@@ -1,318 +1,185 @@
-Return-Path: <linux-kernel+bounces-126063-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-126064-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B0D2F89319E
-	for <lists+linux-kernel@lfdr.de>; Sun, 31 Mar 2024 14:56:00 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id CECEC89319F
+	for <lists+linux-kernel@lfdr.de>; Sun, 31 Mar 2024 15:01:36 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C11DE1C2116D
-	for <lists+linux-kernel@lfdr.de>; Sun, 31 Mar 2024 12:55:59 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D01BD1C21069
+	for <lists+linux-kernel@lfdr.de>; Sun, 31 Mar 2024 13:01:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E13C31448FF;
-	Sun, 31 Mar 2024 12:55:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 62F551448F6;
+	Sun, 31 Mar 2024 13:01:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="JIZqx5Ie"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="eJnKUWex"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.8])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B3D551C0DD3;
-	Sun, 31 Mar 2024 12:55:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711889745; cv=none; b=puC2cPP+miNnFoBneQkZgBB99B6fWvzqJhf/n8RBGib+DETaO75ch04yh2NYaO4ooJTmhbFD5PeXfxviWunEZz7OA09kI6A2IQRDjGWSsesmXoHMyK7GEim+hanBRJC0Q1spOHOmF4LpkVgW8d3VrTBu3NM1hswjJkuQlAQe0Ik=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711889745; c=relaxed/simple;
-	bh=8nhBa9A6E7OCBceKD5lGdt//TuWHKMwSZP1rusZVNGw=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=C+5MjYykpr0L0nzy9bWpra6GJGptBcgO1YAk+IMS0GPaCTyDx22qI6SQRr1w6Szy9hhpZNHEhGCXhCs/N/J4q13hFKGOADEcTbisDeypByiNv7m7NXXsPH90bleBmQlL0nVTAVfW6pCGJHsqVxkD1O31Kff/oXv9UjWZNuFLfS8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=JIZqx5Ie; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4D1DBC433F1;
-	Sun, 31 Mar 2024 12:55:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711889745;
-	bh=8nhBa9A6E7OCBceKD5lGdt//TuWHKMwSZP1rusZVNGw=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=JIZqx5IeHFq/LF+LOnbGEorwt2qCR42M543FksbPJaB68hgfYHdX3rqm+fRFQabiT
-	 y37CrAJ9idUub/lXCH8yZQ7CGRZ4z587xCuS3KxgEwSI27Z0TsFHSOjfzNmF8mqR+k
-	 nVc32Mi2AJFiLos2AoyMKJkq6NpmxXkcrG07KnNubkbfzRBUqmK/UFSf0b56YEBX8S
-	 wqO8GLu+hAdO/a+GS5MwGT+8MtrAncaCH+uO9anTgzeNS5DaPXLCinpwtLio9H9gfA
-	 UxyoPhUbTl/dFXpAjQjw+zLBAAduMO/U1FBVVCO3Vu1SuJwJTIMfW2eFjKmXbuyBn2
-	 SY+d7eMLpUwwg==
-Date: Sun, 31 Mar 2024 14:55:13 +0200
-From: Christian Brauner <brauner@kernel.org>
-To: Alice Ryhl <aliceryhl@google.com>
-Cc: a.hindborg@samsung.com, alex.gaynor@gmail.com, arve@android.com, 
-	benno.lossin@proton.me, bjorn3_gh@protonmail.com, boqun.feng@gmail.com, 
-	cmllamas@google.com, dan.j.williams@intel.com, dxu@dxuuu.xyz, gary@garyguo.net, 
-	gregkh@linuxfoundation.org, joel@joelfernandes.org, keescook@chromium.org, 
-	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, maco@android.com, ojeda@kernel.org, 
-	peterz@infradead.org, rust-for-linux@vger.kernel.org, surenb@google.com, 
-	tglx@linutronix.de, tkjos@android.com, tmgross@umich.edu, viro@zeniv.linux.org.uk, 
-	wedsonaf@gmail.com, willy@infradead.org, yakoyoku@gmail.com
-Subject: Re: [PATCH v5 3/9] rust: file: add Rust abstraction for `struct file`
-Message-ID: <20240331-kellner-ausrufen-5b6c191fba35@brauner>
-References: <20240320-wegziehen-teilhaben-86e071fa163c@brauner>
- <20240320180905.3858535-1-aliceryhl@google.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D7547142E97;
+	Sun, 31 Mar 2024 13:01:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=192.198.163.8
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1711890086; cv=fail; b=a3hiClgmYEgg6PsCeDXEgoyzWxc8dB3E0sZLjHDmXAbxOMTfO+tjG1bvf4PiERYPvhGZbRKcIHnr+q7CtN5tIlf+kMLxZD4E7ykBeksXGWhtSkXCBJw9slnJqRhXWGWVHgNYsARqDo+50qxmVdVxEr+P02lWdTwVylnBdk4ZfBc=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1711890086; c=relaxed/simple;
+	bh=+CtUzNfteMVDHRuwIX5781fsmaFIlHZcyPlcQv4zDZc=;
+	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
+	 Content-Type:MIME-Version; b=Hsf4Eq0/nQxGKbWFZS7VuDw0WznDMnzSYMs9rUrx2VGPY+ZRBGxNESLTIpjHsGRnWn648Z2kdZh8Ri/J1yLuRN6kzMsKH+zZhsohatpGg2qepVc0pMs/Yy9552APnsRpLDkVExgRus/nvOI6cToLsW7IZx0gKpWdaeMCI9LO04s=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=eJnKUWex; arc=fail smtp.client-ip=192.198.163.8
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1711890084; x=1743426084;
+  h=from:to:cc:subject:date:message-id:references:
+   in-reply-to:content-transfer-encoding:mime-version;
+  bh=+CtUzNfteMVDHRuwIX5781fsmaFIlHZcyPlcQv4zDZc=;
+  b=eJnKUWexGjflXeP+jYDmhHbpZLyVNN9GppFJ1EVpa6Wz34tbK/5mBB+w
+   C/50vXqD8mvKAp/DBxawj/C/DC7oCitZnoW2x35SiF0yRSts9ImWnMV56
+   fyPOLS0HsdbzZPBp7AkZdRW6G3b0Y85y7x2WNU01dfaICNuPHJZyDZsON
+   Q+maFT0XztgbHGGGit8eUpAkmTV3sfXZt89ZJQL+zS7FVHeTzuJH5GNBC
+   h8dtJZftTkO687fyG5x3I6b9Oa+Vzs1lq5uW2HMNCtw0d/pS3UwVpTJhM
+   kzcYb8BXiBRMx3LC5b8wLC+XyLAbPGyuuS9ijYP6rrZ/R+5BS0np90LG5
+   w==;
+X-CSE-ConnectionGUID: 626C+LZ8TBeS18zb+phhYA==
+X-CSE-MsgGUID: ky71nFTkQBGE9RDPFjzKMQ==
+X-IronPort-AV: E=McAfee;i="6600,9927,11029"; a="24513264"
+X-IronPort-AV: E=Sophos;i="6.07,170,1708416000"; 
+   d="scan'208";a="24513264"
+Received: from fmviesa004.fm.intel.com ([10.60.135.144])
+  by fmvoesa102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Mar 2024 06:01:23 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,170,1708416000"; 
+   d="scan'208";a="22133090"
+Received: from fmsmsx602.amr.corp.intel.com ([10.18.126.82])
+  by fmviesa004.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 31 Mar 2024 06:01:22 -0700
+Received: from fmsmsx611.amr.corp.intel.com (10.18.126.91) by
+ fmsmsx602.amr.corp.intel.com (10.18.126.82) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Sun, 31 Mar 2024 06:01:22 -0700
+Received: from fmsedg602.ED.cps.intel.com (10.1.192.136) by
+ fmsmsx611.amr.corp.intel.com (10.18.126.91) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35 via Frontend Transport; Sun, 31 Mar 2024 06:01:22 -0700
+Received: from NAM11-CO1-obe.outbound.protection.outlook.com (104.47.56.169)
+ by edgegateway.intel.com (192.55.55.71) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.35; Sun, 31 Mar 2024 06:01:22 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=aID8BjwRCmRaqH3tzxEKd9og1erEG+uKa+J+hCHKZikQ8YRQoEdn+4twiQ0zHRhG+IyPyf025UILojTK3/sg/yQN91zKxrWZLQNeyuVJ5nchtSnXXUGcrZYWfF0afg6bBiBYw76lCyRID+XkuGcKr7nji4vWvtUiWt1BEe++9NNw83AkusD9lxuTLXkX9006YMS/p0ryLs+9OaLwhYTbm5jm89zJUyP/6pLxYou0DsL6ikxFlEFkM4gCU0HH+gpguuUsYXa9Qu8OunlKcYdipFRDiwATFsV2nzP+10j5PCcM5HBZLuluzuXzFEDx6jEp0SNkj+oYLrm9b4Jtpz46lQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=+CtUzNfteMVDHRuwIX5781fsmaFIlHZcyPlcQv4zDZc=;
+ b=G9H0k2LGO7S5UAA9/s6wCZ1nNJ13gr/rXbQdwUhc6CZi0JdGZU8hjUwRpFBw3TLR7r1xSKcGuqeaYMybdiY8RaPQTwFlEznE2d4WvXnsTH/CzASvBw/GJatRiAL3oIv/4iXoNIIH81L3FVucmjj4zpJlmkbRF/cNIjyl4pjN13e/WOw7a9Xxk0fEhetWFpFH37JrBJtlAY5hhiOO2QXrWoN5J4vsz/wGK/0ApF4k4btTPoKaCbBIbQQ8MYAwjy13an11Mo+927inpsssThArav8Azk1B71ffe1BwnFQzli+4EgvmS7uKNrOp7wN2/HZslcZNkVBLglQJgzVDMky8oA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Received: from DS0PR11MB6373.namprd11.prod.outlook.com (2603:10b6:8:cb::20) by
+ SA2PR11MB5132.namprd11.prod.outlook.com (2603:10b6:806:11a::18) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7409.33; Sun, 31 Mar
+ 2024 13:01:21 +0000
+Received: from DS0PR11MB6373.namprd11.prod.outlook.com
+ ([fe80::55de:b95:2c83:7e6c]) by DS0PR11MB6373.namprd11.prod.outlook.com
+ ([fe80::55de:b95:2c83:7e6c%7]) with mapi id 15.20.7452.019; Sun, 31 Mar 2024
+ 13:01:20 +0000
+From: "Wang, Wei W" <wei.w.wang@intel.com>
+To: Sean Christopherson <seanjc@google.com>
+CC: "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, David Skidmore
+	<davidskidmore@google.com>, Steve Rutherford <srutherford@google.com>,
+	"Gupta, Pankaj" <pankaj.gupta@amd.com>, Paolo Bonzini <pbonzini@redhat.com>
+Subject: RE: [ANNOUNCE] PUCK Agenda - 2024.03.13 - No topic
+Thread-Topic: [ANNOUNCE] PUCK Agenda - 2024.03.13 - No topic
+Thread-Index: AQHadN35f9AVk6ft0UyFv8Aerb6gU7FR5xUQ
+Date: Sun, 31 Mar 2024 13:01:20 +0000
+Message-ID: <DS0PR11MB6373543451F0505C220F2C8ADC382@DS0PR11MB6373.namprd11.prod.outlook.com>
+References: <20240313003211.1900117-1-seanjc@google.com>
+In-Reply-To: <20240313003211.1900117-1-seanjc@google.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: DS0PR11MB6373:EE_|SA2PR11MB5132:EE_
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: QgBcP03amZ53dI/UAmFRc2tlaOj1ZKCJpRu6fFucFd98i31/PGN1DPJispkPDLxf3P1xGfPAbfZODY7/y+FSMcjruBNXne0TmpusX/srwABWDTp5Rh1HglCcIep2YJbRaid1mZZytkV8tZxe0YiGWiNUEMrOSKSAFhO4nycLqyQiDuRRKbZVZw1m+HqeSMaMFs5cWMg5k6/GrIXuQP1wKGtjAqAB4Hh6D2ChXUIU2DdCXcO3JtKxuXKH3k4+7i6b4k+t3hNwx7tzqIph3STTm6TxtnE8L+u4uQ5BZlkF8CeRVlsEkp8aSadslgRFjnc/vrOhpdbwZwE8d7rsJzyZBcVGoTQSXEekJ9Y/05NoYZBqjxGzcACBMRwbWzb3oxuMfyHxWMVZxiyfBxEI3aiK0IjTzD84lVcC7L6R7970AyJt+7PusTkqIafS/MXhCsscg8/+Q9aNf99hpJEloJ2Uwpy9JKLYAm43ohLAYE+zDBYKe+qUMXpsbYZ6/DNytCsl8jzvATgkdq1oUjUjY+P3sUH9/QijMyJ3ZCMsPykbW26cU/S70dMJWHx7H7mngZ9hNAkL360qvbQ2QCliSbYWgCQNvoEwdL2jbwy+9NDdQDezd6IfPSMhK33J1FmZVKRChuVkl2oOvQB3fYKd9yEV1A==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DS0PR11MB6373.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376005)(366007)(1800799015);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?utf-8?B?MnBKOUZzOUF2aTlsbnEwaXJ4UGFyeExyTkNob2c5d2JISDBEY3lNNFo1VzMw?=
+ =?utf-8?B?cDBCWlhHbFpzQk1Hcm9SckdIY2h3UW1BM1lyTUlablZmMWZUc0tVZW95S2N0?=
+ =?utf-8?B?Szl6Vi9BZHowL1VPV3BhZFk4VC9wbEowTnZGcG5IWXBKcXRxakEzMXJFOEtz?=
+ =?utf-8?B?M1huWVhIZFk5bjRYK2xqT1BoYlVaODdIakxaR2p2OUIvNVc5V3VqMisyUHRU?=
+ =?utf-8?B?aWdZMTFvZGVlMWZTOGdWMHFTOWFrbk5LdkYyMTRMc3dkNVc1VkZBN1BSa1Fu?=
+ =?utf-8?B?SnpBVEtwODExczFyb2NGTU5lTFVJWm9mekdvQ3gxcDVWN3JYaE5jbTlaMmVU?=
+ =?utf-8?B?SWkzcnlFL0xVMWhDZUdsSGZkNXBIaWtGWmc2T3p2R2lCMStZRS8zdXZ1VzJT?=
+ =?utf-8?B?R3l5TWRVVmFsYVVkK1gvRm1qdUtBeFViVVJLa1Z1Rm1VVks1TWsrdnRZVWZo?=
+ =?utf-8?B?WDlYRlloeElnMUZvYmJwR0FhYzM1aTJVVDF2MlhNV3dyYXByNDJVZS9lK2JW?=
+ =?utf-8?B?dm80QnNCU21oc3l3Ti9Da3lsK0pxaThRL2lPSzY2RjlPZlNuWmtyTHl5M3ZO?=
+ =?utf-8?B?T1pKa3RPcWlWWTltNnFPNDJ2b0V0MHkyNjJLVFc4UURnZk5HVHZ0OGhiU2lF?=
+ =?utf-8?B?QktqL09JV1R2NEFyclFuZHhZTE5lTDhoOHRxeVBmTlFxRkc3alNxYUtlODFi?=
+ =?utf-8?B?ZjZ3clRzcWJ0ZVlPV0c4ZkM4S2xmTHZQTW5QMVdmWUhaUzY4VEdGNWJweDFp?=
+ =?utf-8?B?bHNyaFNiSU5qWjBYQVZRSW9qdDFZN0lHRVZiNkNpeEZ6K3FsSmFiUmFicEJk?=
+ =?utf-8?B?cE45TDN6d0JjN3FrejhHNmhhTEVPM3Z4TmV3QmNhR1ZFYXcyNEhzL05XQWVK?=
+ =?utf-8?B?ampWTllyeGlKbG1LdXlUNmJwck5EVzkxUFp2eE5hZTF5NmViMDlKQ08wSG9K?=
+ =?utf-8?B?UGNOcUFaaHo1azdSSWxDSC9jd0NXQU5vbVBqVVhYU04yeXdJSk1tYzVoOERC?=
+ =?utf-8?B?WHI3WHdxdmxzMXZVQ3pmamhYWG5DWDMxVkxpNEtLdGhhZGV3SlZTbXdWOXBT?=
+ =?utf-8?B?TEt1VXNHWXRsZXcrakE0cy9wUjNLZ3IzTGNwRlRWaUhtU1dFWmJraTd1TDBQ?=
+ =?utf-8?B?d0FKREcyNWlWWHNEZlA0Uno3OXJKVUdGYUMvL0c2TzlSSWI3UUd0Ym1LRW1v?=
+ =?utf-8?B?UnIvQXRUUEpIa0lNUnloMmYrdklQeFBNUHZKenlpVmpKaDFsNVNhUFNhWlZr?=
+ =?utf-8?B?Y2VrZE8wRTJqd3Z3MzBGdjFFN3IraWFNSUhpWmZWNDNYNTgrajdLSStFc2JT?=
+ =?utf-8?B?NTdDYXc0SEdDNU5qa2JWVndmZ25DeEQyeXJKMmVLRkRTYW8rUUdhY001cHlJ?=
+ =?utf-8?B?N1E5NDFVVlpqaVl3bHo0VjQxK3h0bEF5SXB4cFhTZnF3MkFISUFRckJ5QWh5?=
+ =?utf-8?B?eHBCOVFuRWRUYTM4NjFGbUpZeVNXZmQ1cnFaL1VuSFZ2Ujg0L2QzTnlURUJ2?=
+ =?utf-8?B?WkMrQUx3Q2plNWNZUWJSU0xpTG90L3lmMXQ0eDVJRG1OSEFzZm9MNUhESmEz?=
+ =?utf-8?B?a0liVExBcFZVWlRPWkR4L0Z5ZUlrMGhGUC9GNVRGRUd5N0NPSy94U0FaNWlT?=
+ =?utf-8?B?dXBTVUJtSy84YXg4SFlaakdUTHpXU0Y4ZUtnZllqVlFUWXNmVFcweHY4T25u?=
+ =?utf-8?B?WjdIQTdrdDd4cUo4TGpndWJsbDduOE1sV1JJM2ZqNWp2bEhYbmVpM2k3cnZG?=
+ =?utf-8?B?VXZMaG1RYW93YjNQUlN3elRLUG9jOUdNRGtKRHdidlV2UVAvUWxjSENRYWFt?=
+ =?utf-8?B?WExrL3Y1eVdrN09pMmI1QlRUdDZLZUJLUDFpd2FQVFA4Y3FLUnhCN1ZESytG?=
+ =?utf-8?B?L1RHWmR0dHJRYktxTHUxL1drVHBDNVRXcXRBOFNOS3lFdndObWhGZ3FFNkEx?=
+ =?utf-8?B?bHlCc3BRWk4xUjZvd0xoMjBQK1BSOFV3TktDRlI4TU9xU0MrMDdQL08zWlAx?=
+ =?utf-8?B?Mm5UOFhpTWtyYkhuM3U3WHF2UzRmdkdrSVo2NThoM3pOODVlSS9WY2RNSGdG?=
+ =?utf-8?B?MVR2UDJhRk11bHJQWmp1bzM1cVZTQmptY09pa0VsWkJUWHljQ01LUkNOb2Rj?=
+ =?utf-8?Q?KNcHc3Hrny7KnugxNfoXxhdvj?=
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20240320180905.3858535-1-aliceryhl@google.com>
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: DS0PR11MB6373.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 3194b329-bec7-4299-4972-08dc5182a91c
+X-MS-Exchange-CrossTenant-originalarrivaltime: 31 Mar 2024 13:01:20.4431
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: ZYB8fLIBd7IEgM3h/0CG0yZ0++vphMrcWLRFWpnyBCQN6W+E+nycDOsodwBUmti0OXWvG7kXYRH9Th7VyZdK4A==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA2PR11MB5132
+X-OriginatorOrg: intel.com
 
-On Wed, Mar 20, 2024 at 06:09:05PM +0000, Alice Ryhl wrote:
-> Christian Brauner <brauner@kernel.org> wrote:
-> > On Fri, Feb 09, 2024 at 11:18:16AM +0000, Alice Ryhl wrote:
-> >> From: Wedson Almeida Filho <wedsonaf@gmail.com>
-> >> 
-> >> This abstraction makes it possible to manipulate the open files for a
-> >> process. The new `File` struct wraps the C `struct file`. When accessing
-> >> it using the smart pointer `ARef<File>`, the pointer will own a
-> >> reference count to the file. When accessing it as `&File`, then the
-> >> reference does not own a refcount, but the borrow checker will ensure
-> >> that the reference count does not hit zero while the `&File` is live.
-> >> 
-> >> Since this is intended to manipulate the open files of a process, we
-> >> introduce an `fget` constructor that corresponds to the C `fget`
-> >> method. In future patches, it will become possible to create a new fd in
-> >> a process and bind it to a `File`. Rust Binder will use these to send
-> >> fds from one process to another.
-> >> 
-> >> We also provide a method for accessing the file's flags. Rust Binder
-> >> will use this to access the flags of the Binder fd to check whether the
-> >> non-blocking flag is set, which affects what the Binder ioctl does.
-> >> 
-> >> This introduces a struct for the EBADF error type, rather than just
-> >> using the Error type directly. This has two advantages:
-> >> * `File::from_fd` returns a `Result<ARef<File>, BadFdError>`, which the
-> > 
-> > Sorry, where's that method?
-> 
-> Sorry, this is supposed to say `File::fget`.
-> 
-> >> +/// Wraps the kernel's `struct file`.
-> >> +///
-> >> +/// This represents an open file rather than a file on a filesystem. Processes generally reference
-> >> +/// open files using file descriptors. However, file descriptors are not the same as files. A file
-> >> +/// descriptor is just an integer that corresponds to a file, and a single file may be referenced
-> >> +/// by multiple file descriptors.
-> >> +///
-> >> +/// # Refcounting
-> >> +///
-> >> +/// Instances of this type are reference-counted. The reference count is incremented by the
-> >> +/// `fget`/`get_file` functions and decremented by `fput`. The Rust type `ARef<File>` represents a
-> >> +/// pointer that owns a reference count on the file.
-> >> +///
-> >> +/// Whenever a process opens a file descriptor (fd), it stores a pointer to the file in its `struct
-> >> +/// files_struct`. This pointer owns a reference count to the file, ensuring the file isn't
-> >> +/// prematurely deleted while the file descriptor is open. In Rust terminology, the pointers in
-> >> +/// `struct files_struct` are `ARef<File>` pointers.
-> >> +///
-> >> +/// ## Light refcounts
-> >> +///
-> >> +/// Whenever a process has an fd to a file, it may use something called a "light refcount" as a
-> >> +/// performance optimization. Light refcounts are acquired by calling `fdget` and released with
-> >> +/// `fdput`. The idea behind light refcounts is that if the fd is not closed between the calls to
-> >> +/// `fdget` and `fdput`, then the refcount cannot hit zero during that time, as the `struct
-> >> +/// files_struct` holds a reference until the fd is closed. This means that it's safe to access the
-> >> +/// file even if `fdget` does not increment the refcount.
-> >> +///
-> >> +/// The requirement that the fd is not closed during a light refcount applies globally across all
-> >> +/// threads - not just on the thread using the light refcount. For this reason, light refcounts are
-> >> +/// only used when the `struct files_struct` is not shared with other threads, since this ensures
-> >> +/// that other unrelated threads cannot suddenly start using the fd and close it. Therefore,
-> >> +/// calling `fdget` on a shared `struct files_struct` creates a normal refcount instead of a light
-> >> +/// refcount.
-> > 
-> > When the fdget() calling task doesn't have a shared file descriptor
-> > table fdget() will not increment the reference count, yes. This
-> > also implies that you cannot have task A use fdget() and then pass
-> > f.file to task B that holds on to it while A returns to userspace. It's
-> > irrelevant that task A won't drop the reference count or that task B
-> > won't drop the reference count. Because task A could return back to
-> > userspace and immediately close the fd via a regular close() system call
-> > at which point task B has a UAF. In other words a file that has been
-> > gotten via fdget() can't be Send to another task without the Send
-> > implying taking a reference to it.
-> 
-> That matches my understanding.
-> 
-> I suppose that technically you can still send it to another thread *if* you
-> ensure that the current thread waits until that other thread stops using the
-> file before returning to userspace.
-
-_Technically_ yes, but it would be brittle as hell. The problem is that
-fdget() _relies_ on being single-threaded for the time that fd is used
-until fdput(). There's locking assumptions that build on that e.g., for
-concurrent read/write. So no, that shouldn't be allowed.
-
-Look at how this broke our back when we introduced pidfd_getfd() where
-we steal an fd from another task. I have a lengthy explanation how that
-can be used to violate our elided-locking which is based on assuming
-that we're always single-threaded and the file can't be suddenly shared
-with another task. So maybe doable but it would make the semantics even
-more intricate.
-
-> >> +///
-> >> +/// Light reference counts must be released with `fdput` before the system call returns to
-> >> +/// userspace. This means that if you wait until the current system call returns to userspace, then
-> >> +/// all light refcounts that existed at the time have gone away.
-> >> +///
-> >> +/// ## Rust references
-> >> +///
-> >> +/// The reference type `&File` is similar to light refcounts:
-> >> +///
-> >> +/// * `&File` references don't own a reference count. They can only exist as long as the reference
-> >> +///   count stays positive, and can only be created when there is some mechanism in place to ensure
-> >> +///   this.
-> >> +///
-> >> +/// * The Rust borrow-checker normally ensures this by enforcing that the `ARef<File>` from which
-> >> +///   a `&File` is created outlives the `&File`.
-> > 
-> > The section confuses me a little: Does the borrow-checker always ensure
-> > that a &File stays valid or are there circumstances where it doesn't or
-> > are you saying it doesn't enforce it?
-> 
-> The borrow-checker always ensures it.
-
-Ok, thanks.
-
-> 
-> A &File is actually short-hand for &'a File, where 'a is some
-> unspecified lifetime. We say that &'a File is annotated with 'a. The
-> borrow-checker rejects any code that tries to use a reference after the
-> end of the lifetime annotated on it.
-
-Thanks for the explanation.
-
-> 
-> So as long as you annotate the reference with a sufficiently short
-> lifetime, the borrow checker will prevent UAF. And outside of cases like
-
-Sorry, but can you explain "sufficiently short lifetime"?
-
-> from_ptr, the borrow-checker also takes care of ensuring that the
-> lifetimes are sufficiently short.
-> 
-> (Technically &'a File and &'b File are two completely different types,
-> so &File is technically a class of types and not a single type. Rust
-> will automatically convert &'long File to &'short File.)
-> 
-> >> +///
-> >> +/// * Using the unsafe [`File::from_ptr`] means that it is up to the caller to ensure that the
-> >> +///   `&File` only exists while the reference count is positive.
-> > 
-> > What is this used for in binder? If it's not used don't add it.
-> 
-> This is used on the boundary between the Rust part of Binder and the
-> binderfs component that is implemented in C. For example:
-
-I see, I'm being foiled by my own code...
-
-> 
-> 	unsafe extern "C" fn rust_binder_open(
-> 	    inode: *mut bindings::inode,
-> 	    file_ptr: *mut bindings::file,
-> 	) -> core::ffi::c_int {
-> 	    // SAFETY: The `rust_binderfs.c` file ensures that `i_private` is set to the return value of a
-> 	    // successful call to `rust_binder_new_device`.
-> 	    let ctx = unsafe { Arc::<Context>::borrow((*inode).i_private) };
-> 	
-> 	    // SAFETY: The caller provides a valid file pointer to a new `struct file`.
-> 	    let file = unsafe { File::from_ptr(file_ptr) };
-
-We need a better name for this helper than from_ptr() imho. I think
-from_ptr() and as_ptr() is odd for C. How weird would it be to call
-that from_raw_file() and as_raw_file()?
-
-But bigger picture I somewhat struggle with the semantics of this
-because this is not an interface that we have in C and this is really
-about a low-level contract between C and Rust. Specifically this states
-that this pointer is _somehow_ guaranteed valid. And really, this seems
-a bit of a hack.
-
-Naively, I think this should probably not be necessary if
-file_operations are properly wrapped. Or it should at least be demotable
-to a purely internal method that can't be called directly or something.
-
-So what I mean is. fdget() may or may not take a reference. The C
-interface internally knows whether a reference is owned or not by
-abusing the lower two bits in a pointer to keep track of that. Naively,
-I would expect the same information to be available to rust so that it's
-clear to Rust wheter it's dealing with an explicitly referenced file or
-an elided-reference file. Maybe that's not possible and I'm not
-well-versed enough to see that yet.
-
-> 	    let process = match Process::open(ctx, file) {
-> 	        Ok(process) => process,
-> 	        Err(err) => return err.to_errno(),
-> 	    };
-> 	    // SAFETY: This file is associated with Rust binder, so we own the `private_data` field.
-> 	    unsafe {
-> 	        (*file_ptr).private_data = process.into_foreign().cast_mut();
-> 	    }
-> 	    0
-> 	}
-> 
-> Here, rust_binder_open is the open function in a struct file_operations
-> vtable. In this case, file_ptr is guaranteed by the caller to be valid
-
-Where's the code that wraps struct file_operations?
-
-> for the duration of the call to rust_binder_open. Binder uses from_ptr
-> to get a &File from the raw pointer.
-> 
-> As far as I understand, the caller of rust_binder_open uses fdget to
-> ensure that file_ptr is valid for the duration of the call, but the Rust
-> code doesn't assume that it does this with fdget. As long as file_ptr is
-> valid for the duration of the rust_binder_open call, this use of
-> from_ptr is okay. It will continue to work even if the caller is changed
-> to use fget.
-
-Ok.
-
-> 
-> As for how this code ensures that `file` ends up annotated with a
-> sufficiently short lifetime, well, that has to do with the signature of
-> Process::open. Here it is:
-> 
-> 	impl Process {
-> 	    pub(crate) fn open(ctx: ArcBorrow<'_, Context>, file: &File) -> Result<Arc<Process>> {
-> 	        Self::new(ctx.into(), ARef::from(file.cred()))
-> 	    }
-> 	}
-> 
-> In this case, &File is used without specifying a lifetime. It's a
-> function argument, so this means that the lifetime annotated on the
-> `file` argument will be exactly the duration in which Process::open is
-> called. So any attempt to use `file` after the end of the call to
-> Process::open will be rejected by the borrow-checker. (E.g., if
-> Process::open tried to schedule something on the workqueue using `file`,
-> then that would not compile. Storing it in a global variable would not
-> compile either.)
-> 
-> This means that the borrow-checker will not catch mistakes in
-> rust_binder_open, but it *will* catch mistakes in Process::open, and
-> anything called by Process::open.
-> 
-> These examples come from patch 2 of the Binder RFC:
-> https://lore.kernel.org/rust-for-linux/20231101-rust-binder-v1-2-08ba9197f637@google.com/
-> 
-> >> +///
-> >> +/// * You can think of `fdget` as using an fd to look up an `ARef<File>` in the `struct
-> > 
-> > Could you explain why there isn't an explicit fdget() then and you have
-> > that from_ptr() method?
-> 
-> I don't provide an fdget implementation because Binder never calls it.
-> However, if you would like, I would be happy to add one to the patchset.
-> 
-> As for from_ptr, see above.
-> 
-> Alice
+T24gV2VkbmVzZGF5LCBNYXJjaCAxMywgMjAyNCA4OjMyIEFNLCBTZWFuIENocmlzdG9waGVyc29u
+IHdyb3RlOg0KPiBUbzogU2VhbiBDaHJpc3RvcGhlcnNvbiA8c2VhbmpjQGdvb2dsZS5jb20+DQo+
+IENjOiBrdm1Admdlci5rZXJuZWwub3JnOyBsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnDQo+
+IFN1YmplY3Q6IFtBTk5PVU5DRV0gUFVDSyBBZ2VuZGEgLSAyMDI0LjAzLjEzIC0gTm8gdG9waWMN
+Cj4gDQo+IE5vIHRvcGljIGZvciB0b21vcnJvdywgYnV0IEknbGwgYmUgb25saW5lLg0KPiANCj4g
+Tm90ZSwgdGhlIFVTIGp1c3QgZGlkIGl0cyBEYXlsaWdodCBTYXZpbmdzIHRoaW5nLCBzbyB0aGUg
+bG9jYWwgdGltZSBtaWdodCBiZQ0KPiBkaWZmZXJlbnQgZm9yIHlvdSB0aGlzIHdlZWsuDQo+IA0K
+PiBOb3RlICMyLCBQVUNLIGlzIGNhbmNlbGVkIGZvciB0aGUgbmV4dCB0d28gd2Vla3MgYXMgSSds
+bCBiZSBvZmZsaW5lLg0KPiANCj4gRnV0dXJlIFNjaGVkdWxlOg0KPiBNYXJjaCAgICAyMHRoIC0g
+Q0FOQ0VMRUQNCj4gTWFyY2ggICAgMjd0aCAtIENBTkNFTEVEDQoNCldvdWxkIHRoZXJlIGJlIGEg
+c2xvdCBhdmFpbGFibGUgb24gQXByaWwgM3JkPw0KSSdkIGxpa2UgdG8gaGF2ZSBhIGRpc2N1c3Np
+b24gYWJvdXQgS1ZNIHVBUElzIGZvciBURFggYW5kIFNOUCBMaXZlIE1pZ3JhdGlvbi4NCg0KQ0Mg
+dGhlIG9uZXMgd2hvIHdvdWxkIGJlIGludGVyZXN0ZWQgaW4gam9pbmluZyB0aGUgZGlzY3Vzc2lv
+bi4NCihIb3BlIG1vcmUgZm9sa3Mgd29ya2luZyBvbiB0aGUgU05QIG1pZ3JhdGlvbiBwYXJ0IGNv
+dWxkIGpvaW4pDQoNClRoYW5rcywNCldlaQ0K
 
