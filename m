@@ -1,148 +1,105 @@
-Return-Path: <linux-kernel+bounces-125917-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-125918-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0DA73892E31
-	for <lists+linux-kernel@lfdr.de>; Sun, 31 Mar 2024 03:28:48 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 31720892E34
+	for <lists+linux-kernel@lfdr.de>; Sun, 31 Mar 2024 03:31:55 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 60CEE2825D0
-	for <lists+linux-kernel@lfdr.de>; Sun, 31 Mar 2024 01:28:46 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9628D1F218A0
+	for <lists+linux-kernel@lfdr.de>; Sun, 31 Mar 2024 01:31:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A277B10E6;
-	Sun, 31 Mar 2024 01:28:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1CAA110FA;
+	Sun, 31 Mar 2024 01:31:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="a36wuHNF"
-Received: from mail-yb1-f172.google.com (mail-yb1-f172.google.com [209.85.219.172])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b="y/mcPyJM"
+Received: from out203-205-221-236.mail.qq.com (out203-205-221-236.mail.qq.com [203.205.221.236])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4A3ACA5F
-	for <linux-kernel@vger.kernel.org>; Sun, 31 Mar 2024 01:28:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 946487E9
+	for <linux-kernel@vger.kernel.org>; Sun, 31 Mar 2024 01:31:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=203.205.221.236
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711848520; cv=none; b=bbVowo1rjWuPDEvH9wyPBhXQYgIeN5XrnyYKMITJXWVwvSAP4jlxb4BTeWhAz6qMEFCxP6CrEXiDYbN8GlcM/CBXdOb6mVEDeyNXZ7C/V3L2o+Q2f/yc2wO0UFbJ4ZKETt16X+kwtiQPps+Fi6SilCLtT3vgkpvmYEioya3R0tg=
+	t=1711848707; cv=none; b=ihwgDM2KbaASM/ym5p7sF1LWlS8KG1HYNLlqwdEGnC0NXL4WptwIebf5yrRxk3+Bi5fltSXCvTp+j49j7HR46TaadqN/TpfBr3l+EH/HOfHfV4Op2RZu8HG8kJEC0QVEgRMND0kn1/AJhImH4DemkAqwYxSH4oEUvz1G5KRmb3g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711848520; c=relaxed/simple;
-	bh=fwCsj9KzvvZz8Fr0/8Sp6V8OFjpmhOC76hu56ZddtJc=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=L2FVvMaRqk/DvYF0X8CkCasjhonuRXq6smfYOQfA79HTagpKGas2PQPbmfrr3b3phohPIVX5tA+nPvbQf10+73jzabPuk9LJd4AEUN+YX+bBYH2gYTrgT5GAta7PMeTfzWjZOzweRr8Qz6fLnuzUUK1UbBx7+Y/+8Sl9v3im6r8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=a36wuHNF; arc=none smtp.client-ip=209.85.219.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-yb1-f172.google.com with SMTP id 3f1490d57ef6-dc74435c428so2930763276.2
-        for <linux-kernel@vger.kernel.org>; Sat, 30 Mar 2024 18:28:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1711848517; x=1712453317; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=BL2R1QAuvfVx+U9ruvI1fjJwx/fUUYB4YJfJTk35Ycg=;
-        b=a36wuHNFC0DbmMRm9QNUNO76ibDrG+CFhwqGJNF/T+ZsGvxiiPPtHWtQB72uyywcgK
-         mbG+KxWt05iQ305lA/75h/3MmLy6WwzZP8djSg2sXaomibAj4iOEy7+wdzlGvqwVgG5w
-         KoVW2gzxJPD1dcSN2Qt9djf405pA3ToxA8/2VJ/4C0bT4kYHN7M3bv9ooJIxH/tRCnEp
-         VHiF+Jre1VL6ShwiQdEGIoBaDCXUV46vfytw/Rp5O9fQfbxuEKfte+SRDessTADb5qof
-         BQoO22I1wFbwWvETV2Bj7BoWXemSEfAl4Mix0N8GGxwPOCNnT+Mrn1WSa48XnoQKbL0g
-         mChw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711848517; x=1712453317;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=BL2R1QAuvfVx+U9ruvI1fjJwx/fUUYB4YJfJTk35Ycg=;
-        b=FxpHbZ/h7Or3uMCD1HSK5QixprCB5XqWxxxZWPVnDstCkCMjkvq3JpRLe9UvnM4YJa
-         T3U+LKk4oNlxn+GI/krEs6E9l1Sxn0w4eAHeRDo6nkMdnwhj6W2eil9bdTOI5qtcnFoA
-         iG3Z3ou3F+RFE1aK6Czjstku8/2svf2lIEGrhD0CIYi1qxE1nz9tLXRFCHdzCd5NguNM
-         TE/u+/rqLOrbSLylZ6hkLoXbLZPgR5Y4v1hMJPzFdQmBYKCO49VJZnYb1NnUT+N2LePq
-         cj8MwZjtGxDctyze64fc4saebfRZwQgBlYLpyPmBH5V/so63VPf1MMOz/wP3nnbyf8ii
-         dmLw==
-X-Forwarded-Encrypted: i=1; AJvYcCWlHw7W72xET0SAWC4NljlVA1YyLhOQiWzRF5Mu1v+CBGzXIv4nbETh5zqjXBybEkwL8QIbMfouwb435om1k/J045i+SZGPrIl40SsP
-X-Gm-Message-State: AOJu0Yzb7y1IqDmmmzxOflqD3h2Q2eXibx2q6q21+R59NcoMKiPc8Hxu
-	qaQ3L0F0MfukYTlh690wk71FGbaRdIcVfsv0OjsqeEzzeCSf4Ib4Y9lyikWYUz+t/PivRaLqazI
-	lLdP226sWcgcPqFnFoouDv9hNEakxsMue+kqdTw==
-X-Google-Smtp-Source: AGHT+IH8rc6ukKZ431Xu+JFdWXSvpJY/UG2Kt+Pg0Sya5av9XYBdN41omRMHENn7AkaVIvIVLpbPE6RbB/yVwhyEjNc=
-X-Received: by 2002:a25:890b:0:b0:dc6:9c51:760f with SMTP id
- e11-20020a25890b000000b00dc69c51760fmr4459130ybl.56.1711848517203; Sat, 30
- Mar 2024 18:28:37 -0700 (PDT)
+	s=arc-20240116; t=1711848707; c=relaxed/simple;
+	bh=+Rq/WGVMfaAaENb1dfR0qroMqXD7ZO67MAafXubZalE=;
+	h=Message-ID:From:To:Cc:Subject:Date:In-Reply-To:References:
+	 MIME-Version; b=Pk4kelAN0Jyaxmas7bvDqUlPWGWtBVBTf2vhqkMfGG4QPGPwo7yi9+QFjFRzB2MdbZQ+zrBPeGmbbLR38lQYlChBGz4Q3rbpHMEmPGTPoF1x7h8f6izok030yxWTFd9iQ/9RSTnWYHxEgXSW5HaUxH9fXTyWOuWNPHwTb7izibs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com; spf=pass smtp.mailfrom=qq.com; dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b=y/mcPyJM; arc=none smtp.client-ip=203.205.221.236
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=qq.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qq.com; s=s201512;
+	t=1711848702; bh=rMYFnHJQ1YF4qyTAPas1uqvbpFRkQTmxzFOLJyQXG6o=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References;
+	b=y/mcPyJMewBDjZnGW4g0WLbd5Jjlwwr5/mZJwg2FVhWbHoOpZfd+vMrixJEB9PEAq
+	 TVBfW5NcwzUPWh698WSf9TDqxWRNRPu4lgSJmL4sjL8ORW+IyLEZ0lXA9Ug/QgbNHr
+	 0WlRUt0AJ0FKzln1Cp2jlC91s8OZyIc5+9Di00PM=
+Received: from pek-lxu-l1.wrs.com ([111.198.228.153])
+	by newxmesmtplogicsvrszc5-1.qq.com (NewEsmtp) with SMTP
+	id 7E880EA9; Sun, 31 Mar 2024 09:31:40 +0800
+X-QQ-mid: xmsmtpt1711848700t9bmd44mv
+Message-ID: <tencent_3B1966563C69363897A236A64A4E74437709@qq.com>
+X-QQ-XMAILINFO: NY3HYYTs4gYSGKrmfDl+FNKZaJYwJtMcbTiYZlA0cW0aS8gPMg1LwVK5FesNXJ
+	 7PpcvEC5AVKLBJImb8XlQTnuke3ZQbCMxk8delXf+cxY0D30Dau3Rb9Pih7hflJC0jUK3+Gxcylv
+	 pGAyRLRiCzAXBDYL11p8bpXKgNpwQbTDQxjNHEJqjiADzvo4lQU3XsxRboBHubWt00sWc1TcYLns
+	 V4I8Cxq/Lieoz+KJ6tz4CF+BqlPIoq4xTihxegY19vckFLZC78hr1tJU5dVTEyTC/49CLBhSDSuN
+	 VO2WdT+pP7g6glum6l9S0ZoUcUdV5/te4Hv47//Eddy+ltaH4R39L+U+XfOixp9ciHLgQjFWBrAo
+	 J9Rrotizl8m3P/tr1p2aG8lL2cxF63O3kJ2tjU9uRw5bLrxHaMHsJb+OFUoFSam1/I1OBHMPdF85
+	 eyUHiwZMyHp22IQiK/NUv34VviDN56hrC799jMOfVeXh5Bwd/TT/QiY2RAw8okeXl+tra3wY1SwR
+	 QCdt9GdR8tZMpAaKrcGfOWpZBv5vKd/2zu8xjYnLZYmxs/I7+xrCkY+Wpt0H7/NXEOPkqLc357oG
+	 cEEnI3uQJCxWgblFn61aQaCE2w2vv3JcX3DAIA9dzvde8Wf7oDdYb8XW4Q44qAfWbrrdKSg5Wub2
+	 YNVky58RxUGtWfvvJrSpOzkCnGitP0xbDKzOWGaCBlmJFXLyX77fzcw1eJM5GHmLzfSh5VadtbXc
+	 6lAA6YnUcHJEqdUG387pARF7QKlevFlngIXBQ9uPSB4Gj/GFn92de8psUyNpbjBjGy61zMJ1npjX
+	 pbDuGBjkmQ5XxIyEdfCXZgUw2g4mPS2DhNg//WV943AVhboyWAqq+UcxHJGfhaPxpAbhGiOLjWZC
+	 98lSJtvup5k/6C0H3MmYl9o7WdKUpG1dLjW+esxNiD78CkfWiLUeqbBXhWEbnMaVPrM0JaD2jF
+X-QQ-XMRINFO: NyFYKkN4Ny6FSmKK/uo/jdU=
+From: Edward Adam Davis <eadavis@qq.com>
+To: syzbot+af9492708df9797198d6@syzkaller.appspotmail.com
+Cc: linux-kernel@vger.kernel.org,
+	syzkaller-bugs@googlegroups.com
+Subject: Re: [syzbot] [bpf?] [net?] general protection fault in dev_map_enqueue
+Date: Sun, 31 Mar 2024 09:31:41 +0800
+X-OQ-MSGID: <20240331013140.719556-2-eadavis@qq.com>
+X-Mailer: git-send-email 2.43.0
+In-Reply-To: <00000000000069ee1a06149ff00c@google.com>
+References: <00000000000069ee1a06149ff00c@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240330182817.3272224-1-quic_ajipan@quicinc.com> <20240330182817.3272224-4-quic_ajipan@quicinc.com>
-In-Reply-To: <20240330182817.3272224-4-quic_ajipan@quicinc.com>
-From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Date: Sun, 31 Mar 2024 04:28:26 +0300
-Message-ID: <CAA8EJpqZjysw+YE=vKguearf_abSzocvYtMvW9eHAZD-tMKs0g@mail.gmail.com>
-Subject: Re: [PATCH 3/7] clk: qcom: Add DISPCC driver support for SM4450
-To: Ajit Pandey <quic_ajipan@quicinc.com>
-Cc: Michael Turquette <mturquette@baylibre.com>, Stephen Boyd <sboyd@kernel.org>, 
-	Rob Herring <robh@kernel.org>, Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
-	Conor Dooley <conor+dt@kernel.org>, Bjorn Andersson <andersson@kernel.org>, 
-	Konrad Dybcio <konrad.dybcio@linaro.org>, Vinod Koul <vkoul@kernel.org>, 
-	Vladimir Zapolskiy <vladimir.zapolskiy@linaro.org>, linux-arm-msm@vger.kernel.org, 
-	linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	Taniya Das <quic_tdas@quicinc.com>, Jagadeesh Kona <quic_jkona@quicinc.com>, 
-	Imran Shaik <quic_imrashai@quicinc.com>, 
-	Satya Priya Kakitapalli <quic_skakitap@quicinc.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 
-On Sat, 30 Mar 2024 at 20:29, Ajit Pandey <quic_ajipan@quicinc.com> wrote:
->
-> Add Display Clock Controller (DISPCC) support for SM4450 platform.
->
-> Signed-off-by: Ajit Pandey <quic_ajipan@quicinc.com>
-> ---
->  drivers/clk/qcom/Kconfig         |  10 +
->  drivers/clk/qcom/Makefile        |   1 +
->  drivers/clk/qcom/dispcc-sm4450.c | 781 +++++++++++++++++++++++++++++++
->  3 files changed, 792 insertions(+)
->  create mode 100644 drivers/clk/qcom/dispcc-sm4450.c
->
+please test null ptr deref in dev_map_enqueue
 
-[skipped]
+#syz test https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf.git 443574b03387
 
-> +static int disp_cc_sm4450_probe(struct platform_device *pdev)
-> +{
-> +       struct regmap *regmap;
+diff --git a/kernel/bpf/devmap.c b/kernel/bpf/devmap.c
+index 4e2cdbb5629f..ef20de14154a 100644
+--- a/kernel/bpf/devmap.c
++++ b/kernel/bpf/devmap.c
+@@ -86,6 +86,7 @@ struct bpf_dtab {
+ static DEFINE_PER_CPU(struct list_head, dev_flush_list);
+ static DEFINE_SPINLOCK(dev_map_lock);
+ static LIST_HEAD(dev_map_list);
++static bool is_valid_dst(struct bpf_dtab_netdev *obj, struct xdp_frame *xdpf);
+ 
+ static struct hlist_head *dev_map_create_hash(unsigned int entries,
+ 					      int numa_node)
+@@ -536,7 +537,10 @@ int dev_xdp_enqueue(struct net_device *dev, struct xdp_frame *xdpf,
+ int dev_map_enqueue(struct bpf_dtab_netdev *dst, struct xdp_frame *xdpf,
+ 		    struct net_device *dev_rx)
+ {
+-	struct net_device *dev = dst->dev;
++	struct net_device *dev;
++	if (!is_valid_dst(dst, xdpf))
++		return -EINVAL;
++	dev = dst->dev;
+ 
+ 	return __xdp_enqueue(dev, xdpf, dev_rx, dst->xdp_prog);
+ }
 
-Is there a MMCX power domain on the platform? See how other dispcc
-drivers handle pm_runtime status.
-
-> +
-> +       regmap = qcom_cc_map(pdev, &disp_cc_sm4450_desc);
-> +       if (IS_ERR(regmap))
-> +               return PTR_ERR(regmap);
-> +
-> +       clk_lucid_evo_pll_configure(&disp_cc_pll0, regmap, &disp_cc_pll0_config);
-> +       clk_lucid_evo_pll_configure(&disp_cc_pll1, regmap, &disp_cc_pll1_config);
-> +
-> +       /* Keep some clocks always enabled */
-> +       qcom_branch_set_clk_en(regmap, 0xe070); /* DISP_CC_SLEEP_CLK */
-> +       qcom_branch_set_clk_en(regmap, 0xe054); /* DISP_CC_XO_CLK */
-> +
-> +       return qcom_cc_really_probe(pdev, &disp_cc_sm4450_desc, regmap);
-> +}
-> +
-> +static struct platform_driver disp_cc_sm4450_driver = {
-> +       .probe = disp_cc_sm4450_probe,
-> +       .driver = {
-> +               .name = "dispcc-sm4450",
-> +               .of_match_table = disp_cc_sm4450_match_table,
-> +       },
-> +};
-> +
-> +module_platform_driver(disp_cc_sm4450_driver);
-> +
-> +MODULE_DESCRIPTION("QTI DISPCC SM4450 Driver");
-> +MODULE_LICENSE("GPL");
-> --
-> 2.25.1
->
->
-
-
--- 
-With best wishes
-Dmitry
 
