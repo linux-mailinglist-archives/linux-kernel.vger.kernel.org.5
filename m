@@ -1,56 +1,70 @@
-Return-Path: <linux-kernel+bounces-126034-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-126035-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 702CB89313A
-	for <lists+linux-kernel@lfdr.de>; Sun, 31 Mar 2024 12:28:00 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2B29689313B
+	for <lists+linux-kernel@lfdr.de>; Sun, 31 Mar 2024 12:30:45 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 92B531C21323
-	for <lists+linux-kernel@lfdr.de>; Sun, 31 Mar 2024 10:27:59 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 89A902827C8
+	for <lists+linux-kernel@lfdr.de>; Sun, 31 Mar 2024 10:30:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3FBAC7764E;
-	Sun, 31 Mar 2024 10:27:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9DE7584037;
+	Sun, 31 Mar 2024 10:30:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=proton.me header.i=@proton.me header.b="drQZw0N5"
-Received: from mail-4322.protonmail.ch (mail-4322.protonmail.ch [185.70.43.22])
+	dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b="T2OQmZU0"
+Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 57498763EC;
-	Sun, 31 Mar 2024 10:27:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.70.43.22
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 570F583CA6
+	for <linux-kernel@vger.kernel.org>; Sun, 31 Mar 2024 10:30:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=65.109.113.108
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711880872; cv=none; b=e6gMlreel5UHPKcXWnunhMQGoCd2rA86nQ+cTiFINgVFXBmGFYMlDog7vCjNbpptkM+1yNc2ZLiKGLi4pVBDWT68nobQAawBU5nhLGlevTdPfLhrsfqxHib6SDYEMICaDOgVIlOlEXuA7go0MxeelZPTwQjoQuMvGiH6GkLOcL0=
+	t=1711881038; cv=none; b=t3y6+4B9JOpfy9/5nb9KGa35JSm9HkCPO/6aykfBVr/mM/9p6GoMKZA9CwbkZAD5e/DIydqV/s/YRTaESMNvFONJmNbelBHEEKccATym/ucZjJclWmxxOqm1eulekyBIQx5BW/Tejb5PjXFaDDpeQ6sEeSo2npWm5ak0/SvKY0A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711880872; c=relaxed/simple;
-	bh=L/10QJEhsAIm7eEgjRvTrgcoaqTTGRJhJ9WBna1Dhzo=;
-	h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=B0ks29nkeg+I722LXKQRyPvB2otD09yFrnak5ITlEnAPyTkSlhlLPMUsnTZyq2y0f6JT8yaLRg9IKaAbBRhoV7HjPOptvczG/SgN/OQPtWaVoW6NlRD9iUeFX9/fpqm3DN2hYK6ADYAAD/friSXDYPbPmaFtHlzv9hWFAsbiwxs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=proton.me; spf=pass smtp.mailfrom=proton.me; dkim=pass (2048-bit key) header.d=proton.me header.i=@proton.me header.b=drQZw0N5; arc=none smtp.client-ip=185.70.43.22
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=proton.me
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=proton.me
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=proton.me;
-	s=protonmail; t=1711880862; x=1712140062;
-	bh=xXth9F6mwWUjnYOxzF4GaPch1yXF0oNpcQcxRS44w7o=;
-	h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
-	 Feedback-ID:From:To:Cc:Date:Subject:Reply-To:Feedback-ID:
-	 Message-ID:BIMI-Selector;
-	b=drQZw0N5x+P/gZGHHE0jckPV6Ol7xxWmHl241EVA4RqoHZXHzth9hx7sTbBfj4Ju1
-	 8pOT0V6UUng3HHCl7BXMkwBefdE3p8A/5KDazXZB07HfNMOQJtA+CDLBT6q/zlyqOt
-	 /N2Co0gmGH0WsdP77w9XkNIlQTOPOsjnNsx4MuhJpR0K+5mbXgvpAKHXxcDbYbmwAm
-	 jsDoIUaQNFhBKSZfJJ91qnu+ru1ZKdsBBKwQ3KEFporLzFDvJM32o4+gO3LRHTzsUu
-	 J5wCxK4v9QdcIiN1vliExlJWEdNH2R9RHfQdUESW7DNEOCuecKuDvDljcJvdy9OS0B
-	 uuclS0MVnsaPA==
-Date: Sun, 31 Mar 2024 10:27:37 +0000
-To: Wedson Almeida Filho <wedsonaf@gmail.com>
-From: Benno Lossin <benno.lossin@proton.me>
-Cc: Miguel Ojeda <ojeda@kernel.org>, Alex Gaynor <alex.gaynor@gmail.com>, Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>, =?utf-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>, Andreas Hindborg <a.hindborg@samsung.com>, Alice Ryhl <aliceryhl@google.com>, Martin Rodriguez Reboredo <yakoyoku@gmail.com>, Asahi Lina <lina@asahilina.net>, Eric Curtin <ecurtin@redhat.com>, Neal Gompa <neal@gompa.dev>, Thomas Bertschinger <tahbertschinger@gmail.com>, Andrea Righi <andrea.righi@canonical.com>, Sumera Priyadarsini <sylphrenadin@gmail.com>, Finn Behrens <me@kloenk.dev>, Adam Bratschi-Kaye <ark.email@gmail.com>, stable@vger.kernel.org, Daniel Xu <dxu@dxuuu.xyz>, rust-for-linux@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] rust: macros: fix soundness issue in `module!` macro
-Message-ID: <d41d123e-d682-4685-88f5-e45567cc1975@proton.me>
-In-Reply-To: <CANeycqp0o-HKBx6nuGCy9DD6mAwoGWzTR6bm5ceajsUhKcZuQg@mail.gmail.com>
-References: <20240327160346.22442-1-benno.lossin@proton.me> <CANeycqp0o-HKBx6nuGCy9DD6mAwoGWzTR6bm5ceajsUhKcZuQg@mail.gmail.com>
-Feedback-ID: 71780778:user:proton
+	s=arc-20240116; t=1711881038; c=relaxed/simple;
+	bh=3zpgI1Paos9ciLo9HGzztyAnzRRh3nIravi7wdM4Qpo=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition; b=edU21uKmAQfZZHqU/6y7bQ9BUu6dK7laT1+ZawhaCl8ENScgwr2VLe6mGUoot9ylSxx4YvHhWAs/Nf7qt5FBvPSq8E9Khl+V3qLfr8EeLa7XxRNbURrn3qHWSVoCol6yb9FdeqiXXTWmUZG7DUOh/59MPasm7LZS9N8LQfNru1Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de; spf=pass smtp.mailfrom=alien8.de; dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b=T2OQmZU0; arc=none smtp.client-ip=65.109.113.108
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alien8.de
+Received: from localhost (localhost.localdomain [127.0.0.1])
+	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id 27E3340E0028;
+	Sun, 31 Mar 2024 10:30:35 +0000 (UTC)
+X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
+Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
+	header.d=alien8.de
+Received: from mail.alien8.de ([127.0.0.1])
+	by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
+	with ESMTP id CSisdASETqf0; Sun, 31 Mar 2024 10:30:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
+	t=1711881031; bh=LvPojGx+RycBrf5Jz7MadF0GpXNUwG/7udU95/K0TK0=;
+	h=Date:From:To:Cc:Subject:From;
+	b=T2OQmZU0+Fj1nMTvOZUnGsiBKScQq2DnuEs+4ZaWuavjWE0biimGhxqK8gVuhHX09
+	 lAQQ+IX59th9OsOkpFd7ZJMWu/nhYhOor1pItIhVY4OqV5xKGIVJKJBBBHlK8Ii88j
+	 O6AiOXdqpH5qirivjDrJ3zJVR8iDDTSYIsW+fjAH9t8A9bcth55LhPxewc7Cls0A07
+	 XozQDWXVQjHZXY3tmdw6jo8+nc5Hx+X6DRPCkHoYvTzsLBqcRYbQqXTPZWhddUdsUe
+	 EPXHLTwGs+ViTgtdEqUJCJJHzLDF85ET657jWvZF8kVPGHmgVtYjYNA8qPIO+sImfd
+	 gnrqMFtJm5WnaXqO2lbIQtFsNmhfFZQD5cLEppml6LdUu6hd/PtUXzZlGZHJ20NJTG
+	 7tyHcKOuSKavrtvzFYj/qiNjGO+aYKzOZaUgZQZIra/RMhIN8Uph6/IDxgD8PkI0Cb
+	 J+QWcxIKQ+locsaOB3owgR3Z8nOSUW3c2j6og5wVMSYzb6CIunQliDK2oYE2tg0+SI
+	 wVVMzleXiWT6vcl3FzFyONpgYp+AnwecBN3H/r+uy3dTrIkXeK42Y+g46VTb9O8PT6
+	 uu2b4HNApHpLFsB0yrxeKt3WZmTza2bl1Tx6peACBAg8mj+ckAtecgVGDE+pXp5obF
+	 hRbqb63dK2S4N2Sptq7Y/dKY=
+Received: from zn.tnic (p5de8ecf7.dip0.t-ipconnect.de [93.232.236.247])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
+	(No client certificate requested)
+	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 8C81040E00B2;
+	Sun, 31 Mar 2024 10:30:28 +0000 (UTC)
+Date: Sun, 31 Mar 2024 12:30:27 +0200
+From: Borislav Petkov <bp@alien8.de>
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: x86-ml <x86@kernel.org>, lkml <linux-kernel@vger.kernel.org>
+Subject: [GIT PULL] timers/urgent for v6.9-rc2
+Message-ID: <20240331103027.GAZgk7Q5vR6nlYkmm8@fat_crate.local>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -58,139 +72,43 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Content-Disposition: inline
 
-On 31.03.24 03:00, Wedson Almeida Filho wrote:
-> On Wed, 27 Mar 2024 at 13:04, Benno Lossin <benno.lossin@proton.me> wrote=
-:
->> +                    #[cfg(not(MODULE))]
->> +                    #[doc(hidden)]
->> +                    #[no_mangle]
->> +                    pub extern \"C\" fn __{name}_exit() {{
->> +                        __exit()
+Hi Linus,
 
-I just noticed this should be wrapped in an `unsafe` block with a SAFETY
-comment. Will fix this in v2.
+please pull an urgent timers fix for v6.9-rc2 so that tglx can relax
+more. :-P
 
->> +                    }}
->>
->> -            #[cfg(not(MODULE))]
->> -            #[doc(hidden)]
->> -            #[no_mangle]
->> -            pub extern \"C\" fn __{name}_exit() {{
->> -                __exit()
->> -            }}
->> +                    /// # Safety
->> +                    ///
->> +                    /// This function must
->> +                    /// - only be called once,
->> +                    /// - not be called concurrently with `__exit`.
->=20
-> I don't think the second item is needed here, it really is a
-> requirement on `__exit`.
+Thx.
 
-Fixed.
+---
 
->=20
->> +                    unsafe fn __init() -> core::ffi::c_int {{
->> +                        match <{type_} as kernel::Module>::init(&THIS_M=
-ODULE) {{
->> +                            Ok(m) =3D> {{
->> +                                // SAFETY:
->> +                                // no data race, since `__MOD` can only=
- be accessed by this module and
->> +                                // there only `__init` and `__exit` acc=
-ess it. These functions are only
->> +                                // called once and `__exit` cannot be c=
-alled before or during `__init`.
->> +                                unsafe {{
->> +                                    __MOD =3D Some(m);
->> +                                }}
->> +                                return 0;
->> +                            }}
->> +                            Err(e) =3D> {{
->> +                                return e.to_errno();
->> +                            }}
->> +                        }}
->> +                    }}
->>
->> -            fn __init() -> core::ffi::c_int {{
->> -                match <{type_} as kernel::Module>::init(&THIS_MODULE) {=
-{
->> -                    Ok(m) =3D> {{
->> +                    /// # Safety
->> +                    ///
->> +                    /// This function must
->> +                    /// - only be called once,
->> +                    /// - be called after `__init`,
->> +                    /// - not be called concurrently with `__init`.
->=20
-> The second item is incomplete: it must be called after `__init` *succeeds=
-*.
+The following changes since commit 4cece764965020c22cff7665b18a012006359095:
 
-Indeed.
+  Linux 6.9-rc1 (2024-03-24 14:10:05 -0700)
 
->=20
-> With that added (which is a different precondition), I think the third
-> item can be dropped because if you have to wait to see whether
-> `__init` succeeded or failed before you can call `__exit`, then
-> certainly you cannot call it concurrently with `__init`.
+are available in the Git repository at:
 
-I would love to drop that requirement, but I am not sure we can. With
-that requirement, I wanted to ensure that no data race on `__MOD` can
-happen. If you need to verify that `__init` succeeded, one might think
-that it is not possible to call `__exit` such that a data race occurs,
-but I think it could theoretically be done if the concrete `Module`
-implementation never failed.
+  git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git tags/timers_urgent_for_v6.9_rc2
 
-Do you have any suggestion for what I could add to the "be called after
-`__init` was called and returned `0`" requirement to make a data race
-impossible?
+for you to fetch changes up to 1fed2f1ea62aa79e8c1df79b26e5bf5c8cf45065:
 
---=20
-Cheers,
-Benno
+  MAINTAINERS: Add co-maintainers for time[rs] (2024-03-27 14:48:11 +0100)
 
->=20
->> +                    unsafe fn __exit() {{
->> +                        // SAFETY:
->> +                        // no data race, since `__MOD` can only be acce=
-ssed by this module and there
->> +                        // only `__init` and `__exit` access it. These =
-functions are only called once
->> +                        // and `__init` was already called.
->>                           unsafe {{
->> -                            __MOD =3D Some(m);
->> +                            // Invokes `drop()` on `__MOD`, which shoul=
-d be used for cleanup.
->> +                            __MOD =3D None;
->>                           }}
->> -                        return 0;
->>                       }}
->> -                    Err(e) =3D> {{
->> -                        return e.to_errno();
->> -                    }}
->> -                }}
->> -            }}
->>
->> -            fn __exit() {{
->> -                unsafe {{
->> -                    // Invokes `drop()` on `__MOD`, which should be use=
-d for cleanup.
->> -                    __MOD =3D None;
->> +                    {modinfo}
->>                   }}
->>               }}
->> -
->> -            {modinfo}
->>           ",
->>           type_ =3D info.type_,
->>           name =3D info.name,
->>
->> base-commit: 4cece764965020c22cff7665b18a012006359095
->> --
->> 2.44.0
->>
->>
+----------------------------------------------------------------
+- Volunteer in Anna-Maria and Frederic as timers co-maintainers
 
+----------------------------------------------------------------
+Thomas Gleixner (1):
+      MAINTAINERS: Add co-maintainers for time[rs]
+
+ MAINTAINERS | 35 +++++++++++++++++++++++++++--------
+ 1 file changed, 27 insertions(+), 8 deletions(-)
+
+
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
 
