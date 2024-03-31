@@ -1,235 +1,178 @@
-Return-Path: <linux-kernel+bounces-125938-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-125939-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id D75CE892E67
-	for <lists+linux-kernel@lfdr.de>; Sun, 31 Mar 2024 05:26:27 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2E6D7892E6C
+	for <lists+linux-kernel@lfdr.de>; Sun, 31 Mar 2024 05:47:35 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 47C5C28244A
-	for <lists+linux-kernel@lfdr.de>; Sun, 31 Mar 2024 03:26:26 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 50156B2166B
+	for <lists+linux-kernel@lfdr.de>; Sun, 31 Mar 2024 03:47:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 468121C33;
-	Sun, 31 Mar 2024 03:26:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="CZy4sLvw"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.13])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A45672566;
+	Sun, 31 Mar 2024 03:47:24 +0000 (UTC)
+Received: from out01.mta.xmission.com (out01.mta.xmission.com [166.70.13.231])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3A42B15A5;
-	Sun, 31 Mar 2024 03:26:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.13
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8040A15A5;
+	Sun, 31 Mar 2024 03:47:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=166.70.13.231
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711855579; cv=none; b=UN4Z+4QpcfhpeX/06Hyh7j/feyuOxu6BnzG1srRKT+lkBbPT9JLsvjFgzhxzjaQyMRUqMAL1T9fOwlaRfIHuH+fZxymbNsJOEyUWR3QTrszPsPNUdYwYJM0aZRnoDAsVwu/UtPRkXf0ZrmYHZgHB2AcZuJBE3C6x15jRQWYEzzs=
+	t=1711856844; cv=none; b=UPb7Pv3mZPGzMXmWfn5TvCKxwlPYrBNOORkqncPeUPqLXGjbpgGrPotVvdIA3MNWkT2aLjU3b+/I0eQ+ef38R0vH/a77GS7BkC5hGRyujUhyJcR7Rageze+Gsy6zLVUnHzq9EQXFPE2LUP7A0GgKQpaPCzhjo5Wu6Eu1xyn4ZSw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711855579; c=relaxed/simple;
-	bh=mcOlxyFsflrwoL63B7r2X+EHxgx+Zstva2sSGp2qJjg=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=eOHmrgc6Tcdopdz9uGbg5/5k7ZOxe/IAgrkLcGE+ep0/wmRZkP9txKgEg8SLVCxoWzDhCJuK57xKqshg2vse2a+U+AIR81+d9lvF8VG7S1Nv/8R/WHoixIHCY5fDctYPlDQ+rL+dxqStc7o7fEAe0qRnPMFqMbCX1RlJ1qRwAyo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=CZy4sLvw; arc=none smtp.client-ip=198.175.65.13
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1711855576; x=1743391576;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=mcOlxyFsflrwoL63B7r2X+EHxgx+Zstva2sSGp2qJjg=;
-  b=CZy4sLvw31/6k8LJBmxkgUy2mLG84IWAq95N79WW81obgocTBGYmiXkj
-   9YDqlbD05IYcxrv4IMJkMturYvVVEpmizEN91T44GmVz1Yya8yzgrNvka
-   Z/lD8kBQmybphu3S2nN/qOFOanGhcfYDDKYJDO6VEoZ7UA44i6R+vsAdw
-   ogL+7kcG0xaqGZte4rJ2YWmBNI66CqWED4imBy9opoShJAeg4UmYj3GNw
-   0lj7hQ+OVfKHzVxe32EHayPU3z+OxPaoi9Dfps6Zjp8xZBuBP0OZ8+sYf
-   7aFLBlHQQacnlxQ5f/ltBZvkjajt3uignEPz9CPbZts3S65PCp2xwTtjH
-   A==;
-X-CSE-ConnectionGUID: aXUUi6lES8yR9wX5GnDhbw==
-X-CSE-MsgGUID: fXPPYzYsQU6UPvIs/Ltrrw==
-X-IronPort-AV: E=McAfee;i="6600,9927,11029"; a="18146966"
-X-IronPort-AV: E=Sophos;i="6.07,169,1708416000"; 
-   d="scan'208";a="18146966"
-Received: from orviesa005.jf.intel.com ([10.64.159.145])
-  by orvoesa105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Mar 2024 20:26:16 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,169,1708416000"; 
-   d="scan'208";a="22050680"
-Received: from lkp-server01.sh.intel.com (HELO 3d808bfd2502) ([10.239.97.150])
-  by orviesa005.jf.intel.com with ESMTP; 30 Mar 2024 20:26:13 -0700
-Received: from kbuild by 3d808bfd2502 with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1rqlpi-0000ka-2S;
-	Sun, 31 Mar 2024 03:26:10 +0000
-Date: Sun, 31 Mar 2024 11:25:52 +0800
-From: kernel test robot <lkp@intel.com>
-To: Witold Sadowski <wsadowski@marvell.com>, linux-kernel@vger.kernel.org,
-	linux-spi@vger.kernel.org, devicetree@vger.kernel.org
-Cc: oe-kbuild-all@lists.linux.dev, broonie@kernel.org, robh@kernel.org,
-	krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-	pthombar@cadence.com, Witold Sadowski <wsadowski@marvell.com>
-Subject: Re: [PATCH 5/5] cadence-xspi: Add xfer capabilities
-Message-ID: <202403311133.jOI5kbg4-lkp@intel.com>
-References: <20240329194849.25554-6-wsadowski@marvell.com>
+	s=arc-20240116; t=1711856844; c=relaxed/simple;
+	bh=q/UXeIVEvbuRxXjpDaKpAWZldLOGx4dunY82JvdDwgo=;
+	h=From:To:Cc:References:Date:In-Reply-To:Message-ID:MIME-Version:
+	 Content-Type:Subject; b=bygUVHiSUYVVhwNCvA8FNEnDQ24oCyvjbBBu50FhJk5JUKXQg6+A93nSXIQS14rgopDnFjzzztl448zYhy7t8/SGorK72iEeJhImGeteP8ZTHwc+q1wXfYvzTYo0C9cLSY3QN9plQ2aecxiJQ+waSnjkQzASBKvpK8071nHdvLM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=xmission.com; spf=pass smtp.mailfrom=xmission.com; arc=none smtp.client-ip=166.70.13.231
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=xmission.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=xmission.com
+Received: from in01.mta.xmission.com ([166.70.13.51]:58052)
+	by out01.mta.xmission.com with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.93)
+	(envelope-from <ebiederm@xmission.com>)
+	id 1rqmA4-006QND-0x; Sat, 30 Mar 2024 21:47:12 -0600
+Received: from ip68-227-168-167.om.om.cox.net ([68.227.168.167]:50014 helo=email.froward.int.ebiederm.org.xmission.com)
+	by in01.mta.xmission.com with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.93)
+	(envelope-from <ebiederm@xmission.com>)
+	id 1rqmA2-00BMxw-UQ; Sat, 30 Mar 2024 21:47:11 -0600
+From: "Eric W. Biederman" <ebiederm@xmission.com>
+To: Steve Wahl <steve.wahl@hpe.com>
+Cc: Russ Anderson <rja@hpe.com>,  Ingo Molnar <mingo@kernel.org>,  Dave
+ Hansen <dave.hansen@linux.intel.com>,  Andy Lutomirski <luto@kernel.org>,
+  Peter Zijlstra <peterz@infradead.org>,  Thomas Gleixner
+ <tglx@linutronix.de>,  Ingo Molnar <mingo@redhat.com>,  Borislav Petkov
+ <bp@alien8.de>,  x86@kernel.org,  "H. Peter Anvin" <hpa@zytor.com>,
+  linux-kernel@vger.kernel.org,  Linux regressions mailing list
+ <regressions@lists.linux.dev>,  Pavin Joseph <me@pavinjoseph.com>,
+  stable@vger.kernel.org,  Eric Hagberg <ehagberg@gmail.com>,  Simon Horman
+ <horms@verge.net.au>,  Dave Young <dyoung@redhat.com>,  Sarah Brofeldt
+ <srhb@dbc.dk>,  Dimitri Sivanich <sivanich@hpe.com>
+References: <20240322162135.3984233-1-steve.wahl@hpe.com>
+	<ZgABC1oQ9YJW6Bw3@gmail.com> <20240325020334.GA10309@hpe.com>
+	<87o7b273p2.fsf@email.froward.int.ebiederm.org>
+	<ZgHTXvCQr6ycbVzp@swahl-home.5wahls.com>
+	<87r0fv6ddb.fsf@email.froward.int.ebiederm.org>
+	<ZgQ8Ej-MLlNJR6wn@swahl-home.5wahls.com>
+	<87zfuj2bgh.fsf@email.froward.int.ebiederm.org>
+	<ZgWO5I_p8zHyp3en@swahl-home.5wahls.com>
+Date: Sat, 30 Mar 2024 22:46:21 -0500
+In-Reply-To: <ZgWO5I_p8zHyp3en@swahl-home.5wahls.com> (Steve Wahl's message of
+	"Thu, 28 Mar 2024 10:38:12 -0500")
+Message-ID: <87msqf12sy.fsf@email.froward.int.ebiederm.org>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.2 (gnu/linux)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240329194849.25554-6-wsadowski@marvell.com>
+Content-Type: text/plain
+X-XM-SPF: eid=1rqmA2-00BMxw-UQ;;;mid=<87msqf12sy.fsf@email.froward.int.ebiederm.org>;;;hst=in01.mta.xmission.com;;;ip=68.227.168.167;;;frm=ebiederm@xmission.com;;;spf=pass
+X-XM-AID: U2FsdGVkX18tVHgKQJM7d8W+0ghGuHKCx2buRkgEzhE=
+X-SA-Exim-Connect-IP: 68.227.168.167
+X-SA-Exim-Mail-From: ebiederm@xmission.com
+X-Spam-Level: 
+X-Spam-Report: 
+	* -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
+	* -0.0 BAYES_40 BODY: Bayes spam probability is 20 to 40%
+	*      [score: 0.3191]
+	*  0.7 XMSubLong Long Subject
+	*  0.0 T_TM2_M_HEADER_IN_MSG BODY: No description available.
+	* -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
+	*      [sa07 1397; Body=1 Fuz1=1 Fuz2=1]
+	* -0.0 T_SCC_BODY_TEXT_LINE No description available.
+	*  0.0 T_TooManySym_01 4+ unique symbols in subject
+	*  0.2 XM_B_SpammyWords One or more commonly used spammy words
+	*  0.0 T_TooManySym_02 5+ unique symbols in subject
+X-Spam-DCC: XMission; sa07 1397; Body=1 Fuz1=1 Fuz2=1 
+X-Spam-Combo: ;Steve Wahl <steve.wahl@hpe.com>
+X-Spam-Relay-Country: 
+X-Spam-Timing: total 529 ms - load_scoreonly_sql: 0.06 (0.0%),
+	signal_user_changed: 12 (2.2%), b_tie_ro: 10 (1.9%), parse: 1.18
+	(0.2%), extract_message_metadata: 14 (2.6%), get_uri_detail_list: 2.1
+	(0.4%), tests_pri_-2000: 5 (1.0%), tests_pri_-1000: 3.7 (0.7%),
+	tests_pri_-950: 1.27 (0.2%), tests_pri_-900: 1.10 (0.2%),
+	tests_pri_-90: 86 (16.2%), check_bayes: 84 (15.9%), b_tokenize: 11
+	(2.0%), b_tok_get_all: 11 (2.1%), b_comp_prob: 3.6 (0.7%),
+	b_tok_touch_all: 54 (10.3%), b_finish: 1.11 (0.2%), tests_pri_0: 386
+	(73.1%), check_dkim_signature: 0.87 (0.2%), check_dkim_adsp: 2.8
+	(0.5%), poll_dns_idle: 1.20 (0.2%), tests_pri_10: 2.3 (0.4%),
+	tests_pri_500: 12 (2.4%), rewrite_mail: 0.00 (0.0%)
+Subject: Re: [PATCH] x86/mm/ident_map: Use full gbpages in identity maps
+ except on UV platform.
+X-SA-Exim-Version: 4.2.1 (built Sat, 08 Feb 2020 21:53:50 +0000)
+X-SA-Exim-Scanned: Yes (on in01.mta.xmission.com)
 
-Hi Witold,
+Steve Wahl <steve.wahl@hpe.com> writes:
 
-kernel test robot noticed the following build warnings:
+> On Thu, Mar 28, 2024 at 12:05:02AM -0500, Eric W. Biederman wrote:
+>> 
+>> From my perspective the entire reason for wanting to be fine grained and
+>> precise in the kernel memory map is because the UV systems don't have
+>> enough MTRRs.  So you have to depend upon the cache-ability attributes
+>> for specific addresses of memory coming from the page tables instead of
+>> from the MTRRs.
+>
+> It would be more accurate to say we depend upon the addresses not
+> being listed in the page tables at all.  We'd be OK with mapped but
+> not accessed, if it weren't for processor speculation.  There's no "no
+> access" setting within the existing MTRR definitions, though there may
+> be a setting that would rein in processor speculation enough to make
+> due.
 
-[auto build test WARNING on broonie-spi/for-next]
-[also build test WARNING on linus/master v6.9-rc1 next-20240328]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+The uncached setting and the write-combining settings that are used for
+I/O are required to disable speculation for any regions so marked.  Any
+reads or writes to a memory mapped I/O region can result in hardware
+with processing it as a command.  Which as I understand it is exactly
+the problem with UV systems.
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Witold-Sadowski/spi-cadence-Add-new-bindings-documentation-for-Cadence-XSPI/20240330-035124
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/spi.git for-next
-patch link:    https://lore.kernel.org/r/20240329194849.25554-6-wsadowski%40marvell.com
-patch subject: [PATCH 5/5] cadence-xspi: Add xfer capabilities
-config: x86_64-randconfig-123-20240331 (https://download.01.org/0day-ci/archive/20240331/202403311133.jOI5kbg4-lkp@intel.com/config)
-compiler: gcc-7 (Ubuntu 7.5.0-6ubuntu2) 7.5.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240331/202403311133.jOI5kbg4-lkp@intel.com/reproduce)
+Frankly not mapping an I/O region (in an identity mapped page table)
+instead of properly mapping it as it would need to be mapped for
+performing I/O seems like a bit of a bug.
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202403311133.jOI5kbg4-lkp@intel.com/
+>> If you had enough MTRRs more defining the page tables to be precisely
+>> what is necessary would be simply an exercise in reducing kernel
+>> performance, because it is more efficient in both page table size, and
+>> in TLB usage to use 1GB pages instead of whatever smaller pages you have
+>> to use for oddball regions.
+>> 
+>> For systems without enough MTRRs the small performance hit in paging
+>> performance is the necessary trade off.
+>> 
+>> At least that is my perspective.  Does that make sense?
+>
+> I think I'm begining to get your perspective.  From your point of
+> view, is kexec failing with "nogbpages" set a bug?  My point of view
+> is it likely is.  I think your view would say it isn't?
 
-All warnings (new ones prefixed by >>):
+I would say it is a bug.
 
-   drivers/spi/spi-cadence-xspi.c: In function 'cdns_xspi_setup':
-   drivers/spi/spi-cadence-xspi.c:892:36: error: implicit declaration of function 'spi_master_get_devdata'; did you mean 'spi_mem_get_drvdata'? [-Werror=implicit-function-declaration]
-     struct cdns_xspi_dev *cdns_xspi = spi_master_get_devdata(spi_dev->master);
-                                       ^~~~~~~~~~~~~~~~~~~~~~
-                                       spi_mem_get_drvdata
-   drivers/spi/spi-cadence-xspi.c:892:66: error: 'struct spi_device' has no member named 'master'
-     struct cdns_xspi_dev *cdns_xspi = spi_master_get_devdata(spi_dev->master);
-                                                                     ^~
-   drivers/spi/spi-cadence-xspi.c: In function 'cdns_xspi_transfer_one_message_b0':
->> drivers/spi/spi-cadence-xspi.c:1029:36: warning: initialization makes pointer from integer without a cast [-Wint-conversion]
-     struct cdns_xspi_dev *cdns_xspi = spi_master_get_devdata(master);
-                                       ^~~~~~~~~~~~~~~~~~~~~~
->> drivers/spi/spi-cadence-xspi.c:1035:11: warning: initialization makes integer from pointer without a cast [-Wint-conversion]
-     int cs = spi->chip_select;
-              ^~~
-   drivers/spi/spi-cadence-xspi.c: At top level:
-   drivers/spi/spi-cadence-xspi.c:1242:0: error: unterminated #ifdef
-    #ifdef CONFIG_OF
-    
-   cc1: some warnings being treated as errors
+Part of the bug is someone yet again taking something simple that
+kexec is doing and reworking it to use generic code, then changing
+the generic code to do something different from what kexec needs
+and then being surprised that kexec stops working.
 
+The interface kexec wants to provide to whatever is being loaded is not
+having to think about page tables until that software is up far enough
+to enable their own page tables.
 
-vim +1029 drivers/spi/spi-cadence-xspi.c
+People being clever and enabling just enough pages in the page  tables
+to work based upon the results of some buggy (they are always buggy some
+are just less so than others) boot up firmware is where I get concerned.
 
-  1025	
-  1026	int cdns_xspi_transfer_one_message_b0(struct spi_controller *master,
-  1027						   struct spi_message *m)
-  1028	{
-> 1029		struct cdns_xspi_dev *cdns_xspi = spi_master_get_devdata(master);
-  1030		struct spi_device *spi = m->spi;
-  1031		struct spi_transfer *t = NULL;
-  1032	
-  1033		const int max_len = XFER_QWORD_BYTECOUNT * XFER_QWORD_COUNT;
-  1034		int current_cycle_count;
-> 1035		int cs = spi->chip_select;
-  1036		int cs_change = 0;
-  1037	
-  1038		/* Enable xfer state machine */
-  1039		if (!cdns_xspi->xfer_in_progress) {
-  1040			u32 xfer_control = readl(cdns_xspi->xferbase + SPIX_XFER_FUNC_CTRL);
-  1041	
-  1042			cdns_xspi->current_xfer_qword = 0;
-  1043			cdns_xspi->xfer_in_progress = true;
-  1044			xfer_control |= (XFER_RECEIVE_ENABLE |
-  1045					 XFER_CLK_CAPTURE_POL |
-  1046					 XFER_FUNC_START |
-  1047					 XFER_SOFT_RESET |
-  1048					 FIELD_PREP(XFER_CS_N_HOLD, (1 << cs)));
-  1049			xfer_control &= ~(XFER_FUNC_ENABLE | XFER_CLK_DRIVE_POL);
-  1050			writel(xfer_control, cdns_xspi->xferbase + SPIX_XFER_FUNC_CTRL);
-  1051		}
-  1052	
-  1053		list_for_each_entry(t, &m->transfers, transfer_list) {
-  1054			u8 *txd = (u8 *) t->tx_buf;
-  1055			u8 *rxd = (u8 *) t->rx_buf;
-  1056			u8 data[10];
-  1057			u32 cmd_regs[6];
-  1058	
-  1059			if (!txd)
-  1060				txd = data;
-  1061	
-  1062			cdns_xspi->in_buffer = txd + 1;
-  1063			cdns_xspi->out_buffer = txd + 1;
-  1064	
-  1065			while (t->len) {
-  1066	
-  1067				current_cycle_count = t->len > max_len ? max_len : t->len;
-  1068	
-  1069				if (current_cycle_count < 10) {
-  1070					cdns_xspi_prepare_generic(cs, txd, current_cycle_count,
-  1071								  false, cmd_regs);
-  1072					cdns_xspi_trigger_command(cdns_xspi, cmd_regs);
-  1073					if (cdns_xspi_stig_ready(cdns_xspi, true))
-  1074						return -EIO;
-  1075				} else {
-  1076					cdns_xspi_prepare_generic(cs, txd, 1, true, cmd_regs);
-  1077					cdns_xspi_trigger_command(cdns_xspi, cmd_regs);
-  1078					cdns_xspi_prepare_transfer(cs, 1, current_cycle_count - 1,
-  1079								   cmd_regs);
-  1080					cdns_xspi_trigger_command(cdns_xspi, cmd_regs);
-  1081					if (cdns_xspi_sdma_ready(cdns_xspi, true))
-  1082						return -EIO;
-  1083					cdns_xspi_sdma_handle(cdns_xspi);
-  1084					if (cdns_xspi_stig_ready(cdns_xspi, true))
-  1085						return -EIO;
-  1086	
-  1087					cdns_xspi->in_buffer += current_cycle_count;
-  1088					cdns_xspi->out_buffer += current_cycle_count;
-  1089				}
-  1090	
-  1091				if (rxd) {
-  1092					int j;
-  1093	
-  1094					for (j = 0; j < current_cycle_count / 8; j++)
-  1095						cdns_xspi_read_single_qword(cdns_xspi, &rxd);
-  1096					cdns_xspi_finish_read(cdns_xspi, &rxd, current_cycle_count);
-  1097				} else {
-  1098					cdns_xspi->current_xfer_qword += current_cycle_count /
-  1099									 XFER_QWORD_BYTECOUNT;
-  1100					if (current_cycle_count % XFER_QWORD_BYTECOUNT)
-  1101						cdns_xspi->current_xfer_qword++;
-  1102	
-  1103					cdns_xspi->current_xfer_qword %= XFER_QWORD_COUNT;
-  1104				}
-  1105				cs_change = t->cs_change;
-  1106				t->len -= current_cycle_count;
-  1107			}
-  1108		}
-  1109	
-  1110		if (!cs_change) {
-  1111			u32 xfer_control = readl(cdns_xspi->xferbase + SPIX_XFER_FUNC_CTRL);
-  1112	
-  1113			xfer_control &= ~(XFER_RECEIVE_ENABLE |
-  1114					  XFER_SOFT_RESET);
-  1115			writel(xfer_control, cdns_xspi->xferbase + SPIX_XFER_FUNC_CTRL);
-  1116			cdns_xspi->xfer_in_progress = false;
-  1117		}
-  1118	
-  1119		m->status = 0;
-  1120		spi_finalize_current_message(master);
-  1121	
-  1122		return 0;
-  1123	}
-  1124	
+Said another way the point is to build an identity mapped page table.
+Skipping some parts of the physical<->virtual identity because we seem
+to think no one will use it is likely a bug.
 
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+I really don't see any point in putting holes in such a page table for
+any address below the highest address that is good for something.  Given
+that on some systems the MTRRs are insufficient to do there job it
+definitely makes sense to not enable caching on areas that we don't
+think are memory.
+
+Eric
+
 
