@@ -1,244 +1,278 @@
-Return-Path: <linux-kernel+bounces-126090-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-126091-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6B5D489320C
-	for <lists+linux-kernel@lfdr.de>; Sun, 31 Mar 2024 17:05:41 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4307489320E
+	for <lists+linux-kernel@lfdr.de>; Sun, 31 Mar 2024 17:11:35 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BB508282477
-	for <lists+linux-kernel@lfdr.de>; Sun, 31 Mar 2024 15:05:39 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 99DCD1F21BD4
+	for <lists+linux-kernel@lfdr.de>; Sun, 31 Mar 2024 15:11:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 63038145340;
-	Sun, 31 Mar 2024 15:05:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7E0A3145333;
+	Sun, 31 Mar 2024 15:11:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b="ieCGqDyH"
-Received: from EUR04-VI1-obe.outbound.protection.outlook.com (mail-vi1eur04olkn2078.outbound.protection.outlook.com [40.92.75.78])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Nucjm3lP"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.9])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 45A7B2628C;
-	Sun, 31 Mar 2024 15:05:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.92.75.78
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 73AF9144D21;
+	Sun, 31 Mar 2024 15:11:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=192.198.163.9
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711897526; cv=fail; b=cKx+l4SnOBrfC9inKSqxsPrXgaKrc3y3/EhqV+mxKfx60MZqA5MB+dXh3dcNOiWCyo352qdjRQEPv7g5Eps0R9oH2k3YdCMGJeGXazUzL18plSOxEEsQLN/mQ+e7qq8heSHNnYzzDKvnY/PP6TYOTsWb6gG8O7hPXEOfmjjEM/U=
+	t=1711897887; cv=fail; b=hfRezUJ1FpUeDRohYuZ0NymMRFDtfVszzOq/957OYyGeuOzYpzvzWiMYjM9yMX8V0xg0dh5/ScGOV1zClIus9HkKJGPIZDESzTDK6HKILE+rS0BibAyIG+9i7Rc5Ho22Njtb70Tgm1AjuZ03DywlvdgCOjSmp18tO1tP/zgFP0E=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711897526; c=relaxed/simple;
-	bh=B3OGipwb+0sVeBg2LNsYHRRypUheYKwyXM86w1Nyujk=;
-	h=From:To:Cc:Subject:Date:Message-ID:Content-Type:MIME-Version; b=afiRfxXEiZUnYbD2JlR68VYSJD3MD/B1RcGc92qoek++ZIl7veAuUdGQPWKtPinNb6CQmXYpVMnZFy/3WsXxtww3BQKX5aOA3lKVXIbePbhKImuCiY+ObmyZCx/D1p3j2HmmmwagMki+GpZk7u+oWy0K/iRs2XSLvAG3ENjh0wI=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com; spf=pass smtp.mailfrom=outlook.com; dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b=ieCGqDyH; arc=fail smtp.client-ip=40.92.75.78
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=outlook.com
+	s=arc-20240116; t=1711897887; c=relaxed/simple;
+	bh=TNl522M15Nfi3zuWalAlAxNNnhH/pJBR8sRyHQOKMDI=;
+	h=Date:From:To:CC:Subject:Message-ID:Content-Type:
+	 Content-Disposition:In-Reply-To:MIME-Version; b=lphSZ+Wx9K5+CQ+EkSDMdW9o9V3B/mVPNc+6EmVaTt7sVQ3Z/rO+dK9x861we7uaZqrtJRgpJL7VxaAqmLgaGCjZWg9Cm8mrWaBvCfYCd4IUh7dk5D5sy9HO+HtRgbFHg39HSNXe8m7C/ECJrb83+/D2XZ9c3X5FUt89YHEuLFU=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Nucjm3lP; arc=fail smtp.client-ip=192.198.163.9
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1711897885; x=1743433885;
+  h=date:from:to:cc:subject:message-id:in-reply-to:
+   mime-version;
+  bh=TNl522M15Nfi3zuWalAlAxNNnhH/pJBR8sRyHQOKMDI=;
+  b=Nucjm3lP2rtq9JEYF/NgxgjjaODuaPS/NBTvO7MQ3icMab0QYDCpKNr6
+   ou1vk4rx7i58rSeIT2SyKex2zci9PdDIzLU5AKJjtJo0qnw1O8O7ZTtcU
+   PG7wg4uIQBI0KtNZm8H6hYDP1JC3TNs8ZyVSraDPbpHf9vlhWX2U51h9x
+   k5OkpJeFfoZccBB2/tRrXaN7VbBOQZqGN1Merg7RUg1boCoyzYZb9hdOz
+   Yj80JAtMS0/G8oeIAEmKmMLg8P/+xqXNWP9JsvVDxkxmqEKLNO93kSBj/
+   CfHDHBiCUIuFaqZ8W3DHeN54bnLCAjSOWR1eQq10ss5iCS7MF+ld9vrGE
+   A==;
+X-CSE-ConnectionGUID: BZsO8qMjQU6c8mXbAgOJbg==
+X-CSE-MsgGUID: XnV7D8fEQU2MmbgTs2PAjQ==
+X-IronPort-AV: E=McAfee;i="6600,9927,11030"; a="17753294"
+X-IronPort-AV: E=Sophos;i="6.07,170,1708416000"; 
+   d="scan'208";a="17753294"
+Received: from orviesa001.jf.intel.com ([10.64.159.141])
+  by fmvoesa103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Mar 2024 08:11:24 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,170,1708416000"; 
+   d="scan'208";a="54942227"
+Received: from fmsmsx602.amr.corp.intel.com ([10.18.126.82])
+  by orviesa001.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 31 Mar 2024 08:11:24 -0700
+Received: from fmsmsx612.amr.corp.intel.com (10.18.126.92) by
+ fmsmsx602.amr.corp.intel.com (10.18.126.82) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Sun, 31 Mar 2024 08:11:23 -0700
+Received: from fmsmsx612.amr.corp.intel.com (10.18.126.92) by
+ fmsmsx612.amr.corp.intel.com (10.18.126.92) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Sun, 31 Mar 2024 08:11:23 -0700
+Received: from fmsedg601.ED.cps.intel.com (10.1.192.135) by
+ fmsmsx612.amr.corp.intel.com (10.18.126.92) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35 via Frontend Transport; Sun, 31 Mar 2024 08:11:23 -0700
+Received: from NAM10-MW2-obe.outbound.protection.outlook.com (104.47.55.100)
+ by edgegateway.intel.com (192.55.55.70) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.35; Sun, 31 Mar 2024 08:11:23 -0700
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=OlO3PJ8M1wQi6oakfmortGMTjxaRT+K0uqGzMGDSgG5IpcBkWu40ShGYEp1kFnkEFuaCZukmcRvTSDVgfJ1gNvs/GBneuzU7tbMfzTPGWAWkOeFWkBfERvq22aj9QvI5bc2QJmEOADSqI3NAlqT4E24jYp20Z5t2aLzWkYE1QODH+Y0shjBv1Cy5U5yTo9xPkz7e6Lem0QMZ7pS2WM0kRWdeBQK8g7FdavAY39enYKJ5XQ7szFLkE5d++8pezeviUKX3UkRmXUFWyh1hXIwKzGUKBu0pIVhrbLSSyvptauLi6lgP9XcEnjLp66DkeJ64bUbwRfeEL2Owzf7GDkvm9A==
+ b=jXtbqMDTw3HGkGJA3fcgJ2w5aHkx2apI81Azq6W6TC1gD1fk4qOjIg7fic7v1xRyQiJudtcBwm/QjqUDH3R9UGD+NdhS8QxNuAMUOKYojHAUqEIrVFxdOduK1O+5smJGbgWLvGrAdWDKZlxqzF/i4y+AlGHKksZFwhsynbaeUsM5tAkB/oV93oV3y+hMfvLPCqpteVEVB+79zuvIhebVsGTNq6P1HaDpVadWJwbIzuK6WvGCgBJgWL3FrHLtDT5dLGifUZiT8kkZ/05v5dBGWpNQlIgF4h86x5ShdbcPnNWrdxjvIdo6d4J+dxu/GMxWvMZjQNT1Ib6qcxjsonDlmQ==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=lzE0RtM1Zo7qthW93kAZAngHg9wpx8iF5BRNORZhF4c=;
- b=H+iMcCenIgzSAem3Cny/5npZ6639K3nW7bUFe/az9kN/knuXWWkr3un4f1wdbKPoap3tOqPJhRIlf7lHdmwpzXRzQSvOJFS6Pu+vFhttNhsQOVghCfH5S2AsH4vnoKOZtyLIWLSeij+I7D4rPnSv4uA8LQXZMzl7OBjUmTbvjhxznlaGWg1GTlLK7u4a6FNRoOlShBVoD0biwKKIZqve6Ylb6mdy3Rx8poVmBAYO0AIe23txJPSVgB1wKiRcy/REKzbtvVe0VUak5rc7SCsXDJvV/YJPL66bhJ0k1ztR28LZPsEuNHemqkYQ8X/Pd+NSRAvgfNUhOHPZqR4pnPS/qw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
- dkim=none; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=outlook.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=lzE0RtM1Zo7qthW93kAZAngHg9wpx8iF5BRNORZhF4c=;
- b=ieCGqDyHIQy8aDxva7JsLFcgG8TCVTrk12Fu48OXLcC5vJ8RCwDlzhmmiMf2m7qVOnPFKB3WaXRVJY1CHkakX06XVkq1NuY29zCw80wfJT5ZizIpWQ19T79FjB/WbgP5XexvIx0DxucOqMPiWjx74JK7/szNibKGpJPeYe66OEQvP4kL2zatl90wk5Z6PA9UM8dJK++elXVvWhhBejj4HHndAjn3hNVPEKgxRpwB/BBVknIrZW1rUfNldvaB0tj3gxygwMwUNZLNM0LAGNGEWJcBlX7ibf3DwCpeJvuQZvj2KwEDXsyyi6Kc30y9203CtmKwYTq9d78Du4vUIqlOSw==
-Received: from AS8PR02MB7237.eurprd02.prod.outlook.com (2603:10a6:20b:3f1::10)
- by DU0PR02MB8690.eurprd02.prod.outlook.com (2603:10a6:10:3ed::12) with
+ bh=WAmFu84ktMzQztWEd3Ywi5qFZWUU5w0qh+wIZh/jJa0=;
+ b=Lvn393NvLfDSmMPAqr5HqXtIZaEREH1ti1ANmbujUPT8QBQSSpr61K3G3sy9dM0bjosFolPSZ9I74n8SfNB0aFQWdm/XR1qFXd4op7dNGvY1L0HQ1gRdC8wThq7dMsWfGpAbPNjpezRQLCmYXzW03n5xfLMBODgWIK8xyPQMJisUE92wTrz+vwhShvXtZvXWX0AZAglGKJs4Y21St+bCtUWzI9qhpJydrao6IOFt+YPGLYml50bWb4tICjeVg9AYsI6pooCwPjC6GDygW5ot/VrWhnjIgpvhPzElx+XLCjuinJIUHTLRvqQWm7GC3y4C6sI177g0DoGM2IK7OBqfig==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Received: from LV3PR11MB8603.namprd11.prod.outlook.com (2603:10b6:408:1b6::9)
+ by CY8PR11MB7012.namprd11.prod.outlook.com (2603:10b6:930:54::6) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7409.46; Sun, 31 Mar
- 2024 15:05:20 +0000
-Received: from AS8PR02MB7237.eurprd02.prod.outlook.com
- ([fe80::9817:eaf5:e2a7:e486]) by AS8PR02MB7237.eurprd02.prod.outlook.com
- ([fe80::9817:eaf5:e2a7:e486%4]) with mapi id 15.20.7409.042; Sun, 31 Mar 2024
- 15:05:20 +0000
-From: Erick Archer <erick.archer@outlook.com>
-To: Long Li <longli@microsoft.com>,
-	Ajay Sharma <sharmaajay@microsoft.com>,
-	Jason Gunthorpe <jgg@ziepe.ca>,
-	Leon Romanovsky <leon@kernel.org>,
-	"K. Y. Srinivasan" <kys@microsoft.com>,
-	Haiyang Zhang <haiyangz@microsoft.com>,
-	Wei Liu <wei.liu@kernel.org>,
-	Dexuan Cui <decui@microsoft.com>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>,
-	Paolo Abeni <pabeni@redhat.com>,
-	Shradha Gupta <shradhagupta@linux.microsoft.com>,
-	Konstantin Taranov <kotaranov@microsoft.com>,
-	Kees Cook <keescook@chromium.org>,
-	"Gustavo A. R. Silva" <gustavoars@kernel.org>
-Cc: Erick Archer <erick.archer@outlook.com>,
-	linux-rdma@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	linux-hyperv@vger.kernel.org,
-	netdev@vger.kernel.org,
-	linux-hardening@vger.kernel.org
-Subject: [PATCH] RDMA/mana_ib: Add flex array to struct mana_cfg_rx_steer_req_v2
-Date: Sun, 31 Mar 2024 17:04:53 +0200
-Message-ID:
- <AS8PR02MB7237974EF1B9BAFA618166C38B382@AS8PR02MB7237.eurprd02.prod.outlook.com>
-X-Mailer: git-send-email 2.25.1
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-TMN: [ax2AMivpXtObadqhPIRt7GSws6HmSCa/]
-X-ClientProxiedBy: MA3P292CA0015.ESPP292.PROD.OUTLOOK.COM
- (2603:10a6:250:2c::11) To AS8PR02MB7237.eurprd02.prod.outlook.com
- (2603:10a6:20b:3f1::10)
-X-Microsoft-Original-Message-ID:
- <20240331150453.5432-1-erick.archer@outlook.com>
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7452.24; Sun, 31 Mar
+ 2024 15:11:21 +0000
+Received: from LV3PR11MB8603.namprd11.prod.outlook.com
+ ([fe80::58dd:99ca:74a6:2e3e]) by LV3PR11MB8603.namprd11.prod.outlook.com
+ ([fe80::58dd:99ca:74a6:2e3e%3]) with mapi id 15.20.7452.019; Sun, 31 Mar 2024
+ 15:11:21 +0000
+Date: Sun, 31 Mar 2024 23:11:10 +0800
+From: kernel test robot <oliver.sang@intel.com>
+To: "Matthew Wilcox (Oracle)" <willy@infradead.org>
+CC: <oe-lkp@lists.linux.dev>, <lkp@intel.com>, <linux-mm@kvack.org>,
+	<linux-kernel@vger.kernel.org>, <linux-trace-kernel@vger.kernel.org>,
+	<ltp@lists.linux.it>, Andrew Morton <akpm@linux-foundation.org>, "Matthew
+ Wilcox (Oracle)" <willy@infradead.org>, David Hildenbrand <david@redhat.com>,
+	Vlastimil Babka <vbabka@suse.cz>, Miaohe Lin <linmiaohe@huawei.com>, "Muchun
+ Song" <muchun.song@linux.dev>, Oscar Salvador <osalvador@suse.de>,
+	<oliver.sang@intel.com>
+Subject: Re: [PATCH 7/9] mm: Free up PG_slab
+Message-ID: <202403312344.c0d273ab-oliver.sang@intel.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20240321142448.1645400-8-willy@infradead.org>
+X-ClientProxiedBy: SG2PR02CA0073.apcprd02.prod.outlook.com
+ (2603:1096:4:90::13) To LV3PR11MB8603.namprd11.prod.outlook.com
+ (2603:10b6:408:1b6::9)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: AS8PR02MB7237:EE_|DU0PR02MB8690:EE_
-X-MS-Office365-Filtering-Correlation-Id: 2725dda3-38b9-4383-539a-08dc5193fb94
-X-MS-Exchange-SLBlob-MailProps:
-	qdrM8TqeFBsbamEakaZu1wFzLqU5ubB8EJuublZ4zULzY+Y+3WPTzZFjw0UTpAp5bJxoxVy7oJxCgKwEEr8MAOmSCvzSUbAx2Oz7j6tth9ThI4qv9rAc8i5s0UOIOu2krBdLVjUcaTosnES15mEPD5EWyBgwFliEJy73mQDRVrzJRgJ06jjDNpvgmitzplvQNPXOuOGcDcORQzq0iPohPkazZVNI+xvZomA9Csahf9LgUTR8Df9k6fhALVDkESwc6E1bJCpix2LM2aZvAHOk27Fn/iGkH/NKTKrKvH3X+UoLnHJdjGDkECaxN/cIPaTXu2TbEvODCEY1Gou9kFeirhR/GmzBkUMOrd+huc4E+eWaJVO5l8rO8eXamfTyRQlYIHZkV73xUwlONmSlDHAjo5pYyVQ4fIRzpS7bjzouS5yfGnxTwUNG7hp8QSQ38HDkL16HHb4vBymQs11MSme9T8ROU7mgcTw1OSO7Temhuwin+LQKnHYjGa2aBSZLFXtGHKQ7bgRCalmoSHDn/V4oWHA3/f0a5qZht7yviw+m7TZjSSS5x8BTGcGYfOmtJhHjhSN3pKoQIYT9BFwRWzjcSFetcwXw8SppwwsuSldjA1NyCpOm6vof5VCKbU+wAXGF27eIZLgGqpJU/ja7GxhAd12ds07nRF4EheiUqyUdVhU8BWNDjMjZf/oA2MgkbHgp/2IXSHlxybZPP1hNd7PkX/+r62Hc32SCwT8eUoYK6lbdbFpy0vEV+k1Hv8W2o/k6MsZD3+5kMGCeJwwk+9AW/SKufCvKjoeG
+X-MS-TrafficTypeDiagnostic: LV3PR11MB8603:EE_|CY8PR11MB7012:EE_
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	XyUYUnDC+fEiim2xlTA//XPjLZpg84E1IaSysCt7WxY4iHw1ZvDSUGkOarebfnPwi15yigOAgyFApFdim9Rmw0Jf418paEctIhOQO388lkfjZ7QDe+AbUzy/HBuw2zg1rDFzFaOyl40Q/PVCxtFTJfyeMniPZ59J0Uk55CecsU5BmIKa55V+MAa+c2ZOKpqRgC0oeUFtAbvlHsxmpAD+bZ7/I0pd8UgMhOrdNksKiHO6emwtUb53kckDcoA2F6hINPbLKN5VH+4hF/L2+tcsAFTuCanGoYn7O2IChPwjfofEdXuyvSVFUv2GgQDjkHtydWqpLosJvNkUzJeIesUK1kd5QTvSyVrnne+72dXmYLfHi/nOH07hN/hqKCbE6hLRKWYOFYWkm8htNv3WFrV4kQr1JO3dmj2n3yiYhGqumUp9UKet79S0V8jyBrfK9pAvo82MeTa/CbeC80BWrcyBcm/+dS2PEJskIN6S/v2WitpXpt52NYKZxFVmPGRGapKuNtBlddW6ywHWVRGLp6i79qXmc1eTTHMTQBZZZpkY9rszpcrEr+TvbOa8mjiEgt0fpN8tPkb7ayZDhbxN869y3VLm+e5A5sMaEKF039gesjPv7YBJ/bHTstqbw/+z6xUNJYFkXh55UWHz4h9nxs8HeJsAJLBXrXK5qGD6Vw8mVfJuc1iHfvMG5nLcNqd7BMZI
+X-Microsoft-Antispam-Message-Info: fC1jc3w84ybQVFrjE7A1mN7s0Qp34oC9lz0OHAHW515wsIqB1hY2rxkOJddW7oCbCzUppmdWdU97vDuDwplQA+mmeBwYc0nYUFYjTwh/XMIOjsfyLTgFP1IT0K2KQkOE3EM1KI5Vrm3m7w2q+l8QupvoLPxcsGBldDDT5Lh7sbtbkDsqoaMW/F11u/CXdaVPwgJW6SIspqT0jpVpLpgygy36MvZ1a8WZPFnV2y73Qd2a//TxJSN+9UjNHZnLqcmBUChHSrrppeDF47oiy+jaaoM0NWfLYTWXJUWRWSXi21cwwycmjg2b5ROQ6rnlUXnqZ27R+0E1gLoRVr6rCU6mRSiWCKBgOb107CnqvVnHVjJCWPxuknu5T8dbEH6QsxBMv2B+aOpx5NW8/JF1fIc4dEtkWph0yf6YZbhdho6osqXqUgmRd58cSvA4zWfg9zArzFkdxcf+3snEOzVSrsPpdX2JC8awGuHuOmhPjBYzaShN6dstG4p7WBeDpaVqX0vPBRoU2BZlf2wpA1fwQuE6bWBX1AddKnyUhh0CzLZEvfaRjqaQNCVLwP2bjlBQWutZf4cqsgRzhz1qOvjn2ehzT28Rnq33P6kUAadOwe0jG+uCPMA6Uc/dorMLr1iJN3QB
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:LV3PR11MB8603.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376005)(7416005)(1800799015)(366007);DIR:OUT;SFP:1102;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?qJhDBq/GG/JiMVVX3Nq2evRaBJRNNGIUMYeeL9/ZxBW0eXTBt//q2wWn05jU?=
- =?us-ascii?Q?7qznjmlI7PH4ql1Tjo64uUhMdQfxsBkqm5tn762WcPF0ffLjz3D5xX7fuHOD?=
- =?us-ascii?Q?TcqA0Gg1ZjzlVOuUn+093VCUHSuKUE+8BvMQMvFDaJTbRK5R2nl/Rx4d/OFE?=
- =?us-ascii?Q?TC/JabyEtTIyhEjs4R1l5aUIpwVg1eUZxZJbS3Kl/PpaYv61uYURCDRlWbNF?=
- =?us-ascii?Q?9wjbrMTVJ0u0e//EPM7QxkwqYpO9UTfmSe5EkcrBtudYWyKtws2O4S+Dfoy+?=
- =?us-ascii?Q?4smmuU4pew+RLMFAnH/dE3zMOaZScfvuPMZyI/nlFR+FUmopwkoCspMpq4/Z?=
- =?us-ascii?Q?i605RMwx31Yv62MoCxVkJbDX24tbX+8b2aN0Htz/cjPdEweTeO8cc16rQZMC?=
- =?us-ascii?Q?mvfFR54FvBDi1ie7relhgVG+Lj6b8wWGx+Jsb5z8DebzWTTQ0JY9cbSLcBJu?=
- =?us-ascii?Q?2/+gIG6FL4yYcUIVqfHJu99MC6oKwsBb1aGur9+gW9oPfIKv8lPvtgtM+yzL?=
- =?us-ascii?Q?G2+FjyzH3kLU5OVdmP5NlaT9SJNblXlGPy5TVX/G+iop/3iD/zxTOMX6scJI?=
- =?us-ascii?Q?h/a3Mk6hKiHzSUgst1QNc3LVf4HgWplNut8C+L8HrwuUFIs2LFdb5fCLal3o?=
- =?us-ascii?Q?6vWtP6w7xdP4oimrMa6+NVPy/F3gjToBF+kt5Dv0rEhXMPTe2kFCfcS+vJ03?=
- =?us-ascii?Q?wpC7MvizUB9IOrA43YMS6EBC3qGpIOSxx+hn1Y2bC0z4lSZRC7CXMnBUbKm7?=
- =?us-ascii?Q?wBaAvy/twYYbHn1Vz0fhKbbAqk8MP22hI0u2XzaBXjyyvZEcKec40HZsJk7x?=
- =?us-ascii?Q?JmL7xHmeusGOfBTllRz4Y4/Fpng8TKA6edZSV0CGBBBJjOLWR9GmwuXI3b+M?=
- =?us-ascii?Q?B7FzWQO7j5MNyU1S8bX91Il8RoOswbNRRNHMbJNVIQN5Jo6qlNVXiQlahwbC?=
- =?us-ascii?Q?OdiLhBEP4gBkpP0hHTrVJfHQQxa0kBdSFhjk9kX+CBULsJL+Qsh75mkd0uzC?=
- =?us-ascii?Q?OgaZSHSyZii2IG1QIabskF/NKjzsvSX+1R9IE+2tuZlFLFobHB9GcHb0IYKT?=
- =?us-ascii?Q?mBU+ZadFTKFPQEOvTty3PU/X2nWwiq9Op4SuswGwrKp+BNvE06YmDeD7AkSv?=
- =?us-ascii?Q?bd/k74m1SJFJQtntZgZnjKQX6FAFV/E9lDGp5amHDgsvDtK2aR3enmuAE/DJ?=
- =?us-ascii?Q?L0rBcIvaBDUzQp2QAr02XJGsF4YzVRo0rW0yh0+1ffFj+Epvzbe3Mn4YL+pG?=
- =?us-ascii?Q?rtYig0buB88VQueXs+eI?=
-X-OriginatorOrg: outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 2725dda3-38b9-4383-539a-08dc5193fb94
-X-MS-Exchange-CrossTenant-AuthSource: AS8PR02MB7237.eurprd02.prod.outlook.com
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?M1YwEyQ3GGwlQuDEQ5bnNBNEoZ1N3/UpWGC4ZwmTaamhV4VO+PKDsx1r2cY/?=
+ =?us-ascii?Q?1+DJH7tgWeocY4oMwz4NuKQseNOSi7iZxEi01m57H5Z5V+08IsafpiSYVDpS?=
+ =?us-ascii?Q?P4LyyGcZyq8ZgL9IneSUhtVhvpPtuTLDVzLJcUAblcSjo0ORtcdq+8ZHPZf9?=
+ =?us-ascii?Q?H6rXURSIYnGZVlz0+WzOMibWWZwk2VyYs/EGUFPLUdXnWY3LwpUlBxbdZRzy?=
+ =?us-ascii?Q?JzxyhvC/HQ8LWU1fP/o7fYWdOXAcCa8Bv5ho7FIwgNvZRKTvcFAStQqL+yAO?=
+ =?us-ascii?Q?vYsqkQUjFM4deGuoY7qzFCCw3PGFVLkZrsc28jmuWxBTTqvUVwfm0uXmUW3Z?=
+ =?us-ascii?Q?80k3dnsOkgKwTWt0iTh8zIrMrEY23iAWA+GDe5lzP5H5LxCKrzN7CGKw+mbQ?=
+ =?us-ascii?Q?TuMOOFAkeSzvv4BcsvZu4F9VJematlOc4RuUN75eGDlNHIvjOiPwtVvC5wkV?=
+ =?us-ascii?Q?IY4WCQ0idMeAsPe5ZfEl5t0CFOKUMJumuplELQn+VeeMEOy6coc2VVGg9hcE?=
+ =?us-ascii?Q?za3hlQz/5wfPo3wipSoe6wBf9MuM+qdpic6vyDXVEV7R9T/HCz4vgx4T1bjB?=
+ =?us-ascii?Q?rSpWc03UevNZCvmZaj27wLaaNFX5wE5JR0h5xROYUtGyFic4l0LLS8mO6zCf?=
+ =?us-ascii?Q?aIhZem3zV0SyUAgv+JgpVccmnSxmaZB0Fk7wAPsxreza1tP8cFj8Cf6N847b?=
+ =?us-ascii?Q?LrIh7mwcyz1GYqjbLGrKB5FduEcpRCufACUZL0M7ZGlOpIOwJtpGHvXDOJXY?=
+ =?us-ascii?Q?xokFU6Z8jLVxfyk7zyS2Ihtt7BBdkPO+5gTz4//6KSMr3+z8/wPDSa2lV5BB?=
+ =?us-ascii?Q?UhtKNRktHs0CMm60dX7gb/oF8IHS7phQ2Y7m1d7kfKK0dQtz/cseUrNwGIet?=
+ =?us-ascii?Q?rprsZOhmToUQ8UPKDkkYSsA676zG7F3I1qftCr2iNHqMeVY9dEFMcGrBY0XH?=
+ =?us-ascii?Q?am+40JxKTT2aapY3f6b0nRPtOK0hK8C1+sJFEVaaGN1bpsDy8RiykWVrXqlx?=
+ =?us-ascii?Q?SK7BUCQNo64XZFgx/stOhBI8+e5LRI6c2kdQgyGL6Ncd1PFo98/FamvkD2O7?=
+ =?us-ascii?Q?CRivaClTslLJ/xNReXQmnyg11RO15+Cka/Obe4FIOjKi2hpmDmWGYXxBtQVM?=
+ =?us-ascii?Q?ko3VjfcZhGS8pAPYYw2Xd9hp3hsSAbfQWKKuZ/BKTmfuSF7PSppogKPO1aja?=
+ =?us-ascii?Q?R36gKwuQLqpHu7c3YmWt3PLH2eJAvzMVkxj9pMlYucXmzlMkEeQIbsaYtoya?=
+ =?us-ascii?Q?RWrCu94LByG784bGTDWgpBcrYlw/B9IkrLSecR/+Fa8F1LgoZ5lDFLkrHghU?=
+ =?us-ascii?Q?+v71myOBZDWsuzqctdD70/nv22IC3Ra/qy1161Eb9ZbVKjSA7I0SseTxFPy3?=
+ =?us-ascii?Q?oy0eBSJnRstfN3lIpQGUgwV2JgoBhMKV3H9x9vhYPeIa8Om266KT3btlWPJ+?=
+ =?us-ascii?Q?FUpVPd2TlMXpnh5sOud2VEgJMYbyAduShWiRqEwYeOJuFaL2ulHO3p18UpmW?=
+ =?us-ascii?Q?NMAzLgTg9uSrd2+73S4n0xeHbertlAPmSeii9tz7y916c82atRC89sTpoSXI?=
+ =?us-ascii?Q?VL2BdDsUgeTBGMlMSsqD7ggANVzIbmpAli0jBDNq4WBrEdXVW1gC0G4nuN4T?=
+ =?us-ascii?Q?vg=3D=3D?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 342990e7-8c5f-46fe-09d1-08dc5194d271
+X-MS-Exchange-CrossTenant-AuthSource: LV3PR11MB8603.namprd11.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 31 Mar 2024 15:05:20.4865
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 31 Mar 2024 15:11:21.0728
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
-X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg:
-	00000000-0000-0000-0000-000000000000
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DU0PR02MB8690
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: DPII/pRYF/bpMibhGsERR99ElNs9dcf4cjD4JDJ6CaU3Xgjg9kCEkMJGhjkULPxBeZxDqGNB7IyUSejWyw5xPQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY8PR11MB7012
+X-OriginatorOrg: intel.com
 
-The "struct mana_cfg_rx_steer_req_v2" uses a dynamically sized set of
-trailing elements. Specifically, it uses a "mana_handle_t" array. So,
-use the preferred way in the kernel declaring a flexible array [1].
 
-Also, avoid the open-coded arithmetic in the memory allocator functions
-[2] using the "struct_size" macro.
 
-Moreover, use the "offsetof" helper to get the indirect table offset
-instead of the "sizeof" operator and avoid the open-coded arithmetic in
-pointers using the new flex member.
+Hello,
 
-Now, it is also possible to use the "flex_array_size" helper to compute
-the size of these trailing elements in the "memcpy" function.
+kernel test robot noticed "UBSAN:shift-out-of-bounds_in_fs/proc/page.c" on:
 
-Link: https://www.kernel.org/doc/html/next/process/deprecated.html#zero-length-and-one-element-arrays [1]
-Link: https://www.kernel.org/doc/html/next/process/deprecated.html#open-coded-arithmetic-in-allocator-arguments [2]
-Signed-off-by: Erick Archer <erick.archer@outlook.com>
----
- drivers/infiniband/hw/mana/qp.c               | 8 ++++----
- drivers/net/ethernet/microsoft/mana/mana_en.c | 9 +++++----
- include/net/mana/mana.h                       | 1 +
- 3 files changed, 10 insertions(+), 8 deletions(-)
+commit: 30e5296811312a13938b83956a55839ac1e3aa40 ("[PATCH 7/9] mm: Free up PG_slab")
+url: https://github.com/intel-lab-lkp/linux/commits/Matthew-Wilcox-Oracle/mm-Always-initialise-folio-_deferred_list/20240321-222800
+base: https://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git 23956900041d968f9ad0f30db6dede4daccd7aa9
+patch link: https://lore.kernel.org/all/20240321142448.1645400-8-willy@infradead.org/
+patch subject: [PATCH 7/9] mm: Free up PG_slab
 
-diff --git a/drivers/infiniband/hw/mana/qp.c b/drivers/infiniband/hw/mana/qp.c
-index 6e7627745c95..c2a39db8ef92 100644
---- a/drivers/infiniband/hw/mana/qp.c
-+++ b/drivers/infiniband/hw/mana/qp.c
-@@ -22,8 +22,7 @@ static int mana_ib_cfg_vport_steering(struct mana_ib_dev *dev,
- 
- 	gc = mdev_to_gc(dev);
- 
--	req_buf_size =
--		sizeof(*req) + sizeof(mana_handle_t) * MANA_INDIRECT_TABLE_SIZE;
-+	req_buf_size = struct_size(req, indir_tab, MANA_INDIRECT_TABLE_SIZE);
- 	req = kzalloc(req_buf_size, GFP_KERNEL);
- 	if (!req)
- 		return -ENOMEM;
-@@ -44,11 +43,12 @@ static int mana_ib_cfg_vport_steering(struct mana_ib_dev *dev,
- 		req->rss_enable = true;
- 
- 	req->num_indir_entries = MANA_INDIRECT_TABLE_SIZE;
--	req->indir_tab_offset = sizeof(*req);
-+	req->indir_tab_offset = offsetof(struct mana_cfg_rx_steer_req_v2,
-+					 indir_tab);
- 	req->update_indir_tab = true;
- 	req->cqe_coalescing_enable = 1;
- 
--	req_indir_tab = (mana_handle_t *)(req + 1);
-+	req_indir_tab = req->indir_tab;
- 	/* The ind table passed to the hardware must have
- 	 * MANA_INDIRECT_TABLE_SIZE entries. Adjust the verb
- 	 * ind_table to MANA_INDIRECT_TABLE_SIZE if required
-diff --git a/drivers/net/ethernet/microsoft/mana/mana_en.c b/drivers/net/ethernet/microsoft/mana/mana_en.c
-index 59287c6e6cee..04aa096c6cc4 100644
---- a/drivers/net/ethernet/microsoft/mana/mana_en.c
-+++ b/drivers/net/ethernet/microsoft/mana/mana_en.c
-@@ -1062,7 +1062,7 @@ static int mana_cfg_vport_steering(struct mana_port_context *apc,
- 	u32 req_buf_size;
- 	int err;
- 
--	req_buf_size = sizeof(*req) + sizeof(mana_handle_t) * num_entries;
-+	req_buf_size = struct_size(req, indir_tab, num_entries);
- 	req = kzalloc(req_buf_size, GFP_KERNEL);
- 	if (!req)
- 		return -ENOMEM;
-@@ -1074,7 +1074,8 @@ static int mana_cfg_vport_steering(struct mana_port_context *apc,
- 
- 	req->vport = apc->port_handle;
- 	req->num_indir_entries = num_entries;
--	req->indir_tab_offset = sizeof(*req);
-+	req->indir_tab_offset = offsetof(struct mana_cfg_rx_steer_req_v2,
-+					 indir_tab);
- 	req->rx_enable = rx;
- 	req->rss_enable = apc->rss_state;
- 	req->update_default_rxobj = update_default_rxobj;
-@@ -1087,9 +1088,9 @@ static int mana_cfg_vport_steering(struct mana_port_context *apc,
- 		memcpy(&req->hashkey, apc->hashkey, MANA_HASH_KEY_SIZE);
- 
- 	if (update_tab) {
--		req_indir_tab = (mana_handle_t *)(req + 1);
-+		req_indir_tab = req->indir_tab;
- 		memcpy(req_indir_tab, apc->rxobj_table,
--		       req->num_indir_entries * sizeof(mana_handle_t));
-+		       flex_array_size(req, indir_tab, req->num_indir_entries));
- 	}
- 
- 	err = mana_send_request(apc->ac, req, req_buf_size, &resp,
-diff --git a/include/net/mana/mana.h b/include/net/mana/mana.h
-index 76147feb0d10..20ffcae29e1e 100644
---- a/include/net/mana/mana.h
-+++ b/include/net/mana/mana.h
-@@ -671,6 +671,7 @@ struct mana_cfg_rx_steer_req_v2 {
- 	u8 hashkey[MANA_HASH_KEY_SIZE];
- 	u8 cqe_coalescing_enable;
- 	u8 reserved2[7];
-+	mana_handle_t indir_tab[];
- }; /* HW DATA */
- 
- struct mana_cfg_rx_steer_resp {
+in testcase: ltp
+version: ltp-x86_64-14c1f76-1_20240323
+with following parameters:
+
+	disk: 1HDD
+	fs: ext4
+	test: fs-00
+
+
+
+compiler: gcc-12
+test machine: 4 threads 1 sockets Intel(R) Core(TM) i3-3220 CPU @ 3.30GHz (Ivy Bridge) with 8G memory
+
+(please refer to attached dmesg/kmsg for entire log/backtrace)
+
+
+
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <oliver.sang@intel.com>
+| Closes: https://lore.kernel.org/oe-lkp/202403312344.c0d273ab-oliver.sang@intel.com
+
+
+kern  :warn  : [  528.627387] ------------[ cut here ]------------
+kern  :err   : [  528.627589] UBSAN: shift-out-of-bounds in fs/proc/page.c:107:18
+kern  :err   : [  528.627884] shift exponent 4096 is too large for 64-bit type 'long long unsigned int'
+kern  :warn  : [  528.628200] CPU: 0 PID: 4703 Comm: proc01 Tainted: G S                 6.8.0-11774-g30e529681131 #1
+kern  :warn  : [  528.628446] Hardware name: Hewlett-Packard p6-1451cx/2ADA, BIOS 8.15 02/05/2013
+kern  :warn  : [  528.628659] Call Trace:
+kern  :warn  : [  528.628814]  <TASK>
+kern :warn : [  528.628960] dump_stack_lvl (lib/dump_stack.c:117 (discriminator 1)) 
+kern :warn : [  528.629134] __ubsan_handle_shift_out_of_bounds (lib/ubsan.c:218 lib/ubsan.c:454) 
+kern :warn : [  528.629360] stable_page_flags.part.0.cold (include/linux/page-flags.h:284 fs/proc/page.c:184) 
+kern :warn : [  528.629506] kpageflags_read (fs/proc/page.c:238 fs/proc/page.c:250) 
+kern :warn : [  528.629623] vfs_read (fs/read_write.c:474) 
+kern :warn : [  528.629737] ? do_sys_openat2 (fs/open.c:1415) 
+kern :warn : [  528.629898] ? kmem_cache_free (mm/slub.c:4280 mm/slub.c:4344) 
+kern :warn : [  528.630063] ? __pfx_vfs_read (fs/read_write.c:457) 
+kern :warn : [  528.630225] ? do_sys_openat2 (fs/open.c:1415) 
+kern :warn : [  528.630388] ? __pfx_do_sys_openat2 (fs/open.c:1392) 
+kern :warn : [  528.630552] ? __do_sys_newfstatat (fs/stat.c:464) 
+kern :warn : [  528.630717] ? __fget_light (include/linux/atomic/atomic-arch-fallback.h:479 include/linux/atomic/atomic-instrumented.h:50 fs/file.c:1145) 
+kern :warn : [  528.630888] ksys_read (fs/read_write.c:619) 
+kern :warn : [  528.631051] ? __pfx_ksys_read (fs/read_write.c:609) 
+kern :warn : [  528.631216] ? kmem_cache_free (mm/slub.c:4280 mm/slub.c:4344) 
+kern :warn : [  528.631415] do_syscall_64 (arch/x86/entry/common.c:52 arch/x86/entry/common.c:83) 
+kern :warn : [  528.631555] entry_SYSCALL_64_after_hwframe (arch/x86/entry/entry_64.S:129) 
+kern  :warn  : [  528.631756] RIP: 0033:0x7f90bf2ba19d
+kern :warn : [ 528.631913] Code: 31 c0 e9 c6 fe ff ff 50 48 8d 3d 66 54 0a 00 e8 49 ff 01 00 66 0f 1f 84 00 00 00 00 00 80 3d 41 24 0e 00 00 74 17 31 c0 0f 05 <48> 3d 00 f0 ff ff 77 5b c3 66 2e 0f 1f 84 00 00 00 00 00 48 83 ec
+All code
+========
+   0:	31 c0                	xor    %eax,%eax
+   2:	e9 c6 fe ff ff       	jmpq   0xfffffffffffffecd
+   7:	50                   	push   %rax
+   8:	48 8d 3d 66 54 0a 00 	lea    0xa5466(%rip),%rdi        # 0xa5475
+   f:	e8 49 ff 01 00       	callq  0x1ff5d
+  14:	66 0f 1f 84 00 00 00 	nopw   0x0(%rax,%rax,1)
+  1b:	00 00 
+  1d:	80 3d 41 24 0e 00 00 	cmpb   $0x0,0xe2441(%rip)        # 0xe2465
+  24:	74 17                	je     0x3d
+  26:	31 c0                	xor    %eax,%eax
+  28:	0f 05                	syscall 
+  2a:*	48 3d 00 f0 ff ff    	cmp    $0xfffffffffffff000,%rax		<-- trapping instruction
+  30:	77 5b                	ja     0x8d
+  32:	c3                   	retq   
+  33:	66 2e 0f 1f 84 00 00 	nopw   %cs:0x0(%rax,%rax,1)
+  3a:	00 00 00 
+  3d:	48                   	rex.W
+  3e:	83                   	.byte 0x83
+  3f:	ec                   	in     (%dx),%al
+
+Code starting with the faulting instruction
+===========================================
+   0:	48 3d 00 f0 ff ff    	cmp    $0xfffffffffffff000,%rax
+   6:	77 5b                	ja     0x63
+   8:	c3                   	retq   
+   9:	66 2e 0f 1f 84 00 00 	nopw   %cs:0x0(%rax,%rax,1)
+  10:	00 00 00 
+  13:	48                   	rex.W
+  14:	83                   	.byte 0x83
+  15:	ec                   	in     (%dx),%al
+kern  :warn  : [  528.632309] RSP: 002b:00007ffe2eb3c008 EFLAGS: 00000246 ORIG_RAX: 0000000000000000
+kern  :warn  : [  528.632540] RAX: ffffffffffffffda RBX: 00007ffe2eb3d1b0 RCX: 00007f90bf2ba19d
+kern  :warn  : [  528.632757] RDX: 0000000000000400 RSI: 000055e284e68c40 RDI: 0000000000000005
+kern  :warn  : [  528.632960] RBP: 0000000000000000 R08: 0000000000000000 R09: 0000000000000073
+kern  :warn  : [  528.633156] R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000005
+kern  :warn  : [  528.633399] R13: 000055e284e68c40 R14: 000055e2a975f8cb R15: 00007ffe2eb3d1b0
+kern  :warn  : [  528.633645]  </TASK>
+kern  :warn  : [  528.633813] ---[ end trace ]---
+
+
+
+The kernel config and materials to reproduce are available at:
+https://download.01.org/0day-ci/archive/20240331/202403312344.c0d273ab-oliver.sang@intel.com
+
+
+
 -- 
-2.25.1
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
 
