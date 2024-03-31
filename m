@@ -1,114 +1,144 @@
-Return-Path: <linux-kernel+bounces-126026-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-126027-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7471589311E
-	for <lists+linux-kernel@lfdr.de>; Sun, 31 Mar 2024 11:32:57 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 44A02893126
+	for <lists+linux-kernel@lfdr.de>; Sun, 31 Mar 2024 12:00:57 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1420EB2185A
-	for <lists+linux-kernel@lfdr.de>; Sun, 31 Mar 2024 09:32:55 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 757411C20E91
+	for <lists+linux-kernel@lfdr.de>; Sun, 31 Mar 2024 10:00:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 99B6176036;
-	Sun, 31 Mar 2024 09:32:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A3DE5762DE;
+	Sun, 31 Mar 2024 10:00:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="OKMhz6eg"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="KmMMF4Fq"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D20CE74BF4;
-	Sun, 31 Mar 2024 09:32:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D9F5A1C33;
+	Sun, 31 Mar 2024 10:00:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711877566; cv=none; b=PDELnuOyk1aGrWuDrKaUBZSNkkt15Oot7rdTedEhkqDdAw41WoZ3X4lKF/VfJEDBkGh7os550N49MaciZgFudAlDiEddnM9lSBDtK7hcc8EfWE0YP12UyVxdvnGryNL+ddxya9CUJ7lgfBAK36gy0xrxlzmUpCOzy5SBC9x78Ak=
+	t=1711879249; cv=none; b=MYHpxZ2baLuuXk7FsGlgbEwUH+HAuPp9bbi7hbv7x/XUpDh68/74rZxiXEynQFIh5DFhLLVg7jnwKxSwlGUG/evRsjqJLt77mQT62Ch2KdJkgqGzpLqyJnC2eZxZ1JASoSAeRivoog4wQ2A1txbOaYZg1mf/v5qEWW7P60L9ur0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711877566; c=relaxed/simple;
-	bh=2enq6wAu/O4AeWARd094N9k1k7dNI3QZzRGN2sj1ta0=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=iMBqUpSPL2c+ocO5Q1uU3DDGRCXRw0H7M8/bLQLf69J4O02PvlThpDikIyk/7Zk6xSJaCdgac5T6/NG4e/4f83h3eQRquEcJzQvwCH0Hdz2jWdpqsk24w5CWJrfOg257mUq8qYSR02KYz8qpVDWh2gnDLcXZX6QsnJlED/R2iSc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=OKMhz6eg; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 96306C433F1;
-	Sun, 31 Mar 2024 09:32:43 +0000 (UTC)
+	s=arc-20240116; t=1711879249; c=relaxed/simple;
+	bh=8ZlEK5607Jk4tOKuXpJJJZbQBuqSIL7N3MY76VqKGds=;
+	h=Date:Message-ID:From:To:Cc:Subject:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=tQq5PggapuYJ0UGG0JZQAfZD4QGTMlk6ZJqtF5xLRvsC/wnVcyqPLprYzKCbsnvIrdAwTZUM29Zy62dABUkYeSYjBkSczJ8FvIZZT32HoGhsz3k4bZMoUz0hsi/dTBecJdH/jy0v0T/I0jd9cP65b1yiAqJAjewNCzHSD86q830=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=KmMMF4Fq; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 61394C433F1;
+	Sun, 31 Mar 2024 10:00:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711877565;
-	bh=2enq6wAu/O4AeWARd094N9k1k7dNI3QZzRGN2sj1ta0=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=OKMhz6egBE+acFXIafQ3P8FTGcVhCEiKujymKP5WRIQ/QVNQdarAqzCq3QyhN9CDI
-	 pUvnjDtj7IvbTg0LkSWDOjZJXFfDLmQS8uFLurOZBAu9Vv1LnGMSDMIENbw+BD2P3z
-	 7n9S/VxH5Dr+ELusP98pq1MLLX8cWo0r625SMZ/rMRlqaN4ZHBwE83rVkttIW34oMz
-	 6rYjyS0cq+R76PXJwHYi/VrALQJfojUR8K3OCE9LXgrR1Fb49PriNAYETy+FfJ9VjC
-	 pK12pYKT6BvZy3YuyTU0/+V9jhxDyJmlZQKrAzrz3Eph+rdEw2ClNN1Cy7Wii/vtST
-	 f1y/oZDtaeC3g==
-Date: Sun, 31 Mar 2024 10:32:41 +0100
-From: Simon Horman <horms@kernel.org>
-To: Duoming Zhou <duoming@zju.edu.cn>
-Cc: netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-hams@vger.kernel.org, pabeni@redhat.com, kuba@kernel.org,
-	edumazet@google.com, davem@davemloft.net, jreuter@yaina.de
-Subject: Re: [PATCH net v2] ax25: fix use-after-free bugs caused by
- ax25_ds_del_timer
-Message-ID: <20240331093241.GB26556@kernel.org>
-References: <20240329015023.9223-1-duoming@zju.edu.cn>
+	s=k20201202; t=1711879248;
+	bh=8ZlEK5607Jk4tOKuXpJJJZbQBuqSIL7N3MY76VqKGds=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=KmMMF4FqWijFeM4Mc1d+9Ubdwa3TgkbMdi6eJ6RH0MAB8zu2AokIMtuynk9zHpst7
+	 sjaOhpoiX/WY/rN5CHXvjADJSyWPVAk6E29IYeTIpMKQgGbS0bjQEdOxCPRzZrHqRo
+	 4I61gRbw7wBV0302LHrINBbf1Qu8jogvvPA2OPYB5Rda+tdjSWwlpUrBL94xa7zCyT
+	 sxQ3fdtYh4Ed+8k8UoLlhy5wUCDdk+g9Ee0f7ZkPcpfN1U2bUQTJtR0mIKbmN2Yu8J
+	 cWc12qcfmDEeapF4GLr3ETEj5czb7hk7mGI/Lk19OgAijibq+r+28/DKr5RV5kcQ3E
+	 ZsOTd8Sgq5fug==
+Received: from ip-185-104-136-29.ptr.icomera.net ([185.104.136.29] helo=wait-a-minute.misterjones.org)
+	by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.95)
+	(envelope-from <maz@kernel.org>)
+	id 1rqrzY-00013r-IH;
+	Sun, 31 Mar 2024 11:00:45 +0100
+Date: Sun, 31 Mar 2024 11:00:41 +0100
+Message-ID: <87msqesoty.wl-maz@kernel.org>
+From: Marc Zyngier <maz@kernel.org>
+To: Mark Brown <broonie@kernel.org>
+Cc: Catalin Marinas <catalin.marinas@arm.com>,
+	Will Deacon <will@kernel.org>,
+	Oliver Upton <oliver.upton@linux.dev>,
+	James Morse <james.morse@arm.com>,
+	Suzuki K Poulose <suzuki.poulose@arm.com>,
+	Jonathan Corbet <corbet@lwn.net>,
+	Shuah Khan <shuah@kernel.org>,
+	linux-arm-kernel@lists.infradead.org,
+	linux-kernel@vger.kernel.org,
+	Dave Martin <Dave.Martin@arm.com>,
+	kvmarm@lists.linux.dev,
+	linux-doc@vger.kernel.org,
+	linux-kselftest@vger.kernel.org
+Subject: Re: [PATCH v6 1/5] KVM: arm64: Share all userspace hardened thread data with the hypervisor
+In-Reply-To: <20240329-arm64-2023-dpisa-v6-1-ba42db6c27f3@kernel.org>
+References: <20240329-arm64-2023-dpisa-v6-0-ba42db6c27f3@kernel.org>
+	<20240329-arm64-2023-dpisa-v6-1-ba42db6c27f3@kernel.org>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/28.2
+ (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240329015023.9223-1-duoming@zju.edu.cn>
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-SA-Exim-Connect-IP: 185.104.136.29
+X-SA-Exim-Rcpt-To: broonie@kernel.org, catalin.marinas@arm.com, will@kernel.org, oliver.upton@linux.dev, james.morse@arm.com, suzuki.poulose@arm.com, corbet@lwn.net, shuah@kernel.org, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, Dave.Martin@arm.com, kvmarm@lists.linux.dev, linux-doc@vger.kernel.org, linux-kselftest@vger.kernel.org
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 
-On Fri, Mar 29, 2024 at 09:50:23AM +0800, Duoming Zhou wrote:
-> When the ax25 device is detaching, the ax25_dev_device_down()
-> calls ax25_ds_del_timer() to cleanup the slave_timer. When
-> the timer handler is running, the ax25_ds_del_timer() that
-> calls del_timer() in it will return directly. As a result,
-> the use-after-free bugs could happen, one of the scenarios
-> is shown below:
+On Fri, 29 Mar 2024 00:13:42 +0000,
+Mark Brown <broonie@kernel.org> wrote:
 > 
->       (Thread 1)          |      (Thread 2)
->                           | ax25_ds_timeout()
-> ax25_dev_device_down()    |
->   ax25_ds_del_timer()     |
->     del_timer()           |
->   ax25_dev_put() //FREE   |
->                           |  ax25_dev-> //USE
+> As part of the lazy FPSIMD state transitioning done by the hypervisor we
+> currently share the userpsace FPSIMD state in thread->uw.fpsimd_state with
+> the host. Since this struct is non-extensible userspace ABI we have to keep
+
+Using the same representation is just pure convenience, and nothing
+requires us to use the it in the kernel/hypervisor.
+
+> the definition as is but the addition of FPMR in the 2023 dpISA means that
+> we will want to share more storage with the host. To facilitate this
+> refactor the current code to share the entire thread->uw rather than just
+> the one field.
+
+So this increase the required sharing with EL2 from 528 bytes to
+560. Not a huge deal, but definitely moving in the wrong direction. Is
+there any plans to add more stuff to this structure that wouldn't be
+*directly* relevant to the hypervisor?
+
 > 
-> In order to mitigate bugs, when the device is detaching, use
-> timer_shutdown_sync() to stop the timer.
-> 
-> Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
-> Signed-off-by: Duoming Zhou <duoming@zju.edu.cn>
+> The large number of references to fpsimd_state make it very inconvenient
+> to add an additional wrapper struct.
+>
+> Signed-off-by: Mark Brown <broonie@kernel.org>
 > ---
-> Changes in v2:
->   - Call timer_shutdown_sync() in ax25_dev_device_down().
-
-Thanks,
-
-as per my review of v1, I do think this is a correct approach to addressing
-a valid concern.  But I would also value another set of eyes on the problem.
-
-Reviewed-by: Simon Horman <horms@kernel.org>
-
->  net/ax25/ax25_dev.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+>  arch/arm64/include/asm/kvm_host.h       |  3 ++-
+>  arch/arm64/include/asm/processor.h      |  2 +-
+>  arch/arm64/kvm/fpsimd.c                 | 13 ++++++-------
+>  arch/arm64/kvm/hyp/include/hyp/switch.h |  2 +-
+>  arch/arm64/kvm/hyp/nvhe/hyp-main.c      |  4 ++--
+>  5 files changed, 12 insertions(+), 12 deletions(-)
 > 
-> diff --git a/net/ax25/ax25_dev.c b/net/ax25/ax25_dev.c
-> index c5462486dbc..282ec581c07 100644
-> --- a/net/ax25/ax25_dev.c
-> +++ b/net/ax25/ax25_dev.c
-> @@ -105,7 +105,7 @@ void ax25_dev_device_down(struct net_device *dev)
->  	spin_lock_bh(&ax25_dev_lock);
+> diff --git a/arch/arm64/include/asm/kvm_host.h b/arch/arm64/include/asm/kvm_host.h
+> index 9e8a496fb284..8a251f0da900 100644
+> --- a/arch/arm64/include/asm/kvm_host.h
+> +++ b/arch/arm64/include/asm/kvm_host.h
+> @@ -27,6 +27,7 @@
+>  #include <asm/fpsimd.h>
+>  #include <asm/kvm.h>
+>  #include <asm/kvm_asm.h>
+> +#include <asm/processor.h>
+>  #include <asm/vncr_mapping.h>
 >  
->  #ifdef CONFIG_AX25_DAMA_SLAVE
-> -	ax25_ds_del_timer(ax25_dev);
-> +	timer_shutdown_sync(&ax25_dev->dama.slave_timer);
->  #endif
+>  #define __KVM_HAVE_ARCH_INTC_INITIALIZED
+> @@ -640,7 +641,7 @@ struct kvm_vcpu_arch {
+>  	struct kvm_guest_debug_arch vcpu_debug_state;
+>  	struct kvm_guest_debug_arch external_debug_state;
 >  
->  	/*
-> -- 
-> 2.17.1
-> 
+> -	struct user_fpsimd_state *host_fpsimd_state;	/* hyp VA */
+> +	struct thread_struct_uw *host_uw;	/* hyp VA */
+>  	struct task_struct *parent_task;
+
+Well, this is going away, and you know it.
+
+	M.
+
+-- 
+Without deviation from the norm, progress is not possible.
 
