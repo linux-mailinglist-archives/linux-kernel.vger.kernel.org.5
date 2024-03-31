@@ -1,263 +1,244 @@
-Return-Path: <linux-kernel+bounces-126089-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-126090-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1DA9F893207
-	for <lists+linux-kernel@lfdr.de>; Sun, 31 Mar 2024 17:02:47 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6B5D489320C
+	for <lists+linux-kernel@lfdr.de>; Sun, 31 Mar 2024 17:05:41 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A158A1F21BC8
-	for <lists+linux-kernel@lfdr.de>; Sun, 31 Mar 2024 15:02:46 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BB508282477
+	for <lists+linux-kernel@lfdr.de>; Sun, 31 Mar 2024 15:05:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7BCCE14431A;
-	Sun, 31 Mar 2024 15:02:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 63038145340;
+	Sun, 31 Mar 2024 15:05:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="BnP8EbRS"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.11])
+	dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b="ieCGqDyH"
+Received: from EUR04-VI1-obe.outbound.protection.outlook.com (mail-vi1eur04olkn2078.outbound.protection.outlook.com [40.92.75.78])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C16C5433BF;
-	Sun, 31 Mar 2024 15:02:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.11
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711897356; cv=none; b=PtAtR6ggEHsyp2mePr4jju/VVx9BitLrRQnSIXUILPaA9ga75QD9uIwRwvxd92DxHDj6vKUT+f5EmFZncYCc4IDp8cOMlMs1TlrZ9XnBHaQS3hO8Pavo6u63zqknfV9WTt5EsubNLRtsYFwQrZFtfbMz817HoztA5OmQsZMzjP0=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711897356; c=relaxed/simple;
-	bh=aVuVh2OqrH74gF1FKTiMNhGw2N4I9suhNWP0z/DShdc=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Hk2tsWYNKyTfWOxkb/6GirTYkvo70dU7hyUolTM3Z5WKlswAE6LAFLi7vJVngLmF/6lGQsV3qlWcI6He+Wyw72TDYwsXujStQY6l4KTxgWCjLc5jsGlh7PhKZQkU0if7AsJ3Ms65gQ54kQaIozQXZj9LULX02ByJVPx6/GLte0Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=BnP8EbRS; arc=none smtp.client-ip=198.175.65.11
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1711897355; x=1743433355;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=aVuVh2OqrH74gF1FKTiMNhGw2N4I9suhNWP0z/DShdc=;
-  b=BnP8EbRSCRzfxOPqVw1Ae9SZ/eLlLjxz9K4rEKtnCCZU+38vzVPF+Z8b
-   090qFGqDCqNiGHZzGFodDNTy0OqgiKE+CMIUPj/6scBZBTuFWi0vDdc1M
-   /VFQ92Eoiii8YxQGOtp6NzNAkf5smzw0r8dUAmGTjNgdpaLFZHX1QkBPO
-   h8KRdwZ4KqeVBns6fFCuYV7m+o56zQfvFSAbrJkBS+3w9TPe/4NZsMY94
-   vITY/oZBg00p5n3n7GQtdvBwWGAnEg2Y86Rw8PSquzDkeP0B9jVLrCCVd
-   TGcb54DNRWuWe0gxuNYMMhSp32yboomZaj0xKEqDFPznw4ZDA6OOk5bNy
-   Q==;
-X-CSE-ConnectionGUID: j9EwA1GZRnmt/vd615T3QA==
-X-CSE-MsgGUID: 9+ehEjrbTh6HBCCN0MHhNw==
-X-IronPort-AV: E=McAfee;i="6600,9927,11030"; a="17594435"
-X-IronPort-AV: E=Sophos;i="6.07,170,1708416000"; 
-   d="scan'208";a="17594435"
-Received: from fmviesa007.fm.intel.com ([10.60.135.147])
-  by orvoesa103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Mar 2024 08:02:34 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,170,1708416000"; 
-   d="scan'208";a="17548115"
-Received: from lkp-server01.sh.intel.com (HELO 3d808bfd2502) ([10.239.97.150])
-  by fmviesa007.fm.intel.com with ESMTP; 31 Mar 2024 08:02:29 -0700
-Received: from kbuild by 3d808bfd2502 with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1rqwhX-0001CS-1p;
-	Sun, 31 Mar 2024 15:02:27 +0000
-Date: Sun, 31 Mar 2024 23:02:17 +0800
-From: kernel test robot <lkp@intel.com>
-To: "yu-chang.lee" <yu-chang.lee@mediatek.com>,
-	Rob Herring <robh@kernel.org>,
-	Krzysztof Kozlowski <krzk@kernel.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Ulf Hansson <ulf.hansson@linaro.org>,
-	Matthias Brugger <matthias.bgg@gmail.com>,
-	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
-	MandyJH Liu <mandyjh.liu@mediatek.com>
-Cc: oe-kbuild-all@lists.linux.dev, devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org,
-	linux-mediatek@lists.infradead.org,
-	Project_Global_Chrome_Upstream_Group@mediatek.com,
-	fan.chen@mediatek.com, xiufeng.li@mediatek.com,
-	yu-chang.lee@mediatek.com
-Subject: Re: [PATCH v2 2/3] dt-bindings: power: Add mediatek larb definition
-Message-ID: <202403312222.fjYPC06h-lkp@intel.com>
-References: <20240327055732.28198-3-yu-chang.lee@mediatek.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 45A7B2628C;
+	Sun, 31 Mar 2024 15:05:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.92.75.78
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1711897526; cv=fail; b=cKx+l4SnOBrfC9inKSqxsPrXgaKrc3y3/EhqV+mxKfx60MZqA5MB+dXh3dcNOiWCyo352qdjRQEPv7g5Eps0R9oH2k3YdCMGJeGXazUzL18plSOxEEsQLN/mQ+e7qq8heSHNnYzzDKvnY/PP6TYOTsWb6gG8O7hPXEOfmjjEM/U=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1711897526; c=relaxed/simple;
+	bh=B3OGipwb+0sVeBg2LNsYHRRypUheYKwyXM86w1Nyujk=;
+	h=From:To:Cc:Subject:Date:Message-ID:Content-Type:MIME-Version; b=afiRfxXEiZUnYbD2JlR68VYSJD3MD/B1RcGc92qoek++ZIl7veAuUdGQPWKtPinNb6CQmXYpVMnZFy/3WsXxtww3BQKX5aOA3lKVXIbePbhKImuCiY+ObmyZCx/D1p3j2HmmmwagMki+GpZk7u+oWy0K/iRs2XSLvAG3ENjh0wI=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com; spf=pass smtp.mailfrom=outlook.com; dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b=ieCGqDyH; arc=fail smtp.client-ip=40.92.75.78
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=outlook.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=OlO3PJ8M1wQi6oakfmortGMTjxaRT+K0uqGzMGDSgG5IpcBkWu40ShGYEp1kFnkEFuaCZukmcRvTSDVgfJ1gNvs/GBneuzU7tbMfzTPGWAWkOeFWkBfERvq22aj9QvI5bc2QJmEOADSqI3NAlqT4E24jYp20Z5t2aLzWkYE1QODH+Y0shjBv1Cy5U5yTo9xPkz7e6Lem0QMZ7pS2WM0kRWdeBQK8g7FdavAY39enYKJ5XQ7szFLkE5d++8pezeviUKX3UkRmXUFWyh1hXIwKzGUKBu0pIVhrbLSSyvptauLi6lgP9XcEnjLp66DkeJ64bUbwRfeEL2Owzf7GDkvm9A==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=lzE0RtM1Zo7qthW93kAZAngHg9wpx8iF5BRNORZhF4c=;
+ b=H+iMcCenIgzSAem3Cny/5npZ6639K3nW7bUFe/az9kN/knuXWWkr3un4f1wdbKPoap3tOqPJhRIlf7lHdmwpzXRzQSvOJFS6Pu+vFhttNhsQOVghCfH5S2AsH4vnoKOZtyLIWLSeij+I7D4rPnSv4uA8LQXZMzl7OBjUmTbvjhxznlaGWg1GTlLK7u4a6FNRoOlShBVoD0biwKKIZqve6Ylb6mdy3Rx8poVmBAYO0AIe23txJPSVgB1wKiRcy/REKzbtvVe0VUak5rc7SCsXDJvV/YJPL66bhJ0k1ztR28LZPsEuNHemqkYQ8X/Pd+NSRAvgfNUhOHPZqR4pnPS/qw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
+ dkim=none; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=outlook.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=lzE0RtM1Zo7qthW93kAZAngHg9wpx8iF5BRNORZhF4c=;
+ b=ieCGqDyHIQy8aDxva7JsLFcgG8TCVTrk12Fu48OXLcC5vJ8RCwDlzhmmiMf2m7qVOnPFKB3WaXRVJY1CHkakX06XVkq1NuY29zCw80wfJT5ZizIpWQ19T79FjB/WbgP5XexvIx0DxucOqMPiWjx74JK7/szNibKGpJPeYe66OEQvP4kL2zatl90wk5Z6PA9UM8dJK++elXVvWhhBejj4HHndAjn3hNVPEKgxRpwB/BBVknIrZW1rUfNldvaB0tj3gxygwMwUNZLNM0LAGNGEWJcBlX7ibf3DwCpeJvuQZvj2KwEDXsyyi6Kc30y9203CtmKwYTq9d78Du4vUIqlOSw==
+Received: from AS8PR02MB7237.eurprd02.prod.outlook.com (2603:10a6:20b:3f1::10)
+ by DU0PR02MB8690.eurprd02.prod.outlook.com (2603:10a6:10:3ed::12) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7409.46; Sun, 31 Mar
+ 2024 15:05:20 +0000
+Received: from AS8PR02MB7237.eurprd02.prod.outlook.com
+ ([fe80::9817:eaf5:e2a7:e486]) by AS8PR02MB7237.eurprd02.prod.outlook.com
+ ([fe80::9817:eaf5:e2a7:e486%4]) with mapi id 15.20.7409.042; Sun, 31 Mar 2024
+ 15:05:20 +0000
+From: Erick Archer <erick.archer@outlook.com>
+To: Long Li <longli@microsoft.com>,
+	Ajay Sharma <sharmaajay@microsoft.com>,
+	Jason Gunthorpe <jgg@ziepe.ca>,
+	Leon Romanovsky <leon@kernel.org>,
+	"K. Y. Srinivasan" <kys@microsoft.com>,
+	Haiyang Zhang <haiyangz@microsoft.com>,
+	Wei Liu <wei.liu@kernel.org>,
+	Dexuan Cui <decui@microsoft.com>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>,
+	Paolo Abeni <pabeni@redhat.com>,
+	Shradha Gupta <shradhagupta@linux.microsoft.com>,
+	Konstantin Taranov <kotaranov@microsoft.com>,
+	Kees Cook <keescook@chromium.org>,
+	"Gustavo A. R. Silva" <gustavoars@kernel.org>
+Cc: Erick Archer <erick.archer@outlook.com>,
+	linux-rdma@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux-hyperv@vger.kernel.org,
+	netdev@vger.kernel.org,
+	linux-hardening@vger.kernel.org
+Subject: [PATCH] RDMA/mana_ib: Add flex array to struct mana_cfg_rx_steer_req_v2
+Date: Sun, 31 Mar 2024 17:04:53 +0200
+Message-ID:
+ <AS8PR02MB7237974EF1B9BAFA618166C38B382@AS8PR02MB7237.eurprd02.prod.outlook.com>
+X-Mailer: git-send-email 2.25.1
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-TMN: [ax2AMivpXtObadqhPIRt7GSws6HmSCa/]
+X-ClientProxiedBy: MA3P292CA0015.ESPP292.PROD.OUTLOOK.COM
+ (2603:10a6:250:2c::11) To AS8PR02MB7237.eurprd02.prod.outlook.com
+ (2603:10a6:20b:3f1::10)
+X-Microsoft-Original-Message-ID:
+ <20240331150453.5432-1-erick.archer@outlook.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240327055732.28198-3-yu-chang.lee@mediatek.com>
+X-MS-Exchange-MessageSentRepresentingType: 1
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: AS8PR02MB7237:EE_|DU0PR02MB8690:EE_
+X-MS-Office365-Filtering-Correlation-Id: 2725dda3-38b9-4383-539a-08dc5193fb94
+X-MS-Exchange-SLBlob-MailProps:
+	qdrM8TqeFBsbamEakaZu1wFzLqU5ubB8EJuublZ4zULzY+Y+3WPTzZFjw0UTpAp5bJxoxVy7oJxCgKwEEr8MAOmSCvzSUbAx2Oz7j6tth9ThI4qv9rAc8i5s0UOIOu2krBdLVjUcaTosnES15mEPD5EWyBgwFliEJy73mQDRVrzJRgJ06jjDNpvgmitzplvQNPXOuOGcDcORQzq0iPohPkazZVNI+xvZomA9Csahf9LgUTR8Df9k6fhALVDkESwc6E1bJCpix2LM2aZvAHOk27Fn/iGkH/NKTKrKvH3X+UoLnHJdjGDkECaxN/cIPaTXu2TbEvODCEY1Gou9kFeirhR/GmzBkUMOrd+huc4E+eWaJVO5l8rO8eXamfTyRQlYIHZkV73xUwlONmSlDHAjo5pYyVQ4fIRzpS7bjzouS5yfGnxTwUNG7hp8QSQ38HDkL16HHb4vBymQs11MSme9T8ROU7mgcTw1OSO7Temhuwin+LQKnHYjGa2aBSZLFXtGHKQ7bgRCalmoSHDn/V4oWHA3/f0a5qZht7yviw+m7TZjSSS5x8BTGcGYfOmtJhHjhSN3pKoQIYT9BFwRWzjcSFetcwXw8SppwwsuSldjA1NyCpOm6vof5VCKbU+wAXGF27eIZLgGqpJU/ja7GxhAd12ds07nRF4EheiUqyUdVhU8BWNDjMjZf/oA2MgkbHgp/2IXSHlxybZPP1hNd7PkX/+r62Hc32SCwT8eUoYK6lbdbFpy0vEV+k1Hv8W2o/k6MsZD3+5kMGCeJwwk+9AW/SKufCvKjoeG
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	XyUYUnDC+fEiim2xlTA//XPjLZpg84E1IaSysCt7WxY4iHw1ZvDSUGkOarebfnPwi15yigOAgyFApFdim9Rmw0Jf418paEctIhOQO388lkfjZ7QDe+AbUzy/HBuw2zg1rDFzFaOyl40Q/PVCxtFTJfyeMniPZ59J0Uk55CecsU5BmIKa55V+MAa+c2ZOKpqRgC0oeUFtAbvlHsxmpAD+bZ7/I0pd8UgMhOrdNksKiHO6emwtUb53kckDcoA2F6hINPbLKN5VH+4hF/L2+tcsAFTuCanGoYn7O2IChPwjfofEdXuyvSVFUv2GgQDjkHtydWqpLosJvNkUzJeIesUK1kd5QTvSyVrnne+72dXmYLfHi/nOH07hN/hqKCbE6hLRKWYOFYWkm8htNv3WFrV4kQr1JO3dmj2n3yiYhGqumUp9UKet79S0V8jyBrfK9pAvo82MeTa/CbeC80BWrcyBcm/+dS2PEJskIN6S/v2WitpXpt52NYKZxFVmPGRGapKuNtBlddW6ywHWVRGLp6i79qXmc1eTTHMTQBZZZpkY9rszpcrEr+TvbOa8mjiEgt0fpN8tPkb7ayZDhbxN869y3VLm+e5A5sMaEKF039gesjPv7YBJ/bHTstqbw/+z6xUNJYFkXh55UWHz4h9nxs8HeJsAJLBXrXK5qGD6Vw8mVfJuc1iHfvMG5nLcNqd7BMZI
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?us-ascii?Q?qJhDBq/GG/JiMVVX3Nq2evRaBJRNNGIUMYeeL9/ZxBW0eXTBt//q2wWn05jU?=
+ =?us-ascii?Q?7qznjmlI7PH4ql1Tjo64uUhMdQfxsBkqm5tn762WcPF0ffLjz3D5xX7fuHOD?=
+ =?us-ascii?Q?TcqA0Gg1ZjzlVOuUn+093VCUHSuKUE+8BvMQMvFDaJTbRK5R2nl/Rx4d/OFE?=
+ =?us-ascii?Q?TC/JabyEtTIyhEjs4R1l5aUIpwVg1eUZxZJbS3Kl/PpaYv61uYURCDRlWbNF?=
+ =?us-ascii?Q?9wjbrMTVJ0u0e//EPM7QxkwqYpO9UTfmSe5EkcrBtudYWyKtws2O4S+Dfoy+?=
+ =?us-ascii?Q?4smmuU4pew+RLMFAnH/dE3zMOaZScfvuPMZyI/nlFR+FUmopwkoCspMpq4/Z?=
+ =?us-ascii?Q?i605RMwx31Yv62MoCxVkJbDX24tbX+8b2aN0Htz/cjPdEweTeO8cc16rQZMC?=
+ =?us-ascii?Q?mvfFR54FvBDi1ie7relhgVG+Lj6b8wWGx+Jsb5z8DebzWTTQ0JY9cbSLcBJu?=
+ =?us-ascii?Q?2/+gIG6FL4yYcUIVqfHJu99MC6oKwsBb1aGur9+gW9oPfIKv8lPvtgtM+yzL?=
+ =?us-ascii?Q?G2+FjyzH3kLU5OVdmP5NlaT9SJNblXlGPy5TVX/G+iop/3iD/zxTOMX6scJI?=
+ =?us-ascii?Q?h/a3Mk6hKiHzSUgst1QNc3LVf4HgWplNut8C+L8HrwuUFIs2LFdb5fCLal3o?=
+ =?us-ascii?Q?6vWtP6w7xdP4oimrMa6+NVPy/F3gjToBF+kt5Dv0rEhXMPTe2kFCfcS+vJ03?=
+ =?us-ascii?Q?wpC7MvizUB9IOrA43YMS6EBC3qGpIOSxx+hn1Y2bC0z4lSZRC7CXMnBUbKm7?=
+ =?us-ascii?Q?wBaAvy/twYYbHn1Vz0fhKbbAqk8MP22hI0u2XzaBXjyyvZEcKec40HZsJk7x?=
+ =?us-ascii?Q?JmL7xHmeusGOfBTllRz4Y4/Fpng8TKA6edZSV0CGBBBJjOLWR9GmwuXI3b+M?=
+ =?us-ascii?Q?B7FzWQO7j5MNyU1S8bX91Il8RoOswbNRRNHMbJNVIQN5Jo6qlNVXiQlahwbC?=
+ =?us-ascii?Q?OdiLhBEP4gBkpP0hHTrVJfHQQxa0kBdSFhjk9kX+CBULsJL+Qsh75mkd0uzC?=
+ =?us-ascii?Q?OgaZSHSyZii2IG1QIabskF/NKjzsvSX+1R9IE+2tuZlFLFobHB9GcHb0IYKT?=
+ =?us-ascii?Q?mBU+ZadFTKFPQEOvTty3PU/X2nWwiq9Op4SuswGwrKp+BNvE06YmDeD7AkSv?=
+ =?us-ascii?Q?bd/k74m1SJFJQtntZgZnjKQX6FAFV/E9lDGp5amHDgsvDtK2aR3enmuAE/DJ?=
+ =?us-ascii?Q?L0rBcIvaBDUzQp2QAr02XJGsF4YzVRo0rW0yh0+1ffFj+Epvzbe3Mn4YL+pG?=
+ =?us-ascii?Q?rtYig0buB88VQueXs+eI?=
+X-OriginatorOrg: outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 2725dda3-38b9-4383-539a-08dc5193fb94
+X-MS-Exchange-CrossTenant-AuthSource: AS8PR02MB7237.eurprd02.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 31 Mar 2024 15:05:20.4865
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
+X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg:
+	00000000-0000-0000-0000-000000000000
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DU0PR02MB8690
 
-Hi yu-chang.lee,
+The "struct mana_cfg_rx_steer_req_v2" uses a dynamically sized set of
+trailing elements. Specifically, it uses a "mana_handle_t" array. So,
+use the preferred way in the kernel declaring a flexible array [1].
 
-kernel test robot noticed the following build warnings:
+Also, avoid the open-coded arithmetic in the memory allocator functions
+[2] using the "struct_size" macro.
 
-[auto build test WARNING on robh/for-next]
-[also build test WARNING on krzk-dt/for-next linus/master v6.9-rc1 next-20240328]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+Moreover, use the "offsetof" helper to get the indirect table offset
+instead of the "sizeof" operator and avoid the open-coded arithmetic in
+pointers using the new flex member.
 
-url:    https://github.com/intel-lab-lkp/linux/commits/yu-chang-lee/pmdomain-mediatek-add-smi_larb_reset-function-when-power-on/20240327-140007
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/robh/linux.git for-next
-patch link:    https://lore.kernel.org/r/20240327055732.28198-3-yu-chang.lee%40mediatek.com
-patch subject: [PATCH v2 2/3] dt-bindings: power: Add mediatek larb definition
-compiler: loongarch64-linux-gcc (GCC) 13.2.0
-reproduce: (https://download.01.org/0day-ci/archive/20240331/202403312222.fjYPC06h-lkp@intel.com/reproduce)
+Now, it is also possible to use the "flex_array_size" helper to compute
+the size of these trailing elements in the "memcpy" function.
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202403312222.fjYPC06h-lkp@intel.com/
+Link: https://www.kernel.org/doc/html/next/process/deprecated.html#zero-length-and-one-element-arrays [1]
+Link: https://www.kernel.org/doc/html/next/process/deprecated.html#open-coded-arithmetic-in-allocator-arguments [2]
+Signed-off-by: Erick Archer <erick.archer@outlook.com>
+---
+ drivers/infiniband/hw/mana/qp.c               | 8 ++++----
+ drivers/net/ethernet/microsoft/mana/mana_en.c | 9 +++++----
+ include/net/mana/mana.h                       | 1 +
+ 3 files changed, 10 insertions(+), 8 deletions(-)
 
-dtcheck warnings: (new ones prefixed by >>)
->> Documentation/devicetree/bindings/power/mediatek,power-controller.yaml:128:6: [error] syntax error: expected <block end>, but found '<block mapping start>' (syntax)
->> Documentation/devicetree/bindings/power/mediatek,power-controller.yaml:129:9: [warning] wrong indentation: expected 7 but found 8 (indentation)
---
->> Documentation/devicetree/bindings/power/mediatek,power-controller.yaml:128:6: did not find expected key
->> Documentation/devicetree/bindings/mfd/mediatek,mt8195-scpsys.yaml:
-   while parsing a block mapping
-     in "<unicode string>", line 64, column 5
-   did not find expected key
-     in "<unicode string>", line 128, column 6
---
->> Documentation/devicetree/bindings/power/mediatek,power-controller.yaml: ignoring, error parsing file
-
-vim +128 Documentation/devicetree/bindings/power/mediatek,power-controller.yaml
-
-     8	
-     9	maintainers:
-    10	  - MandyJH Liu <mandyjh.liu@mediatek.com>
-    11	  - Matthias Brugger <mbrugger@suse.com>
-    12	
-    13	description: |
-    14	  Mediatek processors include support for multiple power domains which can be
-    15	  powered up/down by software based on different application scenes to save power.
-    16	
-    17	  IP cores belonging to a power domain should contain a 'power-domains'
-    18	  property that is a phandle for SCPSYS node representing the domain.
-    19	
-    20	properties:
-    21	  $nodename:
-    22	    pattern: '^power-controller(@[0-9a-f]+)?$'
-    23	
-    24	  compatible:
-    25	    enum:
-    26	      - mediatek,mt6795-power-controller
-    27	      - mediatek,mt8167-power-controller
-    28	      - mediatek,mt8173-power-controller
-    29	      - mediatek,mt8183-power-controller
-    30	      - mediatek,mt8186-power-controller
-    31	      - mediatek,mt8188-power-controller
-    32	      - mediatek,mt8192-power-controller
-    33	      - mediatek,mt8195-power-controller
-    34	      - mediatek,mt8365-power-controller
-    35	
-    36	  '#power-domain-cells':
-    37	    const: 1
-    38	
-    39	  '#address-cells':
-    40	    const: 1
-    41	
-    42	  '#size-cells':
-    43	    const: 0
-    44	
-    45	patternProperties:
-    46	  "^power-domain@[0-9a-f]+$":
-    47	    $ref: "#/$defs/power-domain-node"
-    48	    patternProperties:
-    49	      "^power-domain@[0-9a-f]+$":
-    50	        $ref: "#/$defs/power-domain-node"
-    51	        patternProperties:
-    52	          "^power-domain@[0-9a-f]+$":
-    53	            $ref: "#/$defs/power-domain-node"
-    54	            patternProperties:
-    55	              "^power-domain@[0-9a-f]+$":
-    56	                $ref: "#/$defs/power-domain-node"
-    57	                unevaluatedProperties: false
-    58	            unevaluatedProperties: false
-    59	        unevaluatedProperties: false
-    60	    unevaluatedProperties: false
-    61	
-    62	$defs:
-    63	  power-domain-node:
-    64	    type: object
-    65	    description: |
-    66	      Represents the power domains within the power controller node as documented
-    67	      in Documentation/devicetree/bindings/power/power-domain.yaml.
-    68	
-    69	    properties:
-    70	
-    71	      '#power-domain-cells':
-    72	        description:
-    73	          Must be 0 for nodes representing a single PM domain and 1 for nodes
-    74	          providing multiple PM domains.
-    75	
-    76	      '#address-cells':
-    77	        const: 1
-    78	
-    79	      '#size-cells':
-    80	        const: 0
-    81	
-    82	      reg:
-    83	        description: |
-    84	          Power domain index. Valid values are defined in:
-    85	              "include/dt-bindings/power/mt6795-power.h" - for MT8167 type power domain.
-    86	              "include/dt-bindings/power/mt8167-power.h" - for MT8167 type power domain.
-    87	              "include/dt-bindings/power/mt8173-power.h" - for MT8173 type power domain.
-    88	              "include/dt-bindings/power/mt8183-power.h" - for MT8183 type power domain.
-    89	              "include/dt-bindings/power/mediatek,mt8188-power.h" - for MT8188 type power domain.
-    90	              "include/dt-bindings/power/mt8192-power.h" - for MT8192 type power domain.
-    91	              "include/dt-bindings/power/mt8195-power.h" - for MT8195 type power domain.
-    92	              "include/dt-bindings/power/mediatek,mt8365-power.h" - for MT8365 type power domain.
-    93	        maxItems: 1
-    94	
-    95	      clocks:
-    96	        description: |
-    97	          A number of phandles to clocks that need to be enabled during domain
-    98	          power-up sequencing.
-    99	
-   100	      clock-names:
-   101	        description: |
-   102	          List of names of clocks, in order to match the power-up sequencing
-   103	          for each power domain we need to group the clocks by name. BASIC
-   104	          clocks need to be enabled before enabling the corresponding power
-   105	          domain, and should not have a '-' in their name (i.e mm, mfg, venc).
-   106	          SUSBYS clocks need to be enabled before releasing the bus protection,
-   107	          and should contain a '-' in their name (i.e mm-0, isp-0, cam-0).
-   108	
-   109	          In order to follow properly the power-up sequencing, the clocks must
-   110	          be specified by order, adding first the BASIC clocks followed by the
-   111	          SUSBSYS clocks.
-   112	
-   113	      domain-supply:
-   114	        description: domain regulator supply.
-   115	
-   116	      mediatek,infracfg:
-   117	        $ref: /schemas/types.yaml#/definitions/phandle
-   118	        description: phandle to the device containing the INFRACFG register range.
-   119	
-   120	      mediatek,infracfg-nao:
-   121	        $ref: /schemas/types.yaml#/definitions/phandle
-   122	        description: phandle to the device containing the INFRACFG-NAO register range.
-   123	
-   124	      mediatek,smi:
-   125	        $ref: /schemas/types.yaml#/definitions/phandle
-   126	        description: phandle to the device containing the SMI register range.
-   127	
- > 128	     mediatek,larb:
- > 129	        $ref: /schemas/types.yaml#/definitions/phandle
-   130	        description: phandle to the device containing the LARB register range.
-   131	
-   132	    required:
-   133	      - reg
-   134	
-   135	required:
-   136	  - compatible
-   137	
-
+diff --git a/drivers/infiniband/hw/mana/qp.c b/drivers/infiniband/hw/mana/qp.c
+index 6e7627745c95..c2a39db8ef92 100644
+--- a/drivers/infiniband/hw/mana/qp.c
++++ b/drivers/infiniband/hw/mana/qp.c
+@@ -22,8 +22,7 @@ static int mana_ib_cfg_vport_steering(struct mana_ib_dev *dev,
+ 
+ 	gc = mdev_to_gc(dev);
+ 
+-	req_buf_size =
+-		sizeof(*req) + sizeof(mana_handle_t) * MANA_INDIRECT_TABLE_SIZE;
++	req_buf_size = struct_size(req, indir_tab, MANA_INDIRECT_TABLE_SIZE);
+ 	req = kzalloc(req_buf_size, GFP_KERNEL);
+ 	if (!req)
+ 		return -ENOMEM;
+@@ -44,11 +43,12 @@ static int mana_ib_cfg_vport_steering(struct mana_ib_dev *dev,
+ 		req->rss_enable = true;
+ 
+ 	req->num_indir_entries = MANA_INDIRECT_TABLE_SIZE;
+-	req->indir_tab_offset = sizeof(*req);
++	req->indir_tab_offset = offsetof(struct mana_cfg_rx_steer_req_v2,
++					 indir_tab);
+ 	req->update_indir_tab = true;
+ 	req->cqe_coalescing_enable = 1;
+ 
+-	req_indir_tab = (mana_handle_t *)(req + 1);
++	req_indir_tab = req->indir_tab;
+ 	/* The ind table passed to the hardware must have
+ 	 * MANA_INDIRECT_TABLE_SIZE entries. Adjust the verb
+ 	 * ind_table to MANA_INDIRECT_TABLE_SIZE if required
+diff --git a/drivers/net/ethernet/microsoft/mana/mana_en.c b/drivers/net/ethernet/microsoft/mana/mana_en.c
+index 59287c6e6cee..04aa096c6cc4 100644
+--- a/drivers/net/ethernet/microsoft/mana/mana_en.c
++++ b/drivers/net/ethernet/microsoft/mana/mana_en.c
+@@ -1062,7 +1062,7 @@ static int mana_cfg_vport_steering(struct mana_port_context *apc,
+ 	u32 req_buf_size;
+ 	int err;
+ 
+-	req_buf_size = sizeof(*req) + sizeof(mana_handle_t) * num_entries;
++	req_buf_size = struct_size(req, indir_tab, num_entries);
+ 	req = kzalloc(req_buf_size, GFP_KERNEL);
+ 	if (!req)
+ 		return -ENOMEM;
+@@ -1074,7 +1074,8 @@ static int mana_cfg_vport_steering(struct mana_port_context *apc,
+ 
+ 	req->vport = apc->port_handle;
+ 	req->num_indir_entries = num_entries;
+-	req->indir_tab_offset = sizeof(*req);
++	req->indir_tab_offset = offsetof(struct mana_cfg_rx_steer_req_v2,
++					 indir_tab);
+ 	req->rx_enable = rx;
+ 	req->rss_enable = apc->rss_state;
+ 	req->update_default_rxobj = update_default_rxobj;
+@@ -1087,9 +1088,9 @@ static int mana_cfg_vport_steering(struct mana_port_context *apc,
+ 		memcpy(&req->hashkey, apc->hashkey, MANA_HASH_KEY_SIZE);
+ 
+ 	if (update_tab) {
+-		req_indir_tab = (mana_handle_t *)(req + 1);
++		req_indir_tab = req->indir_tab;
+ 		memcpy(req_indir_tab, apc->rxobj_table,
+-		       req->num_indir_entries * sizeof(mana_handle_t));
++		       flex_array_size(req, indir_tab, req->num_indir_entries));
+ 	}
+ 
+ 	err = mana_send_request(apc->ac, req, req_buf_size, &resp,
+diff --git a/include/net/mana/mana.h b/include/net/mana/mana.h
+index 76147feb0d10..20ffcae29e1e 100644
+--- a/include/net/mana/mana.h
++++ b/include/net/mana/mana.h
+@@ -671,6 +671,7 @@ struct mana_cfg_rx_steer_req_v2 {
+ 	u8 hashkey[MANA_HASH_KEY_SIZE];
+ 	u8 cqe_coalescing_enable;
+ 	u8 reserved2[7];
++	mana_handle_t indir_tab[];
+ }; /* HW DATA */
+ 
+ struct mana_cfg_rx_steer_resp {
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+2.25.1
+
 
