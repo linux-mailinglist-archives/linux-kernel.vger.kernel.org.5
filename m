@@ -1,196 +1,127 @@
-Return-Path: <linux-kernel+bounces-126052-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-126053-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id BF85F89317D
-	for <lists+linux-kernel@lfdr.de>; Sun, 31 Mar 2024 13:21:25 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6A40689317E
+	for <lists+linux-kernel@lfdr.de>; Sun, 31 Mar 2024 13:24:10 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 736F42825DC
-	for <lists+linux-kernel@lfdr.de>; Sun, 31 Mar 2024 11:21:24 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id DC950B21623
+	for <lists+linux-kernel@lfdr.de>; Sun, 31 Mar 2024 11:24:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 030AB144D25;
-	Sun, 31 Mar 2024 11:20:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9E5941442FC;
+	Sun, 31 Mar 2024 11:24:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="O9hNEPm9"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b="W0okKfoR"
+Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7221814430F
-	for <linux-kernel@vger.kernel.org>; Sun, 31 Mar 2024 11:20:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8482175803
+	for <linux-kernel@vger.kernel.org>; Sun, 31 Mar 2024 11:23:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=65.109.113.108
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711884043; cv=none; b=X119DD0YXGENKm/VIYfL0gEighE0e0/GRMCp3In2mkcMkBOKYwOQy4MT0wpgtIWdrOa3RyqdbHdG33sVkzzl/lTU31nT2g9/vgboW7rWr0bMytX5a6MRHtF7wzxcpaFbGN2xpsn5adCzCl+567qGJ8d8i89tTbhuVkSzh61nYXA=
+	t=1711884240; cv=none; b=Bt1X7JTuo3ZEq/tpnAFIOpWotSywgXygAsdQSTZglK3oN5vuSWtH8lXsUpii+ytIb8GwDmU+ydxwU30mgqOOlZ/nsJEx6VIDjT6AqgdToip3v7gjE6hJuD/ruJC2Se8ofdnZD285mIO0ijA3Mb8PQN/8chGbYfGts7E750Wz/Vg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711884043; c=relaxed/simple;
-	bh=HA92dRzVt3vZdgr5pQJY02em2UTWtsR+GLFyMiGbHw4=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=m1tBTK3Lp+mpwrC8OOTmBGpOqYaaLZDufWoBamCm4oesnba6zWPc8z3Ti5ZywYCr3EeYXp8nMnHFVj6Qx4t0+McvJJCZu6fPQmL62bcbOLzlHuSTMHrjl2AiRIzPWDlbl2ygcNJW0ME2nkcQAt7zIYPipG90yF0RpAExJqOLbzg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=O9hNEPm9; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1711884040;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=ZAFJ+0SeTqdsqNS6GC0N4AccV7yeFgGXHpRB2cwbNo4=;
-	b=O9hNEPm9d0O69v2SYtEVIAv/U2/DkfMVnqoT3sS3hw97Pwv3xLSYQMy3hz8OAtCRArUzk4
-	POezS0OrrZtR9aqD1bN9s6JF162Hg0s7ZbHhe3NUriXHopxotUal9HkHvj149BMkZNsWX8
-	dTvicyJ42irvCew2m05QMhtYhYfYtqI=
-Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
- [209.85.128.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-54-FS6DhqkXMqGdyUtiiRydqg-1; Sun, 31 Mar 2024 07:20:36 -0400
-X-MC-Unique: FS6DhqkXMqGdyUtiiRydqg-1
-Received: by mail-wm1-f71.google.com with SMTP id 5b1f17b1804b1-414ae9b8c04so21085365e9.2
-        for <linux-kernel@vger.kernel.org>; Sun, 31 Mar 2024 04:20:36 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711884034; x=1712488834;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=ZAFJ+0SeTqdsqNS6GC0N4AccV7yeFgGXHpRB2cwbNo4=;
-        b=YvB6SafvkWYC11+aTR2QMK92mI/7XFtXKJfZDacO5USRzidH0mkoT13Ifvvkd1BzGx
-         T7yKsrsHHwhlvRbztgf51Qf8FjHW3X8p6pLnGXP+Zfrm+tiQJsEyyRD5c//imThrey44
-         t8r4EXMi8xhwj1Yw785Dp0N7S3CRAn1Bz//sbEbpgwKQ0fmGXCJgNEFGkLZV/DuC962c
-         6CSwqrZXNCFDNO0bSxnRAEGYqPG/OM1cBmbhaAHNrfFnygCrlDkhwb3oKvU/gFpuhHP5
-         JsSSEBeYE7rM84FjUbIUGe8gRbZuMLirSOZll45fZPViN1JLboPBWlMuJ3ssi49c3bzR
-         wNMQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUQDor+HTte5ykjVyws9628Z2Lth4bIot9XeCfxxbx+PGI2xt6qCRS2ETmUeT9kxsZEb9slsepgmrUkFMVoRt/AvYevkIJpPU62LwCq
-X-Gm-Message-State: AOJu0YzGSRn0kERZ8ocxYUcKPQpD9D0+e0RGFxpVXCvY52Whw7PFTX76
-	VAdVhspIIXPhqHsEoKug3BWQqkFu6Maq0RZWQjhDDws3R1Qrai6NT4cbyrBTz5hmkG51t5AAF7q
-	LdIlBCKZ17AybMuynksWgO+1nV2yJz5h/uxl4gsCqOmxd01QJhu1bxAPy0OXI9BeJtHRx3Q==
-X-Received: by 2002:a05:600c:220f:b0:413:e19:337f with SMTP id z15-20020a05600c220f00b004130e19337fmr6115865wml.22.1711884034571;
-        Sun, 31 Mar 2024 04:20:34 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IEhoN6xvj4jps7JZJhPCGbovoaf04BQIV4BBUP7925nSfWx1HPIV5PQzN7Ku2MIo02ql2sOQw==
-X-Received: by 2002:a05:600c:220f:b0:413:e19:337f with SMTP id z15-20020a05600c220f00b004130e19337fmr6115845wml.22.1711884033951;
-        Sun, 31 Mar 2024 04:20:33 -0700 (PDT)
-Received: from redhat.com ([2a02:14f:173:c52c:ce6f:ec9c:ca7c:7200])
-        by smtp.gmail.com with ESMTPSA id u22-20020a05600c139600b004148d7b889asm14465567wmf.8.2024.03.31.04.20.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 31 Mar 2024 04:20:33 -0700 (PDT)
-Date: Sun, 31 Mar 2024 07:20:24 -0400
-From: "Michael S. Tsirkin" <mst@redhat.com>
-To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Cc: virtualization@lists.linux.dev, linux-doc@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-um@lists.infradead.org,
-	linux-block@vger.kernel.org, linux-bluetooth@vger.kernel.org,
-	linux-crypto@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-	linux-gpio@vger.kernel.org, dri-devel@lists.freedesktop.org,
-	iommu@lists.linux.dev, netdev@vger.kernel.org, v9fs@lists.linux.dev,
-	kvm@vger.kernel.org, linux-wireless@vger.kernel.org,
-	nvdimm@lists.linux.dev, linux-remoteproc@vger.kernel.org,
-	linux-scsi@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-	alsa-devel@alsa-project.org, linux-sound@vger.kernel.org
-Subject: Re: [PATCH 01/22] virtio: store owner from modules with
- register_virtio_driver()
-Message-ID: <20240331071546-mutt-send-email-mst@kernel.org>
-References: <20240327-module-owner-virtio-v1-0-0feffab77d99@linaro.org>
- <20240327-module-owner-virtio-v1-1-0feffab77d99@linaro.org>
+	s=arc-20240116; t=1711884240; c=relaxed/simple;
+	bh=5JxUsSXMCSWhZ6xditAkMrzlNfdaTlrJ992weujTTts=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition; b=D4zSfVRqF11bc0jjEbd6F4oWMLiTuukS8l00Ie1pKCD3WVmPRWLpj44IUP6zjYOsdfGjkljOSGHTIYnqsFVkeP9nbwkb3aXykTimjTlZAe7dqCb0ytCQhl6llMKFr2HoWfWTbj9s04EUJ0YYc/zwb2t9WHAU+w/dIahWnbYr/RI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de; spf=pass smtp.mailfrom=alien8.de; dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b=W0okKfoR; arc=none smtp.client-ip=65.109.113.108
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alien8.de
+Received: from localhost (localhost.localdomain [127.0.0.1])
+	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id 5113140E016B;
+	Sun, 31 Mar 2024 11:23:56 +0000 (UTC)
+X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
+Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
+	header.d=alien8.de
+Received: from mail.alien8.de ([127.0.0.1])
+	by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
+	with ESMTP id zIr8XeVslluJ; Sun, 31 Mar 2024 11:23:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
+	t=1711884232; bh=IcVtkBPKIAjlVfemdQsIzUpiLSl2adxIcpTQ+gQY45k=;
+	h=Date:From:To:Cc:Subject:From;
+	b=W0okKfoR8OT3PRY0Y1XYQMLZbUouPo4o9RVGYUB1xvscH4H8hjIlScqZ48VPFU1uY
+	 8kmLMl8zPDTyI/S0/iB6v1BOuvKegI/EF8YFLx5EpRbFss3C0FCutaI7DmA3G40oOe
+	 s6mA/J3mMroEn2CH7Ssfmcmp6sTU8Xvv8AshpW9tH41qjY7xibBwtp/8+dYEs/If/A
+	 JJt9nPQ6rxXh3hBHNewhIXkt4kZgK++LK3G5fiaGruZlczgYDCfyse9xbVN5/Ovxoq
+	 y3Vn/p9cPHIwfei/lWf+xdg1OxkdDxnEc6NWRwKznAr0XgATUj7NuKK9/QkvYt4ujQ
+	 tiadPxgwQES0Nk5zpG97oUmPgvJZ1+Qf/Zqi6PwitXpyFVvF7pLtFw/kXSiR5ZnUzh
+	 y2P7xKcvueanRwJqCFK6qYijXEYm0gnck5XpQDNXWS+8jRMl7v+lVCu860hr1O/ZBC
+	 qBvjqRiLnsX2Vm4zS/UMvZvFVl1XNMaiJqTSghc1S5e52z5qqyoWTVhUrB8haOrxq1
+	 IaLWZcyRs5333qXaT53nmmT5XSsYa565b2FCNRir+egaY3/LK99NVfqNU7KEDAPGHE
+	 LFnTBHURpDCxIOuHqu8MiMqUFWT9SPwFT9oSLq9kgd5JzSnVwb3tDG+HxLdiNdVxFc
+	 Sl4/rhpCQN2jIzySvM0Efoh4=
+Received: from zn.tnic (p5de8ecf7.dip0.t-ipconnect.de [93.232.236.247])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
+	(No client certificate requested)
+	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 665EB40E0028;
+	Sun, 31 Mar 2024 11:23:49 +0000 (UTC)
+Date: Sun, 31 Mar 2024 13:23:44 +0200
+From: Borislav Petkov <bp@alien8.de>
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: x86-ml <x86@kernel.org>, lkml <linux-kernel@vger.kernel.org>
+Subject: [GIT PULL] perf/urgent for v6.9-rc2
+Message-ID: <20240331112344.GAZglHwOp8M9XR1akK@fat_crate.local>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20240327-module-owner-virtio-v1-1-0feffab77d99@linaro.org>
 
-On Wed, Mar 27, 2024 at 01:40:54PM +0100, Krzysztof Kozlowski wrote:
-> Modules registering driver with register_virtio_driver() might forget to
-> set .owner field.  i2c-virtio.c for example has it missing.  The field
-> is used by some of other kernel parts for reference counting
-> (try_module_get()), so it is expected that drivers will set it.
-> 
-> Solve the problem by moving this task away from the drivers to the core
-> amba bus code, just like we did for platform_driver in
-> commit 9447057eaff8 ("platform_device: use a macro instead of
-> platform_driver_register").
-> 
-> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Hi Linus,
+
+please pull a couple of urgent perf fixes to the AMD side of things, for
+v6.9-rc2.
+
+Thx.
+
+---
+
+The following changes since commit 4cece764965020c22cff7665b18a012006359095:
+
+  Linux 6.9-rc1 (2024-03-24 14:10:05 -0700)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git tags/perf_urgent_for_v6.9_rc2
+
+for you to fetch changes up to 68cdf1e6e8f2ce78ed7d8f5d80844fd75a9c54ff:
+
+  perf/x86/amd/core: Define a proper ref-cycles event for Zen 4 and later (2024-03-26 09:04:21 +0100)
+
+----------------------------------------------------------------
+- Define the correct set of default hw events on AMD Zen4
+
+- Use the correct stalled cycles PMCs on AMD Zen2 and newer
+
+- Fix detection of the LBR freeze feature on AMD
+
+----------------------------------------------------------------
+Sandipan Das (4):
+      x86/cpufeatures: Add new word for scattered features
+      perf/x86/amd/lbr: Use freeze based on availability
+      perf/x86/amd/core: Update and fix stalled-cycles-* events for Zen 2 and later
+      perf/x86/amd/core: Define a proper ref-cycles event for Zen 4 and later
+
+ arch/x86/events/amd/core.c               | 39 ++++++++++++++++++++++++++++----
+ arch/x86/events/amd/lbr.c                | 16 ++++++++-----
+ arch/x86/include/asm/cpufeature.h        |  6 +++--
+ arch/x86/include/asm/cpufeatures.h       | 10 +++++++-
+ arch/x86/include/asm/disabled-features.h |  3 ++-
+ arch/x86/include/asm/required-features.h |  3 ++-
+ arch/x86/kernel/cpu/scattered.c          |  1 +
+ 7 files changed, 62 insertions(+), 16 deletions(-)
 
 
+-- 
+Regards/Gruss,
+    Boris.
 
-This makes sense. So this will be:
-
-Fixes: 3cfc88380413 ("i2c: virtio: add a virtio i2c frontend driver")
-Cc: "Jie Deng" <jie.deng@intel.com>
-
-and I think I will pick this patch for this cycle to fix
-the bug. The cleanups can go in the next cycle.
-
-
-> ---
->  Documentation/driver-api/virtio/writing_virtio_drivers.rst | 1 -
->  drivers/virtio/virtio.c                                    | 6 ++++--
->  include/linux/virtio.h                                     | 7 +++++--
->  3 files changed, 9 insertions(+), 5 deletions(-)
-> 
-> diff --git a/Documentation/driver-api/virtio/writing_virtio_drivers.rst b/Documentation/driver-api/virtio/writing_virtio_drivers.rst
-> index e14c58796d25..e5de6f5d061a 100644
-> --- a/Documentation/driver-api/virtio/writing_virtio_drivers.rst
-> +++ b/Documentation/driver-api/virtio/writing_virtio_drivers.rst
-> @@ -97,7 +97,6 @@ like this::
->  
->  	static struct virtio_driver virtio_dummy_driver = {
->  		.driver.name =  KBUILD_MODNAME,
-> -		.driver.owner = THIS_MODULE,
->  		.id_table =     id_table,
->  		.probe =        virtio_dummy_probe,
->  		.remove =       virtio_dummy_remove,
-> diff --git a/drivers/virtio/virtio.c b/drivers/virtio/virtio.c
-> index f173587893cb..9510c551dce8 100644
-> --- a/drivers/virtio/virtio.c
-> +++ b/drivers/virtio/virtio.c
-> @@ -362,14 +362,16 @@ static const struct bus_type virtio_bus = {
->  	.remove = virtio_dev_remove,
->  };
->  
-> -int register_virtio_driver(struct virtio_driver *driver)
-> +int __register_virtio_driver(struct virtio_driver *driver, struct module *owner)
->  {
->  	/* Catch this early. */
->  	BUG_ON(driver->feature_table_size && !driver->feature_table);
->  	driver->driver.bus = &virtio_bus;
-> +	driver->driver.owner = owner;
-> +
->  	return driver_register(&driver->driver);
->  }
-> -EXPORT_SYMBOL_GPL(register_virtio_driver);
-> +EXPORT_SYMBOL_GPL(__register_virtio_driver);
->  
->  void unregister_virtio_driver(struct virtio_driver *driver)
->  {
-> diff --git a/include/linux/virtio.h b/include/linux/virtio.h
-> index b0201747a263..26c4325aa373 100644
-> --- a/include/linux/virtio.h
-> +++ b/include/linux/virtio.h
-> @@ -170,7 +170,7 @@ size_t virtio_max_dma_size(const struct virtio_device *vdev);
->  
->  /**
->   * struct virtio_driver - operations for a virtio I/O driver
-> - * @driver: underlying device driver (populate name and owner).
-> + * @driver: underlying device driver (populate name).
->   * @id_table: the ids serviced by this driver.
->   * @feature_table: an array of feature numbers supported by this driver.
->   * @feature_table_size: number of entries in the feature table array.
-> @@ -208,7 +208,10 @@ static inline struct virtio_driver *drv_to_virtio(struct device_driver *drv)
->  	return container_of(drv, struct virtio_driver, driver);
->  }
->  
-> -int register_virtio_driver(struct virtio_driver *drv);
-> +/* use a macro to avoid include chaining to get THIS_MODULE */
-> +#define register_virtio_driver(drv) \
-> +	__register_virtio_driver(drv, THIS_MODULE)
-> +int __register_virtio_driver(struct virtio_driver *drv, struct module *owner);
->  void unregister_virtio_driver(struct virtio_driver *drv);
->  
->  /* module_virtio_driver() - Helper macro for drivers that don't do
-> 
-> -- 
-> 2.34.1
-
+https://people.kernel.org/tglx/notes-about-netiquette
 
