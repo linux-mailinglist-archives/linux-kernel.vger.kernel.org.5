@@ -1,137 +1,167 @@
-Return-Path: <linux-kernel+bounces-125964-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-125965-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5A832892EB6
-	for <lists+linux-kernel@lfdr.de>; Sun, 31 Mar 2024 08:01:12 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 78CD1892EB7
+	for <lists+linux-kernel@lfdr.de>; Sun, 31 Mar 2024 08:03:29 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0C4EA1F219BB
-	for <lists+linux-kernel@lfdr.de>; Sun, 31 Mar 2024 06:01:12 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id CD2001F21BAB
+	for <lists+linux-kernel@lfdr.de>; Sun, 31 Mar 2024 06:03:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D057A7490;
-	Sun, 31 Mar 2024 06:01:05 +0000 (UTC)
-Received: from mail-io1-f70.google.com (mail-io1-f70.google.com [209.85.166.70])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 69AED6FD5;
+	Sun, 31 Mar 2024 06:03:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="RMuj82PN"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.19])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F0F0B6FA7
-	for <linux-kernel@vger.kernel.org>; Sun, 31 Mar 2024 06:01:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.70
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8FE216ABA
+	for <linux-kernel@vger.kernel.org>; Sun, 31 Mar 2024 06:03:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.19
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711864865; cv=none; b=i2ldWeExvBwBmak2fEjSnhF4UPaUbapeHjNo8LjYYAAfFh9Kd6LD1Y2gDLGymI2xlbnCGhF8rBg+pXUK/6mFE9PabVrgja+nlpDjPU+D2RbLvOvlwuHUVN9JruNAPHTlOcBofpJtkr5BqxF1PqZ8nYNF+JOC3lfb0/FiGJ8IiFo=
+	t=1711865001; cv=none; b=J0Mmi5ytIHPg133eh5EIpZvc5ycSon/IGng1i+lpY0AgFIIPt8L2xf0zuA1aVRHO7f49oCIqxghkkApeTusi+trU8CrFHH9Vf3L2bn7n2jVgLzQAEoAcuVnC3fbaBSNBrH5B4kNMQlmzJP0OcN9s484Cw0n+H+ejLN9PvIz/OCA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711864865; c=relaxed/simple;
-	bh=ideiMZMwbNehoEO3iScR+VjeMazw2/S8yiFBiEfZS1g=;
-	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
-	 Content-Type; b=a97SiU+dMoBXYARH8aClIZhXNNQEnKzy+0OgBu7FnwNRANz5wlRP+S6EuLFC06R5FIFqxPlVHyM9d6dbuGtWk6zYhqyKbZYRFAq880qz2wIs5sbA2ykED2faJX92Q4GIIQ8AkV3bpy49U+DqbLdf3bgeDxJoGg4ZjejQpfYreCY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.70
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-io1-f70.google.com with SMTP id ca18e2360f4ac-7cbef888187so312830639f.2
-        for <linux-kernel@vger.kernel.org>; Sat, 30 Mar 2024 23:01:03 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711864863; x=1712469663;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=L5mlMxwOI1H4b9p1J7fHoAEMIUJxBb9xtfOVdtEvbC8=;
-        b=DD+6fvW4rtsw2GsreLENpHGAZ5eGW7mcmzldSBVF7MA4UDXsOrNyV7Xf7/1CoE7wlL
-         07CF/HC/nS2zNvBzCfUW5fC4W/GzZodZUPncKTRraNgRLhTQCg3Q9RMc6JzJYlBh6eow
-         IalvTLVpI0R6JyQAqfiapnC3ncJUe4y/oBOwLbC+Iny940iRpxaYTZ9HBc42AWcaLte1
-         7flz/i0JeWZ9WhJ53QByw5kOiIkGJLQnOhZXKpXC+5lyUmWTX23rATm+VqZ21PJfGRh9
-         O9EHqxvB5bQYL0sgp3vCLu/TQGRBX4lNVPORD0e/374MwfRrb7colc0g3bulmBb2ILQM
-         EWeQ==
-X-Forwarded-Encrypted: i=1; AJvYcCV53ktyaUjV93GOW6zWf5L0r+Q+T8DDZYhT9ITV1uYWPuoHyMisEJzvMq8dtQFs0QtAAQ8vGvHlNmcCQQBQZ/5GSUQ91iyGnHfHEi1a
-X-Gm-Message-State: AOJu0YxOxDcA9IEc7npPFt/tI8hozfMgyyh2XIC6c0/lvLMSSte8aui8
-	LU64KgRdBH46ASUjSbSwppQKhG8NUL6WaCM36rpsfzSmPIlx+KzPseypajbIAqRhGpnttxSLekP
-	Fvqv4Gd/tJ/rGgnZRBZJLmixev1RyKnQIjYTvNpEAStdIIpTFMEW2Fgo=
-X-Google-Smtp-Source: AGHT+IFBYrOTdDP8nrnrJ4R+byhGUCu7v21kl7EufHAol3WE3SZMhuRuDACuRM/HCYOldkDULBomKOLz5ZMbMQH1i0n9TNBl1V+q
+	s=arc-20240116; t=1711865001; c=relaxed/simple;
+	bh=nRQtuk+65XZXJMoGM5MuO3DPUwYoug1VdmDCSRXswN4=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition; b=ii00dF0fQcjiPdrbWiSm7aijbuq+AMT48rOpi5YmPI+hsLNUjsxUI8jeqUdAqXZNzOiMS5AA6fVW5yGfh1EXiDkvhjtebhj3ZE2qnzwuL9vOeoBXcAxRYR57WMZV6Ojod1Quno+LtOteb/8b7mG3INGFVRSQKG8u15ocdiAlGbI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=RMuj82PN; arc=none smtp.client-ip=192.198.163.19
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1711865000; x=1743401000;
+  h=date:from:to:cc:subject:message-id:mime-version;
+  bh=nRQtuk+65XZXJMoGM5MuO3DPUwYoug1VdmDCSRXswN4=;
+  b=RMuj82PNmN00zgJ7bK0bA8mcaZqR0mN4Lqe0GyKelsEVyLJUXx69CkyG
+   WEmB+7l59rhc514+Foc1WG/SRrJapqs0e46E7hejJFZZ3eg1Jl4K2NU38
+   0aUXzrZiJJCyjI0zsGhbzXjsP5wHhmX+N6Y0kZeP/fdxqvC/BWtsisAaW
+   K6FMXxM5c8cfUhtwRblAGIBJamjsREcpXVNFsMsP8Z2mJ4BKp5TRCwj0f
+   QdG89qqo/N3bE7SDhK4muV4p1w23DXLwTnDO+KDK1VfzsXXhQzl9Mmeor
+   fjzOfUDnDqMtrBtTFpfjWjDUJ3XJIM716B/4YnwnW10r5lgi2JAFWlu6u
+   A==;
+X-CSE-ConnectionGUID: 7Wxf82TTR0aR2Mv98Cyuxg==
+X-CSE-MsgGUID: 6F6rYypGSyGl0OpwKuowDQ==
+X-IronPort-AV: E=McAfee;i="6600,9927,11029"; a="6861504"
+X-IronPort-AV: E=Sophos;i="6.07,169,1708416000"; 
+   d="scan'208";a="6861504"
+Received: from orviesa001.jf.intel.com ([10.64.159.141])
+  by fmvoesa113.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Mar 2024 23:03:19 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,169,1708416000"; 
+   d="scan'208";a="54831833"
+Received: from lkp-server01.sh.intel.com (HELO 3d808bfd2502) ([10.239.97.150])
+  by orviesa001.jf.intel.com with ESMTP; 30 Mar 2024 23:03:17 -0700
+Received: from kbuild by 3d808bfd2502 with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1rqoHj-0000qw-0S;
+	Sun, 31 Mar 2024 06:03:15 +0000
+Date: Sun, 31 Mar 2024 14:02:26 +0800
+From: kernel test robot <lkp@intel.com>
+To: Huacai Chen <chenhuacai@loongson.cn>
+Cc: oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: drivers/base/power/domain_governor.c:409: warning: cannot understand
+ function prototype: 'struct dev_power_governor pm_domain_always_on_gov = '
+Message-ID: <202403311326.Dr2HlMYm-lkp@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6602:2c11:b0:7cf:16d5:181c with SMTP id
- w17-20020a0566022c1100b007cf16d5181cmr312659iov.4.1711864863105; Sat, 30 Mar
- 2024 23:01:03 -0700 (PDT)
-Date: Sat, 30 Mar 2024 23:01:03 -0700
-In-Reply-To: <tencent_A50DF61259DD955DDD190C4FE50D88A5C207@qq.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000011b7ed0614ee9943@google.com>
-Subject: Re: [syzbot] [v9fs?] KMSAN: uninit-value in p9_client_rpc (2)
-From: syzbot <syzbot+ff14db38f56329ef68df@syzkaller.appspotmail.com>
-To: eadavis@qq.com, linux-kernel@vger.kernel.org, 
-	syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Hello,
+Hi Huacai,
 
-syzbot has tested the proposed patch but the reproducer is still triggering an issue:
-KMSAN: uninit-value in p9_client_rpc
+First bad commit (maybe != root cause):
 
-=====================================================
-BUG: KMSAN: uninit-value in trace_9p_client_res include/trace/events/9p.h:146 [inline]
-BUG: KMSAN: uninit-value in p9_client_rpc+0x1314/0x1340 net/9p/client.c:755
- trace_9p_client_res include/trace/events/9p.h:146 [inline]
- p9_client_rpc+0x1314/0x1340 net/9p/client.c:755
- p9_client_create+0x1551/0x1ff0 net/9p/client.c:1032
- v9fs_session_init+0x1b9/0x28e0 fs/9p/v9fs.c:410
- v9fs_mount+0xe2/0x12b0 fs/9p/vfs_super.c:122
- legacy_get_tree+0x114/0x290 fs/fs_context.c:662
- vfs_get_tree+0xa7/0x570 fs/super.c:1797
- do_new_mount+0x71f/0x15e0 fs/namespace.c:3352
- path_mount+0x742/0x1f20 fs/namespace.c:3679
- do_mount fs/namespace.c:3692 [inline]
- __do_sys_mount fs/namespace.c:3898 [inline]
- __se_sys_mount+0x725/0x810 fs/namespace.c:3875
- __x64_sys_mount+0xe4/0x150 fs/namespace.c:3875
- do_syscall_64+0xd5/0x1f0
- entry_SYSCALL_64_after_hwframe+0x72/0x7a
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+head:   712e14250dd2907346617eba275c46f53db8fae7
+commit: 366bb35a8e48198cefcd3484ac6b2374d1347873 LoongArch: Add suspend (ACPI S3) support
+date:   1 year, 4 months ago
+config: loongarch-randconfig-r034-20230511 (https://download.01.org/0day-ci/archive/20240331/202403311326.Dr2HlMYm-lkp@intel.com/config)
+compiler: loongarch64-linux-gcc (GCC) 12.3.0
+reproduce: (https://download.01.org/0day-ci/archive/20240331/202403311326.Dr2HlMYm-lkp@intel.com/reproduce)
 
-Uninit was created at:
- __alloc_pages+0x9d6/0xe70 mm/page_alloc.c:4598
- __alloc_pages_node include/linux/gfp.h:238 [inline]
- alloc_pages_node include/linux/gfp.h:261 [inline]
- alloc_slab_page mm/slub.c:2175 [inline]
- allocate_slab mm/slub.c:2338 [inline]
- new_slab+0x2de/0x1400 mm/slub.c:2391
- ___slab_alloc+0x1184/0x33d0 mm/slub.c:3525
- __slab_alloc mm/slub.c:3610 [inline]
- __slab_alloc_node mm/slub.c:3663 [inline]
- slab_alloc_node mm/slub.c:3835 [inline]
- kmem_cache_alloc+0x6d3/0xbe0 mm/slub.c:3852
- p9_tag_alloc net/9p/client.c:278 [inline]
- p9_client_prepare_req+0x210/0x17c0 net/9p/client.c:642
- p9_client_rpc+0x27e/0x1340 net/9p/client.c:689
- p9_client_create+0x1551/0x1ff0 net/9p/client.c:1032
- v9fs_session_init+0x1b9/0x28e0 fs/9p/v9fs.c:410
- v9fs_mount+0xe2/0x12b0 fs/9p/vfs_super.c:122
- legacy_get_tree+0x114/0x290 fs/fs_context.c:662
- vfs_get_tree+0xa7/0x570 fs/super.c:1797
- do_new_mount+0x71f/0x15e0 fs/namespace.c:3352
- path_mount+0x742/0x1f20 fs/namespace.c:3679
- do_mount fs/namespace.c:3692 [inline]
- __do_sys_mount fs/namespace.c:3898 [inline]
- __se_sys_mount+0x725/0x810 fs/namespace.c:3875
- __x64_sys_mount+0xe4/0x150 fs/namespace.c:3875
- do_syscall_64+0xd5/0x1f0
- entry_SYSCALL_64_after_hwframe+0x72/0x7a
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202403311326.Dr2HlMYm-lkp@intel.com/
 
-CPU: 0 PID: 5499 Comm: syz-executor.0 Not tainted 6.9.0-rc1-syzkaller-00355-g712e14250dd2-dirty #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 03/27/2024
-=====================================================
+All warnings (new ones prefixed by >>):
 
+>> drivers/base/power/domain_governor.c:409: warning: cannot understand function prototype: 'struct dev_power_governor pm_domain_always_on_gov = '
+--
+>> drivers/base/power/runtime.c:365: warning: Excess function parameter 'dev' description in '__rpm_callback'
 
-Tested on:
+sparse warnings: (new ones prefixed by >>)
+>> drivers/acpi/nvs.c:140:54: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void volatile [noderef] __iomem *addr @@     got void *kaddr @@
+   drivers/acpi/nvs.c:140:54: sparse:     expected void volatile [noderef] __iomem *addr
+   drivers/acpi/nvs.c:140:54: sparse:     got void *kaddr
+>> drivers/acpi/nvs.c:143:66: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void [noderef] __iomem *virt @@     got void *kaddr @@
+   drivers/acpi/nvs.c:143:66: sparse:     expected void [noderef] __iomem *virt
+   drivers/acpi/nvs.c:143:66: sparse:     got void *kaddr
+>> drivers/acpi/nvs.c:182:38: sparse: sparse: incorrect type in assignment (different address spaces) @@     expected void *kaddr @@     got void [noderef] __iomem * @@
+   drivers/acpi/nvs.c:182:38: sparse:     expected void *kaddr
+   drivers/acpi/nvs.c:182:38: sparse:     got void [noderef] __iomem *
+   drivers/acpi/nvs.c:184:46: sparse: sparse: incorrect type in assignment (different address spaces) @@     expected void *kaddr @@     got void [noderef] __iomem * @@
+   drivers/acpi/nvs.c:184:46: sparse:     expected void *kaddr
+   drivers/acpi/nvs.c:184:46: sparse:     got void [noderef] __iomem *
+--
+>> drivers/acpi/sleep.c:556:46: sparse: sparse: restricted suspend_state_t degrades to integer
+   drivers/acpi/sleep.c:656:50: sparse: sparse: restricted suspend_state_t degrades to integer
+--
+>> kernel/power/main.c:133:34: sparse: sparse: restricted suspend_state_t degrades to integer
+   kernel/power/main.c:133:38: sparse: sparse: restricted suspend_state_t degrades to integer
+   kernel/power/main.c:134:21: sparse: sparse: restricted suspend_state_t degrades to integer
+   kernel/power/main.c:134:26: sparse: sparse: restricted suspend_state_t degrades to integer
+   kernel/power/main.c:136:38: sparse: sparse: restricted suspend_state_t degrades to integer
+   kernel/power/main.c:137:62: sparse: sparse: restricted suspend_state_t degrades to integer
+   kernel/power/main.c:133:55: sparse: sparse: restricted suspend_state_t degrades to integer
+   kernel/power/main.c:162:38: sparse: sparse: restricted suspend_state_t degrades to integer
+   kernel/power/main.c:162:46: sparse: sparse: restricted suspend_state_t degrades to integer
+   kernel/power/main.c:163:54: sparse: sparse: restricted suspend_state_t degrades to integer
+   kernel/power/main.c:162:67: sparse: sparse: restricted suspend_state_t degrades to integer
+   kernel/power/main.c:182:31: sparse: sparse: restricted suspend_state_t degrades to integer
+   kernel/power/main.c:182:36: sparse: sparse: restricted suspend_state_t degrades to integer
+   kernel/power/main.c:188:13: sparse: sparse: restricted suspend_state_t degrades to integer
+   kernel/power/main.c:188:21: sparse: sparse: restricted suspend_state_t degrades to integer
+   kernel/power/main.c:188:39: sparse: sparse: restricted suspend_state_t degrades to integer
+   kernel/power/main.c:188:47: sparse: sparse: restricted suspend_state_t degrades to integer
+   kernel/power/main.c:579:34: sparse: sparse: restricted suspend_state_t degrades to integer
+   kernel/power/main.c:579:38: sparse: sparse: restricted suspend_state_t degrades to integer
+   kernel/power/main.c:580:31: sparse: sparse: restricted suspend_state_t degrades to integer
+   kernel/power/main.c:581:57: sparse: sparse: restricted suspend_state_t degrades to integer
+   kernel/power/main.c:579:55: sparse: sparse: restricted suspend_state_t degrades to integer
+   kernel/power/main.c:608:38: sparse: sparse: restricted suspend_state_t degrades to integer
+   kernel/power/main.c:608:46: sparse: sparse: restricted suspend_state_t degrades to integer
+   kernel/power/main.c:609:47: sparse: sparse: restricted suspend_state_t degrades to integer
+   kernel/power/main.c:608:67: sparse: sparse: restricted suspend_state_t degrades to integer
+   kernel/power/main.c:629:31: sparse: sparse: restricted suspend_state_t degrades to integer
+   kernel/power/main.c:629:36: sparse: sparse: restricted suspend_state_t degrades to integer
+   kernel/power/main.c:635:13: sparse: sparse: restricted suspend_state_t degrades to integer
+   kernel/power/main.c:635:21: sparse: sparse: restricted suspend_state_t degrades to integer
+   kernel/power/main.c:703:31: sparse: sparse: restricted suspend_state_t degrades to integer
+   kernel/power/main.c:703:36: sparse: sparse: restricted suspend_state_t degrades to integer
 
-commit:         712e1425 Merge tag 'xfs-6.9-fixes-1' of git://git.kern..
-git tree:       https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-console output: https://syzkaller.appspot.com/x/log.txt?x=12ec65b1180000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=e2599baf258ef795
-dashboard link: https://syzkaller.appspot.com/bug?extid=ff14db38f56329ef68df
-compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
-patch:          https://syzkaller.appspot.com/x/patch.diff?x=1485fa1d180000
+vim +409 drivers/base/power/domain_governor.c
 
+e59a8db8d9b7c0 Rafael J. Wysocki 2012-01-14  405  
+925b44a273aa8c Mark Brown        2011-12-08  406  /**
+925b44a273aa8c Mark Brown        2011-12-08  407   * pm_genpd_gov_always_on - A governor implementing an always-on policy
+925b44a273aa8c Mark Brown        2011-12-08  408   */
+925b44a273aa8c Mark Brown        2011-12-08 @409  struct dev_power_governor pm_domain_always_on_gov = {
+
+:::::: The code at line 409 was first introduced by commit
+:::::: 925b44a273aa8c4c23c006c1228aacd538eead09 PM / Domains: Provide an always on power domain governor
+
+:::::: TO: Mark Brown <broonie@opensource.wolfsonmicro.com>
+:::::: CC: Rafael J. Wysocki <rjw@sisk.pl>
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
