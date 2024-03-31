@@ -1,185 +1,142 @@
-Return-Path: <linux-kernel+bounces-126064-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-126065-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id CECEC89319F
-	for <lists+linux-kernel@lfdr.de>; Sun, 31 Mar 2024 15:01:36 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id CC3548931A4
+	for <lists+linux-kernel@lfdr.de>; Sun, 31 Mar 2024 15:01:52 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D01BD1C21069
-	for <lists+linux-kernel@lfdr.de>; Sun, 31 Mar 2024 13:01:35 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id ED6032823EB
+	for <lists+linux-kernel@lfdr.de>; Sun, 31 Mar 2024 13:01:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 62F551448F6;
-	Sun, 31 Mar 2024 13:01:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D6C67144D32;
+	Sun, 31 Mar 2024 13:01:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="eJnKUWex"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.8])
+	dkim=pass (1024-bit key) header.d=hansenpartnership.com header.i=@hansenpartnership.com header.b="La0soKW7";
+	dkim=pass (1024-bit key) header.d=hansenpartnership.com header.i=@hansenpartnership.com header.b="LIaNafrJ"
+Received: from bedivere.hansenpartnership.com (bedivere.hansenpartnership.com [96.44.175.130])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D7547142E97;
-	Sun, 31 Mar 2024 13:01:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=192.198.163.8
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711890086; cv=fail; b=a3hiClgmYEgg6PsCeDXEgoyzWxc8dB3E0sZLjHDmXAbxOMTfO+tjG1bvf4PiERYPvhGZbRKcIHnr+q7CtN5tIlf+kMLxZD4E7ykBeksXGWhtSkXCBJw9slnJqRhXWGWVHgNYsARqDo+50qxmVdVxEr+P02lWdTwVylnBdk4ZfBc=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711890086; c=relaxed/simple;
-	bh=+CtUzNfteMVDHRuwIX5781fsmaFIlHZcyPlcQv4zDZc=;
-	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=Hsf4Eq0/nQxGKbWFZS7VuDw0WznDMnzSYMs9rUrx2VGPY+ZRBGxNESLTIpjHsGRnWn648Z2kdZh8Ri/J1yLuRN6kzMsKH+zZhsohatpGg2qepVc0pMs/Yy9552APnsRpLDkVExgRus/nvOI6cToLsW7IZx0gKpWdaeMCI9LO04s=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=eJnKUWex; arc=fail smtp.client-ip=192.198.163.8
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4EB92144D13;
+	Sun, 31 Mar 2024 13:01:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=96.44.175.130
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1711890091; cv=none; b=WvPUzngRrOueRnV2Pefx7mhU0th7omOAAc1MJxjuJSUf32+EJx8TepY8Fc8CQsxJGE2OazLxCc6eKXZRETcm9d9izt7jpXVnayY8hFQrEQ3zeo4znXKJXTe3Qmt7XkNH2cjMZsu66ouqeZT54uGco7AYaN50ebJJGlVK2yF84SQ=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1711890091; c=relaxed/simple;
+	bh=sDzCySBGc78kD08nnzcKeQyX2gLEvAv/rzqBNe7+CzE=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=JAUKzYw/ASKD64KJvM7Xd0b5VY226JCVMy8cTgvY5DPDVHki8JuJuIpSDniIMzQ2nQnyZYPGtMx6sQnr7lGP9wUa0gWccOerz7z5lCeiK5Vp/mosWK7T9MjxDT0fH5qF3xlyYNm9U3xgFtHlYW17DPut+uMZyi2Syu4nOL6ZmLg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=HansenPartnership.com; spf=pass smtp.mailfrom=HansenPartnership.com; dkim=pass (1024-bit key) header.d=hansenpartnership.com header.i=@hansenpartnership.com header.b=La0soKW7; dkim=pass (1024-bit key) header.d=hansenpartnership.com header.i=@hansenpartnership.com header.b=LIaNafrJ; arc=none smtp.client-ip=96.44.175.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=HansenPartnership.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=HansenPartnership.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1711890084; x=1743426084;
-  h=from:to:cc:subject:date:message-id:references:
-   in-reply-to:content-transfer-encoding:mime-version;
-  bh=+CtUzNfteMVDHRuwIX5781fsmaFIlHZcyPlcQv4zDZc=;
-  b=eJnKUWexGjflXeP+jYDmhHbpZLyVNN9GppFJ1EVpa6Wz34tbK/5mBB+w
-   C/50vXqD8mvKAp/DBxawj/C/DC7oCitZnoW2x35SiF0yRSts9ImWnMV56
-   fyPOLS0HsdbzZPBp7AkZdRW6G3b0Y85y7x2WNU01dfaICNuPHJZyDZsON
-   Q+maFT0XztgbHGGGit8eUpAkmTV3sfXZt89ZJQL+zS7FVHeTzuJH5GNBC
-   h8dtJZftTkO687fyG5x3I6b9Oa+Vzs1lq5uW2HMNCtw0d/pS3UwVpTJhM
-   kzcYb8BXiBRMx3LC5b8wLC+XyLAbPGyuuS9ijYP6rrZ/R+5BS0np90LG5
-   w==;
-X-CSE-ConnectionGUID: 626C+LZ8TBeS18zb+phhYA==
-X-CSE-MsgGUID: ky71nFTkQBGE9RDPFjzKMQ==
-X-IronPort-AV: E=McAfee;i="6600,9927,11029"; a="24513264"
-X-IronPort-AV: E=Sophos;i="6.07,170,1708416000"; 
-   d="scan'208";a="24513264"
-Received: from fmviesa004.fm.intel.com ([10.60.135.144])
-  by fmvoesa102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Mar 2024 06:01:23 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,170,1708416000"; 
-   d="scan'208";a="22133090"
-Received: from fmsmsx602.amr.corp.intel.com ([10.18.126.82])
-  by fmviesa004.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 31 Mar 2024 06:01:22 -0700
-Received: from fmsmsx611.amr.corp.intel.com (10.18.126.91) by
- fmsmsx602.amr.corp.intel.com (10.18.126.82) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Sun, 31 Mar 2024 06:01:22 -0700
-Received: from fmsedg602.ED.cps.intel.com (10.1.192.136) by
- fmsmsx611.amr.corp.intel.com (10.18.126.91) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35 via Frontend Transport; Sun, 31 Mar 2024 06:01:22 -0700
-Received: from NAM11-CO1-obe.outbound.protection.outlook.com (104.47.56.169)
- by edgegateway.intel.com (192.55.55.71) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.35; Sun, 31 Mar 2024 06:01:22 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=aID8BjwRCmRaqH3tzxEKd9og1erEG+uKa+J+hCHKZikQ8YRQoEdn+4twiQ0zHRhG+IyPyf025UILojTK3/sg/yQN91zKxrWZLQNeyuVJ5nchtSnXXUGcrZYWfF0afg6bBiBYw76lCyRID+XkuGcKr7nji4vWvtUiWt1BEe++9NNw83AkusD9lxuTLXkX9006YMS/p0ryLs+9OaLwhYTbm5jm89zJUyP/6pLxYou0DsL6ikxFlEFkM4gCU0HH+gpguuUsYXa9Qu8OunlKcYdipFRDiwATFsV2nzP+10j5PCcM5HBZLuluzuXzFEDx6jEp0SNkj+oYLrm9b4Jtpz46lQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=+CtUzNfteMVDHRuwIX5781fsmaFIlHZcyPlcQv4zDZc=;
- b=G9H0k2LGO7S5UAA9/s6wCZ1nNJ13gr/rXbQdwUhc6CZi0JdGZU8hjUwRpFBw3TLR7r1xSKcGuqeaYMybdiY8RaPQTwFlEznE2d4WvXnsTH/CzASvBw/GJatRiAL3oIv/4iXoNIIH81L3FVucmjj4zpJlmkbRF/cNIjyl4pjN13e/WOw7a9Xxk0fEhetWFpFH37JrBJtlAY5hhiOO2QXrWoN5J4vsz/wGK/0ApF4k4btTPoKaCbBIbQQ8MYAwjy13an11Mo+927inpsssThArav8Azk1B71ffe1BwnFQzli+4EgvmS7uKNrOp7wN2/HZslcZNkVBLglQJgzVDMky8oA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Received: from DS0PR11MB6373.namprd11.prod.outlook.com (2603:10b6:8:cb::20) by
- SA2PR11MB5132.namprd11.prod.outlook.com (2603:10b6:806:11a::18) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7409.33; Sun, 31 Mar
- 2024 13:01:21 +0000
-Received: from DS0PR11MB6373.namprd11.prod.outlook.com
- ([fe80::55de:b95:2c83:7e6c]) by DS0PR11MB6373.namprd11.prod.outlook.com
- ([fe80::55de:b95:2c83:7e6c%7]) with mapi id 15.20.7452.019; Sun, 31 Mar 2024
- 13:01:20 +0000
-From: "Wang, Wei W" <wei.w.wang@intel.com>
-To: Sean Christopherson <seanjc@google.com>
-CC: "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, David Skidmore
-	<davidskidmore@google.com>, Steve Rutherford <srutherford@google.com>,
-	"Gupta, Pankaj" <pankaj.gupta@amd.com>, Paolo Bonzini <pbonzini@redhat.com>
-Subject: RE: [ANNOUNCE] PUCK Agenda - 2024.03.13 - No topic
-Thread-Topic: [ANNOUNCE] PUCK Agenda - 2024.03.13 - No topic
-Thread-Index: AQHadN35f9AVk6ft0UyFv8Aerb6gU7FR5xUQ
-Date: Sun, 31 Mar 2024 13:01:20 +0000
-Message-ID: <DS0PR11MB6373543451F0505C220F2C8ADC382@DS0PR11MB6373.namprd11.prod.outlook.com>
-References: <20240313003211.1900117-1-seanjc@google.com>
-In-Reply-To: <20240313003211.1900117-1-seanjc@google.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: DS0PR11MB6373:EE_|SA2PR11MB5132:EE_
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: QgBcP03amZ53dI/UAmFRc2tlaOj1ZKCJpRu6fFucFd98i31/PGN1DPJispkPDLxf3P1xGfPAbfZODY7/y+FSMcjruBNXne0TmpusX/srwABWDTp5Rh1HglCcIep2YJbRaid1mZZytkV8tZxe0YiGWiNUEMrOSKSAFhO4nycLqyQiDuRRKbZVZw1m+HqeSMaMFs5cWMg5k6/GrIXuQP1wKGtjAqAB4Hh6D2ChXUIU2DdCXcO3JtKxuXKH3k4+7i6b4k+t3hNwx7tzqIph3STTm6TxtnE8L+u4uQ5BZlkF8CeRVlsEkp8aSadslgRFjnc/vrOhpdbwZwE8d7rsJzyZBcVGoTQSXEekJ9Y/05NoYZBqjxGzcACBMRwbWzb3oxuMfyHxWMVZxiyfBxEI3aiK0IjTzD84lVcC7L6R7970AyJt+7PusTkqIafS/MXhCsscg8/+Q9aNf99hpJEloJ2Uwpy9JKLYAm43ohLAYE+zDBYKe+qUMXpsbYZ6/DNytCsl8jzvATgkdq1oUjUjY+P3sUH9/QijMyJ3ZCMsPykbW26cU/S70dMJWHx7H7mngZ9hNAkL360qvbQ2QCliSbYWgCQNvoEwdL2jbwy+9NDdQDezd6IfPSMhK33J1FmZVKRChuVkl2oOvQB3fYKd9yEV1A==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DS0PR11MB6373.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376005)(366007)(1800799015);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?utf-8?B?MnBKOUZzOUF2aTlsbnEwaXJ4UGFyeExyTkNob2c5d2JISDBEY3lNNFo1VzMw?=
- =?utf-8?B?cDBCWlhHbFpzQk1Hcm9SckdIY2h3UW1BM1lyTUlablZmMWZUc0tVZW95S2N0?=
- =?utf-8?B?Szl6Vi9BZHowL1VPV3BhZFk4VC9wbEowTnZGcG5IWXBKcXRxakEzMXJFOEtz?=
- =?utf-8?B?M1huWVhIZFk5bjRYK2xqT1BoYlVaODdIakxaR2p2OUIvNVc5V3VqMisyUHRU?=
- =?utf-8?B?aWdZMTFvZGVlMWZTOGdWMHFTOWFrbk5LdkYyMTRMc3dkNVc1VkZBN1BSa1Fu?=
- =?utf-8?B?SnpBVEtwODExczFyb2NGTU5lTFVJWm9mekdvQ3gxcDVWN3JYaE5jbTlaMmVU?=
- =?utf-8?B?SWkzcnlFL0xVMWhDZUdsSGZkNXBIaWtGWmc2T3p2R2lCMStZRS8zdXZ1VzJT?=
- =?utf-8?B?R3l5TWRVVmFsYVVkK1gvRm1qdUtBeFViVVJLa1Z1Rm1VVks1TWsrdnRZVWZo?=
- =?utf-8?B?WDlYRlloeElnMUZvYmJwR0FhYzM1aTJVVDF2MlhNV3dyYXByNDJVZS9lK2JW?=
- =?utf-8?B?dm80QnNCU21oc3l3Ti9Da3lsK0pxaThRL2lPSzY2RjlPZlNuWmtyTHl5M3ZO?=
- =?utf-8?B?T1pKa3RPcWlWWTltNnFPNDJ2b0V0MHkyNjJLVFc4UURnZk5HVHZ0OGhiU2lF?=
- =?utf-8?B?QktqL09JV1R2NEFyclFuZHhZTE5lTDhoOHRxeVBmTlFxRkc3alNxYUtlODFi?=
- =?utf-8?B?ZjZ3clRzcWJ0ZVlPV0c4ZkM4S2xmTHZQTW5QMVdmWUhaUzY4VEdGNWJweDFp?=
- =?utf-8?B?bHNyaFNiSU5qWjBYQVZRSW9qdDFZN0lHRVZiNkNpeEZ6K3FsSmFiUmFicEJk?=
- =?utf-8?B?cE45TDN6d0JjN3FrejhHNmhhTEVPM3Z4TmV3QmNhR1ZFYXcyNEhzL05XQWVK?=
- =?utf-8?B?ampWTllyeGlKbG1LdXlUNmJwck5EVzkxUFp2eE5hZTF5NmViMDlKQ08wSG9K?=
- =?utf-8?B?UGNOcUFaaHo1azdSSWxDSC9jd0NXQU5vbVBqVVhYU04yeXdJSk1tYzVoOERC?=
- =?utf-8?B?WHI3WHdxdmxzMXZVQ3pmamhYWG5DWDMxVkxpNEtLdGhhZGV3SlZTbXdWOXBT?=
- =?utf-8?B?TEt1VXNHWXRsZXcrakE0cy9wUjNLZ3IzTGNwRlRWaUhtU1dFWmJraTd1TDBQ?=
- =?utf-8?B?d0FKREcyNWlWWHNEZlA0Uno3OXJKVUdGYUMvL0c2TzlSSWI3UUd0Ym1LRW1v?=
- =?utf-8?B?UnIvQXRUUEpIa0lNUnloMmYrdklQeFBNUHZKenlpVmpKaDFsNVNhUFNhWlZr?=
- =?utf-8?B?Y2VrZE8wRTJqd3Z3MzBGdjFFN3IraWFNSUhpWmZWNDNYNTgrajdLSStFc2JT?=
- =?utf-8?B?NTdDYXc0SEdDNU5qa2JWVndmZ25DeEQyeXJKMmVLRkRTYW8rUUdhY001cHlJ?=
- =?utf-8?B?N1E5NDFVVlpqaVl3bHo0VjQxK3h0bEF5SXB4cFhTZnF3MkFISUFRckJ5QWh5?=
- =?utf-8?B?eHBCOVFuRWRUYTM4NjFGbUpZeVNXZmQ1cnFaL1VuSFZ2Ujg0L2QzTnlURUJ2?=
- =?utf-8?B?WkMrQUx3Q2plNWNZUWJSU0xpTG90L3lmMXQ0eDVJRG1OSEFzZm9MNUhESmEz?=
- =?utf-8?B?a0liVExBcFZVWlRPWkR4L0Z5ZUlrMGhGUC9GNVRGRUd5N0NPSy94U0FaNWlT?=
- =?utf-8?B?dXBTVUJtSy84YXg4SFlaakdUTHpXU0Y4ZUtnZllqVlFUWXNmVFcweHY4T25u?=
- =?utf-8?B?WjdIQTdrdDd4cUo4TGpndWJsbDduOE1sV1JJM2ZqNWp2bEhYbmVpM2k3cnZG?=
- =?utf-8?B?VXZMaG1RYW93YjNQUlN3elRLUG9jOUdNRGtKRHdidlV2UVAvUWxjSENRYWFt?=
- =?utf-8?B?WExrL3Y1eVdrN09pMmI1QlRUdDZLZUJLUDFpd2FQVFA4Y3FLUnhCN1ZESytG?=
- =?utf-8?B?L1RHWmR0dHJRYktxTHUxL1drVHBDNVRXcXRBOFNOS3lFdndObWhGZ3FFNkEx?=
- =?utf-8?B?bHlCc3BRWk4xUjZvd0xoMjBQK1BSOFV3TktDRlI4TU9xU0MrMDdQL08zWlAx?=
- =?utf-8?B?Mm5UOFhpTWtyYkhuM3U3WHF2UzRmdkdrSVo2NThoM3pOODVlSS9WY2RNSGdG?=
- =?utf-8?B?MVR2UDJhRk11bHJQWmp1bzM1cVZTQmptY09pa0VsWkJUWHljQ01LUkNOb2Rj?=
- =?utf-8?Q?KNcHc3Hrny7KnugxNfoXxhdvj?=
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+	d=hansenpartnership.com; s=20151216; t=1711890086;
+	bh=sDzCySBGc78kD08nnzcKeQyX2gLEvAv/rzqBNe7+CzE=;
+	h=Message-ID:Subject:From:To:Date:In-Reply-To:References:From;
+	b=La0soKW7NsRuUh/rimdDOLzAak0a7z/Qw3VmW2h3qshwBezBO5N3vU/HF9TuASSWc
+	 0qt0SsBU/ZTMqwKWrILa0XyIzUDlKvvMNKcysxp8NWXhobpVolWbTiYflaiOrH0m0C
+	 47Tzc2C90RKkz2eV4O1rxIxzuAkw2yv48odeT06E=
+Received: from localhost (localhost [127.0.0.1])
+	by bedivere.hansenpartnership.com (Postfix) with ESMTP id 73D90128681D;
+	Sun, 31 Mar 2024 09:01:26 -0400 (EDT)
+Received: from bedivere.hansenpartnership.com ([127.0.0.1])
+ by localhost (bedivere.hansenpartnership.com [127.0.0.1]) (amavis, port 10024)
+ with ESMTP id AfUzaoxOPFxH; Sun, 31 Mar 2024 09:01:26 -0400 (EDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+	d=hansenpartnership.com; s=20151216; t=1711890085;
+	bh=sDzCySBGc78kD08nnzcKeQyX2gLEvAv/rzqBNe7+CzE=;
+	h=Message-ID:Subject:From:To:Date:In-Reply-To:References:From;
+	b=LIaNafrJKwQC0PlYtqfoiToK8eAAYjZpQpkUkk1ND3I5lmO3goivsbWpHTLCHbvPX
+	 w7fy0842lTmLlXDwWGLvY5ZQRMnkraJJcVByghLoNujPf+1fHAuB5xXh6FTMV4STZD
+	 1XLB/XMN63MHZOyGAlVmsFDA4kzSgKOx1V4MjlpY=
+Received: from lingrow.int.hansenpartnership.com (unknown [IPv6:2601:5c4:4302:c21::a774])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (prime256v1) server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(Client did not present a certificate)
+	by bedivere.hansenpartnership.com (Postfix) with ESMTPSA id 1659512867AB;
+	Sun, 31 Mar 2024 09:01:25 -0400 (EDT)
+Message-ID: <fbc4bb78b39ab5b088b215cf854487022e59bbb4.camel@HansenPartnership.com>
+Subject: Re: [PATCH] KEYS: Add ECDH support
+From: James Bottomley <James.Bottomley@HansenPartnership.com>
+To: Eric Biggers <ebiggers@kernel.org>
+Cc: Zhang Yiqun <zhangyiqun@phytium.com.cn>, dhowells@redhat.com, 
+	jarkko@kernel.org, corbet@lwn.net, keyrings@vger.kernel.org, 
+	linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	linux-crypto@vger.kernel.org
+Date: Sun, 31 Mar 2024 09:01:22 -0400
+In-Reply-To: <20240331004844.GA104623@sol.localdomain>
+References: <20240330065506.3146-1-zhangyiqun@phytium.com.cn>
+	 <20240330070436.GA2116@sol.localdomain>
+	 <087bbfcf95c9014ee8f87d482773244f0833b892.camel@HansenPartnership.com>
+	 <20240331004844.GA104623@sol.localdomain>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.42.4 
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: DS0PR11MB6373.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 3194b329-bec7-4299-4972-08dc5182a91c
-X-MS-Exchange-CrossTenant-originalarrivaltime: 31 Mar 2024 13:01:20.4431
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: ZYB8fLIBd7IEgM3h/0CG0yZ0++vphMrcWLRFWpnyBCQN6W+E+nycDOsodwBUmti0OXWvG7kXYRH9Th7VyZdK4A==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA2PR11MB5132
-X-OriginatorOrg: intel.com
+Content-Transfer-Encoding: 8bit
 
-T24gV2VkbmVzZGF5LCBNYXJjaCAxMywgMjAyNCA4OjMyIEFNLCBTZWFuIENocmlzdG9waGVyc29u
-IHdyb3RlOg0KPiBUbzogU2VhbiBDaHJpc3RvcGhlcnNvbiA8c2VhbmpjQGdvb2dsZS5jb20+DQo+
-IENjOiBrdm1Admdlci5rZXJuZWwub3JnOyBsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnDQo+
-IFN1YmplY3Q6IFtBTk5PVU5DRV0gUFVDSyBBZ2VuZGEgLSAyMDI0LjAzLjEzIC0gTm8gdG9waWMN
-Cj4gDQo+IE5vIHRvcGljIGZvciB0b21vcnJvdywgYnV0IEknbGwgYmUgb25saW5lLg0KPiANCj4g
-Tm90ZSwgdGhlIFVTIGp1c3QgZGlkIGl0cyBEYXlsaWdodCBTYXZpbmdzIHRoaW5nLCBzbyB0aGUg
-bG9jYWwgdGltZSBtaWdodCBiZQ0KPiBkaWZmZXJlbnQgZm9yIHlvdSB0aGlzIHdlZWsuDQo+IA0K
-PiBOb3RlICMyLCBQVUNLIGlzIGNhbmNlbGVkIGZvciB0aGUgbmV4dCB0d28gd2Vla3MgYXMgSSds
-bCBiZSBvZmZsaW5lLg0KPiANCj4gRnV0dXJlIFNjaGVkdWxlOg0KPiBNYXJjaCAgICAyMHRoIC0g
-Q0FOQ0VMRUQNCj4gTWFyY2ggICAgMjd0aCAtIENBTkNFTEVEDQoNCldvdWxkIHRoZXJlIGJlIGEg
-c2xvdCBhdmFpbGFibGUgb24gQXByaWwgM3JkPw0KSSdkIGxpa2UgdG8gaGF2ZSBhIGRpc2N1c3Np
-b24gYWJvdXQgS1ZNIHVBUElzIGZvciBURFggYW5kIFNOUCBMaXZlIE1pZ3JhdGlvbi4NCg0KQ0Mg
-dGhlIG9uZXMgd2hvIHdvdWxkIGJlIGludGVyZXN0ZWQgaW4gam9pbmluZyB0aGUgZGlzY3Vzc2lv
-bi4NCihIb3BlIG1vcmUgZm9sa3Mgd29ya2luZyBvbiB0aGUgU05QIG1pZ3JhdGlvbiBwYXJ0IGNv
-dWxkIGpvaW4pDQoNClRoYW5rcywNCldlaQ0K
+On Sat, 2024-03-30 at 17:48 -0700, Eric Biggers wrote:
+> On Sat, Mar 30, 2024 at 09:09:51AM -0400, James Bottomley wrote:
+[...]
+> > For instance there are people who use the kernel keyring to replace
+> > ssh-agent and thus *reduce* the attack surface they have for
+> > storing
+> > ssh keys:
+> > 
+> > https://blog.cloudflare.com/the-linux-kernel-key-retention-service-and-why-you-should-use-it-in-your-next-application/
+> > 
+> > The same thing could be done with gpg keys or the gnome keyring.
+> 
+> First, that blog post never actually said that the "replace ssh-agent
+> with kernel keyrings" idea was deployed.  It sounds like a proof of
+> concept idea that someone thought was interesting and decided to blog
+> about.  Upstream OpenSSH has no support for Linux keyrings.
+
+The openssh community is incredibly resistant to out of house
+innovation.  It has no support for engine or provider keys, for TPM
+keys, or for that systemd start patch xz just exploited ...
+
+>   It seems unlikely it would get added, especially given the OpenSSH
+> developers' healthy skepticism of using broken Linux-isms.
+> You're welcome to bring it up on openssh-unix-dev and get their buy-
+> in first.
+
+I also didn't say just openssh.  You picked the one you apparently know
+hardly ever accepts anyone else's ideas.  I don't disagree that finding
+implementors is reasonable ... I just wouldn't pick openssh as the
+first upstream target.
+
+> Second, as mentioned by the blog post, the kernel also does not
+> support private keys in the default OpenSSH format.  That sort of
+> thing is an example of the fundamental problem with trying to make
+> the kernel support every cryptographic protocol and format in
+> existence.  Userspace simply has much more flexibility to implement
+> whatever it happens to need.
+
+That's a complete red herring.  You don't need the kernel keyrings to
+support every format, you just need a user space converter to import to
+the kernel keyring format.  Every device or token that can replace key
+handling has their own internal format and they all come with importers
+that do conversion.
+
+> Third, ssh-agent is already a separate process, and like any other
+> process the kernel enforces isolation of its address space.  The
+> potential loopholes are ptrace and coredumps, which ssh-agent already
+> disables, except for ptrace by root which it can't do alone, but the
+> system administrator can do that by setting the ptrace_scope sysctl
+> to 3 or by using SELinux.
+
+Well, a) this doesn't survive privilege escalation and b) I don't think
+many people would buy into the notion that we should remove security
+functions from the kernel and give them to userspace daemons because
+it's safer.
+
+James
+
 
