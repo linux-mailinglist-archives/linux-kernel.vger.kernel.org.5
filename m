@@ -1,87 +1,109 @@
-Return-Path: <linux-kernel+bounces-125970-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-125972-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6F494892EBF
-	for <lists+linux-kernel@lfdr.de>; Sun, 31 Mar 2024 08:39:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 5DACB892EC2
+	for <lists+linux-kernel@lfdr.de>; Sun, 31 Mar 2024 08:46:24 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8E0BA1C20CDA
-	for <lists+linux-kernel@lfdr.de>; Sun, 31 Mar 2024 06:39:12 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8F1EC1C20C05
+	for <lists+linux-kernel@lfdr.de>; Sun, 31 Mar 2024 06:46:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 74A0D79CF;
-	Sun, 31 Mar 2024 06:39:06 +0000 (UTC)
-Received: from mail-io1-f69.google.com (mail-io1-f69.google.com [209.85.166.69])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 63B636FD5;
+	Sun, 31 Mar 2024 06:46:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=ispras.ru header.i=@ispras.ru header.b="k0FTnHnY"
+Received: from mail.ispras.ru (mail.ispras.ru [83.149.199.84])
+	(using TLSv1.2 with cipher DHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A2C656FB0
-	for <linux-kernel@vger.kernel.org>; Sun, 31 Mar 2024 06:39:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.69
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2339A79CF
+	for <linux-kernel@vger.kernel.org>; Sun, 31 Mar 2024 06:46:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=83.149.199.84
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711867146; cv=none; b=r5/5GoaZptfpW9I1un3DEFriYAZkToV4AxVjXE0BrvOzEjRpkPp4dKeyqW8aN44SucgNtWIGExcaBpPqodTHM8fuzf4UAOPvFwaS1HbE2NH2x/NYc/8aI6w2ixSVoGe3mkBYLUDKKMz2qjnc9sfA7WaljgtmoxbyvL2Wjq4Dw/0=
+	t=1711867577; cv=none; b=botBRkid5ZZ+Cvn/ZfdR283S+2FFpqCE6OEKksJe7L7DYXJeB2coZSZ7EuGUEd1y5v7UEc6yjgmVKUDFXuhdKWfdPyJ/biZLMcnPsGi16GnjdNQXiwCmELb1OK22m11+Cgj/QhIy0048YfZYNt/LQT1m9xBLnJm24Kcyzxow2Nw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711867146; c=relaxed/simple;
-	bh=d0LbC7NP/kY3ykwR5ZbFSBZTdzpKeHD0SZmMQO1UNfs=;
-	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
-	 Content-Type; b=FDWHoNqYyRFGSwOR5Xpl13F5zkrqePcomZ2W6V9QeYFaiR0biFJXa2OqKaVeGWz77IPBOWeTeb67ueuKhFPaClO9+CsQSxk2uyP1uptJuP30t3997aJNA7sOLNvHycGC3OYdGCxy6PzVtGfUsdUPd6GPTt1ZUx90jHLDryi1MgQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.69
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-io1-f69.google.com with SMTP id ca18e2360f4ac-7cf265cb019so264644939f.3
-        for <linux-kernel@vger.kernel.org>; Sat, 30 Mar 2024 23:39:04 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711867144; x=1712471944;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=cQ8VuHx3zYYL3CHeHPvJ8zJopr1d1QL2nszjux4HsUw=;
-        b=SuvRTcyGC0w/uqfE+cHs7m0k7o24CgXnR5HWzR222JBEj+vQV5XVBPMT3DGUCvVL9D
-         Jgqczf6HE/YMPy2TOGzZ0reRrnVAGovxAImxZyDq6wJhTI8BAC18Poh7AEIhpI44yT7u
-         VXVQSTPBQ3hizY45JnEMspZzsMhno76M0Wl18OHWKOmRjQD7c6jTMY35xyOYlof8A1bS
-         i6gUGeW1mFxF/KugOaeakjRdCELvB2Z4W5jEuqEtvQS36HPB7L46NvJgnpXr/drdMpPa
-         mUTQHwQckJ6N6LBMqhvpSzZjXTHRrgjKVmaOjlTAbOy74IHzEmY3a1Fs91VYw1HCDd9t
-         v71w==
-X-Forwarded-Encrypted: i=1; AJvYcCVImjVcjjGEyst95GgmJQPa1NJ8CLUcRRErAR3m2eyzwmF+ixrtWTiwdZ9uuNIT/Q0Ogt7XtQO512HUqBYDxTrTNegI+cr4YeH70GF6
-X-Gm-Message-State: AOJu0YxrHm6JrbyKgXlyy7Mtkv1cyDYa3gOZC6HyHDI6S0rxG8oNJfn7
-	2K4U3x1WX+r4Me6kOqHUigx33Izia+X1Msx6CZ0Ffqf9G03d8Ht7Y5b6aeALptJhyUDgNU3iBVv
-	zRruQAG3W/cR0mhLN10WSg5rNeFg4slFklkDjz7/3JNnKRuAmOs4jjok=
-X-Google-Smtp-Source: AGHT+IGQUCI9vVEX3ax0ensR7zYCjlOjMwi0gbYoZRMXnUo6G/ac15/KJvQ6TyQ/2wqGdMrZwUFwc86hxopMJYRsCGnRlAldc12C
+	s=arc-20240116; t=1711867577; c=relaxed/simple;
+	bh=YBKGUG6xwLwd/efnk+1ZzvtR165fqMeCotqx2Uv9AM0=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=J5I2lJ8Kf07q+6+oj3uBtPtf5b0Thjls8tBg176d/alSNV3hmmrjr9pKZJyAFz7fK3DxzxN9jLR0Ur+nNOGfBLK8SSAFJqK4YQoEsKoC+1dC5+f2p9DKKwwP2VuL0QMGAkHENn8mQsIVWPdiuA82zycnVeMenaXXncud6VK4wjM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ispras.ru; spf=pass smtp.mailfrom=ispras.ru; dkim=pass (1024-bit key) header.d=ispras.ru header.i=@ispras.ru header.b=k0FTnHnY; arc=none smtp.client-ip=83.149.199.84
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ispras.ru
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ispras.ru
+Received: from tundra.lovozera (unknown [46.138.86.221])
+	by mail.ispras.ru (Postfix) with ESMTPSA id 5F9F140755D8;
+	Sun, 31 Mar 2024 06:46:03 +0000 (UTC)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mail.ispras.ru 5F9F140755D8
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ispras.ru;
+	s=default; t=1711867563;
+	bh=Um1OeF+YjMXHeUez/kZLspj1wOkVZEI9a9MFeGLZNZo=;
+	h=From:To:Cc:Subject:Date:From;
+	b=k0FTnHnYTdvZURFzBOOYPMVCPYR5A2omqFTQlaRaFzwnHARsJT5Fj5QwrdRktR9J4
+	 jfced4TYeae7QRKyV7KkJAxZ6BKdeu6N9q/CkaJifFd002w0QdMN212n6YwWnY9sMl
+	 MUPYvIcBMG5fcxw/67QvuSkNbhV2WhInMT96d9dI=
+From: Mikhail Kobuk <m.kobuk@ispras.ru>
+To: Karol Herbst <kherbst@redhat.com>
+Cc: Mikhail Kobuk <m.kobuk@ispras.ru>,
+	Lyude Paul <lyude@redhat.com>,
+	Danilo Krummrich <dakr@redhat.com>,
+	David Airlie <airlied@gmail.com>,
+	Daniel Vetter <daniel@ffwll.ch>,
+	Ben Skeggs <bskeggs@redhat.com>,
+	Francisco Jerez <currojerez@riseup.net>,
+	dri-devel@lists.freedesktop.org,
+	nouveau@lists.freedesktop.org,
+	linux-kernel@vger.kernel.org,
+	lvc-project@linuxtesting.org,
+	Fedor Pchelkin <pchelkin@ispras.ru>,
+	Alexey Khoroshilov <khoroshilov@ispras.ru>
+Subject: [PATCH] drm: nv04: Add check to avoid out of bounds access
+Date: Sun, 31 Mar 2024 09:45:51 +0300
+Message-ID: <20240331064552.6112-1-m.kobuk@ispras.ru>
+X-Mailer: git-send-email 2.44.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6638:8911:b0:47e:e6a1:d1f2 with SMTP id
- jc17-20020a056638891100b0047ee6a1d1f2mr137889jab.3.1711867143893; Sat, 30 Mar
- 2024 23:39:03 -0700 (PDT)
-Date: Sat, 30 Mar 2024 23:39:03 -0700
-In-Reply-To: <20240331000912.3242-1-hdanton@sina.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000003c53d0614ef21a4@google.com>
-Subject: Re: [syzbot] [audit?] [bpf?] INFO: rcu detected stall in
- kauditd_thread (4)
-From: syzbot <syzbot+81f5ca46b043d4a1b789@syzkaller.appspotmail.com>
-To: hdanton@sina.com, linux-kernel@vger.kernel.org, 
-	syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 
-Hello,
+Output Resource (dcb->or) value is not guaranteed to be non-zero (i.e.
+in drivers/gpu/drm/nouveau/nouveau_bios.c, in 'fabricate_dcb_encoder_table()'
+'dcb->or' is assigned value '0' in call to 'fabricate_dcb_output()').
 
-syzbot has tested the proposed patch and the reproducer did not trigger any issue:
+Add check to validate 'dcb->or' before it's used.
 
-Reported-and-tested-by: syzbot+81f5ca46b043d4a1b789@syzkaller.appspotmail.com
+Found by Linux Verification Center (linuxtesting.org) with SVACE.
 
-Tested on:
+Fixes: 2e5702aff395 ("drm/nouveau: fabricate DCB encoder table for iMac G4")
+Signed-off-by: Mikhail Kobuk <m.kobuk@ispras.ru>
+---
+ drivers/gpu/drm/nouveau/dispnv04/dac.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-commit:         712e1425 Merge tag 'xfs-6.9-fixes-1' of git://git.kern..
-git tree:       https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-console output: https://syzkaller.appspot.com/x/log.txt?x=13cd811d180000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=f64ec427e98bccd7
-dashboard link: https://syzkaller.appspot.com/bug?extid=81f5ca46b043d4a1b789
-compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
-patch:          https://syzkaller.appspot.com/x/patch.diff?x=10c7aa1d180000
+diff --git a/drivers/gpu/drm/nouveau/dispnv04/dac.c b/drivers/gpu/drm/nouveau/dispnv04/dac.c
+index d6b8e0cce2ac..0c8d4fc95ff3 100644
+--- a/drivers/gpu/drm/nouveau/dispnv04/dac.c
++++ b/drivers/gpu/drm/nouveau/dispnv04/dac.c
+@@ -428,7 +428,7 @@ void nv04_dac_update_dacclk(struct drm_encoder *encoder, bool enable)
+ 	struct drm_device *dev = encoder->dev;
+ 	struct dcb_output *dcb = nouveau_encoder(encoder)->dcb;
+ 
+-	if (nv_gf4_disp_arch(dev)) {
++	if (nv_gf4_disp_arch(dev) && ffs(dcb->or)) {
+ 		uint32_t *dac_users = &nv04_display(dev)->dac_users[ffs(dcb->or) - 1];
+ 		int dacclk_off = NV_PRAMDAC_DACCLK + nv04_dac_output_offset(encoder);
+ 		uint32_t dacclk = NVReadRAMDAC(dev, 0, dacclk_off);
+@@ -453,7 +453,7 @@ bool nv04_dac_in_use(struct drm_encoder *encoder)
+ 	struct drm_device *dev = encoder->dev;
+ 	struct dcb_output *dcb = nouveau_encoder(encoder)->dcb;
+ 
+-	return nv_gf4_disp_arch(encoder->dev) &&
++	return nv_gf4_disp_arch(encoder->dev) && ffs(dcb->or) &&
+ 		(nv04_display(dev)->dac_users[ffs(dcb->or) - 1] & ~(1 << dcb->index));
+ }
+ 
+-- 
+2.44.0
 
-Note: testing is done by a robot and is best-effort only.
 
