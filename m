@@ -1,137 +1,163 @@
-Return-Path: <linux-kernel+bounces-125914-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-125915-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id A5021892E23
-	for <lists+linux-kernel@lfdr.de>; Sun, 31 Mar 2024 01:43:06 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5D661892E28
+	for <lists+linux-kernel@lfdr.de>; Sun, 31 Mar 2024 01:48:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 423F51F21972
-	for <lists+linux-kernel@lfdr.de>; Sun, 31 Mar 2024 00:43:06 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 68F9B1C20C10
+	for <lists+linux-kernel@lfdr.de>; Sun, 31 Mar 2024 00:48:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7903A64F;
-	Sun, 31 Mar 2024 00:43:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0ED2210E6;
+	Sun, 31 Mar 2024 00:48:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=permerror (0-bit key) header.d=16bits.net header.i=@16bits.net header.b="IFQ9O1v/";
-	dkim=pass (2048-bit key) header.d=16bits.net header.i=@16bits.net header.b="QUZNcr0S"
-Received: from mail.direccionemail.com (mail.direccionemail.com [198.23.137.135])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="HnnxChoe"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A4E60383
-	for <linux-kernel@vger.kernel.org>; Sun, 31 Mar 2024 00:42:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.23.137.135
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 35546383;
+	Sun, 31 Mar 2024 00:48:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711845779; cv=none; b=PZFYIp12F5mUz9Zwvvnf+/qcxA9IazaiZl9+9vQvl+7GFbJz4ITnmRrRV1hAws30rBz5XhhV2WOo03sv3QJuwPKOKezcwhPVNOg4HArFKm5A0GL5x62P0LOKNAZaq5morqP+ewdUDM5M2MJk5rpt/KCr8wiCoTLzmQEBt7MQedU=
+	t=1711846127; cv=none; b=BZKqmTrdl/RN0V2FsGHWhIP578b9eDgzTT5Fk0PkW/O4wMO8zMJpx3mkUnaNVQURJUmyBpqFGLvg1D4lvDHMq6T2qJM8IBceiGw3yneAT31L0Cg4UYPSv0ZNwOt/inMG8Mj5xys3VjNbkH5Ivlm+GzopgHK7JVWqahwQASY5yy4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711845779; c=relaxed/simple;
-	bh=iCxeJcNOkxgZobbksFzeMpkBarjY0hOOiZ8z/jhPQ2E=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=Mf0vonhoyEGgDWo/e/x3a6uP6wRbbq71APXsr5KrqWRIDjLD3+//vyG/TAwccg6ApE84wbmJWybF8IzjQE467K1HYK8zxokSm/RTRBknq4weoVLHlAksxU8LFjMmpVGdj0t+aBbHFMY3qaC8yMJPY/jmSZZXPSeX35KqsuANis8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=16bits.net; spf=pass smtp.mailfrom=16bits.net; dkim=permerror (0-bit key) header.d=16bits.net header.i=@16bits.net header.b=IFQ9O1v/; dkim=pass (2048-bit key) header.d=16bits.net header.i=@16bits.net header.b=QUZNcr0S; arc=none smtp.client-ip=198.23.137.135
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=16bits.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=16bits.net
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=16bits.net;
-	s=ec2401; t=1711845751;
-	bh=DPrEQ8VIsCnwPBCgVB8ZQfxkn20Goq/qqCb1lEguxbU=;
-	h=Subject:From:To:Cc:Date:In-Reply-To:References:Content-Type:
-	 Content-Transfer-Encoding:MIME-Version;
-	b=IFQ9O1v/9bA2gjqLtbJYHl5YKHzaLq8lQadkJWPUQ5N4UsMjDSojYMks0veFRH3nD
-	 OGk3RzgTdZxsAtxom8KAg==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=16bits.net;
-	s=rsa2401; t=1711845751;
-	bh=DPrEQ8VIsCnwPBCgVB8ZQfxkn20Goq/qqCb1lEguxbU=;
-	h=Subject:From:To:Cc:Date:In-Reply-To:References:Content-Type:
-	 Content-Transfer-Encoding:MIME-Version;
-	b=QUZNcr0SpORpssbKtx3wvSGqeiz35HJ7OkilYMOSm+9rNmylsK5wMqVXs8HREdSza
-	 kwOUIttLUXWa7g+ijNPF6i6Bc2lsHNSIndANFgzqR5extIyuJ4A9VQAYk/v+7/7WRM
-	 sr3aZ/mQkzGV0OoXE5deSqWZ/11OyJxf+KvDPFV21LhUZrqhl7pBAzbQoRDKjZw2vW
-	 Gjj5K4KmC5R+NbKjUth2ngo5zQX9/HtzAPWJlrDtbYY1fA4pFMVHiNaq+eb9tS3ztA
-	 fEO6M8hyYBPmduGXNdWuuYZcRvkXPlkPT6iSEoE7an4GQf8mHMe89XCdRMAIRxujtg
-	 +/H8Rz+roKjug==
-Message-ID: <27db456edeb6f72e7e229c2333c5d8449718c26e.camel@16bits.net>
-Subject: Re: [PATCH 11/11] xz: Adjust arch-specific options for better
- kernel compression
-From: <angel.lkml@16bits.net>
-To: Andrew Morton <akpm@linux-foundation.org>
-Cc: lasse.collin@tukaani.org, Jubin Zhong <zhongjubin@huawei.com>, 
-	linux-kernel@vger.kernel.org, vegard.nossum@oracle.com
-Date: Sun, 31 Mar 2024 01:42:31 +0100
-In-Reply-To: <20240320183846.19475-12-lasse.collin@tukaani.org>
-References: <20240320183846.19475-1-lasse.collin@tukaani.org>
-	 <20240320183846.19475-12-lasse.collin@tukaani.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+	s=arc-20240116; t=1711846127; c=relaxed/simple;
+	bh=5R/y/M+p05y5G7U6Q0i8lhl8d1NWN6ZRPceQTVGsVrI=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=S622OIFwgXW/vLRK1N/i7M0+QXecyfPK2oSHoe8TBkMRMRCieJ7jSF/eKf5/sY1488lSTdHzW2rbjJbSOzIOjZwkaJLP2WFc7Xy8mn7G/e8c7YSnIyXhsVUQQgJz9cgAHbCmG1DvPpP/bvW2so8c/XOw6Tppt4EbNqYdPeBPuKg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=HnnxChoe; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 72A51C433C7;
+	Sun, 31 Mar 2024 00:48:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1711846126;
+	bh=5R/y/M+p05y5G7U6Q0i8lhl8d1NWN6ZRPceQTVGsVrI=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=HnnxChoe6PD0c253FzpqzrGbGakgdwsrko83C1NyXCjMlc/PkIYrqVejJGzJnRubB
+	 SLh08seHoHgJPf+qCjJqbfUC5LZS3KmneiZh/vCoGOPs9LPhZFp5mRnRTKzAjHQOVw
+	 G/Qnzd/pDbFPQBIBcBVgBp0Ev0HUtGqAt1a+lCPHKpuE4GXTrs2IFjjKGYd+BqYjjR
+	 ixOvthPzaXJ0azrzgMB/UozGCbk2SPB3SpOVWfe0H7eHgF3u8HoH/36lYd8Vp+FFMl
+	 trrs/8GeDhb6fOZFacgfmEzzuYVsjcsBiFUMyvUyyrujhffg/T0MHmMiChmiDDkww6
+	 Q7QKPIw9ue+Gg==
+Date: Sat, 30 Mar 2024 17:48:44 -0700
+From: Eric Biggers <ebiggers@kernel.org>
+To: James Bottomley <James.Bottomley@hansenpartnership.com>
+Cc: Zhang Yiqun <zhangyiqun@phytium.com.cn>, dhowells@redhat.com,
+	jarkko@kernel.org, corbet@lwn.net, keyrings@vger.kernel.org,
+	linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-crypto@vger.kernel.org
+Subject: Re: [PATCH] KEYS: Add ECDH support
+Message-ID: <20240331004844.GA104623@sol.localdomain>
+References: <20240330065506.3146-1-zhangyiqun@phytium.com.cn>
+ <20240330070436.GA2116@sol.localdomain>
+ <087bbfcf95c9014ee8f87d482773244f0833b892.camel@HansenPartnership.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <087bbfcf95c9014ee8f87d482773244f0833b892.camel@HansenPartnership.com>
 
-Under the light of the recent xz backdoor, I should note that this
-patch (patch 11) does:
+On Sat, Mar 30, 2024 at 09:09:51AM -0400, James Bottomley wrote:
+> On Sat, 2024-03-30 at 00:04 -0700, Eric Biggers wrote:
+> > [+Cc linux-crypto]
+> > 
+> > On Sat, Mar 30, 2024 at 02:55:06PM +0800, Zhang Yiqun wrote:
+> > > This patch is to introduce ECDH into keyctl syscall for
+> > > userspace usage, containing public key generation and
+> > > shared secret computation.
+> > > 
+> > > It is mainly based on dh code, so it has the same condition
+> > > to the input which only user keys is supported. The output
+> > > result is storing into the buffer with the provided length.
+> > > 
+> > > Signed-off-by: Zhang Yiqun <zhangyiqun@phytium.com.cn>
+> > > ---
+> > >  Documentation/security/keys/core.rst |  62 ++++++
+> > >  include/linux/compat.h               |   4 +
+> > >  include/uapi/linux/keyctl.h          |  11 +
+> > >  security/keys/Kconfig                |  12 +
+> > >  security/keys/Makefile               |   2 +
+> > >  security/keys/compat_ecdh.c          |  50 +++++
+> > >  security/keys/ecdh.c                 | 318
+> > > +++++++++++++++++++++++++++
+> > >  security/keys/internal.h             |  44 ++++
+> > >  security/keys/keyctl.c               |  10 +
+> > >  9 files changed, 513 insertions(+)
+> > >  create mode 100644 security/keys/compat_ecdh.c
+> > >  create mode 100644 security/keys/ecdh.c
+> > 
+> > Nacked-by: Eric Biggers <ebiggers@google.com>
+> > 
+> > The existing KEYCTL_PKEY_*, KEYCTL_DH_COMPUTE, and AF_ALG are causing
+> > enough problems.  We do not need any more UAPIs like this.  They are
+> > hard to maintain, break often, not properly documented, increase the
+> > kernel's attack surface, and what they do is better done in
+> > userspace.
+> 
+> Actually that's not entirely true.  There is a use case for keys which
+> is where you'd like to harden unwrapped key handling and don't have the
+> ability to use a device.  The kernel provides a harder exfiltration
+> environment than user space, so there is a use case for getting the
+> kernel to handle operations on unwrapped keys for the protection it
+> affords the crytpographic key material.
+> 
+> For instance there are people who use the kernel keyring to replace
+> ssh-agent and thus *reduce* the attack surface they have for storing
+> ssh keys:
+> 
+> https://blog.cloudflare.com/the-linux-kernel-key-retention-service-and-why-you-should-use-it-in-your-next-application/
+> 
+> The same thing could be done with gpg keys or the gnome keyring.
 
-> +# Set XZ_VERSION (and LIBLZMA_VERSION). This is needed to disable featur=
-es
-> +# that aren't available in old XZ Utils versions.
-> +eval "$($XZ --robot --version)" || exit
-> +
+First, that blog post never actually said that the "replace ssh-agent with
+kernel keyrings" idea was deployed.  It sounds like a proof of concept idea that
+someone thought was interesting and decided to blog about.  Upstream OpenSSH has
+no support for Linux keyrings.  It seems unlikely it would get added, especially
+given the OpenSSH developers' healthy skepticism of using broken Linux-isms.
+You're welcome to bring it up on openssh-unix-dev and get their buy-in first.
 
-in order to do=20
+Second, as mentioned by the blog post, the kernel also does not support private
+keys in the default OpenSSH format.  That sort of thing is an example of the
+fundamental problem with trying to make the kernel support every cryptographic
+protocol and format in existence.  Userspace simply has much more flexibility to
+implement whatever it happens to need.
 
-> +	arm64)
-> +		ALIGN=3D4
-> +
-> +		# ARM64 filter was added in XZ Utils 5.4.0.
-> +		if [ "$XZ_VERSION" -ge 50040002 ]; then
-> +			BCJ=3D--arm64
-> +		else
-> +			echo "$0: Upgrading to xz >=3D 5.4.0" \
-> +				"would enable the ARM64 filter" \
-> +				"for better compression" >&2
-> +		fi
-> +		;;
+Third, ssh-agent is already a separate process, and like any other process the
+kernel enforces isolation of its address space.  The potential loopholes are
+ptrace and coredumps, which ssh-agent already disables, except for ptrace by
+root which it can't do alone, but the system administrator can do that by
+setting the ptrace_scope sysctl to 3 or by using SELinux.
 
-and
-> +		# RISC-V filter was added in XZ Utils 5.6.0.
-> +		if [ "$XZ_VERSION" -ge 50060002 ]; then
-> +			BCJ=3D--riscv
-> +		else
-> +			echo "$0: Upgrading to xz >=3D 5.6.0" \
-> +				"would enable the RISC-V filter" \
-> +				"for better compression" >&2
-> +		fi
->=20
+Amusingly, the existing KEYCTL_DH_* APIs, and the KEYCTL_ECDH_* APIs proposed by
+this patch, only operate on user keys that the process has READ access to.  This
+means that the keys can be trivially extracted by a shell script running in your
+user session.  That's *less* secure than using an isolated process...
 
-which was noted on Hacker News as a potential gadget of
-exploitation[1]. Thanks Vegard for bringing it up[2].
+That's not to mention that merging this will likely add vulnerabilities
+reachable by unprivileged users, just as the original KEYCTL_DH_* did.  I had to
+fix some of them last time around (e.g. commits 12d41a023efb, bbe240454d86,
+3619dec5103d, 1d9ddde12e3c, ccd9888f14a8, 199512b1234f).  I don't really feel
+like doing it again. (Wait, was this supposed to *improve* security?)
 
-A compromised $XZ could modify the build files directly in C, or even
-produce a file that decompresses into a kernel with added evil
-instructions, at a quite near level to Reflections on Trusting Trust.
+> > Please refer to the recent thread
+> > https://lore.kernel.org/linux-crypto/CZSHRUIJ4RKL.34T4EASV5DNJM@matfyz.cz/T/#u
+> > where these issues were discussed in detail.
+> 
+> This thread was talking about using the kernel for handling the
+> algorithms themselves (which is probably best done in userspace) and
+> didn't address using the kernel to harden the key protection
+> environment.
 
-Nonetheless, execution of high level shell script would probably be
-more useful for an attacker that has to surreptitiously include their
-backdoor, as it would only require a few bytes (e.g. a sed call) when
-compared to coding that in C.
+This patch is about using the kernel to handle a class of algorithm,
+Elliptic-Curve Diffie-Hellman.  Which specific algorithm in that class (i.e.
+which elliptic curve), who knows.  Just like the existing APIs like this, it's
+undocumented which algorithm(s) are actually supported.
 
-So, in the spirit of keeping a fair amount of paranoia, and since it
-doesn't do any harm, any such code should be failproofed to ensure it
-can only import the expected shell variables with the right format[3]:
-
- eval "$($XZ --robot --version | grep '^\(XZ\|LIBLZMA\)_VERSION=3D[0-9]*$')=
-" || exit
-
-
-Regards
-
-
-
-[1] https://news.ycombinator.com/item?id=3D39869715
-[2] https://www.openwall.com/lists/oss-security/2024/03/30/11
-[3] Actually, LIBLZMA_VERSION isn't used, only XZ_VERSION. Being
-generous and accepting that one as well. :)
-
-
+- Eric
 
