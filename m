@@ -1,87 +1,111 @@
-Return-Path: <linux-kernel+bounces-125967-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-125968-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id A82B5892EBB
-	for <lists+linux-kernel@lfdr.de>; Sun, 31 Mar 2024 08:21:14 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id DEB3D892EBC
+	for <lists+linux-kernel@lfdr.de>; Sun, 31 Mar 2024 08:26:18 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4904D1F217B4
-	for <lists+linux-kernel@lfdr.de>; Sun, 31 Mar 2024 06:21:14 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 128071C20B4C
+	for <lists+linux-kernel@lfdr.de>; Sun, 31 Mar 2024 06:26:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4A6AA8F5C;
-	Sun, 31 Mar 2024 06:21:06 +0000 (UTC)
-Received: from mail-io1-f70.google.com (mail-io1-f70.google.com [209.85.166.70])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9604E79E1;
+	Sun, 31 Mar 2024 06:26:12 +0000 (UTC)
+Received: from mail114-241.sinamail.sina.com.cn (mail114-241.sinamail.sina.com.cn [218.30.114.241])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 72C6B8F59
-	for <linux-kernel@vger.kernel.org>; Sun, 31 Mar 2024 06:21:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.70
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 93DFD7490
+	for <linux-kernel@vger.kernel.org>; Sun, 31 Mar 2024 06:26:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=218.30.114.241
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711866065; cv=none; b=dC4xv8MmnVqa1gBpg7HwKkSNoy8jA5RznWz2F1twQ+Ikp6ikQHdddayUIHaE+fSb5GhfwmrX14Ft8s0Af480xdMx3rs+PZE/kLnYMDgCSQVR7WtTG483ylXb+hmSZvtMac0fDpmlfSxvya0LIUJzKuEY54vVsUr6QpFD1PdYyBU=
+	t=1711866372; cv=none; b=LaqTbeno/fnzT1OnBSfQjhnHN5rIUFN0SkZP3DJ0m+MOGApZ3XtpgYhDSprXAn2PUnwY+UtR8t2hlOZBDpqox+nOFKQH+SPy0O+26ofWbGxPMCSfUlBn244EVgPa3NNXKWKkHMZJ0enWoP5zYTF9bjf2UN968ILnoBoG+BAHjl0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711866065; c=relaxed/simple;
-	bh=k7w9gKf1/Faln8I5YI1/1Q+7u/6rkW9rJQj1hybESvc=;
-	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
-	 Content-Type; b=jI6gvLhwmshNcTNbqM8FF3wGd0BpVYsZQldI1/OzpP7kA7DvLYA6OT8tC1TkwATjakwWeUuNAs1JyOBwDyFP+3WJSQ1HUwje801kYLM6/p/65eK1/7F1WNTHSUqlFz4QJGd60NpB7AcYc2KtCsYUVMc1N6geFRWHl8RQhpLITzY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.70
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-io1-f70.google.com with SMTP id ca18e2360f4ac-7cbf0ebfda8so317261839f.0
-        for <linux-kernel@vger.kernel.org>; Sat, 30 Mar 2024 23:21:04 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711866063; x=1712470863;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=xlswKLmOm1SDm4ReW4epLmoaNJKVXjDO0IpWKml69N0=;
-        b=W+srjkOpqWXs2qoY/Ouq8qULRAKI5/LUjjgfzBnsqHzzxb6aJ+l2JUdtGtwjBVu5Ck
-         PoaAcXPO2DVPexEdS87vQBCv8BaW5XDRcXy+yjRhtfRT715cu1KC4dqvuZZpTtphMjys
-         CeGpHMqH6Z1QsDT08+FvyjYDwWqHcjq6lAZRQuxOO0urWtfXHbq2kx3bJYfiOHmbIlDG
-         x3IiJONVX5h41PnFe677/f7ijROZz16d0iMsNel/6pSZujNFRjvH6zrnJzDxZhXsGK5D
-         fN+jd8yi22bjmiQ4uGFXmh1ntJ303mNIxyg6APcuzcDwIGTI8J9Ih7ccwnZc/qbfHW7k
-         wHCA==
-X-Forwarded-Encrypted: i=1; AJvYcCVB6s9ftAexSj8b1rIoYfgRK24fk8UZy02h61n46bTVNhz7zXzpsS6jJ/9y+1XDAaJc518AFoSHb7oHaJxGe0k3jiXk1LAw1teyX/8i
-X-Gm-Message-State: AOJu0YxvWEtv2hPPq3yEohaVoYXV7qc7RLPdnQZ7VI1FWsDdAmFgeMzr
-	BAFgJW7OLk4XOp4Aox2HiNrlybbc2tGFjHxNrXMw7Ic54x/DdCeIbAzv309JW4kPn67xqY4B93X
-	fpPXoWPFeif+trBpATxHnFSuq7kHUpkkmJpmNtDquiug0/8N2qO2KEhg=
-X-Google-Smtp-Source: AGHT+IEyFXjJr0VpnOS1Uj56Zhn/+di/cCyhycl8AF7wIkBk/6D4mJmQ5p475M6lIC7GwdvKfSNggxYqRE7T4irlvaR1vOKr/WvQ
+	s=arc-20240116; t=1711866372; c=relaxed/simple;
+	bh=rGn4vL9+asmP70dMTI/LIUbfHclY24B3bM9CP8QSGHk=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=AWCR86RLbU9TQesl2oCZ3cVCRcv3o+Lci5z3/cXmZ8+fF9mEKmiAiwPsKvFslLfLWmR5AS+B7ZN9qa3xmDqKWPI3uJAmNlXEBj/XvPa8FKSEs6SGt+T/Y7/KFnG7mRug4UKVoY6Zx64+sfKoc45O68F0xOIJ4yRNdyDI0Ss5Aec=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sina.com; spf=pass smtp.mailfrom=sina.com; arc=none smtp.client-ip=218.30.114.241
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sina.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sina.com
+X-SMAIL-HELO: localhost.localdomain
+Received: from unknown (HELO localhost.localdomain)([113.118.64.152])
+	by sina.com (172.16.235.24) with ESMTP
+	id 6609015C00007CD6; Sun, 31 Mar 2024 14:23:31 +0800 (CST)
+X-Sender: hdanton@sina.com
+X-Auth-ID: hdanton@sina.com
+Authentication-Results: sina.com;
+	 spf=none smtp.mailfrom=hdanton@sina.com;
+	 dkim=none header.i=none;
+	 dmarc=none action=none header.from=hdanton@sina.com
+X-SMAIL-MID: 29318145089346
+X-SMAIL-UIID: F8131F5289424113AB8638F7DD5264EF-20240331-142331-1
+From: Hillf Danton <hdanton@sina.com>
+To: Uladzislau Rezki <urezki@gmail.com>
+Cc: syzbot <syzbot+1fa663a2100308ab6eab@syzkaller.appspotmail.com>,
+	Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+	"Paul E. McKenney" <paulmck@kernel.org>,
+	linux-kernel@vger.kernel.org,
+	syzkaller-bugs@googlegroups.com
+Subject: Re: [syzbot] [bpf?] possible deadlock in kvfree_call_rcu
+Date: Sun, 31 Mar 2024 14:23:14 +0800
+Message-Id: <20240331062314.3394-1-hdanton@sina.com>
+In-Reply-To: <ZghSHWexmBHXpyA-@pc638.lan>
+References: <000000000000f2f0c0061494e610@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6638:14d5:b0:47c:1232:10d4 with SMTP id
- l21-20020a05663814d500b0047c123210d4mr301791jak.1.1711866063724; Sat, 30 Mar
- 2024 23:21:03 -0700 (PDT)
-Date: Sat, 30 Mar 2024 23:21:03 -0700
-In-Reply-To: <tencent_CD333C9E9E1B544B651B4D250FBAE5BB1208@qq.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000a1b0d20614eee073@google.com>
-Subject: Re: [syzbot] [jfs?] INFO: task hung in lmLogClose (3)
-From: syzbot <syzbot+c824290332add8067111@syzkaller.appspotmail.com>
-To: eadavis@qq.com, linux-kernel@vger.kernel.org, 
-	syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 
-Hello,
+On Sat, 30 Mar 2024 18:55:41 +0100 Uladzislau Rezki <urezki@gmail.com>
+> diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+> index d9642dd06c25..8867aac3668c 100644
+> --- a/kernel/rcu/tree.c
+> +++ b/kernel/rcu/tree.c
+> @@ -3467,19 +3467,19 @@ void kvfree_call_rcu(struct rcu_head *head, void *ptr)
+>  	 */
+>  	kmemleak_ignore(ptr);
+>  
+> -	// Set timer to drain after KFREE_DRAIN_JIFFIES.
+> -	if (rcu_scheduler_active == RCU_SCHEDULER_RUNNING)
+> -		schedule_delayed_monitor_work(krcp);
+> -
 
-syzbot has tested the proposed patch and the reproducer did not trigger any issue:
+This is not enough at least WRT run_page_cache_worker() [1]
 
-Reported-and-tested-by: syzbot+c824290332add8067111@syzkaller.appspotmail.com
+[1] https://lore.kernel.org/lkml/0000000000007a44120614e27cb7@google.com/
 
-Tested on:
+while the reason why syzbot failed to catch the zone->per_cpu_pageset in
+setup_zone_pageset() in mm/page_alloc.c is trylock [2]
 
-commit:         712e1425 Merge tag 'xfs-6.9-fixes-1' of git://git.kern..
-git tree:       https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-console output: https://syzkaller.appspot.com/x/log.txt?x=10f2512d180000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=ffb07c9738b12db3
-dashboard link: https://syzkaller.appspot.com/bug?extid=c824290332add8067111
-compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
-userspace arch: arm64
-patch:          https://syzkaller.appspot.com/x/patch.diff?x=121abb76180000
+[2] https://lore.kernel.org/lkml/000000000000a5ee4e0614ee586e@google.com/
 
-Note: testing is done by a robot and is best-effort only.
+>  unlock_return:
+>  	krc_this_cpu_unlock(krcp, flags);
+>  
+> -	/*
+> -	 * Inline kvfree() after synchronize_rcu(). We can do
+> -	 * it from might_sleep() context only, so the current
+> -	 * CPU can pass the QS state.
+> -	 */
+> -	if (!success) {
+> +	if (success) {
+> +		// Set timer to drain after KFREE_DRAIN_JIFFIES.
+> +		if (rcu_scheduler_active == RCU_SCHEDULER_RUNNING)
+> +			schedule_delayed_monitor_work(krcp);
+> +	} else {
+> +		/*
+> +		 * Inline kvfree() after synchronize_rcu(). We can do
+> +		 * it from might_sleep() context only, so the current
+> +		 * CPU can pass the QS state.
+> +		 */
+>  		debug_rcu_head_unqueue((struct rcu_head *) ptr);
+>  		synchronize_rcu();
+>  		kvfree(ptr);
+> 
+> 
+> --
 
