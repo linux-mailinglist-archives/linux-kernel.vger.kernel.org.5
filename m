@@ -1,144 +1,166 @@
-Return-Path: <linux-kernel+bounces-126027-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-126028-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 44A02893126
-	for <lists+linux-kernel@lfdr.de>; Sun, 31 Mar 2024 12:00:57 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9F11A89312C
+	for <lists+linux-kernel@lfdr.de>; Sun, 31 Mar 2024 12:16:51 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 757411C20E91
-	for <lists+linux-kernel@lfdr.de>; Sun, 31 Mar 2024 10:00:56 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3DAA1282707
+	for <lists+linux-kernel@lfdr.de>; Sun, 31 Mar 2024 10:16:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A3DE5762DE;
-	Sun, 31 Mar 2024 10:00:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D1DBC2EAE5;
+	Sun, 31 Mar 2024 10:16:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="KmMMF4Fq"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b="a4pXD/Jl"
+Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D9F5A1C33;
-	Sun, 31 Mar 2024 10:00:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9DDF676050
+	for <linux-kernel@vger.kernel.org>; Sun, 31 Mar 2024 10:16:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=65.109.113.108
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711879249; cv=none; b=MYHpxZ2baLuuXk7FsGlgbEwUH+HAuPp9bbi7hbv7x/XUpDh68/74rZxiXEynQFIh5DFhLLVg7jnwKxSwlGUG/evRsjqJLt77mQT62Ch2KdJkgqGzpLqyJnC2eZxZ1JASoSAeRivoog4wQ2A1txbOaYZg1mf/v5qEWW7P60L9ur0=
+	t=1711880204; cv=none; b=utMzpLz+C4mmWHSyKhnGWRQvaovHjHxUIiQ8hDWoX6xNqmHk0zDhDpYQ8LRKqd2nMuxQG3KtP5K5POny4NRw1M730Rt0hDQJ9aEFZhl/Cq9wcZ5VtwAVwE4qfXS5uTBqHIsEy0mJiXDedElHkwY8SVCQIsXRxj3SOr7oZGv8abo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711879249; c=relaxed/simple;
-	bh=8ZlEK5607Jk4tOKuXpJJJZbQBuqSIL7N3MY76VqKGds=;
-	h=Date:Message-ID:From:To:Cc:Subject:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=tQq5PggapuYJ0UGG0JZQAfZD4QGTMlk6ZJqtF5xLRvsC/wnVcyqPLprYzKCbsnvIrdAwTZUM29Zy62dABUkYeSYjBkSczJ8FvIZZT32HoGhsz3k4bZMoUz0hsi/dTBecJdH/jy0v0T/I0jd9cP65b1yiAqJAjewNCzHSD86q830=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=KmMMF4Fq; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 61394C433F1;
-	Sun, 31 Mar 2024 10:00:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711879248;
-	bh=8ZlEK5607Jk4tOKuXpJJJZbQBuqSIL7N3MY76VqKGds=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=KmMMF4FqWijFeM4Mc1d+9Ubdwa3TgkbMdi6eJ6RH0MAB8zu2AokIMtuynk9zHpst7
-	 sjaOhpoiX/WY/rN5CHXvjADJSyWPVAk6E29IYeTIpMKQgGbS0bjQEdOxCPRzZrHqRo
-	 4I61gRbw7wBV0302LHrINBbf1Qu8jogvvPA2OPYB5Rda+tdjSWwlpUrBL94xa7zCyT
-	 sxQ3fdtYh4Ed+8k8UoLlhy5wUCDdk+g9Ee0f7ZkPcpfN1U2bUQTJtR0mIKbmN2Yu8J
-	 cWc12qcfmDEeapF4GLr3ETEj5czb7hk7mGI/Lk19OgAijibq+r+28/DKr5RV5kcQ3E
-	 ZsOTd8Sgq5fug==
-Received: from ip-185-104-136-29.ptr.icomera.net ([185.104.136.29] helo=wait-a-minute.misterjones.org)
-	by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.95)
-	(envelope-from <maz@kernel.org>)
-	id 1rqrzY-00013r-IH;
-	Sun, 31 Mar 2024 11:00:45 +0100
-Date: Sun, 31 Mar 2024 11:00:41 +0100
-Message-ID: <87msqesoty.wl-maz@kernel.org>
-From: Marc Zyngier <maz@kernel.org>
-To: Mark Brown <broonie@kernel.org>
-Cc: Catalin Marinas <catalin.marinas@arm.com>,
-	Will Deacon <will@kernel.org>,
-	Oliver Upton <oliver.upton@linux.dev>,
-	James Morse <james.morse@arm.com>,
-	Suzuki K Poulose <suzuki.poulose@arm.com>,
-	Jonathan Corbet <corbet@lwn.net>,
-	Shuah Khan <shuah@kernel.org>,
-	linux-arm-kernel@lists.infradead.org,
-	linux-kernel@vger.kernel.org,
-	Dave Martin <Dave.Martin@arm.com>,
-	kvmarm@lists.linux.dev,
-	linux-doc@vger.kernel.org,
-	linux-kselftest@vger.kernel.org
-Subject: Re: [PATCH v6 1/5] KVM: arm64: Share all userspace hardened thread data with the hypervisor
-In-Reply-To: <20240329-arm64-2023-dpisa-v6-1-ba42db6c27f3@kernel.org>
-References: <20240329-arm64-2023-dpisa-v6-0-ba42db6c27f3@kernel.org>
-	<20240329-arm64-2023-dpisa-v6-1-ba42db6c27f3@kernel.org>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
- FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/28.2
- (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+	s=arc-20240116; t=1711880204; c=relaxed/simple;
+	bh=H3ycVgsRJTJJrcDSqrUsU2RC18j3B+ELOPKEFoqwY14=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition; b=jrQNpJ0jdKcGdHaaji+bWr2dkaxKRmmH2CItvygreG9/oQlNn/HcJV1xo3J8/RuHEAhsofvAMgLGaiIUd9AZ37Erp/RepLdoDUQxwJ3qhVCT5itYIa1Yce+niwx9475VifohV49Xc3JMRYUHTzn4xheTW6X2QBBRSUYBlzgxHDo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de; spf=pass smtp.mailfrom=alien8.de; dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b=a4pXD/Jl; arc=none smtp.client-ip=65.109.113.108
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alien8.de
+Received: from localhost (localhost.localdomain [127.0.0.1])
+	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id 78A7A40E0202;
+	Sun, 31 Mar 2024 10:16:40 +0000 (UTC)
+X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
+Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
+	header.d=alien8.de
+Received: from mail.alien8.de ([127.0.0.1])
+	by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
+	with ESMTP id L1UBLig6gS8s; Sun, 31 Mar 2024 10:16:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
+	t=1711880197; bh=Wc8KOaLGsOSzixx6Mvq1IC+2rGDC4iJp6dAFoNuW15A=;
+	h=Date:From:To:Cc:Subject:From;
+	b=a4pXD/JlXXqASiT4JL3aIw9Rio9y6AcNjQpNlHC/rsOTY5sS2L6YIk1na+RwxdjO+
+	 wCaeIZMOV2/R4iGuCOzsnJ53QYKNaMM8CBqeJpts4HkmRImJxRQC0ja+H31M7UJPXY
+	 M8XHqz3ESSyQ09jwWhmRgKbS5dG42VhOakW1lY0RhBZETzJ1L1OXpRuJ2FLfDPMoI9
+	 PUcbg2MUeGzk98nXbdb+tmu8Mo8Vtqfy4g3XZ22OIBuYkVzdwzbvvW78/gdZBYqkEp
+	 qgcou6t2gwn4gTzRWjPohDLH4cwLBtlTlGMyol5Cmy2OC5E8FVB+H8+qRsiuANH03o
+	 w3Ua1MWZXZYhfLdHBakPso6J57KkrGi2hfByqFmNLlc+u96TmJPDeTqHkJr2296Xtn
+	 ojZjF6nuqpyY5cOfl4wextvg8nWkuq8hEiJthLJYuZn69pD28wMJOUW+DQcp20Jcms
+	 VnmV3SFBDjGRei4yJqTjIpZf4J66etEOJkA7xj2LM14Q795jQj30PWckw6Ng5QFQWM
+	 SJMWeU5PfdjoDwHrNAF2esDD3o4fW78vnVPO3eUThCE2jB/XW0uisSOMpeP4hTtTIt
+	 aT/1mnfdh+b4ryOT5Pmwj0Lhiu8RUTk2ykkbMU6PL3g3/xwd6iPrFtRJDqzzvmiZLP
+	 BxEEv1ZxKwzyWIv3hWmGhWLY=
+Received: from zn.tnic (p5de8ecf7.dip0.t-ipconnect.de [93.232.236.247])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
+	(No client certificate requested)
+	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 02EB440E00B2;
+	Sun, 31 Mar 2024 10:16:33 +0000 (UTC)
+Date: Sun, 31 Mar 2024 12:16:25 +0200
+From: Borislav Petkov <bp@alien8.de>
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: x86-ml <x86@kernel.org>, lkml <linux-kernel@vger.kernel.org>
+Subject: [GIT PULL] x86/urgent for v6.9-rc2
+Message-ID: <20240331101625.GAZgk3-cPeMkj9y3JD@fat_crate.local>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Content-Type: text/plain; charset=US-ASCII
-X-SA-Exim-Connect-IP: 185.104.136.29
-X-SA-Exim-Rcpt-To: broonie@kernel.org, catalin.marinas@arm.com, will@kernel.org, oliver.upton@linux.dev, james.morse@arm.com, suzuki.poulose@arm.com, corbet@lwn.net, shuah@kernel.org, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, Dave.Martin@arm.com, kvmarm@lists.linux.dev, linux-doc@vger.kernel.org, linux-kselftest@vger.kernel.org
-X-SA-Exim-Mail-From: maz@kernel.org
-X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 
-On Fri, 29 Mar 2024 00:13:42 +0000,
-Mark Brown <broonie@kernel.org> wrote:
-> 
-> As part of the lazy FPSIMD state transitioning done by the hypervisor we
-> currently share the userpsace FPSIMD state in thread->uw.fpsimd_state with
-> the host. Since this struct is non-extensible userspace ABI we have to keep
+Hi Linus,
 
-Using the same representation is just pure convenience, and nothing
-requires us to use the it in the kernel/hypervisor.
+please pull x86 urgent fixes for v6.9-rc2.
 
-> the definition as is but the addition of FPMR in the 2023 dpISA means that
-> we will want to share more storage with the host. To facilitate this
-> refactor the current code to share the entire thread->uw rather than just
-> the one field.
+Thx.
 
-So this increase the required sharing with EL2 from 528 bytes to
-560. Not a huge deal, but definitely moving in the wrong direction. Is
-there any plans to add more stuff to this structure that wouldn't be
-*directly* relevant to the hypervisor?
+---
 
-> 
-> The large number of references to fpsimd_state make it very inconvenient
-> to add an additional wrapper struct.
->
-> Signed-off-by: Mark Brown <broonie@kernel.org>
-> ---
->  arch/arm64/include/asm/kvm_host.h       |  3 ++-
->  arch/arm64/include/asm/processor.h      |  2 +-
->  arch/arm64/kvm/fpsimd.c                 | 13 ++++++-------
->  arch/arm64/kvm/hyp/include/hyp/switch.h |  2 +-
->  arch/arm64/kvm/hyp/nvhe/hyp-main.c      |  4 ++--
->  5 files changed, 12 insertions(+), 12 deletions(-)
-> 
-> diff --git a/arch/arm64/include/asm/kvm_host.h b/arch/arm64/include/asm/kvm_host.h
-> index 9e8a496fb284..8a251f0da900 100644
-> --- a/arch/arm64/include/asm/kvm_host.h
-> +++ b/arch/arm64/include/asm/kvm_host.h
-> @@ -27,6 +27,7 @@
->  #include <asm/fpsimd.h>
->  #include <asm/kvm.h>
->  #include <asm/kvm_asm.h>
-> +#include <asm/processor.h>
->  #include <asm/vncr_mapping.h>
->  
->  #define __KVM_HAVE_ARCH_INTC_INITIALIZED
-> @@ -640,7 +641,7 @@ struct kvm_vcpu_arch {
->  	struct kvm_guest_debug_arch vcpu_debug_state;
->  	struct kvm_guest_debug_arch external_debug_state;
->  
-> -	struct user_fpsimd_state *host_fpsimd_state;	/* hyp VA */
-> +	struct thread_struct_uw *host_uw;	/* hyp VA */
->  	struct task_struct *parent_task;
+The following changes since commit 4cece764965020c22cff7665b18a012006359095:
 
-Well, this is going away, and you know it.
+  Linux 6.9-rc1 (2024-03-24 14:10:05 -0700)
 
-	M.
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git tags/x86_urgent_for_v6.9_rc2
+
+for you to fetch changes up to 3f1a9bc5d878004ed4bc3904e5cb9b7fb317fbe2:
+
+  x86/build: Use obj-y to descend into arch/x86/virt/ (2024-03-30 10:41:49 +0100)
+
+----------------------------------------------------------------
+- Make sure single object builds in arch/x86/virt/ ala
+    make ... arch/x86/virt/vmx/tdx/seamcall.o
+  work again
+
+- Do not do ROM range scans and memory validation when the kernel is
+  running as a SEV-SNP guest as those can get problematic and, before
+  that, are not really needed in such a guest
+
+- Exclude the build-time generated vdso-image-x32.o object from objtool
+  validation and in particular the return sites in there due to
+  a warning which fires when an unpatched return thunk is being used
+
+- Improve the NMI CPUs stall message to show additional information
+  about the state of each CPU wrt the NMI handler
+
+- Enable gcc named address spaces support only on !KCSAN configs due to
+  compiler options incompatibility
+
+- Revert a change which was trying to use GB pages for mapping regions
+  only when the regions would be large enough but that change lead to
+  kexec failing
+
+- A documentation fixlet
+
+----------------------------------------------------------------
+Borislav Petkov (AMD) (1):
+      x86/vdso: Fix rethunk patching for vdso-image-x32.o too
+
+Ingo Molnar (2):
+      Documentation/x86: Fix title underline length
+      Revert "x86/mm/ident_map: Use gbpages only where full GB page should be mapped."
+
+Kevin Loughlin (1):
+      x86/sev: Skip ROM range scans and validation for SEV-SNP guests
+
+Masahiro Yamada (1):
+      x86/build: Use obj-y to descend into arch/x86/virt/
+
+Paul E. McKenney (1):
+      x86/nmi: Upgrade NMI backtrace stall checks & messages
+
+Uros Bizjak (1):
+      x86/percpu: Disable named address spaces for KCSAN
+
+ Documentation/arch/x86/resctrl.rst |  2 +-
+ arch/x86/Kbuild                    |  2 +-
+ arch/x86/Kconfig                   |  2 ++
+ arch/x86/Makefile                  |  2 --
+ arch/x86/entry/vdso/Makefile       |  1 +
+ arch/x86/include/asm/sev.h         |  4 ++--
+ arch/x86/include/asm/x86_init.h    |  3 ++-
+ arch/x86/kernel/eisa.c             |  3 ++-
+ arch/x86/kernel/nmi.c              | 24 ++++++++++++++----------
+ arch/x86/kernel/probe_roms.c       | 10 ----------
+ arch/x86/kernel/setup.c            |  3 +--
+ arch/x86/kernel/sev.c              | 27 ++++++++++++---------------
+ arch/x86/kernel/x86_init.c         |  2 ++
+ arch/x86/mm/ident_map.c            | 23 +++++------------------
+ arch/x86/mm/mem_encrypt_amd.c      | 18 ++++++++++++++++++
+ arch/x86/virt/Makefile             |  2 +-
+ 16 files changed, 64 insertions(+), 64 deletions(-)
+
 
 -- 
-Without deviation from the norm, progress is not possible.
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
 
