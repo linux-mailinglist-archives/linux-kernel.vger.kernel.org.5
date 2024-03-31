@@ -1,264 +1,122 @@
-Return-Path: <linux-kernel+bounces-126001-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-126020-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C884C893002
-	for <lists+linux-kernel@lfdr.de>; Sun, 31 Mar 2024 10:50:31 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4CBB4893101
+	for <lists+linux-kernel@lfdr.de>; Sun, 31 Mar 2024 11:03:39 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7E3B7282586
-	for <lists+linux-kernel@lfdr.de>; Sun, 31 Mar 2024 08:50:30 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7EBAC1C21A3C
+	for <lists+linux-kernel@lfdr.de>; Sun, 31 Mar 2024 09:03:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9B86613440F;
-	Sun, 31 Mar 2024 08:45:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DEFD1757F2;
+	Sun, 31 Mar 2024 08:54:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b="E1af0MIc"
-Received: from out203-205-221-191.mail.qq.com (out203-205-221-191.mail.qq.com [203.205.221.191])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="hnenQLRM"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 56B20131746;
-	Sun, 31 Mar 2024 08:45:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=203.205.221.191
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 268C16BB23;
+	Sun, 31 Mar 2024 08:54:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711874707; cv=none; b=ASjZhm4etoroySNZM7SHPypUllGWchz7JTA0L9hJQ1lBfEDoFwSBJD/6kAL0RflI5zSLfAZ/MkUNLsAAIBmQnAO8CtBHPFeYe37YDR6GMznoRpXjHAH4SpJ1symJl1qCEmjALonN5QDOCCdH3QGxM5kWF4p1hRK8WB1H51ALt1I=
+	t=1711875284; cv=none; b=E4rQwWbkqg7K7yiK0NQohFpheOREtj0q9rO4gbb8ASZbrLjvWKnm8ELAVhVpDhh59JWB7qqirRyyFXdkSg4mmvzV0CCvAJMq//3SmkruaB1ouIzy/LAHxiy/4hgy1TrUmEW+EWJ9a4J9gYTyYllqvSFejCGJB1WMXS5NpyW+48Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711874707; c=relaxed/simple;
-	bh=CNf8m/nWef9wkixInR6E4NOpXx000CTYoiqaE6ARRBM=;
-	h=Message-ID:From:To:Cc:Subject:Date:In-Reply-To:References:
-	 MIME-Version; b=YOho9o/tqDgno3dKSYsO97RmZwiqBoe2ZMvFABUtl+RpS+nrT20p8EPgivMRnI466WV22nvtRywPYJw/jV8rzZg/My27zL/15Bywi3pCnOafdfEQo6tVSLzyM8mcJagKI8nXKIAqHmqfSW/HndFs1Mp7TGVRVFJ5OSfIH5e1pUg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com; spf=pass smtp.mailfrom=qq.com; dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b=E1af0MIc; arc=none smtp.client-ip=203.205.221.191
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=qq.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qq.com; s=s201512;
-	t=1711874698; bh=tBu+Ad0GvUc8I+j976xrx6ZCEBZjX5o7ydCYejD59JE=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References;
-	b=E1af0MIcwwgHHanggZE7u1ZgOGH/OUXEy/YKxQRtoMkA/EnpA1cuUmIR2iVFc7LFh
-	 T1U+/m1cmjrlXTGch9yz2WSW7iwv0TYbIz6USo5DTXe2vZ/g3KQFuVEhzZ4i2+ZN10
-	 3kvdAS++WEe1Ba2CtpaOThEtyvIAGovjTnGK8HiQ=
-Received: from pek-lxu-l1.wrs.com ([111.198.228.153])
-	by newxmesmtplogicsvrsza1-0.qq.com (NewEsmtp) with SMTP
-	id B38BB8CD; Sun, 31 Mar 2024 16:44:56 +0800
-X-QQ-mid: xmsmtpt1711874696tshyse111
-Message-ID: <tencent_6CF766EA3CD936E4960C377C4A0C74377609@qq.com>
-X-QQ-XMAILINFO: Mdc3TkmnJyI/uQ6d1i0rpitS/WHY3aEsTp4RGE2Rw/OuqxCrWz4BOPf2zajzUA
-	 OVQnNkUIZgAGyBK+zkbxNXxuyjMfpzjcaCysDFz6P+IaJsUBjG7ybGHRrhT/wysmMVBj0I1opnWW
-	 nXWAXIrhGG4g+lnTwEtj2+wlcEwFXQ1sLVcIzNSY2rrD/D35zMTSPQjOKIwZOh+NHCOsYT93XzG4
-	 G4gtVFVHO1D63kETEWyMXWWup6PuCZhNrQkvz9MS4cdsdA9nQsIBn+ALUA0gniPXS8Q2jjburTTp
-	 UtqH7tlI0tKUwwd5oeV8qdFfeiu8QYv2qt5PaJiJzArTEhIt92zlW//3ZV0K+8RgI0nlU6ljDWCa
-	 Zl05gZSxGzb0Nrejcie3UgMcPXZCtxxX1gqmKYjCgiJlkEJ+ppITyssSRec3tY4W4SLNkMgQt+aD
-	 vF2C3bhV/rpyv0cXJKCvyQtNQ2zffU4qo4LzjgKWDWuqvM+Gra40aCHR4uxJPy9HMbGlE0GrOasr
-	 5QmNDM1xSCcIWGv+y7sWk9khpy7syy3/ahflyLYGg1BSOvffGr2hzBM5huI3ucmHssx8QnkwQ4Xh
-	 K3nhBEDr2ANCrovAhX0eT65U9zTvYSgHeswbps8NzTY6WTwV8bV8gt82jYYd1eH3KRsQlDe+dwWV
-	 OGLYkQRSiMd6zxtnD7fcSiPt3P+npQq1t4q9KBDPCyxGhXWh0nKEKNOVyyf+JNXBv+1T02AKmRpm
-	 8CNToJYt5/Y7UDfGu9wpg1WGxZmRdOuIq4rRbFdWE4kt12BL7F4mS6L68C/3lEiqCaRhZhcfF6YW
-	 xO1UGhpse9wGZWLw5NUf2uDVpxtl9l1YaJfC/ZSUV6/7FHeioyRpACSuX4VzAi6ID0MTtlUFdOIJ
-	 4Md8/+BPyBfqiOAxBiKQ+ptf0qmxXLETNUlmwgHGpqFrN+AZtAmDOyTXbHuvXtfzl9iiyctBR4
-X-QQ-XMRINFO: MPJ6Tf5t3I/ycC2BItcBVIA=
-From: Edward Adam Davis <eadavis@qq.com>
-To: syzbot+c824290332add8067111@syzkaller.appspotmail.com
-Cc: jfs-discussion@lists.sourceforge.net,
-	linux-fsdevel@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	shaggy@kernel.org,
-	syzkaller-bugs@googlegroups.com
-Subject: [PATCH] jfs: fix task hung in lmLogClose
-Date: Sun, 31 Mar 2024 16:44:57 +0800
-X-OQ-MSGID: <20240331084456.1126705-2-eadavis@qq.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <00000000000041ac86061400b95d@google.com>
-References: <00000000000041ac86061400b95d@google.com>
+	s=arc-20240116; t=1711875284; c=relaxed/simple;
+	bh=vq+yVxHBNYz1MHfaG/f7xwyOH/JCSiaOQmS2/BWaKb4=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=X95HGmomnKacIV++w9omnMkcSokfK68zNLLLyUpGsJ/6uGcHIykxe0dV0sTeXB+z2taWdF21qgjZq7TxUgclgYmfcgXXTNns0KcfGej3oR4VrNPWDQzVVXhLR2vKl9yuXLrGsj+iNRbszKS5TWGe27ctRTvsJjb/WXtMqs/aOEI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=hnenQLRM; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2C27EC433C7;
+	Sun, 31 Mar 2024 08:54:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1711875283;
+	bh=vq+yVxHBNYz1MHfaG/f7xwyOH/JCSiaOQmS2/BWaKb4=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=hnenQLRMWEJv9JsczxYuZzPYE00Uygwtk+6KJaj7VtKppqD3jESbEZdPnql67BOpo
+	 eqmFnEQ1SJiM3jstS2wrxcASOgOz4ebv0R5/ZBvg1B5GgmfsA91HkBGyDeeMQyVbbQ
+	 H4J8hGHP4wMoRvMsWljXdQVJmxy8MmbJx14eOLuPtyJgGLM2LIbl7tUaryLrCvXRKj
+	 phEsy+C1a6v67TaG4O+aL9r9ngSNDC/h14r1sP4+HgOb8fRSrkX9mUIFMVrnGmQCf2
+	 zSYkg5X9xzs1/RCURPXm/tYgVfmuijIs9FpoDGZgmsDVFLYbgqvB+c1zLMEzShnInA
+	 f76qTV/KTCz8w==
+Date: Sun, 31 Mar 2024 09:54:38 +0100
+From: Simon Horman <horms@kernel.org>
+To: Breno Leitao <leitao@debian.org>
+Cc: aleksander.lobakin@intel.com, kuba@kernel.org, davem@davemloft.net,
+	pabeni@redhat.com, edumazet@google.com,
+	Taras Chornyi <taras.chornyi@plvision.eu>,
+	quic_jjohnson@quicinc.com, kvalo@kernel.org, leon@kernel.org,
+	dennis.dalessandro@cornelisnetworks.com,
+	linux-kernel@vger.kernel.org, netdev@vger.kernel.org
+Subject: Re: [PATCH net-next v2 2/5] net: marvell: prestera: allocate dummy
+ net_device dynamically
+Message-ID: <20240331085438.GA26556@kernel.org>
+References: <20240328235214.4079063-1-leitao@debian.org>
+ <20240328235214.4079063-3-leitao@debian.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240328235214.4079063-3-leitao@debian.org>
 
-[Syzbot reported]
-INFO: task syz-executor394:6204 blocked for more than 143 seconds.
-      Not tainted 6.8.0-rc7-syzkaller-g707081b61156 #0
-"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
-task:syz-executor394 state:D stack:0     pid:6204  tgid:6204  ppid:6201   flags:0x0000000c
-Call trace:
- __switch_to+0x314/0x560 arch/arm64/kernel/process.c:553
- context_switch kernel/sched/core.c:5400 [inline]
- __schedule+0x1498/0x24b4 kernel/sched/core.c:6727
- __schedule_loop kernel/sched/core.c:6802 [inline]
- schedule+0xb8/0x19c kernel/sched/core.c:6817
- schedule_preempt_disabled+0x18/0x2c kernel/sched/core.c:6874
- __mutex_lock_common+0xbd8/0x21a0 kernel/locking/mutex.c:684
- __mutex_lock kernel/locking/mutex.c:752 [inline]
- mutex_lock_nested+0x2c/0x38 kernel/locking/mutex.c:804
- lmLogClose+0xc8/0x4d4 fs/jfs/jfs_logmgr.c:1444
- jfs_umount+0x274/0x360 fs/jfs/jfs_umount.c:114
- jfs_put_super+0x90/0x188 fs/jfs/super.c:194
- generic_shutdown_super+0x128/0x2b8 fs/super.c:641
- kill_block_super+0x44/0x90 fs/super.c:1675
- deactivate_locked_super+0xc4/0x12c fs/super.c:472
- deactivate_super+0xe0/0x100 fs/super.c:505
- cleanup_mnt+0x34c/0x3dc fs/namespace.c:1267
- __cleanup_mnt+0x20/0x30 fs/namespace.c:1274
- task_work_run+0x230/0x2e0 kernel/task_work.c:180
- resume_user_mode_work include/linux/resume_user_mode.h:50 [inline]
- do_notify_resume+0x178/0x1f4 arch/arm64/kernel/entry-common.c:151
- exit_to_user_mode_prepare arch/arm64/kernel/entry-common.c:169 [inline]
- exit_to_user_mode arch/arm64/kernel/entry-common.c:178 [inline]
- el0_svc+0xac/0x168 arch/arm64/kernel/entry-common.c:713
- el0t_64_sync_handler+0x84/0xfc arch/arm64/kernel/entry-common.c:730
- el0t_64_sync+0x190/0x194 arch/arm64/kernel/entry.S:598
-[Fix]
-The jfs_log_mutex cannot distinguish different superblocks, resulting in multiple
-different superblocks competing for jfs_log_mutex.
+On Thu, Mar 28, 2024 at 04:52:02PM -0700, Breno Leitao wrote:
+> Embedding net_device into structures prohibits the usage of flexible
+> arrays in the net_device structure. For more details, see the discussion
+> at [1].
+> 
+> Un-embed the net_device from the private struct by converting it
+> into a pointer. Then use the leverage the new alloc_netdev_dummy()
+> helper to allocate and initialize dummy devices.
+> 
+> [1] https://lore.kernel.org/all/20240229225910.79e224cf@kernel.org/
+> 
+> Signed-off-by: Breno Leitao <leitao@debian.org>
+> ---
+>  .../net/ethernet/marvell/prestera/prestera_rxtx.c | 15 ++++++++++++---
+>  1 file changed, 12 insertions(+), 3 deletions(-)
+> 
+> diff --git a/drivers/net/ethernet/marvell/prestera/prestera_rxtx.c b/drivers/net/ethernet/marvell/prestera/prestera_rxtx.c
 
-Reported-and-tested-by: syzbot+c824290332add8067111@syzkaller.appspotmail.com
-Signed-off-by: Edward Adam Davis <eadavis@qq.com>
----
- fs/jfs/jfs_incore.h |  1 +
- fs/jfs/jfs_logmgr.c | 26 +++++++++++++-------------
- fs/jfs/super.c      |  1 +
- 3 files changed, 15 insertions(+), 13 deletions(-)
+..
 
-diff --git a/fs/jfs/jfs_incore.h b/fs/jfs/jfs_incore.h
-index 10934f9a11be..56d336a49985 100644
---- a/fs/jfs/jfs_incore.h
-+++ b/fs/jfs/jfs_incore.h
-@@ -197,6 +197,7 @@ struct jfs_sb_info {
- 	kgid_t		gid;		/* gid to override on-disk gid */
- 	uint		umask;		/* umask to override on-disk umask */
- 	uint		minblks_trim;	/* minimum blocks, for online trim */
-+	struct mutex    simutex;
- };
- 
- /* jfs_sb_info commit_state */
-diff --git a/fs/jfs/jfs_logmgr.c b/fs/jfs/jfs_logmgr.c
-index 73389c68e251..b5609a7618e5 100644
---- a/fs/jfs/jfs_logmgr.c
-+++ b/fs/jfs/jfs_logmgr.c
-@@ -155,7 +155,6 @@ do {						\
-  */
- static LIST_HEAD(jfs_external_logs);
- static struct jfs_log *dummy_log;
--static DEFINE_MUTEX(jfs_log_mutex);
- 
- /*
-  * forward references
-@@ -1068,19 +1067,19 @@ int lmLogOpen(struct super_block *sb)
- 	if (sbi->mntflag & JFS_INLINELOG)
- 		return open_inline_log(sb);
- 
--	mutex_lock(&jfs_log_mutex);
-+	mutex_lock(&sbi->simutex);
- 	list_for_each_entry(log, &jfs_external_logs, journal_list) {
- 		if (file_bdev(log->bdev_file)->bd_dev == sbi->logdev) {
- 			if (!uuid_equal(&log->uuid, &sbi->loguuid)) {
- 				jfs_warn("wrong uuid on JFS journal");
--				mutex_unlock(&jfs_log_mutex);
-+				mutex_unlock(&sbi->simutex);
- 				return -EINVAL;
- 			}
- 			/*
- 			 * add file system to log active file system list
- 			 */
- 			if ((rc = lmLogFileSystem(log, sbi, 1))) {
--				mutex_unlock(&jfs_log_mutex);
-+				mutex_unlock(&sbi->simutex);
- 				return rc;
- 			}
- 			goto journal_found;
-@@ -1088,7 +1087,7 @@ int lmLogOpen(struct super_block *sb)
- 	}
- 
- 	if (!(log = kzalloc(sizeof(struct jfs_log), GFP_KERNEL))) {
--		mutex_unlock(&jfs_log_mutex);
-+		mutex_unlock(&sbi->simutex);
- 		return -ENOMEM;
- 	}
- 	INIT_LIST_HEAD(&log->sb_list);
-@@ -1130,7 +1129,7 @@ int lmLogOpen(struct super_block *sb)
- 	sbi->log = log;
- 	LOG_UNLOCK(log);
- 
--	mutex_unlock(&jfs_log_mutex);
-+	mutex_unlock(&sbi->simutex);
- 	return 0;
- 
- 	/*
-@@ -1144,7 +1143,7 @@ int lmLogOpen(struct super_block *sb)
- 	fput(bdev_file);
- 
-       free:		/* free log descriptor */
--	mutex_unlock(&jfs_log_mutex);
-+	mutex_unlock(&sbi->simutex);
- 	kfree(log);
- 
- 	jfs_warn("lmLogOpen: exit(%d)", rc);
-@@ -1187,12 +1186,13 @@ static int open_inline_log(struct super_block *sb)
- static int open_dummy_log(struct super_block *sb)
- {
- 	int rc;
-+	struct jfs_sb_info *sbi = JFS_SBI(sb);
- 
--	mutex_lock(&jfs_log_mutex);
-+	mutex_lock(&sbi->simutex);
- 	if (!dummy_log) {
- 		dummy_log = kzalloc(sizeof(struct jfs_log), GFP_KERNEL);
- 		if (!dummy_log) {
--			mutex_unlock(&jfs_log_mutex);
-+			mutex_unlock(&sbi->simutex);
- 			return -ENOMEM;
- 		}
- 		INIT_LIST_HEAD(&dummy_log->sb_list);
-@@ -1205,7 +1205,7 @@ static int open_dummy_log(struct super_block *sb)
- 		if (rc) {
- 			kfree(dummy_log);
- 			dummy_log = NULL;
--			mutex_unlock(&jfs_log_mutex);
-+			mutex_unlock(&sbi->simutex);
- 			return rc;
- 		}
- 	}
-@@ -1214,7 +1214,7 @@ static int open_dummy_log(struct super_block *sb)
- 	list_add(&JFS_SBI(sb)->log_list, &dummy_log->sb_list);
- 	JFS_SBI(sb)->log = dummy_log;
- 	LOG_UNLOCK(dummy_log);
--	mutex_unlock(&jfs_log_mutex);
-+	mutex_unlock(&sbi->simutex);
- 
- 	return 0;
- }
-@@ -1441,7 +1441,7 @@ int lmLogClose(struct super_block *sb)
- 
- 	jfs_info("lmLogClose: log:0x%p", log);
- 
--	mutex_lock(&jfs_log_mutex);
-+	mutex_lock(&sbi->simutex);
- 	LOG_LOCK(log);
- 	list_del(&sbi->log_list);
- 	LOG_UNLOCK(log);
-@@ -1490,7 +1490,7 @@ int lmLogClose(struct super_block *sb)
- 	kfree(log);
- 
-       out:
--	mutex_unlock(&jfs_log_mutex);
-+	mutex_unlock(&sbi->simutex);
- 	jfs_info("lmLogClose: exit(%d)", rc);
- 	return rc;
- }
-diff --git a/fs/jfs/super.c b/fs/jfs/super.c
-index e1be21ca5d6e..23628ca3990c 100644
---- a/fs/jfs/super.c
-+++ b/fs/jfs/super.c
-@@ -504,6 +504,7 @@ static int jfs_fill_super(struct super_block *sb, void *data, int silent)
- 	sbi->uid = INVALID_UID;
- 	sbi->gid = INVALID_GID;
- 	sbi->umask = -1;
-+	mutex_init(&sbi->simutex);
- 
- 	/* initialize the mount flag and determine the default error handler */
- 	flag = JFS_ERR_REMOUNT_RO;
--- 
-2.43.0
+> @@ -654,13 +654,21 @@ static int prestera_sdma_switch_init(struct prestera_switch *sw)
+>  	if (err)
+>  		goto err_evt_register;
+>  
+> -	init_dummy_netdev(&sdma->napi_dev);
+> +	sdma->napi_dev = alloc_netdev_dummy(0);
+> +	if (!sdma->napi_dev) {
+> +		dev_err(dev, "not able to initialize dummy device\n");
+> +		goto err_alloc_dummy;
 
+Hi Breno,
+
+This goto will result in the function returning err.
+But err is 0 here. Perhaps it should be set to a negative error value
+instead?
+
+Flagged by Smatch.
+
+> +	}
+> +
+>  
+> -	netif_napi_add(&sdma->napi_dev, &sdma->rx_napi, prestera_sdma_rx_poll);
+> +	netif_napi_add(sdma->napi_dev, &sdma->rx_napi, prestera_sdma_rx_poll);
+>  	napi_enable(&sdma->rx_napi);
+>  
+>  	return 0;
+>  
+> +err_alloc_dummy:
+> +	prestera_hw_event_handler_unregister(sw, PRESTERA_EVENT_TYPE_RXTX,
+> +					     prestera_rxtx_handle_event);
+>  err_evt_register:
+>  err_tx_init:
+>  	prestera_sdma_tx_fini(sdma);
+
+..
 
