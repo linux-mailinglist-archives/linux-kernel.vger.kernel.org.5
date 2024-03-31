@@ -1,74 +1,74 @@
-Return-Path: <linux-kernel+bounces-125984-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-125985-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 398EF892EE7
-	for <lists+linux-kernel@lfdr.de>; Sun, 31 Mar 2024 10:15:31 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id B2E8A892EEB
+	for <lists+linux-kernel@lfdr.de>; Sun, 31 Mar 2024 10:17:57 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5CE7D1C20C16
-	for <lists+linux-kernel@lfdr.de>; Sun, 31 Mar 2024 08:15:30 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 41DDA28213F
+	for <lists+linux-kernel@lfdr.de>; Sun, 31 Mar 2024 08:17:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3E10CAD5C;
-	Sun, 31 Mar 2024 08:15:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C61F5B651;
+	Sun, 31 Mar 2024 08:17:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="UDLpZktB"
-Received: from mail-wm1-f47.google.com (mail-wm1-f47.google.com [209.85.128.47])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="Ec3xndOz"
+Received: from mail-wr1-f48.google.com (mail-wr1-f48.google.com [209.85.221.48])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E91758F51
-	for <linux-kernel@vger.kernel.org>; Sun, 31 Mar 2024 08:15:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 163486FD5
+	for <linux-kernel@vger.kernel.org>; Sun, 31 Mar 2024 08:17:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711872922; cv=none; b=V9S/g20cM1mRKpPgBtE0eSi3H9cpS1E7C9uNNPCyLiWURMW3g12o/HoX7ouUY2XgZMlns4+tijH8CqefzezwWiqOKYxhPZyU5miZJwdWy4imw7miZY9ySKLRLH7zSB8KGxhUqqZCQZMR0jPq4YxcSofqVSjCP2CY3eAH3MQqCds=
+	t=1711873069; cv=none; b=ai1iMfhT+GCRJZWFSFhDju0ZNLN+Wxs2qVY79JthH8+2lPWMB0BdsaviZsk+PQ6qAvHtskXQOk7yiWdR5iqO5fh9CDzjyl/1z2Ukw+H6W6Fxa6IR466blKuIkgIkVIpTjXanIb5eMbIbEqT8bQJwT1XRG3I40HlhZoF9XJg0Qro=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711872922; c=relaxed/simple;
-	bh=jwo6cfDvf3jFfMqcnF6otesm/6mEcOhzaNul8s+ISls=;
+	s=arc-20240116; t=1711873069; c=relaxed/simple;
+	bh=ndc8ysYjCQBy80trrp4M4IUJn4Lae74qwNH7biRU2Y0=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=StUwQrbFeyW92haoANciLXhVdiS7V9R8K5cJNF5T7hO2uGQxkPrK9lSSIQbJlJ0D53QW8/ZKbbjYVj4hN+jxWJNzf4NhK5Ebsrw+2w4T2/jvw8+PVdTumYZyldPGADC+7NQCNnpx1RP443YYUW4YqRgTccMb5NIfbRCFTOrZg34=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=UDLpZktB; arc=none smtp.client-ip=209.85.128.47
+	 In-Reply-To:Content-Type; b=MeAL2/fFMnud1do+zAsLhcUUVm1NAiaK3Bw986IQUczfwiwqOnKszhHpvnrOo0myGSynrGBD8pOT+wrpT4kRROcJa2GsX+marsuiYtYhR4Z7lYCC828XppwVrr+6lhb8kA7d45v/a6ugyjcybVxmP0jKTut59gC03jLNqEa0w2k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=Ec3xndOz; arc=none smtp.client-ip=209.85.221.48
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wm1-f47.google.com with SMTP id 5b1f17b1804b1-415584360c0so5777435e9.1
-        for <linux-kernel@vger.kernel.org>; Sun, 31 Mar 2024 01:15:19 -0700 (PDT)
+Received: by mail-wr1-f48.google.com with SMTP id ffacd0b85a97d-33ececeb19eso1925481f8f.3
+        for <linux-kernel@vger.kernel.org>; Sun, 31 Mar 2024 01:17:46 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1711872918; x=1712477718; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1711873065; x=1712477865; darn=vger.kernel.org;
         h=content-transfer-encoding:in-reply-to:autocrypt:from
          :content-language:references:cc:to:subject:user-agent:mime-version
          :date:message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=GLqRhp75hqcMq70uNQSU9yQJhrD6r55MJYxRY4a6Sjc=;
-        b=UDLpZktByYdTT1TcKbtqW6gT/C8Npq5seEYUnME8EetiM6zeDXpPfbEMGj1WhE0vhj
-         MoMk9j9wHWQmYSUBHeMBQXb+/1ejn7ae0s1U514bLE7s0WaqAQRC6126CowP79qtKTNs
-         52Tm+ZmdBQmdRopmANoLIVJHOCcqXU38YUz/58NUDsOJGJPk0dUaOwaViO0d4WM+MZSa
-         hidXT8BDvulx/FU60eSL1NjToogv/BJkfGCBvtpvPI+xyuMLYhHwUC7HcVsBQmiawXS7
-         bZcjlrIBqGlF/TRuAFCxqfTpmvSHezoNzHC5dTrKBszzvyHKG2LWi2zGnGSRcr05/Ab1
-         gPJA==
+        bh=fq7w+pBD8boHlTnH6hQ1AjLF/ulfj31jixz7V7xfDhI=;
+        b=Ec3xndOz//8RW9wlLctpAGs4SA0l6N8BZo3cS5haARGY0uwogvZg2eTDiGX5t5/D6P
+         YE+jf5YpQ0XFdKRasupizCLWv3Xk5HWZdQaO0y5zx6NtnnOZSVdgZxspB3sOg8Togzh9
+         GXxGO1Sb5HVFqL7QpGhaSnkQ9iSFAM5KEKGy528aip7biJiGyJ6xv7t5aIlLs7P+Hhek
+         G9jCzzvrY1CTJb22OFeFd5VuItE8XCMxAzZS2yJ2yX9xaDIMQLKE0OStLXXUArqNqpXT
+         UaJUd6Pqd3scSFZsYMPeV07hpr0v+KjqNb52+vuHHQmcZumWl/o0F02aJPahyEwP6ICT
+         OBWw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711872918; x=1712477718;
+        d=1e100.net; s=20230601; t=1711873065; x=1712477865;
         h=content-transfer-encoding:in-reply-to:autocrypt:from
          :content-language:references:cc:to:subject:user-agent:mime-version
          :date:message-id:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=GLqRhp75hqcMq70uNQSU9yQJhrD6r55MJYxRY4a6Sjc=;
-        b=eZSowK+FPMVm5Lej2UyAdr8udf3hBSyzXaiBhNX4QNYINH5OSP1l/1Bs84LL5xqFnm
-         S7Hzp5UmbmQjJeIukW2/ow8CzUAHpqvQBdAyFg5+SzopDVCvrYYdvNehHoiaxYnO6pru
-         oLJ23Zx6QshZ275v8LHcqI+2eRN44h2hccrG/75Ce11L5QpbH0pRIQMv1uZJUzOyo3j9
-         n92Qlkceg+MCfR4+XNCYSm8S5e+EOZhpTL2ziZzpt7lfzYOvcQUwpdwAhiL95KL2ZJS7
-         y6sp7zCl5cafVSWrO7731mH87B/ZrfJmETWJmXH8dJ8TfewgmJI2PX6uPAY8+Ar6JVvH
-         JgNQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXylCmvdSl+AE4yoCIQCqBRLxmDc/ivqi14QM4lQjfYif+A09iZHtWdc06Ws8Euj/FR7UZ//njC6YwJB+sHjpuhZJdNP+0Hz38SaRrd
-X-Gm-Message-State: AOJu0YzDc6TrawNUtWrPoI/NqRR4cyCkQQI/9J33zYMcv0EQoqbZBhOM
-	k2towyVov00//zN0BY0mGaMigt+cbxUFx8charf1DId5aZivVgJVGpDOiiK5HGM=
-X-Google-Smtp-Source: AGHT+IEj4chibXJ3nlFP7Bu9V6ZYACWLCIaWSoNnJpklJoiCR8s38a0x+aNfDean6K7brvG3wVoBsQ==
-X-Received: by 2002:a05:600c:1f94:b0:415:5732:65d3 with SMTP id je20-20020a05600c1f9400b00415573265d3mr2471233wmb.37.1711872918184;
-        Sun, 31 Mar 2024 01:15:18 -0700 (PDT)
+        bh=fq7w+pBD8boHlTnH6hQ1AjLF/ulfj31jixz7V7xfDhI=;
+        b=LSRVO5ThEBNVPNNK2fEWio/MjWaL8DqCkZIiEmBmrj2LKllfpPds5dH8iY02K82opp
+         rwLWi9APRwTi5OxHCTobigzBe5+vqVVbxcSs22CmQxMnnU/8wBJaIf2Joh7DIZefRkAN
+         HO0Uz/Zzc/wxTLA7UwTWbC+vKwVEbzTtMjjPu39hSxjL647imbwZ5GEn5IYXkTmhe8F6
+         oaL/3gqM4gYeMIs0mMcVjT45cNfIOrnlvZQYl0sAfq1oW05WoHAe2uPdSZ0Uk2ceFCVx
+         g0ezPyEmc/AariNcYzG2l2kZf6d/30L/lj6xLgvg7mYdxIcOwRGwponRuebhKOCHobl1
+         fsPQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVfq/V06/rlC6biyCppiKApaueuEXleNyWgRkdH/PKVID4IJ64kjZ+3LF42lT9EhdvezAf+Zm7d/Le/klSAgLGPt/XJHkD3wescW+G8
+X-Gm-Message-State: AOJu0Yw7Lc90zOzQG8YbJUlRP3CcQVhx9SoizhMqr/9g2156UN1rjIym
+	+b2gnWIiCI8A5KrTtRXuJbI4LGj3yTuQKa0wW01mqVzmM/rAaDQ607lOSg6ZKUQ=
+X-Google-Smtp-Source: AGHT+IEa/XFklbocnJfv5TPx94avsX/AKg/mx4hi40SHzpsfTqJ7VRAGVUZ+shQ7VZWhx5fOkFhFfw==
+X-Received: by 2002:a05:600c:5253:b0:414:8a7b:481b with SMTP id fc19-20020a05600c525300b004148a7b481bmr4682510wmb.31.1711873065332;
+        Sun, 31 Mar 2024 01:17:45 -0700 (PDT)
 Received: from [192.168.1.20] ([178.197.223.16])
-        by smtp.gmail.com with ESMTPSA id q9-20020adfab09000000b00341b9737fc5sm8411916wrc.96.2024.03.31.01.15.15
+        by smtp.gmail.com with ESMTPSA id je14-20020a05600c1f8e00b00414887d9329sm10886866wmb.46.2024.03.31.01.17.43
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 31 Mar 2024 01:15:17 -0700 (PDT)
-Message-ID: <cc7a60c3-4a1e-4f32-b6ef-4a41d5c48eaf@linaro.org>
-Date: Sun, 31 Mar 2024 10:15:14 +0200
+        Sun, 31 Mar 2024 01:17:44 -0700 (PDT)
+Message-ID: <d020d14a-6f57-4283-ab71-293f1d9a9cc9@linaro.org>
+Date: Sun, 31 Mar 2024 10:17:42 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -76,17 +76,22 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v7 4/4] ASoc: dt-bindings: PCM6240: Add initial DT binding
-To: Shenghao Ding <shenghao-ding@ti.com>, linux-kernel@vger.kernel.org
-Cc: lgirdwood@gmail.com, broonie@kernel.org, robh+dt@kernel.org,
- krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
- linux-sound@vger.kernel.org, devicetree@vger.kernel.org, perex@perex.cz,
- tiwai@suse.com, 13916275206@139.com, mohit.chawla@ti.com, soyer@irl.hu,
- jkhuang3@ti.com, tiwai@suse.de, pdjuandi@ti.com, manisha.agrawal@ti.com,
- s-hari@ti.com, aviel@ti.com, hnagalla@ti.com, praneeth@ti.com,
- Baojun.Xu@fpt.com, Rob Herring <robh@kernel.org>
-References: <20240331021835.1470-1-shenghao-ding@ti.com>
- <20240331021835.1470-5-shenghao-ding@ti.com>
+Subject: Re: [PATCH 2/7] dt-bindings: clock: qcom: Add DISPCC clocks for
+ SM4450
+To: Ajit Pandey <quic_ajipan@quicinc.com>,
+ Michael Turquette <mturquette@baylibre.com>, Stephen Boyd
+ <sboyd@kernel.org>, Rob Herring <robh@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>, Bjorn Andersson <andersson@kernel.org>,
+ Konrad Dybcio <konrad.dybcio@linaro.org>, Vinod Koul <vkoul@kernel.org>,
+ Vladimir Zapolskiy <vladimir.zapolskiy@linaro.org>
+Cc: linux-arm-msm@vger.kernel.org, linux-clk@vger.kernel.org,
+ linux-kernel@vger.kernel.org, Taniya Das <quic_tdas@quicinc.com>,
+ Jagadeesh Kona <quic_jkona@quicinc.com>,
+ Imran Shaik <quic_imrashai@quicinc.com>,
+ Satya Priya Kakitapalli <quic_skakitap@quicinc.com>
+References: <20240330182817.3272224-1-quic_ajipan@quicinc.com>
+ <20240330182817.3272224-3-quic_ajipan@quicinc.com>
 Content-Language: en-US
 From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
@@ -133,53 +138,41 @@ Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  KQ06ztUMRrj8eVtpImjsWCd0bDWRaaR4vqhCHvAG9iWXZu4qh3ipie2Y0oSJygcZT7H3UZxq
  fyYKiqEmRuqsvv6dcbblD8ZLkz1EVZL6djImH5zc5x8qpVxlA0A0i23v5QvN00m6G9NFF0Le
  D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20240331021835.1470-5-shenghao-ding@ti.com>
+In-Reply-To: <20240330182817.3272224-3-quic_ajipan@quicinc.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 
-On 31/03/2024 04:18, Shenghao Ding wrote:
-> PCM6240 family chips are popular among audio customers, in spite of only a
-> portion of the functionality of codec, such as ADC or DAC, and so on, for
-> different Specifications, range from Personal Electric to Automotive
-> Electric, even some professional fields. Yet their audio performance is far
-> superior to the codec's, and cost is lower than codec, and much easier to
-> program than codec.
-> 
-> Reviewed-by: Rob Herring <robh@kernel.org>
-> 
-> Signed-off-by: Shenghao Ding <shenghao-ding@ti.com>
-> 
-> ---
-> Change in v7:
->  - Rewrite the subject to match something similar to other commits.
->  - And none of them are compatible with something.
->  - minItems, then maxItems.
->  - Drop reset-gpios description
->  - Remove the repeated reg descriptions and reg constraints.
->  - Drop redundant spaces.
->  - Add missing line breaks between blocks and additionalProperties.
->  - Correct compatibility issue on adc6120 and pcm6240.
->  - All these chips have only a portion of the functionality of codec,
->    such as ADC or DAC, and so on, but their audio performance is far
->    superior to the codec's, and cost is lower than codec, and much easier
->    to program than codec. Simply one or two register settings can enable
->    them to work. Init for these chips are hardware reset or software reset.
->    As to some audio filter params for internal filters, it is up to the
->    special user cases, which can be saved into the bin file. The default
->    value also can work well.
->  - Add blank line before reg.
->  - remove unneeded items and if branches.
->  - Add missing compatible devices, such as adc6120, etc.
->  - Add necessary people into the list for DTS review
->  - correct misaligned.
->  - simplify the compatibility
->  - remove sound-name-prefix and revert back
->  - Add review information
+On 30/03/2024 19:28, Ajit Pandey wrote:
+> Add support for qcom display clock controller bindings
+> for SM4450 platform.
 
-All these changes in v7 and you still kept Rob's review? I think either
-review was not given or your changelog is just incorrect.
+You cannot add support for a binding. Either you add a binding or not.
+Please look at git history for inspiration.
+
+> 
+> Signed-off-by: Ajit Pandey <quic_ajipan@quicinc.com>
 
 
+> +
+> +  clocks:
+> +    items:
+> +      - description: Board XO source
+> +      - description: Board active XO source
+> +      - description: Display AHB clock source from GCC
+> +      - description: sleep clock source
+> +      - description: Byte clock from DSI PHY0
+> +      - description: Pixel clock from DSI PHY0
+> +
+> +  '#clock-cells':
+> +    const: 1
+> +
+> +  '#reset-cells':
+> +    const: 1
+> +
+> +  '#power-domain-cells':
+> +    const: 1
+
+No power-domain? This looks incomplete.
 
 Best regards,
 Krzysztof
