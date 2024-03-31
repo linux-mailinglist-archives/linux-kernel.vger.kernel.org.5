@@ -1,121 +1,125 @@
-Return-Path: <linux-kernel+bounces-126074-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-126075-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 65EAE8931BE
-	for <lists+linux-kernel@lfdr.de>; Sun, 31 Mar 2024 15:43:56 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 385C38931C1
+	for <lists+linux-kernel@lfdr.de>; Sun, 31 Mar 2024 15:44:46 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id AEF21B215E0
-	for <lists+linux-kernel@lfdr.de>; Sun, 31 Mar 2024 13:43:53 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A071DB215E0
+	for <lists+linux-kernel@lfdr.de>; Sun, 31 Mar 2024 13:44:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A3D81144D30;
-	Sun, 31 Mar 2024 13:43:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 13C95144D29;
+	Sun, 31 Mar 2024 13:44:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b="eYEDm/6w"
-Received: from NAM12-MW2-obe.outbound.protection.outlook.com (mail-mw2nam12olkn2103.outbound.protection.outlook.com [40.92.23.103])
+	dkim=pass (1024-bit key) header.d=nxp.com header.i=@nxp.com header.b="H0PPdfqQ"
+Received: from EUR05-AM6-obe.outbound.protection.outlook.com (mail-am6eur05on2099.outbound.protection.outlook.com [40.107.22.99])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C9C6875813;
-	Sun, 31 Mar 2024 13:43:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.92.23.103
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9EDEE286AC;
+	Sun, 31 Mar 2024 13:44:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.22.99
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711892618; cv=fail; b=jXTGs6tRgsQUuOcCfyc1Ws46yPAL+8ik/vnAvzFZYn6uKonNZC3cG7LYIdKbpZDrnq87OOhQhDdgkyh8YL+6II8ThGB2SMDYc6GXh5W1nRmJfm2mMwUV8GGoSmKfTaVJ+pvOi/ikc/ynMrdpYVwSl48cIYTAkRcHNVZA9Y0mCCQ=
+	t=1711892673; cv=fail; b=qlLoUyJwglyOMgGiJtsR5qdxDf2B5gh79BJ+abtRvDVVpx9AsN1JgnMDjQWCINhTWziw7xOqER+LBIEodKJlEnNFHYf9j71tN238V/BSGvjT62LU9NnWKEADRGE1CrTup6SwJMiDAETFyEW+UapmRFdqdF538Q4QvAboACmX/+I=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711892618; c=relaxed/simple;
-	bh=4lmyGAdIk5B0DP6g9C8WvLoajGqhoGc9PaEQdsZuGBs=;
+	s=arc-20240116; t=1711892673; c=relaxed/simple;
+	bh=Q1DHDdx5vluvwImauN6LYvK4qYianDhzvXq+AiwifKI=;
 	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=saZpzXNOi1+43qF80LUtMiC8+OQjuB4oMddt1nr62x+WHMIzgTe6MNBsgoUQfvlsCVwiDFavoaISt/pfLZwO754VpFKtL5oLLC+nz38wgRrbk/JRQps8G4zn14TdOvBFmkREIvx73AZuFSgUZQGAuSdmInG8fzdW6iQshoXJYi4=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com; spf=pass smtp.mailfrom=outlook.com; dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b=eYEDm/6w; arc=fail smtp.client-ip=40.92.23.103
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=outlook.com
+	 Content-Type:MIME-Version; b=TLMLZVetkYpmmNb4j2QZaHH9U2yehjXsvYBCsn3wLtw+xFEWPI2DaoRGx4L9xIzsey6FDYhInDdFdoHL7Gyd2SI8qczIT+0d8C+35WLn1Hvx4ny0wkM94LCKwtsE9MpFnCyDoylu8xs6hu2m+IbwlDAMDsBP/MOaGK1k7VBdd8Y=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com; spf=pass smtp.mailfrom=nxp.com; dkim=pass (1024-bit key) header.d=nxp.com header.i=@nxp.com header.b=H0PPdfqQ; arc=fail smtp.client-ip=40.107.22.99
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nxp.com
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Ojdvn99c3eZocRTMU+YJzPvznzNAE6RdgX+zZdMlOTzBuPpBEm48UDDga5wBv2FHx/03xlxBU1WXP2KuJgatOSyzKXxFxmR7zgO7GXDifwLfvMJhlHmnLP+miVoPjphVqQO75WnrC1v/E4Jh9OgVkULne2notNhkyiyWmyewRjuvzOZBKpOT3YQfolIm+6b07SFC4AaxFyDtOy4yxrJKOoQFuYMFpUrh4e+o1Lvz+7ZKvVwromfbi+Jk6t39a/3qSWjCq1QYsfQB6zIDh5fKSjkJ99Oa8p8Yj3fufarwqeF4ENI0ZPh9wk1Lqc/1fVyDq473RuGek/spopYLeCd26Q==
+ b=ReD1rEEEZ7upoJBUSplzFbaBoBmQ3q64OuUXYeCkpJKBvBVkr+B/9kEo3EirA67NcrAr+YMRlz2+CmrdgD3apEwBaKWfXwvLVqqxpz1kcIaYgOnm5csXMRGVfgVSajxKK29Kd/AGqo0epf00ZqBqqQyQDIRZ3noFm83wzcdYmVQptFmq7dV/ALzsdHFKj3IUhP2uq1IsUlgcUE2AByppJC4jHL5i2eSJLTfw/jg00E52qg4WpqP7lApgAzKvoUFs/jJFYNa0pfXN6dmBtx29f7GhHeHFhsPcsx1lWBuJFQCzROfgFjlR66oY2NI2wlYdsA3TvMpFqFFQBeXsrmlqJA==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=fWoAE0dUeLMqDl4GmB3m5z2f21t7U0VAGxemvbR2Jj8=;
- b=YNUuwS3skBU9Up9+5J3pJKQqHbkoOvTD++lSHCP3yNwxsxvQAMlcxqcnag2+8pdYfeLRbzSvhKge7uULwLbrWcwzeqxk43uxqDBB5fXDhBV/GpBk8YnPQuF0dBTvXgJSlNNMtdZ0slO+uSKSF4eKOZ4OXLBZMslm1TZawTShJ5ggETFzUmC5tksiIpkVnOL3zcAkYwwfUmWnVvtmtnOwovVSCZ/yx2EQ3mQzmX7ERhO/WdByAsouzxqRSigbqq7UPDLKwYfSKgCYVrWwJHtwxwgBPpfq+vTfk2pMH0WyTNnZugVJ/LG9nLBD+LeV9RdVwgmZt5kde5sXrLeNQx5sRA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
- dkim=none; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=outlook.com;
- s=selector1;
+ bh=Sk9WFYoGdpwP0Nqbn5XHYROgGtrwNg6qfD0OEth9fes=;
+ b=iLPevZCw7Ah14WAm0UDD6i8xFUI76XbSXJOjcm4LKzPTcpctv75QGLwmB/HIaw02aoHQL8voBsrp9S7lEIFP3RIw8MZiTb77LoNUYsM60qZx5eNQLf8KQzMgtB+6Ay6OOahtUFnoTNb8CfUC6xNsS2reg/HLdwfseymRsv7Vk23yHkOpXNqbIvSWaPTDCB6pNUZQWcYbKHlu3qkCMO/tUwPq6DOySDfoiAR52Jpn87T1NlnP/EpdT27utDaLE8pAA1sUAPFAydVEigN1E25BgXgRbkx79F8e7IJxO1H7+0tj5p8CuGPvLbg1WCyPMThFdYlrGM6Jd9q7gb4Mwoq+Pw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=fWoAE0dUeLMqDl4GmB3m5z2f21t7U0VAGxemvbR2Jj8=;
- b=eYEDm/6wfN/zKOZ9AjARAL+9SLYOCBfL9a5P7aLrljRDQJsjDrQ5BoUMC7aAxTuPOb/nO2XJwIPZaeHLSybRVXgo4+S5LbQ9G6CDC8lrH+/YN16x/udCKzK+jddR1g9uK4+Pt2ZH36FXjaG711Pnwq3yhLssiHd+YGf4OEUriDRXVgi7aGzdkfE186bXAtu8tt05kw3Sx2y2GTXtuadwn8l0BTKwsbnUDdljDrPwM8bHxHVUFG1H/3GwcqvtjCcy/jREK1q43Pxa/eQ8ePO1fNjcxUEEIZfJDn4c2uZHrrNPo0UYRW/xM87kbwHOgReiBKXovBFZmOG/i1fhdoBdRw==
-Received: from MN0PR20MB4717.namprd20.prod.outlook.com (2603:10b6:208:3cf::20)
- by BY1PR20MB7433.namprd20.prod.outlook.com (2603:10b6:a03:4b4::8) with
+ bh=Sk9WFYoGdpwP0Nqbn5XHYROgGtrwNg6qfD0OEth9fes=;
+ b=H0PPdfqQr90tVwRw3vBUnJQVjR3+YIt2v6PSrKNqZ9b3RmuJaz/juDIavtGnTt0qPIOX/aVQ+sIHAmkwul1YH7szGdzLy0CQYZP/mN7/iC+fXLCIx0rcDXidtK56cUGyfvw8AUCrm7RuKsZWLfcXt3HGwccYNB4k808k7oiZFYE=
+Received: from DU0PR04MB9417.eurprd04.prod.outlook.com (2603:10a6:10:358::11)
+ by AS8PR04MB8961.eurprd04.prod.outlook.com (2603:10a6:20b:42c::23) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7409.43; Sun, 31 Mar
- 2024 13:43:33 +0000
-Received: from MN0PR20MB4717.namprd20.prod.outlook.com
- ([fe80::e0a3:f058:e169:988b]) by MN0PR20MB4717.namprd20.prod.outlook.com
- ([fe80::e0a3:f058:e169:988b%4]) with mapi id 15.20.7409.042; Sun, 31 Mar 2024
- 13:43:33 +0000
-From: Mac Xu <mac.xxn@outlook.com>
-To: Joe Perches <joe@perches.com>, Barry Song <21cnbao@gmail.com>,
-	"akpm@linux-foundation.org" <akpm@linux-foundation.org>,
-	"linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>
-CC: "apw@canonical.com" <apw@canonical.com>, "broonie@kernel.org"
-	<broonie@kernel.org>, "chenhuacai@loongson.cn" <chenhuacai@loongson.cn>,
-	"chris@zankel.net" <chris@zankel.net>, "corbet@lwn.net" <corbet@lwn.net>,
-	"dwaipayanray1@gmail.com" <dwaipayanray1@gmail.com>,
-	"herbert@gondor.apana.org.au" <herbert@gondor.apana.org.au>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	"linux@roeck-us.net" <linux@roeck-us.net>, "lukas.bulwahn@gmail.com"
-	<lukas.bulwahn@gmail.com>, "sfr@canb.auug.org.au" <sfr@canb.auug.org.au>,
-	"v-songbaohua@oppo.com" <v-songbaohua@oppo.com>, "workflows@vger.kernel.org"
-	<workflows@vger.kernel.org>, Max Filippov <jcmvbkbc@gmail.com>
-Subject: Re: [PATCH v4 2/2] scripts: checkpatch: check unused parameters for
- function-like macro
-Thread-Topic: [PATCH v4 2/2] scripts: checkpatch: check unused parameters for
- function-like macro
-Thread-Index: AQHagLa6dUAj6irLP0SxfpZRpU9V17FM60mAgAT1lsw=
-Date: Sun, 31 Mar 2024 13:43:33 +0000
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7409.45; Sun, 31 Mar
+ 2024 13:44:28 +0000
+Received: from DU0PR04MB9417.eurprd04.prod.outlook.com
+ ([fe80::d30b:44e7:e78e:662d]) by DU0PR04MB9417.eurprd04.prod.outlook.com
+ ([fe80::d30b:44e7:e78e:662d%4]) with mapi id 15.20.7386.037; Sun, 31 Mar 2024
+ 13:44:28 +0000
+From: Peng Fan <peng.fan@nxp.com>
+To: Andy Shevchenko <andy.shevchenko@gmail.com>, "Peng Fan (OSS)"
+	<peng.fan@oss.nxp.com>
+CC: Sudeep Holla <sudeep.holla@arm.com>, Cristian Marussi
+	<cristian.marussi@arm.com>, Rob Herring <robh@kernel.org>, Krzysztof
+ Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley
+	<conor+dt@kernel.org>, Linus Walleij <linus.walleij@linaro.org>, Dan
+ Carpenter <dan.carpenter@linaro.org>, "linux-arm-kernel@lists.infradead.org"
+	<linux-arm-kernel@lists.infradead.org>, "linux-kernel@vger.kernel.org"
+	<linux-kernel@vger.kernel.org>, "devicetree@vger.kernel.org"
+	<devicetree@vger.kernel.org>, "linux-gpio@vger.kernel.org"
+	<linux-gpio@vger.kernel.org>, Oleksii Moisieiev <oleksii_moisieiev@epam.com>
+Subject: RE: [PATCH v6 3/4] firmware: arm_scmi: Add SCMI v3.2 pincontrol
+ protocol basic support
+Thread-Topic: [PATCH v6 3/4] firmware: arm_scmi: Add SCMI v3.2 pincontrol
+ protocol basic support
+Thread-Index: AQHafRqyofu9Mu9OLUiaociI+9q/i7FPHJwAgALIoZA=
+Date: Sun, 31 Mar 2024 13:44:28 +0000
 Message-ID:
- <MN0PR20MB47171D2D78C8E71286E133BCF3382@MN0PR20MB4717.namprd20.prod.outlook.com>
-References: <20240328022136.5789-1-21cnbao@gmail.com>
-	 <20240328022136.5789-3-21cnbao@gmail.com>
- <ef2c96e40bcf777535c9ff2405e4dc5b3138b27e.camel@perches.com>
-In-Reply-To: <ef2c96e40bcf777535c9ff2405e4dc5b3138b27e.camel@perches.com>
+ <DU0PR04MB9417E797F4E0F7BB6154B3BE88382@DU0PR04MB9417.eurprd04.prod.outlook.com>
+References: <20240323-pinctrl-scmi-v6-0-a895243257c0@nxp.com>
+ <20240323-pinctrl-scmi-v6-3-a895243257c0@nxp.com>
+ <ZgcP4IkTQGks9ehH@surfacebook.localdomain>
+In-Reply-To: <ZgcP4IkTQGks9ehH@surfacebook.localdomain>
 Accept-Language: en-US
 Content-Language: en-US
 X-MS-Has-Attach:
 X-MS-TNEF-Correlator:
-msip_labels:
-x-tmn: [HQNAlrncRfkrRgud9wP9UzlVA/4FqJlc]
 x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: MN0PR20MB4717:EE_|BY1PR20MB7433:EE_
-x-ms-office365-filtering-correlation-id: 953deff3-b627-4c79-6cca-08dc51888f13
+x-ms-traffictypediagnostic: DU0PR04MB9417:EE_|AS8PR04MB8961:EE_
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
 x-microsoft-antispam: BCL:0;
 x-microsoft-antispam-message-info:
- OKZ2fJQZ2fqgrNyXQAuIHRyf2AKW2DIEn8rENlUArLEJkifF/X1A/GxvUvX5QF+MQKF+DIsptLOn24AjSpKYHKr48yh5IolLYPKBYZRleZ07G3nwhguVr+Os/6aFmsJPhdeJtoOtuZxCEn/C1Xl9ey4laqYJKmIy9XpncAlmp5qVk/1KfUsCvD4EUniosIgVL2VE01bM0WFy9KpvWH/oM8Dygi6JAP/q2KWVfmKtDxiBgQech8NEi8wqrSgXkgwsGzV5K8mSQpJi9IRraVkngld4lqurHl++fuknBS1o0+2Kk01xkI7lGgJElOsf7TLN0qBbYhiBofcMOAmUEmdn1x55dXpa3/uqftovEyBHxG2nBGEOG82AP1LuEbQy2TI8BkkJzPasYr1ehS88yxPJ3l9hETSbEhZAmaaRYzzNbNZCbxXy1rnmg+HjukCHhAnx52zw2nScQyjuaFqsNkIod9iVlED6Tu3M6LYn22y3hbBgrHijy6whJajJShQVOGkEfXAFeElWz1DpqszN7BHIgN8tlVd6uqBFytLD2ckSoFEFf3/50coIK9VW4Cr+FCpW
+ qHWCnRJeFMZQRJW735zC/zwOTNEIi0HCswbIQuFAZj6j8Ejgm10RgJbzRrA8UpAD/yToiabCBq1hCFiY7ohIxSsO2KnK7WHDZ5YXpn74O/tL4AmavVRG8OnhjflITXg+c5/VaEGH1HlGL8aMoEC6PBdwWC+xTGJ7J5B9/gjJqTF5vWLIbwL2oD3UeF9ERw5NbrMuN6HQEKfzxoJeVAjaUGb8wl0k0d687eJfULhp4JlkgLdl0pguVyn9Qvf45DUJmd02nfPVywYNFfOBEvQXoWiR7hF1W+XVBrIV6K88G4rPJZ2YU/xSrsqtdWB/ctsfTFmbV8IbWvZAYo6rGWD8ZHR6A+G0RC0XmOMFsXHwa/EOaSb9/aaw6PO+8c+6Von+Bhhe5D9sffZvgLBAT1/vsZkVYpu6BfImEYrsZ1J2C/2pjbJHA2ccrkgTKZkeAU5JQS5yLYmr+oDv4nu9aOhLjoZOlt8WWa/D5Z57kNTSJbtF0v+DGp2+VFHhRwWGvtb6J4XNkaOoev1fNl7YK3eG5fazrYx5c55+AviLCDIbVvxy0aWFX/v5f875xs/XdGazl+gpIjEdwKtvgi+XMjfuVy6RZJHnGvsVov8tpfPB6ZN6YhaWPXx05R3z7zfPX6W2r4SkfQDOcqaUdslvOX2L36Rl4wur/xX+8vPfdAP1kwM=
+x-forefront-antispam-report:
+ CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DU0PR04MB9417.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(1800799015)(7416005)(376005)(366007);DIR:OUT;SFP:1102;
 x-ms-exchange-antispam-messagedata-chunkcount: 1
 x-ms-exchange-antispam-messagedata-0:
- =?iso-8859-1?Q?1b6HgsvSXwIS8D1rpVLE/0/uckDuw5qrPwEPrmc7oShh0DBSNv3k81duxJ?=
- =?iso-8859-1?Q?Pq1Y/TSZO/0UD0be+fnpvP5JHY6BMrriuPh3qqxtTTLmvDSIP0aIKUdhxk?=
- =?iso-8859-1?Q?Gdne3DoGw/f9pEaPUgE5T60SppE0HXmKAVAvfbHmUO0orRXtlpREZIz643?=
- =?iso-8859-1?Q?9Xkf43+uiXVZO7ekew5aw2zNTcaxI527uiRkrPMVJZ1fIcNm1pEvxa/WbV?=
- =?iso-8859-1?Q?SMtTvaXnvLNvc5Ne99G5GBkBGDEa9UBe7b6WQtgaHkT9pVYptBZ4LswI49?=
- =?iso-8859-1?Q?4lvhuDsLRi+4RbShD7GkZGaOM4B2Uo/LT2yTvjzNTtW0Gi3VAZhYdA76VU?=
- =?iso-8859-1?Q?cDJeA/g8/tfZtsK03XuTR7jyBuidZttMjW+Z416Q0jCIDVmXlnpHwhm7et?=
- =?iso-8859-1?Q?NLpsYko7G9xjV+EfCmKuajbKbnqQWZFIS+eIIn97j9eXbyf2PFQYqQ/Oqt?=
- =?iso-8859-1?Q?UO/LLWi8Q7SkpvutsNdn9e3hnB7rBClU0MXOKN719m1uY0eM+yfsoNOira?=
- =?iso-8859-1?Q?RB01BpV7sQDH8iwEusCI8JkwFgKj+lV5YjC2vEDS/KMIAa23Dq7BMOcRm2?=
- =?iso-8859-1?Q?co4JbXi1adXDkMoaDXuK1i/lKtPC2s/lg7CVHQwcwbaMplX0u22ZLEnPbE?=
- =?iso-8859-1?Q?DSK3+MaP7L1h3dcCW0uEZonQjvHK+mVop/yO2lCVmuAQ9N0jZ0HW+sfNwP?=
- =?iso-8859-1?Q?rFzvmKGuZro6a/hteZy/DSPIwsV1z+BKSQgCclbkqvcxhtifInKh+9Ypem?=
- =?iso-8859-1?Q?IrhcfETn7XCIn2W8uyMluj9vid0l0cZKnIxl/TdJtqwZy3hJip8MW+rJ9J?=
- =?iso-8859-1?Q?dDlz+YIec44k1iV0OCIgNIqkzXkdxah6pP+XeoDdu++ajmxjSqfjAig/dW?=
- =?iso-8859-1?Q?o44FJJDkWlVMrLmiLG5EJgxNzzrFdkYxjHlFeCycXLrMuxHg/nCRUMKFt3?=
- =?iso-8859-1?Q?hqyD9Akx2VNXheAyC4OrE+XGxRjWjF19Q/Q4hx3iVTtwnmJ2MFsonLxV0u?=
- =?iso-8859-1?Q?7ia1IGXdHTJgNZ8HDb6ZdQ0t5ovtrjxjQSnPgWqwmygAneA2cEel52aHa2?=
- =?iso-8859-1?Q?QwiS6/aqlQVPkL6IsGGcyi8b6sxVe062sCvJqjwbSc8ykWNgRu06vCSfvW?=
- =?iso-8859-1?Q?jOfjhZZxl/xQ9tAxVXfO9bXUCgQ6Tkol4hjdOCo7kUUDjg3rbFMWbqqjwi?=
- =?iso-8859-1?Q?0ObaPW/rUb4YIpC6rfixk6ezYEEsjqsok2noYrTdxpRzbfEfzy6fujlJ9I?=
- =?iso-8859-1?Q?Y6bYF84RUcovqwDFz7Pw=3D=3D?=
-Content-Type: text/plain; charset="iso-8859-1"
+ =?us-ascii?Q?3tJmb9uuw/kAwHnATHfVL2uBTujZIn32XOZMdY5/NjjHY5VS9/r6qDEuh9S5?=
+ =?us-ascii?Q?T9Je8bVkXUXuZfA4pf/ONLNTgzDczlxyKx3em/rVHJCYp7nQFCwr1zcnspcx?=
+ =?us-ascii?Q?utrvIOJpmI1pF+za+MX5oDioGJT9zXZhqYmV3tSzoc8DuQZbR+ynsmxWeOg9?=
+ =?us-ascii?Q?egf63+rjmAxEN4jH/YqkhilNCpwsLDwG5gyiNEq4s2Uk8C/7T19uArPBOZei?=
+ =?us-ascii?Q?H2tT9SdS5OIyt/d9lV2BOTAx6QU3HTDUEAUq1PPfGgi5tG4Uam4nDhGxWDE9?=
+ =?us-ascii?Q?o7xWkXCcci8w3yuJVdBw+pXGKdt3W8ZZDApYmZuboXSxwZWEIGyTwzRCB/rK?=
+ =?us-ascii?Q?pTbPPWoxoOA8DaUUp23DSonf85GOJSurJyhVl/0fWmwhyrBNotlDpDzJnG9Z?=
+ =?us-ascii?Q?JV1o+Hw334OnYcuGxp2tnZi3/7u3CqyrhBdwitI4Fjs589lkd4XJek/+2irs?=
+ =?us-ascii?Q?gxHoCTVBO1x+DoRX1x5dE+BCE+LM4qtprYVCExHA903JGZewyyWmZqBJkGdR?=
+ =?us-ascii?Q?r/yce+j8pxhhIXozwUpvSVk+quhFThraCv9xXDR87GKfKIpnancIb4mFdyx3?=
+ =?us-ascii?Q?1PwQiKkOL8S6o0xML3AehMSHPR1wh8esyB3M24g4ZZP8AfCZrC4DsTfIsaaZ?=
+ =?us-ascii?Q?SQlAo2FBH4II1bSX0NK0tM+LH0PiCk6TYNbGEKwmpmWNANPtDKqFYVnMjcJp?=
+ =?us-ascii?Q?AilpwKC9UFoaq3ISJkmBWJFNUAcFEVIB21d6fz9Iimn+l5AbSYHaKFZaxiu3?=
+ =?us-ascii?Q?B8YOU0c3qs9hTi/a52oJM+4rMbjNDkj8twPRDufwlI0TMAnMYRFRaCYJ3tNk?=
+ =?us-ascii?Q?WujUU0VOdOamFJfG4TBB2YOk8vKrAI5wGpzjucncWlWoRj9EIRV7Xwak+UwQ?=
+ =?us-ascii?Q?gxdXt+wTMmUg70qoE0R8OmlVDKYwEYXXuu2i+SybJBuqxirSdlcB6xJTZZrT?=
+ =?us-ascii?Q?6jE2YR63bEXPe6L+Fw6oH7djvlRyS1YJVMNYFBIdnmI5+YxG122uQ7kT6Zx4?=
+ =?us-ascii?Q?SBHdw3Xtihuk9sRnj+5AHZ8A4VFqKNLSWwiaUVK5gic0b7/szT8+QynxMCe5?=
+ =?us-ascii?Q?CbX53PuWwPDFFYD7oNP4BFWb/oj+BGMn4MOC9TywXPxO24xBymhSMLcMzze1?=
+ =?us-ascii?Q?6dEtfg8ynLO4hiI+erna9y1TebOtL1VgEeeEUvn9mYeiTjyv9cXpL+YrwAfG?=
+ =?us-ascii?Q?bCcOxW09qTYKD7TuWSD2lliXw6eI/aKbfcRCwmv7MTEm6ph1dKeytqF5D+gj?=
+ =?us-ascii?Q?57tqd3nCia/KEUu7qfdFm28lHU/XCTo6LCLJuQHUrH1wH8h5uIPnB06h0xEg?=
+ =?us-ascii?Q?aD94dzV11oE80TXtdGy5StJWh6Ks3lRVmJRY5cPF6efmNWQlZEuAUwRfs+Y6?=
+ =?us-ascii?Q?vIrMl4Z33Jeb/OooejhXYzSdK5ogZ3GFk8TWt3C0nG6hRQ5UTLbOIrjVy8Nx?=
+ =?us-ascii?Q?GGnVcyx47NlSSPm1MTvjtTBlre2ebJG1CuZU5em2vp7yIug2zEc8DvHQGLDN?=
+ =?us-ascii?Q?MjC7oVDoTbBM50zCq9fm/4HojHj/Bf9GRsdBmtutZOWPgfmct0eBxqyvbqCU?=
+ =?us-ascii?Q?ysr+fq1KnEQXTGCqY3I=3D?=
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -123,137 +127,425 @@ List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-OriginatorOrg: outlook.com
+X-OriginatorOrg: nxp.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: MN0PR20MB4717.namprd20.prod.outlook.com
-X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg: 00000000-0000-0000-0000-000000000000
-X-MS-Exchange-CrossTenant-Network-Message-Id: 953deff3-b627-4c79-6cca-08dc51888f13
-X-MS-Exchange-CrossTenant-rms-persistedconsumerorg: 00000000-0000-0000-0000-000000000000
-X-MS-Exchange-CrossTenant-originalarrivaltime: 31 Mar 2024 13:43:33.7186
+X-MS-Exchange-CrossTenant-AuthSource: DU0PR04MB9417.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: da8e3ba2-5182-4654-4ee5-08dc5188afce
+X-MS-Exchange-CrossTenant-originalarrivaltime: 31 Mar 2024 13:44:28.6260
  (UTC)
 X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY1PR20MB7433
+X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: SWiSltzjuYFb0YxiirFaf0n4m6Wz9O0as9oNQt0X/aH8idUaAlZAzfv0XLB86MNabddtIcn9zda1jQXFioClEg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AS8PR04MB8961
 
-=0A=
-> On Thu, 2024-03-28 at 15:21 +1300, Barry Song wrote:=0A=
-> > From: Xining Xu <mac.xxn@outlook.com>=0A=
-> >=0A=
-> > If function-like macros do not utilize a parameter, it might result in =
-a=0A=
-> > build warning.  In our coding style guidelines, we advocate for utilizi=
-ng=0A=
-> > static inline functions to replace such macros.  This patch verifies=0A=
-> > compliance with the new rule.=0A=
-> []=0A=
-> > diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl=0A=
-> []=0A=
-> > @@ -6109,6 +6109,36 @@ sub process {=0A=
-> >                                WARN("TRAILING_SEMICOLON",=0A=
-> >                                     "macros should not use a trailing s=
-emicolon\n" . "$herectx");=0A=
-> >                        }=0A=
-> > +=0A=
-> > +                     # match "\s*" rather than "\s+" after the balance=
-d parens, as macro definition with arguments=0A=
-> > +                     # is not required to have whitespace after argume=
-nts=0A=
-> > +                     if ($dstat =3D~ /^\+\s*#\s*define\s+$Ident$balanc=
-ed_parens\s*(\S+.*)(\/[\/*].*)?/) {=0A=
-> =0A=
-> I think '(\/[\/*].*)?' doesn't do what you expect=0A=
-> perhaps '(\/[\/\*].*)?'=0A=
-> though I don't know why this should be capture group=0A=
-=0A=
-I'd wanted to capture the comment to handle a case where a unused param hap=
-pens to appears in a comment=0A=
-=0A=
-> =0A=
-> > +                             my $params =3D $1 || "";=0A=
-> =0A=
-> =0A=
-> > +                             my $body =3D $2 || "";=0A=
-> =0A=
-> Should never get the || "" as the 2nd capture group is not optional=0A=
-> =0A=
-> > +=0A=
-> > +                         # get the individual params=0A=
-> > +                             $params =3D~ tr/()//d;=0A=
-> > +                             # remove leading and trailing whitespace=
-=0A=
-> > +                             $params =3D~ s/^\s+|\s+$//g;=0A=
-> > +=0A=
-> > +                             $ctx =3D~ s/\n*$//;=0A=
-> > +                             my $cnt =3D statement_rawlines($ctx);=0A=
-> > +                             my $herectx =3D get_stat_here($linenr, $c=
-nt, $here);=0A=
-> > +=0A=
-> > +                             if ($params ne "") {=0A=
-> =0A=
-> probably unnecessary=0A=
-> =0A=
-> > +                                     my @paramList =3D split /,\s*/, $=
-params;=0A=
-> =0A=
-> please use split() with parentheses=0A=
-> =0A=
-> > +                                     foreach my $param(@paramList) {=
-=0A=
-> =0A=
-> maybe=0A=
->                                 foreach my $param (split(/,/, $params) {=
-=0A=
->                                         $param =3D trim($param);=0A=
->                                         next if ($param =3D~ /\.\.\.$/);=
-=0A=
-> > +                                             if ($param =3D~ /\.\.\.$/=
-) {=0A=
-> > +                                                     # if the param na=
-me ends with "...", skip the check=0A=
-> > +                                                     next;=0A=
-> > +                                             }=0A=
-> > +                                             if ($body !~ /\b$param\b/=
-) {=0A=
-> > +                                                     WARN("UNUSED_PARA=
-M_IN_MACRO",=0A=
-> > +                                                             "Paramete=
-r '$param' is not used in function-like macro\n" . "$herectx");=0A=
-> > +                                             }=0A=
-> > +                                     }=0A=
-> It seems this logic is a bit redundant to existing=0A=
-> code and might be better added in the block that starts=0A=
-> =0A=
-> (line 6026)=0A=
-> # check if any macro arguments are reused (ignore '...' and 'type')=0A=
-> =0A=
-> as that already does each param in a #define and=0A=
-> ignores ... and type=0A=
-=0A=
-Hi Joe,=0A=
-=0A=
-Thank you for your comments with insights, as you said, code block of line =
-6026 is a better place to =0A=
-place this new logic, as it already handles the logic I'd wanted like extra=
-cting, splitting and trimming =0A=
-the arguments, excluding the trailing comments etc.=0A=
-=0A=
-By placing the logic in the new place, code duplicates are drastically redu=
-ced.=0A=
-=0A=
-Here's my new code (inserted from line 6044):=0A=
-+# check if this is an unused argument=0A=
-+        if ($define_stmt !~ /\b$arg\b/) {=0A=
-+                WARN("UNUSED_ARG_IN_MACRO",=0A=
-+                        "Argument '$arg' is not used in function-like macr=
-o\n" . "$herectx");=0A=
-+        }=0A=
-+}=0A=
-=0A=
-Please note that I use the wording of "arg/argument" instead of "param/para=
-meter" for consistency, =0A=
-please let me know if if this is the correct wording to use here.=0A=
-=0A=
-Thanks,=0A=
-Mac.=0A=
-=0A=
+Hi Andy,
+
+> Subject: Re: [PATCH v6 3/4] firmware: arm_scmi: Add SCMI v3.2 pincontrol
+> protocol basic support
+>=20
+> Sat, Mar 23, 2024 at 08:15:16PM +0800, Peng Fan (OSS) kirjoitti:
+> > From: Peng Fan <peng.fan@nxp.com>
+> >
+> > Add basic implementation of the SCMI v3.2 pincontrol protocol.
+>=20
+> ...
+>=20
+> >  scmi-transport-$(CONFIG_ARM_SCMI_TRANSPORT_VIRTIO) +=3D virtio.o
+> >  scmi-transport-$(CONFIG_ARM_SCMI_TRANSPORT_OPTEE) +=3D optee.o
+> > scmi-protocols-y =3D base.o clock.o perf.o power.o reset.o sensors.o
+> > system.o voltage.o powercap.o
+>=20
+> Actually you want to have :=3D here.
+>=20
+> > +scmi-protocols-y +=3D pinctrl.o
+>=20
+>=20
+>=20
+> >  scmi-module-objs :=3D $(scmi-driver-y) $(scmi-protocols-y)
+> > $(scmi-transport-y)
+>=20
+> Side note: The -objs has to be -y
+>=20
+> ...
+>=20
+> > +#include <linux/module.h>
+> > +#include <linux/scmi_protocol.h>
+> > +#include <linux/slab.h>
+>=20
+> This is semi-random list of headers. Please, follow IWYU principle (inclu=
+de
+> what you use). There are a lot of inclusions I see missing (just in the c=
+ontext of
+> this page I see bits.h, types.h, and  asm/byteorder.h).
+
+Is there any documentation about this requirement?
+Some headers are already included by others.
+
+>=20
+> ...
+>=20
+> > +enum scmi_pinctrl_protocol_cmd {
+> > +	PINCTRL_ATTRIBUTES =3D 0x3,
+> > +	PINCTRL_LIST_ASSOCIATIONS =3D 0x4,
+> > +	PINCTRL_SETTINGS_GET =3D 0x5,
+> > +	PINCTRL_SETTINGS_CONFIGURE =3D 0x6,
+> > +	PINCTRL_REQUEST =3D 0x7,
+> > +	PINCTRL_RELEASE =3D 0x8,
+> > +	PINCTRL_NAME_GET =3D 0x9,
+> > +	PINCTRL_SET_PERMISSIONS =3D 0xa
+>=20
+> Leave trailing comma as it's not a termination.
+>=20
+> > +};
+>=20
+> ...
+>=20
+> > +static int scmi_pinctrl_attributes_get(const struct scmi_protocol_hand=
+le
+> *ph,
+> > +				       struct scmi_pinctrl_info *pi) {
+> > +	int ret;
+> > +	struct scmi_xfer *t;
+> > +	struct scmi_msg_pinctrl_protocol_attributes *attr;
+> > +
+> > +	ret =3D ph->xops->xfer_get_init(ph, PROTOCOL_ATTRIBUTES, 0,
+> sizeof(*attr),
+> > +				      &t);
+>=20
+> This looks much better on a single line.
+
+Per Cristian, scmi drivers keep 80 max chars.
+
+>=20
+> > +	if (ret)
+> > +		return ret;
+> > +
+> > +	attr =3D t->rx.buf;
+> > +
+> > +	ret =3D ph->xops->do_xfer(ph, t);
+> > +	if (!ret) {
+> > +		pi->nr_functions =3D GET_FUNCTIONS_NR(attr-
+> >attributes_high);
+> > +		pi->nr_groups =3D GET_GROUPS_NR(attr->attributes_low);
+> > +		pi->nr_pins =3D GET_PINS_NR(attr->attributes_low);
+> > +	}
+> > +
+> > +	ph->xops->xfer_put(ph, t);
+> > +	return ret;
+> > +}
+>=20
+> ...
+>=20
+> > +	ret =3D ph->xops->xfer_get_init(ph, PINCTRL_ATTRIBUTES, sizeof(*tx),
+> > +				      sizeof(*rx), &t);
+>=20
+> Possible to have on a single line (if you use relaxed 100 limit).
+> Or (re)split it more logically:
+>=20
+> 	ret =3D ph->xops->xfer_get_init(ph, PINCTRL_ATTRIBUTES,
+> 				      sizeof(*tx), sizeof(*rx), &t);
+>=20
+> > +	if (ret)
+> > +		return ret;
+>=20
+> ...
+>=20
+> > +	/*
+> > +	 * If supported overwrite short name with the extended one;
+> > +	 * on error just carry on and use already provided short name.
+> > +	 */
+> > +	if (!ret && ext_name_flag)
+>=20
+> Please, use standard pattern, i.e.
+>=20
+> 	if (ret)
+> 		return ret;
+>=20
+> > +		ph->hops->extended_name_get(ph, PINCTRL_NAME_GET,
+> selector,
+> > +					    (u32 *)&type, name,
+>=20
+> Why is an explicit casting needed?
+
+The type is enum, not u32.
+
+>=20
+> > +					    SCMI_MAX_STR_SIZE);
+> > +	return ret;
+>=20
+> ...
+>=20
+> > +	iter =3D ph->hops->iter_response_init(ph, &ops, size,
+> > +					    PINCTRL_LIST_ASSOCIATIONS,
+> > +					    sizeof(struct
+> scmi_msg_pinctrl_list_assoc),
+> > +					    &ipriv);
+>=20
+> > +
+>=20
+> Redundant blank line.
+>=20
+> > +	if (IS_ERR(iter))
+> > +		return PTR_ERR(iter);
+>=20
+> ...
+>=20
+> > +	if (p->flag =3D=3D 1)
+> > +		attributes |=3D FIELD_PREP(SKIP_CONFIGS_MASK, desc_index);
+> > +	else if (!p->flag)
+>=20
+> Be consistent, i.e. if (p->flag =3D=3D 0)
+>=20
+> > +		attributes |=3D FIELD_PREP(CONFIG_TYPE_MASK, p-
+> >config_types[0]);
+>=20
+> ...
+>=20
+> > +		st->num_remaining =3D le32_get_bits(r->num_configs,
+> > +						  GENMASK(31, 24));
+>=20
+> One line?
+
+Scmi drivers use 80 max drivers.
+>=20
+> ...
+>=20
+> > +	if (!p->flag) {
+> > +		if (p->config_types[0] !=3D
+> > +		    le32_get_bits(r->configs[st->loop_idx * 2], GENMASK(7, 0)))
+> > +			return -EINVAL;
+> > +	} else if (p->flag =3D=3D 1) {
+> > +		p->config_types[st->desc_index + st->loop_idx] =3D
+> > +			le32_get_bits(r->configs[st->loop_idx * 2],
+> > +				      GENMASK(7, 0));
+>=20
+> With a temporary variable for r->configs[st->loop_idx * 2] the above can =
+be
+> written in much better way.
+
+ok. Fix in v7.
+>=20
+> > +	} else if (p->flag =3D=3D 2) {
+> > +		return 0;
+> > +	}
+>=20
+> > +	p->config_values[st->desc_index + st->loop_idx] =3D
+> > +		le32_to_cpu(r->configs[st->loop_idx * 2 + 1]);
+>=20
+> For the sake of consistency with the above suggestion also temporary for =
+next
+> config value.
+>=20
+> ...
+>=20
+> > +	iter =3D ph->hops->iter_response_init(ph, &ops, 1,
+> PINCTRL_SETTINGS_GET,
+> > +					    sizeof(struct
+> scmi_msg_settings_get),
+> > +					    &ipriv);
+>=20
+> > +
+>=20
+> Redundant blank line.
+>=20
+> > +	if (IS_ERR(iter))
+> > +		return PTR_ERR(iter);
+>=20
+> ...
+>=20
+> > +static int scmi_pinctrl_get_group_info(const struct scmi_protocol_hand=
+le
+> *ph,
+> > +				       u32 selector,
+> > +				       struct scmi_group_info *group) {
+> > +	int ret;
+>=20
+> > +	if (!group)
+> > +		return -EINVAL;
+>=20
+> When the above is not a dead code?
+
+It could be removed.
+
+>=20
+> > +	ret =3D scmi_pinctrl_attributes(ph, GROUP_TYPE, selector,
+> > +				      group->name,
+> > +				      &group->nr_pins);
+> > +	if (ret)
+> > +		return ret;
+> > +
+> > +	if (!group->nr_pins) {
+> > +		dev_err(ph->dev, "Group %d has 0 elements", selector);
+> > +		return -ENODATA;
+> > +	}
+> > +
+> > +	group->group_pins =3D kmalloc_array(group->nr_pins,
+> > +					  sizeof(*group->group_pins),
+> > +					  GFP_KERNEL);
+> > +	if (!group->group_pins)
+> > +		return -ENOMEM;
+> > +
+> > +	ret =3D scmi_pinctrl_list_associations(ph, selector, GROUP_TYPE,
+> > +					     group->nr_pins, group-
+> >group_pins);
+> > +	if (ret) {
+> > +		kfree(group->group_pins);
+> > +		return ret;
+> > +	}
+> > +
+> > +	group->present =3D true;
+> > +	return 0;
+> > +}
+>=20
+> ...
+>=20
+> > +		ret =3D scmi_pinctrl_get_group_info(ph, selector,
+> > +						  &pi->groups[selector]);
+>=20
+> One line?
+>=20
+> > +		if (ret)
+> > +			return ret;
+>=20
+> ...
+>=20
+> > +	ret =3D scmi_pinctrl_attributes(ph, FUNCTION_TYPE, selector,
+> > +				      func->name,
+> > +				      &func->nr_groups);
+>=20
+> At least last two lines can be joined.
+>=20
+> > +	if (ret)
+> > +		return ret;
+>=20
+> ...
+>=20
+> > +	ret =3D scmi_pinctrl_attributes(ph, PIN_TYPE, selector,
+> > +				      pin->name, NULL);
+>=20
+> It's pleany of room on the previous line.
+>=20
+> > +	if (ret)
+> > +		return ret;
+>=20
+> ...
+>=20
+> > +		ret =3D scmi_pinctrl_get_pin_info(ph, selector,
+> > +						&pi->pins[selector]);
+>=20
+> Ditto.
+>=20
+> > +		if (ret)
+> > +			return ret;
+>=20
+> ...
+>=20
+> > +static int scmi_pinctrl_protocol_init(const struct
+> > +scmi_protocol_handle *ph) {
+> > +	int ret;
+> > +	u32 version;
+> > +	struct scmi_pinctrl_info *pinfo;
+> > +
+> > +	ret =3D ph->xops->version_get(ph, &version);
+> > +	if (ret)
+> > +		return ret;
+> > +
+> > +	dev_dbg(ph->dev, "Pinctrl Version %d.%d\n",
+> > +		PROTOCOL_REV_MAJOR(version),
+> PROTOCOL_REV_MINOR(version));
+> > +
+> > +	pinfo =3D devm_kzalloc(ph->dev, sizeof(*pinfo), GFP_KERNEL);
+>=20
+> Huh?!
+>=20
+> Please, get yourself familiar with the scope of devm APIs.
+
+Please teach me if this is wrong.
+
+>=20
+> > +	if (!pinfo)
+> > +		return -ENOMEM;
+> > +
+> > +	ret =3D scmi_pinctrl_attributes_get(ph, pinfo);
+> > +	if (ret)
+> > +		return ret;
+> > +
+> > +	pinfo->pins =3D devm_kcalloc(ph->dev, pinfo->nr_pins,
+> > +				   sizeof(*pinfo->pins),
+> > +				   GFP_KERNEL);
+> > +	if (!pinfo->pins)
+> > +		return -ENOMEM;
+> > +
+> > +	pinfo->groups =3D devm_kcalloc(ph->dev, pinfo->nr_groups,
+> > +				     sizeof(*pinfo->groups),
+> > +				     GFP_KERNEL);
+> > +	if (!pinfo->groups)
+> > +		return -ENOMEM;
+> > +
+> > +	pinfo->functions =3D devm_kcalloc(ph->dev, pinfo->nr_functions,
+> > +					sizeof(*pinfo->functions),
+> > +					GFP_KERNEL);
+> > +	if (!pinfo->functions)
+> > +		return -ENOMEM;
+> > +
+> > +	pinfo->version =3D version;
+> > +
+> > +	return ph->set_priv(ph, pinfo, version); }
+> > +
+> > +static int scmi_pinctrl_protocol_deinit(const struct
+> > +scmi_protocol_handle *ph) {
+> > +	int i;
+> > +	struct scmi_pinctrl_info *pi =3D ph->get_priv(ph);
+> > +
+> > +	for (i =3D 0; i < pi->nr_groups; i++) {
+> > +		if (pi->groups[i].present) {
+> > +			kfree(pi->groups[i].group_pins);
+> > +			pi->groups[i].present =3D false;
+> > +		}
+> > +	}
+> > +
+> > +	for (i =3D 0; i < pi->nr_functions; i++) {
+> > +		if (pi->functions[i].present) {
+> > +			kfree(pi->functions[i].groups);
+>=20
+> This is wrong in conjunction with the above.
+
+Yeah.
+
+>=20
+> > +			pi->functions[i].present =3D false;
+> > +		}
+> > +	}
+> > +
+> > +	return 0;
+> > +}
+>=20
+> ...
+>=20
+> > +static const struct scmi_protocol scmi_pinctrl =3D {
+> > +	.id =3D SCMI_PROTOCOL_PINCTRL,
+> > +	.owner =3D THIS_MODULE,
+> > +	.instance_init =3D &scmi_pinctrl_protocol_init,
+> > +	.instance_deinit =3D &scmi_pinctrl_protocol_deinit,
+> > +	.ops =3D &pinctrl_proto_ops,
+> > +	.supported_version =3D SCMI_PROTOCOL_SUPPORTED_VERSION, };
+>=20
+> > +
+>=20
+> Redundant blank line.
+
+Fix in v7
+
+Thanks,
+Peng.
+>=20
+> > +DEFINE_SCMI_PROTOCOL_REGISTER_UNREGISTER(pinctrl, scmi_pinctrl)
+>=20
+>=20
+> --
+> With Best Regards,
+> Andy Shevchenko
+>=20
+
 
