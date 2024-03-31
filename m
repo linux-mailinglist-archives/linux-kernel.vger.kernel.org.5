@@ -1,102 +1,101 @@
-Return-Path: <linux-kernel+bounces-126116-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-126182-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1A3BF893261
-	for <lists+linux-kernel@lfdr.de>; Sun, 31 Mar 2024 18:06:38 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 47BB3893348
+	for <lists+linux-kernel@lfdr.de>; Sun, 31 Mar 2024 18:38:14 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3D5F11C21C75
-	for <lists+linux-kernel@lfdr.de>; Sun, 31 Mar 2024 16:06:37 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B27091F23802
+	for <lists+linux-kernel@lfdr.de>; Sun, 31 Mar 2024 16:38:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1221622079;
-	Sun, 31 Mar 2024 16:02:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 137C0155A3C;
+	Sun, 31 Mar 2024 16:28:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="HnnxChoe"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="PZ9D70uV"
 Received: from a.mx.secunet.com (a.mx.secunet.com [62.96.220.36])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4F59D148FF3;
-	Sun, 31 Mar 2024 16:02:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=62.96.220.36
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C35F8154424;
+	Sun, 31 Mar 2024 16:28:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=62.96.220.36
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711900955; cv=fail; b=eX9YnE6oAdwEN6aIhFmRQY517wnZBnPhulfh4hZpakX9fMRGA86wcAVrJGyh2fbRDA6N0i2jcHDuAUfajTpoJW+eNE6J6Aw7flhNgSSaCCvVG6Fzd7MQoPJjP4ZidJfU8DuPhrNaNtEesPcBTCpGbtj1i4nUY/tz/kcD9hfBHRs=
+	t=1711902520; cv=pass; b=ANXCOc1bPlPz178MXWVMfFblFkhFPxjw/U/0lRDq035znpZs6u0au1OoWJM1uM+p9FqusumNVQtutwTkBSx980ziAxoMOZr4Bi+wPzsgNy3FEKqp6N9Wlku6WPFmttKrJ1uXZGnYXrOcuCvXQSjCZr2vDYBJHtlDa0nYv8kTxWk=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711900955; c=relaxed/simple;
-	bh=YVgu6j1j0isPy4AXtAhtK7ZyY09vAr2lZa5WjLrIggg=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=oHlvYphSgL8SLMom2Nx8t7w/b23opQaSpHY946F8/Ta9A1SDweEhM71mc1/IaQPg/E78yyqtqMipGnt2qEr9VO922MdRU0fuFuVBeW5Wpw+3l7IHTRh0zwX2fX23D2enZO3k/tx+o7l3Y0rQdycvzvYSoUJ/WKEu9P8djTP3Wc8=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=fail smtp.mailfrom=kernel.org; dkim=fail (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=HnnxChoe reason="signature verification failed"; arc=none smtp.client-ip=10.30.226.201; arc=fail smtp.client-ip=62.96.220.36
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	s=arc-20240116; t=1711902520; c=relaxed/simple;
+	bh=+9xtEveTESmqEmgqfqi/AHy+l/CY7o7HoCu99ORDDcA=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=eoDZgRjHEf7JNyKvW74p/ALV+zVvE/820y7ObY1p5CNRieRbZ0F3aOVybsYJHbZSAyk4e0GN84L79nd28AZXmIrWES/v/aej9QgevYXpumoeUfnnrFCLYHI3psm8eer+QHkRlX2oSuK9NmUmitzI48C9WibEHpW/Oba0u36JMi8=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=kernel.org; spf=fail smtp.mailfrom=kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=PZ9D70uV; arc=none smtp.client-ip=10.30.226.201; arc=pass smtp.client-ip=62.96.220.36
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=kernel.org
 Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=kernel.org
 Received: from localhost (localhost [127.0.0.1])
-	by a.mx.secunet.com (Postfix) with ESMTP id E7DDC208C1;
-	Sun, 31 Mar 2024 18:02:29 +0200 (CEST)
+	by a.mx.secunet.com (Postfix) with ESMTP id 8E17A208DC;
+	Sun, 31 Mar 2024 18:28:37 +0200 (CEST)
 X-Virus-Scanned: by secunet
 Received: from a.mx.secunet.com ([127.0.0.1])
 	by localhost (a.mx.secunet.com [127.0.0.1]) (amavisd-new, port 10024)
-	with ESMTP id Th7h4OmXf2nO; Sun, 31 Mar 2024 18:02:28 +0200 (CEST)
-Received: from mailout1.secunet.com (mailout1.secunet.com [62.96.220.44])
+	with ESMTP id OdgYfLKVeVlx; Sun, 31 Mar 2024 18:28:37 +0200 (CEST)
+Received: from mailout2.secunet.com (mailout2.secunet.com [62.96.220.49])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by a.mx.secunet.com (Postfix) with ESMTPS id 017DB2082B;
-	Sun, 31 Mar 2024 18:02:28 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 a.mx.secunet.com 017DB2082B
+	by a.mx.secunet.com (Postfix) with ESMTPS id AB5F1208E0;
+	Sun, 31 Mar 2024 18:28:31 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 a.mx.secunet.com AB5F1208E0
 Received: from cas-essen-01.secunet.de (unknown [10.53.40.201])
-	by mailout1.secunet.com (Postfix) with ESMTP id E92CC800055;
-	Sun, 31 Mar 2024 18:02:27 +0200 (CEST)
+	by mailout2.secunet.com (Postfix) with ESMTP id 9D894800059;
+	Sun, 31 Mar 2024 18:28:31 +0200 (CEST)
 Received: from mbx-essen-01.secunet.de (10.53.40.197) by
  cas-essen-01.secunet.de (10.53.40.201) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Sun, 31 Mar 2024 18:02:27 +0200
+ 15.1.2507.35; Sun, 31 Mar 2024 18:28:31 +0200
 Received: from Pickup by mbx-essen-01.secunet.de with Microsoft SMTP Server id
- 15.1.2507.17; Sun, 31 Mar 2024 15:52:47 +0000
-X-sender: <linux-kernel+bounces-125915-steffen.klassert=secunet.com@vger.kernel.org>
-X-Receiver: <steffen.klassert@secunet.com>
- ORCPT=rfc822;steffen.klassert@secunet.com NOTIFY=NEVER;
- X-ExtendedProps=BQAVABYAAgAAAAUAFAARAPDFCS25BAlDktII2g02frgPADUAAABNaWNyb3NvZnQuRXhjaGFuZ2UuVHJhbnNwb3J0LkRpcmVjdG9yeURhdGEuSXNSZXNvdXJjZQIAAAUAagAJAAEAAAAAAAAABQAWAAIAAAUAQwACAAAFAEYABwADAAAABQBHAAIAAAUAEgAPAGIAAAAvbz1zZWN1bmV0L291PUV4Y2hhbmdlIEFkbWluaXN0cmF0aXZlIEdyb3VwIChGWURJQk9IRjIzU1BETFQpL2NuPVJlY2lwaWVudHMvY249U3RlZmZlbiBLbGFzc2VydDY4YwUACwAXAL4AAACheZxkHSGBRqAcAp3ukbifQ049REI2LENOPURhdGFiYXNlcyxDTj1FeGNoYW5nZSBBZG1pbmlzdHJhdGl2ZSBHcm91cCAoRllESUJPSEYyM1NQRExUKSxDTj1BZG1pbmlzdHJhdGl2ZSBHcm91cHMsQ049c2VjdW5ldCxDTj1NaWNyb3NvZnQgRXhjaGFuZ2UsQ049U2VydmljZXMsQ049Q29uZmlndXJhdGlvbixEQz1zZWN1bmV0LERDPWRlBQAOABEABiAS9uuMOkqzwmEZDvWNNQUAHQAPAAwAAABtYngtZXNzZW4tMDIFADwAAgAADwA2AAAATWljcm9zb2Z0LkV4Y2hhbmdlLlRyYW5zcG9ydC5NYWlsUmVjaXBpZW50LkRpc3BsYXlOYW1lDwARAAAAS2xhc3NlcnQsIFN0ZWZmZW4FAAwAAgAABQBsAAIAAAUAWAAXAEoAAADwxQktuQQJQ5LSCNoNNn64Q049S2xhc3NlcnQgU3RlZmZlbixPVT1Vc2VycyxPVT1NaWdyYXRpb24sREM9c2VjdW5ldCxEQz1kZQUAJgACAAEFACIADwAxAAAAQXV0b1Jlc3BvbnNlU3VwcHJlc3M6IDANClRyYW5zbWl0SGlzdG9ye
-	TogRmFsc2UNCg8ALwAAAE1pY3Jvc29mdC5FeGNoYW5nZS5UcmFuc3BvcnQuRXhwYW5zaW9uR3JvdXBUeXBlDwAVAAAATWVtYmVyc0dyb3VwRXhwYW5zaW9uBQAjAAIAAQ==
+ 15.1.2507.17; Sun, 31 Mar 2024 16:23:59 +0000
+X-sender: <netdev+bounces-83536-peter.schumann=secunet.com@vger.kernel.org>
+X-Receiver: <peter.schumann@secunet.com>
+ ORCPT=rfc822;peter.schumann@secunet.com NOTIFY=NEVER;
+ X-ExtendedProps=BQAVABYAAgAAAAUAFAARAJ05ab4WgQhHsqdZ7WUjHykPADUAAABNaWNyb3NvZnQuRXhjaGFuZ2UuVHJhbnNwb3J0LkRpcmVjdG9yeURhdGEuSXNSZXNvdXJjZQIAAAUAagAJAAEAAAAAAAAABQAWAAIAAAUAQwACAAAFAEYABwADAAAABQBHAAIAAAUAEgAPAGAAAAAvbz1zZWN1bmV0L291PUV4Y2hhbmdlIEFkbWluaXN0cmF0aXZlIEdyb3VwIChGWURJQk9IRjIzU1BETFQpL2NuPVJlY2lwaWVudHMvY249UGV0ZXIgU2NodW1hbm41ZTcFAAsAFwC+AAAAQ5IZ35DtBUiRVnd98bETxENOPURCNCxDTj1EYXRhYmFzZXMsQ049RXhjaGFuZ2UgQWRtaW5pc3RyYXRpdmUgR3JvdXAgKEZZRElCT0hGMjNTUERMVCksQ049QWRtaW5pc3RyYXRpdmUgR3JvdXBzLENOPXNlY3VuZXQsQ049TWljcm9zb2Z0IEV4Y2hhbmdlLENOPVNlcnZpY2VzLENOPUNvbmZpZ3VyYXRpb24sREM9c2VjdW5ldCxEQz1kZQUADgARAC7JU/le071Fhs0mWv1VtVsFAB0ADwAMAAAAbWJ4LWVzc2VuLTAxBQA8AAIAAA8ANgAAAE1pY3Jvc29mdC5FeGNoYW5nZS5UcmFuc3BvcnQuTWFpbFJlY2lwaWVudC5EaXNwbGF5TmFtZQ8ADwAAAFNjaHVtYW5uLCBQZXRlcgUADAACAAAFAGwAAgAABQBYABcASAAAAJ05ab4WgQhHsqdZ7WUjHylDTj1TY2h1bWFubiBQZXRlcixPVT1Vc2VycyxPVT1NaWdyYXRpb24sREM9c2VjdW5ldCxEQz1kZQUAJgACAAEFACIADwAxAAAAQXV0b1Jlc3BvbnNlU3VwcHJlc3M6IDANClRyYW5zbWl0SGlzdG9yeTogRmFsc
+	2UNCg8ALwAAAE1pY3Jvc29mdC5FeGNoYW5nZS5UcmFuc3BvcnQuRXhwYW5zaW9uR3JvdXBUeXBlDwAVAAAATWVtYmVyc0dyb3VwRXhwYW5zaW9uBQAjAAIAAQ==
 X-CreatedBy: MSExchange15
-X-HeloDomain: a.mx.secunet.com
-X-ExtendedProps: BQBjAAoAxmBrGbMv3AgFAGEACAABAAAABQA3AAIAAA8APAAAAE1pY3Jvc29mdC5FeGNoYW5nZS5UcmFuc3BvcnQuTWFpbFJlY2lwaWVudC5Pcmdhbml6YXRpb25TY29wZREAAAAAAAAAAAAAAAAAAAAAAAUASQACAAEFAAQAFCABAAAAHAAAAHN0ZWZmZW4ua2xhc3NlcnRAc2VjdW5ldC5jb20FAAYAAgABBQApAAIAAQ8ACQAAAENJQXVkaXRlZAIAAQUAAgAHAAEAAAAFAAMABwAAAAAABQAFAAIAAQUAYgAKAIYAAADmigAABQBkAA8AAwAAAEh1Yg==
-X-Source: SMTP:Default MBX-ESSEN-01
-X-SourceIPAddress: 62.96.220.36
-X-EndOfInjectedXHeaders: 20102
+X-HeloDomain: b.mx.secunet.com
+X-ExtendedProps: BQBjAAoAwapAQuxQ3AgFAGEACAABAAAABQA3AAIAAA8APAAAAE1pY3Jvc29mdC5FeGNoYW5nZS5UcmFuc3BvcnQuTWFpbFJlY2lwaWVudC5Pcmdhbml6YXRpb25TY29wZREAAAAAAAAAAAAAAAAAAAAAAAUASQACAAEFAGIACgBnAAAAqIoAAAUABAAUIAEAAAAaAAAAcGV0ZXIuc2NodW1hbm5Ac2VjdW5ldC5jb20FAAYAAgABBQApAAIAAQ8ACQAAAENJQXVkaXRlZAIAAQUAAgAHAAEAAAAFAAMABwAAAAAABQAFAAIAAQUAZAAPAAMAAABIdWI=
+X-Source: SMTP:Default MBX-DRESDEN-01
+X-SourceIPAddress: 62.96.220.37
+X-EndOfInjectedXHeaders: 15383
 X-Virus-Scanned: by secunet
-Received-SPF: Pass (sender SPF authorized) identity=mailfrom; client-ip=139.178.88.99; helo=sv.mirrors.kernel.org; envelope-from=linux-kernel+bounces-125915-steffen.klassert=secunet.com@vger.kernel.org; receiver=steffen.klassert@secunet.com 
-DKIM-Filter: OpenDKIM Filter v2.11.0 a.mx.secunet.com D77EB20882
+Received-SPF: Pass (sender SPF authorized) identity=mailfrom; client-ip=147.75.48.161; helo=sy.mirrors.kernel.org; envelope-from=netdev+bounces-83536-peter.schumann=secunet.com@vger.kernel.org; receiver=peter.schumann@secunet.com 
+DKIM-Filter: OpenDKIM Filter v2.11.0 b.mx.secunet.com 226AE20199
+Authentication-Results: b.mx.secunet.com;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="PZ9D70uV"
+X-Original-To: netdev@vger.kernel.org
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal: i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711846127; cv=none; b=BZKqmTrdl/RN0V2FsGHWhIP578b9eDgzTT5Fk0PkW/O4wMO8zMJpx3mkUnaNVQURJUmyBpqFGLvg1D4lvDHMq6T2qJM8IBceiGw3yneAT31L0Cg4UYPSv0ZNwOt/inMG8Mj5xys3VjNbkH5Ivlm+GzopgHK7JVWqahwQASY5yy4=
+	t=1711852445; cv=none; b=Pj9ztFoeNFC8W8Bmk7O2Z5NF1FqYCQSQXvXHwYXp92impW8yqIqXKztodGBRpXQU5wfGBPjF30T0jKjGp+dRMIVrE9+rHt+E/sK11cG0ccYiCxhujgs6p0ewfBT+tyH81Ba1BpjFwcgtUyVZk4Fx9c+IJDc8Pbb3UqAFDp4kjvQ=
 ARC-Message-Signature: i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711846127; c=relaxed/simple;
-	bh=5R/y/M+p05y5G7U6Q0i8lhl8d1NWN6ZRPceQTVGsVrI=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=S622OIFwgXW/vLRK1N/i7M0+QXecyfPK2oSHoe8TBkMRMRCieJ7jSF/eKf5/sY1488lSTdHzW2rbjJbSOzIOjZwkaJLP2WFc7Xy8mn7G/e8c7YSnIyXhsVUQQgJz9cgAHbCmG1DvPpP/bvW2so8c/XOw6Tppt4EbNqYdPeBPuKg=
-ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=HnnxChoe; arc=none smtp.client-ip=10.30.226.201
+	s=arc-20240116; t=1711852445; c=relaxed/simple;
+	bh=+9xtEveTESmqEmgqfqi/AHy+l/CY7o7HoCu99ORDDcA=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=PCxe4cBbfRJV3gpTvYKFbbR/6Oo8CmYNpvDoIAdyEoT+Fst6iaUXtghvq3ijq3w1+V6jl8iuUhxs26iFUlXrzTxzkigqaTs5dnoEnR/bLxwsiIwpFFcP1wwql0Rd0L+n+/bc3NcLBp7LSIEUyTq3KbDcKWe4NXrWGbBy3k5Tsu0=
+ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=PZ9D70uV; arc=none smtp.client-ip=10.30.226.201
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711846126;
-	bh=5R/y/M+p05y5G7U6Q0i8lhl8d1NWN6ZRPceQTVGsVrI=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=HnnxChoe6PD0c253FzpqzrGbGakgdwsrko83C1NyXCjMlc/PkIYrqVejJGzJnRubB
-	 SLh08seHoHgJPf+qCjJqbfUC5LZS3KmneiZh/vCoGOPs9LPhZFp5mRnRTKzAjHQOVw
-	 G/Qnzd/pDbFPQBIBcBVgBp0Ev0HUtGqAt1a+lCPHKpuE4GXTrs2IFjjKGYd+BqYjjR
-	 ixOvthPzaXJ0azrzgMB/UozGCbk2SPB3SpOVWfe0H7eHgF3u8HoH/36lYd8Vp+FFMl
-	 trrs/8GeDhb6fOZFacgfmEzzuYVsjcsBiFUMyvUyyrujhffg/T0MHmMiChmiDDkww6
-	 Q7QKPIw9ue+Gg==
-Date: Sat, 30 Mar 2024 17:48:44 -0700
-From: Eric Biggers <ebiggers@kernel.org>
-To: James Bottomley <James.Bottomley@hansenpartnership.com>
-Cc: Zhang Yiqun <zhangyiqun@phytium.com.cn>, dhowells@redhat.com,
-	jarkko@kernel.org, corbet@lwn.net, keyrings@vger.kernel.org,
-	linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-crypto@vger.kernel.org
-Subject: Re: [PATCH] KEYS: Add ECDH support
-Message-ID: <20240331004844.GA104623@sol.localdomain>
-References: <20240330065506.3146-1-zhangyiqun@phytium.com.cn>
- <20240330070436.GA2116@sol.localdomain>
- <087bbfcf95c9014ee8f87d482773244f0833b892.camel@HansenPartnership.com>
+	s=k20201202; t=1711852444;
+	bh=+9xtEveTESmqEmgqfqi/AHy+l/CY7o7HoCu99ORDDcA=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=PZ9D70uVOm8Q1eV7TepfO1FkN+1k1kWNkT6Ku6f/2s6iTAOV7tZxn2zhkvPsVyaFX
+	 RPw7j/3dyOXbWPTqh7GDBBmESHoa0/CSjp3BgTh7gbx5KJ1tdiDym07g+AY4FzPgQS
+	 DKX7tgoR9K9mHdV/+tGZPsttPaEAScJJhqA81HNprVN9Fu9EJ0XTEzkGTvbaVJb6Hx
+	 Qzks5PLB5vorWVg53klblNq3phtjvnvFZqLRpBY/lb0TuCBuxS4GgeeCTYGb+VI6ok
+	 zfc1qtwfOHsXCTucSL4Xb61hPPubFgtHkxN2eCV1J182QybCpwgfTt0/4sSb25g/FL
+	 PUk6ZaAAFbN5g==
+X-Forwarded-Encrypted: i=1; AJvYcCVDkGXqULJb0iTE30zok3Z/DcAitzYB9HUyf5pQ/qSbH7TnoDghRS696d3Z3Bc7u3vJtKOCIyp0hkqFnVKFWXLHRnz0A8czvwM7M2KtNDkdHOpr2c074bO9nltfNZLNpXSwZIksKCLZNGtZiA0bHX646SeY+kLLS+WUzjnVm4MKEuoM
+X-Gm-Message-State: AOJu0YzWfQ4zDI0K2CTviHTVM/YUaXaFBBv4MmJVL07IxX6zt/sEhULv
+	8wYbpd4A6ohvhE1X1s1afNGS2g9DPx2m3V/0v8z3Oa7dpCwciQaRAnkxDrAd98WqSrH+OiQMNXB
+	qPMEzBdnsGuo/e1Si+icML8zVNFY=
+X-Google-Smtp-Source: AGHT+IGpEQPL0v7g3+p+5E8g7HGnWQKzlMop6CryhqCRVmhK61t313PDdp5vf1ukKDWFXpyLX2tmge1Ix/vKXAwQ4u4=
+X-Received: by 2002:a2e:9914:0:b0:2d4:6aba:f1a9 with SMTP id
+ v20-20020a2e9914000000b002d46abaf1a9mr4254960lji.40.1711852443253; Sat, 30
+ Mar 2024 19:34:03 -0700 (PDT)
 Precedence: bulk
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -104,137 +103,75 @@ List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Disposition: inline
+References: <20240326144741.3094687-1-arnd@kernel.org> <20240326144741.3094687-2-arnd@kernel.org>
+ <87jzlohhbc.fsf@intel.com> <cb853762-06d4-401c-a1c8-07a0c031b499@app.fastmail.com>
+ <87edbwglle.fsf@intel.com> <07c604d1-6304-4ff8-844b-03c3d5c727ad@app.fastmail.com>
+In-Reply-To: <07c604d1-6304-4ff8-844b-03c3d5c727ad@app.fastmail.com>
+From: Masahiro Yamada <masahiroy@kernel.org>
+Date: Sun, 31 Mar 2024 11:33:27 +0900
+X-Gmail-Original-Message-ID: <CAK7LNARmABUDDTFtp_HCqKid7=8011wk0HMgHYGHWOLunhpxXA@mail.gmail.com>
+Message-ID: <CAK7LNARmABUDDTFtp_HCqKid7=8011wk0HMgHYGHWOLunhpxXA@mail.gmail.com>
+Subject: Re: [PATCH 01/12] kbuild: make -Woverride-init warnings more consistent
+To: Arnd Bergmann <arnd@arndb.de>
+Cc: Jani Nikula <jani.nikula@linux.intel.com>, Arnd Bergmann <arnd@kernel.org>, 
+	linux-kbuild@vger.kernel.org, Harry Wentland <harry.wentland@amd.com>, 
+	Alex Deucher <alexander.deucher@amd.com>, =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>, 
+	Lucas De Marchi <lucas.demarchi@intel.com>, Oded Gabbay <ogabbay@kernel.org>, 
+	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, Maxime Ripard <mripard@kernel.org>, 
+	Thomas Zimmermann <tzimmermann@suse.de>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
+	Andrew Jeffery <andrew@codeconstruct.com.au>, Linus Walleij <linus.walleij@linaro.org>, 
+	Joel Stanley <joel@jms.id.au>, Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Andrew Morton <akpm@linux-foundation.org>, Nathan Chancellor <nathan@kernel.org>, 
+	Nicolas Schier <nicolas@fjasle.eu>, dri-devel@lists.freedesktop.org, 
+	linux-kernel@vger.kernel.org, Netdev <netdev@vger.kernel.org>, linux-mm@kvack.org, 
+	llvm@lists.linux.dev
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <087bbfcf95c9014ee8f87d482773244f0833b892.camel@HansenPartnership.com>
 X-EXCLAIMER-MD-CONFIG: 2c86f778-e09b-4440-8b15-867914633a10
 
-On Sat, Mar 30, 2024 at 09:09:51AM -0400, James Bottomley wrote:
-> On Sat, 2024-03-30 at 00:04 -0700, Eric Biggers wrote:
-> > [+Cc linux-crypto]
-> >=20
-> > On Sat, Mar 30, 2024 at 02:55:06PM +0800, Zhang Yiqun wrote:
-> > > This patch is to introduce ECDH into keyctl syscall for
-> > > userspace usage, containing public key generation and
-> > > shared secret computation.
-> > >=20
-> > > It is mainly based on dh code, so it has the same condition
-> > > to the input which only user keys is supported. The output
-> > > result is storing into the buffer with the provided length.
-> > >=20
-> > > Signed-off-by: Zhang Yiqun <zhangyiqun@phytium.com.cn>
-> > > ---
-> > > =A0Documentation/security/keys/core.rst |=A0 62 ++++++
-> > > =A0include/linux/compat.h=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 |=
-=A0=A0 4 +
-> > > =A0include/uapi/linux/keyctl.h=A0=A0=A0=A0=A0=A0=A0=A0=A0 |=A0 11 +
-> > > =A0security/keys/Kconfig=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=
- |=A0 12 +
-> > > =A0security/keys/Makefile=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 |=
-=A0=A0 2 +
-> > > =A0security/keys/compat_ecdh.c=A0=A0=A0=A0=A0=A0=A0=A0=A0 |=A0 50 +++=
-++
-> > > =A0security/keys/ecdh.c=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=
-=A0 | 318
-> > > +++++++++++++++++++++++++++
-> > > =A0security/keys/internal.h=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 |=A0 =
-44 ++++
-> > > =A0security/keys/keyctl.c=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 |=
-=A0 10 +
-> > > =A09 files changed, 513 insertions(+)
-> > > =A0create mode 100644 security/keys/compat_ecdh.c
-> > > =A0create mode 100644 security/keys/ecdh.c
-> >=20
-> > Nacked-by: Eric Biggers <ebiggers@google.com>
-> >=20
-> > The existing KEYCTL_PKEY_*, KEYCTL_DH_COMPUTE, and AF_ALG are causing
-> > enough problems.=A0 We do not need any more UAPIs like this.=A0 They ar=
-e
-> > hard to maintain, break often, not properly documented, increase the
-> > kernel's attack surface, and what they do is better done in
-> > userspace.
->=20
-> Actually that's not entirely true.  There is a use case for keys which
-> is where you'd like to harden unwrapped key handling and don't have the
-> ability to use a device.  The kernel provides a harder exfiltration
-> environment than user space, so there is a use case for getting the
-> kernel to handle operations on unwrapped keys for the protection it
-> affords the crytpographic key material.
->=20
-> For instance there are people who use the kernel keyring to replace
-> ssh-agent and thus *reduce* the attack surface they have for storing
-> ssh keys:
->=20
-> https://blog.cloudflare.com/the-linux-kernel-key-retention-service-and-wh=
-y-you-should-use-it-in-your-next-application/
->=20
-> The same thing could be done with gpg keys or the gnome keyring.
+On Wed, Mar 27, 2024 at 6:23=E2=80=AFPM Arnd Bergmann <arnd@arndb.de> wrote=
+:
+>
+> On Wed, Mar 27, 2024, at 08:50, Jani Nikula wrote:
+> > On Tue, 26 Mar 2024, "Arnd Bergmann" <arnd@arndb.de> wrote:
+> >> On Tue, Mar 26, 2024, at 21:24, Jani Nikula wrote:
+> >>> On Tue, 26 Mar 2024, Arnd Bergmann <arnd@kernel.org> wrote:
+> >>
+> >> It works now.
+> >>
+> >> The original __diag_ignore_all() only did it for gcc-8 and above
+> >> because that was initially needed to suppress warnings that
+> >> got added in that version, but this was always a mistake.
+> >>
+> >> 689b097a06ba ("compiler-gcc: Suppress -Wmissing-prototypes
+> >> warning for all supported GCC") made it work correctly.
+> >
+> > Oh, nice! Then I think we'd like to go back to __diag_ignore_all() in
+> > i915 and xe.
+> >
+> > The diff is below. I'm fine with you squashing it to your patch, or if
+> > you want me to turn it into a proper patch for you to pick up in your
+> > series, that's fine too. Just let me know.
+>
+> I think I'd prefer to keep my patch simpler for the moment and
+> get that merged through the kbuild tree, it already touches
+> too many places at once.
+>
+> It may be better for me to just drop the drivers/gpu/ part of
+> my patch so you can just just take your patch through the
+> drm tree. I actually have a similar patch for the amdgpu driver
+> that I can send if you like this option better.
+>
+>     Arnd
+>
 
-First, that blog post never actually said that the "replace ssh-agent with
-kernel keyrings" idea was deployed.  It sounds like a proof of concept idea=
- that
-someone thought was interesting and decided to blog about.  Upstream OpenSS=
-H has
-no support for Linux keyrings.  It seems unlikely it would get added, espec=
-ially
-given the OpenSSH developers' healthy skepticism of using broken Linux-isms=
-.
-You're welcome to bring it up on openssh-unix-dev and get their buy-in firs=
-t.
 
-Second, as mentioned by the blog post, the kernel also does not support pri=
-vate
-keys in the default OpenSSH format.  That sort of thing is an example of th=
-e
-fundamental problem with trying to make the kernel support every cryptograp=
-hic
-protocol and format in existence.  Userspace simply has much more flexibili=
-ty to
-implement whatever it happens to need.
 
-Third, ssh-agent is already a separate process, and like any other process =
-the
-kernel enforces isolation of its address space.  The potential loopholes ar=
-e
-ptrace and coredumps, which ssh-agent already disables, except for ptrace b=
-y
-root which it can't do alone, but the system administrator can do that by
-setting the ptrace_scope sysctl to 3 or by using SELinux.
+Applied to linux-kbuild/fixes.
+Thanks.
 
-Amusingly, the existing KEYCTL_DH_* APIs, and the KEYCTL_ECDH_* APIs propos=
-ed by
-this patch, only operate on user keys that the process has READ access to. =
- This
-means that the keys can be trivially extracted by a shell script running in=
- your
-user session.  That's *less* secure than using an isolated process...
-
-That's not to mention that merging this will likely add vulnerabilities
-reachable by unprivileged users, just as the original KEYCTL_DH_* did.  I h=
-ad to
-fix some of them last time around (e.g. commits 12d41a023efb, bbe240454d86,
-3619dec5103d, 1d9ddde12e3c, ccd9888f14a8, 199512b1234f).  I don't really fe=
-el
-like doing it again. (Wait, was this supposed to *improve* security?)
-
-> > Please refer to the recent thread
-> > https://lore.kernel.org/linux-crypto/CZSHRUIJ4RKL.34T4EASV5DNJM@matfyz.=
-cz/T/#u
-> > where these issues were discussed in detail.
->=20
-> This thread was talking about using the kernel for handling the
-> algorithms themselves (which is probably best done in userspace) and
-> didn't address using the kernel to harden the key protection
-> environment.
-
-This patch is about using the kernel to handle a class of algorithm,
-Elliptic-Curve Diffie-Hellman.  Which specific algorithm in that class (i.e=
-.
-which elliptic curve), who knows.  Just like the existing APIs like this, i=
-t's
-undocumented which algorithm(s) are actually supported.
-
-- Eric
+--=20
+Best Regards
+Masahiro Yamada
 
 
