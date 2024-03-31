@@ -1,103 +1,114 @@
-Return-Path: <linux-kernel+bounces-126025-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-126026-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4462C89311B
-	for <lists+linux-kernel@lfdr.de>; Sun, 31 Mar 2024 11:28:28 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7471589311E
+	for <lists+linux-kernel@lfdr.de>; Sun, 31 Mar 2024 11:32:57 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C8AA328293E
-	for <lists+linux-kernel@lfdr.de>; Sun, 31 Mar 2024 09:28:26 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1420EB2185A
+	for <lists+linux-kernel@lfdr.de>; Sun, 31 Mar 2024 09:32:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1A760757FF;
-	Sun, 31 Mar 2024 09:28:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 99B6176036;
+	Sun, 31 Mar 2024 09:32:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=arinc9.com header.i=@arinc9.com header.b="SYbvsV0Q"
-Received: from relay2-d.mail.gandi.net (relay2-d.mail.gandi.net [217.70.183.194])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="OKMhz6eg"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 36D468BE8;
-	Sun, 31 Mar 2024 09:28:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.194
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D20CE74BF4;
+	Sun, 31 Mar 2024 09:32:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711877300; cv=none; b=oIP4Q2rl9dtis1lUD7oVVd6aVZy3YZ5tUKDJgaWH4zMa1AypYlxifRmeIyZxGoxUJNFEh6azfA6xP8Q2kyGpZrsxpojxJpuwsnoXPvvs+MYcqn3pGOVW09eSKZfISRd/IriPo6CMZRlIL+iwl3lT+SQ5RCTsSwz0XmOiCs06Wig=
+	t=1711877566; cv=none; b=PDELnuOyk1aGrWuDrKaUBZSNkkt15Oot7rdTedEhkqDdAw41WoZ3X4lKF/VfJEDBkGh7os550N49MaciZgFudAlDiEddnM9lSBDtK7hcc8EfWE0YP12UyVxdvnGryNL+ddxya9CUJ7lgfBAK36gy0xrxlzmUpCOzy5SBC9x78Ak=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711877300; c=relaxed/simple;
-	bh=atHYMADKrIyGgNKWVLwIwluYpFa44DQ3VN+kH8YnIRk=;
-	h=MIME-Version:Date:From:To:Cc:Subject:In-Reply-To:References:
-	 Message-ID:Content-Type; b=Lh/Su0HJovMkTY7VKMVuYiAuO73CNLOp4Ha05gmJf76OYmaUTJSb/vpegZUyUZsAuuII5A6eCYxNXuc3R/6K5EMe+6owPAXkusiTzFKzke7xJeFQRbVa3oJpVuEUt0KaQgD75eVUK4pM4BeonKqdOdOXBCw/gwf+RtTBiL/pcb0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arinc9.com; spf=pass smtp.mailfrom=arinc9.com; dkim=pass (2048-bit key) header.d=arinc9.com header.i=@arinc9.com header.b=SYbvsV0Q; arc=none smtp.client-ip=217.70.183.194
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arinc9.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arinc9.com
-Received: by mail.gandi.net (Postfix) with ESMTPA id 088D240002;
-	Sun, 31 Mar 2024 09:28:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arinc9.com; s=gm1;
-	t=1711877290;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=7fryVNeKcFi90zGkyiXh+sDRmYe0qNq3h58tPTD/nTY=;
-	b=SYbvsV0QOW5SIxArNvayTkUOk1Iu/7frW4lonHhDTt9QJbYqJjwak/raLpyUYHV9mYoVX+
-	VSrTjlHuSWJIprEyNU3wP6MLKjsty5nII0og5SPfkenzTGwLrmCzE4nJnV+t5n2bJpIIep
-	NgwWzc0MLvcN1VY4x0nE4DJKzkr9VtSpYWR6diqPfCEtu2s/PU85OgLxFn0M5XRtJTKRdS
-	vgK4UjBWF+FF7wnKvTdUkOFXLpnTef8ChLPno3paxPaNsNB3FE2zTc5LK5qeh2AUDhAQpv
-	IExxVs4vthw95Exeg8CZa5UwC5LMDnPWXDXu9uaPhO5TAuL6nJ1Rm61JMfgkqg==
+	s=arc-20240116; t=1711877566; c=relaxed/simple;
+	bh=2enq6wAu/O4AeWARd094N9k1k7dNI3QZzRGN2sj1ta0=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=iMBqUpSPL2c+ocO5Q1uU3DDGRCXRw0H7M8/bLQLf69J4O02PvlThpDikIyk/7Zk6xSJaCdgac5T6/NG4e/4f83h3eQRquEcJzQvwCH0Hdz2jWdpqsk24w5CWJrfOg257mUq8qYSR02KYz8qpVDWh2gnDLcXZX6QsnJlED/R2iSc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=OKMhz6eg; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 96306C433F1;
+	Sun, 31 Mar 2024 09:32:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1711877565;
+	bh=2enq6wAu/O4AeWARd094N9k1k7dNI3QZzRGN2sj1ta0=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=OKMhz6egBE+acFXIafQ3P8FTGcVhCEiKujymKP5WRIQ/QVNQdarAqzCq3QyhN9CDI
+	 pUvnjDtj7IvbTg0LkSWDOjZJXFfDLmQS8uFLurOZBAu9Vv1LnGMSDMIENbw+BD2P3z
+	 7n9S/VxH5Dr+ELusP98pq1MLLX8cWo0r625SMZ/rMRlqaN4ZHBwE83rVkttIW34oMz
+	 6rYjyS0cq+R76PXJwHYi/VrALQJfojUR8K3OCE9LXgrR1Fb49PriNAYETy+FfJ9VjC
+	 pK12pYKT6BvZy3YuyTU0/+V9jhxDyJmlZQKrAzrz3Eph+rdEw2ClNN1Cy7Wii/vtST
+	 f1y/oZDtaeC3g==
+Date: Sun, 31 Mar 2024 10:32:41 +0100
+From: Simon Horman <horms@kernel.org>
+To: Duoming Zhou <duoming@zju.edu.cn>
+Cc: netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-hams@vger.kernel.org, pabeni@redhat.com, kuba@kernel.org,
+	edumazet@google.com, davem@davemloft.net, jreuter@yaina.de
+Subject: Re: [PATCH net v2] ax25: fix use-after-free bugs caused by
+ ax25_ds_del_timer
+Message-ID: <20240331093241.GB26556@kernel.org>
+References: <20240329015023.9223-1-duoming@zju.edu.cn>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Date: Sun, 31 Mar 2024 12:28:08 +0300
-From: arinc.unal@arinc9.com
-To: Rob Herring <robh+dt@kernel.org>, Krzysztof Kozlowski
- <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>,
- Matthias Brugger <matthias.bgg@gmail.com>, AngeloGioacchino Del Regno
- <angelogioacchino.delregno@collabora.com>
-Cc: mithat.guner@xeront.com, erkin.bozoglu@xeront.com,
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org, linux-mediatek@lists.infradead.org
-Subject: Re: [PATCH 0/2] Set PHY address of MT7531 switch to 0x1f on MediaTek
- arm64 boards
-In-Reply-To: <20240314-for-mediatek-mt7531-phy-address-v1-0-52f58db01acd@arinc9.com>
-References: <20240314-for-mediatek-mt7531-phy-address-v1-0-52f58db01acd@arinc9.com>
-Message-ID: <ff196055-ecd8-4563-bc01-ff2533a07109@arinc9.com>
-X-Sender: arinc.unal@arinc9.com
-Content-Type: text/plain; charset=UTF-8;
- format=flowed
-Content-Transfer-Encoding: 8bit
-X-GND-Sasl: arinc.unal@arinc9.com
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240329015023.9223-1-duoming@zju.edu.cn>
 
-On 14.03.2024 15:20, Arınç ÜNAL via B4 Relay wrote:
-> Hello.
+On Fri, Mar 29, 2024 at 09:50:23AM +0800, Duoming Zhou wrote:
+> When the ax25 device is detaching, the ax25_dev_device_down()
+> calls ax25_ds_del_timer() to cleanup the slave_timer. When
+> the timer handler is running, the ax25_ds_del_timer() that
+> calls del_timer() in it will return directly. As a result,
+> the use-after-free bugs could happen, one of the scenarios
+> is shown below:
 > 
-> This is a small patch series setting the PHY address of MT7531 to 0x1f 
-> on
-> all boards that have the switch.
+>       (Thread 1)          |      (Thread 2)
+>                           | ax25_ds_timeout()
+> ax25_dev_device_down()    |
+>   ax25_ds_del_timer()     |
+>     del_timer()           |
+>   ax25_dev_put() //FREE   |
+>                           |  ax25_dev-> //USE
 > 
-> Signed-off-by: Arınç ÜNAL <arinc.unal@arinc9.com>
+> In order to mitigate bugs, when the device is detaching, use
+> timer_shutdown_sync() to stop the timer.
+> 
+> Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
+> Signed-off-by: Duoming Zhou <duoming@zju.edu.cn>
 > ---
-> Arınç ÜNAL (2):
->        arm64: dts: mediatek: mt7622: set PHY address of MT7531 switch 
-> to 0x1f
->        arm64: dts: mediatek: mt7986: set PHY address of MT7531 switch 
-> to 0x1f
-> 
->   arch/arm64/boot/dts/mediatek/mt7622-bananapi-bpi-r64.dts | 4 ++--
->   arch/arm64/boot/dts/mediatek/mt7622-rfb1.dts             | 4 ++--
->   arch/arm64/boot/dts/mediatek/mt7986a-bananapi-bpi-r3.dts | 4 ++--
->   arch/arm64/boot/dts/mediatek/mt7986a-rfb.dts             | 4 ++--
->   arch/arm64/boot/dts/mediatek/mt7986b-rfb.dts             | 4 ++--
->   5 files changed, 10 insertions(+), 10 deletions(-)
-> ---
-> base-commit: ba90af39ba57b3fe3ecfdba0c87a80d20c7b788d
-> change-id: 20240314-for-mediatek-mt7531-phy-address-9d0b4cfeca21
-> 
-> Best regards,
+> Changes in v2:
+>   - Call timer_shutdown_sync() in ax25_dev_device_down().
 
-Reminder that this patch series is waiting.
+Thanks,
 
-Arınç
+as per my review of v1, I do think this is a correct approach to addressing
+a valid concern.  But I would also value another set of eyes on the problem.
+
+Reviewed-by: Simon Horman <horms@kernel.org>
+
+>  net/ax25/ax25_dev.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/net/ax25/ax25_dev.c b/net/ax25/ax25_dev.c
+> index c5462486dbc..282ec581c07 100644
+> --- a/net/ax25/ax25_dev.c
+> +++ b/net/ax25/ax25_dev.c
+> @@ -105,7 +105,7 @@ void ax25_dev_device_down(struct net_device *dev)
+>  	spin_lock_bh(&ax25_dev_lock);
+>  
+>  #ifdef CONFIG_AX25_DAMA_SLAVE
+> -	ax25_ds_del_timer(ax25_dev);
+> +	timer_shutdown_sync(&ax25_dev->dama.slave_timer);
+>  #endif
+>  
+>  	/*
+> -- 
+> 2.17.1
+> 
 
