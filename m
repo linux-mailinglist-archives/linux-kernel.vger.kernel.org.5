@@ -1,150 +1,216 @@
-Return-Path: <linux-kernel+bounces-126358-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-126359-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 487EF893598
-	for <lists+linux-kernel@lfdr.de>; Sun, 31 Mar 2024 21:29:37 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 969FD8935A1
+	for <lists+linux-kernel@lfdr.de>; Sun, 31 Mar 2024 21:40:32 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A52D31F21AA5
-	for <lists+linux-kernel@lfdr.de>; Sun, 31 Mar 2024 19:29:36 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 46B252831F5
+	for <lists+linux-kernel@lfdr.de>; Sun, 31 Mar 2024 19:40:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DEE351474A7;
-	Sun, 31 Mar 2024 19:29:28 +0000 (UTC)
-Received: from mail-io1-f71.google.com (mail-io1-f71.google.com [209.85.166.71])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1C8E21474B5;
+	Sun, 31 Mar 2024 19:40:26 +0000 (UTC)
+Received: from mail-il1-f199.google.com (mail-il1-f199.google.com [209.85.166.199])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CEFEF146D72
-	for <linux-kernel@vger.kernel.org>; Sun, 31 Mar 2024 19:29:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.71
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C9F35146D65
+	for <linux-kernel@vger.kernel.org>; Sun, 31 Mar 2024 19:40:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.199
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711913368; cv=none; b=a65AQel4N5uFH4xd6B6kxCf23dY+GdbAZxXseY+QYrF0CedV7gquNhqSh4mQmF3rNIw+Dff9Mdh2X7FVcRFxJXf3irYEwI5JzTBb0CtuvbAJISPmMHdasNnrYEmrqLJalHZGAQMg3d7sEu41S4gyyYGVpbzNaJHxxQOWQ9scPzI=
+	t=1711914025; cv=none; b=eXJjSvgoUpHO98vGoI+8p1+ITdK4Uc1G1SqXGA5ux4WTo9EbnEZL1KEX8BPTtR/gxI2ySrriy+sQbuuIyGT3g9xG8SSUhl1UsBMOVnyqsO/EnUZOPBHzXsq05v9+qPOy38Lxbs66oO+P+RVu4nvjXP5Hdo5o3H1BeiJ9FwTEkGU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711913368; c=relaxed/simple;
-	bh=f5ljg/Wc7ME7G04qzot3/0WoJ9Z5hK3QSpk2j3B01do=;
-	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=dLRlL1suh/S/GZJ6JbIZtIBlevw4vB/qQXveR3KTWLIT++HHc6UPCYmTbVe4Gu7IkBQA6xb9MQWJDQLxLOLVcZLvXlhEYI5E0tB8MkZ5fWvLhujHr7HzeoJD0c3DclVYDVT3a6b2Qq3iKL48OfZm8R9XXROCt0tzIIRArI69qQs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.71
+	s=arc-20240116; t=1711914025; c=relaxed/simple;
+	bh=WtZO//oTkMb7qEM3wH6ldO8WMWnV6J+6osYZIZpSGdo=;
+	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=ibxbuT1SkRcmY1cRnkjvXAPVgptGolOvfTC8Hr3HsKDju7GqaJJ71JY+YkWDr0ApYMZjRcIXuRW9q+y2qAG4H/2cn6xv0Gov6dR9Clx0wcQE2VP86J1GigohASsPt6cnDCiE6TpTN3xvD+CYrBls7nVt/5jcVE2W6xnDFfwQvAk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.199
 Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-io1-f71.google.com with SMTP id ca18e2360f4ac-7cc01445f6bso403041639f.3
-        for <linux-kernel@vger.kernel.org>; Sun, 31 Mar 2024 12:29:26 -0700 (PDT)
+Received: by mail-il1-f199.google.com with SMTP id e9e14a558f8ab-36860170307so34111435ab.0
+        for <linux-kernel@vger.kernel.org>; Sun, 31 Mar 2024 12:40:23 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711913366; x=1712518166;
+        d=1e100.net; s=20230601; t=1711914023; x=1712518823;
         h=to:from:subject:message-id:date:mime-version:x-gm-message-state
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=X8E6BccGg7QBRqyiJt5ld5mepNqMnMyoDuErjNXyThI=;
-        b=VkO/KCW23CX1CYXTspZiIWyylJ5jUpNW38563+844EKcbUcG/4FqejLF//CWxZo16x
-         d2i6yMmHdKJs7EX6R9XIH9k4kP8B9XFmQ2cb77Tibr/GmCRLX1/WibOYPbfOaArhtE71
-         qxueV7wzIr/x5ePL4LAlTRSDvRgesdtiwrBNrxaKmn0LeNcyGyMK7SxNUL7RW+Rnhk4C
-         EiaXCc9mbOBlDoJ+Uq0psLteo4H4YTkovRiTBOCNjkvVEgsc9cBYTg6cKyHtYbBxZuR9
-         rFonNS/r7o58nmJPpS3vONCK2qDn4mXA/LCFWJuWPsIskXyFuRA9tyBkMB34fM+iuxCd
-         VHMQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWeC9HGptbFQMZajeNQGwd9lt4oq1tYv89lanlL39Ldzn/4XYSNJLARisZrFgCvmLmLCoqcoVWX/r3ti6XZ3c5yhH7yF2Ge0Z8DnEP9
-X-Gm-Message-State: AOJu0YxtHVDjU+l6E/jUyumo+VRXuyUboHIL1o9nQQ8aD3Pq+Nn5Vy4v
-	I2WvbXICC7dQO/lfinERkYjI0Vo23FfFNehQFLZJPY4QD5N6ZP/wuAvMyJ7AXc6lhlIhuxHJKJ9
-	pqAovQXHG4C6IqukIO0IUCcjdrpjI5tIwm2DvGOa/hbA7lMI+uqzsJd4=
-X-Google-Smtp-Source: AGHT+IGptXJRZnPSMNtiqp2ps1An8cGZzR2w0P6ZXD4+BiSBlp68VHmHUT+vbOVPbNeH3HqDQk/bPFK0BzRSVKy84IiUnumV00ZI
+        bh=wCMoD4Z1Eh6UfTpI37yPqo7ZeYs68XPjsHXktP/hjLE=;
+        b=O2zapG0AIVdLl3OEiFO5fo7LBGdOcFfhf2H8LTVSe2+WuyqVKJCPvzY1QSyhx7HVul
+         G9iS8n2VKxI+iVurUeHcrve24+/afGU70eHpDYkoX671Odts049v9mjLQ4Huau77L4Da
+         AbyKCvwk3LR40MjHqZWmsSRRbgjqVHYwR53apVSvoVDqdstKbJTf+VFnzeD2dgwvNv0Q
+         nA+eKur+lLS3SYdQSO+hpFqg2guAJJb3KB3vcRkpJWCFqcJR8pI7WcaEDKbpuXaHKMTz
+         i+2LH17BDuXZdiKFlhYodMuv61shcNB5mh2DDrcosrOtmnjcdY3EVE0pNhMbkI65UdgV
+         YfNg==
+X-Forwarded-Encrypted: i=1; AJvYcCU9RLsF1lle9Kw9/eZ4bGm0qOo0kDSvt69vNRa90++MU2Yv26sdcGUXp4bWDVaHoMHSBnPj/g0DxzASM1uDMrHO4iZsWb2milpLw0RM
+X-Gm-Message-State: AOJu0Yz460Ppn/tEh0GZnd+SpvwibYOD2157tHnnRxvDxPTcK2N5EOD6
+	T15AFP10dwjyRnebQ6ROmV7RZvi91SE9bfON7YQCDOUWe+HgHaOqx4KrE4PqMzoIMXS2BYZNolX
+	qxMxuFRPBwhtH3uGgfff2k+Gay20iMoKOWuGEjASDb9LCeTj4yUBzm6U=
+X-Google-Smtp-Source: AGHT+IGw9xvAfNAjjZRAbSTeDLrQTK4qbwK+ybTVf+mksi9+a6VfEVqZXSgWev61/BWI9M4ckQWWUTOkfI1pW1vX4K80iqSNjMZc
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6602:3422:b0:7cc:ea7:4f0f with SMTP id
- n34-20020a056602342200b007cc0ea74f0fmr373025ioz.3.1711913366042; Sun, 31 Mar
- 2024 12:29:26 -0700 (PDT)
-Date: Sun, 31 Mar 2024 12:29:26 -0700
+X-Received: by 2002:a05:6e02:350d:b0:366:9539:84dc with SMTP id
+ bu13-20020a056e02350d00b00366953984dcmr545551ilb.0.1711914023041; Sun, 31 Mar
+ 2024 12:40:23 -0700 (PDT)
+Date: Sun, 31 Mar 2024 12:40:23 -0700
 X-Google-Appengine-App-Id: s~syzkaller
 X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000011ce560614f9e4a6@google.com>
-Subject: [syzbot] [ide?] WARNING in ata_scsi_queuecmd
-From: syzbot <syzbot+5a834bc6771dddfa994e@syzkaller.appspotmail.com>
-To: cassel@kernel.org, dlemoal@kernel.org, linux-ide@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
+Message-ID: <0000000000003ad27a0614fa0b99@google.com>
+Subject: [syzbot] [kernel?] inconsistent lock state in sock_hash_delete_elem
+From: syzbot <syzbot+1dab15008502531a13d2@syzkaller.appspotmail.com>
+To: frederic@kernel.org, linux-kernel@vger.kernel.org, mingo@kernel.org, 
+	syzkaller-bugs@googlegroups.com, tglx@linutronix.de
 Content-Type: text/plain; charset="UTF-8"
 
 Hello,
 
 syzbot found the following issue on:
 
-HEAD commit:    962490525cff Merge tag 'probes-fixes-v6.9-rc1' of git://gi..
+HEAD commit:    fe46a7dd189e Merge tag 'sound-6.9-rc1' of git://git.kernel..
 git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=11171735180000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=f64ec427e98bccd7
-dashboard link: https://syzkaller.appspot.com/bug?extid=5a834bc6771dddfa994e
+console+strace: https://syzkaller.appspot.com/x/log.txt?x=16f5005e180000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=aef2a55903e5791c
+dashboard link: https://syzkaller.appspot.com/bug?extid=1dab15008502531a13d2
 compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
-
-Unfortunately, I don't have any reproducer for this issue yet.
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=14437c21180000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=15217b9e180000
 
 Downloadable assets:
-disk image (non-bootable): https://storage.googleapis.com/syzbot-assets/7bc7510fe41f/non_bootable_disk-96249052.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/c5a4f1f7db02/vmlinux-96249052.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/ea148b99c50a/bzImage-96249052.xz
+disk image: https://storage.googleapis.com/syzbot-assets/089e25869df5/disk-fe46a7dd.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/423b1787914f/vmlinux-fe46a7dd.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/4c043e30c07d/bzImage-fe46a7dd.xz
 
 IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+5a834bc6771dddfa994e@syzkaller.appspotmail.com
+Reported-by: syzbot+1dab15008502531a13d2@syzkaller.appspotmail.com
 
-------------[ cut here ]------------
-raw_local_irq_restore() called with IRQs enabled
-WARNING: CPU: 0 PID: 1166 at kernel/locking/irqflag-debug.c:10 warn_bogus_irq_restore+0x29/0x30 kernel/locking/irqflag-debug.c:10
-Modules linked in:
-CPU: 0 PID: 1166 Comm: kworker/u32:9 Not tainted 6.9.0-rc1-syzkaller-00021-g962490525cff #0
-Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.16.2-debian-1.16.2-1 04/01/2014
-Workqueue: writeback wb_workfn (flush-8:0)
-RIP: 0010:warn_bogus_irq_restore+0x29/0x30 kernel/locking/irqflag-debug.c:10
-Code: 90 f3 0f 1e fa 90 80 3d 6c e3 ec 04 00 74 06 90 c3 cc cc cc cc c6 05 5d e3 ec 04 01 90 48 c7 c7 c0 c2 2c 8b e8 28 2c 72 f6 90 <0f> 0b 90 90 eb df 90 90 90 90 90 90 90 90 90 90 90 90 90 90 90 90
-RSP: 0018:ffffc9000467e9d8 EFLAGS: 00010286
-RAX: 0000000000000000 RBX: ffff888022a70400 RCX: ffffffff814fe149
-RDX: ffff88802384a440 RSI: ffffffff814fe156 RDI: 0000000000000001
-RBP: 0000000000000246 R08: 0000000000000001 R09: 0000000000000000
-R10: 0000000000000000 R11: 000000002d2d2d2d R12: ffff8880232f2680
-R13: 0000000000000246 R14: ffff8880232f0010 R15: 0000000000000000
-FS:  0000000000000000(0000) GS:ffff88806b000000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 0000000020000040 CR3: 000000002fd56000 CR4: 0000000000350ef0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+================================
+WARNING: inconsistent lock state
+6.8.0-syzkaller-08951-gfe46a7dd189e #0 Not tainted
+--------------------------------
+inconsistent {IN-HARDIRQ-W} -> {HARDIRQ-ON-W} usage.
+syz-executor164/5064 [HC0[0]:SC0[0]:HE0:SE1] takes:
+ffff8880b943e698 (&rq->__lock){?.-.}-{2:2}, at: raw_spin_rq_lock_nested+0x29/0x130 kernel/sched/core.c:559
+{IN-HARDIRQ-W} state was registered at:
+  lock_acquire kernel/locking/lockdep.c:5754 [inline]
+  lock_acquire+0x1b1/0x540 kernel/locking/lockdep.c:5719
+  _raw_spin_lock_nested+0x31/0x40 kernel/locking/spinlock.c:378
+  raw_spin_rq_lock_nested+0x29/0x130 kernel/sched/core.c:559
+  raw_spin_rq_lock kernel/sched/sched.h:1385 [inline]
+  rq_lock kernel/sched/sched.h:1699 [inline]
+  scheduler_tick+0xa2/0x650 kernel/sched/core.c:5679
+  update_process_times+0x199/0x220 kernel/time/timer.c:2481
+  tick_periodic+0x7e/0x230 kernel/time/tick-common.c:100
+  tick_handle_periodic+0x45/0x120 kernel/time/tick-common.c:112
+  timer_interrupt+0x4e/0x80 arch/x86/kernel/time.c:57
+  __handle_irq_event_percpu+0x22c/0x750 kernel/irq/handle.c:158
+  handle_irq_event_percpu kernel/irq/handle.c:193 [inline]
+  handle_irq_event+0xab/0x1e0 kernel/irq/handle.c:210
+  handle_edge_irq+0x263/0xd10 kernel/irq/chip.c:831
+  generic_handle_irq_desc include/linux/irqdesc.h:161 [inline]
+  handle_irq arch/x86/kernel/irq.c:238 [inline]
+  __common_interrupt+0xe1/0x250 arch/x86/kernel/irq.c:257
+  common_interrupt+0xab/0xd0 arch/x86/kernel/irq.c:247
+  asm_common_interrupt+0x26/0x40 arch/x86/include/asm/idtentry.h:693
+  console_flush_all+0xa19/0xd70 kernel/printk/printk.c:2979
+  console_unlock+0xae/0x290 kernel/printk/printk.c:3042
+  vprintk_emit kernel/printk/printk.c:2342 [inline]
+  vprintk_emit+0x11a/0x5a0 kernel/printk/printk.c:2297
+  vprintk+0x7f/0xa0 kernel/printk/printk_safe.c:45
+  _printk+0xc8/0x100 kernel/printk/printk.c:2367
+  cpu_detect_tlb arch/x86/kernel/cpu/common.c:860 [inline]
+  identify_boot_cpu arch/x86/kernel/cpu/common.c:1934 [inline]
+  arch_cpu_finalize_init+0x7b/0x170 arch/x86/kernel/cpu/common.c:2310
+  start_kernel+0x32b/0x490 init/main.c:1043
+  x86_64_start_reservations+0x18/0x30 arch/x86/kernel/head64.c:509
+  x86_64_start_kernel+0xb2/0xc0 arch/x86/kernel/head64.c:490
+  common_startup_64+0x13e/0x148
+irq event stamp: 4834
+hardirqs last  enabled at (4831): [<ffffffff8ad60263>] __raw_spin_unlock_irq include/linux/spinlock_api_smp.h:159 [inline]
+hardirqs last  enabled at (4831): [<ffffffff8ad60263>] _raw_spin_unlock_irq+0x23/0x50 kernel/locking/spinlock.c:202
+hardirqs last disabled at (4832): [<ffffffff8ad48b14>] __schedule+0x2644/0x5c70 kernel/sched/core.c:6634
+softirqs last  enabled at (4834): [<ffffffff88cb2754>] spin_unlock_bh include/linux/spinlock.h:396 [inline]
+softirqs last  enabled at (4834): [<ffffffff88cb2754>] sock_hash_delete_elem+0x1f4/0x260 net/core/sock_map.c:947
+softirqs last disabled at (4833): [<ffffffff88cb262b>] spin_lock_bh include/linux/spinlock.h:356 [inline]
+softirqs last disabled at (4833): [<ffffffff88cb262b>] sock_hash_delete_elem+0xcb/0x260 net/core/sock_map.c:939
+
+other info that might help us debug this:
+ Possible unsafe locking scenario:
+
+       CPU0
+       ----
+  lock(&rq->__lock
+);
+  <Interrupt>
+    lock(&rq->__lock
+);
+
+ *** DEADLOCK ***
+
+2 locks held by syz-executor164/5064:
+ #0: ffff8880b943e698
+ (&rq->__lock
+){?.-.}-{2:2}
+, at: raw_spin_rq_lock_nested+0x29/0x130 kernel/sched/core.c:559
+ #1: ffffffff8d7b08e0
+ (rcu_read_lock
+){....}-{1:2}
+, at: rcu_lock_acquire include/linux/rcupdate.h:298 [inline]
+, at: rcu_read_lock include/linux/rcupdate.h:750 [inline]
+, at: __bpf_trace_run kernel/trace/bpf_trace.c:2380 [inline]
+, at: bpf_trace_run4+0x107/0x460 kernel/trace/bpf_trace.c:2422
+
+stack backtrace:
+CPU: 0 PID: 5064 Comm: syz-executor164 Not tainted 6.8.0-syzkaller-08951-gfe46a7dd189e #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 02/29/2024
 Call Trace:
  <TASK>
- __raw_spin_unlock_irqrestore include/linux/spinlock_api_smp.h:151 [inline]
- _raw_spin_unlock_irqrestore+0x74/0x80 kernel/locking/spinlock.c:194
- spin_unlock_irqrestore include/linux/spinlock.h:406 [inline]
- ata_scsi_queuecmd+0xda/0x160 drivers/ata/libata-scsi.c:4204
- scsi_dispatch_cmd drivers/scsi/scsi_lib.c:1610 [inline]
- scsi_queue_rq+0x12af/0x36a0 drivers/scsi/scsi_lib.c:1852
- blk_mq_dispatch_rq_list+0x452/0x2030 block/blk-mq.c:2058
- __blk_mq_do_dispatch_sched block/blk-mq-sched.c:170 [inline]
- blk_mq_do_dispatch_sched block/blk-mq-sched.c:184 [inline]
- __blk_mq_sched_dispatch_requests+0xcdf/0x1620 block/blk-mq-sched.c:309
- blk_mq_sched_dispatch_requests+0xd4/0x150 block/blk-mq-sched.c:331
- blk_mq_run_hw_queue+0x645/0x9a0 block/blk-mq.c:2273
- blk_mq_dispatch_plug_list block/blk-mq.c:2774 [inline]
- blk_mq_flush_plug_list.part.0+0x611/0x1d90 block/blk-mq.c:2822
- blk_mq_flush_plug_list block/blk-mq.c:1296 [inline]
- blk_add_rq_to_plug+0x117/0x540 block/blk-mq.c:1299
- blk_mq_submit_bio+0x1602/0x20f0 block/blk-mq.c:3014
- __submit_bio+0xfd/0x310 block/blk-core.c:619
- __submit_bio_noacct_mq block/blk-core.c:698 [inline]
- submit_bio_noacct_nocheck+0x98a/0xd50 block/blk-core.c:727
- submit_bio_noacct+0x746/0x1ba0 block/blk-core.c:837
- ext4_io_submit+0xa6/0x140 fs/ext4/page-io.c:378
- ext4_do_writepages+0xf0f/0x3250 fs/ext4/inode.c:2699
- ext4_writepages+0x303/0x730 fs/ext4/inode.c:2768
- do_writepages+0x1a3/0x7f0 mm/page-writeback.c:2612
- __writeback_single_inode+0x163/0xf90 fs/fs-writeback.c:1650
- writeback_sb_inodes+0x5a6/0x10d0 fs/fs-writeback.c:1941
- __writeback_inodes_wb+0xff/0x2e0 fs/fs-writeback.c:2012
- wb_writeback+0x7db/0xb30 fs/fs-writeback.c:2119
- wb_check_start_all fs/fs-writeback.c:2245 [inline]
- wb_do_writeback fs/fs-writeback.c:2271 [inline]
- wb_workfn+0x9fb/0xf40 fs/fs-writeback.c:2304
- process_one_work+0x9a9/0x1ac0 kernel/workqueue.c:3254
- process_scheduled_works kernel/workqueue.c:3335 [inline]
- worker_thread+0x6c8/0xf70 kernel/workqueue.c:3416
- kthread+0x2c1/0x3a0 kernel/kthread.c:388
- ret_from_fork+0x45/0x80 arch/x86/kernel/process.c:147
- ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:243
+ __dump_stack lib/dump_stack.c:88 [inline]
+ dump_stack_lvl+0x116/0x1f0 lib/dump_stack.c:114
+ print_usage_bug kernel/locking/lockdep.c:3971 [inline]
+ valid_state kernel/locking/lockdep.c:4013 [inline]
+ mark_lock_irq kernel/locking/lockdep.c:4216 [inline]
+ mark_lock+0x923/0xc60 kernel/locking/lockdep.c:4678
+ mark_held_locks+0x9f/0xe0 kernel/locking/lockdep.c:4274
+ __trace_hardirqs_on_caller kernel/locking/lockdep.c:4292 [inline]
+ lockdep_hardirqs_on_prepare+0x137/0x420 kernel/locking/lockdep.c:4359
+ trace_hardirqs_on+0x36/0x40 kernel/trace/trace_preemptirq.c:61
+ __local_bh_enable_ip+0xa4/0x120 kernel/softirq.c:387
+ spin_unlock_bh include/linux/spinlock.h:396 [inline]
+ sock_hash_delete_elem+0x1f4/0x260 net/core/sock_map.c:947
+ ___bpf_prog_run+0x3e51/0xae80 kernel/bpf/core.c:1997
+ __bpf_prog_run32+0xc1/0x100 kernel/bpf/core.c:2236
+ bpf_dispatcher_nop_func include/linux/bpf.h:1234 [inline]
+ __bpf_prog_run include/linux/filter.h:657 [inline]
+ bpf_prog_run include/linux/filter.h:664 [inline]
+ __bpf_trace_run kernel/trace/bpf_trace.c:2381 [inline]
+ bpf_trace_run4+0x176/0x460 kernel/trace/bpf_trace.c:2422
+ __bpf_trace_sched_switch+0x13e/0x190 include/trace/events/sched.h:222
+ trace_sched_switch include/trace/events/sched.h:222 [inline]
+ __schedule+0x2266/0x5c70 kernel/sched/core.c:6733
+ __schedule_loop kernel/sched/core.c:6813 [inline]
+ schedule+0xe7/0x350 kernel/sched/core.c:6828
+ ptrace_stop.part.0+0x440/0x940 kernel/signal.c:2358
+ ptrace_stop kernel/signal.c:2260 [inline]
+ ptrace_do_notify+0x222/0x2d0 kernel/signal.c:2395
+ ptrace_notify+0xc5/0x130 kernel/signal.c:2407
+ ptrace_report_syscall include/linux/ptrace.h:415 [inline]
+ ptrace_report_syscall_entry include/linux/ptrace.h:452 [inline]
+ syscall_trace_enter+0xb5/0x210 kernel/entry/common.c:45
+ syscall_enter_from_user_mode_work include/linux/entry-common.h:168 [inline]
+ syscall_enter_from_user_mode include/linux/entry-common.h:198 [inline]
+ do_syscall_64+0x1f6/0x260 arch/x86/entry/common.c:79
+ entry_SYSCALL_64_after_hwframe+0x6d/0x75
+RIP: 0033:0x7f122969f6b3
+Code: 00 00 00 00 0f 1f 00 83 ff 03 74 7b 83 ff 02 b8 fa ff ff ff 49 89 ca 0f 44 f8 80 3d ce e9 03 00 00 74 14 b8 e6 00 00 00 0f 05 <f7> d8 c3 66 2e 0f 1f 84 00 00 00 00 00 48 83 ec 28 48 89 54 24 10
+RSP: 002b:00007ffd4d89e018 EFLAGS: 00000202
+ ORIG_RAX: 00000000000000e6
+RAX: ffffffffffffffda RBX: 00000000000013c9 RCX: 00007f122969f6b3
+RDX: 00007ffd4d89e030 RSI: 0000000000000000 RDI: 0000000000000000
+RBP: 0000000000012939 R08: 000000000000004c R09: 0000000000000001
+R10: 0000000000000000 R11: 0000000000000202 R12: 00007ffd4d89e06c
+R13: 431bde82d7b634db R14: 0000000000000001 R15: 0000000000000001
  </TASK>
 
 
@@ -158,6 +224,10 @@ https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
 
 If the report is already addressed, let syzbot know by replying with:
 #syz fix: exact-commit-title
+
+If you want syzbot to run the reproducer, reply with:
+#syz test: git://repo/address.git branch-or-commit-hash
+If you attach or paste a git patch, syzbot will apply it before testing.
 
 If you want to overwrite report's subsystems, reply with:
 #syz set subsystems: new-subsystem
