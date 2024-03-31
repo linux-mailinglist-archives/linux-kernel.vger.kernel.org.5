@@ -1,97 +1,87 @@
-Return-Path: <linux-kernel+bounces-125966-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-125967-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id A5C23892EBA
-	for <lists+linux-kernel@lfdr.de>; Sun, 31 Mar 2024 08:21:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id A82B5892EBB
+	for <lists+linux-kernel@lfdr.de>; Sun, 31 Mar 2024 08:21:14 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 27B6E1F21727
-	for <lists+linux-kernel@lfdr.de>; Sun, 31 Mar 2024 06:21:03 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4904D1F217B4
+	for <lists+linux-kernel@lfdr.de>; Sun, 31 Mar 2024 06:21:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C22C679DC;
-	Sun, 31 Mar 2024 06:20:56 +0000 (UTC)
-Received: from mail115-171.sinamail.sina.com.cn (mail115-171.sinamail.sina.com.cn [218.30.115.171])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4A6AA8F5C;
+	Sun, 31 Mar 2024 06:21:06 +0000 (UTC)
+Received: from mail-io1-f70.google.com (mail-io1-f70.google.com [209.85.166.70])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 539246FCC
-	for <linux-kernel@vger.kernel.org>; Sun, 31 Mar 2024 06:20:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=218.30.115.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 72C6B8F59
+	for <linux-kernel@vger.kernel.org>; Sun, 31 Mar 2024 06:21:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.70
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711866056; cv=none; b=ovmur2pM/PDcjoJNk+E6QHsmmU0MIrZNK3IB/dnSohhwxIVFW3kri21vCq246QXXrVcQsNU1NA/5r8360sFIOgBvJiwjMM6CR952C8SKYhoxK7lhjmy+mxC4FXmHBsgPBSJ5Z1/XfQXvET+il0t3cbWJQZYqTfQQEsXhNQxTAQc=
+	t=1711866065; cv=none; b=dC4xv8MmnVqa1gBpg7HwKkSNoy8jA5RznWz2F1twQ+Ikp6ikQHdddayUIHaE+fSb5GhfwmrX14Ft8s0Af480xdMx3rs+PZE/kLnYMDgCSQVR7WtTG483ylXb+hmSZvtMac0fDpmlfSxvya0LIUJzKuEY54vVsUr6QpFD1PdYyBU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711866056; c=relaxed/simple;
-	bh=VqKv1cUOhZbzr+oAZDwA1oezSwzFV6yXqtR6U/dea/c=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=mmnoTXVG4a1wl6I0GQLg6I16mGe8MS5acD63myPVxUDBd4P9KqnJRA+vFGkLaklByBn+F8q4eXbSq9dCuhdU7Hfg4lDqRKwfCJP0pSBHuGTXL3NQ7FGn1aJhGmFCd8l7L9NAFWV2KSpop9gNCbyg/dpHmCT+HqftU+u2m/fTk1o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sina.com; spf=pass smtp.mailfrom=sina.com; arc=none smtp.client-ip=218.30.115.171
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sina.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sina.com
-X-SMAIL-HELO: localhost.localdomain
-Received: from unknown (HELO localhost.localdomain)([113.118.64.152])
-	by sina.com (172.16.235.25) with ESMTP
-	id 6609009800003D91; Sun, 31 Mar 2024 14:20:10 +0800 (CST)
-X-Sender: hdanton@sina.com
-X-Auth-ID: hdanton@sina.com
-Authentication-Results: sina.com;
-	 spf=none smtp.mailfrom=hdanton@sina.com;
-	 dkim=none header.i=none;
-	 dmarc=none action=none header.from=hdanton@sina.com
-X-SMAIL-MID: 44924034210201
-X-SMAIL-UIID: 6924078F414540C5A10A825D4304B6C9-20240331-142010-1
-From: Hillf Danton <hdanton@sina.com>
-To: syzbot <syzbot+1fa663a2100308ab6eab@syzkaller.appspotmail.com>
-Cc: linux-kernel@vger.kernel.org,
-	syzkaller-bugs@googlegroups.com
-Subject: Re: [syzbot] [bpf?] possible deadlock in kvfree_call_rcu
-Date: Sun, 31 Mar 2024 14:19:58 +0800
-Message-Id: <20240331061958.3340-1-hdanton@sina.com>
-In-Reply-To: <000000000000716bb60614acbf37@google.com>
-References: 
+	s=arc-20240116; t=1711866065; c=relaxed/simple;
+	bh=k7w9gKf1/Faln8I5YI1/1Q+7u/6rkW9rJQj1hybESvc=;
+	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
+	 Content-Type; b=jI6gvLhwmshNcTNbqM8FF3wGd0BpVYsZQldI1/OzpP7kA7DvLYA6OT8tC1TkwATjakwWeUuNAs1JyOBwDyFP+3WJSQ1HUwje801kYLM6/p/65eK1/7F1WNTHSUqlFz4QJGd60NpB7AcYc2KtCsYUVMc1N6geFRWHl8RQhpLITzY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.70
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-io1-f70.google.com with SMTP id ca18e2360f4ac-7cbf0ebfda8so317261839f.0
+        for <linux-kernel@vger.kernel.org>; Sat, 30 Mar 2024 23:21:04 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711866063; x=1712470863;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=xlswKLmOm1SDm4ReW4epLmoaNJKVXjDO0IpWKml69N0=;
+        b=W+srjkOpqWXs2qoY/Ouq8qULRAKI5/LUjjgfzBnsqHzzxb6aJ+l2JUdtGtwjBVu5Ck
+         PoaAcXPO2DVPexEdS87vQBCv8BaW5XDRcXy+yjRhtfRT715cu1KC4dqvuZZpTtphMjys
+         CeGpHMqH6Z1QsDT08+FvyjYDwWqHcjq6lAZRQuxOO0urWtfXHbq2kx3bJYfiOHmbIlDG
+         x3IiJONVX5h41PnFe677/f7ijROZz16d0iMsNel/6pSZujNFRjvH6zrnJzDxZhXsGK5D
+         fN+jd8yi22bjmiQ4uGFXmh1ntJ303mNIxyg6APcuzcDwIGTI8J9Ih7ccwnZc/qbfHW7k
+         wHCA==
+X-Forwarded-Encrypted: i=1; AJvYcCVB6s9ftAexSj8b1rIoYfgRK24fk8UZy02h61n46bTVNhz7zXzpsS6jJ/9y+1XDAaJc518AFoSHb7oHaJxGe0k3jiXk1LAw1teyX/8i
+X-Gm-Message-State: AOJu0YxvWEtv2hPPq3yEohaVoYXV7qc7RLPdnQZ7VI1FWsDdAmFgeMzr
+	BAFgJW7OLk4XOp4Aox2HiNrlybbc2tGFjHxNrXMw7Ic54x/DdCeIbAzv309JW4kPn67xqY4B93X
+	fpPXoWPFeif+trBpATxHnFSuq7kHUpkkmJpmNtDquiug0/8N2qO2KEhg=
+X-Google-Smtp-Source: AGHT+IEyFXjJr0VpnOS1Uj56Zhn/+di/cCyhycl8AF7wIkBk/6D4mJmQ5p475M6lIC7GwdvKfSNggxYqRE7T4irlvaR1vOKr/WvQ
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-Received: by 2002:a05:6638:14d5:b0:47c:1232:10d4 with SMTP id
+ l21-20020a05663814d500b0047c123210d4mr301791jak.1.1711866063724; Sat, 30 Mar
+ 2024 23:21:03 -0700 (PDT)
+Date: Sat, 30 Mar 2024 23:21:03 -0700
+In-Reply-To: <tencent_CD333C9E9E1B544B651B4D250FBAE5BB1208@qq.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000a1b0d20614eee073@google.com>
+Subject: Re: [syzbot] [jfs?] INFO: task hung in lmLogClose (3)
+From: syzbot <syzbot+c824290332add8067111@syzkaller.appspotmail.com>
+To: eadavis@qq.com, linux-kernel@vger.kernel.org, 
+	syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 
-On Wed, 27 Mar 2024 16:27:19 -0700
-> syzbot has found a reproducer for the following issue on:
-> 
-> HEAD commit:    443574b03387 riscv, bpf: Fix kfunc parameters incompatibil..
-> git tree:       bpf
-> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=16ca53c9180000
+Hello,
 
-#syz test https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git  fe46a7dd189e
+syzbot has tested the proposed patch and the reproducer did not trigger any issue:
 
---- x/kernel/rcu/tree.c
-+++ y/kernel/rcu/tree.c
-@@ -2957,7 +2957,8 @@ krc_this_cpu_lock(unsigned long *flags)
- 
- 	local_irq_save(*flags);	// For safely calling this_cpu_ptr().
- 	krcp = this_cpu_ptr(&krc);
--	raw_spin_lock(&krcp->lock);
-+	while (!raw_spin_trylock(&krcp->lock))
-+		;
- 
- 	return krcp;
- }
---- x/kernel/bpf/lpm_trie.c
-+++ y/kernel/bpf/lpm_trie.c
-@@ -382,9 +382,10 @@ static long trie_update_elem(struct bpf_
- 			trie->n_entries--;
- 
- 		rcu_assign_pointer(*slot, new_node);
--		kfree_rcu(node, rcu);
- 
--		goto out;
-+		spin_unlock_irqrestore(&trie->lock, irq_flags);
-+		kfree_rcu(node, rcu);
-+		return 0;
- 	}
- 
- 	/* If the new node matches the prefix completely, it must be inserted
---
+Reported-and-tested-by: syzbot+c824290332add8067111@syzkaller.appspotmail.com
+
+Tested on:
+
+commit:         712e1425 Merge tag 'xfs-6.9-fixes-1' of git://git.kern..
+git tree:       https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+console output: https://syzkaller.appspot.com/x/log.txt?x=10f2512d180000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=ffb07c9738b12db3
+dashboard link: https://syzkaller.appspot.com/bug?extid=c824290332add8067111
+compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+userspace arch: arm64
+patch:          https://syzkaller.appspot.com/x/patch.diff?x=121abb76180000
+
+Note: testing is done by a robot and is best-effort only.
 
