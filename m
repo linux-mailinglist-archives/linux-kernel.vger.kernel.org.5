@@ -1,174 +1,154 @@
-Return-Path: <linux-kernel+bounces-126352-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-126353-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7329989357D
-	for <lists+linux-kernel@lfdr.de>; Sun, 31 Mar 2024 21:09:09 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1B85089357E
+	for <lists+linux-kernel@lfdr.de>; Sun, 31 Mar 2024 21:10:48 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6A4341C21608
-	for <lists+linux-kernel@lfdr.de>; Sun, 31 Mar 2024 19:09:08 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 864EBB22E75
+	for <lists+linux-kernel@lfdr.de>; Sun, 31 Mar 2024 19:10:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1DFDD146D76;
-	Sun, 31 Mar 2024 19:09:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7D406146D6B;
+	Sun, 31 Mar 2024 19:10:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="EkdU9EiU"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (1024-bit key) header.d=natalenko.name header.i=@natalenko.name header.b="EWburBWB"
+Received: from prime.voidband.net (prime.voidband.net [199.247.17.104])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5570B4688;
-	Sun, 31 Mar 2024 19:09:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2D024146D5C
+	for <linux-kernel@vger.kernel.org>; Sun, 31 Mar 2024 19:10:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=199.247.17.104
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711912141; cv=none; b=PtP8iikdgVU9g9R6EmnJwrIMDRYcM1pZh4aCVRjBlMxqgHCWLo77rxsVKDEtPOaL4AE9WbJa81Tfn46l1x4LGrasopx1AuzIdZsXGVxpPRhBMkmmcQzyRpd67LkrAdbkcUHlcRcQfx09ay6uzrk/24uPO55aTIMjVCA5k+iQ6iM=
+	t=1711912239; cv=none; b=qseDj+iJ7LukWlsDdpzXiIj+bYDfqys6qMPzKG8rwNSFWGDyGsS49OVvkLYgKTpCxDPueQDJ2kWHgTC0TmYV1kbX9n5ummGIFDr1wfE1RhxWxExFOtEgTfM9tVhlq+VeGrzKvS4DTSuvuPczOTFARghoJZzmf6Jqpu6OsY5gxdE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711912141; c=relaxed/simple;
-	bh=v/zuC8dt4PV8gMPcCnVwh1IagNNndASoACR2DPKF6zg=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=HGbnnlaj5+OcavjWrXqkOKc8G4KUpLtXkQLWkqnmKpuuipIoc7a38MQyWpHVRzqPfXHVIGbjeXD/vIv3NRB/xokRHclWzs9y03w+cMa1b8ptDH4qggo7jAYCE9gw1QmcX9aJZKGVn0bEtrEQ2bKtJduzAKtODZuXYp4DekCNZ0c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=EkdU9EiU; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 348A7C433C7;
-	Sun, 31 Mar 2024 19:08:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711912140;
-	bh=v/zuC8dt4PV8gMPcCnVwh1IagNNndASoACR2DPKF6zg=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=EkdU9EiU/fOn+VGtH/tMC4xLPQef/k8wjFWti0XMQjY0ZC+CwZadjgwdsOnuiSFvw
-	 xPviXDAw+R09SJt/zL1282C9RYbrWZujNgIu13gna1VsZUMsilrog1MuCyndMg90jK
-	 lSN7+qQFSB18Qru/PmhPexFbSbL/AZ6BJLjFFB49RRi2WZvV/NX00if0UIeggw3ap/
-	 aCdVgYMQmXvS2iKJAx+VPbDgaQjccZ+aQPZbOtAsmH8KrnMRMqubWTturx7IEni3/d
-	 oWhO8Gsuegc5AQVQDzgSjEth8LXHD3AnBaFIz6b41Onab2Mhk+86ujvXyomS1dCkke
-	 6DLAsl7U8CMRg==
-From: SeongJae Park <sj@kernel.org>
-To: "Ho-Ren (Jack) Chuang" <horenchuang@bytedance.com>
-Cc: SeongJae Park <sj@kernel.org>,
-	"Huang, Ying" <ying.huang@intel.com>,
-	"Gregory Price" <gourry.memverge@gmail.com>,
-	aneesh.kumar@linux.ibm.com,
-	mhocko@suse.com,
-	tj@kernel.org,
-	john@jagalactic.com,
-	"Eishan Mirakhur" <emirakhur@micron.com>,
-	"Vinicius Tavares Petrucci" <vtavarespetr@micron.com>,
-	"Ravis OpenSrc" <Ravis.OpenSrc@micron.com>,
-	"Alistair Popple" <apopple@nvidia.com>,
-	"Srinivasulu Thanneeru" <sthanneeru@micron.com>,
-	Dan Williams <dan.j.williams@intel.com>,
-	Vishal Verma <vishal.l.verma@intel.com>,
-	Dave Jiang <dave.jiang@intel.com>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	nvdimm@lists.linux.dev,
-	linux-cxl@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	linux-mm@kvack.org,
-	"Ho-Ren (Jack) Chuang" <horenc@vt.edu>,
-	"Ho-Ren (Jack) Chuang" <horenchuang@gmail.com>,
-	qemu-devel@nongnu.org
-Subject: Re: [PATCH v9 1/2] memory tier: dax/kmem: introduce an abstract layer for finding, allocating, and putting memory types
-Date: Sun, 31 Mar 2024 12:08:57 -0700
-Message-Id: <20240331190857.132490-1-sj@kernel.org>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20240329053353.309557-2-horenchuang@bytedance.com>
-References: 
+	s=arc-20240116; t=1711912239; c=relaxed/simple;
+	bh=zquvECkhXFKGeqN+2HotacergWrCotq0h8xbNwu5S0E=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=W4G1ziO37es1NB/3L2edSjuVjnASfnueMJu5UZt59Gir/qN4Q2n6WCKjDQgXXsjbr/lCZhagnRGprjqUuAPKbZP8TM+RNGhx3by62h83ZoIWAqq3XEGYxdYvUQHX9zmEiCz/kHfO/eCMO7bxyBRutwft8eXVRM454Exyz4ulyZM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=natalenko.name; spf=pass smtp.mailfrom=natalenko.name; dkim=pass (1024-bit key) header.d=natalenko.name header.i=@natalenko.name header.b=EWburBWB; arc=none smtp.client-ip=199.247.17.104
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=natalenko.name
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=natalenko.name
+Received: from spock.localnet (unknown [94.142.239.106])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
+	(No client certificate requested)
+	by prime.voidband.net (Postfix) with ESMTPSA id A577C62FD5E0;
+	Sun, 31 Mar 2024 21:10:26 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=natalenko.name;
+	s=dkim-20170712; t=1711912226;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=/EtX0OVt3ih5dbQ01+pyMTmXRKnYiOfgjTF+4SBncoQ=;
+	b=EWburBWB7TKQXoda3pMGIi/jRURXx0cTJ+HY3XiIq22mxZTtnQZ+lrGDyD3k/0+PtJMW9R
+	51WB8jFLu3p+3YSqm7c1p8hMaJiW8M9I5c6SsMkyWw1sJ1C8AkiuFodk6EICKOlLRbKSEf
+	N1PJFoUblLPUF8RiE1hD38Ue8gBh3Wk=
+From: Oleksandr Natalenko <oleksandr@natalenko.name>
+To: linux-kernel@vger.kernel.org, Randy Dunlap <rdunlap@infradead.org>
+Cc: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+ Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>,
+ David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
+ dri-devel@lists.freedesktop.org
+Subject: Re: [PATCH] drm/display: fix typo
+Date: Sun, 31 Mar 2024 21:10:13 +0200
+Message-ID: <2740172.mvXUDI8C0e@natalenko.name>
+In-Reply-To: <a7c8ec21-adf5-4dcc-af7d-33662f864596@infradead.org>
+References:
+ <20240119102215.201474-1-oleksandr@natalenko.name>
+ <a7c8ec21-adf5-4dcc-af7d-33662f864596@infradead.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; boundary="nextPart12423692.O9o76ZdvQC";
+ micalg="pgp-sha256"; protocol="application/pgp-signature"
 
-Hi Ho-Ren,
+--nextPart12423692.O9o76ZdvQC
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="utf-8"; protected-headers="v1"
+From: Oleksandr Natalenko <oleksandr@natalenko.name>
+To: linux-kernel@vger.kernel.org, Randy Dunlap <rdunlap@infradead.org>
+Subject: Re: [PATCH] drm/display: fix typo
+Date: Sun, 31 Mar 2024 21:10:13 +0200
+Message-ID: <2740172.mvXUDI8C0e@natalenko.name>
+In-Reply-To: <a7c8ec21-adf5-4dcc-af7d-33662f864596@infradead.org>
+MIME-Version: 1.0
 
-On Fri, 29 Mar 2024 05:33:52 +0000 "Ho-Ren (Jack) Chuang" <horenchuang@bytedance.com> wrote:
-
-> Since different memory devices require finding, allocating, and putting
-> memory types, these common steps are abstracted in this patch,
-> enhancing the scalability and conciseness of the code.
+On sobota 20. ledna 2024 7:44:45, CEST Randy Dunlap wrote:
 > 
-> Signed-off-by: Ho-Ren (Jack) Chuang <horenchuang@bytedance.com>
-> Reviewed-by: "Huang, Ying" <ying.huang@intel.com>
-> ---
->  drivers/dax/kmem.c           | 20 ++------------------
->  include/linux/memory-tiers.h | 13 +++++++++++++
->  mm/memory-tiers.c            | 32 ++++++++++++++++++++++++++++++++
->  3 files changed, 47 insertions(+), 18 deletions(-)
+> On 1/19/24 02:22, Oleksandr Natalenko wrote:
+> > While studying the code I've bumped into a small typo within the
+> > kernel-doc for two functions, apparently, due to copy-paste.
+> > 
+> > This commit fixes "sizo" word to be "size".
+> > 
+> > Signed-off-by: Oleksandr Natalenko <oleksandr@natalenko.name>
 > 
-[...]
-> diff --git a/include/linux/memory-tiers.h b/include/linux/memory-tiers.h
-> index 69e781900082..a44c03c2ba3a 100644
-> --- a/include/linux/memory-tiers.h
-> +++ b/include/linux/memory-tiers.h
-> @@ -48,6 +48,9 @@ int mt_calc_adistance(int node, int *adist);
->  int mt_set_default_dram_perf(int nid, struct access_coordinate *perf,
->  			     const char *source);
->  int mt_perf_to_adistance(struct access_coordinate *perf, int *adist);
-> +struct memory_dev_type *mt_find_alloc_memory_type(int adist,
-> +							struct list_head *memory_types);
-> +void mt_put_memory_types(struct list_head *memory_types);
->  #ifdef CONFIG_MIGRATION
->  int next_demotion_node(int node);
->  void node_get_allowed_targets(pg_data_t *pgdat, nodemask_t *targets);
-> @@ -136,5 +139,15 @@ static inline int mt_perf_to_adistance(struct access_coordinate *perf, int *adis
->  {
->  	return -EIO;
->  }
-> +
-> +struct memory_dev_type *mt_find_alloc_memory_type(int adist, struct list_head *memory_types)
-> +{
-> +	return NULL;
-> +}
-> +
-> +void mt_put_memory_types(struct list_head *memory_types)
-> +{
-> +
-> +}
+> Acked-by: Randy Dunlap <rdunlap@infradead.org>
+> 
+> Thanks.
+> 
+> > ---
+> >  drivers/gpu/drm/display/drm_dp_dual_mode_helper.c | 4 ++--
+> >  1 file changed, 2 insertions(+), 2 deletions(-)
+> > 
+> > diff --git a/drivers/gpu/drm/display/drm_dp_dual_mode_helper.c b/drivers/gpu/drm/display/drm_dp_dual_mode_helper.c
+> > index bd61e20770a5b..14a2a8473682b 100644
+> > --- a/drivers/gpu/drm/display/drm_dp_dual_mode_helper.c
+> > +++ b/drivers/gpu/drm/display/drm_dp_dual_mode_helper.c
+> > @@ -52,7 +52,7 @@
+> >   * @adapter: I2C adapter for the DDC bus
+> >   * @offset: register offset
+> >   * @buffer: buffer for return data
+> > - * @size: sizo of the buffer
+> > + * @size: size of the buffer
+> >   *
+> >   * Reads @size bytes from the DP dual mode adaptor registers
+> >   * starting at @offset.
+> > @@ -116,7 +116,7 @@ EXPORT_SYMBOL(drm_dp_dual_mode_read);
+> >   * @adapter: I2C adapter for the DDC bus
+> >   * @offset: register offset
+> >   * @buffer: buffer for write data
+> > - * @size: sizo of the buffer
+> > + * @size: size of the buffer
+> >   *
+> >   * Writes @size bytes to the DP dual mode adaptor registers
+> >   * starting at @offset.
+> 
+> 
 
-I found latest mm-unstable tree is failing kunit as below, and 'git bisect'
-says it happens from this patch.
+Gentle ping. I don't see this change in linux-next, so probably it got lost.
 
-    $ ./tools/testing/kunit/kunit.py run --build_dir ../kunit.out/
-    [11:56:40] Configuring KUnit Kernel ...
-    [11:56:40] Building KUnit Kernel ...
-    Populating config with:
-    $ make ARCH=um O=../kunit.out/ olddefconfig
-    Building with:
-    $ make ARCH=um O=../kunit.out/ --jobs=36
-    ERROR:root:In file included from .../mm/memory.c:71:
-    .../include/linux/memory-tiers.h:143:25: warning: no previous prototype for ‘mt_find_alloc_memory_type’ [-Wmissing-prototypes]
-      143 | struct memory_dev_type *mt_find_alloc_memory_type(int adist, struct list_head *memory_types)
-          |                         ^~~~~~~~~~~~~~~~~~~~~~~~~
-    .../include/linux/memory-tiers.h:148:6: warning: no previous prototype for ‘mt_put_memory_types’ [-Wmissing-prototypes]
-      148 | void mt_put_memory_types(struct list_head *memory_types)
-          |      ^~~~~~~~~~~~~~~~~~~
-    [...]
+-- 
+Oleksandr Natalenko (post-factum)
+--nextPart12423692.O9o76ZdvQC
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part.
+Content-Transfer-Encoding: 7Bit
 
-Maybe we should set these as 'static inline', like below?  I confirmed this
-fixes the kunit error.  May I ask your opinion?
+-----BEGIN PGP SIGNATURE-----
 
-diff --git a/include/linux/memory-tiers.h b/include/linux/memory-tiers.h
-index a44c03c2ba3a..ee6e53144156 100644
---- a/include/linux/memory-tiers.h
-+++ b/include/linux/memory-tiers.h
-@@ -140,12 +140,12 @@ static inline int mt_perf_to_adistance(struct access_coordinate *perf, int *adis
-        return -EIO;
- }
+iQIzBAABCAAdFiEEZUOOw5ESFLHZZtOKil/iNcg8M0sFAmYJtRUACgkQil/iNcg8
+M0s4gRAA5iLebl3ys6Ahv0UbaSkAVM2x4sVViWzB8xhhyJ5uzt//1482rTXM/fuk
+griAEfUtxGcoeU+WHSpBNbd6vNfQPgPJU826ZoUkWp7lpebHYSYfGofZjU9226jW
+aAugwhPVnAU5yM/i3d2UnqJXs9iBRyfjFHoBxKOXYJxR+0bbSKvSemRRh0IZQrNd
+EnZ6Q0LSsiin98uFZ7asf+9P1RkXMT/ZSWjg03VNUmMDxC7NVLBCx6erTb6+KN95
+xGxqi7wmQizlYtO9zvVTzYyRt5HCWKzv6SpY6C4fYYFEzjZXncAa+G9DCGnhCR4u
+IIfJUEnp1uW2+AEyflXH4rdv0835yLq+vxeImpo7zjIpgoqUXu0/3HnASmVI3pay
+vMrQC/pWKF+5hz9L154wDsHzYUJvKPAeYIbdDak6QQEppRL6slOqy2dyeK8rsizT
+po4TPtqba2d5QZ3P0p0BOdEjMKCzjRD1nFxbMRi+UkA0EIE9XI3A90WUpcgI1G+A
+0UPCR04RKEgyafXnbLJ0z2Tdan0Inwa64URtkOpVhz11SeYa61JBcQz0wie4v/1k
+aGaHS77AP1s/3NkX4FyrL4SIb3p+pr6DzFGI/MeRRsTGCLzSmdu9X5gdQh5AYpuh
++5bt2Kny7bvfnCjOOidCvLY4iQvgOysdxgSUTZVDn3Ztwg2FizY=
+=3A4y
+-----END PGP SIGNATURE-----
 
--struct memory_dev_type *mt_find_alloc_memory_type(int adist, struct list_head *memory_types)
-+static inline struct memory_dev_type *mt_find_alloc_memory_type(int adist, struct list_head *memory_types)
- {
-        return NULL;
- }
-
--void mt_put_memory_types(struct list_head *memory_types)
-+static inline void mt_put_memory_types(struct list_head *memory_types)
- {
-
- }
+--nextPart12423692.O9o76ZdvQC--
 
 
-Thanks,
-SJ
+
 
