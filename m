@@ -1,60 +1,60 @@
-Return-Path: <linux-kernel+bounces-125925-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-125926-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9B8A5892E4A
-	for <lists+linux-kernel@lfdr.de>; Sun, 31 Mar 2024 04:20:34 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 629CC892E49
+	for <lists+linux-kernel@lfdr.de>; Sun, 31 Mar 2024 04:20:18 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C4CE8B21887
-	for <lists+linux-kernel@lfdr.de>; Sun, 31 Mar 2024 02:20:31 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 187BF2823D4
+	for <lists+linux-kernel@lfdr.de>; Sun, 31 Mar 2024 02:20:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CDD958F6E;
-	Sun, 31 Mar 2024 02:19:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E82F579CC;
+	Sun, 31 Mar 2024 02:19:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="WMH4HRfO"
-Received: from lelv0142.ext.ti.com (lelv0142.ext.ti.com [198.47.23.249])
+	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="lqRTEy9G"
+Received: from fllv0015.ext.ti.com (fllv0015.ext.ti.com [198.47.19.141])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 208354436;
-	Sun, 31 Mar 2024 02:19:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.23.249
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 03124EC3;
+	Sun, 31 Mar 2024 02:19:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.19.141
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711851594; cv=none; b=i1KOJe2kr2/dCFlcu4+/IfUkyXLjb1a7IqcvxVcbmhGpt7ZfIukTfqB1ygVSR8IWOQE4FrnkAjN9yOVkZN2ke7GR2MtdMZ08s1CX37zcHbpNiLSik/rM4SHTLElq0IsXok8HI0qsj0OhCtLKGNqLAvuDdmW6ao2mh+S9lJLvY30=
+	t=1711851594; cv=none; b=avv+Ljmb0UvLAY4ntw/wdbcEeq8rbDzTHp/0ZwrlzkuG8JqCo7GXuzmAzFwZQbTKwBRZKpu69rlsxv9B881V8/1qKbmp3VpFDLArv6HPeudwkN2ZOC5FUoUiqEVFXCpDg5Dio7+UPBqv3fBN3YEwQJNwG77nWhIxOTgubgd+qJQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1711851594; c=relaxed/simple;
-	bh=PRztVU9t6gA9IcSEps499AWPMqTE5/at25WQYhOtWOs=;
+	bh=aeVYM9LPIF1VBhVfGl5ZCsQcbJAgoLrdLmeB/5aaZr8=;
 	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=auCtgEtI46Pc+v7TnktJdLaVzGKT+y5XFv5+L9peKPZWPzLbA+mMh1u/DMwF1xPiq3GzaiqtJIYeB8nIfOj5+XC2nHiRoHuv8VPnbtO44Z9+6XO7S6p0HVkslp3aPWh+t7SxBLtUve8aE7U1vhBUV6O866z1QdOR7oQr2EVFNZ0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=WMH4HRfO; arc=none smtp.client-ip=198.47.23.249
+	 MIME-Version:Content-Type; b=Twp4McYFhJTgCZLa5/7beRx4c1kOFJqaRzsPA8v2w42bNv17KzjCT2nXucW8KSfhfYQJ3WYXNRKF17oSgoEPndgjxi/cLaELbW1QKnQrHySE5qmcUZxRgY9bQUZUVdCMN53QVae/cebjRNd64H86eHl1wUE5pMjy4HhuvfG1l9s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=lqRTEy9G; arc=none smtp.client-ip=198.47.19.141
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
-Received: from fllv0034.itg.ti.com ([10.64.40.246])
-	by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 42V2IsNi034914;
-	Sat, 30 Mar 2024 21:18:54 -0500
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+	by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 42V2J2Fq068506;
+	Sat, 30 Mar 2024 21:19:02 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-	s=ti-com-17Q1; t=1711851534;
-	bh=lfu2qig2vXFWTz5bR8exkOrSsN4CsBZQeh/nXG6CXH4=;
+	s=ti-com-17Q1; t=1711851542;
+	bh=jbFIAm0rOMd7iNLnbOXonklm8C58zKPtSiuWJ2ldQo4=;
 	h=From:To:CC:Subject:Date:In-Reply-To:References;
-	b=WMH4HRfOpesnnNnGs8g28uL+waOGSUBPXBQhPaNnjMFZIf3Zutz/L5AlFiG+Pe/xI
-	 KU/z6EnyalVsoOnASqa4bxY3++AAlRRjCT1KRkg3Qs7hkeOnRUQ+AuZlKFFv0D54cR
-	 GUTPHsiywPzb8BqXXcnBb1vNa+PHGomdsxsYlNJo=
-Received: from DFLE111.ent.ti.com (dfle111.ent.ti.com [10.64.6.32])
-	by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 42V2IsC6076848
+	b=lqRTEy9G2GwZIBpA1mh6i+u0ZNWaVA0+qolwXr8wVpWb6H1NcW65eqt5AjgqU9HdF
+	 lpgDbr/zmfWxoxuxFQlNR7Em5BoDjEQYT3VXk1t6Kcv/4cOBpTgbKnFVJN5ho9vdig
+	 mJWB3COKDoMcIZuT7knUHOQq3v8SzYMcyfAubjbM=
+Received: from DLEE115.ent.ti.com (dlee115.ent.ti.com [157.170.170.26])
+	by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 42V2J2OY047883
 	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-	Sat, 30 Mar 2024 21:18:54 -0500
-Received: from DFLE103.ent.ti.com (10.64.6.24) by DFLE111.ent.ti.com
- (10.64.6.32) with Microsoft SMTP Server (version=TLS1_2,
+	Sat, 30 Mar 2024 21:19:02 -0500
+Received: from DLEE100.ent.ti.com (157.170.170.30) by DLEE115.ent.ti.com
+ (157.170.170.26) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Sat, 30
- Mar 2024 21:18:54 -0500
-Received: from lelvsmtp6.itg.ti.com (10.180.75.249) by DFLE103.ent.ti.com
- (10.64.6.24) with Microsoft SMTP Server (version=TLS1_2,
+ Mar 2024 21:19:01 -0500
+Received: from lelvsmtp6.itg.ti.com (10.180.75.249) by DLEE100.ent.ti.com
+ (157.170.170.30) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Sat, 30 Mar 2024 21:18:53 -0500
+ Frontend Transport; Sat, 30 Mar 2024 21:19:01 -0500
 Received: from LT5CG31242FY.dhcp.ti.com ([10.250.160.249])
-	by lelvsmtp6.itg.ti.com (8.15.2/8.15.2) with ESMTP id 42V2IcmA106026;
-	Sat, 30 Mar 2024 21:18:47 -0500
+	by lelvsmtp6.itg.ti.com (8.15.2/8.15.2) with ESMTP id 42V2IcmB106026;
+	Sat, 30 Mar 2024 21:18:55 -0500
 From: Shenghao Ding <shenghao-ding@ti.com>
 To: <linux-kernel@vger.kernel.org>
 CC: <lgirdwood@gmail.com>, <broonie@kernel.org>, <robh+dt@kernel.org>,
@@ -66,9 +66,9 @@ CC: <lgirdwood@gmail.com>, <broonie@kernel.org>, <robh+dt@kernel.org>,
         <s-hari@ti.com>, <aviel@ti.com>, <hnagalla@ti.com>, <praneeth@ti.com>,
         <Baojun.Xu@fpt.com>, Shenghao Ding
 	<shenghao-ding@ti.com>
-Subject: [PATCH v7 1/4] ASoc: PCM6240: Create PCM6240 Family driver code
-Date: Sun, 31 Mar 2024 10:18:31 +0800
-Message-ID: <20240331021835.1470-2-shenghao-ding@ti.com>
+Subject: [PATCH v7 2/4] ASoc: PCM6240: Create header file for PCM6240 Family driver code
+Date: Sun, 31 Mar 2024 10:18:32 +0800
+Message-ID: <20240331021835.1470-3-shenghao-ding@ti.com>
 X-Mailer: git-send-email 2.33.0.windows.2
 In-Reply-To: <20240331021835.1470-1-shenghao-ding@ti.com>
 References: <20240331021835.1470-1-shenghao-ding@ti.com>
@@ -90,2124 +90,254 @@ Signed-off-by: Shenghao Ding <shenghao-ding@ti.com>
 
 ---
 Change in v7:
- - Use _MAPLE as cache_type for new devices, it's a more modern design with
-   tradeoffs that work better for most current systems.
- - Rewrite error checks to return immediately on error in pcmdev_dev_read,
-   pcmdev_dev_write, pcmdev_dev_update_bits, and pcmdev_dev_bulk_write,
-   that way there's less indentation and fewer paths later on.
- - Add profileid check in pcmdevice_set_profile_id, if invalid, set to
-   max-value or 0.
- - fixed the return value as -EBUSY in pcmdevice_startup
- - remove unused chn and chenend in pcmdevice_select_cfg_blk
- - Be consistent with name, ret, rc, err.
- - fixed compiling warning on iteration 4 invokes undefined behavior in
-   pcmdev_regbin_ready.
- - remove unnecessary blank line between
-   "module_i2c_driver(pcmdevice_i2c_driver);" and
-   "static struct i2c_driver pcmdevice_i2c_driver".
- - Move reset into i2c_probe and remove sw_rst callback.
- - extract the put_vol and get_vol function as pcmdev_put_volsw and
-   pcmdev_get_volsw to reduce the red
- - Simplify and rewirte gain_control_add code.
- - Move gain kcontrol into codec_probe.
- - Unified ret and rc to ret.
- - correct of_gpio.h to gpio.h
- - Add an array pcmdev_ctrl_name to store the gain control name.
- - Move i2c_set_clientdata before sw_reset.
- - Remove pcmdevice_startup, it seemed unnecessary once firmware_request was
-   move to i2c_probe.
- - Add return value into pcmdev_profile_ctrl_add.
- - If one side of the if/else has a braces both should.
- - mixer-test kselftest to check the Kcontrol
- - follow the same convention for error log
- - Add sound-name-prefix for bin file name and control name
- - use get_unaligned_be16 instead of be16_to_cpup and get_unaligned_be32
-   instead of be32_to_cpup for potentially broken alignment
- - remove gain kcontrol for each device
- - send the output of mixer-test from a machine with this driver in it as
-   part of the cover letter, it'll make it easier to tell what's going on.
+ - remove unused data structure.
 ---
- sound/soc/codecs/pcm6240.c | 2071 ++++++++++++++++++++++++++++++++++++
- 1 file changed, 2071 insertions(+)
- create mode 100644 sound/soc/codecs/pcm6240.c
+ sound/soc/codecs/pcm6240.h | 236 +++++++++++++++++++++++++++++++++++++
+ 1 file changed, 236 insertions(+)
+ create mode 100644 sound/soc/codecs/pcm6240.h
 
-diff --git a/sound/soc/codecs/pcm6240.c b/sound/soc/codecs/pcm6240.c
+diff --git a/sound/soc/codecs/pcm6240.h b/sound/soc/codecs/pcm6240.h
 new file mode 100644
-index 000000000000..f8b713f9cad1
+index 000000000000..49a313305b26
 --- /dev/null
-+++ b/sound/soc/codecs/pcm6240.c
-@@ -0,0 +1,2071 @@
-+// SPDX-License-Identifier: GPL-2.0
++++ b/sound/soc/codecs/pcm6240.h
+@@ -0,0 +1,236 @@
++/* SPDX-License-Identifier: GPL-2.0 */
 +//
-+// ALSA SoC Texas Instruments PCM6240 Family Audio ADC/DAC Device
++// ALSA SoC Texas Instruments PCM6240 Family Audio ADC/DAC/Router
 +//
 +// Copyright (C) 2022 - 2024 Texas Instruments Incorporated
 +// https://www.ti.com
 +//
 +// The PCM6240 driver implements a flexible and configurable
 +// algo coefficient setting for one, two, or even multiple
-+// PCM6240 Family chips.
++// PCM6240 Family Audio chips.
 +//
 +// Author: Shenghao Ding <shenghao-ding@ti.com>
 +//
 +
-+#include <asm/unaligned.h>
-+#include <linux/firmware.h>
-+#include <linux/gpio.h>
-+#include <linux/i2c.h>
-+#include <linux/module.h>
-+#include <linux/of_irq.h>
-+#include <linux/regmap.h>
-+#include <sound/pcm_params.h>
-+#include <sound/soc.h>
-+#include <sound/tlv.h>
++#ifndef __PCM6240_H__
++#define __PCM6240_H__
 +
-+#include "pcm6240.h"
-+
-+static const struct i2c_device_id pcmdevice_i2c_id[] = {
-+	{ "adc3120",  ADC3120  },
-+	{ "adc5120",  ADC5120  },
-+	{ "adc6120",  ADC6120  },
-+	{ "dix4192",  DIX4192  },
-+	{ "pcm1690",  PCM1690  },
-+	{ "pcm3120",  PCM3120  },
-+	{ "pcm3140",  PCM3140  },
-+	{ "pcm5120",  PCM5120  },
-+	{ "pcm5140",  PCM5140  },
-+	{ "pcm6120",  PCM6120  },
-+	{ "pcm6140",  PCM6140  },
-+	{ "pcm6240",  PCM6240  },
-+	{ "pcm6260",  PCM6260  },
-+	{ "pcm9211",  PCM9211  },
-+	{ "pcmd3140", PCMD3140 },
-+	{ "pcmd3180", PCMD3180 },
-+	{ "pcmd512x", PCMD512X },
-+	{ "taa5212",  TAA5212  },
-+	{ "taa5412",  TAA5412  },
-+	{ "tad5212",  TAD5212  },
-+	{ "tad5412",  TAD5412  },
-+	{}
-+};
-+MODULE_DEVICE_TABLE(i2c, pcmdevice_i2c_id);
-+
-+static const char *const pcmdev_ctrl_name[] = {
-+	"%s-i2c-%d-dev%d-ch%d-ana-gain",
-+	"%s-i2c-%d-dev%d-ch%d-digi-gain",
-+	"%s-i2c-%d-dev%d-ch%d-fine-gain",
++enum pcm_device {
++	ADC3120,
++	ADC5120,
++	ADC6120,
++	DIX4192,
++	PCM1690,
++	PCM3120,
++	PCM3140,
++	PCM5120,
++	PCM5140,
++	PCM6120,
++	PCM6140,
++	PCM6240,
++	PCM6260,
++	PCM9211,
++	PCMD3140,
++	PCMD3180,
++	PCMD512X,
++	TAA5212,
++	TAA5412,
++	TAD5212,
++	TAD5412,
++	MAX_DEVICE,
 +};
 +
-+static const char *const pcmdev_ctrl_name_with_prefix[] = {
-+	"%s-dev%d-ch%d-ana-gain",
-+	"%s-dev%d-ch%d-digi-gain",
-+	"%s-dev%d-ch%d-fine-gain",
++#define PCMDEV_GENERIC_VOL_CTRL			0x0
++#define PCMDEV_PCM1690_VOL_CTRL			0x1
++#define PCMDEV_PCM1690_FINE_VOL_CTRL		0x2
++
++/* Maximum number of I2C addresses */
++#define PCMDEVICE_MAX_I2C_DEVICES		4
++/* Maximum number defined in REGBIN protocol */
++#define PCMDEVICE_MAX_REGBIN_DEVICES		8
++#define PCMDEVICE_CONFIG_SUM			64
++#define PCMDEVICE_BIN_FILENAME_LEN		64
++
++#define PCMDEVICE_RATES	(SNDRV_PCM_RATE_44100 | \
++	SNDRV_PCM_RATE_48000)
++#define PCMDEVICE_MAX_CHANNELS			8
++#define PCMDEVICE_FORMATS	(SNDRV_PCM_FMTBIT_S16_LE | \
++	SNDRV_PCM_FMTBIT_S20_3LE | \
++	SNDRV_PCM_FMTBIT_S24_3LE | \
++	SNDRV_PCM_FMTBIT_S24_LE | \
++	SNDRV_PCM_FMTBIT_S32_LE)
++
++/* PAGE Control Register (available in page0 of each book) */
++#define PCMDEVICE_PAGE_SELECT			0x00
++#define PCMDEVICE_REG(page, reg)		((page * 128) + reg)
++#define PCMDEVICE_REG_SWRESET			PCMDEVICE_REG(0X0, 0x01)
++#define PCMDEVICE_REG_SWRESET_RESET		BIT(0)
++
++#define ADC5120_REG_CH1_ANALOG_GAIN		PCMDEVICE_REG(0X0, 0x3d)
++#define ADC5120_REG_CH1_DIGITAL_GAIN		PCMDEVICE_REG(0X0, 0x3e)
++#define ADC5120_REG_CH2_ANALOG_GAIN		PCMDEVICE_REG(0X0, 0x42)
++#define ADC5120_REG_CH2_DIGITAL_GAIN		PCMDEVICE_REG(0X0, 0x43)
++
++#define PCM1690_REG_MODE_CTRL			PCMDEVICE_REG(0X0, 0x46)
++#define PCM1690_REG_MODE_CTRL_DAMS_MSK		BIT(7)
++#define PCM1690_REG_MODE_CTRL_DAMS_FINE_STEP	0x0
++#define PCM1690_REG_MODE_CTRL_DAMS_WIDE_RANGE	0x80
++
++#define PCM1690_REG_CH1_DIGITAL_GAIN		PCMDEVICE_REG(0X0, 0x48)
++#define PCM1690_REG_CH2_DIGITAL_GAIN		PCMDEVICE_REG(0X0, 0x49)
++#define PCM1690_REG_CH3_DIGITAL_GAIN		PCMDEVICE_REG(0X0, 0x4a)
++#define PCM1690_REG_CH4_DIGITAL_GAIN		PCMDEVICE_REG(0X0, 0x4b)
++#define PCM1690_REG_CH5_DIGITAL_GAIN		PCMDEVICE_REG(0X0, 0x4c)
++#define PCM1690_REG_CH6_DIGITAL_GAIN		PCMDEVICE_REG(0X0, 0x4d)
++#define PCM1690_REG_CH7_DIGITAL_GAIN		PCMDEVICE_REG(0X0, 0x4e)
++#define PCM1690_REG_CH8_DIGITAL_GAIN		PCMDEVICE_REG(0X0, 0x4f)
++
++#define PCM6240_REG_CH1_ANALOG_GAIN		PCMDEVICE_REG(0X0, 0x3d)
++#define PCM6240_REG_CH1_DIGITAL_GAIN		PCMDEVICE_REG(0X0, 0x3e)
++#define PCM6240_REG_CH2_ANALOG_GAIN		PCMDEVICE_REG(0X0, 0x42)
++#define PCM6240_REG_CH2_DIGITAL_GAIN		PCMDEVICE_REG(0X0, 0x43)
++#define PCM6240_REG_CH3_ANALOG_GAIN		PCMDEVICE_REG(0X0, 0x47)
++#define PCM6240_REG_CH3_DIGITAL_GAIN		PCMDEVICE_REG(0X0, 0x48)
++#define PCM6240_REG_CH4_ANALOG_GAIN		PCMDEVICE_REG(0X0, 0x4c)
++#define PCM6240_REG_CH4_DIGITAL_GAIN		PCMDEVICE_REG(0X0, 0x4d)
++
++#define PCM6260_REG_CH1_ANALOG_GAIN		PCMDEVICE_REG(0X0, 0x3d)
++#define PCM6260_REG_CH1_DIGITAL_GAIN		PCMDEVICE_REG(0X0, 0x3e)
++#define PCM6260_REG_CH2_ANALOG_GAIN		PCMDEVICE_REG(0X0, 0x42)
++#define PCM6260_REG_CH2_DIGITAL_GAIN		PCMDEVICE_REG(0X0, 0x43)
++#define PCM6260_REG_CH3_ANALOG_GAIN		PCMDEVICE_REG(0X0, 0x47)
++#define PCM6260_REG_CH3_DIGITAL_GAIN		PCMDEVICE_REG(0X0, 0x48)
++#define PCM6260_REG_CH4_ANALOG_GAIN		PCMDEVICE_REG(0X0, 0x4c)
++#define PCM6260_REG_CH4_DIGITAL_GAIN		PCMDEVICE_REG(0X0, 0x4d)
++#define PCM6260_REG_CH5_ANALOG_GAIN		PCMDEVICE_REG(0X0, 0x51)
++#define PCM6260_REG_CH5_DIGITAL_GAIN		PCMDEVICE_REG(0X0, 0x52)
++#define PCM6260_REG_CH6_ANALOG_GAIN		PCMDEVICE_REG(0X0, 0x56)
++#define PCM6260_REG_CH6_DIGITAL_GAIN		PCMDEVICE_REG(0X0, 0x57)
++
++#define PCM9211_REG_SW_CTRL			PCMDEVICE_REG(0X0, 0x40)
++#define PCM9211_REG_SW_CTRL_MRST_MSK		BIT(7)
++#define PCM9211_REG_SW_CTRL_MRST		0x0
++
++#define PCM9211_REG_CH1_DIGITAL_GAIN		PCMDEVICE_REG(0X0, 0x46)
++#define PCM9211_REG_CH2_DIGITAL_GAIN		PCMDEVICE_REG(0X0, 0x47)
++
++#define PCMD3140_REG_CH1_DIGITAL_GAIN		PCMDEVICE_REG(0X0, 0x3E)
++#define PCMD3140_REG_CH2_DIGITAL_GAIN		PCMDEVICE_REG(0X0, 0x43)
++#define PCMD3140_REG_CH3_DIGITAL_GAIN		PCMDEVICE_REG(0X0, 0x48)
++#define PCMD3140_REG_CH4_DIGITAL_GAIN		PCMDEVICE_REG(0X0, 0x4D)
++
++#define PCMD3180_REG_CH1_DIGITAL_GAIN		PCMDEVICE_REG(0X0, 0x3E)
++#define PCMD3180_REG_CH2_DIGITAL_GAIN		PCMDEVICE_REG(0X0, 0x43)
++#define PCMD3180_REG_CH3_DIGITAL_GAIN		PCMDEVICE_REG(0X0, 0x48)
++#define PCMD3180_REG_CH4_DIGITAL_GAIN		PCMDEVICE_REG(0X0, 0x4D)
++#define PCMD3180_REG_CH5_DIGITAL_GAIN		PCMDEVICE_REG(0X0, 0x52)
++#define PCMD3180_REG_CH6_DIGITAL_GAIN		PCMDEVICE_REG(0X0, 0x57)
++#define PCMD3180_REG_CH7_DIGITAL_GAIN		PCMDEVICE_REG(0X0, 0x5C)
++#define PCMD3180_REG_CH8_DIGITAL_GAIN		PCMDEVICE_REG(0X0, 0x61)
++
++#define TAA5412_REG_CH1_DIGITAL_VOLUME		PCMDEVICE_REG(0X0, 0x52)
++#define TAA5412_REG_CH2_DIGITAL_VOLUME		PCMDEVICE_REG(0X0, 0x57)
++#define TAA5412_REG_CH3_DIGITAL_VOLUME		PCMDEVICE_REG(0X0, 0x5B)
++#define TAA5412_REG_CH4_DIGITAL_VOLUME		PCMDEVICE_REG(0X0, 0x5F)
++
++#define TAA5412_REG_CH1_FINE_GAIN		PCMDEVICE_REG(0X0, 0x53)
++#define TAA5412_REG_CH2_FINE_GAIN		PCMDEVICE_REG(0X0, 0x58)
++#define TAA5412_REG_CH3_FINE_GAIN		PCMDEVICE_REG(0X0, 0x5C)
++#define TAA5412_REG_CH4_FINE_GAIN		PCMDEVICE_REG(0X0, 0x60)
++
++#define PCMDEVICE_CMD_SING_W		0x1
++#define PCMDEVICE_CMD_BURST		0x2
++#define PCMDEVICE_CMD_DELAY		0x3
++#define PCMDEVICE_CMD_FIELD_W		0x4
++
++enum pcmdevice_bin_blk_type {
++	PCMDEVICE_BIN_BLK_COEFF = 1,
++	PCMDEVICE_BIN_BLK_POST_POWER_UP,
++	PCMDEVICE_BIN_BLK_PRE_SHUTDOWN,
++	PCMDEVICE_BIN_BLK_PRE_POWER_UP,
++	PCMDEVICE_BIN_BLK_POST_SHUTDOWN
 +};
 +
-+static const struct pcmdevice_mixer_control adc5120_analog_gain_ctl[] = {
-+	{
-+		.shift = 1,
-+		.reg = ADC5120_REG_CH1_ANALOG_GAIN,
-+		.max = 0x54,
-+		.invert = 0,
-+	},
-+	{
-+		.shift = 1,
-+		.reg = ADC5120_REG_CH2_ANALOG_GAIN,
-+		.max = 0x54,
-+		.invert = 0,
-+	}
++enum pcmdevice_fw_state {
++	PCMDEVICE_FW_LOAD_OK = 0,
++	PCMDEVICE_FW_LOAD_FAILED
 +};
 +
-+static const struct pcmdevice_mixer_control adc5120_digi_gain_ctl[] = {
-+	{
-+		.shift = 0,
-+		.reg = ADC5120_REG_CH1_DIGITAL_GAIN,
-+		.max = 0xff,
-+		.invert = 0,
-+	},
-+	{
-+		.shift = 0,
-+		.reg = ADC5120_REG_CH2_DIGITAL_GAIN,
-+		.max = 0xff,
-+		.invert = 0,
-+	}
++struct pcmdevice_regbin_hdr {
++	unsigned int img_sz;
++	unsigned int checksum;
++	unsigned int binary_version_num;
++	unsigned int drv_fw_version;
++	unsigned int timestamp;
++	unsigned char plat_type;
++	unsigned char dev_family;
++	unsigned char reserve;
++	unsigned char ndev;
++	unsigned char devs[PCMDEVICE_MAX_REGBIN_DEVICES];
++	unsigned int nconfig;
++	unsigned int config_size[PCMDEVICE_CONFIG_SUM];
 +};
 +
-+static const struct pcmdevice_mixer_control pcm1690_digi_gain_ctl[] = {
-+	{
-+		.shift = 0,
-+		.reg = PCM1690_REG_CH1_DIGITAL_GAIN,
-+		.max = 0xff,
-+		.invert = 0,
-+	},
-+	{
-+		.shift = 0,
-+		.reg = PCM1690_REG_CH2_DIGITAL_GAIN,
-+		.max = 0xff,
-+		.invert = 0,
-+	},
-+	{
-+		.shift = 0,
-+		.reg = PCM1690_REG_CH3_DIGITAL_GAIN,
-+		.max = 0xff,
-+		.invert = 0,
-+	},
-+	{
-+		.shift = 0,
-+		.reg = PCM1690_REG_CH4_DIGITAL_GAIN,
-+		.max = 0xff,
-+		.invert = 0,
-+	},
-+	{
-+		.shift = 0,
-+		.reg = PCM1690_REG_CH5_DIGITAL_GAIN,
-+		.max = 0xff,
-+		.invert = 0,
-+	},
-+	{
-+		.shift = 0,
-+		.reg = PCM1690_REG_CH6_DIGITAL_GAIN,
-+		.max = 0xff,
-+		.invert = 0,
-+	},
-+	{
-+		.shift = 0,
-+		.reg = PCM1690_REG_CH7_DIGITAL_GAIN,
-+		.max = 0xff,
-+		.invert = 0,
-+	},
-+	{
-+		.shift = 0,
-+		.reg = PCM1690_REG_CH8_DIGITAL_GAIN,
-+		.max = 0xff,
-+		.invert = 0,
-+	}
-+};
-+
-+static const struct pcmdevice_mixer_control pcm6240_analog_gain_ctl[] = {
-+	{
-+		.shift = 2,
-+		.reg = PCM6240_REG_CH1_ANALOG_GAIN,
-+		.max = 0x42,
-+		.invert = 0,
-+	},
-+	{
-+		.shift = 2,
-+		.reg = PCM6240_REG_CH2_ANALOG_GAIN,
-+		.max = 0x42,
-+		.invert = 0,
-+	},
-+	{
-+		.shift = 2,
-+		.reg = PCM6240_REG_CH3_ANALOG_GAIN,
-+		.max = 0x42,
-+		.invert = 0,
-+	},
-+	{
-+		.shift = 2,
-+		.reg = PCM6240_REG_CH4_ANALOG_GAIN,
-+		.max = 0x42,
-+		.invert = 0,
-+	}
-+};
-+
-+static const struct pcmdevice_mixer_control pcm6240_digi_gain_ctl[] = {
-+	{
-+		.shift = 0,
-+		.reg = PCM6240_REG_CH1_DIGITAL_GAIN,
-+		.max = 0xff,
-+		.invert = 0,
-+	},
-+	{
-+		.shift = 0,
-+		.reg = PCM6240_REG_CH2_DIGITAL_GAIN,
-+		.max = 0xff,
-+		.invert = 0,
-+	},
-+	{
-+		.shift = 0,
-+		.reg = PCM6240_REG_CH3_DIGITAL_GAIN,
-+		.max = 0xff,
-+		.invert = 0,
-+	},
-+	{
-+		.shift = 0,
-+		.reg = PCM6240_REG_CH4_DIGITAL_GAIN,
-+		.max = 0xff,
-+		.invert = 0,
-+	}
-+};
-+
-+static const struct pcmdevice_mixer_control pcm6260_analog_gain_ctl[] = {
-+	{
-+		.shift = 2,
-+		.reg = PCM6260_REG_CH1_ANALOG_GAIN,
-+		.max = 0x42,
-+		.invert = 0,
-+	},
-+	{
-+		.shift = 2,
-+		.reg = PCM6260_REG_CH2_ANALOG_GAIN,
-+		.max = 0x42,
-+		.invert = 0,
-+	},
-+	{
-+		.shift = 2,
-+		.reg = PCM6260_REG_CH3_ANALOG_GAIN,
-+		.max = 0x42,
-+		.invert = 0,
-+	},
-+	{
-+		.shift = 2,
-+		.reg = PCM6260_REG_CH4_ANALOG_GAIN,
-+		.max = 0x42,
-+		.invert = 0,
-+	},
-+	{
-+		.shift = 2,
-+		.reg = PCM6260_REG_CH5_ANALOG_GAIN,
-+		.max = 0x42,
-+		.invert = 0,
-+	},
-+	{
-+		.shift = 2,
-+		.reg = PCM6260_REG_CH6_ANALOG_GAIN,
-+		.max = 0x42,
-+		.invert = 0,
-+	}
-+};
-+
-+static const struct pcmdevice_mixer_control pcm6260_digi_gain_ctl[] = {
-+	{
-+		.shift = 0,
-+		.reg = PCM6260_REG_CH1_DIGITAL_GAIN,
-+		.max = 0xff,
-+		.invert = 0,
-+	},
-+	{
-+		.shift = 0,
-+		.reg = PCM6260_REG_CH2_DIGITAL_GAIN,
-+		.max = 0xff,
-+		.invert = 0,
-+	},
-+	{
-+		.shift = 0,
-+		.reg = PCM6260_REG_CH3_DIGITAL_GAIN,
-+		.max = 0xff,
-+		.invert = 0,
-+	},
-+	{
-+		.shift = 0,
-+		.reg = PCM6260_REG_CH4_DIGITAL_GAIN,
-+		.max = 0xff,
-+		.invert = 0,
-+	},
-+	{
-+		.shift = 0,
-+		.reg = PCM6260_REG_CH5_DIGITAL_GAIN,
-+		.max = 0xff,
-+		.invert = 0,
-+	},
-+	{
-+		.shift = 0,
-+		.reg = PCM6260_REG_CH6_DIGITAL_GAIN,
-+		.max = 0xff,
-+		.invert = 0,
-+	}
-+};
-+
-+static const struct pcmdevice_mixer_control pcm9211_digi_gain_ctl[] = {
-+	{
-+		.shift = 0,
-+		.reg = PCM9211_REG_CH1_DIGITAL_GAIN,
-+		.max = 0xff,
-+		.invert = 0,
-+	},
-+	{
-+		.shift = 0,
-+		.reg = PCM9211_REG_CH2_DIGITAL_GAIN,
-+		.max = 0xff,
-+		.invert = 0,
-+	}
-+};
-+
-+static const struct pcmdevice_mixer_control pcmd3140_digi_gain_ctl[] = {
-+	{
-+		.shift = 0,
-+		.reg = PCMD3140_REG_CH1_DIGITAL_GAIN,
-+		.max = 0xff,
-+		.invert = 0,
-+	},
-+	{
-+		.shift = 0,
-+		.reg = PCMD3140_REG_CH2_DIGITAL_GAIN,
-+		.max = 0xff,
-+		.invert = 0,
-+	},
-+	{
-+		.shift = 0,
-+		.reg = PCMD3140_REG_CH3_DIGITAL_GAIN,
-+		.max = 0xff,
-+		.invert = 0,
-+	},
-+	{
-+		.shift = 0,
-+		.reg = PCMD3140_REG_CH4_DIGITAL_GAIN,
-+		.max = 0xff,
-+		.invert = 0,
-+	}
-+};
-+
-+static const struct pcmdevice_mixer_control pcmd3180_digi_gain_ctl[] = {
-+	{
-+		.shift = 0,
-+		.reg = PCMD3180_REG_CH1_DIGITAL_GAIN,
-+		.max = 0xff,
-+		.invert = 0,
-+	},
-+	{
-+		.shift = 0,
-+		.reg = PCMD3180_REG_CH2_DIGITAL_GAIN,
-+		.max = 0xff,
-+		.invert = 0,
-+	},
-+	{
-+		.shift = 0,
-+		.reg = PCMD3180_REG_CH3_DIGITAL_GAIN,
-+		.max = 0xff,
-+		.invert = 0,
-+	},
-+	{
-+		.shift = 0,
-+		.reg = PCMD3180_REG_CH4_DIGITAL_GAIN,
-+		.max = 0xff,
-+		.invert = 0,
-+	},
-+	{
-+		.shift = 0,
-+		.reg = PCMD3180_REG_CH5_DIGITAL_GAIN,
-+		.max = 0xff,
-+		.invert = 0,
-+	},
-+	{
-+		.shift = 0,
-+		.reg = PCMD3180_REG_CH6_DIGITAL_GAIN,
-+		.max = 0xff,
-+		.invert = 0,
-+	},
-+	{
-+		.shift = 0,
-+		.reg = PCMD3180_REG_CH7_DIGITAL_GAIN,
-+		.max = 0xff,
-+		.invert = 0,
-+	},
-+	{
-+		.shift = 0,
-+		.reg = PCMD3180_REG_CH8_DIGITAL_GAIN,
-+		.max = 0xff,
-+		.invert = 0,
-+	}
-+};
-+
-+static const struct pcmdevice_mixer_control taa5412_digi_vol_ctl[] = {
-+	{
-+		.shift = 0,
-+		.reg = TAA5412_REG_CH1_DIGITAL_VOLUME,
-+		.max = 0xff,
-+		.invert = 0,
-+	},
-+	{
-+		.shift = 0,
-+		.reg = TAA5412_REG_CH2_DIGITAL_VOLUME,
-+		.max = 0xff,
-+		.invert = 0,
-+	},
-+	{
-+		.shift = 0,
-+		.reg = TAA5412_REG_CH3_DIGITAL_VOLUME,
-+		.max = 0xff,
-+		.invert = 0,
-+	},
-+	{
-+		.shift = 0,
-+		.reg = TAA5412_REG_CH4_DIGITAL_VOLUME,
-+		.max = 0xff,
-+		.invert = 0,
-+	},
-+};
-+
-+static const struct pcmdevice_mixer_control taa5412_fine_gain_ctl[] = {
-+	{
-+		.shift = 4,
-+		.reg = TAA5412_REG_CH1_FINE_GAIN,
-+		.max = 0xf,
-+		.invert = 0,
-+	},
-+	{
-+		.shift = 4,
-+		.reg = TAA5412_REG_CH2_FINE_GAIN,
-+		.max = 0xf,
-+		.invert = 0,
-+	},
-+	{
-+		.shift = 4,
-+		.reg = TAA5412_REG_CH3_FINE_GAIN,
-+		.max = 0xf,
-+		.invert = 4,
-+	},
-+	{
-+		.shift = 0,
-+		.reg = TAA5412_REG_CH4_FINE_GAIN,
-+		.max = 0xf,
-+		.invert = 4,
-+	},
-+};
-+
-+static const DECLARE_TLV_DB_MINMAX_MUTE(pcmd3140_dig_gain_tlv,
-+	-10000, 2700);
-+static const DECLARE_TLV_DB_MINMAX_MUTE(pcm1690_fine_dig_gain_tlv,
-+	-12750, 0);
-+static const DECLARE_TLV_DB_MINMAX_MUTE(pcm1690_dig_gain_tlv,
-+	-25500, 0);
-+static const DECLARE_TLV_DB_MINMAX_MUTE(pcm9211_dig_gain_tlv,
-+	-11450, 2000);
-+static const DECLARE_TLV_DB_MINMAX_MUTE(adc5120_fgain_tlv,
-+	-10050, 2700);
-+static const DECLARE_TLV_DB_LINEAR(adc5120_chgain_tlv, 0, 4200);
-+static const DECLARE_TLV_DB_MINMAX_MUTE(pcm6260_fgain_tlv,
-+	-10000, 2700);
-+static const DECLARE_TLV_DB_LINEAR(pcm6260_chgain_tlv, 0, 4200);
-+static const DECLARE_TLV_DB_MINMAX_MUTE(taa5412_dig_vol_tlv,
-+	-8050, 4700);
-+static const DECLARE_TLV_DB_LINEAR(taa5412_fine_gain_tlv,
-+	-80, 70);
-+
-+static int pcmdev_change_dev(struct pcmdevice_priv *pcm_priv,
-+	unsigned short dev_no)
-+{
-+	struct i2c_client *client = (struct i2c_client *)pcm_priv->client;
-+	struct regmap *map = pcm_priv->regmap;
-+	int ret;
-+
-+	if (client->addr == pcm_priv->addr[dev_no])
-+		return 0;
-+
-+	client->addr = pcm_priv->addr[dev_no];
-+	/* All pcmdevices share the same regmap, clear the page
-+	 * inside regmap once switching to another pcmdevice.
-+	 * Register 0 at any pages inside pcmdevice is the same
-+	 * one for page-switching.
-+	 */
-+	ret = regmap_write(map, PCMDEVICE_PAGE_SELECT, 0);
-+	if (ret < 0)
-+		dev_err(pcm_priv->dev, "%s: err = %d\n", __func__, ret);
-+
-+	return ret;
-+}
-+
-+static int pcmdev_dev_read(struct pcmdevice_priv *pcm_dev,
-+	unsigned int dev_no, unsigned int reg, unsigned int *val)
-+{
-+	struct regmap *map = pcm_dev->regmap;
-+	int ret;
-+
-+	if (dev_no >= pcm_dev->ndev) {
-+		dev_err(pcm_dev->dev, "%s: no such channel(%d)\n", __func__,
-+			dev_no);
-+		return -EINVAL;
-+	}
-+
-+	ret = pcmdev_change_dev(pcm_dev, dev_no);
-+	if (ret < 0) {
-+		dev_err(pcm_dev->dev, "%s: chg dev err = %d\n", __func__, ret);
-+		return ret;
-+	}
-+
-+	ret = regmap_read(map, reg, val);
-+	if (ret < 0)
-+		dev_err(pcm_dev->dev, "%s: err = %d\n", __func__, ret);
-+
-+	return ret;
-+}
-+
-+static int pcmdev_dev_update_bits(struct pcmdevice_priv *pcm_dev,
-+	unsigned int dev_no, unsigned int reg, unsigned int mask,
-+	unsigned int value)
-+{
-+	struct regmap *map = pcm_dev->regmap;
-+	int ret;
-+
-+	if (dev_no >= pcm_dev->ndev) {
-+		dev_err(pcm_dev->dev, "%s: no such channel(%d)\n", __func__,
-+			dev_no);
-+		return -EINVAL;
-+	}
-+
-+	ret = pcmdev_change_dev(pcm_dev, dev_no);
-+	if (ret < 0) {
-+		dev_err(pcm_dev->dev, "%s: chg dev err = %d\n", __func__, ret);
-+		return ret;
-+	}
-+
-+	ret = regmap_update_bits(map, reg, mask, value);
-+	if (ret < 0)
-+		dev_err(pcm_dev->dev, "%s: update_bits err=%d\n",
-+			__func__, ret);
-+
-+	return ret;
-+}
-+
-+static int pcmdev_get_volsw(struct snd_kcontrol *kcontrol,
-+	struct snd_ctl_elem_value *ucontrol, int vol_ctrl_type)
-+{
-+	struct snd_soc_component *component = snd_kcontrol_chip(kcontrol);
-+	struct pcmdevice_priv *pcm_dev =
-+		snd_soc_component_get_drvdata(component);
-+	struct pcmdevice_mixer_control *mc =
-+		(struct pcmdevice_mixer_control *)kcontrol->private_value;
-+	int max = mc->max, ret;
-+	unsigned int mask = BIT(fls(max)) - 1;
-+	unsigned int dev_no = mc->dev_no;
-+	unsigned int shift = mc->shift;
-+	unsigned int reg = mc->reg;
-+	unsigned int val;
-+
-+	mutex_lock(&pcm_dev->codec_lock);
-+
-+	if (pcm_dev->chip_id == PCM1690) {
-+		ret = pcmdev_dev_read(pcm_dev, dev_no, PCM1690_REG_MODE_CTRL,
-+			&val);
-+		if (ret) {
-+			dev_err(pcm_dev->dev, "%s: read mode err=%d\n",
-+				__func__, ret);
-+			goto out;
-+		}
-+		val &= PCM1690_REG_MODE_CTRL_DAMS_MSK;
-+		/* Set to wide-range mode, before using vol ctrl. */
-+		if (!val && vol_ctrl_type == PCMDEV_PCM1690_VOL_CTRL) {
-+			ucontrol->value.integer.value[0] = -25500;
-+			goto out;
-+		}
-+		/* Set to fine mode, before using fine vol ctrl. */
-+		if (val && vol_ctrl_type == PCMDEV_PCM1690_FINE_VOL_CTRL) {
-+			ucontrol->value.integer.value[0] = -12750;
-+			goto out;
-+		}
-+	}
-+
-+	ret = pcmdev_dev_read(pcm_dev, dev_no, reg, &val);
-+	if (ret) {
-+		dev_err(pcm_dev->dev, "%s: read err=%d\n",
-+			__func__, ret);
-+		goto out;
-+	}
-+
-+	val = (val >> shift) & mask;
-+	val = (val > max) ? max : val;
-+	val = mc->invert ? max - val : val;
-+	ucontrol->value.integer.value[0] = val;
-+out:
-+	mutex_unlock(&pcm_dev->codec_lock);
-+	return ret;
-+}
-+
-+static int pcmdevice_get_volsw(struct snd_kcontrol *kcontrol,
-+	struct snd_ctl_elem_value *ucontrol)
-+{
-+	return pcmdev_get_volsw(kcontrol, ucontrol, PCMDEV_GENERIC_VOL_CTRL);
-+}
-+
-+static int pcm1690_get_volsw(struct snd_kcontrol *kcontrol,
-+	struct snd_ctl_elem_value *ucontrol)
-+{
-+	return pcmdev_get_volsw(kcontrol, ucontrol, PCMDEV_PCM1690_VOL_CTRL);
-+}
-+
-+static int pcm1690_get_finevolsw(struct snd_kcontrol *kcontrol,
-+		struct snd_ctl_elem_value *ucontrol)
-+{
-+	return pcmdev_get_volsw(kcontrol, ucontrol,
-+		PCMDEV_PCM1690_FINE_VOL_CTRL);
-+}
-+
-+static int pcmdev_put_volsw(struct snd_kcontrol *kcontrol,
-+	struct snd_ctl_elem_value *ucontrol, int vol_ctrl_type)
-+{
-+	struct snd_soc_component *component = snd_kcontrol_chip(kcontrol);
-+	struct pcmdevice_priv *pcm_dev =
-+		snd_soc_component_get_drvdata(component);
-+	struct pcmdevice_mixer_control *mc =
-+		(struct pcmdevice_mixer_control *)kcontrol->private_value;
-+	int max = mc->max, err = 1;
-+	unsigned int mask = BIT(fls(max)) - 1;
-+	unsigned int dev_no = mc->dev_no;
-+	unsigned int shift = mc->shift;
-+	unsigned int val, val_mask;
-+	unsigned int reg = mc->reg;
-+
-+	mutex_lock(&pcm_dev->codec_lock);
-+	val = ucontrol->value.integer.value[0] & mask;
-+	val = (val > max) ? max : val;
-+	val = mc->invert ? max - val : val;
-+	val_mask = mask << shift;
-+	val = val << shift;
-+
-+	switch (vol_ctrl_type) {
-+	case PCMDEV_PCM1690_VOL_CTRL:
-+		val_mask |= PCM1690_REG_MODE_CTRL_DAMS_MSK;
-+		val |= PCM1690_REG_MODE_CTRL_DAMS_WIDE_RANGE;
-+		break;
-+	case PCMDEV_PCM1690_FINE_VOL_CTRL:
-+		val_mask |= PCM1690_REG_MODE_CTRL_DAMS_MSK;
-+		val |= PCM1690_REG_MODE_CTRL_DAMS_FINE_STEP;
-+		break;
-+	}
-+
-+	err = pcmdev_dev_update_bits(pcm_dev, dev_no, reg, val_mask, val);
-+	if (err) {
-+		dev_err(pcm_dev->dev, "%s: update_bits err = %d\n",
-+			__func__, err);
-+		err = 0;
-+	}
-+
-+	mutex_unlock(&pcm_dev->codec_lock);
-+	return err;
-+}
-+
-+static int pcmdevice_put_volsw(struct snd_kcontrol *kcontrol,
-+	struct snd_ctl_elem_value *ucontrol)
-+{
-+	return pcmdev_put_volsw(kcontrol, ucontrol, PCMDEV_GENERIC_VOL_CTRL);
-+}
-+
-+static int pcm1690_put_volsw(struct snd_kcontrol *kcontrol,
-+	struct snd_ctl_elem_value *ucontrol)
-+{
-+	return pcmdev_put_volsw(kcontrol, ucontrol, PCMDEV_PCM1690_VOL_CTRL);
-+}
-+
-+static int pcm1690_put_finevolsw(struct snd_kcontrol *kcontrol,
-+	struct snd_ctl_elem_value *ucontrol)
-+{
-+	return pcmdev_put_volsw(kcontrol, ucontrol,
-+		PCMDEV_PCM1690_FINE_VOL_CTRL);
-+}
-+
-+static const struct pcmdev_ctrl_info pcmdev_gain_ctl_info[][2] = {
-+	// ADC3120
-+	{
-+		{
-+			.gain = adc5120_chgain_tlv,
-+			.pcmdev_ctrl = adc5120_analog_gain_ctl,
-+			.ctrl_array_size = ARRAY_SIZE(adc5120_analog_gain_ctl),
-+			.get = pcmdevice_get_volsw,
-+			.put = pcmdevice_put_volsw,
-+			.pcmdev_ctrl_name_id = 0,
-+		},
-+		{
-+			.gain = adc5120_fgain_tlv,
-+			.pcmdev_ctrl = adc5120_digi_gain_ctl,
-+			.ctrl_array_size = ARRAY_SIZE(adc5120_digi_gain_ctl),
-+			.get = pcmdevice_get_volsw,
-+			.put = pcmdevice_put_volsw,
-+			.pcmdev_ctrl_name_id = 1,
-+		},
-+	},
-+	// ADC5120
-+	{
-+		{
-+			.gain = adc5120_chgain_tlv,
-+			.pcmdev_ctrl = adc5120_analog_gain_ctl,
-+			.ctrl_array_size = ARRAY_SIZE(adc5120_analog_gain_ctl),
-+			.get = pcmdevice_get_volsw,
-+			.put = pcmdevice_put_volsw,
-+			.pcmdev_ctrl_name_id = 0,
-+		},
-+		{
-+			.gain = adc5120_fgain_tlv,
-+			.pcmdev_ctrl = adc5120_digi_gain_ctl,
-+			.ctrl_array_size = ARRAY_SIZE(adc5120_digi_gain_ctl),
-+			.get = pcmdevice_get_volsw,
-+			.put = pcmdevice_put_volsw,
-+			.pcmdev_ctrl_name_id = 1,
-+		},
-+	},
-+	// ADC6120
-+	{
-+		{
-+			.gain = adc5120_chgain_tlv,
-+			.pcmdev_ctrl = adc5120_analog_gain_ctl,
-+			.ctrl_array_size = ARRAY_SIZE(adc5120_analog_gain_ctl),
-+			.get = pcmdevice_get_volsw,
-+			.put = pcmdevice_put_volsw,
-+			.pcmdev_ctrl_name_id = 0,
-+		},
-+		{
-+			.gain = adc5120_fgain_tlv,
-+			.pcmdev_ctrl = adc5120_digi_gain_ctl,
-+			.ctrl_array_size = ARRAY_SIZE(adc5120_digi_gain_ctl),
-+			.get = pcmdevice_get_volsw,
-+			.put = pcmdevice_put_volsw,
-+			.pcmdev_ctrl_name_id = 1,
-+		},
-+	},
-+	// DIX4192
-+	{
-+		{
-+			.ctrl_array_size = 0,
-+		},
-+		{
-+			.ctrl_array_size = 0,
-+		},
-+	},
-+	// PCM1690
-+	{
-+		{
-+			.gain = pcm1690_fine_dig_gain_tlv,
-+			.pcmdev_ctrl = pcm1690_digi_gain_ctl,
-+			.ctrl_array_size = ARRAY_SIZE(pcm1690_digi_gain_ctl),
-+			.get = pcm1690_get_volsw,
-+			.put = pcm1690_put_volsw,
-+			.pcmdev_ctrl_name_id = 1,
-+		},
-+		{
-+			.gain = pcm1690_dig_gain_tlv,
-+			.pcmdev_ctrl = pcm1690_digi_gain_ctl,
-+			.ctrl_array_size = ARRAY_SIZE(pcm1690_digi_gain_ctl),
-+			.get = pcm1690_get_finevolsw,
-+			.put = pcm1690_put_finevolsw,
-+			.pcmdev_ctrl_name_id = 2,
-+		},
-+	},
-+	// PCM3120
-+	{
-+		{
-+			.gain = adc5120_chgain_tlv,
-+			.pcmdev_ctrl = adc5120_analog_gain_ctl,
-+			.ctrl_array_size = ARRAY_SIZE(adc5120_analog_gain_ctl),
-+			.get = pcmdevice_get_volsw,
-+			.put = pcmdevice_put_volsw,
-+			.pcmdev_ctrl_name_id = 0,
-+		},
-+		{
-+			.gain = adc5120_fgain_tlv,
-+			.pcmdev_ctrl = adc5120_digi_gain_ctl,
-+			.ctrl_array_size = ARRAY_SIZE(adc5120_digi_gain_ctl),
-+			.get = pcmdevice_get_volsw,
-+			.put = pcmdevice_put_volsw,
-+			.pcmdev_ctrl_name_id = 1,
-+		},
-+	},
-+	// PCM3140
-+	{
-+		{
-+			.gain = pcm6260_chgain_tlv,
-+			.pcmdev_ctrl = pcm6240_analog_gain_ctl,
-+			.ctrl_array_size = ARRAY_SIZE(pcm6240_analog_gain_ctl),
-+			.get = pcmdevice_get_volsw,
-+			.put = pcmdevice_put_volsw,
-+			.pcmdev_ctrl_name_id = 0,
-+		},
-+		{
-+			.gain = pcm6260_fgain_tlv,
-+			.pcmdev_ctrl = pcm6240_digi_gain_ctl,
-+			.ctrl_array_size = ARRAY_SIZE(pcm6240_digi_gain_ctl),
-+			.get = pcmdevice_get_volsw,
-+			.put = pcmdevice_put_volsw,
-+			.pcmdev_ctrl_name_id = 1,
-+		},
-+	},
-+	// PCM5120
-+	{
-+		{
-+			.gain = adc5120_chgain_tlv,
-+			.pcmdev_ctrl = adc5120_analog_gain_ctl,
-+			.ctrl_array_size = ARRAY_SIZE(adc5120_analog_gain_ctl),
-+			.get = pcmdevice_get_volsw,
-+			.put = pcmdevice_put_volsw,
-+			.pcmdev_ctrl_name_id = 0,
-+		},
-+		{
-+			.gain = adc5120_fgain_tlv,
-+			.pcmdev_ctrl = adc5120_digi_gain_ctl,
-+			.ctrl_array_size = ARRAY_SIZE(adc5120_digi_gain_ctl),
-+			.get = pcmdevice_get_volsw,
-+			.put = pcmdevice_put_volsw,
-+			.pcmdev_ctrl_name_id = 1,
-+		},
-+	},
-+	// PCM5140
-+	{
-+		{
-+			.gain = pcm6260_chgain_tlv,
-+			.pcmdev_ctrl = pcm6240_analog_gain_ctl,
-+			.ctrl_array_size = ARRAY_SIZE(pcm6240_analog_gain_ctl),
-+			.get = pcmdevice_get_volsw,
-+			.put = pcmdevice_put_volsw,
-+			.pcmdev_ctrl_name_id = 0,
-+		},
-+		{
-+			.gain = pcm6260_fgain_tlv,
-+			.pcmdev_ctrl = pcm6240_digi_gain_ctl,
-+			.ctrl_array_size = ARRAY_SIZE(pcm6240_digi_gain_ctl),
-+			.get = pcmdevice_get_volsw,
-+			.put = pcmdevice_put_volsw,
-+			.pcmdev_ctrl_name_id = 1,
-+		},
-+	},
-+	// PCM6120
-+	{
-+		{
-+			.gain = adc5120_chgain_tlv,
-+			.pcmdev_ctrl = adc5120_analog_gain_ctl,
-+			.ctrl_array_size = ARRAY_SIZE(adc5120_analog_gain_ctl),
-+			.get = pcmdevice_get_volsw,
-+			.put = pcmdevice_put_volsw,
-+			.pcmdev_ctrl_name_id = 0,
-+		},
-+		{
-+			.gain = adc5120_fgain_tlv,
-+			.pcmdev_ctrl = adc5120_digi_gain_ctl,
-+			.ctrl_array_size = ARRAY_SIZE(adc5120_digi_gain_ctl),
-+			.get = pcmdevice_get_volsw,
-+			.put = pcmdevice_put_volsw,
-+			.pcmdev_ctrl_name_id = 1,
-+		},
-+	},
-+	// PCM6140
-+	{
-+		{
-+			.gain = pcm6260_chgain_tlv,
-+			.pcmdev_ctrl = pcm6240_analog_gain_ctl,
-+			.ctrl_array_size = ARRAY_SIZE(pcm6240_analog_gain_ctl),
-+			.get = pcmdevice_get_volsw,
-+			.put = pcmdevice_put_volsw,
-+			.pcmdev_ctrl_name_id = 0,
-+		},
-+		{
-+			.gain = pcm6260_fgain_tlv,
-+			.pcmdev_ctrl = pcm6240_digi_gain_ctl,
-+			.ctrl_array_size = ARRAY_SIZE(pcm6240_digi_gain_ctl),
-+			.get = pcmdevice_get_volsw,
-+			.put = pcmdevice_put_volsw,
-+			.pcmdev_ctrl_name_id = 1,
-+		},
-+	},
-+	// PCM6240
-+	{
-+		{
-+			.gain = pcm6260_chgain_tlv,
-+			.pcmdev_ctrl = pcm6240_analog_gain_ctl,
-+			.ctrl_array_size = ARRAY_SIZE(pcm6240_analog_gain_ctl),
-+			.get = pcmdevice_get_volsw,
-+			.put = pcmdevice_put_volsw,
-+			.pcmdev_ctrl_name_id = 0,
-+		},
-+		{
-+			.gain = pcm6260_fgain_tlv,
-+			.pcmdev_ctrl = pcm6240_digi_gain_ctl,
-+			.ctrl_array_size = ARRAY_SIZE(pcm6240_digi_gain_ctl),
-+			.get = pcmdevice_get_volsw,
-+			.put = pcmdevice_put_volsw,
-+			.pcmdev_ctrl_name_id = 1,
-+		},
-+	},
-+	// PCM6260
-+	{
-+		{
-+			.gain = pcm6260_chgain_tlv,
-+			.pcmdev_ctrl = pcm6260_analog_gain_ctl,
-+			.ctrl_array_size = ARRAY_SIZE(pcm6260_analog_gain_ctl),
-+			.get = pcmdevice_get_volsw,
-+			.put = pcmdevice_put_volsw,
-+			.pcmdev_ctrl_name_id = 0,
-+		},
-+		{
-+			.gain = pcm6260_fgain_tlv,
-+			.pcmdev_ctrl = pcm6260_digi_gain_ctl,
-+			.ctrl_array_size = ARRAY_SIZE(pcm6260_digi_gain_ctl),
-+			.get = pcmdevice_get_volsw,
-+			.put = pcmdevice_put_volsw,
-+			.pcmdev_ctrl_name_id = 1,
-+		},
-+	},
-+	// PCM9211
-+	{
-+		{
-+			.ctrl_array_size = 0,
-+		},
-+		{
-+			.gain = pcm9211_dig_gain_tlv,
-+			.pcmdev_ctrl = pcm9211_digi_gain_ctl,
-+			.ctrl_array_size = ARRAY_SIZE(pcm9211_digi_gain_ctl),
-+			.get = pcmdevice_get_volsw,
-+			.put = pcmdevice_put_volsw,
-+			.pcmdev_ctrl_name_id = 1,
-+		},
-+
-+	},
-+	// PCMD3140
-+	{
-+		{
-+			.ctrl_array_size = 0,
-+		},
-+		{
-+			.gain = pcmd3140_dig_gain_tlv,
-+			.pcmdev_ctrl = pcmd3140_digi_gain_ctl,
-+			.ctrl_array_size = ARRAY_SIZE(pcmd3140_digi_gain_ctl),
-+			.get = pcmdevice_get_volsw,
-+			.put = pcmdevice_put_volsw,
-+			.pcmdev_ctrl_name_id = 1,
-+		},
-+	},
-+	// PCMD3180
-+	{
-+		{
-+			.ctrl_array_size = 0,
-+		},
-+		{
-+			.gain = pcmd3140_dig_gain_tlv,
-+			.pcmdev_ctrl = pcmd3180_digi_gain_ctl,
-+			.ctrl_array_size = ARRAY_SIZE(pcmd3180_digi_gain_ctl),
-+			.get = pcmdevice_get_volsw,
-+			.put = pcmdevice_put_volsw,
-+			.pcmdev_ctrl_name_id = 1,
-+		},
-+	},
-+	// PCMD512X
-+	{
-+		{
-+			.ctrl_array_size = 0,
-+		},
-+		{
-+			.ctrl_array_size = 0,
-+		},
-+	},
-+	// TAA5212
-+	{
-+		{
-+			.gain = taa5412_fine_gain_tlv,
-+			.pcmdev_ctrl = taa5412_fine_gain_ctl,
-+			.ctrl_array_size = ARRAY_SIZE(taa5412_fine_gain_ctl),
-+			.get = pcmdevice_get_volsw,
-+			.put = pcmdevice_put_volsw,
-+			.pcmdev_ctrl_name_id = 2,
-+		},
-+		{
-+			.gain = taa5412_dig_vol_tlv,
-+			.pcmdev_ctrl = taa5412_digi_vol_ctl,
-+			.ctrl_array_size = ARRAY_SIZE(taa5412_digi_vol_ctl),
-+			.get = pcmdevice_get_volsw,
-+			.put = pcmdevice_put_volsw,
-+			.pcmdev_ctrl_name_id = 1,
-+		},
-+	},
-+	// TAA5412
-+	{
-+		{
-+			.gain = taa5412_fine_gain_tlv,
-+			.pcmdev_ctrl = taa5412_fine_gain_ctl,
-+			.ctrl_array_size = ARRAY_SIZE(taa5412_fine_gain_ctl),
-+			.get = pcmdevice_get_volsw,
-+			.put = pcmdevice_put_volsw,
-+			.pcmdev_ctrl_name_id = 2,
-+		},
-+		{
-+			.gain = taa5412_dig_vol_tlv,
-+			.pcmdev_ctrl = taa5412_digi_vol_ctl,
-+			.ctrl_array_size = ARRAY_SIZE(taa5412_digi_vol_ctl),
-+			.get = pcmdevice_get_volsw,
-+			.put = pcmdevice_put_volsw,
-+			.pcmdev_ctrl_name_id = 1,
-+		},
-+	},
-+	// TAD5212
-+	{
-+		{
-+			.ctrl_array_size = 0,
-+		},
-+		{
-+			.ctrl_array_size = 0,
-+		},
-+	},
-+	// TAD5412
-+	{
-+		{
-+			.ctrl_array_size = 0,
-+		},
-+		{
-+			.ctrl_array_size = 0,
-+		},
-+	},
-+};
-+
-+static int pcmdev_dev_bulk_write(struct pcmdevice_priv *pcm_dev,
-+	unsigned int dev_no, unsigned int reg, unsigned char *data,
-+	unsigned int len)
-+{
-+	struct regmap *map = pcm_dev->regmap;
-+	int ret;
-+
-+	if (dev_no >= pcm_dev->ndev) {
-+		dev_err(pcm_dev->dev, "%s: no such channel(%d)\n", __func__,
-+			dev_no);
-+		return -EINVAL;
-+	}
-+
-+	ret = pcmdev_change_dev(pcm_dev, dev_no);
-+	if (ret < 0) {
-+		dev_err(pcm_dev->dev, "%s: chg dev err = %d\n", __func__, ret);
-+		return ret;
-+	}
-+
-+	ret = regmap_bulk_write(map, reg, data, len);
-+	if (ret < 0)
-+		dev_err(pcm_dev->dev, "%s: bulk_write err = %d\n", __func__,
-+			ret);
-+
-+	return ret;
-+}
-+
-+static int pcmdev_dev_write(struct pcmdevice_priv *pcm_dev,
-+	unsigned int dev_no, unsigned int reg, unsigned int value)
-+{
-+	struct regmap *map = pcm_dev->regmap;
-+	int ret;
-+
-+	if (dev_no >= pcm_dev->ndev) {
-+		dev_err(pcm_dev->dev, "%s: no such channel(%d)\n", __func__,
-+			dev_no);
-+		return -EINVAL;
-+	}
-+
-+	ret = pcmdev_change_dev(pcm_dev, dev_no);
-+	if (ret < 0) {
-+		dev_err(pcm_dev->dev, "%s: chg dev err = %d\n", __func__, ret);
-+		return ret;
-+	}
-+
-+	ret = regmap_write(map, reg, value);
-+	if (ret < 0)
-+		dev_err(pcm_dev->dev, "%s: err = %d\n", __func__, ret);
-+
-+	return ret;
-+}
-+
-+static int pcmdevice_info_profile(
-+	struct snd_kcontrol *kcontrol,
-+	struct snd_ctl_elem_info *uinfo)
-+{
-+	struct snd_soc_component *codec
-+		= snd_soc_kcontrol_component(kcontrol);
-+	struct pcmdevice_priv *pcm_dev =
-+		snd_soc_component_get_drvdata(codec);
-+
-+	uinfo->type = SNDRV_CTL_ELEM_TYPE_INTEGER;
-+	uinfo->count = 1;
-+	uinfo->value.integer.min = 0;
-+	uinfo->value.integer.max = max(0, pcm_dev->regbin.ncfgs - 1);
-+
-+	return 0;
-+}
-+
-+static int pcmdevice_get_profile_id(
-+	struct snd_kcontrol *kcontrol,
-+	struct snd_ctl_elem_value *ucontrol)
-+{
-+	struct snd_soc_component *codec
-+		= snd_soc_kcontrol_component(kcontrol);
-+	struct pcmdevice_priv *pcm_dev =
-+		snd_soc_component_get_drvdata(codec);
-+
-+	ucontrol->value.integer.value[0] = pcm_dev->cur_conf;
-+
-+	return 0;
-+}
-+
-+static int pcmdevice_set_profile_id(
-+	struct snd_kcontrol *kcontrol,
-+	struct snd_ctl_elem_value *ucontrol)
-+{
-+	struct snd_soc_component *codec
-+		= snd_soc_kcontrol_component(kcontrol);
-+	struct pcmdevice_priv *pcm_dev =
-+		snd_soc_component_get_drvdata(codec);
-+	int nr_profile = ucontrol->value.integer.value[0];
-+	int max = pcm_dev->regbin.ncfgs - 1;
-+	int ret = 0;
-+
-+	nr_profile = clamp(nr_profile, 0, max);
-+
-+	if (pcm_dev->cur_conf != nr_profile) {
-+		pcm_dev->cur_conf = nr_profile;
-+		ret = 1;
-+	}
-+
-+	return ret;
-+}
-+
-+static int pcmdevice_info_volsw(struct snd_kcontrol *kcontrol,
-+	struct snd_ctl_elem_info *uinfo)
-+{
-+	struct pcmdevice_mixer_control *mc =
-+		(struct pcmdevice_mixer_control *)kcontrol->private_value;
-+
-+	uinfo->type = SNDRV_CTL_ELEM_TYPE_INTEGER;
-+	uinfo->count = 1;
-+	uinfo->value.integer.min = 0;
-+	uinfo->value.integer.max = mc->max;
-+	return 0;
-+}
-+
-+static void pcm9211_sw_rst(struct pcmdevice_priv *pcm_dev)
-+{
-+	int ret, i;
-+
-+	for (i = 0; i < pcm_dev->ndev; i++) {
-+		ret = pcmdev_dev_update_bits(pcm_dev, i,
-+			PCM9211_REG_SW_CTRL, PCM9211_REG_SW_CTRL_MRST_MSK,
-+			PCM9211_REG_SW_CTRL_MRST);
-+		if (ret < 0)
-+			dev_err(pcm_dev->dev, "%s: dev %d swreset fail %d\n",
-+				__func__, i, ret);
-+	}
-+}
-+
-+static void pcmdevice_sw_rst(struct pcmdevice_priv *pcm_dev)
-+{
-+	int ret, i;
-+
-+	for (i = 0; i < pcm_dev->ndev; i++) {
-+		ret = pcmdev_dev_write(pcm_dev, i, PCMDEVICE_REG_SWRESET,
-+			PCMDEVICE_REG_SWRESET_RESET);
-+		if (ret < 0)
-+			dev_err(pcm_dev->dev, "%s: dev %d swreset fail %d\n",
-+				__func__, i, ret);
-+	}
-+}
-+
-+static struct pcmdevice_config_info *pcmdevice_add_config(void *ctxt,
-+	const unsigned char *config_data, unsigned int config_size,
-+	int *status)
-+{
-+	struct pcmdevice_priv *pcm_dev = (struct pcmdevice_priv *)ctxt;
-+	struct pcmdevice_config_info *cfg_info;
-+	struct pcmdevice_block_data **bk_da;
-+	unsigned int config_offset = 0, i;
-+
-+	cfg_info = kzalloc(sizeof(struct pcmdevice_config_info), GFP_KERNEL);
-+	if (!cfg_info) {
-+		*status = -ENOMEM;
-+		goto out;
-+	}
-+
-+	if (pcm_dev->regbin.fw_hdr.binary_version_num >= 0x105) {
-+		if (config_offset + 64 > (int)config_size) {
-+			*status = -EINVAL;
-+			dev_err(pcm_dev->dev,
-+				"%s: cfg_name out of boundary\n", __func__);
-+			goto out;
-+		}
-+		memcpy(cfg_info->cfg_name, &config_data[config_offset], 64);
-+		config_offset += 64;
-+	}
-+
-+	if (config_offset + 4 > config_size) {
-+		*status = -EINVAL;
-+		dev_err(pcm_dev->dev, "%s: nblocks out of boundary\n",
-+			__func__);
-+		goto out;
-+	}
-+	cfg_info->nblocks =
-+		get_unaligned_be32(&config_data[config_offset]);
-+	config_offset += 4;
-+
-+	bk_da = cfg_info->blk_data = kcalloc(cfg_info->nblocks,
-+		sizeof(struct pcmdevice_block_data *), GFP_KERNEL);
-+	if (!bk_da) {
-+		*status = -ENOMEM;
-+		goto out;
-+	}
-+	cfg_info->real_nblocks = 0;
-+	for (i = 0; i < cfg_info->nblocks; i++) {
-+		if (config_offset + 12 > config_size) {
-+			*status = -EINVAL;
-+			dev_err(pcm_dev->dev,
-+				"%s: out of boundary i = %d nblocks = %u\n",
-+				__func__, i, cfg_info->nblocks);
-+			break;
-+		}
-+		bk_da[i] = kzalloc(sizeof(struct pcmdevice_block_data),
-+			GFP_KERNEL);
-+		if (!bk_da[i]) {
-+			*status = -ENOMEM;
-+			break;
-+		}
-+		bk_da[i]->dev_idx = config_data[config_offset];
-+		config_offset++;
-+
-+		bk_da[i]->block_type = config_data[config_offset];
-+		config_offset++;
-+
-+		if (bk_da[i]->block_type == PCMDEVICE_BIN_BLK_PRE_POWER_UP) {
-+			if (bk_da[i]->dev_idx == 0)
-+				cfg_info->active_dev =
-+					(1 << pcm_dev->ndev) - 1;
-+			else
-+				cfg_info->active_dev =
-+					1 << (bk_da[i]->dev_idx - 1);
-+		}
-+
-+		bk_da[i]->yram_checksum =
-+			get_unaligned_be16(&config_data[config_offset]);
-+		config_offset += 2;
-+		bk_da[i]->block_size =
-+			get_unaligned_be32(&config_data[config_offset]);
-+		config_offset += 4;
-+
-+		bk_da[i]->n_subblks =
-+			get_unaligned_be32(&config_data[config_offset]);
-+
-+		config_offset += 4;
-+
-+		if (config_offset + bk_da[i]->block_size > config_size) {
-+			*status = -EINVAL;
-+			dev_err(pcm_dev->dev,
-+				"%s: out of boundary: i = %d blks = %u\n",
-+				__func__, i, cfg_info->nblocks);
-+			break;
-+		}
-+
-+		bk_da[i]->regdata = kmemdup(&config_data[config_offset],
-+			bk_da[i]->block_size, GFP_KERNEL);
-+		if (!bk_da[i]->regdata) {
-+			*status = -ENOMEM;
-+			goto out;
-+		}
-+		config_offset += bk_da[i]->block_size;
-+		cfg_info->real_nblocks += 1;
-+	}
-+out:
-+	return cfg_info;
-+}
-+
-+static int pcmdev_gain_ctrl_add(struct pcmdevice_priv *pcm_dev,
-+	int dev_no, int ctl_id)
-+{
-+	struct i2c_adapter *adap = pcm_dev->client->adapter;
-+	struct snd_soc_component *comp = pcm_dev->component;
-+	struct pcmdevice_mixer_control *pcmdev_ctrl;
-+	struct snd_kcontrol_new *pcmdev_controls;
-+	int ret, mix_index = 0, name_id, chn;
-+	unsigned int id = pcm_dev->chip_id;
-+	const int nr_chn =
-+		pcmdev_gain_ctl_info[id][ctl_id].ctrl_array_size;
-+	const char *ctrl_name;
-+	char *name;
-+
-+	if (!nr_chn) {
-+		dev_dbg(pcm_dev->dev, "%s: no gain ctrl for %s\n", __func__,
-+			pcm_dev->dev_name);
-+		return 0;
-+	}
-+
-+	pcmdev_controls = devm_kzalloc(pcm_dev->dev,
-+		nr_chn * sizeof(struct snd_kcontrol_new), GFP_KERNEL);
-+	if (!pcmdev_controls)
-+		return -ENOMEM;
-+
-+	name_id = pcmdev_gain_ctl_info[id][ctl_id].pcmdev_ctrl_name_id;
-+
-+	if (comp->name_prefix)
-+		ctrl_name = pcmdev_ctrl_name_with_prefix[name_id];
-+	else
-+		ctrl_name = pcmdev_ctrl_name[name_id];
-+
-+	for (chn = 1; chn <= nr_chn; chn++) {
-+		name = devm_kzalloc(pcm_dev->dev,
-+			SNDRV_CTL_ELEM_ID_NAME_MAXLEN, GFP_KERNEL);
-+		if (!name) {
-+			ret = -ENOMEM;
-+			goto out;
-+		}
-+		if (comp->name_prefix)
-+			scnprintf(name, SNDRV_CTL_ELEM_ID_NAME_MAXLEN,
-+				ctrl_name, comp->name_prefix, dev_no, chn);
-+		else
-+			scnprintf(name, SNDRV_CTL_ELEM_ID_NAME_MAXLEN,
-+				ctrl_name, pcm_dev->dev_name, adap->nr,
-+				dev_no, chn);
-+		pcmdev_controls[mix_index].tlv.p =
-+			pcmdev_gain_ctl_info[id][ctl_id].gain;
-+		pcmdev_ctrl = devm_kmemdup(pcm_dev->dev,
-+			&pcmdev_gain_ctl_info[id][ctl_id].pcmdev_ctrl[chn - 1],
-+			sizeof(*pcmdev_ctrl), GFP_KERNEL);
-+		if (!pcmdev_ctrl) {
-+			ret = -ENOMEM;
-+			goto out;
-+		}
-+		pcmdev_ctrl->dev_no = dev_no;
-+		pcmdev_controls[mix_index].private_value =
-+			(unsigned long)pcmdev_ctrl;
-+		pcmdev_controls[mix_index].name = name;
-+		pcmdev_controls[mix_index].access =
-+			SNDRV_CTL_ELEM_ACCESS_TLV_READ |
-+			SNDRV_CTL_ELEM_ACCESS_READWRITE;
-+		pcmdev_controls[mix_index].iface =
-+			SNDRV_CTL_ELEM_IFACE_MIXER;
-+		pcmdev_controls[mix_index].info = pcmdevice_info_volsw;
-+		pcmdev_controls[mix_index].get =
-+			pcmdev_gain_ctl_info[id][ctl_id].get;
-+		pcmdev_controls[mix_index].put =
-+			pcmdev_gain_ctl_info[id][ctl_id].put;
-+		mix_index++;
-+	}
-+
-+	ret = snd_soc_add_component_controls(comp, pcmdev_controls, mix_index);
-+	if (ret)
-+		dev_err(pcm_dev->dev, "%s: add_controls err = %d\n",
-+			__func__, ret);
-+out:
-+	return ret;
-+}
-+
-+static int pcmdev_profile_ctrl_add(struct pcmdevice_priv *pcm_dev)
-+{
-+	struct snd_soc_component *comp = pcm_dev->component;
-+	struct i2c_adapter *adap = pcm_dev->client->adapter;
-+	struct snd_kcontrol_new *pcmdev_ctrl;
-+	char *name;
-+	int ret;
-+
-+	pcmdev_ctrl = devm_kzalloc(pcm_dev->dev,
-+		sizeof(struct snd_kcontrol_new), GFP_KERNEL);
-+	if (!pcmdev_ctrl)
-+		return -ENOMEM;
-+
-+	/* Create a mixer item for selecting the active profile */
-+	name = devm_kzalloc(pcm_dev->dev, SNDRV_CTL_ELEM_ID_NAME_MAXLEN,
-+		GFP_KERNEL);
-+	if (!name)
-+		return -ENOMEM;
-+
-+	if (comp->name_prefix)
-+		scnprintf(name, SNDRV_CTL_ELEM_ID_NAME_MAXLEN,
-+			"%s Profile id", comp->name_prefix);
-+	else
-+		scnprintf(name, SNDRV_CTL_ELEM_ID_NAME_MAXLEN,
-+			"%s-i2c-%d Profile id", pcm_dev->dev_name, adap->nr);
-+	pcmdev_ctrl->name = name;
-+	pcmdev_ctrl->iface = SNDRV_CTL_ELEM_IFACE_MIXER;
-+	pcmdev_ctrl->info = pcmdevice_info_profile;
-+	pcmdev_ctrl->get = pcmdevice_get_profile_id;
-+	pcmdev_ctrl->put = pcmdevice_set_profile_id;
-+
-+	ret = snd_soc_add_component_controls(comp, pcmdev_ctrl, 1);
-+	if (ret)
-+		dev_err(pcm_dev->dev, "%s: add_controls err = %d\n",
-+			__func__, ret);
-+
-+	return ret;
-+}
-+
-+static void pcmdevice_config_info_remove(void *ctxt)
-+{
-+	struct pcmdevice_priv *pcm_dev = (struct pcmdevice_priv *) ctxt;
-+	struct pcmdevice_regbin *regbin = &(pcm_dev->regbin);
-+	struct pcmdevice_config_info **cfg_info = regbin->cfg_info;
-+	int i, j;
-+
-+	if (!cfg_info)
-+		return;
-+	for (i = 0; i < regbin->ncfgs; i++) {
-+		if (!cfg_info[i])
-+			continue;
-+		if (cfg_info[i]->blk_data) {
-+			for (j = 0; j < (int)cfg_info[i]->real_nblocks; j++) {
-+				if (!cfg_info[i]->blk_data[j])
-+					continue;
-+				kfree(cfg_info[i]->blk_data[j]->regdata);
-+				kfree(cfg_info[i]->blk_data[j]);
-+			}
-+			kfree(cfg_info[i]->blk_data);
-+		}
-+		kfree(cfg_info[i]);
-+	}
-+	kfree(cfg_info);
-+}
-+
-+static int pcmdev_regbin_ready(const struct firmware *fmw, void *ctxt)
-+{
-+	struct pcmdevice_config_info **cfg_info;
-+	struct pcmdevice_priv *pcm_dev = ctxt;
-+	struct pcmdevice_regbin_hdr *fw_hdr;
-+	struct pcmdevice_regbin *regbin;
-+	unsigned int total_config_sz = 0;
-+	int offset = 0, ret = 0, i;
-+	unsigned char *buf;
-+
-+	regbin = &(pcm_dev->regbin);
-+	fw_hdr = &(regbin->fw_hdr);
-+	if (!fmw || !fmw->data) {
-+		dev_err(pcm_dev->dev, "%s: failed to read %s\n",
-+			__func__, pcm_dev->bin_name);
-+		pcm_dev->fw_state = PCMDEVICE_FW_LOAD_FAILED;
-+		ret = -EINVAL;
-+		goto out;
-+	}
-+	buf = (unsigned char *)fmw->data;
-+
-+	fw_hdr->img_sz = get_unaligned_be32(&buf[offset]);
-+	offset += 4;
-+	if (fw_hdr->img_sz != fmw->size) {
-+		dev_err(pcm_dev->dev, "%s: file size(%d) not match %u",
-+			__func__, (int)fmw->size, fw_hdr->img_sz);
-+		pcm_dev->fw_state = PCMDEVICE_FW_LOAD_FAILED;
-+		ret = -EINVAL;
-+		goto out;
-+	}
-+
-+	fw_hdr->checksum = get_unaligned_be32(&buf[offset]);
-+	offset += 4;
-+	fw_hdr->binary_version_num = get_unaligned_be32(&buf[offset]);
-+	if (fw_hdr->binary_version_num < 0x103) {
-+		dev_err(pcm_dev->dev, "%s: bin version 0x%04x is out of date",
-+			__func__, fw_hdr->binary_version_num);
-+		pcm_dev->fw_state = PCMDEVICE_FW_LOAD_FAILED;
-+		ret = -EINVAL;
-+		goto out;
-+	}
-+	offset += 4;
-+	fw_hdr->drv_fw_version = get_unaligned_be32(&buf[offset]);
-+	offset += 8;
-+	fw_hdr->plat_type = buf[offset];
-+	offset += 1;
-+	fw_hdr->dev_family = buf[offset];
-+	offset += 1;
-+	fw_hdr->reserve = buf[offset];
-+	offset += 1;
-+	fw_hdr->ndev = buf[offset];
-+	offset += 1;
-+	if (fw_hdr->ndev != pcm_dev->ndev) {
-+		dev_err(pcm_dev->dev, "%s: invalid ndev(%u)\n", __func__,
-+			fw_hdr->ndev);
-+		pcm_dev->fw_state = PCMDEVICE_FW_LOAD_FAILED;
-+		ret = -EINVAL;
-+		goto out;
-+	}
-+
-+	if (offset + PCMDEVICE_MAX_REGBIN_DEVICES > fw_hdr->img_sz) {
-+		dev_err(pcm_dev->dev, "%s: devs out of boundary!\n", __func__);
-+		pcm_dev->fw_state = PCMDEVICE_FW_LOAD_FAILED;
-+		ret = -EINVAL;
-+		goto out;
-+	}
-+
-+	for (i = 0; i < PCMDEVICE_MAX_REGBIN_DEVICES; i++, offset++)
-+		fw_hdr->devs[i] = buf[offset];
-+
-+	fw_hdr->nconfig = get_unaligned_be32(&buf[offset]);
-+	offset += 4;
-+
-+	for (i = 0; i < PCMDEVICE_CONFIG_SUM; i++) {
-+		fw_hdr->config_size[i] = get_unaligned_be32(&buf[offset]);
-+		offset += 4;
-+		total_config_sz += fw_hdr->config_size[i];
-+	}
-+
-+	if (fw_hdr->img_sz - total_config_sz != (unsigned int)offset) {
-+		dev_err(pcm_dev->dev, "%s: bin file error!\n", __func__);
-+		pcm_dev->fw_state = PCMDEVICE_FW_LOAD_FAILED;
-+		ret = -EINVAL;
-+		goto out;
-+	}
-+	cfg_info = kcalloc(fw_hdr->nconfig, sizeof(*cfg_info), GFP_KERNEL);
-+	if (!cfg_info) {
-+		pcm_dev->fw_state = PCMDEVICE_FW_LOAD_FAILED;
-+		ret = -ENOMEM;
-+		goto out;
-+	}
-+	regbin->cfg_info = cfg_info;
-+	regbin->ncfgs = 0;
-+	for (i = 0; i < (int)fw_hdr->nconfig; i++) {
-+		cfg_info[i] = pcmdevice_add_config(ctxt, &buf[offset],
-+				fw_hdr->config_size[i], &ret);
-+		if (ret) {
-+			/* In case the bin file is partially destroyed. */
-+			if (regbin->ncfgs == 0)
-+				pcm_dev->fw_state = PCMDEVICE_FW_LOAD_FAILED;
-+			break;
-+		}
-+		offset += (int)fw_hdr->config_size[i];
-+		regbin->ncfgs += 1;
-+	}
-+
-+out:
-+	if (pcm_dev->fw_state == PCMDEVICE_FW_LOAD_FAILED) {
-+		dev_err(pcm_dev->dev,
-+			"%s: remove config due to fw load error!\n", __func__);
-+		pcmdevice_config_info_remove(pcm_dev);
-+	}
-+
-+	return ret;
-+}
-+
-+static int pcmdevice_comp_probe(struct snd_soc_component *comp)
-+{
-+	struct pcmdevice_priv *pcm_dev = snd_soc_component_get_drvdata(comp);
-+	struct i2c_adapter *adap = pcm_dev->client->adapter;
-+	const struct firmware *fw_entry = NULL;
-+	int ret, i, j;
-+
-+	mutex_lock(&pcm_dev->codec_lock);
-+
-+	pcm_dev->component = comp;
-+
-+	for (i = 0; i < pcm_dev->ndev; i++) {
-+		for (j = 0; j < 2; j++) {
-+			ret = pcmdev_gain_ctrl_add(pcm_dev, i, j);
-+			if (ret < 0)
-+				goto out;
-+		}
-+	}
-+
-+	if (comp->name_prefix) {
-+	/* There's name_prefix defined in DTS. Bin file name will be
-+	 * name_prefix.bin stores the firmware including register setting and
-+	 * params for different filters inside chips, it must be copied into
-+	 * firmware folder. The same types of pcmdevices sitting on the same
-+	 * i2c bus will be aggregated as one single codec, all of them share
-+	 * the same bin file.
-+	 */
-+		scnprintf(pcm_dev->bin_name, PCMDEVICE_BIN_FILENAME_LEN,
-+			"%s.bin", comp->name_prefix);
-+	} else {
-+	/* There's NO name_prefix defined in DTS. Bin file name will be
-+	 * device-name[defined in pcmdevice_i2c_id]-i2c-bus_id[0,1,...,N]-
-+	 * sum[1,...,4]dev.bin stores the firmware including register setting
-+	 * and params for different filters inside chips, it must be copied
-+	 * into firmware folder. The same types of pcmdevices sitting on the
-+	 * same i2c bus will be aggregated as one single codec, all of them
-+	 * share the same bin file.
-+	 */
-+		scnprintf(pcm_dev->bin_name, PCMDEVICE_BIN_FILENAME_LEN,
-+			"%s-i2c-%d-%udev.bin", pcm_dev->dev_name, adap->nr,
-+			pcm_dev->ndev);
-+	}
-+
-+	ret = request_firmware(&fw_entry, pcm_dev->bin_name, pcm_dev->dev);
-+	if (ret) {
-+		dev_err(pcm_dev->dev, "%s: request %s err = %d\n", __func__,
-+			pcm_dev->bin_name, ret);
-+		goto out;
-+	}
-+
-+	ret = pcmdev_regbin_ready(fw_entry, pcm_dev);
-+	if (ret) {
-+		dev_err(pcm_dev->dev, "%s: %s parse err = %d\n", __func__,
-+			pcm_dev->bin_name, ret);
-+		goto out;
-+	}
-+	ret = pcmdev_profile_ctrl_add(pcm_dev);
-+out:
-+	if (fw_entry)
-+		release_firmware(fw_entry);
-+
-+	mutex_unlock(&pcm_dev->codec_lock);
-+	return ret;
-+}
-+
-+
-+static void pcmdevice_comp_remove(struct snd_soc_component *codec)
-+{
-+	struct pcmdevice_priv *pcm_dev = snd_soc_component_get_drvdata(codec);
-+
-+	if (!pcm_dev)
-+		return;
-+	mutex_lock(&pcm_dev->codec_lock);
-+	pcmdevice_config_info_remove(pcm_dev);
-+	mutex_unlock(&pcm_dev->codec_lock);
-+}
-+
-+static const struct snd_soc_dapm_widget pcmdevice_dapm_widgets[] = {
-+	SND_SOC_DAPM_AIF_IN("ASI", "ASI Playback", 0, SND_SOC_NOPM, 0, 0),
-+	SND_SOC_DAPM_AIF_OUT("ASI1 OUT", "ASI1 Capture",
-+		0, SND_SOC_NOPM, 0, 0),
-+	SND_SOC_DAPM_OUTPUT("OUT"),
-+	SND_SOC_DAPM_INPUT("MIC"),
-+};
-+
-+static const struct snd_soc_dapm_route pcmdevice_audio_map[] = {
-+	{"OUT", NULL, "ASI"},
-+	{"ASI1 OUT", NULL, "MIC"},
-+};
-+
-+static const struct snd_soc_component_driver
-+	soc_codec_driver_pcmdevice = {
-+	.probe			= pcmdevice_comp_probe,
-+	.remove			= pcmdevice_comp_remove,
-+	.dapm_widgets		= pcmdevice_dapm_widgets,
-+	.num_dapm_widgets	= ARRAY_SIZE(pcmdevice_dapm_widgets),
-+	.dapm_routes		= pcmdevice_audio_map,
-+	.num_dapm_routes	= ARRAY_SIZE(pcmdevice_audio_map),
-+	.suspend_bias_off	= 1,
-+	.idle_bias_on		= 0,
-+	.use_pmdown_time	= 1,
-+	.endianness		= 1,
-+};
-+
-+static int pcmdevice_process_block(void *ctxt, unsigned char *data,
-+	unsigned char dev_idx, int sublocksize)
-+{
-+	struct pcmdevice_priv *pcm_dev = (struct pcmdevice_priv *)ctxt;
-+	int subblk_offset = 2, chn, chnend, ret;
-+	unsigned char subblk_typ = data[1];
-+
-+	if (dev_idx) {
-+		chn = dev_idx - 1;
-+		chnend = dev_idx;
-+	} else {
-+		chn = 0;
-+		chnend = pcm_dev->ndev;
-+	}
-+
-+	for (; chn < chnend; chn++) {
-+		switch (subblk_typ) {
-+		case PCMDEVICE_CMD_SING_W: {
-+			unsigned short len = get_unaligned_be16(&data[2]);
-+			int i = 0;
-+
-+			subblk_offset += 2;
-+			if (subblk_offset + 4 * len > sublocksize) {
-+				dev_err(pcm_dev->dev,
-+					"%s: byt wr out of boundary\n",
-+					__func__);
-+				break;
-+			}
-+
-+			for (i = 0; i < len; i++) {
-+				ret = pcmdev_dev_write(pcm_dev, chn,
-+					PCMDEVICE_REG(data[subblk_offset + 1],
-+						data[subblk_offset + 2]),
-+					data[subblk_offset + 3]);
-+				if (ret < 0)
-+					dev_err(pcm_dev->dev,
-+						"%s: single write error\n",
-+						__func__);
-+
-+				subblk_offset += 4;
-+			}
-+		}
-+		break;
-+		case PCMDEVICE_CMD_BURST: {
-+			unsigned short len = get_unaligned_be16(&data[2]);
-+
-+			subblk_offset += 2;
-+			if (subblk_offset + 4 + len > sublocksize) {
-+				dev_err(pcm_dev->dev,
-+					"%s: burst Out of boundary\n",
-+					__func__);
-+				break;
-+			}
-+			if (len % 4) {
-+				dev_err(pcm_dev->dev,
-+					"%s: burst-len(%u) not div by 4\n",
-+					__func__, len);
-+				break;
-+			}
-+			ret = pcmdev_dev_bulk_write(pcm_dev, chn,
-+				PCMDEVICE_REG(data[subblk_offset + 1],
-+				data[subblk_offset + 2]),
-+				&(data[subblk_offset + 4]), len);
-+			if (ret < 0)
-+				dev_err(pcm_dev->dev,
-+					"%s: bulk_write err = %d\n",
-+					__func__, ret);
-+
-+			subblk_offset += (len + 4);
-+		}
-+			break;
-+		case PCMDEVICE_CMD_DELAY: {
-+			unsigned int delay_time = 0;
-+
-+			if (subblk_offset + 2 > sublocksize) {
-+				dev_err(pcm_dev->dev,
-+					"%s: deley out of boundary\n",
-+					__func__);
-+				break;
-+			}
-+			delay_time = get_unaligned_be16(&data[2]) * 1000;
-+			usleep_range(delay_time, delay_time + 50);
-+			subblk_offset += 2;
-+		}
-+			break;
-+		case PCMDEVICE_CMD_FIELD_W:
-+		if (subblk_offset + 6 > sublocksize) {
-+			dev_err(pcm_dev->dev,
-+				"%s: bit write out of memory\n", __func__);
-+			break;
-+		}
-+			ret = pcmdev_dev_update_bits(pcm_dev, chn,
-+				PCMDEVICE_REG(data[subblk_offset + 3],
-+				data[subblk_offset + 4]),
-+				data[subblk_offset + 1],
-+				data[subblk_offset + 5]);
-+		if (ret < 0)
-+			dev_err(pcm_dev->dev, "%s: update_bits err = %d\n",
-+				__func__, ret);
-+
-+		subblk_offset += 6;
-+			break;
-+		default:
-+			break;
-+		}
-+	}
-+
-+	return subblk_offset;
-+}
-+
-+static void pcmdevice_select_cfg_blk(void *ctxt, int conf_no,
-+	unsigned char block_type)
-+{
-+	struct pcmdevice_priv *pcm_dev = (struct pcmdevice_priv *)ctxt;
-+	struct pcmdevice_regbin *regbin = &(pcm_dev->regbin);
-+	struct pcmdevice_config_info **cfg_info = regbin->cfg_info;
-+	struct pcmdevice_block_data **blk_data;
-+	int j, k;
-+
-+	if (conf_no >= regbin->ncfgs || conf_no < 0 || NULL == cfg_info) {
-+		dev_err(pcm_dev->dev, "%s: conf_no should be less than %u\n",
-+			__func__, regbin->ncfgs);
-+		goto out;
-+	}
-+	blk_data = cfg_info[conf_no]->blk_data;
-+
-+	for (j = 0; j < (int)cfg_info[conf_no]->real_nblocks; j++) {
-+		unsigned int length = 0, ret;
-+
-+		if (block_type > 5 || block_type < 2) {
-+			dev_err(pcm_dev->dev,
-+				"%s: block_type should be out of range\n",
-+				__func__);
-+			goto out;
-+		}
-+		if (block_type != blk_data[j]->block_type)
-+			continue;
-+
-+		for (k = 0; k < (int)blk_data[j]->n_subblks; k++) {
-+			ret = pcmdevice_process_block(pcm_dev,
-+				blk_data[j]->regdata + length,
-+				blk_data[j]->dev_idx,
-+				blk_data[j]->block_size - length);
-+			length += ret;
-+			if (blk_data[j]->block_size < length) {
-+				dev_err(pcm_dev->dev,
-+					"%s: %u %u out of boundary\n",
-+					__func__, length,
-+					blk_data[j]->block_size);
-+				break;
-+			}
-+		}
-+		if (length != blk_data[j]->block_size)
-+			dev_err(pcm_dev->dev, "%s: %u %u size is not same\n",
-+				__func__, length, blk_data[j]->block_size);
-+	}
-+
-+out:
-+	return;
-+}
-+
-+static int pcmdevice_mute(struct snd_soc_dai *dai, int mute, int stream)
-+{
-+	struct snd_soc_component *codec = dai->component;
-+	struct pcmdevice_priv *pcm_dev = snd_soc_component_get_drvdata(codec);
++struct pcmdevice_block_data {
++	unsigned char dev_idx;
 +	unsigned char block_type;
-+
-+	if (pcm_dev->fw_state == PCMDEVICE_FW_LOAD_FAILED) {
-+		dev_err(pcm_dev->dev, "%s: bin file not loaded\n", __func__);
-+		return -EINVAL;
-+	}
-+
-+	if (mute)
-+		block_type = PCMDEVICE_BIN_BLK_PRE_SHUTDOWN;
-+	else
-+		block_type = PCMDEVICE_BIN_BLK_PRE_POWER_UP;
-+
-+	mutex_lock(&pcm_dev->codec_lock);
-+	pcmdevice_select_cfg_blk(pcm_dev, pcm_dev->cur_conf, block_type);
-+	mutex_unlock(&pcm_dev->codec_lock);
-+	return 0;
-+}
-+
-+static int pcmdevice_hw_params(struct snd_pcm_substream *substream,
-+	struct snd_pcm_hw_params *params, struct snd_soc_dai *dai)
-+{
-+	struct pcmdevice_priv *pcm_dev = snd_soc_dai_get_drvdata(dai);
-+	unsigned int fsrate;
-+	unsigned int slot_width;
-+	int bclk_rate;
-+	int ret = 0;
-+
-+	fsrate = params_rate(params);
-+	switch (fsrate) {
-+	case 48000:
-+		break;
-+	case 44100:
-+		break;
-+	default:
-+		dev_err(pcm_dev->dev, "%s: incorrect sample rate = %u\n",
-+			__func__, fsrate);
-+		ret = -EINVAL;
-+		goto out;
-+	}
-+
-+	slot_width = params_width(params);
-+	switch (slot_width) {
-+	case 16:
-+		break;
-+	case 20:
-+		break;
-+	case 24:
-+		break;
-+	case 32:
-+		break;
-+	default:
-+		dev_err(pcm_dev->dev, "%s: incorrect slot width = %u\n",
-+			__func__, slot_width);
-+		ret = -EINVAL;
-+		goto out;
-+	}
-+
-+	bclk_rate = snd_soc_params_to_bclk(params);
-+	if (bclk_rate < 0) {
-+		dev_err(pcm_dev->dev, "%s: incorrect bclk rate = %d\n",
-+			__func__, bclk_rate);
-+		ret = bclk_rate;
-+	}
-+
-+out:
-+	return ret;
-+}
-+
-+static const struct snd_soc_dai_ops pcmdevice_dai_ops = {
-+	.mute_stream = pcmdevice_mute,
-+	.hw_params = pcmdevice_hw_params,
++	unsigned short yram_checksum;
++	unsigned int block_size;
++	unsigned int n_subblks;
++	unsigned char *regdata;
 +};
 +
-+static struct snd_soc_dai_driver pcmdevice_dai_driver[] = {
-+	{
-+		.name = "pcmdevice-codec",
-+		.capture = {
-+			.stream_name	 = "Capture",
-+			.channels_min	 = 2,
-+			.channels_max	 = PCMDEVICE_MAX_CHANNELS,
-+			.rates		 = PCMDEVICE_RATES,
-+			.formats	 = PCMDEVICE_FORMATS,
-+		},
-+		.playback = {
-+			.stream_name	 = "Playback",
-+			.channels_min	 = 2,
-+			.channels_max	 = PCMDEVICE_MAX_CHANNELS,
-+			.rates		 = PCMDEVICE_RATES,
-+			.formats	 = PCMDEVICE_FORMATS,
-+		},
-+		.ops = &pcmdevice_dai_ops,
-+		.symmetric_rate = 1,
-+	}
++struct pcmdevice_config_info {
++	char cfg_name[64];
++	unsigned int nblocks;
++	unsigned int real_nblocks;
++	unsigned char active_dev;
++	struct pcmdevice_block_data **blk_data;
 +};
 +
-+#ifdef CONFIG_OF
-+static const struct of_device_id pcmdevice_of_match[] = {
-+	{ .compatible = "ti,adc3120"  },
-+	{ .compatible = "ti,adc5120"  },
-+	{ .compatible = "ti,adc6120"  },
-+	{ .compatible = "ti,dix4192"  },
-+	{ .compatible = "ti,pcm1690"  },
-+	{ .compatible = "ti,pcm3120"  },
-+	{ .compatible = "ti,pcm3140"  },
-+	{ .compatible = "ti,pcm5120"  },
-+	{ .compatible = "ti,pcm5140"  },
-+	{ .compatible = "ti,pcm6120"  },
-+	{ .compatible = "ti,pcm6140"  },
-+	{ .compatible = "ti,pcm6240"  },
-+	{ .compatible = "ti,pcm6260"  },
-+	{ .compatible = "ti,pcm9211"  },
-+	{ .compatible = "ti,pcmd3140" },
-+	{ .compatible = "ti,pcmd3180" },
-+	{ .compatible = "ti,pcmd512x" },
-+	{ .compatible = "ti,taa5212"  },
-+	{ .compatible = "ti,taa5412"  },
-+	{ .compatible = "ti,tad5212"  },
-+	{ .compatible = "ti,tad5412"  },
-+	{},
-+};
-+MODULE_DEVICE_TABLE(of, pcmdevice_of_match);
-+#endif
-+
-+static const struct regmap_range_cfg pcmdevice_ranges[] = {
-+	{
-+		.range_min = 0,
-+		.range_max = 256 * 128,
-+		.selector_reg = PCMDEVICE_PAGE_SELECT,
-+		.selector_mask = 0xff,
-+		.selector_shift = 0,
-+		.window_start = 0,
-+		.window_len = 128,
-+	},
++struct pcmdevice_regbin {
++	struct pcmdevice_regbin_hdr fw_hdr;
++	int ncfgs;
++	struct pcmdevice_config_info **cfg_info;
 +};
 +
-+static const struct regmap_config pcmdevice_i2c_regmap = {
-+	.reg_bits = 8,
-+	.val_bits = 8,
-+	.cache_type = REGCACHE_MAPLE,
-+	.ranges = pcmdevice_ranges,
-+	.num_ranges = ARRAY_SIZE(pcmdevice_ranges),
-+	.max_register = 256 * 128,
++struct pcmdevice_irqinfo {
++	int gpio;
++	int nmb;
 +};
 +
-+static void pcmdevice_remove(struct pcmdevice_priv *pcm_dev)
-+{
-+	if (gpio_is_valid(pcm_dev->irq_info.gpio)) {
-+		gpio_free(pcm_dev->irq_info.gpio);
-+		free_irq(pcm_dev->irq_info.nmb, pcm_dev);
-+	}
-+	mutex_destroy(&pcm_dev->codec_lock);
-+}
-+
-+static int pcmdevice_i2c_probe(struct i2c_client *i2c)
-+{
-+	const struct i2c_device_id *id = i2c_match_id(pcmdevice_i2c_id, i2c);
-+	struct pcmdevice_priv *pcm_dev;
-+	struct device_node *np;
-+	unsigned int dev_addrs[PCMDEVICE_MAX_I2C_DEVICES];
-+	int ret = 0, i = 0, ndev = 0;
-+#ifdef CONFIG_OF
-+	const __be32 *reg, *reg_end;
-+	int len, sw, aw;
-+#endif
-+
-+	pcm_dev = devm_kzalloc(&i2c->dev, sizeof(*pcm_dev), GFP_KERNEL);
-+	if (!pcm_dev) {
-+		ret = -ENOMEM;
-+		goto out;
-+	}
-+
-+	pcm_dev->chip_id = (id != NULL) ? id->driver_data : 0;
-+
-+	pcm_dev->dev = &i2c->dev;
-+	pcm_dev->client = i2c;
-+
-+	if (pcm_dev->chip_id >= MAX_DEVICE)
-+		pcm_dev->chip_id = 0;
-+
-+	strscpy(pcm_dev->dev_name, pcmdevice_i2c_id[pcm_dev->chip_id].name,
-+		sizeof(pcm_dev->dev_name));
-+
-+	pcm_dev->regmap = devm_regmap_init_i2c(i2c, &pcmdevice_i2c_regmap);
-+	if (IS_ERR(pcm_dev->regmap)) {
-+		ret = PTR_ERR(pcm_dev->regmap);
-+		dev_err(&i2c->dev, "%s: failed to allocate register map: %d\n",
-+			__func__, ret);
-+		goto out;
-+	}
-+
-+	i2c_set_clientdata(i2c, pcm_dev);
-+	mutex_init(&pcm_dev->codec_lock);
-+	np = pcm_dev->dev->of_node;
-+#ifdef CONFIG_OF
-+	aw = of_n_addr_cells(np);
-+	sw = of_n_size_cells(np);
-+	if (sw == 0) {
-+		reg = (const __be32 *)of_get_property(np,
-+			"reg", &len);
-+		reg_end = reg + len/sizeof(*reg);
-+		ndev = 0;
-+		do {
-+			dev_addrs[ndev] = of_read_number(reg, aw);
-+			reg += aw;
-+			ndev++;
-+		} while (reg < reg_end);
-+	} else {
-+		ndev = 1;
-+		dev_addrs[0] = i2c->addr;
-+	}
-+#else
-+	ndev = 1;
-+	dev_addrs[0] = i2c->addr;
-+#endif
-+	pcm_dev->irq_info.gpio = of_irq_get(np, 0);
-+
-+	for (i = 0; i < ndev; i++)
-+		pcm_dev->addr[i] = dev_addrs[i];
-+
-+	pcm_dev->ndev = ndev;
-+
-+	pcm_dev->hw_rst = devm_gpiod_get_optional(&i2c->dev,
-+			"reset-gpios", GPIOD_OUT_HIGH);
-+	/* No reset GPIO, no side-effect */
-+	if (IS_ERR(pcm_dev->hw_rst)) {
-+		if (pcm_dev->chip_id == PCM9211 || pcm_dev->chip_id == PCM1690)
-+			pcm9211_sw_rst(pcm_dev);
-+		else
-+			pcmdevice_sw_rst(pcm_dev);
-+	} else {
-+		gpiod_set_value_cansleep(pcm_dev->hw_rst, 0);
-+		usleep_range(500, 1000);
-+		gpiod_set_value_cansleep(pcm_dev->hw_rst, 1);
-+	}
-+
-+	if (pcm_dev->chip_id == PCM1690)
-+		goto skip_interrupt;
-+	if (gpio_is_valid(pcm_dev->irq_info.gpio)) {
-+		dev_dbg(pcm_dev->dev, "irq-gpio = %d", pcm_dev->irq_info.gpio);
-+
-+		ret = gpio_request(pcm_dev->irq_info.gpio, "PCMDEV-IRQ");
-+		if (!ret) {
-+			int gpio = pcm_dev->irq_info.gpio;
-+
-+			gpio_direction_input(gpio);
-+			pcm_dev->irq_info.nmb = gpio_to_irq(gpio);
-+
-+		} else
-+			dev_err(pcm_dev->dev, "%s: GPIO %d request error\n",
-+				__func__, pcm_dev->irq_info.gpio);
-+	} else
-+		dev_err(pcm_dev->dev, "Looking up irq-gpio failed %d\n",
-+			pcm_dev->irq_info.gpio);
-+
-+skip_interrupt:
-+	ret = devm_snd_soc_register_component(&i2c->dev,
-+		&soc_codec_driver_pcmdevice, pcmdevice_dai_driver,
-+		ARRAY_SIZE(pcmdevice_dai_driver));
-+	if (ret < 0)
-+		dev_err(&i2c->dev, "probe register comp failed %d\n", ret);
-+
-+out:
-+	if (ret < 0)
-+		pcmdevice_remove(pcm_dev);
-+	return ret;
-+}
-+
-+static void pcmdevice_i2c_remove(struct i2c_client *i2c)
-+{
-+	struct pcmdevice_priv *pcm_dev = i2c_get_clientdata(i2c);
-+
-+	pcmdevice_remove(pcm_dev);
-+}
-+
-+static struct i2c_driver pcmdevice_i2c_driver = {
-+	.driver = {
-+		.name = "pcmdevice-codec",
-+		.of_match_table = of_match_ptr(pcmdevice_of_match),
-+	},
-+	.probe	= pcmdevice_i2c_probe,
-+	.remove = pcmdevice_i2c_remove,
-+	.id_table = pcmdevice_i2c_id,
++struct pcmdevice_priv {
++	struct snd_soc_component *component;
++	struct i2c_client *client;
++	struct device *dev;
++	struct mutex codec_lock;
++	struct gpio_desc *hw_rst;
++	struct regmap *regmap;
++	struct pcmdevice_regbin regbin;
++	struct pcmdevice_irqinfo irq_info;
++	unsigned int addr[PCMDEVICE_MAX_I2C_DEVICES];
++	unsigned int chip_id;
++	int cur_conf;
++	int fw_state;
++	int ndev;
++	unsigned char bin_name[PCMDEVICE_BIN_FILENAME_LEN];
++	unsigned char dev_name[I2C_NAME_SIZE];
 +};
-+module_i2c_driver(pcmdevice_i2c_driver);
 +
-+MODULE_AUTHOR("Shenghao Ding <shenghao-ding@ti.com>");
-+MODULE_DESCRIPTION("ASoC PCM6240 Family Audio ADC/DAC Driver");
-+MODULE_LICENSE("GPL");
++/* mixer control */
++struct pcmdevice_mixer_control {
++	int max;
++	int reg;
++	unsigned int dev_no;
++	unsigned int shift;
++	unsigned int invert;
++};
++struct pcmdev_ctrl_info {
++	const unsigned int *gain;
++	const struct pcmdevice_mixer_control *pcmdev_ctrl;
++	unsigned int ctrl_array_size;
++	snd_kcontrol_get_t *get;
++	snd_kcontrol_put_t *put;
++	int pcmdev_ctrl_name_id;
++};
++#endif /* __PCM6240_H__ */
 -- 
 2.34.1
 
