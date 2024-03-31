@@ -1,351 +1,318 @@
-Return-Path: <linux-kernel+bounces-126066-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-126063-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 06A4D8931A8
-	for <lists+linux-kernel@lfdr.de>; Sun, 31 Mar 2024 15:18:13 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B0D2F89319E
+	for <lists+linux-kernel@lfdr.de>; Sun, 31 Mar 2024 14:56:00 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6975AB2131C
-	for <lists+linux-kernel@lfdr.de>; Sun, 31 Mar 2024 13:18:10 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C11DE1C2116D
+	for <lists+linux-kernel@lfdr.de>; Sun, 31 Mar 2024 12:55:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 25BD9144D04;
-	Sun, 31 Mar 2024 13:18:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E13C31448FF;
+	Sun, 31 Mar 2024 12:55:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=marvell.com header.i=@marvell.com header.b="b9cadDmm"
-Received: from mx0b-0016f401.pphosted.com (mx0a-0016f401.pphosted.com [67.231.148.174])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="JIZqx5Ie"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 33338762DF;
-	Sun, 31 Mar 2024 13:17:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=67.231.148.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B3D551C0DD3;
+	Sun, 31 Mar 2024 12:55:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711891079; cv=none; b=ADuzUhTjVNvAFFpOay9U0DuVk1mLEoX6Q2J7cqZfV3rzIf0euFMlafh6MRL6oTaB0ofTKXEcWzzA0NY8OGXEZaGTw+mJChZN6Mw1fsmv2NoD5MNzQK6F9HQY9B/6ZVXJ/WDaFvKlJ9xpjuXIZsQcIGLz0Gyr4nD+teMk3nLLXlc=
+	t=1711889745; cv=none; b=puC2cPP+miNnFoBneQkZgBB99B6fWvzqJhf/n8RBGib+DETaO75ch04yh2NYaO4ooJTmhbFD5PeXfxviWunEZz7OA09kI6A2IQRDjGWSsesmXoHMyK7GEim+hanBRJC0Q1spOHOmF4LpkVgW8d3VrTBu3NM1hswjJkuQlAQe0Ik=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711891079; c=relaxed/simple;
-	bh=HQ2LXoIEVmp8/qP0MN2mwzqsAKAVtORpWqbh4y7LyM4=;
-	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=cflu+/hVyD5aBj2PSY1zpFDRTmjmX0fNPYIrlk4grWDkoYsSXsIo06Z7DN1zauhVRRG/PoWyHfs6rzJnjklqHEFMhMTmHo5jrsxyPln255dQ2v/yHbZxz+n1HRMNZzxqFogQek26JCE5/GQpyAXrah4gTpEIkZKJLvudAk5KweQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=marvell.com; spf=pass smtp.mailfrom=marvell.com; dkim=pass (2048-bit key) header.d=marvell.com header.i=@marvell.com header.b=b9cadDmm; arc=none smtp.client-ip=67.231.148.174
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=marvell.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=marvell.com
-Received: from pps.filterd (m0045849.ppops.net [127.0.0.1])
-	by mx0a-0016f401.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 42VBmDs9009610;
-	Sun, 31 Mar 2024 05:48:33 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=
-	from:to:cc:subject:date:message-id:mime-version
-	:content-transfer-encoding:content-type; s=pfpt0220; bh=5DTBjzcq
-	xh4wTG4VBBYScUn4HvM5rt+lsvC8uKlOytU=; b=b9cadDmmvtIsodHUtrQdoEp7
-	Y91qa8rbzEBdRV6P9NYrekXQfeWCpS3uy4l2B8+b4AWcLl+B1sxt5aJ6BS6kAazv
-	IRSaHBA2DRpRgRQseoryEkGGYuLr9G+qgd4CNxgQ7qBUv7XgdYNIcGmYO+x+lBZj
-	3yCW+COgaGMGpxUYdsCsCktCntJZlYuX8jzS255jXlcDicFaVMUUWs7iZERudkIh
-	YvVHkU7/Cc3Lcep79haY4EipETllZt3GxYjETwOIRAkEK/gLg6MKGJKK51xqwJss
-	Lufm/cy+SMUMQ3yTT5KhdiXT/9FBnPGb6r+zEg6eO0zn4Vg7+7DBCLuAS6wkRA==
-Received: from dc6wp-exch02.marvell.com ([4.21.29.225])
-	by mx0a-0016f401.pphosted.com (PPS) with ESMTPS id 3x6g3kadqv-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Sun, 31 Mar 2024 05:48:33 -0700 (PDT)
-Received: from DC6WP-EXCH02.marvell.com (10.76.176.209) by
- DC6WP-EXCH02.marvell.com (10.76.176.209) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1544.4; Sun, 31 Mar 2024 05:48:32 -0700
-Received: from maili.marvell.com (10.69.176.80) by DC6WP-EXCH02.marvell.com
- (10.76.176.209) with Microsoft SMTP Server id 15.2.1544.4 via Frontend
- Transport; Sun, 31 Mar 2024 05:48:32 -0700
-Received: from hyd1425.marvell.com (unknown [10.29.37.83])
-	by maili.marvell.com (Postfix) with ESMTP id 9CE335C68E3;
-	Sun, 31 Mar 2024 05:48:28 -0700 (PDT)
-From: Sai Krishna <saikrishnag@marvell.com>
-To: <davem@davemloft.net>, <edumazet@google.com>, <kuba@kernel.org>,
-        <pabeni@redhat.com>, <netdev@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <sgoutham@marvell.com>,
-        <gakula@marvell.com>, <hkelam@marvell.com>, <sbhatta@marvell.com>
-CC: Sai Krishna <saikrishnag@marvell.com>
-Subject: [net-next PATCH v4] octeontx2-pf: Reset MAC stats during probe
-Date: Sun, 31 Mar 2024 18:18:19 +0530
-Message-ID: <20240331124819.425930-1-saikrishnag@marvell.com>
-X-Mailer: git-send-email 2.25.1
+	s=arc-20240116; t=1711889745; c=relaxed/simple;
+	bh=8nhBa9A6E7OCBceKD5lGdt//TuWHKMwSZP1rusZVNGw=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=C+5MjYykpr0L0nzy9bWpra6GJGptBcgO1YAk+IMS0GPaCTyDx22qI6SQRr1w6Szy9hhpZNHEhGCXhCs/N/J4q13hFKGOADEcTbisDeypByiNv7m7NXXsPH90bleBmQlL0nVTAVfW6pCGJHsqVxkD1O31Kff/oXv9UjWZNuFLfS8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=JIZqx5Ie; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4D1DBC433F1;
+	Sun, 31 Mar 2024 12:55:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1711889745;
+	bh=8nhBa9A6E7OCBceKD5lGdt//TuWHKMwSZP1rusZVNGw=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=JIZqx5IeHFq/LF+LOnbGEorwt2qCR42M543FksbPJaB68hgfYHdX3rqm+fRFQabiT
+	 y37CrAJ9idUub/lXCH8yZQ7CGRZ4z587xCuS3KxgEwSI27Z0TsFHSOjfzNmF8mqR+k
+	 nVc32Mi2AJFiLos2AoyMKJkq6NpmxXkcrG07KnNubkbfzRBUqmK/UFSf0b56YEBX8S
+	 wqO8GLu+hAdO/a+GS5MwGT+8MtrAncaCH+uO9anTgzeNS5DaPXLCinpwtLio9H9gfA
+	 UxyoPhUbTl/dFXpAjQjw+zLBAAduMO/U1FBVVCO3Vu1SuJwJTIMfW2eFjKmXbuyBn2
+	 SY+d7eMLpUwwg==
+Date: Sun, 31 Mar 2024 14:55:13 +0200
+From: Christian Brauner <brauner@kernel.org>
+To: Alice Ryhl <aliceryhl@google.com>
+Cc: a.hindborg@samsung.com, alex.gaynor@gmail.com, arve@android.com, 
+	benno.lossin@proton.me, bjorn3_gh@protonmail.com, boqun.feng@gmail.com, 
+	cmllamas@google.com, dan.j.williams@intel.com, dxu@dxuuu.xyz, gary@garyguo.net, 
+	gregkh@linuxfoundation.org, joel@joelfernandes.org, keescook@chromium.org, 
+	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, maco@android.com, ojeda@kernel.org, 
+	peterz@infradead.org, rust-for-linux@vger.kernel.org, surenb@google.com, 
+	tglx@linutronix.de, tkjos@android.com, tmgross@umich.edu, viro@zeniv.linux.org.uk, 
+	wedsonaf@gmail.com, willy@infradead.org, yakoyoku@gmail.com
+Subject: Re: [PATCH v5 3/9] rust: file: add Rust abstraction for `struct file`
+Message-ID: <20240331-kellner-ausrufen-5b6c191fba35@brauner>
+References: <20240320-wegziehen-teilhaben-86e071fa163c@brauner>
+ <20240320180905.3858535-1-aliceryhl@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Proofpoint-GUID: XCDHxE5j0hxD45BxxlrouD4RVTop-N0P
-X-Proofpoint-ORIG-GUID: XCDHxE5j0hxD45BxxlrouD4RVTop-N0P
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-03-31_09,2024-03-28_01,2023-05-22_02
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20240320180905.3858535-1-aliceryhl@google.com>
 
-Reset CGX/RPM MAC HW statistics at the time of driver probe()
+On Wed, Mar 20, 2024 at 06:09:05PM +0000, Alice Ryhl wrote:
+> Christian Brauner <brauner@kernel.org> wrote:
+> > On Fri, Feb 09, 2024 at 11:18:16AM +0000, Alice Ryhl wrote:
+> >> From: Wedson Almeida Filho <wedsonaf@gmail.com>
+> >> 
+> >> This abstraction makes it possible to manipulate the open files for a
+> >> process. The new `File` struct wraps the C `struct file`. When accessing
+> >> it using the smart pointer `ARef<File>`, the pointer will own a
+> >> reference count to the file. When accessing it as `&File`, then the
+> >> reference does not own a refcount, but the borrow checker will ensure
+> >> that the reference count does not hit zero while the `&File` is live.
+> >> 
+> >> Since this is intended to manipulate the open files of a process, we
+> >> introduce an `fget` constructor that corresponds to the C `fget`
+> >> method. In future patches, it will become possible to create a new fd in
+> >> a process and bind it to a `File`. Rust Binder will use these to send
+> >> fds from one process to another.
+> >> 
+> >> We also provide a method for accessing the file's flags. Rust Binder
+> >> will use this to access the flags of the Binder fd to check whether the
+> >> non-blocking flag is set, which affects what the Binder ioctl does.
+> >> 
+> >> This introduces a struct for the EBADF error type, rather than just
+> >> using the Error type directly. This has two advantages:
+> >> * `File::from_fd` returns a `Result<ARef<File>, BadFdError>`, which the
+> > 
+> > Sorry, where's that method?
+> 
+> Sorry, this is supposed to say `File::fget`.
+> 
+> >> +/// Wraps the kernel's `struct file`.
+> >> +///
+> >> +/// This represents an open file rather than a file on a filesystem. Processes generally reference
+> >> +/// open files using file descriptors. However, file descriptors are not the same as files. A file
+> >> +/// descriptor is just an integer that corresponds to a file, and a single file may be referenced
+> >> +/// by multiple file descriptors.
+> >> +///
+> >> +/// # Refcounting
+> >> +///
+> >> +/// Instances of this type are reference-counted. The reference count is incremented by the
+> >> +/// `fget`/`get_file` functions and decremented by `fput`. The Rust type `ARef<File>` represents a
+> >> +/// pointer that owns a reference count on the file.
+> >> +///
+> >> +/// Whenever a process opens a file descriptor (fd), it stores a pointer to the file in its `struct
+> >> +/// files_struct`. This pointer owns a reference count to the file, ensuring the file isn't
+> >> +/// prematurely deleted while the file descriptor is open. In Rust terminology, the pointers in
+> >> +/// `struct files_struct` are `ARef<File>` pointers.
+> >> +///
+> >> +/// ## Light refcounts
+> >> +///
+> >> +/// Whenever a process has an fd to a file, it may use something called a "light refcount" as a
+> >> +/// performance optimization. Light refcounts are acquired by calling `fdget` and released with
+> >> +/// `fdput`. The idea behind light refcounts is that if the fd is not closed between the calls to
+> >> +/// `fdget` and `fdput`, then the refcount cannot hit zero during that time, as the `struct
+> >> +/// files_struct` holds a reference until the fd is closed. This means that it's safe to access the
+> >> +/// file even if `fdget` does not increment the refcount.
+> >> +///
+> >> +/// The requirement that the fd is not closed during a light refcount applies globally across all
+> >> +/// threads - not just on the thread using the light refcount. For this reason, light refcounts are
+> >> +/// only used when the `struct files_struct` is not shared with other threads, since this ensures
+> >> +/// that other unrelated threads cannot suddenly start using the fd and close it. Therefore,
+> >> +/// calling `fdget` on a shared `struct files_struct` creates a normal refcount instead of a light
+> >> +/// refcount.
+> > 
+> > When the fdget() calling task doesn't have a shared file descriptor
+> > table fdget() will not increment the reference count, yes. This
+> > also implies that you cannot have task A use fdget() and then pass
+> > f.file to task B that holds on to it while A returns to userspace. It's
+> > irrelevant that task A won't drop the reference count or that task B
+> > won't drop the reference count. Because task A could return back to
+> > userspace and immediately close the fd via a regular close() system call
+> > at which point task B has a UAF. In other words a file that has been
+> > gotten via fdget() can't be Send to another task without the Send
+> > implying taking a reference to it.
+> 
+> That matches my understanding.
+> 
+> I suppose that technically you can still send it to another thread *if* you
+> ensure that the current thread waits until that other thread stops using the
+> file before returning to userspace.
 
-Signed-off-by: Hariprasad Kelam <hkelam@marvell.com>
-Signed-off-by: Sai Krishna <saikrishnag@marvell.com>
----
-v4:
-    - Addresses review comments given by Jakub Kicinski
-        1. Moved MAC stats reset before netdev/devlink register.
-v3:
-    - Addressed review comments given by Jakub Kicinski
-        1. Removed un-necessary EXPORT_SYMBOL 
-v2:
-    - Addressed review comments given by Jakub Kicinski
-	1. Removed devlink option to reset MAC stats, 
-           will implement stats reset with debugfs in later patches.
+_Technically_ yes, but it would be brittle as hell. The problem is that
+fdget() _relies_ on being single-threaded for the time that fd is used
+until fdput(). There's locking assumptions that build on that e.g., for
+concurrent read/write. So no, that shouldn't be allowed.
 
- .../net/ethernet/marvell/octeontx2/af/cgx.c   | 27 +++++++++++++++++
- .../net/ethernet/marvell/octeontx2/af/cgx.h   |  1 +
- .../marvell/octeontx2/af/lmac_common.h        |  1 +
- .../net/ethernet/marvell/octeontx2/af/mbox.h  |  1 +
- .../net/ethernet/marvell/octeontx2/af/rpm.c   | 17 +++++++++++
- .../net/ethernet/marvell/octeontx2/af/rpm.h   |  3 ++
- .../ethernet/marvell/octeontx2/af/rvu_cgx.c   | 29 +++++++++++++++++++
- .../marvell/octeontx2/nic/otx2_common.h       |  1 +
- .../ethernet/marvell/octeontx2/nic/otx2_pf.c  | 20 +++++++++++++
- 9 files changed, 100 insertions(+)
+Look at how this broke our back when we introduced pidfd_getfd() where
+we steal an fd from another task. I have a lengthy explanation how that
+can be used to violate our elided-locking which is based on assuming
+that we're always single-threaded and the file can't be suddenly shared
+with another task. So maybe doable but it would make the semantics even
+more intricate.
 
-diff --git a/drivers/net/ethernet/marvell/octeontx2/af/cgx.c b/drivers/net/ethernet/marvell/octeontx2/af/cgx.c
-index b86f3224f0b7..27935c54b91b 100644
---- a/drivers/net/ethernet/marvell/octeontx2/af/cgx.c
-+++ b/drivers/net/ethernet/marvell/octeontx2/af/cgx.c
-@@ -24,6 +24,8 @@
- #define DRV_NAME	"Marvell-CGX/RPM"
- #define DRV_STRING      "Marvell CGX/RPM Driver"
- 
-+#define CGX_RX_STAT_GLOBAL_INDEX	9
-+
- static LIST_HEAD(cgx_list);
- 
- /* Convert firmware speed encoding to user format(Mbps) */
-@@ -701,6 +703,30 @@ u64 cgx_features_get(void *cgxd)
- 	return ((struct cgx *)cgxd)->hw_features;
- }
- 
-+int cgx_stats_reset(void *cgxd, int lmac_id)
-+{
-+	struct cgx *cgx = cgxd;
-+	int stat_id;
-+
-+	if (!is_lmac_valid(cgx, lmac_id))
-+		return -ENODEV;
-+
-+	for (stat_id = 0 ; stat_id < CGX_RX_STATS_COUNT; stat_id++) {
-+		if (stat_id >= CGX_RX_STAT_GLOBAL_INDEX)
-+		/* pass lmac as 0 for CGX_CMR_RX_STAT9-12 */
-+			cgx_write(cgx, 0,
-+				  (CGXX_CMRX_RX_STAT0 + (stat_id * 8)), 0);
-+		else
-+			cgx_write(cgx, lmac_id,
-+				  (CGXX_CMRX_RX_STAT0 + (stat_id * 8)), 0);
-+	}
-+
-+	for (stat_id = 0 ; stat_id < CGX_TX_STATS_COUNT; stat_id++)
-+		cgx_write(cgx, lmac_id, CGXX_CMRX_TX_STAT0 + (stat_id * 8), 0);
-+
-+	return 0;
-+}
-+
- static int cgx_set_fec_stats_count(struct cgx_link_user_info *linfo)
- {
- 	if (!linfo->fec)
-@@ -1788,6 +1814,7 @@ static struct mac_ops	cgx_mac_ops    = {
- 	.pfc_config =                   cgx_lmac_pfc_config,
- 	.mac_get_pfc_frm_cfg   =        cgx_lmac_get_pfc_frm_cfg,
- 	.mac_reset   =			cgx_lmac_reset,
-+	.mac_stats_reset       =	cgx_stats_reset,
- };
- 
- static int cgx_probe(struct pci_dev *pdev, const struct pci_device_id *id)
-diff --git a/drivers/net/ethernet/marvell/octeontx2/af/cgx.h b/drivers/net/ethernet/marvell/octeontx2/af/cgx.h
-index 6f7d1dee5830..dc9ace30554a 100644
---- a/drivers/net/ethernet/marvell/octeontx2/af/cgx.h
-+++ b/drivers/net/ethernet/marvell/octeontx2/af/cgx.h
-@@ -141,6 +141,7 @@ int cgx_lmac_evh_register(struct cgx_event_cb *cb, void *cgxd, int lmac_id);
- int cgx_lmac_evh_unregister(void *cgxd, int lmac_id);
- int cgx_get_tx_stats(void *cgxd, int lmac_id, int idx, u64 *tx_stat);
- int cgx_get_rx_stats(void *cgxd, int lmac_id, int idx, u64 *rx_stat);
-+int cgx_stats_reset(void *cgxd, int lmac_id);
- int cgx_lmac_rx_tx_enable(void *cgxd, int lmac_id, bool enable);
- int cgx_lmac_tx_enable(void *cgxd, int lmac_id, bool enable);
- int cgx_lmac_addr_set(u8 cgx_id, u8 lmac_id, u8 *mac_addr);
-diff --git a/drivers/net/ethernet/marvell/octeontx2/af/lmac_common.h b/drivers/net/ethernet/marvell/octeontx2/af/lmac_common.h
-index 0b4cba03f2e8..9ffc6790c513 100644
---- a/drivers/net/ethernet/marvell/octeontx2/af/lmac_common.h
-+++ b/drivers/net/ethernet/marvell/octeontx2/af/lmac_common.h
-@@ -132,6 +132,7 @@ struct mac_ops {
- 	/* FEC stats */
- 	int			(*get_fec_stats)(void *cgxd, int lmac_id,
- 						 struct cgx_fec_stats_rsp *rsp);
-+	int			(*mac_stats_reset)(void *cgxd, int lmac_id);
- };
- 
- struct cgx {
-diff --git a/drivers/net/ethernet/marvell/octeontx2/af/mbox.h b/drivers/net/ethernet/marvell/octeontx2/af/mbox.h
-index 3d801a1a4f70..4a77f6fe2622 100644
---- a/drivers/net/ethernet/marvell/octeontx2/af/mbox.h
-+++ b/drivers/net/ethernet/marvell/octeontx2/af/mbox.h
-@@ -174,6 +174,7 @@ M(CGX_FEC_STATS,	0x217, cgx_fec_stats, msg_req, cgx_fec_stats_rsp) \
- M(CGX_SET_LINK_MODE,	0x218, cgx_set_link_mode, cgx_set_link_mode_req,\
- 			       cgx_set_link_mode_rsp)	\
- M(CGX_GET_PHY_FEC_STATS, 0x219, cgx_get_phy_fec_stats, msg_req, msg_rsp) \
-+M(CGX_STATS_RST,	0x21A, cgx_stats_rst, msg_req, msg_rsp)		\
- M(CGX_FEATURES_GET,	0x21B, cgx_features_get, msg_req,		\
- 			       cgx_features_info_msg)			\
- M(RPM_STATS,		0x21C, rpm_stats, msg_req, rpm_stats_rsp)	\
-diff --git a/drivers/net/ethernet/marvell/octeontx2/af/rpm.c b/drivers/net/ethernet/marvell/octeontx2/af/rpm.c
-index 76218f1cb459..1b34cf9c9703 100644
---- a/drivers/net/ethernet/marvell/octeontx2/af/rpm.c
-+++ b/drivers/net/ethernet/marvell/octeontx2/af/rpm.c
-@@ -38,6 +38,7 @@ static struct mac_ops		rpm_mac_ops   = {
- 	.pfc_config =                   rpm_lmac_pfc_config,
- 	.mac_get_pfc_frm_cfg   =        rpm_lmac_get_pfc_frm_cfg,
- 	.mac_reset   =			rpm_lmac_reset,
-+	.mac_stats_reset		 =	  rpm_stats_reset,
- };
- 
- static struct mac_ops		rpm2_mac_ops   = {
-@@ -70,6 +71,7 @@ static struct mac_ops		rpm2_mac_ops   = {
- 	.pfc_config =                   rpm_lmac_pfc_config,
- 	.mac_get_pfc_frm_cfg   =        rpm_lmac_get_pfc_frm_cfg,
- 	.mac_reset   =			rpm_lmac_reset,
-+	.mac_stats_reset	    =	rpm_stats_reset,
- };
- 
- bool is_dev_rpm2(void *rpmd)
-@@ -443,6 +445,21 @@ int rpm_get_tx_stats(void *rpmd, int lmac_id, int idx, u64 *tx_stat)
- 	return 0;
- }
- 
-+int rpm_stats_reset(void *rpmd, int lmac_id)
-+{
-+	rpm_t *rpm = rpmd;
-+	u64 cfg;
-+
-+	if (!is_lmac_valid(rpm, lmac_id))
-+		return -ENODEV;
-+
-+	cfg = rpm_read(rpm, 0, RPMX_MTI_STAT_STATN_CONTROL);
-+	cfg |= RPMX_CMD_CLEAR_TX | RPMX_CMD_CLEAR_RX | BIT_ULL(lmac_id);
-+	rpm_write(rpm, 0, RPMX_MTI_STAT_STATN_CONTROL, cfg);
-+
-+	return 0;
-+}
-+
- u8 rpm_get_lmac_type(void *rpmd, int lmac_id)
- {
- 	rpm_t *rpm = rpmd;
-diff --git a/drivers/net/ethernet/marvell/octeontx2/af/rpm.h b/drivers/net/ethernet/marvell/octeontx2/af/rpm.h
-index b79cfbc6f877..34b11deb0f3c 100644
---- a/drivers/net/ethernet/marvell/octeontx2/af/rpm.h
-+++ b/drivers/net/ethernet/marvell/octeontx2/af/rpm.h
-@@ -85,6 +85,8 @@
- #define RPMX_MTI_STAT_STATN_CONTROL			0x10018
- #define RPMX_MTI_STAT_DATA_HI_CDC			0x10038
- #define RPMX_RSFEC_RX_CAPTURE				BIT_ULL(27)
-+#define RPMX_CMD_CLEAR_RX				BIT_ULL(30)
-+#define RPMX_CMD_CLEAR_TX				BIT_ULL(31)
- #define RPMX_MTI_RSFEC_STAT_COUNTER_CAPTURE_2		0x40050
- #define RPMX_MTI_RSFEC_STAT_COUNTER_CAPTURE_3		0x40058
- #define RPMX_MTI_FCFECX_VL0_CCW_LO			0x38618
-@@ -134,4 +136,5 @@ int rpm2_get_nr_lmacs(void *rpmd);
- bool is_dev_rpm2(void *rpmd);
- int rpm_get_fec_stats(void *cgxd, int lmac_id, struct cgx_fec_stats_rsp *rsp);
- int rpm_lmac_reset(void *rpmd, int lmac_id, u8 pf_req_flr);
-+int rpm_stats_reset(void *rpmd, int lmac_id);
- #endif /* RPM_H */
-diff --git a/drivers/net/ethernet/marvell/octeontx2/af/rvu_cgx.c b/drivers/net/ethernet/marvell/octeontx2/af/rvu_cgx.c
-index 72e060cf6b61..9d2836077d9f 100644
---- a/drivers/net/ethernet/marvell/octeontx2/af/rvu_cgx.c
-+++ b/drivers/net/ethernet/marvell/octeontx2/af/rvu_cgx.c
-@@ -602,6 +602,35 @@ int rvu_mbox_handler_rpm_stats(struct rvu *rvu, struct msg_req *req,
- 	return rvu_lmac_get_stats(rvu, req, (void *)rsp);
- }
- 
-+int rvu_mbox_handler_cgx_stats_rst(struct rvu *rvu, struct msg_req *req,
-+				   struct msg_rsp *rsp)
-+{
-+	int pf = rvu_get_pf(req->hdr.pcifunc);
-+	struct rvu_pfvf	*parent_pf;
-+	struct mac_ops *mac_ops;
-+	u8 cgx_idx, lmac;
-+	void *cgxd;
-+
-+	if (!is_cgx_config_permitted(rvu, req->hdr.pcifunc))
-+		return LMAC_AF_ERR_PERM_DENIED;
-+
-+	parent_pf = &rvu->pf[pf];
-+	/* To ensure reset cgx stats won't affect VF stats,
-+	 *  check if it used by only PF interface.
-+	 *  If not, return
-+	 */
-+	if (parent_pf->cgx_users > 1) {
-+		dev_info(rvu->dev, "CGX busy, could not reset statistics\n");
-+		return 0;
-+	}
-+
-+	rvu_get_cgx_lmac_id(rvu->pf2cgxlmac_map[pf], &cgx_idx, &lmac);
-+	cgxd = rvu_cgx_pdata(cgx_idx, rvu);
-+	mac_ops = get_mac_ops(cgxd);
-+
-+	return mac_ops->mac_stats_reset(cgxd, lmac);
-+}
-+
- int rvu_mbox_handler_cgx_fec_stats(struct rvu *rvu,
- 				   struct msg_req *req,
- 				   struct cgx_fec_stats_rsp *rsp)
-diff --git a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_common.h b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_common.h
-index 7e16a341ec58..c5de3ba33e2f 100644
---- a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_common.h
-+++ b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_common.h
-@@ -961,6 +961,7 @@ void otx2_get_mac_from_af(struct net_device *netdev);
- void otx2_config_irq_coalescing(struct otx2_nic *pfvf, int qidx);
- int otx2_config_pause_frm(struct otx2_nic *pfvf);
- void otx2_setup_segmentation(struct otx2_nic *pfvf);
-+int otx2_reset_mac_stats(struct otx2_nic *pfvf);
- 
- /* RVU block related APIs */
- int otx2_attach_npa_nix(struct otx2_nic *pfvf);
-diff --git a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_pf.c b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_pf.c
-index 5d8359b54098..9afeefea3b65 100644
---- a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_pf.c
-+++ b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_pf.c
-@@ -1146,6 +1146,23 @@ static int otx2_cgx_config_linkevents(struct otx2_nic *pf, bool enable)
- 	return err;
- }
- 
-+int otx2_reset_mac_stats(struct otx2_nic *pfvf)
-+{
-+	struct msg_req *req;
-+	int err;
-+
-+	mutex_lock(&pfvf->mbox.lock);
-+	req = otx2_mbox_alloc_msg_cgx_stats_rst(&pfvf->mbox);
-+	if (!req) {
-+		mutex_unlock(&pfvf->mbox.lock);
-+		return -ENOMEM;
-+	}
-+
-+	err = otx2_sync_mbox_msg(&pfvf->mbox);
-+	mutex_unlock(&pfvf->mbox.lock);
-+	return err;
-+}
-+
- static int otx2_cgx_config_loopback(struct otx2_nic *pf, bool enable)
- {
- 	struct msg_req *msg;
-@@ -3034,6 +3051,9 @@ static int otx2_probe(struct pci_dev *pdev, const struct pci_device_id *id)
- 	netdev->min_mtu = OTX2_MIN_MTU;
- 	netdev->max_mtu = otx2_get_max_mtu(pf);
- 
-+	/* reset CGX/RPM MAC stats */
-+	otx2_reset_mac_stats(pf);
-+
- 	err = register_netdev(netdev);
- 	if (err) {
- 		dev_err(dev, "Failed to register netdevice\n");
--- 
-2.25.1
+> >> +///
+> >> +/// Light reference counts must be released with `fdput` before the system call returns to
+> >> +/// userspace. This means that if you wait until the current system call returns to userspace, then
+> >> +/// all light refcounts that existed at the time have gone away.
+> >> +///
+> >> +/// ## Rust references
+> >> +///
+> >> +/// The reference type `&File` is similar to light refcounts:
+> >> +///
+> >> +/// * `&File` references don't own a reference count. They can only exist as long as the reference
+> >> +///   count stays positive, and can only be created when there is some mechanism in place to ensure
+> >> +///   this.
+> >> +///
+> >> +/// * The Rust borrow-checker normally ensures this by enforcing that the `ARef<File>` from which
+> >> +///   a `&File` is created outlives the `&File`.
+> > 
+> > The section confuses me a little: Does the borrow-checker always ensure
+> > that a &File stays valid or are there circumstances where it doesn't or
+> > are you saying it doesn't enforce it?
+> 
+> The borrow-checker always ensures it.
 
+Ok, thanks.
+
+> 
+> A &File is actually short-hand for &'a File, where 'a is some
+> unspecified lifetime. We say that &'a File is annotated with 'a. The
+> borrow-checker rejects any code that tries to use a reference after the
+> end of the lifetime annotated on it.
+
+Thanks for the explanation.
+
+> 
+> So as long as you annotate the reference with a sufficiently short
+> lifetime, the borrow checker will prevent UAF. And outside of cases like
+
+Sorry, but can you explain "sufficiently short lifetime"?
+
+> from_ptr, the borrow-checker also takes care of ensuring that the
+> lifetimes are sufficiently short.
+> 
+> (Technically &'a File and &'b File are two completely different types,
+> so &File is technically a class of types and not a single type. Rust
+> will automatically convert &'long File to &'short File.)
+> 
+> >> +///
+> >> +/// * Using the unsafe [`File::from_ptr`] means that it is up to the caller to ensure that the
+> >> +///   `&File` only exists while the reference count is positive.
+> > 
+> > What is this used for in binder? If it's not used don't add it.
+> 
+> This is used on the boundary between the Rust part of Binder and the
+> binderfs component that is implemented in C. For example:
+
+I see, I'm being foiled by my own code...
+
+> 
+> 	unsafe extern "C" fn rust_binder_open(
+> 	    inode: *mut bindings::inode,
+> 	    file_ptr: *mut bindings::file,
+> 	) -> core::ffi::c_int {
+> 	    // SAFETY: The `rust_binderfs.c` file ensures that `i_private` is set to the return value of a
+> 	    // successful call to `rust_binder_new_device`.
+> 	    let ctx = unsafe { Arc::<Context>::borrow((*inode).i_private) };
+> 	
+> 	    // SAFETY: The caller provides a valid file pointer to a new `struct file`.
+> 	    let file = unsafe { File::from_ptr(file_ptr) };
+
+We need a better name for this helper than from_ptr() imho. I think
+from_ptr() and as_ptr() is odd for C. How weird would it be to call
+that from_raw_file() and as_raw_file()?
+
+But bigger picture I somewhat struggle with the semantics of this
+because this is not an interface that we have in C and this is really
+about a low-level contract between C and Rust. Specifically this states
+that this pointer is _somehow_ guaranteed valid. And really, this seems
+a bit of a hack.
+
+Naively, I think this should probably not be necessary if
+file_operations are properly wrapped. Or it should at least be demotable
+to a purely internal method that can't be called directly or something.
+
+So what I mean is. fdget() may or may not take a reference. The C
+interface internally knows whether a reference is owned or not by
+abusing the lower two bits in a pointer to keep track of that. Naively,
+I would expect the same information to be available to rust so that it's
+clear to Rust wheter it's dealing with an explicitly referenced file or
+an elided-reference file. Maybe that's not possible and I'm not
+well-versed enough to see that yet.
+
+> 	    let process = match Process::open(ctx, file) {
+> 	        Ok(process) => process,
+> 	        Err(err) => return err.to_errno(),
+> 	    };
+> 	    // SAFETY: This file is associated with Rust binder, so we own the `private_data` field.
+> 	    unsafe {
+> 	        (*file_ptr).private_data = process.into_foreign().cast_mut();
+> 	    }
+> 	    0
+> 	}
+> 
+> Here, rust_binder_open is the open function in a struct file_operations
+> vtable. In this case, file_ptr is guaranteed by the caller to be valid
+
+Where's the code that wraps struct file_operations?
+
+> for the duration of the call to rust_binder_open. Binder uses from_ptr
+> to get a &File from the raw pointer.
+> 
+> As far as I understand, the caller of rust_binder_open uses fdget to
+> ensure that file_ptr is valid for the duration of the call, but the Rust
+> code doesn't assume that it does this with fdget. As long as file_ptr is
+> valid for the duration of the rust_binder_open call, this use of
+> from_ptr is okay. It will continue to work even if the caller is changed
+> to use fget.
+
+Ok.
+
+> 
+> As for how this code ensures that `file` ends up annotated with a
+> sufficiently short lifetime, well, that has to do with the signature of
+> Process::open. Here it is:
+> 
+> 	impl Process {
+> 	    pub(crate) fn open(ctx: ArcBorrow<'_, Context>, file: &File) -> Result<Arc<Process>> {
+> 	        Self::new(ctx.into(), ARef::from(file.cred()))
+> 	    }
+> 	}
+> 
+> In this case, &File is used without specifying a lifetime. It's a
+> function argument, so this means that the lifetime annotated on the
+> `file` argument will be exactly the duration in which Process::open is
+> called. So any attempt to use `file` after the end of the call to
+> Process::open will be rejected by the borrow-checker. (E.g., if
+> Process::open tried to schedule something on the workqueue using `file`,
+> then that would not compile. Storing it in a global variable would not
+> compile either.)
+> 
+> This means that the borrow-checker will not catch mistakes in
+> rust_binder_open, but it *will* catch mistakes in Process::open, and
+> anything called by Process::open.
+> 
+> These examples come from patch 2 of the Binder RFC:
+> https://lore.kernel.org/rust-for-linux/20231101-rust-binder-v1-2-08ba9197f637@google.com/
+> 
+> >> +///
+> >> +/// * You can think of `fdget` as using an fd to look up an `ARef<File>` in the `struct
+> > 
+> > Could you explain why there isn't an explicit fdget() then and you have
+> > that from_ptr() method?
+> 
+> I don't provide an fdget implementation because Binder never calls it.
+> However, if you would like, I would be happy to add one to the patchset.
+> 
+> As for from_ptr, see above.
+> 
+> Alice
 
