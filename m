@@ -1,70 +1,56 @@
-Return-Path: <linux-kernel+bounces-126033-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-126034-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A2C36893138
-	for <lists+linux-kernel@lfdr.de>; Sun, 31 Mar 2024 12:27:46 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 702CB89313A
+	for <lists+linux-kernel@lfdr.de>; Sun, 31 Mar 2024 12:28:00 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id EE39EB20B94
-	for <lists+linux-kernel@lfdr.de>; Sun, 31 Mar 2024 10:27:43 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 92B531C21323
+	for <lists+linux-kernel@lfdr.de>; Sun, 31 Mar 2024 10:27:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 85EBB762E5;
-	Sun, 31 Mar 2024 10:27:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3FBAC7764E;
+	Sun, 31 Mar 2024 10:27:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b="hd0nks06"
-Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
+	dkim=pass (2048-bit key) header.d=proton.me header.i=@proton.me header.b="drQZw0N5"
+Received: from mail-4322.protonmail.ch (mail-4322.protonmail.ch [185.70.43.22])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B770EEEC0
-	for <linux-kernel@vger.kernel.org>; Sun, 31 Mar 2024 10:27:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=65.109.113.108
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 57498763EC;
+	Sun, 31 Mar 2024 10:27:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.70.43.22
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711880849; cv=none; b=IqHKDJBnbc6rU9zLZSx/BTKfyZxb5jSyKIKq2tPYoz1PQXXFO4pjdyKzRjAeRl8hitTrNzEdYX+UrvntE4oqDU8jxarAb28A3k33rWCQrwkiH5hZRwnlyzZuXBT+w/opMNwjIjLYeUwBQZyMp2KBPiGZYn5Ifq76vQcGKKMl/eM=
+	t=1711880872; cv=none; b=e6gMlreel5UHPKcXWnunhMQGoCd2rA86nQ+cTiFINgVFXBmGFYMlDog7vCjNbpptkM+1yNc2ZLiKGLi4pVBDWT68nobQAawBU5nhLGlevTdPfLhrsfqxHib6SDYEMICaDOgVIlOlEXuA7go0MxeelZPTwQjoQuMvGiH6GkLOcL0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711880849; c=relaxed/simple;
-	bh=z3YsaUmiXJzAMJ91jUojmTwdr1iCVVYpE3My/dVKtAo=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition; b=Hxb/fJOZXbmD7h8XxYYC8P6wDOp3annZM7D9i9vF2QbwMCoj5JCx7oFj7aaQhF+0i21FvrjU9t8aJGTd2kT7dpZbkdKtVEdeeGuu+kFEAd0aO+etW6nPfuJKT2EyHSVeeRBFU/wF0THrxVW5NPzsPkqerzFbd0mJp0JFsVbnT8U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de; spf=pass smtp.mailfrom=alien8.de; dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b=hd0nks06; arc=none smtp.client-ip=65.109.113.108
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alien8.de
-Received: from localhost (localhost.localdomain [127.0.0.1])
-	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id D27B540E00B2;
-	Sun, 31 Mar 2024 10:27:25 +0000 (UTC)
-X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
-Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
-	header.d=alien8.de
-Received: from mail.alien8.de ([127.0.0.1])
-	by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
-	with ESMTP id yCZs_qkhiZkE; Sun, 31 Mar 2024 10:27:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
-	t=1711880840; bh=z4kW7JXCRak7Oqlw0w+Wsv9jCFqqLGwmCNv/G0yOFvI=;
-	h=Date:From:To:Cc:Subject:From;
-	b=hd0nks06WWxp3rGdZ8DeU70azz2L9r9Skh4DKGicBDuBvecuCI35N0HFEcyLRuVUp
-	 LPwkUHMjUmhA+UVj6eOtanV6zsZe1vmj1/dpsaDfOKC685/tItNsquFAMq4CevtXtg
-	 6Ux0dPFIlTgUPM6JxT6xmqKEK0+anIhw3n/tHTljiBvXE1m/MjdkIIIjbvtP6J/Sqj
-	 nEDIqMO3UK7s2CISqgHo2DSqQW7d+Y1O3LJqZbFylcybaDWM1Qv1ZiUuArJvFwyBzg
-	 QdrNMyqS0wUfRgfNl1DSx7fFhhHUPsf0/JD+tmFPygPmdaUlffmWtktoothIJGTpns
-	 5yg8cxQ4JrgSJudJnPUAmgSSsauSilq8K1MLRGuPQ2TpuwQQpaEr4+KkhCzCfUtykd
-	 XZItmkpiYTKcoq5L9WfRj3/xB2EnAOSWs9SMSUya9Xa1RGz+Dp5W+etwtfKZ8dMz+F
-	 hEDilUbOjHRJfVTr8/HJSpaZO+uvhXfW3LxBYH0tidBW8KMCswkXcCaRjMycko4orC
-	 GDlbY99FqksLc9TjuuwnIPhyVbPl/h8gvAxd2NFIuv4hfikItajJ8Js9lJr51kC/4m
-	 PCNkyjqlYlVG1cjBugIRjZGRg6blUPwX4/uBz7a1iYjcSaFdQN4OnC0SCZh/RJuvmb
-	 YCuCyv+4q7E85qPQsfQqLph0=
-Received: from zn.tnic (p5de8ecf7.dip0.t-ipconnect.de [93.232.236.247])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
-	(No client certificate requested)
-	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id D3B3A40E0028;
-	Sun, 31 Mar 2024 10:27:17 +0000 (UTC)
-Date: Sun, 31 Mar 2024 12:27:11 +0200
-From: Borislav Petkov <bp@alien8.de>
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: x86-ml <x86@kernel.org>, lkml <linux-kernel@vger.kernel.org>
-Subject: [GIT PULL] objtool/urgent for v6.9-rc2
-Message-ID: <20240331102711.GAZgk6f8mOWJiFN8pR@fat_crate.local>
+	s=arc-20240116; t=1711880872; c=relaxed/simple;
+	bh=L/10QJEhsAIm7eEgjRvTrgcoaqTTGRJhJ9WBna1Dhzo=;
+	h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=B0ks29nkeg+I722LXKQRyPvB2otD09yFrnak5ITlEnAPyTkSlhlLPMUsnTZyq2y0f6JT8yaLRg9IKaAbBRhoV7HjPOptvczG/SgN/OQPtWaVoW6NlRD9iUeFX9/fpqm3DN2hYK6ADYAAD/friSXDYPbPmaFtHlzv9hWFAsbiwxs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=proton.me; spf=pass smtp.mailfrom=proton.me; dkim=pass (2048-bit key) header.d=proton.me header.i=@proton.me header.b=drQZw0N5; arc=none smtp.client-ip=185.70.43.22
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=proton.me
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=proton.me
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=proton.me;
+	s=protonmail; t=1711880862; x=1712140062;
+	bh=xXth9F6mwWUjnYOxzF4GaPch1yXF0oNpcQcxRS44w7o=;
+	h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
+	 Feedback-ID:From:To:Cc:Date:Subject:Reply-To:Feedback-ID:
+	 Message-ID:BIMI-Selector;
+	b=drQZw0N5x+P/gZGHHE0jckPV6Ol7xxWmHl241EVA4RqoHZXHzth9hx7sTbBfj4Ju1
+	 8pOT0V6UUng3HHCl7BXMkwBefdE3p8A/5KDazXZB07HfNMOQJtA+CDLBT6q/zlyqOt
+	 /N2Co0gmGH0WsdP77w9XkNIlQTOPOsjnNsx4MuhJpR0K+5mbXgvpAKHXxcDbYbmwAm
+	 jsDoIUaQNFhBKSZfJJ91qnu+ru1ZKdsBBKwQ3KEFporLzFDvJM32o4+gO3LRHTzsUu
+	 J5wCxK4v9QdcIiN1vliExlJWEdNH2R9RHfQdUESW7DNEOCuecKuDvDljcJvdy9OS0B
+	 uuclS0MVnsaPA==
+Date: Sun, 31 Mar 2024 10:27:37 +0000
+To: Wedson Almeida Filho <wedsonaf@gmail.com>
+From: Benno Lossin <benno.lossin@proton.me>
+Cc: Miguel Ojeda <ojeda@kernel.org>, Alex Gaynor <alex.gaynor@gmail.com>, Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>, =?utf-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>, Andreas Hindborg <a.hindborg@samsung.com>, Alice Ryhl <aliceryhl@google.com>, Martin Rodriguez Reboredo <yakoyoku@gmail.com>, Asahi Lina <lina@asahilina.net>, Eric Curtin <ecurtin@redhat.com>, Neal Gompa <neal@gompa.dev>, Thomas Bertschinger <tahbertschinger@gmail.com>, Andrea Righi <andrea.righi@canonical.com>, Sumera Priyadarsini <sylphrenadin@gmail.com>, Finn Behrens <me@kloenk.dev>, Adam Bratschi-Kaye <ark.email@gmail.com>, stable@vger.kernel.org, Daniel Xu <dxu@dxuuu.xyz>, rust-for-linux@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] rust: macros: fix soundness issue in `module!` macro
+Message-ID: <d41d123e-d682-4685-88f5-e45567cc1975@proton.me>
+In-Reply-To: <CANeycqp0o-HKBx6nuGCy9DD6mAwoGWzTR6bm5ceajsUhKcZuQg@mail.gmail.com>
+References: <20240327160346.22442-1-benno.lossin@proton.me> <CANeycqp0o-HKBx6nuGCy9DD6mAwoGWzTR6bm5ceajsUhKcZuQg@mail.gmail.com>
+Feedback-ID: 71780778:user:proton
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -72,42 +58,139 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Hi Linus,
+On 31.03.24 03:00, Wedson Almeida Filho wrote:
+> On Wed, 27 Mar 2024 at 13:04, Benno Lossin <benno.lossin@proton.me> wrote=
+:
+>> +                    #[cfg(not(MODULE))]
+>> +                    #[doc(hidden)]
+>> +                    #[no_mangle]
+>> +                    pub extern \"C\" fn __{name}_exit() {{
+>> +                        __exit()
 
-please pull a single objtool urgent fix for v6.9-rc2.
+I just noticed this should be wrapped in an `unsafe` block with a SAFETY
+comment. Will fix this in v2.
 
-Thx.
+>> +                    }}
+>>
+>> -            #[cfg(not(MODULE))]
+>> -            #[doc(hidden)]
+>> -            #[no_mangle]
+>> -            pub extern \"C\" fn __{name}_exit() {{
+>> -                __exit()
+>> -            }}
+>> +                    /// # Safety
+>> +                    ///
+>> +                    /// This function must
+>> +                    /// - only be called once,
+>> +                    /// - not be called concurrently with `__exit`.
+>=20
+> I don't think the second item is needed here, it really is a
+> requirement on `__exit`.
 
----
+Fixed.
 
-The following changes since commit 486291a0e6246364936df1ecd64c90affef4b9c5:
+>=20
+>> +                    unsafe fn __init() -> core::ffi::c_int {{
+>> +                        match <{type_} as kernel::Module>::init(&THIS_M=
+ODULE) {{
+>> +                            Ok(m) =3D> {{
+>> +                                // SAFETY:
+>> +                                // no data race, since `__MOD` can only=
+ be accessed by this module and
+>> +                                // there only `__init` and `__exit` acc=
+ess it. These functions are only
+>> +                                // called once and `__exit` cannot be c=
+alled before or during `__init`.
+>> +                                unsafe {{
+>> +                                    __MOD =3D Some(m);
+>> +                                }}
+>> +                                return 0;
+>> +                            }}
+>> +                            Err(e) =3D> {{
+>> +                                return e.to_errno();
+>> +                            }}
+>> +                        }}
+>> +                    }}
+>>
+>> -            fn __init() -> core::ffi::c_int {{
+>> -                match <{type_} as kernel::Module>::init(&THIS_MODULE) {=
+{
+>> -                    Ok(m) =3D> {{
+>> +                    /// # Safety
+>> +                    ///
+>> +                    /// This function must
+>> +                    /// - only be called once,
+>> +                    /// - be called after `__init`,
+>> +                    /// - not be called concurrently with `__init`.
+>=20
+> The second item is incomplete: it must be called after `__init` *succeeds=
+*.
 
-  Merge tag 'drm-fixes-2024-03-30' of https://gitlab.freedesktop.org/drm/kernel (2024-03-29 15:51:15 -0700)
+Indeed.
 
-are available in the Git repository at:
+>=20
+> With that added (which is a different precondition), I think the third
+> item can be dropped because if you have to wait to see whether
+> `__init` succeeded or failed before you can call `__exit`, then
+> certainly you cannot call it concurrently with `__init`.
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git tags/objtool_urgent_for_v6.9_rc2
+I would love to drop that requirement, but I am not sure we can. With
+that requirement, I wanted to ensure that no data race on `__MOD` can
+happen. If you need to verify that `__init` succeeded, one might think
+that it is not possible to call `__exit` such that a data race occurs,
+but I think it could theoretically be done if the concrete `Module`
+implementation never failed.
 
-for you to fetch changes up to 6205125bd326ed0153e5f9da3c4689fe60ae885a:
+Do you have any suggestion for what I could add to the "be called after
+`__init` was called and returned `0`" requirement to make a data race
+impossible?
 
-  objtool: Fix compile failure when using the x32 compiler (2024-03-30 22:12:37 +0100)
+--=20
+Cheers,
+Benno
 
-----------------------------------------------------------------
-- Fix a format specifier build error in objtool during an x32 build
+>=20
+>> +                    unsafe fn __exit() {{
+>> +                        // SAFETY:
+>> +                        // no data race, since `__MOD` can only be acce=
+ssed by this module and there
+>> +                        // only `__init` and `__exit` access it. These =
+functions are only called once
+>> +                        // and `__init` was already called.
+>>                           unsafe {{
+>> -                            __MOD =3D Some(m);
+>> +                            // Invokes `drop()` on `__MOD`, which shoul=
+d be used for cleanup.
+>> +                            __MOD =3D None;
+>>                           }}
+>> -                        return 0;
+>>                       }}
+>> -                    Err(e) =3D> {{
+>> -                        return e.to_errno();
+>> -                    }}
+>> -                }}
+>> -            }}
+>>
+>> -            fn __exit() {{
+>> -                unsafe {{
+>> -                    // Invokes `drop()` on `__MOD`, which should be use=
+d for cleanup.
+>> -                    __MOD =3D None;
+>> +                    {modinfo}
+>>                   }}
+>>               }}
+>> -
+>> -            {modinfo}
+>>           ",
+>>           type_ =3D info.type_,
+>>           name =3D info.name,
+>>
+>> base-commit: 4cece764965020c22cff7665b18a012006359095
+>> --
+>> 2.44.0
+>>
+>>
 
-----------------------------------------------------------------
-Mikulas Patocka (1):
-      objtool: Fix compile failure when using the x32 compiler
-
- tools/objtool/check.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-
--- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
 
