@@ -1,161 +1,192 @@
-Return-Path: <linux-kernel+bounces-126596-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-126597-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 056A8893A32
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 12:32:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 7B8FB893A33
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 12:35:46 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B487A281EEB
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 10:32:47 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F1E19281EDC
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 10:35:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9422019452;
-	Mon,  1 Apr 2024 10:32:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 27F3A1BF3D;
+	Mon,  1 Apr 2024 10:35:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="L4rEMlVh"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (1024-bit key) header.d=bursov.com header.i=vitaly@bursov.com header.b="Yc8m5U8k"
+Received: from sender-of-o58.zoho.eu (sender-of-o58.zoho.eu [136.143.169.58])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D932DD52B
-	for <linux-kernel@vger.kernel.org>; Mon,  1 Apr 2024 10:32:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711967562; cv=none; b=bKrT726TFzlyUlW8k1sr/IZjTL31I6/JRwN6iBAO+vLSvWE0Kg2uZ0MdbnrfS7aIgFoS1Q+FRYJWaRwDMdQPOD2Mp5jD1Qdt5+/zyEa/1ZwOXw0tmnJQzJ8yROUdzkDOPeAW0vohp9lc+NAUNsNMotBrfBuCelaBkjTXGMcW+40=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711967562; c=relaxed/simple;
-	bh=VKbhvGB/H5FPJQ4BNky4cRNh9erO4bHex9ypDk2lDLo=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=aDbbWbCYM1LZR/a0oPOsVo+McgQkyKe8e8UYtJujTjPF5A9COznAB12k45ldbeEG7otx5s0lur4vSHORkbzn5rjPlY8wB2py4FKe/ShqweM55t92REBlL5EKXbDIPNwGcjP1XHJIY00MCYs/XrO4h0oVHpdG4j5SaE6c8WYFFcc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=L4rEMlVh; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5B156C433F1;
-	Mon,  1 Apr 2024 10:32:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-	s=korg; t=1711967562;
-	bh=VKbhvGB/H5FPJQ4BNky4cRNh9erO4bHex9ypDk2lDLo=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=L4rEMlVhaiXICSdBbXs20/xxLo6F3xmA1yEc/AsibVoFKHBlhs1K2vBzIsZQRo6j3
-	 Xy9eJlF1TJ9f4UFDqGBPwabWrxGQ/NAJaiY3VfT2uRou8Kl8cplafH6HgmcgD0gq5i
-	 mUMTubSHyJ2TkWy04PTBqDP3iNEpUQocal+8AxNk=
-Date: Mon, 1 Apr 2024 12:32:39 +0200
-From: Greg KH <gregkh@linuxfoundation.org>
-To: "fengchunguo@126.com" <fengchunguo@126.com>
-Cc: ilpo.jarvinen@linux.intel.com, andriy.shevchenko@linux.intel.com,
-	jirislaby@kernel.org, linux-kernel@vger.kernel.org,
-	Gary Feng <chunguo.feng@semidrive.com>
-Subject: Re: [PATCH] tty: serial: fixed uart irq maybe cause irq storm
-Message-ID: <2024040124-gone-retreat-6596@gregkh>
-References: <1711966746-225228-1-git-send-email-fengchunguo@126.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 17067171C1
+	for <linux-kernel@vger.kernel.org>; Mon,  1 Apr 2024 10:35:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=136.143.169.58
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1711967739; cv=pass; b=K9ADJgNKbhclcvWnYGueFAwV8kvzUeDk0ye5uywDReelkLH8eWO/ZoIPCqE9/zQHny2DqVzk1Y/msAzSwute4dx4/FoCyFjGT7qxXgay+kgxBnnddlcI3/T7yQ6GMULyxeUGz8YML/LItHPfH0ay8wlrf1MJht0AF8YC1dfbJX8=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1711967739; c=relaxed/simple;
+	bh=T5UPnOqSN1OxMYf8MU9PBiT05JBXBdOZebD5wKyiIQU=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=KpXJAOKxZqCQU1ofqfjn/tJem38EAeMURj03CMJ9SaBViAb19us8f0KPiBufLBfC9aLda3KV/DuDLcy/N6oLsrlaVdZNQ4qyqRzD984yR0mORqHkZF4jOpf3CCy3oQdrxU8jLDA8dHWpN57yWUvG+6UsYlkU1HKcqcjv+Kc3CoM=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bursov.com; spf=pass smtp.mailfrom=bursov.com; dkim=pass (1024-bit key) header.d=bursov.com header.i=vitaly@bursov.com header.b=Yc8m5U8k; arc=pass smtp.client-ip=136.143.169.58
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bursov.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bursov.com
+ARC-Seal: i=1; a=rsa-sha256; t=1711967707; cv=none; 
+	d=zohomail.eu; s=zohoarc; 
+	b=CO0EH0ncsJDUbpWxyct58wYiBvdbKzGnrjOfHcr+tZLX+S0o79ng+Md9R4AVUjoHlOdqCPuVb8BSlYbdBrm5IyVeGG3PQoafhmf5Lev6jF2QqG9rzbkC9Cz/TMVeQe4yZRYnIZKFskU1Y6ZfaxGV1gkkDN4S6d9VJ/fGNq+4BqU=
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=zohomail.eu; s=zohoarc; 
+	t=1711967707; h=Content-Type:Content-Transfer-Encoding:Cc:Cc:Date:Date:From:From:In-Reply-To:MIME-Version:Message-ID:References:Subject:Subject:To:To:Message-Id:Reply-To; 
+	bh=gflFRaec5NN9RfJ4L1873iEQ3hm8EbbWvvyreqMswuE=; 
+	b=YabcR4hju85qxOgOrCcwIYLk9FZL7QhhAcpjPOJQ6k2D5FmqWqqEa2oilqRcxO7ljdK45Z1yXRYLsbjrRq3Rbx2xTyz3deSi1TrPxtVg3O3OjbZU7z0bS3qX6XedN+Q8aTSxwQ10sY1Z74yO+4HbzW9nalrMGDAw3Rq2WDXBOlY=
+ARC-Authentication-Results: i=1; mx.zohomail.eu;
+	dkim=pass  header.i=bursov.com;
+	spf=pass  smtp.mailfrom=vitaly@bursov.com;
+	dmarc=pass header.from=<vitaly@bursov.com>
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; t=1711967707;
+	s=zoho; d=bursov.com; i=vitaly@bursov.com;
+	h=Message-ID:Date:Date:MIME-Version:Subject:Subject:To:To:Cc:Cc:References:From:From:In-Reply-To:Content-Type:Content-Transfer-Encoding:Message-Id:Reply-To;
+	bh=gflFRaec5NN9RfJ4L1873iEQ3hm8EbbWvvyreqMswuE=;
+	b=Yc8m5U8k1+DX9MPQLpA6umKR5pUpepTAS1FY+pz1m68TZtBzNnnbVl7Dqy6ehnXf
+	REne9aN6Lt1cJbXX5dU1OjQpigijO/TepqD4LMELXavIUu+URKOyI5GFVl3yh6ft7MH
+	xBi+Ozh1m7+W6z1EuNrDc5hwy6hciDMNc+uXgA4Y=
+Received: from [192.168.11.99] (217.20.170.230 [217.20.170.230]) by mx.zoho.eu
+	with SMTPS id 17119677050351005.7836305119542; Mon, 1 Apr 2024 12:35:05 +0200 (CEST)
+Message-ID: <78c60269-5aee-45d7-8014-2c0188f972da@bursov.com>
+Date: Mon, 1 Apr 2024 13:35:03 +0300
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1711966746-225228-1-git-send-email-fengchunguo@126.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 3/3] docs: cgroup-v1: clarify that domain levels are
+ system-specific
+To: Shrikanth Hegde <sshegde@linux.ibm.com>
+Cc: Ingo Molnar <mingo@redhat.com>, Peter Zijlstra <peterz@infradead.org>,
+ Juri Lelli <juri.lelli@redhat.com>,
+ Vincent Guittot <vincent.guittot@linaro.org>,
+ Dietmar Eggemann <dietmar.eggemann@arm.com>,
+ Steven Rostedt <rostedt@goodmis.org>, Ben Segall <bsegall@google.com>,
+ Mel Gorman <mgorman@suse.de>, Daniel Bristot de Oliveira
+ <bristot@redhat.com>, Valentin Schneider <vschneid@redhat.com>,
+ linux-kernel@vger.kernel.org
+References: <cover.1711900396.git.vitaly@bursov.com>
+ <af9562aac2e9208029aef1dd19c3b0e096dd42c7.1711900396.git.vitaly@bursov.com>
+ <3d85926d-378a-4d5e-8303-92461bd3b100@linux.ibm.com>
+Content-Language: en-US, ru-RU, uk-UA
+From: Vitalii Bursov <vitaly@bursov.com>
+In-Reply-To: <3d85926d-378a-4d5e-8303-92461bd3b100@linux.ibm.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-ZohoMailClient: External
 
-On Mon, Apr 01, 2024 at 06:19:06PM +0800, fengchunguo@126.com wrote:
-> From: "Gary Feng" <chunguo.feng@semidrive.com>
+
+
+On 01.04.24 07:05, Shrikanth Hegde wrote:
 > 
-> if not disable uart irq before disable clk,  uart irq maybe triggered after
-> disabled clk immediately, then maybe cause irq storm.
 > 
-> Reproduced the below call trace, see i2c not be connected, but irq storm
-> was triggered.
+> On 3/31/24 9:31 PM, Vitalii Bursov wrote:
+>> Add a clarification that domain levels are system-specific
+>> and where to check for system details.
+>>
+>> Add CPU clusters to the scheduler domain levels table.
+>>
+>> Signed-off-by: Vitalii Bursov <vitaly@bursov.com>
+>> ---
+>>  Documentation/admin-guide/cgroup-v1/cpusets.rst | 16 +++++++++++-----
+>>  1 file changed, 11 insertions(+), 5 deletions(-)
+>>
+>> diff --git a/Documentation/admin-guide/cgroup-v1/cpusets.rst b/Documentation/admin-guide/cgroup-v1/cpusets.rst
+>> index 7d3415eea..d16a3967d 100644
+>> --- a/Documentation/admin-guide/cgroup-v1/cpusets.rst
+>> +++ b/Documentation/admin-guide/cgroup-v1/cpusets.rst
+>> @@ -568,19 +568,25 @@ on the next tick.  For some applications in special situation, waiting
+>>  
+>>  The 'cpuset.sched_relax_domain_level' file allows you to request changing
+>>  this searching range as you like.  This file takes int value which
+>> -indicates size of searching range in levels ideally as follows,
+>> +indicates size of searching range in levels approximately as follows,
+>>  otherwise initial value -1 that indicates the cpuset has no request.
+>>  
+>>  ====== ===========================================================
+>>    -1   no request. use system default or follow request of others.
+>>     0   no search.
+>>     1   search siblings (hyperthreads in a core).
+>> -   2   search cores in a package.
+>> -   3   search cpus in a node [= system wide on non-NUMA system]
+>> -   4   search nodes in a chunk of node [on NUMA system]
+>> -   5   search system wide [on NUMA system]
+>> +   2   search cpu clusters
+>> +   3   search cores in a package.
+>> +   4   search cpus in a node [= system wide on non-NUMA system]
+>> +   5   search nodes in a chunk of node [on NUMA system]
+>> +   6   search system wide [on NUMA system]
 > 
-> i2c_designware 30b70000.i2c: controller timed out
-> CPU: 2 PID: 2932 Comm: gnss@1.0-servic 
-> Tainted: G O 5.14.61-00094-geaa0149416cc-dirty #8
-> Hardware name: Semidrive kunlun x9 REF Board (DT)
-> Call trace:
-> [<ffff00000808a3cc>] dump_backtrace+0x0/0x3c0
-> [<ffff00000808a7a0>] show_stack+0x14/0x1c
-> [<ffff000008cef43c>] dump_stack+0xc4/0xfc
-> [<ffff00000814eb80>] __report_bad_irq+0x50/0xe0
-> [<ffff00000814eaec>] note_interrupt+0x248/0x28c
-> [<ffff00000814c0e8>] handle_irq_event+0x78/0xa4
-> [<ffff00000814fcb8>] handle_fasteoi_irq+0xe4/0x1b4
-> [<ffff00000814b060>] __handle_domain_irq+0x7c/0xbc
-> [<ffff00000808176c>] gic_handle_irq+0x4c/0xb8
-> [<ffff000008083230>] el1_irq+0xb0/0x124
-> [<ffff000008d09f5c>] _raw_spin_unlock_irqrestore+0x10/0x44
-> [<ffff00000865b784>] dw8250_set_termios+0x48/0xf4
-> [<ffff0000086545a4>] serial8250_set_termios+0x14/0x28
-> [<ffff00000864c4f4>] uart_change_speed+0x38/0x10c
-> [<ffff00000864e458>] uart_set_termios+0xd0/0x17c
-> [<ffff000008630ad4>] tty_set_termios+0x160/0x1e4
-> [<ffff00000863165c>] set_termios+0x32c/0x3bc
-> [<ffff000008631248>] tty_mode_ioctl+0x6f0/0x7d8
-> [<ffff000008631a6c>] n_tty_ioctl_helper+0x10c/0x1e8
-> [<ffff00000862d2c4>] n_tty_ioctl+0x120/0x194
-> [<ffff00000862a724>] tty_ioctl+0x658/0xa34
-> [<ffff0000082a8f40>] do_vfs_ioctl+0x554/0x810
-> [<ffff0000082a9368>] SyS_ioctl+0x88/0x94
-> Exception stack(0xffff00000ccf3ec0 to 0xffff00000ccf4000
-> 
-> Signed-off-by: chunguo.feng <chunguo.feng@semidrive.com>
-> ---
->  drivers/tty/serial/8250/8250_dw.c | 9 +++++++++
->  1 file changed, 9 insertions(+)
-> 
-> diff --git a/drivers/tty/serial/8250/8250_dw.c b/drivers/tty/serial/8250/8250_dw.c
-> index c1d43f0..133c24e 100644
-> --- a/drivers/tty/serial/8250/8250_dw.c
-> +++ b/drivers/tty/serial/8250/8250_dw.c
-> @@ -359,6 +359,12 @@ static void dw8250_set_termios(struct uart_port *p, struct ktermios *termios,
->  
->  	rate = clk_round_rate(d->clk, newrate);
->  	if (rate > 0 && p->uartclk != rate) {
-> +		/*Need disable uart irq before disabled clk, because uart irq maybe triggered after
-> +		 * disabled clk immediately, then cause irq storm.
-> +		 */
-> +		if (p->irq)
-> +			disabled_irq(p->irq);
-> +
->  		clk_disable_unprepare(d->clk);
->  		/*
->  		 * Note that any clock-notifer worker will block in
-> @@ -368,6 +374,9 @@ static void dw8250_set_termios(struct uart_port *p, struct ktermios *termios,
->  		if (!ret)
->  			p->uartclk = rate;
->  		clk_prepare_enable(d->clk);
-> +
-> +		if (p->irq)
-> +			enable_irq(p->irq);
->  	}
->  
->  	dw8250_do_set_termios(p, termios, old);
-> -- 
-> 2.7.4
+> I think above block of documentation need not change. SD_CLUSTER is a software 
+> construct, not a sched domain per se. 
 > 
 
-Hi,
+I added "cpu clusters" because the original table:
+====== ===========================================================
+  -1   no request. use system default or follow request of others.
+   0   no search.
+   1   search siblings (hyperthreads in a core).
+   2   search cores in a package.
+   3   search cpus in a node [= system wide on non-NUMA system]
+   4   search nodes in a chunk of node [on NUMA system]
+   5   search system wide [on NUMA system]
+====== ===========================================================
+does not match to what I see on a few systems I checked.
 
-This is the friendly patch-bot of Greg Kroah-Hartman.  You have sent him
-a patch that has triggered this response.  He used to manually respond
-to these common problems, but in order to save his sanity (he kept
-writing the same thing over and over, yet to different people), I was
-created.  Hopefully you will not take offence and will fix the problem
-in your patch and resubmit it so that it can be accepted into the Linux
-kernel tree.
+AMD Ryzen and the same dual-CPU Intel server with NUMA disabled:
+  level:0 - SMT
+  level:2 - MC
+  level:3 - PKG
 
-You are receiving this message because of the following common error(s)
-as indicated below:
+Server with NUMA enabled:
+  level:0 - SMT
+  level:2 - MC
+  level:5 - NUMA
 
-- This looks like a new version of a previously submitted patch, but you
-  did not list below the --- line any changes from the previous version.
-  Please read the section entitled "The canonical patch format" in the
-  kernel file, Documentation/process/submitting-patches.rst for what
-  needs to be done here to properly describe this.
+So, for the relax level original table:
+  1 -> enables 0 SMP -> OK
+  2 -> enables 1 unknown -> does not enable cores in a package
+  3 -> enables 2 MC -> OK for NUMA, but not system wide on non-NUMA system
+  5 -> enables 4 unknown -> does not enable system wide on NUMA
 
-If you wish to discuss this problem further, or you have questions about
-how to resolve this issue, please feel free to respond to this email and
-Greg will reply once he has dug out from the pending patches received
-from other developers.
+The updated table
+====== ===========================================================
+  -1   no request. use system default or follow request of others.
+   0   no search.
+   1   search siblings (hyperthreads in a core).
+   2   search cpu clusters
+   3   search cores in a package.
+   4   search cpus in a node [= system wide on non-NUMA system]
+   5   search nodes in a chunk of node [on NUMA system]
+   6   search system wide [on NUMA system]
+====== ===========================================================
+would work like this:
+  1 -> enables 0 SMP -> OK
+  2 -> enables 1 unknown -> does nothing new
+  3 -> enables 2 MC -> OK, cores in a package for NUMA and non-NUMA system
+  4 -> enables 3 PKG -> OK on non-NUMA system
+  6 -> enables 5 NUMA -> OK
 
-thanks,
+I think it would look more correct on "average" systems, but anyway,
+please confirm and I'll remove the table update in an updated patch.
 
-greg k-h's patch email bot
+Thanks
+
+> IMO the next paragraph that is added is good enough and the above change can be removed.
+
+>>  ====== ===========================================================
+>>  
+>> +Not all levels can be present and values can change depending on the
+>> +system architecture and kernel configuration. Check
+>> +/sys/kernel/debug/sched/domains/cpu*/domain*/ for system-specific
+>> +details.
+>> +
+>>  The system default is architecture dependent.  The system default
+>>  can be changed using the relax_domain_level= boot parameter.
+>>  
 
