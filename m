@@ -1,203 +1,166 @@
-Return-Path: <linux-kernel+bounces-126893-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-126894-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 95A6D894411
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 19:13:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id B7B00894416
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 19:15:16 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id F202EB2140A
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 17:12:59 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 2E2CBB20791
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 17:15:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 05A1F482EF;
-	Mon,  1 Apr 2024 17:12:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 79FDC4AED7;
+	Mon,  1 Apr 2024 17:15:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=salutedevices.com header.i=@salutedevices.com header.b="m0lMe8sE"
-Received: from mx1.sberdevices.ru (mx2.sberdevices.ru [45.89.224.132])
+	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="jM05olW4"
+Received: from NAM12-DM6-obe.outbound.protection.outlook.com (mail-dm6nam12on2064.outbound.protection.outlook.com [40.107.243.64])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AD41121105;
-	Mon,  1 Apr 2024 17:12:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.89.224.132
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711991571; cv=none; b=OP0oE4VKEWAJcO1O8B2F/g+tXU6grXmR4NAUJQ8low3cKfZe07/D1PeLwKd3RUA4ESsxiF3G5L2g6JXo5b6YQR1I+PmteGUnbTgLYrTYao4o68u4ViuBLMA7K3oqTaMrhIpCGXaQEvYEAj4ZsJE12kNkTMwlieqElqg85XM6zkU=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711991571; c=relaxed/simple;
-	bh=hRW7LaUViC/2yeXmYcIOSziW/mhb4rNib+dfmKV1v0E=;
-	h=Date:From:To:CC:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=jbYAQPd2yUPEFiJtLuHvh3PIFvZNHtKEn3CX8wAnN7Vn04YVl7Ol2+frBFaW0HApDdW2P1N4+wwH/Fe6uuPE48VeMxG4RoBUsmH7MYvxy01o7+YYz0O59g7BUjIReHkekQsXN1uqV3FAeqT3+BxHSfK253tGG0qxZuF4KlHkOWI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=salutedevices.com; spf=pass smtp.mailfrom=salutedevices.com; dkim=pass (2048-bit key) header.d=salutedevices.com header.i=@salutedevices.com header.b=m0lMe8sE; arc=none smtp.client-ip=45.89.224.132
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=salutedevices.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=salutedevices.com
-Received: from p-infra-ksmg-sc-msk02 (localhost [127.0.0.1])
-	by mx1.sberdevices.ru (Postfix) with ESMTP id 0FDA2120003;
-	Mon,  1 Apr 2024 20:12:38 +0300 (MSK)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mx1.sberdevices.ru 0FDA2120003
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=salutedevices.com;
-	s=mail; t=1711991558;
-	bh=tnV8DGhNxoxzX801UIgTUfBlu7sQv3A5VcnesxjPL9Y=;
-	h=Date:From:To:Subject:Message-ID:MIME-Version:Content-Type:From;
-	b=m0lMe8sEnZlEGvDay+PxIIf/+Fp5YlR6YcY6FU18RLaDLcT4t9bpZukzKSIN0I9gX
-	 EC1at4j0jfb5muT9AZbmhNFeiep++Efy9T67jgAlASn3gPHWwjK+G7Ds561EiNLXIu
-	 kQv1yDB8I68uX4j5Z+zJFH+k2m5omOd2tPn62c5cGARyE1VG874sEZhDfyXAs1JtMq
-	 Ebbbq9dOx26d+Tiii208BfDl3C9sTK50W3UJHRTghYKRbPKCH6cl9C4meLSRfnaOgT
-	 EipK+d1wAnQpREsd+r683GN9byPNe4PyHN65WMYegm8xeJBzxoZmRnif+crgvF7ic0
-	 JueEdsEU77NKg==
-Received: from smtp.sberdevices.ru (p-i-exch-sc-m02.sberdevices.ru [172.16.192.103])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by mx1.sberdevices.ru (Postfix) with ESMTPS;
-	Mon,  1 Apr 2024 20:12:37 +0300 (MSK)
-Received: from localhost (100.64.160.123) by p-i-exch-sc-m02.sberdevices.ru
- (172.16.192.103) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Mon, 1 Apr
- 2024 20:12:37 +0300
-Date: Mon, 1 Apr 2024 20:12:37 +0300
-From: Dmitry Rokosov <ddrokosov@salutedevices.com>
-To: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-CC: <neil.armstrong@linaro.org>, <jbrunet@baylibre.com>,
-	<mturquette@baylibre.com>, <sboyd@kernel.org>, <robh+dt@kernel.org>,
-	<krzysztof.kozlowski+dt@linaro.org>, <khilman@baylibre.com>,
-	<kernel@salutedevices.com>, <rockosov@gmail.com>,
-	<linux-amlogic@lists.infradead.org>, <linux-clk@vger.kernel.org>,
-	<devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-	<linux-arm-kernel@lists.infradead.org>
-Subject: Re: [PATCH v1 6/6] clk: meson: a1: add Amlogic A1 CPU clock
- controller driver
-Message-ID: <20240401171237.qoewp2pgcdrqvc3e@CAB-WSD-L081021>
-References: <20240329205904.25002-1-ddrokosov@salutedevices.com>
- <20240329205904.25002-7-ddrokosov@salutedevices.com>
- <CAFBinCCC5KK-4_w41B-+ZJ3zdZckq_EDuAW+Kak2C0Ow8uuD6Q@mail.gmail.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E492E8F5C;
+	Mon,  1 Apr 2024 17:15:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.243.64
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1711991706; cv=fail; b=GoFkVt3X9f+Smaxv6d5v+cwkyyU+FJpBBEcpCZIMZ9HPW5JxJmC+NKPM7crwc7e58ysCVtovwr2qRo6hHpsyQ96dAw1HgchvritrFsLkkPIulIx9kxmRvItg2OikVDkx2C2aihf4LBTHMbnev1Gwiizs+IFr/hwRam3NHWak+ZQ=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1711991706; c=relaxed/simple;
+	bh=I5VKwzjw5VMv8wU5qAIHjhhwZqe7sxaucfGbjSe/xf0=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=lswPrM8i9TBtHwJxzMn5OlTTYs92GQfazhetBKndA1K9LOfQwLbA1jEH7uHxIYF8hW6h4/6PSpqIDnOnQl3y5i3+bcUWrwvjOj/TizJsd/sKT02oW0H17R9FgsjEJ+f1Cjs2zI4YF68+7M99NBSv5YmthTylXpcUAQk2tHenBf8=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=jM05olW4; arc=fail smtp.client-ip=40.107.243.64
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=SgkYBZANMKfqsVg9ZZs7GKLrXbM9MiswhbqPBtT5Tdio0TtbbCYWGg0tyf41O9WCkhW3lYyrMENJvw4gBz/XwKp2IsFCyh6S7N14L8iZH5XxrjAb6MIIDNdgr5pusYNvTz+yGXWJzz3Fy1UgQFlfk2fedufyw9ZE13SfzOJ3FA3oKOsbCugEX34o8FUqvEp80QHaA9PDMtaXhKH8V1x7gR0fyLMcKMFbzZ6hPWfzrQA9eCFheF+qgsBjTyTVXfrGajHAdWc1ngYyI1ulWUQupA0HNUooL3cWGFn6rr+yxW+Y3JyU67whcn1qWjv+VpRgvTwFI9HKAcslbvP2GkrwrA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=OKSCmD2GgkoP/SPFwuByyWNOOsbiL2KF/yfNL1mU83M=;
+ b=TsXwmfWiZIJ3uKFaEmEvsatHX7sJ1hTEf6nLxs1WkF5kS957U8Fd1ESXOyrBXPBpjZAdD9tjkTC1iU71hgkSkW7pu8OVIuk5CPcLVLB8+EZeZwL6A4YxTtYpW4A0AC1dWCuJEvOHGlXG2bFZyh0Iw26rUsp8vtKiLWbcc0f/LdZOXJT3Mr/H61BRbHce6+4lWGl+7ThVUCBeAzaouA8vqkRz4Mf8vVsYVxRfKPbO7A/Xb40ySLLJ0YrpHOivOJGqytchVRmfcFTNjKWHHW3+LHtFtpSHmwDGS94CNrRjMpVlJ7tyuaTUJTobV9SYxrTbhnZedrPu4sD001eS/3KMmA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 165.204.84.17) smtp.rcpttodomain=vger.kernel.org smtp.mailfrom=amd.com;
+ dmarc=pass (p=quarantine sp=quarantine pct=100) action=none
+ header.from=amd.com; dkim=none (message not signed); arc=none (0)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=OKSCmD2GgkoP/SPFwuByyWNOOsbiL2KF/yfNL1mU83M=;
+ b=jM05olW49/xW8606+N2G7oCA1A7277r1d3GYMPU+QPb+/q+5rGwstjQMXVHM+Fbeg7Vo8ycIYBk+SdkhRUrVt8kMuGCPHuMlCsUn4I6Tqe5YR7l9C/BEoXHCk8x7VkOXOuTGR/BMGU9jkj9dZh6PIklTg0ZT+iZbItAfH7/ORiw=
+Received: from BY3PR05CA0038.namprd05.prod.outlook.com (2603:10b6:a03:39b::13)
+ by PH7PR12MB7379.namprd12.prod.outlook.com (2603:10b6:510:20e::10) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7409.46; Mon, 1 Apr
+ 2024 17:15:02 +0000
+Received: from SJ1PEPF00001CE9.namprd03.prod.outlook.com
+ (2603:10b6:a03:39b:cafe::34) by BY3PR05CA0038.outlook.office365.com
+ (2603:10b6:a03:39b::13) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7452.25 via Frontend
+ Transport; Mon, 1 Apr 2024 17:15:02 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
+ smtp.mailfrom=amd.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=amd.com;
+Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
+ 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
+ client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
+Received: from SATLEXMB04.amd.com (165.204.84.17) by
+ SJ1PEPF00001CE9.mail.protection.outlook.com (10.167.242.25) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.20.7452.22 via Frontend Transport; Mon, 1 Apr 2024 17:15:01 +0000
+Received: from titanite-d354host.amd.com (10.180.168.240) by
+ SATLEXMB04.amd.com (10.181.40.145) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Mon, 1 Apr 2024 12:15:00 -0500
+From: Avadhut Naik <avadhut.naik@amd.com>
+To: <linux-trace-kernel@vger.kernel.org>, <linux-edac@vger.kernel.org>
+CC: <rostedt@goodmis.org>, <tony.luck@intel.com>, <bp@alien8.de>,
+	<x86@kernel.org>, <sohil.mehta@intel.com>, <linux-kernel@vger.kernel.org>,
+	<yazen.ghannam@amd.com>, <avadnaik@amd.com>
+Subject: [PATCH v6 0/2] Update mce_record tracepoint
+Date: Mon, 1 Apr 2024 12:14:53 -0500
+Message-ID: <20240401171455.1737976-1-avadhut.naik@amd.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAFBinCCC5KK-4_w41B-+ZJ3zdZckq_EDuAW+Kak2C0Ow8uuD6Q@mail.gmail.com>
-User-Agent: NeoMutt/20220415
-X-ClientProxiedBy: p-i-exch-sc-m02.sberdevices.ru (172.16.192.103) To
- p-i-exch-sc-m02.sberdevices.ru (172.16.192.103)
-X-KSMG-Rule-ID: 10
-X-KSMG-Message-Action: clean
-X-KSMG-AntiSpam-Lua-Profiles: 184515 [Apr 01 2024]
-X-KSMG-AntiSpam-Version: 6.1.0.4
-X-KSMG-AntiSpam-Envelope-From: ddrokosov@salutedevices.com
-X-KSMG-AntiSpam-Rate: 0
-X-KSMG-AntiSpam-Status: not_detected
-X-KSMG-AntiSpam-Method: none
-X-KSMG-AntiSpam-Auth: dkim=none
-X-KSMG-AntiSpam-Info: LuaCore: 14 0.3.14 5a0c43d8a1c3c0e5b0916cc02a90d4b950c01f96, {Track_E25351}, {Tracking_from_domain_doesnt_match_to}, 127.0.0.199:7.1.2;salutedevices.com:7.1.1;100.64.160.123:7.1.2;smtp.sberdevices.ru:5.0.1,7.1.1;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1, FromAlignment: s, ApMailHostAddress: 100.64.160.123
-X-MS-Exchange-Organization-SCL: -1
-X-KSMG-AntiSpam-Interceptor-Info: scan successful
-X-KSMG-AntiPhishing: Clean
-X-KSMG-LinksScanning: Clean
-X-KSMG-AntiVirus: Kaspersky Secure Mail Gateway, version 2.0.1.6960, bases: 2024/04/01 15:13:00 #24563578
-X-KSMG-AntiVirus-Status: Clean, skipped
+Content-Type: text/plain
+X-ClientProxiedBy: SATLEXMB03.amd.com (10.181.40.144) To SATLEXMB04.amd.com
+ (10.181.40.145)
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: SJ1PEPF00001CE9:EE_|PH7PR12MB7379:EE_
+X-MS-Office365-Filtering-Correlation-Id: b710851f-67a2-4589-4895-08dc526f445f
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	RMSb2jXTjRxABnWJ88MkVG5mhPblDtYFh6+f48Sdrco3zUk8mehrl40yRn6HdiO07UPD/H/dvAu6lgdp438+4wFws3de7bpiyHIZvsNpt2cy+3M9wxmcQ93vev569WAOicr6EAXExMVmXkU0iTVtHl/OY9y9a5c4skPlkNeS6OvBlqnc7n+GcwnU9qQwrF3vnXENQmIpS3xGoK8u1EafqdXCPUs0rx46VfmTH440rCYVVGJqzDmqG3hQB/iJgrfFqBgWzz6vlonMPEQUAdhImopN/x2x9iVC3hgTY4loJEgilGaHKhGX+rfvt5/aSGzT0gv+Q10oZ0eBsO/LUWhvkYbE0dIunyJ2yDThVDRK2gRD7PIvLNprau0B1r5IOcBedgFqe/BEWJy7sbgRKLUnRkU3uN282Q9BKnn0Olhr6TvpegIX2YvcAd3imZgC8inn/T/gcaOuEQorBZe1NlCl6QazHXokvCLpc2dEuwCuC7Wc44fyTJAIzQOxV+Ej6SSCIb9/zWtiynQUrmK8Z1SVuiDQHSat+A1RUm2TcQyr79gdswxROp5mOE0+FhVwkey65KV/EneQQLWwnYjurzd6zkplg0AENKsqfKFxyIgL3LVoFPUUYAimR91Mq6iVq2k2P1I6GoyRkEfKJGSW6+JZilTNunlxfeO2YEpdJMxKYbBUnkJ9kjqbFtbYohBqzwe0AWepqGTnvXThBIQVKguMCw==
+X-Forefront-Antispam-Report:
+	CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(36860700004)(82310400014)(376005)(1800799015);DIR:OUT;SFP:1101;
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 01 Apr 2024 17:15:01.9366
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: b710851f-67a2-4589-4895-08dc526f445f
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
+X-MS-Exchange-CrossTenant-AuthSource:
+	SJ1PEPF00001CE9.namprd03.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH7PR12MB7379
 
-Hello Martin,
+This patchset updates the mce_record tracepoint so that the recently added
+fields of struct mce are exported through it to userspace.
 
-Thank you for quick response. Please find my thoughts below.
+The first patch adds PPIN (Protected Processor Inventory Number) field to
+the tracepoint.
 
-On Sun, Mar 31, 2024 at 11:40:13PM +0200, Martin Blumenstingl wrote:
-> Hi Dmitry,
-> 
-> On Fri, Mar 29, 2024 at 9:59 PM Dmitry Rokosov
-> <ddrokosov@salutedevices.com> wrote:
-> [...]
-> > +static struct clk_regmap cpu_fclk = {
-> > +       .data = &(struct clk_regmap_mux_data) {
-> > +               .offset = CPUCTRL_CLK_CTRL0,
-> > +               .mask = 0x1,
-> > +               .shift = 10,
-> > +       },
-> > +       .hw.init = &(struct clk_init_data) {
-> > +               .name = "cpu_fclk",
-> > +               .ops = &clk_regmap_mux_ops,
-> > +               .parent_hws = (const struct clk_hw *[]) {
-> > +                       &cpu_fsel0.hw,
-> > +                       &cpu_fsel1.hw,
-> Have you considered the CLK_SET_RATE_GATE flag for &cpu_fsel0.hw and
-> &cpu_fsel1.hw and then dropping the clock notifier below?
-> We use that approach with the Mali GPU clock on other SoCs, see for
-> example commit 8daeaea99caa ("clk: meson: meson8b: make the CCF use
-> the glitch-free mali mux").
-> It may differ from what Amlogic does in their BSP,
+The second patch adds the microcode field (Microcode Revision) to the
+tracepoint.
 
-Amlogic in their BSP takes a different approach, which is slightly
-different from mine. They cleverly change the parent of cpu_clk directly
-by forking the cpufreq driver to a custom version. I must admit, it's
-quite an "interesting and amazing" idea :) but it's not architecturally
-correct totally.
+Changes in v2:
+ - Export microcode field (Microcode Revision) through the tracepoiont in
+   addition to PPIN.
 
-> but I don't think
-> that there's any harm (if it works in general) because CCF (common
-> clock framework) will set all clocks in the "inactive" tree and then
-> as a last step just change the mux (&cpu_fclk.hw). So at no point in
-> time will we get any other rate than a) the original CPU clock rate
-> before the rate change b) the new desired CPU clock rate. This is
-> because we have two symmetric clock trees.
+Changes in v3:
+ - Change format specifier for microcode revision from %u to %x
+ - Fix tab alignments
+ - Add Reviewed-by: Sohil Mehta <sohil.mehta@intel.com>
 
-Now, let's dive into the specifics of the issue we're facing. I've
-examined the CLK_SET_RATE_GATE flag, which, to my understanding, blocks
-rate changes for the entire clock chain. However, in this particular
-situation, it doesn't provide the solution we need.
+Changes in v4:
+ - Update commit messages to reflect the reason for the fields being
+   added to the tracepoint.
+ - Add comment to explicitly state the type of information that should
+   be added to the tracepoint.
+ - Add Reviewed-by: Steven Rostedt (Google) <rostedt@goodmis.org>
 
-Here's the problem we're dealing with:
+Changes in v5:
+ - Changed "MICROCODE REVISION" to just "MICROCODE".
+ - Changed words which are not acronyms from ALL CAPS to no caps.
+ - Added Reviewed-by: Tony Luck <tony.luck@intel.com>
 
-1) The CPU clock can have the following frequency points:
+Changes in v6:
+ - Rebased on top of Ingo's changes to the MCE tracepoint
+    https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git/commit/include/trace/events/mce.h?id=ac5e80e94f5c67d7053f50fc3faddab931707f0f
 
-  available frequency steps:  128 MHz, 256 MHz, 512 MHz, 768 MHz, 1.01 GHz, 1.20 GHz
+[NOTE:
+ - Since changes in this version are very minor, have retained the below
+   tags received for previous versions:
+    Reviewed-by: Sohil Mehta <sohil.mehta@intel.com>
+    Reviewed-by: Steven Rostedt (Google) <rostedt@goodmis.org>
+    Reviewed-by: Tony Luck <tony.luck@intel.com>]
 
-When we run the cpupower, we get the following information:
-# cpupower -c 0,1 frequency-info
-analyzing CPU 0:
-  driver: cpufreq-dt
-  CPUs which run at the same hardware frequency: 0 1
-  CPUs which need to have their frequency coordinated by software: 0 1
-  maximum transition latency: 50.0 us
-  hardware limits: 128 MHz - 1.20 GHz
-  available frequency steps:  128 MHz, 256 MHz, 512 MHz, 768 MHz, 1.01 GHz, 1.20 GHz
-  available cpufreq governors: conservative ondemand userspace performance schedutil
-  current policy: frequency should be within 128 MHz and 128 MHz.
-                  The governor "schedutil" may decide which speed to use
-                  within this range.
-  current CPU frequency: 128 MHz (asserted by call to hardware)
-analyzing CPU 1:
-  driver: cpufreq-dt
-  CPUs which run at the same hardware frequency: 0 1
-  CPUs which need to have their frequency coordinated by software: 0 1
-  maximum transition latency: 50.0 us
-  hardware limits: 128 MHz - 1.20 GHz
-  available frequency steps:  128 MHz, 256 MHz, 512 MHz, 768 MHz, 1.01 GHz, 1.20 GHz
-  available cpufreq governors: conservative ondemand userspace performance schedutil
-  current policy: frequency should be within 128 MHz and 128 MHz.
-                  The governor "schedutil" may decide which speed to use
-                  within this range.
-  current CPU frequency: 128 MHz (asserted by call to hardware)
+Avadhut Naik (2):
+  tracing: Include PPIN in mce_record tracepoint
+  tracing: Include Microcode Revision in mce_record tracepoint
 
-2) For the frequency points 128 MHz, 256 MHz, and 512 MHz, the CPU fixed
-clock should be used. Fortunately, we don't encounter any freeze
-problems when we attempt to change its rate at these frequencies.
+ include/trace/events/mce.h | 18 ++++++++++++++++--
+ 1 file changed, 16 insertions(+), 2 deletions(-)
 
-3) However, for the frequency points 768 MHz, 1.01 GHz, and 1.20 GHz,
-the sys_pll is used as the clock source because it's a faster option.
-Now, let's imagine that we want to change the CPU clock from 768 MHz to
-1.01 GHz. Unfortunately, it's not possible due to the broken sys_pll,
-and any execution attempts will result in a hang.
 
-4) As you can observe, in this case, we actually don't need to lock the
-rate for the sys_pll chain. We want to change the rate instead. Hence,
-I'm not aware of any other method to achieve this except by switching
-the cpu_clk parent to a stable clock using clock notifier block.
-Interestingly, I've noticed a similar approach in the CPU clock drivers
-of Rockchip, Qualcomm, and Mediatek.
-
+base-commit: 65d1240b6728b38e4d2068d6738a17e4ee4351f5
 -- 
-Thank you,
-Dmitry
+2.34.1
+
 
