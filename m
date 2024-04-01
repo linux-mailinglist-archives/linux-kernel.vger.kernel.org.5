@@ -1,45 +1,45 @@
-Return-Path: <linux-kernel+bounces-126721-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-126722-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8CC80893BF7
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 16:12:05 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id BB5AB893BF9
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 16:12:18 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4897D281F93
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 14:12:04 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E4E271C20C03
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 14:12:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 898A0482DF;
-	Mon,  1 Apr 2024 14:10:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1240D4AEEA;
+	Mon,  1 Apr 2024 14:10:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="fSx+y65E"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="KZrH/g4M"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C861A481C4;
-	Mon,  1 Apr 2024 14:10:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 541E34AED1;
+	Mon,  1 Apr 2024 14:10:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711980635; cv=none; b=mxHQjK6A0pK0as67LOMQ0bzMauuvR/3jnEbiuVGuWwDPke5uz7CL/DdXGhGK4471kUHnQ1GRubGy2STBXK3fdGZp8H0TtA/Dn9e//IEasMyBP/eCOS0K21Rb3j1v6HNI/rbsxRLycGRPonyo+EDTqxmfv6kqx2ebXcL6dm0U6tc=
+	t=1711980638; cv=none; b=CAj3Y4iJr7VOVR3+1I2S0gjQd+sZM9FHbz/hTG36wGOwt8Q1dxIv3nLaAtWKzPVdvKXum/PO73UyIZJZdYRhv8nXFiMVXhYKlNSuujzfeeKk5xEQMcXK9Ki8//D6Uc7whoz1RYxLMl7+fCrri9WlB07baJTcVWcXi796poMDV0o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711980635; c=relaxed/simple;
-	bh=rF3G/J0eU0DgxMWivEwEC1LIEn/AUnhTq0d7YYaha8s=;
+	s=arc-20240116; t=1711980638; c=relaxed/simple;
+	bh=Vc7RoNzIIhqz3cEik7q+jldp+Dpkulw+lDFJ9hSu5Y0=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=NN3dq6kxWr2xdOc1cAKqZOuA694WuUA7xy/FZyD8ZmolZc1YauzGG8fp/wtp1ZkVxR16hXrSN6qvR9vmbutykrtTSCOHpX2WZA48p+GDkIFGhU99rhSY4KZp/nM2N0iIflsbf0GmATbehyPGvndcbtJhu0M7Ya/8G2E4bNz7+II=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=fSx+y65E; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8D82EC43390;
-	Mon,  1 Apr 2024 14:10:33 +0000 (UTC)
+	 MIME-Version; b=H7W3U3u4IqdjFfcni2OOMW+C8pnHA4i6I216bhpyJKYMgF8MncJGNSfdlg8ESldOP9E2vw339dB3oSiOqV+HD6yM5PG28VGywcBsoZ9C2ItPAMwU3XRR3Fi6W59ozqog1OjhEGMYzTiaFSPcyN+H7LMf8EFhHzMDraqcQjIYP5Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=KZrH/g4M; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 223E2C433A6;
+	Mon,  1 Apr 2024 14:10:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711980635;
-	bh=rF3G/J0eU0DgxMWivEwEC1LIEn/AUnhTq0d7YYaha8s=;
+	s=k20201202; t=1711980637;
+	bh=Vc7RoNzIIhqz3cEik7q+jldp+Dpkulw+lDFJ9hSu5Y0=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=fSx+y65E8WXNWaNF4hHWRMLVkq9LqOu19tl2K85sbzGnvsV5PpdKLWasmGuRUbgII
-	 tgdPsPapyRoX7gCLTTAkpeuWi9Zm3MOboosoe8fiGeuCCmXOjhDeGjfmmalEsRo4JX
-	 Es9085WBKt07ujx0OIuJM80skot1l6FNJWWBftecdDst+BwNCjczQYVZTAkInaM6Ds
-	 ML9RK/3UJgCHqeMv54skbBShg/O0wwHPLYKa/ANvJteGi9rTGYzTbr6AyC6jjE9pMV
-	 uEDVs29B9SuWNYe/IVStRoPsb7plrQ0ULbishANnJ026GZKbik7J49m20hMQvMn6bN
-	 cWxEveEly2zhw==
+	b=KZrH/g4MXW2Vz0ah7J+w0QXuXD/DrbxnYFAKLo0A+52fDIZG1tQsMuDl/RF/5rYbV
+	 zJETv82sJOEH5iPbAFFEQHdLKPPGOMj+5k+cic1Cmk/nV93GsULxRznLb611r/Gbdv
+	 6T8HpUWBoRkK/XTxTWHk42UCCticRXIjRM2WLf6kXMsKU8v37SVW7DYoSx5Y9sdE3v
+	 fiUDjnpVqcr1eqjg86s2jMC//aBCe6qvpqq8x0B8cKoelS/R5wW0mfdEs9mZY/eeTJ
+	 pVy9S49leEkDmxf+FZIa0CZ9eUX48iKuCYKiKitfshKFmE+m2ik54+FPxPA0q2lo+t
+	 xngz5S7n3Q14w==
 From: Krzysztof Kozlowski <krzk@kernel.org>
 To: Dinh Nguyen <dinguyen@kernel.org>,
 	Rob Herring <robh@kernel.org>,
@@ -48,9 +48,9 @@ To: Dinh Nguyen <dinguyen@kernel.org>,
 	devicetree@vger.kernel.org,
 	linux-kernel@vger.kernel.org
 Cc: Krzysztof Kozlowski <krzk@kernel.org>
-Subject: [PATCH 3/4] arm64: dts: agilex: socdk: drop unneeded flash address/size-cells
-Date: Mon,  1 Apr 2024 16:10:24 +0200
-Message-Id: <20240401141025.98125-3-krzk@kernel.org>
+Subject: [PATCH 4/4] arm64: dts: n5x: socdk: drop unneeded flash address/size-cells
+Date: Mon,  1 Apr 2024 16:10:25 +0200
+Message-Id: <20240401141025.98125-4-krzk@kernel.org>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20240401141025.98125-1-krzk@kernel.org>
 References: <20240401141025.98125-1-krzk@kernel.org>
@@ -66,18 +66,18 @@ Flash node uses single "partition" node to describe partitions, so
 remove deprecated address/size-cells properties to also fix dtc W=1
 warnings:
 
-  socfpga_agilex_socdk.dts:108.10-137.4: Warning (avoid_unnecessary_addr_size): /soc@0/spi@ff8d2000/flash@0: unnecessary #address-cells/#size-cells without "ranges" or child "reg" property
+  socfpga_n5x_socdk.dts:85.10-114.4: Warning (avoid_unnecessary_addr_size): /soc@0/spi@ff8d2000/flash@0: unnecessary #address-cells/#size-cells without "ranges" or child "reg" property
 
 Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
 ---
- arch/arm64/boot/dts/intel/socfpga_agilex_socdk.dts | 2 --
+ arch/arm64/boot/dts/intel/socfpga_n5x_socdk.dts | 2 --
  1 file changed, 2 deletions(-)
 
-diff --git a/arch/arm64/boot/dts/intel/socfpga_agilex_socdk.dts b/arch/arm64/boot/dts/intel/socfpga_agilex_socdk.dts
-index ad99aefeb185..b31cfa6b802d 100644
---- a/arch/arm64/boot/dts/intel/socfpga_agilex_socdk.dts
-+++ b/arch/arm64/boot/dts/intel/socfpga_agilex_socdk.dts
-@@ -106,8 +106,6 @@ &watchdog0 {
+diff --git a/arch/arm64/boot/dts/intel/socfpga_n5x_socdk.dts b/arch/arm64/boot/dts/intel/socfpga_n5x_socdk.dts
+index 2d70a92c2090..7952c7f47cc2 100644
+--- a/arch/arm64/boot/dts/intel/socfpga_n5x_socdk.dts
++++ b/arch/arm64/boot/dts/intel/socfpga_n5x_socdk.dts
+@@ -83,8 +83,6 @@ &osc1 {
  &qspi {
  	status = "okay";
  	flash@0 {
