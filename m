@@ -1,154 +1,164 @@
-Return-Path: <linux-kernel+bounces-127154-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-127155-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 72AB2894781
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 00:56:34 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id F1D71894784
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 01:01:48 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id CE3DBB21EDB
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 22:56:31 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 091A31C21FD6
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 23:01:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2262356773;
-	Mon,  1 Apr 2024 22:56:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 012E056B6F;
+	Mon,  1 Apr 2024 23:01:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Iap+bcp1"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.17])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="UZ59IzDo"
+Received: from mail-io1-f73.google.com (mail-io1-f73.google.com [209.85.166.73])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BD9D733982
-	for <linux-kernel@vger.kernel.org>; Mon,  1 Apr 2024 22:56:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.17
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2644341A81
+	for <linux-kernel@vger.kernel.org>; Mon,  1 Apr 2024 23:01:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.73
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712012184; cv=none; b=L8pyORg8IkZYbBH1gPEK9i1WvWyOeHTGWdk3PcozZAOl9FyAA0HjAtyWA+czSYi6QHfUR++PZ/wPmnsLmarIuMG/J2fmFVBrOMjENC+0X1SF11y7AdvISlyktXXTMB9fzmJPLIz5ZbuAadNCRIbBkxZqWFvZE/xmSCboeQrmFKc=
+	t=1712012501; cv=none; b=cWxxHXQ7bn3FY+n1m9uj8MUvftdXpaeOsBRhaFquTb7HtyeUzCEaoRTUG6b7eZXCVY3H9B1qCEgpAfLG7Nf7KVXiSmUzZFendSMNjVxtA3AbqIZ6Hh/tIaoJbWctL++9iikH6a/hzT0kKpi5+E3nJGTYtl8tlhjBYO92Z04ic1Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712012184; c=relaxed/simple;
-	bh=HWcoYzLcadqjzv5w1Vao0XZJvifGka4oNIEPmv5U5BI=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition; b=am4XKGGaP4VU7DBReNit63Mz+UxVsPvRf2Gny0gr9J+h9+rzmS97Z3v9b/VpYtIriYAVrfXaktmcCPDXCGSwuuSDg3dDz+VCNp7slC27g3/VOS6Z3lt5vTG5+GSDrNQRSeo8T4PYVwWA3jqF89Z0bdSv5kmr0NjBs72Y+wyjXfo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Iap+bcp1; arc=none smtp.client-ip=198.175.65.17
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1712012183; x=1743548183;
-  h=date:from:to:cc:subject:message-id:mime-version:
-   content-transfer-encoding;
-  bh=HWcoYzLcadqjzv5w1Vao0XZJvifGka4oNIEPmv5U5BI=;
-  b=Iap+bcp15sIELO9S0sGuY/Tj0opjeekfRc60ODYxZ7UkjhsFBXv4imtF
-   M7DArZxtadIEyhi90NOQgmQ2uzwTIW/igs0gV3q6Xp87IfXwXPDxcnnNc
-   bzo71aQ0RWB7dWE50UL80xwbdKya7LHB+WAfD6SCIaFQXr/decZ4a+Jl6
-   Ty+mqfyLdfRaYC6eKhlnT5ERS4TJG+pge3FbjbRvfhI0B7X6LZUCAfzn+
-   CDheWX1K9POR9i0rxGqx9q3NqlgTXHMprouaeCO5oq1O0QCc83k4MZvNq
-   DDdxreqQIYrQ3/t5TaICPnJh+Z/QVnk2p7HbJUQX6bWmxESDCp241dk4c
-   g==;
-X-CSE-ConnectionGUID: hbCRBgUJQgWtfe/pwCTzBw==
-X-CSE-MsgGUID: jrMheJ0GRSmnxkGoMcKceA==
-X-IronPort-AV: E=McAfee;i="6600,9927,11031"; a="7276144"
-X-IronPort-AV: E=Sophos;i="6.07,173,1708416000"; 
-   d="scan'208";a="7276144"
-Received: from orviesa004.jf.intel.com ([10.64.159.144])
-  by orvoesa109.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Apr 2024 15:56:17 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,173,1708416000"; 
-   d="scan'208";a="22594009"
-Received: from lkp-server02.sh.intel.com (HELO 90ee3aa53dbd) ([10.239.97.151])
-  by orviesa004.jf.intel.com with ESMTP; 01 Apr 2024 15:56:15 -0700
-Received: from kbuild by 90ee3aa53dbd with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1rrQZW-0000el-2e;
-	Mon, 01 Apr 2024 22:56:11 +0000
-Date: Tue, 2 Apr 2024 06:55:34 +0800
-From: kernel test robot <lkp@intel.com>
-To: Mika Westerberg <mika.westerberg@linux.intel.com>
-Cc: oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
-	Bjorn Helgaas <helgaas@kernel.org>, Lukas Wunner <lukas@wunner.de>
-Subject: drivers/pci/pci.h:343:17: sparse: sparse: cast from restricted
- pci_channel_state_t
-Message-ID: <202404020648.ZvydnKCR-lkp@intel.com>
+	s=arc-20240116; t=1712012501; c=relaxed/simple;
+	bh=Sw17VZ2rI5t1U7w6lSBn7Tgm6w53GtT34jTTgkY57jY=;
+	h=Date:Mime-Version:Message-ID:Subject:From:To:Cc:Content-Type; b=QtRarP/ea9fjmVjxJg+TuOeo8se/WkBJ7NaUqCGtv8b6S9/3jijg3iV7ZTRkdWRjwKznJ3CaPPom9TsPMkjuYH4kT1l+d/9r5CSOderJdE7j/+idfWOGPV/J/GefQHuilS4QdLIm+klosG72XAXeaf2M18zjHg6vvvFiSLNcJeg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--justinstitt.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=UZ59IzDo; arc=none smtp.client-ip=209.85.166.73
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--justinstitt.bounces.google.com
+Received: by mail-io1-f73.google.com with SMTP id ca18e2360f4ac-7cc74ea9c20so545897139f.1
+        for <linux-kernel@vger.kernel.org>; Mon, 01 Apr 2024 16:01:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1712012498; x=1712617298; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=4UCTUqrCfJ+dpmdPP9hi+yGQv3LbBnFi/puoG4yXu+A=;
+        b=UZ59IzDo+aVZhpLdXkaFdWKK6akcV6wBQsTeuS7s1T6vOJpeIFm24kKSMEUt/XNqFV
+         LckB/5FOUU1VrAROUZ3Ec4Rc7Dwt/IoiX552eMZhXr/hlf8RytRoc5qAm7fePh60MwhK
+         i+nHMTtFtyZjWQO9tM95SS0E3mYrw2Sha2RFNwSJmmNQ6QytgMZs7E5GR8opaMAOQmEg
+         Hl+4K+aagSid0gPJawo3GvntPWHBnigdJfIK+aRivaF/d96c3ayhMha/yBiPjx63n0zj
+         Y4SXbyPYTt2ZogvOde3r5SUYbWdHWVb6JgPxikeFv4FuywDzzlhLRuyRJ6JBKhJPbY2+
+         mJ+g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712012498; x=1712617298;
+        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=4UCTUqrCfJ+dpmdPP9hi+yGQv3LbBnFi/puoG4yXu+A=;
+        b=ejF3whypJ6dkvbuTsVgi/qVgtFOVL/Cfv1vBq5KUmlj/jL/+wGw9OVtthSnagtFTIy
+         VIR/1P5PbgvP2WRkwLBacVfRHAQZXeSDQDq+yKf8nIV02RbcbJ6Om3ZrGIBrvGUNnm3S
+         8RO+pDpS1/EYmnBP4fBpJQqF/wDYTg/f8GnOdN/9vjR/hZ8kXIUWR5opfSw9Uljim5Bt
+         BqeiNwKQlFqJqDPWst40PMe6S9PzJ7jrs3430JcyzbkkGFUetWB9LdkASeJ5ySqH7hAC
+         a+Xc5iXBOtsZcy3zEOgCDuhdK0hLvWaZZRx3GXKFPoohlQQ+cNFV6m3l8RMIZKZjoZ7Y
+         HsBg==
+X-Forwarded-Encrypted: i=1; AJvYcCW15rwO01FK1f/8SuDXVL0wdQb82C9MEPE8TTYaiP89qTCq8vNGiXBsyTsqeDDwyNAFiNLgSDQwdha7HxFGDz9qJKfmT7x8KZPf+dyu
+X-Gm-Message-State: AOJu0YztCZ4cnfW0kKagvh/6wxPxRoYLZt9qZXV1QM5clvQZ1mqbHES5
+	O3b/SSA0Nv5Bg0q2pmEwxiw4IaMxlv3C1CaBi1OieuzggF7Xs0jtr3r7BVGd8VwjNbsSEGPJFH0
+	0PzWALGiKZh4bvVdo4Q8/mQ==
+X-Google-Smtp-Source: AGHT+IFxVfAigFgMJYj0MK1XEtlxuguR9QWg4M5wW3cmX+ehlPJHICAdqbQsd1MUKQyprqYyiz7tRJ0CYxKiBQl4pg==
+X-Received: from jstitt-linux1.c.googlers.com ([fda3:e722:ac3:cc00:2b:ff92:c0a8:23b5])
+ (user=justinstitt job=sendgmr) by 2002:a05:6602:6b84:b0:7cc:39c:143d with
+ SMTP id ii4-20020a0566026b8400b007cc039c143dmr390494iob.0.1712012498421; Mon,
+ 01 Apr 2024 16:01:38 -0700 (PDT)
+Date: Mon, 01 Apr 2024 23:01:38 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
+Mime-Version: 1.0
+X-B4-Tracking: v=1; b=H4sIANE8C2YC/6tWKk4tykwtVrJSqFYqSi3LLM7MzwNyDHUUlJIzE
+ vPSU3UzU4B8JSMDIxMDEwND3eKSorzkgkrdtGLdCgiOz8xPLsnRTda1SEwzT7SwNE1KSzNQAhp QUJSallkBNjw6trYWANLq9zZsAAAA
+X-Developer-Key: i=justinstitt@google.com; a=ed25519; pk=tC3hNkJQTpNX/gLKxTNQKDmiQl6QjBNCGKJINqAdJsE=
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1712012497; l=2623;
+ i=justinstitt@google.com; s=20230717; h=from:subject:message-id;
+ bh=Sw17VZ2rI5t1U7w6lSBn7Tgm6w53GtT34jTTgkY57jY=; b=Je+3bNOSl7VFFOi8HXFh39huAOtiEkqd6rPxUqiwOM0mvuBTBLcnq2KhywdxKIOo4cLT9pfWn
+ V/SkR0/wmEZCC2e2cJMcsHJHf83GS2EdKd0Xp+fXHoZtq8eOB+5DclX
+X-Mailer: b4 0.12.3
+Message-ID: <20240401-strncpy-fs-xfs-xfs_ioctl-c-v1-1-02b9feb1989b@google.com>
+Subject: [PATCH] xfs: cleanup deprecated uses of strncpy
+From: Justin Stitt <justinstitt@google.com>
+To: Chandan Babu R <chandan.babu@oracle.com>, "Darrick J. Wong" <djwong@kernel.org>
+Cc: linux-xfs@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	linux-hardening@vger.kernel.org, Justin Stitt <justinstitt@google.com>
+Content-Type: text/plain; charset="utf-8"
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   026e680b0a08a62b1d948e5a8ca78700bfac0e6e
-commit: c82458101d5490230d735caecce14c9c27b1010c PCI/PM: Mark devices disconnected if upstream PCIe link is down on resume
-date:   6 months ago
-config: loongarch-randconfig-r034-20230511 (https://download.01.org/0day-ci/archive/20240402/202404020648.ZvydnKCR-lkp@intel.com/config)
-compiler: loongarch64-linux-gcc (GCC) 12.3.0
-reproduce: (https://download.01.org/0day-ci/archive/20240402/202404020648.ZvydnKCR-lkp@intel.com/reproduce)
+strncpy() is deprecated for use on NUL-terminated destination strings
+[1] and as such we should prefer more robust and less ambiguous string
+interfaces.
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202404020648.ZvydnKCR-lkp@intel.com/
+In xfs_ioctl.c:
+The current code has taken care NUL-termination by memset()'ing @label.
+This is followed by a strncpy() to perform the string copy.
 
-sparse warnings: (new ones prefixed by >>)
-   drivers/pci/pci-driver.c:522:42: sparse: sparse: restricted pci_power_t degrades to integer
-   drivers/pci/pci-driver.c:522:61: sparse: sparse: restricted pci_power_t degrades to integer
-   drivers/pci/pci-driver.c:757:28: sparse: sparse: restricted pci_power_t degrades to integer
-   drivers/pci/pci-driver.c:757:46: sparse: sparse: restricted pci_power_t degrades to integer
-   drivers/pci/pci-driver.c: note: in included file:
->> drivers/pci/pci.h:343:17: sparse: sparse: cast from restricted pci_channel_state_t
->> drivers/pci/pci.h:343:17: sparse: sparse: cast to restricted pci_channel_state_t
-   drivers/pci/pci.h:346:23: sparse: sparse: cast from restricted pci_channel_state_t
-   drivers/pci/pci.h:346:23: sparse: sparse: cast from restricted pci_channel_state_t
-   drivers/pci/pci.h:346:23: sparse: sparse: cast to restricted pci_channel_state_t
-   drivers/pci/pci.h:350:23: sparse: sparse: cast from restricted pci_channel_state_t
-   drivers/pci/pci.h:350:23: sparse: sparse: cast from restricted pci_channel_state_t
-   drivers/pci/pci.h:350:23: sparse: sparse: cast to restricted pci_channel_state_t
+Use strscpy_pad() to get both 1) NUL-termination and 2) NUL-padding
+which may be needed as this is copied out to userspace.
 
-vim +343 drivers/pci/pci.h
+Note that this patch uses the new 2-argument version of strscpy_pad
+introduced in Commit e6584c3964f2f ("string: Allow 2-argument
+strscpy()").
 
-ac04840350e2c2 Lukas Wunner         2023-03-11  324  
-a6bd101b8f84f9 Keith Busch          2018-09-20  325  /**
-a6bd101b8f84f9 Keith Busch          2018-09-20  326   * pci_dev_set_io_state - Set the new error state if possible.
-a6bd101b8f84f9 Keith Busch          2018-09-20  327   *
-347269c113f10f Krzysztof Wilczyński 2021-07-03  328   * @dev: PCI device to set new error_state
-347269c113f10f Krzysztof Wilczyński 2021-07-03  329   * @new: the state we want dev to be in
-a6bd101b8f84f9 Keith Busch          2018-09-20  330   *
-74ff8864cc842b Lukas Wunner         2023-01-20  331   * If the device is experiencing perm_failure, it has to remain in that state.
-74ff8864cc842b Lukas Wunner         2023-01-20  332   * Any other transition is allowed.
-a6bd101b8f84f9 Keith Busch          2018-09-20  333   *
-a6bd101b8f84f9 Keith Busch          2018-09-20  334   * Returns true if state has been changed to the requested state.
-a6bd101b8f84f9 Keith Busch          2018-09-20  335   */
-a6bd101b8f84f9 Keith Busch          2018-09-20  336  static inline bool pci_dev_set_io_state(struct pci_dev *dev,
-a6bd101b8f84f9 Keith Busch          2018-09-20  337  					pci_channel_state_t new)
-a6bd101b8f84f9 Keith Busch          2018-09-20  338  {
-74ff8864cc842b Lukas Wunner         2023-01-20  339  	pci_channel_state_t old;
-a6bd101b8f84f9 Keith Busch          2018-09-20  340  
-a6bd101b8f84f9 Keith Busch          2018-09-20  341  	switch (new) {
-a6bd101b8f84f9 Keith Busch          2018-09-20  342  	case pci_channel_io_perm_failure:
-74ff8864cc842b Lukas Wunner         2023-01-20 @343  		xchg(&dev->error_state, pci_channel_io_perm_failure);
-74ff8864cc842b Lukas Wunner         2023-01-20  344  		return true;
-a6bd101b8f84f9 Keith Busch          2018-09-20  345  	case pci_channel_io_frozen:
-74ff8864cc842b Lukas Wunner         2023-01-20  346  		old = cmpxchg(&dev->error_state, pci_channel_io_normal,
-74ff8864cc842b Lukas Wunner         2023-01-20  347  			      pci_channel_io_frozen);
-74ff8864cc842b Lukas Wunner         2023-01-20  348  		return old != pci_channel_io_perm_failure;
-a6bd101b8f84f9 Keith Busch          2018-09-20  349  	case pci_channel_io_normal:
-74ff8864cc842b Lukas Wunner         2023-01-20  350  		old = cmpxchg(&dev->error_state, pci_channel_io_frozen,
-74ff8864cc842b Lukas Wunner         2023-01-20  351  			      pci_channel_io_normal);
-74ff8864cc842b Lukas Wunner         2023-01-20  352  		return old != pci_channel_io_perm_failure;
-74ff8864cc842b Lukas Wunner         2023-01-20  353  	default:
-74ff8864cc842b Lukas Wunner         2023-01-20  354  		return false;
-a6bd101b8f84f9 Keith Busch          2018-09-20  355  	}
-a6bd101b8f84f9 Keith Busch          2018-09-20  356  }
-89ee9f7680031d Keith Busch          2017-03-29  357  
+In xfs_xattr.c:
+There's a lot of manual memory management to get a prefix and name into
+a string. Let's use an easier to understand and more robust interface in
+scnprintf() to accomplish the same task.
 
-:::::: The code at line 343 was first introduced by commit
-:::::: 74ff8864cc842be994853095dba6db48e716400a PCI: hotplug: Allow marking devices as disconnected during bind/unbind
+Link: https://www.kernel.org/doc/html/latest/process/deprecated.html#strncpy-on-nul-terminated-strings [1]
+Link: https://manpages.debian.org/testing/linux-manual-4.8/strscpy.9.en.html [2]
+Link: https://github.com/KSPP/linux/issues/90
+Cc: linux-hardening@vger.kernel.org
+Signed-off-by: Justin Stitt <justinstitt@google.com>
+---
+Note: build-tested only.
 
-:::::: TO: Lukas Wunner <lukas@wunner.de>
-:::::: CC: Bjorn Helgaas <bhelgaas@google.com>
+Found with: $ rg "strncpy\("
+---
+ fs/xfs/xfs_ioctl.c | 4 +---
+ fs/xfs/xfs_xattr.c | 6 +-----
+ 2 files changed, 2 insertions(+), 8 deletions(-)
 
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+diff --git a/fs/xfs/xfs_ioctl.c b/fs/xfs/xfs_ioctl.c
+index d0e2cec6210d..abef9707a433 100644
+--- a/fs/xfs/xfs_ioctl.c
++++ b/fs/xfs/xfs_ioctl.c
+@@ -1755,10 +1755,8 @@ xfs_ioc_getlabel(
+ 	/* Paranoia */
+ 	BUILD_BUG_ON(sizeof(sbp->sb_fname) > FSLABEL_MAX);
+ 
+-	/* 1 larger than sb_fname, so this ensures a trailing NUL char */
+-	memset(label, 0, sizeof(label));
+ 	spin_lock(&mp->m_sb_lock);
+-	strncpy(label, sbp->sb_fname, XFSLABEL_MAX);
++	strscpy_pad(label, sbp->sb_fname);
+ 	spin_unlock(&mp->m_sb_lock);
+ 
+ 	if (copy_to_user(user_label, label, sizeof(label)))
+diff --git a/fs/xfs/xfs_xattr.c b/fs/xfs/xfs_xattr.c
+index 364104e1b38a..b9256988830f 100644
+--- a/fs/xfs/xfs_xattr.c
++++ b/fs/xfs/xfs_xattr.c
+@@ -220,11 +220,7 @@ __xfs_xattr_put_listent(
+ 		return;
+ 	}
+ 	offset = context->buffer + context->count;
+-	memcpy(offset, prefix, prefix_len);
+-	offset += prefix_len;
+-	strncpy(offset, (char *)name, namelen);			/* real name */
+-	offset += namelen;
+-	*offset = '\0';
++	scnprintf(offset, prefix_len + namelen + 1, "%s%s", prefix, name);
+ 
+ compute_size:
+ 	context->count += prefix_len + namelen + 1;
+
+---
+base-commit: 928a87efa42302a23bb9554be081a28058495f22
+change-id: 20240401-strncpy-fs-xfs-xfs_ioctl-c-8af7a895bff0
+
+Best regards,
+--
+Justin Stitt <justinstitt@google.com>
+
 
