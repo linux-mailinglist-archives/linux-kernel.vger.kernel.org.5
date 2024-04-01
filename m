@@ -1,85 +1,88 @@
-Return-Path: <linux-kernel+bounces-126760-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-126761-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 15D75893C5E
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 16:52:46 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id E1D6D893C60
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 16:53:15 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C0C491F220D2
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 14:52:45 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 738921F22414
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 14:53:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5AD3F446B6;
-	Mon,  1 Apr 2024 14:52:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4C359446BD;
+	Mon,  1 Apr 2024 14:53:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b="APoNXS7i"
-Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="GGj9zHif"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 29A4D44367;
-	Mon,  1 Apr 2024 14:52:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=156.67.10.101
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9120A43ADB;
+	Mon,  1 Apr 2024 14:53:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711983159; cv=none; b=i/mytGqFewTZGNYsAk3zggsUXVO3NHprqpql5C0/ukazOPFduCM8fuPVIyLMDCrmqpQuD3snqMP+37lVTA5xNWxY+X4CrZYThvyH/L3TCGlvI5dpfLpbv1o50SdNqaoA7X8eKXv6hV2qxBYu6DvE6x218WYB5PGIizQbFwgEihY=
+	t=1711983188; cv=none; b=mHC+QNKe6xNeUeTczLVEtQdV7AQWC3dwzuhebuOwM6puCrxFYilpERbcNQtNOs3iMFuG6mk1OkvXK/o+w5db3ESoXHhKVYg3eeSUJFj59HIratwGkxtTPkd5Iq0ZFjbaBz+rBcUlWZqBpRlN2sFkQwp/opa0qfEn4R2UqM/SNxg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711983159; c=relaxed/simple;
-	bh=hCCMDoVs9hwlaIgpLalvIN8iuYSg1bwiHL2O6nBWr4Y=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ticQzVauDylcAM6TLzSdJAE7Euq8yw/v+8qfZlTFg33sm4+heyWIuG/MIGFUcMdTzaMur5SgLfjyUK4tvePTuzY2u/IUxwHObX2hkzx0DH5+PEeaP2g0CUyqnXAR4ESeKaO3ZzkWdOs9i60RtD8EFw7DzHMXr1gkH/lyjcvYxJY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch; spf=pass smtp.mailfrom=lunn.ch; dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b=APoNXS7i; arc=none smtp.client-ip=156.67.10.101
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lunn.ch
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-	s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
-	References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
-	Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
-	Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
-	bh=VO5BT6laMwQjJkCJwR4qE81BL69+Osp3rzopB62pODA=; b=APoNXS7iDJxM1bJsk/Gir/IDBm
-	efwypmZVLv6q6MvWijb8/ed6zEBg5KKlV9biQf7IjOcownf1O1+l4jVh/3npRDZn2BRnTHCiZLHLG
-	/mqW1pRtyTidM75tMiORlYtXERyz66yFxZeermwrQOQLrPrvcfj2MyCjz4AxO8yo9zKk=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-	(envelope-from <andrew@lunn.ch>)
-	id 1rrJ1U-00BrbM-K1; Mon, 01 Apr 2024 16:52:32 +0200
-Date: Mon, 1 Apr 2024 16:52:32 +0200
-From: Andrew Lunn <andrew@lunn.ch>
-To: Krzysztof Kozlowski <krzk@kernel.org>
-Cc: Gregory Clement <gregory.clement@bootlin.com>,
-	Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
-	Rob Herring <robh@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 5/6] arm64: dts: marvell: cn9130-crb: drop wrong
- unit-addresses
-Message-ID: <c5562704-6ebf-4bd3-b0dc-37068a9e472c@lunn.ch>
-References: <20240401141051.98233-1-krzk@kernel.org>
- <20240401141051.98233-5-krzk@kernel.org>
+	s=arc-20240116; t=1711983188; c=relaxed/simple;
+	bh=iyaoH6bcOO25NNyfcq9h4+csxLjCIbPx6O3NrMvYE/M=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=dYBhfWFPar62wrOtVUR+eIHMJE4JAQTG/KjxgGY0mZQxhQnX4auVVPNR9PT2uSjE2yfbEsjOEVXkAUTjPTwTdjDeIclG8beNQsuvTkg3Z65+O824zN4npzQEsBt8NnYYU7KC7Epfinmo78RBXsSinD9tY9EyV/eN4+pg98vwfyE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=GGj9zHif; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D092CC433C7;
+	Mon,  1 Apr 2024 14:53:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1711983188;
+	bh=iyaoH6bcOO25NNyfcq9h4+csxLjCIbPx6O3NrMvYE/M=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=GGj9zHifgURy0amXELr6RKj4/a409NOYZq+9oNUHnmDVtufl0lamiJLcrKgtH6PI3
+	 389MqmebbDzTVK34fSf3lNkX0w42/gRITTi56rIFqyOsM0g+m8b+Ix11pZrd3/ky7C
+	 7dFhwAI34BXRbUDr6xKBYqwIfC7OvDdQloyHcpayNRJTwZihY8epKiQEXQVbW7bVlP
+	 o1a5L/DiM3zRpvT9rr3rIUKLkgLtgsfmnd7B9mbYKcpZifL0l36A6BOIYzdA9S7dbF
+	 yd+P8SdMi0SkipvzD5j5yVBNU4eSKLZnKDOXvG8+t+dCUoH7w8AiuFYbNDlN+RPpBB
+	 2Fh0p/+XMyEhw==
+Date: Mon, 1 Apr 2024 07:53:06 -0700
+From: Jakub Kicinski <kuba@kernel.org>
+To: Leon Romanovsky <leon@kernel.org>
+Cc: Breno Leitao <leitao@debian.org>, Dennis Dalessandro
+ <dennis.dalessandro@cornelisnetworks.com>, Jason Gunthorpe <jgg@ziepe.ca>,
+ keescook@chromium.org, "open list:HFI1 DRIVER"
+ <linux-rdma@vger.kernel.org>, open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v4] IB/hfi1: allocate dummy net_device dynamically
+Message-ID: <20240401075306.0ce18627@kernel.org>
+In-Reply-To: <20240401115331.GB73174@unreal>
+References: <20240319090944.2021309-1-leitao@debian.org>
+	<20240401115331.GB73174@unreal>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240401141051.98233-5-krzk@kernel.org>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-On Mon, Apr 01, 2024 at 04:10:50PM +0200, Krzysztof Kozlowski wrote:
-> Top-level nodes, not being on MMIO bus, do not have "reg" properties and
-> should not have unit addresses.  Correct their name as well to match
-> "Generic node names" recommendation from Devicetree specification.
-> This also fixes dtc W=1 warnings:
+On Mon, 1 Apr 2024 14:53:31 +0300 Leon Romanovsky wrote:
+> On Tue, Mar 19, 2024 at 02:09:43AM -0700, Breno Leitao wrote:
+> > Embedding net_device into structures prohibits the usage of flexible
+> > arrays in the net_device structure. For more details, see the discussion
+> > at [1].
+> > 
+> > Un-embed the net_device from struct hfi1_netdev_rx by converting it
+> > into a pointer. Then use the leverage alloc_netdev() to allocate the
+> > net_device object at hfi1_alloc_rx().
+> > 
+> > [1] https://lore.kernel.org/all/20240229225910.79e224cf@kernel.org/
+> > 
+> > Signed-off-by: Breno Leitao <leitao@debian.org>
+> > Acked-by: Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>  
 > 
->   cn9130-crb.dtsi:29.35-37.4: Warning (unit_address_vs_reg): /ap0_mmc_vccq@0: node has a unit name, but no reg or ranges property
->   cn9130-crb.dtsi:39.38-46.4: Warning (unit_address_vs_reg): /cp0_usb3_vbus@1: node has a unit name, but no reg or ranges property
->   cn9130-crb.dtsi:57.33-65.4: Warning (unit_address_vs_reg): /cp0_sd_vccq@0: node has a unit name, but no reg or ranges property
->   cn9130-crb.dtsi:67.31-75.4: Warning (unit_address_vs_reg): /cp0_sd_vcc@0: node has a unit name, but no reg or ranges property
+> Jakub,
 > 
-> Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
+> I create shared branch for you, please pull it from:
+> https://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git/log/?h=remove-dummy-netdev
 
-Reviewed-by: Andrew Lunn <andrew@lunn.ch>
-
-    Andrew
+Did you merge it in already?
+Turned out that the use of init_dummy_netdev as a setup function
+is broken, I'm not sure how Dennis tested this :(
+We should have pinged you, sorry.
 
