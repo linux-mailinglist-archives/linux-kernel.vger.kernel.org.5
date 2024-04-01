@@ -1,143 +1,140 @@
-Return-Path: <linux-kernel+bounces-127005-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-127006-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 545E18945A7
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 21:48:11 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 096638945AA
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 21:49:29 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E9A23B216A5
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 19:48:08 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 694C4B213E8
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 19:49:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6DE12535CE;
-	Mon,  1 Apr 2024 19:48:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D79BC53819;
+	Mon,  1 Apr 2024 19:49:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="mDmf2EUy"
-Received: from mail-wr1-f46.google.com (mail-wr1-f46.google.com [209.85.221.46])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="h+EFkdRf"
+Received: from mail-ej1-f50.google.com (mail-ej1-f50.google.com [209.85.218.50])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 309E942056
-	for <linux-kernel@vger.kernel.org>; Mon,  1 Apr 2024 19:48:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8B92351C2C;
+	Mon,  1 Apr 2024 19:49:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712000881; cv=none; b=rsd2DKtRZIvVci1ViQLLusUNVE6hnOY7/V95w0odLOpLPutYM1dWTuX0DZvADL+ZmMwxqN2oHzhtkJQUtGjR/Bsmd3W8p4oJLVZ2pd9tiNLMKCUmM0WpfBElzG0muUoARyPpQg8wHv5UEo7MjN8zJGe4X3rMaDbwwV/bfQtU5KQ=
+	t=1712000957; cv=none; b=ZMjt8yBeFLLY7VQDNBA2ulIR5BmTNHFReVDlr0Tje//n9ODwAD30JuvNzLDLeQt0DJf4kjDkD5rbblnbPNGrGioXpBf9w4HfeSa84xy35dKeiC+2X0Alu0jiEJEYdIm5kuwK9yyTXP5xx2iJukFInTQd+7BM/pIPoOPB8LThlbQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712000881; c=relaxed/simple;
-	bh=lnar+0o7dLIVFJzKrV98YGj2n80M98LUV4BiC3ifQZU=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=VybK7Bn0Wot5bNpLSmnKXIumoWZokq9svKR6wq4muFgLAv/7LR7xldz5UXwzg3PuGhBOc8rspiu7GiQjWgrtdNk0ydFj30lUp3RLskrqIEWdbzZTIU7cCikdrSuHG/jnQp+nP+/ZJJ7dUFPsgngOqdfeUlB7tEFFy+q9fYVpxTM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=mDmf2EUy; arc=none smtp.client-ip=209.85.221.46
+	s=arc-20240116; t=1712000957; c=relaxed/simple;
+	bh=WU5u5tSJ02AYMZESgvc/FrHnORzoFJrhI68C/KZILbk=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=igr3f+VF9Rc6y3PjwCBWWcWahXgO/uNJ4liV4B7bt4nJP6ZiIRjuffBDmwpxLi1sItrqIBsM/Tf1prqRzWPdKVWXgZmF5VRTUJFSAOs/v9QLKszcVZadxtxUsd/PFNEI4Ko/CPo/bdyKBKNgmPW8/lA8ScIUzuheO0ABj/PsHLQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=h+EFkdRf; arc=none smtp.client-ip=209.85.218.50
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f46.google.com with SMTP id ffacd0b85a97d-3416a975840so3472449f8f.0
-        for <linux-kernel@vger.kernel.org>; Mon, 01 Apr 2024 12:47:59 -0700 (PDT)
+Received: by mail-ej1-f50.google.com with SMTP id a640c23a62f3a-a4a3a5e47baso507445666b.2;
+        Mon, 01 Apr 2024 12:49:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1712000878; x=1712605678; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=i+aKdwQrYSYkzio8WwLCV972xl0lvZDetZCMBr85V4g=;
-        b=mDmf2EUycpZCKTod3Go887aPFmG2okicCngiTNgjXLCyJzVo07y69I0sFBBgUgxaMd
-         Cn9jD3A0tvmNp0yHDBuAlB+ol8tV98S5m3sdrnhPWmlTKUgaOIUx8LtnzYDkYkfkZWDa
-         O3cCrmaXYV9PB8di8209fHdBYoBaRXcxRViuzdFYKTcaPdA9TJ9SufbBKbEzl4sM5W1a
-         h6CJgAPwsejDh5U1q3uFVhvWIOG64gOYY1BjYv9fQAtw/u+dDlAwhsp+DsNKUNNsPua0
-         FaVixP37QNBLAsKJNEwS5T7zp6SjW47teDo4YxAPjbu2ySpJSJnD5I+tEvWoyQRayiR9
-         YecQ==
+        d=gmail.com; s=20230601; t=1712000954; x=1712605754; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=vn9GcJIKaMq//B5+hEHlJ9U/1PmsSieGlv6ZmEvK/n4=;
+        b=h+EFkdRfIzdU9hWfA7SMB7QS91qy3fK7FHgIg78RpE6DRq5tIfGZxU6y+eNMNc3Es7
+         cAuEPmveehPzYdjR4J6NwiQsLFZ+Ntlg4iQGVhc4dkLAowmtD6vwn88VRpzv70Zp2Yw+
+         zIgG1fXQyiFq3GTvram9FUbKHguCwTwIFrU/sV1emHyMNlHPpvnhMnQeRL1PDwPNla9E
+         SOJ8tE2kulVMI44KIU7XbM3IaFt5i2ODX+b/oeFtVChywaaaIWNnR6FQ1S6zFo6SK6+m
+         SOP8i13lXBCJzks4jLRz98h69Qda2dsBVQhjxwCfjnKkB25PW8xTN0z9FrYMROhldW36
+         vPjg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712000878; x=1712605678;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=i+aKdwQrYSYkzio8WwLCV972xl0lvZDetZCMBr85V4g=;
-        b=u7du8mCwcIjE/qbDlAs5Zasy1u3UhPeEFubSHziVSWk12CzfY2XMSnas6ELmdalNfl
-         9vuhJ0Tv+42kOEIX5mDu7zqjlWwwZz4R9iPqJaet6BovkVvWwyLaRUOn1BeqUYRJ6dNW
-         sQJGXjUJ59aIIiW6XA5cRxUHQ4Nc/QjyjerwHPV8MhqAlw8voiMfO6h0KXlcd1oPsxC0
-         kK7pOsKRLOecGwmu/DQJ5X2Epg4bG5L1vE9v07f6LYfBEcFcZ6WO+zyTNhuy2xcAYBLs
-         E4RY/H158lLvhxv9dHUoLr8EUczLrelOdiemEnU361skH2o/XDTClkfiNhIMRl6RiSa3
-         2XgA==
-X-Forwarded-Encrypted: i=1; AJvYcCWZ89SY8BcM02nAfKzKMQ4bjz6v6YC0CQRkWvbF5wdF7EY8V+3zhPXyxuhU5FrYDdDFrsK6ainx5Tros3HA0/BffpzabwRaUlNQdehG
-X-Gm-Message-State: AOJu0YzN1E7U+NOwhlmsbUCTt9nqv4z99qeKtIXnwmKdXH8WhNlmJkwD
-	Bc0DMTJNDDJW0UOrKuGv45DWrm22QmKZEfju6HMOEY4jjw7h+pgs5os4Wcaqi0w=
-X-Google-Smtp-Source: AGHT+IFMNEfCpuQjJ8WPz+6uM3yEpezsYLuHC2wVq7juE0ooOQEgeuAu2jh/5KYIiQvvkCP2EftuwA==
-X-Received: by 2002:adf:ea50:0:b0:33e:7fbc:caea with SMTP id j16-20020adfea50000000b0033e7fbccaeamr6898410wrn.34.1712000878354;
-        Mon, 01 Apr 2024 12:47:58 -0700 (PDT)
-Received: from localhost (host86-170-129-184.range86-170.btcentralplus.com. [86.170.129.184])
-        by smtp.gmail.com with ESMTPSA id l2-20020a5d4bc2000000b0033e7e9c8657sm12297256wrt.45.2024.04.01.12.47.57
+        d=1e100.net; s=20230601; t=1712000954; x=1712605754;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=vn9GcJIKaMq//B5+hEHlJ9U/1PmsSieGlv6ZmEvK/n4=;
+        b=sBhSxF8AlswsBOb8NrIjjMqaS8JxLIHsnmdL3rmpZgql/gmWFG5rJDuetj2EdIhYrT
+         RLmIjaAqqV48SFDdnQfFuh/jbwp/6FQU39UzMiKYrYmR6uV3r242g34FmJT5CWt1r3TS
+         gjNjNL86vU27Mc5WfhwyjD0OhAqt+1k6eJG+4XcHCS5aBAli1F19c63XAhncq9JuHxJH
+         5E4FkJr/aHgaQJ8UT6D8tTOdUMfJxpVg41IkB4gNpjZpUYc9CdUltbQLTxiJ020pKAAo
+         MYlcL4JYDDvVEEy4U3Kz9yRaMZop821e4BXPuzIdaL58OMbOePxW1she2GFHfKaskH+u
+         8/lg==
+X-Forwarded-Encrypted: i=1; AJvYcCUkKVEhoAO9ewTjKjCDfGW+TttAcrW0GXBqEWcjOCAfJjAOe2bhPr4/4MEBJti7Viyv7xLuKU5zWhRxVsPPqm7NPz89CQ9MdMyYX3j/s7rKwB5hI75BSC0NuW+sJ0221OfANu16NT+PmA==
+X-Gm-Message-State: AOJu0YxZI6A5bUQVrkU6+I3BIN9Z7uFxk+D2S7hiIZHVmnQ1/qXKM3Bt
+	gODT+JMwmPv0I91Dsww34QgZMW6tXxOQRqSlIu4VsyDlJtUmD2rC
+X-Google-Smtp-Source: AGHT+IFAf7XIsMYACkXDPtdiCnTGBVpTFxlkqFS+DqQTVODE/AfcKxa92M230y1aU6+AgOKLJbeUFA==
+X-Received: by 2002:a17:906:3e19:b0:a46:dd30:7cb5 with SMTP id k25-20020a1709063e1900b00a46dd307cb5mr7972371eji.76.1712000953689;
+        Mon, 01 Apr 2024 12:49:13 -0700 (PDT)
+Received: from 13a4f82a8f12.v.cablecom.net (84-72-156-211.dclient.hispeed.ch. [84.72.156.211])
+        by smtp.gmail.com with ESMTPSA id dn21-20020a17090794d500b00a4588098c5esm5540575ejc.132.2024.04.01.12.49.12
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 01 Apr 2024 12:47:57 -0700 (PDT)
-Date: Mon, 1 Apr 2024 20:45:42 +0100
-From: Lorenzo Stoakes <lstoakes@gmail.com>
-To: Vlastimil Babka <vbabka@suse.cz>
-Cc: linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-	patches@lists.linux.dev, stable@vger.kenrel.org,
-	"Liam R . Howlett" <Liam.Howlett@oracle.com>
-Subject: Re: [PATCH] mm, mmap: remove vma_merge()
-Message-ID: <38b67f6a-6c64-43db-85fb-027efac9d9d6@lucifer.local>
-References: <20240401192623.18575-2-vbabka@suse.cz>
+        Mon, 01 Apr 2024 12:49:13 -0700 (PDT)
+From: Lothar Rubusch <l.rubusch@gmail.com>
+To: lars@metafoo.de,
+	Michael.Hennerich@analog.com,
+	jic23@kernel.org,
+	robh+dt@kernel.org,
+	krzysztof.kozlowski+dt@linaro.org,
+	conor+dt@kernel.org
+Cc: linux-iio@vger.kernel.org,
+	devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	eraretuya@gmail.com,
+	l.rubusch@gmail.com
+Subject: [PATCH v7 0/8]  iio: accel: adxl345: Add spi-3wire feature
+Date: Mon,  1 Apr 2024 19:48:58 +0000
+Message-Id: <20240401194906.56810-1-l.rubusch@gmail.com>
+X-Mailer: git-send-email 2.25.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240401192623.18575-2-vbabka@suse.cz>
+Content-Transfer-Encoding: 8bit
 
-On Mon, Apr 01, 2024 at 09:26:24PM +0200, Vlastimil Babka wrote:
-> With SLAB gone I was looking for what I could delete next, and then it
-> dawned on me - it should be vma_merge(). It's simply an unmaintainable
-> mess.
->
-> The code is extremely hard to follow. There has been a number of recent
-> attempts to made it more readable, by Liam, Lorenzo and myself. Almost
-> every time this only resulted in subtle embarassing bugs [1] [2] [3] [4]
-> [5]. For many of the bugs the only reliable testcase we have is the rpm
-> process running in the Open Build Service. Which is worrying, as that
-> clearly makes vma_merge() a potential supply chain attack vector for
-> planting backdoors.
->
-> Thus simply remove vma_merge() and all the related code, and adjust all
-> callers to take the path as if merging was attempted and failed.
-> The only downside is that there might now be more vmas and maple tree
-> nodes due to no merging. To extensively validate that, I've booted the
-> kernel with virtme-ng before and after the change and checked slabinfo
-> for the number of active objects:
->
-> before:
-> maple_node          1159
-> vm_area_struct      1538
->
-> after:
-> maple_node          1113
-> vm_area_struct      1861
->
-> Yeah there's more vma's but interestingly, less maple tree nodes. I
-> believe it's worth it. The larger number of smaller vmas could even help
-> with better parallelism thanks to per-vma locking. So the conclusion is
-> obvious - we should have never tried merging vmas in the first place,
-> hence the tags on this patch.
->
-> [1] https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=d014cd7c1c35
-> [2] https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=4c6759967826
-> [3] https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=7e7757876f25
-> [4] https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=1419430c8abb
-> [5] https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=fc0c8f9089c2
->
-> Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
-> Cc: <stable@vger.kenrel.org> # CVE mandatory
-> Cc: Lorenzo Stoakes <lstoakes@gmail.com>
-> Cc: Liam R. Howlett <Liam.Howlett@oracle.com>
-> Singed-off-by-one: Vlastimil Babka <vbabka@suse.cz>
-> ---
+Pass a function setup() as pointer from SPI/I2C specific modules to the
+core module. Implement setup() to pass the spi-3wire bus option, if
+declared in the device-tree.
 
-[snip]
+In the core module then update data_format register configuration bits
+instead of overwriting it. The changes allow to remove a data_range field.
 
-This is a beautiful patch and about as perfect a clean up as one could imagine
-(I mean #thebestcodeisnocode right?), but as we have now eradicated VMA merging,
-I can't be a hypocrite and advocate for patch merging.
+Signed-off-by: Lothar Rubusch <l.rubusch@gmail.com>
+---
+V1 -> V2: Split into spi-3wire and refactoring
+V2 -> V3: Split further, focus on needed changesets
+V3 -> V4: Drop "Remove single info instances";
+          split "Group bus configuration" into separat
+          comment patch; reorder patch set
+V4 -> V5: Refrase comments; Align comments to 75; rebuild FORMAT_MASK by
+          available flags; fix indention
+V5 -> V6: Remove FORMAT_MASK by a local variable on call site;
+          Refrase comments;
+          Remove unneeded include
+V6 -> V7: Restructure optional passing the setup() to core's probe()
+          Guarantee that initially a regmap_write() was called to init
+          all bits to a defined state
+          - When a setup() e.g. for 3wire is passed, then call
+            regmap_write() inside the setup(). In the following
+            core's probe() has to call regmap_update()
+          - When NULL is passed, then call regmap_write() in core's
+            probe()
+          - Refactoring: remove obvious comments and simplify code
 
-As a result, sadly I must:
+Lothar Rubusch (8):
+  iio: accel: adxl345: Make data_range obsolete
+  iio: accel: adxl345: Group bus configuration
+  iio: accel: adxl345: Move defines to header
+  dt-bindings: iio: accel: adxl345: Add spi-3wire
+  iio: accel: adxl345: Pass function pointer to core
+  iio: accel: adxl345: Reorder probe initialization
+  iio: accel: adxl345: Add comment to probe
+  iio: accel: adxl345: Add spi-3wire option
 
-Hope-Liam-Nacks-It-By: Lorenzo Stoakes <lstoakes@gmail.com>
+ .../bindings/iio/accel/adi,adxl345.yaml       |  2 +
+ drivers/iio/accel/adxl345.h                   | 36 +++++++-
+ drivers/iio/accel/adxl345_core.c              | 92 ++++++++++---------
+ drivers/iio/accel/adxl345_i2c.c               |  2 +-
+ drivers/iio/accel/adxl345_spi.c               | 10 +-
+ 5 files changed, 94 insertions(+), 48 deletions(-)
+
+-- 
+2.25.1
+
 
