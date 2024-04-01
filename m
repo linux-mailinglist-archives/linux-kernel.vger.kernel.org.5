@@ -1,60 +1,56 @@
-Return-Path: <linux-kernel+bounces-127094-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-127096-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9B2018946A5
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 23:40:25 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E6A5D8946A6
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 23:40:26 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CCA331C21919
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 662A9B22EB4
 	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 21:40:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3A0E756B78;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3804456B70;
 	Mon,  1 Apr 2024 21:39:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="t6SR+duR"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ALYUYhl+"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7455A55E4F
-	for <linux-kernel@vger.kernel.org>; Mon,  1 Apr 2024 21:39:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 745B955E72;
+	Mon,  1 Apr 2024 21:39:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712007595; cv=none; b=JPIDxQbB9wF1YoQsfnsCY2vAZIVk3laPvUYllXZaXAPfZiCYCJWaRMFC5XSsnWxh+UVPnDoiIggvQDlx2QsfWKiPWznA/86pt2qgA3TypEP8GCOQButLQFmjg2TqIctW8jDkNVmSFMD7QEvIuWzWLqcKNZF9rmjEXzHUHRpN0yI=
+	t=1712007595; cv=none; b=ungtlxZyvHacu++csu1pdGWk/Z8WfbJG4isW1LYDkBGvYgbVN3WYL4SSnVJhn2YqpnVRocpBwCnTixmvVKKY6+xh9BOSgC1HJV9Y1vah8cW7x4O1wtktkKzdan3BFeXevtKyVjiViBAWpOSEoOfktSa6+W6URgl0K4ucSNIlVBs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1712007595; c=relaxed/simple;
-	bh=V+BpmS0L5AY0NVsYdTSBQxe6rtRi97k3MCIt6y0ESdA=;
+	bh=ZGz86/tSVAGS9mMQah03h/TzE5FSFLZz3YJL1al/ZP0=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=FLSLU5iWZRGga4pBtPVpYME9Synqan9D2iL4G1GNolx7JvzujSbsBQl/6gMZd9EO+erbImA0dbj9RJtlGPebT6UXB+2ctcNyAVcYBhQAeSIaIgcVhZwF4vK8iqkZONIIaXAezLCVo4rrKFcjsHUZ7HWdwoyP+xv1ganvyjOkAO8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=t6SR+duR; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1EE32C43394;
+	 MIME-Version; b=WhgMA4EWJvtTfFi7h3ayCFykUPbIMaVASAuuNdU9/+kqmM2IxZJ2aQN77yDq369S14HA2EU3IBcU2m81z5ZIFj9xUZ6U1+HAAYqlmYF6/xisRjztYIJag5FN2YJ8FI5WiKR9xSf3hwy/yPI/NfR4QvlJkENrEbEbLTf5hiDYWE4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ALYUYhl+; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2699BC433C7;
 	Mon,  1 Apr 2024 21:39:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
 	s=k20201202; t=1712007595;
-	bh=V+BpmS0L5AY0NVsYdTSBQxe6rtRi97k3MCIt6y0ESdA=;
+	bh=ZGz86/tSVAGS9mMQah03h/TzE5FSFLZz3YJL1al/ZP0=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=t6SR+duRyz91MSUJd6aDkPfhqtTUYz+BtdhwHcEwrjvBL3wMl3HTDfuq2dc5KxMs9
-	 VbR0s4/x47BOzkstNFYga3IECVzsunTnepncGio7T7V5OQvbxe3y0O6Xu0PCcrGim4
-	 xpM/LUutYwScLWvyOogZlV1s33uThDYjSz0nTsA76EG3QmRAVJXpVPhpWLkriWfrxf
-	 9AE7YODRHtPCaVjNm2kjP3rWTjKCd9gdyAJbYSqMO+FybJLaCoxTshEq0U260FZFmJ
-	 uJ2D9qIfonNIAfSanKTkTyz8TSsf+ihOmImDZyIkJ7rWxapRNK22bfPuP1v1Bd5lyI
-	 NYNdUxyKkdA/w==
+	b=ALYUYhl+t4DM33sILtMlLhGEKvST/UP5cm8J0LAwDf9/Bkm6xQWIE8iwoktinrOLb
+	 iOY4BQXBBAc7rw68xS39P9s0VZqb1gn6Sbt/cle5KzcIslH938LBjGiI5gudH6VeqN
+	 OozUjpH+jmiWYx3FRtKGYZhB46AAIsK+K29ePAFrWWpX9ACBCXRHUfDnXbxL60+1re
+	 b6S0LI3KQDxmRqJFxFvQiFZvUcUEcRiHAGK8OcUeQSJ85joaso9fT5ZfBMhgI9mz84
+	 R5kXXKaBktQmgMebBiD6EXkWq7rsNfl5TpPg6wqVywJLZA13bEwkRhwX0xKNm8P9mV
+	 Cej7pK0/yQ74g==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id C0299CE074C; Mon,  1 Apr 2024 14:39:54 -0700 (PDT)
+	id C2BACCE0B64; Mon,  1 Apr 2024 14:39:54 -0700 (PDT)
 From: "Paul E. McKenney" <paulmck@kernel.org>
 To: linux-kernel@vger.kernel.org
 Cc: kernel-team@meta.com,
 	"Paul E. McKenney" <paulmck@kernel.org>,
-	Vineet Gupta <vgupta@kernel.org>,
-	Andi Shyti <andi.shyti@linux.intel.com>,
-	Andrzej Hajda <andrzej.hajda@intel.com>,
-	Arnd Bergmann <arnd@arndb.de>,
-	Palmer Dabbelt <palmer@rivosinc.com>,
-	linux-snps-arc@lists.infradead.org
-Subject: [PATCH RFC cmpxchg 3/8] ARC: Emulate one-byte and two-byte cmpxchg
-Date: Mon,  1 Apr 2024 14:39:45 -0700
-Message-Id: <20240401213950.3910531-3-paulmck@kernel.org>
+	Guo Ren <guoren@kernel.org>,
+	linux-csky@vger.kernel.org
+Subject: [PATCH RFC cmpxchg 4/8] csky: Emulate one-byte and two-byte cmpxchg
+Date: Mon,  1 Apr 2024 14:39:46 -0700
+Message-Id: <20240401213950.3910531-4-paulmck@kernel.org>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <31c82dcc-e203-48a9-aadd-f2fcd57d94c1@paulmck-laptop>
 References: <31c82dcc-e203-48a9-aadd-f2fcd57d94c1@paulmck-laptop>
@@ -67,89 +63,71 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
 Use the new cmpxchg_emu_u8() and cmpxchg_emu_u16() to emulate one-byte
-and two-byte cmpxchg() on arc.
+and two-byte cmpxchg() on csky.
 
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-Cc: Vineet Gupta <vgupta@kernel.org>
-Cc: Andi Shyti <andi.shyti@linux.intel.com>
-Cc: Andrzej Hajda <andrzej.hajda@intel.com>
-Cc: Arnd Bergmann <arnd@arndb.de>
-Cc: Palmer Dabbelt <palmer@rivosinc.com>
-Cc: <linux-snps-arc@lists.infradead.org>
+Cc: Guo Ren <guoren@kernel.org>
+Cc: <linux-csky@vger.kernel.org>
 ---
- arch/arc/Kconfig               |  1 +
- arch/arc/include/asm/cmpxchg.h | 38 ++++++++++++++++++++++++++--------
- 2 files changed, 30 insertions(+), 9 deletions(-)
+ arch/csky/Kconfig               |  1 +
+ arch/csky/include/asm/cmpxchg.h | 18 ++++++++++++++++++
+ 2 files changed, 19 insertions(+)
 
-diff --git a/arch/arc/Kconfig b/arch/arc/Kconfig
-index 99d2845f3feb9..0b40039f38eb2 100644
---- a/arch/arc/Kconfig
-+++ b/arch/arc/Kconfig
-@@ -14,6 +14,7 @@ config ARC
- 	select ARCH_HAS_SETUP_DMA_OPS
- 	select ARCH_HAS_SYNC_DMA_FOR_CPU
- 	select ARCH_HAS_SYNC_DMA_FOR_DEVICE
+diff --git a/arch/csky/Kconfig b/arch/csky/Kconfig
+index d3ac36751ad1f..860d4e02d6295 100644
+--- a/arch/csky/Kconfig
++++ b/arch/csky/Kconfig
+@@ -37,6 +37,7 @@ config CSKY
+ 	select ARCH_INLINE_SPIN_UNLOCK_BH if !PREEMPTION
+ 	select ARCH_INLINE_SPIN_UNLOCK_IRQ if !PREEMPTION
+ 	select ARCH_INLINE_SPIN_UNLOCK_IRQRESTORE if !PREEMPTION
 +	select ARCH_NEED_CMPXCHG_1_2_EMU
- 	select ARCH_SUPPORTS_ATOMIC_RMW if ARC_HAS_LLSC
- 	select ARCH_32BIT_OFF_T
- 	select BUILDTIME_TABLE_SORT
-diff --git a/arch/arc/include/asm/cmpxchg.h b/arch/arc/include/asm/cmpxchg.h
-index e138fde067dea..1e3e23adaca13 100644
---- a/arch/arc/include/asm/cmpxchg.h
-+++ b/arch/arc/include/asm/cmpxchg.h
-@@ -46,6 +46,12 @@
- 	__typeof__(*(ptr)) _prev_;					\
- 									\
- 	switch(sizeof((_p_))) {						\
-+	case 1:								\
-+		_prev_ = cmpxchg_emu_u8((volatile u8 *)_p_, _o_, _n_);	\
-+		break;							\
-+	case 2:								\
-+		_prev_ = cmpxchg_emu_u16((volatile u16 *)_p_, _o_, _n_); \
-+		break;							\
- 	case 4:								\
- 		_prev_ = __cmpxchg(_p_, _o_, _n_);			\
- 		break;							\
-@@ -65,16 +71,30 @@
- 	__typeof__(*(ptr)) _prev_;					\
- 	unsigned long __flags;						\
- 									\
--	BUILD_BUG_ON(sizeof(_p_) != 4);					\
-+	switch(sizeof((_p_))) {						\
-+	case 1:								\
-+		__flags = cmpxchg_emu_u8((volatile u8 *)_p_, _o_, _n_);	\
-+		_prev_ = (__typeof__(*(ptr)))__flags;			\
-+		break;							\
-+	case 2:								\
-+		__flags = cmpxchg_emu_u16((volatile u16 *)_p_, _o_, _n_); \
-+		_prev_ = (__typeof__(*(ptr)))__flags;			\
-+		break;							\
-+	case 4:								\
-+		/*							\
-+		 * spin lock/unlock provide the needed smp_mb()		\
-+		 * before/after						\
-+		 */							\
-+		atomic_ops_lock(__flags);				\
-+		_prev_ = *_p_;						\
-+		if (_prev_ == _o_)					\
-+			*_p_ = _n_;					\
-+		atomic_ops_unlock(__flags);				\
-+		break;							\
-+	default:							\
-+		BUILD_BUG();						\
-+	}								\
- 									\
--	/*								\
--	 * spin lock/unlock provide the needed smp_mb() before/after	\
--	 */								\
--	atomic_ops_lock(__flags);					\
--	_prev_ = *_p_;							\
--	if (_prev_ == _o_)						\
--		*_p_ = _n_;						\
--	atomic_ops_unlock(__flags);					\
- 	_prev_;								\
- })
- 
+ 	select ARCH_WANT_FRAME_POINTERS if !CPU_CK610 && $(cc-option,-mbacktrace)
+ 	select ARCH_WANT_DEFAULT_TOPDOWN_MMAP_LAYOUT
+ 	select COMMON_CLK
+diff --git a/arch/csky/include/asm/cmpxchg.h b/arch/csky/include/asm/cmpxchg.h
+index 916043b845f14..848a8691c5a2a 100644
+--- a/arch/csky/include/asm/cmpxchg.h
++++ b/arch/csky/include/asm/cmpxchg.h
+@@ -61,6 +61,12 @@
+ 	__typeof__(old) __old = (old);				\
+ 	__typeof__(*(ptr)) __ret;				\
+ 	switch (size) {						\
++	case 1:							\
++		__ret = cmpxchg_emu_u8((volatile u8 *)__ptr, __old, __new); \
++		break;						\
++	case 2:							\
++		__ret = cmpxchg_emu_u16((volatile u16 *)__ptr, __old, __new); \
++		break;						\
+ 	case 4:							\
+ 		asm volatile (					\
+ 		"1:	ldex.w		%0, (%3) \n"		\
+@@ -91,6 +97,12 @@
+ 	__typeof__(old) __old = (old);				\
+ 	__typeof__(*(ptr)) __ret;				\
+ 	switch (size) {						\
++	case 1:							\
++		__ret = cmpxchg_emu_u8((volatile u8 *)__ptr, __old, __new); \
++		break;						\
++	case 2:							\
++		__ret = cmpxchg_emu_u16((volatile u16 *)__ptr, __old, __new); \
++		break;						\
+ 	case 4:							\
+ 		asm volatile (					\
+ 		"1:	ldex.w		%0, (%3) \n"		\
+@@ -122,6 +134,12 @@
+ 	__typeof__(old) __old = (old);				\
+ 	__typeof__(*(ptr)) __ret;				\
+ 	switch (size) {						\
++	case 1:							\
++		__ret = cmpxchg_emu_u8((volatile u8 *)__ptr, __old, __new); \
++		break;						\
++	case 2:							\
++		__ret = cmpxchg_emu_u16((volatile u16 *)__ptr, __old, __new); \
++		break;						\
+ 	case 4:							\
+ 		asm volatile (					\
+ 		RELEASE_FENCE					\
 -- 
 2.40.1
 
