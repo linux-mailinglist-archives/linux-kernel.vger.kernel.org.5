@@ -1,187 +1,141 @@
-Return-Path: <linux-kernel+bounces-126399-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-126402-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C33C48936CA
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 03:50:20 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9D6188936D3
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 03:57:46 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4895B281AA7
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 01:50:19 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3CE7F1F215B7
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 01:57:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0D5AC138C;
-	Mon,  1 Apr 2024 01:50:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C4E0E8C1E;
+	Mon,  1 Apr 2024 01:57:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b="RVMozxAa"
-Received: from mail-pg1-f182.google.com (mail-pg1-f182.google.com [209.85.215.182])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="JTIMJvHR"
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A967BA59
-	for <linux-kernel@vger.kernel.org>; Mon,  1 Apr 2024 01:50:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 902DD4683;
+	Mon,  1 Apr 2024 01:57:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711936213; cv=none; b=dmlMNEK10zPxWqm3LrcK/DJFQ7PbwRekGou04Lrrf4JFNv57E5dFOUnfsa1IyqsjVTx8msT1RTkiMlksPE6DUElv82UZgmOnjHkgL7dtdL82NietiuxrMTfzyzjUzAWrD7IK4+BkKxpb9H0xz/Mtc+/HZXsB/hGAwHbGzOQV12w=
+	t=1711936636; cv=none; b=VDYp/cCp2wPuJwSGA+k1bOI9AdH4ZPC7VYIzwmstWSCmFJTie7F6wxAuZqnsXwwNX1AFc9Osi5//Fa0GjjHvLi6ftapBeYgwPcXLVIldaWKCyH4/1w2c5AE2OdO4HyVpvLf9mEinKuKMNLdGn+mud9WA9xjHC0rAf+m9nKl8eo0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711936213; c=relaxed/simple;
-	bh=rDFUral7vn5eS7vyVCG8JtxHLPByu19HqxEscA/SB4M=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=bZQpQ3LBwOeYHkhEuaY/q+4wjv2el0BQd/PX33s2XjBtWl8Y5NsWEAUwkqbXsGBOZGXPhS4e25a4C+TXG62D09QEgTFdU0WtqCiUj0FoZ/hU40gjSM+nv3rWXbGZuJAGds44r+7WChnn3ueJgkW5RbdKwd5lFqMDY1l6ppqDV3c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com; spf=pass smtp.mailfrom=bytedance.com; dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b=RVMozxAa; arc=none smtp.client-ip=209.85.215.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bytedance.com
-Received: by mail-pg1-f182.google.com with SMTP id 41be03b00d2f7-5ce2aada130so2190981a12.1
-        for <linux-kernel@vger.kernel.org>; Sun, 31 Mar 2024 18:50:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance.com; s=google; t=1711936210; x=1712541010; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=CRYywXE8+9lX5RrI042vy6CzRi3+MsMsXqGgBAV3yHw=;
-        b=RVMozxAalILwYSBy6ChMcwlKUCKO5SBV9uYOqx4lCQZ7iGgMogPOGHFU5MwaDX0NwE
-         gDr+YAtvMhYdmKFnhtspo+fRYlZBh3b3o/514dt+LWKkWxhUxPBG84WTNZAow11pyU0g
-         rHu38ll5x3nkUbeUBToLBZgPZ7jWslwvwj23syCQ7X67dCnpSIld6UMdgUzXw3XGeT9I
-         PB6HImvawore5KAy4a6GdFUpRjFMIbW3S4kdV9sniSzaix/tIlLuXiL+DikhmDIPhWAa
-         +a7cN8mrj+Z/uu1qwWty9NeZL7+LBTbgJJmeJ4KURzgp2LeBcitMt96bO6TCiCSoUmOE
-         7GkA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711936210; x=1712541010;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=CRYywXE8+9lX5RrI042vy6CzRi3+MsMsXqGgBAV3yHw=;
-        b=cm3Dq1f/uVdiZz3WkDI+x9h2m2fQmQfqGgwIgBqXont7TQVP9rLMmwYsDXsik9cbRA
-         L6kgrA9s+EY2/JLui30X7Q1Jz1mpfa7KEoCzDT5A1lcF/tE8rnrt06zb+Z4Q4cu+FNGc
-         M+XHc+yV9xawTg0FaSjn92iZeaNmyQt+UUtFORo3ADdc//Y6ttBRQayjLyf/8KHpCLas
-         fa/u3+s28Cvdel9ZaTEq6URbNG2ig3thL5fB3ytvqeE84azCZttW+FGjD78EJ/o/dmGn
-         Yl5pZacu0ilmLjRhi9lXMpO37Zj1nTPYLpPAuZRGlndueS5EYUy0bsZCP6rpuUlxu5hQ
-         t1fA==
-X-Forwarded-Encrypted: i=1; AJvYcCURKwQGtw71R620/TjmHfVQqxu+bRLB18ExQmTOjjnX5lzvsl0+hx9a6o6chFNQm1Srs+5Xbw3lcnPU8VpM8o18NzG1Hlone6LIqQtd
-X-Gm-Message-State: AOJu0YzWhuc0YuH0qBBxbnB8UXWFKxfoBPlSBQ6vMtKEr2yG7RyIESrR
-	IZ81DcTRkQwsm0VW9nFTHNXm9FR7boq0mhR0YK2WBly963onjZfXIcsCTBWh8Amb2lul2RXC17O
-	Qqog=
-X-Google-Smtp-Source: AGHT+IH3O3ddA0jLxC5WEKab+WbxA2X3ci2q31Bq94psQF6a23zi00KnDE6uDLGe1jAMKgE9PTe/UA==
-X-Received: by 2002:a05:6a20:d90e:b0:1a3:dc61:926a with SMTP id jd14-20020a056a20d90e00b001a3dc61926amr8809408pzb.54.1711936209967;
-        Sun, 31 Mar 2024 18:50:09 -0700 (PDT)
-Received: from [10.70.146.105] ([203.208.189.8])
-        by smtp.gmail.com with ESMTPSA id b15-20020a170902650f00b001e014627baasm7671692plk.79.2024.03.31.18.50.05
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 31 Mar 2024 18:50:09 -0700 (PDT)
-Message-ID: <3be0a35e-9e10-49b5-8fa2-71f6ddc6f704@bytedance.com>
-Date: Mon, 1 Apr 2024 09:50:02 +0800
+	s=arc-20240116; t=1711936636; c=relaxed/simple;
+	bh=MWWUYfBfJ+W+K7MWTchapqC1K1oEOTbwWXy3pHBvkxw=;
+	h=From:Subject:Date:Message-ID:MIME-Version:Content-Type:To:CC; b=CfjsHXEWSPY6zvLfNi0MUwuIMq/BLAFxM28PSLCI/aRoP5iWqgsYPTG10Yhj9kzZj1/J/Cy2iXwELVtlL4vdtO8suJm41z+epDgrA+JyACR9/7lJzEAfhE//ZBNUp6qwBWItUcCe8kwPiW+uej8dxkWjvCQZB5MrzkPqL3wqp/8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=JTIMJvHR; arc=none smtp.client-ip=205.220.168.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279865.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 4311gHTl031750;
+	Mon, 1 Apr 2024 01:56:57 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	from:subject:date:message-id:mime-version:content-type
+	:content-transfer-encoding:to:cc; s=qcppdkim1; bh=GAkLdLSYFHmFYC
+	lUBJFWkUPMHRmzAIsktPBWFnF+tCY=; b=JTIMJvHRu7WS85OY2hAKshTHYEr8OV
+	lVkD0oYp0aD6rEPGuB9wEbhBZpu4z5WlqYEHrCPQSLMMQI2N+PpQ6V++siuM+kwu
+	wtZyLyKTb0DoUjse+UNod+DMp41B/VlR1S9K07xRSNgorZ/hNijEK2Ybw4nuFRe1
+	l0r1ftu3h8zwhSG0+fI8K53iQdfbHehmvgYl+w/EmdzLErdUWD+fDEcgOQ9N9Y+N
+	6oTPwwGvP4+iLfMLaZIpy3KbGAq6ezHNV9Zaxn/+OjhlnztulIylTaPyHsah0Ide
+	LtmWIfi6tRuA/SSDKUYeUVriW49iGCTGUjZR7gmFaGyl4HKh/Ik/LdrQ==
+Received: from nalasppmta02.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3x69pvtx3s-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 01 Apr 2024 01:56:56 +0000 (GMT)
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+	by NALASPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 4311uuEC009280
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 1 Apr 2024 01:56:56 GMT
+Received: from jianbinz-gv.ap.qualcomm.com (10.80.80.8) by
+ nalasex01a.na.qualcomm.com (10.47.209.196) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.40; Sun, 31 Mar 2024 18:56:53 -0700
+From: jianbin zhang <quic_jianbinz@quicinc.com>
+Subject: [PATCH v4 0/2] rtc-pm8xxx: fix rtc alarm which fired before driver
+ probe not be cleard
+Date: Mon, 1 Apr 2024 09:56:28 +0800
+Message-ID: <20240401-fix-rtc-alarm-which-fired-before-driver-probe-not-be-cleard-v1-0-aab2cd6ddab8@quicinc.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [External] Re: [PATCH 1/2] perf sched timehist: Fix
- -g/--call-graph option failure
-Content-Language: en-US
-To: Arnaldo Carvalho de Melo <acme@kernel.org>,
- Ian Rogers <irogers@google.com>
-Cc: peterz@infradead.org, mingo@redhat.com, namhyung@kernel.org,
- mark.rutland@arm.com, alexander.shishkin@linux.intel.com, jolsa@kernel.org,
- adrian.hunter@intel.com, kan.liang@linux.intel.com, james.clark@arm.com,
- linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20240328055857.383180-1-yangjihong@bytedance.com>
- <CAP-5=fXms1noWT8PXqBu89QogcwVsvAGpxq3Q_bNUYOYL7PpKA@mail.gmail.com>
- <2e44ae50-d4af-4788-9274-aaf345bac066@bytedance.com>
- <CAP-5=fWDY9Aj+qHNOuwJ9yE==G=vmCzECXYEZAifOhGHX7yr6w@mail.gmail.com>
- <ZggmNWYjBtid_hCZ@x1>
-From: Yang Jihong <yangjihong@bytedance.com>
-In-Reply-To: <ZggmNWYjBtid_hCZ@x1>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIAE0UCmYC/x2NwQ6CMBAFf4Xs2U1KhaB+iBfjobQPuwm2ZEvQh
+ PDvNh5nDjM7Faig0K3ZSbFJkZwqtKeGfHTpBZZQmayxnTnbK0/yZV09u9npmz9RfKxOEXjElBU
+ cVDYoL5pHcMpr9exnOA1sBm/bi0Hfm4HqYVHU3P/+oHtHz+P4AWgKYvmRAAAA
+To: Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio
+	<konrad.dybcio@linaro.org>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>
+CC: <linux-arm-msm@vger.kernel.org>, <linux-rtc@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>,
+        jianbin zhang <quic_jianbinz@quicinc.com>
+X-Mailer: b4 0.14-dev
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1711936613; l=1607;
+ i=quic_jianbinz@quicinc.com; s=20240329; h=from:subject:message-id;
+ bh=MWWUYfBfJ+W+K7MWTchapqC1K1oEOTbwWXy3pHBvkxw=;
+ b=xZuifqRCbJMCACnTkYoyyYGiltQ0nZfzdGAx7rRLd+j2TWwU0Ox9M0075nxW7SYwDDcsYmg3U
+ T16fR98PXRJAdUE1ZCLlpIJyhTI4MdzGHrXUL/47dujNAFcbEsig4Su
+X-Developer-Key: i=quic_jianbinz@quicinc.com; a=ed25519;
+ pk=8Qm7Xwv+QY8Y3hGEXPGglY/NRmdGYSKQJh+oPGgX+2c=
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: v_cfyh0-Ds5N7P1nEJB0UAqf-foGbg44
+X-Proofpoint-GUID: v_cfyh0-Ds5N7P1nEJB0UAqf-foGbg44
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-03-31_21,2024-03-28_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ suspectscore=0 phishscore=0 lowpriorityscore=0 impostorscore=0 spamscore=0
+ mlxscore=0 malwarescore=0 mlxlogscore=749 clxscore=1011 bulkscore=0
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2403210001 definitions=main-2404010013
 
-Hello,
+Hi maintainers,
 
-On 3/30/24 22:48, Arnaldo Carvalho de Melo wrote:
-> On Fri, Mar 29, 2024 at 09:08:01AM -0700, Ian Rogers wrote:
->> On Thu, Mar 28, 2024 at 8:02 PM Yang Jihong <yangjihong@bytedance.com> wrote:
->>>
->>> Hello,
->>>
->>> Sorry, due to the new email settings, the last reply email was in html
->>> format, resend it now.
->>>
->>> On 3/29/24 00:02, Ian Rogers wrote:
->>>> On Wed, Mar 27, 2024 at 10:59 PM Yang Jihong <yangjihong@bytedance.com> wrote:
->>>>>
->>>>> When perf-sched enables the call-graph recording, sample_type of dummy
->>>>> event does not have PERF_SAMPLE_CALLCHAIN, timehist_check_attr() checks
->>>>> that the evsel does not have a callchain, and set show_callchain to 0.
->>>>>
->>>>> Currently perf sched timehist only saves callchain when processing
->>>>> sched:sched_switch event, timehist_check_attr() only needs to determine
->>>>> whether the event has PERF_SAMPLE_CALLCHAIN.
->>>>>
->>>>> Before:
->>>>>     # perf sched record -g true
->>>>>     [ perf record: Woken up 0 times to write data ]
->>>>>     [ perf record: Captured and wrote 4.153 MB perf.data (7536 samples) ]
->>>>>     # perf sched timehist
->>>>>     Samples do not have callchains.
->>>>>                time    cpu  task name                       wait time  sch delay   run time
->>>>>                             [tid/pid]                          (msec)     (msec)     (msec)
->>>>>     --------------- ------  ------------------------------  ---------  ---------  ---------
->>>>>       147851.826019 [0000]  perf[285035]                        0.000      0.000      0.000
->>>>>       147851.826029 [0000]  migration/0[15]                     0.000      0.003      0.009
->>>>>       147851.826063 [0001]  perf[285035]                        0.000      0.000      0.000
->>>>>       147851.826069 [0001]  migration/1[21]                     0.000      0.003      0.006
->>>>>     <SNIP>
->>>>>
->>>>> After:
->>>>>     # perf sched record -g true
->>>>>     [ perf record: Woken up 1 times to write data ]
->>>>>     [ perf record: Captured and wrote 2.572 MB perf.data (822 samples) ]
->>>>>     # perf sched timehist
->>>>>                time    cpu  task name                       wait time  sch delay   run time
->>>>>                             [tid/pid]                          (msec)     (msec)     (msec)
->>>>>     --------------- ------  ------------------------------  ---------  ---------  ---------
->>>>>       144193.035164 [0000]  perf[277062]                        0.000      0.000      0.000    __traceiter_sched_switch <- __traceiter_sched_switch <- __sched_text_start <- preempt_schedule_common <- __cond_resched <- __wait_for_common <- wait_for_completion
->>>>>       144193.035174 [0000]  migration/0[15]                     0.000      0.003      0.009    __traceiter_sched_switch <- __traceiter_sched_switch <- __sched_text_start <- smpboot_thread_fn <- kthread <- ret_from_fork
->>>>>       144193.035207 [0001]  perf[277062]                        0.000      0.000      0.000    __traceiter_sched_switch <- __traceiter_sched_switch <- __sched_text_start <- preempt_schedule_common <- __cond_resched <- __wait_for_common <- wait_for_completion
->>>>>       144193.035214 [0001]  migration/1[21]                     0.000      0.003      0.007    __traceiter_sched_switch <- __traceiter_sched_switch <- __sched_text_start <- smpboot_thread_fn <- kthread <- ret_from_fork
->>>>> <SNIP>
->>>>
->>>> This looks good, should there be a Fixes tag for the sake of backports?
->>>>
->>> The direct cause is commit 9c95e4ef0657 ("perf evlist: Add
->>> evlist__findnew_tracking_event() helper"). perf-record uses
->>> evlist__add_aux_dummy() to replace evlist__add_dummy() to add a dummy
->>> event. The difference is that evlist__add_aux_dummy() sets
->>> no_aux_samples to true (this is expected behavior, for dummy event, no
->>> need to sample aux data), resulting in evsel__config() not adding the
->>> PERF_SAMPLE_CALLCHAIN bit to dummy's sample_type.
->>>
->>> In summary, the direct cause is the problem introduced by commit
->>> 9c95e4ef0657 ("perf evlist: Add evlist__findnew_tracking_event()
->>> helper"), but the root cause is the timehist_check_attr() logic problem,
->>> The dummy event itself does not need to have PERF_SAMPLE_CALLCHAIN, so
->>> there is no need to check it.
->>>
->>>
->>> So, maybe add fixes-tag:
->>>
->>> Fixes: 9c95e4ef0657 ("perf evlist: Add evlist__findnew_tracking_event()
->>> helper")
->>>
->>> If it is ok, I will send v2 version with this fixes-tag.
->>
->> I think the maintainer can add the fixes tag when they add the reviewed-by tag:
-> 
-> I usually do this, but if the submitter does it I'll have just to check
-> that it is the right tag, helps a bit in processing.
-Okay, will send v2 version.
+In this v4 patch series include following:
+- Fix the issue that rtc alarm interrupt triggered befor driver probe is not cleared
+- Correct the value written into PM8xxx_RTC_ALARM_CLEAR register in trigger function
 
-> 
-> - Arnaldo
->   
->> Reviewed-by: Ian Rogers <irogers@google.com>
-Thanks for reviewed-by tag.
+Regarding the issue "Fix the issue that rtc alarm interrupt triggered befor driver probe is not cleared":
+- Issue describtion as following
+  If the alarm is triggered before the driver gets probed, the alarm interrupt
+  will be missed and it won't be detected, and the stale alarm settings will
+  be still retained because of not being cleared.
+- Issue reproduce step:
+  (1) set the alarm and poweroff the device
+  (2) alarm happens and the device boots
+  (3) poweroff the device again
+  (4) alarm irq not be cleard, device boots again
 
-Thanks,
-Yang
+Regarding "Correct the value written into PM8xxx_RTC_ALARM_CLEAR"
+- Writing 1 to the register is expected to clear the fired alarm
+ register. In patch v2, the value written to the register in the
+ trigger function is incorrectly written as 0. So correct the value
+ to 1.
+
+Signed-off-by: jianbin zhang <quic_jianbinz@quicinc.com>
+---
+jianbin zhang (2):
+      rtc-pm8xxx: clear the triggered alarm interrupt during driver probe
+      rtc-pm8xxx: Correct the value written into the PM8xxx_RTC_ALARM_CLEAR
+
+ drivers/rtc/rtc-pm8xxx.c | 7 ++++++-
+ 1 file changed, 6 insertions(+), 1 deletion(-)
+---
+base-commit: 317c7bc0ef035d8ebfc3e55c5dde0566fd5fb171
+change-id: 20240329-fix-rtc-alarm-which-fired-before-driver-probe-not-be-cleard-07c2180e5507
+
+Best regards,
+-- 
+jianbin zhang <quic_jianbinz@quicinc.com>
+
 
