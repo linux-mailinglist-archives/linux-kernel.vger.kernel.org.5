@@ -1,127 +1,130 @@
-Return-Path: <linux-kernel+bounces-127151-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-127152-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id C209A89477B
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 00:55:18 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5D0D289477C
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 00:55:32 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E51A61C21A3E
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 22:55:17 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id F214C1F22868
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 22:55:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 39E9156B62;
-	Mon,  1 Apr 2024 22:55:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0E91156B91;
+	Mon,  1 Apr 2024 22:55:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="A34oIFey"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="DU2sZgTd"
 Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.20])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 93BDA33982;
-	Mon,  1 Apr 2024 22:55:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5FDBC33982;
+	Mon,  1 Apr 2024 22:55:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.20
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712012110; cv=none; b=leP6AQYPq/TPbDgmGaiJL1Aaiya+hK0xDTGsoMUJ62SYlFT/gEvEv4w/2pDAANQAcbFk2Xgmf8CEz5kyMgCmORMH2CRjbaGxrk4Tr79nFFnAJ4er81iVz7k/E/v7c9WQf25BmnJA79dWz8LhHcXT9W0eHlQ/viFoESDCaq5PCvw=
+	t=1712012118; cv=none; b=bgdZZlntpojsCm9MCWA/OjbByIVey/aPxRUWC59sGo9dv3K29QSItbZcIpdMJUeXsv/pondPZI4eQNQPavw/g8J0ktUoqRBPAXAfK1aDPlitabo/rAWhrhGHvcayODY1Ka8dzLlO5Ha33o+hSxPdPPDyPigRjUSIJ+LITW3epOM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712012110; c=relaxed/simple;
-	bh=30gWJyaHRF80+3efAwmOoPWr9DWWUI7WAK4YaLcCZOc=;
-	h=Content-Type:To:Cc:Subject:References:Date:MIME-Version:From:
-	 Message-ID:In-Reply-To; b=X1uhAzzBpZXNqFMZ9oCTJFNFJF6dujSNMWCEc1fuC4uwvXZMKCxQy0+xgAGKaJKsH4a2pjt+wUKSEgzoRQ5M9+6GgN6GoruYF/k0Y+QCHAKDcr8MleYVPTGl5O1m8WJIxFyg/4QLapbSHWOt+B/mXYqw3dv1Z0JpJJpt7j99OOk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=A34oIFey; arc=none smtp.client-ip=198.175.65.20
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+	s=arc-20240116; t=1712012118; c=relaxed/simple;
+	bh=fBRLXb8M1oUe7xHcHZtau0o3gCJ7+yXoMO8c301gkPs=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=pNEiOc7imi/zgbDYCWNnNzsT5EOZF4bqdpBt4OyBWliwceK3VuOy9WqdqmcQP86VNcF16rdEUEfB748IRQlTxM6ZjpI0bbfrgFrxNgkhGGUVHsQwWD19DjtRV98BB2gE5KgyDs8DaCZly7zPQfTkPQZnir8Rlv6mDXZ/JFv/Xwk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=DU2sZgTd; arc=none smtp.client-ip=198.175.65.20
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1712012109; x=1743548109;
-  h=to:cc:subject:references:date:mime-version:
-   content-transfer-encoding:from:message-id:in-reply-to;
-  bh=30gWJyaHRF80+3efAwmOoPWr9DWWUI7WAK4YaLcCZOc=;
-  b=A34oIFeyZyz1OurneqWBAsyCjROWBzwO+9F7mhd+8F1U0Gu5wuQwLixV
-   uxbcdxUZ1+vN3oiLIXBz8si5gK0fKhpu/NUPGzZnUogTl7ub0Tns6liEw
-   hZCx5Dw7HvEY75f77VZ9sKynBwYJrGXjdVABCVlfC6Zako6JBCs/bRD/F
-   Jaf+GI65ofsf0CGLY/+TeZgBUq/xl0CtA0Xt06KX8+hBRBreFMVwwAEvz
-   Bp28JuUGiZpX5+7equuiID4LcxRpK6fhP0VKB2tOlo/AtD33KHccZeXHd
-   Gv+CXIqHiWm6VCXrFfDRx+aMjW6WEhgH7IUMB8V/n3XtavyGBxJ9TJZDn
-   w==;
-X-CSE-ConnectionGUID: JEayBrwWQjavic3XzCdT8g==
-X-CSE-MsgGUID: letfgcqiT0aLQUntDZf+QQ==
-X-IronPort-AV: E=McAfee;i="6600,9927,11031"; a="7058405"
+  t=1712012117; x=1743548117;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=fBRLXb8M1oUe7xHcHZtau0o3gCJ7+yXoMO8c301gkPs=;
+  b=DU2sZgTdNXzaHfb46UznpYjlUWQHWAiJ5o0Hp8K07pampC9gGbqVBhRw
+   5nwhc3/TDXrAKuLGadB8YZp43M861hmuZVREJk1M66qTK1ZxVhSBa+X9U
+   x6V/EkDOb/PAbl+zKqGonSesZc5nmG4TUqhJzy5Gx88nGIoWnxM8JX6eC
+   etCJzJk6BWcdXGjYnvU62DZ2cHloDyve4pJfsdMvBODDddXAm0iBWOhoz
+   QFyPRfiozYQgJiFxFwg5wi5m+puL1ZF2O2K/3VFTt7VNfJoHvtcbCHk/Q
+   MGgr+gK6r4UE3I3E55EkHE8HpaNyQNq/TP+wV64e+OS3LbllENSfcb2zU
+   Q==;
+X-CSE-ConnectionGUID: rF6H24LXR4WTsSTT1sdFeg==
+X-CSE-MsgGUID: 1SFXi37wRJGtaLgcMZo8Tg==
+X-IronPort-AV: E=McAfee;i="6600,9927,11031"; a="7058422"
 X-IronPort-AV: E=Sophos;i="6.07,173,1708416000"; 
-   d="scan'208";a="7058405"
+   d="scan'208";a="7058422"
 Received: from orviesa006.jf.intel.com ([10.64.159.146])
-  by orvoesa112.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Apr 2024 15:55:08 -0700
+  by orvoesa112.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Apr 2024 15:55:16 -0700
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.07,173,1708416000"; 
-   d="scan'208";a="18321991"
-Received: from hhuan26-mobl.amr.corp.intel.com ([10.92.17.168])
-  by orviesa006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-SHA; 01 Apr 2024 15:55:06 -0700
-Content-Type: text/plain; charset=iso-8859-15; format=flowed; delsp=yes
-To: "Jarkko Sakkinen" <jarkko@kernel.org>
-Cc: anakrish@microsoft.com, bp@alien8.de, cgroups@vger.kernel.org,
- chrisyan@microsoft.com, dave.hansen@linux.intel.com, hpa@zytor.com,
- kai.huang@intel.com, kristen@linux.intel.com, linux-kernel@vger.kernel.org,
- linux-sgx@vger.kernel.org, mikko.ylinen@linux.intel.com, mingo@redhat.com,
- mkoutny@suse.com, seanjc@google.com, sohil.mehta@intel.com,
- tglx@linutronix.de, tim.c.chen@linux.intel.com, tj@kernel.org, x86@kernel.org,
- yangjie@microsoft.com, zhanb@microsoft.com, zhiquan1.li@intel.com
-Subject: Re: [PATCH] selftests/sgx: Improve cgroup test scripts
-References: <D071SWVSOJLN.2C9H7NTS4PHGI@kernel.org>
- <20240331174442.51019-1-haitao.huang@linux.intel.com>
- <D08UQJ2XQY6L.1XEOEJ6HIUJ8Y@kernel.org>
-Date: Mon, 01 Apr 2024 17:55:02 -0500
+   d="scan'208";a="18322003"
+Received: from ls.sc.intel.com (HELO localhost) ([172.25.112.31])
+  by orviesa006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Apr 2024 15:55:16 -0700
+Date: Mon, 1 Apr 2024 15:55:15 -0700
+From: Isaku Yamahata <isaku.yamahata@intel.com>
+To: Binbin Wu <binbin.wu@linux.intel.com>
+Cc: Isaku Yamahata <isaku.yamahata@intel.com>,
+	Chao Gao <chao.gao@intel.com>, kvm@vger.kernel.org,
+	linux-kernel@vger.kernel.org, isaku.yamahata@gmail.com,
+	Paolo Bonzini <pbonzini@redhat.com>, erdemaktas@google.com,
+	Sean Christopherson <seanjc@google.com>,
+	Sagi Shahar <sagis@google.com>, Kai Huang <kai.huang@intel.com>,
+	chen.bo@intel.com, hang.yuan@intel.com, tina.zhang@intel.com,
+	Sean Christopherson <sean.j.christopherson@intel.com>,
+	isaku.yamahata@linux.intel.com
+Subject: Re: [PATCH v19 038/130] KVM: TDX: create/destroy VM structure
+Message-ID: <20240401225515.GU2444378@ls.amr.corp.intel.com>
+References: <cover.1708933498.git.isaku.yamahata@intel.com>
+ <7a508f88e8c8b5199da85b7a9959882ddf390796.1708933498.git.isaku.yamahata@intel.com>
+ <ZfpwIespKy8qxWWE@chao-email>
+ <20240321141709.GK1994522@ls.amr.corp.intel.com>
+ <f52734ac-704a-49f7-bbee-de5909d53b14@linux.intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-From: "Haitao Huang" <haitao.huang@linux.intel.com>
-Organization: Intel
-Message-ID: <op.2lkm90y3wjvjmi@hhuan26-mobl.amr.corp.intel.com>
-In-Reply-To: <D08UQJ2XQY6L.1XEOEJ6HIUJ8Y@kernel.org>
-User-Agent: Opera Mail/1.0 (Win32)
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <f52734ac-704a-49f7-bbee-de5909d53b14@linux.intel.com>
 
-On Mon, 01 Apr 2024 09:22:21 -0500, Jarkko Sakkinen <jarkko@kernel.org>  
-wrote:
+On Fri, Mar 29, 2024 at 02:22:12PM +0800,
+Binbin Wu <binbin.wu@linux.intel.com> wrote:
 
-> On Sun Mar 31, 2024 at 8:44 PM EEST, Haitao Huang wrote:
->> Make cgroup test scripts ash compatible.
->> Remove cg-tools dependency.
->> Add documentation for functions.
->>
->> Tested with busybox on Ubuntu.
->>
->> Signed-off-by: Haitao Huang <haitao.huang@linux.intel.com>
->
-> I'll run this next week on good old NUC7. Thank you.
->
-> I really wish that either (hopefully both) Intel or AMD would bring up
-> for developers home use meant platform to develop on TDX and SNP. It is
-> a shame that the latest and greatest is from 2018.
->
-> BR, Jarkko
->
+> 
+> 
+> On 3/21/2024 10:17 PM, Isaku Yamahata wrote:
+> > On Wed, Mar 20, 2024 at 01:12:01PM +0800,
+> > Chao Gao <chao.gao@intel.com> wrote:
+> > 
+> > > > config KVM_SW_PROTECTED_VM
+> > > > 	bool "Enable support for KVM software-protected VMs"
+> > > > -	depends on EXPERT
+> 
+> This change is not needed, right?
+> Since you intended to use KVM_GENERIC_PRIVATE_MEM, not KVM_SW_PROTECTED_VM.
 
-Argh, missed a few changes for v2 cgroup:
+Right. The fix will be something as follows.
 
---- a/tools/testing/selftests/sgx/run_epc_cg_selftests.sh
-+++ b/tools/testing/selftests/sgx/run_epc_cg_selftests.sh
-@@ -15,6 +15,8 @@ CG_MEM_ROOT=/sys/fs/cgroup
-  CG_V1=0
-  if [ ! -d "/sys/fs/cgroup/misc" ]; then
-      echo "# cgroup V2 is in use."
-+    echo "+misc" >  $CG_MISC_ROOT/cgroup.subtree_control
-+    echo "+memory" > $CG_MEM_ROOT/cgroup.subtree_control
-  else
-      echo "# cgroup V1 is in use."
-      CG_MISC_ROOT=/sys/fs/cgroup/misc
-@@ -26,6 +28,11 @@ mkdir -p $CG_MISC_ROOT/$TEST_CG_SUB2
-  mkdir -p $CG_MISC_ROOT/$TEST_CG_SUB3
-  mkdir -p $CG_MISC_ROOT/$TEST_CG_SUB4
-
-+if [ $CG_V1 -eq 0 ]; then
-+echo "+misc" >  $CG_MISC_ROOT/$TEST_ROOT_CG/cgroup.subtree_control
-+echo "+misc" >  $CG_MISC_ROOT/$TEST_CG_SUB1/cgroup.subtree_control
-+fi
+diff --git a/arch/x86/kvm/Kconfig b/arch/x86/kvm/Kconfig
+index f2bc78ceaa9a..e912b128bddb 100644
+--- a/arch/x86/kvm/Kconfig
++++ b/arch/x86/kvm/Kconfig
+@@ -77,6 +77,7 @@ config KVM_WERROR
+ 
+ config KVM_SW_PROTECTED_VM
+        bool "Enable support for KVM software-protected VMs"
++       depends on EXPERT
+        depends on KVM && X86_64
+        select KVM_GENERIC_PRIVATE_MEM
+        help
+@@ -90,7 +91,7 @@ config KVM_SW_PROTECTED_VM
+ config KVM_INTEL
+        tristate "KVM for Intel (and compatible) processors support"
+        depends on KVM && IA32_FEAT_CTL
+-       select KVM_SW_PROTECTED_VM if INTEL_TDX_HOST
++       select KVM_GENERIC_PRIVATE_MEM if INTEL_TDX_HOST
+        select KVM_GENERIC_MEMORY_ATTRIBUTES if INTEL_TDX_HOST
+        help
+          Provides support for KVM on processors equipped with Intel's VT
+-- 
+2.43.2
+-- 
+Isaku Yamahata <isaku.yamahata@intel.com>
 
