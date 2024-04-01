@@ -1,108 +1,177 @@
-Return-Path: <linux-kernel+bounces-126973-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-126974-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3DECF89452C
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 21:04:30 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id D392E89452E
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 21:04:43 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EAA0A281FE6
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 19:04:28 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C2BFC1C2187F
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 19:04:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5411F524B8;
-	Mon,  1 Apr 2024 19:04:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8B0BA51C33;
+	Mon,  1 Apr 2024 19:04:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="NEtZqFxV"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="ASFESFrV"
+Received: from mail-ed1-f52.google.com (mail-ed1-f52.google.com [209.85.208.52])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 85F69249E4;
-	Mon,  1 Apr 2024 19:04:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8FB0951C46
+	for <linux-kernel@vger.kernel.org>; Mon,  1 Apr 2024 19:04:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711998262; cv=none; b=UyFVuU7ZG3z72ke8IPxmNAayUBgkR01MpaBce6P8tpOrU80ty+6kqKVnWEkTo8cb5Hyr0zOvxhleM3Mf3gO48y27iKNqBEdMmPKhPMpL85uXUZG0NV+ORu2BsHTRaiHkPFTKcTcIpPS34gXh0dlswbZniWi8aMV4nc+cDz5n1ac=
+	t=1711998279; cv=none; b=Ae/L+WXu9a7gEbN1e44uojz92FjCiYqG8T6Y/kbZiTcoQoaX1l2hfJ4CBJhdHFSUNYdF361r14h+12H8GxHTjHoUJYtmBLuCSJEw82WDtnwqrlPeOPNmpmk7zPHilzf+7dixB5QKdpi6cjKz1ZyfjsesXDCvldpkr7gABAzVPYE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711998262; c=relaxed/simple;
-	bh=AgTHelVsz+bSEWE8bp2UzifCO3HT/TL0k8z89kPZWx4=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=kDCKjim72ddtk6Y7CmM+JdfzWOC/5wOJY8t1ODgEqWzWakomCpuiVkuAHL6z/fIvcVBmp6NUFCiUrOURHp6KXLuKnChNPWw9GMF/mIHky8IouuKTrasi98QgErXB+Lfz6APWE8FmLZt9yBuat1mGZESDIiHRkLd281vfVS1yZlU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=NEtZqFxV; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8329DC433C7;
-	Mon,  1 Apr 2024 19:04:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711998262;
-	bh=AgTHelVsz+bSEWE8bp2UzifCO3HT/TL0k8z89kPZWx4=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=NEtZqFxVDPiQStJtMES0JB/NfEqkor7ZgBCpa+95nYcRaLw0JMoMEHC3TZtCXpj6w
-	 cSKhcXYTWXcAfF+Szrs8ZjGHr19yDM2lQsA5mreQWq3HYIdwmz4qJpQB89kG6Rqx2d
-	 Hd+ors9yNwRXrkkAFDZoOTTJZZZtR9aD20xXfAle9shsWaA3ME2/8L7O8lz7UO06Ij
-	 JD0fUzFOnRccH+xrK6Jua/oKR7k9gJjkpkTZuHkBjBkv42cXyrWIOAySs+uLCLIQJQ
-	 zETJFd4y+PgfUth9jleAUqxLMeKAKit49sSg7PoX4Q93XOhCvNw3IrynCAVVtx4Bzg
-	 ygFaahykuUccQ==
-Date: Mon, 1 Apr 2024 12:04:20 -0700
-From: Jakub Kicinski <kuba@kernel.org>
-To: Leon Romanovsky <leon@kernel.org>
-Cc: David Ahern <dsahern@kernel.org>, Greg Kroah-Hartman
- <gregkh@linuxfoundation.org>, Jason Gunthorpe <jgg@nvidia.com>, Christoph
- Hellwig <hch@infradead.org>, Saeed Mahameed <saeed@kernel.org>, Arnd
- Bergmann <arnd@arndb.de>, Jiri Pirko <jiri@nvidia.com>, Leonid Bloch
- <lbloch@nvidia.com>, Itay Avraham <itayavr@nvidia.com>, Saeed Mahameed
- <saeedm@nvidia.com>, Aron Silverton <aron.silverton@oracle.com>,
- linux-kernel@vger.kernel.org, "netdev@vger.kernel.org"
- <netdev@vger.kernel.org>, Andy Gospodarek <andrew.gospodarek@broadcom.com>,
- Junxian Huang <huangjunxian6@hisilicon.com>
-Subject: Re: [PATCH V4 0/5] mlx5 ConnectX control misc driver
-Message-ID: <20240401120420.4d33a89b@kernel.org>
-In-Reply-To: <20240401181033.GB11187@unreal>
-References: <9cc7127f-8674-43bc-b4d7-b1c4c2d96fed@kernel.org>
-	<2024032248-ardently-ribcage-a495@gregkh>
-	<510c1b6b-1738-4baa-bdba-54d478633598@kernel.org>
-	<Zf2n02q0GevGdS-Z@C02YVCJELVCG>
-	<20240322135826.1c4655e2@kernel.org>
-	<e5c61607-4d66-4cd8-bf45-0aac2b3af126@kernel.org>
-	<20240322154027.5555780a@kernel.org>
-	<1cd2a70c-17b8-4421-b70b-3c0199a84a6a@kernel.org>
-	<20240401123003.GC73174@unreal>
-	<20240401075003.70f5cb4b@kernel.org>
-	<20240401181033.GB11187@unreal>
+	s=arc-20240116; t=1711998279; c=relaxed/simple;
+	bh=j7VLIK/u4oATc/29XeVXWWlasJDfPqEJ9jTWxs2dNWo=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=m6Hma/QTRv9hQpwjiJfaD643SCp2bN+l4nJHLCyh1LR+1fR968qLFCm1TCD0Vji8BYmZyL26ZzQ9HUh0e5MkZlrop4UtClDGZaLY+4vJvSne50TiPOOqSlf4vAs4pykz5X1SGfFxNsO/w9V7SB/j6t0RqmT77O+2+DgqxxtJsH0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=ASFESFrV; arc=none smtp.client-ip=209.85.208.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-ed1-f52.google.com with SMTP id 4fb4d7f45d1cf-56c2b4850d2so5061085a12.2
+        for <linux-kernel@vger.kernel.org>; Mon, 01 Apr 2024 12:04:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1711998275; x=1712603075; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=u6uaUI+tf8SHKzsQC+xZokqIl8VwjiOYFPlSJheN0WY=;
+        b=ASFESFrVjrCH6gC5TV1XvEQd/5rhkwLOB6094MP1neqOfhQyNzbqIkhEYBVr6oHsRg
+         DCuDtl7NCkUR08zheHfnF+k/jrFdZA0TgGwo7CnfjkgIJbha2HAdW7OX4CxJG1Oajb84
+         6CHYs2zZ7fEFiULgeRQEVk7ogT0aBvsrZ6s0SMNkdtBthcj0X6rixZnAvEabrARrx5Qo
+         77ZSTjLdJ7xLWWZqtwrMANk8G/0aGje9jCGKY9YGWwGzc7vWS6u+rq1+S/49fX6ID1zr
+         N4Cp8noLOdsV3CL9nG+bUFZKlBC4pNzRFh5Ul0rsgm3gS9rwzuhjBetO4+KZa6uxmW1S
+         co6Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711998275; x=1712603075;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=u6uaUI+tf8SHKzsQC+xZokqIl8VwjiOYFPlSJheN0WY=;
+        b=gxa353tYyCsjbAWBxM0XqGJauwbhz76QYxW+xDU2vLR6FSR78AJxSVlrmW6bUYVSKK
+         FtAc65bqlDbCrlxAeqgMZumUrVxfvh1txjSPRZVRvc+HjhHeupNZSvTT+bWTj0emZ5je
+         BbPG89XOSyJ78gGAzk0OSOqECAX9f9A9DFm0k7aVuJUDDMjQl53yKYg42qYFXYYaedui
+         9G7s9vJf4rzQIw5vWs7gxCZSmWHJ12jzNwQCp+skg8LJN54tSgTvv82sv/U4itPNp3gr
+         VEVcYqvWZNzVsLQi6oruSKlyj/7n0WQH1T/H4xEidoH1Likh1TIrOlzgzLctlT6HOFmU
+         D0Jg==
+X-Forwarded-Encrypted: i=1; AJvYcCW6vyC19HsIq/Wd77mcbbTxuT3JrhnN5zzcsefud3su0Ag5Q0GLIyHlU94tXXXGJm0eaAh5xCKSRWYJyBuZYo4fh7QkhpupQZSOKboU
+X-Gm-Message-State: AOJu0YyoXr01laTGL8T5CcbCfhYN99jlhvuPli2KGm05n/4mwVN6JvoQ
+	DdrqzqNmDxkdWeKirjCbftJJY1ioNn5S8gpS5f1IjMFqssqV2T27DjPzZhMoQBkNGVw/t1uK9k8
+	RjQIE9WKaz7ak9Qj+OAXPi3hUad3bzyFQtv1oIA==
+X-Google-Smtp-Source: AGHT+IEGBhywqC+1C7o8zzn+AZ5cc0LrVNMqLDt3eM22SEsVPi/zqIlKIAhUFw1kqaGpME2GmtIWwF1NpF/DV8RSiUo=
+X-Received: by 2002:a05:6402:518f:b0:566:ca0:4a91 with SMTP id
+ q15-20020a056402518f00b005660ca04a91mr8331898edd.2.1711998274794; Mon, 01 Apr
+ 2024 12:04:34 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+References: <20240401152553.125349965@linuxfoundation.org>
+In-Reply-To: <20240401152553.125349965@linuxfoundation.org>
+From: Naresh Kamboju <naresh.kamboju@linaro.org>
+Date: Tue, 2 Apr 2024 00:34:22 +0530
+Message-ID: <CA+G9fYuY6jrEroCeeioC389E6G56wjSGQpFxQS5MQtTFz-aZtQ@mail.gmail.com>
+Subject: Re: [PATCH 6.7 000/432] 6.7.12-rc1 review
+To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: stable@vger.kernel.org, patches@lists.linux.dev, 
+	linux-kernel@vger.kernel.org, torvalds@linux-foundation.org, 
+	akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org, 
+	patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de, 
+	jonathanh@nvidia.com, f.fainelli@gmail.com, sudipm.mukherjee@gmail.com, 
+	srw@sladewatkins.net, rwarsow@gmx.de, conor@kernel.org, allen.lkml@gmail.com, 
+	broonie@kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
-On Mon, 1 Apr 2024 21:10:33 +0300 Leon Romanovsky wrote:
-> > Sorry, I have a completely different reading of that thread.
-> > Thanks for bringing it up, tho.  
-> 
-> Different people have different opinions, and it is fine.
+On Mon, 1 Apr 2024 at 21:41, Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
+>
+> Note, this will be the LAST 6.7.y kernel release.  After this one it
+> will be end-of-life.  Please move to 6.8.y now.
+>
+> ------------------------------------------
+>
+> This is the start of the stable review cycle for the 6.7.12 release.
+> There are 432 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+>
+> Responses should be made by Wed, 03 Apr 2024 15:24:46 +0000.
+> Anything received after that time might be too late.
+>
+> The whole patch series can be found in one patch at:
+>         https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patch-6.7.12-rc1.gz
+> or in the git tree and branch at:
+>         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-6.7.y
+> and the diffstat can be found below.
+>
+> thanks,
+>
+> greg k-h
 
-Agreed! I think the core of our disagreement is whether and when
-one set of people get to force their set of choices on other people.
-Far be it from me to try to force my opinions in RDMA or the kernel
-as a whole.
 
-> > As I said multiple times I agree that configuring custom parameters
-> > in RDMA is a necessity. Junxian's approach of putting such code in
-> > the RDMA driver / subsystem is more than reasonable. Even better,
-> > it looks like the API is fairly narrowly defined.  
-> 
-> It was a tiny example, which emphasizes the need for a common way.
-> 
-> If we were listen to average RDMA driver author, we would find ourselves
-> with gazillion different sysfs knobs which do nothing except sending
-> raw data to FW. As a subsystem, we don't want to waste our time in
-> not-beneficial to the subsystem code.
+Following kernel warnings have been noticed on qemu-x86_64 while running LTP
+cve ioctl_sg01 tests the kernel with stable-rc 6.6.24-rc1, 6.7.12-rc1 and
+6.8.3-rc1.
 
-No disagreement here either, there's a trade-off here between what
-you call waste of time and what I'd call fostering organic
-collaboration. Even without taking your priorities into account -
-whether reviewing device APIs is beneficial is (a) subjective, 
-(b) subsystem dependent, so you should be allowed to make your choice
-(within the bounds of Linus's trust). But what I keep arguing is that
-so should we :|
+We have started bi-secting this issue.
+Always reproduced.
+
+Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
+
+ioctl_sg01.c:81: TINFO: Found SCSI device /dev/sg0
+------------[ cut here ]------------
+[   36.606841] WARNING: CPU: 0 PID: 8 at drivers/scsi/sg.c:2237
+sg_remove_sfp_usercontext+0x145/0x150
+[   36.609445] Modules linked in:
+[   36.610793] CPU: 0 PID: 8 Comm: kworker/0:0 Not tainted 6.6.24-rc1 #1
+[   36.611568] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009),
+BIOS 1.16.3-debian-1.16.3-2~bpo12+1 04/01/2014
+[   36.612872] Workqueue: events sg_remove_sfp_usercontext
+[   36.613691] RIP: 0010:sg_remove_sfp_usercontext+0x145/0x150
+
+<trim>
+
+[   36.621539] Call Trace:
+[   36.621953]  <TASK>
+[   36.622444]  ? show_regs+0x69/0x80
+[   36.622819]  ? __warn+0x8d/0x150
+[   36.623078]  ? sg_remove_sfp_usercontext+0x145/0x150
+[   36.623558]  ? report_bug+0x171/0x1a0
+[   36.623881]  ? handle_bug+0x42/0x80
+[   36.624070]  ? exc_invalid_op+0x1c/0x70
+[   36.624491]  ? asm_exc_invalid_op+0x1f/0x30
+[   36.624897]  ? sg_remove_sfp_usercontext+0x145/0x150
+[   36.625408]  process_one_work+0x141/0x300
+[   36.625769]  worker_thread+0x2f6/0x430
+[   36.626073]  ? __pfx_worker_thread+0x10/0x10
+[   36.626529]  kthread+0x105/0x140
+[   36.626778]  ? __pfx_kthread+0x10/0x10
+[   36.627059]  ret_from_fork+0x41/0x60
+[   36.627441]  ? __pfx_kthread+0x10/0x10
+[   36.627735]  ret_from_fork_asm+0x1b/0x30
+[   36.628293]  </TASK>
+[   36.628604] ---[ end trace 0000000000000000 ]---
+ioctl_sg01.c:122: TPASS: Output buffer is empty, no data leaked
+
+Suspecting commit:
+-----
+scsi: sg: Avoid sg device teardown race
+commit 27f58c04a8f438078583041468ec60597841284d upstream.
+
+ + WARN_ON_ONCE(kref_read(&sdp->d_ref) != 1);
+
+Steps to reproduce:
+- https://tuxapi.tuxsuite.com/v1/groups/linaro/projects/lkft/tests/2eVWFlAeOUepfeFVkrOXFYNNAqI/reproducer
+
+Links:
+ - https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-6.6.y/build/v6.6.23-397-g75a2533b74d0/testrun/23255318/suite/log-parser-test/tests/
+ - https://tuxapi.tuxsuite.com/v1/groups/linaro/projects/lkft/tests/2eVTitwVMagaiWhs5T2iKH390D5
+
+
+--
+Linaro LKFT
+https://lkft.linaro.org
 
