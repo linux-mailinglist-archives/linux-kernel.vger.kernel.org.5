@@ -1,174 +1,166 @@
-Return-Path: <linux-kernel+bounces-126598-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-126600-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id BD24A893A35
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 12:36:49 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 35739893A3A
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 12:38:42 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 71BD9281F1F
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 10:36:48 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 584B11C2100C
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 10:38:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D48471CAA9;
-	Mon,  1 Apr 2024 10:36:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="Gg+GPvYz"
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B377120DDB;
+	Mon,  1 Apr 2024 10:38:28 +0000 (UTC)
+Received: from vps-vb.mhejs.net (vps-vb.mhejs.net [37.28.154.113])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8BD341BDC8
-	for <linux-kernel@vger.kernel.org>; Mon,  1 Apr 2024 10:36:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.1
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 05238200A6
+	for <linux-kernel@vger.kernel.org>; Mon,  1 Apr 2024 10:38:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=37.28.154.113
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711967803; cv=none; b=lCPL5E9bgpmfebmlWCAc3uK6rOQoICTNDONDE1qxkKb34o19BlM96zmszweCgC4wtuqSdwmVNJ8fRbXc3vmVT2g6GaXE11HPFmW2k6DuZeFcWxBWVao7j0oLfs5kcsGF7Pp5CShtGGpAKuu3oZg3Wh1V8BBfjDbLOBdetaC8YCA=
+	t=1711967908; cv=none; b=ZlMfu84iagMCBpqTz3h3hK7ItxRAel+yDd/7+YnMukXd/GX6ORHFnmDklGA2jfBDlggNCW97qzcPwmt6sbk1y5o3BZs3QF2aJaNGEzcsR0HxDF+r1En0hA+ui+5FBlnCG7ED2zIXxlZyK+6MFYgrwMBSUvjP3xoSfWWQhshlcrg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711967803; c=relaxed/simple;
-	bh=afpxfrYCMNe6Vx+dzgzcDV9owz3AvEM25VaQsNBBB7I=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=EnfTDOtX5x/RT2Q/G0L4/k79xXM89c52eu1Ez3TEZN3h5urwgXBcFlMqwyDs+x6rqgnKXP7WNQnI1ZoFSsxpvU+X6r5Cyvft2JuWWjyLMWiH2s+QZA1Z8eStm5gKSlEhWfRx7Vh07H443KtBSr1D6Qwk6HkVYkHleimQoHPnniY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=Gg+GPvYz; arc=none smtp.client-ip=148.163.156.1
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0353728.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 431AWxSQ023017;
-	Mon, 1 Apr 2024 10:36:27 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : references : mime-version : content-type :
- in-reply-to; s=pp1; bh=VxWeLjasO9XYUjAJvIAQ3i3G+NVHlgWs48qMNHASJMM=;
- b=Gg+GPvYzNR4lZ0Gbb/pQG/IlUv/wjEQjGY+tdLdo31w1H+AM3mN0nNGoFsRwYuQD2LUy
- WeYwyjGHJVat1dk/bUJZ0AljFb/XrxGS/M3l0HO8ZlIZcB9CCMyQfLOHWZ6TBxlVKcnP
- Q+Klp8l5ZJ2xDACN9i12GqLAT46Rv+kx6r99b3jrLd34sTbqQ1DGsBtjOyaI8IW3rzNn
- SHbko485mTCCILNvOUgXqa8PoUwl5XYP/uQy9TCQr6PfSlA5ir9T5STSziPrDN8Z5Ade
- jft+KWN6gorp2fwo/cHv48kJ84mNvC5kqT72N5chesbM/coFbtlysqKE7GlcR33XPGtB YQ== 
-Received: from pps.reinject (localhost [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3x7u8s804h-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 01 Apr 2024 10:36:26 +0000
-Received: from m0353728.ppops.net (m0353728.ppops.net [127.0.0.1])
-	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 431AaQwm028538;
-	Mon, 1 Apr 2024 10:36:26 GMT
-Received: from ppma12.dal12v.mail.ibm.com (dc.9e.1632.ip4.static.sl-reverse.com [50.22.158.220])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3x7u8s8042-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 01 Apr 2024 10:36:26 +0000
-Received: from pps.filterd (ppma12.dal12v.mail.ibm.com [127.0.0.1])
-	by ppma12.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 431AC6JU008431;
-	Mon, 1 Apr 2024 10:36:09 GMT
-Received: from smtprelay04.fra02v.mail.ibm.com ([9.218.2.228])
-	by ppma12.dal12v.mail.ibm.com (PPS) with ESMTPS id 3x6w2tqwuf-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 01 Apr 2024 10:36:09 +0000
-Received: from smtpav03.fra02v.mail.ibm.com (smtpav03.fra02v.mail.ibm.com [10.20.54.102])
-	by smtprelay04.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 431Aa63311993388
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Mon, 1 Apr 2024 10:36:08 GMT
-Received: from smtpav03.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 038F420040;
-	Mon,  1 Apr 2024 10:36:06 +0000 (GMT)
-Received: from smtpav03.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 621BC20043;
-	Mon,  1 Apr 2024 10:36:03 +0000 (GMT)
-Received: from linux.ibm.com (unknown [9.204.201.194])
-	by smtpav03.fra02v.mail.ibm.com (Postfix) with ESMTPS;
-	Mon,  1 Apr 2024 10:36:03 +0000 (GMT)
-Date: Mon, 1 Apr 2024 16:06:00 +0530
-From: Vishal Chourasia <vishalc@linux.ibm.com>
-To: Dawei Li <daweilics@gmail.com>
-Cc: Ingo Molnar <mingo@redhat.com>, Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>, Ben Segall <bsegall@google.com>,
-        Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Valentin Schneider <vschneid@redhat.com>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] sched/fair: fix initial util_avg calculation
-Message-ID: <ZgqOEJ5sCANkkk5N@linux.ibm.com>
-References: <20240315015916.21545-1-daweilics@gmail.com>
+	s=arc-20240116; t=1711967908; c=relaxed/simple;
+	bh=xALpn2xp66RFV4OxE/ZnsPAvZ5zAuLADDlRfGuPxKiU=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=br44KBeRoTxJEOS9LZ1ZcrmnlJ7EIB2DOy7GhCzDPikt7EkV8ImxN7UjDdHrK7HxXRzB4cUKeIq8fMK/OThFCAkGEH69zu0oL1l1G1EnSyuw7nYmSAzdrhMDsloAS49LZC/h2PIzfMt8akZSW71DX7PDKYpey+g5lD7a12uRAFk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=maciej.szmigiero.name; spf=pass smtp.mailfrom=maciej.szmigiero.name; arc=none smtp.client-ip=37.28.154.113
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=maciej.szmigiero.name
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=maciej.szmigiero.name
+Received: from MUA
+	by vps-vb.mhejs.net with esmtps  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+	(Exim 4.94.2)
+	(envelope-from <mail@maciej.szmigiero.name>)
+	id 1rrF3C-0000cd-Fg; Mon, 01 Apr 2024 12:38:02 +0200
+Message-ID: <d111a52c-8f42-4743-9b1a-691882ca58be@maciej.szmigiero.name>
+Date: Mon, 1 Apr 2024 12:37:56 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240315015916.21545-1-daweilics@gmail.com>
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: 9b4vFGhrgS7Juj57cXuQlNxk0tI6-AYZ
-X-Proofpoint-GUID: mV8RCCkrMEnxbFdSyuDCwvZY-SGf-xDt
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-04-01_07,2024-03-28_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 bulkscore=0
- mlxlogscore=999 clxscore=1015 mlxscore=0 priorityscore=1501 spamscore=0
- phishscore=0 adultscore=0 impostorscore=0 malwarescore=0
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2403210000 definitions=main-2404010075
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RFC PATCH 5/9] mm: zswap: remove zswap_same_filled_pages_enabled
+To: Yosry Ahmed <yosryahmed@google.com>
+Cc: Andrew Morton <akpm@linux-foundation.org>, Nhat Pham <nphamcs@gmail.com>,
+ Chengming Zhou <chengming.zhou@linux.dev>, linux-mm@kvack.org,
+ linux-kernel@vger.kernel.org, Johannes Weiner <hannes@cmpxchg.org>
+References: <20240325235018.2028408-1-yosryahmed@google.com>
+ <20240325235018.2028408-6-yosryahmed@google.com>
+ <20240328191109.GE7597@cmpxchg.org>
+ <CAJD7tka4iKD0=MOkj7iBCXvG6Jmq6WQgvRNV3mY+YRWPnYWmAg@mail.gmail.com>
+ <CAJD7tkYo90ynKfBcWyMZLu7r-GJj3egnnJyGiJ5T2SN-Tn3d9A@mail.gmail.com>
+ <19d5cdee-2868-41bd-83d5-6da75d72e940@maciej.szmigiero.name>
+ <20240329174457.GJ7597@cmpxchg.org>
+ <CAJD7tkaXtbM6_6+Oe08_xorMRrU94nvEeDj4_R78nKdZZWqAMw@mail.gmail.com>
+Content-Language: en-US, pl-PL
+From: "Maciej S. Szmigiero" <mail@maciej.szmigiero.name>
+Autocrypt: addr=mail@maciej.szmigiero.name; keydata=
+ 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
+Disposition-Notification-To: "Maciej S. Szmigiero"
+ <mail@maciej.szmigiero.name>
+In-Reply-To: <CAJD7tkaXtbM6_6+Oe08_xorMRrU94nvEeDj4_R78nKdZZWqAMw@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-On Thu, Mar 14, 2024 at 06:59:16PM -0700, Dawei Li wrote:
-> Change se->load.weight to se_weight(se) in the calculation for the
-> initial util_avg to avoid unnecessarily inflating the util_avg by 1024
-> times.
+On 29.03.2024 19:22, Yosry Ahmed wrote:
+> On Fri, Mar 29, 2024 at 10:45 AM Johannes Weiner <hannes@cmpxchg.org> wrote:
+>>
+>> On Fri, Mar 29, 2024 at 03:02:10PM +0100, Maciej S. Szmigiero wrote:
+>>> On 29.03.2024 03:14, Yosry Ahmed wrote:
+>>>> On Thu, Mar 28, 2024 at 1:06 PM Yosry Ahmed <yosryahmed@google.com> wrote:
+>>>>>
+>>>>> On Thu, Mar 28, 2024 at 12:11 PM Johannes Weiner <hannes@cmpxchg.org> wrote:
+>>>>>>
+>>>>>> On Mon, Mar 25, 2024 at 11:50:13PM +0000, Yosry Ahmed wrote:
+>>>>>>> There is no logical reason to refuse storing same-filled pages more
+>>>>>>> efficiently and opt for compression. Remove the userspace knob.
+>>>>>>>
+>>>>>>> Signed-off-by: Yosry Ahmed <yosryahmed@google.com>
+>>>>>>
+>>>>>> Acked-by: Johannes Weiner <hannes@cmpxchg.org>
+>>>>>>
+>>>>>> I also think the non_same_filled_pages_enabled option should go
+>>>>>> away. Both of these tunables are pretty bizarre.
+>>>>>
+>>>>> Happy to remove both in the next version :)
+>>>>
+>>>> I thought non_same_filled_pages_enabled was introduced with the
+>>>> initial support for same-filled pages, but it was introduced
+>>>> separately (and much more recently):
+>>>> https://lore.kernel.org/all/7dbafa963e8bab43608189abbe2067f4b9287831.1641247624.git.maciej.szmigiero@oracle.com/
+>>>>
+>>>> I am CCing Maciej to hear more about the use case for this.
+>>>
+>>> Thanks for CCing me.
+>>>
+>>> I introduced "non_same_filled_pages_enabled" a few years ago to
+>>> enable using zswap in a lightweight mode where it is only used for
+>>> its ability to store same-filled pages effectively.
+>>
+>> But all the pages it rejects go to disk swap instead, which is much
+>> slower than compression...
+>>
+>>> As far as I remember, there were some interactions between full
+>>> zswap and the cgroup memory controller - like, it made it easier
+>>> for an aggressive workload to exceed its cgroup memory.high limits.
+>>
+>> Ok, that makes sense! A container fairness measure, rather than a
+>> performance optimization.
+>>
+>> Fair enough, but that's moot then with cgroup accounting of the
+>> backing memory, f4840ccfca25 ("zswap: memcg accounting").
 > 
-> The reason is that se->load.weight has the unit/scale as the scaled-up
-> load, while cfs_rg->avg.load_avg has the unit/scale as the true task
-> weight (as mapped directly from the task's nice/priority value). With
-> CONFIG_32BIT, the scaled-up load is equal to the true task weight. With
-> CONFIG_64BIT, the scaled-up load is 1024 times the true task weight.
-> Thus, the current code may inflate the util_avg by 1024 times. The
-> follow-up capping will not allow the util_avg value to go wild. But the
-> calculation should have the correct logic.
+> Right, this should no longer be needed with the zswap charging.
 > 
-> Signed-off-by: Dawei Li <daweilics@gmail.com>
-> ---
-> Changes in v2:
-> - update the commit message
-> ---
->  kernel/sched/fair.c | 5 +++--
->  1 file changed, 3 insertions(+), 2 deletions(-)
-> 
-> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-> index a19ea290b790..5f98f639bdb9 100644
-> --- a/kernel/sched/fair.c
-> +++ b/kernel/sched/fair.c
-> @@ -1031,7 +1031,8 @@ void init_entity_runnable_average(struct sched_entity *se)
->   * With new tasks being created, their initial util_avgs are extrapolated
->   * based on the cfs_rq's current util_avg:
->   *
-> - *   util_avg = cfs_rq->util_avg / (cfs_rq->load_avg + 1) * se.load.weight
-> + *   util_avg = cfs_rq->avg.util_avg / (cfs_rq->avg.load_avg + 1)
-> + *		* se_weight(se)
->   *
->   * However, in many cases, the above util_avg does not give a desired
->   * value. Moreover, the sum of the util_avgs may be divergent, such
-> @@ -1078,7 +1079,7 @@ void post_init_entity_util_avg(struct task_struct *p)
->  
->  	if (cap > 0) {
->  		if (cfs_rq->avg.util_avg != 0) {
-> -			sa->util_avg  = cfs_rq->avg.util_avg * se->load.weight;
-> +			sa->util_avg  = cfs_rq->avg.util_avg * se_weight(se);
-Hi,
+> Maciej, is this still being used on kernels with f4840ccfca25 (5.19+)?
+> Any objections to removing it now?
 
-The comment above the declaration of se_weight function says we should be
-using full load resolution and get rid of this helper.
+I don't object to its removal as long as stable kernel trees aren't
+affected.
 
-Should we be adding new user of the helper?
+Thanks,
+Maciej
 
-/*
- * XXX we want to get rid of these helpers and use the full load resolution.
- */
-static inline long se_weight(struct sched_entity *se)
-{
-	return scale_load_down(se->load.weight);
-}
-
-
->  			sa->util_avg /= (cfs_rq->avg.load_avg + 1);
->  
->  			if (sa->util_avg > cap)
-> -- 
-> 2.40.1
-> 
 
