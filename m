@@ -1,119 +1,377 @@
-Return-Path: <linux-kernel+bounces-127043-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-127044-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 758AE894622
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 22:36:48 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C6A05894623
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 22:37:05 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 162651F23351
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 20:36:48 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B6E1EB225EE
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 20:37:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E328E5490C;
-	Mon,  1 Apr 2024 20:34:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="YoPSAsag"
-Received: from mail-pj1-f45.google.com (mail-pj1-f45.google.com [209.85.216.45])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 484C15579A;
+	Mon,  1 Apr 2024 20:34:50 +0000 (UTC)
+Received: from mail-pf1-f169.google.com (mail-pf1-f169.google.com [209.85.210.169])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DE0CD5B05E;
-	Mon,  1 Apr 2024 20:34:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B2DD941A81;
+	Mon,  1 Apr 2024 20:34:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.169
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712003663; cv=none; b=UFYfrC9TIpyPIfxa/F5+Xjaoho2mPr1df5Ex09txbP9w6jF5VbrBoz0aPNTM36Jk+qXtMJmy0RrWXJS4ZqOiffQV3j1uD0z+Od4DTP+a8mXfIBgwDfSrc1o1K8fBRPaRWJc+HIWzS0x/zSBVnOL5EPR0Xzomcs9UhrKV7z7RqlA=
+	t=1712003689; cv=none; b=uvOJvFk6TxGHGDF8R9TY3KSV5UZi1zOxSGWUrmkAEKyCBgSMN7xIsE+wzbtvENHKG3GJqGoSZRu7B0M8Yp8VxKxaIBSBRUuwwPost9MUHplqBH0gUzdACujcGa1wJctCHQtO74L6EQBh2lCePDFEQt6Xg2TiIyXgx/at2wHpivg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712003663; c=relaxed/simple;
-	bh=IXvnhxI2pXQ52Hg1YEyiDW9h4z8TaCL/BxY7wfJZcS0=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=JIvePDtif0gkgWcQA+epRsXTVI2RJHL2sqfqGOvZ5kxmLTpmeHxhVJxyWnQTcbOJCdWD7MD2uUUGVmvnpuFhPcHrhVhAdIBPK6f4YUwf+r/gXMLOFyqcUMLXgfia/Ff8FSN1dAjY2gRf4KnXM4H+7SnmjQit8jHw6xnMceNQc6U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=YoPSAsag; arc=none smtp.client-ip=209.85.216.45
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+	s=arc-20240116; t=1712003689; c=relaxed/simple;
+	bh=zTb10yAyJzSUvw4jcT+sRrqI5txFvClYEey9vEoTK7w=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=hDIYxzuT8RcYDdB96wKTXd3dVxsXtMDcXcsLZZP5AhMF66sYI8KfLoL8dSxHEeytNsKen9Ri/qZxMo1jqb9+8VVHGypJGwopgEQ8KxBgCdE8EjWR+qPqK2HogbEd5w/ZH/Vgk5fz4nFLeGxXiAJvwkq0UqZjwK2Hd/APYqGsPWE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.210.169
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f45.google.com with SMTP id 98e67ed59e1d1-2a2559fe607so8603a91.2;
-        Mon, 01 Apr 2024 13:34:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1712003661; x=1712608461; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=6FwFD4JYxhcIwnfKCG0w6eqnbQcVPaedMXbOYVzksxk=;
-        b=YoPSAsagXEVv+Jc7kP6MxShjqOdDqe+VO9aCpRwi/5RHGM80m26EEfM7HuiIpmeBjD
-         1WiMLuqg78XtnHcAgzZEAuU3oR83kdc7AQvSjRpL9Cud3Br/rKr7+Wb6H4UjnCXlS+Bx
-         VTlG+gkGeOPVzC43eQU0M8mp69rh/kA/2gcdO9m4B36IV18ACJ1Wn1OCqd+0M7g1GuKM
-         8PjTMBf0mo7pO7AtMeSWhq0ZEoamLpaSWMjzxtS8RJFggKonCQCwQpkCTKeCKZ2dwZ/o
-         8nNPIGO9s70d/zt+oyJYFJUh/rqwGvH1t09dS3Hd83ghpdr7ivyKi4+wHFHRjPRjLgRS
-         qHDQ==
+Received: by mail-pf1-f169.google.com with SMTP id d2e1a72fcca58-6e7425a6714so3608952b3a.0;
+        Mon, 01 Apr 2024 13:34:47 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712003661; x=1712608461;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=6FwFD4JYxhcIwnfKCG0w6eqnbQcVPaedMXbOYVzksxk=;
-        b=iR7zHqFiiyzbBOlCJvPNzktlIJzpG4VySeFm04cjmmtP9UOuFq4XnRAsOoHaJp4h+J
-         jLnGhb1E2s8zKT6xxJ/W2yDbXzSoRapXCMT2t9YCrTAps7kaB8aiKLacbjlriGMvplXL
-         /0/JJXNKS4EJdhjVqoT7z/LprwTXuaIayOZR2JtLIv6LaJpWdtzQFS9WFu//yctJLcyN
-         couxiQQEnemXltNye4QBBq1GRFPuS4TixtcpOzSxPPJoM2ZRa4YMO/UzBOr4bj0E0e+7
-         Cx9CeQhfM9oGTihtW+uuES50wm6OEIV6uMWAjao8p/I4+MJYYP5mZAbUKl8cUNQG6XMC
-         r7bw==
-X-Forwarded-Encrypted: i=1; AJvYcCVijmAC6hI1rV/YvudFPTiltf5agSF79OSHNzv95cuwh9Aj6iQOxMTdtO1hOlOUQB/WIjAG0/MxOW9cWGRdbfLncycK3uSBquaqPJ8kULba3mzkxj743HSC7Utpdf5M2II3CGsL
-X-Gm-Message-State: AOJu0Yyi1azFuVEiK3zfRl5Ggk1c4b2pJGiIM9vNrNZPc8HQtE9XhVvk
-	VfNcytFS/6om6qKXPQjTy/3r3J1TeVzWrAxWx0qjeAgpC8909yGf
-X-Google-Smtp-Source: AGHT+IFTxaQptQJCitxa2lQjF/XzI2d/woGr+xEoVq2OhhXdQPW+leNIfgcvPM0k+RuUFB8jtLnLHw==
-X-Received: by 2002:a17:90a:5c86:b0:29f:67ad:7db0 with SMTP id r6-20020a17090a5c8600b0029f67ad7db0mr9768772pji.11.1712003660956;
-        Mon, 01 Apr 2024 13:34:20 -0700 (PDT)
-Received: from [10.67.48.245] ([192.19.223.252])
-        by smtp.googlemail.com with ESMTPSA id u1-20020a17090aae8100b0029b9954a02asm9598386pjq.0.2024.04.01.13.34.17
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 01 Apr 2024 13:34:20 -0700 (PDT)
-Message-ID: <4bea0061-09e7-42ef-84b1-735682c5f65d@gmail.com>
-Date: Mon, 1 Apr 2024 13:34:15 -0700
+        d=1e100.net; s=20230601; t=1712003687; x=1712608487;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=XXVaY3G/d6Eq8xnia9iWtACY1/LzEUfU4H07xndy94A=;
+        b=DLQyj64NvAgTOAZz4W3ipVLdq1YnIF5LHcdj8j6xvaI0pgYL6EJkjx6swFiyJbKwY6
+         eS56Cq9TcNM71HA1aQSddPvjh0Qw6QLjPsKPhi0o5NQ4Pj51lqr7bpg7ckcCgcztMIUS
+         doRoZJSAWjVFfzPI4alvlJwRP28zED7EFKI83tzUzksC0kWRLKQZJYTCIRnd/ZG7wmN5
+         rcsRw/cAVyRDZJ3nZwMtmESUOXkU4KlNxuy3APsEY3lqCERs7o6ZeI//ZeUOgKnnHqFV
+         Wi76FBPKQwCqPlqJrZBtiv72AZ3HfrS75um7DpYWKJksJXyQehj5636nghK5Qd9zp49S
+         Rp3A==
+X-Forwarded-Encrypted: i=1; AJvYcCWa7HKp0yXiAax/spoBP6iveuks3O6PWgKzESwAiuyLBzU84mK1KhI+9LbHVSNnpNpOH/EtDSL4+gdxhc/8kX4M2/Uy6kZGZ93iMPDkGMOqRgRoWajhNG3aYuqqtoofaOMMl0egml6lorqsIItITw==
+X-Gm-Message-State: AOJu0YyPbuqkmkpmx9FY7GY6QGTeWfIZE6npIHM6/+NU9NasLvIf0CYT
+	QOEAkZ5u/E6PFGFR1Ogzqu7KcDKPP7ENHqN7xv/joep+1c8JW53/RblF1hh3Gth4AxDa/GVE8Ps
+	/PNs7rnNfLKsZ5hDTPiQE9c//1gNu1ljJ
+X-Google-Smtp-Source: AGHT+IEqBSAtyGt0ACrfNdnK3Wd1mX3wUGY10DvKxFWW1xSE2i9I3WitM3FBROnIDGG1V5FEw2xr0bDvSYih6dvIMQ0=
+X-Received: by 2002:a05:6a20:9f0b:b0:1a3:72d6:641e with SMTP id
+ mk11-20020a056a209f0b00b001a372d6641emr11951449pzb.20.1712003686951; Mon, 01
+ Apr 2024 13:34:46 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 6.6 000/396] 6.6.24-rc1 review
-Content-Language: en-US
-To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, stable@vger.kernel.org
-Cc: patches@lists.linux.dev, linux-kernel@vger.kernel.org,
- torvalds@linux-foundation.org, akpm@linux-foundation.org,
- linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
- lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
- sudipm.mukherjee@gmail.com, srw@sladewatkins.net, rwarsow@gmx.de,
- conor@kernel.org, allen.lkml@gmail.com, broonie@kernel.org
-References: <20240401152547.867452742@linuxfoundation.org>
-From: Florian Fainelli <f.fainelli@gmail.com>
-In-Reply-To: <20240401152547.867452742@linuxfoundation.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+References: <20240329191224.1046866-1-weilin.wang@intel.com> <20240329191224.1046866-2-weilin.wang@intel.com>
+In-Reply-To: <20240329191224.1046866-2-weilin.wang@intel.com>
+From: Namhyung Kim <namhyung@kernel.org>
+Date: Mon, 1 Apr 2024 13:34:35 -0700
+Message-ID: <CAM9d7chzKCM1erCd4aBoGupPrwvY6Siy1mJ60_1XXZP-Bz8d+g@mail.gmail.com>
+Subject: Re: [RFC PATCH v6 1/5] perf stat: Parse and find tpebs events when
+ parsing metrics to prepare for perf record sampling
+To: weilin.wang@intel.com
+Cc: Ian Rogers <irogers@google.com>, Arnaldo Carvalho de Melo <acme@kernel.org>, 
+	Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, 
+	Alexander Shishkin <alexander.shishkin@linux.intel.com>, Jiri Olsa <jolsa@kernel.org>, 
+	Adrian Hunter <adrian.hunter@intel.com>, Kan Liang <kan.liang@linux.intel.com>, 
+	linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	Perry Taylor <perry.taylor@intel.com>, Samantha Alt <samantha.alt@intel.com>, 
+	Caleb Biggers <caleb.biggers@intel.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 4/1/24 08:40, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 6.6.24 release.
-> There are 396 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-> 
-> Responses should be made by Wed, 03 Apr 2024 15:24:46 +0000.
-> Anything received after that time might be too late.
-> 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patch-6.6.24-rc1.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-6.6.y
-> and the diffstat can be found below.
-> 
-> thanks,
-> 
-> greg k-h
+Hello Weilin,
 
-On ARCH_BRCMSTB using 32-bit and 64-bit ARM kernels, build tested on 
-BMIPS_GENERIC:
+On Fri, Mar 29, 2024 at 12:12=E2=80=AFPM <weilin.wang@intel.com> wrote:
+>
+> From: Weilin Wang <weilin.wang@intel.com>
+>
+> Metrics that use tpebs values would use the R as retire_latency modifier =
+in
+> formulas. We put all these events into a list and pass the list to perf
+> record to collect their retire latency value.
+>
+> Signed-off-by: Weilin Wang <weilin.wang@intel.com>
+> Reviewed-by: Ian Rogers <irogers@google.com>
+> ---
+>  tools/perf/builtin-stat.c     | 38 +++++++++++++--
+>  tools/perf/util/metricgroup.c | 88 +++++++++++++++++++++++++++++------
+>  tools/perf/util/metricgroup.h | 10 +++-
+>  tools/perf/util/stat.h        |  2 +
+>  4 files changed, 119 insertions(+), 19 deletions(-)
+>
+> diff --git a/tools/perf/builtin-stat.c b/tools/perf/builtin-stat.c
+> index 6bba1a89d030..6291e1e24535 100644
+> --- a/tools/perf/builtin-stat.c
+> +++ b/tools/perf/builtin-stat.c
+> @@ -162,6 +162,7 @@ static struct perf_stat_config stat_config =3D {
+>         .ctl_fd                 =3D -1,
+>         .ctl_fd_ack             =3D -1,
+>         .iostat_run             =3D false,
+> +       .tpebs_events           =3D LIST_HEAD_INIT(stat_config.tpebs_even=
+ts),
+>  };
+>
+>  static bool cpus_map_matched(struct evsel *a, struct evsel *b)
+> @@ -686,6 +687,12 @@ static enum counter_recovery stat_handle_error(struc=
+t evsel *counter)
+>         return COUNTER_FATAL;
+>  }
+>
+> +static int __run_perf_record(void)
+> +{
+> +       pr_debug("Prepare perf record for retire_latency\n");
+> +       return 0;
+> +}
+> +
+>  static int __run_perf_stat(int argc, const char **argv, int run_idx)
+>  {
+>         int interval =3D stat_config.interval;
+> @@ -703,6 +710,16 @@ static int __run_perf_stat(int argc, const char **ar=
+gv, int run_idx)
+>         int err;
+>         bool second_pass =3D false;
+>
+> +       /* Prepare perf record for sampling event retire_latency before f=
+ork and
+> +        * prepare workload */
+> +       if (stat_config.tpebs_event_size > 0) {
+> +               int ret;
+> +
+> +               ret =3D __run_perf_record();
+> +               if (ret)
+> +                       return ret;
+> +       }
+> +
+>         if (forks) {
+>                 if (evlist__prepare_workload(evsel_list, &target, argv, i=
+s_pipe, workload_exec_failed_signal) < 0) {
+>                         perror("failed to prepare workload");
+> @@ -2106,7 +2123,9 @@ static int add_default_attributes(void)
+>                                                 stat_config.metric_no_thr=
+eshold,
+>                                                 stat_config.user_requeste=
+d_cpu_list,
+>                                                 stat_config.system_wide,
+> -                                               &stat_config.metric_event=
+s);
+> +                                               &stat_config.metric_event=
+s,
+> +                                               &stat_config.tpebs_events=
+,
+> +                                               &stat_config.tpebs_event_=
+size);
 
-Tested-by: Florian Fainelli <florian.fainelli@broadcom.com>
--- 
-Florian
+Maybe it'd be better to pass the stat_config, but it can be done later.
 
+
+>         }
+>
+>         if (smi_cost) {
+> @@ -2139,7 +2158,9 @@ static int add_default_attributes(void)
+>                                                 stat_config.metric_no_thr=
+eshold,
+>                                                 stat_config.user_requeste=
+d_cpu_list,
+>                                                 stat_config.system_wide,
+> -                                               &stat_config.metric_event=
+s);
+> +                                               &stat_config.metric_event=
+s,
+> +                                               &stat_config.tpebs_events=
+,
+> +                                               &stat_config.tpebs_event_=
+size);
+>         }
+>
+>         if (topdown_run) {
+> @@ -2173,7 +2194,9 @@ static int add_default_attributes(void)
+>                                                 /*metric_no_threshold=3D*=
+/true,
+>                                                 stat_config.user_requeste=
+d_cpu_list,
+>                                                 stat_config.system_wide,
+> -                                               &stat_config.metric_event=
+s) < 0)
+> +                                               &stat_config.metric_event=
+s,
+> +                                               &stat_config.tpebs_events=
+,
+> +                                               &stat_config.tpebs_event_=
+size) < 0)
+>                         return -1;
+>         }
+>
+> @@ -2214,7 +2237,9 @@ static int add_default_attributes(void)
+>                                                         /*metric_no_thres=
+hold=3D*/true,
+>                                                         stat_config.user_=
+requested_cpu_list,
+>                                                         stat_config.syste=
+m_wide,
+> -                                                       &stat_config.metr=
+ic_events) < 0)
+> +                                                       &stat_config.metr=
+ic_events,
+> +                                                       /*&stat_config.tp=
+ebs_events=3D*/NULL,
+> +                                                       /*stat_config.tpe=
+bs_event_size=3D*/0) < 0)
+>                                 return -1;
+>
+>                         evlist__for_each_entry(metric_evlist, metric_evse=
+l) {
+> @@ -2736,6 +2761,7 @@ int cmd_stat(int argc, const char **argv)
+>                 }
+>         }
+>
+> +
+>         /*
+>          * Metric parsing needs to be delayed as metrics may optimize eve=
+nts
+>          * knowing the target is system-wide.
+> @@ -2748,7 +2774,9 @@ int cmd_stat(int argc, const char **argv)
+>                                                 stat_config.metric_no_thr=
+eshold,
+>                                                 stat_config.user_requeste=
+d_cpu_list,
+>                                                 stat_config.system_wide,
+> -                                               &stat_config.metric_event=
+s);
+> +                                               &stat_config.metric_event=
+s,
+> +                                               &stat_config.tpebs_events=
+,
+> +                                               &stat_config.tpebs_event_=
+size);
+>
+>                 zfree(&metrics);
+>                 if (ret) {
+> diff --git a/tools/perf/util/metricgroup.c b/tools/perf/util/metricgroup.=
+c
+> index 79ef6095ab28..8e007d60af91 100644
+> --- a/tools/perf/util/metricgroup.c
+> +++ b/tools/perf/util/metricgroup.c
+> @@ -277,7 +277,8 @@ static bool contains_metric_id(struct evsel **metric_=
+events, int num_events,
+>   */
+>  static int setup_metric_events(const char *pmu, struct hashmap *ids,
+>                                struct evlist *metric_evlist,
+> -                              struct evsel ***out_metric_events)
+> +                              struct evsel ***out_metric_events,
+> +                              size_t tpebs_event_size)
+>  {
+>         struct evsel **metric_events;
+>         const char *metric_id;
+> @@ -286,7 +287,7 @@ static int setup_metric_events(const char *pmu, struc=
+t hashmap *ids,
+>         bool all_pmus =3D !strcmp(pmu, "all") || perf_pmus__num_core_pmus=
+() =3D=3D 1 || !is_pmu_core(pmu);
+>
+>         *out_metric_events =3D NULL;
+> -       ids_size =3D hashmap__size(ids);
+> +       ids_size =3D hashmap__size(ids) - tpebs_event_size;
+>
+>         metric_events =3D calloc(ids_size + 1, sizeof(void *));
+>         if (!metric_events)
+> @@ -323,6 +324,7 @@ static int setup_metric_events(const char *pmu, struc=
+t hashmap *ids,
+>                 }
+>         }
+>         if (matched_events < ids_size) {
+> +               pr_debug("Error: matched_events =3D %lu, ids_size =3D %lu=
+\n", matched_events, ids_size);
+>                 free(metric_events);
+>                 return -EINVAL;
+>         }
+> @@ -668,7 +670,9 @@ static int decode_all_metric_ids(struct evlist *perf_=
+evlist, const char *modifie
+>  static int metricgroup__build_event_string(struct strbuf *events,
+>                                            const struct expr_parse_ctx *c=
+tx,
+>                                            const char *modifier,
+> -                                          bool group_events)
+> +                                          bool group_events,
+> +                                          struct list_head *tpebs_events=
+ __maybe_unused,
+> +                                          size_t *tpebs_event_size)
+>  {
+>         struct hashmap_entry *cur;
+>         size_t bkt;
+> @@ -681,8 +685,56 @@ static int metricgroup__build_event_string(struct st=
+rbuf *events,
+>         hashmap__for_each_entry(ctx->ids, cur, bkt) {
+>                 const char *sep, *rsep, *id =3D cur->pkey;
+>                 enum perf_tool_event ev;
+> +               /*
+> +                * Parse and search for event name with retire_latency mo=
+difier R.
+> +                * If found, put event name into the tpebs_events list. T=
+his list
+> +                * of events will be passed to perf record for sampling t=
+o get
+> +                * their reitre_latency value.
+> +                * Search for ":R" in event name without "@". Search for =
+the
+> +                * last "@R" in event name with "@".
+
+Hmm.. it seems you look for an 'R' modifier and then change it to 'p', righ=
+t?
+Why not use strrchr to check ':' or '@' and if it's followed by 'R'?
+
+Is the 'R' modifier only used in the metric expressions?  Also please menti=
+on
+why some events have "@" in the name and others don't.
+
+
+> +                */
+> +               char *p =3D strstr(id, ":R");
+> +               char *p1 =3D strstr(id, "@R");
+> +
+> +               if (p =3D=3D NULL && p1) {
+> +                       p =3D strstr(p1+1, "@R");
+> +                       if (p =3D=3D NULL)
+> +                               p =3D p1;
+> +                       p =3D p+1;
+> +               }
+> +
+> +               if (p) {
+> +                       char *name;
+> +                       char *at;
+> +                       struct tpebs_event *new_event =3D malloc(sizeof(s=
+truct tpebs_event));
+>
+> -               pr_debug("found event %s\n", id);
+> +                       if (!new_event)
+> +                               return -ENOMEM;
+> +
+> +                       new_event->tpebs_name =3D strdup(id);
+> +                       *p =3D '\0';
+
+I think 'p' points to the 'id' string ("cur->pkey").  Is it ok to
+change it here?
+I guess you may want to do it on the tpebs_name.
+
+Thanks,
+Namhyung
+
+
+> +                       name =3D malloc(strlen(id) + 2);
+> +                       if (!name)
+> +                               return -ENOMEM;
+> +
+> +                       at =3D strchr(id, '@');
+> +                       if (at !=3D NULL) {
+> +                               *at =3D '/';
+> +                               at =3D strchr(id, '@');
+> +                               *at =3D '/';
+> +                               strcpy(name, id);
+> +                               strcat(name, "p");
+> +                       } else {
+> +                               strcpy(name, id);
+> +                               strcat(name, ":p");
+> +                       }
+> +                       new_event->name =3D name;
+> +                       *tpebs_event_size +=3D 1;
+> +                       pr_debug("retire_latency required, tpebs_event_si=
+ze=3D%lu, new_event=3D%s\n",
+> +                               *tpebs_event_size, new_event->name);
+> +                       list_add_tail(&new_event->nd, tpebs_events);
+> +                       continue;
+> +               }
+>
 
