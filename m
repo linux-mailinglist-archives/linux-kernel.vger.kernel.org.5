@@ -1,183 +1,191 @@
-Return-Path: <linux-kernel+bounces-126459-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-126460-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id ABCFD89384A
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 08:16:48 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6DE8389384F
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 08:19:01 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6367C281916
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 06:16:47 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 08EC01F21339
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 06:19:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C9766944E;
-	Mon,  1 Apr 2024 06:16:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6E15B8F7A;
+	Mon,  1 Apr 2024 06:18:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=windriver.com header.i=@windriver.com header.b="FHoaR+dr"
-Received: from mx0a-0064b401.pphosted.com (mx0a-0064b401.pphosted.com [205.220.166.238])
+	dkim=pass (1024-bit key) header.d=tw.synaptics.com header.i=@tw.synaptics.com header.b="pqAeAYqm"
+Received: from NAM11-DM6-obe.outbound.protection.outlook.com (mail-dm6nam11on2113.outbound.protection.outlook.com [40.107.223.113])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D71782595;
-	Mon,  1 Apr 2024 06:16:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.166.238
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711952198; cv=none; b=J1tuXCYZupSM3VdR7MiFNpLS3PaWSRUGRM/6OMdVqt9aWu1TP4sNEzhlmS1ePn+vnguJgViQtlBFKjpSfdu3UrpUpvyliIckzfnz8IPNtBgnpF1c5hbpi00+U5akWqy3DI6ISgeqe69fVfJVdK5oadlqF7/WSJBOqDR0S0tu35s=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711952198; c=relaxed/simple;
-	bh=Gf16/3ATwW5ymrwfxNotUxyAiehv1Nj7wPTQDzI+o1E=;
-	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=G6NNIoQdHL5kDf4rYEbprYhZOZroZ6gf1mvRW70m5HIhWvmGShgDU49XDPpUDxCNrCJfDiwFLbi+4qW8Aid9Qu7ZX4gp4eAM6dl6gWH1BbCG+EVVwbENCCBoWsdGkxqdFcRaaMOTRRWX2B9FYCH12jEIxcGk4+Xb0CKvYWyPYmg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=windriver.com; spf=pass smtp.mailfrom=windriver.com; dkim=pass (2048-bit key) header.d=windriver.com header.i=@windriver.com header.b=FHoaR+dr; arc=none smtp.client-ip=205.220.166.238
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=windriver.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=windriver.com
-Received: from pps.filterd (m0250810.ppops.net [127.0.0.1])
-	by mx0a-0064b401.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 4314icou027716;
-	Sun, 31 Mar 2024 23:16:27 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=windriver.com;
-	 h=from:to:cc:subject:date:message-id:in-reply-to:references
-	:mime-version:content-transfer-encoding:content-type; s=
-	PPS06212021; bh=b94hqPNHzJ06xjr7BdMuOoe9TJRdHoixRFvvRcdazSY=; b=
-	FHoaR+drR9DxOd9KlI3Fm61PX0vt2htMGp3sC33+cd3bOC2vkt4V/z9Se3c3ljqx
-	Zf5sMa216+TUFCcKDm4KUiwU8KgLOg8ZFj55lxbRZOJDz2sAbwfVgUTFPFW22zNf
-	kcrkTfwoLUTo9FUkCme8gUqokOktRj4KGl2vMaMbnUCY4YMKct71jXfHXwePtP0z
-	wZzwgSa3S7qQ9zVNuO7HKDLA1YjLLcB27gO4k3a+BQEiDNbKXxBPf0WvH9W86rrL
-	YRu1k9Cb+RtivWJEN6VLkjAFdEgBLtpIgaeBjkpMxQoUZCyDfwDM25kY7yclw2jL
-	Vbu1j2WVrkVb0ZKKsTxYOQ==
-Received: from ala-exchng02.corp.ad.wrs.com (ala-exchng02.wrs.com [147.11.82.254])
-	by mx0a-0064b401.pphosted.com (PPS) with ESMTPS id 3x6e10heu2-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-	Sun, 31 Mar 2024 23:16:26 -0700 (PDT)
-Received: from ALA-EXCHNG02.corp.ad.wrs.com (147.11.82.254) by
- ALA-EXCHNG02.corp.ad.wrs.com (147.11.82.254) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.37; Sun, 31 Mar 2024 23:16:26 -0700
-Received: from pek-lpd-ccm6.wrs.com (147.11.136.210) by
- ALA-EXCHNG02.corp.ad.wrs.com (147.11.82.254) with Microsoft SMTP Server id
- 15.1.2507.37 via Frontend Transport; Sun, 31 Mar 2024 23:16:24 -0700
-From: Lizhi Xu <lizhi.xu@windriver.com>
-To: <syzbot+fa7b3ab32bcb56c10961@syzkaller.appspotmail.com>
-CC: <linux-fsdevel@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <syzkaller-bugs@googlegroups.com>
-Subject: [PATCH] fs/hfsplus: fix in hfsplus_read_wrapper
-Date: Mon, 1 Apr 2024 14:16:19 +0800
-Message-ID: <20240401061619.2995409-1-lizhi.xu@windriver.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <0000000000001126200614f5c9c4@google.com>
-References: <0000000000001126200614f5c9c4@google.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 042848F51;
+	Mon,  1 Apr 2024 06:18:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.223.113
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1711952332; cv=fail; b=TV81ZW6p3C5D+KhfM+CyDRHiNTVlZAp/Cu7kopSwHuDl+0rS0HPCrNlWM1c3XMumNkDF1HPxLtAbLtxofisxMVhiDLIVdgxvn7Oo6xgisLJQ+fqrYDZ4asDAShQqXpx3YE/8MrSEMjVVe/qMfavOdZlzgldEHgW11WVs/NK1OOQ=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1711952332; c=relaxed/simple;
+	bh=fMueFQ3ukYd5ZNbdj20ZNi1fWSobiLPgSS2PurZ8CeU=;
+	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
+	 Content-Type:MIME-Version; b=KyzMqWeFO5BWvDs8g0cl4Gz9jJT2fPqi/+U5g3yDdVdBV9NtTLeQTWxtTGoOwVUpjCdAd6VIB9lcBF4ovEX9+vG3PvnjtM4ksveZmt/QwRQjKdEY34kPA5jUknmaULsNW5QkEn9kWX/sphgAoJov9c8B0Lp8H+looG87n0zaDCI=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=tw.synaptics.com; spf=pass smtp.mailfrom=tw.synaptics.com; dkim=pass (1024-bit key) header.d=tw.synaptics.com header.i=@tw.synaptics.com header.b=pqAeAYqm; arc=fail smtp.client-ip=40.107.223.113
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=tw.synaptics.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=tw.synaptics.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=eyEhO94JmVGPM3Y/6sqAFhGdpWJy+mqK2CRLKUlzL/nHCG3SbMkjvjvuvFzT1F4qiRvoTbCUYVMTmTu2D+RNSRhJ0s/eqPSfzOX42F2aAslB0o2p4tKIyDMsTTbVRtneRtJrTeaIQIjiNJDwKmdh3sSawsPQjgeNewr7j8hpDynxzh7BVTjTonHbSo413Lua8C7ovsLE2q0GUMLVqgx84INH5vzYdDxyDr1Yjtb2mKgRwItD09zPavxL9rZQ6qcwgUVpi0aiPWeFgjJs/fvFmMw2G4eJ2Oj0QRXLObnfbBtfHSo69XhGnsJe7L2who04BUya205GitCPozQ1UIjoYA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=x9aXyX+bJYqikQMHQdr4lGsmmsbIACKenehEp5o0BB0=;
+ b=SmKkNWdp9XtYHyIF3frlsnP/K8aeaXr5cIJwYeDUSnb3v2U2eI5YSgqBYgbgXXyuDL1UpyKldljh7UU/EgY/b7L7Bj2vHipa1CihlVgYKNicUGLGIXsNJfSS+mh9uNaYm4iRz1q9IGe2qx63zn8qPc/8QWdTp2kv7fTp13QAQtHxc7MpQIIemKxr13yZxImJvs2OkGLCM+0a8Hte6PUK4z3NEEsPPehX1KeMfh9YU0ovAvJA1HBue9PwpZT4U6wOdg/lyM2IiLBZEOSWXtqQFPx72F7ttm6DfwdSw808xnuKkepRe+/a23PyvunlJcE3/TISuMnbVKxElOY0XKH5tA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=tw.synaptics.com; dmarc=pass action=none
+ header.from=tw.synaptics.com; dkim=pass header.d=tw.synaptics.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=tw.synaptics.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=x9aXyX+bJYqikQMHQdr4lGsmmsbIACKenehEp5o0BB0=;
+ b=pqAeAYqmm/aHABjKODS1cHPBOD+WoWBgdgAWn3Pfl2vlLv44o9891V9GIGBp8slCQNWLK8lvKiWxnmscUxyWyr1SBb6Lv4L+0q9lCk1ivYu3KCaX26MrNiDH60JLJsklqPeBnASYQYiug7NgHMhbuPshojaLb0UMQ99Kk9zL5fA=
+Received: from MW4PR03MB6651.namprd03.prod.outlook.com (2603:10b6:303:12e::17)
+ by MN2PR03MB5343.namprd03.prod.outlook.com (2603:10b6:208:1e9::21) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7409.46; Mon, 1 Apr
+ 2024 06:18:46 +0000
+Received: from MW4PR03MB6651.namprd03.prod.outlook.com
+ ([fe80::ea0d:c340:3e10:c59a]) by MW4PR03MB6651.namprd03.prod.outlook.com
+ ([fe80::ea0d:c340:3e10:c59a%7]) with mapi id 15.20.7409.042; Mon, 1 Apr 2024
+ 06:18:46 +0000
+From: Marge Yang <Marge.Yang@tw.synaptics.com>
+To: "friederhannenheim@riseup.net" <friederhannenheim@riseup.net>, Dmitry
+ Torokhov <dmitry.torokhov@gmail.com>, Scott Lin <scott.lin@tw.synaptics.com>
+CC: "linux-input@vger.kernel.org" <linux-input@vger.kernel.org>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Vincent Huang
+	<Vincent.huang@tw.synaptics.com>
+Subject: RE: [PATCH] input/touchscreen: synaptics_tcm_oncell: add driver
+Thread-Topic: [PATCH] input/touchscreen: synaptics_tcm_oncell: add driver
+Thread-Index: AQHagTjnr0tKQifYmUyrnsfS+tAKTbFQwOmAgAI0AdA=
+Date: Mon, 1 Apr 2024 06:18:46 +0000
+Message-ID:
+ <MW4PR03MB66512E92870E3700B64B4F8AA33F2@MW4PR03MB6651.namprd03.prod.outlook.com>
+References: <20240327214643.7055-1-friederhannenheim@riseup.net>
+ <ZgWuq1bDWNRtrImD@google.com> <5dcfdc9c77b1dcd73815b8eaec8a4717@riseup.net>
+In-Reply-To: <5dcfdc9c77b1dcd73815b8eaec8a4717@riseup.net>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+x-dg-ref:
+ PG1ldGE+PGF0IGFpPSIwIiBubT0iYm9keS50eHQiIHA9ImM6XHVzZXJzXG15YW5nXGFwcGRhdGFccm9hbWluZ1wwOWQ4NDliNi0zMmQzLTRhNDAtODVlZS02Yjg0YmEyOWUzNWJcbXNnc1xtc2ctYWZmODdiN2YtZWZlZi0xMWVlLTgzMzEtZjg1OTcxNDk5Y2RjXGFtZS10ZXN0XGFmZjg3YjgwLWVmZWYtMTFlZS04MzMxLWY4NTk3MTQ5OWNkY2JvZHkudHh0IiBzej0iNDAyOCIgdD0iMTMzNTY0MjU5MjM0OTExMTQ0IiBoPSJ5M25OWkE4dnNWeWt2SjAvZnhMTGRaT0l6ZnM9IiBpZD0iIiBibD0iMCIgYm89IjEiLz48L21ldGE+
+x-dg-rorf: true
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: MW4PR03MB6651:EE_|MN2PR03MB5343:EE_
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info:
+ zYKN+DoiQJcb0xDZKLCkhkn06L8hcEbCUZ++FAHdqK6vglp/4ftVqliUQzIl2k+5Gz3T6BG4KBv9SOzLuQk6k2mlco9nOdSvSFWbJmCK1DjVWYxmPvsijfWLshORkOVW0VNCHQTtggmgDQ8TcqzgCZVm3BCl/gkuetdFOjNLLrXQ3vZPkPNSiJ3vhRJdtF2UHY/VZlIqbaF8qzC78e3RyG4fBOPHpJjwUMho1HtQdHOXC0HpfqtGvRHERtkkF7Q6fQsii6pv+8br2gutohjyVpjEYMkOdDD7rM/AC9pegElPvSIzxgRXOzlgxFE8kU09Hx5cxffVPvNEMuqhl2gKDSp9gNTemxmxsgeAoMCunMc/kV1mrtdj7JVvLwNCcqW8nvNvjxhgoRD+bwr5wo2nPSGr8jQZ53YI34UaW44s0be2RL8KTeCwII0xTzQvYBwRw81uM3Hb9m4b9XiI+uUopX7fbz5yS9hOWuRN+cAhCHN3rV0Qmqkm1UNvIexdkc7e5LH3jbIUfLcogguBe0rIgBrgFvZdv0zR5P8QXv8bSFombzWbEfmg6UQdLPv/VmgQfOui97+IUoyAYlrLd/2jxPnCURLE+TgQY3lfWMTBmHE=
+x-forefront-antispam-report:
+ CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MW4PR03MB6651.namprd03.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366007)(376005)(1800799015);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0:
+ =?us-ascii?Q?LAfsHkq8UU8jFw+V0zqu/ZtT3hDoiX9dvmiiWkb+lAjzbubITXztaqJa/idh?=
+ =?us-ascii?Q?jUygOhm3YqKLFM5Ls5+WSY7Aa1veuK9lfhAT8XS4gvQIYOwUf18KZIbok4P7?=
+ =?us-ascii?Q?JfQITKiPe8POoi9rqLSn8cssz15J7kxnnuzx9cN7yJiIIZ9GMcyExQjhAVUU?=
+ =?us-ascii?Q?B3QweItGtXJIyfzmMPNKDRVl4+HcKTTkLN3l3YAEA3BAgYSapYQJEYbB2Fx5?=
+ =?us-ascii?Q?k5pvHQCZF86sNK1JIwUJaA3MKUzfKWnqj/SMHTIKlX6ls7Uk/gW6Q9i/FBp2?=
+ =?us-ascii?Q?0QBUmbKjeSz1MgkxpeGJIBOGkNWCzNkFTM7eqFysiCLfUXmiPGD+v3hGopxv?=
+ =?us-ascii?Q?Qf8ukef3xtL9pB1W0XnqLJImAGZ61A1gA4vJIA1j/YZQoGe8QDkp5OtY7RSC?=
+ =?us-ascii?Q?vcd9nxd6UpufobsAp1XnEhNJbCrcTrYukX73EUH2LO40eLYsydJ5zt/z5VTK?=
+ =?us-ascii?Q?mIqjLKGE3aFH5eYNMnAGxrPdGDWtgeDfGk4NwSupDlCJas9831wkVGzlXSFx?=
+ =?us-ascii?Q?vCxeV5TfI+C7QQCQ4spB4uWHhdlQrOOoXYA2wo4ZZORrdOK6psMnt2Nw5Oxn?=
+ =?us-ascii?Q?zk4b/FV7foUhoCULMkRf1o6h6NsK5/IJuOb7/jDmgWLLwShrRjT4t+rIsEkS?=
+ =?us-ascii?Q?NIBrCUqr93pUits2oRjlctiYATsL/1HwmxGDpvIkAnkDYwCNncgSJ+e1ESUA?=
+ =?us-ascii?Q?6kyZE01WYv3/rISfSNTw58iccSx05Io5bert392QfyaoqRS1CSDKgVoBOWg3?=
+ =?us-ascii?Q?SpLhxP6mWcpw0i/yARzSIsHQ+ePwYQ46O0GSDMb+Uml9hBaChMz5i4htvOCk?=
+ =?us-ascii?Q?fOnc8qBqKh5qyVgVGh5jEqdAtsD7BdNh7wqtlhi08xY6Cfv2VEQWpODIzLEo?=
+ =?us-ascii?Q?gC6qDqlVM34O2l1MDHD0jeD5keYMDoBJ5WXQArhUT7TwzIO3BSSurq7uITmo?=
+ =?us-ascii?Q?9eO0gB/BvJhfuksMaIWrlKp0cgY7fUqNqMyABIe/6GL/kN8ITHh7B4hdBPPU?=
+ =?us-ascii?Q?JSfVNo6VXCUoGfRiWXa8VV3VEMAtXGAKeqPG/YVuKoi1zCaYYk0WG6kEhOql?=
+ =?us-ascii?Q?U78NZSxmfR2/kDS3yE00f7aYhE+IPaF0uDNcq8hkj5alB3kTeRSRYLx4kXwT?=
+ =?us-ascii?Q?IrKcVcW71Eisk7ni/8Lm5DLaH4zQ+Rxd+fdwpb0dIeG5fUxIYG/XXrnlr/Gl?=
+ =?us-ascii?Q?iDKZidfpanU+6nNQaNtjUYGBc0WtFqMk6pxbKR4V+yO2Czw/20KHK7+rIEa8?=
+ =?us-ascii?Q?lnZEQ44e0f2iILSKkVApyrAFucQcWIN7zd/NWK5/Ff59zkSBH4jYfzFYc/Pa?=
+ =?us-ascii?Q?Mtke3NoGL1P+vFAbc9QF6WBi00gy8BalzuDUeoP1nro3c7+19yCwM2mcDoIc?=
+ =?us-ascii?Q?W9pQxSBsNh3UFYjA9Z4DwSP2DqgBb5QN4kh3ltZCwAmBkUoR2N79PIrJKgtt?=
+ =?us-ascii?Q?ZVtdvaOBycmK2tuB9qtHC9V3EZGXk1M6iolK4W0v9dx5Y+qJdd5XJtYERScr?=
+ =?us-ascii?Q?fyWK+wjBkGvRaNzT0X1zR58s9Vqq3Srje1njWifB/5y4N7l8SZGWfdie9ggv?=
+ =?us-ascii?Q?YrCXiE8u83Pm7KvkpVg=3D?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Proofpoint-ORIG-GUID: SltEFJFXiS2Dxwb9z7AU2VZ-n3NLmiIA
-X-Proofpoint-GUID: SltEFJFXiS2Dxwb9z7AU2VZ-n3NLmiIA
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-04-01_03,2024-03-28_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
- spamscore=0 adultscore=0 clxscore=1011 phishscore=0 priorityscore=1501
- suspectscore=0 mlxscore=0 mlxlogscore=999 malwarescore=0 bulkscore=0
- impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2403210001 definitions=main-2404010044
+X-OriginatorOrg: tw.synaptics.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: MW4PR03MB6651.namprd03.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 1284f5f4-c588-4e29-4859-08dc521396b3
+X-MS-Exchange-CrossTenant-originalarrivaltime: 01 Apr 2024 06:18:46.5530
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 335d1fbc-2124-4173-9863-17e7051a2a0e
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: vT3adXTxsOOL/LJcVoG3SyulzTBiP2nn4OcAoLcM2o0zgo6otrWGkLnOXbl8oZ3WVrZz6a8OEXD7de6xKm0ArA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR03MB5343
 
-[Syzbot reported]
-BUG: KASAN: slab-use-after-free in hfsplus_read_wrapper+0xf86/0x1070 fs/hfsplus/wrapper.c:226
-Read of size 2 at addr ffff888024fba400 by task syz-executor204/5218
+Loop Scott Lin
 
-CPU: 1 PID: 5218 Comm: syz-executor204 Not tainted 6.8.0-syzkaller-08951-gfe46a7dd189e #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 02/29/2024
-Call Trace:
- <TASK>
- __dump_stack lib/dump_stack.c:88 [inline]
- dump_stack_lvl+0x116/0x1f0 lib/dump_stack.c:114
- print_address_description mm/kasan/report.c:377 [inline]
- print_report+0xc3/0x620 mm/kasan/report.c:488
- kasan_report+0xd9/0x110 mm/kasan/report.c:601
- hfsplus_read_wrapper+0xf86/0x1070 fs/hfsplus/wrapper.c:226
- hfsplus_fill_super+0x352/0x1bc0 fs/hfsplus/super.c:419
- mount_bdev+0x1e6/0x2d0 fs/super.c:1658
- legacy_get_tree+0x10c/0x220 fs/fs_context.c:662
- vfs_get_tree+0x92/0x380 fs/super.c:1779
- do_new_mount fs/namespace.c:3352 [inline]
- path_mount+0x14e6/0x1f20 fs/namespace.c:3679
- do_mount fs/namespace.c:3692 [inline]
- __do_sys_mount fs/namespace.c:3898 [inline]
- __se_sys_mount fs/namespace.c:3875 [inline]
- __x64_sys_mount+0x297/0x320 fs/namespace.c:3875
- do_syscall_x64 arch/x86/entry/common.c:52 [inline]
- do_syscall_64+0xd5/0x260 arch/x86/entry/common.c:83
- entry_SYSCALL_64_after_hwframe+0x6d/0x75
-RIP: 0033:0x7f706ca0c69a
-Code: d8 64 89 02 48 c7 c0 ff ff ff ff eb a6 e8 5e 04 00 00 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 49 89 ca b8 a5 00 00 00 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007ffcd3a1c1c8 EFLAGS: 00000286 ORIG_RAX: 00000000000000a5
-RAX: ffffffffffffffda RBX: 0000000000000000 RCX: 00007f706ca0c69a
-RDX: 0000000020000000 RSI: 0000000020000100 RDI: 00007ffcd3a1c210
-RBP: 0000000000000004 R08: 00007ffcd3a1c250 R09: 0000000000000632
-R10: 0000000000000050 R11: 0000000000000286 R12: 00007ffcd3a1c210
-R13: 00007ffcd3a1c250 R14: 0000000000080000 R15: 0000000000000003
- </TASK>
-[Fix] 
-When the logical_block_size was changed from 512 to 2048, it resulted in 
-insufficient space pre allocated to s_backup_vhdr_buf. To solve this problem, 
-move the memory allocation of s_backup_vhdr_buf to after the logical_block_size
-has been changed.
+Scott Lin is responsible for mobile products.
 
-Reported-and-tested-by: syzbot+fa7b3ab32bcb56c10961@syzkaller.appspotmail.com
-Signed-off-by: Lizhi Xu <lizhi.xu@windriver.com>
----
- fs/hfsplus/wrapper.c | 12 ++++++------
- 1 file changed, 6 insertions(+), 6 deletions(-)
+Thanks
+Marge Yang
 
-diff --git a/fs/hfsplus/wrapper.c b/fs/hfsplus/wrapper.c
-index ce9346099c72..974786e30259 100644
---- a/fs/hfsplus/wrapper.c
-+++ b/fs/hfsplus/wrapper.c
-@@ -179,16 +179,13 @@ int hfsplus_read_wrapper(struct super_block *sb)
- 	sbi->s_vhdr_buf = kmalloc(hfsplus_min_io_size(sb), GFP_KERNEL);
- 	if (!sbi->s_vhdr_buf)
- 		goto out;
--	sbi->s_backup_vhdr_buf = kmalloc(hfsplus_min_io_size(sb), GFP_KERNEL);
--	if (!sbi->s_backup_vhdr_buf)
--		goto out_free_vhdr;
- 
- reread:
- 	error = hfsplus_submit_bio(sb, part_start + HFSPLUS_VOLHEAD_SECTOR,
- 				   sbi->s_vhdr_buf, (void **)&sbi->s_vhdr,
- 				   REQ_OP_READ);
- 	if (error)
--		goto out_free_backup_vhdr;
-+		goto out_free_vhdr;
- 
- 	error = -EINVAL;
- 	switch (sbi->s_vhdr->signature) {
-@@ -199,7 +196,7 @@ int hfsplus_read_wrapper(struct super_block *sb)
- 		break;
- 	case cpu_to_be16(HFSP_WRAP_MAGIC):
- 		if (!hfsplus_read_mdb(sbi->s_vhdr, &wd))
--			goto out_free_backup_vhdr;
-+			goto out_free_vhdr;
- 		wd.ablk_size >>= HFSPLUS_SECTOR_SHIFT;
- 		part_start += (sector_t)wd.ablk_start +
- 			       (sector_t)wd.embed_start * wd.ablk_size;
-@@ -212,10 +209,13 @@ int hfsplus_read_wrapper(struct super_block *sb)
- 		 * (should do this only for cdrom/loop though)
- 		 */
- 		if (hfs_part_find(sb, &part_start, &part_size))
--			goto out_free_backup_vhdr;
-+			goto out_free_vhdr;
- 		goto reread;
- 	}
- 
-+	sbi->s_backup_vhdr_buf = kmalloc(hfsplus_min_io_size(sb), GFP_KERNEL);
-+	if (!sbi->s_backup_vhdr_buf)
-+		goto out_free_vhdr;
- 	error = hfsplus_submit_bio(sb, part_start + part_size - 2,
- 				   sbi->s_backup_vhdr_buf,
- 				   (void **)&sbi->s_backup_vhdr, REQ_OP_READ);
--- 
-2.43.0
 
+-----Original Message-----
+From: friederhannenheim@riseup.net <friederhannenheim@riseup.net>=20
+Sent: Sunday, March 31, 2024 4:35 AM
+To: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+Cc: Marge Yang <Marge.Yang@tw.synaptics.com>; linux-input@vger.kernel.org; =
+linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] input/touchscreen: synaptics_tcm_oncell: add driver
+
+CAUTION: Email originated externally, do not click links or open attachment=
+s unless you recognize the sender and know the content is safe.
+
+
+On 2024-03-28 18:53, Dmitry Torokhov wrote:
+> [ now CCing for real ]
+>
+> Hi Frieder,
+>
+> On Wed, Mar 27, 2024 at 10:39:12PM +0100, Frieder Hannenheim wrote:
+>> This is a bit of a stripped down and partially reworked driver for=20
+>> the synaptics_tcm_oncell touchscreen. I based my work off the driver=20
+>> in the LineageOS kernel found at=20
+>> https://urldefense.proofpoint.com/v2/url?u=3Dhttps-3A__github.com_Linea
+>> geOS_android-5Fkernel-5Foneplus-5Fsm8250&d=3DDwICAg&c=3D7dfBJ8cXbWjhc0Bh=
+I
+>> mu8wVIoUFmBzj1s88r8EGyM0UY&r=3Dddk_91asmhyAjxFmXHNIQZ2mVcW0D_eq4tb4409nZ=
+94&m=3D2_iuhvyQkYcT-qsozPf_h9irH_AlUtaQ020UAxVQhZ3SuHgXYihgVocHyTV-zNSV&s=
+=3DFT4Hkpxkhqktmhyz4RWC9lGAD4DvNBS06wQnn4ofQkk&e=3D  branch lineage-20. The=
+ code was originally written by OnePlus developers but I'm not sure how to =
+credit them correctly.
+>
+> So the first question is: does this device not use Synaptics RMI4=20
+> protocol?
+>
+> I am CCing Marge Yang of Synaptics who may shed some light on the kind=20
+> of touch controller this is.
+>
+> Thanks.
+Hi Dmitri,
+
+the synaptics-s3908 uses a command based protocol whereas rmi4 is register-=
+based (as far as I understand it, I haven't been able to read up on it prop=
+erly since information on the internet is sparse). So I'm pretty sure that =
+it can not be controlled via rmi4.
+
+Best wishes,
+Frieder
 
