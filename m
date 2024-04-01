@@ -1,72 +1,79 @@
-Return-Path: <linux-kernel+bounces-126516-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-126507-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7D9D08938E6
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 10:20:47 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 068628938CC
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 10:06:56 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id EDBBAB21366
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 08:20:44 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 71E2C1F21549
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 08:06:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4474CD52B;
-	Mon,  1 Apr 2024 08:20:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5BC63C122;
+	Mon,  1 Apr 2024 08:06:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="BDVImgV4"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="TgJSwzBp"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.9])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0B97AD2FF
-	for <linux-kernel@vger.kernel.org>; Mon,  1 Apr 2024 08:20:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2FF1E1113;
+	Mon,  1 Apr 2024 08:06:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.9
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711959628; cv=none; b=SKAPSawAV5dyAId5Bw7HjSxAjkjnrrsIi/xe701n4KA34LtSDS6f1rfPT8tOxUaC7NmKtttzrSJUWDW4FsVdB2AtSIouvwKl9XP0RzXaYQuoCxeBeg6R/3dgtaocBsP58syPM4amRnEozCCEmRfgcaiGKMEe1bkuFnsK3gjnH4Y=
+	t=1711958804; cv=none; b=k2WBj6LH/QnrDp3/CzBuuekMkSQ7j1kykM50N4eGqBWyFYO+eGDHhHol/bWlNpc49giejZR5Ea5X17BvMXBTCmkIck+vGsFAR8eymvXMA6Hht4oP+x3UHx/WNIbtCZI0S/N+cCkvkUiwK7J5sKHUZMg27rmvgnrDlKxwScW4Xn4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711959628; c=relaxed/simple;
-	bh=AYfbXjqn1csMfWieLVj4OX3kYZy+q/Ro04Eoi583V2M=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=eG8ZP/4SPkuY1a4wO/aaXa6m4nZnSll6Qx+Jx1uygNJ+0Ztl1CxzvwJnrzwCsRXHo5sakPSt2b791eAPwvmfx3zpYwSgj29xTxrWcMMe1b7kE5smdDK6/wsyAE9Qsjzi778XyNYpKesSVvz2N/e80CwQQ9rJVm9GuxBPIF0sU/o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=BDVImgV4; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1711959626;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=ykcYgNvqI+rrvzzN7v7HbAkkijLEL7CWTEdxTlOuJ/U=;
-	b=BDVImgV47seDmWU7geWKUcf71c/GcCe1MP/EMPMxTxP5eiB4SP2HGwji410/JYPImqiBnC
-	W/3bNnNXu7z0yIsdzjm6S5CVKoaDtCczwgmVQk4fWWqPSNrE0F6LugXp8RVBPZ2mrcKS/C
-	vzn0mSdELNyA3nHKDJM6nSnsRpSfg2M=
-Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
- by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-97-h5FlAcv-NCW53rjv43MBeA-1; Mon,
- 01 Apr 2024 04:20:22 -0400
-X-MC-Unique: h5FlAcv-NCW53rjv43MBeA-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.rdu2.redhat.com [10.11.54.5])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 3F49F3C0E641;
-	Mon,  1 Apr 2024 08:20:22 +0000 (UTC)
-Received: from fedora.redhat.com (unknown [10.39.192.124])
-	by smtp.corp.redhat.com (Postfix) with ESMTP id 6DB778173;
-	Mon,  1 Apr 2024 08:20:19 +0000 (UTC)
-From: Jose Ignacio Tornos Martinez <jtornosm@redhat.com>
-To: horms@kernel.org,
-	davem@davemloft.net,
-	edumazet@google.com,
-	kuba@kernel.org,
-	pabeni@redhat.com,
-	linux-usb@vger.kernel.org,
-	netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Cc: Jose Ignacio Tornos Martinez <jtornosm@redhat.com>,
-	stable@vger.kernel.org,
-	Dave Stevenson <dave.stevenson@raspberrypi.com>
-Subject: [PATCH net v3] net: usb: ax88179_178a: avoid the interface always configured as random address
-Date: Mon,  1 Apr 2024 10:19:50 +0200
-Message-ID: <20240401082004.7412-1-jtornosm@redhat.com>
+	s=arc-20240116; t=1711958804; c=relaxed/simple;
+	bh=HXl89clGCBmFMUQwsMNffueQqIafNclJQm4lGSgRHks=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=Tv6pIxwmVa5UBGu8tTsbK2wJ+GhqgRLHxlp0/LyU4DikR3HxMUe0h4q1wzuxP5i+Xd7LFLmEqjvzBOsJAyLdk59Ywu7CY/eieXGDFQJFP8TPJuW40cZw4mWlF61DdCg5NMbRuBVKD0FkXWoe9GXcR8NCP1a9g90MB6qZE8MeYh0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=TgJSwzBp; arc=none smtp.client-ip=198.175.65.9
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1711958802; x=1743494802;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=HXl89clGCBmFMUQwsMNffueQqIafNclJQm4lGSgRHks=;
+  b=TgJSwzBpY2KickNloCs9wrum5AU8mJqML4Td/YX3Ci4WFN6QPlknFYtc
+   ULk5qFKX0vECHUAKO9aupp3wQdCvWczKymLlOW0OlkNBiFhud4zDkcTYx
+   MRX7BuJ5WAv7iJJpfCeb0kAWgz8pw8xcrKWLstxxEajmxAtbcYyBkQ5kC
+   mreOyg0x8eFp5xb3bNqRj/OaEU5o7YAMsHCiF028b/74pFNYw1LTgtN8C
+   rcrJmuOD6Ech2YtnkayF0vfcBZEvqKSmSjQ5xzFLVjXjnMhINl3BdRMSS
+   HBm440HrXqp4nSxuxfjLWCFv/FHLWvBtL9H0RLmb9FFM3zl5s4sxm8Uqq
+   g==;
+X-CSE-ConnectionGUID: BdqdgPRSSzCjaCdGZfu8bw==
+X-CSE-MsgGUID: Ji9+nn1KSzCXQNz5FGoexg==
+X-IronPort-AV: E=McAfee;i="6600,9927,11030"; a="29553376"
+X-IronPort-AV: E=Sophos;i="6.07,171,1708416000"; 
+   d="scan'208";a="29553376"
+Received: from orviesa004.jf.intel.com ([10.64.159.144])
+  by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Apr 2024 01:06:42 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,171,1708416000"; 
+   d="scan'208";a="22386789"
+Received: from haibo-optiplex-7090.sh.intel.com ([10.239.159.132])
+  by orviesa004.jf.intel.com with ESMTP; 01 Apr 2024 01:06:37 -0700
+From: Haibo Xu <haibo1.xu@intel.com>
+To: ajones@ventanamicro.com
+Cc: xiaobo55x@gmail.com,
+	Haibo Xu <haibo1.xu@intel.com>,
+	Paolo Bonzini <pbonzini@redhat.com>,
+	Shuah Khan <shuah@kernel.org>,
+	Anup Patel <anup@brainfault.org>,
+	Atish Patra <atishp@atishpatra.org>,
+	Paul Walmsley <paul.walmsley@sifive.com>,
+	Palmer Dabbelt <palmer@dabbelt.com>,
+	Albert Ou <aou@eecs.berkeley.edu>,
+	linux-kernel@vger.kernel.org,
+	kvm@vger.kernel.org,
+	linux-kselftest@vger.kernel.org,
+	kvm-riscv@lists.infradead.org,
+	linux-riscv@lists.infradead.org
+Subject: [PATCH] KVM: riscv: selftests: Add SBI base extension test
+Date: Mon,  1 Apr 2024 16:20:18 +0800
+Message-Id: <20240401082019.2318193-1-haibo1.xu@intel.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -74,50 +81,152 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.5
 
-After the commit d2689b6a86b9 ("net: usb: ax88179_178a: avoid two
-consecutive device resets"), reset is not executed from bind operation and
-mac address is not read from the device registers or the devicetree at that
-moment. Since the check to configure if the assigned mac address is random
-or not for the interface, happens after the bind operation from
-usbnet_probe, the interface keeps configured as random address, although the
-address is correctly read and set during open operation (the only reset
-now).
+This is the first patch to enable the base extension selftest
+for the SBI implementation in KVM. Test for other extensions
+will be added later.
 
-In order to keep only one reset for the device and to avoid the interface
-always configured as random address, after reset, configure correctly the
-suitable field from the driver, if the mac address is read successfully from
-the device registers or the devicetree.
-
-cc: stable@vger.kernel.org # 6.6+
-Fixes: d2689b6a86b9 ("net: usb: ax88179_178a: avoid two consecutive device resets")
-Reported-by: Dave Stevenson  <dave.stevenson@raspberrypi.com>
-Signed-off-by: Jose Ignacio Tornos Martinez <jtornosm@redhat.com>
+Signed-off-by: Haibo Xu <haibo1.xu@intel.com>
 ---
-v3:
-  - Send the patch separately to net.
-v2:
-  - Split the fix and the improvement in two patches as Simon Horman
-suggests.
-v1: https://lore.kernel.org/netdev/20240325173155.671807-1-jtornosm@redhat.com/
+ tools/testing/selftests/kvm/Makefile          |  1 +
+ .../selftests/kvm/include/riscv/processor.h   |  8 +-
+ tools/testing/selftests/kvm/riscv/sbi_test.c  | 95 +++++++++++++++++++
+ 3 files changed, 103 insertions(+), 1 deletion(-)
+ create mode 100644 tools/testing/selftests/kvm/riscv/sbi_test.c
 
- drivers/net/usb/ax88179_178a.c | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/drivers/net/usb/ax88179_178a.c b/drivers/net/usb/ax88179_178a.c
-index 88e084534853..8ca8ace93d9c 100644
---- a/drivers/net/usb/ax88179_178a.c
-+++ b/drivers/net/usb/ax88179_178a.c
-@@ -1273,6 +1273,7 @@ static void ax88179_get_mac_addr(struct usbnet *dev)
+diff --git a/tools/testing/selftests/kvm/Makefile b/tools/testing/selftests/kvm/Makefile
+index 741c7dc16afc..a6acbbcad757 100644
+--- a/tools/testing/selftests/kvm/Makefile
++++ b/tools/testing/selftests/kvm/Makefile
+@@ -189,6 +189,7 @@ TEST_GEN_PROGS_s390x += rseq_test
+ TEST_GEN_PROGS_s390x += set_memory_region_test
+ TEST_GEN_PROGS_s390x += kvm_binary_stats_test
  
- 	if (is_valid_ether_addr(mac)) {
- 		eth_hw_addr_set(dev->net, mac);
-+		dev->net->addr_assign_type = NET_ADDR_PERM;
- 	} else {
- 		netdev_info(dev->net, "invalid MAC address, using random\n");
- 		eth_hw_addr_random(dev->net);
++TEST_GEN_PROGS_riscv += riscv/sbi_test
+ TEST_GEN_PROGS_riscv += arch_timer
+ TEST_GEN_PROGS_riscv += demand_paging_test
+ TEST_GEN_PROGS_riscv += dirty_log_test
+diff --git a/tools/testing/selftests/kvm/include/riscv/processor.h b/tools/testing/selftests/kvm/include/riscv/processor.h
+index ce473fe251dd..df530ac751c4 100644
+--- a/tools/testing/selftests/kvm/include/riscv/processor.h
++++ b/tools/testing/selftests/kvm/include/riscv/processor.h
+@@ -178,7 +178,13 @@ enum sbi_ext_id {
+ };
+ 
+ enum sbi_ext_base_fid {
+-	SBI_EXT_BASE_PROBE_EXT = 3,
++	SBI_EXT_BASE_GET_SPEC_VERSION = 0,
++	SBI_EXT_BASE_GET_IMP_ID,
++	SBI_EXT_BASE_GET_IMP_VERSION,
++	SBI_EXT_BASE_PROBE_EXT,
++	SBI_EXT_BASE_GET_MVENDORID,
++	SBI_EXT_BASE_GET_MARCHID,
++	SBI_EXT_BASE_GET_MIMPID,
+ };
+ 
+ struct sbiret {
+diff --git a/tools/testing/selftests/kvm/riscv/sbi_test.c b/tools/testing/selftests/kvm/riscv/sbi_test.c
+new file mode 100644
+index 000000000000..b9378546e3b6
+--- /dev/null
++++ b/tools/testing/selftests/kvm/riscv/sbi_test.c
+@@ -0,0 +1,95 @@
++// SPDX-License-Identifier: GPL-2.0
++/*
++ * sbi_test - SBI API test for KVM's SBI implementation.
++ *
++ * Copyright (c) 2024 Intel Corporation
++ *
++ * Test cover the following SBI extentions:
++ *  - Base: All functions in this extension should be supported
++ */
++
++#include "kvm_util.h"
++#include "processor.h"
++#include "test_util.h"
++
++/*
++ * Test that all functions in the base extension must be supported
++ */
++static void base_ext_guest_code(void)
++{
++	struct sbiret ret;
++
++	/*
++	 * Since the base extension was introduced in SBI Spec v0.2,
++	 * assert if the implemented SBI version is below 0.2.
++	 */
++	ret = sbi_ecall(SBI_EXT_BASE, SBI_EXT_BASE_GET_SPEC_VERSION, 0,
++			0, 0, 0, 0, 0);
++	__GUEST_ASSERT(!ret.error && ret.value >= 2, "Get Spec Version Error: ret.error=%ld, "
++			"ret.value=%ld\n", ret.error, ret.value);
++
++	ret = sbi_ecall(SBI_EXT_BASE, SBI_EXT_BASE_GET_IMP_ID, 0,
++			0, 0, 0, 0, 0);
++	__GUEST_ASSERT(!ret.error && ret.value == 3, "Get Imp ID Error: ret.error=%ld, "
++			"ret.value=%ld\n",
++			ret.error, ret.value);
++
++	ret = sbi_ecall(SBI_EXT_BASE, SBI_EXT_BASE_GET_IMP_VERSION, 0,
++			0, 0, 0, 0, 0);
++	__GUEST_ASSERT(!ret.error, "Get Imp Version Error: ret.error=%ld\n", ret.error);
++
++	ret = sbi_ecall(SBI_EXT_BASE, SBI_EXT_BASE_PROBE_EXT, SBI_EXT_BASE,
++			0, 0, 0, 0, 0);
++	__GUEST_ASSERT(!ret.error && ret.value == 1, "Probe ext Error: ret.error=%ld, "
++			"ret.value=%ld\n",
++			ret.error, ret.value);
++
++	ret = sbi_ecall(SBI_EXT_BASE, SBI_EXT_BASE_GET_MVENDORID, 0,
++			0, 0, 0, 0, 0);
++	__GUEST_ASSERT(!ret.error, "Get Machine Vendor ID Error: ret.error=%ld\n", ret.error);
++
++	ret = sbi_ecall(SBI_EXT_BASE, SBI_EXT_BASE_GET_MARCHID, 0,
++			0, 0, 0, 0, 0);
++	__GUEST_ASSERT(!ret.error, "Get Machine Arch ID Error: ret.error=%ld\n", ret.error);
++
++	ret = sbi_ecall(SBI_EXT_BASE, SBI_EXT_BASE_GET_MIMPID, 0,
++			0, 0, 0, 0, 0);
++	__GUEST_ASSERT(!ret.error, "Get Machine Imp ID Error: ret.error=%ld\n", ret.error);
++
++	GUEST_DONE();
++}
++
++static void sbi_base_ext_test(void)
++{
++	struct kvm_vm *vm;
++	struct kvm_vcpu *vcpu;
++	struct ucall uc;
++
++	vm = vm_create_with_one_vcpu(&vcpu, base_ext_guest_code);
++	while (1) {
++		vcpu_run(vcpu);
++		TEST_ASSERT(vcpu->run->exit_reason == UCALL_EXIT_REASON,
++			    "Unexpected exit reason: %u (%s),",
++			    vcpu->run->exit_reason, exit_reason_str(vcpu->run->exit_reason));
++
++		switch (get_ucall(vcpu, &uc)) {
++		case UCALL_DONE:
++			goto done;
++		case UCALL_ABORT:
++			fprintf(stderr, "Guest assert failed!\n");
++			REPORT_GUEST_ASSERT(uc);
++		default:
++			TEST_FAIL("Unexpected ucall %lu", uc.cmd);
++		}
++	}
++
++done:
++	kvm_vm_free(vm);
++}
++
++int main(void)
++{
++	sbi_base_ext_test();
++
++	return 0;
++}
 -- 
-2.44.0
+2.34.1
 
 
