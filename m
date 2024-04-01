@@ -1,97 +1,128 @@
-Return-Path: <linux-kernel+bounces-126817-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-126777-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 503B4893D02
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 17:41:39 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 793BF893CA3
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 17:10:53 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0AF92280E79
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 15:41:38 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id DFC201F22517
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 15:10:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7BF2C47774;
-	Mon,  1 Apr 2024 15:41:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 75B04481DD;
+	Mon,  1 Apr 2024 15:10:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=wanadoo.fr header.i=@wanadoo.fr header.b="IDWpuH0V"
-Received: from smtp.smtpout.orange.fr (smtp-30.smtpout.orange.fr [80.12.242.30])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="lmvnDyNX"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9A898208D1;
-	Mon,  1 Apr 2024 15:41:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=80.12.242.30
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 77A3B45974;
+	Mon,  1 Apr 2024 15:10:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711986089; cv=none; b=M03eAqiirt9E5jaMPjR66rcSmrsK9eF7RJNrkwd4FRzlanRkEMhXOePaRfv8FAcNy/g4WtjV2C/ZBPv2rstGWeHeifZP+PPOZfGEB08+lrjLrRSu7Pk38TxjoU4xHEPSS8OgHHGrUqfFO7B6XV1Z8FjRsPZd6F3chGkdMcztQwE=
+	t=1711984217; cv=none; b=MDfYs9GtPgzQNw4MIC2wHZnSghtwVpoF7LdQ72uJNE8Cub+kCUIlN7Nj3vrJh+XDTOyjxU4cU1hblMWmFTJ3e2fY82nRhaTE81r+h6UPYdgag3nZErTG9EMVEpjXnJSqwQRSr2mam/UcDQLJ2Be5VbnmdXDsH2pctyRPMkOfJIE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711986089; c=relaxed/simple;
-	bh=Y/Bj6IHFimK/L3bQZNyOgnhAWh2BT8FNakGZBoDEYtU=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=CLh5nl7WQC3lii1UhLkk/QEYKVSLWKnHYATk5wZhdxiuW0GjSQpjaV7Kk7XyjdkeV3oDmOtBMV900Rqyec7/BJ8nit0+rjtQPBYtdrglLEWh6AljpmGCThsjmIjwo5UHTQiiG3EJwmq14jGM0kl7XVeoUnfAD+zV6JFvQBmn6qU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wanadoo.fr; spf=pass smtp.mailfrom=wanadoo.fr; dkim=pass (2048-bit key) header.d=wanadoo.fr header.i=@wanadoo.fr header.b=IDWpuH0V; arc=none smtp.client-ip=80.12.242.30
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wanadoo.fr
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=wanadoo.fr
-Received: from fedora.home ([86.243.17.157])
-	by smtp.orange.fr with ESMTPA
-	id rJdfrt5eMFDStrJdfryokC; Mon, 01 Apr 2024 17:32:00 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wanadoo.fr;
-	s=t20230301; t=1711985520;
-	bh=HXJxPRAT/1ovZ08zVcfoBlF6cHXXFiWjqhU7B+IHfPk=;
-	h=From:To:Subject:Date:Message-ID:MIME-Version;
-	b=IDWpuH0VtaQGNJrHB+Kmke7pWKxXeWu2l81BpKO/eq73sF1I/wnJZzDDo7zicuXwx
-	 0Q6v4yp2nvdWIddFwiNicKVu6gwe9fLKAtSQqr1JW/MZs3AzA8/71gvplrbLwVEbtv
-	 Lb177vNRMW/uOWMHzMeB2iRPqAjZ7jd1OMQn23I67ZxJNUkCgrprYtC+H5C12CAZZB
-	 8azL/WIP1/uoELoviK6YRM+LjgmMW50FF6e6gYs5IihxZFk+eP4l7IfSWjrZIJQJ2Z
-	 qHUzOAkf94+lViLj0ImVp7DT/5KTiIm0sX8rTGAfNr82XJUYN0h1Y7GFEdd1XX4OY5
-	 PX7McXIfyIAnQ==
-X-ME-Helo: fedora.home
-X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
-X-ME-Date: Mon, 01 Apr 2024 17:32:00 +0200
-X-ME-IP: 86.243.17.157
-From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-To: Michael Turquette <mturquette@baylibre.com>,
-	Stephen Boyd <sboyd@kernel.org>,
-	Vladimir Zapolskiy <vz@mleia.com>
-Cc: linux-kernel@vger.kernel.org,
-	kernel-janitors@vger.kernel.org,
-	Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-	linux-clk@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org
-Subject: [PATCH] clk: nxp: Remove an unused field in struct lpc18xx_pll
-Date: Mon,  1 Apr 2024 17:31:53 +0200
-Message-ID: <6cfb0e5251c3a59a156e70bcf6a0cc74aa764faa.1711985490.git.christophe.jaillet@wanadoo.fr>
-X-Mailer: git-send-email 2.44.0
+	s=arc-20240116; t=1711984217; c=relaxed/simple;
+	bh=10B9kij4RJ8Moszjff2kF8cKqehkeXTDRYV4vE4emTg=;
+	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=CO5aZGxLUisU1B5Kw01ECibm+gGQ5zN2EfXf8unjzz5C8ICqUb+JiK1qy/NnVRNCFzIihyo99fSzVdfJrpM/odAS7TJXUktSzUdf89yQbIfcSZwX/5INCfNiO9zCVdG+7VeHJTxgPGgEpn45LciBW7AdPz1QM6oGkcCmDZbC4ho=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=lmvnDyNX; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 046F8C433C7;
+	Mon,  1 Apr 2024 15:10:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1711984217;
+	bh=10B9kij4RJ8Moszjff2kF8cKqehkeXTDRYV4vE4emTg=;
+	h=From:Subject:Date:To:Cc:Reply-To:From;
+	b=lmvnDyNXrQmePxOdWlP/Mz9noqy2ujaQWVXS4amlmG+jzqOXv4Mc9hhTKl03VDbL8
+	 2/n+qgK7s1yLDNC0zr/xZHwXW0VwqKUsp9wppd/IiCLcLEW9Jz3m21tZNXHqswmyFH
+	 vsOCyolLPqAPYGA+uYgQ6EsLKMfmNivpAOUfxGm6+Ecy4A9nhQaxZrZEx5J88Xe9/i
+	 lbzRQt1vue5xiPXpBm51ZyED3oXPLlMO4sbS5Y0WCjtbsd7YiZ4lB7umJUtAVtJEUH
+	 r/tOs3R2XngD80ErdsUSZt3atkML36LtawbyFuPB7xJXSX1CyARm1wpKFznSunLVNI
+	 iwrfc9N1eCSPA==
+Received: from aws-us-west-2-korg-lkml-1.web.codeaurora.org (localhost.localdomain [127.0.0.1])
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E18AECD128D;
+	Mon,  1 Apr 2024 15:10:16 +0000 (UTC)
+From: Dumitru Ceclan via B4 Relay <devnull+dumitru.ceclan.analog.com@kernel.org>
+Subject: [PATCH 0/6] Add support for AD411x
+Date: Mon, 01 Apr 2024 18:32:18 +0300
+Message-Id: <20240401-ad4111-v1-0-34618a9cc502@analog.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIAIPTCmYC/6tWKk4tykwtVrJSqFYqSi3LLM7MzwNyDHUUlJIzE
+ vPSU3UzU4B8JSMDIxMDY0Mj3cQUE0NDQ13z1NQkY5PUJJNE0zQloOKCotS0zAqwQdGxtbUApX1
+ /H1gAAAA=
+To: Ceclan Dumitru <dumitru.ceclan@analog.com>
+Cc: Lars-Peter Clausen <lars@metafoo.de>, 
+ Michael Hennerich <Michael.Hennerich@analog.com>, 
+ Jonathan Cameron <jic23@kernel.org>, Rob Herring <robh@kernel.org>, 
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
+ Conor Dooley <conor+dt@kernel.org>, David Lechner <dlechner@baylibre.com>, 
+ linux-iio@vger.kernel.org, devicetree@vger.kernel.org, 
+ linux-kernel@vger.kernel.org, Dumitru Ceclan <mitrutzceclan@gmail.com>
+X-Mailer: b4 0.12.4
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1711985550; l=2067;
+ i=dumitru.ceclan@analog.com; s=20240313; h=from:subject:message-id;
+ bh=10B9kij4RJ8Moszjff2kF8cKqehkeXTDRYV4vE4emTg=;
+ b=XLN9Nt8v7bv1mWjyDAWDeyL+7eBHCtShfmeS9aiFjAAWhNLQnF8WvA3P84LoqGXId7oimiFXZ
+ njaVyz3tn1JC8NxVW9DB6cuu1ZuAS2yhvJA9QrY4mondxwUlXGQn1ip
+X-Developer-Key: i=dumitru.ceclan@analog.com; a=ed25519;
+ pk=HdqMlVyrcazwoiai7oN6ghU+Bj1pusGUFRl30jhS7Bo=
+X-Endpoint-Received: by B4 Relay for dumitru.ceclan@analog.com/20240313
+ with auth_id=140
+X-Original-From: Dumitru Ceclan <dumitru.ceclan@analog.com>
+Reply-To: dumitru.ceclan@analog.com
 
-In "struct lpc18xx_pll", the 'lock' field is unused.
-Remove it.
+This patch series adds support for the Analog Devices AD4111, AD4112,
+ AD4114, AD4115, AD4116 within the existing AD7173 driver.
 
-Found with cppcheck, unusedStructMember.
+  The AD411X family encompasses a series of low power, low noise, 24-bit,
+sigma-delta analog-to-digital converters that offer a versatile range of
+specifications. They integrate an analog front end suitable for processing
+fully differential/single-ended and bipolar voltage inputs.
 
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+- All ADCs have inputs with a precision voltage divider with a division
+ratio of 10.
+- AD4116 has 5 low level inputs without a voltage divider.
+- AD4111 and AD4112 support current inputs (0 mA to 20 mA) using a 50ohm
+shunt resistor.
+
+Datasheets:
+https://www.analog.com/media/en/technical-documentation/data-sheets/AD4111.pdf
+https://www.analog.com/media/en/technical-documentation/data-sheets/AD4112.pdf
+https://www.analog.com/media/en/technical-documentation/data-sheets/AD4114.pdf
+https://www.analog.com/media/en/technical-documentation/data-sheets/AD4115.pdf
+https://www.analog.com/media/en/technical-documentation/data-sheets/AD4116.pdf
+
+This series depends on patch:
+(iio: adc: ad7173: Use device_for_each_child_node_scoped() to simplify error paths.)
+https://lore.kernel.org/all/20240330190849.1321065-6-jic23@kernel.org
+
+Signed-off-by: Dumitru Ceclan <mitrutzceclan@gmail.com>
 ---
-Compile tested only.
----
- drivers/clk/nxp/clk-lpc18xx-cgu.c | 1 -
- 1 file changed, 1 deletion(-)
+Dumitru Ceclan (6):
+      dt-bindings: adc: ad7173: add support for ad411x
+      iio: adc: ad7173: fix buffers enablement for ad7176-2
+      iio: adc: ad7173: refactor channel configuration parsing
+      iio: adc: ad7173: refactor ain and vref selection
+      iio: adc: ad7173: Remove index from temp channel
+      iio: adc: ad7173: Add support for AD411x devices
 
-diff --git a/drivers/clk/nxp/clk-lpc18xx-cgu.c b/drivers/clk/nxp/clk-lpc18xx-cgu.c
-index 69ebf65081b8..81efa885069b 100644
---- a/drivers/clk/nxp/clk-lpc18xx-cgu.c
-+++ b/drivers/clk/nxp/clk-lpc18xx-cgu.c
-@@ -250,7 +250,6 @@ static struct lpc18xx_cgu_base_clk lpc18xx_cgu_base_clks[] = {
- struct lpc18xx_pll {
- 	struct		clk_hw hw;
- 	void __iomem	*reg;
--	spinlock_t	*lock;
- 	u8		flags;
- };
- 
+ .../devicetree/bindings/iio/adc/adi,ad7173.yaml    |  59 +++-
+ drivers/iio/adc/ad7173.c                           | 318 ++++++++++++++++++---
+ 2 files changed, 331 insertions(+), 46 deletions(-)
+---
+base-commit: 5ab61121a34759eb2418977f0b3589b7edc57776
+change-id: 20240312-ad4111-7eeb34eb4a5f
+
+Best regards,
 -- 
-2.44.0
+Dumitru Ceclan <dumitru.ceclan@analog.com>
+
 
 
