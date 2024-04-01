@@ -1,122 +1,109 @@
-Return-Path: <linux-kernel+bounces-127182-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-127183-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 55C048947CC
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 01:37:02 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E13F18947CE
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 01:37:21 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 224811C203BD
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 23:37:01 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1E0181C2197B
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 23:37:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A4A1856B99;
-	Mon,  1 Apr 2024 23:36:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 95D5D5730A;
+	Mon,  1 Apr 2024 23:37:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="G1lqbLKf"
-Received: from mail-io1-f44.google.com (mail-io1-f44.google.com [209.85.166.44])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b="qsQszD+6"
+Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 83DA057301
-	for <linux-kernel@vger.kernel.org>; Mon,  1 Apr 2024 23:36:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7BB8656B91;
+	Mon,  1 Apr 2024 23:37:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=150.107.74.76
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712014618; cv=none; b=aJ6tD+58KtTm/3ioPN2GHo8zwXWUeK3t2MNzj7SpjP4H3+DINok4ql6oTDqJ9lKnR74FqPrF/M7SX0bxjO+2qWaetEJUDXdH18YBjtyPgRsY00hng+yCxvP5w1S7HYDryvme9+LxYTlbsQqgF7mdiN++Vk4bScZTiYkCC23pWWQ=
+	t=1712014634; cv=none; b=bK5iZe6oICzeCA+vdf7uqJYZpb3c2v9YDwrKBlFUeiQxMZn4jn9cW7dVVX2m0Z2fRwThMmPMOezT4tPuWvLiZhEgjVU3BsNic0PJ5U3R9G8oiC33P4rhKILTNnyHqbrEjceWPSaEBOsrre2Y+Sd0fI7zQIzx/zM7GWlN9XK/0JE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712014618; c=relaxed/simple;
-	bh=CqfeARlug8+zcjr8pia+tcq62XchzGu/UcL4fzI7plM=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=jAx6TRmXWF0MxwvnzJl/QULpoB4dTecuoXhFnJ00o95u+Dn5xQQ85CZmpMv4eAX2RRruArYrfjdjKVu7cXjR/uNbo7T/8zi49lTJ+1oC61V/kh1U94YQup2S05jd3sdkqW9VdE1zAegNhCw4pyJ7ezhUrwwPu1fMqwB9zKwLZ5Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linuxfoundation.org; spf=pass smtp.mailfrom=linuxfoundation.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=G1lqbLKf; arc=none smtp.client-ip=209.85.166.44
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linuxfoundation.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
-Received: by mail-io1-f44.google.com with SMTP id ca18e2360f4ac-7cc67249181so35849039f.1
-        for <linux-kernel@vger.kernel.org>; Mon, 01 Apr 2024 16:36:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google; t=1712014614; x=1712619414; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=RwQzHTQg7aKASMwhwisC553WH/Sq/sNTw6BLGLLQEgs=;
-        b=G1lqbLKf3SRoT8O1nrQVgZYcHiPCsHOFEO/iXPBDJRwjuoWpBUaeDUNdERpHMpGll9
-         syKyykJg9HxrYdakpO0J4uwADGFDWuOaRzk0YI6yss7HeEB+rU+/eeLT3z0BjfQrVtx+
-         7AefySGK/lA7ZdN16oI79rjwxNws3lZGAcNVQ=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712014614; x=1712619414;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=RwQzHTQg7aKASMwhwisC553WH/Sq/sNTw6BLGLLQEgs=;
-        b=AxcIbNxk6ifbjSZQ8oC6866sh3lzA2sn21KB8h6kU693kgfvEb/QOUAMFQoFqOEjF9
-         /XaUMPBctRYmhXKEBvlyCjS/q6niaBxVkeKHx/5b70yCY1GzOa6ZUHPLBZFsySRQuQrT
-         KqcNyUKjjneQEDXH20q2FdzRNbSqy1chnDMrlUikStiX//+kVufCi09PcU4y9F8N5nv7
-         Cgzo/gv46GyUlO//+hslY+eSn6jWcO0vxU6Yhtdp4YhLLc+pqKBpm8k/sz0IgDlt+QvK
-         6VsQmsaEHKigFYausblsjZ6MeeGtqB9q1hPJa5MM+hfek5SIHpL0XMtJ8QzO6mEZEcud
-         jQIw==
-X-Forwarded-Encrypted: i=1; AJvYcCXZgFj5F0L3DrWIUEFZKqLkTesND8rCJpt8ISrcB0YRffdeZAg56kV+0hAru/Cul+jLFUlXnqaVWx6tdJ6GSOhBwVmF5WkRcJteLJu/
-X-Gm-Message-State: AOJu0Yw2E+LHkj5uz5v+EKk6BDfRxryAyMZu2c1cjkddF7nC0xqykzHq
-	BRrdEVkhPo3MkBOzpTdxcaANnXbIY1tB7kGBBqhO5B1BONN9DP2YwLoSs2RHEEI=
-X-Google-Smtp-Source: AGHT+IF9VDrAkw8zM+JlSY1VR4/oU7l/OgNtFNLNupYNJ/J4MEr7YxZTlgnNdnDmkWerLIX7U/KH+g==
-X-Received: by 2002:a92:cc46:0:b0:368:9b64:fa7a with SMTP id t6-20020a92cc46000000b003689b64fa7amr9893308ilq.0.1712014614629;
-        Mon, 01 Apr 2024 16:36:54 -0700 (PDT)
-Received: from [192.168.1.128] ([38.175.170.29])
-        by smtp.gmail.com with ESMTPSA id v2-20020a92c6c2000000b00366a9dc823dsm2959187ilm.55.2024.04.01.16.36.53
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 01 Apr 2024 16:36:54 -0700 (PDT)
-Message-ID: <92c40e6d-3db6-4cbb-838b-f4c875e747ea@linuxfoundation.org>
-Date: Mon, 1 Apr 2024 17:36:53 -0600
+	s=arc-20240116; t=1712014634; c=relaxed/simple;
+	bh=cxQWEl2bXe1KXR4K9NXaIPfSpa9M5S9NI7JMYsGlyL4=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type; b=IjXtooratMbHixtOMNoGbRQ4K59hcQ+vcrlnyppeIiSmAy5l8EXVgY6XUIsNCvyLjjuw4ypJ4KbjcgRWDLUZHMLan+4aP4fN6murw1YjwekFabVKqkZXdDsTnVXw9ptyft0/1JozTagraKmL9Tb1ykhWzfWzEl/AsjZIDVZvODE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au; spf=pass smtp.mailfrom=canb.auug.org.au; dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b=qsQszD+6; arc=none smtp.client-ip=150.107.74.76
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canb.auug.org.au
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+	s=201702; t=1712014630;
+	bh=7N1IadMbQesE6rixW+2z5mzW3WljWUZ1MS6lgFxh57w=;
+	h=Date:From:To:Cc:Subject:From;
+	b=qsQszD+6MQ6cWYjGx0ywaxMwIN9tLnPESKCBmKB9iBZfX+lbB+Ujt0djbeGFrzpjS
+	 RDtIuicGQO3QvIGG9POMY/gsI2Qu9sPRASXm7NDKHJ3anXYIUG460nbbWxeIHAgFnL
+	 ka967qPlMQLxuvpmgq8yNdlz+FglVuSpWJeNXtGHRsw0b54j+OI7PWbuoDH1apVprQ
+	 7myFHBEpCY7AePNAnpOdiQCCMXrJV4poaPQn4tMxmxSVWSY2RVevCtlC/Nu30jOgVB
+	 KyE1rNANH6+n0mqhHu/D1+t7FW3vfNNDE05+tyK2aZI/PrirmlIQenY51pj+p7ieRL
+	 rYVrNmrppN1uQ==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mail.ozlabs.org (Postfix) with ESMTPSA id 4V7nVG46bvz4wxt;
+	Tue,  2 Apr 2024 10:37:10 +1100 (AEDT)
+Date: Tue, 2 Apr 2024 10:37:08 +1100
+From: Stephen Rothwell <sfr@canb.auug.org.au>
+To: Marcel Holtmann <marcel@holtmann.org>, Johan Hedberg
+ <johan.hedberg@gmail.com>
+Cc: Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Linux Next
+ Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: duplicate patches in the bluetooth tree
+Message-ID: <20240402103708.0b157270@canb.auug.org.au>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 6.7 000/432] 6.7.12-rc1 review
-To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, stable@vger.kernel.org
-Cc: patches@lists.linux.dev, linux-kernel@vger.kernel.org,
- torvalds@linux-foundation.org, akpm@linux-foundation.org,
- linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
- lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
- f.fainelli@gmail.com, sudipm.mukherjee@gmail.com, srw@sladewatkins.net,
- rwarsow@gmx.de, conor@kernel.org, allen.lkml@gmail.com, broonie@kernel.org,
- Shuah Khan <skhan@linuxfoundation.org>
-References: <20240401152553.125349965@linuxfoundation.org>
-Content-Language: en-US
-From: Shuah Khan <skhan@linuxfoundation.org>
-In-Reply-To: <20240401152553.125349965@linuxfoundation.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; boundary="Sig_/2jGNmjQ/t8ctfUBKS5mkfp.";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 
-On 4/1/24 09:39, Greg Kroah-Hartman wrote:
-> Note, this will be the LAST 6.7.y kernel release.  After this one it
-> will be end-of-life.  Please move to 6.8.y now.
-> 
-> ------------------------------------------
-> 
-> This is the start of the stable review cycle for the 6.7.12 release.
-> There are 432 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-> 
-> Responses should be made by Wed, 03 Apr 2024 15:24:46 +0000.
-> Anything received after that time might be too late.
-> 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patch-6.7.12-rc1.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-6.7.y
-> and the diffstat can be found below.
-> 
-> thanks,
-> 
-> greg k-h
-> 
+--Sig_/2jGNmjQ/t8ctfUBKS5mkfp.
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Compiled and booted on my test system. No dmesg regressions.
+Hi all,
 
-Tested-by: Shuah Khan <skhan@linuxfoundation.org>
+The following commits are also in the net tree as different commits
+(but the same patches):
 
-thanks,
--- Shuah
+  019b9f7b4ed6 ("dt-bindings: bluetooth: add 'qcom,local-bd-address-broken'=
+")
+  19b8ed600761 ("Bluetooth: add quirk for broken address properties")
+  1c3366abdbe8 ("Bluetooth: hci_sync: Fix not checking error on hci_cmd_syn=
+c_cancel_sync")
+  399a043aaa60 ("Revert "Bluetooth: hci_qca: Set BDA quirk bit if fwnode ex=
+ists in DT"")
+  a2a52ae8fe1f ("Bluetooth: hci_event: set the conn encrypted before conn e=
+stablishes")
+  b8f2609aee86 ("arm64: dts: qcom: sc7180-trogdor: mark bluetooth address a=
+s broken")
+  d39a2734bf62 ("Bluetooth: qca: fix device-address endianness")
+  db4597cc88b2 ("Bluetooth: Fix TOCTOU in HCI debugfs implementation")
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/2jGNmjQ/t8ctfUBKS5mkfp.
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmYLRSQACgkQAVBC80lX
+0GxZCQf/fJ8ramxfTGt/LFQmUXPkCv6czPN1FTbrQOYYrKH69q2NCqrAJ3MaruUq
+GmEJ/44EkVVwf3rhpHdjhHmbSrnyuD2xXmaDZuD7g0xdfXw5S1/TVqAvsmPqwZij
+A8IAai2CWyBvyDjujz6y20HWokFofbW1pfUlflkpRwYVuSZeMgQ57V6SfjPQSrVy
+LfagZu7GDdZ3cY2Oyrx6gwsYdnmvwcaLTA+W0bMBJvCvP0F4hXXlfuwEc2W0R1DE
+wr1CwjRDMxeMTUH+Tv4zrDcLRVCqsU5YwyA15VUvvlLcKGPgEgFT1FCtJ+pGsIdd
+dIZvUY3nvErOff2BOUA8brvnauCGrA==
+=Z7yN
+-----END PGP SIGNATURE-----
+
+--Sig_/2jGNmjQ/t8ctfUBKS5mkfp.--
 
