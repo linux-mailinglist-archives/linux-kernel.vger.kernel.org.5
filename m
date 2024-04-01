@@ -1,254 +1,83 @@
-Return-Path: <linux-kernel+bounces-126635-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-126637-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id D718D893ABB
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 13:51:50 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 93C53893ABF
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 13:53:44 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4ED2E1F21F4E
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 11:51:50 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 491571F21FA0
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 11:53:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 00B182233B;
-	Mon,  1 Apr 2024 11:51:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6D51B2233B;
+	Mon,  1 Apr 2024 11:53:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="aSZAhOg7"
-Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="fGwQK2jl"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4AF3921105;
-	Mon,  1 Apr 2024 11:51:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ABCC021340;
+	Mon,  1 Apr 2024 11:53:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711972299; cv=none; b=Hqj82nzjqbcSRnzYLaoitKD+zkPlfGsenMHfLKAVA+igP/70UrdOmVupimV/xGgyynQ8wy3/7mVNREjX9ai5+0FgzyMGxDiDXzKJRQSv/x8gG6DF0x3BCkmDGaESeMnbq4wMtoccPakWQdU7O4tRIHRaOSjs54X6I9YIr9gE3g8=
+	t=1711972415; cv=none; b=B3cA+TQ9q3UqIwaP9PQVPCVksqWgLWN9mHwE53lMe166qajd0wIMVFjnToqjZIcN6WsbSAbdN/ihDpVI4SsYDCC0h2WW+LzVHMUvvnIf5G9pyLKq+sE9FwddcmIkE+8d9YQFVha9FIWtby4mN1yrA0n2k0uaDtMJro0XpcWNKzY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711972299; c=relaxed/simple;
-	bh=MiTn1QBDoXu4z3m/p6W/aD6j7Th+QhOgpsn4TJ96pM4=;
-	h=Message-ID:Date:MIME-Version:Cc:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=hHHkViYMC9bDuTxdaIqK3lO2CqqBfnlhec4TGZ9mXqBDAbek0+CvJJ8JW3XCmaiMBhKQ5JmTIHqWCa7S21wxIi2k3x2G8Eae8+FGqG6142zzHLyor/iBkVJzShxZgY4NVWdSEdphscFIaiAyxWwa1JsOWElOo7o4l5eHEg0I70A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=aSZAhOg7; arc=none smtp.client-ip=46.235.227.194
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-	s=mail; t=1711972295;
-	bh=MiTn1QBDoXu4z3m/p6W/aD6j7Th+QhOgpsn4TJ96pM4=;
-	h=Date:Cc:Subject:To:References:From:In-Reply-To:From;
-	b=aSZAhOg7s9F54Xk9A+/KBlyVHJkYmKnrD3ue0k6/PKYyKxnxXL677aP/EwKzCpiip
-	 BFEUDUPTHZ5zimVyg8xRLy15d3h7kSByWUauNJ6dmiWJlvfyGde65fSo4peW+Ujhrt
-	 YRtGf5r9L1Kr7Flh4WC5FhftJ8Z1NYcN8FJDoGHsmaX2IO2yzfNVOGgwFpAI8h2FIc
-	 ZNOEGVDfNI/bePkYRyVuNpe7zrdq6LmhtmrUEYRNMGjafxYD8dhIxN7uwGB9BJmj3C
-	 uEo0o8pxSGSwTAunV+3F1O7IIrh/86DmcN3G9kdSTtXboGgWf03WqdEzJW0gS6aYte
-	 N9uIhELEmiC8Q==
-Received: from [10.193.1.1] (broslavsky.collaboradmins.com [68.183.210.73])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	(Authenticated sender: usama.anjum)
-	by madrid.collaboradmins.com (Postfix) with ESMTPSA id BBED937809D1;
-	Mon,  1 Apr 2024 11:51:30 +0000 (UTC)
-Message-ID: <737409df-d83e-49cf-bb1a-49436ed2d38a@collabora.com>
-Date: Mon, 1 Apr 2024 16:52:02 +0500
+	s=arc-20240116; t=1711972415; c=relaxed/simple;
+	bh=9uVLf3becGVUgjaaJtEsn16D5M1Pat2+PNKbE6FqNes=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=lBR1bn4E/K/oHZqSqZBZi07lQtId6xTb4bsQnqTPZVmcn1ybqf4nXV4H8B+DhJOwrgiO4E+reBBLGDuIPWTad8erBRbCuIInm96eBkGsi3eUfuy21RxGbMBunSRrBgAnXw5tmbzJgIihbQRFGq9iOT4Pi/zyteSnsPrqUizVlbY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=fGwQK2jl; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 46CB8C433C7;
+	Mon,  1 Apr 2024 11:53:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1711972415;
+	bh=9uVLf3becGVUgjaaJtEsn16D5M1Pat2+PNKbE6FqNes=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=fGwQK2jlRWX/sZ8JVLzM1IzKZ5E6GVNsKVM7vYSmcJtgBh0jrdZRkOc2rYMK6TBny
+	 rVpslyeWYSprKJYxGn0ir5Sil+Zqrm3UCrBMrSXYoJVCa4tvUUJSV1RFQIyYewpffS
+	 HFIb4qiOwQaExPz9vy7nxGZtShhuby1y7fgFZO4I5o8GcGsaHJcT/HeqC5ghwUVV8I
+	 cAmiL0C2wSMwKo35aegmpLkC0Xm8Ty3yVaXlxYhWr2Z6JAy5EriVn9yDP4sIHBII/u
+	 Uku4yGj05z0Z1vxiY7u2Cyt4oJF1KYFUgg834fN5Cl0vvQyRvYT0acOKLAz6yIJ7Zs
+	 twlPxQqj7UNtg==
+Date: Mon, 1 Apr 2024 14:53:31 +0300
+From: Leon Romanovsky <leon@kernel.org>
+To: Jakub Kicinski <kuba@kernel.org>, Breno Leitao <leitao@debian.org>
+Cc: Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
+	Jason Gunthorpe <jgg@ziepe.ca>, keescook@chromium.org,
+	"open list:HFI1 DRIVER" <linux-rdma@vger.kernel.org>,
+	open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v4] IB/hfi1: allocate dummy net_device dynamically
+Message-ID: <20240401115331.GB73174@unreal>
+References: <20240319090944.2021309-1-leitao@debian.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Cc: Muhammad Usama Anjum <usama.anjum@collabora.com>, kernel@collabora.com,
- linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
- linux-kselftest@vger.kernel.org
-Subject: Re: [PATCH bpf-next v2] selftests/bpf: Move test_dev_cgroup to
- prog_tests
-To: Alexei Starovoitov <ast@kernel.org>,
- Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>,
- Martin KaFai Lau <martin.lau@linux.dev>, Eduard Zingerman
- <eddyz87@gmail.com>, Song Liu <song@kernel.org>,
- Yonghong Song <yonghong.song@linux.dev>,
- John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>,
- Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>,
- Jiri Olsa <jolsa@kernel.org>, Mykola Lysenko <mykolal@fb.com>,
- Shuah Khan <shuah@kernel.org>
-References: <20240221092248.1945364-1-usama.anjum@collabora.com>
- <a0fb8d9a-ae4d-4fc0-a921-efaa180e1bd7@collabora.com>
- <765ac086-621e-40b9-bbdf-bc1fbbdebf06@collabora.com>
-Content-Language: en-US
-From: Muhammad Usama Anjum <usama.anjum@collabora.com>
-In-Reply-To: <765ac086-621e-40b9-bbdf-bc1fbbdebf06@collabora.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240319090944.2021309-1-leitao@debian.org>
 
-Trying the BPF CI job again by changing test_dev_cgroup to
-serial_test_dev_cgroup. I'm not sure if it'll trigger the job or not. Is
-there any other way to trigger a CI job for a test patch?
+On Tue, Mar 19, 2024 at 02:09:43AM -0700, Breno Leitao wrote:
+> Embedding net_device into structures prohibits the usage of flexible
+> arrays in the net_device structure. For more details, see the discussion
+> at [1].
+> 
+> Un-embed the net_device from struct hfi1_netdev_rx by converting it
+> into a pointer. Then use the leverage alloc_netdev() to allocate the
+> net_device object at hfi1_alloc_rx().
+> 
+> [1] https://lore.kernel.org/all/20240229225910.79e224cf@kernel.org/
+> 
+> Signed-off-by: Breno Leitao <leitao@debian.org>
+> Acked-by: Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>
 
-Signed-off-by: Muhammad Usama Anjum <usama.anjum@collabora.com>
----
- .../selftests/bpf/prog_tests/dev_cgroup.c     | 58 +++++++++++++
- tools/testing/selftests/bpf/test_dev_cgroup.c | 85 -------------------
- 2 files changed, 58 insertions(+), 85 deletions(-)
- create mode 100644 tools/testing/selftests/bpf/prog_tests/dev_cgroup.c
- delete mode 100644 tools/testing/selftests/bpf/test_dev_cgroup.c
+Jakub,
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/dev_cgroup.c
-b/tools/testing/selftests/bpf/prog_tests/dev_cgroup.c
-new file mode 100644
-index 0000000000000..980b015a116ff
---- /dev/null
-+++ b/tools/testing/selftests/bpf/prog_tests/dev_cgroup.c
-@@ -0,0 +1,58 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+/* Copyright (c) 2017 Facebook
-+ */
-+
-+#include <test_progs.h>
-+#include <time.h>
-+#include "cgroup_helpers.h"
-+#include "dev_cgroup.skel.h"
-+
-+#define TEST_CGROUP "/test-bpf-based-device-cgroup/"
-+
-+void serial_test_dev_cgroup(void)
-+{
-+	struct dev_cgroup *skel;
-+	int cgroup_fd, err;
-+	__u32 prog_cnt;
-+
-+	skel = dev_cgroup__open_and_load();
-+	if (!ASSERT_OK_PTR(skel, "skel_open_and_load"))
-+		goto cleanup;
-+
-+	cgroup_fd = cgroup_setup_and_join(TEST_CGROUP);
-+	if (!ASSERT_GT(cgroup_fd, 0, "cgroup_setup_and_join"))
-+		goto cleanup;
-+
-+	err = bpf_prog_attach(bpf_program__fd(skel->progs.bpf_prog1), cgroup_fd,
-+			      BPF_CGROUP_DEVICE, 0);
-+	if (!ASSERT_EQ(err, 0, "bpf_attach"))
-+		goto cleanup;
-+
-+	err = bpf_prog_query(cgroup_fd, BPF_CGROUP_DEVICE, 0, NULL, NULL, &prog_cnt);
-+	if (!ASSERT_EQ(err, 0, "bpf_query") || (!ASSERT_EQ(prog_cnt, 1,
-"bpf_query")))
-+		goto cleanup;
-+
-+	/* All operations with /dev/zero and /dev/urandom are allowed,
-+	 * everything else is forbidden.
-+	 */
-+	ASSERT_EQ(system("rm -f /tmp/test_dev_cgroup_null"), 0, "rm");
-+	ASSERT_NEQ(system("mknod /tmp/test_dev_cgroup_null c 1 3"), 0, "mknod");
-+	ASSERT_EQ(system("rm -f /tmp/test_dev_cgroup_null"), 0, "rm");
-+
-+	/* /dev/zero is whitelisted */
-+	ASSERT_EQ(system("rm -f /tmp/test_dev_cgroup_zero"), 0, "rm");
-+	ASSERT_EQ(system("mknod /tmp/test_dev_cgroup_zero c 1 5"), 0, "mknod");
-+	ASSERT_EQ(system("rm -f /tmp/test_dev_cgroup_zero"), 0, "rm");
-+
-+	ASSERT_EQ(system("dd if=/dev/urandom of=/dev/zero count=64"), 0, "dd");
-+
-+	/* src is allowed, target is forbidden */
-+	ASSERT_NEQ(system("dd if=/dev/urandom of=/dev/full count=64"), 0, "dd");
-+
-+	/* src is forbidden, target is allowed */
-+	ASSERT_NEQ(system("dd if=/dev/random of=/dev/zero count=64"), 0, "dd");
-+
-+cleanup:
-+	cleanup_cgroup_environment();
-+	dev_cgroup__destroy(skel);
-+}
-diff --git a/tools/testing/selftests/bpf/test_dev_cgroup.c
-b/tools/testing/selftests/bpf/test_dev_cgroup.c
-deleted file mode 100644
-index adeaf63cb6fa3..0000000000000
---- a/tools/testing/selftests/bpf/test_dev_cgroup.c
-+++ /dev/null
-@@ -1,85 +0,0 @@
--// SPDX-License-Identifier: GPL-2.0-only
--/* Copyright (c) 2017 Facebook
-- */
--
--#include <stdio.h>
--#include <stdlib.h>
--#include <string.h>
--#include <errno.h>
--#include <assert.h>
--#include <sys/time.h>
--
--#include <linux/bpf.h>
--#include <bpf/bpf.h>
--#include <bpf/libbpf.h>
--
--#include "cgroup_helpers.h"
--#include "testing_helpers.h"
--
--#define DEV_CGROUP_PROG "./dev_cgroup.bpf.o"
--
--#define TEST_CGROUP "/test-bpf-based-device-cgroup/"
--
--int main(int argc, char **argv)
--{
--	struct bpf_object *obj;
--	int error = EXIT_FAILURE;
--	int prog_fd, cgroup_fd;
--	__u32 prog_cnt;
--
--	/* Use libbpf 1.0 API mode */
--	libbpf_set_strict_mode(LIBBPF_STRICT_ALL);
--
--	if (bpf_prog_test_load(DEV_CGROUP_PROG, BPF_PROG_TYPE_CGROUP_DEVICE,
--			  &obj, &prog_fd)) {
--		printf("Failed to load DEV_CGROUP program\n");
--		goto out;
--	}
--
--	cgroup_fd = cgroup_setup_and_join(TEST_CGROUP);
--	if (cgroup_fd < 0) {
--		printf("Failed to create test cgroup\n");
--		goto out;
--	}
--
--	/* Attach bpf program */
--	if (bpf_prog_attach(prog_fd, cgroup_fd, BPF_CGROUP_DEVICE, 0)) {
--		printf("Failed to attach DEV_CGROUP program");
--		goto err;
--	}
--
--	if (bpf_prog_query(cgroup_fd, BPF_CGROUP_DEVICE, 0, NULL, NULL,
--			   &prog_cnt)) {
--		printf("Failed to query attached programs");
--		goto err;
--	}
--
--	/* All operations with /dev/zero and and /dev/urandom are allowed,
--	 * everything else is forbidden.
--	 */
--	assert(system("rm -f /tmp/test_dev_cgroup_null") == 0);
--	assert(system("mknod /tmp/test_dev_cgroup_null c 1 3"));
--	assert(system("rm -f /tmp/test_dev_cgroup_null") == 0);
--
--	/* /dev/zero is whitelisted */
--	assert(system("rm -f /tmp/test_dev_cgroup_zero") == 0);
--	assert(system("mknod /tmp/test_dev_cgroup_zero c 1 5") == 0);
--	assert(system("rm -f /tmp/test_dev_cgroup_zero") == 0);
--
--	assert(system("dd if=/dev/urandom of=/dev/zero count=64") == 0);
--
--	/* src is allowed, target is forbidden */
--	assert(system("dd if=/dev/urandom of=/dev/full count=64"));
--
--	/* src is forbidden, target is allowed */
--	assert(system("dd if=/dev/random of=/dev/zero count=64"));
--
--	error = 0;
--	printf("test_dev_cgroup:PASS\n");
--
--err:
--	cleanup_cgroup_environment();
--
--out:
--	return error;
--}
--- 
-2.42.0
+I create shared branch for you, please pull it from:
+https://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git/log/?h=remove-dummy-netdev
+
+Thanks
 
