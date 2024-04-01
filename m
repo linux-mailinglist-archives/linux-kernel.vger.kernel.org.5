@@ -1,107 +1,362 @@
-Return-Path: <linux-kernel+bounces-127070-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-127071-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3C818894667
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 23:10:02 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4D93789466A
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 23:11:28 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EC5532821F2
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 21:10:00 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C69841F21BFA
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 21:11:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5190054BD3;
-	Mon,  1 Apr 2024 21:09:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 95D2354BF4;
+	Mon,  1 Apr 2024 21:11:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b="sXjMUqJZ"
-Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="No47/9B4"
+Received: from mail-qv1-f51.google.com (mail-qv1-f51.google.com [209.85.219.51])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3DCEF53E35;
-	Mon,  1 Apr 2024 21:09:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=150.107.74.76
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BFD8354780;
+	Mon,  1 Apr 2024 21:11:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712005794; cv=none; b=FzsqjWS/crW5e73039ejBJsyeCiCj5JHjnzRtn8RAo/rneiPE2qgcEWo2tEuWvqvxoHBYuMNFmdZzXKEvmwjPiyFZzKdN1mUOGAhTXQlgYpKVlOJR7nx2hFHjANuSDLjyuTLDHRo7V0YvM8/N2QrVLzLfgNI8UWwyW6VPUiyCgs=
+	t=1712005876; cv=none; b=R8r4cqpJ0dfkGk2VxBuS4wepW9KpLJ6opLuqKWNN4hseV6fEr4WpKdHbxdLfLcKOoNEjDCx716feei9yGdGTUECexbchvdRpfd8HXfLt19nx0Kp19jg0+0PCFBcY9zKcRcVdd1NB7M6exzC3dvejGkhF3NT8O2mAI3J1w/a8YVI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712005794; c=relaxed/simple;
-	bh=tA+LAgwHvXVBYCf5xFYuoaXlhCog5CNRglD0+y0EJVM=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type; b=oI3cs3TR7OsrsYj0WNMJqvRXa0+wkzkOFAHdhaQ69ERRoA3Q/+rXeXRel40D+CjVOWHuGFxtX8jZWShNLdb/9dK+xb352mZQ8CkQIXiBCtIiWO0A8fgyd5/2q03kgMiuYnKl5zW01ztmCB6GWlfzlD5qSnP12R5XN2LA8VhhOTc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au; spf=pass smtp.mailfrom=canb.auug.org.au; dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b=sXjMUqJZ; arc=none smtp.client-ip=150.107.74.76
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canb.auug.org.au
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-	s=201702; t=1712005790;
-	bh=FdraD/HXMlrnb9uIEk8mlAmMFORLDh7t0a5WqHXVvGU=;
-	h=Date:From:To:Cc:Subject:From;
-	b=sXjMUqJZG2i7YS7aLTVQPIkn+MfkpM//I45Ek55qGpAj7gLy00uruBNfcLwv5zUcl
-	 zXr38RDNDP/cTDpZdmcVqVyyhbgrcC/UBGgTiuKjsG5X0WGlGcfbr5xPUhOo115kLP
-	 0ltG+o7QQKkZYwlddSemoJ4tRhg/YpNvDsBhqx61zFiDWb9GvABsDEAMl++l+yhUSF
-	 apb5dgUIBD9Y8EPDvF87N6GXuuCA5slYEeipNkrigiFAwIhpjvybVE8Omtq8hhh98H
-	 I/l66ACmvXtuRTzOvIU521/KEI00rJSfscx8au5iYUQqBIPipBsPLqQQtWQjBit65W
-	 MiViJfFrD6aqg==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mail.ozlabs.org (Postfix) with ESMTPSA id 4V7kDG2hxWz4wcq;
-	Tue,  2 Apr 2024 08:09:50 +1100 (AEDT)
-Date: Tue, 2 Apr 2024 08:09:49 +1100
-From: Stephen Rothwell <sfr@canb.auug.org.au>
-To: Corey Minyard <cminyard@mvista.com>
-Cc: Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Linux Next
- Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: duplicate patches in the ipmi tree
-Message-ID: <20240402080949.20b4a9b5@canb.auug.org.au>
+	s=arc-20240116; t=1712005876; c=relaxed/simple;
+	bh=gJl1jhUoKN3I83hZ1w+NN+ttN5UGtoQtIQL6QlBnQNw=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=P7s0rvJN7fD8zGW5J0Wg9HD3uXEqLXtYnNn3VQdi86aCDerT+slFzEdw58V4877xiwq+1bLGY7DoHWFviKulVYdY4EFkrj5S2R2UwC1VOn8jC3t8Glp7u50QOT2Dy/SzV42htTUIx0Ek+V4WUJPACOIPWIKjmzEa8sv0Waq1xJo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=No47/9B4; arc=none smtp.client-ip=209.85.219.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-qv1-f51.google.com with SMTP id 6a1803df08f44-6969388c36fso25623726d6.1;
+        Mon, 01 Apr 2024 14:11:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1712005873; x=1712610673; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:feedback-id:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=pkhnvWHhVL6JHXVbv5PuUQPIXTyetrYiX4MyEXYBe+I=;
+        b=No47/9B4bcB6cq27NQQ59WaD7AyQaIFrR74f3DtNTtUlVif9Qhf7s31cyNwN4x/1ma
+         u2t3Q8LR6e+4P/lnw2XfPA4S38EUCspO0RGgZb+d8ofnQmllRzj6/Pozev+N6ArJc85f
+         OA1jcehy44pSLDK2lRHVpx9HQc8/D8TQuyLVgFLqEcLn7+l7mRtfdfdcZq63yy32OQ6+
+         Sa0L46tG5kKMc5j4xt/NrNjBhB0kaTrC3KgrZzkbcPR2SauD3ApJ6ZQxrDmf/Xz46g/r
+         jg84CCVL0tkYxsi7U/MLQbtammeHMBk9iDYsHv+tLZ1ZLMQe7149+M3TFbwpTYw80HFz
+         PntA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712005873; x=1712610673;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:feedback-id:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=pkhnvWHhVL6JHXVbv5PuUQPIXTyetrYiX4MyEXYBe+I=;
+        b=rZnnqvXRrRP3/ChHMgC2V2b42InonOUq+LgCvnzaTRr//mVhuoDa366MBNGsR9hjSo
+         kKbIjcYcjnPv+O6vB5V4uyKJnFmlcSzHswwf+kWd+/TcLKyYTK0Fe/BBhIV24sfT3NSD
+         iQUXdsEi0rd4g0gMiWcAfg6f/ZITsgbA4FitJMCviQ0iS6Bs2qLLdXWH3hz5YV04nDNN
+         znEcmJVR/1G1j/yntzvXklNLE0mBEV2j2U1P7sXGDqrA0Bi8D3ILcYLGByoQoe2nriRq
+         CW4lRb03uiLQWt1Jqq3M6jWx59inSXnej43BZ8U+wCYbx3j+81vdO8ndtj6rHGRvb1bS
+         gkmA==
+X-Forwarded-Encrypted: i=1; AJvYcCXzBSaWDaPx2HT/gYvtXTQvHPIpcKCDJR01Ra+TZMjdI4lmwBbu309IfuBheeffmNsk9KS9REtovSgdhH+eEGTtxk8wH+ZziFAriNyfxt1X0o9D/ji+6MXpPalSn8wHSO4Se9QGCFuH/nBXycmUWNJymp4ZYLuw2v/ZxyF6/twzEP/LgwQ=
+X-Gm-Message-State: AOJu0YzXvRpCvuPQdLRE+aVaPFqCbhKWqtkTmut93nNItscypze6SZ3O
+	Ro0vpX6/DeVZvJBV+IEbAFHfEbqH0Uinnfpc93JVV+b5oL315v+R
+X-Google-Smtp-Source: AGHT+IEI1pa9Cn8u5iUlH/1lz7Kk5D2iJ7tR3ZtNokhvych9OhM/KVht0/hJAYYawgJhL8KUzHUtUg==
+X-Received: by 2002:ad4:4f88:0:b0:696:b0ba:c3b with SMTP id em8-20020ad44f88000000b00696b0ba0c3bmr9823601qvb.36.1712005873459;
+        Mon, 01 Apr 2024 14:11:13 -0700 (PDT)
+Received: from fauth1-smtp.messagingengine.com (fauth1-smtp.messagingengine.com. [103.168.172.200])
+        by smtp.gmail.com with ESMTPSA id g12-20020a0562141ccc00b0069915b47bf4sm120705qvd.146.2024.04.01.14.11.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 01 Apr 2024 14:11:12 -0700 (PDT)
+Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
+	by mailfauth.nyi.internal (Postfix) with ESMTP id DB4E31200032;
+	Mon,  1 Apr 2024 17:11:11 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute4.internal (MEProxy); Mon, 01 Apr 2024 17:11:11 -0400
+X-ME-Sender: <xms:7iILZmL_DCYpWhK6Qdn0NOOCy_J91o6mgR8e1LTHCSQxeDl8zld9ig>
+    <xme:7iILZuLkSJP1eqGpK2S5rGvtR5picmSBSPQzcdG6TLkt94j9W3dHgc6JCiCdU6FOT
+    BuguMZyghyh8MvBWA>
+X-ME-Received: <xmr:7iILZmvYZCekUvf6gcEwfxzyJEIAJzeN8LB5ZOfiBDOut6XtnfxHJLy9iO0>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrudeftddgudehkecutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
+    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
+    enucfjughrpeffhffvvefukfhfgggtuggjsehttdertddttddvnecuhfhrohhmpeeuohhq
+    uhhnucfhvghnghcuoegsohhquhhnrdhfvghnghesghhmrghilhdrtghomheqnecuggftrf
+    grthhtvghrnhephedugfduffffteeutddvheeuveelvdfhleelieevtdeguefhgeeuveei
+    udffiedvnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomh
+    epsghoqhhunhdomhgvshhmthhprghuthhhphgvrhhsohhnrghlihhthidqieelvdeghedt
+    ieegqddujeejkeehheehvddqsghoqhhunhdrfhgvnhhgpeepghhmrghilhdrtghomhesfh
+    higihmvgdrnhgrmhgv
+X-ME-Proxy: <xmx:7iILZraz5_Hh6fH9CCDAC1e82jMrxfq1jx7cCmkAcy9k2qsff73yGQ>
+    <xmx:7iILZtbMKOe_9jTp8le1JUXN73e_ldUAwAj_PjCC7ePgvENeuf4nmg>
+    <xmx:7iILZnAXlv73NWzKT5C55DKJzGamjPEPsVA-Zlf6sjXnHUZusL-HhQ>
+    <xmx:7iILZjYs1GwLHdAtA7ikUSO8By9D_ZZwlTQ98BNsttllk7-G7qnZnA>
+    <xmx:7yILZtrtmycj0vxDzl3nSQp1-GVIfxIHFNA0Do3cm3qBPgkCVMrjCv9kt-I>
+Feedback-ID: iad51458e:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Mon,
+ 1 Apr 2024 17:11:10 -0400 (EDT)
+Date: Mon, 1 Apr 2024 14:10:18 -0700
+From: Boqun Feng <boqun.feng@gmail.com>
+To: Benno Lossin <benno.lossin@proton.me>
+Cc: Miguel Ojeda <ojeda@kernel.org>, Alex Gaynor <alex.gaynor@gmail.com>,
+	Wedson Almeida Filho <wedsonaf@gmail.com>,
+	Gary Guo <gary@garyguo.net>,
+	=?iso-8859-1?Q?Bj=F6rn?= Roy Baron <bjorn3_gh@protonmail.com>,
+	Andreas Hindborg <a.hindborg@samsung.com>,
+	Alice Ryhl <aliceryhl@google.com>,
+	Martin Rodriguez Reboredo <yakoyoku@gmail.com>,
+	Asahi Lina <lina@asahilina.net>,
+	Sumera Priyadarsini <sylphrenadin@gmail.com>,
+	Neal Gompa <neal@gompa.dev>,
+	Thomas Bertschinger <tahbertschinger@gmail.com>,
+	Andrea Righi <andrea.righi@canonical.com>,
+	Matthew Bakhtiari <dev@mtbk.me>,
+	Adam Bratschi-Kaye <ark.email@gmail.com>, stable@vger.kernel.org,
+	Masahiro Yamada <masahiroy@kernel.org>,
+	Wedson Almeida Filho <wedsonaf@google.com>,
+	Finn Behrens <me@kloenk.dev>, rust-for-linux@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] rust: macros: fix soundness issue in `module!` macro
+Message-ID: <Zgsiumknfshjbi9J@boqun-archlinux>
+References: <20240401185222.12015-1-benno.lossin@proton.me>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/W+My7znABgA3dPIVe37kFlm";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240401185222.12015-1-benno.lossin@proton.me>
 
---Sig_/W+My7znABgA3dPIVe37kFlm
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Mon, Apr 01, 2024 at 06:52:50PM +0000, Benno Lossin wrote:
+[...]
+> +            // Double nested modules, since then nobody can access the public items inside.
+> +            mod __module_init {{
+> +                mod __module_init {{
+> +                    use super::super::{type_};
+> +
+> +                    /// The \"Rust loadable module\" mark.
+> +                    //
+> +                    // This may be best done another way later on, e.g. as a new modinfo
+> +                    // key or a new section. For the moment, keep it simple.
+> +                    #[cfg(MODULE)]
+> +                    #[doc(hidden)]
+> +                    #[used]
+> +                    static __IS_RUST_MODULE: () = ();
+> +
+> +                    static mut __MOD: Option<{type_}> = None;
+> +
+> +                    // SAFETY: `__this_module` is constructed by the kernel at load time and will not be
+> +                    // freed until the module is unloaded.
+> +                    #[cfg(MODULE)]
+> +                    static THIS_MODULE: kernel::ThisModule = unsafe {{
+> +                        kernel::ThisModule::from_ptr(&kernel::bindings::__this_module as *const _ as *mut _)
 
-Hi all,
+While we're at it, probably we want the following as well? I.e. using
+`Opaque` and extern block, because __this_module is certainly something
+interior mutable and !Unpin.
 
-The following commits are also in Linus Torvalds' tree as different
-commits (but the same patches):
+diff --git a/rust/macros/module.rs b/rust/macros/module.rs
+index 293beca0a583..8aa4eed6578c 100644
+--- a/rust/macros/module.rs
++++ b/rust/macros/module.rs
+@@ -219,7 +219,11 @@ mod __module_init {{
+                     // freed until the module is unloaded.
+                     #[cfg(MODULE)]
+                     static THIS_MODULE: kernel::ThisModule = unsafe {{
+-                        kernel::ThisModule::from_ptr(&kernel::bindings::__this_module as *const _ as *mut _)
++                        extern \"C\" {{
++                            static __this_module: kernel::types::Opaque<kernel::bindings::module>;
++                        }}
++
++                        kernel::ThisModule::from_ptr(__this_module.get())
+                     }};
+                     #[cfg(not(MODULE))]
+                     static THIS_MODULE: kernel::ThisModule = unsafe {{
 
-  090251a7852d ("MAINTAINERS: erofs: add myself as reviewer")
-  912635053a01 ("erofs: drop experimental warning for FSDAX")
+Thoughts?
 
-These are commits
+Note this requires `Opaque::get` to be `const`, which I will send out
+shortly, I think it's a good change regardless of the usage here.
 
-  7557d296ad43 ("MAINTAINERS: erofs: add myself as reviewer")
-  a97b59ed7968 ("erofs: drop experimental warning for FSDAX")
+Regards,
+Boqun
 
-in Linus' tree.
-
-These commits in the ipmi tree are also missing Signed-off-bys from their
-committer.
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/W+My7znABgA3dPIVe37kFlm
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmYLIp0ACgkQAVBC80lX
-0GzOSAf/QgmmMNatz+uxrBC2yEEKcHBesdIseEJ71NXev+ZqQuspM3qS70lmuv7f
-Zu6nDTl0y2qgYqeXkFK2EIdhWOzqvNeHPkVL9tMOzLs32+JMlViNJdxSKHw0SOXt
-QBh3s2N1dbTJ4bswcswxhQyOYukXWKRxL4s83Yiak12sQx+f/j5mIj9907yf61dU
-A1pTmd6YHM4x+Uwr2KeBPmbVDKuEtF+FMvWa4HjP5gWpjABYL/B70eupXni4ufBB
-3E8Gw9CIKxz2ynqnvouZpiWYrIBc3ONQVzBRcqA8qFxViGvcg73/0Qbtqrevflqk
-p+tMFQtkQcQTF/MMwM78iJxHYrUhCw==
-=DVIW
------END PGP SIGNATURE-----
-
---Sig_/W+My7znABgA3dPIVe37kFlm--
+> +                    }};
+> +                    #[cfg(not(MODULE))]
+> +                    static THIS_MODULE: kernel::ThisModule = unsafe {{
+> +                        kernel::ThisModule::from_ptr(core::ptr::null_mut())
+> +                    }};
+> +
+> +                    // Loadable modules need to export the `{{init,cleanup}}_module` identifiers.
+> +                    /// # Safety
+> +                    ///
+> +                    /// This function must not be called after module initialization, because it may be
+> +                    /// freed after that completes.
+> +                    #[cfg(MODULE)]
+> +                    #[doc(hidden)]
+> +                    #[no_mangle]
+> +                    #[link_section = \".init.text\"]
+> +                    pub unsafe extern \"C\" fn init_module() -> core::ffi::c_int {{
+> +                        // SAFETY: this function is inaccessible to the outside due to the double
+> +                        // module wrapping it. It is called exactly once by the C side via its
+> +                        // unique name.
+> +                        unsafe {{ __init() }}
+> +                    }}
+>  
+> -            #[cfg(MODULE)]
+> -            #[doc(hidden)]
+> -            #[no_mangle]
+> -            pub extern \"C\" fn cleanup_module() {{
+> -                __exit()
+> -            }}
+> +                    #[cfg(MODULE)]
+> +                    #[doc(hidden)]
+> +                    #[no_mangle]
+> +                    pub extern \"C\" fn cleanup_module() {{
+> +                        // SAFETY:
+> +                        // - this function is inaccessible to the outside due to the double
+> +                        //   module wrapping it. It is called exactly once by the C side via its
+> +                        //   unique name,
+> +                        // - furthermore it is only called after `init_module` has returned `0`
+> +                        //   (which delegates to `__init`).
+> +                        unsafe {{ __exit() }}
+> +                    }}
+>  
+> -            // Built-in modules are initialized through an initcall pointer
+> -            // and the identifiers need to be unique.
+> -            #[cfg(not(MODULE))]
+> -            #[cfg(not(CONFIG_HAVE_ARCH_PREL32_RELOCATIONS))]
+> -            #[doc(hidden)]
+> -            #[link_section = \"{initcall_section}\"]
+> -            #[used]
+> -            pub static __{name}_initcall: extern \"C\" fn() -> core::ffi::c_int = __{name}_init;
+> -
+> -            #[cfg(not(MODULE))]
+> -            #[cfg(CONFIG_HAVE_ARCH_PREL32_RELOCATIONS)]
+> -            core::arch::global_asm!(
+> -                r#\".section \"{initcall_section}\", \"a\"
+> -                __{name}_initcall:
+> -                    .long   __{name}_init - .
+> -                    .previous
+> -                \"#
+> -            );
+> +                    // Built-in modules are initialized through an initcall pointer
+> +                    // and the identifiers need to be unique.
+> +                    #[cfg(not(MODULE))]
+> +                    #[cfg(not(CONFIG_HAVE_ARCH_PREL32_RELOCATIONS))]
+> +                    #[doc(hidden)]
+> +                    #[link_section = \"{initcall_section}\"]
+> +                    #[used]
+> +                    pub static __{name}_initcall: extern \"C\" fn() -> core::ffi::c_int = __{name}_init;
+> +
+> +                    #[cfg(not(MODULE))]
+> +                    #[cfg(CONFIG_HAVE_ARCH_PREL32_RELOCATIONS)]
+> +                    core::arch::global_asm!(
+> +                        r#\".section \"{initcall_section}\", \"a\"
+> +                        __{name}_initcall:
+> +                            .long   __{name}_init - .
+> +                            .previous
+> +                        \"#
+> +                    );
+> +
+> +                    #[cfg(not(MODULE))]
+> +                    #[doc(hidden)]
+> +                    #[no_mangle]
+> +                    pub extern \"C\" fn __{name}_init() -> core::ffi::c_int {{
+> +                        // SAFETY: this function is inaccessible to the outside due to the double
+> +                        // module wrapping it. It is called exactly once by the C side via its
+> +                        // placement above in the initcall section.
+> +                        unsafe {{ __init() }}
+> +                    }}
+>  
+> -            #[cfg(not(MODULE))]
+> -            #[doc(hidden)]
+> -            #[no_mangle]
+> -            pub extern \"C\" fn __{name}_init() -> core::ffi::c_int {{
+> -                __init()
+> -            }}
+> +                    #[cfg(not(MODULE))]
+> +                    #[doc(hidden)]
+> +                    #[no_mangle]
+> +                    pub extern \"C\" fn __{name}_exit() {{
+> +                        // SAFETY:
+> +                        // - this function is inaccessible to the outside due to the double
+> +                        //   module wrapping it. It is called exactly once by the C side via its
+> +                        //   unique name,
+> +                        // - furthermore it is only called after `__{name}_init` has returned `0`
+> +                        //   (which delegates to `__init`).
+> +                        unsafe {{ __exit() }}
+> +                    }}
+>  
+> -            #[cfg(not(MODULE))]
+> -            #[doc(hidden)]
+> -            #[no_mangle]
+> -            pub extern \"C\" fn __{name}_exit() {{
+> -                __exit()
+> -            }}
+> +                    /// # Safety
+> +                    ///
+> +                    /// This function must only be called once.
+> +                    unsafe fn __init() -> core::ffi::c_int {{
+> +                        match <{type_} as kernel::Module>::init(&THIS_MODULE) {{
+> +                            Ok(m) => {{
+> +                                // SAFETY:
+> +                                // no data race, since `__MOD` can only be accessed by this module and
+> +                                // there only `__init` and `__exit` access it. These functions are only
+> +                                // called once and `__exit` cannot be called before or during `__init`.
+> +                                unsafe {{
+> +                                    __MOD = Some(m);
+> +                                }}
+> +                                return 0;
+> +                            }}
+> +                            Err(e) => {{
+> +                                return e.to_errno();
+> +                            }}
+> +                        }}
+> +                    }}
+>  
+> -            fn __init() -> core::ffi::c_int {{
+> -                match <{type_} as kernel::Module>::init(&THIS_MODULE) {{
+> -                    Ok(m) => {{
+> +                    /// # Safety
+> +                    ///
+> +                    /// This function must
+> +                    /// - only be called once,
+> +                    /// - be called after `__init` has been called and returned `0`.
+> +                    unsafe fn __exit() {{
+> +                        // SAFETY:
+> +                        // no data race, since `__MOD` can only be accessed by this module and there
+> +                        // only `__init` and `__exit` access it. These functions are only called once
+> +                        // and `__init` was already called.
+>                          unsafe {{
+> -                            __MOD = Some(m);
+> +                            // Invokes `drop()` on `__MOD`, which should be used for cleanup.
+> +                            __MOD = None;
+>                          }}
+> -                        return 0;
+>                      }}
+> -                    Err(e) => {{
+> -                        return e.to_errno();
+> -                    }}
+> -                }}
+> -            }}
+>  
+> -            fn __exit() {{
+> -                unsafe {{
+> -                    // Invokes `drop()` on `__MOD`, which should be used for cleanup.
+> -                    __MOD = None;
+> +                    {modinfo}
+>                  }}
+>              }}
+> -
+> -            {modinfo}
+>          ",
+>          type_ = info.type_,
+>          name = info.name,
+> 
+> base-commit: 9ffe2a730313f27cebd0859ea856247ac59c576c
+> -- 
+> 2.44.0
+> 
+> 
 
