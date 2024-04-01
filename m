@@ -1,214 +1,137 @@
-Return-Path: <linux-kernel+bounces-126875-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-126873-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 039A8894254
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 18:52:20 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C2DAA894251
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 18:52:04 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 26BF71C21A21
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 16:52:19 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id EA75AB20B07
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 16:52:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 229AA51C46;
-	Mon,  1 Apr 2024 16:51:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 15D584F5FD;
+	Mon,  1 Apr 2024 16:51:23 +0000 (UTC)
 Received: from mail-io1-f71.google.com (mail-io1-f71.google.com [209.85.166.71])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5666E4D5A1
-	for <linux-kernel@vger.kernel.org>; Mon,  1 Apr 2024 16:51:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C75B6481D1
+	for <linux-kernel@vger.kernel.org>; Mon,  1 Apr 2024 16:51:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.71
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711990283; cv=none; b=fcop/aiChhrz7NGE3wWUurp0AAYoFNdcpdSn/pguNz1nG6rPyKog3Tla36u+FYkO6N1hMES4azom6IPQ9jf0dgXa8W/RJn2+PTGfaYaEJ98w7f8w+LzxBTNjx2Bd/w9JLZECsYyg3P1J4KgzKa6k1dNDlMpUoHhrfh0WJt1fKjc=
+	t=1711990282; cv=none; b=E1MC9UIL9pFUboIqRqDin2vTWTXOp80134zvdbJN/DwJx6O2V9oxTGVBHHQn8Wp84bv66mryoO0xf6GC6sMBWif/NYMJV2Y5LSVy9e65tDKWvbHR4Lu4j7HzDmatah0S88cXyDNFiOF9qq98nPdpo+xslIqqlAbTTbiXff611Nk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711990283; c=relaxed/simple;
-	bh=yomIkOv1iNN25m2c71KHbCEQes+QXQ6arnsFTaT+REE=;
-	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=grfXMvjMryv0ztZo1MF5G+d24jgCjtA6SSuBggm/ix2cap/f9nfSJh9PCNuzHoD4LgaWP8Wl5xEFpBLugmukYJJx2mTxTuGN46gGfgQtk1NveM6bCrbwGT5xEj7x6LNpmROBVrX2AS87JOiw+8vs+jSsdazbcY7kqW8jzKjhxac=
+	s=arc-20240116; t=1711990282; c=relaxed/simple;
+	bh=+YpLD+4LiDllvY8qBsgrDSTA9AJ0+xQFee1/kxIpYlc=;
+	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=LdRJr9kMTxTd91SyKRJIWMEVoVS8IJ7PUBs+Bf+OuzDNbXw/JPTVZCXFQPBPNLi9hg9JlrQvhqouNpwG2y97XnoPI+rn0VhGiJmLoEyi+1+02HLGcz3MZ5mMt4+59tXQL+l4WA2oltoHxO+SvzOQqW1Zd7DsBYWHnxMWpJrm2RA=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.71
 Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-io1-f71.google.com with SMTP id ca18e2360f4ac-7cbf1aea97fso467714839f.2
-        for <linux-kernel@vger.kernel.org>; Mon, 01 Apr 2024 09:51:21 -0700 (PDT)
+Received: by mail-io1-f71.google.com with SMTP id ca18e2360f4ac-7cf265b30e2so447844539f.1
+        for <linux-kernel@vger.kernel.org>; Mon, 01 Apr 2024 09:51:20 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20230601; t=1711990280; x=1712595080;
         h=to:from:subject:message-id:date:mime-version:x-gm-message-state
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=M8sRsX9oj8EYrJwx7cJqGn/qBC0J7akgWFj1v3Fd8Eo=;
-        b=q/Yqd4NPxwqCGK3zJ97QBY27JfsCWBXNg9ds6t8fdtYA8eadMB+hgy+WoR/mq82tQy
-         uS+CD4HtoVzz+jh+h7/JzTwrfJ/YUaKTrNCSDkZ7TX8eNox75qjLSBcHakcqcXYz0Nih
-         qGtTs+Ndd0/ppGkqE2T8kdB1vZ0DJUtC9XB4ecrbEDVUXo7urx67lauh4AmoMtZg2Sqe
-         0RnWCATWtz3HY4o7MDZrnzsxaSWHvtVmYWISvoQX5Xfuqq1NWxNYdOKust1Iv0SYYtTK
-         +RxfFizCIZwCO/1WtF4qReJ6kRyDbgf/BIyZ8VcWy8FV0dkC7IcRcpB+QmZhTRClaDg8
-         UCxw==
-X-Forwarded-Encrypted: i=1; AJvYcCW/6xCAxoA7FhGZDsymHG4bAGmFS8qc/9x4eKeP7rzsIpbwDpJynaSxkl2X8HdKqUIZogfsNuBYjVpMkwVz6Yap70ymiE1Btu0T1xh6
-X-Gm-Message-State: AOJu0YwIjI+b3wHbmgf3at5M/O3K7y+9rOiNYLPYctfB5VwuAE7ZgnRk
-	xDpmgcPmqqiG/EAWlpVcafOIBU92xX78OQ6r6D7Q8maAzIIgEiWpCoFheEinhBz306fuAJ4nsOa
-	gPl3X8D/aXKrA2CRx8nXmYljc86f7lKZcjLvJCxc/NoOOKprRN/Yf/C0=
-X-Google-Smtp-Source: AGHT+IGu3AQDPLjNZnSMBmnVNEi+JZEWBxvuzFBM38+Fg/OOsm/aVmYq31P5vrt6zv40vQj+/4oYMdAQvO2seircNwEmvWwqAHzC
+        bh=mdk8hs5YwRs0MgKKaMSnooSWizCujgZiOxORDfdAX/0=;
+        b=VHfagUU52KOMcCYXDhxwtcXxpYiE3d5/7I3Bvl5v221CX88uo5Od4aqhEaTCqr1MIV
+         SO8UKykTUJdGhvJECyfY2kfZE6pLVouwBz3TtDNX88YX68Kob6ctSDz5pvQ3kfltZOKD
+         i9NthL39otQXcNgZmYn9OjmJUuBlaIcaZZ1+KSvQJZkTtTStlR7rhIbluaNMjy1C7aPI
+         //ukSkoIBJG8qpkw5Ku2Slafd8JTz5f4Cdzff/Emn/putTXoGTdQ6L0vOwQidnf603TC
+         hIOjyXdFd8qkJmroZWJCli+B5iCpUz/vUV4JJB7/7AdYMpdE99HabQaDqLRwrPEITxOj
+         ogFg==
+X-Forwarded-Encrypted: i=1; AJvYcCXseC6h26lvfGFiuay6ZStmQNxnswQEhSmNsk9dlql0PBGMF1MCfBAWikZWKVETAN2bw4ytBkb0y0Cr5MK12HC6gMX0aO6D3D9U4vsP
+X-Gm-Message-State: AOJu0YxPi5tE2tHylpbbLoA+slc3fCHP81gTC109jzJ/V3q0KVXtdkaV
+	0x9hHXyDfA27DVrq5Xy3LgXHSu5e3SBO9biNoLxxobQcLt9k+SZGfW+OCPMrFCZacd5RemPZqKi
+	PYEa4aocn9Pb/J+0uO2d1KtJJnrXjJoHmxhW5GhMJ/p42K3D2Mzaelzg=
+X-Google-Smtp-Source: AGHT+IGvh+h9Q7ZKk4dzQgcg/ciJVMmq/GBMv8Wtyz3R29FKzahTPJgHxJnFFV/WhUXFq7csn3ZGP0Txvp4nKR+njrehwDhRFGim
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6638:35ab:b0:47e:db25:8eb7 with SMTP id
- v43-20020a05663835ab00b0047edb258eb7mr653579jal.2.1711990280582; Mon, 01 Apr
+X-Received: by 2002:a05:6602:150c:b0:7d0:ad03:af10 with SMTP id
+ g12-20020a056602150c00b007d0ad03af10mr179166iow.1.1711990280083; Mon, 01 Apr
  2024 09:51:20 -0700 (PDT)
 Date: Mon, 01 Apr 2024 09:51:20 -0700
 X-Google-Appengine-App-Id: s~syzkaller
 X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000008886db06150bcc92@google.com>
-Subject: [syzbot] [ntfs3?] INFO: trying to register non-static key in
- do_mpage_readpage (2)
-From: syzbot <syzbot+6783b9aaa6a224fabde8@syzkaller.appspotmail.com>
-To: almaz.alexandrovich@paragon-software.com, linux-fsdevel@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, ntfs3@lists.linux.dev, 
-	syzkaller-bugs@googlegroups.com
+Message-ID: <00000000000081146c06150bcc2a@google.com>
+Subject: [syzbot] [bpf?] WARNING in __mark_chain_precision (4)
+From: syzbot <syzbot+148110ee7cf72f39f33e@syzkaller.appspotmail.com>
+To: andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org, 
+	daniel@iogearbox.net, eddyz87@gmail.com, haoluo@google.com, 
+	john.fastabend@gmail.com, jolsa@kernel.org, kpsingh@kernel.org, 
+	linux-kernel@vger.kernel.org, martin.lau@linux.dev, sdf@google.com, 
+	song@kernel.org, syzkaller-bugs@googlegroups.com, yonghong.song@linux.dev
 Content-Type: text/plain; charset="UTF-8"
 
 Hello,
 
 syzbot found the following issue on:
 
-HEAD commit:    4535e1a4174c x86/bugs: Fix the SRSO mitigation on Zen3/4
+HEAD commit:    fe46a7dd189e Merge tag 'sound-6.9-rc1' of git://git.kernel..
 git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=17a4b3d9180000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=f64ec427e98bccd7
-dashboard link: https://syzkaller.appspot.com/bug?extid=6783b9aaa6a224fabde8
-compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=145213d9180000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=11869af9180000
+console+strace: https://syzkaller.appspot.com/x/log.txt?x=14024776180000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=4d90a36f0cab495a
+dashboard link: https://syzkaller.appspot.com/bug?extid=148110ee7cf72f39f33e
+compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=10c51c1d180000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=127285b1180000
 
 Downloadable assets:
-disk image (non-bootable): https://storage.googleapis.com/syzbot-assets/7bc7510fe41f/non_bootable_disk-4535e1a4.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/af9b780d5ab6/vmlinux-4535e1a4.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/ca7710536ebc/bzImage-4535e1a4.xz
-mounted in repro: https://storage.googleapis.com/syzbot-assets/8ba3546286ed/mount_0.gz
+disk image: https://storage.googleapis.com/syzbot-assets/f6c04726a2ae/disk-fe46a7dd.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/09c26ce901ea/vmlinux-fe46a7dd.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/134acf7f5322/bzImage-fe46a7dd.xz
 
 IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+6783b9aaa6a224fabde8@syzkaller.appspotmail.com
+Reported-by: syzbot+148110ee7cf72f39f33e@syzkaller.appspotmail.com
 
-ntfs3: loop0: Mark volume as dirty due to NTFS errors
-INFO: trying to register non-static key.
-The code is fine but needs lockdep annotation, or maybe
-you didn't initialize this object before use?
-turning off the locking correctness validator.
-CPU: 0 PID: 5194 Comm: syz-executor221 Not tainted 6.9.0-rc1-syzkaller-00206-g4535e1a4174c #0
-Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.16.2-debian-1.16.2-1 04/01/2014
-Call Trace:
- <TASK>
- __dump_stack lib/dump_stack.c:88 [inline]
- dump_stack_lvl+0x116/0x1f0 lib/dump_stack.c:114
- assign_lock_key kernel/locking/lockdep.c:976 [inline]
- register_lock_class+0xc2a/0x1230 kernel/locking/lockdep.c:1289
- __lock_acquire+0x111/0x3b30 kernel/locking/lockdep.c:5014
- lock_acquire kernel/locking/lockdep.c:5754 [inline]
- lock_acquire+0x1b1/0x560 kernel/locking/lockdep.c:5719
- down_read+0x9a/0x330 kernel/locking/rwsem.c:1526
- attr_data_get_block+0x18b/0x1b70 fs/ntfs3/attrib.c:902
- ntfs_get_block_vbo+0x288/0xec0 fs/ntfs3/inode.c:587
- do_mpage_readpage+0x660/0x17c0 fs/mpage.c:232
- mpage_readahead+0x34d/0x590 fs/mpage.c:381
- ntfs_readahead+0x1f7/0x250 fs/ntfs3/inode.c:755
- read_pages+0x1a8/0xda0 mm/readahead.c:160
- page_cache_ra_unbounded+0x450/0x5a0 mm/readahead.c:269
- do_page_cache_ra mm/readahead.c:299 [inline]
- page_cache_ra_order+0x64b/0x9a0 mm/readahead.c:539
- ondemand_readahead+0x520/0x1140 mm/readahead.c:661
- page_cache_sync_ra+0x174/0x1d0 mm/readahead.c:688
- page_cache_sync_readahead include/linux/pagemap.h:1300 [inline]
- filemap_get_pages+0xc09/0x1840 mm/filemap.c:2505
- filemap_read+0x3af/0xd10 mm/filemap.c:2601
- generic_file_read_iter+0x350/0x460 mm/filemap.c:2782
- ntfs_file_read_iter+0x258/0x330 fs/ntfs3/file.c:768
- __kernel_read+0x3ec/0xb20 fs/read_write.c:434
- integrity_kernel_read+0x7f/0xb0 security/integrity/iint.c:28
- ima_calc_file_hash_tfm+0x2cf/0x3e0 security/integrity/ima/ima_crypto.c:485
- ima_calc_file_shash security/integrity/ima/ima_crypto.c:516 [inline]
- ima_calc_file_hash+0x1c6/0x4a0 security/integrity/ima/ima_crypto.c:573
- ima_collect_measurement+0x7eb/0x950 security/integrity/ima/ima_api.c:291
- process_measurement+0x11ae/0x2100 security/integrity/ima/ima_main.c:359
- ima_file_check+0xc1/0x110 security/integrity/ima/ima_main.c:559
- security_file_post_open+0x6d/0xc0 security/security.c:2981
- do_open fs/namei.c:3644 [inline]
- path_openat+0x17ad/0x2990 fs/namei.c:3799
- do_file_open_root+0x2dd/0x5b0 fs/namei.c:3851
- file_open_root+0x2a8/0x450 fs/open.c:1386
- do_handle_open+0x3c9/0x5c0 fs/fhandle.c:235
- do_syscall_x64 arch/x86/entry/common.c:52 [inline]
- do_syscall_64+0xd2/0x260 arch/x86/entry/common.c:83
- entry_SYSCALL_64_after_hwframe+0x72/0x7a
-RIP: 0033:0x7f773274c6f9
-Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 61 17 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007ffea3fa8848 EFLAGS: 00000246 ORIG_RAX: 0000000000000130
-RAX: ffffffffffffffda RBX: 00007ffea3fa8a18 RCX: 00007f773274c6f9
-RDX: 0000000000000000 RSI: 0000000020000100 RDI: 0000000000000004
-RBP: 00007f77327de610 R08: 00007ffea3fa8a18 R09: 00007ffea3fa8a18
-R10: 00007ffea3fa8a18 R11: 0000000000000246 R12: 0000000000000001
-R13: 00007ffea3fa8a08 R14: 0000000000000001 R15: 0000000000000001
- </TASK>
 ------------[ cut here ]------------
-DEBUG_RWSEMS_WARN_ON(sem->magic != sem): count = 0x100, magic = 0x0, owner = 0xffff888025864881, curr 0xffff888025864880, list not empty
-WARNING: CPU: 0 PID: 5194 at kernel/locking/rwsem.c:1342 __up_read+0x508/0x760 kernel/locking/rwsem.c:1342
+verifier backtracking bug
+WARNING: CPU: 0 PID: 5066 at kernel/bpf/verifier.c:3714 backtrack_insn kernel/bpf/verifier.c:3714 [inline]
+WARNING: CPU: 0 PID: 5066 at kernel/bpf/verifier.c:3714 __mark_chain_precision+0x7027/0x7520 kernel/bpf/verifier.c:4255
 Modules linked in:
-CPU: 0 PID: 5194 Comm: syz-executor221 Not tainted 6.9.0-rc1-syzkaller-00206-g4535e1a4174c #0
-Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.16.2-debian-1.16.2-1 04/01/2014
-RIP: 0010:__up_read+0x508/0x760 kernel/locking/rwsem.c:1342
-Code: 24 10 80 3c 02 00 0f 85 21 02 00 00 48 8b 13 41 57 48 c7 c6 20 bf 2c 8b 48 c7 c7 60 bf 2c 8b 4c 8b 4c 24 08 e8 79 82 e5 ff 90 <0f> 0b 90 90 5f e9 c3 fe ff ff c6 05 46 38 60 0e 01 90 4c 8d 7b 58
-RSP: 0018:ffffc900037de2a0 EFLAGS: 00010282
-RAX: 0000000000000000 RBX: ffff88803259efe0 RCX: ffffffff814fe149
-RDX: ffff888025864880 RSI: ffffffff814fe156 RDI: 0000000000000001
-RBP: ffffffff8fe14954 R08: 0000000000000001 R09: 0000000000000000
-R10: 0000000000000000 R11: 57525f4755424544 R12: ffff88803259efe8
-R13: 1ffff920006fbc58 R14: ffff88803259f048 R15: ffffffff8b2cbee0
-FS:  000055558a2df380(0000) GS:ffff88806b000000(0000) knlGS:0000000000000000
+CPU: 0 PID: 5066 Comm: syz-executor296 Not tainted 6.8.0-syzkaller-08951-gfe46a7dd189e #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 03/27/2024
+RIP: 0010:backtrack_insn kernel/bpf/verifier.c:3714 [inline]
+RIP: 0010:__mark_chain_precision+0x7027/0x7520 kernel/bpf/verifier.c:4255
+Code: 8b e8 ed df b0 ff 90 0f 0b 90 90 e9 7d f2 ff ff e8 9e 0b ee ff c6 05 41 c2 c9 0d 01 90 48 c7 c7 c0 af b0 8b e8 ca df b0 ff 90 <0f> 0b 90 90 e9 5a f2 ff ff e8 7b 0b ee ff c6 05 1f c2 c9 0d 01 90
+RSP: 0018:ffffc900043f6ac0 EFLAGS: 00010246
+RAX: 3bf0d782b73e5400 RBX: ffff8880236c5600 RCX: ffff88802a9dbc00
+RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000000000000
+RBP: ffffc900043f6d10 R08: ffffffff8157cb22 R09: 1ffff110172851a2
+R10: dffffc0000000000 R11: ffffed10172851a3 R12: 0000000080000000
+R13: 0000000000000010 R14: 0000000000000001 R15: ffff8880236c0000
+FS:  000055557d2fe380(0000) GS:ffff8880b9400000(0000) knlGS:0000000000000000
 CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007f772a3ff000 CR3: 000000001e23e000 CR4: 0000000000350ef0
+CR2: 0000000020000082 CR3: 00000000231d4000 CR4: 00000000003506f0
 DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
 DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
 Call Trace:
  <TASK>
- attr_data_get_block+0x1f9/0x1b70 fs/ntfs3/attrib.c:905
- ntfs_get_block_vbo+0x288/0xec0 fs/ntfs3/inode.c:587
- do_mpage_readpage+0x660/0x17c0 fs/mpage.c:232
- mpage_readahead+0x34d/0x590 fs/mpage.c:381
- ntfs_readahead+0x1f7/0x250 fs/ntfs3/inode.c:755
- read_pages+0x1a8/0xda0 mm/readahead.c:160
- page_cache_ra_unbounded+0x450/0x5a0 mm/readahead.c:269
- do_page_cache_ra mm/readahead.c:299 [inline]
- page_cache_ra_order+0x64b/0x9a0 mm/readahead.c:539
- ondemand_readahead+0x520/0x1140 mm/readahead.c:661
- page_cache_sync_ra+0x174/0x1d0 mm/readahead.c:688
- page_cache_sync_readahead include/linux/pagemap.h:1300 [inline]
- filemap_get_pages+0xc09/0x1840 mm/filemap.c:2505
- filemap_read+0x3af/0xd10 mm/filemap.c:2601
- generic_file_read_iter+0x350/0x460 mm/filemap.c:2782
- ntfs_file_read_iter+0x258/0x330 fs/ntfs3/file.c:768
- __kernel_read+0x3ec/0xb20 fs/read_write.c:434
- integrity_kernel_read+0x7f/0xb0 security/integrity/iint.c:28
- ima_calc_file_hash_tfm+0x2cf/0x3e0 security/integrity/ima/ima_crypto.c:485
- ima_calc_file_shash security/integrity/ima/ima_crypto.c:516 [inline]
- ima_calc_file_hash+0x1c6/0x4a0 security/integrity/ima/ima_crypto.c:573
- ima_collect_measurement+0x7eb/0x950 security/integrity/ima/ima_api.c:291
- process_measurement+0x11ae/0x2100 security/integrity/ima/ima_main.c:359
- ima_file_check+0xc1/0x110 security/integrity/ima/ima_main.c:559
- security_file_post_open+0x6d/0xc0 security/security.c:2981
- do_open fs/namei.c:3644 [inline]
- path_openat+0x17ad/0x2990 fs/namei.c:3799
- do_file_open_root+0x2dd/0x5b0 fs/namei.c:3851
- file_open_root+0x2a8/0x450 fs/open.c:1386
- do_handle_open+0x3c9/0x5c0 fs/fhandle.c:235
- do_syscall_x64 arch/x86/entry/common.c:52 [inline]
- do_syscall_64+0xd2/0x260 arch/x86/entry/common.c:83
- entry_SYSCALL_64_after_hwframe+0x72/0x7a
-RIP: 0033:0x7f773274c6f9
-Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 61 17 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007ffea3fa8848 EFLAGS: 00000246 ORIG_RAX: 0000000000000130
-RAX: ffffffffffffffda RBX: 00007ffea3fa8a18 RCX: 00007f773274c6f9
-RDX: 0000000000000000 RSI: 0000000020000100 RDI: 0000000000000004
-RBP: 00007f77327de610 R08: 00007ffea3fa8a18 R09: 00007ffea3fa8a18
-R10: 00007ffea3fa8a18 R11: 0000000000000246 R12: 0000000000000001
-R13: 00007ffea3fa8a08 R14: 0000000000000001 R15: 0000000000000001
+ mark_chain_precision kernel/bpf/verifier.c:4358 [inline]
+ check_return_code+0xbe0/0x11e0 kernel/bpf/verifier.c:15500
+ do_check+0xb91f/0x10500 kernel/bpf/verifier.c:17867
+ do_check_common+0x14bd/0x1dd0 kernel/bpf/verifier.c:20492
+ do_check_main kernel/bpf/verifier.c:20583 [inline]
+ bpf_check+0x136ab/0x19010 kernel/bpf/verifier.c:21253
+ bpf_prog_load+0x1667/0x20f0 kernel/bpf/syscall.c:2895
+ __sys_bpf+0x4ee/0x810 kernel/bpf/syscall.c:5631
+ __do_sys_bpf kernel/bpf/syscall.c:5738 [inline]
+ __se_sys_bpf kernel/bpf/syscall.c:5736 [inline]
+ __x64_sys_bpf+0x7c/0x90 kernel/bpf/syscall.c:5736
+ do_syscall_64+0xfb/0x240
+ entry_SYSCALL_64_after_hwframe+0x6d/0x75
+RIP: 0033:0x7f6484f2a469
+Code: 48 83 c4 28 c3 e8 37 17 00 00 0f 1f 80 00 00 00 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007ffc85bd0a08 EFLAGS: 00000246 ORIG_RAX: 0000000000000141
+RAX: ffffffffffffffda RBX: 00007ffc85bd0be8 RCX: 00007f6484f2a469
+RDX: 0000000000000090 RSI: 0000000020000600 RDI: 0000000000000005
+RBP: 00007f6484f9d610 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000001
+R13: 00007ffc85bd0bd8 R14: 0000000000000001 R15: 0000000000000001
  </TASK>
 
 
