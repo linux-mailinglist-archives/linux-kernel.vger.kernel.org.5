@@ -1,192 +1,174 @@
-Return-Path: <linux-kernel+bounces-126597-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-126598-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7B8FB893A33
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 12:35:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id BD24A893A35
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 12:36:49 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F1E19281EDC
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 10:35:44 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 71BD9281F1F
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 10:36:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 27F3A1BF3D;
-	Mon,  1 Apr 2024 10:35:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D48471CAA9;
+	Mon,  1 Apr 2024 10:36:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=bursov.com header.i=vitaly@bursov.com header.b="Yc8m5U8k"
-Received: from sender-of-o58.zoho.eu (sender-of-o58.zoho.eu [136.143.169.58])
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="Gg+GPvYz"
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 17067171C1
-	for <linux-kernel@vger.kernel.org>; Mon,  1 Apr 2024 10:35:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=136.143.169.58
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711967739; cv=pass; b=K9ADJgNKbhclcvWnYGueFAwV8kvzUeDk0ye5uywDReelkLH8eWO/ZoIPCqE9/zQHny2DqVzk1Y/msAzSwute4dx4/FoCyFjGT7qxXgay+kgxBnnddlcI3/T7yQ6GMULyxeUGz8YML/LItHPfH0ay8wlrf1MJht0AF8YC1dfbJX8=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711967739; c=relaxed/simple;
-	bh=T5UPnOqSN1OxMYf8MU9PBiT05JBXBdOZebD5wKyiIQU=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=KpXJAOKxZqCQU1ofqfjn/tJem38EAeMURj03CMJ9SaBViAb19us8f0KPiBufLBfC9aLda3KV/DuDLcy/N6oLsrlaVdZNQ4qyqRzD984yR0mORqHkZF4jOpf3CCy3oQdrxU8jLDA8dHWpN57yWUvG+6UsYlkU1HKcqcjv+Kc3CoM=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bursov.com; spf=pass smtp.mailfrom=bursov.com; dkim=pass (1024-bit key) header.d=bursov.com header.i=vitaly@bursov.com header.b=Yc8m5U8k; arc=pass smtp.client-ip=136.143.169.58
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bursov.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bursov.com
-ARC-Seal: i=1; a=rsa-sha256; t=1711967707; cv=none; 
-	d=zohomail.eu; s=zohoarc; 
-	b=CO0EH0ncsJDUbpWxyct58wYiBvdbKzGnrjOfHcr+tZLX+S0o79ng+Md9R4AVUjoHlOdqCPuVb8BSlYbdBrm5IyVeGG3PQoafhmf5Lev6jF2QqG9rzbkC9Cz/TMVeQe4yZRYnIZKFskU1Y6ZfaxGV1gkkDN4S6d9VJ/fGNq+4BqU=
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=zohomail.eu; s=zohoarc; 
-	t=1711967707; h=Content-Type:Content-Transfer-Encoding:Cc:Cc:Date:Date:From:From:In-Reply-To:MIME-Version:Message-ID:References:Subject:Subject:To:To:Message-Id:Reply-To; 
-	bh=gflFRaec5NN9RfJ4L1873iEQ3hm8EbbWvvyreqMswuE=; 
-	b=YabcR4hju85qxOgOrCcwIYLk9FZL7QhhAcpjPOJQ6k2D5FmqWqqEa2oilqRcxO7ljdK45Z1yXRYLsbjrRq3Rbx2xTyz3deSi1TrPxtVg3O3OjbZU7z0bS3qX6XedN+Q8aTSxwQ10sY1Z74yO+4HbzW9nalrMGDAw3Rq2WDXBOlY=
-ARC-Authentication-Results: i=1; mx.zohomail.eu;
-	dkim=pass  header.i=bursov.com;
-	spf=pass  smtp.mailfrom=vitaly@bursov.com;
-	dmarc=pass header.from=<vitaly@bursov.com>
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; t=1711967707;
-	s=zoho; d=bursov.com; i=vitaly@bursov.com;
-	h=Message-ID:Date:Date:MIME-Version:Subject:Subject:To:To:Cc:Cc:References:From:From:In-Reply-To:Content-Type:Content-Transfer-Encoding:Message-Id:Reply-To;
-	bh=gflFRaec5NN9RfJ4L1873iEQ3hm8EbbWvvyreqMswuE=;
-	b=Yc8m5U8k1+DX9MPQLpA6umKR5pUpepTAS1FY+pz1m68TZtBzNnnbVl7Dqy6ehnXf
-	REne9aN6Lt1cJbXX5dU1OjQpigijO/TepqD4LMELXavIUu+URKOyI5GFVl3yh6ft7MH
-	xBi+Ozh1m7+W6z1EuNrDc5hwy6hciDMNc+uXgA4Y=
-Received: from [192.168.11.99] (217.20.170.230 [217.20.170.230]) by mx.zoho.eu
-	with SMTPS id 17119677050351005.7836305119542; Mon, 1 Apr 2024 12:35:05 +0200 (CEST)
-Message-ID: <78c60269-5aee-45d7-8014-2c0188f972da@bursov.com>
-Date: Mon, 1 Apr 2024 13:35:03 +0300
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8BD341BDC8
+	for <linux-kernel@vger.kernel.org>; Mon,  1 Apr 2024 10:36:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.1
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1711967803; cv=none; b=lCPL5E9bgpmfebmlWCAc3uK6rOQoICTNDONDE1qxkKb34o19BlM96zmszweCgC4wtuqSdwmVNJ8fRbXc3vmVT2g6GaXE11HPFmW2k6DuZeFcWxBWVao7j0oLfs5kcsGF7Pp5CShtGGpAKuu3oZg3Wh1V8BBfjDbLOBdetaC8YCA=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1711967803; c=relaxed/simple;
+	bh=afpxfrYCMNe6Vx+dzgzcDV9owz3AvEM25VaQsNBBB7I=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=EnfTDOtX5x/RT2Q/G0L4/k79xXM89c52eu1Ez3TEZN3h5urwgXBcFlMqwyDs+x6rqgnKXP7WNQnI1ZoFSsxpvU+X6r5Cyvft2JuWWjyLMWiH2s+QZA1Z8eStm5gKSlEhWfRx7Vh07H443KtBSr1D6Qwk6HkVYkHleimQoHPnniY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=Gg+GPvYz; arc=none smtp.client-ip=148.163.156.1
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
+Received: from pps.filterd (m0353728.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 431AWxSQ023017;
+	Mon, 1 Apr 2024 10:36:27 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=pp1; bh=VxWeLjasO9XYUjAJvIAQ3i3G+NVHlgWs48qMNHASJMM=;
+ b=Gg+GPvYzNR4lZ0Gbb/pQG/IlUv/wjEQjGY+tdLdo31w1H+AM3mN0nNGoFsRwYuQD2LUy
+ WeYwyjGHJVat1dk/bUJZ0AljFb/XrxGS/M3l0HO8ZlIZcB9CCMyQfLOHWZ6TBxlVKcnP
+ Q+Klp8l5ZJ2xDACN9i12GqLAT46Rv+kx6r99b3jrLd34sTbqQ1DGsBtjOyaI8IW3rzNn
+ SHbko485mTCCILNvOUgXqa8PoUwl5XYP/uQy9TCQr6PfSlA5ir9T5STSziPrDN8Z5Ade
+ jft+KWN6gorp2fwo/cHv48kJ84mNvC5kqT72N5chesbM/coFbtlysqKE7GlcR33XPGtB YQ== 
+Received: from pps.reinject (localhost [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3x7u8s804h-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 01 Apr 2024 10:36:26 +0000
+Received: from m0353728.ppops.net (m0353728.ppops.net [127.0.0.1])
+	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 431AaQwm028538;
+	Mon, 1 Apr 2024 10:36:26 GMT
+Received: from ppma12.dal12v.mail.ibm.com (dc.9e.1632.ip4.static.sl-reverse.com [50.22.158.220])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3x7u8s8042-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 01 Apr 2024 10:36:26 +0000
+Received: from pps.filterd (ppma12.dal12v.mail.ibm.com [127.0.0.1])
+	by ppma12.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 431AC6JU008431;
+	Mon, 1 Apr 2024 10:36:09 GMT
+Received: from smtprelay04.fra02v.mail.ibm.com ([9.218.2.228])
+	by ppma12.dal12v.mail.ibm.com (PPS) with ESMTPS id 3x6w2tqwuf-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 01 Apr 2024 10:36:09 +0000
+Received: from smtpav03.fra02v.mail.ibm.com (smtpav03.fra02v.mail.ibm.com [10.20.54.102])
+	by smtprelay04.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 431Aa63311993388
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Mon, 1 Apr 2024 10:36:08 GMT
+Received: from smtpav03.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 038F420040;
+	Mon,  1 Apr 2024 10:36:06 +0000 (GMT)
+Received: from smtpav03.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 621BC20043;
+	Mon,  1 Apr 2024 10:36:03 +0000 (GMT)
+Received: from linux.ibm.com (unknown [9.204.201.194])
+	by smtpav03.fra02v.mail.ibm.com (Postfix) with ESMTPS;
+	Mon,  1 Apr 2024 10:36:03 +0000 (GMT)
+Date: Mon, 1 Apr 2024 16:06:00 +0530
+From: Vishal Chourasia <vishalc@linux.ibm.com>
+To: Dawei Li <daweilics@gmail.com>
+Cc: Ingo Molnar <mingo@redhat.com>, Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>, Ben Segall <bsegall@google.com>,
+        Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Valentin Schneider <vschneid@redhat.com>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] sched/fair: fix initial util_avg calculation
+Message-ID: <ZgqOEJ5sCANkkk5N@linux.ibm.com>
+References: <20240315015916.21545-1-daweilics@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 3/3] docs: cgroup-v1: clarify that domain levels are
- system-specific
-To: Shrikanth Hegde <sshegde@linux.ibm.com>
-Cc: Ingo Molnar <mingo@redhat.com>, Peter Zijlstra <peterz@infradead.org>,
- Juri Lelli <juri.lelli@redhat.com>,
- Vincent Guittot <vincent.guittot@linaro.org>,
- Dietmar Eggemann <dietmar.eggemann@arm.com>,
- Steven Rostedt <rostedt@goodmis.org>, Ben Segall <bsegall@google.com>,
- Mel Gorman <mgorman@suse.de>, Daniel Bristot de Oliveira
- <bristot@redhat.com>, Valentin Schneider <vschneid@redhat.com>,
- linux-kernel@vger.kernel.org
-References: <cover.1711900396.git.vitaly@bursov.com>
- <af9562aac2e9208029aef1dd19c3b0e096dd42c7.1711900396.git.vitaly@bursov.com>
- <3d85926d-378a-4d5e-8303-92461bd3b100@linux.ibm.com>
-Content-Language: en-US, ru-RU, uk-UA
-From: Vitalii Bursov <vitaly@bursov.com>
-In-Reply-To: <3d85926d-378a-4d5e-8303-92461bd3b100@linux.ibm.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-ZohoMailClient: External
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240315015916.21545-1-daweilics@gmail.com>
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: 9b4vFGhrgS7Juj57cXuQlNxk0tI6-AYZ
+X-Proofpoint-GUID: mV8RCCkrMEnxbFdSyuDCwvZY-SGf-xDt
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-04-01_07,2024-03-28_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 bulkscore=0
+ mlxlogscore=999 clxscore=1015 mlxscore=0 priorityscore=1501 spamscore=0
+ phishscore=0 adultscore=0 impostorscore=0 malwarescore=0
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2403210000 definitions=main-2404010075
 
-
-
-On 01.04.24 07:05, Shrikanth Hegde wrote:
+On Thu, Mar 14, 2024 at 06:59:16PM -0700, Dawei Li wrote:
+> Change se->load.weight to se_weight(se) in the calculation for the
+> initial util_avg to avoid unnecessarily inflating the util_avg by 1024
+> times.
 > 
+> The reason is that se->load.weight has the unit/scale as the scaled-up
+> load, while cfs_rg->avg.load_avg has the unit/scale as the true task
+> weight (as mapped directly from the task's nice/priority value). With
+> CONFIG_32BIT, the scaled-up load is equal to the true task weight. With
+> CONFIG_64BIT, the scaled-up load is 1024 times the true task weight.
+> Thus, the current code may inflate the util_avg by 1024 times. The
+> follow-up capping will not allow the util_avg value to go wild. But the
+> calculation should have the correct logic.
 > 
-> On 3/31/24 9:31 PM, Vitalii Bursov wrote:
->> Add a clarification that domain levels are system-specific
->> and where to check for system details.
->>
->> Add CPU clusters to the scheduler domain levels table.
->>
->> Signed-off-by: Vitalii Bursov <vitaly@bursov.com>
->> ---
->>  Documentation/admin-guide/cgroup-v1/cpusets.rst | 16 +++++++++++-----
->>  1 file changed, 11 insertions(+), 5 deletions(-)
->>
->> diff --git a/Documentation/admin-guide/cgroup-v1/cpusets.rst b/Documentation/admin-guide/cgroup-v1/cpusets.rst
->> index 7d3415eea..d16a3967d 100644
->> --- a/Documentation/admin-guide/cgroup-v1/cpusets.rst
->> +++ b/Documentation/admin-guide/cgroup-v1/cpusets.rst
->> @@ -568,19 +568,25 @@ on the next tick.  For some applications in special situation, waiting
->>  
->>  The 'cpuset.sched_relax_domain_level' file allows you to request changing
->>  this searching range as you like.  This file takes int value which
->> -indicates size of searching range in levels ideally as follows,
->> +indicates size of searching range in levels approximately as follows,
->>  otherwise initial value -1 that indicates the cpuset has no request.
->>  
->>  ====== ===========================================================
->>    -1   no request. use system default or follow request of others.
->>     0   no search.
->>     1   search siblings (hyperthreads in a core).
->> -   2   search cores in a package.
->> -   3   search cpus in a node [= system wide on non-NUMA system]
->> -   4   search nodes in a chunk of node [on NUMA system]
->> -   5   search system wide [on NUMA system]
->> +   2   search cpu clusters
->> +   3   search cores in a package.
->> +   4   search cpus in a node [= system wide on non-NUMA system]
->> +   5   search nodes in a chunk of node [on NUMA system]
->> +   6   search system wide [on NUMA system]
+> Signed-off-by: Dawei Li <daweilics@gmail.com>
+> ---
+> Changes in v2:
+> - update the commit message
+> ---
+>  kernel/sched/fair.c | 5 +++--
+>  1 file changed, 3 insertions(+), 2 deletions(-)
 > 
-> I think above block of documentation need not change. SD_CLUSTER is a software 
-> construct, not a sched domain per se. 
+> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+> index a19ea290b790..5f98f639bdb9 100644
+> --- a/kernel/sched/fair.c
+> +++ b/kernel/sched/fair.c
+> @@ -1031,7 +1031,8 @@ void init_entity_runnable_average(struct sched_entity *se)
+>   * With new tasks being created, their initial util_avgs are extrapolated
+>   * based on the cfs_rq's current util_avg:
+>   *
+> - *   util_avg = cfs_rq->util_avg / (cfs_rq->load_avg + 1) * se.load.weight
+> + *   util_avg = cfs_rq->avg.util_avg / (cfs_rq->avg.load_avg + 1)
+> + *		* se_weight(se)
+>   *
+>   * However, in many cases, the above util_avg does not give a desired
+>   * value. Moreover, the sum of the util_avgs may be divergent, such
+> @@ -1078,7 +1079,7 @@ void post_init_entity_util_avg(struct task_struct *p)
+>  
+>  	if (cap > 0) {
+>  		if (cfs_rq->avg.util_avg != 0) {
+> -			sa->util_avg  = cfs_rq->avg.util_avg * se->load.weight;
+> +			sa->util_avg  = cfs_rq->avg.util_avg * se_weight(se);
+Hi,
+
+The comment above the declaration of se_weight function says we should be
+using full load resolution and get rid of this helper.
+
+Should we be adding new user of the helper?
+
+/*
+ * XXX we want to get rid of these helpers and use the full load resolution.
+ */
+static inline long se_weight(struct sched_entity *se)
+{
+	return scale_load_down(se->load.weight);
+}
+
+
+>  			sa->util_avg /= (cfs_rq->avg.load_avg + 1);
+>  
+>  			if (sa->util_avg > cap)
+> -- 
+> 2.40.1
 > 
-
-I added "cpu clusters" because the original table:
-====== ===========================================================
-  -1   no request. use system default or follow request of others.
-   0   no search.
-   1   search siblings (hyperthreads in a core).
-   2   search cores in a package.
-   3   search cpus in a node [= system wide on non-NUMA system]
-   4   search nodes in a chunk of node [on NUMA system]
-   5   search system wide [on NUMA system]
-====== ===========================================================
-does not match to what I see on a few systems I checked.
-
-AMD Ryzen and the same dual-CPU Intel server with NUMA disabled:
-  level:0 - SMT
-  level:2 - MC
-  level:3 - PKG
-
-Server with NUMA enabled:
-  level:0 - SMT
-  level:2 - MC
-  level:5 - NUMA
-
-So, for the relax level original table:
-  1 -> enables 0 SMP -> OK
-  2 -> enables 1 unknown -> does not enable cores in a package
-  3 -> enables 2 MC -> OK for NUMA, but not system wide on non-NUMA system
-  5 -> enables 4 unknown -> does not enable system wide on NUMA
-
-The updated table
-====== ===========================================================
-  -1   no request. use system default or follow request of others.
-   0   no search.
-   1   search siblings (hyperthreads in a core).
-   2   search cpu clusters
-   3   search cores in a package.
-   4   search cpus in a node [= system wide on non-NUMA system]
-   5   search nodes in a chunk of node [on NUMA system]
-   6   search system wide [on NUMA system]
-====== ===========================================================
-would work like this:
-  1 -> enables 0 SMP -> OK
-  2 -> enables 1 unknown -> does nothing new
-  3 -> enables 2 MC -> OK, cores in a package for NUMA and non-NUMA system
-  4 -> enables 3 PKG -> OK on non-NUMA system
-  6 -> enables 5 NUMA -> OK
-
-I think it would look more correct on "average" systems, but anyway,
-please confirm and I'll remove the table update in an updated patch.
-
-Thanks
-
-> IMO the next paragraph that is added is good enough and the above change can be removed.
-
->>  ====== ===========================================================
->>  
->> +Not all levels can be present and values can change depending on the
->> +system architecture and kernel configuration. Check
->> +/sys/kernel/debug/sched/domains/cpu*/domain*/ for system-specific
->> +details.
->> +
->>  The system default is architecture dependent.  The system default
->>  can be changed using the relax_domain_level= boot parameter.
->>  
 
