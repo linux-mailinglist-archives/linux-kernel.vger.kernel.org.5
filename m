@@ -1,71 +1,71 @@
-Return-Path: <linux-kernel+bounces-126904-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-126905-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id A76B6894437
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 19:22:52 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id A542F89443A
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 19:23:12 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 58C421F237D9
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 17:22:52 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1BA8F1F2419F
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 17:23:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E43F651C4F;
-	Mon,  1 Apr 2024 17:22:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8B1AD535B8;
+	Mon,  1 Apr 2024 17:22:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="TMgrSLhB"
-Received: from mail-lf1-f43.google.com (mail-lf1-f43.google.com [209.85.167.43])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="fXnYthvW"
+Received: from mail-lf1-f41.google.com (mail-lf1-f41.google.com [209.85.167.41])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 761FF4F897;
-	Mon,  1 Apr 2024 17:22:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0B7B051C52;
+	Mon,  1 Apr 2024 17:22:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711992128; cv=none; b=DWY/6QAyY0U7uM2PJRNQOpZ21EnBv43AOlC0QhsfLh1nKF7QVRm0oIwN8jYC95E8ghoz2+qY5RlwZetwr/wWUmuy/dOHW2YL/xJN1zLEgeGPT/sE3JV4uIdptad4LpBgjb4jvrF9LD3Y7Q5vkt9BK3XZ8cvBdopJ4XBt+d5rQc4=
+	t=1711992130; cv=none; b=nJ7lb4KrY1MyQy+YfA7JfqecIapkUZb6AgyMUHWN8r9GIylWKi1lEFM/J/eVp1bkdhxvW0Pr+ekxJm40nL/hA2SLHxgVJv8IKvz/SPgYfiBpQ6of6cecrCUSyJTNXBOgE5R3ekaMq6Rqtj47lA98MitTITXkXWHMJv9fBTx+1Lk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711992128; c=relaxed/simple;
-	bh=sW3zpSlIGwFyAynd9cDIq/nNSDBBXDSfPehTUPeVDdI=;
+	s=arc-20240116; t=1711992130; c=relaxed/simple;
+	bh=QZgCgD+pDmfzTboyomfPDIaQwmmi1D2si8FkQh7TzwE=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=cA13JswhlA3XrFcPpTrBOMobbspfj+/Io6+nff0EGONbqlhi4rVullO9/pAL+hrz1DjyVYzVCjwAy3plG9p42tNjiVVu/0/FySrqFxbtE22guweX1Vmtle2NrNzqpmSInLu8ndblP8mfJbY0dZ7eqSxW7jWXuPSAoZJzAfoxbdA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=TMgrSLhB; arc=none smtp.client-ip=209.85.167.43
+	 MIME-Version; b=nLGxcyUdS4zW4A+YetmNr/Tc3L/iJSvyXvXcbd3NBAHPZRt6Yw3kVI3IfQgYgRWpRYaON4lcPAqUBLULItoWVmVOkfjgrJTqWf39CJxIHQRnljG6+fBclXX/I+lZ+LM42ZZ4HE2Nd2eCu5RxVaOzKJRxIxxREx4dMaeVcO7vSdg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=fXnYthvW; arc=none smtp.client-ip=209.85.167.41
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lf1-f43.google.com with SMTP id 2adb3069b0e04-513e6777af4so6985727e87.2;
-        Mon, 01 Apr 2024 10:22:06 -0700 (PDT)
+Received: by mail-lf1-f41.google.com with SMTP id 2adb3069b0e04-515d515e28dso1789538e87.0;
+        Mon, 01 Apr 2024 10:22:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1711992124; x=1712596924; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1711992127; x=1712596927; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=cA4GurxP5PJibrlcvf5UpY/AeoXbypPT8llBBvZXFbQ=;
-        b=TMgrSLhBRXrIOwe8S3sg31s/IbhhydpV5EJzlH7iRg2//+rXZW82O7ztoKnGZSryAW
-         ZtBBCbvsf5gYCAPZ274onoNLsJ/8adjE4w8+jLv3XQoazZKdIaVGyBzEzptcPV/013RZ
-         vn/QftOVM5bIIkwSxoJ2j1PA+byyRI735nEl0dmtPKNd5FiSKlVGyaf4hRWIIPqy6Wk/
-         VSrvWcXoONK03WYLduw1T/SrcfsA722nDSkzjoxhw22dSi2jOQ8kAw07x5iHeWx9z/BU
-         7yiadJTxRXYhJ/NHwIfCaJbnB61wAoJZkJZH1K+fxCPYAEgVw+v68u92E2jOwWGU/GXp
-         R+dA==
+        bh=ew+Rv+h3xO004AjwxMfY/c/AUT9eZb4PNwe0Tj37/ak=;
+        b=fXnYthvWMtq21oe0xWtC9/HG0geKV9jLtDaWC6fi+j5kX5eHwGJhGzHHWoczsTcgWy
+         qPkOkglatDaXq/u1N8q6q+CS7g9hfdHRLkh8dZCaAJTgrNmkfOIrzlBg9s6fuTq6EfbZ
+         NZTbD8fz4RBAX4UBzHZuvNSeRDI991JGSz9kUQcJH9bCtFAeMcFqsRrYUYjca51Qx+zO
+         eUFow1vBzpESdIUcM1nFpl9/G6c94uqVIK40VAgTYiSFtdRDG8ZyPqr/LFtZxGWGUQEJ
+         1ZSWrtd6vzQnLZ9hsnEj0sQrFTv+XNIJPNj8PrTfVmPAiwimCQAqx6n3HvPO43cbCxD0
+         sENQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711992124; x=1712596924;
+        d=1e100.net; s=20230601; t=1711992127; x=1712596927;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=cA4GurxP5PJibrlcvf5UpY/AeoXbypPT8llBBvZXFbQ=;
-        b=r3aL6MhdmQIw/TWNtGeaYTEu4ZTkWCen/5oL+pG20vSC30rOAb5CpURU7LR5z8wq1M
-         XrjyiCkRii6crEhToavCKfuvSU5M3egdBlJLTHFKztjpteK0ooH+h6m2MQSOW91UKN13
-         rPJN81skc2BQ25pAUBtKu5XaMiFO4uGkO1by4Pz6uxrtp4YXaMfMWG2Pd9Lto49JqIOV
-         IkZTAoAAWj3edEeRio9H6P2eoFUZo5o+zNLLRjTHzHfBNW7n2LIOjtACl0dnpqJPmP5P
-         1wBiNc5QBUQZxKyP/xz8PmfyzSODOJNEXYmBh7A3nFcz0mx9+vMV4xr6QieSy+TNsIP+
-         mSLg==
-X-Forwarded-Encrypted: i=1; AJvYcCXSzF98dP0I9952hc39tEYKctRWy3iW6KPCp2yfCWM/h9Pgcy4r+BQd1Uxx29k/VoFor9fI26O/P6n4Ae2KyhKlnLXODVu+iFgy1QeqxoEJqscnIS+JxTci5JqHjUwWem4hEqNQIkGfRnzNCR2pZLc+KAOWh5wqT2vlANl6C+jMAimavi8xc/A=
-X-Gm-Message-State: AOJu0Yzwuh3ismftkuzJ2J5ghCJ8HOZEvEN14y4fpRls4xziZCcwQlOI
-	r64tek7QSr/KqYuw3bH3dqvTruUKvx0cD+0drMkW7D25DB0p6ww7uZRVxOU93Pc=
-X-Google-Smtp-Source: AGHT+IEOnvv5tSnWQVYJHrrRJKN+SrqLGIYoAeRwMKHNL4dudLBnq+OGeUnQSsqAgdXUdMcqzGEqlA==
-X-Received: by 2002:ac2:5106:0:b0:515:952b:7886 with SMTP id q6-20020ac25106000000b00515952b7886mr8202042lfb.61.1711992123718;
-        Mon, 01 Apr 2024 10:22:03 -0700 (PDT)
+        bh=ew+Rv+h3xO004AjwxMfY/c/AUT9eZb4PNwe0Tj37/ak=;
+        b=bMHG5U0vWUBLYBguLJXvB94ns1uI+aYEPDAEw1og3G5RaLJvlhzcQ3C69IT6QtYBwR
+         JS+FkBEseHHVbcQ/a790zBBpcyJgpf5l+2k380pmApxT7AH7g33cNDMTU7OrV9XJgSx4
+         OQg2BXdte4G3a2YffFnMXkrdyECTvWFvv1EpJmH4t+dXB60dg+98bK55Zuf9TRM9Bh5k
+         mMkDuCyCuJC6VqZxbErv2G/58n/G/fHQLrC844uKe1gYR1U3wlP1KSqiTVZ3w3pcIEQS
+         8FJ+56oJgQhog6X8ENwz7AM3c+AFOdd5HSGH0L69XaRJ6bIGAXesOEcN1QFNwsSEyeDo
+         wt6w==
+X-Forwarded-Encrypted: i=1; AJvYcCVZiDeMBJZg1H4l99o1y97P8lbTgFczCuzTvaznlqBK9iQEkqsfHQItEE4+RLMy6CM/Tg2Ao31BcFCYDys6vi4baztaHDVp/ycBy9HiqesKD8FXl/ACAGjKOqUmRc06DNR38/aATx3qCtvTZOYBUqhllWxaT3xbQgARMXEZ2cfMktFO5bEJbnM=
+X-Gm-Message-State: AOJu0YySEhobYU5gdSnvO52BUsqcQ/Qr8eALD9pNK9KPm4CINscr0sUl
+	k+jLElpVm8AR7in/eLGPuKbH1VjO57fXRJ4R8KWzwNwI7gqsJ7+TJFyzn+rGkZk=
+X-Google-Smtp-Source: AGHT+IHD0PSqP84JkC+CvhhJ2s2SBxucZkTKCBPDRSoaA74HpBEd2Z1Ez/nUJqDtrwe5KK2+gEw0bQ==
+X-Received: by 2002:ac2:5b4b:0:b0:516:a2fc:9099 with SMTP id i11-20020ac25b4b000000b00516a2fc9099mr3475138lfp.60.1711992126528;
+        Mon, 01 Apr 2024 10:22:06 -0700 (PDT)
 Received: from localhost.localdomain (ccu40.neoplus.adsl.tpnet.pl. [83.30.144.40])
-        by smtp.gmail.com with ESMTPSA id xi7-20020a170906dac700b00a4e23486a5dsm5347949ejb.20.2024.04.01.10.22.02
+        by smtp.gmail.com with ESMTPSA id xi7-20020a170906dac700b00a4e23486a5dsm5347949ejb.20.2024.04.01.10.22.04
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 01 Apr 2024 10:22:03 -0700 (PDT)
+        Mon, 01 Apr 2024 10:22:06 -0700 (PDT)
 From: Adam Skladowski <a39.skl@gmail.com>
 To: 
 Cc: phone-devel@vger.kernel.org,
@@ -80,9 +80,9 @@ Cc: phone-devel@vger.kernel.org,
 	linux-arm-msm@vger.kernel.org,
 	devicetree@vger.kernel.org,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH v2 3/4] arm64: dts: qcom: msm8976: Add Adreno GPU
-Date: Mon,  1 Apr 2024 19:21:52 +0200
-Message-Id: <20240401172153.9231-4-a39.skl@gmail.com>
+Subject: [PATCH v2 4/4] arm64: dts: qcom: msm8976: Add WCNSS node
+Date: Mon,  1 Apr 2024 19:21:53 +0200
+Message-Id: <20240401172153.9231-5-a39.skl@gmail.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20240401172153.9231-1-a39.skl@gmail.com>
 References: <20240401172153.9231-1-a39.skl@gmail.com>
@@ -94,89 +94,135 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Add Adreno GPU node.
+Add node describing wireless connectivity subsystem.
 
 Signed-off-by: Adam Skladowski <a39.skl@gmail.com>
 ---
- arch/arm64/boot/dts/qcom/msm8976.dtsi | 65 +++++++++++++++++++++++++++
- 1 file changed, 65 insertions(+)
+ arch/arm64/boot/dts/qcom/msm8976.dtsi | 104 ++++++++++++++++++++++++++
+ 1 file changed, 104 insertions(+)
 
 diff --git a/arch/arm64/boot/dts/qcom/msm8976.dtsi b/arch/arm64/boot/dts/qcom/msm8976.dtsi
-index 6be310079f5b..77670fce9b8f 100644
+index 77670fce9b8f..41c748c78347 100644
 --- a/arch/arm64/boot/dts/qcom/msm8976.dtsi
 +++ b/arch/arm64/boot/dts/qcom/msm8976.dtsi
-@@ -1074,6 +1074,71 @@ mdss_dsi1_phy: phy@1a96a00 {
+@@ -771,6 +771,36 @@ blsp2_i2c4_sleep: blsp2-i2c4-sleep-state {
+ 				drive-strength = <2>;
+ 				bias-disable;
  			};
++
++			wcss_wlan_default: wcss-wlan-default-state  {
++				wcss-wlan2-pins {
++					pins = "gpio40";
++					function = "wcss_wlan2";
++					drive-strength = <6>;
++					bias-pull-up;
++				};
++
++				wcss-wlan1-pins {
++					pins = "gpio41";
++					function = "wcss_wlan1";
++					drive-strength = <6>;
++					bias-pull-up;
++				};
++
++				wcss-wlan0-pins {
++					pins = "gpio42";
++					function = "wcss_wlan0";
++					drive-strength = <6>;
++					bias-pull-up;
++				};
++
++				wcss-wlan-pins {
++					pins = "gpio43", "gpio44";
++					function = "wcss_wlan";
++					drive-strength = <6>;
++					bias-pull-up;
++				};
++			};
  		};
  
-+		adreno_gpu: gpu@1c00000 {
-+			compatible = "qcom,adreno-510.0", "qcom,adreno";
+ 		gcc: clock-controller@1800000 {
+@@ -1446,6 +1476,80 @@ blsp2_i2c4: i2c@7af8000 {
+ 			status = "disabled";
+ 		};
+ 
++		wcnss: remoteproc@a204000 {
++			compatible = "qcom,pronto-v3-pil", "qcom,pronto";
++			reg = <0x0a204000 0x2000>,
++			      <0x0a202000 0x1000>,
++			      <0x0a21b000 0x3000>;
++			reg-names = "ccu",
++				    "dxe",
++				    "pmu";
 +
-+			reg = <0x01c00000 0x40000>;
-+			reg-names = "kgsl_3d0_reg_memory";
++			memory-region = <&wcnss_fw_mem>;
 +
-+			interrupts = <GIC_SPI 33 IRQ_TYPE_LEVEL_HIGH>;
-+			interrupt-names = "kgsl_3d0_irq";
++			interrupts-extended = <&intc GIC_SPI 149 IRQ_TYPE_EDGE_RISING>,
++					      <&wcnss_smp2p_in 0 IRQ_TYPE_EDGE_RISING>,
++					      <&wcnss_smp2p_in 1 IRQ_TYPE_EDGE_RISING>,
++					      <&wcnss_smp2p_in 2 IRQ_TYPE_EDGE_RISING>,
++					      <&wcnss_smp2p_in 3 IRQ_TYPE_EDGE_RISING>;
++			interrupt-names = "wdog",
++					  "fatal",
++					  "ready",
++					  "handover",
++					  "stop-ack";
 +
-+			clocks = <&gcc GCC_GFX3D_OXILI_CLK>,
-+				 <&gcc GCC_GFX3D_OXILI_AHB_CLK>,
-+				 <&gcc GCC_GFX3D_OXILI_GMEM_CLK>,
-+				 <&gcc GCC_GFX3D_BIMC_CLK>,
-+				 <&gcc GCC_GFX3D_OXILI_TIMER_CLK>,
-+				 <&gcc GCC_GFX3D_OXILI_AON_CLK>;
-+			clock-names = "core",
-+				      "iface",
-+				      "mem",
-+				      "mem_iface",
-+				      "rbbmtimer",
-+				      "alwayson";
++			power-domains = <&rpmpd MSM8976_VDDCX>,
++					<&rpmpd MSM8976_VDDMX>;
++			power-domain-names = "cx", "mx";
 +
-+			power-domains = <&gcc OXILI_GX_GDSC>;
++			qcom,smem-states = <&wcnss_smp2p_out 0>;
++			qcom,smem-state-names = "stop";
 +
-+			iommus = <&gpu_iommu 0>;
++			pinctrl-0 = <&wcss_wlan_default>;
++			pinctrl-names = "default";
 +
 +			status = "disabled";
 +
-+			operating-points-v2 = <&gpu_opp_table>;
++			wcnss_iris: iris {
++				/* Separate chip, compatible is board-specific */
++				clocks = <&rpmcc RPM_SMD_RF_CLK2>;
++				clock-names = "xo";
++			};
 +
-+			gpu_opp_table: opp-table {
-+				compatible = "operating-points-v2";
++			smd-edge {
++				interrupts = <GIC_SPI 142 IRQ_TYPE_EDGE_RISING>;
 +
-+				opp-200000000 {
-+					opp-hz = /bits/ 64 <200000000>;
-+					required-opps = <&rpmpd_opp_low_svs>;
-+				};
++				qcom,ipc = <&apcs 8 17>;
++				qcom,smd-edge = <6>;
++				qcom,remote-pid = <4>;
 +
-+				opp-300000000 {
-+					opp-hz = /bits/ 64 <300000000>;
-+					required-opps = <&rpmpd_opp_svs>;
-+				};
++				label = "pronto";
 +
-+				opp-400000000 {
-+					opp-hz = /bits/ 64 <400000000>;
-+					required-opps = <&rpmpd_opp_nom>;
-+				};
++				wcnss_ctrl: wcnss {
++					compatible = "qcom,wcnss";
++					qcom,smd-channels = "WCNSS_CTRL";
 +
-+				opp-480000000 {
-+					opp-hz = /bits/ 64 <480000000>;
-+					required-opps = <&rpmpd_opp_nom_plus>;
-+				};
++					qcom,mmio = <&wcnss>;
 +
-+				opp-540000000 {
-+					opp-hz = /bits/ 64 <540000000>;
-+					required-opps = <&rpmpd_opp_turbo>;
-+				};
++					wcnss_bt: bluetooth {
++						compatible = "qcom,wcnss-bt";
++					};
 +
-+				opp-600000000 {
-+					opp-hz = /bits/ 64 <600000000>;
-+					required-opps = <&rpmpd_opp_turbo>;
++					wcnss_wifi: wifi {
++						compatible = "qcom,wcnss-wlan";
++
++						interrupts = <GIC_SPI 145 IRQ_TYPE_LEVEL_HIGH>,
++							     <GIC_SPI 146 IRQ_TYPE_LEVEL_HIGH>;
++						interrupt-names = "tx", "rx";
++
++						qcom,smem-states = <&apps_smsm 10>, <&apps_smsm 9>;
++						qcom,smem-state-names = "tx-enable",
++									"tx-rings-empty";
++					};
 +				};
 +			};
 +		};
 +
- 		apps_iommu: iommu@1ee0000 {
- 			compatible = "qcom,msm8976-iommu", "qcom,msm-iommu-v2";
- 			reg = <0x01ee0000 0x3000>;
+ 		intc: interrupt-controller@b000000 {
+ 			compatible = "qcom,msm-qgic2";
+ 			reg = <0x0b000000 0x1000>, <0x0b002000 0x1000>;
 -- 
 2.44.0
 
