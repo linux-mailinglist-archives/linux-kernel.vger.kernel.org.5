@@ -1,91 +1,60 @@
-Return-Path: <linux-kernel+bounces-127078-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-127081-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 44ECC89467A
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 23:21:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id D6AEE894681
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 23:23:53 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 767E01C21DFD
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 21:20:59 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 14C591C215A6
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 21:23:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E5DD555E73;
-	Mon,  1 Apr 2024 21:20:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 569F654BF6;
+	Mon,  1 Apr 2024 21:23:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ENqd+/3P"
-Received: from mail-ed1-f46.google.com (mail-ed1-f46.google.com [209.85.208.46])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="RO4Xyl0r"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7678C54BE8
-	for <linux-kernel@vger.kernel.org>; Mon,  1 Apr 2024 21:20:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7ADA855E53;
+	Mon,  1 Apr 2024 21:23:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712006438; cv=none; b=rZ7/P/beT+ArTY27G9stkIqQ/ZIOSAHhYIGRCZ9poPGkrFsb3ZEA5y0mAzIM+BJ/kY4qokQas065nm9Xmbgi4/YbgMAjlOrTRj+OUyqhxLcLqC05IcKB77lRMyGn2IRNpfBb6V6//R1Bth8y6YSv1k8W2snBNygEOT9LSfG/rRg=
+	t=1712006623; cv=none; b=Jb8B9gdvOr85aTZVNLCmMUetFFtCoDL3IQ82OpcDUvBDQUs+PpYvXG+U0Xgoopfh39EJvNKfxBZl8CZXRbPA/pdZvwqfeOZJadc2/gYcl6GkswOi03q7MnyeQ4zyjwgfEQZ0TUm7ZEMCsY9txNm4jfR9df0OkOSajaMyED1kbmo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712006438; c=relaxed/simple;
-	bh=4tAT8rRy70vJeo8NmALG6/yPhj/u7VxHH0WOeoyFZZk=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=mYmyEj5xfkUgberQJw8mxh1vZrUFSf9xA9kS491ssykcIMYMCqr/VLqqTZDhGfvCIkT/UkK0JFs5O86gMr8pU5t1Qh7DOIHjt2OYaD5YYFdjz9WPcCjQkrajVjj37Rr6gsl9dqIQSIN3bR27BA65eOe74PIpwORGflrSawKfzjU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ENqd+/3P; arc=none smtp.client-ip=209.85.208.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f46.google.com with SMTP id 4fb4d7f45d1cf-565c6cf4819so8738263a12.1
-        for <linux-kernel@vger.kernel.org>; Mon, 01 Apr 2024 14:20:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1712006435; x=1712611235; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=t6CZf7DmYX851P/l0Uf00dwEomagAVZ/kC4VexJ4Dzo=;
-        b=ENqd+/3P4nIBn1yCGJ0pyjn+yCOo1SozdAURRuiLoXRG2A+Ai7grd+hESjd3OpypOD
-         c8TnDqnNecgX8Ed5Q0PVjfA3ei0ZxK5eUoLdzJVk03Y7V57ZIiEmYWvG2dvJtPF6lgb6
-         rKUS/dkTjZd+H7/t1vfz22YwkEzu5d0w9R69F25WnmFeABs2Ui4aRORd8GlZguvDKCrj
-         6IsPuC2Vulbb+bOhsOQIfY60CdjbJPSxp5NEJuc+NuTLbjLU+ao2B6v8NvOL8rB3bhXj
-         pYzDt4RKEfWe5Yn9zy0bVKFh5WRkBaRTjR7MdBGUNUzisICENWwUlrjI8jvLp0UJrwFB
-         Ljzg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712006435; x=1712611235;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=t6CZf7DmYX851P/l0Uf00dwEomagAVZ/kC4VexJ4Dzo=;
-        b=w8JLje0cmvkM6jvJY0ZD7/TCWNaW2vgn7L2b3u9RuJAmJdlE+avZV6Bri+1/ozueXg
-         ez5c1qAHezud8HAylAqjtN7RGGzjb5AWClaxyKSBzPcofw18yXE39QlwPatbCWtDV0Gy
-         3CipGdcKlF+oDRsD+PgurP2SoyrIKJd57QyIPoOf8WwProqKQPfoOB2i2IRoFAt8Amfi
-         MVXqBcVv3pqn7Hc4bAWKOWL43Zr/uXaZfbP8GShxVb2DXWB/qh1HzpGTAhZIEGm1r3Vl
-         d2OzKKTcxkm3ILRkGaS4Bf1t1hBpesmWWc/VUqKy5rV8to+gdxDjGnpce8CiNo9P9/hn
-         iUMA==
-X-Forwarded-Encrypted: i=1; AJvYcCVUWOC1R6dg56us3uCogtSTZ17wuw0yQDk1qCXJCOhHI8yvEvw521f3mIv4+nK83tNSXCXW7ygIC5m8RuAcNf7HadwNB+2fF13oHnYd
-X-Gm-Message-State: AOJu0Yxi7raE25heqlGOWvd+j0/pS7yDpDQ2btUK6br4dAJxv4pUChxg
-	V0+AY/o3s6kDo8y4E7UtzB3GGjGFAM6ASZwzm93merz1zv8rpZv3
-X-Google-Smtp-Source: AGHT+IHgu03nwowrHJ4hNvbD6J9I7GBjKkJAgtAh3gEv1A3EjqvjMjgBEd/bURK64Y93yv+dakE7Rw==
-X-Received: by 2002:a17:906:670e:b0:a4a:3b6e:1fa9 with SMTP id a14-20020a170906670e00b00a4a3b6e1fa9mr8425321ejp.15.1712006434693;
-        Mon, 01 Apr 2024 14:20:34 -0700 (PDT)
-Received: from mosaic.enunes.eu (ip-78-45-66-209.bb.vodafone.cz. [78.45.66.209])
-        by smtp.gmail.com with ESMTPSA id n12-20020a1709061d0c00b00a4da28f42f1sm5737881ejh.177.2024.04.01.14.20.33
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 01 Apr 2024 14:20:34 -0700 (PDT)
-From: Erico Nunes <nunes.erico@gmail.com>
-To: Qiang Yu <yuq825@gmail.com>,
-	anarsoul@gmail.com,
-	dri-devel@lists.freedesktop.org,
-	lima@lists.freedesktop.org
-Cc: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-	Maxime Ripard <mripard@kernel.org>,
-	Thomas Zimmermann <tzimmermann@suse.de>,
-	David Airlie <airlied@gmail.com>,
-	Daniel Vetter <daniel@ffwll.ch>,
-	christian.koenig@amd.com,
-	megi@xff.cz,
+	s=arc-20240116; t=1712006623; c=relaxed/simple;
+	bh=EgrDOpn9PZzkLVfGjgBd1Asx2yeFKC8w6ZZ/S4hov40=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=P61k8E2hXkbJ86dqMDlbh87XwuW4OmhdoW80XDXWWP7j5prIxqnMf7B3aLWD0dcDkbiFdgvQwK2MCJODqWln+YPxLWJstkZudD46gjNb7VtXf9WdnISAW5yybJToOQ8t7hRt1qJH8a5GyTmrtZPXnOeBhPL6N1/0zDwMBW9RT0E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=RO4Xyl0r; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5C6A0C433C7;
+	Mon,  1 Apr 2024 21:23:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1712006623;
+	bh=EgrDOpn9PZzkLVfGjgBd1Asx2yeFKC8w6ZZ/S4hov40=;
+	h=From:To:Cc:Subject:Date:From;
+	b=RO4Xyl0r2rQbWZ0sZIsm05CSkeyrrqxYqOHcCCTxvbnHzEjOWqsKNQ5ZrVajAvVlD
+	 R0XnCmuqBRknYQIOSSk03Cx5mj+wE+IpEbbuLnwcDetRXDT1b2Vod+MoYMpjq/JPjc
+	 3FIFHeSdmG09We05sY59Z9dzDIWtCU5OnLgf2k4ia9/XfR9gMiyaRDt4OlNh352Xwy
+	 5NsUs0shwsTwbvfSAF3vCV6I7FQxtBOYsdky5PSLUJhPjrQgI1JEVXMYJyoFsgd40J
+	 S34qf3OgHDNXI+COnExSsOHCkPkxIaNyxAGauyvacNhchGo3Uj+6CE+4LEEUpSi8ow
+	 16J6AXfH2w4jQ==
+From: Miguel Ojeda <ojeda@kernel.org>
+To: Miguel Ojeda <ojeda@kernel.org>,
+	Wedson Almeida Filho <wedsonaf@gmail.com>,
+	Alex Gaynor <alex.gaynor@gmail.com>
+Cc: Boqun Feng <boqun.feng@gmail.com>,
+	Gary Guo <gary@garyguo.net>,
+	=?UTF-8?q?Bj=C3=B6rn=20Roy=20Baron?= <bjorn3_gh@protonmail.com>,
+	Benno Lossin <benno.lossin@proton.me>,
+	Andreas Hindborg <a.hindborg@samsung.com>,
+	Alice Ryhl <aliceryhl@google.com>,
+	rust-for-linux@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
-	Erico Nunes <nunes.erico@gmail.com>
-Subject: [PATCH 2/2] drm/lima: mask irqs in timeout path before hard reset
-Date: Mon,  1 Apr 2024 23:20:02 +0200
-Message-ID: <20240401212002.1191549-3-nunes.erico@gmail.com>
-X-Mailer: git-send-email 2.44.0
-In-Reply-To: <20240401212002.1191549-1-nunes.erico@gmail.com>
-References: <20240401212002.1191549-1-nunes.erico@gmail.com>
+	patches@lists.linux.dev
+Subject: [PATCH 0/3] Rust 1.78.0 upgrade
+Date: Mon,  1 Apr 2024 23:23:00 +0200
+Message-ID: <20240401212303.537355-1-ojeda@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -94,54 +63,42 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-There is a race condition in which a rendering job might take just long
-enough to trigger the drm sched job timeout handler but also still
-complete before the hard reset is done by the timeout handler.
-This runs into race conditions not expected by the timeout handler.
-In some very specific cases it currently may result in a refcount
-imbalance on lima_pm_idle, with a stack dump such as:
+This is the first upgrade without the `alloc` fork.
 
-[10136.669170] WARNING: CPU: 0 PID: 0 at drivers/gpu/drm/lima/lima_devfreq.c:205 lima_devfreq_record_idle+0xa0/0xb0
-..
-[10136.669459] pc : lima_devfreq_record_idle+0xa0/0xb0
-..
-[10136.669628] Call trace:
-[10136.669634]  lima_devfreq_record_idle+0xa0/0xb0
-[10136.669646]  lima_sched_pipe_task_done+0x5c/0xb0
-[10136.669656]  lima_gp_irq_handler+0xa8/0x120
-[10136.669666]  __handle_irq_event_percpu+0x48/0x160
-[10136.669679]  handle_irq_event+0x4c/0xc0
+In other words, it is based on top of Wedson's "Allocation APIs" series
+[1], applied on top of the current `rust-next`, i.e. commit 9ffe2a730313
+("rust: str: add {make,to}_{upper,lower}case() to CString").
 
-We can prevent that race condition entirely by masking the irqs at the
-beginning of the timeout handler, at which point we give up on waiting
-for that job entirely.
-The irqs will be enabled again at the next hard reset which is already
-done as a recovery by the timeout handler.
+Please note that Rust 1.78.0 will be released in a month (2024-05-02).
 
-Signed-off-by: Erico Nunes <nunes.erico@gmail.com>
----
- drivers/gpu/drm/lima/lima_sched.c | 7 +++++++
- 1 file changed, 7 insertions(+)
+Link: https://lore.kernel.org/rust-for-linux/20240328013603.206764-1-wedsonaf@gmail.com/ [1]
 
-diff --git a/drivers/gpu/drm/lima/lima_sched.c b/drivers/gpu/drm/lima/lima_sched.c
-index 66841503a618..bbf3f8feab94 100644
---- a/drivers/gpu/drm/lima/lima_sched.c
-+++ b/drivers/gpu/drm/lima/lima_sched.c
-@@ -430,6 +430,13 @@ static enum drm_gpu_sched_stat lima_sched_timedout_job(struct drm_sched_job *job
- 		return DRM_GPU_SCHED_STAT_NOMINAL;
- 	}
- 
-+	/*
-+	 * The task might still finish while this timeout handler runs.
-+	 * To prevent a race condition on its completion, mask all irqs
-+	 * on the running core until the next hard reset completes.
-+	 */
-+	pipe->task_mask_irq(pipe);
-+
- 	if (!pipe->error)
- 		DRM_ERROR("%s job timeout\n", lima_ip_name(ip));
- 
--- 
+Miguel Ojeda (3):
+  rust: sync: implement `Default` for `LockClassKey`
+  rust: kernel: remove redundant imports
+  rust: upgrade to Rust 1.78.0
+
+ Documentation/process/changes.rst | 2 +-
+ rust/kernel/alloc.rs              | 1 -
+ rust/kernel/alloc/allocator.rs    | 2 --
+ rust/kernel/alloc/box_ext.rs      | 1 -
+ rust/kernel/alloc/vec_ext.rs      | 1 -
+ rust/kernel/error.rs              | 1 -
+ rust/kernel/net/phy.rs            | 2 +-
+ rust/kernel/print.rs              | 5 -----
+ rust/kernel/str.rs                | 5 +----
+ rust/kernel/sync.rs               | 6 ++++++
+ rust/kernel/sync/arc.rs           | 1 -
+ rust/kernel/sync/condvar.rs       | 1 -
+ rust/kernel/sync/lock.rs          | 2 +-
+ rust/kernel/sync/lock/mutex.rs    | 2 --
+ rust/kernel/sync/lock/spinlock.rs | 2 --
+ rust/kernel/task.rs               | 2 +-
+ rust/kernel/workqueue.rs          | 4 +---
+ scripts/generate_rust_target.rs   | 2 +-
+ scripts/min-tool-version.sh       | 2 +-
+ 19 files changed, 14 insertions(+), 30 deletions(-)
+
+--
 2.44.0
-
 
