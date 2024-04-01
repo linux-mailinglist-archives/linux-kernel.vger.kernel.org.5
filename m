@@ -1,149 +1,156 @@
-Return-Path: <linux-kernel+bounces-126931-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-126932-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 024BC89449F
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 20:03:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 0810A8944A1
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 20:03:42 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AC49A282CF8
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 18:03:25 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B25E3282C78
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 18:03:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A300A4F200;
-	Mon,  1 Apr 2024 18:03:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8161C4E1D6;
+	Mon,  1 Apr 2024 18:03:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="TCqP7Tus"
-Received: from mail-wr1-f47.google.com (mail-wr1-f47.google.com [209.85.221.47])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Q1NZdvHi"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.14])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4318E481C6;
-	Mon,  1 Apr 2024 18:03:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9FDA4481C6;
+	Mon,  1 Apr 2024 18:03:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.14
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711994594; cv=none; b=DVti2xeus4xPqCoYrgnTrNS5fpLfHcBdK/CdVmtj27KY+0sjWcLc7IHX9n19aAlYaDY3DX5+BtAtS0TT/Dgdov8dIZ9ZSBPAmZG1x8EsN2v3O2hzd77wosHLdXUoVC4G1Gy4IM6vm+FuZwHrTSWCNJ8yqCDxqAWTY8zSqQUEcBM=
+	t=1711994604; cv=none; b=EOx28TnEKRQgehqFy0N2w1Fq1CFvLEfK9MpzQUCsZGXqKrAjttSi6Ae4NIcfEvtUeceXzLrfIztDAyeNKFd8C8kzUuY5UQ5GWbtph72lDOPthGDOGwPjSE2W+jhyo/QVX66vwVinr3iwM/57EnbJ/SjOjBN51uqO+0fn4S0b33M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711994594; c=relaxed/simple;
-	bh=dJpGXu0C9rO7fmzbAKI1TioiM08l2gECNbt1RRXQXIM=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=hd44rhaSBd5HkmWo85CIztYJX49fD3HUaCcfBz2xVN+Q+lHGn7ZlUYXpz1FQt0ytDXqdIQletN2/bsSs0f7H4XxRLiQEG+UtHDxGRndZJRn44uUroN/WnzYdTjFIOovLDgXzPtM8l4fYPMkNtqA5nudWawE3zYrpjo0mB6KOIDQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=TCqP7Tus; arc=none smtp.client-ip=209.85.221.47
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f47.google.com with SMTP id ffacd0b85a97d-3434c6e1941so465941f8f.0;
-        Mon, 01 Apr 2024 11:03:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1711994591; x=1712599391; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=6JaPPNMEgkwh4HfN+ukbZ/toOf6Bi9mBKsKcLnPIOUU=;
-        b=TCqP7TusWZgzdoKmAF6d+BtqpVpiTtv4KhGRoHG0I8NxP5B3gjXLFHUifuCdk/nBj1
-         KWpKAw/fqZMRfsMDJzR09CQ55bWFYsqh6xm8m/zteMhKtRXi66L39BVpaTRWFxnRXV9o
-         ZYWX6MCHQwe5yyw5mF4jFLd4LNAKNWU69zn7Lf74e2CMrsP12ircEvhXeMxymPCgPVVi
-         XZO4Gl66FU3UhHOky1pYI7FwHczQgigdNfmqr4sEIEVPR3SwTTz1Ot1HDFRfUCK8Xej/
-         00j6ysC7aTiupRZI2y9JzoEpFGGbQoNGcA/x8SBU2Iwo69/yqeW0ChpsEe+qfWfOSl5Y
-         NZQg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711994591; x=1712599391;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=6JaPPNMEgkwh4HfN+ukbZ/toOf6Bi9mBKsKcLnPIOUU=;
-        b=awAf5iIab2UnWSHquR32lLKDXkQ1mYIj/cQGZm2pD96m+Mke1pLpTGX0fiHNe+RsmM
-         3Kn6D/sTRAa9D55KJs8UA+ut5p7Dc4v63Sv/oT1sA3UhhA8fY7gYnV7q7aiF/tkqqvSy
-         /7A5HjKSiylZzZPIizb1AAR1PZMEFKsWuOBdeh5qaqHmaTdE33TNsGfG0GdtFaN6f7jm
-         VEbFV2n+xPRv5lCgRQEihEccBxK5GkjnjJT9i8lUJghWgY53sGL3gig456R2nKxGVuyj
-         K4jiMv0IUNDs7iiYc7zV96AvlcAfbKQKjDdraZIsvtaqHR8pMk7tVzmqrml3ac8H7o8p
-         5BcA==
-X-Forwarded-Encrypted: i=1; AJvYcCU+oyODtERkwcb2ESwsHFz8eIoGM5+h4UCGNNfRdmYGStRPbdz1Cw3UaVuw4QPXkvuwJc89PJzbPoXV1zSUgIqXmb+GFhwKrd0cKcJX/Ck+yfAK+evH1/QrlUAwlq0xOuRSNHRHYaoQaJB/Oc2Sr+EjMTtwUyENRMyD
-X-Gm-Message-State: AOJu0YzRLaoeZRcF0j6fDCx3foBwgMdT4fWYGz5vNoF7EukWiD2uL0cZ
-	HQxwNDTwihKUSd1eaoHYhLPiSbIdx/nz8E2chc8LKYtHAoDU4L2vT3ANmI8DAOLbCTsd4zNA18r
-	i2YRcLAMol0M962+p1RijHjjurC0=
-X-Google-Smtp-Source: AGHT+IHrNStCNtNQGmdjEnbKYU7NKwXc/9dP2cUhAQzSjTICwnMFZo4Sj7nLR7UnIZj7+3aq3HEl8pNjaGLzL+dDelI=
-X-Received: by 2002:adf:edcc:0:b0:33e:40a3:22c8 with SMTP id
- v12-20020adfedcc000000b0033e40a322c8mr6490749wro.33.1711994591321; Mon, 01
- Apr 2024 11:03:11 -0700 (PDT)
+	s=arc-20240116; t=1711994604; c=relaxed/simple;
+	bh=RFQnBVgfQHWtAoykdsiTVNLlxjx5dhXgtJF0FhsJ/ek=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=SfayR5hTCCdloZlnpUoUO/OlXLYunhC6jsP/g7V6sH5sbm6EBKBcCz1iomvPOej5glrWnH6XEUWczTsGpsAMITA8yswu89ni+2vdHuCzNvP6q4HsJIU4jaizULeS2FqLXYJFZwITsCQisrJgro/jdiSZrpLOA5HCnLXVT6a5clU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Q1NZdvHi; arc=none smtp.client-ip=192.198.163.14
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1711994602; x=1743530602;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=RFQnBVgfQHWtAoykdsiTVNLlxjx5dhXgtJF0FhsJ/ek=;
+  b=Q1NZdvHi6NSchHX4i4lu8+F9c6Nis2ptbuAU09y0U91g4sQOUHqtqur9
+   1SMGYjTNvRzIwa2yIITw7Y74YUUcKwtsBH67QtUt7VAoAIEZTcGTTv1TZ
+   X8vRCbbLdo3SW9QbUGBl6Ml7wGaLg7DDCh0ggW9g9lmudQWrz11B2jOen
+   x71UDKI2gNU7w9T2/t39bR1X+CsmEO4lxnMLmMjIYdzMk5Ey0dIeXW5aX
+   nmASAO3IlaZlhbLsWINoOk0W1iCaTgMZ+lB5CVoCyzIx2aIfEOUIlP6/8
+   bCt62D5gK6kgRSPHZ6LSONqAFPayHvwfp/lDyogucfEOLL879Yigjmmuc
+   w==;
+X-CSE-ConnectionGUID: V4DQTCSxQlaPo0fQksOEDw==
+X-CSE-MsgGUID: L4DeoYKGRc6S5crFv8+Awg==
+X-IronPort-AV: E=McAfee;i="6600,9927,11031"; a="7345221"
+X-IronPort-AV: E=Sophos;i="6.07,172,1708416000"; 
+   d="scan'208";a="7345221"
+Received: from orviesa001.jf.intel.com ([10.64.159.141])
+  by fmvoesa108.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Apr 2024 11:03:21 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,172,1708416000"; 
+   d="scan'208";a="55248280"
+Received: from mminuddi-mobl1.amr.corp.intel.com (HELO [10.209.48.250]) ([10.209.48.250])
+  by smtpauth.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Apr 2024 11:03:21 -0700
+Message-ID: <ed6a32ef-85f0-4f90-883b-911ef0964984@intel.com>
+Date: Mon, 1 Apr 2024 11:03:20 -0700
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240329094906.18147-1-ubizjak@gmail.com> <20240329094906.18147-3-ubizjak@gmail.com>
- <CAADnVQ+6D++hCXaP=aK+Q5wienMzhHo3h9YCvpA_7sHjMt+q6A@mail.gmail.com> <CAFULd4b6juiw3wC3Z61V9=-UnA+NGyUt4231vC14UnGAATk6tA@mail.gmail.com>
-In-Reply-To: <CAFULd4b6juiw3wC3Z61V9=-UnA+NGyUt4231vC14UnGAATk6tA@mail.gmail.com>
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Mon, 1 Apr 2024 11:02:59 -0700
-Message-ID: <CAADnVQKqxQxLLQ6OwZCWni8==-fioeOZ_AH7YVjjCwvYNYmCqg@mail.gmail.com>
-Subject: Re: [PATCH RESEND bpf 2/2] x86/bpf: Fix IP for relocating call depth accounting
-To: Uros Bizjak <ubizjak@gmail.com>
-Cc: X86 ML <x86@kernel.org>, bpf <bpf@vger.kernel.org>, 
-	Network Development <netdev@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>, 
-	=?UTF-8?Q?Joan_Bruguera_Mic=C3=B3?= <joanbrugueram@gmail.com>, 
-	Ingo Molnar <mingo@kernel.org>, Alexei Starovoitov <ast@kernel.org>, 
-	Daniel Borkmann <daniel@iogearbox.net>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] x86/mm/ident_map: Use full gbpages in identity maps
+ except on UV platform.
+To: Steve Wahl <steve.wahl@hpe.com>, "Eric W. Biederman"
+ <ebiederm@xmission.com>
+Cc: Russ Anderson <rja@hpe.com>, Ingo Molnar <mingo@kernel.org>,
+ Dave Hansen <dave.hansen@linux.intel.com>, Andy Lutomirski
+ <luto@kernel.org>, Peter Zijlstra <peterz@infradead.org>,
+ Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>,
+ Borislav Petkov <bp@alien8.de>, x86@kernel.org,
+ "H. Peter Anvin" <hpa@zytor.com>, linux-kernel@vger.kernel.org,
+ Linux regressions mailing list <regressions@lists.linux.dev>,
+ Pavin Joseph <me@pavinjoseph.com>, stable@vger.kernel.org,
+ Eric Hagberg <ehagberg@gmail.com>, Simon Horman <horms@verge.net.au>,
+ Dave Young <dyoung@redhat.com>, Sarah Brofeldt <srhb@dbc.dk>,
+ Dimitri Sivanich <sivanich@hpe.com>
+References: <20240322162135.3984233-1-steve.wahl@hpe.com>
+ <ZgABC1oQ9YJW6Bw3@gmail.com> <20240325020334.GA10309@hpe.com>
+ <87o7b273p2.fsf@email.froward.int.ebiederm.org>
+ <ZgHTXvCQr6ycbVzp@swahl-home.5wahls.com>
+ <87r0fv6ddb.fsf@email.froward.int.ebiederm.org>
+ <ZgQ8Ej-MLlNJR6wn@swahl-home.5wahls.com>
+ <87zfuj2bgh.fsf@email.froward.int.ebiederm.org>
+ <ZgWO5I_p8zHyp3en@swahl-home.5wahls.com>
+ <87msqf12sy.fsf@email.froward.int.ebiederm.org>
+ <ZgrPrZqAXeq7e_wh@swahl-home.5wahls.com>
+Content-Language: en-US
+From: Dave Hansen <dave.hansen@intel.com>
+Autocrypt: addr=dave.hansen@intel.com; keydata=
+ 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
+In-Reply-To: <ZgrPrZqAXeq7e_wh@swahl-home.5wahls.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Sat, Mar 30, 2024 at 2:01=E2=80=AFAM Uros Bizjak <ubizjak@gmail.com> wro=
-te:
->
-> On Fri, Mar 29, 2024 at 10:53=E2=80=AFPM Alexei Starovoitov
-> <alexei.starovoitov@gmail.com> wrote:
-> >
-> > On Fri, Mar 29, 2024 at 2:49=E2=80=AFAM Uros Bizjak <ubizjak@gmail.com>=
- wrote:
-> > >
-> > > From: Joan Bruguera Mic=C3=B3 <joanbrugueram@gmail.com>
-> > >
-> > > The recently introduced support for %rip-relative relocations in the
-> > > call thunk template assumes that the code is being patched in-place,
-> > > so the destination of the relocation matches the address of the code.
-> > > This is not true for the call depth accounting emitted by the BPF JIT=
-,
-> > > so the calculated address is wrong and usually causes a page fault.
-> >
-> > Could you share the link to what this 'rip-relative' relocation is ?
->
-> Please see the "RIP relative addressing" section in [1].
->
-> [1] https://compas.cs.stonybrook.edu/~nhonarmand/courses/sp17/cse506/ref/=
-assembly.html
->
-> In our case:
->
-> The callthunks patching creates a call thunk template in the .rodata
-> section (please see arch/x86/kernel/callthunks.c)  that is later
-> copied to the .text section at the correct place. The template uses
-> X86_call_depth in the pcpu_hot structure. Previously, the template
-> used absolute location for X86_call_depth and the linker resolved the
-> address in the template to this absolute location. There is no issue
-> when this template is copied to the various places in the .text
-> section.
->
-> When we want to use PC relative relocations (to reduce the code size),
-> then the linker calculates the address of the variable in the template
-> according to the PC in the .rodata section. If we want to copy the
-> template to its final location, then the address of X86_call_depth,
-> relative to the PC, has to be adjusted, as explained in
-> arch/x86/kernel/alternative.c, in the comment above apply_reloc_n
-> macro.
+On 4/1/24 08:15, Steve Wahl wrote:
+> From that point of view, it does make sense to special case UV systems
+> for this.  The restricted areas we're talking about are not in the map
+> when the bootloader is started on the UV platform.
 
-I didn't mean to ask for info about the definition of rip-relative,
-but how it's used in this case and what you've been trying
-to achieve with commit 17bce3b2ae2d that broke call depth accounting.
-And the whole sequence of events that caused this breakage.
-Something like:
-commit 59bec00ace28 ("x86/percpu: Introduce %rip-relative addressing
-to PER_CPU_VAR()")
-made PER_CPU_VAR() to use rip-relative addressing,
-hence INCREMENT_CALL_DEPTH macro and skl_call_thunk_template
-got rip-relative asm code inside of it.
-Hence x86_call_depth_emit_accounting() was changed
-in commit 17bce3b2ae2d ("x86/callthunks: Handle %rip-relative
-relocations in call thunk template") to use apply_relocation(),
-but it was mistakenly made to use *pprog as dest ip,
-so jit-ed bpf progs on kernels with call depth tracking got broken.
-Such details should be in the commit log.
+Just to be clear what I'm looking for here: Special casing UV systems is
+theoretically OK.  What I don't like is doing that in using GB pages or not.
+
+It would be much nicer to have specific, precise information about what
+UV needs done.  For instance, do we know where the special address range
+is?  Is it fixed?  If so, I'd much rather have code that says: "Whoa,
+don't map this range with *any* identity map page tables" versus
+something targeted specifically at gbpages.
+
+
 
