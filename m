@@ -1,234 +1,110 @@
-Return-Path: <linux-kernel+bounces-127139-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-127140-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7708F894761
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 00:37:29 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id F1CC9894762
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 00:38:19 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id DCFBAB21721
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 22:37:26 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id ABA30282B6F
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 22:38:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F278F5677C;
-	Mon,  1 Apr 2024 22:37:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3DA0A55C3B;
+	Mon,  1 Apr 2024 22:38:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=atishpatra.org header.i=@atishpatra.org header.b="OEmtXUxR"
-Received: from mail-lj1-f173.google.com (mail-lj1-f173.google.com [209.85.208.173])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=linux.org.uk header.i=@linux.org.uk header.b="plBg51k+"
+Received: from zeniv.linux.org.uk (zeniv.linux.org.uk [62.89.141.173])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5B99F29CFA
-	for <linux-kernel@vger.kernel.org>; Mon,  1 Apr 2024 22:37:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0BB2B8F6F
+	for <linux-kernel@vger.kernel.org>; Mon,  1 Apr 2024 22:38:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=62.89.141.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712011036; cv=none; b=lxX8cpVOV1gD4gnzTEJ8hmFWKFDcBmuFtLhEC+3ysEkjrTEoXQ8WrQnNjC3rESsjQ9ff0zQmojuhXa5raidUjXSOEHpzHu1NanDJNfRCzazVumhGE96/FcNZr1R2IRfqxzfpf/GVIHH8Zf9PnRoqWEj7DC1G1MzMsy/gxytqqlw=
+	t=1712011093; cv=none; b=fXJShpSsMm7IwyjXUk4CbOgWcClvVRJAG4wNGYHpnLoDtpDP0/ZA6LhEa6aLC1tkkvy2tS32YraeceI/5DZKFVKZ43MUHIb/EOITwh2cLzS+nScpH5ERjbpE4VHL1wtevM+onoSkflHuWJn75jXkN3xhGb8irJGrRqiEPcnqA/Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712011036; c=relaxed/simple;
-	bh=NTg0LNvASPU60r1Pc8Xg21cU9Db2pDu0bl/8+t+KWZg=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=jj51cbYrDxj2pwwQ4uPm7U/Pvd81DII3TyXdZvcHPO9WEgaposbL+mIwzflB8Au6nxUqEzS7hliKPwX9zn58PIDIQJIf44yRil60c6C0W4fIcnsbods76lr/trkvZF3gYilKftyKnDhAgs6x5Ds0NtFc6DcylNSYkzUO2v0qcHs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=atishpatra.org; spf=pass smtp.mailfrom=atishpatra.org; dkim=pass (1024-bit key) header.d=atishpatra.org header.i=@atishpatra.org header.b=OEmtXUxR; arc=none smtp.client-ip=209.85.208.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=atishpatra.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=atishpatra.org
-Received: by mail-lj1-f173.google.com with SMTP id 38308e7fff4ca-2d48d75ab70so66019031fa.0
-        for <linux-kernel@vger.kernel.org>; Mon, 01 Apr 2024 15:37:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=atishpatra.org; s=google; t=1712011032; x=1712615832; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=aY4S4yPUfIj0lcZIhHGm/I+32cExDlXkzSV19aujdnE=;
-        b=OEmtXUxRtFiXZW6cQjKo9p5rXSTBp/6P8FcepU+kL8H3t5v7zCxK8XLDgALUHeKAqQ
-         8H7oNeNCGwmMmEchSDVVdnkeOZFZz0ExUvy4rRbVhXnC0RuYkpJUaKwmsDHlxDUj5xsA
-         LaGACyClK2phAkDZxwFvBVuXisHlB8q+imrvk=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712011032; x=1712615832;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=aY4S4yPUfIj0lcZIhHGm/I+32cExDlXkzSV19aujdnE=;
-        b=qlHBJA6HOEMp7qsZGz98N9T1a/t/APPNGztHLHFOoB0geSDx1tQ4U4aZr/NWoeG4J9
-         Imun7/Tc/LvZJlvQNLel/lD6tM+UTWx4a5nQkTeFwlzh3X/Jak8F7i7RYl6aArqkNzTr
-         eR065+A+W+yZcH8zSoq5CtOf6oI2slU1P+Ben6pfaljDkJjTQRT6ihsXVB56a92MNiiX
-         lc+r8lAMzEdprH5c/Dfg2eU05Vh6H+K94RaitXWLXpvl6vdQfQhOcCYlWfIatfg8GSlp
-         zbstIYP9wx7YfiVECfD8Z3aTGBaEiUzLrhVDVpwAIRj659adA8wnGwVikwDZl1qls56P
-         OafQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUBAjwro847QupqZl97SkxR9ACdBE4mz/kh6cSQk5Uakas5EwXqEHWH/SXI1TyXVIDOY939+aR5R50CM4oLnKeRtSZZmvhH25/yxCyx
-X-Gm-Message-State: AOJu0YwLUrV8l4J9qMcf+TxkzLt4EvCvNFr37tFLNuCxVXSeeNPOigjW
-	ikgLBdOkgQ/pvvYUBipl78aipzKJPUsF/VhEefMED3dgb8qeg4tjo0P5DTODTjHDAnQafGPX0iJ
-	AEX1WJ3YD/p13foToV5YT6ZqDdAvYv7lokXyF
-X-Google-Smtp-Source: AGHT+IG/nrfJyiecsCRexI+R+JQkltSWLIGxNJI1MuunG9lO7Xv1PZB0PJSIO5fHcSDuaVZDyAvA8i4t7A+QtlxnzZU=
-X-Received: by 2002:a05:651c:14a:b0:2d4:514b:428 with SMTP id
- c10-20020a05651c014a00b002d4514b0428mr6412640ljd.6.1712011032590; Mon, 01 Apr
- 2024 15:37:12 -0700 (PDT)
+	s=arc-20240116; t=1712011093; c=relaxed/simple;
+	bh=g/h+7JQtmK0612QuZpj38JeIqT5igHLPix+xixz83Ec=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Jd2X0LYRIvOqTRs31CbwNgr1lkbWifNHFNjStryrlV+4P0fHWMPxN95Ud6JB/AsmJmnzaLWhCfOUXT8yrexZPkRjRoLg63TB3+HQWuH9+RUIF4FmOkt8PtqLoTch7E/ae5VbGy45sVGm9nlfpLGJuWzNyNOrmOTvymNr7VoL08I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zeniv.linux.org.uk; spf=none smtp.mailfrom=ftp.linux.org.uk; dkim=pass (2048-bit key) header.d=linux.org.uk header.i=@linux.org.uk header.b=plBg51k+; arc=none smtp.client-ip=62.89.141.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zeniv.linux.org.uk
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=ftp.linux.org.uk
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=linux.org.uk; s=zeniv-20220401; h=Sender:In-Reply-To:Content-Type:
+	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=F/FK682CzzS2lTPRJ6kmulNGDgp0gh8yyv2qOpj+Vfg=; b=plBg51k+Zuu8uvQXOx6kwQJFfS
+	1CYyecZypKTi0CKJmYscdL5L27L8oK69PJuj4qY/uWM+3WavqtqqwqoAV0qMsGwjoKwpAFS5zhVsB
+	gewDLU3SmQmImtpBPWv6wTEecc7rK6tdR3Ku+97sXB3lWa1DD2l/nPQamIS+v0Y6ogh/YXJBRbvVx
+	K6WzQGZkpN1zEm/jvuOusZv0As94oXKaVVKQAR+GQNDNg0eUffrchILbH8PfZb7Soebv4YX2uCkKi
+	mx9haC3MgGgtmSTaeTdZLzG8dE4VrPKRHxk04CzctPMz+8kZxPSBvYNZKQ3Nl5DysTUSpIfuK3J4F
+	IYPaac7A==;
+Received: from viro by zeniv.linux.org.uk with local (Exim 4.96 #2 (Red Hat Linux))
+	id 1rrQHz-003mh2-1t;
+	Mon, 01 Apr 2024 22:38:03 +0000
+Date: Mon, 1 Apr 2024 23:38:03 +0100
+From: Al Viro <viro@zeniv.linux.org.uk>
+To: "Paul E. McKenney" <paulmck@kernel.org>
+Cc: linux-kernel@vger.kernel.org, kernel-team@meta.com,
+	"David S. Miller" <davem@davemloft.net>,
+	Andreas Larsson <andreas@gaisler.com>,
+	Palmer Dabbelt <palmer@rivosinc.com>, Arnd Bergmann <arnd@arndb.de>,
+	Marco Elver <elver@google.com>
+Subject: Re: [PATCH RFC cmpxchg 2/8] sparc: Emulate one-byte and two-byte
+ cmpxchg
+Message-ID: <20240401223803.GZ538574@ZenIV>
+References: <31c82dcc-e203-48a9-aadd-f2fcd57d94c1@paulmck-laptop>
+ <20240401213950.3910531-2-paulmck@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240229010130.1380926-1-atishp@rivosinc.com> <20240229010130.1380926-8-atishp@rivosinc.com>
- <20240302-1a3c0df25f2422e1e6abecf3@orel>
-In-Reply-To: <20240302-1a3c0df25f2422e1e6abecf3@orel>
-From: Atish Patra <atishp@atishpatra.org>
-Date: Mon, 1 Apr 2024 15:37:01 -0700
-Message-ID: <CAOnJCUJCQjBfLZFW-3iLUB6ygyRmz1Anu+fhfrT4Lpoj2iNB5Q@mail.gmail.com>
-Subject: Re: [PATCH v4 07/15] RISC-V: KVM: No need to exit to the user space
- if perf event failed
-To: Andrew Jones <ajones@ventanamicro.com>
-Cc: Atish Patra <atishp@rivosinc.com>, linux-kernel@vger.kernel.org, 
-	Anup Patel <anup@brainfault.org>, Albert Ou <aou@eecs.berkeley.edu>, 
-	Alexandre Ghiti <alexghiti@rivosinc.com>, Conor Dooley <conor.dooley@microchip.com>, 
-	Guo Ren <guoren@kernel.org>, Icenowy Zheng <uwu@icenowy.me>, kvm-riscv@lists.infradead.org, 
-	kvm@vger.kernel.org, linux-kselftest@vger.kernel.org, 
-	linux-riscv@lists.infradead.org, Mark Rutland <mark.rutland@arm.com>, 
-	Palmer Dabbelt <palmer@dabbelt.com>, Paolo Bonzini <pbonzini@redhat.com>, 
-	Paul Walmsley <paul.walmsley@sifive.com>, Shuah Khan <shuah@kernel.org>, 
-	Will Deacon <will@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240401213950.3910531-2-paulmck@kernel.org>
+Sender: Al Viro <viro@ftp.linux.org.uk>
 
-On Sat, Mar 2, 2024 at 12:16=E2=80=AFAM Andrew Jones <ajones@ventanamicro.c=
-om> wrote:
->
-> On Wed, Feb 28, 2024 at 05:01:22PM -0800, Atish Patra wrote:
-> > Currently, we return a linux error code if creating a perf event failed
-> > in kvm. That shouldn't be necessary as guest can continue to operate
-> > without perf profiling or profiling with firmware counters.
-> >
-> > Return appropriate SBI error code to indicate that PMU configuration
-> > failed. An error message in kvm already describes the reason for failur=
-e.
->
-> I don't know enough about the perf subsystem to know if there may be
-> a concern that resources are temporarily unavailable. If so, then this
+On Mon, Apr 01, 2024 at 02:39:44PM -0700, Paul E. McKenney wrote:
+> Use the new cmpxchg_emu_u8() and cmpxchg_emu_u16() to emulate one-byte
+> and two-byte cmpxchg() on 32-bit sparc.
 
-Do you mean the hardware resources unavailable because the host is using it=
- ?
+>  __cmpxchg(volatile void *ptr, unsigned long old, unsigned long new_, int size)
+>  {
+>  	switch (size) {
+> +	case 1:
+> +		return cmpxchg_emu_u8((volatile u8 *)ptr, old, new_);
+> +	case 2:
+> +		return cmpxchg_emu_u16((volatile u16 *)ptr, old, new_);
+>  	case 4:
+>  		return __cmpxchg_u32((u32 *)ptr, (u32)old, (u32)new_);
+>  	default:
 
-> patch would make it possible for a guest to do the exact same thing,
-> but sometimes succeed and sometimes get SBI_ERR_NOT_SUPPORTED.
-> sbi_pmu_counter_config_matching doesn't currently have any error types
-> specified that say "unsupported at the moment, maybe try again", which
-> would be more appropriate in that case. I do see
-> perf_event_create_kernel_counter() can return ENOMEM when memory isn't
-> available, but if the kernel isn't able to allocate a small amount of
-> memory, then we're in bigger trouble anyway, so the concern would be
-> if there are perf resource pools which may temporarily be exhausted at
-> the time the guest makes this request.
->
+Considering how awful sparc32 32bit cmpxchg is, it might be better to
+implement those directly rather than trying to do them on top of
+that.  Something like
 
-For other cases, this patch ensures that guests continue to run without fai=
-lure
-which allows the user in the guest to try again if this fails due to a temp=
-orary
-resource availability.
+#define CMPXCHG(T)	\
+	T __cmpxchg_##T(volatile ##T *ptr, ##T old, ##T new)	\
+	{							\
+		unsigned long flags;				\
+		##T prev;					\
+								\
+		spin_lock_irqsave(ATOMIC_HASH(ptr), flags);	\
+		if ((prev = *ptr) == old)			\
+			*ptr = new;				\
+		spin_unlock_irqrestore(ATOMIC_HASH(ptr), flags);\
+		return prev;					\
+	}
 
-> One comment below.
->
-> >
-> > Fixes: 0cb74b65d2e5 ("RISC-V: KVM: Implement perf support without sampl=
-ing")
-> > Reviewed-by: Anup Patel <anup@brainfault.org>
-> > Signed-off-by: Atish Patra <atishp@rivosinc.com>
-> > ---
-> >  arch/riscv/kvm/vcpu_pmu.c     | 14 +++++++++-----
-> >  arch/riscv/kvm/vcpu_sbi_pmu.c |  6 +++---
-> >  2 files changed, 12 insertions(+), 8 deletions(-)
-> >
-> > diff --git a/arch/riscv/kvm/vcpu_pmu.c b/arch/riscv/kvm/vcpu_pmu.c
-> > index b1574c043f77..29bf4ca798cb 100644
-> > --- a/arch/riscv/kvm/vcpu_pmu.c
-> > +++ b/arch/riscv/kvm/vcpu_pmu.c
-> > @@ -229,8 +229,9 @@ static int kvm_pmu_validate_counter_mask(struct kvm=
-_pmu *kvpmu, unsigned long ct
-> >       return 0;
-> >  }
-> >
-> > -static int kvm_pmu_create_perf_event(struct kvm_pmc *pmc, struct perf_=
-event_attr *attr,
-> > -                                  unsigned long flags, unsigned long e=
-idx, unsigned long evtdata)
-> > +static long kvm_pmu_create_perf_event(struct kvm_pmc *pmc, struct perf=
-_event_attr *attr,
-> > +                                   unsigned long flags, unsigned long =
-eidx,
-> > +                                   unsigned long evtdata)
-> >  {
-> >       struct perf_event *event;
-> >
-> > @@ -454,7 +455,8 @@ int kvm_riscv_vcpu_pmu_ctr_cfg_match(struct kvm_vcp=
-u *vcpu, unsigned long ctr_ba
-> >                                    unsigned long eidx, u64 evtdata,
-> >                                    struct kvm_vcpu_sbi_return *retdata)
-> >  {
-> > -     int ctr_idx, ret, sbiret =3D 0;
-> > +     int ctr_idx, sbiret =3D 0;
-> > +     long ret;
-> >       bool is_fevent;
-> >       unsigned long event_code;
-> >       u32 etype =3D kvm_pmu_get_perf_event_type(eidx);
-> > @@ -513,8 +515,10 @@ int kvm_riscv_vcpu_pmu_ctr_cfg_match(struct kvm_vc=
-pu *vcpu, unsigned long ctr_ba
-> >                       kvpmu->fw_event[event_code].started =3D true;
-> >       } else {
-> >               ret =3D kvm_pmu_create_perf_event(pmc, &attr, flags, eidx=
-, evtdata);
-> > -             if (ret)
-> > -                     return ret;
-> > +             if (ret) {
-> > +                     sbiret =3D SBI_ERR_NOT_SUPPORTED;
-> > +                     goto out;
-> > +             }
-> >       }
-> >
-> >       set_bit(ctr_idx, kvpmu->pmc_in_use);
-> > diff --git a/arch/riscv/kvm/vcpu_sbi_pmu.c b/arch/riscv/kvm/vcpu_sbi_pm=
-u.c
-> > index 7eca72df2cbd..b70179e9e875 100644
-> > --- a/arch/riscv/kvm/vcpu_sbi_pmu.c
-> > +++ b/arch/riscv/kvm/vcpu_sbi_pmu.c
-> > @@ -42,9 +42,9 @@ static int kvm_sbi_ext_pmu_handler(struct kvm_vcpu *v=
-cpu, struct kvm_run *run,
-> >  #endif
-> >               /*
-> >                * This can fail if perf core framework fails to create a=
-n event.
-> > -              * Forward the error to userspace because it's an error w=
-hich
-> > -              * happened within the host kernel. The other option woul=
-d be
-> > -              * to convert to an SBI error and forward to the guest.
-> > +              * No need to forward the error to userspace and exit the=
- guest
->
-> Period after guest
->
->
-> > +              * operation can continue without profiling. Forward the
->
-> The operation
->
+CMPXCHG(u8)
+CMPXCHG(u16)
+CMPXCHG(u32)
+CMPXCHG(u64)
 
-Fixed the above two.
-
-
-> > +              * appropriate SBI error to the guest.
-> >                */
-> >               ret =3D kvm_riscv_vcpu_pmu_ctr_cfg_match(vcpu, cp->a0, cp=
-->a1,
-> >                                                      cp->a2, cp->a3, te=
-mp, retdata);
-> > --
-> > 2.34.1
-> >
->
-> Thanks,
-> drew
-
-
-
---
-Regards,
-Atish
+in arch/sparc/lib/atomic32.c, replacing equivalent __cmpxchg_u{32,64}()
+definitions already there and use of those in that switch in __cmpxchg()
+definition...
 
