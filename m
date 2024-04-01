@@ -1,213 +1,254 @@
-Return-Path: <linux-kernel+bounces-127084-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-127080-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id A36C9894684
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 23:24:38 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id B59AF894680
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 23:23:40 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2FF3B1F21E95
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 21:24:38 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 56B0EB22764
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 21:23:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D67B257304;
-	Mon,  1 Apr 2024 21:23:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 65C4854BD6;
+	Mon,  1 Apr 2024 21:23:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="YST/10ZF"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=acm.org header.i=@acm.org header.b="fWgc6Hib"
+Received: from 008.lax.mailroute.net (008.lax.mailroute.net [199.89.1.11])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EEC0F56B87;
-	Mon,  1 Apr 2024 21:23:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9E89D4683;
+	Mon,  1 Apr 2024 21:23:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=199.89.1.11
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712006633; cv=none; b=r9SFjT8BVQhF+PDIlVEJwRtSGQxiCqJ3v4aYpuxmfC5eudAwM5/WSC3DDnCVEBcBvpef88ChEAuLTX/klppIz/21PNxsG4CVcPTDUbpqomVCVdk0ymSY9cx41/Mlw5O7+uaaMQyMl3iTMPUORxX+VwRCbq9rEPSOnxdqald8u6s=
+	t=1712006609; cv=none; b=ZfCSM3BTp0pCp+MhbxfNlD+aw5k1gVfUG21UnXhXZvMtQkOPepktsW8yFAXa/PHUGpvqDUO8q+z8uUPaq+AA5N9uRXrw3m9sL414wHM3bknb9QFppg/lqcmJ7sERsdQtzjkSEVawRQdKLAAhfXQIMJ2lRyq+sTyKdpWhhYYcRkc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712006633; c=relaxed/simple;
-	bh=t1ZeJrMETPQfNrlMHp4pMGLFYeT5RoqomHGFXhf2vQM=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=faBMwRKZ8pz2cC9XMQuDDIbYSXBJp0arfByHX0H/s4f1uSBdMgrP0CZBwFheqprwe+5CSagnK6wOsmn0sOyer4AoHbz3yI0Cj8R2diXhY6r4Wk2QrCO3YnG8qJrZajUEoJyHcKn0AJtuPtflAWXimjgWLSbl9jIbHgfDKVLr+7g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=YST/10ZF; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1EA65C43390;
-	Mon,  1 Apr 2024 21:23:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712006632;
-	bh=t1ZeJrMETPQfNrlMHp4pMGLFYeT5RoqomHGFXhf2vQM=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=YST/10ZFa0qLdfZ4VroGx47csOwBXaHD5UdVQkUYR5VwTq2uBOX8pwAK6MFVbaPhs
-	 8cCdlkjqvzMmkAWskrJvBVp1c315YdF0c4FvFm2Gebvzje949yYdOgr1SRdMqDQf6x
-	 BinsXShsX31liDDuN4zvWw8hn7RGc0fCvkWvXLjiddkAS1WgZOAHLKmf7xswQEzzdJ
-	 xCLaE+lHpDVHtfk3P4Zmun7TLb5ZK7EmNC2eSUvpgKa0UJ78vyXPHwPCEcM091Wvql
-	 glqyS/YAYzQAtjEauwKdhPSxETICugeC66Q4WjcbDgisKeePPom4fvf4K/LNkv9t9r
-	 uar+FhQD0ZJ0g==
-From: Miguel Ojeda <ojeda@kernel.org>
-To: Miguel Ojeda <ojeda@kernel.org>,
-	Wedson Almeida Filho <wedsonaf@gmail.com>,
-	Alex Gaynor <alex.gaynor@gmail.com>
-Cc: Boqun Feng <boqun.feng@gmail.com>,
-	Gary Guo <gary@garyguo.net>,
-	=?UTF-8?q?Bj=C3=B6rn=20Roy=20Baron?= <bjorn3_gh@protonmail.com>,
-	Benno Lossin <benno.lossin@proton.me>,
-	Andreas Hindborg <a.hindborg@samsung.com>,
-	Alice Ryhl <aliceryhl@google.com>,
-	rust-for-linux@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	patches@lists.linux.dev
-Subject: [PATCH 3/3] rust: upgrade to Rust 1.78.0
-Date: Mon,  1 Apr 2024 23:23:03 +0200
-Message-ID: <20240401212303.537355-4-ojeda@kernel.org>
-In-Reply-To: <20240401212303.537355-1-ojeda@kernel.org>
-References: <20240401212303.537355-1-ojeda@kernel.org>
+	s=arc-20240116; t=1712006609; c=relaxed/simple;
+	bh=CFKYD9nVhCS3d3jWxKqwf7HPx0PmDPX0G8/hDBXf/TY=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=hFU73TokmuH6tG0CfLcHvth1/h0RyDB/eb9Uqck55t9uhfdK6PfQDw9hQ5QIvVzC+Ca9rlnhNPKWJmBJT1TtBWOXMEteAoqvDbQpqmebi65zqPDtlKg2lGl6YyVwyZKRZDnQOPkx6D0J+nUnN1RSzh6juBoV5SDyuEitkRUCoT8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=acm.org; spf=pass smtp.mailfrom=acm.org; dkim=pass (2048-bit key) header.d=acm.org header.i=@acm.org header.b=fWgc6Hib; arc=none smtp.client-ip=199.89.1.11
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=acm.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=acm.org
+Received: from localhost (localhost [127.0.0.1])
+	by 008.lax.mailroute.net (Postfix) with ESMTP id 4V7kWs2kdzz6Cnk8t;
+	Mon,  1 Apr 2024 21:23:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=acm.org; h=
+	content-transfer-encoding:content-type:content-type:in-reply-to
+	:from:from:references:content-language:subject:subject
+	:user-agent:mime-version:date:date:message-id:received:received;
+	 s=mr01; t=1712006594; x=1714598595; bh=O7oKmKUsBp2UuDlgNH+Fc49v
+	eA1RbMZi5k1upyKoAng=; b=fWgc6Hib+t0Pg/8cg55FNrqGHd74DX17FAgsa/vj
+	AS2i44wlI4OLpu7D/OJEZL7Jr6+A4rZ8QwA1l9D8IjPZn7G5POE4MzrcsHjlRLvL
+	u7laJHFI8AzgDAmqqB9ukKzxstt3BXHEk5mPpUZ5Bs2Dy8InWoNt8Oar/xm0VMOV
+	YrOFFvWfXWcyP+MFptn3a2Rw7KVakN2bqup95uqW/oGqgrCtS5Wpqhzj5msACk1m
+	CD9G4XtHV/j95g7Sl9d+pDJ9G2T7rnWyEsgpbqNeY8UMnpKWvdLKYRGeZkg1jsKr
+	Z2AFV8hM2qJxdlADI0Jt+qkoIEVjbUPUiicCDUQYeJHaCw==
+X-Virus-Scanned: by MailRoute
+Received: from 008.lax.mailroute.net ([127.0.0.1])
+ by localhost (008.lax [127.0.0.1]) (mroute_mailscanner, port 10029) with LMTP
+ id h-yZf0CWai33; Mon,  1 Apr 2024 21:23:14 +0000 (UTC)
+Received: from [100.96.154.173] (unknown [104.132.1.77])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	(Authenticated sender: bvanassche@acm.org)
+	by 008.lax.mailroute.net (Postfix) with ESMTPSA id 4V7kWh3FJ5z6Cnk8m;
+	Mon,  1 Apr 2024 21:23:12 +0000 (UTC)
+Message-ID: <92e45c93-e2ff-4d34-b70f-7772f0596e68@acm.org>
+Date: Mon, 1 Apr 2024 14:23:10 -0700
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] block/mq-deadline: Fix WARN when set async_depth by sysfs
+Content-Language: en-US
+To: Zhiguo Niu <niuzhiguo84@gmail.com>
+Cc: Zhiguo Niu <zhiguo.niu@unisoc.com>, axboe@kernel.dk,
+ linux-kernel@vger.kernel.org, linux-block@vger.kernel.org,
+ ke.wang@unisoc.com, hongyu.jin@unisoc.com,
+ Damien Le Moal <dlemoal@kernel.org>
+References: <1711680261-5789-1-git-send-email-zhiguo.niu@unisoc.com>
+ <890bd06d-2a94-4138-9854-4a7ed74e0e51@acm.org>
+ <CAHJ8P3K9OL6MHNrSrqmf0esbr2h1HJ3mVRmxDNVpf95ZMHQcqg@mail.gmail.com>
+From: Bart Van Assche <bvanassche@acm.org>
+In-Reply-To: <CAHJ8P3K9OL6MHNrSrqmf0esbr2h1HJ3mVRmxDNVpf95ZMHQcqg@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
 
-This is the next upgrade to the Rust toolchain, from 1.77.1 to 1.78.0
-(i.e. the latest) [1].
+On 3/31/24 17:58, Zhiguo Niu wrote:
+> On Sat, Mar 30, 2024 at 2:08=E2=80=AFAM Bart Van Assche <bvanassche@acm=
+org> wrote:
+>>
+>> On 3/28/24 7:44 PM, Zhiguo Niu wrote:
+>>> diff --git a/block/mq-deadline.c b/block/mq-deadline.c
+>>> index 02a916b..89c516e 100644
+>>> --- a/block/mq-deadline.c
+>>> +++ b/block/mq-deadline.c
+>>> @@ -646,10 +646,12 @@ static void dd_depth_updated(struct blk_mq_hw_c=
+tx *hctx)
+>>>        struct request_queue *q =3D hctx->queue;
+>>>        struct deadline_data *dd =3D q->elevator->elevator_data;
+>>>        struct blk_mq_tags *tags =3D hctx->sched_tags;
+>>> +     unsigned int shift =3D tags->bitmap_tags.sb.shift;
+>>> +     unsigned int dd_min_depth =3D max(1U, 3 * (1U << shift)  / 4);
+>>>
+>>>        dd->async_depth =3D max(1UL, 3 * q->nr_requests / 4);
+>>>
+>>> -     sbitmap_queue_min_shallow_depth(&tags->bitmap_tags, dd->async_d=
+epth);
+>>> +     sbitmap_queue_min_shallow_depth(&tags->bitmap_tags, dd_min_dept=
+h);
+>>>    }
+>>
+>> The above patch sets min_shallow_depth to the same value as commit
+>> d47f9717e5cf ("block/mq-deadline: use correct way to throttling write
+>> requests"). That commit got reverted because it was causing performanc=
+e
+>> problems. So the above patch reintroduces the performance problem that
+>> has been fixed by commit 256aab46e316 ("Revert "block/mq-deadline: use
+>> correct way to throttling write requests"").
+> Hi Bart Van Assche,
+>=20
+> This  patch only modifies the initial minimum value of
+> min_shallow_depth and does not change "dd->async_depth",
+> so it will not cause performance problems like the previous patch
+> (d47f9717e5cf ("block/mq-deadline: use correct way to throttling write
+> requests")).
 
-See the upgrade policy [2] and the comments on the first upgrade in
-commit 3ed03f4da06e ("rust: upgrade to Rust 1.68.2").
+Oops, I misread your patch. After having taken another look, my
+conclusions are as follows:
+* sbitmap_queue_min_shallow_depth() is called. This causes
+   sbq->wake_batch to be modified but I don't think that it is a proper
+   fix for dd_limit_depth().
+* dd_limit_depth() still assigns a number in the range 1..nr_requests to
+   data->shallow_depth while a number in the range 1..(1<<bt->sb.shift)
+   should be assigned.
 
-# Unstable features
+> So what are your suggestions for fixing the warning shown in commit
+> msg if dd->async_depth is set by the user from sysfs?
+> thanks
 
-There have been no changes to the set of unstable features used in
-our own code. Therefore, the only unstable features allowed to be used
-outside the `kernel` crate is still `new_uninit`.
+How about the two untested patches below?
 
-However, since we are finally dropping our `alloc` fork [3], all the
-unstable features used by `alloc` (~30 language ones, ~60 library ones)
-are not a concern anymore. This reduces the maintenance burden, increases
-the chances of new compiler versions working without changes and gets
-us closer to the goal of supporting several compiler versions.
+Thanks,
 
-It also means that, ignoring non-language/library features, we are
-currently left with just the few language features needed to implement the
-kernel `Arc`, the `new_uninit` library feature, the `compiler_builtins`
-marker and the few `no_*` `cfg`s we pass when compiling `core`/`alloc`.
+Bart.
 
-Please see [4] for details.
 
-# Required changes
+Subject: [PATCH 1/2] block: Call .limit_depth() after .hctx has been set
 
-## LLVM's data layout
+Prepare for using .hctx in dd_limit_depth().
 
-Rust 1.77.0 (i.e. the previous upgrade) introduced a check for matching
-LLVM data layouts [5]. Then, Rust 1.78.0 upgraded LLVM's bundled major
-version from 17 to 18 [6], which changed the data layout in x86 [7]. Thus
-update the data layout in our custom target specification for x86 so
-that the compiler does not complain about the mismatch:
-
-    error: data-layout for target `target-5559158138856098584`,
-    `e-m:e-p270:32:32-p271:32:32-p272:64:64-i64:64-f80:128-n8:16:32:64-S128`,
-    differs from LLVM target's `x86_64-linux-gnu` default layout,
-    `e-m:e-p270:32:32-p271:32:32-p272:64:64-i64:64-i128:128-f80:128-n8:16:32:64-S128`
-
-In the future, the goal is to drop the custom target specifications.
-Meanwhile, if we want to support other LLVM versions used in `rustc`
-(e.g. for LTO), we will need to add some extra logic (e.g. conditional on
-LLVM's version, or extracting the data layout from an existing built-in
-target specification).
-
-## `unused_imports`
-
-Rust's `unused_imports` lint covers both unused and redundant imports.
-Now, in 1.78.0, the lint detects more cases of redundant imports [8].
-Thus one of the previous patches cleaned them up.
-
-## Clippy's `new_without_default`
-
-Clippy now suggests to implement `Default` even when `new()` is `const`,
-since `Default::default()` may call `const` functions even if it is not
-`const` itself [9]. Thus one of the previous patches implemented it.
-
-# Other changes in Rust
-
-Rust 1.78.0 introduced `feature(asm_goto)` [10] [11]. This feature was
-discussed in the past [12].
-
-Rust 1.78.0 introduced support for mutable pointers to Rust statics,
-including a test case for the Linux kernel's `VTABLE` use case [13].
-
-Rust 1.78.0 with debug assertions enabled (i.e. `-Cdebug-assertions=y`,
-kernel's `CONFIG_RUST_DEBUG_ASSERTIONS=y`) now always checks all unsafe
-preconditions, without a way to opt-out for particular cases [14].
-
-Rust 1.78.0 also improved a couple issues we reported when giving feedback
-for the new `--check-cfg` feature [15] [16].
-
-# `alloc` upgrade and reviewing
-
-As mentioned above, compiler upgrades will not update `alloc` anymore,
-since we are dropping our `alloc` fork [3].
-
-Link: https://github.com/rust-lang/rust/blob/stable/RELEASES.md#version-1780-2024-05-02 [1]
-Link: https://rust-for-linux.com/rust-version-policy [2]
-Link: https://lore.kernel.org/rust-for-linux/20240328013603.206764-1-wedsonaf@gmail.com/ [3]
-Link: https://github.com/Rust-for-Linux/linux/issues/2 [4]
-Link: https://github.com/rust-lang/rust/pull/120062 [5]
-Link: https://github.com/rust-lang/rust/pull/120055 [6]
-Link: https://reviews.llvm.org/D86310 [7]
-Link: https://github.com/rust-lang/rust/pull/117772 [8]
-Link: https://github.com/rust-lang/rust-clippy/pull/10903 [9]
-Link: https://github.com/rust-lang/rust/pull/119365 [10]
-Link: https://github.com/rust-lang/rust/issues/119364 [11]
-Link: https://lore.kernel.org/rust-for-linux/ZWipTZysC2YL7qsq@Boquns-Mac-mini.home/ [12]
-Link: https://github.com/rust-lang/rust/pull/120932 [13]
-Link: https://github.com/rust-lang/rust/issues/120969 [14]
-Link: https://github.com/rust-lang/rust/pull/121202 [15]
-Link: https://github.com/rust-lang/rust/pull/121237 [16]
-Signed-off-by: Miguel Ojeda <ojeda@kernel.org>
+Signed-off-by: Bart Van Assche <bvanassche@acm.org>
 ---
-Please note that Rust 1.78.0 will be released in a month (2024-05-02).
+  block/blk-mq.c | 8 +++++---
+  1 file changed, 5 insertions(+), 3 deletions(-)
 
- Documentation/process/changes.rst | 2 +-
- scripts/generate_rust_target.rs   | 2 +-
- scripts/min-tool-version.sh       | 2 +-
- 3 files changed, 3 insertions(+), 3 deletions(-)
+diff --git a/block/blk-mq.c b/block/blk-mq.c
+index 34060d885c5a..d0db9252bb71 100644
+--- a/block/blk-mq.c
++++ b/block/blk-mq.c
+@@ -435,6 +435,7 @@ __blk_mq_alloc_requests_batch(struct=20
+blk_mq_alloc_data *data)
+  static struct request *__blk_mq_alloc_requests(struct=20
+blk_mq_alloc_data *data)
+  {
+  	struct request_queue *q =3D data->q;
++	struct elevator_mq_ops *ops =3D NULL;
+  	u64 alloc_time_ns =3D 0;
+  	struct request *rq;
+  	unsigned int tag;
+@@ -459,13 +460,11 @@ static struct request=20
+*__blk_mq_alloc_requests(struct blk_mq_alloc_data *data)
+  		 */
+  		if ((data->cmd_flags & REQ_OP_MASK) !=3D REQ_OP_FLUSH &&
+  		    !blk_op_is_passthrough(data->cmd_flags)) {
+-			struct elevator_mq_ops *ops =3D &q->elevator->type->ops;
++			ops =3D &q->elevator->type->ops;
 
-diff --git a/Documentation/process/changes.rst b/Documentation/process/changes.rst
-index b5d3107c6734..5d83958888e0 100644
---- a/Documentation/process/changes.rst
-+++ b/Documentation/process/changes.rst
-@@ -31,7 +31,7 @@ you probably needn't concern yourself with pcmciautils.
- ====================== ===============  ========================================
- GNU C                  5.1              gcc --version
- Clang/LLVM (optional)  13.0.1           clang --version
--Rust (optional)        1.77.1           rustc --version
-+Rust (optional)        1.78.0           rustc --version
- bindgen (optional)     0.65.1           bindgen --version
- GNU make               3.82             make --version
- bash                   4.2              bash --version
-diff --git a/scripts/generate_rust_target.rs b/scripts/generate_rust_target.rs
-index 54919cf48621..3fcbc3737b2e 100644
---- a/scripts/generate_rust_target.rs
-+++ b/scripts/generate_rust_target.rs
-@@ -154,7 +154,7 @@ fn main() {
-         ts.push("arch", "x86_64");
-         ts.push(
-             "data-layout",
--            "e-m:e-p270:32:32-p271:32:32-p272:64:64-i64:64-f80:128-n8:16:32:64-S128",
-+            "e-m:e-p270:32:32-p271:32:32-p272:64:64-i64:64-i128:128-f80:128-n8:16:32:64-S128",
-         );
-         let mut features = "-3dnow,-3dnowa,-mmx,+soft-float".to_string();
-         if cfg.has("MITIGATION_RETPOLINE") {
-diff --git a/scripts/min-tool-version.sh b/scripts/min-tool-version.sh
-index 6086e00e640e..91c91201212c 100755
---- a/scripts/min-tool-version.sh
-+++ b/scripts/min-tool-version.sh
-@@ -33,7 +33,7 @@ llvm)
- 	fi
- 	;;
- rustc)
--	echo 1.77.1
-+	echo 1.78.0
- 	;;
- bindgen)
- 	echo 0.65.1
---
-2.44.0
+  			WARN_ON_ONCE(data->flags & BLK_MQ_REQ_RESERVED);
+
+  			data->rq_flags |=3D RQF_USE_SCHED;
+-			if (ops->limit_depth)
+-				ops->limit_depth(data->cmd_flags, data);
+  		}
+  	}
+
+@@ -478,6 +477,9 @@ static struct request=20
+*__blk_mq_alloc_requests(struct blk_mq_alloc_data *data)
+  	if (data->flags & BLK_MQ_REQ_RESERVED)
+  		data->rq_flags |=3D RQF_RESV;
+
++	if (ops && ops->limit_depth)
++		ops->limit_depth(data->cmd_flags, data);
++
+  	/*
+  	 * Try batched alloc if we want more than 1 tag.
+  	 */
+
+
+
+Subject: [PATCH 2/2] block/mq-deadline: Fix the tag reservation code
+
+Fixes: 07757588e507 ("block/mq-deadline: Reserve 25% of scheduler tags=20
+for synchronous requests")
+---
+  block/mq-deadline.c | 18 ++++++++++++++++--
+  1 file changed, 16 insertions(+), 2 deletions(-)
+
+diff --git a/block/mq-deadline.c b/block/mq-deadline.c
+index 02a916ba62ee..8e780069d91b 100644
+--- a/block/mq-deadline.c
++++ b/block/mq-deadline.c
+@@ -621,6 +621,20 @@ static struct request *dd_dispatch_request(struct=20
+blk_mq_hw_ctx *hctx)
+  	return rq;
+  }
+
++/*
++ * 'depth' is a number in the range 0..q->nr_requests. Convert it to a=20
+number
++ * in the range 0..(1 << bt->sb.shift) since that is the range expected =
+by
++ * sbitmap_get_shallow().
++ */
++static int dd_to_word_depth(struct blk_mq_hw_ctx *hctx, unsigned int=20
+qdepth)
++{
++	struct sbitmap_queue *bt =3D &hctx->sched_tags->bitmap_tags;
++	const unsigned int nrr =3D hctx->queue->nr_requests;
++
++	return max(((qdepth << bt->sb.shift) + nrr - 1) / nrr,
++		   bt->min_shallow_depth);
++}
++
+  /*
+   * Called by __blk_mq_alloc_request(). The shallow_depth value set by t=
+his
+   * function is used by __blk_mq_get_tag().
+@@ -637,7 +651,7 @@ static void dd_limit_depth(blk_opf_t opf, struct=20
+blk_mq_alloc_data *data)
+  	 * Throttle asynchronous requests and writes such that these requests
+  	 * do not block the allocation of synchronous requests.
+  	 */
+-	data->shallow_depth =3D dd->async_depth;
++	data->shallow_depth =3D dd_to_word_depth(data->hctx, dd->async_depth);
+  }
+
+  /* Called by blk_mq_update_nr_requests(). */
+@@ -649,7 +663,7 @@ static void dd_depth_updated(struct blk_mq_hw_ctx *hc=
+tx)
+
+  	dd->async_depth =3D max(1UL, 3 * q->nr_requests / 4);
+
+-	sbitmap_queue_min_shallow_depth(&tags->bitmap_tags, dd->async_depth);
++	sbitmap_queue_min_shallow_depth(&tags->bitmap_tags, 1);
+  }
+
+  /* Called by blk_mq_init_hctx() and blk_mq_init_sched(). */
+
 
