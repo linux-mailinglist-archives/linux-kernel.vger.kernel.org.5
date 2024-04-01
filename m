@@ -1,70 +1,62 @@
-Return-Path: <linux-kernel+bounces-126695-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-126696-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id BAFD7893BAB
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 15:57:05 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7C3EC893BAE
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 15:57:38 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DE8D91C2137C
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 13:57:04 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E70701F212F7
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 13:57:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6A5653FE4B;
-	Mon,  1 Apr 2024 13:56:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9B5213FE55;
+	Mon,  1 Apr 2024 13:57:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=ieee.org header.i=@ieee.org header.b="fz8bYd9L"
-Received: from mail-qk1-f182.google.com (mail-qk1-f182.google.com [209.85.222.182])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="iJCbodrJ"
+Received: from fllv0015.ext.ti.com (fllv0015.ext.ti.com [198.47.19.141])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6391B3FB1E
-	for <linux-kernel@vger.kernel.org>; Mon,  1 Apr 2024 13:56:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DB1623FE4E;
+	Mon,  1 Apr 2024 13:57:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.19.141
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711979811; cv=none; b=Pr0sE8lJs0SF3OkK6b9RaQ6k9pVY9TnFdndfcvd21v5ZQh/yA4oSytoEHe6EnliNVO7aj2ugaPKRFcKw7HV8tS+D+dnfeDSLsz3HvlmKP5GusDO/vgwui35WvUUrLs3j5UoZYKzlF5U7LWNYrlsLDw2hNf//UM3DA+LHpgZRyFw=
+	t=1711979847; cv=none; b=VerjpMnk81w/qR03Uqmjb3PG0xDPuihV0F+JL0IP7en9ju+TjgFJr8LQVL/BqDBlPYSBXz68Cs1YXCvGuyIvwL1akHR/aaoF28DEJ82jGAbZYEUnlkvG10wEWdSM1RnmT5DvbU3ioJDzn8h6Mwkq9ah9N5hKi86tn7QQRk6S6Mw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711979811; c=relaxed/simple;
-	bh=z1rTJoyh3kQXvkGEjaAw0+Naoqr1iRiwfgcJUP92xuI=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=fYDoY0ZSALGMgNcxBnkUsieVtjn6PJBD7oFuVl/mkYPeUdDS3ArouPe+uE5CggKHApfLIzIjqgxyaIH3CbFlmT5cdGw+Dy1U5QP/u88esMvx7uJPaflcKI0pvAx456BcDpqdEw2/qmM/SyxdGzJg7O2EtspHXch8BftwgLzJhcw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ieee.org; spf=pass smtp.mailfrom=ieee.org; dkim=pass (1024-bit key) header.d=ieee.org header.i=@ieee.org header.b=fz8bYd9L; arc=none smtp.client-ip=209.85.222.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ieee.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ieee.org
-Received: by mail-qk1-f182.google.com with SMTP id af79cd13be357-78be555ff94so32448885a.2
-        for <linux-kernel@vger.kernel.org>; Mon, 01 Apr 2024 06:56:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ieee.org; s=google; t=1711979808; x=1712584608; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=vIsXdWS2cI3BbLNz71YpvwQlJrZcsPNHY/5w7NcKrRM=;
-        b=fz8bYd9L+JabwXldZE05Yl/j+Oi4XD6t+j/8TGsWhXDXp+AWmtP8g9sqz+CxCDnTcL
-         1ur6FsCnX09mjwkXo1Gfm/fg08UOpPSWZhA6PczDg1MvneLrHgnldnIHwb/1qCCgAdIU
-         mX0ut28tK1k/L/e+r0DVRX29MkCHHbVXeX27o=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711979808; x=1712584608;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=vIsXdWS2cI3BbLNz71YpvwQlJrZcsPNHY/5w7NcKrRM=;
-        b=bTAuNKiui7rH6gLh6VtnL/4TMRUgs5NfwPHo32yBijNgid8ZL2LllTApKcis8Vmvkl
-         yrqC44xchauHhiI61/J2g6lrxqt79RDofLA76I6bhHUZg4o8Uarawx2P0AyS2L0zoRtM
-         Gzq+c48oMXl6VycpXRRLcl3GIf37KnNN6G06xRzhb0hiJd3HWDbRMwoMgilj7OKDrYad
-         KkdLrGK7zyErpmJW/LRTBC2l99RaIIX5ozlgaSDJV0k9XIKTqu/HR6EJ8QlJruG++Feh
-         QKdtHqMipEHSEOIFe5pj0PQwtwuoCCscRiYLU5YIMAx7hSbt6/n7rKVHV4QGFYXzgxk2
-         TJJg==
-X-Forwarded-Encrypted: i=1; AJvYcCXPo7pnbgryc4ioHekJKOfLzAp63dMaEspB95M9ONI2eYCtzBplQVE2/w2YNrbKNVf6Do+u0DpZ8tXiuenlKPCD3CJ/Js2iKtV1MkQx
-X-Gm-Message-State: AOJu0YxeZAzkGJLPHyXNpW1mvME4XAGyRF8DFfyo+RBOvWRIDwEjMXlx
-	v33LhakrZSlEHO7o3ivbjf/G8Q9dPRRAtj+tQk5WJ21v2WAnlxDFV8odgyxKJQ==
-X-Google-Smtp-Source: AGHT+IHpdiBgFqnnvm7ZVM+aGDyiKaOSAKL0YQHlrY6jrtN7YVvCa34VaG+vG8E4TcajtXcF8JkbXA==
-X-Received: by 2002:a0c:f7cc:0:b0:699:514:3046 with SMTP id f12-20020a0cf7cc000000b0069905143046mr3624538qvo.15.1711979808249;
-        Mon, 01 Apr 2024 06:56:48 -0700 (PDT)
-Received: from [172.22.22.28] (c-73-228-159-35.hsd1.mn.comcast.net. [73.228.159.35])
-        by smtp.googlemail.com with ESMTPSA id s2-20020a0562140ca200b006990539c0aasm1418385qvs.137.2024.04.01.06.56.47
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 01 Apr 2024 06:56:47 -0700 (PDT)
-Message-ID: <c03b8113-e1be-4cf3-a85c-43de15163ab1@ieee.org>
-Date: Mon, 1 Apr 2024 08:56:46 -0500
+	s=arc-20240116; t=1711979847; c=relaxed/simple;
+	bh=gic5QdbQz3rnf6+SVYiyGjZkeak6aOfejo30F/XPFAQ=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=uSiVLWL/1bbyr3VdxkB449+HEu2xoqvSKt/qGb4+r8Lf4aqiHsryof4r5pO+rwyvH0nZEvyaT2PplvN2C9+9oO/3ep+U5L3F/qDEHtsLwrVHd3BokHifYhLFCKRNx4S/mVTlsPb973+uWY3o9Kehap82CnuWngMfZ7celEp4+og=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=iJCbodrJ; arc=none smtp.client-ip=198.47.19.141
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+	by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 431DvDUu088560;
+	Mon, 1 Apr 2024 08:57:13 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+	s=ti-com-17Q1; t=1711979833;
+	bh=cSkpmLo6oDjRy50TsiDoTn2ryWmugvDSjH5h3qwLNEI=;
+	h=Date:Subject:To:CC:References:From:In-Reply-To;
+	b=iJCbodrJPXAi3kGNvDKqHTeU+UIrxD/ndTjjUKc7DrVQWSB0Or1O7ajgOMeiGayce
+	 HsmqSsSz2gepNL5TJPC/T+jWL3K2hDpCYAupWQaI20DPmWiaGmKlLk1D6elF8DFsMG
+	 SXCAnotNqvLNPG94Hqqx7IF4VOXewadBfrEwu4Fc=
+Received: from DLEE103.ent.ti.com (dlee103.ent.ti.com [157.170.170.33])
+	by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 431DvDrw109653
+	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+	Mon, 1 Apr 2024 08:57:13 -0500
+Received: from DLEE111.ent.ti.com (157.170.170.22) by DLEE103.ent.ti.com
+ (157.170.170.33) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Mon, 1
+ Apr 2024 08:57:13 -0500
+Received: from lelvsmtp6.itg.ti.com (10.180.75.249) by DLEE111.ent.ti.com
+ (157.170.170.22) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Mon, 1 Apr 2024 08:57:13 -0500
+Received: from [10.249.42.149] ([10.249.42.149])
+	by lelvsmtp6.itg.ti.com (8.15.2/8.15.2) with ESMTP id 431DvDbN127935;
+	Mon, 1 Apr 2024 08:57:13 -0500
+Message-ID: <c3c219ca-e126-42fb-8f20-5df0dec58d7c@ti.com>
+Date: Mon, 1 Apr 2024 08:57:12 -0500
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -72,139 +64,509 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net-next v2 4/5] net: ipa: allocate dummy net_device
- dynamically
-To: Breno Leitao <leitao@debian.org>, aleksander.lobakin@intel.com,
- kuba@kernel.org, davem@davemloft.net, pabeni@redhat.com,
- edumazet@google.com, Alex Elder <elder@kernel.org>
-Cc: quic_jjohnson@quicinc.com, kvalo@kernel.org, leon@kernel.org,
- dennis.dalessandro@cornelisnetworks.com, linux-kernel@vger.kernel.org,
- netdev@vger.kernel.org
-References: <20240328235214.4079063-1-leitao@debian.org>
- <20240328235214.4079063-5-leitao@debian.org>
+Subject: Re: [PATCH v2] power: supply: bq27xxx: Divide the reg cache to each
+ register
+To: Sebastian Reichel <sebastian.reichel@collabora.com>,
+        Hermes Zhang
+	<Hermes.Zhang@axis.com>
+CC: <kernel@axis.com>, =?UTF-8?Q?Pali_Roh=C3=A1r?= <pali@kernel.org>,
+        <linux-pm@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+References: <20240306100904.1914263-1-Hermes.Zhang@axis.com>
+ <c4u27576oazfrlcp5avy3ect3i4jlsmdvi7nlun5qvez3ipti2@ue5jxbydmevs>
 Content-Language: en-US
-From: Alex Elder <elder@ieee.org>
-In-Reply-To: <20240328235214.4079063-5-leitao@debian.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+From: Andrew Davis <afd@ti.com>
+In-Reply-To: <c4u27576oazfrlcp5avy3ect3i4jlsmdvi7nlun5qvez3ipti2@ue5jxbydmevs>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: 7bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 
-On 3/28/24 6:52 PM, Breno Leitao wrote:
-> Embedding net_device into structures prohibits the usage of flexible
-> arrays in the net_device structure. For more details, see the discussion
-> at [1].
+On 4/1/24 8:15 AM, Sebastian Reichel wrote:
+> [+cc Andrew Davis]
 > 
-> Un-embed the net_device from the private struct by converting it
-> into a pointer. Then use the leverage the new alloc_netdev_dummy()
-> helper to allocate and initialize dummy devices.
+> Hello Hermes,
 > 
-> [1] https://lore.kernel.org/all/20240229225910.79e224cf@kernel.org/
+> On Wed, Mar 06, 2024 at 06:09:03PM +0800, Hermes Zhang wrote:
+>> The reg cache used to be grouped and activated for each property
+>> access, regardless of whether it was part of the group. That will
+>> lead to a significant increase in I2C transmission.
+>> Divide the cache group and create a cache for every register. The
+>> cache won't work until the register has been fetched. This will help
+>> in reducing the quantity of pointless I2C communication and avoiding
+>> the error -16 (EBUSY) that occurs while using an I2C bus that is
+>> shared by many devices.
+>>
+>> Signed-off-by: Hermes Zhang <Hermes.Zhang@axis.com>
+>> ---
 > 
-> Signed-off-by: Breno Leitao <leitao@debian.org>
-
-Thanks for pointing this out, I didn't notice the earlier
-discussion.  Embedding the dummy netdev in this case was
-probably done to eliminate the chance of an unlikely
-allocation error at init time.  It is not at all necessary.
-
-I had to go find the rest of your series.  If at least one patch
-is addressed to me in a series, please copy me on all of them.
-
-I see the dummy netdev now gets "fully initialized" but that's
-a one-time thing, and seems harmless.  But given that, shouldn't
-the result of alloc_dummy_netdev() also have a free_dummy_netdev()
-(rather than simply calling kfree(dummy_netdev))?  (And I now
-see that Jakub made a similar remark.)
-
-More below.
-
-> ---
->   drivers/net/ipa/gsi.c | 12 ++++++++----
->   drivers/net/ipa/gsi.h |  2 +-
->   2 files changed, 9 insertions(+), 5 deletions(-)
+> Sorry for the delay. This arrived too close to the 6.9 merge window.
+> I had a look now and while the patch looks fine to me on a conceptual
+> level, it did not apply. It looks like you used a pre-2024 kernel tree
+> to generate the patch against. Please always use something recent base
+> tree (and ideally use git's --base option to document the used
+> parent commit).
 > 
-> diff --git a/drivers/net/ipa/gsi.c b/drivers/net/ipa/gsi.c
-> index 9a0b1fe4a93a..d2db54cbd46d 100644
-> --- a/drivers/net/ipa/gsi.c
-> +++ b/drivers/net/ipa/gsi.c
-> @@ -1730,10 +1730,10 @@ static int gsi_channel_setup_one(struct gsi *gsi, u32 channel_id)
->   	gsi_channel_program(channel, true);
->   
->   	if (channel->toward_ipa)
-> -		netif_napi_add_tx(&gsi->dummy_dev, &channel->napi,
-> +		netif_napi_add_tx(gsi->dummy_dev, &channel->napi,
->   				  gsi_channel_poll);
->   	else
-> -		netif_napi_add(&gsi->dummy_dev, &channel->napi,
-> +		netif_napi_add(gsi->dummy_dev, &channel->napi,
->   			       gsi_channel_poll);
->   
->   	return 0;
-> @@ -2369,12 +2369,14 @@ int gsi_init(struct gsi *gsi, struct platform_device *pdev,
->   	/* GSI uses NAPI on all channels.  Create a dummy network device
->   	 * for the channel NAPI contexts to be associated with.
->   	 */
-> -	init_dummy_netdev(&gsi->dummy_dev);
-> +	gsi->dummy_dev = alloc_netdev_dummy(0);
-> +	if (!gsi->dummy_dev)
-> +		return -ENOMEM;
->   	init_completion(&gsi->completion);
->   
->   	ret = gsi_reg_init(gsi, pdev);
->   	if (ret)
-> -		return ret;
-> +		goto err_reg_exit;
+> Other than that I just applied a series from Andrew, which cleans up
+> the register caching in bq27xxx and removed most registers from the
+> cache. That's something I did not consider earlier, since I thought
+> the cache was introduced to fix a different issue. But that was
+> apparently sbs-battery and not bq27xxx.
+> 
 
-Assuming you change it to not just use kfree() to free the
-dummy netdev, the above call won't work.  You'll want to do
-something like:
+The original BQ27000 device did not have an interrupt pin to signal
+when important updates to the battery occurred, so early devices
+using it would have userspace poll those values. As the kernel driver
+added its own polling for updates, it seems the early driver authors
+simply decided to cache the values between kernel reads and return
+those to userspace when it reads.
 
-	if (ret)
-		goto err_netdev_free;
+This is a problem though for two reasons.
+1. If no one is interested in these values the kernel will still poll
+    them anyway, wasting I2C bus time and power.
+2. If userspace is actually interested in some value and so checks it
+    often, it will only get real updated values when the kernel next polls,
+    which might not be often enough for some use-cases.
 
- . .
+> Anyways, there is only two registers left in the cache now. I'm fine
+> with having a per-register cache for them, if that is still needed
+> to further reduce I2C traffic on your device.
+> 
+> And... re-reading your problem description, I wonder if we need to
+> reintroduce the caching for all registers (on a per register basis)
+> to avoid userspace being able to do a denial of service by quickly
+> polling the battery information.
+> 
 
-err_netdev_free:
-	free_dummy_netdev(gsi->dummy_dev);
-err_reg_exit:
+Preventing a DoS of the I2C bus is not the responsibility of a
+given driver. Userspace has plenty of other ways to spam the
+I2C bus if it really wants to, no need to try to predict what a
+system's admin would want and block users from those actions.
 
+If we really do want to reduce I2C accesses for registers we know
+cannot change often (which are few), then we should use the
+existing regmap_cache mechanism, not roll our own. This driver
+is complex enough without re-inventing the wheel and adding
+our own custom register caching scheme.
 
->   
->   	ret = gsi_irq_init(gsi, pdev);	/* No matching exit required */
->   	if (ret)
-> @@ -2389,6 +2391,7 @@ int gsi_init(struct gsi *gsi, struct platform_device *pdev,
->   	return 0;
->   
->   err_reg_exit:
-> +	kfree(gsi->dummy_dev);
->   	gsi_reg_exit(gsi);
->   
->   	return ret;
-> @@ -2400,6 +2403,7 @@ void gsi_exit(struct gsi *gsi)
->   	mutex_destroy(&gsi->mutex);
->   	gsi_channel_exit(gsi);
+Andrew
 
-Please call the free here, so the cleanup is done in
-exactly the reverse order of the initialization.
-
-					-Alex
-
->   	gsi_reg_exit(gsi);
-> +	kfree(gsi->dummy_dev);
->   }
->   
->   /* The maximum number of outstanding TREs on a channel.  This limits
-> diff --git a/drivers/net/ipa/gsi.h b/drivers/net/ipa/gsi.h
-> index 42063b227c18..6b7ec2a39676 100644
-> --- a/drivers/net/ipa/gsi.h
-> +++ b/drivers/net/ipa/gsi.h
-> @@ -155,7 +155,7 @@ struct gsi {
->   	struct mutex mutex;		/* protects commands, programming */
->   	struct gsi_channel channel[GSI_CHANNEL_COUNT_MAX];
->   	struct gsi_evt_ring evt_ring[GSI_EVT_RING_COUNT_MAX];
-> -	struct net_device dummy_dev;	/* needed for NAPI */
-> +	struct net_device *dummy_dev;	/* needed for NAPI */
->   };
->   
->   /**
-
+> Any thoughts?
+> 
+> -- Sebastian
+> 
+>> v2:
+>>   - Refactor implementation.
+>>
+>>   drivers/power/supply/bq27xxx_battery.c | 231 +++++++++++++++++--------
+>>   include/linux/power/bq27xxx_battery.h  |  30 ++--
+>>   2 files changed, 179 insertions(+), 82 deletions(-)
+>>
+>> diff --git a/drivers/power/supply/bq27xxx_battery.c b/drivers/power/supply/bq27xxx_battery.c
+>> index 1c4a9d137744..cc724322f4f0 100644
+>> --- a/drivers/power/supply/bq27xxx_battery.c
+>> +++ b/drivers/power/supply/bq27xxx_battery.c
+>> @@ -1746,14 +1746,16 @@ static bool bq27xxx_battery_capacity_inaccurate(struct bq27xxx_device_info *di,
+>>   
+>>   static int bq27xxx_battery_read_health(struct bq27xxx_device_info *di)
+>>   {
+>> +	int flags = di->cache[CACHE_REG_FLAGS].value;
+>> +
+>>   	/* Unlikely but important to return first */
+>> -	if (unlikely(bq27xxx_battery_overtemp(di, di->cache.flags)))
+>> +	if (unlikely(bq27xxx_battery_overtemp(di, flags)))
+>>   		return POWER_SUPPLY_HEALTH_OVERHEAT;
+>> -	if (unlikely(bq27xxx_battery_undertemp(di, di->cache.flags)))
+>> +	if (unlikely(bq27xxx_battery_undertemp(di, flags)))
+>>   		return POWER_SUPPLY_HEALTH_COLD;
+>> -	if (unlikely(bq27xxx_battery_dead(di, di->cache.flags)))
+>> +	if (unlikely(bq27xxx_battery_dead(di, flags)))
+>>   		return POWER_SUPPLY_HEALTH_DEAD;
+>> -	if (unlikely(bq27xxx_battery_capacity_inaccurate(di, di->cache.flags)))
+>> +	if (unlikely(bq27xxx_battery_capacity_inaccurate(di, flags)))
+>>   		return POWER_SUPPLY_HEALTH_CALIBRATION_REQUIRED;
+>>   
+>>   	return POWER_SUPPLY_HEALTH_GOOD;
+>> @@ -1778,7 +1780,7 @@ static int bq27xxx_battery_current_and_status(
+>>   	struct bq27xxx_device_info *di,
+>>   	union power_supply_propval *val_curr,
+>>   	union power_supply_propval *val_status,
+>> -	struct bq27xxx_reg_cache *cache)
+>> +	struct bq27xxx_cache_reg *reg)
+>>   {
+>>   	bool single_flags = (di->opts & BQ27XXX_O_ZERO);
+>>   	int curr;
+>> @@ -1790,8 +1792,8 @@ static int bq27xxx_battery_current_and_status(
+>>   		return curr;
+>>   	}
+>>   
+>> -	if (cache) {
+>> -		flags = cache->flags;
+>> +	if (reg) {
+>> +		flags = reg->value;
+>>   	} else {
+>>   		flags = bq27xxx_read(di, BQ27XXX_REG_FLAGS, single_flags);
+>>   		if (flags < 0) {
+>> @@ -1832,57 +1834,128 @@ static int bq27xxx_battery_current_and_status(
+>>   	return 0;
+>>   }
+>>   
+>> -static void bq27xxx_battery_update_unlocked(struct bq27xxx_device_info *di)
+>> +static int bq27xxx_cached_reg_value_unlocked(struct bq27xxx_device_info *di,
+>> +					     enum bq27xxx_cache_registers item)
+>>   {
+>> -	union power_supply_propval status = di->last_status;
+>> -	struct bq27xxx_reg_cache cache = {0, };
+>> -	bool has_singe_flag = di->opts & BQ27XXX_O_ZERO;
+>> -
+>> -	cache.flags = bq27xxx_read(di, BQ27XXX_REG_FLAGS, has_singe_flag);
+>> -	if ((cache.flags & 0xff) == 0xff)
+>> -		cache.flags = -1; /* read error */
+>> -	if (cache.flags >= 0) {
+>> -		cache.temperature = bq27xxx_battery_read_temperature(di);
+>> +	struct bq27xxx_cache_reg *reg;
+>> +	int tmp = -EINVAL;
+>> +
+>> +	reg = &di->cache[item];
+>> +
+>> +	if (time_is_after_jiffies(reg->last_update + 5 * HZ))
+>> +		return reg->value;
+>> +
+>> +	switch (item) {
+>> +	case CACHE_REG_TEMPERATURE:
+>> +		tmp = bq27xxx_battery_read_temperature(di);
+>> +		break;
+>> +	case CACHE_REG_TIME_TO_EMPTY:
+>>   		if (di->regs[BQ27XXX_REG_TTE] != INVALID_REG_ADDR)
+>> -			cache.time_to_empty = bq27xxx_battery_read_time(di, BQ27XXX_REG_TTE);
+>> +			tmp = bq27xxx_battery_read_time(di, BQ27XXX_REG_TTE);
+>> +		break;
+>> +	case CACHE_REG_TIME_TO_EMPTY_AVG:
+>>   		if (di->regs[BQ27XXX_REG_TTECP] != INVALID_REG_ADDR)
+>> -			cache.time_to_empty_avg = bq27xxx_battery_read_time(di, BQ27XXX_REG_TTECP);
+>> +			tmp = bq27xxx_battery_read_time(di, BQ27XXX_REG_TTECP);
+>> +		break;
+>> +	case CACHE_REG_TIME_TO_FULL:
+>>   		if (di->regs[BQ27XXX_REG_TTF] != INVALID_REG_ADDR)
+>> -			cache.time_to_full = bq27xxx_battery_read_time(di, BQ27XXX_REG_TTF);
+>> -
+>> -		cache.charge_full = bq27xxx_battery_read_fcc(di);
+>> -		cache.capacity = bq27xxx_battery_read_soc(di);
+>> -		if (di->regs[BQ27XXX_REG_AE] != INVALID_REG_ADDR)
+>> -			cache.energy = bq27xxx_battery_read_energy(di);
+>> -		di->cache.flags = cache.flags;
+>> -		cache.health = bq27xxx_battery_read_health(di);
+>> +			tmp = bq27xxx_battery_read_time(di, BQ27XXX_REG_TTF);
+>> +		break;
+>> +	case CACHE_REG_CHARGE_FULL:
+>> +		tmp = bq27xxx_battery_read_fcc(di);
+>> +		break;
+>> +	case CACHE_REG_CYCLE_COUNT:
+>>   		if (di->regs[BQ27XXX_REG_CYCT] != INVALID_REG_ADDR)
+>> -			cache.cycle_count = bq27xxx_battery_read_cyct(di);
+>> -
+>> -		/*
+>> -		 * On gauges with signed current reporting the current must be
+>> -		 * checked to detect charging <-> discharging status changes.
+>> -		 */
+>> -		if (!(di->opts & BQ27XXX_O_ZERO))
+>> -			bq27xxx_battery_current_and_status(di, NULL, &status, &cache);
+>> -
+>> -		/* We only have to read charge design full once */
+>> -		if (di->charge_design_full <= 0)
+>> -			di->charge_design_full = bq27xxx_battery_read_dcap(di);
+>> +			tmp = bq27xxx_battery_read_cyct(di);
+>> +		break;
+>> +	case CACHE_REG_CAPACITY:
+>> +		tmp = bq27xxx_battery_read_soc(di);
+>> +		break;
+>> +	case CACHE_REG_ENERGY:
+>> +		if (di->regs[BQ27XXX_REG_AE] != INVALID_REG_ADDR)
+>> +			tmp = bq27xxx_battery_read_energy(di);
+>> +		break;
+>> +	case CACHE_REG_FLAGS:
+>> +		bool has_singe_flag = di->opts & BQ27XXX_O_ZERO;
+>> +
+>> +		tmp = bq27xxx_read(di, BQ27XXX_REG_FLAGS, has_singe_flag);
+>> +		if ((tmp & 0xff) == 0xff)
+>> +			tmp = -1; /* read error */
+>> +		break;
+>> +	default:
+>> +		break;
+>> +	}
+>> +
+>> +	/* only update cache value when successful */
+>> +	if (tmp >= 0) {
+>> +		reg->value = tmp;
+>> +		reg->last_update = jiffies;
+>>   	}
+>>   
+>> -	if ((di->cache.capacity != cache.capacity) ||
+>> -	    (di->cache.flags != cache.flags) ||
+>> +	return tmp;
+>> +}
+>> +
+>> +static int bq27xxx_cached_reg_value(struct bq27xxx_device_info *di,
+>> +				    enum bq27xxx_cache_registers item)
+>> +{
+>> +	int ret;
+>> +
+>> +	mutex_lock(&di->lock);
+>> +	ret = bq27xxx_cached_reg_value_unlocked(di, item);
+>> +	mutex_unlock(&di->lock);
+>> +
+>> +	return ret;
+>> +}
+>> +
+>> +static void bq27xxx_battery_update_unlocked(struct bq27xxx_device_info *di)
+>> +{
+>> +	union power_supply_propval status = di->last_status;
+>> +	int old_flags, flags;
+>> +	int old_capacity, capacity;
+>> +
+>> +	old_capacity = di->cache[CACHE_REG_CAPACITY].value;
+>> +	capacity = old_capacity;
+>> +
+>> +	old_flags = di->cache[CACHE_REG_FLAGS].value;
+>> +	flags = bq27xxx_cached_reg_value_unlocked(di, CACHE_REG_FLAGS);
+>> +
+>> +	if (flags < 0)
+>> +		goto out;
+>> +
+>> +	bq27xxx_cached_reg_value_unlocked(di, CACHE_REG_TEMPERATURE);
+>> +	if (di->regs[BQ27XXX_REG_TTE] != INVALID_REG_ADDR)
+>> +		bq27xxx_cached_reg_value_unlocked(di, CACHE_REG_TIME_TO_EMPTY);
+>> +	if (di->regs[BQ27XXX_REG_TTECP] != INVALID_REG_ADDR)
+>> +		bq27xxx_cached_reg_value_unlocked(di, CACHE_REG_TIME_TO_EMPTY_AVG);
+>> +	if (di->regs[BQ27XXX_REG_TTF] != INVALID_REG_ADDR)
+>> +		bq27xxx_cached_reg_value_unlocked(di, CACHE_REG_TIME_TO_FULL);
+>> +
+>> +	bq27xxx_cached_reg_value_unlocked(di, CACHE_REG_CHARGE_FULL);
+>> +	bq27xxx_cached_reg_value_unlocked(di, CACHE_REG_CAPACITY);
+>> +	if (di->regs[BQ27XXX_REG_AE] != INVALID_REG_ADDR)
+>> +		bq27xxx_cached_reg_value_unlocked(di, CACHE_REG_ENERGY);
+>> +	if (di->regs[BQ27XXX_REG_CYCT] != INVALID_REG_ADDR)
+>> +		bq27xxx_cached_reg_value_unlocked(di, CACHE_REG_CYCLE_COUNT);
+>> +
+>> +	/*
+>> +	 * On gauges with signed current reporting the current must be
+>> +	 * checked to detect charging <-> discharging status changes.
+>> +	 */
+>> +	if (!(di->opts & BQ27XXX_O_ZERO))
+>> +		bq27xxx_battery_current_and_status(di, NULL, &status,
+>> +						   &di->cache[CACHE_REG_FLAGS]);
+>> +
+>> +	/* We only have to read charge design full once */
+>> +	if (di->charge_design_full <= 0)
+>> +		di->charge_design_full = bq27xxx_battery_read_dcap(di);
+>> +
+>> +out:
+>> +	if ((old_capacity != capacity) || (old_flags != flags) ||
+>>   	    (di->last_status.intval != status.intval)) {
+>>   		di->last_status.intval = status.intval;
+>>   		power_supply_changed(di->bat);
+>>   	}
+>>   
+>> -	if (memcmp(&di->cache, &cache, sizeof(cache)) != 0)
+>> -		di->cache = cache;
+>> -
+>> -	di->last_update = jiffies;
+>> -
+>>   	if (!di->removed && poll_interval > 0)
+>>   		mod_delayed_work(system_wq, &di->work, poll_interval * HZ);
+>>   }
+>> @@ -1934,29 +2007,32 @@ static int bq27xxx_battery_capacity_level(struct bq27xxx_device_info *di,
+>>   					  union power_supply_propval *val)
+>>   {
+>>   	int level;
+>> +	int flags;
+>> +
+>> +	flags = di->cache[CACHE_REG_FLAGS].value;
+>>   
+>>   	if (di->opts & BQ27XXX_O_ZERO) {
+>> -		if (di->cache.flags & BQ27000_FLAG_FC)
+>> +		if (flags & BQ27000_FLAG_FC)
+>>   			level = POWER_SUPPLY_CAPACITY_LEVEL_FULL;
+>> -		else if (di->cache.flags & BQ27000_FLAG_EDVF)
+>> +		else if (flags & BQ27000_FLAG_EDVF)
+>>   			level = POWER_SUPPLY_CAPACITY_LEVEL_CRITICAL;
+>> -		else if (di->cache.flags & BQ27000_FLAG_EDV1)
+>> +		else if (flags & BQ27000_FLAG_EDV1)
+>>   			level = POWER_SUPPLY_CAPACITY_LEVEL_LOW;
+>>   		else
+>>   			level = POWER_SUPPLY_CAPACITY_LEVEL_NORMAL;
+>>   	} else if (di->opts & BQ27Z561_O_BITS) {
+>> -		if (di->cache.flags & BQ27Z561_FLAG_FC)
+>> +		if (flags & BQ27Z561_FLAG_FC)
+>>   			level = POWER_SUPPLY_CAPACITY_LEVEL_FULL;
+>> -		else if (di->cache.flags & BQ27Z561_FLAG_FDC)
+>> +		else if (flags & BQ27Z561_FLAG_FDC)
+>>   			level = POWER_SUPPLY_CAPACITY_LEVEL_CRITICAL;
+>>   		else
+>>   			level = POWER_SUPPLY_CAPACITY_LEVEL_NORMAL;
+>>   	} else {
+>> -		if (di->cache.flags & BQ27XXX_FLAG_FC)
+>> +		if (flags & BQ27XXX_FLAG_FC)
+>>   			level = POWER_SUPPLY_CAPACITY_LEVEL_FULL;
+>> -		else if (di->cache.flags & BQ27XXX_FLAG_SOCF)
+>> +		else if (flags & BQ27XXX_FLAG_SOCF)
+>>   			level = POWER_SUPPLY_CAPACITY_LEVEL_CRITICAL;
+>> -		else if (di->cache.flags & BQ27XXX_FLAG_SOC1)
+>> +		else if (flags & BQ27XXX_FLAG_SOC1)
+>>   			level = POWER_SUPPLY_CAPACITY_LEVEL_LOW;
+>>   		else
+>>   			level = POWER_SUPPLY_CAPACITY_LEVEL_NORMAL;
+>> @@ -2004,13 +2080,12 @@ static int bq27xxx_battery_get_property(struct power_supply *psy,
+>>   {
+>>   	int ret = 0;
+>>   	struct bq27xxx_device_info *di = power_supply_get_drvdata(psy);
+>> +	int flags;
+>> +	int cache;
+>>   
+>> -	mutex_lock(&di->lock);
+>> -	if (time_is_before_jiffies(di->last_update + 5 * HZ))
+>> -		bq27xxx_battery_update_unlocked(di);
+>> -	mutex_unlock(&di->lock);
+>> +	flags = bq27xxx_cached_reg_value(di, CACHE_REG_FLAGS);
+>>   
+>> -	if (psp != POWER_SUPPLY_PROP_PRESENT && di->cache.flags < 0)
+>> +	if (psp != POWER_SUPPLY_PROP_PRESENT && flags < 0)
+>>   		return -ENODEV;
+>>   
+>>   	switch (psp) {
+>> @@ -2021,30 +2096,40 @@ static int bq27xxx_battery_get_property(struct power_supply *psy,
+>>   		ret = bq27xxx_battery_voltage(di, val);
+>>   		break;
+>>   	case POWER_SUPPLY_PROP_PRESENT:
+>> -		val->intval = di->cache.flags < 0 ? 0 : 1;
+>> +		val->intval = flags < 0 ? 0 : 1;
+>>   		break;
+>>   	case POWER_SUPPLY_PROP_CURRENT_NOW:
+>>   		ret = bq27xxx_battery_current_and_status(di, val, NULL, NULL);
+>>   		break;
+>>   	case POWER_SUPPLY_PROP_CAPACITY:
+>> -		ret = bq27xxx_simple_value(di->cache.capacity, val);
+>> +		cache = bq27xxx_cached_reg_value(di, CACHE_REG_CAPACITY);
+>> +
+>> +		ret = bq27xxx_simple_value(cache, val);
+>>   		break;
+>>   	case POWER_SUPPLY_PROP_CAPACITY_LEVEL:
+>>   		ret = bq27xxx_battery_capacity_level(di, val);
+>>   		break;
+>>   	case POWER_SUPPLY_PROP_TEMP:
+>> -		ret = bq27xxx_simple_value(di->cache.temperature, val);
+>> +		cache = bq27xxx_cached_reg_value(di, CACHE_REG_TEMPERATURE);
+>> +
+>> +		ret = bq27xxx_simple_value(cache, val);
+>>   		if (ret == 0)
+>>   			val->intval -= 2731; /* convert decidegree k to c */
+>>   		break;
+>>   	case POWER_SUPPLY_PROP_TIME_TO_EMPTY_NOW:
+>> -		ret = bq27xxx_simple_value(di->cache.time_to_empty, val);
+>> +		cache = bq27xxx_cached_reg_value(di, CACHE_REG_TIME_TO_EMPTY);
+>> +
+>> +		ret = bq27xxx_simple_value(cache, val);
+>>   		break;
+>>   	case POWER_SUPPLY_PROP_TIME_TO_EMPTY_AVG:
+>> -		ret = bq27xxx_simple_value(di->cache.time_to_empty_avg, val);
+>> +		cache = bq27xxx_cached_reg_value(di, CACHE_REG_TIME_TO_EMPTY_AVG);
+>> +
+>> +		ret = bq27xxx_simple_value(cache, val);
+>>   		break;
+>>   	case POWER_SUPPLY_PROP_TIME_TO_FULL_NOW:
+>> -		ret = bq27xxx_simple_value(di->cache.time_to_full, val);
+>> +		cache = bq27xxx_cached_reg_value(di, CACHE_REG_TIME_TO_FULL);
+>> +
+>> +		ret = bq27xxx_simple_value(cache, val);
+>>   		break;
+>>   	case POWER_SUPPLY_PROP_TECHNOLOGY:
+>>   		if (di->opts & BQ27XXX_O_MUL_CHEM)
+>> @@ -2059,7 +2144,9 @@ static int bq27xxx_battery_get_property(struct power_supply *psy,
+>>   			ret = bq27xxx_simple_value(bq27xxx_battery_read_rc(di), val);
+>>   		break;
+>>   	case POWER_SUPPLY_PROP_CHARGE_FULL:
+>> -		ret = bq27xxx_simple_value(di->cache.charge_full, val);
+>> +		cache = bq27xxx_cached_reg_value(di, CACHE_REG_CHARGE_FULL);
+>> +
+>> +		ret = bq27xxx_simple_value(cache, val);
+>>   		break;
+>>   	case POWER_SUPPLY_PROP_CHARGE_FULL_DESIGN:
+>>   		ret = bq27xxx_simple_value(di->charge_design_full, val);
+>> @@ -2072,16 +2159,22 @@ static int bq27xxx_battery_get_property(struct power_supply *psy,
+>>   	case POWER_SUPPLY_PROP_VOLTAGE_MIN_DESIGN:
+>>   		return -EINVAL;
+>>   	case POWER_SUPPLY_PROP_CYCLE_COUNT:
+>> -		ret = bq27xxx_simple_value(di->cache.cycle_count, val);
+>> +		cache = bq27xxx_cached_reg_value(di, CACHE_REG_CYCLE_COUNT);
+>> +
+>> +		ret = bq27xxx_simple_value(cache, val);
+>>   		break;
+>>   	case POWER_SUPPLY_PROP_ENERGY_NOW:
+>> -		ret = bq27xxx_simple_value(di->cache.energy, val);
+>> +		cache = bq27xxx_cached_reg_value(di, CACHE_REG_ENERGY);
+>> +
+>> +		ret = bq27xxx_simple_value(cache, val);
+>>   		break;
+>>   	case POWER_SUPPLY_PROP_POWER_AVG:
+>>   		ret = bq27xxx_battery_pwr_avg(di, val);
+>>   		break;
+>>   	case POWER_SUPPLY_PROP_HEALTH:
+>> -		ret = bq27xxx_simple_value(di->cache.health, val);
+>> +		cache = bq27xxx_battery_read_health(di);
+>> +
+>> +		ret = bq27xxx_simple_value(cache, val);
+>>   		break;
+>>   	case POWER_SUPPLY_PROP_MANUFACTURER:
+>>   		val->strval = BQ27XXX_MANUFACTURER;
+>> diff --git a/include/linux/power/bq27xxx_battery.h b/include/linux/power/bq27xxx_battery.h
+>> index 7d8025fb74b7..617c8409d80f 100644
+>> --- a/include/linux/power/bq27xxx_battery.h
+>> +++ b/include/linux/power/bq27xxx_battery.h
+>> @@ -46,17 +46,22 @@ struct bq27xxx_access_methods {
+>>   	int (*write_bulk)(struct bq27xxx_device_info *di, u8 reg, u8 *data, int len);
+>>   };
+>>   
+>> -struct bq27xxx_reg_cache {
+>> -	int temperature;
+>> -	int time_to_empty;
+>> -	int time_to_empty_avg;
+>> -	int time_to_full;
+>> -	int charge_full;
+>> -	int cycle_count;
+>> -	int capacity;
+>> -	int energy;
+>> -	int flags;
+>> -	int health;
+>> +struct bq27xxx_cache_reg {
+>> +	int value;
+>> +	unsigned long last_update;
+>> +};
+>> +
+>> +enum bq27xxx_cache_registers {
+>> +	CACHE_REG_TEMPERATURE = 0,
+>> +	CACHE_REG_TIME_TO_EMPTY,
+>> +	CACHE_REG_TIME_TO_EMPTY_AVG,
+>> +	CACHE_REG_TIME_TO_FULL,
+>> +	CACHE_REG_CHARGE_FULL,
+>> +	CACHE_REG_CYCLE_COUNT,
+>> +	CACHE_REG_CAPACITY,
+>> +	CACHE_REG_ENERGY,
+>> +	CACHE_REG_FLAGS,
+>> +	CACHE_REG_MAX,
+>>   };
+>>   
+>>   struct bq27xxx_device_info {
+>> @@ -68,10 +73,9 @@ struct bq27xxx_device_info {
+>>   	struct bq27xxx_dm_reg *dm_regs;
+>>   	u32 unseal_key;
+>>   	struct bq27xxx_access_methods bus;
+>> -	struct bq27xxx_reg_cache cache;
+>> +	struct bq27xxx_cache_reg cache[CACHE_REG_MAX];
+>>   	int charge_design_full;
+>>   	bool removed;
+>> -	unsigned long last_update;
+>>   	union power_supply_propval last_status;
+>>   	struct delayed_work work;
+>>   	struct power_supply *bat;
+>> -- 
+>> 2.39.2
+>>
 
