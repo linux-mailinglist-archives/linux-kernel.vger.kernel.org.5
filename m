@@ -1,419 +1,417 @@
-Return-Path: <linux-kernel+bounces-126648-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-126650-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 80091893AE9
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 14:24:18 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3CD6B893AEF
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 14:25:37 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0DCB7281A09
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 12:24:17 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id BE3EE1F2114C
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 12:25:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 669B03716F;
-	Mon,  1 Apr 2024 12:24:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 691F8374F7;
+	Mon,  1 Apr 2024 12:25:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="cbe5JFy4"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.13])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Mir5d+F2"
+Received: from mail-ed1-f50.google.com (mail-ed1-f50.google.com [209.85.208.50])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 38F9E28DC0
-	for <linux-kernel@vger.kernel.org>; Mon,  1 Apr 2024 12:24:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.13
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 47C3B208DD
+	for <linux-kernel@vger.kernel.org>; Mon,  1 Apr 2024 12:25:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711974250; cv=none; b=RY3Tt7Ya3nQRLB35Q5YzkPsHfYM1D7CrZ9NMHH6ltzE0iok4ro8+HCUkhRh7GIauJaOVepUGKG0RwEkKNv7MJMKrOU6R2XX6nhDe0X8I6O8leia2tuAPR6Z0Mbt9RqHfIeDZ9jFdYiIthCMVAwUB1RC9VGb6H27bHLCXCwrq/mM=
+	t=1711974329; cv=none; b=oqJUSgFyKTqfWGYwlbvFOh0jQxIFZe/a80zuft8Rkqd1m4I2+RqdaZNtx2tm04YssJaoWUXKSz9Oitfon3l4IQWyQIYnyPtbD4dzDjoOKwQP2zY2OsF7mlTYTqlYRPPszC/e8uxCAuLym1yGw93RMcBZC0/x+ZW04SLpUP2tfDU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711974250; c=relaxed/simple;
-	bh=spJ9RMVRv0rFwfAZFjfUbN/DezHPiJgk650X8Hq4PQk=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition; b=kQJLWyS0Pbnu86GHgRespKSRhYwrcB2tKAqv4vkPGBfUnDTtCukUNrCgCCcQjbuhPyMMXr3/NGcLt+9qIYmk8Thm9z5vAWqtZ1h94dGppUEwYGPH8/SwHLo0/3GRilHrHcbbcO03e2U8A0zC/wlf75r9bi3YV1qATVNAwzgVZ3I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=cbe5JFy4; arc=none smtp.client-ip=192.198.163.13
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1711974248; x=1743510248;
-  h=date:from:to:cc:subject:message-id:mime-version;
-  bh=spJ9RMVRv0rFwfAZFjfUbN/DezHPiJgk650X8Hq4PQk=;
-  b=cbe5JFy4zUwnmchcrBdi0zj4oBeTiUIv062bhXgvulCJFSY9hJRJWxuR
-   c7NcBne1jIMLLXx+QdwSB6vqmot8DXEDL/Y6691Wy0u03yxBKwICIZGpZ
-   htZ9nO8LbH6S7SibGb8mEn/nu3myBEb31DKCnTlEFgAS+1NrUYH1v45uK
-   LhPxY0piN4ID0twbbBMx1RPC1VkXYZFvp7+1byyXkOFcojxtbfh16Hv2P
-   6Altdm15ow8GaCSbl2uhJzUIp6mC3az/Wp+lRhtOxcWQTX0hYIGq2+Yju
-   0CAgIoDHM601nz2ON5Gsq/ZFWODk58cTyaSCFOTCmfZyBmW40zHM/ooIa
-   g==;
-X-CSE-ConnectionGUID: Xz1TvRftS9GxfLWeTG+RIQ==
-X-CSE-MsgGUID: NdssrXcvQKC3+ShZ7yuUkg==
-X-IronPort-AV: E=McAfee;i="6600,9927,11030"; a="10055454"
-X-IronPort-AV: E=Sophos;i="6.07,172,1708416000"; 
-   d="scan'208";a="10055454"
-Received: from orviesa010.jf.intel.com ([10.64.159.150])
-  by fmvoesa107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Apr 2024 05:24:07 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,172,1708416000"; 
-   d="scan'208";a="17525456"
-Received: from lkp-server02.sh.intel.com (HELO 90ee3aa53dbd) ([10.239.97.151])
-  by orviesa010.jf.intel.com with ESMTP; 01 Apr 2024 05:24:05 -0700
-Received: from kbuild by 90ee3aa53dbd with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1rrGhn-0000IF-1N;
-	Mon, 01 Apr 2024 12:24:03 +0000
-Date: Mon, 1 Apr 2024 20:23:42 +0800
-From: kernel test robot <lkp@intel.com>
-To: Huacai Chen <chenhuacai@loongson.cn>
-Cc: oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: arch/loongarch/kernel/signal.c:370:47: sparse: sparse: incorrect
- type in initializer (different address spaces)
-Message-ID: <202404012046.TImS0QcF-lkp@intel.com>
+	s=arc-20240116; t=1711974329; c=relaxed/simple;
+	bh=0+uuaWuZI/u1j6ybe/zc1IQEf7G44Ll0b/8zBfHfnFA=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=l8DaXtHv03Gdxsaljx9gvTSm5AsTi7PXOsR2sGG1cDSTGjttGKj2bxrlvHpOx3Y7Iw531znlJoK6qZU1AFTFXPWbAChAZ1QhezMT6AuZEpEQG//MPMvTbHCU8Rx9z6imeJZcZgjKS7quMfivEYgGFXU2rjgtct3rr/mfWoF7pAY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Mir5d+F2; arc=none smtp.client-ip=209.85.208.50
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ed1-f50.google.com with SMTP id 4fb4d7f45d1cf-56c2c41cbdaso2183282a12.2
+        for <linux-kernel@vger.kernel.org>; Mon, 01 Apr 2024 05:25:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1711974325; x=1712579125; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=j5Wz2K6I2DnMCzQHAtDkcCM/sbtzk2JGtRSmt3tcB4Y=;
+        b=Mir5d+F2XTyGjR489OEMNw/xuC2JRHfPGaiISyXq11bvUqEd7ZM8qKoon7nCy8hVTa
+         YnHviVn0/GQit+q2z/J89RHaKpHI+7J7GQpaJ4IKobRWuMKf7mNw0Lj9WoJSrz8JvMtr
+         2SAW4BFcOOoSt/pbqVxuiNjI+RBweTtbRvhLImSCnT+UdCbFGytXFHewWO+lOtQJOcDu
+         VdmPoEe/k95ck6RrDmmNDCQgmvyUwK1oYJm6ZekzsLfAjV7O4kl5HoWF6JR9uL2A+FTh
+         mPAGlqITmeUn92/OIK/rLS6/4xDz9nQQrvQv7Am6g2MOuBNnnFRWKXHBX0wXQdgbUuxj
+         uB/A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711974325; x=1712579125;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=j5Wz2K6I2DnMCzQHAtDkcCM/sbtzk2JGtRSmt3tcB4Y=;
+        b=l/7ZIoajWO+9RCur7CTNEDGJjJ+zh8DF0pFRsR9ELFImh9fsNHJrbteAupmnuvHiP3
+         cy7nR7uj6LpbbnJlyV1KFzLqBq7nQ607GYQ/k4vaMEPGxjMSLSQYx78+1UfJK+Yclhxr
+         5YVFWewQP6F8V4KSRx8F1rYltlFWUsQjd8HMrQhQwYljHwyh+J7F4K/GyqjYW13sMsyP
+         cklfJ1DnyCBgurHy52lvFHQf81tldYN/eDnNjI2i0x1GvuqsEzIJN0HPuQywMNY2cTNr
+         rJLtoyZrIBtQBS3NMpHtn4CLi0UYuNBc7eqWlHDQM1Po0fVZGzmqRlzw66Webxyef8EW
+         6jTg==
+X-Forwarded-Encrypted: i=1; AJvYcCXdvlSIXUBAhv0WameMJ7NLa26IC83UpR6VPF3i45DjQ4keN5eiMxMbIX3WDDepcYK4ATp2JGrJ78AXMRbh6YYFybl23h5fygxrHQoS
+X-Gm-Message-State: AOJu0YyhxWrY3ZuE1ECf880cz0kMHS13/8cJZm7AGM3GpI00IOYGD2Bw
+	qDyPoj3d6q6kGxGnRrtmQdxxzeYQXdkAQ4GLLBi4WjQ9Vh4DGkm+vrMEhV6QJ10fpxS1K3OIKvo
+	tT7/uKahMNoGkDJPBIz61k8qRPoQ=
+X-Google-Smtp-Source: AGHT+IGsYJCiWk1VPNmspSvN2B/1A+RmR7GmpS9FfAhe2KXRwYgHCRDx7saQzpYF6MmuqYPaa4df/BoskbhHTifgQ3w=
+X-Received: by 2002:a05:6402:34d6:b0:56b:d1c2:9b42 with SMTP id
+ w22-20020a05640234d600b0056bd1c29b42mr9366765edc.29.1711974325215; Mon, 01
+ Apr 2024 05:25:25 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+References: <20240327144537.4165578-1-ryan.roberts@arm.com> <20240327144537.4165578-7-ryan.roberts@arm.com>
+In-Reply-To: <20240327144537.4165578-7-ryan.roberts@arm.com>
+From: Lance Yang <ioworker0@gmail.com>
+Date: Mon, 1 Apr 2024 20:25:13 +0800
+Message-ID: <CAK1f24kON1tLerfYMPUO5vXN2yL9UXozOgACDtSwgGO_zFzTQQ@mail.gmail.com>
+Subject: Re: [PATCH v5 6/6] mm: madvise: Avoid split during MADV_PAGEOUT and MADV_COLD
+To: Ryan Roberts <ryan.roberts@arm.com>
+Cc: Andrew Morton <akpm@linux-foundation.org>, David Hildenbrand <david@redhat.com>, 
+	Matthew Wilcox <willy@infradead.org>, Huang Ying <ying.huang@intel.com>, Gao Xiang <xiang@kernel.org>, 
+	Yu Zhao <yuzhao@google.com>, Yang Shi <shy828301@gmail.com>, Michal Hocko <mhocko@suse.com>, 
+	Kefeng Wang <wangkefeng.wang@huawei.com>, Barry Song <21cnbao@gmail.com>, 
+	Chris Li <chrisl@kernel.org>, linux-mm@kvack.org, linux-kernel@vger.kernel.org, 
+	Barry Song <v-songbaohua@oppo.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   39cd87c4eb2b893354f3b850f916353f2658ae6f
-commit: 616500232e632dba8b03981eeccadacf2fbf1c30 LoongArch: Add vector extensions support
-date:   9 months ago
-config: loongarch-randconfig-r034-20230511 (https://download.01.org/0day-ci/archive/20240401/202404012046.TImS0QcF-lkp@intel.com/config)
-compiler: loongarch64-linux-gcc (GCC) 12.3.0
-reproduce: (https://download.01.org/0day-ci/archive/20240401/202404012046.TImS0QcF-lkp@intel.com/reproduce)
+On Wed, Mar 27, 2024 at 10:46=E2=80=AFPM Ryan Roberts <ryan.roberts@arm.com=
+> wrote:
+>
+> Rework madvise_cold_or_pageout_pte_range() to avoid splitting any large
+> folio that is fully and contiguously mapped in the pageout/cold vm
+> range. This change means that large folios will be maintained all the
+> way to swap storage. This both improves performance during swap-out, by
+> eliding the cost of splitting the folio, and sets us up nicely for
+> maintaining the large folio when it is swapped back in (to be covered in
+> a separate series).
+>
+> Folios that are not fully mapped in the target range are still split,
+> but note that behavior is changed so that if the split fails for any
+> reason (folio locked, shared, etc) we now leave it as is and move to the
+> next pte in the range and continue work on the proceeding folios.
+> Previously any failure of this sort would cause the entire operation to
+> give up and no folios mapped at higher addresses were paged out or made
+> cold. Given large folios are becoming more common, this old behavior
+> would have likely lead to wasted opportunities.
+>
+> While we are at it, change the code that clears young from the ptes to
+> use ptep_test_and_clear_young(), via the new mkold_ptes() batch helper
+> function. This is more efficent than get_and_clear/modify/set,
+> especially for contpte mappings on arm64, where the old approach would
+> require unfolding/refolding and the new approach can be done in place.
+>
+> Reviewed-by: Barry Song <v-songbaohua@oppo.com>
+> Signed-off-by: Ryan Roberts <ryan.roberts@arm.com>
+> ---
+>  include/linux/pgtable.h | 30 ++++++++++++++
+>  mm/internal.h           | 12 +++++-
+>  mm/madvise.c            | 88 ++++++++++++++++++++++++-----------------
+>  mm/memory.c             |  4 +-
+>  4 files changed, 93 insertions(+), 41 deletions(-)
+>
+> diff --git a/include/linux/pgtable.h b/include/linux/pgtable.h
+> index 8185939df1e8..391f56a1b188 100644
+> --- a/include/linux/pgtable.h
+> +++ b/include/linux/pgtable.h
+> @@ -361,6 +361,36 @@ static inline int ptep_test_and_clear_young(struct v=
+m_area_struct *vma,
+>  }
+>  #endif
+>
+> +#ifndef mkold_ptes
+> +/**
+> + * mkold_ptes - Mark PTEs that map consecutive pages of the same folio a=
+s old.
+> + * @vma: VMA the pages are mapped into.
+> + * @addr: Address the first page is mapped at.
+> + * @ptep: Page table pointer for the first entry.
+> + * @nr: Number of entries to mark old.
+> + *
+> + * May be overridden by the architecture; otherwise, implemented as a si=
+mple
+> + * loop over ptep_test_and_clear_young().
+> + *
+> + * Note that PTE bits in the PTE range besides the PFN can differ. For e=
+xample,
+> + * some PTEs might be write-protected.
+> + *
+> + * Context: The caller holds the page table lock.  The PTEs map consecut=
+ive
+> + * pages that belong to the same folio.  The PTEs are all in the same PM=
+D.
+> + */
+> +static inline void mkold_ptes(struct vm_area_struct *vma, unsigned long =
+addr,
+> +               pte_t *ptep, unsigned int nr)
+> +{
+> +       for (;;) {
+> +               ptep_test_and_clear_young(vma, addr, ptep);
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202404012046.TImS0QcF-lkp@intel.com/
+IIUC, if the first PTE is a CONT-PTE, then calling ptep_test_and_clear_youn=
+g()
+will clear the young bit for the entire contig range to avoid having
+to unfold. So,
+the other PTEs within the range don't need to clear again.
 
-sparse warnings: (new ones prefixed by >>)
-   arch/loongarch/kernel/signal.c:94:36: sparse: sparse: cast removes address space '__user' of expression
-   arch/loongarch/kernel/signal.c:94:36: sparse: sparse: incorrect type in initializer (different address spaces) @@     expected unsigned long long [noderef] [usertype] __user *regs @@     got unsigned long long [usertype] * @@
-   arch/loongarch/kernel/signal.c:94:36: sparse:     expected unsigned long long [noderef] [usertype] __user *regs
-   arch/loongarch/kernel/signal.c:94:36: sparse:     got unsigned long long [usertype] *
-   arch/loongarch/kernel/signal.c:114:36: sparse: sparse: cast removes address space '__user' of expression
-   arch/loongarch/kernel/signal.c:114:36: sparse: sparse: incorrect type in initializer (different address spaces) @@     expected unsigned long long [noderef] [usertype] __user *regs @@     got unsigned long long [usertype] * @@
-   arch/loongarch/kernel/signal.c:114:36: sparse:     expected unsigned long long [noderef] [usertype] __user *regs
-   arch/loongarch/kernel/signal.c:114:36: sparse:     got unsigned long long [usertype] *
-   arch/loongarch/kernel/signal.c:132:36: sparse: sparse: cast removes address space '__user' of expression
-   arch/loongarch/kernel/signal.c:132:36: sparse: sparse: incorrect type in initializer (different address spaces) @@     expected unsigned long long [noderef] [usertype] __user *regs @@     got unsigned long long [usertype] * @@
-   arch/loongarch/kernel/signal.c:132:36: sparse:     expected unsigned long long [noderef] [usertype] __user *regs
-   arch/loongarch/kernel/signal.c:132:36: sparse:     got unsigned long long [usertype] *
-   arch/loongarch/kernel/signal.c:153:36: sparse: sparse: cast removes address space '__user' of expression
-   arch/loongarch/kernel/signal.c:153:36: sparse: sparse: incorrect type in initializer (different address spaces) @@     expected unsigned long long [noderef] [usertype] __user *regs @@     got unsigned long long [usertype] * @@
-   arch/loongarch/kernel/signal.c:153:36: sparse:     expected unsigned long long [noderef] [usertype] __user *regs
-   arch/loongarch/kernel/signal.c:153:36: sparse:     got unsigned long long [usertype] *
-   arch/loongarch/kernel/signal.c:173:36: sparse: sparse: cast removes address space '__user' of expression
-   arch/loongarch/kernel/signal.c:173:36: sparse: sparse: incorrect type in initializer (different address spaces) @@     expected unsigned long long [noderef] [usertype] __user *regs @@     got unsigned long long [usertype] * @@
-   arch/loongarch/kernel/signal.c:173:36: sparse:     expected unsigned long long [noderef] [usertype] __user *regs
-   arch/loongarch/kernel/signal.c:173:36: sparse:     got unsigned long long [usertype] *
-   arch/loongarch/kernel/signal.c:198:36: sparse: sparse: cast removes address space '__user' of expression
-   arch/loongarch/kernel/signal.c:198:36: sparse: sparse: incorrect type in initializer (different address spaces) @@     expected unsigned long long [noderef] [usertype] __user *regs @@     got unsigned long long [usertype] * @@
-   arch/loongarch/kernel/signal.c:198:36: sparse:     expected unsigned long long [noderef] [usertype] __user *regs
-   arch/loongarch/kernel/signal.c:198:36: sparse:     got unsigned long long [usertype] *
-   arch/loongarch/kernel/signal.c:223:36: sparse: sparse: cast removes address space '__user' of expression
-   arch/loongarch/kernel/signal.c:223:36: sparse: sparse: incorrect type in initializer (different address spaces) @@     expected unsigned long long [noderef] [usertype] __user *regs @@     got unsigned long long [usertype] * @@
-   arch/loongarch/kernel/signal.c:223:36: sparse:     expected unsigned long long [noderef] [usertype] __user *regs
-   arch/loongarch/kernel/signal.c:223:36: sparse:     got unsigned long long [usertype] *
-   arch/loongarch/kernel/signal.c:232:36: sparse: sparse: cast removes address space '__user' of expression
-   arch/loongarch/kernel/signal.c:232:36: sparse: sparse: incorrect type in initializer (different address spaces) @@     expected unsigned long long [noderef] [usertype] __user *regs @@     got unsigned long long [usertype] * @@
-   arch/loongarch/kernel/signal.c:232:36: sparse:     expected unsigned long long [noderef] [usertype] __user *regs
-   arch/loongarch/kernel/signal.c:232:36: sparse:     got unsigned long long [usertype] *
-   arch/loongarch/kernel/signal.c:241:36: sparse: sparse: cast removes address space '__user' of expression
-   arch/loongarch/kernel/signal.c:241:36: sparse: sparse: incorrect type in initializer (different address spaces) @@     expected unsigned long long [noderef] [usertype] __user *regs @@     got unsigned long long [usertype] * @@
-   arch/loongarch/kernel/signal.c:241:36: sparse:     expected unsigned long long [noderef] [usertype] __user *regs
-   arch/loongarch/kernel/signal.c:241:36: sparse:     got unsigned long long [usertype] *
-   arch/loongarch/kernel/signal.c:250:36: sparse: sparse: cast removes address space '__user' of expression
-   arch/loongarch/kernel/signal.c:250:36: sparse: sparse: incorrect type in initializer (different address spaces) @@     expected unsigned long long [noderef] [usertype] __user *regs @@     got unsigned long long [usertype] * @@
-   arch/loongarch/kernel/signal.c:250:36: sparse:     expected unsigned long long [noderef] [usertype] __user *regs
-   arch/loongarch/kernel/signal.c:250:36: sparse:     got unsigned long long [usertype] *
-   arch/loongarch/kernel/signal.c:259:36: sparse: sparse: cast removes address space '__user' of expression
-   arch/loongarch/kernel/signal.c:259:36: sparse: sparse: incorrect type in initializer (different address spaces) @@     expected unsigned long long [noderef] [usertype] __user *regs @@     got unsigned long long [usertype] * @@
-   arch/loongarch/kernel/signal.c:259:36: sparse:     expected unsigned long long [noderef] [usertype] __user *regs
-   arch/loongarch/kernel/signal.c:259:36: sparse:     got unsigned long long [usertype] *
-   arch/loongarch/kernel/signal.c:268:36: sparse: sparse: cast removes address space '__user' of expression
-   arch/loongarch/kernel/signal.c:268:36: sparse: sparse: incorrect type in initializer (different address spaces) @@     expected unsigned long long [noderef] [usertype] __user *regs @@     got unsigned long long [usertype] * @@
-   arch/loongarch/kernel/signal.c:268:36: sparse:     expected unsigned long long [noderef] [usertype] __user *regs
-   arch/loongarch/kernel/signal.c:268:36: sparse:     got unsigned long long [usertype] *
-   arch/loongarch/kernel/signal.c:300:52: sparse: sparse: incorrect type in initializer (different address spaces) @@     expected struct sctx_info [noderef] __user *info @@     got struct sctx_info *addr @@
-   arch/loongarch/kernel/signal.c:300:52: sparse:     expected struct sctx_info [noderef] __user *info
-   arch/loongarch/kernel/signal.c:300:52: sparse:     got struct sctx_info *addr
-   arch/loongarch/kernel/signal.c:301:92: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected struct sctx_info *info @@     got struct sctx_info [noderef] __user *info @@
-   arch/loongarch/kernel/signal.c:301:92: sparse:     expected struct sctx_info *info
-   arch/loongarch/kernel/signal.c:301:92: sparse:     got struct sctx_info [noderef] __user *info
-   arch/loongarch/kernel/signal.c:301:47: sparse: sparse: cast removes address space '__user' of expression
-   arch/loongarch/kernel/signal.c:301:47: sparse: sparse: incorrect type in initializer (different address spaces) @@     expected struct fpu_context [noderef] __user *fpu_ctx @@     got struct fpu_context * @@
-   arch/loongarch/kernel/signal.c:301:47: sparse:     expected struct fpu_context [noderef] __user *fpu_ctx
-   arch/loongarch/kernel/signal.c:301:47: sparse:     got struct fpu_context *
-   arch/loongarch/kernel/signal.c:302:36: sparse: sparse: cast removes address space '__user' of expression
-   arch/loongarch/kernel/signal.c:302:36: sparse: sparse: incorrect type in initializer (different address spaces) @@     expected unsigned long long [noderef] [usertype] __user *regs @@     got unsigned long long [usertype] * @@
-   arch/loongarch/kernel/signal.c:302:36: sparse:     expected unsigned long long [noderef] [usertype] __user *regs
-   arch/loongarch/kernel/signal.c:302:36: sparse:     got unsigned long long [usertype] *
-   arch/loongarch/kernel/signal.c:334:52: sparse: sparse: incorrect type in initializer (different address spaces) @@     expected struct sctx_info [noderef] __user *info @@     got struct sctx_info *addr @@
-   arch/loongarch/kernel/signal.c:334:52: sparse:     expected struct sctx_info [noderef] __user *info
-   arch/loongarch/kernel/signal.c:334:52: sparse:     got struct sctx_info *addr
-   arch/loongarch/kernel/signal.c:335:92: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected struct sctx_info *info @@     got struct sctx_info [noderef] __user *info @@
-   arch/loongarch/kernel/signal.c:335:92: sparse:     expected struct sctx_info *info
-   arch/loongarch/kernel/signal.c:335:92: sparse:     got struct sctx_info [noderef] __user *info
-   arch/loongarch/kernel/signal.c:335:47: sparse: sparse: cast removes address space '__user' of expression
-   arch/loongarch/kernel/signal.c:335:47: sparse: sparse: incorrect type in initializer (different address spaces) @@     expected struct fpu_context [noderef] __user *fpu_ctx @@     got struct fpu_context * @@
-   arch/loongarch/kernel/signal.c:335:47: sparse:     expected struct fpu_context [noderef] __user *fpu_ctx
-   arch/loongarch/kernel/signal.c:335:47: sparse:     got struct fpu_context *
-   arch/loongarch/kernel/signal.c:336:36: sparse: sparse: cast removes address space '__user' of expression
-   arch/loongarch/kernel/signal.c:336:36: sparse: sparse: incorrect type in initializer (different address spaces) @@     expected unsigned long long [noderef] [usertype] __user *regs @@     got unsigned long long [usertype] * @@
-   arch/loongarch/kernel/signal.c:336:36: sparse:     expected unsigned long long [noderef] [usertype] __user *regs
-   arch/loongarch/kernel/signal.c:336:36: sparse:     got unsigned long long [usertype] *
-   arch/loongarch/kernel/signal.c:369:52: sparse: sparse: incorrect type in initializer (different address spaces) @@     expected struct sctx_info [noderef] __user *info @@     got struct sctx_info *addr @@
-   arch/loongarch/kernel/signal.c:369:52: sparse:     expected struct sctx_info [noderef] __user *info
-   arch/loongarch/kernel/signal.c:369:52: sparse:     got struct sctx_info *addr
-   arch/loongarch/kernel/signal.c:370:92: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected struct sctx_info *info @@     got struct sctx_info [noderef] __user *info @@
-   arch/loongarch/kernel/signal.c:370:92: sparse:     expected struct sctx_info *info
-   arch/loongarch/kernel/signal.c:370:92: sparse:     got struct sctx_info [noderef] __user *info
-   arch/loongarch/kernel/signal.c:370:47: sparse: sparse: cast removes address space '__user' of expression
->> arch/loongarch/kernel/signal.c:370:47: sparse: sparse: incorrect type in initializer (different address spaces) @@     expected struct lsx_context [noderef] __user *lsx_ctx @@     got struct lsx_context * @@
-   arch/loongarch/kernel/signal.c:370:47: sparse:     expected struct lsx_context [noderef] __user *lsx_ctx
-   arch/loongarch/kernel/signal.c:370:47: sparse:     got struct lsx_context *
-   arch/loongarch/kernel/signal.c:371:36: sparse: sparse: cast removes address space '__user' of expression
-   arch/loongarch/kernel/signal.c:371:36: sparse: sparse: incorrect type in initializer (different address spaces) @@     expected unsigned long long [noderef] [usertype] __user *regs @@     got unsigned long long [usertype] * @@
-   arch/loongarch/kernel/signal.c:371:36: sparse:     expected unsigned long long [noderef] [usertype] __user *regs
-   arch/loongarch/kernel/signal.c:371:36: sparse:     got unsigned long long [usertype] *
-   arch/loongarch/kernel/signal.c:406:52: sparse: sparse: incorrect type in initializer (different address spaces) @@     expected struct sctx_info [noderef] __user *info @@     got struct sctx_info *addr @@
-   arch/loongarch/kernel/signal.c:406:52: sparse:     expected struct sctx_info [noderef] __user *info
-   arch/loongarch/kernel/signal.c:406:52: sparse:     got struct sctx_info *addr
-   arch/loongarch/kernel/signal.c:407:92: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected struct sctx_info *info @@     got struct sctx_info [noderef] __user *info @@
-   arch/loongarch/kernel/signal.c:407:92: sparse:     expected struct sctx_info *info
-   arch/loongarch/kernel/signal.c:407:92: sparse:     got struct sctx_info [noderef] __user *info
-   arch/loongarch/kernel/signal.c:407:47: sparse: sparse: cast removes address space '__user' of expression
-   arch/loongarch/kernel/signal.c:407:47: sparse: sparse: incorrect type in initializer (different address spaces) @@     expected struct lsx_context [noderef] __user *lsx_ctx @@     got struct lsx_context * @@
-   arch/loongarch/kernel/signal.c:407:47: sparse:     expected struct lsx_context [noderef] __user *lsx_ctx
-   arch/loongarch/kernel/signal.c:407:47: sparse:     got struct lsx_context *
-   arch/loongarch/kernel/signal.c:408:36: sparse: sparse: cast removes address space '__user' of expression
-   arch/loongarch/kernel/signal.c:408:36: sparse: sparse: incorrect type in initializer (different address spaces) @@     expected unsigned long long [noderef] [usertype] __user *regs @@     got unsigned long long [usertype] * @@
-   arch/loongarch/kernel/signal.c:408:36: sparse:     expected unsigned long long [noderef] [usertype] __user *regs
-   arch/loongarch/kernel/signal.c:408:36: sparse:     got unsigned long long [usertype] *
-   arch/loongarch/kernel/signal.c:444:53: sparse: sparse: incorrect type in initializer (different address spaces) @@     expected struct sctx_info [noderef] __user *info @@     got struct sctx_info *addr @@
-   arch/loongarch/kernel/signal.c:444:53: sparse:     expected struct sctx_info [noderef] __user *info
-   arch/loongarch/kernel/signal.c:444:53: sparse:     got struct sctx_info *addr
-   arch/loongarch/kernel/signal.c:446:64: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected struct sctx_info *info @@     got struct sctx_info [noderef] __user *info @@
-   arch/loongarch/kernel/signal.c:446:64: sparse:     expected struct sctx_info *info
-   arch/loongarch/kernel/signal.c:446:64: sparse:     got struct sctx_info [noderef] __user *info
-   arch/loongarch/kernel/signal.c:446:18: sparse: sparse: cast removes address space '__user' of expression
->> arch/loongarch/kernel/signal.c:446:18: sparse: sparse: incorrect type in initializer (different address spaces) @@     expected struct lasx_context [noderef] __user *lasx_ctx @@     got struct lasx_context * @@
-   arch/loongarch/kernel/signal.c:446:18: sparse:     expected struct lasx_context [noderef] __user *lasx_ctx
-   arch/loongarch/kernel/signal.c:446:18: sparse:     got struct lasx_context *
-   arch/loongarch/kernel/signal.c:447:36: sparse: sparse: cast removes address space '__user' of expression
-   arch/loongarch/kernel/signal.c:447:36: sparse: sparse: incorrect type in initializer (different address spaces) @@     expected unsigned long long [noderef] [usertype] __user *regs @@     got unsigned long long [usertype] * @@
-   arch/loongarch/kernel/signal.c:447:36: sparse:     expected unsigned long long [noderef] [usertype] __user *regs
-   arch/loongarch/kernel/signal.c:447:36: sparse:     got unsigned long long [usertype] *
-   arch/loongarch/kernel/signal.c:484:53: sparse: sparse: incorrect type in initializer (different address spaces) @@     expected struct sctx_info [noderef] __user *info @@     got struct sctx_info *addr @@
-   arch/loongarch/kernel/signal.c:484:53: sparse:     expected struct sctx_info [noderef] __user *info
-   arch/loongarch/kernel/signal.c:484:53: sparse:     got struct sctx_info *addr
-   arch/loongarch/kernel/signal.c:486:64: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected struct sctx_info *info @@     got struct sctx_info [noderef] __user *info @@
-   arch/loongarch/kernel/signal.c:486:64: sparse:     expected struct sctx_info *info
-   arch/loongarch/kernel/signal.c:486:64: sparse:     got struct sctx_info [noderef] __user *info
-   arch/loongarch/kernel/signal.c:486:18: sparse: sparse: cast removes address space '__user' of expression
-   arch/loongarch/kernel/signal.c:486:18: sparse: sparse: incorrect type in initializer (different address spaces) @@     expected struct lasx_context [noderef] __user *lasx_ctx @@     got struct lasx_context * @@
-   arch/loongarch/kernel/signal.c:486:18: sparse:     expected struct lasx_context [noderef] __user *lasx_ctx
-   arch/loongarch/kernel/signal.c:486:18: sparse:     got struct lasx_context *
-   arch/loongarch/kernel/signal.c:487:36: sparse: sparse: cast removes address space '__user' of expression
-   arch/loongarch/kernel/signal.c:487:36: sparse: sparse: incorrect type in initializer (different address spaces) @@     expected unsigned long long [noderef] [usertype] __user *regs @@     got unsigned long long [usertype] * @@
-   arch/loongarch/kernel/signal.c:487:36: sparse:     expected unsigned long long [noderef] [usertype] __user *regs
-   arch/loongarch/kernel/signal.c:487:36: sparse:     got unsigned long long [usertype] *
-   arch/loongarch/kernel/signal.c:543:14: sparse: sparse: incorrect type in assignment (different address spaces) @@     expected struct sctx_info [noderef] __user *info @@     got struct sctx_info * @@
-   arch/loongarch/kernel/signal.c:543:14: sparse:     expected struct sctx_info [noderef] __user *info
-   arch/loongarch/kernel/signal.c:543:14: sparse:     got struct sctx_info *
-   arch/loongarch/kernel/signal.c:570:42: sparse: sparse: incorrect type in assignment (different address spaces) @@     expected struct sctx_info *addr @@     got struct sctx_info [noderef] __user *info @@
-   arch/loongarch/kernel/signal.c:570:42: sparse:     expected struct sctx_info *addr
-   arch/loongarch/kernel/signal.c:570:42: sparse:     got struct sctx_info [noderef] __user *info
-   arch/loongarch/kernel/signal.c:577:42: sparse: sparse: incorrect type in assignment (different address spaces) @@     expected struct sctx_info *addr @@     got struct sctx_info [noderef] __user *info @@
-   arch/loongarch/kernel/signal.c:577:42: sparse:     expected struct sctx_info *addr
-   arch/loongarch/kernel/signal.c:577:42: sparse:     got struct sctx_info [noderef] __user *info
-   arch/loongarch/kernel/signal.c:584:43: sparse: sparse: incorrect type in assignment (different address spaces) @@     expected struct sctx_info *addr @@     got struct sctx_info [noderef] __user *info @@
-   arch/loongarch/kernel/signal.c:584:43: sparse:     expected struct sctx_info *addr
-   arch/loongarch/kernel/signal.c:584:43: sparse:     got struct sctx_info [noderef] __user *info
-   arch/loongarch/kernel/signal.c:591:46: sparse: sparse: cast removes address space '__user' of expression
-   arch/loongarch/kernel/signal.c:591:22: sparse: sparse: incorrect type in assignment (different address spaces) @@     expected struct sctx_info [noderef] __user *info @@     got struct sctx_info * @@
-   arch/loongarch/kernel/signal.c:591:22: sparse:     expected struct sctx_info [noderef] __user *info
-   arch/loongarch/kernel/signal.c:591:22: sparse:     got struct sctx_info *
-   arch/loongarch/kernel/signal.c:737:17: sparse: sparse: symbol 'sys_rt_sigreturn' was not declared. Should it be static?
-   arch/loongarch/kernel/signal.c: note: in included file:
-   arch/loongarch/include/asm/fpu.h:72:17: sparse: sparse: undefined identifier '__builtin_loongarch_csrrd_w'
-   arch/loongarch/include/asm/fpu.h:72:17: sparse: sparse: cast from unknown type
-   arch/loongarch/include/asm/fpu.h:72:17: sparse: sparse: cast from unknown type
-   arch/loongarch/include/asm/fpu.h:81:17: sparse: sparse: undefined identifier '__builtin_loongarch_csrrd_w'
-   arch/loongarch/include/asm/fpu.h:81:17: sparse: sparse: cast from unknown type
-   arch/loongarch/include/asm/fpu.h:72:17: sparse: sparse: cast from unknown type
-   arch/loongarch/include/asm/fpu.h:81:17: sparse: sparse: cast from unknown type
-   arch/loongarch/include/asm/fpu.h:72:17: sparse: sparse: cast from unknown type
-   arch/loongarch/include/asm/fpu.h:72:17: sparse: sparse: cast from unknown type
-   arch/loongarch/include/asm/fpu.h:81:17: sparse: sparse: cast from unknown type
-   arch/loongarch/kernel/signal.c: note: in included file (through arch/loongarch/include/asm/cpu-info.h, arch/loongarch/include/asm/processor.h, ...):
-   arch/loongarch/include/asm/loongarch.h:1281:1: sparse: sparse: undefined identifier '__builtin_loongarch_csrrd_w'
-   arch/loongarch/include/asm/loongarch.h:1281:1: sparse: sparse: cast from unknown type
-   arch/loongarch/include/asm/loongarch.h:1281:1: sparse: sparse: undefined identifier '__builtin_loongarch_csrwr_w'
-   arch/loongarch/include/asm/loongarch.h:1281:1: sparse: sparse: cast from unknown type
-   arch/loongarch/kernel/signal.c: note: in included file:
-   arch/loongarch/include/asm/fpu.h:81:17: sparse: sparse: cast from unknown type
-   arch/loongarch/kernel/signal.c: note: in included file (through arch/loongarch/include/asm/cpu-info.h, arch/loongarch/include/asm/processor.h, ...):
-   arch/loongarch/include/asm/loongarch.h:1281:1: sparse: sparse: cast from unknown type
-   arch/loongarch/include/asm/loongarch.h:1281:1: sparse: sparse: cast from unknown type
+Maybe we should consider overriding mkold_ptes for arm64?
 
-vim +370 arch/loongarch/kernel/signal.c
+Thanks,
+Lance
 
-   330	
-   331	static int protected_restore_fpu_context(struct extctx_layout *extctx)
-   332	{
-   333		int err = 0, sig = 0, tmp __maybe_unused;
-   334		struct sctx_info __user *info = extctx->fpu.addr;
-   335		struct fpu_context __user *fpu_ctx = (struct fpu_context *)get_ctx_through_ctxinfo(info);
- > 336		uint64_t __user *regs	= (uint64_t *)&fpu_ctx->regs;
-   337		uint64_t __user *fcc	= &fpu_ctx->fcc;
-   338		uint32_t __user *fcsr	= &fpu_ctx->fcsr;
-   339	
-   340		err = sig = fcsr_pending(fcsr);
-   341		if (err < 0)
-   342			return err;
-   343	
-   344		while (1) {
-   345			lock_fpu_owner();
-   346			if (is_fpu_owner())
-   347				err = restore_hw_fpu_context(fpu_ctx);
-   348			else
-   349				err = copy_fpu_from_sigcontext(fpu_ctx);
-   350			unlock_fpu_owner();
-   351	
-   352			if (likely(!err))
-   353				break;
-   354			/* Touch the FPU context and try again */
-   355			err = __get_user(tmp, &regs[0]) |
-   356				__get_user(tmp, &regs[31]) |
-   357				__get_user(tmp, fcc) |
-   358				__get_user(tmp, fcsr);
-   359			if (err)
-   360				break;	/* really bad sigcontext */
-   361		}
-   362	
-   363		return err ?: sig;
-   364	}
-   365	
-   366	static int protected_save_lsx_context(struct extctx_layout *extctx)
-   367	{
-   368		int err = 0;
-   369		struct sctx_info __user *info = extctx->lsx.addr;
- > 370		struct lsx_context __user *lsx_ctx = (struct lsx_context *)get_ctx_through_ctxinfo(info);
-   371		uint64_t __user *regs	= (uint64_t *)&lsx_ctx->regs;
-   372		uint64_t __user *fcc	= &lsx_ctx->fcc;
-   373		uint32_t __user *fcsr	= &lsx_ctx->fcsr;
-   374	
-   375		while (1) {
-   376			lock_fpu_owner();
-   377			if (is_lsx_enabled())
-   378				err = save_hw_lsx_context(lsx_ctx);
-   379			else {
-   380				if (is_fpu_owner())
-   381					save_fp(current);
-   382				err = copy_lsx_to_sigcontext(lsx_ctx);
-   383			}
-   384			unlock_fpu_owner();
-   385	
-   386			err |= __put_user(LSX_CTX_MAGIC, &info->magic);
-   387			err |= __put_user(extctx->lsx.size, &info->size);
-   388	
-   389			if (likely(!err))
-   390				break;
-   391			/* Touch the LSX context and try again */
-   392			err = __put_user(0, &regs[0]) |
-   393				__put_user(0, &regs[32*2-1]) |
-   394				__put_user(0, fcc) |
-   395				__put_user(0, fcsr);
-   396			if (err)
-   397				return err;	/* really bad sigcontext */
-   398		}
-   399	
-   400		return err;
-   401	}
-   402	
-   403	static int protected_restore_lsx_context(struct extctx_layout *extctx)
-   404	{
-   405		int err = 0, sig = 0, tmp __maybe_unused;
-   406		struct sctx_info __user *info = extctx->lsx.addr;
-   407		struct lsx_context __user *lsx_ctx = (struct lsx_context *)get_ctx_through_ctxinfo(info);
- > 408		uint64_t __user *regs	= (uint64_t *)&lsx_ctx->regs;
-   409		uint64_t __user *fcc	= &lsx_ctx->fcc;
-   410		uint32_t __user *fcsr	= &lsx_ctx->fcsr;
-   411	
-   412		err = sig = fcsr_pending(fcsr);
-   413		if (err < 0)
-   414			return err;
-   415	
-   416		while (1) {
-   417			lock_fpu_owner();
-   418			if (is_lsx_enabled())
-   419				err = restore_hw_lsx_context(lsx_ctx);
-   420			else {
-   421				err = copy_lsx_from_sigcontext(lsx_ctx);
-   422				if (is_fpu_owner())
-   423					restore_fp(current);
-   424			}
-   425			unlock_fpu_owner();
-   426	
-   427			if (likely(!err))
-   428				break;
-   429			/* Touch the LSX context and try again */
-   430			err = __get_user(tmp, &regs[0]) |
-   431				__get_user(tmp, &regs[32*2-1]) |
-   432				__get_user(tmp, fcc) |
-   433				__get_user(tmp, fcsr);
-   434			if (err)
-   435				break;	/* really bad sigcontext */
-   436		}
-   437	
-   438		return err ?: sig;
-   439	}
-   440	
-   441	static int protected_save_lasx_context(struct extctx_layout *extctx)
-   442	{
-   443		int err = 0;
-   444		struct sctx_info __user *info = extctx->lasx.addr;
-   445		struct lasx_context __user *lasx_ctx =
- > 446			(struct lasx_context *)get_ctx_through_ctxinfo(info);
-   447		uint64_t __user *regs	= (uint64_t *)&lasx_ctx->regs;
-   448		uint64_t __user *fcc	= &lasx_ctx->fcc;
-   449		uint32_t __user *fcsr	= &lasx_ctx->fcsr;
-   450	
-   451		while (1) {
-   452			lock_fpu_owner();
-   453			if (is_lasx_enabled())
-   454				err = save_hw_lasx_context(lasx_ctx);
-   455			else {
-   456				if (is_lsx_enabled())
-   457					save_lsx(current);
-   458				else if (is_fpu_owner())
-   459					save_fp(current);
-   460				err = copy_lasx_to_sigcontext(lasx_ctx);
-   461			}
-   462			unlock_fpu_owner();
-   463	
-   464			err |= __put_user(LASX_CTX_MAGIC, &info->magic);
-   465			err |= __put_user(extctx->lasx.size, &info->size);
-   466	
-   467			if (likely(!err))
-   468				break;
-   469			/* Touch the LASX context and try again */
-   470			err = __put_user(0, &regs[0]) |
-   471				__put_user(0, &regs[32*4-1]) |
-   472				__put_user(0, fcc) |
-   473				__put_user(0, fcsr);
-   474			if (err)
-   475				return err;	/* really bad sigcontext */
-   476		}
-   477	
-   478		return err;
-   479	}
-   480	
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+> +               if (--nr =3D=3D 0)
+> +                       break;
+> +               ptep++;
+> +               addr +=3D PAGE_SIZE;
+> +       }
+> +}
+> +#endif
+> +
+>  #ifndef __HAVE_ARCH_PMDP_TEST_AND_CLEAR_YOUNG
+>  #if defined(CONFIG_TRANSPARENT_HUGEPAGE) || defined(CONFIG_ARCH_HAS_NONL=
+EAF_PMD_YOUNG)
+>  static inline int pmdp_test_and_clear_young(struct vm_area_struct *vma,
+> diff --git a/mm/internal.h b/mm/internal.h
+> index eadb79c3a357..efee8e4cd2af 100644
+> --- a/mm/internal.h
+> +++ b/mm/internal.h
+> @@ -130,6 +130,8 @@ static inline pte_t __pte_batch_clear_ignored(pte_t p=
+te, fpb_t flags)
+>   * @flags: Flags to modify the PTE batch semantics.
+>   * @any_writable: Optional pointer to indicate whether any entry except =
+the
+>   *               first one is writable.
+> + * @any_young: Optional pointer to indicate whether any entry except the
+> + *               first one is young.
+>   *
+>   * Detect a PTE batch: consecutive (present) PTEs that map consecutive
+>   * pages of the same large folio.
+> @@ -145,16 +147,18 @@ static inline pte_t __pte_batch_clear_ignored(pte_t=
+ pte, fpb_t flags)
+>   */
+>  static inline int folio_pte_batch(struct folio *folio, unsigned long add=
+r,
+>                 pte_t *start_ptep, pte_t pte, int max_nr, fpb_t flags,
+> -               bool *any_writable)
+> +               bool *any_writable, bool *any_young)
+>  {
+>         unsigned long folio_end_pfn =3D folio_pfn(folio) + folio_nr_pages=
+(folio);
+>         const pte_t *end_ptep =3D start_ptep + max_nr;
+>         pte_t expected_pte, *ptep;
+> -       bool writable;
+> +       bool writable, young;
+>         int nr;
+>
+>         if (any_writable)
+>                 *any_writable =3D false;
+> +       if (any_young)
+> +               *any_young =3D false;
+>
+>         VM_WARN_ON_FOLIO(!pte_present(pte), folio);
+>         VM_WARN_ON_FOLIO(!folio_test_large(folio) || max_nr < 1, folio);
+> @@ -168,6 +172,8 @@ static inline int folio_pte_batch(struct folio *folio=
+, unsigned long addr,
+>                 pte =3D ptep_get(ptep);
+>                 if (any_writable)
+>                         writable =3D !!pte_write(pte);
+> +               if (any_young)
+> +                       young =3D !!pte_young(pte);
+>                 pte =3D __pte_batch_clear_ignored(pte, flags);
+>
+>                 if (!pte_same(pte, expected_pte))
+> @@ -183,6 +189,8 @@ static inline int folio_pte_batch(struct folio *folio=
+, unsigned long addr,
+>
+>                 if (any_writable)
+>                         *any_writable |=3D writable;
+> +               if (any_young)
+> +                       *any_young |=3D young;
+>
+>                 nr =3D pte_batch_hint(ptep, pte);
+>                 expected_pte =3D pte_advance_pfn(expected_pte, nr);
+> diff --git a/mm/madvise.c b/mm/madvise.c
+> index 070bedb4996e..bd00b83e7c50 100644
+> --- a/mm/madvise.c
+> +++ b/mm/madvise.c
+> @@ -336,6 +336,7 @@ static int madvise_cold_or_pageout_pte_range(pmd_t *p=
+md,
+>         LIST_HEAD(folio_list);
+>         bool pageout_anon_only_filter;
+>         unsigned int batch_count =3D 0;
+> +       int nr;
+>
+>         if (fatal_signal_pending(current))
+>                 return -EINTR;
+> @@ -423,7 +424,8 @@ static int madvise_cold_or_pageout_pte_range(pmd_t *p=
+md,
+>                 return 0;
+>         flush_tlb_batched_pending(mm);
+>         arch_enter_lazy_mmu_mode();
+> -       for (; addr < end; pte++, addr +=3D PAGE_SIZE) {
+> +       for (; addr < end; pte +=3D nr, addr +=3D nr * PAGE_SIZE) {
+> +               nr =3D 1;
+>                 ptent =3D ptep_get(pte);
+>
+>                 if (++batch_count =3D=3D SWAP_CLUSTER_MAX) {
+> @@ -447,55 +449,67 @@ static int madvise_cold_or_pageout_pte_range(pmd_t =
+*pmd,
+>                         continue;
+>
+>                 /*
+> -                * Creating a THP page is expensive so split it only if w=
+e
+> -                * are sure it's worth. Split it if we are only owner.
+> +                * If we encounter a large folio, only split it if it is =
+not
+> +                * fully mapped within the range we are operating on. Oth=
+erwise
+> +                * leave it as is so that it can be swapped out whole. If=
+ we
+> +                * fail to split a folio, leave it in place and advance t=
+o the
+> +                * next pte in the range.
+>                  */
+>                 if (folio_test_large(folio)) {
+> -                       int err;
+> -
+> -                       if (folio_likely_mapped_shared(folio))
+> -                               break;
+> -                       if (pageout_anon_only_filter && !folio_test_anon(=
+folio))
+> -                               break;
+> -                       if (!folio_trylock(folio))
+> -                               break;
+> -                       folio_get(folio);
+> -                       arch_leave_lazy_mmu_mode();
+> -                       pte_unmap_unlock(start_pte, ptl);
+> -                       start_pte =3D NULL;
+> -                       err =3D split_folio(folio);
+> -                       folio_unlock(folio);
+> -                       folio_put(folio);
+> -                       if (err)
+> -                               break;
+> -                       start_pte =3D pte =3D
+> -                               pte_offset_map_lock(mm, pmd, addr, &ptl);
+> -                       if (!start_pte)
+> -                               break;
+> -                       arch_enter_lazy_mmu_mode();
+> -                       pte--;
+> -                       addr -=3D PAGE_SIZE;
+> -                       continue;
+> +                       const fpb_t fpb_flags =3D FPB_IGNORE_DIRTY |
+> +                                               FPB_IGNORE_SOFT_DIRTY;
+> +                       int max_nr =3D (end - addr) / PAGE_SIZE;
+> +                       bool any_young;
+> +
+> +                       nr =3D folio_pte_batch(folio, addr, pte, ptent, m=
+ax_nr,
+> +                                            fpb_flags, NULL, &any_young)=
+;
+> +                       if (any_young)
+> +                               ptent =3D pte_mkyoung(ptent);
+> +
+> +                       if (nr < folio_nr_pages(folio)) {
+> +                               int err;
+> +
+> +                               if (folio_likely_mapped_shared(folio))
+> +                                       continue;
+> +                               if (pageout_anon_only_filter && !folio_te=
+st_anon(folio))
+> +                                       continue;
+> +                               if (!folio_trylock(folio))
+> +                                       continue;
+> +                               folio_get(folio);
+> +                               arch_leave_lazy_mmu_mode();
+> +                               pte_unmap_unlock(start_pte, ptl);
+> +                               start_pte =3D NULL;
+> +                               err =3D split_folio(folio);
+> +                               folio_unlock(folio);
+> +                               folio_put(folio);
+> +                               if (err)
+> +                                       continue;
+> +                               start_pte =3D pte =3D
+> +                                       pte_offset_map_lock(mm, pmd, addr=
+, &ptl);
+> +                               if (!start_pte)
+> +                                       break;
+> +                               arch_enter_lazy_mmu_mode();
+> +                               nr =3D 0;
+> +                               continue;
+> +                       }
+>                 }
+>
+>                 /*
+>                  * Do not interfere with other mappings of this folio and
+> -                * non-LRU folio.
+> +                * non-LRU folio. If we have a large folio at this point,=
+ we
+> +                * know it is fully mapped so if its mapcount is the same=
+ as its
+> +                * number of pages, it must be exclusive.
+>                  */
+> -               if (!folio_test_lru(folio) || folio_mapcount(folio) !=3D =
+1)
+> +               if (!folio_test_lru(folio) ||
+> +                   folio_mapcount(folio) !=3D folio_nr_pages(folio))
+>                         continue;
+>
+>                 if (pageout_anon_only_filter && !folio_test_anon(folio))
+>                         continue;
+>
+> -               VM_BUG_ON_FOLIO(folio_test_large(folio), folio);
+> -
+>                 if (!pageout && pte_young(ptent)) {
+> -                       ptent =3D ptep_get_and_clear_full(mm, addr, pte,
+> -                                                       tlb->fullmm);
+> -                       ptent =3D pte_mkold(ptent);
+> -                       set_pte_at(mm, addr, pte, ptent);
+> -                       tlb_remove_tlb_entry(tlb, pte, addr);
+> +                       mkold_ptes(vma, addr, pte, nr);
+> +                       tlb_remove_tlb_entries(tlb, pte, nr, addr);
+>                 }
+>
+>                 /*
+> diff --git a/mm/memory.c b/mm/memory.c
+> index 9d844582ba38..b5b48f4cf2af 100644
+> --- a/mm/memory.c
+> +++ b/mm/memory.c
+> @@ -989,7 +989,7 @@ copy_present_ptes(struct vm_area_struct *dst_vma, str=
+uct vm_area_struct *src_vma
+>                         flags |=3D FPB_IGNORE_SOFT_DIRTY;
+>
+>                 nr =3D folio_pte_batch(folio, addr, src_pte, pte, max_nr,=
+ flags,
+> -                                    &any_writable);
+> +                                    &any_writable, NULL);
+>                 folio_ref_add(folio, nr);
+>                 if (folio_test_anon(folio)) {
+>                         if (unlikely(folio_try_dup_anon_rmap_ptes(folio, =
+page,
+> @@ -1553,7 +1553,7 @@ static inline int zap_present_ptes(struct mmu_gathe=
+r *tlb,
+>          */
+>         if (unlikely(folio_test_large(folio) && max_nr !=3D 1)) {
+>                 nr =3D folio_pte_batch(folio, addr, pte, ptent, max_nr, f=
+pb_flags,
+> -                                    NULL);
+> +                                    NULL, NULL);
+>
+>                 zap_present_folio_ptes(tlb, vma, folio, page, pte, ptent,=
+ nr,
+>                                        addr, details, rss, force_flush,
+> --
+> 2.25.1
+>
 
