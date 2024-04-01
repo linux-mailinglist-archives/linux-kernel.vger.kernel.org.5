@@ -1,139 +1,166 @@
-Return-Path: <linux-kernel+bounces-126411-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-126412-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7DD1D8936ED
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 04:28:19 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id B0B758936F3
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 04:28:47 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 333AC28121D
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 02:28:18 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 52209B21183
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 02:28:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 363EB1FAA;
-	Mon,  1 Apr 2024 02:28:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C38374A3E;
+	Mon,  1 Apr 2024 02:28:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b="NGJC7Tvj"
-Received: from mail-pf1-f171.google.com (mail-pf1-f171.google.com [209.85.210.171])
+	dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b="P9LU1I5j"
+Received: from mail-pg1-f174.google.com (mail-pg1-f174.google.com [209.85.215.174])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 00914137E
-	for <linux-kernel@vger.kernel.org>; Mon,  1 Apr 2024 02:28:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 71F7E138A
+	for <linux-kernel@vger.kernel.org>; Mon,  1 Apr 2024 02:28:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711938492; cv=none; b=D2aCcVGKPh/U+mNvVfzoKiVsTbXnNdfTJTCnSmftafX1pEK4Ah939TkLPnMarCYJR6RBsO1ahsbwFEF2lW7o5FpLmnN0JIAkEdw5qNIvVwN0Rtlp0vJPsc+R2BoFImMPrNz8BAj8XeI97dpt5240a7b6JmpV8yeQbyeOVji+h6w=
+	t=1711938511; cv=none; b=VPpf0s+QoM3nJ/kj01JOr5wrobxTXbNcRmbbHCkuT78IF8BWxqqTDtqDr+OblyWNNGXlkaZNjYuXrLHSxlaIGchkd5iP6tVXrh5HHFDP9bjCTmN+a1RaJEISCb1NQpLsw9mePMpNyDpuM88y3wusXIsv+nzza1AP8VfQdeprjHA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711938492; c=relaxed/simple;
-	bh=LfhO/ttDrHhRYeW84ygSeWSEB8losPLPFBPFAJz+dqo=;
-	h=Content-Type:From:Mime-Version:Subject:Date:Message-Id:References:
-	 Cc:In-Reply-To:To; b=fjOPQxefTQH9lyMPVqIEDiWMDfjPe7wPCP2gCIKuTVUc6M7i73RonXX42uVEZIh/ws0wj0CKIXSDOMfw6VCBxSOmjdlgQ922S7t9S1IDERV3zW2/CK3bO+LmolvvlHBbJL+kqNTf3u7rGs+YpZ839GKWTB//QNQfm3wutsBfFT4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=joelfernandes.org; spf=pass smtp.mailfrom=joelfernandes.org; dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b=NGJC7Tvj; arc=none smtp.client-ip=209.85.210.171
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=joelfernandes.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=joelfernandes.org
-Received: by mail-pf1-f171.google.com with SMTP id d2e1a72fcca58-6eafbcc5392so927680b3a.1
-        for <linux-kernel@vger.kernel.org>; Sun, 31 Mar 2024 19:28:10 -0700 (PDT)
+	s=arc-20240116; t=1711938511; c=relaxed/simple;
+	bh=lKYTnWKj8aFybgNfcmvkcPZSxsoRl/ozkQQU3rEQW/s=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=Xznt+sXoiEs5xVdFGUUUkAPA089fmBKUsWAybdva2yStRkf0l5u6wZWKUGBF1sMPjYbwCnsr+hhsDarTTStlviEt7+jlUK/VhWo5GpqiU8uG1KWRLSGaetB3j0U+/SJle/CW2Yq8WvWwwd2LqRPivMjVycR75dtO5VnGKHsK6kc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com; spf=pass smtp.mailfrom=bytedance.com; dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b=P9LU1I5j; arc=none smtp.client-ip=209.85.215.174
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bytedance.com
+Received: by mail-pg1-f174.google.com with SMTP id 41be03b00d2f7-5bdbe2de25fso2682681a12.3
+        for <linux-kernel@vger.kernel.org>; Sun, 31 Mar 2024 19:28:29 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google; t=1711938490; x=1712543290; darn=vger.kernel.org;
-        h=to:in-reply-to:cc:references:message-id:date:subject:mime-version
-         :from:content-transfer-encoding:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=LfhO/ttDrHhRYeW84ygSeWSEB8losPLPFBPFAJz+dqo=;
-        b=NGJC7TvjkbbUANZ68vwWACYvXSzt19xDrG1EtWchEK+0EY8D3h3IaJH0C/KTiu5W4l
-         ihqf4CHw49NrT103cuDil55C/J8q3Oxb/npu4Hf82NIAKE2OWCqjPSHb7bDo24Xw+CT/
-         JC0Tj5+IAusX1ZHMkYkGr1+pHmo/XvO/rKvZ4=
+        d=bytedance.com; s=google; t=1711938509; x=1712543309; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=IXMeLoImPZ33R4zJ3SWpn56WCPhsxXC6Los6ajh1i8M=;
+        b=P9LU1I5jukjBMKO1LqMu6jlbfGHWLyHQxqQEbnkNnlfzzWygJn8dddUXQxUiTYGYJk
+         pIU80nb/2WZVl3/N78k9aRjLZDKKH6J8167B9QXy68cqQHfQubEORLoFjlDhJVM7VM3B
+         6Na+rY+eTZa0JSAL6z3h7R/HVgj9AeTdTOE8/TY6IYzAzKStiN8pUlJs4+N6Qa/6A3ya
+         7EDlKJEIHYKWInZL5oH0u5OH7XiI1OuKJWLwWhynNDiDm4rNYpwWeBGxtyJngpicWEL+
+         88rxTY76vW1XtH7NDjlmMxvBnSri98lhy/GpFpqlgYW5itg2Oxs+cqcpgtblJ2t/vYuY
+         YDog==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711938490; x=1712543290;
-        h=to:in-reply-to:cc:references:message-id:date:subject:mime-version
-         :from:content-transfer-encoding:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20230601; t=1711938509; x=1712543309;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=LfhO/ttDrHhRYeW84ygSeWSEB8losPLPFBPFAJz+dqo=;
-        b=JjmbZR8TFCC3eVRJlOZtg9bFW14AM3ha6AUiQ7zKNaFHi8mBxA5F8cTkkw5O62YFxK
-         nDuUM7XxtnoIQsqy+6xp4D5VJ+0FG5K9uikI512ZHC7jAAyHO5Noq/6A47fdAB+nQcz3
-         IKloLfbTW5re39GLhY4y98Z95Dkypmtp+bKmutfYvJFcJc2z5CTsaGs3QXjDP+E08CLb
-         yNbqevMoiGRbrG52FbeSJVO/FjwnK/sFdAzHYZcMTdv9rjHWHoo/njQKtM3wgd5Cw37s
-         H+sty3X17uZ/i0WIb368d602PXy/1NK4Wy0zzYX8uqVodTH5//qlUIS4PmsnZRJzVW0c
-         mdbA==
-X-Gm-Message-State: AOJu0Yz52tzabmQeFfrKNtamNt/VveXrRwgWykNCplHkdo1zmHKDTXk1
-	lok4D1x5PS+zJq5Lj7JK2dFuXrVgl1vihbAyZaQqLJrUlP2Bk/wKx5dAFYC01Uo=
-X-Google-Smtp-Source: AGHT+IEo7v0nQkkhmt17kaM/JYiwK7RoHw0U7Q9CpORk17x7Qn038TFiQedTaFsGabLvfukwIBvJPA==
-X-Received: by 2002:a05:6a20:ea8:b0:1a3:a092:5746 with SMTP id fk40-20020a056a200ea800b001a3a0925746mr5387679pzb.50.1711938489912;
-        Sun, 31 Mar 2024 19:28:09 -0700 (PDT)
-Received: from smtpclient.apple ([103.98.78.155])
-        by smtp.gmail.com with ESMTPSA id bi8-20020a170902bf0800b001e0b2851db7sm7592434plb.105.2024.03.31.19.28.08
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 31 Mar 2024 19:28:09 -0700 (PDT)
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-From: Joel Fernandes <joel@joelfernandes.org>
+        bh=IXMeLoImPZ33R4zJ3SWpn56WCPhsxXC6Los6ajh1i8M=;
+        b=q5rbdTLP3knvGr/JIhtZe2YEmxEhlr3r36N1GuHN5pIrDjgpa84kf5RoSMOy2OZHcA
+         fThdCHgD/kw668ySHvG1UiTRbF/QUivsoH09FJgcAqa2GM/TTTNqpf+pMnJTzUer2cJ8
+         mvy3Pys9NQYE6UjC/2gaKyofunetQqsU0mRAXehuzhmCfaWqMZQFcCUVwz7Y5YPYyFXE
+         Q0zuN61X1xJ1+3ORdb5r+qCwZZjwfsyQsmoyA8IjG5tipDiE7umpaQ94RO5R0xvcvFMe
+         02K0KJdEiW++obc244kG5bMPmhiOojbdu3bxFIKDkeLnGq21+JW+hqaKbrdLEkXmlf6N
+         fTIg==
+X-Forwarded-Encrypted: i=1; AJvYcCXOJjgEI1jn43b6wraT3HYZZDxRIfgTUNmyoQ487Qnbhw3pJKQiGdXkQ4Mf9vugWwnlfhS3+G5okxsgYcpdcG9E4wyB5aoLjLKKhjwS
+X-Gm-Message-State: AOJu0YynsEiqZHM+PXtCqhRlI/6dKJ3nSO/AlxWUxPnEr7vRPdZXUDLv
+	lDOKYheUUd2M5OyvC53og1dKosjviripfaQvKpuc1YPuPkSp/SxsZI7zNJux/rWJwm7vyrzzBJp
+	bRu1jyBWSUMxCYFFoG1tF6SWXPqFHod0DfxQKwQ==
+X-Google-Smtp-Source: AGHT+IGzGQQaneP5xALvw57pZKTHGiCwen67uykrwqg6rWGJrnO4HP/K70Vm6Xhliw5Ne2x0YoSn10U7kH5Lflzm9D8=
+X-Received: by 2002:a05:6a20:550a:b0:1a3:6a74:2e6a with SMTP id
+ ko10-20020a056a20550a00b001a36a742e6amr8586402pzb.14.1711938508724; Sun, 31
+ Mar 2024 19:28:28 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0 (1.0)
-Subject: Re: [PATCH 02/10] rcu: Move rcu_preempt_depth_set() to rcupdate.h
-Date: Mon, 1 Apr 2024 07:57:56 +0530
-Message-Id: <B89CA77D-2E7C-4AE7-B4AA-06BF681A983A@joelfernandes.org>
-References: <CAJhGHyDjoQ3TrApksYJ5o1ooU4s8rzys2UnfF6EFzGwkaSVaKA@mail.gmail.com>
-Cc: linux-kernel@vger.kernel.org, rcu@vger.kernel.org, x86@kernel.org,
- Lai Jiangshan <jiangshan.ljs@antgroup.com>,
- "Paul E. McKenney" <paulmck@kernel.org>,
- Peter Zijlstra <peterz@infradead.org>,
- Frederic Weisbecker <frederic@kernel.org>,
- Neeraj Upadhyay <quic_neeraju@quicinc.com>,
- Josh Triplett <josh@joshtriplett.org>, Boqun Feng <boqun.feng@gmail.com>,
- Steven Rostedt <rostedt@goodmis.org>,
- Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
- Zqiang <qiang.zhang1211@gmail.com>
-In-Reply-To: <CAJhGHyDjoQ3TrApksYJ5o1ooU4s8rzys2UnfF6EFzGwkaSVaKA@mail.gmail.com>
-To: Lai Jiangshan <jiangshanlai@gmail.com>
-X-Mailer: iPhone Mail (21D61)
+MIME-Version: 1.0
+References: <20240311093526.1010158-1-dongmenglong.8@bytedance.com>
+ <20240311093526.1010158-2-dongmenglong.8@bytedance.com> <CAADnVQKQPS5NcvEouH4JqZ2fKgQAC+LtcwhX9iXYoiEkF_M94Q@mail.gmail.com>
+ <CALz3k9i5G5wWi+rtvHPwVLOUAXVMCiU_8QUZs87TEYgR_0wpPA@mail.gmail.com>
+ <CAADnVQJ_ZCzMmT1aBsNXEBFfYNSVBdBXmLocjR0PPEWtYQrQFw@mail.gmail.com>
+ <CALz3k9icPePb0c4FE67q=u1U0hrePorN9gDpQrKTR_sXbLMfDA@mail.gmail.com>
+ <CAADnVQLwgw8bQ7OHBbqLhcPJ2QpxiGw3fkMFur+2cjZpM_78oA@mail.gmail.com>
+ <CALz3k9g9k7fEwdTZVLhrmGoXp8CE47Q+83r-AZDXrzzuR+CjVA@mail.gmail.com>
+ <CAADnVQLHpi3J6cBJ0QBgCQ2aY6fWGnVvNGdfi3W-jmoa9d1eVQ@mail.gmail.com>
+ <CALz3k9g-U8ih=ycJPRbyU9x_9cp00fNkU3PGQ6jP0WJ+=uKmqQ@mail.gmail.com>
+ <CALz3k9jG5Jrqw=BGjt05yMkEF-1u909GbBYrV-02W0dQtm6KQQ@mail.gmail.com>
+ <20240328111330.194dcbe5@gandalf.local.home> <CALz3k9idLX10+Gh18xWepwtgvp4VZ3zQfY4aoNXn0gCh8Fs_fA@mail.gmail.com>
+ <20240330153722.65104301@gandalf.local.home>
+In-Reply-To: <20240330153722.65104301@gandalf.local.home>
+From: =?UTF-8?B?5qKm6b6Z6JGj?= <dongmenglong.8@bytedance.com>
+Date: Mon, 1 Apr 2024 10:28:17 +0800
+Message-ID: <CALz3k9j_RGqSMdN+GvbHEjRqMWYe4R9VNZRANG7jbfL_jVpoVg@mail.gmail.com>
+Subject: Re: [External] Re: [PATCH bpf-next v2 1/9] bpf: tracing: add support
+ to record and check the accessed args
+To: Steven Rostedt <rostedt@goodmis.org>
+Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>, Jiri Olsa <jolsa@kernel.org>, 
+	Andrii Nakryiko <andrii@kernel.org>, Alexei Starovoitov <ast@kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, Martin KaFai Lau <martin.lau@linux.dev>, Eddy Z <eddyz87@gmail.com>, 
+	Song Liu <song@kernel.org>, Yonghong Song <yonghong.song@linux.dev>, 
+	John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>, 
+	Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, 
+	Alexander Gordeev <agordeev@linux.ibm.com>, Christian Borntraeger <borntraeger@linux.ibm.com>, 
+	Sven Schnelle <svens@linux.ibm.com>, "David S. Miller" <davem@davemloft.net>, 
+	David Ahern <dsahern@kernel.org>, Dave Hansen <dave.hansen@linux.intel.com>, 
+	X86 ML <x86@kernel.org>, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, 
+	Quentin Monnet <quentin@isovalent.com>, bpf <bpf@vger.kernel.org>, 
+	linux-arm-kernel <linux-arm-kernel@lists.infradead.org>, LKML <linux-kernel@vger.kernel.org>, 
+	linux-riscv <linux-riscv@lists.infradead.org>, linux-s390 <linux-s390@vger.kernel.org>, 
+	Network Development <netdev@vger.kernel.org>, linux-trace-kernel@vger.kernel.org, 
+	"open list:KERNEL SELFTEST FRAMEWORK" <linux-kselftest@vger.kernel.org>, linux-stm32@st-md-mailman.stormreply.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-
-
-> On Mar 31, 2024, at 9:46=E2=80=AFPM, Lai Jiangshan <jiangshanlai@gmail.com=
+On Sun, Mar 31, 2024 at 3:34=E2=80=AFAM Steven Rostedt <rostedt@goodmis.org=
 > wrote:
->=20
-> =EF=BB=BFOn Sun, Mar 31, 2024 at 7:10=E2=80=AFPM Joel Fernandes <joel@joel=
-fernandes.org> wrote:
->>=20
->>=20
->>=20
->>>> On Mar 28, 2024, at 1:20=E2=80=AFPM, Lai Jiangshan <jiangshanlai@gmail.=
-com> wrote:
->>>=20
->>> =EF=BB=BFFrom: Lai Jiangshan <jiangshan.ljs@antgroup.com>
->>>=20
->>> Prepare for arch-specific-defined rcu_preempt_depth_set().
->>>=20
->>> No functionality change intended, but it has to be defined as a macro
->>> as rcupdate.h is a very low level header included from areas that don't
->>> even know about the task struct "current".
->>=20
->> Sorry I did not follow changelog. If some rcupdate.h includers do not kno=
-w
->> about task_struct, how does adding a macro that uses current help?
->>=20
->=20
-> Hello
->=20
-> This is how macro works and it expands blindly based on tokens on the
-> usage-sites.
->=20
-> And rcu_preempt_depth() & rcu_preempt_depth_set() are not universally
-> used wrappers, the user can simply also include linux/sched.h to make
-> they work.
+>
+> On Sat, 30 Mar 2024 11:18:29 +0800
+> =E6=A2=A6=E9=BE=99=E8=91=A3 <dongmenglong.8@bytedance.com> wrote:
+>
+> > > If you really want to have thousands of functions, why not just regis=
+ter it
+> > > with ftrace itself. It will give you the arguments via the ftrace_reg=
+s
+> > > structure. Can't you just register a program as the callback?
+> > >
+> >
+> > Ennn...I don't understand. The main purpose for
+> > me to use TRACING is:
+> >
+> > 1. we can directly access the memory, which is more
+> >    efficient.
+>
+> I'm not sure what you mean by the above. Access what memory?
+>
 
-Oh I see, so by hiding it in a macro, the code remains unexpanded. That make=
-s sense..
+We need to use the helper of bpf_probe_read_kernel
+when we read "skb->sk" in kprobe, and the "skb" is the
+1st arg in ip_rcv(). And we can directly read "skb->sk"
+in tracing, which is more efficient. Isn't it?
 
-Thanks.
+> > 2. we can obtain the function args in FEXIT, which
+> >     kretprobe can't do it. And this is the main reason.
+>
+> I didn't mention kretprobe. If you need access to the exit of the functio=
+n,
+> you can use Masami's fgraph update.
+>
+>  fentry -> ftrace_trampoline -> your_code
+>
+> For fgraph:
+>
+>  fentry -> ftrace_trampoline -> fgraph [sets up return call] -> your_entr=
+y_code
+>
+>  function ret -> fgraph_ret_handler -> your_exit_code
+>
+> And you will be able to pass data from the entry to the exit code,
+> including parameters.
 
+Yeah, the fgraph sounds like a nice solution to my problem.
+I'll have a try on it.
 
+Thanks!
+Menglong Dong
 
-
-
->=20
-> Thanks
-> Lai
+>
+> -- Steve
+>
+>
 
