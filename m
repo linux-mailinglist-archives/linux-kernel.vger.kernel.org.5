@@ -1,97 +1,180 @@
-Return-Path: <linux-kernel+bounces-126500-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-126501-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 443B78938B2
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 09:47:43 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2FB1F8938B4
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 09:50:12 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D71FFB21322
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 07:47:40 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 525BB1C20E60
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 07:50:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DFFCEBA2D;
-	Mon,  1 Apr 2024 07:47:34 +0000 (UTC)
-Received: from mail-io1-f70.google.com (mail-io1-f70.google.com [209.85.166.70])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 95CDFBA41;
+	Mon,  1 Apr 2024 07:50:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="hSRXXqxX"
+Received: from NAM02-DM3-obe.outbound.protection.outlook.com (mail-dm3nam02on2060.outbound.protection.outlook.com [40.107.95.60])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1EFD615A4
-	for <linux-kernel@vger.kernel.org>; Mon,  1 Apr 2024 07:47:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.70
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711957654; cv=none; b=QfRna9rly5dvL4FIdr2HmBgLzlThh3C+9lvoQCdjhX7kZ2gZNLTTflNnF4gZBc/xnmmCOKVDyxhykSXdGbdZ5DyO/v1RdtruRALro8SNavJR0E+RZLwMMp6Imc2ctSDj/JkjinheiqGNPG+dUSOXNwjsk010Fup955GoDp7nC4E=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711957654; c=relaxed/simple;
-	bh=+ZI2DP/qaKtIBC0/ule56jqNcJ6Jtlb5WWTWdjUCxcg=;
-	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
-	 Content-Type; b=u/S/RSxOdeYi93GITH8EO3m82XD2bEI38K846iA4qiPQ9O4jYRO5pQd4rXdrpucgl8e0BpSogb+86SLDXQHt+GuYK+lXH1hyV9qSSpC9qYhtfuEb+ffj+kI0MAC6CNTtoZ1NY++Z0euGxo+H/rwH7ME8ik4cX8I3DHxr8ciZGLI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.70
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-io1-f70.google.com with SMTP id ca18e2360f4ac-7cbfd9f04e3so286475939f.0
-        for <linux-kernel@vger.kernel.org>; Mon, 01 Apr 2024 00:47:32 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711957652; x=1712562452;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=ElTuJtmDQn1CxZbPxr5ImKVjUP9n6hi2pFM99DoBj+E=;
-        b=jVL3poufrzgZQSfpeRk2IsmCuf1LUUXSIq4BL22MamF89Oysb30sRbGzpgYHGvGbfL
-         /ppxvAcIgrqGaBID2HYnPBGWjVcP9RBeE+ZQEpLgWM7aBln4WXkPmlvKebCtkDTe9JuW
-         M5aHlkMd/Dwt8uboTHPHrf32ZFj3vV4k81SgNZcAVlKFJ8jOXu5EXTZ03XzC/ENnNJeA
-         6uh8ciQo6UioRhThaTkaMq1cH9Hbrg70GLMiGVBEG0c30jr2mNn1clqqT86hDsPCErfw
-         yGWMOvwaSPvvFpLcoFwu/mNAOskuxfpCC2ffMF+bGypjHS7eLf2VugpQEVDieWPPUwWC
-         jHrA==
-X-Gm-Message-State: AOJu0YxqCc0cBOV2pHfIzF+ObpOCC6znA26mb23Cil0mJ1Nn7FUTN9Bv
-	TqAOwkJlZpmJ7pgxaX3ZBwi/SmQ/1S2FTkjDljPEArHHURnWSB8gghaldYQyRp/VTvTl391Wqg4
-	hbLASj/exSnD0CzvSTw7LJd9hy4yJwGbivD4HZ7X3rfPFnKUTFnBzCx7lDg==
-X-Google-Smtp-Source: AGHT+IHBCq93SVMQeU/PijysUPhDpFbG0FJZliblkCqnW3L6nRtbd3NnSXSmJJKpatqwz5axoUzwtLFfULEWiC3JF8iBgsxc0h96
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EEC9F15A4;
+	Mon,  1 Apr 2024 07:50:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.95.60
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1711957803; cv=fail; b=lf8wA3l5faOypsGPiEoGvyVXAnLh5Qz6FmOoz0CVE/+mjjufJ1aw10PINvVx9vBjpm+ar4VkZF6NFzGKACnmIRdXW4gesMxoWURtS4U3JVhPU+HhYrZooj6rBNrIk7zze3wMQM0wIE0BHhSJzHCC8KwRZ9sTJQc/1zxyoAGAeN4=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1711957803; c=relaxed/simple;
+	bh=MYHm1/Gx7zlAKULH8iZErbJIFQQEM0VLEwc6U3o3Etc=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=C0gBKpwFWiteJVvvLncp2fvJvDo0mOB1a75J36G0mQ3YAKPuyOATKH/23zC13qGwqKzOLcgUtFFyRgaO8Ncj4UfAWlDATtP+dR2vagI3mw37lWaPcDuUaxrN277TwQbBM32rk8QET4cjipNS2qnPCeAADMEqOZIrYIvn3IHljoQ=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=hSRXXqxX; arc=fail smtp.client-ip=40.107.95.60
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=EFyKhg+namGjngpQna6eccWB4JH7olQjNFI7seRm7fEMcLRUth/eC+ZtArKLinHezlGBO2r6dwq7Tg+5cj5GkPITNf9XIBlNbPzmnk00bY+2UClriNOzuzkTw6Un9/YfvYTxsXd/Nls76ZagBXOUSDztb4heHCFAqN55e4JuB4H1j131EQ77lrDdqxwhcjwOpvDrEr9sTrUzThBjKynBKkGW1IXCuqkqZ+bx6QeVrz8XQ2N9mBrx4Gs7CBdR3tLaXXdZx/+mogt4TUp6P7AcXq4w0gks9SOgMANRps6v+t2S8ZqmQGvg3ATlBlWA2hmpsJPx4/SrAIw0DEYu/w7Fig==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=MKtSE/GKvERz+toGLJd2SiEd/17Zc2VWVmzGA9r+cgI=;
+ b=fnqsu1CPY7/Aj0DC+Smj1YthYZhDinQAxLkkGGyjIMUpynxlKU2chcnXFMYiNc+bFYan5YrOWt32ljT/P1MpEiJcDuSotYP0uXYdqOoDOGaUa9bgQEfm1XMf8+0nUOUGBRXrROzmRgCWLIYFXXz/T93GqPnAT3ARJQANSzdjalp014oj0VQpdh0nQERFNA2lL+JAFpG2r/LOOncD1hOp8/j0NDUMvVyjLqnByqQDtAPfAQ79K3MrA2wRll9xHBsovXqnX/cSJ20FRXrbMzpDJ2IcYC0ho9Or2HQts6r4HQwrWR9TBh3XuBqAc6/NRcoGTfNtLyWVe/eYpHYzSRD2NA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 216.228.117.161) smtp.rcpttodomain=kernel.org smtp.mailfrom=nvidia.com;
+ dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
+ dkim=none (message not signed); arc=none (0)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=MKtSE/GKvERz+toGLJd2SiEd/17Zc2VWVmzGA9r+cgI=;
+ b=hSRXXqxXFe2FPwSj2yKDNJCO6DCpYdGy9y/GQLBK59lg1vm8ZoPKR0sWk7XDAPY/fOrEhy/XKrlWp2PJyF95gvkPchHw0gdH1y374q/Isf1Oz198B1++4Yr3ja/8fWIgPJcrIWe4Bbfo03Y2eQhDaVZpLuOtoNRKjLJnYqRifz7l519eUEJIMkDDSUQ2HdLMEjzMUeprJ7IX4k+p1kUqqbHd7v7FPFsLumI135SCgfoWr1qdQZ5+MJ55XjGTQIgCEfOikYHdZRYiE4/2pckJLu/AS6Acv0VmdsT0RJ2hLfGLaaFB+4j7riNXRPZAG6zyG6ZVj67aF5Vxbr4zpj7KxA==
+Received: from SA9P223CA0027.NAMP223.PROD.OUTLOOK.COM (2603:10b6:806:26::32)
+ by SA3PR12MB9225.namprd12.prod.outlook.com (2603:10b6:806:39e::13) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7409.46; Mon, 1 Apr
+ 2024 07:49:59 +0000
+Received: from SN1PEPF0002BA4C.namprd03.prod.outlook.com
+ (2603:10b6:806:26:cafe::3b) by SA9P223CA0027.outlook.office365.com
+ (2603:10b6:806:26::32) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7409.46 via Frontend
+ Transport; Mon, 1 Apr 2024 07:49:59 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.117.161)
+ smtp.mailfrom=nvidia.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=nvidia.com;
+Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
+ 216.228.117.161 as permitted sender) receiver=protection.outlook.com;
+ client-ip=216.228.117.161; helo=mail.nvidia.com; pr=C
+Received: from mail.nvidia.com (216.228.117.161) by
+ SN1PEPF0002BA4C.mail.protection.outlook.com (10.167.242.69) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.7452.22 via Frontend Transport; Mon, 1 Apr 2024 07:49:59 +0000
+Received: from rnnvmail205.nvidia.com (10.129.68.10) by mail.nvidia.com
+ (10.129.200.67) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.41; Mon, 1 Apr 2024
+ 00:49:44 -0700
+Received: from rnnvmail201.nvidia.com (10.129.68.8) by rnnvmail205.nvidia.com
+ (10.129.68.10) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1258.12; Mon, 1 Apr
+ 2024 00:49:43 -0700
+Received: from vidyas-desktop.nvidia.com (10.127.8.9) by mail.nvidia.com
+ (10.129.68.8) with Microsoft SMTP Server id 15.2.1258.12 via Frontend
+ Transport; Mon, 1 Apr 2024 00:49:40 -0700
+From: Vidya Sagar <vidyas@nvidia.com>
+To: <robh@kernel.org>, <bhelgaas@google.com>
+CC: <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+	<treding@nvidia.com>, <jonathanh@nvidia.com>, <kthota@nvidia.com>,
+	<mmaddireddy@nvidia.com>, <vidyas@nvidia.com>, <sagar.tv@gmail.com>
+Subject: [PATCH V3] schemas: pci: Extend the meaning of 'linux,pci-probe-only'
+Date: Mon, 1 Apr 2024 13:19:37 +0530
+Message-ID: <20240401074937.3334632-1-vidyas@nvidia.com>
+X-Mailer: git-send-email 2.25.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6638:1413:b0:47e:df47:df4d with SMTP id
- k19-20020a056638141300b0047edf47df4dmr479622jad.0.1711957652052; Mon, 01 Apr
- 2024 00:47:32 -0700 (PDT)
-Date: Mon, 01 Apr 2024 00:47:32 -0700
-In-Reply-To: <0000000000003ad27a0614fa0b99@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000b8aba3061504339d@google.com>
-Subject: Re: [syzbot] [syzbot] [kernel?] inconsistent lock state in sock_hash_delete_elem
-From: syzbot <syzbot+1dab15008502531a13d2@syzkaller.appspotmail.com>
-To: linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+X-NVConfidentiality: public
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-NV-OnPremToCloud: ExternallySecured
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: SN1PEPF0002BA4C:EE_|SA3PR12MB9225:EE_
+X-MS-Office365-Filtering-Correlation-Id: b3dbc6cb-9c9a-4fca-9fee-08dc522054a5
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	dmctpe+XeY2d13/R/NPhTZuJ6uZPJJwWn/vAdMpCGlcfq8/614+NLKGj1jFaCWjedXt3rwhQrKw0Co1ACCMKOKG/azN/po/CigzszYTumhSaxLBec1bNePqwc5dU256vW7zqSzsr2EOoUHmtaAsddSLmhH6sGTPTe5Z+NMIgz5PrKYS+Y4leygEMoMU8OohCuIChfPsYFmDamD8O41SyHrel9yisJq+I/onc5A6Zih9lTIzilShLsj+P1f7t2r2f15Oxtz836TmmilWvqWdbRd9z8TRkPlWLgN1WOS+s6bCWqgNWP8aGsnwdrLmp2F1D7jcFmmd1W/cK4bnM0a6sXIANlxDbzmwzl+OGKfVkyaH/CP9XYdaEulnauJEmmDL8R7xiOpw1XNHHkNl6pTjEmngUFQ5B8nqZjyRZhggVe799dqWBl/Ha8N5m/QSjDlO4Sa8K5vvaGYIXV8N7GW6pKvPMOGEV2SRnTyBaUyd4zPf4+a0vPlJLNT9gqfsqy2SWBZpSoqOcjPn3VQxz+bSwWVGm/jzRvq63Bj+ZDymk0rVEfxEarzdHcZbLqORio8a4kL8OxoLps/9YwsZY5IVpXg6W2DZKUS0ySbQguGBsm9SgzbbWP+B/tC5dik8YhuITOqeVwaKsFi7HScCJokcYvAhuKsahr6tNmJTBcUEpwHnH+ErPZU8nSvVjhzPY+F1Tm6s0QfL47liqXz3dYPARHRg3B4YE8tAXktYn4VoPkEH5ek9DJRkKkVK7JBh3nFJq
+X-Forefront-Antispam-Report:
+	CIP:216.228.117.161;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc6edge2.nvidia.com;CAT:NONE;SFS:(13230031)(376005)(82310400014)(1800799015)(36860700004);DIR:OUT;SFP:1101;
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 01 Apr 2024 07:49:59.0776
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: b3dbc6cb-9c9a-4fca-9fee-08dc522054a5
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.117.161];Helo=[mail.nvidia.com]
+X-MS-Exchange-CrossTenant-AuthSource:
+	SN1PEPF0002BA4C.namprd03.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA3PR12MB9225
 
-For archival purposes, forwarding an incoming command email to
-linux-kernel@vger.kernel.org.
+Extend the meaning of 'linux,pci-probe-only' to cover the cases where
+it is applicable only to a specific PCI host bridge if defined in a
+PCI node instead of chosen node. Add the documentation for the same
+in schemas/pci/pci-host-bridge.yaml
 
-***
+Signed-off-by: Vidya Sagar <vidyas@nvidia.com>
+---
+V3:
+* Addressed Rob's review comments
 
-Subject: [syzbot] [kernel?] inconsistent lock state in sock_hash_delete_elem
-Author: lizhi.xu@windriver.com
+V2:
+* Addressed Bjorn's review comments
+ dtschema/schemas/chosen.yaml              |  7 +++++--
+ dtschema/schemas/pci/pci-host-bridge.yaml | 11 +++++++++++
+ 2 files changed, 16 insertions(+), 2 deletions(-)
 
-#syz test https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git fe46a7dd189e
-
-diff --git a/kernel/sched/sched.h b/kernel/sched/sched.h
-index d2242679239e..a7aa4f31c0e2 100644
---- a/kernel/sched/sched.h
-+++ b/kernel/sched/sched.h
-@@ -1696,6 +1696,7 @@ static inline void
- rq_lock(struct rq *rq, struct rq_flags *rf)
- 	__acquires(rq->lock)
- {
-+	local_irq_save(rf->flags);
- 	raw_spin_rq_lock(rq);
- 	rq_pin_lock(rq, rf);
- }
-@@ -1722,6 +1723,7 @@ rq_unlock(struct rq *rq, struct rq_flags *rf)
- {
- 	rq_unpin_lock(rq, rf);
- 	raw_spin_rq_unlock(rq);
-+	local_irq_restore(rf->flags);
- }
+diff --git a/dtschema/schemas/chosen.yaml b/dtschema/schemas/chosen.yaml
+index 6d5c3f1..f806646 100644
+--- a/dtschema/schemas/chosen.yaml
++++ b/dtschema/schemas/chosen.yaml
+@@ -142,8 +142,11 @@ properties:
+     enum: [ 0, 1 ]
+     description:
+       Optional property which takes a single-cell argument. If '0', then Linux
+-      will assign devices in its usual manner, otherwise it will not try to
+-      assign devices and instead use them as they are configured already.
++      will reassign BARs and bridge windows in its usual manner, otherwise it will
++      not try to reassign BARs and bridge windows, instead use them as they are
++      configured already by the platform firmware.
++      NOTE:- To restrict the applicability of this property to a specific PCI
++             host bridge, please refer to /schemas/pci/pci-host-bridge.yaml
  
- DEFINE_LOCK_GUARD_1(rq_lock, struct rq,
+   stdout-path:
+     $ref: types.yaml#/definitions/string
+diff --git a/dtschema/schemas/pci/pci-host-bridge.yaml b/dtschema/schemas/pci/pci-host-bridge.yaml
+index fbbb829..e6665e7 100644
+--- a/dtschema/schemas/pci/pci-host-bridge.yaml
++++ b/dtschema/schemas/pci/pci-host-bridge.yaml
+@@ -31,6 +31,17 @@ properties:
+       number for each host bridge in the system must be unique.
+     $ref: /schemas/types.yaml#/definitions/uint32
+ 
++  linux,pci-probe-only:
++    $ref: types.yaml#/definitions/uint32
++    enum: [ 0, 1 ]
++    description:
++      Optional property which takes a single-cell argument. If '0', then Linux
++      will reassign BARs and bridge windows in its usual manner, otherwise it will
++      not try to reassign BARs and bridge windows, instead use them as they are
++      configured already by the platform firmware.
++      NOTE:- If defined in chosen node, this property has system wide applicability.
++             Please refer to /schemas/chosen.yaml for more info.
++
+   msi-map:
+     $ref: /schemas/types.yaml#/definitions/uint32-matrix
+     items:
+-- 
+2.25.1
+
 
