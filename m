@@ -1,53 +1,64 @@
-Return-Path: <linux-kernel+bounces-126680-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-126681-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7DF30893B60
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 15:21:56 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7233A893B64
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 15:24:15 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 13400B20EB6
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 13:21:54 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2E767281E6E
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 13:24:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BDFA83F9D3;
-	Mon,  1 Apr 2024 13:21:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 63F733F9C7;
+	Mon,  1 Apr 2024 13:24:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=igalia.com header.i=@igalia.com header.b="NHa0hk6s"
-Received: from fanzine2.igalia.com (fanzine2.igalia.com [213.97.179.56])
+	dkim=pass (1024-bit key) header.d=amazon.com header.i=@amazon.com header.b="aOo7XpIN"
+Received: from smtp-fw-9105.amazon.com (smtp-fw-9105.amazon.com [207.171.188.204])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 94E8A21A0A;
-	Mon,  1 Apr 2024 13:21:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.97.179.56
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4AAE821A0A;
+	Mon,  1 Apr 2024 13:24:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=207.171.188.204
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711977706; cv=none; b=F6Mqpqe/xj3uRHr6ud9ftOr1URXS+d91lc/fj79aSdIrU2e0SIi63cJfNqRU4qjdrpY8Lgj99TKjEfOx01BcbPBylQyDmNj9GJvUPL+iDUjhBmfxN06VMvDWgrxlphDBKBD8TKEe8Y6ukb4eojVp7/LE5fk15aYPBV4J5YSBKj0=
+	t=1711977847; cv=none; b=HSkr4aoYswWDSuEaDE3ElmT1VraUo2hNVC4Ycx2AanVg1NgE2zO4eP3UvovPV1hc5ysWlfE+kRMuwh54jNujx1LuwdNlx3NIWX7YtYVpWPnZP0dz/AELUSX4iSidbyyCZmncWHw6ItPClkeui2CmwcKhfYmV5HatP/nelJWP3uc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711977706; c=relaxed/simple;
-	bh=Pvj3W9vMpYYXEBCVV8FYX9pJanbCNb8yW1Aw7jAJ0Ho=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=RtjZqgJrAPV1R38u2w0gR1rikqDvoff45DdEBkDhuNcI+0dA+bq0MqbtFQbV47Q7EhzN5tolr4ALCpJ4/9SljIguODn1u2F4DdXn6moxJnLbqKZnaoOSGQh3C+Jh4UaXMhubYNP7JQZ7/9FXJSBZ2U18EacDxaK4b6eBEJxSTXk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=igalia.com; spf=pass smtp.mailfrom=igalia.com; dkim=pass (2048-bit key) header.d=igalia.com header.i=@igalia.com header.b=NHa0hk6s; arc=none smtp.client-ip=213.97.179.56
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=igalia.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=igalia.com
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=igalia.com;
-	s=20170329; h=Content-Transfer-Encoding:Content-Type:In-Reply-To:From:
-	References:Cc:To:Subject:MIME-Version:Date:Message-ID:Sender:Reply-To:
-	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
-	Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
-	List-Subscribe:List-Post:List-Owner:List-Archive;
-	bh=0ztbKwxnOONze6uE5KAh6nif3N82SFeibbZIcAhXlYU=; b=NHa0hk6sMYXxr+xwUvnjlKQUnF
-	MEqYyBd6WXe4P9ZmqgpFKFUvIBNOHaBie9S5C1YhSJv8Rs/O97U7tb1LxxqHskQdD1UlbinKsB+aB
-	EktpoqosJWLm0tByrCD4QbzTiyNWz9U4N/Lz06EG+U+fHcpR6RTubhijoN4D12R1a3RbKhjqZzytW
-	BkIacfu/lXSbvo+KO4MFTQKStY32m8k4CV+MStArowuITtWgTKdneNI3tp8JsNjLFZjrEcpdNHE19
-	hhvZAfb+PsOkhrCrlY+7s1vWxZsBUXWOlsu967nT+FyNAomPB6W6ny8IGWR/HeEKvfcdFSlVpXgY8
-	UuMW3vEw==;
-Received: from [84.65.0.132] (helo=[192.168.0.101])
-	by fanzine2.igalia.com with esmtpsa 
-	(Cipher TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_128_GCM:128) (Exim)
-	id 1rrHbF-0001WQ-89; Mon, 01 Apr 2024 15:21:21 +0200
-Message-ID: <4342d02c-a180-4a7e-8ef6-4ece51aba946@igalia.com>
-Date: Mon, 1 Apr 2024 14:21:19 +0100
+	s=arc-20240116; t=1711977847; c=relaxed/simple;
+	bh=9EaMVV3elotIvVru5tyAQ4Ib+d3jzMQzcTbDbh/1SCs=;
+	h=Subject:Message-ID:Date:MIME-Version:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=d0Ui9QVanPToQkBVK829snNq10aOixUPRBe+O6N+7Y9o6YjuwXWrO1P7CwabW/qPqBYoI+sHuEBD51Q/OF3A0f813jdRKy7QNsmQ5haLcpPpol4kpeg89QppSkTOyHfiZSp/AqMDhkSfTuwu+dnu+cg9OZp4rtavMOXrNjhOgDE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.com; spf=pass smtp.mailfrom=amazon.com; dkim=pass (1024-bit key) header.d=amazon.com header.i=@amazon.com header.b=aOo7XpIN; arc=none smtp.client-ip=207.171.188.204
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=amazon.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
+  t=1711977846; x=1743513846;
+  h=message-id:date:mime-version:to:cc:references:from:
+   in-reply-to:content-transfer-encoding:subject;
+  bh=/q5RUYrVO7lETbxfGo97Atx61q36lvWj5/xhBcLh7fk=;
+  b=aOo7XpINo08y4LChadQE9loNUa2Uc9kozy6hJfW74p8UvQ3xxNzJDESz
+   UJDa6cwQqUFm5Uo/tvD1pex+aGYAlkcp/5w9q79IB/lRbMQS+yH32tbhU
+   FscZSF6JKDvWVVuv690zzY9R4R2u5NBtu6CpGePMgv3SAdIyMyhgSNoBC
+   Y=;
+X-IronPort-AV: E=Sophos;i="6.07,172,1708387200"; 
+   d="scan'208";a="715783487"
+Subject: Re: Implementing .shutdown method for efa module
+Received: from pdx4-co-svc-p1-lb2-vlan2.amazon.com (HELO smtpout.prod.us-east-1.prod.farcaster.email.amazon.dev) ([10.25.36.210])
+  by smtp-border-fw-9105.sea19.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Apr 2024 13:23:44 +0000
+Received: from EX19MTAEUB002.ant.amazon.com [10.0.17.79:63400]
+ by smtpin.naws.eu-west-1.prod.farcaster.email.amazon.dev [10.0.31.112:2525] with esmtp (Farcaster)
+ id de5bc671-77f5-45f8-a682-175bf7ec8cfe; Mon, 1 Apr 2024 13:23:43 +0000 (UTC)
+X-Farcaster-Flow-ID: de5bc671-77f5-45f8-a682-175bf7ec8cfe
+Received: from EX19D031EUB003.ant.amazon.com (10.252.61.88) by
+ EX19MTAEUB002.ant.amazon.com (10.252.51.79) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1258.28; Mon, 1 Apr 2024 13:23:41 +0000
+Received: from [192.168.82.210] (10.85.143.172) by
+ EX19D031EUB003.ant.amazon.com (10.252.61.88) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1258.28; Mon, 1 Apr 2024 13:23:37 +0000
+Message-ID: <0e7dddff-d7f3-4617-83e6-f255449a282b@amazon.com>
+Date: Mon, 1 Apr 2024 16:23:32 +0300
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -55,63 +66,61 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] dma-buf: Do not build debugfs related code when
- !CONFIG_DEBUG_FS
-Content-Language: en-GB
-To: =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
- Tvrtko Ursulin <tursulin@ursulin.net>, "T.J. Mercier"
- <tjmercier@google.com>, Tvrtko Ursulin <tursulin@igalia.com>,
- Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
-Cc: dri-devel@lists.freedesktop.org, Sumit Semwal <sumit.semwal@linaro.org>,
- linux-media@vger.kernel.org, linaro-mm-sig@lists.linaro.org,
- linux-kernel@vger.kernel.org, kernel-dev@igalia.com
-References: <20240328145323.68872-1-tursulin@igalia.com>
- <CABdmKX3V3HGA4mNQvqHqhcLqyr-A5kJK8v9vmuDybRvV-KsiOg@mail.gmail.com>
- <9a063c39-6d2f-43c3-98b3-e4f8c3c6e9c4@ursulin.net>
- <1e94363a-b449-4efb-b2fe-c1dd710b57c9@amd.com>
-From: Tvrtko Ursulin <tvrtko.ursulin@igalia.com>
-In-Reply-To: <1e94363a-b449-4efb-b2fe-c1dd710b57c9@amd.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+To: Jason Gunthorpe <jgg@ziepe.ca>
+CC: Tao Liu <ltao@redhat.com>, Gal Pressman <gal.pressman@linux.dev>,
+	<sleybo@amazon.com>, <leon@kernel.org>, <kexec@lists.infradead.org>,
+	<linux-kernel@vger.kernel.org>, <linux-rdma@vger.kernel.org>
+References: <CAO7dBbVNv5NWRN6hXeo5rNEixn-ctmTLLn2KAKhEBYvvR+Du2w@mail.gmail.com>
+ <5d81d6d0-5afc-4d0e-8d2b-445d48921511@linux.dev>
+ <CAO7dBbXLU5teiYm8VvES7e7m7dUzJQYV9HHLOFKperjwq-NJeA@mail.gmail.com>
+ <b6c0bd81-3b8d-465d-a0eb-faa5323a6b05@amazon.com>
+ <20240326153223.GF8419@ziepe.ca>
+From: "Margolin, Michael" <mrgolin@amazon.com>
+In-Reply-To: <20240326153223.GF8419@ziepe.ca>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: EX19D043UWA002.ant.amazon.com (10.13.139.53) To
+ EX19D031EUB003.ant.amazon.com (10.252.61.88)
+
+Jason
+
+Thanks for your response, efa_remove() is performing reset to the device 
+which should stop all DMA from the device.
+
+Except skipping cleanups that are unnecessary for shutdown flow are 
+there any other reasons to prefer a separate function for shutdown?
 
 
-On 01/04/2024 13:45, Christian König wrote:
-> Am 01.04.24 um 14:39 schrieb Tvrtko Ursulin:
+Michael
+
+On 3/26/2024 5:32 PM, Jason Gunthorpe wrote:
+> CAUTION: This email originated from outside of the organization. Do not click links or open attachments unless you can confirm the sender and know the content is safe.
+>
+>
+>
+> On Tue, Mar 26, 2024 at 02:34:45PM +0200, Margolin, Michael wrote:
+>> Hi Tao,
 >>
->> On 29/03/2024 00:00, T.J. Mercier wrote:
->>> On Thu, Mar 28, 2024 at 7:53 AM Tvrtko Ursulin <tursulin@igalia.com> 
->>> wrote:
->>>>
->>>> From: Tvrtko Ursulin <tursulin@ursulin.net>
->>>>
->>>> There is no point in compiling in the list and mutex operations 
->>>> which are
->>>> only used from the dma-buf debugfs code, if debugfs is not compiled in.
->>>>
->>>> Put the code in questions behind some kconfig guards and so save 
->>>> some text
->>>> and maybe even a pointer per object at runtime when not enabled.
->>>>
->>>> Signed-off-by: Tvrtko Ursulin <tursulin@ursulin.net>
->>>
->>> Reviewed-by: T.J. Mercier <tjmercier@google.com>
+>> Thanks for bringing this up.
 >>
->> Thanks!
+>> I've unsuccessfully tried to reproduce this kernel panic using production
+>> Red Hat 9.3 AMI (5.14.0-362.18.1.el9_3.aarch64).
 >>
->> How would patches to dma-buf be typically landed? Via what tree I 
->> mean? drm-misc-next?
-> 
-> That should go through drm-misc-next.
-> 
-> And feel free to add Reviewed-by: Christian König 
-> <christian.koenig@amd.com> as well.
-
-Thanks!
-
-Maarten if I got it right you are handling the next drm-misc-next pull - 
-could you merge this one please?
-
-Regards,
-
-Tvrtko
+>> Are there any related changes in the kernel you are testing?
+>>
+>> Anyways we do need to handle shutdown properly, please let know if calling
+>> to efa_remove solves your issue.
+> efa_remove should not be used for shutdown..
+>
+> If you have an iommu in your system (smmuv3 for this ARM64 case) then
+> drivers must implement a shutdown handler or you will risk data
+> corruption on ARM64 sytems during crash.
+>
+> The shutdown handler must stop all DMA from the device.
+>
+> If you don't have an iommu then the shutdown handler shouldn't be
+> critical.
+>
+> Jason
 
