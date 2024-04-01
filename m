@@ -1,187 +1,115 @@
-Return-Path: <linux-kernel+bounces-126900-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-126901-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8712889442B
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 19:20:16 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4D5EE89442E
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 19:22:11 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E2F37B21A75
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 17:20:13 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E0C4A1F21365
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 17:22:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 036784C630;
-	Mon,  1 Apr 2024 17:20:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AEEAF4CE04;
+	Mon,  1 Apr 2024 17:22:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="m0ZaRqzZ"
-Received: from out-179.mta0.migadu.com (out-179.mta0.migadu.com [91.218.175.179])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="IiV77F5z"
+Received: from mail-ed1-f45.google.com (mail-ed1-f45.google.com [209.85.208.45])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D74A021105
-	for <linux-kernel@vger.kernel.org>; Mon,  1 Apr 2024 17:20:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6DC4D4AEC3;
+	Mon,  1 Apr 2024 17:22:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711992007; cv=none; b=egUA/fTmbgUw6bS261iuLC3ollQhFXGjXKf2qdhmhMW5YvIUAqaTlN16lp2kgIiGwEorcgrmsZvEd5w4ovestUwG2sYrkgMOwZ7mkn3N39tzmBJ3a6sQBrztO33ruV1e+G99UjyPV4Fn7B8npA+juA81lhGjck7Bn2OSjnaSXcc=
+	t=1711992122; cv=none; b=h+6/PmMGUZtEdT43D0XR4i8xur/zJVJ1/e71lsP2r6vU9uXm8XT0aHFOufA6FBwrQK+iqQnZmWhRPZ2Oro4TdujsgVPuqJ+6M85FKYUId8r4CKiUsjv7IXgKystWTtFkh5KI4FSkHbHjWxbw2EmzFu0MjQ8w/P2p4Or7S2Y3B0s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711992007; c=relaxed/simple;
-	bh=ZZkDx3+ivYoBkuPSMsuOjpvWPvcAKrM1VWZ9vIg86n4=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=HFZIQpYX8y0nQkxpsRvNuW8Wf38tYMIsCWbtiLGcLf6VvgnxOhDCN1Mg0iYXEShQ2fUyWD5emV2KJKyik1mgbBlp9pka7H5+jJSnJTUsgWnRZIWIfZkGMsLkl7LicLuRge7k5/UlsDSZQmhviB/9VCG81eXXxPevEcjczTSgQIY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=m0ZaRqzZ; arc=none smtp.client-ip=91.218.175.179
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Date: Mon, 1 Apr 2024 10:19:47 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1711992001;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=w5NrOmceP2tZ8VIirRS6Xm/Nx7HgAEOPOS/AdWr5fgo=;
-	b=m0ZaRqzZv6itmDrjtxSBo/OSqKgnCdGvK8JhdumsJl26b8q/E9HvHDtvgmMJx/oX7gKtVG
-	FeOM0l/KXOOJfGQAnBo2LSIOUMqCeANJ/n0ARXxb8pcz3DXMJzCNWaGdIWOXcELd39eV0C
-	zIzgxM9r7FUbZG0qc0eNRI0uvjhe1cY=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Russ Weight <russ.weight@linux.dev>
-To: Xu Yilun <yilun.xu@linux.intel.com>
-Cc: Peter Colberg <peter.colberg@intel.com>,
-	Moritz Fischer <mdf@kernel.org>, Wu Hao <hao.wu@intel.com>,
-	Xu Yilun <yilun.xu@intel.com>, Tom Rix <trix@redhat.com>,
-	Lee Jones <lee@kernel.org>, linux-fpga@vger.kernel.org,
-	linux-kernel@vger.kernel.org, Marco Pagani <marpagan@redhat.com>,
-	Matthew Gerlach <matthew.gerlach@linux.intel.com>,
-	Ilpo =?utf-8?B?SsOkcnZpbmVu?= <ilpo.jarvinen@linux.intel.com>,
-	Russ Weight <russell.h.weight@intel.com>
-Subject: Re: [PATCH] mfd: intel-m10-bmc: Change staging size to a variable
-Message-ID: <20240401171947.dncdvc3gxna33nxq@4VRSMR2-DT.corp.robot.car>
-References: <20240328233559.6949-1-peter.colberg@intel.com>
- <ZgqCdfCSatazEkIj@yilunxu-OptiPlex-7050>
- <20240401170905.v2xin3fzoe3m3tmz@4VRSMR2-DT.corp.robot.car>
+	s=arc-20240116; t=1711992122; c=relaxed/simple;
+	bh=yGSMWtyTvsNKYw3IzNfdUL7VvAd5Xekz8J7V3atz0kA=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=jdE3zEdrELSSmvQsjSQ3dOnpRMw/6AiZpKTWhJ+XB62oibpUQbxQ1WATdjg2REwHzJokZp/oY5ZzhWGG4aj2Vt2z5GIYRMrb6PV0F8oW3KIqa5aYAJAd94HrTa26h/7EmHkrMcS3rdhUqdtXYoj6ASouhmqeQYWp36X3H8LnEtM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=IiV77F5z; arc=none smtp.client-ip=209.85.208.45
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ed1-f45.google.com with SMTP id 4fb4d7f45d1cf-56dd16630d8so942350a12.0;
+        Mon, 01 Apr 2024 10:22:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1711992118; x=1712596918; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=cFKQ5iAv9Q4vsIgWAjjOKXP7jVa9L0LaTnYCKK3WFF4=;
+        b=IiV77F5zUu06GtqP/E1HGs3pYrE3GvM9FT7Ei3Z9ToYBeIRAl3e13kapvD/bDFD45B
+         sJRgniWwacQN6TP5QaQx4i52ecMZv5e6JWir1pB5VsueNOvdy5aqjK+gHHiiPrUyZvw1
+         Xu8OB0kh63vM3P+i/4419t7tpCbAXTIomVZ0YF3BoqXGdp1TMuah90XmuHW7IO+6Fse7
+         uoodgwqNIqpp+gP+z6OWr2CobwI1WykeXc+1qVi5UwqN/8cr0dJCZh2HvHfc3VW28SGH
+         3yzVH1LTQ4LprO0CTy/mheEN05X7r3B3Lw1dXzDOzexBIWU4nUK3rlPvDG4IHd18OOiy
+         GTMg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711992118; x=1712596918;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=cFKQ5iAv9Q4vsIgWAjjOKXP7jVa9L0LaTnYCKK3WFF4=;
+        b=e0LASU/o/x5Zv1FUgD0UWpSeCcBopM9qJfv/FuvN8IvA/OJy8RdZbh8ZfmYrQMWybh
+         ou9Hqz3s1CBSTmegKBN40hnrF46OY/SDzq2xVUdhMVrlF4r2KS+WTCj5IlXq+dakOYEP
+         De/f+vffSM/fCtsc5Zpmi1ht1jySL7NvhuRjdFqfChbanrLpjMLtJ5myQ7zNiLyxgj3c
+         pHbPj8Ms8BZZejkVpDcFSgBC8EKGxS2NVoDE3JMR4rhAtOotGWgQNWDPlwFOUP5pyfgQ
+         ZYviXEVZWhpb4LZrS6TQRRxQZIKDSxmW32YZc1s5iKv7TgaDWen0oN0mhQWvBLC99fq/
+         a4yA==
+X-Forwarded-Encrypted: i=1; AJvYcCVZwCtUkNWpQjYhzDGNrEbximYmLj04+uBix4lA4+pJjiErmcbqUFeOdjZaRe4BJ2M9US3bFy8F51ISyq+GzXmhLmVbvwAhC2guDpm6YdJsQMpNuMUCc14VzXo4fzZZLoLlNTtSd8bsFNnA+mrpfdzrkHqY15fvd502jpzi24U5cwPjLIoyrJo=
+X-Gm-Message-State: AOJu0Yx7x2tlE1+rGLnLuSIpP9RLR5qTY0FLCwLafyTHpYDC3cIM2yZB
+	jOhb7hAqCr/MTAf4uVb+PsuQKyUIsFJCcQHmf2OSjOuyeS9Sf2HdAqkQE0gPypM=
+X-Google-Smtp-Source: AGHT+IHA4HhwZKjoCKMwQeG/ipnWsYQ2yEZNIYKMejNh6H2iV9+YIsf3PBnYkhMAIQ/U3ef4vYeK/A==
+X-Received: by 2002:a17:907:c1f:b0:a4e:d43:dc4b with SMTP id ga31-20020a1709070c1f00b00a4e0d43dc4bmr8607122ejc.58.1711992118052;
+        Mon, 01 Apr 2024 10:21:58 -0700 (PDT)
+Received: from localhost.localdomain (ccu40.neoplus.adsl.tpnet.pl. [83.30.144.40])
+        by smtp.gmail.com with ESMTPSA id xi7-20020a170906dac700b00a4e23486a5dsm5347949ejb.20.2024.04.01.10.21.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 01 Apr 2024 10:21:57 -0700 (PDT)
+From: Adam Skladowski <a39.skl@gmail.com>
+To: 
+Cc: phone-devel@vger.kernel.org,
+	~postmarketos/upstreaming@lists.sr.ht,
+	Adam Skladowski <a39.skl@gmail.com>,
+	Andy Gross <agross@kernel.org>,
+	Bjorn Andersson <andersson@kernel.org>,
+	Konrad Dybcio <konrad.dybcio@linaro.org>,
+	Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	linux-arm-msm@vger.kernel.org,
+	devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH v2 0/4] MSM8976 MDSS/GPU/WCNSS support
+Date: Mon,  1 Apr 2024 19:21:49 +0200
+Message-Id: <20240401172153.9231-1-a39.skl@gmail.com>
+X-Mailer: git-send-email 2.25.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20240401170905.v2xin3fzoe3m3tmz@4VRSMR2-DT.corp.robot.car>
-X-Migadu-Flow: FLOW_OUT
 
+This patch series provide support for display subsystem, gpu
+and also adds wireless connectivity subsystem support.
 
-On Mon, Apr 01, 2024 at 10:09:05AM -0700, Russ Weight wrote:
-> On Mon, Apr 01, 2024 at 05:46:29PM +0800, Xu Yilun wrote:
-> > On Thu, Mar 28, 2024 at 07:35:59PM -0400, Peter Colberg wrote:
-> > > From: Ilpo Järvinen <ilpo.jarvinen@linux.intel.com>
-> > > 
-> > > The size of the staging area in FLASH for FPGA updates is dependent on the
-> > > size of the FPGA. Currently, the staging size is defined as a constant.
-> > > Larger FPGAs are coming soon and it will soon be necessary to support
-> > 
-> > Soon? When? You cannot add some feature without a user case. If you do
-> > have a use case, put the patch in the same patchset.
-> 
-> There may never be an up-streamed use-case. This is a very small
-> change intended to make it easier for a third-party vendor to
-> build a card that requires a larger staging area in FLASH. They
-> would have to add a new "struct m10bmc_csr_map", but they
-> wouldn't have to refactor this code as part of the change
-> 
-> This change does not introduce an unused function or variable.
-> It is more of a clean-up, making the code more flexible.
-> 
-> Can it not be taken as is?
+Changes since v1
+================
+1. Addressed feedback
+2. Dropped already applied dt-bindings patches
+3. Dropped sdc patch as it was submitted as part of other series
+4. Dropped dt-bindings patch for Adreno, also separate now
 
-Would it be acceptable to just change the commit message to something
-like:
+Adam Skladowski (4):
+  arm64: dts: qcom: msm8976: Add IOMMU nodes
+  arm64: dts: qcom: msm8976: Add MDSS nodes
+  arm64: dts: qcom: msm8976: Add Adreno GPU
+  arm64: dts: qcom: msm8976: Add WCNSS node
 
-Do not hardwire the staging size in the secure update driver. Move
-the staging size to the m10bmc_csr_map structure to make the size
-assignment more flexible.
+ arch/arm64/boot/dts/qcom/msm8976.dtsi | 524 +++++++++++++++++++++++++-
+ 1 file changed, 520 insertions(+), 4 deletions(-)
 
-> 
-> - Russ
-> 
-> > 
-> > Thanks,
-> > Yilun
-> > 
-> > > different sizes for the staging area. Add a new staging_size member to the
-> > > csr_map structure to support a variable staging size.
-> > > 
-> > > The secure update driver does a sanity-check of the image size in
-> > > comparison to the size of the staging area in FLASH. Change the
-> > > staging size reference to a variable instead of a constant in order
-> > > to more readily support future, larger FPGAs.
-> > > 
-> > > Co-developed-by: Russ Weight <russell.h.weight@intel.com>
-> > > Signed-off-by: Russ Weight <russell.h.weight@intel.com>
-> > > Signed-off-by: Ilpo Järvinen <ilpo.jarvinen@linux.intel.com>
-> > > Signed-off-by: Peter Colberg <peter.colberg@intel.com>
-> > > ---
-> > >  drivers/fpga/intel-m10-bmc-sec-update.c | 3 ++-
-> > >  drivers/mfd/intel-m10-bmc-pmci.c        | 1 +
-> > >  drivers/mfd/intel-m10-bmc-spi.c         | 1 +
-> > >  include/linux/mfd/intel-m10-bmc.h       | 1 +
-> > >  4 files changed, 5 insertions(+), 1 deletion(-)
-> > > 
-> > > diff --git a/drivers/fpga/intel-m10-bmc-sec-update.c b/drivers/fpga/intel-m10-bmc-sec-update.c
-> > > index 89851b133709..7ac9f9f5af12 100644
-> > > --- a/drivers/fpga/intel-m10-bmc-sec-update.c
-> > > +++ b/drivers/fpga/intel-m10-bmc-sec-update.c
-> > > @@ -529,11 +529,12 @@ static enum fw_upload_err m10bmc_sec_prepare(struct fw_upload *fwl,
-> > >  					     const u8 *data, u32 size)
-> > >  {
-> > >  	struct m10bmc_sec *sec = fwl->dd_handle;
-> > > +	const struct m10bmc_csr_map *csr_map = sec->m10bmc->info->csr_map;
-> > >  	u32 ret;
-> > >  
-> > >  	sec->cancel_request = false;
-> > >  
-> > > -	if (!size || size > M10BMC_STAGING_SIZE)
-> > > +	if (!size || size > csr_map->staging_size)
-> > >  		return FW_UPLOAD_ERR_INVALID_SIZE;
-> > >  
-> > >  	if (sec->m10bmc->flash_bulk_ops)
-> > > diff --git a/drivers/mfd/intel-m10-bmc-pmci.c b/drivers/mfd/intel-m10-bmc-pmci.c
-> > > index 0392ef8b57d8..698c5933938b 100644
-> > > --- a/drivers/mfd/intel-m10-bmc-pmci.c
-> > > +++ b/drivers/mfd/intel-m10-bmc-pmci.c
-> > > @@ -370,6 +370,7 @@ static const struct m10bmc_csr_map m10bmc_n6000_csr_map = {
-> > >  	.pr_reh_addr = M10BMC_N6000_PR_REH_ADDR,
-> > >  	.pr_magic = M10BMC_N6000_PR_PROG_MAGIC,
-> > >  	.rsu_update_counter = M10BMC_N6000_STAGING_FLASH_COUNT,
-> > > +	.staging_size = M10BMC_STAGING_SIZE,
-> > >  };
-> > >  
-> > >  static const struct intel_m10bmc_platform_info m10bmc_pmci_n6000 = {
-> > > diff --git a/drivers/mfd/intel-m10-bmc-spi.c b/drivers/mfd/intel-m10-bmc-spi.c
-> > > index cbeb7de9e041..d64d28199df6 100644
-> > > --- a/drivers/mfd/intel-m10-bmc-spi.c
-> > > +++ b/drivers/mfd/intel-m10-bmc-spi.c
-> > > @@ -109,6 +109,7 @@ static const struct m10bmc_csr_map m10bmc_n3000_csr_map = {
-> > >  	.pr_reh_addr = M10BMC_N3000_PR_REH_ADDR,
-> > >  	.pr_magic = M10BMC_N3000_PR_PROG_MAGIC,
-> > >  	.rsu_update_counter = M10BMC_N3000_STAGING_FLASH_COUNT,
-> > > +	.staging_size = M10BMC_STAGING_SIZE,
-> > >  };
-> > >  
-> > >  static struct mfd_cell m10bmc_d5005_subdevs[] = {
-> > > diff --git a/include/linux/mfd/intel-m10-bmc.h b/include/linux/mfd/intel-m10-bmc.h
-> > > index ee66c9751003..988f1cd90032 100644
-> > > --- a/include/linux/mfd/intel-m10-bmc.h
-> > > +++ b/include/linux/mfd/intel-m10-bmc.h
-> > > @@ -205,6 +205,7 @@ struct m10bmc_csr_map {
-> > >  	unsigned int pr_reh_addr;
-> > >  	unsigned int pr_magic;
-> > >  	unsigned int rsu_update_counter;
-> > > +	unsigned int staging_size;
-> > >  };
-> > >  
-> > >  /**
-> > > -- 
-> > > 2.44.0
-> > > 
-> > > 
+-- 
+2.44.0
+
 
