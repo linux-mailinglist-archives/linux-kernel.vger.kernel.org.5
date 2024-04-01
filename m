@@ -1,86 +1,161 @@
-Return-Path: <linux-kernel+bounces-126664-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-126663-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C4087893B2F
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 15:04:37 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6BFA2893B2E
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 15:03:58 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2E6D1281EAA
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 13:04:36 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9DD191C20D6A
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 13:03:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2920D3EA68;
-	Mon,  1 Apr 2024 13:04:31 +0000 (UTC)
-Received: from mail115-63.sinamail.sina.com.cn (mail115-63.sinamail.sina.com.cn [218.30.115.63])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1FA0B3EA74;
+	Mon,  1 Apr 2024 13:03:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="t9tDxF+B"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0496921A0A
-	for <linux-kernel@vger.kernel.org>; Mon,  1 Apr 2024 13:04:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=218.30.115.63
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 46B8C1E888;
+	Mon,  1 Apr 2024 13:03:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711976670; cv=none; b=qLH2+sfCWYH+ws41uFiUc4LOuuJeaNfE3xfrAKJGFrD9tMwCCosRfwqDTc56D52h09JeEO8CkZ0sWQ4YvoOQZ1FkllqvlPmkY+1MoP4H0kDDB7DQy21sEBbRZ4wY+bQhdo9F4e70np1a8BMy6MZUxMzkr/tzy2Heyhlklc5daQs=
+	t=1711976630; cv=none; b=efrPEvKDrnglGvmhYf0rmq1tKwf/SbKb7zMjDo5C68QfVKD3R0yBaWPfpA0EAzgeZZwzF62Hysmzmursy/a8YlN9VAGMCOVAUp7IOetpjEXXh4LgmmqegPFq5XSKetphAP70b8y0e6G2uvaC+lFEE+1s7/GHTWa3ZIVM/tTN+eg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711976670; c=relaxed/simple;
-	bh=WOf1t5/kLTuMP0vqmrlw4HwW7o7C0/4Q8Dfs/g7PJ5I=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=Pm0mx/RlDTL9/zpsAG2BiXSjNCplb/hXURPQmYMg4bmlWnznsk1VAmz/PvyKQtz4lolhSvdSNIupQRNMb+Cw+LaEX7CuknertFxEZ6Cw7/VAOb9k/R8qn20dl2mMo3S9uAL/jhf6wO9//nL+BYJ9rqi4GcP3hawHd3CQE5pMZlI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sina.com; spf=pass smtp.mailfrom=sina.com; arc=none smtp.client-ip=218.30.115.63
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sina.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sina.com
-X-SMAIL-HELO: localhost.localdomain
-Received: from unknown (HELO localhost.localdomain)([113.88.49.36])
-	by sina.com (10.75.12.45) with ESMTP
-	id 660AB0A800007332; Mon, 1 Apr 2024 21:03:42 +0800 (CST)
-X-Sender: hdanton@sina.com
-X-Auth-ID: hdanton@sina.com
-Authentication-Results: sina.com;
-	 spf=none smtp.mailfrom=hdanton@sina.com;
-	 dkim=none header.i=none;
-	 dmarc=none action=none header.from=hdanton@sina.com
-X-SMAIL-MID: 55674131457705
-X-SMAIL-UIID: 6CF2D06D852B4E73966546F7E98388BD-20240401-210342-1
-From: Hillf Danton <hdanton@sina.com>
-To: syzbot <syzbot+fbf74291c3b7e753b481@syzkaller.appspotmail.com>
-Cc: linux-kernel@vger.kernel.org,
-	syzkaller-bugs@googlegroups.com
-Subject: Re: [syzbot] [net?] possible deadlock in hsr_dev_xmit (2)
-Date: Mon,  1 Apr 2024 21:03:28 +0800
-Message-Id: <20240401130328.3529-1-hdanton@sina.com>
-In-Reply-To: <00000000000022c6b2061502dcbb@google.com>
-References: 
+	s=arc-20240116; t=1711976630; c=relaxed/simple;
+	bh=6IX8cDFUlSsk6IxtbhcF68yxgznuBZCAUSinqNSI60Q=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=TL2whoBUq9rL4IQyYOEjNJ9s8cLnvFwJMvl0v+OSvQ2V3IpgOpGRGmxZFB6KjxMz0mVrex/cMx+hvt9OJ4jR6ygcfZLPJXzdFGk1r3htJ7L24qneeWTAv7KKH5t31glw6+t8c43KZFF2spw5x6qa/s/Nnt+tDI9Q2Q0cJzwHw4M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=t9tDxF+B; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 91F3AC43390;
+	Mon,  1 Apr 2024 13:03:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1711976629;
+	bh=6IX8cDFUlSsk6IxtbhcF68yxgznuBZCAUSinqNSI60Q=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=t9tDxF+B/kICX01tgWTInIvIoSP9ORRRD9KOxwP84iHOUi0SKK/Ie42RUnp7t63FN
+	 HVqjkZ5KlC6r9xKWCl/PeAJMG/KIh5KXuih4+kiHghdkd8/st153SMr/ZNhz+ZL23p
+	 D6EuKGrsL+Ai1zBEWIcpOvcddijki3UnjLotM8odP4gXTf7VBLo8n3OihiTeVz6O/V
+	 93Vr1FFFPxCnRAvBkZ9v758Qjjkohp6VSPznDAbcnaGecnpbMEcO5WLl7vGxIXqsxs
+	 CUw4xRe+JpxokeW//OF/xQU0Z3nndTfOdl9EVWPpGm58X/UdaltgtXdup/n47CR6ru
+	 8Mu87fvXgThzg==
+Date: Mon, 1 Apr 2024 08:03:47 -0500
+From: Rob Herring <robh@kernel.org>
+To: Patrick Gansterer <paroga@paroga.com>
+Cc: dri-devel@lists.freedesktop.org, linux-leds@vger.kernel.org,
+	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-fbdev@vger.kernel.org, Lee Jones <lee@kernel.org>,
+	Daniel Thompson <daniel.thompson@linaro.org>,
+	Jingoo Han <jingoohan1@gmail.com>, Pavel Machek <pavel@ucw.cz>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>, Helge Deller <deller@gmx.de>,
+	Sam Ravnborg <sam@ravnborg.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Subject: Re: [PATCH v5 1/2] dt-bindings: backlight: Add Texas Instruments
+ LM3509
+Message-ID: <20240401130347.GA274540-robh@kernel.org>
+References: <20240330145931.729116-1-paroga@paroga.com>
+ <20240330145931.729116-2-paroga@paroga.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240330145931.729116-2-paroga@paroga.com>
 
-On Sun, 31 Mar 2024 23:11:27 -0700
-> syzbot has found a reproducer for the following issue on:
+On Sat, Mar 30, 2024 at 03:59:24PM +0100, Patrick Gansterer wrote:
+> Add Device Tree bindings for Texas Instruments LM3509 - a
+> High Efficiency Boost for White LED's and/or OLED Displays
 > 
-> HEAD commit:    480e035fc4c7 Merge tag 'drm-next-2024-03-13' of https://gi..
-> git tree:       upstream
-> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=15e0f5c3180000
+> Signed-off-by: Patrick Gansterer <paroga@paroga.com>
+> Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+> Reviewed-by: Daniel Thompson <daniel.thompson@linaro.org>
+> ---
+>  .../bindings/leds/backlight/ti,lm3509.yaml    | 139 ++++++++++++++++++
+>  1 file changed, 139 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/leds/backlight/ti,lm3509.yaml
+> 
+> diff --git a/Documentation/devicetree/bindings/leds/backlight/ti,lm3509.yaml b/Documentation/devicetree/bindings/leds/backlight/ti,lm3509.yaml
+> new file mode 100644
+> index 000000000000..b67f67648852
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/leds/backlight/ti,lm3509.yaml
+> @@ -0,0 +1,139 @@
+> +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/leds/backlight/ti,lm3509.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: TI LM3509 High Efficiency Boost for White LED's and/or OLED Displays
+> +
+> +maintainers:
+> +  - Patrick Gansterer <paroga@paroga.com>
+> +
+> +description:
+> +  The LM3509 current mode boost converter offers two separate outputs.
+> +  https://www.ti.com/product/LM3509
+> +
+> +properties:
+> +  compatible:
+> +    const: ti,lm3509
+> +
+> +  reg:
+> +    maxItems: 1
+> +
+> +  "#address-cells":
+> +    const: 1
+> +
+> +  "#size-cells":
+> +    const: 0
+> +
+> +  reset-gpios:
+> +    maxItems: 1
+> +
+> +  ti,brightness-rate-of-change-us:
+> +    description: Brightness Rate of Change in microseconds.
+> +    enum: [51, 13000, 26000, 52000]
+> +
+> +  ti,oled-mode:
+> +    description: Enable OLED mode.
+> +    type: boolean
+> +
+> +patternProperties:
+> +  "^led@[01]$":
+> +    type: object
+> +    description: Properties for a string of connected LEDs.
+> +
+> +    allOf:
 
-#syz test https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git  480e035fc4c7
+You don't need allOf here.
 
---- x/net/hsr/hsr_device.c
-+++ y/net/hsr/hsr_device.c
-@@ -226,9 +226,11 @@ static netdev_tx_t hsr_dev_xmit(struct s
- 		skb->dev = master->dev;
- 		skb_reset_mac_header(skb);
- 		skb_reset_mac_len(skb);
--		spin_lock_bh(&hsr->seqnr_lock);
-+		local_bh_disable();
-+		spin_lock_nested(&hsr->seqnr_lock, 1);
- 		hsr_forward_skb(skb, master);
--		spin_unlock_bh(&hsr->seqnr_lock);
-+		spin_unlock(&hsr->seqnr_lock);
-+		local_bh_enable();
- 	} else {
- 		dev_core_stats_tx_dropped_inc(dev);
- 		dev_kfree_skb_any(skb);
---
+> +      - $ref: common.yaml#
+> +
+> +    properties:
+> +      reg:
+> +        description:
+> +          The control register that is used to program the two current sinks.
+> +          The LM3509 has two registers (BMAIN and BSUB) and are represented
+> +          as 0 or 1 in this property. The two current sinks can be controlled
+> +          independently with both registers, or register BMAIN can be
+> +          configured to control both sinks with the led-sources property.
+> +        minimum: 0
+> +        maximum: 1
+> +
+> +      label: true
+> +
+> +      led-sources:
+> +        allOf:
+
+Or here.
+
+> +          - minItems: 1
+> +            maxItems: 2
+> +            items:
+> +              minimum: 0
+> +              maximum: 1
 
