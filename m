@@ -1,54 +1,54 @@
-Return-Path: <linux-kernel+bounces-126585-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-126583-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 044AF8939EB
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 12:03:03 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 35F898939E8
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 12:02:42 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6F5CD1F22092
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 10:03:02 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E06E5281DBC
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 10:02:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 295B21754B;
-	Mon,  1 Apr 2024 10:02:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4050E13FEA;
+	Mon,  1 Apr 2024 10:02:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com header.b="Wb4xgyCn"
+	dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com header.b="IECkVOhi"
 Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com [67.231.149.25])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5B47414014;
-	Mon,  1 Apr 2024 10:02:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9BA6F1113;
+	Mon,  1 Apr 2024 10:02:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=67.231.149.25
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711965747; cv=none; b=dtvTIdglllVebGaqqCQtYd+6E6x4q9xt2Yu83ecgvLfefggJ/vR2IX9XO0pxiz56LH+olIfo7AV0E7a2CzxGmQJN+GhjHh5Qo0QCJ3LYXSafYZvlLhHu5shJft11Wz0D/O4dRpmVIVn5wvItXwqn78IdnLifGKgg8J79e87gdxs=
+	t=1711965744; cv=none; b=oFP+0w2v75XPQ+TiqVaQGuo+t/f737cNLMfmT+avuvFc3rCmr3o26bml9n0KyJ/j4Deds/JVjmJPIk6yK9cnk+L4lrQiLjbmHFCldVFsEO6e04/I6E/OscAFcyTQvucNV80MR0Y3OkPdenK7ARXW40rA8g2ZM4rJ0XpIxQyTsys=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711965747; c=relaxed/simple;
-	bh=s/N/0MGnnbaI2ruainzBFAMTg5WL9GCIxZMR9Vo5V2w=;
+	s=arc-20240116; t=1711965744; c=relaxed/simple;
+	bh=ImXU1s+ziaP2Z40BfdA5X2xpNVe3p9EN+iG/UF6M7pY=;
 	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=oJOAk5zj1by0X2/VvbKFFoxMb9jYiQFxZ532NUdHyEGXiUvvz6uZrVffG3bW1EfEILkFE9OJSnZeHn5uTkTFaINOhMa6B7JVIGtksXbH5aaH6lHdKsKmzcAP7yKcbPUfNw17phzY80aWVd5oATWX3WV7+XH6ai88fypk3SfUKt4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=opensource.cirrus.com; spf=pass smtp.mailfrom=opensource.cirrus.com; dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com header.b=Wb4xgyCn; arc=none smtp.client-ip=67.231.149.25
+	 MIME-Version:Content-Type; b=FS8mJnIadqFs3EYSeDRmfvWK3N0dEhIPqo9B7NTA+qLXkzK6afUEmPGi9oIFhwH3xk3Ien8Fcax9sZlsXB+4TCEKZoimL1TVcfUQoFvfj7iV6O0emXnlXmd3EvSJFEt3Lf66PAhTyVvyocsb1b0nHDeFp7CMqReCPAbsdXTLXSo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=opensource.cirrus.com; spf=pass smtp.mailfrom=opensource.cirrus.com; dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com header.b=IECkVOhi; arc=none smtp.client-ip=67.231.149.25
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=opensource.cirrus.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=opensource.cirrus.com
 Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
-	by mx0a-001ae601.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 4319jd4e020490;
-	Mon, 1 Apr 2024 05:02:13 -0500
+	by mx0a-001ae601.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 4315mEb3029960;
+	Mon, 1 Apr 2024 05:02:14 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=
 	from:to:cc:subject:date:message-id:in-reply-to:references
 	:mime-version:content-transfer-encoding:content-type; s=
-	PODMain02222019; bh=QyfgH0d6kp4gRp6HlUFJbwfDEHAE87v+bFNRFgBAiMM=; b=
-	Wb4xgyCnUQoxMSFoyqerBRoCGWcUAVRNlkSkUbIBp/nqlfKbfgIUjqHjgHLr3jMo
-	1Ry+UUmW2VPGvE4cwmLNzeYj8/XpnpJhz8Yc8KPJUkQbi9y6wHIngwWJiEm8P321
-	a63OgI//UR42usNwrsbKR3Nujl2rur9hgEiPLx1JtRygmHGv5xYNmWI7QwfQdjER
-	u4pToHG9w/E3hYG6bzMgw8+IrDvPHgzxa014Upm0zqI2Pb6BU/BMpqITHNRSjjE8
-	LIzQ+wWyMHJX6upZpJ8uJOncKMHlmSJmtAiEfhRRdhdoKdHwYuDjatq/zJEQREjj
-	OGohMwe8BWoz09wUc+uW2g==
-Received: from ediex01.ad.cirrus.com ([84.19.233.68])
-	by mx0a-001ae601.pphosted.com (PPS) with ESMTPS id 3x6g4xhtw7-1
+	PODMain02222019; bh=BsjfU2++YD2KMtQsHziYmhBOdrFvAcXQOjckWGQdiCY=; b=
+	IECkVOhisZ8akWVbju5r4GLAZCv6pwUaoSJSzljfnBvXf8EAoJUAbtTVJsJu8i4y
+	i30+dk+1MsqgUZsfIyFIke/sE6Vr0yi/B0TWLGuWJFZmCC5xnX62peLzX/1XiqsH
+	n85WCD+xxo/j2jFZWxKlKDEQikphYdQFjSMk2fwaq0nYWSbMsjOJlNIdznECePCF
+	Fdb7Wt09FiPFT3o9yWdEmPU0fvCjMA4PpIUcjjEW1OLoGbS4738QoISFMDrVSSXC
+	E4yKkYeIVQCV6lirvxS5gw/j6CvDPIKQ3NVEKZnxHLjHiwHc9sbHTnkX8JdSNYVj
+	zrONt9flIr9+YsJRmNtOBw==
+Received: from ediex02.ad.cirrus.com ([84.19.233.68])
+	by mx0a-001ae601.pphosted.com (PPS) with ESMTPS id 3x6g4xhtw6-3
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 01 Apr 2024 05:02:12 -0500 (CDT)
-Received: from ediex01.ad.cirrus.com (198.61.84.80) by ediex01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
+	Mon, 01 Apr 2024 05:02:14 -0500 (CDT)
+Received: from ediex01.ad.cirrus.com (198.61.84.80) by ediex02.ad.cirrus.com
+ (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.9; Mon, 1 Apr 2024
  11:02:10 +0100
 Received: from ediswmail9.ad.cirrus.com (198.61.86.93) by
@@ -56,7 +56,7 @@ Received: from ediswmail9.ad.cirrus.com (198.61.86.93) by
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.9
  via Frontend Transport; Mon, 1 Apr 2024 11:02:10 +0100
 Received: from ediswws06.ad.cirrus.com (ediswws06.ad.cirrus.com [198.90.208.18])
-	by ediswmail9.ad.cirrus.com (Postfix) with ESMTP id 3FD0A820270;
+	by ediswmail9.ad.cirrus.com (Postfix) with ESMTP id 43DD7820271;
 	Mon,  1 Apr 2024 10:02:10 +0000 (UTC)
 From: Richard Fitzgerald <rf@opensource.cirrus.com>
 To: <broonie@kernel.org>, <tiwai@suse.com>
@@ -64,9 +64,9 @@ CC: <linux-sound@vger.kernel.org>, <alsa-devel@alsa-project.org>,
         <linux-kernel@vger.kernel.org>, <patches@opensource.cirrus.com>,
         "Richard
  Fitzgerald" <rf@opensource.cirrus.com>
-Subject: [PATCH v2 2/3] ASoC: soc-card: Use snd_ctl_find_id_mixer() instead of open-coding
-Date: Mon, 1 Apr 2024 10:02:09 +0000
-Message-ID: <20240401100210.61277-3-rf@opensource.cirrus.com>
+Subject: [PATCH v2 3/3] ASoC: soc-card: Add KUnit test case for snd_soc_card_get_kcontrol
+Date: Mon, 1 Apr 2024 10:02:10 +0000
+Message-ID: <20240401100210.61277-4-rf@opensource.cirrus.com>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20240401100210.61277-1-rf@opensource.cirrus.com>
 References: <20240401100210.61277-1-rf@opensource.cirrus.com>
@@ -78,61 +78,245 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
-X-Proofpoint-ORIG-GUID: Ts69AvBdsGy9ubWHypuuhOhtbMX5BcX-
-X-Proofpoint-GUID: Ts69AvBdsGy9ubWHypuuhOhtbMX5BcX-
+X-Proofpoint-ORIG-GUID: UmITU5UMEQXXuzPm6VTxcYNBRm-NEamv
+X-Proofpoint-GUID: UmITU5UMEQXXuzPm6VTxcYNBRm-NEamv
 X-Proofpoint-Spam-Reason: safe
 
-Use the snd_ctl_find_id_mixer[_locked]() wrapper in
-snd_soc_card_get_kcontrol[_locked]() instead of open-coding a custom
-list walk of the card controls list.
+Add a new snd-soc-card KUnit test with a simple test case for
+snd_soc_card_get_kcontrol() and snd_soc_card_get_kcontrol_locked().
 
 Signed-off-by: Richard Fitzgerald <rf@opensource.cirrus.com>
 ---
- sound/soc/soc-card.c | 21 ++++-----------------
- 1 file changed, 4 insertions(+), 17 deletions(-)
+ sound/soc/Kconfig         |   8 ++
+ sound/soc/Makefile        |   4 +
+ sound/soc/soc-card-test.c | 184 ++++++++++++++++++++++++++++++++++++++
+ 3 files changed, 196 insertions(+)
+ create mode 100644 sound/soc/soc-card-test.c
 
-diff --git a/sound/soc/soc-card.c b/sound/soc/soc-card.c
-index 8a2f163da6bc..0a3104d4ad23 100644
---- a/sound/soc/soc-card.c
-+++ b/sound/soc/soc-card.c
-@@ -32,33 +32,20 @@ static inline int _soc_card_ret(struct snd_soc_card *card,
- struct snd_kcontrol *snd_soc_card_get_kcontrol_locked(struct snd_soc_card *soc_card,
- 						      const char *name)
- {
--	struct snd_card *card = soc_card->snd_card;
--	struct snd_kcontrol *kctl;
--
--	/* must be held read or write */
--	lockdep_assert_held(&card->controls_rwsem);
--
- 	if (unlikely(!name))
- 		return NULL;
+diff --git a/sound/soc/Kconfig b/sound/soc/Kconfig
+index 439fa631c342..a52afb423b46 100644
+--- a/sound/soc/Kconfig
++++ b/sound/soc/Kconfig
+@@ -66,6 +66,14 @@ config SND_SOC_TOPOLOGY_KUNIT_TEST
+ 	  userspace applications such as pulseaudio, to prevent unnecessary
+ 	  problems.
  
--	list_for_each_entry(kctl, &card->controls, list)
--		if (!strncmp(kctl->id.name, name, sizeof(kctl->id.name)))
--			return kctl;
--	return NULL;
-+	return snd_ctl_find_id_mixer_locked(soc_card->snd_card, name);
- }
- EXPORT_SYMBOL_GPL(snd_soc_card_get_kcontrol_locked);
++config SND_SOC_CARD_KUNIT_TEST
++	tristate "KUnit tests for SoC card"
++	depends on KUNIT
++	default KUNIT_ALL_TESTS
++	help
++	  If you want to perform tests on ALSA SoC card functions say Y here.
++	  If unsure, say N.
++
+ config SND_SOC_UTILS_KUNIT_TEST
+ 	tristate "KUnit tests for SoC utils"
+ 	depends on KUNIT
+diff --git a/sound/soc/Makefile b/sound/soc/Makefile
+index 8376fdb217ed..f90f5300b36e 100644
+--- a/sound/soc/Makefile
++++ b/sound/soc/Makefile
+@@ -12,6 +12,10 @@ ifneq ($(CONFIG_SND_SOC_TOPOLOGY_KUNIT_TEST),)
+ obj-$(CONFIG_SND_SOC_TOPOLOGY_KUNIT_TEST) += soc-topology-test.o
+ endif
  
- struct snd_kcontrol *snd_soc_card_get_kcontrol(struct snd_soc_card *soc_card,
- 					       const char *name)
- {
--	struct snd_card *card = soc_card->snd_card;
--	struct snd_kcontrol *kctl;
-+	if (unlikely(!name))
-+		return NULL;
- 
--	down_read(&card->controls_rwsem);
--	kctl = snd_soc_card_get_kcontrol_locked(soc_card, name);
--	up_read(&card->controls_rwsem);
--
--	return kctl;
-+	return snd_ctl_find_id_mixer(soc_card->snd_card, name);
- }
- EXPORT_SYMBOL_GPL(snd_soc_card_get_kcontrol);
- 
++ifneq ($(CONFIG_SND_SOC_CARD_KUNIT_TEST),)
++obj-$(CONFIG_SND_SOC_CARD_KUNIT_TEST) += soc-card-test.o
++endif
++
+ ifneq ($(CONFIG_SND_SOC_UTILS_KUNIT_TEST),)
+ # snd-soc-test-objs := soc-utils-test.o
+ obj-$(CONFIG_SND_SOC_UTILS_KUNIT_TEST) += soc-utils-test.o
+diff --git a/sound/soc/soc-card-test.c b/sound/soc/soc-card-test.c
+new file mode 100644
+index 000000000000..075c52fe82e5
+--- /dev/null
++++ b/sound/soc/soc-card-test.c
+@@ -0,0 +1,184 @@
++// SPDX-License-Identifier: GPL-2.0-only
++// Copyright (C) 2024 Cirrus Logic, Inc. and
++//                    Cirrus Logic International Semiconductor Ltd.
++
++#include <kunit/device.h>
++#include <kunit/test.h>
++#include <linux/module.h>
++#include <sound/control.h>
++#include <sound/soc.h>
++#include <sound/soc-card.h>
++
++struct soc_card_test_priv {
++	struct device *card_dev;
++	struct snd_soc_card *card;
++};
++
++static const struct snd_kcontrol_new test_card_controls[] = {
++	SOC_SINGLE("Fee", SND_SOC_NOPM, 0, 1, 0),
++	SOC_SINGLE("Fi", SND_SOC_NOPM, 1, 1, 0),
++	SOC_SINGLE("Fo", SND_SOC_NOPM, 2, 1, 0),
++	SOC_SINGLE("Fum", SND_SOC_NOPM, 3, 1, 0),
++	SOC_SINGLE("Left Fee", SND_SOC_NOPM, 4, 1, 0),
++	SOC_SINGLE("Right Fee", SND_SOC_NOPM, 5, 1, 0),
++	SOC_SINGLE("Left Fi", SND_SOC_NOPM, 6, 1, 0),
++	SOC_SINGLE("Right Fi", SND_SOC_NOPM, 7, 1, 0),
++	SOC_SINGLE("Left Fo", SND_SOC_NOPM, 8, 1, 0),
++	SOC_SINGLE("Right Fo", SND_SOC_NOPM, 9, 1, 0),
++	SOC_SINGLE("Left Fum", SND_SOC_NOPM, 10, 1, 0),
++	SOC_SINGLE("Right Fum", SND_SOC_NOPM, 11, 1, 0),
++};
++
++static void test_snd_soc_card_get_kcontrol(struct kunit *test)
++{
++	struct soc_card_test_priv *priv = test->priv;
++	struct snd_soc_card *card = priv->card;
++	struct snd_kcontrol *kc;
++	struct soc_mixer_control *mc;
++	int i, ret;
++
++	ret = snd_soc_add_card_controls(card, test_card_controls, ARRAY_SIZE(test_card_controls));
++	KUNIT_ASSERT_EQ(test, ret, 0);
++
++	/* Look up every control */
++	for (i = 0; i < ARRAY_SIZE(test_card_controls); ++i) {
++		kc = snd_soc_card_get_kcontrol(card, test_card_controls[i].name);
++		KUNIT_EXPECT_NOT_ERR_OR_NULL_MSG(test, kc, "Failed to find '%s'\n",
++						 test_card_controls[i].name);
++		if (!kc)
++			continue;
++
++		/* Test that it is the correct control */
++		mc = (struct soc_mixer_control *)kc->private_value;
++		KUNIT_EXPECT_EQ_MSG(test, mc->shift, i, "For '%s'\n", test_card_controls[i].name);
++	}
++
++	/* Test some names that should not be found */
++	kc = snd_soc_card_get_kcontrol(card, "None");
++	KUNIT_EXPECT_NULL(test, kc);
++
++	kc = snd_soc_card_get_kcontrol(card, "Left None");
++	KUNIT_EXPECT_NULL(test, kc);
++
++	kc = snd_soc_card_get_kcontrol(card, "Left");
++	KUNIT_EXPECT_NULL(test, kc);
++
++	kc = snd_soc_card_get_kcontrol(card, NULL);
++	KUNIT_EXPECT_NULL(test, kc);
++}
++
++static void test_snd_soc_card_get_kcontrol_locked(struct kunit *test)
++{
++	struct soc_card_test_priv *priv = test->priv;
++	struct snd_soc_card *card = priv->card;
++	struct snd_kcontrol *kc, *kcw;
++	struct soc_mixer_control *mc;
++	int i, ret;
++
++	ret = snd_soc_add_card_controls(card, test_card_controls, ARRAY_SIZE(test_card_controls));
++	KUNIT_ASSERT_EQ(test, ret, 0);
++
++	/* Look up every control */
++	for (i = 0; i < ARRAY_SIZE(test_card_controls); ++i) {
++		down_read(&card->snd_card->controls_rwsem);
++		kc = snd_soc_card_get_kcontrol_locked(card, test_card_controls[i].name);
++		up_read(&card->snd_card->controls_rwsem);
++		KUNIT_EXPECT_NOT_ERR_OR_NULL_MSG(test, kc, "Failed to find '%s'\n",
++						 test_card_controls[i].name);
++		if (!kc)
++			continue;
++
++		/* Test that it is the correct control */
++		mc = (struct soc_mixer_control *)kc->private_value;
++		KUNIT_EXPECT_EQ_MSG(test, mc->shift, i, "For '%s'\n", test_card_controls[i].name);
++
++		down_write(&card->snd_card->controls_rwsem);
++		kcw = snd_soc_card_get_kcontrol_locked(card, test_card_controls[i].name);
++		up_write(&card->snd_card->controls_rwsem);
++		KUNIT_EXPECT_NOT_ERR_OR_NULL_MSG(test, kcw, "Failed to find '%s'\n",
++						 test_card_controls[i].name);
++
++		KUNIT_EXPECT_PTR_EQ(test, kc, kcw);
++	}
++
++	/* Test some names that should not be found */
++	down_read(&card->snd_card->controls_rwsem);
++	kc = snd_soc_card_get_kcontrol_locked(card, "None");
++	up_read(&card->snd_card->controls_rwsem);
++	KUNIT_EXPECT_NULL(test, kc);
++
++	down_read(&card->snd_card->controls_rwsem);
++	kc = snd_soc_card_get_kcontrol_locked(card, "Left None");
++	up_read(&card->snd_card->controls_rwsem);
++	KUNIT_EXPECT_NULL(test, kc);
++
++	down_read(&card->snd_card->controls_rwsem);
++	kc = snd_soc_card_get_kcontrol_locked(card, "Left");
++	up_read(&card->snd_card->controls_rwsem);
++	KUNIT_EXPECT_NULL(test, kc);
++
++	down_read(&card->snd_card->controls_rwsem);
++	kc = snd_soc_card_get_kcontrol_locked(card, NULL);
++	up_read(&card->snd_card->controls_rwsem);
++	KUNIT_EXPECT_NULL(test, kc);
++}
++
++static int soc_card_test_case_init(struct kunit *test)
++{
++	struct soc_card_test_priv *priv;
++	int ret;
++
++	priv = kunit_kzalloc(test, sizeof(*priv), GFP_KERNEL);
++	if (!priv)
++		return -ENOMEM;
++
++	test->priv = priv;
++
++	priv->card_dev = kunit_device_register(test, "sound-soc-card-test");
++	priv->card_dev = get_device(priv->card_dev);
++	if (!priv->card_dev)
++		return -ENODEV;
++
++	priv->card = kunit_kzalloc(test, sizeof(*priv->card), GFP_KERNEL);
++	if (!priv->card)
++		return -ENOMEM;
++
++	priv->card->name = "soc-card-test";
++	priv->card->dev = priv->card_dev;
++	priv->card->owner = THIS_MODULE;
++
++	ret = snd_soc_register_card(priv->card);
++	if (!ret)
++		return ret;
++
++	return 0;
++}
++
++static void soc_card_test_case_exit(struct kunit *test)
++{
++	struct soc_card_test_priv *priv = test->priv;
++
++	if (priv->card)
++		snd_soc_unregister_card(priv->card);
++
++	if (priv->card_dev)
++		put_device(priv->card_dev);
++}
++
++static struct kunit_case soc_card_test_cases[] = {
++	KUNIT_CASE(test_snd_soc_card_get_kcontrol),
++	KUNIT_CASE(test_snd_soc_card_get_kcontrol_locked),
++	{}
++};
++
++static struct kunit_suite soc_card_test_suite = {
++	.name = "soc-card",
++	.test_cases = soc_card_test_cases,
++	.init = soc_card_test_case_init,
++	.exit = soc_card_test_case_exit,
++};
++
++kunit_test_suites(&soc_card_test_suite);
++
++MODULE_DESCRIPTION("ASoC soc-card KUnit test");
++MODULE_LICENSE("GPL");
 -- 
 2.39.2
 
