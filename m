@@ -1,142 +1,152 @@
-Return-Path: <linux-kernel+bounces-126926-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-126927-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id ACAA889448B
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 19:56:22 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id AC5C689448C
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 19:56:37 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C8A9F1C2170F
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 17:56:21 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 62007282889
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 17:56:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 863434E1CE;
-	Mon,  1 Apr 2024 17:56:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3F65C50249;
+	Mon,  1 Apr 2024 17:56:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b="La2OO3yl"
-Received: from mail-yw1-f172.google.com (mail-yw1-f172.google.com [209.85.128.172])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="NeyxgSbt"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.17])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EBC201DFE3
-	for <linux-kernel@vger.kernel.org>; Mon,  1 Apr 2024 17:56:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9A08A4F200
+	for <linux-kernel@vger.kernel.org>; Mon,  1 Apr 2024 17:56:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.17
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711994170; cv=none; b=gxQZLgtQXNxzUGcGcmuf/jHiUH8okXGUEsCA9O8cgWs2D48BlkS+ZB02922EI6tZ5VrCExrwRzGIrb2WQDM3qZJr0AL14McjhJYrDTFtyAeZgfnhKKae67UzVHC25ifIjX7ntxBGvhB8f/6dO8HRMepQpDLbU5jVU9rN7SAqSDM=
+	t=1711994178; cv=none; b=nmGNLRLyz9odMudE2dQXEoee8Yc+/vQC+6UhaYjOjkoJeLiYJassDb4GbmztuHwI+J+UJ756aU3tO9hyknVy3GiGiTYEWiTBglBqIL3OJoYpZsTMEJiHWQ8/50UIwNJUpvQ26ixPBnafZcjNakqElFnQ3nW+Zfpyii9IlQCfXsY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711994170; c=relaxed/simple;
-	bh=fJ3mDYlOFdsxP5e3NSHYMyBrX3fsoPQq5tmWrO4oCpg=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=siqZ6DSlAAl8Z36iF+s97fXZjmkGKP5yFJnK+rojJhAF+/fKB1tiJ7PavZh8z7wyx89z+TFoYI92PIyUQ9e8tTXZNk+mXoPsiBoIfV7iXi4/SYwUZoE1hah48NOcPjlngfjOxFbW9VJmVZgab/lvzbAoSeMiuqZRGLqHWkDU8kk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com; spf=pass smtp.mailfrom=rivosinc.com; dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b=La2OO3yl; arc=none smtp.client-ip=209.85.128.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rivosinc.com
-Received: by mail-yw1-f172.google.com with SMTP id 00721157ae682-6143fd4c182so28966657b3.0
-        for <linux-kernel@vger.kernel.org>; Mon, 01 Apr 2024 10:56:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1711994167; x=1712598967; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Ayg8yEodnyIkhrNKh0vWxZ555hD22ZpFvhWL8Rikvao=;
-        b=La2OO3ylCdYIFPVA3jXXm6oenj1aweY8q87bO0Ib7DBSHhMrxT73tScAvjg9KbUwW0
-         518LczmaGyah+E4JgHdbyxSrUF7++zrIMRmAz3vwvAKSPtw2Xyj1XUXZVGCMkv4JHUsD
-         YjJdUKFNzF69ThurIJ5lf/FkYzA7dtzXcvQ1g5e/pesIoj6hyrQuRQ048q3QvC09HO3R
-         eUWrQIxib3Byc4A00Ravnsuxe+AwBFz8bDbgl5CnoMCMthovkO3h7GIztw2ZenYFjvJr
-         ThW8Vd9nQVB5AcrRvzh/ynAwsYoStF5n6zoone9flnGkSMCOasQth32PaBDuBu1OLGzs
-         jBmA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711994167; x=1712598967;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Ayg8yEodnyIkhrNKh0vWxZ555hD22ZpFvhWL8Rikvao=;
-        b=TcuTmYBW+iRCbNeB1LSa6J0eLvKSiC6hNtkZFD52THku+OxtAlNXmuCsMX+Q1U4DQM
-         sVy8kirGHtkQQW1g7ojuKP+9d//y/ZDU5YZhBFFy3WWvaiaizcGhrOgC7/PGVKCEKtta
-         L+PZNmF284MUZ/6tLbjAc5HNGy+EUlnJyurXp4Zcd6Yj+OUmA5ZIZ3+2riUkGpAXN6gX
-         kSilep7yJPUAnRxmNrgxRKGBMXKmIpJA6vFSv7Z7xpK+cibwxrIzgo4t9qtj/zVXaTKY
-         7QeOQWkNDOgYStHab8bQwE5MJg/QFayZgjU3SeohJUMklhGbUY1BMwsBeJ8xzVWAE3sr
-         hJ7A==
-X-Forwarded-Encrypted: i=1; AJvYcCW8bNa9wjGTO/lIxEvA3ACNA9hyhi4Q/arrKlRqASKWoJ7/f5psacau2/8jhnsjKXRGp7hbXu5oLdgWFMVrrlotp/AMC/7mSfq5BKXA
-X-Gm-Message-State: AOJu0YxwL/COvt37PUnVAFWjkeuUeBorFVRg3sA7BPAFvTs8AD0CvyVG
-	pez3xkqPCQTVWxfLeXBVRvGO+VtSagERTkC71CuMLvfxFAdNnXcC5aly1eHTR7KDRDW+k9ry5ps
-	sJgucQ5q+ZRgPJQi2hC0LP06h7k56cGts45/gBQ==
-X-Google-Smtp-Source: AGHT+IHbNEbSTz8DBCYKR9MqO/caPtbEZWICPniiYQejcusJBa6iSdkbnh9sfMt7GjtTJc/3SigyJ/z+M6qQOU/SrM8=
-X-Received: by 2002:a0d:c984:0:b0:611:a5b:337f with SMTP id
- l126-20020a0dc984000000b006110a5b337fmr9528979ywd.10.1711994165573; Mon, 01
- Apr 2024 10:56:05 -0700 (PDT)
+	s=arc-20240116; t=1711994178; c=relaxed/simple;
+	bh=K8ZYwb8nVuPFiuvTlpHRAIwMR+3U3ALosS7AP6ycdZI=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=uh4zS+azvoazyltn6jOMNYosCtt2tSn0SMvn9LdNFr5Qgo0l0TsuuBK+zNnERBf0STkP3t4GS9JYkeYg4FIHfISvz8y+DbTqsmecvppfQku7Ry0g/xTgWAlAPm80j9FrALZd/BSWCgN52I0eIF6wVd+XrvvjglHNp/4Y70BK9sc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=NeyxgSbt; arc=none smtp.client-ip=198.175.65.17
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1711994177; x=1743530177;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=K8ZYwb8nVuPFiuvTlpHRAIwMR+3U3ALosS7AP6ycdZI=;
+  b=NeyxgSbt55MImhV4ZPznulnI63Ql44dvMAmJne62epvUTrwLnlMzKKQE
+   rnnWhPHuCe7GiHGsg/PH6U/5HlCyJG3izDkxyuI55PS0AqRT7g7Ydquyf
+   83tG3ZyNrAtJ+RLnGjJD7wMZTzELf5Oxl/hwKifCxi5/tgqEpQ/vM4Gok
+   oHMSc05U60o+HpEY3oQ3OdLDSJPmFYUjgQQ+AdLuqVIaQ3fxx+PYsZwv6
+   RhEZbDQBlLWPdiG3NzZ/DIBn9qCpWtHXC42a94AG9oof5C7eAzIFO0tF4
+   bdUdXlCH3dCLg/6Js4TkSGQ7FdtD54vOvjfCy2E73rWPKIsIbDIfFrYg3
+   Q==;
+X-CSE-ConnectionGUID: NYOfrDdDTmauMoA0pTPK/w==
+X-CSE-MsgGUID: 7278nQCSTWydya/oUHVS3w==
+X-IronPort-AV: E=McAfee;i="6600,9927,11031"; a="7250876"
+X-IronPort-AV: E=Sophos;i="6.07,172,1708416000"; 
+   d="scan'208";a="7250876"
+Received: from fmviesa002.fm.intel.com ([10.60.135.142])
+  by orvoesa109.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Apr 2024 10:56:16 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,172,1708416000"; 
+   d="scan'208";a="40945848"
+Received: from mminuddi-mobl1.amr.corp.intel.com (HELO [10.209.48.250]) ([10.209.48.250])
+  by fmviesa002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Apr 2024 10:56:15 -0700
+Message-ID: <8ee463af-fdbf-4514-bb6e-bf2fd61fbc06@intel.com>
+Date: Mon, 1 Apr 2024 10:56:14 -0700
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240329044459.3990638-1-debug@rivosinc.com> <20240329044459.3990638-28-debug@rivosinc.com>
- <4b38393a-f69d-4a77-a896-b6cd42c7edcf@collabora.com> <CAKC1njQ_RU=uHhrna=MFVdjAMjjQNqZWnkjPoJvO7CxtPMeNuQ@mail.gmail.com>
- <ef72ae20-6b68-496a-a819-8818ade0d433@collabora.com> <CAKC1njQj7GfkdE1HJD54utkoPqJXyqMeoXOxa6ActqZ-fSDuKQ@mail.gmail.com>
-In-Reply-To: <CAKC1njQj7GfkdE1HJD54utkoPqJXyqMeoXOxa6ActqZ-fSDuKQ@mail.gmail.com>
-From: Deepak Gupta <debug@rivosinc.com>
-Date: Mon, 1 Apr 2024 10:55:54 -0700
-Message-ID: <CAKC1njR3+mxZHEig8iZo+=0k_VFWg9ZYO3pzGi6s=uLZ5hOkKw@mail.gmail.com>
-Subject: Re: [PATCH v2 27/27] kselftest/riscv: kselftest for user mode cfi
-To: Muhammad Usama Anjum <usama.anjum@collabora.com>
-Cc: paul.walmsley@sifive.com, rick.p.edgecombe@intel.com, broonie@kernel.org, 
-	Szabolcs.Nagy@arm.com, kito.cheng@sifive.com, keescook@chromium.org, 
-	ajones@ventanamicro.com, conor.dooley@microchip.com, cleger@rivosinc.com, 
-	atishp@atishpatra.org, alex@ghiti.fr, bjorn@rivosinc.com, 
-	alexghiti@rivosinc.com, samuel.holland@sifive.com, conor@kernel.org, 
-	linux-doc@vger.kernel.org, linux-riscv@lists.infradead.org, 
-	linux-kernel@vger.kernel.org, devicetree@vger.kernel.org, linux-mm@kvack.org, 
-	linux-arch@vger.kernel.org, linux-kselftest@vger.kernel.org, corbet@lwn.net, 
-	tech-j-ext@lists.risc-v.org, palmer@dabbelt.com, aou@eecs.berkeley.edu, 
-	robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org, oleg@redhat.com, 
-	akpm@linux-foundation.org, arnd@arndb.de, ebiederm@xmission.com, 
-	Liam.Howlett@oracle.com, vbabka@suse.cz, lstoakes@gmail.com, shuah@kernel.org, 
-	brauner@kernel.org, andy.chiu@sifive.com, jerry.shih@sifive.com, 
-	hankuan.chen@sifive.com, greentime.hu@sifive.com, evan@rivosinc.com, 
-	xiao.w.wang@intel.com, charlie@rivosinc.com, apatel@ventanamicro.com, 
-	mchitale@ventanamicro.com, dbarboza@ventanamicro.com, sameo@rivosinc.com, 
-	shikemeng@huaweicloud.com, willy@infradead.org, vincent.chen@sifive.com, 
-	guoren@kernel.org, samitolvanen@google.com, songshuaishuai@tinylab.org, 
-	gerg@kernel.org, heiko@sntech.de, bhe@redhat.com, 
-	jeeheng.sia@starfivetech.com, cyy@cyyself.name, maskray@google.com, 
-	ancientmodern4@gmail.com, mathis.salmen@matsal.de, cuiyunhui@bytedance.com, 
-	bgray@linux.ibm.com, mpe@ellerman.id.au, baruch@tkos.co.il, alx@kernel.org, 
-	david@redhat.com, catalin.marinas@arm.com, revest@chromium.org, 
-	josh@joshtriplett.org, shr@devkernel.io, deller@gmx.de, omosnace@redhat.com, 
-	ojeda@kernel.org, jhubbard@nvidia.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 1/1] x86/mm/pae: Align up pteval_t, pmdval_t and pudval_t
+ to avoid split locks
+To: Javier Pello <devel@otheo.eu>, linux-kernel@vger.kernel.org
+Cc: x86@kernel.org, Thomas Gleixner <tglx@linutronix.de>,
+ Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+ Dave Hansen <dave.hansen@linux.intel.com>, "H. Peter Anvin" <hpa@zytor.com>
+References: <20240401185451.6897208962d3fc47a12ffb5a@otheo.eu>
+ <20240401185712.a80deeb2fddeded0ad42cc04@otheo.eu>
+Content-Language: en-US
+From: Dave Hansen <dave.hansen@intel.com>
+Autocrypt: addr=dave.hansen@intel.com; keydata=
+ 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
+In-Reply-To: <20240401185712.a80deeb2fddeded0ad42cc04@otheo.eu>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Mon, Apr 1, 2024 at 10:34=E2=80=AFAM Deepak Gupta <debug@rivosinc.com> w=
-rote:
->
-> On Mon, Apr 1, 2024 at 2:48=E2=80=AFAM Muhammad Usama Anjum
-> <usama.anjum@collabora.com> wrote:
-> >
-> > >>> Signed-off-by: Deepak Gupta <debug@rivosinc.com>
-> > >>> ---
-> > >>>  tools/testing/selftests/riscv/Makefile        |   2 +-
-> > >>>  tools/testing/selftests/riscv/cfi/Makefile    |  10 +
-> > >>>  .../testing/selftests/riscv/cfi/cfi_rv_test.h |  85 ++++
-> > >>>  .../selftests/riscv/cfi/riscv_cfi_test.c      |  91 +++++
-> > >>>  .../testing/selftests/riscv/cfi/shadowstack.c | 376 ++++++++++++++=
-++++
-> > >>>  .../testing/selftests/riscv/cfi/shadowstack.h |  39 ++
-> > >> Please add generated binaries in the .gitignore files.
-> > >
-> > > hmm...
-> > > I don't see binary as part of the patch. Which file are you referring
-> > > to here being binary?
-> > shadowstack would be generated by the build. Create a .gitignore file a=
-nd
-> > add it there. For example, look at
-> > tools/testing/selftests/riscv/vector/.gitignore to understand.
->
-> It's `shadowstack.c` (a C source file) and not a binary file.
+On 4/1/24 09:57, Javier Pello wrote:
+> -typedef u64	pteval_t;
+> -typedef u64	pmdval_t;
+> -typedef u64	pudval_t;
+> -typedef u64	p4dval_t;
+> -typedef u64	pgdval_t;
+> -typedef u64	pgprotval_t;
+> +/*
+> + * Variables of these types are subject to atomic compare-and-exchange
+> + * operations, so they have to be properly aligned to avoid split locks.
+> + */
+> +typedef u64	pteval_t	__aligned(8);
+> +typedef u64	pmdval_t	__aligned(8);
+> +typedef u64	pudval_t	__aligned(8);
+> +typedef u64	p4dval_t	__aligned(8);
+> +typedef u64	pgdval_t	__aligned(8);
+> +typedef u64	pgprotval_t	__aligned(8);
 
-Nevermind. I think what you want me to do is add a rule in `.gitignore`.
-I was thinking otherwise (that somehow you're seeing a binary file in
-patch set).
+First of all, how is it that you're running a PAE kernel on new, 64-bit
+hardware?  That's rather odd.
 
-Thanks. Will do that in the next iteration.
+The case that you're hitting is actually an on-stack pmd_t.  The fun
+part is that it's not shared and doesn't even _need_ atomics.  I think
+it's just using pmd_populate() because it's convenient.
+
+I'd honestly much rather just disable split lock support in 32-bit
+builds than mess with this stuff.  You really shouldn't be running
+32-but kernels on this hardware.
 
