@@ -1,217 +1,217 @@
-Return-Path: <linux-kernel+bounces-126787-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-126788-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 07380893CB3
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 17:15:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 3DF8A893CB6
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 17:17:47 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8B1C91F2113A
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 15:15:46 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id BEAC01F21578
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 15:17:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E823745C07;
-	Mon,  1 Apr 2024 15:15:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A119E46420;
+	Mon,  1 Apr 2024 15:17:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="fuS3Qooa"
-Received: from mail-lj1-f169.google.com (mail-lj1-f169.google.com [209.85.208.169])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=hpe.com header.i=@hpe.com header.b="GEwJij2p"
+Received: from mx0a-002e3701.pphosted.com (mx0a-002e3701.pphosted.com [148.163.147.86])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 518CB45948
-	for <linux-kernel@vger.kernel.org>; Mon,  1 Apr 2024 15:15:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ED94F45974;
+	Mon,  1 Apr 2024 15:17:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.147.86
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711984539; cv=none; b=CzEvXln4J+mckCB38QS27J7S84qk2s7ISFWyEw96dT3SMd1lkD0i5YxNqA4Cb3Gm1aSCeZxd+7Uo4emUXIh2/5NJeWORM7XA7ylBaZzMZZuD1CdE03Ro9RxIh79PUj691QznwCF+qKI3D/nTrh+wj9kubwcix8ksNm4Jcj1I3wA=
+	t=1711984657; cv=none; b=IxuC76jOQm+kYJ/j1fQXZo0ujwz4ycE8tcXsJD+CZfytgAX+y3fIpkZBVQvqFBr4GPEZHDwD/poor6gpi1X1R62N+P/Ch6yeWmI09/M65rRgyLNuoPJceo0pCZwg9dP1tNdfSGXhfd3s7whOhLDUcduFonlThACMZS9pvAghrmY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711984539; c=relaxed/simple;
-	bh=UGCJnGrY1HcT4tS9dtSCnBbe3N2cEX03n/ihCHy5DtM=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=ZmQHXPpR8mnYzlHDrU6Twj2T5Rg7LI4WX+HLhgbdDYVbZ06VGiMvo5k4oqAZiw7nbgZDGTCByz17DTVtAP3KRGsjAm9HzSXetTpuI/uxgXKpADNmwaKFZIWtHJXfKCuVL4UUzEtvtYiwbIFXyFrG3xnpwdp/cHVUQsD+8DR+aUk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=fuS3Qooa; arc=none smtp.client-ip=209.85.208.169
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lj1-f169.google.com with SMTP id 38308e7fff4ca-2d485886545so68354701fa.2
-        for <linux-kernel@vger.kernel.org>; Mon, 01 Apr 2024 08:15:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1711984535; x=1712589335; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=UGCJnGrY1HcT4tS9dtSCnBbe3N2cEX03n/ihCHy5DtM=;
-        b=fuS3QooaUMUHghgSy1M3y3jMB5yKg/HNEXBgdwVfJab+91pE22HnnM4bVvqDj9zbGx
-         RqW9zn0L9BK2YBJeT4RwGQHDH92vhpz5m2CKyY+1bfGhsmY01ISHKaxyU6CK2ptGdpNf
-         WPLSSLeQ29SVfgBLU/Qv+jl2yUZZTUZ6VgtsJxdj2syWLVYfZTA4aTnNAWBBROxSIJFD
-         /Q+yA02dYK0hIq8zNrswILnAxL1XSXPfVEfIvGQ2d0YUEfKJ0Q+0gq0AWGRllB7hF+PX
-         un9ppVfkaH9BZEBkW6ceeL9ppMotQAFvJzahaVs8K4nq+upHXJ+ISMOfG9JqZ2RFjsZB
-         kX4A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711984535; x=1712589335;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=UGCJnGrY1HcT4tS9dtSCnBbe3N2cEX03n/ihCHy5DtM=;
-        b=rhKA5myU5cjLnvULr4oNLXR5HjmPCde7swgLzceeNI5xB962dGY2tnTJRhvXYuaiCm
-         o+GdQxPY2HxIBwCwP0gvTu0oE/N+Lg199iyXNxgu9RyETuzbYCKbb9pZfRBSF5tg2rQj
-         NqH10cEF+50mFW3a6mGWgk5ph7Pb1ilRXE1RwWMK/tRCqGem6GP/POZc5/YMS0djt1d5
-         iBsGu43lxSaJEwcLmxRSU7+gGcExTiZf9nuZ2VMEApZ11oZnSieSoQCqiaMDYTIx6bVE
-         WXSo4ZlUTIybRKc/EDgrMjV0oMbnnI85F/RsukwXctEVdbGVtetwq5f3zFPK3ybeFHeE
-         eRjA==
-X-Forwarded-Encrypted: i=1; AJvYcCX5IUQQieI8istYqFAArx/7boEGNWkSjQGEsEh0VrTtshwhEXfmInJaGlmiYYJb6xKUzvtLspmjWa8PC47slWDQxxgqM+KuUDymRotG
-X-Gm-Message-State: AOJu0YwCdFAdEza7Xe7u5xdChlmphIxBv0AW9ehpZef/a9Iw8yWn28JL
-	5Q8BV1yadT/7GFGwGLAFycC2nUeaN0LjLc+gfF0HUAbXrYBlYyd7YIUl8nWNKIUpry+uZmkeQfh
-	bH1fjNliZVMt+YHVC1SPo5Sz6toc=
-X-Google-Smtp-Source: AGHT+IGWPNJzVz4HVG8JBI+Lb3BFjPn8V5RTtoWCOJIC3fg/s5S8XIefdWJSSyvjaaFSLZqqNbyLoYL5IT3mnGdozmc=
-X-Received: by 2002:a05:651c:384:b0:2d6:a609:9a33 with SMTP id
- e4-20020a05651c038400b002d6a6099a33mr7549832ljp.0.1711984535069; Mon, 01 Apr
- 2024 08:15:35 -0700 (PDT)
+	s=arc-20240116; t=1711984657; c=relaxed/simple;
+	bh=oJmSsv5xGOhFtnk+Xic/LQeUyvu+FYl2RG6Gz/YH/qs=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=eTEhyjbq5NLQgfeS/N8zXJeDrOX5PJPie/HqWl7qI/hYXrTMVbeRVcMj7dEFJukw86uYPzWg962VcNMpKICMsAAaGe1z2hVmPJI3M6OlWCyARvQYryueNcEG/8CgXbC7CvDWFnLnzhu/Qra4HlxFcpqqK775GYfRsDbz4qKPCkc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=hpe.com; spf=pass smtp.mailfrom=hpe.com; dkim=pass (2048-bit key) header.d=hpe.com header.i=@hpe.com header.b=GEwJij2p; arc=none smtp.client-ip=148.163.147.86
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=hpe.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=hpe.com
+Received: from pps.filterd (m0150241.ppops.net [127.0.0.1])
+	by mx0a-002e3701.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 431C2Qwp021586;
+	Mon, 1 Apr 2024 15:16:27 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=hpe.com; h=date : from : to : cc :
+ subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=pps0720; bh=BirW+UIBY1HR4YTM1gaQXYTvu6fujR94JXCjW3QUDQg=;
+ b=GEwJij2p2LTOrxopReL8DU9Uy/7sy1wneW3c+CHkmpffhuqrxvIw0/uECwm9v7v14/FA
+ bDcOq1fxAwFLH12Q4xpR9xznDMPXyNvSd5sZaSZuSJpRYXRvGcC6SJHDNA6AYBXDMhst
+ Q0D/3o9wYgN0YWjmloPRfaSS4JHBoZAEEK0W0eolKTk2GqQmq+Jv7eTVrOsW6ImZYH26
+ 8s8S2q17mb/GsW3FgG4PWlm0hGTbia4mV53/2M26H1yw4ID8G7OZh7/tv+tOtbHwMG5L
+ /rGKk/kBeXB008JuXMXNxL+iVo28sREMso0JBrgVex86XiCaLRbEkcHX9tKpzmrKegIF 3w== 
+Received: from p1lg14878.it.hpe.com ([16.230.97.204])
+	by mx0a-002e3701.pphosted.com (PPS) with ESMTPS id 3x7s8gauu3-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 01 Apr 2024 15:16:26 +0000
+Received: from p1lg14886.dc01.its.hpecorp.net (unknown [10.119.18.237])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by p1lg14878.it.hpe.com (Postfix) with ESMTPS id 63B281379E;
+	Mon,  1 Apr 2024 15:16:15 +0000 (UTC)
+Received: from swahl-home.5wahls.com (unknown [16.231.227.36])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(Client did not present a certificate)
+	by p1lg14886.dc01.its.hpecorp.net (Postfix) with ESMTPS id EA89E80360A;
+	Mon,  1 Apr 2024 15:15:59 +0000 (UTC)
+Date: Mon, 1 Apr 2024 10:15:57 -0500
+From: Steve Wahl <steve.wahl@hpe.com>
+To: "Eric W. Biederman" <ebiederm@xmission.com>
+Cc: Steve Wahl <steve.wahl@hpe.com>, Russ Anderson <rja@hpe.com>,
+        Ingo Molnar <mingo@kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>,
+        Borislav Petkov <bp@alien8.de>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>, linux-kernel@vger.kernel.org,
+        Linux regressions mailing list <regressions@lists.linux.dev>,
+        Pavin Joseph <me@pavinjoseph.com>, stable@vger.kernel.org,
+        Eric Hagberg <ehagberg@gmail.com>, Simon Horman <horms@verge.net.au>,
+        Dave Young <dyoung@redhat.com>, Sarah Brofeldt <srhb@dbc.dk>,
+        Dimitri Sivanich <sivanich@hpe.com>
+Subject: Re: [PATCH] x86/mm/ident_map: Use full gbpages in identity maps
+ except on UV platform.
+Message-ID: <ZgrPrZqAXeq7e_wh@swahl-home.5wahls.com>
+References: <20240322162135.3984233-1-steve.wahl@hpe.com>
+ <ZgABC1oQ9YJW6Bw3@gmail.com>
+ <20240325020334.GA10309@hpe.com>
+ <87o7b273p2.fsf@email.froward.int.ebiederm.org>
+ <ZgHTXvCQr6ycbVzp@swahl-home.5wahls.com>
+ <87r0fv6ddb.fsf@email.froward.int.ebiederm.org>
+ <ZgQ8Ej-MLlNJR6wn@swahl-home.5wahls.com>
+ <87zfuj2bgh.fsf@email.froward.int.ebiederm.org>
+ <ZgWO5I_p8zHyp3en@swahl-home.5wahls.com>
+ <87msqf12sy.fsf@email.froward.int.ebiederm.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <CACFO4hLEReDiPvaLmEj1c105xUnC3o_zXshpw1zF_+2n0CZpiQ@mail.gmail.com>
-In-Reply-To: <CACFO4hLEReDiPvaLmEj1c105xUnC3o_zXshpw1zF_+2n0CZpiQ@mail.gmail.com>
-From: Kairui Song <ryncsn@gmail.com>
-Date: Mon, 1 Apr 2024 23:15:18 +0800
-Message-ID: <CAMgjq7C-4H5zcbs_-mvSNBBWiGhx__0_sTTG32Nfsz7TnP=i5Q@mail.gmail.com>
-Subject: Re: [PATCH] mm: swap: prejudgement swap_has_cache to avoid page allocation
-To: Zhaoyu Liu <liuzhaoyu.zackary@bytedance.com>
-Cc: akpm@linux-foundation.org, ying.huang@intel.com, songmuchun@bytedance.com, 
-	david@redhat.com, willy@infradead.org, chrisl@kernel.org, nphamcs@gmail.com, 
-	yosryahmed@google.com, guo.ziliang@zte.com.cn, linux-kernel@vger.kernel.org, 
-	linux-mm@kvack.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <87msqf12sy.fsf@email.froward.int.ebiederm.org>
+X-Proofpoint-ORIG-GUID: SldB7dXPKExcbOG7DIQQKbrxLxnGuLBX
+X-Proofpoint-GUID: SldB7dXPKExcbOG7DIQQKbrxLxnGuLBX
+X-HPE-SCL: -1
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-04-01_10,2024-04-01_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0 mlxscore=0
+ priorityscore=1501 lowpriorityscore=0 spamscore=0 adultscore=0
+ malwarescore=0 clxscore=1015 bulkscore=0 suspectscore=0 mlxlogscore=999
+ phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2403210000 definitions=main-2404010108
 
-On Mon, Apr 1, 2024 at 10:15=E2=80=AFPM Zhaoyu Liu
-<liuzhaoyu.zackary@bytedance.com> wrote:
->
+On Sat, Mar 30, 2024 at 10:46:21PM -0500, Eric W. Biederman wrote:
+> Steve Wahl <steve.wahl@hpe.com> writes:
+> 
+> > On Thu, Mar 28, 2024 at 12:05:02AM -0500, Eric W. Biederman wrote:
+> >> 
+> >> From my perspective the entire reason for wanting to be fine grained and
+> >> precise in the kernel memory map is because the UV systems don't have
+> >> enough MTRRs.  So you have to depend upon the cache-ability attributes
+> >> for specific addresses of memory coming from the page tables instead of
+> >> from the MTRRs.
+> >
+> > It would be more accurate to say we depend upon the addresses not
+> > being listed in the page tables at all.  We'd be OK with mapped but
+> > not accessed, if it weren't for processor speculation.  There's no "no
+> > access" setting within the existing MTRR definitions, though there may
+> > be a setting that would rein in processor speculation enough to make
+> > due.
+> 
+> The uncached setting and the write-combining settings that are used for
+> I/O are required to disable speculation for any regions so marked.  Any
+> reads or writes to a memory mapped I/O region can result in hardware
+> with processing it as a command.  Which as I understand it is exactly
+> the problem with UV systems.
+> 
+> Frankly not mapping an I/O region (in an identity mapped page table)
+> instead of properly mapping it as it would need to be mapped for
+> performing I/O seems like a bit of a bug.
+> 
+> >> If you had enough MTRRs more defining the page tables to be precisely
+> >> what is necessary would be simply an exercise in reducing kernel
+> >> performance, because it is more efficient in both page table size, and
+> >> in TLB usage to use 1GB pages instead of whatever smaller pages you have
+> >> to use for oddball regions.
+> >> 
+> >> For systems without enough MTRRs the small performance hit in paging
+> >> performance is the necessary trade off.
+> >> 
+> >> At least that is my perspective.  Does that make sense?
+> >
+> > I think I'm begining to get your perspective.  From your point of
+> > view, is kexec failing with "nogbpages" set a bug?  My point of view
+> > is it likely is.  I think your view would say it isn't?
+> 
+> I would say it is a bug.
+> 
+> Part of the bug is someone yet again taking something simple that
+> kexec is doing and reworking it to use generic code, then changing
+> the generic code to do something different from what kexec needs
+> and then being surprised that kexec stops working.
+> 
+> The interface kexec wants to provide to whatever is being loaded is not
+> having to think about page tables until that software is up far enough
+> to enable their own page tables.
+> 
+> People being clever and enabling just enough pages in the page  tables
+> to work based upon the results of some buggy (they are always buggy some
+> are just less so than others) boot up firmware is where I get concerned.
+> 
+> Said another way the point is to build an identity mapped page table.
+> Skipping some parts of the physical<->virtual identity because we seem
+> to think no one will use it is likely a bug.
 
-Hi Zhaoyu
+Hmm.  I would think what's needed for kexec is to create, as nearly as
+possible, identical conditions to what the BIOS / bootloader provides
+when jumping to the kernel entry point.  Whatever agreements are set
+on entry to the kernel, kexec needs to match.
 
-Not sure why but I can't apply your patch, maybe you need to fix your
-email client?
+And I think you want a completely identity mapped table to match those
+entry point requirements, that's why on other platforms, the condition
+is MMU turned off.
 
-> Based on qemu arm64 - latest kernel + 100M memory + 1024M swapfile.
-> Create 1G anon mmap and set it to shared, and has two processes
-> randomly access the shared memory. When they are racing on swap cache,
-> on average, each "alloc_pages_mpol + swapcache_prepare + folio_put"
-> took about 1475 us.
->
-> So skip page allocation if SWAP_HAS_CACHE was set, just
-> schedule_timeout_uninterruptible and continue to acquire page
-> via filemap_get_folio() from swap cache, to speedup
-> __read_swap_cache_async.
->
-> Signed-off-by: Zhaoyu Liu
-> ---
-> include/linux/swap.h | 6 ++++++
-> mm/swap_state.c | 10 ++++++++++
-> mm/swapfile.c | 15 +++++++++++++++
-> 3 files changed, 31 insertions(+)
->
-> diff --git a/include/linux/swap.h b/include/linux/swap.h
-> index a211a0383425..8a0013299f38 100644
-> --- a/include/linux/swap.h
-> +++ b/include/linux/swap.h
-> @@ -480,6 +480,7 @@ extern sector_t swapdev_block(int, pgoff_t);
-> extern int __swap_count(swp_entry_t entry);
-> extern int swap_swapcount(struct swap_info_struct *si, swp_entry_t entry)=
-;
-> extern int swp_swapcount(swp_entry_t entry);
-> +extern bool swap_has_cache(struct swap_info_struct *si, swp_entry_t entr=
-y);
-> struct swap_info_struct *swp_swap_info(swp_entry_t entry);
-> struct backing_dev_info;
-> extern int init_swap_address_space(unsigned int type, unsigned long nr_pa=
-ges);
-> @@ -570,6 +571,11 @@ static inline int swp_swapcount(swp_entry_t entry)
-> return 0;
-> }
->
-> +static inline bool swap_has_cache(struct swap_info_struct *si, swp_entry=
-_t entry)
-> +{
-> + return false;
-> +}
-> +
-> static inline swp_entry_t folio_alloc_swap(struct folio *folio)
-> {
-> swp_entry_t entry;
-> diff --git a/mm/swap_state.c b/mm/swap_state.c
-> index bfc7e8c58a6d..f130cfc669ce 100644
-> --- a/mm/swap_state.c
-> +++ b/mm/swap_state.c
-> @@ -462,6 +462,15 @@ struct folio *__read_swap_cache_async(swp_entry_t en=
-try, gfp_t gfp_mask,
-> if (!swap_swapcount(si, entry) && swap_slot_cache_enabled)
-> goto fail_put_swap;
->
-> + /*
-> + * Skipping page allocation if SWAP_HAS_CACHE was set,
-> + * just schedule_timeout_uninterruptible and continue to
-> + * acquire page via filemap_get_folio() from swap cache,
-> + * to speedup __read_swap_cache_async.
-> + */
-> + if (swap_has_cache(si, entry))
-> + goto skip_alloc;
-> +
+From that point of view, it does make sense to special case UV systems
+for this.  The restricted areas we're talking about are not in the map
+when the bootloader is started on the UV platform.
 
-But will this cause more lock contention? You need to lock the cluster
-for the has_cache now.
+> I really don't see any point in putting holes in such a page table for
+> any address below the highest address that is good for something.  Given
+> that on some systems the MTRRs are insufficient to do there job it
+> definitely makes sense to not enable caching on areas that we don't
+> think are memory.
 
-> /*
-> * Get a new folio to read into from swap. Allocate it now,
-> * before marking swap_map SWAP_HAS_CACHE, when -EEXIST will
-> @@ -483,6 +492,7 @@ struct folio *__read_swap_cache_async(swp_entry_t ent=
-ry, gfp_t gfp_mask,
-> if (err !=3D -EEXIST)
-> goto fail_put_swap;
->
-> +skip_alloc:
-> /*
-> * Protect against a recursive call to __read_swap_cache_async()
-> * on the same entry waiting forever here because SWAP_HAS_CACHE
-> diff --git a/mm/swapfile.c b/mm/swapfile.c
-> index cf900794f5ed..5388950c4ca6 100644
-> --- a/mm/swapfile.c
-> +++ b/mm/swapfile.c
-> @@ -1513,6 +1513,21 @@ int swp_swapcount(swp_entry_t entry)
-> return count;
-> }
->
-> +/*
-> + * Verify that a swap entry has been tagged with SWAP_HAS_CACHE
-> + */
-> +bool swap_has_cache(struct swap_info_struct *si, swp_entry_t entry)
-> +{
-> + pgoff_t offset =3D swp_offset(entry);
-> + struct swap_cluster_info *ci;
-> + bool has_cache;
-> +
-> + ci =3D lock_cluster_or_swap_info(si, offset);
-> + has_cache =3D !!(si->swap_map[offset] & SWAP_HAS_CACHE);
+Well, on the UV platform, these addresses are *not* good for
+something, at least from any processor's point of view, nor any IO
+device (they are not allowed to appear in any DMA or PCI bus master
+transaction, either).  A hardware ASIC is using this portion of local
+RAM to hold some tables that are too large to put directly on the
+ASIC.  Things turn ugly if anyone else tries to access these
+addresses.
 
-I think you also need to check swap_count here, if an entry was just
-freed or loaded into slot cache, it will also have SWAP_HAS_CACHE set.
+In another message, Pavin thanked you for you work on kexec.  I'd like
+to express my appreciation also.  In my current job, I'm mostly
+focused on its use for kdump kernels.  I've been dealing with kernel
+crash dumps since running Unix on i386 machines, and always had do
+deal with "OK, but what if the kernel state gets corrupt enough that
+the disk driver won't work, or network if you're trying to do a remote
+dump."  The use of kexec to start a fresh instance of the kernel is an
+excelent way to solve that problem, in my opinion.  And a couple of
+jobs ago we were able to use it to restart a SAN switch after software
+upgrade, without needing to stop forwarding traffic, which wouldn't
+have been possible without kexec.
 
-I have a very similar function in my another series (see __swap_has_cache):
-https://lore.kernel.org/all/20240326185032.72159-10-ryncsn@gmail.com/
+Thanks,
 
-The situation is different with this patch though. But this check is
-not reliable in both patches, having SWAP_HAS_CACHE doesn't mean the
-folio is in the cache, and even if it's in the cache, it might get
-freed very soon. So you need to ensure later checks can ensure the
-final result is not affected.
+--> Steve Wahl
 
-eg. If swap_has_cache returns true, then swap cache is freed, and
-skip_if_exists is set to true, __read_swap_cache_async will return
-NULL for an entry that it should be able to alloc and cache, could
-this be a problem (for example, causing zswap writeback to fail with
-ENOMEM due to readahead)?
-
-Also the race window that you are trying to avoid seems to be very
-short and rare? Not sure if the whole idea is worth it and actually
-affects performance in a positive way, any data on that?
+-- 
+Steve Wahl, Hewlett Packard Enterprise
 
