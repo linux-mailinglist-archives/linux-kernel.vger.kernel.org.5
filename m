@@ -1,166 +1,81 @@
-Return-Path: <linux-kernel+bounces-126600-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-126601-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 35739893A3A
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 12:38:42 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id E0EC5893A3E
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 12:39:01 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 584B11C2100C
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 10:38:41 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 80A6B1F2117A
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 10:39:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B377120DDB;
-	Mon,  1 Apr 2024 10:38:28 +0000 (UTC)
-Received: from vps-vb.mhejs.net (vps-vb.mhejs.net [37.28.154.113])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BFC29200A6;
+	Mon,  1 Apr 2024 10:38:35 +0000 (UTC)
+Received: from mx2.usergate.com (mx2.usergate.com [46.229.79.1])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 05238200A6
-	for <linux-kernel@vger.kernel.org>; Mon,  1 Apr 2024 10:38:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=37.28.154.113
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 81DF22209F;
+	Mon,  1 Apr 2024 10:38:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.229.79.1
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711967908; cv=none; b=ZlMfu84iagMCBpqTz3h3hK7ItxRAel+yDd/7+YnMukXd/GX6ORHFnmDklGA2jfBDlggNCW97qzcPwmt6sbk1y5o3BZs3QF2aJaNGEzcsR0HxDF+r1En0hA+ui+5FBlnCG7ED2zIXxlZyK+6MFYgrwMBSUvjP3xoSfWWQhshlcrg=
+	t=1711967915; cv=none; b=G8emiY1on8Y1rJtxLUIEej0KNcxhcor5SK2prC8Rrrq5y+WZafbhPPkHPcQ7LsZk9oUR3Zjmiyp8ai+W8kJfXyaoh0fztBveIjmAiQWYA7IZJEJHHzzhKLppuaNvI/440907vAl1GVz2I7bJx16S1cPnPK+vqVkyBm5H/Z07O50=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711967908; c=relaxed/simple;
-	bh=xALpn2xp66RFV4OxE/ZnsPAvZ5zAuLADDlRfGuPxKiU=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=br44KBeRoTxJEOS9LZ1ZcrmnlJ7EIB2DOy7GhCzDPikt7EkV8ImxN7UjDdHrK7HxXRzB4cUKeIq8fMK/OThFCAkGEH69zu0oL1l1G1EnSyuw7nYmSAzdrhMDsloAS49LZC/h2PIzfMt8akZSW71DX7PDKYpey+g5lD7a12uRAFk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=maciej.szmigiero.name; spf=pass smtp.mailfrom=maciej.szmigiero.name; arc=none smtp.client-ip=37.28.154.113
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=maciej.szmigiero.name
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=maciej.szmigiero.name
-Received: from MUA
-	by vps-vb.mhejs.net with esmtps  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-	(Exim 4.94.2)
-	(envelope-from <mail@maciej.szmigiero.name>)
-	id 1rrF3C-0000cd-Fg; Mon, 01 Apr 2024 12:38:02 +0200
-Message-ID: <d111a52c-8f42-4743-9b1a-691882ca58be@maciej.szmigiero.name>
-Date: Mon, 1 Apr 2024 12:37:56 +0200
+	s=arc-20240116; t=1711967915; c=relaxed/simple;
+	bh=3wAh+pB/PnNQex92i1+AES9ZDslGICWsgIRD4jVuNyI=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=el31ggzNFczMKnlH4+D7n6ygLqrdW9XssrYN2ktQppp63KugO1CoffpDkDpdToRi60U+W8HP/EbHRpELfbCLFpXJGoEDq/zDJow0MQtNC5pSqHhhyVNjP2xZ6W63S7gpxWUjCPhav9J5H/woSny9PnAqi9bgWkcCLOLGt0xDmPc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=usergate.com; spf=pass smtp.mailfrom=usergate.com; arc=none smtp.client-ip=46.229.79.1
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=usergate.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=usergate.com
+Received: from mail.usergate.com[192.168.90.36] by mx2.usergate.com with ESMTP id
+	 F0569C2093D044FBB24DB97CF6AC9904; Mon, 1 Apr 2024 17:38:21 +0700
+From: Aleksandr Aprelkov <aaprelkov@usergate.com>
+To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+CC: Aleksandr Aprelkov <aaprelkov@usergate.com>,Michael Turquette <mturquette@baylibre.com>,Stephen Boyd <sboyd@kernel.org>,<linux-kernel@vger.kernel.org>,<linux-samsung-soc@vger.kernel.org>,<linux-clk@vger.kernel.org>,<lvc-project@linuxtesting.org>
+Subject: [PATCH] clk: s2mps11: Check of_clk_add_hw_provider() result
+Date: Mon, 1 Apr 2024 17:38:08 +0700
+Message-ID: <20240401103808.617463-1-aaprelkov@usergate.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC PATCH 5/9] mm: zswap: remove zswap_same_filled_pages_enabled
-To: Yosry Ahmed <yosryahmed@google.com>
-Cc: Andrew Morton <akpm@linux-foundation.org>, Nhat Pham <nphamcs@gmail.com>,
- Chengming Zhou <chengming.zhou@linux.dev>, linux-mm@kvack.org,
- linux-kernel@vger.kernel.org, Johannes Weiner <hannes@cmpxchg.org>
-References: <20240325235018.2028408-1-yosryahmed@google.com>
- <20240325235018.2028408-6-yosryahmed@google.com>
- <20240328191109.GE7597@cmpxchg.org>
- <CAJD7tka4iKD0=MOkj7iBCXvG6Jmq6WQgvRNV3mY+YRWPnYWmAg@mail.gmail.com>
- <CAJD7tkYo90ynKfBcWyMZLu7r-GJj3egnnJyGiJ5T2SN-Tn3d9A@mail.gmail.com>
- <19d5cdee-2868-41bd-83d5-6da75d72e940@maciej.szmigiero.name>
- <20240329174457.GJ7597@cmpxchg.org>
- <CAJD7tkaXtbM6_6+Oe08_xorMRrU94nvEeDj4_R78nKdZZWqAMw@mail.gmail.com>
-Content-Language: en-US, pl-PL
-From: "Maciej S. Szmigiero" <mail@maciej.szmigiero.name>
-Autocrypt: addr=mail@maciej.szmigiero.name; keydata=
- xsFNBFpGusUBEADXUMM2t7y9sHhI79+2QUnDdpauIBjZDukPZArwD+sDlx5P+jxaZ13XjUQc
- 6oJdk+jpvKiyzlbKqlDtw/Y2Ob24tg1g/zvkHn8AVUwX+ZWWewSZ0vcwp7u/LvA+w2nJbIL1
- N0/QUUdmxfkWTHhNqgkNX5hEmYqhwUPozFR0zblfD/6+XFR7VM9yT0fZPLqYLNOmGfqAXlxY
- m8nWmi+lxkd/PYqQQwOq6GQwxjRFEvSc09m/YPYo9hxh7a6s8hAP88YOf2PD8oBB1r5E7KGb
- Fv10Qss4CU/3zaiyRTExWwOJnTQdzSbtnM3S8/ZO/sL0FY/b4VLtlZzERAraxHdnPn8GgxYk
- oPtAqoyf52RkCabL9dsXPWYQjkwG8WEUPScHDy8Uoo6imQujshG23A99iPuXcWc/5ld9mIo/
- Ee7kN50MOXwS4vCJSv0cMkVhh77CmGUv5++E/rPcbXPLTPeRVy6SHgdDhIj7elmx2Lgo0cyh
- uyxyBKSuzPvb61nh5EKAGL7kPqflNw7LJkInzHqKHDNu57rVuCHEx4yxcKNB4pdE2SgyPxs9
- 9W7Cz0q2Hd7Yu8GOXvMfQfrBiEV4q4PzidUtV6sLqVq0RMK7LEi0RiZpthwxz0IUFwRw2KS/
- 9Kgs9LmOXYimodrV0pMxpVqcyTepmDSoWzyXNP2NL1+GuQtaTQARAQABzTBNYWNpZWogUy4g
- U3ptaWdpZXJvIDxtYWlsQG1hY2llai5zem1pZ2llcm8ubmFtZT7CwZQEEwEIAD4CGwMFCwkI
- BwIGFQoJCAsCBBYCAwECHgECF4AWIQRyeg1N257Z9gOb7O+Ef143kM4JdwUCZdEV4gUJDWuO
- nQAKCRCEf143kM4JdyzED/0Qwk2KVsyNwEukYK2zbJPHp7CRbXcpCApgocVwtmdabAubtHej
- 7owLq89ibmkKT0gJxc6OfJJeo/PWTJ/Qo/+db48Y7y03Xl+rTbFyzsoTyZgdR21FQGdgNRG9
- 3ACPDpZ0UlEwA4VdGT+HKfu0X8pVb0G0D44DjIeHC7lBRzzE5JXJUGUVUd2FiyUqMFqZ8xP3
- wp53ekB5p5OstceqyZIq+O/r1pTgGErZ1No80JrnVC/psJpmMpw1Q56t88JMaHIe+Gcnm8fB
- k3LyWNr7gUwVOus8TbkP3TOx/BdS/DqkjN3GvXauhVXfGsasmHHWEFBE0ijNZi/tD63ZILRY
- wUpRVRU2F0UqI+cJvbeG3c+RZ7jqMAAZj8NB8w6iviX1XG3amlbJgiyElxap6Za1SQ3hfTWf
- c6gYzgaNOFRh77PQbzP9BcAVDeinOqXg2IkjWQ89o0YVFKXiaDHKw7VVld3kz2FQMI8PGfyn
- zg5vyd9id1ykISCQQUQ4Nw49tqYoSomLdmIgPSfXDDMOvoDoENWDXPiMGOgDS2KbqRNYCNy5
- KGQngJZNuDicDBs4r/FGt9/xg2uf8M5lU5b8vC78075c4DWiKgdqaIhqhSC+n+qcHX0bAl1L
- me9DMNm0NtsVw+mk65d7cwxHmYXKEGgzBcbVMa5C+Yevv+0GPkkwccIvps7AzQRaRrwiAQwA
- xnVmJqeP9VUTISps+WbyYFYlMFfIurl7tzK74bc67KUBp+PHuDP9p4ZcJUGC3UZJP85/GlUV
- dE1NairYWEJQUB7bpogTuzMI825QXIB9z842HwWfP2RW5eDtJMeujzJeFaUpmeTG9snzaYxY
- N3r0TDKj5dZwSIThIMQpsmhH2zylkT0jH7kBPxb8IkCQ1c6wgKITwoHFjTIO0B75U7bBNSDp
- XUaUDvd6T3xd1Fz57ujAvKHrZfWtaNSGwLmUYQAcFvrKDGPB5Z3ggkiTtkmW3OCQbnIxGJJw
- /+HefYhB5/kCcpKUQ2RYcYgCZ0/WcES1xU5dnNe4i0a5gsOFSOYCpNCfTHttVxKxZZTQ/rxj
- XwTuToXmTI4Nehn96t25DHZ0t9L9UEJ0yxH2y8Av4rtf75K2yAXFZa8dHnQgCkyjA/gs0ujG
- wD+Gs7dYQxP4i+rLhwBWD3mawJxLxY0vGwkG7k7npqanlsWlATHpOdqBMUiAR22hs02FikAo
- iXNgWTy7ABEBAAHCwXwEGAEIACYCGwwWIQRyeg1N257Z9gOb7O+Ef143kM4JdwUCZdEWBwUJ
- DWuNXAAKCRCEf143kM4Jd5OdD/0UXMpMd4eDWvtBBQkoOcz2SqsWwMj+vKPJS0BZ33MV/wXT
- PaTbzAFy23/JXbyBPcb0qgILCmoimBNiXDzYBfcwIoc9ycNwCMBBN47Jxwb8ES5ukFutjS4q
- +tPcjbPYu+hc9qzodl1vjAhaWjgqY6IzDGe4BAmM+L6UUID4Vr46PPN02bpm4UsL31J6X+lA
- Vj5WbY501vKMvTAiF1dg7RkHPX7ZVa0u7BPLjBLqu6NixNkpSRts8L9G4QDpIGVO7sOC9oOU
- 2h99VYY1qKml0qJ9SdTwtDj+Yxz+BqW7O4nHLsc4FEIjILjwF71ZKY/dlTWDEwDl5AJR7bhy
- HXomkWae2nBTzmWgIf9fJ2ghuCIjdKKwOFkDbFUkSs8HjrWymvMM22PHLTTGFx+0QbjOstEh
- 9i56FZj3DoOEfVKvoyurU86/4sxjIbyhqL6ZiTzuZAmB0RICOIGilm5x03ESkDztiuCtQL2u
- xNT833IQSNqyuEnxG9/M82yYa+9ClBiRKM2JyvgnBEbiWA15rAQkOqZGJfFJ3bmTFePx4R/I
- ZVehUxCRY5IS1FLe16tymf9lCASrPXnkO2+hkHpBCwt75wnccS3DwtIGqwagVVmciCxAFg9E
- WZ4dI5B0IUziKtBxgwJG4xY5rp7WbzywjCeaaKubtcLQ9bSBkkK4U8Fu58g6Hg==
-Disposition-Notification-To: "Maciej S. Szmigiero"
- <mail@maciej.szmigiero.name>
-In-Reply-To: <CAJD7tkaXtbM6_6+Oe08_xorMRrU94nvEeDj4_R78nKdZZWqAMw@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: ESLSRV-EXCH-01.esafeline.com (192.168.90.36) To
+ nsk02-mbx01.esafeline.com (10.10.1.35)
+X-Message-Id: D787E24C5A284804AC7923C7C89510EA
+X-MailFileId: 0DE6D82EDE3D42C6A79E7984A7D233FA
 
-On 29.03.2024 19:22, Yosry Ahmed wrote:
-> On Fri, Mar 29, 2024 at 10:45 AM Johannes Weiner <hannes@cmpxchg.org> wrote:
->>
->> On Fri, Mar 29, 2024 at 03:02:10PM +0100, Maciej S. Szmigiero wrote:
->>> On 29.03.2024 03:14, Yosry Ahmed wrote:
->>>> On Thu, Mar 28, 2024 at 1:06 PM Yosry Ahmed <yosryahmed@google.com> wrote:
->>>>>
->>>>> On Thu, Mar 28, 2024 at 12:11 PM Johannes Weiner <hannes@cmpxchg.org> wrote:
->>>>>>
->>>>>> On Mon, Mar 25, 2024 at 11:50:13PM +0000, Yosry Ahmed wrote:
->>>>>>> There is no logical reason to refuse storing same-filled pages more
->>>>>>> efficiently and opt for compression. Remove the userspace knob.
->>>>>>>
->>>>>>> Signed-off-by: Yosry Ahmed <yosryahmed@google.com>
->>>>>>
->>>>>> Acked-by: Johannes Weiner <hannes@cmpxchg.org>
->>>>>>
->>>>>> I also think the non_same_filled_pages_enabled option should go
->>>>>> away. Both of these tunables are pretty bizarre.
->>>>>
->>>>> Happy to remove both in the next version :)
->>>>
->>>> I thought non_same_filled_pages_enabled was introduced with the
->>>> initial support for same-filled pages, but it was introduced
->>>> separately (and much more recently):
->>>> https://lore.kernel.org/all/7dbafa963e8bab43608189abbe2067f4b9287831.1641247624.git.maciej.szmigiero@oracle.com/
->>>>
->>>> I am CCing Maciej to hear more about the use case for this.
->>>
->>> Thanks for CCing me.
->>>
->>> I introduced "non_same_filled_pages_enabled" a few years ago to
->>> enable using zswap in a lightweight mode where it is only used for
->>> its ability to store same-filled pages effectively.
->>
->> But all the pages it rejects go to disk swap instead, which is much
->> slower than compression...
->>
->>> As far as I remember, there were some interactions between full
->>> zswap and the cgroup memory controller - like, it made it easier
->>> for an aggressive workload to exceed its cgroup memory.high limits.
->>
->> Ok, that makes sense! A container fairness measure, rather than a
->> performance optimization.
->>
->> Fair enough, but that's moot then with cgroup accounting of the
->> backing memory, f4840ccfca25 ("zswap: memcg accounting").
-> 
-> Right, this should no longer be needed with the zswap charging.
-> 
-> Maciej, is this still being used on kernels with f4840ccfca25 (5.19+)?
-> Any objections to removing it now?
+There is no check if error occurs in clock provider registration.
 
-I don't object to its removal as long as stable kernel trees aren't
-affected.
+Found by Linux Verification Center (linuxtesting.org) with SVACE.
 
-Thanks,
-Maciej
+Fixes: b228fad50c00 ("clk: s2mps11: Migrate to clk_hw based OF and registration APIs")
+Signed-off-by: Aleksandr Aprelkov <aaprelkov@usergate.com>
+---
+ drivers/clk/clk-s2mps11.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/clk/clk-s2mps11.c b/drivers/clk/clk-s2mps11.c
+index 38c456540d1b..f9ce413b6c02 100644
+--- a/drivers/clk/clk-s2mps11.c
++++ b/drivers/clk/clk-s2mps11.c
+@@ -187,8 +187,10 @@ static int s2mps11_clk_probe(struct platform_device *pdev)
+ 	}
+ 
+ 	clk_data->num = S2MPS11_CLKS_NUM;
+-	of_clk_add_hw_provider(s2mps11_clks->clk_np, of_clk_hw_onecell_get,
++	ret = of_clk_add_hw_provider(s2mps11_clks->clk_np, of_clk_hw_onecell_get,
+ 			       clk_data);
++	if (ret < 0)
++		goto err_reg;
+ 
+ 	platform_set_drvdata(pdev, s2mps11_clks);
+ 
+-- 
+2.34.1
 
 
