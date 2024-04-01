@@ -1,44 +1,44 @@
-Return-Path: <linux-kernel+bounces-126619-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-126616-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id C7095893A6F
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 12:53:48 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4AB0E893A6D
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 12:53:15 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CE7C01C21019
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 10:53:47 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 78762B2115A
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 10:53:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A98BD3F9C3;
-	Mon,  1 Apr 2024 10:51:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id ADEB53E47B;
+	Mon,  1 Apr 2024 10:50:52 +0000 (UTC)
 Received: from blizzard.enjellic.com (wind.enjellic.com [76.10.64.91])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 461DE2C683;
-	Mon,  1 Apr 2024 10:50:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AB699200A9;
+	Mon,  1 Apr 2024 10:50:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=76.10.64.91
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711968653; cv=none; b=u7nQEMXFzMBHphMKyeeU6Kmm1Yputflz0QKdKvl8uqfdlKfHKjUUYTCTn4P4lH2T6r8aG/hZcKWkJ1A5hE6tIxotHirhf2Llitq2Kas0Hk/q/AKl8O9BmHEXb+NzQHYGY3MItecyx+VlXvMekFu7dNGlJRoQHfW+k9d22R+E/Hw=
+	t=1711968645; cv=none; b=B6kbFNvCllyZazMKkmvfQSzadoXU2rXpJuL/+4e2el2pPOx6pw2vum4pjSXY0L5++qisJEwJvlHZJy8hR6oEwZqAYbhPD8T6I4YSUbg/rhU/YaEhPAQj19KIukvKCdQ4cQNO9kC3sm3LMsjp6F5bBNwnL2oubx+TuYr2U8Rv5ow=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711968653; c=relaxed/simple;
-	bh=kTvVJB3MC6N81oTkCdxEcGkOwgjehf55HCYI+JfjTZg=;
+	s=arc-20240116; t=1711968645; c=relaxed/simple;
+	bh=kiSKeVm/R4Y473bOeXjaGQ9tsGFKlry+yxf6taSv4pU=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=qi2/Jpy4VVWSWYjwOr1HqKSFqobiGyVOLrm6+eFM3e4v4hkzV0qcip69WAKtH506L7GnCFOyb/ez4CxFnod5sF5kgawLew4SmD2obtn4AKWVfZxUFriBrNPD7ZByXIeOGy/h77qhIXfU4GnmLSZMLelRegfOSfaZr57yG6XI1Uk=
+	 MIME-Version; b=glDpjDiEXYAebkSNhFrKq8qdNvYFYTszBrVdX2A9xSCI9zvgtyPK/gfJl0p+Sc/jgqJAX2Tz7iUnGpXtBle+ynZfc2EkUFJdyimCFN9eJHnrSq7NRV00dfaOZaQJzLR8DtV/2MB9J9EWhK8lgYZwow8qird+iLB4BuFmC93GmGk=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=enjellic.com; spf=pass smtp.mailfrom=enjellic.com; arc=none smtp.client-ip=76.10.64.91
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=enjellic.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=enjellic.com
 Received: from blizzard.enjellic.com (localhost [127.0.0.1])
-	by blizzard.enjellic.com (8.15.2/8.15.2) with ESMTP id 431AoJXp027658;
-	Mon, 1 Apr 2024 05:50:19 -0500
+	by blizzard.enjellic.com (8.15.2/8.15.2) with ESMTP id 431AoK66027663;
+	Mon, 1 Apr 2024 05:50:20 -0500
 Received: (from greg@localhost)
-	by blizzard.enjellic.com (8.15.2/8.15.2/Submit) id 431AoJTf027656;
-	Mon, 1 Apr 2024 05:50:19 -0500
+	by blizzard.enjellic.com (8.15.2/8.15.2/Submit) id 431AoKQq027661;
+	Mon, 1 Apr 2024 05:50:20 -0500
 X-Authentication-Warning: blizzard.enjellic.com: greg set sender to greg@enjellic.com using -f
 From: Greg Wettstein <greg@enjellic.com>
 To: linux-security-module@vger.kernel.org, linux-kernel@vger.kernel.org
 Cc: jmorris@namei.org
-Subject: [PATCH v3 02/12] Add TSEM specific documentation.
-Date: Mon,  1 Apr 2024 05:50:05 -0500
-Message-Id: <20240401105015.27614-3-greg@enjellic.com>
+Subject: [PATCH v3 03/12] TSEM global declarations.
+Date: Mon,  1 Apr 2024 05:50:06 -0500
+Message-Id: <20240401105015.27614-4-greg@enjellic.com>
 X-Mailer: git-send-email 2.39.1
 In-Reply-To: <20240401105015.27614-1-greg@enjellic.com>
 References: <20240401105015.27614-1-greg@enjellic.com>
@@ -52,4124 +52,2302 @@ Content-Transfer-Encoding: 8bit
 
 From: "Dr. Greg" <greg@enjellic.com>
 
-An entry was added to the ABI testing documentation to document
-the API definitions for the TSEM ontrol plane.
+TSEM is designed, from a functional perspective, to be entirely contained in
+its own directory.
 
-The file documenting the kernel command-line parameters was
-updated to document the TSEM specific parameters that are
-implemented.
-
-The primary TSEM documentation file was added to the LSM
-administration guide and the file was linked to the index of LSM
-documentation.
+TSEM uses a single global header file, tsem.h, to define the
+enumeration types, structure definitions and functions that are
+referenced across all of the compilation units that implement the
+LSM.
 ---
- Documentation/ABI/testing/tsem                | 2386 +++++++++++++++++
- Documentation/admin-guide/LSM/index.rst       |    1 +
- Documentation/admin-guide/LSM/tsem.rst        | 1657 ++++++++++++
- .../admin-guide/kernel-parameters.txt         |   24 +
- 4 files changed, 4068 insertions(+)
- create mode 100644 Documentation/ABI/testing/tsem
- create mode 100644 Documentation/admin-guide/LSM/tsem.rst
+ security/tsem/tsem.h | 2278 ++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 2278 insertions(+)
+ create mode 100644 security/tsem/tsem.h
 
-diff --git a/Documentation/ABI/testing/tsem b/Documentation/ABI/testing/tsem
+diff --git a/security/tsem/tsem.h b/security/tsem/tsem.h
 new file mode 100644
-index 000000000000..d88a1994294d
+index 000000000000..d1d3e847a550
 --- /dev/null
-+++ b/Documentation/ABI/testing/tsem
-@@ -0,0 +1,2386 @@
-+This file contains descriptions of output generated by the TSEM
-+control plane files and the role of the only write-only file in the
-+control plane.
-+
-+It is highly recommended that the following document be read in order
-+to fully understand the rationale and functioning of these files:
-+
-+Documentation/admin-guide/LSM/tsem.rst
-+
-+What:		/sys/kernel/security/tsem
-+Date:		March 2024
-+Contact:	Greg Wettstein <greg@enjellic.com>
-+Description:
-+		The /sys/kernel/security/tsem directory contains files
-+		and directories that implement the control plane for
-+		the Trusted Security Event Modeling (TSEM) LSM.
-+
-+		The files in this directory hierarchy, with the
-+		exception of the aggregate file, when read, reflect
-+		the values for the security modeling namespace that
-+		the process reading the files is operating in.
-+
-+What:		/sys/kernel/security/tsem/id
-+Date:		March 2024
-+Contact:	Greg Wettstein <greg@enjellic.com>
-+Description:
-+		The id file outputs the ASCII base 10 representation
-+		of the security modeling namespace that the reading
-+		process is operating in.
-+
-+		The root security modeling namespace has a value of
-+		zero, a non-zero value indicates a modeling namespace
-+		subordinate to the root model.
-+
-+		Each externally modeled security namespace will have a
-+		file, with this id number, created in the
-+		/sys/kernel/security/tsem/external_tma that is
-+		documented below.
-+
-+What:		/sys/kernel/security/tsem/aggregate
-+Date:		March 2024
-+Contact:	Greg Wettstein <greg@enjellic.com>
-+Description:	
-+		The aggregate file contains the ASCII base 16
-+		representation of the Trusted Platform Module (TPM)
-+		based hardware aggregate measurement.  The hardware
-+		aggregate measurement is the linear extension sum,
-+		using the digest function chosen for the root modeling
-+		namespace, of PCR registers 0 through 8
-+
-+		The hardware aggregate measurement is a common concept
-+		in trusted systems and is used to verify the integrity
-+		and known good state of the hardware environment
-+		leading up to the boot of the operating system.
-+
-+		The size of the measurement is equal in length to the
-+		ASCII Base16 representation of the cryptographic
-+		digest function being used for the root security
-+		modeling namespace.  For example, if the default
-+		sha256 digest function is being used, the aggregate
-+		measurement will be 64 ASCII hexadecimal characters.
-+
-+		On a platform without a TPM this value will be all
-+		ASCII 0 values.
-+
-+What:		/sys/kernel/security/tsem/control
-+Date:		March 2024
-+Contact:	Greg Wettstein <greg@enjellic.com>
-+Description:
-+		The control file is the only writable file in the
-+		filesystem and is used by trust orchestrator's to
-+		configure and control the behavior of the TSEM
-+		implementation.
-+
-+		The following keyword and arguments are recognized:
-+
-+		internal
-+			The internal keyword causes an internally
-+			modeled namespace to be created for the
-+			calling process.
-+
-+		external
-+			The external keyword causes an externally
-+			modeled namespace to be created for the
-+			calling process.
-+
-+		A modeling namespace created by either of these
-+		directives accepts the following key=value pairs that
-+		configure the namespace:
-+
-+		nsref=initial|current
-+			The nsref key specifies the namespace that is
-+			to be referenced when determining the UID/GID
-+			values used to characterize a COE or CELL
-+			mapping.
-+
-+			The initial keyword specifies that the initial
-+			user namespace is to be used.  The current
-+			keyword specifies that the user namespace of
-+			the process that is invoking a security event
-+			handler is used.
-+
-+			The default is to use the initial user
-+			namespace.
-+
-+		digest=digestname
-+			The digest key value is used to specify the
-+			cryptographic hash function that is to be used
-+			for the generation of the security state
-+			coefficients for the LSM events being modeled.
-+
-+			The digestname value is the name used by the
-+			Linux kernel cryptographic API to identify the
-+			hash function.  Examples would include;
-+			sha256, sha3-256, sm3 etc.  The source files
-+			for the various cryptographic hash functions in
-+			the crypto directory of the kernel source has
-+			the names for hash functions implemented in
-+			the kernel.
-+
-+			The sha256 hash function is the default
-+			function for the root modeling namespace.
-+			This can be modified by the tsem_digest
-+			command-line parameter.
-+
-+			A hash function, used by the root modeling
-+			namespace, must be built into the kernel.
-+
-+		cache=NN
-+			The cache key specifies the size of the caches
-+			to be used for holding pointers to structures
-+			used for the modeling or export of security
-+			events that are called while the invoking
-+			process is in atomic context.
-+
-+			The value NN is the ASCII base 10
-+			representation of the number of entries in the
-+			cache.
-+
-+			By default, the root modeling namespace and an
-+			externally modeled namespace will have 96
-+			entries.  An internally modeled namespace will
-+			have 16 entries.
-+
-+		key=HEXID
-+			The key argument is used to specify the
-+			authentication key that will be used by a
-+			trust orchestrator to authenticate trust
-+			control requests to a process running in the
-+			security modeling namespace.
-+
-+			The HEXID value is the ASCII base16 encoded
-+			representation of the key that is to be used.
-+			The length of this key, in binary, must be
-+			equal to the size of the digest produced by
-+			the cryptographic hash function that is being
-+			used in the security modeling namespace.
-+
-+		enforce
-+			The enforce keyword causes the modeling
-+			namespace of the process to enter enforcing
-+			mode.  In this mode, a value of -EPERM will be
-+			returned for a security event coefficient that
-+			does not map into the current set of allowed
-+			coefficients for the security model being
-+			implemented in the namespace.
-+
-+		seal
-+			The seal keyword causes the security model
-+			being implemented for the namespace to be
-+			placed in a sealed state.  In this state, the
-+			current set of security coefficients is
-+			considered to be the only set of valid
-+			coefficients for the model.  Any subsequent
-+			events that map to a coefficient not in the
-+			current model will be considered a violation
-+			of the model.
-+
-+		trusted pid=PID key=HEXID
-+			The trusted keyword is used by a trust
-+			orchestrator to specify that a process being
-+			woken up after model evaluation of a security
-+			event should be allowed to run in trusted
-+			status.
-+
-+			The pid argument is used to locate the process
-+			that is sleeping on the modeling event.
-+
-+			The HEXID argument is the authentication key
-+			that was configured by a trust orchestrator
-+			for the namespace at the time of its creation.
-+
-+		untrusted pid=PID key=HEXID
-+			The untrusted keyword is used by a trust
-+			orchestrator to specify that a process being
-+			woken up after model evaluation should be
-+			placed in untrusted status.
-+
-+			The pid argument is used to locate the process
-+			that is sleeping on the modeling event.
-+
-+			The HEXID argument is the authentication key
-+			that was configured by a trust orchestrator
-+			for the namespace at the time of its creation.
-+
-+		state value=HEXID
-+			The state keyword is used to indicate that the
-+			security state coefficient, identified by the
-+			ASCII base 16 encoded value specified by HEXID,
-+			should be loaded into the current security
-+			model as a valid security event coefficient.
-+
-+			The HEXID value will be the length of the
-+			digest value of the cryptographic hash
-+			function specified for the security modeling
-+			namespace.
-+
-+		pseudonym value=HEXID
-+			The pseudonym keyword is used to indicate that
-+			the pathname, identified by the ASCII base 16
-+			encoded value HEXID, should be designated to
-+			return a constant digest value for the
-+			contents of the file named by the pseudonym.
-+
-+			The HEXID value is computed with the following
-+			function:
-+
-+			HEXID = HF(PATHNAME_LENGTH || PATHNAME)
-+
-+			Where HF is the cryptographic hash function
-+			that has been designated for use by the
-+			security modeling namespace and || implies
-+			concatenation of the byte stream fed to the
-+			hash function.
-+
-+		base value=HEXID
-+			The base keyword is used to indicate that the
-+			ASCII base 16 encoded value HEXID should be
-+			registered as the value used to generate
-+			security state coefficients for the model
-+			implemented in the modeling namespace.
-+
-+			The binary length of the value specified by
-+			HEXID must match the digest size of the
-+			cryptographic hash function specified for use
-+			in the security modeling namespace.
-+
-+			A model specific base value is designed to be
-+			used as a 'freshness' nonce, similar to an
-+			attestation nonce, to prove that a model state
-+			value or measurement is current and not being
-+			replayed.
-+
-+What:		/sys/kernel/security/tsem/internal_tma
-+Date:		March 2024
-+Contact:	Greg Wettstein <greg@enjellic.com>
-+Description:
-+		This directory will contain directories that will be
-+		used to hold files that surface model parameters for
-+		Trusted Modeling Agents (TMA's) for internally modeled
-+		security namespaces.
-+
-+		There is currently only one internal TMA that is
-+		surfaced through the following directory:
-+
-+		/sys/kernel/security/tsem/internal_tma/model0
-+
-+		The subsequent descriptions for the files implemented
-+		in this directory will use ROOTDIR to represent the
-+		above directory for space conservation purposes.
-+
-+What:		ROOTDIR/measurement
-+Date:		March 2024
-+Contact:	Greg Wettstein <greg@enjellic.com>
-+Description:
-+		The measurement file contains the ASCII base 16
-+		representation of the time dependent linear extension
-+		value of all the security state coefficients in the
-+		model implemented by the namespace of the calling
-+		process.
-+
-+		This value is similar in concept to measurement values
-+		generated by TPM PCR's.  In the case of TSEM, it can
-+		be used to validate the order integrity of the
-+		security state coefficients output in the
-+		trajectory_coefficients file documented below.
-+		
-+What:		ROOTDIR/state
-+Date:		March 2024
-+Contact:	Greg Wettstein <greg@enjellic.com>
-+Description:
-+		The state file contains the ASCII base 16
-+		representation of the functional value of a security
-+		modeling namespace.
-+
-+		The state value is a time independent representation
-+		of the measurement of a security model.  This value is
-+		designed to be a single value that represents whether
-+		or not a workload has deviated from a defined set of
-+		known good behaviors.
-+
-+What:		ROOTDIR/trajectory
-+Date:		March 2024
-+Contact:	Greg Wettstein <greg@enjellic.com>
-+Description:
-+		The trajectory file contains a description of the
-+		security events that have occurred in a security
-+		modeling namespace
-+
-+		Each entry in this file represents a single security
-+		event and consists of a JSON encoded record with keys
-+		and associated values or structures that define the
-+		characteristics of the event.
-+
-+		Examples and descriptions of the JSON structures are
-+		provided at the end of this document.
-+		
-+What:		ROOTDIR/trajectory_coefficients
-+Date:		March 2024
-+Contact:	Greg Wettstein <greg@enjellic.com>
-+Description:
-+		The trajectory_coefficients file will output the ASCII
-+		base16 representation of each security state
-+		coefficient that has been generated by the security
-+		modeling namespace of the calling process.
-+
-+		The length of each point will be the ASCII
-+		representation of the size of the cryptographic hash
-+		function that has been specified for the model.
-+
-+What:		ROOTDIR/trajectory_counts
-+Date:		March 2024
-+Contact:	Greg Wettstein <greg@enjellic.com>
-+Description:
-+		The trajectory_coefficients file will output the ASCII
-+		base10 representation of the number of times each
-+		security state coefficient has been generated by the
-+		security modeling namespace of the calling process.
-+
-+What:		ROOTDIR/forensics
-+Date:		March 2024
-+Contact:	Greg Wettstein <greg@enjellic.com>
-+Description:
-+		The forensics file contains the descriptions of
-+		security events that are inconsistent with the
-+		security model that the security namespace is
-+		implementing.  Forensics events are generated after a
-+		security model is 'sealed' and the events represent
-+		security state coefficients that have not already been
-+		generated by the model.
-+
-+		The format of lines in this file are identical to the
-+		output generated by the ROOTDIR/trajectory file
-+		that is documented above.
-+
-+What:		ROOTDIR/forensics_coefficients
-+Date:		March 2024
-+Contact:	Greg Wettstein <greg@enjellic.com>
-+Description:
-+		The forensics_coefficients file will output the ASCII
-+		base16 representation of each security state
-+		coefficient that have been generated by forensics
-+		events in the security modeling namespace of the
-+		calling process.
-+
-+		The length of each point will be the ASCII
-+		representation of the size of the cryptographic hash
-+		function that has been specified for the model.
-+
-+What:		ROOTDIR/forensics_counts
-+Date:		March 2024
-+Contact:	Greg Wettstein <greg@enjellic.com>
-+Description:
-+		The forensics_counts file will output the ASCII base10
-+		representation of the number of times each security
-+		state coefficient, generated by a forensics event, has
-+		been generated by the security modeling namespace of
-+		the calling process.
-+
-+What:		/sys/kernel/security/tsem/external_tma
-+Date:		March 2024
-+Contact:	Greg Wettstein <greg@enjellic.com>
-+Description:
-+		The external_tma is a container directory that holds
-+		files that will be used to export JSON encoded security
-+		event descriptions for externally modeled security
-+		modeling namespaces.
-+
-+		The files created in this directory will be named by
-+		the base 10 ASCII representation of the id value
-+		assigned to the security modeling namespace.  See the
-+		documentation for the /sys/kernel/security/tsem/id
-+		file in this documentation for more details on this
-+		value.
-+
-+		This file will is a read-only file that can be polled
-+		by a userspace trust orchestrator implementation to
-+		obtain security events that are to be modeled by a
-+		Trusted Modeling Agent implementation associated with
-+		the trust orchestrator.
-+
-+		Each exported event is a JSON encoded record
-+		describing an event that is to be externally
-+		processed.  The encoding for these events are included
-+		below.
-+
-+		
-+JSON Security Event Description Encoding:
-+
-+Methodology:
-+------------
-+
-+The security event descriptions maintained by the internal TMA and
-+that are exported to external trust orchestrator's are encoded in
-+JavaScript Object Notation (JSON).  This section of the document will
-+describe the encoding strategy that is used.
-+
-+An encoding strategy was used where each non-structure key value is
-+encoded as a JSON string type.  In the case of numeric values it is
-+the responsibility of the TMA to convert the string value into an
-+appropriate numeric value for the generation of the mapping values
-+that contribute to a security state coefficient.
-+
-+The JSON string encodings for numeric values follow the conventions
-+used by the strtol() and/or strtoll() functions to interpret how to
-+convert a string encoded numeric value into an appropriate numeric
-+binary type when the conversion function is called with the 'special'
-+value of 0 for the base argument.
-+
-+The following nomenclature will be define the value member for numeric
-+types:
-+
-+	0MM:	A base 8 ASCII value.
-+	NN:	A base 10 ASCII value.
-+	0xHEX	A base 16 ASCII value.
-+
-+The MM, NN and HEX labels above do not imply a length of the numeric
-+string but are used instead to imply that numeric digits of the
-+specified type will follow.
-+
-+When the documentation below specifies a value name of DIGEST it is
-+referring to a string value containing the base 16 hexadecimal
-+encoding of a cryptographic digest value.  The length of the value
-+will be equal to the ASCII hexadecimal encoding length of a digest
-+value for the cryptographic compression function that is in effect for
-+the security modeling namespace.  A DIGEST value will NOT be preceded
-+by the 0x prefix for these values.
-+
-+A value name of ASCII implies an ASCII string.
-+
-+
-+Event descriptions:
-+-------------------
-+
-+Each TSEM supported LSM event handler (hook) encodes a description of
-+the characteristics of an event in the following general form:
-+
-+{"event": {}, "COE": {}, "CELL": {}}
-+
-+Where the event key is used to label a structure that characterizes
-+the event type.  The COE key labels a structure that characterizes the
-+Context Of Execution that is executing the event and the CELL key
-+labels a structure that defines the characteristics of the security
-+event that an LSM handler/hook is invoked with.
-+
-+The CELL label used above is a generic label for documentation
-+purposes.  The "CELL" label in an actual security event description
-+will be replaced with one of the following currently supported event
-+type descriptions:
-+
-+	task_kill
-+	task_setpgid
-+	task_getpgid
-+	task_getsid
-+	task_setnice
-+	task_setioprio
-+	task_getioprio
-+	task_prlimit
-+	task_setrlimit
-+	task_setscheduler
-+	task_getscheduler
-+	task_prctl
-+	file_open
-+	mmap_file
-+	file_ioctl
-+	file_lock
-+	file_fcntl
-+	file_receive
-+	unix_stream_connect
-+	unix_may_send
-+	socket_create
-+	socket_connect
-+	socket_bind
-+	socket_accept
-+	socket_listen
-+	socket_socketpair
-+	socket_sendmsg"
-+	socket_recvmsg
-+	socket_getsockname
-+	socket_getpeername
-+	socket_setsockopt
-+	socket_shutdown
-+	ptrace_traceme
-+	kernel_module_request
-+	kernel_load_data
-+	kernel_read_file
-+	sb_mount
-+	sb_umount
-+	sb_remount
-+	sb_pivotroot
-+	sb_statfs
-+	move_mount
-+	shm_associate
-+	shm_shmctl
-+	shm_shmat
-+	sem_associate
-+	sem_semctl
-+	sem_semop
-+	syslog
-+	settime
-+	quotactl
-+	quota_on
-+	msg_queue_associate
-+	msg_queue_msgctl
-+	msg_queue_msgsnd
-+	msg_queue_msgrcv
-+	ipc_permission
-+	key_alloc
-+	key_permission
-+	netlink_send
-+	inode_create
-+	inode_link
-+	inode_unlink
-+	inode_symlink
-+	inode_mkdir
-+	inode_rmdir
-+	inode_mknod
-+	inode_rename
-+	inode_setattr
-+	inode_getattr
-+	inode_setxattr
-+	inode_getxattr
-+	inode_listxattr
-+	inode_removexattr
-+	inode_killpriv
-+	tun_dev_create
-+	tun_dev_attach_queue
-+	tun_dev_attach
-+	tun_dev_open
-+	bpf
-+	bpf_map
-+	bpf_prog
-+	ptrace_access_check
-+	capable
-+	capget
-+	capset
-+
-+
-+Event encoding:
-+---------------
-+
-+The 'event' label encodes a value structure of the following form:
-+
-+	"event": {
-+	        "process": "ASCII",
-+	        "type": "ASCII",
-+	        "ttd": "NN",
-+	        "p_ttd": "NN",
-+	        "task_id": "DIGEST",
-+	        "p_task_id": "DIGEST",
-+	        "ts": "NN"
-+	{
-+
-+Where the value type for the individual keys is as follows:
-+
-+	process:	The name of the process (current->comm) that
-+			is invoking the security handler.
-+
-+	type:		One of the security event description names
-+			noted above.
-+
-+	ttd:		A 64-bit numeric value incremented each time
-+			a TASK_ID is generated by the bprm_committed_creds
-+			handler.  This value is used to separate unique
-+			invocations of an executable corpus of code.
-+
-+	p_ttd:		The ttd value of the parent process of the process
-+			generating the event.  This value and the ttd
-+			value can be used to reproduce the order of
-+			execution of executable code on a platform or
-+			in a security modeling namespace.
-+
-+	task_id:	The TASK_ID of the process executing the event.
-+
-+	p_task_id:	The TASK_ID of the parent process of the process
-+			executing the event.
-+
-+	ts: 		The timestamp for when the security event occurred.
-+			The timestamp value is in monotonic nanoseconds
-+			since the hardware platform was booted.
-+			
-+
-+Context Of Execution encoding:
-+------------------------------
-+
-+The 'COE' label encodes a structure of the following form:
-+
-+	"COE": {
-+		"uid": "NN",
-+		"euid": "NN",
-+		"suid": "NN",
-+		"gid": "NN",
-+		"egid": "NN",
-+		"sgid": "NN",
-+		"fsuid": "NN",
-+		"fsgid": "NN",
-+		"capeff": "0xHEX"
-+	}
-+
-+	Which describes the credentials of the process that is
-+	executing the event.  The reference for the numeric values of
-+	the discretionary access control values is either the initial
-+	user namespace or the user namespace that the security
-+	modeling namespace is running in.
-+
-+	The namespace reference is a selectable feature when the
-+	security modeling namespace is created.  The root security
-+	modeling namespace always uses the initial user namespace.
-+
-+	It is assumed that anyone developing security models will be
-+	familiar with the common definitions for the uid, gid
-+	etc. labels.
-+
-+	The 'capeff' label is the effective capability set possessed
-+	by a process when the security event is executed.
-+
-+	
-+CELL (event description) encoding:
-+----------------------------------
-+	
-+The 'CELL' label encodes multiple different structures depending on
-+the security event that is being encoded.  An understanding of the
-+various LSM security event hooks and their arguments is recommended
-+prerequisite for anyone wishing to develop security models using these
-+event descriptions.
-+
-+The CELL event descriptions frequently have subordinate JSON
-+structures embedded in them.  In some cases only a single instance of
-+a structure is used for that event type, in which case the definition
-+of that structure will be included inline with the description of the
-+event itself.
-+
-+The following general event subordinate parameter descriptions are
-+used:
-+
-+The 'creds' structure is used to define the standard discretionary
-+access based security credentials for a process:
-+
-+	creds {
-+		"uid": "NN",
-+		"euid": "NN",
-+		"suid": "NN",
-+		"gid": "NN",
-+		"egid": "NN",
-+		"sgid": "NN",
-+		"fsuid": "NN",
-+		"fsgid": "NN",
-+		"capeff": "0xHEX",
-+		"securebits:" "NN"
-+	}
-+
-+	As in the case for the COE encoding standard knowledge of
-+	discretionary access controls is assumed with the capeff label
-+	being previously described.
-+
-+	securebits:	A numeric value containing bit specific fields
-+			that a file capability enabled kernel will use
-+			to invoke special handling of capabilities for
-+			the root user id.
-+
-+
-+The 'perm' structure is used to describe the IPC permissions for
-+shared memory primitives such as shared memory regions, message
-+queues, semaphores etc.:
-+
-+	"perm": {
-+		"uid": "NN",
-+		"gid": "NN",
-+		"cuid": "NN",
-+		"cgid": "NN",
-+		"mode": "0MM",
-+		"owner": "DIGEST"
-+	}
-+
-+	uid:		The user id requesting permission for access to the
-+			memory area.
-+
-+	gid:		The group id requesting permission for access to
-+			the memory area.
-+
-+	cuid:		The alternate user id requesting permission for
-+			access to the memory area.
-+
-+	cgid:		The alternate group id requesting permission for
-+			access to the memory area.
-+
-+	mode:		The permissions being requested for access.
-+
-+	owner:		The TASK_ID of the process requesting access
-+			to the memory area.
-+
-+
-+The 'inode' structure is used to describe an inode structure used in
-+a security event description:
-+
-+	"inode": {
-+		"uid": "NN",
-+		"gid": "NN",
-+		"mode": "0MM,
-+		"s_magic": "0xHEX",
-+		"s_id": "ASCII",
-+		"s_uuid": "HEX"
-+	}
-+
-+	uid:		The user id that owns the inode.
-+
-+	gid:		The group id that owns the inode.
-+
-+	mode:		The discretionary access control permissions
-+			for the inode.
-+
-+	s_magic:	The magic number of the filesystem that the
-+			inode is in.
-+
-+	s_id:		The informational name from the superblock
-+			of the filesystem the inode is in.
-+
-+	s_uuid:		The UUID of the filesystem the inode is in.
-+
-+
-+The 'inode' structure is used to describe an inode structure used in
-+a security event description:
-+
-+	"inode": {
-+		"uid": "NN",
-+		"gid": "NN",
-+		"mode": "0MM,
-+		"s_magic": "0xHEX",
-+		"s_id": "ASCII",
-+		"s_uuid": "HEX"
-+	}
-+		
-+
-+The 'path' structure is used to describe a path definition for an
-+inode:
-+
-+	"path": {
-+		"dev": {
-+			"major": "NN",
-+			"minor": "NN"
-+		},
-+		"instance": "NN",  	/* Optional. */
-+		"owner": "DIGEST", 	/* Optional. */
-+		"pathname": "ASCII"
-+	}
-+
-+	dev:		A structure used to encapsulate the major and minor
-+			numbers of the device that the filesystem is based
-+			on.  This structure will not be included if the
-+			path is not on a block device.
-+
-+	instance:	This key/value pair is only reported for an
-+			inode that is created in the context of the
-+			security modeling namespace that is reporting
-+			the path description.
-+
-+			If reported, the instance value is the
-+			instance count of an inode created under the
-+			containing directory by the TASK_ID of the
-+			process creating the inode.
-+
-+	owner:		As with the instance key, this key/value pair
-+			is only reported for an inode created in the
-+			context of the security modeling namespace
-+			that is reporting the path description.
-+
-+			If reported, the DIGEST value is the TASK_ID
-+			of the process that created the inode.
-+
-+	pathname:	The pathname of the file.
-+	
-+
-+The 'dentry' structure is used to describe a dentry argument:
-+
-+	"dentry": {
-+		"inode": {},
-+		"path": {}
-+	}
-+
-+	inode:		A JSON inode structure that describes the backing
-+			inode for the dentry.  In some instances a
-+			dentry does not have an inode defined, in which
-+			case this key/value structure will be omitted
-+			from the security event description.
-+
-+	path:		A JSON path structure describing the pathname
-+			implemented by the dentry.
-+			
-+
-+The 'file' structure is used to describe a file structure used in
-+a security event description:
-+
-+	"file": {
-+		"flags": "NN",
-+		"inode": {},
-+		"path": {}
-+		"digest": "DIGEST"
-+	}
-+
-+	flags:	The f_flags member of the file structure describing
-+		how the file was opened.
-+
-+	inode:	A structure describing the inode that is backing
-+		the file.  The definition of the inode structure will
-+		be included after the descriptions of the inode based
-+		security handlers.
-+
-+	path:	A structure describing the path to the file.
-+
-+	digest:	The cryptographic digest of the file.  For files
-+		on a pseudo-filesystem or files that are created in
-+		the context of a security modeling namespace this
-+		value will be the 'zero-value' digest for the
-+		hash function being used in the security modeling
-+		namespace.
-+
-+
-+The 'sb' structure is used to describe a filesystem superblock.
-+
-+	"sb": {
-+		"dev_name", "ASCII",
-+		"path", {},
-+		"type", "ASCII",
-+		"flags", "NN"
-+	}
-+
-+	dev_name:	The device name that the filesystem is mounted
-+			on.
-+
-+	path:		A JSON path description describing where the
-+			the superblock is mounted.
-+
-+	type:		An ASCII string describing the mounted filesystem.
-+
-+	flags:		The mount flags for the mountpoint.
-+
-+
-+The 'sock' structure is used to describe a socket that is used in
-+a security event description:
-+
-+	sock {
-+		"family": "NN",
-+		"type": "NN",
-+		"protocol": "NN",
-+		"owner": "DIGEST"
-+	}
-+
-+	family:		A numeric value describing the protocol family
-+			that the socket is to be created for, ie. AF_UNIX,
-+			AF_INET etc.
-+
-+	type:		The type of communications the socket is to
-+			be used for, ie. SOCKET_STREAM, SOCKET_DGRAM.
-+
-+	protocol:	An optional protocol to be used with the socket.
-+
-+
-+The 'addr' structure is used is an enclosing structure to hold
-+subordinate structures that describe the address of a socket.  The
-+addr field will contain a subordinate structure that is specific to
-+the address type:
-+
-+	addr {
-+		"af_inet": {}
-+		"af_inet6": {}
-+		"af_unix": {}
-+		"af_other": {}
-+	}
-+
-+The 'af_inet' structure defines an IPV4 network address:
-+
-+	"af_inet": {
-+		"port": "NN",
-+		"address": "NN
-+	{
-+
-+	port:		The port number of the address.
-+
-+	address:	The 32-bit IPV4 address.
-+
-+The 'af_inet6' structure defines an IPV6 network address:
-+
-+	"af_inet6": {
-+		"port": "NN",
-+		"flow":	"NN",
-+		"scope": "NN",
-+		"address": "HEXID"
-+	}
-+
-+	port:		The port number of the address.
-+
-+	flow:		The IPV6 flow specifier.
-+
-+	scope:		The IPV6 scope designator.
-+
-+	address:	The 128 bit IPV6 address in ASCII hexadecimal.
-+
-+The 'af_unix' structure a UNIX domain address:
-+
-+	"af_unix": {
-+		"address": "ASCII"
-+	}
-+
-+	address:	The path to the filesystem object representing
-+			the socket.
-+
-+The 'af_other' structure is used to define a socket address other
-+than one of the three above:
-+
-+	"af_other": {
-+		"address": "DIGEST"
-+	}
-+
-+	address:	The DIGEST value is the cryptographic digest
-+			value over the sa_data member of the
-+			sockaddr structure.
-+
-+
-+Event Specific Encodings:
-+-------------------------
-+
-+The 'task_kill' event models a request to send a signal to a target
-+task:
-+
-+	"task_kill": {
-+		"target": "DIGEST",
-+		"sig": "NN",
-+		"cross_ns": "NN"
-+	}
-+
-+	target:		The TASK_ID of the process that the signal is
-+			being sent to.
-+
-+	sig:		The number of the signal being sent.
-+
-+	cross_ns:	A boolean flag variable of 0 or 1 indicating
-+			whether or not the signal will be crossing a
-+			security modeling namespace boundary.
-+
-+
-+The 'task_setpgid' event models a request to set the process group id
-+of a task:
-+
-+	"task_setpgid": {
-+		"task": "DIGEST",
-+		"source": "DIGEST"
-+	}
-+
-+	task:		The TASK_ID of the process whose process group
-+			id is to be set.
-+
-+	source:		The TASK_ID of the process whose process group
-+			id the target task is to be placed into.
-+
-+
-+The 'task_getpgid' event describes a request to obtain the process
-+group id of a task:
-+
-+	"task_getpgid": {
-+		"task": "DIGEST",
-+	}
-+
-+	task:		The TASK_ID of the process whose process group
-+			id is to be obtained.
-+
-+
-+The 'task_getsid' event describes a request to obtain the session id of
-+a task.
-+	
-+	"task_getsid": {
-+		"task": "DIGEST",
-+	}
-+
-+	task:		The TASK_ID of the process whose session id is
-+			to be obtained.
-+
-+
-+The 'task_setnice' event describes a request to set the execution
-+priority of a task.
-+
-+	"task_setnice": {
-+		"task": "DIGEST",
-+		"nice": "NN"
-+	}
-+
-+	task:		The TASK_ID of the process whose priority is
-+			to be set.
-+
-+	nice:		The numerical priority value to be set.
-+
-+
-+The 'task_setioprio' event describes a request to set the io priority
-+of a task.
-+
-+	"task_setioprio": {
-+		"task": "DIGEST",
-+		"ioprio": "NN"
-+	}
-+
-+	task:		The TASK_ID of the process whose I/O priority is
-+			to be set.
-+
-+	ioprio:		The numerical priority value to be set.
-+
-+
-+
-+The 'task_getioprio' event describes a request to get the io priority
-+of a task.
-+
-+	"task_getioprio": {
-+		"task": "DIGEST"
-+	}
-+
-+	task:		The TASK_ID of the process whose I/O priority is
-+			to be obtained.
-+
-+
-+The 'task_prlimit' event describes a request to get or set resource
-+limits for a task
-+
-+	"task_prlimit": {
-+		"cred": {}
-+		"tcred": {}
-+	}
-+
-+	cred:		A credential structure, defined below, that
-+			describes the credentials of the task that
-+			is requesting the right to set resource limits
-+			for a task.
-+
-+	tcred:		A credential structure that describes the
-+			credentials of the task whose resource limits
-+			are to queried.
-+
-+
-+The 'task_setrlimit' event describes a request to set a new resource
-+limit for a task.
-+
-+	"task_setrlimit": {
-+		"task": "DIGEST"
-+		"new_rlim": {
-+			"resource": "NN",
-+			"current": "NN",
-+			"max": "NN"
-+		}
-+	}
-+
-+	task:		The TASK_ID of the process whose resource limit
-+			is to be set.
-+
-+	new_rlim:	A structure with the following key values that
-+		 	describes the resource limit being set:
-+
-+			resource:	The numeric identifier for the
-+					resource being set.
-+
-+			current:	The current numeric value of
-+					the resource.
-+
-+			max:		The new numeric value for the
-+					resource.
-+	
-+
-+The 'task_setscheduler' event describes a request to set a new scheduler
-+type for a task.
-+
-+	"task_setscheduler": {
-+		"task": "DIGEST"
-+	}
-+
-+	task:		The TASK_ID of the process whose scheduler is
-+			to be set.
-+
-+
-+The 'task_getscheduler' event describes a request to obtain the type of
-+process scheduler that is set for a task.
-+
-+	"task_getscheduler": {
-+		"task": "DIGEST"
-+	}
-+
-+	task:		The TASK_ID of the process whose scheduler
-+			type is to be queried.
-+
-+
-+The 'task_prctl' event describes a request to perform a process control
-+operation on the task that is executing the event.
-+
-+	"task_prctl": {
-+		"option": "NN",
-+		"arg2": "NN",
-+		"arg3": "NN",
-+		"arg4": "NN",
-+		"arg5": "NN
-+	}
-+
-+	option:		The type of process control operation that is
-+			to be performed.
-+
-+	arg2-5:		A total of four numeric values that describe
-+			the process control operation.
-+
-+
-+The 'file_open' event describes a request to open a file.
-+
-+	"file_open": {
-+		"file": {}
-+	}
-+
-+	file:	A structure describing the file that is to be opened.
-+		This structure is used as a parameter in multiple
-+		events and will be documented later.
-+
-+
-+The 'file_ioctl' event describes a request to issue an ioctl call against
-+a file.
-+
-+	"file_ioctl": {
-+		"file": {},
-+		"cmd": "NN
-+	}
-+
-+	file:	The description of the file that the ioctl call is
-+		to be issued against.
-+
-+	prot:	The numeric value of the argument specifying the memory
-+		protections that are to be implemented.
-+
-+	flags:	The flags argument specifying the type of mapping to be
-+		implemented.  See the mmap(2) manpage for information
-+		about the protection and flags argument to the mmap
-+		system call.
-+
-+
-+The 'file_lock' event describes a request for permission to issue a
-+lock operation against the specified file.
-+
-+	"file_lock": {
-+		"file": {},
-+		"cmd": "NN"
-+	}
-+
-+	file:	The description of the file that the lock is to be
-+		placed on.
-+
-+	cmd:	The numeric coding of the lock operation that is to
-+		be performed.
-+
-+
-+The 'file_fcntl' event describes a request for permission to issue a
-+perform a file operation on the designated file.
-+
-+	"file_fcntl": {
-+		"file": {},
-+		"cmd": "NN"
-+	}
-+
-+	file:	The description of the file that the file operation is
-+		to be conducted on.
-+
-+	cmd:	The numeric coding of the type of file operation that
-+		is to be performed.
-+
-+
-+The 'file_receive' event describes a request for permission to receive
-+an open file descriptor though an InterProcess Communications (IPC)
-+call.
-+
-+	"file_receive": {
-+		"file": {},
-+	}
-+
-+	file:	The description of the file whose file descriptor is to
-+		be received.
-+
-+
-+The 'unix_stream_connect' event describes a request for permission to
-+establish a UNIX domain stream connection.  This request for
-+permission is for AF_UNIX sockets that are not enumerated using the
-+traditional filename model.
-+
-+	"unix_stream_connect": {
-+		"sock": {},
-+		"other": "{}"
-+	}
-+
-+	sock:	A JSON socket structure describing the socket that is
-+		to be connected to a second socket.  A socket description
-+		structure is used by other socket operations and its
-+		characteristics will be documented later.
-+
-+	other:	A JSON socket structure describing the socket that is
-+		to be connected to.
-+
-+
-+The 'unix_may_send' event describes a request for permission to send
-+a datagram from an originating socket to a destination socket.  This
-+permission check is associated with the non-filename based sockets
-+described above.
-+
-+	"unix_may_send": {
-+		"sock": {},
-+		"other": "{}"
-+	}
-+
-+	sock:	A structure describing the socket that is originating
-+		the datagram.
-+
-+	other:	A structure describing the socket that is to receive
-+		the datagram.
-+
-+
-+The 'socket_create' event describes a request for permission to create
-+a networking socket.
-+
-+	"socket_create": {
-+		"family": NN,
-+		"type": "NN",
-+		"protocol": "NN",
-+		"kern": "NN"
-+	}
-+
-+	family:		A numeric value describing the protocol family
-+			that the socket is to be created for, ie. AF_UNIX,
-+			AF_INET etc.
-+
-+	type:		The type of communications the socket is to
-+			be used for, ie. SOCKET_STREAM, SOCKET_DGRAM.
-+
-+	protocol:	An optional protocol to be used with the socket.
-+
-+	kern:		A boolean value used to indicate whether or
-+			not the socket is kernel based.
-+
-+
-+The 'socket_connect' event describes a request for permission to
-+create connect a socket to a remote endpoint address.
-+
-+	"socket_connect": {
-+		"sock": {},
-+		"addr": {}
-+	}
-+
-+	sock:		A JSON socket description of the socket making
-+			the connection request.
-+
-+	addr:		A JSON socket structure describing the connection
-+			endpoint address.
-+
-+
-+The 'socket_bind' event describes a request for permission to bind a
-+socket to a network endpoint address.
-+
-+	"socket_bind": {
-+		"sock": {},
-+		"addr": {}
-+	}
-+
-+	sock:		A JSON socket description of the socket making
-+			the request.
-+
-+	addr:		A JSON address description describing the address
-+			that is being bound to.
-+
-+
-+The 'socket_accept' event describes a request for permission for a
-+socket to accept a connection from a remote address.
-+
-+	"socket_accept": {
-+		"sock": {},
-+		"addr": {}
-+	}
-+
-+	sock:		A JSON socket description of the socket making
-+			the request.
-+
-+	addr:		A JSON address description of the address being
-+			accepted by the socket.
-+
-+
-+The 'socket_listen' event describes a request for permission for a
-+socket to listen for a connection.
-+
-+	"socket_listen": {
-+		"sock": {},
-+		"backlog": "NN"
-+	}
-+
-+	sock:		A JSON socket description of the socket making
-+			the request to listen.
-+
-+	backlog:	The maximum number of entries that will be
-+			allowed to be queued waiting for acceptance.
-+
-+
-+The 'socket_socketpair' event describes a request for permission to
-+create a pair of connected sockets.
-+
-+	"socket_socketpair": {
-+		"socka": {},
-+		"sockb": {}"
-+	}
-+
-+	socka:		A JSON socket description of the first socket in
-+			the pair.
-+
-+	sockb:		A JSON socket description of the second socket in
-+			the pair.
-+
-+
-+The 'socket_sendmsg' event describes a request for permission to
-+send a message over a socket.
-+
-+	"socket_sendmsg": {
-+		"sock": {},
-+		"addr": {}"
-+	}
-+
-+	sock:		A JSON socket description of the socket sending
-+			the message.
-+
-+	addr:		A JSON address description defining the address
-+			to which the message is being sent.
-+
-+
-+The 'socket_recvmsg' event describes a request for permission to
-+receive a message over a socket.
-+
-+	"socket_recvmsg": {
-+		"sock": {},
-+		"addr": {}"
-+	}
-+
-+	sock:		A JSON socket description of the socket receiving
-+			the message.
-+
-+	addr:		A JSON address description the address from which
-+			the message is being received.
-+
-+
-+The 'socket_getsockname' event describes a request for permission to
-+read the address of a socket.
-+
-+	"socket_getsockname": {
-+		"sock": {}
-+	}
-+
-+	sock:		A JSON socket description of the socket whose
-+			address is to be read.
-+
-+
-+The 'socket_getpeername' event describes a request for permission to
-+read the address of the socket's peer.
-+
-+	"socket_getpeername": {
-+		"sock": {}
-+	}
-+
-+	sock:		A JSON socket description of the socket the
-+			peer address is to be obtained from.
-+
-+
-+The 'socket_setsockopt' event describes a request for permission to
-+set an option on a socket.
-+
-+	"socket_setsockopt": {
-+		"sock": {},
-+		"level": "NN",
-+		"optname": "NN"
-+	}
-+
-+	sock:		A JSON socket description of the socket whose
-+			options are to be set.
-+
-+	level:		The protocol level at which the option will be
-+			set.
-+
-+	optname:	The numeric coding of the option that will be set.
-+
-+
-+The 'socket_shutdown' event describes a request for permission to shutdown
-+a socket.
-+
-+	"socket_shutdown": {
-+		"sock": {},
-+		"how": "NN"
-+	}
-+
-+	sock:		A JSON socket description of the socket that is
-+			to be shutdown.
-+
-+	how:		A numeric code specifying how send and receives
-+			on the socket are to be handled by the shutdown.
-+
-+
-+The 'ptrace_traceme' event describes a request for permission for the
-+parent process to trace the process that is executing the security
-+handler.
-+
-+	"ptrace_traceme": {
-+		"source": "DIGEST"
-+	}
-+
-+	source:		The TASK_ID of the process requesting tracing
-+			permissions.
-+
-+
-+The 'kernel_module_request' event describes a request for permission
-+to load a kernel module.
-+
-+	"kernel_module_request": {
-+		"kmod_name": "ASCII"
-+	}
-+
-+	kmod_name:	The name of the kernel module being requested.
-+
-+
-+The 'kernel_load_data' event describes a request for permission to
-+load data into the kernel
-+
-+	"kernel_load_data": {
-+		"id": "NN",
-+		"contents": "NN"
-+	}
-+
-+	id:		A numeric identifier value representing the
-+			type of data to be loaded.
-+
-+	contents:	A flag variable indicating if post data
-+			loading will be used.
-+		
-+
-+The 'kernel_read_file' event describes a request for permission for the
-+kernel to load a file specified by userspace.
-+
-+	"kernel_read_file": {
-+		"file": {},
-+		"contents": "NN"
-+	}
-+
-+	file:		A JSON description of the file to be read.
-+
-+	id:		A numeric identifier value representing the
-+			type of data to be loaded.
-+
-+
-+The 'sb_mount' event describes a request for permission to mount a
-+filesystem.
-+
-+	sb_mount {
-+		"dev_name": "ASCII",
-+		"path": {}
-+		"type": "ASCII",
-+		"flags": "NN"
-+	}
-+
-+	dev_name:	The name of the device that is to be mounted.
-+
-+	path:		A JSON path description describing where the
-+			device is to be mounted.
-+
-+	type:		The type of filesystem to be mounted.
-+
-+	flags:		The mount flags to be implemented.
-+	
-+
-+The 'sb_umount' event describes a request to unmount a filesystem.
-+
-+	"sb_umount": {
-+		"mnt", {},
-+		"flags", "NN"
-+	}
-+
-+	mnt:		A JSON dentry structure defining the mount point
-+			that is to be unmounted.
-+
-+	flags:		A numerical value specifying the flags passed
-+			to the unmount command.
-+
-+
-+The 'sb_remount' event describes a request for permission to remount a
-+filesystem.
-+
-+	"sb_remount": {
-+		"sb": {}
-+		"dentry": {},
-+		"fstype": "ASCII",
-+		"s_flags": "NN"
-+	}
-+
-+	sb:		A JSON superblock structure describing the
-+			mountpoint that is to be remounted.
-+
-+	dentry:		A JSON dentry structure describing the mountpoint
-+			that is to be remounted.
-+
-+	fstype:		The name of the filesystem being remounted.
-+
-+	s_flags:	The superblock flags describing the mount.
-+
-+
-+The 'sb_pivotroot' event describes a request for permission to pivot
-+the root filesystem to a new mount point.
-+
-+	"sb_pivotroot": {
-+		"old_path": {},
-+		"new_path": {}
-+	}
-+
-+	old_path:	A JSON path structure specifying the location
-+			from which the root filesystem is to be moved.
-+
-+	new_path:	A JSON path structure specifying the location
-+			to which the root filesystem is to be moved.
-+
-+
-+The 'sb_statfs' event describes a request for permission to access
-+filesystem statistics.
-+
-+	"sb_statfs": {
-+		"dentry": {},
-+	}
-+
-+	dentry:		A JSON dentry structure describing the superblock
-+			location for the request.
-+
-+
-+The 'move_mount' event describes a request for permission to move a
-+mount from one location to another.
-+
-+	"move_mount": {
-+		"from_path": {},
-+		"to_path": {}
-+	}
-+
-+	from_path:	A JSON path structure describing the location from
-+			where the mount is to be moved from.
-+
-+	to_path:	A JSON path structure describing the location to
-+			where the mount is to be moved to.
-+
-+
-+The 'shm_associate' event structure describes a request for permission
-+to access an existing shared memory region.
-+
-+	"shm_associate": {
-+		"perm": {},
-+		"shmflg": "NN"
-+	}
-+
-+	perm: 		A JSON IPC permissions structure describing the
-+			permissions of the shared memory region.
-+
-+	shmflg:		A numeric flag describing the shared memory
-+			operations being requested.
-+
-+
-+The 'shm_shmctl' event structure describes a request for permission to
-+execute a command on a SYSV shared memory region.
-+
-+	"shm_shmctl": {
-+		"perm": {},
-+		"cmd": "NN"
-+	}
-+
-+	perm: 		A JSON IPC permissions structure describing the
-+			permissions of the shared memory region.
-+
-+	cmd:		The command whose permission is to be checked.
-+
-+
-+The 'shm_shmat' event structure describes a request for permission to
-+attach to a shared memory region.
-+
-+	"shm_shmat": {
-+		"perm": {},
-+		"shmflg": "NN"
-+	}
-+
-+	perm: 		A JSON IPC permissions structure describing the
-+			permissions of the shared memory region.
-+
-+	shmflg:		The shared memory attachment command being
-+			requested.
-+
-+
-+The 'sem_associate' event structure describes a request for permission
-+to attach to an existing shared memory semaphore.
-+
-+	"sem_associate": {
-+		"perm": {},
-+		"shmflg": "NN"
-+	}
-+
-+	perm: 		A JSON IPC permissions structure describing the
-+			permissions of the semaphores that the
-+			association request is being requested for.
-+
-+	semflg:		The semaphore operations flag.
-+
-+
-+The 'sem_semctl' event structure describes a request for permission
-+to execute a control operation on a shared memory semaphore.
-+
-+	"sem_semctl": {
-+		"perm": {},
-+		"cmd": "NN"
-+	}
-+
-+	perm: 		A JSON IPC permissions structure describing the
-+			permissions of on the semaphore that the control
-+			command is being requested on.
-+
-+	cmd:		The semaphore command that is being requested.
-+
-+
-+The 'sem_semop' event structure describes a request for permission to
-+request an operation on a semaphore set.
-+
-+	"sem_semctl": {
-+		"perm": {},
-+		"nsops": "NN",
-+		"alter": "NN"
-+	}
-+
-+	perm: 		A JSON IPC permissions structure describing the
-+			permissions of the semaphore set that the
-+			operation is being requested on.
-+
-+	nsops:		The number of operations to be performed.
-+
-+	alter:		The changes that are to be made.
-+
-+
-+The 'syslog' event structure describes a request for permission to
-+access the kernel message buffers or change console logging.
-+
-+	"syslog": {
-+		"type": NN
-+	}
-+
-+	type: 		The action that is being requested.
-+
-+
-+The 'settime' event structure describes a request for permission to
-+access the kernel message buffers or change console logging.
-+
-+	"settime": {
-+		"ts": {
-+			"seconds", "NN",
-+			"nsecs", "NN"
-+		},
-+		"tz": {
-+			"minuteswest", "NN",
-+			"dsttime", "NN"
-+		}
-+	}
-+
-+	ts: 		If the call to the security_settime handler was
-+			to set the time this structure will be present.
-+
-+	seconds:	The time in seconds to set.
-+
-+	nsecs:		The time in nano-seconds to be set.
-+
-+	tz:		If the call to the security_settime handler was
-+			to set the timezone this structure will be present.
-+
-+	minuteswest:	The offset of the timezone.
-+
-+	dsttime:	A flag variable to indicate if daylight savings
-+			time is to be set.
-+
-+
-+The 'quotactl' event structure describes a request for permission to
-+control manipulate filesystem quotas.
-+
-+	"quotactl": {
-+		"cmds": "NN",
-+		"type": "NN",
-+		"id": "NN",
-+		"sb", {}
-+	}
-+
-+	cmds:		The quota commands to be enforced.
-+
-+	type:		The type of quota to be enforced.
-+
-+	id:		The quota version to be enforced.
-+
-+	sb:		A JSON superblock structure describing the
-+			filesystem on which the quota command is to
-+			operate on.
-+
-+
-+The 'quota_on' event structure describes a request to enable quotas
-+for a filesystem.
-+
-+	"quota_on": {
-+		"dentry": {}
-+	}
-+
-+	dentry:		A JSON dentry description describing the
-+			mountpoint that quotas are to be enabled on.
-+
-+
-+The 'msg_queue_associate' event structure describes a request to
-+access a previously defined message queue.
-+
-+	"msg_queue_associate": {
-+		"perm": {}
-+		"msgflg": "NN"
-+	}
-+
-+	perm: 		A JSON IPC permissions structure describing the
-+			permissions of the message queue that association
-+			is being requested for.
-+
-+	msgflg:		A numeric flag indicating the operation that is
-+			being requested.
-+
-+
-+The 'msg_queue_msgctl' event structure describes a request to execute
-+a control operation on a shared memory message queue region.
-+
-+	"msg_queue_msgctl": {
-+		"perm": {}
-+		"cmd": "NN"
-+	}
-+
-+	perm: 		A JSON IPC permissions structure describing the
-+			permissions of the shared memory message queue
-+			region that the control command is being
-+			requested on.
-+
-+	cmd:		A numeric flag indicating the control operation
-+			that is to be executed.
-+
-+
-+The 'msg_queue_msgsnd' event structure describes a request to send a
-+message over a shared memory message queue.
-+
-+	"msg_queue_msgsnd": {
-+		"perm": {}
-+		"msqflg": "NN"
-+	}
-+
-+	perm: 		A JSON IPC permissions structure describing the
-+			permissions of the shared memory message queue
-+			region that the message is being sent on.
-+
-+	msqflg:		A numeric coding of the operation that is to
-+			be performed.
-+
-+
-+The 'msg_queue_msgrcv' event structure describes a request to receive
-+a message over a shared memory message queue.
-+
-+	"msg_queue_msgrcv": {
-+		"perm": {}
-+		"target": "DIGEST"
-+		"type": "NN",
-+		"mode": 
-+	}
-+
-+	perm: 		A JSON IPC permissions structure describing the
-+			permissions of the shared memory message queue
-+			region that the message is being received on.
-+
-+	target:		The TASK_ID of the process that is to receive
-+			the message.
-+
-+	type:		The type of message that is to be received.
-+
-+	mode:		The operations flag for the message.
-+
-+
-+The 'ipc_permission' event structure describes a request to check if
-+SYSV IPC access is to be allowed.
-+
-+	"ipc_permission": {
-+		"perm": {}
-+		"target": "DIGEST"
-+		"type": "NN",
-+		"mode": "NN"
-+	}
-+
-+	ipcp: 		A JSON IPC permissions structure describing the
-+			permissions on the SYSV shared memory region that
-+			is to be checked.
-+
-+	flag:		The access permissions being requested.
-+
-+
-+The 'key_alloc' event structure describes a request for permission to
-+allocate and initialize a kernel key structure.
-+
-+	"key_alloc": {
-+		"creds": {},
-+		"flags": "NN"
-+	}
-+
-+	creds: 		A JSON credentials structure describing the
-+			the access controls for the key structure
-+
-+	flags:		A numeric control constant describing how the
-+			key is to be created.
-+
-+
-+The 'key_permission' event structure describes a request for
-+permission to execute a control operation on a kernel key structure.
-+
-+	"key_permission": {
-+		"key_refs": {
-+			"possessed": "NN",
-+			"uid": "NN",
-+			"gid": "NN",
-+			"flags": "NN"
-+		}
-+		"creds": {},
-+		"perm", "NN"
-+	}
-+
-+	key_refs:	A JSON structure describing the key to be
-+			accessed.
-+
-+		possessed:	A flag indicating whether or not the key is
-+				possessed by a process.
-+
-+		uid:		The user id that owns the key.
-+
-+		gid:		The group id that owns the key.
-+
-+		flags:		Flags describing the state of the key.
-+
-+	creds		A credentials structure describing the task that
-+			is requesting access to the key.
-+
-+	perm:		The permissions that are being requested on the
-+			key.
-+
-+
-+The 'netlink_send' event structure describes the permissions that are
-+to be set on a netlink socket.
-+
-+	"netlink_send": {
-+		"sock": {},
-+		"uid": "NN",
-+		"gid": "NN"
-+		"portid": "NN",
-+		"dst_group": "NN",
-+		"nsid_set": "NN",
-+		"nsid": "NN"
-+	}
-+
-+	sock:		A JSON socket description structure describing
-+			the socket over which the message is to be sent.
-+
-+	uid:		The user id that the message is to be sent to.
-+
-+	gid:		The group id that the message is to be sent to.
-+
-+	portid:		The port identifier of the 	
-+
-+	dst_group:	The destination group for the message.
-+
-+	nsid_set:	A flag variable indicating that the nsid value
-+			is valid.
-+
-+	nsid:		The namespace identifier.
-+
-+
-+The 'inode_create' event structure describes a request to create an
-+inode.
-+
-+	"inode_create": {
-+		"dir":	{},
-+		"dentry": {},
-+		"mode": "0MM"
-+	}
-+
-+	dir:		A JSON inode description describing the directory
-+			the inode is to be created under.
-+
-+	dentry:		A JSON dentry description describing the location
-+			where the inode is to be created.
-+
-+	mode:		The permissions to be assigned to the inode.
-+
-+
-+The 'inode_link' event structure describes a request to link an inode
-+to a new location.
-+
-+	"inode_link": {
-+		"old_dentry": {},
-+		"dir": {},
-+		"new_dentry": {}
-+	}
-+
-+	old_dentry:	A JSON dentry description describing the current
-+			location of the inode.
-+
-+	dir		A JSON inode description describing the parent
-+			directory under which the inode link will be
-+			created.
-+
-+	new_dentry:	A JSON dentry description describing the location
-+			of the new link.
-+
-+
-+The 'inode_unlink' event structure describes a request to delete an
-+inode.
-+
-+	"inode_unlink": {
-+		"dir": {},
-+		"dentry": {}
-+	}
-+
-+	dir:		A JSON inode structure describing the parent
-+			directory from which the inode is to be removed.
-+
-+	dentry:		A JSON dentry description describing the inode
-+			to be removed.
-+
-+
-+The inode_symlink event structure describes a request to delete an inode.
-+
-+	"inode_symlink": {
-+		"dir": {},
-+		"dentry": {},
-+		"old_name": "ASCII"
-+	}
-+
-+	dir:		A JSON inode structure describing the parent
-+			directory in which the link is to be created.
-+
-+	dentry:		A JSON dentry description describing the inode
-+			that is to be created as the link.
-+
-+	old_name:	The name of the existing filename to be linked.
-+
-+
-+The 'inode_mkdir' event structure describes a request to create an
-+directory.
-+
-+	"inode_mkdir": {
-+		"dir": {},
-+		"dentry": {},
-+		"mode": "0MM"
-+	}
-+
-+	dir:		A JSON inode structure describing the parent
-+			directory in which the directory is to be created.
-+
-+	dentry:		A JSON dentry description describing the directory
-+			inode that is to be created.
-+
-+	mode:		The permissions to be assigned to the new directory.
-+
-+
-+The 'inode_rmdir' event structure describes a request to remove a
-+directory inode.
-+
-+	"inode_rmdir": {
-+		"dir": {},
-+		"dentry": {},
-+	}
-+
-+	dir:		A JSON inode structure describing the parent
-+			directory of the directory being removed.
-+
-+	dentry:		A JSON dentry description describing the directory
-+			inode that is to be removed.
-+
-+	mode:		The permissions to be assigned to the new directory.
-+
-+
-+The 'inode_mknod' event structure describes a request to remove a directory
-+inode.
-+
-+	"inode_mknod": {
-+		"dir": {},
-+		"dentry": {},
-+		"mode": "0MM",
-+		"dev": {
-+			"major": "NN",
-+			"minor": "NN"
-+		}
-+	}
-+
-+	dir:		A JSON inode structure describing the directory
-+			under which the device node is being created.
-+
-+	dentry:		A JSON dentry description describing the location
-+			of the device node inode.
-+
-+	mode:		The permissions to be assigned to the device node.
-+
-+	dev:		A JSON structure describing the device node
-+			characteristics:
-+
-+		major:		The major number of the device to be
-+				created.
-+
-+		minor:		The minor number of the device to be
-+				created.
-+
-+
-+The 'inode_rename' event structure describes a request to rename an
-+inode.
-+
-+	"inode_rename": {
-+		"old_dir": {},
-+		"old_dentry": {},
-+		"new_dir": {},
-+		"new_dentry": {}
-+	}
-+
-+	old_dir:	A JSON inode structure describing the parent
-+			directory of the inode to be renamed.
-+
-+	old_dentry:	A JSON dentry description describing the location
-+			of the inode to be renamed.
-+
-+	new_dir:	A JSON inode structure describing the parent
-+			directory of the new location of the inode.
-+
-+	new_dentry:	A JSON dentry description describing the new
-+			inode location.
-+
-+
-+The 'inode_setattr' event structure describes a request to set the
-+attributes of an inode.
-+
-+	"inode_setattr": {
-+		"dentry": {},
-+		"attr": {
-+			"valid": "NN",
-+			"mode": "0MM",
-+			"uid": "NN",
-+			"gid": "NN",
-+			"size": "NN
-+		}
-+	}
-+
-+	dentry:		A JSON dentry structure describing the inode
-+			whose characteristics are to be set.
-+
-+	attr:		A JSON structure describing the characteristics
-+			that will be set:
-+
-+		valid:		A numeric encoding of what characteristics
-+				of the inode should be set.
-+
-+		mode:		If requested, the permissions that are to
-+				be set.
-+
-+		uid:		If requested, the new user id to be set.
-+
-+		gid:		If requested, the new group id to be set.
-+
-+		size:		If requested, the new size of the file.
-+
-+
-+
-+The 'inode_getattr' event structure describes a request to obtain the
-+attributes of an inode.
-+
-+	"inode_getattr": {
-+		"path": {}
-+	}
-+
-+	path:		A JSON path structure describing the path to
-+			the inode whose attributes are to be retrieved.
-+
-+
-+The 'inode_setxattr' event structure describes a request to set the
-+extended attributes of an inode.
-+
-+	"inode_setxattr": {
-+		"dentry": {},
-+		"name": "ASCII",
-+		"value": "BASE64",
-+		"flags": "NN"
-+	}
-+
-+	dentry:		A JSON dentry structure describing the inode
-+			whose extended attributes are to be set.
-+
-+	name:		The name of the attribute to be set.
-+
-+	value:		The value of the attribute to be set encoded
-+			as a Base64 ASCII string.
-+
-+	flags:		The operations flag for how to set the attribute.
-+
-+
-+The 'inode_getxattr' event structure describes a request to get the
-+extended attributes of an inode.
-+
-+	"inode_getxattr": {
-+		"dentry": {},
-+		"name": "ASCII",
-+	}
-+
-+	dentry:		A JSON dentry structure describing the inode
-+			whose extended attributes are to be requested.
-+
-+	name:		The name of the attribute whose value is to
-+			be requested.
-+
-+
-+The 'inode_listxattr' event structure describes a request to list the
-+extended attributes attached to an inode.
-+
-+	"inode_listxattr": {
-+		"dentry": {}
-+	}
-+
-+	dentry:		A JSON dentry structure describing the inode
-+			whose extended attributes are to be listed.
-+
-+
-+The 'inode_removexattr' event structure describes a request to remove
-+an extended attributes attached to an inode.
-+
-+	"inode_removexattr": {
-+		"dentry": {},
-+		"name": "ASCII"
-+	}
-+
-+	dentry:		A JSON dentry structure describing the inode
-+			whose extended attribute are to be removed.
-+
-+	name:		The name of the extended attribute that is to
-+			be removed.
-+
-+
-+The 'inode_killpriv' event structure describes a request to remove
-+privileges from an inode.
-+
-+	"inode_killpriv": {
-+		"dentry": {}
-+	}
-+
-+	dentry:		A JSON dentry structure describing the inode
-+			whose privileges are to be removed.
-+
-+
-+The 'tun_dev_create' event structure describes a request to create a
-+TUN network device.
-+
-+	"tun_dev_create": {
-+	}
-+
-+	No parameters are processed for this request.
-+
-+
-+The 'tun_dev_attach_queue' event structure describes a request to
-+attach a TUN device queue.
-+
-+	"tun_dev_attach_queue": {
-+	}
-+
-+	No parameters are processed for this request.
-+
-+
-+The 'tun_dev_attach' event structure describes a request to attach to
-+a TUN device.
-+
-+	"tun_dev_attach": {
-+		"sock": {}
-+	}
-+
-+	sock:		A JSON socket description structure describing
-+			the socket requesting access to the TUN device.
-+
-+
-+The 'tun_dev_open' event structure describes a request to open a
-+network TUN device.
-+
-+	"tun_dev_open": {
-+	}
-+
-+	No parameters are processed for this request.
-+
-+
-+The 'bpf' event structure describes a request to use the BPS system
-+call.
-+
-+	"bpf": {
-+		"cmd": "NN",
-+		"attr": {
-+			"size": "NN"
-+		}
-+	}
-+
-+	cmd:		The BPF command that is being requested.
-+
-+	attr:		A JSON structure describing the attributes for
-+			the command:
-+
-+		size:		The size of the BPF attribute description
-+				that will be passed to the BPF call.
-+
-+
-+The 'bpf_map' event structure describes a request for permission to
-+access a BPF map.
-+
-+	"bpf_map": {
-+		"map": {
-+			"map_type": "NN",
-+			"fmode": "NN"
-+		}
-+	}
-+
-+	map:		A JSON description structure used to describe the
-+			map that will be accessed.
-+
-+	fmode:		The permissions to be used for accessing the
-+			map.
-+
-+
-+The 'bpf_prog' event structure describes a request for permission to
-+access a BPF program.
-+
-+	"bpf_prog": {
-+		"prog": {
-+			"type": "NN",
-+			"attach_type": "NN"
-+		}
-+	}
-+
-+	prog:		A JSON description structure used to describe the
-+			program that access is being requested to.
-+
-+		type:		The type of program being described.
-+
-+		attach_type:	The type of attachment to be used for the
-+				program.
-+
-+
-+The 'capable' event structure describes a request to check if a
-+process has a specific capability.
-+
-+	"capable": {
-+		"cap": "NN",
-+		"opts": "NN"
-+	}
-+
-+	cap:		The capability being requested.
-+
-+	opts:		The options directing how the check is to be
-+			performed.
-+
-+
-+The 'capget' event structure describes a request to return the
-+capability sets that a process has.
-+
-+	"capget": {
-+		"target": "DIGEST",
-+		"effective": "0xHEX",
-+		"inheritable": "0xHEX",
-+		"permitted": "0xHEX"
-+	}
-+
-+	target:		The TASK_ID of the process whose capability masks
-+			are to be checked.
-+
-+	effective:	The effective capabilities of the process.
-+
-+	inheritable:	The inheritable capabilities of the process.
-+
-+	permitted:	The permitted capabilities of the process.
-+
-+
-+The 'capset' event structure describes a request to set the
-+capabilities of a target process.
-+
-+	"capset": {
-+		"effective": "0xHEX",
-+		"inheritable": "0xHEX",
-+		"permitted": "0xHEX"
-+	}
-+
-+	effective:	The effective capabilities to be set.
-+
-+	inheritable:	The inheritable capabilities to be set.
-+
-+	permitted:	The permitted capabilities to be set.
-+
-+
-+Security event export encodings:
-+--------------------------------
-+
-+External trust orchestrator's read security events from the control
-+plane file created for an externally modeled security namespace.
-+
-+The encoding of the event is in the following form:
-+
-+{"export": {}, "event": {}}
-+
-+Where the event structure is the previously described event structure
-+with the following additional key:
-+
-+	pid:		The process identifier (PID) of the task that
-+			generated the event.
-+
-+			The primary TSEM documentation file documents why
-+			this value can be safely used in this context.
-+
-+
-+The 'export' structure encodes the characteristics type of the
-+exported event.
-+
-+	"export:" {
-+		"type": "ASCII",
-+		"TYPE": {}
-+	}
-+
-+The 'export' structure is a self-describing structure where the ASCII
-+string that serves as the value of the 'type' key will serve as the
-+key value that describes the payload structure of the event, ie. the
-+TYPE key will be substituted with the ASCII string.
-+
-+The following payload labels are defined:
-+
-+	event
-+	async_event
-+	aggregate
-+	log
-+
-+The event and async_event payload labels both resolve to the
-+previously documented 'event' payload.  The use of different labels
-+for the event is to provide a means for a trust orchestrator to know
-+the context that the process was running in when the event was
-+generated.
-+
-+The 'aggregate' structure defines the hardware boot measurement
-+described previously in this documentation.
-+
-+	"aggregate": {
-+		"value": "DIGEST"
-+	}
-+
-+	value:		The hardware aggregate measurement.
-+
-+
-+The 'log' structure is used to describe a security event that was
-+requested while the task was running in untrusted status after a
-+security model violating event:
-+
-+	"log": {
-+		"process": "ASCII",
-+		"event": "ASCII",
-+		"action": "ASCII"
-+	}
-+
-+	process:	The process name (current->comm) that invoked
-+			the event.
-+
-+	event:		The CELL description name of the event that
-+			was requested.
-+
-+	action:		A string value indicating how the event was
-+			enforced, either DENY or LOG.
-diff --git a/Documentation/admin-guide/LSM/index.rst b/Documentation/admin-guide/LSM/index.rst
-index a6ba95fbaa9f..cebd3b02598d 100644
---- a/Documentation/admin-guide/LSM/index.rst
-+++ b/Documentation/admin-guide/LSM/index.rst
-@@ -47,3 +47,4 @@ subdirectories.
-    tomoyo
-    Yama
-    SafeSetID
-+   tsem
-diff --git a/Documentation/admin-guide/LSM/tsem.rst b/Documentation/admin-guide/LSM/tsem.rst
-new file mode 100644
-index 000000000000..7331ead13d9a
---- /dev/null
-+++ b/Documentation/admin-guide/LSM/tsem.rst
-@@ -0,0 +1,1657 @@
-+====
-+TSEM
-+====
-+
-+	"This is the story of the wine of Brule, and it shows what
-+	 men love is never money itself but their own way, and
-+	 that human beings love sympathy and pageant above all
-+	 things."
-+				- Hilaire Belloc
-+				  The Path to Rome
-+
-+TSEM is the Trusted Security Event Modeling system.  TSEM is the
-+kernel LSM based infrastructure that provides a platform for
-+implementing model based mandatory access controls.  TSEM is model
-+agnostic and is designed to support deterministic, quasi-deterministic
-+and machine learning models.
-+
-+TSEM also provides a framework for implementing Host Based Intrusion
-+Detection (HIDS) and anomaly interdiction systems without the need to
-+write kernel code or implement kernel loadable modules or BPF
-+programs.
-+
-+The design and implementation of TSEM is inspired by the notion that
-+the security behavior of a platform, or a workload, like all other
-+physical phenomenon, can be mathematically modeled.
-+
-+Security, is at once, both a technical and economic problem.  One of
-+the objectives of TSEM is to address inherent and structural economic
-+barriers to security, by introducing technology that reduces the skill
-+and time needed to implement a level of security, equivalent to what
-+can be achieved by mandatory access controls, through unit testing of
-+an application stack.
-+
-+A second objective is to reduce the skill, complexity and
-+infrastructure needed to create trusted and remotely attestable
-+platforms and/or workloads.
-+
-+To assist in achieving these objectives, TSEM implements the concept
-+of a security modeling namespace that reduces the scope and hence
-+complexity of a security model and allows it to be limited to the
-+level of a single process hierarchy or a container.
-+
-+TSEM is the Linux kernel component of a new security architecture
-+introduced by the Quixote Project, the notion of a Trust Orchestration
-+System (TOS).  The Quixote Project provides a complete implementation
-+of the userspace tools and utilities that are used in combination
-+with the TSEM LSM.
-+
-+The Trusted Computed Base (TCB) for a platform or a subordinate
-+workload is maintained and enforced by a Trust Orchestrator (TO).
-+Paired with a Trust Orchestrator is a Trusted Modeling Agent (TMA)
-+that maps the description of a security event into a security state
-+coefficient.
-+
-+TSEM is implemented as a Linux Security Module (LSM) and is designed
-+to be self-contained with little or no dependency on kernel
-+infrastructure, other than the LSM hooks themselves.  It can be
-+stacked in any order with existing LSM's.  It is implemented as the
-+first LSM in the call sequence, since it provides infrastructure that
-+can be used, for example, to validate extended attributes that may be
-+used by subsequently invoked LSM's.
-+
-+TSEM implements mandatory access controls, without a requirement for
-+extended attributes, filesystem labeling or the need to protect
-+filesystem metadata against offline attack.  A mathematically defined
-+security model, generated by unit testing of a workload, is the
-+bearer's token that carries the security guarantee for a system or
-+workload.
-+
-+TBDHTTRAD
-+=========
-+
-+A quick summary for those interested in experimenting with trust
-+orchestration and security modeling but are constrained by the concept
-+of: 'Too Busy Don't Have Time To Read Any Documentation'.
-+
-+A kernel with TSEM support in its list of enabled LSM's must be
-+available for use.  A TSEM enabled kernel will have the tsem keyword
-+in the following file:
-+
-+/sys/kernel/security/lsm
-+
-+For experimentation, or integrating TSEM modeling into a Continuous
-+Integration/Continous Development (CI/CD) workflow, modeling can be
-+restricted to subordinate security modeling namespaces by booting a
-+kernel with the following kernel command-line option:
-+
-+tsem_mode=1
-+
-+This disables modeling of the root security modeling namespace and
-+only implements modeling for subordinate security namespaces.
-+
-+The Quixote trust orchestration utilities either need to be built or
-+the statically compiled sample utilities need to be installed.  Source
-+for the userspace utilities and compiled sample programs are available
-+at the following location:
-+
-+https://github.com/Quixote-Project
-+
-+After installing the utilities, two shell sessions will be needed with
-+root privileges in each shell.
-+
-+The following directories need to be in the PATH variable of each shell:
-+
-+/opt/Quixote/sbin
-+/opt/Quixote/bin
-+
-+Execute the following command to start a process in an independent
-+security namespace with the modeling being done in the kernel:
-+
-+quixote -P -c test -o test.model
-+
-+In the second shell session, run the following command to display the
-+security execution trajectory of the model:
-+
-+quixote-console -p test -T
-+
-+In the shell session provided by the trust orchestrator, run the
-+following command:
-+
-+grep SOME_STRING /etc/passwd
-+
-+Then exit the shell.
-+
-+The orchestrator will indicate that the security model definition has
-+been written to the test.model file.
-+
-+Run the following command to execute a shell in an enforced security
-+model obtained from the previous session:
-+
-+quixote -P -c test -m test.model -e
-+
-+In the shell that is provided, run the following command:
-+
-+cat /etc/passwd
-+
-+The command will fail.
-+
-+Running the following command in the second shell session will output
-+forensics on the command that failed:
-+
-+quixote-console -p test -F
-+
-+Executing additional commands in the trust orchestrated shell will
-+cause additional entries to be added to the forensics trajectory.
-+
-+The test can be repeated using the quixote-us trust orchestrator.
-+This test will model the security namespace in a userspace process
-+rather than in the kernel based trusted modeling agent.
-+
-+Mandatory Access Controls
-+=========================
-+
-+	"If I have seen further it is by standing on the shoulders of
-+	 Giants."
-+				- Sir Isaac Newton
-+
-+It is assumed that astute readers will be familiar with classic
-+subject/object based mandatory access controls; or at least astute
-+enough to use a search engine to develop a modicum of secundem artem
-+in the discipline.
-+
-+Very simplistically, subject/object based mandatory access controls
-+can be thought of as being implemented with a two dimensional access
-+vector matrix, with some type of a description of a process (subject)
-+on one axis and a description of a data sync/source (object),
-+typically an inode, on the second axis.  The descriptions are
-+commonly referred to as subjects and objects.
-+
-+A security policy is developed that assigns a boolean value for each
-+element of the matrix that specifies whether or not permission should
-+be granted for the subject to access the object.
-+
-+These schemes are frequently referred to as 'mandatory access
-+controls', since only the kernel has the ability to implement the
-+labeling and decision processes.  In these systems, the root or
-+administrative user has no ability to affect kernel decision making
-+with respect to whether or not permission is granted or denied.
-+
-+These systems were derived from governmental and military information
-+classification systems and are capable of delivering security
-+guarantees appropriate to classified and high sensitivity assets.  The
-+delivery of these security guarantees comes with it a reputation for
-+complexity and fragility.
-+
-+Development of a system wide security policy is a complex process and
-+administration of such systems is frequently done in an iterative
-+fashion.  The system is monitored for permission denials with
-+modifications to correct these false denials folded back into the
-+policy.  In many cases, mandatory access control systems are run in
-+warning rather than enforcing mode and used as an indicator for
-+potential security violations.
-+
-+One of the additional challenges is that the integrity of labels is
-+fundamental to the ability of these systems to deliver their security
-+guarantees.  This requires that the labeling process be conducted
-+under security controlled conditions, with the labels subsequently
-+protected against offline modification by cryptographic integrity
-+guarantees.
-+
-+Mandatory access controls had their origin in centralized multi-user
-+platforms, and before the now widely accepted, strategy of using
-+resource compartmentalization (namespaces) to isolate applications
-+from each other and the system at large.  A legitimate technical
-+argument can be made as to whether or not enforcement of a system wide
-+security policy is suitable for these environments.
-+
-+At the other end of the spectrum, in embedded systems, structural
-+economic barriers incent very little attention to security, where time
-+to market is the primary goal.  These systems are pushed into the
-+field, many time for multi-year operational lifetimes, with little
-+prospect for upgrades or any notion of an iterative tuning process of
-+a security policy.
-+
-+Security Event Modeling
-+=======================
-+
-+	"We can no longer speak of the behavior of the particle
-+	 independently of the process of observation. As a final
-+	 consequence, the natural laws formulated mathematically in
-+	 quantum theory no longer deal with the elementary particles
-+	 themselves but with our knowledge of them. Nor is it any
-+	 longer possible to ask whether or not these particles exist in
-+	 space and time objectively ... When we speak of the picture of
-+	 nature in the exact science of our age, we do not mean a
-+	 picture of nature so much as a picture of our relationships
-+	 with nature.  ...Science no longer confronts nature as an
-+	 objective observer, but sees itself as an actor in this
-+	 interplay between man and nature. The scientific method of
-+	 analysing, explaining and classifying has become conscious of
-+	 its limitations, which arise out of the fact that by its
-+	 intervention science alters and refashions the object of
-+	 investigation. In other words, method and object can no longer
-+	 be separated."
-+				- Werner Karl Heisenberg
-+
-+Security Event Modeling (SEM), is an alternative strategy to implement
-+the security guarantees of mandatory access and integrity controls, in
-+a manner that is consistent with emerging application development
-+strategies such as namespaces and CI/CD workflows.
-+
-+As was noted at the start of this document, the premise for SEM is
-+that the security behavior of a platform, or alternatively a workload,
-+can be modeled like any other physical phenomenon in science and
-+engineering.
-+
-+Inspiration for this came from the primary TSEM author/architect
-+having trained as a quantum chemist, conducting very early research in
-+the development of multi-scale modeling strategies for molecules of
-+size to be of interest to pharmaceutical intents.
-+
-+SEM is premised on the theory that kernel security architects have
-+instrumented the LSM security event hooks to be called in locations
-+before security sensitive operations are conducted, with appropriate
-+descriptive parameters, that are considered relevant to the security
-+posture of the kernel.  With respect to modeling, the security event
-+hooks are conceptualized as representing the independent variables of
-+a basis set that yields a functional definition for the security state
-+of an execution trajectory.
-+
-+SEM can be framed in the context of classic subject/object mandatory
-+access controls, by the notion that a unique identity can be generated
-+for each element of an access vector matrix, rather than a boolean
-+value.  In SEM, a security execution trajectory is defined by the set
-+of security state coefficients that a process hierarchy (workload)
-+generates.  This execution trajectory produces a vector of identities,
-+whose sum in an appropriate form, yields a functional definition of
-+the security state of the system.
-+
-+Two subordinate identities are combined to yield a security event
-+state coefficient.  These subordinate identities are referred to as
-+the Context Of Execution (COE) and the CELL, which are conceptually
-+similar to the subject and object in mandatory access control.  The
-+COE identity is derived from the parameters that describe the security
-+relevant characteristics (ie. credentials) of a process, while the
-+CELL value is derived from the parameters used by a security event
-+hook to describe the characteristics of the event.
-+
-+A security policy is implemented by a modeling algorithm that
-+translates COE and CELL event parameters into their respective
-+identities.  The COE and CELL are combined to yield a security state
-+coefficient that uniquely describes the security event in the security
-+model.  Different security policies and criteria can be developed by
-+modifying how the modeling algorithm utilizes the COE and CELL
-+characteristics.
-+
-+Since the security policy is implemented with a modeling algorithm, a
-+single platform can support multiple and arbitrary security policies.
-+The equivalent of a resource namespace in SEM is referred to as a
-+security modeling namespace.
-+
-+The formation of the security state coefficients from existing kernel
-+parameters eliminates the need for the use of extended attributes to
-+hold security label definitions.  In SEM, a cryptographically signed
-+security model definition, designed to be interpreted by a modeling
-+algorithm, becomes the bearer's token for the security of the modeled
-+workload, rather than information encoded in filesystem security
-+attributes.
-+
-+Trusted Security Event Modeling
-+===============================
-+
-+	"Do you see over yonder, friend Sancho, thirty or forty
-+	 hulking giants?  I intend to do battle with them and slay
-+	 them."
-+				- Don Quixote
-+
-+In TSEM, the modeling algorithm is implemented in an entity known as a
-+Trusted Modeling Agent (TMA), in a 'trusted' environment where
-+modeling is immune from modification or alteration by any activity on
-+the platform or in a workload.  The notion of a TMA provides a
-+framework for such things as next generation security co-processors
-+that extend functionality beyond what is defined by the concept of a
-+Trusted Platform Module (TPM).
-+
-+In addition to providing an attestation of an execution trajectory, a
-+TMA, in contrast to a TPM, has the ability to advise an operating
-+system on whether or not an event being modeled is consistent with the
-+security model that is being enforced.  In this manner, it introduces
-+a prospective rather than a retrospective trust model.
-+
-+TSEM is designed to support Trust Orchestration Systems (TOS).  In a
-+TOS, the trust orchestrators are supervisory programs that run
-+workloads in independent security modeling namespaces , enforcing a
-+workload specific security model.  Each trust orchestrator is paired
-+with a 'trusted partner TMA', known as a Sancho, that implements the
-+workload specific modeling algorithm.
-+
-+The root of trust for a security modeling namespace is based on where
-+the TMA instance is implemented.  As an example, the Quixote TOS
-+implementation currently offers orchestrators for the following TMA
-+execution localities:
-+
-+- Kernel.
-+
-+- Userspace process.
-+
-+- SGX enclave.
-+
-+- Xen stub domain.
-+
-+- Micro-controller.
-+
-+This partitioning of trust results in the concept of security modeling
-+namespaces being referred to as internally or externally modeled.  A
-+TMA implementation run in the kernel is referred to as an internally
-+modeled namespace; TMA's run outside of the kernel are referred to as
-+an externally modeled namespace.
-+
-+The TMA, regardless of locality, is responsible for processing the
-+characteristics that describe a security event, computing the identity
-+for the COE and CELL and then combining these two identities to create
-+a security state coefficient.  With respect to modeling theory, the
-+coefficient is a task specific value representing the event in a
-+security model.
-+
-+TSEM is dispassionate with respect to the type of algorithm that is
-+implemented.  The processing of the security event characteristics and
-+their conversion to security coefficients, is driven by the security
-+model/policy that will be implemented for the workload.  The
-+architecture is designed to support security modeling algorithms that
-+are either deterministic or embrace approximations, stochastic
-+inference and machine learning algorithms in response to specific
-+workload, platform or device requirements.
-+
-+A security model, to be enforced by a trust orchestrator, is
-+implemented by providing the TMA with a set of security state
-+coefficients that are to be observed.  A TMA processes the
-+characteristics of a security event and converts the characteristics
-+to a security state coefficient that is evaluated against the
-+coefficients provided to the TMA as the reference security model for a
-+workload.
-+
-+A security event that translates to one of the provided 'good'
-+coefficients, will cause the TMA to indicate to the trust orchestrator
-+that the process is to be allowed to run as a trusted process.  A
-+security event that does not map to a known good coefficient, results
-+in the trust orchestrator designating that the process be labeled as
-+an untrusted process.
-+
-+Trust orchestrators and their associated TMA's, are designed to
-+support signed security models.  This results in the elimination of
-+the requirement to verify or appraise extended attributes and other
-+measures currently required to protect labeled security systems or
-+filesystem metadata against offline attacks.
-+
-+The use of a cryptographic hash function to generate the security
-+coefficient results in the definition of very specific security
-+behaviors, that are sensitive to any variation in their
-+characteristics.  Any offline modifications to files will result in a
-+coefficient that is inconsistent with a signed model provided to a
-+TMA.
-+
-+In order to support the development of TSEM based security models, a
-+TMA is designed to run in one of the following three modes:
-+
-+- Free modeling.
-+
-+- Sealed.
-+
-+- Enforcing.
-+
-+In a free modeling configuration, the TMA adds the security state
-+coefficient for the characteristics of a security event to the current
-+set of known good states.  In addition, the description of the
-+security event is retained as a member of the security execution
-+trajectory for the model.  This mode is used, in combination with unit
-+testing of a workload, to generate a security model for subsequent
-+enforcement.
-+
-+Placing a TMA in 'sealed' mode implies that any subsequent security
-+coefficients, that do not map into a known security state, are to be
-+considered 'forensic' violations to the security state of the model.
-+
-+This mode is designed to provide the ability to either fine tune a
-+model or provide early warning of a potential attempt to subvert the
-+security status of a workload.  The characteristics of the violating
-+event are registered in the forensics trajectory of the model for use
-+in subsequent evaluation of the violating event and/or model
-+refinement.
-+
-+Placing a TMA model in 'enforcing' status implies that the model is in
-+a sealed state and any subsequent violations to the model will result
-+in the violating process being placed in untrusted status and a
-+permissions violation returned to the task invoking the security
-+event.
-+
-+Process and Platform Trust Status
-+=================================
-+
-+A fundamental concept in TSEM is the notion of providing a precise
-+definition for what it means for a platform or workload to be trusted.
-+A trusted platform or workload is one where there has not been an
-+attempt by a process to execute a security relevant event that does
-+not map into a known security state coefficient.
-+
-+The process trust status is a characteristic of the process that is
-+passed to any subordinate processes that are descendants of that
-+process.  Once a process is tagged as untrusted, that characteristic
-+cannot be removed from the process.  In a 'fruit from the poisoned
-+vine' paradigm, all subordinate processes created by an untrusted
-+process are untrusted as well.
-+
-+On entry into each TSEM security event handler, the trust status of a
-+process is checked before an attempt to model the event is made.  An
-+attempt to execute a security event by an untrusted process will cause
-+the event, and its characteristics, to be logged.  The return status
-+of the hook will be determined by the enforcement state of the model.
-+A permission denial is only returned if the TMA is running in
-+enforcing mode.
-+
-+If the platform running the TSEM LSM has a TPM, the hardware aggregate
-+value is computed at the time that TSEM is initialized.  This hardware
-+aggregate value is the linear extension sum over Platform
-+Configuration Registers (PCR's) 0 through 7.  This is the same
-+aggregate value that is computed by the Integrity Measurement
-+Architecture (IMA) and is the industry standard method of providing an
-+evaluation measurement of the hardware platform state.
-+
-+Internally modeled namespaces have the hardware aggregate measurement
-+included as the first event in the security model.  Externally modeled
-+namespaces export the hardware aggregate value to the TMA for
-+inclusion as the first event of the model maintained by the external
-+TMA.
-+
-+The root security model extends each security state coefficient into a
-+PCR.  The default PCR is 11 but is configurable through the kernel
-+compilation configuration process.  The use of a separate PCR from IMA
-+allows hardware based TSEM measurements to coexist with IMA
-+measurement values.  This hardware measurement value is designed to
-+allow attestation to the hardware state that the root model is running
-+in.
-+
-+TSEM is designed to support a philosophy where the root security
-+modeling namespace will be a minimum Trusted Computing Base
-+implementation that will only be running trust orchestrators and any
-+other infrastructure needed to support running workloads in
-+subordinate security namespaces.
-+
-+The subordinate security modeling namespaces are designed to decrease
-+model complexity in order to support a single functional value
-+describing the 'known good' security state of a subordinate security
-+workload.  Subordinate security modeling namespaces are
-+non-hierarchical, ie. a security modeling namespace cannot itself
-+parent an additional security modeling namespace.
-+
-+The Linux TSEM Implementation
-+=============================
-+
-+	"Sometimes the questions are complicated and the answers are
-+	 simple."
-+				- Dr. Seuss
-+
-+The Linux TSEM implementation is deliberately simplistic and consists
-+of the following two generic components:
-+
-+- Security modeling namespace and security event export functionality.
-+
-+- Internal trusted modeling agent implementation.
-+
-+The security modeling namespace and export functionality is designed
-+to be generic infrastructure that allows security namespaces to be
-+created that are either internally or externally modeled.  The TSEM
-+implementation does not pose any constraints on what type of modeling
-+can or should be implemented in these namespaces.
-+
-+On the theory that security event handlers represent all of the
-+security relevant action points in the kernel, any security or
-+integrity model can be implemented using the TSEM infrastructure.  For
-+example, basic IMA functionality could be implemented by a TMA that
-+maps the digests of files accessed, or mapped executable, by the root
-+user as the security state coefficients.
-+
-+A primary intent of the Linux TSEM implementation is to provide a
-+generic method for implementing security policy in userspace rather
-+than the kernel.  This is consistent with what has been the historic
-+understanding in Linux architecture, that policy decisions should be
-+delegated, when possible, to userspace rather than to kernel based
-+implementations.
-+
-+The model is extremely simplistic; a TMA interprets a security event
-+and its characteristics and advises whether or not the kernel should
-+designate the process as trusted or untrusted after event processing
-+is complete.
-+
-+The following sections discuss various aspects of the infrastructure
-+used to implement this architecture.
-+
-+Internal vs external modeling
-+-----------------------------
-+
-+When a TSEM security modeling namespace is created, a designation is
-+made as to whether the namespace is to be internally or externally
-+modeled.
-+
-+In an internally modeled namespace, the security event handlers pass the
-+event type and its characteristics to the designated internal trusted
-+modeling agent.  The agent provides the permission value for the
-+security event handler to return as the result of the event and sets
-+the trust status of the process executing the event.
-+
-+In an externally modeled namespace, the event type and parameters are
-+exported to userspace for processing by a trust orchestrator with an
-+associated TMA.  The trust orchestrator communicates the result of the
-+modeling back to the kernel to support the setting of the process
-+trust status.
-+
-+The exception to this model are for security event handlers that are
-+called in atomic, ie. non-sleeping context.  The export of these
-+security event descriptions are done asynchronously in order to avoid
-+having the TSEM implementation attempt to sleep in atomic context
-+while the userspace trust orchestrator is scheduled for execution.
-+
-+It is up to the trust orchestrator and its security policy to
-+determine how it handles events that violate the security model being
-+enforced in this model.  The Quixote trust orchestrators shut down the
-+entire workload running in the security namespace if an asynchronously
-+modeled event violates the security model being enforced and the model
-+is running in enforcing mode.
-+
-+Internally modeled domains are able to provide immediate interception
-+and modification of the trust status of a process that is violating
-+the security model.  This has implications for the root security
-+namespace that is running on a system with a TPM, since the security
-+event coefficients are logged to the Platform Configuration Register
-+that is being used by TSEM.
-+
-+Issuing the TPM transaction would cause the process to attempt to
-+sleep while it waits for the TPM command to complete.  In order to
-+address this issue, the TPM transactions are deferred to an ordered
-+workqueue for execution.  The use of an ordered workqueue maintains
-+the time dependency of the security coefficients being registered.
-+
-+In order to handle modeling of security events in atomic context, the
-+TSEM implementation maintains caches (magazines) of structures that
-+are needed to implement the modeling and export of events.  The size
-+of this cache can be configured independently for each individual
-+security modeling namespace that is created.  The default
-+implementation is for a cache size of 32 for internally modeled
-+namespaces and 128 for externally modeled namespaces.
-+
-+By default the root security namespace uses a cache size of 128.  This
-+value can be configured by the 'tsem_cache' kernel command-line
-+parameter to an alternate value.
-+
-+Trust Orchestrator/Process authentication
-+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-+
-+The process identifier values (PID's) that are exported in the
-+security event descriptions are the unique global PID values, not the
-+value as seen through the lens of a PID namespace.
-+
-+PID values are, by default, not considered to be a stable identifier
-+between the kernel and userspace.  In the case of TSEM external
-+modeling, the threat model for a namespace is whether or not an
-+adversarial process, running in either the root security modeling
-+namespace or another subordinate security modeling namespace, can kill
-+a process that is being orchestrated and substitute an alternate
-+process with an identical PID value.
-+
-+The suggested threat model would be that the orchestrator would set
-+the trust status of the adversarial process rather than the one that
-+had emitted the security event characteristics.  The threat interval
-+is the latency time required for the processing of the security event
-+description by the trust orchestrator and its associated TMA.
-+
-+Exploiting this theoretical race is extremely complex and requires an
-+in depth understanding of the TSEM architecture.  Rather than discuss
-+the conditions that must be met and their implications, this
-+discussion will first focus on the generic threat model and its
-+generic utility to an adversary followed by a treatment of the
-+mechanisms that TSEM implements in order to mitigate this threat.
-+
-+In short, a process in an adversarial security modeling namespace
-+would want to execute security events that are barred from its
-+security model with the hope of having them approved by an alternate
-+namespace.
-+
-+A process waiting for the external modeling of a security event
-+description can only be placed back into run state by two methods:
-+reception of a fatal signal or the TRUST_PENDING status bit being
-+cleared from its TSEM specific task control structure by a trust
-+orchestrator.
-+
-+If a process being evaluated receives a fatal signal, its trust status
-+will be set to untrusted and an error will be returned to the trust
-+orchestrator.  The error would cause a trust violation to be
-+registered for the workload.  In addition, the evaluation of the event
-+would be terminated, so a replacement process would not receive an
-+incorrect trust assessment for an event that was initiated by its
-+predecessor.
-+
-+The second issue that limits the utility of a PID substitution attack
-+is that from the point of substitution forward it would place the
-+replacement process in the context of the security model that the
-+trust orchestrator is enforcing.  As a result, a substituted process
-+would not be allowed to exhibit any security behaviors inconsistent
-+with the model being enforced.
-+
-+If an attempt to exploit this race would be considered, an adversarial
-+process would have to force the termination of a process in the target
-+namespace and then fork and exit a process a sufficient number of
-+times in order to have a process under its control match the PID value
-+of the process that was waiting for an orchestration response.
-+
-+Measured modeling latency times for a trust orchestrator running the
-+deterministic Quixote TMA in userspace, on current generation x86_64
-+hardware, averages 170 micro-seconds.  In a worst case scenario from
-+the perspective of an adversary, there would be a need to force the
-+termination of the target process and then fork and execute a
-+sufficient number of times to force the PID collision during this time
-+interval.
-+
-+As a generic protection, TSEM in the tsem_task_kill() handler, blocks
-+the notion of 'cross-model' signals, ie. a signal originating from an
-+external security modeling namespace.  This would require the
-+adversary to reliably force a process termination through a mechanism
-+other than signaling, for example, through the OOM killer whose signal
-+transmission would not be blocked by this policy control.
-+
-+When a subordinate security modeling namespace is created, the id
-+number of the namespace is registered in the tsem_task structure of
-+the trust orchestrator that is creating the namespace.  The TSEM
-+driver will refuse to honor control plane requests affecting the trust
-+status of a process whose trust orchestrator security namespace id
-+does not match the namespace identifier of the process that it is
-+being asked to act on.
-+
-+As an additional protection, TSEM uses an authentication strategy that
-+allows a process running in a security modeling namespace to verify
-+that a control request is coming from the trust orchestrator that
-+initiated the namespace the process is running in.  As part of the
-+setup of a security modeling namespace, a trust orchestrator is
-+required to provide an ASCII hexadecimally encoded authentication key
-+that matches the length of a digest value of cryptographic hash
-+function being used to generate security state coefficient in the
-+security modeling namespace.  This authentication key must be provided
-+by the trust orchestrator for every subsequent control plane request.
-+
-+The process that is being transferred to a subordinate security
-+modeling namespace generates a second random key that is hashed with
-+the authentication key provided by the trust orchestrator, using the
-+hash function that has been defined for the security namespace.  The
-+resultant digest value is compared to a list of authentication keys
-+for all currently executing namespaces.  The selection of the second
-+random key is repeated until a globally unique key is generated.
-+
-+This randomly generated authentication key is stored in the tsem_task
-+structure of the process and propagated to any subsequent processes
-+that are created in the namespace.  The hash product of this key and
-+the orchestration authentication key, ie. the globally unique key, is
-+placed in the tsem_task control structure of the orchestration
-+process.
-+
-+When a control plane request is received, the authentication key
-+provided by the trust orchestrator is used to re-generate an
-+authentication key based on the randomly generated namespace key held
-+by the process whose trust status is being updated.  The generated
-+authentication key is compared to the key in the tsem_task structure
-+of the process issuing the orchestration call.  The control plane will
-+refuse to honor a control plane request if the call specific key that
-+is generated does not match the key generated at the time the security
-+namespace was created.
-+
-+Event modeling
-+--------------
-+
-+The generation of security state coefficients is a functional process
-+that uses a cryptographic hash function for the creation of the
-+individual identity mappings that contribute to the generation of the
-+security state coefficient.
-+
-+TSEM can use any cryptographic hash function available to the Linux
-+kernel for this purpose.  The hash function to be used for a security
-+modeling namespace is specified as a parameter to the namespace
-+creation process.
-+
-+By default, the root security namespace uses sha256.  This value can
-+be modified through the tsem_digest kernel command-line parameter.
-+
-+Since TSEM is active before the kernel has the ability to load
-+modules, the root modeling domain must be a cryptographic hash
-+function that is statically compiled into the kernel.  By default the
-+TSEM configuration selects for the presence of the sha256 hash
-+function.
-+
-+TSEM security event modeling is based on the following functional
-+definition for a security event coefficient:
-+
-+Coeff = HF(HF(EVENT_ID) || PTASK_ID || TASK_ID || HF(COE) || HF(CELL))
-+
-+	Where:
-+		Coeff	 = A security state coefficient that is equal
-+			   in length to the digest value of the
-+			   cryptographic hash function in use for the
-+			   security modeling namespace.
-+
-+		HF	 = Security namespace specific hash function.
-+
-+		||       = Concatenation operator.
-+
-+		EVENT_ID = The ASCII name of event.
-+
-+		PTASK_ID = The TASK_ID of the parent process of the
-+			   process represented by TASK_ID.
-+
-+		TASK_ID  = The process specific identity of the
-+			   executable code that is calling the security
-+			   event handler.
-+
-+		COE      = Characteristics of the context of execution
-+			   of the event.
-+
-+		CELL	 = Characteristics of the LSM event that is being
-+			   modeled.
-+
-+Workload or platform specific security state coefficient definitions
-+are generated by a TMA, using the COE or CELL characteristics that are
-+considered relevant for the model being implemented.  These
-+coefficients are used to determine whether or not an event should lead
-+to the process being considered trusted or untrusted.
-+
-+The TASK_ID component of the function above is important with respect
-+to the generation of the security state coefficients.  The notion of a
-+task identity serves to link the concepts of system integrity and
-+security access control.
-+
-+The TASK_ID is defined by the following function:
-+
-+TASK_ID = HF(HF(EVENT) || PTASK_ID || NULL_ID || HF(COE) || HF(CELL))
-+
-+	Where:
-+		TASK_ID	  = The executable identity of the process
-+			    expressed as a digest value of length
-+			    equal to the cryptographic hash function
-+			    the security modeling namespace is using.
-+
-+		HF	  = Security namespace specific hash function.
-+
-+		||        = Concatenation operator.
-+
-+		EVENT	  = The string "bprm_committed_creds".
-+
-+		PTASK_ID  = The TASK_ID of the parent process of the
-+			    process whose TASK_ID is being generated.
-+
-+		NULL_ID	  = A buffer of null bytes equal to the digest
-+			    size of the hash function being used for
-+			    the namespace.
-+
-+		COE	  = Characteristics of the context of execution
-+			    calling the bprm_committed_creds LSM hook.
-+
-+		CELL	  = The characteristics of the file provided
-+			    by the linux_binprm structure passed to
-+			    the security_bprm_committed_creds handler.
-+
-+An attentive reader will quickly conclude, correctly, that the TASK_ID
-+function generates an executable specific security coefficient for the
-+bprm_committed_creds security hook.  The generative function for the
-+TASK_ID is the same as the standard security state coefficient; with
-+the exception that the task identity is replaced with a 'null id',
-+consisting of the number of null bytes in the digest size of the
-+namespace specific hash function.
-+
-+One of the CELL characteristics used in the computation of the task
-+identity is the digest of the executable file.  Modifying an
-+executable, or attempting to execute a binary not considered in the
-+security model, will result in an alteration of the task identity that
-+propagates to the generation of invalid state coefficients.
-+
-+The task identity is saved in the TSEM specific task structure and is
-+used to compute the state coefficients for any security events that
-+the task subsequently executes.  As noted in the previous paragraph,
-+incorporating the TASK_ID into the computation of security state
-+coefficients results in the security state coefficient values becoming
-+specific to the corpus of executable code that initiated a process.
-+This affords a very high degree of specificity with respect to the
-+security models that can be implemented.
-+
-+As was demonstrated in the TBDHTTRAD section, in contrast to standard
-+digest based controls, TSEM will discriminate the following commands
-+as different events/coefficients in a security model:
-+
-+cat /etc/shadow
-+
-+grep something /etc/shadow
-+
-+while read input
-+do
-+	echo $input;
-+done < /etc/shadow
-+
-+An important, and perhaps subtle issue to note, is how these events
-+result in the change of process trust status.  In the first two cases,
-+if access to the /etc/shadow file is not permitted by the operative
-+security model, the cat and grep process will become untrusted.
-+
-+In the third example, the shell process itself would become untrusted.
-+This would cause any subsequent attempts to execute a binary to be
-+considered untrusted events, even if access to the binary is a
-+permitted coefficient in the model.
-+
-+The integration of the PTASK_ID in the generation of the security
-+state coefficients causes the coefficients to be dependent on the
-+chain of execution of executable code.  This concept generates
-+extremely specific security coefficients that yield the high
-+sensitivity of TSEM based security models.
-+
-+For example, consider the following chain of execution:
-+
-+init/systemd -> sshd -> bash
-+
-+init/systemd -> getty -> bash
-+
-+Even if the COE characteristics (credentials) of the two bash
-+processes are identical, the security coefficients generated by the
-+two bash shells will be different.  This is secondary to the fact that
-+the TASK_ID of the two bash processes will be different by virtue of
-+the fact that the first bash process will have a PTASK_ID that
-+represents the TASK_ID of the ssh process, while the second process
-+will have a PTASK_ID that represents the TASK_ID of the getty process.
-+
-+This generative functions provides a framework for modeling that
-+yields very precise tracking of security relevant events.  This is
-+significant with respect to detecting and addressing adversarial
-+techniques such as Living Off The Land (LOTL).
-+
-+Since the modeling operates at the level of a mandatory security
-+control, these permission denials would occur even if the process is
-+running with classic root privilege levels.  This is secondary to the
-+notion that security and trust status are invested in the trust
-+orchestrator and ultimately the TMA.
-+
-+From a hardware perspective, this is important with respect to the
-+notion of a TMA being a model for a successor to the TPM.  From a
-+system trust or integrity perspective, a TPM is designed to provide a
-+retrospective assessment of the actions that have occurred on a
-+platform.  A verifying party uses the TPM event log and a PCR based
-+summary measurement, to verify what actions have occurred on the host,
-+in order to allow a determination of whether or not the platform
-+should be 'trusted'.
-+
-+In contrast, a TSEM/TMA based system enforces, on a real time basis,
-+that a platform or workload remains in a trusted state.  Security
-+relevant actions cannot be conducted unless the TMA authorizes the
-+actions as being trusted.
-+
-+This is particularly important with respect to embedded systems.  A
-+TPM based architecture would not prevent a system from having its
-+trust status altered.  Maintaining the system in a trusted state would
-+require attestation polling of the system, and presumably, executing
-+actions if the platform has engaged in untrusted behavior.
-+
-+Conversely, a trust orchestrated software implementation enforces that
-+a system or workload remain in a security/trust state that it's
-+security model was unit tested to.
-+
-+Security model functional definitions
-+-------------------------------------
-+
-+Previously, classic trusted system implementations supported the
-+notion of the 'measurement' of the system.  The measurement is the
-+value of a linear extension function of all the security relevant
-+actions recorded by a trust measurement system such as IMA.
-+
-+In TPM based trust architectures, this measurement is maintained in a
-+PCR.  A measurement value is submitted to the TPM that extends the
-+current measurement using the following formula:
-+
-+MEASUREMENT = HF(CURRENT || NEW)
-+
-+	Where:
-+		MEASUREMENT = The new measurement value to be maintained
-+			      in the register for the system.
-+
-+		HF	    = A cryptographic hash function supported
-+			      by the TPM device.
-+
-+		||	    = Concatenation operator.
-+
-+		CURRENT     = The current measurement value.
-+
-+		NEW	    = A new measurement value to be added to
-+			      the current measurement.
-+
-+The use of a cryptographic function produces a non-commutative sum
-+that can be used to verify the integrity of a series of measurements.
-+With respect to security modeling theory, this can be thought of as a
-+'time-dependent' measurement of the system.  Stated more simply, the
-+measurement value is sensitive to the order in which the measurements
-+were made.
-+
-+In systems such as IMA, the measurement value reflects the sum of
-+digest values of what are considered to be security critical entities,
-+most principally, files that are accessed or memory that is mapped
-+executable, based on various policies.
-+
-+In TSEM based TMA's, the measurement of a security modeling namespace
-+is the sum of the unique security state coefficients generated by the
-+security model being enforced.  As previously noted, on systems with a
-+TPM, the root security modeling namespace measurement is maintained by
-+default in PCR 11 or the PCR that was selected at kernel configuration
-+time.
-+
-+The challenge associated with classic integrity measurements is the
-+time dependent nature of using a non-commutative summing function.
-+The almost universal embrace of SMP based hardware architectures, in
-+addition to standard kernel task scheduling issues, makes the
-+measurement values non-deterministic.  This requires a verifying party
-+to evaluate an event log, verified by a measurement value, to
-+determine whether or not the system is in a security appropriate or
-+trusted state.
-+
-+TSEM addresses this issue by implementing a strategy designed to
-+produce a single functional value that represents the functional
-+security state of a model.  This allows a TMA to attest to the
-+trust/security status of a platform or workload by signing this
-+singular value and presenting it to a verifying party.
-+
-+In TSEM nomenclature, this functional value is referred to as the
-+'state' of the model.  The attestation model is to use trust
-+orchestrators to generate the state value of a workload by unit
-+testing.  This state value can be packaged with a utility or container
-+to represent a summary trust characteristic that can be attested by a
-+TMA, eliminating the need for a verifying partner to review and verify
-+an event log.
-+
-+TMA's implement this architecture by maintaining a single instance
-+vector of the set of unique security state coefficients that have been
-+experienced in a security modeling namespace.  The state measurement
-+is generated by sorting the security state coefficient vector in
-+big-endian hash format and then generating a standard linear extension
-+measurement over this new vector.
-+
-+Any security event that generates an associated state coefficient that
-+is not in the model will resulted in a perturbed state function value.
-+That perturbed value would be interpreted by a verifying party as an
-+indication of an untrusted system.
-+
-+Since the TMA maintains the security event descriptions in time
-+ordered form, the option to provide a classic event log and
-+measurement are preserved and available.  Extensive experience in the
-+development of TSEM modeled systems has demonstrated the superiority
-+of state value interpretation over classic measurement schemes.
-+
-+A TMA may choose to incorporate a 'base nonce' into a security model
-+that it is implementing, this base nonce is designed to serve in a
-+manner similar to an attestation nonce.  If used, the trust
-+orchestrator is responsible for negotiating a random base nonce with a
-+verifying party at the time of initialization of a security modeling
-+namespace and providing it to the TMA.
-+
-+The TMA uses the base nonce to extend each security event coefficient
-+that is generated by the model.  This causes the state and measurement
-+values of the model to become dependent on this base nonce, a process
-+that can be used to defeat a replay attack against the security model.
-+
-+Control plane
-+-------------
-+
-+Both primary functions of TSEM: security modeling namespace management
-+and the internal TMA modeling implementation, are controlled by
-+pseudo-files in the securityfs filesystem.  The following directory
-+is the top level implementation directory for the TSEM control plane:
-+
-+/sys/kernel/security/tsem
-+
-+The following file in the kernel source tree documents, in detail,
-+the interfaces provided by the filesystem:
-+
-+Documentation/ABI/testing/tsem
-+
-+This filesystem is primarily intended for use by trust orchestrators
-+to create and manage security modeling namespaces.
-+
-+The files are process context sensitive.  Writing to the control file,
-+or reading from the informational files, will act on or reference the
-+security modeling namespace that the accessing process is assigned to.
-+
-+The following files are provided in the root directory of the TSEM
-+control plane and implement global controls for the TSEM LSM:
-+
-+	aggregate
-+	id
-+	control
-+
-+The 'aggregate' file is used by trust orchestrators for internally
-+modeled namespaces to obtain the hardware measurement value for
-+inclusion in a security model.  A trust orchestrator for an externally
-+modeled namespace capture this value as the first event generated by a
-+security modeling namespace.
-+
-+The 'id' file is used to determine the security modeling namespace
-+that the process is running in.  The namespace id value of 0 is
-+reserved for the root security modeling namespace, a non-zero value
-+indicates that the process is running in a subordinate security
-+modeling namespace.
-+
-+The TSEM implementation is controlled by the only writable file, which
-+is the 'control' file.
-+
-+The following keywords are used by trust orchestrators to place the
-+process writing to the file in an internally or externally modeled
-+security namespace:
-+
-+	internal
-+	external
-+
-+Each argument accepts key=value pairs that configure the namespace.
-+The following key values are currently accepted:
-+
-+	nsref
-+	digest
-+	cache
-+	key
-+
-+The 'nsref' keyword takes one of the following two values:
-+
-+	initial
-+	current
-+
-+The initial argument indicates that the UID/GID values for the COE and
-+CELL characteristics are derived from the initial user namespace.
-+This is the default characteristic if the nsref key is not specified.
-+
-+The current argument indicates that the UID/GID values are derived
-+from the user namespace that the process is running in, when the
-+request is made to model an event.
-+
-+The 'digest' keyword is used to specify the cryptographic hash
-+function that is to be used to create the functional values for the
-+security state coefficients for the namespace.  The value to this
-+keyword is the name by which the hash function is defined by the
-+cryptographic API in the kernel.
-+
-+Examples of suitable strings are as follows:
-+
-+	sha256
-+	sha3-256
-+	sm3
-+
-+Definitions for the names of the cryptographic hashes can be found in
-+the source files for the various cryptographic hash functions in the
-+'crypto' directory of the Linux source tree.
-+
-+The 'cache' keyword is used to specify the size of the caches used to
-+hold pointers to data structures used for the internal modeling of
-+security events or the export of the security event to external trust
-+orchestrators.  These pre-allocated structures are used to service
-+security event hooks that are called while the process is running in
-+atomic context and thus cannot sleep in order to allocate memory.
-+
-+The argument to this keyword is a numeric value specifying the number
-+of structures that are to be held in reserve for the namespace.
-+
-+By default the root security modeling namespace and externally modeled
-+namespaces have a default value of 128 entries.  An internally modeled
-+namespace has a default value of 32 entries.  The size requirements of
-+these caches can be highly dependent on the characteristics of the
-+modeled workload and may require tuning to the needs of the platform
-+or workload.
-+
-+The structures that are used by security events generated in atomic
-+context are replenished by work requests submitted to the high
-+priority system workqueue.  The refill latency will also affect the
-+magazine sizes that are needed.
-+
-+The 'key' keyword is used to specify the authentication key that is to
-+be used to support the authentication of trust control requests from a
-+trust orchestrator to processes running in a security modeling
-+namespace.  The argument to this keyword is the ASCII base16
-+representation of the key that is to be used.  The length of the key
-+must be equal to the length of the ASCII base16 representation of the
-+digest value of the cryptographic digest function defined for the
-+security modeling namespace.
-+
-+The following keywords and arguments are used by trust orchestrators
-+to set the trust status of a process after the processing of a
-+security event by an external TMA:
-+
-+	trusted pid=PID key=HEXID
-+	untrusted pid=PID key=HEXID
-+
-+	PID is the process identifier that is provided to the TMA in
-+	the security event description.  HEXID is the base16 ASCII
-+	representation of the authentication key that the security
-+	modeling namespace was configured with when the namespace was
-+	created.  The length of the ASCII representation of HEXID must
-+	equal the size of the base16 ASCII representation of a digest
-+	value for the cryptographic hash function selected for the
-+	security modeling namespace.
-+
-+By default a security modeling namespace runs in free modeling mode.
-+The modeling mode is changed by writing the following keywords to the
-+control file:
-+
-+	seal
-+	enforce
-+
-+The seal value is used to specify that any further security state
-+coefficients are to be considered outside the bounds of a desired
-+security model.  The security event descriptions that generate these
-+coefficients will be considered forensics events for the model.
-+
-+The enforce key is used to specify that invalid security events
-+generate permission denials as the return value for the LSM security
-+event handler that generates the invalid events.
-+
-+The following keyword and argument are used to load a security model
-+into an internal TMA modeling implementation:
-+
-+	state value=HEXID
-+
-+	Where HEXID is the ASCII base 16 representation of a security
-+	state coefficient that represents a valid security event in
-+	the model.  The length of the HEXID string must be equal to
-+	the size of the ASCII base 16 representation of the digest
-+	value of the cryptographic hash function defined for the
-+	security modeling namespace.
-+
-+	After writing a series of state values the trust orchestrator
-+	writes the 'seal' keyword to the control file to complete
-+	creation of a security model.
-+
-+	Writing the 'enforce' keyword to the control file will place
-+	the defined model in enforcing mode.
-+
-+	Defining a security model to be enforced will affect the
-+	output of the 'trajectory' file.  The 'trajectory' file will
-+	have no event descriptions for a sealed model, since the event
-+	description list is only populated when a new state
-+	coefficient is added to the model.
-+
-+	In a sealed model the security event descriptions will be
-+	surfaced in the 'forensics' file instead to indicate they are
-+	violations against the security model being enforced.
-+
-+	Since the state state coefficients are generated with a
-+	cryptographic hash function, the first pre-image resistance
-+	characteristics of the function prevents a security model
-+	description from disclosing information, a-priori, about the
-+	desired characteristics of the workload.
-+
-+The following keyword and argument is used to set a base nonce for the
-+internal TMA:
-+
-+	base value=HEXID
-+
-+	Where HEXID is the ASCII base 16 representation of a value
-+	that each security state event mapping is to be extended with
-+	before being committed as a security state coefficient value
-+	for the model.  The size of the HEXID string must equal the
-+	size of the ASCII base 16 representation of a digest value of
-+	the cryptographic hash function defined for the security
-+	modeling namespace.
-+
-+The following keyword and argument is used to create a file digest
-+pseudonym for the internal TMA:
-+
-+	pseudonym value=HEXID
-+
-+	Where HEXID is the ASCII base 16 representation of a file
-+	digest pseudonym that is to be maintained by the model.  See
-+	the ABI documentation for how the argument to this verb is
-+	generated.
-+	
-+	The size of the HEXID string must equal the size of the ASCII
-+	base 16 representation of a digest value of the cryptographic
-+	hash function defined for the security modeling namespace.
-+
-+The following two directories are implemented in the top level TSEM
-+control directory in order to support interfaces to internally and
-+externally modeled namespaces:
-+
-+	external_tma
-+	internal_tma
-+
-+The external_tma directory holds a file, that is created when the
-+request to create an externally modeled namespace is made.  The filename
-+is the ASCII base 10 representation of the id number of the security
-+modeling namespace.  The descriptions for security events that occur
-+in the context of the namespace are exported in JSON format through
-+this file to the external trust orchestrator that is controlling the
-+security modeling namespace.
-+
-+The internal_tma directory is a container directory that holds
-+directories for the control of each internal TMA that is implemented
-+in the kernel.
-+
-+There is currently only a single kernel based TMA that is managed
-+through the following directory:
-+
-+/sys/kernel/security/tsem/internal_tma/model0
-+
-+The following files are implemented for this model:
-+
-+	measurement
-+	state
-+
-+	trajectory
-+	trajectory_coefficients
-+	trajectory_counts
-+
-+	forensics
-+	forensics_coefficient
-+	forensics_counts
-+
-+The 'measurement' file outputs the classic linear extension value of
-+the security state coefficients that are generated in the context of
-+the security modeling namespace.  This value is time dependent and can
-+be used to verify the order of the security events that occurred in
-+the model.
-+
-+The 'state' file outputs the time independent functional value of
-+security state of the security modeling namespace.  This value and its
-+generation and motivation are discussed in the 'Security model
-+functional definitions' section of this document.
-+
-+The 'trajectory' file outputs the description of each security event
-+recorded by the model in time dependent form.  The ABI documentation
-+file contains a complete description of the output that is generated
-+by this file and the 'forensics' file described below.
-+
-+The 'trajectory_coefficients' file outputs the set of security state
-+coefficients in the model.  These coefficients match the entries of
-+the event descriptions that are output in the 'trajectory' file.
-+
-+The security state coefficients can be paired with the security state
-+descriptions with the following shell command, where DIR is the path
-+to the individual files:
-+
-+paste DIR/trajectory_coefficients DIR/trajectory
-+
-+The 'trajectory_counts" file outputs the number of times that each
-+security state coefficient, output by the 'trajectory_coefficients'
-+file, has been experienced in the security modeling namespace.  This
-+value can be used to verify that a security sensitive event has
-+occurred or for statistical inference as to the anomaly status of an
-+event.
-+
-+The 'forensics' file outputs the description of security events that
-+have occurred when the namespace security model is running in a sealed
-+state.  These events are useful for characterizing a security
-+intrusion that has occurred or for refinement of a security model.
-+
-+The 'forensics_coefficients' file outputs the security state
-+coefficients that are generated by the forensics events that have
-+been captured by the model and available through the 'forensics' file.
-+
-+The 'forensics_counts" file outputs the number of times that each
-+security state coefficient output by the 'forensics_coefficients' file
-+has been experienced in the security namespace.  This value can can be
-+used for statistical inference as to the anomaly status of the
-+namespace.
-+
-+Trust orchestrators
-+===================
-+
-+In security modeling, the need for a trust orchestrator is embodied in
-+Heisenberg's reflections on quantum mechanical modeling.  A modeled
-+system cannot model itself without affecting the functional value of
-+the security model being implemented.  An external entity is needed to
-+setup, configure and monitor the state of a modeled system, in a
-+manner that does affect the state of the modeled system itself.
-+
-+After creating and configuring a security modeling namespace, the
-+orchestrator is responsible for executing and monitoring a process
-+that is run in the context of the namespace.  The trust orchestrator
-+is also responsible for providing access to the status of the security
-+model being implemented by the TMA associated with the orchestrator.
-+
-+Trust orchestrators for externally modeled namespaces, have an
-+associated external TMA that is responsible for implementing the
-+security model for a namespace.  The TMA represents the the root of
-+trust for the modeled namespace.  The TMA advises the trust
-+orchestrator as to what the trust status for a process should be set
-+to, based on the modeling of the security event characteristics that
-+are presented to it by the trust orchestrator.
-+
-+In a trust orchestration architecture, secondary to their integral
-+role in maintaining the trust state of the system, the trust
-+orchestrators are the highest value security asset running on the
-+system.  The CAP_MAC_ADMIN capability must be held by a trust
-+orchestrator in order to access the TSEM control plane.
-+
-+Trust orchestrators are designed to drop the CAP_MAC_ADMIN capability
-+before forking the process that will be responsible for launching a
-+security modeled workload.  This provides an architecture where the
-+root of trust for the system can be predicated on a small body of well
-+audited orchestration utilities, that can be linked to a hardware root
-+of trust implemented by a TPM or a hardware based TMA.
-+
-+Quixote
-+=======
-+
-+	"He is awkward, past his prime and engaged in a task beyond his
-+	 capacities."
-+				- Don Quixote's able mount Rocinante
-+
-+The Quixote Trust Orchestration System, released in concert with TSEM,
-+is an implementation of a trust orchestration environment that
-+implements the characteristics described in the previous section.  It
-+provides all off the basic functionality needed to build and run
-+security architectures based on TSEM using either internal or external
-+TMA implementations.
-+
-+It is anticipated that Quixote would not be the only such system to
-+take advantage of TSEM.  Given the burgeoning capability set of
-+systemd, it would be an architecturally valid concept to have systemd,
-+or other system init equivalents, gain the ability to launch critical
-+system services in security modeled environments.
-+
-+Source code, in GIT form, for all Quixote and TSEM components are
-+available at the Quixote project site:
-+
-+https://github.com/Quixote-Project
-+
-+The build of Quixote is somewhat formidable, given that it spans the
-+range from system programming though SGX programming and into embedded
-+micro-controller systems.  In order to facilitate experimentation,
-+Quixote projects binaries statically compiled against MUSL libc, are
-+provided that have virtually no system dependencies, other than a TSEM
-+enabled kernel.
-+
-+Sample utilities
-+----------------
-+
-+The Quixote TSEM implementation implements a separate trust
-+orchestration utility for each TMA environment, nee Sancho partner,
-+that is supported:
-+
-+quixote		 -> TMA run in the kernel for internally modeled namespaces.
-+
-+quixote-us	 -> TMA run in a userspace process.
-+
-+quixote-xen	 -> TMA run in a Xen based stub domain.
-+
-+quixote-sgx	 -> TMA run in an SGX enclave.
-+
-+quixote-export*  -> Utility for exporting security event descriptions.
-+
-+quixote-mcu**	 -> TMA run in a micro-controller implementation.
-+
-+* = See discussion below.
-+
-+Each modeling utility runs in one of two modes: process or container
-+
-+In process mode, a shell process is run as the workload process in a
-+security modeling namespace.  This mode is selected with the -P
-+command-line option.
-+
-+In container mode, the default, the OCI runc utility is run as the
-+workload process, with a 'bundle' argument that specifies a directory
-+that contains a JSON container definition for a directory hierarchy in
-+the bundle directory.  The /var/lib/Quixote/Magazine directory
-+contains the bundle directories.
-+
-+The -c command-line option selects container mode, the argument to the
-+option specifies the bundle directory for the runc utility.
-+
-+In order to support the creation of security models, each utility
-+supports the -o command-line option to specify that a security model
-+description be output when the modeled workload terminates.  The model
-+is written to the name of the file supplied via the command-line
-+option.
-+
-+If the -t command-line option is also specified, the security
-+execution trajectory, rather than a model consisting of security state
-+coefficients, is written to the output file.  This trajectory
-+represents the description of the security events that were modeled.
-+This trajectory can be converted to security state coefficients with
-+the generate-states utility that is provided in the utilities package.
-+
-+The -m command-line option is used to specify a model that is to be
-+loaded into the TMA and optionally enforced.  By default, a security
-+model output with the -o command-line option will place the TMA in a
-+sealed modeling state.  Any security events that are non-compliant
-+with the model will be registered as forensics events.
-+
-+Adding the -e command-line option, with the '-m FILENAME' option, will
-+cause the loaded model to be enforced.  Any forensic events will cause
-+a permission denial to be returned to the caller of a TSEM LSM hook
-+implementation.
-+
-+The Quixote package also includes the quixote-console utility, for
-+interrogating the model state of both external and internal TMA's.
-+The following command-line options request output of the following
-+characteristics of the model:
-+
-+-C -> The current execution trajectory coefficient counts.
-+
-+-E -> The log of denied events.
-+
-+-F -> The current forensics execution trajectory.
-+
-+-M -> A definition for the current security model.
-+
-+-P -> The current security state coefficients.
-+
-+-S -> The state value of the model.
-+
-+-T -> The current security execution trajectory.
-+
-+Executing the utility, without these arguments, will cause a
-+command-line version of the utility to be presented that takes the
-+following arguments:
-+
-+show trajectory
-+
-+show coefficients
-+
-+show counts
-+
-+show forensics
-+
-+show forensics_coefficients
-+
-+show forensics_counts
-+
-+show state
-+
-+show model
-+
-+quit
-+
-+It is important to note that any of the values output, represent the
-+current state of the model and do not reflect a cumulative model of
-+the workload.  Capturing a complete workload model requires the use of
-+the -m command-line option to the trust orchestrators to capture a
-+model that is representative of the entire execution trajectory of the
-+workload after it completes.
-+
-+As an example, the following security model definition represents the
-+execution and termination of a shell session run on a system with a
-+hardware TPM:
-+
-+aggregate de2b9c37eb1ceefa4bcbc6d8412920693d3272f30eb5ba98d51d2f898d620289
-+state 97b29769580b412fbf55e326a98d6a1b97c6ebf446aaf78ea38c884e954ca5b2
-+state 7c435854b4fa421175ec0a5d3ca7c156480913d85c03155ea3305afa56c9717d
-+state 554d9f62693d522c9a43acf40780065f99cea3d67ca629ac4eaab4e22d4e63c2
-+state 1b228046c4c2e7aa14db9a29fcff6f718f4f852afbfb76c8a45af7bf0485f9ce
-+state 24fd04b10e2b5016e0061952f3bdea959e0fa80a55ff0f4e8e13f9f72ede7498
-+state da6038511db71b08c49a838d178ed055e0b7bfc42548b4c2d71eca046e9a222e
-+state 94b24ad4c8902f8ecb578a702408e8458e72c0774c402c3bd09ec5f390c4d0ae
-+state 5ffa5a2a38f42d89ae74a6d58be8b687c1baed9746d9c6a7ae3c632a2e7c082f
-+state a2e309d84bd4a52466c22779a622254c65ad1208583d70113751c4624baa7804
-+state e93ceb0b1bf3cd58373a9e9ab4aca11a507782bbfde395ff68f8bfaf1678ed43
-+state bf42388d63887368605fac9816134bc67314762c3a97b440cc48c5a30c07fdb9
-+state eaa342599d682d63be4b64e159b98f21d85f0133ef5b28588e444ad12e446bf6
-+state 2b9c86bc34202504c398c2f177d1dcf807b2f267c160bf8ebda863a9b427917f
-+state 686fc3c958f2e4f2ce3b2c6a2cb3fff44ccc4db98869bd377b14e557a5191231
-+state 613c39fd2a58413b32f448c13ea4d6bc38b77966dfc5560e39e4b37d2b2f5675
-+state 70e276bfd7c20262cd9c9f5b09a922f11d16d1e3a602e8005d68e9ed6afc9b5d
-+state 456aaedc5c1fc63f852ee97ae9561aba2a06c416154ecb9d7a1bf9d9a8c9c064
-+state 97507c4c91af4a9b34b4d66118f6cc0ba1f8b55b8bb6e623dcafe27b100aea07
-+state ea635c48031f81140b3561ed2291a3b1790a302e6adf5244320593b08a5af924
-+state 2fd6a4d6ea1869a193926e998fbdf855916b510257d379762f48a1df63a810d4
-+state 9c4cb7ef4848be1e29f9eb35fadaf5bfdc1fa3cbb22b6407cbd31b7088257026
-+state 66640cbf9ae772515070f8613182b6852bf46220df0833fbe6b330a418fad95b
-+state 6b0d1890cbd78c627e23d7a564e77a5ee88fb20e0662ce5e66f3727ebf75fa1d
-+state bd28fa43b34850591fdf6fb2aa5542f33c21c20ee91b4bc2034e199b4e09edc1
-+state 04425354419e53e6e73cde7d61856ff27763c2be01934e9990c1ae9f8d2a0b6e
-+state 2650d86382f6404367b7fdeec07f873b67b9ce26caef09d035b4dff09fce04d5
-+state df2f91f5fd84ca4621092420eaf1b0a3743b328a95e3f9e0b7b1281468462aa2
-+state c730c66ecfabe99480e61a7f25962582ca7bb6f2b17983048e77adde1fe7f72b
-+state 0fc937b71d0067fcc2c2f37c060763de250b3142e621174ffedc1b2520cdf6fd
-+state 7f267400a3ccf462c77ae5129799558c2c62d8bc5b388882caec813ab4cf7b7f
-+seal
-+end
-+
-+As was previously discussed, the model output is cryptographically
-+secure against the elucidation of the security events that resulted in
-+the described security states.
-+
-+The Quixote userspace implementation also contains utilities for
-+generating signed versions of these security models.
-+
-+Quixote Export Utility
-+----------------------
-+
-+The quixote-export utility is used to implement security modeling
-+namespaces that are running in 'export only' mode.  In this mode the
-+security event descriptions for a security modeling namespace are
-+exported asynchronously and do not wait approval.  This utility and
-+modeling mode can be used to implement kernel native security
-+surveillance systems.
-+
-+The root security modeling namespace can be placed in 'export only'
-+mode through the following kernel command-line option:
-+
-+tsem_mode=2
-+
-+The supplied quixote-export utility operates in a manner similar to
-+the trust orchestrators for externally modeled namespaces.
-+
-+Workloads can be run in either 'cartridge' or 'process' modes that are
-+specified with the -C or -P command-line options.
-+
-+Processing of events from the root security modeling namespace is
-+specified with the -R command-line option.
-+
-+By default the quixote-export utility will run in 'one-shot' mode
-+where all of the buffered security event descriptions are read and
-+output, after which the utility terminates.
-+
-+Specifying the -f command-line option places the utility in 'follow'
-+mode where the utility will first output all of the buffered security
-+event descriptions and then wait for subsequent descriptions to be
-+generated.  This mode can be terminated by issuing a CNTRL-C key
-+sequence to the utility.
-+
-+The -q command-line option is used to specify the queuing factor or
-+the number of events that will be held by the export utility before
-+flushing the events to the output device.  This increases the
-+efficiency of the utility and decreases the impact the export utility
-+has on the security modeling namespace that it is running in, see the
-+discussion of the 'Heisenberg' effect in security modeling.  The
-+default queue size is 100 entries.
-+
-+By default the security event descriptions are written to standard
-+out.   The -o command-line option can be used to specify that the
-+events are to be written to a file.
-+
-+The quixote-export utility has native support for exporting security
-+event descriptions as MQTT encoded messages.  This facilitates the use
-+of cloud based assets for security monitoring/surveillance.  MQTT mode
-+is specified with the -b command-line option.  The argument to the -b
-+option is the hostname of an MQTT broker that is to receive the
-+encoded security event descriptions.
-+
-+In MQTT broker mode the -t command-line option is used to specify a
-+'topic' that the descriptions are to published to in the target
-+broker.
-+
-+An important issue that should be noted with 'export only' mode is
-+that security event descriptions are buffered in the kernel until read
-+by an export orchestrator.  These events are not subject to
-+'uniqueness' compression, as is the case with internally modeled
-+namespaces, this can result in large kernel descriptions, particularly
-+during the boot of a kernel whose root security modeling namespace is
-+configured for export only mode.
-+
-+In addition there are no latency delays since the security event
-+descriptions are asynchronously exported.  This may require an
-+increase in the kernel event magazine sizes in order to avoid security
-+failures caused by the inability to allocate structures for security
-+events running in atomic context.
-+
-+** MCU TMA's
-+------------
-+
-+One of the objectives of TSEM/Quixote is to explore architectures for
-+trusted systems that extend beyond what is provided by the TPM model
-+for security co-processors.  The MCU based reference implementations
-+allow experimentation with hardware based TMA's.
-+
-+The Quixote TSEM utilities include TMA implementations for the
-+following following ARM32 based micro-controller platforms:
-+
-+STM32L496
-+
-+STM32L562
-+
-+NRF52840-DK
-+
-+NRF52840-DONGLE
-+
-+The STM32L496 platform, in addition to the base TMA implementation,
-+includes support for a CAT1-M based cellular modem.  This demonstrates
-+the ability of an external TMA to conduct remote, out-of-band,
-+signaling of security violations for modeled platforms/workloads and
-+the downloading of security models outside the context of the platform
-+itself.
-+
-+The STM32L562 platform is a low power MCU designed for security
-+focused IOT implementations.  It includes hardware hashing, hardware
-+asymmetric encryption and Trust Zone support.
-+
-+Of primary interest may be the NRF52840-DONGLE implementation.  This
-+is a 'USB fob' form factor board that GOOGLE uses as the basis for
-+their OpenSK security key implementation.  This form factor allows the
-+development and experimentation with easily deployable hardware based
-+TMA implementations.
-+
-+The NRF52840-DONGLE architecture was chosen by the NLnet sponsored
-+'FobNail' project, that is developing a hardware based attestation
-+server:
-+
-+https://fobnail.3mdeb.com/
-+
-+The Fobnail projects discusses the notion of their architecture
-+expanding to provide protection for a Linux system at large.
-+Quixote/TSEM, running on the NRF52840-DONGLE micro-controller, is a
-+demonstration of such an implementation.
-+
-+===============
-+Closing Remarks
-+===============
-+
-+	"Sometimes it is the people no one can imagine anything of who
-+	 do the things no one can imagine.
-+				- Alan Turing
-+
-+While this document is of some length and detail, it hopefully
-+fulfills its obligation to provide sufficient prose for the
-+justification of the security model that TSEM addresses, and in
-+combination with trust orchestrators, implements.
-+
-+The MAINTAINERS file has contact information for feedback, patches
-+and/or questions regarding TSEM and its reference TOS implementation.
-+
-+     The Quixote Team - Flailing at the Travails of Cybersecurity
-+
-+	With all due respect to Miguel de Cervantes Saavedra.
-+
-+   From the glacial moraine lake country of West-Central Minnesota.
-diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
-index bb884c14b2f6..d54654a69606 100644
---- a/Documentation/admin-guide/kernel-parameters.txt
-+++ b/Documentation/admin-guide/kernel-parameters.txt
-@@ -6785,6 +6785,30 @@
- 			with CPUID.16h support and partial CPUID.15h support.
- 			Format: <unsigned int>
- 
-+	tsem_cache=	[TSEM] Define the size of the caches used to hold
-+			pointers to structures that will be used to model
-+			security events occurring in the root modeling
-+			namespace that are called in atomic context.  The
-+			value is the size of the arrays of pointers to the
-+			pre-allocated structures that will be maintained.
-+			For example, a value of 16 means each array would
-+			have 16 entries in it.
-+			Format: <integer>
-+			Default: 96
-+
-+	tsem_digest=	[TSEM] Define the cryptographic hash function that
-+			will be used to generate the security event
-+			coefficients in the root modeling namespace.
-+			Format: {name of the cryptographic hash function}
-+			Default: sha256
-+
-+	tsem_mode=	[TSEM] Set the mode that the Trusted Security Event
-+			Modeling LSM is to run in.
-+			Format: <unsigned int>
-+			1 -- Disable root security namespace modeling.
-+			2 -- Only export security event descriptions from
-+			     the root security modeling namespace.
-+
- 	tsx=		[X86] Control Transactional Synchronization
- 			Extensions (TSX) feature in Intel processors that
- 			support TSX control.
++++ b/security/tsem/tsem.h
+@@ -0,0 +1,2278 @@
++/* SPDX-License-Identifier: GPL-2.0-only */
++
++/*
++ * Copyright (C) 2024 Enjellic Systems Development, LLC
++ * Author: Dr. Greg Wettstein <greg@enjellic.com>
++ *
++ * This is the single include file that documents all of the externally
++ * visible types and functions that are used by TSEM.  This file is
++ * currently organized into four major sections in the following order;
++ *
++ * includes used by all compilation units
++ * CPP definitions
++ * enumeration types
++ * structure definitions
++ * function declarations
++ * inline encapsulation functions.
++ *
++ * Include files that are referenced by more than a single compilation
++ * should be included in this file.  Includes that are needed to
++ * satisfy compilation requirements for only a single file should be
++ * included in the file needing that include.
++ *
++ * Understanding the overall implementation and architecture of TSEM
++ * will be facilitated by reviewing the documentation in this file.
++ */
++
++#include <linux/wait.h>
++#include <linux/kref.h>
++#include <linux/lsm_hooks.h>
++#include <linux/capability.h>
++#include <crypto/hash.h>
++#include <crypto/hash_info.h>
++#include <net/af_unix.h>
++
++/*
++ * The number of 'slots' in the structure magazines that are used to
++ * satisfy modeling of security events that are called in atomic context.
++ */
++#define TSEM_ROOT_MAGAZINE_SIZE	128
++#define TSEM_MAGAZINE_SIZE_INTERNAL 32
++#define TSEM_MAGAZINE_SIZE_EXTERNAL 128
++
++/**
++ * enum tsem_event_type - Ordinal value for a security event.
++ * @TSEM_BPRM_COMMITTED_CREDS: Ordinal value for bprm_committed_creds.
++ * @TSEM_TASK_KILL: Ordinal value for task kill.
++ * @....: Remainder follows with a similar naming format that has
++ *        TSEM_ prep ended to the raw LSM security hook name.
++ * @TSEM_EVENT_CNT: The final ordinal value is used to define the
++ *		    length of the following arrays that are indexed
++ *		    by the ordinal value of the hook:
++ *
++ * This enumeration is used to designate an ordinal value for each
++ * security event, ie. LSM hook/event handler, that TSEM is
++ * implementing modeling for.  This value is used to identify the
++ * handler that is either having its event description being exported
++ * to an external trust orchestrator or modeled by the internal TMA
++ * implementation.
++ *
++ * The primary use of this enumeration is to conditionalize code paths
++ * based on the security hook being processed and to index the
++ * tsem_names array and the array that defines the action that is to
++ * be taken in response to an event that generates a permissions
++ * violation.
++ */
++enum tsem_event_type {
++	TSEM_BPRM_COMMITTING_CREDS = 1,
++	TSEM_TASK_KILL,
++	TSEM_TASK_SETPGID,
++	TSEM_TASK_GETPGID,
++	TSEM_TASK_GETSID,
++	TSEM_TASK_SETNICE,
++	TSEM_TASK_SETIOPRIO,
++	TSEM_TASK_GETIOPRIO,
++	TSEM_TASK_PRLIMIT,
++	TSEM_TASK_SETRLIMIT,
++	TSEM_TASK_SETSCHEDULER,
++	TSEM_TASK_GETSCHEDULER,
++	TSEM_TASK_PRCTL,
++	TSEM_FILE_OPEN,
++	TSEM_MMAP_FILE,
++	TSEM_FILE_IOCTL,
++	TSEM_FILE_LOCK,
++	TSEM_FILE_FCNTL,
++	TSEM_FILE_RECEIVE,
++	TSEM_UNIX_STREAM_CONNECT,
++	TSEM_UNIX_MAY_SEND,
++	TSEM_SOCKET_CREATE,
++	TSEM_SOCKET_CONNECT,
++	TSEM_SOCKET_BIND,
++	TSEM_SOCKET_ACCEPT,
++	TSEM_SOCKET_LISTEN,
++	TSEM_SOCKET_SOCKETPAIR,
++	TSEM_SOCKET_SENDMSG,
++	TSEM_SOCKET_RECVMSG,
++	TSEM_SOCKET_GETSOCKNAME,
++	TSEM_SOCKET_GETPEERNAME,
++	TSEM_SOCKET_SETSOCKOPT,
++	TSEM_SOCKET_SHUTDOWN,
++	TSEM_PTRACE_TRACEME,
++	TSEM_KERNEL_MODULE_REQUEST,
++	TSEM_KERNEL_LOAD_DATA,
++	TSEM_KERNEL_READ_FILE,
++	TSEM_SB_MOUNT,
++	TSEM_SB_UMOUNT,
++	TSEM_SB_REMOUNT,
++	TSEM_SB_PIVOTROOT,
++	TSEM_SB_STATFS,
++	TSEM_MOVE_MOUNT,
++	TSEM_SHM_ASSOCIATE,
++	TSEM_SHM_SHMCTL,
++	TSEM_SHM_SHMAT,
++	TSEM_SEM_ASSOCIATE,
++	TSEM_SEM_SEMCTL,
++	TSEM_SEM_SEMOP,
++	TSEM_SYSLOG,
++	TSEM_SETTIME,
++	TSEM_QUOTACTL,
++	TSEM_QUOTA_ON,
++	TSEM_MSG_QUEUE_ASSOCIATE,
++	TSEM_MSG_QUEUE_MSGCTL,
++	TSEM_MSG_QUEUE_MSGSND,
++	TSEM_MSG_QUEUE_MSGRCV,
++	TSEM_IPC_PERMISSION,
++	TSEM_KEY_ALLOC,
++	TSEM_KEY_PERMISSION,
++	TSEM_NETLINK_SEND,
++	TSEM_INODE_CREATE,
++	TSEM_INODE_LINK,
++	TSEM_INODE_UNLINK,
++	TSEM_INODE_SYMLINK,
++	TSEM_INODE_MKDIR,
++	TSEM_INODE_RMDIR,
++	TSEM_INODE_MKNOD,
++	TSEM_INODE_RENAME,
++	TSEM_INODE_SETATTR,
++	TSEM_INODE_GETATTR,
++	TSEM_INODE_SETXATTR,
++	TSEM_INODE_GETXATTR,
++	TSEM_INODE_LISTXATTR,
++	TSEM_INODE_REMOVEXATTR,
++	TSEM_INODE_KILLPRIV,
++	TSEM_TUN_DEV_CREATE,
++	TSEM_TUN_DEV_ATTACH_QUEUE,
++	TSEM_TUN_DEV_ATTACH,
++	TSEM_TUN_DEV_OPEN,
++	TSEM_BPF,
++	TSEM_BPF_MAP,
++	TSEM_BPF_PROG,
++	TSEM_PTRACE_ACCESS_CHECK,
++	TSEM_CAPABLE,
++	TSEM_CAPGET,
++	TSEM_CAPSET,
++	TSEM_EVENT_CNT
++};
++
++/**
++ * enum tsem_action_type - Ordinal value for security responses.
++ * @TSEM_ACTION_LOG: Ordinal value to indicate that a security event
++ *		     that results in a model permissions violation
++ *		     should be logged.
++ * @TSEM_ACTION_EPERM: Ordinal value to indicate that a security event
++ *		       generating a model permissions violation should
++ *		       return -EPERM to the caller.
++ *
++ * This enumeration type is used to designate what type of action is
++ * to be taken when the processing of a security event hook results in
++ * a model violation.  The TSEM_ACTION_LOG and TSEM_ACTION_EPERM
++ * translate into the classical concepts of logging or enforcing
++ * actions used by other mandatory access control architectures.
++ */
++enum tsem_action_type {
++	TSEM_ACTION_LOG = 0,
++	TSEM_ACTION_EPERM,
++	TSEM_ACTION_CNT
++};
++
++/**
++ * enum tsem_control_type - Ordinal values for TSEM control actions.
++ * @TSEM_CONTROL_INTERNAL: This ordinal value is set when the first
++ *			   word of an argument string written to the
++ *			   control file is the word 'internal'.  This
++ *			   designates that the security namespace will
++ *			   be modeled by the internal TMA.
++ * @TSEM_CONTROL_EXTERNAL: This ordinal value is set when the first
++ *			   word of an argument string written to the
++ *			   control file is the word 'external'.  This
++ *			   designates that the security namespace will
++ *			   be model by an external TMA.
++ * @TSEM_CONTROL_ENFORCE: This ordinal value is set when the word
++ *			  'enforce' is written to the control file.
++ *			  This indicates that model is to be placed
++ *			  in 'enforcing' mode and security events that
++ *			  result in model violations will return EPERM.
++ * @TSEM_CONTROL_SEAL: This ordinal value is set when the word 'seal'
++ *		       is written to the control file.  This indicates
++ *		       that the model for security domain will treat
++ *		       all security events that do not conform to the
++ *		       model as 'forensics' events.
++ * @TSEM_CONTROL_TRUSTED: This ordinal value is used when the first
++ *			  word of an argument string written to the
++ *			  control file is the word 'trusted'.  This
++ *			  is interpreted as a directive to set the
++ *			  trust status of the task that executed the
++ *			  security event to be trusted.
++ * @TSEM_CONTROL_UNTRUSTED: This ordinal value is used when the first
++ *			    word of an argument string written to the
++ *			    control file is the word 'untrusted'.
++ *			    This is interpreted as a directive to set
++ *			    the trust status of the task that executed
++ *			    the security event to be untrusted.
++ * @TSEM_CONTROL_MAP_STATE: This ordinal value is used when the first
++ *			    word of an argument string written to the
++ *			    control file is the word 'state'.  The
++ *			    argument to this directive will be an
++ *			    ASCII hexadecimally encoded string of the
++ *			    current model's digest size that will be
++ *			    treated as a security state point for
++ *			    inclusion in the security model for the
++ *			    security domain/namespace.
++ * @TSEM_CONTROL_MAP_PSEUDONYM: This ordinal value is used when the
++ *				first word of an argument string
++ *				written to the control file is the
++ *				word 'pseudonym'.  The argument to
++ *				this directive will be an ASCII
++ *				hexadecimally encoded string of the
++ *				current model's digest size that will
++ *				be treated as a pseudonym directive
++ *				for the security domain/namespace.
++ * TSEM_CONTROL_MAP_BASE: This ordinal value is used when the first
++ *			  word of an argument string written to the
++ *			  control file is the word 'base'.  The
++ *			  argument to this directive will be an ASCII
++ *			  hexadecimally encoded string of the current
++ *			  model's digest size that will be treated as
++ *			  the base value for the computation of the
++ *			  functional values (measurement and state) of
++ *			  the security domain/namespace.
++
++ * This enumeration type is used to designate what type of control
++ * action is to be implemented when arguments are written to the TSEM
++ * control file (/sys/kernel/security/tsem/control).  The ordinal
++ * values govern the processing of the command and the interpretation
++ * of the rest of the command argument string.
++ */
++enum tsem_control_type {
++	TSEM_CONTROL_INTERNAL = 0,
++	TSEM_CONTROL_EXTERNAL,
++	TSEM_CONTROL_EXPORT,
++	TSEM_CONTROL_ENFORCE,
++	TSEM_CONTROL_SEAL,
++	TSEM_CONTROL_TRUSTED,
++	TSEM_CONTROL_UNTRUSTED,
++	TSEM_CONTROL_MAP_STATE,
++	TSEM_CONTROL_MAP_PSEUDONYM,
++	TSEM_CONTROL_MAP_BASE
++};
++
++/**
++ * enum tsem_ns_reference - Ordinal value for DAC namespace reference.
++ * @TSEM_NS_INITIAL: This ordinal value indicates that the uid/gid
++ *		     values should be interpreted against the initial
++ *		     user namespace.
++ * @TSEM_NS_CURRENT: This ordinal value indicates that the uid/gid
++ *		     values should be interpreted against the user
++ *		     namespace that is in effect for the process being
++ *		     modeled.
++ *
++ * This enumeration type is used to indicate what user namespace
++ * should be referenced when the uid/gid values are interpreted for
++ * the creation of either the COE or CELL identities.  The enumeration
++ * ordinal passed to the tsem_ns_create() function, to configure the
++ * security domain/namespace, is set by the nsref argument to either
++ * the 'internal' or 'external' control commands.
++ */
++enum tsem_ns_reference {
++	TSEM_NS_INITIAL = 1,
++	TSEM_NS_CURRENT
++};
++
++/**
++ * enum tsem_task_trust - Ordinal value describing task trust status.
++ * @TSEM_TASK_TRUSTED: This ordinal value indicates that the task has
++ *		       not executed a security event that has resulted
++ *		       in a security behavior not described by the
++ *		       security model the task is being governed by.
++ * @TSEM_TASK_UNTRUSTED: This ordinal value indicates that the task
++ *		          has requested the execution of a security event
++ *		          that resulted in a security behavior not
++ *		          permitted by the security model the task is
++ *		          being governed by.
++ * @TSEM_TASK_TRUST_PENDING: This ordinal value indicates that the setting
++ *			     of the task trust status is pending a response
++ *		             from an external TMA.
++ *
++ * This enumeration type is used to specify the three different trust
++ * states that a task can be in.  The trust status of a task is
++ * regulated by the trust_status member of struct tsem_task.  A task
++ * carrying the status of TSEM_TASK_TRUSTED means that it has
++ * not requested the execution of any security events that are
++ * inconsistent with the security model that the task is running in.
++ *
++ * If a task requests execution of a security event that is
++ * inconsistent with the security model it is operating in, and the
++ * domain is running in 'sealed' mode, the task trust status is set to
++ * TSEM_TASK_UNTRUSTED.  This value is 'sticky' in that it will be
++ * propagated to any child tasks that are spawned from an untrusted
++ * task.
++ *
++ * In the case of an externally modeled security domain/namespace, the
++ * task trust status cannot be determined until the modeling of the
++ * security event has been completed.  The tsem_export_event()
++ * function sets the trust status TSEM_TASK_TRUST_PENDING and then
++ * places the task into an interruptible sleep state.
++ *
++ * Only two events will cause the task to be removed from sleep state.
++ * Either the task is killed or a control message is written to the
++ * TSEM control file that specifies the trust status of the task.  See
++ * the description of the TSEM_CONTROL_TRUSTED and
++ * TSEM_CONTROL_UNTRUSTED enumeration types.
++ */
++enum tsem_task_trust {
++	TSEM_TASK_TRUSTED = 1,
++	TSEM_TASK_UNTRUSTED = 2,
++	TSEM_TASK_TRUST_PENDING = 4
++};
++
++/**
++ * enum tsem_inode_state - Ordinal value for inode reference state.
++ * @TSEM_INODE_COLLECTING: This ordinal value indicates that the inode
++ *			   is being opened in order to compute the
++ *			   digest of the file.
++ * @TSEM_INODE_COLLECTED: This ordinal value indicates that the digest
++ *			  file for the contents of the file referenced
++ *			  by the inode has been collected and is
++ *			  available in the digest cache attached to
++ *			  the inode.
++ * @TSEM_INODE_CONTROL_PLANE: The associated inode represents a TSEM
++ *			       control plane file that should be
++ *			      bypassed for security tests such as
++ *			      the TSEM_FILE_OPEN event.
++ *
++ * This enumeration type is used to specify the status of the inode.
++ * The primary purpose of this enumeration is so that the recursive
++ * call to the TSEM_FILE_OPEN hook, caused by the kernel opening the
++ * file to compute the checksum, can be bypassed when the digest
++ * value of the file is being computed for inclusion in an event
++ * description.
++ *
++ * The state value of the inode is carried in struct tsem_inode and is
++ * set and interrogated by the event.c:add_file_digest() function.  If
++ * the status of the inode is TSEM_INODE_COLLECTED and the iversion of
++ * the inode is the same as it was at collection time, the cached
++ * value for the currently active namespace digest function is
++ * returned.
++ *
++ * If the test for the relevancy of the cached digest value fails the
++ * status of the inode is set to TSEM_INODE_COLLECTING.  The
++ * tsem_file_open() function will check the inode status when it is
++ * invoked by the integrity_kernel_read() function and if it is
++ * set to 'COLLECTING', a successful permissions check is returned so
++ * that the kernel can open the file and compute its digest.
++ *
++ * The TSEM_INODE_CONTROL_PLANE value is used to indicate that the
++ * attached inode is part of the TSEM control plane.  This allows
++ * security events referencing this inode to bypass event processing
++ * in order to avoid a 'Heisenberg deadlock' situation.
++ */
++enum tsem_inode_state {
++	TSEM_INODE_COLLECTING = 1,
++	TSEM_INODE_COLLECTED,
++	TSEM_INODE_CONTROL_PLANE
++};
++
++/**
++ * struct tsem_task - TSEM task control structure.
++ * @tma_for_ns: The context identity number of the namespace that
++ *		the task has control over if any.
++ * @instance: The instance number of the task.  The global task
++ *	      instance number is incremented each time the
++ *	      bprm_committed_creds handler is invoked to compute the
++ *	      TASK_ID of a process.   This instance number represents
++ *	      the total number of unique instances of a specific body
++ *	      of executable code has been requested.
++ * @p_instance: The instance number of the parent process to the
++ *		process represented by an instance of this structure.
++ *		This value allows an execution heirarchy of executable
++ *		code to be established.
++ * @trust_status: The enumeration type that specifies the trust state of
++ *		  the process.
++ * @task_id: The TSEM task identity (TASK_ID) of the process.
++ * @p_task_id: The TASK_ID of the parent process to the process
++ *	       represented by an instance of this structure.
++ * @task_key: A security model specific digest value that is used to
++ *	      authenticate a task that is running as a trust
++ *	      orchestrator to a task that is under the control of the
++ *	      orchestrator.
++ * @context: A pointer to the tsem_context structure that defines the
++ *	     modeling context that the task is running under.
++
++ * This structure is represents the TSEM security state of a task.  It
++ * is automatically created when the task control structure is
++ * allocated for the creation of a new task.
++ *
++ * The trust_status member of structure determines whether or not the
++ * task is in a condition to be trusted.  It represents whether or not
++ * the task has requested execution of a security event that is
++ * inconsistent with the security model that the task is running
++ * under.  Reference the tsem_trust_status enumeration type for more
++ * information on this member.  The trust status value is propagated
++ * to any child tasks that are spawned from a task.
++ *
++ * The value of task_id member is generated by the
++ * tsem_bprm_committed_creds() function that computes the task
++ * identity based TSEM TASK_ID generative function.  This task_id
++ * value is used in the computation of the security state point values
++ * in combination with the COE and CELL mappings for this event.
++ * The task_id digest creates security state points that are specific
++ * to the executable code that was used to initiate the task.
++ *
++ * The instance member of the structure is used to temporally
++ * disambiguate instances of the same task_id.  A single 64-bit
++ * counter is used to generate the instance.  This counter is
++ * incremented and assigned to the instance member of the structure
++ * at the same tame the TASK_ID value is computed.
++ *
++ * The task_key member holds the authentication key that will be used
++ * to authenticate a process that is requesting the ability to set the
++ * trust status of a process.  This value is generated for the task
++ * structure of the trust orchestrator when a security modeling
++ * namespace is created by the orchestrator.
++ *
++ * The context member of the structure contains a pointer to the
++ * tsem_context structure allocated when a security modeling namespace
++ * is created by the tsem_ns_create() function.  This structure will
++ * contain all of the information needed to define how the task is to
++ * have its security behavior modeled.
++ */
++struct tsem_task {
++	u64 tma_for_ns;
++	u64 instance;
++	u64 p_instance;
++	enum tsem_task_trust trust_status;
++	u8 task_id[HASH_MAX_DIGESTSIZE];
++	u8 p_task_id[HASH_MAX_DIGESTSIZE];
++	u8 task_key[HASH_MAX_DIGESTSIZE];
++	struct tsem_context *context;
++};
++
++/**
++ * struct tsem_context - TSEM modeling context description.
++ * @kref: Reference count for the context.
++ * @work: Work structure for asynchronous release of the context.
++ * @id: The index number of the context.
++ * @sealed: A status variable indicating whether or not the
++ *	    modeling context can be modified.
++ * @use_current_ns: Status variable indicating which user namespace
++ *		    should be used for resolution of uid/gid values.
++ *		    A true value indicates that the user namespace
++ *		    the process is running under should be used.
++ * @actions: An array of enum tsem_action_type variables indicating
++ *	     the type of response that should be returned in
++ *	     response to the modeling of a security event that
++ *	     is inconsistent with the model being used for the
++ *	     security context.
++ * @digestname: A pointer to a null-terminated buffer containing the
++ *		name of the digest function that is to be used for
++ *		this security context.
++ * @zero_digest: The digest value for a 'zero-length' digest value.
++ * @tfm: A pointer to the digest transformation structure that is to
++ *	 generate cryptographic checksums for the modeling context.
++ * @inode_mutex: The lock that protects the inode_list that tracks
++ *		 inodes created in the context of a security modeling
++ *		 namespace.
++ * @inode_list: The list of inodes created in a security modeling
++ *		namespace protected by the inode_mutex member of
++ *		this structure.
++ * @magazine_size: The number of struct tsem_event structures that
++ *		   are held in reserve for security event handlers that
++ *		   are called in atomic context.
++ * @magazine_lock: The spinlock that protects access to the event
++ *		   magazine.
++ * @magazine_index: The bitmap that is used to track the magazine slots
++ *		    that have been allocated.
++ * @ws: An array of work structures that are used to refill the event
++ *	magazine slots.
++ * @magazine: An array of pointers to tsem_event structures that are
++ *	      pre-allocated for security handlers that are called in
++ *	      atomic context.
++ * @model: If the modeling context is implemented with a kernel based
++ *	   trusted model agent this pointer will point to the struct
++ *	   tsem_model structure that maintains the state of the
++ *	   security model.
++ * @external: If the modeling context is implemented with an external
++ *	      modeling agent this pointer will point to the
++ *	      tsem_external structure that implements the interface to
++ *            the trust orchestrator that is managing the security
++ *	      modeling namespace represented by this structure.
++ *
++ * This structure is used to represent the state of a TSEM security
++ * modeling namespace.  A pointer to this structure is stored in the
++ * struct tsem_task structure.
++ *
++ * This structure is allocated by the tsem_ns_create() function in
++ * response to a TSEM control request.  This structure maintains all
++ * of the information that describes the security modeling namespace
++ * that is not specific to the type of namespace, ie. external or
++ * internal that is being implemented.
++ *
++ * The id member is a 64-bit counter that cannot feasibly be
++ * overflowed and that is incremented for each namespace that is
++ * created.  The root modeling namespace has a value of zero so the
++ * TSEM code uses a pattern of testing this value for non-zero status
++ * as an indication of whether or not the task is running in a
++ * subordinate modeling namespace.
++ *
++ * Each security modeling namespace can have an independent
++ * cryptographic digest function that is used as the compression
++ * function for generating the security coefficients, and other
++ * entities, that are used to model security events that occur in a
++ * namespace.  A single struct tfm is allocated for this digest
++ * function at the time that the tsem_context structure is created and
++ * is maintained in this structure for subsequent use during event
++ * processing.
++ *
++ * Each cryptographic digest function has a 'zero message' value that
++ * is the result of the initialization and closure of a hash function
++ * that has no other input.  This zero digest value is computed at the
++ * time of the creation of the array.  This digest value is returned
++ * for files with zero sizes, have pseudonyms declared for them or
++ * that reside on pseudo-filesystems.
++
++ * The actions array contains a specification of how each security
++ * event should be handled in the event that a TMA detects a
++ * security event inconsistent with the model designated for the
++ * security modeling namespace.  This array allows the specification
++ * of whether the events should be enforcing or logging.
++ *
++ * Each security event that is processed requires a struct tsem_event
++ * structure that drives either the internal modeling of an event or
++ * its export to an external modeling agent.  Some security event
++ * hooks are called while a task is running in atomic context. Since
++ * memory cannot be allocated while a process is in atomic context, a
++ * magazine of these structures is maintained by this structure for
++ * security events that run in atomic context.  The size of this
++ * magazine is dynamic and is configurable for each security modeling
++ *
++ * When a tsem_event structure is allocated for an atomic event a
++ * request for the refill of the slot that is vacated is dispatched to
++ * an asynchronous workqueue.  The ws member of this structure points
++ * to an array of work structures for this refill capability, one for
++ * each slot in the magazine.
++ *
++ * All of this infrastructure is generic for each security modeling
++ * namespace.  How the security modeling is done is governed by the
++ * model and externally defined members of this structure.  These
++ * members point to data structures that either maintain the security
++ * model state for an in kernel trusted modeling agent or handle the
++ * export of the event to an external trust orchestrator.
++ *
++ * Each task that is created in a non-root security modeling namespace
++ * increments the reference count maintained in the kref member of
++ * this structure in the tsem_task_alloc() function.  The
++ * tsem_task_free() function decrements this reference count.  When
++ * the reference count expires, ie. when the last task using the
++ * modeling namespace exits, an asynchronous workqueue request is
++ * dispatched to dispose of the context.  The work member of this
++ * structure is used to reference that workqueue.
++ */
++struct tsem_context {
++	struct kref kref;
++	struct work_struct work;
++
++	u64 id;
++	bool sealed;
++	bool use_current_ns;
++
++	enum tsem_action_type actions[TSEM_EVENT_CNT];
++
++	char *digestname;
++	u8 zero_digest[HASH_MAX_DIGESTSIZE];
++	struct crypto_shash *tfm;
++
++	struct mutex inode_mutex;
++	struct list_head inode_list;
++
++	unsigned int magazine_size;
++	spinlock_t magazine_lock;
++	unsigned long *magazine_index;
++	struct tsem_work *ws;
++	struct tsem_event **magazine;
++
++	struct tsem_model *model;
++	struct tsem_external *external;
++};
++
++/**
++ * struct tsem_model - TSEM internal TMA description.
++ * @have_aggregate: Flag variable to indicate whether or not the
++ *		    hardware aggregate value has been injected into
++ *		    the model.
++ * @base: The base value that is to be used in computing the
++ *	  security state coefficients for the model.
++ * @measurement: The time dependent linear extension state of the
++ *		 security state coefficients that have been
++ *		 experienced in the model.
++ * @state: The time independent functional description of the security
++ *	   model.
++ * @point_lock: The spinlock that protects access to the list of
++ *		security state coefficients in the model.
++ * @point_list: A pointer to the list of security state coefficients
++ *		in the model protected by the point_lock.
++ * @point_end_mutex: The mutex that is used to protect the end of the
++ *		     list of security state coefficients that will
++ *		     be exported.
++ * @point_end: A pointer to the end of the list of security state
++ *	       coefficients that will be traversed by a call to the
++ *	       control plane.
++ * @trajectory_lock: The spinlock used to protect the list of security
++ *		     event descriptions in the model.
++ * @trajectory_list: A pointer to the list of descriptions of the
++ *		     security events that have been recorded in this
++ *		     model.
++ * @trajectory_end_mutex: The mutex that protects the end of the list
++ *			  of security event descriptions.
++ * @trajectory_end: A pointer to the end of the list of security event
++ *		    descriptions that will be traversed by a call to
++ *		    the control plane.
++ * @forensics_lock: The spinlock used to protect the list of security
++ *		    event descriptions that are considered invalid by
++ *		    the model being enforced.
++ * @forensics_list: A pointer to the list of descriptions of security
++ *		    events that are considered invalid by the security
++ *		    model being enforced.
++ * @forensics_end_mutex: The mutex that protects the end of the list
++ *			 of security event descriptions that are
++ *			 considered invalid by the current model.
++ * @forensics_end: A pointer to the end of the list of security event
++ *		   descriptions, that are considered invalid, that are
++ *		   to be traversed by a call to the control plane.
++ * @pseudonym_mutex: The mutex lock that protects the list of file
++ *		     digest pseudonyms for the current model.
++ * @pseudonum_list: A pointer to the list of file digest pseudonyms
++ *		    that have been declared for the current model.
++ * @magazine_size: The number of struct tsem_event_point structures that
++ *		   are held in reserve for security event hooks that
++ *		   are called in atomic context.
++ * @magazine_lock: The spinlock that protects access to the event
++ *		   magazine for the security context.
++ * @magazine_index: The bitmap that is used to track the magazine slots
++ *		    that have been allocated.
++ * @ws: An array of work structures that are used to refill the magazine
++ *	slots.
++ * @magazine: An array of pointers to struct tsem_event_point structures that
++ *	      are pre-allocated for security hooks called in atomic
++ *	      context.
++ *
++ * If a call to the tsem_ns_create() function specifies that a kernel
++ * based trusted modeling agent is to be used to implement the
++ * security namespace model, a pointer to this structure is placed in
++ * the struct tsem_context structure.  This structure is used to
++ * maintain the state of the kernel based model.
++ *
++ * There are two primary functional values that are maintained by the
++ * model.  The measurement member of this structure represents the
++ * time dependent linear extension sum of the security state
++ * coefficients that have been assigned to security events that have
++ * occurred in the context of the model.  This is a measurement
++ * that has been classically maintained by a Trusted Platform Module.
++ *
++ * This classic integrity measurement is subject to scheduling
++ * dependencies and may be invariant from run to run of the model.  It
++ * is of primary use in verifying the order of security events that
++ * have occurred in the model.
++ *
++ * The state member of this structure represents a time independent
++ * linear extension sum of the security state coefficients that have
++ * been generated in the model.  It represents a functional value
++ * for the security state of the model being enforced.
++ *
++ * Both of these measurements are dependent on the platform hardware
++ * aggregate value and the base point that has been defined for the
++ * define.
++ *
++ * A non-NULL representation of the hardware aggregate value is only
++ * available if the platform has a TPM.  The have_aggregate member of
++ * this structure is a flag variable that indicates whether or not the
++ * aggregate value has been injected into the model.
++ *
++ * The base member of this structure contains a model specific
++ * coefficient that is used to perturb each security state coefficient
++ * generated in the model.  This value is designed to serve as a
++ * 'freshness' value for a verifying party to the model.
++ *
++ * There are three primary model lists maintain by this structure:
++ *
++ * * security state points
++ * * security trajectory events
++ * * security forensics events
++ *
++ * Similar members are maintained in this structure to support each of
++ * these lists.
++ *
++ * All three lists are extension only and are protected by a spinlock
++ * that can be held in atomic context.  This spinlock is only held for
++ * the period of time required to extend the list.
++ *
++ * Calls by the control plane to interrogate the lists require the
++ * traversal of the list that is ill-suited for a spinlock.  As a
++ * result each list type has a mutex associated with it that protects
++ * a pointer to the end of the list, an endpoint that is determined at
++ * the start of a call to the control plane.
++ *
++ * The list spinlock is used at the start of the control plane call to
++ * capture the end of the list that is then protected by the mutex.
++ * In essence this is used to transition protection of the list from
++ * the spinlock to the mutex.
++ *
++ * The kernel based modeling agent has support for maintaining a
++ * constant digest value for files, that by function, do not have a
++ * fixed digest value, such as log files or files residing on a
++ * pseudo-filesystem.  The pseudonym_list member of this structure
++ * points to the list of these designations.  The pseudonym_mutex
++ * structure protects this list.
++ *
++ * Like the struct tsem_context structure the tsem_model structure
++ * maintains a magazine of structures that are used to service
++ * security events that are called in atomic context.  The magazine
++ * maintained by this structure is a list of struct tsem_event_point
++ * structures that are used to describe the security state
++ * coefficients held by the model.
++ *
++ * The description of struct tsem_context details the implementation
++ * of the magazine which is identical to the implementation for this
++ * structure, with the exception of the type of structures that are
++ * held in reserve.
++ */
++struct tsem_model {
++	bool have_aggregate;
++
++	u8 base[HASH_MAX_DIGESTSIZE];
++	u8 measurement[HASH_MAX_DIGESTSIZE];
++	u8 state[HASH_MAX_DIGESTSIZE];
++
++	spinlock_t point_lock;
++	struct list_head point_list;
++	struct mutex point_end_mutex;
++	struct list_head *point_end;
++	unsigned int point_count;
++
++	spinlock_t trajectory_lock;
++	struct list_head trajectory_list;
++	struct mutex trajectory_end_mutex;
++	struct list_head *trajectory_end;
++
++	spinlock_t forensics_lock;
++	struct list_head forensics_list;
++	struct mutex forensics_end_mutex;
++	struct list_head *forensics_end;
++
++	struct mutex pseudonym_mutex;
++	struct list_head pseudonym_list;
++
++	struct mutex mount_mutex;
++	struct list_head mount_list;
++
++	unsigned int magazine_size;
++	spinlock_t magazine_lock;
++	unsigned long *magazine_index;
++	struct tsem_work *ws;
++	struct tsem_event_point **magazine;
++};
++
++/**
++ * struct tsem_external - TSEM external TMA description.
++ * @export_only: A flag variable used to indicate that the security
++ *		 namespace is running in export only mode that
++ *		 simply presents the events to the external trust
++ *		 orchestrator.
++ * @export_lock: The spinlock that protects access to the export_list
++ *		 member of this structure.
++ * @export_list: A pointer to the list of events waiting to be
++ *		 exported to the trust orchestrator for the security
++ *		 modeling namespace.  The structure type that is
++ *		 linked by this list is the struct export_event
++ *		 structure that is private to the export.c compilation
++ *		 unit.
++ * @dentry: A pointer to the dentry describing the pseudo-file in the
++ *	    /sys/kernel/security/tsem/external_tma directory that is
++ *	    being used to export security event descriptions to the
++ *	    external trust orchestrator for the security modeling
++ *	    namespace.
++ * @have_event: A flag variable to indicate that is work queued
++ *		on the export pseudo-file for the security modeling
++ *		namespace.
++ * @wq: The work queue used to implement polling for the security
++ *	event export file.
++ * @magazine_size: The number of struct export_event structures that
++ *		   are held in reserve for security event hooks that
++ *		   are called in atomic context.
++ * @magazine_lock: The spinlock that protects access to the event
++ *		   magazine for the security modeling domain.
++ * @magazine_index: The bitmap that is used to track the magazine slots
++ *		    that have been allocated.
++ * @ws: An array of work structures that are used to refill the magazine
++ *	slots.
++ * @magazine: An array of pointers to struct export_event structures that
++ *	      are pre-allocated for security hooks called in atomic
++ *	      context.
++ *
++ * If an externally modeled security modeling namespace is created
++ * a structure of this type is allocated for the namespace and placed
++ * in the struct tsem_context structure.
++ *
++ * The primary purpose of this structure is to manage event
++ * descriptions that are being transmitted to the trust orchestrator
++ * associated with the security modeling namespace.  The pseudo-file
++ * will be as follows:
++ *
++ * /sys/kernel/security/tsem/external_tma/N
++ *
++ * Where N is the context id number of the modeling namespace.
++ *
++ * The dentry member of this structure is used to represent the
++ * pseudo-file that is created when the external modeled namespace is
++ * created.
++ *
++ * This list of events waiting to be received by the trust
++ * orchestrator is maintained in the export_list member of this
++ * structure.  Additions or removals from the list hold the spinlock
++ * described by the export_lock member of this structure.
++ *
++ * The wq member of this structure is used to implement a workqueue
++ * to support polling for events on the export control file.  The
++ * have_event flag is set to indicate to the polling call that
++ * security events are available for export.
++ *
++ * When a security event description is exported the calling task is
++ * scheduled away to allow the trust orchestrator to process the
++ * event.  This obviously creates issues for security events that are
++ * called in atomic context.
++ *
++ * Security events in atomic context are exported as an async_event
++ * rather than a simple event.  The trust orchestrator has the option
++ * of killing the workload that deviated from the security model or
++ * signaling a violation of the model.
++ *
++ * To support the export of asynchronous events, magazine
++ * infrastructure, similar to the event and model structure magazines,
++ * is maintained by this structure for the external modeling
++ * namespace.
++ */
++struct tsem_external {
++	bool export_only;
++
++	spinlock_t export_lock;
++	struct list_head export_list;
++	struct dentry *dentry;
++	bool have_event;
++	wait_queue_head_t wq;
++
++	unsigned int magazine_size;
++	spinlock_t magazine_lock;
++	unsigned long *magazine_index;
++	struct tsem_work *ws;
++	struct export_event **magazine;
++};
++
++/**
++ * struct tsem_work - TSEM magazine refill work structure.
++ * @index: The index number of the slot in the structure magazine that
++ *	   is being refilled.
++ * @u: A union that holds pointers to the structure whose magazine is
++ *     being refilled.
++ * @work: The work structure that manages the workqueue being used to
++ *	  refill the magazine entry.
++ *
++ * As has been previously documented for the struct tsem_context,
++ * struct tsem_model and struct tsem_external structures, there is a
++ * need to maintain a magazine of these structures in order to allow
++ * the processing of security events that are called in atomic
++ * context.  An array of this structure type is embedded in each of
++ * those structures to manage the asynchronous refill of the slot in
++ * the magazine that was used to handle an atomic security event.
++ *
++ * The index member of this structure points to the slot in the
++ * magazine that this work item is referencing.
++ *
++ * The structure that the refill work is being done for is maintained
++ * in the respective structure pointer in the u member of this
++ * structure.
++ *
++ * The work member of this structure is used to reference the
++ * asynchronous work request that is being submitted for the refill.
++ */
++struct tsem_work {
++	unsigned int index;
++	union {
++		struct tsem_context *ctx;
++		struct tsem_model *model;
++		struct tsem_external *ext;
++	} u;
++	struct work_struct work;
++};
++
++/**
++ * struct tsem_COE - TSEM context of execution definition structure.
++ * @uid: The numeric user identity that the COE is running with.
++ * @euid: The effective user identity that the COE is running with.
++ * @suid: The saved user identity possessed by the COE.
++ * @gid: The group identity that the COE is running with.
++ * @egid: The effective group identity that the COE possesses.
++ * @sgid: The saved group identity of the COE.
++ * @fsuid: The filesystem user identity that the COE is running with.
++ * @fsgid: The filesystem group identity that the COE is running with.
++ * @capeff: This union is used to implement access to the effective
++ *	    capability set the COE is running with.  The mask value
++ *	    is used to assign to the structure with the value member
++ *	    used to extract the 64 bit value for export and
++ *	    computation.
++ * @securebits: In a file capabilities implementation this value
++ *		specifies potential handling for process running with
++ *		a UID value of 0.
++ *
++ * A security state coefficient is computed from two primary entities:
++ * the COE and the CELL identities.  This structure is used to carry
++ * and encapsulate the characteristics of the context of execution
++ * (COE) that will be used to generate the COE identity.
++ *
++ * The numeric values for discretionary access controls, ie. uid, gid,
++ * are determined by which user namespace the security modeling
++ * namespace is configured to reference.  The reference will be either
++ * the initial user namespace or the user namespace that the context
++ * of execution is running in.  This reference can be set on a per
++ * security model namespace basis.
++ */
++struct tsem_COE {
++	uid_t uid;
++	uid_t euid;
++	uid_t suid;
++
++	gid_t gid;
++	gid_t egid;
++	gid_t sgid;
++
++	uid_t fsuid;
++	gid_t fsgid;
++
++	union {
++		kernel_cap_t mask;
++		u64 value;
++	} capeff;
++
++	unsigned int securebits;
++};
++
++/**
++ * struct tsem_inode_cell - TSEM inode information.
++ * @uid: The numeric user identity assigned to the inode.
++ * @gid: The numeric group identity assigned to the inode.
++ * @mode: The discretionary access mode for the file.
++ * @s_magic: The magic number of the filesystem that the file resides
++ *	     in.
++ * @s_id: The name of the block device supporting the filesystem the
++ *	  inode is on.
++ * @s_uuid: The uuid of the filesystem that contains the inode.
++ *
++ * This structure defines the characteristics of an inode that is
++ * referenced by a security event.
++ */
++struct tsem_inode_cell {
++	uid_t uid;
++	gid_t gid;
++	umode_t mode;
++	u32 s_magic;
++	u8 s_id[32];
++	u8 s_uuid[16];
++};
++
++/**
++ * struct tsem_inode_entry - Reference to a directory inode with temp files.
++ * @list: List of directory inodes for a security modeling namespace
++ *	  that have had an inode created under the directory.
++ * @tsip: A pointer to the TSEM security description of a temporary
++ *	  file that was createdunder a directory entry.
++ *
++ * This structure is used to implement a list of directory inodes that
++ * have had temporary files created under them in a security modeling
++ * namespace.  This list is used to allow the instance identifiers
++ * for inodes to be removed when the security modeling namespace
++ * terminates or when the directory in which temporary files had been
++ * created is removed.
++ */
++
++struct tsem_inode_entry {
++	struct list_head list;
++	struct tsem_inode *tsip;
++};
++
++/**
++ * struct tsem_inode_instance - Instance information for a created inode.
++ * @list: List of inode owners.
++ * @creator: The id number of the security modeling namespace that is
++ *	     creating an inode.
++ * @instance: The instance number of an inode being created under a
++ *	      given directory.
++ * @owner: The TASK_ID of the process creating the inode.
++ * @pathname: A pointer to allocated memory holding the null-terminated
++ *	      pathname for the inode.
++ *
++ * This structure is used to convey information about the owner and
++ * instance number of an inode created in a security modeling namespace.
++ *
++ * This structure serves three distinct purposes.
++ *
++ * A linked list of these structures is used to convey ownership and
++ * instance information about a created inode from the
++ * tsem_inode_create() function to the tsem_inode_init_security()
++ * function, so that this information can be attached to the inode via
++ * the tsem_inode structure.
++ *
++ * Secondly, a linked list of inode ownership information is
++ * maintained for inodes that are created in a security modeling
++ * namespace and used as mountpoints.  This list is maintained in the
++ * security model description for the namespace.  Since the inode that
++ * is 'covering' the mountpoint is different than the inode describing
++ * the directory created for the mountpoint, the ownership information
++ * for the inode needs to carried as a characteristic of the model.
++ *
++ * The final use of this structure is to track the instance numbers of
++ * an inode created by a TASK_ID.  This list is carried by the
++ * directory in which temporary files and directories are created.
++ *
++ */
++struct tsem_inode_instance {
++	struct list_head list;
++
++	u64 creator;
++	u64 instance;
++	u8 owner[HASH_MAX_DIGESTSIZE];
++	char *pathname;
++};
++
++/**
++ * struct tsem_path - TSEM path information.
++ * @created: A flag to indicate that the path was created in the
++ *	     context of the current security modeling namespace.
++ * @creator: The id of the security modeling namespace that created
++ *	     the path.
++ * @instance: The instance number of an inode that was created.
++ * @owner: The TASK_ID of the process that created the path.
++ * @dev: The device number that the filesystem is mounted on.
++ * @pathname: An allocated and null-terminated buffer containing the
++ *	      path from the root directory to the file.
++ *
++ * The tsem_path structure is used to carry information about the
++ * pathname and ownership of a filesystem object that is an argument
++ * to a security event handler.
++ */
++struct tsem_path {
++	bool created;
++	u64 creator;
++	u64 instance;
++	u8 owner[HASH_MAX_DIGESTSIZE];
++
++	dev_t dev;
++	char *pathname;
++};
++
++/**
++ * struct tsem_dentry - TSEM dentry definition.
++ * @have_inode: A flag variable to indicate that the dentry has an
++ *		inode associated with it.
++ * @inode: The TSEM characteristics of the inode associated with a dentry.
++ * @path: The path definition for the dentry.
++ *
++ * This structure is used to contain the TSEM representation of a
++ * dentry.
++ */
++struct tsem_dentry {
++	bool have_inode;
++	struct tsem_inode_cell inode;
++	struct tsem_path path;
++};
++
++/**
++ * struct tsem_inode_args - Arguments for inode security handlers.
++ * @mode: The access mode requested for an inode being created.
++ * @dev: For the inode_mknod handler, the device specification for
++ *	 device node being created.
++ * @in.old_name: In the case of the tsem_inode_symlink handler, this
++ *		 member contains a pointer to the filename of the target
++ *		 of the symbolic link.
++ * @in.dir: For handlers processing rename or movement of an inode,
++ *	    the inode of the directory that contains the inode to be moved.
++ * @in.new_dir: For handlers processing the rename or movement of an
++ *		inode, the inode of the directory that will contain
++ *		the destination inode.
++ * @in.dentry: The dentry argument to inode event handlers that take
++ *	       a dentry.
++ * @in.new_dentry: In the case of handlers that result in a new dentry
++ *		   a pointer to that dentry.
++ * @out.old_name: In the case of the tsem_inode_symlink handler this
++ *		  member contains a pointer to a copy of the name of
++ *		  the target of symbolic link.  This second
++ *		  representation is used to avoid warnings about the
++ *		  use of a constant character pointer in the arguments
++ *		  to the handler.
++ * @out.dir: The TSEM representation of the inode representing a directory
++ *	     that the security handler is acting on.
++ * @out.new_dir: For inode movements or renames, the TSEM representation
++ *		 of the new_dir argument.
++ * @out.dentry: The TSEM representation of the dentry argument to a
++ *		security handler.
++ * @out.new_dentry: For inode movements or renames, the
++ *		    representation of the new location of the inode.
++ *
++ * This structure is used to carry input parameters and their
++ * retained and translated TSEM equivalent for LSM security handlers
++ * that are acting on inodes and/or dentries.
++ */
++struct tsem_inode_args {
++	umode_t mode;
++	dev_t dev;
++
++	union {
++		struct {
++			const char *old_name;
++			struct inode *dir;
++			struct inode *new_dir;
++			struct dentry *dentry;
++			struct dentry *new_dentry;
++		} in;
++
++		struct {
++			char *old_name;
++			struct tsem_inode_cell dir;
++			struct tsem_inode_cell new_dir;
++			struct tsem_dentry dentry;
++			struct tsem_dentry new_dentry;
++		} out;
++	};
++};
++
++/**
++ * struct tsem_file_args - TSEM file argument description.
++ * @cmd: The command argument for security handlers that take a
++ *       command type arguement, ie. file_ioctl, file_fcntl, file_lock
++ *	 handlers.
++ * @in.pseudo_file: A flag indicating that the file was on a
++ *		    pseudo-filesystem and will not have a digest value.
++ * @in.file: A structure to the file that will be modeled.
++ * @out.path: The TSEM representation of the pathname to a file.
++ * @out.inode: The TSEM representation of the inode that backs a file
++ *	       description
++ * @out.flags: The flags value from the file structure.
++ * @out.digest: The cryptographic checksum of the contents of the file.
++ *
++ * This structure is used to carry the input file description and
++ * their TSEM retention values for security event handles that are
++ * provided with a struct file pointer.
++ */
++struct tsem_file_args {
++	unsigned int cmd;
++
++	union {
++		struct {
++			bool pseudo_file;
++			struct file *file;
++		} in;
++
++		struct {
++			struct tsem_path path;
++			struct tsem_inode_cell inode;
++			unsigned int flags;
++			u8 digest[HASH_MAX_DIGESTSIZE];
++		} out;
++
++	};
++};
++
++/**
++ * struct tsem_mmap_file_args - TSEM memory mapping arguments.
++ * @anonymous: A flag variable to indicate whether or not the mapping
++ *	       is file backed or anonymous.
++ * @file: If the handler is being called for a file backed mapping this
++ *	  structure will be populated with the TSEM description of the
++ *	  file.
++ * @prot: The protections that are being requested for the mapping.
++ * @flags: The control flags to the memory mapping call.
++ *
++ * This structure is used to encapsulate the arguments provided to the
++ * tsem_mmap_file security event handler.  The anonymous member of
++ * this structure is used internally by TSEM to indicate that the
++ * file pointer to the call was NULL, thus indicating that the mapping
++ * is for anonymous memory.
++ */
++struct tsem_mmap_file_args {
++	u32 anonymous;
++	struct tsem_file_args file;
++	u32 prot;
++	u32 flags;
++};
++
++/**
++ * struct tsem_socket - TSEM socket information
++ * @family: The family name of the socket whose creation is being
++ *	    requested.
++ * @type: The type of the socket being created.
++ * @protocol: The protocol family of the socket being created.
++ * @kern: A flag variable to indicate whether or not the socket being
++ *	  created is kernel or userspace based.
++ * @owner: The TASK_ID of the task that created the socket.
++ *
++ * This structure is used to encapsulate socket information for
++ * security handlers that take a socket description as an argument.
++ */
++struct tsem_socket {
++	int family;
++	int type;
++	int protocol;
++	int kern;
++	u8 owner[HASH_MAX_DIGESTSIZE];
++};
++
++/**
++ * struct tsem_socket_args - TSEM socket arguments
++ * @value: Possible numeric values passed to event handlers.
++ * @optname: The option name for the tsem_socket_setsockopt call.
++ * @in.socka: A pointer to the socket argument of a security handler.
++ * @in.sockb: A pointer to a second socket argument that may be supplied
++ *	      to the handler.
++ * @in.addr: In the case of handlers that accept an address
++ *	     description a pointer to that description.
++ * @out.socka: The TSEM representation of the first socket argument.
++ * @out.sockb: The TSEM representation of the second socket argument.
++ * @out.have_addr: A boolean flag used to indicate that either the
++ *		   ipv6 or ipv6 union members have been populated.
++ * @out.ipv4: The IPV4 address of an AF_INET socket.
++ * @out.ipv6: The IPV6 address of an AF_INET6 socket.
++ * @out.path: The path of an AF_UNIX socket.
++ * @out.mapping: The checksum of the socket address if the socket type
++ *		 is other than AF_INET, AF_INET6 or AF_UNIX.
++ *
++ * This structure is used to maintain arguments provided to LSM
++ * hooks that handle generic socket security events.
++ */
++struct tsem_socket_args {
++	int value;
++	int optname;
++
++	union {
++		struct {
++			struct sock *socka;
++			struct sock *sockb;
++			void *addr;
++		} in;
++
++		struct {
++			struct tsem_socket socka;
++			struct tsem_socket sockb;
++			bool have_addr;
++			union {
++				struct sockaddr_in ipv4;
++				struct sockaddr_in6 ipv6;
++				char path[UNIX_PATH_MAX + 1];
++				u8 mapping[HASH_MAX_DIGESTSIZE];
++			};
++		} out;
++	};
++};
++
++/**
++ * struct tsem_netlink_args - TSEM netlink event parameters
++ * @in.sock: The sock argument to the LSM event handler.
++ * @in.parms: The pointer to the netlink parameters from the sk_buff
++ *	      structure that was passed to the LSM hook.
++ * @out.sock: The TSEM representation of the sock argument.
++ * @out.uid: The UID, in the TSEM designated namespace of the uid in
++ *	     the netlink control block.
++ * @out.gid: THE GID, in the TSEM designated namespace of the gid in
++ *	     the netlink control block.
++ * @out.portid: The portid member of the netlink_skb_parms structure.
++ * @out.dst_group: The dst_group member of the netlink_skb_parms structure.
++ * @out.flags: The flags member of the netlink_skb_parms structure.
++ * @nsid_set: The nsid_set flag member of the netlink_skb_parms structure.
++ * @nsid: The nsid member of the netlink_skb_parms structure.
++ *
++ * This structure is used to encapsulate and retain the arguments
++ * provided to the tsem_netlink_send event handler.
++ *
++ */
++struct tsem_netlink_args {
++	union {
++		struct {
++			struct sock *sock;
++			struct netlink_skb_parms *parms;
++		} in;
++
++		struct {
++			struct tsem_socket sock;
++			uid_t uid;
++			gid_t gid;
++			__u32 portid;
++			__u32 dst_group;
++			__u32 flags;
++			bool nsid_set;
++			int nsid;
++		} out;
++	};
++};
++
++/**
++ * struct tsem_sb_args - TSEM parameters for superblock security events.
++ * flags: An integer value that was a component of the LSM argument
++ *	  for the sb_mount, sb_umount, sb_remount handlers.
++ * @in.sb: For the sb_remount handler the pointer to the superblock
++ *	   argument passed to the caller.
++ * @in.dentry: An incoming dentry argument.
++ * @in.dev_name: The name of the device to be used for the sb_mount
++ *		 command.
++ * @in.path: The path argument passed to the sb_mount commands.
++ * @in.type: A character pointer to the filesystem type being processed
++ *	     by the superblock security handlers.
++ * @in.path2: The second path argument passed to the move_mount and
++ *	      sb_pivotroot security handlers.
++ * @out.dentry: The TSEM representation of the dentry argument to the
++ *		handler.
++ * @out.inode: The TSEM representation of the inode backing the dentry
++ *	       argument to an LSM handler.
++ * @out.path: The TSEM representation of the incoming path argument.
++ * @out.dev_name: A an allocated copy of the dev_name argument.
++ * @out.type: A allocated copy of the filesystem type.
++ * @out.path2: The TSEM representation of the second path argument if
++ *	       used.
++ *
++ * This structure is used to encapsulate and retain the arguments for
++ * the family of security event handlers that deal with superblocks.  The
++ * list of these handlers is as follows:
++ *
++ * tsem_sb_mount
++ * tsem_sb_umount
++ * tsem_sb_remount
++ * tsem_move_mount
++ * tsem_sb_statfs
++ */
++struct tsem_sb_args {
++	unsigned long flags;
++
++	union {
++		struct {
++			struct super_block *sb;
++			struct dentry *dentry;
++			const char *dev_name;
++			const char *type;
++			const struct path *path;
++			const struct path *path2;
++		} in;
++
++		struct {
++			struct tsem_dentry dentry;
++			char *dev_name;
++			char *type;
++			struct tsem_path path;
++			struct tsem_path path2;
++		} out;
++	};
++};
++
++/**
++ * struct tsem_task_kill_args - TSEM task kill arguments.
++ * @u.value: The signed representation of an integer argument.
++ * @u.resource: The unsigned representation of an integer argument.
++ * @cur: The current resource limit for a task_setrlimit call.
++ * @max: The maximum resource limit for a task_setrlimit call.
++ * @cross_model: A flag variable used to indicate whether or not the
++ *		 signal is originating from a security modeling
++ *		 namespace other than the namespace of the target process.
++ * @signal: The number of the signal being sent.
++ * @source: The task identifier of the process sending the signal
++ * @target: The task identifier of the target process.
++ *
++ * This structure is used to encapsulate and retain the arguments
++ * provided to the tsem_task_kill security event handler.
++ *
++ */
++struct tsem_task_kill_args {
++	union {
++		int value;
++		unsigned int resource;
++	} u;
++	u64 cur;
++	u64 max;
++	u32 cross_model;
++	u32 signal;
++	u8 source[HASH_MAX_DIGESTSIZE];
++	u8 target[HASH_MAX_DIGESTSIZE];
++};
++
++/**
++ * struct tsem_task_prlimit_args - TSEM task prlimit arguments.
++ * @flags: The flag variable passed to the LSM handler.
++ * @in.cred: The cred pointer passed to the handler.
++ * @in.tcred: The tcred pointer passed to the handler.
++ * @out.cred: The TSEM representation of the in.cred pointer.
++ * @out.tcred: The TSEM representation of the in.tcred pointer.
++ *
++ * This structure is used to hold and retain the arguments provided to
++ * the tsem_task_prlimit security event handler.
++ */
++struct tsem_task_prlimit_args {
++	unsigned int flags;
++
++	union {
++		struct {
++			const struct cred *cred;
++			const struct cred *tcred;
++
++		} in;
++
++		struct {
++			struct tsem_COE cred;
++			struct tsem_COE tcred;
++		} out;
++
++	};
++};
++
++/**
++ * struct tsem_task_prctl - TSEM task prctl arguments.
++ * @option: The first argument to the task_prctl LSM handler
++ *	    specifying the command to be executed.
++ * @arg2: The first argument to the handler.
++ * @arg3: The second argument to the handler.
++ * @arg4: The third argument to the handler.
++ * @arg5: The fourth and final argument to the handler.
++ *
++ * This structure is used to encapsulate the arguments provided to the
++ * tsem_task_prctl security event handler.  The argument model is to
++ * specify the 'option' value which is the kernel prctl call that is
++ * to be executed.  The remaining positional arguments are without
++ * specific format and are designed to be interpreted by the prctl
++ * system call based on the command specified.
++ */
++struct tsem_task_prctl_args {
++	int option;
++	unsigned long arg2;
++	unsigned long arg3;
++	unsigned long arg4;
++	unsigned long arg5;
++};
++
++/**
++ * struct tsem_inode_attr_args - TSEM inode manipulation arguments.
++ * @in.path: In the case of the inode_getattr call the path to the
++ *	     inode being referenced.
++ * @in.dentry: In the case of the inode_setattr call the dentry that
++ *	       whose characteristics will be set.
++ * @in.iattr: A pointer to the iattr structure that was passed to the
++ *	      inode_setattr handler.
++ * @out.dentry: A TSEM dentry definition structure that will retain
++ *		the description of either a dentry or path argument
++ *		to a security handler.
++ * @out.valid: The ia_valid member from the iattr structure passed to the
++ *	       inode_setattr handler
++ * @out.mode: The ia_mode member from the iattr structure passed to the
++ *	      inode_setattr handler.
++ * @out.uid: The ia_uid member from the iattr structure passed to the
++ *	     inode_setattr handler.
++ * @out.gid: The ia_gid member from the iattr structure passed to the
++ *	     inode_setattr handler.
++ *	     hook.
++ * @out.size: The ia_size member from the iattr structure passed to the
++ *	      inode_setattr handler.
++ *
++ * This structure is used to encapsulate information on the arguments
++ * passed to the inode_getattr and inode_setattr LSM handler.  The in
++ * structure is used to hold the arguments passed that were passed to
++ * the handlers.  Argument information that is to be held for the life
++ * of the event description are in the out structure.
++ */
++struct tsem_inode_attr_args {
++	union {
++		struct {
++			const struct path *path;
++			struct dentry *dentry;
++			struct iattr *iattr;
++		} in;
++
++		struct {
++			struct tsem_dentry dentry;
++			unsigned int valid;
++			umode_t mode;
++			uid_t uid;
++			gid_t gid;
++			loff_t size;
++		} out;
++	};
++};
++
++/**
++ * struct tsem_inode_xattr_args - TSEM extended attribute arguments.
++ * @in.dentry: A pointer to the backing inode for the dentry that was
++ *	       passed to the LSM hook.  The relevant values from the inode
++ *	       will be copied into the tsem_file structure.
++ * @in.name: A pointer to the name of the extended attribute being
++ *	     queried.
++ * @in.size: The size of an extended attribute that may be set.
++ * @in.flags: The flag value specifying how an extended attributte is
++ *	      to be set.
++ * @out.dentry: The TSEM representation of the path that is being
++ *		action on.
++ * @out.name: The name of an attribute to be set or retrieved.
++ * @out.value: The binary value of the extended attribute that was
++ *	       passed to the inode_setxattr handler.  For an
++ *	       internally modeled namespace this value will be freed
++ *	       after the coefficient for the event is mapped.
++ * @out.encoded_value: The Base64 encoding of the extended attribute
++ *		       value that is used for either the export of
++ *		       the event or the trajectory history.  This
++ *		       memory will be allocated in order to support
++ *		       encoding of the attribute.
++ * @out.size: The size of the att
++ * @out.flags: The flags value that was passed to the inode_setxattr
++ *	       handler.
++ *
++ * This structure is used to encapsulate information on the arguments
++ * passed to the LSM hooks that manipulate extended attributes.  The
++ * in structure is used to hold the pointers to the arguments passed
++ * to the LSM hook while the out structure holds the arguments in
++ * converted form that will be held for the lifetime of the modeling
++ * namespace.
++ */
++struct tsem_inode_xattr_args {
++	union {
++		struct {
++			struct dentry *dentry;
++			const char *name;
++			const void *value;
++			size_t size;
++			int flags;
++		} in;
++
++		struct {
++			struct tsem_dentry dentry;
++			char *name;
++			char *value;
++			char *encoded_value;
++			size_t size;
++			int flags;
++		} out;
++	};
++};
++
++/**
++ * struct tsem_kernel_args - TSEM event descriptions for kernel requests.
++ * @id: For the tsem_kernel_load_data handler the indicator of the type
++ *     of data being requested.
++ * @contents: The boolean flag used to indicate whether or not the
++ *           security_kernel_post_load_data handler should be called.
++ * @in.file: A pointer to the file structure passwd to the
++ *	     tsem_kernel_file_file handler.
++ * @in.kmod_name: A pointer to the buffer containing the name of the
++ *		   module to load.
++ * @out.kmod_name: The retained copy of the kernel module name.
++ * @out.file: The TSEM representation of the file structure that was
++ *	      passed to the tsem_kernel_read_file handler.
++ *
++ * This structure is used to encapsulate information on the arguments
++ * passed to the following LSM hook handlers:
++ *
++ * tsem_kernel_module_request
++ * tsem_kernel_load_data
++ * tsem_kernel_read_file
++ */
++struct tsem_kernel_args {
++	enum kernel_load_data_id id;
++	bool contents;
++
++	union {
++		struct {
++			struct file *file;
++			char *kmod_name;
++		} in;
++
++		struct {
++			char *kmod_name;
++			struct tsem_file_args file;
++		} out;
++	};
++};
++
++/**
++ * struct tsem_time_args - TSEM event description for setting the time
++ * @have_ts: A flag variable to indicate if the time in seconds and
++ *	     nanoseconds is valid.
++ * @seconds: The number of seconds passed to the time set function.
++ * @nsecs: The number of nanoseconds to set the time to.
++ * @have_tz: A flag variable to indicate if the timezone information
++ *	     is valid.
++ * @minuteswest: The minutes west of GMT for the time being set.
++ * @dsttime: The daylight savings time offset.
++ *
++ * This structure is a simple encapsulation of the arguments passed to
++ * the TSEM_SETTIME handler.
++ */
++struct tsem_time_args {
++	bool have_ts;
++	long seconds;
++	long nsecs;
++
++	bool have_tz;
++	int minuteswest;
++	int dsttime;
++};
++
++/**
++ * struct tsem_quota_args - TSEM arguments for quota security management.
++ * @cmds: The cmds argument from the security_quotactl handler.
++ * @type: The type argument from the security_quotactl handler.
++ * @id: The id argument from the security_quotactl handler.
++ * @in.dentry: In the case of the quota_on LSM handler the dentry
++ *	       argument to the handler.
++ * @in.sb: The superblock pointer argument from the security_quotactl handler.
++ * @out.dentry: The TSEM dentry representation of a dentry arguement
++ *		to the quota handlers.
++ * @out.s_flags: In the case of the quotactl handler the flags from
++ *		 the superblock of the filesystem.
++ * @out.fstype: In the case of the quotactl handler the filesystem
++ *		type of the mountpoint.
++ *
++ * This structure is an encapsulation of the arguments and their
++ * retention values for the LSM security handlers that make security
++ * decisions relevant to filesystem quota manipulation.
++ */
++struct tsem_quota_args {
++	int cmds;
++	int type;
++	int id;
++
++	union {
++		struct {
++			struct dentry *dentry;
++			const struct super_block *sb;
++		} in;
++
++		struct {
++			struct tsem_dentry dentry;
++			unsigned long s_flags;
++			char *fstype;
++		} out;
++	};
++};
++
++/**
++ * struct tsem_key_args - TSEM key handler arguments.
++ * @flags: The flags value passed to the key_alloc handler.
++ * @in.cred: A pointer to the credential structures passed to the
++ *	     security handlers.
++ * @out.possessed: A flag variable indicating if a key is owned by a
++ *		  task.
++ * @out.uid: The owner id of a key.
++ * @out.gid: The group id of a key.
++ * @out.flags: The flags value retained for a key operation.
++ * @out.cred: The retained  credentials of a process attempting to
++ *	      access a key.
++ * @out.perm: The retained permissions value of a key.
++ *
++ * This structure is used to hold the arguments to the LSM hooks that
++ * handle key security event and their retained TSEM equivalents.
++ */
++struct tsem_key_args {
++	unsigned long flags;
++
++	union {
++		struct {
++			key_ref_t ref;
++			const struct cred *cred;
++
++		} in;
++
++		struct {
++			bool possessed;
++			uid_t uid;
++			gid_t gid;
++			unsigned long flags;
++			struct tsem_COE cred;
++			u32 perm;
++		} out;
++
++	};
++};
++
++/**
++ * struct tsem_bpf_args - TSEM bpf security handler arguments.
++ * @bpf.cmd: For the security_bpf LSM handler the command number passed
++ *	     the event handler.
++ * @bpf.size: For the security_bpf LSM handler the size argument passed
++ *	      to the event handler.
++ * @prog.type: For the security_bpf_prog LSM handler the type member of
++ *	       the bpf_prog structure passed to the event handler.
++ * @prog.attach_type: For the security_bpf LSM handler the attach_type
++ *		      member of the bpf_prog structure passed to the
++ *		      event handler.
++ * @map.map_type: For the security_map LSM handler the map_type member
++ *		  of the bpf_map structure passed to the event handler.
++ * @map.fmode: For the security_map LSM handler the fmode argument passed
++ *	       to the event handler.
++
++ * This structure is used to hold the arguments to the various LSM
++ * hooks that handle BPF security management.  This structure is a
++ * union over structures for each of the TSEM bpf handlers.
++ */
++struct tsem_bpf_args {
++	union {
++		struct {
++			int cmd;
++			unsigned int size;
++		} bpf;
++
++		struct {
++			int type;
++			int attach_type;
++		} prog;
++
++		struct {
++			int map_type;
++			fmode_t fmode;
++		} map;
++	};
++};
++
++/**
++ * struct tsem_ipc_perm - TSEM retained members of an IPC permission
++ *			  structure.
++ * @uid: The uid member of the IPC permission structure translated into
++ *	 the namespace reference for the modeling namespace.
++ * @gid: The gid member of the IPC permission structure translated into
++ *	 the namespace reference for the modeling namespace.
++ * @cuid: The cuid member of the IPC permission structure translated
++ *	  into the namespace reference for the modeling namespace.
++ * @cgid: The cgid member of the IPC permission structure translated
++ *	  into the namespace reference for the modeling namespace.
++ * @mode: The mode member of the IPC permission structure.
++ *
++ * This structure is used to hold the translated values from a
++ * kern_ipc_perm structure that is passed to one of the LSM IPC
++ * shared memory security handlers.
++ */
++struct tsem_ipc_perm {
++	uid_t uid;
++	gid_t gid;
++	uid_t cuid;
++	gid_t cgid;
++	umode_t mode;
++};
++
++/**
++ * struct tsem_ipc_args - TSEM arguments for IPC security handlers.
++ * @perm_flag: For the tsem_ipc_permission handler the permission flag.
++ * @value: A signed integer value that serves as an argument type to
++ *	   a number of the handlers.
++ * @nsops: In the came of the tsem_sem_semop handler the nsops argument
++ *	   to the handler.
++ * @type: The type argument to the msg_queue_msgrcv handler.
++ * @in.perm: The kern_ipc_perm structure that is passed to multiple
++ *	     handlers that define the permissions for the IPC
++ *	     object whose security status is being checked.
++ * @in.target: For the msg_queue_msgrc handler the TASK_ID of the
++ *	       process ending the message.
++ * @out.perm: The TSEM translated versions of the perm pointer that
++ *	      was passed to a handler.
++ * @out.owner: The TASK_ID of the task that created the IPC resource.
++ * @out.target: The retained version of the TASK_ID describing the
++ *		sender of a message.
++ *
++ * This structure is an encapsulation of the arguments and their
++ * retention values for the LSM security handlers that make security
++ * decisions relevant to IPC objects.
++ */
++struct tsem_ipc_args {
++	short perm_flag;
++	int value;
++	unsigned int nsops;
++	long type;
++
++	union {
++		struct {
++			struct kern_ipc_perm *perm;
++			struct task_struct *target;
++		} in;
++
++		struct {
++			struct tsem_ipc_perm perm;
++			u8 owner[HASH_MAX_DIGESTSIZE];
++			u8 target[HASH_MAX_DIGESTSIZE];
++		} out;
++	};
++};
++
++/**
++ * struct tsem_capability_args - TSEM arguments for capability handling.
++ * @cap: A capability specified for an event.
++ * @opts: Options for handling a capabilities command.
++ * @effective: The effective capability that is being manipulated.
++ * @inheritable: The inheritable capability that is being manipulated.
++ * @permitted: The permitted capability that is being manipulated.
++ * @target: The TASK_ID of the process whose capabilities are being
++ *	    requested.
++ *
++ * This structure is an encapsulation of the arguments to be retained
++ * for security event descriptions that describe security events
++ * involving process capabilities.
++ */
++struct tsem_capability_args {
++	int cap;
++	unsigned int opts;
++
++	kernel_cap_t effective;
++	kernel_cap_t inheritable;
++	kernel_cap_t permitted;
++
++	u8 target[HASH_MAX_DIGESTSIZE];
++};
++
++/**
++ * struct tsem_event - TSEM security event description.
++ * @kref: Reference count structure to track event lifetime.
++ * @list: The list of security events in a security modeling namespace.
++ * @work: The work structure that manages the workqueue being used to
++ *	  refill the event magazine structures.
++ * @event: The enumeration type describing the security event that the
++ *	   structure is defining.
++ * @locked: A boolean flag used to indicate whether or not the
++ *	    security event is running in atomic context.
++ * @instance: The process instance number that is executing the
++ *	      event described by the structure.
++ * @p_instance: The parent process instance number of the process
++ *		executing the event described by the structure.
++ * @pid: The process id number, in the global pid namespace, of the
++ *	 task that is executing the security event.
++ * @comm: A pointer to a null terminated buffer containing the name of
++ *	  the process that is requesting the security event.
++ * @digestsize: The size in bytes of the cryptographic hash function
++ *		that is being used in the security modeling namespace
++ *		in which the event occurred.
++ * @task_id: The TSEM TASK_ID of the process that generated the
++ *	     security event described by an instance of this
++ *	     structure.
++ * @mapping: The security state coefficient that the event described
++ *	     by this structure generates.
++ * @COE: The tsem_COE structure that describes the Context Of
++ *	 Execution that generated the event described by this
++ *	 structure.
++ * @no_params: A boolean value that is set if the security event
++ *	       has no characterizing parameters.
++ * @CELL: The CELL union is used to hold the data structures that
++ *	  characterize the CELL mapping of the event.
++ * @CELL.value: A single numeric value that may be used in
++ *		characterizing an event.
++ * @CELL.netlink: A structure describing  parameters that characterize
++ *		  an event inolving a netlink event.
++ * @CELL.inode: A structure describing characters of security events
++ *		that address inode manipulation operations.
++ * @CELL.file: A structure characterizing a file used as an arguement
++ *	       for a security event.
++ * @CELL.mmap_file: The structure describing the characteristics of
++ *		    a security event involving a memory mapping event.
++ * @CELL.socket: A structure characterizing security events that
++ *		 involve a socket.
++ * @CELL.kernel: A structure characterizing kernel I/O or memory
++ *		 loading opeations.
++ * @CELL.task_kill: The structure describing the characteristics of an
++ *		    event sending a signal to a process.
++ * @CELL.task_prlimit: A structure describing a security event that
++ *		       sets process resource limits.
++ * @CELL.task_prctl: A structure describing an event involving the
++ *		     process control operations.
++ * @CELL.inode_attr: A structure describing events involving getting
++ *		     or setting of inode attributes.
++ * @CELL.inode_xattr: A structure describing events involving actions
++ *		      on inode extended attributes.
++ * @CELL.key: A structure describing events involving manipulation of
++ *	      a kernel key.
++ * @CELL.sb: A structure describing events that involve the a
++ *	     filesystem superblock.
++ * @CELL.quota: A structure describing events that involve the
++ *		manipulation of filesystem quotas.
++ * @CELL.time: A structure describing the setting of the system time
++ *	       or timezone.
++ * @CELL.bpf: A structure describing involves involving manipulation
++ *	      of BPF functionality
++ * @CELL.ipc: A structure describing events that are manipulating
++ *	      shared memory structures or operations.
++ * @CELL.capability: A structure describing events that manipulate
++ *		     the capabilities of a process.
++ *
++ * This structure is the primary data structure for describing
++ * security events that occur in a security modeling namespace.  Each
++ * unique security coefficient in the namespace will have one of these
++ * structures associated with it.
++ *
++ * This structure encapsulates the following three major sources of
++ * information about the event:
++ *
++ * * A description of the process initiating the event.
++ * * The characteristics of the COE identity of the event.
++ * * The characteristics of the CELL identity of the event.
++ *
++ * Since one event description has to ultimately characterize any
++ * security event that can occur, the strategy is to use a union that
++ * contains security event specific structures that describe the
++ * characteristics of the event.  The event member of the structure
++ * is used to indicate the structure that should be referenced.
++ *
++ * The kref member of this structure is used to track the lifetime of
++ * an instance of this structure.  For example, in the case of an
++ * externally modeled event, when the export of the event description
++ * is complete.  In the case of an internally modeled namespace the
++ * structure will be released if it represents a security state
++ * coefficient that is already present in the model.  The structures
++ * are also released when an internally modeled namespace terminates.
++ *
++ * The work member of this structure is used to support asynchronous
++ * updates to a TPM for the root modeling domain.  Asynchronous
++ * updates are used to improve the performance of modeling and to
++ * handle security events that are running in atomic context and
++ * cannot be scheduled away while the TPM transaction completes.
++ *
++ * The tsem_event_allocate() function is called by a TSEM security
++ * event handler to allocate and populate an instance of this
++ * structure.  The locked member of this structure is used to
++ * determine whether the structure should be allocated from the
++ * kmem_cache based structure pool or from the magazine of structures
++ * help for processes running in atomic context.
++ *
++ * After the event is mapped this structure is either passed to the
++ * internal trusted modeling agent or the contents of this structure
++ * is exported to the trust orchestrator attached to the namespace for
++ * modeling by an external trusted modeling agent.
++ */
++struct tsem_event {
++	struct kref kref;
++	struct list_head list;
++	struct work_struct work;
++
++	enum tsem_event_type event;
++	bool locked;
++	u64 instance;
++	u64 p_instance;
++	u64 timestamp;
++	pid_t pid;
++	char comm[TASK_COMM_LEN];
++
++	unsigned int digestsize;
++	u8 task_id[HASH_MAX_DIGESTSIZE];
++	u8 p_task_id[HASH_MAX_DIGESTSIZE];
++	u8 mapping[HASH_MAX_DIGESTSIZE];
++
++	struct tsem_COE COE;
++
++	bool no_params;
++	union {
++		int value;
++		struct tsem_netlink_args netlink;
++		struct tsem_inode_args inode;
++		struct tsem_file_args file;
++		struct tsem_mmap_file_args mmap_file;
++		struct tsem_socket_args socket;
++		struct tsem_kernel_args kernel;
++		struct tsem_task_kill_args task_kill;
++		struct tsem_task_prlimit_args task_prlimit;
++		struct tsem_task_prctl_args task_prctl;
++		struct tsem_inode_attr_args inode_attr;
++		struct tsem_inode_xattr_args inode_xattr;
++		struct tsem_key_args key;
++		struct tsem_sb_args sb;
++		struct tsem_quota_args quota;
++		struct tsem_time_args time;
++		struct tsem_bpf_args bpf;
++		struct tsem_ipc_args ipc;
++		struct tsem_capability_args capability;
++
++	} CELL;
++};
++
++/**
++ * struct tsem_event_point - TSEM security coefficient characteristics.
++ * @list: The list of all the security state coefficients for a
++ *	   modeling namespace.
++ * @valid: A boolean value use to indicate whether or not the security
++ *	   state point is a valid coefficient in the model.
++ * @count: The number of times this coefficient has been expressed by
++ *	   the security modeling namespace.
++ * @point: The security state coefficient for a security event.
++ *
++ * This structure is used by internal trusted modeling agents to
++ * represent each unique security coefficient in a security model.
++ * Security state coefficients are unique within a model so only one
++ * struct tsem_event_point structure will be generated regardless of
++ * how many times the security event that generates the point occurs.
++ * The count member of this structure represents the total number of
++ * security events that have occurred generated this point.
++ *
++ * The valid member of this structure is used to flag whether this
++ * is consistent with the model for the namespace or was generated by
++ * a 'forensic', ie. out of model, event.
++ *
++ * Within each security namespace these structures are linked together
++ * in a list that describes the functional security value of the
++ * namespace.  Entries are only added to this list and never removed.
++ *
++ * The desired state of a security model is created by using the TSEM
++ * control plane to inject a list of acceptable security state
++ * coefficients into the model.  Sealing a model causes any security
++ * events that produce a coefficient different from those already in
++ * the model to be rejected as an invalid security event and logged as
++ * a forensic event for the model.
++ */
++struct tsem_event_point {
++	struct list_head list;
++	bool valid;
++	u64 count;
++	u8 point[HASH_MAX_DIGESTSIZE];
++};
++
++/**
++ * struct tsem_inode - TSEM inode status structure.
++ * @create_mutex: The mutex that protects the create_list.
++ * @create_list: The list of structures that contain ownership and instance
++ *		 information for inodes created under a directory.
++ * @instance_mutex: The mutex protecting the instance_list.
++ * @instance_list: The list of task identities that have created inodes
++ *		   under a directory and the instance count of inodes
++ *		   for each TASK_ID.
++ * @digest_mutex: The mutex protecting the digest_list.
++ * @digest_list: A list of structures containing the digest values that
++ *		 have been calculated for the inode.
++ * @status: The status of the inode.  See the discussion of enum
++ *	    tsem_inode_state for the information that is conveyed
++ *	    by this member.
++ * @created: A boolean flag to indicate that this inode was created
++ *	     in the context of a security modeling namespace.
++ * @creator: The context identity of the security modeling namespace that
++ *	     created the inode.
++ * @instance: The inode instance number for the TASK_ID that created
++ *	      the inode.
++ * @owner: The TASK_ID of the process that created the inode.
++ *
++ * This structure is used to contain the TSEM security state of an
++ * inode.
++ *
++ * Three lists are managed by this structure:
++ *
++ * An inode that is a directory will have inodes that are create under
++ * it added to the create_list.  This list will be traversed when the
++ * inode is instantiated so creation information about the inode can
++ * be registered in the tsem_inode structure attached to that inode.
++ *
++ * The instance_list is also maintained by a directory inode and is
++ * used to track the instances of an inode that is created under the
++ * directory by specific TASK_ID's.
++ *
++ * The digest_list is used for inodes that are backing files and is
++ * used to track the various cryptographic digest values that have
++ * been computed for the file.  This supports the use of multiple
++ * simultaneous digest values across multiple security modeling
++ * namespaces.
++ *
++ * The status member of this function serves two purposes:
++ *
++ * For file based inodes the status member is used to indicate
++ * whether or not the digest value is being computed.  The
++ * tsem_file_open handler uses this status variable to determine
++ * whether or not the modeling of an event should be bypassed if the
++ * file is being opened by the kernel to compute the digest value of
++ * the file.
++ *
++ * The second role of the status member is to indicate that the inode
++ * is one of the TSEM control plane files.  This allows modeling of
++ * events involving this inode to be bypassed in order to avoid a
++ * 'Heisenberg Deadlock' situation.
++ */
++struct tsem_inode {
++	struct mutex create_mutex;
++	struct list_head create_list;
++
++	struct mutex instance_mutex;
++	struct list_head instance_list;
++
++	struct mutex digest_mutex;
++	struct list_head digest_list;
++
++	enum tsem_inode_state status;
++	bool created;
++	u64 creator;
++	u64 instance;
++	u8 owner[HASH_MAX_DIGESTSIZE];
++};
++
++/**
++ * struct tsem_ipc - TSEM IPC security structure.
++ * @owner: The identity of the task that created the IPC resource.
++ *
++ * This structure is used to track the TASK_ID of the process that
++ * created the IPC memory resource so that information can be
++ * integrated into security coefficients that are generated for
++ * shared memory events.
++ */
++struct tsem_ipc {
++	u8 owner[HASH_MAX_DIGESTSIZE];
++};
++
++/**
++ * struct tsem_inode_digest - Digest specific file checksum.
++ * @list:	The list structure used to link multiple digest values
++ *		for an inode.
++ * @name:	A pointer to an allocated null-terminated character
++ *		buffer containing the name of the hash function that
++ *		generated the digest value represented by an instance
++ *		of this structure.
++ * @version:	The version number of the inode that generated the digest
++ *		value that is currently represented.
++ * @value:	The digest value of the file represented by the inode..
++ *
++ * A linked list of these structures is maintained for each inode that
++ * is modeled by TSEM and is used to support multiple hash specific
++ * digest values for a file represented by the inode.  The tsem_inode
++ * structure that represents the TSEM security status of the inode
++ * contains a list of these structures.
++ *
++ * The name member of structure contains the name of the hash function
++ * that generated the checksum value.  This name is used to locate the
++ * correct structure by comparing its value against the hash function
++ * that is being used by the security modeling namespace that is
++ * traversing the list attempting to locate a previously computed
++ * digest value.
++ *
++ * The version member of the structure contains the inode version number
++ * that was in effect when the last digest value of this type was computed.
++ * This version number value is used to detect changes and to trigger an
++ * update of the digest value.
++ */
++struct tsem_inode_digest {
++	struct list_head list;
++	char *name;
++	u64 version;
++	u8 value[HASH_MAX_DIGESTSIZE];
++};
++
++/*
++ * The following three variables are the only globally visible
++ * variables used in the TSEM implementation.
++ *
++ * The tsem_blob_sizes variable is used by the LSM infrastructure to
++ * describe the amount of space that will be needed by the TSEM
++ * security structures.
++ *
++ * The tsem_names array is defined in the tsem.c file and contains an
++ * array of pointers to the strings that define the names for each of
++ * the TSEM security event handlers.  The enum tsem_event_type
++ * enumeration indexes this array.
++ *
++ * The tsem_root_actions array is also indexed by the tsem_event_type
++ * enumeration and is used to determine the type of response that a
++ * TSEM security event handler is to return to the caller, ie. either
++ * logging or enforcing.  The contents of this array is inherited by
++ * copying the array into the struct tsem_context structure for
++ * modeling namespaces that are subordinate to the root model.
++ */
++extern struct lsm_blob_sizes tsem_blob_sizes;
++extern const char * const tsem_names[TSEM_EVENT_CNT];
++extern enum tsem_action_type tsem_root_actions[TSEM_EVENT_CNT];
++
++/*
++ * The following section of the file contains the definitions for the
++ * externally visible functions in each of the TSEM compilation units.
++ */
++extern struct dentry *tsem_fs_create_external(const char *name);
++extern void tsem_fs_show_trajectory(struct seq_file *c, struct tsem_event *ep);
++extern void tsem_fs_show_field(struct seq_file *c, const char *field);
++extern void tsem_fs_show_key(struct seq_file *c, char *term, char *key,
++			     char *fmt, ...);
++extern int tsem_fs_init(void);
++
++extern struct tsem_model *tsem_model_allocate(size_t size);
++extern void tsem_model_free(struct tsem_context *ctx);
++extern int tsem_model_event(struct tsem_event *ep);
++extern int tsem_model_load_point(u8 *point);
++extern int tsem_model_load_pseudonym(u8 *mapping);
++extern int tsem_model_has_pseudonym(struct tsem_inode *tsip, char *pathname);
++extern void tsem_model_load_base(u8 *mapping);
++extern int tsem_model_add_aggregate(void);
++extern void tsem_model_compute_state(void);
++extern void tsem_model_magazine_free(struct tsem_model *model);
++extern int tsem_model_cache_init(struct tsem_model *model, size_t size);
++
++extern void tsem_ns_put(struct tsem_context *ctx);
++extern int tsem_ns_event_key(u8 *task_key, const char *keystr, u8 *key);
++extern int tsem_ns_create(const enum tsem_control_type type,
++			  const char *digest, const enum tsem_ns_reference ns,
++			  const char *key, const unsigned int cache_size);
++extern int tsem_ns_export_root(unsigned int magazine_size);
++
++extern int tsem_export_show(struct seq_file *m, void *v);
++extern int tsem_export_event(struct tsem_event *ep);
++extern int tsem_export_action(enum tsem_event_type event, bool locked);
++extern int tsem_export_aggregate(void);
++extern int tsem_export_magazine_allocate(struct tsem_external *ext,
++					 size_t size);
++extern void tsem_export_magazine_free(struct tsem_external *ext);
++extern int tsem_export_cache_init(void);
++
++extern int tsem_map_task(struct file *file, u8 *mapping);
++int tsem_map_event(struct tsem_event *ep);
++
++extern struct tsem_event *tsem_event_allocate(enum tsem_event_type event,
++					      bool locked);
++extern int tsem_event_init(struct tsem_event *ep);
++extern void tsem_event_put(struct tsem_event *ep);
++extern void tsem_event_get(struct tsem_event *ep);
++extern int tsem_event_magazine_allocate(struct tsem_context *ctx, size_t size);
++extern void tsem_event_magazine_free(struct tsem_context *ctx);
++extern int tsem_event_cache_init(void);
++
++extern u8 *tsem_trust_aggregate(void);
++extern int tsem_trust_add_event(struct tsem_event *ep);
++
++/*
++ * The remaining inline function declarations follow the design
++ * pattern of the other LSM's and implement functions that return
++ * various TSEM characteristics of tasks, modeling contexts and
++ * inodes.
++ */
++static inline struct tsem_task *tsem_task(const struct task_struct *task)
++{
++	return task->security + tsem_blob_sizes.lbs_task;
++}
++
++static inline bool tsem_task_trusted(struct task_struct *task)
++{
++	return tsem_task(task)->trust_status & TSEM_TASK_TRUSTED;
++}
++
++static inline bool tsem_task_untrusted(struct task_struct *task)
++{
++	return tsem_task(task)->trust_status & ~TSEM_TASK_TRUSTED;
++}
++
++static inline struct tsem_context *tsem_context(struct task_struct *task)
++{
++	return tsem_task(task)->context;
++}
++
++static inline struct tsem_model *tsem_model(struct task_struct *task)
++{
++	return tsem_task(task)->context->model;
++}
++
++static inline struct tsem_inode *tsem_inode(struct inode *inode)
++{
++	return inode->i_security + tsem_blob_sizes.lbs_inode;
++}
++
++static inline struct tsem_ipc *tsem_ipc(struct kern_ipc_perm *kipc)
++{
++	return kipc->security + tsem_blob_sizes.lbs_ipc;
++}
++
++static inline struct crypto_shash *tsem_digest(void)
++{
++	return tsem_context(current)->tfm;
++}
++
++static inline unsigned int tsem_digestsize(void)
++{
++	return crypto_shash_digestsize(tsem_digest());
++}
 -- 
 2.39.1
 
