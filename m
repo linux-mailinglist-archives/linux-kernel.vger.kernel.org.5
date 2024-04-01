@@ -1,230 +1,163 @@
-Return-Path: <linux-kernel+bounces-127104-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-127105-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id A0B338946B4
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 23:49:19 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7136F8946B8
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 23:50:57 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 55069281BF6
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 21:49:18 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F1ED828259B
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 21:50:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7557755C3C;
-	Mon,  1 Apr 2024 21:49:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3BDD055792;
+	Mon,  1 Apr 2024 21:50:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="PT1voFun"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="xqJlfgFm"
+Received: from mail-yb1-f202.google.com (mail-yb1-f202.google.com [209.85.219.202])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A83A454FBE
-	for <linux-kernel@vger.kernel.org>; Mon,  1 Apr 2024 21:49:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F102B1C2E
+	for <linux-kernel@vger.kernel.org>; Mon,  1 Apr 2024 21:50:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.202
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712008146; cv=none; b=ZjfasNt/WhSehHlD/MZNMHtAYkYER78GoVdG5aSGjWeSdDC69/OLvWj0IwOMyEAAMmMoPX0nwSu8Gq0f/DbGjR1YgqYqM1pWWkFCq9NOIST/oZW3h/levOcBXhN8Xrx/n89kKLEDGNEDKohxvDxX78HMZf5WY6sKbJqq11IykN0=
+	t=1712008248; cv=none; b=ArvkuH2Tjtgpk3uK0wZGYNHPCd5p0nRr3IrAK14vvsXv1wxGeJO+fuSBvyUdX0Ofu/rame4Qv/Gsx77UBsuc4jivKv8xMAUWkBB2EbezJKRlmw02AzFk6Y7X1F+SuNGPPRujpRjR6gACDsmaNvZ00GZX3ZqCqFn6nHWRpKxStNg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712008146; c=relaxed/simple;
-	bh=OaM75925jZLdZHhC39NGd4RsmecdFjlcFz/3krTx1Uc=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=cpyDvuX7iHsq1sKXmZ01wppornwIrfg00aTws1eNpQr3bYl0NvBXPmbbLv5f92lOIXjfoPYxQMkZeFL8S1QEvRAiK7rWoSfExTGXE8ld6WzOii4gfLnVenyqk/fuU35yF2Av8cGXLmcBCJsdBILPS20E1yXd5z0Xl6floC10kaM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=PT1voFun; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3D73BC433F1;
-	Mon,  1 Apr 2024 21:49:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712008146;
-	bh=OaM75925jZLdZHhC39NGd4RsmecdFjlcFz/3krTx1Uc=;
-	h=From:To:Cc:Subject:Date:From;
-	b=PT1voFun3d5j2XLeGwqrimcNdbQhzQe893LIv3pvw0aGWOO0qZGm6o+WOnhYBDwO2
-	 IGDQyK7yK//bqhyB4KVNuyoOqmMMoVg7UqqQhPvJSM1GvUpyVKu3Z7oMOU2gZPVDDF
-	 cYDAYPxXcbWz/cWximqPcKIUV0Fy9lIMRk4aYFtHtQW7uceDFEqzpf+d1cbPII9fuC
-	 JR3GkMhhDXUiSCwbDeImMhINiccAMOUv/DCvqU6b1tvx1RYv8OdVG9EUR2FDb4SjMS
-	 ZtSNbOxhQa6tjrC57mEhNmosD5BRJqIspcsnfrCbr+qKvWPls6dzr2GnzusJhXQ8d+
-	 JErhpxMEY6dcA==
-From: Frederic Weisbecker <frederic@kernel.org>
-To: Anna-Maria Behnsen <anna-maria@linutronix.de>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Ingo Molnar <mingo@kernel.org>
-Cc: LKML <linux-kernel@vger.kernel.org>,
-	Frederic Weisbecker <frederic@kernel.org>
-Subject: [PATCH] timers/migration: Fix ignored event due to missing CPU update
-Date: Mon,  1 Apr 2024 23:48:59 +0200
-Message-ID: <20240401214859.11533-1-frederic@kernel.org>
-X-Mailer: git-send-email 2.44.0
+	s=arc-20240116; t=1712008248; c=relaxed/simple;
+	bh=LvCBtM2YQSeJABfcqD051PDiGGBI0pmlfrMCxzUoMmE=;
+	h=Date:Mime-Version:Message-ID:Subject:From:To:Cc:Content-Type; b=a8uVDqT9Eqq5zJiRdK/u0RHiQ1RDQTjH3oIbp+wW5I4KfS0ajlbqpG8Bm3TjxHg2KkvDMyOEEccMRW40fCLsnpJD1mULetmFq9c4BCRSRv+2aHFL9w6CcDua9z+A0cKZ0x0/WiJGJATaupzkZVxMPugbdcMP8qTTTdSUMgJayj0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--almasrymina.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=xqJlfgFm; arc=none smtp.client-ip=209.85.219.202
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--almasrymina.bounces.google.com
+Received: by mail-yb1-f202.google.com with SMTP id 3f1490d57ef6-dc647f65573so7361530276.2
+        for <linux-kernel@vger.kernel.org>; Mon, 01 Apr 2024 14:50:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1712008246; x=1712613046; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=XLIDZpDBHrtC9mQGuM4295zuVNtkbE3PLQnEnnfrBMA=;
+        b=xqJlfgFmw8EVSNp5ix6dcbeyrN7dLmOMFe9SHW+OycpRPRgMAHRgN2t5LerU4HRTdT
+         KmTrH+Dk4u2rRCeuRD3GD/R/X6W3ZDBgF95+9kiqJ2I1ulsuINi0c55F0JSK7v0tHOHH
+         5fVHW8PZ4eTjTLqREeHKCeaxxS0GMHCwWtZZ7uCn+j5eCpwkm3Fln1UBQM/YOZrjUNap
+         89LDl067TluOt9qOfbERA1tzFi47zLt0YDEFJU7IY8+QjHQaO2D2X1+rxkjg5/4wV0Fz
+         0BEuUIgSpyjQ73z9thH5OhAUZrxiIFff8QaSdDFXTzxRvVuOjhyDGaxgB+5D/XxdXYzc
+         H5lA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712008246; x=1712613046;
+        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=XLIDZpDBHrtC9mQGuM4295zuVNtkbE3PLQnEnnfrBMA=;
+        b=SZk151ccAGhPF8NJc3amZwHB+L2h5noq1xzvFynFlxGNapMdYHq+5NghFdDYKefXd5
+         1NChrfkasFgg8TU872LwloaAkJsGxEc5+5QghS39ijMSyiRqe4l2x2mZAWXszIkYPAfZ
+         IXnelarjerOtMr+pBd7FMKthvlAR3vgrNLM5stA610a/zyS4bWYn4nURXpfHJniLTmkm
+         t1LsYEswUCj0ZHae8br2F0sfxKc2nYIWgpF9zk+tVf7pGYrNX4znVxpGzz+eO3Lp9If4
+         Fyk3Jd8IbT1C4piocWyu6suM8UnVieEhdvskKtA0BTDRnHGgT0d/M0V7/IvtVQ7GXzCt
+         m2UA==
+X-Forwarded-Encrypted: i=1; AJvYcCXtlfy+o+VoKVFBPGBkSoIJpI2AZafCJI4hNxccMR943+YUP5jk4/ALeM0Lx70w9rkNVwXFTSDzX3CHj/rNCyebpdfCWE1kHOGb66LE
+X-Gm-Message-State: AOJu0YxwoFkJZ+YRJxUD1FdGRHPew5r9WaKsNqqGOrw2Ef2CNbbYYJJk
+	c3W/t969Bes2eemtlwP3KviJ9igxksweTXHZP8K/5ViJlKWdv+mNLdvt1SJPLVHzIIXtcc/vCnV
+	3rJj6bPELk1c2nGYslnJ0Tg==
+X-Google-Smtp-Source: AGHT+IHruwWq4JyI/hLsIFHmVo+4Qge4gKmr6iKc/6xRaXQRVz5Jk7BCEwSZk+LRAFeal/Y+Ugr7hvswKysh+BY5+Q==
+X-Received: from almasrymina.svl.corp.google.com ([2620:15c:2c4:200:b337:405b:46e7:9bd9])
+ (user=almasrymina job=sendgmr) by 2002:a05:6902:2503:b0:dc9:c54e:c5eb with
+ SMTP id dt3-20020a056902250300b00dc9c54ec5ebmr3429870ybb.7.1712008246111;
+ Mon, 01 Apr 2024 14:50:46 -0700 (PDT)
+Date: Mon,  1 Apr 2024 14:50:36 -0700
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.44.0.478.gd926399ef9-goog
+Message-ID: <20240401215042.1877541-1-almasrymina@google.com>
+Subject: [PATCH net-next v3 0/3] Minor cleanups to skb frag ref/unref
+From: Mina Almasry <almasrymina@google.com>
+To: netdev@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	linux-rdma@vger.kernel.org
+Cc: Mina Almasry <almasrymina@google.com>, Ayush Sawal <ayush.sawal@chelsio.com>, 
+	"David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, 
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
+	Mirko Lindner <mlindner@marvell.com>, Stephen Hemminger <stephen@networkplumber.org>, 
+	Tariq Toukan <tariqt@nvidia.com>, Steffen Klassert <steffen.klassert@secunet.com>, 
+	Herbert Xu <herbert@gondor.apana.org.au>, David Ahern <dsahern@kernel.org>, 
+	Boris Pismenny <borisp@nvidia.com>, John Fastabend <john.fastabend@gmail.com>, 
+	Dragos Tatulea <dtatulea@nvidia.com>, Maxim Mikityanskiy <maxtram95@gmail.com>, 
+	Sabrina Dubroca <sd@queasysnail.net>, Simon Horman <horms@kernel.org>, 
+	Yunsheng Lin <linyunsheng@huawei.com>, 
+	"=?UTF-8?q?Ahelenia=20Ziemia=C5=84ska?=" <nabijaczleweli@nabijaczleweli.xyz>, 
+	Christophe JAILLET <christophe.jaillet@wanadoo.fr>, David Howells <dhowells@redhat.com>, 
+	Florian Westphal <fw@strlen.de>, Aleksander Lobakin <aleksander.lobakin@intel.com>, 
+	Lorenzo Bianconi <lorenzo@kernel.org>, Johannes Berg <johannes.berg@intel.com>, 
+	Liang Chen <liangchen.linux@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 
-When a group event is updated with its expiry unchanged but a different
-CPU, that target change may go unnoticed and the event may be propagated
-up with a stale CPU value. The following depicts a scenario that has
-been actually observed:
+v3:
+- Fixed patchwork build errors/warnings from patch-by-patch modallconfig
+  build
 
-                       [GRP2:0]
-                   migrator = GRP1:1
-                   active   = GRP1:1
-                   nextevt  = TGRP1:0 (T0)
-                    /              \
-               [GRP1:0]           [GRP1:1]
-            migrator = NONE       [...]
-            active   = NONE
-            nextevt  = TGRP0:0 (T0)
-            /           \
-        [GRP0:0]       [...]
-      migrator = NONE
-      active   = NONE
-      nextevt  = T0
-      /         \
-    0 (T0)       1 (T1)
-    idle         idle
+v2:
+- Removed RFC tag.
+- Rebased on net-next after the merge window opening.
+- Added 1 patch at the beginning, "net: make napi_frag_unref reuse
+  skb_page_unref" because a recent patch introduced some code
+  duplication that can also be improved.
+- Addressed feedback from Dragos & Yunsheng.
+- Added Dragos's Reviewed-by.
 
-0) The hierarchy has 3 levels. The left part (GRP1:0) is all idle,
-including CPU 0 and CPU 1 which have a timer each: T0 and T1. They have
-the same expiry value.
+This series is largely motivated by a recent discussion where there was
+some confusion on how to properly ref/unref pp pages vs non pp pages:
 
-                       [GRP2:0]
-                   migrator = GRP1:1
-                   active   = GRP1:1
-                   nextevt  = KTIME_MAX
-                    /              \
-               [GRP1:0]           [GRP1:1]
-            migrator = NONE       [...]
-            active   = NONE
-            nextevt  = TGRP0:0 (T0)
-            /           \
-        [GRP0:0]       [...]
-      migrator = NONE
-      active   = NONE
-      nextevt  = T0
-      /         \
-    0 (T0)       1 (T1)
-    idle         idle
+https://lore.kernel.org/netdev/CAHS8izOoO-EovwMwAm9tLYetwikNPxC0FKyVGu1TPJWSz4bGoA@mail.gmail.com/T/#t
 
-1) The migrator in GRP1:1 handles remotely T0. The event is dequeued
-from the top and T0 executed.
+There is some subtely there because pp uses page->pp_ref_count for
+refcounting, while non-pp uses get_page()/put_page() for ref counting.
+Getting the refcounting pairs wrong can lead to kernel crash.
 
-                       [GRP2:0]
-                   migrator = GRP1:1
-                   active   = GRP1:1
-                   nextevt  = KTIME_MAX
-                    /              \
-               [GRP1:0]           [GRP1:1]
-            migrator = NONE       [...]
-            active   = NONE
-            nextevt  = TGRP0:0 (T0)
-            /           \
-        [GRP0:0]       [...]
-      migrator = NONE
-      active   = NONE
-      nextevt  = T1
-      /         \
-    0            1 (T1)
-    idle         idle
+Additionally currently it may not be obvious to skb users unaware of
+page pool internals how to properly acquire a ref on a pp frag. It
+requires checking of skb->pp_recycle & is_pp_page() to make the correct
+calls and may require some handling at the call site aware of arguable pp
+internals.
 
-2) The migrator in GRP1:1 fetches the next timer for CPU 0 and finds
-none. But it updates the events from its groups, starting with GRP0:0
-which now has T1 as its next event. So far so good.
+This series is a minor refactor with a couple of goals:
 
-                       [GRP2:0]
-                   migrator = GRP1:1
-                   active   = GRP1:1
-                   nextevt  = KTIME_MAX
-                    /              \
-               [GRP1:0]           [GRP1:1]
-            migrator = NONE       [...]
-            active   = NONE
-            nextevt  = TGRP0:0 (T0)
-            /           \
-        [GRP0:0]       [...]
-      migrator = NONE
-      active   = NONE
-      nextevt  = T1
-      /         \
-    0            1 (T1)
-    idle         idle
+1. skb users should be able to ref/unref a frag using
+   [__]skb_frag_[un]ref() functions without needing to understand pp
+   concepts and pp_ref_count vs get/put_page() differences.
 
-3) The migrator in GRP1:1 proceeds upward and updates the events in
-GRP1:0. The child event TGRP0:0 is found queued with the same expiry
-as before. And therefore it is left unchanged. However the target CPU
-is not the same but that fact is ignored so TGRP0:0 still points to
-CPU 0 when it should point to CPU 1.
+2. reference counting functions should have a mirror opposite. I.e. there
+   should be a foo_unref() to every foo_ref() with a mirror opposite
+   implementation (as much as possible).
 
-                       [GRP2:0]
-                   migrator = GRP1:1
-                   active   = GRP1:1
-                   nextevt  = TGRP1:0 (T0)
-                    /              \
-               [GRP1:0]           [GRP1:1]
-            migrator = NONE       [...]
-            active   = NONE
-            nextevt  = TGRP0:0 (T0)
-            /           \
-        [GRP0:0]       [...]
-      migrator = NONE
-      active   = NONE
-      nextevt  = T1
-      /         \
-    0            1 (T1)
-    idle         idle
+This is RFC to collect feedback if this change is desirable, but also so
+that I don't race with the fix for the issue Dragos is seeing for his
+crash.
 
-4) The propagation has reached the top level and TGRP1:0, having TGRP0:0
-as its first event, also wrongly points to CPU 0. TGRP1:0 is added to
-the top level group.
+https://lore.kernel.org/lkml/CAHS8izN436pn3SndrzsCyhmqvJHLyxgCeDpWXA4r1ANt3RCDLQ@mail.gmail.com/T/
 
-                       [GRP2:0]
-                   migrator = GRP1:1
-                   active   = GRP1:1
-                   nextevt  = KTIME_MAX
-                    /              \
-               [GRP1:0]           [GRP1:1]
-            migrator = NONE       [...]
-            active   = NONE
-            nextevt  = TGRP0:0 (T0)
-            /           \
-        [GRP0:0]       [...]
-      migrator = NONE
-      active   = NONE
-      nextevt  = T1
-      /         \
-    0            1 (T1)
-    idle         idle
+Cc: Dragos Tatulea <dtatulea@nvidia.com>
 
-5) The migrator in GRP1:1 dequeues the next event in top level pointing
-to CPU 0. But since it actually doesn't see any real event in CPU 0, it
-early returns.
+Mina Almasry (3):
+  net: make napi_frag_unref reuse skb_page_unref
+  net: mirror skb frag ref/unref helpers
+  net: remove napi_frag_unref
 
-6) T1 is left unhandled until either CPU 0 or CPU 1 wake up.
+ .../chelsio/inline_crypto/ch_ktls/chcr_ktls.c |  2 +-
+ drivers/net/ethernet/marvell/sky2.c           |  2 +-
+ drivers/net/ethernet/mellanox/mlx4/en_rx.c    |  2 +-
+ drivers/net/ethernet/sun/cassini.c            |  4 +-
+ drivers/net/veth.c                            |  2 +-
+ include/linux/skbuff.h                        | 44 +++++++-------
+ net/core/skbuff.c                             | 58 ++++++-------------
+ net/ipv4/esp4.c                               |  2 +-
+ net/ipv6/esp6.c                               |  2 +-
+ net/tls/tls_device.c                          |  2 +-
+ net/tls/tls_device_fallback.c                 |  2 +-
+ net/tls/tls_strp.c                            |  2 +-
+ 12 files changed, 54 insertions(+), 70 deletions(-)
 
-Some other bad scenario may involve trees with just two levels.
-
-Fix this with checking the CPU, along with the expiry value before
-considering to early return while updating a queued event.
-
-Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
----
- kernel/time/timer_migration.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
-
-diff --git a/kernel/time/timer_migration.c b/kernel/time/timer_migration.c
-index c63a0afdcebe..90786bb9a607 100644
---- a/kernel/time/timer_migration.c
-+++ b/kernel/time/timer_migration.c
-@@ -762,8 +762,11 @@ bool tmigr_update_events(struct tmigr_group *group, struct tmigr_group *child,
- 	 * queue when the expiry time changed only or when it could be ignored.
- 	 */
- 	if (timerqueue_node_queued(&evt->nextevt)) {
--		if ((evt->nextevt.expires == nextexp) && !evt->ignore)
-+		if ((evt->nextevt.expires == nextexp) && !evt->ignore) {
-+			if (evt->cpu != first_childevt->cpu)
-+				evt->cpu = first_childevt->cpu;
- 			goto check_toplvl;
-+		}
- 
- 		if (!timerqueue_del(&group->events, &evt->nextevt))
- 			WRITE_ONCE(group->next_expiry, KTIME_MAX);
 -- 
-2.44.0
+2.44.0.478.gd926399ef9-goog
 
 
