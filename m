@@ -1,152 +1,128 @@
-Return-Path: <linux-kernel+bounces-126846-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-126848-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0A244893EE9
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 18:09:40 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id A82F1893FAF
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 18:20:00 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 73C6C1F21B2B
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 16:09:39 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5E97E1F221C5
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 16:20:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3281B481C4;
-	Mon,  1 Apr 2024 16:09:31 +0000 (UTC)
-Received: from mail-io1-f71.google.com (mail-io1-f71.google.com [209.85.166.71])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A0A18481AA;
+	Mon,  1 Apr 2024 16:19:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=trvn.ru header.i=@trvn.ru header.b="Eojp17Uj"
+Received: from box.trvn.ru (box.trvn.ru [194.87.146.52])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 053BE47A79
-	for <linux-kernel@vger.kernel.org>; Mon,  1 Apr 2024 16:09:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.71
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F0666C129;
+	Mon,  1 Apr 2024 16:19:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=194.87.146.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711987770; cv=none; b=gi9dDA/S+pBHRoebKVYT3pephml7R6g2lAoRLF8a/juGw7LZwNbXcO4lPlyHCBCRpHSmFYHDB+GUybMgrI912BhEcXLebpWB1oN1lJpZqo3c3r6yTacB0OUxdPXEuCfE8PoQSZG41Hf/kqsndtJRbjUOaXnLAIMoxgalZceu0f0=
+	t=1711988392; cv=none; b=iClr+h4tRDmWFE/5FeGmvNncNN275cNvCLSa5LzNZ4g6tcT4FZWX2L/Y2x9ZgFkaRpSremne/0BnTgqbhHh9InuitoscV93SK43bA0eFMtDmJg3P6C84P0bhHQgOnhdxu0pN6tUm+lv7rFjo6entS1VaO/ZUIq4e5RKNC2xOAxE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711987770; c=relaxed/simple;
-	bh=9MJQaaNhjZxg8cTjUe//Brvwr9I7kgQyflReATtuETk=;
-	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=RKnNZRAqCkid2duWY3au6NU8i2d2HLeipN2fjMY8gvZHRTJa/6xrkKRfFQlqSBYwF9aHLTHBgM8wGbKn16Qq2AZwJzZn7b7rpNCAigIJNcTxkPXJoE4dd7eXP2S1R06LwXiCWT+MCpt9xfKi2JtOtzh2mmIEo3rdF83BN0Y04b8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.71
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-io1-f71.google.com with SMTP id ca18e2360f4ac-7cc012893acso454446239f.2
-        for <linux-kernel@vger.kernel.org>; Mon, 01 Apr 2024 09:09:28 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711987768; x=1712592568;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=v8ltHQaZ4qCuEtVlYYBAXZvP0KfucEV94mRShkDJKW8=;
-        b=YeBU092rgmvQOvZZlVfmPhTs8cCLaTJCeh1AymrmI1oh2cm4TRRs58uykox9hkv3VN
-         4/9v7w/Nwt8KhfMc2SB6sdp8wg9UOO6GVSJvD7mjCm9b3i4Jd40Ws3N1DNMKqIEa5hvo
-         r1nZ35wvdX0TBH9l7fY9SwAj8XlCdNBm6GyRSiDRmhkuAtj08AE1jZfHcILttPmD36pj
-         eehf4xMyzeix3aTAapNXxYNtmidRjrJsuZGZ/2PWV30zidVQ8ToJD6RNSTgDH/nkeWgV
-         1MBnMksfYA6yAd6n6ktFkkNT/DKp6Dc4bM6rjNZRIh7KO/9PJ3EPt4OjwvgXX85uKxsg
-         i30w==
-X-Forwarded-Encrypted: i=1; AJvYcCUa3BURBCHhR+FZqxaYc9AqYhXtsaUgIHMvjLe6PRqWxKsVTZm7JNIpGw3EIhwrwP6agENlOcEP+78FHLGsegkc2ToGwt6HbKMJwBI8
-X-Gm-Message-State: AOJu0YxLkC2tpSIV0iBZH7soGXmhSjb3dlX1+OxXbryfxDniD+hnahOJ
-	vifs5Q7NB6VqEFPS0RC5sY/A5mKQyAGMxemX0YD27XbJhtG+mYRJiEGXbtGZOuwEIlBFa+dFxjP
-	GTWmXjZGk9nrh34y4EOOJ4kvASOvtCNxJGGziYTNP8UWiN/xuavepEFc=
-X-Google-Smtp-Source: AGHT+IG5j4u78ZNjb/Jw67+iM4et54jH7d48y5fTefaiTFr2aCnztjUBHPyzxghJLrWbFnQq+DceoHsnDB5Fr3f+SkbuiyO/zPa6
+	s=arc-20240116; t=1711988392; c=relaxed/simple;
+	bh=mR/cOeAw4E7C++Ggf0FcfRIhKkLkJCA2eKgJ7ORve1k=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=dvOEz5wUMf/jOdQFVgfHA6FrEnYPcUDtQnYppoDgBee7s8ORGselIOFlOAMuqyE+pk54S9JEAjHgMaAvQpmsi5O/GWxlyO2RtRq8PRw8sLswU8luy/P/nnlkbDycJP2d2Z20Riqk797aS3+UbVlNtKLSgy7spd4/DNeoFKPFNXY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=trvn.ru; spf=pass smtp.mailfrom=trvn.ru; dkim=pass (2048-bit key) header.d=trvn.ru header.i=@trvn.ru header.b=Eojp17Uj; arc=none smtp.client-ip=194.87.146.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=trvn.ru
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=trvn.ru
+Received: from authenticated-user (box.trvn.ru [194.87.146.52])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
+	(No client certificate requested)
+	by box.trvn.ru (Postfix) with ESMTPSA id 8EC74401B8;
+	Mon,  1 Apr 2024 21:19:39 +0500 (+05)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=trvn.ru; s=mail;
+	t=1711988380; bh=mR/cOeAw4E7C++Ggf0FcfRIhKkLkJCA2eKgJ7ORve1k=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=Eojp17Ujo/uMpf1fwFbzjNhysujUbTNg10EALJdjfAVRyC5AVKkKURjF5xuKJv9vf
+	 FEVsiPPAT63k0DW5SMMjWK6EeW4DQBySzJ4zD5L76TzKckXGw+A4i8g7kTkLdEliOu
+	 ShR9wGrQxaSd+9o7/R4cIn08s/SKudbqSh/u+rZMpp1WwkPj5qHsQs2f3UCauExHSA
+	 AQWtOEP000HS9JfmwiXwxBp3NdbrJItZYSl6zZ/FljI9G3IPwiK7PeH8FDxgr7IJJr
+	 yx0RdOhAYpu2qJ79AJIAIVl0YgpYH7/No5LYU8uhr/SOdqdOe1/SYiiCxMKx9bPt31
+	 jhf9PBM8g9bqA==
+Date: Mon, 1 Apr 2024 21:19:36 +0500
+From: Nikita Travkin <nikita@trvn.ru>
+To: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Cc: Jonathan Corbet <corbet@lwn.net>, workflows@vger.kernel.org, 
+	linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org
+Subject: Re: [PATCH] docs: submitting-patches: describe additional tags
+Message-ID: <gkxxcernzydrduvmzgyyj22evukzhuxe7mr2nbn5p4cft23s6h@koerky6gc3bf>
+References: <20240401-additional-trailers-v1-1-f472bf158d2f@linaro.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:1a69:b0:369:8ea5:f650 with SMTP id
- w9-20020a056e021a6900b003698ea5f650mr408782ilv.3.1711987768088; Mon, 01 Apr
- 2024 09:09:28 -0700 (PDT)
-Date: Mon, 01 Apr 2024 09:09:28 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000c6ea9b06150b361c@google.com>
-Subject: [syzbot] [v9fs?] WARNING in v9fs_init_request
-From: syzbot <syzbot+0354394655e838206fba@syzkaller.appspotmail.com>
-To: asmadeus@codewreck.org, ericvh@kernel.org, linux-fsdevel@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, linux_oss@crudebyte.com, lucho@ionkov.net, 
-	syzkaller-bugs@googlegroups.com, v9fs@lists.linux.dev
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240401-additional-trailers-v1-1-f472bf158d2f@linaro.org>
 
-Hello,
+On Mon, Apr 01, 2024 at 08:17:03AM +0300, Dmitry Baryshkov wrote:
+> Described tags do not fully cover development needs. For example the LKP
+> robot insists on using Reported-by: tag, but that's not fully correct.
+> The robot reports an issue with the patch, not the issue that is being
+> fixed by the patch. Describe additional tags to be used while submitting
+> patches.
+> 
+> Signed-off-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+> ---
+>  Documentation/process/submitting-patches.rst | 19 +++++++++++++++++++
+>  1 file changed, 19 insertions(+)
+> 
+> diff --git a/Documentation/process/submitting-patches.rst b/Documentation/process/submitting-patches.rst
+> index 66029999b587..3a24d90fa385 100644
+> --- a/Documentation/process/submitting-patches.rst
+> +++ b/Documentation/process/submitting-patches.rst
+> @@ -544,6 +544,25 @@ future patches, and ensures credit for the testers.
+>  Reviewed-by:, instead, indicates that the patch has been reviewed and found
+>  acceptable according to the Reviewer's Statement:
+>  
+> +Additional tags to be used while submitting patches
+> +---------------------------------------------------
+> +
+> +The tags described previously do not always cover the needs of the development
+> +process.
+> +
+> +For example, if the kernel test robot reports an issue in the patch, the robot
+> +insists that the next version of the patch gets the Reported-by: and Closes:
+> +tags.  While the Closes: tag can be considered correct in such a case, the
+> +Reported-by: tag is definitely not correct. The LKP robot hasn't reported the
+> +issue that is being fixed by the patch, but instead it has reported an issue
+> +with the patch. To be more precise you may use the Improved-thanks-to: tag for
+> +the next version of the patch.
+> +
+> +Another frequent case is when you want to express gratitude to the colleagues,
+> +who helped to improve the patch, but neither the Co-developed-by: nor
+> +Suggested-by: tags are appropriate. In such case you might prefer to use
+> +Discussed-with:, Listened-by:, or Discussed-over-a-beer-with: tags.
+> +
 
-syzbot found the following issue on:
+This is an amazing idea!
 
-HEAD commit:    8d025e2092e2 Merge tag 'erofs-for-6.9-rc2-fixes' of git://..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=17cb6d7e180000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=a2fbd4c518bbb6b3
-dashboard link: https://syzkaller.appspot.com/bug?extid=0354394655e838206fba
-compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
-userspace arch: i386
+Though I wonder if we should use the industry standard X- prefix for those:
+i.e. X-Code-generator: or X-Sent-some-messages-about-this-that-were-left-unread-to:
+to clarify they are extensions to the usual workflow.
 
-Unfortunately, I don't have any reproducer for this issue yet.
+I think the decision on this would be pretty obvious after reading the
+current recommendation for X- prefixes in RFC 6648.
 
-Downloadable assets:
-disk image (non-bootable): https://storage.googleapis.com/syzbot-assets/7bc7510fe41f/non_bootable_disk-8d025e20.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/8028eb34add3/vmlinux-8d025e20.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/1edea22db964/bzImage-8d025e20.xz
+I like this change!
+Nikita
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+0354394655e838206fba@syzkaller.appspotmail.com
-
-------------[ cut here ]------------
-folio expected an open fid inode->i_ino=2
-WARNING: CPU: 2 PID: 1121 at fs/9p/vfs_addr.c:115 v9fs_init_request+0x346/0x380 fs/9p/vfs_addr.c:115
-Modules linked in:
-CPU: 2 PID: 1121 Comm: kworker/u32:9 Not tainted 6.9.0-rc1-syzkaller-00061-g8d025e2092e2 #0
-Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.16.2-debian-1.16.2-1 04/01/2014
-Workqueue: writeback wb_workfn (flush-9p-36)
-RIP: 0010:v9fs_init_request+0x346/0x380 fs/9p/vfs_addr.c:115
-Code: ff ff 37 00 48 c1 e0 2a 48 8d 7b 40 48 89 fa 48 c1 ea 03 80 3c 02 00 75 35 48 8b 73 40 48 c7 c7 60 03 4e 8b e8 cb 20 12 fe 90 <0f> 0b 90 90 eb 9a e8 1f d0 ab fe e9 51 fe ff ff e8 25 cf ab fe e9
-RSP: 0018:ffffc90006ebf2e8 EFLAGS: 00010282
-RAX: 0000000000000000 RBX: ffff888029e72920 RCX: ffffffff8150eb39
-RDX: ffff888018f42440 RSI: ffffffff8150eb46 RDI: 0000000000000001
-RBP: ffff88805d9bfc00 R08: 0000000000000001 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000002 R12: 0000000000000000
-R13: ffff88805d9bfd42 R14: 0000000000000001 R15: 0000000000000001
-FS:  0000000000000000(0000) GS:ffff88802c400000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 0000000058389000 CR3: 0000000043388000 CR4: 0000000000350ef0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- <TASK>
- netfs_alloc_request+0x54c/0x9a0 fs/netfs/objects.c:53
- netfs_write_back_from_locked_folio fs/netfs/buffered_write.c:910 [inline]
- netfs_writepages_begin fs/netfs/buffered_write.c:1100 [inline]
- netfs_writepages_region.constprop.0+0xffe/0x1bc0 fs/netfs/buffered_write.c:1123
- netfs_writepages+0x2fa/0x420 fs/netfs/buffered_write.c:1169
- do_writepages+0x1a3/0x7f0 mm/page-writeback.c:2612
- __writeback_single_inode+0x163/0xf90 fs/fs-writeback.c:1650
- writeback_sb_inodes+0x5a6/0x10d0 fs/fs-writeback.c:1941
- wb_writeback+0x28a/0xb30 fs/fs-writeback.c:2117
- wb_do_writeback fs/fs-writeback.c:2264 [inline]
- wb_workfn+0x28d/0xf40 fs/fs-writeback.c:2304
- process_one_work+0x902/0x1a30 kernel/workqueue.c:3254
- process_scheduled_works kernel/workqueue.c:3335 [inline]
- worker_thread+0x6c8/0xf70 kernel/workqueue.c:3416
- kthread+0x2c1/0x3a0 kernel/kthread.c:388
- ret_from_fork+0x45/0x80 arch/x86/kernel/process.c:147
- ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:243
- </TASK>
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-
-If the report is already addressed, let syzbot know by replying with:
-#syz fix: exact-commit-title
-
-If you want to overwrite report's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
-
-If the report is a duplicate of another one, reply with:
-#syz dup: exact-subject-of-another-report
-
-If you want to undo deduplication, reply with:
-#syz undup
+>  Reviewer's statement of oversight
+>  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>  
+> 
+> ---
+> base-commit: 13ee4a7161b6fd938aef6688ff43b163f6d83e37
+> change-id: 20240401-additional-trailers-2b764f3e4aee
+> 
+> Best regards,
+> -- 
+> Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
 
