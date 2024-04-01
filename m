@@ -1,172 +1,156 @@
-Return-Path: <linux-kernel+bounces-126733-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-126735-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0917D893C0F
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 16:14:42 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 56759893C16
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 16:15:41 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B394D1F24118
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 14:14:41 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C07B91F247AE
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 14:15:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0CFF65337F;
-	Mon,  1 Apr 2024 14:11:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 114904122C;
+	Mon,  1 Apr 2024 14:15:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="dA9t1hYJ"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=kroah.com header.i=@kroah.com header.b="ZVYnjnuJ";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="neoyCpxP"
+Received: from fhigh7-smtp.messagingengine.com (fhigh7-smtp.messagingengine.com [103.168.172.158])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4D1E2535B5;
-	Mon,  1 Apr 2024 14:11:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 202143FE2D;
+	Mon,  1 Apr 2024 14:15:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.158
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711980706; cv=none; b=I31iDObh0dzJD0IUVtJ4kQKB9ln5pqYlPRZPTcAh6JC+sEjQ0Kgb9OqHOkzpWDRec8mDNPtUb+GkqrHkb7eK8gB6hvR3UhYXS95QxAJMl+FGvmfTJ0mbToFiVqJuhmCsltYdD2rqucGRt5hEZW95acJKhexXyZfwFMgLsC06A5Q=
+	t=1711980933; cv=none; b=Qf2m/yWeW7Ks3hCN41qgNlxPz+5gThd8oCESU6ndYcNohWz3z461rXdjf9P8inYvR28pmqqsGYL9GyUzkjDROkDQk4Y/MXHS0GzY5lfgwxoQoq+AAU0BCr6GZFRKwpdbMehtC8jEtKZJ+w2wBIw28vEpaVLt87BiRE/tZ+3MxAQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711980706; c=relaxed/simple;
-	bh=7YKueyhgS9qTuYqs8FtNtLDSmanBAOxpbsa2jb1AonU=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=Rh5yIU81zBhfPvB7IoLF7tshqbgdArsDO1dJ2bNaEaUXiYc3Pq3tCV+23DWE9BnmVb0pDAv/F1hXsHSp7W8yWo0b4EeYI6vQV+4Apw6Dw+mOQhBzJur+0nojxURiTCv3MvIU4EKAl90ZRohW72dctc9iaTBubjZSQB/i2Uu1jVo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=dA9t1hYJ; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D8EB6C43394;
-	Mon,  1 Apr 2024 14:11:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711980706;
-	bh=7YKueyhgS9qTuYqs8FtNtLDSmanBAOxpbsa2jb1AonU=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=dA9t1hYJhSFwqkYUYntmy6iMEiAXNB8eK6BE8IbP1OrhLfq5rDLBvFzl6UdUkqdZh
-	 0SP4UybqF8c/Vo1nSeFTuoe1w1ejCMEutpv9gByxTknN2VImSkuzQiZrirTnxmmUQn
-	 Q/JM4915QG32oUioLJvX+0OriuZe/zzdcftOZti/KZErQCV7taMXsERknngtdbXNHA
-	 +VqpVoGSjuwlVjvVmGAqEdRMTTWuD2kmcinLZ0cw6yanGHFSfidBqvf+ZsL+UPM+zu
-	 2fD15tve2IBR5YhOkBX4unn4MnhVeRDrDRrYRwo1JE23UA49ZbFoDm7G5gsg+EnV6K
-	 /DObeuKdOkIhg==
-From: Krzysztof Kozlowski <krzk@kernel.org>
-To: Rob Herring <robh@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Orson Zhai <orsonzhai@gmail.com>,
-	Baolin Wang <baolin.wang@linux.alibaba.com>,
-	Chunyan Zhang <zhang.lyra@gmail.com>,
-	devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Cc: Krzysztof Kozlowski <krzk@kernel.org>
-Subject: [PATCH 5/5] arm64: dts: sharkl3: add missing unit addresses
-Date: Mon,  1 Apr 2024 16:11:28 +0200
-Message-Id: <20240401141128.98317-5-krzk@kernel.org>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20240401141128.98317-1-krzk@kernel.org>
-References: <20240401141128.98317-1-krzk@kernel.org>
+	s=arc-20240116; t=1711980933; c=relaxed/simple;
+	bh=u5aRqDMU06217vwzRELvpEqF5sg6IKxMJxYbUA7HFDU=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=hSGnJQ4Ue6SFNTZiIgMwD9JoS7iC78pDLB4uTaLL+FQvRnRedYoA/8DbSJKtBkUm9I5wDPnY9ID8QiIJSw1Np1QafA/Hkz1rslyagTae16uLFgM2hVOXGFJGGH7yhJ9bGepAVuP5YrAXoa7hVE3RyGM0WhXdE9pjDFecdheLzZ8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=kroah.com; spf=pass smtp.mailfrom=kroah.com; dkim=pass (2048-bit key) header.d=kroah.com header.i=@kroah.com header.b=ZVYnjnuJ; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=neoyCpxP; arc=none smtp.client-ip=103.168.172.158
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=kroah.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kroah.com
+Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
+	by mailfhigh.nyi.internal (Postfix) with ESMTP id 2BC7E11400FA;
+	Mon,  1 Apr 2024 10:15:30 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute1.internal (MEProxy); Mon, 01 Apr 2024 10:15:30 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kroah.com; h=cc
+	:cc:content-type:content-type:date:date:from:from:in-reply-to
+	:in-reply-to:message-id:mime-version:references:reply-to:subject
+	:subject:to:to; s=fm2; t=1711980930; x=1712067330; bh=KOzQg2YZPj
+	byBpQUDfdRM4dKo4GpMSdsyM5kYCupZgk=; b=ZVYnjnuJNzx0RbTT7BVhm0jeuF
+	amAPpU/dkBQUA8nCZqNYclGLHKZwauEJBoSpDiu6vebaST4how4KqAunYSbxX8R7
+	buIqjt23Qji/cvLQ6W6AJixmzSzTqXC3kwTZ6rActUponSMymVnMTiaBv0D4LBiH
+	SHgwdt8BjzMFL8qPQRtdLXdN1CSX1mDPSbGCsA1k9/Xn2spR2ty15FUzs/hHGQvx
+	MKnYlqn2HqeOF/06ihW4XhU1IzeOkpLJKE3bOKJKP0qIKn+ReE991rUvswJkx7Fl
+	CCM5LNgYA2Kq0TkY1I/2p5h8GwtZV76L6DQFZKCbVhg14gIDLZ3dwXAn+xkQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-type:content-type:date:date
+	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+	:message-id:mime-version:references:reply-to:subject:subject:to
+	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+	fm2; t=1711980930; x=1712067330; bh=KOzQg2YZPjbyBpQUDfdRM4dKo4Gp
+	MSdsyM5kYCupZgk=; b=neoyCpxPEvwnmIXhjPKSiV9Mabxyk970msJnryyP7OED
+	DRhkQCEifP64gNsotJ3dQ/XRMrxOp2f6LNVlLIBA3gi36xOPkQKTuqQxWKFj7Twf
+	wWCInbSEAvMgOR3pSxSCwUygPVyZLEhlvqR7a8axLhMuId8P/reS5sApXvIaGscx
+	fpen4/prDPST4MmWhbTOU2Ue+JamJbgAgEnuZQ1iiB5m5DffL2G69czHUsBAS6Wa
+	9oacpyXYkxL9IqC2KDz+Yp/BIgHPynjXHXdsoTflh2LY6NmX8EHZibCzkQh+Kfbp
+	8D1YMmzCjELwju4FOe40Xm7DIS5im9RWAnzMmfYtaQ==
+X-ME-Sender: <xms:gcEKZmyk4xEraiqIW_XjDv8bWGTBzsqrbTlLEma-UnWU-6kbT_YrgA>
+    <xme:gcEKZiQmLKd8bm8tmDKFLCDPkChpOfS4kBFoS1PSKQCas4FCA5sMEnxMjGK2pa3XH
+    7Hjn3F3_YgNTg>
+X-ME-Received: <xmr:gcEKZoXtoDANHb_FSKwn8bWlHhErh2dJQLNLQSvtHHrX2iHuNPErDaSZF16nnHuYD4Vqhguu2snBAI0qgJamag9D8rN0bo-qSQzNZg>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrudeftddgjeehucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepfffhvfevuffkfhggtggujgesthdtredttddtvdenucfhrhhomhepifhrvghg
+    ucfmjfcuoehgrhgvgheskhhrohgrhhdrtghomheqnecuggftrfgrthhtvghrnhepheegvd
+    evvdeljeeugfdtudduhfekledtiefhveejkeejuefhtdeufefhgfehkeetnecuvehluhhs
+    thgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepghhrvghgsehkrhhorg
+    hhrdgtohhm
+X-ME-Proxy: <xmx:gcEKZsgLattQce-rCdZZQEPwkVX3Dpr88CxHSzNzF5w1HhhJ7-BG9Q>
+    <xmx:gcEKZoB4YDtCE3h0nV2c0V6TcYoqUFpl-sYj3uqQ-UzZfW4RN2FOMw>
+    <xmx:gcEKZtLqPItqrnPP8WN8M75goZX12q6FGxLHGkhq21M-L0G-eKd_7A>
+    <xmx:gcEKZvA4HgxYm7Xstf44DpnyP2Ri3tP0DfiMvyZxck_QbsCNeHZ8lg>
+    <xmx:gsEKZq5gWU7Ue_mfopJLBrQtEXma5RimplUjMetkgCMuwguwIPAoRQ>
+Feedback-ID: i787e41f1:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Mon,
+ 1 Apr 2024 10:15:29 -0400 (EDT)
+Date: Mon, 1 Apr 2024 16:15:25 +0200
+From: Greg KH <greg@kroah.com>
+To: Bagas Sanjaya <bagasdotme@gmail.com>
+Cc: Viktor Malik <vmalik@redhat.com>, Andrii Nakryiko <andrii@kernel.org>,
+	Daniel Xu <dxu@dxuuu.xyz>, Alexei Starovoitov <ast@kernel.org>,
+	Nick Desaulniers <ndesaulniers@google.com>, ncopa@alpinelinux.org,
+	Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+	Linux Regressions <regressions@lists.linux.dev>,
+	Linux Stable <stable@vger.kernel.org>
+Subject: Re: Fwd: stable kernels 6.6.23 and 6.1.83 fails to build: error:
+ unknown type name 'u32'
+Message-ID: <2024040143-shrimp-congress-8263@gregkh>
+References: <ZgrAM4NjZQWZ2Jq6@archie.me>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZgrAM4NjZQWZ2Jq6@archie.me>
 
-Nodes with "reg" property are supposed to have unit address, as reported
-by dtc W=1 warning:
+On Mon, Apr 01, 2024 at 09:09:55PM +0700, Bagas Sanjaya wrote:
+> Hi,
+> 
+> On Bugzilla, ncopa@alpinelinux.org reported resolve_btfids FTBFS regression
+> on musl system [1]:
+> 
+> > The latest releases fails to build with musl libc (Alpine Linux edge and v3.19):
+> > 
+> > ```
+> > rm -f -f /home/ncopa/aports/main/linux-lts/src/build-lts.x86_64/tools/bpf/resolve_btfids/libbpf/libbpf.a; ar rcs /home/ncopa/aports/main/linux-lts/src/build-lts.x86_64/tool
+> > s/bpf/resolve_btfids/libbpf/libbpf.a /home/ncopa/aports/main/linux-lts/src/build-lts.x86_64/tools/bpf/resolve_btfids/libbpf/staticobjs/libbpf-in.o
+> > In file included from main.c:73:
+> > /home/ncopa/aports/main/linux-lts/src/linux-6.6/tools/include/linux/btf_ids.h:7:9: error: unknown type name 'u32'
+> >     7 |         u32 cnt;                                                              
+> >       |         ^~~                
+> > /home/ncopa/aports/main/linux-lts/src/linux-6.6/tools/include/linux/btf_ids.h:8:9: error: unknown type name 'u32'
+> >     8 |         u32 ids[];         
+> >       |         ^~~                    
+> > /home/ncopa/aports/main/linux-lts/src/linux-6.6/tools/include/linux/btf_ids.h:12:9: error: unknown type name 'u32'
+> >    12 |         u32 cnt;   
+> >       |         ^~~                        
+> > /home/ncopa/aports/main/linux-lts/src/linux-6.6/tools/include/linux/btf_ids.h:13:9: error: unknown type name 'u32'
+> >    13 |         u32 flags;
+> >       |         ^~~
+> > /home/ncopa/aports/main/linux-lts/src/linux-6.6/tools/include/linux/btf_ids.h:15:17: error: unknown type name 'u32'
+> >    15 |                 u32 id;
+> >       |                 ^~~
+> > /home/ncopa/aports/main/linux-lts/src/linux-6.6/tools/include/linux/btf_ids.h:16:17: error: unknown type name 'u32'
+> >    16 |                 u32 flags;
+> >       |                 ^~~
+> > /home/ncopa/aports/main/linux-lts/src/linux-6.6/tools/include/linux/btf_ids.h:215:8: error: unknown type name 'u32'
+> >   215 | extern u32 btf_tracing_ids[];
+> >       |        ^~~
+> > make[4]: *** [/home/ncopa/aports/main/linux-lts/src/linux-6.6/tools/build/Makefile.build:98: /home/ncopa/aports/main/linux-lts/src/build-lts.x86_64/tools/bpf/resolve_btfids
+> > /main.o] Error 1
+> > make[4]: *** Waiting for unfinished jobs....
+> > make[3]: *** [Makefile:83: /home/ncopa/aports/main/linux-lts/src/build-lts.x86_64/tools/bpf/resolve_btfids//resolve_btfids-in.o] Error 2
+> > make[2]: *** [Makefile:76: bpf/resolve_btfids] Error 2
+> > make[1]: *** [/home/ncopa/aports/main/linux-lts/src/linux-6.6/Makefile:1354: tools/bpf/resolve_btfids] Error 2
+> > make: *** [/home/ncopa/aports/main/linux-lts/src/linux-6.6/Makefile:234: __sub-make] Error 2
+> > ```
+> 
+> Bisection led to upstream commit 9707ac4fe2f5ba ("tools/resolve_btfids:
+> Refactor set sorting with types from btf_ids.h") as the culprit.
+> 
+> See the report on Bugzilla for the full thread and proposed fix.
 
-  sharkl3.dtsi:42.23-48.6: Warning (unit_address_vs_reg): /soc/syscon@402b0000/pmu-gate: node has a reg or ranges property, but no unit name
-  sharkl3.dtsi:59.29-63.6: Warning (unit_address_vs_reg): /soc/syscon@402e0000/aonapb-gate: node has a reg or ranges property, but no unit name
-  sharkl3.dtsi:74.13-80.6: Warning (unit_address_vs_reg): /soc/syscon@40353000/pll: node has a reg or ranges property, but no unit name
-  sharkl3.dtsi:91.15-95.6: Warning (unit_address_vs_reg): /soc/syscon@40359000/mpll: node has a reg or ranges property, but no unit name
-  sharkl3.dtsi:106.15-112.6: Warning (unit_address_vs_reg): /soc/syscon@4035c000/rpll: node has a reg or ranges property, but no unit name
-  sharkl3.dtsi:123.15-127.6: Warning (unit_address_vs_reg): /soc/syscon@40363000/dpll: node has a reg or ranges property, but no unit name
-  sharkl3.dtsi:138.21-142.6: Warning (unit_address_vs_reg): /soc/syscon@60800000/mm-gate: node has a reg or ranges property, but no unit name
-  sharkl3.dtsi:153.27-159.6: Warning (unit_address_vs_reg): /soc/syscon@71300000/apapb-gate: node has a reg or ranges property, but no unit name
+Is the proposed fix a commit to backport?
 
-Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
----
- arch/arm64/boot/dts/sprd/sharkl3.dtsi | 18 +++++++++---------
- 1 file changed, 9 insertions(+), 9 deletions(-)
+Digging through entries is not the easiest way to get things resolved...
 
-diff --git a/arch/arm64/boot/dts/sprd/sharkl3.dtsi b/arch/arm64/boot/dts/sprd/sharkl3.dtsi
-index 206a4afdab1c..9b4ee0bdd69f 100644
---- a/arch/arm64/boot/dts/sprd/sharkl3.dtsi
-+++ b/arch/arm64/boot/dts/sprd/sharkl3.dtsi
-@@ -24,7 +24,7 @@ ap_ahb_regs: syscon@20e00000 {
- 			#size-cells = <1>;
- 			ranges = <0 0 0x20e00000 0x4000>;
- 
--			apahb_gate: apahb-gate {
-+			apahb_gate: apahb-gate@0 {
- 				compatible = "sprd,sc9863a-apahb-gate";
- 				reg = <0x0 0x1020>;
- 				#clock-cells = <1>;
-@@ -39,7 +39,7 @@ pmu_regs: syscon@402b0000 {
- 			#size-cells = <1>;
- 			ranges = <0 0 0x402b0000 0x4000>;
- 
--			pmu_gate: pmu-gate {
-+			pmu_gate: pmu-gate@0 {
- 				compatible = "sprd,sc9863a-pmu-gate";
- 				reg = <0 0x1200>;
- 				clocks = <&ext_26m>;
-@@ -56,7 +56,7 @@ aon_apb_regs: syscon@402e0000 {
- 			#size-cells = <1>;
- 			ranges = <0 0 0x402e0000 0x4000>;
- 
--			aonapb_gate: aonapb-gate {
-+			aonapb_gate: aonapb-gate@0 {
- 				compatible = "sprd,sc9863a-aonapb-gate";
- 				reg = <0 0x1100>;
- 				#clock-cells = <1>;
-@@ -71,7 +71,7 @@ anlg_phy_g2_regs: syscon@40353000 {
- 			#size-cells = <1>;
- 			ranges = <0 0 0x40353000 0x3000>;
- 
--			pll: pll {
-+			pll: pll@0 {
- 				compatible = "sprd,sc9863a-pll";
- 				reg = <0 0x100>;
- 				clocks = <&ext_26m>;
-@@ -88,7 +88,7 @@ anlg_phy_g4_regs: syscon@40359000 {
- 			#size-cells = <1>;
- 			ranges = <0 0 0x40359000 0x3000>;
- 
--			mpll: mpll {
-+			mpll: mpll@0 {
- 				compatible = "sprd,sc9863a-mpll";
- 				reg = <0 0x100>;
- 				#clock-cells = <1>;
-@@ -103,7 +103,7 @@ anlg_phy_g5_regs: syscon@4035c000 {
- 			#size-cells = <1>;
- 			ranges = <0 0 0x4035c000 0x3000>;
- 
--			rpll: rpll {
-+			rpll: rpll@0 {
- 				compatible = "sprd,sc9863a-rpll";
- 				reg = <0 0x100>;
- 				clocks = <&ext_26m>;
-@@ -120,7 +120,7 @@ anlg_phy_g7_regs: syscon@40363000 {
- 			#size-cells = <1>;
- 			ranges = <0 0 0x40363000 0x3000>;
- 
--			dpll: dpll {
-+			dpll: dpll@0 {
- 				compatible = "sprd,sc9863a-dpll";
- 				reg = <0 0x100>;
- 				#clock-cells = <1>;
-@@ -135,7 +135,7 @@ mm_ahb_regs: syscon@60800000 {
- 			#size-cells = <1>;
- 			ranges = <0 0 0x60800000 0x3000>;
- 
--			mm_gate: mm-gate {
-+			mm_gate: mm-gate@0 {
- 				compatible = "sprd,sc9863a-mm-gate";
- 				reg = <0 0x1100>;
- 				#clock-cells = <1>;
-@@ -150,7 +150,7 @@ ap_apb_regs: syscon@71300000 {
- 			#size-cells = <1>;
- 			ranges = <0 0 0x71300000 0x4000>;
- 
--			apapb_gate: apapb-gate {
-+			apapb_gate: apapb-gate@0 {
- 				compatible = "sprd,sc9863a-apapb-gate";
- 				reg = <0 0x1000>;
- 				clocks = <&ext_26m>;
--- 
-2.34.1
-
+greg k-h
 
