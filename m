@@ -1,116 +1,113 @@
-Return-Path: <linux-kernel+bounces-126462-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-126463-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5A30C893857
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 08:24:43 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8522489385C
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 08:27:47 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E0F84281986
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 06:24:41 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2695B1F21378
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 06:27:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D90A18F6F;
-	Mon,  1 Apr 2024 06:24:35 +0000 (UTC)
-Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 43038947B;
+	Mon,  1 Apr 2024 06:27:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b="H92hmDxG"
+Received: from mail-ot1-f50.google.com (mail-ot1-f50.google.com [209.85.210.50])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 200EF8F4E
-	for <linux-kernel@vger.kernel.org>; Mon,  1 Apr 2024 06:24:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D91D0946C
+	for <linux-kernel@vger.kernel.org>; Mon,  1 Apr 2024 06:27:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711952675; cv=none; b=DLUpOYzGB1z+AN40AlMCm9ljJZqHq5JW6amFC/lIFTwDIywxZ1qnj5QJUUNZmw7vj85wPqhK1xVBs1860m3iUArT393M6BSM+bIaTlJTu0l0XC+cZNfdDLt4CZFK13mrdW/0LhG12fGnDvu7MddCfYAxYMSkJtFvTZtVMaIjWmo=
+	t=1711952857; cv=none; b=OU3FSldrb+FhkI0UHWPrFsaaeKoUBPzEOGQrtUG+CMy1NNQ8UDx833N7EfbQkJL9HXrpWkZTKkMdnHi+oJZZUq2KpCxvr2mfnNGLn/UqgQoWxGlj48AToaAy7csFqOHvnDLh3BQXe//NHe85zDPgVQkIh20MphZdXycvHg5pkG8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711952675; c=relaxed/simple;
-	bh=tNXqN5M71+tjw6FpcPPDIY/Rszo4GvwiHe9uN7gj2b8=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ljkk7/vpozuZK0Ub7UKPSvFh7wX5bkWJQEec7bc9tM2OWqVw/KpP8UigD1EUrEBPFVpP0lQTuQbjEZXQs0OjFQS0bzuH8Vic39OWxKIfKcfjQS1lMp4fuEQXQdibEd5zDhU1aSLktY3sTJ+qusDvCOHjS07rGvBAeevUsMU8Tk0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
-Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
-	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-	(Exim 4.92)
-	(envelope-from <ukl@pengutronix.de>)
-	id 1rrB5a-0000GP-Mi; Mon, 01 Apr 2024 08:24:14 +0200
-Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
-	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.94.2)
-	(envelope-from <ukl@pengutronix.de>)
-	id 1rrB5Z-009k0b-D4; Mon, 01 Apr 2024 08:24:13 +0200
-Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.96)
-	(envelope-from <ukl@pengutronix.de>)
-	id 1rrB5Z-00Dx64-0z;
-	Mon, 01 Apr 2024 08:24:13 +0200
-Date: Mon, 1 Apr 2024 08:24:13 +0200
-From: Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-To: Arnd Bergmann <arnd@kernel.org>
-Cc: llvm@lists.linux.dev, Hans de Goede <hdegoede@redhat.com>, 
-	Ilpo =?utf-8?B?SsOkcnZpbmVu?= <ilpo.jarvinen@linux.intel.com>, Maximilian Luz <luzmaximilian@gmail.com>, 
-	Nathan Chancellor <nathan@kernel.org>, Arnd Bergmann <arnd@arndb.de>, 
-	Nick Desaulniers <ndesaulniers@google.com>, Bill Wendling <morbo@google.com>, 
-	Justin Stitt <justinstitt@google.com>, Andy Shevchenko <andy.shevchenko@gmail.com>, 
-	platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 5/9] surface3_power: avoid format string truncation
- warning
-Message-ID: <yiqdxzxtcw4dpths24sl4x2qwmuf2bj5lnayd3pclk5zf4h3mm@oc4l3ojar2i4>
-References: <20240326223825.4084412-1-arnd@kernel.org>
- <20240326223825.4084412-6-arnd@kernel.org>
+	s=arc-20240116; t=1711952857; c=relaxed/simple;
+	bh=bYen6EInXgg5D07KDCpAr/HoyWpGFlKsSfSo63G0Cpo=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=CW2gv+yMYX4Lh3mVq1kWq6k8sNiN/YyoH9kkLWdc7hQqY0TSL5/0nZ5G1bsvKGkVKG8ng8TsgcGkisejt3SHj9dJq7YOynLZqi1Z163Vd0Ju+Ye/dZXO9VV3AsOW6/SbpOKqhVd9ULX6wNhwd/lXBprQ2Wce3kQXuv5YlfhBwtM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com; spf=pass smtp.mailfrom=bytedance.com; dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b=H92hmDxG; arc=none smtp.client-ip=209.85.210.50
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bytedance.com
+Received: by mail-ot1-f50.google.com with SMTP id 46e09a7af769-6e125818649so1759652a34.1
+        for <linux-kernel@vger.kernel.org>; Sun, 31 Mar 2024 23:27:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance.com; s=google; t=1711952855; x=1712557655; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=mjntkn8+XAnauVrJHZ4ew0LUHQ2GaW9HCb7KV1S8FAc=;
+        b=H92hmDxGl53TVwZ1N4DX3WLQ7g5vGFcVt5zAC6E6QUOZfCqcaXwHvU+xMsFOXBJHw4
+         Aio0lIjauGAQ4W0/d/p1VzeX6J+DUaVrElq30uZ2Eh/1wpQh6Zz/jTxtEyGp4gV4Bs4L
+         51vehPsCTvxHVWTumyr5cfiOwTDTldcWef66t9cScGXkP1CivhyHAEmlGkbous+vNZ06
+         GqGTnNTzBaVdMseViWzyQENmH2RRN+GLTfKzHYK3iuQ5vsl9xlOzViZbiXIhrja5NYAR
+         qbcgZc9hGJW9hBMgZ6K4s48nNTExJTch2XbSPYZ6AIPVpvIiyTXQNsQ1uGseLIBUyfg8
+         +vEw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711952855; x=1712557655;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=mjntkn8+XAnauVrJHZ4ew0LUHQ2GaW9HCb7KV1S8FAc=;
+        b=pjofJrO7TQ8+kQMskVHrIvRv4mkq04sYfnk1mqQqysrY8Gs4EZlRuoEyoxWigg04mP
+         +G3YBJqyINyZnGW8RDlgb2JKpyUjzrprYpR8oawBQQWi/9YFf584x0/VaZhmEzZ3o2H0
+         bej1Js58VZwx1anrO7M2FiGs3nmLDVpKCuMXUEzApKDh6agSHLFECUTmeNxro373hKOQ
+         pfr6bVPxNAm2JCd712mH4NvxG1/h8o2G3HRmfIBWmKdmVOABYbHJDbkGPvIHSIe+rIfo
+         6CG4Zg/dgcx/0T/wG6Cpa87ges8qYyNbPYUkTsNFaktzFvDONhCM6J4OgA3lERzJBjQz
+         yIkA==
+X-Forwarded-Encrypted: i=1; AJvYcCUTNSz481rHtZorx8xlVvs+lK5jiwOga+laXsFJbecHV7u8gAwYoEb+dSZ6SnIWLDeb+pNVVr0ICj31XB6+Bppp4ZP/ai9sMHEMnV9V
+X-Gm-Message-State: AOJu0YxUKTOx46exsiG5u8JycJkw+h1Ws33TxiWuYbq3uct9rmkeR0ip
+	PhtCMiiC5yIV4DFRvU8bUQAkHrXaT208ykAxIdBYzyEtJaE59mxVTQBSEAjw+0c=
+X-Google-Smtp-Source: AGHT+IHtTIXybRYNrUZK68VVa+sMSpkU4KHrKithTKF/QhaEB/xGeBR8SBmGHIcCDfsAqTKHXNMpYg==
+X-Received: by 2002:a05:6808:1792:b0:3c4:2f37:f158 with SMTP id bg18-20020a056808179200b003c42f37f158mr8927497oib.30.1711952854964;
+        Sun, 31 Mar 2024 23:27:34 -0700 (PDT)
+Received: from ubuntu20.04 ([203.208.189.8])
+        by smtp.gmail.com with ESMTPSA id y15-20020a056a00038f00b006e6b2ba1577sm7102001pfs.138.2024.03.31.23.27.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 31 Mar 2024 23:27:34 -0700 (PDT)
+From: Yang Jihong <yangjihong@bytedance.com>
+To: peterz@infradead.org,
+	mingo@redhat.com,
+	acme@kernel.org,
+	namhyung@kernel.org,
+	mark.rutland@arm.com,
+	alexander.shishkin@linux.intel.com,
+	jolsa@kernel.org,
+	irogers@google.com,
+	adrian.hunter@intel.com,
+	kan.liang@linux.intel.com,
+	james.clark@arm.com,
+	linux-perf-users@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Cc: yangjihong@bytedance.com
+Subject: [PATCH v2 0/2] perf sched time -g/--call-graph option & perf
+Date: Mon,  1 Apr 2024 14:27:22 +0800
+Message-Id: <20240401062724.1006010-1-yangjihong@bytedance.com>
+X-Mailer: git-send-email 2.25.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="v26yt34kxi4ilpyq"
-Content-Disposition: inline
-In-Reply-To: <20240326223825.4084412-6-arnd@kernel.org>
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
-X-SA-Exim-Mail-From: ukl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+Content-Transfer-Encoding: 8bit
 
+Changes since v1:
+ - patch1: Add Reviewed-by tag from Ian and fixes-tag
+ - patch2: Add Reviewed-by tag from Ian
 
---v26yt34kxi4ilpyq
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Yang Jihong (2):
+  perf sched timehist: Fix -g/--call-graph option failure
+  perf evsel: Use evsel__name_is() helper
 
-Hello,
+ tools/perf/builtin-kmem.c               |  2 +-
+ tools/perf/builtin-sched.c              | 11 ++++---
+ tools/perf/builtin-script.c             |  2 +-
+ tools/perf/builtin-trace.c              |  4 +--
+ tools/perf/tests/evsel-roundtrip-name.c |  4 +--
+ tools/perf/tests/parse-events.c         | 39 +++++++++----------------
+ 6 files changed, 27 insertions(+), 35 deletions(-)
 
-just a nitpick:
+-- 
+2.25.1
 
-On Tue, Mar 26, 2024 at 11:38:04PM +0100, Arnd Bergmann wrote:
-> Change the format string two print two less bytes so it always fits. The =
-string
-
-s/two/to/
-
-> is still truncated, so there is no change in behavior, but the compiler no
-> longer warns about it.
-
-Best regards
-Uwe
-
---=20
-Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
-Industrial Linux Solutions                 | https://www.pengutronix.de/ |
-
---v26yt34kxi4ilpyq
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEP4GsaTp6HlmJrf7Tj4D7WH0S/k4FAmYKUwwACgkQj4D7WH0S
-/k69qwgAo8++BQ8OE5ajtNU6wrlQxb07HGXRy3w/Nb7iL0ELQ6yDY51J7dRFylDo
-/hmKPWn6X+ybKlK1W1VXlA1Qm+UbMHaj3KhHMUR9rFAC2r1SLzxJ1DpP0zdXe1Qw
-h/rErFvH2tgtF/C9ZeNNWputJhMsSlTkJJUJYACkEb8hdEDDbv/wB0y/wBsl3uBi
-KFdxlCFmr54MtZbQ+khq31iVIrmbAqHKL8VAVPiiuB16I0OJwsOzL5C0mr/w1t6F
-C2Ijqcy2kHwcdzzNQYRwAJR48nwZNc6Vp3G2jD2FlhuptBMngX1RrFpUeYkAgjbt
-04h9y2wTPfVkwMUViYBW/huM0Fgi+g==
-=VQ95
------END PGP SIGNATURE-----
-
---v26yt34kxi4ilpyq--
 
