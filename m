@@ -1,99 +1,163 @@
-Return-Path: <linux-kernel+bounces-127184-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-127185-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id F356E8947D2
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 01:39:33 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3E5648947D5
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 01:40:23 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 94AE01F22953
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 23:39:33 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9D02E28382B
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 23:40:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4D4F557300;
-	Mon,  1 Apr 2024 23:39:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 330925730C;
+	Mon,  1 Apr 2024 23:40:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="KhaRwQ+z"
-Received: from lelv0142.ext.ti.com (lelv0142.ext.ti.com [198.47.23.249])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="WsmTklMs"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E3AAAC139;
-	Mon,  1 Apr 2024 23:39:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.23.249
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6BC8656760;
+	Mon,  1 Apr 2024 23:40:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712014766; cv=none; b=QT2PA+0/eeBQu7cJtNLTNB6OvtwEfykJXm1EfOGFZ43eoRpXkGsh/kRfbuBnancQGwpJrLdA1ApUeKh7FXoQzLaroOFoqy+2svKMNXrZC0h70UgyTq+3CvyOl5EocuiXzu7dzd5M5hizymg6pdMagTJqRIqQPnpIMfUCuMxI5YA=
+	t=1712014814; cv=none; b=NQuM6kuL7yYHvj1FY+hlzpBKlv6/aCGhUCjAJYzxVkV5fB7daozclq6eowKwEEnVRphfmqiZ6pVlgBZN7JcbGGqlcJiR+p6y+cNJ0FIXIo1w+P5VaajnCpmdNRDWuzPI53oiN6L7tBM739XsYhqq6JWOmwc6F0H+gh89btb5d0A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712014766; c=relaxed/simple;
-	bh=qDL79W4tDRSoCxziPmtQJDLHj5eXaeFBf36CANPZYOo=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=XxDK6y7afTFNN1QBQfvGVu4oC34wZ5wAWExtmt6WanNUwfagdZTdHIgR6ORZH7FBIRKBdAGmNPFiD9m/dKZWglZJ0NtKT93nnYO9OH7r3UiQDkMIx5y714yEEltTAxOCY005HgW2DNuGGlyHQTOJz5fM9TIVRuOU3PeI4uYXKmU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=KhaRwQ+z; arc=none smtp.client-ip=198.47.23.249
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
-Received: from fllv0035.itg.ti.com ([10.64.41.0])
-	by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 431NdKDh129217;
-	Mon, 1 Apr 2024 18:39:20 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-	s=ti-com-17Q1; t=1712014760;
-	bh=KJec4Lr4hS/3zoW/qDar4/1YlvfzINb6rbydkKiyH4E=;
-	h=Date:Subject:To:CC:References:From:In-Reply-To;
-	b=KhaRwQ+z38nUV3md7+zGyORisTOSw5HWQ5FjwmZfFXgCAkpfpygf7SYFqEdFXWdC2
-	 WI9V2IzZWKSAdSvHcUdxgUcMGu0u8AKvnVuLiNf04LC/4TL930dMnR0+aKZ/7RpuiD
-	 sYUwchQaEKHeuEtORnfhmg++cy4ES5WDEXXDuL90=
-Received: from DLEE113.ent.ti.com (dlee113.ent.ti.com [157.170.170.24])
-	by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 431NdKmu087524
-	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-	Mon, 1 Apr 2024 18:39:20 -0500
-Received: from DLEE113.ent.ti.com (157.170.170.24) by DLEE113.ent.ti.com
- (157.170.170.24) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Mon, 1
- Apr 2024 18:39:21 -0500
-Received: from fllvsmtp8.itg.ti.com (10.64.41.158) by DLEE113.ent.ti.com
- (157.170.170.24) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Mon, 1 Apr 2024 18:39:21 -0500
-Received: from [10.249.48.175] ([10.249.48.175])
-	by fllvsmtp8.itg.ti.com (8.15.2/8.15.2) with ESMTP id 431NdKCO095046;
-	Mon, 1 Apr 2024 18:39:20 -0500
-Message-ID: <761aa56f-55c4-e0d4-9f75-eef8035aa25b@ti.com>
-Date: Mon, 1 Apr 2024 18:39:20 -0500
+	s=arc-20240116; t=1712014814; c=relaxed/simple;
+	bh=7ZzuN0E5FJAIusgfFsV6NIYO/Dp9pbGAoWrIo0VHKN4=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=gZCzH61aurB5Dce9b0+9ojJdCP4BdptV2O3vTRiR9ZBdMl3BvsX6toJSdmmY70tm6HVvQOW5Z9jz7+LbkMzEkHtGLmTyGJxIx1jMekEmEFdiuZeD4t5JyY1BaoKxCblZ9YrG12huZth1njnZNp1AMpsY1W8X+twweTEb6GfX+sg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=WsmTklMs; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E9F42C433F1;
+	Mon,  1 Apr 2024 23:40:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1712014813;
+	bh=7ZzuN0E5FJAIusgfFsV6NIYO/Dp9pbGAoWrIo0VHKN4=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=WsmTklMsOOFb6FOOI7d+qMoyUjFrdfhPMc2XYpW9zvfgomkDzk3iijWjXP4+YX9wO
+	 A8pd8mDnAsy7u1GKgaR2OcxqEuqJj8AjxuEfNeUNI3+nSwbKT5YtUx33d2Ad6KXf3X
+	 FJDZHZnHUBr3os4zRbT4mBp0T5U7GXIFF2MoYrOlOTLH+xxy2pL/lQNGE4ug1e8XMN
+	 rn9QqtS+0N4CyOJ9lqvbDUsvXrl14JIsieQ5CQUpfxHy6DfkYiDQ80Ii5iHY57w59/
+	 CT04eNIXUHy646qvwGsW1v32rFrA43JFTUjMauMTw98ZQolLodIM3FNQ1qYP15DCNV
+	 ocDgkx8RWB+yQ==
+Message-ID: <d5429736-8305-4afe-89a8-fe62907616e1@kernel.org>
+Date: Tue, 2 Apr 2024 08:40:11 +0900
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.11.0
-Subject: Re: [PATCH 13/13] mailbox: omap: Remove kernel FIFO message queuing
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3] dt-bindings: ata: ahci-da850: Convert to dtschema
+To: Animesh Agarwal <animeshagarwal28@gmail.com>
+Cc: Rob Herring <robh+dt@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>, linux-ide@vger.kernel.org,
+ devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20240327064354.17384-1-animeshagarwal28@gmail.com>
 Content-Language: en-US
-To: Andrew Davis <afd@ti.com>, Jassi Brar <jassisinghbrar@gmail.com>,
-        Nick
- Saulnier <nsaulnier@ti.com>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Mathieu
- Poirier <mathieu.poirier@linaro.org>
-CC: <linux-remoteproc@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-References: <20240325172045.113047-1-afd@ti.com>
- <20240325172045.113047-14-afd@ti.com>
-From: Hari Nagalla <hnagalla@ti.com>
-In-Reply-To: <20240325172045.113047-14-afd@ti.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
+From: Damien Le Moal <dlemoal@kernel.org>
+Organization: Western Digital Research
+In-Reply-To: <20240327064354.17384-1-animeshagarwal28@gmail.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 
-On 3/25/24 12:20, Andrew Davis wrote:
-> The kernel FIFO queue has a couple issues. The biggest issue is that
-> it causes extra latency in a path that can be used in real-time tasks,
-> such as communication with real-time remote processors.
+On 3/27/24 15:43, Animesh Agarwal wrote:
+> Convert the ahci-da850 bindings to DT schema.
 > 
-> The whole FIFO idea itself looks to be a leftover from before the
-> unified mailbox framework. The current mailbox framework expects
-> mbox_chan_received_data() to be called with data immediately as it
-> arrives. Remove the FIFO and pass the messages to the mailbox
-> framework directly.
-Yes, this would definitely speed up the message receive path. With RT 
-linux, the irq runs in thread context, so that is Ok. But with non-RT 
-the whole receive path runs in interrupt context. So, i think it would 
-be appropriate to use a threaded_irq()?
+> Signed-off-by: Animesh Agarwal <animeshagarwal28@gmail.com>
+
+Krzysztof, Rob,
+
+Are you OK with this patch ?
+
+> 
+> ---
+> Changes in v3:
+> - Fixed line length issue on line 20
+> - Removed unneccessary '|' character
+> Changes in v2:
+> - Added description for reg property items.
+> ---
+>  .../devicetree/bindings/ata/ahci-da850.txt    | 18 ---------
+>  .../bindings/ata/ti,da850-ahci.yaml           | 39 +++++++++++++++++++
+>  2 files changed, 39 insertions(+), 18 deletions(-)
+>  delete mode 100644 Documentation/devicetree/bindings/ata/ahci-da850.txt
+>  create mode 100644 Documentation/devicetree/bindings/ata/ti,da850-ahci.yaml
+> 
+> diff --git a/Documentation/devicetree/bindings/ata/ahci-da850.txt b/Documentation/devicetree/bindings/ata/ahci-da850.txt
+> deleted file mode 100644
+> index 5f8193417725..000000000000
+> --- a/Documentation/devicetree/bindings/ata/ahci-da850.txt
+> +++ /dev/null
+> @@ -1,18 +0,0 @@
+> -Device tree binding for the TI DA850 AHCI SATA Controller
+> ----------------------------------------------------------
+> -
+> -Required properties:
+> -  - compatible: must be "ti,da850-ahci"
+> -  - reg: physical base addresses and sizes of the two register regions
+> -         used by the controller: the register map as defined by the
+> -         AHCI 1.1 standard and the Power Down Control Register (PWRDN)
+> -         for enabling/disabling the SATA clock receiver
+> -  - interrupts: interrupt specifier (refer to the interrupt binding)
+> -
+> -Example:
+> -
+> -	sata: sata@218000 {
+> -		compatible = "ti,da850-ahci";
+> -		reg = <0x218000 0x2000>, <0x22c018 0x4>;
+> -		interrupts = <67>;
+> -	};
+> diff --git a/Documentation/devicetree/bindings/ata/ti,da850-ahci.yaml b/Documentation/devicetree/bindings/ata/ti,da850-ahci.yaml
+> new file mode 100644
+> index 000000000000..ce13c76bdffb
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/ata/ti,da850-ahci.yaml
+> @@ -0,0 +1,39 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/ata/ti,da850-ahci.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: TI DA850 AHCI SATA Controller
+> +
+> +maintainers:
+> +  - Animesh Agarwal <animeshagarwal28@gmail.com>
+> +
+> +properties:
+> +  compatible:
+> +    const: ti,da850-ahci
+> +
+> +  reg:
+> +    items:
+> +      - description: Address and size of the register map as defined by the AHCI 1.1 standard.
+> +      - description:
+> +          Address and size of Power Down Control Register (PWRDN) for enabling/disabling the SATA clock
+> +          receiver.
+> +
+> +  interrupts:
+> +    maxItems: 1
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +  - interrupts
+> +
+> +additionalProperties: false
+> +
+> +examples:
+> +  - |
+> +    sata@218000 {
+> +        compatible = "ti,da850-ahci";
+> +        reg = <0x218000 0x2000>, <0x22c018 0x4>;
+> +        interrupts = <67>;
+> +    };
+
+-- 
+Damien Le Moal
+Western Digital Research
+
 
