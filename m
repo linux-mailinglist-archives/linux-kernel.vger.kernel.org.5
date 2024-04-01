@@ -1,51 +1,62 @@
-Return-Path: <linux-kernel+bounces-126489-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-126490-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id D70DD893891
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 09:09:14 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id B65CD893892
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 09:09:30 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4EE3D1F21407
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 07:09:14 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6BE6A1F21687
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 07:09:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C44C1B664;
-	Mon,  1 Apr 2024 07:09:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4DE95BA27;
+	Mon,  1 Apr 2024 07:09:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="pC80AAS8"
-Received: from casper.infradead.org (casper.infradead.org [90.155.50.34])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Orh85Lt1"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.15])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3998B8F6E;
-	Mon,  1 Apr 2024 07:09:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.50.34
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E60ACBE4B;
+	Mon,  1 Apr 2024 07:09:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.15
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711955346; cv=none; b=s46A6WL9jeR60OPp2PjDJfbYq9bBZoxy1r0YqGl9TrgJ+Gmf6tojb4S0eb/dOnAKWeYo0Rnq6dIc8p9FEenTYHm+CQcSvuEY+ImYTXNu73kX4fKKZikuO9ex4A0/00+ac6AC0zVUBJPtX9Hv7WuVZszESBC1ebLD/+sRWobxRzQ=
+	t=1711955359; cv=none; b=Has/cf6T3A8CJwevpFABMp95o6XJnOnE/BusEt862zrkgc78U2TpzRSLLD5tny7ue3XJBgzq4JiuD5GdmTZMW+J79Cz/qWfc2e7Hx3dVKvQJjrcSVT3Ae5ju/MEpZuS5GqedSzqBAlW5VHwhcpnrUeQ9j36xa8OSf7TcspUH8VI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711955346; c=relaxed/simple;
-	bh=Yyu6J6GZaiez1H2m1XGhKtvi+4/m1eSvkPh5cBaNwXo=;
-	h=Message-ID:Date:MIME-Version:Subject:From:To:Cc:References:
-	 In-Reply-To:Content-Type; b=eFzqiGnJhkAQf9nsfdGQawg5wo88jcXwvY9TF7cdHJvxKX9uLR4SKeesL1pd6h5zSCJDsOP/xbPTzofba8Zs9YLLMtyIZL2qgaGLFACWAWy2VW8pXcHzTblANlITL9GGmW/0Q4Ktt5Scs0DUgbsWOn8fcUBcsrgXUBzSIUCzkB4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=pC80AAS8; arc=none smtp.client-ip=90.155.50.34
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:Content-Type:
-	In-Reply-To:References:Cc:To:From:Subject:MIME-Version:Date:Message-ID:Sender
-	:Reply-To:Content-ID:Content-Description;
-	bh=faKtwJA5t6Zj+D3Q/jEbeWC+9IIE68VhlZebCZwcy9Y=; b=pC80AAS8EZ4vHufsZXQhhNJXMB
-	pEZ4zygf0sNfgHbd7JHc5VE5r8vplOj8Vdo3RUxGuZj3OM9UhReJOicLxpX1+QY61C88nz5lxjIfg
-	sg7AVzqLO24mjIphRT4DTseRQTfjnua7G0tZICN3mZhOyWNk4Ux23hZQfM7ItidY5DxS9ZcvtELvq
-	2F5Er7a13fIYALE36kvV1kcuaYoXBuzsP9iPq5Zivg1qEU8qYHH1BFZgbDk70vqEhQDvSf+dHN8gY
-	rpOES3fB8J5cnkDomIiqIAd96lW16AN/qj5MdS8bMsnXjsEx8BMLOUbfsLuAH+DFFzx2MSQxg63+M
-	iGiaMIfw==;
-Received: from fpd2fa7e2a.ap.nuro.jp ([210.250.126.42] helo=[192.168.1.8])
-	by casper.infradead.org with esmtpsa (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rrBml-0000000016F-0yKC;
-	Mon, 01 Apr 2024 07:08:52 +0000
-Message-ID: <d64f06f4-81ae-4ec5-ab3b-d7f7f091e0ac@infradead.org>
-Date: Mon, 1 Apr 2024 16:08:31 +0900
+	s=arc-20240116; t=1711955359; c=relaxed/simple;
+	bh=QK03u+6ppdo1nULFDMzZhk4/uikkG5Uc2lkrQyuYkqs=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=hyiE2C/4IpzcOVrmTS1Xg/A+1WNXGInM0KpI7uFYVgdzZL6tqCrEeArkpEL4+5cMLmv5grSCYuI4KZFTx8d9Tv3o3yLjx7YwaV7yW5eeRjV2N07LxsVtT1QX82awcxbRUItdtoSPPBew15KuPU0wC0d3qVjFJAliKnjJeok9qaQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Orh85Lt1; arc=none smtp.client-ip=198.175.65.15
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1711955358; x=1743491358;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=QK03u+6ppdo1nULFDMzZhk4/uikkG5Uc2lkrQyuYkqs=;
+  b=Orh85Lt1cMKSIC/Yk7a9XyO9uqHFroe6elwU559Dajuj+7S+TPZBLxEF
+   x8CcrkRcaCFSeOi+J6t+sANPzG+J6z8Tqm2r1iGYhNnlhrQpBhaLxzb5u
+   s88Ui9xSUjyW1w/MUOydKL4nIukM66MN1hYdVTF6b8TNtb2fU1en5D79P
+   og6l3fWETCZESY0/psFjwyLpJWCCAH4iRBuSJJ70LTPCswtyG+M3RxKak
+   s2SdeJYWQcE0xnPe61+I4yM/BYqXaaCg/II4Wetu1B68eZaYbIm3iRX/5
+   aeDL9jlBHAoBgW15a0hga6b8sSLcM/VxoLVbkKKHadgh4wUgWAdANuP5j
+   g==;
+X-CSE-ConnectionGUID: 6NApPkTHREmFkmBrSi42tA==
+X-CSE-MsgGUID: ZBgmWJTmSsG3lAJlImtI9g==
+X-IronPort-AV: E=McAfee;i="6600,9927,11030"; a="10896469"
+X-IronPort-AV: E=Sophos;i="6.07,171,1708416000"; 
+   d="scan'208";a="10896469"
+Received: from orviesa002.jf.intel.com ([10.64.159.142])
+  by orvoesa107.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Apr 2024 00:09:17 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,171,1708416000"; 
+   d="scan'208";a="48614457"
+Received: from xiaoyaol-hp-g830.ccr.corp.intel.com (HELO [10.124.224.7]) ([10.124.224.7])
+  by orviesa002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Apr 2024 00:09:06 -0700
+Message-ID: <329c7188-bd24-4200-9934-ff4a07fa1c61@intel.com>
+Date: Mon, 1 Apr 2024 15:09:03 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -53,165 +64,85 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: [PATCH v2] powerpc: Fix PS3 allmodconfig warning
-From: Geoff Levand <geoff@infradead.org>
-To: Arnd Bergmann <arnd@kernel.org>, Michael Ellerman <mpe@ellerman.id.au>,
- Nathan Chancellor <nathan@kernel.org>, Paul Mackerras <paulus@ozlabs.org>
-Cc: Arnd Bergmann <arnd@arndb.de>, Nicholas Piggin <npiggin@gmail.com>,
- Christophe Leroy <christophe.leroy@csgroup.eu>,
- "Aneesh Kumar K.V" <aneesh.kumar@kernel.org>,
- "Naveen N. Rao" <naveen.n.rao@linux.ibm.com>,
- Nick Desaulniers <ndesaulniers@google.com>, Bill Wendling
- <morbo@google.com>, Justin Stitt <justinstitt@google.com>,
- Kevin Hao <haokexin@gmail.com>, linuxppc-dev@lists.ozlabs.org,
- linux-kernel@vger.kernel.org, llvm@lists.linux.dev
-References: <20240320180333.151043-1-arnd@kernel.org>
- <415f4af0-f44a-49fb-b1fa-76f64ed09ec6@infradead.org>
+Subject: Re: [PATCH v6 9/9] KVM: nVMX: Use macros and #defines in
+ vmx_restore_vmx_misc()
+To: Sean Christopherson <seanjc@google.com>,
+ Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>,
+ Borislav Petkov <bp@alien8.de>, Dave Hansen <dave.hansen@linux.intel.com>,
+ x86@kernel.org, Paolo Bonzini <pbonzini@redhat.com>,
+ Andy Lutomirski <luto@kernel.org>, Peter Zijlstra <peterz@infradead.org>
+Cc: linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+ Shan Kang <shan.kang@intel.com>, Kai Huang <kai.huang@intel.com>,
+ Xin Li <xin3.li@intel.com>
+References: <20240309012725.1409949-1-seanjc@google.com>
+ <20240309012725.1409949-10-seanjc@google.com>
 Content-Language: en-US
-In-Reply-To: <415f4af0-f44a-49fb-b1fa-76f64ed09ec6@infradead.org>
-Content-Type: text/plain; charset=UTF-8
+From: Xiaoyao Li <xiaoyao.li@intel.com>
+In-Reply-To: <20240309012725.1409949-10-seanjc@google.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 
-The struct ps3_notification_device in the ps3_probe_thread routine
-is too large to be on the stack, causing a warning for an
-allmodconfig build with clang.
+On 3/9/2024 9:27 AM, Sean Christopherson wrote:
+> From: Xin Li <xin3.li@intel.com>
+> 
+> Use macros in vmx_restore_vmx_misc() instead of open coding everything
+> using BIT_ULL() and GENMASK_ULL().  Opportunistically split feature bits
+> and reserved bits into separate variables, and add a comment explaining
+> the subset logic (it's not immediately obvious that the set of feature
+> bits is NOT the set of _supported_ feature bits).
+> 
+> Cc: Shan Kang <shan.kang@intel.com>
+> Cc: Kai Huang <kai.huang@intel.com>
+> Signed-off-by: Xin Li <xin3.li@intel.com>
+> [sean: split to separate patch, write changelog, drop #defines]
+> Signed-off-by: Sean Christopherson <seanjc@google.com>
 
-Change the struct ps3_notification_device from a variable on the stack
-to a dynamically allocated variable.
+Reviewed-by: Xiaoyao Li <xiaoyao.li@intel.com>
 
-Reported-by: Arnd Bergmann <arnd@kernel.org>
-Signed-off-by: Geoff Levand <geoff@infradead.org>
-
-diff --git a/arch/powerpc/platforms/ps3/device-init.c b/arch/powerpc/platforms/ps3/device-init.c
-index 878bc160246e..b18e1c92e554 100644
---- a/arch/powerpc/platforms/ps3/device-init.c
-+++ b/arch/powerpc/platforms/ps3/device-init.c
-@@ -770,49 +770,51 @@ static struct task_struct *probe_task;
- 
- static int ps3_probe_thread(void *data)
- {
--	struct ps3_notification_device dev;
-+	struct {
-+		struct ps3_notification_device dev;
-+		u8 buf[512];
-+	} *local;
-+	struct ps3_notify_cmd *notify_cmd;
-+	struct ps3_notify_event *notify_event;
- 	int res;
- 	unsigned int irq;
- 	u64 lpar;
--	void *buf;
--	struct ps3_notify_cmd *notify_cmd;
--	struct ps3_notify_event *notify_event;
- 
- 	pr_debug(" -> %s:%u: kthread started\n", __func__, __LINE__);
- 
--	buf = kzalloc(512, GFP_KERNEL);
--	if (!buf)
-+	local = kzalloc(sizeof(*local), GFP_KERNEL);
-+	if (!local)
- 		return -ENOMEM;
- 
--	lpar = ps3_mm_phys_to_lpar(__pa(buf));
--	notify_cmd = buf;
--	notify_event = buf;
-+	lpar = ps3_mm_phys_to_lpar(__pa(&local->buf));
-+	notify_cmd = (struct ps3_notify_cmd *)&local->buf;
-+	notify_event = (struct ps3_notify_event *)&local->buf;
- 
- 	/* dummy system bus device */
--	dev.sbd.bus_id = (u64)data;
--	dev.sbd.dev_id = PS3_NOTIFICATION_DEV_ID;
--	dev.sbd.interrupt_id = PS3_NOTIFICATION_INTERRUPT_ID;
-+	local->dev.sbd.bus_id = (u64)data;
-+	local->dev.sbd.dev_id = PS3_NOTIFICATION_DEV_ID;
-+	local->dev.sbd.interrupt_id = PS3_NOTIFICATION_INTERRUPT_ID;
- 
--	res = lv1_open_device(dev.sbd.bus_id, dev.sbd.dev_id, 0);
-+	res = lv1_open_device(local->dev.sbd.bus_id, local->dev.sbd.dev_id, 0);
- 	if (res) {
- 		pr_err("%s:%u: lv1_open_device failed %s\n", __func__,
- 		       __LINE__, ps3_result(res));
- 		goto fail_free;
- 	}
- 
--	res = ps3_sb_event_receive_port_setup(&dev.sbd, PS3_BINDING_CPU_ANY,
--					      &irq);
-+	res = ps3_sb_event_receive_port_setup(&local->dev.sbd,
-+		PS3_BINDING_CPU_ANY, &irq);
- 	if (res) {
- 		pr_err("%s:%u: ps3_sb_event_receive_port_setup failed %d\n",
- 		       __func__, __LINE__, res);
- 	       goto fail_close_device;
- 	}
- 
--	spin_lock_init(&dev.lock);
--	rcuwait_init(&dev.wait);
-+	spin_lock_init(&local->dev.lock);
-+	rcuwait_init(&local->dev.wait);
- 
- 	res = request_irq(irq, ps3_notification_interrupt, 0,
--			  "ps3_notification", &dev);
-+			  "ps3_notification", &local->dev);
- 	if (res) {
- 		pr_err("%s:%u: request_irq failed %d\n", __func__, __LINE__,
- 		       res);
-@@ -823,7 +825,7 @@ static int ps3_probe_thread(void *data)
- 	notify_cmd->operation_code = 0; /* must be zero */
- 	notify_cmd->event_mask = 1UL << notify_region_probe;
- 
--	res = ps3_notification_read_write(&dev, lpar, 1);
-+	res = ps3_notification_read_write(&local->dev, lpar, 1);
- 	if (res)
- 		goto fail_free_irq;
- 
-@@ -834,36 +836,37 @@ static int ps3_probe_thread(void *data)
- 
- 		memset(notify_event, 0, sizeof(*notify_event));
- 
--		res = ps3_notification_read_write(&dev, lpar, 0);
-+		res = ps3_notification_read_write(&local->dev, lpar, 0);
- 		if (res)
- 			break;
- 
- 		pr_debug("%s:%u: notify event type 0x%llx bus id %llu dev id %llu"
- 			 " type %llu port %llu\n", __func__, __LINE__,
--			 notify_event->event_type, notify_event->bus_id,
--			 notify_event->dev_id, notify_event->dev_type,
--			 notify_event->dev_port);
-+			notify_event->event_type, notify_event->bus_id,
-+			notify_event->dev_id, notify_event->dev_type,
-+			notify_event->dev_port);
- 
- 		if (notify_event->event_type != notify_region_probe ||
--		    notify_event->bus_id != dev.sbd.bus_id) {
-+			notify_event->bus_id != local->dev.sbd.bus_id) {
- 			pr_warn("%s:%u: bad notify_event: event %llu, dev_id %llu, dev_type %llu\n",
- 				__func__, __LINE__, notify_event->event_type,
- 				notify_event->dev_id, notify_event->dev_type);
- 			continue;
- 		}
- 
--		ps3_find_and_add_device(dev.sbd.bus_id, notify_event->dev_id);
-+		ps3_find_and_add_device(local->dev.sbd.bus_id,
-+			notify_event->dev_id);
- 
- 	} while (!kthread_should_stop());
- 
- fail_free_irq:
--	free_irq(irq, &dev);
-+	free_irq(irq, &local->dev);
- fail_sb_event_receive_port_destroy:
--	ps3_sb_event_receive_port_destroy(&dev.sbd, irq);
-+	ps3_sb_event_receive_port_destroy(&local->dev.sbd, irq);
- fail_close_device:
--	lv1_close_device(dev.sbd.bus_id, dev.sbd.dev_id);
-+	lv1_close_device(local->dev.sbd.bus_id, local->dev.sbd.dev_id);
- fail_free:
--	kfree(buf);
-+	kfree(local);
- 
- 	probe_task = NULL;
- 
+> ---
+>   arch/x86/kvm/vmx/nested.c | 27 ++++++++++++++++++++-------
+>   1 file changed, 20 insertions(+), 7 deletions(-)
+> 
+> diff --git a/arch/x86/kvm/vmx/nested.c b/arch/x86/kvm/vmx/nested.c
+> index 06512ee7a5c4..6610d258c680 100644
+> --- a/arch/x86/kvm/vmx/nested.c
+> +++ b/arch/x86/kvm/vmx/nested.c
+> @@ -1322,16 +1322,29 @@ vmx_restore_control_msr(struct vcpu_vmx *vmx, u32 msr_index, u64 data)
+>   
+>   static int vmx_restore_vmx_misc(struct vcpu_vmx *vmx, u64 data)
+>   {
+> -	const u64 feature_and_reserved_bits =
+> -		/* feature */
+> -		BIT_ULL(5) | GENMASK_ULL(8, 6) | BIT_ULL(14) | BIT_ULL(15) |
+> -		BIT_ULL(28) | BIT_ULL(29) | BIT_ULL(30) |
+> -		/* reserved */
+> -		GENMASK_ULL(13, 9) | BIT_ULL(31);
+> +	const u64 feature_bits = VMX_MISC_SAVE_EFER_LMA |
+> +				 VMX_MISC_ACTIVITY_HLT |
+> +				 VMX_MISC_ACTIVITY_SHUTDOWN |
+> +				 VMX_MISC_ACTIVITY_WAIT_SIPI |
+> +				 VMX_MISC_INTEL_PT |
+> +				 VMX_MISC_RDMSR_IN_SMM |
+> +				 VMX_MISC_VMWRITE_SHADOW_RO_FIELDS |
+> +				 VMX_MISC_VMXOFF_BLOCK_SMI |
+> +				 VMX_MISC_ZERO_LEN_INS;
+> +
+> +	const u64 reserved_bits = BIT_ULL(31) | GENMASK_ULL(13, 9);
+> +
+>   	u64 vmx_misc = vmx_control_msr(vmcs_config.nested.misc_low,
+>   				       vmcs_config.nested.misc_high);
+>   
+> -	if (!is_bitwise_subset(vmx_misc, data, feature_and_reserved_bits))
+> +	BUILD_BUG_ON(feature_bits & reserved_bits);
+> +
+> +	/*
+> +	 * The incoming value must not set feature bits or reserved bits that
+> +	 * aren't allowed/supported by KVM.  Fields, i.e. multi-bit values, are
+> +	 * explicitly checked below.
+> +	 */
+> +	if (!is_bitwise_subset(vmx_misc, data, feature_bits | reserved_bits))
+>   		return -EINVAL;
+>   
+>   	if ((vmx->nested.msrs.pinbased_ctls_high &
 
 
