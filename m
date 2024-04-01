@@ -1,137 +1,161 @@
-Return-Path: <linux-kernel+bounces-127021-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-127022-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id E2FE08945E9
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 22:17:32 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 949638945ED
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 22:21:41 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 98A9F1F221B6
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 20:17:32 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4ABD7282E8E
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 20:21:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1E03C53819;
-	Mon,  1 Apr 2024 20:17:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C089753E22;
+	Mon,  1 Apr 2024 20:21:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="aAiPbrGh"
-Received: from mail-wm1-f47.google.com (mail-wm1-f47.google.com [209.85.128.47])
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="xq+anBcx"
+Received: from mail-yb1-f201.google.com (mail-yb1-f201.google.com [209.85.219.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 962D0537EE
-	for <linux-kernel@vger.kernel.org>; Mon,  1 Apr 2024 20:17:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7399846535
+	for <linux-kernel@vger.kernel.org>; Mon,  1 Apr 2024 20:21:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712002645; cv=none; b=r7KRD3NOOIJzTeMTzt56pjEnPz0Sy1ZPs5Vrp3F5lETKX3Q30jDGyKy1uD2qqlZs7O9nGvVDcJTAyqDckgyuPo6kzwAxXGxyzZyLAV/wlDQQ0LB2XB1hQIn9YH4mUBlPSBpKLPYlY+EDkvfjx8OATIzbGIJq3W5R5X2wgObFhK8=
+	t=1712002889; cv=none; b=MjO6YnqeZfvzv3zcGau1JU5MG4h1l+OAzRoEThHhoqhNxyurvGeaiizpjyme0hYDPza88yllzSw0LWemcXmx3Qpf+3O80ST94p1ydls9ai0JXwo43lNCUrIRoI7a4lW31STTYsBDVeBKRCzaKWMtfT0Co7U/gjOXuLh9SJC/BA4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712002645; c=relaxed/simple;
-	bh=DHtBhqBNeZBIKrY/GX3JtpOpPT1r6vgPt3XKywQu1Os=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=c+SmF+mvQkH9PV91F5/oy00ROHJfvrr5SD4zgODiEY1FgG/8NgnYMPDsoeX+XW9e9+iNricXAi+vYa+X5s3KUVhTUWz5cdcQUmbxAjtl4HB2rtgLz2jIO5qitPm7g/2mYZfkQODz+QVBqh0Mf5MYGZyQDY+Itj4DXumr8mV4VJE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=aAiPbrGh; arc=none smtp.client-ip=209.85.128.47
+	s=arc-20240116; t=1712002889; c=relaxed/simple;
+	bh=xi8fNfb+f7ixAYxOIg8qOE321OOUGkU+4oppUXoLRsU=;
+	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
+	 To:Cc:Content-Type; b=WhfB65KVSLZgayJaXSOMHGWJRYqZpJ2C1Sii4nHJukISvQUoNobRkQYdGUYg08PeeXPIpVaJ1k4zBIdaLNXGDQLOEbL9GIMDLrSNZ7oZLWqrGps/qIVCACU9MXPLATxJ3jMzeV2QOVyvMwI8zPNWF6T9bwhRLz+RqoxQ8dfnwd0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=xq+anBcx; arc=none smtp.client-ip=209.85.219.201
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-wm1-f47.google.com with SMTP id 5b1f17b1804b1-413f8c8192eso225385e9.0
-        for <linux-kernel@vger.kernel.org>; Mon, 01 Apr 2024 13:17:23 -0700 (PDT)
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
+Received: by mail-yb1-f201.google.com with SMTP id 3f1490d57ef6-dc6b26845cdso6512570276.3
+        for <linux-kernel@vger.kernel.org>; Mon, 01 Apr 2024 13:21:27 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1712002642; x=1712607442; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=J3aFjL6s1SfTb0uIG99KnzgQCy9He0FDmkud5jyqZjA=;
-        b=aAiPbrGh4OnL9TCoh/ir7CKcMXHdrs7U1Kw0YmHTEqofzsmjb2xjhroFlMP56MnhAK
-         ce2M0R8W2K+uh5APaeY9aliOMrrrrA3e6RhCmz1Ltow/3YrStYO0JbKBgJqHSysuSeU6
-         G3ka5zVN0GMCNbiJ1ZpWtFULncwEbCWM4H5b+X/4GmypNwQJxWdlgsfuesMDKwuG25bk
-         4G8/WsmZt3O210YXOKGciDvGH0hvGAHV1AOue/C32RIY9R+Zq8GcSnEFSsfJ/abSwHFD
-         7OkVjL132DRWPrjHqkfil8rI2oyRuF1pLBM7a+eLjiVcmZP77p/fh4LPtNxjsvKgBWAb
-         VRSg==
+        d=google.com; s=20230601; t=1712002886; x=1712607686; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=EXuQrJxq8hh4Q4PrrL+1pUvmc/UlgSCH8mpU+iMNc/A=;
+        b=xq+anBcx66qyZQercVDaUpKLfhNQcMjDe9r/pF6FsIdAtQkudxq3maBQbSZorqZvmT
+         jKmG6Gdmtt0FGbFKmwiFqEc+TR7OcM484R2qtboyVX7xZ14iGnj1BB5wbRYnY6VVgxQF
+         6h1nBWVlrdqyMoijeIzIHwz5SvKaUSdg+bxs63BQqb7FqrpGcOwi1lXNVJzhqewhZLOs
+         w+ZyPSap7dXcSfBUopbT0wRr4yonEEQqtj/P6YUgAmZ9daRhXLEbM7+nF5qo8NYLRZmN
+         tPD4/sX4OHNKtHdz+l+mxNULNvUS2+HqqbJTy6lFUn+fFmbGPFKsqitnMosApJFCfHxf
+         nHYw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712002642; x=1712607442;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=J3aFjL6s1SfTb0uIG99KnzgQCy9He0FDmkud5jyqZjA=;
-        b=XCaIIEbyVDhJfikI3ThbSuCtn/u3FJGp7U7LNQpXn07oqtWTCMIXp0gHEPHk29/uD5
-         deXU1ezAI6OSf9MPESFFnbgPQeqLhrvfcZE4aviUg8CZ1n7ounAC8GE3sHGFd/mkahLS
-         PpG8X9OFuOw877OWaHLQflgnj1fXbIaZUgLecYiuPhl/VUmr/OY6FImmvo2cSwOvoMfw
-         oByPouLNqKUh9I0HFZF5zfezPk+y3DdQtR4uBw5i/3oE+7q5VSyBe1HM6NKT1A+lpBbN
-         fEdb/dPEf1w/xTnqLjw1+nNi0lCkopAwiS/usFO4+pQ0KM5pOUo4DkIO1xb6PINE7AFu
-         mTrA==
-X-Forwarded-Encrypted: i=1; AJvYcCWw8aRyjk75jQnWzi712OSf7a+16i+Iim3J7bE4pCbbFg0SvMEy5krUr/1iB60fcopn2/LV0WLEyAwfMRvmMnxxoGaslKSdu14s5F6x
-X-Gm-Message-State: AOJu0YxaE+TNjk4+4VUK+yBRRjjxoB4gmtfm8nP99wK0u4BuBAdvUBRW
-	XCyHD/jTuw9G4izo8iZCxHGVyfyTG6eO2CGkYiRAgwSCcAAR2VemZxZXWYfXgzA5k1B0Kl9ELki
-	XyPLWhNZMGxqyk/dQJnYiH7rmMYfwR2CGjYo=
-X-Google-Smtp-Source: AGHT+IH4u6ixRGerfhByJbubIH4VZXbfeMuEQl6z//6B53qEEPTxywQn+A1RXkYeDD69+9wPxjVog+ULgLhkr/oAGMs=
-X-Received: by 2002:a05:600c:3587:b0:414:800f:f9b1 with SMTP id
- p7-20020a05600c358700b00414800ff9b1mr640853wmq.2.1712002641819; Mon, 01 Apr
- 2024 13:17:21 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1712002886; x=1712607686;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=EXuQrJxq8hh4Q4PrrL+1pUvmc/UlgSCH8mpU+iMNc/A=;
+        b=aIkfD3uND0S+/sWXZp1YMxqvg8wjZKjMHwPO7pxsK2a+tgPKPW4/fLCWOhSlz05TM7
+         FdrEgNMgwR8Gnbiar0XmzFgI3XYfRa7En/ZVwHuZZixsHlEdX77dBqiNGTtpaF87qw82
+         8rQ203AZIrMEVzmuQf41A7E9U0tGmq/9Dq0Iik77aAPAqXHpfL7Z5KJY7bl6BLxGrgGZ
+         czsYlsjVxRP9O0ELPn8gnULBO9J3opEyEZ2BfS1q+COymb0ws5YOLEZfngO8cwnXONHG
+         GU05c9WcNIY/jAmMo2iyfOLb/iCI3Ev42elguHxCyWisHbNaHOy20NSIqGMWRpTCEV3a
+         lkqQ==
+X-Forwarded-Encrypted: i=1; AJvYcCV44co5ZBRTjSi+nDyEPF0XfQgJhhbZQMaZT597E8dcGc7+gcCIXYWkfV8hhokBrB58z4ALfCnUaa0M4+W6fOKAbcJ6GFctrGAychBi
+X-Gm-Message-State: AOJu0Yx/vXmn/PZTThTT//MSx/CkVPDP3M7jtOyg6zdJ2Vr9lFeJOO5X
+	MZ/E6IkBHeTbfa9K66/EDbEjmgzlaRiAWFAU5uY8JN0ULNk8+igQdsH0l9qtuPyag6BLhQRkZ67
+	Tzg==
+X-Google-Smtp-Source: AGHT+IF9bN9rMKRDiKGIJtYfo638VzxlHSURX9J2Qs9hT7nu5H17e7f7Ql/BLpIFbwZluzOjprKPqs6RiH8=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a05:6902:1002:b0:dc9:5ef8:2b2d with SMTP id
+ w2-20020a056902100200b00dc95ef82b2dmr3291799ybt.4.1712002886627; Mon, 01 Apr
+ 2024 13:21:26 -0700 (PDT)
+Date: Mon, 1 Apr 2024 13:21:25 -0700
+In-Reply-To: <20240328171949.743211-1-leobras@redhat.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-References: <20230316123028.2890338-1-elver@google.com>
-In-Reply-To: <20230316123028.2890338-1-elver@google.com>
-From: John Stultz <jstultz@google.com>
-Date: Mon, 1 Apr 2024 13:17:09 -0700
-Message-ID: <CANDhNCqBGnAr_MSBhQxWo+-8YnPPggxoVL32zVrDB+NcoKXVPQ@mail.gmail.com>
-Subject: Re: [PATCH v6 1/2] posix-timers: Prefer delivery of signals to the
- current thread
-To: Marco Elver <elver@google.com>
-Cc: Peter Zijlstra <peterz@infradead.org>, Thomas Gleixner <tglx@linutronix.de>, 
-	Ingo Molnar <mingo@kernel.org>, Oleg Nesterov <oleg@redhat.com>, 
-	"Eric W. Biederman" <ebiederm@xmission.com>, linux-kernel@vger.kernel.org, 
-	linux-kselftest@vger.kernel.org, Dmitry Vyukov <dvyukov@google.com>, 
-	kasan-dev@googlegroups.com, Edward Liaw <edliaw@google.com>, 
-	Carlos Llamas <cmllamas@google.com>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Mime-Version: 1.0
+References: <20240328171949.743211-1-leobras@redhat.com>
+Message-ID: <ZgsXRUTj40LmXVS4@google.com>
+Subject: Re: [RFC PATCH v1 0/2] Avoid rcu_core() if CPU just left guest vcpu
+From: Sean Christopherson <seanjc@google.com>
+To: Leonardo Bras <leobras@redhat.com>
+Cc: Paolo Bonzini <pbonzini@redhat.com>, "Paul E. McKenney" <paulmck@kernel.org>, 
+	Frederic Weisbecker <frederic@kernel.org>, Neeraj Upadhyay <quic_neeraju@quicinc.com>, 
+	Joel Fernandes <joel@joelfernandes.org>, Josh Triplett <josh@joshtriplett.org>, 
+	Boqun Feng <boqun.feng@gmail.com>, Steven Rostedt <rostedt@goodmis.org>, 
+	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, Lai Jiangshan <jiangshanlai@gmail.com>, 
+	Zqiang <qiang.zhang1211@gmail.com>, Marcelo Tosatti <mtosatti@redhat.com>, kvm@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, rcu@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
 
-On Thu, Mar 16, 2023 at 5:30=E2=80=AFAM Marco Elver <elver@google.com> wrot=
-e:
->
-> From: Dmitry Vyukov <dvyukov@google.com>
->
-> POSIX timers using the CLOCK_PROCESS_CPUTIME_ID clock prefer the main
-> thread of a thread group for signal delivery.     However, this has a
-> significant downside: it requires waking up a potentially idle thread.
->
-> Instead, prefer to deliver signals to the current thread (in the same
-> thread group) if SIGEV_THREAD_ID is not set by the user. This does not
-> change guaranteed semantics, since POSIX process CPU time timers have
-> never guaranteed that signal delivery is to a specific thread (without
-> SIGEV_THREAD_ID set).
->
-> The effect is that we no longer wake up potentially idle threads, and
-> the kernel is no longer biased towards delivering the timer signal to
-> any particular thread (which better distributes the timer signals esp.
-> when multiple timers fire concurrently).
->
-> Signed-off-by: Dmitry Vyukov <dvyukov@google.com>
-> Suggested-by: Oleg Nesterov <oleg@redhat.com>
-> Reviewed-by: Oleg Nesterov <oleg@redhat.com>
-> Signed-off-by: Marco Elver <elver@google.com>
+On Thu, Mar 28, 2024, Leonardo Bras wrote:
+> I am dealing with a latency issue inside a KVM guest, which is caused by
+> a sched_switch to rcuc[1].
+> 
+> During guest entry, kernel code will signal to RCU that current CPU was on
+> a quiescent state, making sure no other CPU is waiting for this one.
+> 
+> If a vcpu just stopped running (guest_exit), and a syncronize_rcu() was
+> issued somewhere since guest entry, there is a chance a timer interrupt
+> will happen in that CPU, which will cause rcu_sched_clock_irq() to run.
+> 
+> rcu_sched_clock_irq() will check rcu_pending() which will return true,
+> and cause invoke_rcu_core() to be called, which will (in current config)
+> cause rcuc/N to be scheduled into the current cpu.
+> 
+> On rcu_pending(), I noticed we can avoid returning true (and thus invoking
+> rcu_core()) if the current cpu is nohz_full, and the cpu came from either
+> idle or userspace, since both are considered quiescent states.
+> 
+> Since this is also true to guest context, my idea to solve this latency
+> issue by avoiding rcu_core() invocation if it was running a guest vcpu.
+> 
+> On the other hand, I could not find a way of reliably saying the current
+> cpu was running a guest vcpu, so patch #1 implements a per-cpu variable
+> for keeping the time (jiffies) of the last guest exit.
+> 
+> In patch #2 I compare current time to that time, and if less than a second
+> has past, we just skip rcu_core() invocation, since there is a high chance
+> it will just go back to the guest in a moment.
 
-Apologies for drudging up this old thread.
+What's the downside if there's a false positive?
 
-I wanted to ask if anyone had objections to including this in the -stable t=
-rees?
+> What I know it's weird with this patch:
+> 1 - Not sure if this is the best way of finding out if the cpu was
+>     running a guest recently.
+> 
+> 2 - This per-cpu variable needs to get set at each guest_exit(), so it's
+>     overhead, even though it's supposed to be in local cache. If that's
+>     an issue, I would suggest having this part compiled out on 
+>     !CONFIG_NO_HZ_FULL, but further checking each cpu for being nohz_full
+>     enabled seems more expensive than just setting this out.
 
-After this and the follow-on patch e797203fb3ba
-("selftests/timers/posix_timers: Test delivery of signals across
-threads") landed, folks testing older kernels with the latest
-selftests started to see the new test checking for this behavior to
-stall.  Thomas did submit an adjustment to the test here to avoid the
-stall: https://lore.kernel.org/lkml/20230606142031.071059989@linutronix.de/=
-,
-but it didn't seem to land, however that would just result in the test
-failing instead of hanging.
+A per-CPU write isn't problematic, but I suspect reading jiffies will be quite
+imprecise, e.g. it'll be a full tick "behind" on many exits.
 
-This change does seem to cherry-pick cleanly back to at least
-stable/linux-5.10.y cleanly, so it looks simple to pull this change
-back. But I wanted to make sure there wasn't anything subtle I was
-missing before sending patches.
+> 3 - It checks if the guest exit happened over than 1 second ago. This 1
+>     second value was copied from rcu_nohz_full_cpu() which checks if the
+>     grace period started over than a second ago. If this value is bad,
+>     I have no issue changing it.
 
-thanks
--john
+IMO, checking if a CPU "recently" ran a KVM vCPU is a suboptimal heuristic regardless
+of what magic time threshold is used.  IIUC, what you want is a way to detect if
+a CPU is likely to _run_ a KVM vCPU in the near future.  KVM can provide that
+information with much better precision, e.g. KVM knows when when it's in the core
+vCPU run loop.
+
+> 4 - Even though I could detect no issue, I included linux/kvm_host.h into 
+>     rcu/tree_plugin.h, which is the first time it's getting included
+>     outside of kvm or arch code, and can be weird.
+
+Heh, kvm_host.h isn't included outside of KVM because several architectures can
+build KVM as a module, which means referencing global KVM varibles from the kernel
+proper won't work.
+
+>     An alternative would be to create a new header for providing data for
+>     non-kvm code.
+
+I doubt a new .h or .c file is needed just for this, there's gotta be a decent
+landing spot for a one-off variable.  E.g. I wouldn't be at all surprised if there
+is additional usefulness in knowing if a CPU is in KVM's core run loop and thus
+likely to do a VM-Enter in the near future, at which point you could probably make
+a good argument for adding a flag in "struct context_tracking".  Even without a
+separate use case, there's a good argument for adding that info to context_tracking.
 
