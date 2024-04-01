@@ -1,132 +1,163 @@
-Return-Path: <linux-kernel+bounces-126651-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-126652-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D53F3893AF0
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 14:26:29 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 55509893AF1
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 14:26:41 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0458E1C20E77
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 12:26:29 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0B7F51F21110
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 12:26:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E4A9E38389;
-	Mon,  1 Apr 2024 12:26:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 07444376FC;
+	Mon,  1 Apr 2024 12:26:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bendiksen.me header.i=@bendiksen.me header.b="J+73k5td"
-Received: from mail-4022.proton.ch (mail-4022.proton.ch [185.70.40.22])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="E+5byxU5"
+Received: from mail-pf1-f175.google.com (mail-pf1-f175.google.com [209.85.210.175])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D87CB1F600
-	for <linux-kernel@vger.kernel.org>; Mon,  1 Apr 2024 12:26:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.70.40.22
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CD0DC38FBC
+	for <linux-kernel@vger.kernel.org>; Mon,  1 Apr 2024 12:26:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.175
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711974382; cv=none; b=UWCWmXEnDKFc2JnsnjLMuflvNcRV0Sg5I5HZnLKxPttK3mbLOsQvdFMbG0h0LhmexRtaZ7B3d/agBGJwR+TLO0VuTibiBwwFSw45UOk3vHkGgOrSehPaj8O7tM0jTaOPB2E4rJ5aXo93/TGExJwuPVl7oOPZKCA8K9pLHWn/7oE=
+	t=1711974391; cv=none; b=tneDkGEzzs3A9iyB+6Lp1LHqguuonO+EmazcjXEDFB53BmdhweJWNL9W67iQXAwmIE45ibksaiq9rc2MOIDTxPdQ7g6K1Rsj482hLb6dJ19NtzChImKOJMPDH/IXpKsr9SRx0tRPx3t0srDzTyFIrTB5nrB3RDSG7vJ3PdNE4CU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711974382; c=relaxed/simple;
-	bh=S0uiI1l+bopCmJ8FboWrkmf9PiNBKaQEV65dZuKRil4=;
-	h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=LHBS89odUh8fau0AlsSTg2MUoAdllMzIS0yRiakXQAz2YoHWZsYnczHF2U8TblTPyPlO4guCRedGV9UU666VBwm0pWtf7sr4akuPc7w9G1NZJjvs/kIxvxsdzcu0j1rWCEIP7IL3IMCwEktl2ZRE1bRuQyjJ8ahlKegFEc8SVwo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bendiksen.me; spf=pass smtp.mailfrom=bendiksen.me; dkim=pass (2048-bit key) header.d=bendiksen.me header.i=@bendiksen.me header.b=J+73k5td; arc=none smtp.client-ip=185.70.40.22
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bendiksen.me
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bendiksen.me
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bendiksen.me;
-	s=protonmail; t=1711974376; x=1712233576;
-	bh=kxyHDz4wP5C31gmz6bpfh2rAfPvXOIaBKxhpx4lBACw=;
-	h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
-	 Feedback-ID:From:To:Cc:Date:Subject:Reply-To:Feedback-ID:
-	 Message-ID:BIMI-Selector;
-	b=J+73k5tdAKpfxvYIDSqm5S7feaMf/+lK0/2BwUeulWqszAgdy3CiDBBuTX/rMtKx/
-	 etpco59lG6hzBXOuVN/zGEYKvhikzrwJYEp/7yQxmlMjzhOF6KuIImXJZaIZQFsA3N
-	 YBOlH0/w0tDqeKsnHtjU1cSR7saRIKD5/ZtynKQcvZBZw78oWQ64arvtc74vSSZ07w
-	 5/XQE1WtrdyGhGKZap/TxV3Qa/h7aNMN9B5nGQ/fDzxbRE2A12i4GhYrwUC0IcfagI
-	 g0ioyQwQ3brx7vkoeuguYDxKrU9owPrwBiBv+EJXfSIzRjdGoorNdldM4dLYoRXkNl
-	 bwqxR8+os4gWA==
-Date: Mon, 01 Apr 2024 12:26:10 +0000
-To: james.schulman@cirrus.com, david.rhodes@cirrus.com, rf@opensource.cirrus.com, perex@perex.cz, tiwai@suse.com, sbinding@opensource.cirrus.com, kailang@realtek.com, luke@ljones.dev, shenghao-ding@ti.com, foss@athaariq.my.id, alsa-devel@alsa-project.org, patches@opensource.cirrus.com, linux-sound@vger.kernel.org, linux-kernel@vger.kernel.org
-From: Christian Bendiksen <Christian@bendiksen.me>
-Cc: Christian Bendiksen <christian@bendiksen.me>
-Subject: [PATCH v3] Add sound quirks for Lenovo Legion slim 7 16ARHA7 models.
-Message-ID: <20240401122603.6634-1-christian@bendiksen.me>
-In-Reply-To: <87y19x5wfs.wl-tiwai@suse.de>
-References: <20240329185406.9802-1-christian@bendiksen.me> <87r0fsnmky.wl-tiwai@suse.de> <20240330115554.27895-1-christian@bendiksen.me> <87y19x5wfs.wl-tiwai@suse.de>
-Feedback-ID: 100541561:user:proton
+	s=arc-20240116; t=1711974391; c=relaxed/simple;
+	bh=c2T6wibH5F5WD78oV+uJZBaTSlduS/x3Pva398zJ2NE=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=R+L/48RX+0y3AtoFigVwONXEf4fo7JyFLK+U49sewGhXkWrR+7Qg+stzXgv8Ajtbg4lreATTsP7XSqUS3klE8+GTYUA1V85/xDBLT3yw2zN1SETs2AD2Bi+gIGOSUzf2iNXRTC9ulOrF+0rUT8C3vYBPosjbXpRPDo5Y/lIHj4Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=E+5byxU5; arc=none smtp.client-ip=209.85.210.175
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pf1-f175.google.com with SMTP id d2e1a72fcca58-6e73e8bdea2so3583139b3a.0
+        for <linux-kernel@vger.kernel.org>; Mon, 01 Apr 2024 05:26:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1711974389; x=1712579189; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=u6feF6K6v6g7R1Hg319jEuD6xgNSbVhQOmS4a1TLMNc=;
+        b=E+5byxU5lr2uIqu2X5pSa0U8wJAK6wb4zLm3JuG9M/JckVdT0RYCw3Qsqu3q+MQ4TE
+         49mq8aa9kNVqp8KpZ2lIsRVxhivirfDAH9C4Nrbc9AfbvSiSX9BW2ysJ7qVxFoWbSErS
+         lqtnOCrMX72gG0OOg5aFEm3tVTF6YapnHR+ug8p1/+BxuSGV26bYtBleZOwWapqGo4q5
+         VK3iAsvl3GEA86prpoOP5HyWy8SFtEYDHsn60552oFqEVb2EtCIXSm/vRue9gEKnn8/7
+         AFMVeniv1/YwEbtzsxugtzLmUm+MQaM14tHbfLbDSdgHHNXU3qgryudBQKYOc53sapoz
+         hozw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711974389; x=1712579189;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=u6feF6K6v6g7R1Hg319jEuD6xgNSbVhQOmS4a1TLMNc=;
+        b=K+Ff71Ywd5zff3Htt2ikk319pI5BEyaVjqx7NQ3/4xVY5rL7VVUyaw4Jc2Xj3LbeX+
+         7U0H4VzBrps8qDfkbqBikWvSkBM0h1ONFlymEfvHHmnDV8ymmgnjw1UKh8iQlYQRUzma
+         mN0YnXBB5MWBlpABu/SlakoSkzfr5cE6alIu33VrlvHCA08tOoInRFP2HzUEygp+ynh2
+         MDBkJ5rlZb0uU9y9s961MD7DakkYNLKTX/mcJ5V8S/XgqjqGXHvvz1zoNLi1sMkUGn5S
+         g54fJMcxn+doajK4Ae6wejO9nevf/Xz7zCLfLqPpfntqvBVY+njJIkIrQ/L5iCR3rwTa
+         aWEQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVUlPWGX4HTJS9+YrREo1phTFKDI5gm10wOlJjiwD4jHFvefgZLk+pStVoRBaXPelgwr5rbsYGwFT5f0OrKCRLbPt3z9cnOVWZe20xA
+X-Gm-Message-State: AOJu0Yz6fKRvQiCQLfKdi2Xf5yMfOmrgi0tp/uMqiUIuZCxNKJzpxA/w
+	E4qKtkwblg2jbs1vKJyRabBxpgDMqxLFjfkwtSQnqpmjV1JTvqca
+X-Google-Smtp-Source: AGHT+IEAivMxtOmgKqQ4sG59sjkiA6GyfykFA6t8zaG5rQMJo8i/Wp4nRjMYYFNRSp2kdaCucXtiVw==
+X-Received: by 2002:a17:902:dacf:b0:1de:e5aa:5ce with SMTP id q15-20020a170902dacf00b001dee5aa05cemr10304970plx.41.1711974388885;
+        Mon, 01 Apr 2024 05:26:28 -0700 (PDT)
+Received: from archie.me ([103.124.138.155])
+        by smtp.gmail.com with ESMTPSA id b15-20020a170902650f00b001e014627baasm8902636plk.79.2024.04.01.05.26.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 01 Apr 2024 05:26:28 -0700 (PDT)
+Received: by archie.me (Postfix, from userid 1000)
+	id 977C51847ECE7; Mon,  1 Apr 2024 19:26:26 +0700 (WIB)
+Date: Mon, 1 Apr 2024 19:26:26 +0700
+From: Bagas Sanjaya <bagasdotme@gmail.com>
+To: me@wantyapps.xyz
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	Prathu Baronia <prathubaronia2011@gmail.com>,
+	Rob Herring <robh@kernel.org>, Yangtao Li <frank.li@vivo.com>,
+	"Fabio M. De Francesco" <fmdefrancesco@gmail.com>,
+	Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>,
+	Khadija Kamran <kamrankhadijadj@gmail.com>,
+	linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] staging: axis-fifo: Fix indentation
+Message-ID: <Zgqn8izgsMI7rQNA@archie.me>
+References: <20240305211416.755911-1-me@wantyapps.xyz>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="RMq/zonEoj5TvfGw"
+Content-Disposition: inline
+In-Reply-To: <20240305211416.755911-1-me@wantyapps.xyz>
+
+
+--RMq/zonEoj5TvfGw
 Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-This fixes the sound not working from internal speakers on
-Lenovo Legion Slim 7 16ARHA7 models. The correct subsystem ID
-have been added to cs35l41_hda_property.c and patch_realtek.c.
+On Tue, Mar 05, 2024 at 11:14:01PM +0200, me@wantyapps.xyz wrote:
+> From: Uri Arev <me@wantyapps.xyz>
+>=20
+> Warning reported by checkpatch.pl script:
+>=20
+> CHECK: Alignment should match open parenthesis
+>=20
+> Signed-off-by: Uri Arev <me@wantyapps.xyz>
+> ---
+>  drivers/staging/axis-fifo/axis-fifo.c | 10 +++++-----
+>  1 file changed, 5 insertions(+), 5 deletions(-)
+>=20
+> diff --git a/drivers/staging/axis-fifo/axis-fifo.c b/drivers/staging/axis=
+-fifo/axis-fifo.c
+> index 727b956aa231..ab758a527261 100644
+> --- a/drivers/staging/axis-fifo/axis-fifo.c
+> +++ b/drivers/staging/axis-fifo/axis-fifo.c
+> @@ -381,8 +381,8 @@ static ssize_t axis_fifo_read(struct file *f, char __=
+user *buf,
+>  		 */
+>  		mutex_lock(&fifo->read_lock);
+>  		ret =3D wait_event_interruptible_timeout(fifo->read_queue,
+> -			ioread32(fifo->base_addr + XLLF_RDFO_OFFSET),
+> -			read_timeout);
+> +						       ioread32(fifo->base_addr + XLLF_RDFO_OFFSET),
+> +						       read_timeout);
+> =20
+>  		if (ret <=3D 0) {
+>  			if (ret =3D=3D 0) {
+> @@ -522,9 +522,9 @@ static ssize_t axis_fifo_write(struct file *f, const =
+char __user *buf,
+>  		 */
+>  		mutex_lock(&fifo->write_lock);
+>  		ret =3D wait_event_interruptible_timeout(fifo->write_queue,
+> -			ioread32(fifo->base_addr + XLLF_TDFV_OFFSET)
+> -				 >=3D words_to_write,
+> -			write_timeout);
+> +						       ioread32(fifo->base_addr + XLLF_TDFV_OFFSET)
+> +								>=3D words_to_write,
+> +						       write_timeout);
+> =20
+>  		if (ret <=3D 0) {
+>  			if (ret =3D=3D 0) {
 
-Signed-off-by: Christian Bendiksen <christian@bendiksen.me>
----
- sound/pci/hda/cs35l41_hda_property.c | 4 ++++
- sound/pci/hda/patch_realtek.c        | 2 ++
- 2 files changed, 6 insertions(+)
+LGTM, thanks!
 
-diff --git a/sound/pci/hda/cs35l41_hda_property.c b/sound/pci/hda/cs35l41_h=
-da_property.c
-index 72ec872afb8d..d6ea3ab72f75 100644
---- a/sound/pci/hda/cs35l41_hda_property.c
-+++ b/sound/pci/hda/cs35l41_hda_property.c
-@@ -109,6 +109,8 @@ static const struct cs35l41_config cs35l41_config_table=
-[] =3D {
- =09{ "10431F1F", 2, EXTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 1, -1=
-, 0, 0, 0, 0 },
- =09{ "10431F62", 2, EXTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 1, 2,=
- 0, 0, 0, 0 },
- =09{ "17AA386F", 2, EXTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 0, -1=
-, -1, 0, 0, 0 },
-+=09{ "17AA3877", 2, EXTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 0, 1,=
- -1, 0, 0, 0 },
-+=09{ "17AA3878", 2, EXTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 0, 1,=
- -1, 0, 0, 0 },
- =09{ "17AA38A9", 2, EXTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 0, 2,=
- -1, 0, 0, 0 },
- =09{ "17AA38AB", 2, EXTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 0, 2,=
- -1, 0, 0, 0 },
- =09{ "17AA38B4", 2, EXTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 0, 1,=
- -1, 0, 0, 0 },
-@@ -497,6 +499,8 @@ static const struct cs35l41_prop_model cs35l41_prop_mod=
-el_table[] =3D {
- =09{ "CSC3551", "10431F1F", generic_dsd_config },
- =09{ "CSC3551", "10431F62", generic_dsd_config },
- =09{ "CSC3551", "17AA386F", generic_dsd_config },
-+=09{ "CSC3551", "17AA3877", generic_dsd_config },
-+=09{ "CSC3551", "17AA3878", generic_dsd_config },
- =09{ "CSC3551", "17AA38A9", generic_dsd_config },
- =09{ "CSC3551", "17AA38AB", generic_dsd_config },
- =09{ "CSC3551", "17AA38B4", generic_dsd_config },
-diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
-index a17c36a36aa5..124aaaa6cf76 100644
---- a/sound/pci/hda/patch_realtek.c
-+++ b/sound/pci/hda/patch_realtek.c
-@@ -10333,6 +10333,8 @@ static const struct snd_pci_quirk alc269_fixup_tbl[=
-] =3D {
- =09SND_PCI_QUIRK(0x17aa, 0x3869, "Lenovo Yoga7 14IAL7", ALC287_FIXUP_YOGA9=
-_14IAP7_BASS_SPK_PIN),
- =09SND_PCI_QUIRK(0x17aa, 0x386f, "Legion 7i 16IAX7", ALC287_FIXUP_CS35L41_=
-I2C_2),
- =09SND_PCI_QUIRK(0x17aa, 0x3870, "Lenovo Yoga 7 14ARB7", ALC287_FIXUP_YOGA=
-7_14ARB7_I2C),
-+=09SND_PCI_QUIRK(0x17aa, 0x3877, "Lenovo Legion 7 Slim 16ARHA7", ALC287_FI=
-XUP_CS35L41_I2C_2),
-+=09SND_PCI_QUIRK(0x17aa, 0x3878, "Lenovo Legion 7 Slim 16ARHA7", ALC287_FI=
-XUP_CS35L41_I2C_2),
- =09SND_PCI_QUIRK(0x17aa, 0x387d, "Yoga S780-16 pro Quad AAC", ALC287_FIXUP=
-_TAS2781_I2C),
- =09SND_PCI_QUIRK(0x17aa, 0x387e, "Yoga S780-16 pro Quad YC", ALC287_FIXUP_=
-TAS2781_I2C),
- =09SND_PCI_QUIRK(0x17aa, 0x3881, "YB9 dual power mode2 YC", ALC287_FIXUP_T=
-AS2781_I2C),
+Reviewed-by: Bagas Sanjaya <bagasdotme@gmail.com>
+
 --=20
-2.44.0
+An old man doll... just what I always wanted! - Clara
 
+--RMq/zonEoj5TvfGw
+Content-Type: application/pgp-signature; name="signature.asc"
 
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYKAB0WIQSSYQ6Cy7oyFNCHrUH2uYlJVVFOowUCZgqn7QAKCRD2uYlJVVFO
+o8s7AP93pQcbIO5XI50jdNT/8fX+13cGyDwmxZvPuGWkmwswPwEA4/xSD6mE4SEW
+iaXCdqJLVhWJfdTk2viDAHS0hL4WGAU=
+=Ba1J
+-----END PGP SIGNATURE-----
+
+--RMq/zonEoj5TvfGw--
 
