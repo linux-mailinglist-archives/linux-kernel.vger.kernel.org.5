@@ -1,54 +1,54 @@
-Return-Path: <linux-kernel+bounces-126858-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-126859-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 254DA894174
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 18:42:32 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 80B0F89417E
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 18:42:54 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 90DE71F237DA
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 16:42:31 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A451D1C21482
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 16:42:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CB2784A99C;
-	Mon,  1 Apr 2024 16:42:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E604A482EF;
+	Mon,  1 Apr 2024 16:42:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="xLbIBnl7"
+	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="FLeMla2d"
 Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EEC1B3BBC3
-	for <linux-kernel@vger.kernel.org>; Mon,  1 Apr 2024 16:42:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6C71363E
+	for <linux-kernel@vger.kernel.org>; Mon,  1 Apr 2024 16:42:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711989732; cv=none; b=DE8equ1J+FkGNazG25n5y/j29WYej/jZyOGXlB0FmQE95iIo6bi9BJpL/gwQDSFcHmu7wYIJTgyLe4hUfMVwkHF+U8t2Cgb5Pjj/E+BiT65S8lel7f36UJYrBaJiSRlOQDGvsmkQ1bJiqaQhiXK1bMq0IW4eae23AuzWd0Odw48=
+	t=1711989755; cv=none; b=PTKW+Kh2Lp6F+qk1G4Fs3S7MpGIlyrBigg60rRkK0xpZE3k1RL4XLl18HquLOxLCHfXtpLZNFi8rdlB8o3tuj+oK8aE4Mzn6hVlWseKOjuL7dagtm3/13is/EM88TRzY9qFLmgLEHWgcGiX9HaLSEQQOclAj14aPoYD9hb8NuQc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711989732; c=relaxed/simple;
-	bh=WopZIv1m6iHVZ5GAyDRjVH14xeI4Hdv9HeL4nql8kK4=;
+	s=arc-20240116; t=1711989755; c=relaxed/simple;
+	bh=GXcuHIR2aLO/M7Ecmuh2cNcHg4o55p5/3iz9GsdEEuA=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=fJ/nA68X9aXa1+Zewqvl58ZNYjfVGzfT9hHwYGiWFEE7NMjI3w7MaNdwi9AANe7epjpD+4Zqpujd+bkV7n7N93zPHenw7ZS4p+n/r3eTw00PA4O4mJn8mnuLgZjV6g5wXi2Nfd33vF7AVHsmVn3eRGQOi4DUstlFHHPv3Ai1xPw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=xLbIBnl7; arc=none smtp.client-ip=46.235.227.194
+	 In-Reply-To:Content-Type; b=mI+qsaLRbuZ0dVnKAXhGVKRwFJvzcBPmviUfHaajOiWCAmaPFBQECi0KdIKtsP7waIvizkcuegP1a4AKx8Q09pF0/Fw1jQIiqcE1l/QCQQddbJ2R2AFJDhX1tgHg9tL5dqMtdmpAN0jtd4qjZfRh81iTiz6XhShpnbgLpEen4qs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=FLeMla2d; arc=none smtp.client-ip=46.235.227.194
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-	s=mail; t=1711989729;
-	bh=WopZIv1m6iHVZ5GAyDRjVH14xeI4Hdv9HeL4nql8kK4=;
+	s=mail; t=1711989751;
+	bh=GXcuHIR2aLO/M7Ecmuh2cNcHg4o55p5/3iz9GsdEEuA=;
 	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=xLbIBnl792sEhVS0hA7Ot1TsA6aXkyC3C/5TeYVOON+ULaJIJdlN8xkPR8yjC9OEK
-	 XB/LkzmhZy2/RHHSmut0sdP3JKhqkRiDPj2kAOQq252/UgQ6MNvJXZHRIfRDS4OvIP
-	 gqQW4by8jd6/CK06lRraJl+ZaZp4FGt1Vod8Ht3qWXJFVTzaGzjK1fU2hmebQpBD97
-	 fqJUuhFhOa1qj2VOAfLEWJAd7TBx56b6sFqkIer3HaTyVRUPpBQsfDAsXqURGIF98j
-	 GfGJce3xojpChU/ofabShSxisAE2x9OI+txzlIOYDgS0D7nosofAPPpuxTOFBdgGtU
-	 M+oQeOKIFQG/w==
+	b=FLeMla2dhSGBer1eeLDew6OlcTAsszh3tTYKvpleLNILDUQoXtl2CCAoyTEY/59MW
+	 VfE4OZa4qUH8+65sx1T436lSXsIFO4KYJ5w9ArWaTL3JyvkFn/BNlH6Ri8ZpXHX9US
+	 VCchsAC4WBt4lPajc9TWGshXpGbuyMlZH56IYIVTSfcYiTQxL8xOXHt55hzSLswC2K
+	 KsRsyld2ECMGlET09CYQlQGnv1/IagkVuRT2KvDchf8yQv6xofFzfV00vQouUCk88X
+	 NgUvvVgLs+gsuPy3gkeACyfNbLAMMZUstaUnMVusSCoC7VNPQl+DZM8LolhJGrvkHH
+	 67Ul2fNjclSJw==
 Received: from [100.95.196.25] (cola.collaboradmins.com [195.201.22.229])
 	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
 	(Authenticated sender: koike)
-	by madrid.collaboradmins.com (Postfix) with ESMTPSA id E30A2378143B;
-	Mon,  1 Apr 2024 16:42:03 +0000 (UTC)
-Message-ID: <f4b6cb98-0146-4f9c-a1ed-3324da01ca16@collabora.com>
-Date: Mon, 1 Apr 2024 13:42:03 -0300
+	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 61624378143B;
+	Mon,  1 Apr 2024 16:42:26 +0000 (UTC)
+Message-ID: <7f958855-0be7-47d4-9b58-036646534217@collabora.com>
+Date: Mon, 1 Apr 2024 13:42:26 -0300
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -56,8 +56,8 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v5 04/10] drm/ci: mediatek: Refactor existing mediatek
- jobs
+Subject: Re: [PATCH v5 05/10] drm/ci: mediatek: Add job to test panfrost and
+ powervr GPU driver
 Content-Language: en-US
 To: Vignesh Raman <vignesh.raman@collabora.com>,
  dri-devel@lists.freedesktop.org
@@ -69,232 +69,158 @@ Cc: daniels@collabora.com, airlied@gmail.com, daniel@ffwll.ch,
  linux-mediatek@lists.infradead.org, linux-amlogic@lists.infradead.org,
  linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org
 References: <20240401061235.192713-1-vignesh.raman@collabora.com>
- <20240401061235.192713-5-vignesh.raman@collabora.com>
+ <20240401061235.192713-6-vignesh.raman@collabora.com>
 From: Helen Koike <helen.koike@collabora.com>
-In-Reply-To: <20240401061235.192713-5-vignesh.raman@collabora.com>
+In-Reply-To: <20240401061235.192713-6-vignesh.raman@collabora.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 
 
 
 On 01/04/2024 03:12, Vignesh Raman wrote:
-> For mediatek mt8173 and mt8183, the display driver is mediatek.
-> Currently, in drm-ci for mediatek, only the display driver is
-> tested. Refactor the existing mediatek jobs so that gpu driver
-> testing jobs can be added later and update xfails accordingly.
-> Since the correct driver name is passed from the job to test gpu
-> and display driver, remove the check to set IGT_FORCE_DRIVER
-> based on driver name.
+> For mediatek mt8173, the GPU driver is powervr and for mediatek
+> mt8183, the GPU driver is panfrost. So add support in drm-ci to
+> test panfrost and powervr GPU driver for mediatek SOCs and update
+> xfails. Powervr driver was merged in linux kernel, but there's no
+> mediatek support yet. So disable the mt8173-gpu job which uses
+> powervr driver.
+> 
+> Add panfrost specific tests to testlist and skip KMS tests for
+> panfrost driver since it is not a not a KMS driver and skip
+> driver-specific tests. Also update the MAINTAINERS file to include
+> xfails for panfrost driver.
 > 
 > Signed-off-by: Vignesh Raman <vignesh.raman@collabora.com>
 > ---
 > 
 > v2:
->    - Refactor the patch to rename job to indicate display driver testing,
->      rename the existing xfail files, and remove IGT_FORCE_DRIVER from the
->      script since it's now set by the job.
+>    - Add panfrost and PVR GPU jobs for mediatek SOC with new xfails, add xfail
+>      entry to MAINTAINERS.
 > 
 > v3:
->    - Add the job name in GPU_VERSION and use it for xfail file names instead
->      of using DRIVER_NAME. Also update xfails.
+>    - Add panfrost specific tests to testlist and skip KMS tests for
+>      panfrost driver since it is not a not a KMS driver and update xfails.
+>      Update the MAINTAINERS file to include xfails for panfrost driver.
+>      Add the job name in GPU_VERSION and use it for xfail file names instead
+>      of using DRIVER_NAME.
 > 
 > v4:
->    - Remove the display suffix in job and rename xfails accordingly.
->      Remove the change adding job name in GPU_VERSION.
+>    - Remove the gpu suffix in job and rename xfails accordingly.
+>      Update the MAINTAINERS file to include xfails for panfrost driver.
 > 
 > v5:
->    - Add mediatek-display job.
+>    - Add powervr-gpu and panfrost-gpu jobs and skip driver-specific tests.
 > 
 > ---
->   drivers/gpu/drm/ci/igt_runner.sh              | 10 ---------
->   drivers/gpu/drm/ci/test.yml                   | 21 +++++++++++++++----
->   .../drm/ci/xfails/mediatek-mt8173-fails.txt   | 15 -------------
->   .../drm/ci/xfails/mediatek-mt8173-flakes.txt  | 13 ++++++++++++
->   .../drm/ci/xfails/mediatek-mt8183-fails.txt   | 21 ++++++++++++-------
->   .../drm/ci/xfails/mediatek-mt8183-flakes.txt  |  8 +++++++
->   6 files changed, 51 insertions(+), 37 deletions(-)
->   create mode 100644 drivers/gpu/drm/ci/xfails/mediatek-mt8173-flakes.txt
->   create mode 100644 drivers/gpu/drm/ci/xfails/mediatek-mt8183-flakes.txt
+>   MAINTAINERS                                   |  1 +
+>   drivers/gpu/drm/ci/gitlab-ci.yml              |  2 ++
+>   drivers/gpu/drm/ci/test.yml                   | 24 +++++++++++++++++++
+>   .../drm/ci/xfails/panfrost-mt8183-fails.txt   |  1 +
+>   .../drm/ci/xfails/panfrost-mt8183-skips.txt   |  8 +++++++
+>   5 files changed, 36 insertions(+)
+>   create mode 100644 drivers/gpu/drm/ci/xfails/panfrost-mt8183-fails.txt
+>   create mode 100644 drivers/gpu/drm/ci/xfails/panfrost-mt8183-skips.txt
 > 
-> diff --git a/drivers/gpu/drm/ci/igt_runner.sh b/drivers/gpu/drm/ci/igt_runner.sh
-> index f1a08b9b146f..ce6e22369d4d 100755
-> --- a/drivers/gpu/drm/ci/igt_runner.sh
-> +++ b/drivers/gpu/drm/ci/igt_runner.sh
-> @@ -20,16 +20,6 @@ cat /sys/kernel/debug/dri/*/state
->   set -e
->   
->   case "$DRIVER_NAME" in
-> -    rockchip|meson)
-> -        export IGT_FORCE_DRIVER="panfrost"
-> -        ;;
-> -    mediatek)
-> -        if [ "$GPU_VERSION" = "mt8173" ]; then
-> -            export IGT_FORCE_DRIVER=${DRIVER_NAME}
-> -        elif [ "$GPU_VERSION" = "mt8183" ]; then
-> -            export IGT_FORCE_DRIVER="panfrost"
-> -        fi
-> -        ;;
->       amdgpu)
->           # Cannot use HWCI_KERNEL_MODULES as at that point we don't have the module in /lib
->           mv /install/modules/lib/modules/* /lib/modules/.
-> diff --git a/drivers/gpu/drm/ci/test.yml b/drivers/gpu/drm/ci/test.yml
-> index 612c9ede3507..d8af670ee51d 100644
-> --- a/drivers/gpu/drm/ci/test.yml
-> +++ b/drivers/gpu/drm/ci/test.yml
-> @@ -282,14 +282,17 @@ amdgpu:stoney:
->   .mediatek:
+> diff --git a/MAINTAINERS b/MAINTAINERS
+> index f7d0040a6c21..333704ceefb6 100644
+> --- a/MAINTAINERS
+> +++ b/MAINTAINERS
 
-Maybe we could s/.mediatek/.mediatek-device, so we know we are not 
-talking about the driver name, what do you think?
+Note: We'll also need an entry in MAINTAINERS file for powervr (but it 
+is fine to only add it once we have tests running on it).
 
->     extends:
->       - .lava-igt:arm64
-> -  stage: mediatek
->     variables:
-> -    DRIVER_NAME: mediatek
->       DTB: ${DEVICE_TYPE}
->       BOOT_METHOD: depthcharge
->       KERNEL_IMAGE_TYPE: ""
->   
-> -mediatek:mt8173:
-> +.mediatek-display:
-> +  stage: mediatek
-> +  variables:
-> +    DRIVER_NAME: mediatek
-> +
-> +.mt8173:
->     extends:
->       - .mediatek
->     parallel: 4
-> @@ -298,7 +301,7 @@ mediatek:mt8173:
->       GPU_VERSION: mt8173
->       RUNNER_TAG: mesa-ci-x86-64-lava-mt8173-elm-hana
->   
-> -mediatek:mt8183:
-> +.mt8183:
->     extends:
->       - .mediatek
->     parallel: 3
-> @@ -307,6 +310,16 @@ mediatek:mt8183:
->       GPU_VERSION: mt8183
->       RUNNER_TAG: mesa-ci-x86-64-lava-mt8183-kukui-jacuzzi-juniper-sku16
->   
-> +mediatek:mt8173:
-> +  extends:
-> +    - .mt8173
-> +    - .mediatek-display
-> +
-> +mediatek:mt8183:
-> +  extends:
-> +    - .mt8183
-> +    - .mediatek-display
+Acked-by: Helen Koike <helen.koike@collabora.com>
 
- From the code, panfrost was being used in IGT_FORCE_DRIVER for mt8183 
-no? --> never mind, I just saw the next patch handles panfrost case. I 
-guess these two commits could be squashed (up to you).
-
-Regards,
+Thanks
 Helen
 
+> @@ -1666,6 +1666,7 @@ S:	Supported
+>   T:	git git://anongit.freedesktop.org/drm/drm-misc
+>   F:	Documentation/gpu/panfrost.rst
+>   F:	drivers/gpu/drm/ci/testlist.txt
+> +F:	drivers/gpu/drm/ci/xfails/panfrost*
+>   F:	drivers/gpu/drm/panfrost/
+>   F:	include/uapi/drm/panfrost_drm.h
+>   
+> diff --git a/drivers/gpu/drm/ci/gitlab-ci.yml b/drivers/gpu/drm/ci/gitlab-ci.yml
+> index d03d76692f0e..5b5d4a324659 100644
+> --- a/drivers/gpu/drm/ci/gitlab-ci.yml
+> +++ b/drivers/gpu/drm/ci/gitlab-ci.yml
+> @@ -111,6 +111,8 @@ stages:
+>     - meson
+>     - msm
+>     - rockchip
+> +  - panfrost
+> +  - powervr
+>     - virtio-gpu
+>   
+>   # YAML anchors for rule conditions
+> diff --git a/drivers/gpu/drm/ci/test.yml b/drivers/gpu/drm/ci/test.yml
+> index d8af670ee51d..adeb05bdb440 100644
+> --- a/drivers/gpu/drm/ci/test.yml
+> +++ b/drivers/gpu/drm/ci/test.yml
+> @@ -292,6 +292,16 @@ amdgpu:stoney:
+>     variables:
+>       DRIVER_NAME: mediatek
+>   
+> +.powervr-gpu:
+> +  stage: powervr
+> +  variables:
+> +    DRIVER_NAME: powervr
+> +
+> +.panfrost-gpu:
+> +  stage: panfrost
+> +  variables:
+> +    DRIVER_NAME: panfrost
+> +
+>   .mt8173:
+>     extends:
+>       - .mediatek
+> @@ -315,11 +325,25 @@ mediatek:mt8173:
+>       - .mt8173
+>       - .mediatek-display
+>   
+> +powervr:mt8173:
+> +  extends:
+> +    - .mt8173
+> +    - .powervr-gpu
+> +  rules:
+> +    # TODO: powervr driver was merged in linux kernel, but there's no mediatek support yet
+> +    # Remove the rule once mediatek support is added for powervr
+> +    - when: never
+> +
+>   mediatek:mt8183:
+>     extends:
+>       - .mt8183
+>       - .mediatek-display
+>   
+> +panfrost:mt8183:
+> +  extends:
+> +    - .mt8183
+> +    - .panfrost-gpu
 > +
 >   # drm-mtk doesn't even probe yet in mainline for mt8192
 >   .mediatek:mt8192:
 >     extends:
-> diff --git a/drivers/gpu/drm/ci/xfails/mediatek-mt8173-fails.txt b/drivers/gpu/drm/ci/xfails/mediatek-mt8173-fails.txt
-> index ef0cb7c3698c..c63abd603b02 100644
-> --- a/drivers/gpu/drm/ci/xfails/mediatek-mt8173-fails.txt
-> +++ b/drivers/gpu/drm/ci/xfails/mediatek-mt8173-fails.txt
-> @@ -9,28 +9,13 @@ kms_bw@linear-tiling-3-displays-1920x1080p,Fail
->   kms_bw@linear-tiling-3-displays-2560x1440p,Fail
->   kms_bw@linear-tiling-3-displays-3840x2160p,Fail
->   kms_color@invalid-gamma-lut-sizes,Fail
-> -kms_color@pipe-A-invalid-gamma-lut-sizes,Fail
-> -kms_color@pipe-B-invalid-gamma-lut-sizes,Fail
->   kms_cursor_legacy@cursor-vs-flip-atomic,Fail
->   kms_cursor_legacy@cursor-vs-flip-legacy,Fail
->   kms_flip@flip-vs-modeset-vs-hang,Fail
->   kms_flip@flip-vs-panning-vs-hang,Fail
->   kms_flip@flip-vs-suspend,Fail
->   kms_flip@flip-vs-suspend-interruptible,Fail
-> -kms_force_connector_basic@force-edid,Fail
-> -kms_force_connector_basic@force-load-detect,Fail
-> -kms_force_connector_basic@prune-stale-modes,Fail
-> -kms_hdmi_inject@inject-4k,Fail
-> -kms_plane_scaling@planes-upscale-20x20,Fail
-> -kms_plane_scaling@planes-upscale-20x20-downscale-factor-0-25,Fail
-> -kms_plane_scaling@planes-upscale-20x20-downscale-factor-0-5,Fail
-> -kms_plane_scaling@planes-upscale-20x20-downscale-factor-0-75,Fail
-> -kms_plane_scaling@upscale-with-modifier-20x20,Fail
-> -kms_plane_scaling@upscale-with-pixel-format-20x20,Fail
-> -kms_plane_scaling@upscale-with-rotation-20x20,Fail
->   kms_properties@get_properties-sanity-atomic,Fail
->   kms_properties@plane-properties-atomic,Fail
->   kms_properties@plane-properties-legacy,Fail
->   kms_rmfb@close-fd,Fail
-> -kms_selftest@drm_format,Timeout
-> -kms_selftest@drm_format_helper,Timeout
-> diff --git a/drivers/gpu/drm/ci/xfails/mediatek-mt8173-flakes.txt b/drivers/gpu/drm/ci/xfails/mediatek-mt8173-flakes.txt
+> diff --git a/drivers/gpu/drm/ci/xfails/panfrost-mt8183-fails.txt b/drivers/gpu/drm/ci/xfails/panfrost-mt8183-fails.txt
 > new file mode 100644
-> index 000000000000..64b30c092c85
+> index 000000000000..6f5e760d5ec0
 > --- /dev/null
-> +++ b/drivers/gpu/drm/ci/xfails/mediatek-mt8173-flakes.txt
-> @@ -0,0 +1,13 @@
-> +# Board Name: mt8173-elm-hana.dtb
-> +# Bug Report: https://lore.kernel.org/dri-devel/931e3f9a-9c5c-fc42-16fc-abaac4e0c0ff@collabora.com/T/#u
-> +# IGT Version: 1.28-gd2af13d9f
-> +# Failure Rate: 50
-> +# Linux Version: 6.7.0-rc3
-> +
-> +# Reported by deqp-runner
-> +kms_cursor_legacy@cursor-vs-flip-atomic-transitions
-> +
-> +# Below test shows inconsistency across multiple runs,
-> +# giving results of Pass and Timeout/Fail alternately
-> +kms_prop_blob@invalid-set-prop
-> +kms_prop_blob@invalid-set-prop-any
-> diff --git a/drivers/gpu/drm/ci/xfails/mediatek-mt8183-fails.txt b/drivers/gpu/drm/ci/xfails/mediatek-mt8183-fails.txt
-> index 67d690fc4037..91cd1c4ec068 100644
-> --- a/drivers/gpu/drm/ci/xfails/mediatek-mt8183-fails.txt
-> +++ b/drivers/gpu/drm/ci/xfails/mediatek-mt8183-fails.txt
-> @@ -1,13 +1,18 @@
-> -kms_addfb_basic@addfb25-bad-modifier,Fail
-> +core_setmaster_vs_auth,Fail
-> +kms_bw@linear-tiling-1-displays-1920x1080p,Fail
->   kms_bw@linear-tiling-1-displays-2560x1440p,Fail
-> +kms_bw@linear-tiling-1-displays-3840x2160p,Fail
->   kms_bw@linear-tiling-2-displays-1920x1080p,Fail
->   kms_bw@linear-tiling-2-displays-2560x1440p,Fail
->   kms_bw@linear-tiling-2-displays-3840x2160p,Fail
-> -kms_bw@linear-tiling-3-displays-2560x1440p,Fail
-> -kms_bw@linear-tiling-3-displays-3840x2160p,Fail
-> -kms_color@pipe-A-invalid-gamma-lut-sizes,Fail
-> -kms_plane_cursor@overlay,Fail
-> -kms_plane_cursor@primary,Fail
-> -kms_plane_cursor@viewport,Fail
-> -kms_plane_scaling@upscale-with-rotation-20x20,Fail
-> +kms_color@invalid-gamma-lut-sizes,Fail
-> +kms_cursor_legacy@cursor-vs-flip-atomic,Fail
-> +kms_cursor_legacy@cursor-vs-flip-legacy,Fail
-> +kms_flip@flip-vs-modeset-vs-hang,Fail
-> +kms_flip@flip-vs-panning-vs-hang,Fail
-> +kms_flip@flip-vs-suspend,Fail
-> +kms_flip@flip-vs-suspend-interruptible,Fail
-> +kms_properties@get_properties-sanity-atomic,Fail
-> +kms_properties@plane-properties-atomic,Fail
-> +kms_properties@plane-properties-legacy,Fail
->   kms_rmfb@close-fd,Fail
-> diff --git a/drivers/gpu/drm/ci/xfails/mediatek-mt8183-flakes.txt b/drivers/gpu/drm/ci/xfails/mediatek-mt8183-flakes.txt
+> +++ b/drivers/gpu/drm/ci/xfails/panfrost-mt8183-fails.txt
+> @@ -0,0 +1 @@
+> +panfrost_prime@gem-prime-import,Fail
+> diff --git a/drivers/gpu/drm/ci/xfails/panfrost-mt8183-skips.txt b/drivers/gpu/drm/ci/xfails/panfrost-mt8183-skips.txt
 > new file mode 100644
-> index 000000000000..5885a950fa72
+> index 000000000000..41a846a59644
 > --- /dev/null
-> +++ b/drivers/gpu/drm/ci/xfails/mediatek-mt8183-flakes.txt
+> +++ b/drivers/gpu/drm/ci/xfails/panfrost-mt8183-skips.txt
 > @@ -0,0 +1,8 @@
-> +# Board Name: mt8183-kukui-jacuzzi-juniper-sku16.dtb
-> +# Bug Report: https://lore.kernel.org/dri-devel/931e3f9a-9c5c-fc42-16fc-abaac4e0c0ff@collabora.com/T/#u
-> +# IGT Version: 1.28-gd2af13d9f
-> +# Failure Rate: 100
-> +# Linux Version: 6.7.0-rc3
+> +# Panfrost is not a KMS driver, so skip the KMS tests
+> +kms_.*
 > +
-> +# Reported by deqp-runner
-> +kms_cursor_legacy@cursor-vs-flip-atomic-transitions
+> +# Skip driver specific tests
+> +msm_.*
+> +^amdgpu.*
+> +v3d_.*
+> +vc4_.*
 
