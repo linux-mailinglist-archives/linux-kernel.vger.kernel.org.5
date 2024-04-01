@@ -1,62 +1,46 @@
-Return-Path: <linux-kernel+bounces-126571-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-126572-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 945068939B8
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 11:47:15 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id BAE6A8939BA
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 11:47:31 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2B3E01F2122A
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 09:47:15 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 70DC62845D9
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 09:47:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 078EC10A3B;
-	Mon,  1 Apr 2024 09:47:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 31D2310A17;
+	Mon,  1 Apr 2024 09:47:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="H4IgENyy"
-Received: from fllv0015.ext.ti.com (fllv0015.ext.ti.com [198.47.19.141])
+	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="Awl4+MIC"
+Received: from out30-130.freemail.mail.aliyun.com (out30-130.freemail.mail.aliyun.com [115.124.30.130])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E245D10953;
-	Mon,  1 Apr 2024 09:47:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.19.141
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5D5C312E76
+	for <linux-kernel@vger.kernel.org>; Mon,  1 Apr 2024 09:47:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711964826; cv=none; b=PtWMBoBcbeO1UaxVIgrNFYygzIaHQv0nBl1C12U3a9oiAV74HloTojlz0ImASKnYAYSo3rd7LmX/EyIMy5VpVPEz4RKMSOJeeir5d4yZBS2aRm+Mm4udIGWqve/q8qDr7732cEU0J36YjjSEC3lEUl+IC9I44O593+Hf3/Js/bQ=
+	t=1711964836; cv=none; b=CgiqK/OpqpkyE90/ZnzMOrzD8qgdtIsUqRkw6ew3raC6ND6oyB4YvF8jAgh/bbf+lxlX+W5P9/6SbcAwif23H98lbmIYCokTBHGRZ3Icz04HXYza4igaZ2HRpPkboSjijl4jsa5E2i8H9gq0z+llhW87d5Pju12f4ADXKb6Tptw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711964826; c=relaxed/simple;
-	bh=ikA8MDST2pXkX5fvpsetPaZ87FEe2/XOnEPeV5hEdWc=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=YBP11AElH8/llXWXaGYWd1mITBrldcD8ZrRqvfUnpWidoMr7542/2E08xIdZZcagqORttP+3dzc8ymRdFQ5xQluux2izxl4EkLKJwM/o2yFdDs8bknoIJDR7drEfQwEFM6+wZ12sHVeGyS/8yX5ePsK5Akn2qqUmPX9ZZZyv3DQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=H4IgENyy; arc=none smtp.client-ip=198.47.19.141
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
-Received: from fllv0034.itg.ti.com ([10.64.40.246])
-	by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 4319kfaK037664;
-	Mon, 1 Apr 2024 04:46:41 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-	s=ti-com-17Q1; t=1711964801;
-	bh=GhP5JL9UrBvNzC+YjH3zvQlQUkQUerqqI1bJfe0019Q=;
-	h=Date:Subject:To:CC:References:From:In-Reply-To;
-	b=H4IgENyyXQHgD5rNK0yeyIHVyoOglcgg4xT2+pOB9jY/2df7+qBPpgMXVW97bg3As
-	 LobVu9YNnPiDOG1A2e5WC5J0gefE7hUPEhDSwW57BJFBbmvxBZ8VaBxAYJggYvwSDz
-	 YMPLaM9L37H1FsKoZicAqY78aGP0uZgzSiFxeiKM=
-Received: from DLEE105.ent.ti.com (dlee105.ent.ti.com [157.170.170.35])
-	by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 4319kegB059389
-	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-	Mon, 1 Apr 2024 04:46:41 -0500
-Received: from DLEE102.ent.ti.com (157.170.170.32) by DLEE105.ent.ti.com
- (157.170.170.35) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Mon, 1
- Apr 2024 04:46:40 -0500
-Received: from lelvsmtp5.itg.ti.com (10.180.75.250) by DLEE102.ent.ti.com
- (157.170.170.32) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Mon, 1 Apr 2024 04:46:40 -0500
-Received: from [172.24.227.220] (chintan-thinkstation-p360-tower.dhcp.ti.com [172.24.227.220])
-	by lelvsmtp5.itg.ti.com (8.15.2/8.15.2) with ESMTP id 4319ix0X075731;
-	Mon, 1 Apr 2024 04:46:36 -0500
-Message-ID: <d7c1adc3-e9b2-4ed8-b16e-e36474c4b5f5@ti.com>
-Date: Mon, 1 Apr 2024 15:16:36 +0530
+	s=arc-20240116; t=1711964836; c=relaxed/simple;
+	bh=sLD088rZSYLR+7UhtuM5mEkrNG1QE2W4oVO6nFXFoFs=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=rdleCEEqlriooZnWymMdFfHjzi+s8VxFVJ72bktgCx7XFUuG3SAQsblzsZKtEuQDlCb9ruoFDb+tw8qbwxWRFxWY6Aofr3eP8AK7RU3NxjOam46KlWQW6+mpSRV60oqZ5VGkewkoPkCUugzZ+sfLxAZDC8JB39Tfq+qBG0SxVqE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=Awl4+MIC; arc=none smtp.client-ip=115.124.30.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
+DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
+	d=linux.alibaba.com; s=default;
+	t=1711964831; h=Message-ID:Date:MIME-Version:Subject:To:From:Content-Type;
+	bh=zuuew83k+LQb/Y+TvxE+cu+nqYDNqpIa+/3fszfLWmM=;
+	b=Awl4+MIC7vHo2KsGR9YuWO+Ihmh+ephU+renNld7yNT4dl2Ce9kIgSBkLdLcm4rJoecnk1YsaM3BvUnlKa6pa1tMJsoOsJi1WvDLjjtuv2k4S5SIsjlRaP/+jo6XhoeZqtWPXBrdFroqmDmNqQ5xERcMk62mZsFNwGveB8nGMVA=
+X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R121e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046060;MF=baolin.wang@linux.alibaba.com;NM=1;PH=DS;RN=10;SR=0;TI=SMTPD_---0W3jcQaE_1711964829;
+Received: from 30.97.56.92(mailfrom:baolin.wang@linux.alibaba.com fp:SMTPD_---0W3jcQaE_1711964829)
+          by smtp.aliyun-inc.com;
+          Mon, 01 Apr 2024 17:47:10 +0800
+Message-ID: <5f17af68-721b-42bc-88f6-ee8fc527789d@linux.alibaba.com>
+Date: Mon, 1 Apr 2024 17:47:09 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -64,42 +48,225 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net-next v4 3/3] net: ethernet: ti: am65-cpsw-ethtool:
- Update rx_filters for CPSW's timestamping capability
-Content-Language: en-US
-To: Jakub Kicinski <kuba@kernel.org>
-CC: Dan Carpenter <dan.carpenter@linaro.org>,
-        Siddharth Vadapalli
-	<s-vadapalli@ti.com>,
-        Grygorii Strashko <grygorii.strashko@ti.com>,
-        "Heiner
- Kallweit" <hkallweit1@gmail.com>,
-        Vladimir Oltean <vladimir.oltean@nxp.com>,
-        Andrew Lunn <andrew@lunn.ch>, Roger Quadros <rogerq@kernel.org>,
-        "Richard
- Cochran" <richardcochran@gmail.com>,
-        Paolo Abeni <pabeni@redhat.com>, "Eric
- Dumazet" <edumazet@google.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        <linux-kernel@vger.kernel.org>, <netdev@vger.kernel.org>
-References: <20240327054234.1906957-1-c-vankar@ti.com>
- <20240327054234.1906957-3-c-vankar@ti.com>
- <20240329145517.7b46a15a@kernel.org>
-From: Chintan Vankar <c-vankar@ti.com>
-In-Reply-To: <20240329145517.7b46a15a@kernel.org>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Subject: Re: [PATCH v2 2/2] mm: support multi-size THP numa balancing
+To: Kefeng Wang <wangkefeng.wang@huawei.com>, akpm@linux-foundation.org
+Cc: david@redhat.com, mgorman@techsingularity.net, jhubbard@nvidia.com,
+ ying.huang@intel.com, 21cnbao@gmail.com, ryan.roberts@arm.com,
+ linux-mm@kvack.org, linux-kernel@vger.kernel.org
+References: <cover.1711683069.git.baolin.wang@linux.alibaba.com>
+ <d28d276d599c26df7f38c9de8446f60e22dd1950.1711683069.git.baolin.wang@linux.alibaba.com>
+ <86236280-a811-4d5a-a480-5006226ae379@huawei.com>
+From: Baolin Wang <baolin.wang@linux.alibaba.com>
+In-Reply-To: <86236280-a811-4d5a-a480-5006226ae379@huawei.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
 
 
-On 30/03/24 03:25, Jakub Kicinski wrote:
-> On Wed, 27 Mar 2024 11:12:34 +0530 Chintan Vankar wrote:
->> Update supported hwtstamp_rx_filters values for CPSW's timestamping
->> capability.
+On 2024/4/1 11:47, Kefeng Wang wrote:
 > 
-> Is there a reason this is not part of the previous patch?
+> 
+> On 2024/3/29 14:56, Baolin Wang wrote:
+>> Now the anonymous page allocation already supports multi-size THP (mTHP),
+>> but the numa balancing still prohibits mTHP migration even though it 
+>> is an
+>> exclusive mapping, which is unreasonable.
+>>
+>> Allow scanning mTHP:
+>> Commit 859d4adc3415 ("mm: numa: do not trap faults on shared data section
+>> pages") skips shared CoW pages' NUMA page migration to avoid shared data
+>> segment migration. In addition, commit 80d47f5de5e3 ("mm: don't try to
+>> NUMA-migrate COW pages that have other uses") change to use page_count()
+>> to avoid GUP pages migration, that will also skip the mTHP numa scaning.
+>> Theoretically, we can use folio_maybe_dma_pinned() to detect the GUP
+>> issue, although there is still a GUP race, the issue seems to have been
+>> resolved by commit 80d47f5de5e3. Meanwhile, use the 
+>> folio_likely_mapped_shared()
+>> to skip shared CoW pages though this is not a precise sharers count. To
+>> check if the folio is shared, ideally we want to make sure every page is
+>> mapped to the same process, but doing that seems expensive and using
+>> the estimated mapcount seems can work when running autonuma benchmark.
+>>
+>> Allow migrating mTHP:
+>> As mentioned in the previous thread[1], large folios (including THP) are
+>> more susceptible to false sharing issues among threads than 4K base page,
+>> leading to pages ping-pong back and forth during numa balancing, which is
+>> currently not easy to resolve. Therefore, as a start to support mTHP numa
+>> balancing, we can follow the PMD mapped THP's strategy, that means we can
+>> reuse the 2-stage filter in should_numa_migrate_memory() to check if the
+>> mTHP is being heavily contended among threads (through checking the 
+>> CPU id
+>> and pid of the last access) to avoid false sharing at some degree. Thus,
+>> we can restore all PTE maps upon the first hint page fault of a large 
+>> folio
+>> to follow the PMD mapped THP's strategy. In the future, we can 
+>> continue to
+>> optimize the NUMA balancing algorithm to avoid the false sharing issue 
+>> with
+>> large folios as much as possible.
+>>
+>> Performance data:
+>> Machine environment: 2 nodes, 128 cores Intel(R) Xeon(R) Platinum
+>> Base: 2024-03-25 mm-unstable branch
+>> Enable mTHP to run autonuma-benchmark
+>>
+>> mTHP:16K
+>> Base                Patched
+>> numa01                numa01
+>> 224.70                143.48
+>> numa01_THREAD_ALLOC        numa01_THREAD_ALLOC
+>> 118.05                47.43
+>> numa02                numa02
+>> 13.45                9.29
+>> numa02_SMT            numa02_SMT
+>> 14.80                7.50
+>>
+>> mTHP:64K
+>> Base                Patched
+>> numa01                numa01
+>> 216.15                114.40
+>> numa01_THREAD_ALLOC        numa01_THREAD_ALLOC
+>> 115.35                47.41
+>> numa02                numa02
+>> 13.24                9.25
+>> numa02_SMT            numa02_SMT
+>> 14.67                7.34
+>>
+>> mTHP:128K
+>> Base                Patched
+>> numa01                numa01
+>> 205.13                144.45
+>> numa01_THREAD_ALLOC        numa01_THREAD_ALLOC
+>> 112.93                41.88
+>> numa02                numa02
+>> 13.16                9.18
+>> numa02_SMT            numa02_SMT
+>> 14.81                7.49
+>>
+>> [1] 
+>> https://lore.kernel.org/all/20231117100745.fnpijbk4xgmals3k@techsingularity.net/
+>> Signed-off-by: Baolin Wang <baolin.wang@linux.alibaba.com>
+>> ---
+>>   mm/memory.c   | 57 +++++++++++++++++++++++++++++++++++++++++++--------
+>>   mm/mprotect.c |  3 ++-
+>>   2 files changed, 51 insertions(+), 9 deletions(-)
+>>
+>> diff --git a/mm/memory.c b/mm/memory.c
+>> index c30fb4b95e15..2aca19e4fbd8 100644
+>> --- a/mm/memory.c
+>> +++ b/mm/memory.c
+>> @@ -5068,16 +5068,56 @@ static void numa_rebuild_single_mapping(struct 
+>> vm_fault *vmf, struct vm_area_str
+>>       update_mmu_cache_range(vmf, vma, vmf->address, vmf->pte, 1);
+>>   }
+>> +static void numa_rebuild_large_mapping(struct vm_fault *vmf, struct 
+>> vm_area_struct *vma,
+>> +                       struct folio *folio, pte_t fault_pte, bool 
+>> ignore_writable)
+>> +{
+>> +    int nr = pte_pfn(fault_pte) - folio_pfn(folio);
+>> +    unsigned long start = max(vmf->address - nr * PAGE_SIZE, 
+>> vma->vm_start);
+>> +    unsigned long end = min(vmf->address + (folio_nr_pages(folio) - 
+>> nr) * PAGE_SIZE, vma->vm_end);
+>> +    pte_t *start_ptep = vmf->pte - (vmf->address - start) / PAGE_SIZE;
+>> +    bool pte_write_upgrade = vma_wants_manual_pte_write_upgrade(vma);
+>> +    unsigned long addr;
+>> +
+>> +    /* Restore all PTEs' mapping of the large folio */
+>> +    for (addr = start; addr != end; start_ptep++, addr += PAGE_SIZE) {
+>> +        pte_t pte, old_pte;
+>> +        pte_t ptent = ptep_get(start_ptep);
+>> +        bool writable = false;
+>> +
+>> +        if (!pte_present(ptent) || !pte_protnone(ptent))
+>> +            continue;
+>> +
+>> +        if (pfn_folio(pte_pfn(ptent)) != folio)
+>> +            continue;
+>> +
+>> +        if (!ignore_writable) {
+>> +            ptent = pte_modify(ptent, vma->vm_page_prot);
+>> +            writable = pte_write(ptent);
+>> +            if (!writable && pte_write_upgrade &&
+>> +                can_change_pte_writable(vma, addr, ptent))
+>> +                writable = true;
+>> +        }
+>> +
+>> +        old_pte = ptep_modify_prot_start(vma, addr, start_ptep);
+>> +        pte = pte_modify(old_pte, vma->vm_page_prot);
+>> +        pte = pte_mkyoung(pte);
+>> +        if (writable)
+>> +            pte = pte_mkwrite(pte, vma);
+>> +        ptep_modify_prot_commit(vma, addr, start_ptep, old_pte, pte);
+>> +        update_mmu_cache_range(vmf, vma, addr, start_ptep, 1);
+> 
+> Maybe pass "unsigned long address, pte_t *ptep" to 
+> numa_rebuild_single_mapping(),
+> then, just call it here.
 
-No there is no reason to make it as independent patch, I will combine
-this patch with previous patch in next version.
+Yes, sounds reasonable. Will do in next version.
+
+>>   static vm_fault_t do_numa_page(struct vm_fault *vmf)
+>>   {
+>>       struct vm_area_struct *vma = vmf->vma;
+>>       struct folio *folio = NULL;
+>>       int nid = NUMA_NO_NODE;
+>> -    bool writable = false;
+>> +    bool writable = false, ignore_writable = false;
+>>       int last_cpupid;
+>>       int target_nid;
+>>       pte_t pte, old_pte;
+>> -    int flags = 0;
+>> +    int flags = 0, nr_pages;
+>>       /*
+>>        * The pte cannot be used safely until we verify, while holding 
+>> the page
+>> @@ -5107,10 +5147,6 @@ static vm_fault_t do_numa_page(struct vm_fault 
+>> *vmf)
+>>       if (!folio || folio_is_zone_device(folio))
+>>           goto out_map;
+>> -    /* TODO: handle PTE-mapped THP */
+>> -    if (folio_test_large(folio))
+>> -        goto out_map;
+>> -
+>>       /*
+>>        * Avoid grouping on RO pages in general. RO pages shouldn't 
+>> hurt as
+>>        * much anyway since they can be in shared cache state. This misses
+>> @@ -5130,6 +5166,7 @@ static vm_fault_t do_numa_page(struct vm_fault 
+>> *vmf)
+>>           flags |= TNF_SHARED;
+>>       nid = folio_nid(folio);
+>> +    nr_pages = folio_nr_pages(folio);
+>>       /*
+>>        * For memory tiering mode, cpupid of slow memory page is used
+>>        * to record page access time.  So use default value.
+>> @@ -5146,6 +5183,7 @@ static vm_fault_t do_numa_page(struct vm_fault 
+>> *vmf)
+>>       }
+>>       pte_unmap_unlock(vmf->pte, vmf->ptl);
+>>       writable = false;
+>> +    ignore_writable = true;
+>>       /* Migrate to the requested node */
+>>       if (migrate_misplaced_folio(folio, vma, target_nid)) {
+>> @@ -5166,14 +5204,17 @@ static vm_fault_t do_numa_page(struct vm_fault 
+>> *vmf)
+>>   out:
+>>       if (nid != NUMA_NO_NODE)
+>> -        task_numa_fault(last_cpupid, nid, 1, flags);
+>> +        task_numa_fault(last_cpupid, nid, nr_pages, flags);
+>>       return 0;
+>>   out_map:
+>>       /*
+>>        * Make it present again, depending on how arch implements
+>>        * non-accessible ptes, some can allow access by kernel mode.
+>>        */
+>> -    numa_rebuild_single_mapping(vmf, vma, writable);
+>> +    if (folio && folio_test_large(folio))
+> initialize nr_pages and then call
+> 
+>      if (nr_pages > 1)
+
+Umm, IMO, folio_test_large() is more readable for me.
 
