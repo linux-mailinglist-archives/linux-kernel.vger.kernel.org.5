@@ -1,203 +1,357 @@
-Return-Path: <linux-kernel+bounces-126884-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-126885-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5049B8942F2
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 18:58:05 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2476D89432E
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 19:00:44 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 000B328374C
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 16:58:03 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A5E921F26EDC
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 17:00:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6964C4D108;
-	Mon,  1 Apr 2024 16:57:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 531C2482EF;
+	Mon,  1 Apr 2024 17:00:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="UHp/RCnS"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.14])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=igalia.com header.i=@igalia.com header.b="Od2BR8PC"
+Received: from fanzine2.igalia.com (fanzine2.igalia.com [213.97.179.56])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1BD41487BC;
-	Mon,  1 Apr 2024 16:57:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=192.198.163.14
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711990665; cv=fail; b=sLcXR1d5yMS4/1QfK+0W3755yS9lvj++UmfwbXXPPV28oMIvO5CwmzPM+2YSBKfIRkkqbqBZRDpJAZOGWycvbqKKhru0JYLrvnRBcV3P/lX21somZ3hG3bsqt3IlbKpwOE6MUU09fuLjSKZOn68eKy56piRsahvoKXlUbAGXsrk=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711990665; c=relaxed/simple;
-	bh=a702SssXQ/FTdJU4yVp2ADGsa7Z9qQcd1JSSOPAmZB8=;
-	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=ghzQ1zOxGJjUXTqJyVgJ6/T/RWjfyhIhBEnaEBEfN6MgGGCBkJgM/+jO5fEs0w5i1sZfjigezcHJN54jKlDrJdhfc6337I7FD8EaQRZVZd0Y3yuleVNDZ2b9u1P/xVaAnNU8+kxN+KuitrMvEpdvBVRAJf45g/eECcedMRiEUc8=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=UHp/RCnS; arc=fail smtp.client-ip=192.198.163.14
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1711990663; x=1743526663;
-  h=from:to:cc:subject:date:message-id:references:
-   in-reply-to:content-transfer-encoding:mime-version;
-  bh=a702SssXQ/FTdJU4yVp2ADGsa7Z9qQcd1JSSOPAmZB8=;
-  b=UHp/RCnS8Mlq3vOqe0/MaUqi+zfpPDbLHSyuygyOQ7AgxK5fzeS90GQd
-   KJudSHO3qww6yQilU7F1Ud/hVOh9BWLm3PIV4CVxqOdn8l/tX/eg9h10X
-   Vtuor27LfWl8eYuUNveE+AMdf5GoDOqJC8xeA/6Yg1K0VAzgMeh01gFvS
-   vpYTLkU036Kp4262PhYlBDrhrlfnm8Q84bASklHe+tW7F35EN5bM3rHsv
-   PDlFdEKN0a42ZEsKWlmOJRfkoWuIOWjZD9S9xUj/DiSHhNZqOsibr3ldY
-   2o0vfNkg4MbXcUXc7i2rInReKjd6EV0X2Ctr7iwZmPiVvtcpoKMnBjdxZ
-   g==;
-X-CSE-ConnectionGUID: PMVv1tlSSseIqfN5iqznVA==
-X-CSE-MsgGUID: jebnq1/NQHiasCHSpW0X5A==
-X-IronPort-AV: E=McAfee;i="6600,9927,11031"; a="7336874"
-X-IronPort-AV: E=Sophos;i="6.07,172,1708416000"; 
-   d="scan'208";a="7336874"
-Received: from fmviesa006.fm.intel.com ([10.60.135.146])
-  by fmvoesa108.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Apr 2024 09:57:42 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,172,1708416000"; 
-   d="scan'208";a="17809480"
-Received: from orsmsx602.amr.corp.intel.com ([10.22.229.15])
-  by fmviesa006.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 01 Apr 2024 09:57:41 -0700
-Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
- ORSMSX602.amr.corp.intel.com (10.22.229.15) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Mon, 1 Apr 2024 09:57:39 -0700
-Received: from orsedg603.ED.cps.intel.com (10.7.248.4) by
- orsmsx610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35 via Frontend Transport; Mon, 1 Apr 2024 09:57:39 -0700
-Received: from NAM11-DM6-obe.outbound.protection.outlook.com (104.47.57.169)
- by edgegateway.intel.com (134.134.137.100) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.35; Mon, 1 Apr 2024 09:57:38 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=nkQO+VbZucTYRAlb6Qbwy0H4PWU8ItottPU65RNcw74K4oQ+94bTLsJtGgJJlsCaChfzn33R6wwKhXVuyeMWkumIN6vl4ZVdCqQud72L5wkIfz02I71PBZKZydcUIn6G8jIeCU9RdJX0CDBeEYiU7v+DDIsXhTWaNZNDd54AMyx8QIOguVtXtdexUClBFsWwLsUww443ZZxbKcoeStH+RjcyGYHLozFwhL1N4Cbgi8PsKx7g7flTML4OiFUkx0AGKtRhV0N8bcYm6CsOloNS3KRq1jOnn3q6DYstNpsKrfAgdv6Y+gARs+z8OpMkbpYRPbOAl9/1IfYqTiIQW5JOZw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=a702SssXQ/FTdJU4yVp2ADGsa7Z9qQcd1JSSOPAmZB8=;
- b=MMr2XhF+7EJ1PTp4z84Y2+lXva9lTGz8UEoSJU/oB1OZKfT5BLPOfgENdEG4pe+ay/P42VMA3ALO3EpFqOBXFggyPcb2KdE4SB3ZpdL9MqJnJ6mqoQqDD0McPYndEZvwWd8vVmCXE3i+SIqkUNyzJQpn/x+PaEFuPp2bdT6uWP8izmrUVQtbibfHtf/DKmljaVPQ6BMPfQrX/6bhz8y7XieywvltG5+qFSeir7kw8FqmWfijVYL5u8mH7lfjESHAxBJwaUqnhNbDy/SDGpOV1NEbvzIg6AKG1T1FUqZl6fqTzdR+TWuIE2KRgJj7AbZJZgbcSEykGo8bxq/ibeftVg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Received: from SJ1PR11MB6083.namprd11.prod.outlook.com (2603:10b6:a03:48a::9)
- by PH8PR11MB8288.namprd11.prod.outlook.com (2603:10b6:510:1c8::17) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7452.25; Mon, 1 Apr
- 2024 16:57:30 +0000
-Received: from SJ1PR11MB6083.namprd11.prod.outlook.com
- ([fe80::fca9:7c00:b6d0:1d62]) by SJ1PR11MB6083.namprd11.prod.outlook.com
- ([fe80::fca9:7c00:b6d0:1d62%5]) with mapi id 15.20.7452.019; Mon, 1 Apr 2024
- 16:57:30 +0000
-From: "Luck, Tony" <tony.luck@intel.com>
-To: Haibo Xu <xiaobo55x@gmail.com>, Sunil V L <sunilvl@ventanamicro.com>
-CC: "Xu, Haibo1" <haibo1.xu@intel.com>, "ajones@ventanamicro.com"
-	<ajones@ventanamicro.com>, Paul Walmsley <paul.walmsley@sifive.com>, "Palmer
- Dabbelt" <palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>, "Rafael J.
- Wysocki" <rafael@kernel.org>, Len Brown <lenb@kernel.org>, "Moore, Robert"
-	<robert.moore@intel.com>, Conor Dooley <conor.dooley@microchip.com>, Guo Ren
-	<guoren@kernel.org>, Alexandre Ghiti <alexghiti@rivosinc.com>, Greentime Hu
-	<greentime.hu@sifive.com>, Charlie Jenkins <charlie@rivosinc.com>, "Sami
- Tolvanen" <samitolvanen@google.com>, Zong Li <zong.li@sifive.com>, "Jisheng
- Zhang" <jszhang@kernel.org>, Baoquan He <bhe@redhat.com>,
-	=?utf-8?B?Q2zDqW1lbnQgTMOpZ2Vy?= <cleger@rivosinc.com>, Greg Kroah-Hartman
-	<gregkh@linuxfoundation.org>, Chen Jiahao <chenjiahao16@huawei.com>, "Arnd
- Bergmann" <arnd@arndb.de>, James Morse <james.morse@arm.com>, "Russell King
- (Oracle)" <rmk+kernel@armlinux.org.uk>, Evan Green <evan@rivosinc.com>,
-	Samuel Holland <samuel.holland@sifive.com>, Marc Zyngier <maz@kernel.org>,
-	Anup Patel <apatel@ventanamicro.com>, Ard Biesheuvel <ardb@kernel.org>,
-	Yuntao Wang <ytcoode@gmail.com>, "Schofield, Alison"
-	<alison.schofield@intel.com>, Dave Hansen <dave.hansen@linux.intel.com>,
-	"Williams, Dan J" <dan.j.williams@intel.com>,
-	"linux-riscv@lists.infradead.org" <linux-riscv@lists.infradead.org>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	"linux-acpi@vger.kernel.org" <linux-acpi@vger.kernel.org>,
-	"acpica-devel@lists.linux.dev" <acpica-devel@lists.linux.dev>
-Subject: RE: [PATCH v2 6/6] ACPI: RISCV: Enable ACPI based NUMA
-Thread-Topic: [PATCH v2 6/6] ACPI: RISCV: Enable ACPI based NUMA
-Thread-Index: AQHacGqJQBWRJiNhuUyCbQKEpDrv+bFTKNEAgAAMuICAAJRPQA==
-Date: Mon, 1 Apr 2024 16:57:30 +0000
-Message-ID: <SJ1PR11MB6083B43290D216B1568642B0FC3F2@SJ1PR11MB6083.namprd11.prod.outlook.com>
-References: <cover.1709780590.git.haibo1.xu@intel.com>
- <01cb5780041565784d459cd94a5c4f55eaa87739.1709780590.git.haibo1.xu@intel.com>
- <Zgpf0rqUSEZcSiAV@sunil-laptop>
- <CAJve8om9-cTtYKLmB0R=6Wwh5KQ9z+16AFR-tuUkJhJjbn0UEA@mail.gmail.com>
-In-Reply-To: <CAJve8om9-cTtYKLmB0R=6Wwh5KQ9z+16AFR-tuUkJhJjbn0UEA@mail.gmail.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: SJ1PR11MB6083:EE_|PH8PR11MB8288:EE_
-x-ld-processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: 72tV3NX2AD6uemawyj46pdW1evTCN5oa4DOOosr/qu2meGUQB/nUQ5YXhDIEYX8XVGO+bX9+MaomugAF0o9Vf5gKrFcPjS+nLJsFgJIQsrEKbNMMZusEsP07X+DQ5mw8HCqBn1ZWUotc4Wxz0Pr0ozxLI7K7n73CQ4NaA2oh1l/qmYhN/Wy9/WNHURwWsYI/qUKjgyn6wzzLcMRELEJRp5jP7Wt1P4QOJz88QhR0gh6QpWOEQiLD9cAvt+4Fd1HlRm61kUSaI8dK6pItqSTjMop18OTPes1RfRNC/Q/vYBHi4NyLMExrvHf4CNZ+GO58qRRXYiEMo7BQ+8DTgsYR6rTcOOcGhT86AJ5gK2hvw0kW+aIN4dBWbssrz3EYCNMydZjVYJDwOF+yj4XVIQLrW9VpNwhWzCe5ZE4cQNpmxW6W/EniPr6wn3BHhQSL1bS1z5ckGqQyL/NKxsadae88ku2bKZjHv/A30dLulbOzzG5KPkLdV8+KiGvJDHV/KDGuong+qn86lKCCQeBom/DUfwxops78Ufl6tKAc6d8dL1SIOk07BxkAtp/KHk4ctigzegvX9cTWwAPAc9Y7VZdoCL4/K/O7/wH32rVt7HKt8q2lGvPdyJFaDChgN/MuhB7VLNjgViRB9ytU7hrCbKTlC/aBVBO+feFsQG7sfcWEcsQ=
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SJ1PR11MB6083.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(7416005)(376005)(1800799015)(366007);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?utf-8?B?WmdISzBNYUpWTXoxbjlkc1B6UTlCQVVVV3I4MG9RYWpQbWpPempwbWpudUJN?=
- =?utf-8?B?UGZTZk5uU1hXZFVUOUdadzBwTzRDNkF5VW4wTXlZVlJPbmdwQ05WZERpWTYv?=
- =?utf-8?B?eGZFYk5oZmIvbFJYRTdMdWYxQldnUkZ3bzkzc0xmUHJOQ0UwVzZzd2U0QVdQ?=
- =?utf-8?B?SkZ5N29LN1R2TDVUN2lPZ2dlMUUvQnUxNmplbEFwWkdQMjRFY2NUQnJKOUJX?=
- =?utf-8?B?WVZnSkhXRjZ3emhOemhhZUovYWxIZzJzWUZNNEVaY3Fqb1Jrb0NEV3VoMDlT?=
- =?utf-8?B?YU1pVHFwQjg1ZHNVdkUyK0J4ejN4L1dWaWM4TlJaQ1NXYnUrTXoyeER5VjRV?=
- =?utf-8?B?bzFUS0FjSnFRVEEwdFhMaHRBVHhWNStMUjNMZTNaTktaMWFNbmtuR0pEbUV5?=
- =?utf-8?B?QWM5KzVEdUZTdnRVYVVsb0docnRZN0V2WEFtWWVXMFp6eFo4c0wwZWdBQlMv?=
- =?utf-8?B?aEYwM00xMzhEKzY4ZXkrVTl1U1BjU3NDYm9sQ21nU2RoVGE4Z05zS3ZvUXIy?=
- =?utf-8?B?ZklKeHVuV0VFNTZLRjR4NS9xNGh2aXozVTAxOVlpbkFDNjM2d2xjdC9qNldU?=
- =?utf-8?B?QlVOK2F4bXpPN1Q1bkFlTHNkZnNUVFpMNHpIZ2I4SC9QQjVXUmZtWXZNRmdi?=
- =?utf-8?B?WVdNcXhvRHpFSUo4M2Jxak1RandmR251dVhUcXd6MmRBRklaN0l5cHFDSlVm?=
- =?utf-8?B?Z3RBRjVOejR0T0xFVVBlUVF6Qm5qWGpMNCs3NmtoTGJhVkNaaCtsYzFDVng4?=
- =?utf-8?B?a0dqcFZNME1XeWVBdzRuZjVnUTlZMmR4SkVYdnVPdERzbWx5OFF1NnhxWmh5?=
- =?utf-8?B?TFZkQVhLazNQK1dlSHEyQ09lWmdGdUIzT0YwK0ZsWVlVeWRKblpZME41T29a?=
- =?utf-8?B?RVR3SkZJcTV2V09VcDRoMmtqK0UvaFROVE5XMUVyZDE5eXZhMFpWSC8rcHVC?=
- =?utf-8?B?VDBvUmM4RkJsOEV5RC9iajNsamM3Nm1zUGN5ZTRqak5zemhzOElVQWhUUUsy?=
- =?utf-8?B?VmQyMmJZNkozK2hLcjRoUzRSVlYzVTM3YVRtMjVtYW9obzFQN3BrTzdyK01J?=
- =?utf-8?B?TCthbEV2K2ZjNTkwSWtFM3lwRUFwVkZJeVhBc0s4MXJtbEZ1eHEyVjB3N0ZY?=
- =?utf-8?B?T2VoMmluSXF4TnM1U2FjWi9nWGk3a2ZRdFpscXFML3ZwYXNacUw5YUVBNUg2?=
- =?utf-8?B?RTJETVdHdXhtV0o1b0NnQTh5MHN3eDMxeUZoNTkzbUxJTk8rdjZlNmxOZmt3?=
- =?utf-8?B?MDVLb1A3TGFKVUM2VmRseHJPV01xWUtaMjFOSTRXQmxZKzFoNkkxNVlpYSsw?=
- =?utf-8?B?QVlCYVZFRnFjY3FMaEI5dG9ob3Y2QUtMVHRuMXBnYjAzOWFZa0tlV3p1RFF6?=
- =?utf-8?B?d2owdC9sR0drclYrZEdycFNRVTdSZVB2UkFUdTQxODNYbk5IM1dKaUY3cXVK?=
- =?utf-8?B?SExlVFpYd0VDc0EyM2ZsY29KSWN2UDFydnZad1NSNUVTcFh4NzUwTkI4TGwr?=
- =?utf-8?B?QjJmbmo5RFBiaFhoYmQ5Tm1RNTNRdFlpeHFCb0d4SXpCU1FyazhJTTJhQlA4?=
- =?utf-8?B?Sk5uTzhiTEN3YktLSFJabUc1Q2xzYWJvM3YvMGNudTQ3am8rZXdoaXlqWnZK?=
- =?utf-8?B?NTVuaEsrdGhoRzFtTWg5alJZUUR4d0E2aFBwQUk0bDRUSFp1T2RxQ3BiOHlM?=
- =?utf-8?B?eENuU2xRWitjTU5UU1RDWFZXOUVGZ3FSTVVGRENaMGtwWEhuM1JPVnhsNHpP?=
- =?utf-8?B?T2ZSREs0MmJlSEthazFwTHBtSVAxVVUxRURHRkZUMmI0OWVrVW9ZTTVEOWdN?=
- =?utf-8?B?SzdjamVWaU85bCtHQmNxMzdSakpyS0Z0N0l3WEI0K0oyMFQvYm1Xc3dQcWd3?=
- =?utf-8?B?c0ZvY1pjZjd2T3lMckZmMVhsbTd6QUJ6TmlPR2VpV2NLQmhtMkxGVDNha1E3?=
- =?utf-8?B?bzRBYXZlL0locmlEMVA5djNUWWNwV3Qva3g4dFFnblVDaDhlNm5RSmNFNEoy?=
- =?utf-8?B?U243MFR5S0hrUS9yMnE1NzJmZXcrRWRtZ1poRnhtVWZXV2pjam5JVkRiSXNL?=
- =?utf-8?B?WTlTK0xZazljaHl2TFY1Z0R3b3JzRVlFU1dheVVhVGNtc0hhZ2dqN1FuZzA1?=
- =?utf-8?Q?Md0UN1yAZkGdn/xgUUborpjyW?=
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ED8C847A5D
+	for <linux-kernel@vger.kernel.org>; Mon,  1 Apr 2024 17:00:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.97.179.56
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1711990838; cv=none; b=V3pDhoFHqNpGyCCMzeHedSEeCzld5H8Gqp4/RsPT2vHK2gfjcb1+AS5jchH0tj4qaymg9O+UFoBgW4KIJlU9tueakVhixWUF+RqalreG0FFIBuQiMS/RcmpWQ1ljqSxN1FxovyaprS9VaaLIhESOHUNNxSGtjBK9rVL9thEr2vs=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1711990838; c=relaxed/simple;
+	bh=pCILjjFruTUItgAuh0UXMOTQA+eHcZREO60ZnkHyAaY=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=kobSx3MOvQfyqCguLvRNHqar7JZClWWthgum8B3wsy/yCq/OdunkQTe1aYU7IvTNfNghvMA3vWMd3z8b2he+QDBfOhnx5dJjbFKd3jqGmdiolgy3UXNUCMSBtT4zTCr7GyYuGE0qrr4Og61uzU8pJHzfZr+4zSdyki+/5FRUx4s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=igalia.com; spf=pass smtp.mailfrom=igalia.com; dkim=pass (2048-bit key) header.d=igalia.com header.i=@igalia.com header.b=Od2BR8PC; arc=none smtp.client-ip=213.97.179.56
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=igalia.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=igalia.com
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=igalia.com;
+	s=20170329; h=Content-Transfer-Encoding:Content-Type:In-Reply-To:From:
+	References:Cc:To:Subject:MIME-Version:Date:Message-ID:Sender:Reply-To:
+	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+	Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
+	List-Subscribe:List-Post:List-Owner:List-Archive;
+	bh=FmT/246q2v4RRcdH4pcSl1aosdjsTKWCAVsj0OC9Dks=; b=Od2BR8PCSY9h5KHAo5CL8wu6ZX
+	FjTkf1FQdjKl4ym2ZbNe5X9hmzFiKhNgqJakJcv3NZC2aCi5LZGV0ED0hHLaHU9kvlTq5aq4KusJc
+	EMBftNoxAwz6WCu+i6OJBBmDFK/RmrAW4rxTJstU9ObaNCaeMt851toFBVIAzxoaGOnAXrm3da5G1
+	IHzDZSMTfCKJt+F9im9wEtnTq7AhYM6QNCTTKDerxtPX9XXQCWCuQZlyySk+o0S6iSXnQZC8YjjqT
+	TIgFIvDtUVH0kNZSzNkFBcDWxIgclMqd//ogRRIv5IfoOdw3N/ND1LTic+YPTTU7vRB0QDg8zZ4iV
+	xpxt3JDQ==;
+Received: from [177.34.169.255] (helo=[192.168.0.139])
+	by fanzine2.igalia.com with esmtpsa 
+	(Cipher TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_128_GCM:128) (Exim)
+	id 1rrL15-0006D0-3m; Mon, 01 Apr 2024 19:00:15 +0200
+Message-ID: <db70b74c-1b7c-463f-a783-a289caf59fa5@igalia.com>
+Date: Mon, 1 Apr 2024 14:00:03 -0300
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: SJ1PR11MB6083.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 0beb6b21-fe4e-47a5-719f-08dc526cd196
-X-MS-Exchange-CrossTenant-originalarrivaltime: 01 Apr 2024 16:57:30.5652
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: bLj7dv8lVCdkizGlF6VPNH8T77E9G+ea1UJ2bTKdfJ7P5EY05qdZ6ZhXbGIhqr3ocByQ/q8h8Wj1ZawlIc3e+g==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH8PR11MB8288
-X-OriginatorOrg: intel.com
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v5 10/10] drm/ci: add tests on vkms
+To: Vignesh Raman <vignesh.raman@collabora.com>,
+ dri-devel@lists.freedesktop.org
+Cc: daniels@collabora.com, helen.koike@collabora.com, airlied@gmail.com,
+ daniel@ffwll.ch, emma@anholt.net, robdclark@gmail.com,
+ david.heidelberg@collabora.com, guilherme.gallo@collabora.com,
+ sergi.blanch.torne@collabora.com, hamohammed.sa@gmail.com,
+ rodrigosiqueiramelo@gmail.com, melissa.srw@gmail.com, mairacanal@riseup.net,
+ linux-mediatek@lists.infradead.org, linux-amlogic@lists.infradead.org,
+ linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org
+References: <20240401061235.192713-1-vignesh.raman@collabora.com>
+ <20240401061235.192713-11-vignesh.raman@collabora.com>
+Content-Language: en-US
+From: =?UTF-8?Q?Ma=C3=ADra_Canal?= <mcanal@igalia.com>
+Autocrypt: addr=mcanal@igalia.com; keydata=
+ xjMEZIsaeRYJKwYBBAHaRw8BAQdAGU6aY8oojw61KS5rGGMrlcilFqR6p6ID45IZ6ovX0h3N
+ H01haXJhIENhbmFsIDxtY2FuYWxAaWdhbGlhLmNvbT7CjwQTFggANxYhBDMCqFtIvFKVRJZQ
+ hDSPnHLaGFVuBQJkixp5BQkFo5qAAhsDBAsJCAcFFQgJCgsFFgIDAQAACgkQNI+cctoYVW5u
+ GAEAwpaC5rI3wD8zqETKwGVoXd6+AbmGfZuVD40xepy7z/8BAM5w95/oyPsHUqOsg/xUTlNp
+ rlbhA+WWoaOXA3XgR+wCzjgEZIsaeRIKKwYBBAGXVQEFAQEHQGoOK0jgh0IorMAacx6WUUWb
+ s3RLiJYWUU6iNrk5wWUbAwEIB8J+BBgWCAAmFiEEMwKoW0i8UpVEllCENI+cctoYVW4FAmSL
+ GnkFCQWjmoACGwwACgkQNI+cctoYVW6cqwD/Q9R98msvkhgRvi18fzUPFDwwogn+F+gQJJ6o
+ pwpgFkAA/R2zOfla3IT6G3SBoV5ucdpdCpnIXFpQLbmfHK7dXsAC
+In-Reply-To: <20240401061235.192713-11-vignesh.raman@collabora.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-Pj4gSWYgdGhlIGZpcm13YXJlIGRpZG4ndCBwcm92aWRlIHRoZSBTUkFUL1NMSVQgb24gQUNQSSBi
-YXNlZCBzeXN0ZW1zLCB0aGVuDQo+PiB0aGVyZSB3aWxsIGJlIGEgbWVzc2FnZSAiRmFpbGVkIHRv
-IGluaXRpYWxpc2UgZnJvbSBmaXJtd2FyZSIgZnJvbQ0KPj4gYXJjaF9hY3BpX251bWFfaW5pdCgp
-LiBUaGlzIGlzIG5vdCBzcGVjaWZpYyB0byBSSVNDLVYuIEJ1dCBJIGFtDQo+PiB3b25kZXJpbmcg
-d2h5IHNob3VsZCBpdCBiZSBwcl9pbmZvIGluc3RlYWQgb2YgcHJfZGVidWcuDQo+Pg0KPg0KPiBN
-eSB1bmRlcnN0YW5kaW5nIGlzIG1heWJlIGl0IGp1c3Qgd2FudHMgdG8gZXhwb3NlIGV4cGxpY2l0
-IGxvZ3MgdG8NCj4gYXZvaWQgYW55IHBvdGVudGlhbCBidWdzIGZyb20gRlcgb3IgS2VybmVsLg0K
-DQpUaGVyZSBhcmUgbG90cyBvZiBBQ1BJIGVuYWJsZWQgc3lzdGVtcyB0aGF0IGFyZW4ndCBOVU1B
-IChzaW5nbGUNCnNvY2tldCBzZXJ2ZXJzLCBkZXNrdG9wcywgbGFwdG9wcykuIE1ha2luZyB0aGlz
-ICJwcl9pbmZvKCkiIHdvdWxkIGp1c3QNCmFkZCBub2lzZSB0byB0aGUgYm9vdCBvbiBhbGwgb2Yg
-dGhvc2UuDQoNCi1Ub255DQo=
+On 4/1/24 03:12, Vignesh Raman wrote:
+> Add job that runs igt on top of vkms.
+> 
+> Signed-off-by: Vignesh Raman <vignesh.raman@collabora.com>
+> Acked-by: Jessica Zhang <quic_jesszhan@quicinc.com>
+> Tested-by: Jessica Zhang <quic_jesszhan@quicinc.com>
+> Acked-by: Maxime Ripard <mripard@kernel.org>
+> Signed-off-by: Helen Koike <helen.koike@collabora.com>
+
+Acked-by: Maíra Canal <mcanal@igalia.com>
+
+Best Regards,
+- Maíra
+
+> ---
+> 
+> v4:
+>    - New patch in the series.
+>      https://lore.kernel.org/lkml/20240201065346.801038-1-vignesh.raman@collabora.com/
+> 
+> v5:
+>    - No changes.
+> 
+> ---
+>   MAINTAINERS                                   |  2 ++
+>   drivers/gpu/drm/ci/build.sh                   |  1 -
+>   drivers/gpu/drm/ci/gitlab-ci.yml              |  3 +-
+>   drivers/gpu/drm/ci/igt_runner.sh              |  6 ++--
+>   drivers/gpu/drm/ci/image-tags.yml             |  2 +-
+>   drivers/gpu/drm/ci/test.yml                   | 24 +++++++++++++-
+>   drivers/gpu/drm/ci/x86_64.config              |  1 +
+>   .../drm/ci/xfails/virtio_gpu-none-fails.txt   |  1 -
+>   drivers/gpu/drm/ci/xfails/vkms-none-fails.txt | 33 +++++++++++++++++++
+>   .../gpu/drm/ci/xfails/vkms-none-flakes.txt    | 20 +++++++++++
+>   drivers/gpu/drm/ci/xfails/vkms-none-skips.txt | 23 +++++++++++++
+>   11 files changed, 108 insertions(+), 8 deletions(-)
+>   create mode 100644 drivers/gpu/drm/ci/xfails/vkms-none-fails.txt
+>   create mode 100644 drivers/gpu/drm/ci/xfails/vkms-none-flakes.txt
+>   create mode 100644 drivers/gpu/drm/ci/xfails/vkms-none-skips.txt
+> 
+> diff --git a/MAINTAINERS b/MAINTAINERS
+> index 333704ceefb6..c78c825508ce 100644
+> --- a/MAINTAINERS
+> +++ b/MAINTAINERS
+> @@ -6962,6 +6962,8 @@ L:	dri-devel@lists.freedesktop.org
+>   S:	Maintained
+>   T:	git git://anongit.freedesktop.org/drm/drm-misc
+>   F:	Documentation/gpu/vkms.rst
+> +F:	drivers/gpu/drm/ci/testlist.txt
+> +F:	drivers/gpu/drm/ci/xfails/vkms*
+>   F:	drivers/gpu/drm/vkms/
+>   
+>   DRM DRIVER FOR VIRTUALBOX VIRTUAL GPU
+> diff --git a/drivers/gpu/drm/ci/build.sh b/drivers/gpu/drm/ci/build.sh
+> index 8a3baa003904..95493df9cdc2 100644
+> --- a/drivers/gpu/drm/ci/build.sh
+> +++ b/drivers/gpu/drm/ci/build.sh
+> @@ -156,7 +156,6 @@ fi
+>   
+>   mkdir -p artifacts/install/lib
+>   mv install/* artifacts/install/.
+> -rm -rf artifacts/install/modules
+>   ln -s common artifacts/install/ci-common
+>   cp .config artifacts/${CI_JOB_NAME}_config
+>   
+> diff --git a/drivers/gpu/drm/ci/gitlab-ci.yml b/drivers/gpu/drm/ci/gitlab-ci.yml
+> index 5b5d4a324659..df762d03533f 100644
+> --- a/drivers/gpu/drm/ci/gitlab-ci.yml
+> +++ b/drivers/gpu/drm/ci/gitlab-ci.yml
+> @@ -114,6 +114,7 @@ stages:
+>     - panfrost
+>     - powervr
+>     - virtio-gpu
+> +  - software-driver
+>   
+>   # YAML anchors for rule conditions
+>   # --------------------------------
+> @@ -269,4 +270,4 @@ sanity:
+>   
+>   # Jobs that need to pass before spending hardware resources on further testing
+>   .required-for-hardware-jobs:
+> -  needs: []
+> \ No newline at end of file
+> +  needs: []
+> diff --git a/drivers/gpu/drm/ci/igt_runner.sh b/drivers/gpu/drm/ci/igt_runner.sh
+> index ce6e22369d4d..c89acb974645 100755
+> --- a/drivers/gpu/drm/ci/igt_runner.sh
+> +++ b/drivers/gpu/drm/ci/igt_runner.sh
+> @@ -20,10 +20,10 @@ cat /sys/kernel/debug/dri/*/state
+>   set -e
+>   
+>   case "$DRIVER_NAME" in
+> -    amdgpu)
+> +    amdgpu|vkms)
+>           # Cannot use HWCI_KERNEL_MODULES as at that point we don't have the module in /lib
+> -        mv /install/modules/lib/modules/* /lib/modules/.
+> -        modprobe amdgpu
+> +        mv /install/modules/lib/modules/* /lib/modules/. || true
+> +        modprobe --first-time $DRIVER_NAME
+>           ;;
+>   esac
+>   
+> diff --git a/drivers/gpu/drm/ci/image-tags.yml b/drivers/gpu/drm/ci/image-tags.yml
+> index cf07c3e09b8c..bf861ab8b9c2 100644
+> --- a/drivers/gpu/drm/ci/image-tags.yml
+> +++ b/drivers/gpu/drm/ci/image-tags.yml
+> @@ -4,7 +4,7 @@ variables:
+>      DEBIAN_BASE_TAG: "${CONTAINER_TAG}"
+>   
+>      DEBIAN_X86_64_BUILD_IMAGE_PATH: "debian/x86_64_build"
+> -   DEBIAN_BUILD_TAG: "2023-10-08-config"
+> +   DEBIAN_BUILD_TAG: "2024-01-29-vkms"
+>   
+>      KERNEL_ROOTFS_TAG: "2023-10-06-amd"
+>      PKG_REPO_REV: "67f2c46b"
+> diff --git a/drivers/gpu/drm/ci/test.yml b/drivers/gpu/drm/ci/test.yml
+> index 8c90ae5a51e6..8fed797a26b9 100644
+> --- a/drivers/gpu/drm/ci/test.yml
+> +++ b/drivers/gpu/drm/ci/test.yml
+> @@ -411,7 +411,7 @@ panfrost:g12b:
+>       - .panfrost-gpu
+>   
+>   virtio_gpu:none:
+> -  stage: virtio-gpu
+> +  stage: software-driver
+>     variables:
+>       CROSVM_GALLIUM_DRIVER: llvmpipe
+>       DRIVER_NAME: virtio_gpu
+> @@ -431,3 +431,25 @@ virtio_gpu:none:
+>       - debian/x86_64_test-gl
+>       - testing:x86_64
+>       - igt:x86_64
+> +
+> +vkms:none:
+> +  stage: software-driver
+> +  variables:
+> +    DRIVER_NAME: vkms
+> +    GPU_VERSION: none
+> +  extends:
+> +    - .test-gl
+> +    - .test-rules
+> +  tags:
+> +    - kvm
+> +  script:
+> +    - ln -sf $CI_PROJECT_DIR/install /install
+> +    - mv install/bzImage /lava-files/bzImage
+> +    - mkdir -p /lib/modules
+> +    - mkdir -p $CI_PROJECT_DIR/results
+> +    - ln -sf $CI_PROJECT_DIR/results /results
+> +    - ./install/crosvm-runner.sh ./install/igt_runner.sh
+> +  needs:
+> +    - debian/x86_64_test-gl
+> +    - testing:x86_64
+> +    - igt:x86_64
+> diff --git a/drivers/gpu/drm/ci/x86_64.config b/drivers/gpu/drm/ci/x86_64.config
+> index 1cbd49a5b23a..8eaba388b141 100644
+> --- a/drivers/gpu/drm/ci/x86_64.config
+> +++ b/drivers/gpu/drm/ci/x86_64.config
+> @@ -24,6 +24,7 @@ CONFIG_DRM=y
+>   CONFIG_DRM_PANEL_SIMPLE=y
+>   CONFIG_PWM_CROS_EC=y
+>   CONFIG_BACKLIGHT_PWM=y
+> +CONFIG_DRM_VKMS=m
+>   
+>   # Strip out some stuff we don't need for graphics testing, to reduce
+>   # the build.
+> diff --git a/drivers/gpu/drm/ci/xfails/virtio_gpu-none-fails.txt b/drivers/gpu/drm/ci/xfails/virtio_gpu-none-fails.txt
+> index 007f21e56d89..f82d437909b5 100644
+> --- a/drivers/gpu/drm/ci/xfails/virtio_gpu-none-fails.txt
+> +++ b/drivers/gpu/drm/ci/xfails/virtio_gpu-none-fails.txt
+> @@ -41,7 +41,6 @@ kms_flip@flip-vs-absolute-wf_vblank,Fail
+>   kms_flip@flip-vs-absolute-wf_vblank-interruptible,Fail
+>   kms_flip@flip-vs-blocking-wf-vblank,Fail
+>   kms_flip@flip-vs-expired-vblank,Fail
+> -kms_flip@flip-vs-expired-vblank-interruptible,Fail
+>   kms_flip@flip-vs-modeset-vs-hang,Fail
+>   kms_flip@flip-vs-panning-vs-hang,Fail
+>   kms_flip@flip-vs-wf_vblank-interruptible,Fail
+> diff --git a/drivers/gpu/drm/ci/xfails/vkms-none-fails.txt b/drivers/gpu/drm/ci/xfails/vkms-none-fails.txt
+> new file mode 100644
+> index 000000000000..ef6101d2c356
+> --- /dev/null
+> +++ b/drivers/gpu/drm/ci/xfails/vkms-none-fails.txt
+> @@ -0,0 +1,33 @@
+> +kms_cursor_crc@cursor-rapid-movement-128x128,Fail
+> +kms_cursor_crc@cursor-rapid-movement-128x42,Fail
+> +kms_cursor_crc@cursor-rapid-movement-256x256,Fail
+> +kms_cursor_crc@cursor-rapid-movement-256x85,Fail
+> +kms_cursor_crc@cursor-rapid-movement-32x10,Fail
+> +kms_cursor_crc@cursor-rapid-movement-32x32,Fail
+> +kms_cursor_crc@cursor-rapid-movement-512x170,Fail
+> +kms_cursor_crc@cursor-rapid-movement-512x512,Fail
+> +kms_cursor_crc@cursor-rapid-movement-64x21,Fail
+> +kms_cursor_crc@cursor-rapid-movement-64x64,Fail
+> +kms_cursor_legacy@basic-flip-before-cursor-atomic,Fail
+> +kms_cursor_legacy@basic-flip-before-cursor-legacy,Fail
+> +kms_cursor_legacy@cursor-vs-flip-atomic,Fail
+> +kms_cursor_legacy@cursor-vs-flip-legacy,Fail
+> +kms_cursor_legacy@cursor-vs-flip-toggle,Fail
+> +kms_cursor_legacy@cursor-vs-flip-varying-size,Fail
+> +kms_cursor_legacy@flip-vs-cursor-atomic,Fail
+> +kms_cursor_legacy@flip-vs-cursor-crc-atomic,Fail
+> +kms_cursor_legacy@flip-vs-cursor-crc-legacy,Fail
+> +kms_cursor_legacy@flip-vs-cursor-legacy,Fail
+> +kms_flip@flip-vs-modeset-vs-hang,Fail
+> +kms_flip@flip-vs-panning-vs-hang,Fail
+> +kms_pipe_crc_basic@nonblocking-crc,Fail
+> +kms_pipe_crc_basic@nonblocking-crc-frame-sequence,Fail
+> +kms_pipe_crc_basic@suspend-read-crc,Fail
+> +kms_plane@plane-panning-bottom-right-suspend,Fail
+> +kms_universal_plane@universal-plane-pipe-A-sanity,Fail
+> +kms_universal_plane@universal-plane-sanity,Fail
+> +kms_vblank@pipe-A-ts-continuation-dpms-suspend,Fail
+> +kms_writeback@writeback-check-output,Fail
+> +kms_writeback@writeback-fb-id,Fail
+> +kms_writeback@writeback-invalid-parameters,Fail
+> +kms_writeback@writeback-pixel-formats,Fail
+> diff --git a/drivers/gpu/drm/ci/xfails/vkms-none-flakes.txt b/drivers/gpu/drm/ci/xfails/vkms-none-flakes.txt
+> new file mode 100644
+> index 000000000000..7b52dab45457
+> --- /dev/null
+> +++ b/drivers/gpu/drm/ci/xfails/vkms-none-flakes.txt
+> @@ -0,0 +1,20 @@
+> +# Board Name: vkms
+> +# Bug Report: https://lore.kernel.org/dri-devel/005da8f1-8050-bffd-653c-2a87ae6376f7@collabora.com/T/#u
+> +# IGT Version: 1.28-gb0cc8160e
+> +# Linux Version: 6.7.0-rc3
+> +# Failure Rate: 50
+> +
+> +# Reported by deqp-runner
+> +kms_cursor_legacy@cursorA-vs-flipA-legacy
+> +kms_cursor_legacy@cursorA-vs-flipA-varying-size
+> +kms_flip@flip-vs-expired-vblank-interruptible
+> +kms_flip@flip-vs-expired-vblank
+> +kms_flip@plain-flip-fb-recreate
+> +kms_flip@plain-flip-fb-recreate-interruptible
+> +kms_flip@plain-flip-ts-check-interruptible
+> +
+> +# The below test shows inconsistency across multiple runs,
+> +# giving results of Pass and Fail alternately.
+> +kms_cursor_legacy@cursorA-vs-flipA-toggle
+> +kms_pipe_crc_basic@nonblocking-crc
+> +kms_flip@plain-flip-ts-check
+> diff --git a/drivers/gpu/drm/ci/xfails/vkms-none-skips.txt b/drivers/gpu/drm/ci/xfails/vkms-none-skips.txt
+> new file mode 100644
+> index 000000000000..723de920dc37
+> --- /dev/null
+> +++ b/drivers/gpu/drm/ci/xfails/vkms-none-skips.txt
+> @@ -0,0 +1,23 @@
+> +# Hits:
+> +# rcu: INFO: rcu_preempt detected stalls on CPUs/tasks:
+> +# rcu: 	Tasks blocked on level-0 rcu_node (CPUs 0-1): P749/1:b..l
+> +kms_prop_blob@invalid-get-prop
+> +
+> +# keeps printing vkms_vblank_simulate: vblank timer overrun and never ends
+> +kms_invalid_mode@int-max-clock
+> +
+> +# Suspend seems to be broken
+> +.*suspend.*
+> +
+> +# Hangs machine and timeout occurs
+> +kms_flip@flip-vs-absolute-wf_vblank-interruptible
+> +kms_invalid_mode@zero-hdisplay
+> +kms_invalid_mode@bad-vtotal
+> +kms_cursor_crc.*
+> +
+> +# Skip hw specific tests
+> +msm_.*
+> +amdgpu/amd_.*
+> +panfrost_.*
+> +v3d_.*
+> +vc4_.*
 
