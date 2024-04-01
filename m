@@ -1,151 +1,152 @@
-Return-Path: <linux-kernel+bounces-127073-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-127074-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 389CB89466D
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 23:15:38 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id EF6E3894671
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 23:17:14 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id DFF9A1F2202B
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 21:15:37 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A8B8D282720
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 21:17:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CEAC254BE8;
-	Mon,  1 Apr 2024 21:15:30 +0000 (UTC)
-Received: from mail-pl1-f176.google.com (mail-pl1-f176.google.com [209.85.214.176])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AFACC54FB8;
+	Mon,  1 Apr 2024 21:16:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b="qRIqM2kW"
+Received: from mail-lf1-f45.google.com (mail-lf1-f45.google.com [209.85.167.45])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0ABEB2A1BF;
-	Mon,  1 Apr 2024 21:15:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1716954F87
+	for <linux-kernel@vger.kernel.org>; Mon,  1 Apr 2024 21:16:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712006130; cv=none; b=ZnlDId87wD1NdPTGeiu2UlMf7f6AFypvUSCqenx0hH4xGZWgRxVvUxE7Zg1YQuL57XJxinJcS9qeXwK5Cxvq+jwj0ETj65uRUQzNoyn9rrbeneIK76mrnJfJGSUOJAwNRAmuWSab6KwLEizsYs0SUEUnjFCX/TRp+0vkXYXbmRg=
+	t=1712006217; cv=none; b=PSHkBcOzm6AdO34aUjejEoxNCWXyO/BrqU6Wy3h6yvHEzY85IufNheLzNLN+xZ4JiQUAMX4giDUh6/SD/A4o9MnE+vBcj6y+WBwcc/V+JUPxqRzyzgc0vqpkUfEWghjQV+gjGcsk3L2O4q3jYULnSx97xJ9ke5tm628/ei4WVfI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712006130; c=relaxed/simple;
-	bh=CC5RoHNood4sNyDuHBo6HDda8sVDACBLUrjlALO7FxU=;
+	s=arc-20240116; t=1712006217; c=relaxed/simple;
+	bh=LRIB+IlQyiZJucvH3luhNQ5xpEz7qQsLM5a02CjHDSk=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=Znk7+JFxmMFFLDkSOwPl/3mV4AwEoVtWEMPCGSyRqXa39BKH0t68sl6KEgG4qnKkc44WCT/BpCvmEb/RTEwlbD2oc3xIun+3eu19Z7cr3I/ZbBPMM3YmUZOSfgLCY9s4RcpvAmokkC3kKu1GScGFsQ9uXauJPjlwo9PEz0QiWNk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.214.176
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f176.google.com with SMTP id d9443c01a7336-1e0fa980d55so34898435ad.3;
-        Mon, 01 Apr 2024 14:15:27 -0700 (PDT)
+	 To:Cc:Content-Type; b=KrsNyPj7mhWBvues8Og1Amogbs/OzVhPA1FBFCzTczLvLktwpw0UacdNKASOriZyardnTEAybIcEAza/4QjuvAY7h4wnIFuvHaZfM1S5808FqnSJdZjZQ1dIRTBpKXRoKGy00sKOnyzhyKNUqNzwYAzwZO3xPu8L6d4bWj/mw7o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com; spf=pass smtp.mailfrom=baylibre.com; dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b=qRIqM2kW; arc=none smtp.client-ip=209.85.167.45
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=baylibre.com
+Received: by mail-lf1-f45.google.com with SMTP id 2adb3069b0e04-515a81928a1so7235071e87.3
+        for <linux-kernel@vger.kernel.org>; Mon, 01 Apr 2024 14:16:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20230601.gappssmtp.com; s=20230601; t=1712006212; x=1712611012; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=V7IJ6bTDAFU3LIbdvbyl4a/Q/nTpdUPDNMP+Qrjtk6c=;
+        b=qRIqM2kWsIsHCQTrQAlqZciEm1PI2SYvSsGqXDSOt+aF0fzKjxFR2mIsnWz9PwQL3w
+         bTCKMA/RoOmuTe04CoAZXe8cYwqHmw20x1nNjoRFlurq4kB0TwYahdCeBFPFygSchyKa
+         NZxndGGwV+ATMoEBWwCuZkGPMkscb/LKBbtmLyycTwFNKiIqdtXULUW+I+XFuhRXLcnF
+         6ZnEtt8O5cQTZOz0E2yJGPhDivZY3v0TaLbfih6oCYlCToivbU+UiFOWo/Peebert6at
+         k0T6O8ywLHqL8bCCWiDwY8V6n9b6HHwelGVKtoAMJ9FzK4DPcgd3XpbSPktE7cjmVpCf
+         hBgw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712006127; x=1712610927;
+        d=1e100.net; s=20230601; t=1712006212; x=1712611012;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=ZOjxoedclmTtjqJIWU8Dyy9YgLz8iOnVuv662VeBEBs=;
-        b=q6by7IIENRDQwadelYQBr9mwWXV879fg3Mfs2IiAkkS/j1xkCxyuuyNX2QWK9FdFGe
-         d0hEXYo+qj+CKaG07vsjMmSOq8bhC3mD+8XkdrabudBbawzHPOJsk93r7xwfqP3SPPeW
-         9ZZ3nhAt5juQ1D/DLTMLBiyJIgseHyGOfBVl6Pg8mo5U6xJti5OlNCXUl9z4l9J+AcAx
-         mbYiySu4fCORZLAVGiUV3UFdrRN8BvBuqEjYzD17Yu7+3OvvswbR9+wHhH7S6L8DnOKI
-         NltHc7Xu2E/EXnlDmK97V7QXDpNXKhNWrI06fMekz3Wgl2KLlh6t1V8TySIqk2G4cMka
-         GGrQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXZ5ZL83jbLnMkiArYu7vzObq4CZAE3C9HLGSoaEVnufedWOC3T53lzA2v8rkdh/VLBvvfD+m7N6Yq4Bfy9F8mcM1SI+Syz7m5P5SyHPLSUR/Az07e2KpO/6JhiUjvJAskBIipElF3o7DNOjFBNsw==
-X-Gm-Message-State: AOJu0Yx4PeiH88QuPGgX5tafsNSCGEv6FYae7k6JPBjTwTH2grq+q0dh
-	Vql9EDNO07Qwgm8PzxDelXVlAK/G3XYJy3rSh96jsNbTwTlzMHSrUgMhPK5BUJDmUw8jk0Sm/hF
-	81wfOl3+9fy7Nmwo+VYqhK9WW8dg=
-X-Google-Smtp-Source: AGHT+IHV6W1kjqikzerVzCsJtErA2QPWzzyW4QJsaPChLYQec4LXZLCMJA0Bj48TgrDejpoPP+cxcLM0opkrGV4qte0=
-X-Received: by 2002:a17:902:f705:b0:1e2:5e32:4444 with SMTP id
- h5-20020a170902f70500b001e25e324444mr1900698plo.10.1712006127351; Mon, 01 Apr
- 2024 14:15:27 -0700 (PDT)
+        bh=V7IJ6bTDAFU3LIbdvbyl4a/Q/nTpdUPDNMP+Qrjtk6c=;
+        b=ebLmATsnfEXSS/huac4RsQiF4QLZx2cXjvcY5OGjye4LZgP/Jx52+MJ2CHji3WZJQY
+         d9uQwS2ku/4OyI12LjVI3rejDu2v0eKb2nfOKqe/507Oks3LopJJnWfdvASYkuN/I1Gk
+         6iaZBi8/Vt6EA/8GYwlt96G+n30+G4VQurcC545MW6h0qepra3KlMROgfxSDjUeKVMEo
+         aZAG0QKJxGrnu5+Am5GsWvBwraJCB81DCEXqSbjQ48z4FLlYNHJeLSp8w4DpI1YtN7lh
+         wMV7DDMgOo1eQ/35tV7RvOBHL7RyfC/1odUnZpf1wDtdQqD0kF7uv0KyOd78fgDpzwX1
+         f3iA==
+X-Forwarded-Encrypted: i=1; AJvYcCUYXtV5B7d1qHmk3WAnPjz0uwvWU9f/3SiYRxS6TXJ9bSeDGPF+WOFYkRpglxGvPTgMhok3/WnkxUxQpOEwVEH/lwu9DUXf4cxlDCi6
+X-Gm-Message-State: AOJu0YwAzvbncqdMYjeFj7qjIxPhDZtJWc7DSw5YLGfgBfsBEkxL7crg
+	oA3nTfGotpUsDRx8nY0FVRhvw3PzubkDTE/qaDIdordqBlWtbRRfmO+etowhxtjzNASCLnGKsnO
+	LzVyMQyX42Hm6OpnycutSFDNthnF5nnA1GfsOlQ==
+X-Google-Smtp-Source: AGHT+IF+zrcKfWk2kOPKYiAPiiHaME+SrZnrnzl8M8MqT2GbO3PJ/dSLjODI5cHAlocFRGgyaRTtIScCdWLP55GgbLg=
+X-Received: by 2002:a2e:9157:0:b0:2d6:a73f:234e with SMTP id
+ q23-20020a2e9157000000b002d6a73f234emr8122196ljg.11.1712006212189; Mon, 01
+ Apr 2024 14:16:52 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240329191224.1046866-1-weilin.wang@intel.com>
- <20240329191224.1046866-5-weilin.wang@intel.com> <CAM9d7ciqiAOV_1A0N3he_Jiw3ur-ZN6djWpzgR2C+AF2m9an5A@mail.gmail.com>
- <CO6PR11MB56356D30DC2EE8F0EB7ADB30EE3F2@CO6PR11MB5635.namprd11.prod.outlook.com>
-In-Reply-To: <CO6PR11MB56356D30DC2EE8F0EB7ADB30EE3F2@CO6PR11MB5635.namprd11.prod.outlook.com>
-From: Namhyung Kim <namhyung@kernel.org>
-Date: Mon, 1 Apr 2024 14:15:16 -0700
-Message-ID: <CAM9d7chNd70gWCOe+268mTiLHAaGQEeJc9B5TebdexM-s_sB0A@mail.gmail.com>
-Subject: Re: [RFC PATCH v6 4/5] perf stat: Add retire latency print functions
- to print out at the very end of print out
-To: "Wang, Weilin" <weilin.wang@intel.com>
-Cc: Ian Rogers <irogers@google.com>, Arnaldo Carvalho de Melo <acme@kernel.org>, 
-	Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, 
-	Alexander Shishkin <alexander.shishkin@linux.intel.com>, Jiri Olsa <jolsa@kernel.org>, 
-	"Hunter, Adrian" <adrian.hunter@intel.com>, Kan Liang <kan.liang@linux.intel.com>, 
-	"linux-perf-users@vger.kernel.org" <linux-perf-users@vger.kernel.org>, 
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "Taylor, Perry" <perry.taylor@intel.com>, 
-	"Alt, Samantha" <samantha.alt@intel.com>, "Biggers, Caleb" <caleb.biggers@intel.com>
+References: <20240401-ad4111-v1-0-34618a9cc502@analog.com> <20240401-ad4111-v1-1-34618a9cc502@analog.com>
+ <CAMknhBHeKAQ45=5-dL1T1tv-mZcPN+bNo3vxWJYgWpEPE+8p3Q@mail.gmail.com>
+In-Reply-To: <CAMknhBHeKAQ45=5-dL1T1tv-mZcPN+bNo3vxWJYgWpEPE+8p3Q@mail.gmail.com>
+From: David Lechner <dlechner@baylibre.com>
+Date: Mon, 1 Apr 2024 16:16:40 -0500
+Message-ID: <CAMknhBGVuMSg+OpS5QTLWi9vA=Xa33AJ+cVS8ZCDyKsAVEe-ww@mail.gmail.com>
+Subject: Re: [PATCH 1/6] dt-bindings: adc: ad7173: add support for ad411x
+To: dumitru.ceclan@analog.com
+Cc: Lars-Peter Clausen <lars@metafoo.de>, Michael Hennerich <Michael.Hennerich@analog.com>, 
+	Jonathan Cameron <jic23@kernel.org>, Rob Herring <robh@kernel.org>, 
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
+	linux-iio@vger.kernel.org, devicetree@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, Dumitru Ceclan <mitrutzceclan@gmail.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Mon, Apr 1, 2024 at 2:08=E2=80=AFPM Wang, Weilin <weilin.wang@intel.com>=
- wrote:
+On Mon, Apr 1, 2024 at 2:37=E2=80=AFPM David Lechner <dlechner@baylibre.com=
+> wrote:
 >
->
->
-> > -----Original Message-----
-> > From: Namhyung Kim <namhyung@kernel.org>
-> > Sent: Monday, April 1, 2024 2:04 PM
-> > To: Wang, Weilin <weilin.wang@intel.com>
-> > Cc: Ian Rogers <irogers@google.com>; Arnaldo Carvalho de Melo
-> > <acme@kernel.org>; Peter Zijlstra <peterz@infradead.org>; Ingo Molnar
-> > <mingo@redhat.com>; Alexander Shishkin
-> > <alexander.shishkin@linux.intel.com>; Jiri Olsa <jolsa@kernel.org>; Hun=
-ter,
-> > Adrian <adrian.hunter@intel.com>; Kan Liang <kan.liang@linux.intel.com>=
-;
-> > linux-perf-users@vger.kernel.org; linux-kernel@vger.kernel.org; Taylor,=
- Perry
-> > <perry.taylor@intel.com>; Alt, Samantha <samantha.alt@intel.com>; Bigge=
-rs,
-> > Caleb <caleb.biggers@intel.com>
-> > Subject: Re: [RFC PATCH v6 4/5] perf stat: Add retire latency print fun=
-ctions to
-> > print out at the very end of print out
+> On Mon, Apr 1, 2024 at 10:10=E2=80=AFAM Dumitru Ceclan via B4 Relay
+> <devnull+dumitru.ceclan.analog.com@kernel.org> wrote:
 > >
-> > On Fri, Mar 29, 2024 at 12:12=E2=80=AFPM <weilin.wang@intel.com> wrote:
-> > >
-> > > From: Weilin Wang <weilin.wang@intel.com>
-> > >
-> > > Add print out functions so that users could read retire latency value=
-s.
-> > >
-> > > Example output:
-> > > In this simple example, there is no MEM_INST_RETIRED.STLB_HIT_STORES
-> > sample.
-> > > Therefore, the MEM_INST_RETIRED.STLB_HIT_STORES:p retire_latency
-> > value, count
-> > > and sum are all 0.
-> > >
-> > >  Performance counter stats for 'system wide':
-> > >
-> > >        181,047,168      cpu_core/TOPDOWN.SLOTS/          #      0.6 %
-> > tma_dtlb_store
-> > >          3,195,608      cpu_core/topdown-retiring/
-> > >         40,156,649      cpu_core/topdown-mem-bound/
-> > >          3,550,925      cpu_core/topdown-bad-spec/
-> > >        117,571,818      cpu_core/topdown-fe-bound/
-> > >         57,118,087      cpu_core/topdown-be-bound/
-> > >             69,179      cpu_core/EXE_ACTIVITY.BOUND_ON_STORES/
-> > >              4,582      cpu_core/MEM_INST_RETIRED.STLB_HIT_STORES/
-> > >         30,183,104      cpu_core/CPU_CLK_UNHALTED.DISTRIBUTED/
-> > >         30,556,790      cpu_core/CPU_CLK_UNHALTED.THREAD/
-> > >            168,486      cpu_core/DTLB_STORE_MISSES.WALK_ACTIVE/
-> > >               0.00 MEM_INST_RETIRED.STLB_HIT_STORES:p       0        =
-0
+> > From: Dumitru Ceclan <dumitru.ceclan@analog.com>
 > >
-> > The output is not aligned and I think it's hard to read.
-> > I think it should print the result like this:
+> > Add support for: AD4111, AD4112, AD4114, AD4115, AD4116.
 > >
-> >     <sum>  <event-name>  # <val>  average retired latency
->
-> Since we would like to use the average retire latency, I would think put =
-average
-> at the beginning would be more consistent. So in format like:
-> <val> <event-name> <sum> <count> or <val> <event-name> <count> <sum> ?
+> > AD411x family ADCs support a VCOM pin, dedicated for single-ended usage=
+.
+> > AD4111/AD4112 support current channels, usage is implemented by
+> >  specifying channel reg values bigger than 15.
+> >
+> > Signed-off-by: Dumitru Ceclan <dumitru.ceclan@analog.com>
+> > ---
 
-But it's not consistent with others.  When I see the perf stat
-output, I'd expect it shows the total count.  And the average
-latency is a derived value so I think it can be treated as a metric.
+..
 
-Thanks,
-Namhyung
+> > @@ -125,10 +141,19 @@ patternProperties:
+> >
+> >      properties:
+> >        reg:
+> > +        description:
+> > +          Reg values 16-19 are only permitted for ad4111/ad4112 curren=
+t channels.
+> >          minimum: 0
+> > -        maximum: 15
+> > +        maximum: 19
+>
+> This looks wrong. Isn't reg describing the number of logical channels
+> (# of channel config registers)?
+>
+> After reviewing the driver, I see that > 16 is used as a way of
+> flagging current inputs, but still seems like the wrong way to do it.
+> See suggestion below.
+>
+> >
+> >        diff-channels:
+> > +        description:
+> > +          For using current channels specify only the positive channel=
+.
+> > +            (IIN2+, IIN2=E2=88=92) -> diff-channels =3D <2 0>
+>
+> I find this a bit confusing since 2 is already VIN2 and 0 is already
+> VIN0. I think it would make more sense to assign unique channel
+> numbers individually to the negative and positive current inputs.
+> Also, I think it makes sense to use the same numbers that the
+> registers in the datasheet use (8 - 11 for negative and 12 to 15 for
+> positive).
+>
+> So: (IIN2+, IIN2=E2=88=92) -> diff-channels =3D <13 10>
+
+Thinking about this a bit more...
+
+Since the current inputs have dedicated pins and aren't mix-and-match
+with multiple valid wiring configurations like the voltage inputs, do
+we even need to describe them in the devicetree?
+
+In the driver, the current channels would just be hard-coded like the
+temperature channel since there isn't any application-specific
+variation.
 
