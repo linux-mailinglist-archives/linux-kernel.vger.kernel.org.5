@@ -1,179 +1,104 @@
-Return-Path: <linux-kernel+bounces-127203-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-127204-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id BD2008947F3
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 01:49:15 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 524F18947F5
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 01:50:51 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 715E4281316
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 23:49:14 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id F129E1F241AB
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 23:50:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4AD1957874;
-	Mon,  1 Apr 2024 23:49:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 837F257315;
+	Mon,  1 Apr 2024 23:50:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="vfaAFvG+"
-Received: from mail-yb1-f201.google.com (mail-yb1-f201.google.com [209.85.219.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="AbgKql0u"
+Received: from fllv0015.ext.ti.com (fllv0015.ext.ti.com [198.47.19.141])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 306E457302
-	for <linux-kernel@vger.kernel.org>; Mon,  1 Apr 2024 23:48:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 48A482A1BF;
+	Mon,  1 Apr 2024 23:50:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.19.141
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712015339; cv=none; b=ey5/XnN2WkDaExkojUPCG5LvKhZtSWBDAx8h6NGqG+wB2cuHBO8RYb+c0O0/+ovDWGTtdHWZSzmv0z687uRWLXOhy77h9v23cafw3Tub5l4BCYTSRYIWHYQRdEO/EaNH3a1cTjxJE7YGtaa4r6FFxwbXwepqqQNlwhAEOq8b6tU=
+	t=1712015443; cv=none; b=EQePA9QOH1nCkEH80jzM4gZBDGpaZ5rkkV1njbtc7i50C4vkAA6LIALHpadvi8g+t+r6ZNnXtPZWrwkKk1TLG8RjE8pA9ADvshTJlQV/IyirtMSo+Y+4+XjTB7xdrKkN1Nn+EgnJJJXjQEddc6X7EXnam/7gXrSse0JRSjwUygk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712015339; c=relaxed/simple;
-	bh=4JhNkEpOiWMttmklKDS6dB8Whz9xSe93GiSKkFueDRI=;
-	h=Date:Mime-Version:Message-ID:Subject:From:To:Cc:Content-Type; b=HmYiM1dctrRBHq7L0KyqHfGauqK6wWbacj9ZVX2cGBHMsrnLoRpwPIIOxhEuqBY1J6TzSf/2xlxf2ntPYi7bNLx4dG5+XR+2UVE/X0UDV/lIxz0uLipyT+XSfc62Pp6v5aOkqvfevrrWbAvHpD2QCkvldNoFdt34KpTKkSj8ntQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--justinstitt.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=vfaAFvG+; arc=none smtp.client-ip=209.85.219.201
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--justinstitt.bounces.google.com
-Received: by mail-yb1-f201.google.com with SMTP id 3f1490d57ef6-dd169dd4183so5085810276.3
-        for <linux-kernel@vger.kernel.org>; Mon, 01 Apr 2024 16:48:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1712015336; x=1712620136; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=BeCArdFCgR6hPIyqHhpmGoh9zohrxgi2vCDzv1Uvsng=;
-        b=vfaAFvG+mOqrKjbH9Ge0oDljZh/cSXm67PclGL+fcN/avO/woLbSPb5FLBQg6uXzLD
-         dSp0OBr2PDyfRibpQSC9Pf+upEsj7RNSFzbFreM7ZqaVhqlhTrQT1xiu2arpA14YTk/u
-         B6i6l0MZe+oOAzJEVDR5uwn+9Si+qJtNHjFZADP9xSHIz8a7epD4LZxRVqqN3WQTw+hc
-         jTptohz3JTm6T1N4n2nnQoH2VXzgbD5gTZmanjnieO1HNHHgLDv+dEVqaLe4025qShDl
-         Fh5+f7Ib09HcHAXUA3IaZB8LaCS/nqGZwikS8+sOb2Zm1mW7SinOyKRevnhJdYOBqSP3
-         S5xw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712015336; x=1712620136;
-        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=BeCArdFCgR6hPIyqHhpmGoh9zohrxgi2vCDzv1Uvsng=;
-        b=md5CIu4DAEB9jxXC+6NdbrBtef4zJLuy7xKhBnTgf2ZFeYSw8Z8OuR2ghBjn/OAqJu
-         8sIea+KrVcouWLOS1n2oQ7UYt8AJo4zYN1agEFuikZHUsTWGqLLdGVUPhnILiThXL6v/
-         jucaTP0pF7f1JUU23d4h4gj6qpbLKkZZamFWtbDoaK85LKjKDhVAer9utFsK0DLjVFTS
-         rECVJH6S/8puNdJZIEZq7hrs3ojlksQWsv/YqYNtg497HX4Jpvt8v0MAz6Vj4Qlbu38t
-         WH+9CbXH4q5rN1KVlFy0exMD8snzZ+tk7yTvsULJ9l005FN6sPnYCY0jIgt6K2Y55sNh
-         XqAA==
-X-Forwarded-Encrypted: i=1; AJvYcCUNIAPRNZ/g8kVlslikx+klrmM4XBpyauTnGg9aUcAPRjJpvQlNI1ORhOC+YKetmTSqa4YoK6iDP4EERzMo8mUEYny/j262JJLEQCdJ
-X-Gm-Message-State: AOJu0YyhAjTsBmc4ZVU7tFy1sXu08sq+MwXdcp8+al7iZKlqLyeOeds+
-	Xv5VLQDco4Nbx/1xDViuT+RSOO6wmY0S3h6mg7t5Nc31ZtBnQJM2Kxr6yly8pAPBhE9jsJfTpyR
-	BrOB9CfuL5O84cJ57zIh2Xg==
-X-Google-Smtp-Source: AGHT+IENg/l0w7lJnqGpT/qHSwpQYol/8NlTdFPuRBHCAciA1BzQJQzDQqMPR1/kH8jhEkZOGWe/9UtkbBomwoKlsA==
-X-Received: from jstitt-linux1.c.googlers.com ([fda3:e722:ac3:cc00:2b:ff92:c0a8:23b5])
- (user=justinstitt job=sendgmr) by 2002:a05:6902:1006:b0:dcc:94b7:a7a3 with
- SMTP id w6-20020a056902100600b00dcc94b7a7a3mr769132ybt.12.1712015336258; Mon,
- 01 Apr 2024 16:48:56 -0700 (PDT)
-Date: Mon, 01 Apr 2024 23:48:52 +0000
+	s=arc-20240116; t=1712015443; c=relaxed/simple;
+	bh=gC3y51smFQte+vpAUum3ZwOj1MUe7sBXkuCwpfUK7Pw=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=q8Ds4FOeotaBXDl6YYah8pTMppeF7E1ztATsKXJlP2qH683qwy7BpyVYZHNSQNwdIl6F9bY45xfjEDigXaKcT3nZ3qNFWXnGGCrMvm1gKXo+/2odp6C2xr3zgwT/1BZA9Z6cppR0BgNXRKmRxLdJOx7KHHwzqXRaznKzxEmqlp0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=AbgKql0u; arc=none smtp.client-ip=198.47.19.141
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+	by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 431NobTl104499;
+	Mon, 1 Apr 2024 18:50:37 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+	s=ti-com-17Q1; t=1712015437;
+	bh=gC3y51smFQte+vpAUum3ZwOj1MUe7sBXkuCwpfUK7Pw=;
+	h=Date:Subject:To:CC:References:From:In-Reply-To;
+	b=AbgKql0ukID+o8z/3tOLazD9/Q0mUbUR1zry7T/uKGONvtx9P6iUODZRXwyk7/M74
+	 SQ9AG2zQ2yotPuXsG7thUM8/SOpAZx+2A9u7Gl6U7thVwPLd9v/A507+Ie/K2aKpKe
+	 P6SkO1Vy5jh29H8rAY8KeAR2uE6yDAn/yN+QwAYs=
+Received: from DLEE114.ent.ti.com (dlee114.ent.ti.com [157.170.170.25])
+	by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 431Nob62095778
+	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+	Mon, 1 Apr 2024 18:50:37 -0500
+Received: from DLEE102.ent.ti.com (157.170.170.32) by DLEE114.ent.ti.com
+ (157.170.170.25) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Mon, 1
+ Apr 2024 18:50:37 -0500
+Received: from lelvsmtp6.itg.ti.com (10.180.75.249) by DLEE102.ent.ti.com
+ (157.170.170.32) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Mon, 1 Apr 2024 18:50:37 -0500
+Received: from [10.249.42.149] ([10.249.42.149])
+	by lelvsmtp6.itg.ti.com (8.15.2/8.15.2) with ESMTP id 431NobFt082588;
+	Mon, 1 Apr 2024 18:50:37 -0500
+Message-ID: <e172edd3-824b-4ee4-b650-be1a8b9286fd@ti.com>
+Date: Mon, 1 Apr 2024 18:50:37 -0500
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-X-B4-Tracking: v=1; b=H4sIAONHC2YC/x3NwQrCMAyA4VcZORvoaq3iq4iHro0uoNlI6nCMv
- bvF43f5/w2MlMng2m2gtLDxJA39oYM8JnkScmkG73xwwfVoVSXPK7Lk16cQVk2ZkBaSavguPOG ILh39KZ7jEOIFWmlWevD3f7nd9/0HcnYlG3UAAAA=
-X-Developer-Key: i=justinstitt@google.com; a=ed25519; pk=tC3hNkJQTpNX/gLKxTNQKDmiQl6QjBNCGKJINqAdJsE=
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1712015335; l=3378;
- i=justinstitt@google.com; s=20230717; h=from:subject:message-id;
- bh=4JhNkEpOiWMttmklKDS6dB8Whz9xSe93GiSKkFueDRI=; b=NKg6XG8BN99gUBI3M2EOxgxK+kUU1xCXzro+M6vtMFE/7+A6dbh9K6zgb0yyqbNaih+k6ztsO
- bX+IDfR2tSbBc3Hz4yHOB8t7lA0pR91YNefcOSR+Ppvq3Y+FZM5/PuR
-X-Mailer: b4 0.12.3
-Message-ID: <20240401-strncpy-include-trace-events-mdio-h-v1-1-9cb5a4cda116@google.com>
-Subject: [PATCH] trace: events: cleanup deprecated strncpy uses
-From: Justin Stitt <justinstitt@google.com>
-To: Andrew Lunn <andrew@lunn.ch>, Heiner Kallweit <hkallweit1@gmail.com>, 
-	Russell King <linux@armlinux.org.uk>, Steven Rostedt <rostedt@goodmis.org>, 
-	Masami Hiramatsu <mhiramat@kernel.org>, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, 
-	Chuck Lever <chuck.lever@oracle.com>, Jeff Layton <jlayton@kernel.org>, Neil Brown <neilb@suse.de>, 
-	Olga Kornievskaia <kolga@netapp.com>, Dai Ngo <Dai.Ngo@oracle.com>, Tom Talpey <tom@talpey.com>
-Cc: netdev@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-trace-kernel@vger.kernel.org, linux-nfs@vger.kernel.org, 
-	linux-hardening@vger.kernel.org, Justin Stitt <justinstitt@google.com>
-Content-Type: text/plain; charset="utf-8"
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 13/13] mailbox: omap: Remove kernel FIFO message queuing
+To: Hari Nagalla <hnagalla@ti.com>, Jassi Brar <jassisinghbrar@gmail.com>,
+        Nick Saulnier <nsaulnier@ti.com>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>
+CC: <linux-remoteproc@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+References: <20240325172045.113047-1-afd@ti.com>
+ <20240325172045.113047-14-afd@ti.com>
+ <761aa56f-55c4-e0d4-9f75-eef8035aa25b@ti.com>
+Content-Language: en-US
+From: Andrew Davis <afd@ti.com>
+In-Reply-To: <761aa56f-55c4-e0d4-9f75-eef8035aa25b@ti.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 
-strncpy() is deprecated for use on NUL-terminated destination strings
-[1] and as such we should prefer more robust and less ambiguous string
-interfaces.
+On 4/1/24 6:39 PM, Hari Nagalla wrote:
+> On 3/25/24 12:20, Andrew Davis wrote:
+>> The kernel FIFO queue has a couple issues. The biggest issue is that
+>> it causes extra latency in a path that can be used in real-time tasks,
+>> such as communication with real-time remote processors.
+>>
+>> The whole FIFO idea itself looks to be a leftover from before the
+>> unified mailbox framework. The current mailbox framework expects
+>> mbox_chan_received_data() to be called with data immediately as it
+>> arrives. Remove the FIFO and pass the messages to the mailbox
+>> framework directly.
+> Yes, this would definitely speed up the message receive path. With RT linux, the irq runs in thread context, so that is Ok. But with non-RT the whole receive path runs in interrupt context. So, i think it would be appropriate to use a threaded_irq()?
 
-For 2 out of 3 of these changes we can simply swap in strscpy() as it
-guarantess NUL-termination which is needed for the following trace
-print.
+I was thinking the same at first, but seems some mailbox drivers use threaded, others
+use non-threaded context. Since all we do in the IRQ context anymore is call
+mbox_chan_received_data(), which is supposed to be IRQ safe, then it should be fine
+either way. So for now I just kept this using the regular IRQ context as before.
 
-trace_rpcgss_context() should use memcpy as its format specifier %.*s
-allows for the length to be specifier (__entry->len). Due to this,
-acceptor does not technically need to be NUL-terminated. Moreover,
-swapping in strscpy() and keeping everything else the same could result
-in truncation of the source string by one byte. To remedy this, we could
-use `len + 1` but I am unsure of the size of the destination buffer so a
-simple memcpy should suffice.
-|	TP_printk("win_size=%u expiry=%lu now=%lu timeout=%u acceptor=%.*s",
-|		__entry->window_size, __entry->expiry, __entry->now,
-|		__entry->timeout, __entry->len, __get_str(acceptor))
+If that does turn out to be an issue then let's switch to threaded.
 
-I suspect acceptor not to naturally be a NUL-terminated string due to
-the presence of some stringify methods.
-|	.crstringify_acceptor	= gss_stringify_acceptor,
-
-Link: https://www.kernel.org/doc/html/latest/process/deprecated.html#strncpy-on-nul-terminated-strings [1]
-Link: https://manpages.debian.org/testing/linux-manual-4.8/strscpy.9.en.html [2]
-Link: https://github.com/KSPP/linux/issues/90
-Cc: linux-hardening@vger.kernel.org
-Signed-off-by: Justin Stitt <justinstitt@google.com>
----
-Note: build-tested only.
-
-Found with: $ rg "strncpy\("
----
- include/trace/events/mdio.h   | 2 +-
- include/trace/events/rpcgss.h | 2 +-
- include/trace/events/sock.h   | 2 +-
- 3 files changed, 3 insertions(+), 3 deletions(-)
-
-diff --git a/include/trace/events/mdio.h b/include/trace/events/mdio.h
-index 0f241cbe00ab..285b3e4f83ba 100644
---- a/include/trace/events/mdio.h
-+++ b/include/trace/events/mdio.h
-@@ -25,7 +25,7 @@ TRACE_EVENT_CONDITION(mdio_access,
- 	),
- 
- 	TP_fast_assign(
--		strncpy(__entry->busid, bus->id, MII_BUS_ID_SIZE);
-+		strscpy(__entry->busid, bus->id, MII_BUS_ID_SIZE);
- 		__entry->read = read;
- 		__entry->addr = addr;
- 		__entry->regnum = regnum;
-diff --git a/include/trace/events/rpcgss.h b/include/trace/events/rpcgss.h
-index ba2d96a1bc2f..274c297f1b15 100644
---- a/include/trace/events/rpcgss.h
-+++ b/include/trace/events/rpcgss.h
-@@ -618,7 +618,7 @@ TRACE_EVENT(rpcgss_context,
- 		__entry->timeout = timeout;
- 		__entry->window_size = window_size;
- 		__entry->len = len;
--		strncpy(__get_str(acceptor), data, len);
-+		memcpy(__get_str(acceptor), data, len);
- 	),
- 
- 	TP_printk("win_size=%u expiry=%lu now=%lu timeout=%u acceptor=%.*s",
-diff --git a/include/trace/events/sock.h b/include/trace/events/sock.h
-index fd206a6ab5b8..1d0b98e6b2cc 100644
---- a/include/trace/events/sock.h
-+++ b/include/trace/events/sock.h
-@@ -109,7 +109,7 @@ TRACE_EVENT(sock_exceed_buf_limit,
- 	),
- 
- 	TP_fast_assign(
--		strncpy(__entry->name, prot->name, 32);
-+		strscpy(__entry->name, prot->name, 32);
- 		__entry->sysctl_mem[0] = READ_ONCE(prot->sysctl_mem[0]);
- 		__entry->sysctl_mem[1] = READ_ONCE(prot->sysctl_mem[1]);
- 		__entry->sysctl_mem[2] = READ_ONCE(prot->sysctl_mem[2]);
-
----
-base-commit: 928a87efa42302a23bb9554be081a28058495f22
-change-id: 20240401-strncpy-include-trace-events-mdio-h-0a325676b468
-
-Best regards,
---
-Justin Stitt <justinstitt@google.com>
-
+Andrew
 
