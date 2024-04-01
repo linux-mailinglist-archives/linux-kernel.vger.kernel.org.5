@@ -1,84 +1,91 @@
-Return-Path: <linux-kernel+bounces-126661-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-126669-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6BCA8893B1D
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 14:48:23 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 32ADF893B3F
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 15:12:02 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1FB2A1F2205F
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 12:48:23 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 38B471C209AC
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 13:12:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 099133E495;
-	Mon,  1 Apr 2024 12:48:14 +0000 (UTC)
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4153A3F8C2;
+	Mon,  1 Apr 2024 13:11:54 +0000 (UTC)
+Received: from inva020.nxp.com (inva020.nxp.com [92.121.34.13])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 90919219F9;
-	Mon,  1 Apr 2024 12:48:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3BB463E495;
+	Mon,  1 Apr 2024 13:11:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=92.121.34.13
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711975693; cv=none; b=gSDWUblcEzSu9fUlx1di/vhRwau8Jid2Dql6o2P+RTjlFSyE2wev+VZiR3/kgGcH7QLQta3HNg1+5UfjNEP8VCu3zvIGwH36WFe9ketMrhywkszBIFnkHsKuieJc38Tg8N2XvbPYXtS+FZV998vxokkGF/woUBQFDqZgmK7vkZo=
+	t=1711977113; cv=none; b=cQ324q6b83Ps7nBGe8ikpk2wG2C82XyLTaogn6xLilh0u6BKB4axb6O1WzF6KHFZnQVZ4131AlTxuhmSp4/DsxAD5ORZdS+yLDMZqXn3ieILXVFr73FdQe0C24Uv0rHqig30fWgsUVMpXAgrnmplBV/7zrC1U/+YdVZqB9HoY2Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711975693; c=relaxed/simple;
-	bh=2BFcbcdVntnlGcJuBtVOzuZjIQk1ui17aXdZS5wM33M=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
-	 MIME-Version:Content-Type; b=qnzhumR+z2R4p6E3uhsIkmRr2jI25EzS4Rp4PqMopOn8Unn6mHBnYcuL4Y1Hyi03RDSbkI7TxsB04n0SumaCPAaumS97gBPv+jkNwSaEt/YLjUUp+l3hdis8XN1+RSDk1DM1CXHt2Ve6zIEZeySZSk6T69EmI6AME6eHT2Uh9Rs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EAE8EC433C7;
-	Mon,  1 Apr 2024 12:48:12 +0000 (UTC)
-Received: by mercury (Postfix, from userid 1000)
-	id 62A2410608D9; Mon,  1 Apr 2024 14:48:10 +0200 (CEST)
-From: Sebastian Reichel <sebastian.reichel@collabora.com>
-To: =?utf-8?q?Pali_Roh=C3=A1r?= <pali@kernel.org>, 
- Sebastian Reichel <sre@kernel.org>, Andrew Davis <afd@ti.com>
-Cc: linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org
-In-Reply-To: <20240325203129.150030-1-afd@ti.com>
-References: <20240325203129.150030-1-afd@ti.com>
-Subject: Re: [PATCH 1/6] power: supply: bq27xxx: Move temperature reading
- out of update loop
-Message-Id: <171197569037.595938.587169149835280734.b4-ty@collabora.com>
-Date: Mon, 01 Apr 2024 14:48:10 +0200
+	s=arc-20240116; t=1711977113; c=relaxed/simple;
+	bh=/xRbQyEj49OzBik80PzEYVfra1poW7CuE+P7YJUgUhA=;
+	h=From:To:Subject:Date:Message-Id; b=eKngOXXCKPVO7VJ8x+t6GDorZvV14TcSRg+uahQd3LNi758i447klrYuIOSUyglbuGhLZuFlvRU0fPazwl82wWEyg/noX8P0RV48OqwiTIwvmDYs2wHpO5MqIxobQ8ZRqLR3NieCToI2JWe6HMVYawAzjdN2XxUzCfNjME3i8To=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com; spf=pass smtp.mailfrom=nxp.com; arc=none smtp.client-ip=92.121.34.13
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nxp.com
+Received: from inva020.nxp.com (localhost [127.0.0.1])
+	by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 68AE81A0138;
+	Mon,  1 Apr 2024 15:11:45 +0200 (CEST)
+Received: from aprdc01srsp001v.ap-rdc01.nxp.com (aprdc01srsp001v.ap-rdc01.nxp.com [165.114.16.16])
+	by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 1D2161A00F8;
+	Mon,  1 Apr 2024 15:11:45 +0200 (CEST)
+Received: from localhost.localdomain (shlinux2.ap.freescale.net [10.192.224.44])
+	by aprdc01srsp001v.ap-rdc01.nxp.com (Postfix) with ESMTP id 0A6E9180031D;
+	Mon,  1 Apr 2024 21:11:42 +0800 (+08)
+From: Shengjiu Wang <shengjiu.wang@nxp.com>
+To: lgirdwood@gmail.com,
+	broonie@kernel.org,
+	robh+dt@kernel.org,
+	krzysztof.kozlowski+dt@linaro.org,
+	conor+dt@kernel.org,
+	shengjiu.wang@gmail.com,
+	linux-sound@vger.kernel.org,
+	devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	shawnguo@kernel.org,
+	s.hauer@pengutronix.de,
+	kernel@pengutronix.de,
+	festevam@gmail.com,
+	imx@lists.linux.dev,
+	linux-arm-kernel@lists.infradead.org
+Subject: [PATCH v2 0/2] ASoC: dt-bindings: convert fsl-asoc-card.txt to YAML
+Date: Mon,  1 Apr 2024 20:54:14 +0800
+Message-Id: <1711976056-19884-1-git-send-email-shengjiu.wang@nxp.com>
+X-Mailer: git-send-email 2.7.4
+X-Virus-Scanned: ClamAV using ClamSMTP
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.13.0
 
+Convert fsl-asoc-card.txt to YAML. In order to pass the checking,
+add some used compatible string from devicetree.
 
-On Mon, 25 Mar 2024 15:31:24 -0500, Andrew Davis wrote:
-> Most of the functions that read values return a status and put the value
-> itself in an a function parameter. Update temperature reading to match.
-> 
-> As temp is not checked for changes as part of the update loop, remove
-> the read of the temperature from the periodic update loop. This saves
-> I2C/1W bandwidth. It also means we do not have to cache it, fresh
-> values are read when requested.
-> 
-> [...]
+change cpu-dai in imx6sx-nitrogen6sx to ssi-controller.
 
-Applied, thanks!
+changes in v2:
+- update commit message for reason why add compatible strings
+  which are not in txt file.
+- add deprecated
+- add $ref for bitclock-master and others.
 
-[1/6] power: supply: bq27xxx: Move temperature reading out of update loop
-      commit: c32c617de8076d8fb2a16a4a2f3b5da5f3df398d
-[2/6] power: supply: bq27xxx: Move time reading out of update loop
-      commit: 651a620aa4d49f5647e21e55fc71bb049bc03389
-[3/6] power: supply: bq27xxx: Move charge reading out of update loop
-      commit: 8d846335204f25a2247e5e88e39e1604b6ecc133
-[4/6] power: supply: bq27xxx: Move energy reading out of update loop
-      commit: 39cf1c4cd03254218a23ef955bd534e19328f618
-[5/6] power: supply: bq27xxx: Move cycle count reading out of update loop
-      commit: 656489ac90f25f92190a1dd5c4e5c5293bd70323
-[6/6] power: supply: bq27xxx: Move health reading out of update loop
-      commit: 50f0ff7c8cc4c1d10fabc4b3b3f3b9e942b08187
+Shengjiu Wang (2):
+  ARM: dts: imx6sx-nitrogen6sx: drop incorrect cpu-dai property
+  ASoC: dt-bindings: fsl-asoc-card: convert to YAML
 
-Best regards,
+ .../bindings/sound/fsl-asoc-card.txt          | 117 -----------
+ .../bindings/sound/fsl-asoc-card.yaml         | 195 ++++++++++++++++++
+ .../boot/dts/nxp/imx/imx6sx-nitrogen6sx.dts   |   2 +-
+ 3 files changed, 196 insertions(+), 118 deletions(-)
+ delete mode 100644 Documentation/devicetree/bindings/sound/fsl-asoc-card.txt
+ create mode 100644 Documentation/devicetree/bindings/sound/fsl-asoc-card.yaml
+
 -- 
-Sebastian Reichel <sebastian.reichel@collabora.com>
+2.34.1
 
 
