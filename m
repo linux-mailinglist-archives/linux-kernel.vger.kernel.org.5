@@ -1,198 +1,223 @@
-Return-Path: <linux-kernel+bounces-126504-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-126505-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id B60418938C2
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 09:56:26 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id DFDBE8938C6
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 10:00:11 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6B40E281BCD
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 07:56:25 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 191F91C20FEF
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 08:00:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4DC9BBA49;
-	Mon,  1 Apr 2024 07:56:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EC556BE5E;
+	Mon,  1 Apr 2024 08:00:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=atmark-techno.com header.i=@atmark-techno.com header.b="awqdFPRm"
-Received: from gw2.atmark-techno.com (gw2.atmark-techno.com [35.74.137.57])
+	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="TJs3oLxL"
+Received: from NAM10-BN7-obe.outbound.protection.outlook.com (mail-bn7nam10on2099.outbound.protection.outlook.com [40.107.92.99])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ED9398F6E
-	for <linux-kernel@vger.kernel.org>; Mon,  1 Apr 2024 07:56:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=35.74.137.57
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711958177; cv=none; b=M8xH0tvvDcUomApLdL5iePvDPS/7XXlu9pDeVVvMaHWFkR5gBm6mREyOdmCg9qkjnQZ6Cf7KkwK403S1uCzb51lbcF4caEbR/Dyj2GXWpBQevSi2g3cp4+6SQ2eJpChtM27M58Pn/Ox7NaXJby9LgBGaJEaBqHGJDj3Z5F/BwOQ=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711958177; c=relaxed/simple;
-	bh=cgdtpYyjvErlX+/utjCkRaIwVeHPHbXHGies5CxxI0o=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=eXK4Yr5Kx+XxSLi5CYutWtSMkHmC8SXJ6VqqS4WJ8hemr7xCkxJN82C7hl2JIhfzdu90NVcc5Rpjr1CzVmRcwh/GdSzDIerUbhUawPsVGvo+oUDR3jYJoi+UOOdOFLFU/4TOftKsQ0o30gtyu9eLaUNHrVT18ijujCPQZ25G9Og=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=atmark-techno.com; spf=pass smtp.mailfrom=atmark-techno.com; dkim=pass (2048-bit key) header.d=atmark-techno.com header.i=@atmark-techno.com header.b=awqdFPRm; arc=none smtp.client-ip=35.74.137.57
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=atmark-techno.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=atmark-techno.com
-Authentication-Results: gw2.atmark-techno.com;
-	dkim=pass (2048-bit key; unprotected) header.d=atmark-techno.com header.i=@atmark-techno.com header.a=rsa-sha256 header.s=google header.b=awqdFPRm;
-	dkim-atps=neutral
-Received: from mail-pj1-f69.google.com (mail-pj1-f69.google.com [209.85.216.69])
-	by gw2.atmark-techno.com (Postfix) with ESMTPS id E36E8276
-	for <linux-kernel@vger.kernel.org>; Mon,  1 Apr 2024 16:56:08 +0900 (JST)
-Received: by mail-pj1-f69.google.com with SMTP id 98e67ed59e1d1-29e06733018so2921446a91.0
-        for <linux-kernel@vger.kernel.org>; Mon, 01 Apr 2024 00:56:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=atmark-techno.com; s=google; t=1711958168; x=1712562968; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=3/bmRW0RZrolxTvrm8LcMiQ+wRa4Ya61rnM0CmvyhhU=;
-        b=awqdFPRmjnk/7pZsDYheI/wAwmIlIku6xWWT6OweYbwOWfz/DJPm9Pjttl7M/H4FIB
-         mPMAtocOtu5+jWv4j6Qo0hZKV9ipugOch+Av7NJZr3WqGErAqYS0Bsd41JPIsNmk59Gz
-         LBbDdmTtJLFmU9KE3GB1Sh8SzToK9E2zT0fUYv30ZG4qKtLKuKRaR1mC0t+8eQMBKico
-         OAFWLA++VPztpYUU0X7m6LeqLCXKM8vLpFZCyROz7jFqXcGCpoBtD1nKAWpw7mSGJTye
-         gzFbwqIKDwZBxgeFXTLV6qL+7sV94QJ6eEgLPyDbnIaM/YJLPQa4ESOOm8kHamd5WVRk
-         2ieA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711958168; x=1712562968;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=3/bmRW0RZrolxTvrm8LcMiQ+wRa4Ya61rnM0CmvyhhU=;
-        b=w+BiQ2nnCNQvUXvkW9dMC81m8qRqMX4MeEmFavuumIQ+tW1dQXrVJr8pgJQPypQS+w
-         /JBkj0y24+CHJRmUm/kJAdh/6JI4qWr0SSSkG2/1EGYtyYDctJfX0S+qeSQFrk4thXgZ
-         FNCEoejaAOdIsVxFJv2IeJLIh+H8afBjUi/Bgm+sFEQJSRfzhJQ5xtAEVYGBIUzMerva
-         BcnbaX1fZP5EVq1B1GoOpAfeKqJ4Fer9WIka2Wzd8wZpK3ppHrfPUDoIvQCXA8hnpo5U
-         tI7gxWsxj61hSXdExMjRa+ffA2U35uVJjBxaC9FG7KKi8qsPHKhleRzOCrF/5R7WtD3W
-         5fBA==
-X-Forwarded-Encrypted: i=1; AJvYcCWk5iOWktS+65Opru238leQjPIb59AQY292PcJFiFse+x5hGpoY3FGkUkkjFY/AA2PE6alXvCtYUofwhKr0jQMxVpTDgur8xWNNKKkP
-X-Gm-Message-State: AOJu0Yz9JXM6AGuYcAsJo+aTOwhb1FA6aD7+gXG6BhWdcL06Z8vHCbkf
-	90lvFT++tbzUOK6wFytsRCM6bAP9l2dADa8uPquuhTivp09LxKmrMoQ4hfnZ9JJbIH+B/C09VCF
-	eGfqmLJiTT5VMSGgQEFCUFHDP8wU8+Aziji+nw6XW87CSJGpjuISj4D4R0qnBj/M=
-X-Received: by 2002:a17:90b:4c05:b0:2a2:434a:e644 with SMTP id na5-20020a17090b4c0500b002a2434ae644mr739028pjb.25.1711958167648;
-        Mon, 01 Apr 2024 00:56:07 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IHQltWPRncLt13ChqratVLhmMs+Pjq8XMc73VtWtFv+JAusnWsYxaGUJXFQp+XxHQNqKROHpw==
-X-Received: by 2002:a17:90b:4c05:b0:2a2:434a:e644 with SMTP id na5-20020a17090b4c0500b002a2434ae644mr739009pjb.25.1711958167223;
-        Mon, 01 Apr 2024 00:56:07 -0700 (PDT)
-Received: from pc-0182.atmarktech (35.112.198.104.bc.googleusercontent.com. [104.198.112.35])
-        by smtp.gmail.com with ESMTPSA id ev9-20020a17090aeac900b002a03d13fef5sm9414600pjb.7.2024.04.01.00.56.06
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 01 Apr 2024 00:56:06 -0700 (PDT)
-Received: from martinet by pc-0182.atmarktech with local (Exim 4.96)
-	(envelope-from <martinet@pc-zest>)
-	id 1rrCWT-00D2zY-1h;
-	Mon, 01 Apr 2024 16:56:05 +0900
-Date: Mon, 1 Apr 2024 16:55:55 +0900
-From: Dominique Martinet <dominique.martinet@atmark-techno.com>
-To: Michael Kelley <mhklinux@outlook.com>
-Cc: "hch@lst.de" <hch@lst.de>,
-	"m.szyprowski@samsung.com" <m.szyprowski@samsung.com>,
-	"robin.murphy@arm.com" <robin.murphy@arm.com>,
-	"konrad.wilk@oracle.com" <konrad.wilk@oracle.com>,
-	"bumyong.lee@samsung.com" <bumyong.lee@samsung.com>,
-	"iommu@lists.linux.dev" <iommu@lists.linux.dev>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	"will@kernel.org" <will@kernel.org>,
-	"petr@tesarici.cz" <petr@tesarici.cz>,
-	"roberto.sassu@huaweicloud.com" <roberto.sassu@huaweicloud.com>,
-	"lukas@mntmn.com" <lukas@mntmn.com>
-Subject: Re: [PATCH 1/1] swiotlb: Fix swiotlb_bounce() to do partial sync's
- correctly
-Message-ID: <ZgpoizG3JMGKWdFH@atmark-techno.com>
-References: <20240327034548.1959-1-mhklinux@outlook.com>
- <ZgO3HlYWo6qXaGs8@atmark-techno.com>
- <ZgZNAM337-UEY1DH@atmark-techno.com>
- <SN6PR02MB41574B5BC91B70AE74E51FE6D43A2@SN6PR02MB4157.namprd02.prod.outlook.com>
- <Zgd_JaCHzOOLqWUM@atmark-techno.com>
- <SN6PR02MB41578CEA46D8DD626829294ED4392@SN6PR02MB4157.namprd02.prod.outlook.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 272AC15A4;
+	Mon,  1 Apr 2024 07:59:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.92.99
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1711958402; cv=fail; b=N8kMt+blpDWC8lAi8vBL2hmvA5ejl2y3TiJowI7zV7FO9aNGpI9TXI144tV0Xn+bqZAAwaI4iy0VrqhcRTxIsGeTH+SohKPVr5u2nlIWEI2N6Axd5ilvroz4NEJ9A7ZpW4Y3iIext7kKebvUbpOzMVJUk/aNUKOoYHG4ToLohR8=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1711958402; c=relaxed/simple;
+	bh=ABm5nJeRaGhExt1ThyKI3VqUjNF82qk9iP5Z0Ua13rQ=;
+	h=Message-ID:Date:Subject:From:To:Cc:References:In-Reply-To:
+	 Content-Type:MIME-Version; b=Tz7NNpp9zOKHBAvDG0Q1oxQ9l9lrngBOB5RR8dtRRSPhFtByD7vLm826ICY1HSAQ6QuT1C41AuCFui5xnLeY4tzwH6C49RJHHG1jzWiHuIppG+LZOLwl1OF5AeC3+5FzHpygzmhdzwRcULPbz70AQV8uvetkATA2eZZ1czQW9sU=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=TJs3oLxL; arc=fail smtp.client-ip=40.107.92.99
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=WZwItGCr42Ukw/fKLLRqJmBAiaXk4kO7jxKvZMwRVA+4UK+vK/Cs/Zs1DhnnR7qsn4pRdwVgVi3zhLhVOpPK3a48J+PKJmqXkhNWvOTmzNeJ3RaBt24FsI1YIqlfFaPP5A80KHIL8FGxg07f5dz/PaVcuh+bFObe3DaIW3KRViTg+r49UVXQg57dunpGxwHG+5gtvptdZiZjokGbAxDCjBV1SOImiQFPdGWg8lmf5LgDDPxVkDolbgS6niob5Juabd1mJbnT33v2ijh2eK8O+Z1ITk99l00FOfcHtDTHOgPGipb3APaqAMC5QiFV5Cq3zbbdMyvD2eV02VSWFa367g==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=37JQt1m21pGTIdgQjEVYMF+XFoK9vtMPlMecpu96J5o=;
+ b=jcmh39AJMMudHVCQP1wWzX+RmIapJOhNCN+YwDD44pCW2el5udLFdOmNs+WKoFwmZ2B+6y0J6GVlXwtG+Ty3YiU7pugwr13LTrPfRq1daaqhG++mCHfRPfcuc1bZutCnYEn88wa0ao2Xq5Cq8hwFmwz5bFoXvvuSsL8P3uYpCkqIpwpcxo6ExjoM5ZA+aLPZtt16XkEalEsdcR/WQRR98UJX+eOECucHyAZCoedRKsoCFiF7dCraKEIdd+vqXf2Ebdp++aDonz8XM57zpSsX+xbzZ6fGxPMKdn+eVry++sNcLjfk9fiHyycxSX5C4JYa8QKzSg4Bwuf/ZoewtgJdTw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=37JQt1m21pGTIdgQjEVYMF+XFoK9vtMPlMecpu96J5o=;
+ b=TJs3oLxLKrLNGvRbzJRTY0GovwF3qMkf/dx76mdbiAyRlg5JiwrAl9gPABQ1sNG6JiCCdgdpoRqCzAc42gW+TuDFokSTheY7UDVjq45tXAPSP4p6gUq4yzPrcMq8ldb9tDWgkxphT0vMmZoJ0B1L++O7UwDw5H20vmjkB1jIT8CqzaVui0mRx3JQGZPx/M5Ujts5wa+y7A95Y/OLggaYOjnqfknmOnwNGA8pbu761kPzrrz6XlEkUa6m8+F9tPpNBBvK2fXpMOlgSRNyy/b2DwtCwmF2hAg+RreAzJHHkxQJICopQqbKJfzxvE17hF8Viifxy8LuY/K33Z/mt6Ju/g==
+Received: from PH8PR12MB6674.namprd12.prod.outlook.com (2603:10b6:510:1c1::18)
+ by BL1PR12MB5777.namprd12.prod.outlook.com (2603:10b6:208:390::21) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7409.46; Mon, 1 Apr
+ 2024 07:59:56 +0000
+Received: from PH8PR12MB6674.namprd12.prod.outlook.com
+ ([fe80::c19e:4e13:c3bd:191d]) by PH8PR12MB6674.namprd12.prod.outlook.com
+ ([fe80::c19e:4e13:c3bd:191d%7]) with mapi id 15.20.7409.039; Mon, 1 Apr 2024
+ 07:59:56 +0000
+Message-ID: <0c948351-9715-4c5c-ad0c-3727cd2ba8a8@nvidia.com>
+Date: Mon, 1 Apr 2024 13:29:48 +0530
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH V2] PCI: Clear errors logged in Secondary Status Register
+From: Vidya Sagar <vidyas@nvidia.com>
+To: Bjorn Helgaas <helgaas@kernel.org>
+Cc: bhelgaas@google.com, linux-pci@vger.kernel.org,
+ linux-kernel@vger.kernel.org, treding@nvidia.com, jonathanh@nvidia.com,
+ kthota@nvidia.com, mmaddireddy@nvidia.com, sagar.tv@gmail.com
+References: <20240122230026.GA290856@bhelgaas>
+ <d93a3f29-b260-4910-aaf5-d734e6242223@nvidia.com>
+Content-Language: en-US
+In-Reply-To: <d93a3f29-b260-4910-aaf5-d734e6242223@nvidia.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: MA1P287CA0015.INDP287.PROD.OUTLOOK.COM
+ (2603:1096:a00:35::30) To PH8PR12MB6674.namprd12.prod.outlook.com
+ (2603:10b6:510:1c1::18)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <SN6PR02MB41578CEA46D8DD626829294ED4392@SN6PR02MB4157.namprd02.prod.outlook.com>
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: PH8PR12MB6674:EE_|BL1PR12MB5777:EE_
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	BL0C2WyWlymT66IQtOmrBHl05Re0ABR8de0by4bJQn9pharq82+BcJIv28/JjzsANXnw/id4gp0tQaSF2n9godHrK6vuG1UfSZrxD7BlltsftVVHtUbG8Qmivh8oWZlNUT629JR6K8DjyaYHYR+kfSX8LXzLGns99mgLCYLDac/LwNL0+AJbLSM6Toifboj7CaDaPmOh34NAOGagJZ0DdrvJ9FvfGXV6OJAAuS5WH7W60QeQWKEGdsUa3B3M/XpF8yyBBi0/9RwxrY1atveqt15XlzEuGhxyTVDKPe6ex31/tHlkkR9Ltu4/i+KO6QrGolJHUsOFsLJX6F1FQUvgGq8NE74pGoFakzbnpWwJk79bbvRjFO7sVyC9GGE3055NFbHcS42wSzwiwscLqTDodforeVsw/pB3ghrNxUdarFKb4m7cIcJVLd/BUtAYqXGL7NIwKez+X4kYTMculyEsWbgHrHIN9F9YU/rhJK0piQtl+zxsxU/CmSHVTrRtph5t0z8w6VETM90hSGD1AhxKiApnhWXOUClVA5X3AzOVB6Rv1ugfwomJoYZiMYr0IvSa4PMeW058wkRYOMJwrpDcnTVFer3VKraRse0q60Gi27epmTcYblvmtc2s9PcaXGNsi+ifh2k+8VXnptPjDIbWH+Y1U2l8iV8iTKpri8EDjRA=
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH8PR12MB6674.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366007)(376005)(1800799015);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?utf-8?B?ZU5zalhSZG5MRStVZE5xaFRNQitmUjEyMkRuOE9uYmh3dFhIaWpFUno4RVUw?=
+ =?utf-8?B?aExsMitybWF5ckE2QVV4YUpwcHFjektYZ3FFdGkwQnFreDdpNGM2MEFWa3ly?=
+ =?utf-8?B?ckxFcHpDQnZhZFRMMnRjNjdoRk03SGlzOFFyeThmd0tZZkZXQXVXNjZVSCtv?=
+ =?utf-8?B?SjhMaEYraUJoRjZDcGtXMWpVR0dqRGhNRW1lVklXak40TkhxZFJvc1JReDkx?=
+ =?utf-8?B?OUx2VVF5a3gvUC8vdElkLzVLWmE0UUVXeWRiWCtFYW9hSnJkSFVVMFVZRlJY?=
+ =?utf-8?B?ZTlZMHVJdnNmem1BeWdqZUIxcFZ3d0ZyNkVaVDBESXhoQzFxcDBjZkdqQkFY?=
+ =?utf-8?B?M0ExVTAxNUk2YkFaVkVUelkxNFRDeVNjZ01rRnBnUE5BQkhUaVRZais1VFp4?=
+ =?utf-8?B?VldJcWNiVEdCaWV4M1hqRGdNTGEzcmoyRVZPSDNtUkU3c2lGSitiRERnK2tE?=
+ =?utf-8?B?UkhTaFZISC95dXlYUmRzbUU1ZnZwWXptY01RSFhBVTFrM1Zkb2lzdjVXQTJh?=
+ =?utf-8?B?VTRoRDJPTnJDbjhBb2lWUTR1ZDdueDdVRFJURFR5MTRVTno2UjhaNkF6MHdn?=
+ =?utf-8?B?cEpvTmowS01PeGFsMHE3MjBpTmRMYlpYVm1oZDF0dm5ONWJ0ejNwd1RHZjRv?=
+ =?utf-8?B?V3M1ZjljZmZaTG9sNnpsc3NJOWlWUjRsdFM5T3BPaDlhZmltZkFjNEhTYnEw?=
+ =?utf-8?B?UjJwcnc0TDUrSW1Id2hMTzRTNjIrMCtzMkVlZ2RhNThGUTBIdlppdG1jMFBX?=
+ =?utf-8?B?bHhWakFtZkJCT0t2LytvUGhiOUo1Qld2UHduYzYxWTNLRkZtby83bUZ2WTRI?=
+ =?utf-8?B?MG5JVUxNWm91LytZVThHODhTMnIvQXRRMVhIby9nNENKMG03eTBZRzVURWQy?=
+ =?utf-8?B?ZFFQRmdvcXFoYzZGVmg5VlZQcUlPVkVKYlZmRVMzWU9vSXg1bGxhc3Q3Z2Uv?=
+ =?utf-8?B?UlBQV0RETmhBUUkzWTZ4TEtzVEJvbUNYUmZ1VmtOQUFRNkdueGFnbFZnRXIv?=
+ =?utf-8?B?YVRiMkNkMlhSZFk0U0dhYWcrbkEzUEoybHhQTWVxV0c1TnEzNkxDR09RQ3Vl?=
+ =?utf-8?B?NXVzZTVlWTdMeFZ1ZEZJTXpETGpDR1cxeWdqWWtPcm1DKzdiZFFyeTh0czVH?=
+ =?utf-8?B?eEE5eWZUdE1QV0p5M21LR2VBU2ZxWlpFdlBhYXNvdVBYYmRweDA0SSticWR5?=
+ =?utf-8?B?emV1UW5iMnI2bFpXNEVQbGhkcW9vT2phWkV5STNiNG1jT0JkQ2tZVkFPbC9J?=
+ =?utf-8?B?Y0dNUDhsbk5HQlhRWHJMU2ZwOTgxK1NoVkRoUjF4ZU1xUkMxR1hmVzdHejk4?=
+ =?utf-8?B?OXd4YlBselozUlF2c2ZNdlVndW9qOFRZcWlZZ1hkVS9iZUp0ZTBvRzNoZE5K?=
+ =?utf-8?B?d1NVZElxK01Zamg3ZWIyUERXdVk1WUhEYWNWTWxzOFNEdXVCZkhTS2dNNW44?=
+ =?utf-8?B?ZUNZeWpyMkNFcUVISCs2dDMwQWRGOVVzTG14TXltKy9MTGtMMEpxVDdMR0Nt?=
+ =?utf-8?B?S21tQ3lqc0EwbnVSY05KSDNrNDZBTGszbTRnQmUxdE0vdk8xRWZHMVNuZWNw?=
+ =?utf-8?B?eUFvNEFSc25UQ3dTaERwTngzaXJiVlVsaTVnSTRBdGI4eFluQlViOVgwekVx?=
+ =?utf-8?B?eFhFdXB2bkhEQ0YyL2k2Y25kZG5nYVNudVlReXlIVmc0bndYM0tPaTlaZDlY?=
+ =?utf-8?B?c3hKbXU3aU4xZ1lwcmtweFZYdU5YL295ZDVaeEVWclhaMjlHWFk1dGFHVmhn?=
+ =?utf-8?B?KzF5RnZQbEozbHZIVXQwS3gxWnYvUGVlMTR4Z1Y0NDdUb3lIRC9Xa1c3RjZM?=
+ =?utf-8?B?WUx4UmVnU1lnSUc0Y3QwczN2Sy9sSGlzNEJzQ1lzVS9TM1o1V0JwQU9wdkht?=
+ =?utf-8?B?YW5qc0hHQmVQZVB5VVl3WHlob1pRTGI5bjNjMDcrdWVaYnNpWlVPZ25ocjZK?=
+ =?utf-8?B?Q3FpbXFSNUVEcjZnYUxKMTJkQ0s5ak0yV2FYVE9IV0FPazBiL2RDZVlBUnJx?=
+ =?utf-8?B?MlFlSVVQNGRPK2VDRFM0YnpjVG9xTTNwRGtTOFo2UWZ2dlhRZFpoYnRDNVJ1?=
+ =?utf-8?B?dEZtQ0JGY1REQWNvWFFnUGlUbk13bFJkMnBZWG5aSUQ4MGp5cUJ6MjhkcHVM?=
+ =?utf-8?Q?u0o7OkpIjHI4zd/Pj4mlQpkqY?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 8a96fde3-e5a1-4bfc-4e15-08dc5221b823
+X-MS-Exchange-CrossTenant-AuthSource: PH8PR12MB6674.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 01 Apr 2024 07:59:56.1024
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: hMloaVxDBlQ4P3Y2Y31RN5yQlUPLyudOuqy1omP9mKPDgNtH/umqlZu5ms4fZ9my3g7MhDitIadmuBopmWynVg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL1PR12MB5777
 
-Michael Kelley wrote on Sat, Mar 30, 2024 at 04:16:30AM +0000:
-> From: Dominique Martinet <dominique.martinet@atmark-techno.com> Sent: Friday, March 29, 2024 7:56 PM
-> > There are two things I don't understand here:
-> > 1/ Why orig_addr would come from slot[1] ?
-> > 
-> > We have index = (tlb_addr - mem->start) >> IO_TLB_SHIFT,
-> > so index = (33 - 7) >> 5 = 26 >> 5 = 0
-> > 
-> > As such, orig_addr = mem->slots[0].orig_addr and we'd need the offset to
-> > be 30, not -2 ?
-> 
-> mem->start is the physical address of the global pool of
-> memory allocated for swiotlb buffers.
+Hi Bjorn,
+Just checking on this thread.
+Is there anything else you want me to clarify on?
 
-Argh.
-Okay, that clears up a misunderstanding I've had since day one... I
-should have done a little more reading there.
-I've re-checked now and indeed mem->start comes from the pool init, and
-corresponds to the reserved memory base.
-(I'm not actually 100% sure reserved memory has to be aligned, but at the
-very least I've never seen any that isn't on my hardware so I'll pretend
-it must be without checking)
+Thanks,
+Vidya Sagar
 
-That makes much more sense with your fix, I agree offset must be
-negative in that case, and it'll work out.
+On 14-03-2024 06:09, Vidya Sagar wrote:
+>
+>
+> On 23-01-2024 04:30, Bjorn Helgaas wrote:
+>> External email: Use caution opening links or attachments
+>>
+>>
+>> On Tue, Jan 16, 2024 at 08:02:58PM +0530, Vidya Sagar wrote:
+>>> The enumeration process leaves the 'Received Master Abort' bit set in
+>>> the Secondary Status Register of the downstream port in the following
+>>> scenarios.
+>>>
+>>> (1) The device connected to the downstream port has ARI capability
+>>>      and that makes the kernel set the 'ARI Forwarding Enable' bit in
+>>>      the Device Control 2 Register of the downstream port. This
+>>>      effectively makes the downstream port forward the configuration
+>>>      requests targeting the devices downstream of it, even though they
+>>>      don't exist in reality. It causes the downstream devices return
+>>>      completions with UR set in the status in turn causing 'Received
+>>>      Master Abort' bit set.
+>>>
+>>>      In contrast, if the downstream device doesn't have ARI capability,
+>>>      the 'ARI Forwarding Enable' bit in the downstream port is not set
+>>>      and any configuration requests targeting the downstream devices
+>>>      that don't exist are terminated (section 6.13 of PCI Express Base
+>>>      6.0 spec) in the downstream port itself resulting in no change of
+>>>      the 'Received Master Abort' bit.
+>>>
+>>> (2) A PCIe switch is connected to the downstream port and when the
+>>>      enumeration flow tries to explore the presence of devices that
+>>>      don't really exist downstream of the switch, the downstream
+>>>      port receives the completions with UR set causing the 'Received
+>>>      Master Abort' bit set.
+>> Are these the only possible ways this error is logged?  I expected
+>> them to be logged when we enumerate below a Root Port that has nothing
+>> attached, for example.
+> In this case, there won't be any TLP sent downstream. I talked about 
+> this scenario in the
+> second paragraph of point (1) above.
+>> Does clearing them in pci_scan_bridge_extend() cover all ways this
+>> error might be logged during enumeration?  I can't remember whether
+>> all enumeration goes through this path.
+> So far in my testing, clearing it in pci_scan_bridge_extend() covers 
+> all the cases.
+>
+>>> Clear 'Received Master Abort' bit to keep the bridge device in a clean
+>>> state post enumeration.
+>>>
+>>> Signed-off-by: Vidya Sagar <vidyas@nvidia.com>
+>>> ---
+>>> V2:
+>>> * Changed commit message based on Bjorn's feedback
+>>>
+>>>   drivers/pci/probe.c | 3 +++
+>>>   1 file changed, 3 insertions(+)
+>>>
+>>> diff --git a/drivers/pci/probe.c b/drivers/pci/probe.c
+>>> index 795534589b98..640d2871b061 100644
+>>> --- a/drivers/pci/probe.c
+>>> +++ b/drivers/pci/probe.c
+>>> @@ -1470,6 +1470,9 @@ static int pci_scan_bridge_extend(struct 
+>>> pci_bus *bus, struct pci_dev *dev,
+>>>        }
+>>>
+>>>   out:
+>>> +     /* Clear errors in the Secondary Status Register */
+>>> +     pci_write_config_word(dev, PCI_SEC_STATUS, 0xffff);
+>>> +
+>>>        pci_write_config_word(dev, PCI_BRIDGE_CONTROL, bctl);
+>>>
+>>>        pm_runtime_put(&dev->dev);
+>>> -- 
+>>> 2.25.1
+>>>
+>
 
-> > Well, either work - if we fix index to point to the next slot in the
-> > negative case that's also acceptable if we're sure it's valid, but I'm
-> > worried it might not be in cases there was only one slot e.g. mapping
-> > [7; 34] and calling with 33 size 2 would try to access slot 1 with a
-> > negative offset in your example, but slot[0] is the last valid slot.
-> 
-> Right, but there wouldn't be one slot mapping [7; 34] if the
-> alignment rules are followed when the global swiotlb memory
-> pool is originally created.  The low order IO_TLB_SHIFT bits
-> of slot physical addresses must be zero for the arithmetic
-> using shifts to work, so [7; 34] will cross a slot boundary and
-> two slots are needed.
-
-Yes, since the mem->start/slots belongs to the pool and not the mapping
-this didn't make sense either; there's no problem here.
-
-> > 2/ Why is orig_addr 37 the correct address to use for memcpy, and not
-> > 33? I'd think it's off by a "minimum alignment page", for me this
-> > computation only works if the dma_get_min_align size is bigger than io
-> > tlb size.
-> 
-> The swiotlb mapping operation establishes a pair-wise mapping between
-> an orig_addr and tlb_addr, with the mapping extending for a specified
-> number of bytes.   Your example started with orig_addr = 7, and I
-> posited that the mapping extends for 40 bytes.
-
-Sure.
-
-> I further posited that the tlb_addr returned by
-> swiotlb_tbl_map_single() would be 3 to meet the min alignment
-> requirement (which again only works if mem->start is 0).
-
-Okay that's where I'm lost.
-1/ I agree that swiotlb_bounce() called from swiotlb_tbl_map_single()
-cannot be called with a tlb_addr past a single segment (which I'm not
-sure is acceptable in itself, taking the real value of 2KB for io tlb
-"pages", if the device requires 512 bytes alignment you won't be able to
-access [512-2048[ ?)
-2/ swiotlb_bounce() can be called from swiotlb_sync_single_for_device()
-or swiotlb_sync_single_for_cpu() with no alignment check on tlb_addr,
-we're just trusting that they only ever pass address within the same
-constraint ?
-
-If you assume tlb addr can only go from the start of a slot to as far as
-the min alignment allows then I agree there's no more problem, but I
-don't understand where that comes from.
-
-
-Either way, that's not a new problem, and the old checks aren't making
-this any better so as far as I'm concerned this patch is Progress:
-Reviewed-by: Dominique Martinet <dominique.martinet@atmark-techno.com>
-
-
-Thanks for taking me by the hand here; if you want to keep discussing
-this I'll be happy to give it a little bit more time but I might be a
-little bit slower.
--- 
-Dominique
 
