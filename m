@@ -1,124 +1,104 @@
-Return-Path: <linux-kernel+bounces-127052-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-127053-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id C87AB894639
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 22:46:55 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8CF1D89463A
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 22:47:39 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 623B01F222A5
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 20:46:55 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 117EDB21275
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 20:47:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B0B0953E3C;
-	Mon,  1 Apr 2024 20:46:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7E6255027F;
+	Mon,  1 Apr 2024 20:47:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="LZcqKfV8"
-Received: from mail-pl1-f171.google.com (mail-pl1-f171.google.com [209.85.214.171])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="RJ6d9zDc"
+Received: from mail-yb1-f177.google.com (mail-yb1-f177.google.com [209.85.219.177])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8601917552;
-	Mon,  1 Apr 2024 20:46:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6E2732E3EB
+	for <linux-kernel@vger.kernel.org>; Mon,  1 Apr 2024 20:47:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712004397; cv=none; b=YiRVyukWuv7YmLoongtUi3RiY2wT4a6A9BWMHCHfOmh11LNQVLhiE5YREDg1UwSS5uUVgGyzIvLz5/2jCacKYFld7GfN2ZxzJaVHu587kHa1Y/qEQH42t0sIscT4Y44hxZHWp+OdBrh+CxyXxam5cRP58GjvlKYu+kVkaWzMZxM=
+	t=1712004450; cv=none; b=VKGpgq286gArK3NGQiD819+ZPvpUBu7pcxnHYkZP2cmDCF3ZfzgBr//RAe6aoQyvvp5E/ymH1c8+HQ1xyOF79QMlZjoFhdRRSkIPaCKmcRzpbUB/98grmlVkay8JzmvjeduTNilFBXkGh2Nz535o6FMAOqurCxr0Ox7yx75Zxjk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712004397; c=relaxed/simple;
-	bh=1eh4EosVIJe/RGgbyngmwAmaNn7FpgVczuCce1/V6dE=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=jmU5EJBCGxsMk007NhRGK/77LXFUKkEwXWnsi/ZZ4GRb8apW5bnW973oVq2FsBLNRNt85RYmBj4RUc8aDc+PuBnmwHhs9bE2efPnbpCVbFFRuXNIePDDqPaV2KFQANCGS207M/ImOkodjp1xNpO2pk+sp6v68MYWUQpB0TUw17A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=LZcqKfV8; arc=none smtp.client-ip=209.85.214.171
+	s=arc-20240116; t=1712004450; c=relaxed/simple;
+	bh=fUcKWaylPje7JoEGRLPNgb/gXUPzyY52GFBTMrRUYug=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=uCv6bM7hopbRoEziN/XsiuEID6INplaeXvvvsXWtsZTDj1y87iuNawu5rLgb19HrGqn0bnaowBgZZk8hKfYXbj756n3/PAo3J9l3DQTi3BMbf8XmrMXBPi4u/1rzxsTLFfYIIX95AKPs+Rmb2ZWVeLK4336DUCYqoekZ1C3m7Pg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=RJ6d9zDc; arc=none smtp.client-ip=209.85.219.177
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f171.google.com with SMTP id d9443c01a7336-1e223025ccbso17430875ad.3;
-        Mon, 01 Apr 2024 13:46:35 -0700 (PDT)
+Received: by mail-yb1-f177.google.com with SMTP id 3f1490d57ef6-dcc7cdb3a98so3988145276.2
+        for <linux-kernel@vger.kernel.org>; Mon, 01 Apr 2024 13:47:29 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1712004395; x=1712609195; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=4vmwsO/t4KNvnDmSvXyJNoMNNVTQa5mB2jFuIsMRTOg=;
-        b=LZcqKfV8sJbxJJrIcuXGJH3w9WULH74apoFDYOsvy1oW+pW20NEMgzsRzn9krdWwEr
-         MrOaZ5u4Qf3JXBFGKtPBUCOnxBzOAxJhP7pDi8P3CJ8uRMRAPLZKcqZyiR7ALmnYhgtF
-         oZFf0/u3RkSPIZ0zA1akiTU602+0wvwPXH54J2D08OQB7T+om9bl9nAWtEw1SCEF5IzZ
-         Bcx2qZ5da7LMYmH+FHBHd+XYSLYsXmxW0K9d7j8RwCq32fihkbXtSUWeQQCIFcz4dXnh
-         aInECzIeyO/pshwItvppcjQRKpCNxladGgrBKGd7MUvb1c6UlAD17ihQzEYBWxp4HVr5
-         xTsg==
+        d=gmail.com; s=20230601; t=1712004448; x=1712609248; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=fUcKWaylPje7JoEGRLPNgb/gXUPzyY52GFBTMrRUYug=;
+        b=RJ6d9zDcm8W1kBV5u8HZ7HuFSrPqMkGHBKnrEfPcEU2BzVw2MPkewWuxAi/6KikLVf
+         AixoH0jx+nyQShVwQG/ZbNDTbZrhauYqwanX4cex1OhlwHrU3Tz/orNvk+IMR1xUxg5B
+         jJo5DLMa/Dd7TmCZKvqMS0eZkZWyWLoHPOfJzMsejk4faK2x79LyrMxX5zKmhpyLrXyF
+         0haSmvLqmUNZEgKHXSTD5v+pCfYlspS9gSQGdLdjyk4eW2lu6kv2iKhOAjs429QBIjuh
+         eGMCYqWGqeUnlikRToI5mQZRjGeclaDPcJAIFQc/F5+dJ5eSIcVcX5PgyKVhGza9yx5i
+         r9PQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712004395; x=1712609195;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=4vmwsO/t4KNvnDmSvXyJNoMNNVTQa5mB2jFuIsMRTOg=;
-        b=QKsH3+SlnLMrQt+P9ZF6/Nao5gdxOYRNu3ks+r71x6BHadHns3vVK0kAg0WsWHiGjK
-         Wm0wyMXQisxRmZab5cdTJAwG7FrfNxopNwrauW6xONFsJzBz/s/4JUo4j3nxZaXWUyCs
-         Y+Q/Se+vDHJ7ui6+hvLmkjHWsNnMs0E6bZE5SGJbG9YBd8uASELwFULsWLG0q3ibxuBC
-         /lJZuEsxYcqMPuCftDdC5Di7VV0iINvrOr6E6cAD0P8aa2OqbSnCKEU6R2HhWGAMZQ22
-         PGx32CBdq082HBLOtz+ZVDNhKsBda9WrinDg5IYC9U0mCagWxVYqS8M0Ik7O3Q/aTEzy
-         FgaQ==
-X-Forwarded-Encrypted: i=1; AJvYcCU/BQjrUPJNAkfHy2bsZZ2dLkXZJhxZ+niYcVCo33MAlyfX64uVe3rmHbe3NKUd5fINA4tICg7DZQjLVUHQZXjDabiZX9hyM0hV9cPuywV8WxK4RHcCcx2RWNM9MaL3D/pyboyg
-X-Gm-Message-State: AOJu0Yz85+VcJNqSb/oegCtpVCMDgdHS3jF+2zmqckuwbKzn6ZuyXSKE
-	5/rj+lhvlEtyc6BNQndp84QVX8PyMPPDnG0N0q0m7TlwGlbdkwvh
-X-Google-Smtp-Source: AGHT+IHXp/WGncQL5m+2scozSheJ2HjLV5OTyDk7ex5hN+Yk3jgndPR6FmSAQ/+tMINfp/heU8X8gQ==
-X-Received: by 2002:a17:902:c407:b0:1e0:7f78:624d with SMTP id k7-20020a170902c40700b001e07f78624dmr10073853plk.57.1712004394743;
-        Mon, 01 Apr 2024 13:46:34 -0700 (PDT)
-Received: from [10.67.48.245] ([192.19.223.252])
-        by smtp.googlemail.com with ESMTPSA id kh12-20020a170903064c00b001e2194ab34bsm9234135plb.245.2024.04.01.13.46.31
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 01 Apr 2024 13:46:34 -0700 (PDT)
-Message-ID: <022b4411-2ebd-4f8b-adc7-0ae81a665181@gmail.com>
-Date: Mon, 1 Apr 2024 13:46:29 -0700
+        d=1e100.net; s=20230601; t=1712004448; x=1712609248;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=fUcKWaylPje7JoEGRLPNgb/gXUPzyY52GFBTMrRUYug=;
+        b=bnK8GKRus7oQZNJtLwP6N2dRnSDtfk5yG9zk4ENzPr7LMGOfwmd/SrIfsuVupwIYoJ
+         ZPxcwegEMhnshNX3BxdPVrrkMbrs1V3sMNUO8OmF0/8PJhu6V6Zr07UPGDlUMplyvDc8
+         c7YuAqsL1MbGpJv6aY//1zWsmQxdsD/dSVoYCpFGQdsASBuotTNrmi1TB9vZ0yMLpU+B
+         zIvP2LIFV800OdfEcLuVSQ7kShJQKlp1m1+aKc8AhNhIem/8wQ61W9lMLXOtufNvL+CI
+         Io9//8/60iNSSMYWLM0ZpACIx9804H7tOeIiUPON9PrOyKCugeNzLMD9mRRuoV1uJR2m
+         qXsw==
+X-Gm-Message-State: AOJu0Ywn17kC8MPFDhojAPW/t7Dg3mqotOyTuwd8OsCpXMRyOw/kRjMr
+	OL51o1R/9G1KWRsq9uvNAY7woKvYPUL0dqEyvV1waPRMkcr9MKSOf1EjmBf+LRJpS/7v9GpZ7h1
+	xus6vvbFfn93JaWqGhcrUnx62lO6Q9iawNOg=
+X-Google-Smtp-Source: AGHT+IGMQ31IZyI1sF5KGelg7Rndph9eLBjm42ggsH1ak4z/OcFWIMsn4LcrqY6f5tjG8qRdjlBF1PVAgfV+MCWZSnE=
+X-Received: by 2002:a25:bb51:0:b0:dc6:238e:d766 with SMTP id
+ b17-20020a25bb51000000b00dc6238ed766mr8748595ybk.2.1712004448456; Mon, 01 Apr
+ 2024 13:47:28 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 6.7 000/432] 6.7.12-rc1 review
-Content-Language: en-US
-To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, stable@vger.kernel.org
-Cc: patches@lists.linux.dev, linux-kernel@vger.kernel.org,
- torvalds@linux-foundation.org, akpm@linux-foundation.org,
- linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
- lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
- sudipm.mukherjee@gmail.com, srw@sladewatkins.net, rwarsow@gmx.de,
- conor@kernel.org, allen.lkml@gmail.com, broonie@kernel.org
-References: <20240401152553.125349965@linuxfoundation.org>
-From: Florian Fainelli <f.fainelli@gmail.com>
-In-Reply-To: <20240401152553.125349965@linuxfoundation.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+References: <CALaQ_hrVM0dMaFqLshW5NTkkomGSvGnpyLOPx8E0QpniewyxUA@mail.gmail.com>
+ <20240329194603.ed67a334f75ba3c933cc8876@linux-foundation.org>
+In-Reply-To: <20240329194603.ed67a334f75ba3c933cc8876@linux-foundation.org>
+From: Nathan Royce <nroycea+kernel@gmail.com>
+Date: Mon, 1 Apr 2024 15:46:52 -0500
+Message-ID: <CALaQ_hqHwBKFBFPyantgr59SDpfZHwJFyWimLAZROdDsvA6rwQ@mail.gmail.com>
+Subject: Re: Allmodconfig - logic_outb - Boot Panic
+To: Andrew Morton <akpm@linux-foundation.org>
+Cc: LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 4/1/24 08:39, Greg Kroah-Hartman wrote:
-> Note, this will be the LAST 6.7.y kernel release.  After this one it
-> will be end-of-life.  Please move to 6.8.y now.
-> 
-> ------------------------------------------
-> 
-> This is the start of the stable review cycle for the 6.7.12 release.
-> There are 432 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-> 
-> Responses should be made by Wed, 03 Apr 2024 15:24:46 +0000.
-> Anything received after that time might be too late.
-> 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patch-6.7.12-rc1.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-6.7.y
-> and the diffstat can be found below.
-> 
-> thanks,
-> 
-> greg k-h
+Yup. I just figured linux would gracefully handle these sorts of
+issues (eg. notify the caller, for them to handle, or just do
+nothing).
+"ISAPNP" was one of the small handful of things I had to disable from
+"allmodconfig" before I could get it to boot.
+The latest (and last) was "DEBUG_TEST_DRIVER_REMOVE". I had to add
+"dump_stack()" in "__kernfs_remove"" in "fs/kernfs/dir.c" because I
+couldn't understand why I was getting other hardware panics for
+hardware that DID exist.
+So while I wanted "everything under the sun", which "allmodconfig"
+delivered, it also delivered things that simply made booting
+impossible.
+One other requirement for "allmodconfig" is making sure the FS that
+root exists on is enabled ('Y', not 'M') for it (common-sense mention
+for anyone searching for "allmodconfig" issues).
 
-On ARCH_BRCMSTB using 32-bit and 64-bit ARM kernels, build tested on 
-BMIPS_GENERIC:
-
-Tested-by: Florian Fainelli <florian.fainelli@broadcom.com>
--- 
-Florian
-
+On Fri, Mar 29, 2024 at 9:46=E2=80=AFPM Andrew Morton <akpm@linux-foundatio=
+n.org> wrote:
+> Could be that the logic_pio driver is crashing when the hardware isn't th=
+ere.
 
