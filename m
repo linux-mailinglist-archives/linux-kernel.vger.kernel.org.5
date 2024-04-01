@@ -1,188 +1,102 @@
-Return-Path: <linux-kernel+bounces-126935-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-126936-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 69F058944AA
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 20:11:06 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 551418944AC
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 20:12:20 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C43B9B219F5
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 18:11:03 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E18DEB21AED
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 18:12:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BBB5E4F5FD;
-	Mon,  1 Apr 2024 18:10:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EEC4B4F217;
+	Mon,  1 Apr 2024 18:12:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=google.com header.i=@google.com header.b="rHMkJeSL"
-Received: from mail-yb1-f202.google.com (mail-yb1-f202.google.com [209.85.219.202])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="mhgXf8dQ"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 40F134E1C4
-	for <linux-kernel@vger.kernel.org>; Mon,  1 Apr 2024 18:10:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.202
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3840F1DFF4;
+	Mon,  1 Apr 2024 18:12:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711995051; cv=none; b=HVTpQl9MPi0XHE2t9huYWKpufka1MeetOms/vKNUxGynpXyIPlI01DRMu9YvIZFW1xGffK0czKpcggO2spwj2yIr7ORyMJVTmXuP2M5CwcCLYEoeQVdS78oyfFt0JzB3KwqPyIzNc/cNbEq6g29fwBdpV55CrmPCFUT78a8jXr0=
+	t=1711995130; cv=none; b=meirY1EJRqXt54mivkmSvNYkc7jztxWNDk50SJXATlouxGprlSJwttW1MtxyroOtSg1LlVfZ63nH9uU4YXloZiUioOo2wWN7aa6V+9vVA2H//w6zJoPTWiaPSidNblKuhGvFLknp1egce46Igt70mNq10PQ4b8D5eFrpZTi0im4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711995051; c=relaxed/simple;
-	bh=z2HNaLW7w9QpZHWGF0jaA9MyMN6bCQ1kVStq5aF7W4M=;
-	h=Date:Mime-Version:Message-ID:Subject:From:To:Cc:Content-Type; b=X4mskrPHb5tMm5B2MbtsYXKT61gO68dzSipxY/4YMJZVwDLrgk937YnWRP/Az5U690TYt//PS1MmHEKo0kSd9gUulG6KyZobNuUvdMCwfBtqmTQ+cPe0IXT+3rfPkImSHhuSqyzgXp0NZ3mhkI2H00/OBlXbL08NGXVx76SFfe8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--justinstitt.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=rHMkJeSL; arc=none smtp.client-ip=209.85.219.202
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--justinstitt.bounces.google.com
-Received: by mail-yb1-f202.google.com with SMTP id 3f1490d57ef6-dc6ceade361so7893107276.0
-        for <linux-kernel@vger.kernel.org>; Mon, 01 Apr 2024 11:10:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1711995049; x=1712599849; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=sw2vY2M4CeKEyqj973cP6PJDE6m3drwFn3wvpEExDXs=;
-        b=rHMkJeSLIwbDSDjhAaUaHbGeo9ua3hm9of4MyQaLy0zZMvNGtvYEnEdula2es1QbPW
-         pY4QSMRWt+1t/WE9SNVbgzlEVlFj8GGjMIaO0tar77U8CEsd/4yT+PIfWJYbsXsvAvbV
-         uCCvztO/lH1qProrX3SxFuT+O/4ldTN1OWLZdVfhqgcxMvNAnVBKnxhFPFv6H2jgvOJ0
-         8FJLuRFXQwdPA7pnbfjNsj+s//nuXBraiIeZpaypwBXn5cbliWpVG+myT90fLVRhK9Ag
-         SMgGj7StrbdgJVpr6fkS2+lUtNxDv0JNJq5Qmi0r1Mjk/99ISZ+LSOWL44a+iDi/OlYR
-         6Kzg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711995049; x=1712599849;
-        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=sw2vY2M4CeKEyqj973cP6PJDE6m3drwFn3wvpEExDXs=;
-        b=bWSOQ8yJDAskhyk/rx1pXXDxFV3wFvQUOw6ix8EDBSqGO3Obi82MjdLWToh2dPS+JS
-         dwUzE6rOjYPcxIwesZgnVtXlGhYqOvjQliPVdb/e/HTl/LNMkHnRXE5iOuvAddy02MkE
-         rnBIwgQtexCr42QNaMDzJVdCkp+EDoh0jmEz7hJqgznqRZ7ha4Ndjg52yQZ/6V0qfwa6
-         pxaaAuiQ78tfqrOB/6KF1ODtIwpKjfqe/b6p48ZvLcr43+StTp7A7zEIhPGSC3HRsbjJ
-         Ya3Z36m+qzo5T5pNLHRPm22+ANsirk8ODwgbaSV3DLEO9zs41rjMVkvj8vKIprDEm2rF
-         uQ/A==
-X-Forwarded-Encrypted: i=1; AJvYcCXpMK17pf+NactRJqmE/ZZfLDyyrVSfnlY0jXtUIgJ1cp8ipHaNlvbRPsQ8/aeU10CmPsmfI0Z/c0nX6jFta7vO249T1TgFPCm89+Fl
-X-Gm-Message-State: AOJu0YyjenoMjItfB11OFXdQ1RiKqZDN3WXDXgekMbBx6JmeiPk/iadA
-	QkPGURBahPJ5wkvtsAeVA0H2nYtqfTRwWdcAZUkXV1m2sBC1CMDQzu75nq/nQnR3fooYjrJBknJ
-	7bnWB/yON7ghp4SHdc61IBw==
-X-Google-Smtp-Source: AGHT+IFAZ8Se8nHA0Of3hEysmza4VRg6qbci7e1TG3olLS+L6R1D++n7SLB99RNTps6QkAlE7iFc8jPZQ89cC3NRtQ==
-X-Received: from jstitt-linux1.c.googlers.com ([fda3:e722:ac3:cc00:2b:ff92:c0a8:23b5])
- (user=justinstitt job=sendgmr) by 2002:a05:6902:2313:b0:ddd:7581:1237 with
- SMTP id do19-20020a056902231300b00ddd75811237mr3279498ybb.3.1711995049368;
- Mon, 01 Apr 2024 11:10:49 -0700 (PDT)
-Date: Mon, 01 Apr 2024 18:10:48 +0000
+	s=arc-20240116; t=1711995130; c=relaxed/simple;
+	bh=A411EZgHmp3c7197ZJ8Qjf7fYUtEd7pYUVgTImdegQE=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=GZ8Thu65qol34gkHDNEMckPCzFFvh8GyUR917Fo/yJ4qC7+ohizbLvejCfUB6K15UxNLp594p07/CnOsCX7iDVRK0fq71GNeWxhGle0YIN7WcCmzvSFBPkaoU/0aK0wL1qGgxdP3zDCJsK+wBRBS4Kt8Ki4WQQd3DcuK1cDLIC4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=mhgXf8dQ; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B7382C433C7;
+	Mon,  1 Apr 2024 18:12:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1711995129;
+	bh=A411EZgHmp3c7197ZJ8Qjf7fYUtEd7pYUVgTImdegQE=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=mhgXf8dQulqZp2bP1mzKG+Pjd43ns3WWeGfnhAl0MSNCaPBmZgrapgQrZoTkW1p1w
+	 ZxThyPNZFR/PFdFbuRVqbXPJu6xabPMwYjyAnxk+eBcMqxhGOz2yCPbURsOM2Wbf3k
+	 yY3+WPmwVuNDKn84POxrGHrxjKkFovrYu+ubnp1Wzq4Y/983zWWm3InQlsDioZe2TB
+	 0uBjdXNn5zkru74U2xTNWp1b8KGuryOUqxiS0RpcWAoixaDObLxszIoJLf/LQt0HhU
+	 q1mOGR53BjNkh518I6hudTkLTfCgZ4Cb2dxjXFiAtsRqYd21RVmvS6grrchYUV1Wak
+	 Gz37tuHUN30XQ==
+Date: Mon, 1 Apr 2024 21:12:04 +0300
+From: Leon Romanovsky <leon@kernel.org>
+To: Junxian Huang <huangjunxian6@hisilicon.com>
+Cc: jgg@ziepe.ca, linux-rdma@vger.kernel.org, linuxarm@huawei.com,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH for-next] RDMA/hns: Support DSCP
+Message-ID: <20240401181204.GC11187@unreal>
+References: <20240315093551.1650088-1-huangjunxian6@hisilicon.com>
+ <20240401114853.GA73174@unreal>
+ <1f786e1b-e8ff-1d6f-7c4d-89724eda6712@hisilicon.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-X-B4-Tracking: v=1; b=H4sIAKf4CmYC/43NQQ6CMBCF4auQWTumLQWNK+5hWGCZQhOkpFMJh
- PTuVk7g8nuL/x3AFBwxPIoDAq2OnZ8z1KUAM3bzQOj6bFBCaVEqiRzDbJYdLeNoeZk+jFsXY0C
- Dml6W6pvVpu4hB5ZA1m1n/Nlmj46jD/v5tcrf+ld2lShRmLq8V50UqpLN4P0w0dX4N7QppS9rB YvIxQAAAA==
-X-Developer-Key: i=justinstitt@google.com; a=ed25519; pk=tC3hNkJQTpNX/gLKxTNQKDmiQl6QjBNCGKJINqAdJsE=
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1711995048; l=3756;
- i=justinstitt@google.com; s=20230717; h=from:subject:message-id;
- bh=z2HNaLW7w9QpZHWGF0jaA9MyMN6bCQ1kVStq5aF7W4M=; b=kU6IxVx3/F03byPgQEL8DLNLMSnWNCYWY3e9y+7keVoKq+5hvMV5hXsypcquKgXyj0ecnWlJ8
- lvja9jJqSVCAxSvYraO/3hVEpDYa2ynuZ0XmjXrTG7v0QdUj3JsrDWG
-X-Mailer: b4 0.12.3
-Message-ID: <20240401-strncpy-fs-hfsplus-xattr-c-v2-1-6e089999355e@google.com>
-Subject: [PATCH v2] hfsplus: refactor copy_name to not use strncpy
-From: Justin Stitt <justinstitt@google.com>
-To: Kees Cook <keescook@chromium.org>
-Cc: linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-hardening@vger.kernel.org, Justin Stitt <justinstitt@google.com>
-Content-Type: text/plain; charset="utf-8"
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1f786e1b-e8ff-1d6f-7c4d-89724eda6712@hisilicon.com>
 
-strncpy() is deprecated with NUL-terminated destination strings [1].
+On Mon, Apr 01, 2024 at 09:25:39PM +0800, Junxian Huang wrote:
+> 
+> 
+> On 2024/4/1 19:48, Leon Romanovsky wrote:
+> > On Fri, Mar 15, 2024 at 05:35:51PM +0800, Junxian Huang wrote:
+> >> Add support for DSCP configuration. For DSCP, get dscp-prio mapping
+> >> via hns3 nic driver api .get_dscp_prio() and fill the SL (in WQE for
+> >> UD or in QPC for RC) with the priority value. The prio-tc mapping is
+> >> configured to HW by hns3 nic driver. HW will select a corresponding
+> >> TC according to SL and the prio-tc mapping.
+> >>
+> >> Signed-off-by: Junxian Huang <huangjunxian6@hisilicon.com>
+> >> ---
+> >>  drivers/infiniband/hw/hns/hns_roce_ah.c     | 32 +++++---
+> >>  drivers/infiniband/hw/hns/hns_roce_device.h |  6 ++
+> >>  drivers/infiniband/hw/hns/hns_roce_hw_v2.c  | 86 ++++++++++++++++-----
+> >>  drivers/infiniband/hw/hns/hns_roce_qp.c     | 13 ++++
+> >>  include/uapi/rdma/hns-abi.h                 |  9 ++-
+> >>  5 files changed, 117 insertions(+), 29 deletions(-)
+> > 
+> > 1. What is TC mode?
+> 
+> TC mode indicates whether the HW is configured as DSCP mode or VLAN priority
+> mode currently.
+> 
+> > 2. Did you post rdma-core PR?
+> 
+> Not yet. I was meant to wait until this patch is applied. Should I post it
+> right now?
 
-The copy_name() method does a lot of manual buffer manipulation to
-eventually arrive with its desired string. If we don't know the
-namespace this attr has or belongs to we want to prepend "osx." to our
-final string. Following this, we're copying xattr_name and doing a
-bizarre manual NUL-byte assignment with a memset where n=1.
+Yes, for any UAPI changes, we require to have rdma-core PR.
 
-Really, we can use some more obvious string APIs to acomplish this,
-improving readability and security. Following the same control flow as
-before: if we don't know the namespace let's use scnprintf() to form our
-prefix + xattr_name pairing (while NUL-terminating too!). Otherwise, use
-strscpy() to return the number of bytes copied into our buffer.
-Additionally, for non-empty strings, include the NUL-byte in the length
--- matching the behavior of the previous implementation.
+Thanks
 
-Note that strscpy() _can_ return -E2BIG but this is already handled by
-all callsites:
-
-In both hfsplus_listxattr_finder_info() and hfsplus_listxattr(), ret is
-already type ssize_t so we can change the return type of copy_name() to
-match (understanding that scnprintf()'s return type is different yet
-fully representable by ssize_t). Furthermore, listxattr() in fs/xattr.c
-is well-equipped to handle a potential -E2BIG return result from
-vfs_listxattr():
-|	ssize_t error;
-..
-|	error = vfs_listxattr(d, klist, size);
-|	if (error > 0) {
-|		if (size && copy_to_user(list, klist, error))
-|			error = -EFAULT;
-|	} else if (error == -ERANGE && size >= XATTR_LIST_MAX) {
-|		/* The file system tried to returned a list bigger
-|			than XATTR_LIST_MAX bytes. Not possible. */
-|		error = -E2BIG;
-|	}
-.. the error can potentially already be -E2BIG, skipping this else-if
-and ending up at the same state as other errors.
-
-Link: https://www.kernel.org/doc/html/latest/process/deprecated.html#strncpy-on-nul-terminated-strings [1]
-Link: https://manpages.debian.org/testing/linux-manual-4.8/strscpy.9.en.html
-Link: https://github.com/KSPP/linux/issues/90
-Cc: linux-hardening@vger.kernel.org
-Signed-off-by: Justin Stitt <justinstitt@google.com>
----
-Changes in v2:
-- include NUL-byte in length (thanks Kees)
-- reword commit message slightly
-- Link to v1: https://lore.kernel.org/r/20240321-strncpy-fs-hfsplus-xattr-c-v1-1-0c6385a10251@google.com
----
----
- fs/hfsplus/xattr.c | 22 ++++++++++------------
- 1 file changed, 10 insertions(+), 12 deletions(-)
-
-diff --git a/fs/hfsplus/xattr.c b/fs/hfsplus/xattr.c
-index 9c9ff6b8c6f7..5a400259ae74 100644
---- a/fs/hfsplus/xattr.c
-+++ b/fs/hfsplus/xattr.c
-@@ -400,21 +400,19 @@ static int name_len(const char *xattr_name, int xattr_name_len)
- 	return len;
- }
- 
--static int copy_name(char *buffer, const char *xattr_name, int name_len)
-+static ssize_t copy_name(char *buffer, const char *xattr_name, int name_len)
- {
--	int len = name_len;
--	int offset = 0;
-+	ssize_t len;
- 
--	if (!is_known_namespace(xattr_name)) {
--		memcpy(buffer, XATTR_MAC_OSX_PREFIX, XATTR_MAC_OSX_PREFIX_LEN);
--		offset += XATTR_MAC_OSX_PREFIX_LEN;
--		len += XATTR_MAC_OSX_PREFIX_LEN;
--	}
--
--	strncpy(buffer + offset, xattr_name, name_len);
--	memset(buffer + offset + name_len, 0, 1);
--	len += 1;
-+	if (!is_known_namespace(xattr_name))
-+		len = scnprintf(buffer, name_len + XATTR_MAC_OSX_PREFIX_LEN,
-+				 "%s%s", XATTR_MAC_OSX_PREFIX, xattr_name);
-+	else
-+		len = strscpy(buffer, xattr_name, name_len + 1);
- 
-+	/* include NUL-byte in length for non-empty name */
-+	if (len >= 0)
-+		len++;
- 	return len;
- }
- 
-
----
-base-commit: 241590e5a1d1b6219c8d3045c167f2fbcc076cbb
-change-id: 20240321-strncpy-fs-hfsplus-xattr-c-4ebfe67f4c6d
-
-Best regards,
---
-Justin Stitt <justinstitt@google.com>
-
+> 
+> Junxian
+> 
+> > 
+> > Thanks
 
