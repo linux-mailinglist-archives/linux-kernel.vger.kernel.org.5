@@ -1,351 +1,178 @@
-Return-Path: <linux-kernel+bounces-126865-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-126866-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7AD508941BD
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 18:45:34 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id B92748941C3
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 18:45:56 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2BCFB283216
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 16:45:33 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DD4801C21977
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 16:45:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 27F0E482E4;
-	Mon,  1 Apr 2024 16:45:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D5D3A4AEE0;
+	Mon,  1 Apr 2024 16:45:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="QVRDSDu+"
-Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
+	dkim=pass (1024-bit key) header.d=natalenko.name header.i=@natalenko.name header.b="PKMxoe+A"
+Received: from prime.voidband.net (prime.voidband.net [199.247.17.104])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4DBBF4653C
-	for <linux-kernel@vger.kernel.org>; Mon,  1 Apr 2024 16:45:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 536F5481D5;
+	Mon,  1 Apr 2024 16:45:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=199.247.17.104
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711989925; cv=none; b=ecwjwyfuGtoh8Oo+K+9ei5DysWKbx0z+cq0/ZAqVa6o9jpLWWWmNVGl2AXvV/RAaNIDBD6NDer12nwYk8tFOAr/am3KqgUo1LVSMdWg6KDceBtVfqJiMqn9wkT6Rw1iyk3W2/lP1ksRUBl712RRdPKpOk/OzS/JYSAUWR7nCW/Q=
+	t=1711989938; cv=none; b=P4jMSUbt07SIvLJK4JLlCScWwwHV88soG7lfDtIRnQEUMezUYuhp8RUPFpBrQBV4K3un+suYexs6Y1ZkqMD8k34Hgbu0Kl3uhLp38ieTi8+Lc3DuCH2bwgk6oIVeNyblb9pCWD69JKJX4Pzwz/XdxdoZ8aPTQRQ3LQMq/M0mO6g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711989925; c=relaxed/simple;
-	bh=heEWpXD2d4ioamqcjV7dMigkm+Pyz3fXsZggrGudDyE=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=szc9kpX2jWS4BAJM2YsxVg7qINbyUI2EWkTwmTlIAdG0gtOJEtPiNX/A7dp4uYr5p7APr7ezW89WPK98bnz1VH+W/pt5B/bCNpVd1m7MObSrigvIi+FlLSXIj9dBTmZgJRcqVGYXSJ3APZ5LfXik5MZDr3gAz7us4mvZx8I1Mkg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=QVRDSDu+; arc=none smtp.client-ip=46.235.227.194
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-	s=mail; t=1711989921;
-	bh=heEWpXD2d4ioamqcjV7dMigkm+Pyz3fXsZggrGudDyE=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=QVRDSDu+fZDRGSOFV/02926geo1si6E/74JtfFQW9eSIOfoJArC2cES1tlfKeDbZj
-	 vXDBVxpI4XT9PuB8jrO+QRHdHDjrZmDgkxeb6H/sQhsxPgv9+vXzbVTHc/WQjrPvBA
-	 iEhtiuudDsmdI4BUC5nkox0KAxtbs4S3g/x3UXKB2p3bbQGlNi7P4DeUIecefD5nAc
-	 XXL1OxSB2/E5xVolY00Ig+M+PcxfeYI0Ky3UxAOaWOEP/v12i6kDsaIiSzdCvzmfKX
-	 awmZbcL40ZHgWf6htwI6K5aESAwMRRzuecz6Y9ZgLGJ22kR61XIkBQaS2I78zFSVWA
-	 1boJe2piEwImw==
-Received: from [100.95.196.25] (cola.collaboradmins.com [195.201.22.229])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits))
+	s=arc-20240116; t=1711989938; c=relaxed/simple;
+	bh=dy4TsSyZ9KfrYMBOe0ovVesbC9ccx+VUrTBRTCitf/0=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=CTCNFE87t2owY/YbPe9x4ilTUEjFRUlvnB0cUOpmxjCfCJzA9p6fojYtAr8lcdEozCEN1taHwSywW470nSDMUuE6TgFmOTy8VQgAef+Iif9EcsRYpMm3+GDJ5eAke2PhcIWhZWyVeMacWCKJe2w5nTX1zUvoTnDWGPuZ5uH4b4k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=natalenko.name; spf=pass smtp.mailfrom=natalenko.name; dkim=pass (1024-bit key) header.d=natalenko.name header.i=@natalenko.name header.b=PKMxoe+A; arc=none smtp.client-ip=199.247.17.104
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=natalenko.name
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=natalenko.name
+Received: from spock.localnet (unknown [94.142.239.106])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	(Authenticated sender: koike)
-	by madrid.collaboradmins.com (Postfix) with ESMTPSA id D1A803781144;
-	Mon,  1 Apr 2024 16:45:15 +0000 (UTC)
-Message-ID: <c05bbde7-7119-4fff-9b62-a7a585259143@collabora.com>
-Date: Mon, 1 Apr 2024 13:45:15 -0300
+	by prime.voidband.net (Postfix) with ESMTPSA id 68F8E62FD5E0;
+	Mon,  1 Apr 2024 18:45:31 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=natalenko.name;
+	s=dkim-20170712; t=1711989931;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=aAjz4MKZi39vNHP//SIAL+tM7VX8sjhM3OZ1h2IEnfs=;
+	b=PKMxoe+AGftfg/s7R2viEIo7q+PE1+a8swfPhLP+dGqIOSPD/qXgcYviFqpYDlw270HHbI
+	gHJ0ZDvhySTNda9J6vkax2mHq9XqAS3Rw0WSbmIKpPVEigIJxkrzdM5p/mThSASqiHCfQR
+	MjzykhhWYRFmMsFPRRLlkRaTbNmfW5g=
+From: Oleksandr Natalenko <oleksandr@natalenko.name>
+To: linux-kernel@vger.kernel.org
+Cc: linux-media@vger.kernel.org,
+ Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+ Ricardo Ribalda <ribalda@chromium.org>,
+ Mauro Carvalho Chehab <mchehab@kernel.org>,
+ "hn.chen" <hn.chen@sunplusit.com>, Hans Verkuil <hverkuil@xs4all.nl>,
+ Sergey Senozhatsky <senozhatsky@chromium.org>
+Subject:
+ Re: [PATCH] media/uvcvideo: add quirk for invalid dev_sof in Logitech C920
+Date: Mon, 01 Apr 2024 18:45:16 +0200
+Message-ID: <6046664.lOV4Wx5bFT@natalenko.name>
+In-Reply-To: <20240325142611.15550-1-oleksandr@natalenko.name>
+References: <20240325142611.15550-1-oleksandr@natalenko.name>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v5 10/10] drm/ci: add tests on vkms
-Content-Language: en-US
-To: Vignesh Raman <vignesh.raman@collabora.com>,
- dri-devel@lists.freedesktop.org
-Cc: daniels@collabora.com, airlied@gmail.com, daniel@ffwll.ch,
- emma@anholt.net, robdclark@gmail.com, david.heidelberg@collabora.com,
- guilherme.gallo@collabora.com, sergi.blanch.torne@collabora.com,
- hamohammed.sa@gmail.com, rodrigosiqueiramelo@gmail.com,
- melissa.srw@gmail.com, mairacanal@riseup.net, mcanal@igalia.com,
- linux-mediatek@lists.infradead.org, linux-amlogic@lists.infradead.org,
- linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org
-References: <20240401061235.192713-1-vignesh.raman@collabora.com>
- <20240401061235.192713-11-vignesh.raman@collabora.com>
-From: Helen Koike <helen.koike@collabora.com>
-In-Reply-To: <20240401061235.192713-11-vignesh.raman@collabora.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; boundary="nextPart4923946.31r3eYUQgx";
+ micalg="pgp-sha256"; protocol="application/pgp-signature"
 
+--nextPart4923946.31r3eYUQgx
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="utf-8"; protected-headers="v1"
+From: Oleksandr Natalenko <oleksandr@natalenko.name>
+To: linux-kernel@vger.kernel.org
+Date: Mon, 01 Apr 2024 18:45:16 +0200
+Message-ID: <6046664.lOV4Wx5bFT@natalenko.name>
+In-Reply-To: <20240325142611.15550-1-oleksandr@natalenko.name>
+References: <20240325142611.15550-1-oleksandr@natalenko.name>
+MIME-Version: 1.0
 
-
-On 01/04/2024 03:12, Vignesh Raman wrote:
-> Add job that runs igt on top of vkms.
-> 
-> Signed-off-by: Vignesh Raman <vignesh.raman@collabora.com>
-> Acked-by: Jessica Zhang <quic_jesszhan@quicinc.com>
-> Tested-by: Jessica Zhang <quic_jesszhan@quicinc.com>
-> Acked-by: Maxime Ripard <mripard@kernel.org>
-> Signed-off-by: Helen Koike <helen.koike@collabora.com>
-
-Acked-by: Helen Koike <helen.koike@collabora.com>
-
-Thanks
-Helen
-
+On pond=C4=9Bl=C3=AD 25. b=C5=99ezna 2024 15:26:11, CEST Oleksandr Natalenk=
+o wrote:
+> Similarly to Logitech C922, C920 seems to also suffer from a firmware
+> bug that breaks hardware timestamping.
+>=20
+> Add a quirk for this camera model too.
+>=20
+> Before applying the quirk:
+>=20
+> ```
+> 100 (4) [-] none 100 200717 B 212.919114 213.079004 33.727 fps ts mono/SoE
+> 101 (5) [-] none 101 200889 B 213.003703 213.114996 11.822 fps ts mono/SoE
+> 102 (6) [-] none 102 200926 B 213.035571 213.146999 31.379 fps ts mono/SoE
+> 103 (7) [-] none 103 200839 B 213.067424 213.179003 31.394 fps ts mono/SoE
+> 104 (0) [-] none 104 200692 B 213.293180 213.214991 4.430 fps ts mono/SoE
+> 105 (1) [-] none 105 200937 B 213.322374 213.247001 34.254 fps ts mono/SoE
+> 106 (2) [-] none 106 201013 B 213.352228 213.279005 33.496 fps ts mono/SoE
+> =E2=80=A6
+> ```
+>=20
+> After applying the quirk:
+>=20
+> ```
+> 154 (2) [-] none 154 192417 B 42.199823 42.207788 27.779 fps ts mono/SoE
+> 155 (3) [-] none 155 192040 B 42.231834 42.239791 31.239 fps ts mono/SoE
+> 156 (4) [-] none 156 192213 B 42.263823 42.271822 31.261 fps ts mono/SoE
+> 157 (5) [-] none 157 191981 B 42.299824 42.303827 27.777 fps ts mono/SoE
+> 158 (6) [-] none 158 191953 B 42.331835 42.339811 31.239 fps ts mono/SoE
+> 159 (7) [-] none 159 191904 B 42.363824 42.371813 31.261 fps ts mono/SoE
+> 160 (0) [-] none 160 192210 B 42.399834 42.407801 27.770 fps ts mono/SoE
+> ```
+>=20
+> Link: https://lore.kernel.org/lkml/5764213.DvuYhMxLoT@natalenko.name/
+> Reviewed-by: Ricardo Ribalda <ribalda@chromium.org>
+> Signed-off-by: Oleksandr Natalenko <oleksandr@natalenko.name>
 > ---
-> 
-> v4:
->    - New patch in the series.
->      https://lore.kernel.org/lkml/20240201065346.801038-1-vignesh.raman@collabora.com/
-> 
-> v5:
->    - No changes.
-> 
-> ---
->   MAINTAINERS                                   |  2 ++
->   drivers/gpu/drm/ci/build.sh                   |  1 -
->   drivers/gpu/drm/ci/gitlab-ci.yml              |  3 +-
->   drivers/gpu/drm/ci/igt_runner.sh              |  6 ++--
->   drivers/gpu/drm/ci/image-tags.yml             |  2 +-
->   drivers/gpu/drm/ci/test.yml                   | 24 +++++++++++++-
->   drivers/gpu/drm/ci/x86_64.config              |  1 +
->   .../drm/ci/xfails/virtio_gpu-none-fails.txt   |  1 -
->   drivers/gpu/drm/ci/xfails/vkms-none-fails.txt | 33 +++++++++++++++++++
->   .../gpu/drm/ci/xfails/vkms-none-flakes.txt    | 20 +++++++++++
->   drivers/gpu/drm/ci/xfails/vkms-none-skips.txt | 23 +++++++++++++
->   11 files changed, 108 insertions(+), 8 deletions(-)
->   create mode 100644 drivers/gpu/drm/ci/xfails/vkms-none-fails.txt
->   create mode 100644 drivers/gpu/drm/ci/xfails/vkms-none-flakes.txt
->   create mode 100644 drivers/gpu/drm/ci/xfails/vkms-none-skips.txt
-> 
-> diff --git a/MAINTAINERS b/MAINTAINERS
-> index 333704ceefb6..c78c825508ce 100644
-> --- a/MAINTAINERS
-> +++ b/MAINTAINERS
-> @@ -6962,6 +6962,8 @@ L:	dri-devel@lists.freedesktop.org
->   S:	Maintained
->   T:	git git://anongit.freedesktop.org/drm/drm-misc
->   F:	Documentation/gpu/vkms.rst
-> +F:	drivers/gpu/drm/ci/testlist.txt
-> +F:	drivers/gpu/drm/ci/xfails/vkms*
->   F:	drivers/gpu/drm/vkms/
->   
->   DRM DRIVER FOR VIRTUALBOX VIRTUAL GPU
-> diff --git a/drivers/gpu/drm/ci/build.sh b/drivers/gpu/drm/ci/build.sh
-> index 8a3baa003904..95493df9cdc2 100644
-> --- a/drivers/gpu/drm/ci/build.sh
-> +++ b/drivers/gpu/drm/ci/build.sh
-> @@ -156,7 +156,6 @@ fi
->   
->   mkdir -p artifacts/install/lib
->   mv install/* artifacts/install/.
-> -rm -rf artifacts/install/modules
->   ln -s common artifacts/install/ci-common
->   cp .config artifacts/${CI_JOB_NAME}_config
->   
-> diff --git a/drivers/gpu/drm/ci/gitlab-ci.yml b/drivers/gpu/drm/ci/gitlab-ci.yml
-> index 5b5d4a324659..df762d03533f 100644
-> --- a/drivers/gpu/drm/ci/gitlab-ci.yml
-> +++ b/drivers/gpu/drm/ci/gitlab-ci.yml
-> @@ -114,6 +114,7 @@ stages:
->     - panfrost
->     - powervr
->     - virtio-gpu
-> +  - software-driver
->   
->   # YAML anchors for rule conditions
->   # --------------------------------
-> @@ -269,4 +270,4 @@ sanity:
->   
->   # Jobs that need to pass before spending hardware resources on further testing
->   .required-for-hardware-jobs:
-> -  needs: []
-> \ No newline at end of file
-> +  needs: []
-> diff --git a/drivers/gpu/drm/ci/igt_runner.sh b/drivers/gpu/drm/ci/igt_runner.sh
-> index ce6e22369d4d..c89acb974645 100755
-> --- a/drivers/gpu/drm/ci/igt_runner.sh
-> +++ b/drivers/gpu/drm/ci/igt_runner.sh
-> @@ -20,10 +20,10 @@ cat /sys/kernel/debug/dri/*/state
->   set -e
->   
->   case "$DRIVER_NAME" in
-> -    amdgpu)
-> +    amdgpu|vkms)
->           # Cannot use HWCI_KERNEL_MODULES as at that point we don't have the module in /lib
-> -        mv /install/modules/lib/modules/* /lib/modules/.
-> -        modprobe amdgpu
-> +        mv /install/modules/lib/modules/* /lib/modules/. || true
-> +        modprobe --first-time $DRIVER_NAME
->           ;;
->   esac
->   
-> diff --git a/drivers/gpu/drm/ci/image-tags.yml b/drivers/gpu/drm/ci/image-tags.yml
-> index cf07c3e09b8c..bf861ab8b9c2 100644
-> --- a/drivers/gpu/drm/ci/image-tags.yml
-> +++ b/drivers/gpu/drm/ci/image-tags.yml
-> @@ -4,7 +4,7 @@ variables:
->      DEBIAN_BASE_TAG: "${CONTAINER_TAG}"
->   
->      DEBIAN_X86_64_BUILD_IMAGE_PATH: "debian/x86_64_build"
-> -   DEBIAN_BUILD_TAG: "2023-10-08-config"
-> +   DEBIAN_BUILD_TAG: "2024-01-29-vkms"
->   
->      KERNEL_ROOTFS_TAG: "2023-10-06-amd"
->      PKG_REPO_REV: "67f2c46b"
-> diff --git a/drivers/gpu/drm/ci/test.yml b/drivers/gpu/drm/ci/test.yml
-> index 8c90ae5a51e6..8fed797a26b9 100644
-> --- a/drivers/gpu/drm/ci/test.yml
-> +++ b/drivers/gpu/drm/ci/test.yml
-> @@ -411,7 +411,7 @@ panfrost:g12b:
->       - .panfrost-gpu
->   
->   virtio_gpu:none:
-> -  stage: virtio-gpu
-> +  stage: software-driver
->     variables:
->       CROSVM_GALLIUM_DRIVER: llvmpipe
->       DRIVER_NAME: virtio_gpu
-> @@ -431,3 +431,25 @@ virtio_gpu:none:
->       - debian/x86_64_test-gl
->       - testing:x86_64
->       - igt:x86_64
-> +
-> +vkms:none:
-> +  stage: software-driver
-> +  variables:
-> +    DRIVER_NAME: vkms
-> +    GPU_VERSION: none
-> +  extends:
-> +    - .test-gl
-> +    - .test-rules
-> +  tags:
-> +    - kvm
-> +  script:
-> +    - ln -sf $CI_PROJECT_DIR/install /install
-> +    - mv install/bzImage /lava-files/bzImage
-> +    - mkdir -p /lib/modules
-> +    - mkdir -p $CI_PROJECT_DIR/results
-> +    - ln -sf $CI_PROJECT_DIR/results /results
-> +    - ./install/crosvm-runner.sh ./install/igt_runner.sh
-> +  needs:
-> +    - debian/x86_64_test-gl
-> +    - testing:x86_64
-> +    - igt:x86_64
-> diff --git a/drivers/gpu/drm/ci/x86_64.config b/drivers/gpu/drm/ci/x86_64.config
-> index 1cbd49a5b23a..8eaba388b141 100644
-> --- a/drivers/gpu/drm/ci/x86_64.config
-> +++ b/drivers/gpu/drm/ci/x86_64.config
-> @@ -24,6 +24,7 @@ CONFIG_DRM=y
->   CONFIG_DRM_PANEL_SIMPLE=y
->   CONFIG_PWM_CROS_EC=y
->   CONFIG_BACKLIGHT_PWM=y
-> +CONFIG_DRM_VKMS=m
->   
->   # Strip out some stuff we don't need for graphics testing, to reduce
->   # the build.
-> diff --git a/drivers/gpu/drm/ci/xfails/virtio_gpu-none-fails.txt b/drivers/gpu/drm/ci/xfails/virtio_gpu-none-fails.txt
-> index 007f21e56d89..f82d437909b5 100644
-> --- a/drivers/gpu/drm/ci/xfails/virtio_gpu-none-fails.txt
-> +++ b/drivers/gpu/drm/ci/xfails/virtio_gpu-none-fails.txt
-> @@ -41,7 +41,6 @@ kms_flip@flip-vs-absolute-wf_vblank,Fail
->   kms_flip@flip-vs-absolute-wf_vblank-interruptible,Fail
->   kms_flip@flip-vs-blocking-wf-vblank,Fail
->   kms_flip@flip-vs-expired-vblank,Fail
-> -kms_flip@flip-vs-expired-vblank-interruptible,Fail
->   kms_flip@flip-vs-modeset-vs-hang,Fail
->   kms_flip@flip-vs-panning-vs-hang,Fail
->   kms_flip@flip-vs-wf_vblank-interruptible,Fail
-> diff --git a/drivers/gpu/drm/ci/xfails/vkms-none-fails.txt b/drivers/gpu/drm/ci/xfails/vkms-none-fails.txt
-> new file mode 100644
-> index 000000000000..ef6101d2c356
-> --- /dev/null
-> +++ b/drivers/gpu/drm/ci/xfails/vkms-none-fails.txt
-> @@ -0,0 +1,33 @@
-> +kms_cursor_crc@cursor-rapid-movement-128x128,Fail
-> +kms_cursor_crc@cursor-rapid-movement-128x42,Fail
-> +kms_cursor_crc@cursor-rapid-movement-256x256,Fail
-> +kms_cursor_crc@cursor-rapid-movement-256x85,Fail
-> +kms_cursor_crc@cursor-rapid-movement-32x10,Fail
-> +kms_cursor_crc@cursor-rapid-movement-32x32,Fail
-> +kms_cursor_crc@cursor-rapid-movement-512x170,Fail
-> +kms_cursor_crc@cursor-rapid-movement-512x512,Fail
-> +kms_cursor_crc@cursor-rapid-movement-64x21,Fail
-> +kms_cursor_crc@cursor-rapid-movement-64x64,Fail
-> +kms_cursor_legacy@basic-flip-before-cursor-atomic,Fail
-> +kms_cursor_legacy@basic-flip-before-cursor-legacy,Fail
-> +kms_cursor_legacy@cursor-vs-flip-atomic,Fail
-> +kms_cursor_legacy@cursor-vs-flip-legacy,Fail
-> +kms_cursor_legacy@cursor-vs-flip-toggle,Fail
-> +kms_cursor_legacy@cursor-vs-flip-varying-size,Fail
-> +kms_cursor_legacy@flip-vs-cursor-atomic,Fail
-> +kms_cursor_legacy@flip-vs-cursor-crc-atomic,Fail
-> +kms_cursor_legacy@flip-vs-cursor-crc-legacy,Fail
-> +kms_cursor_legacy@flip-vs-cursor-legacy,Fail
-> +kms_flip@flip-vs-modeset-vs-hang,Fail
-> +kms_flip@flip-vs-panning-vs-hang,Fail
-> +kms_pipe_crc_basic@nonblocking-crc,Fail
-> +kms_pipe_crc_basic@nonblocking-crc-frame-sequence,Fail
-> +kms_pipe_crc_basic@suspend-read-crc,Fail
-> +kms_plane@plane-panning-bottom-right-suspend,Fail
-> +kms_universal_plane@universal-plane-pipe-A-sanity,Fail
-> +kms_universal_plane@universal-plane-sanity,Fail
-> +kms_vblank@pipe-A-ts-continuation-dpms-suspend,Fail
-> +kms_writeback@writeback-check-output,Fail
-> +kms_writeback@writeback-fb-id,Fail
-> +kms_writeback@writeback-invalid-parameters,Fail
-> +kms_writeback@writeback-pixel-formats,Fail
-> diff --git a/drivers/gpu/drm/ci/xfails/vkms-none-flakes.txt b/drivers/gpu/drm/ci/xfails/vkms-none-flakes.txt
-> new file mode 100644
-> index 000000000000..7b52dab45457
-> --- /dev/null
-> +++ b/drivers/gpu/drm/ci/xfails/vkms-none-flakes.txt
-> @@ -0,0 +1,20 @@
-> +# Board Name: vkms
-> +# Bug Report: https://lore.kernel.org/dri-devel/005da8f1-8050-bffd-653c-2a87ae6376f7@collabora.com/T/#u
-> +# IGT Version: 1.28-gb0cc8160e
-> +# Linux Version: 6.7.0-rc3
-> +# Failure Rate: 50
-> +
-> +# Reported by deqp-runner
-> +kms_cursor_legacy@cursorA-vs-flipA-legacy
-> +kms_cursor_legacy@cursorA-vs-flipA-varying-size
-> +kms_flip@flip-vs-expired-vblank-interruptible
-> +kms_flip@flip-vs-expired-vblank
-> +kms_flip@plain-flip-fb-recreate
-> +kms_flip@plain-flip-fb-recreate-interruptible
-> +kms_flip@plain-flip-ts-check-interruptible
-> +
-> +# The below test shows inconsistency across multiple runs,
-> +# giving results of Pass and Fail alternately.
-> +kms_cursor_legacy@cursorA-vs-flipA-toggle
-> +kms_pipe_crc_basic@nonblocking-crc
-> +kms_flip@plain-flip-ts-check
-> diff --git a/drivers/gpu/drm/ci/xfails/vkms-none-skips.txt b/drivers/gpu/drm/ci/xfails/vkms-none-skips.txt
-> new file mode 100644
-> index 000000000000..723de920dc37
-> --- /dev/null
-> +++ b/drivers/gpu/drm/ci/xfails/vkms-none-skips.txt
-> @@ -0,0 +1,23 @@
-> +# Hits:
-> +# rcu: INFO: rcu_preempt detected stalls on CPUs/tasks:
-> +# rcu: 	Tasks blocked on level-0 rcu_node (CPUs 0-1): P749/1:b..l
-> +kms_prop_blob@invalid-get-prop
-> +
-> +# keeps printing vkms_vblank_simulate: vblank timer overrun and never ends
-> +kms_invalid_mode@int-max-clock
-> +
-> +# Suspend seems to be broken
-> +.*suspend.*
-> +
-> +# Hangs machine and timeout occurs
-> +kms_flip@flip-vs-absolute-wf_vblank-interruptible
-> +kms_invalid_mode@zero-hdisplay
-> +kms_invalid_mode@bad-vtotal
-> +kms_cursor_crc.*
-> +
-> +# Skip hw specific tests
-> +msm_.*
-> +amdgpu/amd_.*
-> +panfrost_.*
-> +v3d_.*
-> +vc4_.*
+>  drivers/media/usb/uvc/uvc_driver.c | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
+>=20
+> diff --git a/drivers/media/usb/uvc/uvc_driver.c b/drivers/media/usb/uvc/u=
+vc_driver.c
+> index 723e6d5680c2e..444d7089885ea 100644
+> --- a/drivers/media/usb/uvc/uvc_driver.c
+> +++ b/drivers/media/usb/uvc/uvc_driver.c
+> @@ -2573,7 +2573,8 @@ static const struct usb_device_id uvc_ids[] =3D {
+>  	  .bInterfaceClass	=3D USB_CLASS_VIDEO,
+>  	  .bInterfaceSubClass	=3D 1,
+>  	  .bInterfaceProtocol	=3D 0,
+> -	  .driver_info		=3D UVC_INFO_QUIRK(UVC_QUIRK_RESTORE_CTRLS_ON_INIT) },
+> +	  .driver_info		=3D UVC_INFO_QUIRK(UVC_QUIRK_RESTORE_CTRLS_ON_INIT
+> +					       | UVC_QUIRK_INVALID_DEVICE_SOF) },
+>  	/* Logitech HD Pro Webcam C922 */
+>  	{ .match_flags		=3D USB_DEVICE_ID_MATCH_DEVICE
+>  				| USB_DEVICE_ID_MATCH_INT_INFO,
+>=20
+
+Gentle ping on this one.
+
+Also, should I have added:
+
+=46ixes: 5d0fd3c806b9 ("[media] uvcvideo: Disable hardware timestamps by de=
+fault")
+
+?
+
+(it's not that this change re-enables HW timestamping, but 5d0fd3c806b9 exp=
+licitly mentions C920 as affected)
+
+=2D-=20
+Oleksandr Natalenko (post-factum)
+--nextPart4923946.31r3eYUQgx
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part.
+Content-Transfer-Encoding: 7Bit
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCAAdFiEEZUOOw5ESFLHZZtOKil/iNcg8M0sFAmYK5JwACgkQil/iNcg8
+M0vQbw//a6GrNbz1zBqVfcyTN5UhJIxpyiYBs2K8P5tmSMEJZbobZyX5AWZ6stWf
+x5v5UTF6GZL2wWjZsr8m7V3TvzFezDS5lB+yGfE2mcoWV7ULGe+Uel9/TxFeMCZH
+5Kmpkdxh8GuWXMUCd7roFSfUSLYJfON1i9HjUOInLNzKaTq5B41Gy1V5UaU1fRVN
+W5iY1+SuCJjlQmn56uAlSUm+YcWQywIRM4i14W7dFBJKD07zHCJ23YBcFieiK6ql
+H/MrF9koSNi1l3iPKyHyhIlvBxP/xFODFH7avR2aEmkiuVZbGD4AhrnBWnLjo0vJ
+17UNno+k+/mkHLMIliZjZMA45m35Z3VKW/DqnMsuiiUV6D6EMPoo9PTPlZOf88hZ
+atAHIBeCY33xUZYXRz70FiZ5GlcHRqJVMSOu3UBHFQkKsA0vTTZSGjF6mgZyA98i
+obytmxaZezJbZcR53zPOKG9ABQ0dw+Ky+lhz6ARzqX8o2RHLEmRV8eyQ3lTfUSwT
+9DLminOHNDw9joqL18x5+a0/MgQi5fYlICxEirFp06o/M7BARjYHwmKHXHiz1Fj+
+aiptxwb36qHS3KpYqOv1dQCDxctayv+na0vyJX39fBsi+FrcX8ORgW4V/68ySIy/
+mGR+mC9OIGtF33W5Mnb79+OlFnAG9TB9T8Nlce5Z8ikjgyCM4cc=
+=w7/U
+-----END PGP SIGNATURE-----
+
+--nextPart4923946.31r3eYUQgx--
+
+
+
 
