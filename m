@@ -1,76 +1,76 @@
-Return-Path: <linux-kernel+bounces-126529-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-126530-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 66C4F893924
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 10:48:31 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0392F893923
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 10:47:51 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8B0E3281E3C
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 08:48:29 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 34FD81C21095
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 08:47:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 125E7DF62;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 38A3DDF6C;
 	Mon,  1 Apr 2024 08:47:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="ZLb1zm7q";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="4sTSJedq"
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="2d+eUc0B";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="iiRtBZFg"
 Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6336EDDA7;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6334FDDA2;
 	Mon,  1 Apr 2024 08:47:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711961257; cv=none; b=W7pxBSclb2jP/++eiKKWuhkUWi8f9GzuNUQYKHmXFwrN6XmGUm7twMjHbYGo4KgdhDWDwqk0sc8ADaDB1V0wdOB9HsnB8ihdCLT+0xsnCwKkup9bNNmoXYeZ+TseXyPfsFD1TYbgUO3cNnfKS+O1nEpJa318OI3o2RHGbBi5Uy4=
+	t=1711961257; cv=none; b=JteqDb08ke4llTXqS3bZUeGPiYfXcODL2MtMX+SFTmE9/cQVkiM4Ow4NAPAERIRZ07e9s9mKWWhYrdAFIpIsDtV1PVxqEz3+Q8b77A9yLx3yaQZSWXzTiXdOz7HuCDKMeKaolEJ0NEFOIrxjQR4cAhswUV6h8M4dHnniIChbXMk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1711961257; c=relaxed/simple;
-	bh=WacFEThZdZ/CeEkhPpaOXAkvpDcAJFT5q5lXYhowVgs=;
+	bh=SB1WykvbvMaws7Jqmh3+cYaIZ7obgk8EzdX73CxxIvI=;
 	h=Date:From:To:Subject:Cc:In-Reply-To:References:MIME-Version:
-	 Message-ID:Content-Type; b=NqwqAXWFt1wviDvYm2bu91EnfR6kJq3EeVtNP8g2UGtCV5JJF2YXjNgCqQWPz1TfyMVDQcNDVg43hmzeU7PNU0yqUmIQiE0XTjzZNHoN4aZPuiHIH9WODzpXiZHGBRkqpa6cTvBauy31AXUu7qp8aKF1izQL2tdc7gJD7hyExOY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=ZLb1zm7q; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=4sTSJedq; arc=none smtp.client-ip=193.142.43.55
+	 Message-ID:Content-Type; b=WsVcsrw8qeYw7LMbUQDbBIz9ZT0id7w6TDejiE/6sKs0fqFe3+RIuuGy+Cv4nVQHeBbuTBwCzO+oqszOz3CFh8XWog6i1TjVWS70PDdSSyf3dy5kcHgMtH35Q24CrCz/g8N3rZ6/U9LK3XMKh4e5lxUhG+I/ysvuphIM/6p/jCM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=2d+eUc0B; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=iiRtBZFg; arc=none smtp.client-ip=193.142.43.55
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
-Date: Mon, 01 Apr 2024 08:47:26 -0000
+Date: Mon, 01 Apr 2024 08:47:27 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1711961247;
+	s=2020; t=1711961248;
 	h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
 	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
 	 content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=FtHh4UuqdvPc0eGJDnBaV3DpW+FpXi8pKi6HDkOgI+U=;
-	b=ZLb1zm7qZZeILP0O9tWhW2Uzv4MvEt3jYd9/IKIK+0RLM+hvPFrHsY8Mnvoanwq4xEECVF
-	uZ8lXlrr55BlGLQof8FvyiwTph0HXC1qiIRs8o7w1i0RknYuxNGSi3F+k06gtrsQoj2Uhi
-	sUEfmYlrzLqbABSOKYf5fR/DkPmp4f7aYTUjFU9CJ2F+ibrW9zrCDr+lTDEA1Y6uCHaPyw
-	QIluBaYv0h/oYvjc6eixP0XWMbnXyHl0j580QwZXrGeWsWrj5AHfVnO1MMX+TEP8X2G5tb
-	KIltXA5ebrEBHs5BirUSztnGcNwAFf5yH01jMwuhPmyRVfMkAWYB1ETeT/UzvQ==
+	bh=rrYrq2EJYDc3p66/DxsvOt+rTj+ZqlEcUlC9IPqdTcI=;
+	b=2d+eUc0BN6WOty6UuEJ+9Hx9ueZbIVjpaZS/zqcg5ysI62MCfH/goy1TkMRfoVmQj8o+/g
+	ExSIdDTkyz8+qml4nbJ5Hh11+A6RNzyJTkS3u1tgmmzUVBh13F0lbVe/gDjrLHuPAFg4R+
+	iCiJBY5KbuaT/k7hoPnvaUKfF6tm8nBlqN6tX8Ux93gBS0F5objNVc3y+WlGr1fjNkN6V9
+	eSH3Z21yDn9Rzjz1jnB6izxSN+NYm7zInkExRO4NITC5ISQZRLKr+NqBqbIP9OxdKmr3SY
+	zVSaVlBfgKGQuUKbT/ZERK9D/itEOQ0VfBD+jwp5hq3ecAUJn/UBMkaE9VI1zA==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1711961247;
+	s=2020e; t=1711961248;
 	h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
 	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
 	 content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=FtHh4UuqdvPc0eGJDnBaV3DpW+FpXi8pKi6HDkOgI+U=;
-	b=4sTSJedqEqQTPQH0PY96NTMFoogocug92cL3+n5WEbPczW1POTvJm8kMhlwRzYKoXud5Wd
-	4Hu4HyvEiY+YwXDQ==
+	bh=rrYrq2EJYDc3p66/DxsvOt+rTj+ZqlEcUlC9IPqdTcI=;
+	b=iiRtBZFgvTJhuIK2GZMoXJN5OzKydU+kFjgnlNf8EDXd3H2+5Z9OBuI/zvB3UIUxqQH+1R
+	832/tq1XYJiiomAg==
 From: "tip-bot2 for Randy Dunlap" <tip-bot2@linutronix.de>
 Sender: tip-bot2@linutronix.de
 Reply-to: linux-kernel@vger.kernel.org
 To: linux-tip-commits@vger.kernel.org
-Subject: [tip: timers/urgent] timers: Fix text inconsistencies and spelling
+Subject: [tip: timers/urgent] tick/sched: Fix struct tick_sched doc warnings
 Cc: Randy Dunlap <rdunlap@infradead.org>, Ingo Molnar <mingo@kernel.org>,
  x86@kernel.org, linux-kernel@vger.kernel.org
-In-Reply-To: <20240331172652.14086-7-rdunlap@infradead.org>
-References: <20240331172652.14086-7-rdunlap@infradead.org>
+In-Reply-To: <20240331172652.14086-6-rdunlap@infradead.org>
+References: <20240331172652.14086-6-rdunlap@infradead.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Message-ID: <171196124670.10875.10311187024916401962.tip-bot2@tip-bot2>
+Message-ID: <171196124750.10875.16713792755621842011.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2@linutronix.de>
 Robot-Unsubscribe:
  Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
@@ -80,120 +80,39 @@ Content-Transfer-Encoding: 7bit
 
 The following commit has been merged into the timers/urgent branch of tip:
 
-Commit-ID:     9e643ab59d7ee4332994671720a9528bac62e9b7
-Gitweb:        https://git.kernel.org/tip/9e643ab59d7ee4332994671720a9528bac62e9b7
+Commit-ID:     ba6ad57b803e33ed509213a5e840427dbef501d6
+Gitweb:        https://git.kernel.org/tip/ba6ad57b803e33ed509213a5e840427dbef501d6
 Author:        Randy Dunlap <rdunlap@infradead.org>
-AuthorDate:    Sun, 31 Mar 2024 10:26:52 -07:00
+AuthorDate:    Sun, 31 Mar 2024 10:26:51 -07:00
 Committer:     Ingo Molnar <mingo@kernel.org>
 CommitterDate: Mon, 01 Apr 2024 10:36:35 +02:00
 
-timers: Fix text inconsistencies and spelling
+tick/sched: Fix struct tick_sched doc warnings
 
-Fix some text for consistency: s/lvl/level/ in a comment and use
-correct/full function names in comments.
+Fix kernel-doc warnings in struct tick_sched:
 
-Correct spelling errors as reported by codespell.
+  tick-sched.h:103: warning: Function parameter or struct member 'idle_sleeptime_seq' not described in 'tick_sched'
+  tick-sched.h:104: warning: Excess struct member 'nohz_mode' description in 'tick_sched'
 
 Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
 Signed-off-by: Ingo Molnar <mingo@kernel.org>
-Link: https://lore.kernel.org/r/20240331172652.14086-7-rdunlap@infradead.org
+Link: https://lore.kernel.org/r/20240331172652.14086-6-rdunlap@infradead.org
 ---
- kernel/time/timer.c | 22 +++++++++++-----------
- 1 file changed, 11 insertions(+), 11 deletions(-)
+ kernel/time/tick-sched.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/kernel/time/timer.c b/kernel/time/timer.c
-index dee29f1..3baf2fb 100644
---- a/kernel/time/timer.c
-+++ b/kernel/time/timer.c
-@@ -64,15 +64,15 @@ EXPORT_SYMBOL(jiffies_64);
- 
- /*
-  * The timer wheel has LVL_DEPTH array levels. Each level provides an array of
-- * LVL_SIZE buckets. Each level is driven by its own clock and therefor each
-+ * LVL_SIZE buckets. Each level is driven by its own clock and therefore each
-  * level has a different granularity.
-  *
-- * The level granularity is:		LVL_CLK_DIV ^ lvl
-+ * The level granularity is:		LVL_CLK_DIV ^ level
-  * The level clock frequency is:	HZ / (LVL_CLK_DIV ^ level)
-  *
-  * The array level of a newly armed timer depends on the relative expiry
-  * time. The farther the expiry time is away the higher the array level and
-- * therefor the granularity becomes.
-+ * therefore the granularity becomes.
-  *
-  * Contrary to the original timer wheel implementation, which aims for 'exact'
-  * expiry of the timers, this implementation removes the need for recascading
-@@ -207,7 +207,7 @@ EXPORT_SYMBOL(jiffies_64);
-  * struct timer_base - Per CPU timer base (number of base depends on config)
-  * @lock:		Lock protecting the timer_base
-  * @running_timer:	When expiring timers, the lock is dropped. To make
-- *			sure not to race agains deleting/modifying a
-+ *			sure not to race against deleting/modifying a
-  *			currently running timer, the pointer is set to the
-  *			timer, which expires at the moment. If no timer is
-  *			running, the pointer is NULL.
-@@ -737,7 +737,7 @@ static bool timer_is_static_object(void *addr)
- }
- 
- /*
-- * fixup_init is called when:
-+ * timer_fixup_init is called when:
-  * - an active object is initialized
-  */
- static bool timer_fixup_init(void *addr, enum debug_obj_state state)
-@@ -761,7 +761,7 @@ static void stub_timer(struct timer_list *unused)
- }
- 
- /*
-- * fixup_activate is called when:
-+ * timer_fixup_activate is called when:
-  * - an active object is activated
-  * - an unknown non-static object is activated
-  */
-@@ -783,7 +783,7 @@ static bool timer_fixup_activate(void *addr, enum debug_obj_state state)
- }
- 
- /*
-- * fixup_free is called when:
-+ * timer_fixup_free is called when:
-  * - an active object is freed
-  */
- static bool timer_fixup_free(void *addr, enum debug_obj_state state)
-@@ -801,7 +801,7 @@ static bool timer_fixup_free(void *addr, enum debug_obj_state state)
- }
- 
- /*
-- * fixup_assert_init is called when:
-+ * timer_fixup_assert_init is called when:
-  * - an untracked/uninit-ed object is found
-  */
- static bool timer_fixup_assert_init(void *addr, enum debug_obj_state state)
-@@ -914,7 +914,7 @@ static void do_init_timer(struct timer_list *timer,
-  * @key: lockdep class key of the fake lock used for tracking timer
-  *       sync lock dependencies
-  *
-- * init_timer_key() must be done to a timer prior calling *any* of the
-+ * init_timer_key() must be done to a timer prior to calling *any* of the
-  * other timer functions.
-  */
- void init_timer_key(struct timer_list *timer,
-@@ -1417,7 +1417,7 @@ static int __timer_delete(struct timer_list *timer, bool shutdown)
- 	 * If @shutdown is set then the lock has to be taken whether the
- 	 * timer is pending or not to protect against a concurrent rearm
- 	 * which might hit between the lockless pending check and the lock
--	 * aquisition. By taking the lock it is ensured that such a newly
-+	 * acquisition. By taking the lock it is ensured that such a newly
- 	 * enqueued timer is dequeued and cannot end up with
- 	 * timer->function == NULL in the expiry code.
- 	 *
-@@ -2306,7 +2306,7 @@ static inline u64 __get_next_timer_interrupt(unsigned long basej, u64 basem,
- 
- 		/*
- 		 * When timer base is not set idle, undo the effect of
--		 * tmigr_cpu_deactivate() to prevent inconsitent states - active
-+		 * tmigr_cpu_deactivate() to prevent inconsistent states - active
- 		 * timer base but inactive timer migration hierarchy.
- 		 *
- 		 * When timer base was already marked idle, nothing will be
+diff --git a/kernel/time/tick-sched.h b/kernel/time/tick-sched.h
+index e11c4dc..b4a7822 100644
+--- a/kernel/time/tick-sched.h
++++ b/kernel/time/tick-sched.h
+@@ -46,8 +46,8 @@ struct tick_device {
+  * @next_tick:		Next tick to be fired when in dynticks mode.
+  * @idle_jiffies:	jiffies at the entry to idle for idle time accounting
+  * @idle_waketime:	Time when the idle was interrupted
++ * @idle_sleeptime_seq:	sequence counter for data consistency
+  * @idle_entrytime:	Time when the idle call was entered
+- * @nohz_mode:		Mode - one state of tick_nohz_mode
+  * @last_jiffies:	Base jiffies snapshot when next event was last computed
+  * @timer_expires_base:	Base time clock monotonic for @timer_expires
+  * @timer_expires:	Anticipated timer expiration time (in case sched tick is stopped)
 
