@@ -1,45 +1,45 @@
-Return-Path: <linux-kernel+bounces-126952-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-126953-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 62CB28944E3
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 20:28:04 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id B0F968944E5
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 20:28:53 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 930FF1C218C0
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 18:28:03 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 515CD1F21EDB
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 18:28:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B2CE950255;
-	Mon,  1 Apr 2024 18:27:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7B4595024E;
+	Mon,  1 Apr 2024 18:28:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ax+tQejF"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="P/+Z7tmO"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E28304F217;
-	Mon,  1 Apr 2024 18:27:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B566E4B5CD;
+	Mon,  1 Apr 2024 18:28:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711996079; cv=none; b=YjWrIo9+NWYQl0lfDt/ID7zqLmfIq1XF6wuIgkmMfIz3t8HFX1mQBrC1L11/FqHKSXB4G3Sl8X9HCmN3UTTb1A6/As7t9a1l52QKBoVfP/c7jG5nGMtKpe/0b0ABG7GerNJcpgFKDLVxQgOMpMBvn1bqY7wMhWJDAmWs3ard5x4=
+	t=1711996124; cv=none; b=nsEXYLShjUDpEKSC6WczH0RRqC8RmUQgECw2iU2Rwil1S5M4XKsmv3cNvX8FdbcirUbkeQ0ORqolihICTD5WtTLFMH2ai1aQrkJjJM3vG1c18E0obPEGgAAzi74hIRQlnRz3+/vNCnFar5UrT4FDffB83UMvmiIIDeJnMN3iSv4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711996079; c=relaxed/simple;
-	bh=DkBLyz6Oe5n20gIwuNBPAgT3BIFjXbqfmn5T3bPA09g=;
+	s=arc-20240116; t=1711996124; c=relaxed/simple;
+	bh=uYc5BN4wdQ0xZQ7ypOKQ3DXcVbSi25qP6EkLk04NfTM=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=bCJlq3E58SdcYM4SHajwzse4efS7TBbo+2HA9opyKd+XCYw9m0R+NXdWAeO3RVEXMycZeUiGAz39GL5SazDWDSd3hfBj25IW8AwZ/nGRoYj3dD4jLYC62md+rcyyuxzEg+WuodytCMVlbwELK2XRwgaJ4u14klfgRxk1DWGAcEU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ax+tQejF; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D9C3DC43390;
-	Mon,  1 Apr 2024 18:27:56 +0000 (UTC)
+	 MIME-Version; b=ck0a2v5SbdWwhYai27LnuOxq6rD1z5C8rUANDUWui9VLfl+K7rdWjogJFUTp99/A9JTb/jLtVRwMRQRLLWKLSISWLWABkJeE3RsnLH1r3TcmwJKdoecPRIJVUYurqmqCWImu12O4j3vjTcHOREaXQLP1zaS1lWbmb3FSZboJ6Ac=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=P/+Z7tmO; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CD2DFC433F1;
+	Mon,  1 Apr 2024 18:28:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711996078;
-	bh=DkBLyz6Oe5n20gIwuNBPAgT3BIFjXbqfmn5T3bPA09g=;
+	s=k20201202; t=1711996124;
+	bh=uYc5BN4wdQ0xZQ7ypOKQ3DXcVbSi25qP6EkLk04NfTM=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=ax+tQejF+PzTjPyE12/U3pWTu6ul++RYSlG/+sH6cg7hb11XHAE4uVupkvCdUOBRW
-	 UVTITjO2whnr21M8gZKXMaS0oJT8Pz9Dgt6u/OTSOrYY+EdZUYlbWjRWElG7tnLpP4
-	 XU9QgpP4QMVf5DNXEP6r4Pd9pnYdGUNsKgjelh7zQWJuw3m8j6BulkE1e24AlN0/oO
-	 MOtmZ+3HxmExoGPjEfUawkW3iG2UKgFGoSC5tsJyunmA/hsqqzzcsDY2d7F0gDisaE
-	 VW79TSFNVwgktjZhLIiySq192Ovv0XL4uzpLUXWL92u5yBZAWg8ECpe7hd8dcxI3mJ
-	 rxWD9gh1WXufw==
+	b=P/+Z7tmOh1Yane/Rcd8lJq4cf4odmcMtyzgglQYf6TmGwXnqyIiOmD4pwAaKuRzW9
+	 lEN8Rb5a7PQellAj77ZGQ26rUjWGOI976tjcb5gOXWFbN8+kbVTqMXgxpF0WXGR0UB
+	 U6WVwTO7qd8GEgoe5pHBpEoXIfDM5PWx4qVlKOmLAcIhsccEB+Y5Agh3E3hdj8Vjpm
+	 u9hhH9F4eAKiwd0dVsqC1ER4XRMEBUvJgrnMTM9btLvk+vHd2E6OnOLotX2rW1/Pjp
+	 06ATMvxsbatNHeaIpHm4hfmgROxLQxuCAqHu9z08YYHX//9wAj8uhpvbpChtCHmxoS
+	 GQBkDxa7RX7pw==
 From: SeongJae Park <sj@kernel.org>
 To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Cc: SeongJae Park <sj@kernel.org>,
@@ -62,11 +62,11 @@ Cc: SeongJae Park <sj@kernel.org>,
 	allen.lkml@gmail.com,
 	broonie@kernel.org,
 	damon@lists.linux.dev
-Subject: Re: [PATCH 6.6 000/396] 6.6.24-rc1 review
-Date: Mon,  1 Apr 2024 11:27:54 -0700
-Message-Id: <20240401182755.248908-1-sj@kernel.org>
+Subject: Re: [PATCH 6.7 000/432] 6.7.12-rc1 review
+Date: Mon,  1 Apr 2024 11:28:41 -0700
+Message-Id: <20240401182841.248955-1-sj@kernel.org>
 X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20240401152547.867452742@linuxfoundation.org>
+In-Reply-To: <20240401152553.125349965@linuxfoundation.org>
 References: 
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -78,10 +78,15 @@ Content-Transfer-Encoding: 8bit
 
 Hello,
 
-On Mon,  1 Apr 2024 17:40:49 +0200 Greg Kroah-Hartman <gregkh@linuxfoundation.org> wrote:
+On Mon,  1 Apr 2024 17:39:47 +0200 Greg Kroah-Hartman <gregkh@linuxfoundation.org> wrote:
 
-> This is the start of the stable review cycle for the 6.6.24 release.
-> There are 396 patches in this series, all will be posted as a response
+> Note, this will be the LAST 6.7.y kernel release.  After this one it
+> will be end-of-life.  Please move to 6.8.y now.
+> 
+> ------------------------------------------
+> 
+> This is the start of the stable review cycle for the 6.7.12 release.
+> There are 432 patches in this series, all will be posted as a response
 > to this one.  If anyone has any issues with these being applied, please
 > let me know.
 > 
@@ -89,9 +94,9 @@ On Mon,  1 Apr 2024 17:40:49 +0200 Greg Kroah-Hartman <gregkh@linuxfoundation.or
 > Anything received after that time might be too late.
 > 
 > The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patch-6.6.24-rc1.gz
+> 	https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patch-6.7.12-rc1.gz
 > or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-6.6.y
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-6.7.y
 > and the diffstat can be found below.
 
 This rc kernel passes DAMON functionality test[1] on my test machine.
@@ -101,7 +106,7 @@ kernel from linux-stable-rc tree[2].
 Tested-by: SeongJae Park <sj@kernel.org>
 
 [1] https://github.com/awslabs/damon-tests/tree/next/corr
-[2] 75a2533b74d0 ("Linux 6.6.24-rc1")
+[2] b15156435f06 ("Linux 6.7.12-rc1")
 
 Thanks,
 SJ
