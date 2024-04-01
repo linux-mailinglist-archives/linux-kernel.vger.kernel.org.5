@@ -1,278 +1,166 @@
-Return-Path: <linux-kernel+bounces-126432-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-126433-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 642598937DE
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 05:47:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id F0DD48937EC
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 06:00:17 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 11B0728151A
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 03:47:40 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0807E281731
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 04:00:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A59E3539A;
-	Mon,  1 Apr 2024 03:47:34 +0000 (UTC)
-Received: from szxga05-in.huawei.com (szxga05-in.huawei.com [45.249.212.191])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 96FD58C1D;
+	Mon,  1 Apr 2024 04:00:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=nuvoton.com header.i=@nuvoton.com header.b="AsxaJR68"
+Received: from HK3PR03CU002.outbound.protection.outlook.com (mail-eastasiaazon11021007.outbound.protection.outlook.com [52.101.128.7])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C5AD51C2D
-	for <linux-kernel@vger.kernel.org>; Mon,  1 Apr 2024 03:47:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.191
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711943254; cv=none; b=cjOYHIWnLYq8OUFT11lO8WaYj5lzDKEbi1Xa6o9VP7G5OpY6gBkr7382EEQWQWa7rwfqmvU0DNITaGsA5gLjzqqFPlZZqH1iX4cBGysz9X5Y8ZEaabTkdl7MNKIsTv3mwXQSeSf6Y4Lvk/2AnO5ACUU3loejGxOhtH8GUn6C7sI=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711943254; c=relaxed/simple;
-	bh=hKvYqKD8DWFNFLgkZXl8enqUTOM4i9FWTNgYn0TN31E=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=RFg2wpy+6wMHfLrZVYrFISkfNMui9ipPRk2waciiMGxJ3GiEysFFUXH7EaWltVy2IdcX8DgybEyDmhAB8xRbgrRMqqarSe0wKHX8S/sfvyWTVmcH62Jw1txXrIw9gQKceDWNOFX/bkicKBVuPHjL2N5bAXm6Ym7aApn7rPha9Nk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.191
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.88.163])
-	by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4V7H2P6NSnz1h50d;
-	Mon,  1 Apr 2024 11:44:45 +0800 (CST)
-Received: from dggpemm100001.china.huawei.com (unknown [7.185.36.93])
-	by mail.maildlp.com (Postfix) with ESMTPS id 66D81180060;
-	Mon,  1 Apr 2024 11:47:29 +0800 (CST)
-Received: from [10.174.177.243] (10.174.177.243) by
- dggpemm100001.china.huawei.com (7.185.36.93) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.35; Mon, 1 Apr 2024 11:47:28 +0800
-Message-ID: <86236280-a811-4d5a-a480-5006226ae379@huawei.com>
-Date: Mon, 1 Apr 2024 11:47:28 +0800
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8AEFC53BE;
+	Mon,  1 Apr 2024 04:00:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=52.101.128.7
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1711944008; cv=fail; b=e42f5H/OM5FQfxuZLn5zh6W3mZLB+uGhxeI9a9qmqcP81G1ftfTGKpIq6+L4AgZNFEeLVbVB1z7pRPtz5YB0a/cOKjuBXOfA/ZreUGJeppba8PqUQiGtvxUSKl7S5u1NlptX2O1d/5NOlHXsuodha36VxP0XmhU8EjLYwVJ/Nyw=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1711944008; c=relaxed/simple;
+	bh=sZI6WY8O0zOMIY6pjFuOdzxteiQomX0hOAZYWbPR2dk=;
+	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
+	 Content-Type:MIME-Version; b=rdqvS2cGuj0qNBd+7U/+gA5r85l9OvE8WG/eLLKzfvZLC4/LvRcBfe0M319zYcBdKq+yhZtkX8EqIhhb9/nMjVf5PacV5cXvx01vrRJLljSKqR+dCZpVY9scW+ImROKemgnzOP5ZYdXYZVcbKxqy2M4JdYOVx9PP4jllW1hvwMI=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=nuvoton.com; spf=pass smtp.mailfrom=nuvoton.com; dkim=pass (1024-bit key) header.d=nuvoton.com header.i=@nuvoton.com header.b=AsxaJR68; arc=fail smtp.client-ip=52.101.128.7
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=nuvoton.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nuvoton.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=CI1MJHfdhZv2CvSRUTlAD19WiPp+9ueV4IfLQscx5NsMT+vjJ3AD0nvm3z/2xwFcYndjBxzXnLeXVjoAG7gE1kMEEnzYmnr6fSrNcc9yITa6akzHWT0jhvM0zEtr8oUeJm0D9rIsfcxmOrwZ1IowD4Qc8gudtEWtMfSiwN+/IXtGs9ITElmQHPK+a6m8qkNaj82z+lfElWPXW81dtUsA0DQP3pCv8vvBx6kTyTTVKQ1H114Ph/N8XjsUzE+XEqLI1NvVE4Sm2nYVtp4BEl8HvNTFm1MrvaJXi1urEXZcuso0sjNKJjH8TKL3XOgdFMtPLjO0rTrfskrEDe3l0iX/1Q==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=sZI6WY8O0zOMIY6pjFuOdzxteiQomX0hOAZYWbPR2dk=;
+ b=EgR+53zfaiaWZQOx1YhJ8OOcZOolBx3sUqsy9u7wbGvGLhrkOiDtSSeVTvLMAu4u5u/wH5y4hJClHD8DLMe75hckq0if5NSZA8t3UAT8bRtK+x04FDJI8lpuCssFPdCDl4vZblytF6BdmMjePKzu6PKAvXr/hfySKTNUe29WQ271BaVkRiGTDFw4aGPxGVxBnxk5iVV5gJxsHEtbw8LTuOEXsAUAH53ky9bGp5VRiXrxWJOPS8sxZyCsd2eGcUdsb9K8xf5CMzY9oFtc+wrJm0OIjFXQ2YOPh63gy8sDw1kgUyTVVbSANHxgJSR2+U3kao3x+56PMHsAKu8llRIO3g==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nuvoton.com; dmarc=pass action=none header.from=nuvoton.com;
+ dkim=pass header.d=nuvoton.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nuvoton.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=sZI6WY8O0zOMIY6pjFuOdzxteiQomX0hOAZYWbPR2dk=;
+ b=AsxaJR68XgWWjSd6qCnuX1qwqyFAitWgyeS/DpmW/Ee1Agg9NyOIrMY2hNKnBNwJwHBK2VapD5mj3aJJp2prlHWhy4sV5wx7x4QNo9xnNIxRFUOE71YR8V8TRokEJ42kN0ex4s+f22Oxl9fkOfS65qsyzLx7H0EeUtwRbwuPpXc=
+Received: from SI6PR03MB8987.apcprd03.prod.outlook.com (2603:1096:4:235::7) by
+ SEZPR03MB6761.apcprd03.prod.outlook.com (2603:1096:101:64::8) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.7409.46; Mon, 1 Apr 2024 03:59:59 +0000
+Received: from SI6PR03MB8987.apcprd03.prod.outlook.com
+ ([fe80::13be:c406:46ab:8d0e]) by SI6PR03MB8987.apcprd03.prod.outlook.com
+ ([fe80::13be:c406:46ab:8d0e%5]) with mapi id 15.20.7409.042; Mon, 1 Apr 2024
+ 03:59:59 +0000
+Message-ID: <7426929b-c92d-4020-a59e-20fddc753e98@nuvoton.com>
+Date: Mon, 1 Apr 2024 11:59:54 +0800
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v6 0/2] ASoC: nau8325: Modify driver code and dtschema.
+Content-Language: en-US
+To: Mark Brown <broonie@kernel.org>
+Cc: lgirdwood@gmail.com, alsa-devel@alsa-project.org,
+ devicetree@vger.kernel.org, linux-sound@vger.kernel.org,
+ krzysztof.kozlowski+dt@linaro.org, linux-kernel@vger.kernel.org,
+ robh+dt@kernel.org, conor+dt@kernel.org, perex@perex.cz, tiwai@suse.com,
+ YHCHuang@nuvoton.com, KCHSU0@nuvoton.com, CTLIN0@nuvoton.com,
+ SJLIN0@nuvoton.com, scott6986@gmail.com, supercraig0719@gmail.com,
+ dardar923@gmail.com
+References: <20240329085402.3424749-1-wtli@nuvoton.com>
+ <ZgbFv+c3fjME+x+Y@finisterre.sirena.org.uk>
+From: WTLI <wtli@nuvoton.com>
+In-Reply-To: <ZgbFv+c3fjME+x+Y@finisterre.sirena.org.uk>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
+X-ClientProxiedBy: TYCP286CA0103.JPNP286.PROD.OUTLOOK.COM
+ (2603:1096:400:2b4::16) To SI6PR03MB8987.apcprd03.prod.outlook.com
+ (2603:1096:4:235::7)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 2/2] mm: support multi-size THP numa balancing
-Content-Language: en-US
-To: Baolin Wang <baolin.wang@linux.alibaba.com>, <akpm@linux-foundation.org>
-CC: <david@redhat.com>, <mgorman@techsingularity.net>, <jhubbard@nvidia.com>,
-	<ying.huang@intel.com>, <21cnbao@gmail.com>, <ryan.roberts@arm.com>,
-	<linux-mm@kvack.org>, <linux-kernel@vger.kernel.org>
-References: <cover.1711683069.git.baolin.wang@linux.alibaba.com>
- <d28d276d599c26df7f38c9de8446f60e22dd1950.1711683069.git.baolin.wang@linux.alibaba.com>
-From: Kefeng Wang <wangkefeng.wang@huawei.com>
-In-Reply-To: <d28d276d599c26df7f38c9de8446f60e22dd1950.1711683069.git.baolin.wang@linux.alibaba.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
- dggpemm100001.china.huawei.com (7.185.36.93)
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: SI6PR03MB8987:EE_|SEZPR03MB6761:EE_
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	oe3v6VjabG1acXk0RPMoY2JrtJ2atCC3NZxl00uxTd0ecDJqgNV/KpZGqjOjgTGBAzqpRMccdpESAzDGaAVifsR3tnu83y+/BW9sEBJlX5j2bnR5cA45aGcJ83arVNG9xgI3xWXpAp4ibwjDSJag/8y6p+iBl7EaZG8GGkjnhBtMT6AJcg1/DQGFC3HldJAxr/Fe4Gvc/tJAbuVHfFqW0ejD5RfWpQhVg307wgOFUmVes8BbFRS2lFVOL+9RbDyGl/H2dC2h1vpWNSX6oLOsHJTFkUMGk9me4JECcOlORbEnQ2wSsiD7Bgi0ZfryABfCra3JW+4hqhnW92ZErFZUlSP8LttyqZyyHu187MjtHyZTT/R2SSzVWe1uNEIvAk0xyxnrTBVk3lWvDgi591ohlxrJWWPNRVwgcIRxo//o06/PqSKgygznDfOoXKltQ/Uymv9MRu/TMmGnDa+nZA5YaX/ieKXFNpQ1cMf/MjEshNnzShA3rQwqbnV7bKlphZCqigN0v9eiYShG5ahcqs7H87hczwGJ1HeoThgdPrtOD3fligc6M6Hke4Q6u48ZmgW//jlEjaldT9M0ofGiGyUtCVOZDbZMRnwyGj4Fk+ou3N4fIJmZU7VZH3f1/g+BnO0YlSCzjdyCRhqPSOF+JMmnirXESiBFlpwSLgKdJfs69D8=
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SI6PR03MB8987.apcprd03.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366007)(1800799015)(7416005)(376005);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?utf-8?B?b0EwOHI1eFRCMDdKQ2lFbERRQXNFanFzNUlsRGJPbEE0cmFrZFd3QjhYbmJG?=
+ =?utf-8?B?cWZsSjVjMC9Mc0l3U3c0UUt5WmFIMEFDeVJmMDZiYUlTNjdrYk4vNWpUM2VD?=
+ =?utf-8?B?a0pmcnl4OXdBU0pNZ3ovZnVRYnZWcHdGNWx2eFFDUHEvVTJlcGRzcGd0allW?=
+ =?utf-8?B?a0Rxalhtd2Jsd2ZPUmp2bGcvdGwzYjBna3ZmcDhwMWxzVVdlMzU1MGpWT0E0?=
+ =?utf-8?B?VEFIMEVzL05oOTE0ZWhXaWRwYTI4UE40UUdPeEUxbk95SnhVKzUrSUY4a2Qx?=
+ =?utf-8?B?V2VvU3NxbGdWMW1tN1lNWEMxUVJtd1Zpb1FDdDBQcjVuckhsdHZ4VVlac1Fi?=
+ =?utf-8?B?OWhmL0VKekxrZEV4ZkNqY0k0NzVBckExSEdSV3I1Rkx4eFBBTWE0bnJVd3VX?=
+ =?utf-8?B?QU9DMWo2K3RmUnplc01iY2xHZ1ArN0tjcDZFZW82QlRobm9MeHVMcUF6aWFr?=
+ =?utf-8?B?ZXh4NnJacU9VWFdaaE9CdWNiNTVTQ3JocG9IT3pHNWFURDBRTWZmWHIwcUlJ?=
+ =?utf-8?B?Q2wwRVdPY20zdUxZMjVOM1NpUWNvNEpwMXVIV0pVY0FHVmc2dVJDZlk1Z1RR?=
+ =?utf-8?B?cnZNcmlBMWs1d0RCM0N3RCs1ZHkzNzhyU3BHb2l2LzZTZnA1V0J1L0F4ZHZF?=
+ =?utf-8?B?MUNIQnloL3dwUTVRdUpaTzRiK1dTQk9WMG52ejUrMHE2RERPTjhoU2NNcEVh?=
+ =?utf-8?B?bDFNRnZWdVhNSUZ0SEhXb1F6aTNCaXdDbENwQnFDVTk2TmZHaEpsMWxJWHhX?=
+ =?utf-8?B?NmM3WVhWTkN4a3plUjh4UFZJODJZa3Q5UThIemZsbVp3S2FrRlNJZTJrb2FY?=
+ =?utf-8?B?OUF3dWt6VkRDdUZjTVo3YXd0dStWTkZqaXNvZUF4RXl5K2RPZEpQdE5lRVdj?=
+ =?utf-8?B?UG9reXZTbVc1TVYvMVFpcjN1SDVvNHRoclpscHMzd3krVEtNemJMS3N1SWFq?=
+ =?utf-8?B?ZWQ1TmhMVW5GVFkyY0ZXTGx0T3k3VjZXN21UNjJrSTRrQ2EzUEx5UEtscUdM?=
+ =?utf-8?B?ejFkZHFITjFubEpQemlZbEhqTUlENzRMSW5iZkZHUE9aaTNsOE44UzVyQnlJ?=
+ =?utf-8?B?bWtrcTB4NVBWTG1hTC9iaklXNTlLdDlOTGF2cStXckVxNkVFVUhLelJ4bnZt?=
+ =?utf-8?B?OStPRXJ5OXJCNXR4d2ZpZmpCdlpYclZJMXBKQnVrOTQxaWJVemtGUXdaQmNs?=
+ =?utf-8?B?ajlkU05YZVRzSThGVVBXaFcrb2VOQjl4czdraGdGeG96bzVIOCs5N3dYYzlH?=
+ =?utf-8?B?YWJkcmtLcDA3Q1Z3OVVTVDgrU21Zb1pSSE9KaUdpWDRwQUp6Uy85TW5tRUhF?=
+ =?utf-8?B?VzJMSlQwRkRZa3MxdmJxNGNCYXJvV3VjdTI5Q2w2MGFYOUhWL0d3R0l1eXZ4?=
+ =?utf-8?B?cDdrVWg5S3ROZkR6bURYWUNVMXovaTk4NDBrR3doT3YxS3ZYK1ErTDRubXdh?=
+ =?utf-8?B?MHhsS3N4eUdsNVRldmQrMWxxS2h2c1RJUU5CWlZ2T3lJRFhvTG43bGZFSEhO?=
+ =?utf-8?B?RTZ3OTAwWjhpeCt2VDZ3UmMzUjh1eHRVWFc0NzY5ZzN4Y0RYeWlyTktHTFFW?=
+ =?utf-8?B?ZU1NdVBBYmpNWWRNZUEwTStXdE1UaGxPTFFPUldtdjN1aUJHL3VyUk5nNHlS?=
+ =?utf-8?B?ZHE4V0V5R2ludy9ZQ29QejdnRDZ5U3kwVjFvM1ZwUHJNdUxucHBHU24zcThv?=
+ =?utf-8?B?VzdBWS9KbGhieWxpbnJyN1FEc2xDMVlsM0dWajI3Q2JkbmtYVll0TEdWQzlZ?=
+ =?utf-8?B?M3VaYnA1bzZsYUN5ZDI0MnNJUTgzNXBVVGZxRmpvSS9OZ3c2RDJkd1dnOHdo?=
+ =?utf-8?B?cndwcklZcFUrNDFoUm9rZnpwNUxSRmUyaTZGZ3krc2FEdHZra1JydFY3ZzU4?=
+ =?utf-8?B?ZEg3QzBwaU5wRHVWaHFvdkJZdUU4bEc5WUEvR1FPakNxN1c4QWFQVGZUemcy?=
+ =?utf-8?B?eW1WNlZLUzFWdkUvT0FvWUZFQ3l1cE4rQmYvc0hEYUxJbTNYMzE3dURWazA4?=
+ =?utf-8?B?SGJCa1BXSnNSKzdzcndYRXNxZlVNeVJQNGZzcDZ4djVhNlQ3YmtINkhQTlVx?=
+ =?utf-8?B?M2ZRanJZKzgxb21RVmkxRG52MkxxR2hPT1Z3SHZ3TTFJL1BYYmxpYVlHdGRH?=
+ =?utf-8?Q?hyZojdcuIuzxUPSMYxXUqaZFW?=
+X-OriginatorOrg: nuvoton.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 519bf643-9e81-47a3-8507-08dc52003317
+X-MS-Exchange-CrossTenant-AuthSource: SI6PR03MB8987.apcprd03.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 01 Apr 2024 03:59:59.2097
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: a3f24931-d403-4b4a-94f1-7d83ac638e07
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: mlQqy8J9EFWxvdSAEJ0x/SpJsO1qr30N1qq5UkIz2QItrfNE35gXL+ENOnv4lpCFDxgiGr4N9XWNZAZ+WFkg+A==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SEZPR03MB6761
 
 
+Mark Brown =E6=96=BC 3/29/2024 9:44 PM =E5=AF=AB=E9=81=93:
+> On Fri, Mar 29, 2024 at 04:54:00PM +0800, Seven Lee wrote:
+>> Revise properties description and use standard units in dtschema.
+>> The unit conversion driver based on the attribute must also be
+>> changed accordingly.
+> My applying the prior version raced with you sending this new one, could
+> you please send incremental patches with the changes from your v6?
 
-On 2024/3/29 14:56, Baolin Wang wrote:
-> Now the anonymous page allocation already supports multi-size THP (mTHP),
-> but the numa balancing still prohibits mTHP migration even though it is an
-> exclusive mapping, which is unreasonable.
-> 
-> Allow scanning mTHP:
-> Commit 859d4adc3415 ("mm: numa: do not trap faults on shared data section
-> pages") skips shared CoW pages' NUMA page migration to avoid shared data
-> segment migration. In addition, commit 80d47f5de5e3 ("mm: don't try to
-> NUMA-migrate COW pages that have other uses") change to use page_count()
-> to avoid GUP pages migration, that will also skip the mTHP numa scaning.
-> Theoretically, we can use folio_maybe_dma_pinned() to detect the GUP
-> issue, although there is still a GUP race, the issue seems to have been
-> resolved by commit 80d47f5de5e3. Meanwhile, use the folio_likely_mapped_shared()
-> to skip shared CoW pages though this is not a precise sharers count. To
-> check if the folio is shared, ideally we want to make sure every page is
-> mapped to the same process, but doing that seems expensive and using
-> the estimated mapcount seems can work when running autonuma benchmark.
-> 
-> Allow migrating mTHP:
-> As mentioned in the previous thread[1], large folios (including THP) are
-> more susceptible to false sharing issues among threads than 4K base page,
-> leading to pages ping-pong back and forth during numa balancing, which is
-> currently not easy to resolve. Therefore, as a start to support mTHP numa
-> balancing, we can follow the PMD mapped THP's strategy, that means we can
-> reuse the 2-stage filter in should_numa_migrate_memory() to check if the
-> mTHP is being heavily contended among threads (through checking the CPU id
-> and pid of the last access) to avoid false sharing at some degree. Thus,
-> we can restore all PTE maps upon the first hint page fault of a large folio
-> to follow the PMD mapped THP's strategy. In the future, we can continue to
-> optimize the NUMA balancing algorithm to avoid the false sharing issue with
-> large folios as much as possible.
-> 
-> Performance data:
-> Machine environment: 2 nodes, 128 cores Intel(R) Xeon(R) Platinum
-> Base: 2024-03-25 mm-unstable branch
-> Enable mTHP to run autonuma-benchmark
-> 
-> mTHP:16K
-> Base				Patched
-> numa01				numa01
-> 224.70				143.48
-> numa01_THREAD_ALLOC		numa01_THREAD_ALLOC
-> 118.05				47.43
-> numa02				numa02
-> 13.45				9.29
-> numa02_SMT			numa02_SMT
-> 14.80				7.50
-> 
-> mTHP:64K
-> Base				Patched
-> numa01				numa01
-> 216.15				114.40
-> numa01_THREAD_ALLOC		numa01_THREAD_ALLOC
-> 115.35				47.41
-> numa02				numa02
-> 13.24				9.25
-> numa02_SMT			numa02_SMT
-> 14.67				7.34
-> 
-> mTHP:128K
-> Base				Patched
-> numa01				numa01
-> 205.13				144.45
-> numa01_THREAD_ALLOC		numa01_THREAD_ALLOC
-> 112.93				41.88
-> numa02				numa02
-> 13.16				9.18
-> numa02_SMT			numa02_SMT
-> 14.81				7.49
-> 
-> [1] https://lore.kernel.org/all/20231117100745.fnpijbk4xgmals3k@techsingularity.net/
-> Signed-off-by: Baolin Wang <baolin.wang@linux.alibaba.com>
-> ---
->   mm/memory.c   | 57 +++++++++++++++++++++++++++++++++++++++++++--------
->   mm/mprotect.c |  3 ++-
->   2 files changed, 51 insertions(+), 9 deletions(-)
-> 
-> diff --git a/mm/memory.c b/mm/memory.c
-> index c30fb4b95e15..2aca19e4fbd8 100644
-> --- a/mm/memory.c
-> +++ b/mm/memory.c
-> @@ -5068,16 +5068,56 @@ static void numa_rebuild_single_mapping(struct vm_fault *vmf, struct vm_area_str
->   	update_mmu_cache_range(vmf, vma, vmf->address, vmf->pte, 1);
->   }
->   
-> +static void numa_rebuild_large_mapping(struct vm_fault *vmf, struct vm_area_struct *vma,
-> +				       struct folio *folio, pte_t fault_pte, bool ignore_writable)
-> +{
-> +	int nr = pte_pfn(fault_pte) - folio_pfn(folio);
-> +	unsigned long start = max(vmf->address - nr * PAGE_SIZE, vma->vm_start);
-> +	unsigned long end = min(vmf->address + (folio_nr_pages(folio) - nr) * PAGE_SIZE, vma->vm_end);
-> +	pte_t *start_ptep = vmf->pte - (vmf->address - start) / PAGE_SIZE;
-> +	bool pte_write_upgrade = vma_wants_manual_pte_write_upgrade(vma);
-> +	unsigned long addr;
-> +
-> +	/* Restore all PTEs' mapping of the large folio */
-> +	for (addr = start; addr != end; start_ptep++, addr += PAGE_SIZE) {
-> +		pte_t pte, old_pte;
-> +		pte_t ptent = ptep_get(start_ptep);
-> +		bool writable = false;
-> +
-> +		if (!pte_present(ptent) || !pte_protnone(ptent))
-> +			continue;
-> +
-> +		if (pfn_folio(pte_pfn(ptent)) != folio)
-> +			continue;
-> +
-> +		if (!ignore_writable) {
-> +			ptent = pte_modify(ptent, vma->vm_page_prot);
-> +			writable = pte_write(ptent);
-> +			if (!writable && pte_write_upgrade &&
-> +			    can_change_pte_writable(vma, addr, ptent))
-> +				writable = true;
-> +		}
-> +
-> +		old_pte = ptep_modify_prot_start(vma, addr, start_ptep);
-> +		pte = pte_modify(old_pte, vma->vm_page_prot);
-> +		pte = pte_mkyoung(pte);
-> +		if (writable)
-> +			pte = pte_mkwrite(pte, vma);
-> +		ptep_modify_prot_commit(vma, addr, start_ptep, old_pte, pte);
-> +		update_mmu_cache_range(vmf, vma, addr, start_ptep, 1);
+Sorry, I misunderstood. I will send incremental patches with my v6.
 
-Maybe pass "unsigned long address, pte_t *ptep" to 
-numa_rebuild_single_mapping(),
-then, just call it here.
-
-> +	}
-> +}
-> +
->   static vm_fault_t do_numa_page(struct vm_fault *vmf)
->   {
->   	struct vm_area_struct *vma = vmf->vma;
->   	struct folio *folio = NULL;
->   	int nid = NUMA_NO_NODE;
-> -	bool writable = false;
-> +	bool writable = false, ignore_writable = false;
->   	int last_cpupid;
->   	int target_nid;
->   	pte_t pte, old_pte;
-> -	int flags = 0;
-> +	int flags = 0, nr_pages;
->   
->   	/*
->   	 * The pte cannot be used safely until we verify, while holding the page
-> @@ -5107,10 +5147,6 @@ static vm_fault_t do_numa_page(struct vm_fault *vmf)
->   	if (!folio || folio_is_zone_device(folio))
->   		goto out_map;
->   
-> -	/* TODO: handle PTE-mapped THP */
-> -	if (folio_test_large(folio))
-> -		goto out_map;
-> -
->   	/*
->   	 * Avoid grouping on RO pages in general. RO pages shouldn't hurt as
->   	 * much anyway since they can be in shared cache state. This misses
-> @@ -5130,6 +5166,7 @@ static vm_fault_t do_numa_page(struct vm_fault *vmf)
->   		flags |= TNF_SHARED;
->   
->   	nid = folio_nid(folio);
-> +	nr_pages = folio_nr_pages(folio);
->   	/*
->   	 * For memory tiering mode, cpupid of slow memory page is used
->   	 * to record page access time.  So use default value.
-> @@ -5146,6 +5183,7 @@ static vm_fault_t do_numa_page(struct vm_fault *vmf)
->   	}
->   	pte_unmap_unlock(vmf->pte, vmf->ptl);
->   	writable = false;
-> +	ignore_writable = true;
->   
->   	/* Migrate to the requested node */
->   	if (migrate_misplaced_folio(folio, vma, target_nid)) {
-> @@ -5166,14 +5204,17 @@ static vm_fault_t do_numa_page(struct vm_fault *vmf)
->   
->   out:
->   	if (nid != NUMA_NO_NODE)
-> -		task_numa_fault(last_cpupid, nid, 1, flags);
-> +		task_numa_fault(last_cpupid, nid, nr_pages, flags);
->   	return 0;
->   out_map:
->   	/*
->   	 * Make it present again, depending on how arch implements
->   	 * non-accessible ptes, some can allow access by kernel mode.
->   	 */
-> -	numa_rebuild_single_mapping(vmf, vma, writable);
-> +	if (folio && folio_test_large(folio))
-initialize nr_pages and then call
-
-	if (nr_pages > 1)
-
-> +		numa_rebuild_large_mapping(vmf, vma, folio, pte, ignore_writable);
-> +	else
-> +		numa_rebuild_single_mapping(vmf, vma, writable);
->   	pte_unmap_unlock(vmf->pte, vmf->ptl);
->   	goto out;
->   }
-> diff --git a/mm/mprotect.c b/mm/mprotect.c
-> index f8a4544b4601..94878c39ee32 100644
-> --- a/mm/mprotect.c
-> +++ b/mm/mprotect.c
-> @@ -129,7 +129,8 @@ static long change_pte_range(struct mmu_gather *tlb,
->   
->   				/* Also skip shared copy-on-write pages */
->   				if (is_cow_mapping(vma->vm_flags) &&
-> -				    folio_ref_count(folio) != 1)
-> +				    (folio_maybe_dma_pinned(folio) ||
-> +				     folio_likely_mapped_shared(folio)))
->   					continue;
->   
->   				/*
+________________________________
+________________________________
+ The privileged confidential information contained in this email is intende=
+d for use only by the addressees as indicated by the original sender of thi=
+s email. If you are not the addressee indicated in this email or are not re=
+sponsible for delivery of the email to such a person, please kindly reply t=
+o the sender indicating this fact and delete all copies of it from your com=
+puter and network server immediately. Your cooperation is highly appreciate=
+d. It is advised that any unauthorized use of confidential information of N=
+uvoton is strictly prohibited; and any information in this email irrelevant=
+ to the official business of Nuvoton shall be deemed as neither given nor e=
+ndorsed by Nuvoton.
 
