@@ -1,188 +1,314 @@
-Return-Path: <linux-kernel+bounces-126804-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-126805-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id F07CE893CE5
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 17:36:59 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C31CC893CE9
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 17:37:49 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 28A8E283027
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 15:36:58 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CD6601C219BB
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 15:37:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id ECDC846B9F;
-	Mon,  1 Apr 2024 15:36:50 +0000 (UTC)
-Received: from mail.inka.de (quechua.inka.de [193.197.184.2])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 64D9C4778E;
+	Mon,  1 Apr 2024 15:37:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b="JADSp+K8"
+Received: from EUR02-VI1-obe.outbound.protection.outlook.com (mail-vi1eur02olkn2101.outbound.protection.outlook.com [40.92.48.101])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6C6324501C;
-	Mon,  1 Apr 2024 15:36:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.197.184.2
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711985810; cv=none; b=gRBoHAMRSppPND7vtpbIaneEUhLK51dposn1KRJ4MLMNhHBth3KGPLrpb7HrqiuZuBWMKKBM+AP5YaMn6ITRyafVJN1E+uTShjOXCTVhxB5MRLEjtOL/8qNBEERU4/i0KDt22JthRab30skQQcpu2WiW+un4dHAHfOnkOUw8M7E=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711985810; c=relaxed/simple;
-	bh=4IkYm12Xm40qZ4Fx7s8GjYsSBQxNdQAXgH2rzdNq4sw=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=sq9OXk9HhAdw0/CvxN2/My5zO5MYx5opPuTt/L5NeduUVcYxhVPxra24P25/wJHKre0+lweM/fULtkECUHcXu5wpHak8/tu8kDXdmnWbTNv+srf9U8tVzQodX/tKjvQ8ieMEz+LAe/tRaX2YaQefYwvxYySTPXJSKqzt20Bi3QE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=inka.de; spf=pass smtp.mailfrom=inka.de; arc=none smtp.client-ip=193.197.184.2
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=inka.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=inka.de
-Received: from mail.berkhan-weisser.de ([2a03:4000:54:b9a::4])
-	by mail.inka.de with esmtpsa 
-	id 1rrJiE-00ArAD-30; Mon, 01 Apr 2024 17:36:42 +0200
-Received: from 127.0.0.1 (helo=localhost.localdomain)
-	by mail.berkhan-weisser.de with esmtpsa (TLS1.3:ECDHE_SECP256R1__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
-	(Exim 4.96)
-	(envelope-from <Enrik.Berkhan@inka.de>)
-	id 1rrJiD-003wxe-30;
-	Mon, 01 Apr 2024 17:36:41 +0200
-Message-ID: <85837371eadac58dec812c0be14264152ee1e5fd.camel@inka.de>
-Subject: Re: [PATCH 1/1] platform/x86/intel/hid: Don't wake on 5-button
- releases
-From: Enrik Berkhan <Enrik.Berkhan@inka.de>
-To: Linux regressions mailing list <regressions@lists.linux.dev>, David
- McFarland <corngood@gmail.com>, Chris Feng <chris.feng@mediatek.com>
-Cc: "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>, Alex Hung
- <alexhung@gmail.com>, Hans de Goede <hdegoede@redhat.com>, Ilpo
- =?ISO-8859-1?Q?J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>,
- "platform-driver-x86@vger.kernel.org"
- <platform-driver-x86@vger.kernel.org>,  LKML
- <linux-kernel@vger.kernel.org>, linux-pm@vger.kernel.org
-Date: Mon, 01 Apr 2024 17:36:35 +0200
-In-Reply-To: <1198933e-bf89-4237-a6e8-f7daeeebf885@leemhuis.info>
-References: <20240318191153.6978-1-corngood@gmail.com>
-	 <20240318191153.6978-2-corngood@gmail.com>
-	 <1198933e-bf89-4237-a6e8-f7daeeebf885@leemhuis.info>
-Autocrypt: addr=Enrik.Berkhan@inka.de; prefer-encrypt=mutual;
- keydata=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
- Dh1pYX8125Sys26JeDfnh3bnI=
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.52.0 
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1E5253F9C5;
+	Mon,  1 Apr 2024 15:37:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.92.48.101
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1711985855; cv=fail; b=f6FP/L0iMISBf6CpTi6+7b0OkZeEAHw3KYnNT7AbNbUap8FHJfpSHWdo3gSgjkSS2T0ORrJ6JfLxUDR1401/auU4f++WFM3d8erLNW4JrVI32p1azLsdL/QFjoxOroCwWPPaCvn8SieE9j0KbQ/GyyTyZXE/taT2MGvqTn9cGTw=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1711985855; c=relaxed/simple;
+	bh=RjN1+a0ze4yFbrlARz7hHcthnERxcsAYFvS21CoifFU=;
+	h=From:To:Cc:Subject:Date:Message-ID:Content-Type:MIME-Version; b=HnTzTsK78iDf0DAVsZnpqijmcJryynKBGOeuZNZB5h2cqfMg9atwTmn5qhslHU/HtOCgqv5GyLCXOL0aBeFpRB4lRoFvb2LtHb6TD+p6YePzzsLxED6w/u8SW4L9yhG5gyYJEOCvv6vNm3p3Qk2OIBWTHr/XTABPDhp0nIHWEjQ=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com; spf=pass smtp.mailfrom=outlook.com; dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b=JADSp+K8; arc=fail smtp.client-ip=40.92.48.101
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=outlook.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=P11WrR4kpnUwWMFRREg+/3O1ncy53R0LfH/KpnlK+8+Rs7yCHkBfPutAw7xsGEy/gUpsgZXYtV/5LC0/QvFit3S0avzc19RtiVsPbLKA4U6Z3vKh4lnO3LN4lnufTZg57+yo/8Pc8p3KrCnIQ0NnlEbgRzAlOtfjTI+uf/U+kBb9Urnr0VF+kcuYSv6nvegdokW+vhB+FF4FCwIe1Koq1S4aj4Ao9UEugBUF40V1Km6CeNoYVU9zXUjzZzgFImxPcMnfjBMrX3L6kDK+uRSdyeK9kDrMVMOv3/or/7LkJD3R39zN4KBXb9xTH+UeCtuDpbk7Q268h0xflVJnBziDpQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=g4NhnsVgB+nR0/MI42aW4RkDIpRrR1MG06mVvZtxLZ4=;
+ b=f7maFaEfHRoelI/ViujvQbz6WB1hUhd/zqV2yWoQjODJh08teSCuc18LYV0kWZtXhF1UF8IoCGAF2ocCrt1Z/RlFi+8dhPLIehrasijQnSQeRzXuAAYaASh5MlsJheuigE2huaGRLTm9LPC3G+JCJuS72wVBrBen54/bgPQanFALnoRbOvDd707DHi9XgOAN/PDLbyfxrtBaEt7Ajnso8ANNMK43LVbfPa1jNxbXGIuSrAKSIhAlGFO8DJeEdK77w+kos6ipD9AnC9g+IyeR+bOwFTAadSJDFqKSBB2iQocfsbCfy8sMQnV5H/wmTybBfhJqK9eh3toD3nsbVsbZgg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
+ dkim=none; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=outlook.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=g4NhnsVgB+nR0/MI42aW4RkDIpRrR1MG06mVvZtxLZ4=;
+ b=JADSp+K8jVopMjcxABsyIUgOuUr+Kds1q9yC+ZxNA4WPCgpmQ4AIKF+oS0nk9gL9f0jpn1/Sx8bB1XITxcggBKkWYdn+8LLmgJdvCoC+CbP5SBsxiCV9LnTjAcKY/QkIllQ1so/7spsI2DGmFwtzDXojFVfDA1oo7CCPwuukuWQvJZuRxkkBMN0on9ZsDkVbFQp02zn1uZh+OpFUOrCO2pyZadnBONRyl8tZzyOqcTPYtSIa3C8YHmdlWA4NovlNQ/ZVdQjXjCXN83qOBxKGX1kS0XXzUOr6IuGBv0rFf72zkJpZdrVr1xtHjXLewz594JolLNYpPjzRgQvjisWvGQ==
+Received: from AS8PR02MB7237.eurprd02.prod.outlook.com (2603:10a6:20b:3f1::10)
+ by PAVPR02MB9891.eurprd02.prod.outlook.com (2603:10a6:102:31a::9) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7409.46; Mon, 1 Apr
+ 2024 15:37:29 +0000
+Received: from AS8PR02MB7237.eurprd02.prod.outlook.com
+ ([fe80::9817:eaf5:e2a7:e486]) by AS8PR02MB7237.eurprd02.prod.outlook.com
+ ([fe80::9817:eaf5:e2a7:e486%4]) with mapi id 15.20.7409.042; Mon, 1 Apr 2024
+ 15:37:29 +0000
+From: Erick Archer <erick.archer@outlook.com>
+To: Long Li <longli@microsoft.com>,
+	Ajay Sharma <sharmaajay@microsoft.com>,
+	Jason Gunthorpe <jgg@ziepe.ca>,
+	Leon Romanovsky <leon@kernel.org>,
+	"K. Y. Srinivasan" <kys@microsoft.com>,
+	Haiyang Zhang <haiyangz@microsoft.com>,
+	Wei Liu <wei.liu@kernel.org>,
+	Dexuan Cui <decui@microsoft.com>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>,
+	Paolo Abeni <pabeni@redhat.com>,
+	Shradha Gupta <shradhagupta@linux.microsoft.com>,
+	Konstantin Taranov <kotaranov@microsoft.com>,
+	Kees Cook <keescook@chromium.org>,
+	"Gustavo A. R. Silva" <gustavoars@kernel.org>
+Cc: Erick Archer <erick.archer@outlook.com>,
+	linux-rdma@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux-hyperv@vger.kernel.org,
+	netdev@vger.kernel.org,
+	linux-hardening@vger.kernel.org
+Subject: [PATCH v2] RDMA/mana_ib: Add flex array to struct mana_cfg_rx_steer_req_v2
+Date: Mon,  1 Apr 2024 17:37:03 +0200
+Message-ID:
+ <AS8PR02MB723729C5A63F24C312FC9CD18B3F2@AS8PR02MB7237.eurprd02.prod.outlook.com>
+X-Mailer: git-send-email 2.25.1
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-TMN: [FCHex79N5qpriGZxlEPT84agzr8wScmQ]
+X-ClientProxiedBy: MA4P292CA0002.ESPP292.PROD.OUTLOOK.COM
+ (2603:10a6:250:2d::19) To AS8PR02MB7237.eurprd02.prod.outlook.com
+ (2603:10a6:20b:3f1::10)
+X-Microsoft-Original-Message-ID:
+ <20240401153703.5825-1-erick.archer@outlook.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: AS8PR02MB7237:EE_|PAVPR02MB9891:EE_
+X-MS-Office365-Filtering-Correlation-Id: da2c7ad5-2494-4da9-b168-08dc5261a323
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	FEYsG8lwpfYg2ZhSb2TXGs2vIwWEhU+QicVRwrjPsfisBBroSalmmyZgmyvq/mCuAmhi/dqBXJVQkTYH2QWwTXXeukaNa0KOyp71x5ZFdTw0dNtCmUJzD0fORD0ZaH39ReDM7OeIG9dPOtguZYreQjAZMQ814/Ju4IXa7EPLNRgljyZhImBSFJfiKst5b9G1V9DZ8/BRPshDBn5Kn6bbCgXSJS9zi65P2zAhHj4EIsE0HwRfn4V+UJufBLz1CjZQVYrTaoc9biQ95qRoHItkpusaEL2ZfWWDzWaVRx8/TRQpDhdLC+O6TvHTptv5FEr7venZZh7V4dh6V4WremtjHfb1Pk6LKy2K+WVgxDzc7UV8Fn44uw814df1lnSi26QF3IbTuLQNzovDV6kZSQmLW88X14Nsn5rz45EMSFzklGhMpBvXclG3lG1rn48jC4ZknGPyB7H0hMTK/dB+NwVIs3klsE4FoF6w51zUgJcpRSW4xUvPLxwccvS5xdZ21RApdCkSCze1EeHOUvxGDXumBGvLeZI8A/6gceaumNKzQkisJOyPIqiVuJe79H31sW1r6HIZ00jLLYUlownMsqAkiBwAFSS3jGD5hKvTE3hq6cZZ5Tg5x34Pubs2yvP7skW+bbrRU+Beiyo5SdcueA5+FsvXT3f9FLYwFnXRDWMeCvGZt131xrNMEqFGxwR3VWcX
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?us-ascii?Q?1wmFSfklgBu10unlWvDB52wfRmVX1C4KcOunlGrf/4MKvup9sY6cnU1Raih5?=
+ =?us-ascii?Q?UlBFoVqHm40GurLaFPB8AYrBaAFAL7jTDQ3mXH4eLqXaUE8tgymNbUde5iLJ?=
+ =?us-ascii?Q?kacNeZDy3nCmiIuUu/TOZ6Ufj1/u6UT1MA6uNkWbsVngHrndG1y8iYTGXlUo?=
+ =?us-ascii?Q?5XHZZ/57E1BRkvjaEriSxYDMAGt0mEP9f82E+ZNxdj0fDmshjuQ6FyoW2Dql?=
+ =?us-ascii?Q?duivUWTtgRb0pxcQSKSp3EKHZn+JqfHyf4blWbotn6Xz3cTo9aUM91N9HoUA?=
+ =?us-ascii?Q?FjakWhR91C0ndIrhp22PY9xtwn8hUVDzr2nbT/MRgGK4BijtvuU46PmsWjyM?=
+ =?us-ascii?Q?pCZpBygew6YU3eBP4Tdpl0Z07TDOhYnzbdK4FAY+hiuoFuwOHQYIv3rV6+Nc?=
+ =?us-ascii?Q?PBxD2PZUaPRhb7EIAPKx3a3wlv5v73KFqQApnMP6MZ6WxE2i/iwts2lMBjxs?=
+ =?us-ascii?Q?aOYBg1Wy+vf8meVH2Gb+SEkSL0CIb4pWaA3lZgNK9LZNXsJnHcb2G88ORdy0?=
+ =?us-ascii?Q?/cDcgUcdfNzdb2Q8e4E/kLMglBpIVl7KO/EsWJqlLX1kDiQ0jqpb5iv0oCv1?=
+ =?us-ascii?Q?GF4WWa8nxmqEHUiR64FOdASr9RYixfIuPeG/x78y/8nyMTya7D0hknRNaOY9?=
+ =?us-ascii?Q?fhd7sHPAFXNHwun/2BbKx7Znu6oMVe4451yPyHh59vm7/smkg7mPiracXO+c?=
+ =?us-ascii?Q?C9Uilz1fdU9f8n7POQlPa1/OMzhXC3kMjkUcnqMCXMxTMQuK8EzQR5F2C73g?=
+ =?us-ascii?Q?ltN83PAFrp/0xFzoeRl0Fk9kRFIeJ1y5QZZWvtQ08+4/L1XbZ6VTr767bXU4?=
+ =?us-ascii?Q?0EzCqsnfsfdIoVCqXOYb913j4/JfEiXOJG7mWEMne8THNo1lj6utQzP7BsCq?=
+ =?us-ascii?Q?zFu3wqKrK3LSGIrjaxR89EVyhuO1ZOP9slKiqXp7OvgUsWnyMYK3+4JXQT5j?=
+ =?us-ascii?Q?TDrwMlDG7K/LCYsdw8sY07sabl+fpbNgkpIol4I7xj5Zuu4sKbhYqz2EtUFK?=
+ =?us-ascii?Q?a9Dy5gqUoIy72PZdxvMLBZ8W6cjqT/8F4/U7aUW/+sTuxuz1akwLPARBj1LJ?=
+ =?us-ascii?Q?l801EmhXgS0i5dAD+eBksTN6R3ii07P+eAvj43CpYrVuMz6r45lF8E4vi6gw?=
+ =?us-ascii?Q?xP1lZhoGi4tRtLzQRD3kEGDnqc0h1e4mO9DgjbjVPCXMGPQMo6LSeNkeEjrn?=
+ =?us-ascii?Q?GWAbo6JODr248rcmix0w7YaNNgpsD++O8BMvHxxioMNN9vbtVVj+PbuMtfN4?=
+ =?us-ascii?Q?D26cF0vUwqaJPuxD5bSb?=
+X-OriginatorOrg: outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: da2c7ad5-2494-4da9-b168-08dc5261a323
+X-MS-Exchange-CrossTenant-AuthSource: AS8PR02MB7237.eurprd02.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 01 Apr 2024 15:37:29.6055
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
+X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg:
+	00000000-0000-0000-0000-000000000000
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PAVPR02MB9891
 
------BEGIN PGP SIGNED MESSAGE-----
-Hash: SHA256
+The "struct mana_cfg_rx_steer_req_v2" uses a dynamically sized set of
+trailing elements. Specifically, it uses a "mana_handle_t" array. So,
+use the preferred way in the kernel declaring a flexible array [1].
 
-On Fri, 2024-03-29 at 14:51 +0100, Linux regression tracking (Thorsten
-Leemhuis) wrote:
-> [CCing Chris, who authored the culprit; also CCing the platform folks
-> and a few lists]
+At the same time, prepare for the coming implementation by GCC and Clang
+of the __counted_by attribute. Flexible array members annotated with
+__counted_by can have their accesses bounds-checked at run-time via
+CONFIG_UBSAN_BOUNDS (for array indexing) and CONFIG_FORTIFY_SOURCE (for
+strcpy/memcpy-family functions).
 
-(Intentionally replying to the "wrong" e-mail to get the enlarged
-recipient list for free ...)
+Also, avoid the open-coded arithmetic in the memory allocator functions
+[2] using the "struct_size" macro.
 
->=20
+Moreover, use the "offsetof" helper to get the indirect table offset
+instead of the "sizeof" operator and avoid the open-coded arithmetic in
+pointers using the new flex member. This new structure member also allow
+us to remove the "req_indir_tab" variable since it is no longer needed.
 
-> Regarding the patch itself: hopefully this mail will get things
-> moving.
->=20
-> [1]
-> https://lore.kernel.org/linux-pm/20240318191153.6978-1-corngood@gmail.com=
-/
->=20
-> Ciao, Thorsten (wearing his 'the Linux kernel's regression tracker'
-> hat)
-> --
-> Everything you wanna know about Linux kernel regression tracking:
-> https://linux-regtracking.leemhuis.info/about/#tldr
-> If I did something stupid, please tell me, as explained on that page.
->=20
-> #regzbot poke
->=20
-> > Signed-off-by: David McFarland <corngood@gmail.com>
+Now, it is also possible to use the "flex_array_size" helper to compute
+the size of these trailing elements in the "memcpy" function.
 
-Tested-by: Enrik Berkhan <Enrik.Berkhan@inka.de>
+This code was detected with the help of Coccinelle, and audited and
+modified manually.
 
-> > > ---
-> > =C2=A0drivers/platform/x86/intel/hid.c | 8 +++++++-
-> > =C2=A01 file changed, 7 insertions(+), 1 deletion(-)
-> >=20
-> > diff --git a/drivers/platform/x86/intel/hid.c
-> > b/drivers/platform/x86/intel/hid.c
-> > index 7457ca2b27a6..707de9895965 100644
-> > --- a/drivers/platform/x86/intel/hid.c
-> > +++ b/drivers/platform/x86/intel/hid.c
-> > @@ -504,6 +504,7 @@ static void notify_handler(acpi_handle handle,
-> > u32 event, void *context)
-> > =C2=A0	struct platform_device *device =3D context;
-> > =C2=A0	struct intel_hid_priv *priv =3D dev_get_drvdata(&device-
-> > >dev);
-> > =C2=A0	unsigned long long ev_index;
-> > +	struct key_entry *ke;
-> > =C2=A0	int err;
-> > =C2=A0
-> > =C2=A0	/*
-> > @@ -545,11 +546,16 @@ static void notify_handler(acpi_handle
-> > handle, u32 event, void *context)
-> > =C2=A0		if (event =3D=3D 0xc0 || !priv->array)
-> > =C2=A0			return;
-> > =C2=A0
-> > -		if (!sparse_keymap_entry_from_scancode(priv-
-> > >array, event)) {
-> > +		ke =3D sparse_keymap_entry_from_scancode(priv-
-> > >array, event);
-> > +
-> > +		if (!ke) {
-> > =C2=A0			dev_info(&device->dev, "unknown event
-> > 0x%x\n", event);
-> > =C2=A0			return;
-> > =C2=A0		}
-> > =C2=A0
-> > +		if (ke->type =3D=3D KE_IGNORE)
-> > +			return;
-> > +
-> > =C2=A0wakeup:
-> > =C2=A0		pm_wakeup_hard_event(&device->dev);
-> > =C2=A0
+Link: https://www.kernel.org/doc/html/next/process/deprecated.html#zero-length-and-one-element-arrays [1]
+Link: https://www.kernel.org/doc/html/next/process/deprecated.html#open-coded-arithmetic-in-allocator-arguments [2]
+Signed-off-by: Erick Archer <erick.archer@outlook.com>
+---
+Changes in v2:
+- Remove the "req_indir_tab" variable (Gustavo A. R. Silva).
+- Update the commit message.
+- Add the "__counted_by" attribute.
 
------BEGIN PGP SIGNATURE-----
+Previous versions:
+v1 -> https://lore.kernel.org/linux-hardening/AS8PR02MB7237974EF1B9BAFA618166C38B382@AS8PR02MB7237.eurprd02.prod.outlook.com/
 
-iQGzBAEBCAAdFiEEbLyQBMI0qAWiF6l31AjqSkbLPKQFAmYK1IQACgkQ1AjqSkbL
-PKSUXwv/YWiU334Osus+niffw9gN94vCQid6OWuTIbX2zMNIunHmpHouMtfo6dpb
-7Qsyaz0sxaUEclRPLf/bSAV8zWromM/4Xoa/DoBq+GPOLle5wTJAlislhZVfDZFX
-FZ0EfUg+MvThqlJD8yhGNJWGVnSn92hDid7yy5Y/BSWTPCNhRxEsqy+d0pN82EnD
-0mqWnpfG28uqK6dtOLnvbiOuWQhgKYerKFYHXw8FLxZV0eKb3+RqBFf6ZdsAjUEC
-+d7G9Oq4pc9jxZNvOMop+z3Eskd/bD8Wi2aDtR1qcRENMaK0ucevTuOjGL8Gh80c
-SbgKu2eU/qVlbnVrcaPgpB0CXXza7SYUynw5XWB8jBWOj6w2nxpnQPm5a0Z5aNYw
-/kLuabhSommEmUIJtoOA2vgO8D0ACfF2n95cNXaJRiOhuag3SRoair50TOzmf09Z
-4uco5iaWeIQwEpVFGdy+qh0V18kYclnNMZHC9bhO6heBDLB9Wy/iXDxko9tMXm/v
-XnfAKKw9
-=3DudJV
------END PGP SIGNATURE-----
+Hi,
+
+The Coccinelle script used to detect this code pattern is the following:
+
+virtual report
+
+@rule1@
+type t1;
+type t2;
+identifier i0;
+identifier i1;
+identifier i2;
+identifier ALLOC =~ "kmalloc|kzalloc|kmalloc_node|kzalloc_node|vmalloc|vzalloc|kvmalloc|kvzalloc";
+position p1;
+@@
+
+i0 = sizeof(t1) + sizeof(t2) * i1;
+..
+i2 = ALLOC@p1(..., i0, ...);
+
+@script:python depends on report@
+p1 << rule1.p1;
+@@
+
+msg = "WARNING: verify allocation on line %s" % (p1[0].line)
+coccilib.report.print_report(p1[0],msg)
+
+Regards,
+Erick
+---
+ drivers/infiniband/hw/mana/qp.c               | 12 +++++-------
+ drivers/net/ethernet/microsoft/mana/mana_en.c | 14 ++++++--------
+ include/net/mana/mana.h                       |  1 +
+ 3 files changed, 12 insertions(+), 15 deletions(-)
+
+diff --git a/drivers/infiniband/hw/mana/qp.c b/drivers/infiniband/hw/mana/qp.c
+index 6e7627745c95..258f89464c10 100644
+--- a/drivers/infiniband/hw/mana/qp.c
++++ b/drivers/infiniband/hw/mana/qp.c
+@@ -15,15 +15,13 @@ static int mana_ib_cfg_vport_steering(struct mana_ib_dev *dev,
+ 	struct mana_port_context *mpc = netdev_priv(ndev);
+ 	struct mana_cfg_rx_steer_req_v2 *req;
+ 	struct mana_cfg_rx_steer_resp resp = {};
+-	mana_handle_t *req_indir_tab;
+ 	struct gdma_context *gc;
+ 	u32 req_buf_size;
+ 	int i, err;
+ 
+ 	gc = mdev_to_gc(dev);
+ 
+-	req_buf_size =
+-		sizeof(*req) + sizeof(mana_handle_t) * MANA_INDIRECT_TABLE_SIZE;
++	req_buf_size = struct_size(req, indir_tab, MANA_INDIRECT_TABLE_SIZE);
+ 	req = kzalloc(req_buf_size, GFP_KERNEL);
+ 	if (!req)
+ 		return -ENOMEM;
+@@ -44,20 +42,20 @@ static int mana_ib_cfg_vport_steering(struct mana_ib_dev *dev,
+ 		req->rss_enable = true;
+ 
+ 	req->num_indir_entries = MANA_INDIRECT_TABLE_SIZE;
+-	req->indir_tab_offset = sizeof(*req);
++	req->indir_tab_offset = offsetof(struct mana_cfg_rx_steer_req_v2,
++					 indir_tab);
+ 	req->update_indir_tab = true;
+ 	req->cqe_coalescing_enable = 1;
+ 
+-	req_indir_tab = (mana_handle_t *)(req + 1);
+ 	/* The ind table passed to the hardware must have
+ 	 * MANA_INDIRECT_TABLE_SIZE entries. Adjust the verb
+ 	 * ind_table to MANA_INDIRECT_TABLE_SIZE if required
+ 	 */
+ 	ibdev_dbg(&dev->ib_dev, "ind table size %u\n", 1 << log_ind_tbl_size);
+ 	for (i = 0; i < MANA_INDIRECT_TABLE_SIZE; i++) {
+-		req_indir_tab[i] = ind_table[i % (1 << log_ind_tbl_size)];
++		req->indir_tab[i] = ind_table[i % (1 << log_ind_tbl_size)];
+ 		ibdev_dbg(&dev->ib_dev, "index %u handle 0x%llx\n", i,
+-			  req_indir_tab[i]);
++			  req->indir_tab[i]);
+ 	}
+ 
+ 	req->update_hashkey = true;
+diff --git a/drivers/net/ethernet/microsoft/mana/mana_en.c b/drivers/net/ethernet/microsoft/mana/mana_en.c
+index 59287c6e6cee..62bf3e5661a6 100644
+--- a/drivers/net/ethernet/microsoft/mana/mana_en.c
++++ b/drivers/net/ethernet/microsoft/mana/mana_en.c
+@@ -1058,11 +1058,10 @@ static int mana_cfg_vport_steering(struct mana_port_context *apc,
+ 	struct mana_cfg_rx_steer_req_v2 *req;
+ 	struct mana_cfg_rx_steer_resp resp = {};
+ 	struct net_device *ndev = apc->ndev;
+-	mana_handle_t *req_indir_tab;
+ 	u32 req_buf_size;
+ 	int err;
+ 
+-	req_buf_size = sizeof(*req) + sizeof(mana_handle_t) * num_entries;
++	req_buf_size = struct_size(req, indir_tab, num_entries);
+ 	req = kzalloc(req_buf_size, GFP_KERNEL);
+ 	if (!req)
+ 		return -ENOMEM;
+@@ -1074,7 +1073,8 @@ static int mana_cfg_vport_steering(struct mana_port_context *apc,
+ 
+ 	req->vport = apc->port_handle;
+ 	req->num_indir_entries = num_entries;
+-	req->indir_tab_offset = sizeof(*req);
++	req->indir_tab_offset = offsetof(struct mana_cfg_rx_steer_req_v2,
++					 indir_tab);
+ 	req->rx_enable = rx;
+ 	req->rss_enable = apc->rss_state;
+ 	req->update_default_rxobj = update_default_rxobj;
+@@ -1086,11 +1086,9 @@ static int mana_cfg_vport_steering(struct mana_port_context *apc,
+ 	if (update_key)
+ 		memcpy(&req->hashkey, apc->hashkey, MANA_HASH_KEY_SIZE);
+ 
+-	if (update_tab) {
+-		req_indir_tab = (mana_handle_t *)(req + 1);
+-		memcpy(req_indir_tab, apc->rxobj_table,
+-		       req->num_indir_entries * sizeof(mana_handle_t));
+-	}
++	if (update_tab)
++		memcpy(req->indir_tab, apc->rxobj_table,
++		       flex_array_size(req, indir_tab, req->num_indir_entries));
+ 
+ 	err = mana_send_request(apc->ac, req, req_buf_size, &resp,
+ 				sizeof(resp));
+diff --git a/include/net/mana/mana.h b/include/net/mana/mana.h
+index 76147feb0d10..46f741ebce21 100644
+--- a/include/net/mana/mana.h
++++ b/include/net/mana/mana.h
+@@ -671,6 +671,7 @@ struct mana_cfg_rx_steer_req_v2 {
+ 	u8 hashkey[MANA_HASH_KEY_SIZE];
+ 	u8 cqe_coalescing_enable;
+ 	u8 reserved2[7];
++	mana_handle_t indir_tab[] __counted_by(num_indir_entries);
+ }; /* HW DATA */
+ 
+ struct mana_cfg_rx_steer_resp {
+-- 
+2.25.1
+
 
