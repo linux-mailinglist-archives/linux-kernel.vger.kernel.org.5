@@ -1,165 +1,123 @@
-Return-Path: <linux-kernel+bounces-126392-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-126393-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id BBD158936B6
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 03:22:33 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 27AB98936B8
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 03:31:29 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4A240281E51
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 01:22:32 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3F45F1C20B9D
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 01:31:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2AB7323BE;
-	Mon,  1 Apr 2024 01:22:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="EqK1ygLQ"
-Received: from mail-pf1-f176.google.com (mail-pf1-f176.google.com [209.85.210.176])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8A554138C;
+	Mon,  1 Apr 2024 01:31:20 +0000 (UTC)
+Received: from dggsgout11.his.huawei.com (unknown [45.249.212.51])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DF14E6107;
-	Mon,  1 Apr 2024 01:21:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 26094623;
+	Mon,  1 Apr 2024 01:31:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711934521; cv=none; b=I9Rg1KrpTMhdEfhF4rcMepKNUG1s/3nl9mPVVUVdr+9reRfprHBrR+ZV3nheL5TfRXBHprCjaWN4g4g3cml9Biw2xWssBEBCYhHEWjCK9jEEr/bsF7kndAglsTf414Lx8a+vYTyZ+QMzdAvBKnjR1zGIGXp4racL7lckud5c9ns=
+	t=1711935080; cv=none; b=rUWRozZ+amMMbGzS/576Bgtdx7RMWEsEyz2svPRI8q4VaUP3YkM7evqSXU0JUbXOTep3VpLIgGqAxiyqJRMb5r27K55h+mKlNj3lKBpGIAsLRdsnMyuJr9kZgpR8kNKkiGxOqvvkIfCwjYpS2SGjTwYstm3PAwBOr4tyvum4nJE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711934521; c=relaxed/simple;
-	bh=pF8/O7G3JnB+p12JMdMYXn0IIFS7qvrYLMw3/h2CkeY=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=O73D67s43kBaVOOis2kJhKXoC3RxOezJxxvIMBnVdQMXso4+3e/MljvVHkotYnWgT4347GfEWASwEiR1/e3vCPU6QaPqwhCF7iIIgBZCCX9VOoiycEyC1Wu9eGRKqu0rZS+jWfBA8ML58p8NSBD+0tinBV8YvYqkvnEGVFs2hX4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=EqK1ygLQ; arc=none smtp.client-ip=209.85.210.176
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f176.google.com with SMTP id d2e1a72fcca58-6eac64f2205so2942481b3a.2;
-        Sun, 31 Mar 2024 18:21:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1711934519; x=1712539319; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=3ClrGnV7r7AvVPqLy+4xZZ8jmOxanrfAMR3Vk8uaHbU=;
-        b=EqK1ygLQlA9FLAZXZvdBd/dWSQ3g+YoKrUpi+xwOq2vYKZpes9aAaB2WxlpKhl5aZR
-         Bvfe5VkebpG+rx4Npp52LwivWE+d4YguWCIjDWBY5SSjOujHjP5G2okY5w446OACc/gu
-         k77endW1eTS42yQD5UiJehdZF+nH9XcxCWOZXflIFSSYTA/TK6QDVFQgicFHGKSjI6vm
-         XcSvi9uep4NyAfffhBM4m8YzKQEWcE+JU67DAaLO/2PxaQMnbJgr1dt9CTdrKp+cbID0
-         uz39U9404xUpt0rM9a1h9qyS6uGov50hSx36rCyxqHA6o/3sYbwKjoYIqADPU2EOunx7
-         XgMw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711934519; x=1712539319;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=3ClrGnV7r7AvVPqLy+4xZZ8jmOxanrfAMR3Vk8uaHbU=;
-        b=wvTWYpcBpMd2Sb/Nu3Yi9Rmd2MCliDD/H1oK4HczTDKjSOXx3Pl/ao+8zHfQ/kG1Vr
-         lWLTI5HRgBbv0jRWR9TrWdgAXnk9sd7NY52KL0vYCMwBjd0zDeRBBGj7gkDQzqP2oEot
-         F9+qdANoBXB6JLb5BTkbG505gm8ym8IhbfEJdtdlboOPhohDznC7pQMwK7h8zH757nxU
-         Gj9LRnsJGhJ0b/l4HqLaTW/28pQ3rE2jFfvjVBIxPIAKzzvOAVouc0XCGsLDXihE8bGv
-         9Q4oNxkIPyCIhs5Dnou1QVEqmvG4DVZGgkBtHe3zE88sug695Uy7Ef8hKm3Jj6Vujrak
-         kvPg==
-X-Forwarded-Encrypted: i=1; AJvYcCWIlAPg1RFqgLeWX6XRwSsZOn0jjcGbcRrAhCBtGrD09JofMKx63MRPhuZ/qRNJR1EKpMNjAtkkHEfI2nU2IFi2OMHFhi84YA6NJpCODDhoGeWIJUmkQOOLewQpL3OogyfdWEFQMsvFTdLpP+8/9iaG9kuEEeGRCIzOHqhphqadOpKZ
-X-Gm-Message-State: AOJu0YxXtqF5I2zBVcttVEyhedUZfBPZp8hEtapqhMjXalu4J252kXHd
-	Z6Nz+jSQcL3nCZfUAg1tj6TDA7XGyKSYfUqugo1beWyBozaw/qEM
-X-Google-Smtp-Source: AGHT+IEnYGd3AWdwugZeaF+bVGLgmbGVHTTkemvlVARu8loJIMTNqPiBeBnEGYC+XN3O7VO82gK6NQ==
-X-Received: by 2002:a05:6a20:9589:b0:1a3:ae50:16d2 with SMTP id iu9-20020a056a20958900b001a3ae5016d2mr8839288pzb.60.1711934519225;
-        Sun, 31 Mar 2024 18:21:59 -0700 (PDT)
-Received: from localhost.localdomain ([2407:7000:8942:5500:aaa1:59ff:fe57:eb97])
-        by smtp.gmail.com with ESMTPSA id e15-20020a170902784f00b001dde004b31bsm7694357pln.166.2024.03.31.18.21.52
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 31 Mar 2024 18:21:58 -0700 (PDT)
-From: Barry Song <21cnbao@gmail.com>
-To: akpm@linux-foundation.org,
-	linux-doc@vger.kernel.org,
-	workflows@vger.kernel.org
-Cc: apw@canonical.com,
-	broonie@kernel.org,
-	chenhuacai@loongson.cn,
-	chris@zankel.net,
-	corbet@lwn.net,
-	dwaipayanray1@gmail.com,
-	herbert@gondor.apana.org.au,
-	joe@perches.com,
-	linux-kernel@vger.kernel.org,
-	linux@roeck-us.net,
-	lukas.bulwahn@gmail.com,
-	mac.xxn@outlook.com,
-	sfr@canb.auug.org.au,
-	v-songbaohua@oppo.com,
-	Max Filippov <jcmvbkbc@gmail.com>,
-	Jeff Johnson <quic_jjohnson@quicinc.com>,
-	Charlemagne Lasse <charlemagnelasse@gmail.com>
-Subject: [PATCH v5 2/2] scripts: checkpatch: check unused parameters for function-like macro
-Date: Mon,  1 Apr 2024 14:21:20 +1300
-Message-Id: <20240401012120.6052-3-21cnbao@gmail.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20240401012120.6052-1-21cnbao@gmail.com>
-References: <20240401012120.6052-1-21cnbao@gmail.com>
+	s=arc-20240116; t=1711935080; c=relaxed/simple;
+	bh=5GybeWNqzs6nv4wJq1pfFM+SRAKyKCyXUGqdzSUt76A=;
+	h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
+	 In-Reply-To:Content-Type; b=RCeJ/fVO3dyF9yvp/Mf+opE82yXHdwJRV+SJscAC03FbiptkX/BWIm0lL8aebmOmQTUkdALquULpZQ7HklN3V+kMd7Cv/R4pacI3ujEOF81mEwPr1Bw/FG3oEdjrgZarWT0PjSw1B7qYrc5k0QcpCLfeQSv6XwKhhl/oSIMLAi0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.19.163.235])
+	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4V7D423tjnz4f3nJQ;
+	Mon,  1 Apr 2024 09:30:58 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.112])
+	by mail.maildlp.com (Postfix) with ESMTP id D02031A0232;
+	Mon,  1 Apr 2024 09:31:06 +0800 (CST)
+Received: from [10.174.176.73] (unknown [10.174.176.73])
+	by APP1 (Coremail) with SMTP id cCh0CgBHZQ5YDgpmKjnDIg--.2486S3;
+	Mon, 01 Apr 2024 09:31:06 +0800 (CST)
+Subject: Re: [PATCH] scsi: sd: unregister device if device_add_disk() failed
+ in sd_probe()
+To: linan666@huaweicloud.com, jejb@linux.ibm.com, martin.petersen@oracle.com,
+ mcgrof@kernel.org, hch@lst.de, bvanassche@acm.org,
+ "yukuai (C)" <yukuai3@huawei.com>
+Cc: linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linan122@huawei.com, yi.zhang@huawei.com, houtao1@huawei.com,
+ yangerkun@huawei.com
+References: <20231208082335.1754205-1-linan666@huaweicloud.com>
+From: Yu Kuai <yukuai1@huaweicloud.com>
+Message-ID: <6066205b-bdc8-4434-cc2d-3ce06004ae47@huaweicloud.com>
+Date: Mon, 1 Apr 2024 09:31:04 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+In-Reply-To: <20231208082335.1754205-1-linan666@huaweicloud.com>
+Content-Type: text/plain; charset=gbk; format=flowed
 Content-Transfer-Encoding: 8bit
+X-CM-TRANSID:cCh0CgBHZQ5YDgpmKjnDIg--.2486S3
+X-Coremail-Antispam: 1UD129KBjvJXoWrKryxKr45ArWUGF1kKFyfWFg_yoW8Jr48pa
+	1kuasYkryUWr1DC3W7uFWUua48Ga4Iy3s5Wr4xJ34Ygas3Gr98K39agay5W3W8Jr47GFs8
+	JF17GryrX3W8tw7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUvIb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
+	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7Cj
+	xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
+	0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
+	6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
+	Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7Mxk0xIA0c2IE
+	e2xFo4CEbIxvr21l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxV
+	Aqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q
+	6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6x
+	kF7I0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE
+	14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf
+	9x07UWE__UUUUU=
+X-CM-SenderInfo: 51xn3trlr6x35dzhxuhorxvhhfrp/
 
-From: Xining Xu <mac.xxn@outlook.com>
++CC Christoph Hellwig
++CC Bart Van Assche
+ÔÚ 2023/12/08 16:23, linan666@huaweicloud.com Ð´µÀ:
+> From: Li Nan <linan122@huawei.com>
+> 
+> "if device_add() succeeds, you should call device_del() when you want to
+> get rid of it."
+> 
+> In sd_probe(), device_add_disk() fails when device_add() has already
+> succeeded, so change put_device() to device_unregister() to ensure device
+> resources are released.
 
-If function-like macros do not utilize a parameter, it might result in a
-build warning.  In our coding style guidelines, we advocate for utilizing
-static inline functions to replace such macros.  This patch verifies
-compliance with the new rule.
+I was shocked that this patch is still there. This patch is easy and
+straightforward.
 
-For a macro such as the one below,
+LGTM
+Reviewed-by: Yu Kuai <yukuai3@huawei.com>
 
- #define test(a) do { } while (0)
-
-The test result is as follows.
-
- ERROR: Parameter 'a' is not used in function-like macro, please use static
- inline instead
- #21: FILE: mm/init-mm.c:20:
- +#define test(a) do { } while (0)
-
- total: 1 errors, 0 warnings, 8 lines checked
-
-Signed-off-by: Xining Xu <mac.xxn@outlook.com>
-Tested-by: Barry Song <v-songbaohua@oppo.com>
-Signed-off-by: Barry Song <v-songbaohua@oppo.com>
-Cc: Chris Zankel <chris@zankel.net>
-Cc: Huacai Chen <chenhuacai@loongson.cn>
-Cc: Herbert Xu <herbert@gondor.apana.org.au>
-Cc: Guenter Roeck <linux@roeck-us.net>
-Cc: Stephen Rothwell <sfr@canb.auug.org.au>
-Cc: Mark Brown <broonie@kernel.org>
-Cc: Andy Whitcroft <apw@canonical.com>
-Cc: Dwaipayan Ray <dwaipayanray1@gmail.com>
-Cc: Joe Perches <joe@perches.com>
-Cc: Jonathan Corbet <corbet@lwn.net>
-Cc: Lukas Bulwahn <lukas.bulwahn@gmail.com>
-Cc: Max Filippov <jcmvbkbc@gmail.com>
-Cc: Jeff Johnson <quic_jjohnson@quicinc.com>
-Cc: Charlemagne Lasse <charlemagnelasse@gmail.com>
----
- scripts/checkpatch.pl | 6 ++++++
- 1 file changed, 6 insertions(+)
-
-diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
-index 9c4c4a61bc83..9895d7e38a9f 100755
---- a/scripts/checkpatch.pl
-+++ b/scripts/checkpatch.pl
-@@ -6040,6 +6040,12 @@ sub process {
- 					CHK("MACRO_ARG_PRECEDENCE",
- 					    "Macro argument '$arg' may be better as '($arg)' to avoid precedence issues\n" . "$herectx");
- 				}
-+
-+# check if this is an unused argument
-+				if ($define_stmt !~ /\b$arg\b/) {
-+					WARN("MACRO_ARG_UNUSED",
-+						"Argument '$arg' is not used in function-like macro\n" . "$herectx");
-+				}
- 			}
- 
- # check for macros with flow control, but without ## concatenation
--- 
-2.34.1
+BTW, Nan, it will be better if you have a reporducer for this.
+> 
+> Fixes: 2a7a891f4c40 ("scsi: sd: Add error handling support for add_disk()")
+> Signed-off-by: Li Nan <linan122@huawei.com>
+> ---
+>   drivers/scsi/sd.c | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/scsi/sd.c b/drivers/scsi/sd.c
+> index 542a4bbb21bc..d81cbeee06eb 100644
+> --- a/drivers/scsi/sd.c
+> +++ b/drivers/scsi/sd.c
+> @@ -3736,7 +3736,7 @@ static int sd_probe(struct device *dev)
+>   
+>   	error = device_add_disk(dev, gd, NULL);
+>   	if (error) {
+> -		put_device(&sdkp->disk_dev);
+> +		device_unregister(&sdkp->disk_dev);
+>   		put_disk(gd);
+>   		goto out;
+>   	}
+> 
 
 
