@@ -1,62 +1,62 @@
-Return-Path: <linux-kernel+bounces-126927-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-126928-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id AC5C689448C
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 19:56:37 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 481CA89448D
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 19:56:57 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 62007282889
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 17:56:36 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5980B1C2135D
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 17:56:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3F65C50249;
-	Mon,  1 Apr 2024 17:56:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8CFC64F207;
+	Mon,  1 Apr 2024 17:56:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="NeyxgSbt"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.17])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="QZ0nbBF8"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9A08A4F200
-	for <linux-kernel@vger.kernel.org>; Mon,  1 Apr 2024 17:56:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.17
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1B70D51C2B;
+	Mon,  1 Apr 2024 17:56:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.19
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711994178; cv=none; b=nmGNLRLyz9odMudE2dQXEoee8Yc+/vQC+6UhaYjOjkoJeLiYJassDb4GbmztuHwI+J+UJ756aU3tO9hyknVy3GiGiTYEWiTBglBqIL3OJoYpZsTMEJiHWQ8/50UIwNJUpvQ26ixPBnafZcjNakqElFnQ3nW+Zfpyii9IlQCfXsY=
+	t=1711994187; cv=none; b=h3hbd/VfwyiIp2RBHiOPInAbwcLQ5H/KGAohJuYtgNaVw1gkRSdSwSHsGDdyTe2qzLgzhQWvAJqbk5YNj2kF0wLXvh8+vYcAqXsHTQ2xKrRoUxiqDnNht5nhiq3S7E8rhbe9tBuDY6v/qwqKAYQ7JmzhJz4D13ZWfMnPzl6zwTg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711994178; c=relaxed/simple;
-	bh=K8ZYwb8nVuPFiuvTlpHRAIwMR+3U3ALosS7AP6ycdZI=;
+	s=arc-20240116; t=1711994187; c=relaxed/simple;
+	bh=j95tFIo4/eRVdfaUBkxCGG3P+3iJymcsi9ZPT1Ohsd0=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=uh4zS+azvoazyltn6jOMNYosCtt2tSn0SMvn9LdNFr5Qgo0l0TsuuBK+zNnERBf0STkP3t4GS9JYkeYg4FIHfISvz8y+DbTqsmecvppfQku7Ry0g/xTgWAlAPm80j9FrALZd/BSWCgN52I0eIF6wVd+XrvvjglHNp/4Y70BK9sc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=NeyxgSbt; arc=none smtp.client-ip=198.175.65.17
+	 In-Reply-To:Content-Type; b=eZqdNKFgYfZx8zvGk6726KcWqEfZFa8cMr0VAd08utCR83wDoYwbn7m8c7R0P+HIJsEhriqda0nfRrh4cNuI0aQ1I2zOkswyMRg/3ap3l76omwn14vvw5GbUxtLDX4f87SCu08W9L+pbFbPn5lHmeFRohrUfmOHuyrBfMb9Nxuk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=QZ0nbBF8; arc=none smtp.client-ip=198.175.65.19
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1711994177; x=1743530177;
+  t=1711994186; x=1743530186;
   h=message-id:date:mime-version:subject:to:cc:references:
    from:in-reply-to:content-transfer-encoding;
-  bh=K8ZYwb8nVuPFiuvTlpHRAIwMR+3U3ALosS7AP6ycdZI=;
-  b=NeyxgSbt55MImhV4ZPznulnI63Ql44dvMAmJne62epvUTrwLnlMzKKQE
-   rnnWhPHuCe7GiHGsg/PH6U/5HlCyJG3izDkxyuI55PS0AqRT7g7Ydquyf
-   83tG3ZyNrAtJ+RLnGjJD7wMZTzELf5Oxl/hwKifCxi5/tgqEpQ/vM4Gok
-   oHMSc05U60o+HpEY3oQ3OdLDSJPmFYUjgQQ+AdLuqVIaQ3fxx+PYsZwv6
-   RhEZbDQBlLWPdiG3NzZ/DIBn9qCpWtHXC42a94AG9oof5C7eAzIFO0tF4
-   bdUdXlCH3dCLg/6Js4TkSGQ7FdtD54vOvjfCy2E73rWPKIsIbDIfFrYg3
-   Q==;
-X-CSE-ConnectionGUID: NYOfrDdDTmauMoA0pTPK/w==
-X-CSE-MsgGUID: 7278nQCSTWydya/oUHVS3w==
-X-IronPort-AV: E=McAfee;i="6600,9927,11031"; a="7250876"
+  bh=j95tFIo4/eRVdfaUBkxCGG3P+3iJymcsi9ZPT1Ohsd0=;
+  b=QZ0nbBF8U28jIYAtnLwvaWHbN7Jxe77WF2Lvqjo0wByezzTItnJ9fM96
+   x5v0kWcAN+CBL8a0Tb6Mivx5yDYB4u0wh/4lwJ+f+MBt77t5I61j6Q+iD
+   AsSENs2d8BmsWp89mtoB/G5Y7AVdxMi1NU0fAH2eRuJ4CAuvUZ/TfEK7M
+   aAONCoFfiOoMB8/JGvygF1/FtsPOdSzSbN43FTnpTwYZQ8kJ3iPhhAdFl
+   DUcxsq+fbd5cLiEPsw9s8MBZz/gGH3JoWrqYVFvBXb+VJBhQRDhxZ0jyM
+   wgbH1hYXzSwm3WNV681peffztJ6yd1NrK+M9YageENaP3opz9LjYiw9Kc
+   A==;
+X-CSE-ConnectionGUID: +iav1qHOT5eBp0xxZZuIpw==
+X-CSE-MsgGUID: usEmmJnJRFWovnhj61s4UA==
+X-IronPort-AV: E=McAfee;i="6600,9927,11031"; a="6989280"
 X-IronPort-AV: E=Sophos;i="6.07,172,1708416000"; 
-   d="scan'208";a="7250876"
-Received: from fmviesa002.fm.intel.com ([10.60.135.142])
-  by orvoesa109.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Apr 2024 10:56:16 -0700
+   d="scan'208";a="6989280"
+Received: from fmviesa005.fm.intel.com ([10.60.135.145])
+  by orvoesa111.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Apr 2024 10:56:26 -0700
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.07,172,1708416000"; 
-   d="scan'208";a="40945848"
-Received: from mminuddi-mobl1.amr.corp.intel.com (HELO [10.209.48.250]) ([10.209.48.250])
-  by fmviesa002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Apr 2024 10:56:15 -0700
-Message-ID: <8ee463af-fdbf-4514-bb6e-bf2fd61fbc06@intel.com>
-Date: Mon, 1 Apr 2024 10:56:14 -0700
+   d="scan'208";a="22250093"
+Received: from mthansen-mobl.amr.corp.intel.com (HELO [10.212.113.134]) ([10.212.113.134])
+  by fmviesa005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Apr 2024 10:56:25 -0700
+Message-ID: <06314147-49d2-419b-842e-fb34f6901c39@intel.com>
+Date: Mon, 1 Apr 2024 10:56:24 -0700
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -64,89 +64,137 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/1] x86/mm/pae: Align up pteval_t, pmdval_t and pudval_t
- to avoid split locks
-To: Javier Pello <devel@otheo.eu>, linux-kernel@vger.kernel.org
-Cc: x86@kernel.org, Thomas Gleixner <tglx@linutronix.de>,
- Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
- Dave Hansen <dave.hansen@linux.intel.com>, "H. Peter Anvin" <hpa@zytor.com>
-References: <20240401185451.6897208962d3fc47a12ffb5a@otheo.eu>
- <20240401185712.a80deeb2fddeded0ad42cc04@otheo.eu>
+Subject: Re: [PATCH 23/26] cxl/mem: Trace Dynamic capacity Event Record
 Content-Language: en-US
-From: Dave Hansen <dave.hansen@intel.com>
-Autocrypt: addr=dave.hansen@intel.com; keydata=
- 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
-In-Reply-To: <20240401185712.a80deeb2fddeded0ad42cc04@otheo.eu>
+To: ira.weiny@intel.com, Fan Ni <fan.ni@samsung.com>,
+ Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+ Navneet Singh <navneet.singh@intel.com>
+Cc: Dan Williams <dan.j.williams@intel.com>,
+ Davidlohr Bueso <dave@stgolabs.net>,
+ Alison Schofield <alison.schofield@intel.com>,
+ Vishal Verma <vishal.l.verma@intel.com>, linux-btrfs@vger.kernel.org,
+ linux-cxl@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20240324-dcd-type2-upstream-v1-0-b7b00d623625@intel.com>
+ <20240324-dcd-type2-upstream-v1-23-b7b00d623625@intel.com>
+From: Dave Jiang <dave.jiang@intel.com>
+In-Reply-To: <20240324-dcd-type2-upstream-v1-23-b7b00d623625@intel.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 
-On 4/1/24 09:57, Javier Pello wrote:
-> -typedef u64	pteval_t;
-> -typedef u64	pmdval_t;
-> -typedef u64	pudval_t;
-> -typedef u64	p4dval_t;
-> -typedef u64	pgdval_t;
-> -typedef u64	pgprotval_t;
+
+
+On 3/24/24 4:18 PM, ira.weiny@intel.com wrote:
+> From: Navneet Singh <navneet.singh@intel.com>
+> 
+> CXL rev 3.1 section 8.2.9.2.1 adds the Dynamic Capacity Event Records.
+> Notify the host of extents being added or removed.  User space has
+> little use for these events other than for debugging.
+> 
+> Add DC trace points to the trace log for debugging purposes.
+> 
+> Signed-off-by: Navneet Singh <navneet.singh@intel.com>
+> Signed-off-by: Ira Weiny <ira.weiny@intel.com>
+
+Reviewed-by: Dave Jiang <dave.jiang@intel.com>
+> 
+> ---
+> Changes for v1
+> [iweiny: Adjust to new trace code]
+> ---
+>  drivers/cxl/core/mbox.c  |  4 +++
+>  drivers/cxl/core/trace.h | 65 ++++++++++++++++++++++++++++++++++++++++++++++++
+>  2 files changed, 69 insertions(+)
+> 
+> diff --git a/drivers/cxl/core/mbox.c b/drivers/cxl/core/mbox.c
+> index 7babac2d1c95..cb4576890187 100644
+> --- a/drivers/cxl/core/mbox.c
+> +++ b/drivers/cxl/core/mbox.c
+> @@ -978,6 +978,10 @@ static void __cxl_event_trace_record(const struct cxl_memdev *cxlmd,
+>  		ev_type = CXL_CPER_EVENT_DRAM;
+>  	else if (uuid_equal(uuid, &CXL_EVENT_MEM_MODULE_UUID))
+>  		ev_type = CXL_CPER_EVENT_MEM_MODULE;
+> +	else if (uuid_equal(uuid, &CXL_EVENT_DC_EVENT_UUID)) {
+> +		trace_cxl_dynamic_capacity(cxlmd, type, &record->event.dcd);
+> +		return;
+> +	}
+>  
+>  	cxl_event_trace_record(cxlmd, type, ev_type, uuid, &record->event);
+>  }
+> diff --git a/drivers/cxl/core/trace.h b/drivers/cxl/core/trace.h
+> index bdf117a33744..7646fdd9aee3 100644
+> --- a/drivers/cxl/core/trace.h
+> +++ b/drivers/cxl/core/trace.h
+> @@ -707,6 +707,71 @@ TRACE_EVENT(cxl_poison,
+>  	)
+>  );
+>  
 > +/*
-> + * Variables of these types are subject to atomic compare-and-exchange
-> + * operations, so they have to be properly aligned to avoid split locks.
+> + * DYNAMIC CAPACITY Event Record - DER
+> + *
+> + * CXL rev 3.0 section 8.2.9.2.1.5 Table 8-47
 > + */
-> +typedef u64	pteval_t	__aligned(8);
-> +typedef u64	pmdval_t	__aligned(8);
-> +typedef u64	pudval_t	__aligned(8);
-> +typedef u64	p4dval_t	__aligned(8);
-> +typedef u64	pgdval_t	__aligned(8);
-> +typedef u64	pgprotval_t	__aligned(8);
-
-First of all, how is it that you're running a PAE kernel on new, 64-bit
-hardware?  That's rather odd.
-
-The case that you're hitting is actually an on-stack pmd_t.  The fun
-part is that it's not shared and doesn't even _need_ atomics.  I think
-it's just using pmd_populate() because it's convenient.
-
-I'd honestly much rather just disable split lock support in 32-bit
-builds than mess with this stuff.  You really shouldn't be running
-32-but kernels on this hardware.
+> +
+> +#define CXL_DC_ADD_CAPACITY			0x00
+> +#define CXL_DC_REL_CAPACITY			0x01
+> +#define CXL_DC_FORCED_REL_CAPACITY		0x02
+> +#define CXL_DC_REG_CONF_UPDATED			0x03
+> +#define show_dc_evt_type(type)	__print_symbolic(type,		\
+> +	{ CXL_DC_ADD_CAPACITY,	"Add capacity"},		\
+> +	{ CXL_DC_REL_CAPACITY,	"Release capacity"},		\
+> +	{ CXL_DC_FORCED_REL_CAPACITY,	"Forced capacity release"},	\
+> +	{ CXL_DC_REG_CONF_UPDATED,	"Region Configuration Updated"	} \
+> +)
+> +
+> +TRACE_EVENT(cxl_dynamic_capacity,
+> +
+> +	TP_PROTO(const struct cxl_memdev *cxlmd, enum cxl_event_log_type log,
+> +		 struct cxl_event_dcd *rec),
+> +
+> +	TP_ARGS(cxlmd, log, rec),
+> +
+> +	TP_STRUCT__entry(
+> +		CXL_EVT_TP_entry
+> +
+> +		/* Dynamic capacity Event */
+> +		__field(u8, event_type)
+> +		__field(u16, hostid)
+> +		__field(u8, region_id)
+> +		__field(u64, dpa_start)
+> +		__field(u64, length)
+> +		__array(u8, tag, CXL_DC_EXTENT_TAG_LEN)
+> +		__field(u16, sh_extent_seq)
+> +	),
+> +
+> +	TP_fast_assign(
+> +		CXL_EVT_TP_fast_assign(cxlmd, log, rec->hdr);
+> +
+> +		/* Dynamic_capacity Event */
+> +		__entry->event_type = rec->event_type;
+> +
+> +		/* DCD event record data */
+> +		__entry->hostid = le16_to_cpu(rec->host_id);
+> +		__entry->region_id = rec->region_index;
+> +		__entry->dpa_start = le64_to_cpu(rec->extent.start_dpa);
+> +		__entry->length = le64_to_cpu(rec->extent.length);
+> +		memcpy(__entry->tag, &rec->extent.tag, CXL_DC_EXTENT_TAG_LEN);
+> +		__entry->sh_extent_seq = le16_to_cpu(rec->extent.shared_extn_seq);
+> +	),
+> +
+> +	CXL_EVT_TP_printk("event_type='%s' host_id='%d' region_id='%d' " \
+> +		"starting_dpa=%llx length=%llx tag=%s " \
+> +		"shared_extent_sequence=%d",
+> +		show_dc_evt_type(__entry->event_type),
+> +		__entry->hostid,
+> +		__entry->region_id,
+> +		__entry->dpa_start,
+> +		__entry->length,
+> +		__print_hex(__entry->tag, CXL_DC_EXTENT_TAG_LEN),
+> +		__entry->sh_extent_seq
+> +	)
+> +);
+> +
+>  #endif /* _CXL_EVENTS_H */
+>  
+>  #define TRACE_INCLUDE_FILE trace
+> 
 
