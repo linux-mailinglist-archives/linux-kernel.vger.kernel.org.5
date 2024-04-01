@@ -1,153 +1,226 @@
-Return-Path: <linux-kernel+bounces-126523-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-126526-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 66F2F89390C
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 10:39:30 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id D378889391B
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 10:40:11 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1D9891F21836
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 08:39:30 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0338E1C21052
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 08:40:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DC157FC1A;
-	Mon,  1 Apr 2024 08:39:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E1EE110A17;
+	Mon,  1 Apr 2024 08:39:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=leemhuis.info header.i=@leemhuis.info header.b="JOyiWYWB"
-Received: from wp530.webpack.hosteurope.de (wp530.webpack.hosteurope.de [80.237.130.52])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="YLKVOU1F"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AB9D0FC08;
-	Mon,  1 Apr 2024 08:39:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=80.237.130.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DE7FDBA49;
+	Mon,  1 Apr 2024 08:39:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711960748; cv=none; b=R0VKFJUYfluRdOjLilZV6fhNDlBwhNpy9B5MXynYxi/APeN7ztA/aqlzHBxknYANKZSoSuNIgP+buEGnNd/oNojf/nNzMToMDRWnURFNK0XOOs/JR/JiUej8HhvdiivKv3eOEanNnZLzGMoyALn2c6mjeS6lJc8BO5kGHvnnfA0=
+	t=1711960780; cv=none; b=htkjAv4AkcT/tLOYW3MobmyRrRCD3xKPggvbXtdMxGc50LMHz+zwhapbSKprPGqM3OolKfiqMWPNA9DyBGntMMrsnwm/YA4NAaqAAoYKgXhoA+qjY0Jw5QQHiBR+mwPvMeRKorD0RpMKFZ7fxT0If2c4FjBx5TYuVYf5TISsGxI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711960748; c=relaxed/simple;
-	bh=1Tn1esD1kJcJI+TkMvadUmF0KzwOA5IFTcW+3nhhjFM=;
-	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=uXMO5wdGcCnQh6n1d4guxIhwVMP8SlO3POhRBc6Vbv9HEKnUUtACCA6NKCqJzvhC7K0Ve7o/+NEZD0tokMgaXTjIPGPwAPAsqwOXqr0r+G+bI5o+i5TUr8NRpXbKcpRroG9RF0lS2kNwL35DwYViHc5nks7wgmHH70ci6VzsYac=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=leemhuis.info; spf=pass smtp.mailfrom=leemhuis.info; dkim=pass (2048-bit key) header.d=leemhuis.info header.i=@leemhuis.info header.b=JOyiWYWB; arc=none smtp.client-ip=80.237.130.52
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=leemhuis.info
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=leemhuis.info
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=leemhuis.info; s=he214686; h=Content-Transfer-Encoding:Content-Type:
-	In-Reply-To:From:References:To:Subject:MIME-Version:Date:Message-ID:From:
-	Sender:Reply-To:Subject:Date:Message-ID:To:Cc:MIME-Version:Content-Type:
-	Content-Transfer-Encoding:Content-ID:Content-Description:In-Reply-To:
-	References; bh=BjGaJFLrLvMVQq06MTRerBRTLWVUItjpux/8jwfcOwI=; t=1711960745;
-	x=1712392745; b=JOyiWYWBuh/2oVTIpol+iSbaGT0B0vCD+LqVqsra6DeRg+j3M9t4Ld2OhkYny
-	M5HqF+eOW1TMtjNUydKDO6gItTIRmpnV5LIuiaByOkwoasvttdshAuxYmEjeGS8/wqjj/3ihIEsTr
-	ijG9cToFSxHcXqGnUQDHom58AHah1tSJUz3bretCDSY2gk1YvVpJYRGMubg5yQQJROTtxhUMcZkHz
-	Kzvr9pxdRrIDKOu472H4Qu1qSdlOKcfD1rO4nMcctGT9+RGAw0sYOpKKE8cGsnDVxbBG8A/e7YPBE
-	nHyzI53EK0bZMdSHWR5WhnH3SiX5DYacTZE6sZ1v7c/TOWDx3g==;
-Received: from [2a02:8108:8980:2478:8cde:aa2c:f324:937e]; authenticated
-	by wp530.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
-	id 1rrDBt-0007A8-17; Mon, 01 Apr 2024 10:38:53 +0200
-Message-ID: <dfa22ac1-36e9-48da-a2a8-8d7818c09187@leemhuis.info>
-Date: Mon, 1 Apr 2024 10:38:52 +0200
+	s=arc-20240116; t=1711960780; c=relaxed/simple;
+	bh=T0Mfp3WVqeIB8i82ULSnxmrq7ZBFSs8aBDtdvf2WgnI=;
+	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
+	 In-Reply-To:To:Cc; b=ogszAJh7ohuhXDTcqbCqUrwn1Eh5ghGWTSVbV+0fKcFcCgLx9V/5MHzJfFOXuo7XsRwX9ZarlbIn8FF/fdUtWuRuGRdmUKgoZ35JPrZuIoKcxfnPWZEeTdYfqlGWZa4x5S+/C8co+TmiU9cw6tnrVHLz823x/jhp1qBowT7UMTY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=YLKVOU1F; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 993A6C433B2;
+	Mon,  1 Apr 2024 08:39:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1711960779;
+	bh=T0Mfp3WVqeIB8i82ULSnxmrq7ZBFSs8aBDtdvf2WgnI=;
+	h=From:Date:Subject:References:In-Reply-To:To:Cc:Reply-To:From;
+	b=YLKVOU1FX0386yqcsNvKVWx7DGKQ8Rkqlor+hgTHggLLHD9D6IPZJIEMK0I0Xfv/M
+	 Tt36eg6xRKPPDdDv2QJioAX6qbyTuUI/i99bVczTVzYN8CT8cKRM7h7V4Nq6ZenuJ9
+	 nHuHtyEYx+R3DDdFSnPnMMpZB+zrXJG0tAlXaPhR0rvsZFdaU+YjtYunMM/nYkZnBN
+	 x/jqN6JKG3f/gma0upLW3BoKaBfqglra29M4YQviHgJ+whI6byrq7PqTBqWvaSQ84d
+	 DEe8OEqLFlwDoQEuo9PbZZoWQbCxqUglEAY5sPqTF4DhVK7gPesn5/xPb97bKhe1ce
+	 HtcC+q4QczBUw==
+Received: from aws-us-west-2-korg-lkml-1.web.codeaurora.org (localhost.localdomain [127.0.0.1])
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8C88ACD1292;
+	Mon,  1 Apr 2024 08:39:39 +0000 (UTC)
+From: Fenglin Wu via B4 Relay <devnull+quic_fenglinw.quicinc.com@kernel.org>
+Date: Mon, 01 Apr 2024 16:38:52 +0800
+Subject: [PATCH v8 3/3] input: pm8xxx-vibrator: add new SPMI vibrator
+ support
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 2/2] docs: handling-regressions.rst: clarify that
- "Closes:" tags work too
-To: Karel Balej <balejk@matfyz.cz>, Jonathan Corbet <corbet@lwn.net>,
- regressions@lists.linux.dev, linux-doc@vger.kernel.org,
- linux-kernel@vger.kernel.org, workflows@vger.kernel.org
-References: <20240328194342.11760-1-balejk@matfyz.cz>
- <20240328194342.11760-3-balejk@matfyz.cz>
-From: Thorsten Leemhuis <linux@leemhuis.info>
-Content-Language: en-US, de-DE
-Autocrypt: addr=linux@leemhuis.info; keydata=
- xsFNBFJ4AQ0BEADCz16x4kl/YGBegAsYXJMjFRi3QOr2YMmcNuu1fdsi3XnM+xMRaukWby47
- JcsZYLDKRHTQ/Lalw9L1HI3NRwK+9ayjg31wFdekgsuPbu4x5RGDIfyNpd378Upa8SUmvHik
- apCnzsxPTEE4Z2KUxBIwTvg+snEjgZ03EIQEi5cKmnlaUynNqv3xaGstx5jMCEnR2X54rH8j
- QPvo2l5/79Po58f6DhxV2RrOrOjQIQcPZ6kUqwLi6EQOi92NS9Uy6jbZcrMqPIRqJZ/tTKIR
- OLWsEjNrc3PMcve+NmORiEgLFclN8kHbPl1tLo4M5jN9xmsa0OZv3M0katqW8kC1hzR7mhz+
- Rv4MgnbkPDDO086HjQBlS6Zzo49fQB2JErs5nZ0mwkqlETu6emhxneAMcc67+ZtTeUj54K2y
- Iu8kk6ghaUAfgMqkdIzeSfhO8eURMhvwzSpsqhUs7pIj4u0TPN8OFAvxE/3adoUwMaB+/plk
- sNe9RsHHPV+7LGADZ6OzOWWftk34QLTVTcz02bGyxLNIkhY+vIJpZWX9UrfGdHSiyYThHCIy
- /dLz95b9EG+1tbCIyNynr9TjIOmtLOk7ssB3kL3XQGgmdQ+rJ3zckJUQapLKP2YfBi+8P1iP
- rKkYtbWk0u/FmCbxcBA31KqXQZoR4cd1PJ1PDCe7/DxeoYMVuwARAQABzSdUaG9yc3RlbiBM
- ZWVtaHVpcyA8bGludXhAbGVlbWh1aXMuaW5mbz7CwZQEEwEKAD4CGwMFCwkIBwMFFQoJCAsF
- FgIDAQACHgECF4AWIQSoq8a+lZZX4oPULXVytubvTFg9LQUCX31PIwUJFmtPkwAKCRBytubv
- TFg9LWsyD/4t3g4i2YVp8RoKAcOut0AZ7/uLSqlm8Jcbb+LeeuzjY9T3mQ4ZX8cybc1jRlsL
- JMYL8GD3a53/+bXCDdk2HhQKUwBJ9PUDbfWa2E/pnqeJeX6naLn1LtMJ78G9gPeG81dX5Yq+
- g/2bLXyWefpejlaefaM0GviCt00kG4R/mJJpHPKIPxPbOPY2REzWPoHXJpi7vTOA2R8HrFg/
- QJbnA25W55DzoxlRb/nGZYG4iQ+2Eplkweq3s3tN88MxzNpsxZp475RmzgcmQpUtKND7Pw+8
- zTDPmEzkHcUChMEmrhgWc2OCuAu3/ezsw7RnWV0k9Pl5AGROaDqvARUtopQ3yEDAdV6eil2z
- TvbrokZQca2808v2rYO3TtvtRMtmW/M/yyR233G/JSNos4lODkCwd16GKjERYj+sJsW4/hoZ
- RQiJQBxjnYr+p26JEvghLE1BMnTK24i88Oo8v+AngR6JBxwH7wFuEIIuLCB9Aagb+TKsf+0c
- HbQaHZj+wSY5FwgKi6psJxvMxpRpLqPsgl+awFPHARktdPtMzSa+kWMhXC4rJahBC5eEjNmP
- i23DaFWm8BE9LNjdG8Yl5hl7Zx0mwtnQas7+z6XymGuhNXCOevXVEqm1E42fptYMNiANmrpA
- OKRF+BHOreakveezlpOz8OtUhsew9b/BsAHXBCEEOuuUg87BTQRSeAENARAAzu/3satWzly6
- +Lqi5dTFS9+hKvFMtdRb/vW4o9CQsMqL2BJGoE4uXvy3cancvcyodzTXCUxbesNP779JqeHy
- s7WkF2mtLVX2lnyXSUBm/ONwasuK7KLz8qusseUssvjJPDdw8mRLAWvjcsYsZ0qgIU6kBbvY
- ckUWkbJj/0kuQCmmulRMcaQRrRYrk7ZdUOjaYmjKR+UJHljxLgeregyiXulRJxCphP5migoy
- ioa1eset8iF9fhb+YWY16X1I3TnucVCiXixzxwn3uwiVGg28n+vdfZ5lackCOj6iK4+lfzld
- z4NfIXK+8/R1wD9yOj1rr3OsjDqOaugoMxgEFOiwhQDiJlRKVaDbfmC1G5N1YfQIn90znEYc
- M7+Sp8Rc5RUgN5yfuwyicifIJQCtiWgjF8ttcIEuKg0TmGb6HQHAtGaBXKyXGQulD1CmBHIW
- zg7bGge5R66hdbq1BiMX5Qdk/o3Sr2OLCrxWhqMdreJFLzboEc0S13BCxVglnPqdv5sd7veb
- 0az5LGS6zyVTdTbuPUu4C1ZbstPbuCBwSwe3ERpvpmdIzHtIK4G9iGIR3Seo0oWOzQvkFn8m
- 2k6H2/Delz9IcHEefSe5u0GjIA18bZEt7R2k8CMZ84vpyWOchgwXK2DNXAOzq4zwV8W4TiYi
- FiIVXfSj185vCpuE7j0ugp0AEQEAAcLBfAQYAQoAJgIbDBYhBKirxr6Vllfig9QtdXK25u9M
- WD0tBQJffU8wBQkWa0+jAAoJEHK25u9MWD0tv+0P/A47x8r+hekpuF2KvPpGi3M6rFpdPfeO
- RpIGkjQWk5M+oF0YH3vtb0+92J7LKfJwv7GIy2PZO2svVnIeCOvXzEM/7G1n5zmNMYGZkSyf
- x9dnNCjNl10CmuTYud7zsd3cXDku0T+Ow5Dhnk6l4bbJSYzFEbz3B8zMZGrs9EhqNzTLTZ8S
- Mznmtkxcbb3f/o5SW9NhH60mQ23bB3bBbX1wUQAmMjaDQ/Nt5oHWHN0/6wLyF4lStBGCKN9a
- TLp6E3100BuTCUCrQf9F3kB7BC92VHvobqYmvLTCTcbxFS4JNuT+ZyV+xR5JiV+2g2HwhxWW
- uC88BtriqL4atyvtuybQT+56IiiU2gszQ+oxR/1Aq+VZHdUeC6lijFiQblqV6EjenJu+pR9A
- 7EElGPPmYdO1WQbBrmuOrFuO6wQrbo0TbUiaxYWyoM9cA7v7eFyaxgwXBSWKbo/bcAAViqLW
- ysaCIZqWxrlhHWWmJMvowVMkB92uPVkxs5IMhSxHS4c2PfZ6D5kvrs3URvIc6zyOrgIaHNzR
- 8AF4PXWPAuZu1oaG/XKwzMqN/Y/AoxWrCFZNHE27E1RrMhDgmyzIzWQTffJsVPDMQqDfLBhV
- ic3b8Yec+Kn+ExIF5IuLfHkUgIUs83kDGGbV+wM8NtlGmCXmatyavUwNCXMsuI24HPl7gV2h n7RI
-In-Reply-To: <20240328194342.11760-3-balejk@matfyz.cz>
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-X-bounce-key: webpack.hosteurope.de;linux@leemhuis.info;1711960745;94e34c62;
-X-HE-SMSGID: 1rrDBt-0007A8-17
+Message-Id: <20240401-pm8xxx-vibrator-new-design-v8-3-6f2b8b03b4c7@quicinc.com>
+References: <20240401-pm8xxx-vibrator-new-design-v8-0-6f2b8b03b4c7@quicinc.com>
+In-Reply-To: <20240401-pm8xxx-vibrator-new-design-v8-0-6f2b8b03b4c7@quicinc.com>
+To: kernel@quicinc.com, Andy Gross <agross@kernel.org>, 
+ Bjorn Andersson <andersson@kernel.org>, 
+ Konrad Dybcio <konrad.dybcio@linaro.org>, 
+ Dmitry Torokhov <dmitry.torokhov@gmail.com>, 
+ Rob Herring <robh+dt@kernel.org>, 
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
+ Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Cc: linux-arm-msm@vger.kernel.org, linux-input@vger.kernel.org, 
+ linux-kernel@vger.kernel.org, devicetree@vger.kernel.org, 
+ Fenglin Wu <quic_fenglinw@quicinc.com>
+X-Mailer: b4 0.13-dev-83828
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1711960777; l=4499;
+ i=quic_fenglinw@quicinc.com; s=20240327; h=from:subject:message-id;
+ bh=KTKY6pvIVjfzHLnLf3c7IEWevUabtEPHzFZQuRWIpJU=;
+ b=ckVKAUUpGCn6CBayzxswtJaUk5uvqlZf+zx9drwGyK2zmg6H1U8+Ut4ZTH/kV736rxzpAAEkH
+ LCPWeKoHWJ4ACwQDB112nC5c+5VNwiXlyj3hTRLn9/A8i+MDAt/7QVQ
+X-Developer-Key: i=quic_fenglinw@quicinc.com; a=ed25519;
+ pk=BF8SA4IVDk8/EBCwlBehKtn2hp6kipuuAuDAHh9s+K4=
+X-Endpoint-Received: by B4 Relay for quic_fenglinw@quicinc.com/20240327
+ with auth_id=146
+X-Original-From: Fenglin Wu <quic_fenglinw@quicinc.com>
+Reply-To: quic_fenglinw@quicinc.com
 
-On 28.03.24 20:29, Karel Balej wrote:
-> The regressions handling manual claims that regzbot associates patches
-> fixing an issue with the report based on the occurrence of the
-> appropriate "Link:" trailers. It reasons that this does not add any
-> burden on the maintainers/bug fix authors as this is already mandated by
-> the "Submitting patches" guide. In fact however, the guide encourages
-> using "Link:" tags for related discussions or issues which the patch
-> fixes only partially, recommending "Closes:" for full resolutions.
-> 
-> Despite it not being mentioned anywhere in the "Handling regressions"
-> guide, regzbot does in fact take the "Closes:" tags into account and
-> seems to in fact treat them fully equivalently to "Link:" tags.
-> 
-> Clarify this in the regressions handling guide by always mentioning both
-> of the tags.
+From: Fenglin Wu <quic_fenglinw@quicinc.com>
 
-Many thx for this and the other patch. I had planned to do something
-like this myself, but never got around to.
+Add support for a new SPMI vibrator module which is very similar
+to the vibrator module inside PM8916 but has a finer drive voltage
+step and different output voltage range, its drive level control
+is expanded across 2 registers. The vibrator module can be found
+in following Qualcomm PMICs: PMI632, PM7250B, PM7325B, PM7550BA.
 
-There is just one thing that makes me slightly unhappy: this tells
-readers that they can use both, but leaves the question "what's the
-difference" respectively "in which situation should I use one or the
-other" unanswered.
+Signed-off-by: Fenglin Wu <quic_fenglinw@quicinc.com>
+---
+ drivers/input/misc/pm8xxx-vibrator.c | 49 +++++++++++++++++++++++++++++-------
+ 1 file changed, 40 insertions(+), 9 deletions(-)
 
-To answer that question: in a ideal world developers would use "Closes:"
-when a change resolves an issue, and "Link" when it's somehow related to
-a report, but not resolving the problem.
+diff --git a/drivers/input/misc/pm8xxx-vibrator.c b/drivers/input/misc/pm8xxx-vibrator.c
+index 3b6a2e949f30..59548cd9331c 100644
+--- a/drivers/input/misc/pm8xxx-vibrator.c
++++ b/drivers/input/misc/pm8xxx-vibrator.c
+@@ -12,9 +12,9 @@
+ #include <linux/regmap.h>
+ #include <linux/slab.h>
+ 
+-#define VIB_MAX_LEVEL_mV	(3100)
+-#define VIB_MIN_LEVEL_mV	(1200)
+-#define VIB_MAX_LEVELS		(VIB_MAX_LEVEL_mV - VIB_MIN_LEVEL_mV)
++#define VIB_MAX_LEVEL_mV(vib)	(vib->drv2_addr ? (3544) : (3100))
++#define VIB_MIN_LEVEL_mV(vib)	(vib->drv2_addr ? (1504) : (1200))
++#define VIB_MAX_LEVELS(vib)	(VIB_MAX_LEVEL_mV(vib) - VIB_MIN_LEVEL_mV(vib))
+ 
+ #define MAX_FF_SPEED		0xff
+ 
+@@ -25,6 +25,9 @@ struct pm8xxx_regs {
+ 	unsigned int drv_offset;
+ 	unsigned int drv_mask;
+ 	unsigned int drv_shift;
++	unsigned int drv2_offset;
++	unsigned int drv2_mask;
++	unsigned int drv2_shift;
+ 	unsigned int drv_en_manual_mask;
+ };
+ 
+@@ -44,6 +47,18 @@ static struct pm8xxx_regs pm8916_regs = {
+ 	.drv_en_manual_mask = 0,
+ };
+ 
++static struct pm8xxx_regs pmi632_regs = {
++	.enable_offset = 0x46,
++	.enable_mask = BIT(7),
++	.drv_offset = 0x40,
++	.drv_mask = 0xFF,
++	.drv_shift = 0,
++	.drv2_offset = 0x41,
++	.drv2_mask = 0x0F,
++	.drv2_shift = 8,
++	.drv_en_manual_mask = 0,
++};
++
+ /**
+  * struct pm8xxx_vib - structure to hold vibrator data
+  * @vib_input_dev: input device supporting force feedback
+@@ -52,6 +67,7 @@ static struct pm8xxx_regs pm8916_regs = {
+  * @regs: registers' info
+  * @enable_addr: vibrator enable register
+  * @drv_addr: vibrator drive strength register
++ * @drv2_addr: vibrator drive strength upper byte register
+  * @speed: speed of vibration set from userland
+  * @active: state of vibrator
+  * @level: level of vibration to set in the chip
+@@ -64,6 +80,7 @@ struct pm8xxx_vib {
+ 	const struct pm8xxx_regs *regs;
+ 	unsigned int enable_addr;
+ 	unsigned int drv_addr;
++	unsigned int drv2_addr;
+ 	int speed;
+ 	int level;
+ 	bool active;
+@@ -92,6 +109,16 @@ static int pm8xxx_vib_set(struct pm8xxx_vib *vib, bool on)
+ 
+ 	vib->reg_vib_drv = val;
+ 
++	if (regs->drv2_mask) {
++		if (on)
++			val = (vib->level << regs->drv2_shift) & regs->drv2_mask;
++		else
++			val = 0;
++		rc = regmap_write(vib->regmap, vib->drv2_addr, val);
++		if (rc < 0)
++			return rc;
++	}
++
+ 	if (regs->enable_mask)
+ 		rc = regmap_update_bits(vib->regmap, vib->enable_addr,
+ 					regs->enable_mask, on ? ~0 : 0);
+@@ -114,19 +141,22 @@ static void pm8xxx_work_handler(struct work_struct *work)
+ 		return;
+ 
+ 	/*
+-	 * pmic vibrator supports voltage ranges from 1.2 to 3.1V, so
++	 * pmic vibrator supports voltage ranges from MIN_LEVEL to MAX_LEVEL, so
+ 	 * scale the level to fit into these ranges.
+ 	 */
+ 	if (vib->speed) {
+ 		vib->active = true;
+-		vib->level = ((VIB_MAX_LEVELS * vib->speed) / MAX_FF_SPEED) +
+-						VIB_MIN_LEVEL_mV;
+-		vib->level /= 100;
++		vib->level = ((VIB_MAX_LEVELS(vib) * vib->speed) / MAX_FF_SPEED) +
++						VIB_MIN_LEVEL_mV(vib);
+ 	} else {
+ 		vib->active = false;
+-		vib->level = VIB_MIN_LEVEL_mV / 100;
++		vib->level = VIB_MIN_LEVEL_mV(vib);
++
+ 	}
+ 
++	if (!vib->drv2_addr)
++		vib->level /= 100;
++
+ 	pm8xxx_vib_set(vib, vib->active);
+ }
+ 
+@@ -202,7 +232,7 @@ static int pm8xxx_vib_probe(struct platform_device *pdev)
+ 
+ 	vib->enable_addr = reg_base + regs->enable_offset;
+ 	vib->drv_addr = reg_base + regs->drv_offset;
+-
++	vib->drv2_addr = reg_base + regs->drv2_offset;
+ 	/* operate in manual mode */
+ 	error = regmap_read(vib->regmap, vib->drv_addr, &val);
+ 	if (error < 0)
+@@ -256,6 +286,7 @@ static const struct of_device_id pm8xxx_vib_id_table[] = {
+ 	{ .compatible = "qcom,pm8058-vib", .data = &pm8058_regs },
+ 	{ .compatible = "qcom,pm8921-vib", .data = &pm8058_regs },
+ 	{ .compatible = "qcom,pm8916-vib", .data = &pm8916_regs },
++	{ .compatible = "qcom,pmi632-vib", .data = &pmi632_regs },
+ 	{ }
+ };
+ MODULE_DEVICE_TABLE(of, pm8xxx_vib_id_table);
 
-But we don't live in that world and I wonder if we ever reach that point
-where regzbot could act accordingly. Nevertheless I'd say it would be
-wise to write the docs towards that ideal world. E.g.: tell developers
-to uses 'Closes:', but in some places briefly hint that "'Link:' works
-for now, too".
+-- 
+2.25.1
 
-I also find the patch description a bit verbose; and it would be good to
-turn the text upside down: first outline what the patch, then maybe
-describe the "why".
 
-Ciao, Thorsten
 
