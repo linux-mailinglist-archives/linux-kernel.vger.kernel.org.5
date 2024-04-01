@@ -1,129 +1,107 @@
-Return-Path: <linux-kernel+bounces-126521-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-126528-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 65988893907
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 10:36:30 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id ECA4C89391F
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 10:43:00 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E2B62B20E70
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 08:36:27 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8B35F1F218BD
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 08:43:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3BA97613C;
-	Mon,  1 Apr 2024 08:36:21 +0000 (UTC)
-Received: from mail-io1-f69.google.com (mail-io1-f69.google.com [209.85.166.69])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C51B6DDA2;
+	Mon,  1 Apr 2024 08:42:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="LdPisCMo"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.18])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 52D2A1113
-	for <linux-kernel@vger.kernel.org>; Mon,  1 Apr 2024 08:36:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.69
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 25985B671;
+	Mon,  1 Apr 2024 08:42:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711960580; cv=none; b=hcww1R53zXn4y1xQKmiFj8HK1eJ4ut9zxDM6C3W2kujyLH8EhtbBuNqRo7YACuXu/w3Dz3pa8bpBee+MlnzraPHgpn2Mqr0fNSLbBOGEGeIcx9e88Uol/YGc45bXmm4etP1U5PMy+5hDckN7KUr4J0Q7A0uwO+962/C66EwMa6Y=
+	t=1711960972; cv=none; b=G/NIztz07wrnFKT8sqzI6w6lo5F6/MoTM7YVWdwzgj3IOh4ik6MbP2vn986uGZJ+XrbKvsGm5PhGzETpPsHfhGXRfQ1x6Q+w6t1PX+FG00bf+UuCUt3Wdz0xv+ZRsLRvd2ysTit6WOQF7YwYOUw5Ew2K06dwTcVcyhwHO/IGesg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711960580; c=relaxed/simple;
-	bh=atTYbdmCAY25zl1jksRR2HFkj9lyqDiWX5HEGlQUorQ=;
-	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
-	 Content-Type; b=h7KfsM4JQRwlZuC61Sq+tGPIYcW3hdD1elYWK98eTCpKAlNGrnUQOOzIV9e6DbHS3FvJvP+zRVJCYgFjSVTzEAJBGbnVaioD5K67ufRemLn3U7m0GkzuIBrjLevDcI2ccKNzHWnD6SEP1GnqLtAlaZrOwVj3W1IvdtHkZhld0fc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.69
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-io1-f69.google.com with SMTP id ca18e2360f4ac-7d0330ce3d4so442415439f.1
-        for <linux-kernel@vger.kernel.org>; Mon, 01 Apr 2024 01:36:19 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711960578; x=1712565378;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=BIhjoeOynb3lRObJxaxadEdrd7xsN4WBzbWXXiEPgdA=;
-        b=UZyhlAhWue7yC9i1hx2CKp9hAjCLJemhxs8q0bFZYnhgX2KytEjwv3UyNiwJ3pMi/k
-         6cxfco8umgfKAO+9WGYeMBvrrB2JPi+uJIPMqT5SYgbVPPNehJp+9TMSiZF5JH6vCIce
-         J62kMi3PJEICC8jf6RdAw6QibsmGScs8g1OjnmmCEzc5iH6KHz/zS85pi1pvuINvZBso
-         GU+FQ6iUhtbgD5KQL2/Yuy0LY358LPivWoETWkyHbOzIkmc5VaGIkXiRuB7q51vj042v
-         RIAA2XU9Pv2l+o3gwDDNTBqAqh49RVOIC/1ZmnqAJ8BXBm0PZeKVJbHF4IP/64lb1nkF
-         Wf+A==
-X-Gm-Message-State: AOJu0YyZsviT5ySyzcoD0ItkSuCrTQ/fG8TDKG+Jrq8NCuQod9V8Q+t0
-	LTAUYkSVVmF4bMBNkmuOgfjI933BTD+eqB0GvWsQl4f0z5lxhb3PGXGY9r8QJgCwkse95x3Zmog
-	0fao1d9ecIGoKZuP/hokU5Cu13LBbDpKJD/v4u3KaSIUAlccJKSf2loukLQ==
-X-Google-Smtp-Source: AGHT+IEjQodeOnmWatXcPbGclr6dGdTKZ/5enCsS12gtqGhcFtpLPq4OMQGmEBlwd9frPg0eoYd8BvECU0oPJT32FqXlSrZMFsGZ
+	s=arc-20240116; t=1711960972; c=relaxed/simple;
+	bh=AI1XIUyqxzRSpghCdKpQAxauNOiZcpgN+8YqxMVM5Ks=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=GRlMqcgXxdqPElDEuABaCUGhIUeXbhrEpvPr3mEbl6Fb9DDT5UiRHLmXtncarj7rFyr3Hvw6EBkmg0U+8xkUpbEjMpvPPwBeO1tSqjtmnBAK7dqJrhwKDp+70IE3U7+nHlGH29Bx95poIUuVkNdeI0I8EVXQyl9fMATJasDkwcQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=LdPisCMo; arc=none smtp.client-ip=198.175.65.18
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1711960970; x=1743496970;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=AI1XIUyqxzRSpghCdKpQAxauNOiZcpgN+8YqxMVM5Ks=;
+  b=LdPisCMovB+VN3g5BPPCthObRlU48PO5DqznrqkZmW+UG0mT5gL4xY6T
+   e6heQGxJjQddNGMN8eAC+s44zpjcBpJ0hiSL3o0wlb0BFNNA+QNpu0WfP
+   UCWwpwuJG867EAeoOxUDH8GRi0HQEMftblR5X2WwHAALxrO89vNJjuzIO
+   uPWlUkJZIRYoP6Jv+h3LU2Y6fEvaKvL5to/BzU2TkpDTjLHS6Yx7sLiev
+   prB+8U36EiBbTeSYsFF9JWhSwj/yNSIS3TdR8G9JTHHerGf1lyeWqZLh8
+   O4c482G/ePAkkT8i0RBE1kuyRq501w+FM7u5FVFPxtkyT4JJWRYAPmkSt
+   w==;
+X-CSE-ConnectionGUID: yM/V7+wVQ1qp3a0WFWa1UQ==
+X-CSE-MsgGUID: cxck2C41SaOMGPyXavtX3Q==
+X-IronPort-AV: E=McAfee;i="6600,9927,11030"; a="7227301"
+X-IronPort-AV: E=Sophos;i="6.07,171,1708416000"; 
+   d="scan'208";a="7227301"
+Received: from orviesa008.jf.intel.com ([10.64.159.148])
+  by orvoesa110.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Apr 2024 01:42:50 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,171,1708416000"; 
+   d="scan'208";a="18286664"
+Received: from yilunxu-optiplex-7050.sh.intel.com (HELO localhost) ([10.239.159.165])
+  by orviesa008.jf.intel.com with ESMTP; 01 Apr 2024 01:42:48 -0700
+Date: Mon, 1 Apr 2024 16:37:58 +0800
+From: Xu Yilun <yilun.xu@linux.intel.com>
+To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Cc: Moritz Fischer <mdf@kernel.org>, Wu Hao <hao.wu@intel.com>,
+	Xu Yilun <yilun.xu@intel.com>, Tom Rix <trix@redhat.com>,
+	linux-fpga@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] fpga: altera: drop driver owner assignment
+Message-ID: <ZgpyZldW+TTCbCcH@yilunxu-OptiPlex-7050>
+References: <20240327174909.519796-1-krzysztof.kozlowski@linaro.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6638:16c1:b0:47c:561:dbbf with SMTP id
- g1-20020a05663816c100b0047c0561dbbfmr368843jat.6.1711960578601; Mon, 01 Apr
- 2024 01:36:18 -0700 (PDT)
-Date: Mon, 01 Apr 2024 01:36:18 -0700
-In-Reply-To: <0000000000003ad27a0614fa0b99@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000002844af061504e249@google.com>
-Subject: Re: [syzbot] [syzbot] [kernel?] inconsistent lock state in sock_hash_delete_elem
-From: syzbot <syzbot+1dab15008502531a13d2@syzkaller.appspotmail.com>
-To: linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240327174909.519796-1-krzysztof.kozlowski@linaro.org>
 
-For archival purposes, forwarding an incoming command email to
-linux-kernel@vger.kernel.org.
+On Wed, Mar 27, 2024 at 06:49:09PM +0100, Krzysztof Kozlowski wrote:
+> Core in spi_register_driver() already sets the .owner, so driver
+> does not need to.
+> 
+> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 
-***
+Acked-by: Xu Yilun <yilun.xu@intel.com>
 
-Subject: [syzbot] [kernel?] inconsistent lock state in sock_hash_delete_elem
-Author: lizhi.xu@windriver.com
+Applied to for-next.
 
-#syz test https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git fe46a7dd189e
-
-diff --git a/net/core/sock_map.c b/net/core/sock_map.c
-index 27d733c0f65e..ae8f81b26e16 100644
---- a/net/core/sock_map.c
-+++ b/net/core/sock_map.c
-@@ -932,11 +932,12 @@ static long sock_hash_delete_elem(struct bpf_map *map, void *key)
- 	struct bpf_shtab_bucket *bucket;
- 	struct bpf_shtab_elem *elem;
- 	int ret = -ENOENT;
-+	unsigned long flags;
- 
- 	hash = sock_hash_bucket_hash(key, key_size);
- 	bucket = sock_hash_select_bucket(htab, hash);
- 
--	spin_lock_bh(&bucket->lock);
-+	spin_lock_irqsave(&bucket->lock, flags);
- 	elem = sock_hash_lookup_elem_raw(&bucket->head, hash, key, key_size);
- 	if (elem) {
- 		hlist_del_rcu(&elem->node);
-@@ -944,7 +945,7 @@ static long sock_hash_delete_elem(struct bpf_map *map, void *key)
- 		sock_hash_free_elem(htab, elem);
- 		ret = 0;
- 	}
--	spin_unlock_bh(&bucket->lock);
-+	spin_unlock_irqrestore(&bucket->lock, flags);
- 	return ret;
- }
- 
-@@ -1136,6 +1137,7 @@ static void sock_hash_free(struct bpf_map *map)
- 	struct bpf_shtab_elem *elem;
- 	struct hlist_node *node;
- 	int i;
-+	unsigned long flags;
- 
- 	/* After the sync no updates or deletes will be in-flight so it
- 	 * is safe to walk map and remove entries without risking a race
-@@ -1151,11 +1153,11 @@ static void sock_hash_free(struct bpf_map *map)
- 		 * exists, psock exists and holds a ref to socket. That
- 		 * lets us to grab a socket ref too.
- 		 */
--		spin_lock_bh(&bucket->lock);
-+		spin_lock_irqsave(&bucket->lock, flags);
- 		hlist_for_each_entry(elem, &bucket->head, node)
- 			sock_hold(elem->sk);
- 		hlist_move_list(&bucket->head, &unlink_list);
--		spin_unlock_bh(&bucket->lock);
-+		spin_unlock_irqrestore(&bucket->lock, flags);
- 
- 		/* Process removed entries out of atomic context to
- 		 * block for socket lock before deleting the psock's
--- 
-2.43.0
-
+> ---
+>  drivers/fpga/altera-ps-spi.c | 1 -
+>  1 file changed, 1 deletion(-)
+> 
+> diff --git a/drivers/fpga/altera-ps-spi.c b/drivers/fpga/altera-ps-spi.c
+> index 740980e7cef8..d0ec3539b31f 100644
+> --- a/drivers/fpga/altera-ps-spi.c
+> +++ b/drivers/fpga/altera-ps-spi.c
+> @@ -284,7 +284,6 @@ MODULE_DEVICE_TABLE(spi, altera_ps_spi_ids);
+>  static struct spi_driver altera_ps_driver = {
+>  	.driver = {
+>  		.name = "altera-ps-spi",
+> -		.owner = THIS_MODULE,
+>  		.of_match_table = of_ef_match,
+>  	},
+>  	.id_table = altera_ps_spi_ids,
+> -- 
+> 2.34.1
+> 
+> 
 
