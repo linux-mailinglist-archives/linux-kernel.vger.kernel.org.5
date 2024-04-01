@@ -1,115 +1,129 @@
-Return-Path: <linux-kernel+bounces-126520-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-126521-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 72E2B893904
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 10:28:11 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 65988893907
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 10:36:30 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 27F7D1F21771
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 08:28:11 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E2B62B20E70
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 08:36:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DC318D30B;
-	Mon,  1 Apr 2024 08:28:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="WF5Hy5Rd"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3BA97613C;
+	Mon,  1 Apr 2024 08:36:21 +0000 (UTC)
+Received: from mail-io1-f69.google.com (mail-io1-f69.google.com [209.85.166.69])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B2B7BB671
-	for <linux-kernel@vger.kernel.org>; Mon,  1 Apr 2024 08:28:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 52D2A1113
+	for <linux-kernel@vger.kernel.org>; Mon,  1 Apr 2024 08:36:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.69
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711960084; cv=none; b=QN3r8oUbUUVMvXKSyWzEQvktu0pGTePsMgLaSjryXDYvk6TlSA1vNyJMFUXjyeNYKXlehTLE2YnADmJliZo6IJLJSeioFdsnqahayT1BSYLMMoPYNa1/yNAnbNSFkcjxOP/PgAXLGVvrXwInLZLX8rWRYeS7J9lQdqQZ4oCynkY=
+	t=1711960580; cv=none; b=hcww1R53zXn4y1xQKmiFj8HK1eJ4ut9zxDM6C3W2kujyLH8EhtbBuNqRo7YACuXu/w3Dz3pa8bpBee+MlnzraPHgpn2Mqr0fNSLbBOGEGeIcx9e88Uol/YGc45bXmm4etP1U5PMy+5hDckN7KUr4J0Q7A0uwO+962/C66EwMa6Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711960084; c=relaxed/simple;
-	bh=agXxZwKpjsRdYdSSi+1mbrytFe5+985cFwiZHMvbFRE=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=VytWjD5jU6JczaYlw6zK9DqQh/DiyLtUhLO3sMm8An3VhOMdrLPZJcz6to5w7t2awQDYiKo0aVWejuWBQ7s1gXiWm4UCpeEOuXkcZSTx8XudXYNL/TDXDC2bzVIly9dRL2zOQFauC4hmltlsEZLw3akEGN/oixICG6nI+ZFS0J8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=WF5Hy5Rd; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1711960081;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=tSr/lVIfIGvT1+aJOWWnrxhQC1YOeeTlOj48kgZP5e0=;
-	b=WF5Hy5Rdvz5YP5j+O3rzGS5krBrMWEh7Pse4E+Zs/8Vt2/kGJYGcN+eopoDjvf0Uas+Ymp
-	ciaLca7cKVm32lLiiJth4Ztu0yoxKuqga9fVMIa2FdyXCtzRLC38Dwl1j4PHN1Tvmh5WlT
-	jGamoUIM9Jie4QfvOPJKaeWYN5b4VrU=
-Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
- by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-641-3vQyGHplM3Gu5U3S2v6uwg-1; Mon,
- 01 Apr 2024 04:28:00 -0400
-X-MC-Unique: 3vQyGHplM3Gu5U3S2v6uwg-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.rdu2.redhat.com [10.11.54.5])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 8C26F3802124;
-	Mon,  1 Apr 2024 08:27:59 +0000 (UTC)
-Received: from fedora.redhat.com (unknown [10.39.192.124])
-	by smtp.corp.redhat.com (Postfix) with ESMTP id 1B11C112C5;
-	Mon,  1 Apr 2024 08:27:56 +0000 (UTC)
-From: Jose Ignacio Tornos Martinez <jtornosm@redhat.com>
-To: horms@kernel.org,
-	davem@davemloft.net,
-	edumazet@google.com,
-	kuba@kernel.org,
-	pabeni@redhat.com,
-	linux-usb@vger.kernel.org,
-	netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Cc: Jose Ignacio Tornos Martinez <jtornosm@redhat.com>
-Subject: [PATCH net-next v3] net: usb: ax88179_178a: non necessary second random mac address
-Date: Mon,  1 Apr 2024 10:27:25 +0200
-Message-ID: <20240401082746.7654-1-jtornosm@redhat.com>
+	s=arc-20240116; t=1711960580; c=relaxed/simple;
+	bh=atTYbdmCAY25zl1jksRR2HFkj9lyqDiWX5HEGlQUorQ=;
+	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
+	 Content-Type; b=h7KfsM4JQRwlZuC61Sq+tGPIYcW3hdD1elYWK98eTCpKAlNGrnUQOOzIV9e6DbHS3FvJvP+zRVJCYgFjSVTzEAJBGbnVaioD5K67ufRemLn3U7m0GkzuIBrjLevDcI2ccKNzHWnD6SEP1GnqLtAlaZrOwVj3W1IvdtHkZhld0fc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.69
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-io1-f69.google.com with SMTP id ca18e2360f4ac-7d0330ce3d4so442415439f.1
+        for <linux-kernel@vger.kernel.org>; Mon, 01 Apr 2024 01:36:19 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711960578; x=1712565378;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=BIhjoeOynb3lRObJxaxadEdrd7xsN4WBzbWXXiEPgdA=;
+        b=UZyhlAhWue7yC9i1hx2CKp9hAjCLJemhxs8q0bFZYnhgX2KytEjwv3UyNiwJ3pMi/k
+         6cxfco8umgfKAO+9WGYeMBvrrB2JPi+uJIPMqT5SYgbVPPNehJp+9TMSiZF5JH6vCIce
+         J62kMi3PJEICC8jf6RdAw6QibsmGScs8g1OjnmmCEzc5iH6KHz/zS85pi1pvuINvZBso
+         GU+FQ6iUhtbgD5KQL2/Yuy0LY358LPivWoETWkyHbOzIkmc5VaGIkXiRuB7q51vj042v
+         RIAA2XU9Pv2l+o3gwDDNTBqAqh49RVOIC/1ZmnqAJ8BXBm0PZeKVJbHF4IP/64lb1nkF
+         Wf+A==
+X-Gm-Message-State: AOJu0YyZsviT5ySyzcoD0ItkSuCrTQ/fG8TDKG+Jrq8NCuQod9V8Q+t0
+	LTAUYkSVVmF4bMBNkmuOgfjI933BTD+eqB0GvWsQl4f0z5lxhb3PGXGY9r8QJgCwkse95x3Zmog
+	0fao1d9ecIGoKZuP/hokU5Cu13LBbDpKJD/v4u3KaSIUAlccJKSf2loukLQ==
+X-Google-Smtp-Source: AGHT+IEjQodeOnmWatXcPbGclr6dGdTKZ/5enCsS12gtqGhcFtpLPq4OMQGmEBlwd9frPg0eoYd8BvECU0oPJT32FqXlSrZMFsGZ
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.5
+X-Received: by 2002:a05:6638:16c1:b0:47c:561:dbbf with SMTP id
+ g1-20020a05663816c100b0047c0561dbbfmr368843jat.6.1711960578601; Mon, 01 Apr
+ 2024 01:36:18 -0700 (PDT)
+Date: Mon, 01 Apr 2024 01:36:18 -0700
+In-Reply-To: <0000000000003ad27a0614fa0b99@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000002844af061504e249@google.com>
+Subject: Re: [syzbot] [syzbot] [kernel?] inconsistent lock state in sock_hash_delete_elem
+From: syzbot <syzbot+1dab15008502531a13d2@syzkaller.appspotmail.com>
+To: linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
-If the mac address can not be read from the device registers or the
-devicetree, a random address is generated, but this was already done from
-usbnet_probe, so it is not necessary to call eth_hw_addr_random from here
-again to generate another random address.
+For archival purposes, forwarding an incoming command email to
+linux-kernel@vger.kernel.org.
 
-Indeed, when reset was also executed from bind, generate another random mac
-address invalidated the check from usbnet_probe to configure if the assigned
-mac address for the interface was random or not, because it is comparing
-with the initial generated random address. Now, with only a reset from open
-operation, it is just a harmless simplification.
+***
 
-Signed-off-by: Jose Ignacio Tornos Martinez <jtornosm@redhat.com>
----
-v3:
-  - Send the patch separately to net-next and remove fixes and stable tags.
-v2:
-  - Split the fix and the improvement in two patches and keep curly-brackets
-as Simon Horman suggests.
-v1: https://lore.kernel.org/netdev/20240325173155.671807-1-jtornosm@redhat.com/
+Subject: [syzbot] [kernel?] inconsistent lock state in sock_hash_delete_elem
+Author: lizhi.xu@windriver.com
 
- drivers/net/usb/ax88179_178a.c | 1 -
- 1 file changed, 1 deletion(-)
+#syz test https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git fe46a7dd189e
 
-diff --git a/drivers/net/usb/ax88179_178a.c b/drivers/net/usb/ax88179_178a.c
-index 8ca8ace93d9c..08c9b2ab9711 100644
---- a/drivers/net/usb/ax88179_178a.c
-+++ b/drivers/net/usb/ax88179_178a.c
-@@ -1276,7 +1276,6 @@ static void ax88179_get_mac_addr(struct usbnet *dev)
- 		dev->net->addr_assign_type = NET_ADDR_PERM;
- 	} else {
- 		netdev_info(dev->net, "invalid MAC address, using random\n");
--		eth_hw_addr_random(dev->net);
- 	}
+diff --git a/net/core/sock_map.c b/net/core/sock_map.c
+index 27d733c0f65e..ae8f81b26e16 100644
+--- a/net/core/sock_map.c
++++ b/net/core/sock_map.c
+@@ -932,11 +932,12 @@ static long sock_hash_delete_elem(struct bpf_map *map, void *key)
+ 	struct bpf_shtab_bucket *bucket;
+ 	struct bpf_shtab_elem *elem;
+ 	int ret = -ENOENT;
++	unsigned long flags;
  
- 	ax88179_write_cmd(dev, AX_ACCESS_MAC, AX_NODE_ID, ETH_ALEN, ETH_ALEN,
+ 	hash = sock_hash_bucket_hash(key, key_size);
+ 	bucket = sock_hash_select_bucket(htab, hash);
+ 
+-	spin_lock_bh(&bucket->lock);
++	spin_lock_irqsave(&bucket->lock, flags);
+ 	elem = sock_hash_lookup_elem_raw(&bucket->head, hash, key, key_size);
+ 	if (elem) {
+ 		hlist_del_rcu(&elem->node);
+@@ -944,7 +945,7 @@ static long sock_hash_delete_elem(struct bpf_map *map, void *key)
+ 		sock_hash_free_elem(htab, elem);
+ 		ret = 0;
+ 	}
+-	spin_unlock_bh(&bucket->lock);
++	spin_unlock_irqrestore(&bucket->lock, flags);
+ 	return ret;
+ }
+ 
+@@ -1136,6 +1137,7 @@ static void sock_hash_free(struct bpf_map *map)
+ 	struct bpf_shtab_elem *elem;
+ 	struct hlist_node *node;
+ 	int i;
++	unsigned long flags;
+ 
+ 	/* After the sync no updates or deletes will be in-flight so it
+ 	 * is safe to walk map and remove entries without risking a race
+@@ -1151,11 +1153,11 @@ static void sock_hash_free(struct bpf_map *map)
+ 		 * exists, psock exists and holds a ref to socket. That
+ 		 * lets us to grab a socket ref too.
+ 		 */
+-		spin_lock_bh(&bucket->lock);
++		spin_lock_irqsave(&bucket->lock, flags);
+ 		hlist_for_each_entry(elem, &bucket->head, node)
+ 			sock_hold(elem->sk);
+ 		hlist_move_list(&bucket->head, &unlink_list);
+-		spin_unlock_bh(&bucket->lock);
++		spin_unlock_irqrestore(&bucket->lock, flags);
+ 
+ 		/* Process removed entries out of atomic context to
+ 		 * block for socket lock before deleting the psock's
 -- 
-2.44.0
+2.43.0
 
 
