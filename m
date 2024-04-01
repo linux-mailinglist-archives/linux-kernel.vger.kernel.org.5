@@ -1,47 +1,74 @@
-Return-Path: <linux-kernel+bounces-126398-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-126399-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E7C668936C7
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 03:46:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id C33C48936CA
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 03:50:20 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 93953281E1C
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 01:46:44 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4895B281AA7
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 01:50:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9BEB5EDE;
-	Mon,  1 Apr 2024 01:46:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0D5AC138C;
+	Mon,  1 Apr 2024 01:50:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="vQdDr8Xo"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b="RVMozxAa"
+Received: from mail-pg1-f182.google.com (mail-pg1-f182.google.com [209.85.215.182])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B825A10E5
-	for <linux-kernel@vger.kernel.org>; Mon,  1 Apr 2024 01:46:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A967BA59
+	for <linux-kernel@vger.kernel.org>; Mon,  1 Apr 2024 01:50:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711935998; cv=none; b=sR2REGLP6/SSMs/3sr1hLFXi5zg1uOHs9PWSvghvm264DI3RSeB6WWJwe7VR4HTTnwerZGr7rkGnn0kHKGsY3F+xYEpsOunJp/b6L13CqBcpFYD3H5KO8saq19BUpLhz0OvyuRlbrWbck/UQZKM7C5XKtKm55ARAjbDH7yoZ2TA=
+	t=1711936213; cv=none; b=dmlMNEK10zPxWqm3LrcK/DJFQ7PbwRekGou04Lrrf4JFNv57E5dFOUnfsa1IyqsjVTx8msT1RTkiMlksPE6DUElv82UZgmOnjHkgL7dtdL82NietiuxrMTfzyzjUzAWrD7IK4+BkKxpb9H0xz/Mtc+/HZXsB/hGAwHbGzOQV12w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711935998; c=relaxed/simple;
-	bh=n3Cg0Rt5TLrDEys702tEPBe46QCsW8f9s+oMuGbfLkQ=;
+	s=arc-20240116; t=1711936213; c=relaxed/simple;
+	bh=rDFUral7vn5eS7vyVCG8JtxHLPByu19HqxEscA/SB4M=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Hjv5ntd49nsxaaiDCzJ7/SD0TjQs6sY3RrI6CCR+46xjYEfjS5AqldexBqRvcMvz81/BH0SYxKUG2T1Yixw6tXTVGr6MbPT8px78av9rch0WD2MjgdE7tEAYxvO2POjk5TVIUctLWXCqNcbfWsG5OAtPZS2nMoDwLnKAQ5fm2zc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=vQdDr8Xo; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0F186C433F1;
-	Mon,  1 Apr 2024 01:46:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711935998;
-	bh=n3Cg0Rt5TLrDEys702tEPBe46QCsW8f9s+oMuGbfLkQ=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=vQdDr8XofZ2TMfnX7FAAYbjaLXBv3dbgMZASp4rc9zGlBvl7QgOEiyK0q7Be/tvYD
-	 I3gu5BDlIlsdUWJXD1JlSaBUsGDuUr9ePXpisxqCfUHiBxREsRsVbXz7+JKxfNGXGn
-	 F5veV3CZtKzBW5rfiEoMBIdBw3JEHjJiNea5hp3BKQ1avNdK4+a+A2aq1qIlDRGkSQ
-	 LwA6LE/GqKQNyRpgw4Z+4RHjv0AOqHYSuloESsHSV+S0DP5g2nRUJZh7CN9GCWsJiC
-	 QxJeBdfBXZnt1rcnkJ5cbrWI9M+a9PjI7fA8TaAR2txuVRrmP+TGNnH3HNMgYPUr+z
-	 6gP7cAbvKz8dw==
-Message-ID: <4514eda4-0e32-4529-8b45-43222fbf739b@kernel.org>
-Date: Mon, 1 Apr 2024 09:46:34 +0800
+	 In-Reply-To:Content-Type; b=bZQpQ3LBwOeYHkhEuaY/q+4wjv2el0BQd/PX33s2XjBtWl8Y5NsWEAUwkqbXsGBOZGXPhS4e25a4C+TXG62D09QEgTFdU0WtqCiUj0FoZ/hU40gjSM+nv3rWXbGZuJAGds44r+7WChnn3ueJgkW5RbdKwd5lFqMDY1l6ppqDV3c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com; spf=pass smtp.mailfrom=bytedance.com; dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b=RVMozxAa; arc=none smtp.client-ip=209.85.215.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bytedance.com
+Received: by mail-pg1-f182.google.com with SMTP id 41be03b00d2f7-5ce2aada130so2190981a12.1
+        for <linux-kernel@vger.kernel.org>; Sun, 31 Mar 2024 18:50:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance.com; s=google; t=1711936210; x=1712541010; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=CRYywXE8+9lX5RrI042vy6CzRi3+MsMsXqGgBAV3yHw=;
+        b=RVMozxAalILwYSBy6ChMcwlKUCKO5SBV9uYOqx4lCQZ7iGgMogPOGHFU5MwaDX0NwE
+         gDr+YAtvMhYdmKFnhtspo+fRYlZBh3b3o/514dt+LWKkWxhUxPBG84WTNZAow11pyU0g
+         rHu38ll5x3nkUbeUBToLBZgPZ7jWslwvwj23syCQ7X67dCnpSIld6UMdgUzXw3XGeT9I
+         PB6HImvawore5KAy4a6GdFUpRjFMIbW3S4kdV9sniSzaix/tIlLuXiL+DikhmDIPhWAa
+         +a7cN8mrj+Z/uu1qwWty9NeZL7+LBTbgJJmeJ4KURzgp2LeBcitMt96bO6TCiCSoUmOE
+         7GkA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711936210; x=1712541010;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=CRYywXE8+9lX5RrI042vy6CzRi3+MsMsXqGgBAV3yHw=;
+        b=cm3Dq1f/uVdiZz3WkDI+x9h2m2fQmQfqGgwIgBqXont7TQVP9rLMmwYsDXsik9cbRA
+         L6kgrA9s+EY2/JLui30X7Q1Jz1mpfa7KEoCzDT5A1lcF/tE8rnrt06zb+Z4Q4cu+FNGc
+         M+XHc+yV9xawTg0FaSjn92iZeaNmyQt+UUtFORo3ADdc//Y6ttBRQayjLyf/8KHpCLas
+         fa/u3+s28Cvdel9ZaTEq6URbNG2ig3thL5fB3ytvqeE84azCZttW+FGjD78EJ/o/dmGn
+         Yl5pZacu0ilmLjRhi9lXMpO37Zj1nTPYLpPAuZRGlndueS5EYUy0bsZCP6rpuUlxu5hQ
+         t1fA==
+X-Forwarded-Encrypted: i=1; AJvYcCURKwQGtw71R620/TjmHfVQqxu+bRLB18ExQmTOjjnX5lzvsl0+hx9a6o6chFNQm1Srs+5Xbw3lcnPU8VpM8o18NzG1Hlone6LIqQtd
+X-Gm-Message-State: AOJu0YzWhuc0YuH0qBBxbnB8UXWFKxfoBPlSBQ6vMtKEr2yG7RyIESrR
+	IZ81DcTRkQwsm0VW9nFTHNXm9FR7boq0mhR0YK2WBly963onjZfXIcsCTBWh8Amb2lul2RXC17O
+	Qqog=
+X-Google-Smtp-Source: AGHT+IH3O3ddA0jLxC5WEKab+WbxA2X3ci2q31Bq94psQF6a23zi00KnDE6uDLGe1jAMKgE9PTe/UA==
+X-Received: by 2002:a05:6a20:d90e:b0:1a3:dc61:926a with SMTP id jd14-20020a056a20d90e00b001a3dc61926amr8809408pzb.54.1711936209967;
+        Sun, 31 Mar 2024 18:50:09 -0700 (PDT)
+Received: from [10.70.146.105] ([203.208.189.8])
+        by smtp.gmail.com with ESMTPSA id b15-20020a170902650f00b001e014627baasm7671692plk.79.2024.03.31.18.50.05
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 31 Mar 2024 18:50:09 -0700 (PDT)
+Message-ID: <3be0a35e-9e10-49b5-8fa2-71f6ddc6f704@bytedance.com>
+Date: Mon, 1 Apr 2024 09:50:02 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -49,144 +76,112 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [f2fs-dev] [PATCH v6] f2fs: prevent writing without fallocate()
- for pinned files
-To: Daeho Jeong <daeho43@gmail.com>, linux-kernel@vger.kernel.org,
- linux-f2fs-devel@lists.sourceforge.net, kernel-team@android.com
-Cc: Daeho Jeong <daehojeong@google.com>
-References: <20240329191324.3233324-1-daeho43@gmail.com>
+Subject: Re: [External] Re: [PATCH 1/2] perf sched timehist: Fix
+ -g/--call-graph option failure
 Content-Language: en-US
-From: Chao Yu <chao@kernel.org>
-In-Reply-To: <20240329191324.3233324-1-daeho43@gmail.com>
+To: Arnaldo Carvalho de Melo <acme@kernel.org>,
+ Ian Rogers <irogers@google.com>
+Cc: peterz@infradead.org, mingo@redhat.com, namhyung@kernel.org,
+ mark.rutland@arm.com, alexander.shishkin@linux.intel.com, jolsa@kernel.org,
+ adrian.hunter@intel.com, kan.liang@linux.intel.com, james.clark@arm.com,
+ linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20240328055857.383180-1-yangjihong@bytedance.com>
+ <CAP-5=fXms1noWT8PXqBu89QogcwVsvAGpxq3Q_bNUYOYL7PpKA@mail.gmail.com>
+ <2e44ae50-d4af-4788-9274-aaf345bac066@bytedance.com>
+ <CAP-5=fWDY9Aj+qHNOuwJ9yE==G=vmCzECXYEZAifOhGHX7yr6w@mail.gmail.com>
+ <ZggmNWYjBtid_hCZ@x1>
+From: Yang Jihong <yangjihong@bytedance.com>
+In-Reply-To: <ZggmNWYjBtid_hCZ@x1>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 
-On 2024/3/30 3:13, Daeho Jeong wrote:
-> From: Daeho Jeong <daehojeong@google.com>
-> 
-> In a case writing without fallocate(), we can't guarantee it's allocated
-> in the conventional area for zoned stroage. To make it consistent across
-> storage devices, we disallow it regardless of storage device types.
-> 
-> Signed-off-by: Daeho Jeong <daehojeong@google.com>
-> ---
-> v2: covered the direct io case
-> v3: covered the mkwrite case
-> v4: moved pin file check position in prepare_write_begin()
-> v5: removed unnecessary condition in f2fs_map_blocks() and disallowed
->      pre-written inodes for file pinning
-> v6: check a hole for pinned files in mkwrite()
-> ---
->   fs/f2fs/data.c | 20 ++++++++++++++++----
->   fs/f2fs/file.c | 20 +++++++++++---------
->   2 files changed, 27 insertions(+), 13 deletions(-)
-> 
-> diff --git a/fs/f2fs/data.c b/fs/f2fs/data.c
-> index c21b92f18463..1b02a9291176 100644
-> --- a/fs/f2fs/data.c
-> +++ b/fs/f2fs/data.c
-> @@ -1584,8 +1584,11 @@ int f2fs_map_blocks(struct inode *inode, struct f2fs_map_blocks *map, int flag)
->   
->   	/* use out-place-update for direct IO under LFS mode */
->   	if (map->m_may_create &&
-> -	    (is_hole || (f2fs_lfs_mode(sbi) && flag == F2FS_GET_BLOCK_DIO))) {
-> -		if (unlikely(f2fs_cp_error(sbi))) {
-> +	    (is_hole || (f2fs_lfs_mode(sbi) && flag == F2FS_GET_BLOCK_DIO &&
-> +			 !f2fs_is_pinned_file(inode)))) {
-> +		if (unlikely(f2fs_cp_error(sbi)) ||
-> +		    (f2fs_is_pinned_file(inode) &&
-> +		     flag != F2FS_GET_BLOCK_PRE_DIO)) {
->   			err = -EIO;
->   			goto sync_out;
->   		}
-> @@ -3378,6 +3381,8 @@ static int prepare_write_begin(struct f2fs_sb_info *sbi,
->   		f2fs_map_lock(sbi, flag);
->   		locked = true;
->   	} else if ((pos & PAGE_MASK) >= i_size_read(inode)) {
-> +		if (f2fs_is_pinned_file(inode))
-> +			return -EIO;
->   		f2fs_map_lock(sbi, flag);
->   		locked = true;
->   	}
-> @@ -3414,8 +3419,15 @@ static int prepare_write_begin(struct f2fs_sb_info *sbi,
->   
->   		/* hole case */
->   		err = f2fs_get_dnode_of_data(&dn, index, LOOKUP_NODE);
-> -		if (!err && dn.data_blkaddr != NULL_ADDR)
-> -			goto out;
-> +		if (!err) {
-> +			if (dn.data_blkaddr != NULL_ADDR) {
-> +				goto out;
-> +			} else if (f2fs_is_pinned_file(inode)) {
-> +				err = -EIO;
-> +				goto out;
-> +			}
-> +		}
-> +
->   		f2fs_put_dnode(&dn);
->   		f2fs_map_lock(sbi, F2FS_GET_BLOCK_PRE_AIO);
->   		WARN_ON(flag != F2FS_GET_BLOCK_PRE_AIO);
-> diff --git a/fs/f2fs/file.c b/fs/f2fs/file.c
-> index 82277e95c88f..6793c96019a2 100644
-> --- a/fs/f2fs/file.c
-> +++ b/fs/f2fs/file.c
-> @@ -57,7 +57,7 @@ static vm_fault_t f2fs_vm_page_mkwrite(struct vm_fault *vmf)
->   	struct inode *inode = file_inode(vmf->vma->vm_file);
->   	struct f2fs_sb_info *sbi = F2FS_I_SB(inode);
->   	struct dnode_of_data dn;
-> -	bool need_alloc = true;
-> +	bool need_alloc = !f2fs_is_pinned_file(inode);
->   	int err = 0;
->   	vm_fault_t ret;
->   
-> @@ -114,19 +114,17 @@ static vm_fault_t f2fs_vm_page_mkwrite(struct vm_fault *vmf)
->   		goto out_sem;
->   	}
->   
-> +	set_new_dnode(&dn, inode, NULL, NULL, 0);
->   	if (need_alloc) {
->   		/* block allocation */
-> -		set_new_dnode(&dn, inode, NULL, NULL, 0);
->   		err = f2fs_get_block_locked(&dn, page->index);
-> -	}
-> -
-> -#ifdef CONFIG_F2FS_FS_COMPRESSION
-> -	if (!need_alloc) {
-> -		set_new_dnode(&dn, inode, NULL, NULL, 0);
-> +	} else {
->   		err = f2fs_get_dnode_of_data(&dn, page->index, LOOKUP_NODE);
->   		f2fs_put_dnode(&dn);
-> +		if (f2fs_is_pinned_file(inode) && dn.data_blkaddr == NULL_ADDR)
+Hello,
 
-if (f2fs_is_pinned_file(inode) && !__is_valid_data_blkaddr(dn.data_blkaddr))
+On 3/30/24 22:48, Arnaldo Carvalho de Melo wrote:
+> On Fri, Mar 29, 2024 at 09:08:01AM -0700, Ian Rogers wrote:
+>> On Thu, Mar 28, 2024 at 8:02 PM Yang Jihong <yangjihong@bytedance.com> wrote:
+>>>
+>>> Hello,
+>>>
+>>> Sorry, due to the new email settings, the last reply email was in html
+>>> format, resend it now.
+>>>
+>>> On 3/29/24 00:02, Ian Rogers wrote:
+>>>> On Wed, Mar 27, 2024 at 10:59 PM Yang Jihong <yangjihong@bytedance.com> wrote:
+>>>>>
+>>>>> When perf-sched enables the call-graph recording, sample_type of dummy
+>>>>> event does not have PERF_SAMPLE_CALLCHAIN, timehist_check_attr() checks
+>>>>> that the evsel does not have a callchain, and set show_callchain to 0.
+>>>>>
+>>>>> Currently perf sched timehist only saves callchain when processing
+>>>>> sched:sched_switch event, timehist_check_attr() only needs to determine
+>>>>> whether the event has PERF_SAMPLE_CALLCHAIN.
+>>>>>
+>>>>> Before:
+>>>>>     # perf sched record -g true
+>>>>>     [ perf record: Woken up 0 times to write data ]
+>>>>>     [ perf record: Captured and wrote 4.153 MB perf.data (7536 samples) ]
+>>>>>     # perf sched timehist
+>>>>>     Samples do not have callchains.
+>>>>>                time    cpu  task name                       wait time  sch delay   run time
+>>>>>                             [tid/pid]                          (msec)     (msec)     (msec)
+>>>>>     --------------- ------  ------------------------------  ---------  ---------  ---------
+>>>>>       147851.826019 [0000]  perf[285035]                        0.000      0.000      0.000
+>>>>>       147851.826029 [0000]  migration/0[15]                     0.000      0.003      0.009
+>>>>>       147851.826063 [0001]  perf[285035]                        0.000      0.000      0.000
+>>>>>       147851.826069 [0001]  migration/1[21]                     0.000      0.003      0.006
+>>>>>     <SNIP>
+>>>>>
+>>>>> After:
+>>>>>     # perf sched record -g true
+>>>>>     [ perf record: Woken up 1 times to write data ]
+>>>>>     [ perf record: Captured and wrote 2.572 MB perf.data (822 samples) ]
+>>>>>     # perf sched timehist
+>>>>>                time    cpu  task name                       wait time  sch delay   run time
+>>>>>                             [tid/pid]                          (msec)     (msec)     (msec)
+>>>>>     --------------- ------  ------------------------------  ---------  ---------  ---------
+>>>>>       144193.035164 [0000]  perf[277062]                        0.000      0.000      0.000    __traceiter_sched_switch <- __traceiter_sched_switch <- __sched_text_start <- preempt_schedule_common <- __cond_resched <- __wait_for_common <- wait_for_completion
+>>>>>       144193.035174 [0000]  migration/0[15]                     0.000      0.003      0.009    __traceiter_sched_switch <- __traceiter_sched_switch <- __sched_text_start <- smpboot_thread_fn <- kthread <- ret_from_fork
+>>>>>       144193.035207 [0001]  perf[277062]                        0.000      0.000      0.000    __traceiter_sched_switch <- __traceiter_sched_switch <- __sched_text_start <- preempt_schedule_common <- __cond_resched <- __wait_for_common <- wait_for_completion
+>>>>>       144193.035214 [0001]  migration/1[21]                     0.000      0.003      0.007    __traceiter_sched_switch <- __traceiter_sched_switch <- __sched_text_start <- smpboot_thread_fn <- kthread <- ret_from_fork
+>>>>> <SNIP>
+>>>>
+>>>> This looks good, should there be a Fixes tag for the sake of backports?
+>>>>
+>>> The direct cause is commit 9c95e4ef0657 ("perf evlist: Add
+>>> evlist__findnew_tracking_event() helper"). perf-record uses
+>>> evlist__add_aux_dummy() to replace evlist__add_dummy() to add a dummy
+>>> event. The difference is that evlist__add_aux_dummy() sets
+>>> no_aux_samples to true (this is expected behavior, for dummy event, no
+>>> need to sample aux data), resulting in evsel__config() not adding the
+>>> PERF_SAMPLE_CALLCHAIN bit to dummy's sample_type.
+>>>
+>>> In summary, the direct cause is the problem introduced by commit
+>>> 9c95e4ef0657 ("perf evlist: Add evlist__findnew_tracking_event()
+>>> helper"), but the root cause is the timehist_check_attr() logic problem,
+>>> The dummy event itself does not need to have PERF_SAMPLE_CALLCHAIN, so
+>>> there is no need to check it.
+>>>
+>>>
+>>> So, maybe add fixes-tag:
+>>>
+>>> Fixes: 9c95e4ef0657 ("perf evlist: Add evlist__findnew_tracking_event()
+>>> helper")
+>>>
+>>> If it is ok, I will send v2 version with this fixes-tag.
+>>
+>> I think the maintainer can add the fixes tag when they add the reviewed-by tag:
+> 
+> I usually do this, but if the submitter does it I'll have just to check
+> that it is the right tag, helps a bit in processing.
+Okay, will send v2 version.
+
+> 
+> - Arnaldo
+>   
+>> Reviewed-by: Ian Rogers <irogers@google.com>
+Thanks for reviewed-by tag.
 
 Thanks,
-
-> +			err = -EIO;
->   	}
-> -#endif
-> +
->   	if (err) {
->   		unlock_page(page);
->   		goto out_sem;
-> @@ -3235,7 +3233,7 @@ static int f2fs_ioc_set_pin_file(struct file *filp, unsigned long arg)
->   		goto done;
->   	}
->   
-> -	if (f2fs_sb_has_blkzoned(sbi) && F2FS_HAS_BLOCKS(inode)) {
-> +	if (F2FS_HAS_BLOCKS(inode)) {
->   		ret = -EFBIG;
->   		goto out;
->   	}
-> @@ -4611,6 +4609,10 @@ static int f2fs_preallocate_blocks(struct kiocb *iocb, struct iov_iter *iter,
->   			return ret;
->   	}
->   
-> +	/* For pinned files, it should be fallocate()-ed in advance. */
-> +	if (f2fs_is_pinned_file(inode))
-> +		return 0;
-> +
->   	/* Do not preallocate blocks that will be written partially in 4KB. */
->   	map.m_lblk = F2FS_BLK_ALIGN(pos);
->   	map.m_len = F2FS_BYTES_TO_BLK(pos + count);
+Yang
 
