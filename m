@@ -1,44 +1,45 @@
-Return-Path: <linux-kernel+bounces-126806-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-126807-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id D7009893CEB
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 17:38:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id E4E81893CED
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 17:38:17 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 95C661F2202D
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 15:38:04 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9776A1F21C80
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 15:38:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5A56247772;
-	Mon,  1 Apr 2024 15:37:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B92D8481AB;
+	Mon,  1 Apr 2024 15:37:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Du60WaCv"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="F5pisUfH"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8AC8546452;
-	Mon,  1 Apr 2024 15:37:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0974F47A4C;
+	Mon,  1 Apr 2024 15:37:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711985869; cv=none; b=VYnRd+buidxnTJel4x8tLqNcMavyUOFzVNItpAp4NfMlBH/vHjJmKv8Lwi0Nvi3VJ2EoANLYLyuMDs1X4EtFF2adMxiXsvi1pm/jRur6jNvsSmyO1UKxTL1/l5UyDsd+xaollMnF2D7eHfQMXC5jvixC6Zjvip2PSQarCh+yAgk=
+	t=1711985875; cv=none; b=Ts3hglF6SNr+nH4wvRo0k/4LFXZzdk796w14zcuBRKc2rfAYiSHilFNj3VFiK6cDV4z4qceCO1lJ5YnQlitLsJHGaTdIS1sYRCLqwDhk2wOIrwago20BPjtZMSw9Msd8LUOw174qw7N4SbsxTehliHDzuU/sh59Q/WQE33uYGPE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711985869; c=relaxed/simple;
-	bh=TWR2R9S8+YN5+h3vNn0SS/MXsQWwKa64KB0+vUd7Ous=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=Ck4s9RyKMIYUUdMDrwTYZXWZwRacPBerR2tTPVQXfdPKQThpaERTpmHYL5t+G6w2y5bc6t6PQH8SXnIb1pbdzbT4snsxsDWAhVHAbkXjt1bBbC9SO2Tsvmzc1uXyXU69wHqW4syI172fQYWhslaDhDvATpctQjoVWB1vYb/rZRI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Du60WaCv; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8D723C433F1;
-	Mon,  1 Apr 2024 15:37:45 +0000 (UTC)
+	s=arc-20240116; t=1711985875; c=relaxed/simple;
+	bh=AhhaYocEjIqO9rdjPoZ6SpcUsTizNmG30kjKObWFbDs=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=AXvIm+ZBlycc368wn6oLJt0RGQOrYwNmEwojEmf7JG16EpoZ2sG2a871FEy9eZ9yGdU9pdHwV5hdnDP70r4x9bnb1YDzZ83i4iD/tCmfxxk45hE6vgWCNdDoqfqnUJb9zhr0Oxi/B11DbFGkCFgzidVSiB6CghMeRTR0T1dvxHQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=F5pisUfH; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 91426C433A6;
+	Mon,  1 Apr 2024 15:37:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711985869;
-	bh=TWR2R9S8+YN5+h3vNn0SS/MXsQWwKa64KB0+vUd7Ous=;
-	h=From:To:Cc:Subject:Date:From;
-	b=Du60WaCvSlza/o1nfoaVwJ7uL4uMUa5xPlBqYRuLjDxl+NvPqsrllTs/78eCFL4zJ
-	 vGXDS3cbpmTgrYbQyfXj4vgMFmiKjamez+pEUBT5kG/gexrtzjUV7QqkS7h/rLwpOj
-	 jBT44BNTqympo1j+fSJET/euA1EKeBvCh+FQNzrdc95oGVQXhdMlfOUO4DX/Gq04FU
-	 pUaPJRBKyfqp6HzlyxVG5dkMkRjsK8ZywLuGHQX15mUmtqLXskEkSdU/Gdq7A+TCMM
-	 Psx7axzokNcvpG6NdFJsprYcZ1WuocRFZ87VbcnY57mnpt+GeMCu8YVBbAJygPaDRB
-	 O/ClEeZ1kriUQ==
+	s=k20201202; t=1711985874;
+	bh=AhhaYocEjIqO9rdjPoZ6SpcUsTizNmG30kjKObWFbDs=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=F5pisUfHcX8D272f5z+7o5XoAc/4pYmHWE6UeQJZvBFMfsnlVijZ8xY9y6WOjubuN
+	 Zc6Hyhv46ZrZ1JkAqMxSd6sARsGT052kiWfF+XppKcwFeMpyaNFviH/KisrmFr6kNk
+	 Y1jB3Yj2B4FbWLjB3XVf1xCcMdnPrTB6idGbGIn4JBBePCurbDwCzCk8Wtt3GpwEw2
+	 JivZJivyda7nvS7W7k+l+e5S9JzF+F70Xe9w32KyApc4PyaoFL2/tp0zYWtJm6vOwE
+	 owNFtO+kb26BrgXOeoyNuu830zFVw1bhn+/b5eTOZRE9oYYf85JCGWNSCfqkrJsuJZ
+	 MjwEtMJamx+Cw==
 From: Krzysztof Kozlowski <krzk@kernel.org>
 To: Conor Dooley <conor@kernel.org>,
 	Nicolas Ferre <nicolas.ferre@microchip.com>,
@@ -55,10 +56,12 @@ To: Conor Dooley <conor@kernel.org>,
 	devicetree@vger.kernel.org,
 	linux-kernel@vger.kernel.org
 Cc: Krzysztof Kozlowski <krzk@kernel.org>
-Subject: [PATCH RFT 01/10] arm64: dts: microchip: sparx5: fix mdio reg
-Date: Mon,  1 Apr 2024 17:37:31 +0200
-Message-Id: <20240401153740.123978-1-krzk@kernel.org>
+Subject: [PATCH 02/10] arm64: dts: microchip: sparx5: correct serdes unit address
+Date: Mon,  1 Apr 2024 17:37:32 +0200
+Message-Id: <20240401153740.123978-2-krzk@kernel.org>
 X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20240401153740.123978-1-krzk@kernel.org>
+References: <20240401153740.123978-1-krzk@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -67,35 +70,29 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Correct the reg address of mdio node to match unit address.  Assume the
-reg is not correct and unit address was correct, because there is
-alerady node using the existing reg 0x110102d4.
+Unit address should match "reg" property, as reported by dtc W=1
+warnings:
 
-  sparx5.dtsi:443.25-451.5: Warning (simple_bus_reg): /axi@600000000/mdio@6110102f8: simple-bus unit address format error, expected "6110102d4"
+  sparx5.dtsi:463.27-468.5: Warning (simple_bus_reg): /axi@600000000/serdes@10808000: simple-bus unit address format error, expected "610808000"
 
-Fixes: d0f482bb06f9 ("arm64: dts: sparx5: Add the Sparx5 switch node")
 Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
-
----
-
-Not tested on hardware
 ---
  arch/arm64/boot/dts/microchip/sparx5.dtsi | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/arch/arm64/boot/dts/microchip/sparx5.dtsi b/arch/arm64/boot/dts/microchip/sparx5.dtsi
-index 24075cd91420..5d820da8c69d 100644
+index 5d820da8c69d..c3029e0abacc 100644
 --- a/arch/arm64/boot/dts/microchip/sparx5.dtsi
 +++ b/arch/arm64/boot/dts/microchip/sparx5.dtsi
-@@ -447,7 +447,7 @@ mdio2: mdio@6110102f8 {
- 			pinctrl-names = "default";
- 			#address-cells = <1>;
- 			#size-cells = <0>;
--			reg = <0x6 0x110102d4 0x24>;
-+			reg = <0x6 0x110102f8 0x24>;
+@@ -460,7 +460,7 @@ mdio3: mdio@61101031c {
+ 			reg = <0x6 0x1101031c 0x24>;
  		};
  
- 		mdio3: mdio@61101031c {
+-		serdes: serdes@10808000 {
++		serdes: serdes@610808000 {
+ 			compatible = "microchip,sparx5-serdes";
+ 			#phy-cells = <1>;
+ 			clocks = <&sys_clk>;
 -- 
 2.34.1
 
