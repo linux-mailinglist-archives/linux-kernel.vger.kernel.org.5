@@ -1,61 +1,62 @@
-Return-Path: <linux-kernel+bounces-126582-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-126585-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7916E8939E7
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 12:02:30 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 044AF8939EB
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 12:03:03 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AA3541C2080C
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 10:02:29 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6F5CD1F22092
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 10:03:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 532BA12B6F;
-	Mon,  1 Apr 2024 10:02:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 295B21754B;
+	Mon,  1 Apr 2024 10:02:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com header.b="mgLiezN4"
+	dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com header.b="Wb4xgyCn"
 Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com [67.231.149.25])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2B3281119B;
-	Mon,  1 Apr 2024 10:02:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5B47414014;
+	Mon,  1 Apr 2024 10:02:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=67.231.149.25
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711965742; cv=none; b=SC2qnXmS7Nx7nwmEMgurWJ3FFhzQShZsO69B3hR9iCNkqHPoJb3ftzOYMxbSi/ZgfjkU1FAqN3YBYInFOX9laP3dsjfapdT7wFd0krUEcYvDNZCtjHUHapOulNkKABf5UN9pGCQkAu2e8wPRSe9+pYxc+IJVWDoikCmjI97nABY=
+	t=1711965747; cv=none; b=dtvTIdglllVebGaqqCQtYd+6E6x4q9xt2Yu83ecgvLfefggJ/vR2IX9XO0pxiz56LH+olIfo7AV0E7a2CzxGmQJN+GhjHh5Qo0QCJ3LYXSafYZvlLhHu5shJft11Wz0D/O4dRpmVIVn5wvItXwqn78IdnLifGKgg8J79e87gdxs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711965742; c=relaxed/simple;
-	bh=+iI5RpOodzmJXIcv8TNfNZngHxLuBoKhh3Wx6e3sdys=;
+	s=arc-20240116; t=1711965747; c=relaxed/simple;
+	bh=s/N/0MGnnbaI2ruainzBFAMTg5WL9GCIxZMR9Vo5V2w=;
 	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=f+xtDkG6MpEbzoMYGSGWXXMPrsT+f6zQio+Uf4Ud0PtGR+BiBxchdrbzJI4phWW6qlmsinQe5ZNuOUThL3trKVSVPJ2Xop5bDDbNZJcEq5ANrO+90ZAAOYZWzLi1gPE/rbc52MvC+d8Z9ZU3UZb5tviwJ+84Z9VuaLdyjNesqyo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=opensource.cirrus.com; spf=pass smtp.mailfrom=opensource.cirrus.com; dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com header.b=mgLiezN4; arc=none smtp.client-ip=67.231.149.25
+	 MIME-Version:Content-Type; b=oJOAk5zj1by0X2/VvbKFFoxMb9jYiQFxZ532NUdHyEGXiUvvz6uZrVffG3bW1EfEILkFE9OJSnZeHn5uTkTFaINOhMa6B7JVIGtksXbH5aaH6lHdKsKmzcAP7yKcbPUfNw17phzY80aWVd5oATWX3WV7+XH6ai88fypk3SfUKt4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=opensource.cirrus.com; spf=pass smtp.mailfrom=opensource.cirrus.com; dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com header.b=Wb4xgyCn; arc=none smtp.client-ip=67.231.149.25
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=opensource.cirrus.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=opensource.cirrus.com
 Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
-	by mx0a-001ae601.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 4315mEb2029960;
+	by mx0a-001ae601.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 4319jd4e020490;
 	Mon, 1 Apr 2024 05:02:13 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=
 	from:to:cc:subject:date:message-id:in-reply-to:references
 	:mime-version:content-transfer-encoding:content-type; s=
-	PODMain02222019; bh=sQ1IUPXI8DEMkqDZPY9mFbPrpEApJsB5PFIBxvjEGNc=; b=
-	mgLiezN4B9M97zdJa2B9mJJIlEvdtKAmQvQ25qj9x0iq+Sr2H3eXRhZ0ErK9EDUo
-	sxvU5EnRtLh16L9VCgJSLyEbnIC+cGnHWEdMnxwENAd4gniY3rzGhbP/aoOJPaTc
-	ZBznDgrJvUOHrWAPMAOKURns0GBqJv8W0rU/3jcxt1VaUMk83pctHMNTnBCFXi2M
-	UgHxMt1QVl3D7aB3cBDmf2NJiQIGf9wecNhpYg2gbORMXHL6mGtOTdll6PepU5Xw
-	l934i0pbwJbuq4NKDWOAJHIZxlXM08ZnpDkH5BFfRyW3DwWtOdTTB8Q+4RQgccmm
-	BOMv5wKrFDNSTj17GWAMxQ==
-Received: from ediex02.ad.cirrus.com ([84.19.233.68])
-	by mx0a-001ae601.pphosted.com (PPS) with ESMTPS id 3x6g4xhtw6-2
+	PODMain02222019; bh=QyfgH0d6kp4gRp6HlUFJbwfDEHAE87v+bFNRFgBAiMM=; b=
+	Wb4xgyCnUQoxMSFoyqerBRoCGWcUAVRNlkSkUbIBp/nqlfKbfgIUjqHjgHLr3jMo
+	1Ry+UUmW2VPGvE4cwmLNzeYj8/XpnpJhz8Yc8KPJUkQbi9y6wHIngwWJiEm8P321
+	a63OgI//UR42usNwrsbKR3Nujl2rur9hgEiPLx1JtRygmHGv5xYNmWI7QwfQdjER
+	u4pToHG9w/E3hYG6bzMgw8+IrDvPHgzxa014Upm0zqI2Pb6BU/BMpqITHNRSjjE8
+	LIzQ+wWyMHJX6upZpJ8uJOncKMHlmSJmtAiEfhRRdhdoKdHwYuDjatq/zJEQREjj
+	OGohMwe8BWoz09wUc+uW2g==
+Received: from ediex01.ad.cirrus.com ([84.19.233.68])
+	by mx0a-001ae601.pphosted.com (PPS) with ESMTPS id 3x6g4xhtw7-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 01 Apr 2024 05:02:13 -0500 (CDT)
-Received: from ediex02.ad.cirrus.com (198.61.84.81) by ediex02.ad.cirrus.com
- (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
+	Mon, 01 Apr 2024 05:02:12 -0500 (CDT)
+Received: from ediex01.ad.cirrus.com (198.61.84.80) by ediex01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.9; Mon, 1 Apr 2024
  11:02:10 +0100
 Received: from ediswmail9.ad.cirrus.com (198.61.86.93) by
- anon-ediex02.ad.cirrus.com (198.61.84.81) with Microsoft SMTP Server id
- 15.2.1544.9 via Frontend Transport; Mon, 1 Apr 2024 11:02:10 +0100
+ ediex01.ad.cirrus.com (198.61.84.80) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.9
+ via Frontend Transport; Mon, 1 Apr 2024 11:02:10 +0100
 Received: from ediswws06.ad.cirrus.com (ediswws06.ad.cirrus.com [198.90.208.18])
-	by ediswmail9.ad.cirrus.com (Postfix) with ESMTP id 3AFD482026C;
+	by ediswmail9.ad.cirrus.com (Postfix) with ESMTP id 3FD0A820270;
 	Mon,  1 Apr 2024 10:02:10 +0000 (UTC)
 From: Richard Fitzgerald <rf@opensource.cirrus.com>
 To: <broonie@kernel.org>, <tiwai@suse.com>
@@ -63,9 +64,9 @@ CC: <linux-sound@vger.kernel.org>, <alsa-devel@alsa-project.org>,
         <linux-kernel@vger.kernel.org>, <patches@opensource.cirrus.com>,
         "Richard
  Fitzgerald" <rf@opensource.cirrus.com>
-Subject: [PATCH v2 1/3] ALSA: control: Introduce snd_ctl_find_id_mixer_locked()
-Date: Mon, 1 Apr 2024 10:02:08 +0000
-Message-ID: <20240401100210.61277-2-rf@opensource.cirrus.com>
+Subject: [PATCH v2 2/3] ASoC: soc-card: Use snd_ctl_find_id_mixer() instead of open-coding
+Date: Mon, 1 Apr 2024 10:02:09 +0000
+Message-ID: <20240401100210.61277-3-rf@opensource.cirrus.com>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20240401100210.61277-1-rf@opensource.cirrus.com>
 References: <20240401100210.61277-1-rf@opensource.cirrus.com>
@@ -77,53 +78,61 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
-X-Proofpoint-ORIG-GUID: jYmcIEZ1JebaiO2pZCLbge7bIdn-bFPC
-X-Proofpoint-GUID: jYmcIEZ1JebaiO2pZCLbge7bIdn-bFPC
+X-Proofpoint-ORIG-GUID: Ts69AvBdsGy9ubWHypuuhOhtbMX5BcX-
+X-Proofpoint-GUID: Ts69AvBdsGy9ubWHypuuhOhtbMX5BcX-
 X-Proofpoint-Spam-Reason: safe
 
-Adds wrapper function snd_ctl_find_id_mixer_locked(). This is
-identical to snd_ctl_find_id_mixer() except that it can be called
-from code that is already holding controls_rwsem.
+Use the snd_ctl_find_id_mixer[_locked]() wrapper in
+snd_soc_card_get_kcontrol[_locked]() instead of open-coding a custom
+list walk of the card controls list.
 
 Signed-off-by: Richard Fitzgerald <rf@opensource.cirrus.com>
 ---
- include/sound/control.h | 23 +++++++++++++++++++++++
- 1 file changed, 23 insertions(+)
+ sound/soc/soc-card.c | 21 ++++-----------------
+ 1 file changed, 4 insertions(+), 17 deletions(-)
 
-diff --git a/include/sound/control.h b/include/sound/control.h
-index 9a4f4f7138da..c1659036c4a7 100644
---- a/include/sound/control.h
-+++ b/include/sound/control.h
-@@ -167,6 +167,29 @@ snd_ctl_find_id_mixer(struct snd_card *card, const char *name)
- 	return snd_ctl_find_id(card, &id);
+diff --git a/sound/soc/soc-card.c b/sound/soc/soc-card.c
+index 8a2f163da6bc..0a3104d4ad23 100644
+--- a/sound/soc/soc-card.c
++++ b/sound/soc/soc-card.c
+@@ -32,33 +32,20 @@ static inline int _soc_card_ret(struct snd_soc_card *card,
+ struct snd_kcontrol *snd_soc_card_get_kcontrol_locked(struct snd_soc_card *soc_card,
+ 						      const char *name)
+ {
+-	struct snd_card *card = soc_card->snd_card;
+-	struct snd_kcontrol *kctl;
+-
+-	/* must be held read or write */
+-	lockdep_assert_held(&card->controls_rwsem);
+-
+ 	if (unlikely(!name))
+ 		return NULL;
+ 
+-	list_for_each_entry(kctl, &card->controls, list)
+-		if (!strncmp(kctl->id.name, name, sizeof(kctl->id.name)))
+-			return kctl;
+-	return NULL;
++	return snd_ctl_find_id_mixer_locked(soc_card->snd_card, name);
  }
+ EXPORT_SYMBOL_GPL(snd_soc_card_get_kcontrol_locked);
  
-+/**
-+ * snd_ctl_find_id_mixer_locked - find the control instance with the given name string
-+ * @card: the card instance
-+ * @name: the name string
-+ *
-+ * Finds the control instance with the given name and
-+ * @SNDRV_CTL_ELEM_IFACE_MIXER. Other fields are set to zero.
-+ *
-+ * This is merely a wrapper to snd_ctl_find_id_locked().
-+ * The caller must down card->controls_rwsem before calling this function.
-+ *
-+ * Return: The pointer of the instance if found, or %NULL if not.
-+ */
-+static inline struct snd_kcontrol *
-+snd_ctl_find_id_mixer_locked(struct snd_card *card, const char *name)
-+{
-+	struct snd_ctl_elem_id id = {};
-+
-+	id.iface = SNDRV_CTL_ELEM_IFACE_MIXER;
-+	strscpy(id.name, name, sizeof(id.name));
-+	return snd_ctl_find_id_locked(card, &id);
-+}
-+
- int snd_ctl_create(struct snd_card *card);
+ struct snd_kcontrol *snd_soc_card_get_kcontrol(struct snd_soc_card *soc_card,
+ 					       const char *name)
+ {
+-	struct snd_card *card = soc_card->snd_card;
+-	struct snd_kcontrol *kctl;
++	if (unlikely(!name))
++		return NULL;
  
- int snd_ctl_register_ioctl(snd_kctl_ioctl_func_t fcn);
+-	down_read(&card->controls_rwsem);
+-	kctl = snd_soc_card_get_kcontrol_locked(soc_card, name);
+-	up_read(&card->controls_rwsem);
+-
+-	return kctl;
++	return snd_ctl_find_id_mixer(soc_card->snd_card, name);
+ }
+ EXPORT_SYMBOL_GPL(snd_soc_card_get_kcontrol);
+ 
 -- 
 2.39.2
 
