@@ -1,151 +1,153 @@
-Return-Path: <linux-kernel+bounces-126482-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-126483-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A6915893884
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 09:00:55 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 229FB893886
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 09:01:23 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 29757B20DC5
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 07:00:53 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C7F5E1F213EA
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 07:01:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5CA1FB664;
-	Mon,  1 Apr 2024 07:00:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7D768B664;
+	Mon,  1 Apr 2024 07:01:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="eGLfaRcg"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.18])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=ventanamicro.com header.i=@ventanamicro.com header.b="egK3d1qg"
+Received: from mail-oi1-f181.google.com (mail-oi1-f181.google.com [209.85.167.181])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7651929AF;
-	Mon,  1 Apr 2024 07:00:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.18
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 531778C1E
+	for <linux-kernel@vger.kernel.org>; Mon,  1 Apr 2024 07:01:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711954844; cv=none; b=LfX5jq7O+sUgvW5STD8USqxdYUONIT0NDXpMFyhJQgahP0uWIEUGXJ7eVCnYttoQaT1sfLE+RiJE8Jv8geqCAuXtPfo2C/tEbIb67Wl/pLhJ4c6jkKpFyM+PyjVydEbQaEzU/Dg1aIb7D13TtivGTexuCun5phIGPrBAnZWf+J4=
+	t=1711954875; cv=none; b=DBOW5no75l9J/uYlVv0XH/RoH3307Y6iMP16amx1t7ZthFitIJgT+bQserfxiADOJiOfsZ30+UQPR2r/Iw3JwyK7D28P/qQ34KH9cL2tq94Ehwk42yM2zUajcmsErQTp9TEnlNKbuST42kbIAgf7vKnMD6rntxmUEguHmeMEqYU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711954844; c=relaxed/simple;
-	bh=LLuf8x6ofMo6yXJcAwwDMleIkfrsw+/zwHuV6rhATF4=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=JDagCoHoBN4H8kmj083Nx9o0V9URSsuvRs26ZWKC/crA9mvHLknox/GgeVLxY5Moqkjk8YetGhdJUc+GAlLkEgQqchoxtHNwVBuCE6efnYwAFUiEtjBwvOiAgmtOJde1yKFdzezPQWpDRryXHXTeHY2GxWWFNo0DALORyjnd2B0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=eGLfaRcg; arc=none smtp.client-ip=192.198.163.18
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1711954843; x=1743490843;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=LLuf8x6ofMo6yXJcAwwDMleIkfrsw+/zwHuV6rhATF4=;
-  b=eGLfaRcg3sWiGleNxtDcAt9oP+91vpDh9M4cmkM/3nLJfqbm/9i4LfRX
-   JdQugNZXMJKECHbeyxPoA+V2XmLVgHBX9H3AkWFXr3/bBymhdOB2oJFt7
-   sFQqassQ2wMOaPMr6u3RSRdLTcYi+7lu48Jr98Q+9jDrh/E6ZnU1BpVmX
-   IMFCon2aHJ6PrNaQeADasJxoNhqXjPVhkFE+TwBUtLQ898wWa58k3Pnle
-   7DmSyH3DsI6xwWyUAuJmT0p/gPGQZt8hZdo7bftG26fAt3ujQQ8bJmN7w
-   2Rmtnh+nR7CouaxdpsvPEXEOOJYDuOhYZVFDdZoiLcJLT21FgZNWYp6Sz
-   g==;
-X-CSE-ConnectionGUID: B+jZWSBlQGGMQ8wE2L99Mw==
-X-CSE-MsgGUID: s/L/fPmhTyWEgts2GvvZUg==
-X-IronPort-AV: E=McAfee;i="6600,9927,11030"; a="6906441"
-X-IronPort-AV: E=Sophos;i="6.07,171,1708416000"; 
-   d="scan'208";a="6906441"
-Received: from orviesa008.jf.intel.com ([10.64.159.148])
-  by fmvoesa112.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Apr 2024 00:00:42 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,171,1708416000"; 
-   d="scan'208";a="18256849"
-Received: from xiaoyaol-hp-g830.ccr.corp.intel.com (HELO [10.124.224.7]) ([10.124.224.7])
-  by orviesa008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Apr 2024 00:00:38 -0700
-Message-ID: <1bf2a76f-e89b-4aee-8330-7a47280704f1@intel.com>
-Date: Mon, 1 Apr 2024 15:00:34 +0800
+	s=arc-20240116; t=1711954875; c=relaxed/simple;
+	bh=0UxXqbvneBknkvUjHFo+1LfyNPC9qRMw/RiQNbhnucc=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=ul/nKzaM1BqdSjX820p778deMKhhHWi4AcRYsb6/nRJCuY53Td8ji4ZT7RDb9B+t0fDION+ZoZfVslo/KOvCWbKUct/qwFky/5N95UFbJsVMgVAbnxbvyunU0DzCnf1qgDbehJtKjG9Kd9Do8MfyB53NW0idXqjW92brT/6at+Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ventanamicro.com; spf=pass smtp.mailfrom=ventanamicro.com; dkim=pass (2048-bit key) header.d=ventanamicro.com header.i=@ventanamicro.com header.b=egK3d1qg; arc=none smtp.client-ip=209.85.167.181
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ventanamicro.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ventanamicro.com
+Received: by mail-oi1-f181.google.com with SMTP id 5614622812f47-3c36dcb305cso1708327b6e.0
+        for <linux-kernel@vger.kernel.org>; Mon, 01 Apr 2024 00:01:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ventanamicro.com; s=google; t=1711954873; x=1712559673; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=CR3iwkHe4Np8Vng7wVF9RKBPosLNIp8pBnmcewjQ5aU=;
+        b=egK3d1qg4W4lD4JFjbAq+9xx5AxNe4XE4FYQiK9xs7kThX7CJlt+53zfl2w1jpiSgB
+         wCjDC+X0oc/rI9qmtrACpQrcllt3LOCQo2XkuCCnq7L9E8BQ9OJyCHJbm0QOxLorJ6TH
+         fWt0nLTWVvtHMytpmaJvbuNo15RXQgXekAcwAqkddvFwBVwF9LrPZh13SytEfQv2Emss
+         zn3bfybg21YGOh87dab2DZpFongr7rK65dCr0mOYyfJ9nvBIDt+dCNpYiCAQKruKcx9N
+         haPaQ+6Vdl5jnC0/thwUEph6pgG8sb/mV9wbwJyJm6jtQGBm5JmxpfXGKHDzyY++zKOP
+         BC9w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711954873; x=1712559673;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=CR3iwkHe4Np8Vng7wVF9RKBPosLNIp8pBnmcewjQ5aU=;
+        b=JGypd52AFMpBNmo8KsnE96k+FNlSOWLOKBckS8u+1xFHkg5kfVZqivMvGYIyOo9NP6
+         /JaCS0Vzfx06SQLDc8qceuZUtgLLJ5qDaTI2u3vcJyAGiCDK/BjVlz0+liAqSBZhAzhd
+         QVF99503aQCIcNnHemlc/5GNukPHePuQLkuuu9HyiLA1rOMpo6809q6GFjOdrr+9+tLG
+         dJjYaUUPwzaoY4MXZdZAaO5DAK+My/LOHaax3zNhp73upqMs7wkbL53bFkeLmy01m3fO
+         IPlG3HjHxgCV0yYsWvivZEigaW8f2yFKRhbNphqKzAsBrVwQ3tmGSooi5+/1xr9Fl3gn
+         vLCQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVNVOLt9tOc3wyhxlYGIloP7FHT5pRyE6gNEab5G5BTVbyFxVh06oxRtx8U+y0uKAUD7uFAi+EBsaB/+TPA3Bws+wpezRETavD5FQ1z
+X-Gm-Message-State: AOJu0YwDiPeGJnoc/ajQE7RmcfH7phXWY0eiQn0E+ZRP7AWo6mBJ1MLj
+	1HP+nYL9+0RjKqSQXtdnZluilSb7wC7WGpE++m8OMhlxiYCWgHbIavRbfT8jfcc=
+X-Google-Smtp-Source: AGHT+IHNVXbtf4nFi0CjQtWkGz+KO+8YX+Nli7rw8a7TjQYiIWVV4PVHNMdRC2/hIgsRYyvZbdhOXQ==
+X-Received: by 2002:a05:6808:309c:b0:3c3:c157:5dc7 with SMTP id bl28-20020a056808309c00b003c3c1575dc7mr3557976oib.13.1711954873346;
+        Mon, 01 Apr 2024 00:01:13 -0700 (PDT)
+Received: from sunil-laptop ([106.51.187.230])
+        by smtp.gmail.com with ESMTPSA id l7-20020a056808020700b003c4dac3b55dsm1018840oie.3.2024.04.01.00.01.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 01 Apr 2024 00:01:12 -0700 (PDT)
+Date: Mon, 1 Apr 2024 12:30:56 +0530
+From: Sunil V L <sunilvl@ventanamicro.com>
+To: Haibo Xu <haibo1.xu@intel.com>
+Cc: xiaobo55x@gmail.com, ajones@ventanamicro.com,
+	Paul Walmsley <paul.walmsley@sifive.com>,
+	Palmer Dabbelt <palmer@dabbelt.com>,
+	Albert Ou <aou@eecs.berkeley.edu>,
+	"Rafael J. Wysocki" <rafael@kernel.org>,
+	Len Brown <lenb@kernel.org>, Robert Moore <robert.moore@intel.com>,
+	Conor Dooley <conor.dooley@microchip.com>,
+	Guo Ren <guoren@kernel.org>,
+	Alexandre Ghiti <alexghiti@rivosinc.com>,
+	Greentime Hu <greentime.hu@sifive.com>,
+	Anup Patel <apatel@ventanamicro.com>, Zong Li <zong.li@sifive.com>,
+	Sami Tolvanen <samitolvanen@google.com>,
+	Jisheng Zhang <jszhang@kernel.org>, Baoquan He <bhe@redhat.com>,
+	=?utf-8?B?Q2zDqW1lbnQgTMOpZ2Vy?= <cleger@rivosinc.com>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	Chen Jiahao <chenjiahao16@huawei.com>,
+	Arnd Bergmann <arnd@arndb.de>, James Morse <james.morse@arm.com>,
+	Evan Green <evan@rivosinc.com>,
+	Samuel Holland <samuel.holland@sifive.com>,
+	Tony Luck <tony.luck@intel.com>, Ard Biesheuvel <ardb@kernel.org>,
+	Yuntao Wang <ytcoode@gmail.com>,
+	Dan Williams <dan.j.williams@intel.com>,
+	Alison Schofield <alison.schofield@intel.com>,
+	Dave Hansen <dave.hansen@linux.intel.com>,
+	linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
+	linux-acpi@vger.kernel.org, acpica-devel@lists.linux.dev
+Subject: Re: [PATCH v2 4/6] ACPI: NUMA: Make some NUMA related parse
+ functions common
+Message-ID: <ZgpbqAraGbQqZv5d@sunil-laptop>
+References: <cover.1709780590.git.haibo1.xu@intel.com>
+ <c8b86184d9e6d078e9b9949d4837bc6e392c3f52.1709780590.git.haibo1.xu@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v6 6/9] KVM: nVMX: Use macros and #defines in
- vmx_restore_vmx_basic()
-To: Sean Christopherson <seanjc@google.com>,
- Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>,
- Borislav Petkov <bp@alien8.de>, Dave Hansen <dave.hansen@linux.intel.com>,
- x86@kernel.org, Paolo Bonzini <pbonzini@redhat.com>,
- Andy Lutomirski <luto@kernel.org>, Peter Zijlstra <peterz@infradead.org>
-Cc: linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
- Shan Kang <shan.kang@intel.com>, Kai Huang <kai.huang@intel.com>,
- Xin Li <xin3.li@intel.com>
-References: <20240309012725.1409949-1-seanjc@google.com>
- <20240309012725.1409949-7-seanjc@google.com>
-Content-Language: en-US
-From: Xiaoyao Li <xiaoyao.li@intel.com>
-In-Reply-To: <20240309012725.1409949-7-seanjc@google.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <c8b86184d9e6d078e9b9949d4837bc6e392c3f52.1709780590.git.haibo1.xu@intel.com>
 
-On 3/9/2024 9:27 AM, Sean Christopherson wrote:
-> From: Xin Li <xin3.li@intel.com>
+On Thu, Mar 07, 2024 at 04:47:56PM +0800, Haibo Xu wrote:
+> The acpi_numa_slit_init(), acpi_numa_memory_affinity_init()
+> and acpi_parse_cfmws() functions are common enough to be used
+> on platforms that support ACPI_NUMA(x86/arm64/loongarch).
+> Remove the condition to avoid long defined(CONFIG_ARCH) check
+> when new platform(riscv) support was enabled.
 > 
-> Use macros in vmx_restore_vmx_basic() instead of open coding everything
-> using BIT_ULL() and GENMASK_ULL().  Opportunistically split feature bits
-> and reserved bits into separate variables, and add a comment explaining
-> the subset logic (it's not immediately obvious that the set of feature
-> bits is NOT the set of _supported_ feature bits).
-> 
-> Cc: Shan Kang <shan.kang@intel.com>
-> Cc: Kai Huang <kai.huang@intel.com>
-> Signed-off-by: Xin Li <xin3.li@intel.com>
-> [sean: split to separate patch, write changelog, drop #defines]
-> Signed-off-by: Sean Christopherson <seanjc@google.com>
-
-Reviewed-by: Xiaoyao Li <xiaoyao.li@intel.com>
-
+> Suggested-by: Sunil V L <sunilvl@ventanamicro.com>
+> Signed-off-by: Haibo Xu <haibo1.xu@intel.com>
 > ---
->   arch/x86/kvm/vmx/nested.c | 25 ++++++++++++++++++-------
->   1 file changed, 18 insertions(+), 7 deletions(-)
+>  drivers/acpi/numa/srat.c | 8 --------
+>  1 file changed, 8 deletions(-)
 > 
-> diff --git a/arch/x86/kvm/vmx/nested.c b/arch/x86/kvm/vmx/nested.c
-> index 82a35aba7d2b..4ad8696c25af 100644
-> --- a/arch/x86/kvm/vmx/nested.c
-> +++ b/arch/x86/kvm/vmx/nested.c
-> @@ -1228,21 +1228,32 @@ static bool is_bitwise_subset(u64 superset, u64 subset, u64 mask)
->   
->   static int vmx_restore_vmx_basic(struct vcpu_vmx *vmx, u64 data)
->   {
-> -	const u64 feature_and_reserved =
-> -		/* feature (except bit 48; see below) */
-> -		BIT_ULL(49) | BIT_ULL(54) | BIT_ULL(55) |
-> -		/* reserved */
-> -		BIT_ULL(31) | GENMASK_ULL(47, 45) | GENMASK_ULL(63, 56);
-> +	const u64 feature_bits = VMX_BASIC_DUAL_MONITOR_TREATMENT |
-> +				 VMX_BASIC_INOUT |
-> +				 VMX_BASIC_TRUE_CTLS;
-> +
-> +	const u64 reserved_bits = GENMASK_ULL(63, 56) |
-> +				  GENMASK_ULL(47, 45) |
-> +				  BIT_ULL(31);
-> +
->   	u64 vmx_basic = vmcs_config.nested.basic;
->   
-> -	if (!is_bitwise_subset(vmx_basic, data, feature_and_reserved))
-> +	BUILD_BUG_ON(feature_bits & reserved_bits);
-> +
-> +	/*
-> +	 * Except for 32BIT_PHYS_ADDR_ONLY, which is an anti-feature bit (has
-> +	 * inverted polarity), the incoming value must not set feature bits or
-> +	 * reserved bits that aren't allowed/supported by KVM.  Fields, i.e.
-> +	 * multi-bit values, are explicitly checked below.
-> +	 */
-> +	if (!is_bitwise_subset(vmx_basic, data, feature_bits | reserved_bits))
->   		return -EINVAL;
->   
->   	/*
->   	 * KVM does not emulate a version of VMX that constrains physical
->   	 * addresses of VMX structures (e.g. VMCS) to 32-bits.
->   	 */
-> -	if (data & BIT_ULL(48))
-> +	if (data & VMX_BASIC_32BIT_PHYS_ADDR_ONLY)
->   		return -EINVAL;
->   
->   	if (vmx_basic_vmcs_revision_id(vmx_basic) !=
-
+> diff --git a/drivers/acpi/numa/srat.c b/drivers/acpi/numa/srat.c
+> index 1946431c0eef..938c4adb7ec4 100644
+> --- a/drivers/acpi/numa/srat.c
+> +++ b/drivers/acpi/numa/srat.c
+> @@ -219,7 +219,6 @@ int __init srat_disabled(void)
+>  	return acpi_numa < 0;
+>  }
+>  
+> -#if defined(CONFIG_X86) || defined(CONFIG_ARM64) || defined(CONFIG_LOONGARCH)
+>  /*
+>   * Callback for SLIT parsing.  pxm_to_node() returns NUMA_NO_NODE for
+>   * I/O localities since SRAT does not list them.  I/O localities are
+> @@ -351,13 +350,6 @@ static int __init acpi_parse_cfmws(union acpi_subtable_headers *header,
+>  	(*fake_pxm)++;
+>  	return 0;
+>  }
+> -#else
+> -static int __init acpi_parse_cfmws(union acpi_subtable_headers *header,
+> -				   void *arg, const unsigned long table_end)
+> -{
+> -	return 0;
+> -}
+> -#endif /* defined(CONFIG_X86) || defined (CONFIG_ARM64) */
+>  
+>  static int __init acpi_parse_slit(struct acpi_table_header *table)
+>  {
+LGTM.
+Reviewed-by: Sunil V L <sunilvl@ventanamicro.com>
 
