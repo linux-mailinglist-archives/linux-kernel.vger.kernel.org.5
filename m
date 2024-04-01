@@ -1,199 +1,260 @@
-Return-Path: <linux-kernel+bounces-126394-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-126396-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7277A8936BB
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 03:32:57 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3315B8936BF
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 03:40:23 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 23231281E07
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 01:32:56 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5C79F281A28
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 01:40:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D004E138A;
-	Mon,  1 Apr 2024 01:32:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A6ADD1C33;
+	Mon,  1 Apr 2024 01:40:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=nxp.com header.i=@nxp.com header.b="ipnNUYDe"
-Received: from EUR02-DB5-obe.outbound.protection.outlook.com (mail-db5eur02on2091.outbound.protection.outlook.com [40.107.249.91])
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="WMYJ3k1I"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 645B3623;
-	Mon,  1 Apr 2024 01:32:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.249.91
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711935171; cv=fail; b=Esu1syy35/m+o9FNY0wX12LaNlSFXW3mJMOokUu0I9bHJuu8hPOfWedFBGmxmNDDN7rVrKDtv2isnTjc+z9bOo07BIeKeTnduECA4qwK6Och2C+DpBWXxxkgMoPv/fFFB3uDv8HooSWoZFM7e3VoJJxLf17y2J8NfY5c6GTow7g=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711935171; c=relaxed/simple;
-	bh=gMmWHikCaYYVmeCC1zlyVBA7wbCALliNaYxog7ahgjE=;
-	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=c1PUbP5MESCNsY97ZsgamFpF4KTkyP6HsC7w+uaWQmZrq/M3Yo053Z/JKOAEWPAsQMrVDw9cIVENjq5OZHRgYXioREULC0TveM5sOGYX5AJZgyHPZjpZS5BdGnn41rhnCCiiTmRywz8Cq6pW/c1fmqFc/ZfnpUVOGaOOEJFIPf0=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com; spf=pass smtp.mailfrom=nxp.com; dkim=pass (1024-bit key) header.d=nxp.com header.i=@nxp.com header.b=ipnNUYDe; arc=fail smtp.client-ip=40.107.249.91
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nxp.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=FDMXlRX9jU7RsyVNKcqlvkvzlCuXYqzsE4SKDZ9GeF4vY1d3jePxrt+xoVurMfCP0pkHXsDxQOEWsO/2tODjZgu2BHkGqHUIeqo88Bk1ktJmKnBgTG19k2dqOI/H6PbW4U7mrbp3cz/eg19eyH3PCL6XHb7xhNSyMiUlRqBqZ0Jx/4HE0g3yy1OK/qaGK4cKE+WmuTqHKLvlEtpWC8IMP+2X4hVx3T2X0Q8xj2SB0si9kD90mXD7SVCVHtDhVJsD0zT3KnhbFFf7RpgGK18UsnrwrF0yMf+vThvVF24EzVSMZz1BbnfJWsWrkrKJhYgdGZuMV3L4g6Bhvg7+cfa3og==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=gMmWHikCaYYVmeCC1zlyVBA7wbCALliNaYxog7ahgjE=;
- b=PtMiwDIsX1BgUWoXFnhPBaYh4RWSBcNZAdOIYyVdAcLXNxugLZ3HgEDK1j75aFo8mpcrs4qIom9etkRyovZo4nq+7Qrn+cTnRDZ64Rc4NVTIE3IjrZkGT32TPJKipKgH1hjAgShOykiAmCoAIVWKs55ACdynz2moMHdKRJfanG/8WQtVe1SiypxafUZeeNc4hlZ+WyTX5lR0BS2yGIvKcLZQBaSXeHCvf33YfmRAPVg9X4u053x8hub/dD3DLDXbOIhgdyi2kCVpCidXSrGwTPFbuVi52oUsi0uFmyJwkkM0tRcXTyeK++ukgfxtwEVVuDYEIQ7eRtZQ/TO/7RbUFw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=gMmWHikCaYYVmeCC1zlyVBA7wbCALliNaYxog7ahgjE=;
- b=ipnNUYDepDLAQLTzI/dspRtf4w5llcXQMfXWuS033+hrFwXyv7vtGp13zSandq4vdkxevN7IxowpAxOtM4GUGLKw24BK7xpCSBccjxKPYQfFPFsHxIABnnH3zuV5sIM5ijUtHxayOY8YRlzhExhWQS/qU+vjMouJZSfHvMTBobg=
-Received: from DU0PR04MB9417.eurprd04.prod.outlook.com (2603:10a6:10:358::11)
- by AS8PR04MB8152.eurprd04.prod.outlook.com (2603:10a6:20b:3fb::20) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7409.46; Mon, 1 Apr
- 2024 01:32:45 +0000
-Received: from DU0PR04MB9417.eurprd04.prod.outlook.com
- ([fe80::d30b:44e7:e78e:662d]) by DU0PR04MB9417.eurprd04.prod.outlook.com
- ([fe80::d30b:44e7:e78e:662d%4]) with mapi id 15.20.7386.037; Mon, 1 Apr 2024
- 01:32:45 +0000
-From: Peng Fan <peng.fan@nxp.com>
-To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>, "Peng Fan (OSS)"
-	<peng.fan@oss.nxp.com>, Michael Turquette <mturquette@baylibre.com>, Stephen
- Boyd <sboyd@kernel.org>, Rob Herring <robh@kernel.org>, Krzysztof Kozlowski
-	<krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>,
-	Shawn Guo <shawnguo@kernel.org>, Sascha Hauer <s.hauer@pengutronix.de>,
-	Pengutronix Kernel Team <kernel@pengutronix.de>, Fabio Estevam
-	<festevam@gmail.com>, Abel Vesa <abelvesa@kernel.org>
-CC: "linux-clk@vger.kernel.org" <linux-clk@vger.kernel.org>,
-	"devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-	"imx@lists.linux.dev" <imx@lists.linux.dev>,
-	"linux-arm-kernel@lists.infradead.org"
-	<linux-arm-kernel@lists.infradead.org>, "linux-kernel@vger.kernel.org"
-	<linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH v5 0/4] Add support i.MX95 BLK CTL module clock features
-Thread-Topic: [PATCH v5 0/4] Add support i.MX95 BLK CTL module clock features
-Thread-Index: AQHafb8D/Pe+n4NV2E+w7m5684C/SbFI1+eAgAjyXbCAAIR9gIAAXjRA
-Date: Mon, 1 Apr 2024 01:32:45 +0000
-Message-ID:
- <DU0PR04MB94176BF213F73C9B41849019883F2@DU0PR04MB9417.eurprd04.prod.outlook.com>
-References: <20240324-imx95-blk-ctl-v5-0-7a706174078a@nxp.com>
- <ce1b814a-6b1b-4773-ad29-b572d00f56c9@linaro.org>
- <DU0PR04MB9417426E1F8EA9560213E58488382@DU0PR04MB9417.eurprd04.prod.outlook.com>
- <e9809695-760e-42d2-a79c-bc2d4debdc32@linaro.org>
-In-Reply-To: <e9809695-760e-42d2-a79c-bc2d4debdc32@linaro.org>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: DU0PR04MB9417:EE_|AS8PR04MB8152:EE_
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info:
- UB2unewymGvmjLfLOYoriOJdW1KM4B3/njnANjjdH6ZBo9ALvU9S/Z9QOMRjL7ye/VqAIq6YPQQFPX+Aact5IPl8vNteNugYtNIPHwD5mE1uu4hXhPQu0gXCfbAkNKr9eWjzXoeJvXuWA1Aw7xwFXqnYd2vy/uv0Nfg127DNiqTDwHzCCix1uglYtxADGUP/XfqUjI4UQhnjjKxcO76Y0CothEiJJtYUJaWX9H4hfNcqItUu1wViuJurjWYCNecc/RIohmsTm9D+wfCKmXbsbFpwuKjsQCsOwBLkhqB/wDhqMxjtLh/feLpPVKJejUd3LlGRLR6Sp80fQHHXKFvnc+ScLWbilcW9uJVMxg0d5QaIyCS8nMjX0cQwUM+zfjAKSvtUfjImK4yFH97RpiFtY/c6sTDRYhwDv+T07086ng6TjZom/ONbngJuKYJsmX3D/4m5qhDbRhGZ5MZnYY4BTfsY2HO69k97T2LMcYkPjslBb9Z+2+5xFjoGYyiMjwrukEl4lYwso1j3YtMroEr5wsmmCmx4U7DHSE7kFgl98kanDOSxv5qInj5akSuvUc3ROQfLuw+JmctqM4yUqLhZTZjMx1tVtCLQffZkdzFn2A/7sddtwRc63/0PmmeqfYe+1Qu3yqK0EABfaJPdmov0H9945U28CSO7uSBY5PRi+aRDRip/vh6GgZAbqpW6oztF00GYkDwcalWMhuqo6COYYg==
-x-forefront-antispam-report:
- CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DU0PR04MB9417.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366007)(7416005)(376005)(1800799015)(921011);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0:
- =?us-ascii?Q?a5aRqVXQDGFZ708b8PQgKMuZ8wVPEPGNeW1MHIcVaZ/7kD8RS/+d8594H0g0?=
- =?us-ascii?Q?6mgJLZvLtxYOlqB112Vt7IjMdeP+4ZIrdea65aANuTOuzXi7oa1npjNzBZK0?=
- =?us-ascii?Q?1l7tC2Y590yUKTTAc7zRKZVMriNB1iCdKNs3ryJImTGY3aPcuuJw/N3nHFw/?=
- =?us-ascii?Q?BOqKz2CrQSkWGmnH8oSKCzycBTlJKPfjbvTNg8prICeolXLU/dIV6UUMRLBa?=
- =?us-ascii?Q?VDJ82Hiln7niH3YJZ2lAbukidRXmkfrgYlqr5FikDDM3Zog5OcrgZ6pxpJrF?=
- =?us-ascii?Q?t22/OCt9nGE0UfO3Z52xqVGmEJF1VaZlB8m5mmENvFse6PT/HLbCZ4QCoMKu?=
- =?us-ascii?Q?E+oaYQjzJmY9BBsjJycqia9QpkD0anu3txU1c/+60jgIsIvtsoGlR2Ofdu/m?=
- =?us-ascii?Q?IJ2taKDg9vlBaJLoWTbc97QEIIG5AelvbKgSatD9Jz4vwMALPsy+t3gN9NrM?=
- =?us-ascii?Q?ADgoX7XQLpE2gfwQH5YGkGxOWWlrw4VfDrRMOXmUhZcjG2VJZ6bKeC4XU79r?=
- =?us-ascii?Q?5oIpfVIQur6atIeYqdlhWA+zcDFQhxDNAWTJyIjhBX9HreWf3h9umtpa2GzJ?=
- =?us-ascii?Q?gmEzTi7DHNThkeGev3Zea4ApX5NGY+YDTYkw7ZUqhXm7MSS1JH9B2KsqQcOz?=
- =?us-ascii?Q?IlSrkHogbD/De86MDudKit6+2H1XU/C0b17WuRLQPIL1Upts4tweqtffsUQL?=
- =?us-ascii?Q?tNUkBbXovFE+wyFXXx8HoGdCTijys+sJclJ0e2Lg3zfqPCzvnrWOzCZ1VCGu?=
- =?us-ascii?Q?qCyP+v7CPso5NrSwCLU9RrvIm/FQfWj6sLQMYYOGBPy11VpmPF2Fj84P9Tkp?=
- =?us-ascii?Q?aHYLSylAJAcMWBtJNXsYo1bIn2UF8N5PELiQKOJWpc5qxAlfePlQwlOp8Phk?=
- =?us-ascii?Q?2/9/MZ8q8lALWKUZM7U4W0JVlbdXNaHoIk4tQvcR4Oro9OsOKUY3e9vf4jMD?=
- =?us-ascii?Q?WdCf279GET6dBQAjBweOIzFpdoUlcykXhV2csh0wWG1qO20lJbCMlVRyWG6Y?=
- =?us-ascii?Q?QIT6wibVx46XRXjNdcr93W1DrRuPXP5Iq52VfuKVJrBmdA0ctiB1gTu8OBpE?=
- =?us-ascii?Q?qkaanmyEhMAMAnnJ9/I8yWkXS2pwtA5LE/x7uwHA0I2r+3NrfezSnzu3xSAV?=
- =?us-ascii?Q?saP3yackwD6HguzYArZD96DOOmsSWZjOaq0e+0rp8k57IwtFQYgY8XhlPacG?=
- =?us-ascii?Q?ooNYoICpLr9r6y70NHOHbNYTWD8ujFrwzDeVQ6O7RNubdPYeRnGVl7ayHXWm?=
- =?us-ascii?Q?MdcRPLeXgzk8J8koeY7GOw4lxuafsXxPdZYaagI6D2BLuIkS801UaAQURY8v?=
- =?us-ascii?Q?6MYarCrPhS2hgDJkcGLswP7+3tOjengsKtmygDDY+f0IJa/LDlGHbTuCduEf?=
- =?us-ascii?Q?Ga1sbRkJ29jZfj7Q1DA6ZLoNqFn59YIVZqybCrVNgmM8EaSkZBFIEQJlk5Ma?=
- =?us-ascii?Q?D4TS2g4mdcVzfjnGVA1DoRZnn1lIIwnVi7gvywNtD3rQnnrKztq/wx0V7O0n?=
- =?us-ascii?Q?XkNETTEa5SN9yM133jCcGYHjNQyHv/Spw7RVL3LoKZeJTeFNbXvrALp4GArY?=
- =?us-ascii?Q?oGI+tpSb9i5C/Nz/9aU=3D?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C50E6623
+	for <linux-kernel@vger.kernel.org>; Mon,  1 Apr 2024 01:40:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1711935615; cv=none; b=MyBSgYSIe7VHZhOI2qh+OAlo/58bq/IOxdJOoPGT9urThwTRxZ6B9Tc3TKD8lKZStp42JYZ5UVDIIGaNk5mVfb78/dPooCfBrFlz82F/xlnsj62hzfZjKNaI1MeAxf0QpwLSHQNdXITKmv5wNZ8322dC4U0H7K3jo9PzqNqg6bY=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1711935615; c=relaxed/simple;
+	bh=CVvjRkKEQ1K8GZwwAs6XND1VVBqZ3gscg8qbSw1O88Y=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=HZmXc3tsmYgO4rVRrIx6NytKB6eic2RHCrL41rT9KRFguD6l/jOq7D9KxVeseOAhSoiC4wlFjKB3YZM1dazTxdpaILvGLXNW7oLXuBNbs4NYijEg2zY12PCURG9gULzEAbGsrR8ME+QLwO/CV6rXlcsxWb9eh/1dpQn3OudOF8k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=WMYJ3k1I; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1711935612;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=IBzwZVE6/XZJhG9lhNuBo21FIhFKpdiDUdcBLxSjjtE=;
+	b=WMYJ3k1ILdFbt2GENEVzuqZV18/nsZqZf1+z07C+70xCssHf2lsBW61NZdVrb5yoOhr2AO
+	M2/2fe0y3lVRN5FHZYP4Zixgx2XoY16mOfQwTFL7hsjDahRxHxdcrq4DqsFSGHVKPngvvm
+	sLl41Qd4vhPESnGG68hIsY6EWIe/Qps=
+Received: from mail-pl1-f199.google.com (mail-pl1-f199.google.com
+ [209.85.214.199]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-407-L3GGjErXNhicZWCvmiudKw-1; Sun, 31 Mar 2024 21:40:11 -0400
+X-MC-Unique: L3GGjErXNhicZWCvmiudKw-1
+Received: by mail-pl1-f199.google.com with SMTP id d9443c01a7336-1e20573ef3dso23506335ad.1
+        for <linux-kernel@vger.kernel.org>; Sun, 31 Mar 2024 18:40:11 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711935610; x=1712540410;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=IBzwZVE6/XZJhG9lhNuBo21FIhFKpdiDUdcBLxSjjtE=;
+        b=B6zKbWxbUwwM1B/Dk5ZGTNwM7fKtxeG+1nNWkM8D3N1aR8xxU8kCGk5gXUJVF4poG9
+         86u4l/yxgD9mrDOcR64OCLPnwl6DxGcE79e23Qly6KHVnS0AQpApGc4jljCQXOUasLJw
+         Dee3/EPBFB5Vhb25g7n8G+6XiMY6cmqbyV3g5k7xy5N9aRaVniySPgnIM439LfR9grKs
+         4J2xRAI4QxlysIueI3VbroRBb+9z/aDhJaslcoPB3tLuZWAAhifwO5p64wfgnwC8eqZ5
+         HxnkeqU2VKssHdHR4Na4f/ssr6c89MBxStK8Yanq5rVus2GZo+O+Kd8nNjcah4NS4Uqe
+         WNpQ==
+X-Forwarded-Encrypted: i=1; AJvYcCV+vBtmkOyLCyBLEH339Aut/uUgjV1ELqxhf5P9NtZEOB76DFNV+IQVzbK/qPUBiQvLPcBkb13jZXL0LzWbAsQRJvECEoMOuSHiuBc/
+X-Gm-Message-State: AOJu0Yy5e21mOaZdzW706/vIv5JwnXVF2YAN5ryovb8ErkwzC+aqr5Hz
+	i6nSBKffbq3aX/ahP7fOnigq5N+R7DV9cUDUpTB9acH5BCFLGizmBlngyh5MpmQ1SFXZEtnznYf
+	KF/WklYDS1zQIYTGHvVamXFsUHftNt+KGdcLxTKe0xB3mkcMUG/0X9ZsRmWEpE7sbF90jhNqWS9
+	H3sAoi+217HFkfpyxheFvHuKgX6KF5kKkWg9bi
+X-Received: by 2002:a17:902:7005:b0:1e0:a3dd:82df with SMTP id y5-20020a170902700500b001e0a3dd82dfmr6524527plk.38.1711935610174;
+        Sun, 31 Mar 2024 18:40:10 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IEOam+CBLcJgkKx62NYgxq8ze9IbSjrgmvGMm3dvSXCb5VwSU29/cplx6cbZS3eX9jokod62DqaTZD9RRyNze8=
+X-Received: by 2002:a17:902:7005:b0:1e0:a3dd:82df with SMTP id
+ y5-20020a170902700500b001e0a3dd82dfmr6524516plk.38.1711935609797; Sun, 31 Mar
+ 2024 18:40:09 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: DU0PR04MB9417.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 4366a2dc-a3a6-4b70-317f-08dc51eba201
-X-MS-Exchange-CrossTenant-originalarrivaltime: 01 Apr 2024 01:32:45.6734
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: WOHgs6PFe4qL2acpxpqh8AX9WWy+xWV4zF9XPoDjn9dyREFSzlI3lLUe1z9p2T+E58KKiugHY08XlnXQA/voAg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AS8PR04MB8152
+References: <20240324150107.976025-1-hpa@redhat.com> <20240324150107.976025-6-hpa@redhat.com>
+ <nakbogrilul6skiab5opfsqhhqfotfgmb47wyd3xbgbpf6hurc@6xshfz3obj7m>
+In-Reply-To: <nakbogrilul6skiab5opfsqhhqfotfgmb47wyd3xbgbpf6hurc@6xshfz3obj7m>
+From: Kate Hsuan <hpa@redhat.com>
+Date: Mon, 1 Apr 2024 09:39:51 +0800
+Message-ID: <CAEth8oE21tdcEgb9K_d7cY=nBaazkVvcBg2piQeALwRiB2eY+w@mail.gmail.com>
+Subject: Re: [PATCH v5 RESEND 5/6] power: supply: power-supply-leds: Add
+ charging_red_full_green trigger for RGB LED
+To: Sebastian Reichel <sre@kernel.org>
+Cc: Pavel Machek <pavel@ucw.cz>, Lee Jones <lee@kernel.org>, linux-leds@vger.kernel.org, 
+	platform-driver-x86@vger.kernel.org, Hans de Goede <hdegoede@redhat.com>, 
+	=?UTF-8?Q?Ilpo_J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>, 
+	=?UTF-8?Q?Andr=C3=A9_Apitzsch?= <git@apitzsch.eu>, 
+	linux-kernel@vger.kernel.org, Andy Shevchenko <andy.shevchenko@gmail.com>, 
+	linux-pm@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-> Subject: Re: [PATCH v5 0/4] Add support i.MX95 BLK CTL module clock
-> features
->=20
-> On 31/03/2024 14:00, Peng Fan wrote:
-> >> Subject: Re: [PATCH v5 0/4] Add support i.MX95 BLK CTL module clock
-> >> features
-> >>
-> >> On 24/03/2024 08:51, Peng Fan (OSS) wrote:
-> >>> i.MX95's several MIXes has BLK CTL module which could be used for
-> >>> clk settings, QoS settings, Misc settings for a MIX. This patchset
-> >>> is to add the clk feature support, including dt-bindings
-> >>>
-> >>> Signed-off-by: Peng Fan <peng.fan@nxp.com>
-> >>> ---
-> >>> Changes in v5:
-> >>> - Merge bindings except the one has mux-controller
-> >>> - Separate clock ID headers in a separate patch per Rob's comments
-> >>
-> >> Where did he suggest it?
-> >
-> > See
-> > https://eur01.safelinks.protection.outlook.com/?url=3Dhttps%3A%2F%2Flor=
-e
-> > .kernel.org%2Fall%2F20240315165422.GA1472059-
-> robh%40kernel.org%2F&data
-> >
-> =3D05%7C02%7Cpeng.fan%40nxp.com%7C95289dc4bed24c3d125808dc51bc4
-> 4e0%7C686
-> >
-> ea1d3bc2b4c6fa92cd99c5c301635%7C0%7C0%7C638475116243825697%7
-> CUnknown%7
-> >
-> CTWFpbGZsb3d8eyJWIjoiMC4wLjAwMDAiLCJQIjoiV2luMzIiLCJBTiI6Ik1haWwi
-> LCJXV
-> >
-> CI6Mn0%3D%7C0%7C%7C%7C&sdata=3DDt6KYhWwp%2B4NSwHJlXwUjyRqYU
-> CkN0MvlSOE22w
-> > vRE0%3D&reserved=3D0
-> >
->=20
-> He said under specific line about one specific define. There is absolutel=
-y
-> nothing about splitting the header into new patch.
+Hi
 
-I misunderstood your point, I will put the header patch(patch 2/4) as the 1=
-st patch
-V6.
+On Sat, Mar 30, 2024 at 12:24=E2=80=AFAM Sebastian Reichel <sre@kernel.org>=
+ wrote:
+>
+> Hello Kate,
+>
+> On Sun, Mar 24, 2024 at 11:01:06PM +0800, Kate Hsuan wrote:
+> > Add a charging_red_full_green LED trigger and the trigger is based on
+> > led_mc_trigger_event() which can set an RGB LED when the trigger is
+> > triggered. The LED will show red when the battery status is charging.
+> > The LED will show green when the battery status is full.
+> >
+> > Link: https://lore.kernel.org/linux-leds/f40a0b1a-ceac-e269-c2dd-0158c5=
+b4a1ad@gmail.com/T/#t
+> > Signed-off-by: Kate Hsuan <hpa@redhat.com>
+> > ---
+>
+> Have you considered using orange instead of red? Using orange as
+> charging indicator seems to be more common nowadays and allows
 
-Thanks,
-Peng.
->=20
-> NAK
->=20
-> Best regards,
-> Krzysztof
+Sounds good.
+I'll change the color for them.
+
+Thank you
+
+>
+> green  =3D battery full
+> orange =3D battery charging
+> red    =3D battery empty / battery dead / error
+>
+> Greetings,
+>
+> -- Sebastian
+>
+> >  drivers/power/supply/power_supply_leds.c | 25 ++++++++++++++++++++++++
+> >  include/linux/power_supply.h             |  2 ++
+> >  2 files changed, 27 insertions(+)
+> >
+> > diff --git a/drivers/power/supply/power_supply_leds.c b/drivers/power/s=
+upply/power_supply_leds.c
+> > index c7db29d5fcb8..bd9c8fec5870 100644
+> > --- a/drivers/power/supply/power_supply_leds.c
+> > +++ b/drivers/power/supply/power_supply_leds.c
+> > @@ -22,6 +22,8 @@
+> >  static void power_supply_update_bat_leds(struct power_supply *psy)
+> >  {
+> >       union power_supply_propval status;
+> > +     unsigned int intensity_green[3] =3D {255, 0, 0};
+> > +     unsigned int intensity_red[3] =3D {0, 0, 255};
+> >
+> >       if (power_supply_get_property(psy, POWER_SUPPLY_PROP_STATUS, &sta=
+tus))
+> >               return;
+> > @@ -36,12 +38,20 @@ static void power_supply_update_bat_leds(struct pow=
+er_supply *psy)
+> >               /* Going from blink to LED on requires a LED_OFF event to=
+ stop blink */
+> >               led_trigger_event(psy->charging_blink_full_solid_trig, LE=
+D_OFF);
+> >               led_trigger_event(psy->charging_blink_full_solid_trig, LE=
+D_FULL);
+> > +             led_mc_trigger_event(psy->charging_red_full_green_trig,
+> > +                                  intensity_green,
+> > +                                  3,
+> > +                                  LED_FULL);
+> >               break;
+> >       case POWER_SUPPLY_STATUS_CHARGING:
+> >               led_trigger_event(psy->charging_full_trig, LED_FULL);
+> >               led_trigger_event(psy->charging_trig, LED_FULL);
+> >               led_trigger_event(psy->full_trig, LED_OFF);
+> >               led_trigger_blink(psy->charging_blink_full_solid_trig, 0,=
+ 0);
+> > +             led_mc_trigger_event(psy->charging_red_full_green_trig,
+> > +                                  intensity_red,
+> > +                                  3,
+> > +                                  LED_FULL);
+> >               break;
+> >       default:
+> >               led_trigger_event(psy->charging_full_trig, LED_OFF);
+> > @@ -49,6 +59,10 @@ static void power_supply_update_bat_leds(struct powe=
+r_supply *psy)
+> >               led_trigger_event(psy->full_trig, LED_OFF);
+> >               led_trigger_event(psy->charging_blink_full_solid_trig,
+> >                       LED_OFF);
+> > +             led_mc_trigger_event(psy->charging_red_full_green_trig,
+> > +                                  intensity_red,
+> > +                                  3,
+> > +                                  LED_OFF);
+> >               break;
+> >       }
+> >  }
+> > @@ -74,6 +88,11 @@ static int power_supply_create_bat_triggers(struct p=
+ower_supply *psy)
+> >       if (!psy->charging_blink_full_solid_trig_name)
+> >               goto charging_blink_full_solid_failed;
+> >
+> > +     psy->charging_red_full_green_trig_name =3D kasprintf(GFP_KERNEL,
+> > +             "%s-charging-red-full-green", psy->desc->name);
+> > +     if (!psy->charging_red_full_green_trig_name)
+> > +             goto charging_red_full_green_failed;
+> > +
+> >       led_trigger_register_simple(psy->charging_full_trig_name,
+> >                                   &psy->charging_full_trig);
+> >       led_trigger_register_simple(psy->charging_trig_name,
+> > @@ -82,9 +101,13 @@ static int power_supply_create_bat_triggers(struct =
+power_supply *psy)
+> >                                   &psy->full_trig);
+> >       led_trigger_register_simple(psy->charging_blink_full_solid_trig_n=
+ame,
+> >                                   &psy->charging_blink_full_solid_trig)=
+;
+> > +     led_trigger_register_simple(psy->charging_red_full_green_trig_nam=
+e,
+> > +                                 &psy->charging_red_full_green_trig);
+> >
+> >       return 0;
+> >
+> > +charging_red_full_green_failed:
+> > +     kfree(psy->charging_blink_full_solid_trig_name);
+> >  charging_blink_full_solid_failed:
+> >       kfree(psy->full_trig_name);
+> >  full_failed:
+> > @@ -101,10 +124,12 @@ static void power_supply_remove_bat_triggers(stru=
+ct power_supply *psy)
+> >       led_trigger_unregister_simple(psy->charging_trig);
+> >       led_trigger_unregister_simple(psy->full_trig);
+> >       led_trigger_unregister_simple(psy->charging_blink_full_solid_trig=
+);
+> > +     led_trigger_unregister_simple(psy->charging_red_full_green_trig);
+> >       kfree(psy->charging_blink_full_solid_trig_name);
+> >       kfree(psy->full_trig_name);
+> >       kfree(psy->charging_trig_name);
+> >       kfree(psy->charging_full_trig_name);
+> > +     kfree(psy->charging_red_full_green_trig_name);
+> >  }
+> >
+> >  /* Generated power specific LEDs triggers. */
+> > diff --git a/include/linux/power_supply.h b/include/linux/power_supply.=
+h
+> > index c0992a77feea..1d7c0b43070f 100644
+> > --- a/include/linux/power_supply.h
+> > +++ b/include/linux/power_supply.h
+> > @@ -318,6 +318,8 @@ struct power_supply {
+> >       char *online_trig_name;
+> >       struct led_trigger *charging_blink_full_solid_trig;
+> >       char *charging_blink_full_solid_trig_name;
+> > +     struct led_trigger *charging_red_full_green_trig;
+> > +     char *charging_red_full_green_trig_name;
+> >  #endif
+> >  };
+> >
+> > --
+> > 2.44.0
+> >
+> >
+
+
+
+--=20
+BR,
+Kate
 
 
