@@ -1,173 +1,105 @@
-Return-Path: <linux-kernel+bounces-126576-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-126571-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id AB99F8939C8
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 11:51:31 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 945068939B8
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 11:47:15 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 600A01F21EDD
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 09:51:31 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2B3E01F2122A
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 09:47:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 588B410A25;
-	Mon,  1 Apr 2024 09:51:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 078EC10A3B;
+	Mon,  1 Apr 2024 09:47:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="LPolHro1"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.12])
+	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="H4IgENyy"
+Received: from fllv0015.ext.ti.com (fllv0015.ext.ti.com [198.47.19.141])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E3313101C5;
-	Mon,  1 Apr 2024 09:51:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.12
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E245D10953;
+	Mon,  1 Apr 2024 09:47:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.19.141
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711965084; cv=none; b=jvV1Fzv8pG3P5d0hTZP192ds7a1feN7GqKJE3JiOZ1t+Q94Z5QJ1Z/Iwecqfy6eNssDzROb5OfS4jRDR97xiAuzToMCdp7M3tm8LJIle8yeTCwAUgjTuJ1N38lO3Uk9kFf2+7n7lNvbhN6gdfNuEQECC7RGOdScWpHv8eBYQIyU=
+	t=1711964826; cv=none; b=PtWMBoBcbeO1UaxVIgrNFYygzIaHQv0nBl1C12U3a9oiAV74HloTojlz0ImASKnYAYSo3rd7LmX/EyIMy5VpVPEz4RKMSOJeeir5d4yZBS2aRm+Mm4udIGWqve/q8qDr7732cEU0J36YjjSEC3lEUl+IC9I44O593+Hf3/Js/bQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711965084; c=relaxed/simple;
-	bh=dws3mIL2bvlkyMP7eYP2wFCJCVIJfmJmMM9Iw67z8U4=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=DX2/KbL+5cI1xLG5nXFXE9s19sEPez6DW79OZUDRbgaRnCEdKiTlsNtAhA7LyBhY8dsjOqQutL7nUd0CK8HR62YdvEQDRKAr8lKSP5ZpdKdsgdfpnmyNJx7eYOG75Z51gt3fYc53mBjpvXkkEWxYizcQVjeO6uEsExWt1+rwP20=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=LPolHro1; arc=none smtp.client-ip=198.175.65.12
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1711965083; x=1743501083;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:content-transfer-encoding:in-reply-to;
-  bh=dws3mIL2bvlkyMP7eYP2wFCJCVIJfmJmMM9Iw67z8U4=;
-  b=LPolHro1Xe9fG52mdLE7vJq8B5XsWkQuK9233p4PJxAYc4A3NeaaUBbh
-   Sn6d0cU5SUSQtBH36dh2pPVBrOEjkndrxgBW+nqR3Ve0CyU3Kt26ii6l1
-   YDwF0ZLFuau9RYWVzr4uf0cvCJVnIWYrLudbOTUN4CuoXaBHQUZJ80GLu
-   v4f82NW585y55RAFabBWzabvdtMU4G06zkHrKkWJWUFoB6KRLaPBAjyyt
-   O04bXDr85tdY+i+qRaXmh6y6s52LW7x3X1stq0UV4bZrOTcTyZd0nR23w
-   X5DaAMhZeFINCJTyejRyt+WqA+HwuraDBbQGqFlzyPjSkfwYQ2Ruthmit
-   g==;
-X-CSE-ConnectionGUID: MBxt0t4vQh2C2ObzNRgW4Q==
-X-CSE-MsgGUID: RVaEiLyYQOKZegxpSjds7Q==
-X-IronPort-AV: E=McAfee;i="6600,9927,11030"; a="18527608"
-X-IronPort-AV: E=Sophos;i="6.07,171,1708416000"; 
-   d="scan'208";a="18527608"
-Received: from fmviesa002.fm.intel.com ([10.60.135.142])
-  by orvoesa104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Apr 2024 02:51:22 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,171,1708416000"; 
-   d="scan'208";a="40829570"
-Received: from yilunxu-optiplex-7050.sh.intel.com (HELO localhost) ([10.239.159.165])
-  by fmviesa002.fm.intel.com with ESMTP; 01 Apr 2024 02:51:18 -0700
-Date: Mon, 1 Apr 2024 17:46:29 +0800
-From: Xu Yilun <yilun.xu@linux.intel.com>
-To: Peter Colberg <peter.colberg@intel.com>
-Cc: Moritz Fischer <mdf@kernel.org>, Wu Hao <hao.wu@intel.com>,
-	Xu Yilun <yilun.xu@intel.com>, Tom Rix <trix@redhat.com>,
-	Lee Jones <lee@kernel.org>, linux-fpga@vger.kernel.org,
-	linux-kernel@vger.kernel.org, Russ Weight <russ.weight@linux.dev>,
-	Marco Pagani <marpagan@redhat.com>,
-	Matthew Gerlach <matthew.gerlach@linux.intel.com>,
-	Ilpo =?utf-8?B?SsOkcnZpbmVu?= <ilpo.jarvinen@linux.intel.com>,
-	Russ Weight <russell.h.weight@intel.com>
-Subject: Re: [PATCH] mfd: intel-m10-bmc: Change staging size to a variable
-Message-ID: <ZgqCdfCSatazEkIj@yilunxu-OptiPlex-7050>
-References: <20240328233559.6949-1-peter.colberg@intel.com>
+	s=arc-20240116; t=1711964826; c=relaxed/simple;
+	bh=ikA8MDST2pXkX5fvpsetPaZ87FEe2/XOnEPeV5hEdWc=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=YBP11AElH8/llXWXaGYWd1mITBrldcD8ZrRqvfUnpWidoMr7542/2E08xIdZZcagqORttP+3dzc8ymRdFQ5xQluux2izxl4EkLKJwM/o2yFdDs8bknoIJDR7drEfQwEFM6+wZ12sHVeGyS/8yX5ePsK5Akn2qqUmPX9ZZZyv3DQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=H4IgENyy; arc=none smtp.client-ip=198.47.19.141
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
+Received: from fllv0034.itg.ti.com ([10.64.40.246])
+	by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 4319kfaK037664;
+	Mon, 1 Apr 2024 04:46:41 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+	s=ti-com-17Q1; t=1711964801;
+	bh=GhP5JL9UrBvNzC+YjH3zvQlQUkQUerqqI1bJfe0019Q=;
+	h=Date:Subject:To:CC:References:From:In-Reply-To;
+	b=H4IgENyyXQHgD5rNK0yeyIHVyoOglcgg4xT2+pOB9jY/2df7+qBPpgMXVW97bg3As
+	 LobVu9YNnPiDOG1A2e5WC5J0gefE7hUPEhDSwW57BJFBbmvxBZ8VaBxAYJggYvwSDz
+	 YMPLaM9L37H1FsKoZicAqY78aGP0uZgzSiFxeiKM=
+Received: from DLEE105.ent.ti.com (dlee105.ent.ti.com [157.170.170.35])
+	by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 4319kegB059389
+	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+	Mon, 1 Apr 2024 04:46:41 -0500
+Received: from DLEE102.ent.ti.com (157.170.170.32) by DLEE105.ent.ti.com
+ (157.170.170.35) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Mon, 1
+ Apr 2024 04:46:40 -0500
+Received: from lelvsmtp5.itg.ti.com (10.180.75.250) by DLEE102.ent.ti.com
+ (157.170.170.32) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Mon, 1 Apr 2024 04:46:40 -0500
+Received: from [172.24.227.220] (chintan-thinkstation-p360-tower.dhcp.ti.com [172.24.227.220])
+	by lelvsmtp5.itg.ti.com (8.15.2/8.15.2) with ESMTP id 4319ix0X075731;
+	Mon, 1 Apr 2024 04:46:36 -0500
+Message-ID: <d7c1adc3-e9b2-4ed8-b16e-e36474c4b5f5@ti.com>
+Date: Mon, 1 Apr 2024 15:16:36 +0530
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20240328233559.6949-1-peter.colberg@intel.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH net-next v4 3/3] net: ethernet: ti: am65-cpsw-ethtool:
+ Update rx_filters for CPSW's timestamping capability
+Content-Language: en-US
+To: Jakub Kicinski <kuba@kernel.org>
+CC: Dan Carpenter <dan.carpenter@linaro.org>,
+        Siddharth Vadapalli
+	<s-vadapalli@ti.com>,
+        Grygorii Strashko <grygorii.strashko@ti.com>,
+        "Heiner
+ Kallweit" <hkallweit1@gmail.com>,
+        Vladimir Oltean <vladimir.oltean@nxp.com>,
+        Andrew Lunn <andrew@lunn.ch>, Roger Quadros <rogerq@kernel.org>,
+        "Richard
+ Cochran" <richardcochran@gmail.com>,
+        Paolo Abeni <pabeni@redhat.com>, "Eric
+ Dumazet" <edumazet@google.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        <linux-kernel@vger.kernel.org>, <netdev@vger.kernel.org>
+References: <20240327054234.1906957-1-c-vankar@ti.com>
+ <20240327054234.1906957-3-c-vankar@ti.com>
+ <20240329145517.7b46a15a@kernel.org>
+From: Chintan Vankar <c-vankar@ti.com>
+In-Reply-To: <20240329145517.7b46a15a@kernel.org>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 
-On Thu, Mar 28, 2024 at 07:35:59PM -0400, Peter Colberg wrote:
-> From: Ilpo Järvinen <ilpo.jarvinen@linux.intel.com>
-> 
-> The size of the staging area in FLASH for FPGA updates is dependent on the
-> size of the FPGA. Currently, the staging size is defined as a constant.
-> Larger FPGAs are coming soon and it will soon be necessary to support
 
-Soon? When? You cannot add some feature without a user case. If you do
-have a use case, put the patch in the same patchset.
 
-Thanks,
-Yilun
+On 30/03/24 03:25, Jakub Kicinski wrote:
+> On Wed, 27 Mar 2024 11:12:34 +0530 Chintan Vankar wrote:
+>> Update supported hwtstamp_rx_filters values for CPSW's timestamping
+>> capability.
+> 
+> Is there a reason this is not part of the previous patch?
 
-> different sizes for the staging area. Add a new staging_size member to the
-> csr_map structure to support a variable staging size.
-> 
-> The secure update driver does a sanity-check of the image size in
-> comparison to the size of the staging area in FLASH. Change the
-> staging size reference to a variable instead of a constant in order
-> to more readily support future, larger FPGAs.
-> 
-> Co-developed-by: Russ Weight <russell.h.weight@intel.com>
-> Signed-off-by: Russ Weight <russell.h.weight@intel.com>
-> Signed-off-by: Ilpo Järvinen <ilpo.jarvinen@linux.intel.com>
-> Signed-off-by: Peter Colberg <peter.colberg@intel.com>
-> ---
->  drivers/fpga/intel-m10-bmc-sec-update.c | 3 ++-
->  drivers/mfd/intel-m10-bmc-pmci.c        | 1 +
->  drivers/mfd/intel-m10-bmc-spi.c         | 1 +
->  include/linux/mfd/intel-m10-bmc.h       | 1 +
->  4 files changed, 5 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/fpga/intel-m10-bmc-sec-update.c b/drivers/fpga/intel-m10-bmc-sec-update.c
-> index 89851b133709..7ac9f9f5af12 100644
-> --- a/drivers/fpga/intel-m10-bmc-sec-update.c
-> +++ b/drivers/fpga/intel-m10-bmc-sec-update.c
-> @@ -529,11 +529,12 @@ static enum fw_upload_err m10bmc_sec_prepare(struct fw_upload *fwl,
->  					     const u8 *data, u32 size)
->  {
->  	struct m10bmc_sec *sec = fwl->dd_handle;
-> +	const struct m10bmc_csr_map *csr_map = sec->m10bmc->info->csr_map;
->  	u32 ret;
->  
->  	sec->cancel_request = false;
->  
-> -	if (!size || size > M10BMC_STAGING_SIZE)
-> +	if (!size || size > csr_map->staging_size)
->  		return FW_UPLOAD_ERR_INVALID_SIZE;
->  
->  	if (sec->m10bmc->flash_bulk_ops)
-> diff --git a/drivers/mfd/intel-m10-bmc-pmci.c b/drivers/mfd/intel-m10-bmc-pmci.c
-> index 0392ef8b57d8..698c5933938b 100644
-> --- a/drivers/mfd/intel-m10-bmc-pmci.c
-> +++ b/drivers/mfd/intel-m10-bmc-pmci.c
-> @@ -370,6 +370,7 @@ static const struct m10bmc_csr_map m10bmc_n6000_csr_map = {
->  	.pr_reh_addr = M10BMC_N6000_PR_REH_ADDR,
->  	.pr_magic = M10BMC_N6000_PR_PROG_MAGIC,
->  	.rsu_update_counter = M10BMC_N6000_STAGING_FLASH_COUNT,
-> +	.staging_size = M10BMC_STAGING_SIZE,
->  };
->  
->  static const struct intel_m10bmc_platform_info m10bmc_pmci_n6000 = {
-> diff --git a/drivers/mfd/intel-m10-bmc-spi.c b/drivers/mfd/intel-m10-bmc-spi.c
-> index cbeb7de9e041..d64d28199df6 100644
-> --- a/drivers/mfd/intel-m10-bmc-spi.c
-> +++ b/drivers/mfd/intel-m10-bmc-spi.c
-> @@ -109,6 +109,7 @@ static const struct m10bmc_csr_map m10bmc_n3000_csr_map = {
->  	.pr_reh_addr = M10BMC_N3000_PR_REH_ADDR,
->  	.pr_magic = M10BMC_N3000_PR_PROG_MAGIC,
->  	.rsu_update_counter = M10BMC_N3000_STAGING_FLASH_COUNT,
-> +	.staging_size = M10BMC_STAGING_SIZE,
->  };
->  
->  static struct mfd_cell m10bmc_d5005_subdevs[] = {
-> diff --git a/include/linux/mfd/intel-m10-bmc.h b/include/linux/mfd/intel-m10-bmc.h
-> index ee66c9751003..988f1cd90032 100644
-> --- a/include/linux/mfd/intel-m10-bmc.h
-> +++ b/include/linux/mfd/intel-m10-bmc.h
-> @@ -205,6 +205,7 @@ struct m10bmc_csr_map {
->  	unsigned int pr_reh_addr;
->  	unsigned int pr_magic;
->  	unsigned int rsu_update_counter;
-> +	unsigned int staging_size;
->  };
->  
->  /**
-> -- 
-> 2.44.0
-> 
-> 
+No there is no reason to make it as independent patch, I will combine
+this patch with previous patch in next version.
 
