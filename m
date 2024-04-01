@@ -1,128 +1,224 @@
-Return-Path: <linux-kernel+bounces-126755-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-126766-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1A521893C52
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 16:44:46 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8E551893C6D
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 16:58:10 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CB41628149B
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 14:44:44 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B28821C213D6
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 14:58:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3B82644367;
-	Mon,  1 Apr 2024 14:44:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C10DC4595B;
+	Mon,  1 Apr 2024 14:58:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=fireburn-co-uk.20230601.gappssmtp.com header.i=@fireburn-co-uk.20230601.gappssmtp.com header.b="eDBMJ9WP"
-Received: from mail-wm1-f46.google.com (mail-wm1-f46.google.com [209.85.128.46])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="sgku0LzN"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DF1C941A8F
-	for <linux-kernel@vger.kernel.org>; Mon,  1 Apr 2024 14:44:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DE99040872;
+	Mon,  1 Apr 2024 14:58:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711982677; cv=none; b=Dkw9UueKgvFNlXrropeLeD5aGOq7KZJ+NJQweue7wtxglkBMhhVIQ5ITmDNopLvKuEy3xmAAGx0nChVek/AInuX8LZ/kFXkZpvaaQBmhvudjAOnMl2sZXYbn8ytOwwaY16ToLRR8v58mXPeMSoVZhKSqW+h0mEq2eEmaZCO8OXc=
+	t=1711983484; cv=none; b=lGd2Dx3wQmnzeywiRNGcOyUids7Kr6tKtS47RcBZFbRnBajm/ialICqf0+qJkIoTwyKDXrHkhxUSd9+JnqLsWXNcCdcjiDxGhjhdSGdtwR4XLoyIAgFanx0i0EMd9DiDhV6ZpfZqV9WRGpOZtigHKyoIUH9OVdy9PUTy5dMwd14=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711982677; c=relaxed/simple;
-	bh=bRVD+zYXwsd5blv6Xf8Xegw7LTvgK3LiOS69WsxaHgI=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=jIHs0Q92k+7ZQ1WZaVr+qxkg1vky6CVHqW6KBfP9hlUN774yPdSVbjNUGUe1JnIJBIn8EnBuhzMdTUHy/0xXo8VonnTB4S3K00dE6YepKo5+kMSGRRMoM4UovTi1TVxn8n2E6286AHJQCiLZvH143umcgTEnvDipfne4fH6I910=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=fireburn.co.uk; spf=none smtp.mailfrom=fireburn.co.uk; dkim=pass (2048-bit key) header.d=fireburn-co-uk.20230601.gappssmtp.com header.i=@fireburn-co-uk.20230601.gappssmtp.com header.b=eDBMJ9WP; arc=none smtp.client-ip=209.85.128.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=fireburn.co.uk
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=fireburn.co.uk
-Received: by mail-wm1-f46.google.com with SMTP id 5b1f17b1804b1-4156e0cffdaso1586375e9.1
-        for <linux-kernel@vger.kernel.org>; Mon, 01 Apr 2024 07:44:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=fireburn-co-uk.20230601.gappssmtp.com; s=20230601; t=1711982674; x=1712587474; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=2RvYbbHjPyiORsf1A18YXo9DewRsvfmOj39Pus78xSY=;
-        b=eDBMJ9WP/ekqywe8ArRLsXLvk7daBoCdGDwV7MXodNSOwjvw0TcWqPCC8M81iGtqgR
-         NczYaYjsJif3pRJoYGxNCHu03JkGmblF69Wce5CEVrphPa3iknEFMS6Wjmj2OfksEX7m
-         btlSClMvCkB5o4X9NqoUzq1o0b2zxo46J+a94H4LGWEDL7HniJEEZVFso/iYbs8+8uCW
-         oq6BbhmF2FQbhg8qAD6wUO6HOvURcWfxtvksoFsXrEvqgW5/8l+hm6faNEq7g4VVclJ1
-         rXnBT9Mo9/42z2ylHfTQYAUVM6Vp5Veiy/oljbLe3l6kF5XZ7BSkdFBFwJ9K3S8+3ADq
-         GjsA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711982674; x=1712587474;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=2RvYbbHjPyiORsf1A18YXo9DewRsvfmOj39Pus78xSY=;
-        b=QYnY60K+yvhQ41B2Nh0yioxcvZFJ/E+2WaO/5IuoujQ7VedbfidZt99h0CzQ26+yWs
-         2D6484vwEUod9kvhKIDZOOZ7tGsE6CzLHDIdd8nLwfEt6u4XZ9ox7mZ0eIIkC1LTYnNC
-         xH9hpBNMNL3lzZKzdd4HlB/Crr5Z/0KEwvw8wvoQRN0RMRHgsylUkd0McsXbE+uUXnfy
-         HEDklfaFShLWnK3fQNoXRv9WM4eLdxKIAQCa+rIw0zsgXAaOOYaMlX25xPRs1uHf+gyQ
-         jCSKYPDIapMcEIbwQ82okMYp0TXhYtWcrfnK0Y0wB8927DtE7MsKxTdzB5GFW7nEUDzy
-         8T9w==
-X-Forwarded-Encrypted: i=1; AJvYcCVVlLLikrbAFYuaqDwKlWNt7uhKq+INV7UoWdwCK8fQd1wBFqrU9M3bStj+k7FY+QmqaiKcZYoEKOn8Rl8dOotZkSE/pvCQFknBXE7H
-X-Gm-Message-State: AOJu0Yw/dTpsDecw5Bt2d2p2klUdk4n+IUZZ5tM+vu3hNDfTCTBMjEhq
-	M/q7AENMen/TM+uoFITKyTzUzkZTywTMWUoVqgjdoaDZunECtFchJExucOdFog==
-X-Google-Smtp-Source: AGHT+IHFwTeHa3eLF0iSWmR3ZRa9CNqiw+F/uWJvheTXNwpRf9+4QL+uhvTDDxHrRzI6a2UhU6K3YQ==
-X-Received: by 2002:a05:600c:35c1:b0:415:6b9a:326d with SMTP id r1-20020a05600c35c100b004156b9a326dmr1118098wmq.4.1711982673860;
-        Mon, 01 Apr 2024 07:44:33 -0700 (PDT)
-Received: from axion.fireburn.co.uk ([2a01:4b00:d309:1c00:cf6f:1e76:917a:6efb])
-        by smtp.gmail.com with ESMTPSA id bi11-20020a05600c3d8b00b004156c8d0530sm1258026wmb.13.2024.04.01.07.44.32
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 01 Apr 2024 07:44:33 -0700 (PDT)
-From: Mike Lothian <mike@fireburn.co.uk>
-To: peter.tsao@mediatek.com
-Cc: aaron.hou@mediatek.com,
-	chris.lu@mediatek.com,
-	deren.Wu@mediatek.com,
-	johan.hedberg@gmail.com,
-	linux-bluetooth@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	linux-mediatek@lists.infradead.org,
-	luiz.dentz@gmail.com,
-	marcel@holtmann.org,
-	sean.wang@mediatek.com,
-	steve.lee@mediatek.com
-Subject: Re: [PATCH] [PATCH] Bluetooth: btusb: Add support Mediatek MT7920
-Date: Mon,  1 Apr 2024 15:44:24 +0100
-Message-ID: <20240401144424.1714-1-mike@fireburn.co.uk>
-X-Mailer: git-send-email 2.44.0
-In-Reply-To: <20240304144844.2042-1-peter.tsao@mediatek.com>
-References: <20240304144844.2042-1-peter.tsao@mediatek.com>
+	s=arc-20240116; t=1711983484; c=relaxed/simple;
+	bh=iWSrCQXopNpyy4/bhpMbaoyNqlqfJOPFVLa5+tSkyqc=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=G1OvJp2eO2QrCJxwY7VIybCS3zhIk06FvyZa1dCxZnTNkxh5Cn2HB0LWB2s2VNO+M8bNvlaCw6kzvHQS2kOQk0k53YmS8GhthLEAKCRXP8WXKjsbc6IBaLNsbGqikqXxSb9TH4OBUCPlmd7rBSxSbDZQTbNcKB6v1O0Piak0fBA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=sgku0LzN; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id EDE9BC433F1;
+	Mon,  1 Apr 2024 14:58:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1711983483;
+	bh=iWSrCQXopNpyy4/bhpMbaoyNqlqfJOPFVLa5+tSkyqc=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=sgku0LzNBC8durv7D8xHkaXYp4wdGd4dhls8VVLmTtkd5dKHoogKH4J1Ir3H/EZsx
+	 S8lNRaxuCy/1Oiw1B24dKVERxJ8+sd0y2DXKBtjkDvG7ntv/Mw/EjB/Pv5P2rXx9Cq
+	 OZdeZF0sbMbbKBEYlekhhvF2OwDNS96Tp0a7rXdChjJrvtcU4JEwCgEH723S5gh2VN
+	 5gbdC+JOKycuXUtRN0FY6jVYN0CRok4lFqxgJf2QCS+xLZpopgM/VLIzozsRDbmx2R
+	 ori3cTjlfK5Lx5IvSsFj2PJkbs9clGhajS64fLcuyOHhPe5zjAy2fitEEaPRNTW5BT
+	 wcBbBJ0uyjdQg==
+Date: Mon, 1 Apr 2024 22:44:44 +0800
+From: Jisheng Zhang <jszhang@kernel.org>
+To: Heinrich Schuchardt <heinrich.schuchardt@canonical.com>
+Cc: Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Paul Walmsley <paul.walmsley@sifive.com>,
+	Palmer Dabbelt <palmer@dabbelt.com>,
+	Albert Ou <aou@eecs.berkeley.edu>,
+	Emil Renner Berthing <kernel@esmil.dk>,
+	linux-riscv@lists.infradead.org, devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org, Conor Dooley <conor@kernel.org>,
+	Aurelien Jarno <aurelien@aurel32.net>
+Subject: Re: [PATCH v3 6/6] riscv: dts: starfive: add Milkv Mars board device
+ tree
+Message-ID: <ZgrIXHNRTB_NeDeF@xhacker>
+References: <20240131132600.4067-1-jszhang@kernel.org>
+ <20240131132600.4067-7-jszhang@kernel.org>
+ <20240206-magma-deem-2c88e45a545a@spud>
+ <43918921-0d05-41d3-a19b-f137314e868d@canonical.com>
+ <ZgYn9t4akccWuHyf@xhacker>
+ <013f6d51-7f78-4de0-945d-8902f32c850a@canonical.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <013f6d51-7f78-4de0-945d-8902f32c850a@canonical.com>
 
-Hi
+On Mon, Apr 01, 2024 at 03:28:33PM +0200, Heinrich Schuchardt wrote:
+> On 3/29/24 03:31, Jisheng Zhang wrote:
+> > On Thu, Mar 28, 2024 at 10:28:28PM +0100, Heinrich Schuchardt wrote:
+> > > On 2/6/24 20:13, Conor Dooley wrote:
+> > > > On Wed, Jan 31, 2024 at 09:26:00PM +0800, Jisheng Zhang wrote:
+> > > > > The Milkv Mars is a development board based on the Starfive JH7110 SoC.
+> > > > > The board features:
+> > > > > 
+> > > > > - JH7110 SoC
+> > > > > - 1/2/4/8 GiB LPDDR4 DRAM
+> > > > > - AXP15060 PMIC
+> > > > > - 40 pin GPIO header
+> > > > > - 3x USB 3.0 host port
+> > > > > - 1x USB 2.0 host port
+> > > > > - 1x M.2 E-Key
+> > > > > - 1x eMMC slot
+> > > > > - 1x MicroSD slot
+> > > > > - 1x QSPI Flash
+> > > > > - 1x 1Gbps Ethernet port
+> > > > > - 1x HDMI port
+> > > > > - 1x 2-lane DSI and 1x 4-lane DSI
+> > > > > - 1x 2-lane CSI
+> > > > > 
+> > > > > Add the devicetree file describing the currently supported features,
+> > > > > namely PMIC, UART, I2C, GPIO, SD card, QSPI Flash, eMMC and Ethernet.
+> > > > > 
+> > > > > Signed-off-by: Jisheng Zhang <jszhang@kernel.org>
+> > > > 
+> > > > Got a dtbs_check issue in the patchwork CI:
+> > > > 
+> > > >     +arch/riscv/boot/dts/starfive/jh7110-milkv-mars.dtb: gmac1-rgmii-rxin-clock: 'clock-frequency' is a required property
+> > > >     +	from schema $id: http://devicetree.org/schemas/clock/fixed-clock.yaml#
+> > > >     +arch/riscv/boot/dts/starfive/jh7110-milkv-mars.dtb: gmac1-rmii-refin-clock: 'clock-frequency' is a required property
+> > > >     +	from schema $id: http://devicetree.org/schemas/clock/fixed-clock.yaml#
+> > > > 
+> > > > Can you fix that please? Also, I applied some patches the other day that
+> > > > seem to conflict quite a bit with the common board dts patch. Would you
+> > > > please do a rebase on top of that please?
+> > > > 
+> > > > Cheers,
+> > > > Conor.
+> > > > 
+> > > > > ---
+> > > > >    arch/riscv/boot/dts/starfive/Makefile         |  1 +
+> > > > >    .../boot/dts/starfive/jh7110-milkv-mars.dts   | 35 +++++++++++++++++++
+> > > > >    2 files changed, 36 insertions(+)
+> > > > >    create mode 100644 arch/riscv/boot/dts/starfive/jh7110-milkv-mars.dts
+> > > > > 
+> > > > > diff --git a/arch/riscv/boot/dts/starfive/Makefile b/arch/riscv/boot/dts/starfive/Makefile
+> > > > > index 0141504c0f5c..2fa0cd7f31c3 100644
+> > > > > --- a/arch/riscv/boot/dts/starfive/Makefile
+> > > > > +++ b/arch/riscv/boot/dts/starfive/Makefile
+> > > > > @@ -8,5 +8,6 @@ DTC_FLAGS_jh7110-starfive-visionfive-2-v1.3b := -@
+> > > > >    dtb-$(CONFIG_ARCH_STARFIVE) += jh7100-beaglev-starlight.dtb
+> > > > >    dtb-$(CONFIG_ARCH_STARFIVE) += jh7100-starfive-visionfive-v1.dtb
+> > > > > +dtb-$(CONFIG_ARCH_STARFIVE) += jh7110-milkv-mars.dtb
+> > > > >    dtb-$(CONFIG_ARCH_STARFIVE) += jh7110-starfive-visionfive-2-v1.2a.dtb
+> > > > >    dtb-$(CONFIG_ARCH_STARFIVE) += jh7110-starfive-visionfive-2-v1.3b.dtb
+> > > > > diff --git a/arch/riscv/boot/dts/starfive/jh7110-milkv-mars.dts b/arch/riscv/boot/dts/starfive/jh7110-milkv-mars.dts
+> > > > > new file mode 100644
+> > > > > index 000000000000..de600e799e7d
+> > > > > --- /dev/null
+> > > > > +++ b/arch/riscv/boot/dts/starfive/jh7110-milkv-mars.dts
+> > > > > @@ -0,0 +1,35 @@
+> > > > > +// SPDX-License-Identifier: GPL-2.0 OR MIT
+> > > > > +/*
+> > > > > + * Copyright (C) 2023 Jisheng Zhang <jszhang@kernel.org>
+> > > > > + */
+> > > > > +
+> > > > > +/dts-v1/;
+> > > > > +#include "jh7110-visionfive2-mars-common.dtsi"
+> > > > > +
+> > > > > +/ {
+> > > > > +	model = "Milk-V Mars";
+> > > > > +	compatible = "milkv,mars", "starfive,jh7110";
+> > > > > +};
+> > > > > +
+> > > > > +&gmac0 {
+> > > > > +	starfive,tx-use-rgmii-clk;
+> > > > > +	assigned-clocks = <&aoncrg JH7110_AONCLK_GMAC0_TX>;
+> > > > > +	assigned-clock-parents = <&aoncrg JH7110_AONCLK_GMAC0_RMII_RTX>;
+> > > > > +};
+> > > > > +
+> > > > > +
+> > > > > +&phy0 {
+> > > > > +	motorcomm,tx-clk-adj-enabled;
+> > > > > +	motorcomm,tx-clk-10-inverted;
+> > > > > +	motorcomm,tx-clk-100-inverted;
+> > > > > +	motorcomm,tx-clk-1000-inverted;
+> > > > > +	motorcomm,rx-clk-drv-microamp = <3970>;
+> > > > > +	motorcomm,rx-data-drv-microamp = <2910>;
+> > > > > +	rx-internal-delay-ps = <1500>;
+> > > > > +	tx-internal-delay-ps = <1500>;
+> > > > > +};
+> > > > > +
+> > > > > +&mmc1 {
+> > > > > +	disable-wp;
+> > > 
+> > > Due to which difference is 'disable-wp' necessary for the Mars board and not
+> > > necessary for the VisionFive 2 board?
+> > 
+> > Mars doesn't have wp pin, but dunno vf2 case since I don't have a VF2
+> > board ;)
+> 
+> If the Milk-V Mars does not have a WP GPIO, we should be able to drop this
+> property. The VisionFive 2 does not need it either.
 
-I think this patch is cauisng issues with older firmware
+Nope, dropping this property would result in RO sdcard on vf2.
+> 
+> > > 
+> > > > > +	cd-gpios = <&sysgpio 41 GPIO_ACTIVE_LOW>;
+> > > 
+> > > On my VisionFive 2 1.2B, and 1.3A boards GPIO 41 reflects if an SD-card is
+> > > inserted (as shown in U-Boot by gpio status -a). So shouldn't this value be
+> > > moved to the common include "jh7110-visionfive2-mars-common.dtsi" and
+> > > broken-cd removed from the VisionFive2 board?
+> > 
+> > I tested the CD pin and can confirm it works on Mars, but I dunno whether
+> > this works on VF2 since I have no VF2 board.
+> > Could you please check whether it works or not on VF2?
+> 
+> As mentioned in my prior mail the card detect GPIO is working on the
+> VisionFive 2. StarFive acknowledged my U-Boot patch:
+> 
+> https://lore.kernel.org/u-boot/SHXPR01MB086314C47C281B3DDDF7BAE9E63AA@SHXPR01MB0863.CHNPR01.prod.partner.outlook.cn/
 
-Bus 003 Device 002: ID 13d3:3563 IMC Networks Wireless_Device
+Thanks for confirmation.
 
-[    0.315064] Bluetooth: Core ver 2.22
-[    0.315064] NET: Registered PF_BLUETOOTH protocol family
-[    0.315064] Bluetooth: HCI device and connection manager initialized
-[    0.315064] Bluetooth: HCI socket layer initialized
-[    0.315064] Bluetooth: L2CAP socket layer initialized
-[    0.315064] Bluetooth: SCO socket layer initialized
-[    4.670811] Bluetooth: RFCOMM TTY layer initialized
-[    4.671029] Bluetooth: RFCOMM socket layer initialized
-[    4.671790] Bluetooth: RFCOMM ver 1.11
-[    4.673416] Bluetooth: BNEP (Ethernet Emulation) ver 1.3
-[    4.673659] Bluetooth: BNEP filters: protocol multicast
-[    4.673895] Bluetooth: BNEP socket layer initialized
-[    4.674125] Bluetooth: HIDP (Human Interface Emulation) ver 1.2
-[    4.674360] Bluetooth: HIDP socket layer initialized
-[    5.016365] bluetooth hci0: Direct firmware load for mediatek/BT_RAM_CODE_MT7961_1a_2_hdr.bin failed with error -2
-[    5.017163] Bluetooth: hci0: Failed to load firmware file (-2)
-[    5.017557] Bluetooth: hci0: Failed to set up firmware (-2)
-[    5.018129] Bluetooth: hci0: HCI Enhanced Setup Synchronous Connection command is advertised, but not supported.
-
-The correct name should be mediatek/BT_RAM_CODE_MT7961_1_2_hdr.bin
-
-Reverting this patch fixes things
-
-Cheers
-
-Mike
+> 
+> Best regards
+> 
+> Heinrich
+> 
+> > 
+> > > 
+> > > https://doc-en.rvspace.org/VisionFive2/PDF/SCH_RV002_V1.2A_20221216.pdf
+> > > has a line
+> > > 
+> > >      GPIO41 | SD_SDIO0_CD_GPIO41 | Micro SD：J10
+> > > 
+> > > Best regards
+> > > 
+> > > Heinrich
+> > > 
+> > > > > +};
+> > > > > -- 
+> > > > > 2.43.0
+> > > 
+> 
 
