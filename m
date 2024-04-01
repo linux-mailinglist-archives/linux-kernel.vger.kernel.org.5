@@ -1,169 +1,167 @@
-Return-Path: <linux-kernel+bounces-126773-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-126774-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id BDCD8893C8E
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 17:09:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id CFF28893C92
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 17:10:06 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 08CCDB21FAD
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 15:09:27 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C9A9EB21EF6
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 15:10:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 19C8D45C15;
-	Mon,  1 Apr 2024 15:09:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E806D45BFF;
+	Mon,  1 Apr 2024 15:09:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="W8oXkn7y"
-Received: from mail-pl1-f170.google.com (mail-pl1-f170.google.com [209.85.214.170])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="aNIV7VkH"
+Received: from mail-wr1-f42.google.com (mail-wr1-f42.google.com [209.85.221.42])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C81DE4501C
-	for <linux-kernel@vger.kernel.org>; Mon,  1 Apr 2024 15:09:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7DCE2446A1;
+	Mon,  1 Apr 2024 15:09:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711984156; cv=none; b=T/RkM0CKdztfCHkOf/oBbO7K6pTere0lmEdB819zEFEhZhc5wK3WT1Lu/P4/IfIeOQ2lVVcMS6WIATWDjuGfVjg0FpfvneqK8eAql6vmMlomHwo3da27M+I+iZSuhscX0+dRjM6dH0dvMn6+/tziZtdqbjjFVMuw15E7+6fzj1M=
+	t=1711984195; cv=none; b=PpAymFNh1fE2WKKrLFw9YB5PkXD0u34FbcxsYeDpY6lQXYv9t9Y5Fk7Z1cjVSt7Uz5kBKxap0Sp8rjq1Q7Qe1JEc4Zqdma1pcHQ9Y1z866bZe9lFB0u994J6QZWo81tg1EH0j+w15ntYub6iirUK7UEqZVA5/Nro/q/sIdzQ2YA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711984156; c=relaxed/simple;
-	bh=Cty+UnQToC59kYZv18cUD97vngjCf03hJr63ChFyqoM=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:To:Cc; b=U9dv0IEImXwOzZlLHXjU6MfLEN93GFMpY1EhFQVne+Th5esAC7xT9LdjuwGVM+mB1C0F2kvnQXaskRDvJCGu1m0PquLLIUOzNMKOC66NtmsSWmnZ4mqUo1fCcC+ywbP/8NslUzZBgpIW7KiF+ZiDUH2URSTfZ5Nh9YwiItpSoY0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=W8oXkn7y; arc=none smtp.client-ip=209.85.214.170
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-pl1-f170.google.com with SMTP id d9443c01a7336-1e0f3052145so38668785ad.2
-        for <linux-kernel@vger.kernel.org>; Mon, 01 Apr 2024 08:09:14 -0700 (PDT)
+	s=arc-20240116; t=1711984195; c=relaxed/simple;
+	bh=L/8gZAolucuwwkQmFM70oji/BIRrViO0fJYD11aqWo8=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=HObulN6eKw/2Y40vvXFheYD2YBY4XN2otFw7WCjdu93NOA8TFx0wTsPyCVenUU4KdipPQB276PEz6kAT3YA8t5ymonLG/WMIILFwCdp80chCEgMAAC/FmTeMmpfFvg883q5+yCvHPppBYsA86RApq3kM0N2vjs3uhQqkhymSfI4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=aNIV7VkH; arc=none smtp.client-ip=209.85.221.42
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wr1-f42.google.com with SMTP id ffacd0b85a97d-34175878e30so3248032f8f.3;
+        Mon, 01 Apr 2024 08:09:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1711984154; x=1712588954; darn=vger.kernel.org;
-        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
-         :date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=pVYU8GbKC7yGxger5d4I7Be1o72Atk8Z4mAA6WFepzY=;
-        b=W8oXkn7yT0NPole+hobNWxtahGo2JONnmUh9n2CTchYBuD2iba5jqTb8BSG+qzCN4P
-         lnZJJg7UcilNVI+s/ZHscCBBPwyrAyWlHWAgsMdb8ZfaGBbpnPXo8VehIpwP7NyYVH4c
-         lbefectmX/3zPvCpNEN+kH8IPMvBJZ0q2CA8GDz4ZMc5lUgN3PWyhnTWxYHOOjacSwhi
-         Ag8DV4HSjVp4s9jhMptI69h/7/4t2AP6QVL3RIGDIjwtigpC5f0RiQ3Yw4bOmHjKgnJE
-         r0vPYLrr4S60ei6VeHnBam3rRDBOWYu+yyhNgKxTTFR449ZwO0skGCiGHUcm5hqvU3S2
-         e1bA==
+        d=gmail.com; s=20230601; t=1711984192; x=1712588992; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=rD0kt0FvGy6RrN2V5n3OM/nHuzCqFzbTG5LJZtlBfSQ=;
+        b=aNIV7VkHVszs1fsTiYW9ISxfs31okDMo2ObfU6c6jO0wZUPss8YfwCV2m1WJreibM0
+         mRRFwUdldwYTfWyV/6Sl+eDnyOK+Ce4hOM29eQC4ZwsDEN629WbykJs4L1lvE7dX2xs6
+         Ju/IoRlXOHUWWKpTXiazk/u46T0QVfr6kADC3jpS5MrP2hqh4lk3TTp6FCFg6wR3cyTC
+         DCEDREMlO+5XX27GLG6TmFdGIpAORr1AKjFahHMGm6PoHEy3Ptv1kUcYLFzIekKFs6Uw
+         VGmsJcj7dqJteNsGPKZxe+pdxi10HvgHPpleigRocpyEduNA0ioSQvC4Yf6yN/LoldoZ
+         QawQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711984154; x=1712588954;
-        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
-         :date:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=pVYU8GbKC7yGxger5d4I7Be1o72Atk8Z4mAA6WFepzY=;
-        b=leuXdDS7OYQqEVoxW5gR7D5J7JgINGUvr3tJ7vNNJTG0c2H/1476oTKgrde1+jOM+q
-         uaWp0C2gIpK7fUSB4wdR63ygVooFYAwkCJcpUBhuvG78NYpaeP0xol3bd5FejNBLbpN3
-         0r3a+jL6qu42b/jCNbTQFZXemGUq3ytvJ2VzvOAEM8TrML89nuB10rMO5GpCOKCwK+bA
-         pGZDdkFGTDChf51SGhy99LroC1aSiTjdhu+4xAjFKg210rkioPPpJ2Wb+u6SAuaxhvtk
-         tDPb+Ew7HFLqD2HQX5rqkNpeqOCDzqFraoAPWKBkD/mk4qFZzPWL7SCTcBVajVcXd5AO
-         uYtg==
-X-Forwarded-Encrypted: i=1; AJvYcCXLCE4BHA4WudyEj8dvH0RMdewiKfvoMTm8uSKcpQ2Ugq5NYt2F0PwVn5zArEjYYaq8H6AGHrAzEYqMuyf/tARWVduzRv7WP2weCED0
-X-Gm-Message-State: AOJu0Yz/FijAtBTw6B7bONVW6ZweVyjUsgjyP6BdQNBjOSkQz1IJrofJ
-	S9aL2TKyhyv5iArmbmUD6wpI6eNq3eY+0RkJ0IAqyOIVu6vI4WrClF0j+JqWLA==
-X-Google-Smtp-Source: AGHT+IFE9dNt0xZOH3qJyZit+jmNsMhFH7GbTknjl4uhmeiIrUFDsOOM60RHVWJaCdYlrFvJLcUd9g==
-X-Received: by 2002:a17:902:684e:b0:1e0:ac2b:44ad with SMTP id f14-20020a170902684e00b001e0ac2b44admr10395300pln.35.1711984153872;
-        Mon, 01 Apr 2024 08:09:13 -0700 (PDT)
-Received: from [127.0.1.1] ([103.28.246.102])
-        by smtp.gmail.com with ESMTPSA id jn6-20020a170903050600b001defa97c6basm9017045plb.235.2024.04.01.08.09.11
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 01 Apr 2024 08:09:13 -0700 (PDT)
-From: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-Date: Mon, 01 Apr 2024 20:39:08 +0530
-Subject: [PATCH] scsi: ufs: qcom: Add missing interconnect bandwidth values
- for Gear 5
+        d=1e100.net; s=20230601; t=1711984192; x=1712588992;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=rD0kt0FvGy6RrN2V5n3OM/nHuzCqFzbTG5LJZtlBfSQ=;
+        b=eXwg5npHGbzqZaOLOnWCHYSq58N6mYamdfTkI4xfF1Qu28gVKcMk6Pk/QM0D1GUlO9
+         Akuhf7zJ43yPoPbexrKfd5HZt9BFsSSy9olkPrcDhQITW37FLhQk3kuUMpkH3w27MnFw
+         6EW3WFw/y5FzRqEBdjTPpIzeCT7PWLrG2XRGT1gC6p9zbjcr6I3uSSe+X+Sji/2CtvLx
+         ONQm0IBCk6TAjzHqVZLirtVn+cy34jgfwScx3zaHh6sNAenRqfXyG/HZ49NYLNqau1bN
+         20yAqS5AQ+5zpZiLIeRjG1XCR6wl37j/+FXXsf4EMi8u2NNGYoQD4yLpsEGOl0r95Ds2
+         zMuA==
+X-Forwarded-Encrypted: i=1; AJvYcCVXUIZY9LVKGhNZSfIZ0KAHhOUKm1RwghBfhjs9n1HZsfP+eUqKZHex2tgAC8KIWSfg6q2MjjZykl1fexqPkWMwtn9ZKTdtTOPiGSrmFAeZaIfMDddK5mWefWCpqkCevu0nfPBg
+X-Gm-Message-State: AOJu0Yy+3N7I1hzVNCyabJ06pQxDENb2G4ESim8zBGNIAJB9jZxKMjtA
+	KOmg1u/T7mhmYgbuCl2uMm7Cb3Z4ItD+YTobuJNhqV7cfxUQXRyea1Xtl4KPG53qV88u50fRl3h
+	zAdinpggauewRdvbTc4Pdj3KwFBs=
+X-Google-Smtp-Source: AGHT+IEcCbfFXr199EiYnJw5HlOBHWx9BjzqxHRRFkUu/0fAKDBUv9lM2OvcK/+c4eD5ryX6cPZTpJiLniN6MRKODT4=
+X-Received: by 2002:a5d:4523:0:b0:33e:4810:a052 with SMTP id
+ j3-20020a5d4523000000b0033e4810a052mr7375023wra.70.1711984191568; Mon, 01 Apr
+ 2024 08:09:51 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20240401-ufs-icc-fix-v1-1-3bac41bdfa7a@linaro.org>
-X-B4-Tracking: v=1; b=H4sIABPOCmYC/x2MQQqAIBAAvyJ7bkHNCPpKdLBtrb1YKEUg/j3pO
- AMzBTIn4QyTKpD4kSxnbGA6BXT4uDPK1histk47bfAOGYUIg7xobE8jebOyG6AVV+Km/9u81Po
- BqsZFLl0AAAA=
-To: Bjorn Andersson <andersson@kernel.org>, 
- Konrad Dybcio <konrad.dybcio@linaro.org>, 
- "James E.J. Bottomley" <jejb@linux.ibm.com>, 
- "Martin K. Petersen" <martin.petersen@oracle.com>
-Cc: linux-arm-msm@vger.kernel.org, linux-scsi@vger.kernel.org, 
- linux-kernel@vger.kernel.org, Amit Pundir <amit.pundir@linaro.org>, 
- Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-X-Mailer: b4 0.12.4
-X-Developer-Signature: v=1; a=openpgp-sha256; l=2770;
- i=manivannan.sadhasivam@linaro.org; h=from:subject:message-id;
- bh=Cty+UnQToC59kYZv18cUD97vngjCf03hJr63ChFyqoM=;
- b=owEBbQGS/pANAwAKAVWfEeb+kc71AcsmYgBmCs4W5PnPP9s4qkoo1SJWJN/0ZpVQblpiyF1Vh
- BBFu4Rwm/qJATMEAAEKAB0WIQRnpUMqgUjL2KRYJ5dVnxHm/pHO9QUCZgrOFgAKCRBVnxHm/pHO
- 9ZrgB/42bVR2LhePhhSaPpHnN4F8xSPKlhq2wVgf4puXeFn0/pPug87DSVq7VMIok+2XnxYBFux
- 09VhIp1r9d7LjJWQSus7mG/8ULc/glxdMLMbqBF4OaMqxDH5aR3IXRdxKus69xiIBhDSIGdO8Kd
- 9PqtSG9DSZnSIBmXp0JZE0iI+9wZhnbnDj9ik2FNr934T92Z3Plaowp7ZQNGFdec5J9QKsJr5eb
- h/6+Ot9O/OLP0Vfvy318wKHT3IC+eGruaR6Z3WABwMnAK5eK3FadRFMr87xxomdlxE0UvVXJ5jo
- 0T+46URwCyIhFI8lufqLqjWmE49uWeB8kY6BN3Jcy8WPWaL9
-X-Developer-Key: i=manivannan.sadhasivam@linaro.org; a=openpgp;
- fpr=C668AEC3C3188E4C611465E7488550E901166008
+References: <ZgrAM4NjZQWZ2Jq6@archie.me> <2024040143-shrimp-congress-8263@gregkh>
+ <ZgrD-XtaG9D8jFnA@archie.me>
+In-Reply-To: <ZgrD-XtaG9D8jFnA@archie.me>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Mon, 1 Apr 2024 08:09:40 -0700
+Message-ID: <CAADnVQ+3bGQL9tpAR-up0_bPeF-+zW9xPp=Li1xUYf-2SaRuCw@mail.gmail.com>
+Subject: Re: Fwd: stable kernels 6.6.23 and 6.1.83 fails to build: error:
+ unknown type name 'u32'
+To: Bagas Sanjaya <bagasdotme@gmail.com>
+Cc: Greg KH <greg@kroah.com>, Viktor Malik <vmalik@redhat.com>, 
+	Andrii Nakryiko <andrii@kernel.org>, Daniel Xu <dxu@dxuuu.xyz>, Alexei Starovoitov <ast@kernel.org>, 
+	Nick Desaulniers <ndesaulniers@google.com>, Natanael Copa <ncopa@alpinelinux.org>, 
+	Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, 
+	Linux Regressions <regressions@lists.linux.dev>, Linux Stable <stable@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-These entries are necessary to scale the interconnect bandwidth while
-operating in Gear 5.
+On Mon, Apr 1, 2024 at 7:26=E2=80=AFAM Bagas Sanjaya <bagasdotme@gmail.com>=
+ wrote:
+>
+> On Mon, Apr 01, 2024 at 04:15:25PM +0200, Greg KH wrote:
+> > On Mon, Apr 01, 2024 at 09:09:55PM +0700, Bagas Sanjaya wrote:
+> > > Hi,
+> > >
+> > > On Bugzilla, ncopa@alpinelinux.org reported resolve_btfids FTBFS regr=
+ession
+> > > on musl system [1]:
+> > >
+> > > > The latest releases fails to build with musl libc (Alpine Linux edg=
+e and v3.19):
+> > > >
+> > > > ```
+> > > > rm -f -f /home/ncopa/aports/main/linux-lts/src/build-lts.x86_64/too=
+ls/bpf/resolve_btfids/libbpf/libbpf.a; ar rcs /home/ncopa/aports/main/linux=
+-lts/src/build-lts.x86_64/tool
+> > > > s/bpf/resolve_btfids/libbpf/libbpf.a /home/ncopa/aports/main/linux-=
+lts/src/build-lts.x86_64/tools/bpf/resolve_btfids/libbpf/staticobjs/libbpf-=
+in.o
+> > > > In file included from main.c:73:
+> > > > /home/ncopa/aports/main/linux-lts/src/linux-6.6/tools/include/linux=
+/btf_ids.h:7:9: error: unknown type name 'u32'
+> > > >     7 |         u32 cnt;
+> > > >       |         ^~~
+> > > > /home/ncopa/aports/main/linux-lts/src/linux-6.6/tools/include/linux=
+/btf_ids.h:8:9: error: unknown type name 'u32'
+> > > >     8 |         u32 ids[];
+> > > >       |         ^~~
+> > > > /home/ncopa/aports/main/linux-lts/src/linux-6.6/tools/include/linux=
+/btf_ids.h:12:9: error: unknown type name 'u32'
+> > > >    12 |         u32 cnt;
+> > > >       |         ^~~
+> > > > /home/ncopa/aports/main/linux-lts/src/linux-6.6/tools/include/linux=
+/btf_ids.h:13:9: error: unknown type name 'u32'
+> > > >    13 |         u32 flags;
+> > > >       |         ^~~
+> > > > /home/ncopa/aports/main/linux-lts/src/linux-6.6/tools/include/linux=
+/btf_ids.h:15:17: error: unknown type name 'u32'
+> > > >    15 |                 u32 id;
+> > > >       |                 ^~~
+> > > > /home/ncopa/aports/main/linux-lts/src/linux-6.6/tools/include/linux=
+/btf_ids.h:16:17: error: unknown type name 'u32'
+> > > >    16 |                 u32 flags;
+> > > >       |                 ^~~
+> > > > /home/ncopa/aports/main/linux-lts/src/linux-6.6/tools/include/linux=
+/btf_ids.h:215:8: error: unknown type name 'u32'
+> > > >   215 | extern u32 btf_tracing_ids[];
+> > > >       |        ^~~
+> > > > make[4]: *** [/home/ncopa/aports/main/linux-lts/src/linux-6.6/tools=
+/build/Makefile.build:98: /home/ncopa/aports/main/linux-lts/src/build-lts.x=
+86_64/tools/bpf/resolve_btfids
+> > > > /main.o] Error 1
+> > > > make[4]: *** Waiting for unfinished jobs....
 
-Cc: Amit Pundir <amit.pundir@linaro.org>
-Fixes: 03ce80a1bb86 ("scsi: ufs: qcom: Add support for scaling interconnects")
-Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
----
- drivers/ufs/host/ufs-qcom.c | 8 +++++++-
- 1 file changed, 7 insertions(+), 1 deletion(-)
+> > > > make[3]: *** [Makefile:83: /home/ncopa/aports/main/linux-lts/src/bu=
+ild-lts.x86_64/tools/bpf/resolve_btfids//resolve_btfids-in.o] Error 2
+> > > > make[2]: *** [Makefile:76: bpf/resolve_btfids] Error 2
+> > > > make[1]: *** [/home/ncopa/aports/main/linux-lts/src/linux-6.6/Makef=
+ile:1354: tools/bpf/resolve_btfids] Error 2
+> > > > make: *** [/home/ncopa/aports/main/linux-lts/src/linux-6.6/Makefile=
+:234: __sub-make] Error 2
+> > > > ```
+> > >
+> > > Bisection led to upstream commit 9707ac4fe2f5ba ("tools/resolve_btfid=
+s:
+> > > Refactor set sorting with types from btf_ids.h") as the culprit.
+> > >
+> > > See the report on Bugzilla for the full thread and proposed fix.
+> >
+> > Is the proposed fix a commit to backport?
+>
+> Nope (see below).
 
-diff --git a/drivers/ufs/host/ufs-qcom.c b/drivers/ufs/host/ufs-qcom.c
-index 8d68bd21ae73..696540ca835e 100644
---- a/drivers/ufs/host/ufs-qcom.c
-+++ b/drivers/ufs/host/ufs-qcom.c
-@@ -47,7 +47,7 @@ enum {
- 	TSTBUS_MAX,
- };
- 
--#define QCOM_UFS_MAX_GEAR 4
-+#define QCOM_UFS_MAX_GEAR 5
- #define QCOM_UFS_MAX_LANE 2
- 
- enum {
-@@ -67,26 +67,32 @@ static const struct __ufs_qcom_bw_table {
- 	[MODE_PWM][UFS_PWM_G2][UFS_LANE_1] = { 1844,		1000 },
- 	[MODE_PWM][UFS_PWM_G3][UFS_LANE_1] = { 3688,		1000 },
- 	[MODE_PWM][UFS_PWM_G4][UFS_LANE_1] = { 7376,		1000 },
-+	[MODE_PWM][UFS_PWM_G5][UFS_LANE_1] = { 14752,		1000 },
- 	[MODE_PWM][UFS_PWM_G1][UFS_LANE_2] = { 1844,		1000 },
- 	[MODE_PWM][UFS_PWM_G2][UFS_LANE_2] = { 3688,		1000 },
- 	[MODE_PWM][UFS_PWM_G3][UFS_LANE_2] = { 7376,		1000 },
- 	[MODE_PWM][UFS_PWM_G4][UFS_LANE_2] = { 14752,		1000 },
-+	[MODE_PWM][UFS_PWM_G5][UFS_LANE_2] = { 29504,		1000 },
- 	[MODE_HS_RA][UFS_HS_G1][UFS_LANE_1] = { 127796,		1000 },
- 	[MODE_HS_RA][UFS_HS_G2][UFS_LANE_1] = { 255591,		1000 },
- 	[MODE_HS_RA][UFS_HS_G3][UFS_LANE_1] = { 1492582,	102400 },
- 	[MODE_HS_RA][UFS_HS_G4][UFS_LANE_1] = { 2915200,	204800 },
-+	[MODE_HS_RA][UFS_HS_G5][UFS_LANE_1] = { 5836800,	409600 },
- 	[MODE_HS_RA][UFS_HS_G1][UFS_LANE_2] = { 255591,		1000 },
- 	[MODE_HS_RA][UFS_HS_G2][UFS_LANE_2] = { 511181,		1000 },
- 	[MODE_HS_RA][UFS_HS_G3][UFS_LANE_2] = { 1492582,	204800 },
- 	[MODE_HS_RA][UFS_HS_G4][UFS_LANE_2] = { 2915200,	409600 },
-+	[MODE_HS_RA][UFS_HS_G5][UFS_LANE_2] = { 5836800,	819200 },
- 	[MODE_HS_RB][UFS_HS_G1][UFS_LANE_1] = { 149422,		1000 },
- 	[MODE_HS_RB][UFS_HS_G2][UFS_LANE_1] = { 298189,		1000 },
- 	[MODE_HS_RB][UFS_HS_G3][UFS_LANE_1] = { 1492582,	102400 },
- 	[MODE_HS_RB][UFS_HS_G4][UFS_LANE_1] = { 2915200,	204800 },
-+	[MODE_HS_RB][UFS_HS_G5][UFS_LANE_1] = { 5836800,	409600 },
- 	[MODE_HS_RB][UFS_HS_G1][UFS_LANE_2] = { 298189,		1000 },
- 	[MODE_HS_RB][UFS_HS_G2][UFS_LANE_2] = { 596378,		1000 },
- 	[MODE_HS_RB][UFS_HS_G3][UFS_LANE_2] = { 1492582,	204800 },
- 	[MODE_HS_RB][UFS_HS_G4][UFS_LANE_2] = { 2915200,	409600 },
-+	[MODE_HS_RB][UFS_HS_G5][UFS_LANE_2] = { 5836800,	819200 },
- 	[MODE_MAX][0][0]		    = { 7643136,	307200 },
- };
- 
-
----
-base-commit: 4cece764965020c22cff7665b18a012006359095
-change-id: 20240401-ufs-icc-fix-123c7ca1be45
-
-Best regards,
--- 
-Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-
+The fix is in bpf tree.
+commit 62248b22d01e ("tools/resolve_btfids: fix build with musl libc")
 
