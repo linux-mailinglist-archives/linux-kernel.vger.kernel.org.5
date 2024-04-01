@@ -1,66 +1,58 @@
-Return-Path: <linux-kernel+bounces-127060-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-127061-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6888F894650
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 22:55:02 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id E7908894651
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 22:56:50 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9A3291C21843
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 20:55:01 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9C5381F21B41
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 20:56:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A6D7E53E1E;
-	Mon,  1 Apr 2024 20:54:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F41A053E1E;
+	Mon,  1 Apr 2024 20:56:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="JeqgudmR"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="OyjRwpYV"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E55E7446AC;
-	Mon,  1 Apr 2024 20:54:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 43152446AC
+	for <linux-kernel@vger.kernel.org>; Mon,  1 Apr 2024 20:56:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712004895; cv=none; b=B/AI2Jmqc6BdXdmWGuHZ6MGnBayRftrINybuq8mOMt0U8LpcTboHIpxU15HXWBDNIQu7Bi38gbl+Lh2TDd1PqIfTYtYI2w2DIqaslSSUQOTcLidAiC4rRGECp3sHXJIoTPDiwjG0ReibcAPhf7hDgc7vGHQRyVAbJ65mw0rl3RQ=
+	t=1712005005; cv=none; b=u8qkS3M/eHDpAHcn0xjHKEx46PxyPYdVxtPt+tGv8jik/d1yvYL0O68hWJT+XKKiSlBXyi5THDYWF2VUQrQswpNIwAqNycZb/JVPA2U5xRGb9XKNSsnZoCREzqBi2Necdv5l2nsezipzfuvR0m7s7Om5gq3GGj/cOIFfk8fWEs0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712004895; c=relaxed/simple;
-	bh=E9JguHsNU7j/kgZImtaedh14tO/jXcIwFQ8OvqxXEMo=;
+	s=arc-20240116; t=1712005005; c=relaxed/simple;
+	bh=Ccin4Icn1qgvopSjsv4m4lExPsGJNP2O5m4RYgv/XpE=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=UYcJRkBfFU/zbmCyP2LnUwmkrpUNXs5wbIjq9LIvbnhAY8kJj/a2orJsC60NdtH5cVNL3I/f9Vc0nvdCM9e4tss4SE5keBV6Mkx02pGMMLKQGqAn/EJZ2+OhqO9VafM+mCkc+69X66U7IkiZQgnFdVG8/xkadJqjvoxclzy2hLM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=JeqgudmR; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7D9BDC433C7;
-	Mon,  1 Apr 2024 20:54:54 +0000 (UTC)
+	 Content-Type:Content-Disposition:In-Reply-To; b=VOA0kOa7Vg9tnCwar87zJrv4NJb3zT4yJf7DrTu5Znp6wFHTc4SdSrWCoJGbVLOtkLRlN+dRnDUZ+uJrXjsUCMB7EbihNmB6mvZaawMU1PyaUKbJHm+uETmETw5pjWqiTZvAEBlwagZOEhwE4KDjqs0Mqg8Og2pwaDlaN7vIFcM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=OyjRwpYV; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C6DC7C433C7;
+	Mon,  1 Apr 2024 20:56:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712004894;
-	bh=E9JguHsNU7j/kgZImtaedh14tO/jXcIwFQ8OvqxXEMo=;
+	s=k20201202; t=1712005004;
+	bh=Ccin4Icn1qgvopSjsv4m4lExPsGJNP2O5m4RYgv/XpE=;
 	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-	b=JeqgudmRo7/gPc1ODNHJbwBAmGbRcvUJ4fwbQj/ohC7zL0pKEzP6e16Uuj2I1G1Tz
-	 IWQ/qk+RrjAXuIebyrlvOl44eJ80RtW74kTN9tBZJLbtZyC7S7J2LKSG4+fF4z5beT
-	 OaxtD/YNpgzT6DDAr2ofhwkzgf2xQ2ekQNYaCa4Mm1pIGoD1Wed2faRK+E1Wm0lbI3
-	 Ftg22RUDiQq/Gt1qFnzvU+bRhf1DIVNxS0rN6u/pvyN/046YpEqnKwTetnOi7sVxkf
-	 z8gXSEUrxj7G2jGpFWb8a3XFLeWBZ8FKjlusFsFjS3pcPZlphx2uuJ8B40lISEdS0i
-	 myO69AMiYDCjQ==
+	b=OyjRwpYVxL1Qoxium4pjRPKV1qeSk1VTYusdbyPfm50oXs3WtHYb8hhjNfsuyZS/b
+	 QgeWolFLXg8gVRDiZLaOBk1oI6HFYTKAYnBfFzlh6J0XBUZd+vaLP0SUonHxFR/3Rj
+	 kwNeLznaLwGqHAXwPkWYJe0W6U+Gv+6l4qyMAs4AvMU2JIoi8g3/Xgu3OFwcEkftTI
+	 LAX/DHJrYuOj70kZGycxz9Jd80OdCxo464FmMLNOfHAIDQbKpf2HzArz77ms+n7t5S
+	 xgOFS1sxrSilAQzfcYwQ3bvOcEnUi+i/PWCrmjJjd9mN0pTueRmcycvO9ZVFJDNSfw
+	 1jjMgtNlSgiAQ==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id 18871CE0738; Mon,  1 Apr 2024 13:54:54 -0700 (PDT)
-Date: Mon, 1 Apr 2024 13:54:54 -0700
+	id 7571FCE0738; Mon,  1 Apr 2024 13:56:44 -0700 (PDT)
+Date: Mon, 1 Apr 2024 13:56:44 -0700
 From: "Paul E. McKenney" <paulmck@kernel.org>
-To: Steven Rostedt <rostedt@goodmis.org>
-Cc: Nikita Kiryushin <kiryushin@ancud.ru>,
-	Frederic Weisbecker <frederic@kernel.org>,
-	Neeraj Upadhyay <quic_neeraju@quicinc.com>,
-	Joel Fernandes <joel@joelfernandes.org>,
-	Josh Triplett <josh@joshtriplett.org>,
-	Boqun Feng <boqun.feng@gmail.com>,
-	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-	Lai Jiangshan <jiangshanlai@gmail.com>,
-	Zqiang <qiang.zhang1211@gmail.com>, rcu@vger.kernel.org,
-	linux-kernel@vger.kernel.org, lvc-project@linuxtesting.org
-Subject: Re: [PATCH v3] rcu: Fix buffer overlow in print_cpu_stall_info()
-Message-ID: <e8d0f4da-d3af-4bf2-9413-ac48bd2661d7@paulmck-laptop>
+To: Thorsten Blum <thorsten.blum@toblux.com>
+Cc: imran.f.khan@oracle.com, leobras@redhat.com,
+	linux-kernel@vger.kernel.org, peterz@infradead.org,
+	riel@surriel.com, tglx@linutronix.de
+Subject: Re: [PATCH v2] smp: Use str_plural() to fix Coccinelle warnings
+Message-ID: <4382b62a-7625-438e-8eaf-137bd88a499b@paulmck-laptop>
 Reply-To: paulmck@kernel.org
-References: <20240401150540.6dab14fc@gandalf.local.home>
- <20240401194315.362090-1-kiryushin@ancud.ru>
- <20240401160312.7b03e568@gandalf.local.home>
+References: <20240327224216.54342-2-thorsten.blum@toblux.com>
+ <20240401143117.171139-2-thorsten.blum@toblux.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -69,56 +61,50 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240401160312.7b03e568@gandalf.local.home>
+In-Reply-To: <20240401143117.171139-2-thorsten.blum@toblux.com>
 
-On Mon, Apr 01, 2024 at 04:03:12PM -0400, Steven Rostedt wrote:
-> On Mon,  1 Apr 2024 22:43:15 +0300
-> Nikita Kiryushin <kiryushin@ancud.ru> wrote:
+On Mon, Apr 01, 2024 at 04:31:18PM +0200, Thorsten Blum wrote:
+> Fixes the following two Coccinelle/coccicheck warnings reported by
+> string_choices.cocci:
 > 
-> > rcuc info output in print_cpu_stall_info() contains
-> > posiible buffer overflow in the case of huge jiffies
-> > difference. The situation seems improbable, but, buffer
-> > overflow, still.
-> > 
-> > Also, unsigned jiffies difference printed as (signed)
-> > %ld. This is intentional for debugging purposes, but
-> > it is not obvious from the code.
-> > 
-> > Change sprintf to snprintf and add clarifying comment
-> > about intention of %ld format.
-> > 
-> > Found by Linux Verification Center (linuxtesting.org) with SVACE.
-> > 
-> > Fixes: 245a62982502 ("rcu: Dump rcuc kthread status for CPUs not reporting quiescent state")
-> > Signed-off-by: Nikita Kiryushin <kiryushin@ancud.ru>
-> > ---
-> > v3: Change intention comment wording as
-> > Steven Rostedt <rostedt@goodmis.org> suggested
-> > v2: Remove signed to unsigned print format change as
-> > Paul E. McKenney <paulmck@kernel.org> suggested, add format
-> > intention clarification comment
-> >  kernel/rcu/tree_stall.h | 3 ++-
-> >  1 file changed, 2 insertions(+), 1 deletion(-)
-> > 
-> > diff --git a/kernel/rcu/tree_stall.h b/kernel/rcu/tree_stall.h
-> > index 5d666428546b..320440b8384e 100644
-> > --- a/kernel/rcu/tree_stall.h
-> > +++ b/kernel/rcu/tree_stall.h
-> > @@ -504,7 +504,8 @@ static void print_cpu_stall_info(int cpu)
-> >  			rcu_dynticks_in_eqs(rcu_dynticks_snap(cpu));
-> >  	rcuc_starved = rcu_is_rcuc_kthread_starving(rdp, &j);
-> >  	if (rcuc_starved)
-> > -		sprintf(buf, " rcuc=%ld jiffies(starved)", j);
-> > +		/* Print signed value, as negative means it is likely a bug */
-> > +		snprintf(buf, sizeof(buf), " rcuc=%ld jiffies(starved)", j);
-> >  	pr_err("\t%d-%c%c%c%c: (%lu %s) idle=%04x/%ld/%#lx softirq=%u/%u fqs=%ld%s%s\n",
-> >  	       cpu,
-> >  	       "O."[!!cpu_online(cpu)],
+> 	opportunity for str_plural(num_cpus)
+> 	opportunity for str_plural(num_nodes)
 > 
-> 
-> Reviewed-by: Steven Rostedt (Google) <rostedt@goodmis.org>
+> Signed-off-by: Thorsten Blum <thorsten.blum@toblux.com>
 
-Queued for v6.10, thank you both!
+Acked-by: Paul E. McKenney <paulmck@kernel.org>
 
-							Thanx, Paul
+> ---
+> Changes in v2:
+> - Include missing header file
+> ---
+>  kernel/smp.c | 5 +++--
+>  1 file changed, 3 insertions(+), 2 deletions(-)
+> 
+> diff --git a/kernel/smp.c b/kernel/smp.c
+> index f085ebcdf9e7..28fee28174e0 100644
+> --- a/kernel/smp.c
+> +++ b/kernel/smp.c
+> @@ -25,6 +25,7 @@
+>  #include <linux/nmi.h>
+>  #include <linux/sched/debug.h>
+>  #include <linux/jump_label.h>
+> +#include <linux/string_choices.h>
+>  
+>  #include <trace/events/ipi.h>
+>  #define CREATE_TRACE_POINTS
+> @@ -982,8 +983,8 @@ void __init smp_init(void)
+>  	num_nodes = num_online_nodes();
+>  	num_cpus  = num_online_cpus();
+>  	pr_info("Brought up %d node%s, %d CPU%s\n",
+> -		num_nodes, (num_nodes > 1 ? "s" : ""),
+> -		num_cpus,  (num_cpus  > 1 ? "s" : ""));
+> +		num_nodes, str_plural(num_nodes),
+> +		num_cpus,  str_plural(num_cpus));
+>  
+>  	/* Any cleanup work */
+>  	smp_cpus_done(setup_max_cpus);
+> -- 
+> 2.44.0
+> 
 
