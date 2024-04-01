@@ -1,45 +1,45 @@
-Return-Path: <linux-kernel+bounces-126810-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-126811-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id B11DB893CF3
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 17:38:57 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 66D16893CF5
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 17:39:10 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 620EA1F22AB0
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 15:38:57 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 20E5A28322A
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 15:39:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7385F4778B;
-	Mon,  1 Apr 2024 15:38:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 289C04CB4A;
+	Mon,  1 Apr 2024 15:38:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="GFRKQa4I"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="W/4h5ber"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B31A14C62A;
-	Mon,  1 Apr 2024 15:38:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 60AED4D584;
+	Mon,  1 Apr 2024 15:38:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711985888; cv=none; b=bn2/iKUAMiyA0ZKYvoXtmRhlM6nzpfJB7QDZ4WfYcrTnqCSPpW08/eaX93a9gFzt/v8NjZYRZBLqar/7IFjPXag0A56SGqKn0ivuaA427KamjTkhFhlngkR5/PwGM+mmAYWE7MhNH4otpsnxfYJlCndk5N2kqMktvsBZcydsG0Q=
+	t=1711985893; cv=none; b=Mvv+jdsTdZkk/LivmCZ6c9HxGuIfsDSt8kxjFOEpp1EQDskOSf9RQ4xlxIdEp/Lx+UwaVsuHOa1J/JrghpusFWW+VuhsrUKIZ+W+W0rctOxW/4MQZsgeinVR7pj0/C1e2iAc2gdIJWR5b9zytFNMIvaSNksSSbBHNBmPy6WllnE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711985888; c=relaxed/simple;
-	bh=1zF10p+hIOOzeGD/w2eifp2BzHYMkKJyko8PrOd/szw=;
+	s=arc-20240116; t=1711985893; c=relaxed/simple;
+	bh=e40uKtgwHOMJ0qXjF39L3KNX2tZQf8rMLmYjexZGlmw=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=ADWZ7fAdQQsUf02extZiYBL/gv1tI5RUQJexXYE2C5ERxc7goKxcRzUiulHIywS8Dy6+OXcLksjaTv9XZfQdL73ZnY+tvNfCEGqSnsLjTucRfMv6SmsflhNk6aDUwV16iaknOn1c5ogsOCQmZbUcWh1srH88sKnyNsldbhq5EU8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=GFRKQa4I; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 43C82C433C7;
-	Mon,  1 Apr 2024 15:38:04 +0000 (UTC)
+	 MIME-Version; b=VIZf7HLlrsYJxmAJ1eLUWzTol+1lWBuYu4+kk9ZQITHSNM7Dr5jqDggxJD3mljqLu0g35lNZ/otdhSTW8/qFd/dHj4mVmIeFNsr1cw4qYiaUX+hl+C/xGwYz/rNZjHS/W/yXJEksCBGAKUAT6lLHWS4fsrOI+oaqhqNZ8wynw90=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=W/4h5ber; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id F2531C43394;
+	Mon,  1 Apr 2024 15:38:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711985888;
-	bh=1zF10p+hIOOzeGD/w2eifp2BzHYMkKJyko8PrOd/szw=;
+	s=k20201202; t=1711985892;
+	bh=e40uKtgwHOMJ0qXjF39L3KNX2tZQf8rMLmYjexZGlmw=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=GFRKQa4Iy1sbx3ViCQAhaFMKGofoa6+TvIEnAgQixYAsBa3o3lLfERIpvzN1M/j2U
-	 hHzws3RAYU0QPpKLDLfy+tL2ImIaQNqKH7LzrYnFbhgP5yFSgoDvf33gKPJWHQiZXE
-	 Pwd8fVW4G93VFw0h8wNmXNbkwZZ9/1Yx9DHUMEZuEu+uLyxWGaj9pujbaOu08cpm4f
-	 7RBevZ72M6Pyj3Hqr7p1416ZHnXLquTLYu7k2cytMxvxIIZF7Uu/B6MI+IemI2XOxB
-	 +e/3SsOZtqeuhyqM4DDTiEIkLXVU+9ISvZvJJpqLz30QRy2P7X6U1BGtsrgKBQjapx
-	 XjvsK5ixJXNeg==
+	b=W/4h5berDLFQhREHk0G1pfczxuCosz+Caikz+K/Lfgm13EOqeHocM14udPObtukXs
+	 0XqUyaGqREgDrnaVMIMeg7fQ5a8IRooGglnxgEf+xB6gBFsXiFHXdk8VqtLMNTkPrr
+	 Q7/H5BLHpgFY+CP952O1SfjBT14TbRMgEEDoB31Qvt8WJzQTZB8eTnH1meUZvRL9I3
+	 dZqIyyV695SGkWCoQCUAQJqlsGGXT9AuOjlPbKovHoMfNnBVOyGCy7ZbzBoF7/UQXY
+	 4NQ+n+FOdYY+IsdDEhBp8oUK3HodwhBmhn1Kp+KHKT7NgJI/ReUFTq0xB8gPQpvhc+
+	 Z7624yzBr6LzA==
 From: Krzysztof Kozlowski <krzk@kernel.org>
 To: Conor Dooley <conor@kernel.org>,
 	Nicolas Ferre <nicolas.ferre@microchip.com>,
@@ -56,9 +56,9 @@ To: Conor Dooley <conor@kernel.org>,
 	devicetree@vger.kernel.org,
 	linux-kernel@vger.kernel.org
 Cc: Krzysztof Kozlowski <krzk@kernel.org>
-Subject: [PATCH 05/10] arm64: dts: microchip: sparx5_pcb134: align I2C mux node name with bindings
-Date: Mon,  1 Apr 2024 17:37:35 +0200
-Message-Id: <20240401153740.123978-5-krzk@kernel.org>
+Subject: [PATCH 06/10] arm64: dts: microchip: sparx5_pcb135: align I2C mux node name with bindings
+Date: Mon,  1 Apr 2024 17:37:36 +0200
+Message-Id: <20240401153740.123978-6-krzk@kernel.org>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20240401153740.123978-1-krzk@kernel.org>
 References: <20240401153740.123978-1-krzk@kernel.org>
@@ -73,35 +73,28 @@ Content-Transfer-Encoding: 8bit
 DT schema expects node names to match certain.  This fixes dtbs_check
 warnings like:
 
-  sparx5_pcb134_emmc.dtb: i2c0-emux@0: $nodename:0: 'i2c0-emux@0' does not match '^(i2c-?)?mux'
+  sparx5_pcb135_emmc.dtb: i2c0-imux@0: $nodename:0: 'i2c0-imux@0' does not match '^(i2c-?)?mux'
 
 and dtc W=1 warnings:
 
-  sparx5_pcb134_board.dtsi:398.25-403.4: Warning (unique_unit_address_if_enabled): /axi@600000000/i2c0-imux@0: duplicate unit-address (also used in node /axi@600000000/i2c0-emux@0)
+  sparx5_pcb135_board.dtsi:132.25-137.4: Warning (simple_bus_reg): /axi@600000000/i2c0-imux@0: missing or empty reg/ranges property
 
 Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
 ---
- arch/arm64/boot/dts/microchip/sparx5_pcb134_board.dtsi | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ arch/arm64/boot/dts/microchip/sparx5_pcb135_board.dtsi | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/arm64/boot/dts/microchip/sparx5_pcb134_board.dtsi b/arch/arm64/boot/dts/microchip/sparx5_pcb134_board.dtsi
-index e816e6e9d62d..cafec6ef0d0f 100644
---- a/arch/arm64/boot/dts/microchip/sparx5_pcb134_board.dtsi
-+++ b/arch/arm64/boot/dts/microchip/sparx5_pcb134_board.dtsi
-@@ -395,13 +395,13 @@ i2cmux_11: i2cmux-11-pins {
+diff --git a/arch/arm64/boot/dts/microchip/sparx5_pcb135_board.dtsi b/arch/arm64/boot/dts/microchip/sparx5_pcb135_board.dtsi
+index bf51a6e11cf1..860975ffe0a1 100644
+--- a/arch/arm64/boot/dts/microchip/sparx5_pcb135_board.dtsi
++++ b/arch/arm64/boot/dts/microchip/sparx5_pcb135_board.dtsi
+@@ -129,7 +129,7 @@ &sgpio2 {
  };
  
  &axi {
 -	i2c0_imux: i2c0-imux@0 {
-+	i2c0_imux: i2c-mux-0 {
++	i2c0_imux: i2c-mux {
  		compatible = "i2c-mux-pinctrl";
- 		#address-cells = <1>;
- 		#size-cells = <0>;
- 		i2c-parent = <&i2c0>;
- 	};
--	i2c0_emux: i2c0-emux@0 {
-+	i2c0_emux: i2c-mux-1 {
- 		compatible = "i2c-mux-gpio";
  		#address-cells = <1>;
  		#size-cells = <0>;
 -- 
