@@ -1,284 +1,231 @@
-Return-Path: <linux-kernel+bounces-126656-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-126657-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 58473893AFF
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 14:35:01 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id B642E893B02
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 14:35:56 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0BDD4281BC6
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 12:35:00 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 673C7281C50
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 12:35:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F2E653F8C2;
-	Mon,  1 Apr 2024 12:34:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 65BEC3D970;
+	Mon,  1 Apr 2024 12:35:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="f475f+rY"
-Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
+	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="XjSknEkm"
+Received: from NAM12-BN8-obe.outbound.protection.outlook.com (mail-bn8nam12on2094.outbound.protection.outlook.com [40.107.237.94])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4AE2C3A262;
-	Mon,  1 Apr 2024 12:34:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711974885; cv=none; b=Ilvfs+p2/NqCaDoPo74B979Hahio3qlkJQMgg3YCTp8NrrXxCiYhJSu05vgInze0DQN0282h4Tx8A9oXBom7NXucTQGCdTAoAj3HGQpc7yz1CctA9hjDrIKmv4y4bOxc4TUMuTwhygz6+4X73TaY3V5AKZ/Bao5xJki3oJunp1E=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711974885; c=relaxed/simple;
-	bh=U4HB7FzetW57SkZCwImf3w3sHh/l9bhoKvxCMenzM9E=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=YdcPXf7W2F5/zp8hSRdxRLyc5WzlGSLUAB0JLrZmMPRmK8Pqcd4G2u2VofaJ03mkx6yc6bNCtvIPCrEuY3HnPzYSEsZ1jdwIUzkrRMNgJa6ZvJHj7QyH+CA0D3KP+mTuF+PEpUwIuv0lRFcWO2LvzqUvY+IF53vY64hmRA0Ifeg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=f475f+rY; arc=none smtp.client-ip=46.235.227.194
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-	s=mail; t=1711974881;
-	bh=U4HB7FzetW57SkZCwImf3w3sHh/l9bhoKvxCMenzM9E=;
-	h=From:To:Cc:Subject:Date:From;
-	b=f475f+rYVd4mwwx3N5umsoi5aQZqDOS4vW0+QEaTltJtvZ952oat6bUjI0ZKzTqdY
-	 KuZuXHXcZ6ZPlYNh0yDAAUxAHaKpFkpqeX8weikPv92piQTELYFrSMzO4dWmFk7HVV
-	 +750p/WbETf2Jxci7vdRzbjcCSXv6piNg8WFfW3VF4L74JaDuXiAhXpKffEn9nu13s
-	 VR+Zthmw78omuXPlk1klovRmrccvsM0eYgyTnJFmOhEDn0/6MRsvjCQZdpkFBLyc4i
-	 A6bPik1Hr41REee1/Ci+2HSpLwqF0/ZNjd/jFAcdFbmEdOd4gY0WTu+0Mxkcoe7hCf
-	 gjPaSVqEVDeQg==
-Received: from localhost.localdomain (broslavsky.collaboradmins.com [68.183.210.73])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	(Authenticated sender: usama.anjum)
-	by madrid.collaboradmins.com (Postfix) with ESMTPSA id EBA7437813B6;
-	Mon,  1 Apr 2024 12:34:34 +0000 (UTC)
-From: Muhammad Usama Anjum <usama.anjum@collabora.com>
-To: Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Martin KaFai Lau <martin.lau@linux.dev>,
-	Eduard Zingerman <eddyz87@gmail.com>,
-	Song Liu <song@kernel.org>,
-	Yonghong Song <yonghong.song@linux.dev>,
-	John Fastabend <john.fastabend@gmail.com>,
-	KP Singh <kpsingh@kernel.org>,
-	Stanislav Fomichev <sdf@google.com>,
-	Hao Luo <haoluo@google.com>,
-	Jiri Olsa <jolsa@kernel.org>,
-	Mykola Lysenko <mykolal@fb.com>,
-	Shuah Khan <shuah@kernel.org>,
-	Muhammad Usama Anjum <usama.anjum@collabora.com>
-Cc: kernel@collabora.com,
-	linux-kernel@vger.kernel.org,
-	bpf@vger.kernel.org,
-	linux-kselftest@vger.kernel.org
-Subject: [PATCH bpf-next v3] selftests/bpf: Move test_dev_cgroup to prog_tests
-Date: Mon,  1 Apr 2024 17:34:45 +0500
-Message-Id: <20240401123455.1377896-1-usama.anjum@collabora.com>
-X-Mailer: git-send-email 2.39.2
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BDE8F1DFFC;
+	Mon,  1 Apr 2024 12:35:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.237.94
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1711974949; cv=fail; b=jfZ846SX2lGlCiZigaZu+eskRR0a3qVutjEh0ZrbU0+C1FmTCL0X8zTnOXwwzLWerkvZ2/YmBBIC9wjiEsNLbC8jX9P0lYWaQ/2xZFC8w7GUES03n3HofPR5pxfBvPWDcFDlHbg1FRIkN8aAMCYhnVfdjFf7t6fdoFDa8Gt5q2Y=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1711974949; c=relaxed/simple;
+	bh=iDTzx46+G1auYfMHE1Fm4D/MncKWPi8lHF76SlLQ4uU=;
+	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
+	 Content-Type:MIME-Version; b=nyv5GZM3Ngu0Y8SfJru+M1ZnAGI9Czf1i4LdR0R3kOgdUIqtoK/IO+7Rise24WQbMBT3j7cAsmh3a28NRdpCRzWSdaxc7dY6+aRw9tEtdZwEqd8jI5ZRqUvypNX/bhVhD7yUQzp6rheA3cT5dRYiQfX1NwksqEno1iSn3kHpyi8=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=XjSknEkm; arc=fail smtp.client-ip=40.107.237.94
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=VPG8qA3n1ZlZS3YGt2lEQZ7/BAG7ZBL7tVoSPiR1xTwdxg4uCty+DxqfoojLoJSaVJgEfkDXHO+uJiDrNbYSad/jjEIYQHfNb9yzCYh50UfWgN1gmZjukfwY1eB4TQGoCKb2nwyQAg1UuxnEJiEN4kSZI5mLqsnYlRW1RkJ9rWFixOSPUFWYwUk2Y+qWpDTG4XhsbGMprbuZdSMY/AaXdQAOjFBV75a8Go19+DXkXxUyJxbh6RM5XOkCj7lDHoEmKj1EOi7edWFzq4daQ8eGWs1fqkB1lnwlsnWvttlcV0TUzDpfbMy++Daiy45H4P5xAQLMpFb/5q3LOpsDUck4Pg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=ucdoAYbja4uOUIG8TCLJ19/Rr1aQXrrah8r5Ustk0Ns=;
+ b=JtwhYYghZo/iuEQRveaakxzkHttz2Txqi2BVw2LMR9/l7cuHpoJ/vTWP/CSilxL9MUNbp6iO2dlF+rkFnZs5BpvZx+edTdcRoFgCPteazfWDhEECGyy8LrY1kmjgG4zveIiUOk/rz+tq7dyd3cycd9QtDA3xQPABEsQxCTTAztAO8KwjLlXYbvuxY0GS9oKiwYVV9lcWLwDwhBgrxkxuM1BRPZ/p+8rIQoPIaRa8PMVAvPfnMXP0z+OfUmc2IvlinM6B3qF6G4l3nPhx9Rr9P98I4Sg5Y3GDz1lxJxHO7KD+DwIcWpdfTHG9tX3tTrT/WJxbUapmOl5W0+6Y03QlZQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=ucdoAYbja4uOUIG8TCLJ19/Rr1aQXrrah8r5Ustk0Ns=;
+ b=XjSknEkmIhe0aPrwbOsGzK1dQt1pDnZnqtN6UlFLzOjIDUoxwcnzKKLsRsV1CO2ZXl8GfZ9V/qm/t2r69ryd48EnW1FaTy9Yk4RllFOgTsOjNxVo1uMBPlUa96qT2EJYmYr0SLWv23LB4G07KdTpsFsxXbe8IKmU/svnwzj5tjE=
+Received: from PH7PR12MB5685.namprd12.prod.outlook.com (2603:10b6:510:13c::22)
+ by MW6PR12MB9019.namprd12.prod.outlook.com (2603:10b6:303:23f::12) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7409.46; Mon, 1 Apr
+ 2024 12:35:42 +0000
+Received: from PH7PR12MB5685.namprd12.prod.outlook.com
+ ([fe80::f2b6:1034:76e8:f15a]) by PH7PR12MB5685.namprd12.prod.outlook.com
+ ([fe80::f2b6:1034:76e8:f15a%6]) with mapi id 15.20.7409.042; Mon, 1 Apr 2024
+ 12:35:42 +0000
+Message-ID: <c2182ac1-368c-441b-b6ed-b5d15a8f9f38@amd.com>
+Date: Mon, 1 Apr 2024 14:35:38 +0200
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2] drm/radeon/radeon_display: Decrease the size of
+ allocated memory
+To: Erick Archer <erick.archer@outlook.com>,
+ Alex Deucher <alexander.deucher@amd.com>, "Pan, Xinhui"
+ <Xinhui.Pan@amd.com>, David Airlie <airlied@gmail.com>,
+ Daniel Vetter <daniel@ffwll.ch>, "Gustavo A. R. Silva"
+ <gustavoars@kernel.org>, Kees Cook <keescook@chromium.org>
+Cc: amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+ linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
+References: <AS8PR02MB723799AFF24E7524364F66708B392@AS8PR02MB7237.eurprd02.prod.outlook.com>
+Content-Language: en-US
+From: =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>
+In-Reply-To: <AS8PR02MB723799AFF24E7524364F66708B392@AS8PR02MB7237.eurprd02.prod.outlook.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: FR4P281CA0092.DEUP281.PROD.OUTLOOK.COM
+ (2603:10a6:d10:cb::13) To PH7PR12MB5685.namprd12.prod.outlook.com
+ (2603:10b6:510:13c::22)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: PH7PR12MB5685:EE_|MW6PR12MB9019:EE_
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	gqHEqjiLTsdwAVmAOoGEtbQMfgEGUds/k+8gQ6gV4ogm1cNw7rDkFiZIAzoNeHHEZq5APwj2+EkOuVx4pVLTk3L2ZXtSbAeu86iVAZ9SOCFUAnyNjZeIGj/aILZLMyCav3XKHX2JrRShBBgitt92bokzhmv0wIwaP2T2vVgWnZYiuzbUXQZNEPg6EpNGsxg6R1mLep78AybGhsW0TaSIYm/jgWdodtP5GcroQktf0dzd89Q/i17gZvO/8T9mduGpCFOT65VoRy7vGSXC3YPtgpdJ+kkdZ1j0ek4dR143HCjaHxs9UwN3QpigwzVJ0IYM0K35o61XW1PmhgLjPwo9rMvRvXQKDYkd1XfMeLAhdXWLyZEq16C4Yjabep5Yjq6AmfZKoxUAHfOWy7GGR4zPQ8eqGLrzxrimio3u6+E7Xf1A9AKjr6KwjtrU14oBGKFHTmnodqbvwDDzlzlcr9sDRps9fV/frHGOQLPo02NbzzVyj2UXV1YL8cEvL0mKhs8YfweETluOy/do4VoH+RYa0Bq9TXG4/IGZ2t52U19qxiDodnpVKoglWBEsUWFYtqG/JD+/sv7G/yb/5gDTdo2GmKtdmGcBoYX3h2YkDj8WaWryAdChz21OSYnVVmAb2XUN
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH7PR12MB5685.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(1800799015)(376005)(366007);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?utf-8?B?K1hHaUlIQ2UrZ0EvazF1THl4VlRLZ25hbGJ6azZack9qUVBZYm5xcTQwT1Zn?=
+ =?utf-8?B?eDc5UVNmTUh5Zy9mR2V0eVJPRS8rYkFzQnc1bStWclRONFBSVi9aQnVETmtk?=
+ =?utf-8?B?OERPUlI4T0RseGZKLzRFV2o4QXh1cCtJdkFOYTE0VlFoN3A1dmlNcDNBTEpE?=
+ =?utf-8?B?bDVsY0hxaGFnRmw1b2NMZHBPdS9TMlpVQTV1SnVxV0tpNm45dE5POVFjbGhB?=
+ =?utf-8?B?azRKWWdFSS9CbVVmQ2F4d1FieVFIZXV2Mk1pc29PSkJydnhraFdibWR6Vmdq?=
+ =?utf-8?B?K1l5NnpxZmV6ZDNoWk1CNFVIWkZ1NUczYmRkTy9OL3hhR3lsV0tvelZhMzk3?=
+ =?utf-8?B?eVJjRGhmNWJ5Ui9jQytKZUdXU0lVQlMwMW9QRHhrenVWZ1EvRERrYkt4NHdr?=
+ =?utf-8?B?STBMcWk2emVJQjNaSm4rZzNrZkJOSlFoRlhTcEFhTUYyTlhYSUFDamVhL05K?=
+ =?utf-8?B?ZlBNYzNzdjVFTEhMOCtsZVhLWnBYU3p6WFBGeHZnYW9jWDlpQXV0cG5IeDdT?=
+ =?utf-8?B?aE1tY0w2VGxBUy9uWGdWNGxKdlhtN3VkT0FVaGlmY3hJdUpxVmZzeUtLZTIv?=
+ =?utf-8?B?NjVPcEZFSE5UNnRZZStjN2tEdk9QVlByWldNUmpOc3ZmWE4wOE4yc1N1NmVz?=
+ =?utf-8?B?R0diRjZDcnRoNzBhcnNJcy9vcXlXdWh5Zm43YlNOcmlWaG5hSGRWRU9vTEpn?=
+ =?utf-8?B?ZytMeDVUYUlhMTROTlp4VlVpbXF0UVhtQUlBZGdRbTVlL1ZrckF6dzdEaVc0?=
+ =?utf-8?B?eW4xV1NYZGZES0d5ZTgzZDJVaUJtZkUwMUl5Q2Fqemdac25mUHBYdHo3ZFdr?=
+ =?utf-8?B?MjhGMXhta1lhQlBPQW5hMFgyOUxDRXJEZklHWDdwUzVzcThoelQyd3VmR2Rk?=
+ =?utf-8?B?a3JFTGJGUkQvUStrUDh0ZDdiQlUyczhmY0c1c01Jdy95b3Q3alZPM1RzeEwy?=
+ =?utf-8?B?bmdMUi9COFpDc1RMNTJ5Slo2dS9pLzNRdUdjRnVmWHdoWXQ5Mk1DeTNoR2dC?=
+ =?utf-8?B?engxVTh4LzQ1VXh3TlZDWXpBMTZ5Rit6RDViZjJsOXUyUy9VTURXd1h6eUR6?=
+ =?utf-8?B?Z283U3pURGIzcEU5WGY1RDFoSXl0MGg3TlNYbVJTQU1LNDJiYnhHMUlud2lt?=
+ =?utf-8?B?a0RMUTRhY3NSRkdEQzc2TmwzT2taOWgwZ3VRMzZQbFQrWTNZd2k3QnY2Rmw2?=
+ =?utf-8?B?V2hiYzZzVGlaajFLSExtd1gzSEZzSmg2emlIQkFMWmlaRlAzc1k0RjBvMVg2?=
+ =?utf-8?B?c0hVc0N0SmdTSEpvL2dzaTJkZ1UvTWxGWHpQMTBaWThjT0FQZlVKSVVkRTNa?=
+ =?utf-8?B?SUdxclRxTmlTSmcwVnFmZmtrVVJXSXhaZUdPcmREeHBHOWVaTlVpSWhmWVBh?=
+ =?utf-8?B?UmJvanlUcDFJQThWcVFpbVpCQXBXYlE4OXFjODF3U2ZTcEFJTHdXU1lrdGdy?=
+ =?utf-8?B?bUF3alhPMENCUlZuTFVWcGNPa3laUFYxRkF3d2FaQVVJaVVuck53S3VnZW9n?=
+ =?utf-8?B?aVZnclRLUlhEL21Gc1hiMG9wVnRpVm93bWVwVlN3ay9ZRzROTFB5OEdJdENF?=
+ =?utf-8?B?KzU5cUI3RUpOL05oK2h1eWxhenJ3cE5WZEkxTkVEdGorUWNWb0JnTXBIazVx?=
+ =?utf-8?B?dk9wUzF2bDZKMjlJVGJrZlp3bG90Sks2V2pPZitzbDkvTnFOU1hEdlVVcUVv?=
+ =?utf-8?B?YnFWTjU1djdYTzRvYmhxZy95c0FJMGVhRTdlZHhxblVPblgybXlJSmZteEdN?=
+ =?utf-8?B?aWJXSEZHSXRRZDd5bVVjRlhTbE1BNXFEWjJkTTI4Y3pOckpwZjVtSFdsdTkw?=
+ =?utf-8?B?SllQM3RnK0NzRnlqd0tHYzZocERqOW40bnh4VU9HMXkwMmI1dThTUDhibnU1?=
+ =?utf-8?B?S2F3ZWxUVkM0T3ZzK3RCWGlOd295MFJhQlprNDNXRC93dWpBTk03ZElkWkJv?=
+ =?utf-8?B?dXhyZmpiSm8rOVBXQlFnODQzT0ZOV1BCNitzOGdUUEZERnlHSTRSRmtTK2V2?=
+ =?utf-8?B?UFhhY1RyMnhSd2FvUXpqTE5kTDFCTkI3OFdaVEJCSjhtbS9UdjE5ZUcxOFhB?=
+ =?utf-8?B?WUFFSFVCOEVRcjVPUWRTbnkxOVhRSVdMd1NneDdPT2REYXVHOGVUM2k1NjZk?=
+ =?utf-8?Q?a0QQ3/n8crS39lnkNeaHfRcE5?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: f7922ad7-b17d-40d0-0104-08dc52483e9b
+X-MS-Exchange-CrossTenant-AuthSource: PH7PR12MB5685.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 01 Apr 2024 12:35:42.2719
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: NEI8UJQR7tO63jNLvWpx+lGlo1/EyoBxpxOJnqHDtz20I8tBllfzua2prXJo5CR4
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW6PR12MB9019
 
-Move test_dev_cgroup.c to prog_tests/dev_cgroup.c to be able to run it
-with test_progs. Replace dev_cgroup.bpf.o with skel header file,
-dev_cgroup.skel.h and load program from it accourdingly.
+Am 30.03.24 um 17:34 schrieb Erick Archer:
+> This is an effort to get rid of all multiplications from allocation
+> functions in order to prevent integer overflows [1] [2].
+>
+> In this case, the memory allocated to store RADEONFB_CONN_LIMIT pointers
+> to "drm_connector" structures can be avoided. This is because this
+> memory area is never accessed.
+>
+> Also, in the kzalloc function, it is preferred to use sizeof(*pointer)
+> instead of sizeof(type) due to the type of the variable can change and
+> one needs not change the former (unlike the latter).
+>
+> At the same time take advantage to remove the "#if 0" block, the code
+> where the removed memory area was accessed, and the RADEONFB_CONN_LIMIT
+> constant due to now is never used.
+>
+> Link: https://www.kernel.org/doc/html/latest/process/deprecated.html#open-coded-arithmetic-in-allocator-arguments [1]
+> Link: https://github.com/KSPP/linux/issues/160 [2]
+> Signed-off-by: Erick Archer <erick.archer@outlook.com>
 
-  ./test_progs -t dev_cgroup
-  mknod: /tmp/test_dev_cgroup_null: Operation not permitted
-  64+0 records in
-  64+0 records out
-  32768 bytes (33 kB, 32 KiB) copied, 0.000856684 s, 38.2 MB/s
-  dd: failed to open '/dev/full': Operation not permitted
-  dd: failed to open '/dev/random': Operation not permitted
-  #72     test_dev_cgroup:OK
-  Summary: 1/0 PASSED, 0 SKIPPED, 0 FAILED
+Well in general we don't do any new feature development any more for the 
+radeon driver.
 
-Signed-off-by: Muhammad Usama Anjum <usama.anjum@collabora.com>
----
-Changes since v2:
-- Replace test_dev_cgroup with serial_test_dev_cgroup as there is
-  probability that the test is racing against another cgroup test
-- Minor changes to the commit message above
+But this cleanup looks so straight forward that the risk of breaking 
+something is probably very low.
 
-I've tested the patch with vmtest.sh on bpf-next/for-next and linux
-next. It is passing on both. Not sure why it was failed on BPFCI.
-Test run with vmtest.h:
-sudo LDLIBS=-static PKG_CONFIG='pkg-config --static' ./vmtest.sh ./test_progs -t dev_cgroup
-/test_progs -t dev_cgroup
-mknod: /tmp/test_dev_cgroup_null: Operation not permitted
-64+0 records in
-64+0 records out
-32768 bytes (33 kB, 32 KiB) copied, 0.000403432 s, 81.2 MB/s
-dd: failed to open '/dev/full': Operation not permitted
-dd: failed to open '/dev/random': Operation not permitted
- #69      dev_cgroup:OK
-Summary: 1/0 PASSED, 0 SKIPPED, 0 FAILED
+Acked-by from my side, but Alex should probably take a look as well.
 
-Changes since v1:
-- Rename file from test_dev_cgroup.c to dev_cgroup.c
-- Use ASSERT_* in-place of CHECK
----
- .../selftests/bpf/prog_tests/dev_cgroup.c     | 58 +++++++++++++
- tools/testing/selftests/bpf/test_dev_cgroup.c | 85 -------------------
- 2 files changed, 58 insertions(+), 85 deletions(-)
- create mode 100644 tools/testing/selftests/bpf/prog_tests/dev_cgroup.c
- delete mode 100644 tools/testing/selftests/bpf/test_dev_cgroup.c
+Regards,
+Christian.
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/dev_cgroup.c b/tools/testing/selftests/bpf/prog_tests/dev_cgroup.c
-new file mode 100644
-index 0000000000000..da0bc209d6a21
---- /dev/null
-+++ b/tools/testing/selftests/bpf/prog_tests/dev_cgroup.c
-@@ -0,0 +1,58 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+/* Copyright (c) 2017 Facebook
-+ */
-+
-+#include <test_progs.h>
-+#include <time.h>
-+#include "cgroup_helpers.h"
-+#include "dev_cgroup.skel.h"
-+
-+#define TEST_CGROUP "/test-bpf-based-device-cgroup/"
-+
-+void serial_test_dev_cgroup(void)
-+{
-+	struct dev_cgroup *skel;
-+	int cgroup_fd, err;
-+	__u32 prog_cnt;
-+
-+	skel = dev_cgroup__open_and_load();
-+	if (!ASSERT_OK_PTR(skel, "skel_open_and_load"))
-+		goto cleanup;
-+
-+	cgroup_fd = cgroup_setup_and_join(TEST_CGROUP);
-+	if (!ASSERT_GT(cgroup_fd, 0, "cgroup_setup_and_join"))
-+		goto cleanup;
-+
-+	err = bpf_prog_attach(bpf_program__fd(skel->progs.bpf_prog1), cgroup_fd,
-+			      BPF_CGROUP_DEVICE, 0);
-+	if (!ASSERT_EQ(err, 0, "bpf_attach"))
-+		goto cleanup;
-+
-+	err = bpf_prog_query(cgroup_fd, BPF_CGROUP_DEVICE, 0, NULL, NULL, &prog_cnt);
-+	if (!ASSERT_EQ(err, 0, "bpf_query") || (!ASSERT_EQ(prog_cnt, 1, "bpf_query")))
-+		goto cleanup;
-+
-+	/* All operations with /dev/zero and /dev/urandom are allowed,
-+	 * everything else is forbidden.
-+	 */
-+	ASSERT_EQ(system("rm -f /tmp/test_dev_cgroup_null"), 0, "rm");
-+	ASSERT_NEQ(system("mknod /tmp/test_dev_cgroup_null c 1 3"), 0, "mknod");
-+	ASSERT_EQ(system("rm -f /tmp/test_dev_cgroup_null"), 0, "rm");
-+
-+	/* /dev/zero is whitelisted */
-+	ASSERT_EQ(system("rm -f /tmp/test_dev_cgroup_zero"), 0, "rm");
-+	ASSERT_EQ(system("mknod /tmp/test_dev_cgroup_zero c 1 5"), 0, "mknod");
-+	ASSERT_EQ(system("rm -f /tmp/test_dev_cgroup_zero"), 0, "rm");
-+
-+	ASSERT_EQ(system("dd if=/dev/urandom of=/dev/zero count=64"), 0, "dd");
-+
-+	/* src is allowed, target is forbidden */
-+	ASSERT_NEQ(system("dd if=/dev/urandom of=/dev/full count=64"), 0, "dd");
-+
-+	/* src is forbidden, target is allowed */
-+	ASSERT_NEQ(system("dd if=/dev/random of=/dev/zero count=64"), 0, "dd");
-+
-+cleanup:
-+	cleanup_cgroup_environment();
-+	dev_cgroup__destroy(skel);
-+}
-diff --git a/tools/testing/selftests/bpf/test_dev_cgroup.c b/tools/testing/selftests/bpf/test_dev_cgroup.c
-deleted file mode 100644
-index adeaf63cb6fa3..0000000000000
---- a/tools/testing/selftests/bpf/test_dev_cgroup.c
-+++ /dev/null
-@@ -1,85 +0,0 @@
--// SPDX-License-Identifier: GPL-2.0-only
--/* Copyright (c) 2017 Facebook
-- */
--
--#include <stdio.h>
--#include <stdlib.h>
--#include <string.h>
--#include <errno.h>
--#include <assert.h>
--#include <sys/time.h>
--
--#include <linux/bpf.h>
--#include <bpf/bpf.h>
--#include <bpf/libbpf.h>
--
--#include "cgroup_helpers.h"
--#include "testing_helpers.h"
--
--#define DEV_CGROUP_PROG "./dev_cgroup.bpf.o"
--
--#define TEST_CGROUP "/test-bpf-based-device-cgroup/"
--
--int main(int argc, char **argv)
--{
--	struct bpf_object *obj;
--	int error = EXIT_FAILURE;
--	int prog_fd, cgroup_fd;
--	__u32 prog_cnt;
--
--	/* Use libbpf 1.0 API mode */
--	libbpf_set_strict_mode(LIBBPF_STRICT_ALL);
--
--	if (bpf_prog_test_load(DEV_CGROUP_PROG, BPF_PROG_TYPE_CGROUP_DEVICE,
--			  &obj, &prog_fd)) {
--		printf("Failed to load DEV_CGROUP program\n");
--		goto out;
--	}
--
--	cgroup_fd = cgroup_setup_and_join(TEST_CGROUP);
--	if (cgroup_fd < 0) {
--		printf("Failed to create test cgroup\n");
--		goto out;
--	}
--
--	/* Attach bpf program */
--	if (bpf_prog_attach(prog_fd, cgroup_fd, BPF_CGROUP_DEVICE, 0)) {
--		printf("Failed to attach DEV_CGROUP program");
--		goto err;
--	}
--
--	if (bpf_prog_query(cgroup_fd, BPF_CGROUP_DEVICE, 0, NULL, NULL,
--			   &prog_cnt)) {
--		printf("Failed to query attached programs");
--		goto err;
--	}
--
--	/* All operations with /dev/zero and and /dev/urandom are allowed,
--	 * everything else is forbidden.
--	 */
--	assert(system("rm -f /tmp/test_dev_cgroup_null") == 0);
--	assert(system("mknod /tmp/test_dev_cgroup_null c 1 3"));
--	assert(system("rm -f /tmp/test_dev_cgroup_null") == 0);
--
--	/* /dev/zero is whitelisted */
--	assert(system("rm -f /tmp/test_dev_cgroup_zero") == 0);
--	assert(system("mknod /tmp/test_dev_cgroup_zero c 1 5") == 0);
--	assert(system("rm -f /tmp/test_dev_cgroup_zero") == 0);
--
--	assert(system("dd if=/dev/urandom of=/dev/zero count=64") == 0);
--
--	/* src is allowed, target is forbidden */
--	assert(system("dd if=/dev/urandom of=/dev/full count=64"));
--
--	/* src is forbidden, target is allowed */
--	assert(system("dd if=/dev/random of=/dev/zero count=64"));
--
--	error = 0;
--	printf("test_dev_cgroup:PASS\n");
--
--err:
--	cleanup_cgroup_environment();
--
--out:
--	return error;
--}
--- 
-2.39.2
+> ---
+> Changes in v2:
+> - Rebase against linux-next.
+>
+> Previous versions:
+> v1 -> https://lore.kernel.org/linux-hardening/20240222180431.7451-1-erick.archer@gmx.com/
+>
+> Hi everyone,
+>
+> Any comments would be greatly appreciated. The first version was
+> not commented.
+>
+> Thanks,
+> Erick
+> ---
+>   drivers/gpu/drm/radeon/radeon.h         | 1 -
+>   drivers/gpu/drm/radeon/radeon_display.c | 8 +-------
+>   2 files changed, 1 insertion(+), 8 deletions(-)
+>
+> diff --git a/drivers/gpu/drm/radeon/radeon.h b/drivers/gpu/drm/radeon/radeon.h
+> index 3e5ff17e3caf..0999c8eaae94 100644
+> --- a/drivers/gpu/drm/radeon/radeon.h
+> +++ b/drivers/gpu/drm/radeon/radeon.h
+> @@ -132,7 +132,6 @@ extern int radeon_cik_support;
+>   /* RADEON_IB_POOL_SIZE must be a power of 2 */
+>   #define RADEON_IB_POOL_SIZE			16
+>   #define RADEON_DEBUGFS_MAX_COMPONENTS		32
+> -#define RADEONFB_CONN_LIMIT			4
+>   #define RADEON_BIOS_NUM_SCRATCH			8
+>   
+>   /* internal ring indices */
+> diff --git a/drivers/gpu/drm/radeon/radeon_display.c b/drivers/gpu/drm/radeon/radeon_display.c
+> index efd18c8d84c8..5f1d24d3120c 100644
+> --- a/drivers/gpu/drm/radeon/radeon_display.c
+> +++ b/drivers/gpu/drm/radeon/radeon_display.c
+> @@ -683,7 +683,7 @@ static void radeon_crtc_init(struct drm_device *dev, int index)
+>   	struct radeon_device *rdev = dev->dev_private;
+>   	struct radeon_crtc *radeon_crtc;
+>   
+> -	radeon_crtc = kzalloc(sizeof(struct radeon_crtc) + (RADEONFB_CONN_LIMIT * sizeof(struct drm_connector *)), GFP_KERNEL);
+> +	radeon_crtc = kzalloc(sizeof(*radeon_crtc), GFP_KERNEL);
+>   	if (radeon_crtc == NULL)
+>   		return;
+>   
+> @@ -709,12 +709,6 @@ static void radeon_crtc_init(struct drm_device *dev, int index)
+>   	dev->mode_config.cursor_width = radeon_crtc->max_cursor_width;
+>   	dev->mode_config.cursor_height = radeon_crtc->max_cursor_height;
+>   
+> -#if 0
+> -	radeon_crtc->mode_set.crtc = &radeon_crtc->base;
+> -	radeon_crtc->mode_set.connectors = (struct drm_connector **)(radeon_crtc + 1);
+> -	radeon_crtc->mode_set.num_connectors = 0;
+> -#endif
+> -
+>   	if (rdev->is_atom_bios && (ASIC_IS_AVIVO(rdev) || radeon_r4xx_atom))
+>   		radeon_atombios_init_crtc(dev, radeon_crtc);
+>   	else
 
 
