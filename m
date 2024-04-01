@@ -1,114 +1,137 @@
-Return-Path: <linux-kernel+bounces-126698-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-126699-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 17CDC893BBA
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 16:06:15 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 63120893BBB
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 16:06:26 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 48CF91C2094B
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 14:06:14 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 035291F20F12
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 14:06:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 61EC7405EB;
-	Mon,  1 Apr 2024 14:06:08 +0000 (UTC)
-Received: from mail.inka.de (quechua.inka.de [193.197.184.2])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C9378405E6;
+	Mon,  1 Apr 2024 14:06:17 +0000 (UTC)
+Received: from mta20.hihonor.com (mta20.honor.com [81.70.206.69])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D05A93FE52;
-	Mon,  1 Apr 2024 14:06:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.197.184.2
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9FCE93FE52
+	for <linux-kernel@vger.kernel.org>; Mon,  1 Apr 2024 14:06:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=81.70.206.69
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711980368; cv=none; b=n0Jl2n/RvXjIywVwjbbnkGFnz1aw9n9fHcws41d1ycD8kK4dGT8H49dNXe4L1yxRyvXGIR9n6YHm/0UXFzwuRe5Dkaa0YItK62az/W4D0kFS0U73LhgIEoxUvgf2QIQG8nq1TR48ip2dt84cRWGJzNbPECTkibZJoz7a5fuj6rE=
+	t=1711980377; cv=none; b=neOsBQvrvqQuugqNH/O4+saqbe6/9Bsy2pGYEEy7IzMwQeV5i7LGIRUxiCqiSxWwY3mjPsLVeN9OFVNk/Xbf3+e2Pyq+5HfY+eGWkDH7PiiTzW72jpkdSBwqTIt+R9W761HKhkaX3BIGxVqGjGj4ajXUARJEuDk+6Y+m4v4fEDc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711980368; c=relaxed/simple;
-	bh=5Zt86hbg+IWRJfODskmP4KA6bw6Ujfy1jtcfs7KEcuQ=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=rDjouLOy7Kr8HQDC8EKbUH6N+1U2XCaui0B/ozRRr4mlBDWZu2vc3ELT/JjvdSYcHjQpuNZtugGO3h9i6xRVnEe8ndakuk3FSLP4HE5wHLuFhUbqGxWgbStxCaWcuLWiWuKP4IezmcUVUgGeA1//duWsOSm6P0hiYVGaAm3xwHo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=inka.de; spf=pass smtp.mailfrom=inka.de; arc=none smtp.client-ip=193.197.184.2
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=inka.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=inka.de
-Received: from mail.berkhan-weisser.de ([2a03:4000:54:b9a::4])
-	by mail.inka.de with esmtpsa 
-	id 1rrHsj-00Ap2r-85; Mon, 01 Apr 2024 15:39:25 +0200
-Received: from 127.0.0.1 (helo=localhost.localdomain)
-	by mail.berkhan-weisser.de with esmtpsa (TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
-	(Exim 4.96)
-	(envelope-from <Enrik.Berkhan@inka.de>)
-	id 1rrHsi-003vlF-3C;
-	Mon, 01 Apr 2024 15:39:25 +0200
-From: Enrik Berkhan <Enrik.Berkhan@inka.de>
-To: Alex Hung <alexhung@gmail.com>
-Cc: Hans de Goede <hdegoede@redhat.com>,
-	=?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>,
-	platform-driver-x86@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	"Rafael J. Wysocki" <rjw@rjwysocki.net>,
-	Enrik Berkhan <Enrik.Berkhan@inka.de>
-Subject: [PATCH] platform/x86/intel/hid: Ignore power button release in wakeup mode
-Date: Mon,  1 Apr 2024 15:39:19 +0200
-Message-ID: <20240401133919.4304-1-Enrik.Berkhan@inka.de>
-X-Mailer: git-send-email 2.44.0
+	s=arc-20240116; t=1711980377; c=relaxed/simple;
+	bh=7Vn77MQaepkLiapMpfLmvvEmNQBRU3d+1tEdA4VbGUA=;
+	h=From:To:CC:Subject:Date:Message-ID:Content-Type:MIME-Version; b=E7vU5pO19qKH1gdoikB4BgZGOOVb5o9Owi/3Qhs4CHUGWoFPrL1F+GXiS//QZe0rTL+evTMDmpDfOfLUphuFb9vkP7p22gefFZ8ia3uPaPuMhcVryb8HrTdgrGAJ24opBo5/cje3g6SQWxelaUIUjY+KSwuFf07DOFkrw/Ag1nI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=honor.com; spf=pass smtp.mailfrom=honor.com; arc=none smtp.client-ip=81.70.206.69
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=honor.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=honor.com
+Received: from w011.hihonor.com (unknown [10.68.20.122])
+	by mta20.hihonor.com (SkyGuard) with ESMTPS id 4V7XQf2SNQzYxDsy;
+	Mon,  1 Apr 2024 21:48:10 +0800 (CST)
+Received: from a006.hihonor.com (10.68.23.242) by w011.hihonor.com
+ (10.68.20.122) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1258.25; Mon, 1 Apr
+ 2024 21:48:20 +0800
+Received: from a011.hihonor.com (10.68.31.243) by a006.hihonor.com
+ (10.68.23.242) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1258.25; Mon, 1 Apr
+ 2024 21:48:20 +0800
+Received: from a011.hihonor.com ([fe80::78ac:4faf:25dd:3496]) by
+ a011.hihonor.com ([fe80::78ac:4faf:25dd:3496%7]) with mapi id 15.02.1258.025;
+ Mon, 1 Apr 2024 21:48:20 +0800
+From: wangzijie <wangzijie1@honor.com>
+To: "jaegeuk@kernel.org" <jaegeuk@kernel.org>, "chao@kernel.org"
+	<chao@kernel.org>
+CC: "linux-f2fs-devel@lists.sourceforge.net"
+	<linux-f2fs-devel@lists.sourceforge.net>, "linux-kernel@vger.kernel.org"
+	<linux-kernel@vger.kernel.org>, "wangbintian(BintianWang)"
+	<bintian.wang@honor.com>
+Subject: [PATCH] [f2fs-dev] f2fs: use f2fs_get_node_page when write inline
+ data
+Thread-Topic: [PATCH] [f2fs-dev] f2fs: use f2fs_get_node_page when write
+ inline data
+Thread-Index: AdqEOdZMrsI3iA2JQyKLGLQGeOfhFw==
+Date: Mon, 1 Apr 2024 13:48:20 +0000
+Message-ID: <2073e8995f5444aeaf7133b87ec07de8@honor.com>
+Accept-Language: zh-CN, en-US
+Content-Language: zh-CN
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
 
-Since commit 0c4cae1bc00d ("PM: hibernate: Avoid missing wakeup events
-during hibernation"), the return value of hibernation_platform_enter() is
-used. This will, for example, cancel every hibernation attempt if a wakeup
-event is registered during the (long) preparation time needed before
-entering platform hibernate mode.
+From: Zijie Wang <wangzijie1@honor.com>
+Date: Mon, 1 Apr 2024 21:24:08 +0800
+Subject: [PATCH] [f2fs-dev] f2fs: use f2fs_get_node_page when write inline =
+data
 
-As reported in https://bugzilla.kernel.org/show_bug.cgi?id=218634 several
-notebooks will fail to hibernate since then, logging "PM: hibernation:
-Wakeup event detected during hibernation, rolling back." (Looks like mostly
-Dell systems are affected.)
+We just need inode page when write inline data, use
+f2fs_get_node_page() to get it instead of using dnode_of_data,
+which can eliminate unnecessary struct use.
 
-A little investigation has shown that at least one affected device's "Intel
-5 button array" sends spurious "Power button release" events (0xCF) in this
-case. Most probably, this is completely independent from the
-hibernation_platform_enter() change above, and even with kernels before
-6.8, the hibernation was probably not fully prepared before halting the
-system, i.e., hibernation_platform_enter() may have failed early and the
-failure has been ignored.
-
-It ist he spurious "Power button release" event that leads to a wakeup
-during the hibernation preparation. Therefore, ignore these events while
-the intel-hid driver is in "wakeup mode". "Power button press" will still
-be processed as before to not disturb the wakeup from S2Idle.
-
-Only tested on one Dell Inspiron 16 (7640) having BIOS 1.3.0, so far.
-
-Link: https://bugzilla.kernel.org/show_bug.cgi?id=218634
-Closes: https://bugzilla.kernel.org/show_bug.cgi?id=218634
-
-Signed-off-by: Enrik Berkhan <Enrik.Berkhan@inka.de>
+Signed-off-by: Zijie Wang <wangzijie1@honor.com>
 ---
- drivers/platform/x86/intel/hid.c | 7 +++++++
- 1 file changed, 7 insertions(+)
+ fs/f2fs/inline.c | 23 +++++++++++------------
+ 1 file changed, 11 insertions(+), 12 deletions(-)
 
-diff --git a/drivers/platform/x86/intel/hid.c b/drivers/platform/x86/intel/hid.c
-index 7457ca2b27a6..9df4a114334a 100644
---- a/drivers/platform/x86/intel/hid.c
-+++ b/drivers/platform/x86/intel/hid.c
-@@ -528,6 +528,13 @@ static void notify_handler(acpi_handle handle, u32 event, void *context)
- 		 */
- 		if (event == 0xce)
- 			goto wakeup;
-+		/*
-+		 * Other platforms may send spurious notifies for power button
-+		 * release while entering hibernation mode. Ignore these in
-+		 * wakeup mode.
-+		 */
-+		if (event == 0xcf)
-+			return;
- 
- 		/*
- 		 * Some devices send (duplicate) tablet-mode events when moved
--- 
-2.44.0
+diff --git a/fs/f2fs/inline.c b/fs/f2fs/inline.c
+index ac00423f117b..6e20d8e7affc 100644
+--- a/fs/f2fs/inline.c
++++ b/fs/f2fs/inline.c
+@@ -242,33 +242,32 @@ int f2fs_convert_inline_inode(struct inode *inode)
+=20
+ int f2fs_write_inline_data(struct inode *inode, struct page *page)
+ {
+-	struct dnode_of_data dn;
+-	int err;
++	struct f2fs_sb_info *sbi =3D F2FS_I_SB(inode);
++	struct page *ipage;
+=20
+-	set_new_dnode(&dn, inode, NULL, NULL, 0);
+-	err =3D f2fs_get_dnode_of_data(&dn, 0, LOOKUP_NODE);
+-	if (err)
+-		return err;
++	ipage =3D f2fs_get_node_page(sbi, inode->i_ino);
++	if (IS_ERR(ipage))
++		return PTR_ERR(ipage);
+=20
+ 	if (!f2fs_has_inline_data(inode)) {
+-		f2fs_put_dnode(&dn);
++		f2fs_put_page(ipage, 1);
+ 		return -EAGAIN;
+ 	}
+=20
+ 	f2fs_bug_on(F2FS_I_SB(inode), page->index);
+=20
+-	f2fs_wait_on_page_writeback(dn.inode_page, NODE, true, true);
+-	memcpy_from_page(inline_data_addr(inode, dn.inode_page),
++	f2fs_wait_on_page_writeback(ipage, NODE, true, true);
++	memcpy_from_page(inline_data_addr(inode, ipage),
+ 			 page, 0, MAX_INLINE_DATA(inode));
+-	set_page_dirty(dn.inode_page);
++	set_page_dirty(ipage);
+=20
+ 	f2fs_clear_page_cache_dirty_tag(page);
+=20
+ 	set_inode_flag(inode, FI_APPEND_WRITE);
+ 	set_inode_flag(inode, FI_DATA_EXIST);
+=20
+-	clear_page_private_inline(dn.inode_page);
+-	f2fs_put_dnode(&dn);
++	clear_page_private_inline(ipage);
++	f2fs_put_page(ipage, 1);
+ 	return 0;
+ }
+=20
+--=20
+2.25.1
 
 
