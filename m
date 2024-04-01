@@ -1,194 +1,112 @@
-Return-Path: <linux-kernel+bounces-126429-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-126430-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id AE4358937D7
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 05:41:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 708FA8937DB
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 05:42:16 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 643D71F21559
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 03:41:37 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2249C1F214B0
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 03:42:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0A8F28BF6;
-	Mon,  1 Apr 2024 03:41:24 +0000 (UTC)
-Received: from szxga04-in.huawei.com (szxga04-in.huawei.com [45.249.212.190])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EDBBF53A6;
+	Mon,  1 Apr 2024 03:42:09 +0000 (UTC)
+Received: from szxga05-in.huawei.com (szxga05-in.huawei.com [45.249.212.191])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 985351362;
-	Mon,  1 Apr 2024 03:41:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.190
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 654B61C2D;
+	Mon,  1 Apr 2024 03:42:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.191
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711942883; cv=none; b=cBdL2RuEzA/koJRdUPuV6T2xqU70H2ACc/v2somBMvRqirbeRVbyER34qTexEsgTcT5fgO1Whr177Sm7mJ5gsUcKRb7jbnMOauzNAlFqDioSlqAlnkiTcYS2Pko5LNE+SsD46o3rcQmYD5RrI5M1pVE8O9jYiNhiuMvdDLxtUac=
+	t=1711942929; cv=none; b=mkEEPWcHUzikOXzYJQLX6tmD+DA4NWANTUui2jzEys595PffYp5M6ZrGehN59ERlQEbk9BvTwLV96xIhInL0MZqocaFLTidR7WkEjKtsWixnvFCCkFSWComQc+cdNajzY2efD3yBtUmi0zv/j3aSzudjm/WI3lFB7n7z9kt+bgE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711942883; c=relaxed/simple;
-	bh=Y+C6YOutpzawaB9+UJw3qAWVjD/gimExt0e/uFbsI/M=;
-	h=Subject:To:CC:References:From:Message-ID:Date:MIME-Version:
-	 In-Reply-To:Content-Type; b=mY7Zk+TlqPu+lrZp7JFB4o4xRLuTe0T0l5lwKEyf/RlZzxfTwzOgGUlk8z4t+NoeFia2/2U+Fo20XeD6iK7KPJdITlUistow2/yNUhTmp+S6Q2SNpTnNIHVbMnJEUrRSLoNWXULJForu/DemB62v3kznoGkHCly12w2wz5N6ENM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.190
+	s=arc-20240116; t=1711942929; c=relaxed/simple;
+	bh=a+JpqQxOqGrevfZ2IfFKr9WZ5JQPbhyEgjhI9+DlzHk=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=qOxomNB4FOrjuqgnhNNuoocSI/cDMafDPLNvnUKD3vGJJeqLJ7/UKoUMo88vVVmG6/0nSLiGquL+E6MNXY6AMbTYlU9Wz3FOHy9wBbOqWwEsR1z0gcfCb3bZIOH21y7DOJKFqc5v7peOPSN9FEEntJ3EVoQbNJ7drdDkhcgRNXs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.191
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.88.214])
-	by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4V7Gvt1Wpsz1xtQy;
-	Mon,  1 Apr 2024 11:39:06 +0800 (CST)
-Received: from canpemm500002.china.huawei.com (unknown [7.192.104.244])
-	by mail.maildlp.com (Postfix) with ESMTPS id C7BCE1A016F;
-	Mon,  1 Apr 2024 11:41:11 +0800 (CST)
-Received: from [10.173.135.154] (10.173.135.154) by
- canpemm500002.china.huawei.com (7.192.104.244) with Microsoft SMTP Server
+Received: from mail.maildlp.com (unknown [172.19.163.44])
+	by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4V7GyV6Y8Mz1GFF5;
+	Mon,  1 Apr 2024 11:41:22 +0800 (CST)
+Received: from kwepemm600017.china.huawei.com (unknown [7.193.23.234])
+	by mail.maildlp.com (Postfix) with ESMTPS id DACAF1402D0;
+	Mon,  1 Apr 2024 11:41:58 +0800 (CST)
+Received: from [10.174.179.234] (10.174.179.234) by
+ kwepemm600017.china.huawei.com (7.193.23.234) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.35; Mon, 1 Apr 2024 11:41:10 +0800
-Subject: Re: [PATCH 1/7] memory: Remove the now superfluous sentinel element
- from ctl_table array
-To: <j.granados@samsung.com>
-CC: Luis Chamberlain <mcgrof@kernel.org>, <linux-mm@kvack.org>,
-	<linux-kernel@vger.kernel.org>, <linux-fsdevel@vger.kernel.org>,
-	<apparmor@lists.ubuntu.com>, <linux-security-module@vger.kernel.org>,
-	<keyrings@vger.kernel.org>, <linux-crypto@vger.kernel.org>,
-	<io-uring@vger.kernel.org>, <linux-riscv@lists.infradead.org>,
-	<linux-arm-kernel@lists.infradead.org>, Andrew Morton
-	<akpm@linux-foundation.org>, Muchun Song <muchun.song@linux.dev>, Naoya
- Horiguchi <naoya.horiguchi@nec.com>, John Johansen
-	<john.johansen@canonical.com>, Paul Moore <paul@paul-moore.com>, James Morris
-	<jmorris@namei.org>, "Serge E. Hallyn" <serge@hallyn.com>, David Howells
-	<dhowells@redhat.com>, Jarkko Sakkinen <jarkko@kernel.org>, Kees Cook
-	<keescook@chromium.org>, Herbert Xu <herbert@gondor.apana.org.au>, "David S.
- Miller" <davem@davemloft.net>, Jens Axboe <axboe@kernel.dk>, Pavel Begunkov
-	<asml.silence@gmail.com>, Atish Patra <atishp@atishpatra.org>, Anup Patel
-	<anup@brainfault.org>, Will Deacon <will@kernel.org>, Mark Rutland
-	<mark.rutland@arm.com>, Paul Walmsley <paul.walmsley@sifive.com>, Palmer
- Dabbelt <palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>
-References: <20240328-jag-sysctl_remset_misc-v1-0-47c1463b3af2@samsung.com>
- <20240328-jag-sysctl_remset_misc-v1-1-47c1463b3af2@samsung.com>
-From: Miaohe Lin <linmiaohe@huawei.com>
-Message-ID: <0e35e88d-3ea1-4f62-77e4-eb12e9f51583@huawei.com>
-Date: Mon, 1 Apr 2024 11:41:09 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+ 15.1.2507.35; Mon, 1 Apr 2024 11:41:57 +0800
+Message-ID: <8d6f9dd6-0171-4bcb-d611-1f522a1e8c8c@huawei.com>
+Date: Mon, 1 Apr 2024 11:41:56 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <20240328-jag-sysctl_remset_misc-v1-1-47c1463b3af2@samsung.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
- canpemm500002.china.huawei.com (7.192.104.244)
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.8.0
+Subject: Re: [PATCH -next v5 2/3] x86/mce: set MCE_IN_KERNEL_COPYIN for
+ DEFAULT_MCE_SAFE exception
+To: Borislav Petkov <bp@alien8.de>
+CC: Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>,
+	<wangkefeng.wang@huawei.com>, Dave Hansen <dave.hansen@linux.intel.com>,
+	<x86@kernel.org>, "H. Peter Anvin" <hpa@zytor.com>, Tony Luck
+	<tony.luck@intel.com>, Andy Lutomirski <luto@kernel.org>, Peter Zijlstra
+	<peterz@infradead.org>, Andrew Morton <akpm@linux-foundation.org>, Naoya
+ Horiguchi <naoya.horiguchi@nec.com>, <linux-kernel@vger.kernel.org>,
+	<linux-edac@vger.kernel.org>, <linux-mm@kvack.org>, Guohanjun
+	<guohanjun@huawei.com>
+References: <20240204082627.3892816-1-tongtiangen@huawei.com>
+ <20240204082627.3892816-3-tongtiangen@huawei.com>
+ <20240207122942.GRZcN3tqWkV-WE-pak@fat_crate.local>
+ <100198dd-320f-68e6-9c09-210620940a74@huawei.com>
+ <20240327220511.GCZgSYF6lJ3U1CaKV0@fat_crate.local>
+From: Tong Tiangen <tongtiangen@huawei.com>
+In-Reply-To: <20240327220511.GCZgSYF6lJ3U1CaKV0@fat_crate.local>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
+ kwepemm600017.china.huawei.com (7.193.23.234)
 
-On 2024/3/28 23:57, Joel Granados via B4 Relay wrote:
-> From: Joel Granados <j.granados@samsung.com>
-> 
-> This commit comes at the tail end of a greater effort to remove the
-> empty elements at the end of the ctl_table arrays (sentinels) which will
-> reduce the overall build time size of the kernel and run time memory
-> bloat by ~64 bytes per sentinel (further information Link :
-> https://lore.kernel.org/all/ZO5Yx5JFogGi%2FcBo@bombadil.infradead.org/)
-> 
-> Remove sentinel from all files under mm/ that register a sysctl table.
-> 
-> Signed-off-by: Joel Granados <j.granados@samsung.com>
 
-Reviewed-by: Miaohe Lin <linmiaohe@huawei.com>
 
-Thanks.
-
-> ---
->  mm/compaction.c      | 1 -
->  mm/hugetlb.c         | 1 -
->  mm/hugetlb_vmemmap.c | 1 -
->  mm/memory-failure.c  | 1 -
->  mm/oom_kill.c        | 1 -
->  mm/page-writeback.c  | 1 -
->  mm/page_alloc.c      | 1 -
->  7 files changed, 7 deletions(-)
+在 2024/3/28 6:05, Borislav Petkov 写道:
+> On Sun, Feb 18, 2024 at 06:08:14PM +0800, Tong Tiangen wrote:
+>> 1. The copy_mc_to_kernel() is used in the coredump, KSM, and COW
+>> scenarios, in these scenarios, the src mem stores the user data and the
+>> kernel use kernel address to access the src mem(using kmap()).
+>>
+>> 2. the src mem of copy_mc_to_user() is currently only used by the DAX:
 > 
-> diff --git a/mm/compaction.c b/mm/compaction.c
-> index 807b58e6eb68..e8a047afca22 100644
-> --- a/mm/compaction.c
-> +++ b/mm/compaction.c
-> @@ -3345,7 +3345,6 @@ static struct ctl_table vm_compaction[] = {
->  		.extra1		= SYSCTL_ZERO,
->  		.extra2		= SYSCTL_ONE,
->  	},
-> -	{ }
->  };
->  
->  static int __init kcompactd_init(void)
-> diff --git a/mm/hugetlb.c b/mm/hugetlb.c
-> index 23ef240ba48a..7ac5240a197d 100644
-> --- a/mm/hugetlb.c
-> +++ b/mm/hugetlb.c
-> @@ -5045,7 +5045,6 @@ static struct ctl_table hugetlb_table[] = {
->  		.mode		= 0644,
->  		.proc_handler	= hugetlb_overcommit_handler,
->  	},
-> -	{ }
->  };
->  
->  static void hugetlb_sysctl_init(void)
-> diff --git a/mm/hugetlb_vmemmap.c b/mm/hugetlb_vmemmap.c
-> index da177e49d956..b9a55322e52c 100644
-> --- a/mm/hugetlb_vmemmap.c
-> +++ b/mm/hugetlb_vmemmap.c
-> @@ -679,7 +679,6 @@ static struct ctl_table hugetlb_vmemmap_sysctls[] = {
->  		.mode		= 0644,
->  		.proc_handler	= proc_dobool,
->  	},
-> -	{ }
->  };
->  
->  static int __init hugetlb_vmemmap_init(void)
-> diff --git a/mm/memory-failure.c b/mm/memory-failure.c
-> index 9349948f1abf..6a112f9ecf91 100644
-> --- a/mm/memory-failure.c
-> +++ b/mm/memory-failure.c
-> @@ -141,7 +141,6 @@ static struct ctl_table memory_failure_table[] = {
->  		.extra1		= SYSCTL_ZERO,
->  		.extra2		= SYSCTL_ONE,
->  	},
-> -	{ }
->  };
->  
->  /*
-> diff --git a/mm/oom_kill.c b/mm/oom_kill.c
-> index 8d6a207c3c59..4d7a0004df2c 100644
-> --- a/mm/oom_kill.c
-> +++ b/mm/oom_kill.c
-> @@ -724,7 +724,6 @@ static struct ctl_table vm_oom_kill_table[] = {
->  		.mode		= 0644,
->  		.proc_handler	= proc_dointvec,
->  	},
-> -	{}
->  };
->  #endif
->  
-> diff --git a/mm/page-writeback.c b/mm/page-writeback.c
-> index 3e19b87049db..fba324e1a010 100644
-> --- a/mm/page-writeback.c
-> +++ b/mm/page-writeback.c
-> @@ -2291,7 +2291,6 @@ static struct ctl_table vm_page_writeback_sysctls[] = {
->  		.mode		= 0644,
->  		.proc_handler	= proc_dointvec_jiffies,
->  	},
-> -	{}
->  };
->  #endif
->  
-> diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-> index 14d39f34d336..8b9820620fe3 100644
-> --- a/mm/page_alloc.c
-> +++ b/mm/page_alloc.c
-> @@ -6211,7 +6211,6 @@ static struct ctl_table page_alloc_sysctl_table[] = {
->  		.extra2		= SYSCTL_ONE_HUNDRED,
->  	},
->  #endif
-> -	{}
->  };
->  
->  void __init page_alloc_sysctl_init(void)
+> You mean just because it currently is used somewhere which probably is
+> ok - no clue what DAX does - and even if the source address is still
+> *kernel* memory and even at the danger that someone else might use it in
+> the future and think the handling on a potential #MC is ok, you're still
+> arguing that this is the right thing to do perhaps because it fits your
+> use case?!
+> 
+> Sorry Tiangen, not gonna happen.
 > 
 
+I left the office last week and felt sorry for the lateness of the
+reply.
+
+You are right. Our current processing is based on "experience" rather
+than interface constraints.
+
+is_copy_from_user() determines whether a user is a "copy user" based on
+fault_in_kernel_space(). Therefore, it returns false for
+copy_mc_to_kernel()/copy_mc_to_user(). As a result, MCE_IN_KERNEL_COPYIN
+cannot be set in error_context().
+
+Comprehensive consideration of all factors, it is better to manually
+call memory_failure_queue() to handle this problem case by case.
+
+Finally, do we consider accepting only the patch 1/3 ?
+
+Thanks,
+Tong.
 
