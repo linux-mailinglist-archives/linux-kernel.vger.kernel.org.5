@@ -1,134 +1,113 @@
-Return-Path: <linux-kernel+bounces-127134-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-127135-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4431B894752
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 00:29:53 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D9FB2894755
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 00:30:43 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D163A1F21B4A
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 22:29:52 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8F760282959
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 22:30:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 522EB56471;
-	Mon,  1 Apr 2024 22:29:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7B1575674A;
+	Mon,  1 Apr 2024 22:30:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=google.com header.i=@google.com header.b="eyJbGAh0"
-Received: from mail-yw1-f201.google.com (mail-yw1-f201.google.com [209.85.128.201])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="dOeUK2SB"
+Received: from mail-wr1-f45.google.com (mail-wr1-f45.google.com [209.85.221.45])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 102B7535A6
-	for <linux-kernel@vger.kernel.org>; Mon,  1 Apr 2024 22:29:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1E6BA6107
+	for <linux-kernel@vger.kernel.org>; Mon,  1 Apr 2024 22:30:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712010582; cv=none; b=RPwjoc95haHDdLlaom0O4TLko9NBAPMYaFUcOkTAaQxC6j8nAaoZlKLGFeXRFQtx88RiajxWYRCT9D64P8zio+NS5r2UHx/WU9ffYLTpwzzpFSP80z7edv7DzhpzQmybhfCjGyGN6dU1QrFTjq/v/DyQs+jAnVSLshuJIWjYc3Y=
+	t=1712010632; cv=none; b=IS3BeG2j30nJFAxKfUTF8Sj0CQlj6MN09fS2mSW/g3i/S2tkUTDz5C3wodIOqcDZWuo34+1udV5O0gb7IHXvFiNor30VrSB8zhYeQVEQ0lybjfLUl1XaXGnoiGxusF3mWIBKpKINrt59MTOPMrUydZXTFDmcvukf4HkIQ2m9IOo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712010582; c=relaxed/simple;
-	bh=uRf1QBahqZS8Z955x72vM5aZgORLckJbANqvbX6mN9A=;
-	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=ALU4QvlkyFG8XiYqqY1DP/N7Kf7P0efhJ/czcIr3GR6khcfEMaVte/tTb5qoRoETDiVW8SIVYeqdNHY87kw5dcQ5JBOW1KksrFEXZOhsys1bpgxcdmZxJdlV92gH/fdKLaOQVBmDAuDf6kYXIEy5f4rd5RjLYRVExX0u+I9xQGk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=eyJbGAh0; arc=none smtp.client-ip=209.85.128.201
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
-Received: by mail-yw1-f201.google.com with SMTP id 00721157ae682-61506d6d667so11922677b3.1
-        for <linux-kernel@vger.kernel.org>; Mon, 01 Apr 2024 15:29:40 -0700 (PDT)
+	s=arc-20240116; t=1712010632; c=relaxed/simple;
+	bh=AGtcxhiBL3iMSUu5OngGq6sVbaFB/izhrzI/JTU7NgQ=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=YRqLSqPVaIRD2Qq1Z/QbC0svgF3vFTbFv4DS+maBCpRcReZeLqTuueU4nLTeCqBam/CeJl8MQwapL+Xoqk+0HTS0NCgYcGBbg9GO8dglbFFQLGyVieTwiqY+yJoDVzu1pdJ1dQETSzC4/uSzDVGM4TC87WabYEny4ai82Ei/KJo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=dOeUK2SB; arc=none smtp.client-ip=209.85.221.45
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-wr1-f45.google.com with SMTP id ffacd0b85a97d-341cf28dff6so3396979f8f.1
+        for <linux-kernel@vger.kernel.org>; Mon, 01 Apr 2024 15:30:30 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1712010580; x=1712615380; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=dxbv2zR344az1ZpGGMLXWBIEjEGxYRekW2mxLE4Y23k=;
-        b=eyJbGAh0iBdRTIwMI4OtvSBqKQoDFg8NJ0Ep0pbIoQM4UVBLdB+08muoCbmzO0irzt
-         vMLd2qxkSYhzgMbqjXOPsYAfCv6KsjCPt50iAmogxnZ55hxu+sWNoRxuKrQz7qk5KXbY
-         xd8ehcUj5hymmgHqFksAHhoYb8JyrVuMxfIxLyif2Kw9rIoNnkGStYSc/41R1Nmlz3P6
-         xCGGqBbjPdRaKiYL3zLyYPsh/lvAlGUB+iq1/nabr0gicxOJMQJ2YcGfAOYfO6Xs9C83
-         YLnx80yRuicS13u4vTP4/LV6Yb9ni169DPe/1YHhZM9Z7TvZ+iU22QWmVMRezUa+OBr4
-         eIyQ==
+        d=linaro.org; s=google; t=1712010629; x=1712615429; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=iZEEEP3WLdyzsBOF4rzSyiDMnZY/6RPAhCk5qQkVLQU=;
+        b=dOeUK2SBb2QttdB5GeFffoNbmvrSpEhPNcmIy9b+LzuHPUVIcC1VSt0T8wTNobsZtr
+         ANzkTfLBaW9PSqSzNHXTLsYr6MspliE6GPYdPx71yea19il96Ak5GQdcNRu6esB2tvIW
+         gC7G1NR4ptXkQlXgptPN76vxkxM360TQlqlwVtpN35HSxDrw9qdOxwFAq9Hy2K0ngTEV
+         BLxBOCwF8m7U69RnWjH4F3AYYR+vVu7K6aUcYY41kPlRlfgss2jJgdZa2ZJd53Kc4kw0
+         Hp+3ZII+o0FtFZGe277T3T/FIYyAzF7lQKMq0I7R2euSja1ROipryCjj4CW4iDrloDqN
+         N2zA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712010580; x=1712615380;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=dxbv2zR344az1ZpGGMLXWBIEjEGxYRekW2mxLE4Y23k=;
-        b=jcDZOikfq+Jy+hzX5MIukp5ZldCRoCURGVGrvmh74N6C9ifONW5mOR7EKRHr01ST8l
-         CTPxUmLugSY/gy1O9v3eXsSnDmc6CK0CwHkv4UKU/EpT0SBPco4GaRKp/1xF2wT9ZdcG
-         afjnBrzci5Q8lPDQ77sTrHQgecb4LN/AvqHOh+dtP89XSWkmQjTCAMO/BTS9OjY/YUAy
-         EP7Y7M6AHZGsMXJw6hXdBXv7IigYDrOVPflYrlzs3/fPSyxrOaVUhqLj1apim4A//gSM
-         k33zWdWAxA3y6UcYzc7smkjJQEO3N8kocY5PfDzcequDCkFCyzL6gfnNbuEVSQLev7AY
-         tEbQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXTtv5+9tIPELCU0Girx01EYhXyolaKgQaRMHB+K+HyXZfkhB3naPZcDnRAlBWT4OfCGKKvUmeJd2d+zKN52BdCw4fGRuk611Xoj6BY
-X-Gm-Message-State: AOJu0Yzxdukw/zAHvP6kbLBfedH9dXcRCXuNqGqh7h0c4daABFGfeiDb
-	ShDa7ghV0lKC1z20VF1qrC1iwhhW7ETkYDXOup0EfzQFze7L97WG4TSSHeQKvTPxWe8UJFef3Xq
-	pIw==
-X-Google-Smtp-Source: AGHT+IHEvNGnR/FEXAGvVteLDZwjTiunaD1N2L6JusyGM6kOld5osvQPso1tIa1rejLfUzGR7x2twBKIPo4=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a0d:e202:0:b0:615:1579:8660 with SMTP id
- l2-20020a0de202000000b0061515798660mr246209ywe.7.1712010580188; Mon, 01 Apr
- 2024 15:29:40 -0700 (PDT)
-Date: Mon, 1 Apr 2024 15:29:38 -0700
-In-Reply-To: <ZgDyxpaf+HgQzYDp@chao-email>
+        d=1e100.net; s=20230601; t=1712010629; x=1712615429;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=iZEEEP3WLdyzsBOF4rzSyiDMnZY/6RPAhCk5qQkVLQU=;
+        b=WB9cjsiu0S64kISENi8rc0Ab8nUF/3MAgsvXpA6ynpMFABoIKp9LBM4IqMEXPhPJ0A
+         aZPXMq1GB6ImloboyGwBvM+vKn7TiWY4nOvOxR47Nv8mxfHfKOgrBn+a78gReAGcoG56
+         v7jVTwiHPRd7/lqNtrOpmKpBBgwMRyuAc4fyJzltn3DauQZuERqldt0X8h8Mj+P0sqt7
+         /LeW08MQObbC4WQHGvbFG9Jz7nlOzb17e1hP1vyV68oY2P6C3JywtyWDdvIHUeIZkXvX
+         mW+w1hNqGRIZ6FE8WbjI8XQEQAMurXgT/fuHUDVi84BbUpgIdW4Pn+p3z3i1p06gphtG
+         YcIg==
+X-Forwarded-Encrypted: i=1; AJvYcCVc+19f7imM/+65sflLZdIkWgU1s/x1IJIywFuQE9miO5FnE5eMWwuPab2kDLF9shjnnltEFaDuocn8yhL2Yua11lD0P8KpE4BIaPwb
+X-Gm-Message-State: AOJu0Yyoi0L/dROzIHGK9LX/fnq2+/TXzaMBIurtuwZNAu0i+A+Qn1Gb
+	VS4sN0M54P4fX48BHSTS0ZTQFdSkhf7+PTf7gV7FmAKtCPqDs1v4cPK6bNO6FQM=
+X-Google-Smtp-Source: AGHT+IG+ZdFIcfD/b3TocEugIXWKQcUK9JvEnxxkCO8yj9ks7X3SQRNT1uHEIFteQ1t4L3d82zw8yQ==
+X-Received: by 2002:a5d:6505:0:b0:33e:7a1f:5824 with SMTP id x5-20020a5d6505000000b0033e7a1f5824mr7279820wru.0.1712010629385;
+        Mon, 01 Apr 2024 15:30:29 -0700 (PDT)
+Received: from [192.168.0.102] ([176.61.106.68])
+        by smtp.gmail.com with ESMTPSA id m28-20020a05600c3b1c00b00414688af147sm19132258wms.20.2024.04.01.15.30.28
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 01 Apr 2024 15:30:28 -0700 (PDT)
+Message-ID: <a54e7d95-79d3-40fa-8975-f0e107aeeb36@linaro.org>
+Date: Mon, 1 Apr 2024 23:30:27 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-References: <20240309010929.1403984-1-seanjc@google.com> <20240309010929.1403984-6-seanjc@google.com>
- <ZgDyxpaf+HgQzYDp@chao-email>
-Message-ID: <Zgs1Ul2rZjyUvMEx@google.com>
-Subject: Re: [PATCH 5/5] KVM: VMX: Always honor guest PAT on CPUs that support self-snoop
-From: Sean Christopherson <seanjc@google.com>
-To: Chao Gao <chao.gao@intel.com>
-Cc: Paolo Bonzini <pbonzini@redhat.com>, Lai Jiangshan <jiangshanlai@gmail.com>, 
-	"Paul E. McKenney" <paulmck@kernel.org>, Josh Triplett <josh@joshtriplett.org>, kvm@vger.kernel.org, 
-	rcu@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	Kevin Tian <kevin.tian@intel.com>, Yan Zhao <yan.y.zhao@intel.com>, 
-	Yiwei Zhang <zzyiwei@google.com>
-Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 1/8] media: qcom: camss: Add per sub-device type
+ resources
+Content-Language: en-US
+To: Gjorgji Rosikopulos <quic_grosikop@quicinc.com>, rfoss@kernel.org,
+ todor.too@gmail.com, andersson@kernel.org, konrad.dybcio@linaro.org,
+ mchehab@kernel.org
+Cc: linux-media@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+ linux-kernel@vger.kernel.org, laurent.pinchart@ideasonboard.com,
+ hverkuil-cisco@xs4all.nl, quic_hariramp@quicinc.com
+References: <20240319173935.481-1-quic_grosikop@quicinc.com>
+ <20240319173935.481-2-quic_grosikop@quicinc.com>
+From: Bryan O'Donoghue <bryan.odonoghue@linaro.org>
+In-Reply-To: <20240319173935.481-2-quic_grosikop@quicinc.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Mon, Mar 25, 2024, Chao Gao wrote:
-> On Fri, Mar 08, 2024 at 05:09:29PM -0800, Sean Christopherson wrote:
-> >Unconditionally honor guest PAT on CPUs that support self-snoop, as
-> >Intel has confirmed that CPUs that support self-snoop always snoop caches
-> >and store buffers.  I.e. CPUs with self-snoop maintain cache coherency
-> >even in the presence of aliased memtypes, thus there is no need to trust
-> >the guest behaves and only honor PAT as a last resort, as KVM does today.
-> >
-> >Honoring guest PAT is desirable for use cases where the guest has access
-> >to non-coherent DMA _without_ bouncing through VFIO, e.g. when a virtual
-> >(mediated, for all intents and purposes) GPU is exposed to the guest, along
-> >with buffers that are consumed directly by the physical GPU, i.e. which
-> >can't be proxied by the host to ensure writes from the guest are performed
-> >with the correct memory type for the GPU.
+On 19/03/2024 17:39, Gjorgji Rosikopulos wrote:
+> +		.csid = {
+> +			.hw_ops = &csid_ops_gen2
+> +		}
 
-..
+Thanks for rebasing
 
-> > int kvm_tdp_page_fault(struct kvm_vcpu *vcpu, struct kvm_page_fault *fault)
-> >diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
-> >index 17a8e4fdf9c4..5dc4c24ae203 100644
-> >--- a/arch/x86/kvm/vmx/vmx.c
-> >+++ b/arch/x86/kvm/vmx/vmx.c
-> >@@ -7605,11 +7605,13 @@ static u8 vmx_get_mt_mask(struct kvm_vcpu *vcpu, gfn_t gfn, bool is_mmio)
-> > 
-> > 	/*
-> > 	 * Force WB and ignore guest PAT if the VM does NOT have a non-coherent
-> >-	 * device attached.  Letting the guest control memory types on Intel
-> >-	 * CPUs may result in unexpected behavior, and so KVM's ABI is to trust
-> >-	 * the guest to behave only as a last resort.
-> >+	 * device attached and the CPU doesn't support self-snoop.  Letting the
-> >+	 * guest control memory types on Intel CPUs without self-snoop may
-> >+	 * result in unexpected behavior, and so KVM's (historical) ABI is to
-> >+	 * trust the guest to behave only as a last resort.
-> > 	 */
-> >-	if (!kvm_arch_has_noncoherent_dma(vcpu->kvm))
-> >+	if (!static_cpu_has(X86_FEATURE_SELFSNOOP) &&
-> >+	    !kvm_arch_has_noncoherent_dma(vcpu->kvm))
-> > 		return (MTRR_TYPE_WRBACK << VMX_EPT_MT_EPTE_SHIFT) | VMX_EPT_IPAT_BIT;
-> 
-> W/ this change, guests w/o pass-thru devices can also access UC memory. Locking
-> UC memory leads to bus lock. So, guests w/o pass-thru devices can potentially
-> launch DOS attacks on other CPUs on host. isn't it a problem?
+rb3, rb5 and db410c all went well with my testing but x13s showed a few 
+missing resource entries - which I fixed and then it worked fine on x13s 
+too.
 
-Guests can already trigger bus locks with atomic accesses that split cache lines.
-And SPR adds bus lock detection.  So practically speaking, I'm pretty sure ICX is
-the only CPU where anything close to a novel attack is possible.  And FWIW, such
-an attack is already possible on AMD.
+https://git.codelinaro.org/bryan.odonoghue/kernel/-/tree/sc8280xp-6.9-rc1-camss-resource-change-verification?ref_type=heads
+
+Could you guys make a pass through these resource structs again - 
+especially for sc8280xp, sdm660 and 8996 and make sure there's nothing 
+else missing.
+
+---
+bod
 
