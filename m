@@ -1,101 +1,165 @@
-Return-Path: <linux-kernel+bounces-126758-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-126763-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7D66D893C59
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 16:50:14 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 402D1893C64
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 16:53:36 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 32D931F224C7
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 14:50:14 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6C6B01C21668
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 14:53:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 06B5C446AC;
-	Mon,  1 Apr 2024 14:50:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 45A1B45BF3;
+	Mon,  1 Apr 2024 14:53:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="YXfpB+RM"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Z8v3s8xV"
+Received: from mail-lf1-f43.google.com (mail-lf1-f43.google.com [209.85.167.43])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 49A0841A8F;
-	Mon,  1 Apr 2024 14:50:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8E6E2446A0;
+	Mon,  1 Apr 2024 14:53:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711983005; cv=none; b=tL7RcWp2Qi5/IDH5QTyGr/v7LGl21W1Ajqjl0To5+xQ5RAzQXuDtxHcN3oRBRmaR7gpm/O74Th0fUDxfb+j8n1bJ86TktslMVXdKLRL/YkigLjeA70sCqRPVGkPFeSL+4aT1OWeYJ4Cpp+gCpNLDMhkD0agjqAvRZv+jHdPJ9F4=
+	t=1711983203; cv=none; b=n5NMcwdXaizAsESGq4KAnCQK3VBMAI5f7tXkbubkiJ4wGm0gJQAk9iUSKnRAcvtNtAAwpttN+GcRPlmWHqNd0AVrKUmUl9RIHg9cjwQOJHnrWfrzRhjHA03Ys2oGDGTrHIB4OgZQWE/g2bZYRSXLp2w68cn2qHH0oJ5cJaRzask=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711983005; c=relaxed/simple;
-	bh=g1p0JxSTbPiaXdqzfHvytWBMEFzWaRM2oDNw0BLXbDM=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=beXWKQ6hYDNItyeDK1Oleujs/yyaTPkX1Cx2EfUMWNBEO0zTktJoHOuZvrIVyuUcl96Ybe1KaqI0aCYn2Z6Bn6bm/mCfeUVRmIIWozZJ/6x+WNPenZUIE5Yj3Wa4iV73K3cjf5sigVp6+ad8qSrEFdY0PSpOG9ym2ikoNm0JmhA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=YXfpB+RM; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2F511C433F1;
-	Mon,  1 Apr 2024 14:50:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711983004;
-	bh=g1p0JxSTbPiaXdqzfHvytWBMEFzWaRM2oDNw0BLXbDM=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=YXfpB+RM11goqpxKtttYlK6UvF9aR8UcwfJ4cL5CtJWzh7EV9VkLbYkeXKv58ziQx
-	 H+MhTNW9PM2SEKhLM09Karx5kuEXeY00ZvvARbkyE+mlNJQx8dDymrm21yHBGFX9Up
-	 GK1bfM8GqdBdcFsaWeSZqHWEOP9mJUdSuiCQgiNBoQG6NILTSZMFLj5DTALdriUAGP
-	 sQsp3wtgC9kEQKoQuLi2U93MsH6AxDtLigxnWZLMIfIRv98bvveO02cOL3SXassvcX
-	 1JOFyGATYyHSifK9907WxBQZVyRRXl6VV4GuaOXcen3H6CcT7M4AtNnBWlklaSlrel
-	 GjbaFKno2ZtJw==
-Date: Mon, 1 Apr 2024 07:50:03 -0700
-From: Jakub Kicinski <kuba@kernel.org>
-To: Leon Romanovsky <leon@kernel.org>
-Cc: David Ahern <dsahern@kernel.org>, Greg Kroah-Hartman
- <gregkh@linuxfoundation.org>, Jason Gunthorpe <jgg@nvidia.com>, Christoph
- Hellwig <hch@infradead.org>, Saeed Mahameed <saeed@kernel.org>, Arnd
- Bergmann <arnd@arndb.de>, Jiri Pirko <jiri@nvidia.com>, Leonid Bloch
- <lbloch@nvidia.com>, Itay Avraham <itayavr@nvidia.com>, Saeed Mahameed
- <saeedm@nvidia.com>, Aron Silverton <aron.silverton@oracle.com>,
- linux-kernel@vger.kernel.org, "netdev@vger.kernel.org"
- <netdev@vger.kernel.org>, Andy Gospodarek <andrew.gospodarek@broadcom.com>,
- Junxian Huang <huangjunxian6@hisilicon.com>
-Subject: Re: [PATCH V4 0/5] mlx5 ConnectX control misc driver
-Message-ID: <20240401075003.70f5cb4b@kernel.org>
-In-Reply-To: <20240401123003.GC73174@unreal>
-References: <20240214175735.GG1088888@nvidia.com>
-	<20240304160237.GA2909161@nvidia.com>
-	<9cc7127f-8674-43bc-b4d7-b1c4c2d96fed@kernel.org>
-	<2024032248-ardently-ribcage-a495@gregkh>
-	<510c1b6b-1738-4baa-bdba-54d478633598@kernel.org>
-	<Zf2n02q0GevGdS-Z@C02YVCJELVCG>
-	<20240322135826.1c4655e2@kernel.org>
-	<e5c61607-4d66-4cd8-bf45-0aac2b3af126@kernel.org>
-	<20240322154027.5555780a@kernel.org>
-	<1cd2a70c-17b8-4421-b70b-3c0199a84a6a@kernel.org>
-	<20240401123003.GC73174@unreal>
+	s=arc-20240116; t=1711983203; c=relaxed/simple;
+	bh=Hda/pcZKSdARtq0lDDOblBsfsob21d22E3Mq1DlOg9U=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=srvRGDlc2HYa0sXM3sPklkqGvZbTMHgOQYXOdTcYBj4cEjjPHpEcVqrVQ92sXb9wCkvunuHKTRDKp4QnI7Mp43eDRrb1MQ45bL87OgK52iCxlN+BIgiYh6UE9MylT1TVbN9O0JGA1kqvxwG6FTyOsg3Tm0xzl9GpfmGZ5nOtvlQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Z8v3s8xV; arc=none smtp.client-ip=209.85.167.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lf1-f43.google.com with SMTP id 2adb3069b0e04-513cf9bacf1so5116336e87.0;
+        Mon, 01 Apr 2024 07:53:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1711983197; x=1712587997; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=IZvNyXwkPTrqwrSzNjuIBelxb6SA9fNeAnoyYJRTj60=;
+        b=Z8v3s8xVjmspEtnTj711q3Cywj6VIQR2kjKAYneHhG3QnW6KvXU8w/M99q+LadT7Fx
+         bEqznjRYgx6kjMBe6J2VSV9+kXXE631cOCNU9hZSgYP9NuBHgJNNAxJTV8/+5xip/kwE
+         eGXJIFp+Qrr8DJ6umL6KI6/RhhkKFxmWpNIlFFg+9U00yDAR2OJnRaVUFwlpqKgIIh+g
+         gfklLVvmBc2FApEVfyxXNC7Be4RFrQAykIko59vJJK4fgHZ9Dq+l4pQjjpNLzIqLW+a4
+         AoEvUayVBtWn1NUmiV6T8hDbKfkYoNOY9fF7XAi858FwXbDIN/RheDEmU2tHJjYuYXXf
+         pFTQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711983198; x=1712587998;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=IZvNyXwkPTrqwrSzNjuIBelxb6SA9fNeAnoyYJRTj60=;
+        b=NJpJ51C0xASXzD+laFR6b1RA/oJr5lmuJO5zYe9Lel6E3T3oT6d8lKinnhWwVWHLJo
+         BeThBQm6r4q8DzwXSyFfafgJGCkf/ZOaQqf6lnDKtvA3dyi7RJH0nCjCP9pn+Uv3oscR
+         k5+ggN1OXEDloRj3oIv80lEqyClBGpyaDNeLZq3XxSVZ3xUuMhlx2WOTkJ7AdmKJS8fU
+         s68Oktl7TjUzPIWl/YaYANW7n9uXC4xSAcgAD8Ut1Kbj/HgJhiXlFTlL6dKGrXwtWC7W
+         hGgFLyBP9+nVNItascVomzVW5Zs6Gl9pYqs1TisxvTfiw/6WvoyUAF6+4Ut4buxMCPdP
+         Yqmg==
+X-Forwarded-Encrypted: i=1; AJvYcCXwWkvfR2mDAo9mMsI3ih6FmydwFwSeWcio396Bh5BqbGk7bnTHSE1EyOxXuStr3mAgrDorP4NLbsFmXBnFrURr+ZV/f++vJ7QnWi7hcJ3pD+RpbQZ6cAjEiGugy0XxMvAqHBZO
+X-Gm-Message-State: AOJu0Yzt1oqDhuSDZGBCNwixbfqXXJvZUbhmnP9T65pdCcruSqSMON4c
+	81tB4goAg2u0KTSSRjm9vfs9olW2hiO7j9TnhlTT69s/XPWv3wWcq/CvaF5xHe6e
+X-Google-Smtp-Source: AGHT+IHiFC1iVawFIdmsEKx7Pa4Jvjd/fNMQ0J7TvCjVyJQGxEpJ14Oans7o0yFjlvPxOBp5NtGq7g==
+X-Received: by 2002:a05:6512:3c89:b0:516:a14e:82c with SMTP id h9-20020a0565123c8900b00516a14e082cmr4326576lfv.4.1711983197405;
+        Mon, 01 Apr 2024 07:53:17 -0700 (PDT)
+Received: from frutis-latitude7490.lan (public-gprs367196.centertel.pl. [37.47.65.157])
+        by smtp.googlemail.com with ESMTPSA id x12-20020a056512078c00b00513e4086815sm1435703lfr.162.2024.04.01.07.53.15
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 01 Apr 2024 07:53:16 -0700 (PDT)
+From: =?UTF-8?q?Pawe=C5=82=20Owoc?= <frut3k7@gmail.com>
+To: 
+Cc: =?UTF-8?q?Pawe=C5=82=20Owoc?= <frut3k7@gmail.com>,
+	Andrew Lunn <andrew@lunn.ch>,
+	Heiner Kallweit <hkallweit1@gmail.com>,
+	Russell King <linux@armlinux.org.uk>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>,
+	Paolo Abeni <pabeni@redhat.com>,
+	Christian Marangi <ansuelsmth@gmail.com>,
+	Robert Marko <robimarko@gmail.com>,
+	"Russell King (Oracle)" <rmk+kernel@armlinux.org.uk>,
+	netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH net-next v2] net: phy: aquantia: add support for AQR114C PHY ID
+Date: Mon,  1 Apr 2024 16:51:06 +0200
+Message-ID: <20240401145114.1699451-1-frut3k7@gmail.com>
+X-Mailer: git-send-email 2.44.0
+In-Reply-To: <20240315080657.3460084-1-frut3k7@gmail.com>
+References: <20240315080657.3460084-1-frut3k7@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-On Mon, 1 Apr 2024 15:30:03 +0300 Leon Romanovsky wrote:
-> > The proposal is an attempt at a common interface and common tooling to a
-> > degree but independent of any specific subsystem of which many are
-> > supported by the device.
-> > 
-> > Your responses continue to align with the notion that because the device
-> > can spit out ethernet frames, all diagnostics, debugging, configuration,
-> > etc. MUST go through networking APIs.
-> > 
-> > You seem unwilling to acknowledge that devices can work for various use
-> > cases without a netdev driver, and thus aspects of managing that device
-> > should be done outside of a netdev driver.  
-> 
-> HNS driver is a good example of such device. It has nothing to do with
-> netdev and needs common and reliable way to configure FW.
+Add support for AQR114C PHY ID. This PHY advertise 10G speed:
+SPEED(0x04): 0x6031
+  capabilities: -400g +5g +2.5g -200g -25g -10g-xr -100g -40g -10g/1g -10
+                +100 +1000 -10-ts -2-tl +10g
+EXTABLE(0x0B): 0x40fc
+  capabilities: -10g-cx4 -10g-lrm +10g-t +10g-kx4 +10g-kr +1000-t +1000-kx
+                +100-tx -10-t -p2mp -40g/100g -1000/100-t1 -25g -200g/400g
+                +2.5g/5g -1000-h
 
-Sorry, I have a completely different reading of that thread.
-Thanks for bringing it up, tho.
+but supports only up to 5G speed (as with AQR111/111B0).
+AQR111 init config is used to set max speed 5G.
 
-As I said multiple times I agree that configuring custom parameters
-in RDMA is a necessity. Junxian's approach of putting such code in
-the RDMA driver / subsystem is more than reasonable. Even better,
-it looks like the API is fairly narrowly defined.
+Signed-off-by: Paweł Owoc <frut3k7@gmail.com>
+---
+ drivers/net/phy/aquantia/aquantia_main.c | 21 +++++++++++++++++++++
+ 1 file changed, 21 insertions(+)
+
+diff --git a/drivers/net/phy/aquantia/aquantia_main.c b/drivers/net/phy/aquantia/aquantia_main.c
+index 71bfddb8f453..d34cdec47636 100644
+--- a/drivers/net/phy/aquantia/aquantia_main.c
++++ b/drivers/net/phy/aquantia/aquantia_main.c
+@@ -28,6 +28,7 @@
+ #define PHY_ID_AQR412	0x03a1b712
+ #define PHY_ID_AQR113	0x31c31c40
+ #define PHY_ID_AQR113C	0x31c31c12
++#define PHY_ID_AQR114C	0x31c31c22
+ #define PHY_ID_AQR813	0x31c31cb2
+ 
+ #define MDIO_PHYXS_VEND_IF_STATUS		0xe812
+@@ -962,6 +963,25 @@ static struct phy_driver aqr_driver[] = {
+ 	.get_stats      = aqr107_get_stats,
+ 	.link_change_notify = aqr107_link_change_notify,
+ },
++{
++	PHY_ID_MATCH_MODEL(PHY_ID_AQR114C),
++	.name           = "Aquantia AQR114C",
++	.probe          = aqr107_probe,
++	.get_rate_matching = aqr107_get_rate_matching,
++	.config_init    = aqr111_config_init,
++	.config_aneg    = aqr_config_aneg,
++	.config_intr    = aqr_config_intr,
++	.handle_interrupt = aqr_handle_interrupt,
++	.read_status    = aqr107_read_status,
++	.get_tunable    = aqr107_get_tunable,
++	.set_tunable    = aqr107_set_tunable,
++	.suspend        = aqr107_suspend,
++	.resume         = aqr107_resume,
++	.get_sset_count = aqr107_get_sset_count,
++	.get_strings    = aqr107_get_strings,
++	.get_stats      = aqr107_get_stats,
++	.link_change_notify = aqr107_link_change_notify,
++},
+ {
+ 	PHY_ID_MATCH_MODEL(PHY_ID_AQR813),
+ 	.name		= "Aquantia AQR813",
+@@ -999,6 +1019,7 @@ static struct mdio_device_id __maybe_unused aqr_tbl[] = {
+ 	{ PHY_ID_MATCH_MODEL(PHY_ID_AQR412) },
+ 	{ PHY_ID_MATCH_MODEL(PHY_ID_AQR113) },
+ 	{ PHY_ID_MATCH_MODEL(PHY_ID_AQR113C) },
++	{ PHY_ID_MATCH_MODEL(PHY_ID_AQR114C) },
+ 	{ PHY_ID_MATCH_MODEL(PHY_ID_AQR813) },
+ 	{ }
+ };
+-- 
+2.44.0
+
 
