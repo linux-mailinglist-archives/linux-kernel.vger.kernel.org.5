@@ -1,140 +1,99 @@
-Return-Path: <linux-kernel+bounces-126408-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-126409-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 93C6B8936E6
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 04:21:10 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id F1DE38936E8
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 04:23:46 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3BB5D1F21603
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 02:21:10 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DB6431C20A97
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 02:23:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 06D1C1C2D;
-	Mon,  1 Apr 2024 02:21:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1D93B23BE;
+	Mon,  1 Apr 2024 02:23:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="FYbdwBxE"
-Received: from mail-qv1-f43.google.com (mail-qv1-f43.google.com [209.85.219.43])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="a5rnfvDJ"
+Received: from mail-lj1-f172.google.com (mail-lj1-f172.google.com [209.85.208.172])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D45EA10E5;
-	Mon,  1 Apr 2024 02:20:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7EC141113
+	for <linux-kernel@vger.kernel.org>; Mon,  1 Apr 2024 02:23:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711938061; cv=none; b=gtWSG3DIvuxe9mg8jvdT3iji2hEl3crl6yoPX654MGpjRRe+NHQ4ksG51IvFfM+vXZ1J/PpvsQLq/zbFOPWVXW6fDBYUtGybwegBPaD0VpYkhKlU6TvkUVodk6bVSZmLpJQJMVMtOvLcZmiTHdKty6dHQkx+qO4hYmihs4XkIdU=
+	t=1711938218; cv=none; b=eZrWIMbjxdjFHt64EGdiWCJTekf9/naxh5HLD0DuCVdyE8Yxv9ljcjfB0BWQCVBfx5THae0vBvHkG1+CGFqCz+/G4mzbpIYbVUJMGcQF2d7+bW2GV9L68LD+hXDJfSo+KSx7OEflrE053B3RQP1YZWNzRqU6ogh0GYayv5kWMEM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711938061; c=relaxed/simple;
-	bh=9JDO4Cagwi3lP7gijNA6peSXaTD5GczAGmK9Wgoo/bo=;
+	s=arc-20240116; t=1711938218; c=relaxed/simple;
+	bh=j41BO2dds6Fv38WNeZ85tSAZZ0NU5bCk5e9Xy6YPOvk=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=NGrVWzq+yfLRT1TkDmg/9obRXRVQzj9ovWC1+OXHXK6Rc/YDP5kT+EMTAKhOtoMVWtVeownfnCVdPUYtfsadIz4LRymNbTm/1ZllbCyz157Fi6lxXzThGDBxPw1xqF44UDSJX+PkFwdRszPlI8P0VA953v1bmqMsKt/ONb0nwrE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=FYbdwBxE; arc=none smtp.client-ip=209.85.219.43
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-qv1-f43.google.com with SMTP id 6a1803df08f44-697bd743062so13384306d6.0;
-        Sun, 31 Mar 2024 19:20:59 -0700 (PDT)
+	 To:Cc:Content-Type; b=mkfFD+3eWloOdVQmgFl/PjSOgxGUyIOJtbiqZ7YcLpqcfZVTYsJ7mtQOZDkQlotGFxbhlfLWGdVBPJPWj4wbgHx1wdeR6+f7NC4jX2NfOXHnywmMPI2+VT/6sV+TFkOZNdTzt63tqB6tsT5CKEAUOSpS8E8rWPvKW/XQr4+LGY8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=a5rnfvDJ; arc=none smtp.client-ip=209.85.208.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-lj1-f172.google.com with SMTP id 38308e7fff4ca-2d475b6609eso38677511fa.2
+        for <linux-kernel@vger.kernel.org>; Sun, 31 Mar 2024 19:23:36 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1711938059; x=1712542859; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1711938215; x=1712543015; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=9JDO4Cagwi3lP7gijNA6peSXaTD5GczAGmK9Wgoo/bo=;
-        b=FYbdwBxEoe+gJMUx6GvsmDeC4LhJ/H0LYfw5wE7b4JtNMqiQ7wqvgQ1mEo906VoJWk
-         bsqC2GTKfaYG38lqWbwQPn3nA+w72llz9krpXNNA8iLlHNV8V/fLyVuVOC5feQe+t2UX
-         2lAZ+lmTx+n8xAQcOS4NkM1i38yxx3F+4v8JoDOenvkxij/nLvXTMFF/pc+wHtd8m8+h
-         4Pz2RjM3MjupTq1GANnPg4YqoNEyaXOjofUiBBCzMYIngSTsnN/8hFLtaqbYuYytLswD
-         VG3pd421DuZ5WcsZhQSKlVSYN48CXlkrv5GUHN5x9umB5cRA6yAAlSYVbxTvwLbMbXKp
-         gLvw==
+        bh=aXfMuGsoJ/atd6ywH2U36Cddge1WO0AgRUSU8JyF+V8=;
+        b=a5rnfvDJV5Sb/7iXcnj05YVqRjdll/zmN7wOQ05Y4whgr6AHG0sdH8Ba9Zh26lmlZz
+         cuT2wK0KdAJdJzKL0rYV4pkqhfQZYbhpeNbsUfVccdbrQmQyBXjAQu3dktyF1QrbOW/L
+         IDIUepG6U35RkVW+kLrwYFArzRaddkoMEicyKgTH4YdF836HJL9DmNR8t7SczOoJOdBT
+         VfpdJZvux4VLmgHNfX2LjhUheIHw4k9PVWrP+0UwLRuTVoLeF6rKQcefQL9srx8enAP/
+         npuA/bxTco4EdomSNuvLnNPuiDLYOQBqnY3F+015dn16EMvc7yTQV+766gQ7AYEDh7m7
+         wBMQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711938059; x=1712542859;
+        d=1e100.net; s=20230601; t=1711938215; x=1712543015;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=9JDO4Cagwi3lP7gijNA6peSXaTD5GczAGmK9Wgoo/bo=;
-        b=ClM/I8qAwp+rSsKK82Oz8NIi0V6QV69ivrzif+q0udmI4ygvDehFzWbLv73rW+/ZCi
-         y6kzsEvveLkp+uQCID/oFaIXIPtmCxNYbKX197htqAVOYqGmczxcmad1HyavkKbzHCrr
-         zY8qpB8phdDEEwUNFpp4omAJyQsToTxuPhu8a5smccTdNdU1eWmZn3W+ym6UePmw22Ia
-         D9AFIkrfx5FoD/8uoy0VS9gc0sjR71ohXeR3SObzaySHseaIar1UvoHk4u5/XzNDIAvC
-         ZsJHp/9uJ5WrY0pbn+b/VXDq2OWTsjxrszYpW168pTauZEVk0Rx+smTwxKv9H4vur1Ro
-         lZYg==
-X-Forwarded-Encrypted: i=1; AJvYcCUNOLhbpl/pweVFnz9mmoJx20siAPLNqU1F5PWOalgVejg7E5Tk72Jn+oidz1FxJRmVAK7UmsxhX4wF81Lb0FwxACbOa9NmNfT15+JJvVafvR/b5pzXDXzDSf0jZaTgHrxDuOXx
-X-Gm-Message-State: AOJu0YxseOq/1cJquNYj/PCC+Gh5zfhRomPqrdiknSuI6uECFLQp94ew
-	y9WP6XZ2JysXOq6+/GEoADFVbn4+8fhz1kXjc8Rw/xIWQmhCjShyMdpM59KDIVFJGy8/Y60KQla
-	Obw5Jxq3y0d9dL/lX3sB0QqJDI2o=
-X-Google-Smtp-Source: AGHT+IF9CHspS/+4YIVUPThHfX60fsGTHH+icfepuaGZgKOX1lU41zLd0obIn/KQWOfp2D7L66KAVzHs3F7WzTa27BY=
-X-Received: by 2002:a0c:c783:0:b0:698:feb6:3d2 with SMTP id
- k3-20020a0cc783000000b00698feb603d2mr3792497qvj.10.1711938058772; Sun, 31 Mar
- 2024 19:20:58 -0700 (PDT)
+        bh=aXfMuGsoJ/atd6ywH2U36Cddge1WO0AgRUSU8JyF+V8=;
+        b=ufUDka9LrTQBM0P7CCxTD7kKWVUI16YOLXJHWhqLMnelvhKQDYsrZJylT+xkF8pb5x
+         kkS+BAz8So0hsOvxxfc0oua/F+2wPBHbDBOVLbXAHBAimrpp7N+uIASqDwUfsbgMY/ks
+         S2k/mEr+ciIyfR1ifNuD7KTALf/4AXEshuE1CyfR63xNtY9hux5/3sM5S4iZoj8dPCe9
+         7SWjKC/gN+u/88/q1nS2RyrN9eaCgF58PNpxC28Q2KVapbevGqUlFOWIPi4BXuuhwFD4
+         RBeUxh5JH+W/j8coVTgiUUhkQ5d76CuTRahW/d7v3CUQwjwgtRzmpT3BU4n0g+f1HjRN
+         OmAA==
+X-Forwarded-Encrypted: i=1; AJvYcCWh3rE4fBNFyetscj65dF7dpHVkfVAI9zjUYb8A+a4YblP6tUPqXzFbWJEjWzp+I99VMHuBbeS0pGcaOajHSWKo34mXNKIgFCaio1iU
+X-Gm-Message-State: AOJu0YxVm4dHpRfzvlVy/Dzla4n/xe74NLIoCC3FsP17bDwRsGppC3kp
+	KaPr3+tKkq0rcrQNQnWwa5FrKImhuYACQsDBMjWcvhV07N2xX90CVKjhVtjVFj7lKceSeYNc5Bu
+	YqAJNEID/hXLeJL1+QCZ9c/Nvd/DtBljglc3hJg==
+X-Google-Smtp-Source: AGHT+IGYmZtdzOWFfR0vTWyRYyRt7t6Ny+ula3JSyIJ78UHqJttV707k8TBzXPIipjhpUNAlaXV03FimDjkqSbpIieM=
+X-Received: by 2002:a2e:964a:0:b0:2d6:d4ca:fa8b with SMTP id
+ z10-20020a2e964a000000b002d6d4cafa8bmr5023108ljh.34.1711938214572; Sun, 31
+ Mar 2024 19:23:34 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240325033515.814-1-jammy_huang@aspeedtech.com>
- <c04ebd16-f0b0-45be-a831-fae8b50b7011@redhat.com> <5df1d391-7683-4d9c-accc-9b446d46a150@suse.de>
-In-Reply-To: <5df1d391-7683-4d9c-accc-9b446d46a150@suse.de>
-From: =?UTF-8?B?6buD56uL6YqY?= <orbit.huang@gmail.com>
-Date: Mon, 1 Apr 2024 10:20:48 +0800
-Message-ID: <CAOj9kT3=UA-5wkVXb8Rk2h3D=vtZDbhzxe4MY=Nwzod96DeppA@mail.gmail.com>
-Subject: Re: [PATCH] drm/ast: Fix soft lockup
-To: Thomas Zimmermann <tzimmermann@suse.de>
-Cc: Jocelyn Falempe <jfalempe@redhat.com>, maarten.lankhorst@linux.intel.com, 
-	mripard@kernel.org, airlied@redhat.com, airlied@gmail.com, daniel@ffwll.ch, 
-	dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org, 
-	Jammy Huang <jammy_huang@aspeedtech.com>, stable@vger.kernel.org
+References: <20240318-topic-sm8650-gpu-v4-0-206eb0d31694@linaro.org> <20240318-topic-sm8650-gpu-v4-2-206eb0d31694@linaro.org>
+In-Reply-To: <20240318-topic-sm8650-gpu-v4-2-206eb0d31694@linaro.org>
+From: Jun Nie <jun.nie@linaro.org>
+Date: Mon, 1 Apr 2024 10:23:19 +0800
+Message-ID: <CABymUCPqeu=41=jTnTLKkERRG9PMaqsmfyq41TDa43kNvjxEcw@mail.gmail.com>
+Subject: Re: [PATCH v4 2/2] arm64: dts: qcom: sm8650-qrd: enable GPU
+To: Neil Armstrong <neil.armstrong@linaro.org>
+Cc: Bjorn Andersson <andersson@kernel.org>, Konrad Dybcio <konrad.dybcio@linaro.org>, 
+	Rob Herring <robh@kernel.org>, Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
+	Conor Dooley <conor+dt@kernel.org>, linux-arm-msm@vger.kernel.org, 
+	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-Hi Thomas and Jocelyn,
-
-What we do in ast_dp_set_on_off() is a handshake between host driver
-and bmc-fw to confirm
-the operation, on/off, is completed.
-
-We use some scratch registers in bmc to handshake with host. This
-handshake only work if
-BMC's scu-lock is opened. If scu-lock is opened too late, then it
-could lead to this issue.
-
-Best regards
-Jammy
-
-Thomas Zimmermann <tzimmermann@suse.de> =E6=96=BC 2024=E5=B9=B43=E6=9C=8828=
-=E6=97=A5 =E9=80=B1=E5=9B=9B =E4=B8=8A=E5=8D=884:28=E5=AF=AB=E9=81=93=EF=BC=
-=9A
+Neil Armstrong <neil.armstrong@linaro.org> =E4=BA=8E2024=E5=B9=B43=E6=9C=88=
+18=E6=97=A5=E5=91=A8=E4=B8=80 18:12=E5=86=99=E9=81=93=EF=BC=9A
 >
-> Hi
+> Add path of the GPU firmware for the SM8650-QRD board
 >
-> Am 27.03.24 um 09:53 schrieb Jocelyn Falempe:
-> > Hi,
-> >
-> > Thanks for your patch.
-> > I'm wondering how you can trigger this infinite loop ?
+> Reviewed-by: Konrad Dybcio <konrad.dybcio@linaro.org>
+> Signed-off-by: Neil Armstrong <neil.armstrong@linaro.org>
+> ---
+>  arch/arm64/boot/dts/qcom/sm8650-qrd.dts | 8 ++++++++
+>  1 file changed, 8 insertions(+)
 >
-> Yeah, a bit more context for this bug would be welcome. It's hard to
-> judge the fix without.
->
-> Best regards
-> Thomas
->
-> >
-> > Also this looks like a simple fix, that can be easily backported, so
-> > I'm adding stable in Cc.
-> >
-> > If Thomas has no objections, I can push it to drm-misc-fixes.
-> >
-> > Reviewed-by: Jocelyn Falempe <jfalempe@redhat.com>
-> >
->
->
->
-> --
-> --
-> Thomas Zimmermann
-> Graphics Driver Developer
-> SUSE Software Solutions Germany GmbH
-> Frankenstrasse 146, 90461 Nuernberg, Germany
-> GF: Ivo Totev, Andrew Myers, Andrew McDonald, Boudien Moerman
-> HRB 36809 (AG Nuernberg)
->
+Reviewed-by: Jun Nie <jun.nie@linaro.org>
 
