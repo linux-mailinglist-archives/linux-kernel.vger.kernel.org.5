@@ -1,155 +1,211 @@
-Return-Path: <linux-kernel+bounces-126834-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-126835-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5D0A3893D6E
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 17:54:16 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id EBCDF893D84
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 17:54:51 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 783691C21A5D
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 15:54:15 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 746D028139F
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 15:54:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BF4A555E43;
-	Mon,  1 Apr 2024 15:51:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 24B2A4D59F;
+	Mon,  1 Apr 2024 15:52:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="rVVQeIBm"
-Received: from mail-pl1-f172.google.com (mail-pl1-f172.google.com [209.85.214.172])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="maCQSVj7"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CB87655E72
-	for <linux-kernel@vger.kernel.org>; Mon,  1 Apr 2024 15:51:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 455C04CDEC;
+	Mon,  1 Apr 2024 15:52:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711986694; cv=none; b=GB9TTQM95OTmvaiYxVdYo3mjJTwom81qLjovRj6N658xTuMdFRHPesEpah9Q19q6moRs5u0Tza19/UfqHuXtBKUlRfcEyrwO01oX5DoD4FbhPTvbY9m/Pu5JnfqKoKCgDM/uyBzpwPuH1T0OhYyGAz8Ao9UbECr2q0cpSC9fLjs=
+	t=1711986743; cv=none; b=OroiuCmroVElvS7YGl3RW+VD76LOEXW5O6caTs4ddjMGwUv1mX0yyo8T1gdp8ss0iykXVpYK3cp1vFAFfd6Qlx5DgeTKUQnY6aIgsxhbzkdFmE9lhfgZfVSQ5jc0LTEmLyKu8DRcCBOe+yP28sEm8zlRhGhc0qV501sCNxTOZFI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711986694; c=relaxed/simple;
-	bh=nMpZPnhw9L+pUj1D059OFEbCKZXS4KgCBMCDJdioW0Q=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=QS5iIQ2j3S/NGS80522wZT9iQKATxZg1EdDuLbAGLweB5FjkgDCpqkY0RaoTZSzAJ5XCi5q4TNOLGgEG9jRAl3BspqhKdx/hvbqfiuBEK2l36qXlYHYCXf3XBEr34TR3toGVJTeqZEIqWW2SCxcO4iEKRcO/vEaK3+FEzXXJxCI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=rVVQeIBm; arc=none smtp.client-ip=209.85.214.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-pl1-f172.google.com with SMTP id d9443c01a7336-1e0f2798cd8so33392365ad.3
-        for <linux-kernel@vger.kernel.org>; Mon, 01 Apr 2024 08:51:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1711986692; x=1712591492; darn=vger.kernel.org;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=makyLP4le5wSVl0G8mOZnW4dGLqrps4D2r71XeJTz5Y=;
-        b=rVVQeIBmwd9GDM9kUxHihd/AJGUZIITwGSXvAO3qd7L0ZUzpMCzsRutVF28ChU2TxH
-         8mDTpbcn0f9UAjnFErHb294akOiwWvMUx8XzqsMEIk/ZV1+zz1N0Ze7hz7znBVWrU1tL
-         7X5g+cftPrgq4gnyWECo7n2lp3Az1h2ZnifTvyasl0RvRdXcXfCrbis8n05sge8Gxs/a
-         FIaJHmjDQBaFdjHZn4bGPjbVw2vESrzKBdDaN/6dad+sEhyb5qGyWhvCrGbZ/1NvVPcu
-         XYfkhRiVTGzAOiMh1h++7lIs1k6+atOomWWn9x8GkFaTg3uhQgUadwKUoL7I80yT1U+V
-         qs4w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711986692; x=1712591492;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=makyLP4le5wSVl0G8mOZnW4dGLqrps4D2r71XeJTz5Y=;
-        b=cIBr635GVfqPqayup/1nfw9Us4OWcNNCwOB51rDnYlFFANJ50rcj3Iai2ngLtLz9bV
-         3w+E5K8b02l4IjS3Q3PsJQHRUc0m7wv9urJnMhIeQGr/vHWWiXH7DSy89gs3FmiZXZJi
-         2zyIEqz/2ZdkdOzxC8cXXE1am1+EKMv3jXb6fsUBfULzdp3/qhLDh3vKvwgN7d8ZBO6d
-         gdrigCy1d8aZdGsSgvJO1urP3ACcBvIcDAzgYzVj76L5aKkZ5G5Pm9EJuOnte3tf0OmC
-         UWUm0apL+of4U1FH1GRNUu7p/SQODILUwSusKLv26AdC7+71Qn4D4HrZw3Bo8oDtr6Dv
-         KENQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUVsO60etRjy0lTMy6xvirej5h+E34+McAU/rhLtK2o/3SBoQbfhwA2cSPpRwJcRjJgyWnyE98qst+p7felefvfXBbmB3+VkHJMxeFj
-X-Gm-Message-State: AOJu0Yyim0cMKvOpNlWErt6pLGPetIyahJhoyMgGl/nMMcCbOdGQntpl
-	B5OprGH6zKiz9+O9Tw1d6UETjJvGlvFMFlVK0fl/icLxXDgN560UL5kwTd2jgg==
-X-Google-Smtp-Source: AGHT+IHuYkm5JMXP6REnNNqu79HonjQ2rY+2E62XKXihjL/57m1yCgv6vHhEwaf3qQo9xV4etiD08w==
-X-Received: by 2002:a17:902:fc4f:b0:1e2:54ed:5c5f with SMTP id me15-20020a170902fc4f00b001e254ed5c5fmr3370500plb.45.1711986691849;
-        Mon, 01 Apr 2024 08:51:31 -0700 (PDT)
-Received: from [127.0.1.1] ([103.28.246.102])
-        by smtp.gmail.com with ESMTPSA id kh6-20020a170903064600b001e21957fecdsm8949076plb.246.2024.04.01.08.51.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 01 Apr 2024 08:51:31 -0700 (PDT)
-From: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-Date: Mon, 01 Apr 2024 21:20:36 +0530
-Subject: [PATCH v2 10/10] PCI: qcom: Implement shutdown() callback to
- properly reset the endpoint devices
+	s=arc-20240116; t=1711986743; c=relaxed/simple;
+	bh=uIutiB+eFvtzipMrxJvLjeiPeG6GFWVZ0ZS/y6LRjGU=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=iELN8PJUlEdb1Rb2sDOGaepP8gwSG5rW5wj0zyghbUXbOxwd/wyG6iobALQrfaHGHieN79tOz6NM9fQqls1hgRzUsl+rYVPFTrsxsaM5CexdO/oz3jUa3C0ATHhh9Iq/iLECJ8kKLRWn3bIG2vIkgEmTp4tfVlnMqpJ90siZ+OM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=maCQSVj7; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1527DC433C7;
+	Mon,  1 Apr 2024 15:52:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1711986743;
+	bh=uIutiB+eFvtzipMrxJvLjeiPeG6GFWVZ0ZS/y6LRjGU=;
+	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+	b=maCQSVj7j4KkshiBSoREmRa4yq4iZt5uxfMsJkGTonSY3n/GY7KWRMQcANBFLHif1
+	 rvM8fOo4rvJL3owxfRJzk7Dit/OugetLeKm3FrjVgbTHoSy1lNNf3JlRvRsPbPQBj4
+	 J0sjdd+xgI1vQbuEy+n3dqwLNO0FMYyzLPhMiuRxlaAJPC+qaQqT9riuzQ4oVhVwIz
+	 J5g5jHiqD+sexrW+EzhJnH/YBKDOls2OvdzKbgV3NY82+pG064WikCinLrmVc8FDOh
+	 Tve5M4RStj9v9/OmJjakhVxaGvvBLVg+Q1j2eqn+UD3AuFebHEWfmZCl0WN0VqwgHD
+	 d1krplPPRuwnw==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+	id B2B10CE0738; Mon,  1 Apr 2024 08:52:22 -0700 (PDT)
+Date: Mon, 1 Apr 2024 08:52:22 -0700
+From: "Paul E. McKenney" <paulmck@kernel.org>
+To: Leonardo Bras <leobras@redhat.com>
+Cc: Paolo Bonzini <pbonzini@redhat.com>,
+	Frederic Weisbecker <frederic@kernel.org>,
+	Neeraj Upadhyay <quic_neeraju@quicinc.com>,
+	Joel Fernandes <joel@joelfernandes.org>,
+	Josh Triplett <josh@joshtriplett.org>,
+	Boqun Feng <boqun.feng@gmail.com>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+	Lai Jiangshan <jiangshanlai@gmail.com>,
+	Zqiang <qiang.zhang1211@gmail.com>,
+	Marcelo Tosatti <mtosatti@redhat.com>, kvm@vger.kernel.org,
+	linux-kernel@vger.kernel.org, rcu@vger.kernel.org
+Subject: Re: [RFC PATCH v1 2/2] rcu: Ignore RCU in nohz_full cpus if it was
+ running a guest recently
+Message-ID: <b616a57b-56bf-4cdd-abc3-f2064b14abf6@paulmck-laptop>
+Reply-To: paulmck@kernel.org
+References: <20240328171949.743211-1-leobras@redhat.com>
+ <20240328171949.743211-3-leobras@redhat.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20240401-pci-epf-rework-v2-10-970dbe90b99d@linaro.org>
-References: <20240401-pci-epf-rework-v2-0-970dbe90b99d@linaro.org>
-In-Reply-To: <20240401-pci-epf-rework-v2-0-970dbe90b99d@linaro.org>
-To: Lorenzo Pieralisi <lpieralisi@kernel.org>, 
- =?utf-8?q?Krzysztof_Wilczy=C5=84ski?= <kw@linux.com>, 
- Rob Herring <robh@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>, 
- Kishon Vijay Abraham I <kishon@kernel.org>, 
- Thierry Reding <thierry.reding@gmail.com>, 
- Jonathan Hunter <jonathanh@nvidia.com>, Jingoo Han <jingoohan1@gmail.com>
-Cc: linux-pci@vger.kernel.org, linux-arm-msm@vger.kernel.org, 
- linux-kernel@vger.kernel.org, mhi@lists.linux.dev, 
- linux-tegra@vger.kernel.org, Niklas Cassel <cassel@kernel.org>, 
- Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-X-Mailer: b4 0.12.4
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1844;
- i=manivannan.sadhasivam@linaro.org; h=from:subject:message-id;
- bh=nMpZPnhw9L+pUj1D059OFEbCKZXS4KgCBMCDJdioW0Q=;
- b=owEBbQGS/pANAwAKAVWfEeb+kc71AcsmYgBmCtfWCU/F5EBeT9Xc6kKS8bi0avjvP5/hATJSX
- 6Xt16CcsX2JATMEAAEKAB0WIQRnpUMqgUjL2KRYJ5dVnxHm/pHO9QUCZgrX1gAKCRBVnxHm/pHO
- 9a9NB/4gACCmhLBAg0hBUkiwLW1J1dbyKzPeiUuI7Dr8bRC9iEpC+3WlfjzUVbSG7/t+r5XK/59
- zpRMd2CHRveu9TpZva8J+kie6ynO6lb1ht+R+V9g0B+kaOEA150N6p6Sx/S7HabwKSa7tCRjudu
- GVuFNvYLQNV2z4tK4whsZNb+GyYPlnU8aqBnPAU2aU1ow/O3Iucn2keYnBe4EnCF9rB10mBokzH
- MzRH4/qxYjmgMxg2Za3Y6kChv05gMwYJWcp6w5F41uYyIkboJO6DbWdVL6/AEnNt7y5P2gvEPVT
- SJ6NBuehBlYYr0IQVGxb74HOUYDIRBOUnH6F7CdWAD3keYRS
-X-Developer-Key: i=manivannan.sadhasivam@linaro.org; a=openpgp;
- fpr=C668AEC3C3188E4C611465E7488550E901166008
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240328171949.743211-3-leobras@redhat.com>
 
-PCIe host controller drivers are supposed to properly reset the endpoint
-devices during host shutdown/reboot. Currently, Qcom driver doesn't do
-anything during host shutdown/reboot, resulting in both PERST# and refclk
-getting disabled at the same time. This prevents the endpoint device
-firmware to properly reset the state machine. Because, if the refclk is
-cutoff immediately along with PERST#, access to device specific registers
-within the endpoint will result in a firmware crash.
+On Thu, Mar 28, 2024 at 02:19:47PM -0300, Leonardo Bras wrote:
+> In current code, we can ignore the RCU request on a nohz_full cpu for up to
+> a second if it has interrupted idle or userspace tasks, since those are
+> quiescent states, and will probably return to it soon thus not requiring
+> to run a softirq or a rcuc thread.
+> 
+> Running a guest is also considered to be a quiescent state, and will
+> follow the same logic, so it makes sense to also ignore the RCU request in
+> this case.
+> 
+> This solves a latency issue of a latency-sensitive workload running on a
+> guest pinned in nohz_full cpu: if the guest goes out for any reason, and a
+> synchronize_rcu() is requested between guest exit and a timer interrupt,
+> then invoke_rcu_core() is called, and introduce latency due to either a
+> softirq, or a reschedule to run rcuc, if the host is a PREEMPT_RT kernel.
+> 
+> Suggested-by: Marcelo Tosatti <mtosatti@redhat.com>
+> Signed-off-by: Leonardo Bras <leobras@redhat.com>
 
-To address this issue, let's call qcom_pcie_host_deinit() inside the
-shutdown callback, that asserts PERST# and then cuts off the refclk with a
-delay of 1ms, thus allowing the endpoint device firmware to properly
-cleanup the state machine.
+Looks plausible to me!
 
-Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
----
- drivers/pci/controller/dwc/pcie-qcom.c | 8 ++++++++
- 1 file changed, 8 insertions(+)
+Acked-by: Paul E. McKenney <paulmck@kernel.org>
 
-diff --git a/drivers/pci/controller/dwc/pcie-qcom.c b/drivers/pci/controller/dwc/pcie-qcom.c
-index 14772edcf0d3..b2803978c0ad 100644
---- a/drivers/pci/controller/dwc/pcie-qcom.c
-+++ b/drivers/pci/controller/dwc/pcie-qcom.c
-@@ -1655,6 +1655,13 @@ static int qcom_pcie_resume_noirq(struct device *dev)
- 	return 0;
- }
- 
-+static void qcom_pcie_shutdown(struct platform_device *pdev)
-+{
-+	struct qcom_pcie *pcie = platform_get_drvdata(pdev);
-+
-+	qcom_pcie_host_deinit(&pcie->pci->pp);
-+}
-+
- static const struct of_device_id qcom_pcie_match[] = {
- 	{ .compatible = "qcom,pcie-apq8064", .data = &cfg_2_1_0 },
- 	{ .compatible = "qcom,pcie-apq8084", .data = &cfg_1_0_0 },
-@@ -1708,5 +1715,6 @@ static struct platform_driver qcom_pcie_driver = {
- 		.pm = &qcom_pcie_pm_ops,
- 		.probe_type = PROBE_PREFER_ASYNCHRONOUS,
- 	},
-+	.shutdown = qcom_pcie_shutdown,
- };
- builtin_platform_driver(qcom_pcie_driver);
+Or let me know if you would rather these go through -rcu.
 
--- 
-2.25.1
+							Thanx, Paul
 
+> ---
+>  kernel/rcu/tree_plugin.h | 14 ++++++++++++++
+>  kernel/rcu/tree.c        |  4 +++-
+>  2 files changed, 17 insertions(+), 1 deletion(-)
+> 
+> diff --git a/kernel/rcu/tree_plugin.h b/kernel/rcu/tree_plugin.h
+> index 36a8b5dbf5b5..16f3cf2e15df 100644
+> --- a/kernel/rcu/tree_plugin.h
+> +++ b/kernel/rcu/tree_plugin.h
+> @@ -5,20 +5,21 @@
+>   * or preemptible semantics.
+>   *
+>   * Copyright Red Hat, 2009
+>   * Copyright IBM Corporation, 2009
+>   *
+>   * Author: Ingo Molnar <mingo@elte.hu>
+>   *	   Paul E. McKenney <paulmck@linux.ibm.com>
+>   */
+>  
+>  #include "../locking/rtmutex_common.h"
+> +#include "linux/kvm_host.h"
+>  
+>  static bool rcu_rdp_is_offloaded(struct rcu_data *rdp)
+>  {
+>  	/*
+>  	 * In order to read the offloaded state of an rdp in a safe
+>  	 * and stable way and prevent from its value to be changed
+>  	 * under us, we must either hold the barrier mutex, the cpu
+>  	 * hotplug lock (read or write) or the nocb lock. Local
+>  	 * non-preemptible reads are also safe. NOCB kthreads and
+>  	 * timers have their own means of synchronization against the
+> @@ -1260,10 +1261,23 @@ static bool rcu_nohz_full_cpu(void)
+>  
+>  /*
+>   * Bind the RCU grace-period kthreads to the housekeeping CPU.
+>   */
+>  static void rcu_bind_gp_kthread(void)
+>  {
+>  	if (!tick_nohz_full_enabled())
+>  		return;
+>  	housekeeping_affine(current, HK_TYPE_RCU);
+>  }
+> +
+> +/*
+> + * true if for this cpu guest exit is at most over a second ago,
+> + * false otherwise
+> + */
+> +static bool rcu_recent_guest_exit(void)
+> +{
+> +#ifdef CONFIG_KVM
+> +	return time_before(jiffies, guest_exit_last_time() + HZ);
+> +#else
+> +	return false;
+> +#endif
+> +}
+> diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+> index d9642dd06c25..e5ce00bf1898 100644
+> --- a/kernel/rcu/tree.c
+> +++ b/kernel/rcu/tree.c
+> @@ -148,20 +148,21 @@ static void rcu_report_qs_rnp(unsigned long mask, struct rcu_node *rnp,
+>  static struct task_struct *rcu_boost_task(struct rcu_node *rnp);
+>  static void invoke_rcu_core(void);
+>  static void rcu_report_exp_rdp(struct rcu_data *rdp);
+>  static void sync_sched_exp_online_cleanup(int cpu);
+>  static void check_cb_ovld_locked(struct rcu_data *rdp, struct rcu_node *rnp);
+>  static bool rcu_rdp_is_offloaded(struct rcu_data *rdp);
+>  static bool rcu_rdp_cpu_online(struct rcu_data *rdp);
+>  static bool rcu_init_invoked(void);
+>  static void rcu_cleanup_dead_rnp(struct rcu_node *rnp_leaf);
+>  static void rcu_init_new_rnp(struct rcu_node *rnp_leaf);
+> +static bool rcu_recent_guest_exit(void);
+>  
+>  /*
+>   * rcuc/rcub/rcuop kthread realtime priority. The "rcuop"
+>   * real-time priority(enabling/disabling) is controlled by
+>   * the extra CONFIG_RCU_NOCB_CPU_CB_BOOST configuration.
+>   */
+>  static int kthread_prio = IS_ENABLED(CONFIG_RCU_BOOST) ? 1 : 0;
+>  module_param(kthread_prio, int, 0444);
+>  
+>  /* Delay in jiffies for grace-period initialization delays, debug only. */
+> @@ -3931,21 +3932,22 @@ static int rcu_pending(int user)
+>  	lockdep_assert_irqs_disabled();
+>  
+>  	/* Check for CPU stalls, if enabled. */
+>  	check_cpu_stall(rdp);
+>  
+>  	/* Does this CPU need a deferred NOCB wakeup? */
+>  	if (rcu_nocb_need_deferred_wakeup(rdp, RCU_NOCB_WAKE))
+>  		return 1;
+>  
+>  	/* Is this a nohz_full CPU in userspace or idle?  (Ignore RCU if so.) */
+> -	if ((user || rcu_is_cpu_rrupt_from_idle()) && rcu_nohz_full_cpu())
+> +	if ((user || rcu_is_cpu_rrupt_from_idle() || rcu_recent_guest_exit()) &&
+> +	    rcu_nohz_full_cpu())
+>  		return 0;
+>  
+>  	/* Is the RCU core waiting for a quiescent state from this CPU? */
+>  	gp_in_progress = rcu_gp_in_progress();
+>  	if (rdp->core_needs_qs && !rdp->cpu_no_qs.b.norm && gp_in_progress)
+>  		return 1;
+>  
+>  	/* Does this CPU have callbacks ready to invoke? */
+>  	if (!rcu_rdp_is_offloaded(rdp) &&
+>  	    rcu_segcblist_ready_cbs(&rdp->cblist))
+> -- 
+> 2.44.0
+> 
 
