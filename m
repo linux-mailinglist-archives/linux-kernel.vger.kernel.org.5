@@ -1,152 +1,183 @@
-Return-Path: <linux-kernel+bounces-126455-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-126459-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5B754893844
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 08:15:34 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id ABCFD89384A
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 08:16:48 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7E9E31C20AE6
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 06:15:33 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6367C281916
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 06:16:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5AA2E125CF;
-	Mon,  1 Apr 2024 06:14:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C9766944E;
+	Mon,  1 Apr 2024 06:16:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="ZDnBQYsY"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.16])
+	dkim=pass (2048-bit key) header.d=windriver.com header.i=@windriver.com header.b="FHoaR+dr"
+Received: from mx0a-0064b401.pphosted.com (mx0a-0064b401.pphosted.com [205.220.166.238])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CE88F11187;
-	Mon,  1 Apr 2024 06:14:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.16
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D71782595;
+	Mon,  1 Apr 2024 06:16:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.166.238
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711952044; cv=none; b=mCntmXvubO42A0vZ+fGnKuJsyl3f++BPk4UFZ5+cBNZL8RvNL7poGFqqkHpYiVDrCu2KOFtsOeew9zSjGdZwBYlFF+oBU8ZdzSTMncjldcqw6MSFaQ7HIWzGD8lr2LWuUg3VOS3YQhN+6KXJbz3OkkLHKCDt24iGEfXzoh9ayQQ=
+	t=1711952198; cv=none; b=J1tuXCYZupSM3VdR7MiFNpLS3PaWSRUGRM/6OMdVqt9aWu1TP4sNEzhlmS1ePn+vnguJgViQtlBFKjpSfdu3UrpUpvyliIckzfnz8IPNtBgnpF1c5hbpi00+U5akWqy3DI6ISgeqe69fVfJVdK5oadlqF7/WSJBOqDR0S0tu35s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711952044; c=relaxed/simple;
-	bh=1Z2fCk/GC0K5wH/Xh6ji0u0GfFpTzGJ75fuu/9CSOAg=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=UR2GHmmW7G6NfTW2+IWyanfMGMgxkb0C2AILb2RYbli5Sz4c/iubTvpK4cTkz8QkD18A7X7l526a20L+6zi20ZQcQ+4M+5BjAezML5yfSzVKYHp739jvkR2M/oM3p+3fVP5cqQrn47b8zEPn3LG05j0WIPkdEmsvML9rkf9cOCw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=ZDnBQYsY; arc=none smtp.client-ip=192.198.163.16
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1711952042; x=1743488042;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=1Z2fCk/GC0K5wH/Xh6ji0u0GfFpTzGJ75fuu/9CSOAg=;
-  b=ZDnBQYsYGT+OmcuUsfMOUpjg+bg4lwrXcnY8kt3NyhgvUlA/h0RvowJX
-   3V8OuzYNkQrRMsKppmFC3oJqHz3M11fSdRoRRaRlYI7Vr4DsrSp3WEijT
-   CCT1dNNu82YWiJVhcTkMOU3XJ+lpQIBTKyOybgimq2TVxFWwPOa0b4a2+
-   yG/xZ06E1GI2Aznht1PT3d4gpn7Ylqo5pp0aE75gBcaZiWEoeCElE1TS0
-   o84W1fzSd1a5d2puxEbLTP1GH2Gb8+Lfs09hg06ez+B1xVTqisqR8NOoo
-   mkOUnG74E8eczH+E66tNnXv1CCTgXRb/j4f2skgfaKYNwbkDWyP0WmJh7
-   g==;
-X-CSE-ConnectionGUID: ngPhZfQqSLWMOTUtAmDRWA==
-X-CSE-MsgGUID: waYteJwPTwmcZ+oTxRD9SA==
-X-IronPort-AV: E=McAfee;i="6600,9927,11030"; a="7660147"
-X-IronPort-AV: E=Sophos;i="6.07,171,1708416000"; 
-   d="scan'208";a="7660147"
-Received: from fmviesa001.fm.intel.com ([10.60.135.141])
-  by fmvoesa110.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Mar 2024 23:14:01 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,171,1708416000"; 
-   d="scan'208";a="48804236"
-Received: from xiaoyaol-hp-g830.ccr.corp.intel.com (HELO [10.124.224.7]) ([10.124.224.7])
-  by smtpauth.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Mar 2024 23:13:57 -0700
-Message-ID: <05484613-0d02-4ab6-a514-867a0d4459bf@intel.com>
-Date: Mon, 1 Apr 2024 14:13:54 +0800
+	s=arc-20240116; t=1711952198; c=relaxed/simple;
+	bh=Gf16/3ATwW5ymrwfxNotUxyAiehv1Nj7wPTQDzI+o1E=;
+	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=G6NNIoQdHL5kDf4rYEbprYhZOZroZ6gf1mvRW70m5HIhWvmGShgDU49XDPpUDxCNrCJfDiwFLbi+4qW8Aid9Qu7ZX4gp4eAM6dl6gWH1BbCG+EVVwbENCCBoWsdGkxqdFcRaaMOTRRWX2B9FYCH12jEIxcGk4+Xb0CKvYWyPYmg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=windriver.com; spf=pass smtp.mailfrom=windriver.com; dkim=pass (2048-bit key) header.d=windriver.com header.i=@windriver.com header.b=FHoaR+dr; arc=none smtp.client-ip=205.220.166.238
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=windriver.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=windriver.com
+Received: from pps.filterd (m0250810.ppops.net [127.0.0.1])
+	by mx0a-0064b401.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 4314icou027716;
+	Sun, 31 Mar 2024 23:16:27 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=windriver.com;
+	 h=from:to:cc:subject:date:message-id:in-reply-to:references
+	:mime-version:content-transfer-encoding:content-type; s=
+	PPS06212021; bh=b94hqPNHzJ06xjr7BdMuOoe9TJRdHoixRFvvRcdazSY=; b=
+	FHoaR+drR9DxOd9KlI3Fm61PX0vt2htMGp3sC33+cd3bOC2vkt4V/z9Se3c3ljqx
+	Zf5sMa216+TUFCcKDm4KUiwU8KgLOg8ZFj55lxbRZOJDz2sAbwfVgUTFPFW22zNf
+	kcrkTfwoLUTo9FUkCme8gUqokOktRj4KGl2vMaMbnUCY4YMKct71jXfHXwePtP0z
+	wZzwgSa3S7qQ9zVNuO7HKDLA1YjLLcB27gO4k3a+BQEiDNbKXxBPf0WvH9W86rrL
+	YRu1k9Cb+RtivWJEN6VLkjAFdEgBLtpIgaeBjkpMxQoUZCyDfwDM25kY7yclw2jL
+	Vbu1j2WVrkVb0ZKKsTxYOQ==
+Received: from ala-exchng02.corp.ad.wrs.com (ala-exchng02.wrs.com [147.11.82.254])
+	by mx0a-0064b401.pphosted.com (PPS) with ESMTPS id 3x6e10heu2-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+	Sun, 31 Mar 2024 23:16:26 -0700 (PDT)
+Received: from ALA-EXCHNG02.corp.ad.wrs.com (147.11.82.254) by
+ ALA-EXCHNG02.corp.ad.wrs.com (147.11.82.254) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.37; Sun, 31 Mar 2024 23:16:26 -0700
+Received: from pek-lpd-ccm6.wrs.com (147.11.136.210) by
+ ALA-EXCHNG02.corp.ad.wrs.com (147.11.82.254) with Microsoft SMTP Server id
+ 15.1.2507.37 via Frontend Transport; Sun, 31 Mar 2024 23:16:24 -0700
+From: Lizhi Xu <lizhi.xu@windriver.com>
+To: <syzbot+fa7b3ab32bcb56c10961@syzkaller.appspotmail.com>
+CC: <linux-fsdevel@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <syzkaller-bugs@googlegroups.com>
+Subject: [PATCH] fs/hfsplus: fix in hfsplus_read_wrapper
+Date: Mon, 1 Apr 2024 14:16:19 +0800
+Message-ID: <20240401061619.2995409-1-lizhi.xu@windriver.com>
+X-Mailer: git-send-email 2.43.0
+In-Reply-To: <0000000000001126200614f5c9c4@google.com>
+References: <0000000000001126200614f5c9c4@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v6 4/9] KVM: VMX: Move MSR_IA32_VMX_BASIC bit defines to
- asm/vmx.h
-To: Sean Christopherson <seanjc@google.com>,
- Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>,
- Borislav Petkov <bp@alien8.de>, Dave Hansen <dave.hansen@linux.intel.com>,
- x86@kernel.org, Paolo Bonzini <pbonzini@redhat.com>,
- Andy Lutomirski <luto@kernel.org>, Peter Zijlstra <peterz@infradead.org>
-Cc: linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
- Shan Kang <shan.kang@intel.com>, Kai Huang <kai.huang@intel.com>,
- Xin Li <xin3.li@intel.com>
-References: <20240309012725.1409949-1-seanjc@google.com>
- <20240309012725.1409949-5-seanjc@google.com>
-Content-Language: en-US
-From: Xiaoyao Li <xiaoyao.li@intel.com>
-In-Reply-To: <20240309012725.1409949-5-seanjc@google.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Proofpoint-ORIG-GUID: SltEFJFXiS2Dxwb9z7AU2VZ-n3NLmiIA
+X-Proofpoint-GUID: SltEFJFXiS2Dxwb9z7AU2VZ-n3NLmiIA
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-04-01_03,2024-03-28_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
+ spamscore=0 adultscore=0 clxscore=1011 phishscore=0 priorityscore=1501
+ suspectscore=0 mlxscore=0 mlxlogscore=999 malwarescore=0 bulkscore=0
+ impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2403210001 definitions=main-2404010044
 
-On 3/9/2024 9:27 AM, Sean Christopherson wrote:
-> From: Xin Li <xin3.li@intel.com>
-> 
-> Move the bit defines for MSR_IA32_VMX_BASIC from msr-index.h to vmx.h so
-> that they are colocated with other VMX MSR bit defines, and with the
-> helpers that extract specific information from an MSR_IA32_VMX_BASIC value.
+[Syzbot reported]
+BUG: KASAN: slab-use-after-free in hfsplus_read_wrapper+0xf86/0x1070 fs/hfsplus/wrapper.c:226
+Read of size 2 at addr ffff888024fba400 by task syz-executor204/5218
 
-My understanding of msr-index.h is, it contains the index of various 
-MSRs and the bit definitions of each MSRs.
+CPU: 1 PID: 5218 Comm: syz-executor204 Not tainted 6.8.0-syzkaller-08951-gfe46a7dd189e #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 02/29/2024
+Call Trace:
+ <TASK>
+ __dump_stack lib/dump_stack.c:88 [inline]
+ dump_stack_lvl+0x116/0x1f0 lib/dump_stack.c:114
+ print_address_description mm/kasan/report.c:377 [inline]
+ print_report+0xc3/0x620 mm/kasan/report.c:488
+ kasan_report+0xd9/0x110 mm/kasan/report.c:601
+ hfsplus_read_wrapper+0xf86/0x1070 fs/hfsplus/wrapper.c:226
+ hfsplus_fill_super+0x352/0x1bc0 fs/hfsplus/super.c:419
+ mount_bdev+0x1e6/0x2d0 fs/super.c:1658
+ legacy_get_tree+0x10c/0x220 fs/fs_context.c:662
+ vfs_get_tree+0x92/0x380 fs/super.c:1779
+ do_new_mount fs/namespace.c:3352 [inline]
+ path_mount+0x14e6/0x1f20 fs/namespace.c:3679
+ do_mount fs/namespace.c:3692 [inline]
+ __do_sys_mount fs/namespace.c:3898 [inline]
+ __se_sys_mount fs/namespace.c:3875 [inline]
+ __x64_sys_mount+0x297/0x320 fs/namespace.c:3875
+ do_syscall_x64 arch/x86/entry/common.c:52 [inline]
+ do_syscall_64+0xd5/0x260 arch/x86/entry/common.c:83
+ entry_SYSCALL_64_after_hwframe+0x6d/0x75
+RIP: 0033:0x7f706ca0c69a
+Code: d8 64 89 02 48 c7 c0 ff ff ff ff eb a6 e8 5e 04 00 00 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 49 89 ca b8 a5 00 00 00 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007ffcd3a1c1c8 EFLAGS: 00000286 ORIG_RAX: 00000000000000a5
+RAX: ffffffffffffffda RBX: 0000000000000000 RCX: 00007f706ca0c69a
+RDX: 0000000020000000 RSI: 0000000020000100 RDI: 00007ffcd3a1c210
+RBP: 0000000000000004 R08: 00007ffcd3a1c250 R09: 0000000000000632
+R10: 0000000000000050 R11: 0000000000000286 R12: 00007ffcd3a1c210
+R13: 00007ffcd3a1c250 R14: 0000000000080000 R15: 0000000000000003
+ </TASK>
+[Fix] 
+When the logical_block_size was changed from 512 to 2048, it resulted in 
+insufficient space pre allocated to s_backup_vhdr_buf. To solve this problem, 
+move the memory allocation of s_backup_vhdr_buf to after the logical_block_size
+has been changed.
 
-Put the definition of each bit or bits below the definition of MSR index 
-instead of dispersed in different headers looks more intact for me.
+Reported-and-tested-by: syzbot+fa7b3ab32bcb56c10961@syzkaller.appspotmail.com
+Signed-off-by: Lizhi Xu <lizhi.xu@windriver.com>
+---
+ fs/hfsplus/wrapper.c | 12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
 
-> Opportunistically use BIT_ULL() instead of open coding hex values.
-> 
-> Opportunistically rename VMX_BASIC_64 to VMX_BASIC_32BIT_PHYS_ADDR_ONLY,
-> as "VMX_BASIC_64" is widly misleading.  The flag enumerates that addresses
-> are limited to 32 bits, not that 64-bit addresses are allowed.
-> 
-> Cc: Shan Kang <shan.kang@intel.com>
-> Cc: Kai Huang <kai.huang@intel.com>
-> Signed-off-by: Xin Li <xin3.li@intel.com>
-> [sean: split to separate patch, write changelog]
-> Signed-off-by: Sean Christopherson <seanjc@google.com>
-> ---
->   arch/x86/include/asm/msr-index.h | 8 --------
->   arch/x86/include/asm/vmx.h       | 7 +++++++
->   2 files changed, 7 insertions(+), 8 deletions(-)
-> 
-> diff --git a/arch/x86/include/asm/msr-index.h b/arch/x86/include/asm/msr-index.h
-> index af71f8bb76ae..5ca81ad509b5 100644
-> --- a/arch/x86/include/asm/msr-index.h
-> +++ b/arch/x86/include/asm/msr-index.h
-> @@ -1122,14 +1122,6 @@
->   #define MSR_IA32_VMX_VMFUNC             0x00000491
->   #define MSR_IA32_VMX_PROCBASED_CTLS3	0x00000492
->   
-> -/* VMX_BASIC bits and bitmasks */
-> -#define VMX_BASIC_VMCS_SIZE_SHIFT	32
-> -#define VMX_BASIC_TRUE_CTLS		(1ULL << 55)
-> -#define VMX_BASIC_64		0x0001000000000000LLU
-> -#define VMX_BASIC_MEM_TYPE_SHIFT	50
-> -#define VMX_BASIC_MEM_TYPE_MASK	0x003c000000000000LLU
-> -#define VMX_BASIC_INOUT		0x0040000000000000LLU
-> -
->   /* Resctrl MSRs: */
->   /* - Intel: */
->   #define MSR_IA32_L3_QOS_CFG		0xc81
-> diff --git a/arch/x86/include/asm/vmx.h b/arch/x86/include/asm/vmx.h
-> index 4fdc76263066..c3a97dca4a33 100644
-> --- a/arch/x86/include/asm/vmx.h
-> +++ b/arch/x86/include/asm/vmx.h
-> @@ -133,6 +133,13 @@
->   #define VMX_VMFUNC_EPTP_SWITCHING               VMFUNC_CONTROL_BIT(EPTP_SWITCHING)
->   #define VMFUNC_EPTP_ENTRIES  512
->   
-> +#define VMX_BASIC_VMCS_SIZE_SHIFT		32
-> +#define VMX_BASIC_32BIT_PHYS_ADDR_ONLY		BIT_ULL(48)
-> +#define VMX_BASIC_DUAL_MONITOR_TREATMENT	BIT_ULL(49)
-> +#define VMX_BASIC_MEM_TYPE_SHIFT		50
-> +#define VMX_BASIC_INOUT				BIT_ULL(54)
-> +#define VMX_BASIC_TRUE_CTLS			BIT_ULL(55)
-> +
->   static inline u32 vmx_basic_vmcs_revision_id(u64 vmx_basic)
->   {
->   	return vmx_basic & GENMASK_ULL(30, 0);
+diff --git a/fs/hfsplus/wrapper.c b/fs/hfsplus/wrapper.c
+index ce9346099c72..974786e30259 100644
+--- a/fs/hfsplus/wrapper.c
++++ b/fs/hfsplus/wrapper.c
+@@ -179,16 +179,13 @@ int hfsplus_read_wrapper(struct super_block *sb)
+ 	sbi->s_vhdr_buf = kmalloc(hfsplus_min_io_size(sb), GFP_KERNEL);
+ 	if (!sbi->s_vhdr_buf)
+ 		goto out;
+-	sbi->s_backup_vhdr_buf = kmalloc(hfsplus_min_io_size(sb), GFP_KERNEL);
+-	if (!sbi->s_backup_vhdr_buf)
+-		goto out_free_vhdr;
+ 
+ reread:
+ 	error = hfsplus_submit_bio(sb, part_start + HFSPLUS_VOLHEAD_SECTOR,
+ 				   sbi->s_vhdr_buf, (void **)&sbi->s_vhdr,
+ 				   REQ_OP_READ);
+ 	if (error)
+-		goto out_free_backup_vhdr;
++		goto out_free_vhdr;
+ 
+ 	error = -EINVAL;
+ 	switch (sbi->s_vhdr->signature) {
+@@ -199,7 +196,7 @@ int hfsplus_read_wrapper(struct super_block *sb)
+ 		break;
+ 	case cpu_to_be16(HFSP_WRAP_MAGIC):
+ 		if (!hfsplus_read_mdb(sbi->s_vhdr, &wd))
+-			goto out_free_backup_vhdr;
++			goto out_free_vhdr;
+ 		wd.ablk_size >>= HFSPLUS_SECTOR_SHIFT;
+ 		part_start += (sector_t)wd.ablk_start +
+ 			       (sector_t)wd.embed_start * wd.ablk_size;
+@@ -212,10 +209,13 @@ int hfsplus_read_wrapper(struct super_block *sb)
+ 		 * (should do this only for cdrom/loop though)
+ 		 */
+ 		if (hfs_part_find(sb, &part_start, &part_size))
+-			goto out_free_backup_vhdr;
++			goto out_free_vhdr;
+ 		goto reread;
+ 	}
+ 
++	sbi->s_backup_vhdr_buf = kmalloc(hfsplus_min_io_size(sb), GFP_KERNEL);
++	if (!sbi->s_backup_vhdr_buf)
++		goto out_free_vhdr;
+ 	error = hfsplus_submit_bio(sb, part_start + part_size - 2,
+ 				   sbi->s_backup_vhdr_buf,
+ 				   (void **)&sbi->s_backup_vhdr, REQ_OP_READ);
+-- 
+2.43.0
 
 
