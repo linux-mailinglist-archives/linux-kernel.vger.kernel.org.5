@@ -1,126 +1,79 @@
-Return-Path: <linux-kernel+bounces-126444-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-126445-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7C52589382A
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 08:01:02 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4400389382E
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 08:10:56 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 844B11C209DB
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 06:01:01 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8F1D62818CF
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 06:10:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A7C848F6F;
-	Mon,  1 Apr 2024 06:00:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Ewo7Chvp"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.11])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EC6328F7D;
+	Mon,  1 Apr 2024 06:10:46 +0000 (UTC)
+Received: from mx2.usergate.com (mx2.usergate.com [46.229.79.1])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EC9CB8F44;
-	Mon,  1 Apr 2024 06:00:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.11
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E1D8853BE;
+	Mon,  1 Apr 2024 06:10:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.229.79.1
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711951253; cv=none; b=vGwOspbYb/YVV/GHmypZnWteBfd9qgW25AAaXq1eDh+JfEspH4kbJsi13IfANF21/Mcxp4+o3fFM4/95lumwkQ5t8tyBhpJWkl7tFlVNAUb2ikDovLpTqtUyRsPHqISkVI7w6K4YHc1abNa+LOhr+7hp/qFvhrYNQgMQXEXpX4c=
+	t=1711951846; cv=none; b=mSB59Kp0HB6d9gJsUog+0SoEKxEiptkLtMCn9yZVQOIGR8aDft2qsCNeJxZDjhdtNGNlUxSaT8o/y6+9KlCBy5mqzL3YEhQVErLwFwH04YtH2/ACJaPz0d3eyMQDVr6RGtT1IrM9e5zwXLpYOrJZWJKt5Szi17WqNFefEraP8Kw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711951253; c=relaxed/simple;
-	bh=vN4Xt0Wi8wvR6CuyiTLuOstOetSx95WHL6i9bBHaWkI=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=g/j9m6oEiJiikG2FESpenFRdG0n2aIr8OHYdIlPZpZykP7LhDYhvzds7yQ8Zbt+FQXMEuqg9TQqXqoZbYmPQmChj8EWJk4AnQOwccEfFcjJSxDYiowJwuSUvi+CAQaBUmaePTsw92QaOlWqePCNjUE7HMIsHPwwHCEK9TV7F2nY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Ewo7Chvp; arc=none smtp.client-ip=198.175.65.11
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1711951251; x=1743487251;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=vN4Xt0Wi8wvR6CuyiTLuOstOetSx95WHL6i9bBHaWkI=;
-  b=Ewo7ChvpZQnV4RfnaphX/gjCSita/47shJYji7wL9ZMl8Pc/wTqAOfaz
-   K87LVM0WgBXsl6TV+ogtOy6+gX4PgtejvtTB+wNpqloM3LJkbR87hDH6K
-   YU57C0MA3dTsNXY6PFw+uIaFB+kQgqRk+R/ZlNJVsnrGKsrU4fy/2MgPJ
-   YraXXJTOp9SILGVMns1RDn3AdShp8mCwkHeP9wq2KXanNfnc7sU2ewdkF
-   5mLYbw50/1OwgwmaH+wUCFoK9yIFguZXfbf98Ttl84vCqCTBg7H5oDf76
-   CoZTwBbS9pCfJte/RLpTCM3quwMwB548/3H5vlZYmQE4qr+0d3TwDcvfH
-   A==;
-X-CSE-ConnectionGUID: JN++k4l9Ql6PV1A00+x14w==
-X-CSE-MsgGUID: HA+55pWsRx6Wxt8pft2Cpw==
-X-IronPort-AV: E=McAfee;i="6600,9927,11030"; a="17636903"
-X-IronPort-AV: E=Sophos;i="6.07,171,1708416000"; 
-   d="scan'208";a="17636903"
-Received: from orviesa007.jf.intel.com ([10.64.159.147])
-  by orvoesa103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Mar 2024 23:00:28 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,171,1708416000"; 
-   d="scan'208";a="18009099"
-Received: from xiaoyaol-hp-g830.ccr.corp.intel.com (HELO [10.124.224.7]) ([10.124.224.7])
-  by orviesa007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Mar 2024 23:00:25 -0700
-Message-ID: <b0a3ebe8-c69e-47f7-9dcd-021d60c36111@intel.com>
-Date: Mon, 1 Apr 2024 14:00:20 +0800
+	s=arc-20240116; t=1711951846; c=relaxed/simple;
+	bh=+UHLdCQTMrUw8WO10zf7gQvU/OLD5joucmE9A0+3Iog=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=envy35H0yujQsLTA6BJbxVcIgk/UkI05KGjIVXKvUN9PK+hs/hpgrmHoZBmE2UbGqW9JLd65XN2dEJ6YDgqJO3m/Xrg3jYwH9m7cJkpnI8Yyyr+lnzFDpYMepm13UbrME2vKvDBQ0MvseJIdFdcax61CnbtE6U2K+HFrgHnIUMs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=usergate.com; spf=pass smtp.mailfrom=usergate.com; arc=none smtp.client-ip=46.229.79.1
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=usergate.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=usergate.com
+Received: from mail.usergate.com[192.168.90.36] by mx2.usergate.com with ESMTP id
+	 8FF7B9684B1C4A189249FF167EC005ED; Mon, 1 Apr 2024 13:10:26 +0700
+From: Aleksandr Aprelkov <aaprelkov@usergate.com>
+To: Hannes Reinecke <hare@suse.com>
+CC: Aleksandr Aprelkov <aaprelkov@usergate.com>,"James E.J. Bottomley" <jejb@linux.ibm.com>,"Martin K. Petersen" <martin.petersen@oracle.com>,<linux-scsi@vger.kernel.org>,<linux-kernel@vger.kernel.org>,<lvc-project@linuxtesting.org>
+Subject: [PATCH] scsi: aic79xx: add scb NULL check in ahd_handle_msg_reject()
+Date: Mon, 1 Apr 2024 13:10:09 +0700
+Message-ID: <20240401061010.589751-1-aaprelkov@usergate.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v6 3/9] KVM: x86: Stuff vCPU's PAT with default value at
- RESET, not creation
-To: Sean Christopherson <seanjc@google.com>,
- Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>,
- Borislav Petkov <bp@alien8.de>, Dave Hansen <dave.hansen@linux.intel.com>,
- x86@kernel.org, Paolo Bonzini <pbonzini@redhat.com>,
- Andy Lutomirski <luto@kernel.org>, Peter Zijlstra <peterz@infradead.org>
-Cc: linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
- Shan Kang <shan.kang@intel.com>, Kai Huang <kai.huang@intel.com>,
- Xin Li <xin3.li@intel.com>
-References: <20240309012725.1409949-1-seanjc@google.com>
- <20240309012725.1409949-4-seanjc@google.com>
-Content-Language: en-US
-From: Xiaoyao Li <xiaoyao.li@intel.com>
-In-Reply-To: <20240309012725.1409949-4-seanjc@google.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: ESLSRV-EXCH-01.esafeline.com (192.168.90.36) To
+ nsk02-mbx01.esafeline.com (10.10.1.35)
+X-Message-Id: 216EAD62768046DBA990E016335F1F2F
+X-MailFileId: 71D8BFED459B4CA494BB17C93467D2DF
 
-On 3/9/2024 9:27 AM, Sean Christopherson wrote:
-> Move the stuffing of the vCPU's PAT to the architectural "default" value
-> from kvm_arch_vcpu_create() to kvm_vcpu_reset(), guarded by !init_event,
-> to better capture that the default value is the value "Following Power-up
-> or Reset".  E.g. setting PAT only during creation would break if KVM were
-> to expose a RESET ioctl() to userspace (which is unlikely, but that's not
-> a good reason to have unintuitive code).
-> 
-> No functional change.
-> 
-> Signed-off-by: Sean Christopherson <seanjc@google.com>
+If ahd_lookup_scb() returns NULL and ahd_sent_msg() checks are false,
+then NULL pointer dereference happens
 
-Reviewed-by: Xiaoyao Li <xiaoyao.li@intel.com>
+Found by Linux Verification Center (linuxtesting.org) with SVACE.
 
-> ---
->   arch/x86/kvm/x86.c | 4 ++--
->   1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-> index 66c4381460dc..eac97b1b8379 100644
-> --- a/arch/x86/kvm/x86.c
-> +++ b/arch/x86/kvm/x86.c
-> @@ -12134,8 +12134,6 @@ int kvm_arch_vcpu_create(struct kvm_vcpu *vcpu)
->   	vcpu->arch.maxphyaddr = cpuid_query_maxphyaddr(vcpu);
->   	vcpu->arch.reserved_gpa_bits = kvm_vcpu_reserved_gpa_bits_raw(vcpu);
->   
-> -	vcpu->arch.pat = MSR_IA32_CR_PAT_DEFAULT;
-> -
->   	kvm_async_pf_hash_reset(vcpu);
->   
->   	vcpu->arch.perf_capabilities = kvm_caps.supported_perf_cap;
-> @@ -12302,6 +12300,8 @@ void kvm_vcpu_reset(struct kvm_vcpu *vcpu, bool init_event)
->   	if (!init_event) {
->   		vcpu->arch.smbase = 0x30000;
->   
-> +		vcpu->arch.pat = MSR_IA32_CR_PAT_DEFAULT;
-> +
->   		vcpu->arch.msr_misc_features_enables = 0;
->   		vcpu->arch.ia32_misc_enable_msr = MSR_IA32_MISC_ENABLE_PEBS_UNAVAIL |
->   						  MSR_IA32_MISC_ENABLE_BTS_UNAVAIL;
+Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
+Signed-off-by: Aleksandr Aprelkov <aaprelkov@usergate.com>
+---
+ drivers/scsi/aic7xxx/aic79xx_core.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/scsi/aic7xxx/aic79xx_core.c b/drivers/scsi/aic7xxx/aic79xx_core.c
+index 3e3100dbfda3..9e0fafa12e87 100644
+--- a/drivers/scsi/aic7xxx/aic79xx_core.c
++++ b/drivers/scsi/aic7xxx/aic79xx_core.c
+@@ -5577,7 +5577,7 @@ ahd_handle_msg_reject(struct ahd_softc *ahd, struct ahd_devinfo *devinfo)
+ 		       "Using asynchronous transfers\n",
+ 		       ahd_name(ahd), devinfo->channel,
+ 		       devinfo->target, devinfo->lun);
+-	} else if ((scb->hscb->control & SIMPLE_QUEUE_TAG) != 0) {
++	} else if (scb && (scb->hscb->control & SIMPLE_QUEUE_TAG) != 0) {
+ 		int tag_type;
+ 		int mask;
+ 
+-- 
+2.34.1
 
 
