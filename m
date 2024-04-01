@@ -1,473 +1,221 @@
-Return-Path: <linux-kernel+bounces-126781-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-126802-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id DA43B893CA8
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 17:11:54 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2437F893CE1
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 17:34:46 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 440DFB2221E
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 15:11:52 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CE44C282FFC
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 15:34:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 840945026B;
-	Mon,  1 Apr 2024 15:10:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7179B46558;
+	Mon,  1 Apr 2024 15:34:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="gRZ7U572"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=cornelisnetworks.com header.i=@cornelisnetworks.com header.b="lmpKvegl"
+Received: from NAM11-DM6-obe.outbound.protection.outlook.com (mail-dm6nam11on2097.outbound.protection.outlook.com [40.107.223.97])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C8E924778E;
-	Mon,  1 Apr 2024 15:10:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711984217; cv=none; b=JN7AC4vNzI6ZdKAbu22URQiLWm/JzjnSUs1QOnAd++aqOMvlAruaJZzzUHBB6LS4pTSxOMNvwcOkPIN2bfBKFSFdB/hwhEctuJGFxaNxmRUJp0s985Bz/5Kc4QHNNxw0WhG7s1UyRnC2Iuwmm1MFYi/2Z+IxBeOILaRLlW6hu8o=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711984217; c=relaxed/simple;
-	bh=KNM3Z/xPIReDwB4TB74SR3DTpeDcKNy5Ue7Za5F40a8=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=Ip/OgA8D0RUXi/hEdOaEoDx7h5D2SmjjscRytF1JiIoYrYiuVBIRwHeFDVsckT5W/R+60x0G2Q6bAPMneHEzvCWtpXPKEBKW7DX8ATFWwiGcs7ZUPNtOrHN/CXFjto0Kj8cHmz5DSN95hA8Uwxqnlw9nPVHazYEQfRiaz0qlJzs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=gRZ7U572; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 55C56C41679;
-	Mon,  1 Apr 2024 15:10:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711984217;
-	bh=KNM3Z/xPIReDwB4TB74SR3DTpeDcKNy5Ue7Za5F40a8=;
-	h=From:Date:Subject:References:In-Reply-To:To:Cc:Reply-To:From;
-	b=gRZ7U572QYXVHu/OzMZAW2YGeyIoO6wR4T8Z1iYuTNJIXpLqMafJhqi9/+/pDmZDJ
-	 gknfSf4Ynj3Z2/+dDnwt0G0L07cm0QiQAB/PVrYxxKiIkC9GK1jbr9VLhWmrx1th/k
-	 jcmsSyCcvlecLzOGrriNi9T//03Sa7rREnSLiX+LNqCU09E+PL6oHh39Jemi8J7fNp
-	 afyQPq/9mIuzlnCMom6m++VAXvlQZ1F33MRJ2VVSYLoPYCqghIE+gwZdJR3hWx2yjz
-	 jGq2jujgFveQ8+fxUhBx+vEIU/l8XG0LzSS8S133N5pfuANX16mkQjtmqkP3n4dWDQ
-	 5wxY2dc/JihwQ==
-Received: from aws-us-west-2-korg-lkml-1.web.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4BF4ACD1288;
-	Mon,  1 Apr 2024 15:10:17 +0000 (UTC)
-From: Dumitru Ceclan via B4 Relay <devnull+dumitru.ceclan.analog.com@kernel.org>
-Date: Mon, 01 Apr 2024 18:32:24 +0300
-Subject: [PATCH 6/6] iio: adc: ad7173: Add support for AD411x devices
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 52C98208D1;
+	Mon,  1 Apr 2024 15:34:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.223.97
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1711985676; cv=fail; b=mXLDVXoDIQVeEG/atzaY3HyYTy0dUcvTt8njfFotcNVCNSe+hFj/0JvAHbm+F5w9mt88kfJqKLo7DBD6BFVOJYGSqWCsprmyAAYi1AhiBBntv5gIYnM6xPzuwshtX6sAkVxIeqTNF1Iw+0OXhQ4R5aD1X6Xt00jNIOoqReT1nck=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1711985676; c=relaxed/simple;
+	bh=dQMMo1Jvm2iva8u9t0WuMDA+CX7pjvb6gUeIGOj34/M=;
+	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
+	 Content-Type:MIME-Version; b=PQwNAx/CncplWCsKOFWfftN+PikkmRhfB8UHBRSInTHyNfnRNtdMjUJ+mIATAgEHOtxixawrKzYj5gb9JckJLai2OwtsisISYEE0TunpScMaMcLPmhUia0pxip3xVrApGcpcCPoEGH+9GWR7k6LEL3OApM5xoVHfbq0+Hw69Vec=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=cornelisnetworks.com; spf=pass smtp.mailfrom=cornelisnetworks.com; dkim=pass (2048-bit key) header.d=cornelisnetworks.com header.i=@cornelisnetworks.com header.b=lmpKvegl; arc=fail smtp.client-ip=40.107.223.97
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=cornelisnetworks.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cornelisnetworks.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=dgIsGjotd+DKEg2NQfkNcfzpvdI5ZpJJCVWdsSOI1e8068E0zWBxJsmuEf78hiq5rZLgMIBvRAQWqrrgsMnXIJjn+CnNB/w4szNa3Fty4XKFOE5h/OVRNjtdq1Qt5cMtqqgwR5FFmH7Pr8Ov6LgIaOPJ4hrznMkx1/uP8pcjuMQWUmCxLSF8IlARy0h6dNTTaAf02fSLvaqUItUlAOWT1YkIpQY6Xbl3te2L2w4SzDeQq0Y8F0cqOO+52LXu+hh3Q4Z8BJNcePm1NL9bPRe7OC+IZyTUFILYOTaeAmgWUxRQeh50guDz2CbTxHw5i9mxg8v4RaFigFAxYl1jD2h6OA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=ccXKZNM9HZwsMa6/nfRcsF8JK2K/VVNjF7fWNm7U+3s=;
+ b=JQrAkm2LDHPthBAtQZakXAClk9rbX7siiv+hnJTQCad2t/WJi2lRon39LFeh/IIy7v3+NQfScv8spbxa8UkNwTXnH3UI6H0LlrEQWDOU+yoQmXMIYzOT7bY4dgOlZlVwstD6dt4LN6ItBjwn6xf2xXDg/OrTaSjmkpU5GxJ1sRntT9ntKk15FrIr9bOlocQsbfIOqdRZNXhCAxu9BX4vqSQQs/SFiQkw8oKZSL57pyrr+7rmem4i7lGpNVFSvCZbkKTqPj/XsRvsCxrz/junJEXKwjHC9NIPE9FDzjz4+SU3c1iZJPQtXEa+Br04qRMnTGOcMynbjsi9SnSWHznSuw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=cornelisnetworks.com; dmarc=pass action=none
+ header.from=cornelisnetworks.com; dkim=pass header.d=cornelisnetworks.com;
+ arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cornelisnetworks.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=ccXKZNM9HZwsMa6/nfRcsF8JK2K/VVNjF7fWNm7U+3s=;
+ b=lmpKvegl61FvsglbGsHAKpv6v4Gfc+YE0/MhPikanQ0lJ0jUDc5lXmOofMPnreS2+QV95jJsXaozCR+uqQtRJwOYqkXKT7CtBuH9AIRrdVpuZwtIN/hTFjj6KEqjCbAaEkG+SsMCgSy9VzEG9EefIqbCYUxNMkAnKcT8Qzn/xRqCzrUJFxo1gus9x8TLXC3t/8mARYRfoI8jTZvG/+ddgfTJWHZAnSExeLvCA4yCArAO7vDl+mnPeKFR7SeqQJj1/9w9g/gJHgCC+DMbhmI2nG4/toJ5SshZk8chg66zwZZbtZIoxF0kmbN6APOrhs4z+d2pC+loBkoTZjYwp7VPDQ==
+Received: from SJ0PR01MB6158.prod.exchangelabs.com (2603:10b6:a03:2a0::15) by
+ MN0PR01MB7635.prod.exchangelabs.com (2603:10b6:208:377::22) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.7409.46; Mon, 1 Apr 2024 15:34:27 +0000
+Received: from SJ0PR01MB6158.prod.exchangelabs.com
+ ([fe80::82ae:ed8b:de46:cff2]) by SJ0PR01MB6158.prod.exchangelabs.com
+ ([fe80::82ae:ed8b:de46:cff2%4]) with mapi id 15.20.7409.042; Mon, 1 Apr 2024
+ 15:34:27 +0000
+Message-ID: <2453e7d4-fd50-42ae-a322-490e7e691dc6@cornelisnetworks.com>
+Date: Mon, 1 Apr 2024 11:34:23 -0400
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v4] IB/hfi1: allocate dummy net_device dynamically
+To: Jakub Kicinski <kuba@kernel.org>, Leon Romanovsky <leon@kernel.org>
+Cc: Breno Leitao <leitao@debian.org>, Jason Gunthorpe <jgg@ziepe.ca>,
+ keescook@chromium.org, "open list:HFI1 DRIVER" <linux-rdma@vger.kernel.org>,
+ open list <linux-kernel@vger.kernel.org>
+References: <20240319090944.2021309-1-leitao@debian.org>
+ <20240401115331.GB73174@unreal> <20240401075306.0ce18627@kernel.org>
+Content-Language: en-US
+From: Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>
+In-Reply-To: <20240401075306.0ce18627@kernel.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: MN2PR20CA0032.namprd20.prod.outlook.com
+ (2603:10b6:208:e8::45) To SJ0PR01MB6158.prod.exchangelabs.com
+ (2603:10b6:a03:2a0::15)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20240401-ad4111-v1-6-34618a9cc502@analog.com>
-References: <20240401-ad4111-v1-0-34618a9cc502@analog.com>
-In-Reply-To: <20240401-ad4111-v1-0-34618a9cc502@analog.com>
-To: Ceclan Dumitru <dumitru.ceclan@analog.com>
-Cc: Lars-Peter Clausen <lars@metafoo.de>, 
- Michael Hennerich <Michael.Hennerich@analog.com>, 
- Jonathan Cameron <jic23@kernel.org>, Rob Herring <robh@kernel.org>, 
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
- Conor Dooley <conor+dt@kernel.org>, David Lechner <dlechner@baylibre.com>, 
- linux-iio@vger.kernel.org, devicetree@vger.kernel.org, 
- linux-kernel@vger.kernel.org, Dumitru Ceclan <mitrutzceclan@gmail.com>
-X-Mailer: b4 0.12.4
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1711985550; l=12578;
- i=dumitru.ceclan@analog.com; s=20240313; h=from:subject:message-id;
- bh=kiHu5JNtgoCzcntlDNshNci5NsEdS6HEdpF8vTbhVrY=;
- b=3PzLgxXE80EKuvp129PliMgrHheZyY6v4yLLBSuo77eMS8g/Uv4fB8VlUVy9QvZYi1HQth4G/
- LvW21PcLKMkA7ZlJsym0F74JH1+8fmHHi4kue5czc/a9hTLtuoQ0JPk
-X-Developer-Key: i=dumitru.ceclan@analog.com; a=ed25519;
- pk=HdqMlVyrcazwoiai7oN6ghU+Bj1pusGUFRl30jhS7Bo=
-X-Endpoint-Received: by B4 Relay for dumitru.ceclan@analog.com/20240313
- with auth_id=140
-X-Original-From: Dumitru Ceclan <dumitru.ceclan@analog.com>
-Reply-To: dumitru.ceclan@analog.com
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: SJ0PR01MB6158:EE_|MN0PR01MB7635:EE_
+X-MS-Exchange-AtpMessageProperties: SA
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	A6akYaRKHYm28PMqkrvNng7A6RlVogYR5+9db9iEBuZx0vwCG/IU1Ce7kqO4jxqbvMIDJrZfVovvKl1BE15DYLWE0FWDTVyNk2nJThbmrj28XXfZCdo2zQ31XMDbqGQV3bGZM1R4AVFZhpUsQQC7eK1isXyUN8/dVZ0EZ8fvhjiaLUKLnCtfJeBoCLMBfwaI/o8w/YvE2c8frznHRzW4MO6LZGZTqRsAbeT52uV5C440AV3jolQ4XOz/Oe01YD4nCA5HayAeIrd6gXTBKvDWLRqm6Yp45EIY73iOqBQwJpy5g2G3umFD/2TXLbuXPyETRvKQrYLSjMkInUhH2UDEGirh/h1gEl2xVhFzJfFZUhTQllIBy24jp7m7XIJSWcPUt4ZYkzLcSPRYbiWOpude7mlTBBJL7L982df8wrPiZY4qNUIZMFSnhp/wN9K+GprD61xr15DdM9sFUyj8RtbzihZH/pLZ5+4OvHUI1ayzLOKnrAswQYgTI2TcG8R52Z2Dv5qT95cfgISJPuO6gD9MbMeX0aQQwrPbmE6nEl64lwg4O8e5fkYjsh30xmVF7bTx+RHL+AHPoNCIYECkbPzfj48xSS+wCHddd17MxhHdwfkwFrw1KeId8RYe8D9/mxZ503w2vSp6hEYU6gGfIX6dLzFG5I5IMHum/1dQC8GsM8s=
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SJ0PR01MB6158.prod.exchangelabs.com;PTR:;CAT:NONE;SFS:(13230031)(376005)(366007)(52116005)(1800799015)(38350700005);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?utf-8?B?NmR3aEJBUWNlL3p2c1BpYjMvQ2NFOVdHWU1sYjQyQmhkQ0tSeTVYZmxQVXZ1?=
+ =?utf-8?B?bHF0MGpXdHhaUk40ZG12STJGVlp1VThQQVU5cktORk0rOHc1ZzFkRWpZR1Q2?=
+ =?utf-8?B?Wmx6cG9LT3lNeVV1NTZhNUZZa24vYUZTeEQwaXRwUDh6TVZVYVVRT1NqbGFv?=
+ =?utf-8?B?NlNHbEx4M3JjMUZza2dQUmVtVW9EaGFqaWNYQ0RyTEpGVmVoaEJmM0JBRmlF?=
+ =?utf-8?B?UG5jWGZyQWhGMUJFdG1HRm13c21WU1UwZmpGemZjNUNaUTBBWXJMSkxrM3JM?=
+ =?utf-8?B?VlAweWw0LzQrejR2MkVZVEwzcU9Ia2t1bDBzOWRDS295RDkvVmVDMmFlN0hY?=
+ =?utf-8?B?K01yRnJLQ3hPdnJBWVIyRTFKNFBiT2N5UXdFc3VPN2J1dVJFbHZ0OUJPbk1D?=
+ =?utf-8?B?Rm5kbWNySEpLU0lPWjZpNzV6VmczTStoSHNHOG5xMHVQakFrOVIvOCtDYm0w?=
+ =?utf-8?B?Vkx4UGoxeHhxekVXeUtWKzI3Qmx3SDFOZkxSQllQbU5TU1ZkdUN1YW5pdUFP?=
+ =?utf-8?B?WDN6WTFBbElYUU5Ld2RTSnR4QUZXem41b04wT3dKYnlKanB3ZXRMRGVyMUlK?=
+ =?utf-8?B?azlhc2RibG1YWEp4VkJsUnNwZ1JpVnlRZ2FYeURyc1QwU1VuTkdGdzVBMFgr?=
+ =?utf-8?B?dFlyaG9zcm9VRWhibTJPVnhyM2cwaWp2TmFhdHFDR0hZdUU2UnlYNWhEZDI4?=
+ =?utf-8?B?MGZCeExrTlFyeWY2K3lVbDNuUmpib2lhUy8yaGdxNlVnODllbUpiWHY0VHRV?=
+ =?utf-8?B?akd0ZUN1QVNKQWl2OTkyQ084S2QySjd4SUhRV1lROEpBa0d3dkVmTkRRVWdU?=
+ =?utf-8?B?dWxpK0p6WHVLb2dXK3IxNE9lcUwzK3pSY0hpMHFuRXRKcHNWdjBCejR0YTF4?=
+ =?utf-8?B?dWI2ekJJeXRMNGhGeXhZUWNmUnFzMk8zZkJJbGprSnFEUWovQ091L0tFOGwz?=
+ =?utf-8?B?TjZIZExFcmM4UFFzaWkrN0t3QXNjRCtKZU8xemN2d2R4dmdOZklRUU5MQ2Jx?=
+ =?utf-8?B?dU44VGJCblJsdXl4eWYwRVk4VWpNOUg5bCtNdlovWHZORnRvSElETXp3c0Nl?=
+ =?utf-8?B?YlBxb1lHVkVFUE9jSldya2UvN21Qam1IYWdPaVRINDArajVuUEVhSk51QUJn?=
+ =?utf-8?B?YjB4dXl1M0UvS25KZHlQVGs4V3BtTHprNFlpNzNvaTk4OHNYZzRCUzRVVGM5?=
+ =?utf-8?B?UncrcXZYUnRVazRua1lOck1yK3hib05QT2JnR3ZYU1pBMnZNWDh5VHRPQjI0?=
+ =?utf-8?B?SExGQUYyanhsRGp1enpMaE5YQ0xxUWFEdDd5WFovenluMlVlT1JBc2xKZGx1?=
+ =?utf-8?B?ZkFmMkdidXprUEUrdXluVFlUbklEcDVtWms2NkFSQWx0T2JaT2NoSXBYV2xv?=
+ =?utf-8?B?cHVGZDJlMlRlUXRleDVpNklySkFYRlpCVXhTM1lDNXF5MFlnbFZaTlAzRDJR?=
+ =?utf-8?B?Rkx4Ui9FUzNQVHNPblFNMllnaDZLVHgxWkwvNmRURTBYWHNKdXMvSE1pU3Ur?=
+ =?utf-8?B?RGs3cTgweG5NQ0NzWTFKN01saHZvMmZ0ZDRVajI0aHAwOGJZcG1IRnNMQW8r?=
+ =?utf-8?B?S2cvaHdOQ2lUK1JqdnFCRjNHZGJscVdCM2RTY0dUNkNMamJjK3BTSHFoTDBn?=
+ =?utf-8?B?ZXJGN2hjTThVaVBuQVhUc0tWMGRUOGRNZEJPdlB1amZOSjl6QnJqSlRGT09T?=
+ =?utf-8?B?aGNveStZS1R4NjlTUERqMmQ3cW9ET1hmazlGZnd4VWp3b3R2NDROSitST3k0?=
+ =?utf-8?B?ZHkya2lmUnNzbXBlZjNYRUJPcmkvSjNBNDh4cGFYenQ0VVI4aUMvZUovNDl1?=
+ =?utf-8?B?Lzgza2p3UTNzRlFrRy8rRFdMdWkrV3hZVnlsbTFmNUF2anZFNG9oSTFYc2ZO?=
+ =?utf-8?B?OGdNenMzU0R1V2xzNWNvbjJiMVdMekpIWDJrZW51aC84ejVMc1FwSGE5Vnlx?=
+ =?utf-8?B?NVgyOExIYmxHNTJhWVhYY0pKYkdzczFzZ3hXOGgxQVdGSGJub3cwOGFXQ0VX?=
+ =?utf-8?B?Wk5KbWgrU2wzTmFCZFgvNUVWaGQyeDZvN2tEa2dXMDRDV2xNTnQyK2Q5Z3Ry?=
+ =?utf-8?B?MHgzVlNncUJmYTdVQVBlbWVuaE1nZmhBblFHU1hxSGl3QVBHM1dYdzlRdGFK?=
+ =?utf-8?B?MFcyTFBwVlphTjVhS04yWVAwL0dGd282Rm12UUVRYURQUEhEOFUvRUR2blov?=
+ =?utf-8?Q?ScRB4h1HUMOek8QpuWLLjSY=3D?=
+X-OriginatorOrg: cornelisnetworks.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: c7533148-aa2b-4e60-25a6-08dc5261372c
+X-MS-Exchange-CrossTenant-AuthSource: SJ0PR01MB6158.prod.exchangelabs.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 01 Apr 2024 15:34:27.2795
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4dbdb7da-74ee-4b45-8747-ef5ce5ebe68a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: PcRbU42ZXTWJSUIZ4MloM7WqljQ9chtbSqchpvxvx6Htg6SyxFjK5tVb2iTixq3KsCXMbxKnYx0e7Bu1NgmuI/YBYcXidzpyIYwayaZUoeYDdIL8uFpxB2qRhO1ZNVP9
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN0PR01MB7635
 
-From: Dumitru Ceclan <dumitru.ceclan@analog.com>
+On 4/1/24 10:53 AM, Jakub Kicinski wrote:
+> On Mon, 1 Apr 2024 14:53:31 +0300 Leon Romanovsky wrote:
+>> On Tue, Mar 19, 2024 at 02:09:43AM -0700, Breno Leitao wrote:
+>>> Embedding net_device into structures prohibits the usage of flexible
+>>> arrays in the net_device structure. For more details, see the discussion
+>>> at [1].
+>>>
+>>> Un-embed the net_device from struct hfi1_netdev_rx by converting it
+>>> into a pointer. Then use the leverage alloc_netdev() to allocate the
+>>> net_device object at hfi1_alloc_rx().
+>>>
+>>> [1] https://lore.kernel.org/all/20240229225910.79e224cf@kernel.org/
+>>>
+>>> Signed-off-by: Breno Leitao <leitao@debian.org>
+>>> Acked-by: Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>  
+>>
+>> Jakub,
+>>
+>> I create shared branch for you, please pull it from:
+>> https://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git/log/?h=remove-dummy-netdev
+> 
+> Did you merge it in already?
+> Turned out that the use of init_dummy_netdev as a setup function
+> is broken, I'm not sure how Dennis tested this :(
+> We should have pinged you, sorry.
 
-Add support for AD4111/AD4112/AD4114/AD4115/AD4116.
+This is what I tested, Linus 6.8 tag + cherry pick + Breno patch. So if
+something went in that broke it I didn't have it in my tree.
 
-The AD411X family encompasses a series of low power, low noise, 24-bit,
-sigma-delta analog-to-digital converters that offer a versatile range of
-specifications.
+commit 311810a6d7e37d8e7537d50e26197b7f5f02f164 (linus-master)
+Author: Breno Leitao <leitao@debian.org>
+Date:   Wed Mar 13 03:33:10 2024 -0700
 
-This family of ADCs integrates an analog front end suitable for processing
-both fully differential and single-ended, bipolar voltage inputs
-addressing a wide array of industrial and instrumentation requirements.
+    IB/hfi1: allocate dummy net_device dynamically
 
-- All ADCs have inputs with a precision voltage divider with a division
-  ratio of 10.
-- AD4116 has 5 low level inputs without a voltage divider.
-- AD4111 and AD4112 support current inputs (0 mA to 20 mA) using a 50ohm
-  shunt resistor.
+    struct net_device shouldn't be embedded into any structure, instead,
+    the owner should use the priv space to embed their state into net_device.
 
-Signed-off-by: Dumitru Ceclan <dumitru.ceclan@analog.com>
----
- drivers/iio/adc/ad7173.c | 224 ++++++++++++++++++++++++++++++++++++++++++++---
- 1 file changed, 210 insertions(+), 14 deletions(-)
+    Embedding net_device into structures prohibits the usage of flexible
+    arrays in the net_device structure. For more details, see the discussion
+    at [1].
 
-diff --git a/drivers/iio/adc/ad7173.c b/drivers/iio/adc/ad7173.c
-index 9526585e6929..ac32bd7dbd1e 100644
---- a/drivers/iio/adc/ad7173.c
-+++ b/drivers/iio/adc/ad7173.c
-@@ -1,8 +1,9 @@
- // SPDX-License-Identifier: GPL-2.0+
- /*
-- * AD717x family SPI ADC driver
-+ * AD717x and AD411x family SPI ADC driver
-  *
-  * Supported devices:
-+ *  AD4111/AD4112/AD4114/AD4115/AD4116
-  *  AD7172-2/AD7172-4/AD7173-8/AD7175-2
-  *  AD7175-8/AD7176-2/AD7177-2
-  *
-@@ -72,6 +73,11 @@
- #define AD7175_2_ID			0x0cd0
- #define AD7172_4_ID			0x2050
- #define AD7173_ID			0x30d0
-+#define AD4111_ID			0x30d0
-+#define AD4112_ID			0x30d0
-+#define AD4114_ID			0x30d0
-+#define AD4116_ID			0x34d0
-+#define AD4115_ID			0x38d0
- #define AD7175_8_ID			0x3cd0
- #define AD7177_ID			0x4fd0
- #define AD7173_ID_MASK			GENMASK(15, 4)
-@@ -120,11 +126,20 @@
- #define AD7173_VOLTAGE_INT_REF_uV	2500000
- #define AD7173_TEMP_SENSIIVITY_uV_per_C	477
- #define AD7177_ODR_START_VALUE		0x07
-+#define AD4111_SHUNT_RESISTOR_OHM	50
-+#define AD4111_DIVIDER_RATIO		10
-+#define AD411X_VCOM_INPUT		0X10
-+#define AD4111_CURRENT_CHAN_CUTOFF	16
- 
- #define AD7173_FILTER_ODR0_MASK		GENMASK(5, 0)
- #define AD7173_MAX_CONFIGS		8
- 
- enum ad7173_ids {
-+	ID_AD4111,
-+	ID_AD4112,
-+	ID_AD4114,
-+	ID_AD4115,
-+	ID_AD4116,
- 	ID_AD7172_2,
- 	ID_AD7172_4,
- 	ID_AD7173_8,
-@@ -134,16 +149,26 @@ enum ad7173_ids {
- 	ID_AD7177_2,
- };
- 
-+enum ad4111_current_channels {
-+	AD4111_CURRENT_IN0P_IN0N,
-+	AD4111_CURRENT_IN1P_IN1N,
-+	AD4111_CURRENT_IN2P_IN2N,
-+	AD4111_CURRENT_IN3P_IN3N,
-+};
-+
- struct ad7173_device_info {
- 	const unsigned int *sinc5_data_rates;
- 	unsigned int num_sinc5_data_rates;
- 	unsigned int odr_start_value;
-+	unsigned int num_inputs_with_divider;
- 	unsigned int num_channels;
- 	unsigned int num_configs;
- 	unsigned int num_inputs;
- 	unsigned int clock;
- 	unsigned int id;
- 	char *name;
-+	bool has_current_inputs;
-+	bool has_vcom;
- 	bool has_temp;
- 	bool has_input_buf;
- 	bool has_int_ref;
-@@ -189,6 +214,24 @@ struct ad7173_state {
- #endif
- };
- 
-+static unsigned int ad4115_sinc5_data_rates[] = {
-+	24845000, 24845000, 20725000, 20725000,	/*  0-3  */
-+	15564000, 13841000, 10390000, 10390000,	/*  4-7  */
-+	4994000,  2499000,  1000000,  500000,	/*  8-11 */
-+	395500,   200000,   100000,   59890,	/* 12-15 */
-+	49920,    20000,    16660,    10000,	/* 16-19 */
-+	5000,	  2500,     2500,		/* 20-22 */
-+};
-+
-+static unsigned int ad4116_sinc5_data_rates[] = {
-+	12422360, 12422360, 12422360, 12422360,	/*  0-3  */
-+	10362690, 10362690, 7782100,  6290530,	/*  4-7  */
-+	5194800,  2496900,  1007600,  499900,	/*  8-11 */
-+	390600,	  200300,   100000,   59750,	/* 12-15 */
-+	49840,	  20000,    16650,    10000,	/* 16-19 */
-+	5000,	  2500,	    1250,		/* 20-22 */
-+};
-+
- static const unsigned int ad7173_sinc5_data_rates[] = {
- 	6211000, 6211000, 6211000, 6211000, 6211000, 6211000, 5181000, 4444000,	/*  0-7  */
- 	3115000, 2597000, 1007000, 503800,  381000,  200300,  100500,  59520,	/*  8-15 */
-@@ -204,7 +247,91 @@ static const unsigned int ad7175_sinc5_data_rates[] = {
- 	5000,					/* 20    */
- };
- 
-+static unsigned int ad4111_current_channel_config[] = {
-+	[AD4111_CURRENT_IN0P_IN0N] = 0x1E8,
-+	[AD4111_CURRENT_IN1P_IN1N] = 0x1C9,
-+	[AD4111_CURRENT_IN2P_IN2N] = 0x1AA,
-+	[AD4111_CURRENT_IN3P_IN3N] = 0x18B,
-+};
-+
- static const struct ad7173_device_info ad7173_device_info[] = {
-+	[ID_AD4111] = {
-+		.id = AD4111_ID,
-+		.num_inputs_with_divider = 8,
-+		.num_channels = 16,
-+		.num_configs = 8,
-+		.num_inputs = 8,
-+		.num_gpios = 2,
-+		.has_temp = true,
-+		.has_vcom = true,
-+		.has_input_buf = true,
-+		.has_current_inputs = true,
-+		.has_int_ref = true,
-+		.clock = 2 * HZ_PER_MHZ,
-+		.sinc5_data_rates = ad7173_sinc5_data_rates,
-+		.num_sinc5_data_rates = ARRAY_SIZE(ad7173_sinc5_data_rates),
-+	},
-+	[ID_AD4112] = {
-+		.id = AD4112_ID,
-+		.num_inputs_with_divider = 8,
-+		.num_channels = 16,
-+		.num_configs = 8,
-+		.num_inputs = 8,
-+		.num_gpios = 2,
-+		.has_vcom = true,
-+		.has_temp = true,
-+		.has_input_buf = true,
-+		.has_current_inputs = true,
-+		.has_int_ref = true,
-+		.clock = 2 * HZ_PER_MHZ,
-+		.sinc5_data_rates = ad7173_sinc5_data_rates,
-+		.num_sinc5_data_rates = ARRAY_SIZE(ad7173_sinc5_data_rates),
-+	},
-+	[ID_AD4114] = {
-+		.id = AD4114_ID,
-+		.num_inputs_with_divider = 16,
-+		.num_channels = 16,
-+		.num_configs = 8,
-+		.num_inputs = 16,
-+		.num_gpios = 4,
-+		.has_vcom = true,
-+		.has_temp = true,
-+		.has_input_buf = true,
-+		.has_int_ref = true,
-+		.clock = 2 * HZ_PER_MHZ,
-+		.sinc5_data_rates = ad7173_sinc5_data_rates,
-+		.num_sinc5_data_rates = ARRAY_SIZE(ad7173_sinc5_data_rates),
-+	},
-+	[ID_AD4115] = {
-+		.id = AD4115_ID,
-+		.num_inputs_with_divider = 16,
-+		.num_channels = 16,
-+		.num_configs = 8,
-+		.num_inputs = 16,
-+		.num_gpios = 4,
-+		.has_vcom = true,
-+		.has_temp = true,
-+		.has_input_buf = true,
-+		.has_int_ref = true,
-+		.clock = 8 * HZ_PER_MHZ,
-+		.sinc5_data_rates = ad4115_sinc5_data_rates,
-+		.num_sinc5_data_rates = ARRAY_SIZE(ad4115_sinc5_data_rates),
-+	},
-+	[ID_AD4116] = {
-+		.id = AD4116_ID,
-+		.num_inputs_with_divider = 11,
-+		.num_channels = 16,
-+		.num_configs = 8,
-+		.num_inputs = 16,
-+		.num_gpios = 4,
-+		.has_vcom = true,
-+		.has_temp = true,
-+		.has_input_buf = true,
-+		.has_int_ref = true,
-+		.clock = 4 * HZ_PER_MHZ,
-+		.sinc5_data_rates = ad4116_sinc5_data_rates,
-+		.num_sinc5_data_rates = ARRAY_SIZE(ad4116_sinc5_data_rates),
-+	},
- 	[ID_AD7172_2] = {
- 		.name = "ad7172-2",
- 		.id = AD7172_2_ID,
-@@ -670,18 +797,34 @@ static int ad7173_read_raw(struct iio_dev *indio_dev,
- 
- 		return IIO_VAL_INT;
- 	case IIO_CHAN_INFO_SCALE:
--		if (chan->type == IIO_TEMP) {
-+
-+		switch (chan->type) {
-+		case IIO_TEMP:
- 			temp = AD7173_VOLTAGE_INT_REF_uV * MILLI;
- 			temp /= AD7173_TEMP_SENSIIVITY_uV_per_C;
- 			*val = temp;
- 			*val2 = chan->scan_type.realbits;
--		} else {
-+			break;
-+		case IIO_VOLTAGE:
- 			*val = ad7173_get_ref_voltage_milli(st, ch->cfg.ref_sel);
- 			*val2 = chan->scan_type.realbits - !!(ch->cfg.bipolar);
-+
-+			if (chan->channel < st->info->num_inputs_with_divider)
-+				*val *= AD4111_DIVIDER_RATIO;
-+			break;
-+		case IIO_CURRENT:
-+			*val = ad7173_get_ref_voltage_milli(st, ch->cfg.ref_sel);
-+			*val /= AD4111_SHUNT_RESISTOR_OHM;
-+			*val2 = chan->scan_type.realbits - !!(ch->cfg.bipolar);
-+			break;
-+		default:
-+			return -EINVAL;
- 		}
- 		return IIO_VAL_FRACTIONAL_LOG2;
- 	case IIO_CHAN_INFO_OFFSET:
--		if (chan->type == IIO_TEMP) {
-+
-+		switch (chan->type) {
-+		case IIO_TEMP:
- 			/* 0 Kelvin -> raw sample */
- 			temp   = -ABSOLUTE_ZERO_MILLICELSIUS;
- 			temp  *= AD7173_TEMP_SENSIIVITY_uV_per_C;
-@@ -690,8 +833,13 @@ static int ad7173_read_raw(struct iio_dev *indio_dev,
- 						       AD7173_VOLTAGE_INT_REF_uV *
- 						       MILLI);
- 			*val   = -temp;
--		} else {
-+			break;
-+		case IIO_VOLTAGE:
-+		case IIO_CURRENT:
- 			*val = -BIT(chan->scan_type.realbits - 1);
-+			break;
-+		default:
-+			return -EINVAL;
- 		}
- 		return IIO_VAL_INT;
- 	case IIO_CHAN_INFO_SAMP_FREQ:
-@@ -909,6 +1057,24 @@ static int ad7173_register_clk_provider(struct iio_dev *indio_dev)
- 					   &st->int_clk_hw);
- }
- 
-+static int ad4111_validate_current_ain(struct ad7173_state *st,
-+				       unsigned int ain[2])
-+{
-+	struct device *dev = &st->sd.spi->dev;
-+
-+	if (!st->info->has_current_inputs)
-+		return dev_err_probe(dev, -EINVAL,
-+			"Reg values equal to or higher than %d are restricted to models with current channels.\n",
-+			AD4111_CURRENT_CHAN_CUTOFF);
-+
-+	if (ain[1] != 0 && ain[0] >= ARRAY_SIZE(ad4111_current_channel_config))
-+		return dev_err_probe(dev, -EINVAL,
-+			"For current channel diff-channels must be <[0-%d],0>\n",
-+			ARRAY_SIZE(ad4111_current_channel_config) - 1);
-+
-+	return 0;
-+}
-+
- static int ad7173_validate_voltage_ain_inputs(struct ad7173_state *st,
- 					      unsigned int ain[2])
- {
-@@ -951,7 +1117,7 @@ static int ad7173_fw_parse_channel_config(struct iio_dev *indio_dev)
- 	struct device *dev = indio_dev->dev.parent;
- 	struct iio_chan_spec *chan_arr, *chan;
- 	unsigned int ain[2], chan_index = 0;
--	int ref_sel, ret, num_channels;
-+	int ref_sel, ret, reg, num_channels;
- 
- 	num_channels = device_get_child_node_count(dev);
- 
-@@ -1004,10 +1170,20 @@ static int ad7173_fw_parse_channel_config(struct iio_dev *indio_dev)
- 		if (ret)
- 			return ret;
- 
--		ret = ad7173_validate_voltage_ain_inputs(st, ain);
-+		ret = fwnode_property_read_u32(child, "reg", &reg);
- 		if (ret)
- 			return ret;
- 
-+		if (reg >= AD4111_CURRENT_CHAN_CUTOFF) {
-+			ret = ad4111_validate_current_ain(st, ain);
-+			if (ret)
-+				return ret;
-+		} else {
-+			ret = ad7173_validate_voltage_ain_inputs(st, ain);
-+			if (ret)
-+				return ret;
-+		}
-+
- 		ret = fwnode_property_match_property_string(child,
- 							    "adi,reference-select",
- 							    ad7173_ref_sel_str,
-@@ -1028,15 +1204,22 @@ static int ad7173_fw_parse_channel_config(struct iio_dev *indio_dev)
- 		*chan = ad7173_channel_template;
- 		chan->address = chan_index;
- 		chan->scan_index = chan_index;
--		chan->channel = ain[0];
--		chan->channel2 = ain[1];
--		chan->differential = true;
- 
--		chan_st_priv->ain = AD7173_CH_ADDRESS(ain[0], ain[1]);
-+		if (reg >= AD4111_CURRENT_CHAN_CUTOFF) {
-+			chan->type = IIO_CURRENT;
-+			chan->channel = ain[0];
-+			chan_st_priv->ain = ad4111_current_channel_config[ain[0]];
-+		} else {
-+			chan->channel = ain[0];
-+			chan->channel2 = ain[1];
-+			chan->differential = true;
-+
-+			chan_st_priv->ain = AD7173_CH_ADDRESS(ain[0], ain[1]);
-+			chan_st_priv->cfg.input_buf = st->info->has_input_buf;
-+		}
-+
- 		chan_st_priv->chan_reg = chan_index;
--		chan_st_priv->cfg.input_buf = st->info->has_input_buf;
- 		chan_st_priv->cfg.odr = 0;
--
- 		chan_st_priv->cfg.bipolar = fwnode_property_read_bool(child, "bipolar");
- 		if (chan_st_priv->cfg.bipolar)
- 			chan->info_mask_separate |= BIT(IIO_CHAN_INFO_OFFSET);
-@@ -1167,6 +1350,14 @@ static int ad7173_probe(struct spi_device *spi)
- }
- 
- static const struct of_device_id ad7173_of_match[] = {
-+	{ .compatible = "ad4111",
-+	  .data = &ad7173_device_info[ID_AD4111]},
-+	{ .compatible = "ad4112",
-+	  .data = &ad7173_device_info[ID_AD4112]},
-+	{ .compatible = "ad4114",
-+	  .data = &ad7173_device_info[ID_AD4114]},
-+	{ .compatible = "ad4115",
-+	  .data = &ad7173_device_info[ID_AD4115]},
- 	{ .compatible = "adi,ad7172-2",
- 	  .data = &ad7173_device_info[ID_AD7172_2]},
- 	{ .compatible = "adi,ad7172-4",
-@@ -1186,6 +1377,11 @@ static const struct of_device_id ad7173_of_match[] = {
- MODULE_DEVICE_TABLE(of, ad7173_of_match);
- 
- static const struct spi_device_id ad7173_id_table[] = {
-+	{ "ad4111", (kernel_ulong_t)&ad7173_device_info[ID_AD4111]},
-+	{ "ad4112", (kernel_ulong_t)&ad7173_device_info[ID_AD4112]},
-+	{ "ad4114", (kernel_ulong_t)&ad7173_device_info[ID_AD4114]},
-+	{ "ad4115", (kernel_ulong_t)&ad7173_device_info[ID_AD4115]},
-+	{ "ad4116", (kernel_ulong_t)&ad7173_device_info[ID_AD4116]},
- 	{ "ad7172-2", (kernel_ulong_t)&ad7173_device_info[ID_AD7172_2]},
- 	{ "ad7172-4", (kernel_ulong_t)&ad7173_device_info[ID_AD7172_4]},
- 	{ "ad7173-8", (kernel_ulong_t)&ad7173_device_info[ID_AD7173_8]},
-@@ -1210,5 +1406,5 @@ module_spi_driver(ad7173_driver);
- MODULE_IMPORT_NS(IIO_AD_SIGMA_DELTA);
- MODULE_AUTHOR("Lars-Peter Clausen <lars@metafo.de>");
- MODULE_AUTHOR("Dumitru Ceclan <dumitru.ceclan@analog.com>");
--MODULE_DESCRIPTION("Analog Devices AD7172/AD7173/AD7175/AD7176 ADC driver");
-+MODULE_DESCRIPTION("Analog Devices AD717x and AD411x ADC driver");
- MODULE_LICENSE("GPL");
+    Un-embed the net_device from struct hfi1_netdev_rx by converting it
+    into a pointer. Then use the leverage alloc_netdev() to allocate the
+    net_device object at hfi1_alloc_rx().
 
--- 
-2.43.0
+    [1] https://lore.kernel.org/all/20240229225910.79e224cf@kernel.org/
+
+    Signed-off-by: Breno Leitao <leitao@debian.org>
+
+    ----
+    PS: this diff needs d160c66cda0ac8614 ("net: Do not return value from
+    init_dummy_netdev()") in order to apply and build cleanly.
+
+commit 1e06cffe69e6519f8ede42c60f13ad3a7ddb09b7
+Author: Amit Cohen <amcohen@nvidia.com>
+Date:   Mon Feb 5 12:30:22 2024 +0200
+
+    net: Do not return value from init_dummy_netdev()
+
+    init_dummy_netdev() always returns zero and all the callers do not check
+    the returned value. Set the function to not return value, as it is not
+    really used today.
+
+    Signed-off-by: Amit Cohen <amcohen@nvidia.com>
+    Reviewed-by: Ido Schimmel <idosch@nvidia.com>
+    Reviewed-by: Jiri Pirko <jiri@nvidia.com>
+    Reviewed-by: Simon Horman <horms@kernel.org>
+    Link: https://lore.kernel.org/r/20240205103022.440946-1-amcohen@nvidia.com
+    Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+
+commit e8f897f4afef0031fe618a8e94127a0934896aba (tag: v6.8)
+Author: Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Sun Mar 10 13:38:09 2024 -0700
+
+    Linux 6.8
+
 
 
 
