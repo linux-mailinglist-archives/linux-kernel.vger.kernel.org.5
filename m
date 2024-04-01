@@ -1,622 +1,562 @@
-Return-Path: <linux-kernel+bounces-127177-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-127178-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D13A08947C1
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 01:32:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 2C9168947C2
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 01:32:32 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E20941C20956
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 23:32:05 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4FE111C22078
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 23:32:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 652405FBAA;
-	Mon,  1 Apr 2024 23:30:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="LtYLFYhF"
-Received: from mail-yb1-f201.google.com (mail-yb1-f201.google.com [209.85.219.201])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EE85B56B91;
+	Mon,  1 Apr 2024 23:31:33 +0000 (UTC)
+Received: from mail-pg1-f176.google.com (mail-pg1-f176.google.com [209.85.215.176])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 908E058AC3
-	for <linux-kernel@vger.kernel.org>; Mon,  1 Apr 2024 23:30:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8FAC255C3B;
+	Mon,  1 Apr 2024 23:31:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712014206; cv=none; b=pfJ12WHOAef+fn37TB3dzO7Sq3h67B8/WL6zysk+Klia9zQfMp4IXjAM5zRB/BmA3bxZdhKTaFX7R0g4+XCNF0/cXdyEAV06BNmauXWxqP/PblO+Qt1D9KqzRhYGteKk57HK7HiYg2Rf1QCqJ60lC5faEBEz1kAX5K9IFbJHH80=
+	t=1712014292; cv=none; b=CkbR/bTdFq6CFSb8erpyB9ir8Hn7fc+Vgga/n0GrQ3db2f/siGks6Mz6AjpycccnB8zBdTu3+Q5s8xSHGo/VJy/qUTId4AY4ntS6NCki6NnBRllBvCOZsOD4jftDadOFSAf0YCNp3Ok9ZcEdYWxKl5MmdU/01+Mphni4h6e4oUw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712014206; c=relaxed/simple;
-	bh=WmcsQL1jAwPB2bQpwPfReVNE8AqM+O4XaG6OyvFYBYI=;
-	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=Mj2MG6PeQzzoxursWXwTgzEs1dT9OcLLQwF590GwzjP++xlm/U4Bnx7ZRKazJmh4s1AZ2+KreH3P5xkvwPVsjQnITI5CCe7mYuNqB4zBPxPmaUS/eNFAUwH7068MT/QRpDSpGaun3319f7pbtx4ARP+04gNtAF+7KFuSaK0rU1M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--jthoughton.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=LtYLFYhF; arc=none smtp.client-ip=209.85.219.201
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--jthoughton.bounces.google.com
-Received: by mail-yb1-f201.google.com with SMTP id 3f1490d57ef6-dcc05887ee9so5314214276.1
-        for <linux-kernel@vger.kernel.org>; Mon, 01 Apr 2024 16:30:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1712014202; x=1712619002; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=WpAS/uks+xeMlZlwJrS/cYcvCVm3xLsD9iJKs+t5VOw=;
-        b=LtYLFYhFlgEdTD9SON2aVF74U88Svqr5IDehFiQ1CE8pJNPpbBR2bS8mST2vJYBexN
-         vgCcPTdzbkGkWaMm9OKRQdm6tsFHwLBpPYtMxeXuOXE8pN5SYuUhPtqPD+F6zkmsNeky
-         UHJgAdjBHpH1zdfDujmtDGhcocBg5YLuRb54UbOlYPggWoI+aeWiPy96qe1fAeuMV3F0
-         r30K0kysAthcgfzArrdZh1NDDhPQa/ZOJrJ0ETQY24NuAoorJircpQYLR+BC2GY+zQV5
-         Iin6VrAQZd+Tk+i9wDgEns1zHb/aLkL4wwOwmjffBvzeWOnvV+WcU1XLl/dCqa3ZPgOL
-         gmjQ==
+	s=arc-20240116; t=1712014292; c=relaxed/simple;
+	bh=W9Rd3Vg90HSyochB1c8eX8D31ta8C0k+c1YAiursWOU=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=hZ3m7Wn4rMdkX2025OiMZZVYtfY5J32ecUiJZUfwVgASn+TUXtIlGSgSGA5x63t0zhgrM1Zc/lXhsIUftlTq85O/qaZSaTU8IRERWJ/1ZZRr+MIbE7zTG6HA+tZkC8TIOL1AXuKqmL1VZZXWw9GlxGnY/cDXgJjnZlCmN0RiNuI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.215.176
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pg1-f176.google.com with SMTP id 41be03b00d2f7-5d42e7ab8a9so2461033a12.3;
+        Mon, 01 Apr 2024 16:31:30 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712014202; x=1712619002;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=WpAS/uks+xeMlZlwJrS/cYcvCVm3xLsD9iJKs+t5VOw=;
-        b=KwUNGyPISZ3tHxVhvKT7nJ/vcNw4ODeAyafYPl3T1G2RQEnezljwmPSgbN915WJvBr
-         +uqK9rzzZMQDzLbmeAd2UzOA4sjPHP84ZPb2CUhlhnnbSHDFgYiRcBJtYHCoiMRfkqBT
-         ZDvruD9xCoh7qcPBCqvPEQ+JQ/iPYbIPpTQLafCE3i3yVViHez26eWBLlA2IFmeqfxO7
-         ECLZKF19Jga80VU9QjDUpdQNtKJfiXCPQjnenASh8vSyl3XDBDHkdwiF6SUwOxiI0pxq
-         9miETQIcnAVvSH6h6w6FNM1Rpf+vwpC0gKZEmiWaCveNtMzEOG3Oyv6FV7O/8QnDr/UY
-         O+Lw==
-X-Forwarded-Encrypted: i=1; AJvYcCXtDu/1225ys7pS+NE3b1COFYD1aJePrGcvHrhaUCNGGhR0fclLPrfB2SUh2m9hscOt7E5SrDR7LTeqjML95Rt+/W6q6/HZv54IIz5D
-X-Gm-Message-State: AOJu0YwQRQdDVjaEyQjrHX2NzYS9p2jHJAvYomOVGdPaul1Ia7Sy9C8E
-	Afjje5sYR5liXe66xRA2JNbVvroEZw3Vn9HJsFPEy/xFCJnjpV7DCHFc4YzF9G4FvlSChjeY1tx
-	VnONEYLGj6ItEqRldbw==
-X-Google-Smtp-Source: AGHT+IFDD8pqYO4xCu07bbvePXFmo0Pl8SwWr49Tzn/Rs0hc66IZhVLSZQfRP6lopGz4i0uv+3xgxtfkPILQecVq
-X-Received: from jthoughton.c.googlers.com ([fda3:e722:ac3:cc00:14:4d90:c0a8:2a4f])
- (user=jthoughton job=sendgmr) by 2002:a05:6902:2202:b0:dcd:59a5:7545 with
- SMTP id dm2-20020a056902220200b00dcd59a57545mr764461ybb.10.1712014202562;
- Mon, 01 Apr 2024 16:30:02 -0700 (PDT)
-Date: Mon,  1 Apr 2024 23:29:46 +0000
-In-Reply-To: <20240401232946.1837665-1-jthoughton@google.com>
+        d=1e100.net; s=20230601; t=1712014290; x=1712619090;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=kyRsGRAwNFsxUGN4nIP6zyyeaRDG9dHknKxTE5z7gR0=;
+        b=lp4YobQTI4WYiwRdnssDHWR0WzbryiEeXdulz98m+CSGYy36QCMs5dg0jnVrvTh/HG
+         M8UcryqlbO2OIINQYFphF4DdTuueDw9vUrJamtvFX1NnL1+7zueBiZ9rkK8LjgyHKWlH
+         2rfplynrE8h+lomsec5z7OgqpxU8O6q6NFphS9riQuiuNvkozSNS5PqJi53cRfPs80XT
+         mjkc8IjviavqU4coqgInCsBp1wS9+y/TMGbAc6AsDBIP6Eeytcbe5fClRUrwVH0CLi0c
+         UHysC+3C4XPlgh1YG53i06wNw8ypiacr4UhrRtk/i9z7owUaHin2GPnydXzp4ZrhLEd1
+         9Lew==
+X-Forwarded-Encrypted: i=1; AJvYcCUrIyuD4sn9w0zKFTy/y2lS8bxj5pVYR2QZoTAIsYgHcm6inySS80TZHY9erCCiHwJM8C16N/KMckcuLuxHqMPPeVJiNDB+Jr+quYi1VYNBGKh4cGDV2tUPJhl4uFdg2SeQpsbuEz70DYs6oKEwVg==
+X-Gm-Message-State: AOJu0Yxk8lBRQlnbdkEomiWWRB66+1jRiIRNZEB8TVxwwbnCGLmSKP9v
+	mYg2QEWfq1zjiBXJ289iucva9BGdUrJMF2HS2I5nnY9m6X0KPMsNVHDuEEgtHzjrIEyhoUno5wy
+	IshMP7Zt1/kFUNO/W5YMcGgIPgtY=
+X-Google-Smtp-Source: AGHT+IHUcj7bvvOAZ4jdASGxpoQpJwHl+eeiUqNOo7akmbttuzadQVwSi31YMAvfAdXehQ+GUFWlh/h7CiuRkBgK7CM=
+X-Received: by 2002:a17:903:11d1:b0:1e0:a8b8:aba3 with SMTP id
+ q17-20020a17090311d100b001e0a8b8aba3mr14714827plh.35.1712014289753; Mon, 01
+ Apr 2024 16:31:29 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-References: <20240401232946.1837665-1-jthoughton@google.com>
-X-Mailer: git-send-email 2.44.0.478.gd926399ef9-goog
-Message-ID: <20240401232946.1837665-8-jthoughton@google.com>
-Subject: [PATCH v3 7/7] mm: multi-gen LRU: use mmu_notifier_test_clear_young()
-From: James Houghton <jthoughton@google.com>
-To: Andrew Morton <akpm@linux-foundation.org>, Paolo Bonzini <pbonzini@redhat.com>
-Cc: Yu Zhao <yuzhao@google.com>, David Matlack <dmatlack@google.com>, 
-	Marc Zyngier <maz@kernel.org>, Oliver Upton <oliver.upton@linux.dev>, 
-	Sean Christopherson <seanjc@google.com>, Jonathan Corbet <corbet@lwn.net>, James Morse <james.morse@arm.com>, 
-	Suzuki K Poulose <suzuki.poulose@arm.com>, Zenghui Yu <yuzenghui@huawei.com>, 
-	Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>, 
-	Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, 
-	Dave Hansen <dave.hansen@linux.intel.com>, "H. Peter Anvin" <hpa@zytor.com>, 
-	Steven Rostedt <rostedt@goodmis.org>, Masami Hiramatsu <mhiramat@kernel.org>, 
-	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, Shaoqin Huang <shahuang@redhat.com>, 
-	Gavin Shan <gshan@redhat.com>, Ricardo Koller <ricarkol@google.com>, 
-	Raghavendra Rao Ananta <rananta@google.com>, Ryan Roberts <ryan.roberts@arm.com>, 
-	David Rientjes <rientjes@google.com>, Axel Rasmussen <axelrasmussen@google.com>, 
-	linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
-	kvmarm@lists.linux.dev, kvm@vger.kernel.org, linux-mm@kvack.org, 
-	linux-trace-kernel@vger.kernel.org, James Houghton <jthoughton@google.com>
+MIME-Version: 1.0
+References: <20240401160805.51277-1-yakoyoku@gmail.com> <CAP-5=fXu4uM=cU8Q=1JP19sELfarNE9BtBmbFW0Uyq2e_HJ6QA@mail.gmail.com>
+In-Reply-To: <CAP-5=fXu4uM=cU8Q=1JP19sELfarNE9BtBmbFW0Uyq2e_HJ6QA@mail.gmail.com>
+From: Namhyung Kim <namhyung@kernel.org>
+Date: Mon, 1 Apr 2024 16:31:18 -0700
+Message-ID: <CAM9d7cjgfQpo6dgV4f5Wm4shVpknzP4_m36AkTwaUaF4jLrV1w@mail.gmail.com>
+Subject: Re: [PATCH] perf srcline: Implement addr2line using libdw
+To: Ian Rogers <irogers@google.com>
+Cc: Martin Rodriguez Reboredo <yakoyoku@gmail.com>, Peter Zijlstra <peterz@infradead.org>, 
+	Ingo Molnar <mingo@redhat.com>, Arnaldo Carvalho de Melo <acme@kernel.org>, Mark Rutland <mark.rutland@arm.com>, 
+	Alexander Shishkin <alexander.shishkin@linux.intel.com>, Jiri Olsa <jolsa@kernel.org>, 
+	Adrian Hunter <adrian.hunter@intel.com>, linux-perf-users@vger.kernel.org, 
+	linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-From: Yu Zhao <yuzhao@google.com>
+Hello,
 
-Use mmu_notifier_{test,clear}_young_bitmap() to handle KVM PTEs in
-batches when the fast path is supported. This reduces the contention on
-kvm->mmu_lock when the host is under heavy memory pressure.
+On Mon, Apr 1, 2024 at 9:56=E2=80=AFAM Ian Rogers <irogers@google.com> wrot=
+e:
+>
+> On Mon, Apr 1, 2024 at 9:08=E2=80=AFAM Martin Rodriguez Reboredo
+> <yakoyoku@gmail.com> wrote:
+> >
+> > `perf script` can be quite slow when inlines are enabled, by default it
+> > spawns an `addr2line` process and communicates with it via pipes, that
+> > comes with a certain overhead. The other option is to build perf with
+> > libbfd enabled so that its methods are called directly instead, but due
+> > to its licensing the resulting binary cannot be redistribuited.
+> >
+> > This commit adds the ability for perf to use libdw to query the source
+> > lines of binaries from the passed addresses. This avoids the process
+> > spawn overhead and because libdw is licensed dually under
+> > GPL-2.0-or-later and LGPL-3.0-or-later it can be distributed by
+> > downstream packagers. Another thing to consider is that if libdebuginfo=
+d
+> > was enabled for libdw then it's used to download debug info, it can be
+> > switched off by unsetting the `DEBUGINFOD_URLS` envvar.
 
-An existing selftest can quickly demonstrate the effectiveness of
-this patch. On a generic workstation equipped with 128 CPUs and 256GB
-DRAM:
+Thanks for doing this!  Yep, we could unset the env temporarily.
 
-  $ sudo max_guest_memory_test -c 64 -m 250 -s 250
+As a general comment, perf has some helper functions for libdw
+in util/dwarf-aux.[ch].  Please take a look and use/update them.
 
-  MGLRU         run2
-  ------------------
-  Before [1]    ~64s
-  After         ~51s
+> >
+> > Signed-off-by: Martin Rodriguez Reboredo <yakoyoku@gmail.com>
+>
+> Awesome sauce! Namhyung was just mentioning the idea to do this to me.
+> I wonder when this lands we can just work to remove all of the
+> BUILD_NONDISTRO options, namely libbfd, libiberty, etc. I suspect we
+> have dead/broken code hiding there.
+>
+> > ---
+> >  tools/perf/Makefile.config |   7 +-
+> >  tools/perf/util/srcline.c  | 277 ++++++++++++++++++++++++++++++++++++-
+> >  2 files changed, 281 insertions(+), 3 deletions(-)
+> >
+> > diff --git a/tools/perf/Makefile.config b/tools/perf/Makefile.config
+> > index 1fe8df97fe88..ab6d41e7a6b6 100644
+> > --- a/tools/perf/Makefile.config
+> > +++ b/tools/perf/Makefile.config
+> > @@ -947,13 +947,16 @@ ifdef BUILD_NONDISTRO
+> >      $(call feature_check,disassembler-init-styled)
+> >    endif
+> >
+> > -  CFLAGS +=3D -DHAVE_LIBBFD_SUPPORT
+> > -  CXXFLAGS +=3D -DHAVE_LIBBFD_SUPPORT
+> > +  CFLAGS +=3D -DHAVE_LIBBFD_SUPPORT -DHAVE_SYMBOLIZER_SUPPORT
+> > +  CXXFLAGS +=3D -DHAVE_LIBBFD_SUPPORT -DHAVE_SYMBOLIZER_SUPPORT
+>
+> What does SYMBOLIZER mean in this context? Shouldn't the code be gated
+> on say a HAVE_LIBDW?
+>
+> >    ifeq ($(feature-libbfd-buildid), 1)
+> >      CFLAGS +=3D -DHAVE_LIBBFD_BUILDID_SUPPORT
+> >    else
+> >      $(warning Old version of libbfd/binutils things like PE executable=
+ profiling will not be available)
+> >    endif
+> > +else ifndef NO_LIBDW_DWARF_UNWIND
+> > +  CFLAGS +=3D -DHAVE_SYMBOLIZER_SUPPORT
+> > +  CXXFLAGS +=3D -DHAVE_SYMBOLIZER_SUPPORT
+> >  endif
+> >
+> >  ifndef NO_DEMANGLE
+> > diff --git a/tools/perf/util/srcline.c b/tools/perf/util/srcline.c
+> > index 7addc34afcf5..8117424137cc 100644
+> > --- a/tools/perf/util/srcline.c
+> > +++ b/tools/perf/util/srcline.c
+> > @@ -130,6 +130,8 @@ static struct symbol *new_inline_sym(struct dso *ds=
+o,
+> >
+> >  #define MAX_INLINE_NEST 1024
+> >
+> > +#ifdef HAVE_SYMBOLIZER_SUPPORT
+> > +
+> >  #ifdef HAVE_LIBBFD_SUPPORT
+> >
+> >  /*
+> > @@ -372,6 +374,279 @@ void dso__free_a2l(struct dso *dso)
+> >
+> >  #else /* HAVE_LIBBFD_SUPPORT */
+> >
+> > +#include <elfutils/libdwfl.h>
+> > +#include <dwarf.h>
+> > +
+> > +static char *debuginfo_path =3D NULL;
+> > +
+> > +static const Dwfl_Callbacks offline_callbacks =3D {
+> > +       /* We use this table for core files too.  */
+> > +       .find_elf =3D dwfl_build_id_find_elf,
+> > +       .find_debuginfo =3D dwfl_standard_find_debuginfo,
+> > +       .section_address =3D dwfl_offline_section_address,
+> > +       .debuginfo_path =3D &debuginfo_path,
+> > +
+> > +};
+> > +
+> > +struct a2l_data {
+>
+> Perhaps libdw_a2l_data to avoid confusion with data used for forked
+> addr2line. Could you comment the variables? Names like "input" are
+> fairly generic so you could provide an example of what their values
+> are. It is also useful to comment when something like a string is
+> owned by the struct, so that cleaning it up can be checked.
+>
+> > +       const char *input;
+> > +       Dwarf_Addr addr;
+> > +       Dwarf_Addr bias;
+> > +
+> > +       bool found;
+> > +       const char *filename;
+> > +       const char *funcname;
+> > +       int line;
+>
+> Moving "found" and "line" later will avoid padding. As this data is
+> attached to a DSO, does there need to be some kind of locking protocol
+> for >1 symbolizing the same DSO? Perhaps these should be filled in as
+> out arguments to avoid this kind of complexity.
 
-  kswapd (MGLRU before)
-    100.00%  balance_pgdat
-      100.00%  shrink_node
-        100.00%  shrink_one
-          99.99%  try_to_shrink_lruvec
-            99.71%  evict_folios
-              97.29%  shrink_folio_list
-  ==>>          13.05%  folio_referenced
-                  12.83%  rmap_walk_file
-                    12.31%  folio_referenced_one
-                      7.90%  __mmu_notifier_clear_young
-                        7.72%  kvm_mmu_notifier_clear_young
-                          7.34%  _raw_write_lock
+Right, we cannot attach this to a DSO.  Maybe only dwfl can be
+attached, but we might want to use debuginfo abstraction instead.
 
-  kswapd (MGLRU after)
-    100.00%  balance_pgdat
-      100.00%  shrink_node
-        100.00%  shrink_one
-          99.99%  try_to_shrink_lruvec
-            99.59%  evict_folios
-              80.37%  shrink_folio_list
-  ==>>          3.74%  folio_referenced
-                  3.59%  rmap_walk_file
-                    3.19%  folio_referenced_one
-                      2.53%  lru_gen_look_around
-                        1.06%  __mmu_notifier_test_clear_young
+Also I don't think we can keep all debuginfo/dwfl descriptors at
+once due to the file descriptor limit.  But I'm not sure if we have
+something for the external addr2line.
 
-[1] "mm: rmap: Don't flush TLB after checking PTE young for page
-    reference" was included so that the comparison is apples to
-    apples.
-    https://lore.kernel.org/r/20220706112041.3831-1-21cnbao@gmail.com/
 
-Signed-off-by: Yu Zhao <yuzhao@google.com>
-Signed-off-by: James Houghton <jthoughton@google.com>
----
- Documentation/admin-guide/mm/multigen_lru.rst |   6 +-
- include/linux/mmzone.h                        |   6 +-
- mm/rmap.c                                     |   9 +-
- mm/vmscan.c                                   | 183 ++++++++++++++----
- 4 files changed, 159 insertions(+), 45 deletions(-)
+>
+> Also, there is some DSO clean up happening in:
+> https://lore.kernel.org/lkml/CAM9d7chqnsDBCVFoK2hSs=3D22QrXBS=3D13Px5hGA4=
+hM=3Dho7CZd2g@mail.gmail.com/
+> where accessor functions are used for the sake of reference count checkin=
+g:
+> https://perf.wiki.kernel.org/index.php/Reference_Count_Checking
+> which may cause some minor conflicts with this patch.
+>
+> > +
+> > +       Dwfl *dwfl;
+> > +       Dwfl_Module *mod;
+> > +       GElf_Sym **syms;
+> > +};
+> > +
+> > +static const char *get_diename(Dwarf_Die *die)
+> > +{
+> > +       Dwarf_Attribute attr;
+> > +       const char *name;
+> > +
+> > +       name =3D dwarf_formstring(
+> > +               dwarf_attr_integrate(die, DW_AT_MIPS_linkage_name, &att=
+r) ?:
+> > +                       dwarf_attr_integrate(die, DW_AT_linkage_name, &=
+attr));
 
-diff --git a/Documentation/admin-guide/mm/multigen_lru.rst b/Documentation/admin-guide/mm/multigen_lru.rst
-index 33e068830497..0ae2a6d4d94c 100644
---- a/Documentation/admin-guide/mm/multigen_lru.rst
-+++ b/Documentation/admin-guide/mm/multigen_lru.rst
-@@ -48,6 +48,10 @@ Values Components
-        verified on x86 varieties other than Intel and AMD. If it is
-        disabled, the multi-gen LRU will suffer a negligible
-        performance degradation.
-+0x0008 Clearing the accessed bit in KVM page table entries in large
-+       batches, when KVM MMU sets it (e.g., on x86_64). This can
-+       improve the performance of guests when the host is under memory
-+       pressure.
- [yYnN] Apply to all the components above.
- ====== ===============================================================
- 
-@@ -56,7 +60,7 @@ E.g.,
- 
-     echo y >/sys/kernel/mm/lru_gen/enabled
-     cat /sys/kernel/mm/lru_gen/enabled
--    0x0007
-+    0x000f
-     echo 5 >/sys/kernel/mm/lru_gen/enabled
-     cat /sys/kernel/mm/lru_gen/enabled
-     0x0005
-diff --git a/include/linux/mmzone.h b/include/linux/mmzone.h
-index c11b7cde81ef..a98de5106990 100644
---- a/include/linux/mmzone.h
-+++ b/include/linux/mmzone.h
-@@ -397,6 +397,7 @@ enum {
- 	LRU_GEN_CORE,
- 	LRU_GEN_MM_WALK,
- 	LRU_GEN_NONLEAF_YOUNG,
-+	LRU_GEN_KVM_MMU_WALK,
- 	NR_LRU_GEN_CAPS
- };
- 
-@@ -554,7 +555,7 @@ struct lru_gen_memcg {
- 
- void lru_gen_init_pgdat(struct pglist_data *pgdat);
- void lru_gen_init_lruvec(struct lruvec *lruvec);
--void lru_gen_look_around(struct page_vma_mapped_walk *pvmw);
-+bool lru_gen_look_around(struct page_vma_mapped_walk *pvmw);
- 
- void lru_gen_init_memcg(struct mem_cgroup *memcg);
- void lru_gen_exit_memcg(struct mem_cgroup *memcg);
-@@ -573,8 +574,9 @@ static inline void lru_gen_init_lruvec(struct lruvec *lruvec)
+We have die_get_linkage_name() but it doesn't seem to
+handle MIPS_linkage_name though.
+
+
+> > +
+> > +       if (name =3D=3D NULL)
+> > +               name =3D dwarf_diename(die) ?: "??";
+> > +
+> > +       return name;
+> > +}
+> > +
+> > +static void find_address_in_section(struct a2l_data *a2l)
+
+Probably we can use cu_find_lineinfo().
+
+
+> > +{
+> > +       Dwarf_Addr addr;
+> > +       Dwfl_Line *line;
+> > +
+> > +       if (a2l->found)
+> > +               return;
+> > +
+> > +       a2l->mod =3D dwfl_addrmodule(a2l->dwfl, a2l->addr);
+> > +       if (!a2l->mod)
+> > +               return;
+> > +
+> > +       dwfl_module_getdwarf(a2l->mod, &a2l->bias);
+> > +       addr =3D a2l->addr + a2l->bias;
+> > +
+> > +       line =3D dwfl_module_getsrc(a2l->mod, addr);
+> > +       if (!line)
+> > +               line =3D dwfl_getsrc(a2l->dwfl, addr);
+> > +       if (!line)
+> > +               return;
+> > +
+> > +       a2l->filename =3D dwfl_lineinfo(line, NULL, &a2l->line, NULL, N=
+ULL, NULL);
+> > +       a2l->funcname =3D dwfl_module_addrname(a2l->mod, addr);
+> > +
+> > +       if (a2l->filename && !strlen(a2l->filename))
+> > +               a2l->filename =3D NULL;
+> > +       else
+> > +               a2l->found =3D true;
+> > +}
+> > +
+> > +static struct a2l_data *addr2line_init(const char *path)
+
+debuginfo__new()?
+
+
+> > +{
+> > +       Dwfl *dwfl;
+> > +       struct a2l_data *a2l =3D NULL;
+> > +
+> > +       dwfl =3D dwfl_begin(&offline_callbacks);
+> > +       if (!dwfl)
+> > +               goto out;
+> > +
+> > +       if (dwfl_report_offline(dwfl, "", path, -1) =3D=3D NULL)
+> > +               return NULL;
+> > +
+> > +       a2l =3D zalloc(sizeof(*a2l));
+> > +       if (a2l =3D=3D NULL)
+> > +               goto out;
+> > +
+> > +       a2l->dwfl =3D dwfl;
+> > +       a2l->input =3D strdup(path);
+> > +       if (a2l->input =3D=3D NULL)
+> > +               goto out;
+> > +
+> > +       if (dwfl_report_end(dwfl, NULL, NULL))
+> > +               goto out;
+> > +
+> > +       return a2l;
+> > +
+> > +out:
+> > +       if (a2l) {
+> > +               zfree((char **)&a2l->input);
+> > +               free(a2l);
+> > +       }
+> > +       dwfl_end(dwfl);
+> > +       return NULL;
+> > +}
+> > +
+> > +static void addr2line_cleanup(struct a2l_data *a2l)
+> > +{
+> > +       if (a2l->dwfl)
+> > +               dwfl_end(a2l->dwfl);
+> > +       zfree((char **)&a2l->input);
+> > +       zfree(&a2l->syms);
+> > +       free(a2l);
+> > +}
+> > +
+> > +static int inline_list__append_dso_a2l(struct dso *dso,
+> > +                                      struct inline_node *node,
+> > +                                      struct symbol *sym)
+> > +{
+> > +       struct a2l_data *a2l =3D dso->a2l;
+> > +       struct symbol *inline_sym =3D new_inline_sym(dso, sym, a2l->fun=
+cname);
+> > +       char *srcline =3D NULL;
+> > +
+> > +       if (a2l->filename)
+> > +               srcline =3D srcline_from_fileline(a2l->filename, a2l->l=
+ine);
+> > +
+> > +       return inline_list__append(inline_sym, srcline, node);
+> > +}
+> > +
+> > +static int get_inline_function(struct dso *dso, struct inline_node *no=
+de,
+> > +                              struct symbol *sym)
+> > +{
+> > +       struct a2l_data *a2l =3D dso->a2l;
+> > +       Dwarf_Addr addr =3D a2l->addr + a2l->bias;
+> > +       Dwarf_Addr bias =3D 0;
+> > +       Dwarf_Die *cudie =3D dwfl_module_addrdie(a2l->mod, addr, &bias)=
+;
+> > +
+> > +       Dwarf_Die *scopes =3D NULL;
+> > +       int nscopes =3D dwarf_getscopes(cudie, addr - bias, &scopes);
+
+It's not clear to me how this dwarf_getscopes() and later
+dwarf_getscopes_die() work together.  Can you please add some
+comment?  Also we have die_get_scopes() and I think it's simpler.
+
+
+> > +       if (nscopes < 0)
+> > +               return 0;
+> > +
+> > +       if (nscopes > 0) {
+>
+> Try to prefer early return to avoid indenting the code. So I think the
+> above can just be:
+>
+> if (nscopes <=3D 0)
+>     return 0;
+>
+> and then you don't need this "if (nscopes > 0) {"
+>
+> > +               Dwarf_Die subroutine;
+> > +               Dwarf_Off dieoff =3D dwarf_dieoffset(&scopes[0]);
+> > +               dwarf_offdie(dwfl_module_getdwarf(a2l->mod, &bias), die=
+off,
+> > +                            &subroutine);
+> > +               free(scopes);
+> > +               scopes =3D NULL;
+>
+> Is this dead code?
+
+It seems you can use zfree().
+
+
+>
+> > +
+> > +               nscopes =3D dwarf_getscopes_die(&subroutine, &scopes);
+> > +               if (nscopes > 1) {
+>
+> Similar early return comment to above to avoid indentation.
+>
+> Thanks,
+> Ian
+>
+> > +                       Dwarf_Die cu;
+> > +                       Dwarf_Files *files;
+> > +                       if (dwarf_diecu(&scopes[0], &cu, NULL, NULL) !=
+=3D NULL &&
+> > +                           dwarf_getsrcfiles(cudie, &files, NULL) =3D=
+=3D 0) {
+> > +                               for (int i =3D 0; i < nscopes - 1; i++)=
  {
- }
- 
--static inline void lru_gen_look_around(struct page_vma_mapped_walk *pvmw)
-+static inline bool lru_gen_look_around(struct page_vma_mapped_walk *pvmw)
- {
-+	return false;
- }
- 
- static inline void lru_gen_init_memcg(struct mem_cgroup *memcg)
-diff --git a/mm/rmap.c b/mm/rmap.c
-index 56b313aa2ebf..41e9fc25684e 100644
---- a/mm/rmap.c
-+++ b/mm/rmap.c
-@@ -871,13 +871,10 @@ static bool folio_referenced_one(struct folio *folio,
- 			continue;
- 		}
- 
--		if (pvmw.pte) {
--			if (lru_gen_enabled() &&
--			    pte_young(ptep_get(pvmw.pte))) {
--				lru_gen_look_around(&pvmw);
-+		if (lru_gen_enabled() && pvmw.pte) {
-+			if (lru_gen_look_around(&pvmw))
- 				referenced++;
--			}
--
-+		} else if (pvmw.pte) {
- 			if (ptep_clear_flush_young_notify(vma, address,
- 						pvmw.pte))
- 				referenced++;
-diff --git a/mm/vmscan.c b/mm/vmscan.c
-index 293120fe54f3..fd65f3466dfc 100644
---- a/mm/vmscan.c
-+++ b/mm/vmscan.c
-@@ -56,6 +56,7 @@
- #include <linux/khugepaged.h>
- #include <linux/rculist_nulls.h>
- #include <linux/random.h>
-+#include <linux/mmu_notifier.h>
- 
- #include <asm/tlbflush.h>
- #include <asm/div64.h>
-@@ -2596,6 +2597,11 @@ static bool should_clear_pmd_young(void)
- 	return arch_has_hw_nonleaf_pmd_young() && get_cap(LRU_GEN_NONLEAF_YOUNG);
- }
- 
-+static bool should_walk_kvm_mmu(void)
-+{
-+	return get_cap(LRU_GEN_KVM_MMU_WALK);
-+}
-+
- /******************************************************************************
-  *                          shorthand helpers
-  ******************************************************************************/
-@@ -3293,7 +3299,8 @@ static bool get_next_vma(unsigned long mask, unsigned long size, struct mm_walk
- 	return false;
- }
- 
--static unsigned long get_pte_pfn(pte_t pte, struct vm_area_struct *vma, unsigned long addr)
-+static unsigned long get_pte_pfn(pte_t pte, struct vm_area_struct *vma, unsigned long addr,
-+				 struct pglist_data *pgdat)
- {
- 	unsigned long pfn = pte_pfn(pte);
- 
-@@ -3308,10 +3315,15 @@ static unsigned long get_pte_pfn(pte_t pte, struct vm_area_struct *vma, unsigned
- 	if (WARN_ON_ONCE(!pfn_valid(pfn)))
- 		return -1;
- 
-+	/* try to avoid unnecessary memory loads */
-+	if (pfn < pgdat->node_start_pfn || pfn >= pgdat_end_pfn(pgdat))
-+		return -1;
-+
- 	return pfn;
- }
- 
--static unsigned long get_pmd_pfn(pmd_t pmd, struct vm_area_struct *vma, unsigned long addr)
-+static unsigned long get_pmd_pfn(pmd_t pmd, struct vm_area_struct *vma, unsigned long addr,
-+				 struct pglist_data *pgdat)
- {
- 	unsigned long pfn = pmd_pfn(pmd);
- 
-@@ -3326,6 +3338,10 @@ static unsigned long get_pmd_pfn(pmd_t pmd, struct vm_area_struct *vma, unsigned
- 	if (WARN_ON_ONCE(!pfn_valid(pfn)))
- 		return -1;
- 
-+	/* try to avoid unnecessary memory loads */
-+	if (pfn < pgdat->node_start_pfn || pfn >= pgdat_end_pfn(pgdat))
-+		return -1;
-+
- 	return pfn;
- }
- 
-@@ -3334,10 +3350,6 @@ static struct folio *get_pfn_folio(unsigned long pfn, struct mem_cgroup *memcg,
- {
- 	struct folio *folio;
- 
--	/* try to avoid unnecessary memory loads */
--	if (pfn < pgdat->node_start_pfn || pfn >= pgdat_end_pfn(pgdat))
--		return NULL;
--
- 	folio = pfn_folio(pfn);
- 	if (folio_nid(folio) != pgdat->node_id)
- 		return NULL;
-@@ -3352,6 +3364,52 @@ static struct folio *get_pfn_folio(unsigned long pfn, struct mem_cgroup *memcg,
- 	return folio;
- }
- 
-+static bool test_spte_young(struct mm_struct *mm, unsigned long addr, unsigned long end,
-+			    unsigned long *bitmap, unsigned long *last)
-+{
-+	if (*last > addr)
-+		goto done;
-+
-+	*last = end - addr > MIN_LRU_BATCH * PAGE_SIZE ?
-+		addr + MIN_LRU_BATCH * PAGE_SIZE - 1 : end - 1;
-+	bitmap_zero(bitmap, MIN_LRU_BATCH);
-+
-+	mmu_notifier_test_young_bitmap(mm, addr, *last + 1, bitmap);
-+done:
-+	return test_bit((*last - addr) / PAGE_SIZE, bitmap);
-+}
-+
-+static void clear_spte_young(struct mm_struct *mm, unsigned long addr,
-+			     unsigned long *bitmap, unsigned long *last)
-+{
-+	int i;
-+	unsigned long start, end = *last + 1;
-+
-+	if (addr + PAGE_SIZE != end)
-+		return;
-+
-+	i = find_last_bit(bitmap, MIN_LRU_BATCH);
-+	if (i == MIN_LRU_BATCH)
-+		return;
-+
-+	start = end - (i + 1) * PAGE_SIZE;
-+
-+	i = find_first_bit(bitmap, MIN_LRU_BATCH);
-+
-+	end -= i * PAGE_SIZE;
-+
-+	mmu_notifier_clear_young_bitmap(mm, start, end, bitmap);
-+}
-+
-+static void skip_spte_young(struct mm_struct *mm, unsigned long addr,
-+			    unsigned long *bitmap, unsigned long *last)
-+{
-+	if (*last > addr)
-+		__clear_bit((*last - addr) / PAGE_SIZE, bitmap);
-+
-+	clear_spte_young(mm, addr, bitmap, last);
-+}
-+
- static bool suitable_to_scan(int total, int young)
- {
- 	int n = clamp_t(int, cache_line_size() / sizeof(pte_t), 2, 8);
-@@ -3367,6 +3425,8 @@ static bool walk_pte_range(pmd_t *pmd, unsigned long start, unsigned long end,
- 	pte_t *pte;
- 	spinlock_t *ptl;
- 	unsigned long addr;
-+	DECLARE_BITMAP(bitmap, MIN_LRU_BATCH);
-+	unsigned long last = 0;
- 	int total = 0;
- 	int young = 0;
- 	struct lru_gen_mm_walk *walk = args->private;
-@@ -3386,6 +3446,7 @@ static bool walk_pte_range(pmd_t *pmd, unsigned long start, unsigned long end,
- 	arch_enter_lazy_mmu_mode();
- restart:
- 	for (i = pte_index(start), addr = start; addr != end; i++, addr += PAGE_SIZE) {
-+		bool ret;
- 		unsigned long pfn;
- 		struct folio *folio;
- 		pte_t ptent = ptep_get(pte + i);
-@@ -3393,21 +3454,28 @@ static bool walk_pte_range(pmd_t *pmd, unsigned long start, unsigned long end,
- 		total++;
- 		walk->mm_stats[MM_LEAF_TOTAL]++;
- 
--		pfn = get_pte_pfn(ptent, args->vma, addr);
--		if (pfn == -1)
-+		pfn = get_pte_pfn(ptent, args->vma, addr, pgdat);
-+		if (pfn == -1) {
-+			skip_spte_young(args->vma->vm_mm, addr, bitmap, &last);
- 			continue;
-+		}
- 
--		if (!pte_young(ptent)) {
-+		ret = test_spte_young(args->vma->vm_mm, addr, end, bitmap, &last);
-+		if (!ret && !pte_young(ptent)) {
-+			skip_spte_young(args->vma->vm_mm, addr, bitmap, &last);
- 			walk->mm_stats[MM_LEAF_OLD]++;
- 			continue;
- 		}
- 
- 		folio = get_pfn_folio(pfn, memcg, pgdat, walk->can_swap);
--		if (!folio)
-+		if (!folio) {
-+			skip_spte_young(args->vma->vm_mm, addr, bitmap, &last);
- 			continue;
-+		}
- 
--		if (!ptep_test_and_clear_young(args->vma, addr, pte + i))
--			VM_WARN_ON_ONCE(true);
-+		clear_spte_young(args->vma->vm_mm, addr, bitmap, &last);
-+		if (pte_young(ptent))
-+			ptep_test_and_clear_young(args->vma, addr, pte + i);
- 
- 		young++;
- 		walk->mm_stats[MM_LEAF_YOUNG]++;
-@@ -3473,22 +3541,24 @@ static void walk_pmd_range_locked(pud_t *pud, unsigned long addr, struct vm_area
- 		/* don't round down the first address */
- 		addr = i ? (*first & PMD_MASK) + i * PMD_SIZE : *first;
- 
--		pfn = get_pmd_pfn(pmd[i], vma, addr);
--		if (pfn == -1)
--			goto next;
--
--		if (!pmd_trans_huge(pmd[i])) {
--			if (should_clear_pmd_young())
-+		if (pmd_present(pmd[i]) && !pmd_trans_huge(pmd[i])) {
-+			if (should_clear_pmd_young() && !mm_has_notifiers(args->mm))
- 				pmdp_test_and_clear_young(vma, addr, pmd + i);
- 			goto next;
- 		}
- 
-+		pfn = get_pmd_pfn(pmd[i], vma, addr, pgdat);
-+		if (pfn == -1)
-+			goto next;
-+
- 		folio = get_pfn_folio(pfn, memcg, pgdat, walk->can_swap);
- 		if (!folio)
- 			goto next;
- 
--		if (!pmdp_test_and_clear_young(vma, addr, pmd + i))
-+		if (!pmdp_clear_young_notify(vma, addr, pmd + i)) {
-+			walk->mm_stats[MM_LEAF_OLD]++;
- 			goto next;
-+		}
- 
- 		walk->mm_stats[MM_LEAF_YOUNG]++;
- 
-@@ -3545,19 +3615,18 @@ static void walk_pmd_range(pud_t *pud, unsigned long start, unsigned long end,
- 		}
- 
- 		if (pmd_trans_huge(val)) {
--			unsigned long pfn = pmd_pfn(val);
- 			struct pglist_data *pgdat = lruvec_pgdat(walk->lruvec);
-+			unsigned long pfn = get_pmd_pfn(val, vma, addr, pgdat);
- 
- 			walk->mm_stats[MM_LEAF_TOTAL]++;
- 
--			if (!pmd_young(val)) {
--				walk->mm_stats[MM_LEAF_OLD]++;
-+			if (pfn == -1)
- 				continue;
--			}
- 
--			/* try to avoid unnecessary memory loads */
--			if (pfn < pgdat->node_start_pfn || pfn >= pgdat_end_pfn(pgdat))
-+			if (!pmd_young(val) && !mm_has_notifiers(args->mm)) {
-+				walk->mm_stats[MM_LEAF_OLD]++;
- 				continue;
-+			}
- 
- 			walk_pmd_range_locked(pud, addr, vma, args, bitmap, &first);
- 			continue;
-@@ -3565,7 +3634,7 @@ static void walk_pmd_range(pud_t *pud, unsigned long start, unsigned long end,
- 
- 		walk->mm_stats[MM_NONLEAF_TOTAL]++;
- 
--		if (should_clear_pmd_young()) {
-+		if (should_clear_pmd_young() && !mm_has_notifiers(args->mm)) {
- 			if (!pmd_young(val))
- 				continue;
- 
-@@ -3646,6 +3715,9 @@ static void walk_mm(struct mm_struct *mm, struct lru_gen_mm_walk *walk)
- 	struct lruvec *lruvec = walk->lruvec;
- 	struct mem_cgroup *memcg = lruvec_memcg(lruvec);
- 
-+	if (!should_walk_kvm_mmu() && mm_has_notifiers(mm))
-+		return;
-+
- 	walk->next_addr = FIRST_USER_ADDRESS;
- 
- 	do {
-@@ -4011,6 +4083,23 @@ static void lru_gen_age_node(struct pglist_data *pgdat, struct scan_control *sc)
-  *                          rmap/PT walk feedback
-  ******************************************************************************/
- 
-+static bool should_look_around(struct vm_area_struct *vma, unsigned long addr,
-+			       pte_t *pte, int *young)
-+{
-+	int ret = mmu_notifier_clear_young(vma->vm_mm, addr, addr + PAGE_SIZE);
-+
-+	if (pte_young(ptep_get(pte))) {
-+		ptep_test_and_clear_young(vma, addr, pte);
-+		*young = true;
-+		return true;
-+	}
-+
-+	if (ret)
-+		*young = true;
-+
-+	return ret & MMU_NOTIFIER_YOUNG_FAST;
-+}
-+
- /*
-  * This function exploits spatial locality when shrink_folio_list() walks the
-  * rmap. It scans the adjacent PTEs of a young PTE and promotes hot pages. If
-@@ -4018,12 +4107,14 @@ static void lru_gen_age_node(struct pglist_data *pgdat, struct scan_control *sc)
-  * the PTE table to the Bloom filter. This forms a feedback loop between the
-  * eviction and the aging.
-  */
--void lru_gen_look_around(struct page_vma_mapped_walk *pvmw)
-+bool lru_gen_look_around(struct page_vma_mapped_walk *pvmw)
- {
- 	int i;
- 	unsigned long start;
- 	unsigned long end;
- 	struct lru_gen_mm_walk *walk;
-+	DECLARE_BITMAP(bitmap, MIN_LRU_BATCH);
-+	unsigned long last = 0;
- 	int young = 0;
- 	pte_t *pte = pvmw->pte;
- 	unsigned long addr = pvmw->address;
-@@ -4040,12 +4131,15 @@ void lru_gen_look_around(struct page_vma_mapped_walk *pvmw)
- 	lockdep_assert_held(pvmw->ptl);
- 	VM_WARN_ON_ONCE_FOLIO(folio_test_lru(folio), folio);
- 
-+	if (!should_look_around(pvmw->vma, addr, pte, &young))
-+		return young;
-+
- 	if (spin_is_contended(pvmw->ptl))
--		return;
-+		return young;
- 
- 	/* exclude special VMAs containing anon pages from COW */
- 	if (vma->vm_flags & VM_SPECIAL)
--		return;
-+		return young;
- 
- 	/* avoid taking the LRU lock under the PTL when possible */
- 	walk = current->reclaim_state ? current->reclaim_state->mm_walk : NULL;
-@@ -4053,6 +4147,9 @@ void lru_gen_look_around(struct page_vma_mapped_walk *pvmw)
- 	start = max(addr & PMD_MASK, vma->vm_start);
- 	end = min(addr | ~PMD_MASK, vma->vm_end - 1) + 1;
- 
-+	if (end - start == PAGE_SIZE)
-+		return young;
-+
- 	if (end - start > MIN_LRU_BATCH * PAGE_SIZE) {
- 		if (addr - start < MIN_LRU_BATCH * PAGE_SIZE / 2)
- 			end = start + MIN_LRU_BATCH * PAGE_SIZE;
-@@ -4066,29 +4163,38 @@ void lru_gen_look_around(struct page_vma_mapped_walk *pvmw)
- 
- 	/* folio_update_gen() requires stable folio_memcg() */
- 	if (!mem_cgroup_trylock_pages(memcg))
--		return;
-+		return young;
- 
- 	arch_enter_lazy_mmu_mode();
- 
- 	pte -= (addr - start) / PAGE_SIZE;
- 
- 	for (i = 0, addr = start; addr != end; i++, addr += PAGE_SIZE) {
-+		bool ret;
- 		unsigned long pfn;
- 		pte_t ptent = ptep_get(pte + i);
- 
--		pfn = get_pte_pfn(ptent, vma, addr);
--		if (pfn == -1)
-+		pfn = get_pte_pfn(ptent, vma, addr, pgdat);
-+		if (pfn == -1) {
-+			skip_spte_young(vma->vm_mm, addr, bitmap, &last);
- 			continue;
-+		}
- 
--		if (!pte_young(ptent))
-+		ret = test_spte_young(pvmw->vma->vm_mm, addr, end, bitmap, &last);
-+		if (!ret && !pte_young(ptent)) {
-+			skip_spte_young(pvmw->vma->vm_mm, addr, bitmap, &last);
- 			continue;
-+		}
- 
- 		folio = get_pfn_folio(pfn, memcg, pgdat, can_swap);
--		if (!folio)
-+		if (!folio) {
-+			skip_spte_young(vma->vm_mm, addr, bitmap, &last);
- 			continue;
-+		}
- 
--		if (!ptep_test_and_clear_young(vma, addr, pte + i))
--			VM_WARN_ON_ONCE(true);
-+		clear_spte_young(vma->vm_mm, addr, bitmap, &last);
-+		if (pte_young(ptent))
-+			ptep_test_and_clear_young(vma, addr, pte + i);
- 
- 		young++;
- 
-@@ -4118,6 +4224,8 @@ void lru_gen_look_around(struct page_vma_mapped_walk *pvmw)
- 	/* feedback from rmap walkers to page table walkers */
- 	if (mm_state && suitable_to_scan(i, young))
- 		update_bloom_filter(mm_state, max_seq, pvmw->pmd);
-+
-+	return young;
- }
- 
- /******************************************************************************
-@@ -5154,6 +5262,9 @@ static ssize_t enabled_show(struct kobject *kobj, struct kobj_attribute *attr, c
- 	if (should_clear_pmd_young())
- 		caps |= BIT(LRU_GEN_NONLEAF_YOUNG);
- 
-+	if (should_walk_kvm_mmu())
-+		caps |= BIT(LRU_GEN_KVM_MMU_WALK);
-+
- 	return sysfs_emit(buf, "0x%04x\n", caps);
- }
- 
--- 
-2.44.0.478.gd926399ef9-goog
+> > +                                       Dwarf_Word val;
+> > +                                       Dwarf_Attribute attr;
+> > +                                       Dwarf_Die *die =3D &scopes[i];
+> > +                                       if (dwarf_tag(die) !=3D
+> > +                                           DW_TAG_inlined_subroutine)
+> > +                                               continue;
+> > +
+> > +                                       for (int j =3D i + 1; j < nscop=
+es; j++) {
+> > +                                               Dwarf_Die *parent =3D &=
+scopes[j];
+> > +                                               int tag =3D dwarf_tag(p=
+arent);
+> > +                                               if (tag =3D=3D DW_TAG_i=
+nlined_subroutine ||
+> > +                                                   tag =3D=3D DW_TAG_e=
+ntry_point ||
+> > +                                                   tag =3D=3D DW_TAG_s=
+ubprogram) {
+> > +                                                       a2l->funcname =
+=3D
+> > +                                                               get_die=
+name(
+> > +                                                                      =
+ parent);
 
+Why not get the function name from the abstract origin?
+
+
+> > +                                                       break;
+> > +                                               }
+> > +                                       }
+> > +
+> > +                                       a2l->filename =3D NULL;
+> > +                                       a2l->line =3D 0;
+> > +                                       if (dwarf_formudata(
+> > +                                                   dwarf_attr(die,
+> > +                                                              DW_AT_ca=
+ll_file,
+> > +                                                              &attr),
+> > +                                                   &val) =3D=3D 0)
+> > +                                               a2l->filename =3D dwarf=
+_filesrc(
+> > +                                                       files, val, NUL=
+L, NULL);
+> > +
+> > +                                       if (dwarf_formudata(
+> > +                                                   dwarf_attr(die,
+> > +                                                              DW_AT_ca=
+ll_line,
+> > +                                                              &attr),
+> > +                                                   &val) =3D=3D 0)
+> > +                                               a2l->line =3D val;
+
+We have die_get_call_file() and die_get_call_lineno().
+
+Thanks,
+Namhyung
+
+
+> > +
+> > +                                       if (a2l->filename !=3D NULL)
+> > +                                               if (inline_list__append=
+_dso_a2l(
+> > +                                                       dso, node, sym)=
+)
+> > +                                                       return 0;
+> > +                               }
+> > +                       }
+> > +               }
+> > +       }
+> > +       free(scopes);
+> > +
+> > +       return 1;
+> > +}
+> > +
+> > +static int addr2line(const char *dso_name, u64 addr, char **file,
+> > +                    unsigned int *line, struct dso *dso, bool unwind_i=
+nlines,
+> > +                    struct inline_node *node, struct symbol *sym)
+> > +{
+> > +       int ret =3D 0;
+> > +       struct a2l_data *a2l =3D dso->a2l;
+> > +
+> > +       if (!a2l) {
+> > +               dso->a2l =3D addr2line_init(dso_name);
+> > +               a2l =3D dso->a2l;
+> > +       }
+> > +
+> > +       if (a2l =3D=3D NULL) {
+> > +               if (!symbol_conf.disable_add2line_warn)
+> > +                       pr_warning("addr2line_init failed for %s\n", ds=
+o_name);
+> > +               return 0;
+> > +       }
+> > +
+> > +       a2l->addr =3D addr;
+> > +       a2l->found =3D false;
+> > +
+> > +       find_address_in_section(a2l);
+> > +
+> > +       if (!a2l->found)
+> > +               return 0;
+> > +
+> > +       if (unwind_inlines) {
+> > +               if (node && inline_list__append_dso_a2l(dso, node, sym)=
+)
+> > +                       return 0;
+> > +
+> > +               if (node && !get_inline_function(dso, node, sym))
+> > +                       return 0;
+> > +
+> > +               ret =3D 1;
+> > +       }
+> > +
+> > +       if (file) {
+> > +               *file =3D a2l->filename ? strdup(a2l->filename) : NULL;
+> > +               ret =3D *file ? 1 : 0;
+> > +       }
+> > +
+> > +       if (line)
+> > +               *line =3D (unsigned int)a2l->line;
+> > +
+> > +       return ret;
+> > +}
+> > +
+> > +void dso__free_a2l(struct dso *dso)
+> > +{
+> > +       struct a2l_data *a2l =3D dso->a2l;
+> > +
+> > +       if (!a2l)
+> > +               return;
+> > +
+> > +       addr2line_cleanup(a2l);
+> > +
+> > +       dso->a2l =3D NULL;
+> > +}
+> > +
+> > +#endif /* HAVE_LIBBFD_SUPPORT */
+> > +
+> > +#else /* HAVE_SYMBOLIZER_SUPPORT */
+> > +
+> >  static int filename_split(char *filename, unsigned int *line_nr)
+> >  {
+> >         char *sep;
+> > @@ -788,7 +1063,7 @@ void dso__free_a2l(struct dso *dso)
+> >         dso->a2l =3D NULL;
+> >  }
+> >
+> > -#endif /* HAVE_LIBBFD_SUPPORT */
+> > +#endif /* HAVE_SYMBOLIZER_SUPPORT */
+> >
+> >  static struct inline_node *addr2inlines(const char *dso_name, u64 addr=
+,
+> >                                         struct dso *dso, struct symbol =
+*sym)
+> > --
+> > 2.44.0
+> >
 
