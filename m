@@ -1,131 +1,151 @@
-Return-Path: <linux-kernel+bounces-127072-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-127073-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id BEF5C89466C
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 23:13:47 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 389CB89466D
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 23:15:38 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F1CDC1C21B60
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 21:13:46 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id DFF9A1F2202B
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 21:15:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DC5D854BD6;
-	Mon,  1 Apr 2024 21:13:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b="piV6ePZ5"
-Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CEAC254BE8;
+	Mon,  1 Apr 2024 21:15:30 +0000 (UTC)
+Received: from mail-pl1-f176.google.com (mail-pl1-f176.google.com [209.85.214.176])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4023853380;
-	Mon,  1 Apr 2024 21:13:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=150.107.74.76
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0ABEB2A1BF;
+	Mon,  1 Apr 2024 21:15:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712006019; cv=none; b=giTz5l77wGPUHbpm42JEPMjkEYjTktR+h2dUm8SquqJgH/Hkd8UDH069WLbH2IqyNhSalXCOYEfLMXsF8dmxpwko5sdhqUETqMKS/OOXILi6xcCKe35DOk44DsNNurzd+MbMjjKl+dKXSmosAfi/IXieREftIbhi37aXn7LSvk4=
+	t=1712006130; cv=none; b=ZnlDId87wD1NdPTGeiu2UlMf7f6AFypvUSCqenx0hH4xGZWgRxVvUxE7Zg1YQuL57XJxinJcS9qeXwK5Cxvq+jwj0ETj65uRUQzNoyn9rrbeneIK76mrnJfJGSUOJAwNRAmuWSab6KwLEizsYs0SUEUnjFCX/TRp+0vkXYXbmRg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712006019; c=relaxed/simple;
-	bh=sqO0nxLw4hQiQMs9lvX4EQHld4CGTL2RnA24u3DGhXk=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=gwch5/KuXWKDyzLpLgO134GDEljkwAAB1SMqckUhFQnTMzm4RMJPGzzxbIBQVwdo2gWV4i1ohk2Bu9ftt/Um5xgyTv1OwlpVfvKHYCV3IkOfnTGthDUjSnA0aezqro+lMno+YTmu04XJn19+e8lhmHg93HDrFsQYHs1ao2Hv4Rw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au; spf=pass smtp.mailfrom=canb.auug.org.au; dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b=piV6ePZ5; arc=none smtp.client-ip=150.107.74.76
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canb.auug.org.au
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-	s=201702; t=1712006015;
-	bh=5a7LXWD0N7/7gHgDKdN5JZT+yoVzkNotnJc2z7uZDFI=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=piV6ePZ5T3Lq6IHXDVw6uy5QBCPDEooW+rYI2CGMAfyIJkU3nv+JSxI4LF7I242Mz
-	 2Fuyh6qEj1RE9bEkJE7G7xacI1Z0HUK7TNK4m0nQ5kBpc0rfXpBlowAsG1eOUF8/bX
-	 /O+peHQ6eOMPT8KGkEzyk5QrrL6DScuCqj2rqarvdEbx9LAfuQ9MgkJx2k9gxab8LB
-	 IZRCSbiUFIQc5GURawdJkft/CQ97N5Bmi+qfWWsHHdNQU1Zwz94thgwZ0IaRaHbEvI
-	 VxORfa1XQvr1UVDQfU1ejxdXDbZXQGYwBwW8KnqRnII4LFiXdn80xDizh8RDxCmYnC
-	 08yYr2TXTQoZw==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mail.ozlabs.org (Postfix) with ESMTPSA id 4V7kJY6R4Xz4wcC;
-	Tue,  2 Apr 2024 08:13:33 +1100 (AEDT)
-Date: Tue, 2 Apr 2024 08:13:33 +1100
-From: Stephen Rothwell <sfr@canb.auug.org.au>
-To: Linux Next Mailing List <linux-next@vger.kernel.org>
-Cc: Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Alexandre
- Belloni <alexandre.belloni@bootlin.com>, Eric Biggers
- <ebiggers@kernel.org>, Jaegeuk Kim <jaegeuk@kernel.org>, Jens Wiklander
- <jens.wiklander@linaro.org>, Luis Chamberlain <mcgrof@kernel.org>, Richard
- Weinberger <richard@nod.at>, Theodore Ts'o <tytso@mit.edu>, Tyler Hicks
- <code@tyhicks.com>
-Subject: Re: linux-next: trees being removed
-Message-ID: <20240402081333.4a6557db@canb.auug.org.au>
-In-Reply-To: <20240327101309.4e7d04f3@canb.auug.org.au>
-References: <20240327101309.4e7d04f3@canb.auug.org.au>
+	s=arc-20240116; t=1712006130; c=relaxed/simple;
+	bh=CC5RoHNood4sNyDuHBo6HDda8sVDACBLUrjlALO7FxU=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=Znk7+JFxmMFFLDkSOwPl/3mV4AwEoVtWEMPCGSyRqXa39BKH0t68sl6KEgG4qnKkc44WCT/BpCvmEb/RTEwlbD2oc3xIun+3eu19Z7cr3I/ZbBPMM3YmUZOSfgLCY9s4RcpvAmokkC3kKu1GScGFsQ9uXauJPjlwo9PEz0QiWNk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.214.176
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f176.google.com with SMTP id d9443c01a7336-1e0fa980d55so34898435ad.3;
+        Mon, 01 Apr 2024 14:15:27 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712006127; x=1712610927;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=ZOjxoedclmTtjqJIWU8Dyy9YgLz8iOnVuv662VeBEBs=;
+        b=q6by7IIENRDQwadelYQBr9mwWXV879fg3Mfs2IiAkkS/j1xkCxyuuyNX2QWK9FdFGe
+         d0hEXYo+qj+CKaG07vsjMmSOq8bhC3mD+8XkdrabudBbawzHPOJsk93r7xwfqP3SPPeW
+         9ZZ3nhAt5juQ1D/DLTMLBiyJIgseHyGOfBVl6Pg8mo5U6xJti5OlNCXUl9z4l9J+AcAx
+         mbYiySu4fCORZLAVGiUV3UFdrRN8BvBuqEjYzD17Yu7+3OvvswbR9+wHhH7S6L8DnOKI
+         NltHc7Xu2E/EXnlDmK97V7QXDpNXKhNWrI06fMekz3Wgl2KLlh6t1V8TySIqk2G4cMka
+         GGrQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXZ5ZL83jbLnMkiArYu7vzObq4CZAE3C9HLGSoaEVnufedWOC3T53lzA2v8rkdh/VLBvvfD+m7N6Yq4Bfy9F8mcM1SI+Syz7m5P5SyHPLSUR/Az07e2KpO/6JhiUjvJAskBIipElF3o7DNOjFBNsw==
+X-Gm-Message-State: AOJu0Yx4PeiH88QuPGgX5tafsNSCGEv6FYae7k6JPBjTwTH2grq+q0dh
+	Vql9EDNO07Qwgm8PzxDelXVlAK/G3XYJy3rSh96jsNbTwTlzMHSrUgMhPK5BUJDmUw8jk0Sm/hF
+	81wfOl3+9fy7Nmwo+VYqhK9WW8dg=
+X-Google-Smtp-Source: AGHT+IHV6W1kjqikzerVzCsJtErA2QPWzzyW4QJsaPChLYQec4LXZLCMJA0Bj48TgrDejpoPP+cxcLM0opkrGV4qte0=
+X-Received: by 2002:a17:902:f705:b0:1e2:5e32:4444 with SMTP id
+ h5-20020a170902f70500b001e25e324444mr1900698plo.10.1712006127351; Mon, 01 Apr
+ 2024 14:15:27 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/gVOQY_wN3szY+sllcxbnfui";
- protocol="application/pgp-signature"; micalg=pgp-sha256
-
---Sig_/gVOQY_wN3szY+sllcxbnfui
-Content-Type: text/plain; charset=US-ASCII
+References: <20240329191224.1046866-1-weilin.wang@intel.com>
+ <20240329191224.1046866-5-weilin.wang@intel.com> <CAM9d7ciqiAOV_1A0N3he_Jiw3ur-ZN6djWpzgR2C+AF2m9an5A@mail.gmail.com>
+ <CO6PR11MB56356D30DC2EE8F0EB7ADB30EE3F2@CO6PR11MB5635.namprd11.prod.outlook.com>
+In-Reply-To: <CO6PR11MB56356D30DC2EE8F0EB7ADB30EE3F2@CO6PR11MB5635.namprd11.prod.outlook.com>
+From: Namhyung Kim <namhyung@kernel.org>
+Date: Mon, 1 Apr 2024 14:15:16 -0700
+Message-ID: <CAM9d7chNd70gWCOe+268mTiLHAaGQEeJc9B5TebdexM-s_sB0A@mail.gmail.com>
+Subject: Re: [RFC PATCH v6 4/5] perf stat: Add retire latency print functions
+ to print out at the very end of print out
+To: "Wang, Weilin" <weilin.wang@intel.com>
+Cc: Ian Rogers <irogers@google.com>, Arnaldo Carvalho de Melo <acme@kernel.org>, 
+	Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, 
+	Alexander Shishkin <alexander.shishkin@linux.intel.com>, Jiri Olsa <jolsa@kernel.org>, 
+	"Hunter, Adrian" <adrian.hunter@intel.com>, Kan Liang <kan.liang@linux.intel.com>, 
+	"linux-perf-users@vger.kernel.org" <linux-perf-users@vger.kernel.org>, 
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "Taylor, Perry" <perry.taylor@intel.com>, 
+	"Alt, Samantha" <samantha.alt@intel.com>, "Biggers, Caleb" <caleb.biggers@intel.com>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-Hi all,
-
-On Wed, 27 Mar 2024 10:13:09 +1100 Stephen Rothwell <sfr@canb.auug.org.au> =
-wrote:
+On Mon, Apr 1, 2024 at 2:08=E2=80=AFPM Wang, Weilin <weilin.wang@intel.com>=
+ wrote:
 >
-> The following trees are going to be removed from linux-next because they
-> have not been updated in more than a year.  If you want a tree restored,
-> just let me know (and update its branch).
->=20
-> Tree			Last commit date
->   URL
->   comits (if any)
-> ----			----------------
-> ecryptfs		2023-03-24 17:26:44 -0500
->   git://git.kernel.org/pub/scm/linux/kernel/git/tyhicks/ecryptfs.git#next
->   c1cc2db21607 ("ecryptfs: keystore: Fix typo 'the the' in comment")
->   a3d78fe3e1ae ("fs: ecryptfs: comment typo fix")
-> fscrypt-current		2023-03-18 21:08:03 -0700
->   git://git.kernel.org/pub/scm/fs/fscrypt/linux.git#for-current
-> fsverity-current	2023-03-15 22:50:41 -0700
->   git://git.kernel.org/pub/scm/fs/fsverity/linux.git#for-current
-> modules-fixes		2023-02-06 08:45:55 -0800
->   git://git.kernel.org/pub/scm/linux/kernel/git/mcgrof/linux.git#modules-=
-linus
-> rtc-fixes		2023-01-23 23:33:47 +0100
->   git://git.kernel.org/pub/scm/linux/kernel/git/abelloni/linux.git#rtc-fi=
-xes
-> tee-fixes		2023-02-12 14:10:17 -0800
->   https://git.linaro.org/people/jens.wiklander/linux-tee.git#fixes
-> ubifs-fixes		2023-01-21 16:27:01 -0800
->   git://git.kernel.org/pub/scm/linux/kernel/git/rw/ubifs.git#fixes
+>
+>
+> > -----Original Message-----
+> > From: Namhyung Kim <namhyung@kernel.org>
+> > Sent: Monday, April 1, 2024 2:04 PM
+> > To: Wang, Weilin <weilin.wang@intel.com>
+> > Cc: Ian Rogers <irogers@google.com>; Arnaldo Carvalho de Melo
+> > <acme@kernel.org>; Peter Zijlstra <peterz@infradead.org>; Ingo Molnar
+> > <mingo@redhat.com>; Alexander Shishkin
+> > <alexander.shishkin@linux.intel.com>; Jiri Olsa <jolsa@kernel.org>; Hun=
+ter,
+> > Adrian <adrian.hunter@intel.com>; Kan Liang <kan.liang@linux.intel.com>=
+;
+> > linux-perf-users@vger.kernel.org; linux-kernel@vger.kernel.org; Taylor,=
+ Perry
+> > <perry.taylor@intel.com>; Alt, Samantha <samantha.alt@intel.com>; Bigge=
+rs,
+> > Caleb <caleb.biggers@intel.com>
+> > Subject: Re: [RFC PATCH v6 4/5] perf stat: Add retire latency print fun=
+ctions to
+> > print out at the very end of print out
+> >
+> > On Fri, Mar 29, 2024 at 12:12=E2=80=AFPM <weilin.wang@intel.com> wrote:
+> > >
+> > > From: Weilin Wang <weilin.wang@intel.com>
+> > >
+> > > Add print out functions so that users could read retire latency value=
+s.
+> > >
+> > > Example output:
+> > > In this simple example, there is no MEM_INST_RETIRED.STLB_HIT_STORES
+> > sample.
+> > > Therefore, the MEM_INST_RETIRED.STLB_HIT_STORES:p retire_latency
+> > value, count
+> > > and sum are all 0.
+> > >
+> > >  Performance counter stats for 'system wide':
+> > >
+> > >        181,047,168      cpu_core/TOPDOWN.SLOTS/          #      0.6 %
+> > tma_dtlb_store
+> > >          3,195,608      cpu_core/topdown-retiring/
+> > >         40,156,649      cpu_core/topdown-mem-bound/
+> > >          3,550,925      cpu_core/topdown-bad-spec/
+> > >        117,571,818      cpu_core/topdown-fe-bound/
+> > >         57,118,087      cpu_core/topdown-be-bound/
+> > >             69,179      cpu_core/EXE_ACTIVITY.BOUND_ON_STORES/
+> > >              4,582      cpu_core/MEM_INST_RETIRED.STLB_HIT_STORES/
+> > >         30,183,104      cpu_core/CPU_CLK_UNHALTED.DISTRIBUTED/
+> > >         30,556,790      cpu_core/CPU_CLK_UNHALTED.THREAD/
+> > >            168,486      cpu_core/DTLB_STORE_MISSES.WALK_ACTIVE/
+> > >               0.00 MEM_INST_RETIRED.STLB_HIT_STORES:p       0        =
+0
+> >
+> > The output is not aligned and I think it's hard to read.
+> > I think it should print the result like this:
+> >
+> >     <sum>  <event-name>  # <val>  average retired latency
+>
+> Since we would like to use the average retire latency, I would think put =
+average
+> at the beginning would be more consistent. So in format like:
+> <val> <event-name> <sum> <count> or <val> <event-name> <count> <sum> ?
 
-OK, I have removed just the ecryptfs, modules-fixes, tee-fixes and
-ubifs-fixes trees.  Please just ask if you want them reinstated.
+But it's not consistent with others.  When I see the perf stat
+output, I'd expect it shows the total count.  And the average
+latency is a derived value so I think it can be treated as a metric.
 
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/gVOQY_wN3szY+sllcxbnfui
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmYLI30ACgkQAVBC80lX
-0GyzeAf/fFMPGbcATE8fmGkBS3WSdYocY9T+ecXv/6rrxKu4sGNvvGtfjsVA05gt
-f3N5iKsm2aX6FVHZCVZTxQ2yrEXj7Y/gIcOffUdNLGT6Kj9V3xGVkt9hxOT2l+YC
-2T8QBFB9kL/KaXooYNWCNsfCOrv+DmqPI/tezFUEc3ojRMa88bZNbJggwgLPT1em
-wfBdsEMnJdwxMl/0M83szCTNBRj9vGlhoY3ATJdW5PoIYbILCqTqLLvJ7o0GkQPa
-dN8yzdVffzKbaFldEpWAo1aA+0Vtt4U6L9KjdvHyu183fBi/RXqwSNBa+WRj7K/6
-8fVDMMly+JqvW8vJwkSboPBavsZXDA==
-=dte5
------END PGP SIGNATURE-----
-
---Sig_/gVOQY_wN3szY+sllcxbnfui--
+Thanks,
+Namhyung
 
