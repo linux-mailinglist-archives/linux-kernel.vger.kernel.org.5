@@ -1,70 +1,60 @@
-Return-Path: <linux-kernel+bounces-126693-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-126694-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 067BE893BA4
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 15:54:21 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6E101893BA8
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 15:56:49 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 75C70B21ACC
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 13:54:18 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9A9A91C213E5
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 13:56:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id ADEDC4087B;
-	Mon,  1 Apr 2024 13:53:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7E72E3FE46;
+	Mon,  1 Apr 2024 13:56:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="c29yWJov"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="dxp575dQ"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CC5AC3F8F1;
-	Mon,  1 Apr 2024 13:53:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B5B023FB1E;
+	Mon,  1 Apr 2024 13:56:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711979639; cv=none; b=tQWzCsmlMbfa4nu4nMmBeNLBSw/Wa18pE4srCoW/WALjyTW3Xk/AcipeATv+JqWKfAbNJw9lYl7wvp/GNd4e3YGHmtto4f0VbP4C/WIlCB84O2qSiN/RlrL2PO2gQjA3Adxh30lRR96/7qnIp0TceatzAxC3urqzGxj7im+MjUo=
+	t=1711979799; cv=none; b=KGaW/50g74zK4BT4HegxG+nnUDCNlIRp5G7lL5+gUtzMNFTYPtuCmyx7NOgHj1jLlhp15X9GU0y66LRe5LBfIfMEAacUYtPN8flwRXXIc73Xttd3W+7NfeSNrX/zKN/jgA+qhH9cIHtMYJ1H40ODrSQuB97wQ+UjDP9jxN8eu/8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711979639; c=relaxed/simple;
-	bh=dmYCendNfZLK2ZYRN4P3XHXSgHmLS9K4qfGr3Ifd3v0=;
+	s=arc-20240116; t=1711979799; c=relaxed/simple;
+	bh=SB286+nY7DQGLoaBo1jo/XJvyvYzcBgrwXpwBgupmWM=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=u6zYjs94S03IZeCtmtIlyX/0RK17WPiPjQkkDmYDdljlVx5Ikj7KZ0xlYzZkJBOfdBVG1MpITp77wpluPmQpDILA0kJhTsyLJuHYzRXhvMhIcA7cyKxg5+Zg8gi+oK1VsYYFRNPRyFN8P2/SZACqIjf4YrJy966YDreftmU1DIo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=c29yWJov; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id ADA0CC433C7;
-	Mon,  1 Apr 2024 13:53:53 +0000 (UTC)
+	 Content-Type:Content-Disposition:In-Reply-To; b=okeW6jGjK8uV6A+J2tDcZjTVPHh9nR8T/1OXpPtAx4RPw1gc9mZbkSKt0UHZaULTy05WPU3x0v6+Uef3KO2PmDzOuOUWGwPQld4BYbSTogxZ8ZVO2CPd7eY3ENB76uPVf6mlIpdUKP50vo0okfHJdFrcDa/h6ayMVFAfUYxXlS4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=dxp575dQ; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 06E18C43390;
+	Mon,  1 Apr 2024 13:56:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711979638;
-	bh=dmYCendNfZLK2ZYRN4P3XHXSgHmLS9K4qfGr3Ifd3v0=;
+	s=k20201202; t=1711979799;
+	bh=SB286+nY7DQGLoaBo1jo/XJvyvYzcBgrwXpwBgupmWM=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=c29yWJov1MPD3KNJnAc3J10X31RIJx5rJ8pZ9aMASTtRIDHTlXt3YBkMhR/2MmTeW
-	 zKg7sKvzusvvzXvEpqIv8nO9JilxGOlGDD9rpErvCQJiT/+cOIdnykZR54Pb5hp73A
-	 n3db2XvRlrrFuw27hXNlQVFklZF/bwBt1Tvksi8eyn/LaeBo2QoMfURHysv0Ra+tcm
-	 5GNCZFCSDd/aMOWF7fV3ver/b2jE5QU8+WhPmhCzIjV1dmrOHawVXzxIdY9jTI6kkp
-	 3RzhX7bCaKGHmMTJC3G9ZTma+EDhOVW6r/AdWBj3gvJJLSd3U3a0S7GGRMCCfrXnpN
-	 BcEw/0JlvpOew==
-Date: Mon, 1 Apr 2024 14:53:51 +0100
-From: Simon Horman <horms@kernel.org>
-To: David Howells <dhowells@redhat.com>
-Cc: Christian Brauner <christian@brauner.io>,
-	Jeff Layton <jlayton@kernel.org>,
-	Gao Xiang <hsiangkao@linux.alibaba.com>,
-	Dominique Martinet <asmadeus@codewreck.org>,
-	Matthew Wilcox <willy@infradead.org>,
-	Steve French <smfrench@gmail.com>,
-	Marc Dionne <marc.dionne@auristor.com>,
-	Paulo Alcantara <pc@manguebit.com>,
-	Shyam Prasad N <sprasad@microsoft.com>, Tom Talpey <tom@talpey.com>,
-	Eric Van Hensbergen <ericvh@kernel.org>,
-	Ilya Dryomov <idryomov@gmail.com>, netfs@lists.linux.dev,
-	linux-cachefs@redhat.com, linux-afs@lists.infradead.org,
-	linux-cifs@vger.kernel.org, linux-nfs@vger.kernel.org,
-	ceph-devel@vger.kernel.org, v9fs@lists.linux.dev,
-	linux-erofs@lists.ozlabs.org, linux-fsdevel@vger.kernel.org,
-	linux-mm@kvack.org, netdev@vger.kernel.org,
+	b=dxp575dQiKZXAdercVf8cUDwWfKwEI6IqLjDU0pN3iKC0OrWxwjzbb0sw0uNSB2su
+	 DPVp94ewBebNT2v7SyvuYfXsqUtZpuUvIwWT6EtFTNIZpVf/zF7D0puWN82DDXTa6Q
+	 Kpubtuqo9ATNQorO7++V53Rx8U58e13DUolQFy9a7g0XztCd9yAtBGZ70qTnVn534V
+	 mzlsyll3/cmjN5WycpuflvPpxhB+kKCL1N70VmsHaxLPjc6UjtiLJo3Cr1rEybUnEb
+	 i3tJWsVtJV6N59bCi3vYfRUQQWBcdPctEdOXf4zm4Aqec43LuDYbhXz0mgM8gHMD3z
+	 3jWM2YyadVUzQ==
+Date: Mon, 1 Apr 2024 08:56:37 -0500
+From: Rob Herring <robh@kernel.org>
+To: Peter Yin <peteryin.openbmc@gmail.com>
+Cc: patrick@stwcx.xyz, Wim Van Sebroeck <wim@linux-watchdog.org>,
+	Guenter Roeck <linux@roeck-us.net>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>, Joel Stanley <joel@jms.id.au>,
+	Andrew Jeffery <andrew@codeconstruct.com.au>,
+	linux-watchdog@vger.kernel.org, devicetree@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org, linux-aspeed@lists.ozlabs.org,
 	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 26/26] netfs, afs: Use writeback retry to deal with
- alternate keys
-Message-ID: <20240401135351.GD26556@kernel.org>
-References: <20240328163424.2781320-1-dhowells@redhat.com>
- <20240328163424.2781320-27-dhowells@redhat.com>
+Subject: Re: [PATCH v6 3/4] dt-bindings: watchdog: aspeed-wdt: Add aspeed,scu
+Message-ID: <20240401135637.GA342928-robh@kernel.org>
+References: <20240328022231.3649741-1-peteryin.openbmc@gmail.com>
+ <20240328022231.3649741-4-peteryin.openbmc@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -73,116 +63,35 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240328163424.2781320-27-dhowells@redhat.com>
+In-Reply-To: <20240328022231.3649741-4-peteryin.openbmc@gmail.com>
 
-On Thu, Mar 28, 2024 at 04:34:18PM +0000, David Howells wrote:
+On Thu, Mar 28, 2024 at 10:22:30AM +0800, Peter Yin wrote:
+> To use the SCU register to obtain reset flags for supporting
+> bootstatus.
+> 
+> Signed-off-by: Peter Yin <peteryin.openbmc@gmail.com>
+> ---
+>  Documentation/devicetree/bindings/watchdog/aspeed-wdt.txt | 4 ++++
+>  1 file changed, 4 insertions(+)
+> 
+> diff --git a/Documentation/devicetree/bindings/watchdog/aspeed-wdt.txt b/Documentation/devicetree/bindings/watchdog/aspeed-wdt.txt
+> index 3208adb3e52e..80a1f58b5a2e 100644
+> --- a/Documentation/devicetree/bindings/watchdog/aspeed-wdt.txt
+> +++ b/Documentation/devicetree/bindings/watchdog/aspeed-wdt.txt
+> @@ -8,6 +8,8 @@ Required properties:
+>  
+>   - reg: physical base address of the controller and length of memory mapped
+>     region
+> + - aspeed,scu: a reference to the System Control Unit node of the Aspeed
+> +   SOC.
 
-..
+You cannot add new required properties as that is an ABI break.
 
-> +void afs_issue_write(struct netfs_io_subrequest *subreq)
->  {
-> +	struct netfs_io_request *wreq = subreq->rreq;
->  	struct afs_operation *op;
-> -	struct afs_wb_key *wbk = NULL;
-> -	loff_t size = iov_iter_count(iter);
-> +	struct afs_vnode *vnode = AFS_FS_I(wreq->inode);
-> +	unsigned long long pos = subreq->start + subreq->transferred;
-> +	size_t len = subreq->len - subreq->transferred;
->  	int ret = -ENOKEY;
->  
-> -	_enter("%s{%llx:%llu.%u},%llx,%llx",
-> +	_enter("R=%x[%x],%s{%llx:%llu.%u},%llx,%zx",
-> +	       wreq->debug_id, subreq->debug_index,
->  	       vnode->volume->name,
->  	       vnode->fid.vid,
->  	       vnode->fid.vnode,
->  	       vnode->fid.unique,
-> -	       size, pos);
-> +	       pos, len);
->  
-> -	ret = afs_get_writeback_key(vnode, &wbk);
-> -	if (ret) {
-> -		_leave(" = %d [no keys]", ret);
-> -		return ret;
-> -	}
-> +#if 0 // Error injection
-> +	if (subreq->debug_index == 3)
-> +		return netfs_write_subrequest_terminated(subreq, -ENOANO, false);
->  
-> -	op = afs_alloc_operation(wbk->key, vnode->volume);
-> -	if (IS_ERR(op)) {
-> -		afs_put_wb_key(wbk);
-> -		return -ENOMEM;
-> +	if (!test_bit(NETFS_SREQ_RETRYING, &subreq->flags)) {
-> +		set_bit(NETFS_SREQ_NEED_RETRY, &subreq->flags);
-> +		return netfs_write_subrequest_terminated(subreq, -EAGAIN, false);
->  	}
-> +#endif
-> +
-> +	op = afs_alloc_operation(wreq->netfs_priv, vnode->volume);
-> +	if (IS_ERR(op))
-> +		return netfs_write_subrequest_terminated(subreq, -EAGAIN, false);
->  
->  	afs_op_set_vnode(op, 0, vnode);
-> -	op->file[0].dv_delta = 1;
-> +	op->file[0].dv_delta	= 1;
->  	op->file[0].modification = true;
-> -	op->store.pos = pos;
-> -	op->store.size = size;
-> -	op->flags |= AFS_OPERATION_UNINTR;
-> -	op->ops = &afs_store_data_operation;
-> +	op->store.pos		= pos;
-> +	op->store.size		= len,
+If there's only 1 SCU instance, you can just fetch its node by 
+compatible with no DT change.
 
-nit: this is probably more intuitively written using len;
+What's the plan for converting this binding to schema? This is the 2nd 
+new property in 6 months.
 
-> +	op->flags		|= AFS_OPERATION_UNINTR;
-> +	op->ops			= &afs_store_data_operation;
->  
-> -try_next_key:
->  	afs_begin_vnode_operation(op);
->  
-> -	op->store.write_iter = iter;
-> -	op->store.i_size = max(pos + size, vnode->netfs.remote_i_size);
-> -	op->mtime = inode_get_mtime(&vnode->netfs.inode);
-> +	op->store.write_iter	= &subreq->io_iter;
-> +	op->store.i_size	= umax(pos + len, vnode->netfs.remote_i_size);
-> +	op->mtime		= inode_get_mtime(&vnode->netfs.inode);
->  
->  	afs_wait_for_operation(op);
-> -
-> -	switch (afs_op_error(op)) {
-> +	ret = afs_put_operation(op);
-> +	switch (ret) {
->  	case -EACCES:
->  	case -EPERM:
->  	case -ENOKEY:
->  	case -EKEYEXPIRED:
->  	case -EKEYREJECTED:
->  	case -EKEYREVOKED:
-> -		_debug("next");
-> -
-> -		ret = afs_get_writeback_key(vnode, &wbk);
-> -		if (ret == 0) {
-> -			key_put(op->key);
-> -			op->key = key_get(wbk->key);
-> -			goto try_next_key;
-> -		}
-> +		/* If there are more keys we can try, use the retry algorithm
-> +		 * to rotate the keys.
-> +		 */
-> +		if (wreq->netfs_priv2)
-> +			set_bit(NETFS_SREQ_NEED_RETRY, &subreq->flags);
->  		break;
->  	}
->  
-> -	afs_put_wb_key(wbk);
-> -	_leave(" = %d", afs_op_error(op));
-> -	return afs_put_operation(op);
-> +	netfs_write_subrequest_terminated(subreq, ret < 0 ? ret : subreq->len, false);
->  }
->  
->  /*
-
-..
+Rob
 
