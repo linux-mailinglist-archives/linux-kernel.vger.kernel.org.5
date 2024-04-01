@@ -1,156 +1,228 @@
-Return-Path: <linux-kernel+bounces-126735-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-126736-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 56759893C16
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 16:15:41 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3722E893C18
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 16:17:52 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C07B91F247AE
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 14:15:40 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 50B811C20E67
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 14:17:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 114904122C;
-	Mon,  1 Apr 2024 14:15:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 973FB4087A;
+	Mon,  1 Apr 2024 14:17:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kroah.com header.i=@kroah.com header.b="ZVYnjnuJ";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="neoyCpxP"
-Received: from fhigh7-smtp.messagingengine.com (fhigh7-smtp.messagingengine.com [103.168.172.158])
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="fwCT/04G"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 202143FE2D;
-	Mon,  1 Apr 2024 14:15:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.158
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BB0AE3FE2D
+	for <linux-kernel@vger.kernel.org>; Mon,  1 Apr 2024 14:17:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711980933; cv=none; b=Qf2m/yWeW7Ks3hCN41qgNlxPz+5gThd8oCESU6ndYcNohWz3z461rXdjf9P8inYvR28pmqqsGYL9GyUzkjDROkDQk4Y/MXHS0GzY5lfgwxoQoq+AAU0BCr6GZFRKwpdbMehtC8jEtKZJ+w2wBIw28vEpaVLt87BiRE/tZ+3MxAQ=
+	t=1711981064; cv=none; b=T73Hys4aFWqcewaoAFX6KT+W+cHUnfJGBZ/0wdnbIJ5uAI6cb9sctVJVSLbwv94LTkWbhZrcoYlBYMnG04P+7QZoS08wbKV2p7dlJlcm/HbLOVMeT42zzEHX/rfCC/7PPYFjvFVJ6BDGvBetS6jjflLxNMuHWHVujYRRT5Z3uVQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711980933; c=relaxed/simple;
-	bh=u5aRqDMU06217vwzRELvpEqF5sg6IKxMJxYbUA7HFDU=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=hSGnJQ4Ue6SFNTZiIgMwD9JoS7iC78pDLB4uTaLL+FQvRnRedYoA/8DbSJKtBkUm9I5wDPnY9ID8QiIJSw1Np1QafA/Hkz1rslyagTae16uLFgM2hVOXGFJGGH7yhJ9bGepAVuP5YrAXoa7hVE3RyGM0WhXdE9pjDFecdheLzZ8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=kroah.com; spf=pass smtp.mailfrom=kroah.com; dkim=pass (2048-bit key) header.d=kroah.com header.i=@kroah.com header.b=ZVYnjnuJ; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=neoyCpxP; arc=none smtp.client-ip=103.168.172.158
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=kroah.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kroah.com
-Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
-	by mailfhigh.nyi.internal (Postfix) with ESMTP id 2BC7E11400FA;
-	Mon,  1 Apr 2024 10:15:30 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute1.internal (MEProxy); Mon, 01 Apr 2024 10:15:30 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kroah.com; h=cc
-	:cc:content-type:content-type:date:date:from:from:in-reply-to
-	:in-reply-to:message-id:mime-version:references:reply-to:subject
-	:subject:to:to; s=fm2; t=1711980930; x=1712067330; bh=KOzQg2YZPj
-	byBpQUDfdRM4dKo4GpMSdsyM5kYCupZgk=; b=ZVYnjnuJNzx0RbTT7BVhm0jeuF
-	amAPpU/dkBQUA8nCZqNYclGLHKZwauEJBoSpDiu6vebaST4how4KqAunYSbxX8R7
-	buIqjt23Qji/cvLQ6W6AJixmzSzTqXC3kwTZ6rActUponSMymVnMTiaBv0D4LBiH
-	SHgwdt8BjzMFL8qPQRtdLXdN1CSX1mDPSbGCsA1k9/Xn2spR2ty15FUzs/hHGQvx
-	MKnYlqn2HqeOF/06ihW4XhU1IzeOkpLJKE3bOKJKP0qIKn+ReE991rUvswJkx7Fl
-	CCM5LNgYA2Kq0TkY1I/2p5h8GwtZV76L6DQFZKCbVhg14gIDLZ3dwXAn+xkQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-type:content-type:date:date
-	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-	:message-id:mime-version:references:reply-to:subject:subject:to
-	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-	fm2; t=1711980930; x=1712067330; bh=KOzQg2YZPjbyBpQUDfdRM4dKo4Gp
-	MSdsyM5kYCupZgk=; b=neoyCpxPEvwnmIXhjPKSiV9Mabxyk970msJnryyP7OED
-	DRhkQCEifP64gNsotJ3dQ/XRMrxOp2f6LNVlLIBA3gi36xOPkQKTuqQxWKFj7Twf
-	wWCInbSEAvMgOR3pSxSCwUygPVyZLEhlvqR7a8axLhMuId8P/reS5sApXvIaGscx
-	fpen4/prDPST4MmWhbTOU2Ue+JamJbgAgEnuZQ1iiB5m5DffL2G69czHUsBAS6Wa
-	9oacpyXYkxL9IqC2KDz+Yp/BIgHPynjXHXdsoTflh2LY6NmX8EHZibCzkQh+Kfbp
-	8D1YMmzCjELwju4FOe40Xm7DIS5im9RWAnzMmfYtaQ==
-X-ME-Sender: <xms:gcEKZmyk4xEraiqIW_XjDv8bWGTBzsqrbTlLEma-UnWU-6kbT_YrgA>
-    <xme:gcEKZiQmLKd8bm8tmDKFLCDPkChpOfS4kBFoS1PSKQCas4FCA5sMEnxMjGK2pa3XH
-    7Hjn3F3_YgNTg>
-X-ME-Received: <xmr:gcEKZoXtoDANHb_FSKwn8bWlHhErh2dJQLNLQSvtHHrX2iHuNPErDaSZF16nnHuYD4Vqhguu2snBAI0qgJamag9D8rN0bo-qSQzNZg>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrudeftddgjeehucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvfevuffkfhggtggujgesthdtredttddtvdenucfhrhhomhepifhrvghg
-    ucfmjfcuoehgrhgvgheskhhrohgrhhdrtghomheqnecuggftrfgrthhtvghrnhepheegvd
-    evvdeljeeugfdtudduhfekledtiefhveejkeejuefhtdeufefhgfehkeetnecuvehluhhs
-    thgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepghhrvghgsehkrhhorg
-    hhrdgtohhm
-X-ME-Proxy: <xmx:gcEKZsgLattQce-rCdZZQEPwkVX3Dpr88CxHSzNzF5w1HhhJ7-BG9Q>
-    <xmx:gcEKZoB4YDtCE3h0nV2c0V6TcYoqUFpl-sYj3uqQ-UzZfW4RN2FOMw>
-    <xmx:gcEKZtLqPItqrnPP8WN8M75goZX12q6FGxLHGkhq21M-L0G-eKd_7A>
-    <xmx:gcEKZvA4HgxYm7Xstf44DpnyP2Ri3tP0DfiMvyZxck_QbsCNeHZ8lg>
-    <xmx:gsEKZq5gWU7Ue_mfopJLBrQtEXma5RimplUjMetkgCMuwguwIPAoRQ>
-Feedback-ID: i787e41f1:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Mon,
- 1 Apr 2024 10:15:29 -0400 (EDT)
-Date: Mon, 1 Apr 2024 16:15:25 +0200
-From: Greg KH <greg@kroah.com>
-To: Bagas Sanjaya <bagasdotme@gmail.com>
-Cc: Viktor Malik <vmalik@redhat.com>, Andrii Nakryiko <andrii@kernel.org>,
-	Daniel Xu <dxu@dxuuu.xyz>, Alexei Starovoitov <ast@kernel.org>,
-	Nick Desaulniers <ndesaulniers@google.com>, ncopa@alpinelinux.org,
-	Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-	Linux Regressions <regressions@lists.linux.dev>,
-	Linux Stable <stable@vger.kernel.org>
-Subject: Re: Fwd: stable kernels 6.6.23 and 6.1.83 fails to build: error:
- unknown type name 'u32'
-Message-ID: <2024040143-shrimp-congress-8263@gregkh>
-References: <ZgrAM4NjZQWZ2Jq6@archie.me>
+	s=arc-20240116; t=1711981064; c=relaxed/simple;
+	bh=BpS4pipU3ByiDbGb6EOGazi3orlwJfalP1pR72F+5Rc=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=rF5U2/vLy41eoLrfESBBYVVk4UYFgX9OR9CSdAMRP0PwA+q3gQYxSlA5fY2/V7WEJd1b2bwDsBUrXO3aOK7bfL0s7gDb0MCX74JNKCkKCYMnJHyX8p9L6Vzyr9KVaqWWYyX2XNob46URG8dLksUUPEiffKWfKui7na0V6ssMvoE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=fwCT/04G; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1711981061;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=CJRxiasyHmUKvqfQpZ1nrM5CdUFwh/nhoJJg5a06Pdg=;
+	b=fwCT/04GW/BuU1eVCthO/QK/MIVEs0hjH3Iro15H7rigC8KDKWVgKEeAEnFrBHJiQrNFZH
+	lTPhc1KRziryp/foCN4WbPsfg1tGPklWk+Yg22rd3RgO689EyB7mcjtOjrAOSrL+TeHVAO
+	sOf7/xpNGgNpzA3RpSsLrRlLmcrVpLI=
+Received: from mail-oi1-f200.google.com (mail-oi1-f200.google.com
+ [209.85.167.200]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-43-crdgSQwpP9iVYxwwRGWCnQ-1; Mon, 01 Apr 2024 10:17:39 -0400
+X-MC-Unique: crdgSQwpP9iVYxwwRGWCnQ-1
+Received: by mail-oi1-f200.google.com with SMTP id 5614622812f47-3c3cfc89b23so3031477b6e.3
+        for <linux-kernel@vger.kernel.org>; Mon, 01 Apr 2024 07:17:39 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711981059; x=1712585859;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=CJRxiasyHmUKvqfQpZ1nrM5CdUFwh/nhoJJg5a06Pdg=;
+        b=lMLNXxkf3NIXKBV9mHGdm63Ty+0Z/+Uue2NP3/xE5luGEhRGUKhySxARwIwXGd9h2i
+         BbsihNuxWy1cWyIFWpXlisDcT2zctZpLV7BxS4iRhCXgwbLqoiJsV2MARkAukcbns36m
+         fcktXiV+mmPbB3GkCBJmzJTmOjenMcS3OaYqs6RylSaA1+fNHiSeuNfculmlGYTFPJSB
+         iqHESK6TRd0nN5qIuXMJbBIfge1cIK7EeNyYOJ3ad6pznhAEOwnXGZiI+WPjWl2hEzWh
+         LFEocm5FUMRPmTRcEpwEQURF/+kR2OExJ8/sWz4+x5wlYzxAfJJrlhnjr6qr6hUjXlGX
+         6qyQ==
+X-Gm-Message-State: AOJu0YzeyTNc+aGWzSqclhfFrc2ldkNm5gv28nDtogrF3y9pi1MJmI35
+	0CWpNcAvOHttJVzsvEhTzqE6N3BEu7WKnb92jNQBbmzCJzfpHv/qurQAmpQbbzbcSAPmB7V+yWc
+	fHjDZXXyqLpkFmPHFCaoM1Iuh+l3SltYVQdJJIgFdydzTXZJbHT+tWS46LGqvLgNCOm6G1sfwCN
+	g2IIU7CQyIhe8+BtJ40joZwO+KybvN+MMWwB0g
+X-Received: by 2002:a05:6808:1995:b0:3c3:8517:3472 with SMTP id bj21-20020a056808199500b003c385173472mr14104557oib.41.1711981057495;
+        Mon, 01 Apr 2024 07:17:37 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IEKAaot5gPu/xKNuoiU5ZEryU7ovco8JGNrBFL3wur8CERMVFMJ3iEOAuH9JO+iko79W/n109Mabrud3lV8ZsM=
+X-Received: by 2002:a05:6808:1995:b0:3c3:8517:3472 with SMTP id
+ bj21-20020a056808199500b003c385173472mr14104453oib.41.1711981055880; Mon, 01
+ Apr 2024 07:17:35 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZgrAM4NjZQWZ2Jq6@archie.me>
+References: <20240301203023.2197451-1-jsavitz@redhat.com> <87jzmduiva.fsf@kernel.org>
+ <CAL1p7m5BoxFDeK0MryQCmTDCeBLN3rMLRGx3cHa6teS02wsgZw@mail.gmail.com>
+In-Reply-To: <CAL1p7m5BoxFDeK0MryQCmTDCeBLN3rMLRGx3cHa6teS02wsgZw@mail.gmail.com>
+From: Joel Savitz <jsavitz@redhat.com>
+Date: Mon, 1 Apr 2024 10:17:19 -0400
+Message-ID: <CAL1p7m5VHGL+-st7zgGA9LPft6DND=qz0ifiD_ki1hLvfRv=7Q@mail.gmail.com>
+Subject: Re: [PATCH] powerpc: align memory_limit to 16MB in early_parse_mem
+To: "Aneesh Kumar K.V" <aneesh.kumar@kernel.org>
+Cc: linux-kernel@vger.kernel.org, Michael Ellerman <mpe@ellerman.id.au>, 
+	Nicholas Piggin <npiggin@gmail.com>, Christophe Leroy <christophe.leroy@csgroup.eu>, 
+	"Naveen N. Rao" <naveen.n.rao@linux.ibm.com>, Benjamin Gray <bgray@linux.ibm.com>, 
+	Paul Mackerras <paulus@ozlabs.org>, linuxppc-dev@lists.ozlabs.org, 
+	Gonzalo Siero <gsierohu@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Mon, Apr 01, 2024 at 09:09:55PM +0700, Bagas Sanjaya wrote:
-> Hi,
-> 
-> On Bugzilla, ncopa@alpinelinux.org reported resolve_btfids FTBFS regression
-> on musl system [1]:
-> 
-> > The latest releases fails to build with musl libc (Alpine Linux edge and v3.19):
-> > 
-> > ```
-> > rm -f -f /home/ncopa/aports/main/linux-lts/src/build-lts.x86_64/tools/bpf/resolve_btfids/libbpf/libbpf.a; ar rcs /home/ncopa/aports/main/linux-lts/src/build-lts.x86_64/tool
-> > s/bpf/resolve_btfids/libbpf/libbpf.a /home/ncopa/aports/main/linux-lts/src/build-lts.x86_64/tools/bpf/resolve_btfids/libbpf/staticobjs/libbpf-in.o
-> > In file included from main.c:73:
-> > /home/ncopa/aports/main/linux-lts/src/linux-6.6/tools/include/linux/btf_ids.h:7:9: error: unknown type name 'u32'
-> >     7 |         u32 cnt;                                                              
-> >       |         ^~~                
-> > /home/ncopa/aports/main/linux-lts/src/linux-6.6/tools/include/linux/btf_ids.h:8:9: error: unknown type name 'u32'
-> >     8 |         u32 ids[];         
-> >       |         ^~~                    
-> > /home/ncopa/aports/main/linux-lts/src/linux-6.6/tools/include/linux/btf_ids.h:12:9: error: unknown type name 'u32'
-> >    12 |         u32 cnt;   
-> >       |         ^~~                        
-> > /home/ncopa/aports/main/linux-lts/src/linux-6.6/tools/include/linux/btf_ids.h:13:9: error: unknown type name 'u32'
-> >    13 |         u32 flags;
-> >       |         ^~~
-> > /home/ncopa/aports/main/linux-lts/src/linux-6.6/tools/include/linux/btf_ids.h:15:17: error: unknown type name 'u32'
-> >    15 |                 u32 id;
-> >       |                 ^~~
-> > /home/ncopa/aports/main/linux-lts/src/linux-6.6/tools/include/linux/btf_ids.h:16:17: error: unknown type name 'u32'
-> >    16 |                 u32 flags;
-> >       |                 ^~~
-> > /home/ncopa/aports/main/linux-lts/src/linux-6.6/tools/include/linux/btf_ids.h:215:8: error: unknown type name 'u32'
-> >   215 | extern u32 btf_tracing_ids[];
-> >       |        ^~~
-> > make[4]: *** [/home/ncopa/aports/main/linux-lts/src/linux-6.6/tools/build/Makefile.build:98: /home/ncopa/aports/main/linux-lts/src/build-lts.x86_64/tools/bpf/resolve_btfids
-> > /main.o] Error 1
-> > make[4]: *** Waiting for unfinished jobs....
-> > make[3]: *** [Makefile:83: /home/ncopa/aports/main/linux-lts/src/build-lts.x86_64/tools/bpf/resolve_btfids//resolve_btfids-in.o] Error 2
-> > make[2]: *** [Makefile:76: bpf/resolve_btfids] Error 2
-> > make[1]: *** [/home/ncopa/aports/main/linux-lts/src/linux-6.6/Makefile:1354: tools/bpf/resolve_btfids] Error 2
-> > make: *** [/home/ncopa/aports/main/linux-lts/src/linux-6.6/Makefile:234: __sub-make] Error 2
-> > ```
-> 
-> Bisection led to upstream commit 9707ac4fe2f5ba ("tools/resolve_btfids:
-> Refactor set sorting with types from btf_ids.h") as the culprit.
-> 
-> See the report on Bugzilla for the full thread and proposed fix.
+On Tue, Mar 26, 2024 at 12:45=E2=80=AFAM Joel Savitz <jsavitz@redhat.com> w=
+rote:
+>
+> On Fri, Mar 8, 2024 at 5:18=E2=80=AFAM Aneesh Kumar K.V <aneesh.kumar@ker=
+nel.org> wrote:
+> >
+> > Joel Savitz <jsavitz@redhat.com> writes:
+> >
+> > > On 64-bit powerpc, usage of a non-16MB-aligned value for the mem=3D k=
+ernel
+> > > cmdline parameter results in a system hang at boot.
+> > >
+> > > For example, using 'mem=3D4198400K' will always reproduce this issue.
+> > >
+> > > This patch fixes the problem by aligning any argument to mem=3D to 16=
+MB
+> > > corresponding with the large page size on powerpc.
+> > >
+> > > Fixes: 2babf5c2ec2f ("[PATCH] powerpc: Unify mem=3D handling")
+> > > Co-developed-by: Gonzalo Siero <gsierohu@redhat.com>
+> > > Signed-off-by: Gonzalo Siero <gsierohu@redhat.com>
+> > > Signed-off-by: Joel Savitz <jsavitz@redhat.com>
+> > > ---
+> > >  arch/powerpc/kernel/prom.c | 6 +++++-
+> > >  1 file changed, 5 insertions(+), 1 deletion(-)
+> > >
+> > > diff --git a/arch/powerpc/kernel/prom.c b/arch/powerpc/kernel/prom.c
+> > > index 0b5878c3125b..8cd3e2445d8a 100644
+> > > --- a/arch/powerpc/kernel/prom.c
+> > > +++ b/arch/powerpc/kernel/prom.c
+> > > @@ -82,8 +82,12 @@ static int __init early_parse_mem(char *p)
+> > >  {
+> > >       if (!p)
+> > >               return 1;
+> > > -
+> > > +#ifdef CONFIG_PPC64
+> > > +     /* Align to 16 MB =3D=3D size of ppc64 large page */
+> > > +     memory_limit =3D ALIGN(memparse(p, &p), 0x1000000);
+> > > +#else
+> > >       memory_limit =3D PAGE_ALIGN(memparse(p, &p));
+> > > +#endif
+> > >       DBG("memory limit =3D 0x%llx\n", memory_limit);
+> > >
+> > >       return 0;
+> > > --
+> > > 2.43.0
+> >
+> > Can you try this change?
+> >
+> > commit 5555bc55e1aa71f545cff31e1eccdb4a2e39df84
+> > Author: Aneesh Kumar K.V (IBM) <aneesh.kumar@kernel.org>
+> > Date:   Fri Mar 8 14:45:26 2024 +0530
+> >
+> >     powerpc/mm: Align memory_limit value specified using mem=3D kernel =
+parameter
+> >
+> >     The value specified for the memory limit is used to set a restricti=
+on on
+> >     memory usage. It is important to ensure that this restriction is wi=
+thin
+> >     the linear map kernel address space range. The hash page table
+> >     translation uses a 16MB page size to map the kernel linear map addr=
+ess
+> >     space. htab_bolt_mapping() function aligns down the size of the ran=
+ge
+> >     while mapping kernel linear address space. Since the memblock limit=
+ is
+> >     enforced very early during boot, before we can detect the type of m=
+emory
+> >     translation (radix vs hash), we align the memory limit value specif=
+ied
+> >     as a kernel parameter to 16MB. This alignment value will work for b=
+oth
+> >     hash and radix translations.
+> >
+> >     Signed-off-by: Aneesh Kumar K.V (IBM) <aneesh.kumar@kernel.org>
+> >
+> > diff --git a/arch/powerpc/kernel/prom.c b/arch/powerpc/kernel/prom.c
+> > index 0b5878c3125b..9bd965d35352 100644
+> > --- a/arch/powerpc/kernel/prom.c
+> > +++ b/arch/powerpc/kernel/prom.c
+> > @@ -824,8 +824,11 @@ void __init early_init_devtree(void *params)
+> >                 reserve_crashkernel();
+> >         early_reserve_mem();
+> >
+> > -       /* Ensure that total memory size is page-aligned. */
+> > -       limit =3D ALIGN(memory_limit ?: memblock_phys_mem_size(), PAGE_=
+SIZE);
+> > +       if (memory_limit > memblock_phys_mem_size())
+> > +               memory_limit =3D 0;
+> > +
+> > +       /* Align down to 16 MB which is large page size with hash page =
+translation */
+> > +       limit =3D ALIGN_DOWN(memory_limit ?: memblock_phys_mem_size(), =
+SZ_16M);
+> >         memblock_enforce_memory_limit(limit);
+> >
+> >  #if defined(CONFIG_PPC_BOOK3S_64) && defined(CONFIG_PPC_4K_PAGES)
+> > diff --git a/arch/powerpc/kernel/prom_init.c b/arch/powerpc/kernel/prom=
+_init.c
+> > index e67effdba85c..d6410549e141 100644
+> > --- a/arch/powerpc/kernel/prom_init.c
+> > +++ b/arch/powerpc/kernel/prom_init.c
+> > @@ -817,8 +817,8 @@ static void __init early_cmdline_parse(void)
+> >                 opt +=3D 4;
+> >                 prom_memory_limit =3D prom_memparse(opt, (const char **=
+)&opt);
+> >  #ifdef CONFIG_PPC64
+> > -               /* Align to 16 MB =3D=3D size of ppc64 large page */
+> > -               prom_memory_limit =3D ALIGN(prom_memory_limit, 0x100000=
+0);
+> > +               /* Align down to 16 MB which is large page size with ha=
+sh page translation */
+> > +               prom_memory_limit =3D ALIGN_DOWN(prom_memory_limit, SZ_=
+16M);
+> >  #endif
+> >         }
+> >
+> >
+>
+> Sorry for the delayed reply. I just tested this patch and it fixes the
+> bug for me.
 
-Is the proposed fix a commit to backport?
+Hi,
 
-Digging through entries is not the easiest way to get things resolved...
+Just a quick follow up on this.
 
-greg k-h
+The above patch fixed the bug for me.
+
+How do we want to proceed?
+
+Best,
+Joel Savitz
+
 
