@@ -1,77 +1,99 @@
-Return-Path: <linux-kernel+bounces-127111-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-127114-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 65BA08946CE
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 23:55:52 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 150598946D3
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 23:56:46 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 05D9F1F224BC
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 21:55:52 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 46F8F1C218C0
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 21:56:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DE2D655E72;
-	Mon,  1 Apr 2024 21:55:46 +0000 (UTC)
-Received: from gloria.sntech.de (gloria.sntech.de [185.11.138.130])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 076C055C3C;
+	Mon,  1 Apr 2024 21:56:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="DGHPGO1p"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D591153E35;
-	Mon,  1 Apr 2024 21:55:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.11.138.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 482D755792
+	for <linux-kernel@vger.kernel.org>; Mon,  1 Apr 2024 21:56:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712008546; cv=none; b=uDjUrwwzP2C+8NIOYaLsBvTc/LI0uj1+128ZlF4dSBoOd1NeORAerSvCvaBvDCzyxLm/g5bg4A2awdOL4K4kVn3O/HGBEWpcXmoC6uk6asoXdEWRHK2wLHjVsBXUXqvt3ov2YspAc6XGpAr1NDpVt2f9ffm4WX/oR9S+Lqla45Y=
+	t=1712008599; cv=none; b=AoHkwgkkezuEg+yjHg6quIYnRddNnxCJ0jEGmswuER3IDYMlMZCkqYyrlE4R3dNJnTqfXj2nUlnODFo7XKIUnITogKPuerxIKAKHz56qcD4/dpM322Hud7O55hfzxFSBSA5UldUVwiDMNwWf1ZEOMfnrxC4Efk+VFaxUQn8viLo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712008546; c=relaxed/simple;
-	bh=LTftMlGxCD8/c1Ci2D5IeJwheFCcyUEqDSnN2mUJtDw=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=q4rgCiHQHyrlSZhXsJ1Cqs3AnZ6II+DB0zoa2lfvpYTBndow4DqpCnfOr/Hca6kHQe0Np4E06JgqxgipS/U0KrI3F0PifSQphXzaMZGvSfKNjhuaoG0DWN9b6AVNvx24BvUJFEi62KVDj7NHHp5cz6TvY3p4aYvp2hPVRgbj0vI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=sntech.de; spf=pass smtp.mailfrom=sntech.de; arc=none smtp.client-ip=185.11.138.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=sntech.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sntech.de
-Received: from i53875aaf.versanet.de ([83.135.90.175] helo=phil.lan)
-	by gloria.sntech.de with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.94.2)
-	(envelope-from <heiko@sntech.de>)
-	id 1rrPcu-0008FL-2Q; Mon, 01 Apr 2024 23:55:36 +0200
-From: Heiko Stuebner <heiko@sntech.de>
-To: devicetree@vger.kernel.org,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	linux-arm-kernel@lists.infradead.org,
-	Rob Herring <robh@kernel.org>,
-	Krzysztof Kozlowski <krzk@kernel.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	linux-kernel@vger.kernel.org,
-	linux-rockchip@lists.infradead.org
-Cc: Heiko Stuebner <heiko@sntech.de>
-Subject: Re: [PATCH] arm64: dts: rockchip: drop panel port unit address in GRU Scarlet
-Date: Mon,  1 Apr 2024 23:55:32 +0200
-Message-Id: <171200852039.1394042.12669558185744659181.b4-ty@sntech.de>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20240401140939.97808-1-krzk@kernel.org>
-References: <20240401140939.97808-1-krzk@kernel.org>
+	s=arc-20240116; t=1712008599; c=relaxed/simple;
+	bh=6k5BrjOuMeQB/WSl+ly2g5AtD0c2vDIBP07u7b9MxN0=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=ZvenqjPgyuI5IWE1YxYmM8J/JGsjid1qsxh3DxnQ30usgiIjj/sXtXI0owDKEEHeBj3dLsxEQxHSiHzMDa5hcb1SVFM3FlkoqEAP1FgP6gnCdC0w9sYg2EUGe8G79m5CM9TncfjgMUGR8Y4jjy4o4tzGFB2Ql5R3pCd1+UfSQiI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=DGHPGO1p; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7C436C433C7;
+	Mon,  1 Apr 2024 21:56:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1712008598;
+	bh=6k5BrjOuMeQB/WSl+ly2g5AtD0c2vDIBP07u7b9MxN0=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=DGHPGO1pjbSvbZfmQHmu66cGRmgZD1wO0PrDbfnlVh593aDmgzXhFYSwaaNtXSnRO
+	 daipjZX5dKsVWEmuYeR13abZDAELBCJYw4vfBN9QxqTiIgLqBSm3qmIoqli1bCwW6X
+	 YVv4GrVY9quvMyZ5m2C7WoAcZVhpbtBAH+RmAJ0hnxx450ocmOh1gwDn0rNxSI0LiL
+	 zjmS9/B5Zp6CWDd6CYBkAhBoKOjWtEjiW18PlJdWL7e70/FxypCS64eJf0fZ2XQ4sa
+	 FwiSXbURee2yz5Dn+rjHPQ7D5POUJDK9Gf1NP/CQFO/QXs9njhbjMtNvVBGhxdg4b0
+	 EB3tYayIKuK2Q==
+Date: Mon, 1 Apr 2024 23:56:36 +0200
+From: Frederic Weisbecker <frederic@kernel.org>
+To: "Paul E. McKenney" <paulmck@kernel.org>
+Cc: Thomas Gleixner <tglx@linutronix.de>,
+	LKML <linux-kernel@vger.kernel.org>, Ingo Molnar <mingo@kernel.org>,
+	Anna-Maria Behnsen <anna-maria@linutronix.de>
+Subject: Re: [PATCH 2/2] timers: Fix removed self-IPI on global timer's
+ enqueue in nohz_full
+Message-ID: <ZgstlCZn0l9wSv7H@pavilion.home>
+References: <20240318230729.15497-1-frederic@kernel.org>
+ <20240318230729.15497-3-frederic@kernel.org>
+ <464f6be2-4a72-440d-be53-6a1035d56a4f@paulmck-laptop>
+ <1b5752c8-ef32-4ed4-b539-95d507ec99ce@paulmck-laptop>
+ <ZfsLtMijRrNZfqh6@localhost.localdomain>
+ <6a95b6ac-6681-4492-b155-e30c19bb3341@paulmck-laptop>
+ <ZfwdEROGFFmIbkCM@lothringen>
+ <bf8689c2-0749-47cb-9535-53cf66e34f5e@paulmck-laptop>
+ <797f44f9-701d-4fca-a9f4-d112a7178e7b@paulmck-laptop>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <797f44f9-701d-4fca-a9f4-d112a7178e7b@paulmck-laptop>
 
-On Mon, 1 Apr 2024 16:09:39 +0200, Krzysztof Kozlowski wrote:
-> Panel port does not have "reg", thus it should not have unit address, as
-> reported by dtc W=1 warning:
+Le Mon, Apr 01, 2024 at 02:26:25PM -0700, Paul E. McKenney a écrit :
+> > > _ The RCU CPU Stall report. I strongly suspect the cause is the hrtimer
+> > >   enqueue to an offline CPU. Let's solve that and we'll see if it still
+> > >   triggers.
+> > 
+> > Sounds like a plan!
 > 
->   rk3399-gru-scarlet.dtsi:666.32-668.7: Warning (unit_address_vs_reg): /dsi@ff960000/panel@0/ports/port@1/endpoint@1: node has a unit name, but no reg or ranges property
+> Just checking in on this one.  I did reproduce your RCU CPU stall report
+> and also saw a TREE03 OOM that might (or might not) be related.  Please
+> let me know if hammering TREE03 harder or adding some debug would help.
+> Otherwise, I will assume that you are getting sufficient bug reports
+> from your own testing to be getting along with.
+
+Hehe, there are a lot indeed :-)
+
+So there has been some discussion on CPUSET VS Hotplug, as a problem there
+is likely the cause of the hrtimer warning you saw, which in turn might
+be the cause of the RCU stalls.
+
+Do you always see the hrtimer warning along the RCU stalls? Because if so, this
+might help:
+https://lore.kernel.org/lkml/20240401145858.2656598-1-longman@redhat.com/T/#m1bed4d298715d1a6b8289ed48e9353993c63c896
+
+Thanks.
+
 > 
-> 
-
-Applied, thanks!
-
-[1/1] arm64: dts: rockchip: drop panel port unit address in GRU Scarlet
-      commit: 4ddc13461740308d3133c2defda97d9e3a30ede8
-
-Best regards,
--- 
-Heiko Stuebner <heiko@sntech.de>
+> 							Thanx, Paul
 
