@@ -1,300 +1,226 @@
-Return-Path: <linux-kernel+bounces-126417-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-126418-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4D8CC893780
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 04:52:44 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1E412893784
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 04:53:40 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 686BA1C209FE
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 02:52:43 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 76894B20FB2
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 02:53:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A265C138C;
-	Mon,  1 Apr 2024 02:52:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 795B764D;
+	Mon,  1 Apr 2024 02:53:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Y3pGBVJg"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.14])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=embeddedor.com header.i=@embeddedor.com header.b="DgKaBX8A"
+Received: from omta038.useast.a.cloudfilter.net (omta038.useast.a.cloudfilter.net [44.202.169.37])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9850A7F
-	for <linux-kernel@vger.kernel.org>; Mon,  1 Apr 2024 02:52:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.14
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DBD4D1362
+	for <linux-kernel@vger.kernel.org>; Mon,  1 Apr 2024 02:53:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=44.202.169.37
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711939956; cv=none; b=MoI6Pwc48pRBHH9OS8Uc59wIeqr31FslH3lwhJz2pvjoXtrDeeSiUSzNuO/MG8iGmYCXsVYUH1WUAT+24ckYm0VgMFEQN6dqTls6s8O9uOw6IFg2t8d7iWyMKf0e4/8x/7CLbXoa/fZhqO+cF0kYd8asCMPaDcLSS+uBApngoRw=
+	t=1711940002; cv=none; b=EwgVXwCMZ0J1wZsLZ413+BCnzaliKutgQPoZv5ueqafos1moJQVGgTBvjdwD2F7+c68YNQSX3zNsRF1VlEqzqVEVJh5fdO3tuOioF3RPd3gdXqRhBMHsnfol2juZ3xOjCvWTg8xcJRIN1sjLleARk1rSYnGcfGI+2AruHazXsXg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711939956; c=relaxed/simple;
-	bh=vGA7sDQYoQv858YvmllNKPFLnGAF5d3t65jAh5FdeHo=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=ShtaVkiK0oEdM2gNxJsADCB7XTYY5e/X+XMCrfmk9iuusrYPRtavMk+A1U5WhYmRgdF7EYPoLG12iPRbSe4Deg2qy0EKcnKBRGFljgoH90iWm3z2b/U9dEtpn8xeiCiF9vtnjc/C93Pv9s89mbNAs0lO37abWgYN1UqFFaqvAUE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Y3pGBVJg; arc=none smtp.client-ip=192.198.163.14
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1711939953; x=1743475953;
-  h=from:to:cc:subject:in-reply-to:references:date:
-   message-id:mime-version;
-  bh=vGA7sDQYoQv858YvmllNKPFLnGAF5d3t65jAh5FdeHo=;
-  b=Y3pGBVJgugYjPbHJaVgQyX0o/mT9eYYFYhaJ0thimx2a8/AplGlz+isJ
-   VCSz+lBu9Dep+EpCNwepVCs0eTeV1AyD/iZE/B+3TjqiqmDaku97kZjUI
-   rB0msDv9hzViFUjb/d8FAlF5qzcihX5LlHWd4ZJ33rqe68H2W4NlR+jzl
-   L9eTm/sevefiA3ROqVSQunmL6T1vqXQIRxaWI8V7FWCBZyLphrRrCj0Gl
-   IAWTYGKOmPCpA9qydEc9Wc7Vsbhm9r/u/TMWco0hUCtBtjHaVdRgflEvb
-   I32e6RsJCwHJX986vxzo2r9RyAaLidUbeJn/P3Aj7T8OJUtanbgXoGECl
-   g==;
-X-CSE-ConnectionGUID: K8+s4+9OQ9WQ9waNk2vaPg==
-X-CSE-MsgGUID: gYhF0d0ASreBObhmvCVtBg==
-X-IronPort-AV: E=McAfee;i="6600,9927,11030"; a="7269481"
-X-IronPort-AV: E=Sophos;i="6.07,171,1708416000"; 
-   d="scan'208";a="7269481"
-Received: from fmviesa008.fm.intel.com ([10.60.135.148])
-  by fmvoesa108.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Mar 2024 19:52:32 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,171,1708416000"; 
-   d="scan'208";a="17652282"
-Received: from yhuang6-desk2.sh.intel.com (HELO yhuang6-desk2.ccr.corp.intel.com) ([10.238.208.55])
-  by fmviesa008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Mar 2024 19:52:29 -0700
-From: "Huang, Ying" <ying.huang@intel.com>
-To: Baolin Wang <baolin.wang@linux.alibaba.com>
-Cc: akpm@linux-foundation.org,  <david@redhat.com>,
-  <mgorman@techsingularity.net>,  <wangkefeng.wang@huawei.com>,
-  <jhubbard@nvidia.com>,  <21cnbao@gmail.com>,  <ryan.roberts@arm.com>,
-  <linux-mm@kvack.org>,  <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v2 2/2] mm: support multi-size THP numa balancing
-In-Reply-To: <d28d276d599c26df7f38c9de8446f60e22dd1950.1711683069.git.baolin.wang@linux.alibaba.com>
-	(Baolin Wang's message of "Fri, 29 Mar 2024 14:56:46 +0800")
-References: <cover.1711683069.git.baolin.wang@linux.alibaba.com>
-	<d28d276d599c26df7f38c9de8446f60e22dd1950.1711683069.git.baolin.wang@linux.alibaba.com>
-Date: Mon, 01 Apr 2024 10:50:36 +0800
-Message-ID: <87sf05kd8j.fsf@yhuang6-desk2.ccr.corp.intel.com>
-User-Agent: Gnus/5.13 (Gnus v5.13)
+	s=arc-20240116; t=1711940002; c=relaxed/simple;
+	bh=NItB/iOyW385ke3Wb64kZWH68badp87GEEAzPho8s4Q=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=SfovvYk3l0puvRJNjsfbQpN3A6n7/88HC4Z0eDs4K6JR+ryJxLkGK9TzHO1fHfcJEwP7VoE4bVbFbti0jWR3Ia8GJW5oexBAG26ZouefyoHN3fokRIbuN8gUphgJ+QciJlPmfvP4BHnpF6kQ4s5kiMwi3+LyubOxhvkjjU26+WU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=embeddedor.com; spf=pass smtp.mailfrom=embeddedor.com; dkim=pass (2048-bit key) header.d=embeddedor.com header.i=@embeddedor.com header.b=DgKaBX8A; arc=none smtp.client-ip=44.202.169.37
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=embeddedor.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=embeddedor.com
+Received: from eig-obgw-6006a.ext.cloudfilter.net ([10.0.30.182])
+	by cmsmtp with ESMTPS
+	id qynwrLkmVQr4Sr7nOrIN3t; Mon, 01 Apr 2024 02:53:14 +0000
+Received: from gator4166.hostgator.com ([108.167.133.22])
+	by cmsmtp with ESMTPS
+	id r7nNrIV33EKylr7nNr3dnU; Mon, 01 Apr 2024 02:53:13 +0000
+X-Authority-Analysis: v=2.4 cv=Bombw5X5 c=1 sm=1 tr=0 ts=660a2199
+ a=1YbLdUo/zbTtOZ3uB5T3HA==:117 a=zXgy4KOrraTBHT4+ULisNA==:17
+ a=IkcTkHD0fZMA:10 a=K6JAEmCyrfEA:10 a=wYkD_t78qR0A:10 a=VwQbUJbxAAAA:8
+ a=UqCG9HQmAAAA:8 a=ULve-GQanhtCPmNiPXUA:9 a=QEXdDO2ut3YA:10 a=9cHFzqQdt-sA:10
+ a=PUnBvhIW4WwA:10 a=AjGcO6oz07-iQ99wixmX:22
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=embeddedor.com; s=default; h=Content-Transfer-Encoding:Content-Type:
+	In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:Message-ID:Sender
+	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
+	List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+	bh=75BIkSv+82gmLssfiqp91Yj+hWnhvj/bJubjcKhhBFk=; b=DgKaBX8A+Dm2oX7EOhaSTi1lmR
+	hWHL+0p8srhxDq5zJQWqdLDjTjOPM6z77Gqz6MVMNf2KEXhJsLn0PQy+NzuxUrfDOBA097Ybve3ZM
+	R9AS/hexPTxq+TALHm7b0kru/WJTI2Ui2wDg5WDFx1ID4AiJA609AjVovFB+/xfgk1a/qGifZs6yq
+	SuwKXmIxr3SSnfbK+dPb42SaGqS2CJam276LwoawYLqdYwJ5f38SYUmK7zT9zgx9opfgdWexToFGH
+	zgpBz0Q4ZFTsfpHT3M/FbOvQrqV5o9dFhu0EUfj8QirhVBlsxB7TFTB3j6cIvbprUUiJEJblTZ34X
+	eYJBRcUQ==;
+Received: from [201.172.173.147] (port=40326 helo=[192.168.15.14])
+	by gator4166.hostgator.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+	(Exim 4.96.2)
+	(envelope-from <gustavo@embeddedor.com>)
+	id 1rr7nK-0045H6-2R;
+	Sun, 31 Mar 2024 21:53:10 -0500
+Message-ID: <1be10e9c-e521-4974-b2ed-808a2e3a1a9d@embeddedor.com>
+Date: Sun, 31 Mar 2024 20:53:07 -0600
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=ascii
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] RDMA/mana_ib: Add flex array to struct
+ mana_cfg_rx_steer_req_v2
+To: Erick Archer <erick.archer@outlook.com>, Long Li <longli@microsoft.com>,
+ Ajay Sharma <sharmaajay@microsoft.com>, Jason Gunthorpe <jgg@ziepe.ca>,
+ Leon Romanovsky <leon@kernel.org>, "K. Y. Srinivasan" <kys@microsoft.com>,
+ Haiyang Zhang <haiyangz@microsoft.com>, Wei Liu <wei.liu@kernel.org>,
+ Dexuan Cui <decui@microsoft.com>, "David S. Miller" <davem@davemloft.net>,
+ Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
+ Paolo Abeni <pabeni@redhat.com>,
+ Shradha Gupta <shradhagupta@linux.microsoft.com>,
+ Konstantin Taranov <kotaranov@microsoft.com>,
+ Kees Cook <keescook@chromium.org>,
+ "Gustavo A. R. Silva" <gustavoars@kernel.org>
+Cc: linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-hyperv@vger.kernel.org, netdev@vger.kernel.org,
+ linux-hardening@vger.kernel.org
+References: <AS8PR02MB7237974EF1B9BAFA618166C38B382@AS8PR02MB7237.eurprd02.prod.outlook.com>
+Content-Language: en-US
+From: "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+In-Reply-To: <AS8PR02MB7237974EF1B9BAFA618166C38B382@AS8PR02MB7237.eurprd02.prod.outlook.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - gator4166.hostgator.com
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - embeddedor.com
+X-BWhitelist: no
+X-Source-IP: 201.172.173.147
+X-Source-L: No
+X-Exim-ID: 1rr7nK-0045H6-2R
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
+X-Source-Sender: ([192.168.15.14]) [201.172.173.147]:40326
+X-Source-Auth: gustavo@embeddedor.com
+X-Email-Count: 4
+X-Org: HG=hgshared;ORG=hostgator;
+X-Source-Cap: Z3V6aWRpbmU7Z3V6aWRpbmU7Z2F0b3I0MTY2Lmhvc3RnYXRvci5jb20=
+X-Local-Domain: yes
+X-CMAE-Envelope: MS4xfKhYbqjZeSf7ayfRo8LJZ4P81LU/G/WYmAMVQIctsktPnNe0IIXDlhovlB9lCBujnLt5T+KI990eJjs9jefNEPxz5ewjbm08d+ehAQSzpJd/SmOEbxJ2
+ p2BWhgBJ9S2arFEHqhkBXLA2Jx8egKXQ0xN5p5/XKWoWqxiFINdSrhPjm5NcNvxy2gark+isPDJM9OyhxPiOBAknMvumIt+VooFdaYmk3VreMaSw1oC40nMU
 
-Baolin Wang <baolin.wang@linux.alibaba.com> writes:
 
-> Now the anonymous page allocation already supports multi-size THP (mTHP),
-> but the numa balancing still prohibits mTHP migration even though it is an
-> exclusive mapping, which is unreasonable.
->
-> Allow scanning mTHP:
-> Commit 859d4adc3415 ("mm: numa: do not trap faults on shared data section
-> pages") skips shared CoW pages' NUMA page migration to avoid shared data
-> segment migration. In addition, commit 80d47f5de5e3 ("mm: don't try to
-> NUMA-migrate COW pages that have other uses") change to use page_count()
-> to avoid GUP pages migration, that will also skip the mTHP numa scaning.
-> Theoretically, we can use folio_maybe_dma_pinned() to detect the GUP
-> issue, although there is still a GUP race, the issue seems to have been
-> resolved by commit 80d47f5de5e3. Meanwhile, use the folio_likely_mapped_shared()
-> to skip shared CoW pages though this is not a precise sharers count. To
-> check if the folio is shared, ideally we want to make sure every page is
-> mapped to the same process, but doing that seems expensive and using
-> the estimated mapcount seems can work when running autonuma benchmark.
->
-> Allow migrating mTHP:
-> As mentioned in the previous thread[1], large folios (including THP) are
-> more susceptible to false sharing issues among threads than 4K base page,
-> leading to pages ping-pong back and forth during numa balancing, which is
-> currently not easy to resolve. Therefore, as a start to support mTHP numa
-> balancing, we can follow the PMD mapped THP's strategy, that means we can
-> reuse the 2-stage filter in should_numa_migrate_memory() to check if the
-> mTHP is being heavily contended among threads (through checking the CPU id
-> and pid of the last access) to avoid false sharing at some degree. Thus,
-> we can restore all PTE maps upon the first hint page fault of a large folio
-> to follow the PMD mapped THP's strategy. In the future, we can continue to
-> optimize the NUMA balancing algorithm to avoid the false sharing issue with
-> large folios as much as possible.
->
-> Performance data:
-> Machine environment: 2 nodes, 128 cores Intel(R) Xeon(R) Platinum
-> Base: 2024-03-25 mm-unstable branch
-> Enable mTHP to run autonuma-benchmark
->
-> mTHP:16K
-> Base				Patched
-> numa01				numa01
-> 224.70				143.48
-> numa01_THREAD_ALLOC		numa01_THREAD_ALLOC
-> 118.05				47.43
-> numa02				numa02
-> 13.45				9.29
-> numa02_SMT			numa02_SMT
-> 14.80				7.50
->
-> mTHP:64K
-> Base				Patched
-> numa01				numa01
-> 216.15				114.40
-> numa01_THREAD_ALLOC		numa01_THREAD_ALLOC
-> 115.35				47.41
-> numa02				numa02
-> 13.24				9.25
-> numa02_SMT			numa02_SMT
-> 14.67				7.34
->
-> mTHP:128K
-> Base				Patched
-> numa01				numa01
-> 205.13				144.45
-> numa01_THREAD_ALLOC		numa01_THREAD_ALLOC
-> 112.93				41.88
-> numa02				numa02
-> 13.16				9.18
-> numa02_SMT			numa02_SMT
-> 14.81				7.49
->
-> [1] https://lore.kernel.org/all/20231117100745.fnpijbk4xgmals3k@techsingularity.net/
-> Signed-off-by: Baolin Wang <baolin.wang@linux.alibaba.com>
+
+On 31/03/24 09:04, Erick Archer wrote:
+> The "struct mana_cfg_rx_steer_req_v2" uses a dynamically sized set of
+> trailing elements. Specifically, it uses a "mana_handle_t" array. So,
+> use the preferred way in the kernel declaring a flexible array [1].
+> 
+> Also, avoid the open-coded arithmetic in the memory allocator functions
+> [2] using the "struct_size" macro.
+> 
+> Moreover, use the "offsetof" helper to get the indirect table offset
+> instead of the "sizeof" operator and avoid the open-coded arithmetic in
+> pointers using the new flex member.
+> 
+> Now, it is also possible to use the "flex_array_size" helper to compute
+> the size of these trailing elements in the "memcpy" function.
+> 
+> Link: https://www.kernel.org/doc/html/next/process/deprecated.html#zero-length-and-one-element-arrays [1]
+> Link: https://www.kernel.org/doc/html/next/process/deprecated.html#open-coded-arithmetic-in-allocator-arguments [2]
+> Signed-off-by: Erick Archer <erick.archer@outlook.com>
 > ---
->  mm/memory.c   | 57 +++++++++++++++++++++++++++++++++++++++++++--------
->  mm/mprotect.c |  3 ++-
->  2 files changed, 51 insertions(+), 9 deletions(-)
->
-> diff --git a/mm/memory.c b/mm/memory.c
-> index c30fb4b95e15..2aca19e4fbd8 100644
-> --- a/mm/memory.c
-> +++ b/mm/memory.c
-> @@ -5068,16 +5068,56 @@ static void numa_rebuild_single_mapping(struct vm_fault *vmf, struct vm_area_str
->  	update_mmu_cache_range(vmf, vma, vmf->address, vmf->pte, 1);
->  }
->  
-> +static void numa_rebuild_large_mapping(struct vm_fault *vmf, struct vm_area_struct *vma,
-> +				       struct folio *folio, pte_t fault_pte, bool ignore_writable)
-> +{
-> +	int nr = pte_pfn(fault_pte) - folio_pfn(folio);
-> +	unsigned long start = max(vmf->address - nr * PAGE_SIZE, vma->vm_start);
-> +	unsigned long end = min(vmf->address + (folio_nr_pages(folio) - nr) * PAGE_SIZE, vma->vm_end);
-> +	pte_t *start_ptep = vmf->pte - (vmf->address - start) / PAGE_SIZE;
-> +	bool pte_write_upgrade = vma_wants_manual_pte_write_upgrade(vma);
+>   drivers/infiniband/hw/mana/qp.c               | 8 ++++----
+>   drivers/net/ethernet/microsoft/mana/mana_en.c | 9 +++++----
+>   include/net/mana/mana.h                       | 1 +
+>   3 files changed, 10 insertions(+), 8 deletions(-)
+> 
+> diff --git a/drivers/infiniband/hw/mana/qp.c b/drivers/infiniband/hw/mana/qp.c
+> index 6e7627745c95..c2a39db8ef92 100644
+> --- a/drivers/infiniband/hw/mana/qp.c
+> +++ b/drivers/infiniband/hw/mana/qp.c
+> @@ -22,8 +22,7 @@ static int mana_ib_cfg_vport_steering(struct mana_ib_dev *dev,
+>   
+>   	gc = mdev_to_gc(dev);
+>   
+> -	req_buf_size =
+> -		sizeof(*req) + sizeof(mana_handle_t) * MANA_INDIRECT_TABLE_SIZE;
+> +	req_buf_size = struct_size(req, indir_tab, MANA_INDIRECT_TABLE_SIZE);
+>   	req = kzalloc(req_buf_size, GFP_KERNEL);
+>   	if (!req)
+>   		return -ENOMEM;
+> @@ -44,11 +43,12 @@ static int mana_ib_cfg_vport_steering(struct mana_ib_dev *dev,
+>   		req->rss_enable = true;
+>   
+>   	req->num_indir_entries = MANA_INDIRECT_TABLE_SIZE;
+> -	req->indir_tab_offset = sizeof(*req);
+> +	req->indir_tab_offset = offsetof(struct mana_cfg_rx_steer_req_v2,
+> +					 indir_tab);
+>   	req->update_indir_tab = true;
+>   	req->cqe_coalescing_enable = 1;
+>   
+> -	req_indir_tab = (mana_handle_t *)(req + 1);
+> +	req_indir_tab = req->indir_tab;
 
-We call vma_wants_manual_pte_write_upgrade() in do_numa_page() already.
-It seems that we can make "ignore_writable = true" if
-"vma_wants_manual_pte_write_upgrade() == false" in do_numa_page() to
-remove one call.
+It seems that `req_indir_tab` can be removed, and `req->indir_tab` be directly used.
 
-Otherwise, the patchset LGTM, feel free to add
+>   	/* The ind table passed to the hardware must have
+>   	 * MANA_INDIRECT_TABLE_SIZE entries. Adjust the verb
+>   	 * ind_table to MANA_INDIRECT_TABLE_SIZE if required
+> diff --git a/drivers/net/ethernet/microsoft/mana/mana_en.c b/drivers/net/ethernet/microsoft/mana/mana_en.c
+> index 59287c6e6cee..04aa096c6cc4 100644
+> --- a/drivers/net/ethernet/microsoft/mana/mana_en.c
+> +++ b/drivers/net/ethernet/microsoft/mana/mana_en.c
+> @@ -1062,7 +1062,7 @@ static int mana_cfg_vport_steering(struct mana_port_context *apc,
+>   	u32 req_buf_size;
+>   	int err;
+>   
+> -	req_buf_size = sizeof(*req) + sizeof(mana_handle_t) * num_entries;
+> +	req_buf_size = struct_size(req, indir_tab, num_entries);
+>   	req = kzalloc(req_buf_size, GFP_KERNEL);
+>   	if (!req)
+>   		return -ENOMEM;
+> @@ -1074,7 +1074,8 @@ static int mana_cfg_vport_steering(struct mana_port_context *apc,
+>   
+>   	req->vport = apc->port_handle;
+>   	req->num_indir_entries = num_entries;
+> -	req->indir_tab_offset = sizeof(*req);
+> +	req->indir_tab_offset = offsetof(struct mana_cfg_rx_steer_req_v2,
+> +					 indir_tab);
+>   	req->rx_enable = rx;
+>   	req->rss_enable = apc->rss_state;
+>   	req->update_default_rxobj = update_default_rxobj;
+> @@ -1087,9 +1088,9 @@ static int mana_cfg_vport_steering(struct mana_port_context *apc,
+>   		memcpy(&req->hashkey, apc->hashkey, MANA_HASH_KEY_SIZE);
+>   
+>   	if (update_tab) {
+> -		req_indir_tab = (mana_handle_t *)(req + 1);
+> +		req_indir_tab = req->indir_tab;
 
-Reviewed-by: "Huang, Ying" <ying.huang@intel.com>
+Ditto.
 
-in the future versions.
-
+Thanks
 --
-Best Regards,
-Huang, Ying
+Gustavo
 
-
-> +	unsigned long addr;
-> +
-> +	/* Restore all PTEs' mapping of the large folio */
-> +	for (addr = start; addr != end; start_ptep++, addr += PAGE_SIZE) {
-> +		pte_t pte, old_pte;
-> +		pte_t ptent = ptep_get(start_ptep);
-> +		bool writable = false;
-> +
-> +		if (!pte_present(ptent) || !pte_protnone(ptent))
-> +			continue;
-> +
-> +		if (pfn_folio(pte_pfn(ptent)) != folio)
-> +			continue;
-> +
-> +		if (!ignore_writable) {
-> +			ptent = pte_modify(ptent, vma->vm_page_prot);
-> +			writable = pte_write(ptent);
-> +			if (!writable && pte_write_upgrade &&
-> +			    can_change_pte_writable(vma, addr, ptent))
-> +				writable = true;
-> +		}
-> +
-> +		old_pte = ptep_modify_prot_start(vma, addr, start_ptep);
-> +		pte = pte_modify(old_pte, vma->vm_page_prot);
-> +		pte = pte_mkyoung(pte);
-> +		if (writable)
-> +			pte = pte_mkwrite(pte, vma);
-> +		ptep_modify_prot_commit(vma, addr, start_ptep, old_pte, pte);
-> +		update_mmu_cache_range(vmf, vma, addr, start_ptep, 1);
-> +	}
-> +}
-> +
->  static vm_fault_t do_numa_page(struct vm_fault *vmf)
->  {
->  	struct vm_area_struct *vma = vmf->vma;
->  	struct folio *folio = NULL;
->  	int nid = NUMA_NO_NODE;
-> -	bool writable = false;
-> +	bool writable = false, ignore_writable = false;
->  	int last_cpupid;
->  	int target_nid;
->  	pte_t pte, old_pte;
-> -	int flags = 0;
-> +	int flags = 0, nr_pages;
->  
->  	/*
->  	 * The pte cannot be used safely until we verify, while holding the page
-> @@ -5107,10 +5147,6 @@ static vm_fault_t do_numa_page(struct vm_fault *vmf)
->  	if (!folio || folio_is_zone_device(folio))
->  		goto out_map;
->  
-> -	/* TODO: handle PTE-mapped THP */
-> -	if (folio_test_large(folio))
-> -		goto out_map;
-> -
->  	/*
->  	 * Avoid grouping on RO pages in general. RO pages shouldn't hurt as
->  	 * much anyway since they can be in shared cache state. This misses
-> @@ -5130,6 +5166,7 @@ static vm_fault_t do_numa_page(struct vm_fault *vmf)
->  		flags |= TNF_SHARED;
->  
->  	nid = folio_nid(folio);
-> +	nr_pages = folio_nr_pages(folio);
->  	/*
->  	 * For memory tiering mode, cpupid of slow memory page is used
->  	 * to record page access time.  So use default value.
-> @@ -5146,6 +5183,7 @@ static vm_fault_t do_numa_page(struct vm_fault *vmf)
->  	}
->  	pte_unmap_unlock(vmf->pte, vmf->ptl);
->  	writable = false;
-> +	ignore_writable = true;
->  
->  	/* Migrate to the requested node */
->  	if (migrate_misplaced_folio(folio, vma, target_nid)) {
-> @@ -5166,14 +5204,17 @@ static vm_fault_t do_numa_page(struct vm_fault *vmf)
->  
->  out:
->  	if (nid != NUMA_NO_NODE)
-> -		task_numa_fault(last_cpupid, nid, 1, flags);
-> +		task_numa_fault(last_cpupid, nid, nr_pages, flags);
->  	return 0;
->  out_map:
->  	/*
->  	 * Make it present again, depending on how arch implements
->  	 * non-accessible ptes, some can allow access by kernel mode.
->  	 */
-> -	numa_rebuild_single_mapping(vmf, vma, writable);
-> +	if (folio && folio_test_large(folio))
-> +		numa_rebuild_large_mapping(vmf, vma, folio, pte, ignore_writable);
-> +	else
-> +		numa_rebuild_single_mapping(vmf, vma, writable);
->  	pte_unmap_unlock(vmf->pte, vmf->ptl);
->  	goto out;
->  }
-> diff --git a/mm/mprotect.c b/mm/mprotect.c
-> index f8a4544b4601..94878c39ee32 100644
-> --- a/mm/mprotect.c
-> +++ b/mm/mprotect.c
-> @@ -129,7 +129,8 @@ static long change_pte_range(struct mmu_gather *tlb,
->  
->  				/* Also skip shared copy-on-write pages */
->  				if (is_cow_mapping(vma->vm_flags) &&
-> -				    folio_ref_count(folio) != 1)
-> +				    (folio_maybe_dma_pinned(folio) ||
-> +				     folio_likely_mapped_shared(folio)))
->  					continue;
->  
->  				/*
+>   		memcpy(req_indir_tab, apc->rxobj_table,
+> -		       req->num_indir_entries * sizeof(mana_handle_t));
+> +		       flex_array_size(req, indir_tab, req->num_indir_entries));
+>   	}
+>   
+>   	err = mana_send_request(apc->ac, req, req_buf_size, &resp,
+> diff --git a/include/net/mana/mana.h b/include/net/mana/mana.h
+> index 76147feb0d10..20ffcae29e1e 100644
+> --- a/include/net/mana/mana.h
+> +++ b/include/net/mana/mana.h
+> @@ -671,6 +671,7 @@ struct mana_cfg_rx_steer_req_v2 {
+>   	u8 hashkey[MANA_HASH_KEY_SIZE];
+>   	u8 cqe_coalescing_enable;
+>   	u8 reserved2[7];
+> +	mana_handle_t indir_tab[];
+>   }; /* HW DATA */
+>   
+>   struct mana_cfg_rx_steer_resp {
 
