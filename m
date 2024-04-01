@@ -1,134 +1,126 @@
-Return-Path: <linux-kernel+bounces-126464-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-126467-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8141489385D
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 08:28:02 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1BF8C893861
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 08:32:52 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3174C1F213D1
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 06:28:02 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8F15A2829AE
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 06:32:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 832769454;
-	Mon,  1 Apr 2024 06:27:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3BAAC8C1E;
+	Mon,  1 Apr 2024 06:32:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="PO+6ArL9"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.11])
+	dkim=pass (2048-bit key) header.d=marvell.com header.i=@marvell.com header.b="aB+6vyJP"
+Received: from mx0b-0016f401.pphosted.com (mx0b-0016f401.pphosted.com [67.231.156.173])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F0B30BE4B;
-	Mon,  1 Apr 2024 06:27:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.11
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F0FAD10F1;
+	Mon,  1 Apr 2024 06:32:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=67.231.156.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711952866; cv=none; b=Gyxvgs+AdptxaO3zM98Rbuh0tBInvlY/4R+RRZm+CpX2ejPtmKCoaLJwZyOPOKSH/f/jngeQX2XhYuMFf/DDpSEZpgtkBBHlh9/ZVyuQlpb1A1z6/0oae5OBS6WXF26mwz+brIAUwutOyPW53bIR3Rpb43xofBnyjpJdoHFy/iE=
+	t=1711953164; cv=none; b=gLArV/w3cfsY06Ao3OckAPYJHKOHuygOetkTI1P5kwefPgelepQUlM9egJnu3IczDjXqLtc/TgmKZ5I7Vi8BDGprNZ5CTKTpoR3bxCyrlpUPZlY+67PvrIfSMK0iWUPDvhILjbJ/UVnGHYzueIl6ZuRXgKbZBT70xZRlNig00E4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711952866; c=relaxed/simple;
-	bh=FRDWwGwoWrT2hdGyeXRnP8I/oB4ub4bNpO9ycKIRPhk=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=UpcyuPPYnBIFTkrRXTMpV6gbcEq3Gvrg8TBpVUa/uX64bfnJDLH/WNkbLgnv/pXGmXWm1qdkYju5szaCw/fKzgC0nXzYiGTl78Zzt4xeIyYaoJa1nrIeK9lQccO78Fg5En8yDLq1g3xpcXoQ4QiPqK1Ovn1V9W3a3Cwqn5zZk14=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=PO+6ArL9; arc=none smtp.client-ip=192.198.163.11
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1711952865; x=1743488865;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=FRDWwGwoWrT2hdGyeXRnP8I/oB4ub4bNpO9ycKIRPhk=;
-  b=PO+6ArL9RzVcZUfJBdIhXMhRltt3+HpvaB7ScXWJk+gsctqNjrYCmIPg
-   +fmn8saGt3a8ffoiMW9AyJSKTT2JMpGI1NslhRSyxwqpbxCYK04Ub/F/I
-   35FlnffGWJZPpzvAmy/S6RUNB6vZXSetxthc29Ar8AmiWjHLCckQmiAGD
-   oyZ10xM6qLGQRemkq5kOKzSRIfCB+Udmc/ivnpeLr7I+V19pYqc5WP0Pc
-   BL8A1KU7y0gYl9m7M1aODXg5zlRkmu8hzIeDEmOeVeBKClc+jjaR8HlxR
-   FrkOZjQAxES3vGnk7hn1KLN1T1+S4S6Fyf6FlQwapIQ0UPk3s5pZZCxMF
-   A==;
-X-CSE-ConnectionGUID: 9uG+lN7bRLODWahnWE8a0g==
-X-CSE-MsgGUID: inVB4OkiSiWQ+zEmYwuLcA==
-X-IronPort-AV: E=McAfee;i="6600,9927,11030"; a="17691543"
-X-IronPort-AV: E=Sophos;i="6.07,171,1708416000"; 
-   d="scan'208";a="17691543"
-Received: from fmviesa006.fm.intel.com ([10.60.135.146])
-  by fmvoesa105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Mar 2024 23:27:35 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,171,1708416000"; 
-   d="scan'208";a="17650268"
-Received: from xiaoyaol-hp-g830.ccr.corp.intel.com (HELO [10.124.224.7]) ([10.124.224.7])
-  by fmviesa006-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Mar 2024 23:27:31 -0700
-Message-ID: <005c16a4-b88c-4389-8834-a4fc98a8ba02@intel.com>
-Date: Mon, 1 Apr 2024 14:27:28 +0800
+	s=arc-20240116; t=1711953164; c=relaxed/simple;
+	bh=Y0wlRiNfYEnQ/mORbguvM+3hsiBEfgRyx8ZvLJgVA2c=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=kEJLlCGVQeb/HNlgVSWD0MdrNe8q+XsgCSQ6iWa3orD54uNG9qgmKc3089G22gghgzFVGG/2RKcRI1XD99aefBEFXRLZNZHikQ7464hWaRJc961qhUO68l4gDjoO9jG8AGYvQuzNlmoplG2CINkZKkedrDFqcDyiDKoZKuzRQ8o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=marvell.com; spf=pass smtp.mailfrom=marvell.com; dkim=pass (2048-bit key) header.d=marvell.com header.i=@marvell.com header.b=aB+6vyJP; arc=none smtp.client-ip=67.231.156.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=marvell.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=marvell.com
+Received: from pps.filterd (m0045851.ppops.net [127.0.0.1])
+	by mx0b-0016f401.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 4311nMTX017725;
+	Sun, 31 Mar 2024 23:32:39 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=
+	from:to:cc:subject:date:message-id:mime-version
+	:content-transfer-encoding:content-type; s=pfpt0220; bh=9zgvpRcw
+	41YrdWjhBgNmQvxxiQ5A/Um3l5NhKwm12VA=; b=aB+6vyJPbXq3FRpKpSR4GFJM
+	/V0ZHIQTtS15yz+lgD/gekOjgfseAhidnKcrR87H1j4aWawAnV/9LMjJ+IyMVqDs
+	aaHtM0LgNzJUHpcUJtZ+ufY/v3GnCGVQPAn09LxKqmXLqgLl//FIuNY1RTcvhgEF
+	ffU4ZNW9BfJrobTyXUW6/Au8NZqH5+Y1lcvXkim3wgUaqMJyg7k9/YjG8VLvSGpl
+	gtlDiKkxVJ8eEdjMAgA84fQ/WCmrB3kHe0PtpkfHt8zs5v6jNUEdg4xikNr3pxGR
+	/w18JSPhSWKO5mYMz/Mut8WfkM+Rm3u1EQGA+Wd5nw35sYr3Gs/6nktq5UFMSQ==
+Received: from dc6wp-exch02.marvell.com ([4.21.29.225])
+	by mx0b-0016f401.pphosted.com (PPS) with ESMTPS id 3x7kkcgkdr-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Sun, 31 Mar 2024 23:32:39 -0700 (PDT)
+Received: from DC6WP-EXCH02.marvell.com (10.76.176.209) by
+ DC6WP-EXCH02.marvell.com (10.76.176.209) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1544.4; Sun, 31 Mar 2024 23:32:38 -0700
+Received: from maili.marvell.com (10.69.176.80) by DC6WP-EXCH02.marvell.com
+ (10.76.176.209) with Microsoft SMTP Server id 15.2.1544.4 via Frontend
+ Transport; Sun, 31 Mar 2024 23:32:38 -0700
+Received: from Dell2s-9.sclab.marvell.com (unknown [10.110.150.250])
+	by maili.marvell.com (Postfix) with ESMTP id 9C11D3F705D;
+	Sun, 31 Mar 2024 23:32:37 -0700 (PDT)
+From: Piyush Malgujar <pmalgujar@marvell.com>
+To: <andi.shyti@kernel.org>, <linux-i2c@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+CC: <sgarapati@marvell.com>, <cchavva@marvell.com>, <jannadurai@marvell.com>,
+        Piyush Malgujar <pmalgujar@marvell.com>
+Subject: [PATCH v5 0/4] i2c: thunderx: Marvell thunderx i2c changes
+Date: Sun, 31 Mar 2024 23:32:14 -0700
+Message-ID: <20240401063229.2112782-1-pmalgujar@marvell.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v6 5/9] KVM: VMX: Track CPU's MSR_IA32_VMX_BASIC as a
- single 64-bit value
-To: Sean Christopherson <seanjc@google.com>,
- Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>,
- Borislav Petkov <bp@alien8.de>, Dave Hansen <dave.hansen@linux.intel.com>,
- x86@kernel.org, Paolo Bonzini <pbonzini@redhat.com>,
- Andy Lutomirski <luto@kernel.org>, Peter Zijlstra <peterz@infradead.org>
-Cc: linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
- Shan Kang <shan.kang@intel.com>, Kai Huang <kai.huang@intel.com>,
- Xin Li <xin3.li@intel.com>
-References: <20240309012725.1409949-1-seanjc@google.com>
- <20240309012725.1409949-6-seanjc@google.com>
-Content-Language: en-US
-From: Xiaoyao Li <xiaoyao.li@intel.com>
-In-Reply-To: <20240309012725.1409949-6-seanjc@google.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Proofpoint-GUID: 3-xqs7jLmGwIPU0WYoWK3TcgpqlobYAa
+X-Proofpoint-ORIG-GUID: 3-xqs7jLmGwIPU0WYoWK3TcgpqlobYAa
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-04-01_03,2024-03-28_01,2023-05-22_02
 
-On 3/9/2024 9:27 AM, Sean Christopherson wrote:
-> Track the "basic" capabilities VMX MSR as a single u64 in vmcs_config
-> instead of splitting it across three fields, that obviously don't combine
-> into a single 64-bit value, so that KVM can use the macros that define MSR
-> bits using their absolute position.  Replace all open coded shifts and
-> masks, many of which are relative to the "high" half, with the appropriate
-> macro.
-> 
-> Opportunistically use VMX_BASIC_32BIT_PHYS_ADDR_ONLY instead of an open
-> coded equivalent, and clean up the related comment to not reference a
-> specific SDM section (to the surprise of no one, the comment is stale).
-> 
-> No functional change intended (though obviously the code generation will
-> be quite different).
-> 
-> Cc: Shan Kang <shan.kang@intel.com>
-> Cc: Kai Huang <kai.huang@intel.com>
-> Signed-off-by: Xin Li <xin3.li@intel.com>
-> [sean: split to separate patch, write changelog]
+The changes are for Marvell OcteonTX2 SOC family:
 
-The patch author doesn't match with the signed-off
+- Handling clock divisor logic using subsytem ID
+- Support for high speed mode
+- Handle watchdog timeout
+- Added ioclk support
 
-> Signed-off-by: Sean Christopherson <seanjc@google.com>
-> ---
->   arch/x86/include/asm/vmx.h      |  5 +++++
->   arch/x86/kvm/vmx/capabilities.h |  6 ++----
->   arch/x86/kvm/vmx/vmx.c          | 28 ++++++++++++++--------------
->   3 files changed, 21 insertions(+), 18 deletions(-)
-> 
-> diff --git a/arch/x86/include/asm/vmx.h b/arch/x86/include/asm/vmx.h
-> index c3a97dca4a33..ce6d166fc3c5 100644
-> --- a/arch/x86/include/asm/vmx.h
-> +++ b/arch/x86/include/asm/vmx.h
-> @@ -150,6 +150,11 @@ static inline u32 vmx_basic_vmcs_size(u64 vmx_basic)
->   	return (vmx_basic & GENMASK_ULL(44, 32)) >> 32;
->   }
->   
-> +static inline u32 vmx_basic_vmcs_mem_type(u64 vmx_basic)
-> +{
-> +	return (vmx_basic & GENMASK_ULL(53, 50)) >> 50;
+Changes since V4:
+- Proper alignment
+- Used bitops helpers as required
+- Patch description made more clear to understand
+- Removed unrelated code
 
-#define VMX_BASIC_MEM_TYPE_SHIFT		50
+Changes since V3:
+- Removed the MAINTAINER file change from this series
+- Modified the commit message to include more details
+- Minor changes such as adding macros, comments modified
+  to have more detail as required
 
-We have the shift defined in previous patch, we need to use it I think,
-Any maybe, we can define the MASK as well.
+Changes since V2:
+- Respinning the series, no functional change
+- Added Marvell member in MAINTAINERS file
+- Added macro OTX2_REF_FREQ_DEFAULT for 100 MHz
 
-Otherwise, this cleanup is good.
+Changes since V1:
+- Addressed comments, added defines as required
+- Removed unnecessary code
+- Added a patch to support ioclk if sclk not present in ACPI table
 
-Reviewed-by: Xiaoyao Li <xiaoyao.li@intel.com>
+Piyush Malgujar (1):
+  i2c: thunderx: Adding ioclk support
+
+Suneel Garapati (3):
+  i2c: thunderx: Clock divisor logic changes
+  i2c: thunderx: Support for High speed mode
+  i2c: octeon: Handle watchdog timeout
+
+ drivers/i2c/busses/i2c-octeon-core.c     | 141 ++++++++++++++++-------
+ drivers/i2c/busses/i2c-octeon-core.h     |  52 +++++++--
+ drivers/i2c/busses/i2c-thunderx-pcidrv.c |  13 ++-
+ 3 files changed, 151 insertions(+), 55 deletions(-)
+
+-- 
+2.43.0
+
 
