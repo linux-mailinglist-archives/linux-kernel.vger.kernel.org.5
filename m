@@ -1,162 +1,217 @@
-Return-Path: <linux-kernel+bounces-126488-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-126489-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5AF9C89388F
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 09:07:51 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id D70DD893891
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 09:09:14 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B7BEB2817AB
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 07:07:49 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4EE3D1F21407
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 07:09:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 468FDB66C;
-	Mon,  1 Apr 2024 07:07:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C44C1B664;
+	Mon,  1 Apr 2024 07:09:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="vxCmglZw";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="9kDpKOM2"
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="pC80AAS8"
+Received: from casper.infradead.org (casper.infradead.org [90.155.50.34])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 792639468;
-	Mon,  1 Apr 2024 07:07:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3998B8F6E;
+	Mon,  1 Apr 2024 07:09:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.50.34
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711955265; cv=none; b=L9lnnOcTcREq047H+QYB22XJ7TZ4GfKB4Sa5EI6ATvWCSabXkijATY4KKfEdN7xWklFlNjbnBemtUvBEf3f7Jj7OuE98x3u3p0mJADQx4zcrAeFUROfUTdkwOf3+OrWhqwk1XkZ5IX3698102JA6BtSsN8o7+itKxqvbFYYhLc0=
+	t=1711955346; cv=none; b=s46A6WL9jeR60OPp2PjDJfbYq9bBZoxy1r0YqGl9TrgJ+Gmf6tojb4S0eb/dOnAKWeYo0Rnq6dIc8p9FEenTYHm+CQcSvuEY+ImYTXNu73kX4fKKZikuO9ex4A0/00+ac6AC0zVUBJPtX9Hv7WuVZszESBC1ebLD/+sRWobxRzQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711955265; c=relaxed/simple;
-	bh=dVDH2ru8zx7ARrYDcg9bt/4QbbK1H+rD7UOIXtsFGH0=;
-	h=Date:Message-ID:From:To:Cc:Subject:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=pTweOTcTUQ/fH02i8AS5lKnsnxLqwB8WoGJQKqJ6KRupgC7LdTCv6noi6l6cEvUocg6mT1HpO/sIjMaoEdXQxb/aE40UFnHC1N0fBFHhwifldogTey0hM1tA1fUxSTSEZ5f10DShuJ3hDpn5ZQWFbENbb+P3dDRrIep8Y2mtRnU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=vxCmglZw; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=9kDpKOM2; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
-Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:98])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 2F7E91FF6F;
-	Mon,  1 Apr 2024 07:07:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1711955256; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=i52Yxm/nY5hizam5kxXaT7uQYvU/I7XuHa8ZoWvq5HE=;
-	b=vxCmglZw9kxtcTQzcB8PvtT4ilf6Dm24tZJGT0kGjF+mG+W9lYB6q7rn3ZmUp/KdLk2JNw
-	RzJ4eHSYHPDfZRJ7ArSV+w/YQf3u4LZZpb9fBRn6ZZexuN4L4QfTk9J26goi3dT59ZpN35
-	Se+MIS1Ck/EVYEVATvHuXYt1eWIJZsc=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1711955256;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=i52Yxm/nY5hizam5kxXaT7uQYvU/I7XuHa8ZoWvq5HE=;
-	b=9kDpKOM2KOB6MroD7+76OnBpplDMxiuImoM552gB6Z34+nAk4i9Qy5Hrngn3zdILddZJav
-	IARzHSEufDgCvwAQ==
-Authentication-Results: smtp-out2.suse.de;
-	dkim=none
-Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id 02B541348C;
-	Mon,  1 Apr 2024 07:07:35 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap2.dmz-prg2.suse.org with ESMTPSA
-	id qM5hOjddCmbkRgAAn2gu4w
-	(envelope-from <tiwai@suse.de>); Mon, 01 Apr 2024 07:07:35 +0000
-Date: Mon, 01 Apr 2024 09:07:40 +0200
-Message-ID: <874jcl7e83.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: Mikhail Gavrilov <mikhail.v.gavrilov@gmail.com>
-Cc: Takashi Iwai <tiwai@suse.de>,
-	Linux List Kernel Mailing <linux-kernel@vger.kernel.org>,
-	linux-sound@vger.kernel.org
-Subject: Re: regression/bisected/6.9 commit 587d67fd929ad89801bcc429675bda90d53f6592 decrease 30% of gaming performance
-In-Reply-To: <CABXGCsNmEtrN9DK-XmESaPm_1xpXm8A+juE+44Jf6AK5JE0+TQ@mail.gmail.com>
-References: <CABXGCsNmEtrN9DK-XmESaPm_1xpXm8A+juE+44Jf6AK5JE0+TQ@mail.gmail.com>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
+	s=arc-20240116; t=1711955346; c=relaxed/simple;
+	bh=Yyu6J6GZaiez1H2m1XGhKtvi+4/m1eSvkPh5cBaNwXo=;
+	h=Message-ID:Date:MIME-Version:Subject:From:To:Cc:References:
+	 In-Reply-To:Content-Type; b=eFzqiGnJhkAQf9nsfdGQawg5wo88jcXwvY9TF7cdHJvxKX9uLR4SKeesL1pd6h5zSCJDsOP/xbPTzofba8Zs9YLLMtyIZL2qgaGLFACWAWy2VW8pXcHzTblANlITL9GGmW/0Q4Ktt5Scs0DUgbsWOn8fcUBcsrgXUBzSIUCzkB4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=pC80AAS8; arc=none smtp.client-ip=90.155.50.34
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:Content-Type:
+	In-Reply-To:References:Cc:To:From:Subject:MIME-Version:Date:Message-ID:Sender
+	:Reply-To:Content-ID:Content-Description;
+	bh=faKtwJA5t6Zj+D3Q/jEbeWC+9IIE68VhlZebCZwcy9Y=; b=pC80AAS8EZ4vHufsZXQhhNJXMB
+	pEZ4zygf0sNfgHbd7JHc5VE5r8vplOj8Vdo3RUxGuZj3OM9UhReJOicLxpX1+QY61C88nz5lxjIfg
+	sg7AVzqLO24mjIphRT4DTseRQTfjnua7G0tZICN3mZhOyWNk4Ux23hZQfM7ItidY5DxS9ZcvtELvq
+	2F5Er7a13fIYALE36kvV1kcuaYoXBuzsP9iPq5Zivg1qEU8qYHH1BFZgbDk70vqEhQDvSf+dHN8gY
+	rpOES3fB8J5cnkDomIiqIAd96lW16AN/qj5MdS8bMsnXjsEx8BMLOUbfsLuAH+DFFzx2MSQxg63+M
+	iGiaMIfw==;
+Received: from fpd2fa7e2a.ap.nuro.jp ([210.250.126.42] helo=[192.168.1.8])
+	by casper.infradead.org with esmtpsa (Exim 4.97.1 #2 (Red Hat Linux))
+	id 1rrBml-0000000016F-0yKC;
+	Mon, 01 Apr 2024 07:08:52 +0000
+Message-ID: <d64f06f4-81ae-4ec5-ab3b-d7f7f091e0ac@infradead.org>
+Date: Mon, 1 Apr 2024 16:08:31 +0900
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Content-Type: text/plain; charset=US-ASCII
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Spam-Flag: NO
-X-Rspamd-Action: no action
-X-Spamd-Result: default: False [0.69 / 50.00];
-	MID_CONTAINS_FROM(1.00)[];
-	NEURAL_HAM_SHORT(-0.20)[-0.988];
-	MIME_GOOD(-0.10)[text/plain];
-	MX_GOOD(-0.01)[];
-	BAYES_HAM(-0.00)[31.89%];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	TO_DN_SOME(0.00)[];
-	ARC_NA(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	FREEMAIL_TO(0.00)[gmail.com];
-	FREEMAIL_ENVRCPT(0.00)[gmail.com];
-	RCVD_TLS_ALL(0.00)[];
-	RCVD_COUNT_TWO(0.00)[2];
-	FROM_EQ_ENVFROM(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:98:from];
-	R_DKIM_NA(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	TAGGED_RCPT(0.00)[];
-	RCPT_COUNT_THREE(0.00)[4];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[imap2.dmz-prg2.suse.org:rdns,imap2.dmz-prg2.suse.org:helo]
-X-Spam-Level: 
-X-Spam-Score: 0.69
-X-Spamd-Bar: /
-X-Rspamd-Queue-Id: 2F7E91FF6F
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: [PATCH v2] powerpc: Fix PS3 allmodconfig warning
+From: Geoff Levand <geoff@infradead.org>
+To: Arnd Bergmann <arnd@kernel.org>, Michael Ellerman <mpe@ellerman.id.au>,
+ Nathan Chancellor <nathan@kernel.org>, Paul Mackerras <paulus@ozlabs.org>
+Cc: Arnd Bergmann <arnd@arndb.de>, Nicholas Piggin <npiggin@gmail.com>,
+ Christophe Leroy <christophe.leroy@csgroup.eu>,
+ "Aneesh Kumar K.V" <aneesh.kumar@kernel.org>,
+ "Naveen N. Rao" <naveen.n.rao@linux.ibm.com>,
+ Nick Desaulniers <ndesaulniers@google.com>, Bill Wendling
+ <morbo@google.com>, Justin Stitt <justinstitt@google.com>,
+ Kevin Hao <haokexin@gmail.com>, linuxppc-dev@lists.ozlabs.org,
+ linux-kernel@vger.kernel.org, llvm@lists.linux.dev
+References: <20240320180333.151043-1-arnd@kernel.org>
+ <415f4af0-f44a-49fb-b1fa-76f64ed09ec6@infradead.org>
+Content-Language: en-US
+In-Reply-To: <415f4af0-f44a-49fb-b1fa-76f64ed09ec6@infradead.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Sun, 31 Mar 2024 22:21:20 +0200,
-Mikhail Gavrilov wrote:
-> 
-> Hi,
-> 
-> I spotted that FPS was around 122 [1] in the Shadow of the Tomb Raider
-> benchmark at commit f6cef5f8c37f but after moving to commit
-> 4ae3dc83b047 it decreased to 84 [2].
-> 
-> I bisected it and the first bad commit was 587d67fd929a.
-> Author: Takashi Iwai <tiwai@suse.de>
-> Date:   Fri Mar 15 11:14:42 2024 +0100
-> 
->     ALSA: timer: Fix missing irq-disable at closing
-> 
->     The conversion to guard macro dropped the irq-disablement at closing
->     mistakenly, which may lead to a race.  Fix it.
-> 
->     Fixes: beb45974dd49 ("ALSA: timer: Use guard() for locking")
->     Reported-by: syzbot+28c1a5a5b041a754b947@syzkaller.appspotmail.com
->     Closes: http://lore.kernel.org/r/0000000000000b9a510613b0145f@google.com
->     Message-ID: <20240315101447.18395-1-tiwai@suse.de>
->     Signed-off-by: Takashi Iwai <tiwai@suse.de>
-> 
->  sound/core/timer.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> To make sure of this I builded kernel at commit 712e14250dd2 with
-> revert 587d67fd929a and the benchmarking result was returned to best
-> observed by me.
-> 
-> [1] good results - https://postimg.cc/G4NPHMyk
-> [2] bad results - https://postimg.cc/1n0D7sYH
-> 
-> I attached here my build .config and kernel log.
-> Is it possible to find a better approach than 587d67fd929a?
+The struct ps3_notification_device in the ps3_probe_thread routine
+is too large to be on the stack, causing a warning for an
+allmodconfig build with clang.
 
-Is it a regression against the performance on 6.8?
+Change the struct ps3_notification_device from a variable on the stack
+to a dynamically allocated variable.
 
-If so, what happens when you revert both this (587d67fd929a) and
-beb45974dd49?  That should make the timer code back to 6.8 code.
+Reported-by: Arnd Bergmann <arnd@kernel.org>
+Signed-off-by: Geoff Levand <geoff@infradead.org>
 
+diff --git a/arch/powerpc/platforms/ps3/device-init.c b/arch/powerpc/platforms/ps3/device-init.c
+index 878bc160246e..b18e1c92e554 100644
+--- a/arch/powerpc/platforms/ps3/device-init.c
++++ b/arch/powerpc/platforms/ps3/device-init.c
+@@ -770,49 +770,51 @@ static struct task_struct *probe_task;
+ 
+ static int ps3_probe_thread(void *data)
+ {
+-	struct ps3_notification_device dev;
++	struct {
++		struct ps3_notification_device dev;
++		u8 buf[512];
++	} *local;
++	struct ps3_notify_cmd *notify_cmd;
++	struct ps3_notify_event *notify_event;
+ 	int res;
+ 	unsigned int irq;
+ 	u64 lpar;
+-	void *buf;
+-	struct ps3_notify_cmd *notify_cmd;
+-	struct ps3_notify_event *notify_event;
+ 
+ 	pr_debug(" -> %s:%u: kthread started\n", __func__, __LINE__);
+ 
+-	buf = kzalloc(512, GFP_KERNEL);
+-	if (!buf)
++	local = kzalloc(sizeof(*local), GFP_KERNEL);
++	if (!local)
+ 		return -ENOMEM;
+ 
+-	lpar = ps3_mm_phys_to_lpar(__pa(buf));
+-	notify_cmd = buf;
+-	notify_event = buf;
++	lpar = ps3_mm_phys_to_lpar(__pa(&local->buf));
++	notify_cmd = (struct ps3_notify_cmd *)&local->buf;
++	notify_event = (struct ps3_notify_event *)&local->buf;
+ 
+ 	/* dummy system bus device */
+-	dev.sbd.bus_id = (u64)data;
+-	dev.sbd.dev_id = PS3_NOTIFICATION_DEV_ID;
+-	dev.sbd.interrupt_id = PS3_NOTIFICATION_INTERRUPT_ID;
++	local->dev.sbd.bus_id = (u64)data;
++	local->dev.sbd.dev_id = PS3_NOTIFICATION_DEV_ID;
++	local->dev.sbd.interrupt_id = PS3_NOTIFICATION_INTERRUPT_ID;
+ 
+-	res = lv1_open_device(dev.sbd.bus_id, dev.sbd.dev_id, 0);
++	res = lv1_open_device(local->dev.sbd.bus_id, local->dev.sbd.dev_id, 0);
+ 	if (res) {
+ 		pr_err("%s:%u: lv1_open_device failed %s\n", __func__,
+ 		       __LINE__, ps3_result(res));
+ 		goto fail_free;
+ 	}
+ 
+-	res = ps3_sb_event_receive_port_setup(&dev.sbd, PS3_BINDING_CPU_ANY,
+-					      &irq);
++	res = ps3_sb_event_receive_port_setup(&local->dev.sbd,
++		PS3_BINDING_CPU_ANY, &irq);
+ 	if (res) {
+ 		pr_err("%s:%u: ps3_sb_event_receive_port_setup failed %d\n",
+ 		       __func__, __LINE__, res);
+ 	       goto fail_close_device;
+ 	}
+ 
+-	spin_lock_init(&dev.lock);
+-	rcuwait_init(&dev.wait);
++	spin_lock_init(&local->dev.lock);
++	rcuwait_init(&local->dev.wait);
+ 
+ 	res = request_irq(irq, ps3_notification_interrupt, 0,
+-			  "ps3_notification", &dev);
++			  "ps3_notification", &local->dev);
+ 	if (res) {
+ 		pr_err("%s:%u: request_irq failed %d\n", __func__, __LINE__,
+ 		       res);
+@@ -823,7 +825,7 @@ static int ps3_probe_thread(void *data)
+ 	notify_cmd->operation_code = 0; /* must be zero */
+ 	notify_cmd->event_mask = 1UL << notify_region_probe;
+ 
+-	res = ps3_notification_read_write(&dev, lpar, 1);
++	res = ps3_notification_read_write(&local->dev, lpar, 1);
+ 	if (res)
+ 		goto fail_free_irq;
+ 
+@@ -834,36 +836,37 @@ static int ps3_probe_thread(void *data)
+ 
+ 		memset(notify_event, 0, sizeof(*notify_event));
+ 
+-		res = ps3_notification_read_write(&dev, lpar, 0);
++		res = ps3_notification_read_write(&local->dev, lpar, 0);
+ 		if (res)
+ 			break;
+ 
+ 		pr_debug("%s:%u: notify event type 0x%llx bus id %llu dev id %llu"
+ 			 " type %llu port %llu\n", __func__, __LINE__,
+-			 notify_event->event_type, notify_event->bus_id,
+-			 notify_event->dev_id, notify_event->dev_type,
+-			 notify_event->dev_port);
++			notify_event->event_type, notify_event->bus_id,
++			notify_event->dev_id, notify_event->dev_type,
++			notify_event->dev_port);
+ 
+ 		if (notify_event->event_type != notify_region_probe ||
+-		    notify_event->bus_id != dev.sbd.bus_id) {
++			notify_event->bus_id != local->dev.sbd.bus_id) {
+ 			pr_warn("%s:%u: bad notify_event: event %llu, dev_id %llu, dev_type %llu\n",
+ 				__func__, __LINE__, notify_event->event_type,
+ 				notify_event->dev_id, notify_event->dev_type);
+ 			continue;
+ 		}
+ 
+-		ps3_find_and_add_device(dev.sbd.bus_id, notify_event->dev_id);
++		ps3_find_and_add_device(local->dev.sbd.bus_id,
++			notify_event->dev_id);
+ 
+ 	} while (!kthread_should_stop());
+ 
+ fail_free_irq:
+-	free_irq(irq, &dev);
++	free_irq(irq, &local->dev);
+ fail_sb_event_receive_port_destroy:
+-	ps3_sb_event_receive_port_destroy(&dev.sbd, irq);
++	ps3_sb_event_receive_port_destroy(&local->dev.sbd, irq);
+ fail_close_device:
+-	lv1_close_device(dev.sbd.bus_id, dev.sbd.dev_id);
++	lv1_close_device(local->dev.sbd.bus_id, local->dev.sbd.dev_id);
+ fail_free:
+-	kfree(buf);
++	kfree(local);
+ 
+ 	probe_task = NULL;
+ 
 
-Takashi
 
