@@ -1,122 +1,86 @@
-Return-Path: <linux-kernel+bounces-126794-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-126793-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 16AAE893CCD
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 17:22:14 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id C3809893CCB
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 17:21:57 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9AE3CB22714
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 15:22:11 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 597241F22826
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 15:21:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CC04E4CDE0;
-	Mon,  1 Apr 2024 15:21:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C3FC2481DD;
+	Mon,  1 Apr 2024 15:21:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=fireburn-co-uk.20230601.gappssmtp.com header.i=@fireburn-co-uk.20230601.gappssmtp.com header.b="CDoC1mx2"
-Received: from mail-pj1-f42.google.com (mail-pj1-f42.google.com [209.85.216.42])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="fg5ZiGTn"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AF8BA4AEF6
-	for <linux-kernel@vger.kernel.org>; Mon,  1 Apr 2024 15:21:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 07C344AECF;
+	Mon,  1 Apr 2024 15:21:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711984864; cv=none; b=lmo0PxIOL7raJDhmeO77LiDwOgCpJXci+lFtMuTkvGIye6ZR9ddVnUw40sjfGu/uVX20SrjB3kv3R3v16FsRaZkM17/fCn3NqExl/jbYum98+uM3ZY8jWtNbYPUaTPbBJpod0toD89Vxk+mm8GjNldoJ+IBwdzpSkJO2Sjga++A=
+	t=1711984861; cv=none; b=LJfUwPRhG2oGlq+1RC721rqrELoqzc10mFDSKSh/4xPU2ik5i2iWtRstDII2q+/VawE26Uiaetf71w4yyocfT0T0k/WG+BrLzF4dc1Lp/2m9AwSD+TSNwiXcOrrm8duGXwzU0waCUQu8QoiWC47+MiHABL2uzzd7Q8aQoWbC+2A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711984864; c=relaxed/simple;
-	bh=nW4KVcUljnrqT34rDqiJ5XMz9R+fw396kTItAuhWVC0=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=koiwBuc83Vydh6fvMEAqg/zuFu8X2c4c80PYdnv4QGpG3sIxVfIM0wnxSadylHKJGqp+TMmFgsrJz+PKUkBOJoldeN4uXDvF91oFplJt+LD/yQ7HgT57ux9GWodShlTxHKV3NuppQ8YJ+ov7LqeC05IxqyF6sqwagY4zRaq3LsE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=fireburn.co.uk; spf=none smtp.mailfrom=fireburn.co.uk; dkim=pass (2048-bit key) header.d=fireburn-co-uk.20230601.gappssmtp.com header.i=@fireburn-co-uk.20230601.gappssmtp.com header.b=CDoC1mx2; arc=none smtp.client-ip=209.85.216.42
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=fireburn.co.uk
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=fireburn.co.uk
-Received: by mail-pj1-f42.google.com with SMTP id 98e67ed59e1d1-2a07b092c4fso3106941a91.0
-        for <linux-kernel@vger.kernel.org>; Mon, 01 Apr 2024 08:21:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=fireburn-co-uk.20230601.gappssmtp.com; s=20230601; t=1711984862; x=1712589662; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=3Kyf88o4qsQlO/wR+KsemeXOmT0rB7nYlUY+SaWAaQc=;
-        b=CDoC1mx2Yrpa5tdATcbKXMf/VAxsAtlJixpbZxmsulMQsRE20IcUtRBfX+r6vfV46W
-         UTFlx6kCqA+yragjAWVU9/GcsszkgvygORS1RB1OqkM6icoJtfE7Se60X9gr7QV7LPoz
-         l87mC1XGoOM3Qq9ES62I1cQu8QpcB4AjcTmhFfzVJ7/drTVsrn93Yl4V9qJagJYvgaoS
-         gbGse+HBBnERS1GJfhvsoC1eADa7DisXXvTLG1jYXccbv5vIiJi+MNknIa1U98BufZp1
-         DRSzVVRCxFq7A3PqNupj0hVp8mi05qBx42f32eklsgkvhGAMlUhbCg3MJBcGhRxq8FYO
-         BRiA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711984862; x=1712589662;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=3Kyf88o4qsQlO/wR+KsemeXOmT0rB7nYlUY+SaWAaQc=;
-        b=GMTFUlOg1EPMT/JP8n7Q8+3iWuLZZIa8YadS0AMGK+mbtqUf6qE1YL7MqyxYAHj0pV
-         eH2Ij8CMA3SOGjZl//i+eWT77CC2GSbbPBdbYkWYyYJfT9ta6hu6aBxFMWFpN1nQOD/I
-         ZgNvWhBvZP9g0J7NdehsaalZDHW6wH/tbagcTLEjMvP1uT26cXAzHv+UJm3ZFGLQEAaw
-         TiJErV8eEzA9JIcx1VKgucjKoQy8czil1LBLmrKtEx/Cq4FlxyPwBsWXD2Mmv7kEH42W
-         xKcskjPJqUUKjCJBFyLedQjRCtYItWLfSFnRpK+sK1e05tKYNXJ5xWsQyQSK59ES8UYO
-         qDtg==
-X-Forwarded-Encrypted: i=1; AJvYcCWriXbHcfseU067ckinH9dWlTWHavOd+kN3M4SHZE52U6joXdsz6VCRd7AkEJ5dl76DTukJMAyeocv0NpEw4lNm0XIJEuUC7B51hD0+
-X-Gm-Message-State: AOJu0YwtzLTMM6BPQeEKy2vlXaroW2H9PMHvJzL1iUBcNe+UrCDIsM7x
-	2KiNsfXzVmwFm/GxzhyBn72fhCw8+BfVgfY0UTOwrXi7W57VLyD/aKWgeHJtKJodt5Rl1Vhnpbe
-	g6GD0zJSPUbTANKiO+Ld4HOuvvp51UL8v3Mok
-X-Google-Smtp-Source: AGHT+IFPdgTg4m5tdz2zVUYiPfiHs6ZUPBKRXVgXamNWYYGHph95LpNshQvN2PHe1hlxkS0udPLirfwMVN9/FJiljx4=
-X-Received: by 2002:a17:90a:f3c6:b0:2a0:5234:6842 with SMTP id
- ha6-20020a17090af3c600b002a052346842mr8533728pjb.31.1711984861895; Mon, 01
- Apr 2024 08:21:01 -0700 (PDT)
+	s=arc-20240116; t=1711984861; c=relaxed/simple;
+	bh=ZBiBE3qZkHMm5Z23/govMm0X9TLV1iM7mEWgmk1P+oU=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=AcYJbAI+ndsmzJ1PTcHkdkL+WQAKwXPxktbH9JKxR7NgkQGb6jkgLPXiblc0W9yRBhzvKWP0+hJ+JsA8nRzST+hRu7Oylo31nYw71oooqBMt3OLdvO/VzOkBA3sXEbFokRi1FkAjQyPRUefEvdgKt9DScChMHNu+glvwoDcb+i4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=fg5ZiGTn; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id ED925C433F1;
+	Mon,  1 Apr 2024 15:20:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1711984860;
+	bh=ZBiBE3qZkHMm5Z23/govMm0X9TLV1iM7mEWgmk1P+oU=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=fg5ZiGTnwlWG59PKdduv+jm4pSBi8QM4G2Ox8yiViz/oWewJH5UFDzxvoxjcsmEYD
+	 pfUV3qkXIQW2Wgmb4vUz4L9E+SbduzgENEqefxfLzhRiTFXMsVSvYVmHsECK8jm3td
+	 nY5Ot3wf05bG59/VOI8568Rk3RPD309vB8RcTtEBhMJIwYdmbvwUnZUqQP/96ojCOz
+	 xi+zHt9sEuuwr8ZT/uTO/xh5J+84+71XEjmwhf7pVtxkPqMZIzFijlgVFLfyJ5TVyR
+	 JZHNlktj75gRwnYciOqFeq6WvxOkHX3cHX6TxpAtDTl+Hl1C6I/MWyx8hb302+tmqf
+	 spggwy8/Rj3MQ==
+Date: Mon, 1 Apr 2024 08:20:59 -0700
+From: Jakub Kicinski <kuba@kernel.org>
+To: "Michael S. Tsirkin" <mst@redhat.com>
+Cc: Breno Leitao <leitao@debian.org>, hengqi@linux.alibaba.com,
+ xuanzhuo@linux.alibaba.com, Jason Wang <jasowang@redhat.com>, "David S.
+ Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, Paolo
+ Abeni <pabeni@redhat.com>, Andrew Melnychenko <andrew@daynix.com>,
+ rbc@meta.com, riel@surriel.com, stable@vger.kernel.org,
+ qemu-devel@nongnu.org, "open list:VIRTIO CORE AND NET DRIVERS"
+ <virtualization@lists.linux.dev>, "open list:NETWORKING DRIVERS"
+ <netdev@vger.kernel.org>, open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH net v3] virtio_net: Do not send RSS key if it is not
+ supported
+Message-ID: <20240401082059.77df2ff0@kernel.org>
+In-Reply-To: <20240331160618-mutt-send-email-mst@kernel.org>
+References: <20240329171641.366520-1-leitao@debian.org>
+	<20240331160618-mutt-send-email-mst@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240304144844.2042-1-peter.tsao@mediatek.com> <20240401144424.1714-1-mike@fireburn.co.uk>
-In-Reply-To: <20240401144424.1714-1-mike@fireburn.co.uk>
-From: Mike Lothian <mike@fireburn.co.uk>
-Date: Mon, 1 Apr 2024 16:20:50 +0100
-Message-ID: <CAHbf0-FqUqoDty81OH9_Et7MTWFikYYhEvP7SBVGyeXO-R94_A@mail.gmail.com>
-Subject: Re: [PATCH] [PATCH] Bluetooth: btusb: Add support Mediatek MT7920
-To: peter.tsao@mediatek.com
-Cc: aaron.hou@mediatek.com, chris.lu@mediatek.com, deren.Wu@mediatek.com, 
-	johan.hedberg@gmail.com, linux-bluetooth@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, linux-mediatek@lists.infradead.org, 
-	luiz.dentz@gmail.com, marcel@holtmann.org, sean.wang@mediatek.com, 
-	steve.lee@mediatek.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-On Mon, 1 Apr 2024 at 15:44, Mike Lothian <mike@fireburn.co.uk> wrote:
->
-> Hi
->
-> I think this patch is causing issues with older firmware
->
-> Bus 003 Device 002: ID 13d3:3563 IMC Networks Wireless_Device
->
-> [    0.315064] Bluetooth: Core ver 2.22
-> [    0.315064] NET: Registered PF_BLUETOOTH protocol family
-> [    0.315064] Bluetooth: HCI device and connection manager initialized
-> [    0.315064] Bluetooth: HCI socket layer initialized
-> [    0.315064] Bluetooth: L2CAP socket layer initialized
-> [    0.315064] Bluetooth: SCO socket layer initialized
-> [    4.670811] Bluetooth: RFCOMM TTY layer initialized
-> [    4.671029] Bluetooth: RFCOMM socket layer initialized
-> [    4.671790] Bluetooth: RFCOMM ver 1.11
-> [    4.673416] Bluetooth: BNEP (Ethernet Emulation) ver 1.3
-> [    4.673659] Bluetooth: BNEP filters: protocol multicast
-> [    4.673895] Bluetooth: BNEP socket layer initialized
-> [    4.674125] Bluetooth: HIDP (Human Interface Emulation) ver 1.2
-> [    4.674360] Bluetooth: HIDP socket layer initialized
-> [    5.016365] bluetooth hci0: Direct firmware load for mediatek/BT_RAM_CODE_MT7961_1a_2_hdr.bin failed with error -2
-> [    5.017163] Bluetooth: hci0: Failed to load firmware file (-2)
-> [    5.017557] Bluetooth: hci0: Failed to set up firmware (-2)
-> [    5.018129] Bluetooth: hci0: HCI Enhanced Setup Synchronous Connection command is advertised, but not supported.
->
-> The correct name should be mediatek/BT_RAM_CODE_MT7961_1_2_hdr.bin
->
-> Reverting this patch fixes things
->
-> Cheers
->
-> Mike
+On Sun, 31 Mar 2024 16:20:30 -0400 Michael S. Tsirkin wrote:
+> > Fixes: c7114b1249fa ("drivers/net/virtio_net: Added basic RSS support.")
+> > Cc: stable@vger.kernel.org  
+> 
+> net has its own stable process, don't CC stable on net patches.
 
-If it helps, the device ID is 0x7961 and the fw_flavour is 24 or 0x18 in hex
+Not any more, FWIW:
+
+  1.5.7. Stable tree
+
+  While it used to be the case that netdev submissions were not
+  supposed to carry explicit CC: stable@vger.kernel.org tags that is no
+  longer the case today. Please follow the standard stable rules in
+  Documentation/process/stable-kernel-rules.rst, and make sure you
+  include appropriate Fixes tags!
+
+https://www.kernel.org/doc/html/next/process/maintainer-netdev.html#stable-tree
 
