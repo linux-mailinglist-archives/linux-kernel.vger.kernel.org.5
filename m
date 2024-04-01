@@ -1,192 +1,151 @@
-Return-Path: <linux-kernel+bounces-126481-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-126482-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 28FEF893880
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 08:56:47 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A6915893884
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 09:00:55 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CD97E2816AC
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 06:56:45 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 29757B20DC5
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 07:00:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E580D9468;
-	Mon,  1 Apr 2024 06:56:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5CA1FB664;
+	Mon,  1 Apr 2024 07:00:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ventanamicro.com header.i=@ventanamicro.com header.b="MFlBSyA0"
-Received: from mail-oo1-f47.google.com (mail-oo1-f47.google.com [209.85.161.47])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="eGLfaRcg"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.18])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 484FF9479
-	for <linux-kernel@vger.kernel.org>; Mon,  1 Apr 2024 06:56:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7651929AF;
+	Mon,  1 Apr 2024 07:00:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711954601; cv=none; b=gIe+XxG6C/fBOkwNCAQaxsT0EwhoMUWJdQn+LCe6lsM75P3D/crJt+qMBhmgKCO6Eclg9YuI9+OF1EooIHhD8HEkh9l1XtePB6b2TUyIGr4MmuJwHF18NQYGUOShXYKwZZVBR/TuM3Y0ADhdcZz7pw0kw3yZOyXfVrL16HwVGec=
+	t=1711954844; cv=none; b=LfX5jq7O+sUgvW5STD8USqxdYUONIT0NDXpMFyhJQgahP0uWIEUGXJ7eVCnYttoQaT1sfLE+RiJE8Jv8geqCAuXtPfo2C/tEbIb67Wl/pLhJ4c6jkKpFyM+PyjVydEbQaEzU/Dg1aIb7D13TtivGTexuCun5phIGPrBAnZWf+J4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711954601; c=relaxed/simple;
-	bh=Yg6ZAZ9PYBDDNgkzym8CB2lmZAjdjykvvduvHFcu4ew=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=AYBOxlx6F5Q1YJ0rqX3T91bGgA6VZGx/KSlTeFdJzrI+DXPW25sEwLaSyWvPNPQJvD4DRDJjBmihhX40hyFBN462ZV4PUzfd4Bh/J7SEVQ8TAVUh8n9/mav9tKRZmMAnmpudDroQfD0kQEuMfKN3ySG39KO7v5fKbnkl4S6mKxc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ventanamicro.com; spf=pass smtp.mailfrom=ventanamicro.com; dkim=pass (2048-bit key) header.d=ventanamicro.com header.i=@ventanamicro.com header.b=MFlBSyA0; arc=none smtp.client-ip=209.85.161.47
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ventanamicro.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ventanamicro.com
-Received: by mail-oo1-f47.google.com with SMTP id 006d021491bc7-5a558d9c33aso2423700eaf.1
-        for <linux-kernel@vger.kernel.org>; Sun, 31 Mar 2024 23:56:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ventanamicro.com; s=google; t=1711954598; x=1712559398; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=k5QMc5A+3aApya8s9m/eSM60TrmnXCfV5wxTtT8TbHU=;
-        b=MFlBSyA0bJ4CA4QK54HHyxL2JnJEOLwkKd/zJMBp49nih59P1uzsceUReutVAeS/O3
-         n/zDYPkGPNvvRTwjI3AgtiYAIMphEm1rwr1/a/ZyZ9o3ReU7rKmMeAVhEybQs8mF25Sn
-         t5BmYH1QkUeNpna6oU1dpYeAyl7ZOwAToxH54yZZW6E61YvjIhYrFkLJ6kZmOUyHsi6M
-         jyXHdGbRV0MByaYWzRaHGfqXD8EDtCHZn5+T9N2rTrjc7kFI9xZubLi0pTGJ6yO4NfFE
-         5/s3stM1bQOprEXe0g1AT4/1i4sgsqZDZKzBUxg2HVhnBWj6NgSENO3E6dbIPMH8gZXm
-         gnig==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711954598; x=1712559398;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=k5QMc5A+3aApya8s9m/eSM60TrmnXCfV5wxTtT8TbHU=;
-        b=Kz5pscTVtwFoVRBeHJqkUIunOfmS4sWdLPBn0gNTlqNpdAfIy823LfqXWnHuPaOqIl
-         NP/iDnsMA4o2BrpWHZ5+UvRjUkZFJ0O1mAM4lj1hRFQePxu2U4FYyg+AxQQb2cfYeyVD
-         xU0gkgOd2uVMuZve07ymFO9eIGiczwtQAj2m6c1QCJ2NfI33UugPV/19+fCImiIvR216
-         2dxhFamkun16p1aIxDDhdBpX8BKm2xGLsT8s0OY5LedQXsMWYmNlU/QUvaWpSf5WlD1p
-         JK8603J8iN5yj0mWgD1xAkDEyNumIUpPVperz81dNnoQIrvS2Nor5h+/clnrV4S8HHUN
-         n3Og==
-X-Forwarded-Encrypted: i=1; AJvYcCUnLzcLRFDelHyb8Xr1c0nBDD+oIHizqlYx9xBfd7QdcPXG3BZbitYwjTv17iJR0Ho8+VrCdx2xWEB/2ENGtolLqDJ8lKGg394iCmDU
-X-Gm-Message-State: AOJu0Yy6QHyEx7s3v6UPG1Lg41U8K8YWg3o36A4ZpGSNjts8WV6ViFBH
-	gyTdlf/qyUMmt8+Sqh01cYTNT1zA57Hdg4BdNGtIa2h57Bd+P1LIZPJxNpQiKxQ=
-X-Google-Smtp-Source: AGHT+IG8xxvNtnP4w16j8PGzc8Gm8jhbFwQdMjb0A7TOdZGH0K91xBxYft+WGV5HplTsEJ33lk1W0Q==
-X-Received: by 2002:a05:6870:95a4:b0:22a:9d77:f654 with SMTP id k36-20020a05687095a400b0022a9d77f654mr10088415oao.31.1711954598213;
-        Sun, 31 Mar 2024 23:56:38 -0700 (PDT)
-Received: from sunil-laptop ([106.51.187.230])
-        by smtp.gmail.com with ESMTPSA id hu20-20020a056871529400b00222b4f5a5e0sm2695353oac.18.2024.03.31.23.56.25
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 31 Mar 2024 23:56:37 -0700 (PDT)
-Date: Mon, 1 Apr 2024 12:26:21 +0530
-From: Sunil V L <sunilvl@ventanamicro.com>
-To: Haibo Xu <haibo1.xu@intel.com>
-Cc: xiaobo55x@gmail.com, ajones@ventanamicro.com,
-	Paul Walmsley <paul.walmsley@sifive.com>,
-	Palmer Dabbelt <palmer@dabbelt.com>,
-	Albert Ou <aou@eecs.berkeley.edu>,
-	"Rafael J. Wysocki" <rafael@kernel.org>,
-	Len Brown <lenb@kernel.org>, Robert Moore <robert.moore@intel.com>,
-	Conor Dooley <conor.dooley@microchip.com>,
-	Guo Ren <guoren@kernel.org>,
-	=?utf-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@rivosinc.com>,
-	Alexandre Ghiti <alexghiti@rivosinc.com>,
-	Greentime Hu <greentime.hu@sifive.com>,
-	Charlie Jenkins <charlie@rivosinc.com>,
-	Sia Jee Heng <jeeheng.sia@starfivetech.com>,
-	Sami Tolvanen <samitolvanen@google.com>,
-	Zong Li <zong.li@sifive.com>, Jisheng Zhang <jszhang@kernel.org>,
-	=?utf-8?B?Q2zDqW1lbnQgTMOpZ2Vy?= <cleger@rivosinc.com>,
-	Baoquan He <bhe@redhat.com>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Chen Jiahao <chenjiahao16@huawei.com>,
-	James Morse <james.morse@arm.com>, Arnd Bergmann <arnd@arndb.de>,
-	"Russell King (Oracle)" <rmk+kernel@armlinux.org.uk>,
-	Evan Green <evan@rivosinc.com>,
-	Samuel Holland <samuel.holland@sifive.com>,
-	Anup Patel <apatel@ventanamicro.com>,
-	Ard Biesheuvel <ardb@kernel.org>, Tony Luck <tony.luck@intel.com>,
-	Yuntao Wang <ytcoode@gmail.com>,
-	Alison Schofield <alison.schofield@intel.com>,
-	Dave Hansen <dave.hansen@linux.intel.com>,
-	Dan Williams <dan.j.williams@intel.com>,
-	linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
-	linux-acpi@vger.kernel.org, acpica-devel@lists.linux.dev
-Subject: Re: [PATCH v2 3/6] ACPI: NUMA: Add handler for SRAT RINTC affinity
- structure
-Message-ID: <ZgpalRJPbP1/8VBL@sunil-laptop>
-References: <cover.1709780590.git.haibo1.xu@intel.com>
- <91a4bc39444c80ea960bbd070bea489d27628cb6.1709780590.git.haibo1.xu@intel.com>
+	s=arc-20240116; t=1711954844; c=relaxed/simple;
+	bh=LLuf8x6ofMo6yXJcAwwDMleIkfrsw+/zwHuV6rhATF4=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=JDagCoHoBN4H8kmj083Nx9o0V9URSsuvRs26ZWKC/crA9mvHLknox/GgeVLxY5Moqkjk8YetGhdJUc+GAlLkEgQqchoxtHNwVBuCE6efnYwAFUiEtjBwvOiAgmtOJde1yKFdzezPQWpDRryXHXTeHY2GxWWFNo0DALORyjnd2B0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=eGLfaRcg; arc=none smtp.client-ip=192.198.163.18
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1711954843; x=1743490843;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=LLuf8x6ofMo6yXJcAwwDMleIkfrsw+/zwHuV6rhATF4=;
+  b=eGLfaRcg3sWiGleNxtDcAt9oP+91vpDh9M4cmkM/3nLJfqbm/9i4LfRX
+   JdQugNZXMJKECHbeyxPoA+V2XmLVgHBX9H3AkWFXr3/bBymhdOB2oJFt7
+   sFQqassQ2wMOaPMr6u3RSRdLTcYi+7lu48Jr98Q+9jDrh/E6ZnU1BpVmX
+   IMFCon2aHJ6PrNaQeADasJxoNhqXjPVhkFE+TwBUtLQ898wWa58k3Pnle
+   7DmSyH3DsI6xwWyUAuJmT0p/gPGQZt8hZdo7bftG26fAt3ujQQ8bJmN7w
+   2Rmtnh+nR7CouaxdpsvPEXEOOJYDuOhYZVFDdZoiLcJLT21FgZNWYp6Sz
+   g==;
+X-CSE-ConnectionGUID: B+jZWSBlQGGMQ8wE2L99Mw==
+X-CSE-MsgGUID: s/L/fPmhTyWEgts2GvvZUg==
+X-IronPort-AV: E=McAfee;i="6600,9927,11030"; a="6906441"
+X-IronPort-AV: E=Sophos;i="6.07,171,1708416000"; 
+   d="scan'208";a="6906441"
+Received: from orviesa008.jf.intel.com ([10.64.159.148])
+  by fmvoesa112.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Apr 2024 00:00:42 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,171,1708416000"; 
+   d="scan'208";a="18256849"
+Received: from xiaoyaol-hp-g830.ccr.corp.intel.com (HELO [10.124.224.7]) ([10.124.224.7])
+  by orviesa008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Apr 2024 00:00:38 -0700
+Message-ID: <1bf2a76f-e89b-4aee-8330-7a47280704f1@intel.com>
+Date: Mon, 1 Apr 2024 15:00:34 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <91a4bc39444c80ea960bbd070bea489d27628cb6.1709780590.git.haibo1.xu@intel.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v6 6/9] KVM: nVMX: Use macros and #defines in
+ vmx_restore_vmx_basic()
+To: Sean Christopherson <seanjc@google.com>,
+ Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>,
+ Borislav Petkov <bp@alien8.de>, Dave Hansen <dave.hansen@linux.intel.com>,
+ x86@kernel.org, Paolo Bonzini <pbonzini@redhat.com>,
+ Andy Lutomirski <luto@kernel.org>, Peter Zijlstra <peterz@infradead.org>
+Cc: linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+ Shan Kang <shan.kang@intel.com>, Kai Huang <kai.huang@intel.com>,
+ Xin Li <xin3.li@intel.com>
+References: <20240309012725.1409949-1-seanjc@google.com>
+ <20240309012725.1409949-7-seanjc@google.com>
+Content-Language: en-US
+From: Xiaoyao Li <xiaoyao.li@intel.com>
+In-Reply-To: <20240309012725.1409949-7-seanjc@google.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Thu, Mar 07, 2024 at 04:47:55PM +0800, Haibo Xu wrote:
-> Add RINTC affinity structure handler during parsing SRAT table.
+On 3/9/2024 9:27 AM, Sean Christopherson wrote:
+> From: Xin Li <xin3.li@intel.com>
 > 
-> Signed-off-by: Haibo Xu <haibo1.xu@intel.com>
+> Use macros in vmx_restore_vmx_basic() instead of open coding everything
+> using BIT_ULL() and GENMASK_ULL().  Opportunistically split feature bits
+> and reserved bits into separate variables, and add a comment explaining
+> the subset logic (it's not immediately obvious that the set of feature
+> bits is NOT the set of _supported_ feature bits).
+> 
+> Cc: Shan Kang <shan.kang@intel.com>
+> Cc: Kai Huang <kai.huang@intel.com>
+> Signed-off-by: Xin Li <xin3.li@intel.com>
+> [sean: split to separate patch, write changelog, drop #defines]
+> Signed-off-by: Sean Christopherson <seanjc@google.com>
+
+Reviewed-by: Xiaoyao Li <xiaoyao.li@intel.com>
+
 > ---
->  drivers/acpi/numa/srat.c | 32 +++++++++++++++++++++++++++++++-
->  1 file changed, 31 insertions(+), 1 deletion(-)
+>   arch/x86/kvm/vmx/nested.c | 25 ++++++++++++++++++-------
+>   1 file changed, 18 insertions(+), 7 deletions(-)
 > 
-> diff --git a/drivers/acpi/numa/srat.c b/drivers/acpi/numa/srat.c
-> index 0214518fc582..1946431c0eef 100644
-> --- a/drivers/acpi/numa/srat.c
-> +++ b/drivers/acpi/numa/srat.c
-> @@ -165,6 +165,19 @@ acpi_table_print_srat_entry(struct acpi_subtable_header *header)
->  		}
->  	}
->  	break;
+> diff --git a/arch/x86/kvm/vmx/nested.c b/arch/x86/kvm/vmx/nested.c
+> index 82a35aba7d2b..4ad8696c25af 100644
+> --- a/arch/x86/kvm/vmx/nested.c
+> +++ b/arch/x86/kvm/vmx/nested.c
+> @@ -1228,21 +1228,32 @@ static bool is_bitwise_subset(u64 superset, u64 subset, u64 mask)
+>   
+>   static int vmx_restore_vmx_basic(struct vcpu_vmx *vmx, u64 data)
+>   {
+> -	const u64 feature_and_reserved =
+> -		/* feature (except bit 48; see below) */
+> -		BIT_ULL(49) | BIT_ULL(54) | BIT_ULL(55) |
+> -		/* reserved */
+> -		BIT_ULL(31) | GENMASK_ULL(47, 45) | GENMASK_ULL(63, 56);
+> +	const u64 feature_bits = VMX_BASIC_DUAL_MONITOR_TREATMENT |
+> +				 VMX_BASIC_INOUT |
+> +				 VMX_BASIC_TRUE_CTLS;
 > +
-> +	case ACPI_SRAT_TYPE_RINTC_AFFINITY:
-> +		{
-> +			struct acpi_srat_rintc_affinity *p =
-> +			    (struct acpi_srat_rintc_affinity *)header;
-> +			pr_debug("SRAT Processor (acpi id[0x%04x]) in proximity domain %d %s\n",
-> +				 p->acpi_processor_uid,
-> +				 p->proximity_domain,
-> +				 (p->flags & ACPI_SRAT_RINTC_ENABLED) ?
-> +				 "enabled" : "disabled");
-> +		}
-> +		break;
+> +	const u64 reserved_bits = GENMASK_ULL(63, 56) |
+> +				  GENMASK_ULL(47, 45) |
+> +				  BIT_ULL(31);
 > +
->  	default:
->  		pr_warn("Found unsupported SRAT entry (type = 0x%x)\n",
->  			header->type);
-> @@ -448,6 +461,21 @@ acpi_parse_gi_affinity(union acpi_subtable_headers *header,
->  }
->  #endif /* defined(CONFIG_X86) || defined (CONFIG_ARM64) */
->  
-> +static int __init
-> +acpi_parse_rintc_affinity(union acpi_subtable_headers *header,
-> +			  const unsigned long end)
-> +{
-> +	struct acpi_srat_rintc_affinity *rintc_affinity;
+>   	u64 vmx_basic = vmcs_config.nested.basic;
+>   
+> -	if (!is_bitwise_subset(vmx_basic, data, feature_and_reserved))
+> +	BUILD_BUG_ON(feature_bits & reserved_bits);
 > +
-> +	rintc_affinity = (struct acpi_srat_rintc_affinity *)header;
-> +	acpi_table_print_srat_entry(&header->common);
-> +
-> +	/* let architecture-dependent part to do it */
-> +	acpi_numa_rintc_affinity_init(rintc_affinity);
-> +
-> +	return 0;
-> +}
-> +
->  static int __initdata parsed_numa_memblks;
->  
->  static int __init
-> @@ -501,7 +529,7 @@ int __init acpi_numa_init(void)
->  
->  	/* SRAT: System Resource Affinity Table */
->  	if (!acpi_table_parse(ACPI_SIG_SRAT, acpi_parse_srat)) {
-> -		struct acpi_subtable_proc srat_proc[4];
-> +		struct acpi_subtable_proc srat_proc[5];
->  
->  		memset(srat_proc, 0, sizeof(srat_proc));
->  		srat_proc[0].id = ACPI_SRAT_TYPE_CPU_AFFINITY;
-> @@ -512,6 +540,8 @@ int __init acpi_numa_init(void)
->  		srat_proc[2].handler = acpi_parse_gicc_affinity;
->  		srat_proc[3].id = ACPI_SRAT_TYPE_GENERIC_AFFINITY;
->  		srat_proc[3].handler = acpi_parse_gi_affinity;
-> +		srat_proc[4].id = ACPI_SRAT_TYPE_RINTC_AFFINITY;
-> +		srat_proc[4].handler = acpi_parse_rintc_affinity;
->  
->  		acpi_table_parse_entries_array(ACPI_SIG_SRAT,
->  					sizeof(struct acpi_table_srat),
-LGTM. Thanks!
+> +	/*
+> +	 * Except for 32BIT_PHYS_ADDR_ONLY, which is an anti-feature bit (has
+> +	 * inverted polarity), the incoming value must not set feature bits or
+> +	 * reserved bits that aren't allowed/supported by KVM.  Fields, i.e.
+> +	 * multi-bit values, are explicitly checked below.
+> +	 */
+> +	if (!is_bitwise_subset(vmx_basic, data, feature_bits | reserved_bits))
+>   		return -EINVAL;
+>   
+>   	/*
+>   	 * KVM does not emulate a version of VMX that constrains physical
+>   	 * addresses of VMX structures (e.g. VMCS) to 32-bits.
+>   	 */
+> -	if (data & BIT_ULL(48))
+> +	if (data & VMX_BASIC_32BIT_PHYS_ADDR_ONLY)
+>   		return -EINVAL;
+>   
+>   	if (vmx_basic_vmcs_revision_id(vmx_basic) !=
 
-Reviewed-by: Sunil V L <sunilvl@ventanamicro.com>
 
