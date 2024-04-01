@@ -1,189 +1,300 @@
-Return-Path: <linux-kernel+bounces-126857-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-126858-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8B3B589416B
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 18:42:09 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 254DA894174
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 18:42:32 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A92391C20F26
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 16:42:08 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 90DE71F237DA
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 16:42:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5118A4654F;
-	Mon,  1 Apr 2024 16:41:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CB2784A99C;
+	Mon,  1 Apr 2024 16:42:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="NPMKJ3Lr"
-Received: from mail-ot1-f47.google.com (mail-ot1-f47.google.com [209.85.210.47])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="xLbIBnl7"
+Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C350047A76
-	for <linux-kernel@vger.kernel.org>; Mon,  1 Apr 2024 16:41:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EEC1B3BBC3
+	for <linux-kernel@vger.kernel.org>; Mon,  1 Apr 2024 16:42:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711989716; cv=none; b=jZHI0jcvzfWHUpOOwCK0x0j0R9iKsNTd0oO3VO92CcrDt6uegmF6OXEkFQGKLtMo7hibrWarwWtFp42BWbrW2qEe0HjBI8rZBKcvrDZBi0Yu4vx96jSisG+j+aGglZidaJ+Nd5f7mSL0u89Zzyk7ak1JGMkvOLnHol4JQshctlQ=
+	t=1711989732; cv=none; b=DE8equ1J+FkGNazG25n5y/j29WYej/jZyOGXlB0FmQE95iIo6bi9BJpL/gwQDSFcHmu7wYIJTgyLe4hUfMVwkHF+U8t2Cgb5Pjj/E+BiT65S8lel7f36UJYrBaJiSRlOQDGvsmkQ1bJiqaQhiXK1bMq0IW4eae23AuzWd0Odw48=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711989716; c=relaxed/simple;
-	bh=/qz+y5YC2iKyofjEybG266txkeP8b0dMGw22Spe7v0g=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=bsPg+dmbAd+NRLsvhKYAMfWOrNXlx+omL1avW7dU94pBBG1M/tJ6Uf5PKHLW/AB0HbNLDeUE0daZl0b7MNLuDAHqHyaWGywCz8l6jQbgsuQVUt57u1VR0bO1Xs+sYjnuzLv+8zYHnjbBiFMRpmk05Xgt7OWLTAzVFIGDK8V3wvY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=NPMKJ3Lr; arc=none smtp.client-ip=209.85.210.47
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-ot1-f47.google.com with SMTP id 46e09a7af769-6e707210ab9so1643573a34.2
-        for <linux-kernel@vger.kernel.org>; Mon, 01 Apr 2024 09:41:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1711989714; x=1712594514; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=tm96Do3HD9Ni1RnQFtInuSgt43w6ZXYVK1hdTCMkucA=;
-        b=NPMKJ3LrhP/TWUTMdAENVFXheh/pXEX8NwXYYBsz92HOdQ/2dAgNyyH0JcN5e1iXs9
-         K81G1uYRH01tkioSiSccxJCHMccWX0di8AWmFgrjcpbhYgWZ8UBMO3Og5Zazqjz5mTPL
-         zVXwV2AJliV7pdDHPUJWVAqQuBoMba35mG78k=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711989714; x=1712594514;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=tm96Do3HD9Ni1RnQFtInuSgt43w6ZXYVK1hdTCMkucA=;
-        b=K2m9BZZqYrwOaT+zQeqNDh6Jj4SxoWEpSlQVrIwHeY7wRV+ISBZ7Z34Bg/y8ltpD4N
-         zlKPc4z9sy35moR0+gjD/hoNwJnBsT0rhPmvyAd20xIjz6OWMtenWslXyJdRJYGWTU6s
-         OhhcqPul6IIUGWyPBy4pcLnwvue0XuTLnZV7Zm65vTVDg2qJTPmlLrBQ7BIatpI6bzH+
-         qj5zgILakgQ6TXYmcV8zii8PW/KfPaOiqV4ylKAhqvUuuGJJ8AaXXvMZbtqU1wKMuezQ
-         c1yCFvM3YnXM3iHnpRPUBbuqJr5zy0kApuLAbNMpqrWTX6q9uijpoL9/NuTwS/FMr/LQ
-         fFjw==
-X-Forwarded-Encrypted: i=1; AJvYcCWAjh/oB1Spaqn1hDWfMo3r0+9Tjj0Uq/2YbketLyzJ20NbkRCbGrf1nt6tmV9RJ1hFIIDQxfh8e5ZMQiQpRdMlHbXiMQ7DMH/9EIRx
-X-Gm-Message-State: AOJu0Yz5DnQyX4+GA36gR1mP5lyhAvwuEj2dovXSE4jsYhQMu5sAzblQ
-	gps9m/3FQna6wgSBgB6prz9uOZC26GeKW4bY1OXBkaAj+qQPs7J/xqHS9xWEcKGR2oc9v2EiYtc
-	=
-X-Google-Smtp-Source: AGHT+IGCu+7IsNsMH+7+PHdmIZYvPb0u9NBZ/n5COeMnjRALjtPEZb51AHCXQL3qyhH4K4xw1UHqEQ==
-X-Received: by 2002:a05:6808:21a6:b0:3c2:1ed6:f3e8 with SMTP id be38-20020a05680821a600b003c21ed6f3e8mr12969974oib.2.1711989713915;
-        Mon, 01 Apr 2024 09:41:53 -0700 (PDT)
-Received: from mail-qt1-f175.google.com (mail-qt1-f175.google.com. [209.85.160.175])
-        by smtp.gmail.com with ESMTPSA id c13-20020a05620a0ced00b007886bb7826fsm3582838qkj.46.2024.04.01.09.41.53
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 01 Apr 2024 09:41:53 -0700 (PDT)
-Received: by mail-qt1-f175.google.com with SMTP id d75a77b69052e-42ee0c326e8so733501cf.0
-        for <linux-kernel@vger.kernel.org>; Mon, 01 Apr 2024 09:41:53 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCW/OcJsw2mItRnSJ/lwX0U7ZIhngYSQu5rKhtKWMgUpGpAzKfn+kVwgYpUM1X+13FgT5xtk5yQYwZ94YkPWPrYqduSkJ04EK5yz6djc
-X-Received: by 2002:a05:622a:5a89:b0:431:4e0b:d675 with SMTP id
- fz9-20020a05622a5a8900b004314e0bd675mr1027105qtb.18.1711989713017; Mon, 01
- Apr 2024 09:41:53 -0700 (PDT)
+	s=arc-20240116; t=1711989732; c=relaxed/simple;
+	bh=WopZIv1m6iHVZ5GAyDRjVH14xeI4Hdv9HeL4nql8kK4=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=fJ/nA68X9aXa1+Zewqvl58ZNYjfVGzfT9hHwYGiWFEE7NMjI3w7MaNdwi9AANe7epjpD+4Zqpujd+bkV7n7N93zPHenw7ZS4p+n/r3eTw00PA4O4mJn8mnuLgZjV6g5wXi2Nfd33vF7AVHsmVn3eRGQOi4DUstlFHHPv3Ai1xPw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=xLbIBnl7; arc=none smtp.client-ip=46.235.227.194
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+	s=mail; t=1711989729;
+	bh=WopZIv1m6iHVZ5GAyDRjVH14xeI4Hdv9HeL4nql8kK4=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=xLbIBnl792sEhVS0hA7Ot1TsA6aXkyC3C/5TeYVOON+ULaJIJdlN8xkPR8yjC9OEK
+	 XB/LkzmhZy2/RHHSmut0sdP3JKhqkRiDPj2kAOQq252/UgQ6MNvJXZHRIfRDS4OvIP
+	 gqQW4by8jd6/CK06lRraJl+ZaZp4FGt1Vod8Ht3qWXJFVTzaGzjK1fU2hmebQpBD97
+	 fqJUuhFhOa1qj2VOAfLEWJAd7TBx56b6sFqkIer3HaTyVRUPpBQsfDAsXqURGIF98j
+	 GfGJce3xojpChU/ofabShSxisAE2x9OI+txzlIOYDgS0D7nosofAPPpuxTOFBdgGtU
+	 M+oQeOKIFQG/w==
+Received: from [100.95.196.25] (cola.collaboradmins.com [195.201.22.229])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	(Authenticated sender: koike)
+	by madrid.collaboradmins.com (Postfix) with ESMTPSA id E30A2378143B;
+	Mon,  1 Apr 2024 16:42:03 +0000 (UTC)
+Message-ID: <f4b6cb98-0146-4f9c-a1ed-3324da01ca16@collabora.com>
+Date: Mon, 1 Apr 2024 13:42:03 -0300
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240306125208.71803-1-yaoma@linux.alibaba.com>
- <20240306125208.71803-5-yaoma@linux.alibaba.com> <87zfuofzld.ffs@tglx> <6109a3e3-ca88-4a4d-86c5-c4eb0d7f6f9c@linux.alibaba.com>
-In-Reply-To: <6109a3e3-ca88-4a4d-86c5-c4eb0d7f6f9c@linux.alibaba.com>
-From: Doug Anderson <dianders@chromium.org>
-Date: Mon, 1 Apr 2024 09:41:38 -0700
-X-Gmail-Original-Message-ID: <CAD=FV=Xr8-rzANK8oKyEZpk1FZ2dy5HqBXKpk3O29PhG1fRowg@mail.gmail.com>
-Message-ID: <CAD=FV=Xr8-rzANK8oKyEZpk1FZ2dy5HqBXKpk3O29PhG1fRowg@mail.gmail.com>
-Subject: Re: [PATCHv12 4/4] watchdog/softlockup: report the most frequent interrupts
-To: Bitao Hu <yaoma@linux.alibaba.com>, Thomas Gleixner <tglx@linutronix.de>, pmladek@suse.com
-Cc: liusong@linux.alibaba.com, akpm@linux-foundation.org, kernelfans@gmail.com, 
-	deller@gmx.de, npiggin@gmail.com, tsbogend@alpha.franken.de, 
-	James.Bottomley@hansenpartnership.com, jan.kiszka@siemens.com, 
-	linux-kernel@vger.kernel.org, linux-mips@vger.kernel.org, 
-	linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v5 04/10] drm/ci: mediatek: Refactor existing mediatek
+ jobs
+Content-Language: en-US
+To: Vignesh Raman <vignesh.raman@collabora.com>,
+ dri-devel@lists.freedesktop.org
+Cc: daniels@collabora.com, airlied@gmail.com, daniel@ffwll.ch,
+ emma@anholt.net, robdclark@gmail.com, david.heidelberg@collabora.com,
+ guilherme.gallo@collabora.com, sergi.blanch.torne@collabora.com,
+ hamohammed.sa@gmail.com, rodrigosiqueiramelo@gmail.com,
+ melissa.srw@gmail.com, mairacanal@riseup.net, mcanal@igalia.com,
+ linux-mediatek@lists.infradead.org, linux-amlogic@lists.infradead.org,
+ linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org
+References: <20240401061235.192713-1-vignesh.raman@collabora.com>
+ <20240401061235.192713-5-vignesh.raman@collabora.com>
+From: Helen Koike <helen.koike@collabora.com>
+In-Reply-To: <20240401061235.192713-5-vignesh.raman@collabora.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-Hi,
 
-On Mon, Mar 25, 2024 at 2:48=E2=80=AFAM Bitao Hu <yaoma@linux.alibaba.com> =
-wrote:
->
-> Hi, Thomas
->
-> On 2024/3/24 04:43, Thomas Gleixner wrote:
-> > On Wed, Mar 06 2024 at 20:52, Bitao Hu wrote:
-> >> +    if (__this_cpu_read(snapshot_taken)) {
-> >> +            for_each_active_irq(i) {
-> >> +                    count =3D kstat_get_irq_since_snapshot(i);
-> >> +                    tabulate_irq_count(irq_counts_sorted, i, count, N=
-UM_HARDIRQ_REPORT);
-> >> +            }
-> >> +
-> >> +            /*
-> >> +             * We do not want the "watchdog: " prefix on every line,
-> >> +             * hence we use "printk" instead of "pr_crit".
-> >> +             */
-> >
-> > You are not providing any justification why the prefix is not
-> > wanted. Just saying 'We do not want' does not cut it and who is 'We'. I
-> > certainly not.
-> >
-> > I really disagree because the prefixes are very useful for searching lo=
-g
-> > files. So not having it makes it harder to filter out for no reason.
-> >
->
->
-> Regarding the use of printk() instead of pr_crit(), I have had a
-> discussion with Liu Song and Douglas in PATCHv1:
-> https://lore.kernel.org/all/CAD=3DFV=3DWEEQeKX=3Dec3Gr-8CKs2K0MaWN3V0-0yO=
-suret0qcB_AA@mail.gmail.com/
->
-> Please allow me to elaborate on my reasoning. The purpose of the
-> report_cpu_status() function I implemented is similar to that of
-> print_modules(), show_regs(), and dump_stack(). These functions are
-> designed to assist in analyzing the causes of a soft lockup, rather
-> than to report that a soft lockup has occurred. Therefore, I think
-> that adding the "watchdog: " prefix to every line is redundant and
-> not concise. Besides, the existing pr_emerg() in the watchdog.c file
-> is already sufficient for searching useful information in the logs.
-> The information I added, along with the call tree and other data, is
-> located near the line with the "watchdog: " prefix.
->
-> Are the two reasons I've provided reasonable?
 
-FWIW I don't feel super strongly about this, but I'm leaning towards
-agreeing with Bitao. The sample output from the commit message looks
-like this:
+On 01/04/2024 03:12, Vignesh Raman wrote:
+> For mediatek mt8173 and mt8183, the display driver is mediatek.
+> Currently, in drm-ci for mediatek, only the display driver is
+> tested. Refactor the existing mediatek jobs so that gpu driver
+> testing jobs can be added later and update xfails accordingly.
+> Since the correct driver name is passed from the job to test gpu
+> and display driver, remove the check to set IGT_FORCE_DRIVER
+> based on driver name.
+> 
+> Signed-off-by: Vignesh Raman <vignesh.raman@collabora.com>
+> ---
+> 
+> v2:
+>    - Refactor the patch to rename job to indicate display driver testing,
+>      rename the existing xfail files, and remove IGT_FORCE_DRIVER from the
+>      script since it's now set by the job.
+> 
+> v3:
+>    - Add the job name in GPU_VERSION and use it for xfail file names instead
+>      of using DRIVER_NAME. Also update xfails.
+> 
+> v4:
+>    - Remove the display suffix in job and rename xfails accordingly.
+>      Remove the change adding job name in GPU_VERSION.
+> 
+> v5:
+>    - Add mediatek-display job.
+> 
+> ---
+>   drivers/gpu/drm/ci/igt_runner.sh              | 10 ---------
+>   drivers/gpu/drm/ci/test.yml                   | 21 +++++++++++++++----
+>   .../drm/ci/xfails/mediatek-mt8173-fails.txt   | 15 -------------
+>   .../drm/ci/xfails/mediatek-mt8173-flakes.txt  | 13 ++++++++++++
+>   .../drm/ci/xfails/mediatek-mt8183-fails.txt   | 21 ++++++++++++-------
+>   .../drm/ci/xfails/mediatek-mt8183-flakes.txt  |  8 +++++++
+>   6 files changed, 51 insertions(+), 37 deletions(-)
+>   create mode 100644 drivers/gpu/drm/ci/xfails/mediatek-mt8173-flakes.txt
+>   create mode 100644 drivers/gpu/drm/ci/xfails/mediatek-mt8183-flakes.txt
+> 
+> diff --git a/drivers/gpu/drm/ci/igt_runner.sh b/drivers/gpu/drm/ci/igt_runner.sh
+> index f1a08b9b146f..ce6e22369d4d 100755
+> --- a/drivers/gpu/drm/ci/igt_runner.sh
+> +++ b/drivers/gpu/drm/ci/igt_runner.sh
+> @@ -20,16 +20,6 @@ cat /sys/kernel/debug/dri/*/state
+>   set -e
+>   
+>   case "$DRIVER_NAME" in
+> -    rockchip|meson)
+> -        export IGT_FORCE_DRIVER="panfrost"
+> -        ;;
+> -    mediatek)
+> -        if [ "$GPU_VERSION" = "mt8173" ]; then
+> -            export IGT_FORCE_DRIVER=${DRIVER_NAME}
+> -        elif [ "$GPU_VERSION" = "mt8183" ]; then
+> -            export IGT_FORCE_DRIVER="panfrost"
+> -        fi
+> -        ;;
+>       amdgpu)
+>           # Cannot use HWCI_KERNEL_MODULES as at that point we don't have the module in /lib
+>           mv /install/modules/lib/modules/* /lib/modules/.
+> diff --git a/drivers/gpu/drm/ci/test.yml b/drivers/gpu/drm/ci/test.yml
+> index 612c9ede3507..d8af670ee51d 100644
+> --- a/drivers/gpu/drm/ci/test.yml
+> +++ b/drivers/gpu/drm/ci/test.yml
+> @@ -282,14 +282,17 @@ amdgpu:stoney:
+>   .mediatek:
 
-[  638.870231] watchdog: BUG: soft lockup - CPU#9 stuck for 26s! [swapper/9=
-:0]
-[  638.870825] CPU#9 Utilization every 4s during lockup:
-[  638.871194]  #1:   0% system,          0% softirq,   100% hardirq,
-   0% idle
-[  638.871652]  #2:   0% system,          0% softirq,   100% hardirq,
-   0% idle
-[  638.872107]  #3:   0% system,          0% softirq,   100% hardirq,
-   0% idle
-[  638.872563]  #4:   0% system,          0% softirq,   100% hardirq,
-   0% idle
-[  638.873018]  #5:   0% system,          0% softirq,   100% hardirq,
-   0% idle
-[  638.873494] CPU#9 Detect HardIRQ Time exceeds 50%. Most frequent HardIRQ=
-s:
-[  638.873994]  #1: 330945      irq#7
-[  638.874236]  #2: 31          irq#82
-[  638.874493]  #3: 10          irq#10
-[  638.874744]  #4: 2           irq#89
-[  638.874992]  #5: 1           irq#102
+Maybe we could s/.mediatek/.mediatek-device, so we know we are not 
+talking about the driver name, what do you think?
 
-..and in my mind the "watchdog: BUG: soft lockup - CPU#9 stuck for
-26s! [swapper/9:0]" line is enough to grep through the dmesg. Having
-all the following lines start with "watchdog:" feels like overkill to
-me, but if you feel strongly that they should then it wouldn't bother
-me too much for them all to have the "watchdog:" prefix.
+>     extends:
+>       - .lava-igt:arm64
+> -  stage: mediatek
+>     variables:
+> -    DRIVER_NAME: mediatek
+>       DTB: ${DEVICE_TYPE}
+>       BOOT_METHOD: depthcharge
+>       KERNEL_IMAGE_TYPE: ""
+>   
+> -mediatek:mt8173:
+> +.mediatek-display:
+> +  stage: mediatek
+> +  variables:
+> +    DRIVER_NAME: mediatek
+> +
+> +.mt8173:
+>     extends:
+>       - .mediatek
+>     parallel: 4
+> @@ -298,7 +301,7 @@ mediatek:mt8173:
+>       GPU_VERSION: mt8173
+>       RUNNER_TAG: mesa-ci-x86-64-lava-mt8173-elm-hana
+>   
+> -mediatek:mt8183:
+> +.mt8183:
+>     extends:
+>       - .mediatek
+>     parallel: 3
+> @@ -307,6 +310,16 @@ mediatek:mt8183:
+>       GPU_VERSION: mt8183
+>       RUNNER_TAG: mesa-ci-x86-64-lava-mt8183-kukui-jacuzzi-juniper-sku16
+>   
+> +mediatek:mt8173:
+> +  extends:
+> +    - .mt8173
+> +    - .mediatek-display
+> +
+> +mediatek:mt8183:
+> +  extends:
+> +    - .mt8183
+> +    - .mediatek-display
 
-Could you clarify how strongly you feel about this and whether Bitao
-should spin a v13?
+ From the code, panfrost was being used in IGT_FORCE_DRIVER for mt8183 
+no? --> never mind, I just saw the next patch handles panfrost case. I 
+guess these two commits could be squashed (up to you).
 
-I believe that this is the only point of contention on the patch
-series right now and otherwise it could be ready to land. I know in
-the past Petr has wanted ample time to comment though perhaps the fact
-that it's been ~1 month is enough. Petr: do you have anything that
-needs saying before this patch series lands?
+Regards,
+Helen
 
-Thanks!
-
--Doug
+> +
+>   # drm-mtk doesn't even probe yet in mainline for mt8192
+>   .mediatek:mt8192:
+>     extends:
+> diff --git a/drivers/gpu/drm/ci/xfails/mediatek-mt8173-fails.txt b/drivers/gpu/drm/ci/xfails/mediatek-mt8173-fails.txt
+> index ef0cb7c3698c..c63abd603b02 100644
+> --- a/drivers/gpu/drm/ci/xfails/mediatek-mt8173-fails.txt
+> +++ b/drivers/gpu/drm/ci/xfails/mediatek-mt8173-fails.txt
+> @@ -9,28 +9,13 @@ kms_bw@linear-tiling-3-displays-1920x1080p,Fail
+>   kms_bw@linear-tiling-3-displays-2560x1440p,Fail
+>   kms_bw@linear-tiling-3-displays-3840x2160p,Fail
+>   kms_color@invalid-gamma-lut-sizes,Fail
+> -kms_color@pipe-A-invalid-gamma-lut-sizes,Fail
+> -kms_color@pipe-B-invalid-gamma-lut-sizes,Fail
+>   kms_cursor_legacy@cursor-vs-flip-atomic,Fail
+>   kms_cursor_legacy@cursor-vs-flip-legacy,Fail
+>   kms_flip@flip-vs-modeset-vs-hang,Fail
+>   kms_flip@flip-vs-panning-vs-hang,Fail
+>   kms_flip@flip-vs-suspend,Fail
+>   kms_flip@flip-vs-suspend-interruptible,Fail
+> -kms_force_connector_basic@force-edid,Fail
+> -kms_force_connector_basic@force-load-detect,Fail
+> -kms_force_connector_basic@prune-stale-modes,Fail
+> -kms_hdmi_inject@inject-4k,Fail
+> -kms_plane_scaling@planes-upscale-20x20,Fail
+> -kms_plane_scaling@planes-upscale-20x20-downscale-factor-0-25,Fail
+> -kms_plane_scaling@planes-upscale-20x20-downscale-factor-0-5,Fail
+> -kms_plane_scaling@planes-upscale-20x20-downscale-factor-0-75,Fail
+> -kms_plane_scaling@upscale-with-modifier-20x20,Fail
+> -kms_plane_scaling@upscale-with-pixel-format-20x20,Fail
+> -kms_plane_scaling@upscale-with-rotation-20x20,Fail
+>   kms_properties@get_properties-sanity-atomic,Fail
+>   kms_properties@plane-properties-atomic,Fail
+>   kms_properties@plane-properties-legacy,Fail
+>   kms_rmfb@close-fd,Fail
+> -kms_selftest@drm_format,Timeout
+> -kms_selftest@drm_format_helper,Timeout
+> diff --git a/drivers/gpu/drm/ci/xfails/mediatek-mt8173-flakes.txt b/drivers/gpu/drm/ci/xfails/mediatek-mt8173-flakes.txt
+> new file mode 100644
+> index 000000000000..64b30c092c85
+> --- /dev/null
+> +++ b/drivers/gpu/drm/ci/xfails/mediatek-mt8173-flakes.txt
+> @@ -0,0 +1,13 @@
+> +# Board Name: mt8173-elm-hana.dtb
+> +# Bug Report: https://lore.kernel.org/dri-devel/931e3f9a-9c5c-fc42-16fc-abaac4e0c0ff@collabora.com/T/#u
+> +# IGT Version: 1.28-gd2af13d9f
+> +# Failure Rate: 50
+> +# Linux Version: 6.7.0-rc3
+> +
+> +# Reported by deqp-runner
+> +kms_cursor_legacy@cursor-vs-flip-atomic-transitions
+> +
+> +# Below test shows inconsistency across multiple runs,
+> +# giving results of Pass and Timeout/Fail alternately
+> +kms_prop_blob@invalid-set-prop
+> +kms_prop_blob@invalid-set-prop-any
+> diff --git a/drivers/gpu/drm/ci/xfails/mediatek-mt8183-fails.txt b/drivers/gpu/drm/ci/xfails/mediatek-mt8183-fails.txt
+> index 67d690fc4037..91cd1c4ec068 100644
+> --- a/drivers/gpu/drm/ci/xfails/mediatek-mt8183-fails.txt
+> +++ b/drivers/gpu/drm/ci/xfails/mediatek-mt8183-fails.txt
+> @@ -1,13 +1,18 @@
+> -kms_addfb_basic@addfb25-bad-modifier,Fail
+> +core_setmaster_vs_auth,Fail
+> +kms_bw@linear-tiling-1-displays-1920x1080p,Fail
+>   kms_bw@linear-tiling-1-displays-2560x1440p,Fail
+> +kms_bw@linear-tiling-1-displays-3840x2160p,Fail
+>   kms_bw@linear-tiling-2-displays-1920x1080p,Fail
+>   kms_bw@linear-tiling-2-displays-2560x1440p,Fail
+>   kms_bw@linear-tiling-2-displays-3840x2160p,Fail
+> -kms_bw@linear-tiling-3-displays-2560x1440p,Fail
+> -kms_bw@linear-tiling-3-displays-3840x2160p,Fail
+> -kms_color@pipe-A-invalid-gamma-lut-sizes,Fail
+> -kms_plane_cursor@overlay,Fail
+> -kms_plane_cursor@primary,Fail
+> -kms_plane_cursor@viewport,Fail
+> -kms_plane_scaling@upscale-with-rotation-20x20,Fail
+> +kms_color@invalid-gamma-lut-sizes,Fail
+> +kms_cursor_legacy@cursor-vs-flip-atomic,Fail
+> +kms_cursor_legacy@cursor-vs-flip-legacy,Fail
+> +kms_flip@flip-vs-modeset-vs-hang,Fail
+> +kms_flip@flip-vs-panning-vs-hang,Fail
+> +kms_flip@flip-vs-suspend,Fail
+> +kms_flip@flip-vs-suspend-interruptible,Fail
+> +kms_properties@get_properties-sanity-atomic,Fail
+> +kms_properties@plane-properties-atomic,Fail
+> +kms_properties@plane-properties-legacy,Fail
+>   kms_rmfb@close-fd,Fail
+> diff --git a/drivers/gpu/drm/ci/xfails/mediatek-mt8183-flakes.txt b/drivers/gpu/drm/ci/xfails/mediatek-mt8183-flakes.txt
+> new file mode 100644
+> index 000000000000..5885a950fa72
+> --- /dev/null
+> +++ b/drivers/gpu/drm/ci/xfails/mediatek-mt8183-flakes.txt
+> @@ -0,0 +1,8 @@
+> +# Board Name: mt8183-kukui-jacuzzi-juniper-sku16.dtb
+> +# Bug Report: https://lore.kernel.org/dri-devel/931e3f9a-9c5c-fc42-16fc-abaac4e0c0ff@collabora.com/T/#u
+> +# IGT Version: 1.28-gd2af13d9f
+> +# Failure Rate: 100
+> +# Linux Version: 6.7.0-rc3
+> +
+> +# Reported by deqp-runner
+> +kms_cursor_legacy@cursor-vs-flip-atomic-transitions
 
