@@ -1,225 +1,300 @@
-Return-Path: <linux-kernel+bounces-126419-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-126417-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3BE04893788
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 05:00:19 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4D8CC893780
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 04:52:44 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A918D1F2163F
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 03:00:18 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 686BA1C209FE
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 02:52:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 386734A15;
-	Mon,  1 Apr 2024 03:00:11 +0000 (UTC)
-Received: from CHN02-SH0-obe.outbound.protection.partner.outlook.cn (mail-sh0chn02on2136.outbound.protection.partner.outlook.cn [139.219.146.136])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A265C138C;
+	Mon,  1 Apr 2024 02:52:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Y3pGBVJg"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.14])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5DDB4137E;
-	Mon,  1 Apr 2024 03:00:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=139.219.146.136
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711940410; cv=fail; b=tvw1lXqkNQKAkyOJguezI3fBu/DMKjVILJY8hVXC6f77qbVnAv8v5bU7af+l0VM91CkA4cEdR7EtstR525qq2YrVioT+KVZbWUzFrhTf2R21qDm8nFqDMnBMKovJ6MGUGlOClPod6aPAJMUkq6FgOJCahMFzIuzYO9nQWAp0dAk=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711940410; c=relaxed/simple;
-	bh=NikvNeBUajkESp2KtJZ9xFcUt3RLNoCIwAWR8hVnxFI=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=KFriLIeA4uneMHK4mfH8YOgpo4jjoTtZJ2ox6zzsslma9RklLq0Kt+MfV9vN2M14Gp1peAdaIw9uHAWhaL9DMaWyc00D+jFElkJsMTtyet9wF4W5bzcZHDeRMtUmHt8uQ4Pj/05lzwu05fANEuTZ5BxLXDlAwJl9DQlxXXhzjIE=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=starfivetech.com; spf=pass smtp.mailfrom=starfivetech.com; arc=fail smtp.client-ip=139.219.146.136
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=starfivetech.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=starfivetech.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=gjK8eIg6tbgkcVbJ81StShJFQtp55/WwGnw6mt26CLuL4KWMOkKjqnLPZKGQg/cH7n0sjby1mHouOK7Dv5/z0mfE2/Pg8cgoYO1RnAwbxeoF8ADpAd1/wqmEamOOFDSYT38q+wjk5r1Ubl06kYzstLF5m5UKz//L6XzNKbJFramIawQ8xcQy0dDWnb7/wYtDLlqIviDOcmKLIcWnKNMJt7uYpD9Vx5+hUiMQbbRWnTz17snpTPtPd2M1ZOvpT9kcN7WszL/QsAhbz/0L5IUnF6QJs05Ge8l7DYPGw5yS/ULmbspGbmgsfGH2tLMhM0QyFUVR4c9fYrKWTzakSb/Q3g==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=5jtMtNgDpgd+6HzWti/38A2fomqFbCv36tpXTq1pucs=;
- b=awnEmpSUHvg1dCsm0vty/3kZoivPysqryfZHJ3V5iBQ9NFT7YCdtGKh+10tOOv/r2qrhcW6z3KOOzHib4eB1TKZGqBgxzdsv7mtJw2IMff/62tHYwY6I8TXTJfpXjW4v2/ygTmUnefekYVJlojuvnhWP6ogLqGxg1Xn8KM7/hhhiM4EpzSQlQTRaGLEP0zf9oZacnARhRIaDZ3SCESaNueY42U7b+AJTUJFSq8hH/sDqp1vZxgv+701JFthHjIx8hbGhQJIeQHmL7lCf377EDTzUpsX541ATjjPknd9zAYe059HNBEMQRymOvXhb/mz/1wUd21fDZXFkuV7zmCvQKA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=starfivetech.com; dmarc=pass action=none
- header.from=starfivetech.com; dkim=pass header.d=starfivetech.com; arc=none
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=starfivetech.com;
-Received: from SHXPR01MB0863.CHNPR01.prod.partner.outlook.cn
- (2406:e500:c311:25::15) by SHXPR01MB0798.CHNPR01.prod.partner.outlook.cn
- (2406:e500:c311:27::14) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7409.46; Mon, 1 Apr
- 2024 02:45:06 +0000
-Received: from SHXPR01MB0863.CHNPR01.prod.partner.outlook.cn
- ([fe80::a137:b8e5:8a0e:ca9f]) by
- SHXPR01MB0863.CHNPR01.prod.partner.outlook.cn ([fe80::a137:b8e5:8a0e:ca9f%4])
- with mapi id 15.20.7409.042; Mon, 1 Apr 2024 02:45:06 +0000
-From: Minda Chen <minda.chen@starfivetech.com>
-To: Alexandre Torgue <alexandre.torgue@foss.st.com>,
-	Jose Abreu <joabreu@synopsys.com>,
-	"David S . Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>,
-	Paolo Abeni <pabeni@redhat.com>,
-	Maxime Coquelin <mcoquelin.stm32@gmail.com>
-Cc: netdev@vger.kernel.org,
-	linux-stm32@st-md-mailman.stormreply.com,
-	linux-arm-kernel@lists.infradead.org,
-	linux-kernel@vger.kernel.org,
-	Minda Chen <minda.chen@starfivetech.com>
-Subject: [PATCH v1 2/2] net: stmmac: mmc_core: Add GMAC mmc tx/rx missing statistics
-Date: Mon,  1 Apr 2024 10:44:56 +0800
-Message-Id: <20240401024456.41433-2-minda.chen@starfivetech.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20240401024456.41433-1-minda.chen@starfivetech.com>
-References: <20240401024456.41433-1-minda.chen@starfivetech.com>
-Content-Type: text/plain
-X-ClientProxiedBy: SHXPR01CA0022.CHNPR01.prod.partner.outlook.cn
- (2406:e500:c311:1b::31) To SHXPR01MB0863.CHNPR01.prod.partner.outlook.cn
- (2406:e500:c311:25::15)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9850A7F
+	for <linux-kernel@vger.kernel.org>; Mon,  1 Apr 2024 02:52:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.14
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1711939956; cv=none; b=MoI6Pwc48pRBHH9OS8Uc59wIeqr31FslH3lwhJz2pvjoXtrDeeSiUSzNuO/MG8iGmYCXsVYUH1WUAT+24ckYm0VgMFEQN6dqTls6s8O9uOw6IFg2t8d7iWyMKf0e4/8x/7CLbXoa/fZhqO+cF0kYd8asCMPaDcLSS+uBApngoRw=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1711939956; c=relaxed/simple;
+	bh=vGA7sDQYoQv858YvmllNKPFLnGAF5d3t65jAh5FdeHo=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=ShtaVkiK0oEdM2gNxJsADCB7XTYY5e/X+XMCrfmk9iuusrYPRtavMk+A1U5WhYmRgdF7EYPoLG12iPRbSe4Deg2qy0EKcnKBRGFljgoH90iWm3z2b/U9dEtpn8xeiCiF9vtnjc/C93Pv9s89mbNAs0lO37abWgYN1UqFFaqvAUE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Y3pGBVJg; arc=none smtp.client-ip=192.198.163.14
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1711939953; x=1743475953;
+  h=from:to:cc:subject:in-reply-to:references:date:
+   message-id:mime-version;
+  bh=vGA7sDQYoQv858YvmllNKPFLnGAF5d3t65jAh5FdeHo=;
+  b=Y3pGBVJgugYjPbHJaVgQyX0o/mT9eYYFYhaJ0thimx2a8/AplGlz+isJ
+   VCSz+lBu9Dep+EpCNwepVCs0eTeV1AyD/iZE/B+3TjqiqmDaku97kZjUI
+   rB0msDv9hzViFUjb/d8FAlF5qzcihX5LlHWd4ZJ33rqe68H2W4NlR+jzl
+   L9eTm/sevefiA3ROqVSQunmL6T1vqXQIRxaWI8V7FWCBZyLphrRrCj0Gl
+   IAWTYGKOmPCpA9qydEc9Wc7Vsbhm9r/u/TMWco0hUCtBtjHaVdRgflEvb
+   I32e6RsJCwHJX986vxzo2r9RyAaLidUbeJn/P3Aj7T8OJUtanbgXoGECl
+   g==;
+X-CSE-ConnectionGUID: K8+s4+9OQ9WQ9waNk2vaPg==
+X-CSE-MsgGUID: gYhF0d0ASreBObhmvCVtBg==
+X-IronPort-AV: E=McAfee;i="6600,9927,11030"; a="7269481"
+X-IronPort-AV: E=Sophos;i="6.07,171,1708416000"; 
+   d="scan'208";a="7269481"
+Received: from fmviesa008.fm.intel.com ([10.60.135.148])
+  by fmvoesa108.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Mar 2024 19:52:32 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,171,1708416000"; 
+   d="scan'208";a="17652282"
+Received: from yhuang6-desk2.sh.intel.com (HELO yhuang6-desk2.ccr.corp.intel.com) ([10.238.208.55])
+  by fmviesa008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Mar 2024 19:52:29 -0700
+From: "Huang, Ying" <ying.huang@intel.com>
+To: Baolin Wang <baolin.wang@linux.alibaba.com>
+Cc: akpm@linux-foundation.org,  <david@redhat.com>,
+  <mgorman@techsingularity.net>,  <wangkefeng.wang@huawei.com>,
+  <jhubbard@nvidia.com>,  <21cnbao@gmail.com>,  <ryan.roberts@arm.com>,
+  <linux-mm@kvack.org>,  <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v2 2/2] mm: support multi-size THP numa balancing
+In-Reply-To: <d28d276d599c26df7f38c9de8446f60e22dd1950.1711683069.git.baolin.wang@linux.alibaba.com>
+	(Baolin Wang's message of "Fri, 29 Mar 2024 14:56:46 +0800")
+References: <cover.1711683069.git.baolin.wang@linux.alibaba.com>
+	<d28d276d599c26df7f38c9de8446f60e22dd1950.1711683069.git.baolin.wang@linux.alibaba.com>
+Date: Mon, 01 Apr 2024 10:50:36 +0800
+Message-ID: <87sf05kd8j.fsf@yhuang6-desk2.ccr.corp.intel.com>
+User-Agent: Gnus/5.13 (Gnus v5.13)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SHXPR01MB0863:EE_|SHXPR01MB0798:EE_
-X-MS-Office365-Filtering-Correlation-Id: a5732c68-97a0-4912-bfad-08dc51f5bcf9
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	i81Vbv+dPtfo77+UIoYAZMvgG5eGOuB07sXEkJS3vSQsxTfK/4Uc0ZHxeln7MH6Yy1mrzYOMiSsFDl3htOMST59vivaf4MUSX2VR9uvcs8Nwdl8AznU6mjfKBO7kLL1xlYN1ygA5tW77VWwbs1Df6Tm/e/LOEnBI41YjwrmryNUdABfkYF7Y04grMuFmfKv8w7WX/NDN2d5z5M4ynXHR87hXPntRLFk3yKcKLbpMS5wAqjQw66FyFiEPj0oWI53RTfgTCkHzEneiWmu9L/1jYzz3AV4xbef40sPSDLeceOXUSjT3/hACGiAiYXA8c8NLrduvPKP4oD4uV+eaBak/tmJtsZc6TQy4HzXb0nFToBLvvXs6w8ZTJEplU9jKK1kroAIefSWJgEBloVdeKWgvQXT8LXuO9p/NWTSstow6Kp4pYM/MnfHQOF4Zcyi94KW0Jb+WTusQBXYrBpU3SBa68jWGpfRZzDdeWemvDDibhuR/Zq8TSg27xS+c1FdFe9h8whXXHfMDpiB/cFGI6YA6wGZq7kiEhrAKMa6o4W4yX5WQNljTzE5LCG0U+eeVoQG3oe3RhuZxVuBrU9TWR3D7gtyevXppZCYsfKamIfoa4ZSxERXcaeYY4PmN2aAWK+ev
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SHXPR01MB0863.CHNPR01.prod.partner.outlook.cn;PTR:;CAT:NONE;SFS:(13230031)(366007)(1800799015)(7416005)(52116005)(41320700004)(38350700005);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?m7ATje5jk4LVpEov/SEMUrqeh33BPPdIeoGg/D4d8O+0EQTLqao3HePvMiTJ?=
- =?us-ascii?Q?cz0cTlkICT7uB78Wd+GqTX5whKEssbZKNSteJVmbK00hvpv3KPLBCV3Mzcg4?=
- =?us-ascii?Q?obiHEVyWua34wLjYUTvNYBn3YMFmgrBAy8MWhSGM7gTRUBndZNt5Ktp8+iS3?=
- =?us-ascii?Q?tn338p0lpxGNAu2r1m6XWgKs6mwJ/dYcfL0KQlN3daZyZz6WFG+ZJbDUEOUz?=
- =?us-ascii?Q?q4D6ZGo3RRC6s/sHdL5XckZXRTGbkSKsdwUu7dXKzWtya9VoD679p9f+PTrR?=
- =?us-ascii?Q?xg88JED53EoKqRg9Pxd+djax5OTYBnMKuYmhM2+RdlhNexS4FpX6Vz+5L8Js?=
- =?us-ascii?Q?NtiLWN64EPknrmfWhIV+htp4EdfpG6ZCbsbsaRsNCD38oSYywM0r2i5miikZ?=
- =?us-ascii?Q?ROPzp5OLGogiN/TcOyLSTzBJEEsco1fowQNdKKlsH7SfaiokmmGt0cfzElZm?=
- =?us-ascii?Q?nP6iTg0mW+ZIzPstTRXqc1ffiYl5CjqqAqSjnPo1ct5TCrWugP5Ag7Es46bT?=
- =?us-ascii?Q?lT6mOURtIOjM4bnkXS9Kv5Ow23USQRbXPD0b5vntIg7BAl2SZLVr2iTd2Y4A?=
- =?us-ascii?Q?8L123XQmuXhrGAY+4kfFZUxAy/WDjA7vL972zH/jfUvXVkFeldlW/klY2BJ5?=
- =?us-ascii?Q?zoPTuKXoVpMM+JELJPTCz59Q+VD3SMX2jFSEVqTuM8oMlaFX+s/KZqfasBPp?=
- =?us-ascii?Q?0pc6TOIyrmwEC7wpk4xS+SvDspCCBd5mfH7WaV3pkx3Aqoj3+IwGDpXEsBAC?=
- =?us-ascii?Q?SW3WO097EQ/6Ov9PExiK6Y9EzSDbRPHCyXZAlmYCAgiFxniFYnPbPXNbqKeK?=
- =?us-ascii?Q?zaT7WuWsKjgokrBf6jlQ83knoOsZSg2nkscuKR4ejfyjU+oDFE65WnRYKGcE?=
- =?us-ascii?Q?4oGUIgTtqHGDy4tQIUQr0Ka0iqF1Rxf6VITv4WeGlhM/Knjepejn8HcMX1Yz?=
- =?us-ascii?Q?/oaZ8dflEYclzwH5gfVIO0+O17TlJhbGPpIS5r9Sgi0NtnRSjQTdC0Ylri5Q?=
- =?us-ascii?Q?3lYYcIP9NJbneIoRlaWybK36rf1DYMQzrwLVwA+masmvZ526/Lhhqo+rwvxE?=
- =?us-ascii?Q?nIEE33sdQzNUtPRb8dwNoh5QX7TuQGaYpgWeePOpblaX7iiylFXemOyQBHCg?=
- =?us-ascii?Q?hKbavHFcBdvTCy63MutGGgCpYN/JMpuq+xCM0Q3GOIoL9h6tN+di4gt2n+Tr?=
- =?us-ascii?Q?tNFiCLxmIinQYHonyJPt5B0ifTjCzw4ovNfZ2NZo7CaQBgqn+v+JI9xCsDgf?=
- =?us-ascii?Q?1DzMRRb+toHRy/cEtFL+XALiMOcjoYFFGrBHwpeJPWSI17xtPpq/rSuY+MoT?=
- =?us-ascii?Q?rUXSfC+koIeOx7l13Ssb+cqD7ce+WPTKx2SKGFlyTi/iLZx7kOi7dCkeV80s?=
- =?us-ascii?Q?pjXJbUNkR+XfbwkLFitbASOuPpVC0bh7VAu6KjxcYQf3ssPh5KiIzyp1vq/v?=
- =?us-ascii?Q?HBhIdyjzSfS0d0g6yKbUS0+ADOCZ/v7vkbG6m7Wn9OzasuquhXQwprpaxfo6?=
- =?us-ascii?Q?5DQP9zXVuCrsMC4ToVEojZ4KXP2JlK9Z+vbkkgaCYcoFH4wvJDYxledUB2Yw?=
- =?us-ascii?Q?GqlBKHEh0I+5XUU6PvuYjIG16BAfcW9OQXfjDka2pLUIBdrfoUemFq57rdMf?=
- =?us-ascii?Q?gg=3D=3D?=
-X-OriginatorOrg: starfivetech.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: a5732c68-97a0-4912-bfad-08dc51f5bcf9
-X-MS-Exchange-CrossTenant-AuthSource: SHXPR01MB0863.CHNPR01.prod.partner.outlook.cn
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 01 Apr 2024 02:45:05.9867
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 06fe3fa3-1221-43d3-861b-5a4ee687a85c
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: KHZcSPMMlHLi+gLqiTwgrZF/XvV7vs1xDfQVRw61ZQiA+wIGzUMGsRSJ+2xZHZqUmqzzl/6TB/vPygdXmwHwi44JmpGp8JCGSMMVmTO/qeg=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SHXPR01MB0798
+Content-Type: text/plain; charset=ascii
 
-The missing statistics including Rx_Receive_Error_Packets,
-Rx_Control_Packets_Good and Tx_OSize_Packets_Good.
+Baolin Wang <baolin.wang@linux.alibaba.com> writes:
 
-Signed-off-by: Minda Chen <minda.chen@starfivetech.com>
----
- drivers/net/ethernet/stmicro/stmmac/mmc.h            | 3 +++
- drivers/net/ethernet/stmicro/stmmac/mmc_core.c       | 6 ++++++
- drivers/net/ethernet/stmicro/stmmac/stmmac_ethtool.c | 3 +++
- 3 files changed, 12 insertions(+)
+> Now the anonymous page allocation already supports multi-size THP (mTHP),
+> but the numa balancing still prohibits mTHP migration even though it is an
+> exclusive mapping, which is unreasonable.
+>
+> Allow scanning mTHP:
+> Commit 859d4adc3415 ("mm: numa: do not trap faults on shared data section
+> pages") skips shared CoW pages' NUMA page migration to avoid shared data
+> segment migration. In addition, commit 80d47f5de5e3 ("mm: don't try to
+> NUMA-migrate COW pages that have other uses") change to use page_count()
+> to avoid GUP pages migration, that will also skip the mTHP numa scaning.
+> Theoretically, we can use folio_maybe_dma_pinned() to detect the GUP
+> issue, although there is still a GUP race, the issue seems to have been
+> resolved by commit 80d47f5de5e3. Meanwhile, use the folio_likely_mapped_shared()
+> to skip shared CoW pages though this is not a precise sharers count. To
+> check if the folio is shared, ideally we want to make sure every page is
+> mapped to the same process, but doing that seems expensive and using
+> the estimated mapcount seems can work when running autonuma benchmark.
+>
+> Allow migrating mTHP:
+> As mentioned in the previous thread[1], large folios (including THP) are
+> more susceptible to false sharing issues among threads than 4K base page,
+> leading to pages ping-pong back and forth during numa balancing, which is
+> currently not easy to resolve. Therefore, as a start to support mTHP numa
+> balancing, we can follow the PMD mapped THP's strategy, that means we can
+> reuse the 2-stage filter in should_numa_migrate_memory() to check if the
+> mTHP is being heavily contended among threads (through checking the CPU id
+> and pid of the last access) to avoid false sharing at some degree. Thus,
+> we can restore all PTE maps upon the first hint page fault of a large folio
+> to follow the PMD mapped THP's strategy. In the future, we can continue to
+> optimize the NUMA balancing algorithm to avoid the false sharing issue with
+> large folios as much as possible.
+>
+> Performance data:
+> Machine environment: 2 nodes, 128 cores Intel(R) Xeon(R) Platinum
+> Base: 2024-03-25 mm-unstable branch
+> Enable mTHP to run autonuma-benchmark
+>
+> mTHP:16K
+> Base				Patched
+> numa01				numa01
+> 224.70				143.48
+> numa01_THREAD_ALLOC		numa01_THREAD_ALLOC
+> 118.05				47.43
+> numa02				numa02
+> 13.45				9.29
+> numa02_SMT			numa02_SMT
+> 14.80				7.50
+>
+> mTHP:64K
+> Base				Patched
+> numa01				numa01
+> 216.15				114.40
+> numa01_THREAD_ALLOC		numa01_THREAD_ALLOC
+> 115.35				47.41
+> numa02				numa02
+> 13.24				9.25
+> numa02_SMT			numa02_SMT
+> 14.67				7.34
+>
+> mTHP:128K
+> Base				Patched
+> numa01				numa01
+> 205.13				144.45
+> numa01_THREAD_ALLOC		numa01_THREAD_ALLOC
+> 112.93				41.88
+> numa02				numa02
+> 13.16				9.18
+> numa02_SMT			numa02_SMT
+> 14.81				7.49
+>
+> [1] https://lore.kernel.org/all/20231117100745.fnpijbk4xgmals3k@techsingularity.net/
+> Signed-off-by: Baolin Wang <baolin.wang@linux.alibaba.com>
+> ---
+>  mm/memory.c   | 57 +++++++++++++++++++++++++++++++++++++++++++--------
+>  mm/mprotect.c |  3 ++-
+>  2 files changed, 51 insertions(+), 9 deletions(-)
+>
+> diff --git a/mm/memory.c b/mm/memory.c
+> index c30fb4b95e15..2aca19e4fbd8 100644
+> --- a/mm/memory.c
+> +++ b/mm/memory.c
+> @@ -5068,16 +5068,56 @@ static void numa_rebuild_single_mapping(struct vm_fault *vmf, struct vm_area_str
+>  	update_mmu_cache_range(vmf, vma, vmf->address, vmf->pte, 1);
+>  }
+>  
+> +static void numa_rebuild_large_mapping(struct vm_fault *vmf, struct vm_area_struct *vma,
+> +				       struct folio *folio, pte_t fault_pte, bool ignore_writable)
+> +{
+> +	int nr = pte_pfn(fault_pte) - folio_pfn(folio);
+> +	unsigned long start = max(vmf->address - nr * PAGE_SIZE, vma->vm_start);
+> +	unsigned long end = min(vmf->address + (folio_nr_pages(folio) - nr) * PAGE_SIZE, vma->vm_end);
+> +	pte_t *start_ptep = vmf->pte - (vmf->address - start) / PAGE_SIZE;
+> +	bool pte_write_upgrade = vma_wants_manual_pte_write_upgrade(vma);
 
-diff --git a/drivers/net/ethernet/stmicro/stmmac/mmc.h b/drivers/net/ethernet/stmicro/stmmac/mmc.h
-index dff02d75d519..cc189bdc563f 100644
---- a/drivers/net/ethernet/stmicro/stmmac/mmc.h
-+++ b/drivers/net/ethernet/stmicro/stmmac/mmc.h
-@@ -54,6 +54,7 @@ struct stmmac_counters {
- 	unsigned int mmc_tx_vlan_frame_g;
- 	unsigned int mmc_tx_lpi_usec;
- 	unsigned int mmc_tx_lpi_tran;
-+	unsigned int mmc_tx_oversize_g;
- 
- 	/* MMC RX counter registers */
- 	unsigned int mmc_rx_framecount_gb;
-@@ -85,6 +86,8 @@ struct stmmac_counters {
- 	unsigned int mmc_rx_discard_frames_gb;
- 	unsigned int mmc_rx_discard_octets_gb;
- 	unsigned int mmc_rx_align_err_frames;
-+	unsigned int mmc_rx_error;
-+	unsigned int mmc_rx_control_g;
- 
- 	/* IPv4 */
- 	unsigned int mmc_rx_ipv4_gd;
-diff --git a/drivers/net/ethernet/stmicro/stmmac/mmc_core.c b/drivers/net/ethernet/stmicro/stmmac/mmc_core.c
-index b0db5f4e8fe8..948f12b18de3 100644
---- a/drivers/net/ethernet/stmicro/stmmac/mmc_core.c
-+++ b/drivers/net/ethernet/stmicro/stmmac/mmc_core.c
-@@ -53,6 +53,7 @@
- #define MMC_TX_EXCESSDEF		0x6c
- #define MMC_TX_PAUSE_FRAME		0x70
- #define MMC_TX_VLAN_FRAME_G		0x74
-+#define MMC_TX_OVERSIZE_G		0x78
- 
- /* MMC RX counter registers */
- #define MMC_RX_FRAMECOUNT_GB		0x80
-@@ -79,6 +80,8 @@
- #define MMC_RX_FIFO_OVERFLOW		0xd4
- #define MMC_RX_VLAN_FRAMES_GB		0xd8
- #define MMC_RX_WATCHDOG_ERROR		0xdc
-+#define MMC_RX_ERROR			0xe0
-+#define MMC_RX_CONTROL_G		0xe4
- 
- #define MMC_TX_LPI_USEC			0xec
- #define MMC_TX_LPI_TRAN			0xf0
-@@ -289,6 +292,7 @@ static void dwmac_mmc_read(void __iomem *mmcaddr, struct stmmac_counters *mmc)
- 	mmc->mmc_tx_excessdef += readl(mmcaddr + MMC_TX_EXCESSDEF);
- 	mmc->mmc_tx_pause_frame += readl(mmcaddr + MMC_TX_PAUSE_FRAME);
- 	mmc->mmc_tx_vlan_frame_g += readl(mmcaddr + MMC_TX_VLAN_FRAME_G);
-+	mmc->mmc_tx_oversize_g	 += readl(mmcaddr + MMC_TX_OVERSIZE_G);
- 	mmc->mmc_tx_lpi_usec += readl(mmcaddr + MMC_TX_LPI_USEC);
- 	mmc->mmc_tx_lpi_tran += readl(mmcaddr + MMC_TX_LPI_TRAN);
- 
-@@ -324,6 +328,8 @@ static void dwmac_mmc_read(void __iomem *mmcaddr, struct stmmac_counters *mmc)
- 	mmc->mmc_rx_fifo_overflow += readl(mmcaddr + MMC_RX_FIFO_OVERFLOW);
- 	mmc->mmc_rx_vlan_frames_gb += readl(mmcaddr + MMC_RX_VLAN_FRAMES_GB);
- 	mmc->mmc_rx_watchdog_error += readl(mmcaddr + MMC_RX_WATCHDOG_ERROR);
-+	mmc->mmc_rx_error += readl(mmcaddr + MMC_RX_ERROR);
-+	mmc->mmc_rx_control_g += readl(mmcaddr + MMC_RX_CONTROL_G);
- 	mmc->mmc_rx_lpi_usec += readl(mmcaddr + MMC_RX_LPI_USEC);
- 	mmc->mmc_rx_lpi_tran += readl(mmcaddr + MMC_RX_LPI_TRAN);
- 
-diff --git a/drivers/net/ethernet/stmicro/stmmac/stmmac_ethtool.c b/drivers/net/ethernet/stmicro/stmmac/stmmac_ethtool.c
-index e1537a57815f..4517d5162c5a 100644
---- a/drivers/net/ethernet/stmicro/stmmac/stmmac_ethtool.c
-+++ b/drivers/net/ethernet/stmicro/stmmac/stmmac_ethtool.c
-@@ -212,6 +212,7 @@ static const struct stmmac_stats stmmac_mmc[] = {
- 	STMMAC_MMC_STAT(mmc_tx_excessdef),
- 	STMMAC_MMC_STAT(mmc_tx_pause_frame),
- 	STMMAC_MMC_STAT(mmc_tx_vlan_frame_g),
-+	STMMAC_MMC_STAT(mmc_tx_oversize_g),
- 	STMMAC_MMC_STAT(mmc_tx_lpi_usec),
- 	STMMAC_MMC_STAT(mmc_tx_lpi_tran),
- 	STMMAC_MMC_STAT(mmc_rx_framecount_gb),
-@@ -238,6 +239,8 @@ static const struct stmmac_stats stmmac_mmc[] = {
- 	STMMAC_MMC_STAT(mmc_rx_fifo_overflow),
- 	STMMAC_MMC_STAT(mmc_rx_vlan_frames_gb),
- 	STMMAC_MMC_STAT(mmc_rx_watchdog_error),
-+	STMMAC_MMC_STAT(mmc_rx_error),
-+	STMMAC_MMC_STAT(mmc_rx_control_g),
- 	STMMAC_MMC_STAT(mmc_rx_lpi_usec),
- 	STMMAC_MMC_STAT(mmc_rx_lpi_tran),
- 	STMMAC_MMC_STAT(mmc_rx_discard_frames_gb),
--- 
-2.17.1
+We call vma_wants_manual_pte_write_upgrade() in do_numa_page() already.
+It seems that we can make "ignore_writable = true" if
+"vma_wants_manual_pte_write_upgrade() == false" in do_numa_page() to
+remove one call.
 
+Otherwise, the patchset LGTM, feel free to add
+
+Reviewed-by: "Huang, Ying" <ying.huang@intel.com>
+
+in the future versions.
+
+--
+Best Regards,
+Huang, Ying
+
+
+> +	unsigned long addr;
+> +
+> +	/* Restore all PTEs' mapping of the large folio */
+> +	for (addr = start; addr != end; start_ptep++, addr += PAGE_SIZE) {
+> +		pte_t pte, old_pte;
+> +		pte_t ptent = ptep_get(start_ptep);
+> +		bool writable = false;
+> +
+> +		if (!pte_present(ptent) || !pte_protnone(ptent))
+> +			continue;
+> +
+> +		if (pfn_folio(pte_pfn(ptent)) != folio)
+> +			continue;
+> +
+> +		if (!ignore_writable) {
+> +			ptent = pte_modify(ptent, vma->vm_page_prot);
+> +			writable = pte_write(ptent);
+> +			if (!writable && pte_write_upgrade &&
+> +			    can_change_pte_writable(vma, addr, ptent))
+> +				writable = true;
+> +		}
+> +
+> +		old_pte = ptep_modify_prot_start(vma, addr, start_ptep);
+> +		pte = pte_modify(old_pte, vma->vm_page_prot);
+> +		pte = pte_mkyoung(pte);
+> +		if (writable)
+> +			pte = pte_mkwrite(pte, vma);
+> +		ptep_modify_prot_commit(vma, addr, start_ptep, old_pte, pte);
+> +		update_mmu_cache_range(vmf, vma, addr, start_ptep, 1);
+> +	}
+> +}
+> +
+>  static vm_fault_t do_numa_page(struct vm_fault *vmf)
+>  {
+>  	struct vm_area_struct *vma = vmf->vma;
+>  	struct folio *folio = NULL;
+>  	int nid = NUMA_NO_NODE;
+> -	bool writable = false;
+> +	bool writable = false, ignore_writable = false;
+>  	int last_cpupid;
+>  	int target_nid;
+>  	pte_t pte, old_pte;
+> -	int flags = 0;
+> +	int flags = 0, nr_pages;
+>  
+>  	/*
+>  	 * The pte cannot be used safely until we verify, while holding the page
+> @@ -5107,10 +5147,6 @@ static vm_fault_t do_numa_page(struct vm_fault *vmf)
+>  	if (!folio || folio_is_zone_device(folio))
+>  		goto out_map;
+>  
+> -	/* TODO: handle PTE-mapped THP */
+> -	if (folio_test_large(folio))
+> -		goto out_map;
+> -
+>  	/*
+>  	 * Avoid grouping on RO pages in general. RO pages shouldn't hurt as
+>  	 * much anyway since they can be in shared cache state. This misses
+> @@ -5130,6 +5166,7 @@ static vm_fault_t do_numa_page(struct vm_fault *vmf)
+>  		flags |= TNF_SHARED;
+>  
+>  	nid = folio_nid(folio);
+> +	nr_pages = folio_nr_pages(folio);
+>  	/*
+>  	 * For memory tiering mode, cpupid of slow memory page is used
+>  	 * to record page access time.  So use default value.
+> @@ -5146,6 +5183,7 @@ static vm_fault_t do_numa_page(struct vm_fault *vmf)
+>  	}
+>  	pte_unmap_unlock(vmf->pte, vmf->ptl);
+>  	writable = false;
+> +	ignore_writable = true;
+>  
+>  	/* Migrate to the requested node */
+>  	if (migrate_misplaced_folio(folio, vma, target_nid)) {
+> @@ -5166,14 +5204,17 @@ static vm_fault_t do_numa_page(struct vm_fault *vmf)
+>  
+>  out:
+>  	if (nid != NUMA_NO_NODE)
+> -		task_numa_fault(last_cpupid, nid, 1, flags);
+> +		task_numa_fault(last_cpupid, nid, nr_pages, flags);
+>  	return 0;
+>  out_map:
+>  	/*
+>  	 * Make it present again, depending on how arch implements
+>  	 * non-accessible ptes, some can allow access by kernel mode.
+>  	 */
+> -	numa_rebuild_single_mapping(vmf, vma, writable);
+> +	if (folio && folio_test_large(folio))
+> +		numa_rebuild_large_mapping(vmf, vma, folio, pte, ignore_writable);
+> +	else
+> +		numa_rebuild_single_mapping(vmf, vma, writable);
+>  	pte_unmap_unlock(vmf->pte, vmf->ptl);
+>  	goto out;
+>  }
+> diff --git a/mm/mprotect.c b/mm/mprotect.c
+> index f8a4544b4601..94878c39ee32 100644
+> --- a/mm/mprotect.c
+> +++ b/mm/mprotect.c
+> @@ -129,7 +129,8 @@ static long change_pte_range(struct mmu_gather *tlb,
+>  
+>  				/* Also skip shared copy-on-write pages */
+>  				if (is_cow_mapping(vma->vm_flags) &&
+> -				    folio_ref_count(folio) != 1)
+> +				    (folio_maybe_dma_pinned(folio) ||
+> +				     folio_likely_mapped_shared(folio)))
+>  					continue;
+>  
+>  				/*
 
