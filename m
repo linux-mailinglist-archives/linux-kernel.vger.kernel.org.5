@@ -1,110 +1,97 @@
-Return-Path: <linux-kernel+bounces-126964-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-126965-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3BE6289450A
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 20:55:27 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id EF59889450D
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 20:55:43 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E58251F21BDB
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 18:55:26 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 91128B2198A
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 18:55:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C00385024E;
-	Mon,  1 Apr 2024 18:55:23 +0000 (UTC)
-Received: from relay162.nicmail.ru (relay162.nicmail.ru [91.189.117.6])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8929651C2C;
+	Mon,  1 Apr 2024 18:55:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="vwRjbn/t"
+Received: from out-187.mta1.migadu.com (out-187.mta1.migadu.com [95.215.58.187])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DC6154F88B;
-	Mon,  1 Apr 2024 18:55:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.189.117.6
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3D3F750249
+	for <linux-kernel@vger.kernel.org>; Mon,  1 Apr 2024 18:55:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.187
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711997723; cv=none; b=TH+lSK8Bw9WVZri7kHfMOctMdBraXvM2RFZOdnhLs01muBn5JPOea1UoPeaswoqkUECf67+A+6VcNdxfxQRVPmxm4w5ma16A9zzp2y3FYw3bh9hEmWP152WE70wgs+u/QHJU86O+3e2M1Q9p2tmj/AWzIbCQS7C1l4Mn3sGuYPs=
+	t=1711997733; cv=none; b=MlyoUrOUQpaHLqRBASkElXV7N368UJyt+xVC8nKbJevulQjcM+OLwvWfuAEhQQ0x/j04r0VEuMUwVHlTXDzaGoMIqgZnXfIwm5N1O2YZDRFGmwxOjKPKQgL+IVJLsYmJ1yvCN/PcQfktnczamAZkeb0zmO7oz2XUha5YCKr6A1E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711997723; c=relaxed/simple;
-	bh=4yV/6Rl53rOy1mtHIIWoR/s27gopoujP4rYp3U+jscQ=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=bZK8pH9LQrD/CsYqGLVLK6uuP/HLPnUf1Y74ofJfRVHz2wPcCXLgxdMIuRE6TolUNJuyotODvKeBhTSZSxiee7SRu4g3hhcIk8d7xqHF3uPsSXQMPmes4LvHxPk1q2hTaVkpNd+5PYuETp2ayDvIMo19Vv9k6w5cPKuPL6Cuv90=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ancud.ru; spf=pass smtp.mailfrom=ancud.ru; arc=none smtp.client-ip=91.189.117.6
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ancud.ru
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ancud.ru
-Received: from [10.28.138.148] (port=64432 helo=mitx-gfx..)
-	by relay.hosting.mail.nic.ru with esmtp (Exim 5.55)
-	(envelope-from <kiryushin@ancud.ru>)
-	id 1rrMoE-0007tS-6T;
-	Mon, 01 Apr 2024 21:55:06 +0300
-Received: from [87.245.155.195] (account kiryushin@ancud.ru HELO mitx-gfx..)
-	by incarp1101.mail.hosting.nic.ru (Exim 5.55)
-	with id 1rrMoD-009Nd0-2u;
-	Mon, 01 Apr 2024 21:55:05 +0300
-From: Nikita Kiryushin <kiryushin@ancud.ru>
-To: "Paul E. McKenney" <paulmck@kernel.org>
-Cc: Nikita Kiryushin <kiryushin@ancud.ru>,
-	Frederic Weisbecker <frederic@kernel.org>,
-	Neeraj Upadhyay <quic_neeraju@quicinc.com>,
-	Joel Fernandes <joel@joelfernandes.org>,
-	Josh Triplett <josh@joshtriplett.org>,
-	Boqun Feng <boqun.feng@gmail.com>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-	Lai Jiangshan <jiangshanlai@gmail.com>,
-	Zqiang <qiang.zhang1211@gmail.com>,
-	rcu@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	lvc-project@linuxtesting.org
-Subject: [PATCH v2] rcu: Fix buffer overlow in print_cpu_stall_info()
-Date: Mon,  1 Apr 2024 21:54:54 +0300
-Message-Id: <20240401185454.361291-1-kiryushin@ancud.ru>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <5a629a8e-5a70-4c7d-ab6a-f4a09e8c574c@paulmck-laptop>
-References: 
+	s=arc-20240116; t=1711997733; c=relaxed/simple;
+	bh=4SaZuBFazkBBKNpoTWiW8ROSSgI2jLrGDikbbq1uaH8=;
+	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=Pg8DMrhexHNgFOHY3FHeOEeyGQA80gjB1iDy+OQ03/QYoyAJIxrExWI8RrXrFQE4oacovDjj/kNaXg1EB1Yb63d5S+CaZBYovgdT/52P4/FOCBmvWznyqDcAu/RiBCktkbOEt5NY9fXhiNpBO46DcjVIEMGAFQztpl33WXojRZc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=vwRjbn/t; arc=none smtp.client-ip=95.215.58.187
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <2ee098ec-a46f-44fa-8719-049331c4c206@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1711997729;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=TwaXuGDQ6zaSeml1dtFpJh0djt9NWcXU/UO1873hCxE=;
+	b=vwRjbn/tgF4l7bk4tGLN6N7m/NhuxHgXdkJr2khWniTxEi9ZMgQ3wRvo2Dld1NlGVN98xx
+	wtNL+XWC4XC/jCZjfi98ZDMDc16DzKXFdHWdXUdXsOgEawqPsgQ48Pn7GCndRC8Xu5Gyh8
+	CmAkFwHJHFPJ1iuCBLnAEhqFTXYds1A=
+Date: Mon, 1 Apr 2024 11:55:17 -0700
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-MS-Exchange-Organization-SCL: -1
+Subject: Re: [syzbot] [bpf?] KMSAN: uninit-value in trie_delete_elem
+Content-Language: en-GB
+To: syzbot <syzbot+603bcd9b0bf1d94dbb9b@syzkaller.appspotmail.com>,
+ andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org,
+ daniel@iogearbox.net, eddyz87@gmail.com, haoluo@google.com,
+ john.fastabend@gmail.com, jolsa@kernel.org, kpsingh@kernel.org,
+ linux-kernel@vger.kernel.org, martin.lau@linux.dev, sdf@google.com,
+ song@kernel.org, syzkaller-bugs@googlegroups.com
+References: <000000000000f9ce6d061494e694@google.com>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Yonghong Song <yonghong.song@linux.dev>
+In-Reply-To: <000000000000f9ce6d061494e694@google.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Migadu-Flow: FLOW_OUT
 
-rcuc info output in print_cpu_stall_info() contains
-possible buffer overflow in the case of huge jiffies
-difference. The situation seems improbable, but, buffer
-overflow, still.
 
-Also, unsigned jiffies difference printed as (signed)
-%ld. This is intentional for debugging purposes, but
-it is not obvious from the code.
+On 3/26/24 12:00 PM, syzbot wrote:
+> Hello,
+>
+> syzbot found the following issue on:
+>
+> HEAD commit:    4f55aa85a874 Merge tag 'fbdev-for-6.9-rc1' of git://git.ke..
+> git tree:       upstream
+> console output: https://syzkaller.appspot.com/x/log.txt?x=11a8dc6e180000
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=e6bd769cb793b98a
+> dashboard link: https://syzkaller.appspot.com/bug?extid=603bcd9b0bf1d94dbb9b
+> compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+> userspace arch: i386
+>
+> Unfortunately, I don't have any reproducer for this issue yet.
+>
+> Downloadable assets:
+> disk image: https://storage.googleapis.com/syzbot-assets/991fcbce770a/disk-4f55aa85.raw.xz
+> vmlinux: https://storage.googleapis.com/syzbot-assets/bd716e5d2c3c/vmlinux-4f55aa85.xz
+> kernel image: https://storage.googleapis.com/syzbot-assets/bf1151dbf5fc/bzImage-4f55aa85.xz
+>
+> IMPORTANT: if you fix the issue, please add the following tag to the commit:
+> Reported-by: syzbot+603bcd9b0bf1d94dbb9b@syzkaller.appspotmail.com
+>
+> =====================================================
+> BUG: KMSAN: uninit-value in trie_delete_elem+0xc0/0xbe0 kernel/bpf/lpm_trie.c:448
 
-Change sprintf to snprintf and add clarifying comment
-about intention of %ld format.
-
-Found by Linux Verification Center (linuxtesting.org) with SVACE.
-
-Fixes: 245a62982502 ("rcu: Dump rcuc kthread status for CPUs not reporting quiescent state")
-Signed-off-by: Nikita Kiryushin <kiryushin@ancud.ru>
----
-v2: Remove signed to unsigned print format change as
-Paul E. McKenney <paulmck@kernel.org> suggested, add format
-intention clarification comment
- kernel/rcu/tree_stall.h | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
-
-diff --git a/kernel/rcu/tree_stall.h b/kernel/rcu/tree_stall.h
-index 5d666428546b..b972fe9f07a6 100644
---- a/kernel/rcu/tree_stall.h
-+++ b/kernel/rcu/tree_stall.h
-@@ -504,7 +504,8 @@ static void print_cpu_stall_info(int cpu)
- 			rcu_dynticks_in_eqs(rcu_dynticks_snap(cpu));
- 	rcuc_starved = rcu_is_rcuc_kthread_starving(rdp, &j);
- 	if (rcuc_starved)
--		sprintf(buf, " rcuc=%ld jiffies(starved)", j);
-+		/* %ld is intentional, for easier bug detection */
-+		snprintf(buf, sizeof(buf), " rcuc=%ld jiffies(starved)", j);
- 	pr_err("\t%d-%c%c%c%c: (%lu %s) idle=%04x/%ld/%#lx softirq=%u/%u fqs=%ld%s%s\n",
- 	       cpu,
- 	       "O."[!!cpu_online(cpu)],
--- 
-2.34.1
+Unrelated to the bug itself, with KMSAN is enabled, qemu cannot boot my vm
+any more. Anything special I need to do in order to boot a KMSAN kernel?
 
 
