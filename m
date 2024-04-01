@@ -1,137 +1,250 @@
-Return-Path: <linux-kernel+bounces-126685-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-126687-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5251F893B72
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 15:29:26 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id AB0F1893B75
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 15:30:52 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0CA7A28191C
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 13:29:25 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6077F28188F
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 13:30:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 67B113F9D3;
-	Mon,  1 Apr 2024 13:29:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id ECF5C3F9C5;
+	Mon,  1 Apr 2024 13:30:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Pnw59EUG"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.16])
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="EeT6QxYE"
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 685B33F8E0;
-	Mon,  1 Apr 2024 13:29:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.16
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0A4233F8E0
+	for <linux-kernel@vger.kernel.org>; Mon,  1 Apr 2024 13:30:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.1
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711978158; cv=none; b=sjFLIwibqdNwfD1YRwZiuQJJfOYKUO+fwYNrhc5n2n7sPdQYMUd/EPbSaAPvtIkXTrnRwJgcelZIv9b4yv1wHtfEqjHv96UjJtDOjFMG/9MbHUfKO/jKJwa1YEnJoWuJwRObfGDmRRWlWMowHAptamDTUc/G+JvejjaKz/rV/mA=
+	t=1711978246; cv=none; b=YU85Ek3wABG+NR1C8pEgfHd7eeTfbzr0MDAzKzwxma0I+nuIfS+zDMJxXcYZ8d2EZTAdtDmA/8fSM2NBzEDTTkHX5ZY/duIGjylhuhQHtAY3lblNW8pzBPPTew6oa7geOUcAV4+4hoJUGLj3kV3pgMHL6MoqJFa0Z/HZRwJIN98=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711978158; c=relaxed/simple;
-	bh=sq7Bn6wHg2fsxeLVlMSLN4jO8+oiDlZLwdERkhcHRHU=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Vk2DehBlUHn7vDcN9vCIAp3CmUmPxFHh1cvXNVE2r+8RWPvrQW/Oq8UW24Yjee7pyTtN2N02jRMTALuTui4p4WNHAQjTKxr8iR/LDCw4VM68fttJ07TchFoIONkCLX13c4+uqBJbmuKI6OgGmMSWOpbgjMB5W2egdjHUZERh4T4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Pnw59EUG; arc=none smtp.client-ip=192.198.163.16
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1711978156; x=1743514156;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=sq7Bn6wHg2fsxeLVlMSLN4jO8+oiDlZLwdERkhcHRHU=;
-  b=Pnw59EUGDUnSBlvXLLE6xyRIzgk79PA8s15kOghsdA0mZHeGVL434lZE
-   Bm4TJd1IZRcSQHI36r6msb4QJSKQ2tScEay2MoWQx1ZpQEjTUIC04JrTh
-   Ibk/zZEKmK6TrfRYgDgCparb0fZi7+gfHoDoGklABOpSxqBCaHvDns/3x
-   EqirMflh8stWEglH7XohbiHqzIwPFRPa28XHZR2yWgySZwNrvisrY6LO7
-   sYiM467Ma9wcLRnjURqvDzCLUadbAawdbVDZ7g4E4gpV5hE5pe35ivMz1
-   ibdpA2tNVAnlc4YJraKLgdiDt7MdGhosXeiG4hxFVEu3D6Pwhw8qZeaDa
-   g==;
-X-CSE-ConnectionGUID: 3nR/7qWFR8ymThs5VWMQwg==
-X-CSE-MsgGUID: iWH8UVkKQA+DbWnsaxrGAg==
-X-IronPort-AV: E=McAfee;i="6600,9927,11031"; a="7693452"
-X-IronPort-AV: E=Sophos;i="6.07,172,1708416000"; 
-   d="scan'208";a="7693452"
-Received: from orviesa010.jf.intel.com ([10.64.159.150])
-  by fmvoesa110.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Apr 2024 06:29:16 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,172,1708416000"; 
-   d="scan'208";a="17533802"
-Received: from lkp-server02.sh.intel.com (HELO 90ee3aa53dbd) ([10.239.97.151])
-  by orviesa010.jf.intel.com with ESMTP; 01 Apr 2024 06:29:13 -0700
-Received: from kbuild by 90ee3aa53dbd with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1rrHip-0000Kn-0C;
-	Mon, 01 Apr 2024 13:29:11 +0000
-Date: Mon, 1 Apr 2024 21:28:46 +0800
-From: kernel test robot <lkp@intel.com>
-To: Piyush Malgujar <pmalgujar@marvell.com>, andi.shyti@kernel.org,
-	linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc: oe-kbuild-all@lists.linux.dev, sgarapati@marvell.com,
-	cchavva@marvell.com, jannadurai@marvell.com,
-	Piyush Malgujar <pmalgujar@marvell.com>
-Subject: Re: [PATCH v5 1/4] i2c: thunderx: Clock divisor logic changes
-Message-ID: <202404012108.N5Bs6Axl-lkp@intel.com>
-References: <20240401063229.2112782-2-pmalgujar@marvell.com>
+	s=arc-20240116; t=1711978246; c=relaxed/simple;
+	bh=l8Rmbnm5bfzqhkQDekEKXU/9L++kGmxGTPBiuQtYjkw=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=oNVeNM7tBgta3+vUYAlD2Vmi/sks4ZpUp2JklfiQOf7qAmJ1lldsSQtenh/f1oo28tVn92CMzAF6WTZEy0t1E7E9MOjt5HyKgonSKBH2QdCesgBl/brAV+NGeU5OqHOIr/CJGOGrTGZUfmIxIKgN4fvnIAHqV6Cds4TC8DJmxJQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=EeT6QxYE; arc=none smtp.client-ip=148.163.156.1
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
+Received: from pps.filterd (m0353729.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 431DJlE7020912;
+	Mon, 1 Apr 2024 13:30:22 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=mZ054kOzWIIAqwTc19RMLPFYnX3vtoxYOe5U5coBzeM=;
+ b=EeT6QxYEltimETBrskW1VpyiWQgjhPsxuRjsXAf/IMwnf3ffqQE/tOc/dk6rwhkVUC3E
+ VCjiC2GrOOzFfKZNB2E8vTF6qIsDJUcFsR/LWhETRvB0McWgrF5Q5hdYU60lb88gZnOd
+ TglCbA2a81b19eJ7QJNC1By1OY5z4x6ZxN3Fe0pDoU+K7eKyoBcctJByapOxHpaEtZlO
+ eaAgnjvw44pibIBs9XzNELTv3VrQugIURssZGTfVTj1oPB/z4Q31laIWA3eD9qCVmg4i
+ WYpU2E4wsJqAsrHkpPrqIeaznDWUp5UHCFkXh3fZpeCH3sBaV34ZwZ0/pRKrUALpcpT7 3g== 
+Received: from pps.reinject (localhost [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3x7v2dr73y-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 01 Apr 2024 13:30:22 +0000
+Received: from m0353729.ppops.net (m0353729.ppops.net [127.0.0.1])
+	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 431DUL8e004136;
+	Mon, 1 Apr 2024 13:30:21 GMT
+Received: from ppma21.wdc07v.mail.ibm.com (5b.69.3da9.ip4.static.sl-reverse.com [169.61.105.91])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3x7v2dr73s-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 01 Apr 2024 13:30:21 +0000
+Received: from pps.filterd (ppma21.wdc07v.mail.ibm.com [127.0.0.1])
+	by ppma21.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 431BYJRi025721;
+	Mon, 1 Apr 2024 13:30:20 GMT
+Received: from smtprelay07.dal12v.mail.ibm.com ([172.16.1.9])
+	by ppma21.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3x6x2p0bv7-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 01 Apr 2024 13:30:20 +0000
+Received: from smtpav04.wdc07v.mail.ibm.com (smtpav04.wdc07v.mail.ibm.com [10.39.53.231])
+	by smtprelay07.dal12v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 431DUHmY44957966
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Mon, 1 Apr 2024 13:30:19 GMT
+Received: from smtpav04.wdc07v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 46CF958050;
+	Mon,  1 Apr 2024 13:30:17 +0000 (GMT)
+Received: from smtpav04.wdc07v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id B80F258069;
+	Mon,  1 Apr 2024 13:30:12 +0000 (GMT)
+Received: from [9.195.32.11] (unknown [9.195.32.11])
+	by smtpav04.wdc07v.mail.ibm.com (Postfix) with ESMTP;
+	Mon,  1 Apr 2024 13:30:12 +0000 (GMT)
+Message-ID: <540e7569-de5f-4167-a0f3-e508c7bdd63c@linux.ibm.com>
+Date: Mon, 1 Apr 2024 19:00:11 +0530
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240401063229.2112782-2-pmalgujar@marvell.com>
-
-Hi Piyush,
-
-kernel test robot noticed the following build errors:
-
-[auto build test ERROR on andi-shyti/i2c/i2c-host]
-[also build test ERROR on linus/master v6.9-rc2 next-20240328]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
-
-url:    https://github.com/intel-lab-lkp/linux/commits/Piyush-Malgujar/i2c-thunderx-Clock-divisor-logic-changes/20240401-143524
-base:   git://git.kernel.org/pub/scm/linux/kernel/git/andi.shyti/linux.git i2c/i2c-host
-patch link:    https://lore.kernel.org/r/20240401063229.2112782-2-pmalgujar%40marvell.com
-patch subject: [PATCH v5 1/4] i2c: thunderx: Clock divisor logic changes
-config: alpha-allyesconfig (https://download.01.org/0day-ci/archive/20240401/202404012108.N5Bs6Axl-lkp@intel.com/config)
-compiler: alpha-linux-gcc (GCC) 13.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240401/202404012108.N5Bs6Axl-lkp@intel.com/reproduce)
-
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202404012108.N5Bs6Axl-lkp@intel.com/
-
-All errors (new ones prefixed by >>):
-
-   In file included from drivers/i2c/busses/i2c-octeon-core.c:22:
-   drivers/i2c/busses/i2c-octeon-core.h: In function 'octeon_i2c_is_otx2':
->> drivers/i2c/busses/i2c-octeon-core.h:225:23: error: implicit declaration of function 'FIELD_GET' [-Werror=implicit-function-declaration]
-     225 |         u32 chip_id = FIELD_GET(PCI_SUBSYS_MASK, pdev->subsystem_device);
-         |                       ^~~~~~~~~
-   cc1: some warnings being treated as errors
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 3/3] docs: cgroup-v1: clarify that domain levels are
+ system-specific
+To: Vitalii Bursov <vitaly@bursov.com>
+Cc: Ingo Molnar <mingo@redhat.com>, Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>, Ben Segall <bsegall@google.com>,
+        Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira
+ <bristot@redhat.com>,
+        Valentin Schneider <vschneid@redhat.com>, linux-kernel@vger.kernel.org
+References: <cover.1711900396.git.vitaly@bursov.com>
+ <af9562aac2e9208029aef1dd19c3b0e096dd42c7.1711900396.git.vitaly@bursov.com>
+ <3d85926d-378a-4d5e-8303-92461bd3b100@linux.ibm.com>
+ <78c60269-5aee-45d7-8014-2c0188f972da@bursov.com>
+From: Shrikanth Hegde <sshegde@linux.ibm.com>
+Content-Language: en-US
+In-Reply-To: <78c60269-5aee-45d7-8014-2c0188f972da@bursov.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: OZ0Cnki74i7rggO0SIKysMoaCBoejdi8
+X-Proofpoint-ORIG-GUID: 9lnCPhCEZaFmhmv9cQJZ63nzawQ_qNvN
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-04-01_09,2024-04-01_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 clxscore=1015
+ mlxlogscore=999 bulkscore=0 mlxscore=0 adultscore=0 spamscore=0
+ priorityscore=1501 impostorscore=0 suspectscore=0 phishscore=0
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2403210000 definitions=main-2404010096
 
 
-vim +/FIELD_GET +225 drivers/i2c/busses/i2c-octeon-core.h
 
-   214	
-   215	#define PCI_SUBSYS_DEVID_9XXX	0xB
-   216	#define PCI_SUBSYS_MASK		GENMASK(15, 12)
-   217	/**
-   218	 * octeon_i2c_is_otx2 - check for chip ID
-   219	 * @pdev: PCI dev structure
-   220	 *
-   221	 * Returns true if the device is an OcteonTX2, false otherwise.
-   222	 */
-   223	static inline bool octeon_i2c_is_otx2(struct pci_dev *pdev)
-   224	{
- > 225		u32 chip_id = FIELD_GET(PCI_SUBSYS_MASK, pdev->subsystem_device);
-   226	
-   227		return (chip_id == PCI_SUBSYS_DEVID_9XXX);
-   228	}
-   229	
+On 4/1/24 4:05 PM, Vitalii Bursov wrote:
+> 
+> 
+> On 01.04.24 07:05, Shrikanth Hegde wrote:
+>>
+>>
+>> On 3/31/24 9:31 PM, Vitalii Bursov wrote:
+>>> Add a clarification that domain levels are system-specific
+>>> and where to check for system details.
+>>>
+>>> Add CPU clusters to the scheduler domain levels table.
+>>>
+>>> Signed-off-by: Vitalii Bursov <vitaly@bursov.com>
+>>> ---
+>>>  Documentation/admin-guide/cgroup-v1/cpusets.rst | 16 +++++++++++-----
+>>>  1 file changed, 11 insertions(+), 5 deletions(-)
+>>>
+>>> diff --git a/Documentation/admin-guide/cgroup-v1/cpusets.rst b/Documentation/admin-guide/cgroup-v1/cpusets.rst
+>>> index 7d3415eea..d16a3967d 100644
+>>> --- a/Documentation/admin-guide/cgroup-v1/cpusets.rst
+>>> +++ b/Documentation/admin-guide/cgroup-v1/cpusets.rst
+>>> @@ -568,19 +568,25 @@ on the next tick.  For some applications in special situation, waiting
+>>>  
+>>>  The 'cpuset.sched_relax_domain_level' file allows you to request changing
+>>>  this searching range as you like.  This file takes int value which
+>>> -indicates size of searching range in levels ideally as follows,
+>>> +indicates size of searching range in levels approximately as follows,
+>>>  otherwise initial value -1 that indicates the cpuset has no request.
+>>>  
+>>>  ====== ===========================================================
+>>>    -1   no request. use system default or follow request of others.
+>>>     0   no search.
+>>>     1   search siblings (hyperthreads in a core).
+>>> -   2   search cores in a package.
+>>> -   3   search cpus in a node [= system wide on non-NUMA system]
+>>> -   4   search nodes in a chunk of node [on NUMA system]
+>>> -   5   search system wide [on NUMA system]
+>>> +   2   search cpu clusters
+>>> +   3   search cores in a package.
+>>> +   4   search cpus in a node [= system wide on non-NUMA system]
+>>> +   5   search nodes in a chunk of node [on NUMA system]
+>>> +   6   search system wide [on NUMA system]
+>>
+>> I think above block of documentation need not change. SD_CLUSTER is a software 
+>> construct, not a sched domain per se. 
+>>
+> 
+> I added "cpu clusters" because the original table:
+> ====== ===========================================================
+>   -1   no request. use system default or follow request of others.
+>    0   no search.
+>    1   search siblings (hyperthreads in a core).
+>    2   search cores in a package.
+>    3   search cpus in a node [= system wide on non-NUMA system]
+>    4   search nodes in a chunk of node [on NUMA system]
+>    5   search system wide [on NUMA system]
+> ====== ===========================================================
+> does not match to what I see on a few systems I checked.
+> 
+> AMD Ryzen and the same dual-CPU Intel server with NUMA disabled:
+>   level:0 - SMT
+>   level:2 - MC
+>   level:3 - PKG
+> 
+> Server with NUMA enabled:
+>   level:0 - SMT
+>   level:2 - MC
+>   level:5 - NUMA
+> 
 
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+None of these are "cpu clusters". 
+
+From what i know, the description for the above are.
+SMT - multi-threads/hyperthreads
+MC - Multi-Core 
+PKG - Package/Socket level 
+NUMA - Node level. When you enable, PKG gets degenerated since pkg mask and numa mask would 
+have been same. 
+
+ 
+
+> So, for the relax level original table:
+>   1 -> enables 0 SMP -> OK
+>   2 -> enables 1 unknown -> does not enable cores in a package
+>   3 -> enables 2 MC -> OK for NUMA, but not system wide on non-NUMA system
+>   5 -> enables 4 unknown -> does not enable system wide on NUMA
+> 
+> The updated table
+> ====== ===========================================================
+>   -1   no request. use system default or follow request of others.
+>    0   no search.
+>    1   search siblings (hyperthreads in a core).
+>    2   search cpu clusters
+>    3   search cores in a package.
+>    4   search cpus in a node [= system wide on non-NUMA system]
+>    5   search nodes in a chunk of node [on NUMA system]
+>    6   search system wide [on NUMA system]
+> ====== ===========================================================
+> would work like this:
+>   1 -> enables 0 SMP -> OK
+>   2 -> enables 1 unknown -> does nothing new
+>   3 -> enables 2 MC -> OK, cores in a package for NUMA and non-NUMA system
+>   4 -> enables 3 PKG -> OK on non-NUMA system
+
+It wont, PKG domain itself wont be there. It gets removed.
+
+>   6 -> enables 5 NUMA -> OK
+> 
+> I think it would look more correct on "average" systems, but anyway,
+> please confirm and I'll remove the table update in an updated patch.
+> 
+
+IMHO, the table need not get updated. Just adding a paragraph pointing 
+to refer to the sysfs files is good enough. 
+
+
+> Thanks
+> 
+>> IMO the next paragraph that is added is good enough and the above change can be removed.
+> 
+>>>  ====== ===========================================================
+>>>  
+>>> +Not all levels can be present and values can change depending on the
+>>> +system architecture and kernel configuration. Check
+>>> +/sys/kernel/debug/sched/domains/cpu*/domain*/ for system-specific
+>>> +details.
+>>> +
+>>>  The system default is architecture dependent.  The system default
+>>>  can be changed using the relax_domain_level= boot parameter.
+>>>  
 
