@@ -1,173 +1,97 @@
-Return-Path: <linux-kernel+bounces-126801-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-126817-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4288D893CDA
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 17:27:53 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 503B4893D02
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 17:41:39 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A5151B223C4
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 15:27:50 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0AF92280E79
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 15:41:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 325C946551;
-	Mon,  1 Apr 2024 15:27:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7BF2C47774;
+	Mon,  1 Apr 2024 15:41:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=alpinelinux.org header.i=@alpinelinux.org header.b="sPJRUoCt"
-Received: from gbr-app-1.alpinelinux.org (gbr-app-1.alpinelinux.org [213.219.36.190])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=wanadoo.fr header.i=@wanadoo.fr header.b="IDWpuH0V"
+Received: from smtp.smtpout.orange.fr (smtp-30.smtpout.orange.fr [80.12.242.30])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 734104596E;
-	Mon,  1 Apr 2024 15:27:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.219.36.190
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9A898208D1;
+	Mon,  1 Apr 2024 15:41:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=80.12.242.30
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711985260; cv=none; b=TEvnIDiqPCo900HS2wgTMmPfyRorLVIOxdG7xoCiEVuD7XTluQIRutddKzcgTkJlmfHSpN2gr5s6YG/B4yrxBpLDBTZhXRhImfM+5PMblBUYoEhsTWqk39P80nVpyDudALylqwxno5Gb0WdKxTJNo7oFEoepaok6V27a65Ef/Jk=
+	t=1711986089; cv=none; b=M03eAqiirt9E5jaMPjR66rcSmrsK9eF7RJNrkwd4FRzlanRkEMhXOePaRfv8FAcNy/g4WtjV2C/ZBPv2rstGWeHeifZP+PPOZfGEB08+lrjLrRSu7Pk38TxjoU4xHEPSS8OgHHGrUqfFO7B6XV1Z8FjRsPZd6F3chGkdMcztQwE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711985260; c=relaxed/simple;
-	bh=IXumSUCWEcxOebRu6c1bG6LiQip87HwwnASHg6ZJEjs=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=rr16GrepieDZWKFbqK8bRlizvw05W3icoTXOp10RXJpNgre0Z1f6bovmhzp/pqj/eZpJJWFE69MWW71gixlSqh3ehYlLhcKMbYTP88xNDhbeBrfXEqKt8eHgqBcw7xaEo9qCv0lkEAypmxF/pi3Ykrb88gwrkQ5MAV3+u0AciY4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=alpinelinux.org; spf=pass smtp.mailfrom=alpinelinux.org; dkim=pass (1024-bit key) header.d=alpinelinux.org header.i=@alpinelinux.org header.b=sPJRUoCt; arc=none smtp.client-ip=213.219.36.190
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=alpinelinux.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alpinelinux.org
-Received: from ncopa-desktop.lan (ti0056a400-4037.bb.online.no [85.167.238.210])
-	(Authenticated sender: ncopa@alpinelinux.org)
-	by gbr-app-1.alpinelinux.org (Postfix) with ESMTPSA id 9A4EA2258D6;
-	Mon,  1 Apr 2024 15:27:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alpinelinux.org;
-	s=smtp; t=1711985251;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=EbZD58z1sAwDWkRRamsCF5H1xsswpcXAj/U5NCBJMJk=;
-	b=sPJRUoCtJxBkzo1TMAIXuyD7WhrFnxik4mBvsq7xHxnEIiHz81kZ2yh3t/HyQh8SQXeBMg
-	3zOZY8RIaaye90ogxhfcvrwUDMrZABv2/v9fTzSly/NC2/8yLSMqaHJwWns3/Rb27Ms7IO
-	rEoiYark49mI6qtPcbqilt1VFKXYQD0=
-Date: Mon, 1 Apr 2024 17:27:27 +0200
-From: Natanael Copa <ncopa@alpinelinux.org>
-To: Greg Thelen <gthelen@google.com>
-Cc: Bagas Sanjaya <bagasdotme@gmail.com>, Greg KH <greg@kroah.com>, Viktor
- Malik <vmalik@redhat.com>, Andrii Nakryiko <andrii@kernel.org>, Daniel Xu
- <dxu@dxuuu.xyz>, Alexei Starovoitov <ast@kernel.org>, Nick Desaulniers
- <ndesaulniers@google.com>, Linux Kernel Mailing List
- <linux-kernel@vger.kernel.org>, Linux Regressions
- <regressions@lists.linux.dev>, Linux Stable <stable@vger.kernel.org>
-Subject: Re: stable kernels 6.6.23 and 6.1.83 fails to build: error: unknown
- type name 'u32'
-Message-ID: <20240401172727.08b65053@ncopa-desktop.lan>
-In-Reply-To: <CAHH2K0apZttqAhMZ9H_fygUC_Oa9G5-4XYmmqZu-EWNOuqc4Xg@mail.gmail.com>
-References: <ZgrAM4NjZQWZ2Jq6@archie.me>
-	<2024040143-shrimp-congress-8263@gregkh>
-	<ZgrD-XtaG9D8jFnA@archie.me>
-	<CAHH2K0apZttqAhMZ9H_fygUC_Oa9G5-4XYmmqZu-EWNOuqc4Xg@mail.gmail.com>
-X-Mailer: Claws Mail 4.2.0 (GTK 3.24.41; x86_64-alpine-linux-musl)
+	s=arc-20240116; t=1711986089; c=relaxed/simple;
+	bh=Y/Bj6IHFimK/L3bQZNyOgnhAWh2BT8FNakGZBoDEYtU=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=CLh5nl7WQC3lii1UhLkk/QEYKVSLWKnHYATk5wZhdxiuW0GjSQpjaV7Kk7XyjdkeV3oDmOtBMV900Rqyec7/BJ8nit0+rjtQPBYtdrglLEWh6AljpmGCThsjmIjwo5UHTQiiG3EJwmq14jGM0kl7XVeoUnfAD+zV6JFvQBmn6qU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wanadoo.fr; spf=pass smtp.mailfrom=wanadoo.fr; dkim=pass (2048-bit key) header.d=wanadoo.fr header.i=@wanadoo.fr header.b=IDWpuH0V; arc=none smtp.client-ip=80.12.242.30
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wanadoo.fr
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=wanadoo.fr
+Received: from fedora.home ([86.243.17.157])
+	by smtp.orange.fr with ESMTPA
+	id rJdfrt5eMFDStrJdfryokC; Mon, 01 Apr 2024 17:32:00 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wanadoo.fr;
+	s=t20230301; t=1711985520;
+	bh=HXJxPRAT/1ovZ08zVcfoBlF6cHXXFiWjqhU7B+IHfPk=;
+	h=From:To:Subject:Date:Message-ID:MIME-Version;
+	b=IDWpuH0VtaQGNJrHB+Kmke7pWKxXeWu2l81BpKO/eq73sF1I/wnJZzDDo7zicuXwx
+	 0Q6v4yp2nvdWIddFwiNicKVu6gwe9fLKAtSQqr1JW/MZs3AzA8/71gvplrbLwVEbtv
+	 Lb177vNRMW/uOWMHzMeB2iRPqAjZ7jd1OMQn23I67ZxJNUkCgrprYtC+H5C12CAZZB
+	 8azL/WIP1/uoELoviK6YRM+LjgmMW50FF6e6gYs5IihxZFk+eP4l7IfSWjrZIJQJ2Z
+	 qHUzOAkf94+lViLj0ImVp7DT/5KTiIm0sX8rTGAfNr82XJUYN0h1Y7GFEdd1XX4OY5
+	 PX7McXIfyIAnQ==
+X-ME-Helo: fedora.home
+X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
+X-ME-Date: Mon, 01 Apr 2024 17:32:00 +0200
+X-ME-IP: 86.243.17.157
+From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+To: Michael Turquette <mturquette@baylibre.com>,
+	Stephen Boyd <sboyd@kernel.org>,
+	Vladimir Zapolskiy <vz@mleia.com>
+Cc: linux-kernel@vger.kernel.org,
+	kernel-janitors@vger.kernel.org,
+	Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+	linux-clk@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org
+Subject: [PATCH] clk: nxp: Remove an unused field in struct lpc18xx_pll
+Date: Mon,  1 Apr 2024 17:31:53 +0200
+Message-ID: <6cfb0e5251c3a59a156e70bcf6a0cc74aa764faa.1711985490.git.christophe.jaillet@wanadoo.fr>
+X-Mailer: git-send-email 2.44.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
-On Mon, 1 Apr 2024 07:36:08 -0700
-Greg Thelen <gthelen@google.com> wrote:
+In "struct lpc18xx_pll", the 'lock' field is unused.
+Remove it.
 
-> On Mon, Apr 1, 2024 at 7:26*AM Bagas Sanjaya <bagasdotme@gmail.com> wrote:
-> >
-> > On Mon, Apr 01, 2024 at 04:15:25PM +0200, Greg KH wrote: =20
-> > > On Mon, Apr 01, 2024 at 09:09:55PM +0700, Bagas Sanjaya wrote: =20
-> > > > Hi,
-> > > >
-> > > > On Bugzilla, ncopa@alpinelinux.org reported resolve_btfids FTBFS re=
-gression
-> > > > on musl system [1]:
-> > > > =20
-> > > > > The latest releases fails to build with musl libc (Alpine Linux e=
-dge and v3.19):
-> > > > >
-> > > > > ```
-> > > > > rm -f -f /home/ncopa/aports/main/linux-lts/src/build-lts.x86_64/t=
-ools/bpf/resolve_btfids/libbpf/libbpf.a; ar rcs /home/ncopa/aports/main/lin=
-ux-lts/src/build-lts.x86_64/tool
-> > > > > s/bpf/resolve_btfids/libbpf/libbpf.a /home/ncopa/aports/main/linu=
-x-lts/src/build-lts.x86_64/tools/bpf/resolve_btfids/libbpf/staticobjs/libbp=
-f-in.o
-> > > > > In file included from main.c:73:
-> > > > > /home/ncopa/aports/main/linux-lts/src/linux-6.6/tools/include/lin=
-ux/btf_ids.h:7:9: error: unknown type name 'u32'
-> > > > >     7 |         u32 cnt;
-> > > > >       |         ^~~
-> > > > > /home/ncopa/aports/main/linux-lts/src/linux-6.6/tools/include/lin=
-ux/btf_ids.h:8:9: error: unknown type name 'u32'
-> > > > >     8 |         u32 ids[];
-> > > > >       |         ^~~
-> > > > > /home/ncopa/aports/main/linux-lts/src/linux-6.6/tools/include/lin=
-ux/btf_ids.h:12:9: error: unknown type name 'u32'
-> > > > >    12 |         u32 cnt;
-> > > > >       |         ^~~
-> > > > > /home/ncopa/aports/main/linux-lts/src/linux-6.6/tools/include/lin=
-ux/btf_ids.h:13:9: error: unknown type name 'u32'
-> > > > >    13 |         u32 flags;
-> > > > >       |         ^~~
-> > > > > /home/ncopa/aports/main/linux-lts/src/linux-6.6/tools/include/lin=
-ux/btf_ids.h:15:17: error: unknown type name 'u32'
-> > > > >    15 |                 u32 id;
-> > > > >       |                 ^~~
-> > > > > /home/ncopa/aports/main/linux-lts/src/linux-6.6/tools/include/lin=
-ux/btf_ids.h:16:17: error: unknown type name 'u32'
-> > > > >    16 |                 u32 flags;
-> > > > >       |                 ^~~
-> > > > > /home/ncopa/aports/main/linux-lts/src/linux-6.6/tools/include/lin=
-ux/btf_ids.h:215:8: error: unknown type name 'u32'
-> > > > >   215 | extern u32 btf_tracing_ids[];
-> > > > >       |        ^~~
-> > > > > make[4]: *** [/home/ncopa/aports/main/linux-lts/src/linux-6.6/too=
-ls/build/Makefile.build:98: /home/ncopa/aports/main/linux-lts/src/build-lts=
-x86_64/tools/bpf/resolve_btfids
-> > > > > /main.o] Error 1
-> > > > > make[4]: *** Waiting for unfinished jobs....
-> > > > > make[3]: *** [Makefile:83: /home/ncopa/aports/main/linux-lts/src/=
-build-lts.x86_64/tools/bpf/resolve_btfids//resolve_btfids-in.o] Error 2
-> > > > > make[2]: *** [Makefile:76: bpf/resolve_btfids] Error 2
-> > > > > make[1]: *** [/home/ncopa/aports/main/linux-lts/src/linux-6.6/Mak=
-efile:1354: tools/bpf/resolve_btfids] Error 2
-> > > > > make: *** [/home/ncopa/aports/main/linux-lts/src/linux-6.6/Makefi=
-le:234: __sub-make] Error 2
-> > > > > ``` =20
-> > > >
-> > > > Bisection led to upstream commit 9707ac4fe2f5ba ("tools/resolve_btf=
-ids:
-> > > > Refactor set sorting with types from btf_ids.h") as the culprit.
-> > > >
-> > > > See the report on Bugzilla for the full thread and proposed fix. =20
-> > >
-> > > Is the proposed fix a commit to backport? =20
-> >
-> > Nope (see below).
-> > =20
-> > >
-> > > Digging through entries is not the easiest way to get things resolved=
-..
-> > > =20
-> >
-> > The reporter posted the fix as bug comment [1] instead (hint: include
-> > linux/types.h) but not submitted it to mailing lists first.
-> >
-> > Thanks.
-> >
-> > [1]: https://bugzilla.kernel.org/show_bug.cgi?id=3D218647#c2
-> >
-> > --
-> > An old man doll... just what I always wanted! - Clara =20
->=20
-> Does https://lore.kernel.org/all/20240328110103.28734-1-ncopa@alpinelinux=
-org/
-> resolve this? It's staged in the bpf tree. Though I'm not sure when
-> it'll be merged upstream.
+Found with cppcheck, unusedStructMember.
 
-Yes. this is the fix
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+---
+Compile tested only.
+---
+ drivers/clk/nxp/clk-lpc18xx-cgu.c | 1 -
+ 1 file changed, 1 deletion(-)
 
--nc
+diff --git a/drivers/clk/nxp/clk-lpc18xx-cgu.c b/drivers/clk/nxp/clk-lpc18xx-cgu.c
+index 69ebf65081b8..81efa885069b 100644
+--- a/drivers/clk/nxp/clk-lpc18xx-cgu.c
++++ b/drivers/clk/nxp/clk-lpc18xx-cgu.c
+@@ -250,7 +250,6 @@ static struct lpc18xx_cgu_base_clk lpc18xx_cgu_base_clks[] = {
+ struct lpc18xx_pll {
+ 	struct		clk_hw hw;
+ 	void __iomem	*reg;
+-	spinlock_t	*lock;
+ 	u8		flags;
+ };
+ 
+-- 
+2.44.0
+
 
