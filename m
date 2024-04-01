@@ -1,260 +1,167 @@
-Return-Path: <linux-kernel+bounces-126396-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-126397-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3315B8936BF
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 03:40:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id C7AF28936C3
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 03:40:31 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5C79F281A28
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 01:40:21 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7C739281A67
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 01:40:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A6ADD1C33;
-	Mon,  1 Apr 2024 01:40:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BACDB4683;
+	Mon,  1 Apr 2024 01:40:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="WMYJ3k1I"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="bBCn9Q/e"
+Received: from mail-pj1-f54.google.com (mail-pj1-f54.google.com [209.85.216.54])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C50E6623
-	for <linux-kernel@vger.kernel.org>; Mon,  1 Apr 2024 01:40:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 58509138A;
+	Mon,  1 Apr 2024 01:40:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711935615; cv=none; b=MyBSgYSIe7VHZhOI2qh+OAlo/58bq/IOxdJOoPGT9urThwTRxZ6B9Tc3TKD8lKZStp42JYZ5UVDIIGaNk5mVfb78/dPooCfBrFlz82F/xlnsj62hzfZjKNaI1MeAxf0QpwLSHQNdXITKmv5wNZ8322dC4U0H7K3jo9PzqNqg6bY=
+	t=1711935617; cv=none; b=iCx0y7xbVxcKyk+sf+gTju1pKOLsLPFkrW1xQ2SvWe568QsP1t8z7a4UpmA2Rr09PMCgOGcRKIDdPayKbYi7I1Yg1YAMbcuze/DjV+a4GB8QjNiGaC+hkj70gTgJ2CjqfhuTwZBibnIkAnoSQLYNcShL9QNqTce7OwhCkZF6m6E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711935615; c=relaxed/simple;
-	bh=CVvjRkKEQ1K8GZwwAs6XND1VVBqZ3gscg8qbSw1O88Y=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=HZmXc3tsmYgO4rVRrIx6NytKB6eic2RHCrL41rT9KRFguD6l/jOq7D9KxVeseOAhSoiC4wlFjKB3YZM1dazTxdpaILvGLXNW7oLXuBNbs4NYijEg2zY12PCURG9gULzEAbGsrR8ME+QLwO/CV6rXlcsxWb9eh/1dpQn3OudOF8k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=WMYJ3k1I; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1711935612;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=IBzwZVE6/XZJhG9lhNuBo21FIhFKpdiDUdcBLxSjjtE=;
-	b=WMYJ3k1ILdFbt2GENEVzuqZV18/nsZqZf1+z07C+70xCssHf2lsBW61NZdVrb5yoOhr2AO
-	M2/2fe0y3lVRN5FHZYP4Zixgx2XoY16mOfQwTFL7hsjDahRxHxdcrq4DqsFSGHVKPngvvm
-	sLl41Qd4vhPESnGG68hIsY6EWIe/Qps=
-Received: from mail-pl1-f199.google.com (mail-pl1-f199.google.com
- [209.85.214.199]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-407-L3GGjErXNhicZWCvmiudKw-1; Sun, 31 Mar 2024 21:40:11 -0400
-X-MC-Unique: L3GGjErXNhicZWCvmiudKw-1
-Received: by mail-pl1-f199.google.com with SMTP id d9443c01a7336-1e20573ef3dso23506335ad.1
-        for <linux-kernel@vger.kernel.org>; Sun, 31 Mar 2024 18:40:11 -0700 (PDT)
+	s=arc-20240116; t=1711935617; c=relaxed/simple;
+	bh=TI6IuqC+nGLzZt+tVLR6gojEYG3t41oEALcDGbjbp+g=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=cdHjetB4MFUpqzXMKi15b1nrhvTuvmOwvSBWiIYGQeQHY00/oLEBxeACZdmYsl+JJK7lM35mqA2VGwB7FYvWL5AhLQ54ZpR0y2lx6PXO5ZN4ixRaoqhuvPxA5+I8sIcQTc9kZEUsTngoV8mIDRI3P7rDQ/TF5+zuyg1HO+OCV1M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=bBCn9Q/e; arc=none smtp.client-ip=209.85.216.54
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pj1-f54.google.com with SMTP id 98e67ed59e1d1-2a20a9df742so2153238a91.1;
+        Sun, 31 Mar 2024 18:40:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1711935615; x=1712540415; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=uWl2xXHYY6auDvtgz0DFj69yz84J8dM6ZFmwWmtkGUk=;
+        b=bBCn9Q/ev8eaVOr3A2angAxH4M2Sjo2vEeYOmkNAyLqVzitkOr80pPADnN0apmvCK9
+         sHw9OAX5hHwh46+DjM/yYGgTqRPRebkv0oPGih+AvkvV8RSqcAek4kqWAOZtPy/Z0TAF
+         w+JQIfG/Dy7HDUlnDabDCGkTNF0hfhbUc43RJaPy/TjZVEk39o53XaRzHMEgdV89ZA7t
+         Z9SdHkqMEgTJ+1YM0L1ktKOPQgQd0uf9l26mnKU+t8QJnO4hmURVu6UuXEIDz5RQL2wq
+         /UalbgUdMYxFBCnkK4+psOcADekV5LAhT2OR51rfyNvP5gE+3aAU2xbDQCUqoVYlI83F
+         6H4A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711935610; x=1712540410;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=IBzwZVE6/XZJhG9lhNuBo21FIhFKpdiDUdcBLxSjjtE=;
-        b=B6zKbWxbUwwM1B/Dk5ZGTNwM7fKtxeG+1nNWkM8D3N1aR8xxU8kCGk5gXUJVF4poG9
-         86u4l/yxgD9mrDOcR64OCLPnwl6DxGcE79e23Qly6KHVnS0AQpApGc4jljCQXOUasLJw
-         Dee3/EPBFB5Vhb25g7n8G+6XiMY6cmqbyV3g5k7xy5N9aRaVniySPgnIM439LfR9grKs
-         4J2xRAI4QxlysIueI3VbroRBb+9z/aDhJaslcoPB3tLuZWAAhifwO5p64wfgnwC8eqZ5
-         HxnkeqU2VKssHdHR4Na4f/ssr6c89MBxStK8Yanq5rVus2GZo+O+Kd8nNjcah4NS4Uqe
-         WNpQ==
-X-Forwarded-Encrypted: i=1; AJvYcCV+vBtmkOyLCyBLEH339Aut/uUgjV1ELqxhf5P9NtZEOB76DFNV+IQVzbK/qPUBiQvLPcBkb13jZXL0LzWbAsQRJvECEoMOuSHiuBc/
-X-Gm-Message-State: AOJu0Yy5e21mOaZdzW706/vIv5JwnXVF2YAN5ryovb8ErkwzC+aqr5Hz
-	i6nSBKffbq3aX/ahP7fOnigq5N+R7DV9cUDUpTB9acH5BCFLGizmBlngyh5MpmQ1SFXZEtnznYf
-	KF/WklYDS1zQIYTGHvVamXFsUHftNt+KGdcLxTKe0xB3mkcMUG/0X9ZsRmWEpE7sbF90jhNqWS9
-	H3sAoi+217HFkfpyxheFvHuKgX6KF5kKkWg9bi
-X-Received: by 2002:a17:902:7005:b0:1e0:a3dd:82df with SMTP id y5-20020a170902700500b001e0a3dd82dfmr6524527plk.38.1711935610174;
-        Sun, 31 Mar 2024 18:40:10 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IEOam+CBLcJgkKx62NYgxq8ze9IbSjrgmvGMm3dvSXCb5VwSU29/cplx6cbZS3eX9jokod62DqaTZD9RRyNze8=
-X-Received: by 2002:a17:902:7005:b0:1e0:a3dd:82df with SMTP id
- y5-20020a170902700500b001e0a3dd82dfmr6524516plk.38.1711935609797; Sun, 31 Mar
- 2024 18:40:09 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1711935615; x=1712540415;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=uWl2xXHYY6auDvtgz0DFj69yz84J8dM6ZFmwWmtkGUk=;
+        b=pb/HtWsQ1EHsWAERzJCfnBppbXXkDdGjN8pkhD7+GfVWBu7cZaUrjRM9xr8p8c9mcy
+         kMlXMUFOJ0CpN9Wf5rThNQUgwPb06Hva2Tuaa/Gcbh8C3CswVLcT4rvVtPi+iLfsoPkT
+         aQ/wZ0NnNzrhX4cdYYfBu2Z+kSwCJwgQyggpLdneaoj6Toruzr2H3r68yld7dK8fD54D
+         3fTThYgRrKGY0gHqilJ0pqbeA5ex8MbIdVVEpugB1AD1RoUOFNrqH2KmNausZBI5mpvf
+         wNp+t/RDDbOYHBolbK4UZhr4ZC4sYiQBe88Y7YwSMKhp84yPxGNTs5wZE1t0J0vN9XD5
+         8NXQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVwRlLfdRtA938nDmzpQF21ZJGsqceVlY/TnfwtNF9rb/k25VBlNG6oWv2FJkJMwDRtjs72tpukQlTN/XOl41gurN/6UTYppmkqlb81
+X-Gm-Message-State: AOJu0Yy77oH0M587nVon2Nk4mo9OB9ZrdpjIGj1L5tAdJ6yIAuEnPHug
+	2xOMmqaeiY1/c1/S3/TB+iiL4MEUhff7EtKVeU64RmKdmT2atk5uyM8ZeYN1
+X-Google-Smtp-Source: AGHT+IG83zdomN/hFBS+E1Jq2ahe+Md52OeV3igeFtvyvHK4h8JT+yEGUyy9puL3kaFMNJ0y5YfADg==
+X-Received: by 2002:a17:90a:bc95:b0:2a2:13ec:fc6 with SMTP id x21-20020a17090abc9500b002a213ec0fc6mr5646207pjr.10.1711935615351;
+        Sun, 31 Mar 2024 18:40:15 -0700 (PDT)
+Received: from [192.168.255.10] ([43.132.141.21])
+        by smtp.gmail.com with ESMTPSA id w1-20020a17090a15c100b0029facfb3f25sm7176086pjd.45.2024.03.31.18.40.13
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 31 Mar 2024 18:40:14 -0700 (PDT)
+Message-ID: <339b5603-c09a-41de-af75-cf0f196a6310@gmail.com>
+Date: Mon, 1 Apr 2024 09:40:11 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240324150107.976025-1-hpa@redhat.com> <20240324150107.976025-6-hpa@redhat.com>
- <nakbogrilul6skiab5opfsqhhqfotfgmb47wyd3xbgbpf6hurc@6xshfz3obj7m>
-In-Reply-To: <nakbogrilul6skiab5opfsqhhqfotfgmb47wyd3xbgbpf6hurc@6xshfz3obj7m>
-From: Kate Hsuan <hpa@redhat.com>
-Date: Mon, 1 Apr 2024 09:39:51 +0800
-Message-ID: <CAEth8oE21tdcEgb9K_d7cY=nBaazkVvcBg2piQeALwRiB2eY+w@mail.gmail.com>
-Subject: Re: [PATCH v5 RESEND 5/6] power: supply: power-supply-leds: Add
- charging_red_full_green trigger for RGB LED
-To: Sebastian Reichel <sre@kernel.org>
-Cc: Pavel Machek <pavel@ucw.cz>, Lee Jones <lee@kernel.org>, linux-leds@vger.kernel.org, 
-	platform-driver-x86@vger.kernel.org, Hans de Goede <hdegoede@redhat.com>, 
-	=?UTF-8?Q?Ilpo_J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>, 
-	=?UTF-8?Q?Andr=C3=A9_Apitzsch?= <git@apitzsch.eu>, 
-	linux-kernel@vger.kernel.org, Andy Shevchenko <andy.shevchenko@gmail.com>, 
-	linux-pm@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-
-Hi
-
-On Sat, Mar 30, 2024 at 12:24=E2=80=AFAM Sebastian Reichel <sre@kernel.org>=
- wrote:
->
-> Hello Kate,
->
-> On Sun, Mar 24, 2024 at 11:01:06PM +0800, Kate Hsuan wrote:
-> > Add a charging_red_full_green LED trigger and the trigger is based on
-> > led_mc_trigger_event() which can set an RGB LED when the trigger is
-> > triggered. The LED will show red when the battery status is charging.
-> > The LED will show green when the battery status is full.
-> >
-> > Link: https://lore.kernel.org/linux-leds/f40a0b1a-ceac-e269-c2dd-0158c5=
-b4a1ad@gmail.com/T/#t
-> > Signed-off-by: Kate Hsuan <hpa@redhat.com>
-> > ---
->
-> Have you considered using orange instead of red? Using orange as
-> charging indicator seems to be more common nowadays and allows
-
-Sounds good.
-I'll change the color for them.
-
-Thank you
-
->
-> green  =3D battery full
-> orange =3D battery charging
-> red    =3D battery empty / battery dead / error
->
-> Greetings,
->
-> -- Sebastian
->
-> >  drivers/power/supply/power_supply_leds.c | 25 ++++++++++++++++++++++++
-> >  include/linux/power_supply.h             |  2 ++
-> >  2 files changed, 27 insertions(+)
-> >
-> > diff --git a/drivers/power/supply/power_supply_leds.c b/drivers/power/s=
-upply/power_supply_leds.c
-> > index c7db29d5fcb8..bd9c8fec5870 100644
-> > --- a/drivers/power/supply/power_supply_leds.c
-> > +++ b/drivers/power/supply/power_supply_leds.c
-> > @@ -22,6 +22,8 @@
-> >  static void power_supply_update_bat_leds(struct power_supply *psy)
-> >  {
-> >       union power_supply_propval status;
-> > +     unsigned int intensity_green[3] =3D {255, 0, 0};
-> > +     unsigned int intensity_red[3] =3D {0, 0, 255};
-> >
-> >       if (power_supply_get_property(psy, POWER_SUPPLY_PROP_STATUS, &sta=
-tus))
-> >               return;
-> > @@ -36,12 +38,20 @@ static void power_supply_update_bat_leds(struct pow=
-er_supply *psy)
-> >               /* Going from blink to LED on requires a LED_OFF event to=
- stop blink */
-> >               led_trigger_event(psy->charging_blink_full_solid_trig, LE=
-D_OFF);
-> >               led_trigger_event(psy->charging_blink_full_solid_trig, LE=
-D_FULL);
-> > +             led_mc_trigger_event(psy->charging_red_full_green_trig,
-> > +                                  intensity_green,
-> > +                                  3,
-> > +                                  LED_FULL);
-> >               break;
-> >       case POWER_SUPPLY_STATUS_CHARGING:
-> >               led_trigger_event(psy->charging_full_trig, LED_FULL);
-> >               led_trigger_event(psy->charging_trig, LED_FULL);
-> >               led_trigger_event(psy->full_trig, LED_OFF);
-> >               led_trigger_blink(psy->charging_blink_full_solid_trig, 0,=
- 0);
-> > +             led_mc_trigger_event(psy->charging_red_full_green_trig,
-> > +                                  intensity_red,
-> > +                                  3,
-> > +                                  LED_FULL);
-> >               break;
-> >       default:
-> >               led_trigger_event(psy->charging_full_trig, LED_OFF);
-> > @@ -49,6 +59,10 @@ static void power_supply_update_bat_leds(struct powe=
-r_supply *psy)
-> >               led_trigger_event(psy->full_trig, LED_OFF);
-> >               led_trigger_event(psy->charging_blink_full_solid_trig,
-> >                       LED_OFF);
-> > +             led_mc_trigger_event(psy->charging_red_full_green_trig,
-> > +                                  intensity_red,
-> > +                                  3,
-> > +                                  LED_OFF);
-> >               break;
-> >       }
-> >  }
-> > @@ -74,6 +88,11 @@ static int power_supply_create_bat_triggers(struct p=
-ower_supply *psy)
-> >       if (!psy->charging_blink_full_solid_trig_name)
-> >               goto charging_blink_full_solid_failed;
-> >
-> > +     psy->charging_red_full_green_trig_name =3D kasprintf(GFP_KERNEL,
-> > +             "%s-charging-red-full-green", psy->desc->name);
-> > +     if (!psy->charging_red_full_green_trig_name)
-> > +             goto charging_red_full_green_failed;
-> > +
-> >       led_trigger_register_simple(psy->charging_full_trig_name,
-> >                                   &psy->charging_full_trig);
-> >       led_trigger_register_simple(psy->charging_trig_name,
-> > @@ -82,9 +101,13 @@ static int power_supply_create_bat_triggers(struct =
-power_supply *psy)
-> >                                   &psy->full_trig);
-> >       led_trigger_register_simple(psy->charging_blink_full_solid_trig_n=
-ame,
-> >                                   &psy->charging_blink_full_solid_trig)=
-;
-> > +     led_trigger_register_simple(psy->charging_red_full_green_trig_nam=
-e,
-> > +                                 &psy->charging_red_full_green_trig);
-> >
-> >       return 0;
-> >
-> > +charging_red_full_green_failed:
-> > +     kfree(psy->charging_blink_full_solid_trig_name);
-> >  charging_blink_full_solid_failed:
-> >       kfree(psy->full_trig_name);
-> >  full_failed:
-> > @@ -101,10 +124,12 @@ static void power_supply_remove_bat_triggers(stru=
-ct power_supply *psy)
-> >       led_trigger_unregister_simple(psy->charging_trig);
-> >       led_trigger_unregister_simple(psy->full_trig);
-> >       led_trigger_unregister_simple(psy->charging_blink_full_solid_trig=
-);
-> > +     led_trigger_unregister_simple(psy->charging_red_full_green_trig);
-> >       kfree(psy->charging_blink_full_solid_trig_name);
-> >       kfree(psy->full_trig_name);
-> >       kfree(psy->charging_trig_name);
-> >       kfree(psy->charging_full_trig_name);
-> > +     kfree(psy->charging_red_full_green_trig_name);
-> >  }
-> >
-> >  /* Generated power specific LEDs triggers. */
-> > diff --git a/include/linux/power_supply.h b/include/linux/power_supply.=
-h
-> > index c0992a77feea..1d7c0b43070f 100644
-> > --- a/include/linux/power_supply.h
-> > +++ b/include/linux/power_supply.h
-> > @@ -318,6 +318,8 @@ struct power_supply {
-> >       char *online_trig_name;
-> >       struct led_trigger *charging_blink_full_solid_trig;
-> >       char *charging_blink_full_solid_trig_name;
-> > +     struct led_trigger *charging_red_full_green_trig;
-> > +     char *charging_red_full_green_trig_name;
-> >  #endif
-> >  };
-> >
-> > --
-> > 2.44.0
-> >
-> >
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] docs/zh: Fix Cc, Co-developed-by, and Signed-off-by tags
+Content-Language: en-US
+To: Geert Uytterhoeven <geert+renesas@glider.be>, Alex Shi
+ <alexs@kernel.org>, Yanteng Si <siyanteng@loongson.cn>,
+ Jonathan Corbet <corbet@lwn.net>, Hu Haowen <2023002089@link.tyut.edu.cn>
+Cc: linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <22892a8ab5c17d7121ef5b85f7d18d8b1f41e434.1711715655.git.geert+renesas@glider.be>
+From: Alex Shi <seakeel@gmail.com>
+In-Reply-To: <22892a8ab5c17d7121ef5b85f7d18d8b1f41e434.1711715655.git.geert+renesas@glider.be>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
 
 
---=20
-BR,
-Kate
+On 3/29/24 8:35 PM, Geert Uytterhoeven wrote:
+> The updates from commit ae67ee6c5e1d5b6a ("docs: fix Co-Developed-by
+> docs") in v5.0 were never applied to the Chinese translations.
+> In addition:
+>   - "Cc" used wrong case,
+>   - "Co-developed-by" lacked a dash,
+>   - "Signed-off-by" was misspelled.
+> 
+> Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
 
+LGTM 
+Reviewed-by: Alex Shi <alexs@kernel.org>
+
+
+> ---
+>  .../translations/zh_CN/process/submitting-patches.rst     | 8 ++++----
+>  .../translations/zh_TW/process/submitting-patches.rst     | 8 ++++----
+>  2 files changed, 8 insertions(+), 8 deletions(-)
+> 
+> diff --git a/Documentation/translations/zh_CN/process/submitting-patches.rst b/Documentation/translations/zh_CN/process/submitting-patches.rst
+> index f8978f02057c164c..7864107e60a85c58 100644
+> --- a/Documentation/translations/zh_CN/process/submitting-patches.rst
+> +++ b/Documentation/translations/zh_CN/process/submitting-patches.rst
+> @@ -333,10 +333,10 @@ Linus 和其他的内核开发者需要阅读和评论你提交的改动。对
+>  未参与其开发。签署链应当反映补丁传播到维护者并最终传播到Linus所经过的 **真实**
+>  路径，首个签署指明单个作者的主要作者身份。
+>  
+> -何时使用Acked-by:，CC:，和Co-Developed by:
+> +何时使用Acked-by:，Cc:，和Co-developed-by:
+>  ------------------------------------------
+>  
+> -Singed-off-by: 标签表示签名者参与了补丁的开发，或者他/她在补丁的传递路径中。
+> +Signed-off-by: 标签表示签名者参与了补丁的开发，或者他/她在补丁的传递路径中。
+>  
+>  如果一个人没有直接参与补丁的准备或处理，但希望表示并记录他们对补丁的批准/赞成，
+>  那么他们可以要求在补丁的变更日志中添加一个Acked-by:。
+> @@ -358,8 +358,8 @@ Acked-by：不一定表示对整个补丁的确认。例如，如果一个补丁
+>  Co-developed-by: 声明补丁是由多个开发人员共同创建的；当几个人在一个补丁上工
+>  作时，它用于给出共同作者（除了From:所给出的作者之外）。因为Co-developed-by:
+>  表示作者身份，所以每个Co-developed-by:必须紧跟在相关合作作者的签署之后。标准
+> -签署程序要求Singed-off-by:标签的顺序应尽可能反映补丁的时间历史，无论作者是通
+> -过From:还是Co-developed-by:表明。值得注意的是，最后一个Singed-off-by:必须是
+> +签署程序要求Signed-off-by:标签的顺序应尽可能反映补丁的时间历史，无论作者是通
+> +过From:还是Co-developed-by:表明。值得注意的是，最后一个Signed-off-by:必须是
+>  提交补丁的开发人员。
+>  
+>  注意，如果From:作者也是电子邮件标题的From:行中列出的人，则From:标签是可选的。
+> diff --git a/Documentation/translations/zh_TW/process/submitting-patches.rst b/Documentation/translations/zh_TW/process/submitting-patches.rst
+> index 99fa0f2fe6f414e1..f12f2f193f855cfb 100644
+> --- a/Documentation/translations/zh_TW/process/submitting-patches.rst
+> +++ b/Documentation/translations/zh_TW/process/submitting-patches.rst
+> @@ -334,10 +334,10 @@ Linus 和其他的內核開發者需要閱讀和評論你提交的改動。對
+>  未參與其開發。簽署鏈應當反映補丁傳播到維護者並最終傳播到Linus所經過的 **真實**
+>  路徑，首個簽署指明單個作者的主要作者身份。
+>  
+> -何時使用Acked-by:，CC:，和Co-Developed by:
+> +何時使用Acked-by:，Cc:，和Co-developed-by:
+>  ------------------------------------------
+>  
+> -Singed-off-by: 標籤表示簽名者參與了補丁的開發，或者他/她在補丁的傳遞路徑中。
+> +Signed-off-by: 標籤表示簽名者參與了補丁的開發，或者他/她在補丁的傳遞路徑中。
+>  
+>  如果一個人沒有直接參與補丁的準備或處理，但希望表示並記錄他們對補丁的批准/贊成，
+>  那麼他們可以要求在補丁的變更日誌中添加一個Acked-by:。
+> @@ -359,8 +359,8 @@ Acked-by：不一定表示對整個補丁的確認。例如，如果一個補丁
+>  Co-developed-by: 聲明補丁是由多個開發人員共同創建的；當幾個人在一個補丁上工
+>  作時，它用於給出共同作者（除了From:所給出的作者之外）。因爲Co-developed-by:
+>  表示作者身份，所以每個Co-developed-by:必須緊跟在相關合作作者的簽署之後。標準
+> -簽署程序要求Singed-off-by:標籤的順序應儘可能反映補丁的時間歷史，無論作者是通
+> -過From:還是Co-developed-by:表明。值得注意的是，最後一個Singed-off-by:必須是
+> +簽署程序要求Signed-off-by:標籤的順序應儘可能反映補丁的時間歷史，無論作者是通
+> +過From:還是Co-developed-by:表明。值得注意的是，最後一個Signed-off-by:必須是
+>  提交補丁的開發人員。
+>  
+>  注意，如果From:作者也是電子郵件標題的From:行中列出的人，則From:標籤是可選的。
 
