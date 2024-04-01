@@ -1,104 +1,158 @@
-Return-Path: <linux-kernel+bounces-127204-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-127205-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 524F18947F5
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 01:50:51 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4BE128947F8
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 01:51:25 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id F129E1F241AB
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 23:50:50 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6F0CE1C2184F
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 23:51:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 837F257315;
-	Mon,  1 Apr 2024 23:50:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AE25957860;
+	Mon,  1 Apr 2024 23:51:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="AbgKql0u"
-Received: from fllv0015.ext.ti.com (fllv0015.ext.ti.com [198.47.19.141])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="FBL5QGAa"
+Received: from mail-lf1-f47.google.com (mail-lf1-f47.google.com [209.85.167.47])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 48A482A1BF;
-	Mon,  1 Apr 2024 23:50:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.19.141
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EDE7F56B81
+	for <linux-kernel@vger.kernel.org>; Mon,  1 Apr 2024 23:51:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712015443; cv=none; b=EQePA9QOH1nCkEH80jzM4gZBDGpaZ5rkkV1njbtc7i50C4vkAA6LIALHpadvi8g+t+r6ZNnXtPZWrwkKk1TLG8RjE8pA9ADvshTJlQV/IyirtMSo+Y+4+XjTB7xdrKkN1Nn+EgnJJJXjQEddc6X7EXnam/7gXrSse0JRSjwUygk=
+	t=1712015477; cv=none; b=JNxEesBc2L9w0ckUhlB7jkQ5b9UE8dI+GUPzdPnJwSopp3EZRzY0IGcm5BxT96Nh+cJi8IL0V2PA7nXM8fbuI8C/++L4lzuRw2K6iJwe0N4hBqWA0OmmSJTkTL3mCF35/rxy5RHqdAieeGdvZqZfeLcj9iQcqQM3UA70LkpBykA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712015443; c=relaxed/simple;
-	bh=gC3y51smFQte+vpAUum3ZwOj1MUe7sBXkuCwpfUK7Pw=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=q8Ds4FOeotaBXDl6YYah8pTMppeF7E1ztATsKXJlP2qH683qwy7BpyVYZHNSQNwdIl6F9bY45xfjEDigXaKcT3nZ3qNFWXnGGCrMvm1gKXo+/2odp6C2xr3zgwT/1BZA9Z6cppR0BgNXRKmRxLdJOx7KHHwzqXRaznKzxEmqlp0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=AbgKql0u; arc=none smtp.client-ip=198.47.19.141
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
-Received: from fllv0035.itg.ti.com ([10.64.41.0])
-	by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 431NobTl104499;
-	Mon, 1 Apr 2024 18:50:37 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-	s=ti-com-17Q1; t=1712015437;
-	bh=gC3y51smFQte+vpAUum3ZwOj1MUe7sBXkuCwpfUK7Pw=;
-	h=Date:Subject:To:CC:References:From:In-Reply-To;
-	b=AbgKql0ukID+o8z/3tOLazD9/Q0mUbUR1zry7T/uKGONvtx9P6iUODZRXwyk7/M74
-	 SQ9AG2zQ2yotPuXsG7thUM8/SOpAZx+2A9u7Gl6U7thVwPLd9v/A507+Ie/K2aKpKe
-	 P6SkO1Vy5jh29H8rAY8KeAR2uE6yDAn/yN+QwAYs=
-Received: from DLEE114.ent.ti.com (dlee114.ent.ti.com [157.170.170.25])
-	by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 431Nob62095778
-	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-	Mon, 1 Apr 2024 18:50:37 -0500
-Received: from DLEE102.ent.ti.com (157.170.170.32) by DLEE114.ent.ti.com
- (157.170.170.25) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Mon, 1
- Apr 2024 18:50:37 -0500
-Received: from lelvsmtp6.itg.ti.com (10.180.75.249) by DLEE102.ent.ti.com
- (157.170.170.32) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Mon, 1 Apr 2024 18:50:37 -0500
-Received: from [10.249.42.149] ([10.249.42.149])
-	by lelvsmtp6.itg.ti.com (8.15.2/8.15.2) with ESMTP id 431NobFt082588;
-	Mon, 1 Apr 2024 18:50:37 -0500
-Message-ID: <e172edd3-824b-4ee4-b650-be1a8b9286fd@ti.com>
-Date: Mon, 1 Apr 2024 18:50:37 -0500
+	s=arc-20240116; t=1712015477; c=relaxed/simple;
+	bh=AIE+v3isfbEbNJwblsGQEZ9BeAZNLAvQspWBKbN90cg=;
+	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=ce2DriG8uL8XrMvYid+MlNQB9JwdthRHnCXaT8HCRMlMrVyIBZiOLwfo7wxZWfO13/+VwiWaLkGZj8dfqb2pxg2yNho5BY/U30JAB8Qv3Iy6oI9LJY4BgcdrIB2mR6CvNXf4cDsxbnDrnpJtRfbOID9sLsFgtpmeJSEYHiSqj0E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=FBL5QGAa; arc=none smtp.client-ip=209.85.167.47
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-lf1-f47.google.com with SMTP id 2adb3069b0e04-516b324ad69so381743e87.1
+        for <linux-kernel@vger.kernel.org>; Mon, 01 Apr 2024 16:51:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1712015474; x=1712620274; darn=vger.kernel.org;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=1dcSVI3IWYNVdSPmBC0C2QNVAXSUlaGzN8zET/T3Huo=;
+        b=FBL5QGAaLE7u1ajTxg4NwD6oRzWF8seTF4S2qA4BOzKBtuekoUDYfPNh9BH+0SIH+6
+         NcTX8T3GMeg+YaeZ1b7X064NMkdwpTOW0olKpDpYG9SkO7SdKrYKAa6sTgYj96txzbGN
+         /VJBxMAnr12DUelfHQ/OjJgFz8MHcLYd9ysjBmkls6R4uUuzmqKifiRD8CCSngh1C2nv
+         eTGO/c70NCiJtq6RWPpWodUBIbsO7iEouCoeEP76DUqiif6u2PyNd+VHlYOhs+u6TGHH
+         Lv5bONagqO1T5KzYmkC2llGFlkg/8puyiDJJicSkVzP2K5S1ZBq/DE575Pyx1pD3aMd7
+         7yRA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712015474; x=1712620274;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=1dcSVI3IWYNVdSPmBC0C2QNVAXSUlaGzN8zET/T3Huo=;
+        b=JDiG+B+0AEYlbF3nuhOV4COZahr9hWTweMFOjHD4F2xpoXD8w2+uflP0hzKxTUW0kb
+         5tQ3xFh2jAS6z6Tw5dNWetZyuJb6zK6c9Ud8So0D/MpauOEOe2SA4lfMCa1XBMix0NEl
+         7fzjVriDcevlluPT/PXus9pGAwPFjQMVjMKR1BPIWpQ93Ho1f2Oi0OHtdtLT7/mcaG8a
+         0KzgUOJHZhOnWli7zLPdq6W9H4ZfYBYjMU0+czTrAq0Dxl5n58pPzqOjRTFJ9zJ/d+E0
+         UCd1p5ex5C5NyUxMQ8ATJ2TfaDWZfvUwePhzC8qak+8XwyOnAd3X4Yy2OzfFHt0ymnCO
+         PgPg==
+X-Forwarded-Encrypted: i=1; AJvYcCV490J3QL0qMAPrcPdQ7sXCUjO2uqp24eJaa1VGpli8L9DJFHo/d3JEBqEV/gCj1NyVNXF8YjqSjQLz+J3zdVt83T7WGmO2PpVrPkza
+X-Gm-Message-State: AOJu0Yz9lXj0OHEnQoHOlQy5mx+RT8uuuZJLze+cgC2og3KAaFs7hj49
+	JlPOaKji8uH4JGIbe+xE8XlD0g6gXSrqegSCggsD/Mnfho+P+iVa0r3hsTyDXXM=
+X-Google-Smtp-Source: AGHT+IFYSCeMxGqZ2MbE1waQe/9063olfwjZ1oTGYegt2N0rOdrSyiwLNPjYVdZg1fOsMFVZeGMzIA==
+X-Received: by 2002:a19:8c04:0:b0:515:9aba:743a with SMTP id o4-20020a198c04000000b005159aba743amr7163184lfd.59.1712015474106;
+        Mon, 01 Apr 2024 16:51:14 -0700 (PDT)
+Received: from umbar.lan ([192.130.178.91])
+        by smtp.gmail.com with ESMTPSA id g28-20020a0565123b9c00b00515d127a399sm1176135lfv.58.2024.04.01.16.51.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 01 Apr 2024 16:51:13 -0700 (PDT)
+From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Subject: [PATCH v3 0/4] drm/panel: add support for LG SW43408 panel
+Date: Tue, 02 Apr 2024 02:51:11 +0300
+Message-Id: <20240402-lg-sw43408-panel-v3-0-144f17a11a56@linaro.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 13/13] mailbox: omap: Remove kernel FIFO message queuing
-To: Hari Nagalla <hnagalla@ti.com>, Jassi Brar <jassisinghbrar@gmail.com>,
-        Nick Saulnier <nsaulnier@ti.com>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>
-CC: <linux-remoteproc@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-References: <20240325172045.113047-1-afd@ti.com>
- <20240325172045.113047-14-afd@ti.com>
- <761aa56f-55c4-e0d4-9f75-eef8035aa25b@ti.com>
-Content-Language: en-US
-From: Andrew Davis <afd@ti.com>
-In-Reply-To: <761aa56f-55c4-e0d4-9f75-eef8035aa25b@ti.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+X-B4-Tracking: v=1; b=H4sIAG9IC2YC/4XNTQ7CIBCG4as0sxbDb0pdeQ/jglJoJ2mgAYOap
+ neXdudGl++XzDMrZJfQZbg0KyRXMGMMNcSpATuZMDqCQ23glEsqBCXzSPJTCkk1WUxwM+mV4l4
+ yZpVwUM+W5Dy+DvJ2rz1hfsT0Pj4Utq8/sMIIJV4pTb3tPB/MdcZgUjzHNMKuFf5P4FXgnTBKt
+ 6zthf4Stm37AEKhG/vzAAAA
+To: Sumit Semwal <sumit.semwal@linaro.org>, 
+ Caleb Connolly <caleb.connolly@linaro.org>, 
+ Neil Armstrong <neil.armstrong@linaro.org>, 
+ Jessica Zhang <quic_jesszhan@quicinc.com>, Sam Ravnborg <sam@ravnborg.org>, 
+ David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>, 
+ Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, 
+ Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>, 
+ Rob Herring <robh@kernel.org>, 
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
+ Conor Dooley <conor+dt@kernel.org>
+Cc: dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org, 
+ linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org, 
+ Vinod Koul <vkoul@kernel.org>, Caleb Connolly <caleb@connolly.tech>
+X-Mailer: b4 0.13.0
+X-Developer-Signature: v=1; a=openpgp-sha256; l=2055;
+ i=dmitry.baryshkov@linaro.org; h=from:subject:message-id;
+ bh=AIE+v3isfbEbNJwblsGQEZ9BeAZNLAvQspWBKbN90cg=;
+ b=owEBbQGS/pANAwAKAYs8ij4CKSjVAcsmYgBmC0hw1zyg3pAwUtnjkm+5F8dYu9r5Jix16Jwgd
+ d5XVDHdzF+JATMEAAEKAB0WIQRMcISVXLJjVvC4lX+LPIo+Aiko1QUCZgtIcAAKCRCLPIo+Aiko
+ 1dG3CACR4Oyf2mAyMzZiyD5RWhCiID+SZ5tnwd5Zguqhu+bKP68AWpQ+ckh6dZmUs0A7DslNrAR
+ Z3fYeMEIWHk1sWMxedMcymSYfnBb3VoXunNufkBA3HBylB7zGrSuZ7Gr68W/Z7HXftfu6PeacOx
+ 0ib8+dIrDFXHx7jvzGAIGLIjb7C5Y/qFe/7LsxEeIyNADMoD58iutryQyVrFnGIDLFJFg5nDuFu
+ H1j7k9wxHmQnY91jultTOs/37Rx6gkPKOmZPOsSdKpUj7pQzzV1h3e6BSltztv7hEdUn47hMfUr
+ 3mOnDPjuIRNMF08qnVlteUfwH4NQgTG7uUBocJZvtjX6YbSr
+X-Developer-Key: i=dmitry.baryshkov@linaro.org; a=openpgp;
+ fpr=8F88381DD5C873E4AE487DA5199BF1243632046A
 
-On 4/1/24 6:39 PM, Hari Nagalla wrote:
-> On 3/25/24 12:20, Andrew Davis wrote:
->> The kernel FIFO queue has a couple issues. The biggest issue is that
->> it causes extra latency in a path that can be used in real-time tasks,
->> such as communication with real-time remote processors.
->>
->> The whole FIFO idea itself looks to be a leftover from before the
->> unified mailbox framework. The current mailbox framework expects
->> mbox_chan_received_data() to be called with data immediately as it
->> arrives. Remove the FIFO and pass the messages to the mailbox
->> framework directly.
-> Yes, this would definitely speed up the message receive path. With RT linux, the irq runs in thread context, so that is Ok. But with non-RT the whole receive path runs in interrupt context. So, i think it would be appropriate to use a threaded_irq()?
+The LG SW43408 panel is used on Google Pixel3 devices. For a long time
+we could not submit the driver, as the panel was not coming up from the
+reset. The panel seems to be picky about some of the delays during init
+and it also uses non-standard payload for MIPI_DSI_COMPRESSION_MODE.
 
-I was thinking the same at first, but seems some mailbox drivers use threaded, others
-use non-threaded context. Since all we do in the IRQ context anymore is call
-mbox_chan_received_data(), which is supposed to be IRQ safe, then it should be fine
-either way. So for now I just kept this using the regular IRQ context as before.
+Signed-off-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+---
+Changes in v3:
+- Fixed return type of MIPI DSC functions
+- Replaced mipi_dsi_compression_mode_raw() with
+  mipi_dsi_compression_mode_ext() (Marijn)
+- Link to v2: https://lore.kernel.org/r/20240330-lg-sw43408-panel-v2-0-293a58717b38@linaro.org
 
-If that does turn out to be an issue then let's switch to threaded.
+Changes in v2:
+- Removed formatting char from schema (Krzysztof)
+- Moved additionalProperties after required (Krzysztof)
+- Added example to the schema (Krzysztof)
+- Removed obsolete comment in the commit message (Marijn)
+- Moved DSC params to the panel struct (Marijn)
+- Changed dsc_en to be an array (Marijn)
+- Added comment regiarding slice_width and slice_count (Marijn)
+- Link to v1: https://lore.kernel.org/r/20240330-lg-sw43408-panel-v1-0-f5580fc9f2da@linaro.org
 
-Andrew
+---
+Dmitry Baryshkov (2):
+      drm/mipi-dsi: use correct return type for the DSC functions
+      drm/mipi-dsi: add mipi_dsi_compression_mode_ext()
+
+Sumit Semwal (2):
+      dt-bindings: panel: Add LG SW43408 MIPI-DSI panel
+      drm: panel: Add LG sw43408 panel driver
+
+ .../bindings/display/panel/lg,sw43408.yaml         |  62 ++++
+ MAINTAINERS                                        |   8 +
+ drivers/gpu/drm/drm_mipi_dsi.c                     |  37 ++-
+ drivers/gpu/drm/panel/Kconfig                      |  11 +
+ drivers/gpu/drm/panel/Makefile                     |   1 +
+ drivers/gpu/drm/panel/panel-lg-sw43408.c           | 326 +++++++++++++++++++++
+ include/drm/drm_mipi_dsi.h                         |  15 +-
+ 7 files changed, 449 insertions(+), 11 deletions(-)
+---
+base-commit: a6bd6c9333397f5a0e2667d4d82fef8c970108f2
+change-id: 20240330-lg-sw43408-panel-b552f411c53e
+
+Best regards,
+-- 
+Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+
 
