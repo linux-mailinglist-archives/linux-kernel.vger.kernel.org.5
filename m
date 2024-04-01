@@ -1,226 +1,175 @@
-Return-Path: <linux-kernel+bounces-126968-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-126969-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 873BF89451B
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 20:59:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 63AB989451C
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 21:01:49 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AB3841C212A9
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 18:59:19 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 819E51C216BF
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 19:01:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8E0CEF9DF;
-	Mon,  1 Apr 2024 18:58:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BEA5351C2A;
+	Mon,  1 Apr 2024 19:01:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="SsO8skZ6"
-Received: from mail-wm1-f52.google.com (mail-wm1-f52.google.com [209.85.128.52])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="kV2DsGXl"
+Received: from mail-oo1-f44.google.com (mail-oo1-f44.google.com [209.85.161.44])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E52A751C44;
-	Mon,  1 Apr 2024 18:58:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 585FE20DE7
+	for <linux-kernel@vger.kernel.org>; Mon,  1 Apr 2024 19:01:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711997921; cv=none; b=SxNRR03arNzIt4Kna1KOERYGt9UlPBXUXwlORR0oGdjvcVaTZaEMBLt9xmMF0eS+SG1uJT+eCAqTD/HJOGl8pXFtRG3zNnqhPMHtm3eylUJkT/gOrh0wszcRCNf3M1MoDD2OnV0cJFepgep/rMGnNQ3BZqp03CRkRNntzVyMjK8=
+	t=1711998103; cv=none; b=LQqMgGxB6m54+P/pg9VmMkEnbWNCwp6idtknbJrVVh+GAWB2bQ4Uopeuphx5p5fETTeOAyQP1Zt6QI9olDhq2O8woal8XsBRk72x+09NjAXrqRokgDqeycmhZgabS3cmukgLjXuVfV6wHKHYB1bwI7UE5Bg0Vr94KLmsnem68Jc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711997921; c=relaxed/simple;
-	bh=hI/RWjwibOQvhGr3H9JhTRg25qqIumyDdBv7QP2SSBA=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=sDPvl+Ixb/zVk6ylJD1xsRFxKX6k3lpn79hGcWoZgGKXVCSYy6P1JZSMQmEQ0/Ev5cCZ4Vy13gekglXMkORrfSWeQA+s91SCpn26H5G08iSTeBRvu7Zro/kJmqFLwV0FGrNOlqrpGbLSYeAnOoDJF8AnEn9B0nu8hwWVnBSWg0I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=SsO8skZ6; arc=none smtp.client-ip=209.85.128.52
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f52.google.com with SMTP id 5b1f17b1804b1-415a84ea9bbso986115e9.2;
-        Mon, 01 Apr 2024 11:58:39 -0700 (PDT)
+	s=arc-20240116; t=1711998103; c=relaxed/simple;
+	bh=OpL35PcgIK4wmZiMDnenaRELysGw5y7Sx+jwFbuYnC4=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=I+KHBoPHXliEy3pJ3v+4XeXEq8Yl/r8LtIhQdR6i+3vJoNce0i6SJw3vfvFoZbwaxS5Y+480JYsVBcbeFHx+baAPNE+iZAwFaALdtuJJXGBzISl9EUFPp+8zvMoBrPgKBoE+QsyvoO5dGosk4xQ5Q8fcK7u02X7TBzyXR+jmw4M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=kV2DsGXl; arc=none smtp.client-ip=209.85.161.44
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-oo1-f44.google.com with SMTP id 006d021491bc7-5a4d435a036so1708179eaf.1
+        for <linux-kernel@vger.kernel.org>; Mon, 01 Apr 2024 12:01:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1711997918; x=1712602718; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=52WgDeZ/MSi+nlkJeaj0YRfT+cyhyIXYkcaJohsx7Ts=;
-        b=SsO8skZ6m6lQoPZkCjmGR6bP9pDf/7hdxScqglt6KfV8k2v1FmWwtskatZK630Mifo
-         WBQLOzlilmGdy5z6oAl2RPRfxW7cWjfQgue9Ozi/GkrTg62GQu7aibBz486JuutKKYRK
-         zODZSSkx9lZPXVwbQnJPPVhMhSP1glm0UHcWC/qZPunIHeRZQMRxwvkqDZVCUXXj3x2p
-         E9cCCJ7dBpab/GaRJ1ypaqxjBvnwpMHvdCSF5klhmCvr353EWKV2GEz7oHI5AfPgdhYF
-         jpGG32SLolUdgmnEbFu1o37/nx+FIRhe9otvj7asxjkjYD4TvVTBnOoRbuQ2OVStjStx
-         CZCg==
+        d=linaro.org; s=google; t=1711998100; x=1712602900; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=8VfZljfocSfpqKfZ24APD96ZY0uNFOza/nVTuCvA10s=;
+        b=kV2DsGXl3YCXM56t5xV4bC9jgT0P4BSlV1y52ZYuJvI/EAWueCT75kCRGYFSjnitGW
+         +2ppHk3Bx4fsOiQXT3EDjtSAVhwQ55K2CD1+WiZ7tMaERJNAOdKHoUOT2epl7/EOcBC3
+         qgXxjngv+nLDGFCOstWhX3cOU5mZmVv6K4HErfv9bP7AwRSv2KoCBWxEjq+HpZkh7ePY
+         RN4IkQFFD0MwJHhyew3PNGf2nVrE0ToHDOH8Wp8K6tiixSp7kOE9sfLqERDiZ1LwtsAH
+         f9OFNBIEVGisx8wsIOejaGPdiXs2xv4L46MxIiYfVCfsAHEZTZDKd67ksQ9MhBkVApzS
+         +9fA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711997918; x=1712602718;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=52WgDeZ/MSi+nlkJeaj0YRfT+cyhyIXYkcaJohsx7Ts=;
-        b=uh4DXN796SuL5dtQzI6oXNLZ8RjuZgau5rtrrdOcRWziZ0ek+P8fJuvo/F8OvXRrvZ
-         +woF1gztH9VPL16rVILTQzT3tnfJpAEMARIrg3+lVEMll7xSLekDgMwcZSgiZgFTHeXf
-         6TT+Cc6q8o0uVspWTeiikVlwD6m4CQL34as3ECul8TkouSTP/5izhfwV9eUlP42dmwaH
-         lPU+Q5+ysur2vTz/jbgjFI4I49yT4ASX41jk1xntXNKGb19n6TswYAPi8NnXSGLVxjfM
-         EoHISjUDcYW7aoSXrV0arEsNCHGG69MzFO0qRx2a5rdw5Lc+vqTj7m6U/dewwKjYvTpj
-         Cg7A==
-X-Forwarded-Encrypted: i=1; AJvYcCUxoHexaPnSrlSQjYEpFbR1oXslwRjERQG1r8KUJcRVaa9G6XYYQMuTKXq6qE9ezkMDzDzOs2dvbebb1W0rR5MLFXe97Izlodenpcf3pjfZHJYwhOVFpA0ozCbow11nNTca6dxh+yIHNv+Ufpm+K07DB+FjFTUPvOfy
-X-Gm-Message-State: AOJu0Yx+Xe+JSuMaRkRl6xXJvN292IDDXP8lpdYpDVYA7NQcOkM9qqkO
-	tH9+VfbM+7PIQPCCqR+xsoDq9ibFBwf0U9rqll2VIxrWXSoF2ckXWqquR6Vb
-X-Google-Smtp-Source: AGHT+IEHr7EZ2h1N5yq1Ku1nuFDteF4OF+6ZhDrojd7YRlZ3roesKxqxxE/SNg4oYXmPNd01Sv1/7w==
-X-Received: by 2002:a05:600c:4656:b0:415:6dae:771d with SMTP id n22-20020a05600c465600b004156dae771dmr1115722wmo.7.1711997918212;
-        Mon, 01 Apr 2024 11:58:38 -0700 (PDT)
-Received: from localhost.localdomain ([46.248.82.114])
-        by smtp.gmail.com with ESMTPSA id c9-20020a7bc2a9000000b0041552dbc539sm10950986wmk.11.2024.04.01.11.58.37
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 01 Apr 2024 11:58:37 -0700 (PDT)
-From: Uros Bizjak <ubizjak@gmail.com>
-To: x86@kernel.org,
-	bpf@vger.kernel.org,
-	netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Cc: =?UTF-8?q?Joan=20Bruguera=20Mic=C3=B3?= <joanbrugueram@gmail.com>,
-	Uros Bizjak <ubizjak@gmail.com>,
-	Ingo Molnar <mingo@kernel.org>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>
-Subject: [PATCH RESEND bpf v2 2/2] x86/bpf: Fix IP for relocating call depth accounting
-Date: Mon,  1 Apr 2024 20:55:30 +0200
-Message-ID: <20240401185821.224068-3-ubizjak@gmail.com>
-X-Mailer: git-send-email 2.42.0
-In-Reply-To: <20240401185821.224068-1-ubizjak@gmail.com>
-References: <20240401185821.224068-1-ubizjak@gmail.com>
+        d=1e100.net; s=20230601; t=1711998100; x=1712602900;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=8VfZljfocSfpqKfZ24APD96ZY0uNFOza/nVTuCvA10s=;
+        b=GX1xW9Vbjr5gU7dGopJ6uOv0k+1u7/czzxmcXtf33FeALRsHdTrahd0RvZvcV3PhM9
+         yWwFkUsocf89q8FoHjeY/SJQcWc7y8DVVzGVokYnYYv0SDMcD6aPaP3138AmjvJxYa+K
+         Dme7BkkfcuKAO/Xmpx352ANdF2cS+Ctqkve0EY42uECtpmL7uEc0Prk/6K3iy00ioxET
+         A1N8GrIRY3tZnMwmqHT8u+nb6Zg32OZQIqOQXBHvNNSHsJKvQDYdffZl8BDS7AV/PegC
+         pHKE2hIweahakAKp97R4e9vsRTi7CycfalzcLwHI6r/LoMgCxjizY5pelviGTyh2kBVd
+         7xNw==
+X-Forwarded-Encrypted: i=1; AJvYcCUTkP5z2zD0+cS36s/zKNbEWtqiIYJe7CEVy6ROu6YpbwjDr0Hhof676EidIbvKeI0KgjYBLOBHlSbO3cTXMaibjy8q9MA8k2kgM0Vh
+X-Gm-Message-State: AOJu0YyKZzXbuMgGJ81FHg55qbzFVAUbOEzl7pEnTDKdlJ+i9Gpnv9Ux
+	XlNqzW1TlKO+42RMkP9/PCPDd0EWoW61GyY4PM67DFvo0G7s0tztGup9lYKmyYjDHJeqcOdhuIM
+	QKxRMjCRu3p/1FhyBJ9vvMqMpsegaK9asiC26pQ==
+X-Google-Smtp-Source: AGHT+IFWsTgohUEdMBkXC10fXfKP3iS0KDnJgXeRSHA+MEC5uuUmhMYLgrrl4ce7h5CXapU9nMnWcn+nFmlIVMpAOM8=
+X-Received: by 2002:a05:6808:190d:b0:3c3:d37d:594d with SMTP id
+ bf13-20020a056808190d00b003c3d37d594dmr12830121oib.0.1711998100384; Mon, 01
+ Apr 2024 12:01:40 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+References: <20240401152547.867452742@linuxfoundation.org>
+In-Reply-To: <20240401152547.867452742@linuxfoundation.org>
+From: Naresh Kamboju <naresh.kamboju@linaro.org>
+Date: Tue, 2 Apr 2024 00:31:28 +0530
+Message-ID: <CA+G9fYvewkbwR_i07HHTM=8E2yS-0wRhOT-C45LP3SNtzgd+4Q@mail.gmail.com>
+Subject: Re: [PATCH 6.6 000/396] 6.6.24-rc1 review
+To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: stable@vger.kernel.org, patches@lists.linux.dev, 
+	linux-kernel@vger.kernel.org, torvalds@linux-foundation.org, 
+	akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org, 
+	patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de, 
+	jonathanh@nvidia.com, f.fainelli@gmail.com, sudipm.mukherjee@gmail.com, 
+	srw@sladewatkins.net, rwarsow@gmx.de, conor@kernel.org, allen.lkml@gmail.com, 
+	broonie@kernel.org, Alexander Wetzel <Alexander@wetzel-home.de>, 
+	Bart Van Assche <bvanassche@acm.org>, "Martin K. Petersen" <martin.petersen@oracle.com>, 
+	Arnd Bergmann <arnd@arndb.de>, Anders Roxell <anders.roxell@linaro.org>, 
+	Dan Carpenter <dan.carpenter@linaro.org>, LTP List <ltp@lists.linux.it>
+Content-Type: text/plain; charset="UTF-8"
 
-From: Joan Bruguera Micó <joanbrugueram@gmail.com>
+On Mon, 1 Apr 2024 at 22:06, Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
+>
+> This is the start of the stable review cycle for the 6.6.24 release.
+> There are 396 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+>
+> Responses should be made by Wed, 03 Apr 2024 15:24:46 +0000.
+> Anything received after that time might be too late.
+>
+> The whole patch series can be found in one patch at:
+>         https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patch-6.6.24-rc1.gz
+> or in the git tree and branch at:
+>         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-6.6.y
+> and the diffstat can be found below.
+>
+> thanks,
+>
+> greg k-h
 
-The commit:
 
-  59bec00ace28 ("x86/percpu: Introduce %rip-relative addressing to PER_CPU_VAR()")
+Following kernel warnings have been noticed on qemu-x86_64 while running LTP
+cve ioctl_sg01 tests the kernel with stable-rc 6.6.24-rc1, 6.7.12-rc1 and
+6.8.3-rc1.
 
-made PER_CPU_VAR() to use rip-relative addressing, hence
-INCREMENT_CALL_DEPTH macro and skl_call_thunk_template got rip-relative
-asm code inside of it. A follow up commit:
+We have started bi-secting this issue.
+Always reproduced.
 
-  17bce3b2ae2d ("x86/callthunks: Handle %rip-relative relocations in call thunk template")
+Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
 
-changed x86_call_depth_emit_accounting() to use apply_relocation(),
-but mistakenly assumed that the code is being patched in-place (where
-the destination of the relocation matches the address of the code),
-using *pprog as the destination ip. This is not true for the call depth
-accounting, emitted by the BPF JIT, so the calculated address was wrong,
-JIT-ed BPF progs on kernels with call depth tracking got broken and
-usually caused a page fault.
+ioctl_sg01.c:81: TINFO: Found SCSI device /dev/sg0
+------------[ cut here ]------------
+[   36.606841] WARNING: CPU: 0 PID: 8 at drivers/scsi/sg.c:2237
+sg_remove_sfp_usercontext+0x145/0x150
+[   36.609445] Modules linked in:
+[   36.610793] CPU: 0 PID: 8 Comm: kworker/0:0 Not tainted 6.6.24-rc1 #1
+[   36.611568] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009),
+BIOS 1.16.3-debian-1.16.3-2~bpo12+1 04/01/2014
+[   36.612872] Workqueue: events sg_remove_sfp_usercontext
+[   36.613691] RIP: 0010:sg_remove_sfp_usercontext+0x145/0x150
 
-Pass the destination IP when the BPF JIT emits call depth accounting.
+<trim>
 
-Fixes: 17bce3b2ae2d ("x86/callthunks: Handle %rip-relative relocations in call thunk template")
-Signed-off-by: Joan Bruguera Micó <joanbrugueram@gmail.com>
-Reviewed-by: Uros Bizjak <ubizjak@gmail.com>
-Acked-by: Ingo Molnar <mingo@kernel.org>
-Cc: Alexei Starovoitov <ast@kernel.org>
-Cc: Daniel Borkmann <daniel@iogearbox.net>
----
-v2: Add more details to the commit message.
----
- arch/x86/include/asm/alternative.h |  4 ++--
- arch/x86/kernel/callthunks.c       |  4 ++--
- arch/x86/net/bpf_jit_comp.c        | 19 ++++++++-----------
- 3 files changed, 12 insertions(+), 15 deletions(-)
+[   36.621539] Call Trace:
+[   36.621953]  <TASK>
+[   36.622444]  ? show_regs+0x69/0x80
+[   36.622819]  ? __warn+0x8d/0x150
+[   36.623078]  ? sg_remove_sfp_usercontext+0x145/0x150
+[   36.623558]  ? report_bug+0x171/0x1a0
+[   36.623881]  ? handle_bug+0x42/0x80
+[   36.624070]  ? exc_invalid_op+0x1c/0x70
+[   36.624491]  ? asm_exc_invalid_op+0x1f/0x30
+[   36.624897]  ? sg_remove_sfp_usercontext+0x145/0x150
+[   36.625408]  process_one_work+0x141/0x300
+[   36.625769]  worker_thread+0x2f6/0x430
+[   36.626073]  ? __pfx_worker_thread+0x10/0x10
+[   36.626529]  kthread+0x105/0x140
+[   36.626778]  ? __pfx_kthread+0x10/0x10
+[   36.627059]  ret_from_fork+0x41/0x60
+[   36.627441]  ? __pfx_kthread+0x10/0x10
+[   36.627735]  ret_from_fork_asm+0x1b/0x30
+[   36.628293]  </TASK>
+[   36.628604] ---[ end trace 0000000000000000 ]---
+ioctl_sg01.c:122: TPASS: Output buffer is empty, no data leaked
 
-diff --git a/arch/x86/include/asm/alternative.h b/arch/x86/include/asm/alternative.h
-index fcd20c6dc7f9..67b68d0d17d1 100644
---- a/arch/x86/include/asm/alternative.h
-+++ b/arch/x86/include/asm/alternative.h
-@@ -117,7 +117,7 @@ extern void callthunks_patch_builtin_calls(void);
- extern void callthunks_patch_module_calls(struct callthunk_sites *sites,
- 					  struct module *mod);
- extern void *callthunks_translate_call_dest(void *dest);
--extern int x86_call_depth_emit_accounting(u8 **pprog, void *func);
-+extern int x86_call_depth_emit_accounting(u8 **pprog, void *func, void *ip);
- #else
- static __always_inline void callthunks_patch_builtin_calls(void) {}
- static __always_inline void
-@@ -128,7 +128,7 @@ static __always_inline void *callthunks_translate_call_dest(void *dest)
- 	return dest;
- }
- static __always_inline int x86_call_depth_emit_accounting(u8 **pprog,
--							  void *func)
-+							  void *func, void *ip)
- {
- 	return 0;
- }
-diff --git a/arch/x86/kernel/callthunks.c b/arch/x86/kernel/callthunks.c
-index 30335182b6b0..e92ff0c11db8 100644
---- a/arch/x86/kernel/callthunks.c
-+++ b/arch/x86/kernel/callthunks.c
-@@ -314,7 +314,7 @@ static bool is_callthunk(void *addr)
- 	return !bcmp(pad, insn_buff, tmpl_size);
- }
- 
--int x86_call_depth_emit_accounting(u8 **pprog, void *func)
-+int x86_call_depth_emit_accounting(u8 **pprog, void *func, void *ip)
- {
- 	unsigned int tmpl_size = SKL_TMPL_SIZE;
- 	u8 insn_buff[MAX_PATCH_LEN];
-@@ -327,7 +327,7 @@ int x86_call_depth_emit_accounting(u8 **pprog, void *func)
- 		return 0;
- 
- 	memcpy(insn_buff, skl_call_thunk_template, tmpl_size);
--	apply_relocation(insn_buff, tmpl_size, *pprog,
-+	apply_relocation(insn_buff, tmpl_size, ip,
- 			 skl_call_thunk_template, tmpl_size);
- 
- 	memcpy(*pprog, insn_buff, tmpl_size);
-diff --git a/arch/x86/net/bpf_jit_comp.c b/arch/x86/net/bpf_jit_comp.c
-index e55745f512e1..df5fac428408 100644
---- a/arch/x86/net/bpf_jit_comp.c
-+++ b/arch/x86/net/bpf_jit_comp.c
-@@ -480,7 +480,7 @@ static int emit_call(u8 **pprog, void *func, void *ip)
- static int emit_rsb_call(u8 **pprog, void *func, void *ip)
- {
- 	OPTIMIZER_HIDE_VAR(func);
--	ip += x86_call_depth_emit_accounting(pprog, func);
-+	ip += x86_call_depth_emit_accounting(pprog, func, ip);
- 	return emit_patch(pprog, func, ip, 0xE8);
- }
- 
-@@ -1972,20 +1972,17 @@ st:			if (is_imm8(insn->off))
- 
- 			/* call */
- 		case BPF_JMP | BPF_CALL: {
--			int offs;
-+			u8 *ip = image + addrs[i - 1];
- 
- 			func = (u8 *) __bpf_call_base + imm32;
- 			if (tail_call_reachable) {
- 				RESTORE_TAIL_CALL_CNT(bpf_prog->aux->stack_depth);
--				if (!imm32)
--					return -EINVAL;
--				offs = 7 + x86_call_depth_emit_accounting(&prog, func);
--			} else {
--				if (!imm32)
--					return -EINVAL;
--				offs = x86_call_depth_emit_accounting(&prog, func);
-+				ip += 7;
- 			}
--			if (emit_call(&prog, func, image + addrs[i - 1] + offs))
-+			if (!imm32)
-+				return -EINVAL;
-+			ip += x86_call_depth_emit_accounting(&prog, func, ip);
-+			if (emit_call(&prog, func, ip))
- 				return -EINVAL;
- 			break;
- 		}
-@@ -2835,7 +2832,7 @@ static int __arch_prepare_bpf_trampoline(struct bpf_tramp_image *im, void *rw_im
- 		 * Direct-call fentry stub, as such it needs accounting for the
- 		 * __fentry__ call.
- 		 */
--		x86_call_depth_emit_accounting(&prog, NULL);
-+		x86_call_depth_emit_accounting(&prog, NULL, image);
- 	}
- 	EMIT1(0x55);		 /* push rbp */
- 	EMIT3(0x48, 0x89, 0xE5); /* mov rbp, rsp */
--- 
-2.42.0
+Suspecting commit:
+-----
+scsi: sg: Avoid sg device teardown race
+commit 27f58c04a8f438078583041468ec60597841284d upstream.
 
+ + WARN_ON_ONCE(kref_read(&sdp->d_ref) != 1);
+
+Steps to reproduce:
+- https://tuxapi.tuxsuite.com/v1/groups/linaro/projects/lkft/tests/2eVWFlAeOUepfeFVkrOXFYNNAqI/reproducer
+
+Links:
+ - https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-6.6.y/build/v6.6.23-397-g75a2533b74d0/testrun/23255318/suite/log-parser-test/tests/
+ - https://tuxapi.tuxsuite.com/v1/groups/linaro/projects/lkft/tests/2eVTitwVMagaiWhs5T2iKH390D5
+
+
+--
+Linaro LKFT
+https://lkft.linaro.org
 
