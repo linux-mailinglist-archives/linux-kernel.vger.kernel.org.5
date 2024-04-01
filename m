@@ -1,144 +1,162 @@
-Return-Path: <linux-kernel+bounces-127180-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-127181-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 400BD8947C7
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 01:33:11 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6FA5D8947C8
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 01:34:44 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 725EB1C22054
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 23:33:10 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 05956283903
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 23:34:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 063E85730D;
-	Mon,  1 Apr 2024 23:33:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0650F56B95;
+	Mon,  1 Apr 2024 23:34:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b="L0/osbP6"
-Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="HTFhVXyO"
+Received: from mail-ed1-f48.google.com (mail-ed1-f48.google.com [209.85.208.48])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 06C1056B89;
-	Mon,  1 Apr 2024 23:32:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=150.107.74.76
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8587055C3B
+	for <linux-kernel@vger.kernel.org>; Mon,  1 Apr 2024 23:34:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712014381; cv=none; b=QZmlQwkWuIbjDvvhfIWk/5qm2C+99kZx5EXzqPe8IyJHnbYZCDHJcGNUvDzumEj8yEzfqkgLao6QDOQAINXUeHydHxyyqlxfX/6RDwjm1RW8ivw9sfvas6Ct4x3yVSDEZuv/Qc/igXOzFdxFEn04923GvdjIcRXdroxxn+DwbIM=
+	t=1712014478; cv=none; b=jA3osgQ+Y/DmiLvv+hxbJHO7IzEzchUjkQfz2NN4Lx7PszhCc4VX4F+ISvLdeIVt9927EWUT2VtWM7nZkxN18tRqd0VL/gl7siA9sBSumwubWUsKbPfTmu+FAdHqiOp19bJbyTvPSZ5j+qbeloRGYCSonChJ3oSLOxXoSl1Ikds=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712014381; c=relaxed/simple;
-	bh=XrT8Zc+MIc5QsRMtn3u55h8rZpt1I7g+0BByqeu8h9o=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type; b=Hm4GW35GSjxW8vc7mfDNoSjeKQ3qDbFNdT3vmQzEKxjZnFURsrF88aMhnF+GPLSre79GeqYXcVOrHgo/4/OsbHECmeSmXlL9b5PNc7yQsdz6YVNvbgq7RHzLfhvVtQNQvQvScqF0pxvwk2SaLkyh3LlBDRAbRi9tC4MNaxWgFNk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au; spf=pass smtp.mailfrom=canb.auug.org.au; dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b=L0/osbP6; arc=none smtp.client-ip=150.107.74.76
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canb.auug.org.au
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-	s=201702; t=1712014375;
-	bh=59mICa2IHox9XLs87Vsm5NCsqztonbzUGO+e98ooKsM=;
-	h=Date:From:To:Cc:Subject:From;
-	b=L0/osbP6kf4hnBKCIVy5fx3ROz2bfF01ePD6dTAVAjdLhCbFlg2sfpZhKmQR9fTY+
-	 h2BEx5G94hCf7WnhNqASKpvfp/FhckbOK9zQVYvK+ozrq25YvUu10v4GJUSDHsMSv2
-	 4IVF00RQdjetLsUnpBJx6IGG6nMxJ35InEeZdZKrWCNGbOQ++h64epW7P7rdsy7PDj
-	 lrWL6YcTuf09bPkHLgzapSJQnUNYFdZjCJmAvrUvi5FW9FOThyLmgOxsgDKD48xXMt
-	 tzPVSncRsMbtZd+MwadClGPrqAySV3z6uN6AvDCCAKzmPwwNPejQCt3Ht8EuvojUqg
-	 fvrVyVS4QG/RA==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mail.ozlabs.org (Postfix) with ESMTPSA id 4V7nPL6ykPz4wcn;
-	Tue,  2 Apr 2024 10:32:54 +1100 (AEDT)
-Date: Tue, 2 Apr 2024 10:32:53 +1100
-From: Stephen Rothwell <sfr@canb.auug.org.au>
-To: David Miller <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>,
- Paolo Abeni <pabeni@redhat.com>
-Cc: Networking <netdev@vger.kernel.org>, Alexander Lobakin
- <aleksander.lobakin@intel.com>, Eric Dumazet <edumazet@google.com>, Linux
- Kernel Mailing List <linux-kernel@vger.kernel.org>, Linux Next Mailing List
- <linux-next@vger.kernel.org>
-Subject: linux-next: manual merge of the net-next tree with the net tree
-Message-ID: <20240402103253.3b54a1cf@canb.auug.org.au>
+	s=arc-20240116; t=1712014478; c=relaxed/simple;
+	bh=tfX1NHEGpLx8lwqKMsxSmdWjYVtA824r1xE6I2YQgpU=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=Y0WPrKV1jh/nO6VrCul1Ki+c7bthx6SPTmdD1y/d7O6yRrj2oonF5xNdVWfKmtLyI3hnyj4Rpp/NPfzkXuhtHJOyoqk9d7ZDUS3clj0suqm0mk7xP4QdBwBkW5wM1wJRWCU6Mqhw0YUzmzVr0vRGViMB/m/VEfWquCU2PuZX7TU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=HTFhVXyO; arc=none smtp.client-ip=209.85.208.48
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-ed1-f48.google.com with SMTP id 4fb4d7f45d1cf-56c2cfdd728so37293a12.1
+        for <linux-kernel@vger.kernel.org>; Mon, 01 Apr 2024 16:34:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1712014475; x=1712619275; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=2KXI5Lckd//sw4J1CfsLdtjfP4f66PrNobbRTqswo1k=;
+        b=HTFhVXyOBx9pjo6agBidB/KZARGn7Gtn0CDYWQ19rA5BytEu/lVTzaYOH0hj2Fc5AG
+         IBoC/JPJ0Gf2hBiLEs7tK49kMbXiJhnLbU1zLtgAcryOddkW6U1krltos1oNqPQGfkaI
+         lLbeksM+h4EaKheoDbAOFcKLLA28e0dOnyy9Tc/XOo7WEjTowRe5/BHq4adaBycU2+jL
+         YrVeNWYb7ZsLrx1BziVdAVgNtaIGb9vxg3Y1oUbQSGp1FkmaB8jrP9s1IbHdckYL8Bnr
+         7LCqEFuGQ+6XawocByfIqT+zRQjAfvGlJ8HrYDE5th78F/378dUUeXNlmtB43ao5L+o0
+         EgFg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712014475; x=1712619275;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=2KXI5Lckd//sw4J1CfsLdtjfP4f66PrNobbRTqswo1k=;
+        b=Y08nFZHRZ7EUb3ZSDIcf/IxLtea1/eMIWHmWdYSqnMMPh1XsJbOkF497zK1UxOwzNu
+         a1rTYGLNauN/vstyGhqA5VyN51NzTVM6gQXTcCeaPdF5Kjsc67/c+nM9mg6/wQVvze89
+         VdiHOiOnNde2qEHlvxZ7ekPXRvRYLHsBCuh4kdDbbUEgcCeJmHZhma+tsej4ND1YqA0s
+         xpuDx2y8x5U2tD4lbXXnLHO1RcVtN2fVbH2ph5Xet14sAteutVaHTq5l2bpDwKtJu2Fk
+         U/MQeW9K2bijyXDbaxSJPSRGfJu9cOo6Thr6B5m0UssJIwMsH+GNg3bI69TbWChzcsMO
+         3piQ==
+X-Gm-Message-State: AOJu0YxD2FC93iq0BTwM877W7/DKvGwyOpO8Ya58+p1lmlCvF+jT/hAo
+	WRtNG9v9ALCFDt5/h89hRCSbM8PGYwY0GJFbkG/Z0t8oAOEif67WC1LluZBQiGFIbdGacuUdO8D
+	CrOcyL346qJQo2GoXoEBfuiERNaat21TYz/g=
+X-Google-Smtp-Source: AGHT+IFnwdifbsGHTa9+TFkDFHh+iiygHxPUyBVPA/D1nZV1REfhqigDXbEmi0f4brULa2LgRmRorG+PA4yrWQgxcU4=
+X-Received: by 2002:aa7:d888:0:b0:56d:c82d:5475 with SMTP id
+ u8-20020aa7d888000000b0056dc82d5475mr260804edq.4.1712014474689; Mon, 01 Apr
+ 2024 16:34:34 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/4cCA5Hw1boWFJmaQY2dnncK";
- protocol="application/pgp-signature"; micalg=pgp-sha256
-
---Sig_/4cCA5Hw1boWFJmaQY2dnncK
-Content-Type: text/plain; charset=US-ASCII
+References: <20240315044007.2778856-1-jstultz@google.com> <20240315044007.2778856-8-jstultz@google.com>
+ <496a2f13-2d66-48f4-a710-afbd90f1bfd8@arm.com>
+In-Reply-To: <496a2f13-2d66-48f4-a710-afbd90f1bfd8@arm.com>
+From: John Stultz <jstultz@google.com>
+Date: Mon, 1 Apr 2024 16:34:21 -0700
+Message-ID: <CANDhNCrW6LrXecRa0gXRhxhthzNeLkfx+UaYq-NgtQtqdsHw0w@mail.gmail.com>
+Subject: Re: [PATCH v9 7/7] sched: Split scheduler and execution contexts
+To: Metin Kaya <metin.kaya@arm.com>
+Cc: LKML <linux-kernel@vger.kernel.org>, Peter Zijlstra <peterz@infradead.org>, 
+	Joel Fernandes <joelaf@google.com>, Qais Yousef <qyousef@google.com>, Ingo Molnar <mingo@redhat.com>, 
+	Juri Lelli <juri.lelli@redhat.com>, Vincent Guittot <vincent.guittot@linaro.org>, 
+	Dietmar Eggemann <dietmar.eggemann@arm.com>, Valentin Schneider <vschneid@redhat.com>, 
+	Steven Rostedt <rostedt@goodmis.org>, Ben Segall <bsegall@google.com>, 
+	Zimuzo Ezeozue <zezeozue@google.com>, Youssef Esmat <youssefesmat@google.com>, 
+	Mel Gorman <mgorman@suse.de>, Daniel Bristot de Oliveira <bristot@redhat.com>, Will Deacon <will@kernel.org>, 
+	Waiman Long <longman@redhat.com>, Boqun Feng <boqun.feng@gmail.com>, 
+	"Paul E. McKenney" <paulmck@kernel.org>, Xuewen Yan <xuewen.yan94@gmail.com>, 
+	K Prateek Nayak <kprateek.nayak@amd.com>, Thomas Gleixner <tglx@linutronix.de>, kernel-team@android.com, 
+	"Connor O'Brien" <connoro@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-Hi all,
+On Mon, Mar 18, 2024 at 8:06=E2=80=AFAM Metin Kaya <metin.kaya@arm.com> wro=
+te:
+> On 15/03/2024 4:39 am, John Stultz wrote:
+> > From: Peter Zijlstra <peterz@infradead.org>
+> >
+> > Let's define the scheduling context as all the scheduler state
+> > in task_struct for the task selected to run, and the execution
+> > context as all state required to actually run the task.
+> >
+> > Currently both are intertwined in task_struct. We want to
+> > logically split these such that we can use the scheduling
+> > context of the task selected to be scheduled, but use the
+> > execution context of a different task to actually be run.
+> >
+> > To this purpose, introduce rq_selected() macro to point to the
+> > task_struct selected from the runqueue by the scheduler, and
+> > will be used for scheduler state, and preserve rq->curr to
+> > indicate the execution context of the task that will actually be
+> > run.
+> >
+> > Cc: Joel Fernandes <joelaf@google.com>
+> > Cc: Qais Yousef <qyousef@google.com>
+> > Cc: Ingo Molnar <mingo@redhat.com>
+> > Cc: Peter Zijlstra <peterz@infradead.org>
+> > Cc: Juri Lelli <juri.lelli@redhat.com>
+> > Cc: Vincent Guittot <vincent.guittot@linaro.org>
+> > Cc: Dietmar Eggemann <dietmar.eggemann@arm.com>
+> > Cc: Valentin Schneider <vschneid@redhat.com>
+> > Cc: Steven Rostedt <rostedt@goodmis.org>
+> > Cc: Ben Segall <bsegall@google.com>
+> > Cc: Zimuzo Ezeozue <zezeozue@google.com>
+> > Cc: Youssef Esmat <youssefesmat@google.com>
+> > Cc: Mel Gorman <mgorman@suse.de>
+> > Cc: Daniel Bristot de Oliveira <bristot@redhat.com>
+> > Cc: Will Deacon <will@kernel.org>
+> > Cc: Waiman Long <longman@redhat.com>
+> > Cc: Boqun Feng <boqun.feng@gmail.com>
+> > Cc: "Paul E. McKenney" <paulmck@kernel.org>
+> > Cc: Xuewen Yan <xuewen.yan94@gmail.com>
+> > Cc: K Prateek Nayak <kprateek.nayak@amd.com>
+> > Cc: Metin Kaya <Metin.Kaya@arm.com>
+> > Cc: Thomas Gleixner <tglx@linutronix.de>
+> > Cc: kernel-team@android.com
+> > Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+> > Signed-off-by: Juri Lelli <juri.lelli@redhat.com>
+> > Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+>
+> Duplicate S-o-b for Peter.
 
-Today's linux-next merge of the net-next tree got a conflict in:
+Yes, though I believe this accurately tracks the path of development.
 
-  net/ipv4/ip_gre.c
+The patch originally by Peter was sent by Juri:
+  https://lore.kernel.org/all/20181009092434.26221-5-juri.lelli@redhat.com/
 
-between commit:
+Then and Peter put it in a branch on his git tree(adding another SoB
+and the Link tag), from which Conor picked it up:
+  https://lore.kernel.org/lkml/20221003214501.2050087-6-connoro@google.com/
 
-  17af420545a7 ("erspan: make sure erspan_base_hdr is present in skb->head")
+Followed by me.
 
-from the net tree and commit:
+That said, I can no longer find the branch in Peter's tree, so it's
+possible I have this history wrong, but this is what I recall.
 
-  5832c4a77d69 ("ip_tunnel: convert __be16 tunnel flags to bitmaps")
+So I'm hesitant to change that part of the attribution, unless Peter
+requests otherwise.
 
-from the net-next tree.
-
-I fixed it up (see below) and can carry the fix as necessary. This
-is now fixed as far as linux-next is concerned, but any non trivial
-conflicts should be mentioned to your upstream maintainer when your tree
-is submitted for merging.  You may also want to consider cooperating
-with the maintainer of the conflicting tree to minimise any particularly
-complex conflicts.
-
---=20
-Cheers,
-Stephen Rothwell
-
-diff --cc net/ipv4/ip_gre.c
-index 57ddcd8c62f6,3c46a7fef8db..000000000000
---- a/net/ipv4/ip_gre.c
-+++ b/net/ipv4/ip_gre.c
-@@@ -276,19 -279,14 +279,19 @@@ static int erspan_rcv(struct sk_buff *s
-  	iph =3D ip_hdr(skb);
-  	if (is_erspan_type1(gre_hdr_len)) {
-  		ver =3D 0;
-- 		tunnel =3D ip_tunnel_lookup(itn, skb->dev->ifindex,
-- 					  tpi->flags | TUNNEL_NO_KEY,
-+ 		__set_bit(IP_TUNNEL_NO_KEY_BIT, flags);
-+ 		tunnel =3D ip_tunnel_lookup(itn, skb->dev->ifindex, flags,
-  					  iph->saddr, iph->daddr, 0);
-  	} else {
- +		if (unlikely(!pskb_may_pull(skb,
- +					    gre_hdr_len + sizeof(*ershdr))))
- +			return PACKET_REJECT;
- +
-  		ershdr =3D (struct erspan_base_hdr *)(skb->data + gre_hdr_len);
-  		ver =3D ershdr->ver;
- +		iph =3D ip_hdr(skb);
-- 		tunnel =3D ip_tunnel_lookup(itn, skb->dev->ifindex,
-- 					  tpi->flags | TUNNEL_KEY,
-+ 		__set_bit(IP_TUNNEL_KEY_BIT, flags);
-+ 		tunnel =3D ip_tunnel_lookup(itn, skb->dev->ifindex, flags,
-  					  iph->saddr, iph->daddr, tpi->key);
-  	}
- =20
-
---Sig_/4cCA5Hw1boWFJmaQY2dnncK
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmYLRCUACgkQAVBC80lX
-0Gx0XQf9HXhr1nHFOqTHOJ8OYptgp7GXzTXCpZoEqPBYBLQ39wLFon1ufsFDT+Yb
-Vk8X6DR7Ak4TFDmt/Flzb8xdEEspsIVumLmH+RCBC8mYToM/yJyldIMD89v2fmuk
-uUK6dpM6WpNKsKUBasSIRMi3Uu0jryi7DvAmmP4DunKiRfpCxNwrDbljUu6sWRKk
-x7lOxJhbw/ctBE6RiNLKG27jNrHR5UtCVg2zJp8hmo3mqkC8vLBxH/sRpV8K4Xxq
-uZIZIkDeEN7kahTaK4RashI4hjfg+Et1tFIrAO/oFjeOBiuA2sxgTA0BqzrNxW1V
-3XOTE8xhVeDjBeLGSzkt/ZbfHDK0lA==
-=5j3D
------END PGP SIGNATURE-----
-
---Sig_/4cCA5Hw1boWFJmaQY2dnncK--
+thanks
+-john
 
