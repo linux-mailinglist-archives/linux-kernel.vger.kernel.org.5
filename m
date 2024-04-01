@@ -1,191 +1,198 @@
-Return-Path: <linux-kernel+bounces-126460-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-126461-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6DE8389384F
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 08:19:01 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9C834893853
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 08:21:16 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 08EC01F21339
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 06:19:01 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E9835B20FD4
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 06:21:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6E15B8F7A;
-	Mon,  1 Apr 2024 06:18:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AF1859454;
+	Mon,  1 Apr 2024 06:21:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=tw.synaptics.com header.i=@tw.synaptics.com header.b="pqAeAYqm"
-Received: from NAM11-DM6-obe.outbound.protection.outlook.com (mail-dm6nam11on2113.outbound.protection.outlook.com [40.107.223.113])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="AV5u/VTT"
+Received: from mail-io1-f45.google.com (mail-io1-f45.google.com [209.85.166.45])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 042848F51;
-	Mon,  1 Apr 2024 06:18:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.223.113
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711952332; cv=fail; b=TV81ZW6p3C5D+KhfM+CyDRHiNTVlZAp/Cu7kopSwHuDl+0rS0HPCrNlWM1c3XMumNkDF1HPxLtAbLtxofisxMVhiDLIVdgxvn7Oo6xgisLJQ+fqrYDZ4asDAShQqXpx3YE/8MrSEMjVVe/qMfavOdZlzgldEHgW11WVs/NK1OOQ=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711952332; c=relaxed/simple;
-	bh=fMueFQ3ukYd5ZNbdj20ZNi1fWSobiLPgSS2PurZ8CeU=;
-	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=KyzMqWeFO5BWvDs8g0cl4Gz9jJT2fPqi/+U5g3yDdVdBV9NtTLeQTWxtTGoOwVUpjCdAd6VIB9lcBF4ovEX9+vG3PvnjtM4ksveZmt/QwRQjKdEY34kPA5jUknmaULsNW5QkEn9kWX/sphgAoJov9c8B0Lp8H+looG87n0zaDCI=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=tw.synaptics.com; spf=pass smtp.mailfrom=tw.synaptics.com; dkim=pass (1024-bit key) header.d=tw.synaptics.com header.i=@tw.synaptics.com header.b=pqAeAYqm; arc=fail smtp.client-ip=40.107.223.113
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=tw.synaptics.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=tw.synaptics.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=eyEhO94JmVGPM3Y/6sqAFhGdpWJy+mqK2CRLKUlzL/nHCG3SbMkjvjvuvFzT1F4qiRvoTbCUYVMTmTu2D+RNSRhJ0s/eqPSfzOX42F2aAslB0o2p4tKIyDMsTTbVRtneRtJrTeaIQIjiNJDwKmdh3sSawsPQjgeNewr7j8hpDynxzh7BVTjTonHbSo413Lua8C7ovsLE2q0GUMLVqgx84INH5vzYdDxyDr1Yjtb2mKgRwItD09zPavxL9rZQ6qcwgUVpi0aiPWeFgjJs/fvFmMw2G4eJ2Oj0QRXLObnfbBtfHSo69XhGnsJe7L2who04BUya205GitCPozQ1UIjoYA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=x9aXyX+bJYqikQMHQdr4lGsmmsbIACKenehEp5o0BB0=;
- b=SmKkNWdp9XtYHyIF3frlsnP/K8aeaXr5cIJwYeDUSnb3v2U2eI5YSgqBYgbgXXyuDL1UpyKldljh7UU/EgY/b7L7Bj2vHipa1CihlVgYKNicUGLGIXsNJfSS+mh9uNaYm4iRz1q9IGe2qx63zn8qPc/8QWdTp2kv7fTp13QAQtHxc7MpQIIemKxr13yZxImJvs2OkGLCM+0a8Hte6PUK4z3NEEsPPehX1KeMfh9YU0ovAvJA1HBue9PwpZT4U6wOdg/lyM2IiLBZEOSWXtqQFPx72F7ttm6DfwdSw808xnuKkepRe+/a23PyvunlJcE3/TISuMnbVKxElOY0XKH5tA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=tw.synaptics.com; dmarc=pass action=none
- header.from=tw.synaptics.com; dkim=pass header.d=tw.synaptics.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=tw.synaptics.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=x9aXyX+bJYqikQMHQdr4lGsmmsbIACKenehEp5o0BB0=;
- b=pqAeAYqmm/aHABjKODS1cHPBOD+WoWBgdgAWn3Pfl2vlLv44o9891V9GIGBp8slCQNWLK8lvKiWxnmscUxyWyr1SBb6Lv4L+0q9lCk1ivYu3KCaX26MrNiDH60JLJsklqPeBnASYQYiug7NgHMhbuPshojaLb0UMQ99Kk9zL5fA=
-Received: from MW4PR03MB6651.namprd03.prod.outlook.com (2603:10b6:303:12e::17)
- by MN2PR03MB5343.namprd03.prod.outlook.com (2603:10b6:208:1e9::21) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7409.46; Mon, 1 Apr
- 2024 06:18:46 +0000
-Received: from MW4PR03MB6651.namprd03.prod.outlook.com
- ([fe80::ea0d:c340:3e10:c59a]) by MW4PR03MB6651.namprd03.prod.outlook.com
- ([fe80::ea0d:c340:3e10:c59a%7]) with mapi id 15.20.7409.042; Mon, 1 Apr 2024
- 06:18:46 +0000
-From: Marge Yang <Marge.Yang@tw.synaptics.com>
-To: "friederhannenheim@riseup.net" <friederhannenheim@riseup.net>, Dmitry
- Torokhov <dmitry.torokhov@gmail.com>, Scott Lin <scott.lin@tw.synaptics.com>
-CC: "linux-input@vger.kernel.org" <linux-input@vger.kernel.org>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Vincent Huang
-	<Vincent.huang@tw.synaptics.com>
-Subject: RE: [PATCH] input/touchscreen: synaptics_tcm_oncell: add driver
-Thread-Topic: [PATCH] input/touchscreen: synaptics_tcm_oncell: add driver
-Thread-Index: AQHagTjnr0tKQifYmUyrnsfS+tAKTbFQwOmAgAI0AdA=
-Date: Mon, 1 Apr 2024 06:18:46 +0000
-Message-ID:
- <MW4PR03MB66512E92870E3700B64B4F8AA33F2@MW4PR03MB6651.namprd03.prod.outlook.com>
-References: <20240327214643.7055-1-friederhannenheim@riseup.net>
- <ZgWuq1bDWNRtrImD@google.com> <5dcfdc9c77b1dcd73815b8eaec8a4717@riseup.net>
-In-Reply-To: <5dcfdc9c77b1dcd73815b8eaec8a4717@riseup.net>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-x-dg-ref:
- PG1ldGE+PGF0IGFpPSIwIiBubT0iYm9keS50eHQiIHA9ImM6XHVzZXJzXG15YW5nXGFwcGRhdGFccm9hbWluZ1wwOWQ4NDliNi0zMmQzLTRhNDAtODVlZS02Yjg0YmEyOWUzNWJcbXNnc1xtc2ctYWZmODdiN2YtZWZlZi0xMWVlLTgzMzEtZjg1OTcxNDk5Y2RjXGFtZS10ZXN0XGFmZjg3YjgwLWVmZWYtMTFlZS04MzMxLWY4NTk3MTQ5OWNkY2JvZHkudHh0IiBzej0iNDAyOCIgdD0iMTMzNTY0MjU5MjM0OTExMTQ0IiBoPSJ5M25OWkE4dnNWeWt2SjAvZnhMTGRaT0l6ZnM9IiBpZD0iIiBibD0iMCIgYm89IjEiLz48L21ldGE+
-x-dg-rorf: true
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: MW4PR03MB6651:EE_|MN2PR03MB5343:EE_
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info:
- zYKN+DoiQJcb0xDZKLCkhkn06L8hcEbCUZ++FAHdqK6vglp/4ftVqliUQzIl2k+5Gz3T6BG4KBv9SOzLuQk6k2mlco9nOdSvSFWbJmCK1DjVWYxmPvsijfWLshORkOVW0VNCHQTtggmgDQ8TcqzgCZVm3BCl/gkuetdFOjNLLrXQ3vZPkPNSiJ3vhRJdtF2UHY/VZlIqbaF8qzC78e3RyG4fBOPHpJjwUMho1HtQdHOXC0HpfqtGvRHERtkkF7Q6fQsii6pv+8br2gutohjyVpjEYMkOdDD7rM/AC9pegElPvSIzxgRXOzlgxFE8kU09Hx5cxffVPvNEMuqhl2gKDSp9gNTemxmxsgeAoMCunMc/kV1mrtdj7JVvLwNCcqW8nvNvjxhgoRD+bwr5wo2nPSGr8jQZ53YI34UaW44s0be2RL8KTeCwII0xTzQvYBwRw81uM3Hb9m4b9XiI+uUopX7fbz5yS9hOWuRN+cAhCHN3rV0Qmqkm1UNvIexdkc7e5LH3jbIUfLcogguBe0rIgBrgFvZdv0zR5P8QXv8bSFombzWbEfmg6UQdLPv/VmgQfOui97+IUoyAYlrLd/2jxPnCURLE+TgQY3lfWMTBmHE=
-x-forefront-antispam-report:
- CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MW4PR03MB6651.namprd03.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366007)(376005)(1800799015);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0:
- =?us-ascii?Q?LAfsHkq8UU8jFw+V0zqu/ZtT3hDoiX9dvmiiWkb+lAjzbubITXztaqJa/idh?=
- =?us-ascii?Q?jUygOhm3YqKLFM5Ls5+WSY7Aa1veuK9lfhAT8XS4gvQIYOwUf18KZIbok4P7?=
- =?us-ascii?Q?JfQITKiPe8POoi9rqLSn8cssz15J7kxnnuzx9cN7yJiIIZ9GMcyExQjhAVUU?=
- =?us-ascii?Q?B3QweItGtXJIyfzmMPNKDRVl4+HcKTTkLN3l3YAEA3BAgYSapYQJEYbB2Fx5?=
- =?us-ascii?Q?k5pvHQCZF86sNK1JIwUJaA3MKUzfKWnqj/SMHTIKlX6ls7Uk/gW6Q9i/FBp2?=
- =?us-ascii?Q?0QBUmbKjeSz1MgkxpeGJIBOGkNWCzNkFTM7eqFysiCLfUXmiPGD+v3hGopxv?=
- =?us-ascii?Q?Qf8ukef3xtL9pB1W0XnqLJImAGZ61A1gA4vJIA1j/YZQoGe8QDkp5OtY7RSC?=
- =?us-ascii?Q?vcd9nxd6UpufobsAp1XnEhNJbCrcTrYukX73EUH2LO40eLYsydJ5zt/z5VTK?=
- =?us-ascii?Q?mIqjLKGE3aFH5eYNMnAGxrPdGDWtgeDfGk4NwSupDlCJas9831wkVGzlXSFx?=
- =?us-ascii?Q?vCxeV5TfI+C7QQCQ4spB4uWHhdlQrOOoXYA2wo4ZZORrdOK6psMnt2Nw5Oxn?=
- =?us-ascii?Q?zk4b/FV7foUhoCULMkRf1o6h6NsK5/IJuOb7/jDmgWLLwShrRjT4t+rIsEkS?=
- =?us-ascii?Q?NIBrCUqr93pUits2oRjlctiYATsL/1HwmxGDpvIkAnkDYwCNncgSJ+e1ESUA?=
- =?us-ascii?Q?6kyZE01WYv3/rISfSNTw58iccSx05Io5bert392QfyaoqRS1CSDKgVoBOWg3?=
- =?us-ascii?Q?SpLhxP6mWcpw0i/yARzSIsHQ+ePwYQ46O0GSDMb+Uml9hBaChMz5i4htvOCk?=
- =?us-ascii?Q?fOnc8qBqKh5qyVgVGh5jEqdAtsD7BdNh7wqtlhi08xY6Cfv2VEQWpODIzLEo?=
- =?us-ascii?Q?gC6qDqlVM34O2l1MDHD0jeD5keYMDoBJ5WXQArhUT7TwzIO3BSSurq7uITmo?=
- =?us-ascii?Q?9eO0gB/BvJhfuksMaIWrlKp0cgY7fUqNqMyABIe/6GL/kN8ITHh7B4hdBPPU?=
- =?us-ascii?Q?JSfVNo6VXCUoGfRiWXa8VV3VEMAtXGAKeqPG/YVuKoi1zCaYYk0WG6kEhOql?=
- =?us-ascii?Q?U78NZSxmfR2/kDS3yE00f7aYhE+IPaF0uDNcq8hkj5alB3kTeRSRYLx4kXwT?=
- =?us-ascii?Q?IrKcVcW71Eisk7ni/8Lm5DLaH4zQ+Rxd+fdwpb0dIeG5fUxIYG/XXrnlr/Gl?=
- =?us-ascii?Q?iDKZidfpanU+6nNQaNtjUYGBc0WtFqMk6pxbKR4V+yO2Czw/20KHK7+rIEa8?=
- =?us-ascii?Q?lnZEQ44e0f2iILSKkVApyrAFucQcWIN7zd/NWK5/Ff59zkSBH4jYfzFYc/Pa?=
- =?us-ascii?Q?Mtke3NoGL1P+vFAbc9QF6WBi00gy8BalzuDUeoP1nro3c7+19yCwM2mcDoIc?=
- =?us-ascii?Q?W9pQxSBsNh3UFYjA9Z4DwSP2DqgBb5QN4kh3ltZCwAmBkUoR2N79PIrJKgtt?=
- =?us-ascii?Q?ZVtdvaOBycmK2tuB9qtHC9V3EZGXk1M6iolK4W0v9dx5Y+qJdd5XJtYERScr?=
- =?us-ascii?Q?fyWK+wjBkGvRaNzT0X1zR58s9Vqq3Srje1njWifB/5y4N7l8SZGWfdie9ggv?=
- =?us-ascii?Q?YrCXiE8u83Pm7KvkpVg=3D?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 561038F51;
+	Mon,  1 Apr 2024 06:21:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.45
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1711952463; cv=none; b=No6DpMZGw0PTg0rQQgPwyL9Ujdtj4az6M7bUlfFiwXjUnfqn59y2YTDfDA8iNSvvXKTS0BUooZh+LeXjuaptpGDXhuNe99kywwvrV46zTdtq6sfcA5PrHZPSWyjxIk5+esvzQp44boweiTc702qzDAM72z0FNdZB+slyfDe2Yn4=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1711952463; c=relaxed/simple;
+	bh=Lf2dD3nRXEM3QKLcinOUWGrZNiSWMEAx6xFjKwZTZuA=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=Unz5nQdftBROxN6QED9JnyIp85lCOsC3x2mGAcGHHyaYD3DwqX+5dexMVNEZO/QtLX0r7ScnR5NDH7FeVmHT/gB+WhkhZRM+bYEUb6dGjK1fCO7dKWdRjo+iZ9AvN8vXHGeCyqaKaayMAOp7VnDRzolYSnr/cfK5YP2mWkQ0zQs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=AV5u/VTT; arc=none smtp.client-ip=209.85.166.45
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-io1-f45.google.com with SMTP id ca18e2360f4ac-7cc77e74b5cso175448239f.2;
+        Sun, 31 Mar 2024 23:21:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1711952461; x=1712557261; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=iMMohnAWMK6m3tG9gNhC20ZEygwyJguxL99B9xnGWG8=;
+        b=AV5u/VTTWJYcGIO3YwSyLj1AmfLeIQHcSePw9JK0F57Eorjp/XW5t9AP30djqEZ+UV
+         AG0sYnkkcD1iLRP/JSgHE2h1cMHWlmYWN1o2Fg4bB2lCBapiZfzz+5Wztmx/l3h7CFcc
+         u2eS6VI+yKDeckF/u1Ekm/u755SlTA7ZYuTuf83qNtKeaDCwEEOUVsxmIH1YI2A1ak5I
+         PEAYxcpq6xBQbAkKyJ2tiRH89ywRwpNEWveZgqxNrqei9QIwjIFK27Nsfmq96zeH3E5P
+         wvewsFOMraFQSWbvlQXj7Gz1mBRyAakknOwvo12cHbUyl0Q0H0QBE7EZcnElKh07oWYP
+         PljA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711952461; x=1712557261;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=iMMohnAWMK6m3tG9gNhC20ZEygwyJguxL99B9xnGWG8=;
+        b=MTDxLaA2EVZy5e5bcSb+T5UJbR5ei4WaLNWG4DcqW7PmPyY5dwuBB4OS4fiQYhnYNy
+         Qz27vIjvxcz+HRQoQiAJaSPR71Zl99sxPM5c88JDT+MEIKUA1/r1Wf0yTu+b+v+8GicR
+         n4iJgYWidTwWsFHdGPV4WVmU6x4gFFC8GkGjV3wrSLJgN54Fnr+pF5BZhD8CwF0DuKZr
+         WiFcl87AYO8ziu75AsCJ9QAeddzJw50YVARh7Ac/NQEPH0UthmTaNuhIUbC3oFMxhuLJ
+         verNUzTGvnxJ82mYcBGRA49ChG1yc9ux4O0REHlP67k4Ng3rgaoMoHunI5ZdG6Rv4cQb
+         2zxQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUny0raQFzsM8ZIcau0rbJ12NOPOlT/DXpnUGh6SEd33FoWbDwxWFad54ANBnocbRokdQu/Q7qZ9lPqxNCywDKf3lWZEklheWUcQDN5M2zE6rBCv+ATtTW+ynf1SnGAhPkFbDzB0N+UUJrJlqSY8BJPaWCLR0LiVN7rrGw/Fa/qevY+qkSwONUYoRONr0/sD51bTWK3gBUDPruedupwxPh1
+X-Gm-Message-State: AOJu0YytMbKv/InyIrF31TqP71yzcGSLXH5Z3LtBonfqyczc0QHdP4pp
+	ZIthghVLvzVdDBZ0qPHjVzjN5ssyvwXvpYy6dMr6SGnzlY1ihzCci1VQwvQasavrcome6ZxVEsj
+	m3ynYfkgBYeTUA36LUdIGDG1WNYc=
+X-Google-Smtp-Source: AGHT+IGqrP3UbKuIe1tD2jwC4HaMuI/kdKXkvDhRJ+AWyQfCT0kCIFRqJPOXLpW67XqZ5jBlSE9DEP3cTjA6OoqADbE=
+X-Received: by 2002:a5d:8986:0:b0:7cf:1c5c:681e with SMTP id
+ m6-20020a5d8986000000b007cf1c5c681emr10205960iol.17.1711952461453; Sun, 31
+ Mar 2024 23:21:01 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-OriginatorOrg: tw.synaptics.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: MW4PR03MB6651.namprd03.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 1284f5f4-c588-4e29-4859-08dc521396b3
-X-MS-Exchange-CrossTenant-originalarrivaltime: 01 Apr 2024 06:18:46.5530
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 335d1fbc-2124-4173-9863-17e7051a2a0e
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: vT3adXTxsOOL/LJcVoG3SyulzTBiP2nn4OcAoLcM2o0zgo6otrWGkLnOXbl8oZ3WVrZz6a8OEXD7de6xKm0ArA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR03MB5343
+References: <20240322081158.4106326-1-kcfeng0@nuvoton.com> <20240322081158.4106326-2-kcfeng0@nuvoton.com>
+ <171109961635.307786.7810067768607811171.robh@kernel.org> <22fcad13-dd9b-4e9a-90aa-d20fb78e6a0d@roeck-us.net>
+ <e1102a00-0c94-4d35-8de2-1173ee417bdc@linaro.org>
+In-Reply-To: <e1102a00-0c94-4d35-8de2-1173ee417bdc@linaro.org>
+From: Ban Feng <baneric926@gmail.com>
+Date: Mon, 1 Apr 2024 14:20:50 +0800
+Message-ID: <CALz278ZdvJhtDhBaKMg_nP+sS0HQVvAjidKAGkeqG8Cu4ftb+Q@mail.gmail.com>
+Subject: Re: [PATCH v5 1/2] dt-bindings: hwmon: Add NCT7363Y documentation
+To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Cc: Guenter Roeck <linux@roeck-us.net>, Rob Herring <robh@kernel.org>, linux-hwmon@vger.kernel.org, 
+	krzysztof.kozlowski+dt@linaro.org, robh+dt@kernel.org, conor+dt@kernel.org, 
+	corbet@lwn.net, jdelvare@suse.com, kwliu@nuvoton.com, kcfeng0@nuvoton.com, 
+	Paul Menzel <pmenzel@molgen.mpg.de>, linux-kernel@vger.kernel.org, 
+	devicetree@vger.kernel.org, Bonnie_Lo@wiwynn.com, linux-doc@vger.kernel.org, 
+	DELPHINE_CHIU@wiwynn.com, openbmc@lists.ozlabs.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Loop Scott Lin
+Hi Krzysztof,
 
-Scott Lin is responsible for mobile products.
+Thanks for your support.
 
-Thanks
-Marge Yang
+Best regards,
+Ban
 
-
------Original Message-----
-From: friederhannenheim@riseup.net <friederhannenheim@riseup.net>=20
-Sent: Sunday, March 31, 2024 4:35 AM
-To: Dmitry Torokhov <dmitry.torokhov@gmail.com>
-Cc: Marge Yang <Marge.Yang@tw.synaptics.com>; linux-input@vger.kernel.org; =
-linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] input/touchscreen: synaptics_tcm_oncell: add driver
-
-CAUTION: Email originated externally, do not click links or open attachment=
-s unless you recognize the sender and know the content is safe.
-
-
-On 2024-03-28 18:53, Dmitry Torokhov wrote:
-> [ now CCing for real ]
+On Tue, Mar 26, 2024 at 2:29=E2=80=AFAM Krzysztof Kozlowski
+<krzysztof.kozlowski@linaro.org> wrote:
 >
-> Hi Frieder,
+> On 25/03/2024 18:09, Guenter Roeck wrote:
+> > On 3/22/24 02:26, Rob Herring wrote:
+> >>
+> >> On Fri, 22 Mar 2024 16:11:57 +0800, baneric926@gmail.com wrote:
+> >>> From: Ban Feng <kcfeng0@nuvoton.com>
+> >>>
+> >>> Add bindings for the Nuvoton NCT7363Y Fan Controller
+> >>>
+> >>> Reviewed-by: Rob Herring <robh@kernel.org>
+> >>> Reviewed-by: Paul Menzel <pmenzel@molgen.mpg.de>
+> >>> Signed-off-by: Ban Feng <kcfeng0@nuvoton.com>
+> >>> ---
+> >>>   .../bindings/hwmon/nuvoton,nct7363.yaml       | 66 ++++++++++++++++=
++++
+> >>>   MAINTAINERS                                   |  6 ++
+> >>>   2 files changed, 72 insertions(+)
+> >>>   create mode 100644 Documentation/devicetree/bindings/hwmon/nuvoton,=
+nct7363.yaml
+> >>>
+> >>
+> >> My bot found errors running 'make DT_CHECKER_FLAGS=3D-m dt_binding_che=
+ck'
+> >> on your patch (DT_CHECKER_FLAGS is new in v5.13):
+> >>
+> >> yamllint warnings/errors:
+> >>
+> >> dtschema/dtc warnings/errors:
+> >> /builds/robherring/dt-review-ci/linux/Documentation/devicetree/binding=
+s/hwmon/nuvoton,nct7363.yaml:
+> >> Error in referenced schema matching $id: http://devicetree.org/schemas=
+/hwmon/fan-common.yaml
+> >> /builds/robherring/dt-review-ci/linux/Documentation/devicetree/binding=
+s/hwmon/nuvoton,nct7363.example.dtb: hwmon@22: fan-0: False schema does not=
+ allow {'pwms': [[1, 0, 50000]], 'tach-ch': ['']}
+> >>      from schema $id: http://devicetree.org/schemas/hwmon/nuvoton,nct7=
+363.yaml#
+> >> /builds/robherring/dt-review-ci/linux/Documentation/devicetree/binding=
+s/hwmon/nuvoton,nct7363.example.dtb: hwmon@22: fan-0: Unevaluated propertie=
+s are not allowed ('pwms', 'tach-ch' were unexpected)
+> >>      from schema $id: http://devicetree.org/schemas/hwmon/nuvoton,nct7=
+363.yaml#
+> >> /builds/robherring/dt-review-ci/linux/Documentation/devicetree/binding=
+s/hwmon/nuvoton,nct7363.example.dtb: hwmon@22: fan-1: False schema does not=
+ allow {'pwms': [[1, 1, 50000]], 'tach-ch': b'\x01'}
+> >>      from schema $id: http://devicetree.org/schemas/hwmon/nuvoton,nct7=
+363.yaml#
+> >> /builds/robherring/dt-review-ci/linux/Documentation/devicetree/binding=
+s/hwmon/nuvoton,nct7363.example.dtb: hwmon@22: fan-1: Unevaluated propertie=
+s are not allowed ('pwms', 'tach-ch' were unexpected)
+> >>      from schema $id: http://devicetree.org/schemas/hwmon/nuvoton,nct7=
+363.yaml#
+> >> /builds/robherring/dt-review-ci/linux/Documentation/devicetree/binding=
+s/hwmon/nuvoton,nct7363.example.dtb: fan-1: tach-ch: b'\x01' is not of type=
+ 'object', 'array', 'boolean', 'null'
+> >>      from schema $id: http://devicetree.org/schemas/dt-core.yaml#
+> >>
+> >> doc reference errors (make refcheckdocs):
+> >>
+> >> See https://patchwork.ozlabs.org/project/devicetree-bindings/patch/202=
+40322081158.4106326-2-kcfeng0@nuvoton.com
+> >>
+> >> The base for the series is generally the latest rc1. A different depen=
+dency
+> >> should be noted in *this* patch.
+> >>
+> >> If you already ran 'make dt_binding_check' and didn't see the above
+> >> error(s), then make sure 'yamllint' is installed and dt-schema is up t=
+o
+> >> date:
+> >>
+> >> pip3 install dtschema --upgrade
+> >>
+> >> Please check and re-submit after running the above command yourself. N=
+ote
+> >> that DT_SCHEMA_FILES can be set to your schema file to speed up checki=
+ng
+> >> your schema. However, it must be unset to test all examples with your =
+schema.
+> >>
+> >
+> > I am a bit puzzled by this one. The patch has a Reviewed-by: tag from R=
+ob,
+> > but then Rob's bot complains about errors. hat am I missing ?
 >
-> On Wed, Mar 27, 2024 at 10:39:12PM +0100, Frieder Hannenheim wrote:
->> This is a bit of a stripped down and partially reworked driver for=20
->> the synaptics_tcm_oncell touchscreen. I based my work off the driver=20
->> in the LineageOS kernel found at=20
->> https://urldefense.proofpoint.com/v2/url?u=3Dhttps-3A__github.com_Linea
->> geOS_android-5Fkernel-5Foneplus-5Fsm8250&d=3DDwICAg&c=3D7dfBJ8cXbWjhc0Bh=
-I
->> mu8wVIoUFmBzj1s88r8EGyM0UY&r=3Dddk_91asmhyAjxFmXHNIQZ2mVcW0D_eq4tb4409nZ=
-94&m=3D2_iuhvyQkYcT-qsozPf_h9irH_AlUtaQ020UAxVQhZ3SuHgXYihgVocHyTV-zNSV&s=
-=3DFT4Hkpxkhqktmhyz4RWC9lGAD4DvNBS06wQnn4ofQkk&e=3D  branch lineage-20. The=
- code was originally written by OnePlus developers but I'm not sure how to =
-credit them correctly.
+> The warning is a result of missing fan-common.yaml in the tree used as a
+> base.
 >
-> So the first question is: does this device not use Synaptics RMI4=20
-> protocol?
+> I checked now and I don't see warnings on next or v6.9-rc1, so it is
+> safe for you to apply it.
 >
-> I am CCing Marge Yang of Synaptics who may shed some light on the kind=20
-> of touch controller this is.
+> For the record:
 >
-> Thanks.
-Hi Dmitri,
-
-the synaptics-s3908 uses a command based protocol whereas rmi4 is register-=
-based (as far as I understand it, I haven't been able to read up on it prop=
-erly since information on the internet is sparse). So I'm pretty sure that =
-it can not be controlled via rmi4.
-
-Best wishes,
-Frieder
+> Acked-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+>
+> Best regards,
+> Krzysztof
+>
 
