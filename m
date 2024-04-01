@@ -1,151 +1,107 @@
-Return-Path: <linux-kernel+bounces-126909-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-126910-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4DDA4894446
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 19:24:26 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id BB749894455
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 19:30:22 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7F42D1C21B34
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 17:24:25 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 541681F216F9
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 17:30:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D793D4F602;
-	Mon,  1 Apr 2024 17:22:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BA7EE4D5A1;
+	Mon,  1 Apr 2024 17:30:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=salutedevices.com header.i=@salutedevices.com header.b="ePLJZ08v"
-Received: from mx1.sberdevices.ru (mx2.sberdevices.ru [45.89.224.132])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=wanadoo.fr header.i=@wanadoo.fr header.b="OG80Arm7"
+Received: from smtp.smtpout.orange.fr (smtp-30.smtpout.orange.fr [80.12.242.30])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 423194C60C;
-	Mon,  1 Apr 2024 17:22:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.89.224.132
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E4574481BF;
+	Mon,  1 Apr 2024 17:30:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=80.12.242.30
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711992170; cv=none; b=b01QH7F9vrCgOf4vmBEj7qmvE0mjiXubcD25m3cSo/33ymPaWVRi19/SBw/ZAM6K6iiwDTlGFu4faBdAxuwuxaiOcC3g2FIwiYePXmcfnGU6C0qEUWb+NLxVQBmGx7slc5r3gRXHs79WOfwUcGSJ5CxK//9u0tBQHyHsA6BP7cc=
+	t=1711992613; cv=none; b=FyRgy8WNezbvYgSi3hwg6nozeEuyXa1AHZ4yxWHX9ovJB7WU+TLz0TFMckJEC7uYf/p9NHJ/k2PIfwjHMqP/bZZfX7Gl1i41msw/5UyjcZxGzNFyCdtmAzdhTRSQlUOvWFYJ0OwMN1rD2PfeLabNkFFi7Q4y/4Q51jsjs5WEu8Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711992170; c=relaxed/simple;
-	bh=zHbbCSOPyTCqPdUXRwDlup/1JNlur6S+ULZXs+kmzok=;
-	h=Date:From:To:CC:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=dssyXM82KR3LS1wTE2MEwDFOzWLW+fQ682CwkgxXJwdkzKjO5qimzGiZka1YS5N1qlRa7KNlpETNtrYoHrkc0PcvuRQY7SPQPH5n0fSqU9EdlIkMU2npZOTp7JTcMwTE1VxZP+KJ3TDmahReLP+RTglxegMoQeHc5Cmk3okhKWw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=salutedevices.com; spf=pass smtp.mailfrom=salutedevices.com; dkim=pass (2048-bit key) header.d=salutedevices.com header.i=@salutedevices.com header.b=ePLJZ08v; arc=none smtp.client-ip=45.89.224.132
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=salutedevices.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=salutedevices.com
-Received: from p-infra-ksmg-sc-msk02 (localhost [127.0.0.1])
-	by mx1.sberdevices.ru (Postfix) with ESMTP id 4EBEC120003;
-	Mon,  1 Apr 2024 20:22:44 +0300 (MSK)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mx1.sberdevices.ru 4EBEC120003
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=salutedevices.com;
-	s=mail; t=1711992164;
-	bh=tl1k+GzwBoZHvPC5wGd0gk/FR6ibdQtoq6i6yG3MDtE=;
-	h=Date:From:To:Subject:Message-ID:MIME-Version:Content-Type:From;
-	b=ePLJZ08v9l/Hp7+tshkLyConpJh3/E7UlPychQ8v4envB4os0v896owqaCmUZBjPw
-	 CASP3Kvn8yjDiOVNug2zR0XVFAP5hfsR2f70JK4yUprzcIq+X0EfxdpSH+mXgwuB5P
-	 9//DgLEl4FR7a0j5vgchoors49NzStQuA6+XtIawT/vGj/MGbgaQehjcYjwt2LM20g
-	 rtq+7EgaEMsCG/LVOtZKVkUAMpAFl8cIcHkxzsdjEWYVb3CApexAknmGL033IXoPJZ
-	 oX41ydw3Fjehxdcd681iiS8shzVEnB4Du+a1Y2CiY1y11Ylv1lpuvDO32cgmzFb4JG
-	 psrARtLC41j3w==
-Received: from smtp.sberdevices.ru (p-i-exch-sc-m02.sberdevices.ru [172.16.192.103])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by mx1.sberdevices.ru (Postfix) with ESMTPS;
-	Mon,  1 Apr 2024 20:22:44 +0300 (MSK)
-Received: from localhost (100.64.160.123) by p-i-exch-sc-m02.sberdevices.ru
- (172.16.192.103) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Mon, 1 Apr
- 2024 20:22:43 +0300
-Date: Mon, 1 Apr 2024 20:22:43 +0300
-From: Dmitry Rokosov <ddrokosov@salutedevices.com>
-To: Rob Herring <robh@kernel.org>
-CC: <neil.armstrong@linaro.org>, <jbrunet@baylibre.com>,
-	<mturquette@baylibre.com>, <sboyd@kernel.org>,
-	<krzysztof.kozlowski+dt@linaro.org>, <khilman@baylibre.com>,
-	<martin.blumenstingl@googlemail.com>, <kernel@salutedevices.com>,
-	<rockosov@gmail.com>, <linux-amlogic@lists.infradead.org>,
-	<linux-clk@vger.kernel.org>, <devicetree@vger.kernel.org>,
-	<linux-kernel@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>
-Subject: Re: [PATCH v1 1/6] dt-bindings: clock: meson: a1: pll: introduce new
- syspll bindings
-Message-ID: <20240401172243.zuvj6d6ptkrt6p33@CAB-WSD-L081021>
-References: <20240329205904.25002-1-ddrokosov@salutedevices.com>
- <20240329205904.25002-2-ddrokosov@salutedevices.com>
- <20240401142011.GA537763-robh@kernel.org>
+	s=arc-20240116; t=1711992613; c=relaxed/simple;
+	bh=2GW7LvQ/k+2zA/eFgtYcHdUDrylqo2s4FaCiIiR+q1A=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=Jo63Z29kUy1oflsReOHqan830Me+S4EmFp1x7ooG4uifM48VQQfzFYUW4wpsS/ySIETjMZpYbk9aTYCDOZVYx9LlOTSTDjtTEQwtwjC1MxBloMOXLJ0Hp5liK6Jdkl3WL5bvDGC7Gxsii0/FPTkD00eKNTE0G+iTfEKI09Bh8vY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wanadoo.fr; spf=pass smtp.mailfrom=wanadoo.fr; dkim=pass (2048-bit key) header.d=wanadoo.fr header.i=@wanadoo.fr header.b=OG80Arm7; arc=none smtp.client-ip=80.12.242.30
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wanadoo.fr
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=wanadoo.fr
+Received: from fedora.home ([86.243.17.157])
+	by smtp.orange.fr with ESMTPA
+	id rLTzrtoGMFDStrLTzrz7Im; Mon, 01 Apr 2024 19:30:07 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wanadoo.fr;
+	s=t20230301; t=1711992607;
+	bh=WCJsrsV8vLNvTZgdKOiZouZAVMrzQfL7VDSnh6ylrOM=;
+	h=From:To:Subject:Date:Message-ID:MIME-Version;
+	b=OG80Arm7XkLFOReigdtgBIMeqoplFDX7h5lDMj8uM1NwDNczTyYHPTp/YRjh5VRzs
+	 p3KIJpL4p7UZWfPdhygxdo683/rcj3jdbd+ykhsimtneEKQ6o/d3bPgHVU2cgGdDyQ
+	 sJ5Z0Ro/L3X1Y1me5JhzCCSpcFofViXmaGXYt9PxF9Z2qdSTLv5OC28zTekiwxlTxh
+	 0VNzDHvGFXs5fBXRepu4yR72PPgpJOyohxEVdfGtgfj9wwXmSOpQfh6WSfu6Y27+eK
+	 Fwu+zdUXpZNKpI5+L7XHeESdlg0wZjR5mgzHxzhUYN3/w0UdCYOWTlOJGqOv05x03j
+	 GFB7+/YM3QIzA==
+X-ME-Helo: fedora.home
+X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
+X-ME-Date: Mon, 01 Apr 2024 19:30:07 +0200
+X-ME-IP: 86.243.17.157
+From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+To: Linus Walleij <linus.walleij@linaro.org>
+Cc: linux-kernel@vger.kernel.org,
+	kernel-janitors@vger.kernel.org,
+	Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+	linux-gpio@vger.kernel.org
+Subject: [PATCH] pinctrl: max77620: Remove an unused fields in struct max77620_pin_info and max77620_pctrl_info
+Date: Mon,  1 Apr 2024 19:30:05 +0200
+Message-ID: <60af8968864ae4a83a76e589b39a2b1e1f65c9db.1711992588.git.christophe.jaillet@wanadoo.fr>
+X-Mailer: git-send-email 2.44.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20240401142011.GA537763-robh@kernel.org>
-User-Agent: NeoMutt/20220415
-X-ClientProxiedBy: p-i-exch-sc-m02.sberdevices.ru (172.16.192.103) To
- p-i-exch-sc-m02.sberdevices.ru (172.16.192.103)
-X-KSMG-Rule-ID: 10
-X-KSMG-Message-Action: clean
-X-KSMG-AntiSpam-Lua-Profiles: 184515 [Apr 01 2024]
-X-KSMG-AntiSpam-Version: 6.1.0.4
-X-KSMG-AntiSpam-Envelope-From: ddrokosov@salutedevices.com
-X-KSMG-AntiSpam-Rate: 0
-X-KSMG-AntiSpam-Status: not_detected
-X-KSMG-AntiSpam-Method: none
-X-KSMG-AntiSpam-Auth: dkim=none
-X-KSMG-AntiSpam-Info: LuaCore: 14 0.3.14 5a0c43d8a1c3c0e5b0916cc02a90d4b950c01f96, {Tracking_uf_ne_domains}, {Track_E25351}, {Tracking_from_domain_doesnt_match_to}, 127.0.0.199:7.1.2;salutedevices.com:7.1.1;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;100.64.160.123:7.1.2;smtp.sberdevices.ru:5.0.1,7.1.1;lore.kernel.org:7.1.1, FromAlignment: s, ApMailHostAddress: 100.64.160.123
-X-MS-Exchange-Organization-SCL: -1
-X-KSMG-AntiSpam-Interceptor-Info: scan successful
-X-KSMG-AntiPhishing: Clean, bases: 2024/04/01 16:37:00
-X-KSMG-LinksScanning: Clean, bases: 2024/04/01 16:36:00
-X-KSMG-AntiVirus: Kaspersky Secure Mail Gateway, version 2.0.1.6960, bases: 2024/04/01 15:13:00 #24563578
-X-KSMG-AntiVirus-Status: Clean, skipped
+Content-Transfer-Encoding: 8bit
 
-Hello Rob,
+In "struct max77620_pin_info", the 'pull_config' field is unused.
+In "struct max77620_pctrl_info", the 'pins_current_opt' field is unused.
 
-On Mon, Apr 01, 2024 at 09:20:11AM -0500, Rob Herring wrote:
-> On Fri, Mar 29, 2024 at 11:58:41PM +0300, Dmitry Rokosov wrote:
-> > The 'syspll' PLL is a general-purpose PLL designed specifically for the
-> > CPU clock. It is capable of producing output frequencies within the
-> > range of 768MHz to 1536MHz.
-> > 
-> > Signed-off-by: Dmitry Rokosov <ddrokosov@salutedevices.com>
-> > ---
-> >  .../devicetree/bindings/clock/amlogic,a1-pll-clkc.yaml     | 7 +++++--
-> >  include/dt-bindings/clock/amlogic,a1-pll-clkc.h            | 2 ++
-> >  2 files changed, 7 insertions(+), 2 deletions(-)
-> > 
-> > diff --git a/Documentation/devicetree/bindings/clock/amlogic,a1-pll-clkc.yaml b/Documentation/devicetree/bindings/clock/amlogic,a1-pll-clkc.yaml
-> > index a59b188a8bf5..fbba57031278 100644
-> > --- a/Documentation/devicetree/bindings/clock/amlogic,a1-pll-clkc.yaml
-> > +++ b/Documentation/devicetree/bindings/clock/amlogic,a1-pll-clkc.yaml
-> > @@ -26,11 +26,13 @@ properties:
-> >      items:
-> >        - description: input fixpll_in
-> >        - description: input hifipll_in
-> > +      - description: input syspll_in
-> >  
-> >    clock-names:
-> >      items:
-> >        - const: fixpll_in
-> >        - const: hifipll_in
-> > +      - const: syspll_in
-> 
-> A new required entry is an ABI break. Please state why that's ok or make 
-> it optional (minItems: 2).
+Remove them.
 
-Unfortunatelly, it cannot be optional. I've explained here why:
+On my x86_64 config, with allmodconfig, this shrinks the struct
+max77620_pctrl_info from 360 bytes to 296.
 
-https://lore.kernel.org/all/20240401171933.bqmjsuanqsjvjosn@CAB-WSD-L081021/
+Found with cppcheck, unusedStructMember.
 
-"""
-The clock source sys_pll_div16, being one of the GEN clock parents,
-plays a crucial role and cannot be tagged as "optional". Unfortunately,
-it was not implemented earlier due to the cpu clock ctrl driver's
-pending status on the TODO list.
-"""
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+---
+Compile tested only.
+---
+ drivers/pinctrl/pinctrl-max77620.c | 2 --
+ 1 file changed, 2 deletions(-)
 
-Could you please provide guidance on whether there is any alternative
-approach that could potentially make it possible?
-
+diff --git a/drivers/pinctrl/pinctrl-max77620.c b/drivers/pinctrl/pinctrl-max77620.c
+index ab723ab4ec1d..d236daa7c13e 100644
+--- a/drivers/pinctrl/pinctrl-max77620.c
++++ b/drivers/pinctrl/pinctrl-max77620.c
+@@ -88,7 +88,6 @@ struct max77620_pingroup {
+ 
+ struct max77620_pin_info {
+ 	enum max77620_pin_ppdrv drv_type;
+-	int pull_config;
+ };
+ 
+ struct max77620_fps_config {
+@@ -104,7 +103,6 @@ struct max77620_pctrl_info {
+ 	struct device *dev;
+ 	struct pinctrl_dev *pctl;
+ 	struct regmap *rmap;
+-	int pins_current_opt[MAX77620_GPIO_NR];
+ 	const struct max77620_pin_function *functions;
+ 	unsigned int num_functions;
+ 	const struct max77620_pingroup *pin_groups;
 -- 
-Thank you,
-Dmitry
+2.44.0
+
 
