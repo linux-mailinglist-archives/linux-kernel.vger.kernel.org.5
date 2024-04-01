@@ -1,230 +1,388 @@
-Return-Path: <linux-kernel+bounces-126977-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-126978-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id DC62A89454D
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 21:10:53 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 76891894554
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 21:12:10 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0BF291C21593
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 19:10:53 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 051E11F21E94
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 19:12:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CBE7B52F9B;
-	Mon,  1 Apr 2024 19:10:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 871BF524DD;
+	Mon,  1 Apr 2024 19:12:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ApYu8Bme"
-Received: from mail-yb1-f178.google.com (mail-yb1-f178.google.com [209.85.219.178])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="wtF/avTZ"
+Received: from mail-yb1-f169.google.com (mail-yb1-f169.google.com [209.85.219.169])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5FF22F9DF;
-	Mon,  1 Apr 2024 19:10:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6FA0A22085
+	for <linux-kernel@vger.kernel.org>; Mon,  1 Apr 2024 19:12:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.169
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711998644; cv=none; b=cbT/iiqQEaB+/yl8EzN5GIqnMH4XHoXeT0AmVKj0H2uCRRcpA+cWXbjiX9ar0+ytmd3vv6DZUZwjrfA07El2YWQiq6hMGKk5AZmHWGOZmtf1CTH61gDW5mTlBdBg+0/u4uAeF9TkRoNm4ah4AvhmZ7wDmR0KPWK56kHletGMIJo=
+	t=1711998723; cv=none; b=JyLSn0hqUlD5awT+1x2PukUVYieX6GsqXlG6Q79RJNJ+COzqvAuMI1UZGExniwfOd9dQCz3wFWn+lt1BjJ53muQe5QnsRuILPeplXpxXnxje+HG+262W+PJBWK9J3zzyvV+1wtucek2ly8Mbzd9mXy8OOtIRcVxYttUo0cOEOXo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711998644; c=relaxed/simple;
-	bh=EwvM5/ryYd5YhJT1IVG8bcrXkExi8AlkMA6UHPlNQYA=;
+	s=arc-20240116; t=1711998723; c=relaxed/simple;
+	bh=x1zz7MdsTCJuVwQOPljsjb0GOlEYI8qTxfhUzxNEV6U=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=rCmAaVWGZVZRUiPzV2U1fnr3jFi/ustWJvNFj3/4zR0TNs96IJPGiykB2CnEXQiFVpROdchQOIjN9jNLrOsHAKqgB/t2ufgYEX1Hj8wIXCyJRS6oeUB3MiviCy3U69kzr4SRVGcKbgNApo0sGQ2teQ7EjEP4czihfzz9//B4W10=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ApYu8Bme; arc=none smtp.client-ip=209.85.219.178
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yb1-f178.google.com with SMTP id 3f1490d57ef6-dcc71031680so3991548276.2;
-        Mon, 01 Apr 2024 12:10:43 -0700 (PDT)
+	 To:Cc:Content-Type; b=JNjrz5EKYzS7OkTMYF12VKh27OIWwrXIfFQHsItnRx9bd6EBviPvFGEn7YrU8KY6swsDwmIXBa8fuD7hTUWOcG1h4LMtvtha6tsoGR7BsyWh6ksqcdldQHtY70HR5+Iwyed4acnIwd4Cf0869xoHilkZUQfnpkYYAw2YK629O4U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=wtF/avTZ; arc=none smtp.client-ip=209.85.219.169
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-yb1-f169.google.com with SMTP id 3f1490d57ef6-ddda842c399so3098406276.3
+        for <linux-kernel@vger.kernel.org>; Mon, 01 Apr 2024 12:12:00 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1711998642; x=1712603442; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1711998719; x=1712603519; darn=vger.kernel.org;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=GNg9gkgBJslO2GtpUVVXE3k26E466KpxPLo9ZtxpaZY=;
-        b=ApYu8BmeVO91iA5oJa7cbj/VAOng4MsjO3oLUP+jE0I0r2lyWASWfdy93mjle9Yk2O
-         4ElD7yUkBB+gRYkmJSy07xXIDtGC7OPU4W86XBgoIXxxlLLWZoIXCmeszf9V/LhexxCd
-         oltXBEoMcHWXcoWI+BpvcR9yruaB6M7DiQ7pqq38ZJ/IvNEBxWf2kdOBgncF9EK4zY4q
-         rqR+jZeqxc1NLGo9EzFG7yfavoHyXZGRTyWnLHziul0pL6+oKNzmbfrESQ4n39eWaEdz
-         L3O4Tx4eom+oPKJQJF9CDxUnqKL6DD9PWWo5ejsKj10jSqmKKtL8ouPBG+nB5qmSeByh
-         NK6Q==
+        bh=kk7Hyn+xpvgbM6tKLNLW7TGc/bsms5PvzXNhL2wyFJo=;
+        b=wtF/avTZ32pvL8GullRZm8YDpT654tFnEEkn5na1T6m1fvj7Oq+JbjyR4kRrXvwJTo
+         c1/974oyi4pTZGJOM3DTAVvQmwM4zFMDCSj7s4afn7GMUTbSwBiXmbhON2NoW7gOsxvC
+         LjONF+lJhw6VpP9+5cqEUUVbUAAUKHG/dlq/2m8ZgWN5s1LBd+ZP6LnWo7gtOK+GRdMA
+         geiqk7+RSr34ZclzLVwWUc182ZcRn/Kx9M4KnXodQfFFbseaqx8+8dI0W7QdsGEzFGEN
+         aqO4A6wm0H6Z8YwJFngAfxjJ1z5gXw7wz/qXVOVLWUDUHqJH6c/y1tEgNu/PR0kjMRkO
+         0OtQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711998642; x=1712603442;
+        d=1e100.net; s=20230601; t=1711998719; x=1712603519;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=GNg9gkgBJslO2GtpUVVXE3k26E466KpxPLo9ZtxpaZY=;
-        b=Y22RzQo9YD2wf4Rcbyb6Pg0tC8d051Ei2JuJsVGHbHeHn+Wl0Op9MzGtZ4gVnOQQGv
-         uGIAhGZec/Nk/XCcLR+Im2YUSdapD32UGgh+l5dO9jgud/r2kvOz4iT5FotjVxofQfrV
-         TxOvbhSkNWkkCR/ysZwZ6C76w8nrWbdUb+a1PHRHIjfe9qliwqjkHQOqn2b8sZg0XZQQ
-         jZaF3spNOIr3kQKE6pBEOqZ0+0zgbVYBhQmuMMylyfLAiFdoxxLrnxY94RHfOrZXTgwN
-         3n58t/+wNtltxZgvSvEypTuDdPavemjOJgg00o78PjUDaxAvVDSQ/09qaLCT8R+o0Map
-         Wv5w==
-X-Forwarded-Encrypted: i=1; AJvYcCX4/SxwY2eS7YUMlVSLuIrTfcoIJIZDjs3f3NjAJC6NGKw8nKNHSp2eKYyyVULlxUkXiuTfdpxdtbgoJRzUuAr76zSVRQ8wp1YwK88fPJPf6tGhCxuH02jJGLw+iBoJe5b6pu8H2cBzjGMI5sZmoAflbD5Uv6QnXoK8HSPim4Z/C9GOJm0=
-X-Gm-Message-State: AOJu0YxdbUHAzduzEijBHsT/VAL3om9lvfuKV7XviWu+1kazVCrt41Bp
-	evOIfiYuYswj1I5iYsohCJxTA2G+TqPKbiiAKnCqcuzR3XsfIorxCaNDfW0xXSogyKZ4qkprakZ
-	zqC7Z2LFZvs6YYhMUANjOImIdzkc=
-X-Google-Smtp-Source: AGHT+IFdYWWHG46Y6Nw54sSzqw6L5V42K5FKzlzKf1jhP0Ob+er/o+L5Gl6FQpTes5ChjbyBKOwXA3VMGmVwE+tl0Zs=
-X-Received: by 2002:a25:ba41:0:b0:dc6:d22e:ef4c with SMTP id
- z1-20020a25ba41000000b00dc6d22eef4cmr8698196ybj.17.1711998642045; Mon, 01 Apr
- 2024 12:10:42 -0700 (PDT)
+        bh=kk7Hyn+xpvgbM6tKLNLW7TGc/bsms5PvzXNhL2wyFJo=;
+        b=YmdcIl9IqxYvdkBMSww9B8b/IjSVr8pj37xqFKtQSwflYTg6sbRJNJc64ibYl1gQrA
+         AtVvZMAxzvcUxAg/cRIP+JSxNX2f50dx/xe0TANuf/DSlbcBjzPhmnY+V04q+QKm+0tj
+         rXPp0E4pmmXYLu/nuiQOtx5rgGblXqutPoCQDlTZ0ODDUyFV5rfk2omUR53skbUew4i0
+         B08WzqNANU0nOJKMSAFh+SvbV6y1//jJMa2LpM7HI8paTq1qdu09UnVSgvVgWoYJhi1X
+         lJOscsNJx1VqsGH2wpbzvZhaKSE1O+X6iNbzigKQtOmvVYvwjFf6cZmqidTboEEVZgyI
+         HLaQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXUm8L1tl8mhaQaMR3DD55V9DHJOQscZYunV3b0/3CKgTGSrX+tkiBGEsAG8XwWM2UCRn1trA4jtEhbhqXgo3KsWm+W/kTDzb90THG6
+X-Gm-Message-State: AOJu0YxOWuzkrbsnogm7JhXn5Jq0amlv81vab4SxgOedkoS6oUe7heaa
+	BkCqOXpu38PaaX/xQMIoOvrK6eu3tz2ONrBbcFr/yRB97+3RQNLPZGYXRqHK85yUAyvwA6NjBqS
+	0LzDkIL1+FG+Aq13Ukbnn7EjJs8an/FwVgRZv/g==
+X-Google-Smtp-Source: AGHT+IFWRk3Ra/x0kvF10tvKfZ1drCZhkw7tHm5TQ325RcTbj72AmuorzfxwIMTyLTVa539S69++8PuLL+dovxmzyYE=
+X-Received: by 2002:a25:6983:0:b0:dcc:67a7:430 with SMTP id
+ e125-20020a256983000000b00dcc67a70430mr8993468ybc.15.1711998719359; Mon, 01
+ Apr 2024 12:11:59 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240327160346.22442-1-benno.lossin@proton.me>
- <CANeycqp0o-HKBx6nuGCy9DD6mAwoGWzTR6bm5ceajsUhKcZuQg@mail.gmail.com> <d41d123e-d682-4685-88f5-e45567cc1975@proton.me>
-In-Reply-To: <d41d123e-d682-4685-88f5-e45567cc1975@proton.me>
-From: Wedson Almeida Filho <wedsonaf@gmail.com>
-Date: Mon, 1 Apr 2024 16:10:31 -0300
-Message-ID: <CANeycqr_AkxTj2iNdnjRFrC-C8npsBtS34V4hNy35RpQHszG9w@mail.gmail.com>
-Subject: Re: [PATCH] rust: macros: fix soundness issue in `module!` macro
-To: Benno Lossin <benno.lossin@proton.me>
-Cc: Miguel Ojeda <ojeda@kernel.org>, Alex Gaynor <alex.gaynor@gmail.com>, 
-	Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>, 
-	=?UTF-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>, 
-	Andreas Hindborg <a.hindborg@samsung.com>, Alice Ryhl <aliceryhl@google.com>, 
-	Martin Rodriguez Reboredo <yakoyoku@gmail.com>, Asahi Lina <lina@asahilina.net>, 
-	Eric Curtin <ecurtin@redhat.com>, Neal Gompa <neal@gompa.dev>, 
-	Thomas Bertschinger <tahbertschinger@gmail.com>, Andrea Righi <andrea.righi@canonical.com>, 
-	Sumera Priyadarsini <sylphrenadin@gmail.com>, Finn Behrens <me@kloenk.dev>, 
-	Adam Bratschi-Kaye <ark.email@gmail.com>, stable@vger.kernel.org, Daniel Xu <dxu@dxuuu.xyz>, 
-	rust-for-linux@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20240330-lg-sw43408-panel-v1-0-f5580fc9f2da@linaro.org>
+ <20240330-lg-sw43408-panel-v1-3-f5580fc9f2da@linaro.org> <554zkisebym7gbbom3657ws7kqvyidggfmcvetjm6vrnwts3gl@l53hejt72b5q>
+ <CAA8EJpowdjcN8KzGRVLrGx8L8Fi5Drs-C62VZKd5VbmDHsCg+Q@mail.gmail.com> <fn3r4ykwxvgf4ujmpevpsrcwmwzpjl5bhcp6ekyebowgf4rpz3@fyxcwjgn6abg>
+In-Reply-To: <fn3r4ykwxvgf4ujmpevpsrcwmwzpjl5bhcp6ekyebowgf4rpz3@fyxcwjgn6abg>
+From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Date: Mon, 1 Apr 2024 22:11:48 +0300
+Message-ID: <CAA8EJprRHg2KH7H6SPF3yfg8HCT2Fe2Hg-LXU19ak78TkKWwjA@mail.gmail.com>
+Subject: Re: [PATCH 3/3] drm: panel: Add LG sw43408 panel driver
+To: Marijn Suijten <marijn.suijten@somainline.org>
+Cc: Sumit Semwal <sumit.semwal@linaro.org>, Caleb Connolly <caleb.connolly@linaro.org>, 
+	Neil Armstrong <neil.armstrong@linaro.org>, Jessica Zhang <quic_jesszhan@quicinc.com>, 
+	Sam Ravnborg <sam@ravnborg.org>, David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>, 
+	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, Maxime Ripard <mripard@kernel.org>, 
+	Thomas Zimmermann <tzimmermann@suse.de>, Rob Herring <robh@kernel.org>, 
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
+	dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org, 
+	Vinod Koul <vkoul@kernel.org>, Caleb Connolly <caleb@connolly.tech>
 Content-Type: text/plain; charset="UTF-8"
 
-On Sun, 31 Mar 2024 at 07:27, Benno Lossin <benno.lossin@proton.me> wrote:
+On Mon, 1 Apr 2024 at 13:29, Marijn Suijten
+<marijn.suijten@somainline.org> wrote:
 >
-> On 31.03.24 03:00, Wedson Almeida Filho wrote:
-> > On Wed, 27 Mar 2024 at 13:04, Benno Lossin <benno.lossin@proton.me> wrote:
-> >> +                    #[cfg(not(MODULE))]
-> >> +                    #[doc(hidden)]
-> >> +                    #[no_mangle]
-> >> +                    pub extern \"C\" fn __{name}_exit() {{
-> >> +                        __exit()
->
-> I just noticed this should be wrapped in an `unsafe` block with a SAFETY
-> comment. Will fix this in v2.
->
-> >> +                    }}
-> >>
-> >> -            #[cfg(not(MODULE))]
-> >> -            #[doc(hidden)]
-> >> -            #[no_mangle]
-> >> -            pub extern \"C\" fn __{name}_exit() {{
-> >> -                __exit()
-> >> -            }}
-> >> +                    /// # Safety
-> >> +                    ///
-> >> +                    /// This function must
-> >> +                    /// - only be called once,
-> >> +                    /// - not be called concurrently with `__exit`.
+> On 2024-03-30 16:37:08, Dmitry Baryshkov wrote:
+> > On Sat, 30 Mar 2024 at 12:27, Marijn Suijten
+> > <marijn.suijten@somainline.org> wrote:
+> > >
+> > > On 2024-03-30 05:59:30, Dmitry Baryshkov wrote:
+> > > > From: Sumit Semwal <sumit.semwal@linaro.org>
+> > > >
+> > > > LG SW43408 is 1080x2160, 4-lane MIPI-DSI panel, used in some Pixel3
+> > > > phones.
+> > > >
+> > > > Whatever init sequence we have for this panel isn't capable of
+> > > > initialising it completely, toggling the reset gpio ever causes the
+> > > > panel to die. Until this is resolved we avoid resetting the panel. The
+> > >
+> > > Are you sure it is avoided?  This patch seems to be toggling reset_gpio in
+> > > sw43408_prepare()?
+> > >
+> > > > disable/unprepare functions only put the panel to sleep mode and
+> > > > disable the backlight.
+> > > >
+> > > > Signed-off-by: Sumit Semwal <sumit.semwal@linaro.org>
+> > > > [vinod: Add DSC support]
+> > > > Signed-off-by: Vinod Koul <vkoul@kernel.org>
+> > > > [caleb: cleanup and support turning off the panel]
+> > > > Signed-off-by: Caleb Connolly <caleb@connolly.tech>
+> > > > [DB: partially rewrote the driver and fixed DSC programming]
+> > > > Signed-off-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+> > > > ---
+> > > >  MAINTAINERS                              |   8 +
+> > > >  drivers/gpu/drm/panel/Kconfig            |  11 ++
+> > > >  drivers/gpu/drm/panel/Makefile           |   1 +
+> > > >  drivers/gpu/drm/panel/panel-lg-sw43408.c | 322 +++++++++++++++++++++++++++++++
+> > > >  4 files changed, 342 insertions(+)
+> > > >
+> > > > diff --git a/MAINTAINERS b/MAINTAINERS
+> > > > index 4b511a55101c..f4cf7ee97376 100644
+> > > > --- a/MAINTAINERS
+> > > > +++ b/MAINTAINERS
+> > > > @@ -6755,6 +6755,14 @@ S:     Maintained
+> > > >  F:   Documentation/devicetree/bindings/display/panel/jadard,jd9365da-h3.yaml
+> > > >  F:   drivers/gpu/drm/panel/panel-jadard-jd9365da-h3.c
+> > > >
+> > > > +DRM DRIVER FOR LG SW43408 PANELS
+> > > > +M:   Sumit Semwal <sumit.semwal@linaro.org>
+> > > > +M:   Caleb Connolly <caleb.connolly@linaro.org>
+> > > > +S:   Maintained
+> > > > +T:   git git://anongit.freedesktop.org/drm/drm-misc
+> > > > +F:   Documentation/devicetree/bindings/display/panel/lg,sw43408.yaml
+> > > > +F:   drivers/gpu/drm/panel/panel-lg-sw43408.c
+> > > > +
+> > > >  DRM DRIVER FOR LOGICVC DISPLAY CONTROLLER
+> > > >  M:   Paul Kocialkowski <paul.kocialkowski@bootlin.com>
+> > > >  S:   Supported
+> > > > diff --git a/drivers/gpu/drm/panel/Kconfig b/drivers/gpu/drm/panel/Kconfig
+> > > > index d037b3b8b999..f94c702735cb 100644
+> > > > --- a/drivers/gpu/drm/panel/Kconfig
+> > > > +++ b/drivers/gpu/drm/panel/Kconfig
+> > > > @@ -335,6 +335,17 @@ config DRM_PANEL_LG_LG4573
+> > > >         Say Y here if you want to enable support for LG4573 RGB panel.
+> > > >         To compile this driver as a module, choose M here.
+> > > >
+> > > > +config DRM_PANEL_LG_SW43408
+> > > > +     tristate "LG SW43408 panel"
+> > > > +     depends on OF
+> > > > +     depends on DRM_MIPI_DSI
+> > > > +     depends on BACKLIGHT_CLASS_DEVICE
+> > > > +     help
+> > > > +       Say Y here if you want to enable support for LG sw43408 panel.
+> > > > +       The panel has a 1080x2160 resolution and uses
+> > > > +       24 bit RGB per pixel. It provides a MIPI DSI interface to
+> > > > +       the host and has a built-in LED backlight.
+> > > > +
+> > > >  config DRM_PANEL_MAGNACHIP_D53E6EA8966
+> > > >       tristate "Magnachip D53E6EA8966 DSI panel"
+> > > >       depends on OF && SPI
+> > > > diff --git a/drivers/gpu/drm/panel/Makefile b/drivers/gpu/drm/panel/Makefile
+> > > > index f156d7fa0bcc..a75687d13caf 100644
+> > > > --- a/drivers/gpu/drm/panel/Makefile
+> > > > +++ b/drivers/gpu/drm/panel/Makefile
+> > > > @@ -34,6 +34,7 @@ obj-$(CONFIG_DRM_PANEL_LEADTEK_LTK050H3146W) += panel-leadtek-ltk050h3146w.o
+> > > >  obj-$(CONFIG_DRM_PANEL_LEADTEK_LTK500HD1829) += panel-leadtek-ltk500hd1829.o
+> > > >  obj-$(CONFIG_DRM_PANEL_LG_LB035Q02) += panel-lg-lb035q02.o
+> > > >  obj-$(CONFIG_DRM_PANEL_LG_LG4573) += panel-lg-lg4573.o
+> > > > +obj-$(CONFIG_DRM_PANEL_LG_SW43408) += panel-lg-sw43408.o
+> > > >  obj-$(CONFIG_DRM_PANEL_MAGNACHIP_D53E6EA8966) += panel-magnachip-d53e6ea8966.o
+> > > >  obj-$(CONFIG_DRM_PANEL_NEC_NL8048HL11) += panel-nec-nl8048hl11.o
+> > > >  obj-$(CONFIG_DRM_PANEL_NEWVISION_NV3051D) += panel-newvision-nv3051d.o
+> > > > diff --git a/drivers/gpu/drm/panel/panel-lg-sw43408.c b/drivers/gpu/drm/panel/panel-lg-sw43408.c
+> > > > new file mode 100644
+> > > > index 000000000000..365d25e14d54
+> > > > --- /dev/null
+> > > > +++ b/drivers/gpu/drm/panel/panel-lg-sw43408.c
+> > > > @@ -0,0 +1,322 @@
+> > > > +// SPDX-License-Identifier: GPL-2.0+
+> > > > +/*
+> > > > + * Copyright (C) 2019-2024 Linaro Ltd
+> > > > + * Author: Sumit Semwal <sumit.semwal@linaro.org>
+> > > > + *    Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+> > > > + */
+> > > > +
+> > > > +#include <linux/backlight.h>
+> > > > +#include <linux/delay.h>
+> > > > +#include <linux/gpio/consumer.h>
+> > > > +#include <linux/module.h>
+> > > > +#include <linux/of.h>
+> > > > +#include <linux/regulator/consumer.h>
+> > > > +
+> > > > +#include <video/mipi_display.h>
+> > > > +
+> > > > +#include <drm/drm_mipi_dsi.h>
+> > > > +#include <drm/drm_panel.h>
+> > > > +#include <drm/drm_probe_helper.h>
+> > > > +#include <drm/display/drm_dsc.h>
+> > > > +#include <drm/display/drm_dsc_helper.h>
+> > > > +
+> > > > +#define NUM_SUPPLIES 2
+> > > > +
+> > > > +struct sw43408_panel {
+> > > > +     struct drm_panel base;
+> > > > +     struct mipi_dsi_device *link;
+> > > > +
+> > > > +     const struct drm_display_mode *mode;
+> > > > +
+> > > > +     struct regulator_bulk_data supplies[NUM_SUPPLIES];
+> > > > +
+> > > > +     struct gpio_desc *reset_gpio;
+> > > > +};
+> > > > +
+> > > > +static inline struct sw43408_panel *to_panel_info(struct drm_panel *panel)
+> > > > +{
+> > > > +     return container_of(panel, struct sw43408_panel, base);
+> > > > +}
+> > > > +
+> > > > +static int sw43408_unprepare(struct drm_panel *panel)
+> > > > +{
+> > > > +     struct sw43408_panel *ctx = to_panel_info(panel);
+> > > > +     int ret;
+> > > > +
+> > > > +     ret = mipi_dsi_dcs_set_display_off(ctx->link);
+> > > > +     if (ret < 0)
+> > > > +             dev_err(panel->dev, "set_display_off cmd failed ret = %d\n", ret);
+> > > > +
+> > > > +     ret = mipi_dsi_dcs_enter_sleep_mode(ctx->link);
+> > > > +     if (ret < 0)
+> > > > +             dev_err(panel->dev, "enter_sleep cmd failed ret = %d\n", ret);
+> > > > +
+> > > > +     msleep(100);
+> > > > +
+> > > > +     gpiod_set_value(ctx->reset_gpio, 1);
+> > > > +
+> > > > +     return regulator_bulk_disable(ARRAY_SIZE(ctx->supplies), ctx->supplies);
+> > > > +}
+> > > > +
+> > > > +static int sw43408_program(struct drm_panel *panel)
+> > > > +{
+> > > > +     struct sw43408_panel *ctx = to_panel_info(panel);
+> > > > +     struct drm_dsc_picture_parameter_set pps;
+> > > > +     u8 dsc_en = 0x11;
+> > >
+> > > Yeah, this is completely strange. Bit 0, 0x1, is to enable DSC which is
+> > > normal. 0x10 however, which is bit 4, selects PPS table 2.  Do you ever set
+> > > pps_identifier in struct drm_dsc_picture_parameter_set to 2?  Or is the table
+> > > that you send below bogus and/or not used?  Maybe the Driver IC on the other
+> > > end of the DSI link has a default PPS table with identifier 2 that works out of
+> > > the box?
 > >
-> > I don't think the second item is needed here, it really is a
-> > requirement on `__exit`.
+> > Note, MIPI standard also requires two bytes argument. I suspect that
+> > LG didn't fully follow the standard here.
 >
-> Fixed.
+> Have you read this command from downstream DTS, or have you tried sending 2
+> bytes and seen the panel breaking?  The second byte is marked as reserved and
+> should be equal to 0; if the Driver IC is okay with sending either 1 or 2 bytes
+> I'd strive to stick with the defined length of 2 bytes for this DCS.
 >
+> Have you played around with the PPS table?  What if you change
+> drm_dsc_picture_paremeter_set::pps_identifier to the second table, will the
+> panel stop working as expected again?  This could indicate that the PPS that is
+> sent is incorrect (even though the information in the original DSC config was
+> enough to set up the DPU and DSI correctly).
+>
+> According to the DSI spec it is allowed to have a pre-stored/pre-programmed
+> PPS table, which could be used here making the current call to
+> mipi_dsi_picture_parameter_set() useless and "confusing"?
+
+Ok, some short summary of my tests.
+
+Skipping PPS doesn't work at all, so there is no default.
+
+Adding a second zero byte doesn't seem to change anything. Dropping
+the 0x1 bit ('enable') doesn't seem to change anything.
+
+If I send COMPRESSION_MODE before sending the PPS, various combinations work.
+If I send COMPRESSION_MODE after sending the PPS, the follow combos work:
+
+pps_identifier = 0x0, COMPRESSION_MODE = 0x11
+pps_identifier = 0x1, COMPRESSION_MODE = 0x21
+
+>
+> > Basically that's the reason why I went for the _raw function instead
+> > of adding PPS and codec arguments to the existing function.
 > >
-> >> +                    unsafe fn __init() -> core::ffi::c_int {{
-> >> +                        match <{type_} as kernel::Module>::init(&THIS_MODULE) {{
-> >> +                            Ok(m) => {{
-> >> +                                // SAFETY:
-> >> +                                // no data race, since `__MOD` can only be accessed by this module and
-> >> +                                // there only `__init` and `__exit` access it. These functions are only
-> >> +                                // called once and `__exit` cannot be called before or during `__init`.
-> >> +                                unsafe {{
-> >> +                                    __MOD = Some(m);
-> >> +                                }}
-> >> +                                return 0;
-> >> +                            }}
-> >> +                            Err(e) => {{
-> >> +                                return e.to_errno();
-> >> +                            }}
-> >> +                        }}
-> >> +                    }}
-> >>
-> >> -            fn __init() -> core::ffi::c_int {{
-> >> -                match <{type_} as kernel::Module>::init(&THIS_MODULE) {{
-> >> -                    Ok(m) => {{
-> >> +                    /// # Safety
-> >> +                    ///
-> >> +                    /// This function must
-> >> +                    /// - only be called once,
-> >> +                    /// - be called after `__init`,
-> >> +                    /// - not be called concurrently with `__init`.
+> > >
+> > > > +     mipi_dsi_dcs_write_seq(ctx->link, MIPI_DCS_SET_GAMMA_CURVE, 0x02);
+> > > > +
+> > > > +     mipi_dsi_dcs_set_tear_on(ctx->link, MIPI_DSI_DCS_TEAR_MODE_VBLANK);
+> > > > +
+> > > > +     mipi_dsi_dcs_write_seq(ctx->link, 0x53, 0x0c, 0x30);
+> > > > +     mipi_dsi_dcs_write_seq(ctx->link, 0x55, 0x00, 0x70, 0xdf, 0x00, 0x70, 0xdf);
+> > > > +     mipi_dsi_dcs_write_seq(ctx->link, 0xf7, 0x01, 0x49, 0x0c);
+> > > > +
+> > > > +     mipi_dsi_dcs_exit_sleep_mode(ctx->link);
+> > > > +
+> > > > +     msleep(135);
+> > > > +
+> > > > +     mipi_dsi_compression_mode_raw(ctx->link, &dsc_en, 1);
+> > >
+> > > Even though I think we should change this function to describe the known
+> > > bit layout of command 0x7 per the VESA DSI spec, for now replace 1 with
+> > > sizeof(dsc_en)?
 > >
-> > The second item is incomplete: it must be called after `__init` *succeeds*.
+> > If dsc_en were an array, it would have been a proper thing. Maybe I
+> > should change it to the array to remove confusion.
 >
-> Indeed.
+> It should work even with a single byte, just to clarify to readers that the 3rd
+> argument is the byte-size of the input.
 >
+> > > > +     mipi_dsi_dcs_write_seq(ctx->link, 0xb0, 0xac);
+> > > > +     mipi_dsi_dcs_write_seq(ctx->link, 0xe5,
+> > > > +                            0x00, 0x3a, 0x00, 0x3a, 0x00, 0x0e, 0x10);
+> > > > +     mipi_dsi_dcs_write_seq(ctx->link, 0xb5,
+> > > > +                            0x75, 0x60, 0x2d, 0x5d, 0x80, 0x00, 0x0a, 0x0b,
+> > > > +                            0x00, 0x05, 0x0b, 0x00, 0x80, 0x0d, 0x0e, 0x40,
+> > > > +                            0x00, 0x0c, 0x00, 0x16, 0x00, 0xb8, 0x00, 0x80,
+> > > > +                            0x0d, 0x0e, 0x40, 0x00, 0x0c, 0x00, 0x16, 0x00,
+> > > > +                            0xb8, 0x00, 0x81, 0x00, 0x03, 0x03, 0x03, 0x01,
+> > > > +                            0x01);
+> > > > +     msleep(85);
+> > > > +     mipi_dsi_dcs_write_seq(ctx->link, 0xcd,
+> > > > +                            0x00, 0x00, 0x00, 0x19, 0x19, 0x19, 0x19, 0x19,
+> > > > +                            0x19, 0x19, 0x19, 0x19, 0x19, 0x19, 0x19, 0x19,
+> > > > +                            0x16, 0x16);
+> > > > +     mipi_dsi_dcs_write_seq(ctx->link, 0xcb, 0x80, 0x5c, 0x07, 0x03, 0x28);
+> > > > +     mipi_dsi_dcs_write_seq(ctx->link, 0xc0, 0x02, 0x02, 0x0f);
+> > > > +     mipi_dsi_dcs_write_seq(ctx->link, 0x55, 0x04, 0x61, 0xdb, 0x04, 0x70, 0xdb);
+> > > > +     mipi_dsi_dcs_write_seq(ctx->link, 0xb0, 0xca);
+> > > > +
+> > > > +     mipi_dsi_dcs_set_display_on(ctx->link);
+> > >
+> > > Any specific reason to not have the (un)blanking sequence in the enable/disable
+> > > callbacks and leaving display configuration in (un)prepare?
 > >
-> > With that added (which is a different precondition), I think the third
-> > item can be dropped because if you have to wait to see whether
-> > `__init` succeeded or failed before you can call `__exit`, then
-> > certainly you cannot call it concurrently with `__init`.
+> > We are back to the question on when it's fine to send the commands. I
+> > think the current agreement is to send everything in the
+> > prepare/unprepare, because of some strange hosts.
 >
-> I would love to drop that requirement, but I am not sure we can. With
-> that requirement, I wanted to ensure that no data race on `__MOD` can
-> happen. If you need to verify that `__init` succeeded, one might think
-> that it is not possible to call `__exit` such that a data race occurs,
-> but I think it could theoretically be done if the concrete `Module`
-> implementation never failed.
-
-I see. If you're concerned about compiler reordering, then we need
-compiler barriers.
-
-> Do you have any suggestion for what I could add to the "be called after
-> `__init` was called and returned `0`" requirement to make a data race
-> impossible?
-
-If you're concerned with reordering from the processor as well, then
-we need cpu barriers. You'd have to say that the cpu/thread executing
-`__init` must have a release barrier after `__init` completes, and the
-thread/cpu doing `__exit` must have an acquire barrier before starting
-`__exit`.
-
-But I'm not sure we need to go that far. Mostly because C is going to
-guarantee that ordering for us, so I'd say we can just omit this or
-perhaps say "This function must only be called from the exit module
-implementation".
-
-> --
-> Cheers,
-> Benno
+> For my panel drivers I'm sticking with having `post-on` commands (from
+> downstream) in `enable/disable`, which is typically only `set_display_on`.  In
+> hopes of proposing a `prepare_atomic()` some time to allow mode selection.
 >
+> In a short test on recent -next I am once again allowed to send DSI commands in
+> both .disable and .unprepare, making both functions a "clean" inverse of .enable
+> and .prepare respectively.
+
+The world isn't limited to the MSM hosts.
+
+>
+> > > > +     msleep(50);
+> > > > +
+> > > > +     ctx->link->mode_flags &= ~MIPI_DSI_MODE_LPM;
+> > > > +
+> > > > +     drm_dsc_pps_payload_pack(&pps, ctx->link->dsc);
+> > > > +     mipi_dsi_picture_parameter_set(ctx->link, &pps);
+> > >
+> > > I'm always surprised why this is sent _after_ turning the display on (unblanking
+> > > it).  Wouldn't that cause unnecessary corruption?
 > >
-> >> +                    unsafe fn __exit() {{
-> >> +                        // SAFETY:
-> >> +                        // no data race, since `__MOD` can only be accessed by this module and there
-> >> +                        // only `__init` and `__exit` access it. These functions are only called once
-> >> +                        // and `__init` was already called.
-> >>                           unsafe {{
-> >> -                            __MOD = Some(m);
-> >> +                            // Invokes `drop()` on `__MOD`, which should be used for cleanup.
-> >> +                            __MOD = None;
-> >>                           }}
-> >> -                        return 0;
-> >>                       }}
-> >> -                    Err(e) => {{
-> >> -                        return e.to_errno();
-> >> -                    }}
-> >> -                }}
-> >> -            }}
-> >>
-> >> -            fn __exit() {{
-> >> -                unsafe {{
-> >> -                    // Invokes `drop()` on `__MOD`, which should be used for cleanup.
-> >> -                    __MOD = None;
-> >> +                    {modinfo}
-> >>                   }}
-> >>               }}
-> >> -
-> >> -            {modinfo}
-> >>           ",
-> >>           type_ = info.type_,
-> >>           name = info.name,
-> >>
-> >> base-commit: 4cece764965020c22cff7665b18a012006359095
-> >> --
-> >> 2.44.0
-> >>
-> >>
+> > No idea. I followed the dowsntream command sequences here. Most likely
+> > the panel is not fully on until it receives the full frame to be
+> > displayed.
 >
+> According to the DSI spec a PPS update is allowed to happen every frame, and
+> (for cmdmode panels) will take effect after the next TE trigger.  Unsure if a TE
+> event happens before the first frame, otherwise this may start taking effect
+> on the second frame onwards only.
+>
+> If there's no corruption on the first frame there might be a pre-programmed PPS
+> table in slot 2, supporting the theory above.
+
+
+
+-- 
+With best wishes
+Dmitry
 
