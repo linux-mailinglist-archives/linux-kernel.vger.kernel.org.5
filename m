@@ -1,62 +1,47 @@
-Return-Path: <linux-kernel+bounces-126490-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-126491-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id B65CD893892
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 09:09:30 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id CE0A0893898
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 09:10:55 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6BE6A1F21687
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 07:09:30 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6EB9DB20DA0
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 07:10:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4DE95BA27;
-	Mon,  1 Apr 2024 07:09:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E4953B66C;
+	Mon,  1 Apr 2024 07:10:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Orh85Lt1"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.15])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="lDTOR+H1"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E60ACBE4B;
-	Mon,  1 Apr 2024 07:09:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.15
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2E5CF8F6E;
+	Mon,  1 Apr 2024 07:10:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711955359; cv=none; b=Has/cf6T3A8CJwevpFABMp95o6XJnOnE/BusEt862zrkgc78U2TpzRSLLD5tny7ue3XJBgzq4JiuD5GdmTZMW+J79Cz/qWfc2e7Hx3dVKvQJjrcSVT3Ae5ju/MEpZuS5GqedSzqBAlW5VHwhcpnrUeQ9j36xa8OSf7TcspUH8VI=
+	t=1711955444; cv=none; b=aBGCozxoQO1YpBhV9lImyU2YV4vo3pHLGAZnGZLMIwOm6Pf/3O7kJEto+oULGtSJG+8zhJi0UvOx/KKKshbAu2KtrBqSC9EfOxMyhobdCXlieplTELoanndNXi1bMFxEPO64b3zlAFPjjC/ZWUrjqOpM6J2wO1HvXkCOycLkt0s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711955359; c=relaxed/simple;
-	bh=QK03u+6ppdo1nULFDMzZhk4/uikkG5Uc2lkrQyuYkqs=;
+	s=arc-20240116; t=1711955444; c=relaxed/simple;
+	bh=+A1rPpI0d7vMik1H+QiVUQjCpbJ9cTWrwNyONGXtCPg=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=hyiE2C/4IpzcOVrmTS1Xg/A+1WNXGInM0KpI7uFYVgdzZL6tqCrEeArkpEL4+5cMLmv5grSCYuI4KZFTx8d9Tv3o3yLjx7YwaV7yW5eeRjV2N07LxsVtT1QX82awcxbRUItdtoSPPBew15KuPU0wC0d3qVjFJAliKnjJeok9qaQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Orh85Lt1; arc=none smtp.client-ip=198.175.65.15
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1711955358; x=1743491358;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=QK03u+6ppdo1nULFDMzZhk4/uikkG5Uc2lkrQyuYkqs=;
-  b=Orh85Lt1cMKSIC/Yk7a9XyO9uqHFroe6elwU559Dajuj+7S+TPZBLxEF
-   x8CcrkRcaCFSeOi+J6t+sANPzG+J6z8Tqm2r1iGYhNnlhrQpBhaLxzb5u
-   s88Ui9xSUjyW1w/MUOydKL4nIukM66MN1hYdVTF6b8TNtb2fU1en5D79P
-   og6l3fWETCZESY0/psFjwyLpJWCCAH4iRBuSJJ70LTPCswtyG+M3RxKak
-   s2SdeJYWQcE0xnPe61+I4yM/BYqXaaCg/II4Wetu1B68eZaYbIm3iRX/5
-   aeDL9jlBHAoBgW15a0hga6b8sSLcM/VxoLVbkKKHadgh4wUgWAdANuP5j
-   g==;
-X-CSE-ConnectionGUID: 6NApPkTHREmFkmBrSi42tA==
-X-CSE-MsgGUID: ZBgmWJTmSsG3lAJlImtI9g==
-X-IronPort-AV: E=McAfee;i="6600,9927,11030"; a="10896469"
-X-IronPort-AV: E=Sophos;i="6.07,171,1708416000"; 
-   d="scan'208";a="10896469"
-Received: from orviesa002.jf.intel.com ([10.64.159.142])
-  by orvoesa107.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Apr 2024 00:09:17 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,171,1708416000"; 
-   d="scan'208";a="48614457"
-Received: from xiaoyaol-hp-g830.ccr.corp.intel.com (HELO [10.124.224.7]) ([10.124.224.7])
-  by orviesa002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Apr 2024 00:09:06 -0700
-Message-ID: <329c7188-bd24-4200-9934-ff4a07fa1c61@intel.com>
-Date: Mon, 1 Apr 2024 15:09:03 +0800
+	 In-Reply-To:Content-Type; b=kTSH/Vz8WsKLLOknn+e+u+Pi9djKZdeoOMWPJxlQQzdQ/y2fn21od6s80GUmsa7H6CH58MGhYR2yR8Gt07HHa/u9D68sCb/FGNfyvegyywUNRecZHmNpo65Vp67sx1ob8mvxiMnZfbd70Sv6NpiCEq3XlwgQ8+ukDx7Z5cocjHo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=lDTOR+H1; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7C0AFC433C7;
+	Mon,  1 Apr 2024 07:10:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1711955443;
+	bh=+A1rPpI0d7vMik1H+QiVUQjCpbJ9cTWrwNyONGXtCPg=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=lDTOR+H1yS/BG7Vztln4l/c526aQwgZxmigxH1YEntEe+SqRt4rgqU4hftYRkvVt6
+	 DQq+qCE/NxAqLWe698XqIboNthy3Wf0FeteL2KMN5AgY7n119vmfjuAVuWJYi60jQy
+	 V2BWJrgL95BLBVCevfDx4MWI0FMR8ZR3fZrT7M7tnuLHwj3ZMG4rzkDWDy7rXWlhau
+	 h5rFkZry/NX1+W/RK1CNW55G2XgUxUlkJvbZYWfZZ1Lk2ppWAB/jTmFFmGyevRC/wv
+	 FwhC1aXLvvM/Q4u78De5sEWLAJvvqQUPXZvNyGhrRPT7372nY15MteuU5kzbtbY9V2
+	 JQPQHtiAz8Byg==
+Message-ID: <22ccaa0a-96d4-42f2-b7e2-8b4113cacb58@kernel.org>
+Date: Mon, 1 Apr 2024 16:10:41 +0900
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -64,85 +49,53 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v6 9/9] KVM: nVMX: Use macros and #defines in
- vmx_restore_vmx_misc()
-To: Sean Christopherson <seanjc@google.com>,
- Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>,
- Borislav Petkov <bp@alien8.de>, Dave Hansen <dave.hansen@linux.intel.com>,
- x86@kernel.org, Paolo Bonzini <pbonzini@redhat.com>,
- Andy Lutomirski <luto@kernel.org>, Peter Zijlstra <peterz@infradead.org>
-Cc: linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
- Shan Kang <shan.kang@intel.com>, Kai Huang <kai.huang@intel.com>,
- Xin Li <xin3.li@intel.com>
-References: <20240309012725.1409949-1-seanjc@google.com>
- <20240309012725.1409949-10-seanjc@google.com>
+Subject: Re: [PATCH] scsi: aic79xx: add scb NULL check in
+ ahd_handle_msg_reject()
+To: Aleksandr Aprelkov <aaprelkov@usergate.com>,
+ Hannes Reinecke <hare@suse.com>
+Cc: "James E.J. Bottomley" <jejb@linux.ibm.com>,
+ "Martin K. Petersen" <martin.petersen@oracle.com>,
+ linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
+ lvc-project@linuxtesting.org
+References: <20240401061010.589751-1-aaprelkov@usergate.com>
+From: Damien Le Moal <dlemoal@kernel.org>
 Content-Language: en-US
-From: Xiaoyao Li <xiaoyao.li@intel.com>
-In-Reply-To: <20240309012725.1409949-10-seanjc@google.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Organization: Western Digital Research
+In-Reply-To: <20240401061010.589751-1-aaprelkov@usergate.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 
-On 3/9/2024 9:27 AM, Sean Christopherson wrote:
-> From: Xin Li <xin3.li@intel.com>
+On 4/1/24 15:10, Aleksandr Aprelkov wrote:
+> If ahd_lookup_scb() returns NULL and ahd_sent_msg() checks are false,
+> then NULL pointer dereference happens
 > 
-> Use macros in vmx_restore_vmx_misc() instead of open coding everything
-> using BIT_ULL() and GENMASK_ULL().  Opportunistically split feature bits
-> and reserved bits into separate variables, and add a comment explaining
-> the subset logic (it's not immediately obvious that the set of feature
-> bits is NOT the set of _supported_ feature bits).
+> Found by Linux Verification Center (linuxtesting.org) with SVACE.
 > 
-> Cc: Shan Kang <shan.kang@intel.com>
-> Cc: Kai Huang <kai.huang@intel.com>
-> Signed-off-by: Xin Li <xin3.li@intel.com>
-> [sean: split to separate patch, write changelog, drop #defines]
-> Signed-off-by: Sean Christopherson <seanjc@google.com>
-
-Reviewed-by: Xiaoyao Li <xiaoyao.li@intel.com>
-
+> Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
+> Signed-off-by: Aleksandr Aprelkov <aaprelkov@usergate.com>
 > ---
->   arch/x86/kvm/vmx/nested.c | 27 ++++++++++++++++++++-------
->   1 file changed, 20 insertions(+), 7 deletions(-)
+>  drivers/scsi/aic7xxx/aic79xx_core.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> diff --git a/arch/x86/kvm/vmx/nested.c b/arch/x86/kvm/vmx/nested.c
-> index 06512ee7a5c4..6610d258c680 100644
-> --- a/arch/x86/kvm/vmx/nested.c
-> +++ b/arch/x86/kvm/vmx/nested.c
-> @@ -1322,16 +1322,29 @@ vmx_restore_control_msr(struct vcpu_vmx *vmx, u32 msr_index, u64 data)
->   
->   static int vmx_restore_vmx_misc(struct vcpu_vmx *vmx, u64 data)
->   {
-> -	const u64 feature_and_reserved_bits =
-> -		/* feature */
-> -		BIT_ULL(5) | GENMASK_ULL(8, 6) | BIT_ULL(14) | BIT_ULL(15) |
-> -		BIT_ULL(28) | BIT_ULL(29) | BIT_ULL(30) |
-> -		/* reserved */
-> -		GENMASK_ULL(13, 9) | BIT_ULL(31);
-> +	const u64 feature_bits = VMX_MISC_SAVE_EFER_LMA |
-> +				 VMX_MISC_ACTIVITY_HLT |
-> +				 VMX_MISC_ACTIVITY_SHUTDOWN |
-> +				 VMX_MISC_ACTIVITY_WAIT_SIPI |
-> +				 VMX_MISC_INTEL_PT |
-> +				 VMX_MISC_RDMSR_IN_SMM |
-> +				 VMX_MISC_VMWRITE_SHADOW_RO_FIELDS |
-> +				 VMX_MISC_VMXOFF_BLOCK_SMI |
-> +				 VMX_MISC_ZERO_LEN_INS;
-> +
-> +	const u64 reserved_bits = BIT_ULL(31) | GENMASK_ULL(13, 9);
-> +
->   	u64 vmx_misc = vmx_control_msr(vmcs_config.nested.misc_low,
->   				       vmcs_config.nested.misc_high);
->   
-> -	if (!is_bitwise_subset(vmx_misc, data, feature_and_reserved_bits))
-> +	BUILD_BUG_ON(feature_bits & reserved_bits);
-> +
-> +	/*
-> +	 * The incoming value must not set feature bits or reserved bits that
-> +	 * aren't allowed/supported by KVM.  Fields, i.e. multi-bit values, are
-> +	 * explicitly checked below.
-> +	 */
-> +	if (!is_bitwise_subset(vmx_misc, data, feature_bits | reserved_bits))
->   		return -EINVAL;
->   
->   	if ((vmx->nested.msrs.pinbased_ctls_high &
+> diff --git a/drivers/scsi/aic7xxx/aic79xx_core.c b/drivers/scsi/aic7xxx/aic79xx_core.c
+> index 3e3100dbfda3..9e0fafa12e87 100644
+> --- a/drivers/scsi/aic7xxx/aic79xx_core.c
+> +++ b/drivers/scsi/aic7xxx/aic79xx_core.c
+> @@ -5577,7 +5577,7 @@ ahd_handle_msg_reject(struct ahd_softc *ahd, struct ahd_devinfo *devinfo)
+>  		       "Using asynchronous transfers\n",
+>  		       ahd_name(ahd), devinfo->channel,
+>  		       devinfo->target, devinfo->lun);
+> -	} else if ((scb->hscb->control & SIMPLE_QUEUE_TAG) != 0) {
+> +	} else if (scb && (scb->hscb->control & SIMPLE_QUEUE_TAG) != 0) {
+
+"!= 0" is not needed.
+
+>  		int tag_type;
+>  		int mask;
+>  
+
+-- 
+Damien Le Moal
+Western Digital Research
 
 
