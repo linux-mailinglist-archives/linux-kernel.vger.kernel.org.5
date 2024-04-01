@@ -1,183 +1,147 @@
-Return-Path: <linux-kernel+bounces-126569-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-126574-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6CF8F8939AB
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 11:45:26 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E8F3E8939C3
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 11:48:26 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0D42B1F22204
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 09:45:26 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3EBF1B21957
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 09:48:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A9AE710A09;
-	Mon,  1 Apr 2024 09:45:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 192A512E72;
+	Mon,  1 Apr 2024 09:48:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="A0H+RVxS"
-Received: from mail-wm1-f46.google.com (mail-wm1-f46.google.com [209.85.128.46])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="IKkpukb8"
+Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 07DD610953
-	for <linux-kernel@vger.kernel.org>; Mon,  1 Apr 2024 09:45:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 905DE1095A;
+	Mon,  1 Apr 2024 09:48:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711964713; cv=none; b=Xw5B39MrDunKD62YdeFmpeLni3c2yCJVflpMDhYfhUiKxxbdCVQ8P5jcZYsgnuiiv1w2x/NExSbywFcT2F0xpsYSGW+PYCDLg+Xw1rlfZcXmoe8jD8shagDU0Xng1itwKJ+LVMRom0i8pynrXXiULpIW6M22oOOEPJElkBxMKTo=
+	t=1711964889; cv=none; b=iMxA5RUze03NOGMcnJ8ey3HJAXlIoaLgkq1TDpE2oLgpzPzsDKZFmDIV8yoELl0JZF51VeMpx6OZ9S5yFPhw1SC6NncsC+OXqr4PQIgzbBj0QmfxL/gViIw+e1F+SJsPR86onPtH3gfvHqGqYe2hJOoIQ9gNc50YJpvsih3zuLM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711964713; c=relaxed/simple;
-	bh=hfIRYPByEwNm+w1/dkJ/FXHGtCJkgCwdoYJZKYVRTm8=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=l2jkhDtUbeXLlJsw/bWm8ovpJMJACDE8IU4Ie7f4JyUolU36d0C+qqIh6Pep5Oab4qdzHDY6mcR/nMkN+0yXB7edolgEjSuGyd8OOqCCcTfpkNCyyRDLW4YXnaXXgnKgb0xwQn8ihxpLv4kPegEZSkCswX1LRvAn1wsgmpFrmEY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=A0H+RVxS; arc=none smtp.client-ip=209.85.128.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f46.google.com with SMTP id 5b1f17b1804b1-4148c6132b4so26908825e9.1
-        for <linux-kernel@vger.kernel.org>; Mon, 01 Apr 2024 02:45:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1711964710; x=1712569510; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=U82/zKNoj7Un9bj3VUFlAllXXEKzojenj3FXQK42VVY=;
-        b=A0H+RVxSI0MmHETEfTEBHNySZ/ys8zEmF7e7WyZgeuV0lVDDI1+tF/+/bYhCg8aMeB
-         rIVD1NUHTgqDpRF1EQ/toWkhobMZ4OH5+LgzqxmzZFWIi/wr/U9AgBAVwv9yZTHurbry
-         8viBAX0jDBpV8dCCplv25NXGhDjmsjzSv0U7K4IrTytGmIJ5OEMmtuXp4PccHRGvD3aF
-         XEnKTC/JD5LP+3x29W0RotteQISxC4Zp4dXgYWThUN2YlqCq6QacU3INydJ7+ca63nMd
-         3QiiyoPtsl5LwJbTw7CqVX2g81grq+C4XKvNLz/BisjB2sKAFu6md+i3cW4SPisPkdFK
-         wtKA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711964710; x=1712569510;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=U82/zKNoj7Un9bj3VUFlAllXXEKzojenj3FXQK42VVY=;
-        b=Tu9bdfulVgDlyOQZnrnEMMfjQzZp66RdV6+lFDBYO0UNxRlRi+2ML5r24OCWtpyFK1
-         C+MnKCcnS7p97hhmETpL1hby42uiOKPBOc9NYiVCF2aBbU1JGgotd2k2xYCgCJen16xc
-         EfmRRy/igJXbAzz3lESaQvH3RwiCQP7gZcXp3KbXbQr18Nrsu0xmch9ttaIk299TMMC4
-         kvGuOGGVvNtzJJAF/tuNuZf0+Rwrs0hu43TND/8J+b4+pwbLfS2vv3Oo8lW9FTETLblB
-         QRjoROVxB0olpfcu/Wuc36bVqg8mppMvlo9hStlx+iB8OJTumCgHnPEpfM92eHldKIrQ
-         ub1Q==
-X-Forwarded-Encrypted: i=1; AJvYcCWmK8JOuuR4NRJEAeC8/zKfEI6hxsgrsRloUifAbUw/HgyNeTdxoek2wIs0ouFh3I75vsTQPPUYmtM5bGlhpS9zrR/Yz4gsRK8kkkD1
-X-Gm-Message-State: AOJu0YwUcmmTYRbJFr7A/bNi3aaXzFVu82CcqLHQ/hawZOcOumCsXaeM
-	XM8V4VRzW9DmW4DfqGV3sTGj2Gr0ld70KtnKJhLNBEl9xEVYQLml
-X-Google-Smtp-Source: AGHT+IEhC542QHRw2FssFYxmPWyaAlrYdv090z5cJ0v/jmfm7wGlSCr/ORSk0b1JZ0wN6uNB5O3RSg==
-X-Received: by 2002:a05:600c:5123:b0:414:37f:2798 with SMTP id o35-20020a05600c512300b00414037f2798mr7878513wms.6.1711964710077;
-        Mon, 01 Apr 2024 02:45:10 -0700 (PDT)
-Received: from gmail.com (84-236-113-97.pool.digikabel.hu. [84.236.113.97])
-        by smtp.gmail.com with ESMTPSA id g1-20020adfa481000000b00341e7e52802sm11250804wrb.92.2024.04.01.02.45.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 01 Apr 2024 02:45:09 -0700 (PDT)
-Sender: Ingo Molnar <mingo.kernel.org@gmail.com>
-Date: Mon, 1 Apr 2024 11:45:07 +0200
-From: Ingo Molnar <mingo@kernel.org>
-To: David Hildenbrand <david@redhat.com>,
-	Andrew Morton <akpm@linux-foundation.org>
-Cc: Matthew Wilcox <willy@infradead.org>, linux-kernel@vger.kernel.org,
-	linux-mm@kvack.org, x86@kernel.org,
-	Wupeng Ma <mawupeng1@huawei.com>,
-	Dave Hansen <dave.hansen@linux.intel.com>,
-	Andy Lutomirski <luto@kernel.org>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-	"H. Peter Anvin" <hpa@zytor.com>,
-	Andrew Morton <akpm@linux-foundation.org>
-Subject: Re: [PATCH v1] x86/mm/pat: fix VM_PAT handling in COW mappings
-Message-ID: <ZgqCI8ClUKM4B5xG@gmail.com>
-References: <20240312181118.318701-1-david@redhat.com>
- <ZfCrkL-Aieer2EAg@casper.infradead.org>
- <5bc9de2f-c3ba-46e7-a234-3d3a46e53ba1@redhat.com>
- <ZgKIVogEUEnUMgpF@gmail.com>
- <922c5f99-1194-4118-9fe2-09b4f4a8cf04@redhat.com>
- <ZgKNIezvm7tPVuYj@gmail.com>
- <2420ca24-b475-45ba-bab9-66c11b8cf484@redhat.com>
+	s=arc-20240116; t=1711964889; c=relaxed/simple;
+	bh=06wOk/U0MualMJ4bunj44L58B9nb+s9Iaqf0BY9Iihk=;
+	h=Message-ID:Date:MIME-Version:Cc:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=R0fbu7d0cnvSSeCj3pCBCiwTZkqtlB0XIWrn59lYf7ez8ee3gzmrVeKm1j3rIsioVzGqIXa3ofzsMpcbtw5Vexqdb8RoimQje0WX9K0wZ1LnLPsPeaMuX612eLaUce6H4YpULPJoreYQraGH9UGwICmVPk39VF6Ck1/EyuxJV0M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=IKkpukb8; arc=none smtp.client-ip=46.235.227.194
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+	s=mail; t=1711964885;
+	bh=06wOk/U0MualMJ4bunj44L58B9nb+s9Iaqf0BY9Iihk=;
+	h=Date:Cc:Subject:To:References:From:In-Reply-To:From;
+	b=IKkpukb884sj8Eg4Yw/1yM6F+jVI41WbIFR5wppl38DPIFzg7d+snPhJSh90a3YbB
+	 6UxRTezpSmT4wNQmWC70hAfP/JxH0Ch921mvOmRMG6ao7uQPIuZ7OsFD7KR2aH5N87
+	 tG0r+nrikfEXbQvrvlxX1XWEKAWH5gay7UPdFl6DDuIhYIr3WnRTZy/d4En7a/hkhB
+	 ryU3/OINHUKgVPtbeLhy24Ru35rCA0iPfjdVytimtX+uverHEJe3H4njiECn3UAPIe
+	 pNY86YqfqdyTKZh6NivIn+8POtsgH3Jxd+ULYNYtQQqgOUeGD7ZqZngxjW5K5IDaXk
+	 qoDfDq7BJ5Z5Q==
+Received: from [10.193.1.1] (broslavsky.collaboradmins.com [68.183.210.73])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	(Authenticated sender: usama.anjum)
+	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 8BFC2378148F;
+	Mon,  1 Apr 2024 09:47:23 +0000 (UTC)
+Message-ID: <ef72ae20-6b68-496a-a819-8818ade0d433@collabora.com>
+Date: Mon, 1 Apr 2024 14:46:13 +0500
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <2420ca24-b475-45ba-bab9-66c11b8cf484@redhat.com>
+User-Agent: Mozilla Thunderbird
+Cc: Muhammad Usama Anjum <usama.anjum@collabora.com>,
+ paul.walmsley@sifive.com, rick.p.edgecombe@intel.com, broonie@kernel.org,
+ Szabolcs.Nagy@arm.com, kito.cheng@sifive.com, keescook@chromium.org,
+ ajones@ventanamicro.com, conor.dooley@microchip.com, cleger@rivosinc.com,
+ atishp@atishpatra.org, alex@ghiti.fr, bjorn@rivosinc.com,
+ alexghiti@rivosinc.com, samuel.holland@sifive.com, palmer@sifive.com,
+ conor@kernel.org, linux-doc@vger.kernel.org,
+ linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
+ devicetree@vger.kernel.org, linux-mm@kvack.org, linux-arch@vger.kernel.org,
+ linux-kselftest@vger.kernel.org, corbet@lwn.net,
+ tech-j-ext@lists.risc-v.org, palmer@dabbelt.com, aou@eecs.berkeley.edu,
+ robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org, oleg@redhat.com,
+ akpm@linux-foundation.org, arnd@arndb.de, ebiederm@xmission.com,
+ Liam.Howlett@oracle.com, vbabka@suse.cz, lstoakes@gmail.com,
+ shuah@kernel.org, brauner@kernel.org, andy.chiu@sifive.com,
+ jerry.shih@sifive.com, hankuan.chen@sifive.com, greentime.hu@sifive.com,
+ evan@rivosinc.com, xiao.w.wang@intel.com, charlie@rivosinc.com,
+ apatel@ventanamicro.com, mchitale@ventanamicro.com,
+ dbarboza@ventanamicro.com, sameo@rivosinc.com, shikemeng@huaweicloud.com,
+ willy@infradead.org, vincent.chen@sifive.com, guoren@kernel.org,
+ samitolvanen@google.com, songshuaishuai@tinylab.org, gerg@kernel.org,
+ heiko@sntech.de, bhe@redhat.com, jeeheng.sia@starfivetech.com,
+ cyy@cyyself.name, maskray@google.com, ancientmodern4@gmail.com,
+ mathis.salmen@matsal.de, cuiyunhui@bytedance.com, bgray@linux.ibm.com,
+ mpe@ellerman.id.au, baruch@tkos.co.il, alx@kernel.org, david@redhat.com,
+ catalin.marinas@arm.com, revest@chromium.org, josh@joshtriplett.org,
+ shr@devkernel.io, deller@gmx.de, omosnace@redhat.com, ojeda@kernel.org,
+ jhubbard@nvidia.com
+Subject: Re: [PATCH v2 27/27] kselftest/riscv: kselftest for user mode cfi
+To: Deepak Gupta <debug@rivosinc.com>
+References: <20240329044459.3990638-1-debug@rivosinc.com>
+ <20240329044459.3990638-28-debug@rivosinc.com>
+ <4b38393a-f69d-4a77-a896-b6cd42c7edcf@collabora.com>
+ <CAKC1njQ_RU=uHhrna=MFVdjAMjjQNqZWnkjPoJvO7CxtPMeNuQ@mail.gmail.com>
+Content-Language: en-US
+From: Muhammad Usama Anjum <usama.anjum@collabora.com>
+In-Reply-To: <CAKC1njQ_RU=uHhrna=MFVdjAMjjQNqZWnkjPoJvO7CxtPMeNuQ@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-
-* David Hildenbrand <david@redhat.com> wrote:
-
-> > > > try the trivial restriction approach first, and only go with your original
-> > > > patch if that fails?
-> > > 
-> > > Which version would you prefer, I had two alternatives (excluding comment
-> > > changes, white-space expected to be broken).
-> > > 
-> > > 
-> > > 1) Disallow when we would have set VM_PAT on is_cow_mapping()
-> > > 
-> > > diff --git a/arch/x86/mm/pat/memtype.c b/arch/x86/mm/pat/memtype.c
-> > > index 0d72183b5dd0..6979912b1a5d 100644
-> > > --- a/arch/x86/mm/pat/memtype.c
-> > > +++ b/arch/x86/mm/pat/memtype.c
-> > > @@ -994,6 +994,9 @@ int track_pfn_remap(struct vm_area_struct *vma, pgprot_t *prot,
-> > >                                  && size == (vma->vm_end - vma->vm_start))) {
-> > >                  int ret;
-> > > +               if (is_cow_mapping(vma->vm_flags))
-> > > +                       return -EINVAL;
-> > > +
-> > >                  ret = reserve_pfn_range(paddr, size, prot, 0);
-> > >                  if (ret == 0 && vma)
-> > >                          vm_flags_set(vma, VM_PAT);
-> > > 
-> > > 
-> > > 2) Fallback to !VM_PAT
-> > > 
-> > > diff --git a/arch/x86/mm/pat/memtype.c b/arch/x86/mm/pat/memtype.c
-> > > index 0d72183b5dd0..8e97156c9be8 100644
-> > > --- a/arch/x86/mm/pat/memtype.c
-> > > +++ b/arch/x86/mm/pat/memtype.c
-> > > @@ -990,8 +990,8 @@ int track_pfn_remap(struct vm_area_struct *vma, pgprot_t *prot,
-> > >          enum page_cache_mode pcm;
-> > >          /* reserve the whole chunk starting from paddr */
-> > > -       if (!vma || (addr == vma->vm_start
-> > > -                               && size == (vma->vm_end - vma->vm_start))) {
-> > > +       if (!vma || (!is_cow_mapping(vma->vm_flags) && addr == vma->vm_start &&
-> > > +                    size == (vma->vm_end - vma->vm_start))) {
-> > >                  int ret;
-> > >                  ret = reserve_pfn_range(paddr, size, prot, 0);
-> > > 
-> > > 
-> > > 
-> > > Personally, I'd go for 2).
-> > 
-> > So what's the advantage of #2? This is clearly something the user didn't
-> > really intend or think about much. Isn't explicitly failing that mapping a
-> > better option than silently downgrading it to !VM_PAT?
-> > 
-> > (If I'm reading it right ...)
+On 3/30/24 1:02 AM, Deepak Gupta wrote:
+> On Fri, Mar 29, 2024 at 12:50 PM Muhammad Usama Anjum
+> <usama.anjum@collabora.com> wrote:
+>>
+>> On 3/29/24 9:44 AM, Deepak Gupta wrote:
+>>> Adds kselftest for RISC-V control flow integrity implementation for user
+>>> mode. There is not a lot going on in kernel for enabling landing pad for
+>>> user mode. Thus kselftest simply enables landing pad for the binary and
+>>> a signal handler is registered for SIGSEGV. Any control flow violation are
+>>> reported as SIGSEGV with si_code = SEGV_CPERR. Test will fail on recieving
+>>> any SEGV_CPERR. Shadow stack part has more changes in kernel and thus there
+>>> are separate tests for that
+>>>       - enable and disable
+>>>       - Exercise `map_shadow_stack` syscall
+>>>       - `fork` test to make sure COW works for shadow stack pages
+>>>       - gup tests
+>>>         As of today kernel uses FOLL_FORCE when access happens to memory via
+>>>         /proc/<pid>/mem. Not breaking that for shadow stack
+>>>       - signal test. Make sure signal delivery results in token creation on
+>>>       shadow stack and consumes (and verifies) token on sigreturn
+>>>     - shadow stack protection test. attempts to write using regular store
+>>>         instruction on shadow stack memory must result in access faults
+>>>
+>>> Signed-off-by: Deepak Gupta <debug@rivosinc.com>
+>>> ---
+>>>  tools/testing/selftests/riscv/Makefile        |   2 +-
+>>>  tools/testing/selftests/riscv/cfi/Makefile    |  10 +
+>>>  .../testing/selftests/riscv/cfi/cfi_rv_test.h |  85 ++++
+>>>  .../selftests/riscv/cfi/riscv_cfi_test.c      |  91 +++++
+>>>  .../testing/selftests/riscv/cfi/shadowstack.c | 376 ++++++++++++++++++
+>>>  .../testing/selftests/riscv/cfi/shadowstack.h |  39 ++
+>> Please add generated binaries in the .gitignore files.
 > 
-> I think a simple mmap(MAP_PRIVATE) of /dev/mem will unconditionally fail
-> with 1), while it keeps on working for 2).
+> hmm...
+> I don't see binary as part of the patch. Which file are you referring
+> to here being binary?
+shadowstack would be generated by the build. Create a .gitignore file and
+add it there. For example, look at
+tools/testing/selftests/riscv/vector/.gitignore to understand.
+
+
 > 
-> Note that I think we currently set VM_PAT on each and every system if
-> remap_pfn_range() will cover the whole VMA, even if pat is not actually
-> enabled.
+>>
 > 
-> It's all a bit of a mess TBH, but I got my hands dirty enough on that.
-> 
-> So 1) can be rather destructive ... 2) at least somehow keeps it working.
-> 
-> For that reason I went with the current patch, because it's hard to tell
-> which use case you will end up breaking ... :/
 
-Yeah, so I think you make valid observations, i.e. your first patch is 
-probably the best one.
-
-But since it changes mm/memory.c, I'd like to pass that over to Andrew 
-and the MM folks.
-
-The x86 bits:
-
-  Acked-by: Ingo Molnar <mingo@kernel.org>
-
-Thanks,
-
-	Ingo
+-- 
+BR,
+Muhammad Usama Anjum
 
