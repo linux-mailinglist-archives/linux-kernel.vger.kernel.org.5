@@ -1,193 +1,193 @@
-Return-Path: <linux-kernel+bounces-126446-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-126447-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id EB633893830
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 08:11:41 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5AD1F893835
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 08:13:49 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8186428193B
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 06:11:40 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id CAEFBB20F33
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 06:13:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 986459454;
-	Mon,  1 Apr 2024 06:11:30 +0000 (UTC)
-Received: from mail-io1-f70.google.com (mail-io1-f70.google.com [209.85.166.70])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 41DE18F6C;
+	Mon,  1 Apr 2024 06:13:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="F/QFKQRt"
+Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 66AA053BE
-	for <linux-kernel@vger.kernel.org>; Mon,  1 Apr 2024 06:11:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.70
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A32C0137E
+	for <linux-kernel@vger.kernel.org>; Mon,  1 Apr 2024 06:13:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711951890; cv=none; b=fWexMcMd/oz52PlaweNg21PjqC77RBKf/2TvzHc85cmxXa/zQWHgusIPHENTBLXktixxPPNQswyoLyEKJa0+hChMIsKFyiJeckAWJl6Kv04pUWB+Jk/dJc1Vddz7vG2vXH5Jojnjj/UvABV7rgMLiLkwzrdJIRuw0ZlJ3f2TTO4=
+	t=1711952019; cv=none; b=ghPYMtDoPWcXbQSaHoJv83Zoh99wnS8ceihTZtVd7DCK7rq39zubB9xugb6u+M2qyX3Ybp8URyC4TAldvPjQyu5+bMSu24dDjYBEfeeOxftH128w52l3urmh1DjCA6J3uYiO/GkEM1ikdjlQ/5vce0EnKq1YzQf7VGMLrV08X/k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711951890; c=relaxed/simple;
-	bh=5RzfPD80g1MajIdzMSOBq3UGYhnnxMPtHW7ucZlPId8=;
-	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
-	 Content-Type; b=DsVipc5FLFTx4FDIr5c70z9O8tenSsqJkr+uTgGsr91/xg2XSzeJT0VeRQ1Ut/WsWknqQknx1szMsf8Q93MbtHHvUKQlkel8+vyBhEUOLThSQ1te0yP6MHJ6b4GrfGx96+Bre/n5DMxCuSjLdfNchsYGK1WhkOJNQcVVPE1/CzA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.70
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-io1-f70.google.com with SMTP id ca18e2360f4ac-7cf265b30e2so396567639f.1
-        for <linux-kernel@vger.kernel.org>; Sun, 31 Mar 2024 23:11:28 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711951887; x=1712556687;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=QU2ivE4+RjX4u7lvetSsWaIm0V+DKP8bcLz4UjQG+xE=;
-        b=xIVVWDxIqBNMSVw8MdmOVtgm5yphVrEDu78H452wzuZtrdZ8w495xAVY7mWLPueBNk
-         GVye2U8jbdcGNfOnitZ4pY+hj2UQ1UxraB14O/L3ds4qLUvjHPE8EG0NCNMmO17LF06V
-         79oqLKZmuEca1E1ZEZZnsC0R57lrjzoKC6qGh2WlFEVlH+bPWown6vjjbH8RyZiSwaZr
-         ohEnNJ2/fESTt/suAS9pm27RVTLljY0tY96EO2YTrftzW+DxpZXhk8j3Z5LqOvlWD9hB
-         M81Lp6Sp2sMc/T0LRFzaoAiJY1BT+NWoAeOWNbHIhW6U4+W/uaz4AKDbDqtk46/DcVwN
-         qs0w==
-X-Forwarded-Encrypted: i=1; AJvYcCVxmxzcQFylvoPuAxiNmhxSDEkOjd/v6N4OQO7Epsob7UKxXpewzyzhtgRvc46EPepnpU6atylwRseSzpYjoi4y898Gy62WsTfp03ed
-X-Gm-Message-State: AOJu0YzRj8yu+zILUDh9lZcFh6VQNzVVq7J4f4wX6HVlC4PTx+4lqFZq
-	6W+Xgawlpe0YNYbE/mq4bMYpExQd0w0pEyOlFyJnQU02E0te1YXqxVvXV1VIwj1qyIvFFTR239C
-	NCuUa0cbG8ClbJtI0phZa0w/rakDmZqUXp09uAH84iKjrO5XpNxh+EwE=
-X-Google-Smtp-Source: AGHT+IFFH6jMD6jhXSfTF/8n97fODaGx9BtJ8w+g5dRBic/6Guq06rzc6t84WkYWl8Ho+6ArVPMQ+Qnlo52F0GamU4iwMJBJkhwQ
+	s=arc-20240116; t=1711952019; c=relaxed/simple;
+	bh=/x4kBCuY+ccxV+JdiuLGZjMTNXMcjW/HgSMYytFO9ik=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=B4l246PvCBOuBwVWdsZ412yZRk/x72nnwin9lDZBlDVsaGsTopOoyLLU139RKtjpNo9v3FBvL1geOt3KQ++ZJ89rR/GoYqgayxgN0w12eI1S/xTxh60esGpuj/P8KbvCAKGsv1zN5oDiOvBUS2w3Lvca+xh6SCZgV+6thZknyEg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=F/QFKQRt; arc=none smtp.client-ip=46.235.227.194
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+	s=mail; t=1711952009;
+	bh=/x4kBCuY+ccxV+JdiuLGZjMTNXMcjW/HgSMYytFO9ik=;
+	h=From:To:Cc:Subject:Date:From;
+	b=F/QFKQRtdRPVizgrcaJWAlxYVtohziHdyu/AmgMpdoIP7elCwdztc7XL9psW7i7u3
+	 aD+wKiMNETxiEYYiOXSFsuZPC8BgsvJwirv8ZhR8rtuAg3d0gDkmpObIlEroLp2pOR
+	 E/GGTLFOQLFB0JvUOPic9KnBJCNwueqADiFThdT8OPTGq/XHKbW0gFjTOfXtS7yEp7
+	 iXvG/GMrlBnStRc5229+XJ8W3oHtR0zaLvxkePKPTONQFHny7OaBltIrYv8cCrCiMH
+	 qntmOqHngcl7vx6Ed+YCEtFzi9ZXPuRDmQRrJUKZIzL1QonUyUpKkD9Q7kr2z7MmQH
+	 fDl/oHvqPISDQ==
+Received: from localhost.localdomain (cola.collaboradmins.com [195.201.22.229])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	(Authenticated sender: vignesh)
+	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 7749C3781360;
+	Mon,  1 Apr 2024 06:13:25 +0000 (UTC)
+From: Vignesh Raman <vignesh.raman@collabora.com>
+To: dri-devel@lists.freedesktop.org
+Cc: daniels@collabora.com,
+	helen.koike@collabora.com,
+	airlied@gmail.com,
+	daniel@ffwll.ch,
+	emma@anholt.net,
+	robdclark@gmail.com,
+	david.heidelberg@collabora.com,
+	guilherme.gallo@collabora.com,
+	sergi.blanch.torne@collabora.com,
+	hamohammed.sa@gmail.com,
+	rodrigosiqueiramelo@gmail.com,
+	melissa.srw@gmail.com,
+	mairacanal@riseup.net,
+	mcanal@igalia.com,
+	linux-mediatek@lists.infradead.org,
+	linux-amlogic@lists.infradead.org,
+	linux-rockchip@lists.infradead.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH v5 00/10] drm/ci: Add support for GPU and display testing
+Date: Mon,  1 Apr 2024 11:42:25 +0530
+Message-Id: <20240401061235.192713-1-vignesh.raman@collabora.com>
+X-Mailer: git-send-email 2.40.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6638:2727:b0:47c:a3e:2f25 with SMTP id
- m39-20020a056638272700b0047c0a3e2f25mr328200jav.6.1711951887643; Sun, 31 Mar
- 2024 23:11:27 -0700 (PDT)
-Date: Sun, 31 Mar 2024 23:11:27 -0700
-In-Reply-To: <000000000000c430800614b93936@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000022c6b2061502dcbb@google.com>
-Subject: Re: [syzbot] [net?] possible deadlock in hsr_dev_xmit (2)
-From: syzbot <syzbot+fbf74291c3b7e753b481@syzkaller.appspotmail.com>
-To: davem@davemloft.net, edumazet@google.com, kuba@kernel.org, 
-	linux-kernel@vger.kernel.org, netdev@vger.kernel.org, pabeni@redhat.com, 
-	syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 
-syzbot has found a reproducer for the following issue on:
+Some ARM SOCs have a separate display controller and GPU, each with
+different drivers. For mediatek mt8173, the GPU driver is powervr,
+and the display driver is mediatek. In the case of mediatek mt8183,
+the GPU driver is panfrost, and the display driver is mediatek.
+With rockchip rk3288/rk3399, the GPU driver is panfrost, while the
+display driver is rockchip. For amlogic meson, the GPU driver is
+panfrost, and the display driver is meson.
 
-HEAD commit:    480e035fc4c7 Merge tag 'drm-next-2024-03-13' of https://gi..
-git tree:       upstream
-console+strace: https://syzkaller.appspot.com/x/log.txt?x=166a86e5180000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=1e5b814e91787669
-dashboard link: https://syzkaller.appspot.com/bug?extid=fbf74291c3b7e753b481
-compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=10526855180000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=15e0f5c3180000
+IGT tests run various tests with different xfails and can test both
+GPU devices and KMS/display devices. Currently, in drm-ci for MediaTek,
+Rockchip, and Amlogic Meson platforms, only the GPU driver is tested.
+This leads to incomplete coverage since the display is never tested on
+these platforms. This commit series adds support in drm-ci to run tests
+for both GPU and display drivers for MediaTek, Rockchip, and Amlogic
+Meson platforms.
 
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/5f73b6ef963d/disk-480e035f.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/46c949396aad/vmlinux-480e035f.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/e3b4d0f5a5f8/bzImage-480e035f.xz
+Uprev mesa and IGT in drm-ci and add amd, v3d, vc4 and vgem specific
+tests to testlist. Add testlists to the MAINTAINERS file and skip
+driver-specific tests.
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+fbf74291c3b7e753b481@syzkaller.appspotmail.com
+This series also includes patch to add vkms testing to drm-ci.
 
-============================================
-WARNING: possible recursive locking detected
-6.8.0-syzkaller-08073-g480e035fc4c7 #0 Not tainted
---------------------------------------------
-ksoftirqd/1/23 is trying to acquire lock:
-ffff8880744d6da0 (&hsr->seqnr_lock){+.-.}-{2:2}, at: spin_lock_bh include/linux/spinlock.h:356 [inline]
-ffff8880744d6da0 (&hsr->seqnr_lock){+.-.}-{2:2}, at: hsr_dev_xmit+0x13e/0x1d0 net/hsr/hsr_device.c:229
+Working pipeline link,
+https://gitlab.freedesktop.org/vigneshraman/linux/-/pipelines/1140647
 
-but task is already holding lock:
-ffff88802383ada0 (&hsr->seqnr_lock){+.-.}-{2:2}, at: spin_lock_bh include/linux/spinlock.h:356 [inline]
-ffff88802383ada0 (&hsr->seqnr_lock){+.-.}-{2:2}, at: send_hsr_supervision_frame+0x276/0xad0 net/hsr/hsr_device.c:310
+Vignesh Raman (10):
+  drm/ci: arm64.config: Enable CONFIG_DRM_ANALOGIX_ANX7625
+  drm/ci: uprev mesa version
+  drm/ci: uprev IGT and update testlist
+  drm/ci: mediatek: Refactor existing mediatek jobs
+  drm/ci: mediatek: Add job to test panfrost and powervr GPU driver
+  drm/ci: meson: Refactor existing meson jobs
+  drm/ci: meson: Add job to test panfrost GPU driver
+  drm/ci: rockchip: Refactor existing rockchip jobs
+  drm/ci: rockchip: Add job to test panfrost GPU driver
+  drm/ci: add tests on vkms
 
-other info that might help us debug this:
- Possible unsafe locking scenario:
+ MAINTAINERS                                   |  11 +
+ drivers/gpu/drm/ci/arm64.config               |   1 +
+ drivers/gpu/drm/ci/build.sh                   |   2 +-
+ drivers/gpu/drm/ci/container.yml              |   6 +-
+ drivers/gpu/drm/ci/gitlab-ci.yml              |  18 +-
+ drivers/gpu/drm/ci/igt_runner.sh              |  16 +-
+ drivers/gpu/drm/ci/image-tags.yml             |   5 +-
+ drivers/gpu/drm/ci/test.yml                   | 138 ++++++--
+ drivers/gpu/drm/ci/testlist.txt               | 321 ++++++++++++++++++
+ drivers/gpu/drm/ci/x86_64.config              |   1 +
+ .../gpu/drm/ci/xfails/amdgpu-stoney-fails.txt |  25 +-
+ .../drm/ci/xfails/amdgpu-stoney-flakes.txt    |  10 +-
+ .../gpu/drm/ci/xfails/amdgpu-stoney-skips.txt |  23 +-
+ drivers/gpu/drm/ci/xfails/i915-amly-skips.txt |   9 +-
+ drivers/gpu/drm/ci/xfails/i915-apl-skips.txt  |   9 +-
+ drivers/gpu/drm/ci/xfails/i915-cml-skips.txt  |   7 +
+ drivers/gpu/drm/ci/xfails/i915-glk-skips.txt  |   9 +-
+ drivers/gpu/drm/ci/xfails/i915-kbl-skips.txt  |   9 +-
+ drivers/gpu/drm/ci/xfails/i915-tgl-skips.txt  |   9 +-
+ drivers/gpu/drm/ci/xfails/i915-whl-skips.txt  |   9 +-
+ .../drm/ci/xfails/mediatek-mt8173-fails.txt   |  15 -
+ .../drm/ci/xfails/mediatek-mt8173-flakes.txt  |  13 +
+ .../drm/ci/xfails/mediatek-mt8173-skips.txt   |   6 +
+ .../drm/ci/xfails/mediatek-mt8183-fails.txt   |  21 +-
+ .../drm/ci/xfails/mediatek-mt8183-flakes.txt  |   8 +
+ .../drm/ci/xfails/mediatek-mt8183-skips.txt   |   6 +
+ .../gpu/drm/ci/xfails/meson-g12b-fails.txt    |   5 -
+ .../gpu/drm/ci/xfails/meson-g12b-skips.txt    |   6 +
+ .../gpu/drm/ci/xfails/msm-apq8016-skips.txt   |   5 +
+ .../gpu/drm/ci/xfails/msm-apq8096-skips.txt   |   8 +-
+ .../msm-sc7180-trogdor-kingoftown-skips.txt   |   6 +
+ ...sm-sc7180-trogdor-lazor-limozeen-skips.txt |   6 +
+ .../gpu/drm/ci/xfails/msm-sdm845-skips.txt    |   6 +
+ .../gpu/drm/ci/xfails/panfrost-g12b-fails.txt |   1 +
+ .../gpu/drm/ci/xfails/panfrost-g12b-skips.txt |   8 +
+ .../drm/ci/xfails/panfrost-mt8183-fails.txt   |   1 +
+ .../drm/ci/xfails/panfrost-mt8183-skips.txt   |   8 +
+ .../drm/ci/xfails/panfrost-rk3288-fails.txt   |   1 +
+ .../drm/ci/xfails/panfrost-rk3288-skips.txt   |   8 +
+ .../drm/ci/xfails/panfrost-rk3399-fails.txt   |   1 +
+ .../drm/ci/xfails/panfrost-rk3399-skips.txt   |   8 +
+ .../drm/ci/xfails/rockchip-rk3288-fails.txt   |  50 +--
+ .../drm/ci/xfails/rockchip-rk3288-flakes.txt  |  21 ++
+ .../drm/ci/xfails/rockchip-rk3288-skips.txt   |  15 +-
+ .../drm/ci/xfails/rockchip-rk3399-fails.txt   |  38 +--
+ .../drm/ci/xfails/rockchip-rk3399-flakes.txt  |  28 +-
+ .../drm/ci/xfails/rockchip-rk3399-skips.txt   |  11 +
+ .../drm/ci/xfails/virtio_gpu-none-fails.txt   |   1 -
+ .../drm/ci/xfails/virtio_gpu-none-skips.txt   |   9 +-
+ drivers/gpu/drm/ci/xfails/vkms-none-fails.txt |  33 ++
+ .../gpu/drm/ci/xfails/vkms-none-flakes.txt    |  20 ++
+ drivers/gpu/drm/ci/xfails/vkms-none-skips.txt |  23 ++
+ 52 files changed, 890 insertions(+), 144 deletions(-)
+ create mode 100644 drivers/gpu/drm/ci/xfails/mediatek-mt8173-flakes.txt
+ create mode 100644 drivers/gpu/drm/ci/xfails/mediatek-mt8173-skips.txt
+ create mode 100644 drivers/gpu/drm/ci/xfails/mediatek-mt8183-flakes.txt
+ create mode 100644 drivers/gpu/drm/ci/xfails/mediatek-mt8183-skips.txt
+ create mode 100644 drivers/gpu/drm/ci/xfails/meson-g12b-skips.txt
+ create mode 100644 drivers/gpu/drm/ci/xfails/msm-apq8016-skips.txt
+ create mode 100644 drivers/gpu/drm/ci/xfails/panfrost-g12b-fails.txt
+ create mode 100644 drivers/gpu/drm/ci/xfails/panfrost-g12b-skips.txt
+ create mode 100644 drivers/gpu/drm/ci/xfails/panfrost-mt8183-fails.txt
+ create mode 100644 drivers/gpu/drm/ci/xfails/panfrost-mt8183-skips.txt
+ create mode 100644 drivers/gpu/drm/ci/xfails/panfrost-rk3288-fails.txt
+ create mode 100644 drivers/gpu/drm/ci/xfails/panfrost-rk3288-skips.txt
+ create mode 100644 drivers/gpu/drm/ci/xfails/panfrost-rk3399-fails.txt
+ create mode 100644 drivers/gpu/drm/ci/xfails/panfrost-rk3399-skips.txt
+ create mode 100644 drivers/gpu/drm/ci/xfails/rockchip-rk3288-flakes.txt
+ create mode 100644 drivers/gpu/drm/ci/xfails/vkms-none-fails.txt
+ create mode 100644 drivers/gpu/drm/ci/xfails/vkms-none-flakes.txt
+ create mode 100644 drivers/gpu/drm/ci/xfails/vkms-none-skips.txt
 
-       CPU0
-       ----
-  lock(&hsr->seqnr_lock);
-  lock(&hsr->seqnr_lock);
+-- 
+2.40.1
 
- *** DEADLOCK ***
-
- May be due to missing lock nesting notation
-
-7 locks held by ksoftirqd/1/23:
- #0: ffffc900001d7a40 ((&hsr->announce_timer)){+.-.}-{0:0}, at: call_timer_fn+0xc0/0x600 kernel/time/timer.c:1789
- #1: ffffffff8e132020 (rcu_read_lock){....}-{1:2}, at: rcu_lock_acquire include/linux/rcupdate.h:298 [inline]
- #1: ffffffff8e132020 (rcu_read_lock){....}-{1:2}, at: rcu_read_lock include/linux/rcupdate.h:750 [inline]
- #1: ffffffff8e132020 (rcu_read_lock){....}-{1:2}, at: hsr_announce+0xa3/0x370 net/hsr/hsr_device.c:387
- #2: ffff88802383ada0 (&hsr->seqnr_lock){+.-.}-{2:2}, at: spin_lock_bh include/linux/spinlock.h:356 [inline]
- #2: ffff88802383ada0 (&hsr->seqnr_lock){+.-.}-{2:2}, at: send_hsr_supervision_frame+0x276/0xad0 net/hsr/hsr_device.c:310
- #3: ffffffff8e132020 (rcu_read_lock){....}-{1:2}, at: rcu_lock_acquire include/linux/rcupdate.h:298 [inline]
- #3: ffffffff8e132020 (rcu_read_lock){....}-{1:2}, at: rcu_read_lock include/linux/rcupdate.h:750 [inline]
- #3: ffffffff8e132020 (rcu_read_lock){....}-{1:2}, at: hsr_forward_skb+0xae/0x2400 net/hsr/hsr_forward.c:614
- #4: ffffffff8e132080 (rcu_read_lock_bh){....}-{1:2}, at: local_bh_disable include/linux/bottom_half.h:20 [inline]
- #4: ffffffff8e132080 (rcu_read_lock_bh){....}-{1:2}, at: rcu_read_lock_bh include/linux/rcupdate.h:802 [inline]
- #4: ffffffff8e132080 (rcu_read_lock_bh){....}-{1:2}, at: __dev_queue_xmit+0x2c4/0x3b10 net/core/dev.c:4260
- #5: ffffffff8e132020 (rcu_read_lock){....}-{1:2}, at: rcu_lock_acquire include/linux/rcupdate.h:298 [inline]
- #5: ffffffff8e132020 (rcu_read_lock){....}-{1:2}, at: rcu_read_lock include/linux/rcupdate.h:750 [inline]
- #5: ffffffff8e132020 (rcu_read_lock){....}-{1:2}, at: br_dev_xmit+0x1b9/0x1a10 net/bridge/br_device.c:44
- #6: ffffffff8e132080 (rcu_read_lock_bh){....}-{1:2}, at: local_bh_disable include/linux/bottom_half.h:20 [inline]
- #6: ffffffff8e132080 (rcu_read_lock_bh){....}-{1:2}, at: rcu_read_lock_bh include/linux/rcupdate.h:802 [inline]
- #6: ffffffff8e132080 (rcu_read_lock_bh){....}-{1:2}, at: __dev_queue_xmit+0x2c4/0x3b10 net/core/dev.c:4260
-
-stack backtrace:
-CPU: 1 PID: 23 Comm: ksoftirqd/1 Not tainted 6.8.0-syzkaller-08073-g480e035fc4c7 #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 03/27/2024
-Call Trace:
- <TASK>
- __dump_stack lib/dump_stack.c:88 [inline]
- dump_stack_lvl+0x241/0x360 lib/dump_stack.c:114
- check_deadlock kernel/locking/lockdep.c:3062 [inline]
- validate_chain+0x15c1/0x58e0 kernel/locking/lockdep.c:3856
- __lock_acquire+0x1346/0x1fd0 kernel/locking/lockdep.c:5137
- lock_acquire+0x1e4/0x530 kernel/locking/lockdep.c:5754
- __raw_spin_lock_bh include/linux/spinlock_api_smp.h:126 [inline]
- _raw_spin_lock_bh+0x35/0x50 kernel/locking/spinlock.c:178
- spin_lock_bh include/linux/spinlock.h:356 [inline]
- hsr_dev_xmit+0x13e/0x1d0 net/hsr/hsr_device.c:229
- __netdev_start_xmit include/linux/netdevice.h:4903 [inline]
- netdev_start_xmit include/linux/netdevice.h:4917 [inline]
- xmit_one net/core/dev.c:3531 [inline]
- dev_hard_start_xmit+0x26a/0x790 net/core/dev.c:3547
- __dev_queue_xmit+0x19f4/0x3b10 net/core/dev.c:4335
- dev_queue_xmit include/linux/netdevice.h:3091 [inline]
- br_dev_queue_push_xmit+0x701/0x8d0 net/bridge/br_forward.c:53
- NF_HOOK+0x3a7/0x460 include/linux/netfilter.h:314
- br_forward_finish+0xe5/0x140 net/bridge/br_forward.c:66
- NF_HOOK+0x3a7/0x460 include/linux/netfilter.h:314
- __br_forward+0x489/0x660 net/bridge/br_forward.c:115
- deliver_clone net/bridge/br_forward.c:131 [inline]
- maybe_deliver+0xb3/0x150 net/bridge/br_forward.c:190
- br_flood+0x2e4/0x660 net/bridge/br_forward.c:236
- br_dev_xmit+0x118c/0x1a10
- __netdev_start_xmit include/linux/netdevice.h:4903 [inline]
- netdev_start_xmit include/linux/netdevice.h:4917 [inline]
- xmit_one net/core/dev.c:3531 [inline]
- dev_hard_start_xmit+0x26a/0x790 net/core/dev.c:3547
- __dev_queue_xmit+0x19f4/0x3b10 net/core/dev.c:4335
- dev_queue_xmit include/linux/netdevice.h:3091 [inline]
- hsr_xmit net/hsr/hsr_forward.c:380 [inline]
- hsr_forward_do net/hsr/hsr_forward.c:471 [inline]
- hsr_forward_skb+0x183f/0x2400 net/hsr/hsr_forward.c:619
- send_hsr_supervision_frame+0x548/0xad0 net/hsr/hsr_device.c:333
- hsr_announce+0x1a9/0x370 net/hsr/hsr_device.c:389
- call_timer_fn+0x17e/0x600 kernel/time/timer.c:1792
- expire_timers kernel/time/timer.c:1843 [inline]
- __run_timers kernel/time/timer.c:2408 [inline]
- __run_timer_base+0x66a/0x8e0 kernel/time/timer.c:2419
- run_timer_base kernel/time/timer.c:2428 [inline]
- run_timer_softirq+0xb7/0x170 kernel/time/timer.c:2438
- __do_softirq+0x2bc/0x943 kernel/softirq.c:554
- run_ksoftirqd+0xc5/0x130 kernel/softirq.c:924
- smpboot_thread_fn+0x544/0xa30 kernel/smpboot.c:164
- kthread+0x2f0/0x390 kernel/kthread.c:388
- ret_from_fork+0x4b/0x80 arch/x86/kernel/process.c:147
- ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:243
- </TASK>
-
-
----
-If you want syzbot to run the reproducer, reply with:
-#syz test: git://repo/address.git branch-or-commit-hash
-If you attach or paste a git patch, syzbot will apply it before testing.
 
