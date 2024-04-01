@@ -1,45 +1,45 @@
-Return-Path: <linux-kernel+bounces-127083-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-127084-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id D6024894683
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 23:24:23 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id A36C9894684
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 23:24:38 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8C5B52832A2
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 21:24:22 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2FF3B1F21E95
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 21:24:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 19D2956B6C;
-	Mon,  1 Apr 2024 21:23:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D67B257304;
+	Mon,  1 Apr 2024 21:23:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Za6EP7nx"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="YST/10ZF"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1C1E656473;
-	Mon,  1 Apr 2024 21:23:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EEC0F56B87;
+	Mon,  1 Apr 2024 21:23:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712006630; cv=none; b=KtVmXoa2zHVsOgI21or5eKdqtEVg+YKalH5qzsKVCy4UmYUE02sajloVKoRygkJCLWBEpRPEnc2R9pz51qut1NT/Sq7E/uqAZhRHHaMeiZ+Qnvj3lsfboBMorXd3ZveFVVolm+Ac41sb15hFigHdylwWPyyZ6K6RFW4PvYidjlw=
+	t=1712006633; cv=none; b=r9SFjT8BVQhF+PDIlVEJwRtSGQxiCqJ3v4aYpuxmfC5eudAwM5/WSC3DDnCVEBcBvpef88ChEAuLTX/klppIz/21PNxsG4CVcPTDUbpqomVCVdk0ymSY9cx41/Mlw5O7+uaaMQyMl3iTMPUORxX+VwRCbq9rEPSOnxdqald8u6s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712006630; c=relaxed/simple;
-	bh=NXcj/8dsRD58TFA744BRfD8DOeSkOsft9AfKZD+4sGo=;
+	s=arc-20240116; t=1712006633; c=relaxed/simple;
+	bh=t1ZeJrMETPQfNrlMHp4pMGLFYeT5RoqomHGFXhf2vQM=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=Q0z8RdRqNf4pKd5afWq951CpN8y9hBMBcCa4zS/15BYgNAKfA6RCFZEMp42GJzYAJX3ZWwFa3F2Olx4d9501lbnrBnmY37VnynFb+dy3My/oUzGc+C3auwPWaOiBLDOzSmJy5VCPP+NtglUEWOwveTwPj+5x8WoYPXpe+Zavkp4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Za6EP7nx; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BE5FDC433F1;
-	Mon,  1 Apr 2024 21:23:46 +0000 (UTC)
+	 MIME-Version; b=faBMwRKZ8pz2cC9XMQuDDIbYSXBJp0arfByHX0H/s4f1uSBdMgrP0CZBwFheqprwe+5CSagnK6wOsmn0sOyer4AoHbz3yI0Cj8R2diXhY6r4Wk2QrCO3YnG8qJrZajUEoJyHcKn0AJtuPtflAWXimjgWLSbl9jIbHgfDKVLr+7g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=YST/10ZF; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1EA65C43390;
+	Mon,  1 Apr 2024 21:23:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712006629;
-	bh=NXcj/8dsRD58TFA744BRfD8DOeSkOsft9AfKZD+4sGo=;
+	s=k20201202; t=1712006632;
+	bh=t1ZeJrMETPQfNrlMHp4pMGLFYeT5RoqomHGFXhf2vQM=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=Za6EP7nxi04r7XYkFQQF4dfJQtHJXxhtjDA9G+GyRZvRWEQ4BpICkA3fItqoQ1rcd
-	 n0W9Ojs2N19u4JGTMF0jvzawt2tiUgYm7ny5R17sP/0p13vOWOGkv5AfP6ZZ1GXGg2
-	 ew5QKjFW25YQdiBIhOO2esa+HS0/7xDLkm2b6QRSJEF6Tc4KMoyxL00cr5ed5wRnDQ
-	 c53GvkdhaU9b18K/jLf6H3f6/FTkpJXG0eBCPGyANnaYy5dGJSOMB0z/3o5RZ9ovEe
-	 RG+SVhEQb95/4BuSFvTx6c0LHdCtdNjVZefzJi5KYE8Z5vKhuIYQ6XcnKiiiek+Mo4
-	 0wRoHV15BniKg==
+	b=YST/10ZFa0qLdfZ4VroGx47csOwBXaHD5UdVQkUYR5VwTq2uBOX8pwAK6MFVbaPhs
+	 8cCdlkjqvzMmkAWskrJvBVp1c315YdF0c4FvFm2Gebvzje949yYdOgr1SRdMqDQf6x
+	 BinsXShsX31liDDuN4zvWw8hn7RGc0fCvkWvXLjiddkAS1WgZOAHLKmf7xswQEzzdJ
+	 xCLaE+lHpDVHtfk3P4Zmun7TLb5ZK7EmNC2eSUvpgKa0UJ78vyXPHwPCEcM091Wvql
+	 glqyS/YAYzQAtjEauwKdhPSxETICugeC66Q4WjcbDgisKeePPom4fvf4K/LNkv9t9r
+	 uar+FhQD0ZJ0g==
 From: Miguel Ojeda <ojeda@kernel.org>
 To: Miguel Ojeda <ojeda@kernel.org>,
 	Wedson Almeida Filho <wedsonaf@gmail.com>,
@@ -53,9 +53,9 @@ Cc: Boqun Feng <boqun.feng@gmail.com>,
 	rust-for-linux@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
 	patches@lists.linux.dev
-Subject: [PATCH 2/3] rust: kernel: remove redundant imports
-Date: Mon,  1 Apr 2024 23:23:02 +0200
-Message-ID: <20240401212303.537355-3-ojeda@kernel.org>
+Subject: [PATCH 3/3] rust: upgrade to Rust 1.78.0
+Date: Mon,  1 Apr 2024 23:23:03 +0200
+Message-ID: <20240401212303.537355-4-ojeda@kernel.org>
 In-Reply-To: <20240401212303.537355-1-ojeda@kernel.org>
 References: <20240401212303.537355-1-ojeda@kernel.org>
 Precedence: bulk
@@ -66,248 +66,148 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
+This is the next upgrade to the Rust toolchain, from 1.77.1 to 1.78.0
+(i.e. the latest) [1].
+
+See the upgrade policy [2] and the comments on the first upgrade in
+commit 3ed03f4da06e ("rust: upgrade to Rust 1.68.2").
+
+# Unstable features
+
+There have been no changes to the set of unstable features used in
+our own code. Therefore, the only unstable features allowed to be used
+outside the `kernel` crate is still `new_uninit`.
+
+However, since we are finally dropping our `alloc` fork [3], all the
+unstable features used by `alloc` (~30 language ones, ~60 library ones)
+are not a concern anymore. This reduces the maintenance burden, increases
+the chances of new compiler versions working without changes and gets
+us closer to the goal of supporting several compiler versions.
+
+It also means that, ignoring non-language/library features, we are
+currently left with just the few language features needed to implement the
+kernel `Arc`, the `new_uninit` library feature, the `compiler_builtins`
+marker and the few `no_*` `cfg`s we pass when compiling `core`/`alloc`.
+
+Please see [4] for details.
+
+# Required changes
+
+## LLVM's data layout
+
+Rust 1.77.0 (i.e. the previous upgrade) introduced a check for matching
+LLVM data layouts [5]. Then, Rust 1.78.0 upgraded LLVM's bundled major
+version from 17 to 18 [6], which changed the data layout in x86 [7]. Thus
+update the data layout in our custom target specification for x86 so
+that the compiler does not complain about the mismatch:
+
+    error: data-layout for target `target-5559158138856098584`,
+    `e-m:e-p270:32:32-p271:32:32-p272:64:64-i64:64-f80:128-n8:16:32:64-S128`,
+    differs from LLVM target's `x86_64-linux-gnu` default layout,
+    `e-m:e-p270:32:32-p271:32:32-p272:64:64-i64:64-i128:128-f80:128-n8:16:32:64-S128`
+
+In the future, the goal is to drop the custom target specifications.
+Meanwhile, if we want to support other LLVM versions used in `rustc`
+(e.g. for LTO), we will need to add some extra logic (e.g. conditional on
+LLVM's version, or extracting the data layout from an existing built-in
+target specification).
+
+## `unused_imports`
+
 Rust's `unused_imports` lint covers both unused and redundant imports.
-In the upcoming 1.78.0, the lint detects more cases of redundant imports
-[1], e.g.:
+Now, in 1.78.0, the lint detects more cases of redundant imports [8].
+Thus one of the previous patches cleaned them up.
 
-    error: the item `bindings` is imported redundantly
-      --> rust/kernel/print.rs:38:9
-       |
-    38 |     use crate::bindings;
-       |         ^^^^^^^^^^^^^^^ the item `bindings` is already defined by prelude
+## Clippy's `new_without_default`
 
-Most cases are `use crate::bindings`, plus a few other items like `Box`.
-Thus clean them up.
+Clippy now suggests to implement `Default` even when `new()` is `const`,
+since `Default::default()` may call `const` functions even if it is not
+`const` itself [9]. Thus one of the previous patches implemented it.
 
-Note that, in the `bindings` case, the message "defined by prelude"
-above means the extern prelude, i.e. the `--extern` flags we pass.
+# Other changes in Rust
 
-Link: https://github.com/rust-lang/rust/pull/117772 [1]
+Rust 1.78.0 introduced `feature(asm_goto)` [10] [11]. This feature was
+discussed in the past [12].
+
+Rust 1.78.0 introduced support for mutable pointers to Rust statics,
+including a test case for the Linux kernel's `VTABLE` use case [13].
+
+Rust 1.78.0 with debug assertions enabled (i.e. `-Cdebug-assertions=y`,
+kernel's `CONFIG_RUST_DEBUG_ASSERTIONS=y`) now always checks all unsafe
+preconditions, without a way to opt-out for particular cases [14].
+
+Rust 1.78.0 also improved a couple issues we reported when giving feedback
+for the new `--check-cfg` feature [15] [16].
+
+# `alloc` upgrade and reviewing
+
+As mentioned above, compiler upgrades will not update `alloc` anymore,
+since we are dropping our `alloc` fork [3].
+
+Link: https://github.com/rust-lang/rust/blob/stable/RELEASES.md#version-1780-2024-05-02 [1]
+Link: https://rust-for-linux.com/rust-version-policy [2]
+Link: https://lore.kernel.org/rust-for-linux/20240328013603.206764-1-wedsonaf@gmail.com/ [3]
+Link: https://github.com/Rust-for-Linux/linux/issues/2 [4]
+Link: https://github.com/rust-lang/rust/pull/120062 [5]
+Link: https://github.com/rust-lang/rust/pull/120055 [6]
+Link: https://reviews.llvm.org/D86310 [7]
+Link: https://github.com/rust-lang/rust/pull/117772 [8]
+Link: https://github.com/rust-lang/rust-clippy/pull/10903 [9]
+Link: https://github.com/rust-lang/rust/pull/119365 [10]
+Link: https://github.com/rust-lang/rust/issues/119364 [11]
+Link: https://lore.kernel.org/rust-for-linux/ZWipTZysC2YL7qsq@Boquns-Mac-mini.home/ [12]
+Link: https://github.com/rust-lang/rust/pull/120932 [13]
+Link: https://github.com/rust-lang/rust/issues/120969 [14]
+Link: https://github.com/rust-lang/rust/pull/121202 [15]
+Link: https://github.com/rust-lang/rust/pull/121237 [16]
 Signed-off-by: Miguel Ojeda <ojeda@kernel.org>
 ---
- rust/kernel/alloc.rs              | 1 -
- rust/kernel/alloc/allocator.rs    | 2 --
- rust/kernel/alloc/box_ext.rs      | 1 -
- rust/kernel/alloc/vec_ext.rs      | 1 -
- rust/kernel/error.rs              | 1 -
- rust/kernel/net/phy.rs            | 2 +-
- rust/kernel/print.rs              | 5 -----
- rust/kernel/str.rs                | 5 +----
- rust/kernel/sync/arc.rs           | 1 -
- rust/kernel/sync/condvar.rs       | 1 -
- rust/kernel/sync/lock.rs          | 2 +-
- rust/kernel/sync/lock/mutex.rs    | 2 --
- rust/kernel/sync/lock/spinlock.rs | 2 --
- rust/kernel/task.rs               | 2 +-
- rust/kernel/workqueue.rs          | 4 +---
- 15 files changed, 5 insertions(+), 27 deletions(-)
+Please note that Rust 1.78.0 will be released in a month (2024-05-02).
 
-diff --git a/rust/kernel/alloc.rs b/rust/kernel/alloc.rs
-index f1c2c4aa22d2..531b5e471cb1 100644
---- a/rust/kernel/alloc.rs
-+++ b/rust/kernel/alloc.rs
-@@ -46,7 +46,6 @@ fn not(self) -> Self::Output {
- /// These are meant to be used in functions that can allocate memory.
- pub mod flags {
-     use super::Flags;
--    use crate::bindings;
- 
-     /// Zeroes out the allocated memory.
-     ///
-diff --git a/rust/kernel/alloc/allocator.rs b/rust/kernel/alloc/allocator.rs
-index ff88bce04fd4..229642960cd1 100644
---- a/rust/kernel/alloc/allocator.rs
-+++ b/rust/kernel/alloc/allocator.rs
-@@ -6,8 +6,6 @@
- use core::alloc::{GlobalAlloc, Layout};
- use core::ptr;
- 
--use crate::bindings;
--
- struct KernelAllocator;
- 
- /// Calls `krealloc` with a proper size to alloc a new object aligned to `new_layout`'s alignment.
-diff --git a/rust/kernel/alloc/box_ext.rs b/rust/kernel/alloc/box_ext.rs
-index 3b48cfc70deb..2d7254219957 100644
---- a/rust/kernel/alloc/box_ext.rs
-+++ b/rust/kernel/alloc/box_ext.rs
-@@ -5,7 +5,6 @@
- use super::{AllocError, Flags};
- use alloc::boxed::Box;
- use core::mem::MaybeUninit;
--use core::result::Result;
- 
- /// Extensions to [`Box`].
- pub trait BoxExt<T>: Sized {
-diff --git a/rust/kernel/alloc/vec_ext.rs b/rust/kernel/alloc/vec_ext.rs
-index 6a916fcf8bf1..25025a36e250 100644
---- a/rust/kernel/alloc/vec_ext.rs
-+++ b/rust/kernel/alloc/vec_ext.rs
-@@ -4,7 +4,6 @@
- 
- use super::{AllocError, Flags};
- use alloc::vec::Vec;
--use core::result::Result;
- 
- /// Extensions to [`Vec`].
- pub trait VecExt<T>: Sized {
-diff --git a/rust/kernel/error.rs b/rust/kernel/error.rs
-index fc986bc24c6d..55280ae9fe40 100644
---- a/rust/kernel/error.rs
-+++ b/rust/kernel/error.rs
-@@ -8,7 +8,6 @@
- 
- use alloc::alloc::LayoutError;
- 
--use core::convert::From;
- use core::fmt;
- use core::num::TryFromIntError;
- use core::str::Utf8Error;
-diff --git a/rust/kernel/net/phy.rs b/rust/kernel/net/phy.rs
-index 96e09c6e8530..fba19165aa64 100644
---- a/rust/kernel/net/phy.rs
-+++ b/rust/kernel/net/phy.rs
-@@ -6,7 +6,7 @@
- //!
- //! C headers: [`include/linux/phy.h`](srctree/include/linux/phy.h).
- 
--use crate::{bindings, error::*, prelude::*, str::CStr, types::Opaque};
-+use crate::{error::*, prelude::*, types::Opaque};
- 
- use core::marker::PhantomData;
- 
-diff --git a/rust/kernel/print.rs b/rust/kernel/print.rs
-index 9b13aca832c2..a78aa3514a0a 100644
---- a/rust/kernel/print.rs
-+++ b/rust/kernel/print.rs
-@@ -13,9 +13,6 @@
- 
- use crate::str::RawFormatter;
- 
--#[cfg(CONFIG_PRINTK)]
--use crate::bindings;
--
- // Called from `vsprintf` with format specifier `%pA`.
- #[no_mangle]
- unsafe extern "C" fn rust_fmt_argument(
-@@ -35,8 +32,6 @@
- /// Public but hidden since it should only be used from public macros.
- #[doc(hidden)]
- pub mod format_strings {
--    use crate::bindings;
--
-     /// The length we copy from the `KERN_*` kernel prefixes.
-     const LENGTH_PREFIX: usize = 2;
- 
-diff --git a/rust/kernel/str.rs b/rust/kernel/str.rs
-index 27641c3e4df8..bb8d4f41475b 100644
---- a/rust/kernel/str.rs
-+++ b/rust/kernel/str.rs
-@@ -7,10 +7,7 @@
- use core::fmt::{self, Write};
- use core::ops::{self, Deref, DerefMut, Index};
- 
--use crate::{
--    bindings,
--    error::{code::*, Error},
--};
-+use crate::error::{code::*, Error};
- 
- /// Byte string without UTF-8 validity guarantee.
- #[repr(transparent)]
-diff --git a/rust/kernel/sync/arc.rs b/rust/kernel/sync/arc.rs
-index c2a3a2c7cbc5..b19645f93f16 100644
---- a/rust/kernel/sync/arc.rs
-+++ b/rust/kernel/sync/arc.rs
-@@ -17,7 +17,6 @@
- 
- use crate::{
-     alloc::{box_ext::BoxExt, AllocError, Flags},
--    bindings,
-     error::{self, Error},
-     init::{self, InPlaceInit, Init, PinInit},
-     try_init,
-diff --git a/rust/kernel/sync/condvar.rs b/rust/kernel/sync/condvar.rs
-index ef6ffef0aa88..2b306afbe56d 100644
---- a/rust/kernel/sync/condvar.rs
-+++ b/rust/kernel/sync/condvar.rs
-@@ -7,7 +7,6 @@
- 
- use super::{lock::Backend, lock::Guard, LockClassKey};
- use crate::{
--    bindings,
-     init::PinInit,
-     pin_init,
-     str::CStr,
-diff --git a/rust/kernel/sync/lock.rs b/rust/kernel/sync/lock.rs
-index 5b5c8efe427a..f6c34ca4d819 100644
---- a/rust/kernel/sync/lock.rs
-+++ b/rust/kernel/sync/lock.rs
-@@ -6,7 +6,7 @@
- //! spinlocks, raw spinlocks) to be provided with minimal effort.
- 
- use super::LockClassKey;
--use crate::{bindings, init::PinInit, pin_init, str::CStr, types::Opaque, types::ScopeGuard};
-+use crate::{init::PinInit, pin_init, str::CStr, types::Opaque, types::ScopeGuard};
- use core::{cell::UnsafeCell, marker::PhantomData, marker::PhantomPinned};
- use macros::pin_data;
- 
-diff --git a/rust/kernel/sync/lock/mutex.rs b/rust/kernel/sync/lock/mutex.rs
-index 93e1c982facf..30632070ee67 100644
---- a/rust/kernel/sync/lock/mutex.rs
-+++ b/rust/kernel/sync/lock/mutex.rs
-@@ -4,8 +4,6 @@
- //!
- //! This module allows Rust code to use the kernel's `struct mutex`.
- 
--use crate::bindings;
--
- /// Creates a [`Mutex`] initialiser with the given name and a newly-created lock class.
- ///
- /// It uses the name if one is given, otherwise it generates one based on the file name and line
-diff --git a/rust/kernel/sync/lock/spinlock.rs b/rust/kernel/sync/lock/spinlock.rs
-index 6e900807d3b7..ea5c5bc1ce12 100644
---- a/rust/kernel/sync/lock/spinlock.rs
-+++ b/rust/kernel/sync/lock/spinlock.rs
-@@ -4,8 +4,6 @@
- //!
- //! This module allows Rust code to use the kernel's `spinlock_t`.
- 
--use crate::bindings;
--
- /// Creates a [`SpinLock`] initialiser with the given name and a newly-created lock class.
- ///
- /// It uses the name if one is given, otherwise it generates one based on the file name and line
-diff --git a/rust/kernel/task.rs b/rust/kernel/task.rs
-index ca6e7e31d71c..55dff7e088bf 100644
---- a/rust/kernel/task.rs
-+++ b/rust/kernel/task.rs
-@@ -4,7 +4,7 @@
- //!
- //! C header: [`include/linux/sched.h`](srctree/include/linux/sched.h).
- 
--use crate::{bindings, types::Opaque};
-+use crate::types::Opaque;
- use core::{
-     ffi::{c_int, c_long, c_uint},
-     marker::PhantomData,
-diff --git a/rust/kernel/workqueue.rs b/rust/kernel/workqueue.rs
-index dfbf1080ccec..403801324172 100644
---- a/rust/kernel/workqueue.rs
-+++ b/rust/kernel/workqueue.rs
-@@ -133,10 +133,8 @@
- //! C header: [`include/linux/workqueue.h`](srctree/include/linux/workqueue.h)
- 
- use crate::alloc::{AllocError, Flags};
--use crate::{bindings, prelude::*, sync::Arc, sync::LockClassKey, types::Opaque};
--use alloc::boxed::Box;
-+use crate::{prelude::*, sync::Arc, sync::LockClassKey, types::Opaque};
- use core::marker::PhantomData;
--use core::pin::Pin;
- 
- /// Creates a [`Work`] initialiser with the given name and a newly-created lock class.
- #[macro_export]
--- 
+ Documentation/process/changes.rst | 2 +-
+ scripts/generate_rust_target.rs   | 2 +-
+ scripts/min-tool-version.sh       | 2 +-
+ 3 files changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/Documentation/process/changes.rst b/Documentation/process/changes.rst
+index b5d3107c6734..5d83958888e0 100644
+--- a/Documentation/process/changes.rst
++++ b/Documentation/process/changes.rst
+@@ -31,7 +31,7 @@ you probably needn't concern yourself with pcmciautils.
+ ====================== ===============  ========================================
+ GNU C                  5.1              gcc --version
+ Clang/LLVM (optional)  13.0.1           clang --version
+-Rust (optional)        1.77.1           rustc --version
++Rust (optional)        1.78.0           rustc --version
+ bindgen (optional)     0.65.1           bindgen --version
+ GNU make               3.82             make --version
+ bash                   4.2              bash --version
+diff --git a/scripts/generate_rust_target.rs b/scripts/generate_rust_target.rs
+index 54919cf48621..3fcbc3737b2e 100644
+--- a/scripts/generate_rust_target.rs
++++ b/scripts/generate_rust_target.rs
+@@ -154,7 +154,7 @@ fn main() {
+         ts.push("arch", "x86_64");
+         ts.push(
+             "data-layout",
+-            "e-m:e-p270:32:32-p271:32:32-p272:64:64-i64:64-f80:128-n8:16:32:64-S128",
++            "e-m:e-p270:32:32-p271:32:32-p272:64:64-i64:64-i128:128-f80:128-n8:16:32:64-S128",
+         );
+         let mut features = "-3dnow,-3dnowa,-mmx,+soft-float".to_string();
+         if cfg.has("MITIGATION_RETPOLINE") {
+diff --git a/scripts/min-tool-version.sh b/scripts/min-tool-version.sh
+index 6086e00e640e..91c91201212c 100755
+--- a/scripts/min-tool-version.sh
++++ b/scripts/min-tool-version.sh
+@@ -33,7 +33,7 @@ llvm)
+ 	fi
+ 	;;
+ rustc)
+-	echo 1.77.1
++	echo 1.78.0
+ 	;;
+ bindgen)
+ 	echo 0.65.1
+--
 2.44.0
-
 
