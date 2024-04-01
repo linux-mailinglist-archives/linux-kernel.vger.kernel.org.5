@@ -1,141 +1,119 @@
-Return-Path: <linux-kernel+bounces-127042-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-127043-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C185289461F
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 22:35:57 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 758AE894622
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 22:36:48 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 4A935B221C9
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 20:35:55 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 162651F23351
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 20:36:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1BAB758AB9;
-	Mon,  1 Apr 2024 20:33:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E328E5490C;
+	Mon,  1 Apr 2024 20:34:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="lJFdxoSl"
-Received: from mail-lf1-f46.google.com (mail-lf1-f46.google.com [209.85.167.46])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="YoPSAsag"
+Received: from mail-pj1-f45.google.com (mail-pj1-f45.google.com [209.85.216.45])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2C09856B8B
-	for <linux-kernel@vger.kernel.org>; Mon,  1 Apr 2024 20:33:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DE0CD5B05E;
+	Mon,  1 Apr 2024 20:34:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712003633; cv=none; b=O44zZ82L3Og9IPNP79C6VFo63vEi721mnKQC9JoOOXv6EVgWADFd4/hk4+qYrcdeck3SGcGUS5VHExtEF6N8pqNMlA/GTIvV75I83nGpqWYqJVtMPILLmXJpMLlXnAAh/IYQzFr3XId8RGX1/DRhe6JAZUBIumdydXvij74Ru64=
+	t=1712003663; cv=none; b=UFYfrC9TIpyPIfxa/F5+Xjaoho2mPr1df5Ex09txbP9w6jF5VbrBoz0aPNTM36Jk+qXtMJmy0RrWXJS4ZqOiffQV3j1uD0z+Od4DTP+a8mXfIBgwDfSrc1o1K8fBRPaRWJc+HIWzS0x/zSBVnOL5EPR0Xzomcs9UhrKV7z7RqlA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712003633; c=relaxed/simple;
-	bh=+m4KcknPtPtiYtZonTjzGx6OYYK5R2lRlFqksVKoy6E=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=AtZtGCwy9/mIxxyrdjP1kg37kTIbbKnp+v7AoJaQuPSb09elZcTdLB72uWDo431PqmdGUFZXUXASqOV2dh823rbYEmBVgMcDBKssfa0ZeTBEshHAF2qB9tlwARrb4mNqYplnHcbUgC6B9OoKI6ahUaFBDeeJfRKy2Z8lHY56bLA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=lJFdxoSl; arc=none smtp.client-ip=209.85.167.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-lf1-f46.google.com with SMTP id 2adb3069b0e04-513e10a4083so5026659e87.1
-        for <linux-kernel@vger.kernel.org>; Mon, 01 Apr 2024 13:33:50 -0700 (PDT)
+	s=arc-20240116; t=1712003663; c=relaxed/simple;
+	bh=IXvnhxI2pXQ52Hg1YEyiDW9h4z8TaCL/BxY7wfJZcS0=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=JIvePDtif0gkgWcQA+epRsXTVI2RJHL2sqfqGOvZ5kxmLTpmeHxhVJxyWnQTcbOJCdWD7MD2uUUGVmvnpuFhPcHrhVhAdIBPK6f4YUwf+r/gXMLOFyqcUMLXgfia/Ff8FSN1dAjY2gRf4KnXM4H+7SnmjQit8jHw6xnMceNQc6U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=YoPSAsag; arc=none smtp.client-ip=209.85.216.45
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pj1-f45.google.com with SMTP id 98e67ed59e1d1-2a2559fe607so8603a91.2;
+        Mon, 01 Apr 2024 13:34:21 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1712003629; x=1712608429; darn=vger.kernel.org;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=QA39XfS6kFKT4ejZVfv3YPVU/6vd+JV/fWoR8cy3Hug=;
-        b=lJFdxoSlm/M0aZoVMaULjVN3txSdpIH/3YcqThTKXHk9sUVS1uin2sD0+HbLJcBZEH
-         PLBQXPzZaQJ7JCWvsrJTlIErjfaOzxcPNEQDuHYleqQt0S3JdG7yMiGNDNU2mqCHrWxg
-         ptvnOxGH8ifGYsnnzL0yrssZdOyQbtHaDVc4wPsF02BGlPZR6dSjqmCC2++RtcXe00vv
-         g+l+45ZnBjdDT5kbv/NFGr1QHa3Um4OuRxNj0gtboyKnLFVjZ8fy4lRKHd0lPrFDWBVW
-         1/cX2EUIuLyuVCMQh0lPRljrF0Dt5VnwJLl/GupH4uyvLtJkx5sjyOlES32Z6Z/Ldn5i
-         aAUQ==
+        d=gmail.com; s=20230601; t=1712003661; x=1712608461; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=6FwFD4JYxhcIwnfKCG0w6eqnbQcVPaedMXbOYVzksxk=;
+        b=YoPSAsagXEVv+Jc7kP6MxShjqOdDqe+VO9aCpRwi/5RHGM80m26EEfM7HuiIpmeBjD
+         1WiMLuqg78XtnHcAgzZEAuU3oR83kdc7AQvSjRpL9Cud3Br/rKr7+Wb6H4UjnCXlS+Bx
+         VTlG+gkGeOPVzC43eQU0M8mp69rh/kA/2gcdO9m4B36IV18ACJ1Wn1OCqd+0M7g1GuKM
+         8PjTMBf0mo7pO7AtMeSWhq0ZEoamLpaSWMjzxtS8RJFggKonCQCwQpkCTKeCKZ2dwZ/o
+         8nNPIGO9s70d/zt+oyJYFJUh/rqwGvH1t09dS3Hd83ghpdr7ivyKi4+wHFHRjPRjLgRS
+         qHDQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712003629; x=1712608429;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=QA39XfS6kFKT4ejZVfv3YPVU/6vd+JV/fWoR8cy3Hug=;
-        b=cKIPPriPBfNP3q6V8nC+E6mJaGlzAIg5buP4mt+dQMyfdY4KqHhDFfQnHh7Bwpb5IR
-         e/nsxluZzyeKRbIuScbnTS+Bq28/QNYqWXUNF79vrDRJVF2MPQ2x0GK815CTkGsL14sV
-         tvfwhA3OUezLpnRFQ13zwNgeX6l4bbzhO8d7+MSjdRYU2DQhIDqTYWrvOm45CgxJOuW2
-         HP7YGKhNE4OUbXuUaDPUY5CnjY2efcevigpRpNLBGvJNQivDn0rDMv9veCw8160hH6iA
-         wI3DfVTBUoRi3KwrEwVjV/RHAl35gA2rjkzI7VwgEikEnp5I0tQRyInozEJlRtE97IoM
-         O5Fw==
-X-Forwarded-Encrypted: i=1; AJvYcCXlL9gfsUuUZQkUjy8yDk/Vy9LnMUmRPKP262o7DhWZUKAJUx0yNhirT5U1DAaHWpatOO/DgjWiNrjO1V62BmAHGLXxZJp/58gJKvGW
-X-Gm-Message-State: AOJu0YzUPQswwadu9rhKdqXhIRNOsK/KZcgl+POc3TUT4TOVZn5bWqO8
-	gKksGwiKKX/HsiuO2TUpGUOXt8yamzTFFn2n60h26BlCML9tcHq0I+XjLliiet4=
-X-Google-Smtp-Source: AGHT+IEX2xucaNOqEi45e6rA7xWiaBbHHqTl57NjxOHbuJYOV2LS1R05RrcHUWwFbQgnVwIACR9hfA==
-X-Received: by 2002:a05:6512:3e4:b0:515:ccd8:37c2 with SMTP id n4-20020a05651203e400b00515ccd837c2mr6005739lfq.44.1712003629119;
-        Mon, 01 Apr 2024 13:33:49 -0700 (PDT)
-Received: from umbar.lan ([192.130.178.91])
-        by smtp.gmail.com with ESMTPSA id j11-20020ac2550b000000b00515a6e4bdbdsm1478342lfk.250.2024.04.01.13.33.48
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 01 Apr 2024 13:33:48 -0700 (PDT)
-From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Date: Mon, 01 Apr 2024 23:33:48 +0300
-Subject: [PATCH v3 9/9] arm64: dts: qcom: sm8150-hdk: rename Type-C HS
- endpoints
+        d=1e100.net; s=20230601; t=1712003661; x=1712608461;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=6FwFD4JYxhcIwnfKCG0w6eqnbQcVPaedMXbOYVzksxk=;
+        b=iR7zHqFiiyzbBOlCJvPNzktlIJzpG4VySeFm04cjmmtP9UOuFq4XnRAsOoHaJp4h+J
+         jLnGhb1E2s8zKT6xxJ/W2yDbXzSoRapXCMT2t9YCrTAps7kaB8aiKLacbjlriGMvplXL
+         /0/JJXNKS4EJdhjVqoT7z/LprwTXuaIayOZR2JtLIv6LaJpWdtzQFS9WFu//yctJLcyN
+         couxiQQEnemXltNye4QBBq1GRFPuS4TixtcpOzSxPPJoM2ZRa4YMO/UzBOr4bj0E0e+7
+         Cx9CeQhfM9oGTihtW+uuES50wm6OEIV6uMWAjao8p/I4+MJYYP5mZAbUKl8cUNQG6XMC
+         r7bw==
+X-Forwarded-Encrypted: i=1; AJvYcCVijmAC6hI1rV/YvudFPTiltf5agSF79OSHNzv95cuwh9Aj6iQOxMTdtO1hOlOUQB/WIjAG0/MxOW9cWGRdbfLncycK3uSBquaqPJ8kULba3mzkxj743HSC7Utpdf5M2II3CGsL
+X-Gm-Message-State: AOJu0Yyi1azFuVEiK3zfRl5Ggk1c4b2pJGiIM9vNrNZPc8HQtE9XhVvk
+	VfNcytFS/6om6qKXPQjTy/3r3J1TeVzWrAxWx0qjeAgpC8909yGf
+X-Google-Smtp-Source: AGHT+IFTxaQptQJCitxa2lQjF/XzI2d/woGr+xEoVq2OhhXdQPW+leNIfgcvPM0k+RuUFB8jtLnLHw==
+X-Received: by 2002:a17:90a:5c86:b0:29f:67ad:7db0 with SMTP id r6-20020a17090a5c8600b0029f67ad7db0mr9768772pji.11.1712003660956;
+        Mon, 01 Apr 2024 13:34:20 -0700 (PDT)
+Received: from [10.67.48.245] ([192.19.223.252])
+        by smtp.googlemail.com with ESMTPSA id u1-20020a17090aae8100b0029b9954a02asm9598386pjq.0.2024.04.01.13.34.17
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 01 Apr 2024 13:34:20 -0700 (PDT)
+Message-ID: <4bea0061-09e7-42ef-84b1-735682c5f65d@gmail.com>
+Date: Mon, 1 Apr 2024 13:34:15 -0700
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 6.6 000/396] 6.6.24-rc1 review
+Content-Language: en-US
+To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, stable@vger.kernel.org
+Cc: patches@lists.linux.dev, linux-kernel@vger.kernel.org,
+ torvalds@linux-foundation.org, akpm@linux-foundation.org,
+ linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+ lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+ sudipm.mukherjee@gmail.com, srw@sladewatkins.net, rwarsow@gmx.de,
+ conor@kernel.org, allen.lkml@gmail.com, broonie@kernel.org
+References: <20240401152547.867452742@linuxfoundation.org>
+From: Florian Fainelli <f.fainelli@gmail.com>
+In-Reply-To: <20240401152547.867452742@linuxfoundation.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-Message-Id: <20240401-typec-fix-sm8250-v3-9-604dce3ad103@linaro.org>
-References: <20240401-typec-fix-sm8250-v3-0-604dce3ad103@linaro.org>
-In-Reply-To: <20240401-typec-fix-sm8250-v3-0-604dce3ad103@linaro.org>
-To: Bjorn Andersson <andersson@kernel.org>, 
- Konrad Dybcio <konrad.dybcio@linaro.org>, Rob Herring <robh@kernel.org>, 
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
- Conor Dooley <conor+dt@kernel.org>, 
- Bryan O'Donoghue <bryan.odonoghue@linaro.org>
-Cc: linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org, 
- linux-kernel@vger.kernel.org, Luca Weiss <luca.weiss@fairphone.com>, 
- Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-X-Mailer: b4 0.13.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=948;
- i=dmitry.baryshkov@linaro.org; h=from:subject:message-id;
- bh=+m4KcknPtPtiYtZonTjzGx6OYYK5R2lRlFqksVKoy6E=;
- b=owEBbQGS/pANAwAKAYs8ij4CKSjVAcsmYgBmCxomu5aU5NG+Z/64wI5iPLxDf2d2pJXxtC/9V
- Rx789XMZ+WJATMEAAEKAB0WIQRMcISVXLJjVvC4lX+LPIo+Aiko1QUCZgsaJgAKCRCLPIo+Aiko
- 1W9oB/4wBdn4/QHKK+hmLb6lInouPt5uF6PHRC0lKI3zIsxUg16wXXI51U/eaV/RNDk9pdHaLT2
- cOAt0rJnUmgWfnPWEay58qAIQvzAsCrrcWzaa1nxo1b6l77uZiPOS2Q2WjUe/Bodju8/nO/lOAK
- Bp4IJsH/hI5PJxhM3OrE/3Vb843jIurkukowYDFHkLW3optfQyWNSA4K6q0dTvOpwEGR1unUtQ9
- qkVDpDGcLTwEnhwmEKJqzYecFpVqA6h3i1bC+UQHJngXJkCEAN3y1yrbidup8fJybfWBIBRZaMw
- KoPnzwMlDq2mGU0o7eeJqeF2tCOieBcQVC0svm+3y/5XIszQ
-X-Developer-Key: i=dmitry.baryshkov@linaro.org; a=openpgp;
- fpr=8F88381DD5C873E4AE487DA5199BF1243632046A
 
-Follow other Qualcomm platforms and rename pm8150b_role_switch_in to
-pm8150_hs_in. Corresponding port is described as HS port rather than
-role switching.
+On 4/1/24 08:40, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 6.6.24 release.
+> There are 396 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+> 
+> Responses should be made by Wed, 03 Apr 2024 15:24:46 +0000.
+> Anything received after that time might be too late.
+> 
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patch-6.6.24-rc1.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-6.6.y
+> and the diffstat can be found below.
+> 
+> thanks,
+> 
+> greg k-h
 
-Signed-off-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
----
- arch/arm64/boot/dts/qcom/sm8150-hdk.dts | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+On ARCH_BRCMSTB using 32-bit and 64-bit ARM kernels, build tested on 
+BMIPS_GENERIC:
 
-diff --git a/arch/arm64/boot/dts/qcom/sm8150-hdk.dts b/arch/arm64/boot/dts/qcom/sm8150-hdk.dts
-index de670b407ef1..857ccc5de085 100644
---- a/arch/arm64/boot/dts/qcom/sm8150-hdk.dts
-+++ b/arch/arm64/boot/dts/qcom/sm8150-hdk.dts
-@@ -556,7 +556,7 @@ ports {
- 
- 			port@0 {
- 				reg = <0>;
--				pm8150b_role_switch_in: endpoint {
-+				pm8150b_hs_in: endpoint {
- 					remote-endpoint = <&usb_1_dwc3_hs>;
- 				};
- 			};
-@@ -703,7 +703,7 @@ &usb_1_dwc3 {
- };
- 
- &usb_1_dwc3_hs {
--	remote-endpoint = <&pm8150b_role_switch_in>;
-+	remote-endpoint = <&pm8150b_hs_in>;
- };
- 
- &usb_1_dwc3_ss {
-
+Tested-by: Florian Fainelli <florian.fainelli@broadcom.com>
 -- 
-2.39.2
+Florian
 
 
