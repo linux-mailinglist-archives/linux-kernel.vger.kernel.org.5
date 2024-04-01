@@ -1,147 +1,173 @@
-Return-Path: <linux-kernel+bounces-126574-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-126576-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E8F3E8939C3
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 11:48:26 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id AB99F8939C8
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 11:51:31 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3EBF1B21957
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 09:48:24 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 600A01F21EDD
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 09:51:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 192A512E72;
-	Mon,  1 Apr 2024 09:48:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 588B410A25;
+	Mon,  1 Apr 2024 09:51:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="IKkpukb8"
-Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="LPolHro1"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.12])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 905DE1095A;
-	Mon,  1 Apr 2024 09:48:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E3313101C5;
+	Mon,  1 Apr 2024 09:51:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.12
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711964889; cv=none; b=iMxA5RUze03NOGMcnJ8ey3HJAXlIoaLgkq1TDpE2oLgpzPzsDKZFmDIV8yoELl0JZF51VeMpx6OZ9S5yFPhw1SC6NncsC+OXqr4PQIgzbBj0QmfxL/gViIw+e1F+SJsPR86onPtH3gfvHqGqYe2hJOoIQ9gNc50YJpvsih3zuLM=
+	t=1711965084; cv=none; b=jvV1Fzv8pG3P5d0hTZP192ds7a1feN7GqKJE3JiOZ1t+Q94Z5QJ1Z/Iwecqfy6eNssDzROb5OfS4jRDR97xiAuzToMCdp7M3tm8LJIle8yeTCwAUgjTuJ1N38lO3Uk9kFf2+7n7lNvbhN6gdfNuEQECC7RGOdScWpHv8eBYQIyU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711964889; c=relaxed/simple;
-	bh=06wOk/U0MualMJ4bunj44L58B9nb+s9Iaqf0BY9Iihk=;
-	h=Message-ID:Date:MIME-Version:Cc:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=R0fbu7d0cnvSSeCj3pCBCiwTZkqtlB0XIWrn59lYf7ez8ee3gzmrVeKm1j3rIsioVzGqIXa3ofzsMpcbtw5Vexqdb8RoimQje0WX9K0wZ1LnLPsPeaMuX612eLaUce6H4YpULPJoreYQraGH9UGwICmVPk39VF6Ck1/EyuxJV0M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=IKkpukb8; arc=none smtp.client-ip=46.235.227.194
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-	s=mail; t=1711964885;
-	bh=06wOk/U0MualMJ4bunj44L58B9nb+s9Iaqf0BY9Iihk=;
-	h=Date:Cc:Subject:To:References:From:In-Reply-To:From;
-	b=IKkpukb884sj8Eg4Yw/1yM6F+jVI41WbIFR5wppl38DPIFzg7d+snPhJSh90a3YbB
-	 6UxRTezpSmT4wNQmWC70hAfP/JxH0Ch921mvOmRMG6ao7uQPIuZ7OsFD7KR2aH5N87
-	 tG0r+nrikfEXbQvrvlxX1XWEKAWH5gay7UPdFl6DDuIhYIr3WnRTZy/d4En7a/hkhB
-	 ryU3/OINHUKgVPtbeLhy24Ru35rCA0iPfjdVytimtX+uverHEJe3H4njiECn3UAPIe
-	 pNY86YqfqdyTKZh6NivIn+8POtsgH3Jxd+ULYNYtQQqgOUeGD7ZqZngxjW5K5IDaXk
-	 qoDfDq7BJ5Z5Q==
-Received: from [10.193.1.1] (broslavsky.collaboradmins.com [68.183.210.73])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	(Authenticated sender: usama.anjum)
-	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 8BFC2378148F;
-	Mon,  1 Apr 2024 09:47:23 +0000 (UTC)
-Message-ID: <ef72ae20-6b68-496a-a819-8818ade0d433@collabora.com>
-Date: Mon, 1 Apr 2024 14:46:13 +0500
+	s=arc-20240116; t=1711965084; c=relaxed/simple;
+	bh=dws3mIL2bvlkyMP7eYP2wFCJCVIJfmJmMM9Iw67z8U4=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=DX2/KbL+5cI1xLG5nXFXE9s19sEPez6DW79OZUDRbgaRnCEdKiTlsNtAhA7LyBhY8dsjOqQutL7nUd0CK8HR62YdvEQDRKAr8lKSP5ZpdKdsgdfpnmyNJx7eYOG75Z51gt3fYc53mBjpvXkkEWxYizcQVjeO6uEsExWt1+rwP20=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=LPolHro1; arc=none smtp.client-ip=198.175.65.12
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1711965083; x=1743501083;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:content-transfer-encoding:in-reply-to;
+  bh=dws3mIL2bvlkyMP7eYP2wFCJCVIJfmJmMM9Iw67z8U4=;
+  b=LPolHro1Xe9fG52mdLE7vJq8B5XsWkQuK9233p4PJxAYc4A3NeaaUBbh
+   Sn6d0cU5SUSQtBH36dh2pPVBrOEjkndrxgBW+nqR3Ve0CyU3Kt26ii6l1
+   YDwF0ZLFuau9RYWVzr4uf0cvCJVnIWYrLudbOTUN4CuoXaBHQUZJ80GLu
+   v4f82NW585y55RAFabBWzabvdtMU4G06zkHrKkWJWUFoB6KRLaPBAjyyt
+   O04bXDr85tdY+i+qRaXmh6y6s52LW7x3X1stq0UV4bZrOTcTyZd0nR23w
+   X5DaAMhZeFINCJTyejRyt+WqA+HwuraDBbQGqFlzyPjSkfwYQ2Ruthmit
+   g==;
+X-CSE-ConnectionGUID: MBxt0t4vQh2C2ObzNRgW4Q==
+X-CSE-MsgGUID: RVaEiLyYQOKZegxpSjds7Q==
+X-IronPort-AV: E=McAfee;i="6600,9927,11030"; a="18527608"
+X-IronPort-AV: E=Sophos;i="6.07,171,1708416000"; 
+   d="scan'208";a="18527608"
+Received: from fmviesa002.fm.intel.com ([10.60.135.142])
+  by orvoesa104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Apr 2024 02:51:22 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,171,1708416000"; 
+   d="scan'208";a="40829570"
+Received: from yilunxu-optiplex-7050.sh.intel.com (HELO localhost) ([10.239.159.165])
+  by fmviesa002.fm.intel.com with ESMTP; 01 Apr 2024 02:51:18 -0700
+Date: Mon, 1 Apr 2024 17:46:29 +0800
+From: Xu Yilun <yilun.xu@linux.intel.com>
+To: Peter Colberg <peter.colberg@intel.com>
+Cc: Moritz Fischer <mdf@kernel.org>, Wu Hao <hao.wu@intel.com>,
+	Xu Yilun <yilun.xu@intel.com>, Tom Rix <trix@redhat.com>,
+	Lee Jones <lee@kernel.org>, linux-fpga@vger.kernel.org,
+	linux-kernel@vger.kernel.org, Russ Weight <russ.weight@linux.dev>,
+	Marco Pagani <marpagan@redhat.com>,
+	Matthew Gerlach <matthew.gerlach@linux.intel.com>,
+	Ilpo =?utf-8?B?SsOkcnZpbmVu?= <ilpo.jarvinen@linux.intel.com>,
+	Russ Weight <russell.h.weight@intel.com>
+Subject: Re: [PATCH] mfd: intel-m10-bmc: Change staging size to a variable
+Message-ID: <ZgqCdfCSatazEkIj@yilunxu-OptiPlex-7050>
+References: <20240328233559.6949-1-peter.colberg@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Cc: Muhammad Usama Anjum <usama.anjum@collabora.com>,
- paul.walmsley@sifive.com, rick.p.edgecombe@intel.com, broonie@kernel.org,
- Szabolcs.Nagy@arm.com, kito.cheng@sifive.com, keescook@chromium.org,
- ajones@ventanamicro.com, conor.dooley@microchip.com, cleger@rivosinc.com,
- atishp@atishpatra.org, alex@ghiti.fr, bjorn@rivosinc.com,
- alexghiti@rivosinc.com, samuel.holland@sifive.com, palmer@sifive.com,
- conor@kernel.org, linux-doc@vger.kernel.org,
- linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
- devicetree@vger.kernel.org, linux-mm@kvack.org, linux-arch@vger.kernel.org,
- linux-kselftest@vger.kernel.org, corbet@lwn.net,
- tech-j-ext@lists.risc-v.org, palmer@dabbelt.com, aou@eecs.berkeley.edu,
- robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org, oleg@redhat.com,
- akpm@linux-foundation.org, arnd@arndb.de, ebiederm@xmission.com,
- Liam.Howlett@oracle.com, vbabka@suse.cz, lstoakes@gmail.com,
- shuah@kernel.org, brauner@kernel.org, andy.chiu@sifive.com,
- jerry.shih@sifive.com, hankuan.chen@sifive.com, greentime.hu@sifive.com,
- evan@rivosinc.com, xiao.w.wang@intel.com, charlie@rivosinc.com,
- apatel@ventanamicro.com, mchitale@ventanamicro.com,
- dbarboza@ventanamicro.com, sameo@rivosinc.com, shikemeng@huaweicloud.com,
- willy@infradead.org, vincent.chen@sifive.com, guoren@kernel.org,
- samitolvanen@google.com, songshuaishuai@tinylab.org, gerg@kernel.org,
- heiko@sntech.de, bhe@redhat.com, jeeheng.sia@starfivetech.com,
- cyy@cyyself.name, maskray@google.com, ancientmodern4@gmail.com,
- mathis.salmen@matsal.de, cuiyunhui@bytedance.com, bgray@linux.ibm.com,
- mpe@ellerman.id.au, baruch@tkos.co.il, alx@kernel.org, david@redhat.com,
- catalin.marinas@arm.com, revest@chromium.org, josh@joshtriplett.org,
- shr@devkernel.io, deller@gmx.de, omosnace@redhat.com, ojeda@kernel.org,
- jhubbard@nvidia.com
-Subject: Re: [PATCH v2 27/27] kselftest/riscv: kselftest for user mode cfi
-To: Deepak Gupta <debug@rivosinc.com>
-References: <20240329044459.3990638-1-debug@rivosinc.com>
- <20240329044459.3990638-28-debug@rivosinc.com>
- <4b38393a-f69d-4a77-a896-b6cd42c7edcf@collabora.com>
- <CAKC1njQ_RU=uHhrna=MFVdjAMjjQNqZWnkjPoJvO7CxtPMeNuQ@mail.gmail.com>
-Content-Language: en-US
-From: Muhammad Usama Anjum <usama.anjum@collabora.com>
-In-Reply-To: <CAKC1njQ_RU=uHhrna=MFVdjAMjjQNqZWnkjPoJvO7CxtPMeNuQ@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <20240328233559.6949-1-peter.colberg@intel.com>
 
-On 3/30/24 1:02 AM, Deepak Gupta wrote:
-> On Fri, Mar 29, 2024 at 12:50 PM Muhammad Usama Anjum
-> <usama.anjum@collabora.com> wrote:
->>
->> On 3/29/24 9:44 AM, Deepak Gupta wrote:
->>> Adds kselftest for RISC-V control flow integrity implementation for user
->>> mode. There is not a lot going on in kernel for enabling landing pad for
->>> user mode. Thus kselftest simply enables landing pad for the binary and
->>> a signal handler is registered for SIGSEGV. Any control flow violation are
->>> reported as SIGSEGV with si_code = SEGV_CPERR. Test will fail on recieving
->>> any SEGV_CPERR. Shadow stack part has more changes in kernel and thus there
->>> are separate tests for that
->>>       - enable and disable
->>>       - Exercise `map_shadow_stack` syscall
->>>       - `fork` test to make sure COW works for shadow stack pages
->>>       - gup tests
->>>         As of today kernel uses FOLL_FORCE when access happens to memory via
->>>         /proc/<pid>/mem. Not breaking that for shadow stack
->>>       - signal test. Make sure signal delivery results in token creation on
->>>       shadow stack and consumes (and verifies) token on sigreturn
->>>     - shadow stack protection test. attempts to write using regular store
->>>         instruction on shadow stack memory must result in access faults
->>>
->>> Signed-off-by: Deepak Gupta <debug@rivosinc.com>
->>> ---
->>>  tools/testing/selftests/riscv/Makefile        |   2 +-
->>>  tools/testing/selftests/riscv/cfi/Makefile    |  10 +
->>>  .../testing/selftests/riscv/cfi/cfi_rv_test.h |  85 ++++
->>>  .../selftests/riscv/cfi/riscv_cfi_test.c      |  91 +++++
->>>  .../testing/selftests/riscv/cfi/shadowstack.c | 376 ++++++++++++++++++
->>>  .../testing/selftests/riscv/cfi/shadowstack.h |  39 ++
->> Please add generated binaries in the .gitignore files.
+On Thu, Mar 28, 2024 at 07:35:59PM -0400, Peter Colberg wrote:
+> From: Ilpo Järvinen <ilpo.jarvinen@linux.intel.com>
 > 
-> hmm...
-> I don't see binary as part of the patch. Which file are you referring
-> to here being binary?
-shadowstack would be generated by the build. Create a .gitignore file and
-add it there. For example, look at
-tools/testing/selftests/riscv/vector/.gitignore to understand.
+> The size of the staging area in FLASH for FPGA updates is dependent on the
+> size of the FPGA. Currently, the staging size is defined as a constant.
+> Larger FPGAs are coming soon and it will soon be necessary to support
 
+Soon? When? You cannot add some feature without a user case. If you do
+have a use case, put the patch in the same patchset.
 
+Thanks,
+Yilun
+
+> different sizes for the staging area. Add a new staging_size member to the
+> csr_map structure to support a variable staging size.
 > 
->>
+> The secure update driver does a sanity-check of the image size in
+> comparison to the size of the staging area in FLASH. Change the
+> staging size reference to a variable instead of a constant in order
+> to more readily support future, larger FPGAs.
 > 
-
--- 
-BR,
-Muhammad Usama Anjum
+> Co-developed-by: Russ Weight <russell.h.weight@intel.com>
+> Signed-off-by: Russ Weight <russell.h.weight@intel.com>
+> Signed-off-by: Ilpo Järvinen <ilpo.jarvinen@linux.intel.com>
+> Signed-off-by: Peter Colberg <peter.colberg@intel.com>
+> ---
+>  drivers/fpga/intel-m10-bmc-sec-update.c | 3 ++-
+>  drivers/mfd/intel-m10-bmc-pmci.c        | 1 +
+>  drivers/mfd/intel-m10-bmc-spi.c         | 1 +
+>  include/linux/mfd/intel-m10-bmc.h       | 1 +
+>  4 files changed, 5 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/fpga/intel-m10-bmc-sec-update.c b/drivers/fpga/intel-m10-bmc-sec-update.c
+> index 89851b133709..7ac9f9f5af12 100644
+> --- a/drivers/fpga/intel-m10-bmc-sec-update.c
+> +++ b/drivers/fpga/intel-m10-bmc-sec-update.c
+> @@ -529,11 +529,12 @@ static enum fw_upload_err m10bmc_sec_prepare(struct fw_upload *fwl,
+>  					     const u8 *data, u32 size)
+>  {
+>  	struct m10bmc_sec *sec = fwl->dd_handle;
+> +	const struct m10bmc_csr_map *csr_map = sec->m10bmc->info->csr_map;
+>  	u32 ret;
+>  
+>  	sec->cancel_request = false;
+>  
+> -	if (!size || size > M10BMC_STAGING_SIZE)
+> +	if (!size || size > csr_map->staging_size)
+>  		return FW_UPLOAD_ERR_INVALID_SIZE;
+>  
+>  	if (sec->m10bmc->flash_bulk_ops)
+> diff --git a/drivers/mfd/intel-m10-bmc-pmci.c b/drivers/mfd/intel-m10-bmc-pmci.c
+> index 0392ef8b57d8..698c5933938b 100644
+> --- a/drivers/mfd/intel-m10-bmc-pmci.c
+> +++ b/drivers/mfd/intel-m10-bmc-pmci.c
+> @@ -370,6 +370,7 @@ static const struct m10bmc_csr_map m10bmc_n6000_csr_map = {
+>  	.pr_reh_addr = M10BMC_N6000_PR_REH_ADDR,
+>  	.pr_magic = M10BMC_N6000_PR_PROG_MAGIC,
+>  	.rsu_update_counter = M10BMC_N6000_STAGING_FLASH_COUNT,
+> +	.staging_size = M10BMC_STAGING_SIZE,
+>  };
+>  
+>  static const struct intel_m10bmc_platform_info m10bmc_pmci_n6000 = {
+> diff --git a/drivers/mfd/intel-m10-bmc-spi.c b/drivers/mfd/intel-m10-bmc-spi.c
+> index cbeb7de9e041..d64d28199df6 100644
+> --- a/drivers/mfd/intel-m10-bmc-spi.c
+> +++ b/drivers/mfd/intel-m10-bmc-spi.c
+> @@ -109,6 +109,7 @@ static const struct m10bmc_csr_map m10bmc_n3000_csr_map = {
+>  	.pr_reh_addr = M10BMC_N3000_PR_REH_ADDR,
+>  	.pr_magic = M10BMC_N3000_PR_PROG_MAGIC,
+>  	.rsu_update_counter = M10BMC_N3000_STAGING_FLASH_COUNT,
+> +	.staging_size = M10BMC_STAGING_SIZE,
+>  };
+>  
+>  static struct mfd_cell m10bmc_d5005_subdevs[] = {
+> diff --git a/include/linux/mfd/intel-m10-bmc.h b/include/linux/mfd/intel-m10-bmc.h
+> index ee66c9751003..988f1cd90032 100644
+> --- a/include/linux/mfd/intel-m10-bmc.h
+> +++ b/include/linux/mfd/intel-m10-bmc.h
+> @@ -205,6 +205,7 @@ struct m10bmc_csr_map {
+>  	unsigned int pr_reh_addr;
+>  	unsigned int pr_magic;
+>  	unsigned int rsu_update_counter;
+> +	unsigned int staging_size;
+>  };
+>  
+>  /**
+> -- 
+> 2.44.0
+> 
+> 
 
