@@ -1,128 +1,124 @@
-Return-Path: <linux-kernel+bounces-127051-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-127052-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8A027894635
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 22:46:40 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id C87AB894639
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 22:46:55 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1A526B22096
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 20:46:38 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 623B01F222A5
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Apr 2024 20:46:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6B2D454BF4;
-	Mon,  1 Apr 2024 20:46:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B0B0953E3C;
+	Mon,  1 Apr 2024 20:46:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="RCwzi3Fp";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="htMHsfgK"
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="LZcqKfV8"
+Received: from mail-pl1-f171.google.com (mail-pl1-f171.google.com [209.85.214.171])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B34D82A1BF;
-	Mon,  1 Apr 2024 20:46:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8601917552;
+	Mon,  1 Apr 2024 20:46:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712004375; cv=none; b=Kggal1wUxbY1ARHwGMnHDM+G4mwyrNAoJbwyGo+9SUZqAm7AwOn0E8w56px3vOjETdpOlR7tMTiraB4HM5K2iIk1goklU+/xHcSzTQiXGHRpHFNHQq2v3mm+dn9PIIwSQQPWCoiFD9x+Mv0Yzo1zw7qsSrpNQiCwi0h58G7xsBE=
+	t=1712004397; cv=none; b=YiRVyukWuv7YmLoongtUi3RiY2wT4a6A9BWMHCHfOmh11LNQVLhiE5YREDg1UwSS5uUVgGyzIvLz5/2jCacKYFld7GfN2ZxzJaVHu587kHa1Y/qEQH42t0sIscT4Y44hxZHWp+OdBrh+CxyXxam5cRP58GjvlKYu+kVkaWzMZxM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712004375; c=relaxed/simple;
-	bh=avBOhuX3GmEDNDJJHrH0PwxhZKKnjnL1k92PCok0jh8=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=PKdPAm+Xha/Q1GJwfpWSfUiI407OFrfadMttXbnMojoMDxoCzqk+XTHpN8JpH0L9126slhm3sDgsHtD3tPxi57eUUox6FXc/At2CM1dCP7pIYwSuLQt89JDUeu/UNx4a5WW+r9EOTeibMYjtWitFRCo4SQ8TBwpqN6tnc4hzZTQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=RCwzi3Fp; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=htMHsfgK; arc=none smtp.client-ip=193.142.43.55
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
-From: Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1712004371;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=0ouXpnTwZTCYF7FT9pTFvv/0pB2wPIrYopkk2qk0W9U=;
-	b=RCwzi3FpOeLoPGiVcadqq9WkweHj4Kme43Ekqpeump0ROFpO4wCAD3pVhNtr2lGFwDWL1X
-	ahgFiPHRpc6B1V1YLkXhRglCxiPuKIQmvDrNvGCBfz4reUT9t7Ht39Sw9nQyrdH6cZxyl9
-	PS/7L6XoXGOI2HWFApOn/xEC6ypw2A225gntr/fi/huCMbmHcbLwW+LSfKqUm4q8YBJ1UU
-	ddK/rrKTUBDBQzYHNRi9W9ril/RsC9LLFTudBj1F3pQx3DiOxaLLCpn+UMiJOFMqdzOsCQ
-	7dizB8BjzoobnGaJkmELjIgzg3iF5zINH0eJO9Bpp7pM1zAc8kyI+ttpVfpooQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1712004371;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=0ouXpnTwZTCYF7FT9pTFvv/0pB2wPIrYopkk2qk0W9U=;
-	b=htMHsfgKPbXrF8jOpfKKqJnUt3ExzvQDh8OLvonbPrTdII1wItINA3qb4hXrfoOr1zORyc
-	W8h5oalSM7FNJjCA==
-To: Sagi Maimon <maimon.sagi@gmail.com>
-Cc: richardcochran@gmail.com, luto@kernel.org, mingo@redhat.com,
- bp@alien8.de, dave.hansen@linux.intel.com, x86@kernel.org, hpa@zytor.com,
- arnd@arndb.de, geert@linux-m68k.org, peterz@infradead.org,
- hannes@cmpxchg.org, sohil.mehta@intel.com, rick.p.edgecombe@intel.com,
- nphamcs@gmail.com, palmer@sifive.com, keescook@chromium.org,
- legion@kernel.org, mark.rutland@arm.com, mszeredi@redhat.com,
- casey@schaufler-ca.com, reibax@gmail.com, davem@davemloft.net,
- brauner@kernel.org, linux-kernel@vger.kernel.org,
- linux-api@vger.kernel.org, linux-arch@vger.kernel.org,
- netdev@vger.kernel.org
-Subject: Re: [PATCH v7] posix-timers: add clock_compare system call
-In-Reply-To: <CAMuE1bF9ioo39_08Eh26X4WOtnvJ1geJ=WRVt5DhU8gEbYJNdA@mail.gmail.com>
-References: <CAMuE1bHBky9NGP22PVHKdi2+WniwxiLSmMnwRM6wm36sU8W4jA@mail.gmail.com>
- <878r29hjds.ffs@tglx>
- <CAMuE1bF9ioo39_08Eh26X4WOtnvJ1geJ=WRVt5DhU8gEbYJNdA@mail.gmail.com>
-Date: Mon, 01 Apr 2024 22:46:10 +0200
-Message-ID: <87o7asdd65.ffs@tglx>
+	s=arc-20240116; t=1712004397; c=relaxed/simple;
+	bh=1eh4EosVIJe/RGgbyngmwAmaNn7FpgVczuCce1/V6dE=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=jmU5EJBCGxsMk007NhRGK/77LXFUKkEwXWnsi/ZZ4GRb8apW5bnW973oVq2FsBLNRNt85RYmBj4RUc8aDc+PuBnmwHhs9bE2efPnbpCVbFFRuXNIePDDqPaV2KFQANCGS207M/ImOkodjp1xNpO2pk+sp6v68MYWUQpB0TUw17A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=LZcqKfV8; arc=none smtp.client-ip=209.85.214.171
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f171.google.com with SMTP id d9443c01a7336-1e223025ccbso17430875ad.3;
+        Mon, 01 Apr 2024 13:46:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1712004395; x=1712609195; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=4vmwsO/t4KNvnDmSvXyJNoMNNVTQa5mB2jFuIsMRTOg=;
+        b=LZcqKfV8sJbxJJrIcuXGJH3w9WULH74apoFDYOsvy1oW+pW20NEMgzsRzn9krdWwEr
+         MrOaZ5u4Qf3JXBFGKtPBUCOnxBzOAxJhP7pDi8P3CJ8uRMRAPLZKcqZyiR7ALmnYhgtF
+         oZFf0/u3RkSPIZ0zA1akiTU602+0wvwPXH54J2D08OQB7T+om9bl9nAWtEw1SCEF5IzZ
+         Bcx2qZ5da7LMYmH+FHBHd+XYSLYsXmxW0K9d7j8RwCq32fihkbXtSUWeQQCIFcz4dXnh
+         aInECzIeyO/pshwItvppcjQRKpCNxladGgrBKGd7MUvb1c6UlAD17ihQzEYBWxp4HVr5
+         xTsg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712004395; x=1712609195;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=4vmwsO/t4KNvnDmSvXyJNoMNNVTQa5mB2jFuIsMRTOg=;
+        b=QKsH3+SlnLMrQt+P9ZF6/Nao5gdxOYRNu3ks+r71x6BHadHns3vVK0kAg0WsWHiGjK
+         Wm0wyMXQisxRmZab5cdTJAwG7FrfNxopNwrauW6xONFsJzBz/s/4JUo4j3nxZaXWUyCs
+         Y+Q/Se+vDHJ7ui6+hvLmkjHWsNnMs0E6bZE5SGJbG9YBd8uASELwFULsWLG0q3ibxuBC
+         /lJZuEsxYcqMPuCftDdC5Di7VV0iINvrOr6E6cAD0P8aa2OqbSnCKEU6R2HhWGAMZQ22
+         PGx32CBdq082HBLOtz+ZVDNhKsBda9WrinDg5IYC9U0mCagWxVYqS8M0Ik7O3Q/aTEzy
+         FgaQ==
+X-Forwarded-Encrypted: i=1; AJvYcCU/BQjrUPJNAkfHy2bsZZ2dLkXZJhxZ+niYcVCo33MAlyfX64uVe3rmHbe3NKUd5fINA4tICg7DZQjLVUHQZXjDabiZX9hyM0hV9cPuywV8WxK4RHcCcx2RWNM9MaL3D/pyboyg
+X-Gm-Message-State: AOJu0Yz85+VcJNqSb/oegCtpVCMDgdHS3jF+2zmqckuwbKzn6ZuyXSKE
+	5/rj+lhvlEtyc6BNQndp84QVX8PyMPPDnG0N0q0m7TlwGlbdkwvh
+X-Google-Smtp-Source: AGHT+IHXp/WGncQL5m+2scozSheJ2HjLV5OTyDk7ex5hN+Yk3jgndPR6FmSAQ/+tMINfp/heU8X8gQ==
+X-Received: by 2002:a17:902:c407:b0:1e0:7f78:624d with SMTP id k7-20020a170902c40700b001e07f78624dmr10073853plk.57.1712004394743;
+        Mon, 01 Apr 2024 13:46:34 -0700 (PDT)
+Received: from [10.67.48.245] ([192.19.223.252])
+        by smtp.googlemail.com with ESMTPSA id kh12-20020a170903064c00b001e2194ab34bsm9234135plb.245.2024.04.01.13.46.31
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 01 Apr 2024 13:46:34 -0700 (PDT)
+Message-ID: <022b4411-2ebd-4f8b-adc7-0ae81a665181@gmail.com>
+Date: Mon, 1 Apr 2024 13:46:29 -0700
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 6.7 000/432] 6.7.12-rc1 review
+Content-Language: en-US
+To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, stable@vger.kernel.org
+Cc: patches@lists.linux.dev, linux-kernel@vger.kernel.org,
+ torvalds@linux-foundation.org, akpm@linux-foundation.org,
+ linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+ lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+ sudipm.mukherjee@gmail.com, srw@sladewatkins.net, rwarsow@gmx.de,
+ conor@kernel.org, allen.lkml@gmail.com, broonie@kernel.org
+References: <20240401152553.125349965@linuxfoundation.org>
+From: Florian Fainelli <f.fainelli@gmail.com>
+In-Reply-To: <20240401152553.125349965@linuxfoundation.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-Sagi!
+On 4/1/24 08:39, Greg Kroah-Hartman wrote:
+> Note, this will be the LAST 6.7.y kernel release.  After this one it
+> will be end-of-life.  Please move to 6.8.y now.
+> 
+> ------------------------------------------
+> 
+> This is the start of the stable review cycle for the 6.7.12 release.
+> There are 432 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+> 
+> Responses should be made by Wed, 03 Apr 2024 15:24:46 +0000.
+> Anything received after that time might be too late.
+> 
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patch-6.7.12-rc1.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-6.7.y
+> and the diffstat can be found below.
+> 
+> thanks,
+> 
+> greg k-h
 
-On Thu, Mar 28 2024 at 17:40, Sagi Maimon wrote:
-> On Sat, Mar 23, 2024 at 2:38=E2=80=AFAM Thomas Gleixner <tglx@linutronix.=
-de> wrote:
->> On top this needs an analyis whether any of the gettimex64()
->> implementations does something special instead of invoking the
->> ptp_read_system_prets() and ptp_read_system_postts() helpers as close as
->> possible to the PCH readout, but that's not rocket science either. It's
->> just 21 callbacks to look at.
->>
-> I like your suggestion, thanks!
-> it is what our user space needs from the kernel and with minimum kernel c=
-hanges.
-> I will write it, test it and upload it with your permission (it is you
-> idea after all).
+On ARCH_BRCMSTB using 32-bit and 64-bit ARM kernels, build tested on 
+BMIPS_GENERIC:
 
-You don't need permission. I made a suggestion and when you are doing the
-work I'm not in a position to veto posting it. We have an explicit tag
-for that 'Suggested-by:', which only says that someone suggested it to
-you, but then you went and implemented it, made sure it works etc.
-
->> It might also require a new set of variant '3' IOTCLS to make that flag
->> field work, but that's not going to make the change more complex and
->> it's an exercise left to the experts of that IOCTL interface.
->>
-> I think that I understand your meaning.
-> There is a backward compatibility problem here.
->
-> Existing user space application using PTP_SYS_OFFSET_EXTENDED ioctl
-> won't have any problems because of the "extoff->rsv[0] ||
-> extoff->rsv[1] || extoff->rsv[2]" test, but what about all old user
-> space applications using: PTP_SYS_OFFSET ?
-
-So if there is a backwards compability issue with PTP_SYS_OFFSET2, then
-you need to introduce PTP_SYS_OFFSET3. The PTP_SYS_*2 variants were
-introduced to avoid backwards compatibility issues as well, but
-unfortunately that did not address the reserved fields problem for
-PTP_SYS_OFFSET2. PTP_SYS_OFFSET_EXTENDED2 should just work, but maybe
-the PTP maintainers want a full extension to '3'. Either way is fine.
-
-Thanks,
-
-        tglx
+Tested-by: Florian Fainelli <florian.fainelli@broadcom.com>
+-- 
+Florian
 
 
