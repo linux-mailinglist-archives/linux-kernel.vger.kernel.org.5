@@ -1,108 +1,110 @@
-Return-Path: <linux-kernel+bounces-128389-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-128390-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 53755895A2B
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 18:52:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 05130895A33
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 18:53:18 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E5D481F2132B
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 16:52:49 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 994DA1F21870
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 16:53:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B640C159908;
-	Tue,  2 Apr 2024 16:47:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B03FF15AD80;
+	Tue,  2 Apr 2024 16:48:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="czbIuNM1"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="uYxqqwpn"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ECD1417BD4
-	for <linux-kernel@vger.kernel.org>; Tue,  2 Apr 2024 16:47:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E3AB6159916;
+	Tue,  2 Apr 2024 16:48:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712076458; cv=none; b=Bg/NhEqSXBfv2P34lN9+DKtscSxw+33kOmnxi4YvXxs8MS9CGsRvcbcsmVAKIIBWS/XarO6Nt/ZSNkbZGgALOGEh0+M2QIqLHU/nTbr8BefuhuAbc1yNZiW83ShruC+/PBvsIJW+ogrGVpCyJnsR5G6/M9bA4J+Mxrr2SCG30iU=
+	t=1712076484; cv=none; b=Px7anMySimUwvqM87POAtho6dEp3EaBWitYnZ5DlLhNHP6IByrKFozILesA5fuoZQdKxPHc/nNEW2tkf3EZc5Tx9rwiUne7/vaR4ODFRKQrpc9RMVl2mQcP5QvE5szkNrv3LrNXFuTAVmAm15555z25uItop/Rg/92v3AEEy0f4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712076458; c=relaxed/simple;
-	bh=hJ1GDaXq7VRG2pC36rEu0KysPFDAaxQq4vfTZyVpcMQ=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=OokjrkcXD74v7aj1Jsd8D7cuK6XZ91/zKqfvH166n/RXA02yooFmn+tK8p6tvqKslJerM54PqNQPgi7bGXTFcLCvc7pVWItF09AR8a8fLoq7vUs1ri8/M8X3zR7EquRWLwnYAEw4HsIjYwuDgojsB+TIi/hQ/3kFxEiXv81Pphw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=czbIuNM1; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 76DACC433C7;
-	Tue,  2 Apr 2024 16:47:37 +0000 (UTC)
+	s=arc-20240116; t=1712076484; c=relaxed/simple;
+	bh=qc/zRn44QBe4hWpr219p01FEpH9uDc+aUrPnpDuiaq4=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=OO+OePXnx4i5MaQBtvtorG3G/jHNtYMEfKQEBaH9RxUh9v1edtHYAyGbknNZuIKA/JGjJ9j1F9Drz6Ii+J3LJE/Q2chLI+kwuu1oagapgqrCywLU2Y2+iPK0sOk/W4B+s9MfXNXPdC8TYqyDHhl8wR6hc9Q0bfggxrEZypQ6Mec=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=uYxqqwpn; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 26E90C433C7;
+	Tue,  2 Apr 2024 16:48:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712076457;
-	bh=hJ1GDaXq7VRG2pC36rEu0KysPFDAaxQq4vfTZyVpcMQ=;
-	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-	b=czbIuNM1WuqAuvWgwuzeL9WkK0zLRECs8PqcNzU4PumCnYJsXmlfQaKBxgueGgNEF
-	 RKyT40/15wU5vF/0o6Tp/HZDdk1ibxufWmhR6gH34xbJgrnUcjDOGqEFa/d8hDRTyz
-	 KITaIr6fEOO64LBos+DaVgNdHSnhLGih7g7cJxyCw6Z0tYolDnjDMvPr5A4+dQOWWT
-	 BS1IqPLL5+UBUMDS0IjSsD++JMvW12kSBhnYmX03gr204zzRy/OLrl7SA6nNO7khW8
-	 3BhkB3gsnDNrWGBEw89DeVFyHZiHxThkbqQiKqxiie+x8reIMV3PIdsUYfvMhBK7WT
-	 617hItteoif2A==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id 0C31DCE0FF2; Tue,  2 Apr 2024 09:47:37 -0700 (PDT)
-Date: Tue, 2 Apr 2024 09:47:37 -0700
-From: "Paul E. McKenney" <paulmck@kernel.org>
-To: Frederic Weisbecker <frederic@kernel.org>
-Cc: Thomas Gleixner <tglx@linutronix.de>,
-	LKML <linux-kernel@vger.kernel.org>, Ingo Molnar <mingo@kernel.org>,
-	Anna-Maria Behnsen <anna-maria@linutronix.de>
-Subject: Re: [PATCH 2/2] timers: Fix removed self-IPI on global timer's
- enqueue in nohz_full
-Message-ID: <3f2597ea-81ba-4498-a0ee-84d7e4e3da59@paulmck-laptop>
-Reply-To: paulmck@kernel.org
-References: <20240318230729.15497-3-frederic@kernel.org>
- <464f6be2-4a72-440d-be53-6a1035d56a4f@paulmck-laptop>
- <1b5752c8-ef32-4ed4-b539-95d507ec99ce@paulmck-laptop>
- <ZfsLtMijRrNZfqh6@localhost.localdomain>
- <6a95b6ac-6681-4492-b155-e30c19bb3341@paulmck-laptop>
- <ZfwdEROGFFmIbkCM@lothringen>
- <bf8689c2-0749-47cb-9535-53cf66e34f5e@paulmck-laptop>
- <797f44f9-701d-4fca-a9f4-d112a7178e7b@paulmck-laptop>
- <ZgstlCZn0l9wSv7H@pavilion.home>
- <ed13826a-d2d3-4999-8d9e-77dfc6245e1c@paulmck-laptop>
+	s=k20201202; t=1712076483;
+	bh=qc/zRn44QBe4hWpr219p01FEpH9uDc+aUrPnpDuiaq4=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=uYxqqwpnmxdSqu5hH2Fr3hwvG7SiTv4vicfHHIkl0jIGxEbf3ErAh4Sp1WXgo7j2d
+	 uUvPI0yx9VwLPhyFhCqq/0/vazfpKjh4Fpf71M3AS+isr5OhHNsJYmeYZxg8d2C7BW
+	 q5NOvKOqTLkFk/OqsJPTBjAxdSHMNQ6E/pG0KQoJ/G8iwrh68DbFTfNoVRSnLeDxYA
+	 G22MqX6qP5356Cy99W5Q3qT7Y2KPbs5o7Ow2CsdErY4VYdOs8ULgkymtkJK6R1y0ad
+	 /UmwoRNDXw4vzB4GA58pnA7fQslxa8cRKVZRSwWv6EaWxif6Z9I4ciDfkeME0UmWyA
+	 NwpQS5F3nKXeQ==
+Date: Tue, 2 Apr 2024 09:48:02 -0700
+From: Jakub Kicinski <kuba@kernel.org>
+To: Alexander Lobakin <aleksander.lobakin@intel.com>
+Cc: Eric Dumazet <edumazet@google.com>, "David S. Miller"
+ <davem@davemloft.net>, Paolo Abeni <pabeni@redhat.com>, Dmitry Safonov
+ <0x7f454c46@gmail.com>, Heiner Kallweit <hkallweit1@gmail.com>,
+ <nex.sw.ncis.osdt.itp.upstreaming@intel.com>, <netdev@vger.kernel.org>,
+ <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH net-next 2/2] netdev_queues: fix -Wshadow / Sparse
+ shadow warnings throughout the file
+Message-ID: <20240402094802.6fb25869@kernel.org>
+In-Reply-To: <22021664-6630-4663-ac28-c0df4187d8b6@intel.com>
+References: <20240329170000.3241460-1-aleksander.lobakin@intel.com>
+	<20240329170000.3241460-3-aleksander.lobakin@intel.com>
+	<20240329131857.730c6528@kernel.org>
+	<20240329135344.1a310f31@kernel.org>
+	<912d1f9f-a88d-4751-8d91-b82a75f82a32@intel.com>
+	<CANn89iL+goDgitdic97+um6D-PZDw2xYf=2eYgnNYEYU-Nws0Q@mail.gmail.com>
+	<22021664-6630-4663-ac28-c0df4187d8b6@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <ed13826a-d2d3-4999-8d9e-77dfc6245e1c@paulmck-laptop>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-On Mon, Apr 01, 2024 at 05:04:10PM -0700, Paul E. McKenney wrote:
-> On Mon, Apr 01, 2024 at 11:56:36PM +0200, Frederic Weisbecker wrote:
-> > Le Mon, Apr 01, 2024 at 02:26:25PM -0700, Paul E. McKenney a écrit :
-> > > > > _ The RCU CPU Stall report. I strongly suspect the cause is the hrtimer
-> > > > >   enqueue to an offline CPU. Let's solve that and we'll see if it still
-> > > > >   triggers.
-> > > > 
-> > > > Sounds like a plan!
-> > > 
-> > > Just checking in on this one.  I did reproduce your RCU CPU stall report
-> > > and also saw a TREE03 OOM that might (or might not) be related.  Please
-> > > let me know if hammering TREE03 harder or adding some debug would help.
-> > > Otherwise, I will assume that you are getting sufficient bug reports
-> > > from your own testing to be getting along with.
+On Tue, 2 Apr 2024 17:53:08 +0200 Alexander Lobakin wrote:
+> >> But what if there's a function which calls one of these functions and
+> >> already has _res or __res or something? I know renaming is enough for
+> >> the warnings I mentioned, but without __UNIQUE_ID() anything can happen
+> >> anytime, so I wanted to fix that once and for all :z
+> >>
+> >> I already saw some macros which have a layer of indirection for
+> >> __UNIQUE_ID(), but previously they didn't and then there were fixes
+> >> which added underscores, renamed variables etc etc...
+> >>  
 > > 
-> > Hehe, there are a lot indeed :-)
-> > 
-> > So there has been some discussion on CPUSET VS Hotplug, as a problem there
-> > is likely the cause of the hrtimer warning you saw, which in turn might
-> > be the cause of the RCU stalls.
-> > 
-> > Do you always see the hrtimer warning along the RCU stalls? Because if so, this
-> > might help:
-> > https://lore.kernel.org/lkml/20240401145858.2656598-1-longman@redhat.com/T/#m1bed4d298715d1a6b8289ed48e9353993c63c896
+> > We have hundreds of macros in include/ directory which use local names without
+> > __UNIQUE_ID()  
 > 
-> Not always, but why not give it a shot?
+> Most of them were added before __UNIQUE_ID() became norm, weren't they?
+> Lots of them were switched to __UNIQUE_ID() because of issues, weren't they?
 
-And no failures, though I would need to run much longer for this to
-mean much.  These were wide-spectrum tests, so my next step will be to
-run only TREE03 and TREE07.
+Lots of ugly code gets into the kernel. Just look at your patch and
+then look at mine.
 
-							Thanx, Paul
+I understand __UNIQUE_ID() may be useful for libraries or global
+macros in the kernel, but within a subsystem, for macros which are
+rarely used, we can just patch the macro var names. Sprinkling
+__UNIQUE_ID() is in bad taste.
+
+> > What is the plan ? Hundreds of patches obfuscating them more than they are ?  
+> 
+> Only those which flood the console when building with W=12 C=1 to
+> recheck that my new code is fine.
+
+I have never seen this warning be useful in the context of a macro.
+Sure if you shadow inside a function that may be pernicious.
+But well written macro will not be a problem.
+I guess that it may be really hard for the compiler to understand that
+something was a macro but perhaps we should either:
+ - ignore the warning if the shadowing happens inside a compound
+   statement
+ - add a declaration attribute to turn the warning off
+?
 
