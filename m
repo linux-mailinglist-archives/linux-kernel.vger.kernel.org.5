@@ -1,84 +1,83 @@
-Return-Path: <linux-kernel+bounces-127582-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-127585-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5966A894DE6
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 10:48:36 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8C121894DEF
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 10:50:54 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 896211C22425
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 08:48:35 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 12369B23395
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 08:50:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3B53146B80;
-	Tue,  2 Apr 2024 08:48:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0659D5788B;
+	Tue,  2 Apr 2024 08:50:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b="b4xaxt3b"
-Received: from mail-pl1-f194.google.com (mail-pl1-f194.google.com [209.85.214.194])
+	dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b="PGVqg6pX"
+Received: from mail-ot1-f65.google.com (mail-ot1-f65.google.com [209.85.210.65])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 12DB729429
-	for <linux-kernel@vger.kernel.org>; Tue,  2 Apr 2024 08:48:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.194
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8680E56B99
+	for <linux-kernel@vger.kernel.org>; Tue,  2 Apr 2024 08:50:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.65
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712047707; cv=none; b=E3hSfLZBKaDR2/IONxNcjs8EEg4kmO45qup9SJkYrbhK/ugbzI1bcbgCPaipQreR9TzQicoTZEnDwKQPYeOBIi6+u1ik5V+7Fu3XD/bkU6rtiXQSaAoHMFvDCDR5Va5sUgc+IVMobYqiOWQYHJCCrhxc22aee1etybqpYUxy//I=
+	t=1712047817; cv=none; b=EeE2F/ime7LrdQRsTenbO1AvHaHlfMXxfolkUuayBbvuxdbtshQDbaPfHShDQeJb6GT8mekXWwn0fJRf4z3q1hQR9LWg7CODkkjQzH0trSQ1duM8SvjXEpeIy8L41TcSvkzN0ghOLgq9ZnEB9Jq5H2uAmRIu3ejgs1Z1HHM4qBA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712047707; c=relaxed/simple;
-	bh=R6RPSilVAjM1NlOpXz8vUhNSeBgb6HeVc8XvoJaV+yo=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=jwPGtSbplJfTWYhRwZ6wShZU0xgVaclrCdu9rIPLLSmeuSiaIa+5truRfTx9J6WPRpM7j6pwVbK8+NtQjmDDwxVY1FQkcw8PFXC0xQ0TlgKmY86UqEysitU9RNs+tP1egT9wYXj5lZc8fTUq2RU3fqoW1vDwTiJo7/SLLcGCegM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com; spf=fail smtp.mailfrom=broadcom.com; dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b=b4xaxt3b; arc=none smtp.client-ip=209.85.214.194
+	s=arc-20240116; t=1712047817; c=relaxed/simple;
+	bh=/4YkSTRdE7M7Xu8XMpog4hak/3PlwZ+3b3bqKoB55qo=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=usFZtWdsFks47iMvwqRRV3Gdziu6uLBuUVku9MKzgGZdl6ars/OY8qwApcscKMsw3eMBXeypXaNKX8iiPdY4SB5F8RyYqVr+YlhQxtxVSwVOkfyUQTuYG9oeoLtql2HzIHnySuM5kYahE/o9j2iSUGzq10jhKlRmgG/k1tyrgME=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com; spf=fail smtp.mailfrom=broadcom.com; dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b=PGVqg6pX; arc=none smtp.client-ip=209.85.210.65
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com
 Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=broadcom.com
-Received: by mail-pl1-f194.google.com with SMTP id d9443c01a7336-1df01161b39so42189915ad.3
-        for <linux-kernel@vger.kernel.org>; Tue, 02 Apr 2024 01:48:25 -0700 (PDT)
+Received: by mail-ot1-f65.google.com with SMTP id 46e09a7af769-6e0f43074edso3305874a34.1
+        for <linux-kernel@vger.kernel.org>; Tue, 02 Apr 2024 01:50:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google; t=1712047705; x=1712652505; darn=vger.kernel.org;
+        d=broadcom.com; s=google; t=1712047814; x=1712652614; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:message-id:date:subject:cc
          :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=t9676X4fYIim/0sElrYns+vTJTQqEov76qiKy8ITTcg=;
-        b=b4xaxt3bK83Gd5lXY8taNX9xOdCR7HYsq50BnV5rVIh/Ga81MSb1hnUC6fh6Mnb0NV
-         m+pbIiLlgpOE4oancNirJNhwx1QbDM7FZrIjxpOJ3v0fVyL6mTavBTokDOg/6Id/Xl2m
-         ps+vNEi2hmGzWBIe81++SQ6eiUl4dfwrCotfg=
+        bh=Jc5qKirKkUEsGA81ePv/IEQCmdT5wmxUd63NYwufXHA=;
+        b=PGVqg6pX2i8bDe9YZ1wt+ROkmooz+OIQQkoUp6QqTud2NrbhSJihFvtaBLO4Nb38wR
+         QgLI1MZTkP1H5QWRNainq3fv7PcM1+6gApBwjOnC2MqYXJtRtzP2XM8bl9p+yce9Inhb
+         hT/9jQfUsEkqAkg5qxx8IePJwuQ52FnJdQan8=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712047705; x=1712652505;
+        d=1e100.net; s=20230601; t=1712047814; x=1712652614;
         h=content-transfer-encoding:mime-version:message-id:date:subject:cc
          :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=t9676X4fYIim/0sElrYns+vTJTQqEov76qiKy8ITTcg=;
-        b=XihvRafkFvEe8511YA6JIle8sEKgwqoKULjMjWiUbvxHvCQdIgqwgfYU55ol/++Sid
-         IVq9lwGkTO0/nmN+GWyPVglYLz/wNmaam5YV6UFtwNrDjkFBw5/2ZLutQCMAwXN2G0LQ
-         35GKXOY7pZkRHrDh69PDHAlUdc6lpaQHwbM2lQg6mJj9LQMf/QdaQIvDoSxNVs0eWFyw
-         lup79yBV94xmXJydJ3Yx9TOi6RYksFkE5+HpdVvb/Sd/CyBANFWumRFbKxOm11er0nwo
-         1Zj4cIL737ErP7cv2xBnNq/iRVb3PvmHoWuiO0jp2f4Hea8bSID5HUaeN3ISAFBoTtaH
-         r2wQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUR0Sp7lAJB3wjIs/0wDIDGGFPo/BLJmXo38riL7okFftaPKmrPOgwACWB6SzhupSuDCJv3fDJfmL0qiCfox3oqtOHDTijm5cNiM6ja
-X-Gm-Message-State: AOJu0YxcEFM0gf0q3tqIt588qvaEcWZHPwdSs26W9qzVRhOgj41u31BA
-	xwdN1ua7qCr8LXeZhGMW6ezGZyaavlpTbdS0EVaie779R2FQ9S579rojSzgYIg==
-X-Google-Smtp-Source: AGHT+IE7jZjWCI69n3OhJLr4fNBJh50hOsw44XMOQ2qGqsJWbh8Wz+a8CfoO1dEwd/UBwa7lmB2xzQ==
-X-Received: by 2002:a17:902:ce06:b0:1e2:3db0:1d84 with SMTP id k6-20020a170902ce0600b001e23db01d84mr13818169plg.32.1712047705227;
-        Tue, 02 Apr 2024 01:48:25 -0700 (PDT)
+        bh=Jc5qKirKkUEsGA81ePv/IEQCmdT5wmxUd63NYwufXHA=;
+        b=AX7gyR3zD8wFWVALltVVvrBpUUItzqSh40WLfjk34Qad1PB6nYuFzDlKwKlejG5E3U
+         PZ9wvEGgC+w00TMyvSylTWc1GHVKaIn3WnOmrk10GH1cvUhT45qimLvfS3rUPDybqsI5
+         ULxTHcLqt4W4DRzHUcDA7nKXP29FQ3BJidY1tA7wx06kWI+DpXyrkOKakDO1RYwc7WpE
+         kdhm/8hkgRwx+Z7FOv9FKuJJfzB2JjH2QqnWXogpDbS9g+4l0CaOBOcJE+WVhJgQYUcl
+         Dz4Pns60Hd+8PjUiNQuUgkox75pAUM1K0yUSZlY1VkZzSou0GVy5mNazWUfn3w2yjISI
+         nBig==
+X-Forwarded-Encrypted: i=1; AJvYcCXwpuENUtXw2dzyy/2liZF7eyXF9ckxLLxp443UFZg7uxcRREQI1tygfohT6o+sZP9DRTbBEWApWfxsofsTcTsGQpV0hS1sC7a4Lfw0
+X-Gm-Message-State: AOJu0Yy2F8XM5AgZ97ovXwhA5vtLqwf0XX4ok5ShirthH4UYPn8/pUD/
+	a9sh8wCDqasbkoE2zPBbqcapTvYo/2Noo4Xtt/+gHLMfZ+hMl1ZxzUYoQIWRDQ==
+X-Google-Smtp-Source: AGHT+IGAeogQj7OWBty6lfzImr9aptLfny9tqOJXUIZvSX740VF/rVNywUCKCnybxk/NBzbcGcioMQ==
+X-Received: by 2002:a54:4004:0:b0:3c3:de8b:7bdf with SMTP id x4-20020a544004000000b003c3de8b7bdfmr9601570oie.57.1712047814503;
+        Tue, 02 Apr 2024 01:50:14 -0700 (PDT)
 Received: from kashwindayan-virtual-machine.eng.vmware.com ([152.65.205.51])
-        by smtp.gmail.com with ESMTPSA id f10-20020a170902ab8a00b001e00285b727sm10448511plr.294.2024.04.02.01.48.21
+        by smtp.gmail.com with ESMTPSA id a5-20020a63e405000000b005dc36761ad1sm9193042pgi.33.2024.04.02.01.50.10
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 02 Apr 2024 01:48:24 -0700 (PDT)
+        Tue, 02 Apr 2024 01:50:14 -0700 (PDT)
 From: Ashwin Dayanand Kamat <ashwin.kamat@broadcom.com>
 To: stable@vger.kernel.org,
 	gregkh@linuxfoundation.org
-Cc: tglx@linutronix.de,
-	mingo@redhat.com,
-	bp@alien8.de,
-	x86@kernel.org,
-	hpa@zytor.com,
+Cc: axboe@kernel.dk,
+	linux-block@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
 	ajay.kaher@broadcom.com,
 	alexey.makhalov@broadcom.com,
 	vasavi.sirnapalli@broadcom.com,
-	Pu Wen <puwen@hygon.cn>,
-	Ingo Molnar <mingo@kernel.org>,
+	Min Li <min15.li@samsung.com>,
+	Damien Le Moal <dlemoal@kernel.org>,
+	Chaitanya Kulkarni <kch@nvidia.com>,
+	Christoph Hellwig <hch@lst.de>,
 	Ashwin Dayanand Kamat <ashwin.kamat@broadcom.com>
-Subject: [PATCH v5.10] x86/srso: Add SRSO mitigation for Hygon processors
-Date: Tue,  2 Apr 2024 14:18:09 +0530
-Message-Id: <20240402084809.82243-1-ashwin.kamat@broadcom.com>
+Subject: [PATCH v5.10] block: add check that partition length needs to be aligned with block size
+Date: Tue,  2 Apr 2024 14:19:55 +0530
+Message-Id: <20240402084955.82273-1-ashwin.kamat@broadcom.com>
 X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -88,36 +87,67 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-From: Pu Wen <puwen@hygon.cn>
+From: Min Li <min15.li@samsung.com>
 
-[Upstream commit a5ef7d68cea1344cf524f04981c2b3f80bedbb0d]
+[ Upstream commit 6f64f866aa1ae6975c95d805ed51d7e9433a0016]
 
-Add mitigation for the speculative return stack overflow vulnerability
-which exists on Hygon processors too.
+Before calling add partition or resize partition, there is no check
+on whether the length is aligned with the logical block size.
+If the logical block size of the disk is larger than 512 bytes,
+then the partition size maybe not the multiple of the logical block size,
+and when the last sector is read, bio_truncate() will adjust the bio size,
+resulting in an IO error if the size of the read command is smaller than
+the logical block size.If integrity data is supported, this will also
+result in a null pointer dereference when calling bio_integrity_free.
 
-Signed-off-by: Pu Wen <puwen@hygon.cn>
-Signed-off-by: Ingo Molnar <mingo@kernel.org>
-Acked-by: Borislav Petkov (AMD) <bp@alien8.de>
-Cc: <stable@vger.kernel.org>
-Link: https://lore.kernel.org/r/tencent_4A14812842F104E93AA722EC939483CEFF05@qq.com
+Cc:  <stable@vger.kernel.org>
+Signed-off-by: Min Li <min15.li@samsung.com>
+Reviewed-by: Damien Le Moal <dlemoal@kernel.org>
+Reviewed-by: Chaitanya Kulkarni <kch@nvidia.com>
+Reviewed-by: Christoph Hellwig <hch@lst.de>
+Link: https://lore.kernel.org/r/20230629142517.121241-1-min15.li@samsung.com
+Signed-off-by: Jens Axboe <axboe@kernel.dk>
 Signed-off-by: Ashwin Dayanand Kamat <ashwin.kamat@broadcom.com>
 ---
- arch/x86/kernel/cpu/common.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ block/ioctl.c | 11 +++++++----
+ 1 file changed, 7 insertions(+), 4 deletions(-)
 
-diff --git a/arch/x86/kernel/cpu/common.c b/arch/x86/kernel/cpu/common.c
-index 4ecc6072e..8aa43c8ca 100644
---- a/arch/x86/kernel/cpu/common.c
-+++ b/arch/x86/kernel/cpu/common.c
-@@ -1168,7 +1168,7 @@ static const struct x86_cpu_id cpu_vuln_blacklist[] __initconst = {
- 	VULNBL_AMD(0x15, RETBLEED),
- 	VULNBL_AMD(0x16, RETBLEED),
- 	VULNBL_AMD(0x17, RETBLEED | SRSO),
--	VULNBL_HYGON(0x18, RETBLEED),
-+	VULNBL_HYGON(0x18, RETBLEED | SRSO),
- 	VULNBL_AMD(0x19, SRSO),
- 	{}
- };
+diff --git a/block/ioctl.c b/block/ioctl.c
+index e7eed7dad..c490d67fe 100644
+--- a/block/ioctl.c
++++ b/block/ioctl.c
+@@ -17,7 +17,7 @@ static int blkpg_do_ioctl(struct block_device *bdev,
+ 			  struct blkpg_partition __user *upart, int op)
+ {
+ 	struct blkpg_partition p;
+-	long long start, length;
++	sector_t start, length;
+ 
+ 	if (!capable(CAP_SYS_ADMIN))
+ 		return -EACCES;
+@@ -32,6 +32,12 @@ static int blkpg_do_ioctl(struct block_device *bdev,
+ 	if (op == BLKPG_DEL_PARTITION)
+ 		return bdev_del_partition(bdev, p.pno);
+ 
++	if (p.start < 0 || p.length <= 0 || p.start + p.length < 0)
++		return -EINVAL;
++	/* Check that the partition is aligned to the block size */
++	if (!IS_ALIGNED(p.start | p.length, bdev_logical_block_size(bdev)))
++		return -EINVAL;
++
+ 	start = p.start >> SECTOR_SHIFT;
+ 	length = p.length >> SECTOR_SHIFT;
+ 
+@@ -46,9 +52,6 @@ static int blkpg_do_ioctl(struct block_device *bdev,
+ 
+ 	switch (op) {
+ 	case BLKPG_ADD_PARTITION:
+-		/* check if partition is aligned to blocksize */
+-		if (p.start & (bdev_logical_block_size(bdev) - 1))
+-			return -EINVAL;
+ 		return bdev_add_partition(bdev, p.pno, start, length);
+ 	case BLKPG_RESIZE_PARTITION:
+ 		return bdev_resize_partition(bdev, p.pno, start, length);
 -- 
 2.35.6
 
