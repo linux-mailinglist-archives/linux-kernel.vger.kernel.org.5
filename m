@@ -1,164 +1,150 @@
-Return-Path: <linux-kernel+bounces-127440-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-127436-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 60090894B5E
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 08:25:57 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 28AB6894B51
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 08:23:58 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1AFF1281352
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 06:25:56 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5A2351C22529
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 06:23:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5092722615;
-	Tue,  2 Apr 2024 06:25:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=foss.st.com header.i=@foss.st.com header.b="pz+r7Hw5"
-Received: from mx08-00178001.pphosted.com (mx08-00178001.pphosted.com [91.207.212.93])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1D27C1CF87;
+	Tue,  2 Apr 2024 06:23:48 +0000 (UTC)
+Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D9907219FF;
-	Tue,  2 Apr 2024 06:25:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.207.212.93
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DC54218654
+	for <linux-kernel@vger.kernel.org>; Tue,  2 Apr 2024 06:23:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712039127; cv=none; b=ib/1kZl0kSFv1hp97DMe5dqrJOn9y2UbG1z2952B+jAk2mXvq7yDzTuDjCxzhNqp7sZgdXk/pmvT62fjHN0W3M2/5aI1L7SNa6l+3I+x7fcGGTbNDmJ3LwdirL5Ez5A9xjuq8+kyYIUj+HzwE6ki7sVEG4uQUrr/I2KPQVa0qSI=
+	t=1712039027; cv=none; b=HxHvTRyMWVlQFW11OBF5e0JFIyJeEaox727bMDkOwu2aj/4GLo+vzUsBIat4Frf3HDoyZ54WVMY6ZU3iqRnLYhlah1UGjDGiBlecKyK2qXuHLsw8fFwGxCNzhheW45FizA6ziZ3QhNAwxh0s1ZleksTCJJOVKIYspWpGS+oyO6I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712039127; c=relaxed/simple;
-	bh=96qLk1IhGOrnWXSm+XMrq7Jopu+34/nlrkSl2dbSQTg=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=IlxTL5hCbrLtxnMH/iNv9SeC419V+xQ/QnWxxzGlILZ8owGy9F3D6gUH1IVAM5of7mH2iH2AFD87Ab27PS1FUiqa+f2dHcLpIDQJ84qXOuksxQyWpn4aUcgGTP8uxMREXmyWAiOBrSDwOi26CphegjhsiEAhtg5V7KGa5lk6NBE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=foss.st.com; spf=pass smtp.mailfrom=foss.st.com; dkim=pass (2048-bit key) header.d=foss.st.com header.i=@foss.st.com header.b=pz+r7Hw5; arc=none smtp.client-ip=91.207.212.93
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=foss.st.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=foss.st.com
-Received: from pps.filterd (m0369457.ppops.net [127.0.0.1])
-	by mx07-00178001.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 4322mnmp029837;
-	Tue, 2 Apr 2024 08:24:45 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=
-	message-id:date:mime-version:subject:to:cc:references:from
-	:in-reply-to:content-type:content-transfer-encoding; s=
-	selector1; bh=zvO9fT/3hnruxI2Qb+TcMhuCOsE3oJ9aHpPaLeaL1p4=; b=pz
-	+r7Hw5/o9A561LptCu9IMRsqSF9k/YcJLYGgmvjHWz5XsGzcD80zy7UOtDAH2XAH
-	BiULVaaqiNVeQSXsUoZx+1bX2cReN2C42TaeVqBAtOHoFkvmBdoBjKbYaM6ZbKHB
-	7QeQ5nCW7SHzNleUIHmXgL/xqmPTW3NRgQUIwchhgVgD7KKICAqYNDUkJ2B4fFLk
-	UH46I8r4QUfLk+Q/m2MjeH2tLhAsNUWVg4VuSaPvQapRJBj0OOWUd1vGzb7Q8nBN
-	KyDIS0zW0uQ9XmE7o6cNm701135ezPO4n5ua/wmi8F8usC2WKavQlvMv0vQlnW+E
-	csDo1V1sNWA/NUlplsPQ==
-Received: from beta.dmz-ap.st.com (beta.dmz-ap.st.com [138.198.100.35])
-	by mx07-00178001.pphosted.com (PPS) with ESMTPS id 3x6wsu78b5-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 02 Apr 2024 08:24:44 +0200 (MEST)
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-	by beta.dmz-ap.st.com (STMicroelectronics) with ESMTP id 526374002D;
-	Tue,  2 Apr 2024 08:24:38 +0200 (CEST)
-Received: from Webmail-eu.st.com (shfdag1node2.st.com [10.75.129.70])
-	by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 5759520F2C5;
-	Tue,  2 Apr 2024 08:23:25 +0200 (CEST)
-Received: from [10.201.21.128] (10.201.21.128) by SHFDAG1NODE2.st.com
- (10.75.129.70) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Tue, 2 Apr
- 2024 08:23:24 +0200
-Message-ID: <5805e6e7-76a4-4a0f-abd0-823aed023daf@foss.st.com>
-Date: Tue, 2 Apr 2024 08:23:23 +0200
+	s=arc-20240116; t=1712039027; c=relaxed/simple;
+	bh=PPPuY5Hg0Y0DNWRkltz48L7HE6kprcKtqSFqK38Z/U0=;
+	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:To:Cc; b=IMpqe77ats0fdDIF2a2O5O3QYslSJg7cHI95+yRWwG+jHmwg0MHBUa46MLlUWjgDgqRI8Ajgrkm6gkn0H1OZCV+NniTuhRjVh4ATy5bVTMVZMQjxAEDT+OZ0Ult0+WNJ8Pzy571bryP58cikd5Z75kCIPKVfe+FDI8XVN2YuUhg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+	(Exim 4.92)
+	(envelope-from <m.grzeschik@pengutronix.de>)
+	id 1rrXYe-0004sT-20; Tue, 02 Apr 2024 08:23:44 +0200
+Received: from [2a0a:edc0:0:1101:1d::ac] (helo=dude04.red.stw.pengutronix.de)
+	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.94.2)
+	(envelope-from <m.grzeschik@pengutronix.de>)
+	id 1rrXYd-009vdf-Fz; Tue, 02 Apr 2024 08:23:43 +0200
+Received: from localhost ([::1] helo=dude04.red.stw.pengutronix.de)
+	by dude04.red.stw.pengutronix.de with esmtp (Exim 4.96)
+	(envelope-from <m.grzeschik@pengutronix.de>)
+	id 1rrXYd-00EkSU-1P;
+	Tue, 02 Apr 2024 08:23:43 +0200
+From: Michael Grzeschik <m.grzeschik@pengutronix.de>
+Date: Tue, 02 Apr 2024 08:23:43 +0200
+Subject: [PATCH] usb: chipidea: move ci_ulpi_init after the phy
+ initialization
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v5 1/1] dt-bindings: net: dwmac: Document STM32 property
- st,ext-phyclk
-Content-Language: en-US
-To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        "David S . Miller"
-	<davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>, Jakub Kicinski
-	<kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>, Rob Herring
-	<robh+dt@kernel.org>,
-        Krzysztof Kozlowski
-	<krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Alexandre Torgue
-	<alexandre.torgue@foss.st.com>,
-        Richard Cochran <richardcochran@gmail.com>,
-        Jose Abreu <joabreu@synopsys.com>, Liam Girdwood <lgirdwood@gmail.com>,
-        Mark
- Brown <broonie@kernel.org>, Marek Vasut <marex@denx.de>
-CC: <netdev@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        <linux-arm-kernel@lists.infradead.org>, <linux-kernel@vger.kernel.org>
-References: <20240328140803.324141-1-christophe.roullier@foss.st.com>
- <20240328140803.324141-2-christophe.roullier@foss.st.com>
- <46b065d1-82d7-4a15-9de2-1e0bdd2a9085@linaro.org>
-From: Christophe ROULLIER <christophe.roullier@foss.st.com>
-In-Reply-To: <46b065d1-82d7-4a15-9de2-1e0bdd2a9085@linaro.org>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: SHFCAS1NODE2.st.com (10.75.129.73) To SHFDAG1NODE2.st.com
- (10.75.129.70)
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-04-02_02,2024-04-01_01,2023-05-22_02
+Message-Id: <20240328-chipidea-phy-misc-v1-1-907d9de5d4df@pengutronix.de>
+X-B4-Tracking: v=1; b=H4sIAG6kC2YC/x2N0QqDMAwAf0XyvIDWwsp+RXxoY1wDrisNE4f47
+ wt7vIPjTlBuwgqP7oTGu6i8i8Fw64ByLE9GWYzB9c73owtIWaosHLHmL75ECdO4ukRh8Pfgwbo
+ UlTG1WChbWT7bZrI2XuX4j6b5un6FV/z7eAAAAA==
+To: Peter Chen <peter.chen@kernel.org>, 
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org, 
+ Michael Grzeschik <m.grzeschik@pengutronix.de>
+X-Mailer: b4 0.12.0
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1878;
+ i=m.grzeschik@pengutronix.de; h=from:subject:message-id;
+ bh=PPPuY5Hg0Y0DNWRkltz48L7HE6kprcKtqSFqK38Z/U0=;
+ b=owEBbQKS/ZANAwAKAb9pWET5cfSrAcsmYgBmC6RvfNzHPWGSTzAesud7hzhjuUOv2iCGDHlgz
+ +WMmsbz4gqJAjMEAAEKAB0WIQQV2+2Fpbqd6fvv0Gi/aVhE+XH0qwUCZgukbwAKCRC/aVhE+XH0
+ q7+YEACkOuX13NKcmJGgkose0F3MPD8UJZETRgJUxU+eZEKIenMN4a6uAsKhgOnGDp9rjQ16LWP
+ VoeaQwlRLty0VzpPswjJsouoDeMmMZWw1Um+qab6E8yLhGxEvp7PjsED5i0Gq6VyBEBCm1iocOu
+ PIDOsmZkP8Wk/aTwTeMZ3UPzDhuzpKZPPpdzN3uvKebh2YaOkFxCv5MiSulqJMC9LJ6Towv4jNM
+ nnXZ2p3w4VeMNlm8kS3oIeegL6pkbrix2v14LxhFxZRlP8HtDxBgC6v0HnBFj5IRk8wDwvLUh44
+ gwkGsZeEUjNSmvU3VQ07UjL8w21rAOhD+AiUxLIFe9e1kdYX7TYVQlzhsa7VGgga8/9MMuUoXsW
+ vVPqvztqt0EgMBU9zm1heazA+inRPSIZxsdoj86cUouRT8H80n48T31p5gwmMaGOPT7V+D/lgaJ
+ qj1XkdX3IuYhCSmrR82OV1EzsdU4N334yhb8nZTxkMfy/gValRXfJu+n0enYVFHOLtEalq1vu8P
+ xuwghYlomD2ODkNB2NJ/EHehP+ZDpF2+EWmobAdNPpnHv5aabnBQTKnsLyXt1h1dj38owPiG29r
+ ETiyyiR2eKEvKCOgWyfxY7K8+W702lBeT1IwRGCM3poAc95f+3gYNb+LvQlY86DX8qmb6FPCWfg
+ KvysDv7McMG188A==
+X-Developer-Key: i=m.grzeschik@pengutronix.de; a=openpgp;
+ fpr=957BC452CE953D7EA60CF4FC0BE9E3157A1E2C64
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: m.grzeschik@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 
+The function ci_usb_phy_init is already handling the
+hw_phymode_configure path which is also only possible after we have
+a valid phy. So we move the ci_ulpi_init after the phy initialization
+to be really sure to be able to communicate with the ulpi phy.
 
-On 3/30/24 19:40, Krzysztof Kozlowski wrote:
-> On 28/03/2024 15:08, Christophe Roullier wrote:
->> The Linux kernel dwmac-stm32 driver currently supports three DT
->> properties used to configure whether PHY clock are generated by
->> the MAC or supplied to the MAC from the PHY.
->>
->> Originally there were two properties, st,eth-clk-sel and
->> st,eth-ref-clk-sel, each used to configure MAC clocking in
->> different bus mode and for different MAC clock frequency.
->> Since it is possible to determine the MAC 'eth-ck' clock
->> frequency from the clock subsystem and PHY bus mode from
->> the 'phy-mode' property, two disparate DT properties are
->> no longer required to configure MAC clocking.
->>
->> Linux kernel commit 1bb694e20839 ("net: ethernet: stmmac: simplify phy modes management for stm32")
->> introduced a third, unified, property st,ext-phyclk. This property
->> covers both use cases of st,eth-clk-sel and st,eth-ref-clk-sel DT
->> properties, as well as a new use case for 25 MHz clock generated
->> by the MAC.
->>
->> The third property st,ext-phyclk is so far undocumented,
->> document it.
->>
->> Below table summarizes the clock requirement and clock sources for
->> supported PHY interface modes.
->>   __________________________________________________________________________
->> |PHY_MODE | Normal | PHY wo crystal|   PHY wo crystal   |No 125Mhz from PHY|
->> |         |        |      25MHz    |        50MHz       |                  |
->>
->> ---------------------------------------------------------------------------
->> |  MII    |    -   |     eth-ck    |        n/a         |       n/a        |
->> |         |        | st,ext-phyclk |                    |                  |
->>
->> ---------------------------------------------------------------------------
->> |  GMII   |    -   |     eth-ck    |        n/a         |       n/a        |
->> |         |        | st,ext-phyclk |                    |                  |
->>
->> ---------------------------------------------------------------------------
->> | RGMII   |    -   |     eth-ck    |        n/a         |      eth-ck      |
->> |         |        | st,ext-phyclk |                    | st,eth-clk-sel or|
->> |         |        |               |                    | st,ext-phyclk    |
->>
->> ---------------------------------------------------------------------------
->> | RMII    |    -   |     eth-ck    |      eth-ck        |       n/a        |
->> |         |        | st,ext-phyclk | st,eth-ref-clk-sel |                  |
->> |         |        |               | or st,ext-phyclk   |                  |
->>
->> ---------------------------------------------------------------------------
->>
->> Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
->> Signed-off-by: Christophe Roullier <christophe.roullier@foss.st.com>
-> Can you please start testing patches *before* sending them?
-Yes sorry, when I removed patch with phy-supply property (1/2), I had 
-conflict merge and I did not pay attention that my commit was modified :-(
->
-> Best regards,
-> Krzysztof
->
+Signed-off-by: Michael Grzeschik <m.grzeschik@pengutronix.de>
+---
+ drivers/usb/chipidea/core.c | 8 ++++----
+ drivers/usb/chipidea/ulpi.c | 5 -----
+ 2 files changed, 4 insertions(+), 9 deletions(-)
+
+diff --git a/drivers/usb/chipidea/core.c b/drivers/usb/chipidea/core.c
+index 835bf2428dc6e..bada13f704b62 100644
+--- a/drivers/usb/chipidea/core.c
++++ b/drivers/usb/chipidea/core.c
+@@ -1084,10 +1084,6 @@ static int ci_hdrc_probe(struct platform_device *pdev)
+ 		return -ENODEV;
+ 	}
+ 
+-	ret = ci_ulpi_init(ci);
+-	if (ret)
+-		return ret;
+-
+ 	if (ci->platdata->phy) {
+ 		ci->phy = ci->platdata->phy;
+ 	} else if (ci->platdata->usb_phy) {
+@@ -1142,6 +1138,10 @@ static int ci_hdrc_probe(struct platform_device *pdev)
+ 		goto ulpi_exit;
+ 	}
+ 
++	ret = ci_ulpi_init(ci);
++	if (ret)
++		return ret;
++
+ 	ci->hw_bank.phys = res->start;
+ 
+ 	ci->irq = platform_get_irq(pdev, 0);
+diff --git a/drivers/usb/chipidea/ulpi.c b/drivers/usb/chipidea/ulpi.c
+index dfec07e8ae1d2..89fb51e2c3ded 100644
+--- a/drivers/usb/chipidea/ulpi.c
++++ b/drivers/usb/chipidea/ulpi.c
+@@ -68,11 +68,6 @@ int ci_ulpi_init(struct ci_hdrc *ci)
+ 	if (ci->platdata->phy_mode != USBPHY_INTERFACE_MODE_ULPI)
+ 		return 0;
+ 
+-	/*
+-	 * Set PORTSC correctly so we can read/write ULPI registers for
+-	 * identification purposes
+-	 */
+-	hw_phymode_configure(ci);
+ 
+ 	ci->ulpi_ops.read = ci_ulpi_read;
+ 	ci->ulpi_ops.write = ci_ulpi_write;
+
+---
+base-commit: 5bab5dc780c9ed0c69fc2f828015532acf4a7848
+change-id: 20240328-chipidea-phy-misc-b3f2bc814784
+
+Best regards,
+-- 
+Michael Grzeschik <m.grzeschik@pengutronix.de>
+
 
