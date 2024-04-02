@@ -1,135 +1,145 @@
-Return-Path: <linux-kernel+bounces-128676-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-128684-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id AA3B3895E07
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 22:52:19 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3A7AF895E24
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 22:56:04 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 49E171F220E9
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 20:52:19 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id EB5991F233DD
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 20:56:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A392515E1F1;
-	Tue,  2 Apr 2024 20:52:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7A3FC15E1F6;
+	Tue,  2 Apr 2024 20:54:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="WVZcjuEZ"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=metaparadigm.com header.i=@metaparadigm.com header.b="PUn6dMCQ"
+Received: from anarch128.org (anarch128.org [23.253.174.110])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E984012BF20
-	for <linux-kernel@vger.kernel.org>; Tue,  2 Apr 2024 20:52:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 735E915E1ED
+	for <linux-kernel@vger.kernel.org>; Tue,  2 Apr 2024 20:54:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=23.253.174.110
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712091133; cv=none; b=ldaewKXHzu0u4z/xpKpxGa3EBN3d8U0Fn5S5ZpvQKAJIG/I+OZ1CsYjsz3+tPxLDwxBkMCQdkx60+hbaEtsWIt62ZtopYoUcksYP8+XRb+IFt0qMMTJPULcHGnrBuPZHt7WhD4XYwjaq7V+y0S8/eLK5JT2FpXcGVmwlrLfg2aw=
+	t=1712091277; cv=none; b=GZlLwuqm75Y/JSfPQfZOFFGookZX//T4R0Y+W1DRPL/pIa0cOoK/S16CAfAVl0G+1owdaudlq2cdh6pgmoD6GjVg44ceefyO5QCIEgZhq2oBzEpnoHydk2OC06dK+B/D7y7v5mSk6sn3iyDhiYbO0cL6VNSEPj+RfWzkpl6h9oE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712091133; c=relaxed/simple;
-	bh=R3Vv/DIHvrty2Q1jbRGDUHTqjO0wMc/8gqvhtFZSArw=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=rkxz83AU/OOSx6I9mFBKXgScNgMEjD8APOFAUMtU64H/bVNfZl4/l1bsG7tAyJoeQLBUkFX9zhuRoqgljmVvYnOXTScB7zrzCutpyhz3NW2/rzkoymOv5SjJX9HSzzbdegPJWipEiId0Yuy3bqTcaYLzM3b9WNA/S80b0X/PUnE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=WVZcjuEZ; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 84274C433F1;
-	Tue,  2 Apr 2024 20:52:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712091132;
-	bh=R3Vv/DIHvrty2Q1jbRGDUHTqjO0wMc/8gqvhtFZSArw=;
-	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-	b=WVZcjuEZ43WvEIfkaiwrdoMx0BOJsj+4l1u0IMMqul4n5rMgxWUUQl0Sy3ObQmMg2
-	 Gu5ByVQvRCjwYaokcOhGlFTiQ2LxjWqe/b3+iD1b4B+RI+pI+Tfo5TT4s3IljE0tGw
-	 eagYeop4H0txl4QzDYxv0F1cRhK0sQ8+LhEBEe/zqMginFsRmW4fGtO3MQd0D98GPK
-	 IUPpzmEAkQ4u2ZIe4A8qLcqnEOllBaOOH4M8VUSMgTYEWAKy+Zr48LsNiCmRB/l4Wt
-	 XJGMUNaWztZ9C0x650VLDFXs5bZjhICMpqnGdVH8MGNQjD660bhZmGxHY0Sgqo2J9F
-	 agr8e4KeuOM4w==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id 1B64ACE0FF2; Tue,  2 Apr 2024 13:52:12 -0700 (PDT)
-Date: Tue, 2 Apr 2024 13:52:12 -0700
-From: "Paul E. McKenney" <paulmck@kernel.org>
-To: Arnd Bergmann <arnd@arndb.de>
-Cc: linux-kernel@vger.kernel.org, kernel-team@meta.com,
-	Vineet Gupta <vgupta@kernel.org>,
-	Andi Shyti <andi.shyti@linux.intel.com>,
-	Andrzej Hajda <andrzej.hajda@intel.com>,
-	Palmer Dabbelt <palmer@rivosinc.com>,
-	linux-snps-arc@lists.infradead.org
-Subject: Re: [PATCH RFC cmpxchg 3/8] ARC: Emulate one-byte and two-byte
- cmpxchg
-Message-ID: <8d92aab3-a3d0-4625-8b97-e336c0c7a2e8@paulmck-laptop>
-Reply-To: paulmck@kernel.org
-References: <31c82dcc-e203-48a9-aadd-f2fcd57d94c1@paulmck-laptop>
- <20240401213950.3910531-3-paulmck@kernel.org>
- <836df0c7-51a7-4786-8a65-a70efe9b6eec@app.fastmail.com>
- <32936b57-f451-460b-a2df-e74293e44f5c@paulmck-laptop>
+	s=arc-20240116; t=1712091277; c=relaxed/simple;
+	bh=ItRqQxRVa/m81QrwLlyILDa0UEZoouUYVtvYXJrTq84=;
+	h=Message-ID:Date:MIME-Version:To:From:Subject:Content-Type; b=W7XWjEscTKYWIUCAJHtBmi9JwYMQeOA3aJzExQLh/F9/GGfbKg+j1jmSLaT7IkFyqc/VYb4X1zJiO/vwhI246pEPfR487ezj8Y0Qzjur0xLW/x8wj3d4hbYvzwI2wCLC7NrGlcfqD56HSyOXwJBtNTmQbM1/d49fCb8vqGkVo/I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=metaparadigm.com; spf=pass smtp.mailfrom=metaparadigm.com; dkim=fail (2048-bit key) header.d=metaparadigm.com header.i=@metaparadigm.com header.b=PUn6dMCQ reason="signature verification failed"; arc=none smtp.client-ip=23.253.174.110
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=metaparadigm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=metaparadigm.com
+Received: from [192.168.1.5] (default-rdns.vocus.co.nz [202.150.110.104] (may be forged))
+	(authenticated bits=0)
+	by anarch128.org (8.15.2/8.15.2/Debian-22) with ESMTPSA id 432Kres7305610
+	(version=TLSv1.3 cipher=TLS_AES_128_GCM_SHA256 bits=128 verify=NO);
+	Tue, 2 Apr 2024 20:53:43 GMT
+Authentication-Results: anarch128.org;
+    auth=pass;
+    dkim=pass (2048-bit rsa key sha256) header.d=metaparadigm.com header.i=@metaparadigm.com header.b=PUn6dMCQ header.a=rsa-sha256 header.s=100043;
+    x-return-mx=pass header.domain=metaparadigm.com policy.is_org=yes (MX Records found: mail.anarch128.org);
+    x-return-mx=pass smtp.domain=metaparadigm.com policy.is_org=yes (MX Records found: mail.anarch128.org)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=metaparadigm.com;
+	s=100043; t=1712091227;
+	bh=ItRqQxRVa/m81QrwLlyILDa0UEZoouUYVtvYXJrTq84=;
+	h=Date:To:From:Subject:From;
+	b=PUn6dMCQn2mU3DsTfuPGuqL0pJlpQS1McPZeld8JHbMmpePBaX1Ia4/f6ip9/dN4c
+	 XLawcUrgIcUxcuo1cxOnNgx90VzjYCtTEljXbFWEKdevozx9YSV7HO6IeKnnoBpWs3
+	 woQSgtLeCQb6MnYilyrynw7QbcXx6aEC4ddbD53+1c7bkScKLlaTeEeSq7aZR+nSfB
+	 2VfeG3QFpiVoTB4B9eEXklMfbva/ul65XMRGJ1e06mihWRyzeWP3HNjEk3eowRz2nq
+	 rYdtqdxig/Y+BPAtF9vEBNEcUAQFPHD6upDD0p2LT+hedB/x1jCyifPmWkf87qOc3a
+	 IZPEhqKEzyPvg==
+Message-ID: <969ccc0f-d909-4b45-908e-e98279777733@metaparadigm.com>
+Date: Wed, 3 Apr 2024 09:53:34 +1300
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <32936b57-f451-460b-a2df-e74293e44f5c@paulmck-laptop>
+User-Agent: Mozilla Thunderbird
+Content-Language: en-US
+To: Linus Torvalds <torvalds@linux-foundation.org>,
+        Jens Axboe <axboe@kernel.dk>, Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>, linux-kernel@vger.kernel.org
+From: Michael Clark <michael@metaparadigm.com>
+Organization: Metaparadigm
+Subject: user-space concurrent pipe buffer scheduler interactions
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Tue, Apr 02, 2024 at 10:06:14AM -0700, Paul E. McKenney wrote:
-> On Tue, Apr 02, 2024 at 10:14:08AM +0200, Arnd Bergmann wrote:
-> > On Mon, Apr 1, 2024, at 23:39, Paul E. McKenney wrote:
-> > > Use the new cmpxchg_emu_u8() and cmpxchg_emu_u16() to emulate one-byte
-> > > and two-byte cmpxchg() on arc.
-> > >
-> > > Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-> > 
-> > I'm missing the context here, is it now mandatory to have 16-bit
-> > cmpxchg() everywhere? I think we've historically tried hard to
-> > keep this out of common code since it's expensive on architectures
-> > that don't have native 16-bit load/store instructions (alpha, armv3)
-> > and or sub-word atomics (armv5, riscv, mips).
-> 
-> I need 8-bit, and just added 16-bit because it was easy to do so.
-> I would be OK dropping the 16-bit portions of this series, assuming
-> that no-one needs it.  And assuming that it is easier to drop it than
-> to explain why it is not available.  ;-)
-> 
-> > Does the code that uses this rely on working concurrently with
-> > non-atomic stores to part of the 32-bit word? If we want to
-> > allow that, we need to merge my alpha ev4/45/5 removal series
-> > first.
-> 
-> For 8-but cmpxchg(), yes.  There are potentially concurrent
-> smp_load_acquire() and smp_store_release() operations to this same byte.
-> 
-> Or is your question specific to the 16-bit primitives?  (Full disclosure:
-> I have no objection to removing Alpha ev4/45/5, having several times
-> suggested removing Alpha entirely.  And having the scars to prove it.)
-> 
-> > For the cmpxchg() interface, I would prefer to handle the
-> > 8-bit and 16-bit versions the same way as cmpxchg64() and
-> > provide separate cmpxchg8()/cmpxchg16()/cmpxchg32() functions
-> > by architectures that operate on fixed-size integer values
-> > but not compounds or pointers, and a generic cmpxchg() wrapper
-> > in common code that can handle the abtraction for pointers,
-> > long and (if absolutely necessary) compounds by multiplexing
-> > between cmpxchg32() and cmpxchg64() where needed.
-> 
-> So as to support _acquire(), _relaxed(), and _release()?
-> 
-> If so, I don't have any use cases for other than full ordering.
+Folks,
 
-Nor any use cases other than integers.  (In case another thing you are
-after here is good type-checking for non-integers combined with allowing
-C-language implicit conversions for integers.)
+I am working on a low latency cross-platform concurrent pipe buffer 
+using C11 threads and atomics. It is portable code using a <stdatomic.h> 
+polyfill on Windows that wraps the intrinsics that Microsoft provides. 
+There is a detailed write up with implementation details, source code, 
+tests and benchmark results in the URL here:
 
-						Thanx, Paul
+- https://github.com/michaeljclark/cpipe/
 
-> > I did a prototype a few years ago and found that there is
-> > probably under a dozen users of the sub-word atomics in
-> > the tree, so this mostly requires changes to architecture
-> > code and less to drivers and core code.
-> 
-> Given this approach, the predominance of changes to architecture code
-> seems quite likely to me.
-> 
-> But do we really wish to invest that much work into architectures that
-> might not be all that long for the world?  (Quickly donning my old
-> asbestos suit, the one with the tungsten pinstripes...)
-> 
-> 							Thanx, Paul
+I have been eagerly following the work of Jens on io_uring which is why 
+I am including him as he may be interested in these scheduler findings, 
+because I am currently using busy memory polling for synchronization.
+
+The reason why I am writing here, is that I think I now have a pretty 
+decent test case to test the Windows and Linux schedulers side-by-side. 
+Let's just say it has been an eye opening process and I think folks here 
+might be interested in what I am seeing and what we could predict should 
+happen based on Amdahl's Law and low-level cache ping-pong on atomics.
+
+Let me cut to the chase. What I am observing is a situation where when I 
+add threads on Windows, performance increases, but when I add threads on 
+Linux, performance decreases. I don't know exactly why. I am wondering 
+if Windows is doing some topologically affine scheduling? or if it is 
+using performance counters to intuit scheduling decisions? I have 
+checked the codegen and it is basically two LOCK CMPXCHG instructions.
+
+I ran bare metal tests on Kaby Lake and Skylake processors on both OSes:
+
+- `Windows 11 Version 23H2 Build 22631.3296`
+- `Linux 6.5.0-25-generic #25~22.04.1-Ubuntu`
+
+In any case, here are numbers. I will let them speak for themselves:
+
+# Minimum Latency (nanoseconds)
+
+|                      | cpipe win11 | cpipe linux | linux pipes |
+|:---------------------|------------:|------------:|------------:|
+| Kaby Lake (i7-8550U) |      ~219ns |      ~362ns |     ~7692ns |
+| Skylake (i9-7980XE)  |      ~404ns |      ~425ns |     ~9183ns |
+
+# Message Rate (messages per second)
+
+|                      | cpipe win11 | cpipe linux | linux pipes |
+|:---------------------|------------:|------------:|------------:|
+| Kaby Lake (i7-8550U) |       4.55M |       2.71M |     129.62K |
+| Skylake (i9-7980XE)  |       2.47M |       2.35M |     108.89K |
+
+# Bandwidth 32KB buffer (1-thread)
+
+|                      | cpipe win11 | cpipe linux | linux pipes |
+|:---------------------|------------:|------------:|------------:|
+| Kaby Lake (i7-8550U) |  2.91GB/sec |  1.36GB/sec |  1.72GB/sec |
+| Skylake (i9-7980XE)  |  2.98GB/sec |  1.44GB/sec |  1.67GB/sec |
+
+# Bandwidth 32KB buffer (4-threads)
+
+|                      | cpipe win11 | cpipe linux |
+|:---------------------|------------:|------------:|
+| Kaby Lake (i7-8550U) |  5.56GB/sec |  0.79GB/sec |
+| Skylake (i9-7980XE)  |  7.11GB/sec |  0.89GB/sec |
+
+I think we have a very useful test case here for the Linux scheduler. I 
+have been working on a generalization of memory polled user-space queue 
+and this is about the 5th iteration where I have been very careful about 
+modulo arithmetic and overflow as the normal case.
+
+I know it is a little unfair to compare latency with Linux pipes and 
+also we waste a lot of time spinning on queue full. This is where we 
+would really like to use something like SENDUIPI, UMONITOR and UMWAIT 
+but I don't have access to silicon that supports those yet.
+
+Regards,
+Michael Clark
 
