@@ -1,122 +1,162 @@
-Return-Path: <linux-kernel+bounces-128192-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-128195-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id AA4D189575B
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 16:48:56 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3133F895766
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 16:49:42 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DC5E11C20A6F
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 14:48:55 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B3E051F21B13
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 14:49:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7F17312C533;
-	Tue,  2 Apr 2024 14:44:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BBB42133405;
+	Tue,  2 Apr 2024 14:45:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="bkJkgsz+"
-Received: from mail-ed1-f54.google.com (mail-ed1-f54.google.com [209.85.208.54])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="wQXjJLca"
+Received: from mail-vk1-f179.google.com (mail-vk1-f179.google.com [209.85.221.179])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0E63912B171
-	for <linux-kernel@vger.kernel.org>; Tue,  2 Apr 2024 14:44:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 25BCE13175D
+	for <linux-kernel@vger.kernel.org>; Tue,  2 Apr 2024 14:45:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712069066; cv=none; b=r2g60snHvu/mHc8juQTJ3dOBU6D303HK1XrXKSaLR9S6NMEA4QuSSWQn2JWoo3zer00x2INm/pPSDcH/NqQyv2R8ELE7URwbsRsDlRQNaKgKl8FgAQAq/rhKQIiyo/fxAzCdWb+qxIIneZ9ZxRZY+S/hBh4D/ARE/1QuGxwHrAI=
+	t=1712069135; cv=none; b=hknTH+B/BsSoGmoDAu+K2pPHTIMSE+vrOWvc/vPuWZH8EOLNoJx2WVyvMo/vGqnD+VMDLKt9tb3wUKsXJIoKICBb8ty3WmaRMH+GgkThyla9GyzfQ460J+Xm3DfB40AJj6SlusVVezCIe6GKrJCwOxLRzTHa/9lgE15aoWlcmIk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712069066; c=relaxed/simple;
-	bh=fGuaPdX4+28sYtC5DboaV6Cdo5XbtDu/aiutArVxNMM=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=nceXHTbeHgaCICAF6QQ/CUIFcu8w42Wq0keCsHGGyarP1xuQ424yU71q/LKialyhEjGHO1Q37Vjm54O7Rlkmglrs67OtFmuX+7/+CNFLKuuBfWREdhbTXpkN66VoYJv8YzPFmHSuFV/3aW4svQ2Gu3+8XN0qp8RFGCzb2g1BpUM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=bkJkgsz+; arc=none smtp.client-ip=209.85.208.54
+	s=arc-20240116; t=1712069135; c=relaxed/simple;
+	bh=dQyII7vmQHRtc0XgOTiHPMjkmRblHUUbSglUykBczkI=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=UiKNOhsb3JdaHi82icqW5B8UBgOvx+jbuCk5pGBUwJaP/neqQLv7U9mkXKMoRtT1EEPFLxLuU3YgPJpJN9ch7VJmKIMTZyg2gr1nio0aR+/n/BlTudQgdP2eJdOaJw4AgUDrnVrMJdQogjkWjWzFVao0iou5Ic1F8aXwf7jP38A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=wQXjJLca; arc=none smtp.client-ip=209.85.221.179
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ed1-f54.google.com with SMTP id 4fb4d7f45d1cf-56be32b9775so6947913a12.1
-        for <linux-kernel@vger.kernel.org>; Tue, 02 Apr 2024 07:44:24 -0700 (PDT)
+Received: by mail-vk1-f179.google.com with SMTP id 71dfb90a1353d-4da702e48e0so577552e0c.0
+        for <linux-kernel@vger.kernel.org>; Tue, 02 Apr 2024 07:45:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1712069063; x=1712673863; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=llvWiU6WYMOEo8iT+6jDXsiJqq1fV6TG+kjDiXbKQ00=;
-        b=bkJkgsz+Pi3KdolvflzrXw9MQ1j4UeCJMUi+vhwcf9RkV8z77dVrpyFyROoF9xRjYA
-         pMPWPCanluKA3VywzG56JKLSiGZyFBgBom//vH9UP9VmHyYG6p/2W+OYT21FWRnxMA6K
-         Xbb9MIzXk0eshITs1+KldRkWNBEK98TAZh6n26LnVXYOrvH58Ja8Qc/pl2kRpeJNTncE
-         VcW2lPWz5FIsi95r8CIXyyt0yYkAGHAYSVijooeZqqtONRuuJVhgDBY04ntEb8zjR8Ht
-         kSOkxbO8hUa0HUcPu2/6ba1luGEQla/7vkFpFEiJAHPjW4KTCXDH409NfJdUb7fsYqXd
-         M6Nw==
+        d=linaro.org; s=google; t=1712069133; x=1712673933; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=b3+dZ1fpYzh0cVc/i51+AzoQt474NVYKn1M7saZ5Kp0=;
+        b=wQXjJLca0zDbzHxwNe1xofa+xPoemEFGD5kxOFB/zPsBoFzmOD4/SmpaFDEQueKDgF
+         yEhlCXQUZcqHF1MG0YmziaZpi3dM4+QP7pSEGzEtd7tzJS5qc+jOSX7CPpfRYi/XvdHR
+         CmfCIQqQunpVYv1dc1z1xioxmHaZUo3bunUf5bdmQkX5begFnifg/+c3R3Y95Li63BgI
+         kbxm+GWgbT8dRVvKEYYSQ6Yrv0MwYb1tRD0Z3EWWSfbuIM9HSQmxP9NySQ/HYsMHzpCf
+         OY5A3BYPyYgyeukj17WkGp6tapMmgIx05wkeHJxtaNE/vh6cEEzU0HS8pMEH8UF6txCC
+         3vtw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712069063; x=1712673863;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=llvWiU6WYMOEo8iT+6jDXsiJqq1fV6TG+kjDiXbKQ00=;
-        b=FMZRCg90JEVsp6RHZYrrBw5o+jk/pR8OiouMAd/L2cHw5Q7/HexiDdcTxgfidrE6xs
-         Zzb9Yx3vX2pTNK5Ptmqm51WiFTelvM85KcWd6YzN6EjpUgvI0iOMXEP479NLpQ+6/tTW
-         S1pM+/ZJCDrqOXuGibHDy2Ny+nb2KvywnM5YnlQY/nskn3NWVq2hfVUDYaUQWBKGhzp6
-         mhKwf/mAiSVzjORWXiMDBF2U0MupJ1z3tycqR+TH0fRQ5z28/odJa1+/piZ4oYx015c2
-         zJ3NgonhfmHs7AHab06VH8YV1wKgjA746HETzFbJMkndFdGoTUH21egI7c7kz7qsbfMn
-         SXng==
-X-Forwarded-Encrypted: i=1; AJvYcCVxZ+tMK7nmIMcvLT/gUOo9gQQwfrSvbFhrwTNBsX2m0eTdux33E065D7Fna4tLk7tlxMCD0i9vLEP+1qa9n+y/6pCzhp3+TnT/TlOp
-X-Gm-Message-State: AOJu0YxYv0ZPlF5N0Kqxz+INp+q/Ihu2BlyWyjibve81u6IE23KKv4gq
-	PAPg0mNJu6KFQVvvJrdVA5DixsYhxI+S9UjW9zRtS4nba6h8rFpuAGDyhlLUImc=
-X-Google-Smtp-Source: AGHT+IGHCy6AW5RJuX88eDfDpaARDXtUhVjEm97XYVInHvyg/NeNlnam7roamuVmcsfAR6UYhzSKPg==
-X-Received: by 2002:a50:c318:0:b0:56c:16c9:bd2e with SMTP id a24-20020a50c318000000b0056c16c9bd2emr31946edb.9.1712069063270;
-        Tue, 02 Apr 2024 07:44:23 -0700 (PDT)
-Received: from localhost ([102.222.70.76])
-        by smtp.gmail.com with ESMTPSA id bf18-20020a0564021a5200b0056bd13ce50esm6951480edb.44.2024.04.02.07.44.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 02 Apr 2024 07:44:22 -0700 (PDT)
-Date: Tue, 2 Apr 2024 17:44:18 +0300
-From: Dan Carpenter <dan.carpenter@linaro.org>
-To: Boris Brezillon <boris.brezillon@collabora.com>
-Cc: Harshit Mogalapalli <harshit.m.mogalapalli@oracle.com>,
-	Steven Price <steven.price@arm.com>,
-	Liviu Dudau <liviu.dudau@arm.com>,
-	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-	Maxime Ripard <mripard@kernel.org>,
-	Thomas Zimmermann <tzimmermann@suse.de>,
-	David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
-	Heiko Stuebner <heiko@sntech.de>,
-	Grant Likely <grant.likely@linaro.org>,
-	dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-	kernel-janitors@vger.kernel.org, error27@gmail.com
-Subject: Re: [PATCH v3] drm/panthor: Fix couple of NULL vs IS_ERR() bugs
-Message-ID: <91e25b42-c3fa-4b69-ab8c-5d79610e757b@moroto.mountain>
-References: <20240402141412.1707949-1-harshit.m.mogalapalli@oracle.com>
- <20240402163838.34003a10@collabora.com>
+        d=1e100.net; s=20230601; t=1712069133; x=1712673933;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=b3+dZ1fpYzh0cVc/i51+AzoQt474NVYKn1M7saZ5Kp0=;
+        b=bISq0pRe2yBskkkZsMKAWWc0t67nd2ZtfTpBO74ERCtySeKOFhoYBtZ2RN0idLfLwu
+         BjTWlU3IL6cZHpppkYIBTHXDC41LJ8UMG3wjLOY5RvnnTwRUTQRUk3B1ctcU5Ldy9YQf
+         /YncGBtXWVpW26Jk9KV3R/5wI14+fIeRpKNNxw5Cc+yoVMZhUMNVQ1awZUQLiO4R8Nh+
+         esfu22ZzF5XzGJq9/6HE6rOA6QJllEUVgIV/qRGA+juYATl0/1ScXLNRsr6dBmelhjpb
+         JfjT0miB5CITsdUp2vIKxvXmvtHrnnWPvMMDQw3sUFySxTWmv2RQw1D8xgv2Tc8mx6Rh
+         avDg==
+X-Forwarded-Encrypted: i=1; AJvYcCUo30pwSSqS1/dLD3fumKzjHOj0ryC4YYTLZ8x0J1c570dEgdR5YQajVden1V9iNL4vDj237Jm8/9sOa4e46YGwnoivJGe6jqd7Qng8
+X-Gm-Message-State: AOJu0YzStTLZEvTztHnFCUsANFheEcbInyD/g5+3juOo23DTvofqje13
+	n2VJj6zkRxGx5XJroHlERJVF4tDmn0/8GoqiJE7mid+yeFn8JoX6tZ6vUoQnrpcDANYNuep26Bs
+	ihnQZK6tA6WH90yJoc0OkOfobM/lB+0X5Qv/viQ==
+X-Google-Smtp-Source: AGHT+IE1jgEZcgPnB/hD8dZF0oJ3NImwHK9mE9wkjXMjSPzUxoTXJ6/YZxwewKzVuNrajM6LQ0QOegrYmBEtmBqomwI=
+X-Received: by 2002:a1f:d5c4:0:b0:4d1:4e40:bd6f with SMTP id
+ m187-20020a1fd5c4000000b004d14e40bd6fmr9290884vkg.10.1712069132468; Tue, 02
+ Apr 2024 07:45:32 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240402163838.34003a10@collabora.com>
+References: <20240401-ufs-icc-fix-v1-1-3bac41bdfa7a@linaro.org>
+In-Reply-To: <20240401-ufs-icc-fix-v1-1-3bac41bdfa7a@linaro.org>
+From: Amit Pundir <amit.pundir@linaro.org>
+Date: Tue, 2 Apr 2024 20:14:56 +0530
+Message-ID: <CAMi1Hd2tLrP-Qm5tGSwjtYNjy6Di0PGMeW-j=scqj3jgM2RyjA@mail.gmail.com>
+Subject: Re: [PATCH] scsi: ufs: qcom: Add missing interconnect bandwidth
+ values for Gear 5
+To: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+Cc: Bjorn Andersson <andersson@kernel.org>, Konrad Dybcio <konrad.dybcio@linaro.org>, 
+	"James E.J. Bottomley" <jejb@linux.ibm.com>, "Martin K. Petersen" <martin.petersen@oracle.com>, 
+	linux-arm-msm@vger.kernel.org, linux-scsi@vger.kernel.org, 
+	linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
-On Tue, Apr 02, 2024 at 04:38:38PM +0200, Boris Brezillon wrote:
-> On Tue,  2 Apr 2024 07:14:11 -0700
-> Harshit Mogalapalli <harshit.m.mogalapalli@oracle.com> wrote:
-> 
-> > Currently panthor_vm_get_heap_pool() returns both ERR_PTR() and
-> > NULL(when create is false and if there is no poool attached to the
-> 
->                                                ^ pool
-> 
-> > VM)
-> > 	- Change the function to return error pointers, when pool is
-> > 	  NULL return -ENOENT
-> > 	- Also handle the callers to check for IS_ERR() on failure.
-> > 
-> > Fixes: 4bdca1150792 ("drm/panthor: Add the driver frontend block")
-> 
-> I would explain that the code was correct, but the documentation didn't
-> match the function behavior, otherwise it feels a bit weird to have a
-> Fixes tag here.
+On Mon, 1 Apr 2024 at 20:39, Manivannan Sadhasivam
+<manivannan.sadhasivam@linaro.org> wrote:
+>
+> These entries are necessary to scale the interconnect bandwidth while
+> operating in Gear 5.
 
-The code wasn't correct, it returned a mix of error pointers and NULL.
-So it needs a Fixes tag.
+This fixes the UFS breakage we see on SM8550-HDK.
 
-regards,
-dan carpenter
+Tested-by: Amit Pundir <amit.pundir@linaro.org>
 
+Regards,
+Amit Pundir
+
+>
+> Cc: Amit Pundir <amit.pundir@linaro.org>
+> Fixes: 03ce80a1bb86 ("scsi: ufs: qcom: Add support for scaling interconnects")
+> Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+> ---
+>  drivers/ufs/host/ufs-qcom.c | 8 +++++++-
+>  1 file changed, 7 insertions(+), 1 deletion(-)
+>
+> diff --git a/drivers/ufs/host/ufs-qcom.c b/drivers/ufs/host/ufs-qcom.c
+> index 8d68bd21ae73..696540ca835e 100644
+> --- a/drivers/ufs/host/ufs-qcom.c
+> +++ b/drivers/ufs/host/ufs-qcom.c
+> @@ -47,7 +47,7 @@ enum {
+>         TSTBUS_MAX,
+>  };
+>
+> -#define QCOM_UFS_MAX_GEAR 4
+> +#define QCOM_UFS_MAX_GEAR 5
+>  #define QCOM_UFS_MAX_LANE 2
+>
+>  enum {
+> @@ -67,26 +67,32 @@ static const struct __ufs_qcom_bw_table {
+>         [MODE_PWM][UFS_PWM_G2][UFS_LANE_1] = { 1844,            1000 },
+>         [MODE_PWM][UFS_PWM_G3][UFS_LANE_1] = { 3688,            1000 },
+>         [MODE_PWM][UFS_PWM_G4][UFS_LANE_1] = { 7376,            1000 },
+> +       [MODE_PWM][UFS_PWM_G5][UFS_LANE_1] = { 14752,           1000 },
+>         [MODE_PWM][UFS_PWM_G1][UFS_LANE_2] = { 1844,            1000 },
+>         [MODE_PWM][UFS_PWM_G2][UFS_LANE_2] = { 3688,            1000 },
+>         [MODE_PWM][UFS_PWM_G3][UFS_LANE_2] = { 7376,            1000 },
+>         [MODE_PWM][UFS_PWM_G4][UFS_LANE_2] = { 14752,           1000 },
+> +       [MODE_PWM][UFS_PWM_G5][UFS_LANE_2] = { 29504,           1000 },
+>         [MODE_HS_RA][UFS_HS_G1][UFS_LANE_1] = { 127796,         1000 },
+>         [MODE_HS_RA][UFS_HS_G2][UFS_LANE_1] = { 255591,         1000 },
+>         [MODE_HS_RA][UFS_HS_G3][UFS_LANE_1] = { 1492582,        102400 },
+>         [MODE_HS_RA][UFS_HS_G4][UFS_LANE_1] = { 2915200,        204800 },
+> +       [MODE_HS_RA][UFS_HS_G5][UFS_LANE_1] = { 5836800,        409600 },
+>         [MODE_HS_RA][UFS_HS_G1][UFS_LANE_2] = { 255591,         1000 },
+>         [MODE_HS_RA][UFS_HS_G2][UFS_LANE_2] = { 511181,         1000 },
+>         [MODE_HS_RA][UFS_HS_G3][UFS_LANE_2] = { 1492582,        204800 },
+>         [MODE_HS_RA][UFS_HS_G4][UFS_LANE_2] = { 2915200,        409600 },
+> +       [MODE_HS_RA][UFS_HS_G5][UFS_LANE_2] = { 5836800,        819200 },
+>         [MODE_HS_RB][UFS_HS_G1][UFS_LANE_1] = { 149422,         1000 },
+>         [MODE_HS_RB][UFS_HS_G2][UFS_LANE_1] = { 298189,         1000 },
+>         [MODE_HS_RB][UFS_HS_G3][UFS_LANE_1] = { 1492582,        102400 },
+>         [MODE_HS_RB][UFS_HS_G4][UFS_LANE_1] = { 2915200,        204800 },
+> +       [MODE_HS_RB][UFS_HS_G5][UFS_LANE_1] = { 5836800,        409600 },
+>         [MODE_HS_RB][UFS_HS_G1][UFS_LANE_2] = { 298189,         1000 },
+>         [MODE_HS_RB][UFS_HS_G2][UFS_LANE_2] = { 596378,         1000 },
+>         [MODE_HS_RB][UFS_HS_G3][UFS_LANE_2] = { 1492582,        204800 },
+>         [MODE_HS_RB][UFS_HS_G4][UFS_LANE_2] = { 2915200,        409600 },
+> +       [MODE_HS_RB][UFS_HS_G5][UFS_LANE_2] = { 5836800,        819200 },
+>         [MODE_MAX][0][0]                    = { 7643136,        307200 },
+>  };
+>
+>
+> ---
+> base-commit: 4cece764965020c22cff7665b18a012006359095
+> change-id: 20240401-ufs-icc-fix-123c7ca1be45
+>
+> Best regards,
+> --
+> Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+>
 
