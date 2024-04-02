@@ -1,71 +1,71 @@
-Return-Path: <linux-kernel+bounces-128374-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-128375-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 20711895A0F
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 18:48:29 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 93D2D895A11
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 18:48:44 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B10CB1F26F18
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 16:48:28 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4A3CD1F27182
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 16:48:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 15E6515B12A;
-	Tue,  2 Apr 2024 16:46:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 956B515B149;
+	Tue,  2 Apr 2024 16:46:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="aafQCBHQ"
-Received: from mail-lf1-f43.google.com (mail-lf1-f43.google.com [209.85.167.43])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="BXpgWmNf"
+Received: from mail-lf1-f46.google.com (mail-lf1-f46.google.com [209.85.167.46])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 89E8615B10A;
-	Tue,  2 Apr 2024 16:46:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2874615B119;
+	Tue,  2 Apr 2024 16:46:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712076387; cv=none; b=hxnOaysxPt24+uGkewwztagnFJQ5NSspfii/KNlc77GIFdrys0duFsrDyu2CONsIFSPXcljJYKKvkb2044Zr7ltIcVZokMAy5lg46jNp7A5IK5ay28DwYSnunoCQRX5DfTMq23M1tuY08oq6AupE4y0Vchd22zLmRsh+5mAZjxg=
+	t=1712076388; cv=none; b=YK5+pHeq+avq/yOU6ZzvxN9GDJUTTqSMYjAQak6CcQNniSrHYdw/iZ1+0vnOi86Cxo3yLgf09q9CnD0KrNX5bKQh0XQYVxCZmLp4gOPgBhmiFjQ8R6n3v3ufIR91l3ds4vezvCwVFwLKlVurhILW+RECIX+sYU5Uot0/EXyAZrU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712076387; c=relaxed/simple;
-	bh=syKC/lmNqu+Wo7UMZrahrtjFMH+UOJOs9yLduQt5TTg=;
+	s=arc-20240116; t=1712076388; c=relaxed/simple;
+	bh=H0ma8eY/8/S2N+welQc2fVRYTdGUfB4oLn55S6JvmDA=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=Pp4TaYtCp2LlyWzKyJSWHTIz2WhtQ/BUQlBUTpjysxe3orTgLfctHEJE90q+r7ar6YQHtMCAUujf+tOIT1uhFE7Zab7Q+7WNHQAg9X3sUjdzJNnE5LfMnm39Y3Zfjyb8uP0peIyFRwmbLNq36iHnjMVcKkRMLpksAi5ihBOZO0Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=aafQCBHQ; arc=none smtp.client-ip=209.85.167.43
+	 MIME-Version; b=gxkoDWaKEje48hEWtH54b9JnYPtYNMsnVSVmXQWdbktLDwHRkjF6jkxUfHJw1iLyr5LiM/4Y5GLrc0OiqNuYS4tQT3g0/4qlZpRB7CI2Ie3vQsJ78bzm5Aq5XPsVimSAlNW6xXyBgwTxdxUkdDSwHyfDvAOXfp3upti6U7iwbXQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=BXpgWmNf; arc=none smtp.client-ip=209.85.167.46
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lf1-f43.google.com with SMTP id 2adb3069b0e04-516afb04ec7so1931336e87.2;
-        Tue, 02 Apr 2024 09:46:24 -0700 (PDT)
+Received: by mail-lf1-f46.google.com with SMTP id 2adb3069b0e04-515c3eeea5dso6338544e87.1;
+        Tue, 02 Apr 2024 09:46:27 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1712076382; x=1712681182; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1712076385; x=1712681185; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=A8eAyIV1AX0Cdyf1zBdPe9cbHcBl+4k6LrmpiHySYds=;
-        b=aafQCBHQHlQfkxuurw5acepnaNZsrVVsCteTPCqHcdUhb1pTADX5o788SLPCOXsF9M
-         sIxuJZV1e7BmH4qD/00LVsZIGmwajm9FVHSFQwQ1pgWyzfpcluV7C+iEUO4bkQ43H5bg
-         h4V6ty6PUpPE7SJu9iqvE2mzGPsygQJmLFANo/areAkZy/RHo1Na94mW9O9rPxgJUdzL
-         VHILQJhsaK2Q0q+EO4Enwr0gi/BIu+lFX6j2kgOyAc/Jid4CMGtIFUKde7TsmH7KuXf7
-         nvs9v77VduInH7lwHtaU6giteuSDtq2hBp7bIu7YV1phZrDMGSgsNxwpMzcRKdYCWNrc
-         Tzbw==
+        bh=Zvp9vfG0Jk7g28an8SJ7vQketSIg/VKljXWkv56ib7E=;
+        b=BXpgWmNf6NSF3KtTrY/rWU5tJS8wZ5IGNScMCA07dhS636FyUmmBSS4wq5sBXnmOOZ
+         wt1HGYhW5Psmgc5bF9Rh0MWSaYvnmxJ1/zc25JO074GbHxnCsX06KlGB+P9pCTm5TO6C
+         l2xAGp8+FdDb/CWPtXJKkuZ6mC54hS/nONXoQp7XdKThoKXXfALpkZ4mCEkw09/GQV5J
+         +BpAEtNUAUUpntFE1SKnodnf9//O17z/wZkoVzCwD8UihhslrIOIYxJFxYhO+RTx3Gz2
+         2F217SIBnAAU9hJkNpAIB2iBvxdVq4uq5JzfwoTu0uk4KLlaGwv/UzIP/BWFS5C/1D80
+         R4+A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712076382; x=1712681182;
+        d=1e100.net; s=20230601; t=1712076385; x=1712681185;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=A8eAyIV1AX0Cdyf1zBdPe9cbHcBl+4k6LrmpiHySYds=;
-        b=JsdSPDrSrxOi31Hi9kATrNMj2Et+Y0uxBUFMM74xiUwwBZ05ilmg4l3BUYotzv693o
-         yeShC3LMmPRdgzpLNXioNvXe8uAUHScXtp9O5t7Tjuu2NxAyc8xtnIRSrsVGvSxJnLBm
-         9YnZyDT4wUD+jDB3M0h0exURpBQ0P3ygX+Vm+Jvxob5jT5H8cgY1QnRj8WoDN6lqkSda
-         AC+rT78VznDjcsCBUFRGO1nBmbEwLRltZjDgaVec1D5HJx3rUOf3e42rjnGwSCjQgUZ2
-         BuzoDEoP99RatwDKFzCkwOvNXDmNs2/2q3L7PIjOk8LWmMzGS96mYOXwmygg9ZFbZPQh
-         S0+w==
-X-Forwarded-Encrypted: i=1; AJvYcCWsMjUsOcZuo/yIy+ygAV29bXZaKJZ/fXpWbgizDSQre9k7148VdM11iQ6Bok0NXISjpcJkt502jCkh1GkBB61mn1g6ptOe8yMVMM9r
-X-Gm-Message-State: AOJu0YzsZi+VGUSBpdjXdVFJdxbBSDfvRZr8jV+Fg/caaXOYk+jVf34N
-	eDiyjlfqoobabRnWxdkOaaXRT5esE4XAqo1rAk4w6ZFDUok9okHVQXfjPl2G9NKF7w==
-X-Google-Smtp-Source: AGHT+IE7bkoodyNXSz6+EqFKVdQ+OxmFH8pZEeS6dQIKa8N1+77+giivymAbrLvQGhQra3004839rQ==
-X-Received: by 2002:a05:6512:3f1c:b0:513:c9a6:46ce with SMTP id y28-20020a0565123f1c00b00513c9a646cemr11683731lfa.9.1712076382475;
-        Tue, 02 Apr 2024 09:46:22 -0700 (PDT)
+        bh=Zvp9vfG0Jk7g28an8SJ7vQketSIg/VKljXWkv56ib7E=;
+        b=DLeEbBXrHcgJNL8IDBBtGp2h7G0LlaBC12B0CepNZ9492XsRhDTm6lHrqjpqoyybme
+         rqqryhjWaEoXhyL8uWT3zi0qqF8oqWC2Mcik0uIbv1gX79DkmqCu14bivFYEJ8wdZy5L
+         XgHk1nEUv+3LwkW8fEuAz5BbqRJv6GDKgvhXZfuF0yPXKQfqKgfojFhRcDnuGlYti3f+
+         dvqpVfyvQlf7THhlPgva0j3F5y7ltR5zvbcI/JFQlwVIUWjg8l/0NfA2qmJlUKdHFYES
+         kZP/1wzHoI/fCPne0JQIu+8nRQXct5g9TlIhefE/ZENxcu6SMtzbvxHoN1ZqaoVWfW0T
+         7MEQ==
+X-Forwarded-Encrypted: i=1; AJvYcCULSObrNvN5dtl8+JLjyzxaNQQaZx4GTZqQINtGH0mFmK4cPOitcIU+Cu1H8ODh54nDGEtz3j4JQBzcKd7OWaOiVmmvqF5XyMlUsz7H
+X-Gm-Message-State: AOJu0YyLWMoKEJffvcsQoH0QxLDiQaljsrBBUA7zs45m3hxmDUFXMDXh
+	b/keoKfrefgq2loeTCBB4ZKl2PhsX7QHIpKzZKKaMDwBg6CoCdIcbOxWnQHTTHkTaA==
+X-Google-Smtp-Source: AGHT+IEReO8ZOKL4HY4Vm9cDttgAjqCtyW+FlGR/Twe2yq6ADB3Ot4ZsoFYgpQyRa54LPEmWoieyLA==
+X-Received: by 2002:a05:6512:200d:b0:513:4a0c:b83d with SMTP id a13-20020a056512200d00b005134a0cb83dmr7938266lfb.46.1712076384509;
+        Tue, 02 Apr 2024 09:46:24 -0700 (PDT)
 Received: from localhost ([77.91.78.25])
-        by smtp.gmail.com with ESMTPSA id q18-20020ac25292000000b00513cdfff70fsm643674lfm.45.2024.04.02.09.46.21
+        by smtp.gmail.com with ESMTPSA id g1-20020ac24d81000000b00515c102c826sm1779374lfe.270.2024.04.02.09.46.23
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 02 Apr 2024 09:46:22 -0700 (PDT)
+        Tue, 02 Apr 2024 09:46:24 -0700 (PDT)
 From: Mikhail Rudenko <mike.rudenko@gmail.com>
 To: linux-media@vger.kernel.org,
 	linux-kernel@vger.kernel.org
@@ -77,9 +77,9 @@ Cc: Sakari Ailus <sakari.ailus@linux.intel.com>,
 	Dave Stevenson <dave.stevenson@raspberrypi.com>,
 	Mauro Carvalho Chehab <mchehab@kernel.org>,
 	Mikhail Rudenko <mike.rudenko@gmail.com>
-Subject: [PATCH v4 08/20] media: i2c: ov4689: Enable runtime PM before registering sub-device
-Date: Tue,  2 Apr 2024 19:45:39 +0300
-Message-ID: <20240402164552.19171-9-mike.rudenko@gmail.com>
+Subject: [PATCH v4 09/20] media: i2c: ov4689: Use runtime PM autosuspend
+Date: Tue,  2 Apr 2024 19:45:40 +0300
+Message-ID: <20240402164552.19171-10-mike.rudenko@gmail.com>
 X-Mailer: git-send-email 2.44.0
 In-Reply-To: <20240402164552.19171-1-mike.rudenko@gmail.com>
 References: <20240402164552.19171-1-mike.rudenko@gmail.com>
@@ -91,44 +91,64 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-As the sensor may be accessible right after its async sub-device is
-registered, enable runtime PM before doing so.
+Use runtime PM autosuspend to avoid powering off the sensor during
+fast stop-reconfigure-restart cycles.
 
 Signed-off-by: Mikhail Rudenko <mike.rudenko@gmail.com>
 Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
 ---
- drivers/media/i2c/ov4689.c | 14 ++++++++------
- 1 file changed, 8 insertions(+), 6 deletions(-)
+ drivers/media/i2c/ov4689.c | 15 +++++++++++----
+ 1 file changed, 11 insertions(+), 4 deletions(-)
 
 diff --git a/drivers/media/i2c/ov4689.c b/drivers/media/i2c/ov4689.c
-index 47feb6b5ede8..0e0e694510aa 100644
+index 0e0e694510aa..2354397ab34c 100644
 --- a/drivers/media/i2c/ov4689.c
 +++ b/drivers/media/i2c/ov4689.c
-@@ -875,19 +875,21 @@ static int ov4689_probe(struct i2c_client *client)
- 		goto err_clean_entity;
+@@ -426,7 +426,8 @@ static int ov4689_s_stream(struct v4l2_subdev *sd, int on)
+ 	} else {
+ 		cci_write(ov4689->regmap, OV4689_REG_CTRL_MODE,
+ 			  OV4689_MODE_SW_STANDBY, NULL);
+-		pm_runtime_put(dev);
++		pm_runtime_mark_last_busy(dev);
++		pm_runtime_put_autosuspend(dev);
  	}
  
-+	pm_runtime_set_active(dev);
-+	pm_runtime_enable(dev);
-+	pm_runtime_idle(dev);
-+
+ unlock_and_return:
+@@ -606,7 +607,8 @@ static int ov4689_set_ctrl(struct v4l2_ctrl *ctrl)
+ 		break;
+ 	}
+ 
+-	pm_runtime_put(dev);
++	pm_runtime_mark_last_busy(dev);
++	pm_runtime_put_autosuspend(dev);
+ 
+ 	return ret;
+ }
+@@ -876,8 +878,10 @@ static int ov4689_probe(struct i2c_client *client)
+ 	}
+ 
+ 	pm_runtime_set_active(dev);
++	pm_runtime_get_noresume(dev);
+ 	pm_runtime_enable(dev);
+-	pm_runtime_idle(dev);
++	pm_runtime_set_autosuspend_delay(dev, 1000);
++	pm_runtime_use_autosuspend(dev);
+ 
  	ret = v4l2_async_register_subdev_sensor(sd);
  	if (ret) {
- 		dev_err(dev, "v4l2 async register subdev failed\n");
--		goto err_clean_subdev;
-+		goto err_clean_subdev_pm;
+@@ -885,11 +889,14 @@ static int ov4689_probe(struct i2c_client *client)
+ 		goto err_clean_subdev_pm;
  	}
  
--	pm_runtime_set_active(dev);
--	pm_runtime_enable(dev);
--	pm_runtime_idle(dev);
--
++	pm_runtime_mark_last_busy(dev);
++	pm_runtime_put_autosuspend(dev);
++
  	return 0;
  
--err_clean_subdev:
-+err_clean_subdev_pm:
-+	pm_runtime_disable(dev);
-+	pm_runtime_set_suspended(dev);
+ err_clean_subdev_pm:
+ 	pm_runtime_disable(dev);
+-	pm_runtime_set_suspended(dev);
++	pm_runtime_put_noidle(dev);
  	v4l2_subdev_cleanup(sd);
  err_clean_entity:
  	media_entity_cleanup(&sd->entity);
