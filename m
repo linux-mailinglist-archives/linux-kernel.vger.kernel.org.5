@@ -1,100 +1,168 @@
-Return-Path: <linux-kernel+bounces-128392-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-128393-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 77764895A49
+	by mail.lfdr.de (Postfix) with ESMTPS id 744D4895A48
 	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 18:56:49 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8BDADB27ADE
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 16:54:01 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 54AAEB26E8A
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 16:54:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3194515A499;
-	Tue,  2 Apr 2024 16:50:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 22481159906;
+	Tue,  2 Apr 2024 16:53:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="mV0rh8a0"
-Received: from mail-ej1-f42.google.com (mail-ej1-f42.google.com [209.85.218.42])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="giZqpaKN"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.18])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A99362AD1E
-	for <linux-kernel@vger.kernel.org>; Tue,  2 Apr 2024 16:50:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 286CD158214;
+	Tue,  2 Apr 2024 16:53:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712076608; cv=none; b=mkkqdx4RPjb7/Wkq0Tug5fkwJ1qP6Of1rZeiLnE/PAcVcWujBedUIhJwUbvrMmOcHiOiOPTlF+AbR/mGWG5jA5a2uplnkGnnVtPnliY7szRFoWg+usRg9vs9f3q/NNjEcm9vx5Y7f47nq0Fddg8DgRHK5xeM30GySSwEU6pGGRs=
+	t=1712076791; cv=none; b=d5uDs+OzPHuMraDHsxs8OMpEHbbXCMY2vLmA0KRNfbnnveH5sTK6mLV6ZLN5lXtQKdVVS/mxXZT9K1JHZHhCBNiKsizj+74GCs4AGJRYDLWfffKmLzFoXqrT73jcBZRgHCez6R6/+FEgf4tCbF4D20MUBCxhFCUUZVIN7Pizp4M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712076608; c=relaxed/simple;
-	bh=a5VC7rpVvraZunv6Dwst6lVP7+CUM4jij1XoG9GZ/Z0=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=QBnVY2IQAU2N8H02e/Miq4mEATm79G287/rB0re0bwN5xejoBmblOmPzTaxmjaUKccBPB3p8/cd89y6bvu2yUrztXkCJ1HHke6Cz0cYsUr5Mo2Z/0Ov7e1M55mcFmvDWco534P+ZJkaU1yj0IyA0CAUzfsXJL+27t9jnp+e9RVc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=mV0rh8a0; arc=none smtp.client-ip=209.85.218.42
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ej1-f42.google.com with SMTP id a640c23a62f3a-a4a387ff7acso655645566b.2
-        for <linux-kernel@vger.kernel.org>; Tue, 02 Apr 2024 09:50:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1712076605; x=1712681405; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=odERAu60Ug6RsmH7NPCr90WTw8RZSM0Nag43RhUfhM8=;
-        b=mV0rh8a0avUBKzIkJwQ2i6tMq4+xbfipBpivRCmd0g9en6q0TUMUyRCxx5L76u+98H
-         pWJiT7zIP4KifONIV2gRTlrIYYeBhhPtQtNVGEf5LYaGR1QxvwTJHpB1IJ4IF6ymuuZM
-         qM4FsuaLmxMEMhO0Fa5cGcVsFSJ3bfaTvFrnEOoyCExa7C/IYQK/C1gWI4v8okhhT+/A
-         l5vSjPCnSYdci62jv8EU+wLtuxdx7SWNa/ZcG4I0eiEt3z/DLt4xYeAJvXkyDezqoZgX
-         pkGhcqsD0zD5HPRmjb1ShxJ63XejiZHOdsPzIrxEPLH5iPuhG4BVgthnv8H9CvkXIePi
-         Ojmw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712076605; x=1712681405;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=odERAu60Ug6RsmH7NPCr90WTw8RZSM0Nag43RhUfhM8=;
-        b=bgnKRQENJJCjuveioTj5GdVLT5gS1C4AQ75SunZUuAr68gdt+9Q5nX7V5ywlIjGQ6h
-         jtqtVdJ/ldoTzZpY0AJdfpJTYrsH6MiQowu+iVtjitLh3sRHXkePoA/EZJLXEcIxFmQ8
-         xA7SV22DHv6iHxRRigpwlA1AflgaRI9rYvQEI8q3A/9Zt9o5RVHT6CHbnAsRusB123Hi
-         RqFhYFNXpR6WCogzv+uhgzqiJdxgHSG/3GOfkVkFigNZ7hpZc6ktQC+JpykbU9nPpvFz
-         jjHe8eXYZd6TMVVUoCj/QAiBH6jlRAh12GI1Q7zEPoq+NHIyoUv7c9iobfCabC49muyC
-         WNkw==
-X-Forwarded-Encrypted: i=1; AJvYcCUh14tU5k4IuRvKIjhDp72d6BAI/i82Cx/LAHdiNSsk2MUmLAHgEcV27+o1cicJvrKE5JrPRGey9L2JD+/AmlOjrIcLzyBmeh2rwqsx
-X-Gm-Message-State: AOJu0YzPlJ8cZgvZ1hpUznuI2Q2SSfV+LucV0G/xhS2nSD76wXCDztkH
-	321Ptti7f20YlAf+PsC6Hl/I6C6Lvx0xGXtnyQF8OrBfa5Cx/fbOs8dpeNw3nVc=
-X-Google-Smtp-Source: AGHT+IH8OA9pcpehly5awaPgXOENbA8rXra2anS24UXloU1zSe9/5QM+mSIWTveOmI1kpt9iwyCeJg==
-X-Received: by 2002:a17:906:39c2:b0:a4e:7f22:cfc2 with SMTP id i2-20020a17090639c200b00a4e7f22cfc2mr233199eje.28.1712076604896;
-        Tue, 02 Apr 2024 09:50:04 -0700 (PDT)
-Received: from localhost ([102.222.70.76])
-        by smtp.gmail.com with ESMTPSA id bn1-20020a170907268100b00a4e6750a358sm2897610ejc.187.2024.04.02.09.50.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 02 Apr 2024 09:50:04 -0700 (PDT)
-Date: Tue, 2 Apr 2024 19:50:00 +0300
-From: Dan Carpenter <dan.carpenter@linaro.org>
-To: Shahar Avidar <ikobh7@gmail.com>
-Cc: gregkh@linuxfoundation.org, hverkuil-cisco@xs4all.nl,
-	andriy.shevchenko@linux.intel.com, robh@kernel.org,
-	felixkimbu1@gmail.com, linux-staging@lists.linux.dev,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 6/6] staging: pi433: Rename return value from "status"
- to "ret".
-Message-ID: <1f1572b9-9b0f-45b4-94ec-7f79467a7205@moroto.mountain>
-References: <20240402111414.871089-1-ikobh7@gmail.com>
- <20240402111414.871089-7-ikobh7@gmail.com>
+	s=arc-20240116; t=1712076791; c=relaxed/simple;
+	bh=+OIETa7FqtPMYZEyetZK7bSBPqtgACHlQcapBmBrB1s=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=ol5krmBNOBdFkOvhZGk/CyDxwWGdcqk65b9xio3lxK7YQdaS9lUrZ+Es0nXigRM0T5VSnlCpQwMz7dwKK79jM0d88Z4iNyaheVzwM9WIjms9Gql0lQRVhIoryy9HFZ6/uD4egtG0fd4H8KJL1PDdVC9v7BlqsCVR5D1upXEDHRc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=giZqpaKN; arc=none smtp.client-ip=192.198.163.18
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1712076789; x=1743612789;
+  h=from:to:cc:subject:in-reply-to:references:date:
+   message-id:mime-version;
+  bh=+OIETa7FqtPMYZEyetZK7bSBPqtgACHlQcapBmBrB1s=;
+  b=giZqpaKNWgSAvu6O+6L2jjJf7Vrt6DV6RiQPrKgsBLlfRpTQr94fywYp
+   uo3DuTKh4Ai12EHgCxv860EMUnrxS+KzMrP2Q5K/0Ddgg5crBI2gPXi0O
+   YpG3RKISSor5XjQFZX1luwB5YffcahoXNBa4ZMCDZjOGOH820sN/nr6Br
+   YoDWFWYHGl6iOCLGgCMyqaFnDCjA3LWTIYm9rCxqtwZBbOWzoAev59/y9
+   dXd96fwrkbmJo5nM3SYmYaNgUr0MCCo3+B1PVUyGfIDscSRuARJN0qNiq
+   VtvwBi3flwgQ6qy9nV6a6oXnRtOR5bWaRxsmTEr+97mHOKdQZffInul9r
+   Q==;
+X-CSE-ConnectionGUID: FCLUtvWbTD+JY0eydun9UA==
+X-CSE-MsgGUID: oHPpQ1bBT7+4ujOXPxdlXw==
+X-IronPort-AV: E=McAfee;i="6600,9927,11032"; a="7107283"
+X-IronPort-AV: E=Sophos;i="6.07,175,1708416000"; 
+   d="scan'208";a="7107283"
+Received: from orviesa007.jf.intel.com ([10.64.159.147])
+  by fmvoesa112.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Apr 2024 09:53:08 -0700
+X-CSE-ConnectionGUID: ffg8/aPXSdikW95Gpql1bg==
+X-CSE-MsgGUID: UqZyC5N1Sx2Vz2k/GRMH4A==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,175,1708416000"; 
+   d="scan'208";a="18552508"
+Received: from pramona-mobl.ger.corp.intel.com (HELO localhost) ([10.252.57.179])
+  by orviesa007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Apr 2024 09:53:02 -0700
+From: Jani Nikula <jani.nikula@linux.intel.com>
+To: Easwar Hariharan <eahariha@linux.microsoft.com>, Patrik Jakobsson
+ <patrik.r.jakobsson@gmail.com>, Maarten Lankhorst
+ <maarten.lankhorst@linux.intel.com>, Maxime Ripard <mripard@kernel.org>,
+ Thomas Zimmermann <tzimmermann@suse.de>, David Airlie <airlied@gmail.com>,
+ Daniel Vetter <daniel@ffwll.ch>, Rodrigo Vivi <rodrigo.vivi@intel.com>,
+ Joonas Lahtinen <joonas.lahtinen@linux.intel.com>, Tvrtko Ursulin
+ <tursulin@ursulin.net>, Zhenyu Wang <zhenyuw@linux.intel.com>, Zhi Wang
+ <zhi.wang.linux@gmail.com>, dri-devel@lists.freedesktop.org, open list
+ <linux-kernel@vger.kernel.org>, "open list:INTEL DRM DISPLAY FOR XE AND
+ I915 DRIVERS" <intel-gfx@lists.freedesktop.org>, "open list:INTEL DRM
+ DISPLAY FOR XE AND I915 DRIVERS" <intel-xe@lists.freedesktop.org>, "open
+ list:INTEL GVT-g DRIVERS (Intel GPU Virtualization)"
+ <intel-gvt-dev@lists.freedesktop.org>
+Cc: Wolfram Sang <wsa+renesas@sang-engineering.com>, "open list:RADEON and
+ AMDGPU DRM DRIVERS" <amd-gfx@lists.freedesktop.org>, "open list:DRM DRIVER
+ FOR NVIDIA GEFORCE/QUADRO GPUS" <nouveau@lists.freedesktop.org>, "open
+ list:I2C SUBSYSTEM HOST DRIVERS" <linux-i2c@vger.kernel.org>, "open
+ list:BTTV VIDEO4LINUX DRIVER" <linux-media@vger.kernel.org>, "open
+ list:FRAMEBUFFER LAYER" <linux-fbdev@vger.kernel.org>
+Subject: Re: [PATCH v0 03/14] drm/gma500,drm/i915: Make I2C terminology more
+ inclusive
+In-Reply-To: <fde7a0da-1981-48db-95e2-96d45655c11c@linux.microsoft.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+References: <20240329170038.3863998-1-eahariha@linux.microsoft.com>
+ <20240329170038.3863998-4-eahariha@linux.microsoft.com>
+ <87a5mcfbms.fsf@intel.com>
+ <7d5e6ed0-ffe9-46c2-b3b4-a4a47c09532e@linux.microsoft.com>
+ <87ttkjesx8.fsf@intel.com>
+ <fde7a0da-1981-48db-95e2-96d45655c11c@linux.microsoft.com>
+Date: Tue, 02 Apr 2024 19:52:48 +0300
+Message-ID: <87o7aremfz.fsf@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240402111414.871089-7-ikobh7@gmail.com>
+Content-Type: text/plain
 
-On Tue, Apr 02, 2024 at 02:14:14PM +0300, Shahar Avidar wrote:
-> Drivers init functions usually use either "ret" or "rc" naming their
-> return variable.
-> 
+On Tue, 02 Apr 2024, Easwar Hariharan <eahariha@linux.microsoft.com> wrote:
+> On 4/2/2024 7:32 AM, Jani Nikula wrote:
+>> On Tue, 02 Apr 2024, Easwar Hariharan <eahariha@linux.microsoft.com> wrote:
+>>> On 4/2/2024 12:48 AM, Jani Nikula wrote:
+>>>> On Fri, 29 Mar 2024, Easwar Hariharan <eahariha@linux.microsoft.com> wrote:
+>>>>> I2C v7, SMBus 3.2, and I3C specifications have replaced "master/slave"
+>>>>> with more appropriate terms. Inspired by and following on to Wolfram's
+>>>>> series to fix drivers/i2c/[1], fix the terminology for users of
+>>>>> I2C_ALGOBIT bitbanging interface, now that the approved verbiage exists
+>>>>> in the specification.
+>>>>
+>>>> gma500 and i915 changes should be split. See MAINTAINERS.
+>>>>
+>>>> Might also split the i915 changes to smaller pieces, it's kind of
+>>>> random. And the changes here are not strictly related to I2C AFAICT, so
+>>>> the commit message should be updated.
+>>>>
+>>>> BR,
+>>>> Jani.
+>>>>
+>>>>
+>>>
+>>> <snip>
+>>>
+>>> I will split gma500 and i915 into their respective patches if possible in v2.
+>>>
+>>> Can you say more about the changes being "not strictly related to I2C"? My
+>>> heuristic was to grep for master/slave, and look in the surrounding context for
+>>> i2c-related terminology (i2c_pin, 7-bit address, struct i2c_adapter, i2c_bus, etc)
+>>> to confirm that they are i2c-related, then following the references around to
+>>> make the compiler happy. For e.g., I did not change the many references to bigjoiner
+>>> master and slave because I understood from context they were not i2c references.
+>>>
+>>> A couple examples would help me restrict the changes to I2C, since as mentioned in the
+>>> discussion on Wolfram's thread, there are places where migrating away from master/slave
+>>> terms in the code would conflict with the original technical manuals and reduce correlation
+>>> and understanding of the code.
+>> 
+>> I guess I was looking at the VBT changes in intel_bios.c. Granted, they
+>> do end up being used as i2c addresses. No big deal.
+>> 
+>> I think I'd expect the treewide i2c adapter changes to land first, via
+>> i2c, and subsequent cleanups to happen next, via individual driver
+>> trees. There's quite a bit of conflict potential merging this outside of
+>> drm-intel-next, and there's really no need for that.
+>> 
+>> BR,
+>> Jani.
+>> 
+>
+> Great! Just so I'm clear, do you still want the i915 changes split up more, along with them being
+> split off from gma500?
 
-status is also fine.  Just leave this as-is probably.
+If we can merge the i915 changes via drm-intel-next, it's probably fine
+as a big i915 patch. Just the gma500 separated. (The struct
+i2c_algorithm change etc. necessarily has to go via I2C tree of course.)
 
-regards,
-dan carpenter
+BR,
+Jani.
 
+
+
+>
+> Thanks,
+> Easwar
+
+-- 
+Jani Nikula, Intel
 
