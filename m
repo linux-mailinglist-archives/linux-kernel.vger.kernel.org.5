@@ -1,114 +1,102 @@
-Return-Path: <linux-kernel+bounces-127493-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-127494-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0FE00894C78
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 09:16:10 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 542F7894C7C
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 09:16:36 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BF382282758
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 07:16:08 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 86B4028263E
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 07:16:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 331D13AC2B;
-	Tue,  2 Apr 2024 07:15:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C37AE38DFC;
+	Tue,  2 Apr 2024 07:16:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="s8XIPWsI"
-Received: from mail-ed1-f49.google.com (mail-ed1-f49.google.com [209.85.208.49])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b="klVBU1LA"
+Received: from mout.web.de (mout.web.de [212.227.15.14])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D603E383BD
-	for <linux-kernel@vger.kernel.org>; Tue,  2 Apr 2024 07:15:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A4FF23839A;
+	Tue,  2 Apr 2024 07:16:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.15.14
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712042120; cv=none; b=onI8FSxas6xgBwhYSp6UoquNx1Z66jMSH25OupWrD/nBwIrYM8qggPAEB7p//5useydJEW51Qz6t0liCsvNvQVEi6/jS61bP+1SKHUXHfuovECRHoGZ7v45GL1SJ4rjibRn0c5JiNLk6ku6SuLgNf6/hLZ163G4w0iDfrCgLBVM=
+	t=1712042184; cv=none; b=ii5reXlyQrlszFBiZfEWz8BwgChpNcmVXx1+phDQrjZ8BzwTJUK7Ex5L6YtBrPp669wwMG14FnW5mtsy09Rd+9xDnZwbNwvPCZ8ypsT+rSrLlt4aFPKu4Il1M8K1OrbolyCRbuzZ/MxLYEH+e7nyhSFhFAs8QpC2N/59w27oy7g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712042120; c=relaxed/simple;
-	bh=YV6DYQDC3IEebm+Pxkl6Atlk7TWUF7BcjSHmxpdG2BY=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=uPZpKXKq93nIj6biHSkwINarJV2FcoBd9GhrR5528vcXXQnj4BIUwUlsO/bkPVePNTova8nVlOPg//X9UXbYyITH9dsg7kPKkC8j7FSp8xOatqBvQsLRhaP9qmRdjssEz7rRjrqxFEPAWViD6lV1jJ5yyofg8d19z/bxnQZB4aw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=s8XIPWsI; arc=none smtp.client-ip=209.85.208.49
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ed1-f49.google.com with SMTP id 4fb4d7f45d1cf-56dc9955091so1808083a12.1
-        for <linux-kernel@vger.kernel.org>; Tue, 02 Apr 2024 00:15:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1712042117; x=1712646917; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=QcLmIctw5YZRqLa0BDTmesSSp3mrMTcdHK0j2v9fFws=;
-        b=s8XIPWsI59RZd7FgbkmJs6gzqcVro/5P+kHFJeP3LkQIy9hjvfa7RgN5HYSFxoZSnW
-         7QD7R2FuZmSf//E38wMg+VuxadOADKcAO6Q26SxBvMUctcBJVerROKzqq+Hp01vZewl9
-         27TjR5ug+pgoDnoEEvRPY5/2r4qoZ1VNS+hkE5FyIw3qQXQ29CjX22cPcAjiFqbrAvcZ
-         NC5rdzubWl8BhwFy8pkCkAphIU+xQ95CARSYvpUz0FkqNPsZLFujRqzgv3z2cwX3YRIT
-         ARAfwh7vMJM1CQ+qS8pr5/uYx/LQNT3a4iKL9r09op3JeTddCK/XvTf6JCP9rulE+dGc
-         k+JQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712042117; x=1712646917;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=QcLmIctw5YZRqLa0BDTmesSSp3mrMTcdHK0j2v9fFws=;
-        b=Rh9DFj9v/UqntI4VbewXaQ+VusD46YeBTe75C+2bjvfPFIYjMk8rO7VJuvixg1OmHq
-         aS8jMrW7T9+3ukplkR2W4K6lnHTt2LVgwY3X5Wo15q64ELCzSq6SCrhAJ1BlRFEg/k3D
-         WHem0HaH44UcDFaGDMAsIOdVRHkt/WW93vwMtbRq43YZ0TXNEX6OlYmUq1okFpL1bT4K
-         Y4Pfvc2KC+9D7v1ReykMLp/1Z49SaYBTg2i0SkGFHLcaCeLK4HWZ58+8ZWhX5iWVegfF
-         0RKE8xNDgP7lmjSlsEn56mc5e6MAgCW4OJbovQwTLVeF3y7UVUCMd2JUBMSFCNnr1rvv
-         mYvg==
-X-Forwarded-Encrypted: i=1; AJvYcCVbIm0aKSh22UqoNmQn8IAx4p4yZCAjxLBTXJS56jlCZN6NqWg36bIhjkZa3ixA3BTvLbfq/l+0fTPGdO+8TkBaMBJ5vht9hdE+sAfi
-X-Gm-Message-State: AOJu0YwJTH+Nn1V7wRLyHUHl6xzNCIJeXDrNkGv68hcOjk9ffJ5FDERb
-	65UHuGyuMhyEmLbpH5Imz9CWUqvSeFxwtcuxySyVKdQth0dCpfcnmud5MYTzJ74=
-X-Google-Smtp-Source: AGHT+IE/t+XdD6wZQ394SX3ykpFvfynHcDHGuPT0TNGqT3wlNCQpXzyhP3G0Pj+iSe8R3hFkGfbHEg==
-X-Received: by 2002:a17:906:4083:b0:a4d:f0c3:a9e9 with SMTP id u3-20020a170906408300b00a4df0c3a9e9mr6839023ejj.28.1712042117061;
-        Tue, 02 Apr 2024 00:15:17 -0700 (PDT)
-Received: from localhost ([102.222.70.76])
-        by smtp.gmail.com with ESMTPSA id u17-20020a17090626d100b00a4e1aa345f6sm6147253ejc.115.2024.04.02.00.15.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 02 Apr 2024 00:15:16 -0700 (PDT)
-Date: Tue, 2 Apr 2024 10:15:12 +0300
-From: Dan Carpenter <dan.carpenter@linaro.org>
-To: Uri Arev <me@wantyapps.xyz>
-Cc: Shresth Prasad <shresthprasad7@gmail.com>,
-	christophe.jaillet@wanadoo.fr, frank.li@vivo.com,
-	gregkh@linuxfoundation.org, hverkuil-cisco@xs4all.nl,
-	linux-kernel-mentees@lists.linuxfoundation.org,
-	linux-kernel@vger.kernel.org, linux-staging@lists.linux.dev,
-	luca.ceresoli@bootlin.com, prathubaronia2011@gmail.com,
-	robh@kernel.org, skhan@linuxfoundation.org,
-	u.kleine-koenig@pengutronix.de
-Subject: Re: [PATCH] staging: axis-fifo: align arguments to open parenthesis
- in axis-fifo.c
-Message-ID: <fdc25599-f8a7-4d66-9535-494de8439da0@moroto.mountain>
-References: <z2ewk44rjutv24i6lqau3adrmlprj524ulqtqbncvfaj44dwcg@2dnnbm75abbp>
- <72dc90fb-79ef-4dd4-b30e-97b1e7058156@gmail.com>
- <qnljnwccqvqzilxuoat2s6md2zwcuhfruzbpepxebk65k34t3g@cyl67lk5lsoe>
+	s=arc-20240116; t=1712042184; c=relaxed/simple;
+	bh=RDW+zwDa2CBhzAKEQWv7lUSIpXm7MGCiMSp3c7znYCA=;
+	h=Message-ID:Date:MIME-Version:To:Cc:References:Subject:From:
+	 In-Reply-To:Content-Type; b=SOH2d4nDPfLyD1NkbNtetL26YtqHVUa7iaRdInvwLdgecnJ+ScohcQtJUwrjG8mDFWkJGTI+vuap/o6xIQBvaXpa2u+QqtPMNmfsbKA1BpW5ElkLzhsS6U736Uz27k28hdyY+fepUDHjsChyXE0oUuUsoKA7Q08tHbRe9Hwkc7o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de; spf=pass smtp.mailfrom=web.de; dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b=klVBU1LA; arc=none smtp.client-ip=212.227.15.14
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=web.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=web.de;
+	s=s29768273; t=1712042138; x=1712646938; i=markus.elfring@web.de;
+	bh=RDW+zwDa2CBhzAKEQWv7lUSIpXm7MGCiMSp3c7znYCA=;
+	h=X-UI-Sender-Class:Date:To:Cc:References:Subject:From:
+	 In-Reply-To;
+	b=klVBU1LApA5mIHVuMI6quyFsihVv8LzhIcTfdvNXNyI9zDmW9vvyrSPapEuB31IJ
+	 3+gzlmAlKl7UOwV4Ub4j6QZPuQuXEuLDhPpr8bJDsxdJ+c2cnpjGinpA5H6lMfztU
+	 k663VM4upYOUdgzzPS3zBaY8KspXEFYk5XpVufKyOECOz7J8iPfEDlvGBVO8HHrtC
+	 Z097LNP96ylALTvHfvh2x/cY6fQVwHGHAXNEFunpxRYIUJJQZkXXLBNbOBcVW1GPb
+	 EcAKmE3etEOIyz1vs44vj1tNlrGo+UXmPmFhb8wvgvevnSEdimWMCqKhHRjzB+3nG
+	 egtEextJn6dr5IgNcQ==
+X-UI-Sender-Class: 814a7b36-bfc1-4dae-8640-3722d8ec6cd6
+Received: from [192.168.178.21] ([94.31.90.95]) by smtp.web.de (mrweb006
+ [213.165.67.108]) with ESMTPSA (Nemesis) id 1MFrxr-1s2nB70qQZ-00HLVA; Tue, 02
+ Apr 2024 09:15:38 +0200
+Message-ID: <e4776c82-e255-4eab-b6c4-8087e02f384f@web.de>
+Date: Tue, 2 Apr 2024 09:15:17 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <qnljnwccqvqzilxuoat2s6md2zwcuhfruzbpepxebk65k34t3g@cyl67lk5lsoe>
+User-Agent: Mozilla Thunderbird
+To: Kevin Tian <kevin.tian@intel.com>, Dan Williams
+ <dan.j.williams@intel.com>, linux-doc@vger.kernel.org,
+ linux-pci@vger.kernel.org, kernel-janitors@vger.kernel.org
+Cc: Bjorn Helgaas <bhelgaas@google.com>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ =?UTF-8?Q?Ilpo_J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>,
+ Ira Weiny <ira.weiny@intel.com>,
+ Jesse Brandeburg <jesse.brandeburg@intel.com>,
+ Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+ Julia Lawall <Julia.Lawall@inria.fr>, Lukas Wunner <lukas.wunner@intel.com>,
+ Matthew Wilcox <willy@infradead.org>, Peter Zijlstra <peterz@infradead.org>,
+ Linus Torvalds <torvalds@linux-foundation.org>,
+ Jonathan Corbet <corbet@lwn.net>, LKML <linux-kernel@vger.kernel.org>
+References: <BL1PR11MB5271DB63688BF220D0317AC08C3F2@BL1PR11MB5271.namprd11.prod.outlook.com>
+Subject: RE: [v3] cleanup: Add usage and style documentation
+Content-Language: en-GB
+From: Markus Elfring <Markus.Elfring@web.de>
+In-Reply-To: <BL1PR11MB5271DB63688BF220D0317AC08C3F2@BL1PR11MB5271.namprd11.prod.outlook.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Provags-ID: V03:K1:JTNDDC3fQbZw22eedVtgOny1uIqThPnTxOxFVbrDzjp4rYzGaFw
+ 3eJP2d0xCDlTZakMdes3GX7bxJ1ofpe9kWhpKILziqx02qyE5lICdlFkefUJaaqo1Pn+Eq+
+ viv7ysn21bw6ZfmyNgTMDdwnMNeMf1OEe9Ms4Y6PmRelsZPM2hT/UgyXkfZOI4jscCZi5hQ
+ 3pebzI942P5GQrR5Wlr0w==
+X-Spam-Flag: NO
+UI-OutboundReport: notjunk:1;M01:P0:wqufEvOOBnU=;3sjX2UJscXMIMeiT2ovpJaBmB2f
+ l9zRzPgxe4xxclVIw6AtlLYNXNaIafESCTJXewjjt/mow2bTXaXzulvshkQE4HYLinFSHG0PA
+ MYydAQzVF8U/jS2Gctuyeg1hf6EB/kVPPdm5ey1Tm6muUfkSohuqTi7OhdvtK/Ml1Y2buDJoQ
+ F0IjWKpOgXbxK8yKoitYUdlU6h4V5nd6O/nTB27NZtNHBa4U2pqSSTOTen4dnmSAXaCjbgLS/
+ AzmpbHd3Wc8d3L1zBsY7T6tCjXji++bwKFZUR1OHawXWYQMwJ22OzVpb2zDHIPWT9I6wUfdz6
+ VP3yc6Nol2UEsVhMZvjWyYoQHhLqWirsectx4sX8agQ7ipTpUUSVg5CySNY+n64lg7l/VmQN5
+ gg3qSDxzuOJtUymIftZcUsJcoEcs5U8+USGYFKipJ+btRIVi0PuaDonTI4Az3MKK3rd/v2h3Z
+ 3ToIkQ0HxOVuJyCGCbFWFZJ9qGCyi+wFdhhJxNdic4Cx5J6DGqVmODOp6evwO0KGwTbqk4pWa
+ EhT2G6fpzM9T+DzBU79Qy6Wdf2/uOIUNe56A0Qc/dRb6/t6ELKz7A/hT/a0J5mZaDT28Q/SaK
+ uE243V8rni1TP8R+S+s6HWC0qQBhgffqdSf1BeHh0jEn2Lbp9u0U/eLhhmmtem+CIltnk7msS
+ QRwrTKpC7L/ontclCOCxbABz708USgh7V1mb4Zc/1ZWO8TlWN/RL8SM0X+onI/kMdg5BrxSth
+ rFTtF/MWbc9v7A28evW0pemBWGWv22NInEUiwG0OqDshO8rvlMTaZ62o6Ft52qplKpMvXYVLq
+ cc9ux5nBbLV09+/xfNJeqBrrSCswsKDCmpxACnPpjjenw=
 
-On Sun, Mar 31, 2024 at 09:33:55PM +0300, Uri Arev wrote:
-> > Oh, that's too bad. Thanks for the heads up!
-> No worries, I wouldn't mind it if your patch got accepted and not mine
-> :p
-> I just don't think they accept patches to axis-fifo anymore, especially
-> not basic syntax and checkpatch patches which are not as important as
-> actual bug-fixes.
+> Reviewed-by: Kevin Tian <kevin.tian@intel.com>
 
-No, we're always taking patches.  You just had bad luck/timing where you
-sent the patch 2 days before Greg went on vacation.
+Did you take any of my review comments into account for this patch version so far?
 
-Greg is back now, but I imagine he has a long list of stuff to catch up
-with.  It's possible that he also accidentally dropped your patch
-because of the vacation...  I could imagine a situation where that
-happened.
-
-regards,
-dan carpenter
-
+Regards,
+Markus
 
