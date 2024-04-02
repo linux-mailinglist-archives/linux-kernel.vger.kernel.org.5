@@ -1,137 +1,159 @@
-Return-Path: <linux-kernel+bounces-128090-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-128091-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9FED08955FE
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 16:00:44 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 668F9895600
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 16:01:05 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D121C1C22568
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 14:00:43 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1EAEB28256A
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 14:01:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 863A585277;
-	Tue,  2 Apr 2024 14:00:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 40DDF85C5E;
+	Tue,  2 Apr 2024 14:00:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b="RpaHx4tC"
-Received: from mail-lj1-f182.google.com (mail-lj1-f182.google.com [209.85.208.182])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b="1K/27f1q"
+Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.153.233])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 49C5982893
-	for <linux-kernel@vger.kernel.org>; Tue,  2 Apr 2024 14:00:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CEDE385639;
+	Tue,  2 Apr 2024 14:00:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=68.232.153.233
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712066425; cv=none; b=SXEaslHtrYl+Q6YEo83H6WNURD7TOt6/6ODojegdTcolvWTbK5as2GxtcoPP0Gfsy4CeKuYlDzN+0iYRRLQDqNTHbQBx+tT2MYW/DYw7eDwW+MS6V/y/lzLGgeQTCMrIKFCISZGda69DZOF/gcaEumbkxlMGobJ0s5p4owONxFg=
+	t=1712066440; cv=none; b=IWM9YK88PKrSXjDU5InSLftYPt3WLjUH21GU9RcyuNBdQM0sjaUa+NyG2kfGxNZIHetOVCejAvoz9t5eTJETGbsoDRssrT6yzZaPBph6SLp1vRLfQOPwA6JfRrDgELhVvEXRKkoJ6+rblM6bKQfPp2Ssj+2ItFtlolZ+qQyAhIg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712066425; c=relaxed/simple;
-	bh=zQsUVohe62XDCv8RPmVhbR0HOvcb2ANjyDfd2BTRSTA=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=dQMGQ3rle+rRgw9JmYXuOu45s7b+oQIWroB/3rUIqLFGJS4P7u+IlxzqIdR98WdQztEjaDy0eSmGpC4DtzuoNQjIQdbBPNFe4pqLjRtE/O+HwrYqdSFw0PTH+dBbetlpU443gqUje1mKJOEBOo5cPXwLXGlon4BLHazomUUQxJc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com; spf=pass smtp.mailfrom=baylibre.com; dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b=RpaHx4tC; arc=none smtp.client-ip=209.85.208.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=baylibre.com
-Received: by mail-lj1-f182.google.com with SMTP id 38308e7fff4ca-2d82713f473so17418421fa.3
-        for <linux-kernel@vger.kernel.org>; Tue, 02 Apr 2024 07:00:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20230601.gappssmtp.com; s=20230601; t=1712066421; x=1712671221; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=8rDbZVm/05+TD8i00zno4F1FPbK9cGt0EA7D+/0NFvM=;
-        b=RpaHx4tCJ3BDi1LLkthbtY6JG/Zklfc19v14leIe4bGroL1Y29/a9k9R3ZdmD7pZ0n
-         U6Nnp5IqS6lJ6H93XpfLsjwovzdOG1INNTRZu5tXeyg7oRqAeDQxOqrqzXDrDFZMGXBy
-         bZsytrh2FxMjzozGNVEgEUQskkDZ94Mj4oH01DybFJVEk1eSJe8GOwSTFN7JpL9UoI0d
-         ZviYNMcovL0sRChW5cDxNzEsEgwTCAmIXqpDYldWUC/OkDYNEPcmZID9V62HLvAKHmVR
-         X6V7S0brqQS+Q9gDrsR6MCSxuO37S0fbquuAsNnfw39Jgpu+okcAt8VQwdK6VmFEHfr9
-         h27g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712066421; x=1712671221;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=8rDbZVm/05+TD8i00zno4F1FPbK9cGt0EA7D+/0NFvM=;
-        b=TSSE3sJvkfeKEss4XKzfxZrm7r4Y6pgTW3GeBk8jubaBpBT3RkVAaWGCXXpcDzUxYL
-         t6FmcdkNTWYCawG/uulNYJtqi5K6/SvCtLX9j4FtYU1H2UgeTA5LKqfhECxjCUfYw/Bz
-         sm50lZm5se/da99o6W8IEcMe3nl7hbFjkv+dSvpGRH2rwlEFR/cbjxsRsukOWrLpCHRZ
-         9HrBIMJLwENdkrTES3yB8CCIxPSgJSjbwWMg+hK8hWMwhhN0NqnF9KZNnXz9e/ViDckY
-         K4PllDIMzm3pQOvtAof7qLbv0QD3zOkHkL6FhVJfB9LV+QbZoy+tPmhSq6ecYrwBrYWq
-         LNoQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXKQohbD35h/1CDYHoTXTrVaXGQwViSvW3Xr2LFIqe/H2VZmJkg5Wd9fBXIWi4qv+ms2+dYgEYGSVm0W3m+5Y+BM2RxdstOodZGEzqL
-X-Gm-Message-State: AOJu0Ywxl79Tpz64zaJ8Hz6u/rRZTYUvQboI6KQ/g9x7uFIepPMoiwV2
-	98uZuBIO4lik30eSujwnKNu9VtLoViwluRCNcbv6F8WgGGKZbTmB1RwfefBwidUPsRLASW5dsbx
-	QN088a/Yl67IUKlLuwFwEj2sMm5MtB8V4sjQKGg==
-X-Google-Smtp-Source: AGHT+IHCFlw3ou3Ij39/rVMdq0w422umliw3LKcflbCanJZ8AoG55GlMVztIqNJgFjjdkFnQ5BoSu74kXlmLHaTCgpw=
-X-Received: by 2002:a2e:8049:0:b0:2d6:8868:f1a6 with SMTP id
- p9-20020a2e8049000000b002d68868f1a6mr1601468ljg.43.1712066421456; Tue, 02 Apr
- 2024 07:00:21 -0700 (PDT)
+	s=arc-20240116; t=1712066440; c=relaxed/simple;
+	bh=qsST0ylz6gOANXRGsGFqczoAFStFcUOplO5NxDoGV7U=;
+	h=Message-ID:Subject:From:To:CC:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=C0MaAdWvZMlWqqkYFMI1ZsJf1JLB/4goOXO9u5OeVGEyPLSaUF5n3EF3pg8hZZi7k+rm2XFU4pyr39KPTbuRGcJ84n7e2g103pc5nVvrylpXEmUuv/YNjcJthDJrNmhnj/ZC/wU/eGRygxpjzEYh2JLmR+JwIugPKUGVzZ0jE2c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=microchip.com; spf=pass smtp.mailfrom=microchip.com; dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b=1K/27f1q; arc=none smtp.client-ip=68.232.153.233
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=microchip.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=microchip.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1712066438; x=1743602438;
+  h=message-id:subject:from:to:cc:date:in-reply-to:
+   references:content-transfer-encoding:mime-version;
+  bh=qsST0ylz6gOANXRGsGFqczoAFStFcUOplO5NxDoGV7U=;
+  b=1K/27f1qJ0aJ/VMY9DZCAMala9HzpzdZxIpqluoufgxI16a/RL5fUvwt
+   cSMPOgk0yhL0xe1LN11ugXrtlLZqgwc6k1Lq/4xFQLmAO9bCidNiTtDqx
+   9hZJxpgDkSh4y6dKcO/IlDdZexQEN0R4TaQ5AgG83yMBqr3WsShM9M/Nl
+   CdPzK3RYXre/Dq28wqRuHSE1PZWiu9NIV70373cC3jRMYQXrUreddtTXz
+   3Od2pallLfWqsJQ7Y8l4xRLZsKyn3EXinjS2qNmpjHJG9rh71PLHD8mM3
+   NiLc2GuZe541Sh3tehvs3BsF6eDQndBsGlCV+cv3DfxVfSFaORGfLS1/E
+   g==;
+X-CSE-ConnectionGUID: FQZgR+amRMal/fXHX2p5Mw==
+X-CSE-MsgGUID: 8c+KslA7TH6D+wDEUkqJTQ==
+X-IronPort-AV: E=Sophos;i="6.07,175,1708412400"; 
+   d="scan'208";a="19169899"
+X-Amp-Result: SKIPPED(no attachment in message)
+Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
+  by esa3.microchip.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 02 Apr 2024 07:00:37 -0700
+Received: from chn-vm-ex01.mchp-main.com (10.10.85.143) by
+ chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Tue, 2 Apr 2024 07:00:35 -0700
+Received: from DEN-DL-M31857.microsemi.net (10.10.85.11) by
+ chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server id
+ 15.1.2507.35 via Frontend Transport; Tue, 2 Apr 2024 07:00:33 -0700
+Message-ID: <b3d818df8819d2fb3e96fa61b277d49941d9b01b.camel@microchip.com>
+Subject: Re: [PATCH RFT 01/10] arm64: dts: microchip: sparx5: fix mdio reg
+From: Steen Hegelund <steen.hegelund@microchip.com>
+To: Krzysztof Kozlowski <krzk@kernel.org>
+CC: Nicolas Ferre <nicolas.ferre@microchip.com>, Claudiu Beznea
+	<claudiu.beznea@tuxon.dev>, Rob Herring <robh@kernel.org>, "Krzysztof
+ Kozlowski" <krzysztof.kozlowski+dt@linaro.org>, Lars Povlsen
+	<lars.povlsen@microchip.com>, Daniel Machon <daniel.machon@microchip.com>,
+	<UNGLinuxDriver@microchip.com>, "David S. Miller" <davem@davemloft.net>,
+	Bjarni Jonasson <bjarni.jonasson@microchip.com>,
+	<linux-arm-kernel@lists.infradead.org>, <devicetree@vger.kernel.org>,
+	<linux-kernel@vger.kernel.org>, Conor Dooley <conor@kernel.org>
+Date: Tue, 2 Apr 2024 16:00:32 +0200
+In-Reply-To: <20240401153740.123978-1-krzk@kernel.org>
+References: <20240401153740.123978-1-krzk@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.44.4-0ubuntu2 
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240401-ad4111-v1-0-34618a9cc502@analog.com> <20240401-ad4111-v1-6-34618a9cc502@analog.com>
- <CAMknhBFdtv84E_S4wa4UW0pO2yiUEk9=jn=_i4F=b8VHdR6v+w@mail.gmail.com>
-In-Reply-To: <CAMknhBFdtv84E_S4wa4UW0pO2yiUEk9=jn=_i4F=b8VHdR6v+w@mail.gmail.com>
-From: David Lechner <dlechner@baylibre.com>
-Date: Tue, 2 Apr 2024 09:00:10 -0500
-Message-ID: <CAMknhBHf_9kFfLySJmRyoUS6UFfTeLW3bfEi1-3ApEDHyyVhCw@mail.gmail.com>
-Subject: Re: [PATCH 6/6] iio: adc: ad7173: Add support for AD411x devices
-To: dumitru.ceclan@analog.com
-Cc: Lars-Peter Clausen <lars@metafoo.de>, Michael Hennerich <Michael.Hennerich@analog.com>, 
-	Jonathan Cameron <jic23@kernel.org>, Rob Herring <robh@kernel.org>, 
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
-	linux-iio@vger.kernel.org, devicetree@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, Dumitru Ceclan <mitrutzceclan@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 
-On Mon, Apr 1, 2024 at 2:45=E2=80=AFPM David Lechner <dlechner@baylibre.com=
-> wrote:
->
-> On Mon, Apr 1, 2024 at 10:10=E2=80=AFAM Dumitru Ceclan via B4 Relay
-> <devnull+dumitru.ceclan.analog.com@kernel.org> wrote:
-> >
-> > From: Dumitru Ceclan <dumitru.ceclan@analog.com>
-> >
-> > Add support for AD4111/AD4112/AD4114/AD4115/AD4116.
-> >
+Hi Krzysztof,
 
-..
 
-> > @@ -1028,15 +1204,22 @@ static int ad7173_fw_parse_channel_config(struc=
-t iio_dev *indio_dev)
-> >                 *chan =3D ad7173_channel_template;
-> >                 chan->address =3D chan_index;
-> >                 chan->scan_index =3D chan_index;
-> > -               chan->channel =3D ain[0];
-> > -               chan->channel2 =3D ain[1];
-> > -               chan->differential =3D true;
-> >
-> > -               chan_st_priv->ain =3D AD7173_CH_ADDRESS(ain[0], ain[1])=
-;
-> > +               if (reg >=3D AD4111_CURRENT_CHAN_CUTOFF) {
-> > +                       chan->type =3D IIO_CURRENT;
-> > +                       chan->channel =3D ain[0];
-> > +                       chan_st_priv->ain =3D ad4111_current_channel_co=
-nfig[ain[0]];
-> > +               } else {
-> > +                       chan->channel =3D ain[0];
-> > +                       chan->channel2 =3D ain[1];
-> > +                       chan->differential =3D true;
->
-> Expecting chan->differential =3D false when ADCIN15 is configured for
-> pseudo-differential inputs.
->
-> Also, perhaps missed in previous reviews, I would expect
-> chan->differential =3D false when channels are used as single-ended.
->
+On Mon, 2024-04-01 at 17:37 +0200, Krzysztof Kozlowski wrote:
+> [Some people who received this message don't often get email from
+> krzk@kernel.org. Learn why this is important at
+> https://aka.ms/LearnAboutSenderIdentification=C2=A0]
+>=20
+> EXTERNAL EMAIL: Do not click links or open attachments unless you
+> know the content is safe
+>=20
+> Correct the reg address of mdio node to match unit address.=C2=A0 Assume
+> the
+> reg is not correct and unit address was correct, because there is
+> alerady node using the existing reg 0x110102d4.
+>=20
+> =C2=A0 sparx5.dtsi:443.25-451.5: Warning (simple_bus_reg):
+> /axi@600000000/mdio@6110102f8: simple-bus unit address format error,
+> expected "6110102d4"
+>=20
+> Fixes: d0f482bb06f9 ("arm64: dts: sparx5: Add the Sparx5 switch
+> node")
+> Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
+>=20
+> ---
+>=20
+> Not tested on hardware
+> ---
+> =C2=A0arch/arm64/boot/dts/microchip/sparx5.dtsi | 2 +-
+> =C2=A01 file changed, 1 insertion(+), 1 deletion(-)
+>=20
+> diff --git a/arch/arm64/boot/dts/microchip/sparx5.dtsi
+> b/arch/arm64/boot/dts/microchip/sparx5.dtsi
+> index 24075cd91420..5d820da8c69d 100644
+> --- a/arch/arm64/boot/dts/microchip/sparx5.dtsi
+> +++ b/arch/arm64/boot/dts/microchip/sparx5.dtsi
+> @@ -447,7 +447,7 @@ mdio2: mdio@6110102f8 {
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 pinctrl-=
+names =3D "default";
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 #address=
+-cells =3D <1>;
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 #size-ce=
+lls =3D <0>;
+> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 reg =3D <0x6 0=
+x110102d4 0x24>;
+> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 reg =3D <0x6 0=
+x110102f8 0x24>;
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0 };
+>=20
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0 mdio3: mdio@61101031c {
+> --
+> 2.34.1
+>=20
 
-After sleeping on it, I came to the concision that these parts are
-probably too complex to try to worry about differential vs.
-pseudo-differential/single-ended (what the datasheet calls
-single-ended is really pseudo-differential).
+I did a check of our current Sparx5 EVBs and none of them uses
+controller 2 in any revision, so this is probably why it has not come
+up before, so as it stands we have no platform to test this change on
+currently.
 
-So I take back my comments about expecting differential =3D false in those =
-cases.
+Besides that the change looks good to me.
+
+Best Regards
+Steen
+
+Reviewed-by: Steen Hegelund <Steen.Hegelund@microchip.com>
+
+
 
