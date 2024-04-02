@@ -1,106 +1,263 @@
-Return-Path: <linux-kernel+bounces-128649-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-128650-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id C47F5895D7A
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 22:21:47 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id D5204895D80
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 22:24:32 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5F83E1F226E3
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 20:21:47 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3CD1BB2619B
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 20:24:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8D4A215D5AF;
-	Tue,  2 Apr 2024 20:21:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9FDA615D5D1;
+	Tue,  2 Apr 2024 20:24:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b="cSDz+lpe"
-Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="dadBzVxF"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 138E81E49F;
-	Tue,  2 Apr 2024 20:21:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=65.109.113.108
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BB24A59B41;
+	Tue,  2 Apr 2024 20:24:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712089300; cv=none; b=FNlFLc3WfkMS+r2Z7pRlDAmjpw4NJKE+/7b3L7QPYIkplhyZV3Uu19FOtHqyyREEUzYiCpK5x6HsZ0hIsI89DvKCrPALBdJsSA0UBHM2nazuchI/wqInRkAJ/aksNrm8ZTKp6NeT/InQc61d0W52vqTUKqhgnpWuQTuAzHmX6eU=
+	t=1712089461; cv=none; b=i/lVL1MM8ysMEZ3FNZjaelwYTh4m/MyP6d/sWzCo2OqXA5H4GD46hqZXOhxQbcf0lgdqSYbfndchCM+D5/tKe810C4Dcz+x+K3GUO2DgwcOR9OKGZL0rHwOjprCvL43Lgla+NfHnAXPi7uKjiviuJWpL+aw448sxalvxVtGaDmQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712089300; c=relaxed/simple;
-	bh=e4jnAYd+VY9lWUcL61nGpS7H9+W7B6UDiTDlwZgRiGs=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=jNqSXjBf74E1x25wdcai69LLFMrP/R08yr1Ow7gBp+h07231swsr6KX1Gdg7D+yuoXPi103CAjCxF5FfFe6Oih9i0aRp4mde30HypJbw7kNkUyxWfpMF3fd2pff3UHuXA3a9T7gMoAIghAvOlv7xE9YTpMFA00GeFhDAghoUUw4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de; spf=pass smtp.mailfrom=alien8.de; dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b=cSDz+lpe; arc=none smtp.client-ip=65.109.113.108
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alien8.de
-Received: from localhost (localhost.localdomain [127.0.0.1])
-	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id 5C9F040E019C;
-	Tue,  2 Apr 2024 20:21:35 +0000 (UTC)
-X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
-Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
-	header.d=alien8.de
-Received: from mail.alien8.de ([127.0.0.1])
-	by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
-	with ESMTP id 6wNlYm-goBfF; Tue,  2 Apr 2024 20:21:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
-	t=1712089291; bh=Hmf6dIpTeeQcjfFBgvmtyCkiDFGG8/EDjZNVlEzRMk0=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=cSDz+lpevVFi8ruEs/DA+EzXdG3OMXVUlJxAhw3UvWGJlPKZpsdlBDujSY4L+LfDP
-	 epkuowPDPCXZHGI2ooJw6MDdMMODbNw1l4LiNM1XkSROvUhJu4ASNzhyENoZOJ+NOA
-	 l5OiL8pLAqjpzLkUIADDBNef7TDkEFf/8Ezj+o5DZzGkPaL9OR7MffQ3MnrzadS0ZK
-	 V28XPHbdaexpkQRdNrlECGIUpuLNVAr7BN9k8Z1xywqVDq6cisPVG/7AKREi4eJCkD
-	 g4IUOUji1kAj+ZFSzYcySyOOJdLU+7sYqyERql3VLQURdXtYF1CD7ZYLV1QO/TooEN
-	 Jk4vDuOmCF4u1ce9b4MH9UP8ug0M9utdHM6/MdWvCWChDNOUVSRVdn6poLMqZgrCPN
-	 vmUlbm8xPEFp8icDhmllzq1p6VZy/fFhGbHwHKJSy8Rxu0pJdU30JrUU1yYsms+7Ju
-	 NgpFfb+9xJSOOEBdDLA32YaKNWrv4eMrHzzYaIUP09g7EMzosIU3/QjmVfhIyd3K10
-	 cXnB1XksIhhd419wK5Myuxs2Bd/YWj7DOHDg09416WzyBOxPSPPsV29+LQqSP2+m6p
-	 phk03WSiwsGmr+qsBJv0LQRgMZHKUN6QZuIecumWf9LqCvKpvV7EtAbLQa3/nLjiAH
-	 6RKN98d/50o0Zm5McAw/HW6o=
-Received: from zn.tnic (p5de8ecf7.dip0.t-ipconnect.de [93.232.236.247])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
-	(No client certificate requested)
-	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 54C7A40E0177;
-	Tue,  2 Apr 2024 20:21:24 +0000 (UTC)
-Date: Tue, 2 Apr 2024 22:21:18 +0200
-From: Borislav Petkov <bp@alien8.de>
-To: "Kalra, Ashish" <ashish.kalra@amd.com>
-Cc: bp@kernel.org, thomas.lendacky@amd.com, linux-kernel@vger.kernel.org,
-	linux-tip-commits@vger.kernel.org, michael.roth@amd.com,
-	x86@kernel.org
-Subject: Re: [PATCH] x86/sev: Apply RMP table fixups for kexec.
-Message-ID: <20240402202118.GCZgxovu-pgPKYvner@fat_crate.local>
-References: <2ab14f6f-2690-056b-cf9e-38a12dafd728@amd.com>
- <20240402163412.19325-1-bp@kernel.org>
- <6f0d2ccf-243c-4073-a470-21e2f404595a@amd.com>
- <359264a1-e4ef-438c-8f24-32848e131272@amd.com>
- <20240402174540.GAZgxERNxsRJUCb1yp@fat_crate.local>
- <37321af9-aee4-4ba6-81ac-0df4cef38644@amd.com>
- <20240402185039.GBZgxTfwvEP45OxVjm@fat_crate.local>
- <8daf448f-eb52-4b1f-9f98-099a83665321@amd.com>
+	s=arc-20240116; t=1712089461; c=relaxed/simple;
+	bh=ueMPMa7Wa04+ZFktkd2Z6B4anKiLlzjqo1vxs3xrVm0=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=NK/ARPqlTztucd5YiTz6k7v2jWlrF/6kT3PuMGTT+xaeA4SiTab/5pm7EQSJff26FNZNlgaRJpepdH8QqZxh753AY7xWGKrYLjVj7PPIjqdk6e/fR+mTtAHztoGLXhd8taYOJu9VYP5chKEk77jM9jPDFWGmLEBVvL16wvPaQrU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=dadBzVxF; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1D310C43394;
+	Tue,  2 Apr 2024 20:24:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1712089461;
+	bh=ueMPMa7Wa04+ZFktkd2Z6B4anKiLlzjqo1vxs3xrVm0=;
+	h=From:To:Cc:Subject:Date:From;
+	b=dadBzVxF0eifc7/RW5NahmvsfQtrZYmXy4zPDfmszEjxWMsKn+HiiNHNBUm01JxYu
+	 cAxM+B741Lhl7hPPxWl3u/sI+tm9UXIS808eD7ogPzIpmCMuI7m6ZkMz1U1t5t1030
+	 nXjPGxq0r+s6QZUG0EQAFe8MRl5RSqsAxgaYpr+GD8RapWqws1PCcAJeJew7Qhar2O
+	 +pLmMbwruGXhTXSkUANq5LkOgi6Dz8VYHt8UPQjB/lm7biLyDG367t6UUCHMNE4qY6
+	 cUygLGS3GSHTXts0wQMfCSxRPVzoGiGp9fmzYbEeap1SI+VFMPlkxIVILjnHUgT6Cp
+	 RxB9QkE6O4fjQ==
+From: Rob Herring <robh@kernel.org>
+To: Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Andrew Lunn <andrew@lunn.ch>,
+	Gregory Clement <gregory.clement@bootlin.com>,
+	Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
+	Lee Jones <lee@kernel.org>,
+	Ray Jui <rjui@broadcom.com>,
+	Scott Branden <sbranden@broadcom.com>,
+	Broadcom internal kernel review list <bcm-kernel-feedback-list@broadcom.com>,
+	Matthias Brugger <matthias.bgg@gmail.com>,
+	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+Cc: devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org,
+	linux-mediatek@lists.infradead.org
+Subject: [PATCH] dt-bindings: mfd: syscon: Add missing simple syscon compatibles
+Date: Tue,  2 Apr 2024 15:24:11 -0500
+Message-ID: <20240402202413.757283-1-robh@kernel.org>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <8daf448f-eb52-4b1f-9f98-099a83665321@amd.com>
+Content-Transfer-Encoding: 8bit
 
-On Tue, Apr 02, 2024 at 02:33:44PM -0500, Kalra, Ashish wrote:
-> And we can't do this in snp_rmptable_init() as e820_table_firmware can't be
-> fixed at that point and by that time this table has been mapped into sysfs
-> (/sys/firmware) which is used by kexec -c variant.
+Add various "simple" syscon compatibles which were undocumented or
+still documented with old text bindings.
 
-Well, you have to do something here because if snp_rmptable_init()
-late-disables SNP, your RMP table fixups are moot and invalid.
+apm,xgene-csw, apm,xgene-efuse, apm,xgene-mcb, apm,xgene-rb,
+fsl,ls1088a-reset, marvell,armada-3700-cpu-misc,
+mediatek,mt2712-pctl-a-syscfg, mediatek,mt6397-pctl-pmic-syscfg, and
+mediatek,mt8173-pctl-a-syscfg were all undocumented, but are in use
+already. Remove the old text binding docs for the others.
 
-Which means, your RMP table fixups need to happen at the *very* *late*
-step after we know that SNP is enabled and won't get disabled anymore.
+Signed-off-by: Rob Herring <robh@kernel.org>
+---
+ .../arm/altera/socfpga-sdram-controller.txt   | 12 -------
+ .../devicetree/bindings/arm/apm/scu.txt       | 17 ----------
+ .../bindings/arm/marvell/armada-37xx.txt      | 32 -------------------
+ .../bindings/mfd/brcm,iproc-cdru.txt          | 16 ----------
+ .../bindings/mfd/brcm,iproc-mhb.txt           | 18 -----------
+ .../devicetree/bindings/mfd/syscon.yaml       | 15 +++++++++
+ 6 files changed, 15 insertions(+), 95 deletions(-)
+ delete mode 100644 Documentation/devicetree/bindings/arm/altera/socfpga-sdram-controller.txt
+ delete mode 100644 Documentation/devicetree/bindings/arm/apm/scu.txt
+ delete mode 100644 Documentation/devicetree/bindings/arm/marvell/armada-37xx.txt
+ delete mode 100644 Documentation/devicetree/bindings/mfd/brcm,iproc-cdru.txt
+ delete mode 100644 Documentation/devicetree/bindings/mfd/brcm,iproc-mhb.txt
 
-I.e., in snp_rmptable_init().
-
+diff --git a/Documentation/devicetree/bindings/arm/altera/socfpga-sdram-controller.txt b/Documentation/devicetree/bindings/arm/altera/socfpga-sdram-controller.txt
+deleted file mode 100644
+index 77ca635765e1..000000000000
+--- a/Documentation/devicetree/bindings/arm/altera/socfpga-sdram-controller.txt
++++ /dev/null
+@@ -1,12 +0,0 @@
+-Altera SOCFPGA SDRAM Controller
+-
+-Required properties:
+-- compatible : Should contain "altr,sdr-ctl" and "syscon".
+-  syscon is required by the Altera SOCFPGA SDRAM EDAC.
+-- reg : Should contain 1 register range (address and length)
+-
+-Example:
+-	sdr: sdr@ffc25000 {
+-		compatible = "altr,sdr-ctl", "syscon";
+-		reg = <0xffc25000 0x1000>;
+-	};
+diff --git a/Documentation/devicetree/bindings/arm/apm/scu.txt b/Documentation/devicetree/bindings/arm/apm/scu.txt
+deleted file mode 100644
+index b45be06625fd..000000000000
+--- a/Documentation/devicetree/bindings/arm/apm/scu.txt
++++ /dev/null
+@@ -1,17 +0,0 @@
+-APM X-GENE SoC series SCU Registers
+-
+-This system clock unit contain various register that control block resets,
+-clock enable/disables, clock divisors and other deepsleep registers.
+-
+-Properties:
+- - compatible : should contain two values. First value must be:
+-		   - "apm,xgene-scu"
+-		second value must be always "syscon".
+-
+- - reg : offset and length of the register set.
+-
+-Example :
+-	scu: system-clk-controller@17000000 {
+-		compatible = "apm,xgene-scu","syscon";
+-		reg = <0x0 0x17000000 0x0 0x400>;
+-	};
+diff --git a/Documentation/devicetree/bindings/arm/marvell/armada-37xx.txt b/Documentation/devicetree/bindings/arm/marvell/armada-37xx.txt
+deleted file mode 100644
+index 29fa93dad52b..000000000000
+--- a/Documentation/devicetree/bindings/arm/marvell/armada-37xx.txt
++++ /dev/null
+@@ -1,32 +0,0 @@
+-Power management
+-----------------
+-
+-For power management (particularly DVFS and AVS), the North Bridge
+-Power Management component is needed:
+-
+-Required properties:
+-- compatible     : should contain "marvell,armada-3700-nb-pm", "syscon";
+-- reg            : the register start and length for the North Bridge
+-		    Power Management
+-
+-Example:
+-
+-nb_pm: syscon@14000 {
+-	compatible = "marvell,armada-3700-nb-pm", "syscon";
+-	reg = <0x14000 0x60>;
+-}
+-
+-AVS
+----
+-
+-For AVS an other component is needed:
+-
+-Required properties:
+-- compatible     : should contain "marvell,armada-3700-avs", "syscon";
+-- reg            : the register start and length for the AVS
+-
+-Example:
+-avs: avs@11500 {
+-	compatible = "marvell,armada-3700-avs", "syscon";
+-	reg = <0x11500 0x40>;
+-}
+diff --git a/Documentation/devicetree/bindings/mfd/brcm,iproc-cdru.txt b/Documentation/devicetree/bindings/mfd/brcm,iproc-cdru.txt
+deleted file mode 100644
+index 82f82e069563..000000000000
+--- a/Documentation/devicetree/bindings/mfd/brcm,iproc-cdru.txt
++++ /dev/null
+@@ -1,16 +0,0 @@
+-Broadcom iProc Chip Device Resource Unit (CDRU)
+-
+-Various Broadcom iProc SoCs have a set of registers that provide various
+-chip specific device and resource configurations. This node allows access to
+-these CDRU registers via syscon.
+-
+-Required properties:
+-- compatible: should contain:
+-		"brcm,sr-cdru", "syscon" for Stingray
+-- reg: base address and range of the CDRU registers
+-
+-Example:
+-	cdru: syscon@6641d000 {
+-		compatible = "brcm,sr-cdru", "syscon";
+-		reg = <0 0x6641d000 0 0x400>;
+-	};
+diff --git a/Documentation/devicetree/bindings/mfd/brcm,iproc-mhb.txt b/Documentation/devicetree/bindings/mfd/brcm,iproc-mhb.txt
+deleted file mode 100644
+index 4421e9771b8a..000000000000
+--- a/Documentation/devicetree/bindings/mfd/brcm,iproc-mhb.txt
++++ /dev/null
+@@ -1,18 +0,0 @@
+-Broadcom iProc Multi Host Bridge (MHB)
+-
+-Certain Broadcom iProc SoCs have a multi host bridge (MHB) block that controls
+-the connection and configuration of 1) internal PCIe serdes; 2) PCIe endpoint
+-interface; 3) access to the Nitro (network processing) engine
+-
+-This node allows access to these MHB registers via syscon.
+-
+-Required properties:
+-- compatible: should contain:
+-		"brcm,sr-mhb", "syscon" for Stingray
+-- reg: base address and range of the MHB registers
+-
+-Example:
+-	mhb: syscon@60401000 {
+-		compatible = "brcm,sr-mhb", "syscon";
+-		reg = <0 0x60401000 0 0x38c>;
+-	};
+diff --git a/Documentation/devicetree/bindings/mfd/syscon.yaml b/Documentation/devicetree/bindings/mfd/syscon.yaml
+index 9d55bee155ce..0327e779e327 100644
+--- a/Documentation/devicetree/bindings/mfd/syscon.yaml
++++ b/Documentation/devicetree/bindings/mfd/syscon.yaml
+@@ -38,11 +38,20 @@ properties:
+               - allwinner,sun8i-h3-system-controller
+               - allwinner,sun8i-v3s-system-controller
+               - allwinner,sun50i-a64-system-controller
++              - altr,sdr-ctl
+               - amd,pensando-elba-syscon
++              - apm,xgene-csw
++              - apm,xgene-efuse
++              - apm,xgene-mcb
++              - apm,xgene-rb
++              - apm,xgene-scu
+               - brcm,cru-clkset
++              - brcm,sr-cdru
++              - brcm,sr-mhb
+               - freecom,fsg-cs2-system-controller
+               - fsl,imx93-aonmix-ns-syscfg
+               - fsl,imx93-wakeupmix-syscfg
++              - fsl,ls1088a-reset
+               - hisilicon,dsa-subctrl
+               - hisilicon,hi6220-sramctrl
+               - hisilicon,pcie-sas-subctrl
+@@ -51,9 +60,15 @@ properties:
+               - intel,lgm-syscon
+               - loongson,ls1b-syscon
+               - loongson,ls1c-syscon
++              - marvell,armada-3700-cpu-misc
++              - marvell,armada-3700-nb-pm
++              - marvell,armada-3700-avs
+               - marvell,armada-3700-usb2-host-misc
++              - mediatek,mt2712-pctl-a-syscfg
++              - mediatek,mt6397-pctl-pmic-syscfg
+               - mediatek,mt8135-pctl-a-syscfg
+               - mediatek,mt8135-pctl-b-syscfg
++              - mediatek,mt8173-pctl-a-syscfg
+               - mediatek,mt8365-syscfg
+               - microchip,lan966x-cpu-syscon
+               - microchip,sparx5-cpu-syscon
 -- 
-Regards/Gruss,
-    Boris.
+2.43.0
 
-https://people.kernel.org/tglx/notes-about-netiquette
 
