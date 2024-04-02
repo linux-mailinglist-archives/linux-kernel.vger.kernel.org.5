@@ -1,240 +1,148 @@
-Return-Path: <linux-kernel+bounces-127968-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-127969-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 17C0B8953C6
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 14:47:23 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8BE5A8953C8
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 14:47:52 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 849791F22E7A
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 12:47:22 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 45FD9283B81
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 12:47:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 11CBF77F15;
-	Tue,  2 Apr 2024 12:47:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CBB887A13A;
+	Tue,  2 Apr 2024 12:47:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="wkWzJ353"
-Received: from mail-vs1-f51.google.com (mail-vs1-f51.google.com [209.85.217.51])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=proton.me header.i=@proton.me header.b="TG+kzr3T"
+Received: from mail-40133.protonmail.ch (mail-40133.protonmail.ch [185.70.40.133])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 85BD11DFD0
-	for <linux-kernel@vger.kernel.org>; Tue,  2 Apr 2024 12:47:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.217.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F1DBA77F15;
+	Tue,  2 Apr 2024 12:47:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.70.40.133
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712062033; cv=none; b=HUWCcde7VmfH4j+lr4aqAeolpRGDt/+09intLJZt+FEzk3LQOg+GY9r7y77NvjmrPGLCNfpxliJNW8lpbeTGuSZ5bMCrOqoflX99/ED/BmwBmkzSl3w9dH2pH0j27CbTSXBK7UIy5/mWDUrtx1Tzk95YQ79qnX26+gc353UMXiw=
+	t=1712062064; cv=none; b=PjE4dOKzrmy7CPZP9CLo0aWZNkQxq2qKhpGVW4Mws16cT9XbnkbcN3YhKxHKM9nUlCYe0F0SqgQHDFqMVO/DRf4uog6eOAUfRshx2F292gv59djitX1Ak3xryby2MBarQGm3zVx+QnrXOmHIQvVaGq2xYbrYJ8nrCXKlExS5XhA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712062033; c=relaxed/simple;
-	bh=y7r81xGJhGvZo4UNu8tcAQh6Pm1cop4NxxV+9nrHJUg=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=H1171gZLkceW15Snas2gZfOQ96o+KCSSxLIsYVR/VVUFOIvxjDHKC7IBSk9LN3iG8rXyMndqobnVZ7KsqaTWNIZg0UsT9GhZoTyDsxQnMH4DS+QbbLMADSX7xPmHxujD3Wig8JsHVtEckBp1QvdfkODtJadGg9aHI8jpfFjXsqk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=wkWzJ353; arc=none smtp.client-ip=209.85.217.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-vs1-f51.google.com with SMTP id ada2fe7eead31-4765e6cf37aso1397979137.1
-        for <linux-kernel@vger.kernel.org>; Tue, 02 Apr 2024 05:47:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1712062030; x=1712666830; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=KCvuoEY2B7r6zo9f6eT/+ISmVC7xlAWxrfabw7NgzmU=;
-        b=wkWzJ353cfz1drPEsIjmvd2j2tlAynyMp6mbgnCFGQKlYXBo2kXERJdPKppe4MHG84
-         8XmUwD0R3AhmXlxGyY25iL/Sv+IVHPfVVjSX+qiECC4ShUp5bS82rXwOvuq4+rNeMLJL
-         SkWdS6spunuUqf3G2pr3WEwPqxKxssQ9DHdmITdoh3UbIYL8oPwGUuU4lDmmv1Rc6tyd
-         uJTI83IfeqLKfb6u3WAAqryP2Tsbp/ggwoem4gkgJX6QFcdKLsUgENMQXJTzbKoV/UNb
-         UbrWu+8XxhnI23wbGLCQDPYwCvtFQ0fBPdcHpojV91LYpmgfKpIy+dPeH3inB2oEx5Ce
-         r6TA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712062030; x=1712666830;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=KCvuoEY2B7r6zo9f6eT/+ISmVC7xlAWxrfabw7NgzmU=;
-        b=Eofap21MG6bh6K+mTT4c4p+HawWP2zHAbTh+iABLh05JC5/gvmgryIsyXxp+RjCLhG
-         TZE8PJbmrrfqAj8QcXTK1YFa2cx+hbNjOTLp4bJD/wBniZGnxIG0PogBtwvKkRpNXa2m
-         FGIwqOxnXYaLGm0zGhnl/93AsoudOqzkPjpYwwy/3FftCTCFIjeW8/DIlb2falCD7bwi
-         8lVc0nGqVOBtozV5zop18LAsCP0kaE1T/jXXazrYBw+ypdgm3SJQFpT5E4dXhbIe/baz
-         tAkfTaYSOBA1mzZhTtugn1d1Irn+ZFqZpY25n7PnVxB6UKRNsM5ci95ZpMGCQvVnjymY
-         9+mg==
-X-Forwarded-Encrypted: i=1; AJvYcCWKdWmXO9Q0uEQfMCSmfBZfBGNsvzk7GnRkTwewJmqyrg8fAlaAJXP1wtrYAOkM0M4OAGkpWl3pwGhFq1TtFcpXSxm023+OY+jC84CM
-X-Gm-Message-State: AOJu0YwGATbwuWLIC012c8SYKjf64DBzptxKNN6sSTz1OP0kQ26aMyTI
-	HKGZV45byTeAUvqErAdDnq2ux44Ly3OO5IYyE4jTlfrT3AJ40GNvvP1X2f4ylFD6ZqWYaUcHlaX
-	dv312+lEyIAiP3m65pbePdbQNmIpNFVxnBtyG2g==
-X-Google-Smtp-Source: AGHT+IER0olSgqW7huR3aO5YCPv6vu0CrtUUvbpJpH9rBf81cDKDA5UdfqUkMF3GdSGlM6Yl39uhsd8lOSxDgMt7MJo=
-X-Received: by 2002:a05:6102:2ad0:b0:478:92a6:67d3 with SMTP id
- eh16-20020a0561022ad000b0047892a667d3mr915738vsb.14.1712062029047; Tue, 02
- Apr 2024 05:47:09 -0700 (PDT)
+	s=arc-20240116; t=1712062064; c=relaxed/simple;
+	bh=tv77wEY2gXIZxwexHBZDtQXMh//LD9JALwsTToG42s0=;
+	h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=p8T7ZtUXEYjxXHjYy1YivlldfV56+1JYEVItdgIfv0ZBytb6nKPjNKo1BGO6/F3I5xsqVReCyqd9FjXBlxL6u/xtBqv0p97rRxHWTUjIuOiUAv2O9oCuJfsCvjP1RIFlzyZObMHOW+Jy5fjJ0zOWtKksUV8MOvZCJ3TgNiukPZI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=proton.me; spf=pass smtp.mailfrom=proton.me; dkim=pass (2048-bit key) header.d=proton.me header.i=@proton.me header.b=TG+kzr3T; arc=none smtp.client-ip=185.70.40.133
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=proton.me
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=proton.me
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=proton.me;
+	s=protonmail; t=1712062059; x=1712321259;
+	bh=9xyuTCGaaAe31ycaYB+ZYD6nsgUvzbGxycpDYEU663s=;
+	h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
+	 Feedback-ID:From:To:Cc:Date:Subject:Reply-To:Feedback-ID:
+	 Message-ID:BIMI-Selector;
+	b=TG+kzr3TwsqWUcLbtWZ6PfdIh3iPg/oJ5W4qWGbI0K5IiRAjwggyJuXOQnxm+8hSL
+	 YmiNT9OyPZGO61rWBLv+7aeZWLe5yrw373XGF4ufEKO5MCANKNmiu6wDwEvg6w8/h6
+	 a6djz9Ga2cVYRPd3PuVtvchroM2sSLb9HWbwCqqaFivjh9zgp1B2OZtxlbo2AlO9uU
+	 Wbzo6C/viRR8gBHPlTcknRsSdec9oJQssEV2hAeCtjb2eXtqxiZRUkbcgTTVQpTabK
+	 AEQzqdoESVFRa8ccs+00opCqXH2EQfYMEJQB0scv77yNeh5HQN0g0vMkjCeHyHVhTW
+	 l2mEfF8g2ZdaQ==
+Date: Tue, 02 Apr 2024 12:47:34 +0000
+To: Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>
+From: Benno Lossin <benno.lossin@proton.me>
+Cc: Miguel Ojeda <ojeda@kernel.org>, Alex Gaynor <alex.gaynor@gmail.com>, Wedson Almeida Filho <wedsonaf@gmail.com>, =?utf-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>, Andreas Hindborg <a.hindborg@samsung.com>, Alice Ryhl <aliceryhl@google.com>, Martin Rodriguez Reboredo <yakoyoku@gmail.com>, Asahi Lina <lina@asahilina.net>, Sumera Priyadarsini <sylphrenadin@gmail.com>, Neal Gompa <neal@gompa.dev>, Thomas Bertschinger <tahbertschinger@gmail.com>, Andrea Righi <andrea.righi@canonical.com>, Matthew Bakhtiari <dev@mtbk.me>, Adam Bratschi-Kaye <ark.email@gmail.com>, stable@vger.kernel.org, Masahiro Yamada <masahiroy@kernel.org>, Wedson Almeida Filho <wedsonaf@google.com>, Finn Behrens <me@kloenk.dev>, rust-for-linux@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] rust: macros: fix soundness issue in `module!` macro
+Message-ID: <bcbc1c4c-1e26-4afc-86ad-5cefa3dd26e0@proton.me>
+In-Reply-To: <ZgsykVwMBsULtxce@boqun-archlinux>
+References: <20240401185222.12015-1-benno.lossin@proton.me> <Zgsiumknfshjbi9J@boqun-archlinux> <20fcbbd0-4a7a-49b1-a383-f8b388153066@proton.me> <ZgsykVwMBsULtxce@boqun-archlinux>
+Feedback-ID: 71780778:user:proton
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240401152530.237785232@linuxfoundation.org>
-In-Reply-To: <20240401152530.237785232@linuxfoundation.org>
-From: Naresh Kamboju <naresh.kamboju@linaro.org>
-Date: Tue, 2 Apr 2024 18:16:57 +0530
-Message-ID: <CA+G9fYvMX1=ueS0SRKK00JrXt_OrkBON1-+Mp3QS51Yeiu=U8g@mail.gmail.com>
-Subject: Re: [PATCH 6.1 000/272] 6.1.84-rc1 review
-To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: stable@vger.kernel.org, patches@lists.linux.dev, 
-	linux-kernel@vger.kernel.org, torvalds@linux-foundation.org, 
-	akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org, 
-	patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de, 
-	jonathanh@nvidia.com, f.fainelli@gmail.com, sudipm.mukherjee@gmail.com, 
-	srw@sladewatkins.net, rwarsow@gmx.de, conor@kernel.org, allen.lkml@gmail.com, 
-	broonie@kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: quoted-printable
 
-On Mon, 1 Apr 2024 at 22:27, Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
->
-> This is the start of the stable review cycle for the 6.1.84 release.
-> There are 272 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
->
-> Responses should be made by Wed, 03 Apr 2024 15:24:46 +0000.
-> Anything received after that time might be too late.
->
-> The whole patch series can be found in one patch at:
->         https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patch-=
-6.1.84-rc1.gz
-> or in the git tree and branch at:
->         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
--rc.git linux-6.1.y
-> and the diffstat can be found below.
->
-> thanks,
->
-> greg k-h
+On 02.04.24 00:17, Boqun Feng wrote:
+> On Mon, Apr 01, 2024 at 10:01:34PM +0000, Benno Lossin wrote:
+>> On 01.04.24 23:10, Boqun Feng wrote:
+>>> On Mon, Apr 01, 2024 at 06:52:50PM +0000, Benno Lossin wrote:
+>>> [...]
+>>>> +            // Double nested modules, since then nobody can access th=
+e public items inside.
+>>>> +            mod __module_init {{
+>>>> +                mod __module_init {{
+>>>> +                    use super::super::{type_};
+>>>> +
+>>>> +                    /// The \"Rust loadable module\" mark.
+>>>> +                    //
+>>>> +                    // This may be best done another way later on, e.=
+g. as a new modinfo
+>>>> +                    // key or a new section. For the moment, keep it =
+simple.
+>>>> +                    #[cfg(MODULE)]
+>>>> +                    #[doc(hidden)]
+>>>> +                    #[used]
+>>>> +                    static __IS_RUST_MODULE: () =3D ();
+>>>> +
+>>>> +                    static mut __MOD: Option<{type_}> =3D None;
+>>>> +
+>>>> +                    // SAFETY: `__this_module` is constructed by the =
+kernel at load time and will not be
+>>>> +                    // freed until the module is unloaded.
+>>>> +                    #[cfg(MODULE)]
+>>>> +                    static THIS_MODULE: kernel::ThisModule =3D unsafe=
+ {{
+>>>> +                        kernel::ThisModule::from_ptr(&kernel::binding=
+s::__this_module as *const _ as *mut _)
+>>>
+>>> While we're at it, probably we want the following as well? I.e. using
+>>> `Opaque` and extern block, because __this_module is certainly something
+>>> interior mutable and !Unpin.
+>>>
+>>> diff --git a/rust/macros/module.rs b/rust/macros/module.rs
+>>> index 293beca0a583..8aa4eed6578c 100644
+>>> --- a/rust/macros/module.rs
+>>> +++ b/rust/macros/module.rs
+>>> @@ -219,7 +219,11 @@ mod __module_init {{
+>>>                        // freed until the module is unloaded.
+>>>                        #[cfg(MODULE)]
+>>>                        static THIS_MODULE: kernel::ThisModule =3D unsaf=
+e {{
+>>> -                        kernel::ThisModule::from_ptr(&kernel::bindings=
+::__this_module as *const _ as *mut _)
+>>> +                        extern \"C\" {{
+>>> +                            static __this_module: kernel::types::Opaqu=
+e<kernel::bindings::module>;
+>>> +                        }}
+>>> +
+>>> +                        kernel::ThisModule::from_ptr(__this_module.get=
+())
+>>>                        }};
+>>>                        #[cfg(not(MODULE))]
+>>>                        static THIS_MODULE: kernel::ThisModule =3D unsaf=
+e {{
+>>>
+>>> Thoughts?
+>>
+>> I am not sure we need it. Bindgen generates
+>>
+>>       extern "C" {
+>>           pub static mut __this_module: module;
+>>       }
+>>
+>> And the `mut` should take care of the "it might be modified by other
+>> threads".
+>=20
+> Hmm.. but there could a C thread modifies some field of __this_module
+> while Rust code uses it, e.g. struct module has a list_head in it, which
+> could be used by C code to put another module next to it.
 
+This still should not be a problem, since we never actually read or
+write to the mutable static. The only thing we are doing is taking its
+address. `addr_of_mut!` should be sufficient. (AFAIK `static mut` is
+designed such that it can be mutated at any time by any thread. Maybe
+Gary knows more?)
 
-Results from Linaro=E2=80=99s test farm.
-No regressions on arm64, arm, x86_64, and i386.
+--=20
+Cheers,
+Benno
 
-Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
-
-## Build
-* kernel: 6.1.84-rc1
-* git: https://gitlab.com/Linaro/lkft/mirrors/stable/linux-stable-rc
-* git branch: linux-6.1.y
-* git commit: aa2042702765a33750c326a9e153901b313636ac
-* git describe: v6.1.83-273-gaa2042702765
-* test details:
-https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-6.1.y/build/v6.1.8=
-3-273-gaa2042702765
-
-## Test Regressions (compared to v6.1.83)
-
-## Metric Regressions (compared to v6.1.83)
-
-## Test Fixes (compared to v6.1.83)
-
-## Metric Fixes (compared to v6.1.83)
-
-## Test result summary
-total: 146089, pass: 124663, fail: 2421, skip: 18867, xfail: 138
-
-## Build Summary
-* arc: 5 total, 5 passed, 0 failed
-* arm: 138 total, 138 passed, 0 failed
-* arm64: 41 total, 40 passed, 1 failed
-* i386: 30 total, 30 passed, 0 failed
-* mips: 25 total, 25 passed, 0 failed
-* parisc: 4 total, 4 passed, 0 failed
-* powerpc: 34 total, 34 passed, 0 failed
-* riscv: 11 total, 11 passed, 0 failed
-* s390: 16 total, 15 passed, 1 failed
-* sh: 10 total, 10 passed, 0 failed
-* sparc: 8 total, 8 passed, 0 failed
-* x86_64: 35 total, 34 passed, 1 failed
-
-## Test suites summary
-* boot
-* kselftest-android
-* kselftest-arm64
-* kselftest-breakpoints
-* kselftest-capabilities
-* kselftest-clone3
-* kselftest-core
-* kselftest-cpu-hotplug
-* kselftest-drivers-dma-buf
-* kselftest-exec
-* kselftest-fpu
-* kselftest-ftrace
-* kselftest-futex
-* kselftest-gpio
-* kselftest-intel_pstate
-* kselftest-ipc
-* kselftest-kcmp
-* kselftest-lib
-* kselftest-membarrier
-* kselftest-memfd
-* kselftest-memory-hotplug
-* kselftest-mincore
-* kselftest-mm
-* kselftest-mount
-* kselftest-mqueue
-* kselftest-net
-* kselftest-net-forwarding
-* kselftest-net-mptcp
-* kselftest-openat2
-* kselftest-ptrace
-* kselftest-rseq
-* kselftest-rtc
-* kselftest-seccomp
-* kselftest-sigaltstack
-* kselftest-size
-* kselftest-splice
-* kselftest-static_keys
-* kselftest-sync
-* kselftest-sysctl
-* kselftest-tc-testing
-* kselftest-timens
-* kselftest-timers
-* kselftest-tmpfs
-* kselftest-tpm2
-* kselftest-user
-* kselftest-user_events
-* kselftest-vDSO
-* kselftest-x86
-* kselftest-zram
-* kunit
-* libgpiod
-* log-parser-boot
-* log-parser-test
-* ltp-cap_bounds
-* ltp-commands
-* ltp-containers
-* ltp-controllers
-* ltp-cpuhotplug
-* ltp-crypto
-* ltp-cve
-* ltp-dio
-* ltp-fcntl-locktests
-* ltp-filecaps
-* ltp-fs
-* ltp-fs_bind
-* ltp-fs_perms_simple
-* ltp-hugetlb
-* ltp-io
-* ltp-ipc
-* ltp-math
-* ltp-mm
-* ltp-nptl
-* ltp-pty
-* ltp-sched
-* ltp-securebits
-* ltp-smoke
-* ltp-smoketest
-* ltp-syscalls
-* ltp-tracing
-* perf
-* rcutorture
-
---
-Linaro LKFT
-https://lkft.linaro.org
 
