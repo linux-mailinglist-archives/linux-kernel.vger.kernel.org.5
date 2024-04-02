@@ -1,121 +1,141 @@
-Return-Path: <linux-kernel+bounces-127672-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-127673-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B608D894F3F
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 11:56:46 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C9AC7894F42
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 11:56:57 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 08F6BB22238
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 09:56:44 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8488D282807
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 09:56:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D041759172;
-	Tue,  2 Apr 2024 09:56:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 40F4658AD7;
+	Tue,  2 Apr 2024 09:56:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="bApx8/cM"
-Received: from mail-ed1-f53.google.com (mail-ed1-f53.google.com [209.85.208.53])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="lXqaysT1"
+Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5862759151
-	for <linux-kernel@vger.kernel.org>; Tue,  2 Apr 2024 09:56:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D14875731E;
+	Tue,  2 Apr 2024 09:56:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712051788; cv=none; b=IrIqKhu+M8TMPPfQIr2VEMMXbw33K8AjhZosGpLPYcArqdmWhaJWJjzphgx126Wz4lEHPA76nzoXfQCyRQP5M4pDufyJFp3AaEdPlcYkKgDHx0JZKwOjACBu35JSZ5yEVO2UtoprLlbFE+COJBuen9un/D1idXOlwYF6tuLiLyI=
+	t=1712051805; cv=none; b=qb5haUIf/gERgiR46Gfne4e1mvLnoi+3q7A4QWo7rIETzIAxpd9c/1Bexel9RnnSMZwSgZUmUpEHj8tLnnlvlSVRY+aii+PJOiXIwLolb9Rgrl3dEDoxEboQSVK6mhGLBn3UWSccM9PLQLcuhjy6nHXbuAq43Ot3Ia2rnAu2Gp0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712051788; c=relaxed/simple;
-	bh=Nh+2aAI3uXCuRfrMoJJ0v+wDHsdg/m8Udqg61zTF9R4=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition; b=amfuKu6yWSLU+980t6LEYtptn8ULCByauitznb/hxrAm0KX/v7A3aT6psxCANV//xCGcfMwxPTVlrFT5ulAEMB5H6emFefVYklLwNaOBxGwYrYpa1w8yaqXclCAwMfYo87F+2jVoDk/g9AOizUn9R7IL7FmpyeF1G/k7E82Ay+o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=bApx8/cM; arc=none smtp.client-ip=209.85.208.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ed1-f53.google.com with SMTP id 4fb4d7f45d1cf-56c583f5381so6522120a12.1
-        for <linux-kernel@vger.kernel.org>; Tue, 02 Apr 2024 02:56:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1712051785; x=1712656585; darn=vger.kernel.org;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=Eiv2Gv97BeG+qqS2CUDwFb7TsuwaJxi4oFr7eU4Jkw4=;
-        b=bApx8/cMFsi4/EtIWG2FTx+ZkcGLXG1qgEqNmrq9i8NXfN83Q09NDICvLJHH30MjZ3
-         FcHIpOmdnYSNWZObJTEQO+IGz7b9X3GJX0B3CbO6hyFTsMGDk7oNJGgCwYEgbgIgLDvf
-         klk9/oYwhYmyOmVMk5Z0u5hXHeY/1jXaU0YesDCVp6q7B0mwUnTEC61vb5inqc1s67yS
-         bIx7ECdn4cdvYftPc+F/bVpYkOxehGluck4/svyPpVVpK9X5oiMsVg/RgBj9Hh/tZqsu
-         Zdr19A24kgf13UYP9oHkQSuBIIvTTEyh6zuJ+wVLOOB2bZx4BJH2L/2VY95WHYU3+ZQr
-         WVWg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712051785; x=1712656585;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Eiv2Gv97BeG+qqS2CUDwFb7TsuwaJxi4oFr7eU4Jkw4=;
-        b=ZBl+vCDpRFS3rgEZGj6o4dEDEH/op3P1wWKtuT8RC1JQCa5n+Nh9Cst1Ezms9eYNIA
-         UCkPcq51aKxz5XmzOpL8eD9wueoqfnqq6YqtR3AI+iQnDTsWBojQCOEVPgYCCw6bu+PY
-         19jjNFXiiHmxoQ3iSp2cRFtlcj79RTLqwu9dpY6jWU7RE1w8WDJLysyLiRKRR5cULCqQ
-         SD3ogOYhcOqxlwipTog5/ccBTelU8pAxiOY9dyzJIJDr1ojXF/sAQZ51kcpZQuy7nwiU
-         aWcQPT2DexQCBC8da4LHcemG6Fxh8bOxVyOtN5OoQmdb9RxRcr5O4zC6oITGf7LUC54D
-         AxLw==
-X-Forwarded-Encrypted: i=1; AJvYcCWMJ2ZkCFK324/5UpfplVJqefADSWEokbe02cYcLn3XNR6Dxpaz8Sun71hUghRlxliLppsA+MjF49JdrxbPS1FjrUgZ5KxNFeFSx6ug
-X-Gm-Message-State: AOJu0YyCpP39M/yT9ukIhrvziu/QaoT/cGfaSV8U7r0lpkeKy4mcjFz1
-	cvAhduBteKZIf+Z6Qaifhr00bdSd5cfIIcqe7UmCyILpVRml4CyU/RYeisk5au4=
-X-Google-Smtp-Source: AGHT+IGco8HwCbD45dxh0cXo5f4RbSDoT35IhySsKpVpDkYvfjDKul3aeagzg+egPF4UF9e8RGBTWw==
-X-Received: by 2002:a05:6402:35d6:b0:56d:c3f9:b8eb with SMTP id z22-20020a05640235d600b0056dc3f9b8ebmr8364382edc.12.1712051784449;
-        Tue, 02 Apr 2024 02:56:24 -0700 (PDT)
-Received: from localhost ([102.222.70.76])
-        by smtp.gmail.com with ESMTPSA id f5-20020a05640214c500b0056bf7f92346sm6683950edx.50.2024.04.02.02.56.23
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 02 Apr 2024 02:56:23 -0700 (PDT)
-Date: Tue, 2 Apr 2024 12:56:19 +0300
-From: Dan Carpenter <dan.carpenter@linaro.org>
-To: Boris Brezillon <boris.brezillon@collabora.com>
-Cc: Steven Price <steven.price@arm.com>, Liviu Dudau <liviu.dudau@arm.com>,
-	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-	Maxime Ripard <mripard@kernel.org>,
-	Thomas Zimmermann <tzimmermann@suse.de>,
-	David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
-	Heiko Stuebner <heiko@sntech.de>,
-	Grant Likely <grant.likely@linaro.org>,
-	dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-	kernel-janitors@vger.kernel.org
-Subject: [PATCH] drm/panthor: Fix error code in panthor_gpu_init()
-Message-ID: <d753e684-43ee-45c2-a1fd-86222da204e1@moroto.mountain>
+	s=arc-20240116; t=1712051805; c=relaxed/simple;
+	bh=j9p4SY1dLRpZ23VVMTRetjhW1vilDPZriFPu/5VOa3k=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=a8Xuy9o6Mjx1PgqktlqNaJGCBVv9galyBpQIWhNPhMH8kENkLjmA4nm/RZyyd2kfi+p3NOIkDN2YPtSO/nL1OQQ/oSJQJPTvm/bLbJ+e7gLCYMiOIkAw3vhnZzCBpWIAjbe+ezdDkU8ujUsVuaQY4ah0LSMcosjk+G3f6G2PWi8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=lXqaysT1; arc=none smtp.client-ip=46.235.227.194
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+	s=mail; t=1712051802;
+	bh=j9p4SY1dLRpZ23VVMTRetjhW1vilDPZriFPu/5VOa3k=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=lXqaysT19gYQIQ4HXXS9+ssUM9Zy9g48q/mVd8DC6sEORZqgkkXV8RmQgk6nB2XPa
+	 Np3bJ129sch32/NnWUeHaBDt6JHtt40yI55d6X8prhtqjb99Rx66yqVPiRRoQibamp
+	 Nd76QbCvsIHpkYFKXOfb0LQGDzg0yG5YIw67LHPiCjAsmYFsVRsMGUdNwGSG2jDCPD
+	 eoEJnPNdMBBi/XEef+IVngTkQlntkIBWKNUglWC1WGF4yRDkr+uLScz50Pgb/H2QF+
+	 CsrCSV5oZLTzE6NbAsf7YRI+7WQJ7yLOlY29nXxDsgv9DcRV7lJ9tstSX6ZkMmcFuZ
+	 VfHu89DY6GjYw==
+Received: from [100.113.186.2] (cola.collaboradmins.com [195.201.22.229])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	(Authenticated sender: kholk11)
+	by madrid.collaboradmins.com (Postfix) with ESMTPSA id F3EA137820EE;
+	Tue,  2 Apr 2024 09:56:40 +0000 (UTC)
+Message-ID: <b6ed8710-1608-4343-8a58-5f8e0e16d10d@collabora.com>
+Date: Tue, 2 Apr 2024 11:56:40 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Mailer: git-send-email haha only kidding
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 2/2] remoteproc: mediatek: Don't parse extraneous subnodes
+ for multi-core
+To: Mathieu Poirier <mathieu.poirier@linaro.org>
+Cc: andersson@kernel.org, matthias.bgg@gmail.com, tzungbi@kernel.org,
+ tinghan.shen@mediatek.com, linux-remoteproc@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ linux-mediatek@lists.infradead.org, wenst@chromium.org, kernel@collabora.com
+References: <20240321084614.45253-1-angelogioacchino.delregno@collabora.com>
+ <20240321084614.45253-3-angelogioacchino.delregno@collabora.com>
+ <ZfxRyMyUqyqtXy8n@p14s> <9ef4e974-740e-4698-bb38-f236521a425c@collabora.com>
+ <ZgWA/E46i/CaoM74@p14s>
+From: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+Content-Language: en-US
+In-Reply-To: <ZgWA/E46i/CaoM74@p14s>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-This code accidentally returns zero/success on error because of a typo.
-It should be "irq" instead of "ret".  The other thing is that if
-platform_get_irq_byname() were to return zero then the error code would
-be cmplicated.  Fortunately, it does not so we can just change <= to
-< 0.
+Il 28/03/24 15:38, Mathieu Poirier ha scritto:
+> On Wed, Mar 27, 2024 at 01:49:58PM +0100, AngeloGioacchino Del Regno wrote:
+>> Il 21/03/24 16:27, Mathieu Poirier ha scritto:
+>>> On Thu, Mar 21, 2024 at 09:46:14AM +0100, AngeloGioacchino Del Regno wrote:
+>>>> When probing multi-core SCP, this driver is parsing all sub-nodes of
+>>>> the scp-cluster node, but one of those could be not an actual SCP core
+>>>> and that would make the entire SCP cluster to fail probing for no good
+>>>> reason.
+>>>>
+>>>> To fix that, in scp_add_multi_core() treat a subnode as a SCP Core by
+>>>> parsing only available subnodes having compatible "mediatek,scp-core".
+>>>>
+>>>> Fixes: 1fdbf0cdde98 ("remoteproc: mediatek: Probe SCP cluster on multi-core SCP")
+>>>> Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+>>>> ---
+>>>>    drivers/remoteproc/mtk_scp.c | 3 +++
+>>>>    1 file changed, 3 insertions(+)
+>>>>
+>>>> diff --git a/drivers/remoteproc/mtk_scp.c b/drivers/remoteproc/mtk_scp.c
+>>>> index 67518291a8ad..fbe1c232dae7 100644
+>>>> --- a/drivers/remoteproc/mtk_scp.c
+>>>> +++ b/drivers/remoteproc/mtk_scp.c
+>>>> @@ -1096,6 +1096,9 @@ static int scp_add_multi_core(struct platform_device *pdev,
+>>>>    	cluster_of_data = (const struct mtk_scp_of_data **)of_device_get_match_data(dev);
+>>>>    	for_each_available_child_of_node(np, child) {
+>>>> +		if (!of_device_is_compatible(child, "mediatek,scp-core"))
+>>>> +			continue;
+>>>> +
+>>>
+>>> Interesting - what else gets stashed under the remote processor node?  I don't
+>>> see anything specified in the bindings.
+>>>
+>>
+>> Sorry for the late reply - well, in this precise moment in time, upstream,
+>> nothing yet.
+>>
+>> I have noticed this while debugging some lockups and wanted to move the scp_adsp
+>> clock controller node as child of the SCP node (as some of those clocks are located
+>> *into the SCP's CFG register space*, and it's correct for that to be a child as one
+>> of those do depend on the SCP being up - and I'll spare you the rest) and noticed
+>> the unexpected behavior, as the SCP driver was treating those as an SCP core.
+>>
+>> There was no kernel panic, but the SCP would fail probing.
+>>
+>> This is anyway a missed requirement ... for platforms that want *both* two SCP
+>> cores *and* the AudioDSP, as that'd at least be two nodes with the same iostart
+>> (scp@1072000, clock-controller@1072000), other than the reasons I explained some
+>> lines back.
+>>
+>> ...and that's why this commit was sent :-)
+>>
+> 
+> Please update the bindings with the extra clock requirement in your next
+> revision.
+> 
 
-Fixes: 5cd894e258c4 ("drm/panthor: Add the GPU logical block")
-Signed-off-by: Dan Carpenter <dan.carpenter@linaro.org>
----
- drivers/gpu/drm/panthor/panthor_gpu.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+Ok.
 
-diff --git a/drivers/gpu/drm/panthor/panthor_gpu.c b/drivers/gpu/drm/panthor/panthor_gpu.c
-index 0f7c962440d3..5251d8764e7d 100644
---- a/drivers/gpu/drm/panthor/panthor_gpu.c
-+++ b/drivers/gpu/drm/panthor/panthor_gpu.c
-@@ -211,8 +211,8 @@ int panthor_gpu_init(struct panthor_device *ptdev)
- 		return ret;
- 
- 	irq = platform_get_irq_byname(to_platform_device(ptdev->base.dev), "gpu");
--	if (irq <= 0)
--		return ret;
-+	if (irq < 0)
-+		return irq;
- 
- 	ret = panthor_request_gpu_irq(ptdev, &ptdev->gpu->irq, irq, GPU_INTERRUPTS_MASK);
- 	if (ret)
--- 
-2.43.0
+Can you please take only patch 1/2 of this series so that I can delay this one
+for a bit? I don't have time to work on that exactly right now.
+
+Thanks,
+Angelo
+
 
 
