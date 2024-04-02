@@ -1,116 +1,118 @@
-Return-Path: <linux-kernel+bounces-127307-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-127308-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 16DD2894975
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 04:29:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 0E1C1894978
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 04:30:51 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C00711F24660
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 02:29:56 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B66E91F2426F
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 02:30:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2CDC11401C;
-	Tue,  2 Apr 2024 02:29:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BE4861171A;
+	Tue,  2 Apr 2024 02:30:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="i2J4cyQl"
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+	dkim=pass (1024-bit key) header.d=amazon.com header.i=@amazon.com header.b="h1uzAWgw"
+Received: from smtp-fw-80006.amazon.com (smtp-fw-80006.amazon.com [99.78.197.217])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E308310A0C;
-	Tue,  2 Apr 2024 02:29:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A788A7E6;
+	Tue,  2 Apr 2024 02:30:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=99.78.197.217
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712024968; cv=none; b=Nv9MrRzFXzGxG8B61uMn/1oZ3swysUV1EXbOsDklxxj2nEvaCrnMDnmIPGu0sT0uerJ16ldUVa0QLn+eGn6tIBmQf2xyjrzbQPb4XKqmrV7yBJtcmfBcwI8kODMEuFxyVyVlhlKfUEwNeosSvn4Z0RfEB/r5WKkB8Fp/Ac9ERnA=
+	t=1712025040; cv=none; b=Vdx6e9uxaSrPz6YJ27DJ1YUv2KWjNsoXqspR3cAWm/krsBkgC1Jm18zRQR8Uhbv7G4Zn3RNNQhMrJszX/lRDMps7qZNmrB7qEDOuO81z2GR303lom6tk4eAoMTmL/0gOyNrOIHdGify/9/TaN+4im6W62AYpoVNrdbjftbvDPaE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712024968; c=relaxed/simple;
-	bh=YOK3Vrm/GjP8UTcwVyHRIUVeZFsT2y0pds17HFYM7B0=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=d8r8flzyngc6fsUb9JMPfmKpaGLvBo395GwiI9BPoycQn/qQ8GfyQm6O/DZuorokOhLvDrYLRYrxAwj4igKZWJuE+WdAxtO1QjA7OxFkrBMzHtaPvDtPNPD5QZ7mXGj9iDXvjxvSDvPz+rxgeKJAkQE317+RJOLZ+aHIfemt4QA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=i2J4cyQl; arc=none smtp.client-ip=205.220.180.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279870.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 4322Ek4p030833;
-	Tue, 2 Apr 2024 02:29:15 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	message-id:date:mime-version:subject:to:cc:references:from
-	:in-reply-to:content-type:content-transfer-encoding; s=
-	qcppdkim1; bh=J0U5+iwHb3WLKeAZmMsk0vPiVfr2dgan3DXVTFIviw0=; b=i2
-	J4cyQllHtOCNDys8BNxI03gVhIGuuOjPIBYWeBueV3/joQkXn+SFnmdEWVPYg88y
-	5wcYgg3cvziMeyPLdO6WIB6RBHU7+KOPEkTGl3d54EG46jpiIMm3HGsNwxW6lpJR
-	55jCUOE8c6yMnT9VYwhuHN1D6BwBELf7N/9Ks48LX7DiQLpoQugBBdc2rZ6XPH/j
-	FJw2Q9Zv8nB22nd4z3uz9XMKFo6MSJnmFuphaJ1WaR4hMBDAFYHUSKgTrzBM+K84
-	YJ+6kpAuSFVctcwqonKDjh2V8t0NUaPblcJv2pbFVd2YwtBQ5y/7TI7HIlACYJMy
-	s3EMUkxu4Yzq7/MxZ7xg==
-Received: from nalasppmta02.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3x87um04b9-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 02 Apr 2024 02:29:15 +0000 (GMT)
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-	by NALASPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 4322TEAO024929
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 2 Apr 2024 02:29:14 GMT
-Received: from [10.239.132.204] (10.80.80.8) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Mon, 1 Apr
- 2024 19:29:08 -0700
-Message-ID: <2d35eb0c-2a89-4e06-bb29-b4a9fc531446@quicinc.com>
-Date: Tue, 2 Apr 2024 10:29:06 +0800
+	s=arc-20240116; t=1712025040; c=relaxed/simple;
+	bh=PpSXo1QhcMevwm7I+K7iRFo96h88oIV/8+9o9/wUcnU=;
+	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
+	 Content-Type:MIME-Version; b=nV5gSzlyiCxLTPW78rXLDGTTNT09MgeiynIkgDCoAFnHBKvbCRnolYxdO26C7CUouGk3C2kVoyuO2vq9kTfcdy1w9C4xUJpSPXShFGSSw2jrdt+68VP41/MCOmxsZR3cLTEXU3qRs46jpUvsIkTPBKYbr7EkfrcP5d/6rfUQkSs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.com; spf=pass smtp.mailfrom=amazon.com; dkim=pass (1024-bit key) header.d=amazon.com header.i=@amazon.com header.b=h1uzAWgw; arc=none smtp.client-ip=99.78.197.217
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=amazon.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
+  t=1712025039; x=1743561039;
+  h=from:to:cc:subject:date:message-id:references:
+   in-reply-to:content-id:content-transfer-encoding:
+   mime-version;
+  bh=PpSXo1QhcMevwm7I+K7iRFo96h88oIV/8+9o9/wUcnU=;
+  b=h1uzAWgwI7ITpOhT1CRD4wRPpUbXcgkHo67+ubu1QKQHgMiWTMjBtnxM
+   Y2dOnwtdyoTycs2mj/ikSs+6sutqF/WoAlbuAEkBf3UoE+2YkD546Amca
+   EI61fL54lysqTAWIxOqK6vzbhqMKrN/4/5cQizBPZXCX07906zIkheJ59
+   M=;
+X-IronPort-AV: E=Sophos;i="6.07,173,1708387200"; 
+   d="scan'208";a="284455721"
+Received: from pdx4-co-svc-p1-lb2-vlan3.amazon.com (HELO smtpout.prod.us-west-2.prod.farcaster.email.amazon.dev) ([10.25.36.214])
+  by smtp-border-fw-80006.pdx80.corp.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Apr 2024 02:30:33 +0000
+Received: from EX19MTAUWC002.ant.amazon.com [10.0.38.20:38275]
+ by smtpin.naws.us-west-2.prod.farcaster.email.amazon.dev [10.0.56.234:2525] with esmtp (Farcaster)
+ id b76e8157-aec4-494c-8c62-9b3ebbe5bb57; Tue, 2 Apr 2024 02:30:24 +0000 (UTC)
+X-Farcaster-Flow-ID: b76e8157-aec4-494c-8c62-9b3ebbe5bb57
+Received: from EX19D002UWA002.ant.amazon.com (10.13.138.246) by
+ EX19MTAUWC002.ant.amazon.com (10.250.64.143) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1258.28; Tue, 2 Apr 2024 02:30:24 +0000
+Received: from EX19D001UWA003.ant.amazon.com (10.13.138.211) by
+ EX19D002UWA002.ant.amazon.com (10.13.138.246) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA) id 15.2.1258.28;
+ Tue, 2 Apr 2024 02:30:24 +0000
+Received: from EX19D001UWA003.ant.amazon.com ([fe80::256a:26de:3ee6:48a2]) by
+ EX19D001UWA003.ant.amazon.com ([fe80::256a:26de:3ee6:48a2%7]) with mapi id
+ 15.02.1258.028; Tue, 2 Apr 2024 02:30:24 +0000
+From: "Okanovic, Haris" <harisokn@amazon.com>
+To: "linux-pm@vger.kernel.org" <linux-pm@vger.kernel.org>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	"linux-assembly@vger.kernel.org" <linux-assembly@vger.kernel.org>
+CC: "peterz@infradead.org" <peterz@infradead.org>, "Saidi, Ali"
+	<alisaidi@amazon.com>, "Blake, Geoff" <blakgeof@amazon.com>, "Silver, Brian"
+	<silverbr@amazon.com>
+Subject: Re: [PATCH 3/3] arm64: cpuidle: Add arm_poll_idle
+Thread-Topic: [PATCH 3/3] arm64: cpuidle: Add arm_poll_idle
+Thread-Index: AQHahJ/D8+a2/m+FEk+Q2bqBNHXo/LFUQbcA
+Date: Tue, 2 Apr 2024 02:30:23 +0000
+Message-ID: <738769693c52ed23e35850325ee414ab131a06ea.camel@amazon.com>
+References: <20240402014706.3969151-1-harisokn@amazon.com>
+	 <20240402014706.3969151-3-harisokn@amazon.com>
+In-Reply-To: <20240402014706.3969151-3-harisokn@amazon.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <A5B816E60B1093468C4B39A6876BD3EC@amazon.com>
+Content-Transfer-Encoding: base64
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v6 RESEND 0/4] arm64: qcom: add AIM300 AIoT board support
-To: Trilok Soni <quic_tsoni@quicinc.com>, <andersson@kernel.org>,
-        <konrad.dybcio@linaro.org>, <robh@kernel.org>,
-        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>
-CC: <keescook@chromium.org>, <tony.luck@intel.com>, <gpiccoli@igalia.com>,
-        <linux-arm-msm@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <linux-hardening@vger.kernel.org>,
-        <kernel@quicinc.com>
-References: <20240401093843.2591147-1-quic_tengfan@quicinc.com>
- <31f0b5d2-5b92-cc74-68bd-94fd42527a22@quicinc.com>
-From: Tengfei Fan <quic_tengfan@quicinc.com>
-In-Reply-To: <31f0b5d2-5b92-cc74-68bd-94fd42527a22@quicinc.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: enCqBDIQHpnahHhM2nzKGhjfa96sj9ij
-X-Proofpoint-ORIG-GUID: enCqBDIQHpnahHhM2nzKGhjfa96sj9ij
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-04-01_18,2024-04-01_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=840 adultscore=0
- bulkscore=0 priorityscore=1501 suspectscore=0 phishscore=0 clxscore=1015
- malwarescore=0 impostorscore=0 spamscore=0 mlxscore=0 lowpriorityscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.19.0-2403210001
- definitions=main-2404020016
 
-
-
-On 4/1/2024 11:54 PM, Trilok Soni wrote:
-> On 4/1/2024 2:38 AM, Tengfei Fan wrote:
->> Here is a diagram of AIM300 AIoT Carrie Board and SoM
->>   +--------------------------------------------------+
->>   |             AIM300 AIOT Carrie Board             |
-> 
-> spellcheck
-> 
-> s/Carrie/Carrier ?
-
-Thanks Trilok for pointing out the problem here, I will correct this 
-typo in next version patch series.
-
-> 
-
--- 
-Thx and BRs,
-Tengfei Fan
+T24gTW9uLCAyMDI0LTA0LTAxIGF0IDIwOjQ3IC0wNTAwLCBIYXJpcyBPa2Fub3ZpYyB3cm90ZToK
+PiArc3RhdGljIGludCBfX2NwdWlkbGUgYXJtX2lkbGVfd2ZlX3BvbGwoc3RydWN0IGNwdWlkbGVf
+ZGV2aWNlICpkZXYsCj4gK8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgc3RydWN0IGNwdWlkbGVfZHJpdmVyICpkcnYsIGludCBpZHgp
+Cj4gK3sKPiArwqDCoMKgwqDCoMKgwqB1NjQgdGltZV9zdGFydCwgdGltZV9saW1pdDsKPiArCj4g
+K8KgwqDCoMKgwqDCoMKgdGltZV9zdGFydCA9IGxvY2FsX2Nsb2NrKCk7Cj4gK8KgwqDCoMKgwqDC
+oMKgZGV2LT5wb2xsX3RpbWVfbGltaXQgPSBmYWxzZTsKPiArCj4gK8KgwqDCoMKgwqDCoMKgbG9j
+YWxfaXJxX2VuYWJsZSgpOwoKUmUgdGhpcyBjb21tZW50IGZyb20gUGV0ZXIgWmlqbHN0cmEgWzFd
+LCBzaG91bGQgSSB1c2UKcmF3X2xvY2FsX2lycV9lbmFibGUoKSBpbnN0ZWFkPyBJIHNlZSBleGFt
+cGxlcyBvZiBib3RoIHVuZGVyCmRyaXZlcnMvY3B1aWRsZS8uCgpbMV0KaHR0cHM6Ly9lbGl4aXIu
+Ym9vdGxpbi5jb20vbGludXgvdjYuOS1yYzIvc291cmNlL2luY2x1ZGUvbGludXgvY3B1aWRsZS5o
+I0wxMTkKCj4gKwo+ICvCoMKgwqDCoMKgwqDCoGlmIChjdXJyZW50X3NldF9wb2xsaW5nX2FuZF90
+ZXN0KCkpCj4gK8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoGdvdG8gZW5kOwo+ICsKPiAr
+wqDCoMKgwqDCoMKgwqB0aW1lX2xpbWl0ID0gY3B1aWRsZV9wb2xsX3RpbWUoZHJ2LCBkZXYpOwo+
+ICsKPiArwqDCoMKgwqDCoMKgwqBkbyB7Cj4gK8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oC8vIGV4Y2x1c2l2ZSByZWFkIGFybXMgdGhlIG1vbml0b3IgZm9yIHdmZQo+ICvCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqBpZiAoX19SRUFEX09OQ0VfRVgoY3VycmVudF90aHJlYWRfaW5m
+bygpLT5mbGFncykgJgo+IF9USUZfTkVFRF9SRVNDSEVEKQo+ICvCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgZ290byBlbmQ7Cj4gKwo+ICvCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqAvLyBtYXkgZXhpdCBwcmVtYXR1cmVseSwgc2VlIEFSTV9BUkNIX1RJ
+TUVSX0VWVFNUUkVBTQo+ICvCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqB3ZmUoKTsKPiAr
+wqDCoMKgwqDCoMKgwqB9IHdoaWxlIChsb2NhbF9jbG9jaygpIC0gdGltZV9zdGFydCA8IHRpbWVf
+bGltaXQpOwo+ICsKPiArwqDCoMKgwqDCoMKgwqBkZXYtPnBvbGxfdGltZV9saW1pdCA9IHRydWU7
+Cj4gKwo+ICtlbmQ6Cj4gK8KgwqDCoMKgwqDCoMKgY3VycmVudF9jbHJfcG9sbGluZygpOwo+ICvC
+oMKgwqDCoMKgwqDCoHJldHVybiBpZHg7Cj4gK30KPiArCgpUaGFua3MsCkhhcmlzIE9rYW5vdmlj
+Cgo=
 
