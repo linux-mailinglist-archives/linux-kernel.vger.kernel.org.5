@@ -1,117 +1,193 @@
-Return-Path: <linux-kernel+bounces-128081-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-128082-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 580BB8955F4
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 15:59:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id AC8A389560D
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 16:02:47 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 797CBB298D1
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 13:52:46 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 05533B2C993
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 13:53:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C90C284A2C;
-	Tue,  2 Apr 2024 13:52:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5975E85298;
+	Tue,  2 Apr 2024 13:52:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="ExEutO3v"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="HtOEHrQ2"
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9B9DF84A22
-	for <linux-kernel@vger.kernel.org>; Tue,  2 Apr 2024 13:52:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C95667764E;
+	Tue,  2 Apr 2024 13:52:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712065958; cv=none; b=A1zcn5rN1aBDpUai0c92/xbFCs7FJ73oQxpyMqXdh0M5NUUUJ86v3wKbudlqay/k9Cg1/CvpU7895XgbITbnZnMCaaz7BBD+xFtUXQ1O/UHaC5gcI14dkyJXgRHja96bfKKN0pcBCHkpfLM21/it5pBwbghl2bVi87T6fXtjnn8=
+	t=1712065968; cv=none; b=fo6EOrksSoFriTuAFZzvXEIbK8GDtb3UaKPnih6Pq5yXWR86r2HGuD0ZYAv2cF+y60lYnj93mr7IjnykW0tToYgaE11DWIPfJzp9GZAzAXVElQacCAkHLAY31JuuK9LyL9Hf5O9Hz1NRlY5hwr5gO8U/bljnTb8alpV3lpy462c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712065958; c=relaxed/simple;
-	bh=DPrcRRAqP1t9Y3kbn2V/yhUWU5FgxTbcD5//bRhvtjw=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=gLVgd7CY2WBWp04P2y6gvzm9vEEFfuUDHLz/LUbY8pF6/VMB6EvTvW8MJooVsrsVMflsB6djVEqpJyKmdFmyCZWfGb1wtUBN1woVF7oQ7YZ4ykDDkZCa2M3lJhM4Ja1WayKACrq2CcB61kEV2yocxgYntRhkot6rcuq/qsC8jWA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=ExEutO3v; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1712065955;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=DhTrdl+Lsun5myVNSpVrwdD2BVn4sbhl051ZYtiso+E=;
-	b=ExEutO3vx7tEx5TUBLXtzOefuDiZUpAJS5Odm32xdqa4Ej1FFEfV9GQZ73ZZBv5/Ej94kY
-	0zcp93VsOQege5C0bLhPG86YKttKUHWzAQRkR3fUDslN+SNBDnMlEoqztHWCWAA18xPOHr
-	q6OAVltVkTQl5nb4hp+Mf5lR31Ye0fE=
-Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
- by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-206-V_eTs7JBMga5AQrHxfFSIA-1; Tue,
- 02 Apr 2024 09:52:34 -0400
-X-MC-Unique: V_eTs7JBMga5AQrHxfFSIA-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.rdu2.redhat.com [10.11.54.4])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 7EB183C025B9;
-	Tue,  2 Apr 2024 13:52:33 +0000 (UTC)
-Received: from redhat.com (unknown [10.22.8.63])
-	by smtp.corp.redhat.com (Postfix) with ESMTPS id 28A092024517;
-	Tue,  2 Apr 2024 13:52:33 +0000 (UTC)
-Date: Tue, 2 Apr 2024 09:52:31 -0400
-From: Joe Lawrence <joe.lawrence@redhat.com>
-To: zhangwarden@gmail.com
-Cc: jpoimboe@kernel.org, mbenes@suse.cz, jikos@kernel.org, pmladek@suse.com,
-	live-patching@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] livepatch: Add KLP_IDLE state
-Message-ID: <ZgwNn5+/Ryh05OOm@redhat.com>
-References: <20240402030954.97262-1-zhangwarden@gmail.com>
+	s=arc-20240116; t=1712065968; c=relaxed/simple;
+	bh=DB+ahEafpRni611DhU/MfKZ4/BJcBCai0etUoDOdEGw=;
+	h=Message-ID:Date:MIME-Version:Subject:From:To:CC:References:
+	 In-Reply-To:Content-Type; b=IaFKbYtE3RgciIfB0C/Y2gIdrYxGEef6NayUfHV/GwpppnCIqu4J7xSPgk8e3blvL/E+263u9VHuC/lJUgPt6pPdYA4/3NEmU5OOoPen7Dbvcd55UATxghXc2GOIRyM325OWzJ0kNQGFgAjzK4TZhScV5QXJOJ2WKvyC2mB76Bk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=HtOEHrQ2; arc=none smtp.client-ip=205.220.168.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279865.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 432BjQTE030223;
+	Tue, 2 Apr 2024 13:52:44 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	message-id:date:mime-version:subject:from:to:cc:references
+	:in-reply-to:content-type:content-transfer-encoding; s=
+	qcppdkim1; bh=PtUz8Bqtl00LR/OIst0NXPj5KZ5HG092nIuE6D4bz3o=; b=Ht
+	OEHrQ2pw2ojoN8ITPv9Xes5Zxdsi2w+hzWHiU0Qn4KrAfL2pHBi1J71nDqnXVlWc
+	vi9/dA1hK62fvfQkxdqrB+fyK9G30l57UF7LPLXK4aV00ofbJfyuKDhNMpy10xca
+	ncDfAAiiY8mp3RTTJJRwEYr9T4xUum00DOPy+joV9S4B8yrm8WC5nhwS6dcjDQSP
+	iub51IgZl5vugGAOgD3e4KoJwL7lnjbONqMbGO1ZVIVEPQVROKMiyuAweZWacpF1
+	Ts/kY7kO5O/olIXzmzhXpgoLyYCZlNthq/8j0rNrvCZIg4caV6dPrV9UkMckbk5I
+	6j2trHicOk5D/ULMU43A==
+Received: from nasanppmta03.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3x8ha3gena-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 02 Apr 2024 13:52:43 +0000 (GMT)
+Received: from nasanex01b.na.qualcomm.com (nasanex01b.na.qualcomm.com [10.46.141.250])
+	by NASANPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 432DqhE7031729
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 2 Apr 2024 13:52:43 GMT
+Received: from [10.253.10.145] (10.80.80.8) by nasanex01b.na.qualcomm.com
+ (10.46.141.250) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.4; Tue, 2 Apr 2024
+ 06:52:40 -0700
+Message-ID: <0cfac65c-8b71-4900-88a3-631c93aebc17@quicinc.com>
+Date: Tue, 2 Apr 2024 21:52:38 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240402030954.97262-1-zhangwarden@gmail.com>
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.4
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] bus: mhi: host: Add sysfs entry to force device to enter
+ EDL
+Content-Language: en-US
+From: Qiang Yu <quic_qianyu@quicinc.com>
+To: Jeffrey Hugo <quic_jhugo@quicinc.com>,
+        Manivannan Sadhasivam
+	<mani@kernel.org>
+CC: <mhi@lists.linux.dev>, <linux-arm-msm@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <quic_cang@quicinc.com>,
+        <quic_mrana@quicinc.com>, Bhaumik Bhatt <quic_bbhatt@quicinc.com>
+References: <1703490474-84730-1-git-send-email-quic_qianyu@quicinc.com>
+ <cff4b828-9566-a2bd-287a-138d74a76a59@quicinc.com>
+ <20240102165229.GC4917@thinkpad>
+ <90c0a654-a02f-46e2-96a9-34f6a30c95a0@quicinc.com>
+ <a10439f1-0fcd-834c-12a3-677976529cf1@quicinc.com>
+ <e78382b5-428e-4de8-be0d-b319534238f1@quicinc.com>
+In-Reply-To: <e78382b5-428e-4de8-be0d-b319534238f1@quicinc.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nasanex01b.na.qualcomm.com (10.46.141.250)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: fMSS4H5zgWJO9_RmI54q6yj8Lfaq8Ri2
+X-Proofpoint-GUID: fMSS4H5zgWJO9_RmI54q6yj8Lfaq8Ri2
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-04-02_07,2024-04-01_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 impostorscore=0
+ priorityscore=1501 mlxlogscore=999 spamscore=0 lowpriorityscore=0
+ clxscore=1015 adultscore=0 bulkscore=0 suspectscore=0 phishscore=0
+ malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2403210001 definitions=main-2404020102
 
-On Tue, Apr 02, 2024 at 11:09:54AM +0800, zhangwarden@gmail.com wrote:
-> From: Wardenjohn <zhangwarden@gmail.com>
-> 
-> In livepatch, using KLP_UNDEFINED is seems to be confused.
-> When kernel is ready, livepatch is ready too, which state is
-> idle but not undefined. What's more, if one livepatch process
-> is finished, the klp state should be idle rather than undefined.
-> 
-> Therefore, using KLP_IDLE to replace KLP_UNDEFINED is much better
-> in reading and understanding.
-> ---
->  include/linux/livepatch.h     |  1 +
->  kernel/livepatch/patch.c      |  2 +-
->  kernel/livepatch/transition.c | 24 ++++++++++++------------
->  3 files changed, 14 insertions(+), 13 deletions(-)
-> 
-> diff --git a/include/linux/livepatch.h b/include/linux/livepatch.h
-> index 9b9b38e89563..c1c53cd5b227 100644
-> --- a/include/linux/livepatch.h
-> +++ b/include/linux/livepatch.h
-> @@ -19,6 +19,7 @@
->  
->  /* task patch states */
->  #define KLP_UNDEFINED	-1
-> +#define KLP_IDLE       -1
 
-Hi Wardenjohn,
+On 4/2/2024 12:34 PM, Qiang Yu wrote:
+>
+> On 1/12/2024 3:08 AM, Jeffrey Hugo wrote:
+>> On 1/9/2024 2:20 AM, Qiang Yu wrote:
+>>>
+>>> On 1/3/2024 12:52 AM, Manivannan Sadhasivam wrote:
+>>>> On Tue, Jan 02, 2024 at 08:31:15AM -0700, Jeffrey Hugo wrote:
+>>>>> On 12/25/2023 12:47 AM, Qiang Yu wrote:
+>>>>>> From: Bhaumik Bhatt <quic_bbhatt@quicinc.com>
+>>>>>>
+>>>>>> Forcing the device (eg. SDX75) to enter Emergency Download Mode 
+>>>>>> involves
+>>>>>> writing the 0xEDEDEDED cookie to the channel 91 doorbell register 
+>>>>>> and
+>>>>>> forcing an SOC reset afterwards. Allow users of the MHI bus to 
+>>>>>> exercise the
+>>>>>> sequence using a sysfs entry.
+>>>>> I don't see this documented in the spec anywhere.  Is this 
+>>>>> standard behavior
+>>>>> for all MHI devices?
+>>>>>
+>>>>> What about devices that don't support EDL mode?
+>>>>>
+>>>>> How should the host avoid using this special cookie when EDL mode 
+>>>>> is not
+>>>>> desired?
+>>>>>
+>>>> All points raised by Jeff are valid. I had discussions with Hemant 
+>>>> and Bhaumik
+>>>> previously on allowing the devices to enter EDL mode in a generic 
+>>>> manner and we
+>>>> didn't conclude on one final approach.
+>>>>
+>>>> Whatever way we come up with, it should be properly described in 
+>>>> the MHI spec
+>>>> and _should_ be backwards compatible.
+>>>
+>>> Hi Mani, Jeff. The method of entering EDL mode is documented in MHI 
+>>> spec v1.2, Chapter 13.2.
+>>>
+>>> Could you please check once?
+>>
+>> I do see it listed there.  However that was a FR for SDX55, so 
+>> devices prior to that would not support this.  AIC100 predates this 
+>> change and would not support the functionality.  I verified the 
+>> AIC100 implementation is not aware of this cookie.
+>>
+>> Also, that functionality depends on channel 91 being reserved per the 
+>> table 9-2, however that table only applies to modem class devices as 
+>> it is under chapter 9 "Modem protocols over PCIe". Looking at the 
+>> ath11k and ath12k implementations in upstream, it looks like they 
+>> partially comply.  Other devices have different MHI channel definitions.
+>>
+>> Chapter 9 doesn't appear to be in older versions of the spec that I 
+>> have, so it is unclear if this functionality is backwards compatible 
+>> (was channel 91 used for another purpose in pre-SDX55 modems).
+>>
+>> I'm not convinced this belongs in the MHI core.  At a minimum, the 
+>> MHI controller(s) for the applicable devices needs to opt-in to this.
+>>
+>> -Jeff
+> Hi Jeff
+>
+> Sorry for reply so late. In older versions of the spec, there is no 
+> description about EDL doorbell. However, in MHI spec v1.2, section 13.2,
+> It explicitly says "To set the EDL cookie, the host writes 0xEDEDEDED 
+> to channel doorbell 91." So I think every device based on MHI spec v1.2
+> should reserve channel doorbell 91 for EDL mode.
+>
+> So can we add another flag called mhi_ver in mhi controller to 
+> indicate its mhi version and then we can add mhi_ver checking to 
+> determine if this
+> device supports EDL sysfs operation?
+>
+> Thanks,
+> Qiang
 
-Quick question, does this patch intend to:
+I discussed with internal team, look like devices that reserve channel 
+doorbell 91 for EDL, thier MHIVER register value can still be 1.0 instead
+of 1.2. So even if we add a flag called mhi_ver to store the value read 
+from the MHIVER register. We still can not do EDL support check depend 
+on it.
 
-- Completely replace KLP_UNDEFINED with KLP_IDLE
-- Introduce KLP_IDLE as an added, fourth potential state
-- Introduce KLP_IDLE as synonym of sorts for KLP_UNDEFINED under certain
-  conditions
+But I still think enter EDL mode by writing EDL cookie to channel 
+doorbell is a standard way. At least it's a standard way from MHI spec V1.2.
 
-I ask because this patch leaves KLP_UNDEFINED defined and used in other
-parts of the tree (ie, init/init_task.c), yet KLP_IDLE is added and
-continues to use the same -1 enumeration.
-
---
-Joe
-
+In mhi_controller, we have a variable edl_image representing the name 
+and path of firmware. But We still can not determine if the device reserve
+channel doorbell 91 by checking this because some devices may enter EDL 
+mode in different way. Mayebe we have to add a flag in mhi_controller
+called edl_support to do the check.
 
