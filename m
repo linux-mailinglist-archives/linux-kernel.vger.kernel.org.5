@@ -1,164 +1,132 @@
-Return-Path: <linux-kernel+bounces-127943-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-127944-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id D15FB895317
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 14:36:01 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 340FA89531B
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 14:36:16 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 87012285387
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 12:36:00 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C97B41F266E8
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 12:36:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B731F58AB0;
-	Tue,  2 Apr 2024 12:35:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F2A4F7F7EF;
+	Tue,  2 Apr 2024 12:35:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="NQp6/uke"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="HTNdNq8e"
+Received: from mail-ed1-f43.google.com (mail-ed1-f43.google.com [209.85.208.43])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E5378634E5
-	for <linux-kernel@vger.kernel.org>; Tue,  2 Apr 2024 12:35:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8A70F7A151;
+	Tue,  2 Apr 2024 12:35:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712061343; cv=none; b=pzhIlZtLkOO6b2eDVv+axS49tJvCLM7Q0GV8QJv8plqF1RaiMi/TsYedlPPbHMq6GSKu2z633yKPX0snudLVp9Ufo/43CZzb4OTyU9yEaNggW+dTfK8koiX5fmEbRCjucRJVRXEIZ9FphL6rxOcZhr2/vNSGP38UZ48wZD/KXak=
+	t=1712061350; cv=none; b=RrVhOJw3yBKLpR/YA7qgCmcIYSnW4xxbuXXTJTABfXa1dr9DkWCs39IuARvlIDZ2Nbp2SeYR49BRw8Imk19Qugo7xpnhUGdSDhMX3GrDd+oN06Mx6bbzIS7JsKTOnigXnA9MksEyf5NZZhpKYlMS1wjODTB04Ea6u/l32qdFnyQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712061343; c=relaxed/simple;
-	bh=7+z6FHMMk9EWFQfppPVQiC+yP/sYKpg6rT2yPxQXsKQ=;
-	h=Date:Message-ID:From:To:Cc:Subject:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=CjZ8SkbwI9aAbXdgMwNCV/0ZlfEALlpJr4rEBdenTsONU0SEWCltLkPioKm2qKTtEkh0xUVDcpi/+tvwPXcxEYUToflK8709BvHDm5OQA9vmeipOsANvQiRwoWQZ1bfdxj1dQNFO54Nvj11RgEdupSV5186vixxZ+o91iQYLPYY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=NQp6/uke; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5DB33C433C7;
-	Tue,  2 Apr 2024 12:35:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712061342;
-	bh=7+z6FHMMk9EWFQfppPVQiC+yP/sYKpg6rT2yPxQXsKQ=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=NQp6/uke1jwfqfrQTJZGOj++7cB1q1V44B1/1HjkdR9up+FY9tvfjK6s2fjHtiQbt
-	 p6SzLzIyCwNtRL5WRYDC2vvL/B6XArhRUcTvrvTPumMCTr6m/GQQmzFY6zi1tDVdCQ
-	 i5ZH6Oz0jvTecofvowm4+JYf2o/EdM1y+IbUYHilLEr9JbqOSrOyKqW2Yg1x4LIFQS
-	 HI6Pd4DwRfQLrD7Zu/6ijZUOdb7P95FEeg6k1N6FHxgB8sq/rJCfgVRtaxy4Elc77S
-	 Kjuy+C5lMlFxkZ9si9edMbA+UuC0xj0etWgOglft3wI6DU2ehLAaoYm9RLmQwOQlVm
-	 6v1Ln4XZ7mgrw==
-Received: from sofa.misterjones.org ([185.219.108.64] helo=goblin-girl.misterjones.org)
-	by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.95)
-	(envelope-from <maz@kernel.org>)
-	id 1rrdMZ-000hgr-LY;
-	Tue, 02 Apr 2024 13:35:39 +0100
-Date: Tue, 02 Apr 2024 13:35:35 +0100
-Message-ID: <86jzlgt014.wl-maz@kernel.org>
-From: Marc Zyngier <maz@kernel.org>
-To: t00849498 <tangnianyao@huawei.com>
-Cc: <tglx@linutronix.de>,
-	<linux-arm-kernel@lists.infradead.org>,
-	<linux-kernel@vger.kernel.org>,
-	<guoyang2@huawei.com>,
-	<wangwudi@hisilicon.com>
-Subject: Re: [PATCH] irqchip/gic-v3-its: Don't need VSYNC if VMAPP with {V, Alloc}=={0, x}
-In-Reply-To: <20240402114147.3788881-1-tangnianyao@huawei.com>
-References: <20240402114147.3788881-1-tangnianyao@huawei.com>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
- FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/29.2
- (aarch64-unknown-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+	s=arc-20240116; t=1712061350; c=relaxed/simple;
+	bh=uwUTlxU8g81v8Oi7MvncfpmOGATFapjjVVkxW8ji7J8=;
+	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=WpHC+SjO+2HWAVQGDbovU9qZ3H+2VGjBwlcU8eCGR+vtfqtkF21WzjFt6ih3c5W4nK5RNfDVrmwAeP7dMciPcxV+OFMyEdDMz4acCgHSm6w7lduvT4ZVRqrtth1Sn+gkEedabOe8U4chSslCxbVGbI2B4I3f7Lgbkd60GWKVohE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=HTNdNq8e; arc=none smtp.client-ip=209.85.208.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ed1-f43.google.com with SMTP id 4fb4d7f45d1cf-568c714a9c7so5986295a12.2;
+        Tue, 02 Apr 2024 05:35:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1712061346; x=1712666146; darn=vger.kernel.org;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=1kXH/c9PNFa1w+eQcGwX8G+WvzgPzIA+jQ0AfW/TcTU=;
+        b=HTNdNq8eTy4jL5oYf+a45jgz8IHG3FPO0FHr0al1KliesqkBf4nXRex4iG7OiYPjPh
+         pmgSKiNsMexuvprMbXMQqAyqDQ+hsiUusH9e8VxaY7IMFxT0Gb8B44Ds8hfoc8ZhQX+J
+         IXN837dIau/9LDD5QJDRZ6PKHMNTGcn0IcYt4DXFdRpv+EIqZASCWacJ8FYdcvKvE5cf
+         jd7lavND3ta+NRA9bbvC3ZmwpcOHIHQMTbj8m7ehZWcrupd+YS3fU9PZupRs1qyoE+VY
+         YR0+xS8b8aLzJltNwztAlsI7HKZ2y0psES76+uz1pbZMU6oHw6dazr1+npfM25WR+Tgv
+         c3kg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712061346; x=1712666146;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=1kXH/c9PNFa1w+eQcGwX8G+WvzgPzIA+jQ0AfW/TcTU=;
+        b=OB6e++EnXNEDaNE23vs6dIcPAPFlBivQ4w7lVOyjySVxPacXRmMSrxAmqhYcezzynp
+         EVlIBNGNzauiMmwl0TzuwGv/cHGpq81ryytFXWJQJjFy1LWynwKfVTqms0sngeIXskWf
+         ZUpR1dvUDLHLfhlS0T3PzhDihCSRimTiRQv/YDwcG45m8GCMyeK875VJVhXB8pknN3j/
+         EQAxQnR9/H2/vkCkrn2VHgRsTe85GA5QgHeIJXi6F822oW3oNuIOArf3ZCoVzvMbbDzr
+         34T3hn24GklGpb6Dy6BVsny047NuqTBKsirCsYvwrDjoIJoNYdnOuSRbI1baJg35ilLv
+         ykzg==
+X-Forwarded-Encrypted: i=1; AJvYcCX4i5yCkzr3rJ7zjb1lmEm6oAg91EhpKaXf37pJ8crg1FhDsJcBqgkx1yfdGd+h7qJoLECfH9zmKDB/nK91Fw3fu4pCq3WmKjuAtv1tjW3UO0Nng1PBSTiuNrVnl2GHTYLPu2POtljhZMGiQDTF+ev3eS4CsSAF4q80QfDX1d10CYvVHn+zW1k=
+X-Gm-Message-State: AOJu0Yyo1hsb00KNtqp2elkIzRFYO7nZhJMLTf9RO2D0FB6Sj+zsxIul
+	uYEfgirScBljiqkmpXgb44zzTJIRVZeFr2CindZ/USSZeVI7zu4T4jvuwj/w7CA=
+X-Google-Smtp-Source: AGHT+IHEwKfGVidCzlFMb9tDRyex4pxKe3UcnCo7F3wSRPDL4gYT0ZtBGse98NcxA+0nSIPkTDkLWQ==
+X-Received: by 2002:a17:906:4796:b0:a4e:6276:659e with SMTP id cw22-20020a170906479600b00a4e6276659emr4764482ejc.76.1712061346069;
+        Tue, 02 Apr 2024 05:35:46 -0700 (PDT)
+Received: from [127.0.0.1] (net-93-65-126-18.cust.vodafonedsl.it. [93.65.126.18])
+        by smtp.googlemail.com with ESMTPSA id x18-20020a1709060a5200b00a46ab3adea5sm6467506ejf.113.2024.04.02.05.35.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 02 Apr 2024 05:35:45 -0700 (PDT)
+From: Gianluca Boiano <morf3089@gmail.com>
+Subject: [PATCH 0/3] This patch series introduces support for PMI8950 PWM
+ in leds-qcom-lpg.
+Date: Tue, 02 Apr 2024 14:35:41 +0200
+Message-Id: <20240402-pmi8950-pwm-support-v1-0-1a66899eeeb3@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Content-Type: text/plain; charset=US-ASCII
-X-SA-Exim-Connect-IP: 185.219.108.64
-X-SA-Exim-Rcpt-To: tangnianyao@huawei.com, tglx@linutronix.de, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, guoyang2@huawei.com, wangwudi@hisilicon.com
-X-SA-Exim-Mail-From: maz@kernel.org
-X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIAJ37C2YC/x3MSQqAMAxA0atI1gbaUqV6FXHhEDULNbROULy7x
+ eVb/B8hkGcKUGcRPF0ceN8SdJ7BsHTbTMhjMhhlrLLKoKzsqkKh3CuGU2T3B05FpV1pe03GQSr
+ F08TPf23a9/0AyLKhiWUAAAA=
+To: Pavel Machek <pavel@ucw.cz>, Lee Jones <lee@kernel.org>, 
+ Bjorn Andersson <andersson@kernel.org>, 
+ Konrad Dybcio <konrad.dybcio@linaro.org>, Rob Herring <robh@kernel.org>, 
+ Krzysztof Kozlowski <krzk+dt@kernel.org>, 
+ Conor Dooley <conor+dt@kernel.org>
+Cc: linux-leds@vger.kernel.org, linux-kernel@vger.kernel.org, 
+ linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org, 
+ Gianluca Boiano <morf3089@gmail.com>
+X-Mailer: b4 0.13.0
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1712061344; l=1163;
+ i=morf3089@gmail.com; s=20240402; h=from:subject:message-id;
+ bh=uwUTlxU8g81v8Oi7MvncfpmOGATFapjjVVkxW8ji7J8=;
+ b=THaBZudiIx13kFTsWsjMOkSdYCoSBn12xy4LL7Hsvd2vp/hy73n1TtZ21zee+Nh8gjuLqn3pd
+ DRGPcdjdXv2BUk3QaYw1nEL5OPotuD+vAQzlk77+wYyd8LAJNxcAFyX
+X-Developer-Key: i=morf3089@gmail.com; a=ed25519;
+ pk=HsGrEQ3ia8BGGGO8/nUM2K2UX9JKvRPV+nbrVDGrYhA=
 
-On Tue, 02 Apr 2024 12:41:47 +0100,
-t00849498 <tangnianyao@huawei.com> wrote:
-> 
-> From GIC spec, a VMAPP with {V, Alloc}=={0, x} is self-synchronizing,
+The first patch updates the device tree bindings for leds-qcom-lpg to
+include support for PMI8950 PWM.
 
-It'd be nice to quote the part of the spec (5.3.19).
+The second patch adds a pwm node to the device tree for the PMI8950. This
+node is found on some msm8953 devices, such as the Xiaomi Mido, and its
+inclusion in the device tree will enable infrared LED functionality on
+these devices.
 
-> This means the ITS command queue does not show the command as
-> consumed until all of its effects are completed. A VSYNC with unmapped
-> vpeid is not needed.
-> 
-> Signed-off-by: t00849498 <tangnianyao@huawei.com>
+The final patch adds support for the PMI8950 PWM to the leds-qcom-lpg
+driver.
 
-Previous contributions with the same email address had the name
-"Nianyao Tang" associated with it. Was it wrong in the past? Or is the
-above wrong?
+The PMI8950 PMIC contains one PWM channel.
 
-> ---
->  drivers/irqchip/irq-gic-v3-its.c | 4 ++++
->  1 file changed, 4 insertions(+)
-> 
-> diff --git a/drivers/irqchip/irq-gic-v3-its.c b/drivers/irqchip/irq-gic-v3-its.c
-> index fca888b36680..a0ca5dcbb245 100644
-> --- a/drivers/irqchip/irq-gic-v3-its.c
-> +++ b/drivers/irqchip/irq-gic-v3-its.c
-> @@ -789,6 +789,7 @@ static struct its_vpe *its_build_vmapp_cmd(struct its_node *its,
->  	unsigned long vpt_addr, vconf_addr;
->  	u64 target;
->  	bool alloc;
-> +	bool unmap_v4_1 = !desc->its_vmapp_cmd.valid && is_v4_1(its);
->
->  	its_encode_cmd(cmd, GITS_CMD_VMAPP);
->  	its_encode_vpeid(cmd, desc->its_vmapp_cmd.vpe->vpe_id);
-> @@ -832,6 +833,9 @@ static struct its_vpe *its_build_vmapp_cmd(struct its_node *its,
->  out:
->  	its_fixup_cmd(cmd);
->  
-> +	if (unmap_v4_1)
-> +		return NULL;
-> +
->  	return valid_vpe(its, desc->its_vmapp_cmd.vpe);
->  }
->  
+Signed-off-by: Gianluca Boiano <morf3089@gmail.com>
+---
+Gianluca Boiano (3):
+      leds: qcom-lpg: Add support for PMI8950 PWM
+      arm64: dts: qcom: pmi8950: add pwm node
+      dt-bindings: leds: leds-qcom-lpg: Add support for PMI8950 PWM
 
-This is a bit ugly. We already have a whole block dedicated to
-handling VMAPP with V=0 and GICv4.1, and it'd be more readable to keep
-all that code together. Something like the untested patch below.
+ Documentation/devicetree/bindings/leds/leds-qcom-lpg.yaml | 4 ++--
+ arch/arm64/boot/dts/qcom/pmi8950.dtsi                     | 8 ++++++++
+ drivers/leds/rgb/leds-qcom-lpg.c                          | 8 ++++++++
+ 3 files changed, 18 insertions(+), 2 deletions(-)
+---
+base-commit: c0b832517f627ead3388c6f0c74e8ac10ad5774b
+change-id: 20240402-pmi8950-pwm-support-f591864b1e28
 
-Thanks,
-
-	M.
-
-diff --git a/drivers/irqchip/irq-gic-v3-its.c b/drivers/irqchip/irq-gic-v3-its.c
-index fca888b36680..2a537cbfcb07 100644
---- a/drivers/irqchip/irq-gic-v3-its.c
-+++ b/drivers/irqchip/irq-gic-v3-its.c
-@@ -786,6 +786,7 @@ static struct its_vpe *its_build_vmapp_cmd(struct its_node *its,
- 					   struct its_cmd_block *cmd,
- 					   struct its_cmd_desc *desc)
- {
-+	struct its_vpe *vpe = valid_vpe(its, desc->its_vmapp_cmd.vpe);
- 	unsigned long vpt_addr, vconf_addr;
- 	u64 target;
- 	bool alloc;
-@@ -798,6 +799,11 @@ static struct its_vpe *its_build_vmapp_cmd(struct its_node *its,
- 		if (is_v4_1(its)) {
- 			alloc = !atomic_dec_return(&desc->its_vmapp_cmd.vpe->vmapp_count);
- 			its_encode_alloc(cmd, alloc);
-+			/*
-+			 * Unmapping a VPE is self-synchronizing on GICv4.1,
-+			 * no need to issue a VSYNC.
-+			 */
-+			vpe = NULL;
- 		}
- 
- 		goto out;
-@@ -832,7 +838,7 @@ static struct its_vpe *its_build_vmapp_cmd(struct its_node *its,
- out:
- 	its_fixup_cmd(cmd);
- 
--	return valid_vpe(its, desc->its_vmapp_cmd.vpe);
-+	return vpe;
- }
- 
- static struct its_vpe *its_build_vmapti_cmd(struct its_node *its,
-
+Best regards,
 -- 
-Without deviation from the norm, progress is not possible.
+Gianluca Boiano <morf3089@gmail.com>
+
 
