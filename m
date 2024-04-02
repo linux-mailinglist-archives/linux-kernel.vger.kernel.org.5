@@ -1,60 +1,58 @@
-Return-Path: <linux-kernel+bounces-128737-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-128738-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 13462895ED5
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 23:37:43 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 57FB4895ED6
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 23:39:22 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 44AB71C208ED
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 21:37:42 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D88B6284C79
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 21:39:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 22CB615E7F1;
-	Tue,  2 Apr 2024 21:37:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 33F3915E5D9;
+	Tue,  2 Apr 2024 21:39:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="dYPk/mFO"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="S7ShGO7p"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5AC4A5BAE4;
-	Tue,  2 Apr 2024 21:37:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7953F15B146
+	for <linux-kernel@vger.kernel.org>; Tue,  2 Apr 2024 21:39:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712093853; cv=none; b=YJob8j+TF/l+d4E2rsZFhHoKhprSa5vOaky6Uja8E772imD/bu1AC9DbSfWN1ZwzHbDgmSajPNpIucNXoa0trBjNTwrM7mwWGxdFzjNUnm3LFhlB2GaUtqqT4+yHNQUQggOimXAIkhz0EZtoBidXapAPaUWnzTnK5a7PdKceEds=
+	t=1712093955; cv=none; b=Y1jJqwimxWENJyhjSowCgqwVOJtZCMeQWDd3JLr1sYjhro7TW0079htH+R6mp3KnMlDyz8objNwO4XxYCQkxTz4iHYtFg5YFFqUxtnH2PnQtc8dmao0kluwEGw9Ni1BWkbvdGPKyRpw7AAosKV5QmuSs/ewUmrRJ2oSaY08/SIw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712093853; c=relaxed/simple;
-	bh=sIBx7RwB2qvqQW6tyO38tW+0CwyoH7iyM/+YOWV6j2g=;
+	s=arc-20240116; t=1712093955; c=relaxed/simple;
+	bh=j6cH16H7GHSiZVSFBdi1O5KhMFam2IL7zvbUIj4ykVY=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=aEH0lFwD90JMJXM9i12lfrb6O25jwKhiB9wMdDuI6pRuHrFW7+dyAblROotwPL1RY6kdi0kTrbTgGUeVmE5YVrjq3/nb22lBLXQE/Uyfg8UHncAeP4JunvHGvRXyZtsaqVJHh7CcZZwyle1/dkNDXnXRu0VrhnV08rsuHAkzK0k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=dYPk/mFO; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6BC9EC433F1;
-	Tue,  2 Apr 2024 21:37:31 +0000 (UTC)
+	 Content-Type:Content-Disposition:In-Reply-To; b=UDCmbwlTV6z29Hj+wq02I2zNSKnEOcXyBciQ75stu3pyOKutecmz7cCgiFZARjDYinmYq8Oo8mHRFRayFcxONi58wSyppoxeVyhr5SDvsVGcqvLfU/ABll0D1zv1x58aF44P5e+Vc6EKeE172E0JAnwL/3i4QwK7leaWydgAoCw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=S7ShGO7p; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B77BEC433F1;
+	Tue,  2 Apr 2024 21:39:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712093852;
-	bh=sIBx7RwB2qvqQW6tyO38tW+0CwyoH7iyM/+YOWV6j2g=;
+	s=k20201202; t=1712093955;
+	bh=j6cH16H7GHSiZVSFBdi1O5KhMFam2IL7zvbUIj4ykVY=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=dYPk/mFOIrLBeqSqXApAw9JLachGsiZgh4M8lzDFqhtSb/lMqDGerEkJSM+8n3wYm
-	 QAUOAh5E3q0PZ7QqPjm4l1MsWAmAREDtzDac/Hp/Vgm666MKBzzKe7t0MmLalkmhai
-	 p68d6fGuW0sSlV9OsBuP/aqQ0UaRwiAN+RywlAov6Ujv06nbWvZjUlMXScUQpa+znk
-	 VqtFyZtFSJ+cYkyrWgKDEKs72YdcQkAOLwtsCX2eJgLkRx7jmqaUJcaZbYL6dWcopE
-	 gBqtgZCOuj4BZryf4rIdeHSuT+hzxtZLFOvWFFmp7WMK1BcFxBujmMe5ugdQUJtREi
-	 hfqDfSYNCYI5A==
-Date: Tue, 2 Apr 2024 18:37:28 -0300
+	b=S7ShGO7pPWtSTWkEE9LQlUVftmxkRWl7DYsjetb+KKoFKtUcNHflmDWrKENndHR1Z
+	 E8Qa/Stew1EOUQxiMlwJ8vnn1OrcoSqkQDK68P8UvAXnx+1Mh+k93eRaCBVVAuoBLz
+	 ubH4AAvk8/jOKN/+8p9mxgl9zcQkf71P4+RSZ0NPwvUfATa1zOLJnBGKGn++sXQP94
+	 UDEg6bDrIIuzDYD54ME2v21Vv+9Yx7qfKh2kA1SX5EJM1i+EJIqSh/W+kSx43ouCAg
+	 fCS7S4KKbSglGThP3O8ojAKJMQVWe7DufS6x7XNpDzOo8KQKFGIDIe55c5RLCvUdr4
+	 8wf97Fm4vkNhA==
+Date: Tue, 2 Apr 2024 18:39:12 -0300
 From: Arnaldo Carvalho de Melo <acme@kernel.org>
 To: Namhyung Kim <namhyung@kernel.org>
-Cc: Ian Rogers <irogers@google.com>, Kan Liang <kan.liang@linux.intel.com>,
-	Jiri Olsa <jolsa@kernel.org>,
+Cc: "Michael S. Tsirkin" <mst@redhat.com>, linux-kernel@vger.kernel.org,
 	Adrian Hunter <adrian.hunter@intel.com>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Ingo Molnar <mingo@kernel.org>, LKML <linux-kernel@vger.kernel.org>,
-	linux-perf-users@vger.kernel.org, Song Liu <song@kernel.org>,
-	bpf@vger.kernel.org
-Subject: Re: [PATCH] perf lock contention: Add a missing NULL check
-Message-ID: <Zgx6mMda_X4pcAj6@x1>
-References: <20240402184543.898923-1-namhyung@kernel.org>
- <ZgxgRJdFlwfESwKF@x1>
- <CAM9d7ci7a2dbn1cz-OBkYF7P1fFA3yoBMuTzXRx=KP-yEnyfnQ@mail.gmail.com>
+	Ian Rogers <irogers@google.com>, Jiri Olsa <jolsa@kernel.org>,
+	Kan Liang <kan.liang@linux.intel.com>,
+	Zhu Lingshan <lingshan.zhu@intel.com>
+Subject: Re: [PATCH fyi 1/1] perf trace beauty: Sync linux/vhost.h with the
+ kernel sources
+Message-ID: <Zgx7APFHoWQgVEDw@x1>
+References: <ZfybkuM8DKsdX_yO@x1>
+ <CAM9d7cjSN6M4VvKRifwQ=bpvbc92pLoghnjCwWiOE7SFSzXWRg@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -64,26 +62,34 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAM9d7ci7a2dbn1cz-OBkYF7P1fFA3yoBMuTzXRx=KP-yEnyfnQ@mail.gmail.com>
+In-Reply-To: <CAM9d7cjSN6M4VvKRifwQ=bpvbc92pLoghnjCwWiOE7SFSzXWRg@mail.gmail.com>
 
-On Tue, Apr 02, 2024 at 01:42:05PM -0700, Namhyung Kim wrote:
-> On Tue, Apr 2, 2024 at 12:45 PM Arnaldo Carvalho de Melo <acme@kernel.org> wrote:
-> > Acked-by: Arnaldo Carvalho de Melo <acme@redhat.com>
+On Tue, Apr 02, 2024 at 02:04:39PM -0700, Namhyung Kim wrote:
+> On Thu, Mar 21, 2024 at 1:41 PM Arnaldo Carvalho de Melo
+> <acme@kernel.org> wrote:
+> >
+> > tldr; Just FYI, I'm carrying this on the perf tools tree.
+> 
+> Have you applied this to perf-tools-next?
 
-> > Are you going to have this merged into perf-tools?
-
-> > A Fixes: tag isn't perhaps needed as it worked in the past?
+Nope.
  
-> Fixes: 1811e82767dcc ("perf lock contention: Track and show siglock
-> with address")
- 
-> It was introduced in v6.4 and it should be fine to have this
-> even without the error.  I'll queue it to perf-tools.
+> >   +++ after     2024-03-21 17:34:07.687563333 -0300
+> >   @@ -49,6 +49,7 @@
+> >         [0x7B] = "VDPA_GET_VRING_GROUP",
+> >         [0x7F] = "VDPA_GET_VRING_DESC_GROUP",
+> >         [0x80] = "VDPA_GET_VQS_COUNT",
+> >   +     [0x80] = "VDPA_GET_VRING_SIZE",
+> 
+> This gives me a build error:
 
-ok, better, people trying the tool with a recent kernel will experience
-this, so its the right thing to get it thru perf-tools.
+I noticed it and removed it.
 
-Thanks!
+⬢[acme@toolbox perf-tools-next]$ git log --oneline perf-tools-next/perf-tools-next torvalds/master.. | grep vhost
+4962e1949608fed9 perf beauty: Move uapi/linux/vhost.h copy out of the directory used to build perf
+⬢[acme@toolbox perf-tools-next]$ 
+
+Thanks for double checking!
 
 - Arnaldo
 
