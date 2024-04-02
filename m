@@ -1,295 +1,176 @@
-Return-Path: <linux-kernel+bounces-127528-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-127529-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 11021894D36
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 10:12:24 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0A2A1894D38
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 10:12:47 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 65FAFB2265E
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 08:12:21 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8B2AA1F210B7
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 08:12:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 11F383D969;
-	Tue,  2 Apr 2024 08:12:14 +0000 (UTC)
-Received: from mail-wm1-f45.google.com (mail-wm1-f45.google.com [209.85.128.45])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 16F063D968;
+	Tue,  2 Apr 2024 08:12:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=mediatek.com header.i=@mediatek.com header.b="O88CmPZU"
+Received: from mailgw02.mediatek.com (unknown [210.61.82.184])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 96C1C17C69;
-	Tue,  2 Apr 2024 08:12:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E3C5945007
+	for <linux-kernel@vger.kernel.org>; Tue,  2 Apr 2024 08:12:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=210.61.82.184
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712045533; cv=none; b=TKt1svBBrKnqKJCZcXs+2eKzJM3sj0qhkg6RF/3gPOYOItrf7FqTlIebjjZsLcQBb50795HD/fn6lbn8Uwwm4H3hwKXpYY/vca5mczGbcJd2X5j0x31siG9D9U0/nuYuwPVSqNP4zUFRxQYFtWpUgliT+2SicGef1rnXEdkXAa4=
+	t=1712045560; cv=none; b=u2N1ktF4ybuSKQ35R1Cux2lgNCCuUMCx1x2r93uhRlyjEPeJ5bYcS/qSZaiyWJPxLTlA0FIe+agIbC6u00c40DEoVQ7sh2b+OnznusrrMO023x2t6g7JJSA936ssjO627762BPKbQQmWENqyKenz6S/xwjshcK17QwcV/M5TVnA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712045533; c=relaxed/simple;
-	bh=jSGD9FgeIFkRryLuHMUswUWFB7MeVUVWB2IgR0NFFR8=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=pF8mRL4dU/Sok/mYZESbAGSlIhh/czjkWV+p++nFEzaBIv2S+mlrXKks/rS23PCGB308JoVpsXSRaCwLAqZvIh9o0AMgogcSGItVDNSdXrUkvVLNLwAkQRx/755W/Yf5M+a3MneZ18xD3DK9nt88zzENmzRTJN3Tr80Z0DrgzCU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.128.45
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f45.google.com with SMTP id 5b1f17b1804b1-4155819f710so21279335e9.2;
-        Tue, 02 Apr 2024 01:12:11 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712045530; x=1712650330;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=O5EzL8eA+oUnkpWytn/I8Z651/MQDwKYVWGG+QibRDk=;
-        b=UdXQG8iwAgQUSgoAH3zNK8UfcevFrX5O9wDZzwXSrlyUwIw7B+dZbSECjC1igMzEEq
-         TtnpDn7GCAacLU9wh5C21LWWbeQVhXX22RnXkp99LjUwpaBJZn0tZ68OsTTWYDDE5unr
-         FU9otWZCvPzuBfdk8aumlX5bppRrAGG4jU802x4qk+74QNjzxsSgcKJGk1Ljdc4/HVgJ
-         iRwI75w/bzK5Mikoq6M4V1H2SxDqdvuAgDuZUNAzZJky8dHgrj+/UEtHlbu+JK1stBGm
-         WpCveb95scDDNaFB+CyAiOyZxmlMvh2e+wqWuYijaMmIIO2fy3N22cQh6nu1s/b9IxqK
-         OzGQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVty0upV77AUbGIK/CYeJvy5soT5xY8X6NSSrLtAvIx7BSK2lM4FskNeMZ53FzNQ4PO0tTMXVmcwrm7LM6sNCpai4BgeIq4JOHIUT4S4iPkjHNOmuQZDP/0w2cntwPDbRTJjANa
-X-Gm-Message-State: AOJu0YwHvSngMiN8MzLXAHQVT4oaZomLILSnKG91uHP39AuFVP4p1D2Z
-	9WCg/d0C1qLkzor/WYwZ7M0ikOL0H50nCMOwVzgM59qBQABwZRWYcO09lQk4pMU=
-X-Google-Smtp-Source: AGHT+IFGemYYOb9vKJpIFD2a8MsGJDZcPP5xlu/wAqzkxSMfcwWf08urzl88rDYYCi6HAzrcNL/MoA==
-X-Received: by 2002:a5d:5982:0:b0:343:41ef:ab38 with SMTP id n2-20020a5d5982000000b0034341efab38mr8409852wri.48.1712045529800;
-        Tue, 02 Apr 2024 01:12:09 -0700 (PDT)
-Received: from ?IPV6:2a0b:e7c0:0:107::aaaa:69? ([2a0b:e7c0:0:107::aaaa:69])
-        by smtp.gmail.com with ESMTPSA id bl26-20020adfe25a000000b00341ba91c1f5sm13439177wrb.102.2024.04.02.01.12.09
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 02 Apr 2024 01:12:09 -0700 (PDT)
-Message-ID: <bcf80774-98c2-4c14-a1e7-6efcb79a7fee@kernel.org>
-Date: Tue, 2 Apr 2024 10:12:08 +0200
+	s=arc-20240116; t=1712045560; c=relaxed/simple;
+	bh=5lhu8bkA4ICih9Qc8yz1RpFgwQC1a6ZaDAdiBJ/ytt4=;
+	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=EMjewVja1GE7EW8N4xKlnEmEg7HlunIGFPdqG8HDe+37YGXmCpOoIMR14k6sxe6EaYBmx6wa4tTZ03UqSgUX9FPD4JMtvs1WFBVdlRgU5bikuIH5CloNyeVpBKjxESYoZ7btzUJ2TpRll7uGQM4ei2eRZ92pQhNtzKHYL5bd0o8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=mediatek.com; spf=pass smtp.mailfrom=mediatek.com; dkim=pass (1024-bit key) header.d=mediatek.com header.i=@mediatek.com header.b=O88CmPZU; arc=none smtp.client-ip=210.61.82.184
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=mediatek.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mediatek.com
+X-UUID: bde17668f0c811ee935d6952f98a51a9-20240402
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+	h=Content-Type:MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:CC:To:From; bh=d4nRvJ0c59zUyR8ezgAHKzFD+7G8QnVomCEdYphyOZA=;
+	b=O88CmPZUqkw0d5Ku+niN01bdy5m91N9rFlOXocdLkbhoWEzGPET0ZydKqWl3YBaa7clFW5oK0+/HO32jEveKw9E4GXxCb81AUfWjlca6DX6Z2EhfIAin8hKofh90+UxkIIYGyNghGMaAQ5kaKwgdbN5iX1PoFj54+lRo3avLZHg=;
+X-CID-P-RULE: Release_Ham
+X-CID-O-INFO: VERSION:1.1.37,REQID:eee8753e-3c77-4049-a53d-ee9db0624979,IP:0,U
+	RL:0,TC:0,Content:0,EDM:0,RT:0,SF:0,FILE:0,BULK:0,RULE:Release_Ham,ACTION:
+	release,TS:0
+X-CID-META: VersionHash:6f543d0,CLOUDID:d8331f91-e2c0-40b0-a8fe-7c7e47299109,B
+	ulkID:nil,BulkQuantity:0,Recheck:0,SF:102,TC:nil,Content:0,EDM:-3,IP:nil,U
+	RL:0,File:nil,RT:nil,Bulk:nil,QS:nil,BEC:nil,COL:0,OSI:0,OSA:0,AV:0,LES:1,
+	SPR:NO,DKR:0,DKP:0,BRR:0,BRE:0
+X-CID-BVR: 0,NGT
+X-CID-BAS: 0,NGT,0,_
+X-CID-FACTOR: TF_CID_SPAM_SNR
+X-UUID: bde17668f0c811ee935d6952f98a51a9-20240402
+Received: from mtkmbs14n1.mediatek.inc [(172.21.101.75)] by mailgw02.mediatek.com
+	(envelope-from <guoyong.wang@mediatek.com>)
+	(Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
+	with ESMTP id 1646343256; Tue, 02 Apr 2024 16:12:26 +0800
+Received: from mtkmbs11n1.mediatek.inc (172.21.101.185) by
+ mtkmbs10n1.mediatek.inc (172.21.101.34) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.26; Tue, 2 Apr 2024 16:12:25 +0800
+Received: from mbjsdccf07.gcn.mediatek.inc (10.15.20.246) by
+ mtkmbs11n1.mediatek.inc (172.21.101.73) with Microsoft SMTP Server id
+ 15.2.1118.26 via Frontend Transport; Tue, 2 Apr 2024 16:12:24 +0800
+From: Guoyong Wang <guoyong.wang@mediatek.com>
+To: "Jason A . Donenfeld" <Jason@zx2c4.com>, Theodore Ts'o <tytso@mit.edu>,
+	Tejun Heo <tj@kernel.org>, Lai Jiangshan <jiangshanlai@gmail.com>, "Matthias
+ Brugger" <matthias.bgg@gmail.com>, AngeloGioacchino Del Regno
+	<angelogioacchino.delregno@collabora.com>
+CC: <linux-kernel@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
+	<linux-mediatek@lists.infradead.org>, <wsd_upstream@mediatek.com>, "Guoyong
+ Wang" <guoyong.wang@mediatek.com>
+Subject: Re: [PATCH] random: Fix the issue of '_might_sleep' function running in an atomic contex
+Date: Tue, 2 Apr 2024 16:12:14 +0800
+Message-ID: <20240402081214.2723-1-guoyong.wang@mediatek.com>
+X-Mailer: git-send-email 2.18.0
+In-Reply-To: <20240320090242.10318-1-guoyong.wang@mediatek.com>
+References: <20240320090242.10318-1-guoyong.wang@mediatek.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 6.8 015/715] io_uring: remove unconditional looping in
- local task_work handling
-To: Sasha Levin <sashal@kernel.org>, linux-kernel@vger.kernel.org,
- stable@vger.kernel.org
-Cc: Jens Axboe <axboe@kernel.dk>
-References: <20240324223455.1342824-1-sashal@kernel.org>
- <20240324223455.1342824-16-sashal@kernel.org>
-Content-Language: en-US
-From: Jiri Slaby <jirislaby@kernel.org>
-Autocrypt: addr=jirislaby@kernel.org; keydata=
- xsFNBE6S54YBEACzzjLwDUbU5elY4GTg/NdotjA0jyyJtYI86wdKraekbNE0bC4zV+ryvH4j
- rrcDwGs6tFVrAHvdHeIdI07s1iIx5R/ndcHwt4fvI8CL5PzPmn5J+h0WERR5rFprRh6axhOk
- rSD5CwQl19fm4AJCS6A9GJtOoiLpWn2/IbogPc71jQVrupZYYx51rAaHZ0D2KYK/uhfc6neJ
- i0WqPlbtIlIrpvWxckucNu6ZwXjFY0f3qIRg3Vqh5QxPkojGsq9tXVFVLEkSVz6FoqCHrUTx
- wr+aw6qqQVgvT/McQtsI0S66uIkQjzPUrgAEtWUv76rM4ekqL9stHyvTGw0Fjsualwb0Gwdx
- ReTZzMgheAyoy/umIOKrSEpWouVoBt5FFSZUyjuDdlPPYyPav+hpI6ggmCTld3u2hyiHji2H
- cDpcLM2LMhlHBipu80s9anNeZhCANDhbC5E+NZmuwgzHBcan8WC7xsPXPaiZSIm7TKaVoOcL
- 9tE5aN3jQmIlrT7ZUX52Ff/hSdx/JKDP3YMNtt4B0cH6ejIjtqTd+Ge8sSttsnNM0CQUkXps
- w98jwz+Lxw/bKMr3NSnnFpUZaxwji3BC9vYyxKMAwNelBCHEgS/OAa3EJoTfuYOK6wT6nadm
- YqYjwYbZE5V/SwzMbpWu7Jwlvuwyfo5mh7w5iMfnZE+vHFwp/wARAQABzSFKaXJpIFNsYWJ5
- IDxqaXJpc2xhYnlAa2VybmVsLm9yZz7CwXcEEwEIACEFAlW3RUwCGwMFCwkIBwIGFQgJCgsC
- BBYCAwECHgECF4AACgkQvSWxBAa0cEnVTg//TQpdIAr8Tn0VAeUjdVIH9XCFw+cPSU+zMSCH
- eCZoA/N6gitEcnvHoFVVM7b3hK2HgoFUNbmYC0RdcSc80pOF5gCnACSP9XWHGWzeKCARRcQR
- 4s5YD8I4VV5hqXcKo2DFAtIOVbHDW+0okOzcecdasCakUTr7s2fXz97uuoc2gIBB7bmHUGAH
- XQXHvdnCLjDjR+eJN+zrtbqZKYSfj89s/ZHn5Slug6w8qOPT1sVNGG+eWPlc5s7XYhT9z66E
- l5C0rG35JE4PhC+tl7BaE5IwjJlBMHf/cMJxNHAYoQ1hWQCKOfMDQ6bsEr++kGUCbHkrEFwD
- UVA72iLnnnlZCMevwE4hc0zVhseWhPc/KMYObU1sDGqaCesRLkE3tiE7X2cikmj/qH0CoMWe
- gjnwnQ2qVJcaPSzJ4QITvchEQ+tbuVAyvn9H+9MkdT7b7b2OaqYsUP8rn/2k1Td5zknUz7iF
- oJ0Z9wPTl6tDfF8phaMIPISYrhceVOIoL+rWfaikhBulZTIT5ihieY9nQOw6vhOfWkYvv0Dl
- o4GRnb2ybPQpfEs7WtetOsUgiUbfljTgILFw3CsPW8JESOGQc0Pv8ieznIighqPPFz9g+zSu
- Ss/rpcsqag5n9rQp/H3WW5zKUpeYcKGaPDp/vSUovMcjp8USIhzBBrmI7UWAtuedG9prjqfO
- wU0ETpLnhgEQAM+cDWLL+Wvc9cLhA2OXZ/gMmu7NbYKjfth1UyOuBd5emIO+d4RfFM02XFTI
- t4MxwhAryhsKQQcA4iQNldkbyeviYrPKWjLTjRXT5cD2lpWzr+Jx7mX7InV5JOz1Qq+P+nJW
- YIBjUKhI03ux89p58CYil24Zpyn2F5cX7U+inY8lJIBwLPBnc9Z0An/DVnUOD+0wIcYVnZAK
- DiIXODkGqTg3fhZwbbi+KAhtHPFM2fGw2VTUf62IHzV+eBSnamzPOBc1XsJYKRo3FHNeLuS8
- f4wUe7bWb9O66PPFK/RkeqNX6akkFBf9VfrZ1rTEKAyJ2uqf1EI1olYnENk4+00IBa+BavGQ
- 8UW9dGW3nbPrfuOV5UUvbnsSQwj67pSdrBQqilr5N/5H9z7VCDQ0dhuJNtvDSlTf2iUFBqgk
- 3smln31PUYiVPrMP0V4ja0i9qtO/TB01rTfTyXTRtqz53qO5dGsYiliJO5aUmh8swVpotgK4
- /57h3zGsaXO9PGgnnAdqeKVITaFTLY1ISg+Ptb4KoliiOjrBMmQUSJVtkUXMrCMCeuPDGHo7
- 39Xc75lcHlGuM3yEB//htKjyprbLeLf1y4xPyTeeF5zg/0ztRZNKZicgEmxyUNBHHnBKHQxz
- 1j+mzH0HjZZtXjGu2KLJ18G07q0fpz2ZPk2D53Ww39VNI/J9ABEBAAHCwV8EGAECAAkFAk6S
- 54YCGwwACgkQvSWxBAa0cEk3tRAAgO+DFpbyIa4RlnfpcW17AfnpZi9VR5+zr496n2jH/1ld
- wRO/S+QNSA8qdABqMb9WI4BNaoANgcg0AS429Mq0taaWKkAjkkGAT7mD1Q5PiLr06Y/+Kzdr
- 90eUVneqM2TUQQbK+Kh7JwmGVrRGNqQrDk+gRNvKnGwFNeTkTKtJ0P8jYd7P1gZb9Fwj9YLx
- jhn/sVIhNmEBLBoI7PL+9fbILqJPHgAwW35rpnq4f/EYTykbk1sa13Tav6btJ+4QOgbcezWI
- wZ5w/JVfEJW9JXp3BFAVzRQ5nVrrLDAJZ8Y5ioWcm99JtSIIxXxt9FJaGc1Bgsi5K/+dyTKL
- wLMJgiBzbVx8G+fCJJ9YtlNOPWhbKPlrQ8+AY52Aagi9WNhe6XfJdh5g6ptiOILm330mkR4g
- W6nEgZVyIyTq3ekOuruftWL99qpP5zi+eNrMmLRQx9iecDNgFr342R9bTDlb1TLuRb+/tJ98
- f/bIWIr0cqQmqQ33FgRhrG1+Xml6UXyJ2jExmlO8JljuOGeXYh6ZkIEyzqzffzBLXZCujlYQ
- DFXpyMNVJ2ZwPmX2mWEoYuaBU0JN7wM+/zWgOf2zRwhEuD3A2cO2PxoiIfyUEfB9SSmffaK/
- S4xXoB6wvGENZ85Hg37C7WDNdaAt6Xh2uQIly5grkgvWppkNy4ZHxE+jeNsU7tg=
-In-Reply-To: <20240324223455.1342824-16-sashal@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
+X-TM-AS-Product-Ver: SMEX-14.0.0.3152-9.1.1006-23728.005
+X-TM-AS-Result: No-10--11.181500-8.000000
+X-TMASE-MatchedRID: VfovoVrt/oZq0U6EhO9EEya1MaKuob8PC/ExpXrHizyo+b+yOP0oGAAt
+	9g7dvMC1IKdjJZRyIZmrMtdnoedbNxHzG0HT5tBb/1aBDnIV4ikWTveLitVUgcwHSQ+yXjTD/VQ
+	G3oVfx34Pu+MfgwheR2w5+V5bC8rHsEBAuoaUqK8QNC45RlqcS167veYUroY0yWCL+8tLbvaPdB
+	sWkfHN7SQPHPUuX+yXwFVmU96WjVi8f06ZoOZQY0KcYi5Qw/RVQrO4XR6BRQNgg+UjPGL1RUTNC
+	ucTZFZapt+BKnbPggH9KP9acIz8sx8TzIzimOwPVnRXm1iHN1bEQdG7H66TyH4gKq42LRYkIxUs
+	k7Y5zqotD17eyPoKssqg3Bx5SzilnGVR9vPBa4t+3BndfXUhXQ==
+X-TM-AS-User-Approved-Sender: No
+X-TM-AS-User-Blocked-Sender: No
+X-TMASE-Result: 10--11.181500-8.000000
+X-TMASE-Version: SMEX-14.0.0.3152-9.1.1006-23728.005
+X-TM-SNTS-SMTP: 06C58068D73256DA76C0B51F75B979DDFF4EDD0C74A25AEFEA31C055BBFF53672000:8
+X-MTK: N
 
-On 24. 03. 24, 23:23, Sasha Levin wrote:
-> From: Jens Axboe <axboe@kernel.dk>
+On Web, 20 Mar 2024 02:09:21 +0100, Jason A. Donenfeld wrote:
+>> Hi Jason,
+>> 
+>> Thanks for your suggestions. 
+>> 
+>> I am inclined to accept your second suggestion. My reluctance to accept 
+>> the first is due to the concern that "&& !in_atomic()" could potentially 
+>> alter the original meaning of the 'execute_in_process_context' interface. 
+>> Regarding the third suggestion, modifying the logic associated with 'input' 
+>> is not recommended.
 > 
-> [ Upstream commit 9fe3eaea4a3530ca34a8d8ff00b1848c528789ca ]
+> Doesn't something like the below seem simplest? Just move the call out
+> of the spinlock and we're done.
 > 
-> If we have a ton of notifications coming in, we can be looping in here
-> for a long time. This can be problematic for various reasons, mostly
-> because we can starve userspace. If the application is waiting on N
-> events, then only re-run if we need more events.
-
-This commit breaks test/recv-multishot.c from liburing:
-early error: res 4
-test stream=1 wait_each=0 recvmsg=0 early_error=0  defer=1 failed
-
-The behaviour is the same in 6.9-rc2 (which contains the commit too).
-
-Reverting the commit on the top of 6.8.2 makes it pass again.
-
-Should the test be updated or is the commit wrong?
-
-Thanks.
-
-> Fixes: c0e0d6ba25f1 ("io_uring: add IORING_SETUP_DEFER_TASKRUN")
-> Signed-off-by: Jens Axboe <axboe@kernel.dk>
-> Signed-off-by: Sasha Levin <sashal@kernel.org>
-> ---
->   io_uring/io_uring.c | 44 +++++++++++++++++++++++++++++---------------
->   1 file changed, 29 insertions(+), 15 deletions(-)
+> diff --git a/drivers/input/input-core-private.h b/drivers/input/input-core-private.h
+> index 116834cf8868..717f239e28d0 100644
+> --- a/drivers/input/input-core-private.h
+> +++ b/drivers/input/input-core-private.h
+> @@ -10,7 +10,7 @@
+>  struct input_dev;
 > 
-> diff --git a/io_uring/io_uring.c b/io_uring/io_uring.c
-> index 5233a20d01b54..39dfb83dc9fc4 100644
-> --- a/io_uring/io_uring.c
-> +++ b/io_uring/io_uring.c
-> @@ -1389,7 +1389,20 @@ static void __cold io_move_task_work_from_local(struct io_ring_ctx *ctx)
->   	}
->   }
->   
-> -static int __io_run_local_work(struct io_ring_ctx *ctx, struct io_tw_state *ts)
-> +static bool io_run_local_work_continue(struct io_ring_ctx *ctx, int events,
-> +				       int min_events)
-> +{
-> +	if (llist_empty(&ctx->work_llist))
-> +		return false;
-> +	if (events < min_events)
-> +		return true;
-> +	if (ctx->flags & IORING_SETUP_TASKRUN_FLAG)
-> +		atomic_or(IORING_SQ_TASKRUN, &ctx->rings->sq_flags);
-> +	return false;
-> +}
-> +
-> +static int __io_run_local_work(struct io_ring_ctx *ctx, struct io_tw_state *ts,
-> +			       int min_events)
->   {
->   	struct llist_node *node;
->   	unsigned int loops = 0;
-> @@ -1418,18 +1431,20 @@ static int __io_run_local_work(struct io_ring_ctx *ctx, struct io_tw_state *ts)
->   	}
->   	loops++;
->   
-> -	if (!llist_empty(&ctx->work_llist))
-> +	if (io_run_local_work_continue(ctx, ret, min_events))
->   		goto again;
->   	if (ts->locked) {
->   		io_submit_flush_completions(ctx);
-> -		if (!llist_empty(&ctx->work_llist))
-> +		if (io_run_local_work_continue(ctx, ret, min_events))
->   			goto again;
->   	}
-> +
->   	trace_io_uring_local_work_run(ctx, ret, loops);
->   	return ret;
->   }
->   
-> -static inline int io_run_local_work_locked(struct io_ring_ctx *ctx)
-> +static inline int io_run_local_work_locked(struct io_ring_ctx *ctx,
-> +					   int min_events)
->   {
->   	struct io_tw_state ts = { .locked = true, };
->   	int ret;
-> @@ -1437,20 +1452,20 @@ static inline int io_run_local_work_locked(struct io_ring_ctx *ctx)
->   	if (llist_empty(&ctx->work_llist))
->   		return 0;
->   
-> -	ret = __io_run_local_work(ctx, &ts);
-> +	ret = __io_run_local_work(ctx, &ts, min_events);
->   	/* shouldn't happen! */
->   	if (WARN_ON_ONCE(!ts.locked))
->   		mutex_lock(&ctx->uring_lock);
->   	return ret;
->   }
->   
-> -static int io_run_local_work(struct io_ring_ctx *ctx)
-> +static int io_run_local_work(struct io_ring_ctx *ctx, int min_events)
->   {
->   	struct io_tw_state ts = {};
->   	int ret;
->   
->   	ts.locked = mutex_trylock(&ctx->uring_lock);
-> -	ret = __io_run_local_work(ctx, &ts);
-> +	ret = __io_run_local_work(ctx, &ts, min_events);
->   	if (ts.locked)
->   		mutex_unlock(&ctx->uring_lock);
->   
-> @@ -1646,7 +1661,7 @@ static int io_iopoll_check(struct io_ring_ctx *ctx, long min)
->   		    io_task_work_pending(ctx)) {
->   			u32 tail = ctx->cached_cq_tail;
->   
-> -			(void) io_run_local_work_locked(ctx);
-> +			(void) io_run_local_work_locked(ctx, min);
->   
->   			if (task_work_pending(current) ||
->   			    wq_list_empty(&ctx->iopoll_list)) {
-> @@ -2489,7 +2504,7 @@ int io_run_task_work_sig(struct io_ring_ctx *ctx)
->   {
->   	if (!llist_empty(&ctx->work_llist)) {
->   		__set_current_state(TASK_RUNNING);
-> -		if (io_run_local_work(ctx) > 0)
-> +		if (io_run_local_work(ctx, INT_MAX) > 0)
->   			return 0;
->   	}
->   	if (io_run_task_work() > 0)
-> @@ -2557,7 +2572,7 @@ static int io_cqring_wait(struct io_ring_ctx *ctx, int min_events,
->   	if (!io_allowed_run_tw(ctx))
->   		return -EEXIST;
->   	if (!llist_empty(&ctx->work_llist))
-> -		io_run_local_work(ctx);
-> +		io_run_local_work(ctx, min_events);
->   	io_run_task_work();
->   	io_cqring_overflow_flush(ctx);
->   	/* if user messes with these they will just get an early return */
-> @@ -2595,11 +2610,10 @@ static int io_cqring_wait(struct io_ring_ctx *ctx, int min_events,
->   
->   	trace_io_uring_cqring_wait(ctx, min_events);
->   	do {
-> +		int nr_wait = (int) iowq.cq_tail - READ_ONCE(ctx->rings->cq.tail);
->   		unsigned long check_cq;
->   
->   		if (ctx->flags & IORING_SETUP_DEFER_TASKRUN) {
-> -			int nr_wait = (int) iowq.cq_tail - READ_ONCE(ctx->rings->cq.tail);
-> -
->   			atomic_set(&ctx->cq_wait_nr, nr_wait);
->   			set_current_state(TASK_INTERRUPTIBLE);
->   		} else {
-> @@ -2618,7 +2632,7 @@ static int io_cqring_wait(struct io_ring_ctx *ctx, int min_events,
->   		 */
->   		io_run_task_work();
->   		if (!llist_empty(&ctx->work_llist))
-> -			io_run_local_work(ctx);
-> +			io_run_local_work(ctx, nr_wait);
->   
->   		/*
->   		 * Non-local task_work will be run on exit to userspace, but
-> @@ -3273,7 +3287,7 @@ static __cold bool io_uring_try_cancel_requests(struct io_ring_ctx *ctx,
->   
->   	if ((ctx->flags & IORING_SETUP_DEFER_TASKRUN) &&
->   	    io_allowed_defer_tw_run(ctx))
-> -		ret |= io_run_local_work(ctx) > 0;
-> +		ret |= io_run_local_work(ctx, INT_MAX) > 0;
->   	ret |= io_cancel_defer_files(ctx, task, cancel_all);
->   	mutex_lock(&ctx->uring_lock);
->   	ret |= io_poll_remove_all(ctx, task, cancel_all);
-> @@ -3635,7 +3649,7 @@ SYSCALL_DEFINE6(io_uring_enter, unsigned int, fd, u32, to_submit,
->   			 * it should handle ownership problems if any.
->   			 */
->   			if (ctx->flags & IORING_SETUP_DEFER_TASKRUN)
-> -				(void)io_run_local_work_locked(ctx);
-> +				(void)io_run_local_work_locked(ctx, min_complete);
->   		}
->   		mutex_unlock(&ctx->uring_lock);
->   	}
+>  void input_mt_release_slots(struct input_dev *dev);
+> -void input_handle_event(struct input_dev *dev,
+> +bool input_handle_event(struct input_dev *dev,
+>  unsigned int type, unsigned int code, int value);
+> 
+>  #endif /* _INPUT_CORE_PRIVATE_H */
+> diff --git a/drivers/input/input.c b/drivers/input/input.c
+> index f71ea4fb173f..2faf46218c66 100644
+> --- a/drivers/input/input.c
+> +++ b/drivers/input/input.c
+> @@ -391,20 +391,22 @@ static void input_event_dispose(struct input_dev *dev, int disposition,
+>  }
+>  }
+> 
+> -void input_handle_event(struct input_dev *dev,
+> +bool input_handle_event(struct input_dev *dev,
+>  unsigned int type, unsigned int code, int value)
+>  {
+>  int disposition;
+> +bool should_contribute_to_rng = false;
+> 
+>  lockdep_assert_held(&dev->event_lock);
+> 
+>  disposition = input_get_disposition(dev, type, code, &value);
+>  if (disposition != INPUT_IGNORE_EVENT) {
+>  if (type != EV_SYN)
+> -add_input_randomness(type, code, value);
+> +should_contribute_to_rng = true;
+> 
+>  input_event_dispose(dev, disposition, type, code, value);
+>  }
+> +return should_contribute_to_rng;
+>  }
+> 
+>  /**
+> @@ -428,12 +430,15 @@ void input_event(struct input_dev *dev,
+>   unsigned int type, unsigned int code, int value)
+>  {
+>  unsigned long flags;
+> +bool should_contribute_to_rng;
+> 
+>  if (is_event_supported(type, dev->evbit, EV_MAX)) {
+> 
+>  spin_lock_irqsave(&dev->event_lock, flags);
+> -input_handle_event(dev, type, code, value);
+> +should_contribute_to_rng = input_handle_event(dev, type, code, value);
+>  spin_unlock_irqrestore(&dev->event_lock, flags);
+> +if (should_contribute_to_rng)
+> +add_input_randomness(type, code, value);
+>  }
+>  }
+>  EXPORT_SYMBOL(input_event);
 
--- 
-js
-suse labs
+Hi Jason,
+
+As I mentioned last time: Your solution may not be applicable when 'input_event' is executed in users spinlock. 
+What are you thoughts on this? I'm looking forward to your suggestions so we can reach an agreement and expedite 
+the upstream process, Thanks!
 
 
