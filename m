@@ -1,180 +1,155 @@
-Return-Path: <linux-kernel+bounces-127539-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-127540-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id B6A66894D53
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 10:19:06 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 40D03894D56
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 10:19:49 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 2CCC9B2278F
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 08:19:04 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id EA7381F22AFD
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 08:19:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 34F5D3E47A;
-	Tue,  2 Apr 2024 08:18:52 +0000 (UTC)
-Received: from frasgout13.his.huawei.com (frasgout13.his.huawei.com [14.137.139.46])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9398F3DB9A;
+	Tue,  2 Apr 2024 08:19:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b="mLeIThmn"
+Received: from mail-lj1-f174.google.com (mail-lj1-f174.google.com [209.85.208.174])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DE42338DFC;
-	Tue,  2 Apr 2024 08:18:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=14.137.139.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E9E563D57A
+	for <linux-kernel@vger.kernel.org>; Tue,  2 Apr 2024 08:19:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712045931; cv=none; b=fvYhPpm+CUf3d8mOkuDc6+4QrzT/m0NZWQ9QlKI42auZiAGsla55pVoNIqA2iVYQqfwS1pP6huhIwQCZdUKGnVVQc0MCN1iM7EhozVuTEITGYZwpO1AD5LuMtcle6uVhteX+0T60o4ikQSKuwrdmbCT8hCbfOQjW119BPjCv9Fs=
+	t=1712045981; cv=none; b=nMZhpIKXCjbricXWb4MLIOLhx76ksPyqvR3fs7reEqvcWEDhN9mslKjFBYr0QFMeOtLjv/7CKv5SCrXotd9bvsB02BcCM2iy2KQDYtQ2YAUsjcF5oOL7UHulHNgFsRxyGpb5E8czT9d7qzpKeApXeNi9K7reshYrY7CdY+0da5I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712045931; c=relaxed/simple;
-	bh=SLsLFlu2RcD+M7Lg/AfoUXyJ6aDUqNOWQceuD8zlcRA=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=iuf9k6tsTi4Ow2bZvEKyCYlTmDs8UtnT60+muwiPTVbl0m/FgYP8EkPKp8YZM+rv63UirWV6mqgoN38Lrds0erin60Ud80qROoGR9kqCJZZ2Tj6cwJH55eSRFdHpYhCHeZWr+WUMzF8sLbIixmZ2s3pfSFv3spgL6I5Kpvqg3mM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=14.137.139.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.18.186.51])
-	by frasgout13.his.huawei.com (SkyGuard) with ESMTP id 4V80jJ44bTz9xGnY;
-	Tue,  2 Apr 2024 16:02:28 +0800 (CST)
-Received: from mail02.huawei.com (unknown [7.182.16.27])
-	by mail.maildlp.com (Postfix) with ESMTP id 7735B140429;
-	Tue,  2 Apr 2024 16:18:34 +0800 (CST)
-Received: from huaweicloud.com (unknown [10.204.63.22])
-	by APP2 (Coremail) with SMTP id GxC2BwCn4CRLvwtm5OBqBQ--.39080S2;
-	Tue, 02 Apr 2024 09:18:33 +0100 (CET)
-From: Roberto Sassu <roberto.sassu@huaweicloud.com>
-To: zohar@linux.ibm.com,
-	dmitry.kasatkin@gmail.com,
-	eric.snowberg@oracle.com,
-	paul@paul-moore.com,
-	jmorris@namei.org,
-	serge@hallyn.com
-Cc: linux-integrity@vger.kernel.org,
-	linux-security-module@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	linux-fsdevel@vger.kernel.org,
-	linux-cifs@vger.kernel.org,
-	viro@zeniv.linux.org.uk,
-	pc@manguebit.com,
-	christian@brauner.io,
-	Roberto Sassu <roberto.sassu@huawei.com>,
-	Steve French <smfrench@gmail.com>
-Subject: [PATCH v2] security: Handle dentries without inode in security_path_post_mknod()
-Date: Tue,  2 Apr 2024 10:18:05 +0200
-Message-Id: <20240402081805.2491789-1-roberto.sassu@huaweicloud.com>
-X-Mailer: git-send-email 2.34.1
+	s=arc-20240116; t=1712045981; c=relaxed/simple;
+	bh=7NiD2rTtekBippb303o/PwVTk8fqzYuL/kFsudbCtCY=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=gOuHkF9p0jROryz8RMwiMbWhhWvq1ONuGVctj9OMmgMg+Hf5lFoI2Q8/Wa34OaZUbpE1+YmL2XHb97aLJlsrpW//4NF41QqVUo8R8WFJ66bvm9BFGKW7ZAshFw01q2/zQCu2GrYdecF9wBFzsJH1406j+BPO4liwRWFeWqavH68=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com; spf=pass smtp.mailfrom=baylibre.com; dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b=mLeIThmn; arc=none smtp.client-ip=209.85.208.174
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=baylibre.com
+Received: by mail-lj1-f174.google.com with SMTP id 38308e7fff4ca-2d6ee81bc87so43227421fa.1
+        for <linux-kernel@vger.kernel.org>; Tue, 02 Apr 2024 01:19:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20230601.gappssmtp.com; s=20230601; t=1712045978; x=1712650778; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=gvKuEkojvEJgZVr6mPnxPmclDAQ+3pW/HiTvyYuEMzE=;
+        b=mLeIThmnNO3dX/p9paZpPSyVisksMMtk2/gbD1L+6czeOheyg4i84vkPXfGY6EX4Te
+         uGkWefPFOibegv5v9ihBcPZcG3k7orZGHwbNEwDUUQMbtpWVjWqI3zUV1cdb1YpC7oKH
+         0Zn46l9akLpIlwLes6rJd4JWKIzevwXTp7FqkJIj3DNcon52PozY3a2dXO7U1J7fFTsU
+         Huw1z5oq2jjQbk7dr253/IaQjUePlR43BSQm618E7HKzFMQsSbEtd0/q880vtmM6WqgB
+         u2QvcpMlwjtNsBc5BwEgBzUfUMX6twE54skVUupNtBQdaVCaRbSL1mlMs0oeTlFpE7xK
+         9Ejw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712045978; x=1712650778;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=gvKuEkojvEJgZVr6mPnxPmclDAQ+3pW/HiTvyYuEMzE=;
+        b=mAfU/JIZVzr3KvHeWDXHsDbVSXBVMoDfzele7y4j198xweHrqCXsj81ec9gLvu6LaQ
+         KVuQNls3toNKQzcT7SNhp4YKnek0iftZgxljO3niTCmhqW/W0tsLDD1dMIClUHExeBtL
+         0ChXi+DdA2oa6FThOrnmm1EZUaBrRw8i72GWEgOu+NHJQnqFGP5SQaveqe8Zw1HmC803
+         RdWD69SN/i2yPTUlcakgzf0WNbAvVGIyR5TUlLkqZ5j2BukAvL3ulpEeeU5hwvgQgsKk
+         5z4ZIVHoc6y7lfix+h5QccnkmxEH3GOhXzDpjPzrF4Y02lPv/ixOkIw8kk3qIAGZI9IX
+         iZSQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUmE34NFUYsgJwE6PLpYzr0GOSdMGMpCcVVbt0Yk5YarP2mGDbqJiRm3KBxXRuX3Vnq5ImwhORn0fHnww3WGFHGb/8qmmPHhHxc50//
+X-Gm-Message-State: AOJu0Yx9wNIiUoj7DCXof47rwmDB/dBT1/MHZTrN3bn2Omm4mbujjgb4
+	Uyh9157Xz3aKbhucjGMh2UQx0xNIl2e4dZ2zDDsdVbrjODfBEzjivcALvsPXP8Y=
+X-Google-Smtp-Source: AGHT+IEdC7QAWpDO9ofMLjj5d27IdqehrMkIhnDY5YTTVjp3/Rqjsn5l64obtRMXwHeVHJBUbxPVAg==
+X-Received: by 2002:a2e:a989:0:b0:2d4:6aba:f1a3 with SMTP id x9-20020a2ea989000000b002d46abaf1a3mr7609411ljq.6.1712045977722;
+        Tue, 02 Apr 2024 01:19:37 -0700 (PDT)
+Received: from blmsp ([2001:4091:a246:821e:6f3b:6b50:4762:8343])
+        by smtp.gmail.com with ESMTPSA id by7-20020a056000098700b0033ec94c6277sm13556503wrb.115.2024.04.02.01.19.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 02 Apr 2024 01:19:37 -0700 (PDT)
+Date: Tue, 2 Apr 2024 10:19:36 +0200
+From: Markus Schneider-Pargmann <msp@baylibre.com>
+To: Andrew Davis <afd@ti.com>
+Cc: Rob Herring <robh+dt@kernel.org>, 
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
+	Santosh Shilimkar <ssantosh@kernel.org>, Nishanth Menon <nm@ti.com>, 
+	Vignesh Raghavendra <vigneshr@ti.com>, devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 2/4] firmware: ti_sci: Unconditionally register reset
+ handler
+Message-ID: <mnksnjonudeih2iijiu25ewzrlme277nhhcy573qsold5aletu@gyid6glsgg33>
+References: <20240326223730.54639-1-afd@ti.com>
+ <20240326223730.54639-3-afd@ti.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:GxC2BwCn4CRLvwtm5OBqBQ--.39080S2
-X-Coremail-Antispam: 1UD129KBjvJXoWxXrWrAFWkCw4fAr45JF4xJFb_yoWrXFWxpF
-	4rK3WkJr95XFy8Wr18AFy7u3WrKay5WFWUWan5Wa1ayFnxXr1jqr1Iv34j9rW5Jr4UGryx
-	tw12yrsxua1qyr7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUkFb4IE77IF4wAFF20E14v26ryj6rWUM7CY07I20VC2zVCF04k2
-	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Jr0_JF4l84ACjcxK6xIIjxv20xvEc7Cj
-	xVAFwI0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVW8JVWxJwA2z4x0Y4vEx4A2jsIEc7CjxV
-	AFwI0_Gr0_Gr1UM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40E
-	x7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x
-	0Yz7v_Jr0_Gr1lF7xvr2IYc2Ij64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkIwI1l42xK82IY
-	c2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s
-	026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r4a6rW5MIIYrxkI7VAKI48JMIIF
-	0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r4j6F4UMIIF0x
-	vE42xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2
-	jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x07UZ18PUUUUU=
-X-CM-SenderInfo: purev21wro2thvvxqx5xdzvxpfor3voofrz/1tbiAgABBF1jj5gBFwABs5
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20240326223730.54639-3-afd@ti.com>
 
-From: Roberto Sassu <roberto.sassu@huawei.com>
+On Tue, Mar 26, 2024 at 05:37:28PM -0500, Andrew Davis wrote:
+> There was once a limitation that there could only be one system
+> reset handler. Due to that we only would register this handler
+> when a non-standard device tree property was found, else we left
+> the default handler in place (usually PSCI). Now that we can
+> have multiple handlers, and TI-SCI reset is always available
+> in the firmware, register this handler unconditionally.
+> 
+> This priority is left at the default so higher priority handlers
+> (like PSCI) are still attempted first.
+> 
+> Signed-off-by: Andrew Davis <afd@ti.com>
 
-Commit 08abce60d63fi ("security: Introduce path_post_mknod hook")
-introduced security_path_post_mknod(), to replace the IMA-specific call to
-ima_post_path_mknod().
+Reviewed-by: Markus Schneider-Pargmann <msp@baylibre.com>
 
-For symmetry with security_path_mknod(), security_path_post_mknod() is
-called after a successful mknod operation, for any file type, rather than
-only for regular files at the time there was the IMA call.
-
-However, as reported by VFS maintainers, successful mknod operation does
-not mean that the dentry always has an inode attached to it (for example,
-not for FIFOs on a SAMBA mount).
-
-If that condition happens, the kernel crashes when
-security_path_post_mknod() attempts to verify if the inode associated to
-the dentry is private.
-
-Add an extra check to first verify if there is an inode attached to the
-dentry, before checking if the inode is private. Also add the same check to
-the current users of the path_post_mknod hook, ima_post_path_mknod() and
-evm_post_path_mknod().
-
-Finally, use the proper helper, d_backing_inode(), to retrieve the inode
-from the dentry in ima_post_path_mknod().
-
-Reported-by: Steve French <smfrench@gmail.com>
-Closes: https://lore.kernel.org/linux-kernel/CAH2r5msAVzxCUHHG8VKrMPUKQHmBpE6K9_vjhgDa1uAvwx4ppw@mail.gmail.com/
-Fixes: 08abce60d63f ("security: Introduce path_post_mknod hook")
-Signed-off-by: Roberto Sassu <roberto.sassu@huawei.com>
-Acked-by: Mimi Zohar <zohar@linux.ibm.com>
-Acked-by: Paul Moore <paul@paul-moore.com>
----
- security/integrity/evm/evm_main.c | 6 ++++--
- security/integrity/ima/ima_main.c | 5 +++--
- security/security.c               | 5 ++++-
- 3 files changed, 11 insertions(+), 5 deletions(-)
-
-diff --git a/security/integrity/evm/evm_main.c b/security/integrity/evm/evm_main.c
-index 81dbade5b9b3..ec1659273fcf 100644
---- a/security/integrity/evm/evm_main.c
-+++ b/security/integrity/evm/evm_main.c
-@@ -1037,11 +1037,13 @@ static void evm_file_release(struct file *file)
- static void evm_post_path_mknod(struct mnt_idmap *idmap, struct dentry *dentry)
- {
- 	struct inode *inode = d_backing_inode(dentry);
--	struct evm_iint_cache *iint = evm_iint_inode(inode);
-+	struct evm_iint_cache *iint;
- 
--	if (!S_ISREG(inode->i_mode))
-+	/* path_post_mknod hook might pass dentries without attached inode. */
-+	if (!inode || !S_ISREG(inode->i_mode))
- 		return;
- 
-+	iint = evm_iint_inode(inode);
- 	if (iint)
- 		iint->flags |= EVM_NEW_FILE;
- }
-diff --git a/security/integrity/ima/ima_main.c b/security/integrity/ima/ima_main.c
-index c84e8c55333d..afc883e60cf3 100644
---- a/security/integrity/ima/ima_main.c
-+++ b/security/integrity/ima/ima_main.c
-@@ -719,10 +719,11 @@ static void ima_post_create_tmpfile(struct mnt_idmap *idmap,
- static void ima_post_path_mknod(struct mnt_idmap *idmap, struct dentry *dentry)
- {
- 	struct ima_iint_cache *iint;
--	struct inode *inode = dentry->d_inode;
-+	struct inode *inode = d_backing_inode(dentry);
- 	int must_appraise;
- 
--	if (!ima_policy_flag || !S_ISREG(inode->i_mode))
-+	/* path_post_mknod hook might pass dentries without attached inode. */
-+	if (!ima_policy_flag || !inode || !S_ISREG(inode->i_mode))
- 		return;
- 
- 	must_appraise = ima_must_appraise(idmap, inode, MAY_ACCESS,
-diff --git a/security/security.c b/security/security.c
-index 7e118858b545..391477687637 100644
---- a/security/security.c
-+++ b/security/security.c
-@@ -1801,7 +1801,10 @@ EXPORT_SYMBOL(security_path_mknod);
-  */
- void security_path_post_mknod(struct mnt_idmap *idmap, struct dentry *dentry)
- {
--	if (unlikely(IS_PRIVATE(d_backing_inode(dentry))))
-+	struct inode *inode = d_backing_inode(dentry);
-+
-+	/* Not all dentries have an inode attached after mknod. */
-+	if (inode && unlikely(IS_PRIVATE(inode)))
- 		return;
- 	call_void_hook(path_post_mknod, idmap, dentry);
- }
--- 
-2.34.1
-
+Best
+Markus
+> ---
+>  drivers/firmware/ti_sci.c | 15 ++++-----------
+>  1 file changed, 4 insertions(+), 11 deletions(-)
+> 
+> diff --git a/drivers/firmware/ti_sci.c b/drivers/firmware/ti_sci.c
+> index 9885e1763591b..160968301b1fb 100644
+> --- a/drivers/firmware/ti_sci.c
+> +++ b/drivers/firmware/ti_sci.c
+> @@ -3299,7 +3299,6 @@ static int ti_sci_probe(struct platform_device *pdev)
+>  	struct mbox_client *cl;
+>  	int ret = -EINVAL;
+>  	int i;
+> -	int reboot = 0;
+>  	u32 h_id;
+>  
+>  	desc = device_get_match_data(dev);
+> @@ -3323,8 +3322,6 @@ static int ti_sci_probe(struct platform_device *pdev)
+>  		}
+>  	}
+>  
+> -	reboot = of_property_read_bool(dev->of_node,
+> -				       "ti,system-reboot-controller");
+>  	INIT_LIST_HEAD(&info->node);
+>  	minfo = &info->minfo;
+>  
+> @@ -3395,14 +3392,10 @@ static int ti_sci_probe(struct platform_device *pdev)
+>  
+>  	ti_sci_setup_ops(info);
+>  
+> -	if (reboot) {
+> -		ret = devm_register_restart_handler(dev,
+> -						    tisci_reboot_handler,
+> -						    info);
+> -		if (ret) {
+> -			dev_err(dev, "reboot registration fail(%d)\n", ret);
+> -			goto out;
+> -		}
+> +	ret = devm_register_restart_handler(dev, tisci_reboot_handler, info);
+> +	if (ret) {
+> +		dev_err(dev, "reboot registration fail(%d)\n", ret);
+> +		goto out;
+>  	}
+>  
+>  	dev_info(dev, "ABI: %d.%d (firmware rev 0x%04x '%s')\n",
+> -- 
+> 2.39.2
+> 
 
