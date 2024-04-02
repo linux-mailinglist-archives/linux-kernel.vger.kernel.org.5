@@ -1,175 +1,208 @@
-Return-Path: <linux-kernel+bounces-127895-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-127896-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A1548895275
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 14:07:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id E3DA3895279
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 14:08:10 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 570AC287655
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 12:07:25 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9A0D1287661
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 12:08:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A9AB374C1D;
-	Tue,  2 Apr 2024 12:07:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2B7A1763EC;
+	Tue,  2 Apr 2024 12:08:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="ldzUuP/q"
-Received: from mail-ej1-f49.google.com (mail-ej1-f49.google.com [209.85.218.49])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="l7YfhwwN"
+Received: from mail-ej1-f53.google.com (mail-ej1-f53.google.com [209.85.218.53])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 09A6976C61
-	for <linux-kernel@vger.kernel.org>; Tue,  2 Apr 2024 12:07:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6911F6A03F
+	for <linux-kernel@vger.kernel.org>; Tue,  2 Apr 2024 12:07:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712059637; cv=none; b=KNYOX2p5bnsEKhiaRAC5Qfmmm2Pgios8vRcuR5lxQVCvArwLx4njBo902Hy3GVj9Vwr44Q1KKJc6ZI0YK2QflfUQjzFRwXQPbmgZer02D14wuYZFpG9I2+rr0kCW0doeMVRE69V8xDZbkhz/4JSemQiWIUwUagzO8mCaXYp9CIQ=
+	t=1712059680; cv=none; b=h8SOWC1cKsyx6lYZ4GN/8e04gL1aws5zjabkLf/3xGJ5WORvZQbPLuWiW8r+j/O5zJifknw+GnN9+P7uzimqkGK91l5oJjfQy8NvPn2rJdLI5eyMwfhUwqoY+uVv6gzdBIJlLg2f5wrk8zGvRCpT93Q1HVZpQ/Py4QQUj/5w7pc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712059637; c=relaxed/simple;
-	bh=LJysKHt/G76byYSFIHYYrO8UFHkz066n7YDdzbCF7H8=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=oAYpMEZbcHhPZ7S8T3pOQe0Q525Zy8f/XAkUWrdPzkEP2om3i+myJQyS70EnFtCe4fE+0yqlE8Cdtjfjb71sF9eT3or0LEO+cYdgZQUaZPBgzhMKafq/PsUQwu+OTGbNoxUn6XFVRBR4Eh+3vCvDmuEiEODGcC4JqKHbEqgb/yc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=ldzUuP/q; arc=none smtp.client-ip=209.85.218.49
+	s=arc-20240116; t=1712059680; c=relaxed/simple;
+	bh=RdYy7z5iachCEuuENa519b3wQiF8DXGK8dF2mdWEPQQ=;
+	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=XqC+fnW8eTceI66+hV/wrMxvTzL52Rt1ebR2+gm3WoRvlUwJms1X7rYouDUzSh6lDvXRib58uR0sVCixGaaYiFV6cDVNxRqHZl+l/h0eXmFuVV5pk9Q6XFqzrNVy+l0+M5HCzizKHO49NLKS3sw8sNy+spxTq3gbn0GabahvjLE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=l7YfhwwN; arc=none smtp.client-ip=209.85.218.53
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ej1-f49.google.com with SMTP id a640c23a62f3a-a46ba938de0so669935066b.3
-        for <linux-kernel@vger.kernel.org>; Tue, 02 Apr 2024 05:07:15 -0700 (PDT)
+Received: by mail-ej1-f53.google.com with SMTP id a640c23a62f3a-a4e60a64abcso314258866b.1
+        for <linux-kernel@vger.kernel.org>; Tue, 02 Apr 2024 05:07:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1712059634; x=1712664434; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=bu1NZHpiJwJBsJMpdzoT3mwXRazMJ14vhFwwufBSJvw=;
-        b=ldzUuP/qEanIj6eYRqaiocdgSgtXNhIbdK6w6QMY1h7AFXxhU8HpnMvilC+ETOwL+r
-         346fc7nlXV0zYrzFL/uzGEEIGVQ6LnzxHNI9lDxf9R2qElEjn5YNWc2AYzJ9Gjtbc2Jq
-         kht/Loyu/GORQ/qfo19IV9o5KmjZxzbREB+oP1WzYHNJDXKrzK8dDAze+v7bLnha3l9J
-         dM9cpT+qo52FROIrcfkWYbRAW2P52Fe4wd3Coq7WWtXTZSrmg8xtykKz3BQHeGnJ4wzx
-         mymOgQNgHrM0GiPiwaKWO7ow5zsI8K0l86o4Itdu8EDKPpUuj7wiXobGfaup77nNLt9e
-         PTcA==
+        d=linaro.org; s=google; t=1712059677; x=1712664477; darn=vger.kernel.org;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=m69UUoZHVCQbx+lpC9u1HsJi4g+Q71GhA5bw8lUD+Ps=;
+        b=l7YfhwwNEHrWEcidIpLHdehWC07iSzaZA6sGDNWKZ6QneU6Eu45LBBqsTq6YyxPbsj
+         X4EMGEhrIkn9A1mACIXc3Tpicrv+zOF/34hZTU5gH9zTJrx90AN4CXyhJoe94hQlNcSA
+         qZrs9RTUgqhWhPeW36+GHcuw+ZPBmoQpKffF3XAXyEirtBMkPP15xBZXaquuqXM1uhjc
+         SRb/LozScX0FBl5qKu8r9Qhbwm7XCveocrE0L0PWI9hJ0wOYmK9EqEUKnYJamtUGW3Jh
+         bVz98hjFFn4wtMNcsUVoVaizEW8DIA8gafzsl6JXzm1JwFKXlsxVcHkj7Rra+VqE4YhV
+         MGGQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712059634; x=1712664434;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=bu1NZHpiJwJBsJMpdzoT3mwXRazMJ14vhFwwufBSJvw=;
-        b=jHxXD+pefFtkk3now5Quv5QsAj2B2yx7oVvUEFdNrfSHGByVwiLn/n/kLFM+dmVlOI
-         fmh21ghFMs1cUt3CBoV5KAo3g+VW6kwXUZT0sImWhrZCevL0TaWjksdP+/iCRiGJATl0
-         +H9hlv4cVi3DcbhUl9Gc7oyZTcbgeJ7yAUljd5kFN585e8wmyIepfkBg22U8gZSKnNcf
-         zVew3nHmIS0ZxeQWnsEh3d05DIOkjDRzlFvOqK3forDb3SAggBkjMIZNdQVOSSKQiQIh
-         zzsZmsVbZ1VP7P42ER6qO/NBanEicp40vGJw/4B3VWB6r6NL4G+rutJ0jgVEoBzaJy+H
-         JCWg==
-X-Forwarded-Encrypted: i=1; AJvYcCXqPd7DEvBq/zdxAzmBps+DSOhyaGo2suukPgiJvuANkUtaS3olxzJmSU0yna8D9kQMTx8ZF/vzOHIDAlySjUnzWrPibCsEMLBq9E0J
-X-Gm-Message-State: AOJu0YxBhWlRPJChlYXH7mwMvQ9P7ACQTMYnJceQ/Y2LW1Pt+zz/TWLF
-	T8zg/DO3NSFx2xqtHstbQS9MOGbeoI7mb/uQw3QsczkfKhJ7omOm+CYw1a6iU+I=
-X-Google-Smtp-Source: AGHT+IEgIUMy6oJvR7bl3B1Ky8W+fUm2ue1yAgUuXGXQNM5attKUq9jSjoWGKSEWzwcctq2FOBzs4A==
-X-Received: by 2002:a17:907:26ce:b0:a4e:67ca:1040 with SMTP id bp14-20020a17090726ce00b00a4e67ca1040mr5152652ejc.14.1712059634339;
-        Tue, 02 Apr 2024 05:07:14 -0700 (PDT)
-Received: from [192.168.1.20] ([178.197.223.16])
-        by smtp.gmail.com with ESMTPSA id et12-20020a056402378c00b0056c3e65caecsm6699432edb.2.2024.04.02.05.07.12
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 02 Apr 2024 05:07:13 -0700 (PDT)
-Message-ID: <453ecc3d-c585-4665-bda1-b12ffa8d6967@linaro.org>
-Date: Tue, 2 Apr 2024 14:07:12 +0200
+        d=1e100.net; s=20230601; t=1712059677; x=1712664477;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=m69UUoZHVCQbx+lpC9u1HsJi4g+Q71GhA5bw8lUD+Ps=;
+        b=Vmw30/g5WiHvNl8EpAkJxzRuEPqkBsxXhWu1ysEyLYq+tYAk55qkcJkbyNylR2340c
+         CudBKOk7qcPAY1BarMQxef64qZKyIjVc/D7SwPPXHCgCv/anyTZvfyZ8pth2hL8o7fl/
+         PC8H/0j3Rm6aO1OqpVWjpLDEgqMksT2iKA0l7boZf04hXPWgYD9YvlhQ6egM3DvVRXu/
+         pKURKLJvzyQEVmHvBz2nWOnK5j4AhWWBr3YjjGycKJUq7fGKRynOlgDGWiZAwBcjaQ8w
+         HZ8SxTBBpmaYDdOGCiiRBDau+L9jymtGXETzDt3oBYIMyyNoRlRZ2OwfvvxF6ID/A12b
+         9dZQ==
+X-Forwarded-Encrypted: i=1; AJvYcCV96jiD+ntFg/jxZErU2Zzw1cmFcyQslUiba6bNxdueDyItYNEOSatCXHR2ANu8F6aYBlzfbc8LPYIB6vK18LV+QLR5WuFslex6B7nn
+X-Gm-Message-State: AOJu0Yxqzi44tRRn+axLMCc/+lMIz4tuRup/Yl3FvY7aemz23SkfrzFz
+	l3f81YiaJuwuj2Zm8Jk0wVevkr3mLmjINHbY5Wo6VnXaFISAITe0fGqd3s/SYjE=
+X-Google-Smtp-Source: AGHT+IHKukewzmJeKeo/a024DcR5+ftEC1nxaYgSzsfyeI5YLN2EgwKvBiCBODNT3VgQ0pOifNR46Q==
+X-Received: by 2002:a17:906:fb86:b0:a4e:8da0:8646 with SMTP id lr6-20020a170906fb8600b00a4e8da08646mr1172255ejb.29.1712059676318;
+        Tue, 02 Apr 2024 05:07:56 -0700 (PDT)
+Received: from [127.0.1.1] ([79.114.172.194])
+        by smtp.gmail.com with ESMTPSA id l13-20020a1709065a8d00b00a4df251a601sm6519384ejq.77.2024.04.02.05.07.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 02 Apr 2024 05:07:55 -0700 (PDT)
+From: Abel Vesa <abel.vesa@linaro.org>
+Subject: [PATCH v8 0/7] spmi: pmic-arb: Add support for multiple buses
+Date: Tue, 02 Apr 2024 15:07:29 +0300
+Message-Id: <20240402-spmi-multi-master-support-v8-0-ce6f2d14a058@linaro.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/2] ARM: boot: dts: microchip: at91-sama7g5ek: Replace
- regulator-suspend-voltage with the valid property
-To: Andrei.Simion@microchip.com, robh@kernel.org,
- krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
- Nicolas.Ferre@microchip.com, alexandre.belloni@bootlin.com,
- claudiu.beznea@tuxon.dev, Mihai.Sain@microchip.com
-Cc: linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
- devicetree@vger.kernel.org
-References: <20240402091228.110362-1-andrei.simion@microchip.com>
- <20240402091228.110362-2-andrei.simion@microchip.com>
- <34543ae2-4e78-45a4-9cff-389f7495fd4a@linaro.org>
- <312bed1a-0b8a-457d-a2e2-b8ee1b6f443b@microchip.com>
-Content-Language: en-US
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- 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
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <312bed1a-0b8a-457d-a2e2-b8ee1b6f443b@microchip.com>
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIAAH1C2YC/43OwWrDMAwG4FcpPs9Dlhzb2WnvMXawHbs1tE2w0
+ 7BR8u5ze1lGwOwi+AX/J91ZCTmFwt4Od5bDkkoarzWYlwPzJ3s9Bp6GmhkCSkDQvEyXxC+381y
+ nLXPIvNymacwzN4RWg3Ra947V/pRDTF9P++Oz5lMq85i/n6cW8dj+R10EB+5DpyOB8DoO7+d0t
+ Xl8HfORPdgFN5SgFoVccEdOABKqHtSOoi0lWxTVr8DZACGCjDbuKLmhEFqUrNTgjSBvtHHW7Kh
+ uS4kW1VWKsOu8lYIsuB2lthS2KFUp50kG23dKDHZH6V+KsG9RulLa9YAGJUrl/1Druv4AyCGlR
+ YUCAAA=
+To: Stephen Boyd <sboyd@kernel.org>, 
+ Matthias Brugger <matthias.bgg@gmail.com>, 
+ Bjorn Andersson <andersson@kernel.org>, 
+ Konrad Dybcio <konrad.dybcio@linaro.org>, 
+ Dmitry Baryshkov <dmitry.baryshkov@linaro.org>, 
+ Neil Armstrong <neil.armstrong@linaro.org>, 
+ AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>, 
+ Rob Herring <robh@kernel.org>, 
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
+ Conor Dooley <conor+dt@kernel.org>
+Cc: Srini Kandagatla <srinivas.kandagatla@linaro.org>, 
+ Johan Hovold <johan@kernel.org>, linux-kernel@vger.kernel.org, 
+ linux-arm-kernel@lists.infradead.org, linux-arm-msm@vger.kernel.org, 
+ linux-mediatek@lists.infradead.org, devicetree@vger.kernel.org, 
+ Abel Vesa <abel.vesa@linaro.org>, 
+ Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+X-Mailer: b4 0.13.0
+X-Developer-Signature: v=1; a=openpgp-sha256; l=4363; i=abel.vesa@linaro.org;
+ h=from:subject:message-id; bh=RdYy7z5iachCEuuENa519b3wQiF8DXGK8dF2mdWEPQQ=;
+ b=owEBbQKS/ZANAwAKARtfRMkAlRVWAcsmYgBmC/UJKxCvuxK99yI3i9bYhRKNUKoVmH16XdiKc
+ Yx2QXkMatWJAjMEAAEKAB0WIQRO8+4RTnqPKsqn0bgbX0TJAJUVVgUCZgv1CQAKCRAbX0TJAJUV
+ VrKjEADJnnbCbiAmLGLCu/YYNS6HVgsakDJBEmQpta9WcQ2seK8Wo5V1pSRzDWhTuNRYDWKL+t7
+ +3EA3HJC6a8iQPjbspAI0K1Fe6jOJCzMATd+WX1xvhevZdZuvXQc56thYTLdPphGhg95l3xultN
+ q9v42ydzLYkVvAUQ5iA/vlPIvRjBgPctHBxKULKER3MuYLcQ9hJX1574xamT3y0gJSafmDW8FIK
+ KHuezQDrSeqBl4on05kEHL9Jy/7rWigX0gXZ+jQM5T6MfRQe5fmlCaBSsSQj8IIX+ZlFeFjXg65
+ 2mn2aNmDaYh0aonniu2wWVpAVIxSHk5WjgDMnkVrK+5KTXWEfQuG56gMeHST+HMa7qrVQ0mnNkS
+ 4Mrlq2P+GjDstmEBNJBk1ThyYoOV0kAs2RexUCt1Fv19e3JZCQBZbpmphln6P+joCWks96ZbBKS
+ GoWQ3sNKMGKGhsmVveuTUJ2I6Gv5eKeom/sfbepIzedsLSREk/tz6npMZZFc2gwtHTxykNLe8E6
+ EA1wZcZw097on8AjRCsF0f6Zp22u66tcQ6A/XzZ/VOpnpNCMTCl4kEGxiNWH2n7XVvKJHpwwgWP
+ POYKoZ4utU2QPSxdr6YCHZphQct7mqQDyXgcGMuZASdUt/uJEYak+kx5Q1ovnYDwX7NzxHFAxBo
+ rXLq61FEdxc5fvQ==
+X-Developer-Key: i=abel.vesa@linaro.org; a=openpgp;
+ fpr=6AFF162D57F4223A8770EF5AF7BF214136F41FAE
 
-On 02/04/2024 13:27, Andrei.Simion@microchip.com wrote:
-> On 02.04.2024 13:39, Krzysztof Kozlowski wrote:
->> [You don't often get email from krzysztof.kozlowski@linaro.org. Learn why this is important at https://aka.ms/LearnAboutSenderIdentification ]
->>
->> EXTERNAL EMAIL: Do not click links or open attachments unless you know the content is safe
->>
->> On 02/04/2024 11:12, Andrei Simion wrote:
->>> Replace regulator-suspend-voltage with regulator-suspend-microvolt.
->>
->> Why?
->>
-> 
-> at91-sama7g5ek.dtb: mcp16502@5b: regulators:VDD_(CORE|OTHER)|LDO[1-2]:
-> regulator-state-standby 'regulator-suspend-voltage' does not match any of
-> the regexes 'pinctrl-[0-9]+' from schema
-> $id: http://devicetree.org/schemas/regulator/microchip,mcp16502.yaml#
-> 
-> no property named regulator-suspend-voltage in
-> https://github.com/torvalds/linux/blob/master/Documentation/devicetree/bindings/regulator/regulator.yaml  
-> so if it is using this property there will be no effect as it was expected in 
-> https://github.com/torvalds/linux/commit/85b1304b9daa06367139b471789c7ddb76250b9f
-> 
->> Please explain what is the bug and how it manifests itself. Is one
->> property incorrect and other correct?
->>
-> The main reason is explained in the cover-letter but if you ask me to explain in each commit I will do it in next version.
+This patchset prepares for and adds support for 2 buses, which is supported
+in HW starting with version 7. Until now, none of the currently
+supported platforms in upstream have used the second bus. The X1E80100
+platform, on the other hand, needs the second bus for the USB2.0 to work
+as there are 3 SMB2360 PMICs which provide eUSB2 repeaters and they are
+all found on the second bus.
 
-Cover letter does not go to commit history. Each commit should explain
-why you are doing it. Usually piece of the warning is quite
-self-explanatory, thus one easy way to achieve the point - answer why.
+Signed-off-by: Abel Vesa <abel.vesa@linaro.org>
+---
+Changes in v8:
+- Added Neil's R-b tag to the 3rd patch
+- Fixed compile warnings already existent by adding another patch
+- Fixed compile warning about get_core_resources, reported by Neil
+- Dropped and moved the spurious core removal changes, as suggested by Neil
+- Link to v7: https://lore.kernel.org/r/20240329-spmi-multi-master-support-v7-0-7b902824246c@linaro.org
+
+Changes in v7:
+- This time really collected Krzysztof's R-b tags
+- Added Neil's R-b tag to the 4th patch
+- Split the multi bus patch into two separate patches, one for adding
+  the bus object and one for the secondary bus, as per Neil's suggestion
+- Fixed regression for single bus platforms triggered by casting to
+  pmic_arb instead of bus in pmic_arb_non_data_cmd_v1
+- Fixed bus object allocation by using ctrl drvdata instead
+- Prefixed the spmi node property in x1e80100 schema with '^'
+- Fixed struct and function documentation warnings reported by Neil
+
+Changes in v6 (resend):
+- Collected Krzysztof's R-b tags
+- Link to v6: https://lore.kernel.org/r/20240222-spmi-multi-master-support-v6-0-bc34ea9561da@linaro.org
+
+Changes in v6:
+- Changed the compatible to platform specific (X1E80100) along with the
+  schema. Fixed the spmi buses unit addresses and added the empty ranges
+  property. Added missing properties to the spmi buses and the
+  "unevaluatedProperties: false".
+- Deprecated the "qcom,bus-id" in the legacy schema.
+- Changed the driver to check for legacy compatible first
+- Link to v5: https://lore.kernel.org/r/20240221-spmi-multi-master-support-v5-0-3255ca413a0b@linaro.org
+
+Changes in v5:
+- Dropped the RFC as there aren't any concerns about the approach anymore
+- Dropped the unused dev and res variables from pmic_arb_get_obsrvr_chnls_v2
+- Link to v4: https://lore.kernel.org/r/20240220-spmi-multi-master-support-v4-0-dc813c878ba8@linaro.org
+
+Changes in v4:
+- Fixed comment above pmic_arb_init_apid_v7 by dropping the extra "bus" word
+- Swicthed to devm_platform_ioremap_resource_byname for obsrvr and chnls.
+  The core remains with platform_get_resource_byname as we need the core size.
+- Dropped comment from probe related to the need of platform_get_resource_byname
+  as it not true anymore.
+- Dropped the qcom,bus-id optional property.
+- Link to v3: https://lore.kernel.org/r/20240214-spmi-multi-master-support-v3-0-0bae0ef04faf@linaro.org
+
+Changes in v3:
+- Split the change into 3 separate patches. First 2 patches are moving
+  apid init and core resources into version specific ops. Third one is
+  adding the support for 2 buses and dedicated compatible.
+- Added separate bindings patch
+- Link to v2: https://lore.kernel.org/r/20240213-spmi-multi-master-support-v2-1-b3b102326906@linaro.org
+
+Changes in v2:
+- Reworked it so that it registers a spmi controller for each bus
+  rather than relying on the generic framework to pass on the bus
+  (master) id.
+- Link to v1: https://lore.kernel.org/r/20240207-spmi-multi-master-support-v1-0-ce57f301c7fd@linaro.org
+
+---
+Abel Vesa (7):
+      dt-bindings: spmi: Add X1E80100 SPMI PMIC ARB schema
+      dt-bindings: spmi: Deprecate qcom,bus-id
+      spmi: pmic-arb: Fix some compile warnings about members not being described
+      spmi: pmic-arb: Make the APID init a version operation
+      spmi: pmic-arb: Make core resources acquiring a version operation
+      spmi: pmic-arb: Register controller for bus instead of arbiter
+      spmi: pmic-arb: Add multi bus support
+
+ .../bindings/spmi/qcom,spmi-pmic-arb.yaml          |   1 +
+ .../bindings/spmi/qcom,x1e80100-spmi-pmic-arb.yaml | 136 +++
+ drivers/spmi/spmi-pmic-arb.c                       | 952 +++++++++++++--------
+ 3 files changed, 723 insertions(+), 366 deletions(-)
+---
+base-commit: c0b832517f627ead3388c6f0c74e8ac10ad5774b
+change-id: 20240207-spmi-multi-master-support-832a704b779b
 
 Best regards,
-Krzysztof
+-- 
+Abel Vesa <abel.vesa@linaro.org>
 
 
