@@ -1,98 +1,173 @@
-Return-Path: <linux-kernel+bounces-127620-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-127621-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D2940894E7C
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 11:18:09 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7B0F9894E7E
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 11:18:46 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 71AEAB23F6E
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 09:18:07 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3AA1C284853
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 09:18:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 58B5C57874;
-	Tue,  2 Apr 2024 09:17:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 169E057873;
+	Tue,  2 Apr 2024 09:18:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=tuxedo.de header.i=@tuxedo.de header.b="GcHIsoiF"
-Received: from mail.tuxedocomputers.com (mail.tuxedocomputers.com [157.90.84.7])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="FKmj4fwj"
+Received: from mail-ua1-f52.google.com (mail-ua1-f52.google.com [209.85.222.52])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ECFE156766;
-	Tue,  2 Apr 2024 09:17:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=157.90.84.7
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B7F9D1E525
+	for <linux-kernel@vger.kernel.org>; Tue,  2 Apr 2024 09:18:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712049478; cv=none; b=ZAJz/oTAxzs/pS7OYWU1og8pqeVrs63LjyN5yD8yNhdpm40jp0dMO3LnoFgdv79TbfjiyTPZ6TCkPXzCaKa0zblgw2ubOIHeTcoMqu97PbHMVzQLZFzsmLkfM5SWAVS+gGFCmGkiRM0V3r6ALT42tqnvrVy3qhP2138lIQJZbus=
+	t=1712049517; cv=none; b=emVH8cBFU+TLwn87W2tJtQBjK36na6HEfvCTGwBOrV5PBZZmU9oMkawzEQ2qb9niiMUE9LWmCUJ7ScbOcDmTFiyd6tDDfRjGwqisDAK1x1f4Io7KOZb0CcCHayhN9M8ng77ROUh7hFp4XYWfdaQDRHPk8kJAXDR+uqNV8PeFA/Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712049478; c=relaxed/simple;
-	bh=kLCMaKI7+BrwnnoGSoIuNn+cbwCpoIeucymr6iUKRhE=;
-	h=MIME-Version:Date:From:To:Cc:Subject:In-Reply-To:References:
-	 Message-ID:Content-Type; b=eZ45YYyh8LXPzS/aVjgRCHx4f7gMCXqIgY5L7LzNjUjhznSu7wVCb5OlcxKarBQNnLtpIub5L/MR6vmFbuJghcLl1ppBYroCOe/BgwIcH9pHAvHizsY9P4kRquS5Qv+u88d0VBAefYF6NpkEnz4Oi1c6ITszbD/Sf9C7PAEnAl8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=tuxedo.de; spf=pass smtp.mailfrom=tuxedo.de; dkim=pass (2048-bit key) header.d=tuxedo.de header.i=@tuxedo.de header.b=GcHIsoiF; arc=none smtp.client-ip=157.90.84.7
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=tuxedo.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=tuxedo.de
-Received: from mail.tuxedocomputers.com (localhost [IPv6:::1])
-	(Authenticated sender: cs@tuxedocomputers.com)
-	by mail.tuxedocomputers.com (Postfix) with ESMTPA id 22F882FC0063;
-	Tue,  2 Apr 2024 11:17:45 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=tuxedo.de; s=default;
-	t=1712049465;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Y5tY6k0ZLmkz6XkazdkXb7L0Y1vhdIIAYIiiPQmk3pw=;
-	b=GcHIsoiFc+ZblluRqBR8ChHfyO3RZRLyzX3G8s695s/pz+iG7JVOzGRxXK7g/2TvJbgZ90
-	IqXvzCP+0j4GO1HDKw7OWTYTTWC+DDxdkxLdi5c1qOA4xoNOzfCIXzaNqVv1oDAr8gb7nW
-	LOVaBBRhYIEGH/ZIJYvlCVgA27IwR6MukiulNo1yc2obtLJsa+Bj0RtYcVMu49JKsXxAeT
-	evVpf2Hgls7lBkjmuE4KFEgeHTDBtrewnz5dh6rcze4jBP8+Fedt15l785cE+Tt1nG9WDd
-	H3ZvDx1arQOYQoD7RYIgU7Ptr3L/gbqzGN2q5vvCIlXNiFF1yNBHd2AxCHk0/A==
+	s=arc-20240116; t=1712049517; c=relaxed/simple;
+	bh=o/P8asTQgXNr+LtSR/rVKgTHlr8EJ1cZ5yL0HTpm700=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=kg4fxCbTpgvpdP1a0MxAlInZnZtRtsrQjLVwRpZOhbU5RkVeWsIhBI7DDTmCgdjK0+/lYEqvpyyiImk+xG3V8XCL2S8CnemkqQpJ5JF95s2rFjdMTThw/SCZDOPIv9P631aYyg7Yl0FPhQEKPlzxG2fBD7HFvU/PdQJXQsCD2E8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=FKmj4fwj; arc=none smtp.client-ip=209.85.222.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-ua1-f52.google.com with SMTP id a1e0cc1a2514c-7e074f8ac06so1390423241.1
+        for <linux-kernel@vger.kernel.org>; Tue, 02 Apr 2024 02:18:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1712049515; x=1712654315; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=r66TFNSLT4YD94GnwLNWPiQzwjcsChSUIFxq6D9Qnwo=;
+        b=FKmj4fwj3REf8DnlBaqVaNpn5QcmnM8MKLTgTSpsmnLHQbc/rblgX/KauxDLzGyRva
+         asE6lADwlYba8uEnvJ60bsnMPNA4G3B6dXTLO/1aXSZGu41vWVrqZUR0bGovN5prDQ7H
+         s9NYq3L9XJ3OeGE6B64C4gjL+YFzKbKxuYXmAM8DQEA1a1PE+JWdFHjGUjdSFO8H2LH/
+         5MhoRvtqdVuJZjvJ9p99bQxxlpm6p+5/jZR/NXmBxJYcyHneyN2c+rrwgnq1KlvG3CR+
+         q/KXXyj5DPsdOImhwcA6Bbb7mIZzFrIhQjpdflfyEdibs7AcvV/qTz3AHI2PG26Boyac
+         sKsA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712049515; x=1712654315;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=r66TFNSLT4YD94GnwLNWPiQzwjcsChSUIFxq6D9Qnwo=;
+        b=IE1L5rV9YY7XaKt+T355r4bXBjakgF9avVPHhQew0BdSNBcCTWw2ZSGlyOZJDTRwHL
+         G6o2bsbeqblh9ppFGKpnXVCTLJCFIHgEECRsnSGBL2s41NPJ4xCeZGmhv2thD+ZkdK2y
+         F1tGkR70BJ9twACNR6G1pIT+7Ndhe7JUqII4Z9l71iQ9woguC3v4zUZfdas45KgOPQPg
+         GD6AtHD27BkgQQeI6Wqn1yhQVuRjiuduZoETgGZuGhveH1fdqwEOUU/vaZa/113Azfr6
+         bGYF7q6iabGqLrSxpT/HxlGwbuU6+FMoDrslj42sAH7OhG5jasBj1Q4WTZE7yVAGIO8e
+         zdOg==
+X-Forwarded-Encrypted: i=1; AJvYcCVs9TW2CIztBne+ZQMbyqby+tmbnHSNJ/VLbrlMnBBLw13o93TnchbBxFsLm3yXAJ2xkj1RxGlePM6hdGBkyv1O49CpIRYN9zxVOG7w
+X-Gm-Message-State: AOJu0YyZaQwKIiL5F2j+9ntPhnjRJRGYX1c7u8YkKMwt9+RhDF14c4M1
+	P8vF1KgD9KUC6hGpZms1GT7Fy9eulScmfSeJfDtL+JBJUhMVSNLbPKxVn4844fhe6z1kQRhr8Mh
+	ushsYyEWvP2FEeeVBPAS/EvRy+Db+lkyMmAzSYg==
+X-Google-Smtp-Source: AGHT+IHQ73nyKalKwygD4j92nMTrgX97gI21W8eoJIJZkooD2dfv2lbsfKe7svLrUcejklRdqZgrt81nkzCspg1NleI=
+X-Received: by 2002:a05:6102:2459:b0:475:111d:c0dc with SMTP id
+ g25-20020a056102245900b00475111dc0dcmr8809724vss.14.1712049514705; Tue, 02
+ Apr 2024 02:18:34 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Date: Tue, 02 Apr 2024 11:17:45 +0200
-From: Christoffer Sandberg <cs@tuxedo.de>
-To: Paul Menzel <pmenzel@molgen.mpg.de>
-Cc: Werner Sembach <wse@tuxedocomputers.com>, Marcel Holtmann
- <marcel@holtmann.org>, Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
- Christoffer Sandberg <cs@tuxedo.de>, linux-bluetooth@vger.kernel.org,
- linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] Bluetooth: btintel: Add devices to
- HCI_QUIRK_BROKEN_LE_CODED
-In-Reply-To: <ee6259a2-05c3-4d6d-9dda-7a7b8f55fbfe@molgen.mpg.de>
-References: <20240328131800.63328-1-wse@tuxedocomputers.com>
- <ee6259a2-05c3-4d6d-9dda-7a7b8f55fbfe@molgen.mpg.de>
-User-Agent: Roundcube Webmail/1.4.15
-Message-ID: <bda6baa41b6b4511830603138d896add@tuxedocomputers.com>
-X-Sender: cs@tuxedo.de
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
+References: <20240401152547.867452742@linuxfoundation.org>
+In-Reply-To: <20240401152547.867452742@linuxfoundation.org>
+From: Naresh Kamboju <naresh.kamboju@linaro.org>
+Date: Tue, 2 Apr 2024 14:48:23 +0530
+Message-ID: <CA+G9fYuiYQk8FrF=1kvMW-7jeNskkL309+3qtmgoMjF8KMQnxA@mail.gmail.com>
+Subject: Re: [PATCH 6.6 000/396] 6.6.24-rc1 review
+To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: stable@vger.kernel.org, patches@lists.linux.dev, 
+	linux-kernel@vger.kernel.org, torvalds@linux-foundation.org, 
+	akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org, 
+	patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de, 
+	jonathanh@nvidia.com, f.fainelli@gmail.com, sudipm.mukherjee@gmail.com, 
+	srw@sladewatkins.net, rwarsow@gmx.de, conor@kernel.org, allen.lkml@gmail.com, 
+	broonie@kernel.org, Anders Roxell <anders.roxell@linaro.org>, 
+	Bartosz Golaszewski <bartosz.golaszewski@linaro.org>, Stefan Wahren <wahrenst@gmx.net>, 
+	Kent Gibson <warthog618@gmail.com>, Linus Walleij <linus.walleij@linaro.org>, 
+	"open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Dear Paul,
+On Mon, 1 Apr 2024 at 22:06, Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
+>
+> This is the start of the stable review cycle for the 6.6.24 release.
+> There are 396 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+>
+> Responses should be made by Wed, 03 Apr 2024 15:24:46 +0000.
+> Anything received after that time might be too late.
+>
+> The whole patch series can be found in one patch at:
+>         https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patch-=
+6.6.24-rc1.gz
+> or in the git tree and branch at:
+>         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
+-rc.git linux-6.6.y
+> and the diffstat can be found below.
+>
+> thanks,
+>
+> greg k-h
 
-On 28.3.2024 14:23, Paul Menzel wrote:
-> On what hardware with what clients do you experience this exactly?
-> 
+Results from Linaro=E2=80=99s test farm.
+Regressions on arm64, arm, x86_64, and i386 with libgpiod tests.
 
-The wifi/bluetooth modules AX201, AX210 and AX211 (cases 0x18, 0x17 and 
-0x19 respectively) used in various notebook devices started having 
-issues as of the patch that enabled le coded phy in the driver. (We also 
-use AX200, however without issue.)
+libgpiod test regressions noticed on Linux stable-rc 6.8, 6.7 and 6.6
+and Linux next and mainline master.
 
-Noted behaviour as of the issues: Device scan took longer and when it 
-did find a device connection often failed or timed out.
+Anders bisected and found this first bad commit,
+  gpio: cdev: sanitize the label before requesting the interrupt
+  commit b34490879baa847d16fc529c8ea6e6d34f004b38 upstream.
 
-I do not know if a special type of bluetooth client is affected. It was 
-partially tested by looking at the difference in enumeration of the 
-current mix of bluetooth clients in the area (where you could clearly 
-see the difference at a glance) and with one specific device.  A 
-bluetooth connected watercooling system (TUXEDO Aquaris or 
-LCT21001/LCT22002) where a test case showed the mentioned issues.
+Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
 
-Best regards,
+LKFT is running libgpiod test suite version
+  v2.0.1-0-gae275c3 (and also tested v2.1)
 
-Christoffer
+libgpiod
+  - _gpiod_edge-event_edge_event_wait_timeout
+  - _gpiod_edge-event_event_copy
+  - _gpiod_edge-event_null_buffer
+  - _gpiod_edge-event_read_both_events
+  - _gpiod_edge-event_read_both_events_blocking
+  - _gpiod_edge-event_read_falling_edge_event
+  - _gpiod_edge-event_read_rising_edge_event
+  - _gpiod_edge-event_read_rising_edge_event_polled
+  - _gpiod_edge-event_reading_more_events_than_the_queue_contains_doesnt_bl=
+ock
+  - _gpiod_edge-event_seqno
+  - _gpiod_line-info_edge_detection_settings
+
+Test log:
+-------
+ok 16 /gpiod/edge-event/edge_event_buffer_max_capacity
+**
+gpiod-test:ERROR:tests-edge-event.c:52:_gpiod_test_func_edge_event_wait_tim=
+eout:
+'_request' should not be NULL
+# gpiod-test:ERROR:tests-edge-event.c:52:_gpiod_test_func_edge_event_wait_t=
+imeout:
+'_request' should not be NULL
+not ok 17 /gpiod/edge-event/edge_event_wait_timeout
+ok 18 /gpiod/edge-event/cannot_request_lines_in_output_mode_with_edge_detec=
+tion
+**
+gpiod-test:ERROR:tests-edge-event.c:125:_gpiod_test_func_read_both_events:
+'_request' should not be NULL
+# gpiod-test:ERROR:tests-edge-event.c:125:_gpiod_test_func_read_both_events=
+:
+'_request' should not be NULL
+not ok 19 /gpiod/edge-event/read_both_events
+
+Links:
+ - https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-6.6.y/build/v6.=
+6.23-397-g75a2533b74d0/testrun/23254910/suite/libgpiod/tests/
+
+--
+Linaro LKFT
+https://lkft.linaro.org
 
