@@ -1,206 +1,166 @@
-Return-Path: <linux-kernel+bounces-128220-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-128221-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4BE488957D9
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 17:09:37 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id ECA058957DD
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 17:09:54 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6F9B71C22D68
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 15:09:36 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A10B9283364
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 15:09:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DFCDF12C539;
-	Tue,  2 Apr 2024 15:09:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1E74912D771;
+	Tue,  2 Apr 2024 15:09:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=nxp.com header.i=@nxp.com header.b="BH2fQrsZ"
-Received: from EUR04-VI1-obe.outbound.protection.outlook.com (mail-vi1eur04on2104.outbound.protection.outlook.com [40.107.8.104])
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="X8imzE1e"
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F148B60279;
-	Tue,  2 Apr 2024 15:09:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.8.104
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712070570; cv=fail; b=BC8eq0ql183fOXJJIfBzulpw91glTg1Xu/a6gU2+4TGuK19qw9C9rlwFTp9A1VJxbro21FMqYpH4UYh/K3SMNAt8klk3un2eypHp8LOsHNFrp54RG7yjXzdLRuRrGD4cDOF+etHk25VCZ7Cyzej3qoQ8/N/+SUn/d3F7f4QVM78=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712070570; c=relaxed/simple;
-	bh=nxXMwz8vU2HiHuBz9Mjf34LDWpgKXc2NOrvAoJvlImk=;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5EFB312C534;
+	Tue,  2 Apr 2024 15:09:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.1
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1712070583; cv=none; b=h8rooiH1czDPSE0hDqy82rsKdaxYc+rQs7Fzj7lwFuN0SqrUiF7VdlKjo2Kxz2AmarLjsMFVoc2Zxv+JY09P4ujX1UARWEdrwOtEJF+4nb4D4nV/Is/UXwDdyRMPmiLMBbZ6pHGB6tWn9NANCrFT2jZC3qdjsxCMWDkK4rNmRFo=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1712070583; c=relaxed/simple;
+	bh=+peFD21JcBTS6CBdlR+aa/hSltRqOtFDfptmi6JsOp8=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:Content-Type:
-	 Content-Disposition:In-Reply-To:MIME-Version; b=HRM8zMRJ/nkAJdE+udIluVzRWxUjPufeppaE9ca95ZerSN4D1leO+m+RX44eky5FHA2UPt9j5pZ/nCNiyG01s5ENbcpiENgrMIEInzhBTouR8tHalkEXFwCZq8vK2I0MEcrwoKoqS1+Y8IgMlGD2EKx82xcxShS7riLMic518Mk=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com; spf=pass smtp.mailfrom=nxp.com; dkim=pass (1024-bit key) header.d=nxp.com header.i=@nxp.com header.b=BH2fQrsZ; arc=fail smtp.client-ip=40.107.8.104
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nxp.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=BcYzPkqO2hWF0NsgnB3loH3RsQVP4nHSze4k5ZiR1mnzvUs+BgBTiLZrPm2jfCO+ajMeEhQUdaoE/+6twzismZSkPQLjeNVrJV+PhhCKFdryZFxzEF5pEFrX8pySU4+uM6yOFcv9EJDY5AUCmXENkL1jJBQ1nEMAvbyGmfgliY/s8z0Z8PfGQoVXwehDGwqbOw4Dpw8Id2IT6rRHRWEhHWKM0SOiTaa6NJElZq50tNGof6royJh3VJK3NugoiQpT7RBrKgzxnYyg20QBlxO4QNnHt5lJvmm9cT/0YzqQZUpjwCX9hNnArqqGksOWlDDXQcZJpsxe5rEmDDkFMZrRww==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=YG5Be1GtZEfSgWmk7lzy7tkGFRn1szv0bWWjnGkB87c=;
- b=ka3BtTkaY9WZF95Ob9wlAUVkLVPLFAGJ5vY704hfiBqzNKZRJS85rSisCIKGkaEN1Iq5qKou2RTFJT2eYE/V0rq5Onv3D1FDdSguvke0makt9aWoZhBEtaVK14sy6v5tmhEOUyClHw4GZZeSZHy+QGavGfWoQ2f9FW7KbrkLoNR95ghejkTmfCDYofRAnL9DOhXYElVo1/IcITCL3HYpalFhWdfryXyVdQRVem71cUkTMQMf/C0h1DvUe9343URyuD70ZySpZvsCOhs6+35SeIf7nKlKWBBrzX8tS/oMUf1sCF7A/aD0TmvLcWRijMY64w7zaspvKKKNcCZET3TRsw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=YG5Be1GtZEfSgWmk7lzy7tkGFRn1szv0bWWjnGkB87c=;
- b=BH2fQrsZmjqkieE8fTrb+her1Th3pyCFWQgUDQhYofUdU7b9NEC/0EiY/dRH+IQNnocTJfcQnZUzJiwJDehfYp1Tf1HfczvCl1pJJX34+ZFHS8wDjepMYc95Ky6BxbC9Q4sRlX4To8VJ6fm1mkMkB75FwSLoJirtrxvFl5giopU=
-Received: from PAXPR04MB9642.eurprd04.prod.outlook.com (2603:10a6:102:240::14)
- by AS8PR04MB7624.eurprd04.prod.outlook.com (2603:10a6:20b:291::10) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7409.46; Tue, 2 Apr
- 2024 15:09:25 +0000
-Received: from PAXPR04MB9642.eurprd04.prod.outlook.com
- ([fe80::3168:91:27c6:edf6]) by PAXPR04MB9642.eurprd04.prod.outlook.com
- ([fe80::3168:91:27c6:edf6%3]) with mapi id 15.20.7409.042; Tue, 2 Apr 2024
- 15:09:25 +0000
-Date: Tue, 2 Apr 2024 11:09:17 -0400
-From: Frank Li <Frank.li@nxp.com>
-To: Fabio Estevam <festevam@gmail.com>
-Cc: Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>, Shawn Guo <shawnguo@kernel.org>,
-	Sascha Hauer <s.hauer@pengutronix.de>,
-	Pengutronix Kernel Team <kernel@pengutronix.de>,
-	NXP Linux Team <linux-imx@nxp.com>,
-	Marcel Ziswiler <marcel.ziswiler@toradex.com>,
-	Philippe Schenker <philippe.schenker@toradex.com>,
-	Max Krummenacher <max.krummenacher@toradex.com>,
-	Alexander Stein <alexander.stein@ew.tq-group.com>,
-	Joakim Zhang <qiangqing.zhang@nxp.com>, devicetree@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-	stable@vger.kernel.org
-Subject: Re: [PATCH 1/7] arm64: dts: imx8-ss-lsio: fix pwm lpcg indices
-Message-ID: <ZgwfnZJDRYmYy7Qt@lizhi-Precision-Tower-5810>
-References: <20240401-dts_fix-v1-0-8c51ce52d411@nxp.com>
- <20240401-dts_fix-v1-1-8c51ce52d411@nxp.com>
- <CAOMZO5AJrQ5jyV4A-tvX93-R0_nEWpEO9YY3f5DpeXaAFO4cSA@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
+	 Content-Disposition:In-Reply-To:MIME-Version; b=RECeCKpN4MyCEQV2/Vm+RexcRdc3e4nJLDdCrbZwWPF1fosX7wmVhGJLA0MMqD3PsMTOHcPQmSsC++XKnGM8SaAdLN0/w/CG0xIBXoB6Nr6Yg44t5WNLV7R7rER65FZVVN1PcfFrirfhXog//vtZ4Knm5hlyGLzxCsmzaG4/K8c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=X8imzE1e; arc=none smtp.client-ip=148.163.156.1
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
+Received: from pps.filterd (m0353726.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 432EqK0V006662;
+	Tue, 2 Apr 2024 15:09:30 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : references : content-type : in-reply-to :
+ mime-version; s=pp1; bh=ITn/Kb704VlD5FJwMVHmPen0llG6tvxh8lrw6mzr3s8=;
+ b=X8imzE1eMVclqPDvi9n2q3QB8X3skcRhRMxLS/P3Nb9hAVzQTykJmquu4FLkSvwa2GEz
+ HCzHmiVPgkifxh4j953JvxlsYlBhIWLwwHyWb/TI5tRGc/s5YLQolLLwC9yiVD15uqR/
+ +KwELP09rPiTX3Z3X2ey20s/UBT80rvy2H05hQOt6pj9NwL0A+pIODz5mUNMWVobZSO6
+ 5SryF/r3EODO4UpDOwh35rxuk7rUQFTbk+/J++YR+EwsrtOpfvr0oM21F1E1PLMvavUf
+ d+0+fF2/lGtYjAxKu+2aAMMZkyWRu+N31MWU0x9xyH5RP1/YOkrl319y2hJ2LAHjwhik 6w== 
+Received: from pps.reinject (localhost [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3x8m5mg28c-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 02 Apr 2024 15:09:30 +0000
+Received: from m0353726.ppops.net (m0353726.ppops.net [127.0.0.1])
+	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 432F9Twx004325;
+	Tue, 2 Apr 2024 15:09:30 GMT
+Received: from ppma22.wdc07v.mail.ibm.com (5c.69.3da9.ip4.static.sl-reverse.com [169.61.105.92])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3x8m5mg287-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 02 Apr 2024 15:09:29 +0000
+Received: from pps.filterd (ppma22.wdc07v.mail.ibm.com [127.0.0.1])
+	by ppma22.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 432DeTZ8027138;
+	Tue, 2 Apr 2024 15:09:28 GMT
+Received: from smtprelay07.fra02v.mail.ibm.com ([9.218.2.229])
+	by ppma22.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3x6wf07c3q-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 02 Apr 2024 15:09:28 +0000
+Received: from smtpav03.fra02v.mail.ibm.com (smtpav03.fra02v.mail.ibm.com [10.20.54.102])
+	by smtprelay07.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 432F9OMO37945802
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Tue, 2 Apr 2024 15:09:26 GMT
+Received: from smtpav03.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 7454A2005A;
+	Tue,  2 Apr 2024 15:09:24 +0000 (GMT)
+Received: from smtpav03.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 2D97E2004F;
+	Tue,  2 Apr 2024 15:09:23 +0000 (GMT)
+Received: from linux.ibm.com (unknown [9.179.1.65])
+	by smtpav03.fra02v.mail.ibm.com (Postfix) with ESMTPS;
+	Tue,  2 Apr 2024 15:09:23 +0000 (GMT)
+Date: Tue, 2 Apr 2024 18:09:21 +0300
+From: Mike Rapoport <rppt@linux.ibm.com>
+To: Herbert Xu <herbert@gondor.apana.org.au>
+Cc: xingwei lee <xrivendell7@gmail.com>, davem@davemloft.net,
+        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com, samsun1006219@gmail.com,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
+        netdev@vger.kernel.org
+Subject: Re: BUG: unable to handle kernel paging request in crypto_sha3_update
+Message-ID: <ZgwfoSj7GqFiOOsc@linux.ibm.com>
+References: <CABOYnLzjayx369ygmr0PsGYGeRpnBnaH1XPqfbispL5nAeOJ9w@mail.gmail.com>
+ <ZgvDe6fdJzgb8aZZ@gondor.apana.org.au>
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAOMZO5AJrQ5jyV4A-tvX93-R0_nEWpEO9YY3f5DpeXaAFO4cSA@mail.gmail.com>
-X-ClientProxiedBy: SJ0PR03CA0153.namprd03.prod.outlook.com
- (2603:10b6:a03:338::8) To PAXPR04MB9642.eurprd04.prod.outlook.com
- (2603:10a6:102:240::14)
+In-Reply-To: <ZgvDe6fdJzgb8aZZ@gondor.apana.org.au>
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: iYy8icHc0YbYmnBA7qp0fFyP8akUseXg
+X-Proofpoint-GUID: n0TVUuoTuJ7Ax4p-JDwxtCIYmrd1Ixl4
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: PAXPR04MB9642:EE_|AS8PR04MB7624:EE_
-X-LD-Processed: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635,ExtAddr
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
- ygAJ4SC+1oJK/yXXu1RWatLjMtvDZesjXhIVJkgKwMWwD1NK9YqvuzoWuJijGLqIwjmvLKCi99QwNO/p0GfKCHIxWLKfmxpSV1jr4mZayt5FU58lNzYSzqrVZTyXvUpOJyKCJNwbeL7xZxIuIXXaalAdXbA8ZKPHoWztiNE9OeGY3rUrPffRRk3tK3cQpsS9husEobkE5T/i/rwrdvf/xbgwVIhW8e8pib0NTa8L9MdGOvrQW0wpBD/FJaevL5lOcwjm2kq/Q7hgUZlnRNVQ3r1biyguHvGgjoZSOWAdxwKLaW0FNFf3VuoQX1KqwYszBQYCxlYL13+3cmjIpisfCSA8z8SfZHpca+n9HiZ82Q9OG5J3OKKA4p70zj4jEAGJizOeSbGxMUAKEs8elh10oNXk+XLLYaPyiPwQKnP92ztBdPMnRrTOZsdKd51WLPjP7LEWzDBGwQmnYH7y/OISLpY5xRSPUZi6kQPyfVqw3peB9kVKcTZLB+YQEID2aEC7OrC2aj0HFEF+8VQPO7Q/VrEaOTXf3jGAHlGMzxuMJkRwUq8Vo5QHKjHgZRHrPn7pAFh9UI50ItNaa7gXZoqjZlPsozJs8cx1LfGHXzoLit1oTWolj3s8OzMvTltxZ1HXSxMQmqV0gIyq6zES/qGV+DqWb0H06hAsQuIGxwOuzITaXBvgNDk5M6pfhuUyQCVpWyEg3sttiXZWgYhhFkOhgllwOFolv9tWFupPWKC5/bk=
-X-Forefront-Antispam-Report:
- CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PAXPR04MB9642.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366007)(52116005)(376005)(7416005)(1800799015)(38350700005);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
- =?utf-8?B?NEJWU0JmYmFsVGlWc0dva3RKdXdoc2VnclhBQ1kxb0lKWVpIc2x1NTZOYzRN?=
- =?utf-8?B?V1FVVzBhZUo2T2JTSWkyUGFSS01hc3ZzaHQyVHUxcjBBV2NGb0VQR0hPR1Jz?=
- =?utf-8?B?bXhldktqdXZsQUFnbTdFRWdleTBRemhxNDZqWWhrRDJORnNIenRjanhxVHhk?=
- =?utf-8?B?WnVNU2k4VXBETHU3d1RkdjcvZTYzd2RoNFBLYW9YY0RmVVdUdEUweXBnOFFx?=
- =?utf-8?B?dHlSS0xGRWx0RDU0VktnUUZZRUFGOWptMUtrbEQzL1o2TTRyc3FWajhxK21O?=
- =?utf-8?B?Vktxc21wVHJtMDBrZFlsdmhiaElocUU4UlUycTZtTlpjQkNsSkU3M1ZVZUFW?=
- =?utf-8?B?Vkc1aTFwN3VvalZzUFVsaGZETGRuWXQ0WVdNWWwraVl4QmZVMHVsa29zNFdo?=
- =?utf-8?B?N3lHVERxT1dYTEVKUjRiYVhaM0EySVRnMEs0MUJ0K1c0cTZSSGdFWTV5eTVl?=
- =?utf-8?B?SWRCZkpkWndEYmhtbTBBajlmdi9XSUs2MjZYVVNCWWZQbSs3ZUcvMHRuNjVK?=
- =?utf-8?B?N29vNjF4ZENjS2FRbHpXZzhWZDRkaUhoTVg3Yml6OHEyUDhlM3djemplbXZk?=
- =?utf-8?B?RllUUkZ2TEtwSXlQU3FvUFpLakpUVUQ5Qm1rR3Npc1VVTnZxK2ovL2ZmV0Zy?=
- =?utf-8?B?NzJvZGovTEw5RHByRUpoNjhzeDdQTkljSk5NOFkrUGVMM0R0ZVlIY0N6UEFB?=
- =?utf-8?B?N25WbGJCdnhYUHFmZUMwbWNNVGtjS1d4YXlBMjFWcStYSTB0OW5lUnE4ZWNn?=
- =?utf-8?B?Yk1iTExmdWZVV0wxbXp6WklLM2NOSFQ1NGgybENsaUg5bTNkR1dOc3J6VXRh?=
- =?utf-8?B?Q2IySFVvWXNpUVRwYlFJejl2Mk1VaTkvbGRmbzhHS0oxeDcyMlhGTEZaWnNs?=
- =?utf-8?B?SVY3TWwwY1MreVNTSnVjMnBvNFNoWWJwL0phOGRHU0hUT25YZlIvVzhmWVhn?=
- =?utf-8?B?TTdsU0pPTUR3QXNSM3R0eXptRjl4aU9xeCtsRjRtNkFrTUZFZUJFOGhYUlJn?=
- =?utf-8?B?UlM4VDVOVG5tTU5UU28vVkd6ZzRSMUhZeVJlY0Y3K0ovYUlvUmxSWCtsejlV?=
- =?utf-8?B?aG1SRW0zcUpUQjJxclB4c2h6UEwwTlpFV1NNdTB1eTI3aHVPWjFRSkNWZjE5?=
- =?utf-8?B?S2xDVHJRRyt3ZTRWcTFFVWNxOE8xTkFqaFZ3YnVBeHZZVFdoQzRTUG1pMFJl?=
- =?utf-8?B?Q1cxL3pkYmMvWU5NU3RHRzkzNEJBbTIzVmVoZlNubUR4U0lZS0UwODlNUy9R?=
- =?utf-8?B?cGd1MzRCL1lvc0RXWHhjUUtIOTZ5U3BnTU5KcCtrWmh4a0NuMC93d3pJSkJB?=
- =?utf-8?B?a1kvZnJOK3JOVUhFQ01DclVIS21iTFlEczV6cGZkcXBaOUQrSHE2V0tWVDlN?=
- =?utf-8?B?amdDRXB3dnYrVllzbXhKcUUrOWwySEtnQldZQzB3Y3BlLzJ0VnMxUFR4eFBY?=
- =?utf-8?B?QWppVGZBSGVQNUlGbUkxa2dQWXdrUGordkFmYmFIdWc2VmRMRGFHUlcxUHdn?=
- =?utf-8?B?TmkwNUZpcERJWUgxajcwU21ldFRwYVhnbjJTZXljWktWSitVdmhPMitXMEpn?=
- =?utf-8?B?YkNlK1pFQVNmYTl5d1JCWm9zbktNb1p1YVJrZjVWZUhXQ24zR1l1MGxtWTFv?=
- =?utf-8?B?c2dYekNNQmJkSTBDcDFTMVBKL29RNU1TUnd3VXFpNU5LcjlqOFlVQVRDQWZa?=
- =?utf-8?B?aWlhY1ZWSUc3UTNCVjEza3J2a252elYzWXBvY0l6NHhjZ2c4Rm01SzBFNmlF?=
- =?utf-8?B?R0g3dHZUSTIrTkFwMlRnZ0VYcVlBa21TWHVBbmNIOHVPNVZDRWVuY3l5UXlu?=
- =?utf-8?B?cTN3Qnc0TDhLZkZrQ0lhQnM2ZGczWGVOeGFTcndGeTMvdWlQblg0QUpRUkpS?=
- =?utf-8?B?bWsybHkyWUNsWG9ORTZzbUF4VmszNXNETWRhVmZLT0cwV3NzbVN4ZnBZZjJh?=
- =?utf-8?B?Z0dnOFhlQTlwWHpNL0dXMURCT1ROcW1MV1hDS0tFSVVzZ0dNd0FnK2ovMXJm?=
- =?utf-8?B?bFcybmYzQU94TTJubmJrT0lpQUlaYzR0Vmk3Qnd1TFUrUk8yOTArY3pkSWhy?=
- =?utf-8?B?KzhvTWF3RDA0aDlGZWE3ckF5TUN2Um9wemhwRHhhaE01OTZ0US9jTU1QV3Q5?=
- =?utf-8?Q?Im+6Awh+sQz3iIEpu5nvcUx1I?=
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: a64f9367-a590-44f8-47b5-08dc5326e2b5
-X-MS-Exchange-CrossTenant-AuthSource: PAXPR04MB9642.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 02 Apr 2024 15:09:25.8411
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: /nN4Sp2jR/mQtSZGwDkm9GFDTX9pkzRwIYUqMK0cPLp4aESRAu4Bzue65spA9UIqKC+JFvpq/uqwhYvKBZc4Pg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AS8PR04MB7624
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-04-02_08,2024-04-01_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0
+ lowpriorityscore=0 mlxscore=0 spamscore=0 clxscore=1011 priorityscore=1501
+ bulkscore=0 malwarescore=0 adultscore=0 phishscore=0 suspectscore=0
+ mlxlogscore=839 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2403210000 definitions=main-2404020111
 
-On Mon, Apr 01, 2024 at 08:04:56PM -0300, Fabio Estevam wrote:
-> On Mon, Apr 1, 2024 at 7:25 PM Frank Li <Frank.Li@nxp.com> wrote:
+On Tue, Apr 02, 2024 at 04:36:11PM +0800, Herbert Xu wrote:
+> On Wed, Mar 20, 2024 at 10:57:53AM +0800, xingwei lee wrote:
 > >
-> > lpcg's arg0 should use clock indices instead of index.
-> >
-> > pwm0_lpcg: clock-controller@5d400000 {
-> >         ...                                                // Col1  Col2
-> >         clocks = <&clk IMX_SC_R_PWM_0 IMX_SC_PM_CLK_PER>,  // 0     0
-> >                  <&clk IMX_SC_R_PWM_0 IMX_SC_PM_CLK_PER>,  // 1     1
-> >                  <&clk IMX_SC_R_PWM_0 IMX_SC_PM_CLK_PER>,  // 2     4
-> >                  <&lsio_bus_clk>,                          // 3     5
-> >                  <&clk IMX_SC_R_PWM_0 IMX_SC_PM_CLK_PER>;  // 4     6
-> >         clock-indices = <IMX_LPCG_CLK_0>, <IMX_LPCG_CLK_1>,
-> >                         <IMX_LPCG_CLK_4>, <IMX_LPCG_CLK_5>,
-> >                         <IMX_LPCG_CLK_6>;
-> > };
-> >
-> > Col1: index, which exited dts try to get.
+> >   syscall(__NR_bind, /*fd=*/r[0], /*addr=*/0x20000000ul, /*addrlen=*/0x58ul);
+> >   res = syscall(__NR_accept, /*fd=*/r[0], /*peer=*/0ul, /*peerlen=*/0ul);
+> >   if (res != -1)
+> >     r[1] = res;
+> >   res = syscall(__NR_memfd_secret, /*flags=*/0ul);
+> >   if (res != -1)
+> >     r[2] = res;
 > 
-> I cannot understand this sentence, sorry.
+> So this is the key to the issue.  The whole point of memfd_secret is
+> to make the pages inaccessible to the kernel.  The issue is those
+> pages are then gifted to the kernel through sendmsg.  Somewhere
+> along the line someone is supposed to throw up an error about this,
+> or map the pages properly.  I guess neither happened which is why
+> we end up with a page fault.
 
-This base on downstream dts code.  Downstream code use index in 'Col1' to
-get clock.
+Yeah, there was a bug in folio_is_secretmem() that should have throw an
+error about this.
 
-For example:
-<&pwm0_lpcg 3> means &lsio_bus_clk.
+David Hildenbrand sent a fix, it's in Andrew's tree
 
-When someone do upstream, miss understand or omit upsteam lpcg driver's
-difference between downstream and upstream version. And it also work even
-index is wrong.
-
-I realize this problem when I try to enable audio device for qm. The
-difference cause audio can't work.  The grep lpcg [0-9] to find this
-problem.
-
+https://lore.kernel.org/all/20240326143210.291116-1-david@redhat.com
+ 
+> I'll cc the memfd_secret authors to see what should catch this.
 > 
-> > Col2: actual index in lpcg driver.
+> >   syscall(__NR_mmap, /*addr=*/0x20000000ul, /*len=*/0xb36000ul,
+> >           /*prot=*/0x2000003ul, /*flags=*/0x28011ul, /*fd=*/r[2],
+> >           /*offset=*/0ul);
+> >   syscall(__NR_ftruncate, /*fd=*/r[2], /*len=*/0xde99ul);
+> >   *(uint64_t*)0x20000180 = 0;
+> >   *(uint32_t*)0x20000188 = 0;
+> >   *(uint64_t*)0x20000190 = 0x20000140;
+> >   *(uint64_t*)0x20000140 = 0x20000080;
+> >   *(uint64_t*)0x20000148 = 0xb0;
+> >   *(uint64_t*)0x20000198 = 1;
+> >   *(uint64_t*)0x200001a0 = 0;
+> >   *(uint64_t*)0x200001a8 = 0;
+> >   *(uint32_t*)0x200001b0 = 0;
+> >   syscall(__NR_sendmsg, /*fd=*/r[1], /*msg=*/0x20000180ul,
+> >           /*f=*/0x47933e2b0522cf63ul);
 > 
-> You should not describe DT in terms of Linux driver.
+> This is the spot where the memfd_secret pages are given to the kernel
+> for processing through sendmsg.
+> 
+> Thanks,
+> -- 
+> Email: Herbert Xu <herbert@gondor.apana.org.au>
+> Home Page: http://gondor.apana.org.au/~herbert/
+> PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
 
-It just descript the actual hehavior in current drivers to explain why it
-can work even arg0 is wrong.
-
-
-for example: <&pwm0_lpcg 4>, developer intent to get 
-	<&clk IMX_SC_R_PWM_0 IMX_SC_PM_CLK_PER>;  // 4     6
-
-but lpcg driver device device arg0 (4) by 4, get 1. So below clock return
-	<&clk IMX_SC_R_PWM_0 IMX_SC_PM_CLK_PER>,  // 1     1 
-
-Both it is IMX_SC_PM_CLK_PER, so pwm works luckly.
-
-But correct code should be <&pwm0_lpcg IMX_LPCG_CLK_6>. 
-
-
-Frank
+-- 
+Sincerely yours,
+Mike.
 
