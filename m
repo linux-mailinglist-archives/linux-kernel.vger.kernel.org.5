@@ -1,129 +1,97 @@
-Return-Path: <linux-kernel+bounces-128494-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-128495-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 54890895B98
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 20:20:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 5AEDF895B9B
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 20:21:01 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 850721C20AF1
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 18:20:38 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 94AD51C2250D
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 18:21:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B221015AD95;
-	Tue,  2 Apr 2024 18:20:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3283B15ADBA;
+	Tue,  2 Apr 2024 18:20:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="A8oglQ0A"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.10])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="MS+tO2fd"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4117515A48E;
-	Tue,  2 Apr 2024 18:20:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.10
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 64E7115AD95;
+	Tue,  2 Apr 2024 18:20:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712082032; cv=none; b=OsayD2dR/z3GFjVm76mZcON9mPgOequJR3I9aLfXZUn4w2buUoc3VoIIsj/ijumlJLKg+psa6X7dlNAl/Dj2mxn4gTGWrrdox3oGLgeQpUps4ay2qUX2qWEUhL5+yHtnHa739TXjLFeHCaxYSLWR9i9JeQ7IssFRJzkmIRCEj0s=
+	t=1712082048; cv=none; b=gORMsbb2O+LFtvN3/SCRG7wkkFN0iVYJrTiHSQQkFcoCoNDHAe13+7lesZjvPHllj3CAtNv/3iEndyU2WQP3D0f+Xez5xBB5nWMtcSrzKSx+ywv4gKd6Gh/9WnjMXuggrJwdpa6pPqrTpSVQJh7Bg8gVctbKcgy8vND7pjQziP4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712082032; c=relaxed/simple;
-	bh=0nIg5V68eFs+S6WZrMtxSDt8j15LDM7MC/w7XzQq4aM=;
-	h=Content-Type:To:Cc:Subject:References:Date:MIME-Version:From:
-	 Message-ID:In-Reply-To; b=EEMsB5+G4nAgYSzUK0QHJUhNCJO2lvzUG8QSaEkKbJVga35+zNkcB4C9autjrVtQpOdUojMK/B+zOnwC8xy1oDEe0HK+d19D0P1DkSFRS4zL2VPU9uM8YfC6BQV+sAa/M7HEWi/oX02dYgjE1i5HJpW3lUt5YFpGUi36ycsQuRI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=A8oglQ0A; arc=none smtp.client-ip=198.175.65.10
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1712082031; x=1743618031;
-  h=to:cc:subject:references:date:mime-version:
-   content-transfer-encoding:from:message-id:in-reply-to;
-  bh=0nIg5V68eFs+S6WZrMtxSDt8j15LDM7MC/w7XzQq4aM=;
-  b=A8oglQ0AfVBU8AatD6XT9M+b5UhjQwhN2rtD5cbPmcxFQcR9QTQYshfG
-   gt+0AbeVlNuBE4JtjXqBj27h+G9u5kWPArt8K6T6VlzFR/DFtsXvraGJ5
-   odRx47Vis90/txE1pE9Xf7Y6sCR4djyvgMuEOxHIxGo6kHSOqAWr6uXev
-   SXBJGLGa9+8Hrih6i7x/GVRB/Lhos7Xn1qpkMiLRUqhZUDD9vj4OkUeje
-   RaZV/j6gZa+rcQqeTNgubMpU6FSu9+2XRsrtb/uQZsOC7O+SCh5vP8uqE
-   b6iu/sAxaOU7UU3kf5bsULs7gev53y74jJ7nGFV9srAXfRncIZt5eQpKJ
-   Q==;
-X-CSE-ConnectionGUID: JlFDas+gQrqksCjGLq7cUA==
-X-CSE-MsgGUID: WAFdYvq8TJuVtR3D8/JGCw==
-X-IronPort-AV: E=McAfee;i="6600,9927,11032"; a="24729989"
-X-IronPort-AV: E=Sophos;i="6.07,175,1708416000"; 
-   d="scan'208";a="24729989"
-Received: from orviesa009.jf.intel.com ([10.64.159.149])
-  by orvoesa102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Apr 2024 11:20:30 -0700
-X-CSE-ConnectionGUID: W2CB/e5+SoCTGl3jQ/a3rQ==
-X-CSE-MsgGUID: ZBrlNf3NSnaBEgUH3+z5kQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,175,1708416000"; 
-   d="scan'208";a="18133002"
-Received: from hhuan26-mobl.amr.corp.intel.com ([10.92.17.168])
-  by orviesa009-auth.jf.intel.com with ESMTP/TLS/AES256-SHA; 02 Apr 2024 11:20:28 -0700
-Content-Type: text/plain; charset=iso-8859-15; format=flowed; delsp=yes
-To: =?iso-8859-15?Q?Michal_Koutn=FD?= <mkoutny@suse.com>
-Cc: "Jarkko Sakkinen" <jarkko@kernel.org>, dave.hansen@linux.intel.com,
- tj@kernel.org, linux-kernel@vger.kernel.org, linux-sgx@vger.kernel.org,
- x86@kernel.org, cgroups@vger.kernel.org, tglx@linutronix.de, mingo@redhat.com,
- bp@alien8.de, hpa@zytor.com, sohil.mehta@intel.com,
- tim.c.chen@linux.intel.com, zhiquan1.li@intel.com, kristen@linux.intel.com,
- seanjc@google.com, zhanb@microsoft.com, anakrish@microsoft.com,
- mikko.ylinen@linux.intel.com, yangjie@microsoft.com, chrisyan@microsoft.com
-Subject: Re: Re: [PATCH v9 15/15] selftests/sgx: Add scripts for EPC cgroup
- testing
-References: <20240205210638.157741-1-haitao.huang@linux.intel.com>
- <20240205210638.157741-16-haitao.huang@linux.intel.com>
- <4be7b291010973c203ed8c7bcd25b626c1290231.camel@kernel.org>
- <D04OVW6I8MUA.1OAIHFQ8943SM@kernel.org>
- <op.2lbjl0oawjvjmi@hhuan26-mobl.amr.corp.intel.com>
- <D071OAFZ80O6.XEDXJ8AF4PK9@kernel.org> <D071QIHLW7MP.UM9R3VYETIOK@kernel.org>
- <htiz5jgsby5v262saphhomcsxtixb2u7ot6jcghpfhvgz65ht6@qlz3gpdwapaa>
- <D09MB26IPFFW.3UBD7M0S17SG6@kernel.org>
- <op.2llzn7wgwjvjmi@hhuan26-mobl.amr.corp.intel.com>
- <yjremy4leipriqfd547wvjd6jt3r6t4tgz36eazy3slfuew4mc@v4iye7sm7yqn>
-Date: Tue, 02 Apr 2024 13:20:25 -0500
+	s=arc-20240116; t=1712082048; c=relaxed/simple;
+	bh=R+dnlvAnN+zOtr2CXbdtuCPTkxZEygoWJCnVX6je7zY=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=ASGrNsNyTZV0v0+ttvnm/vLd2vdPRrj/pbe//BwwN5DF6w973euuxdrB0A9ToHc+WlohnzPdQQHg+I5kFA3oRJ13RS1Mm/fbFFBSltz9LNzxza/6xMBEQ6ND0UU1zUVxyOhouyHk07/+kFH+m5ezBX9WoL2ffgjlrexQzWot29k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=MS+tO2fd; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 51A76C43390;
+	Tue,  2 Apr 2024 18:20:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1712082047;
+	bh=R+dnlvAnN+zOtr2CXbdtuCPTkxZEygoWJCnVX6je7zY=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=MS+tO2fdHButcdLwRwDMczgoVv7JLOqbWb/gslRHTG50HvGg9Z5dDC/9cCi66iNH6
+	 6g9qe/7/q3c23lNJhEPx0o023ZkiHkvXElbJmxGDv/MkUG8PxSOwpzyaZv/rYdGzuA
+	 c/KbwaggUEglG4kB4yZUik3qyAouF0Nn4ui4XJrXq53+oE40IMfYUDwiGHEAo8YIOw
+	 nc/hOsgjltNjbcdAZbcFvgRkSxN/vcx/uFhwyx2529tTPl4nT5e4lYMkJMZ5oGncs6
+	 UxZIBENP+xABjcAHkoZFRB4k1UvH2DtfHYHCNSAnPVNyYBwzR4YHm1fJdMjCHBFds7
+	 YnZJdBL9B70Vg==
+Date: Tue, 2 Apr 2024 19:20:43 +0100
+From: Conor Dooley <conor@kernel.org>
+To: Rob Herring <robh@kernel.org>
+Cc: "David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Alexandre Torgue <alexandre.torgue@foss.st.com>,
+	Giuseppe Cavallaro <peppe.cavallaro@st.com>,
+	Jose Abreu <joabreu@synopsys.com>, netdev@vger.kernel.org,
+	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH net-next] dt-bindings: net: snps,dwmac: Align
+ 'snps,priority' type definition
+Message-ID: <20240402-surprise-helmet-9f7c0eb6839c@spud>
+References: <20240401204422.1692359-2-robh@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: Quoted-Printable
-From: "Haitao Huang" <haitao.huang@linux.intel.com>
-Organization: Intel
-Message-ID: <op.2ll48bk4wjvjmi@hhuan26-mobl.amr.corp.intel.com>
-In-Reply-To: <yjremy4leipriqfd547wvjd6jt3r6t4tgz36eazy3slfuew4mc@v4iye7sm7yqn>
-User-Agent: Opera Mail/1.0 (Win32)
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="ESvyQlaQyigU/fBK"
+Content-Disposition: inline
+In-Reply-To: <20240401204422.1692359-2-robh@kernel.org>
 
-On Tue, 02 Apr 2024 12:40:03 -0500, Michal Koutn=FD <mkoutny@suse.com> w=
-rote:
 
-> On Tue, Apr 02, 2024 at 11:20:21AM -0500, Haitao Huang  =
+--ESvyQlaQyigU/fBK
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> <haitao.huang@linux.intel.com> wrote:
->> Do we really want to have it implemented in c?
->
-> I only pointed to the available C boilerplate.
->
->> There are much fewer lines of
->> code in shell scripts. Note we are not really testing basic cgroup  =
+On Mon, Apr 01, 2024 at 03:44:22PM -0500, Rob Herring wrote:
+> 'snps,priority' is also defined in dma/snps,dw-axi-dmac.yaml as a
+> uint32-array. It's preferred to have a single type for a given property
+> name, so update the type in snps,dwmac schema to match.
+>=20
+> Signed-off-by: Rob Herring <robh@kernel.org>
 
->> stuff.
->> All we needed were creating/deleting cgroups and set limits which I  =
+Acked-by: Conor Dooley <conor.dooley@microchip.com>
 
->> think
->> have been demonstrated feasible in the ash scripts now.
->
-> I assume you refer to
-> Message-Id: <20240331174442.51019-1-haitao.huang@linux.intel.com>
-> right?
->
-> Could it be even simpler if you didn't stick to cgtools APIs and v1
-> compatibility?
->
-> Reducing ash_cgexec.sh to something like
-> 	echo 0 >$R/$1/cgroup.procs
-> 	shift
-> 	exec "$@"
-> (with some small builerplate for $R and previous mkdirs)
->
-Yes, Thanks for the suggestion.
-Haitao
+--ESvyQlaQyigU/fBK
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZgxMewAKCRB4tDGHoIJi
+0ulmAQCkfrNLqe+sPJxSI8sQY0KUogTFYjfGdbu8F+QOuBqi6gD/Rbh3ZV9LoT5H
+lpqNx32GQ3q94ffF/QC3E6OWnnG36A4=
+=qjGs
+-----END PGP SIGNATURE-----
+
+--ESvyQlaQyigU/fBK--
 
