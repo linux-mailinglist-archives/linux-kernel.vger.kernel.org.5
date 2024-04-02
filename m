@@ -1,175 +1,237 @@
-Return-Path: <linux-kernel+bounces-128808-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-128809-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id A6966895FD6
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 00:53:34 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2D451895FD8
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 00:54:23 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CA2ED1C23677
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 22:53:33 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 94B7E1F23BD0
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 22:54:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 477F12E410;
-	Tue,  2 Apr 2024 22:53:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 553952E3FD;
+	Tue,  2 Apr 2024 22:54:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="QIHeKsrv"
-Received: from NAM10-DM6-obe.outbound.protection.outlook.com (mail-dm6nam10on2104.outbound.protection.outlook.com [40.107.93.104])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="kV8eDMF9"
+Received: from mail-vk1-f174.google.com (mail-vk1-f174.google.com [209.85.221.174])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EA2E62260B
-	for <linux-kernel@vger.kernel.org>; Tue,  2 Apr 2024 22:53:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.93.104
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712098408; cv=fail; b=ZNGFtwevKIZyaA4iiRW/rM0AwXeKaYp13mKgrlRpx5iYmmeIPePV9FjKkFqMz9e9SU+LjQ1gihQbL5Yu8vSr4SJsnqI8uymU/levpyIKIhxxh3CLA1IRWYmSOxBFW1porJ3inB4xD/swOrqFlUmwM2BgMF0EQVbqMvH4B08pgRs=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712098408; c=relaxed/simple;
-	bh=BbYgnLKUVL++d4TFYHeSw1iShZEG/w0X+yoeSO/tjO0=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:Content-Type:
-	 Content-Disposition:In-Reply-To:MIME-Version; b=nht4+rpt6psQaDl5GerrorSu3Y/PSkpCoC67izViCrGP1SYLRd365Ql3cJpllYDhpI/jZV5BAis/60+z+Goh6G5Y3J1JNbME64bJDCXwrH2tHM5tOlU/8k5WpSvwGSAEhI8fGOp0iqMUI2TAhbBFCsKBpDOPucEEdAPvtd+UvCg=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=QIHeKsrv; arc=fail smtp.client-ip=40.107.93.104
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=j5whBe2TPQ5eXK65hZsgCjupJfreBbCduLlbaNWOz4qLJA1Lm5ARHUR+f80j2ozuiR7VPB+NHEGcfCrahsNxU4rpGy8FeNLrEIIS1jaZkLqVeC7Blu/2MqygMfk2GGjs1NoSVvshwItI9kXsHlMOJgWFF7704mk7vHYBJdHQP8Jths9L4wbV6hajnn1RPpUQWXT/fkNAjeybKV9eMxjo+Vll8EXYSgvAclzXQoYIjKj3CC4L8nQtuRjfRWjMGdVLNbdGdv7trv9hJ73JkwS5719yMHFb0EKhLnpHnqqARayrv2QhUAwl5oed9eYIT5hokBMQxRIVWU+GVI9axOWm5A==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=BhJ1UQURdwDUzvXSG96GikuJ0SUIiMxdS6K1gLCHIQ0=;
- b=NY0DjMEqgNnnEBPQii5H8c2t4gPkaFQxJOrsqVXzBwrOYsvFSW78sDMkR7oIvg2E5PmIwUyhPDNNBQeDfoyndJG4l123ZYjXyqVVrF4yrE7TOtP4zXdNenU3ObhCBmSsmFvxyv5IcKV185pzs2Hx+aFcxwTRoMwMjRp1gV+vKVMDMSFfx69pqS9xIbvyGD1G9/zxa72bBxdnEsL8zfNvbaIVM1eKzov0hGP2wBq2UaadIrT6tlZOf9cnvrk0FKU1m3IRpNYjCTKa1oSrF+j3ZPPz8BQwbEHuiI73Yc/ocJUSujz30aubTVxDnaNvXNufdLBagrmKsMdvfn+y6VUMjw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=BhJ1UQURdwDUzvXSG96GikuJ0SUIiMxdS6K1gLCHIQ0=;
- b=QIHeKsrv9dQSlg4VYOTZBEc8XMbAJDA+sibJoDGSBm8ECNJ5skYQ9tKa9Ccmo33G2yIw6XUSAVFDB19NU1YqoxFZtJttnwtnzN8GnqirKY6BUBOaspL5fyZ0Q5Fk3LU0YppxjazsoQ/2uKwEftMnWYnDVAm2FLPsq6jbkFRkw4l2qQlOH6nmwUYeKOhJSdE1iusxOnl9L9dnYOOkRe2u7MmNjMlUy6Df3yEbnCCpaMikq96DXbF6Lc4pdf4bcTyoRDHckgf7W+VnEqT+dZTxXjEKqkpiSM8UNdM7pqd/p7Eb7Yq3D0uDvvdRN+z3d36BxNyMi0Ma95gdNCAc2V9HmA==
-Received: from DM6PR12MB3849.namprd12.prod.outlook.com (2603:10b6:5:1c7::26)
- by LV8PR12MB9262.namprd12.prod.outlook.com (2603:10b6:408:1e7::16) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7409.46; Tue, 2 Apr
- 2024 22:53:22 +0000
-Received: from DM6PR12MB3849.namprd12.prod.outlook.com
- ([fe80::6aec:dbca:a593:a222]) by DM6PR12MB3849.namprd12.prod.outlook.com
- ([fe80::6aec:dbca:a593:a222%5]) with mapi id 15.20.7409.042; Tue, 2 Apr 2024
- 22:53:22 +0000
-Date: Tue, 2 Apr 2024 19:53:20 -0300
-From: Jason Gunthorpe <jgg@nvidia.com>
-To: Peter Xu <peterx@redhat.com>
-Cc: Nathan Chancellor <nathan@kernel.org>, linux-mm@kvack.org,
-	linux-kernel@vger.kernel.org, Yang Shi <shy828301@gmail.com>,
-	"Kirill A . Shutemov" <kirill@shutemov.name>,
-	Mike Kravetz <mike.kravetz@oracle.com>,
-	John Hubbard <jhubbard@nvidia.com>,
-	Michael Ellerman <mpe@ellerman.id.au>,
-	Andrew Jones <andrew.jones@linux.dev>,
-	Muchun Song <muchun.song@linux.dev>,
-	linux-riscv@lists.infradead.org, linuxppc-dev@lists.ozlabs.org,
-	Christophe Leroy <christophe.leroy@csgroup.eu>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Christoph Hellwig <hch@infradead.org>,
-	Lorenzo Stoakes <lstoakes@gmail.com>,
-	Matthew Wilcox <willy@infradead.org>,
-	Rik van Riel <riel@surriel.com>,
-	linux-arm-kernel@lists.infradead.org,
-	Andrea Arcangeli <aarcange@redhat.com>,
-	David Hildenbrand <david@redhat.com>,
-	"Aneesh Kumar K . V" <aneesh.kumar@kernel.org>,
-	Vlastimil Babka <vbabka@suse.cz>,
-	James Houghton <jthoughton@google.com>,
-	Mike Rapoport <rppt@kernel.org>,
-	Axel Rasmussen <axelrasmussen@google.com>,
-	Huacai Chen <chenhuacai@kernel.org>,
-	WANG Xuerui <kernel@xen0n.name>, loongarch@lists.linux.dev
-Subject: Re: [PATCH v4 05/13] mm/arch: Provide pud_pfn() fallback
-Message-ID: <20240402225320.GU946323@nvidia.com>
-References: <20240327152332.950956-1-peterx@redhat.com>
- <20240327152332.950956-6-peterx@redhat.com>
- <20240402190549.GA706730@dev-arch.thelio-3990X>
- <ZgyKLLVZ4vN56uZE@x1n>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZgyKLLVZ4vN56uZE@x1n>
-X-ClientProxiedBy: SA0PR12CA0015.namprd12.prod.outlook.com
- (2603:10b6:806:6f::20) To DM6PR12MB3849.namprd12.prod.outlook.com
- (2603:10b6:5:1c7::26)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3479F446B2
+	for <linux-kernel@vger.kernel.org>; Tue,  2 Apr 2024 22:54:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.174
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1712098455; cv=none; b=MEzRyW5AiuFkZ8gn0z7CJ8IRxmhC8Z37TXfbT1UeM93pmGUuRaTmjjg9ehX1GxbCYwGg29GgN4FTGQ9uPWOp+kwAHfOT8N9xhrx9dRWM88lbPXD1GgECJgv4OfJApQjMS+s23UClg+oIu7Sa/KtimR2w+qRJU7tyE1f7Zv6R748=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1712098455; c=relaxed/simple;
+	bh=oE5cGC5+qAva31AZHfiX83A07qWDi6p4+h0YURYmUP4=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=Lhv6lqI8BsGRQFQIPyGZotZOn2eNb+sA0rAnOzpBWMjo0Rl5jCe7RHankXcpdRq1WohnDxaQyL0bTVRclDnBbKWPyHzpYg+n76aZwput/AGF4ZlAWbRmu/8qVKkeKe/HDeJVHC5w52mzFhtLdgUGNkNLrgIx8DBzQoydWIJDOlw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=kV8eDMF9; arc=none smtp.client-ip=209.85.221.174
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-vk1-f174.google.com with SMTP id 71dfb90a1353d-4d8804a553dso2123319e0c.1
+        for <linux-kernel@vger.kernel.org>; Tue, 02 Apr 2024 15:54:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1712098452; x=1712703252; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=oaCsSLFI4AruxYR7+hfoQQpqqA7CBzp2msWt+WkiOg8=;
+        b=kV8eDMF9f32PMHi5AGnNs2mY6R0FbI/ZNN+Jn7U2Ba9v0i3eVGn9tyMFM3J9SLLJFv
+         xnMpJt8DTdxRcbY6muyIcLrZWcz47TqwL7taA6dpY65O8O8TqVJX+3wUQXXXYwUFmQs2
+         z7cu6o7bEaHFYclpGcCuLFKWm09lpvWRAeBN2NddBtEcMPnVuchsB2LlRxAiKfnl6Xve
+         Ez2NYup4QJ2QhP/ulD9/7bs2lVt/JzlRNttBUTenRAtVKAVCkl6SFPsEu27VYMVddlNn
+         4EEQYgIBCABnn+J+gPlu3spg/FbP3Gaz9O9pnHhjsaa+qzpCfHY6/OiNh7jg3OoeLzHi
+         C8TA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712098452; x=1712703252;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=oaCsSLFI4AruxYR7+hfoQQpqqA7CBzp2msWt+WkiOg8=;
+        b=Rt+wUxHP+1+9/CyIBM6GKapTvukIQ29HCYzNM4poFt1wUnLjlg509hpbZk5vXr7TnS
+         529PdgSfSoXXB7LhHlbKR1eSSVgKswR3iHMldKU+xaJW4lKC/F3Og12dEofWkDQgH4gr
+         WLSe4yB9P2kmh7nxGy/JLvqzp7bNlgxBoQ71vWg+BAz1s5oj31IGeo4PoV8+S36S7CLi
+         nKBFmUZbnKWop0SKqIPgR1LKuh5E84NGyY+cINw0dnxO5stgmg1ZON4Ed1efWZZVS1LV
+         wMWDlG5tHzXKXkB4dUT0MpFP1l03/rdN3emVIcTMQEcaMpuXhox0p+hdKdgLNamdWYM3
+         yuwg==
+X-Forwarded-Encrypted: i=1; AJvYcCVI7VhS6XPGOlt2wd7+vANX/lcIAeP2js8RRXLwew1MRlhyV4SsIX7MLUpfAfF1NWWbHUZwRgJquvk8GcOVFun7r3jLpr3wyH0ydE9M
+X-Gm-Message-State: AOJu0Yzh1qfFD21ygLVU/PEu7n+NRsWsg8HQ9QKPKebjcQenLIBGFkGO
+	1NmcfGfMvy+Vse/OSbwXg3eJL70FAbQrq6BO1u4Elow0136YlCXrLxsKRWz1S8C8+PQPzcbrgEw
+	V/kIs9yrpwqE/STRHxk7RV5K88ug=
+X-Google-Smtp-Source: AGHT+IE5SK/agCNDVab7BHES6qcv591Nd7QR6gkm6qmDioTB9cVi3cwpH7mQGMdj+CBA1CJT15i4BkHwDz+j8E0j254=
+X-Received: by 2002:a05:6122:1d93:b0:4d3:45a2:ae4f with SMTP id
+ gg19-20020a0561221d9300b004d345a2ae4fmr11937500vkb.14.1712098452014; Tue, 02
+ Apr 2024 15:54:12 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DM6PR12MB3849:EE_|LV8PR12MB9262:EE_
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	aAb6xuu5/XJAHyVBhXWlYPiGm0Ij7iFUtCdheAh55xZnEif6U9osw6r5qd8saHTa1z5j4eeJDy6G4+SBbKSC0FJbUyP+1enSkKXgTM8rdlqU1jgs3+E3+Kr1q1Oaf8HIJXoIadx3s+1IVRrRkuDCYz2Fc/0dOptrmHOLAbHwJbno/bBFpBOa8T++2PW0mff9p74UoYUZr9iQnFIChQEWEDbqsGZWudF7Sbb4aZQRjJqFBMEEmZvCPeuuWMfZcrXLAiugvnweT7SviprX/7dJjY4eEjCLQ2ibDx5aGMY9QgJf6gskWHKS8r10zh2U2f8oJgkzGGu1B2sgYXFTO5FAEAK5RXXQcXuCDRDFrswxQ4GhG9PB80iiIdC++DMfMHK8TXHp/t2IzSH0sAnxXDwrOs/NcIAyxhy1OksPA9lHIigJQVRqgY6njgnmhNg4ZGCW8ZSWU0w6IWBfsrGQ9dJGjqc6iHZFm2t/o1rhpymWFgFC6vx0necF5dXk6FAAHecKgRXEEbktMUOaIltDxelWmGzx4Y3BWCcQsnTOlqhIUebVEE1p1KaPfupWkrXL8K7iwePPRX4L2OGFr2IFJ9zTwedEEb19Zm6WTmr45qNKYlhS+3aS3AAj0578joMp7NUpD2feH8PAxb+0M0enNbaY+mcQkNhtVifJV0x3GtqlIOc=
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR12MB3849.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(7416005)(376005)(1800799015)(366007);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?C+DuDQS5m0FwmZVT3XgazypinSRUXPD2n2z0WCs0Dzk7kGekw1vKengH/5gu?=
- =?us-ascii?Q?N3NhemlAVzWH5lnVd7qIapurAK4wFG4B1fcGhyKycUJKxC0W9Cosl0yXdEUU?=
- =?us-ascii?Q?UkmyqOJ7j4u2RcWaYIAkYyLL9A3keTWNOCTVa7Bi9DDuH7vKnLJeyG9tqhQE?=
- =?us-ascii?Q?qlkcT0GnWRV66f+OfKP7rISSP77j6jhb6X7PilGCdErF3fTgYQuMOQfY724R?=
- =?us-ascii?Q?Ji8FG3VAjV2Uw2odkhoVSKR/jGaDFqjZVn/vRSymCzMHZs28bFIQr0TDGJFg?=
- =?us-ascii?Q?OWPnqEYbz7WxCtNQjEjKrUtbxRSsIFzHufyqJQ6YTkBAhjBD9Ef7hI6Rxt80?=
- =?us-ascii?Q?XpM9XAml8m1L6neKtaYC9D9Ym2YuYqgkdcYwLC+krGncN/1HjTRnaKX0QTUI?=
- =?us-ascii?Q?L5HrE6OwM1SGujcNueObqp6YLsDIbp9U839X8SvsOk/VI8d/CFC77HW3mNl+?=
- =?us-ascii?Q?8S3+oypDT+GEWcH+dV/A01Y9xvBWzzKNO1aDF8dRqR7M3Lj2wjqP8zZqt6N5?=
- =?us-ascii?Q?IQ1cdqZAFkT2ZG6H1ejUK5soZCGoGiBMgU4T+/Bp4wpSptIkW1T4IvIR0kl0?=
- =?us-ascii?Q?2/gZMt1pK0NaMwahilBD68c5OxJ6HEQ9yQNAnjpsPkHNA932PX0dDMHkk4cd?=
- =?us-ascii?Q?4L2ft6iBFZdj7tsB5dWKdxMuNQsAk+cpumIXoodBzgyiYNhkFpEJkXBqBRJ9?=
- =?us-ascii?Q?nCA69Q2Jh5W+IfY43r6kc3Gtfk6bGQwOUqpYFWJaWl0qI+bmV+HscFFyDdFK?=
- =?us-ascii?Q?Ik0KP/oS+gp3UOwJ6fZGUOH0XfL0EX2GPAuhH4bccRG8V04Gf3Ub8+sKzBl9?=
- =?us-ascii?Q?HqQ7bY+OG27YOhr1QL1uc6Jb3YVrvU7quk/Ezy5qV2isAjDP3spAcdqW50UB?=
- =?us-ascii?Q?2XE9Wy2EO98RAArmbe73AoSLyqWPX8IVqMjyvA3vAOV9IClfM/f1P5rY86DZ?=
- =?us-ascii?Q?OirmvlLt/cnb6ZhtDSiC7votu01aq73Cxmx9hXojUzh3xcfHC6BX0SL8xGte?=
- =?us-ascii?Q?WEDq1da1/dLosHYr9SE0ZVEXRdCCwH8H6fVm9Dx3Sz8RhN+6WOKS2nnbKNPZ?=
- =?us-ascii?Q?B7VHafBOt7rZ1ZdBOkihFg/dUgE/JakzeFH3WSHgRq0qOuixt/ZqbJDC9EeP?=
- =?us-ascii?Q?RSnE9w3w1ArGAW1QdMn9mf3NvpiMJLYw9C2XbmmZI5mw5ZS5y2ME9IRk1nDj?=
- =?us-ascii?Q?WihLuCIm9Ro9MR10qsgojN2/XP8oABd22kpeHkGwT0JmLCsBhhDdDi5ZPhbU?=
- =?us-ascii?Q?zXwvfkqop5dIqGIxvDNc70B+aiUQkIml5mYBNqBEzwQcairyrvVJr71MHZCy?=
- =?us-ascii?Q?ZDVGIjHpf6NeM/OHYAnWDeOwBj3BjNld+VcmexNkYDkWhxrJYI82EsDeZ8Wc?=
- =?us-ascii?Q?cH8gZSh7tm/toaFI4JiqN52PDCyYaJfi5Spd3BNueDc7pH82xH4HBckOgCeA?=
- =?us-ascii?Q?MUT7enF8IqTek9TWtKb8Uwma5ZEgKM0acUcbXD3HI7N4vla+r3T8vmKRU381?=
- =?us-ascii?Q?eDwAv9MMYzuuU5hsvT+shLXIrXKTP6jojR2BT6uAX/MUCaKtCNW58xd9FwOD?=
- =?us-ascii?Q?VH7yZfQX6ABB+053NKSPO2ioBTE370pze8xiVzCw?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 1d611d46-9fb3-4e5d-6979-08dc5367b2a2
-X-MS-Exchange-CrossTenant-AuthSource: DM6PR12MB3849.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 02 Apr 2024 22:53:22.4580
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: oa2HsOvvP6XJ1dsEuaN3GXjvhCh14tspZkBbQzjRMrzHJ0pnk2KzDpv4P9BaFwFM
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: LV8PR12MB9262
+References: <20240327144537.4165578-1-ryan.roberts@arm.com>
+ <20240327144537.4165578-6-ryan.roberts@arm.com> <CAGsJ_4x40DxoukgRuEt3OKP7dESj3w+HXz=dHYR+PH8LjtCnEA@mail.gmail.com>
+ <63c9caf4-3af4-4149-b3c2-e677788cb11f@arm.com> <47fa11db-3c26-48a6-bb7e-5ea59739b691@arm.com>
+In-Reply-To: <47fa11db-3c26-48a6-bb7e-5ea59739b691@arm.com>
+From: Barry Song <21cnbao@gmail.com>
+Date: Wed, 3 Apr 2024 11:54:00 +1300
+Message-ID: <CAGsJ_4zCTLjJOX3Cs-KDVgqytUykzRJQncHbOEHzyEbyVmt2=g@mail.gmail.com>
+Subject: Re: [PATCH v5 5/6] mm: vmscan: Avoid split during shrink_folio_list()
+To: Ryan Roberts <ryan.roberts@arm.com>
+Cc: Andrew Morton <akpm@linux-foundation.org>, David Hildenbrand <david@redhat.com>, 
+	Matthew Wilcox <willy@infradead.org>, Huang Ying <ying.huang@intel.com>, Gao Xiang <xiang@kernel.org>, 
+	Yu Zhao <yuzhao@google.com>, Yang Shi <shy828301@gmail.com>, Michal Hocko <mhocko@suse.com>, 
+	Kefeng Wang <wangkefeng.wang@huawei.com>, Chris Li <chrisl@kernel.org>, 
+	Lance Yang <ioworker0@gmail.com>, linux-mm@kvack.org, linux-kernel@vger.kernel.org, 
+	Barry Song <v-songbaohua@oppo.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Tue, Apr 02, 2024 at 06:43:56PM -0400, Peter Xu wrote:
+On Wed, Apr 3, 2024 at 2:22=E2=80=AFAM Ryan Roberts <ryan.roberts@arm.com> =
+wrote:
+>
+> On 02/04/2024 14:10, Ryan Roberts wrote:
+> > On 28/03/2024 08:18, Barry Song wrote:
+> >> On Thu, Mar 28, 2024 at 3:45=E2=80=AFAM Ryan Roberts <ryan.roberts@arm=
+com> wrote:
+> >>>
+> >>> Now that swap supports storing all mTHP sizes, avoid splitting large
+> >>> folios before swap-out. This benefits performance of the swap-out pat=
+h
+> >>> by eliding split_folio_to_list(), which is expensive, and also sets u=
+s
+> >>> up for swapping in large folios in a future series.
+> >>>
+> >>> If the folio is partially mapped, we continue to split it since we wa=
+nt
+> >>> to avoid the extra IO overhead and storage of writing out pages
+> >>> uneccessarily.
+> >>>
+> >>> Reviewed-by: David Hildenbrand <david@redhat.com>
+> >>> Reviewed-by: Barry Song <v-songbaohua@oppo.com>
+> >>> Signed-off-by: Ryan Roberts <ryan.roberts@arm.com>
+> >>> ---
+> >>>  mm/vmscan.c | 9 +++++----
+> >>>  1 file changed, 5 insertions(+), 4 deletions(-)
+> >>>
+> >>> diff --git a/mm/vmscan.c b/mm/vmscan.c
+> >>> index 00adaf1cb2c3..293120fe54f3 100644
+> >>> --- a/mm/vmscan.c
+> >>> +++ b/mm/vmscan.c
+> >>> @@ -1223,11 +1223,12 @@ static unsigned int shrink_folio_list(struct =
+list_head *folio_list,
+> >>>                                         if (!can_split_folio(folio, N=
+ULL))
+> >>>                                                 goto activate_locked;
+> >>>                                         /*
+> >>> -                                        * Split folios without a PMD=
+ map right
+> >>> -                                        * away. Chances are some or =
+all of the
+> >>> -                                        * tail pages can be freed wi=
+thout IO.
+> >>> +                                        * Split partially mapped fol=
+ios right
+> >>> +                                        * away. We can free the unma=
+pped pages
+> >>> +                                        * without IO.
+> >>>                                          */
+> >>> -                                       if (!folio_entire_mapcount(fo=
+lio) &&
+> >>> +                                       if (data_race(!list_empty(
+> >>> +                                               &folio->_deferred_lis=
+t)) &&
+> >>>                                             split_folio_to_list(folio=
+,
+> >>>                                                                 folio=
+_list))
+> >>>                                                 goto activate_locked;
+> >>
+> >> Hi Ryan,
+> >>
+> >> Sorry for bringing up another minor issue at this late stage.
+> >
+> > No problem - I'd rather take a bit longer and get it right, rather than=
+ rush it
+> > and get it wrong!
+> >
+> >>
+> >> During the debugging of thp counter patch v2, I noticed the discrepanc=
+y between
+> >> THP_SWPOUT_FALLBACK and THP_SWPOUT.
+> >>
+> >> Should we make adjustments to the counter?
+> >
+> > Yes, agreed; we want to be consistent here with all the other existing =
+THP
+> > counters; they only refer to PMD-sized THP. I'll make the change for th=
+e next
+> > version.
+> >
+> > I guess we will eventually want equivalent counters for per-size mTHP u=
+sing the
+> > framework you are adding.
+> >
+> >>
+> >> diff --git a/mm/vmscan.c b/mm/vmscan.c
+> >> index 293120fe54f3..d7856603f689 100644
+> >> --- a/mm/vmscan.c
+> >> +++ b/mm/vmscan.c
+> >> @@ -1241,8 +1241,10 @@ static unsigned int shrink_folio_list(struct
+> >> list_head *folio_list,
+> >>                                                                 folio_=
+list))
+> >>                                                 goto activate_locked;
+> >>  #ifdef CONFIG_TRANSPARENT_HUGEPAGE
+> >> -
+> >> count_memcg_folio_events(folio, THP_SWPOUT_FALLBACK, 1);
+> >> -                                       count_vm_event(THP_SWPOUT_FALL=
+BACK);
+> >> +                                       if (folio_test_pmd_mappable(fo=
+lio)) {
+>
+> This doesn't quite work because we have already split the folio here, so =
+this
+> will always return false. I've changed it to:
+>
+> if (nr_pages >=3D HPAGE_PMD_NR) {
 
-> I actually tested this without hitting the issue (even though I didn't
-> mention it in the cover letter..).  I re-kicked the build test, it turns
-> out my "make alldefconfig" on loongarch will generate a config with both
-> HUGETLB=n && THP=n, while arch/loongarch/configs/loongson3_defconfig has
-> THP=y (which I assume was the one above build used).  I didn't further
-> check how "make alldefconfig" generated the config; a bit surprising that
-> it didn't fetch from there.
+make sense to me.
 
-I suspect it is weird compiler variations.. Maybe something is not
-being inlined.
+>
+>
+> >> +
+> >> count_memcg_folio_events(folio, THP_SWPOUT_FALLBACK, 1);
+> >> +
+> >> count_vm_event(THP_SWPOUT_FALLBACK);
+> >> +                                       }
+> >>  #endif
+> >>                                         if (!add_to_swap(folio))
+> >>                                                 goto activate_locked_s=
+plit;
+> >>
+> >>
+> >> Because THP_SWPOUT is only for pmd:
+> >>
+> >> static inline void count_swpout_vm_event(struct folio *folio)
+> >> {
+> >> #ifdef CONFIG_TRANSPARENT_HUGEPAGE
+> >>         if (unlikely(folio_test_pmd_mappable(folio))) {
+> >>                 count_memcg_folio_events(folio, THP_SWPOUT, 1);
+> >>                 count_vm_event(THP_SWPOUT);
+> >>         }
+> >> #endif
+> >>         count_vm_events(PSWPOUT, folio_nr_pages(folio));
+> >> }
+> >>
+> >> I can provide per-order counters for this in my THP counter patch.
+> >>
+> >>> --
+> >>> 2.25.1
+> >>>
+> >>
 
-> (and it also surprises me that this BUILD_BUG can trigger.. I used to try
->  triggering it elsewhere but failed..)
-
-As the pud_leaf() == FALSE should result in the BUILD_BUG never being
-called and the optimizer removing it.
-
-Perhaps the issue is that the pud_leaf() is too far from the pud_pfn?
-
-Jason
+Thanks
+Barry
 
