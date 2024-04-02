@@ -1,57 +1,81 @@
-Return-Path: <linux-kernel+bounces-128794-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-128795-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 756A1895FA5
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 00:35:59 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 72F00895FA9
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 00:37:43 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 84356B22613
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 22:35:56 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A38E81C21F7C
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 22:37:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2D6B8225AF;
-	Tue,  2 Apr 2024 22:35:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 232952556E;
+	Tue,  2 Apr 2024 22:37:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=proton.me header.i=@proton.me header.b="Y6alFi2P"
-Received: from mail-40131.protonmail.ch (mail-40131.protonmail.ch [185.70.40.131])
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="y8gs3/kN";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="/S3kigRc"
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F39011EB2B;
-	Tue,  2 Apr 2024 22:35:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.70.40.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1D22F1D6AE;
+	Tue,  2 Apr 2024 22:37:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712097347; cv=none; b=NkYOVngHUJUh8hT20AOrE4kRHs52wael3+oTbvYI/Y39W1wPyqtDb+UO7VUBFhq//zj2LwJX91RCQW/00YxL/rif16THWYoip06tOc3dZb9yR/9wjAvNQGCuGQLn22wSNjv0dr07UtHOYVN/qCVORK8B8KFiYykQpwUcCGHTbBg=
+	t=1712097452; cv=none; b=W10TqsaPvy5VnnlmThzMZBeFgxDZOjLBb3GGNNh17bIpp2lcCYgQVV/Ny27yjt1URfxO0PVhgRDAa3lW1Rzk3RPUEvLnRmFCrP+NWTS/GlnUozRTu7bf0MwzlT9Q8uDI0/CULHYDoe0RGFSy6GEw5PqJgZ4ULQXqg6M/1BFhu7o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712097347; c=relaxed/simple;
-	bh=jkjZO7jwr0PCImAu66df4aVlb2K6kWhUeVLD66IVeD8=;
-	h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=bwvNCN7cryhpU27XcOOCZT8TAi1GRxM90UhCx4sdExTfIFzaAzK04MgF6F/nMYlH7SNRdMiGQbB6iQq8d5unAS8dk0jeWXOsxpffjipT5TKzCtuot/Bo9awjFo1ws389adOv6UxKb9ym0wW+fC4nSWR+fsVR/wAZwObYOmNJXVQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=proton.me; spf=pass smtp.mailfrom=proton.me; dkim=pass (2048-bit key) header.d=proton.me header.i=@proton.me header.b=Y6alFi2P; arc=none smtp.client-ip=185.70.40.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=proton.me
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=proton.me
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=proton.me;
-	s=protonmail; t=1712097336; x=1712356536;
-	bh=ZR6oanZJrjCoyu/0f+lqsJmEQvmkfNvERkB55FpMbLg=;
-	h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
-	 Feedback-ID:From:To:Cc:Date:Subject:Reply-To:Feedback-ID:
-	 Message-ID:BIMI-Selector;
-	b=Y6alFi2PVO8tJG/+5EOowTtK6yQ+6aIb1zfjGhrRz4XFdszTaso4nG7qq2q1l6LY+
-	 UjBcXlcQgC1v+9CJIw/VhW9joS+lqyz4GMBIHL+jlObSUxBQAQqya602hokAIoiUFP
-	 b3kQoeWnN5BPVxHGvKa9kLXAs+T3zKIyP7HzmNWETIAH/pB1V+ulitRQKT7+3/s908
-	 1Czkrja20NNZrbd02NDy4tBSDb1XkLEWJ4/0CKsw0hbl36F8YidFnW6vrLaLG0HK0N
-	 S+03aHDnbdVnBf9lFuYk+FA4/L2msRvXoAopXACBRbWwZTCzalO59KEDknT+nycfxA
-	 l2Dax32bzBzbA==
-Date: Tue, 02 Apr 2024 22:35:32 +0000
-To: Andreas Hindborg <nmi@metaspace.dk>
-From: Benno Lossin <benno.lossin@proton.me>
-Cc: Jens Axboe <axboe@kernel.dk>, Christoph Hellwig <hch@lst.de>, Keith Busch <kbusch@kernel.org>, Damien Le Moal <Damien.LeMoal@wdc.com>, Bart Van Assche <bvanassche@acm.org>, Hannes Reinecke <hare@suse.de>, "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>, Andreas Hindborg <a.hindborg@samsung.com>, Niklas Cassel <Niklas.Cassel@wdc.com>, Greg KH <gregkh@linuxfoundation.org>, Matthew Wilcox <willy@infradead.org>, Miguel Ojeda <ojeda@kernel.org>, Alex Gaynor <alex.gaynor@gmail.com>, Wedson Almeida Filho <wedsonaf@gmail.com>, Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>, =?utf-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>, Alice Ryhl <aliceryhl@google.com>, Chaitanya Kulkarni <chaitanyak@nvidia.com>, Luis Chamberlain <mcgrof@kernel.org>, Yexuan Yang <1182282462@bupt.edu.cn>, =?utf-8?Q?Sergio_Gonz=C3=A1lez_Collado?= <sergio.collado@gmail.com>, Joel Granados <j.granados@samsung.com>, "Pankaj Raghav (Samsung)" <kernel@pankajraghav.com>, Daniel Gomez
-	<da.gomez@samsung.com>, open list <linux-kernel@vger.kernel.org>, "rust-for-linux@vger.kernel.org" <rust-for-linux@vger.kernel.org>, "lsf-pc@lists.linux-foundation.org" <lsf-pc@lists.linux-foundation.org>, "gost.dev@samsung.com" <gost.dev@samsung.com>
-Subject: Re: [RFC PATCH 4/5] rust: block: add rnull, Rust null_blk implementation
-Message-ID: <1e8a2a1f-abbf-44ba-8344-705a9cbb1627@proton.me>
-In-Reply-To: <87msqc3p0e.fsf@metaspace.dk>
-References: <20240313110515.70088-1-nmi@metaspace.dk> <20240313110515.70088-5-nmi@metaspace.dk> <QqpNcEOxhslSB7-34znxmQK_prPJfe2GT0ejWLesj-Dlse1ueCacbzsJOM0LK3YmgQsUWAR58ZFPPh1MUCliionIXrvLNsOqTS_Ee3bXEuQ=@proton.me> <87msqc3p0e.fsf@metaspace.dk>
-Feedback-ID: 71780778:user:proton
+	s=arc-20240116; t=1712097452; c=relaxed/simple;
+	bh=RTJ4TUWlWWd2tTYwH9K2+rCPELvAiNcHn8N7wtsQdE4=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=uGv4B2I9IO7Vu7D2acS2jIBX/gxlkKM4ATuqG+QfjxQjmx/2Pht0zs2TkEkZUIX/lnkI30+++eVc1mZD0VJ0Gk7auouuAUcs6wVE3Iqfs0OPjkwcKfr+msubxKZqnG2ro6pMSSxTJm048CRtQer5Ay8E8FlJeUQnwMF8Kbte+1I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=y8gs3/kN; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=/S3kigRc; arc=none smtp.client-ip=193.142.43.55
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
+From: Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020; t=1712097449;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=clN786LC8NAM+WdiMM9dgE3xxt8pA/vNnE2Z1vIrTT0=;
+	b=y8gs3/kNhqVMDT69laurybXNrUUQLXSrWBlCfk7pYoQcD7sK8QMi2tcLxZzkUPDz1X8GFu
+	rDsIpWZ0dnEQluAc24xXlL4OxvWeX0lwaDKuqO838hTIEmqov7noMajRVkE4KsmiJRAFsQ
+	3vsSR5JyyO2QIU4l+hPyGZvLBGQ96v5jvXV9Sh2ifVY5GBGOQaIHT3bmPElkDDpBp7Nr3v
+	ou/q6j9YcqJz8Gz30kQRCGPebZaTDn7VkUNbbI+KO5BTEDOOP2q3L7BLEWF1I1ZZ1YOXaG
+	C79sLoWN91aYOfwqYOMJ0rCrI198o5Dd+BP7sBJx9J4T5MaI6XiMi2qXJC8CcQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020e; t=1712097449;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=clN786LC8NAM+WdiMM9dgE3xxt8pA/vNnE2Z1vIrTT0=;
+	b=/S3kigRc0yKHbucTfmxketx4NbcQwgEjHo9AEoMAW71rZkqIq1rlQldWDmbV8LlyBHHCAK
+	2c+UPz+ei3Kc93DA==
+To: =?utf-8?B?TWFoZXNoIEJhbmRld2FyICjgpK7gpLngpYfgpLYg4KSs4KSC4KSh4KWH4KS1?=
+ =?utf-8?B?4KS+4KSwKQ==?= <maheshb@google.com>
+Cc: Sagi Maimon <maimon.sagi@gmail.com>, richardcochran@gmail.com,
+ luto@kernel.org, mingo@redhat.com, bp@alien8.de,
+ dave.hansen@linux.intel.com, x86@kernel.org, hpa@zytor.com, arnd@arndb.de,
+ geert@linux-m68k.org, peterz@infradead.org, hannes@cmpxchg.org,
+ sohil.mehta@intel.com, rick.p.edgecombe@intel.com, nphamcs@gmail.com,
+ palmer@sifive.com, keescook@chromium.org, legion@kernel.org,
+ mark.rutland@arm.com, mszeredi@redhat.com, casey@schaufler-ca.com,
+ reibax@gmail.com, davem@davemloft.net, brauner@kernel.org,
+ linux-kernel@vger.kernel.org, linux-api@vger.kernel.org,
+ linux-arch@vger.kernel.org, netdev@vger.kernel.org
+Subject: Re: [PATCH v7] posix-timers: add clock_compare system call
+In-Reply-To: <CAF2d9jj6km7aVSqgcOE-b-A-WDH2TJNGzGy-5MRyw5HrzbqhaA@mail.gmail.com>
+References: <CAMuE1bHBky9NGP22PVHKdi2+WniwxiLSmMnwRM6wm36sU8W4jA@mail.gmail.com>
+ <878r29hjds.ffs@tglx>
+ <CAMuE1bF9ioo39_08Eh26X4WOtnvJ1geJ=WRVt5DhU8gEbYJNdA@mail.gmail.com>
+ <87o7asdd65.ffs@tglx>
+ <CAF2d9jjA8iM1AoPUhQPK62tdd7gPnCnt51f_NMhOAs546rU3dA@mail.gmail.com>
+ <87il10ce1g.ffs@tglx>
+ <CAF2d9jj6km7aVSqgcOE-b-A-WDH2TJNGzGy-5MRyw5HrzbqhaA@mail.gmail.com>
+Date: Wed, 03 Apr 2024 00:37:28 +0200
+Message-ID: <877chfcrx3.ffs@tglx>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -61,222 +85,38 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: quoted-printable
 
-On 02.04.24 14:52, Andreas Hindborg wrote:
-> Benno Lossin <benno.lossin@proton.me> writes:
->=20
->> On 3/13/24 12:05, Andreas Hindborg wrote:
->>> +module! {
->>> +    type: NullBlkModule,
->>> +    name: "rnull_mod",
->>> +    author: "Andreas Hindborg",
->>> +    license: "GPL v2",
->>> +    params: {
->>> +        param_memory_backed: bool {
->>> +            default: true,
->>> +            permissions: 0,
->>> +            description: "Use memory backing",
->>> +        },
->>> +        // Problems with pin_init when `irq_mode`
+On Tue, Apr 02 2024 at 14:16, Mahesh Bandewar (=E0=A4=AE=E0=A4=B9=E0=A5=87=
+=E0=A4=B6 =E0=A4=AC=E0=A4=82=E0=A4=A1=E0=A5=87=E0=A4=B5=E0=A4=BE=E0=A4=B0) =
+wrote:
+> On Tue, Apr 2, 2024 at 2:25=E2=80=AFAM Thomas Gleixner <tglx@linutronix.d=
+e> wrote:
+>> Works as well. I'm not seing the point for CLOCK_MONOTONIC and the
+>> change logs are not really telling anything about the problem being
+>> solved....
 >>
->> Can you elaborate?
->=20
-> I think we discussed this before, but I do not recall what you decided
-> was the issue.
+> https://lore.kernel.org/lkml/20240104212431.3275688-1-maheshb@google.com/=
+T/#:~:text=3D*%20[PATCHv3%20net%2Dnext%200/3]%20add%20ptp_gettimex64any()%2=
+0API,21:24%20Mahesh%20Bandewar%200%20siblings%2C%200%20replies;
+>
+> This is the cover letter where I tried to explain the need for this.
 
-Ah I vaguely remember.
+The justification for a patch needs to be in the change log and not in
+the cover letter because the cover letter is not part of the git
+history.
 
-> It is probably easier if you can apply the patches and try to build with
-> this on top:
->=20
-> diff --git a/drivers/block/rnull.rs b/drivers/block/rnull.rs
-> index 04bdb6668558..bd089c5e6e89 100644
-> --- a/drivers/block/rnull.rs
-> +++ b/drivers/block/rnull.rs
-> @@ -48,7 +48,7 @@
->              description: "Use memory backing",
->          },
->          // Problems with pin_init when `irq_mode`
-> -        param_irq_mode: u8 {
-> +        irq_mode: u8 {
->              default: 0,
->              permissions: 0,
->              description: "IRQ Mode (0: None, 1: Soft, 2: Timer)",
-> @@ -101,7 +101,7 @@ fn add_disk(tagset: Arc<TagSet<NullBlkDevice>>) -> Re=
-sult<GenDisk<NullBlkDevice>
->          return Err(kernel::error::code::EINVAL);
->      }
->=20
-> -    let irq_mode =3D (*param_irq_mode.read()).try_into()?;
-> +    let irq_mode =3D (*irq_mode.read()).try_into()?;
->=20
->      let queue_data =3D Box::pin_init(pin_init!(
->          QueueData {
->=20
-> ---
->=20
-> There is some kind of name clash issue when using `pin_init!` in the expr=
-ession on
-> line 106:
->=20
->     let queue_data =3D Box::pin_init(pin_init!(
->         QueueData {
->             tree <- TreeContainer::new(),
->             completion_time_nsec: *param_completion_time_nsec.read(),
->             irq_mode,
->             memory_backed: *param_memory_backed.read(),
->             block_size,
->         }
->     ))?;
->=20
-> I cannot immediately decipher the error message:
->=20
->   RUSTC [M] drivers/block/rnull.o
-> error[E0277]: the trait bound `__rnull_mod_irq_mode: From<u8>` is not sat=
-isfied
->    --> /home/aeh/src/linux-rust/linux/drivers/block/rnull.rs:104:39
->     |
-> 104 |     let irq_mode =3D (*irq_mode.read()).try_into()?;
->     |                                       ^^^^^^^^ the trait `From<u8>`=
- is not implemented for `__rnull_mod_irq_mode`
->     |
->     =3D note: required for `u8` to implement `Into<__rnull_mod_irq_mode>`
->     =3D note: required for `__rnull_mod_irq_mode` to implement `TryFrom<u=
-8>`
->     =3D note: required for `u8` to implement `TryInto<__rnull_mod_irq_mod=
-e>`
->=20
-> error[E0308]: mismatched types
->     --> /home/aeh/src/linux-rust/linux/drivers/block/rnull.rs:106:36
->      |
-> 106  |       let queue_data =3D Box::pin_init(pin_init!(
->      |  ____________________________________^
-> 107  | |         QueueData {
-> 108  | |             tree <- TreeContainer::new(),
-> 109  | |             completion_time_nsec: *param_completion_time_nsec.re=
-ad(),
-> ...    |
-> 113  | |         }
-> 114  | |     ))?;
->      | |     ^
->      | |     |
->      | |_____expected `IRQMode`, found `__rnull_mod_irq_mode`
->      |       arguments to this function are incorrect
->      |
-> note: function defined here
->     --> /home/aeh/.rustup/toolchains/1.74.1-x86_64-unknown-linux-gnu/lib/=
-rustlib/src/rust/library/core/src/ptr/mod.rs:1365:21
->      |
-> 1365 | pub const unsafe fn write<T>(dst: *mut T, src: T) {
->      |                     ^^^^^
->      =3D note: this error originates in the macro `$crate::__init_interna=
-l` which comes from the expansion of the macro `pin_init` (in Nightly build=
-s, run with -Z macro-backtrace for more info)
->=20
-> error[E0308]: mismatched types
->    --> /home/aeh/src/linux-rust/linux/drivers/block/rnull.rs:106:36
->     |
-> 39  | / module! {
-> 40  | |     type: NullBlkModule,
-> 41  | |     name: "rnull_mod",
-> 42  | |     author: "Andreas Hindborg",
-> ...   |
-> 71  | |     },
-> 72  | | }
->     | |_- constant defined here
-> ...
-> 106 |       let queue_data =3D Box::pin_init(pin_init!(
->     |  ____________________________________^
->     | |____________________________________|
->     | |____________________________________|
->     | |____________________________________|
->     | |
-> 107 | |         QueueData {
-> 108 | |             tree <- TreeContainer::new(),
-> 109 | |             completion_time_nsec: *param_completion_time_nsec.rea=
-d(),
-> ...   |
-> 113 | |         }
-> 114 | |     ))?;
->     | |     ^
->     | |_____|
->     | |_____expected `DropGuard<IRQMode>`, found `__rnull_mod_irq_mode`
->     | |_____this expression has type `DropGuard<IRQMode>`
->     | |_____`irq_mode` is interpreted as a constant, not a new binding
->     |       help: introduce a new binding instead: `other_irq_mode`
->     |
->     =3D note: expected struct `DropGuard<IRQMode>`
->                found struct `__rnull_mod_irq_mode`
->     =3D note: this error originates in the macro `$crate::__init_internal=
-` which comes from the expansion of the macro `pin_init` (in Nightly builds=
-, run with -Z macro-backtrace for more info)
->=20
-> error: aborting due to 3 previous errors
->=20
-> Some errors have detailed explanations: E0277, E0308.
-> For more information about an error, try `rustc --explain E0277`.
-> make[5]: *** [/home/aeh/src/linux-rust/linux/scripts/Makefile.build:293: =
-drivers/block/rnull.o] Error 1
+> Granted, my current use case is for CLOCK_MONOTONIC_RAW but just
+> because I don't have a use case doesn't mean someone else may not have
+> it and hence added it.
 
+Then why did you not five other clock IDs? Someone else might have a
+use case, no?
 
-So I did some digging and there are multiple things at play. I am going
-to explain the second error first, since that one might be a problem
-with `pin_init`:
-- the `params` extension of the `module!` macro creates constants with
-   snake case names.
-- your `QueueData` struct has the same name as a field.
-- `pin_init!` generates `let $field_name =3D ...` statements for each
-   field you initialize
+While a syscall/ioctl should be flexible for future use, the kernel does
+not add features just because there might be some use case. It's
+documented how this works.
 
-Now when you define a constant in Rust, you are able to pattern-match
-with that constant, eg:
+Thanks,
 
-     const FOO: u8 =3D 0;
-    =20
-     fn main() {
-         match 10 {
-             FOO =3D> println!("foo"),
-             _ =3D> {}
-         }
-     }
-
-So when you do `let FOO =3D x;`, then it interprets `FOO` as the constant.
-This is still true if the constant has a snake case name.
-Since the expression in the `pin_init!` macro has type
-`DropGuard<$field_type>`, we get the error "expected
-`DropGuard<IRQMode>`, found `__rnull_mod_irq_mode`".
-
-Now to the first error, this is a problem with the parameter handling of
-`module`. By the same argument above, your let binding in line 104:
-
-     let irq_mode =3D (*irq_mode.read()).try_into()?;
-
-Tries to pattern-match the `irq_mode` constant with the right
-expression. Since you use the `try_into` function, it tries to search
-for a `TryInto` implementation for the type of `irq_mode` which is
-generated by the `module!` macro. The type is named
-__rnull_mod_irq_mode.
-
-
-Now what to do about this. For the second error (the one related to
-`pin_init`), I could create a patch that fixes it by adding the suffix
-`_guard` to those let bindings, preventing the issue. Not sure if we
-need that though, since it will not get rid of the first issue.
-
-For the first issue, I think there is no other way than to use a
-different name for either the field or the constant. Since constants are
-usually named using screaming snake case, I think it should be renamed.
-I believe your reason for using a snake case name is that these names
-are used directly as the names for the parameters when loading the
-module and there the convention is to use snake case, right?
-In that case I think we could expect people to write the screaming snake
-case name in rust and have it automatically be lower-cased by the
-`module!` macro when it creates the names that the parameters are shown
-with.
-
-Hope this helps!
-
---=20
-Cheers,
-Benno
+        tglx
 
 
