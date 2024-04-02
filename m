@@ -1,117 +1,303 @@
-Return-Path: <linux-kernel+bounces-127675-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-127676-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5025D894F48
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 11:57:32 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 38FAF894F4F
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 11:57:59 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0AD7028253E
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 09:57:31 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8BF13B23E93
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 09:57:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BE0585A106;
-	Tue,  2 Apr 2024 09:57:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 70FFC5A4D8;
+	Tue,  2 Apr 2024 09:57:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="SkHkeqkj"
-Received: from mail-ed1-f43.google.com (mail-ed1-f43.google.com [209.85.208.43])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="tkLfejDO"
+Received: from mail-lf1-f50.google.com (mail-lf1-f50.google.com [209.85.167.50])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 647DD5B699
-	for <linux-kernel@vger.kernel.org>; Tue,  2 Apr 2024 09:57:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1AE0959B4E
+	for <linux-kernel@vger.kernel.org>; Tue,  2 Apr 2024 09:57:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712051822; cv=none; b=F+lpkgpg6+6XFBKgeSF0cKOTZkXMgwNi7Ph3FUbuFJ6oO+dUtvQE0rYDrh0KYh1D/Qz2jBgmsSclyW8vtYwcDJjkGy7BqBn+jz3rMG2Li5wNiXamDJcxEQ7lMi6gIxMHP6wbnRjxF9wickbZErvHPvQowfizG9wvVLrcz5cxxN8=
+	t=1712051845; cv=none; b=PygSO1G57MXoQRvpKsa3g5jtqohErF3UlxFcDijC7tb7wrHmdGyWqxcflR3xb72HDxVp+CiM0M+7z0/PUnEH7pFry9pJGkqji8CBP+AVWbdIf7saIoHE78ACBiO8sSzXIHp9QLv7iOfPG23tq9AOKwfLVLAaLQbtoDBqej7pTMI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712051822; c=relaxed/simple;
-	bh=iP61wYLmnnQVWQX/vBTSXN9AMov1jT600DiQQbSBwlI=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition; b=aTOqZJKTlB6QwjepQtNKyyE78AUzXKBHIfCPfSj8ueQNoBEJTaMLD6Ii0L+a/zKCVHAbwrWsAZxFrNtyY665qaHXcra1qLF/aSfs+ws8ZFjxeGHM+XGaYYILCobAp3u6BRaVWdQ27N9KJatYnHs4jbxKfaxze1DVgOKAaS3PWbY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=SkHkeqkj; arc=none smtp.client-ip=209.85.208.43
+	s=arc-20240116; t=1712051845; c=relaxed/simple;
+	bh=bVr7n1vKYGpZMuyW64Mo4Xysn38KZd2exTIGpx5at2w=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=lrxc+3bF1pR5DLsXXdcep6cLULpN2tP1QyEwt/fOLuDsfgTaMLHp9SctgUka34I9K7dwFwmSKfv3hbcQbk5FOKEX1mxnNV0l5Oipl1UgmS3s+4/rZYAS/54BVE7MhAWM+bgHCtizBMM0zMcM3mTIy7oLvjj0w1q8+xFi5b/4ubU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=tkLfejDO; arc=none smtp.client-ip=209.85.167.50
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ed1-f43.google.com with SMTP id 4fb4d7f45d1cf-56c5d05128dso3463830a12.0
-        for <linux-kernel@vger.kernel.org>; Tue, 02 Apr 2024 02:56:59 -0700 (PDT)
+Received: by mail-lf1-f50.google.com with SMTP id 2adb3069b0e04-513ccc70a6dso8204483e87.1
+        for <linux-kernel@vger.kernel.org>; Tue, 02 Apr 2024 02:57:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1712051818; x=1712656618; darn=vger.kernel.org;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=VwgQXgoUW3ptEVLp+FHIBGiwI73MMNowi6SZaD84hB0=;
-        b=SkHkeqkj6Y9XZxGuEhACJ7noJvDVA49Zup3UxNSleXZBmN2cLL1xp/0RjmvJyvkC6d
-         vxcmuwrR1GJHRqjlxnbPhbzV4jAESXRE3m/Qbkl0ezYZGQkCi49XYs1ctwry2ukUQLnB
-         nuYXjbd+L+TxHM3bkry+m4jAanAwPpmedZNvUYN9QTGnENqGk/slYD3s/PSuNTf4iAGq
-         76Hgr5bOcmNAi3984+WL1snjjEh/PFbMTA/XOKeO8QF+3dA7yywkCHD/UkHL2npaijGt
-         mAQed/iDZmfWw3MXsyUPSx6OUKYuU3QHsS2Ls2Xox0lP0fpXEm2dCd6B4SB9Kd0kGeIB
-         xVvg==
+        d=linaro.org; s=google; t=1712051841; x=1712656641; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
+        bh=KaALGpR55LLYN546Bwu1n1OTGHrwQpx5Bj/luubs+R0=;
+        b=tkLfejDOPEblI2k3NaF0y3zDPUpeAOWvdb2s84deZEeKntocfjKOf8kNHGzORdfVaF
+         DtXoMY0uERnly/kl/V1BhXCQATiCH9MQljw6bFJfhS0mijDmm4m3soTO8K+vQcUBfXKg
+         7facdWT3o7dyG5e9zDhVuqC62MEK8QIm4N8laAjSsbVKeyIDcWwzyFs8LmyRLFG3AYpb
+         mTCel2CVAeGCu8oDrWSBjAAW037O5Ukp+X/Tc1DjUCv89zNE3cStzll3CgyD3gWT/yum
+         chC88BvhSKfTBJGCY14qD048bvyFfQG61S9nQzNF2JjBpglvQ0NN6I/6wnln35SYTKDx
+         hcUA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712051818; x=1712656618;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=VwgQXgoUW3ptEVLp+FHIBGiwI73MMNowi6SZaD84hB0=;
-        b=onz3zNSKYQ+4cFXu8v9QtX4L1jg/MGEpTcQWLsDcYJy5ohnQ8RSSiNJQrM5JkS8Ibr
-         +pp6UC3Xx7N3pY8hTXaukJgcVJSYx0ILldB2+3SVE8gV2jqkJ5BrsoGU+AZXaHSjsYt+
-         wlOrFdpMTNCGoKB7WHN88zHw5yWduNsFP8hCgWuRzRr462pcdwy+6myL/9MXWmSW5VpA
-         qVI74VnWp1sPXivqmkG2H6qM29keM7t1Zc+zCd9BNLMzw0OXNxhfakorjXZAHivkoEz/
-         4fIjhHeqRGfkYqZcfPhS0mclOaUk22T3odn1ejBceIoi3e+HfZADJ5ob9KlbqLFjOX90
-         SDUw==
-X-Forwarded-Encrypted: i=1; AJvYcCVMN/4MjaxmvxJbEwv8zltDpOfmtTUe2dNMlNMkWg5bvXGIPKl0zwHwDFY/nfjWwlWpwz3Z/kA2fEdJFcQAQgxYOWGKTRPTmIVpeXvX
-X-Gm-Message-State: AOJu0Yysx6iT7H5k/o7hKGns5L1T8UDAhj/YFS4u/DQyjEtEEmHL0pUt
-	krAKclvzESajgSyw7xDRSuiwCSzkx8qnu15wF9heEl8dmSMFAzETj2Hk3bJgGE8=
-X-Google-Smtp-Source: AGHT+IGY/ckv5IDWBeqA+lu7NK4+cJGbNGKIoaQ4W6h+blnbepjFmGXMUHAOqLWzHMLmnsm5NYCPaw==
-X-Received: by 2002:a05:6402:27ce:b0:56d:b687:5a57 with SMTP id c14-20020a05640227ce00b0056db6875a57mr8537324ede.20.1712051818415;
-        Tue, 02 Apr 2024 02:56:58 -0700 (PDT)
-Received: from localhost ([102.222.70.76])
-        by smtp.gmail.com with ESMTPSA id eg14-20020a056402288e00b0056df6ed8f4csm119336edb.37.2024.04.02.02.56.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 02 Apr 2024 02:56:58 -0700 (PDT)
-Date: Tue, 2 Apr 2024 12:56:54 +0300
-From: Dan Carpenter <dan.carpenter@linaro.org>
-To: Quinn Tran <qutran@marvell.com>
-Cc: Nilesh Javali <njavali@marvell.com>,
-	GR-QLogic-Storage-Upstream@marvell.com,
-	"James E.J. Bottomley" <jejb@linux.ibm.com>,
-	"Martin K. Petersen" <martin.petersen@oracle.com>,
-	Himanshu Madhani <himanshu.madhani@oracle.com>,
-	Larry Wisneski <Larry.Wisneski@marvell.com>,
-	Duane Grigsby <duane.grigsby@marvell.com>,
-	linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
-	kernel-janitors@vger.kernel.org
-Subject: [PATCH] scsi: qla2xxx: Fix off by one in qla_edif_app_getstats()
-Message-ID: <5c125b2f-92dd-412b-9b6f-fc3a3207bd60@moroto.mountain>
+        d=1e100.net; s=20230601; t=1712051841; x=1712656641;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=KaALGpR55LLYN546Bwu1n1OTGHrwQpx5Bj/luubs+R0=;
+        b=l9ACFsuTqAMqwjcZTAlHhxFMQVsIAyzhIkD8hUhMbpZp+pzjqgaqNcgm1BIBEPVktc
+         nY8TAY3II2X5boDWjy+GAcbpNoJQD52MaU9j23WyoTcen0jKtfwahzFoBLyHKT4a+FR2
+         vCsZ/f5SBKQVPSiREYuumloQBjFL7sIpbtBhiwZ6bdFqS4ZO1IFEZKNF8olRjEsD5uKP
+         2hnnXVEhRR4nSohSAUxA5bAKWKqhPHjvgjPFzdy1lWg3jlD3O5zpV+fu4+JuXlbTMHhv
+         OpfHAMrigUBepQRmbL1AGl/SAVlWRsWox8wjuYoQxo4aK7t4DU15fEbqfvEf+rUEAGBX
+         7JMA==
+X-Forwarded-Encrypted: i=1; AJvYcCXPXcoZrR2SsMxMwO5k2Glq0Sc6VXsGNXTp8yoly2CNxMBZePf/5yPvan6hAWaRoCerQrhsD3cMkvK5XGZ21QHYiy0Dg8C9exP5RNz0
+X-Gm-Message-State: AOJu0YxIk9ujCH9SaPaZIcd7zFgpsLpgISpQArqhuha1S/Ae2o5rNRhw
+	kn/SLjNSiU9KramSWwHSUHBOB/KtMuIEL+Thr2ok5aMKP3TVhVnoHlQvxr1sO58=
+X-Google-Smtp-Source: AGHT+IGWCEOGN1+XjtzfYre7/egOrrrKPQ8Lfe9ZEH+5g0W7eKr0xB6p1bbpF7hXyXxGItvb0g1xWg==
+X-Received: by 2002:a05:6512:403:b0:516:a686:8ae1 with SMTP id u3-20020a056512040300b00516a6868ae1mr1017019lfk.62.1712051841164;
+        Tue, 02 Apr 2024 02:57:21 -0700 (PDT)
+Received: from [192.168.1.20] ([178.197.223.16])
+        by smtp.gmail.com with ESMTPSA id r1-20020a170906364100b00a4628cacad4sm6312315ejb.195.2024.04.02.02.57.19
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 02 Apr 2024 02:57:20 -0700 (PDT)
+Message-ID: <47813c01-39b2-4e5e-bb67-1d49788fc613@linaro.org>
+Date: Tue, 2 Apr 2024 11:57:18 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Mailer: git-send-email haha only kidding
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 00/19] amba: store owner from modules with
+ amba_driver_register()
+To: "Russell King (Oracle)" <linux@armlinux.org.uk>
+Cc: Suzuki K Poulose <suzuki.poulose@arm.com>,
+ Mike Leach <mike.leach@linaro.org>, James Clark <james.clark@arm.com>,
+ Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+ Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+ Alexandre Torgue <alexandre.torgue@foss.st.com>,
+ Linus Walleij <linus.walleij@linaro.org>, Andi Shyti
+ <andi.shyti@kernel.org>, Olivia Mackall <olivia@selenic.com>,
+ Herbert Xu <herbert@gondor.apana.org.au>, Vinod Koul <vkoul@kernel.org>,
+ Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+ Miquel Raynal <miquel.raynal@bootlin.com>,
+ Michal Simek <michal.simek@amd.com>, Eric Auger <eric.auger@redhat.com>,
+ Alex Williamson <alex.williamson@redhat.com>, linux-kernel@vger.kernel.org,
+ coresight@lists.linaro.org, linux-arm-kernel@lists.infradead.org,
+ linux-stm32@st-md-mailman.stormreply.com, linux-i2c@vger.kernel.org,
+ linux-crypto@vger.kernel.org, dmaengine@vger.kernel.org,
+ linux-input@vger.kernel.org, kvm@vger.kernel.org
+References: <20240326-module-owner-amba-v1-0-4517b091385b@linaro.org>
+ <f514d9e1-61fa-4c55-aea1-d70c955bb96a@linaro.org>
+ <ZgvIMRDfeQaeVxYt@shell.armlinux.org.uk>
+ <ZgvKh/Cwudh3gCDr@shell.armlinux.org.uk>
+Content-Language: en-US
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ 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
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <ZgvKh/Cwudh3gCDr@shell.armlinux.org.uk>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-The app_reply->elem[] array is allocated earlier in this function and it
-has app_req.num_ports elements.  Thus this > comparison needs to be >=
-to prevent memory corruption.
+On 02/04/2024 11:06, Russell King (Oracle) wrote:
+> On Tue, Apr 02, 2024 at 09:56:17AM +0100, Russell King (Oracle) wrote:
+>> On Sat, Mar 30, 2024 at 01:18:30PM +0100, Krzysztof Kozlowski wrote:
+>>> On 26/03/2024 21:23, Krzysztof Kozlowski wrote:
+>>>> Merging
+>>>> =======
+>>>> All further patches depend on the first amba patch, therefore please ack
+>>>> and this should go via one tree.
+>>>>
+>>>> Description
+>>>> ===========
+>>>> Modules registering driver with amba_driver_register() often forget to
+>>>> set .owner field.
+>>>>
+>>>> Solve the problem by moving this task away from the drivers to the core
+>>>> amba bus code, just like we did for platform_driver in commit
+>>>> 9447057eaff8 ("platform_device: use a macro instead of
+>>>> platform_driver_register").
+>>>>
+>>>> Best regards,
+>>>
+>>> I tried to submit this series to Russell patch tracker and failed. This
+>>> is ridiculous. It's 2024 and instead of normal process, like every other
+>>> maintainer, so b4 or Patchwork, we have some unusable system rejecting
+>>> standard patches.
+>>
+>> Sorry but no. Stop being offensive.
+>>
+>>> First, it depends some weird, duplicated signed-off-by's.
+>>
+>> Eh? There is no such logic in there.
+>>
+>>> Second it > submitting patch-by-patch, all with clicking on some web
+>>> (!!!) interface.
+>>
+>> Again, no it doesn't, and you're just throwing crap out because you
+>> failed. Unlike most of the "normal" processes, the patch system allows
+>> you to submit both by *email* and also by *web* for those cases where
+>> the emails get screwed up by ones company mail server. That's why the
+>> web interface exists - to give people *flexibility*.
+>>
+>> The fact is, the web interface is merely a front end interface that
+>> generates an email and submits it in the usual way by email - an
+>> email that you can perfectly well generate that is *very* close to
+>> the standard email that git format-patch generates.
+>>
+>> The *only* difference is that the patch system wants a KernelVersion:
+>> tag in the email _somewhere_ and it doesn't matter where it appears.
+>> Git even has support to do this.
+>>
+>>   git format-patch --add-header="KernelVersion: $foo"
+>>
+>> Why does it want the kernel version? Because when we were running 2.4
+>> and 2.5 kernel versions in parallel, it was important to know which
+>> tree the patch was being submitted for. It has continued to be required
+>> because it means when there's problems applying a patch, it gives me
+>> the additional information about the base used for the patch (and it
+>> keeps on being useful to have.)
+>>
+>>> That's the response:
+>>> -------------
+>>> Your patch has not been logged because:
+>>>
+>>> Error:   Please supply a summary subject line briefly describing
+>>>          your patch.
+>>>
+>>>
+>>> Error:   Please supply a "KernelVersion: " tag after "PATCH FOLLOWS" or
+>>> "---".
+>>>
+>>> Error:   the patch you are submitting has one or more missing or incorrect
+>>>          Signed-off-by lines:
+>>>
+>>>          - author signoff <krzkreg@gmail.com> is missing.
+>>>
+>>>          Please see the file Documentation/SubmittingPatches, section 11
+>>>          for details on signing off patches.
+>>
+>> Lots of people use it without a problem. I've just run the parser
+>> through its offline tests, and it parses email content correctly.
+>> I've no idea what you're doing wrong, but it looks like something
+>> pretty serious if it didn't parse the subject line.
+>>
+>> Rather than getting stressed about it, why don't you send me an email
+>> the first time something goes wrong so I can investigate, turn on
+>> debugging to capture the problem email?
+> 
+> ... and I'll also point out one of the biggest problems is people.
+> People who think it's more complex than it is, or who can't read
+> instructions.
 
-Fixes: 7878f22a2e03 ("scsi: qla2xxx: edif: Add getfcinfo and statistic bsgs")
-Signed-off-by: Dan Carpenter <dan.carpenter@linaro.org>
----
- drivers/scsi/qla2xxx/qla_edif.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+We all read submitting-patches instructions (and many more). A need to
+learn one more set of instructions for one more process leads to people
+needing to learn 100 different processes for 100 different subsystems.
 
-diff --git a/drivers/scsi/qla2xxx/qla_edif.c b/drivers/scsi/qla2xxx/qla_edif.c
-index 26e6b3e3af43..dcde55c8ee5d 100644
---- a/drivers/scsi/qla2xxx/qla_edif.c
-+++ b/drivers/scsi/qla2xxx/qla_edif.c
-@@ -1100,7 +1100,7 @@ qla_edif_app_getstats(scsi_qla_host_t *vha, struct bsg_job *bsg_job)
- 
- 		list_for_each_entry_safe(fcport, tf, &vha->vp_fcports, list) {
- 			if (fcport->edif.enable) {
--				if (pcnt > app_req.num_ports)
-+				if (pcnt >= app_req.num_ports)
- 					break;
- 
- 				app_reply->elem[pcnt].rekey_count =
--- 
-2.43.0
+That's not the way how people should be contributing to Linux kernel.
+
+> 
+> For example, trying to tell people to use the standard format subject
+> line:
+> 
+> 	[PATCH ...] blah
+> 
+> has proven to be hopeless - unless one states to them the exact
+> sequence of keys on their keyboard to press - yes, it *really* takes
+> that patronising level to get everyone to understand. If one tries to
+> do it any other way, then you get stuff like:
+> 
+> 	"[PATCH ...] ..."
+> 
+> with the quotes. Or some other stupid variation.
+> 
+> The patch system is as forgiving as possible. It takes standard git
+> formatted patches (with the exception of wanting an additional tag).
+
+The additional tag about kernel version is redundant and not helping
+anyone. I doubt you apply patches on top of linux-next or top of
+previous release (e.g. v6.8-rc1). Almost every maintainer applies on top
+of current RC, so v6.9-rc1 currently, thus version is just unnecessary
+obstacle.
+
+> 
+> It is possible that bugs creep in - particularly when Debian updates
+> get applied and change the way Perl works, but I don't think that's
+> what has happened with your situation.
+> 
+> I _guess_ you're putting the entire email-like output from git
+> format-patch as the patch file. That won't work - that isn't a "patch
+> file", that is an email/email template, and the patch system will
+> attempt to parse that as the patch itself.
+
+Yes, that's what every sane person's workflow is. git format-patch -19
+(cover letter goes from branch description).
+
+> 
+> I suppose you term "patch" to be the email as well, rather than what
+> I interpret it to be, which is only the output of "diff" - call me
+> old fashioned but that's what a patch file used to be before the
+> waters got muddied by git "patch files".
+
+Well, world is now using git as a standard. It's true there is quilt out
+there, but even Andrew I think is going slowly towards git in some parts
+of his workflow.
+
+But then even Andrew accepted standard patch from the mailing lists. No
+need for any other step, no need for any double submission (one public,
+second to patches@armlinux or webform) with any other requirement.
+
+Best regards,
+Krzysztof
 
 
