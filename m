@@ -1,88 +1,85 @@
-Return-Path: <linux-kernel+bounces-128335-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-128336-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 863EE89596E
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 18:15:47 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9000F895971
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 18:16:05 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3B6FE1F23E8A
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 16:15:47 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CA0A51C22107
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 16:16:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D6EB814AD2F;
-	Tue,  2 Apr 2024 16:15:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 544955FBA6;
+	Tue,  2 Apr 2024 16:15:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=lwn.net header.i=@lwn.net header.b="cTecepGj"
-Received: from ms.lwn.net (ms.lwn.net [45.79.88.28])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="GYigrtOV"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C3B04126F16;
-	Tue,  2 Apr 2024 16:15:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.79.88.28
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 76ADD14AD1D;
+	Tue,  2 Apr 2024 16:15:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712074532; cv=none; b=Qz2EKwWzEYofbAF3Ritnw7KIVPbabt3MURtI2yGzqipvogJ6FPrzyWl1pB3ylnBMrIQIJllTEDxOE63K7ukZow+G1YWQPDobD2+j9iiLaPRjgkgHbqYrJi1dYAYaJAkLDib3Um0TOahHECHIdkXZG1t2kFobMc1O5NqNrGmPCBQ=
+	t=1712074552; cv=none; b=NmBWCk/1ihaNM7zkyfGdhJnGOzSINU9uC86LsQzCaq2R9Dsgi8dwigCfEQTMqwkINmqSfV9BCv5gLXyO5dRNsZMX2MpZqY300pRh5fTMc+BQVwbVaCk9kCy+60jjc1M7r4saEymcgeay6OVxQUQYH+iC2VSYeHah1YPH7zI0KI8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712074532; c=relaxed/simple;
-	bh=puCtEw4oHch3bsW7tk3MvxKQa3Jdz7HabGwvzPek10k=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=jzdVMciM2nt6fHSjO8Xjx0ceCxRZT/L2MSqefqDPIeT9yEiROj35wVUJp81b3dGq0HEnvmto1cXn84SfYEk+xP36TDE+HmSWSrxZzngn0b0pRPUQEgiA16JNedpje2hkLimtkl1XvUmevPp/i1dzo4h+epvmyKcbSGjiedgG29U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lwn.net; spf=pass smtp.mailfrom=lwn.net; dkim=pass (2048-bit key) header.d=lwn.net header.i=@lwn.net header.b=cTecepGj; arc=none smtp.client-ip=45.79.88.28
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lwn.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lwn.net
-DKIM-Filter: OpenDKIM Filter v2.11.0 ms.lwn.net E18CF45E3E
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lwn.net; s=20201203;
-	t=1712074530; bh=puCtEw4oHch3bsW7tk3MvxKQa3Jdz7HabGwvzPek10k=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-	b=cTecepGjgvmHEhlIL99lLAqS+O2mxlhIvCeQVJcy3OYoQrrjB6GEIT4htdW16Yke+
-	 xNmDUvcGdhUCUnM4RT4C2aPp37roR0JyL3wVY/JXRAy2vV17sbA52gMsmz6IIFoxfK
-	 pgjcHpLSlzBCmDBoN+a6z57OujkQy+8v3eroCfbRdcBtas0T66wBxWXroVkee7VJ7P
-	 JNirAE3Jsg7gZL3fRDqfsyGyAKxI1RgZcfkjxqM5QZepggIgpgOjXz+emHZQp5enNF
-	 h0G3UrOng3zeJYsab+AlhZq1NqgmznNLf8P+YLvAyxPHRiQKt9kTBniUQrtqqjW3UY
-	 tTQPCujZz+HbQ==
-Received: from localhost (unknown [IPv6:2601:280:5e00:625::646])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by ms.lwn.net (Postfix) with ESMTPSA id E18CF45E3E;
-	Tue,  2 Apr 2024 16:15:29 +0000 (UTC)
-From: Jonathan Corbet <corbet@lwn.net>
-To: David Gow <davidgow@google.com>, Kemeng Shi <shikemeng@huaweicloud.com>
-Cc: brendan.higgins@linux.dev, rmoar@google.com,
- linux-kselftest@vger.kernel.org, kunit-dev@googlegroups.com,
- linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] Documentation: kunit: correct KUNIT_VERY_SLOW to
- KUNIT_SPEED_VERY_SLOW
-In-Reply-To: <CABVgOSkJz5ZRePqQR3naK__MxoRLsE3VV0TJOhfjOYxmRayA8A@mail.gmail.com>
-References: <20240320171424.6536-1-shikemeng@huaweicloud.com>
- <CABVgOSkJz5ZRePqQR3naK__MxoRLsE3VV0TJOhfjOYxmRayA8A@mail.gmail.com>
-Date: Tue, 02 Apr 2024 10:15:29 -0600
-Message-ID: <87il0zvizi.fsf@meer.lwn.net>
+	s=arc-20240116; t=1712074552; c=relaxed/simple;
+	bh=4NxXywfhlZNac9KSvHpb7hWlGWljpny7k88YW/fGUtc=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=flCQUwx41yutz/xZ2g/pzzDQyb1YNmm9jAtIKtnagD4CJOYWy2BgYvNm8b+UTvrdhWmdsyW4sdbUsbfvnb2Pbho98I+IZDL84BFzFmquWeJUGAJfKG+z5SWnU5jb6kchOJPjyZvld+MUU93T+uXoXWln/LUHXfxOdchIq6Lp2cE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=GYigrtOV; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B58D2C433F1;
+	Tue,  2 Apr 2024 16:15:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1712074552;
+	bh=4NxXywfhlZNac9KSvHpb7hWlGWljpny7k88YW/fGUtc=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=GYigrtOV+u4k7E1CeM0cd+q9lkmsaFscaPs1nNLOAqFwYz8G17Ph2vC+xr8IdutUL
+	 cFM4JMecXBBoB1YV7yahrKuuGu9A/6+zF03a1bDuF1HwYEjwwUfVzKsMNTijLC4gmO
+	 zESBiNaA7778fOaKb1l5Mkv7YA8ytOSZ3dk8MNz5VKzheg7nh6/ugVelxwpD1mkurB
+	 Gk2GZlhaodniLa3fanI7P/eaAuHnjjYFMnM/FjCSix5fHcLFaAh2qhfNS5iniYKc2i
+	 AA1LjoO0ZnbBmT7b7Itx6P4OSeSol10+lJ8WY4nP7rUeEpD/CnxRpXj0k4Mb1VpETV
+	 fWb+aCVYfKDRA==
+Date: Tue, 2 Apr 2024 11:15:49 -0500
+From: Rob Herring <robh@kernel.org>
+To: Danila Tikhonov <danila@jiaxyga.com>
+Cc: davidwronek@gmail.com, manivannan.sadhasivam@linaro.org,
+	krzysztof.kozlowski+dt@linaro.org, linux-arm-msm@vger.kernel.org,
+	konrad.dybcio@linaro.org, linux-phy@lists.infradead.org,
+	conor+dt@kernel.org, kishon@kernel.org, devicetree@vger.kernel.org,
+	andersson@kernel.org, vkoul@kernel.org,
+	linux-kernel@vger.kernel.org, cros-qcom-dts-watchers@chromium.org
+Subject: Re: [PATCH 1/2] dt-bindings: phy: qmp-ufs: Fix PHY clocks for SC7180
+Message-ID: <171207454539.241562.7875961224491277526.robh@kernel.org>
+References: <20240401182240.55282-1-danila@jiaxyga.com>
+ <20240401182240.55282-2-danila@jiaxyga.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240401182240.55282-2-danila@jiaxyga.com>
 
-David Gow <davidgow@google.com> writes:
 
-> On Wed, 20 Mar 2024 at 16:18, Kemeng Shi <shikemeng@huaweicloud.com> wrote:
->>
->> There is no KUNIT_VERY_SLOW, I guess we mean KUNIT_SPEED_VERY_SLOW.
->>
->> Signed-off-by: Kemeng Shi <shikemeng@huaweicloud.com>
->> ---
->
-> Nice catch, thanks!
->
-> Reviewed-by: David Gow <davidgow@google.com>
+On Mon, 01 Apr 2024 21:22:39 +0300, Danila Tikhonov wrote:
+> QMP UFS PHY used in SC7180 requires 3 clocks:
+> 
+> * ref - 19.2MHz reference clock from RPMh
+> * ref_aux - Auxiliary reference clock from GCC
+> * qref - QREF clock from GCC
+> 
+> This change obviously breaks the ABI, but it is inevitable since the
+> clock topology needs to be accurately described in the binding.
+> 
+> Signed-off-by: Danila Tikhonov <danila@jiaxyga.com>
+> ---
+>  .../devicetree/bindings/phy/qcom,sc8280xp-qmp-ufs-phy.yaml       | 1 +
+>  1 file changed, 1 insertion(+)
+> 
 
-Let me know if you'd like me to pick this up; otherwise I'm assuming it
-will go via the kunit path.
+Acked-by: Rob Herring <robh@kernel.org>
 
-Thanks,
-
-jon
 
