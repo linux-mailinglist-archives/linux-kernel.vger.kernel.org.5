@@ -1,186 +1,218 @@
-Return-Path: <linux-kernel+bounces-127726-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-127727-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 531B8895006
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 12:27:34 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2676E89500C
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 12:28:08 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 093EB284682
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 10:27:33 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 81410B235C3
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 10:28:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EF3EB5FBB3;
-	Tue,  2 Apr 2024 10:27:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9B2435C603;
+	Tue,  2 Apr 2024 10:27:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="uVsEhz5X"
-Received: from mail-wm1-f43.google.com (mail-wm1-f43.google.com [209.85.128.43])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="A8HDP0fm"
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 019CA5F547
-	for <linux-kernel@vger.kernel.org>; Tue,  2 Apr 2024 10:27:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 265325914D;
+	Tue,  2 Apr 2024 10:27:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712053625; cv=none; b=VaL4PWbag3uBVl+6ygoyiOtAqCMzr50kOkH9gI9vyQIDn+KpkRX+XX0Dl6fmxiAcx/fSl3hcb7ss6IA85DeH4D209mc63+haYhwXB8LacKvU1GtnQtuICKmoTqkHqSqhHVCG25VKBramH1ajChI+oW+bDJr59RV6fwH140HnQAU=
+	t=1712053675; cv=none; b=sHpC4e/Dr/H/gIlRkvyEhLcWtO13dbWwClon1uivnoH77174J2TNqkggTu8BmF90cmWBcTrZ4ChV6EhtdHJL9j34BprvYPFQ7PzcRvp2dZkmgfwF7kfg1aqkmR7K7yZU8aCp3qR6DClv1t4ULbQdGcNupLcP2wUPIfyiSh78oeQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712053625; c=relaxed/simple;
-	bh=2lcDfu4xW0bculdHZpac3g3St6ttxpCAMyiLiPfvz8Y=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=ROw1k38jRhUz6zAlGshGO6StJ6Fm7jmYLENv9opXyVnQf0tM/NveIYcTeY+GmfKuj55SYRjRsPLTSgdgaZmXUBc0vDxjl4pA21ZH91LyyaSTY7kkRSKmougZWvuVwT0/2BOg1Ku175M25lwjrhoUM/URyqXG+c6bn6kCJTpGvNA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=uVsEhz5X; arc=none smtp.client-ip=209.85.128.43
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wm1-f43.google.com with SMTP id 5b1f17b1804b1-4161eb1a9fcso15635e9.3
-        for <linux-kernel@vger.kernel.org>; Tue, 02 Apr 2024 03:27:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1712053620; x=1712658420; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=eOBZ55ixLA4dTfJhYr54OdUB1MaemoFEDKwq8GCXVLI=;
-        b=uVsEhz5XacY3RYea9PvmYx/oTz3KUTCz8u7FvA7LXnsaRHtGxCUsLSYCitbHlM9EHp
-         gSgAuZ5m1UG1TMdaS6XUjIE4gcBIp3aqdIu5w2qACLTn59b4V8rcU/NzSzPp448KOAsh
-         UOjVNOPSUc08797K7jucOhxsboprQzqzv1SU3tTgklixn2Hj05ajsLP+whD2jArOuBOE
-         GIyTsMkeGC1h4bvMm/EYcWMc0m+m7IUEwEfFOo7GK3aYy/9WDzFnJlUPrs1RCKy1gCSC
-         Zsg5qL9RJBK+Q7STrxNh64Cz40pfnSAIKTdLKUccO1N/ioMLtQ9HRkD8MZeU31XQMPCp
-         57iQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712053620; x=1712658420;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=eOBZ55ixLA4dTfJhYr54OdUB1MaemoFEDKwq8GCXVLI=;
-        b=YBZpDtFYF+TQsMcnVcD2jbt/nAuQR15iVbT4CZqkEPiEJFdeCbO++HJHtOUzWkXAu/
-         G1lG46OsTpTs78crlbowRgWpMAy9ClmY4g8Vi5O/LkCSQWeaROnNm9sp3NdYEBr80mtJ
-         Eul19vE+jeFxCPlgFj953xTr7FLtUN08cpbJ272621aFE0CQIIT8W4Tz1pt1bArjftTz
-         9NNFrIAkoWPOm9nW+6XN5owy6sZLmG5hgjIsAoiJ9rnSvXZo3qFrYnBMozDzBlheMSQG
-         +Ak5otmn64rXEXzOftGp5TdD5D0sKPjr/fRK0I0aOYk+Xa5I3QK/gTFet7T5cQ/BwN2f
-         aB9Q==
-X-Forwarded-Encrypted: i=1; AJvYcCUMSmfnb0ykk9rXBg45c9X9VB6Mmstu74AGXrO1reNK0y+RaCkFhFB80Det7ck0sz0n/gdjVVr7RUpsUrLUyklebj5sa4mN/pfPcaA5
-X-Gm-Message-State: AOJu0YxQMI4mgkzZOBe/3r7uznK9EJpNqM6bNs72LnT7iFHQRjzcFh/7
-	oUD5lgPqOG/DPZUXNwAJISFWE10UwAwzVgyDfBjb+Ui2x2Gkf3HWgFupM66wjRk=
-X-Google-Smtp-Source: AGHT+IFfOeEwE73Mr8ZZizbJEWLfCXdGOlKeaDZvpcz6sDnmAoZebGN8m3vt0uWalY87R2DUD/pxoA==
-X-Received: by 2002:a05:600c:3549:b0:414:113b:36a6 with SMTP id i9-20020a05600c354900b00414113b36a6mr9267396wmq.25.1712053620231;
-        Tue, 02 Apr 2024 03:27:00 -0700 (PDT)
-Received: from [192.168.0.102] ([176.61.106.68])
-        by smtp.gmail.com with ESMTPSA id v28-20020a5d591c000000b00341d4722a9asm13734949wrd.21.2024.04.02.03.26.59
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 02 Apr 2024 03:26:59 -0700 (PDT)
-Message-ID: <c4b34be0-ac1a-4816-8ad9-7091b2834762@linaro.org>
-Date: Tue, 2 Apr 2024 11:26:58 +0100
+	s=arc-20240116; t=1712053675; c=relaxed/simple;
+	bh=/DQ0J4jT+7O1YXt0ZOeAPIx33eGS+CdFq1XTe0cfZFA=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=TlpXNPX6UQxe8ZCujSDJkhi2FEFsaJ/G4Vxi4MoDfZ2h9wPJ6FsMcHzgUejIEafJi5/yrFvpV3cGUFjQP/yt0+01RnFBiwdQmrKK1U1bviqk9SZ0axKDofZTsQwV8QVVvTSLfrVJo0+1j9PcHL3uuiJ+JnKECQmUP4AiwjMqF+E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=qualcomm.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=A8HDP0fm; arc=none smtp.client-ip=205.220.168.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=qualcomm.com
+Received: from pps.filterd (m0279864.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 4326H81u024439;
+	Tue, 2 Apr 2024 10:27:50 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	from:to:cc:subject:date:message-id:mime-version
+	:content-transfer-encoding; s=qcppdkim1; bh=Cmpg8cecJbn7r1UDKMdr
+	24xUgseklzecMDt64aoeZ3Y=; b=A8HDP0fm/gw6Xe4pUIPDeabwRLVip1d36CfT
+	pV0TB6p6UQjeibz4ddpWc3JjijdH0z3iL8vw9Ydu15AuafhiAiVxsatqx9fuJmUQ
+	M9HRQf69oAFJLIPrqtaiOBD8slr8XPLfiYO7M+t2MIK+AWmjtUEjsUIRXHLCpmCJ
+	3rjsd1FtS8nchgv0l1FnU7OIFgmdSvQLyrExJNe2V+LXVyQQ64E65WQ01N8QBJPh
+	n/f04SH/BP3LFIiKJ4cK68o/Lyao4KlCWBAW9mOMf7hoRLW/X3pFR0CBVZRIyhza
+	4r8pGn7GEgVvvx81kEa7iL6+q248urrjpriEYFNRSJifp0X8Uw==
+Received: from apblrppmta02.qualcomm.com (blr-bdr-fw-01_GlobalNAT_AllZones-Outside.qualcomm.com [103.229.18.19])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3x8cm5gkq2-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 02 Apr 2024 10:27:50 +0000 (GMT)
+Received: from pps.filterd (APBLRPPMTA02.qualcomm.com [127.0.0.1])
+	by APBLRPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTP id 432ARj4S016769;
+	Tue, 2 Apr 2024 10:27:45 GMT
+Received: from pps.reinject (localhost [127.0.0.1])
+	by APBLRPPMTA02.qualcomm.com (PPS) with ESMTPS id 3x6btm596j-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 02 Apr 2024 10:27:45 +0000
+Received: from APBLRPPMTA02.qualcomm.com (APBLRPPMTA02.qualcomm.com [127.0.0.1])
+	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 432ARiO1016760;
+	Tue, 2 Apr 2024 10:27:44 GMT
+Received: from hu-maiyas-hyd.qualcomm.com (hu-msavaliy-hyd.qualcomm.com [10.213.110.207])
+	by APBLRPPMTA02.qualcomm.com (PPS) with ESMTPS id 432ARi1l016758
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 02 Apr 2024 10:27:44 +0000
+Received: by hu-maiyas-hyd.qualcomm.com (Postfix, from userid 429934)
+	id 9EAB1240F4; Tue,  2 Apr 2024 15:57:43 +0530 (+0530)
+From: Mukesh Kumar Savaliya <quic_msavaliy@quicinc.com>
+To: konrad.dybcio@linaro.org, andersson@kernel.org, andi.shyti@kernel.org,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-i2c@vger.kernel.org
+Cc: quic_vdadhani@quicinc.com, vkoul@kernel.org,
+        Mukesh Kumar Savaliya <quic_msavaliy@quicinc.com>
+Subject: [PATCH] i2c: i2c-qcom-geni: Serve transfer during early resume stage
+Date: Tue,  2 Apr 2024 15:57:41 +0530
+Message-Id: <20240402102741.128424-1-quic_msavaliy@quicinc.com>
+X-Mailer: git-send-email 2.25.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 4/4] arm64: dts: qcom: msm8976: Add WCNSS node
-Content-Language: en-US
-To: Adam Skladowski <a39.skl@gmail.com>
-Cc: phone-devel@vger.kernel.org, ~postmarketos/upstreaming@lists.sr.ht,
- Andy Gross <agross@kernel.org>, Bjorn Andersson <andersson@kernel.org>,
- Konrad Dybcio <konrad.dybcio@linaro.org>, Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>, linux-arm-msm@vger.kernel.org,
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20240401172153.9231-1-a39.skl@gmail.com>
- <20240401172153.9231-5-a39.skl@gmail.com>
-From: Bryan O'Donoghue <bryan.odonoghue@linaro.org>
-In-Reply-To: <20240401172153.9231-5-a39.skl@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+X-QCInternal: smtphost
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: RXcenigXZ69eQtIagROOTbGoT0omNlKn
+X-Proofpoint-ORIG-GUID: RXcenigXZ69eQtIagROOTbGoT0omNlKn
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-04-02_04,2024-04-01_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0 impostorscore=0
+ mlxscore=0 mlxlogscore=999 lowpriorityscore=0 suspectscore=0 clxscore=1015
+ priorityscore=1501 malwarescore=0 adultscore=0 bulkscore=0 phishscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.19.0-2403210001
+ definitions=main-2404020075
 
-On 01/04/2024 18:21, Adam Skladowski wrote:
-> Add node describing wireless connectivity subsystem.
-> 
-> Signed-off-by: Adam Skladowski <a39.skl@gmail.com>
-> ---
->   arch/arm64/boot/dts/qcom/msm8976.dtsi | 104 ++++++++++++++++++++++++++
->   1 file changed, 104 insertions(+)
-> 
-> diff --git a/arch/arm64/boot/dts/qcom/msm8976.dtsi b/arch/arm64/boot/dts/qcom/msm8976.dtsi
-> index 77670fce9b8f..41c748c78347 100644
-> --- a/arch/arm64/boot/dts/qcom/msm8976.dtsi
-> +++ b/arch/arm64/boot/dts/qcom/msm8976.dtsi
-> @@ -771,6 +771,36 @@ blsp2_i2c4_sleep: blsp2-i2c4-sleep-state {
->   				drive-strength = <2>;
->   				bias-disable;
->   			};
-> +
-> +			wcss_wlan_default: wcss-wlan-default-state  {
-> +				wcss-wlan2-pins {
-> +					pins = "gpio40";
-> +					function = "wcss_wlan2";
-> +					drive-strength = <6>;
-> +					bias-pull-up;
-> +				};
-> +
-> +				wcss-wlan1-pins {
-> +					pins = "gpio41";
-> +					function = "wcss_wlan1";
-> +					drive-strength = <6>;
-> +					bias-pull-up;
-> +				};
-> +
-> +				wcss-wlan0-pins {
-> +					pins = "gpio42";
-> +					function = "wcss_wlan0";
-> +					drive-strength = <6>;
-> +					bias-pull-up;
-> +				};
-> +
-> +				wcss-wlan-pins {
-> +					pins = "gpio43", "gpio44";
-> +					function = "wcss_wlan";
-> +					drive-strength = <6>;
-> +					bias-pull-up;
-> +				};
-> +			};
->   		};
+pm_runtime_get_sync() function fails during PM early resume and returning
+-EACCES because runtime PM for the device is disabled at the early stage
+causing i2c transfer to fail. Make changes to serve transfer with force
+resume.
 
-Doesn't look right
+1. Register interrupt with IRQF_EARLY_RESUME and IRQF_NO_SUSPEND flags
+   to avoid timeout of transfer when IRQ is not enabled during early stage.
+2. Do force resume if pm_runtime_get_sync() is failing after system
+   suspend when runtime PM is not enabled.
+3. Increment power usage count after forced resume to balance
+   it against regular runtime suspend.
 
-arch/arm64/boot/dts/qcom/msm8916.dtsi
-arch/arm64/boot/dts/qcom/msm8939.dtsi
-
-wcss_wlan_default: wcss-wlan-default-state {
-	pins = "gpio40", "gpio41", "gpio42", "gpio43", "gpio44";
-	function = "wcss_wlan";
-	drive-strength = <6>;
-	bias-pull-up;
-};
-
-
->   
->   		gcc: clock-controller@1800000 {
-> @@ -1446,6 +1476,80 @@ blsp2_i2c4: i2c@7af8000 {
->   			status = "disabled";
->   		};
->   
-> +		wcnss: remoteproc@a204000 {
-> +			compatible = "qcom,pronto-v3-pil", "qcom,pronto";
-> +			reg = <0x0a204000 0x2000>,
-> +			      <0x0a202000 0x1000>,
-> +			      <0x0a21b000 0x3000>;
-> +			reg-names = "ccu",
-> +				    "dxe",
-> +				    "pmu";
-> +
-> +			memory-region = <&wcnss_fw_mem>;
-
-For preference and consistency "wcnss_fw_mem" should be "wcnss_mem"
-
-The ordering of the compatible/reg/interrupt is different to 8916/8939 too.
-
-I'm not sure which is currently the preferred order of declaration but 
-for V3 of this series would appreciate if you could find out and add the 
-comment to your cover letter.
-
-Otherwise LGTM.
-
-Please CC me on V3.
-
+Co-developed-by: Viken Dadhaniya <quic_vdadhani@quicinc.com>
+Signed-off-by: Viken Dadhaniya <quic_vdadhani@quicinc.com>
+Signed-off-by: Mukesh Kumar Savaliya <quic_msavaliy@quicinc.com>
 ---
-bod
+v1 -> v2:
+- Changed gi2c->se.dev to dev during dev_dbg() calls.
+- Addressed review comments from Andi.
+---
+ drivers/i2c/busses/i2c-qcom-geni.c | 55 ++++++++++++++++++++++++------
+ 1 file changed, 45 insertions(+), 10 deletions(-)
+
+diff --git a/drivers/i2c/busses/i2c-qcom-geni.c b/drivers/i2c/busses/i2c-qcom-geni.c
+index da94df466e83..30c335b02ac4 100644
+--- a/drivers/i2c/busses/i2c-qcom-geni.c
++++ b/drivers/i2c/busses/i2c-qcom-geni.c
+@@ -134,6 +134,8 @@ struct geni_i2c_clk_fld {
+ 	u8	t_cycle_cnt;
+ };
+ 
++static int geni_i2c_runtime_resume(struct device *dev);
++
+ /*
+  * Hardware uses the underlying formula to calculate time periods of
+  * SCL clock cycle. Firmware uses some additional cycles excluded from the
+@@ -677,22 +679,48 @@ static int geni_i2c_fifo_xfer(struct geni_i2c_dev *gi2c,
+ 	return num;
+ }
+ 
++static int geni_i2c_force_resume(struct geni_i2c_dev *gi2c)
++{
++	struct device *dev = gi2c->se.dev;
++	int ret;
++
++	ret = geni_i2c_runtime_resume(dev);
++	if (ret) {
++		dev_err(gi2c->se.dev, "Error turning SE resources:%d\n", ret);
++		pm_runtime_put_noidle(dev);
++		pm_runtime_set_suspended(dev);
++		return ret;
++	}
++	pm_runtime_get_noresume(dev);
++	pm_runtime_set_active(dev);
++	return ret;
++}
++
+ static int geni_i2c_xfer(struct i2c_adapter *adap,
+ 			 struct i2c_msg msgs[],
+ 			 int num)
+ {
+ 	struct geni_i2c_dev *gi2c = i2c_get_adapdata(adap);
++	struct device *dev = gi2c->se.dev;
+ 	int ret;
+ 
+ 	gi2c->err = 0;
+ 	reinit_completion(&gi2c->done);
+-	ret = pm_runtime_get_sync(gi2c->se.dev);
+-	if (ret < 0) {
+-		dev_err(gi2c->se.dev, "error turning SE resources:%d\n", ret);
+-		pm_runtime_put_noidle(gi2c->se.dev);
+-		/* Set device in suspended since resume failed */
+-		pm_runtime_set_suspended(gi2c->se.dev);
+-		return ret;
++
++	if (!pm_runtime_enabled(dev) && gi2c->suspended) {
++		dev_dbg(dev, "RT_PM disabled, Do force resume, pm_usage_count: %d\n",
++			atomic_read(&dev->power.usage_count));
++		ret = geni_i2c_force_resume(gi2c);
++		if (ret)
++			return ret;
++	} else {
++		ret = pm_runtime_get_sync(dev);
++		if (ret == -EACCES && gi2c->suspended) {
++			dev_dbg(dev, "PM get_sync() failed-%d, force resume\n", ret);
++			ret = geni_i2c_force_resume(gi2c);
++			if (ret)
++				return ret;
++		}
+ 	}
+ 
+ 	qcom_geni_i2c_conf(gi2c);
+@@ -702,8 +730,15 @@ static int geni_i2c_xfer(struct i2c_adapter *adap,
+ 	else
+ 		ret = geni_i2c_fifo_xfer(gi2c, msgs, num);
+ 
+-	pm_runtime_mark_last_busy(gi2c->se.dev);
+-	pm_runtime_put_autosuspend(gi2c->se.dev);
++	if (!pm_runtime_enabled(dev) && !gi2c->suspended) {
++		pm_runtime_put_noidle(dev);
++		pm_runtime_set_suspended(dev);
++		gi2c->suspended = 0;
++	} else {
++		pm_runtime_mark_last_busy(gi2c->se.dev);
++		pm_runtime_put_autosuspend(gi2c->se.dev);
++	}
++
+ 	gi2c->cur = NULL;
+ 	gi2c->err = 0;
+ 	return ret;
+@@ -820,7 +855,7 @@ static int geni_i2c_probe(struct platform_device *pdev)
+ 	init_completion(&gi2c->done);
+ 	spin_lock_init(&gi2c->lock);
+ 	platform_set_drvdata(pdev, gi2c);
+-	ret = devm_request_irq(dev, gi2c->irq, geni_i2c_irq, 0,
++	ret = devm_request_irq(dev, gi2c->irq, geni_i2c_irq, IRQF_EARLY_RESUME | IRQF_NO_SUSPEND,
+ 			       dev_name(dev), gi2c);
+ 	if (ret) {
+ 		dev_err(dev, "Request_irq failed:%d: err:%d\n",
+-- 
+2.25.1
+
 
