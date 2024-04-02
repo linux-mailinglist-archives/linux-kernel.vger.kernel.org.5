@@ -1,240 +1,174 @@
-Return-Path: <linux-kernel+bounces-127410-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-127412-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1239F894AF1
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 07:45:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 9BE2C894AF5
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 07:48:21 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1A1F01C22126
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 05:45:56 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CD0AA1C22217
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 05:48:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 634E11862E;
-	Tue,  2 Apr 2024 05:45:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 72EB718624;
+	Tue,  2 Apr 2024 05:48:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="IKROSwI0"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="KdESN32f"
+Received: from mail-yw1-f175.google.com (mail-yw1-f175.google.com [209.85.128.175])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7EC8C323D;
-	Tue,  2 Apr 2024 05:45:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 34BF2CA6F
+	for <linux-kernel@vger.kernel.org>; Tue,  2 Apr 2024 05:48:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.175
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712036747; cv=none; b=oxa4QvaEeJvxIfff0IXOKaeWinRxknLUnRpDbMqwbX1imC8nKjyZLFsdzpgU0Rt0d1Tuyl7ej8+psS927cQBCzQVB/mK9oClIydzKTB65Ub4sQy0J55WUUZc2H+CPXFtSPP72lpdsxGQyOCyjjN/YFOm/KnW9tiukcIrHABNJJw=
+	t=1712036895; cv=none; b=bfWggioQ8iNOEc4RvQQqYhazCxBRp+EoA12xh9cIkqLa11aTMTF3Gs4aI5qCmVaWeRT9l3VtafvTE7IVJBTpu5f92In9yuXpRL6m1a71efygY1BI3+QBZzr9O52jnS/95MWJiGvFj+JeQjmT6p8FfP/sl/WHc09FnSAW4Pn4qww=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712036747; c=relaxed/simple;
-	bh=adZ7sJPl/Yy9PlJ2BUlKHOYalm+hH3gkDLFFb7Fweps=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ET4p6r0I7KGVGWkUvh7Xy4JUiEKKGsA0Qh0FT5GObyqTbyzqcQyOTsuOG5Fa0iSy0NMAi9Fjk1CIFh2mtou1TFCRMvRpkDNI/PcLthZTQWEZn6ycSZ9ZZXbDbbmaLNDukBR1UGjtq90VaDOZTq6irNbl3fJMvxn1N+B9ii+1E3k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=IKROSwI0; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id F1971C433C7;
-	Tue,  2 Apr 2024 05:45:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712036747;
-	bh=adZ7sJPl/Yy9PlJ2BUlKHOYalm+hH3gkDLFFb7Fweps=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=IKROSwI0Nc17lvfclyAxTW8vPcWoxxzdHOkvkxdcW7nQPxagM0ZU8YBdQZvkFl1TV
-	 u0LPVkyif7CTVr/NsZenIUddtckeZ7fW7nW3HHpFdBZ/KAtsRVygghvryqu+au+xXY
-	 wrhXtP/HEPCtN26Z6tyUJecE/FgHR/kpK3+m7fYHBQ0MrIDT6wuwAVJ1L8p3w3M7wn
-	 rWtF8poAJvlqB3LryETSqKoNKNZfZbtftXoU7CghODF7DjVf4r2Vy1XNDtzH9TLJTQ
-	 7RlRFH2/yORRSXT+rmoUoRxUB0MuwU3H70ilSQwApagssruJQ1MMuwO3rYXgzdwOhk
-	 d12FH5CzUepvg==
-Date: Tue, 2 Apr 2024 11:15:38 +0530
-From: Manivannan Sadhasivam <mani@kernel.org>
-To: Shashank Babu Chinta Venkata <quic_schintav@quicinc.com>
-Cc: agross@kernel.org, andersson@kernel.org, konrad.dybcio@linaro.org,
-	quic_msarkar@quicinc.com, quic_kraravin@quicinc.com,
-	Lorenzo Pieralisi <lpieralisi@kernel.org>,
-	Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
-	Rob Herring <robh@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>,
-	Jingoo Han <jingoohan1@gmail.com>,
-	Gustavo Pimentel <gustavo.pimentel@synopsys.com>,
-	Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
-	Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
-	Serge Semin <fancer.lancer@gmail.com>,
-	Conor Dooley <conor.dooley@microchip.com>,
-	linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
-	linux-arm-msm@vger.kernel.org
-Subject: Re: [PATCH v2 2/3] PCI: qcom: Add equalization settings for gen4
-Message-ID: <20240402054538.GJ2933@thinkpad>
-References: <20240320071527.13443-1-quic_schintav@quicinc.com>
- <20240320071527.13443-3-quic_schintav@quicinc.com>
+	s=arc-20240116; t=1712036895; c=relaxed/simple;
+	bh=Y78rJj8+C6yXAfWJEDvmRi7jXwsL00HBbfbNEJA7KZI=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=ePZsVhlGRkxSvrPzRL234dJzgpqNwF8uwrkBhc0IH8IYOCUyLgjkj/eS9R+GJvSLFnkoUEwO+fSOJhdqQ6seVHMsvVpJRXqAr9tjRPMqpgbRlxpDn06n315QiWEWgsOu6+OL2SDPHN70AozIl9+hK53JadZ7cvAyHmMJGlaeARU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=KdESN32f; arc=none smtp.client-ip=209.85.128.175
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-yw1-f175.google.com with SMTP id 00721157ae682-60a104601dcso49217017b3.2
+        for <linux-kernel@vger.kernel.org>; Mon, 01 Apr 2024 22:48:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1712036893; x=1712641693; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=LicSR3wkx45YuxnJnubGsVzsBl0pkMbBOEPlM15UIC8=;
+        b=KdESN32fiI69wYH7cOn+QfyL9IMsT5fFtEjO3072n8II2r337rQGjtOCFJ52/NqvE+
+         ZJQzKbWYGSf2BPUwWpMaS2W4gGDXoQdewBpC68NMzDPzhlicfCMLP5lsGvuo54CipMmB
+         NALNmq6nfNoUNV77jdwvTyetgAFO4wpeok/Cu/avUsQxG7QjiaB9aGO2j1OKEJc8bMpz
+         QE36diFKDbKkwDt9L51TfR4Rht/6Bmqp2ifTHOjUdWfTgkY73iHK8peTLBFSYhSjikxB
+         Ont3G6hgwqFa1qXG+pA//qtHSrK9XoRnWoi4WuG48Tj0WjX6vO474YEkWZsCWGUTy0wc
+         S34w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712036893; x=1712641693;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=LicSR3wkx45YuxnJnubGsVzsBl0pkMbBOEPlM15UIC8=;
+        b=Y7bldNNof5F/dVwSvl1lKl/fGTUTWkUN+VZRaEZpvSXNBSNyTxp74N/PnwX3IVYeI4
+         2wm+7BTmgaNYMVLVdsTa8zJLBrNrb5cH7WxZers+Khudp+Fu17sZ3/Ifon7FeAOjJAxX
+         x2WXgFp6UY+VlKNN4fAYYSgCQiKLMvKxTo2CVmdwJIjp8D/kUO7R2FP93K/x8LO4w9ih
+         f/aVjaPTd/24GK+j4K4Nyzlqr2e1RQFNhJmLxVyRT+yJC0328spyS9C3RcClZd1ZmbGw
+         qEkNszrsf7ulMeLZIgp1LRGY6PiTCCPogE5EKpQ6CwbLhtTN9wP3wbxfe68uJthiC3Zf
+         Qz6w==
+X-Forwarded-Encrypted: i=1; AJvYcCUnKiT6LlR6K2BPD/h89FWDlyGsLpVK4PNkcWYzmbSjLFJ5FNSy0PVIZX5+++1SkzXXxTi0m9OKNCWZcC4PG+NRo/9cvlmelhH4a0T1
+X-Gm-Message-State: AOJu0YxU+XLkLD2iNibqCTJdrEUC1e1Cn0LYLCiBXdiRtjnThS9uhl8Z
+	56H38w7cQOCZ7Xy2xTGdhzLvbfZrbko7vKjvnJGS5B1CbQO4ye6lRGz8zOOcu4/hKqYWb06WSMv
+	Aa3PobIJoDAPeuuT6I4uTk/99uu4=
+X-Google-Smtp-Source: AGHT+IG5Hprc/YKZPrz9z9DNyqCunX7nvKsdHb6/htJV8OMRfMj0gK1ecgmP6p3JaYSFs6Eu6bT3XrWt/+r3mP1gME8=
+X-Received: by 2002:a05:6902:34b:b0:db9:9537:2c39 with SMTP id
+ e11-20020a056902034b00b00db995372c39mr9318049ybs.2.1712036893108; Mon, 01 Apr
+ 2024 22:48:13 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20240320071527.13443-3-quic_schintav@quicinc.com>
+References: <20240315015916.21545-1-daweilics@gmail.com> <ZgqOEJ5sCANkkk5N@linux.ibm.com>
+In-Reply-To: <ZgqOEJ5sCANkkk5N@linux.ibm.com>
+From: Dawei Li <daweilics@gmail.com>
+Date: Mon, 1 Apr 2024 22:47:36 -0700
+Message-ID: <CAG5MgCq3GT=CVj7Hz8rUMfNG1c9ypVsTSDKNESHV9tY_qWSt2g@mail.gmail.com>
+Subject: Re: [PATCH v2] sched/fair: fix initial util_avg calculation
+To: Vishal Chourasia <vishalc@linux.ibm.com>
+Cc: Ingo Molnar <mingo@redhat.com>, Peter Zijlstra <peterz@infradead.org>, 
+	Juri Lelli <juri.lelli@redhat.com>, Vincent Guittot <vincent.guittot@linaro.org>, 
+	Dietmar Eggemann <dietmar.eggemann@arm.com>, Steven Rostedt <rostedt@goodmis.org>, 
+	Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>, 
+	Daniel Bristot de Oliveira <bristot@redhat.com>, Valentin Schneider <vschneid@redhat.com>, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Wed, Mar 20, 2024 at 12:14:46AM -0700, Shashank Babu Chinta Venkata wrote:
+Hi Vishal
 
-Here, you are referring to 16 GT/s as the Gen4 datarate. So please mention that
-explicitly.
+Thanks for the comment!
+Do you suggest using scale_load_down() in place of se_weight()?
+It's a soft bug we should fix one way or another before what the
+comment mentions really happens.
+I am actually confused that we have both se_weight() and
+scale_load_down(), and they do the same thing.
 
-> GEN3_RELATED_OFFSET is being used as shadow register for generation4 and
+Best regards,
+Dawei
 
-What is 'GEN3_RELATED_OFFSET' register? Where it is defined? More info on this
-register would be helpful.
-
-> generation5 data rates based on rate select mask settings on this register.
-
-Please reword this sentence to make it more readable.
-
-> Select relevant mask and equalization settings for generation4 operation.
-> 
-> Signed-off-by: Shashank Babu Chinta Venkata <quic_schintav@quicinc.com>
-> ---
->  drivers/pci/controller/dwc/pcie-designware.h | 15 ++++++++
->  drivers/pci/controller/dwc/pcie-qcom-cmn.c   | 36 ++++++++++++++++++++
->  drivers/pci/controller/dwc/pcie-qcom-cmn.h   |  5 +++
->  drivers/pci/controller/dwc/pcie-qcom-ep.c    |  3 ++
->  drivers/pci/controller/dwc/pcie-qcom.c       |  3 ++
->  5 files changed, 62 insertions(+)
-> 
-> diff --git a/drivers/pci/controller/dwc/pcie-designware.h b/drivers/pci/controller/dwc/pcie-designware.h
-> index 26dae4837462..064744bfe35a 100644
-> --- a/drivers/pci/controller/dwc/pcie-designware.h
-> +++ b/drivers/pci/controller/dwc/pcie-designware.h
-> @@ -122,6 +122,21 @@
->  #define GEN3_RELATED_OFF_RATE_SHADOW_SEL_SHIFT	24
->  #define GEN3_RELATED_OFF_RATE_SHADOW_SEL_MASK	GENMASK(25, 24)
->  
-> +#define GEN3_EQ_CONTROL_OFF			0x8a8
-> +#define GEN3_EQ_CONTROL_OFF_FB_MODE_MASK        GENMASK(3, 0)
-> +#define GEN3_EQ_CONTROL_OFF_PHASE23_EXIT_MODE   BIT(4)
-> +#define GEN3_EQ_CONTROL_OFF_PSET_REQ_VEC_MASK	GENMASK(23, 8)
-> +#define GEN3_EQ_CONTROL_OFF_FOM_INC_INITIAL_EVAL	BIT(24)
-> +
-> +#define GEN3_EQ_FB_MODE_DIR_CHANGE_OFF          0x8ac
-> +#define GEN3_EQ_FMDC_T_MIN_PHASE23_MASK         GENMASK(4, 0)
-> +#define GEN3_EQ_FMDC_N_EVALS_MASK               GENMASK(9, 5)
-> +#define GEN3_EQ_FMDC_MAX_PRE_CUSROR_DELTA_MASK  GENMASK(13, 10)
-> +#define GEN3_EQ_FMDC_MAX_POST_CUSROR_DELTA_MASK	GENMASK(17, 14)
-> +#define GEN3_EQ_FMDC_N_EVALS_SHIFT			5
-> +#define GEN3_EQ_FMDC_MAX_PRE_CUSROR_DELTA_SHIFT		10
-> +#define GEN3_EQ_FMDC_MAX_POST_CUSROR_DELTA_SHIFT	14
-> +
-
-You are adding the definitions in designware header, but funtion definitions in
-Qcom driver. Does this mean, this configuration is specific to Qcom and not
-applicable to other DWC drivers?
-
->  #define PCIE_PORT_MULTI_LANE_CTRL	0x8C0
->  #define PORT_MLTI_UPCFG_SUPPORT		BIT(7)
->  
-> diff --git a/drivers/pci/controller/dwc/pcie-qcom-cmn.c b/drivers/pci/controller/dwc/pcie-qcom-cmn.c
-> index 64fa412ec293..208a55e8e9a1 100644
-> --- a/drivers/pci/controller/dwc/pcie-qcom-cmn.c
-> +++ b/drivers/pci/controller/dwc/pcie-qcom-cmn.c
-> @@ -17,6 +17,42 @@
->  #define QCOM_PCIE_LINK_SPEED_TO_BW(speed) \
->  		Mbps_to_icc(PCIE_SPEED2MBS_ENC(pcie_link_speed[speed]))
->  
-> +void qcom_pcie_cmn_set_16gt_eq_settings(struct dw_pcie *pci)
-> +{
-> +	u32 reg;
-> +
-> +	/*
-> +	 * GEN3_RELATED_OFF is repurposed to be used with GEN4(16GT/s) rate
-> +	 * as well based on RATE_SHADOW_SEL_MASK settings on this register.
-> +	 */
-> +	reg = dw_pcie_readl_dbi(pci, GEN3_RELATED_OFF);
-> +	reg &= ~GEN3_RELATED_OFF_GEN3_ZRXDC_NONCOMPL;
-> +	reg &= ~GEN3_RELATED_OFF_RATE_SHADOW_SEL_MASK;
-> +	reg |= (0x1 << GEN3_RELATED_OFF_RATE_SHADOW_SEL_SHIFT);
-
-Please use FIELD_* macros where applicable.
-
-> +	dw_pcie_writel_dbi(pci, GEN3_RELATED_OFF, reg);
-> +
-> +	reg = dw_pcie_readl_dbi(pci, GEN3_EQ_FB_MODE_DIR_CHANGE_OFF);
-> +	reg &= ~GEN3_EQ_FMDC_T_MIN_PHASE23_MASK;
-> +	reg &= ~GEN3_EQ_FMDC_N_EVALS_MASK;
-> +	reg |= (GEN3_EQ_FMDC_N_EVALS_16GT_VAL <<
-> +		GEN3_EQ_FMDC_N_EVALS_SHIFT);
-> +	reg &= ~GEN3_EQ_FMDC_MAX_PRE_CUSROR_DELTA_MASK;
-> +	reg |= (GEN3_EQ_FMDC_MAX_PRE_CUSROR_DELTA_16GT_VAL <<
-> +		GEN3_EQ_FMDC_MAX_PRE_CUSROR_DELTA_SHIFT);
-> +	reg &= ~GEN3_EQ_FMDC_MAX_POST_CUSROR_DELTA_MASK;
-> +	reg |= (GEN3_EQ_FMDC_MAX_POST_CUSROR_DELTA_16GT_VAL <<
-> +		GEN3_EQ_FMDC_MAX_POST_CUSROR_DELTA_SHIFT);
-> +	dw_pcie_writel_dbi(pci, GEN3_EQ_FB_MODE_DIR_CHANGE_OFF, reg);
-> +
-> +	reg = dw_pcie_readl_dbi(pci, GEN3_EQ_CONTROL_OFF);
-> +	reg &= ~GEN3_EQ_CONTROL_OFF_FB_MODE_MASK;
-> +	reg &= ~GEN3_EQ_CONTROL_OFF_PHASE23_EXIT_MODE;
-> +	reg &= ~GEN3_EQ_CONTROL_OFF_FOM_INC_INITIAL_EVAL;
-> +	reg &= ~GEN3_EQ_CONTROL_OFF_PSET_REQ_VEC_MASK;
-> +	dw_pcie_writel_dbi(pci, GEN3_EQ_CONTROL_OFF, reg);
-> +}
-> +EXPORT_SYMBOL_GPL(qcom_pcie_cmn_set_16gt_eq_settings);
-> +
->  int qcom_pcie_cmn_icc_get_resource(struct dw_pcie *pci, struct icc_path *icc_mem)
->  {
->  	if (IS_ERR(pci))
-> diff --git a/drivers/pci/controller/dwc/pcie-qcom-cmn.h b/drivers/pci/controller/dwc/pcie-qcom-cmn.h
-> index 845eda23ae59..97302e8fafa8 100644
-> --- a/drivers/pci/controller/dwc/pcie-qcom-cmn.h
-> +++ b/drivers/pci/controller/dwc/pcie-qcom-cmn.h
-> @@ -9,6 +9,11 @@
->  #include "../../pci.h"
->  #include "pcie-designware.h"
->  
-> +#define GEN3_EQ_FMDC_MAX_PRE_CUSROR_DELTA_16GT_VAL   0x5
-> +#define GEN3_EQ_FMDC_MAX_POST_CUSROR_DELTA_16GT_VAL  0x5
-> +#define GEN3_EQ_FMDC_N_EVALS_16GT_VAL          0xD
-> +
-
-So these settings are Qcom specific? I'd expect this to be documented in commit
-message.
-
->  int qcom_pcie_cmn_icc_get_resource(struct dw_pcie *pci, struct icc_path *icc_mem);
->  int qcom_pcie_cmn_icc_init(struct dw_pcie *pci, struct icc_path *icc_mem);
->  void qcom_pcie_cmn_icc_update(struct dw_pcie *pci, struct icc_path *icc_mem);
-> +void qcom_pcie_cmn_set_16gt_eq_settings(struct dw_pcie *pci);
-> diff --git a/drivers/pci/controller/dwc/pcie-qcom-ep.c b/drivers/pci/controller/dwc/pcie-qcom-ep.c
-> index ce6343426de8..b6bcab21bb9f 100644
-> --- a/drivers/pci/controller/dwc/pcie-qcom-ep.c
-> +++ b/drivers/pci/controller/dwc/pcie-qcom-ep.c
-> @@ -438,6 +438,9 @@ static int qcom_pcie_perst_deassert(struct dw_pcie *pci)
->  		goto err_disable_resources;
->  	}
->  
-> +	if (pcie_link_speed[pci->link_gen] == PCIE_SPEED_16_0GT)
-> +		qcom_pcie_cmn_set_16gt_eq_settings(pci);
-
-So this relies on the optional 'max-link-speed' DT property, but not mentioned
-in the commit message :/
-
-- Mani
-
-> +
->  	/*
->  	 * The physical address of the MMIO region which is exposed as the BAR
->  	 * should be written to MHI BASE registers.
-> diff --git a/drivers/pci/controller/dwc/pcie-qcom.c b/drivers/pci/controller/dwc/pcie-qcom.c
-> index 57a08294c561..b0a22a000fa3 100644
-> --- a/drivers/pci/controller/dwc/pcie-qcom.c
-> +++ b/drivers/pci/controller/dwc/pcie-qcom.c
-> @@ -263,6 +263,9 @@ static int qcom_pcie_start_link(struct dw_pcie *pci)
->  {
->  	struct qcom_pcie *pcie = to_qcom_pcie(pci);
->  
-> +	if (pcie_link_speed[pci->link_gen] == PCIE_SPEED_16_0GT)
-> +		qcom_pcie_cmn_set_16gt_eq_settings(pci);
-> +
->  	/* Enable Link Training state machine */
->  	if (pcie->cfg->ops->ltssm_enable)
->  		pcie->cfg->ops->ltssm_enable(pcie);
-> -- 
-> 2.43.2
-> 
-
--- 
-மணிவண்ணன் சதாசிவம்
+On Mon, Apr 1, 2024 at 3:36=E2=80=AFAM Vishal Chourasia <vishalc@linux.ibm.=
+com> wrote:
+>
+> On Thu, Mar 14, 2024 at 06:59:16PM -0700, Dawei Li wrote:
+> > Change se->load.weight to se_weight(se) in the calculation for the
+> > initial util_avg to avoid unnecessarily inflating the util_avg by 1024
+> > times.
+> >
+> > The reason is that se->load.weight has the unit/scale as the scaled-up
+> > load, while cfs_rg->avg.load_avg has the unit/scale as the true task
+> > weight (as mapped directly from the task's nice/priority value). With
+> > CONFIG_32BIT, the scaled-up load is equal to the true task weight. With
+> > CONFIG_64BIT, the scaled-up load is 1024 times the true task weight.
+> > Thus, the current code may inflate the util_avg by 1024 times. The
+> > follow-up capping will not allow the util_avg value to go wild. But the
+> > calculation should have the correct logic.
+> >
+> > Signed-off-by: Dawei Li <daweilics@gmail.com>
+> > ---
+> > Changes in v2:
+> > - update the commit message
+> > ---
+> >  kernel/sched/fair.c | 5 +++--
+> >  1 file changed, 3 insertions(+), 2 deletions(-)
+> >
+> > diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+> > index a19ea290b790..5f98f639bdb9 100644
+> > --- a/kernel/sched/fair.c
+> > +++ b/kernel/sched/fair.c
+> > @@ -1031,7 +1031,8 @@ void init_entity_runnable_average(struct sched_en=
+tity *se)
+> >   * With new tasks being created, their initial util_avgs are extrapola=
+ted
+> >   * based on the cfs_rq's current util_avg:
+> >   *
+> > - *   util_avg =3D cfs_rq->util_avg / (cfs_rq->load_avg + 1) * se.load.=
+weight
+> > + *   util_avg =3D cfs_rq->avg.util_avg / (cfs_rq->avg.load_avg + 1)
+> > + *           * se_weight(se)
+> >   *
+> >   * However, in many cases, the above util_avg does not give a desired
+> >   * value. Moreover, the sum of the util_avgs may be divergent, such
+> > @@ -1078,7 +1079,7 @@ void post_init_entity_util_avg(struct task_struct=
+ *p)
+> >
+> >       if (cap > 0) {
+> >               if (cfs_rq->avg.util_avg !=3D 0) {
+> > -                     sa->util_avg  =3D cfs_rq->avg.util_avg * se->load=
+weight;
+> > +                     sa->util_avg  =3D cfs_rq->avg.util_avg * se_weigh=
+t(se);
+> Hi,
+>
+> The comment above the declaration of se_weight function says we should be
+> using full load resolution and get rid of this helper.
+>
+> Should we be adding new user of the helper?
+>
+> /*
+>  * XXX we want to get rid of these helpers and use the full load resoluti=
+on.
+>  */
+> static inline long se_weight(struct sched_entity *se)
+> {
+>         return scale_load_down(se->load.weight);
+> }
+>
+>
+> >                       sa->util_avg /=3D (cfs_rq->avg.load_avg + 1);
+> >
+> >                       if (sa->util_avg > cap)
+> > --
+> > 2.40.1
+> >
 
