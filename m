@@ -1,82 +1,85 @@
-Return-Path: <linux-kernel+bounces-127678-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-127679-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 80406894F59
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 11:58:42 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8314C894F5F
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 12:00:22 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 20399B2466E
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 09:58:40 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 228101F21DAA
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 10:00:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 884625916B;
-	Tue,  2 Apr 2024 09:58:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7F30559179;
+	Tue,  2 Apr 2024 10:00:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="lW/riFUL"
-Received: from mail-ed1-f49.google.com (mail-ed1-f49.google.com [209.85.208.49])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="nm9dbyEZ"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.8])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 258E61E4A1
-	for <linux-kernel@vger.kernel.org>; Tue,  2 Apr 2024 09:58:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3632458AAF;
+	Tue,  2 Apr 2024 10:00:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.8
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712051896; cv=none; b=FtDQUYqDaOOCNeMV4JGBzRPG1dBEpVNmTKfjonk80MJv9vE7QO2vs0ApwgYnq8kjiD+QMbpRdrhlG4P1ciM60xzmoZ4bPubrjM59VoX2JCyyuCsJM5fqfS2xDNXFGLlLyGUOJ6fxwS88/7N2vNI+pcOOosvcv0EWTDNVg6bBNW0=
+	t=1712052013; cv=none; b=qVoZF+BPo+1QEfapeYVQjbJzOIqL3hx8Pq06DBoMCvUASfa3XWfAkYJyl2MVtewTKGYadZUcdScM0fs9mohgX2Oh5O8GBC7yiJsZfZwZCtCZXrellJPoPDcZqgxrwZjj7UJmgZjuyUb7cUBCpg+wmYdStopMaJBWQLsvInCxtA0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712051896; c=relaxed/simple;
-	bh=i3dAA3EBuiwwRsOxrV8BH5VJ943ZUlY2pGSFcOqvWsw=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition; b=dmVzBtLVsWy9K1x8Pl3wedcZ48x+qgKU7Eg3xHMf6JMoR4YTOGZiK53uecvbD0B4w8aixi7r6UFUF01c67oszhbzcd6LIzkfojvTZi7ZR5HDoLQ9Fj1I3qLoULJg5IBRzDbfQItTwHpPs3JD20dzRdb5NntFKfijHw5cDPcTNIs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=lW/riFUL; arc=none smtp.client-ip=209.85.208.49
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ed1-f49.google.com with SMTP id 4fb4d7f45d1cf-56b0af675deso5523580a12.1
-        for <linux-kernel@vger.kernel.org>; Tue, 02 Apr 2024 02:58:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1712051893; x=1712656693; darn=vger.kernel.org;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=ld5/UZMRVCPDO/dKTQcgFxFhH+C0bdjqoU583UYXs7Q=;
-        b=lW/riFULRJeVOWDl3FOtQ1mA7mgZZs3VeDZJhMPuHixSaBW/YqAfASuUZr+yY3T477
-         HuMkEpCUiKm1ONF2P4qWldjcuXHa+9et8ktaAQo6kfLRZ30L5cYzt7+ePek6EwbX18xR
-         bwqJIQmOq26Hs5M/b/jDwdfxnNaoeEcoZdcx0S8zc7dnyPiSNoFDfUvCCDq4vpGQk6bG
-         uL9xxE3ya/aTKjo/Ub49RpxPQhTPU+Sg/Eci1RI6vPihBC5hYGL5E9ZcEqwb4E30Sgv5
-         bIV2UMScktdCSkLT44zMkIdn6pvi7XfwbfV7wPEV+fyYnRIKqWHri+FZwI39HXu1RAOj
-         clLQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712051893; x=1712656693;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=ld5/UZMRVCPDO/dKTQcgFxFhH+C0bdjqoU583UYXs7Q=;
-        b=PL7Q+7QRzffBkNqvpUFMOz3+zZVV9ZyhSc3Tv1APi7F8XxJNxUtlfxXD3jMLxGgUir
-         OjWwaovDZw9IJe2r3tHzPjFx0VrqjTEFT06ffq5abp6h8pD7R9HLFQs8Xt9kW7/OgAct
-         pe+dX78EY4U62THb1AvhYXWrBUNaMbL10l1PW+aw/4Ml8sFf4wy+gP/V9BPHB7JixAzB
-         lwlNPWO04Oqvl75UXsV/xDcKEWvMqd+k9O7xX9TuPH5qTqvtKInOzT4chFYpCwXTpUNX
-         69rCYpkx8gwif79Y/qVXIYA5DmGbxO+4DY8WmqFYTmXzkjmTExhOSKWELIrcmi1gUjfD
-         FXQQ==
-X-Forwarded-Encrypted: i=1; AJvYcCU3x+saW/UHLvWWP5EbQQeH6ak0JUxOVkc5ylAgq7yLn1cc3Ark52nxXAtSxR0J/CH0Vv704Nkr9mg/YPRNr+E986WlerwD6HiLitiB
-X-Gm-Message-State: AOJu0YzbhHavtSESAvorDgXIJ5b8uc7eAdbcqF+qy+Fmo5pbyH6h/XUx
-	gd1xvDyLQ5254KOy1nXmhLiSOFOVmBbp+2377ES8ZYs3rnR+Kd+h0iOuQGZ4XDE=
-X-Google-Smtp-Source: AGHT+IFgDns4XbXtOdDo3mYfgf9w3lFqwUVjIK8JRoHpGzz1mCaGhgoZUM8ANRaz4ThKySFmuVQUqQ==
-X-Received: by 2002:a50:d4cc:0:b0:56b:9925:38a with SMTP id e12-20020a50d4cc000000b0056b9925038amr7967208edj.38.1712051893318;
-        Tue, 02 Apr 2024 02:58:13 -0700 (PDT)
-Received: from localhost ([102.222.70.76])
-        by smtp.gmail.com with ESMTPSA id u22-20020aa7d556000000b0056c63ba1387sm5295464edr.86.2024.04.02.02.58.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 02 Apr 2024 02:58:13 -0700 (PDT)
-Date: Tue, 2 Apr 2024 12:58:09 +0300
-From: Dan Carpenter <dan.carpenter@linaro.org>
-To: Boris Brezillon <boris.brezillon@collabora.com>
-Cc: Steven Price <steven.price@arm.com>, Liviu Dudau <liviu.dudau@arm.com>,
-	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-	Maxime Ripard <mripard@kernel.org>,
-	Thomas Zimmermann <tzimmermann@suse.de>,
-	David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
-	Grant Likely <grant.likely@linaro.org>,
-	Heiko Stuebner <heiko@sntech.de>, dri-devel@lists.freedesktop.org,
-	linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
-Subject: [PATCH] drm/panthor: Fix a couple -ENOMEM error codes
-Message-ID: <cf5bbba5-427e-4940-b91e-925f9fa71f8d@moroto.mountain>
+	s=arc-20240116; t=1712052013; c=relaxed/simple;
+	bh=b0OIGFVB57rC+vRSHDqJps7mkAfSLfUHZGQ9SaT07mI=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=fChF7BmW4PcamM6MoII/nA4k8Lt4k8kFJK3gzKT68hn/MYBuTtRWbfHZdZSyythq2FBa17DZ3JbXHbCQtJrOGG0L52yQ4aidls6C2dLczUlKvXR6wHiBfFEjNh4PfYveDEY2j1jeBIxKdPF5poAaRC1z3EaOstTq/4BKNVhgDWk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=nm9dbyEZ; arc=none smtp.client-ip=192.198.163.8
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1712052012; x=1743588012;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=b0OIGFVB57rC+vRSHDqJps7mkAfSLfUHZGQ9SaT07mI=;
+  b=nm9dbyEZrMWGF8wScXVauCOzgRTiHWn0Mh0X5GT5NcCuzYhg5bftSPE5
+   N4FqD5K0OV/X9OEOPL9CVkF7GA91iK7CwaqvRwfZC0fN8E2mYW6TkLIiV
+   rYUEZfxhz2mHtolEoQt8+p8S0NTyWxh+0bUIvuV7FK6CW7uPltHUS13QM
+   5gkonLDZqukwbFHA0hKQYoa5Vv5LpH+chRBJ+wlw8SbNjKl9Ao7t98Qn2
+   9cPa/kfkDviF435amhbDq5onQZGT80r3Ee2dVwR4w71rv0DS2rz1TZqhY
+   /mWTSOwUMEvmq2E3omucudgJqp9bEWfCgEk2TBcWRXnnZPzXFHsiLfQKX
+   Q==;
+X-CSE-ConnectionGUID: iTcCij00TVOyWnrtfI6Png==
+X-CSE-MsgGUID: Shdkxse8Q9C5PoQGFeDSrw==
+X-IronPort-AV: E=McAfee;i="6600,9927,11031"; a="24705416"
+X-IronPort-AV: E=Sophos;i="6.07,174,1708416000"; 
+   d="scan'208";a="24705416"
+Received: from fmviesa009.fm.intel.com ([10.60.135.149])
+  by fmvoesa102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Apr 2024 03:00:05 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,174,1708416000"; 
+   d="scan'208";a="18069109"
+Received: from lkp-server02.sh.intel.com (HELO 90ee3aa53dbd) ([10.239.97.151])
+  by fmviesa009.fm.intel.com with ESMTP; 02 Apr 2024 03:00:00 -0700
+Received: from kbuild by 90ee3aa53dbd with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1rravu-000165-0S;
+	Tue, 02 Apr 2024 09:59:58 +0000
+Date: Tue, 2 Apr 2024 17:59:43 +0800
+From: kernel test robot <lkp@intel.com>
+To: Ajit Pandey <quic_ajipan@quicinc.com>,
+	Michael Turquette <mturquette@baylibre.com>,
+	Stephen Boyd <sboyd@kernel.org>, Rob Herring <robh@kernel.org>,
+	Krzysztof Kozlowski <krzk@kernel.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Bjorn Andersson <andersson@kernel.org>,
+	Konrad Dybcio <konrad.dybcio@linaro.org>,
+	Vinod Koul <vkoul@kernel.org>,
+	Vladimir Zapolskiy <vladimir.zapolskiy@linaro.org>
+Cc: oe-kbuild-all@lists.linux.dev, linux-arm-msm@vger.kernel.org,
+	linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org,
+	Taniya Das <quic_tdas@quicinc.com>,
+	Jagadeesh Kona <quic_jkona@quicinc.com>,
+	Imran Shaik <quic_imrashai@quicinc.com>,
+	Satya Priya Kakitapalli <quic_skakitap@quicinc.com>,
+	Ajit Pandey <quic_ajipan@quicinc.com>
+Subject: Re: [PATCH 7/7] clk: qcom: Add GPUCC driver support for SM4450
+Message-ID: <202404021747.ie04rWAv-lkp@intel.com>
+References: <20240330182817.3272224-8-quic_ajipan@quicinc.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -85,45 +88,55 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-X-Mailer: git-send-email haha only kidding
+In-Reply-To: <20240330182817.3272224-8-quic_ajipan@quicinc.com>
 
-These error paths forgot to set the error code to -ENOMEM.
+Hi Ajit,
 
-Fixes: 647810ec2476 ("drm/panthor: Add the MMU/VM logical block")
-Signed-off-by: Dan Carpenter <dan.carpenter@linaro.org>
----
- drivers/gpu/drm/panthor/panthor_mmu.c | 8 ++++++--
- 1 file changed, 6 insertions(+), 2 deletions(-)
+kernel test robot noticed the following build warnings:
 
-diff --git a/drivers/gpu/drm/panthor/panthor_mmu.c b/drivers/gpu/drm/panthor/panthor_mmu.c
-index fdd35249169f..a26b40aab261 100644
---- a/drivers/gpu/drm/panthor/panthor_mmu.c
-+++ b/drivers/gpu/drm/panthor/panthor_mmu.c
-@@ -1264,8 +1264,10 @@ static int panthor_vm_prepare_map_op_ctx(struct panthor_vm_op_ctx *op_ctx,
- 	op_ctx->rsvd_page_tables.pages = kcalloc(pt_count,
- 						 sizeof(*op_ctx->rsvd_page_tables.pages),
- 						 GFP_KERNEL);
--	if (!op_ctx->rsvd_page_tables.pages)
-+	if (!op_ctx->rsvd_page_tables.pages) {
-+		ret = -ENOMEM;
- 		goto err_cleanup;
-+	}
- 
- 	ret = kmem_cache_alloc_bulk(pt_cache, GFP_KERNEL, pt_count,
- 				    op_ctx->rsvd_page_tables.pages);
-@@ -1318,8 +1320,10 @@ static int panthor_vm_prepare_unmap_op_ctx(struct panthor_vm_op_ctx *op_ctx,
- 		op_ctx->rsvd_page_tables.pages = kcalloc(pt_count,
- 							 sizeof(*op_ctx->rsvd_page_tables.pages),
- 							 GFP_KERNEL);
--		if (!op_ctx->rsvd_page_tables.pages)
-+		if (!op_ctx->rsvd_page_tables.pages) {
-+			ret = -ENOMEM;
- 			goto err_cleanup;
-+		}
- 
- 		ret = kmem_cache_alloc_bulk(pt_cache, GFP_KERNEL, pt_count,
- 					    op_ctx->rsvd_page_tables.pages);
+[auto build test WARNING on clk/clk-next]
+[also build test WARNING on robh/for-next linus/master v6.9-rc2 next-20240402]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
+
+url:    https://github.com/intel-lab-lkp/linux/commits/Ajit-Pandey/clk-qcom-clk-alpha-pll-Fix-CAL_L_VAL-override-for-LUCID-EVO-PLL/20240331-023329
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/clk/linux.git clk-next
+patch link:    https://lore.kernel.org/r/20240330182817.3272224-8-quic_ajipan%40quicinc.com
+patch subject: [PATCH 7/7] clk: qcom: Add GPUCC driver support for SM4450
+config: powerpc64-randconfig-r132-20240402 (https://download.01.org/0day-ci/archive/20240402/202404021747.ie04rWAv-lkp@intel.com/config)
+compiler: clang version 19.0.0git (https://github.com/llvm/llvm-project 546dc2245ffc4cccd0b05b58b7a5955e355a3b27)
+reproduce: (https://download.01.org/0day-ci/archive/20240402/202404021747.ie04rWAv-lkp@intel.com/reproduce)
+
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202404021747.ie04rWAv-lkp@intel.com/
+
+sparse warnings: (new ones prefixed by >>)
+>> drivers/clk/qcom/gpucc-sm4450.c:740:10: sparse: sparse: Initializer entry defined twice
+   drivers/clk/qcom/gpucc-sm4450.c:746:10: sparse:   also defined here
+
+vim +740 drivers/clk/qcom/gpucc-sm4450.c
+
+   736	
+   737	static const struct qcom_reset_map gpu_cc_sm4450_resets[] = {
+   738		[GPU_CC_CB_BCR] = { 0x93a0 },
+   739		[GPU_CC_CX_BCR] = { 0x9104 },
+ > 740		[GPU_CC_GX_BCR] = { 0x9058 },
+   741		[GPU_CC_FAST_HUB_BCR] = { 0x93e4 },
+   742		[GPU_CC_ACD_BCR] = { 0x9358 },
+   743		[GPU_CC_FF_BCR] = { 0x9470 },
+   744		[GPU_CC_GFX3D_AON_BCR] = { 0x9198 },
+   745		[GPU_CC_GMU_BCR] = { 0x9314 },
+   746		[GPU_CC_GX_BCR] = { 0x9058 },
+   747		[GPU_CC_RBCPR_BCR] = { 0x91e0 },
+   748		[GPU_CC_XO_BCR] = { 0x9000 },
+   749		[GPU_CC_GX_ACD_IROOT_BCR] = { 0x958c },
+   750	};
+   751	
+
 -- 
-2.43.0
-
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
