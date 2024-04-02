@@ -1,269 +1,162 @@
-Return-Path: <linux-kernel+bounces-127396-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-127398-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9FB6C894AC0
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 07:06:53 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 69772894AC4
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 07:12:45 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 25EFA1F22E1C
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 05:06:53 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 25E94284D79
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 05:12:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9667B18042;
-	Tue,  2 Apr 2024 05:06:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8C549182BD;
+	Tue,  2 Apr 2024 05:12:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="jzPySdKL"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.10])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="tepFiF6k"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C754F175BC
-	for <linux-kernel@vger.kernel.org>; Tue,  2 Apr 2024 05:06:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.10
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BCCD017C95;
+	Tue,  2 Apr 2024 05:12:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712034404; cv=none; b=sVeKve9fEzhS2zNRU/+2giyFEMzDXTfKicZ3fEF/GMyhX4H3dKPpkbAEDTwP1JvJXPM5i5v071V+9OtR/wPwUgq0G5aTq3KZO/zqTH93yeuEYlGuta2eQy2MJ6c3wuIBM+Acw77yoTkxB7Gs6R3kvJ6zUsRGFIqcNxbJo9+ngn8=
+	t=1712034756; cv=none; b=ul8yfQtdYiKcd4APLURSVLYmNDlEP9aZQxG4AlH7+AVm4MrSF7VTJLR+ZklU2xrhefmmoHWvg3U7LE0LZE7rBxavPngMYdcooRRoH72xlvq3P8qyVWRBIWbhsiDUwjNZOfkwmbmAXEi+6sKZ4Wx0tWD8MQoDf8Jwkh7fYawSrxI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712034404; c=relaxed/simple;
-	bh=/IY63tG5iofDUrDGP1ZeVfT479MM7OSb2oyW+4DVXg8=;
-	h=Date:From:To:Cc:Subject:Message-ID; b=oCykJwYBL8al8vKWq+L1oh1Y5QQrWfIVZuWu5sre4Vy4aLlhRcblUScw3crES7n7NvH4AIOWk1NfhuEbOdimpb88pNjpm4zxy1N5Yms3dHVu7vK8uoMRwfwpn5DfJQbXiOPll1FImoa+IbSyZQg84WwIcGf/fMDEIILxuwsnWUw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=jzPySdKL; arc=none smtp.client-ip=198.175.65.10
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1712034403; x=1743570403;
-  h=date:from:to:cc:subject:message-id;
-  bh=/IY63tG5iofDUrDGP1ZeVfT479MM7OSb2oyW+4DVXg8=;
-  b=jzPySdKLXt2lTdddQL9wKM6Up8uht1MkX/asu2h7zz1Sia0OrAjBmbaW
-   oOJhd/6emuhdCbC/+fQGM7EULe2u5y09aWILQjljZip0hagUIo22VLkvh
-   jpXhLGYuotDrUDm3SIVvXr1SKq7Rs2F9brwYtTsF2ODDh9JHr5/mvXVmG
-   UvsqUFga1pMbkHQeumLuvxIi1pA+oil6t5ON7qh0Hr4+0Od70saudexwV
-   U8NV+eawum8IwPMTLyeZMV5Jj+2yNBox4DIQyl8bygkN0OdmMS1zRqt9F
-   EwPLNpn+9lmbyAlcqk2fwWTwcD4sg7IirYQ4oMVXIcdCXrq8lF16HZghk
-   w==;
-X-CSE-ConnectionGUID: rEUElo9HS1KFLS7kzlC7fA==
-X-CSE-MsgGUID: oNsrAINiSOCXr4KzupGz9Q==
-X-IronPort-AV: E=McAfee;i="6600,9927,11031"; a="24640354"
-X-IronPort-AV: E=Sophos;i="6.07,174,1708416000"; 
-   d="scan'208";a="24640354"
-Received: from orviesa003.jf.intel.com ([10.64.159.143])
-  by orvoesa102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Apr 2024 22:06:42 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,174,1708416000"; 
-   d="scan'208";a="22622057"
-Received: from lkp-server02.sh.intel.com (HELO 90ee3aa53dbd) ([10.239.97.151])
-  by orviesa003.jf.intel.com with ESMTP; 01 Apr 2024 22:06:41 -0700
-Received: from kbuild by 90ee3aa53dbd with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1rrWM2-0000sn-2R;
-	Tue, 02 Apr 2024 05:06:38 +0000
-Date: Tue, 02 Apr 2024 13:06:06 +0800
-From: kernel test robot <lkp@intel.com>
-To: "Paul E. McKenney" <paulmck@kernel.org>
-Cc: linux-kernel@vger.kernel.org
-Subject: [paulmck-rcu:rcu/next] BUILD SUCCESS
- 625b885bd2ecb89211f15dd1d961005bc989beb1
-Message-ID: <202404021304.7FnFXGeC-lkp@intel.com>
-User-Agent: s-nail v14.9.24
+	s=arc-20240116; t=1712034756; c=relaxed/simple;
+	bh=vPvthpF8xyKUQtB9kB8Eu+RGmNNQbLUr594u4ov342Q=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=WBIXHMPRXYqOBna08Tu/mGaCbPGQhKdSg0hkllFEQVelwZHpZi4rL6kfRntjTJ+XTG5bkEqkfHeKnmr2jmE5smDZ+5/HTnqLQpgdBP1duONx7pAhjSzqyjSwLS5qCjV3/re/dWLARRaQmVZQ+KuSu6wXnROjkXOt4xurdvfBQHA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=tepFiF6k; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7682AC433F1;
+	Tue,  2 Apr 2024 05:12:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1712034756;
+	bh=vPvthpF8xyKUQtB9kB8Eu+RGmNNQbLUr594u4ov342Q=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=tepFiF6kxq1eG2O4h2mWo0OK5S3J3gtg1Al/3kbvKR3dbH6H/t/mFKmX5+dkgy9FM
+	 zn3xG5I8WNe9XxCDa8u4EemaESfQDeuj6/cuwbEPXnvMndFUJUp7XO3JZZeVYhlNH9
+	 5/VDnmaHW5nZBEpnnUP0BsZy0y46oYYZW3sWRXgWQlpPE9+ljiUTkA6UsiVfuCKqGi
+	 +Almp2k/t1Wyy4nOApKJi6HKXDZThno/tAjxwUhteDlliI9g5r1cDkKDojcc/kiciO
+	 h1bXfL8DQk+BCU/VFL1yLf2g7OD5Qriwscz/U27UXxgDpXZyFB0IV7JF7iCCxhwMGp
+	 uD+XsBDsC680g==
+Date: Tue, 2 Apr 2024 10:42:28 +0530
+From: Manivannan Sadhasivam <mani@kernel.org>
+To: Niklas Cassel <cassel@kernel.org>
+Cc: Bjorn Helgaas <helgaas@kernel.org>, Frank Li <Frank.Li@nxp.com>,
+	niklas.cassel@wdc.com, bhelgaas@google.com,
+	gustavo.pimentel@synopsys.com, imx@lists.linux.dev,
+	jdmason@kudzu.us, jingoohan1@gmail.com, kw@linux.com,
+	linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
+	lpieralisi@kernel.org, robh@kernel.org
+Subject: Re: [PATCH v2 1/1] PCI: dwc: Fix index 0 incorrectly being
+ interpreted as a free ATU slot
+Message-ID: <20240402051228.GH2933@thinkpad>
+References: <20240321171345.GA2385@thinkpad>
+ <20240321180732.GA1329092@bhelgaas>
+ <20240322052623.GA4092@thinkpad>
+ <Zf0i1X5fg-E59NWx@ryzen>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <Zf0i1X5fg-E59NWx@ryzen>
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git rcu/next
-branch HEAD: 625b885bd2ecb89211f15dd1d961005bc989beb1  torture: Scale --do-kvfree test time
+On Fri, Mar 22, 2024 at 07:19:01AM +0100, Niklas Cassel wrote:
+> On Fri, Mar 22, 2024 at 10:56:23AM +0530, Manivannan Sadhasivam wrote:
+> > On Thu, Mar 21, 2024 at 01:07:32PM -0500, Bjorn Helgaas wrote:
+> > > On Thu, Mar 21, 2024 at 10:43:45PM +0530, Manivannan Sadhasivam wrote:
+> > > > On Mon, Mar 04, 2024 at 05:46:16PM -0500, Frank Li wrote:
+> > > > > dw_pcie_ep_inbound_atu()
+> > > > > {
+> > > > > 	...
+> > > > > 	if (!ep->bar_to_atu[bar])
+> > > > > 		free_win = find_first_zero_bit(ep->ib_window_map, pci->num_ib_windows);
+> > > > > 	else
+> > > > > 		free_win = ep->bar_to_atu[bar];
+> > > > > 	...
+> > > > > }
+> > > > > 
+> > > > > The atu index 0 is valid case for atu number. The find_first_zero_bit()
+> > > > > will return 6 when second time call into this function if atu is 0. Suppose
+> > > > > it should use branch 'free_win = ep->bar_to_atu[bar]'.
+> > > > > 
+> > > > > Change 'bar_to_atu' to free_win + 1. Initialize bar_to_atu as 0 to indicate
+> > > > > it have not allocate atu to the bar.
+> > > > 
+> > > > I'd rewrite the commit message as below:
+> > > > 
+> > > > "The mapping between PCI BAR and iATU inbound window are maintained in the
+> > > > dw_pcie_ep::bar_to_atu[] array. While allocating a new inbound iATU map for a
+> > > > BAR, dw_pcie_ep_inbound_atu() API will first check for the availability of the
+> > > > existing mapping in the array and if it is not found (i.e., value in the array
+> > > > indexed by the BAR is found to be 0), then it will allocate a new map value
+> > > > using find_first_zero_bit().
+> > > > 
+> > > > The issue here is, the existing logic failed to consider the fact that the map
+> > > > value '0' is a valid value for BAR0. Because, find_first_zero_bit() will return
+> > > > '0' as the map value for BAR0 (note that it returns the first zero bit
+> > > > position).
+> > > > 
+> > > > Due to this, when PERST# assert + deassert happens on the PERST# supported
+> > > > platforms, the inbound window allocation restarts from BAR0 and the existing
+> > > > logic to find the BAR mapping will return '6' for BAR0 instead of '0' due to the
+> > > > fact that it considers '0' as an invalid map value.
+> > > > 
+> > > > So fix this issue by always incrementing the map value before assigning to
+> > > > bar_to_atu[] array and then decrementing it while fetching. This will make sure
+> > > > that the map value '0' always represents the invalid mapping."
+> > > 
+> > > This translates C code to English in great detail, but still doesn't
+> > > tell me what's broken from a user's point of view, how urgent the fix
+> > > is, or how it should be handled.
+> > > 
+> > > DMA doesn't work because ATU setup is wrong?  Driver MMIO access to
+> > > the device doesn't work?  OS crashes?  How?  Incorrectly routed access
+> > > causes UR response?  Happens on every boot?  Only after a reboot or
+> > > controller reset?  What platforms are affected?  "PERST# supported
+> > > platforms" is not actionable without a lot of research or pre-existing
+> > > knowledge.  Should this be backported to -stable?
+> > > 
+> > 
+> > Severity is less for the bug fixed by this patch. We have 8 inbound iATU windows
+> > on almost all of the platforms and after PERST# assert + deassert, BAR0 uses map
+> > '6' instead of '0'.
+> > 
+> > This has no user visibility since the mapping will go fine and we have only 6
+> > BARs. So I'd not mark this as as critical fix that needs special attention.
+> 
+> So we will have 6 mappings configured, but only 5 BARs, so two mappings for
+> BAR0. The iATU looks at them in order, so index 0 will override index 6.
+> 
+> We are lucky that the endpoint subsystem does not clean up allocations properly
+> right now (you have an outstanding series which fixes this).
+> 
+> If the endpoint subsystem did clean up resources properly, we would DMA to the
+> area that was previously allocated for BAR0, instead of the new area for BAR0.
+> 
 
-elapsed time: 723m
+How would DMA happen to the previously allocated area? When the BARs are cleared
+properly and then allocated again, BAR0 will get the map of 0 again and then the
+iATU will map window 0 with BAR0. Only if we don't clear the BARs properly (as
+like now), then it will result in BAR0 having 2 identical mappings and even with
+that there won't be any issue since both map 0 and 6 are valid.
 
-configs tested: 179
-configs skipped: 3
+Am I missing anything?
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+> Perhaps just include this fix in your series that actually cleans up the BARs?
+> 
 
-tested configs:
-alpha                             allnoconfig   gcc  
-alpha                            allyesconfig   gcc  
-alpha                               defconfig   gcc  
-arc                              allmodconfig   gcc  
-arc                               allnoconfig   gcc  
-arc                              allyesconfig   gcc  
-arc                                 defconfig   gcc  
-arc                        nsimosci_defconfig   gcc  
-arc                   randconfig-001-20240402   gcc  
-arc                   randconfig-002-20240402   gcc  
-arm                              allmodconfig   gcc  
-arm                               allnoconfig   clang
-arm                              allyesconfig   gcc  
-arm                     am200epdkit_defconfig   gcc  
-arm                                 defconfig   clang
-arm                       netwinder_defconfig   gcc  
-arm                   randconfig-001-20240402   gcc  
-arm                   randconfig-002-20240402   clang
-arm                   randconfig-003-20240402   clang
-arm                   randconfig-004-20240402   clang
-arm64                            allmodconfig   clang
-arm64                             allnoconfig   gcc  
-arm64                            allyesconfig   clang
-arm64                               defconfig   gcc  
-arm64                 randconfig-001-20240402   clang
-arm64                 randconfig-002-20240402   clang
-arm64                 randconfig-003-20240402   clang
-arm64                 randconfig-004-20240402   gcc  
-csky                             allmodconfig   gcc  
-csky                              allnoconfig   gcc  
-csky                             allyesconfig   gcc  
-csky                                defconfig   gcc  
-csky                  randconfig-001-20240402   gcc  
-csky                  randconfig-002-20240402   gcc  
-hexagon                          allmodconfig   clang
-hexagon                           allnoconfig   clang
-hexagon                          allyesconfig   clang
-hexagon                             defconfig   clang
-hexagon               randconfig-001-20240402   clang
-hexagon               randconfig-002-20240402   clang
-i386                             allmodconfig   gcc  
-i386                              allnoconfig   gcc  
-i386                             allyesconfig   gcc  
-i386         buildonly-randconfig-001-20240402   gcc  
-i386         buildonly-randconfig-002-20240402   gcc  
-i386         buildonly-randconfig-003-20240402   clang
-i386         buildonly-randconfig-004-20240402   clang
-i386         buildonly-randconfig-005-20240402   clang
-i386         buildonly-randconfig-006-20240402   clang
-i386                                defconfig   clang
-i386                  randconfig-001-20240402   gcc  
-i386                  randconfig-002-20240402   clang
-i386                  randconfig-003-20240402   clang
-i386                  randconfig-004-20240402   clang
-i386                  randconfig-005-20240402   clang
-i386                  randconfig-006-20240402   clang
-i386                  randconfig-011-20240402   gcc  
-i386                  randconfig-012-20240402   clang
-i386                  randconfig-013-20240402   clang
-i386                  randconfig-014-20240402   clang
-i386                  randconfig-015-20240402   gcc  
-i386                  randconfig-016-20240402   gcc  
-loongarch                        allmodconfig   gcc  
-loongarch                         allnoconfig   gcc  
-loongarch                           defconfig   gcc  
-loongarch             randconfig-001-20240402   gcc  
-loongarch             randconfig-002-20240402   gcc  
-m68k                             allmodconfig   gcc  
-m68k                              allnoconfig   gcc  
-m68k                             allyesconfig   gcc  
-m68k                                defconfig   gcc  
-m68k                        m5307c3_defconfig   gcc  
-microblaze                       allmodconfig   gcc  
-microblaze                        allnoconfig   gcc  
-microblaze                       allyesconfig   gcc  
-microblaze                          defconfig   gcc  
-mips                              allnoconfig   gcc  
-mips                             allyesconfig   gcc  
-mips                          ath79_defconfig   gcc  
-mips                      malta_kvm_defconfig   gcc  
-mips                          rm200_defconfig   gcc  
-nios2                            allmodconfig   gcc  
-nios2                             allnoconfig   gcc  
-nios2                            allyesconfig   gcc  
-nios2                               defconfig   gcc  
-nios2                 randconfig-001-20240402   gcc  
-nios2                 randconfig-002-20240402   gcc  
-openrisc                          allnoconfig   gcc  
-openrisc                         allyesconfig   gcc  
-openrisc                            defconfig   gcc  
-parisc                           allmodconfig   gcc  
-parisc                            allnoconfig   gcc  
-parisc                           allyesconfig   gcc  
-parisc                              defconfig   gcc  
-parisc                randconfig-001-20240402   gcc  
-parisc                randconfig-002-20240402   gcc  
-parisc64                            defconfig   gcc  
-powerpc                          allmodconfig   gcc  
-powerpc                           allnoconfig   gcc  
-powerpc                          allyesconfig   clang
-powerpc                      arches_defconfig   gcc  
-powerpc                        fsp2_defconfig   gcc  
-powerpc               randconfig-001-20240402   clang
-powerpc               randconfig-002-20240402   gcc  
-powerpc               randconfig-003-20240402   clang
-powerpc                  storcenter_defconfig   gcc  
-powerpc64             randconfig-001-20240402   gcc  
-powerpc64             randconfig-002-20240402   gcc  
-powerpc64             randconfig-003-20240402   gcc  
-riscv                            allmodconfig   clang
-riscv                             allnoconfig   gcc  
-riscv                            allyesconfig   clang
-riscv                               defconfig   clang
-riscv                 randconfig-001-20240402   clang
-riscv                 randconfig-002-20240402   clang
-s390                             allmodconfig   clang
-s390                              allnoconfig   clang
-s390                             allyesconfig   gcc  
-s390                                defconfig   clang
-s390                  randconfig-001-20240402   gcc  
-s390                  randconfig-002-20240402   gcc  
-sh                               allmodconfig   gcc  
-sh                                allnoconfig   gcc  
-sh                               allyesconfig   gcc  
-sh                                  defconfig   gcc  
-sh                        edosk7705_defconfig   gcc  
-sh                    randconfig-001-20240402   gcc  
-sh                    randconfig-002-20240402   gcc  
-sh                           se7750_defconfig   gcc  
-sh                        sh7785lcr_defconfig   gcc  
-sh                          urquell_defconfig   gcc  
-sparc                            allmodconfig   gcc  
-sparc                             allnoconfig   gcc  
-sparc                               defconfig   gcc  
-sparc64                          allmodconfig   gcc  
-sparc64                          allyesconfig   gcc  
-sparc64                             defconfig   gcc  
-sparc64               randconfig-001-20240402   gcc  
-sparc64               randconfig-002-20240402   gcc  
-um                               allmodconfig   clang
-um                                allnoconfig   clang
-um                               allyesconfig   gcc  
-um                                  defconfig   clang
-um                             i386_defconfig   gcc  
-um                    randconfig-001-20240402   gcc  
-um                    randconfig-002-20240402   gcc  
-um                           x86_64_defconfig   clang
-x86_64                            allnoconfig   clang
-x86_64                           allyesconfig   clang
-x86_64       buildonly-randconfig-001-20240402   clang
-x86_64       buildonly-randconfig-002-20240402   clang
-x86_64       buildonly-randconfig-003-20240402   clang
-x86_64       buildonly-randconfig-004-20240402   clang
-x86_64       buildonly-randconfig-005-20240402   clang
-x86_64       buildonly-randconfig-006-20240402   clang
-x86_64                              defconfig   gcc  
-x86_64                randconfig-001-20240402   clang
-x86_64                randconfig-002-20240402   clang
-x86_64                randconfig-003-20240402   gcc  
-x86_64                randconfig-004-20240402   clang
-x86_64                randconfig-005-20240402   gcc  
-x86_64                randconfig-006-20240402   gcc  
-x86_64                randconfig-011-20240402   gcc  
-x86_64                randconfig-012-20240402   gcc  
-x86_64                randconfig-013-20240402   clang
-x86_64                randconfig-014-20240402   gcc  
-x86_64                randconfig-015-20240402   clang
-x86_64                randconfig-016-20240402   gcc  
-x86_64                randconfig-071-20240402   clang
-x86_64                randconfig-072-20240402   clang
-x86_64                randconfig-073-20240402   clang
-x86_64                randconfig-074-20240402   gcc  
-x86_64                randconfig-075-20240402   clang
-x86_64                randconfig-076-20240402   clang
-x86_64                          rhel-8.3-rust   clang
-x86_64                               rhel-8.3   gcc  
-xtensa                            allnoconfig   gcc  
-xtensa                randconfig-001-20240402   gcc  
-xtensa                randconfig-002-20240402   gcc  
+Yeah, makes sense. Once we agree on a finalized commit message in this thread,
+I'll include this patch in my series.
+
+- Mani
 
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+மணிவண்ணன் சதாசிவம்
 
