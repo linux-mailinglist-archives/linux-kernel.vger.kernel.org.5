@@ -1,101 +1,113 @@
-Return-Path: <linux-kernel+bounces-127362-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-127364-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 55404894A54
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 06:12:51 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6C997894A58
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 06:17:31 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D94A3B22877
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 04:12:48 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 279AA283AEE
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 04:17:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1C1D417BBA;
-	Tue,  2 Apr 2024 04:12:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C805617991;
+	Tue,  2 Apr 2024 04:17:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="nkTzWbGD"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="jj2/etcD"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 43FA0168B1;
-	Tue,  2 Apr 2024 04:12:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 02149175A1
+	for <linux-kernel@vger.kernel.org>; Tue,  2 Apr 2024 04:17:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712031155; cv=none; b=WWGAcXRZBG6WqcYFo/kcCH5a5j/yLX3toKSm3um8JujzmesowbABT1jaxLFhK01MotoXEK7xbLvvHu76aD6qN1DOIV/3AZecCXPoh0DI0AJfkap00rj8z3cUPVcpMSL9VUooBEYkZKaiIyHSZnscbQjhAZI9B3H2FMQIAI//u+c=
+	t=1712031443; cv=none; b=GIr+PX9VyIln8cY5kFPTobosuvDrce8Wm25I9tGd3oVrm9hO4memawl9dgoHI7Vdd2pNOXCDLICMAHNzkFIUW2NBk/jAI6p3UNHzyH8Obga18cHHt1bQpUlcql1BCuEiib8RxZoQO18XC1dLWO1MXe98zS8z8ggbGtI0OMRYUlc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712031155; c=relaxed/simple;
-	bh=aI3eJF8HniXat2ib1QyBX8zCGp45TAApFBysvadGBQs=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=noVgS2SVCt8ST8HcgSW+vNT5yM6YTB2kvMzM5h9Md/Hyi/DhO+2/FLepbpY6osHTfoCDfVwIbX2PRmGxum5CO0NrgUgCWw+l9iiL+/XMMZ4y353fO0rgUexLmXMA7rdI4xD9yAkwUnVUluuuiGqV2AIBWLwRybJW8vH/kDDst3E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=nkTzWbGD; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 672A3C433C7;
-	Tue,  2 Apr 2024 04:12:33 +0000 (UTC)
+	s=arc-20240116; t=1712031443; c=relaxed/simple;
+	bh=zikIRY2LADiHW5H6P0zhROk8X9vd5W4L+25Lpd005h4=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=rhnmlx+gcYADclILB979u9bZ+5rmBjwE7g+5K1BBz/ghsPOTjpHhrScHbGsKXn6BOkwlBIKHXgfhmJU8d6NmMi9IY9HEdOZAooTdfRCMtURs0puNHYDewfqrt+ntCQTd8Sj3EPnSDSDtlkxoZFQJU16odqephmutqdVkTDI37i4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=jj2/etcD; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 865E4C433F1;
+	Tue,  2 Apr 2024 04:17:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712031154;
-	bh=aI3eJF8HniXat2ib1QyBX8zCGp45TAApFBysvadGBQs=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=nkTzWbGDGnmj8/6m7801zLy+B6JjA/ZXpJtp/FkRdEg9tN9IzGfm0CgMNlSQZ95KA
-	 HqxuhIuo0Z8jXpeg7+WS8AqPQMI3opBF15vPciltVh6dp1j4k9FufIgrSaC/5V2kCt
-	 YEPK5SKsvPPG6KBRWKu0WIHe8/jRr1UzS/lOZBFygL9M7mX0OYThU3fLemJ6C6UhXx
-	 eZZxq598IWatnRW/We9rCVsWeiyKs8JcHDpSLnBbSEV5DuEgCQtyF4olFeKEa5c0ou
-	 eYO3Jbd1Y/f6t6QROP/ViG0ZZliYkzMGtNSo1LuXTlS+lLNb7DndsBZc/K6DXHLcv+
-	 82IVNF+FUIJlA==
-Date: Mon, 1 Apr 2024 21:12:32 -0700
-From: Jakub Kicinski <kuba@kernel.org>
-To: Dexuan Cui <decui@microsoft.com>
-Cc: Haiyang Zhang <haiyangz@microsoft.com>, "linux-hyperv@vger.kernel.org"
- <linux-hyperv@vger.kernel.org>, "netdev@vger.kernel.org"
- <netdev@vger.kernel.org>, Wei Hu <weh@microsoft.com>, stephen
- <stephen@networkplumber.org>, KY Srinivasan <kys@microsoft.com>, Paul
- Rosswurm <paulros@microsoft.com>, "olaf@aepfle.de" <olaf@aepfle.de>,
- "vkuznets@redhat.com" <vkuznets@redhat.com>, "davem@davemloft.net"
- <davem@davemloft.net>, "wei.liu@kernel.org" <wei.liu@kernel.org>,
- "edumazet@google.com" <edumazet@google.com>, "pabeni@redhat.com"
- <pabeni@redhat.com>, "leon@kernel.org" <leon@kernel.org>, Long Li
- <longli@microsoft.com>, "ssengar@linux.microsoft.com"
- <ssengar@linux.microsoft.com>, "linux-rdma@vger.kernel.org"
- <linux-rdma@vger.kernel.org>, "daniel@iogearbox.net"
- <daniel@iogearbox.net>, "john.fastabend@gmail.com"
- <john.fastabend@gmail.com>, "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
- "ast@kernel.org" <ast@kernel.org>, "sharmaajay@microsoft.com"
- <sharmaajay@microsoft.com>, "hawk@kernel.org" <hawk@kernel.org>,
- "tglx@linutronix.de" <tglx@linutronix.de>,
- "shradhagupta@linux.microsoft.com" <shradhagupta@linux.microsoft.com>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "stable@vger.kernel.org" <stable@vger.kernel.org>
-Subject: Re: [PATCH net] net: mana: Fix Rx DMA datasize and skb_over_panic
-Message-ID: <20240401211232.57b17081@kernel.org>
-In-Reply-To: <CY5PR21MB37590FD539C1E380FBDC96B0BF3E2@CY5PR21MB3759.namprd21.prod.outlook.com>
-References: <1711748213-30517-1-git-send-email-haiyangz@microsoft.com>
-	<CY5PR21MB375904FD3437BA610E6BDBD1BF392@CY5PR21MB3759.namprd21.prod.outlook.com>
-	<CH2PR21MB1480E02C74E7BB5A52A71859CA3F2@CH2PR21MB1480.namprd21.prod.outlook.com>
-	<CY5PR21MB37590FD539C1E380FBDC96B0BF3E2@CY5PR21MB3759.namprd21.prod.outlook.com>
+	s=k20201202; t=1712031442;
+	bh=zikIRY2LADiHW5H6P0zhROk8X9vd5W4L+25Lpd005h4=;
+	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+	b=jj2/etcDaDV9TohgThB0sd3IZddvUH176n8Kq6Vl+8kPi7DChO0SkDAG3xffXuvBW
+	 5yIX6QFHc5VRgxo8YvTU2Krtu+pS0Uk5EwGZhD1e5kkEjSCXLakfS9suA1beXQtu+G
+	 xF5vsLgBRb+4nQjj6H8O9xyEb2aLRIOWqeS7yB3LbMVPMND4wEfrA/AnDdGk/LavO7
+	 iwN+B7N/6cX6XMV2ypeILfHU7ZtaIXNrBqB6fqpWhBq2XcZRcTj45ThHs2qgeABzBX
+	 JC4fUxqLyq3KlutUiMOpvyQXLVHQ/wej9/U1BnRpFSATNnnWNjcwed181uwQ1/xbno
+	 tqfm7sn4SYGeg==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+	id 28E91CE074C; Mon,  1 Apr 2024 21:17:22 -0700 (PDT)
+Date: Mon, 1 Apr 2024 21:17:22 -0700
+From: "Paul E. McKenney" <paulmck@kernel.org>
+To: Al Viro <viro@zeniv.linux.org.uk>
+Cc: linux-kernel@vger.kernel.org, kernel-team@meta.com,
+	"David S. Miller" <davem@davemloft.net>,
+	Andreas Larsson <andreas@gaisler.com>,
+	Palmer Dabbelt <palmer@rivosinc.com>, Arnd Bergmann <arnd@arndb.de>,
+	Marco Elver <elver@google.com>
+Subject: Re: [PATCH RFC cmpxchg 2/8] sparc: Emulate one-byte and two-byte
+ cmpxchg
+Message-ID: <1d1bc9d7-ff7d-4554-9c07-90d4e210a91d@paulmck-laptop>
+Reply-To: paulmck@kernel.org
+References: <31c82dcc-e203-48a9-aadd-f2fcd57d94c1@paulmck-laptop>
+ <20240401213950.3910531-2-paulmck@kernel.org>
+ <20240401223803.GZ538574@ZenIV>
+ <114dc62e-e0fb-41c8-bf9c-a9fda8b19eb6@paulmck-laptop>
+ <20240402000758.GC538574@ZenIV>
+ <20240402033753.GE538574@ZenIV>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240402033753.GE538574@ZenIV>
 
-On Tue, 2 Apr 2024 01:23:08 +0000 Dexuan Cui wrote:
-> > > I suggest the Fixes tag should be updated. Otherwise the fix
-> > > looks good to me.  
+On Tue, Apr 02, 2024 at 04:37:53AM +0100, Al Viro wrote:
+> On Tue, Apr 02, 2024 at 01:07:58AM +0100, Al Viro wrote:
+> 
+> > It does, IIRC.
 > > 
-> > Thanks for the suggestion. I actually thought about this before
-> > submission.
-> > I was worried about someone back ports the jumbo frame feature,
-> > they may not automatically know this patch should be backported
-> > too.   
+> > > Would you like to do that patch?  If so, I would be happy to drop mine
+> > > in favor of yours.  If not, could I please have your Signed-off-by so
+> > > I can do the Co-developed-by dance?
+> > 
+> > Will do once I dig my way from under the pile of mail (sick for a week
+> > and subscribed to l-k, among other lists)...
 > 
-> The jumbo frame commit (2fbbd712baf1) depends on the MTU
-> commit (2fbbd712baf1), so adding "Fixes: 2fbbd712baf1" (
-> instead of "Fixes: ca9c54d2d6a5") might make it easier for people
-> to notice and pick up this fix.
-> 
-> I'm OK if the patch remains as is. Just wanted to make  sure I
-> understand the issue here.
+> FWIW, parisc is in the same situation - atomics-by-cached-spinlocks.
+> 've a candidate branch, will post if it survives build...
 
-Please update the tag to where the bug was actually first exposed.
+I am sure that it seemed like a good idea at the time.  ;-)
+
+> Re parisc: why does it bother with arch_cmpxchg_local()?  Default is
+> 	* save and disable local interrupts
+> 	* read the current value, compare to old
+> 	* if equal, store new there
+> 	* restore local interrupts
+> For 32bit case parisc goes for __cmpxchg_u32(), which is
+> 	* if (SMP) choose the spinlock (indexed by hash of address)
+> 	* save and disable local interrupes
+> 	* if (SMP) arch_spin_lock(spinlock)
+> 	* read the current value, compare to old
+> 	* if equal, store new there
+> 	* if (SMP) arch_spin_unlock(spinlock)
+> 	* restore local interrupts
+> In UP case it's identical to generic; on SMP it's strictly more work.
+> Unless I'm very confused about cmpxchg_local() semantics, the
+> callers do not expect atomicity wrt other CPUs, so why do we bother?
+
+;-) ;-) ;-)
+
+In any case, happy to replace my patches with yours whenever you have
+them ready.
+
+							Thanx, Paul
 
