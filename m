@@ -1,172 +1,544 @@
-Return-Path: <linux-kernel+bounces-127259-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-127260-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id E89D68948D9
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 03:39:35 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 30F318948DC
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 03:43:08 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 80042B22C2F
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 01:39:33 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9A8261F22E14
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 01:43:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 57E5AD2E6;
-	Tue,  2 Apr 2024 01:39:27 +0000 (UTC)
-Received: from relay.hostedemail.com (smtprelay0012.hostedemail.com [216.40.44.12])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B1F3CD502;
+	Tue,  2 Apr 2024 01:43:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Sc8ZPdHZ"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.16])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4ABB48F55;
-	Tue,  2 Apr 2024 01:39:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=216.40.44.12
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D5C068F7D;
+	Tue,  2 Apr 2024 01:42:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.16
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712021966; cv=none; b=h1ZjuVmN3wbwRflz3CP11vtWE/6+EV2D1l6lj4vUg0WHdZeWAfr3Nhn7pV1TNjZMXrYxECc/gg9z0HikDTGPD54Jr7UL1X4BOFu4MILbpo1OJXNSV3/rurA4kpSZMfHnlC18DldCJNuDqIGj2qqS6YRzycqlwRmTNPImroWiAv8=
+	t=1712022179; cv=none; b=GR3l4pcJJ5YhsiuiINKZ4wOezMiD9TzAdYFVF5iEOkUXG7uFXIHADO3XvxE85PaZqEI9/NpgxNzn5kX7R/8vZ/l3Hh7UCKtFvdRUf4h380l12lWLdGRQ3k9i0y3CxgB0p/Ha2i1/djC1HFf41ZakoEFwMeKmmigIfw5ehw4OIAs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712021966; c=relaxed/simple;
-	bh=vlhqz5KpBRf9749xRgTPKFO8TUdZ9RYNixw9VsfSU0M=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=qnMwttw9Yr11DDtNAz7RPbb9+TnlAUzTCbPAtfbCxbdlO6I6PLGqeMpXedlNanjvTpfV7QTymw1sHWSXHnjPWy5Zs6HPuEPBiT6iXhvQb/j8rQvLXvA/aHh8XTtKwnOgGqG/LJC+Qkrb+qLn8qWQUdT79ypPjjx7iLRWHJuAI8U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=perches.com; spf=pass smtp.mailfrom=perches.com; arc=none smtp.client-ip=216.40.44.12
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=perches.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=perches.com
-Received: from omf13.hostedemail.com (a10.router.float.18 [10.200.18.1])
-	by unirelay08.hostedemail.com (Postfix) with ESMTP id 85479140199;
-	Tue,  2 Apr 2024 01:39:22 +0000 (UTC)
-Received: from [HIDDEN] (Authenticated sender: joe@perches.com) by omf13.hostedemail.com (Postfix) with ESMTPA id 85F292000D;
-	Tue,  2 Apr 2024 01:39:17 +0000 (UTC)
-Message-ID: <3ea68e8fc46332d45e2af0d8de938628445b6691.camel@perches.com>
-Subject: Re: [PATCH v5 2/2] scripts: checkpatch: check unused parameters for
- function-like macro
-From: Joe Perches <joe@perches.com>
-To: Mac Xu <mac.xxn@outlook.com>, Barry Song <21cnbao@gmail.com>, 
-	"akpm@linux-foundation.org"
-	 <akpm@linux-foundation.org>, "linux-doc@vger.kernel.org"
-	 <linux-doc@vger.kernel.org>, "workflows@vger.kernel.org"
-	 <workflows@vger.kernel.org>
-Cc: "apw@canonical.com" <apw@canonical.com>, "broonie@kernel.org"
- <broonie@kernel.org>, "chenhuacai@loongson.cn" <chenhuacai@loongson.cn>, 
- "chris@zankel.net" <chris@zankel.net>, "corbet@lwn.net" <corbet@lwn.net>, 
- "dwaipayanray1@gmail.com" <dwaipayanray1@gmail.com>,
- "herbert@gondor.apana.org.au" <herbert@gondor.apana.org.au>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "linux@roeck-us.net" <linux@roeck-us.net>,  "lukas.bulwahn@gmail.com"
- <lukas.bulwahn@gmail.com>, "sfr@canb.auug.org.au" <sfr@canb.auug.org.au>, 
- "v-songbaohua@oppo.com" <v-songbaohua@oppo.com>, Max Filippov
- <jcmvbkbc@gmail.com>, Jeff Johnson <quic_jjohnson@quicinc.com>, Charlemagne
- Lasse <charlemagnelasse@gmail.com>
-Date: Mon, 01 Apr 2024 18:39:16 -0700
-In-Reply-To: <MN0PR20MB471708D419907FFAF1DB0FC2F33E2@MN0PR20MB4717.namprd20.prod.outlook.com>
-References: <20240401012120.6052-1-21cnbao@gmail.com>
-	 <20240401012120.6052-3-21cnbao@gmail.com>
-	 <f5bb12d8602a03d28b2a8aeaffd8f74f001d692d.camel@perches.com>
-	 <MN0PR20MB471708D419907FFAF1DB0FC2F33E2@MN0PR20MB4717.namprd20.prod.outlook.com>
-Content-Type: text/plain; charset="ISO-8859-1"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
+	s=arc-20240116; t=1712022179; c=relaxed/simple;
+	bh=YL07RNzQ+IrLuaGQ98bNmMijBJ6zdWlZOd+8C9CH0sU=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=h1RE4cmmdoF873VexXUQqTQjtQjyJbD5U7iIR7thBiyBIpnXicVwkipZHLOmiFp9Z+lgMzM/lPf0Y2W95wVQRB8Sre9AibuvXFkQP2DgSyQKAk9XCU9ozhLRR7UVY8ErBm1UwiseCoDigXJ1UDJRFRT7MttLhY+OaBMhnIUNFRQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Sc8ZPdHZ; arc=none smtp.client-ip=198.175.65.16
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1712022177; x=1743558177;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=YL07RNzQ+IrLuaGQ98bNmMijBJ6zdWlZOd+8C9CH0sU=;
+  b=Sc8ZPdHZ8HcdBYDBt/M19VFzqTgqnNN4r/BFHOsUrnz1+rs2+zrXPMOk
+   cjMAiVXNAKU5K5tL8V3VcIPBeAYCaxB1o2CLaxb0PnHQQX9T/qNp0fAlg
+   Uab2oJ6OLxzvMu53IzYmRz3n13dqkf+Tk5brihF2OniBgQZvZb/uC36aQ
+   PGBON5rWQRyKKxsLIQJlnv/LJdH21KV6PHdXsh3E7HrwMNkGeZ0yRADx8
+   ePd0soi6+57HLyln+yniXGhfHuxYeDsrFjg46OIo7iUyjHEhuWUGPpY5P
+   X6OMmcdqnkk7nbDL7OwQWRagtR4rv1608TFyRYtxVr3IUV1MTJwjUTTAB
+   Q==;
+X-CSE-ConnectionGUID: TRppVAFhSoGTdQRGvd66Fw==
+X-CSE-MsgGUID: c703YzF3T8GXq0uMZ3+2Dw==
+X-IronPort-AV: E=McAfee;i="6600,9927,11031"; a="7295957"
+X-IronPort-AV: E=Sophos;i="6.07,173,1708416000"; 
+   d="scan'208";a="7295957"
+Received: from fmviesa001.fm.intel.com ([10.60.135.141])
+  by orvoesa108.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Apr 2024 18:42:56 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,173,1708416000"; 
+   d="scan'208";a="49110607"
+Received: from b4969161e530.jf.intel.com ([10.165.56.46])
+  by fmviesa001.fm.intel.com with ESMTP; 01 Apr 2024 18:42:54 -0700
+From: Haitao Huang <haitao.huang@linux.intel.com>
+To: jarkko@kernel.org
+Cc: anakrish@microsoft.com,
+	bp@alien8.de,
+	cgroups@vger.kernel.org,
+	chrisyan@microsoft.com,
+	dave.hansen@linux.intel.com,
+	haitao.huang@linux.intel.com,
+	hpa@zytor.com,
+	kai.huang@intel.com,
+	kristen@linux.intel.com,
+	linux-kernel@vger.kernel.org,
+	linux-sgx@vger.kernel.org,
+	mikko.ylinen@linux.intel.com,
+	mingo@redhat.com,
+	mkoutny@suse.com,
+	seanjc@google.com,
+	sohil.mehta@intel.com,
+	tglx@linutronix.de,
+	tim.c.chen@linux.intel.com,
+	tj@kernel.org,
+	x86@kernel.org,
+	yangjie@microsoft.com,
+	zhanb@microsoft.com,
+	zhiquan1.li@intel.com
+Subject: [PATCH v2] selftests/sgx: Improve cgroup test scripts
+Date: Mon,  1 Apr 2024 18:42:54 -0700
+Message-Id: <20240402014254.27717-1-haitao.huang@linux.intel.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <D08UQJ2XQY6L.1XEOEJ6HIUJ8Y@kernel.org>
+References: <D08UQJ2XQY6L.1XEOEJ6HIUJ8Y@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Rspamd-Queue-Id: 85F292000D
-X-Stat-Signature: 6ho5883h6gxd6usjtzscbx6e9uwzjpqi
-X-Rspamd-Server: rspamout04
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Session-ID: U2FsdGVkX1+vZ9mjWctkustVm6kw5YX3rWfz+BrXOao=
-X-HE-Tag: 1712021957-318462
-X-HE-Meta: U2FsdGVkX19ry6l9vQgZxv4Fb9Eb1aW7B+/HBhqXrlUOtlGQpxhNk8JdNQPrzJlak/pEzw0ZctqTBkStewNT8t4wXgswG8fAlqHmVOOMznK3hHXt6zv7YzxntmCnUSvmH59KTIkggyLMfjS2fChexa9S4528beBDHer9bpgp1DNkIQsOzWrGarR3tynjCgvlkmgTvTPaPJEzoEe5BQLVdnzH1isDxYupWV8pZ/kmntVtP3VG4uoCZ2EnGLMi11xe62pq4Zqed2rkH7ybMmV3wmK7XsOcTSP9R44dX+VPMikUFcx0Q8ZUeGRRYSPE7npRXm06LmQOsVCj052nPWHB+If09YfnORDWb7BK0BgaO5ahOzgALKVEOqfpIXNFyHywnHfdHi76BYEmwM3E4WIoFOEloEAweDtqO0AHxNn92Riu0YoLtne0CTjWE1zLvvHsf2dINtsOWJ4=
+Content-Transfer-Encoding: 8bit
 
-On Tue, 2024-04-02 at 00:16 +0000, Mac Xu wrote:
-> > On Mon, 2024-04-01 at 14:21 +1300, Barry Song wrote:
-> > > From: Xining Xu <mac.xxn@outlook.com>
-> > >=20
-> > > If function-like macros do not utilize a parameter, it might result i=
-n a
-> > > build warning.  In our coding style guidelines, we advocate for utili=
-zing
-> > > static inline functions to replace such macros.  This patch verifies
-> > > compliance with the new rule.
-> > >=20
-> > > For a macro such as the one below,
-> > >=20
-> > > =A0#define test(a) do { } while (0)
-> > >=20
-> > > The test result is as follows.
-> > >=20
-> > > =A0ERROR: Parameter 'a' is not used in function-like macro, please us=
-e static
-> > > =A0inline instead
-> > > =A0#21: FILE: mm/init-mm.c:20:
-> > > =A0+#define test(a) do { } while (0)
-> >=20
-> > This is no longer true.
-> > Please update the ERROR->WARN and message as below
-> >=20
-> > Ideally, this would have an update to
-> > Documentation/dev-tools/checkpatch.rst
-> >=20
-> > to describe the new --verbose message type
->=20
-> Hi Joe,
->=20
-> Thank you for the comments, here's the code:
->=20
-> +# check if this is an unused argument
-> +if ($define_stmt !~ /\b$arg\b/) {
-> +	WARN("MACRO_ARG_UNUSED",
-> +		"Argument '$arg' is not used in function-like macro\n" . "$herectx");
-> +}
->=20
-> and here's the document for it which is inserted into the "Macros, Attrib=
-utes and
-> Symbols" section of checkpatch.rst starting from line 909:
-> +
-> +  **MACRO_ARG_UNUSED**
-> +    If function-like macros do not utilize a parameter, it might result
-> +    in a build warning. We advocate for utilizing static inline function=
-s
-> +    to replace such macros.
-> +    For example, for a macro as below::
-> +
-> +      #define test(a) do { } while (0)
-> +
-> +    there would be a warning as below::
-> +
-> +      WARNING: Parameter 'a' is not used in function-like macro, please =
-use
-> +      static inline instead.
->=20
-> Please let me know if the document needs further re-wording to make it he=
-lpful enough
-> to the readers.
+Make cgroup test scripts ash compatible.
+Remove cg-tools dependency.
+Add documentation for functions.
 
-Hi again Xining.
+Tested with busybox on Ubuntu.
 
-Thanks.
+Signed-off-by: Haitao Huang <haitao.huang@linux.intel.com>
+---
+v2:
+- Fixes for v2 cgroup
+- Turn off swapping before memcontrol tests and back on after
+- Add comments and reformat
+---
+ tools/testing/selftests/sgx/ash_cgexec.sh     |  57 ++++++
+ .../selftests/sgx/run_epc_cg_selftests.sh     | 187 +++++++++++-------
+ .../selftests/sgx/watch_misc_for_tests.sh     |  13 +-
+ 3 files changed, 179 insertions(+), 78 deletions(-)
+ create mode 100755 tools/testing/selftests/sgx/ash_cgexec.sh
 
-That looks good but it doesn't match the script output
-which doesn't use ", please use static inline instead."
-(and I believe the script should not output that too)
-
-Another good thing would be to add a line like:
-
-	See: https://www.kernel.org/doc/html/latest/process/coding-style.html#macr=
-os-enums-and-rtl
-
-For example, from: checkpatch.rst
-
-  **ALLOC_SIZEOF_STRUCT**
-    The allocation style is bad.  In general for family of
-    allocation functions using sizeof() to get memory size,
-    constructs like::
-
-      p =3D alloc(sizeof(struct foo), ...)
-
-    should be::
-
-      p =3D alloc(sizeof(*p), ...)
-
-    See: https://www.kernel.org/doc/html/latest/process/coding-style.html#a=
-llocating-memory
+diff --git a/tools/testing/selftests/sgx/ash_cgexec.sh b/tools/testing/selftests/sgx/ash_cgexec.sh
+new file mode 100755
+index 000000000000..9607784378df
+--- /dev/null
++++ b/tools/testing/selftests/sgx/ash_cgexec.sh
+@@ -0,0 +1,57 @@
++#!/usr/bin/env sh
++# SPDX-License-Identifier: GPL-2.0
++# Copyright(c) 2024 Intel Corporation.
++
++# Move the current shell process to the specified cgroup
++# Arguments:
++# 	$1 - The cgroup controller name, e.g., misc, memory.
++#	$2 - The path of the cgroup,
++#		relative to /sys/fs/cgroup for cgroup v2,
++#		relative to /sys/fs/cgroup/$1 for v1.
++move_to_cgroup() {
++    controllers="$1"
++    path="$2"
++
++    # Check if cgroup v2 is in use
++    if [ ! -d "/sys/fs/cgroup/misc" ]; then
++        # Cgroup v2 logic
++        cgroup_full_path="/sys/fs/cgroup/${path}"
++        echo $$ > "${cgroup_full_path}/cgroup.procs"
++    else
++        # Cgroup v1 logic
++        OLD_IFS="$IFS"
++        IFS=','
++        for controller in $controllers; do
++            cgroup_full_path="/sys/fs/cgroup/${controller}/${path}"
++            echo $$ > "${cgroup_full_path}/tasks"
++        done
++        IFS="$OLD_IFS"
++    fi
++}
++
++if [ "$#" -lt 3 ] || [ "$1" != "-g" ]; then
++    echo "Usage: $0 -g <controller1,controller2:path> [-g <controller3:path> ...] <command> [args...]"
++    exit 1
++fi
++
++while [ "$#" -gt 0 ]; do
++    case "$1" in
++        -g)
++            # Ensure that a controller:path pair is provided after -g
++            if [ -z "$2" ]; then
++                echo "Error: Missing controller:path argument after -g"
++                exit 1
++            fi
++            IFS=':' read CONTROLLERS CGROUP_PATH <<EOF
++$2
++EOF
++            move_to_cgroup "$CONTROLLERS" "$CGROUP_PATH"
++            shift 2
++            ;;
++        *)
++            # Execute the command within the cgroup
++            exec "$@"
++            ;;
++    esac
++done
++
+diff --git a/tools/testing/selftests/sgx/run_epc_cg_selftests.sh b/tools/testing/selftests/sgx/run_epc_cg_selftests.sh
+index e027bf39f005..be4172f84580 100755
+--- a/tools/testing/selftests/sgx/run_epc_cg_selftests.sh
++++ b/tools/testing/selftests/sgx/run_epc_cg_selftests.sh
+@@ -1,24 +1,14 @@
+-#!/bin/bash
++#!/usr/bin/env sh
+ # SPDX-License-Identifier: GPL-2.0
+-# Copyright(c) 2023 Intel Corporation.
++# Copyright(c) 2023, 2024 Intel Corporation.
+ 
+ TEST_ROOT_CG=selftest
+-cgcreate -g misc:$TEST_ROOT_CG
+-if [ $? -ne 0 ]; then
+-    echo "# Please make sure cgroup-tools is installed, and misc cgroup is mounted."
+-    exit 1
+-fi
+ TEST_CG_SUB1=$TEST_ROOT_CG/test1
+ TEST_CG_SUB2=$TEST_ROOT_CG/test2
+ # We will only set limit in test1 and run tests in test3
+ TEST_CG_SUB3=$TEST_ROOT_CG/test1/test3
+ TEST_CG_SUB4=$TEST_ROOT_CG/test4
+ 
+-cgcreate -g misc:$TEST_CG_SUB1
+-cgcreate -g misc:$TEST_CG_SUB2
+-cgcreate -g misc:$TEST_CG_SUB3
+-cgcreate -g misc:$TEST_CG_SUB4
+-
+ # Default to V2
+ CG_MISC_ROOT=/sys/fs/cgroup
+ CG_MEM_ROOT=/sys/fs/cgroup
+@@ -31,6 +21,19 @@ else
+     CG_MEM_ROOT=/sys/fs/cgroup/memory
+     CG_V1=1
+ fi
++mkdir -p $CG_MISC_ROOT/$TEST_CG_SUB1
++mkdir -p $CG_MISC_ROOT/$TEST_CG_SUB2
++mkdir -p $CG_MISC_ROOT/$TEST_CG_SUB3
++mkdir -p $CG_MISC_ROOT/$TEST_CG_SUB4
++
++# Turn on misc and memory controller in non-leaf nodes for V2
++if [ $CG_V1 -eq 0 ]; then
++    echo "+misc" >  $CG_MISC_ROOT/cgroup.subtree_control
++    echo "+memory" > $CG_MEM_ROOT/cgroup.subtree_control
++    echo "+misc" >  $CG_MISC_ROOT/$TEST_ROOT_CG/cgroup.subtree_control
++    echo "+memory" > $CG_MEM_ROOT/$TEST_ROOT_CG/cgroup.subtree_control
++    echo "+misc" >  $CG_MISC_ROOT/$TEST_CG_SUB1/cgroup.subtree_control
++fi
+ 
+ CAPACITY=$(grep "sgx_epc" "$CG_MISC_ROOT/misc.capacity" | awk '{print $2}')
+ # This is below number of VA pages needed for enclave of capacity size. So
+@@ -48,34 +51,67 @@ echo "sgx_epc $SMALL" > $CG_MISC_ROOT/$TEST_CG_SUB1/misc.max
+ echo "sgx_epc $LARGE" >  $CG_MISC_ROOT/$TEST_CG_SUB2/misc.max
+ echo "sgx_epc $LARGER" > $CG_MISC_ROOT/$TEST_CG_SUB4/misc.max
+ 
++if [ $? -ne 0 ]; then
++    echo "# Failed setting up misc limits, make sure misc cgroup is mounted."
++    exit 1
++fi
++
++clean_up_misc()
++{
++    sleep 2
++    rmdir $CG_MISC_ROOT/$TEST_CG_SUB2
++    rmdir $CG_MISC_ROOT/$TEST_CG_SUB3
++    rmdir $CG_MISC_ROOT/$TEST_CG_SUB4
++    rmdir $CG_MISC_ROOT/$TEST_CG_SUB1
++    rmdir $CG_MISC_ROOT/$TEST_ROOT_CG
++}
++
+ timestamp=$(date +%Y%m%d_%H%M%S)
+ 
+ test_cmd="./test_sgx -t unclobbered_vdso_oversubscribed"
+ 
++# Wait for a process and check for expected exit status.
++#
++# Arguments:
++#	$1 - the pid of the process to wait and check.
++#	$2 - 1 if expecting success, 0 for failure.
++#
++# Return:
++#	0 if the exit status of the process matches the expectation.
++#	1 otherwise.
+ wait_check_process_status() {
+-    local pid=$1
+-    local check_for_success=$2  # If 1, check for success;
+-                                # If 0, check for failure
++    pid=$1
++    check_for_success=$2  # If 1, check for success;
++                          # If 0, check for failure
+     wait "$pid"
+-    local status=$?
++    status=$?
+ 
+-    if [[ $check_for_success -eq 1 && $status -eq 0 ]]; then
++    if [ $check_for_success -eq 1 ] && [ $status -eq 0 ]; then
+         echo "# Process $pid succeeded."
+         return 0
+-    elif [[ $check_for_success -eq 0 && $status -ne 0 ]]; then
++    elif [ $check_for_success -eq 0 ] && [ $status -ne 0 ]; then
+         echo "# Process $pid returned failure."
+         return 0
+     fi
+     return 1
+ }
+ 
++# Wait for a set of processes and check for expected exit status
++#
++# Arguments:
++#	$1 - 1 if expecting success, 0 for failure.
++#	remaining args - The pids of the processes
++#
++# Return:
++#	0 if exit status of any process matches the expectation.
++#	1 otherwise.
+ wait_and_detect_for_any() {
+-    local pids=("$@")
+-    local check_for_success=$1  # If 1, check for success;
+-                                # If 0, check for failure
+-    local detected=1 # 0 for success detection
++    check_for_success=$1  # If 1, check for success;
++                          # If 0, check for failure
++    shift
++    detected=1 # 0 for success detection
+ 
+-    for pid in "${pids[@]:1}"; do
++    for pid in $@; do
+         if wait_check_process_status "$pid" "$check_for_success"; then
+             detected=0
+             # Wait for other processes to exit
+@@ -88,10 +124,10 @@ wait_and_detect_for_any() {
+ echo "# Start unclobbered_vdso_oversubscribed with SMALL limit, expecting failure..."
+ # Always use leaf node of misc cgroups so it works for both v1 and v2
+ # these may fail on OOM
+-cgexec -g misc:$TEST_CG_SUB3 $test_cmd >cgtest_small_$timestamp.log 2>&1
+-if [[ $? -eq 0 ]]; then
++./ash_cgexec.sh -g misc:$TEST_CG_SUB3 $test_cmd >cgtest_small_$timestamp.log 2>&1
++if [ $? -eq 0 ]; then
+     echo "# Fail on SMALL limit, not expecting any test passes."
+-    cgdelete -r -g misc:$TEST_ROOT_CG
++    clean_up_misc
+     exit 1
+ else
+     echo "# Test failed as expected."
+@@ -102,54 +138,54 @@ echo "# PASSED SMALL limit."
+ echo "# Start 4 concurrent unclobbered_vdso_oversubscribed tests with LARGE limit,
+         expecting at least one success...."
+ 
+-pids=()
+-for i in {1..4}; do
++pids=""
++for i in 1 2 3 4; do
+     (
+-        cgexec -g misc:$TEST_CG_SUB2 $test_cmd >cgtest_large_positive_$timestamp.$i.log 2>&1
++        ./ash_cgexec.sh -g misc:$TEST_CG_SUB2 $test_cmd >cgtest_large_positive_$timestamp.$i.log 2>&1
+     ) &
+-    pids+=($!)
++    pids="$pids $!"
+ done
+ 
+ 
+-if wait_and_detect_for_any 1 "${pids[@]}"; then
++if wait_and_detect_for_any 1 "$pids"; then
+     echo "# PASSED LARGE limit positive testing."
+ else
+     echo "# Failed on LARGE limit positive testing, no test passes."
+-    cgdelete -r -g misc:$TEST_ROOT_CG
++    clean_up_misc
+     exit 1
+ fi
+ 
+ echo "# Start 5 concurrent unclobbered_vdso_oversubscribed tests with LARGE limit,
+         expecting at least one failure...."
+-pids=()
+-for i in {1..5}; do
++pids=""
++for i in 1 2 3 4 5; do
+     (
+-        cgexec -g misc:$TEST_CG_SUB2 $test_cmd >cgtest_large_negative_$timestamp.$i.log 2>&1
++        ./ash_cgexec.sh -g misc:$TEST_CG_SUB2 $test_cmd >cgtest_large_negative_$timestamp.$i.log 2>&1
+     ) &
+-    pids+=($!)
++    pids="$pids $!"
+ done
+ 
+-if wait_and_detect_for_any 0 "${pids[@]}"; then
++if wait_and_detect_for_any 0 "$pids"; then
+     echo "# PASSED LARGE limit negative testing."
+ else
+     echo "# Failed on LARGE limit negative testing, no test fails."
+-    cgdelete -r -g misc:$TEST_ROOT_CG
++    clean_up_misc
+     exit 1
+ fi
+ 
+ echo "# Start 8 concurrent unclobbered_vdso_oversubscribed tests with LARGER limit,
+         expecting no failure...."
+-pids=()
+-for i in {1..8}; do
++pids=""
++for i in 1 2 3 4 5 6 7 8; do
+     (
+-        cgexec -g misc:$TEST_CG_SUB4 $test_cmd >cgtest_larger_$timestamp.$i.log 2>&1
++        ./ash_cgexec.sh -g misc:$TEST_CG_SUB4 $test_cmd >cgtest_larger_$timestamp.$i.log 2>&1
+     ) &
+-    pids+=($!)
++    pids="$pids $!"
+ done
+ 
+-if wait_and_detect_for_any 0 "${pids[@]}"; then
++if wait_and_detect_for_any 0 "$pids"; then
+     echo "# Failed on LARGER limit, at least one test fails."
+-    cgdelete -r -g misc:$TEST_ROOT_CG
++    clean_up_misc
+     exit 1
+ else
+     echo "# PASSED LARGER limit tests."
+@@ -157,51 +193,58 @@ fi
+ 
+ echo "# Start 8 concurrent unclobbered_vdso_oversubscribed tests with LARGER limit,
+       randomly kill one, expecting no failure...."
+-pids=()
+-for i in {1..8}; do
++pids=""
++for i in 1 2 3 4 5 6 7 8; do
+     (
+-        cgexec -g misc:$TEST_CG_SUB4 $test_cmd >cgtest_larger_kill_$timestamp.$i.log 2>&1
++        ./ash_cgexec.sh -g misc:$TEST_CG_SUB4 $test_cmd >cgtest_larger_kill_$timestamp.$i.log 2>&1
+     ) &
+-    pids+=($!)
++    pids="$pids $!"
+ done
+-
+-sleep $((RANDOM % 10 + 5))
++random_number=$(awk 'BEGIN{srand();print int(rand()*10)}')
++sleep $((random_number + 5))
+ 
+ # Randomly select a PID to kill
+-RANDOM_INDEX=$((RANDOM % 8))
+-PID_TO_KILL=${pids[RANDOM_INDEX]}
++RANDOM_INDEX=$(awk 'BEGIN{srand();print int(rand()*8)}')
++counter=0
++for pid in $pids; do
++    if [ "$counter" -eq "$RANDOM_INDEX" ]; then
++        PID_TO_KILL=$pid
++        break
++    fi
++    counter=$((counter + 1))
++done
+ 
+ kill $PID_TO_KILL
+ echo "# Killed process with PID: $PID_TO_KILL"
+ 
+ any_failure=0
+-for pid in "${pids[@]}"; do
++for pid in $pids; do
+     wait "$pid"
+     status=$?
+     if [ "$pid" != "$PID_TO_KILL" ]; then
+-        if [[ $status -ne 0 ]]; then
++        if [ $status -ne 0 ]; then
+ 	    echo "# Process $pid returned failure."
+             any_failure=1
+         fi
+     fi
+ done
+ 
+-if [[ $any_failure -ne 0 ]]; then
++if [ $any_failure -ne 0 ]; then
+     echo "# Failed on random killing, at least one test fails."
+-    cgdelete -r -g misc:$TEST_ROOT_CG
++    clean_up_misc
+     exit 1
+ fi
+ echo "# PASSED LARGER limit test with a process randomly killed."
+ 
+-cgcreate -g memory:$TEST_CG_SUB2
++mkdir -p $CG_MEM_ROOT/$TEST_CG_SUB2
+ if [ $? -ne 0 ]; then
+     echo "# Failed creating memory controller."
+-    cgdelete -r -g misc:$TEST_ROOT_CG
++    clean_up_misc
+     exit 1
+ fi
+ MEM_LIMIT_TOO_SMALL=$((CAPACITY - 2 * LARGE))
+ 
+-if [[ $CG_V1 -eq 0 ]]; then
++if [ $CG_V1 -eq 0 ]; then
+     echo "$MEM_LIMIT_TOO_SMALL" > $CG_MEM_ROOT/$TEST_CG_SUB2/memory.max
+ else
+     echo "$MEM_LIMIT_TOO_SMALL" > $CG_MEM_ROOT/$TEST_CG_SUB2/memory.limit_in_bytes
+@@ -210,23 +253,27 @@ fi
+ 
+ echo "# Start 4 concurrent unclobbered_vdso_oversubscribed tests with LARGE EPC limit,
+         and too small RAM limit, expecting all failures...."
+-pids=()
+-for i in {1..4}; do
++# Ensure swapping off
++swapoff -a
++pids=""
++for i in 1 2 3 4; do
+     (
+-        cgexec -g memory:$TEST_CG_SUB2 -g misc:$TEST_CG_SUB2 $test_cmd \
++        ./ash_cgexec.sh -g memory:$TEST_CG_SUB2 -g misc:$TEST_CG_SUB2 $test_cmd \
+                >cgtest_large_oom_$timestamp.$i.log 2>&1
+     ) &
+-    pids+=($!)
++    pids="$pids $!"
+ done
+ 
+-if wait_and_detect_for_any 1 "${pids[@]}"; then
++if wait_and_detect_for_any 1 "$pids"; then
+     echo "# Failed on tests with memcontrol, some tests did not fail."
+-    cgdelete -r -g misc:$TEST_ROOT_CG
+-    if [[ $CG_V1 -ne 0 ]]; then
+-        cgdelete -r -g memory:$TEST_ROOT_CG
++    clean_up_misc
++    if [ $CG_V1 -ne 0 ]; then
++        rmdir $CG_MEM_ROOT/$TEST_CG_SUB2
+     fi
++    swapon -a
+     exit 1
+ else
++    swapon -a
+     echo "# PASSED LARGE limit tests with memcontrol."
+ fi
+ 
+@@ -239,8 +286,8 @@ else
+     echo "# PASSED leakage check."
+     echo "# PASSED ALL cgroup limit tests, cleanup cgroups..."
+ fi
+-cgdelete -r -g misc:$TEST_ROOT_CG
+-if [[ $CG_V1 -ne 0 ]]; then
+-     cgdelete -r -g memory:$TEST_ROOT_CG
++clean_up_misc
++if [ $CG_V1 -ne 0 ]; then
++     rmdir $CG_MEM_ROOT/$TEST_CG_SUB2
+ fi
+ echo "# done."
+diff --git a/tools/testing/selftests/sgx/watch_misc_for_tests.sh b/tools/testing/selftests/sgx/watch_misc_for_tests.sh
+index dbd38f346e7b..3b05475938d0 100755
+--- a/tools/testing/selftests/sgx/watch_misc_for_tests.sh
++++ b/tools/testing/selftests/sgx/watch_misc_for_tests.sh
+@@ -1,13 +1,10 @@
+-#!/bin/bash
+-# SPDX-License-Identifier: GPL-2.0
++##!/usr/bin/env sh
++#!/bin/sh
+ # Copyright(c) 2023 Intel Corporation.
+ 
+-if [ -z "$1" ]
+-  then
+-    echo "No argument supplied, please provide 'max', 'current' or 'events'"
++if [ -z "$1" ]; then
++    echo "No argument supplied, please provide 'max', 'current', or 'events'"
+     exit 1
+ fi
+ 
+-watch -n 1 "find /sys/fs/cgroup -wholename */test*/misc.$1 -exec sh -c \
+-    'echo \"\$1:\"; cat \"\$1\"' _ {} \;"
+-
++watch -n 1 'find /sys/fs/cgroup -wholename "*/test*/misc.'$1'" -exec sh -c '\''echo "$1:"; cat "$1"'\'' _ {} \;'
+-- 
+2.25.1
 
 
