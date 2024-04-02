@@ -1,66 +1,66 @@
-Return-Path: <linux-kernel+bounces-127927-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-127928-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 004498952D2
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 14:22:01 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 05C6C8952D4
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 14:22:18 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 94C171F22DD9
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 12:22:01 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 355871C230C5
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 12:22:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AB42C7EF12;
-	Tue,  2 Apr 2024 12:21:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E04487C6DF;
+	Tue,  2 Apr 2024 12:21:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="glnejwao"
+	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="tVizRN1e"
 Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C20D478B63;
-	Tue,  2 Apr 2024 12:21:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9B4257764E;
+	Tue,  2 Apr 2024 12:21:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712060466; cv=none; b=QopZshPSoUzaPcHgNvulzwtONc7uVl6Rho6OWPL965StdGnHHDhTmWCHyOK1jJRwSbXMV0TKfuY2/HvOfWOG0qaGf5gMHmh5XU+ZtWPDdwJ24n2PxVXVz86cMlpA8tMtiwm/M9As5GPYvo3/Lc025wQdUNKnqGOiZONPlMdjffo=
+	t=1712060484; cv=none; b=P4Cf7D9J/9EWpUm6nyw7YlH3AX8TQse0T76dD8fzzpjMqy5ABlfMETiGmYIX5o3q3NcvjoRvTXzxd9SuKZsoF+o3xq3Bt4UPVt9C8lklCoFEGFhk/uBLlTqucbI75+o8mPhyUoV90aQxUGRBbr5vx/a8GzCA1Nmw/+93zChzuk0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712060466; c=relaxed/simple;
-	bh=xyAFVVSrUaZelYKAVF4nMxj60RRWxZjPtQr6WMey4Mw=;
+	s=arc-20240116; t=1712060484; c=relaxed/simple;
+	bh=HfpmeKZnkkFXaCQeRtGNvX0DALTE60IDykW4I9/bvKc=;
 	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=XqV2aoidKoBZYUroqxybYMAp/w3/GdLYgCUDc1jm5ABm+y/V8HfSTOnGcgmwsUJ0ymijaWrWbwnuprOg7KrqTSNQjOpz1DJggdRqQHRFgvnP6P0y30f/rcgPj19Kl9hSQoclCvHCB6NtNkaIrvTYQsXdOuTI2AvZWs8nE44AJHk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=glnejwao; arc=none smtp.client-ip=46.235.227.194
+	 MIME-Version:Content-Type; b=ECCf3+T3XCFELYwb7k8lMyX01OlSQGA02cKZmxhyJXBXiq5gR55tiuyZgAuSNbwGqBcG3A0LwldgpFbqX8YMC3hM2qH5tFWTM/idnLdSuUGeviQpeuc5ZZkzGeUFhal+nleQnxe3WdYkrK/bj+ruWqV1lQ54Bg58y/xgl56smh4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=tVizRN1e; arc=none smtp.client-ip=46.235.227.194
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-	s=mail; t=1712060460;
-	bh=xyAFVVSrUaZelYKAVF4nMxj60RRWxZjPtQr6WMey4Mw=;
+	s=mail; t=1712060480;
+	bh=HfpmeKZnkkFXaCQeRtGNvX0DALTE60IDykW4I9/bvKc=;
 	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=glnejwaovaa1DO8cccp6ZRvs2DNHxoE3trZF+FEuDKp8m43onB4hwOknMkYcQ7yYj
-	 aTXzdvcnAilQ+WznEWbbl/6vkY8v7R4ksPGclv/lcjQVwd56tOTohiseugslKDp1eZ
-	 +yrnjF9WQuNuD5qvTrTLloHtZ6mNbXgo8vwc+eKgFNB38j/yAt0nF93MFhpiiMeU9B
-	 hQEEEShmHXDeZOvYBSDOR33tAYOzpKt1TH53/EMULZOeq8WLHBsca3gY1pbFOPjWHC
-	 Owng3d9WO3P4AHfQCIheDlq0ptGb92pDoakhxqEjGUi3e5WLS/CBgS+cdmkDH7aNre
-	 Y09oy5O2JEVAA==
+	b=tVizRN1eaG/A4k20L4YfTkZgs+JGOXCVd1K8Vq0dFZlAvnMmJ08sAA2gXSIfJ2+vG
+	 EqSIWOY/xh7ZFbTpTU9Xk5t9TzcjgGKWIZhUarLwPkPSexkexlrIb/nxGoAJ6sbPeJ
+	 Yh8F02PTp9oFl05I2bmYZ6RLi6CtEz7nRDL5Ydb0gzQ1IzhYKutA8cGYOX8fGMOvhX
+	 BL5bDBWg6tSwRsx1nyAJTfvgxjZzFvsQ2vBNiIAdOLJ6SLAYBLpKZvE4tvDydyhmyT
+	 IB9myNMIf3Edp7t9hqgk41FZru2H923YDBBagB1K0Bt8pvYoMM0horwhFk3ezEFG4J
+	 GqCnhb00u9bNQ==
 Received: from localhost (cola.collaboradmins.com [195.201.22.229])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
 	(Authenticated sender: bbrezillon)
-	by madrid.collaboradmins.com (Postfix) with ESMTPSA id CFAD03781144;
-	Tue,  2 Apr 2024 12:20:59 +0000 (UTC)
-Date: Tue, 2 Apr 2024 14:20:58 +0200
+	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 2E67F3781144;
+	Tue,  2 Apr 2024 12:21:20 +0000 (UTC)
+Date: Tue, 2 Apr 2024 14:21:19 +0200
 From: Boris Brezillon <boris.brezillon@collabora.com>
 To: Dan Carpenter <dan.carpenter@linaro.org>
 Cc: Steven Price <steven.price@arm.com>, Liviu Dudau <liviu.dudau@arm.com>,
  Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, Maxime Ripard
  <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>, David Airlie
  <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>, Heiko Stuebner
- <heiko@sntech.de>, Grant Likely <grant.likely@linaro.org>,
- dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
- kernel-janitors@vger.kernel.org
-Subject: Re: [PATCH] drm/panthor: Fix error code in panthor_gpu_init()
-Message-ID: <20240402142058.5477a9bf@collabora.com>
-In-Reply-To: <d753e684-43ee-45c2-a1fd-86222da204e1@moroto.mountain>
-References: <d753e684-43ee-45c2-a1fd-86222da204e1@moroto.mountain>
+ <heiko@sntech.de>, dri-devel@lists.freedesktop.org,
+ linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
+Subject: Re: [PATCH] drm/panthor: Fix off by one in
+ panthor_fw_get_cs_iface()
+Message-ID: <20240402142119.436dcfb6@collabora.com>
+In-Reply-To: <62835c16-c85c-483d-a8fe-63be78d49d15@moroto.mountain>
+References: <62835c16-c85c-483d-a8fe-63be78d49d15@moroto.mountain>
 Organization: Collabora
 X-Mailer: Claws Mail 4.2.0 (GTK 3.24.41; x86_64-redhat-linux-gnu)
 Precedence: bulk
@@ -72,38 +72,33 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 
-On Tue, 2 Apr 2024 12:56:19 +0300
+On Tue, 2 Apr 2024 12:56:42 +0300
 Dan Carpenter <dan.carpenter@linaro.org> wrote:
 
-> This code accidentally returns zero/success on error because of a typo.
-> It should be "irq" instead of "ret".  The other thing is that if
-> platform_get_irq_byname() were to return zero then the error code would
-> be cmplicated.  Fortunately, it does not so we can just change <= to
-> < 0.
+> The ->iface.streams[csg_slot][] array has MAX_CS_PER_CSG elements so
+> this > comparison needs to be >= to prevent an out of bounds access.
 > 
-> Fixes: 5cd894e258c4 ("drm/panthor: Add the GPU logical block")
+> Fixes: 2718d91816ee ("drm/panthor: Add the FW logical block")
 > Signed-off-by: Dan Carpenter <dan.carpenter@linaro.org>
 
 Reviewed-by: Boris Brezillon <boris.brezillon@collabora.com>
 
 > ---
->  drivers/gpu/drm/panthor/panthor_gpu.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
+>  drivers/gpu/drm/panthor/panthor_fw.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> diff --git a/drivers/gpu/drm/panthor/panthor_gpu.c b/drivers/gpu/drm/panthor/panthor_gpu.c
-> index 0f7c962440d3..5251d8764e7d 100644
-> --- a/drivers/gpu/drm/panthor/panthor_gpu.c
-> +++ b/drivers/gpu/drm/panthor/panthor_gpu.c
-> @@ -211,8 +211,8 @@ int panthor_gpu_init(struct panthor_device *ptdev)
->  		return ret;
+> diff --git a/drivers/gpu/drm/panthor/panthor_fw.c b/drivers/gpu/drm/panthor/panthor_fw.c
+> index 33c87a59834e..181395e2859a 100644
+> --- a/drivers/gpu/drm/panthor/panthor_fw.c
+> +++ b/drivers/gpu/drm/panthor/panthor_fw.c
+> @@ -308,7 +308,7 @@ panthor_fw_get_csg_iface(struct panthor_device *ptdev, u32 csg_slot)
+>  struct panthor_fw_cs_iface *
+>  panthor_fw_get_cs_iface(struct panthor_device *ptdev, u32 csg_slot, u32 cs_slot)
+>  {
+> -	if (drm_WARN_ON(&ptdev->base, csg_slot >= MAX_CSGS || cs_slot > MAX_CS_PER_CSG))
+> +	if (drm_WARN_ON(&ptdev->base, csg_slot >= MAX_CSGS || cs_slot >= MAX_CS_PER_CSG))
+>  		return NULL;
 >  
->  	irq = platform_get_irq_byname(to_platform_device(ptdev->base.dev), "gpu");
-> -	if (irq <= 0)
-> -		return ret;
-> +	if (irq < 0)
-> +		return irq;
->  
->  	ret = panthor_request_gpu_irq(ptdev, &ptdev->gpu->irq, irq, GPU_INTERRUPTS_MASK);
->  	if (ret)
+>  	return &ptdev->fw->iface.streams[csg_slot][cs_slot];
 
 
