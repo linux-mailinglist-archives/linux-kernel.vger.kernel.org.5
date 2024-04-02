@@ -1,58 +1,58 @@
-Return-Path: <linux-kernel+bounces-128027-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-128028-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 06659895521
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 15:19:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id BCF8C895522
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 15:20:08 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2938D1C20BD0
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 13:19:56 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E07B01C21E6D
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 13:20:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B8A0B83CAE;
-	Tue,  2 Apr 2024 13:19:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1A8B78289C;
+	Tue,  2 Apr 2024 13:20:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="MwXOKwDD"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="dZFQ3Dsk"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D471C8062A;
-	Tue,  2 Apr 2024 13:19:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4653260DE9
+	for <linux-kernel@vger.kernel.org>; Tue,  2 Apr 2024 13:20:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712063989; cv=none; b=ckOkC0VKLtTLG9zZNW2r0GDGIuMY2lftj1PWvokDYZlLc1UGmcd0wV3Nh8ISFk0D8ZSTJ8bynMjOBfK3Nd+RZmsnWcwWeehmzrkz4BuPszRxyoSOjufLKMbvxIhqn4fX4q/3Ofi/uwbFkPn5h8nUrACVNG/JxXpy5O5UtwE8eYg=
+	t=1712064005; cv=none; b=scxwwuRyhvGqB1te/dqKLOIzz2txiADg43/VjZW2+eWxkburzR5ubO3Q4zSIgIjdJ0oAalgeu8jUCU+c6FX0EElqPZeL5UuTp7Lu4ZOGWigtgRgHrabM27bju5MSSl6B1d2FZRieljdJK/QtnfTfvULloXxR13G3UI81MlPxu6g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712063989; c=relaxed/simple;
-	bh=6D05Yya3KxK0OkWkNXVX0Mp3DXfWGd2Ns0Ca9ovdfaw=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=reVBf5iEw0F8eFHbyJp5nBkjllSnp+qvML/xJ02FEoWyhrE0zNG7fSGVOr/RePAbuTelviO3mkEMkjEdn5DNn1eW7y1KaHhxtxsflBh3LESYU+eqmEA+dAsosfbanDMdL/wnelL8tN9mtSYoxlq6IgC4HN+IaxA6UZdUTKLxKIk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=MwXOKwDD; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8EAE6C43390;
-	Tue,  2 Apr 2024 13:19:46 +0000 (UTC)
+	s=arc-20240116; t=1712064005; c=relaxed/simple;
+	bh=uKsjU8/PIj0LW7ebecEKaDRjpVVEPAPWOJqhLvwjBdY=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=COx+TQalKCY5W5Ty7cmXQMQ+HA0r4tKx6uikn+t2mLSquNGA/C3ifrq61q9zvq0Ifo5EwekVLvZrtmvbnabZ/fBPtdJPZAMmwRx0YGOCn4+bTACA7MTVFo1iPpN0326XuHJQnexz6UmfBf6spI49noiZmAqgZdFU6/vNBjkFXDM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=dZFQ3Dsk; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 57347C433F1;
+	Tue,  2 Apr 2024 13:20:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712063988;
-	bh=6D05Yya3KxK0OkWkNXVX0Mp3DXfWGd2Ns0Ca9ovdfaw=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=MwXOKwDDFThNQSSdwFoyIDPuzphqyMHtPg1wzAPeJNlw7LZilwgpYtOb5qPMLjVpV
-	 CYUxFWbal2HMJeC93LtARxsmlb6Xu2PACLlFnYHIjXWlmS6M7tWn5kMUJ+qupt3FAv
-	 U7fR66IQmSw/jK5b6N9x64B8O/rca4SOIhBepo5bAO1g9f+6nUpApx/hJ1JlMQAnFk
-	 Vt3XjdtRfWGVvAnfqY43tgY9tNw2FLYYI90+yZA41lRIHs5PSTjZn1p04QirVPulpo
-	 cI7UT62Ym4BcKJKH4D826Xqw5qw7ekg3r8hSuDN2oigtUp8rACw2FP0YND2Aex/qpZ
-	 aRT7q6NBPsanQ==
-Date: Tue, 2 Apr 2024 15:19:43 +0200
-From: Alexey Gladkov <legion@kernel.org>
-To: Jiri Slaby <jirislaby@kernel.org>
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	LKML <linux-kernel@vger.kernel.org>, kbd@lists.linux.dev,
-	linux-api@vger.kernel.org, linux-fbdev@vger.kernel.org,
-	linux-serial@vger.kernel.org, Helge Deller <deller@gmx.de>
-Subject: Re: [RESEND PATCH v3 1/2] VT: Add KDFONTINFO ioctl
-Message-ID: <ZgwF72yHH_0-A4FW@example.org>
-References: <cover.1710252966.git.legion@kernel.org>
- <cover.1712053848.git.legion@kernel.org>
- <ed056326540f04b72c97a276fbcc316e1b2f6371.1712053848.git.legion@kernel.org>
- <74ca50e0-61b1-4d4c-85dd-a5d920548c04@kernel.org>
+	s=k20201202; t=1712064004;
+	bh=uKsjU8/PIj0LW7ebecEKaDRjpVVEPAPWOJqhLvwjBdY=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+	b=dZFQ3DskOEKCJJ0pjg1btHzSeMqU5YkkvRkMb7PmvR6XoRk5BdnGWP1ZPPnBsNgfM
+	 Av1CEuprICBAeX0wAlhkCPjXl8uRUhu1CZDEIG4674budbSyQlFgEnmDjMAFAMP14P
+	 nqqxnetxZv0/0OAny6ddaerzAQQYnEl2pKa8OGzFuCPDf4Oe4FTphJVpSGL17g6oWV
+	 Nq7BU1lN+wk/l/6x4ApmMsojReAskjExzqutQ25+eUyZR3mlHf4Z967feBBcCSEHmJ
+	 5dYTA121fm+zgKKJ48sHACOTTYAg8Y5Pr/SwKmJJPZltypnS/iqDCc4xlhq63+JB7r
+	 +N2z1Y/YT041A==
+From: =?utf-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>
+To: Puranjay Mohan <puranjay12@gmail.com>, Paul Walmsley
+ <paul.walmsley@sifive.com>, Palmer Dabbelt <palmer@dabbelt.com>, Albert Ou
+ <aou@eecs.berkeley.edu>, linux-riscv@lists.infradead.org,
+ linux-kernel@vger.kernel.org, =?utf-8?B?QmrDtnJuIFTDtnBlbA==?=
+ <bjorn@rivosinc.com>
+Cc: puranjay12@gmail.com
+Subject: Re: [PATCH 2/2] riscv: stacktrace: make walk_stackframe() more robust
+In-Reply-To: <20240328184020.34278-3-puranjay12@gmail.com>
+References: <20240328184020.34278-1-puranjay12@gmail.com>
+ <20240328184020.34278-3-puranjay12@gmail.com>
+Date: Tue, 02 Apr 2024 15:20:01 +0200
+Message-ID: <87v84zrjem.fsf@all.your.base.are.belong.to.us>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -60,141 +60,144 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <74ca50e0-61b1-4d4c-85dd-a5d920548c04@kernel.org>
+Content-Transfer-Encoding: quoted-printable
 
-On Tue, Apr 02, 2024 at 01:02:20PM +0200, Jiri Slaby wrote:
-> Hi,
-> 
-> On 02. 04. 24, 12:32, Alexey Gladkov wrote:
-> > Each driver has its own restrictions on font size. There is currently no
-> > way to understand what the requirements are. The new ioctl allows
-> > userspace to get the minmum and maximum font size values.
-> 
-> minimum
+Puranjay Mohan <puranjay12@gmail.com> writes:
 
-Typo. Sorry.
+> Currently walk_stackframe() provides only a cookie and the PC to the
+> consume_entry function. This doesn't allow the implementation of
+> advanced stack walkers that need access to SP and FP as well.
+>
+> Change walk_stackframe to provide a struct unwind_state to the
+> consume_entry function. This unwind_state has all information that is
+> available to walk_stackframe. The information provided to the callback
+> will not always be live/useful, the callback would be aware of the
+> different configurations the information in unwind_state can be.
+>
+> For example: if CONFIG_FRAME_POINTER is not available, unwind_state->fp
+> will always be zero.
+>
+> This commit doesn't make any functional changes.
+>
+> Signed-off-by: Puranjay Mohan <puranjay12@gmail.com>
+> ---
+>  arch/riscv/kernel/stacktrace.c | 55 ++++++++++++++++++++++++++++++----
+>  1 file changed, 49 insertions(+), 6 deletions(-)
+>
+> diff --git a/arch/riscv/kernel/stacktrace.c b/arch/riscv/kernel/stacktrac=
+e.c
+> index e28f7b2e4b6a6..92c41c87b267b 100644
+> --- a/arch/riscv/kernel/stacktrace.c
+> +++ b/arch/riscv/kernel/stacktrace.c
+> @@ -14,15 +14,26 @@
+>=20=20
+>  #include <asm/stacktrace.h>
+>=20=20
+> +struct unwind_state {
+> +	unsigned long fp;
+> +	unsigned long sp;
+> +	unsigned long pc;
+> +	struct pt_regs *regs;
+> +	struct task_struct *task;
+> +};
+> +
+> +typedef bool (*unwind_consume_fn)(void *cookie, const struct unwind_stat=
+e *state);
+> +
+>  #ifdef CONFIG_FRAME_POINTER
+>=20=20
+>  extern asmlinkage void ret_from_exception(void);
+>=20=20
+>  static __always_inline void
+>  walk_stackframe(struct task_struct *task, struct pt_regs *regs,
+> -		bool (*fn)(void *, unsigned long), void *arg)
+> +		unwind_consume_fn fn, void *arg)
+>  {
+>  	unsigned long fp, sp, pc;
+> +	struct unwind_state state;
+>  	int level =3D 0;
+>=20=20
+>  	if (regs) {
+> @@ -40,12 +51,17 @@ walk_stackframe(struct task_struct *task, struct pt_r=
+egs *regs,
+>  		sp =3D task->thread.sp;
+>  		pc =3D task->thread.ra;
+>  	}
+> +	state.task =3D task;
+> +	state.regs =3D regs;
+>=20=20
+>  	for (;;) {
+>  		unsigned long low, high;
+>  		struct stackframe *frame;
+>=20=20
+> -		if (unlikely(!__kernel_text_address(pc) || (level++ >=3D 0 && !fn(arg,=
+ pc))))
+> +		state.sp =3D sp;
+> +		state.fp =3D fp;
+> +		state.pc =3D pc;
+> +		if (unlikely(!__kernel_text_address(pc) || (level++ >=3D 0 && !fn(arg,=
+ &state))))
+>  			break;
+>=20=20
+>  		/* Validate frame pointer */
+> @@ -64,7 +80,10 @@ walk_stackframe(struct task_struct *task, struct pt_re=
+gs *regs,
+>  			pc =3D ftrace_graph_ret_addr(current, NULL, frame->ra,
+>  						   &frame->ra);
+>  			if (pc =3D=3D (unsigned long)ret_from_exception) {
+> -				if (unlikely(!__kernel_text_address(pc) || !fn(arg, pc)))
+> +				state.sp =3D sp;
+> +				state.fp =3D fp;
+> +				state.pc =3D pc;
+> +				if (unlikely(!__kernel_text_address(pc) || !fn(arg, &state)))
+>  					break;
+>=20=20
+>  				pc =3D ((struct pt_regs *)sp)->epc;
+> @@ -79,9 +98,10 @@ walk_stackframe(struct task_struct *task, struct pt_re=
+gs *regs,
+>=20=20
+>  static __always_inline void
+>  walk_stackframe(struct task_struct *task, struct pt_regs *regs,
+> -		bool (*fn)(void *, unsigned long), void *arg)
+> +		unwind_consume_fn fn, void *arg)
+>  {
+>  	unsigned long sp, pc;
+> +	struct unwind_state state;
+>  	unsigned long *ksp;
+>=20=20
+>  	if (regs) {
+> @@ -99,9 +119,14 @@ walk_stackframe(struct task_struct *task, struct pt_r=
+egs *regs,
+>  	if (unlikely(sp & 0x7))
+>  		return;
+>=20=20
+> +	state.task =3D task;
+> +	state.regs =3D regs;
+> +	state.sp =3D sp;
+> +	state.fp =3D 0;
+>  	ksp =3D (unsigned long *)sp;
+>  	while (!kstack_end(ksp)) {
+> -		if (__kernel_text_address(pc) && unlikely(!fn(arg, pc)))
+> +		state.pc =3D pc;
+> +		if (__kernel_text_address(pc) && unlikely(!fn(arg, &state)))
+>  			break;
+>  		pc =3D READ_ONCE_NOCHECK(*ksp++) - 0x4;
+>  	}
+> @@ -109,10 +134,28 @@ walk_stackframe(struct task_struct *task, struct pt=
+_regs *regs,
+>=20=20
+>  #endif /* CONFIG_FRAME_POINTER */
+>=20=20
+> +struct unwind_consume_entry_data {
+> +	stack_trace_consume_fn consume_entry;
+> +	void *cookie;
+> +};
+> +
+> +static __always_inline bool
+> +arch_unwind_consume_entry(void *cookie, const struct unwind_state *state)
 
-> > Acked-by: Helge Deller <deller@gmx.de>
-> > Signed-off-by: Alexey Gladkov <legion@kernel.org>
-> > ---
-> >   drivers/tty/vt/vt.c       | 24 ++++++++++++++++++++++++
-> >   drivers/tty/vt/vt_ioctl.c | 13 +++++++++++++
-> >   include/linux/console.h   |  2 ++
-> >   include/linux/vt_kern.h   |  1 +
-> >   include/uapi/linux/kd.h   | 13 ++++++++++++-
-> >   5 files changed, 52 insertions(+), 1 deletion(-)
-> > 
-> > diff --git a/drivers/tty/vt/vt.c b/drivers/tty/vt/vt.c
-> > index 156efda7c80d..8c2a3d98b5ec 100644
-> > --- a/drivers/tty/vt/vt.c
-> > +++ b/drivers/tty/vt/vt.c
-> > @@ -4680,6 +4680,30 @@ int con_font_op(struct vc_data *vc, struct console_font_op *op)
-> >   	return -ENOSYS;
-> >   }
-> >   
-> > +int con_font_info(struct vc_data *vc, struct console_font_info *info)
-> > +{
-> > +	int rc = -EINVAL;
-> 
-> This initialization appears to be unneeded.
-> 
-> > +
-> > +	info->min_height = 0;
-> > +	info->max_height = max_font_height;
-> > +
-> > +	info->min_width = 0;
-> > +	info->max_width = max_font_width;
-> > +
-> > +	info->flags = KD_FONT_INFO_FLAG_LOW_SIZE | KD_FONT_INFO_FLAG_HIGH_SIZE;
-> > +
-> > +	console_lock();
-> > +	if (vc->vc_mode != KD_TEXT)
-> > +		rc = -EINVAL;
-> > +	else if (vc->vc_sw->con_font_info)
-> > +		rc = vc->vc_sw->con_font_info(vc, info);
-> > +	else
-> > +		rc = -ENOSYS;
-> > +	console_unlock();
-> > +
-> > +	return rc;
-> > +}
-> > +
-> >   /*
-> >    *	Interface exported to selection and vcs.
-> >    */
-> > diff --git a/drivers/tty/vt/vt_ioctl.c b/drivers/tty/vt/vt_ioctl.c
-> > index 8c685b501404..b3b4e4b69366 100644
-> > --- a/drivers/tty/vt/vt_ioctl.c
-> > +++ b/drivers/tty/vt/vt_ioctl.c
-> > @@ -479,6 +479,19 @@ static int vt_k_ioctl(struct tty_struct *tty, unsigned int cmd,
-> >   		break;
-> >   	}
-> >   
-> > +	case KDFONTINFO: {
-> > +		struct console_font_info fnt_info;
-> > +
-> > +		if (copy_from_user(&fnt_info, up, sizeof(fnt_info)))
-> > +			return -EFAULT;
-> 
-> Who uses the copied values?
+Same comment as patch 1.
 
-No one. I did it by analogy with KDFONTOP. Thanks!
 
-> > +		ret = con_font_info(vc, &fnt_info);
-> > +		if (ret)
-> > +			return ret;
-> > +		if (copy_to_user(up, &fnt_info, sizeof(fnt_info)))
-> 
-> We should do the preferred sizeof(*up) here...
-> 
-> > +			return -EFAULT;
-> > +		break;
-> > +	}
-> > +
-> >   	default:
-> >   		return -ENOIOCTLCMD;
-> >   	}
-> ...
-> > --- a/include/uapi/linux/kd.h
-> > +++ b/include/uapi/linux/kd.h
-> > @@ -183,8 +183,19 @@ struct console_font {
-> >   
-> >   #define KD_FONT_FLAG_DONT_RECALC 	1	/* Don't recalculate hw charcell size [compat] */
-> >   
-> > +#define KDFONTINFO	0x4B73	/* font information */
-> 
-> Why not properly define the number using IOC() et al.? K (that 0x4b) is 
-> even reserved for kd.h.
-
-I just did the same as the numbers above. This entire header does not use
-IOC().
-
-Should I convert this header as a separate commit?
-
-> > +#define KD_FONT_INFO_FLAG_LOW_SIZE	(1U << 0) /* 256 */
-> > +#define KD_FONT_INFO_FLAG_HIGH_SIZE	(1U << 1) /* 512 */
-> 
-> _BITUL()
-
-Make sense. I will use it.
-
-> > +struct console_font_info {
-> > +	unsigned int min_width, min_height;	/* minimal font size */
-> > +	unsigned int max_width, max_height;	/* maximum font size */
-> > +	unsigned int flags;			/* KD_FONT_INFO_FLAG_* */
-> 
-> This does not look like a well-defined™ and extendable uapi structure. 
-> While it won't change anything here, still use fixed-length __u32.
-> 
-> And you should perhaps add some reserved fields. Do not repeat the same 
-> mistakes as your predecessors with the current kd uapi.
-
-I thought about it, but I thought it would be overengineering.
-Can you suggest how best to do this?
-
--- 
-Rgrds, legion
-
+Bj=C3=B6rn
 
