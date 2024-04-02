@@ -1,247 +1,162 @@
-Return-Path: <linux-kernel+bounces-128476-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-128481-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id D541E895B56
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 20:05:04 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id CF75C895B68
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 20:07:48 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8A2F52862C9
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 18:05:03 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 475991F23DDC
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 18:07:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1EEDD15AAD7;
-	Tue,  2 Apr 2024 18:04:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B6C2215A4B9;
+	Tue,  2 Apr 2024 18:07:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="A9WVYOFO"
-Received: from mail-pg1-f173.google.com (mail-pg1-f173.google.com [209.85.215.173])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=o2.pl header.i=@o2.pl header.b="nD9wU31h"
+Received: from mx-out.tlen.pl (mx-out.tlen.pl [193.222.135.142])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CAB0215AAC4;
-	Tue,  2 Apr 2024 18:04:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 459A0219E0
+	for <linux-kernel@vger.kernel.org>; Tue,  2 Apr 2024 18:07:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.222.135.142
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712081093; cv=none; b=Zh0HIIUvCnM08wSoc8O9o99JIMVL+Zo5FvBn9t8RSKz3idgfeuKJ7Y/vI+D7HrBmCu3wPsXDb8ZMJGHS5fLbcA2Vjif8UUZh7ujbylUF/NdkBRVwfIxFVd5d73wvIAgMCUlErw62rilJNYININaYx3LpEjvkKVdro+HUh1DrojM=
+	t=1712081259; cv=none; b=LbVmfanOL530+kDUw5VdC2Vs3fKhxa2tu1V+8LmP34UvOD3fqjcZDDcj6lf76x6LK1yjM12RUx3sIUPzHLV6E/Kvwc7gKG8Gd8gMCYJ508lDCYa4hUozUNIwnJjN+p9//Ce+4aPJC0LkTRgScSp3+otSS1ZbQT39YThdfWka3+g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712081093; c=relaxed/simple;
-	bh=dS7TGGX5JXr89RvdjVc6lghaQPgXBTH4kUUgu5VWZgI=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=UqveXfOV2IRb6LsrR9mJ+8SSvVPxjmVfjeYBWMiOjGcNj6deZa58dwYB6UbkWXdnQmaXpYZNt9JI//hPn1X70VtOLC68rnSmvyLP1cIqQ0AgfpEmcPJ8axcIyr9N80U6Tk/thcGX5PTdp0Mrt6R+1Oup26SX109OLIaV3vYmpQw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=A9WVYOFO; arc=none smtp.client-ip=209.85.215.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f173.google.com with SMTP id 41be03b00d2f7-5cedfc32250so3410336a12.0;
-        Tue, 02 Apr 2024 11:04:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1712081091; x=1712685891; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=J14JohUzHX0DW16XpSFBM8/aBKrqCOXEeYVRPdaK38c=;
-        b=A9WVYOFO0TdHrwUC0iNSwN87t/qircJMC9wD3a6OBiwiXRnBN89PE+iZI0Qydmkcbq
-         Jh6S4kI0B+N/SxUV2Tzz8JRE1o8uivI/2F5z2wll5rSbuQ8vt5eI6zexCtdHZB3KBqGn
-         bKWYZ8LGo1bkRVde/NPr4DVIyYfPMLkhrG8/XY5tDSFMlE115EYQzcOucaLsJSOu8wEt
-         1oG689hve5on18utB/Nc7WvlYPm2rK2S4AnRBHlag4IRgzZePb0kYiGZSb/rrodXJH6R
-         C1wFVzcd8EZObBraK+6GylxUHpr+ReovWPxO4CESOHKno+YUCMqdsoGLwP0IdWc/VIGy
-         amfA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712081091; x=1712685891;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=J14JohUzHX0DW16XpSFBM8/aBKrqCOXEeYVRPdaK38c=;
-        b=D5etv5tjWHnsSJ1l7TtVjET3gMc4kqpgeQAkn5ZqBAOWdQpllK9PXWnEzT9R/vIv5H
-         GoW2C80Y0Ns6bLL74wUQ/KPcYRNm98cFPIIuXhyWScbhqVEh7DVnFA2QQP2bsAq4HbcN
-         1RngaEWNQUhTYOJIASoOQghZHSAt1NIUdMneLm4/62B8EDXd0O7ideBEQU6HYmnS46eK
-         gdn9CqddQKyab52Hh7oNnbDEwHcBjNUUETfTKDUQmwi4OyTRNJqQunRv40ZWUk2/UxOF
-         YhOqDaXjdrjWxnR4GAae/9lvv1dDvQzzbuIQ1+d7KvO92T9gSIVnneVRA7tvTBQ1VpGU
-         tqWA==
-X-Forwarded-Encrypted: i=1; AJvYcCUIBAlPAsEbbqeifdWuHys8pQKNUGpG+mBBnjl4CRpHwt2QEGv4BJQvybEVBX8fZjfLBbNvY0r2dPBDUx8ICJVRKr3GkgIXeHAB0hIyLd7tdAOIQyvioSSxWUpfl57oapLv
-X-Gm-Message-State: AOJu0YwOlsvVNDOoakOuiuYTbeh2xksWEWRIcMRXCIM3r2iZnI6j5yLv
-	PGLdFGxPwcL/3OFUfdymRUtln9739F/N6rq5NbTOhR3uIVu5WDeU/MhPwhtBSCYnQb9H0Mux/dC
-	dYRP3beICWxqDdQPWTP6t44IkZZI=
-X-Google-Smtp-Source: AGHT+IHmZ2VOnBkNDQBWiUBoYRpKf88pRXXpaPtg4cyRyO16APTUzV0pxkUw20DKO1HOYFeFK3ZBV5px7iFz94GySiQ=
-X-Received: by 2002:a17:90a:2e17:b0:2a1:f27d:7696 with SMTP id
- q23-20020a17090a2e1700b002a1f27d7696mr11650458pjd.38.1712081091115; Tue, 02
- Apr 2024 11:04:51 -0700 (PDT)
+	s=arc-20240116; t=1712081259; c=relaxed/simple;
+	bh=YF9mt1xPV6SmzGUDBnOuK+ideXdolwq66JBggwvRZdg=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=DX/+I/Znmi2i18wdDWc29mCv2ncBS3uSBJc1kbSLft+1Bb3cZBqHtjhrBgnWZhXgsk67uJjXLOAwauiODXaeZ66Gl5nUAyoCPUtzEREyNuyPc9+e4bpsCVVT/S9cijlHHC1MxSxg18acp67D7aO6lJOdO5oVTwcxqVcbjvmKWqY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=o2.pl; spf=pass smtp.mailfrom=o2.pl; dkim=pass (1024-bit key) header.d=o2.pl header.i=@o2.pl header.b=nD9wU31h; arc=none smtp.client-ip=193.222.135.142
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=o2.pl
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=o2.pl
+Received: (wp-smtpd smtp.tlen.pl 15848 invoked from network); 2 Apr 2024 20:00:54 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=o2.pl; s=1024a;
+          t=1712080854; bh=UlyImwIdJiZpMK2AIxHwKQ2iFbqI6fAJrztUDQKXru4=;
+          h=Subject:To:Cc:From;
+          b=nD9wU31h+/iVlA/VP3F5BiX+3/Z7uAFPwHiayzV6CqenSbJ5pNbNksoK1oAjUj9Ay
+           s4BUNbXf6tS6/wXLJO8s2pTxLAiuzCQObeIdkyGD54XHewxvIJeszFbW0NKkzCSGS7
+           +UoPwU88HACXo9ZPhJ5X1BpSHlMsOY+nl92EEIeE=
+Received: from aaer216.neoplus.adsl.tpnet.pl (HELO [192.168.1.22]) (mat.jonczyk@o2.pl@[83.4.121.216])
+          (envelope-sender <mat.jonczyk@o2.pl>)
+          by smtp.tlen.pl (WP-SMTPD) with ECDHE-RSA-AES256-GCM-SHA384 encrypted SMTP
+          for <gregkh@linuxfoundation.org>; 2 Apr 2024 20:00:54 +0200
+Message-ID: <e643104e-b394-4be0-b0e8-b892d42b543f@o2.pl>
+Date: Tue, 2 Apr 2024 20:00:52 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240401073159.16668-1-andrea.righi@canonical.com> <20240401073159.16668-3-andrea.righi@canonical.com>
-In-Reply-To: <20240401073159.16668-3-andrea.righi@canonical.com>
-From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Tue, 2 Apr 2024 11:04:39 -0700
-Message-ID: <CAEf4BzYuMxF6JDi4gG+cfikXqrOsBqiZRw8Ur4K5=YwQKAqKXg@mail.gmail.com>
-Subject: Re: [PATCH 2/2] libbpf: Add ring__consume_max / ring_buffer__consume_max
-To: Andrea Righi <andrea.righi@canonical.com>
-Cc: Andrii Nakryiko <andrii@kernel.org>, Eduard Zingerman <eddyz87@gmail.com>, 
-	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>, 
-	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, 
-	Jiri Olsa <jolsa@kernel.org>, David Vernet <void@manifault.com>, Tejun Heo <tj@kernel.org>, 
-	bpf@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 6.1 000/272] 6.1.84-rc1 review
+To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, stable@vger.kernel.org
+Cc: patches@lists.linux.dev, linux-kernel@vger.kernel.org
+References: <20240401152530.237785232@linuxfoundation.org>
+Content-Language: en-GB
+From: =?UTF-8?Q?Mateusz_Jo=C5=84czyk?= <mat.jonczyk@o2.pl>
+Autocrypt: addr=mat.jonczyk@o2.pl; keydata=
+ xsFNBFqMDyQBEAC2VYhOvwXdcGfmMs9amNUFjGFgLixeS2C1uYwaC3tYqjgDQNo/qDoPh52f
+ ExoTMJRqx48qvvY/i6iwia7wOTBxbYCBDqGYxDudjtL41ko8AmbGOSkxJww5X/2ZAtFjUJxO
+ QjNESFlRscMfDv5vcCvtH7PaJJob4TBZvKxdL4VCDCgEsmOadTy5hvwv0rjNjohau1y4XfxU
+ DdvOcl6LpWMEezsHGc/PbSHNAKtVht4BZYg66kSEAhs2rOTN6pnWJVd7ErauehrET2xo2JbO
+ 4lAv0nbXmCpPj37ZvURswCeP8PcHoA1QQKWsCnHU2WeVw+XcvR/hmFMI2QnE6V/ObHAb9bzg
+ jxSYVZRAWVsdNakfT7xhkaeHjEQMVRQYBL6bqrJMFFXyh9YDj+MALjyb5hDG3mUcB4Wg7yln
+ DRrda+1EVObfszfBWm2pC9Vz1QUQ4CD88FcmrlC7n2witke3gr38xmiYBzDqi1hRmrSj2WnS
+ RP/s9t+C8M8SweQ2WuoVBLWUvcULYMzwy6mte0aSA8XV6+02a3VuBjP/6Y8yZUd0aZfAHyPi
+ Rf60WVjYNRSeg27lZ9DJmHjSfZNn1FrtZi3W9Ff6bry/SY9D136qXBQxPYxXQfaGDhVeLUVF
+ Q+NIZ6NEjqrLQ07LEvUW2Qzk2q851/IaXZPtP6swx0gqrpjNrwARAQABzSRNYXRldXN6IEpv
+ xYRjenlrIDxtYXQuam9uY3p5a0BvMi5wbD7CwX4EEwECACgFAlqMDyQCGwMFCRLMAwAGCwkI
+ BwMCBhUIAgkKCwQWAgMBAh4BAheAAAoJEPvWWrhhCv7Gb0MQAJVIpJ1KAOH6WaT8e65xZulI
+ 1jkwGwNp+3bWWc5eLjKUnXtOYpa9oIsUUAqvh/L8MofGtM1V11kSX9dEloyqlqDyNSQk0h52
+ hZxMsCQyzjGOcBAi0zmWGYB4xu6SXj4LpVpIPW0sogduEOfbC0i7uAIyotHgepQ8RPGmZoXU
+ 9bzFCyqZ8kAqwOoCCx+ccnXtbnlAXQmDb88cIprAU+Elk4k4t7Bpjn2ek4fv35PsvsBdRTq3
+ ADg8sGuq4KQXhbY53n1tyiab3M88uv6Cv//Ncgx+AqMdXq2AJ7amFsYdvkTC98sx20qk6Cul
+ oHggmCre4MBcDD4S0qDXo5Z9NxVR/e9yUHxGLc5BlNj+FJPO7zwvkmIaMMnMlbydWVke0FSR
+ AzJaEV/NNZKYctw2wYThdXPiz/y7aKd6/sM1jgPlleQhs3tZAIdjPfFjGdeeggv668M7GmKl
+ +SEzpeFQ4b0x64XfLfLXX8GP/ArTuxEfJX4L05/Y9w9AJwXCVEwW4q17v8gNsPyVUVEdIroK
+ cve6cgNNSWoxTaYcATePmkKnrAPqfg+6qFM4TuOWmyzCLQ1YoUZMxH+ddivDQtlKCp6JgGCz
+ c9YCESxVii0vo8TsHdIAjQ/px9KsuYBmOlKnHXKbj6BsE/pkMMKQg/L415dvKzhLm2qVih7I
+ U16IAtK5b7RpzsFNBFqMDyQBEACclVvbzpor4XfU6WLUofqnO3QSTwDuNyoNQaE4GJKEXA+p
+ Bw5/D2ruHhj1Bgs6Qx7G4XL3odzO1xT3Iz6w26ZrxH69hYjeTdT8VW4EoYFvliUvgye2cC01
+ ltYrMYV1IBXwJqSEAImU0Xb+AItAnHA1NNUUb9wKHvOLrW4Y7Ntoy1tp7Vww2ecAWEIYjcO6
+ AMoUX8Q6gfVPxVEQv1EpspSwww+x/VlDGEiiYO4Ewm4MMSP4bmxsTmPb/f/K3rv830ZCQ5Ds
+ U0rzUMG2CkyF45qXVWZ974NqZIeVCTE+liCTU7ARX1bN8VlU/yRs/nP2ISO0OAAMBKea7slr
+ mu93to9gXNt3LEt+5aVIQdwEwPcqR09vGvTWdRaEQPqgkOJFyiZ0vYAUTwtITyjYxZWJbKJh
+ JFaHpMds9kZLF9bH45SGb64uZrrE2eXTyI3DSeUS1YvMlJwKGumRTPXIzmVQ5PHiGXr2/9S4
+ 16W9lBDJeHhmcVOsn+04x5KIxHtqAP3mkMjDBYa0A3ksqD84qUBNuEKkZKgibBbs4qT35oXf
+ kgWJtW+JziZf6LYx4WvRa80VDIIYCcQM6TrpsXIJI+su5qpzON1XJQG2iswY8PJ40pkRI9Sm
+ kfTFrHOgiTpwZnI9saWqJh2ABavtnKZ1CtAY2VA8gmEqQeqs2hjdiNHAmRxR2wARAQABwsFl
+ BBgBAgAPBQJajA8kAhsMBQkSzAMAAAoJEPvWWrhhCv7GhpYP/1tH/Kc35OgWu2lsgJxR9Z49
+ 4q+yYAuu11p0aQidL5utMFiemYHvxh/sJ4vMq65uPQXoQ3vo8lu9YR/p8kEt8jbljJusw6xQ
+ iKA1Cc68xtseiKcUrjmN/rk3csbT+Qj2rZwkgod8v9GlKo6BJXMcKGbHb1GJtLF5HyI1q4j/
+ zfeu7G1gVjGTx8e2OLyuBJp0HlFXWs2vWSMesmZQIBVNyyL9mmDLEwO4ULK2quF6RYtbvg+2
+ PMyomNAaQB4s1UbXAO87s75hM79iszIzak2am4dEjTx+uYCWpvcw3rRDz7aMs401CphrlMKr
+ WndS5qYcdiS9fvAfu/Jp5KIawpM0tVrojnKWCKHG4UnJIn+RF26+E7bjzE/Q5/NpkMblKD/Y
+ 6LHzJWsnLnL1o7MUARU++ztOl2Upofyuj7BSath0N632+XCTXk9m5yeDCl/UzPbP9brIChuw
+ gF7DbkdscM7fkYzkUVRJM45rKOupy5Z03EtAzuT5Z/If3qJPU0txAJsquDohppFsGHrzn/X2
+ 0nI2LedLnIMUWwLRT4EvdYzsbP6im/7FXps15jaBOreobCaWTWtKtwD2LNI0l9LU9/RF+4Ac
+ gwYu1CerMmdFbSo8ZdnaXlbEHinySUPqKmLHmPgDfxKNhfRDm1jJcGATkHCP80Fww8Ihl8aS
+ TANkZ3QqXNX2
+In-Reply-To: <20240401152530.237785232@linuxfoundation.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-WP-MailID: 851a5b2856e545195fd35fbc0daddf9c
+X-WP-AV: skaner antywirusowy Poczty o2
+X-WP-SPAM: NO 0000000 [wVM0]                               
 
-On Mon, Apr 1, 2024 at 12:32=E2=80=AFAM Andrea Righi <andrea.righi@canonica=
-l.com> wrote:
+W dniu 1.04.2024 o 17:43, Greg Kroah-Hartman pisze:
+> This is the start of the stable review cycle for the 6.1.84 release.
+> There are 272 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
 >
-> Introduce a new API to consume items from a ring buffer, limited to a
-> specified amount, and return to the caller the actual number of items
-> consumed.
+> Responses should be made by Wed, 03 Apr 2024 15:24:46 +0000.
+> Anything received after that time might be too late.
 >
-> Link: https://lore.kernel.org/lkml/20240310154726.734289-1-andrea.righi@c=
-anonical.com/T
-> Signed-off-by: Andrea Righi <andrea.righi@canonical.com>
-> ---
->  tools/lib/bpf/libbpf.h   | 13 +++++++++++++
->  tools/lib/bpf/libbpf.map |  2 ++
->  tools/lib/bpf/ringbuf.c  | 35 +++++++++++++++++++++++++++++++++--
->  3 files changed, 48 insertions(+), 2 deletions(-)
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patch-6.1.84-rc1.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-6.1.y
+> and the diffstat can be found below.
 >
-> diff --git a/tools/lib/bpf/libbpf.h b/tools/lib/bpf/libbpf.h
-> index f88ab50c0229..85161889efd4 100644
-> --- a/tools/lib/bpf/libbpf.h
-> +++ b/tools/lib/bpf/libbpf.h
-> @@ -1293,6 +1293,8 @@ LIBBPF_API int ring_buffer__add(struct ring_buffer =
-*rb, int map_fd,
->                                 ring_buffer_sample_fn sample_cb, void *ct=
-x);
->  LIBBPF_API int ring_buffer__poll(struct ring_buffer *rb, int timeout_ms)=
-;
->  LIBBPF_API int ring_buffer__consume(struct ring_buffer *rb);
-> +LIBBPF_API int ring_buffer__consume_max(struct ring_buffer *rb,
-> +                                       size_t max_items);
->  LIBBPF_API int ring_buffer__epoll_fd(const struct ring_buffer *rb);
+> thanks,
 >
->  /**
-> @@ -1367,6 +1369,17 @@ LIBBPF_API int ring__map_fd(const struct ring *r);
->   */
->  LIBBPF_API int ring__consume(struct ring *r);
->
-> +/**
-> + * @brief **ring__consume_max()** consumes up to a certain amount of ite=
-ms from
+> greg k-h
+Hello,
 
-nit: certain -> requested ?
+Tested on a HP 17-by0001nw laptop with an Intel Kaby Lake CPU and Ubuntu 20.04.
 
-> + * a ringbuffer without event polling.
-> + *
-> + * @param r A ringbuffer object.
-> + * @param max_items Maximum amount of items to consume.
-> + * @return The number of items consumed (or max_items, whichever is less=
-), or a
+Stack:
+- amd64,
+- ext4 on top of LVM on top of LUKS on top of mdraid on top of
+  NVMe and SATA drives (the SATA drive in the write-mostly mode).
 
-if we reach max_items, we did consume max_items, so I think "number of
-items consumed" is right and I'd drop the part in parenthesis
+Tested (lightly):
+- suspend to RAM,
+- suspend to disk,
+- GPU (Intel HD Graphics 620, with an old game on Wine and ~3 Unigine benchmarks)
+- WiFi (Realtek RTL8822BE),
+- Bluetooth (Realtek RTL8822BE),
+- PCI soundcard (Intel HD Audio),
+- USB soundcard (Logitech Pro X),
+- webcam,
 
-> + * negative number if any of the callbacks return an error.
-> + */
-> +LIBBPF_API int ring__consume_max(struct ring *r, size_t max_items);
+Filesystems tested very lightly (mounting, listing and opening files):
+- NFS,
+- exFAT
+- vfat,
+- NTFS via FUSE
 
-I'm bikeshedding here, of course, but I prefer `ring__consume_n` and
-max_items -> n.
+Nitpicks:
+- I got the following error in dmesg from Bluetooth after resume from suspend:
+    [ 4058.056834] usb 1-3: 1:1: cannot get freq at ep 0x81
 
-> +
->  struct user_ring_buffer_opts {
->         size_t sz; /* size of this struct, for forward/backward compatibi=
-lity */
->  };
-> diff --git a/tools/lib/bpf/libbpf.map b/tools/lib/bpf/libbpf.map
-> index 51732ecb1385..bb3ed905119d 100644
-> --- a/tools/lib/bpf/libbpf.map
-> +++ b/tools/lib/bpf/libbpf.map
-> @@ -415,4 +415,6 @@ LIBBPF_1.4.0 {
->                 bpf_token_create;
->                 btf__new_split;
->                 btf_ext__raw_data;
-> +               ring__consume_max;
-> +               ring_buffer__consume_max;
+Tested-by: Mateusz Jończyk <mat.jonczyk@o2.pl>
 
-we are in 1.5 cycle now, please add another section that inherits from
-LIBBPF_1.4.0
+Greetings,
 
->  } LIBBPF_1.3.0;
-> diff --git a/tools/lib/bpf/ringbuf.c b/tools/lib/bpf/ringbuf.c
-> index 81df535040d1..c8123e326b1a 100644
-> --- a/tools/lib/bpf/ringbuf.c
-> +++ b/tools/lib/bpf/ringbuf.c
-> @@ -281,6 +281,32 @@ static int64_t ringbuf_process_ring(struct ring *r, =
-int64_t max_items)
->         return cnt;
->  }
->
-> +/* Consume available ring buffer(s) data without event polling up to max=
-_items.
-> + *
-> + * Returns number of records consumed across all registered ring buffers=
- (or
-> + * max_items, whichever is less), or negative number if any of the callb=
-acks
-> + * return error.
-> + */
-> +int ring_buffer__consume_max(struct ring_buffer *rb, size_t max_items)
-> +{
-> +       int64_t err, res =3D 0;
-> +       int i;
-> +
-> +       for (i =3D 0; i < rb->ring_cnt; i++) {
-> +               struct ring *ring =3D rb->rings[i];
-> +
-> +               err =3D ringbuf_process_ring(ring, max_items);
-> +               if (err < 0)
-> +                       return libbpf_err(err);
-> +               res +=3D err;
-> +               max_items -=3D err;
-> +
-> +               if (!max_items)
+Mateusz
 
-please use `=3D=3D 0`, it's not a bool and not a pointer
-
-> +                       break;
-> +       }
-> +       return res;
-> +}
-> +
->  /* Consume available ring buffer(s) data without event polling.
->   * Returns number of records consumed across all registered ring buffers=
- (or
->   * INT_MAX, whichever is less), or negative number if any of the callbac=
-ks
-> @@ -376,17 +402,22 @@ int ring__map_fd(const struct ring *r)
->         return r->map_fd;
->  }
->
-> -int ring__consume(struct ring *r)
-> +int ring__consume_max(struct ring *r, size_t max_items)
->  {
->         int64_t res;
-
-hm.. we can probably change this to int, can you do that as part of
-your changes?
-
->
-> -       res =3D ringbuf_process_ring(r, INT_MAX);
-> +       res =3D ringbuf_process_ring(r, max_items);
->         if (res < 0)
->                 return libbpf_err(res);
->
->         return res;
->  }
->
-> +int ring__consume(struct ring *r)
-> +{
-> +       return ring__consume_max(r, INT_MAX);
-> +}
-> +
->  static void user_ringbuf_unmap_ring(struct user_ring_buffer *rb)
->  {
->         if (rb->consumer_pos) {
-> --
-> 2.43.0
->
 
