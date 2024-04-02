@@ -1,173 +1,160 @@
-Return-Path: <linux-kernel+bounces-128453-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-128455-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A11D8895B06
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 19:46:36 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 91D63895B0B
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 19:47:08 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5C39C2819BD
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 17:46:35 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 41F641F22CBD
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 17:47:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EB75315AADD;
-	Tue,  2 Apr 2024 17:46:05 +0000 (UTC)
-Received: from mail-oa1-f46.google.com (mail-oa1-f46.google.com [209.85.160.46])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D138415AAB0;
+	Tue,  2 Apr 2024 17:47:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="fi/8z9ry"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 538CD159910;
-	Tue,  2 Apr 2024 17:46:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0C0E715AAB3;
+	Tue,  2 Apr 2024 17:47:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712079965; cv=none; b=haqs8ZSXLYmJqmS48c/w9ovTKUf5K+D0F9yPImD4CsvKVEkjwe+9Lwya7XPGaDEcMk9qKYpBGgHPXONUBvAb8fzhWnyePkEGJQ6vPD+d3Cll9CHDokF3RO6/C8uGFVa+MB76djUi4gDTI0dBD7ngFv6LRooLE/Ejk40FzIWNUp8=
+	t=1712080023; cv=none; b=psJ+rT9Zlg4+A1NyYDuDGZIX8rZXyqWBzZIi4CkpmWzhRbVyRNnhLkjwcUSflDdux7VoyYqdgqYYidTWz2cZgkLacXzwywJzJAzSnb6hAgVBDQTTRnOFp61UHmeuzKTGNNLnseBDrVAes27ibScgPKVYh7k9jUH/jiCLuD8e/O4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712079965; c=relaxed/simple;
-	bh=y93SZIbrnH2U1PRuoMZgbJFzq72nN3iSwDY/ntn2yG4=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=g4MhYki6EqtD3XOY2bCm7m4pLUsq7DZZzCYnfD29PehkUiPLVFC85hE88YeL0Mui3ismoHF5yqhynf2yLcXBsMdenykK0drrRhiYO+puMdGhIvdRNFv/IMCEKEbSIKChhmA9Z0VImfGPXlGrfUwj9+bKTJ5c77K370KZ7+CbKWg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.160.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-oa1-f46.google.com with SMTP id 586e51a60fabf-22e82734a13so340260fac.2;
-        Tue, 02 Apr 2024 10:46:03 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712079962; x=1712684762;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=2uQrT4OPUnJJ7qwQbuOJ3w/i96EgMem11ZKbGpAMb2I=;
-        b=aFFTkTSB8K5BO/G7LsPLPxGWr+JEEIXSYsAFAYbp+XilZztyq87tJ3IpcYWGB4EcLq
-         6a/DhiyV47XRICYWOUi8qzH40IouOTqNgIMOsbiFBULMJubxWWaIu+RkQ24qm17nwQCN
-         QiJtAo2tT9gs/trxNiXfP0vAEXBsDmpVgTJl/fKAiw8wLOOMQFVi8+SzWrgCGRq1NCsh
-         TB8n4e0r1fFdl/5V7NJ2KHEdZw61+1FD6/iiDZA6aM8y8kVGGk+PNam217/xc61PGMhV
-         MqU4lhhinEI3/9xiDDb+SpVoEaFGD1uLoZEqqqhe3wXwovWi1kdnOs0I4koH7dDHvD+c
-         vLsg==
-X-Forwarded-Encrypted: i=1; AJvYcCX2UGh81Ai+h0ylBCJDvhF2DKdynhJguRjrz6zR7Tw/HjEKmstA3vE14V0cKyxrggtwM175u5rLs5H+10OSycVFPWCkDvXpDXsPSIdn
-X-Gm-Message-State: AOJu0YyC1xzLwdsfErStwyhSwvt4jleJQlKB/v5OyH6p7550UVgamkFb
-	JS+Ingvwo3wEEEvmiISd15qzJbEQ/Ijpjb/WcfS7afEJ2Bq9rlwUmNVSgKvKwNy1GJF1yM4Ca7t
-	miTvdHD6raEgMS5vr26KcWqLAvO0=
-X-Google-Smtp-Source: AGHT+IEOYGMciwLTpZJjgcMmo8Nro7C40F0fC2Llkhv4PjwwByG4OqSEXbHrQAStqnaR9XL0e+4gk0wcFr6hOxWRBOY=
-X-Received: by 2002:a05:6871:7a2:b0:222:a91a:63cd with SMTP id
- o34-20020a05687107a200b00222a91a63cdmr12864139oap.45.1712079962239; Tue, 02
- Apr 2024 10:46:02 -0700 (PDT)
+	s=arc-20240116; t=1712080023; c=relaxed/simple;
+	bh=6qtbcXbgPT258MwDHIMMVnVJMOfvk/DPTeiD+9wwTxE=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=sWPtgO78HxTzn/IwED12ZjFqOEd4KMvb8QWHUFNdyVnIrfChzfpd13EBWyWqX7V6QzPTfY4PA1IVptELpTaBZcr8SKezVOJPmoxDMnhZ81QtLfKd8ejD/FeibiHKN6VJ2nc3mPeFp4CSHE5X7ujNwd7XsLPnAzBkx4r0AgHJftY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=fi/8z9ry; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id ADB79C433C7;
+	Tue,  2 Apr 2024 17:46:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1712080022;
+	bh=6qtbcXbgPT258MwDHIMMVnVJMOfvk/DPTeiD+9wwTxE=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=fi/8z9ryH9DA63j38wP2nPgPrAlEmUb4Q0Y0T69imsrnRqrdzITdr/fahb11gp21z
+	 KKN1E2imygXDCPznJnJs0qFcZ6u0GtXA5S4QR8pMQjPywi5vdYFThIjdkihZ4Lsee3
+	 yosHVJqIi0WM4MlahhuZ4ol6ZR/30P3YjrPX9FK/AeU6gwD5HFkl3OmydvHeI1goQv
+	 g8Uk2J5t3NiwUkA6pkvWyVfvFmK/jV1c3LLFmv/WFdkREZ2hlVAC4ig/eWtW2+yT10
+	 E9XBQNfNr3krf4eJ9C6bRHdXMqJA8OZNTKY3OUnnbAQJaRNEo6LYliSe0QHYwy8Wm0
+	 6w2IpUAJiOfIg==
+Date: Tue, 2 Apr 2024 18:46:57 +0100
+From: Conor Dooley <conor@kernel.org>
+To: Steen Hegelund <steen.hegelund@microchip.com>
+Cc: Krzysztof Kozlowski <krzk@kernel.org>,
+	Nicolas Ferre <nicolas.ferre@microchip.com>,
+	Claudiu Beznea <claudiu.beznea@tuxon.dev>,
+	Rob Herring <robh@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Lars Povlsen <lars.povlsen@microchip.com>,
+	Daniel Machon <daniel.machon@microchip.com>,
+	UNGLinuxDriver@microchip.com,
+	"David S. Miller" <davem@davemloft.net>,
+	Bjarni Jonasson <bjarni.jonasson@microchip.com>,
+	linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH RFT 01/10] arm64: dts: microchip: sparx5: fix mdio reg
+Message-ID: <20240402-drizzly-risotto-eac556bbe95b@spud>
+References: <20240401153740.123978-1-krzk@kernel.org>
+ <b3d818df8819d2fb3e96fa61b277d49941d9b01b.camel@microchip.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240308204957.2007212-1-justin.ernst@hpe.com>
-In-Reply-To: <20240308204957.2007212-1-justin.ernst@hpe.com>
-From: Len Brown <lenb@kernel.org>
-Date: Tue, 2 Apr 2024 13:45:50 -0400
-Message-ID: <CAJvTdK=R+XQZ4Vov8iXGiMADShgrwSoDL8-Jqfhii7YruRLDsg@mail.gmail.com>
-Subject: Re: [PATCH] tools/power/turbostat: Fix uncore frequency file string
-To: Justin Ernst <justin.ernst@hpe.com>
-Cc: linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="RilKgIjVf/M7rXnH"
+Content-Disposition: inline
+In-Reply-To: <b3d818df8819d2fb3e96fa61b277d49941d9b01b.camel@microchip.com>
+
+
+--RilKgIjVf/M7rXnH
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-Thanks for the patch, Justin,
+Hey,
 
-Looks like the probe part of this was already fixed in my git tree, so
-I lopped off that hunk and kept your 1st hunk.
+On Tue, Apr 02, 2024 at 04:00:32PM +0200, Steen Hegelund wrote:
+> On Mon, 2024-04-01 at 17:37 +0200, Krzysztof Kozlowski wrote:
+> > [Some people who received this message don't often get email from
+> > krzk@kernel.org. Learn why this is important at
+> > https://aka.ms/LearnAboutSenderIdentification=A0]
+> >=20
+> > EXTERNAL EMAIL: Do not click links or open attachments unless you
+> > know the content is safe
+> >=20
+> > Correct the reg address of mdio node to match unit address.=A0 Assume
+> > the
+> > reg is not correct and unit address was correct, because there is
+> > alerady node using the existing reg 0x110102d4.
+> >=20
+> > =A0 sparx5.dtsi:443.25-451.5: Warning (simple_bus_reg):
+> > /axi@600000000/mdio@6110102f8: simple-bus unit address format error,
+> > expected "6110102d4"
+> >=20
+> > Fixes: d0f482bb06f9 ("arm64: dts: sparx5: Add the Sparx5 switch
+> > node")
+> > Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
+> >=20
+> > ---
+> >=20
+> > Not tested on hardware
+> > ---
+> > =A0arch/arm64/boot/dts/microchip/sparx5.dtsi | 2 +-
+> > =A01 file changed, 1 insertion(+), 1 deletion(-)
+> >=20
+> > diff --git a/arch/arm64/boot/dts/microchip/sparx5.dtsi
+> > b/arch/arm64/boot/dts/microchip/sparx5.dtsi
+> > index 24075cd91420..5d820da8c69d 100644
+> > --- a/arch/arm64/boot/dts/microchip/sparx5.dtsi
+> > +++ b/arch/arm64/boot/dts/microchip/sparx5.dtsi
+> > @@ -447,7 +447,7 @@ mdio2: mdio@6110102f8 {
+> > =A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 p=
+inctrl-names =3D "default";
+> > =A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 #=
+address-cells =3D <1>;
+> > =A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 #=
+size-cells =3D <0>;
+> > -=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 reg=
+ =3D <0x6 0x110102d4 0x24>;
+> > +=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 reg=
+ =3D <0x6 0x110102f8 0x24>;
+> > =A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 };
+> >=20
+> > =A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 mdio3: mdio@61101031c {
+> > --
+> > 2.34.1
+> >=20
+>=20
+> I did a check of our current Sparx5 EVBs and none of them uses
+> controller 2 in any revision, so this is probably why it has not come
+> up before, so as it stands we have no platform to test this change on
+> currently.
+>=20
+> Besides that the change looks good to me.
+>=20
+> Best Regards
+> Steen
+>=20
+> Reviewed-by: Steen Hegelund <Steen.Hegelund@microchip.com>
 
-Let me know if it works, or if I screwed it up.
+Are you okay with the rest of the series, or have you only looked at
+this one patch?
 
-latest is in this tree:
-https://git.kernel.org/pub/scm/linux/kernel/git/lenb/linux.git/
+--RilKgIjVf/M7rXnH
+Content-Type: application/pgp-signature; name="signature.asc"
 
-thanks,
--Len
+-----BEGIN PGP SIGNATURE-----
 
-On Fri, Mar 8, 2024 at 3:50=E2=80=AFPM Justin Ernst <justin.ernst@hpe.com> =
-wrote:
->
-> Running turbostat on a 16 socket HPE Scale-up Compute 3200 (SapphireRapid=
-s) fails with:
-> turbostat: /sys/devices/system/cpu/intel_uncore_frequency/package_010_die=
-_00/current_freq_khz: open failed: No such file or directory
->
-> We observe the sysfs uncore frequency directories named:
-> ...
-> package_09_die_00/
-> package_10_die_00/
-> package_11_die_00/
-> ...
-> package_15_die_00/
->
-> The culprit is an incorrect sprintf format string "package_0%d_die_0%d" u=
-sed
-> with each instance of reading uncore frequency files. uncore-frequency-co=
-mmon.c
-> creates the sysfs directory with the format "package_%02d_die_%02d". Once=
- the
-> package value reaches double digits, the formats diverge.
->
-> Change each instance of "package_0%d_die_0%d" to "package_%02d_die_%02d".
->
-> Signed-off-by: Justin Ernst <justin.ernst@hpe.com>
-> ---
->  tools/power/x86/turbostat/turbostat.c | 10 +++++-----
->  1 file changed, 5 insertions(+), 5 deletions(-)
->
-> diff --git a/tools/power/x86/turbostat/turbostat.c b/tools/power/x86/turb=
-ostat/turbostat.c
-> index 7a334377f92b..2a15a23cb726 100644
-> --- a/tools/power/x86/turbostat/turbostat.c
-> +++ b/tools/power/x86/turbostat/turbostat.c
-> @@ -2599,7 +2599,7 @@ unsigned long long get_uncore_mhz(int package, int =
-die)
->  {
->         char path[128];
->
-> -       sprintf(path, "/sys/devices/system/cpu/intel_uncore_frequency/pac=
-kage_0%d_die_0%d/current_freq_khz", package,
-> +       sprintf(path, "/sys/devices/system/cpu/intel_uncore_frequency/pac=
-kage_%02d_die_%02d/current_freq_khz", package,
->                 die);
->
->         return (snapshot_sysfs_counter(path) / 1000);
-> @@ -4589,20 +4589,20 @@ static void probe_intel_uncore_frequency(void)
->                 for (j =3D 0; j < topo.num_die; ++j) {
->                         int k, l;
->
-> -                       sprintf(path, "/sys/devices/system/cpu/intel_unco=
-re_frequency/package_0%d_die_0%d/min_freq_khz",
-> +                       sprintf(path, "/sys/devices/system/cpu/intel_unco=
-re_frequency/package_%02d_die_%02d/min_freq_khz",
->                                 i, j);
->                         k =3D read_sysfs_int(path);
-> -                       sprintf(path, "/sys/devices/system/cpu/intel_unco=
-re_frequency/package_0%d_die_0%d/max_freq_khz",
-> +                       sprintf(path, "/sys/devices/system/cpu/intel_unco=
-re_frequency/package_%02d_die_%02d/max_freq_khz",
->                                 i, j);
->                         l =3D read_sysfs_int(path);
->                         fprintf(outf, "Uncore Frequency pkg%d die%d: %d -=
- %d MHz ", i, j, k / 1000, l / 1000);
->
->                         sprintf(path,
-> -                               "/sys/devices/system/cpu/intel_uncore_fre=
-quency/package_0%d_die_0%d/initial_min_freq_khz",
-> +                               "/sys/devices/system/cpu/intel_uncore_fre=
-quency/package_%02d_die_%02d/initial_min_freq_khz",
->                                 i, j);
->                         k =3D read_sysfs_int(path);
->                         sprintf(path,
-> -                               "/sys/devices/system/cpu/intel_uncore_fre=
-quency/package_0%d_die_0%d/initial_max_freq_khz",
-> +                               "/sys/devices/system/cpu/intel_uncore_fre=
-quency/package_%02d_die_%02d/initial_max_freq_khz",
->                                 i, j);
->                         l =3D read_sysfs_int(path);
->                         fprintf(outf, "(%d - %d MHz)\n", k / 1000, l / 10=
-00);
-> --
-> 2.26.2
->
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZgxEkQAKCRB4tDGHoIJi
+0lSrAQCZbgAp+hHzEbAZUy5ZEACDMf4lJMuQXFA1tS+/Cwh2vgEA/UsYcqeBcYpx
+rn636eS2o+9iXzVq75hhahrnTAKyjAA=
+=1JM2
+-----END PGP SIGNATURE-----
 
-
---=20
-Len Brown, Intel
+--RilKgIjVf/M7rXnH--
 
