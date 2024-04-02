@@ -1,130 +1,119 @@
-Return-Path: <linux-kernel+bounces-127476-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-127477-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0E1B0894C3F
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 09:10:12 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5FF52894C47
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 09:11:29 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BC29C2838BA
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 07:10:10 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 010C71F22F3D
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 07:11:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 695933B182;
-	Tue,  2 Apr 2024 07:09:52 +0000 (UTC)
-Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 95479383BD;
+	Tue,  2 Apr 2024 07:11:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="cg+UdBbC"
+Received: from mail-ed1-f65.google.com (mail-ed1-f65.google.com [209.85.208.65])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 52E863BBC2
-	for <linux-kernel@vger.kernel.org>; Tue,  2 Apr 2024 07:09:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 481BC364BE
+	for <linux-kernel@vger.kernel.org>; Tue,  2 Apr 2024 07:11:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.65
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712041791; cv=none; b=UKDyi2v7PhHRllxk/I/OjKaU98DGFiCTHAnXUsXgAJ/15H+0F3VHdU7dDwIB4n21fkXvPu+EEKvpk4sZGCTdXYfzDUADsZrSQuF3JzvOQ3uiiQpwwCYinU/tDisCriy2ZIbcgE5hy0M+/7SZznOolJXGvfbQBzXqYnsG5EY2lzA=
+	t=1712041882; cv=none; b=DcSgFJCPYQO5omZnai8bktdkakmAGaQX4er3Ln11TPy65y1BVJlkoirRcSbQXvjVNOezbPZqWiU/L1dqp+WkxhZeOyhzpR7VKK6fphK1la2wr+Ulhax2oPLGS/MOlykL9xLsDWmtL8V4zEyh8MCIW9hc35HVkLheVrYC7xjKqik=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712041791; c=relaxed/simple;
-	bh=rXyFgSFt0I1uwtFJWy6dBP2dVw6hwZmEtb3B8gGjNXo=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=IP0j/qg22kDRa64lNo/jLv2swrrTpTxlC+WaA+rwTMw5J/PTY5PYjyP4ySZL/N30cYEVNHwso9jOZFunG24zLI7U9pURP1rfiH9v+6LBz4h8RRdyKJIktdzUMVPg6uYp1NnElB06qWPbYsANDkTIh49eniJWX4EcqNdfF8ZxQYo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
-Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
-	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-	(Exim 4.92)
-	(envelope-from <ore@pengutronix.de>)
-	id 1rrYHA-0004uI-OR; Tue, 02 Apr 2024 09:09:44 +0200
-Received: from [2a0a:edc0:2:b01:1d::c5] (helo=pty.whiteo.stw.pengutronix.de)
-	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.94.2)
-	(envelope-from <ore@pengutronix.de>)
-	id 1rrYHA-009w6e-6m; Tue, 02 Apr 2024 09:09:44 +0200
-Received: from ore by pty.whiteo.stw.pengutronix.de with local (Exim 4.96)
-	(envelope-from <ore@pengutronix.de>)
-	id 1rrYHA-00AjCq-0M;
-	Tue, 02 Apr 2024 09:09:44 +0200
-Date: Tue, 2 Apr 2024 09:09:44 +0200
-From: Oleksij Rempel <o.rempel@pengutronix.de>
-To: Arun.Ramadoss@microchip.com
-Cc: andrew@lunn.ch, olteanv@gmail.com, davem@davemloft.net,
-	Woojung.Huh@microchip.com, pabeni@redhat.com, edumazet@google.com,
-	f.fainelli@gmail.com, kuba@kernel.org, kernel@pengutronix.de,
-	dsahern@kernel.org, san@skov.dk, willemb@google.com,
-	linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-	horms@kernel.org, UNGLinuxDriver@microchip.com
-Subject: Re: [PATCH net-next v1 8/9] net: dsa: microchip: init predictable
- IPV to queue mapping for all non KSZ8xxx variants
-Message-ID: <ZguvOF6czMQg4iaF@pengutronix.de>
-References: <20240328160518.2396238-1-o.rempel@pengutronix.de>
- <20240328160518.2396238-9-o.rempel@pengutronix.de>
- <0331845071e66b8f8f725100f6a138215b77f0a7.camel@microchip.com>
+	s=arc-20240116; t=1712041882; c=relaxed/simple;
+	bh=MQzXPp+oT/1/PFhqEjpGaOh1QP+W+l+TqjkB8HIEYRE=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=cdaKqjWv+yf8EUUsgHnNAWbK/eMPuEpYSmxmM2SQJ5Hnq+ar7UVvqFahB2U4QDthSXdfS1RXir3KrNTig6+SqiSatjI4zGf0OOPdoHLVCoMOUTUfK9tgZ/zOGy8/vwT9R/oQlvB78rvUkl9j6JakKuO6Xw4Uy9qip+ZYuqQyv2c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=cg+UdBbC; arc=none smtp.client-ip=209.85.208.65
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
+Received: by mail-ed1-f65.google.com with SMTP id 4fb4d7f45d1cf-56de953b9a0so114231a12.2
+        for <linux-kernel@vger.kernel.org>; Tue, 02 Apr 2024 00:11:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1712041879; x=1712646679; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=ZnIWTbeR2GXQXE2WKV9Ap/wvI2y5jKr9SDTIrGO5fgY=;
+        b=cg+UdBbC8QEQh/epzJ76f9KKNOW0uMpPRw8EHRKd/WySnlnrzPffjG2IEWAvtnzOLQ
+         nH59W7avW6vcJv+JtmUTdFKmFFZ+V2PCrPh0MyYOe3WPSqYWezjtF9T3WVHp/ZXpLomO
+         4oOavqDgc6gz2xaEALgq1bj3QJmRqXQjvbci0=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712041879; x=1712646679;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=ZnIWTbeR2GXQXE2WKV9Ap/wvI2y5jKr9SDTIrGO5fgY=;
+        b=XJ3lkANkNng+QgVLdjUyU3GJ8Jl44UfATSaricVGu26g6pmPHz3BBiiHeVNmOSmsH4
+         nDUSqPfRkT3Cl4IvQ58IjV2BbyEbcIuDmtdjq0i+Osb11YQ6LBSmg569UcoUnTZ+qIKl
+         TYvw/0ogdQY6kh6SZOQsfCXf5Ru2vlGZQYchz7lG6HeocJkli0OYm0qRU8ZhnO1Attgp
+         vybGcZPA4G/0PVNfL1mDugEsRZYfinc4U2tu577NTYEVEH0nFnZkY6paM8TUuBvHEtl9
+         G7lUq0Zle3n3CnalfvxOv5auvEiOXWyG4qELXbwvxYW7pnZDOi0afe9l1ppcFj7/Ke3K
+         UXoA==
+X-Forwarded-Encrypted: i=1; AJvYcCVYq5A5dT+oCXvdxYGJBqAiabywH+wvbmsQNU02mGdiSpGsHd2cedIblbkk2Q+65DwzZWwpMpoXFn1hAu1NwtC5Iwe2VVxCbzwHC7x3
+X-Gm-Message-State: AOJu0YzxVVq2zzCGlYZTj+Vqvx6YqsyXRI5BDd92gqjfokQK0Pl4N7T8
+	+rrRahqpDOeNC3wgRpr6LBrGMH8YpyguQCmsExnm+RcIvI/Ta8Y8AlfNDTDB3Q==
+X-Google-Smtp-Source: AGHT+IGUOjA6NKyVT/+ELVqwwCceZpb+FILLMln0YYk0jw8k+fwEMqxkgdfJr/x+JyjJ3SCGlsnvew==
+X-Received: by 2002:a50:f603:0:b0:56d:e947:dd52 with SMTP id c3-20020a50f603000000b0056de947dd52mr471101edn.26.1712041879594;
+        Tue, 02 Apr 2024 00:11:19 -0700 (PDT)
+Received: from orzel7.c.googlers.com.com (229.112.91.34.bc.googleusercontent.com. [34.91.112.229])
+        by smtp.gmail.com with ESMTPSA id g28-20020a056402321c00b0056c1c2b851esm6395171eda.0.2024.04.02.00.11.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 02 Apr 2024 00:11:19 -0700 (PDT)
+From: Wojciech Macek <wmacek@chromium.org>
+To: Chun-Kuang Hu <chunkuang.hu@kernel.org>,
+	Philipp Zabel <p.zabel@pengutronix.de>,
+	David Airlie <airlied@gmail.com>,
+	Daniel Vetter <daniel@ffwll.ch>,
+	Matthias Brugger <matthias.bgg@gmail.com>,
+	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
+	dri-devel@lists.freedesktop.org,
+	linux-mediatek@lists.infradead.org,
+	linux-kernel@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org,
+	chrome-platform@lists.linux.dev
+Cc: Wojciech Macek <wmacek@chromium.com>
+Subject: [PATCH] drm/mediatek/dp: fix mtk_dp_aux_transfer return value
+Date: Tue,  2 Apr 2024 07:11:13 +0000
+Message-ID: <20240402071113.3135903-1-wmacek@chromium.org>
+X-Mailer: git-send-email 2.44.0.478.gd926399ef9-goog
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <0331845071e66b8f8f725100f6a138215b77f0a7.camel@microchip.com>
-X-Sent-From: Pengutronix Hildesheim
-X-URL: http://www.pengutronix.de/
-X-Accept-Language: de,en
-X-Accept-Content-Type: text/plain
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
-X-SA-Exim-Mail-From: ore@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+Content-Transfer-Encoding: 8bit
 
-Hi Arun,
+From: Wojciech Macek <wmacek@chromium.com>
 
-On Tue, Apr 02, 2024 at 04:07:30AM +0000, Arun.Ramadoss@microchip.com wrote:
-> Hi Oleksij,
-> 
-> On Thu, 2024-03-28 at 17:05 +0100, Oleksij Rempel wrote:
-> > EXTERNAL EMAIL: Do not click links or open attachments unless you
-> > know the content is safe
-> > 
-> > Init priority to queue mapping in the way as it shown in IEEE 802.1Q
-> > mapping example.
-> > 
-> > Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
-> > ---
-> >  drivers/net/dsa/microchip/ksz_common.c | 53 ++++++++++++++--------
-> > ----
-> >  1 file changed, 29 insertions(+), 24 deletions(-)
-> > 
-> > diff --git a/drivers/net/dsa/microchip/ksz_common.c
-> > b/drivers/net/dsa/microchip/ksz_common.c
-> > index 08426f85f7707..78e9610044ea8 100644
-> > --- a/drivers/net/dsa/microchip/ksz_common.c
-> > +++ b/drivers/net/dsa/microchip/ksz_common.c
-> > @@ -24,6 +24,7 @@
-> >  #include <linux/of_net.h>
-> >  #include <linux/micrel_phy.h>
-> >  #include <net/dsa.h>
-> > +#include <net/ieee8021q.h>
-> >  #include <net/pkt_cls.h>
-> >  #include <net/switchdev.h>
-> > 
-> > @@ -2692,9 +2693,29 @@ static int ksz_port_mdb_del(struct dsa_switch
-> > *ds, int port,
-> >         return dev->dev_ops->mdb_del(dev, port, mdb, db);
-> >  }
-> > 
-> > +static int ksz_set_default_prio_queue_mapping(struct ksz_device
-> > *dev, int port)
-> 
-> Since this function is related to KSZ9477 series switch, do we need to
-> move this function out of ksz_common.c or function name prefixed with
-> ksz9477_set_default_prio_queue_mapping to differentiate it. 
+In case there is no DP device attached to the port the
+transfer function should return IO error, similar to what
+other drivers do.
+In case EAGAIN is returned then any read from /dev/drm_dp_aux
+device ends up in an infinite loop as the upper layers
+constantly repeats the transfer request.
 
-Ack. Sounds good, will update it.
+Signed-off-by: Wojciech Macek <wmacek@chromium.com>
+---
+ drivers/gpu/drm/mediatek/mtk_dp.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Regards,
-Oleksij
+diff --git a/drivers/gpu/drm/mediatek/mtk_dp.c b/drivers/gpu/drm/mediatek/mtk_dp.c
+index 0ba72102636a..536366956447 100644
+--- a/drivers/gpu/drm/mediatek/mtk_dp.c
++++ b/drivers/gpu/drm/mediatek/mtk_dp.c
+@@ -2104,7 +2104,7 @@ static ssize_t mtk_dp_aux_transfer(struct drm_dp_aux *mtk_aux,
+ 
+ 	if (mtk_dp->bridge.type != DRM_MODE_CONNECTOR_eDP &&
+ 	    !mtk_dp->train_info.cable_plugged_in) {
+-		ret = -EAGAIN;
++		ret = -EIO;
+ 		goto err;
+ 	}
+ 
 -- 
-Pengutronix e.K.                           |                             |
-Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
-31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
-Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
+2.44.0.478.gd926399ef9-goog
+
 
