@@ -1,48 +1,48 @@
-Return-Path: <linux-kernel+bounces-127364-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-127365-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6C997894A58
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 06:17:31 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2D0C6894A59
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 06:18:53 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 279AA283AEE
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 04:17:30 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C2076B244CE
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 04:18:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C805617991;
-	Tue,  2 Apr 2024 04:17:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7814517730;
+	Tue,  2 Apr 2024 04:18:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="jj2/etcD"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="rBeVOwbD"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 02149175A1
-	for <linux-kernel@vger.kernel.org>; Tue,  2 Apr 2024 04:17:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BFF14F9DF
+	for <linux-kernel@vger.kernel.org>; Tue,  2 Apr 2024 04:18:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712031443; cv=none; b=GIr+PX9VyIln8cY5kFPTobosuvDrce8Wm25I9tGd3oVrm9hO4memawl9dgoHI7Vdd2pNOXCDLICMAHNzkFIUW2NBk/jAI6p3UNHzyH8Obga18cHHt1bQpUlcql1BCuEiib8RxZoQO18XC1dLWO1MXe98zS8z8ggbGtI0OMRYUlc=
+	t=1712031522; cv=none; b=qiClQ7buQs3yO6fBR8/K5MTuRNmQKQG8mdQqa4ce3qX8lOlOzokzhy6XhPuuyhq8FwGu3blfXiiFKltiyU+pa/uoYt702DduHOKIaE3ZlRQws9zCT+KK766d+DsQKCZudPIwc3g3vzIasL4fzzLW0llNH4pDjFVdwKuqME/x+OQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712031443; c=relaxed/simple;
-	bh=zikIRY2LADiHW5H6P0zhROk8X9vd5W4L+25Lpd005h4=;
+	s=arc-20240116; t=1712031522; c=relaxed/simple;
+	bh=iHHfKFn/5YWAKVFaluAiBITG9Vbff9SyBx/lFMADkjc=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=rhnmlx+gcYADclILB979u9bZ+5rmBjwE7g+5K1BBz/ghsPOTjpHhrScHbGsKXn6BOkwlBIKHXgfhmJU8d6NmMi9IY9HEdOZAooTdfRCMtURs0puNHYDewfqrt+ntCQTd8Sj3EPnSDSDtlkxoZFQJU16odqephmutqdVkTDI37i4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=jj2/etcD; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 865E4C433F1;
-	Tue,  2 Apr 2024 04:17:22 +0000 (UTC)
+	 Content-Type:Content-Disposition:In-Reply-To; b=EFW2zbbddXoBq04qO9DSbVkXgXVCZiOqR/p+dRLilfF4s4D131oBsm5dYVMz0aDKFw5JZ4rcPHpT9MRxks0qRYsJoCl9f5Fi7lO05SlBVfZfpHxDwX0Il5l685inOgVsVfrLtbvMzWqQqH9nQsv0aMItf8lLe1FeJR1jmtrorC0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=rBeVOwbD; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4C5ABC433F1;
+	Tue,  2 Apr 2024 04:18:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712031442;
-	bh=zikIRY2LADiHW5H6P0zhROk8X9vd5W4L+25Lpd005h4=;
+	s=k20201202; t=1712031522;
+	bh=iHHfKFn/5YWAKVFaluAiBITG9Vbff9SyBx/lFMADkjc=;
 	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-	b=jj2/etcDaDV9TohgThB0sd3IZddvUH176n8Kq6Vl+8kPi7DChO0SkDAG3xffXuvBW
-	 5yIX6QFHc5VRgxo8YvTU2Krtu+pS0Uk5EwGZhD1e5kkEjSCXLakfS9suA1beXQtu+G
-	 xF5vsLgBRb+4nQjj6H8O9xyEb2aLRIOWqeS7yB3LbMVPMND4wEfrA/AnDdGk/LavO7
-	 iwN+B7N/6cX6XMV2ypeILfHU7ZtaIXNrBqB6fqpWhBq2XcZRcTj45ThHs2qgeABzBX
-	 JC4fUxqLyq3KlutUiMOpvyQXLVHQ/wej9/U1BnRpFSATNnnWNjcwed181uwQ1/xbno
-	 tqfm7sn4SYGeg==
+	b=rBeVOwbDfvG6XgxgzC4ASd9Zjgii20pcrbltnb453ZEtg777ILHY15EZ3GYCz3oA2
+	 kFQsJUAODAxbuRXG958u9SrqqKnGET8QpNut9E/7wFD9qOcR4TdtNrSt94sSqnkI9f
+	 L2WkrDxSAKsBTqeEUgtdzNk9I4gKYLSIF2jgxYJYT5ManSDVE3QU8NG1idxjXoWSAS
+	 jqCwlvUDCPXV/Z7CvVDh8zxwCKU5FRzQn7nk4bJBtbldj/jaKdsEaquznGurdwfGF3
+	 NwC6F4I6e7kv8Sco17GbBwR8Kfh+cInZBHryx63Duyrwh1c+kZDBX5aoaOrhDGhGK7
+	 VdBYuQsL6Cuew==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id 28E91CE074C; Mon,  1 Apr 2024 21:17:22 -0700 (PDT)
-Date: Mon, 1 Apr 2024 21:17:22 -0700
+	id 0767DCE074C; Mon,  1 Apr 2024 21:18:42 -0700 (PDT)
+Date: Mon, 1 Apr 2024 21:18:42 -0700
 From: "Paul E. McKenney" <paulmck@kernel.org>
 To: Al Viro <viro@zeniv.linux.org.uk>
 Cc: linux-kernel@vger.kernel.org, kernel-team@meta.com,
@@ -52,7 +52,7 @@ Cc: linux-kernel@vger.kernel.org, kernel-team@meta.com,
 	Marco Elver <elver@google.com>
 Subject: Re: [PATCH RFC cmpxchg 2/8] sparc: Emulate one-byte and two-byte
  cmpxchg
-Message-ID: <1d1bc9d7-ff7d-4554-9c07-90d4e210a91d@paulmck-laptop>
+Message-ID: <c6581992-03c6-44e4-8d98-0a73a5ea948b@paulmck-laptop>
 Reply-To: paulmck@kernel.org
 References: <31c82dcc-e203-48a9-aadd-f2fcd57d94c1@paulmck-laptop>
  <20240401213950.3910531-2-paulmck@kernel.org>
@@ -60,6 +60,7 @@ References: <31c82dcc-e203-48a9-aadd-f2fcd57d94c1@paulmck-laptop>
  <114dc62e-e0fb-41c8-bf9c-a9fda8b19eb6@paulmck-laptop>
  <20240402000758.GC538574@ZenIV>
  <20240402033753.GE538574@ZenIV>
+ <20240402041138.GF538574@ZenIV>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -68,46 +69,49 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240402033753.GE538574@ZenIV>
+In-Reply-To: <20240402041138.GF538574@ZenIV>
 
-On Tue, Apr 02, 2024 at 04:37:53AM +0100, Al Viro wrote:
-> On Tue, Apr 02, 2024 at 01:07:58AM +0100, Al Viro wrote:
-> 
-> > It does, IIRC.
+On Tue, Apr 02, 2024 at 05:11:38AM +0100, Al Viro wrote:
+> On Tue, Apr 02, 2024 at 04:37:53AM +0100, Al Viro wrote:
+> > On Tue, Apr 02, 2024 at 01:07:58AM +0100, Al Viro wrote:
 > > 
-> > > Would you like to do that patch?  If so, I would be happy to drop mine
-> > > in favor of yours.  If not, could I please have your Signed-off-by so
-> > > I can do the Co-developed-by dance?
+> > > It does, IIRC.
+> > > 
+> > > > Would you like to do that patch?  If so, I would be happy to drop mine
+> > > > in favor of yours.  If not, could I please have your Signed-off-by so
+> > > > I can do the Co-developed-by dance?
+> > > 
+> > > Will do once I dig my way from under the pile of mail (sick for a week
+> > > and subscribed to l-k, among other lists)...
 > > 
-> > Will do once I dig my way from under the pile of mail (sick for a week
-> > and subscribed to l-k, among other lists)...
+> > FWIW, parisc is in the same situation - atomics-by-cached-spinlocks.
+> > 've a candidate branch, will post if it survives build...
 > 
-> FWIW, parisc is in the same situation - atomics-by-cached-spinlocks.
-> 've a candidate branch, will post if it survives build...
+> Seems to survive.  See
+> git://git.kernel.org:/pub/scm/linux/kernel/git/viro/vfs.git misc.cmpxchg
+> 
+> Completely untested; builds on several configs, but that's it.
+> Al Viro (8):
+>       sparc32: make __cmpxchg_u32() return u32
+>       sparc32: make the first argument of __cmpxchg_u64() volatile u64 *
+>       sparc32: unify __cmpxchg_u{32,64}
+>       sparc32: add __cmpxchg_u{8,16}() and teach __cmpxchg() to handle those sizes
+>       parisc: __cmpxchg_u32(): lift conversion into the callers
+>       parisc: unify implementations of __cmpxchg_u{8,32,64}
+>       parisc: add missing export of __cmpxchg_u8()
+>       parisc: add u16 support to cmpxchg()
+> 
+>  arch/parisc/include/asm/cmpxchg.h   | 16 ++++++------
+>  arch/parisc/kernel/parisc_ksyms.c   |  2 ++
+>  arch/parisc/lib/bitops.c            | 52 ++++++++++++-------------------------
+>  arch/sparc/include/asm/cmpxchg_32.h | 11 +++++---
+>  arch/sparc/lib/atomic32.c           | 45 ++++++++++++++------------------
+>  5 files changed, 55 insertions(+), 71 deletions(-)
+> 
+> Individual patches in followups.
 
-I am sure that it seemed like a good idea at the time.  ;-)
-
-> Re parisc: why does it bother with arch_cmpxchg_local()?  Default is
-> 	* save and disable local interrupts
-> 	* read the current value, compare to old
-> 	* if equal, store new there
-> 	* restore local interrupts
-> For 32bit case parisc goes for __cmpxchg_u32(), which is
-> 	* if (SMP) choose the spinlock (indexed by hash of address)
-> 	* save and disable local interrupes
-> 	* if (SMP) arch_spin_lock(spinlock)
-> 	* read the current value, compare to old
-> 	* if equal, store new there
-> 	* if (SMP) arch_spin_unlock(spinlock)
-> 	* restore local interrupts
-> In UP case it's identical to generic; on SMP it's strictly more work.
-> Unless I'm very confused about cmpxchg_local() semantics, the
-> callers do not expect atomicity wrt other CPUs, so why do we bother?
-
-;-) ;-) ;-)
-
-In any case, happy to replace my patches with yours whenever you have
-them ready.
+Very good, thank you!  I will take yours in place of mine on my next
+rebase.
 
 							Thanx, Paul
 
