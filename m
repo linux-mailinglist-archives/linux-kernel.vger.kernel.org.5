@@ -1,128 +1,119 @@
-Return-Path: <linux-kernel+bounces-127521-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-127522-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 585E4894D04
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 09:56:45 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id D580C894D09
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 09:58:35 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8A8271C21CBD
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 07:56:44 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8E4BA282D29
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 07:58:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 39D0C3D3A4;
-	Tue,  2 Apr 2024 07:56:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ZM2HVAAk"
-Received: from mail-qk1-f175.google.com (mail-qk1-f175.google.com [209.85.222.175])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 158A932C8B
-	for <linux-kernel@vger.kernel.org>; Tue,  2 Apr 2024 07:56:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2F5A63D38D;
+	Tue,  2 Apr 2024 07:58:30 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3E7B92BD1C
+	for <linux-kernel@vger.kernel.org>; Tue,  2 Apr 2024 07:58:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712044598; cv=none; b=W5XQ3Ql4R5IuJhhEp3s3u3AgY6qm30wdmKxbThHzRswC5D7IhZKtJ6McHnYlfAbxggBNieIEOMX4neB/0nILQuAzdnu9prELHi1oXmr2XZ5U7IVw988ZiXYGx27hjE7ma0CRmfaWfF/qoWv4C3E/nXtbPBm88n6K1xF4v5LZB5Y=
+	t=1712044709; cv=none; b=IskmnUKkbgkxSZC6HktM1fejvs5HgC5kkqBGu04+wxBEzCBaStJE531OWyu2d8LF8V8QatPHTnasOQLuvZX9bpwZHEGhhgSIZfydK9BO6TRqCxkDfs6IiSFWjtJDa1cq+3qN9SPCcEWGnVlMMjVZifde+vaBsuXVHT8SRPw0lOY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712044598; c=relaxed/simple;
-	bh=x0EspklCfkC2YV0GStcnSeKPru8ZgAjvrE8QiTK8lF8=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=SMPWv8tpU9VfeTfMr9n5RtVN5TEWSJhKaT4bRa/v560OG51ZPLPKYrDlIfMMz1bR2hy9rOmwCMEnwJVp+A64jUK1o5dfUFJim1M0v17ujD2hlgUOEPgpHOnyc345ANw3kgDkssb9uoFITdDlFHe9hOZ0FsuTXY/W6YXP8bWuPwE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ZM2HVAAk; arc=none smtp.client-ip=209.85.222.175
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-qk1-f175.google.com with SMTP id af79cd13be357-78bd22f8257so176225185a.2
-        for <linux-kernel@vger.kernel.org>; Tue, 02 Apr 2024 00:56:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1712044596; x=1712649396; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=sA1QwJwLBEqrda4F42f/VaV+6Ll5yOow+njNrcMa6RI=;
-        b=ZM2HVAAkV74TMBPylBf3CCEoBE+n71yg5E5jrUts/mpkPpnCmBjKIfyLDfIi4WPP/d
-         57Nfa3jKEX8/509fHMMtJJ8aPmLvy1RVN1vo0ScJzBUdLBUWx6ZvXmLq5nulexdB6b9T
-         Tl85AMvUsNqAQdFtCCE0fhps6X27QNvvCnnKRtrVwGZ18fYGVntvrv+nZN9DKqJ+wGTo
-         ETjLAuvc+5DpHlBeJLlzdOPwJjdJu5E13mFrnKFAYQx/9SKxq5dz7dOZ4zCNzjFHLdPK
-         XgqIADLEzk0Q4nxpj40OJiBv9ZkZvnkDlDMIXA+Z+U04Fg3kfYPUnkx5k+eFW4BY4gIB
-         DTIg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712044596; x=1712649396;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=sA1QwJwLBEqrda4F42f/VaV+6Ll5yOow+njNrcMa6RI=;
-        b=Pub7KvOx3aU4fniGrkRf4wOc+qYANRThnFTnEZQPKp0AEur5661UqCA6dZb+TyMfHl
-         qN63sV/R5k4zJ0fc12IU3ZgdnKpN0WsfULmARwimAuGNZZWgpxU1V+sj+nhUevNtNqKe
-         o3krmPRHaCNNzl18uzjnnpytNNBBjVmTqD38qwVvFEJcbTXspZ7Ugr1aZsPGvpNQpi0o
-         ElNgYQi+9vPwF+058jY23duBQd1QFXlWBZzUKFAWaxUwImW18IsnZjZM4SJxK1T31akE
-         2UotnYVMT7hzFfDRW+gMPsKzH+LMo62QbRi2nMe0Li05kaDMKyU/q+ulAz/IGdxoxQFd
-         XG2g==
-X-Forwarded-Encrypted: i=1; AJvYcCUTm4CQiUnldhIRyHtJdPYZOyj0RBsG++TlZ7RYa6lqDUJOxnBPaqR02m9WhMgnRZIk9NXl0RRF5VBbeabQhrR3II2yZYaq03akgfOG
-X-Gm-Message-State: AOJu0YyPh5ddXbaGjZHHbkHzfmbjPhdijbKZFayzt6f5OS0KnCGMHdL3
-	+CAq6uJhnZwBsy7GXiWsLtvPeF4Mb86YAgu02cG/eRMfM09ArSPqMYSFK1FrfI209JRdIKxuqcL
-	71FJs1ixinibdQ7bZXaEZcSzvsn4=
-X-Google-Smtp-Source: AGHT+IFdz4wAJGBe4yh0jdBBWLcVCN6EC3maxyktxBbflQNgbmxjDD2YZkk2qWj034QZoheIx3uutyEc7c8iE5IS8RU=
-X-Received: by 2002:a05:622a:d:b0:432:f394:ba6e with SMTP id
- x13-20020a05622a000d00b00432f394ba6emr5226558qtw.64.1712044595970; Tue, 02
- Apr 2024 00:56:35 -0700 (PDT)
+	s=arc-20240116; t=1712044709; c=relaxed/simple;
+	bh=Iu2KxyyynVxbq6gjxe89goGC/9h4PqUNeJWtGGqhlqI=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=Yg88Das6WXQg0APUnbZNFrG7aNfwBXW6B7kmqfuXDPdBUrDPG52b5JyLW8WS5gSN6C35V16zoCT95VfKeECCZQsfVe33VzJ/1ygJdMMpg+cNw0OMdN8gVMaaVGwzFcZmFNJmWL/JF7wyogntwuvEU1bl0bsZddcdp+jeLpuROc0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 8516A1042;
+	Tue,  2 Apr 2024 00:58:59 -0700 (PDT)
+Received: from [10.57.73.65] (unknown [10.57.73.65])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id E991F3F64C;
+	Tue,  2 Apr 2024 00:58:23 -0700 (PDT)
+Message-ID: <a18b46b1-7b7d-4cd0-aa68-d715b0c16822@arm.com>
+Date: Tue, 2 Apr 2024 08:58:22 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <CAFGhKbzev7W4aHwhFPWwMZQEHenVgZUj7=aunFieVqZg3mt14A@mail.gmail.com>
- <CAFULd4a75kS=3cJzYKsOcJ3ULjW8k5M1cvPYZQ25zZqTo3QX9Q@mail.gmail.com>
-In-Reply-To: <CAFULd4a75kS=3cJzYKsOcJ3ULjW8k5M1cvPYZQ25zZqTo3QX9Q@mail.gmail.com>
-From: Charlemagne Lasse <charlemagnelasse@gmail.com>
-Date: Tue, 2 Apr 2024 09:56:24 +0200
-Message-ID: <CAFGhKbx3dzrMC0euRMNe5=sAhM87v=6gLwOT+c9HwWKZrWc5Gg@mail.gmail.com>
-Subject: Re: warning: cast removes address space '__percpu' of expression
-To: Uros Bizjak <ubizjak@gmail.com>
-Cc: x86@kernel.org, LKML <linux-kernel@vger.kernel.org>, 
-	Luc Van Oostenryck <lucvoo@kernel.org>, Andy Lutomirski <luto@kernel.org>, Ingo Molnar <mingo@kernel.org>, 
-	Nadav Amit <namit@vmware.com>, Brian Gerst <brgerst@gmail.com>, 
-	Denys Vlasenko <dvlasenk@redhat.com>, "H . Peter Anvin" <hpa@zytor.com>, 
-	Linus Torvalds <torvalds@linux-foundation.org>, Peter Zijlstra <peterz@infradead.org>, 
-	Thomas Gleixner <tglx@linutronix.de>, Borislav Petkov <bp@alien8.de>, Josh Poimboeuf <jpoimboe@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] mm: alloc_anon_folio: avoid doing vma_thp_gfp_mask in
+ fallback cases
+Content-Language: en-GB
+To: Barry Song <21cnbao@gmail.com>, akpm@linux-foundation.org,
+ linux-mm@kvack.org
+Cc: linux-kernel@vger.kernel.org, Barry Song <v-songbaohua@oppo.com>,
+ Kefeng Wang <wangkefeng.wang@huawei.com>, John Hubbard
+ <jhubbard@nvidia.com>, David Hildenbrand <david@redhat.com>,
+ Alistair Popple <apopple@nvidia.com>,
+ Anshuman Khandual <anshuman.khandual@arm.com>,
+ Catalin Marinas <catalin.marinas@arm.com>,
+ David Rientjes <rientjes@google.com>, "Huang, Ying" <ying.huang@intel.com>,
+ Hugh Dickins <hughd@google.com>, Itaru Kitayama <itaru.kitayama@gmail.com>,
+ "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
+ Luis Chamberlain <mcgrof@kernel.org>, Matthew Wilcox <willy@infradead.org>,
+ Vlastimil Babka <vbabka@suse.cz>, Yang Shi <shy828301@gmail.com>,
+ Yin Fengwei <fengwei.yin@intel.com>, Yu Zhao <yuzhao@google.com>,
+ Zi Yan <ziy@nvidia.com>
+References: <20240329073750.20012-1-21cnbao@gmail.com>
+From: Ryan Roberts <ryan.roberts@arm.com>
+In-Reply-To: <20240329073750.20012-1-21cnbao@gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-Am Mo., 1. Apr. 2024 um 21:16 Uhr schrieb Uros Bizjak <ubizjak@gmail.com>:
-> > I would even go as far as saying that 1ca3683cc6d2 ("x86/percpu:
-> > Enable named address spaces with known compiler version") together
-> > with 3a1d3829e193 ("x86/percpu: Avoid sparse warning with cast to
-> > named address space") triggered this problem
+On 29/03/2024 07:37, Barry Song wrote:
+> From: Barry Song <v-songbaohua@oppo.com>
+> 
+> Fallback rates surpassing 90% have been observed on phones utilizing 64KiB
+> CONT-PTE mTHP. In these scenarios, when one out of every 16 PTEs fails
+> to allocate large folios, the remaining 15 PTEs fallback. Consequently,
+> invoking vma_thp_gfp_mask seems redundant in such cases. Furthermore,
+> abstaining from its use can also contribute to improved code readability.
+> 
+> Cc: Ryan Roberts <ryan.roberts@arm.com>
+> Cc: Kefeng Wang <wangkefeng.wang@huawei.com>
+> Cc: John Hubbard <jhubbard@nvidia.com>
+> Cc: David Hildenbrand <david@redhat.com>
+> Cc: Alistair Popple <apopple@nvidia.com>
+> Cc: Anshuman Khandual <anshuman.khandual@arm.com>
+> Cc: Catalin Marinas <catalin.marinas@arm.com>
+> Cc: David Rientjes <rientjes@google.com>
+> Cc: "Huang, Ying" <ying.huang@intel.com>
+> Cc: Hugh Dickins <hughd@google.com>
+> Cc: Itaru Kitayama <itaru.kitayama@gmail.com>
+> Cc: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
+> Cc: Luis Chamberlain <mcgrof@kernel.org>
+> Cc: Matthew Wilcox (Oracle) <willy@infradead.org>
+> Cc: Vlastimil Babka <vbabka@suse.cz>
+> Cc: Yang Shi <shy828301@gmail.com>
+> Cc: Yin Fengwei <fengwei.yin@intel.com>
+> Cc: Yu Zhao <yuzhao@google.com>
+> Cc: Zi Yan <ziy@nvidia.com>
+> Signed-off-by: Barry Song <v-songbaohua@oppo.com>
 
-I think 1ca3683cc6d2 was wrong and is the last working one.
+Reviewed-by: Ryan Roberts <ryan.roberts@arm.com>
 
+> ---
+>  mm/memory.c | 3 +++
+>  1 file changed, 3 insertions(+)
+> 
+> diff --git a/mm/memory.c b/mm/memory.c
+> index c9c1031c2ecb..010e7bb20d2b 100644
+> --- a/mm/memory.c
+> +++ b/mm/memory.c
+> @@ -4353,6 +4353,9 @@ static struct folio *alloc_anon_folio(struct vm_fault *vmf)
+>  
+>  	pte_unmap(pte);
+>  
+> +	if (!orders)
+> +		goto fallback;
+> +
+>  	/* Try allocating the highest of the remaining orders. */
+>  	gfp = vma_thp_gfp_mask(vma);
+>  	while (orders) {
 
-Just switch to 1ca3683cc6d2c2ce4204df519c4e4730d037905a and you won't
-see the messages.
-
-```
-git reset --hard 1ca3683cc6d2c2ce4204df519c4e4730d037905a
-git clean -dfx
-make allnoconfig -j$(nproc)
-make kvm_guest.config
-make prepare -j$(nproc)
-touch include/linux/netdevice.h
-make C=1 net/core/dev.o CHECK="sparse -Wcast-from-as"
-```
-
-Go to 9a462b9eafa6dda16ea8429b151edb1fb535d744 and cherry-pick
-3a1d3829e193c091475ceab481c5f8deab385023 and you would see the error.
-On amd64  with 12.2.0, this would look like this:
-
-```
-git reset --hard 9a462b9eafa6dda16ea8429b151edb1fb535d744
-git cherry-pick 3a1d3829e193c091475ceab481c5f8deab385023
-git clean -dfx
-make allnoconfig -j$(nproc)
-make kvm_guest.config
-make prepare -j$(nproc)
-touch include/linux/netdevice.h
-make C=1 net/core/dev.o CHECK="sparse -Wcast-from-as"
-```
-
-I would recommend to use `-Wsparse-all` for testing but for this
-demonstration, it is easier to use `-Wcast-from-as` to reduce the
-amount of noise in the demonstrator.
 
