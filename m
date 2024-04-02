@@ -1,127 +1,143 @@
-Return-Path: <linux-kernel+bounces-128607-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-128585-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id CA1ED895D05
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 21:52:25 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id A07ED895CBE
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 21:36:11 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 861662865CA
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 19:52:24 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4B5CF1F21EB3
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 19:36:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 828DD15CD59;
-	Tue,  2 Apr 2024 19:52:18 +0000 (UTC)
-Received: from finn.localdomain (finn.gateworks.com [108.161.129.64])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 37A0A15B978;
+	Tue,  2 Apr 2024 19:35:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="cKm8hf0m"
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 687F415AAAA;
-	Tue,  2 Apr 2024 19:52:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=108.161.129.64
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B69CE15D5CA;
+	Tue,  2 Apr 2024 19:35:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712087538; cv=none; b=azoT5H8sA1Rq7l8C3Nt6auw4IP8tvoGWrKg2e335hEzT1Uz1XpWGrLVlVwAK17Qqfn4Q+QiG6jb7ak4NlAVCALE9V0DstB8LXIc9PXxFCbepCYnm2Vetalpi+gviK7cjST2wViponlA3dxjyqsJII2m3IlRf5pL2CzvlasAps2U=
+	t=1712086532; cv=none; b=NjCy8Ja9n01UkOEwFiFuq6yituwZhNH79QuYLwZ9/FEISi+u1L8Tl9iLHdlqjsJ6FOl8YvAEJRWJSxsg/l04qfl8wytxDxcNOlnF3q/bevqvhNB0EW4QVEBEj8yvA8OvDHVp6+7lNPEb+aTZfDbw2ZanZ7ATFLRECTmO9IKYwps=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712087538; c=relaxed/simple;
-	bh=zVrwAjUcGsk/Gvd0IQbWlkXCkBrhd705XLqPbvC6bLI=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=W7Et+TADx9XYY3jKrTXrVgFyI796Qip4wrJKcVIygXImrQwzpvAMKOKthDs9lCvD2esZ5MngTqheNXE1sGsmCBpvkwUIZgUsy8Y309qOnaPYjRYdf8mgNPtSOg3vfUfsj6RuKk6eguzD9Oa8W3MznQzURZv9pJrLtF/Br9mne+Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gateworks.com; spf=pass smtp.mailfrom=gateworks.com; arc=none smtp.client-ip=108.161.129.64
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gateworks.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gateworks.com
-Received: from 068-189-091-139.biz.spectrum.com ([68.189.91.139] helo=tharvey.pdc.gateworks.com)
-	by finn.localdomain with esmtp (Exim 4.95)
-	(envelope-from <tharvey@gateworks.com>)
-	id 1rrjtR-000HwR-Jr;
-	Tue, 02 Apr 2024 19:34:01 +0000
-From: Tim Harvey <tharvey@gateworks.com>
-To: Rob Herring <robh@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Shawn Guo <shawnguo@kernel.org>,
-	Sascha Hauer <s.hauer@pengutronix.de>,
-	Pengutronix Kernel Team <kernel@pengutronix.de>,
-	Fabio Estevam <festevam@gmail.com>,
-	devicetree@vger.kernel.org,
-	imx@lists.linux.dev,
-	linux-arm-kernel@lists.infradead.org,
-	linux-kernel@vger.kernel.org
-Cc: Tim Harvey <tharvey@gateworks.com>,
-	Lukas Wunner <lukas@wunner.de>
-Subject: [PATCH] arm64: dts: imx8m*-venice-gw7: Fix TPM schema violations
-Date: Tue,  2 Apr 2024 12:33:55 -0700
-Message-Id: <20240402193355.2333597-1-tharvey@gateworks.com>
-X-Mailer: git-send-email 2.25.1
+	s=arc-20240116; t=1712086532; c=relaxed/simple;
+	bh=ztl3jzpEH+oOBeEaIlj9fwEFVjcmkBTvpm6G6RzO3KY=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=NHJth0OsFix1WHq7FPpiyNxgKTD9Q1XWfhnAbilYbyLOzIspZRuqDkqQyx6sgnCZtUtI2q36yL64IKVNtvvDg6sI2eVxq21QRkjGLecbczQiMiBlXCFjGU0RYoM160bpEjv97rygFhVe8v7al0E7kPLlGD9MYFlHNOqbwVGI6dQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=cKm8hf0m; arc=none smtp.client-ip=205.220.180.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279869.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 432IiAWb030990;
+	Tue, 2 Apr 2024 19:35:21 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	message-id:date:mime-version:subject:to:cc:references:from
+	:in-reply-to:content-type:content-transfer-encoding; s=
+	qcppdkim1; bh=vYbnRItG2WvNQmUFuvUHXC0F8bQ8viqKAjt1DyD1iHU=; b=cK
+	m8hf0m3FGfzqZswvVfnhXju51poeLVW5oe+dQQUkp9dAMwYsCO0EUoHhW48zH0oy
+	gh9WCfEErlpNZBovYGY22KKjdjT9htmAI3tJ2Jcj4zMo9ctmY89lUkAVcQQ0QXc3
+	3r8g8fF1YO/9XuumsiY0lai9gF/dFkKhNCe8laiP4NL05w5DnO+2d08kytprI8np
+	z5hxEHpNmAAxqMVrdcKhPULJQgUzZKF7twtgfZ89PBkJ2INopZxFgHOrK7qosJsr
+	F/1TpyEymZpY1Q99JpCYIpIV8ivONEQRuTdearYVjp27E0I+pk6ivaeAOndMngQP
+	vmOeUWIL4Bx4mQrRzYjw==
+Received: from nalasppmta05.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3x8ny5gbpr-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 02 Apr 2024 19:35:21 +0000 (GMT)
+Received: from nalasex01c.na.qualcomm.com (nalasex01c.na.qualcomm.com [10.47.97.35])
+	by NALASPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 432JZ16g023919
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 2 Apr 2024 19:35:01 GMT
+Received: from [10.71.108.209] (10.80.80.8) by nalasex01c.na.qualcomm.com
+ (10.47.97.35) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.4; Tue, 2 Apr 2024
+ 12:34:58 -0700
+Message-ID: <13ccc36a-c3cc-469a-ae0b-71fd0d24bf63@quicinc.com>
+Date: Tue, 2 Apr 2024 12:34:57 -0700
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v4 2/5] soc: qcom: llcc: Add regmap for Broadcast_AND
+ region
+Content-Language: en-US
+To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        Bjorn Andersson
+	<andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Rob Herring
+	<robh@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>
+CC: <linux-arm-msm@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <kernel@quicinc.com>
+References: <20240329-llcc-broadcast-and-v4-0-107c76fd8ceb@quicinc.com>
+ <20240329-llcc-broadcast-and-v4-2-107c76fd8ceb@quicinc.com>
+ <d6b0f9d2-a489-4c0e-9c77-0e3eab49d3cb@linaro.org>
+From: Unnathi Chalicheemala <quic_uchalich@quicinc.com>
+In-Reply-To: <d6b0f9d2-a489-4c0e-9c77-0e3eab49d3cb@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01c.na.qualcomm.com (10.47.97.35)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: tT-YTDRg7tlai5cMvSdx_e4WcX8vpmoG
+X-Proofpoint-ORIG-GUID: tT-YTDRg7tlai5cMvSdx_e4WcX8vpmoG
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-04-02_12,2024-04-01_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 suspectscore=0
+ lowpriorityscore=0 phishscore=0 mlxscore=0 mlxlogscore=999 clxscore=1015
+ bulkscore=0 adultscore=0 impostorscore=0 spamscore=0 priorityscore=1501
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.19.0-2403210001
+ definitions=main-2404020145
 
-Since commit 26c9d152ebf3 ("dt-bindings: tpm: Consolidate TCG TIS
-bindings"), several issues are reported by "make dtbs_check" for arm64
-devicetrees:
+On 3/30/2024 4:46 AM, Krzysztof Kozlowski wrote:
+> On 29/03/2024 22:53, Unnathi Chalicheemala wrote:
+>> Define new regmap structure for Broadcast_AND region and initialize
+>> this regmap when HW block version is greater than 4.1, otherwise
+>> initialize as a NULL pointer for backwards compatibility.
+>>
+> 
+>> +	struct regmap *regmap;
+>>  	u32 act_ctrl_reg;
+>>  	u32 act_clear_reg;
+>>  	u32 status_reg;
+>> @@ -849,7 +850,8 @@ static int llcc_update_act_ctrl(u32 sid,
+>>  		return ret;
+>>  
+>>  	if (drv_data->version >= LLCC_VERSION_4_1_0_0) {
+>> -		ret = regmap_read_poll_timeout(drv_data->bcast_regmap, status_reg,
+>> +		regmap = drv_data->bcast_and_regmap ?: drv_data->bcast_regmap;
+>> +		ret = regmap_read_poll_timeout(regmap, status_reg,
+>>  				      slice_status, (slice_status & ACT_COMPLETE),
+>>  				      0, LLCC_STATUS_READ_DELAY);
+>>  		if (ret)
+>> @@ -1284,6 +1286,16 @@ static int qcom_llcc_probe(struct platform_device *pdev)
+>>  
+>>  	drv_data->version = version;
+>>  
+>> +	/* Applicable only when drv_data->version >= 4.1 */
+>> +	drv_data->bcast_and_regmap = qcom_llcc_init_mmio(pdev, i + 1, "llcc_broadcast_and_base");
+>> +	if (IS_ERR(drv_data->bcast_and_regmap)) {
+> 
+> I am pretty sure this breaks all users. Can you please explain how do
+> you maintain ABI and that IS_ERR() is applied only for version >= 4.1?
+> 
+> Best regards,
+> Krzysztof
+> 
+IS_ERR() check is done for all versions.
+If new register isn't defined in DT(for version < 4.1) it simply sets bcast_and_regmap to NULL.
+Otherwise, for version >= 4.1, it goes to err(in the case bcast_and_regmap isn't set properly).
 
-The compatible property needs to contain the chip's name in addition to
-the generic "tcg,tpm_tis-spi".
-
-tpm@1: compatible: ['tcg,tpm_tis-spi'] is too short
-	from schema $id:
-http://devicetree.org/schemas/tpm/tcg,tpm_tis-spi.yaml#
-
-Fix these schema violations.
-
-Gateworks Venice uses an Atmel ATTPM20P:
-https://trac.gateworks.com/wiki/tpm
-
-Cc: Lukas Wunner <lukas@wunner.de>
-Signed-off-by: Tim Harvey <tharvey@gateworks.com>
----
- arch/arm64/boot/dts/freescale/imx8mm-venice-gw71xx.dtsi | 2 +-
- arch/arm64/boot/dts/freescale/imx8mm-venice-gw7901.dts  | 2 +-
- arch/arm64/boot/dts/freescale/imx8mp-venice-gw71xx.dtsi | 2 +-
- 3 files changed, 3 insertions(+), 3 deletions(-)
-
-diff --git a/arch/arm64/boot/dts/freescale/imx8mm-venice-gw71xx.dtsi b/arch/arm64/boot/dts/freescale/imx8mm-venice-gw71xx.dtsi
-index 41c966147b94..429be2bab8a2 100644
---- a/arch/arm64/boot/dts/freescale/imx8mm-venice-gw71xx.dtsi
-+++ b/arch/arm64/boot/dts/freescale/imx8mm-venice-gw71xx.dtsi
-@@ -57,7 +57,7 @@ &ecspi2 {
- 	status = "okay";
- 
- 	tpm@1 {
--		compatible = "tcg,tpm_tis-spi";
-+		compatible = "atmel,attpm20p", "tcg,tpm_tis-spi";
- 		reg = <0x1>;
- 		spi-max-frequency = <36000000>;
- 	};
-diff --git a/arch/arm64/boot/dts/freescale/imx8mm-venice-gw7901.dts b/arch/arm64/boot/dts/freescale/imx8mm-venice-gw7901.dts
-index 5e2cbaf27e0f..35ae0faa815b 100644
---- a/arch/arm64/boot/dts/freescale/imx8mm-venice-gw7901.dts
-+++ b/arch/arm64/boot/dts/freescale/imx8mm-venice-gw7901.dts
-@@ -297,7 +297,7 @@ flash@0 {
- 	};
- 
- 	tpm@1 {
--		compatible = "tcg,tpm_tis-spi";
-+		compatible = "atmel,attpm20p", "tcg,tpm_tis-spi";
- 		reg = <0x1>;
- 		spi-max-frequency = <36000000>;
- 	};
-diff --git a/arch/arm64/boot/dts/freescale/imx8mp-venice-gw71xx.dtsi b/arch/arm64/boot/dts/freescale/imx8mp-venice-gw71xx.dtsi
-index e7bf032265e0..2f740d74707b 100644
---- a/arch/arm64/boot/dts/freescale/imx8mp-venice-gw71xx.dtsi
-+++ b/arch/arm64/boot/dts/freescale/imx8mp-venice-gw71xx.dtsi
-@@ -68,7 +68,7 @@ &ecspi2 {
- 	status = "okay";
- 
- 	tpm@1 {
--		compatible = "tcg,tpm_tis-spi";
-+		compatible = "atmel,attpm20p", "tcg,tpm_tis-spi";
- 		reg = <0x1>;
- 		spi-max-frequency = <36000000>;
- 	};
--- 
-2.25.1
+Thank you for reviewing Krzysztof!   
 
 
