@@ -1,189 +1,172 @@
-Return-Path: <linux-kernel+bounces-128297-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-128301-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3759E8958FD
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 17:59:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 3F24089590A
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 17:59:46 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 680BC1C22674
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 15:58:59 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 62BDF1C22865
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 15:59:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 21FF81332B3;
-	Tue,  2 Apr 2024 15:58:52 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1ADA41E480;
-	Tue,  2 Apr 2024 15:58:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EA4E71350F8;
+	Tue,  2 Apr 2024 15:59:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="Ju3OhhWV"
+Received: from mail-pf1-f170.google.com (mail-pf1-f170.google.com [209.85.210.170])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 15EFD134740
+	for <linux-kernel@vger.kernel.org>; Tue,  2 Apr 2024 15:58:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712073531; cv=none; b=HAVaW9WkdeMwNrvYLH19BPUkxIEuO4L/LxTjx91eu4aUgu/6VNbJmeXx7v9R8ZehfMZS752wMg3FxTRJNaf4hRS/Lre2Z6B5zxPdMdxVVdVmXmjgO3/qBc8s1SEE8TnYHxv9W2/03VzlR+pggTZPSJPBtGxzN/OIzMBAiq3Cur8=
+	t=1712073543; cv=none; b=HInbtcb1lAn5IQ0nYjz9NLKe3yJJU08MSfq379eDhyMQLUVF5eg1sC/ykmTk9ADTQ92OdfJqr+kU1FSmIFReJ+HZrms94iO/+0Gyqn4XfNdsWyKyqSVUEGklwJvsSnhKTKwQ6cKTC0yCHY8SKLP4fswWJEheqJ3rjqYFk4B9PVE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712073531; c=relaxed/simple;
-	bh=Gidpon3Z5DPHUkBqcS5U3KP9v3VSp4F1/+bnIqyCBYY=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=pMyepY4zZ0x5zbMuBk+4Q5/VClr35VOgtPtxSxpBhXUvdyN2CCduI+9G0uCLLvEaAkBPFD0RSgsAPCgfi9S4262F7jMt01T4CrQ0U1UcA6M3me0cwcjVtvDKWzrNKhzWKeE3nMDYSuCKRRlFW6JKY8FADZR5rcEsSNbWJS9snb8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 654971007;
-	Tue,  2 Apr 2024 08:59:19 -0700 (PDT)
-Received: from pluto (unknown [172.31.20.19])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id CA8863F7F5;
-	Tue,  2 Apr 2024 08:58:44 -0700 (PDT)
-Date: Tue, 2 Apr 2024 16:58:34 +0100
-From: Cristian Marussi <cristian.marussi@arm.com>
-To: Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc: Peng Fan <peng.fan@nxp.com>, "Peng Fan (OSS)" <peng.fan@oss.nxp.com>,
-	Sudeep Holla <sudeep.holla@arm.com>, Rob Herring <robh@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Linus Walleij <linus.walleij@linaro.org>,
-	Dan Carpenter <dan.carpenter@linaro.org>,
-	"linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	"devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-	"linux-gpio@vger.kernel.org" <linux-gpio@vger.kernel.org>,
-	Oleksii Moisieiev <oleksii_moisieiev@epam.com>
-Subject: Re: [PATCH v6 3/4] firmware: arm_scmi: Add SCMI v3.2 pincontrol
- protocol basic support
-Message-ID: <ZgwrKnx3hb59OG77@pluto>
-References: <20240323-pinctrl-scmi-v6-0-a895243257c0@nxp.com>
- <20240323-pinctrl-scmi-v6-3-a895243257c0@nxp.com>
- <ZgcP4IkTQGks9ehH@surfacebook.localdomain>
- <DU0PR04MB9417E797F4E0F7BB6154B3BE88382@DU0PR04MB9417.eurprd04.prod.outlook.com>
- <Zgu4Tok43W5t8KM0@pluto>
- <CAHp75VdAaTeQ_Ag3gd0s9UfT=kAT2hwibeJ9-YFXJx4z=R3e+g@mail.gmail.com>
+	s=arc-20240116; t=1712073543; c=relaxed/simple;
+	bh=8NAIgXsfazcwXjwK5f4+owrNYeHcAdGOOqJqfK2TAl0=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=Hb7BzmWaU9x1vzpTaDHqgKGP6O9YB1Oxn6gpG82k+p+J4rG7mKH6S6PPrwEcKUlhufd650wXYEzevQylt5hH6DqAgSwInlWkfME8H6DR2hMXVDWaK719gIAr1LMuzl20D/vQfWKShJ6Nd3LTw6dg6cvPnyEjQOC7/qjJuB8RIpw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=Ju3OhhWV; arc=none smtp.client-ip=209.85.210.170
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-pf1-f170.google.com with SMTP id d2e1a72fcca58-6e703e0e5deso4247810b3a.3
+        for <linux-kernel@vger.kernel.org>; Tue, 02 Apr 2024 08:58:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1712073539; x=1712678339; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=+o7XM/+4QFL4NFpVeras/FA7hCjajIU2dOFHOBIo+B4=;
+        b=Ju3OhhWV/JgKLb/LsBqgqqhApdXynk6XID0duRJ5dletGGjZw0vAGFaEKDqlc26PRI
+         CTfrt2IJJZQcS3yfA3C9W7zFJnP4lnUtQzfZYBZX1C4Q9i7YIj297ri5yo89jgfG1LHJ
+         IrXA8sQMS0603egAkZUZBCv4Ioxb5QjTzi7Zz3HdDXaNJ5xIRXF3r1C0F79xJUmGl3lf
+         Lme/p/Ehwhv0x6mLx9Erx1lsvYfNTw1eq5OjSgaWmDhxR+dpMTygEB9DMgsTZ/H3Ejij
+         H9EkYkLzfFeujf+h8b1DJtDOO7/nvOdwGRL23PGEAUmZ0eYeY/tqrPkd9Q9uVes7RsO5
+         a/qQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712073539; x=1712678339;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=+o7XM/+4QFL4NFpVeras/FA7hCjajIU2dOFHOBIo+B4=;
+        b=petP+rYoKJUsshG1QfoTfBaG1Pw/1swRx5n1oaPeqWROUynCgpzCIkQ5L0MJsjX567
+         HhTW4uk0jyQcIChmg1FTCHOvmcIqpKs0BQghSbYjrra6I2vc3TQqpeMBowjI/B2QRdKq
+         vl/uZiig2c1lOvn0kaqM155NqK1l0rs0SvQ7cU1zg/cE3Wm9Z9Jtt0Xsr8+pVF69SJEz
+         ne8s3O06gd2JeWbcRSz8E5YUH+pOX1bmI13MsY3w3Ru2A+cyKbEcqbXd1aD4sevqijcB
+         HYflDlGtpsCoA7jbH+C5ZoM53A9K9IA/CozaBXQ24M4EaHTZUF8t4FwGfRoknI1fB9Lk
+         uh+g==
+X-Forwarded-Encrypted: i=1; AJvYcCU4F4YyFCVJnzGzWJ5Nz8I4S4TQYuHhDjNi97HJMyohFhCXrNSJSh9MGxEf/4dD0899T2Og+VOHz5YldGgpcUbMkRQYa0/1xLjpq58n
+X-Gm-Message-State: AOJu0Yznm3uzMxlvdWHlWRv4/mvXKF8cPSs2e6bHVokltVwUrWsf7pJ/
+	mtXIZlPzxsbnAzsEjOoX0jEcbDhx+MtJQLc5QWwlddBTWuAQCDDx4IlOdXNjHZXBw5fAnajhtTW
+	bWNZHbjI5l0xlH93vDFbWBxpQDPDCmWXx5QJJ0w==
+X-Google-Smtp-Source: AGHT+IEzsVJjfQE5WZje+CSZh6uu8A/j82gSVdAZbljD1m2TlI5e1JTeeViL0IFd5ZW5fAGfo0XB97vETuhPUGuxvMQ=
+X-Received: by 2002:a05:6a20:3946:b0:1a3:32e5:f38a with SMTP id
+ r6-20020a056a20394600b001a332e5f38amr13336915pzg.45.1712073539439; Tue, 02
+ Apr 2024 08:58:59 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAHp75VdAaTeQ_Ag3gd0s9UfT=kAT2hwibeJ9-YFXJx4z=R3e+g@mail.gmail.com>
+References: <20240401-msm8996-remoteproc-v1-0-f02ab47fc728@linaro.org>
+ <20240401-msm8996-remoteproc-v1-3-f02ab47fc728@linaro.org> <d9ba1e11-44ea-4c1f-ab33-56a8bf57ab63@linaro.org>
+In-Reply-To: <d9ba1e11-44ea-4c1f-ab33-56a8bf57ab63@linaro.org>
+From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Date: Tue, 2 Apr 2024 18:58:48 +0300
+Message-ID: <CAA8EJpqn-s=o2D0CcFg3ZMQUQWGW6UiAs+hZK2gM1A5YciS9MA@mail.gmail.com>
+Subject: Re: [PATCH 3/3] arm64: dts: msm8996: add fastrpc nodes
+To: Konrad Dybcio <konrad.dybcio@linaro.org>
+Cc: Bjorn Andersson <andersson@kernel.org>, Rob Herring <robh@kernel.org>, 
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
+	Mathieu Poirier <mathieu.poirier@linaro.org>, Sibi Sankar <quic_sibis@quicinc.com>, 
+	linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org, 
+	linux-remoteproc@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
 
-On Tue, Apr 02, 2024 at 04:06:06PM +0300, Andy Shevchenko wrote:
-> On Tue, Apr 2, 2024 at 10:48 AM Cristian Marussi
-> <cristian.marussi@arm.com> wrote:
-> > On Sun, Mar 31, 2024 at 01:44:28PM +0000, Peng Fan wrote:
-> > > > Sat, Mar 23, 2024 at 08:15:16PM +0800, Peng Fan (OSS) kirjoitti:
-> 
-> ...
-> 
-> > > > > +#include <linux/module.h>
-> > > > > +#include <linux/scmi_protocol.h>
-> > > > > +#include <linux/slab.h>
-> > > >
-> > > > This is semi-random list of headers. Please, follow IWYU principle (include
-> > > > what you use). There are a lot of inclusions I see missing (just in the context of
-> > > > this page I see bits.h, types.h, and  asm/byteorder.h).
-> > >
-> > > Is there any documentation about this requirement?
-> > > Some headers are already included by others.
-> 
-> The documentation here is called "a common sense".
-> The C language is built like this and we expect that nobody will
-> invest into the dependency hell that we have already, that's why IWYU
-> principle, please follow it.
-> 
-
-Yes, but given that we have a growing number of SCMI protocols there is a
-common local protocols.h header to group all includes needed by any
-protocols: the idea behind this (and the devm_ saga down below) was to ease
-development of protocols, since there are lots of them and growing, given
-the SCMI spec is extensible.
-
-> > Andy made (mostly) the same remarks on this same patch ~1-year ago on
-> > this same patch while it was posted by Oleksii.
+On Tue, 2 Apr 2024 at 17:47, Konrad Dybcio <konrad.dybcio@linaro.org> wrote:
+>
+> On 31.03.2024 11:10 PM, Dmitry Baryshkov wrote:
+> > From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 > >
-> > And I told that time that most of the remarks around devm_ usage were
-> > wrong due to how the SCMI core handles protocol initialization (using a
-> > devres group transparently).
+> > The ADSP provides fastrpc/compute capabilities. Enable support for the
+> > fastrpc on this DSP.
 > >
-> > This is what I answered that time.
+> > Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+> > Signed-off-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+> > ---
+> >  arch/arm64/boot/dts/qcom/msm8996.dtsi | 57 +++++++++++++++++++++++++++++++++++
+> >  1 file changed, 57 insertions(+)
 > >
-> > https://lore.kernel.org/linux-arm-kernel/ZJ78hBcjAhiU+ZBO@e120937-lin/#t
-> >
-> > I wont repeat myself, but, in a nutshell the memory allocation like it
-> > is now is fine: a bit happens via devm_ at protocol initialization, the
-> > other is doe via explicit kmalloc at runtime and freed via kfree at
-> > remove time (if needed...i.e. checking the present flag of some structs)
-> 
-> This sounds like a mess. devm_ is expected to be used only for the
-> ->probe() stage, otherwise you may consider cleanup.h (__free() macro)
-> to have automatic free at the paths where memory is not needed.
-> 
+> > diff --git a/arch/arm64/boot/dts/qcom/msm8996.dtsi b/arch/arm64/boot/dts/qcom/msm8996.dtsi
+> > index 7ae499fa7d91..cf7ab01f3af6 100644
+> > --- a/arch/arm64/boot/dts/qcom/msm8996.dtsi
+> > +++ b/arch/arm64/boot/dts/qcom/msm8996.dtsi
+> > @@ -3545,6 +3545,63 @@ q6routing: routing {
+> >                                               };
+> >                                       };
+> >                               };
+> > +
+> > +                             fastrpc {
+> > +                                     compatible = "qcom,fastrpc";
+> > +                                     qcom,smd-channels = "fastrpcsmd-apps-dsp";
+> > +                                     label = "adsp";
+> > +                                     qcom,non-secure-domain;
+> > +                                     #address-cells = <1>;
+> > +                                     #size-cells = <0>;
+> > +
+> > +                                     cb@8 {
+> > +                                             compatible = "qcom,fastrpc-compute-cb";
+> > +                                             reg = <8>;
+> > +                                             iommus = <&lpass_q6_smmu 8>;
+> > +                                     };
+> > +
+> > +                                     cb@9 {
+> > +                                             compatible = "qcom,fastrpc-compute-cb";
+> > +                                             reg = <9>;
+> > +                                             iommus = <&lpass_q6_smmu 9>;
+> > +                                     };
+> > +
+> > +                                     cb@10 {
+> > +                                             compatible = "qcom,fastrpc-compute-cb";
+> > +                                             reg = <10>;
+> > +                                             iommus = <&lpass_q6_smmu 10>;
+> > +                                     };
+> > +
+> > +                                     cb@11 {
+> > +                                             compatible = "qcom,fastrpc-compute-cb";
+> > +                                             reg = <11>;
+> > +                                             iommus = <&lpass_q6_smmu 11>;
+> > +                                     };
+> > +
+> > +                                     cb@12 {
+> > +                                             compatible = "qcom,fastrpc-compute-cb";
+> > +                                             reg = <12>;
+> > +                                             iommus = <&lpass_q6_smmu 12>;
+> > +                                     };
+> > +
+> > +                                     cb@5 {
+> > +                                             compatible = "qcom,fastrpc-compute-cb";
+> > +                                             reg = <5>;
+>
+> No need to copy downstream's creative alphabetical-but-not-numerical
+> sorting..
 
-Indeed, this protocol_init code is called by the SCMI core once for all when
-an SCMI driver tries at first to use this specific protocol by 'getting' its
-protocol_ops, so it is indeed called inside the probe chain of the driver:
-at this point you *can* decide to use devres to allocate memory and be assured
-that if the init fails, or when the driver cease to use this protocol (calling
-its remove()) and no other driver is using it, all the stuff that have been
-allocated related to this protocol will be released by the core for you.
-(using an internal devres group)
+Ack, I'll fix the order.
 
-Without this you should handle manually all the deallocation manually on
-the init error-paths AND also provide all the cleanup explicitly when
-the protocol is no more used by any driver (multiple users of the same
-protocol instance are possible)...for all protocols.
+> The entries look OK though.. although, any reason we have
+> such a weird binding including faux child nodes and not just an array
+> of iommus? Is the only way to discover the fastrpc nodes' properties
+> such as qcom,non-secure-domain or vmid belonging through hardcoding?
 
-This is/was handy since, till now, all the SCMI querying and resources
-allocation happened anyway all at once at init time...
+No idea here. This is how fastrpc nodes are defined on all existing
+platforms. Maybe Srini knows the story and the reason behind the
+bindings??
 
-..the mess, as you kindly called it, derives from the fact that this specific
-protocol is the first and only one that does NOT allocate all that it needs
-during the initialization (to minimize needless allocs for a lot of possibly
-unused resources) and this lazy-initialization phase, done after init at runtime,
-must be handled manually since it cannot be managed by the devres group that is
-open/clsoed around init by the SCMI core.
 
-I dont like particularly this split allocation but it has a reason and any
-other solution seems more messy to me at the moment.
 
-And I dont feel like changing all the SCMI protocol initialziation core code
-(that address a lot more under the hood) is a desirable solution to address a
-non-existent problem really.
-
-> And the function naming doesn't suggest that you have a probe-remove
-> pair. Moreover, if the init-deinit part is called in the probe-remove,
-> the devm_ must not be mixed with non-devm ones, as it breaks the order
-> and leads to subtle mistakes.
-> 
-
-Initialization order is enforced by SCMI core like this:
-
- @driver_probe->get_protocol_ops()
-  @core/get_protocol_ops
-     -> devres_group_open()
-     -> protocol_init->devm_*()
-     -> devres_group_close()
-     -> driver_probing
-
-   @runtime optional explicit_lazy_kmallocs inside the protocol
- 
- @driver_remove->put_protocol_ops()
-   @core/put_protocol_ops()
-     -> protocol_denit->optional_explicit_kfree_of_the_above
-     -> devres_group_release()
-   -> driver_removing
-
-.. dont think there's an ordering problem.
-
-..note that the ph->dev provided in the protocol_init and used by devm_
-is NOT the dev of the SCMI driver probe/remove that uses the get_protocol_ops,
-it is an internal SCMI device associated with the core SCMI stack probing and
-allocations, within which a devres group for the specific protocol is created
-when that specific protocol is initialized...protocols are not fully
-fledged drivers are just bits of the SCMI stack that are initialized when needed
-(and possibly also loaded when needed for vendor protocols) and
-de-initialzed when no more SCMI driver users exist for that protocol.
-
-Thanks,
-Cristian
-
+-- 
+With best wishes
+Dmitry
 
