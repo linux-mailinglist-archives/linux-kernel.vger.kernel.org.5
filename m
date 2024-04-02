@@ -1,182 +1,163 @@
-Return-Path: <linux-kernel+bounces-127603-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-127590-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4890D894E42
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 11:05:39 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id BF204894E11
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 10:58:06 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id CBE0B1F21192
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 09:05:38 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EA9691C22328
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 08:58:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A3B4858ADB;
-	Tue,  2 Apr 2024 09:04:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b="pCC4bfr3"
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [78.32.30.218])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B61E051C4A;
+	Tue,  2 Apr 2024 08:57:58 +0000 (UTC)
+Received: from mail-yb1-f171.google.com (mail-yb1-f171.google.com [209.85.219.171])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DADB157305;
-	Tue,  2 Apr 2024 09:04:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=78.32.30.218
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 42CB51755A;
+	Tue,  2 Apr 2024 08:57:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712048688; cv=none; b=n3qtJF5qpdQE5O1EcgdH/k5Hef1IxUPvEtNb8oRqe6AZj/ZlJK4swbfcUzIG8AM/bt5tjYo8QfwmoIBLCUeT95DE395FCN9JFMZpafqsSW5Y8MvzpYLmlY6igTI8i3Mt7hpwtXCAxS6S/9xKyGUuIOdyHuevbsAjK9nMggXdYxo=
+	t=1712048278; cv=none; b=i4aURAQLj3qVGPZJjZr8H9pvIdidQanLZeAHn2LbQHWp7QaWVrRNrF8EXgHAaNvxzah4tIPS8eGWEWl0sjPcHNF7Gq4mAw4wFN4nJwV+rGOAWJWNv4C3olHwyhHDtH0EvZ05ZKvPced3QDvZ+k+ALqURtdbaK4C2BU0nJHwEmXQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712048688; c=relaxed/simple;
-	bh=YvAxsRirqP9WIUZqYwF0tiTfjgDxAvwrGrHJaBMhnbg=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=IJw0pWL92Na0iVJzfb+DbQLpuoRT3SiwP2Hzyq8x8XGkDZr9hSixS+AHGfNyVGcNFLIZCEoKEoqECIlKSQiadZA913auzQp1lAqgBYqa5SV3nvziOTuh4CE8g+FcX4eQxHsH9DJXkTLWR0fbqm4fN5jy9CVsBt4c71SP6cYuFnA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=armlinux.org.uk; spf=none smtp.mailfrom=armlinux.org.uk; dkim=pass (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b=pCC4bfr3; arc=none smtp.client-ip=78.32.30.218
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=armlinux.org.uk
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=armlinux.org.uk
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
-	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-	List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-	bh=/sLPoPRj7yaTMRifvssA4ocGQZQ13k50t3gTbGc6at4=; b=pCC4bfr3tEL7rd4uaTZq+6Fpyu
-	d+b3YySnKJPGaKKYgvve+kH+pO/ODBmZxycpxzsqacSBSdWqeYQDiEntqiuyA5cau6k33vgQiFDsO
-	qTlXke5NWkvtiCNdtwLxqrMeHOqaPZAmWI1PdAVLlcOnyjRqTOfUDAgYt7IIyRB97bgcLAVGHikxE
-	6FDGpSBr+ssVKqsGTlUYERTuxv8xLEMlCVg1uHs/VSLGiOfXKS+hO9Wxmm/9/x+Mpwtl6Z95AWH3e
-	Q6UlRsos1rowDkHF5p/nblE1JIq7nT7xR6M/TLYUUxuWJoHm2dDiLno9T0narThxj9NxMVoafbYWi
-	Xo6yfp7Q==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:39088)
-	by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.96)
-	(envelope-from <linux@armlinux.org.uk>)
-	id 1rrZwT-00061T-21;
-	Tue, 02 Apr 2024 09:56:29 +0100
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
-	(envelope-from <linux@shell.armlinux.org.uk>)
-	id 1rrZwH-0006pd-Kx; Tue, 02 Apr 2024 09:56:17 +0100
-Date: Tue, 2 Apr 2024 09:56:17 +0100
-From: "Russell King (Oracle)" <linux@armlinux.org.uk>
-To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Cc: Suzuki K Poulose <suzuki.poulose@arm.com>,
-	Mike Leach <mike.leach@linaro.org>,
-	James Clark <james.clark@arm.com>,
-	Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-	Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-	Alexandre Torgue <alexandre.torgue@foss.st.com>,
-	Linus Walleij <linus.walleij@linaro.org>,
-	Andi Shyti <andi.shyti@kernel.org>,
-	Olivia Mackall <olivia@selenic.com>,
-	Herbert Xu <herbert@gondor.apana.org.au>,
-	Vinod Koul <vkoul@kernel.org>,
-	Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-	Miquel Raynal <miquel.raynal@bootlin.com>,
-	Michal Simek <michal.simek@amd.com>,
-	Eric Auger <eric.auger@redhat.com>,
-	Alex Williamson <alex.williamson@redhat.com>,
-	linux-kernel@vger.kernel.org, coresight@lists.linaro.org,
-	linux-arm-kernel@lists.infradead.org,
-	linux-stm32@st-md-mailman.stormreply.com, linux-i2c@vger.kernel.org,
-	linux-crypto@vger.kernel.org, dmaengine@vger.kernel.org,
-	linux-input@vger.kernel.org, kvm@vger.kernel.org
-Subject: Re: [PATCH 00/19] amba: store owner from modules with
- amba_driver_register()
-Message-ID: <ZgvIMRDfeQaeVxYt@shell.armlinux.org.uk>
-References: <20240326-module-owner-amba-v1-0-4517b091385b@linaro.org>
- <f514d9e1-61fa-4c55-aea1-d70c955bb96a@linaro.org>
+	s=arc-20240116; t=1712048278; c=relaxed/simple;
+	bh=4mGyip3A2vxVFiIMykn/ckhzlQc9ZJ9gaeuHR/O/fZs=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=FojOsJwOw199AYJAfM0mWLtZvS48/fuFc0vHDEnMJCMhz6V/Zsikvs3cNtZ7YGrEyocNSW4CQZkktfNxoDw1z7zKQES9HscMIcfk9CuDHGDEvvQcQKMFuBtqeih6saKkTfamswnOmdgghkLhQ5U4babX4uP5gMBFhvOHryPlLWw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.219.171
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-yb1-f171.google.com with SMTP id 3f1490d57ef6-d9b9adaf291so4679269276.1;
+        Tue, 02 Apr 2024 01:57:56 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712048274; x=1712653074;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=aVhWIofaeGGyMSfZkv2tkxmuwwN8jEo36pNRCgIT+Ys=;
+        b=ObOhPGt8GfG/i3NRtnPqde2CXyJeWx/eyHo/TYmzGWK55NL7IL3wxC3vSIdr931noa
+         iTI3iJ2pOzFeJ8pmDe5lkG5HxW+MZLzO0eUZBfEMcxAb8ZJkUclZ67bNGKaBqdk6clYK
+         kSADdoBz/gvGm59kgjk/YA7O/TjUuPQ7UqDXal7T85Vmc8JloWH6m2ecHH0kw0D8w3Uf
+         RTNo5CWasW1e8jiqXMTnmyaLtDUaHm8Zbc9tMx+KtYBvn6d1+UlM9zmWVHbJ3WN+VaR7
+         S1vGRhMjXxvFUOhyyQ3V4cWSOksJ+gF5DGQictLbFL1p6ohhEkMGpzZHPFoBnhYin/OT
+         v0EA==
+X-Forwarded-Encrypted: i=1; AJvYcCXuB7rrlB3gNodQ1sVsvasHDeDXkbF0GacSCTyeAnLcsX5ISxTkQUto+Z7L2a4Xj1eBhmrKY83VQky5lhFruFqeILErlIZd
+X-Gm-Message-State: AOJu0YxTJkb34vxKv0eJqYeHWTaMs0O5BgbSSDOaxYIBk7QA1WKDFs3a
+	ZiAb0tvE0+lrSicGxOD/dYswDrEx60UjtVplW65kSi1hp9tDlhKzqO4Hpmd5fYE=
+X-Google-Smtp-Source: AGHT+IEbgoiD9Uu1JaAjRsoE9MbIs5GzOHUG3wheIAsp2wKPthdyM/m5DBYTJyIRgXbL5j+Qy/GYuQ==
+X-Received: by 2002:a5b:b91:0:b0:dd0:467:2e48 with SMTP id l17-20020a5b0b91000000b00dd004672e48mr9645824ybq.40.1712048274460;
+        Tue, 02 Apr 2024 01:57:54 -0700 (PDT)
+Received: from mail-yb1-f174.google.com (mail-yb1-f174.google.com. [209.85.219.174])
+        by smtp.gmail.com with ESMTPSA id m3-20020a255803000000b00dcd25ce965esm2440779ybb.41.2024.04.02.01.57.54
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 02 Apr 2024 01:57:54 -0700 (PDT)
+Received: by mail-yb1-f174.google.com with SMTP id 3f1490d57ef6-d9b9adaf291so4679252276.1;
+        Tue, 02 Apr 2024 01:57:54 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCWeMlcabTQARu1weLQD4DTgF5b8MLpZKDgJ3q/fCOE7Q+emTlIKiXpJ3ZBTOqSgcvQ7h//7fwm9ud6+X/FEaaCTIbvE9uAP
+X-Received: by 2002:a25:5f0a:0:b0:dd9:20d6:fd2 with SMTP id
+ t10-20020a255f0a000000b00dd920d60fd2mr8002219ybb.27.1712048273931; Tue, 02
+ Apr 2024 01:57:53 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <f514d9e1-61fa-4c55-aea1-d70c955bb96a@linaro.org>
-Sender: Russell King (Oracle) <linux@armlinux.org.uk>
+References: <20240324233458.1352854-1-sashal@kernel.org> <20240324233458.1352854-111-sashal@kernel.org>
+In-Reply-To: <20240324233458.1352854-111-sashal@kernel.org>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Date: Tue, 2 Apr 2024 10:57:41 +0200
+X-Gmail-Original-Message-ID: <CAMuHMdW9yQsq15Lc_uqULw4LXAzrKwOZe+KCGLrCkiFG9kuVnw@mail.gmail.com>
+Message-ID: <CAMuHMdW9yQsq15Lc_uqULw4LXAzrKwOZe+KCGLrCkiFG9kuVnw@mail.gmail.com>
+Subject: Re: [PATCH 5.15 110/317] arm64: dts: renesas: r8a779a0: Update to
+ R-Car Gen4 compatible values
+To: Sasha Levin <sashal@kernel.org>
+Cc: linux-kernel@vger.kernel.org, stable@vger.kernel.org, 
+	Wolfram Sang <wsa+renesas@sang-engineering.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Sat, Mar 30, 2024 at 01:18:30PM +0100, Krzysztof Kozlowski wrote:
-> On 26/03/2024 21:23, Krzysztof Kozlowski wrote:
-> > Merging
-> > =======
-> > All further patches depend on the first amba patch, therefore please ack
-> > and this should go via one tree.
-> > 
-> > Description
-> > ===========
-> > Modules registering driver with amba_driver_register() often forget to
-> > set .owner field.
-> > 
-> > Solve the problem by moving this task away from the drivers to the core
-> > amba bus code, just like we did for platform_driver in commit
-> > 9447057eaff8 ("platform_device: use a macro instead of
-> > platform_driver_register").
-> > 
-> > Best regards,
-> 
-> I tried to submit this series to Russell patch tracker and failed. This
-> is ridiculous. It's 2024 and instead of normal process, like every other
-> maintainer, so b4 or Patchwork, we have some unusable system rejecting
-> standard patches.
+Hi Sasha,
 
-Sorry but no. Stop being offensive.
+Looks like I missed some things in my previous review...
 
-> First, it depends some weird, duplicated signed-off-by's.
+On Mon, Mar 25, 2024 at 12:36=E2=80=AFAM Sasha Levin <sashal@kernel.org> wr=
+ote:
+> From: Geert Uytterhoeven <geert+renesas@glider.be>
+>
+> [ Upstream commit a1721bbbdb5c6687d157f8b8714bba837f6028ac ]
 
-Eh? There is no such logic in there.
+This is not the corresponding upstream commit for this commit
+(a022251c2f950cd2 in v5.15.153).
+It should be a1ca409cc050166a9e8ed183c1d4192f511cf6a2.
+How could that happen? Interestingly, the backport in v6.1.83
+(efab55e16c55c637) does have the correct upstream commit.
 
-> Second it > submitting patch-by-patch, all with clicking on some web
-> (!!!) interface.
+> Despite the name, R-Car V3U is the first member of the R-Car Gen4
+> family.  Hence update the compatible properties in various device nodes
+> to include family-specific compatible values for R-Car Gen4 instead of
+> R-Car Gen3:
+>   - DMAC,
+>   - (H)SCIF,
+>   - I2C,
+>   - IPMMU,
+>   - WDT.
 
-Again, no it doesn't, and you're just throwing crap out because you
-failed. Unlike most of the "normal" processes, the patch system allows
-you to submit both by *email* and also by *web* for those cases where
-the emails get screwed up by ones company mail server. That's why the
-web interface exists - to give people *flexibility*.
+Likewise, the description should be:
 
-The fact is, the web interface is merely a front end interface that
-generates an email and submits it in the usual way by email - an
-email that you can perfectly well generate that is *very* close to
-the standard email that git format-patch generates.
+    Despite the name, R-Car V3U is the first member of the R-Car Gen4
+    family.  Hence update the compatible properties in various device nodes
+    to include family-specific compatible values for R-Car Gen4 instead of
+    R-Car Gen3:
+      - EtherAVB,
+      - MSIOF.
 
-The *only* difference is that the patch system wants a KernelVersion:
-tag in the email _somewhere_ and it doesn't matter where it appears.
-Git even has support to do this.
+> Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+> Reviewed-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
 
-  git format-patch --add-header="KernelVersion: $foo"
+Likewise, bogus tag never given...
 
-Why does it want the kernel version? Because when we were running 2.4
-and 2.5 kernel versions in parallel, it was important to know which
-tree the patch was being submitted for. It has continued to be required
-because it means when there's problems applying a patch, it gives me
-the additional information about the base used for the patch (and it
-keeps on being useful to have.)
+> Link: https://lore.kernel.org/r/73cea9d5e1a6639422c67e4df4285042e31c9fd5.=
+1651497071.git.geert+renesas@glider.be
 
-> That's the response:
-> -------------
-> Your patch has not been logged because:
-> 
-> Error:   Please supply a summary subject line briefly describing
->          your patch.
-> 
-> 
-> Error:   Please supply a "KernelVersion: " tag after "PATCH FOLLOWS" or
-> "---".
-> 
-> Error:   the patch you are submitting has one or more missing or incorrect
->          Signed-off-by lines:
-> 
->          - author signoff <krzkreg@gmail.com> is missing.
-> 
->          Please see the file Documentation/SubmittingPatches, section 11
->          for details on signing off patches.
+and a wrong link.
 
-Lots of people use it without a problem. I've just run the parser
-through its offline tests, and it parses email content correctly.
-I've no idea what you're doing wrong, but it looks like something
-pretty serious if it didn't parse the subject line.
+> Stable-dep-of: 0c51912331f8 ("arm64: dts: renesas: r8a779a0: Correct avb[=
+01] reg sizes")
+> Signed-off-by: Sasha Levin <sashal@kernel.org>
 
-Rather than getting stressed about it, why don't you send me an email
-the first time something goes wrong so I can investigate, turn on
-debugging to capture the problem email?
+> --- a/arch/arm64/boot/dts/renesas/r8a779a0.dtsi
+> +++ b/arch/arm64/boot/dts/renesas/r8a779a0.dtsi
 
--- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
+> @@ -935,7 +935,7 @@ scif4: serial@e6c40000 {
+>
+>                 msiof0: spi@e6e90000 {
+>                         compatible =3D "renesas,msiof-r8a779a0",
+> -                                    "renesas,rcar-gen3-msiof";
+> +                                    "renesas,rcar-gen4-msiof";
+
+The Renesas MSIOF driver in v5.15.153 does not handle
+"renesas,rcar-gen4-msiof" yet.  Please backport commit ea9d001550abaf2f
+("spi: sh-msiof: add generic Gen4 binding") in v6.1 to fix that.
+
+>                         reg =3D <0 0xe6e90000 0 0x0064>;
+>                         interrupts =3D <GIC_SPI 245 IRQ_TYPE_LEVEL_HIGH>;
+>                         clocks =3D <&cpg CPG_MOD 618>;
+
+Thanks!
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k=
+org
+
+In personal conversations with technical people, I call myself a hacker. Bu=
+t
+when I'm talking to journalists I just say "programmer" or something like t=
+hat.
+                                -- Linus Torvalds
 
