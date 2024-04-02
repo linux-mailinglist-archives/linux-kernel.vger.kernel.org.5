@@ -1,94 +1,109 @@
-Return-Path: <linux-kernel+bounces-127926-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-127927-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 665148952CF
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 14:21:21 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 004498952D2
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 14:22:01 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9792B1C210B3
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 12:21:20 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 94C171F22DD9
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 12:22:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C4BB38060D;
-	Tue,  2 Apr 2024 12:20:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AB42C7EF12;
+	Tue,  2 Apr 2024 12:21:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Puzb/DBV"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="glnejwao"
+Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E305078685;
-	Tue,  2 Apr 2024 12:20:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C20D478B63;
+	Tue,  2 Apr 2024 12:21:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712060433; cv=none; b=Iw5H2nwXMiGRLW61eIJLQpmXWBbSh7PNmE0NH/qrfWntfbpkK3ER6+qiB7U2ufFbBNC/KtkDN3EKtV1eSBx69JuGr/TYxsfrxT7rehOfAunzuInoc7dedxPkRxhFUMzZWu/hryUkvBtwKrjqZlZ2NsUoCmHDDzc78BCLsWmRvbM=
+	t=1712060466; cv=none; b=QopZshPSoUzaPcHgNvulzwtONc7uVl6Rho6OWPL965StdGnHHDhTmWCHyOK1jJRwSbXMV0TKfuY2/HvOfWOG0qaGf5gMHmh5XU+ZtWPDdwJ24n2PxVXVz86cMlpA8tMtiwm/M9As5GPYvo3/Lc025wQdUNKnqGOiZONPlMdjffo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712060433; c=relaxed/simple;
-	bh=VlEbApYYlrQNKemDzsGDoCHVIiP3qoDoNZFKa3I+DAI=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=WjYSuCvcmXsa3zisl3sB4DDqKotN+opnOdqB1T+7lKj15e7vwLTK8KuZlv8s91Tht12/EsP1cDjBp+s4+bmdio+t5kVdL34DVkrYV9FhwSNUmpF7T5AIEgkNTKDvnp7yKZF0Fp/HaD6mYTilwXgo+Pvrefngi8fW9pIWTb+5+iw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Puzb/DBV; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 396DAC433F1;
-	Tue,  2 Apr 2024 12:20:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712060432;
-	bh=VlEbApYYlrQNKemDzsGDoCHVIiP3qoDoNZFKa3I+DAI=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=Puzb/DBV2W8DWmDy/Buo+DRI3mCqYkdrerzy7zNfBqNA9+r9Iowuq4doqAgtNALOP
-	 4VP5OMkKE8POrhf9lbY4pCCJqfkzfPP1ytZRLV0TBrFgl05JoCQyjgPARTZbRZFYoz
-	 tiCwPR/Ve9d/eZLtxX6aDHOr6NkoYolkBBzUiHLcusMptLmtMzEMlgL2UOvusnwx6n
-	 4GYoiAbSPf9z02eTmxp3yKVgbNVUDxnNd6FFEfcXkSDSHWMFRBTaeEd9ROYnMbg89c
-	 9+9zPzrF/tlUhCwaOdx8VWXYrPWtil1GRhIAN+TrX+/fzuWtnFOTiGgdrcnfMrtsLl
-	 gIsvTxdkqeBOw==
-Date: Tue, 2 Apr 2024 07:20:30 -0500
-From: Rob Herring <robh@kernel.org>
-To: Frank Li <Frank.Li@nxp.com>
-Cc: NXP Linux Team <linux-imx@nxp.com>, Vinod Koul <vkoul@kernel.org>,
-	Shawn Guo <shawnguo@kernel.org>, Joy Zou <joy.zou@nxp.com>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	dmaengine@vger.kernel.org, linux-kernel@vger.kernel.org,
-	Conor Dooley <conor+dt@kernel.org>, devicetree@vger.kernel.org,
-	Pengutronix Kernel Team <kernel@pengutronix.de>,
-	linux-arm-kernel@lists.infradead.org,
-	Sascha Hauer <s.hauer@pengutronix.de>, imx@lists.linux.dev,
-	Fabio Estevam <festevam@gmail.com>
-Subject: Re: [PATCH v4 4/5] dt-bindings: fsl-imx-sdma: Add I2C peripheral
- types ID
-Message-ID: <171206040997.3718172.5303876695049483513.robh@kernel.org>
-References: <20240329-sdma_upstream-v4-0-daeb3067dea7@nxp.com>
- <20240329-sdma_upstream-v4-4-daeb3067dea7@nxp.com>
+	s=arc-20240116; t=1712060466; c=relaxed/simple;
+	bh=xyAFVVSrUaZelYKAVF4nMxj60RRWxZjPtQr6WMey4Mw=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=XqV2aoidKoBZYUroqxybYMAp/w3/GdLYgCUDc1jm5ABm+y/V8HfSTOnGcgmwsUJ0ymijaWrWbwnuprOg7KrqTSNQjOpz1DJggdRqQHRFgvnP6P0y30f/rcgPj19Kl9hSQoclCvHCB6NtNkaIrvTYQsXdOuTI2AvZWs8nE44AJHk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=glnejwao; arc=none smtp.client-ip=46.235.227.194
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+	s=mail; t=1712060460;
+	bh=xyAFVVSrUaZelYKAVF4nMxj60RRWxZjPtQr6WMey4Mw=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=glnejwaovaa1DO8cccp6ZRvs2DNHxoE3trZF+FEuDKp8m43onB4hwOknMkYcQ7yYj
+	 aTXzdvcnAilQ+WznEWbbl/6vkY8v7R4ksPGclv/lcjQVwd56tOTohiseugslKDp1eZ
+	 +yrnjF9WQuNuD5qvTrTLloHtZ6mNbXgo8vwc+eKgFNB38j/yAt0nF93MFhpiiMeU9B
+	 hQEEEShmHXDeZOvYBSDOR33tAYOzpKt1TH53/EMULZOeq8WLHBsca3gY1pbFOPjWHC
+	 Owng3d9WO3P4AHfQCIheDlq0ptGb92pDoakhxqEjGUi3e5WLS/CBgS+cdmkDH7aNre
+	 Y09oy5O2JEVAA==
+Received: from localhost (cola.collaboradmins.com [195.201.22.229])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	(Authenticated sender: bbrezillon)
+	by madrid.collaboradmins.com (Postfix) with ESMTPSA id CFAD03781144;
+	Tue,  2 Apr 2024 12:20:59 +0000 (UTC)
+Date: Tue, 2 Apr 2024 14:20:58 +0200
+From: Boris Brezillon <boris.brezillon@collabora.com>
+To: Dan Carpenter <dan.carpenter@linaro.org>
+Cc: Steven Price <steven.price@arm.com>, Liviu Dudau <liviu.dudau@arm.com>,
+ Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, Maxime Ripard
+ <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>, David Airlie
+ <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>, Heiko Stuebner
+ <heiko@sntech.de>, Grant Likely <grant.likely@linaro.org>,
+ dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+ kernel-janitors@vger.kernel.org
+Subject: Re: [PATCH] drm/panthor: Fix error code in panthor_gpu_init()
+Message-ID: <20240402142058.5477a9bf@collabora.com>
+In-Reply-To: <d753e684-43ee-45c2-a1fd-86222da204e1@moroto.mountain>
+References: <d753e684-43ee-45c2-a1fd-86222da204e1@moroto.mountain>
+Organization: Collabora
+X-Mailer: Claws Mail 4.2.0 (GTK 3.24.41; x86_64-redhat-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240329-sdma_upstream-v4-4-daeb3067dea7@nxp.com>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
+On Tue, 2 Apr 2024 12:56:19 +0300
+Dan Carpenter <dan.carpenter@linaro.org> wrote:
 
-On Fri, 29 Mar 2024 10:34:44 -0400, Frank Li wrote:
-> Add peripheral types ID 26 for I2C because sdma firmware (sdma-6q: v3.6,
-> sdma-7d: v4.6) support I2C DMA transfer.
+> This code accidentally returns zero/success on error because of a typo.
+> It should be "irq" instead of "ret".  The other thing is that if
+> platform_get_irq_byname() were to return zero then the error code would
+> be cmplicated.  Fortunately, it does not so we can just change <= to
+> < 0.
 > 
-> Signed-off-by: Frank Li <Frank.Li@nxp.com>
+> Fixes: 5cd894e258c4 ("drm/panthor: Add the GPU logical block")
+> Signed-off-by: Dan Carpenter <dan.carpenter@linaro.org>
+
+Reviewed-by: Boris Brezillon <boris.brezillon@collabora.com>
+
 > ---
->  Documentation/devicetree/bindings/dma/fsl,imx-sdma.yaml | 1 +
->  1 file changed, 1 insertion(+)
+>  drivers/gpu/drm/panthor/panthor_gpu.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
 > 
-
-
-Please add Acked-by/Reviewed-by tags when posting new versions. However,
-there's no need to repost patches *only* to add the tags. The upstream
-maintainer will do that for acks received on the version they apply.
-
-If a tag was not added on purpose, please state why and what changed.
-
-Missing tags:
-
-Acked-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-
-
+> diff --git a/drivers/gpu/drm/panthor/panthor_gpu.c b/drivers/gpu/drm/panthor/panthor_gpu.c
+> index 0f7c962440d3..5251d8764e7d 100644
+> --- a/drivers/gpu/drm/panthor/panthor_gpu.c
+> +++ b/drivers/gpu/drm/panthor/panthor_gpu.c
+> @@ -211,8 +211,8 @@ int panthor_gpu_init(struct panthor_device *ptdev)
+>  		return ret;
+>  
+>  	irq = platform_get_irq_byname(to_platform_device(ptdev->base.dev), "gpu");
+> -	if (irq <= 0)
+> -		return ret;
+> +	if (irq < 0)
+> +		return irq;
+>  
+>  	ret = panthor_request_gpu_irq(ptdev, &ptdev->gpu->irq, irq, GPU_INTERRUPTS_MASK);
+>  	if (ret)
 
 
