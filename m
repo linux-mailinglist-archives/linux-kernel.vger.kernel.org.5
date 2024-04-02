@@ -1,47 +1,39 @@
-Return-Path: <linux-kernel+bounces-128339-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-128340-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8D239895994
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 18:21:50 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 85B6089597F
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 18:18:50 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D3F21B2B926
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 16:18:25 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A8B781C2127E
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 16:18:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9986E14AD31;
-	Tue,  2 Apr 2024 16:18:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="DJDRrDbN"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ADB8C2E40D;
-	Tue,  2 Apr 2024 16:18:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AAC4D14AD30;
+	Tue,  2 Apr 2024 16:18:43 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 29F9A14AD1D
+	for <linux-kernel@vger.kernel.org>; Tue,  2 Apr 2024 16:18:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712074696; cv=none; b=ssW2UpaKAMxVibG/lFzb2xTPZuN0h3dn8vD9eOfyaIjoLQh5PSr3zKkH+lKjgsTai3na9d1g1snzNiEVrBzQ+1NFcP1lNpm0ocWM8gRxrflUedG100z2RmswU1h6COAZP2Z1Nb+y0+tAScKMpW1qfseTUJrsAHumRuU3n1nQ9bk=
+	t=1712074723; cv=none; b=NdGwi7d8Rtp5w1hKWso0N61IjSlEQaFhBdU5/8cDBB28+YBbu3y14bXmASslunRbB2eyYn2I7fdyo3jGhPCQXCbOh5Ks2HkjD44oo+GHrCs7e1Kl2zQC5Q+AiQzHhgFW/V5yJwHy/oYgS7HNxaoIaByxPL/aXlSV0L5DXDRhTg8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712074696; c=relaxed/simple;
-	bh=tqIuMZfC4MsoHlk9HVhKG/9PpH5oRCBJruwdKEA1VZw=;
+	s=arc-20240116; t=1712074723; c=relaxed/simple;
+	bh=gEPCWybFUi+OFQK7L7b5hSrM0ptv3TbLjBSq9qMlCKA=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=iAHGQuxQBJ3/f9rHZtOuEBGHox+yqqQHPgd0QneqeYJvSyXOz425WaxLu8OWTOOfTfslNnZaG2YXfejVohG+V4/FAKolW3qsJomtkIx//xlMGrEyZauwkR1rBgTlK8R2HSH/bEu9vDi/Z0S3DcYe5SvfUE+3FhtZa16VX1bcEwQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=DJDRrDbN; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CD868C433C7;
-	Tue,  2 Apr 2024 16:18:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712074696;
-	bh=tqIuMZfC4MsoHlk9HVhKG/9PpH5oRCBJruwdKEA1VZw=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=DJDRrDbNLGOiNgFd3/HXrhBy/yplIQOUciqf0NwEUhNc72OkVudEPXLgseBuiTuH4
-	 pUA3CN2l7ysl7ggJ34ZEsWQ7OFWB5VHUASq0qWrCkNd/XjeUaXzeyROLPwyqYDErUE
-	 lOBbvSaXwblHk4UiHlCfUmsQFGef9Z/F4EqEYjVhWWnGtfj7ZPnhhvW4I59deE5x2r
-	 cHMZmr3qnkY9FnT16mx1+RdGMgM2zEHDH6ldN2F0WOuCUXUNdLjltPRgEPPmg+6EwU
-	 gDwCDAzmLWBsmutde7WRplqOrZ5LgeqtJUg7wsi5USu3F/XEFULPbLJQqtjrTtZ5Lh
-	 xQPC+Do4UQCfQ==
-Message-ID: <8d21b1bc-9402-41d4-bd81-c521c8a33d2d@kernel.org>
-Date: Tue, 2 Apr 2024 18:18:09 +0200
+	 In-Reply-To:Content-Type; b=GWf4hMDLgY3L48BStdkkM4mZ0Lhw1GFPbzBW5XyVRHvr9DWyqcwd0LsV4wQ/4V/v6N6mH6TjLVB9SC56ntwHyHLaCOMuvWVvk/neet1FjjG4EalHxepo4dkFfz1oMsP6AWpxTjuVyesiKi2P46QoChuw7zWxHdv8kjWEvv1PxyM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id BA6C61007;
+	Tue,  2 Apr 2024 09:19:11 -0700 (PDT)
+Received: from [10.1.38.163] (XHFQ2J9959.cambridge.arm.com [10.1.38.163])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 4D35D3F64C;
+	Tue,  2 Apr 2024 09:18:37 -0700 (PDT)
+Message-ID: <3f670f03-ee97-4368-94ca-e8d18a1b1a69@arm.com>
+Date: Tue, 2 Apr 2024 17:18:36 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -49,159 +41,181 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3] clk: starfive: pll: Fix lower rate of CPUfreq by
- setting PLL0 rate to 1.5GHz
-To: Xingyu Wu <xingyu.wu@starfivetech.com>,
- Michael Turquette <mturquette@baylibre.com>, Stephen Boyd
- <sboyd@kernel.org>, Conor Dooley <conor@kernel.org>,
- Emil Renner Berthing <emil.renner.berthing@canonical.com>,
- Rob Herring <robh@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>
-Cc: Paul Walmsley <paul.walmsley@sifive.com>,
- Palmer Dabbelt <palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>,
- Hal Feng <hal.feng@starfivetech.com>, linux-kernel@vger.kernel.org,
- linux-clk@vger.kernel.org, linux-riscv@lists.infradead.org,
- devicetree@vger.kernel.org
-References: <20240402090920.11627-1-xingyu.wu@starfivetech.com>
-Content-Language: en-US
-From: Krzysztof Kozlowski <krzk@kernel.org>
-Autocrypt: addr=krzk@kernel.org; keydata=
- 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 fv0=
-In-Reply-To: <20240402090920.11627-1-xingyu.wu@starfivetech.com>
+Subject: Re: [PATCH v4 13/13] mm/gup: Handle hugetlb in the generic
+ follow_page_mask code
+Content-Language: en-GB
+To: Matthew Wilcox <willy@infradead.org>, David Hildenbrand <david@redhat.com>
+Cc: peterx@redhat.com, linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+ Yang Shi <shy828301@gmail.com>, "Kirill A . Shutemov"
+ <kirill@shutemov.name>, Mike Kravetz <mike.kravetz@oracle.com>,
+ John Hubbard <jhubbard@nvidia.com>, Michael Ellerman <mpe@ellerman.id.au>,
+ Andrew Jones <andrew.jones@linux.dev>, Muchun Song <muchun.song@linux.dev>,
+ linux-riscv@lists.infradead.org, linuxppc-dev@lists.ozlabs.org,
+ Christophe Leroy <christophe.leroy@csgroup.eu>,
+ Andrew Morton <akpm@linux-foundation.org>,
+ Christoph Hellwig <hch@infradead.org>, Lorenzo Stoakes <lstoakes@gmail.com>,
+ Rik van Riel <riel@surriel.com>, linux-arm-kernel@lists.infradead.org,
+ Andrea Arcangeli <aarcange@redhat.com>,
+ "Aneesh Kumar K . V" <aneesh.kumar@kernel.org>,
+ Vlastimil Babka <vbabka@suse.cz>, James Houghton <jthoughton@google.com>,
+ Jason Gunthorpe <jgg@nvidia.com>, Mike Rapoport <rppt@kernel.org>,
+ Axel Rasmussen <axelrasmussen@google.com>
+References: <20240327152332.950956-1-peterx@redhat.com>
+ <20240327152332.950956-14-peterx@redhat.com>
+ <adfdd89b-ee56-4758-836e-c66a0be7de25@arm.com>
+ <5d9dd9a7-e544-4741-944c-469b79c2c649@redhat.com>
+ <ZgwrhKuypBtSpKdI@casper.infradead.org>
+From: Ryan Roberts <ryan.roberts@arm.com>
+In-Reply-To: <ZgwrhKuypBtSpKdI@casper.infradead.org>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 
-On 02/04/2024 11:09, Xingyu Wu wrote:
-> CPUfreq supports 4 cpu frequency loads on 375/500/750/1500MHz.
-> But now PLL0 rate is 1GHz and the cpu frequency loads become
-> 333/500/500/1000MHz in fact.
+On 02/04/2024 17:00, Matthew Wilcox wrote:
+> On Tue, Apr 02, 2024 at 05:26:28PM +0200, David Hildenbrand wrote:
+>>> The oops trigger is at mm/gup.c:778:
+>>> VM_BUG_ON_PAGE(!PageHead(page) && !is_zone_device_page(page), page);
+>>>
+>>> So 2M passed ok, and its failing for 32M, which is cont-pmd. I'm guessing you're trying to iterate 2M into a cont-pmd folio and ending up with an unexpected tail page?
+>>
+>> I assume we find the expected tail page, it's just that the check
+>>
+>> VM_BUG_ON_PAGE(!PageHead(page) && !is_zone_device_page(page), page);
+>>
+>> Doesn't make sense with hugetlb folios. We might have a tail page mapped in
+>> a cont-pmd entry. As soon as we call follow_huge_pmd() on "not the first
+>> cont-pmd entry", we trigger this check.
+>>
+>> Likely this sanity check must also allow for hugetlb folios. Or we should
+>> just remove it completely.
+>>
+>> In the past, we wanted to make sure that we never get tail pages of THP from
+>> PMD entries, because something would currently be broken (we don't support
+>> THP > PMD).
 > 
-> So PLL0 rate should be default set to 1.5GHz. But setting the
-> PLL0 rate need certain steps:
+> That was a practical limitation on my part.  We have various parts of
+> the MM which assume that pmd_page() returns a head page and until we
+> get all of those fixed, adding support for folios larger than PMD_SIZE
+> was only going to cause trouble for no significant wins.
 > 
-> 1. Change the parent of cpu_root clock to OSC clock.
-> 2. Change the divider of cpu_core if PLL0 rate is higher than
->    1.25GHz before CPUfreq boot.
-> 3. Change the parent of cpu_root clock back to PLL0 clock.
+> I agree with you we should get rid of this assertion entirely.  We should
+> fix all the places which assume that pmd_page() returns a head page,
+> but that may take some time.
 > 
-> Reviewed-by: Hal Feng <hal.feng@starfivetech.com>
-> Fixes: e2c510d6d630 ("riscv: dts: starfive: Add cpu scaling for JH7110 SoC")
-> Signed-off-by: Xingyu Wu <xingyu.wu@starfivetech.com>
-> ---
+> As an example, filemap_map_pmd() has:
 > 
-> Hi Stephen and Emil,
+>        if (pmd_none(*vmf->pmd) && folio_test_pmd_mappable(folio)) {
+>                 struct page *page = folio_file_page(folio, start);
+>                 vm_fault_t ret = do_set_pmd(vmf, page);
 > 
-> This patch fixes the issue about lower rate of CPUfreq[1] by setting PLL0
-> rate to 1.5GHz.
+> and then do_set_pmd() has:
 > 
-> In order not to affect the cpu operation, setting the PLL0 rate need
-> certain steps. The cpu_root's parent clock should be changed first. And
-> the divider of the cpu_core clock should be set to 2 so they won't crash
-> when setting 1.5GHz without voltage regulation. Due to PLL driver boot
-> earlier than SYSCRG driver, cpu_core and cpu_root clocks are using by
-> ioremap(). 
+>         if (page != &folio->page || folio_order(folio) != HPAGE_PMD_ORDER)
+>                 return ret;
 > 
-> [1]: https://github.com/starfive-tech/VisionFive2/issues/55
+> so we'd simply refuse to use a PMD to map a folio larger than PMD_SIZE.
+> There's a lot of work to be done to make this work generally (not to
+> mention figuring out how to handle mapcount for such folios ;-).
 > 
-> Previous patch link:
-> v2: https://lore.kernel.org/all/20230821152915.208366-1-xingyu.wu@starfivetech.com/
-> v1: https://lore.kernel.org/all/20230811033631.160912-1-xingyu.wu@starfivetech.com/
-> 
-> Thanks,
-> Xingyu Wu
-> ---
->  .../jh7110-starfive-visionfive-2.dtsi         |   5 +
->  .../clk/starfive/clk-starfive-jh7110-pll.c    | 102 ++++++++++++++++++
+> This particular case seems straightforward though.  Just remove the
+> assertion.
 
-Please do not mix DTS and driver code. That's not really portable. DTS
-is being exported and used in other projects.
+Removing the assertion gets me further, but then I end up with this:
 
-..
+[    9.748422] kernel BUG at include/linux/page-flags.h:1098!
+[    9.748897] Internal error: Oops - BUG: 00000000f2000800 [#1] PREEMPT SMP
+[    9.749590] Modules linked in:
+[    9.749867] CPU: 2 PID: 1155 Comm: gup_longterm Not tainted 6.9.0-rc2-00210-g910ff1a347e4-dirty #12
+[    9.750682] Hardware name: linux,dummy-virt (DT)
+[    9.751095] pstate: 60400005 (nZCv daif +PAN -UAO -TCO -DIT -SSBS BTYPE=--)
+[    9.751729] pc : follow_page_mask+0x730/0x850
+[    9.752152] lr : follow_page_mask+0x730/0x850
+[    9.752573] sp : ffff8000898f3aa0
+[    9.752882] x29: ffff8000898f3aa0 x28: fffffdffc52b91a8 x27: 0000000000000001
+[    9.753543] x26: ffff00014ae46d08 x25: 00003c0005d88000 x24: fffffdffc5d88000
+[    9.754221] x23: ffffc1ffc0000000 x22: 0000000000080101 x21: ffff8000898f3ba8
+[    9.754875] x20: 0000fffff4200000 x19: ffff0001a3d64450 x18: 0000000000000010
+[    9.755567] x17: 2864616548656761 x16: 5021202626202965 x15: 6761702865677548
+[    9.756254] x14: 6567615028454741 x13: 2929656761702864 x12: 6165486567615021
+[    9.756953] x11: 2026262029656761 x10: ffffaaac08f1d6e0 x9 : ffffaaac0612f090
+[    9.757671] x8 : 00000000ffffefff x7 : ffffaaac08f1d6e0 x6 : 0000000000000000
+[    9.758356] x5 : ffff00017ffb9cc8 x4 : 0000000000000fff x3 : 0000000000000000
+[    9.758983] x2 : 0000000000000000 x1 : ffff000189ecb480 x0 : 0000000000000046
+[    9.759663] Call trace:
+[    9.759901]  follow_page_mask+0x730/0x850
+[    9.760293]  __get_user_pages+0xf4/0x3e8
+[    9.760683]  __gup_longterm_locked+0x204/0xa70
+[    9.761110]  pin_user_pages+0x88/0xc0
+[    9.761486]  gup_test_ioctl+0x860/0xc40
+[    9.761866]  __arm64_sys_ioctl+0xb0/0x100
+[    9.762254]  invoke_syscall+0x50/0x128
+[    9.762630]  el0_svc_common.constprop.0+0x48/0xf8
+[    9.763104]  do_el0_svc+0x28/0x40
+[    9.763413]  el0_svc+0x34/0xe0
+[    9.763699]  el0t_64_sync_handler+0x13c/0x158
+[    9.764139]  el0t_64_sync+0x190/0x198
+[    9.764465] Code: aa1803e0 d000d8e1 911d6021 97fff4c9 (d4210000) 
+[    9.765053] ---[ end trace 0000000000000000 ]---
+[    9.765520] note: gup_longterm[1155] exited with irqs disabled
+[    9.766146] note: gup_longterm[1155] exited with preempt_count 2
+[    9.767366] ------------[ cut here ]------------
+[    9.768062] WARNING: CPU: 2 PID: 0 at kernel/context_tracking.c:128 ct_kernel_exit.constprop.0+0x108/0x120
+[    9.769146] Modules linked in:
+[    9.769429] CPU: 2 PID: 0 Comm: swapper/2 Tainted: G      D            6.9.0-rc2-00210-g910ff1a347e4-dirty #12
+[    9.770338] Hardware name: linux,dummy-virt (DT)
+[    9.770837] pstate: 204003c5 (nzCv DAIF +PAN -UAO -TCO -DIT -SSBS BTYPE=--)
+[    9.771615] pc : ct_kernel_exit.constprop.0+0x108/0x120
+[    9.772150] lr : ct_idle_enter+0x10/0x20
+[    9.772539] sp : ffff8000801b3dc0
+[    9.772913] x29: ffff8000801b3dc0 x28: 0000000000000000 x27: 0000000000000000
+[    9.773769] x26: 0000000000000000 x25: ffff00014149e900 x24: 0000000000000000
+[    9.774526] x23: 0000000000000000 x22: ffffaaac08e99d48 x21: ffffaaac08385730
+[    9.775255] x20: ffffaaac08e99c28 x19: ffff00017ffc8da0 x18: 0000fffff5ffffff
+[    9.775924] x17: 0000000000000000 x16: 1fffe0002a57c9e1 x15: 0000000000000001
+[    9.776619] x14: ffffffffffffffff x13: 0000000000000000 x12: ffffaaac07a06968
+[    9.777246] x11: 000000ae44c42eec x10: 0000000000000ad0 x9 : ffffaaac06189230
+[    9.777942] x8 : ffff00014149f430 x7 : 02c9acb509db422c x6 : 000000001015a9f0
+[    9.778635] x5 : 4000000000000002 x4 : ffff555577c46000 x3 : ffff8000801b3dc0
+[    9.779671] x2 : ffffaaac08382da0 x1 : 4000000000000000 x0 : ffffaaac08382da0
+[    9.780703] Call trace:
+[    9.781150]  ct_kernel_exit.constprop.0+0x108/0x120
+[    9.781949]  ct_idle_enter+0x10/0x20
+[    9.782246]  default_idle_call+0x3c/0x160
+[    9.782624]  do_idle+0x21c/0x280
+[    9.782945]  cpu_startup_entry+0x3c/0x50
+[    9.783268]  secondary_start_kernel+0x140/0x168
+[    9.783818]  __secondary_switched+0xb8/0xc0
+[    9.784163] ---[ end trace 0000000000000000 ]---
 
->  
-> @@ -458,6 +535,8 @@ static int jh7110_pll_probe(struct platform_device *pdev)
->  	struct jh7110_pll_priv *priv;
->  	unsigned int idx;
->  	int ret;
-> +	struct device_node *np;
-> +	struct resource res;
->  
->  	priv = devm_kzalloc(&pdev->dev, sizeof(*priv), GFP_KERNEL);
->  	if (!priv)
-> @@ -489,6 +568,29 @@ static int jh7110_pll_probe(struct platform_device *pdev)
->  			return ret;
->  	}
->  
-> +	priv->is_first_set = true;
-> +	np = of_find_compatible_node(NULL, NULL, "starfive,jh7110-syscrg");
 
-Your drivers should not do it. It's fragile, hides true link/dependency.
-Please use phandles.
+Which is caused by this:
+
+static __always_inline int PageAnonExclusive(const struct page *page)
+{
+	VM_BUG_ON_PGFLAGS(!PageAnon(page), page);
+	VM_BUG_ON_PGFLAGS(PageHuge(page) && !PageHead(page), page); <<<<
+	return test_bit(PG_anon_exclusive, &PF_ANY(page, 1)->flags);
+}
+
+Which is called from can_follow_write_pmd(), called just after the assert I just commented out.
 
 
-> +	if (!np) {
-> +		ret = PTR_ERR(np);
-> +		dev_err(priv->dev, "failed to get syscrg node\n");
-> +		goto np_put;
-> +	}
-> +
-> +	ret = of_address_to_resource(np, 0, &res);
-> +	if (ret) {
-> +		dev_err(priv->dev, "failed to get syscrg resource\n");
-> +		goto np_put;
-> +	}
-> +
-> +	priv->syscrg_base = ioremap(res.start, resource_size(&res));
-> +	if (!priv->syscrg_base)
-> +		ret = -ENOMEM;
+It's triggered by this test:
 
-Why are you mapping other device's IO? How are you going to ensure
-synced access to registers?
+# [RUN] R/W longterm GUP pin in MAP_PRIVATE file mapping ... with memfd hugetlb (32768 kB)
+
+Which is the first MAP_PRIVATE test for cont-pmd mapped hugetlb. (All MAP_SHARED tests are passing).
 
 
+Looks like can_follow_write_pmd() returns early for VM_SHARED mappings.
 
-Best regards,
-Krzysztof
+I don't think we only keep the PAE flag in the head page for hugetlb pages? So we can't just remove this assert?
+
+I tried just commenting it out and get assert further down follow_huge_pmd():
+
+VM_BUG_ON_PAGE((flags & FOLL_PIN) && PageAnon(page) &&
+			!PageAnonExclusive(page), page);
+
+Thanks,
+Ryan
 
 
