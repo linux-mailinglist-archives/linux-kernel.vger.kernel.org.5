@@ -1,597 +1,253 @@
-Return-Path: <linux-kernel+bounces-128534-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-128528-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id BA35F895C27
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 21:05:25 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7D12B895C10
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 20:57:59 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DD2D41C22B0A
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 19:05:24 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3CC08284832
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 18:57:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3577115B97E;
-	Tue,  2 Apr 2024 19:04:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9A11015B548;
+	Tue,  2 Apr 2024 18:57:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=rjwysocki.net header.i=@rjwysocki.net header.b="bB8OPX8r"
-Received: from cloudserver094114.home.pl (cloudserver094114.home.pl [79.96.170.134])
+	dkim=pass (2048-bit key) header.d=hpe.com header.i=@hpe.com header.b="YW5c4cCU"
+Received: from mx0b-002e3701.pphosted.com (mx0b-002e3701.pphosted.com [148.163.143.35])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B98BC8495;
-	Tue,  2 Apr 2024 19:04:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=79.96.170.134
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712084690; cv=none; b=MxAkfIGeRY2yhEwdZEqUICmL6LyjFohW0FDag+XEKCyCdFFXvEcaDNiyelC/XV5V+4mOKGeyeWW79YvBUwX1iVOIdLx7OHd8/bed5uUoQPYs6ydhk/dhN/OKuIHk8Gkefe08d6i5lJS+GhI3WqUKFm/JDU5vhFZGqkEAP7GlDnM=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712084690; c=relaxed/simple;
-	bh=vsfIXvPgGvaQo6RLRc1fuVhub832p7RgRYmHAajL9RY=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=oueMU1nyrblFw4wZN2oameQ5BA3NRfs4BN45CjvVmRb3SnQdgtUsyvM+s4q2T/0W2TluIxtrKByAFhOIx25hhqrYa1uskznvJh3WO4ReHxvUzk2blu3N9HP49r+bL62iL8xoA1NKuUoZl/jpZff1ifwPqrkuUSLY9W+3YRnlvpU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rjwysocki.net; spf=pass smtp.mailfrom=rjwysocki.net; dkim=fail (2048-bit key) header.d=rjwysocki.net header.i=@rjwysocki.net header.b=bB8OPX8r reason="signature verification failed"; arc=none smtp.client-ip=79.96.170.134
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rjwysocki.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rjwysocki.net
-Received: from localhost (127.0.0.1) (HELO v370.home.net.pl)
- by /usr/run/smtp (/usr/run/postfix/private/idea_relay_lmtp) via UNIX with SMTP (IdeaSmtpServer 6.0.0)
- id 6b79526730ddc580; Tue, 2 Apr 2024 21:04:45 +0200
-Received: from kreacher.localnet (unknown [195.136.19.94])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 25A9515AAC8;
+	Tue,  2 Apr 2024 18:57:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=148.163.143.35
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1712084271; cv=fail; b=UedcniGegPSOcVIMs04HJZsyQJ6Lffkk5JZc6k3ybOvvF3aTpNHD31XkZjTuiYDjSpG2JPCwvQ02tgl01rYrMBe0N3JeXyo1tgWnXdpPxI/JGe7XVu9xOKgPQqC/0J8PKgkepo2DNsgvK9X9BnNiTyJxV4HrPGgJuaurFUUygks=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1712084271; c=relaxed/simple;
+	bh=1P/XDU3yMtnwP4ClcB6OfKwu+l7d1qqYHuZY/C6/3Sg=;
+	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
+	 Content-Type:MIME-Version; b=Axx4tEOQqr1q4n9TsXACsBbpZrS75Q6yUnOnlJh6KUy8Xk5jYEC+uwJQmkcphyLdRVwcOWp2cvIcZQrQlmIY7IFNy66hPnHghLA5F8jO1+Ntvg/CLWwyrKg8B6Itnn2Vl5QkAz3H10bWcK28iqxTIZsRekUNYNe8oMnFSEELkAY=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=hpe.com; spf=pass smtp.mailfrom=hpe.com; dkim=pass (2048-bit key) header.d=hpe.com header.i=@hpe.com header.b=YW5c4cCU; arc=fail smtp.client-ip=148.163.143.35
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=hpe.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=hpe.com
+Received: from pps.filterd (m0150245.ppops.net [127.0.0.1])
+	by mx0b-002e3701.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 432FjgFJ013797;
+	Tue, 2 Apr 2024 18:57:33 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=hpe.com; h=from : to : cc : subject
+ : date : message-id : references : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=pps0720;
+ bh=1P/XDU3yMtnwP4ClcB6OfKwu+l7d1qqYHuZY/C6/3Sg=;
+ b=YW5c4cCUzsKMjN/KMyPMqa5CzENlYRxtk0SX+fwucBHFcGd1hSjsgaCuMx213Ogk9gJc
+ gWT8kkHBzWX+fSJxawSD43qoWHrJZHHkuv6zKzF2vsicwy4h2/6MSDacq9Cif7ie3d8s
+ 7q4nPAZhisxF1KolPAOIhRLvb5Q9kbRjqV+jyf4Q4eHCG4iH/MUR02GpmI/RUdQMaGfs
+ vf5oaREOvvoPDKE25zTJbIannoI89MJ4MgoxhrAi4VWExLISgeIJ46jHSpWTN/RpeYvu
+ 9C1CBiyQWC1r1gPwreGnKkrWPyEyhfyYoumCiICmxCZCt5ymxtm6DE3qPN2gAIg5CJOY Lw== 
+Received: from p1lg14879.it.hpe.com ([16.230.97.200])
+	by mx0b-002e3701.pphosted.com (PPS) with ESMTPS id 3x8cbyy36c-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 02 Apr 2024 18:57:32 +0000
+Received: from p1wg14926.americas.hpqcorp.net (unknown [10.119.18.115])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by cloudserver094114.home.pl (Postfix) with ESMTPSA id 2150266C5C5;
-	Tue,  2 Apr 2024 21:04:45 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=rjwysocki.net;
-	s=dkim; t=1712084685;
-	bh=vsfIXvPgGvaQo6RLRc1fuVhub832p7RgRYmHAajL9RY=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References;
-	b=bB8OPX8rHBE0OVri7zhVbAcKcNqeFvj7/kpwsNotLXCD6TnngAC3bpytcN6Zu6dsd
-	 G30KGz6T8a4arEV0LBDx++zjZW6DVDoYSKzwZr/+9UqFeOMDNef0WWOAZVTZo8HCkI
-	 rt07gtiPVfds5lm1dYmsLL76bNoGrjJLC1wbR1rg+FFXtnXGtKy5B5poQuoywuzUPG
-	 cRLzWVmTn4NjFMNaPsZ5vOEiB5wn3ab0btEWZoMoVodzNgoKqrazBNAKcK4ytfD0o3
-	 8ZQVFi9n8ROVaNaKHoVw4F8BE4FaQCLGrlKZMLsQvnToinJT8MYadOIN/SARuf+7fw
-	 GBhPlk1KvzxIg==
-From: "Rafael J. Wysocki" <rjw@rjwysocki.net>
-To: Linux PM <linux-pm@vger.kernel.org>
-Cc: LKML <linux-kernel@vger.kernel.org>,
- Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
- Daniel Lezcano <daniel.lezcano@linaro.org>,
- Lukasz Luba <lukasz.luba@arm.com>,
- AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
-Subject:
- [PATCH v3 1/6] thermal: core: Move threshold out of struct thermal_trip
-Date: Tue, 02 Apr 2024 20:56:43 +0200
-Message-ID: <1884181.tdWV9SEqCh@kreacher>
-In-Reply-To: <4558251.LvFx2qVVIh@kreacher>
-References: <4558251.LvFx2qVVIh@kreacher>
+	by p1lg14879.it.hpe.com (Postfix) with ESMTPS id 5708D12B4F;
+	Tue,  2 Apr 2024 18:57:30 +0000 (UTC)
+Received: from p1wg14924.americas.hpqcorp.net (10.119.18.113) by
+ p1wg14926.americas.hpqcorp.net (10.119.18.115) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.986.42; Tue, 2 Apr 2024 06:57:22 -1200
+Received: from p1wg14919.americas.hpqcorp.net (16.230.19.122) by
+ p1wg14924.americas.hpqcorp.net (10.119.18.113) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.42
+ via Frontend Transport; Tue, 2 Apr 2024 06:57:22 -1200
+Received: from NAM11-BN8-obe.outbound.protection.outlook.com (192.58.206.38)
+ by edge.it.hpe.com (16.230.19.122) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.986.42; Tue, 2 Apr 2024 06:57:22 -1200
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=E95CVWRtuRRyxYz1+PNm74wsvSXqgyR+vSF6A/ms7xQEWLncSioVS/0xLrWS+OtAItDlpJRE+hpUQn74n+z+HcAIdH952MEeHaHfsv+e7N4I6HjCuD3f0A50p0dMsYR9MpiQVJ5QH9kCn6CJS/2+l+oYYhfLhZJlu8GeHonN3ey+AGl8Itd6h9JspRIDJ+lSXNpQAXEfHB+A+gcdTDK90L2SSfCeprka2H8OdsWwTP37p5WjidL6PF5Yk1UYO1sJRI1qGSGoaZDnpraUmBj03ypF8aByBNzAXZ3b037Th016XP84mHRBjozYvDVnbm0cMb3T8KBZcTR/W+dBlH5Skw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=1P/XDU3yMtnwP4ClcB6OfKwu+l7d1qqYHuZY/C6/3Sg=;
+ b=UGcImCw/g2n+e0a0erA8BMwhUqsCXbtZatTTdvw3uK0CHYVk5WfSk1ryZaKSu2NCSub6wf49eyVghOEGx+76eDrtSBOFAPcXt2oIULo8NIAJXa8TGbF3/tfsFWerB+31IKKrAXgpQXFc7yJ5+s7YNFjsEHI5CqIQwC8cZoHO7zAZCwPCL5ZFfQzm2v05tkP5xzVM7cjWI3njmDhTUi9NYNrTPfDGsROeOFx8zx7vnI8QatzCcJYaDy7uZB34YO3PDs0c1WyeSuGjeLqdURI5p0gk0NqHDUCwatq73Tm7dZjNsklPBQLHq/GhSC8ZNMbF5wXuVPRnLHNaYUFw6pdR8Q==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=hpe.com; dmarc=pass action=none header.from=hpe.com; dkim=pass
+ header.d=hpe.com; arc=none
+Received: from PH7PR84MB1813.NAMPRD84.PROD.OUTLOOK.COM (2603:10b6:510:153::10)
+ by MW5PR84MB2226.NAMPRD84.PROD.OUTLOOK.COM (2603:10b6:303:1c8::20) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7452.25; Tue, 2 Apr
+ 2024 18:57:20 +0000
+Received: from PH7PR84MB1813.NAMPRD84.PROD.OUTLOOK.COM
+ ([fe80::98bd:65c6:6d6:e5]) by PH7PR84MB1813.NAMPRD84.PROD.OUTLOOK.COM
+ ([fe80::98bd:65c6:6d6:e5%5]) with mapi id 15.20.7452.019; Tue, 2 Apr 2024
+ 18:57:20 +0000
+From: "Ernst, Justin" <justin.ernst@hpe.com>
+To: Len Brown <lenb@kernel.org>
+CC: "linux-pm@vger.kernel.org" <linux-pm@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH] tools/power/turbostat: Fix uncore frequency file string
+Thread-Topic: [PATCH] tools/power/turbostat: Fix uncore frequency file string
+Thread-Index: AQHacZpeBxFvlRjSPkOAQ1GFadcH5LFVZ/4AgAANvSA=
+Date: Tue, 2 Apr 2024 18:57:20 +0000
+Message-ID: <PH7PR84MB181347D0D20FD336933C6029873E2@PH7PR84MB1813.NAMPRD84.PROD.OUTLOOK.COM>
+References: <20240308204957.2007212-1-justin.ernst@hpe.com>
+ <CAJvTdK=R+XQZ4Vov8iXGiMADShgrwSoDL8-Jqfhii7YruRLDsg@mail.gmail.com>
+In-Reply-To: <CAJvTdK=R+XQZ4Vov8iXGiMADShgrwSoDL8-Jqfhii7YruRLDsg@mail.gmail.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: PH7PR84MB1813:EE_|MW5PR84MB2226:EE_
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: aHbePnzgGMlHWLU3d+xMBg6pcYqkMD8KaNPhxUaqv9iNPDVN2Ykz5EbMQuGQ7SKJihzXuVZ5NyArXkdxc4KYtSgv7ScXwm4r8odSgc4v5Ta1AS19jHqIc6qM56xz7/lpGcN2FJqkylsfi7OeyqyNbq2k/ar6deRpxFvytVPUg9n7fAU0mRJRiXErQByA0vO5YzwrMSBwHKeVQWUQ6jGJshKGQlpIVWd/eFgUpdCSV+O2mu74BE9Dc1ZFZaa2U4OqQ1Xwrs1BAmT+UhGRC1vYz9tpOQ0FhUmyCiQOrKan65dhaMlYTEH+VJOg42rNFn/vMZ7wlkp6D85AvNq8rA1rZoZll/7e5Z8Ss5i0mXaodpBQ0iFkk8SYvp8venv51ODWOuSI5Fa5u/iPIUUqX9HmLPNivL7Eg3Cgo0gdJ8eCqJuv0o7T45OVh0DvaFnc6bsEXofEws69gnX2jcLCARDbtFcdqW3gU2eOYy/lLlYx14LVWU35+FYMceaMjgO2qOpFwDGg+MCNtz6+2t+PdseFrQUCrZ0jwj/uFUfZ3m9faRbCd3QE8iZWt/qidwW6cWJxzXek0a/yOO7VKCGWvL3/TRZZzNHBoHoAt46eOSQA2Kc=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH7PR84MB1813.NAMPRD84.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(13230031)(376005)(366007)(1800799015);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?utf-8?B?TTBrcHFlWUNRT1NSQWI4clo0Vkp3QWw4WmcyZ2R3SFRFb1Y0TVpPRTJuQVVq?=
+ =?utf-8?B?cTZvdHlwVXBQMnZUMEtTZ0tiNUdUd0lxVVN3YlRiRkg5cEwxck5zck5PY2pE?=
+ =?utf-8?B?bzVPVTNkblNuYlFrdlhOVjdCUXZaZ1huM2xBSk52OVFEck1vYW5wbjNFa2J3?=
+ =?utf-8?B?RFJ6WWhHTjRuUjQ1OHNZaUJtRnQ0aG9WVDRwZ1VZL1grU1lSdWNvSXVTUm1C?=
+ =?utf-8?B?VTZqSUg4SDdlVVQ1ZEIyUnJoRkNtajRQRkszZHlLWUt1LzF6L1RzUjg4eU9Y?=
+ =?utf-8?B?cDRlODVmUGhoZWYwY2VYcTNXaThNYzF4QWZQQW55WUtndjloWE9GR3hLMzFo?=
+ =?utf-8?B?R3NNd0hVL3JjM2V5TkhEbXpCc2pJR0ExWnh0K1QrWktVbW1OaUlVci9GcWdL?=
+ =?utf-8?B?dkE0RU16UitwaTlxRDBXRHJtWTY3akNhaWx0ang3QWZyRHhnK1dZTVd3MElE?=
+ =?utf-8?B?UWNEbE1MQTFXeVJUUjEwelF3aWlsZXdUMEhZOEFaay9tY1V5SElMdXRGbFJU?=
+ =?utf-8?B?KzJOZ041am1oTktpUk9Bam5DQmZndS9ZTG9oSk1LUnNPeHpkVjFiekFUcUd3?=
+ =?utf-8?B?U1hTdWtRZTFSOStxYy9pUkhqSDZTUlF2ZEpST3VOWlFxcjVZWUZqMmJmTWRJ?=
+ =?utf-8?B?ZW1SSGx4dzdGK0NwK2tSVURVYU1PU2FUdlV5U1k3VnBwYmE3ZUZmaVJNQlNZ?=
+ =?utf-8?B?N3pxRFdZN2ZiRGJaWkRnZys5TlNqZ0pvZ0lhN0RhZFpCOE5XU1hiem5Qck91?=
+ =?utf-8?B?V1NPRlRLMUJpdTdGVVgyUUs2Si9BNDlLaVdVUFpTSUdwVGJyL09kMGwzcTBB?=
+ =?utf-8?B?dkRjRFBVYjA5OWJlS0FKTzNuQ0diMU5xVXZLSFlBNVNIOCtRQU5lcVV4Wk1z?=
+ =?utf-8?B?YjdlcXA4MkhKcHU3Sml3UjIwb1ZMMTkxSFJldXpnWFhRSUFYZnJNOG0zcHA3?=
+ =?utf-8?B?TXJnZHp2cjNKR1JMeTNSVTRPVnpwQnRaaG1PTlZxZWUvcG1sY0tqYVBhRElC?=
+ =?utf-8?B?Zi9POXcvaFNWWHNUQktnbXJqOVVYb2tZd0c0OVZwVnVyeVJOeEpEODdmVno4?=
+ =?utf-8?B?YzB6Rm5lQWlHeUlHQmZ2RXplUUtpQUk4NHpXOXhWWURHVU9NeEhHVi9pUXhr?=
+ =?utf-8?B?SElqODFTZXh2Y1plWm93Um9wU1JoY0h1aFA0bGlWNUlGcXB4aXVLUzBPMUNi?=
+ =?utf-8?B?M2JpWWsxaFRFKzNFYTRITHowcVRmOTJJczBURkRUNWlTRXVWV0NhdE1EVVdQ?=
+ =?utf-8?B?eHM4aFFkUS9Gejl6UlFsYXJvRlVNZlpYSitLYkFhTkhEaTJmUjEwSE4waDh4?=
+ =?utf-8?B?dDhvRlJja2R2VjNmYmNLNllOODlhVXBtdGhxUXZZdU9UcmlGTWlGcS9SRzEz?=
+ =?utf-8?B?cGg5ZEtrQWZzMUQ5bWl3WXoxTVpGTTRoaFY0ZHFKRVVyTHJ0bjBHK1RVcmN0?=
+ =?utf-8?B?MXVBR3duM2F3ZXhxd1YxMzFlNVl3SG4vbmlreEZFMWtHVDkyTE9Da1R0Vm1K?=
+ =?utf-8?B?MXFhRVNHVkdVbzV4L0IyZXgzVHdyWkxEemVzM1VQblpKeHZVN21ock1WLzlv?=
+ =?utf-8?B?YWhEVEJFZzUxak4xVWZmSFlrSzNXK2gvZmNsSzRaaExzamYyZWNXelFNWTdh?=
+ =?utf-8?B?NnNjQWpMNUZEWkNFTlNMR2Z1R2I3MjBZSmtIWEI5WlNvblMxbC8rQjRzYURV?=
+ =?utf-8?B?NVVjRm0vZjZmUVlTTnNVT2FWYkMrVnZYNGxXMS9xRk1qRlVOUm9IZVdtNXBa?=
+ =?utf-8?B?NFJTcnBBVTFTQU1GbXJWd0Z5YXF4VFQ3aDZ0L0l1SXR0ZGJCSkxZRDQxZ3RX?=
+ =?utf-8?B?VkM3RE5vMTJ4R1lQL0l4OWRxd1I4Z1BsTGpHaWRXVjN0TnVlZW1SSTVyUDhS?=
+ =?utf-8?B?RmNhZ0ZrWktmT2N3T1lDdEoyVjh4N1dkNi90cjg2SHhYcnVxYVhZYi94U0Vn?=
+ =?utf-8?B?MjFFaE4wRzNwOVNZWDZvYkMvcldybk4zNE9BYVRBdUx4enB6bjNrdXVUUUpN?=
+ =?utf-8?B?YzlWc1VOWVhTMFp0OUVLbmJ2ejJKRHZoNUxTb3hwZ0hVL1RvczJLNnhKbENr?=
+ =?utf-8?B?MGRIV3Uzc29OOWVWdHRueG9CZUhpa09hU2hHM0c3QU5QNVJlQTlaNmJILytO?=
+ =?utf-8?Q?MF+cAal86sivfIOkymZ4GWM7t?=
+Content-Type: text/plain; charset="utf-8"
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: PH7PR84MB1813.NAMPRD84.PROD.OUTLOOK.COM
+X-MS-Exchange-CrossTenant-Network-Message-Id: f1456f13-471b-431e-b90e-08dc5346b99e
+X-MS-Exchange-CrossTenant-originalarrivaltime: 02 Apr 2024 18:57:20.6315
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 105b2061-b669-4b31-92ac-24d304d195dc
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: 0d131KkgWRWkpjy4uOEcUHf7M2d7V6CPLWk70V2H8ZtGHYKKqQeFdtm/92WEyn7FV8Gz96gm+ELPBw596IQY5Q==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW5PR84MB2226
+X-OriginatorOrg: hpe.com
+X-Proofpoint-GUID: 9xQaK7X60XcOam_l8cG33LZnJWOp5_zp
+X-Proofpoint-ORIG-GUID: 9xQaK7X60XcOam_l8cG33LZnJWOp5_zp
+Content-Transfer-Encoding: base64
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset="UTF-8"
-X-CLIENT-IP: 195.136.19.94
-X-CLIENT-HOSTNAME: 195.136.19.94
-X-VADE-SPAMSTATE: clean
-X-VADE-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedvledrudefvddgudefvdcutefuodetggdotefrodftvfcurfhrohhfihhlvgemucfjqffogffrnfdpggftiffpkfenuceurghilhhouhhtmecuudehtdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujfgurhephffvvefufffkjghfggfgtgesthhqredttddtjeenucfhrhhomhepfdftrghfrggvlhculfdrucghhihsohgtkhhifdcuoehrjhifsehrjhifhihsohgtkhhirdhnvghtqeenucggtffrrghtthgvrhhnpedtvdefgeelvdefvdevveehvdetfeefhedvueeiudekieeltdetgfdviefhgfetteenucfkphepudelhedrudefiedrudelrdelgeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepihhnvghtpeduleehrddufeeirdduledrleegpdhhvghlohepkhhrvggrtghhvghrrdhlohgtrghlnhgvthdpmhgrihhlfhhrohhmpedftfgrfhgrvghlucflrdcuhgihshhotghkihdfuceorhhjfiesrhhjfiihshhotghkihdrnhgvtheqpdhnsggprhgtphhtthhopeeipdhrtghpthhtoheplhhinhhugidqphhmsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtoheplhhinhhugidqkhgvrhhnvghlsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtohepshhrihhnihhvrghsrdhprghnughruhhvrggurgeslhhinhhugidrihhnthgvlhdrtghomhdprhgtphhtthhopegurghnihgvlhdrlhgviigtrghnoheslhhinhgr
- rhhordhorhhgpdhrtghpthhtoheplhhukhgrshiirdhluhgsrgesrghrmhdrtghomhdprhgtphhtthhopegrnhhgvghlohhgihhorggttghhihhnohdruggvlhhrvghgnhhosegtohhllhgrsghorhgrrdgtohhm
-X-DCC--Metrics: v370.home.net.pl 1024; Body=6 Fuz1=6 Fuz2=6
+X-HPE-SCL: -1
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-04-02_12,2024-04-01_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0
+ priorityscore=1501 lowpriorityscore=0 adultscore=0 spamscore=0 mlxscore=0
+ clxscore=1011 malwarescore=0 bulkscore=0 suspectscore=0 impostorscore=0
+ mlxlogscore=999 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2403210000 definitions=main-2404020140
 
-=46rom: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-
-The threshold field in struct thermal_trip is only used internally by
-the thermal core and it is better to prevent drivers from misusing it.
-It also takes some space unnecessarily in the trip tables passed by
-drivers to the core during thermal zone registration.
-
-=46or this reason, introduce struct thermal_trip_desc as a wrapper around
-struct thermal_trip, move the threshold field directly into it and make
-the thermal core store struct thermal_trip_desc objects in the internal
-thermal zone trip tables.  Adjust all of the code using trip tables in
-the thermal core accordingly.
-
-No intentional functional impact.
-
-Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-=2D--
-
-v2 -> v3: Rebase on top of 6.9-rc2, minor changelog update.
-
-v1 -> v2: No changes.
-
-=2D--
- drivers/thermal/gov_fair_share.c      |    7 +++--
- drivers/thermal/gov_power_allocator.c |    6 ++--
- drivers/thermal/thermal_core.c        |   46 +++++++++++++++++++----------=
-=2D----
- drivers/thermal/thermal_core.h        |    7 +++--
- drivers/thermal/thermal_debugfs.c     |    6 ++--
- drivers/thermal/thermal_helpers.c     |    8 +++--
- drivers/thermal/thermal_netlink.c     |    6 ++--
- drivers/thermal/thermal_sysfs.c       |   20 +++++++-------
- drivers/thermal/thermal_trip.c        |   15 +++++------
- include/linux/thermal.h               |    9 ++++--
- 10 files changed, 78 insertions(+), 52 deletions(-)
-
-Index: linux-pm/include/linux/thermal.h
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-=2D-- linux-pm.orig/include/linux/thermal.h
-+++ linux-pm/include/linux/thermal.h
-@@ -61,7 +61,6 @@ enum thermal_notify_event {
-  * struct thermal_trip - representation of a point in temperature domain
-  * @temperature: temperature value in miliCelsius
-  * @hysteresis: relative hysteresis in miliCelsius
-=2D * @threshold: trip crossing notification threshold miliCelsius
-  * @type: trip point type
-  * @priv: pointer to driver data associated with this trip
-  * @flags: flags representing binary properties of the trip
-@@ -69,12 +68,16 @@ enum thermal_notify_event {
- struct thermal_trip {
- 	int temperature;
- 	int hysteresis;
-=2D	int threshold;
- 	enum thermal_trip_type type;
- 	u8 flags;
- 	void *priv;
- };
-=20
-+struct thermal_trip_desc {
-+	struct thermal_trip trip;
-+	int threshold;
-+};
-+
- #define THERMAL_TRIP_FLAG_RW_TEMP	BIT(0)
- #define THERMAL_TRIP_FLAG_RW_HYST	BIT(1)
-=20
-@@ -203,7 +206,7 @@ struct thermal_zone_device {
- #ifdef CONFIG_THERMAL_DEBUGFS
- 	struct thermal_debugfs *debugfs;
- #endif
-=2D	struct thermal_trip trips[] __counted_by(num_trips);
-+	struct thermal_trip_desc trips[] __counted_by(num_trips);
- };
-=20
- /**
-Index: linux-pm/drivers/thermal/thermal_core.c
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-=2D-- linux-pm.orig/drivers/thermal/thermal_core.c
-+++ linux-pm/drivers/thermal/thermal_core.c
-@@ -361,17 +361,19 @@ static void handle_critical_trips(struct
- }
-=20
- static void handle_thermal_trip(struct thermal_zone_device *tz,
-=2D				struct thermal_trip *trip)
-+				struct thermal_trip_desc *td)
- {
-+	const struct thermal_trip *trip =3D &td->trip;
-+
- 	if (trip->temperature =3D=3D THERMAL_TEMP_INVALID)
- 		return;
-=20
- 	if (tz->last_temperature =3D=3D THERMAL_TEMP_INVALID) {
- 		/* Initialization. */
-=2D		trip->threshold =3D trip->temperature;
-=2D		if (tz->temperature >=3D trip->threshold)
-=2D			trip->threshold -=3D trip->hysteresis;
-=2D	} else if (tz->last_temperature < trip->threshold) {
-+		td->threshold =3D trip->temperature;
-+		if (tz->temperature >=3D td->threshold)
-+			td->threshold -=3D trip->hysteresis;
-+	} else if (tz->last_temperature < td->threshold) {
- 		/*
- 		 * The trip threshold is equal to the trip temperature, unless
- 		 * the latter has changed in the meantime.  In either case,
-@@ -382,9 +384,9 @@ static void handle_thermal_trip(struct t
- 		if (tz->temperature >=3D trip->temperature) {
- 			thermal_notify_tz_trip_up(tz, trip);
- 			thermal_debug_tz_trip_up(tz, trip);
-=2D			trip->threshold =3D trip->temperature - trip->hysteresis;
-+			td->threshold =3D trip->temperature - trip->hysteresis;
- 		} else {
-=2D			trip->threshold =3D trip->temperature;
-+			td->threshold =3D trip->temperature;
- 		}
- 	} else {
- 		/*
-@@ -400,9 +402,9 @@ static void handle_thermal_trip(struct t
- 		if (tz->temperature < trip->temperature - trip->hysteresis) {
- 			thermal_notify_tz_trip_down(tz, trip);
- 			thermal_debug_tz_trip_down(tz, trip);
-=2D			trip->threshold =3D trip->temperature;
-+			td->threshold =3D trip->temperature;
- 		} else {
-=2D			trip->threshold =3D trip->temperature - trip->hysteresis;
-+			td->threshold =3D trip->temperature - trip->hysteresis;
- 		}
- 	}
-=20
-@@ -458,7 +460,7 @@ static void thermal_zone_device_init(str
- void __thermal_zone_device_update(struct thermal_zone_device *tz,
- 				  enum thermal_notify_event event)
- {
-=2D	struct thermal_trip *trip;
-+	struct thermal_trip_desc *td;
-=20
- 	if (tz->suspended)
- 		return;
-@@ -472,8 +474,8 @@ void __thermal_zone_device_update(struct
-=20
- 	tz->notify_event =3D event;
-=20
-=2D	for_each_trip(tz, trip)
-=2D		handle_thermal_trip(tz, trip);
-+	for_each_trip_desc(tz, td)
-+		handle_thermal_trip(tz, td);
-=20
- 	monitor_thermal_zone(tz);
- }
-@@ -766,7 +768,7 @@ int thermal_zone_bind_cooling_device(str
- 	if (trip_index < 0 || trip_index >=3D tz->num_trips)
- 		return -EINVAL;
-=20
-=2D	return thermal_bind_cdev_to_trip(tz, &tz->trips[trip_index], cdev,
-+	return thermal_bind_cdev_to_trip(tz, &tz->trips[trip_index].trip, cdev,
- 					 upper, lower, weight);
- }
- EXPORT_SYMBOL_GPL(thermal_zone_bind_cooling_device);
-@@ -825,7 +827,7 @@ int thermal_zone_unbind_cooling_device(s
- 	if (trip_index < 0 || trip_index >=3D tz->num_trips)
- 		return -EINVAL;
-=20
-=2D	return thermal_unbind_cdev_from_trip(tz, &tz->trips[trip_index], cdev);
-+	return thermal_unbind_cdev_from_trip(tz, &tz->trips[trip_index].trip, cde=
-v);
- }
- EXPORT_SYMBOL_GPL(thermal_zone_unbind_cooling_device);
-=20
-@@ -1221,16 +1223,19 @@ static void thermal_set_delay_jiffies(un
-=20
- int thermal_zone_get_crit_temp(struct thermal_zone_device *tz, int *temp)
- {
-=2D	int i, ret =3D -EINVAL;
-+	const struct thermal_trip_desc *td;
-+	int ret =3D -EINVAL;
-=20
- 	if (tz->ops.get_crit_temp)
- 		return tz->ops.get_crit_temp(tz, temp);
-=20
- 	mutex_lock(&tz->lock);
-=20
-=2D	for (i =3D 0; i < tz->num_trips; i++) {
-=2D		if (tz->trips[i].type =3D=3D THERMAL_TRIP_CRITICAL) {
-=2D			*temp =3D tz->trips[i].temperature;
-+	for_each_trip_desc(tz, td) {
-+		const struct thermal_trip *trip =3D &td->trip;
-+
-+		if (trip->type =3D=3D THERMAL_TRIP_CRITICAL) {
-+			*temp =3D trip->temperature;
- 			ret =3D 0;
- 			break;
- 		}
-@@ -1274,7 +1279,9 @@ thermal_zone_device_register_with_trips(
- 					const struct thermal_zone_params *tzp,
- 					int passive_delay, int polling_delay)
- {
-+	const struct thermal_trip *trip =3D trips;
- 	struct thermal_zone_device *tz;
-+	struct thermal_trip_desc *td;
- 	int id;
- 	int result;
- 	struct thermal_governor *governor;
-@@ -1339,7 +1346,8 @@ thermal_zone_device_register_with_trips(
- 	tz->device.class =3D thermal_class;
- 	tz->devdata =3D devdata;
- 	tz->num_trips =3D num_trips;
-=2D	memcpy(tz->trips, trips, num_trips * sizeof(*trips));
-+	for_each_trip_desc(tz, td)
-+		td->trip =3D *trip++;
-=20
- 	thermal_set_delay_jiffies(&tz->passive_delay_jiffies, passive_delay);
- 	thermal_set_delay_jiffies(&tz->polling_delay_jiffies, polling_delay);
-Index: linux-pm/drivers/thermal/thermal_core.h
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-=2D-- linux-pm.orig/drivers/thermal/thermal_core.h
-+++ linux-pm/drivers/thermal/thermal_core.h
-@@ -120,8 +120,11 @@ void thermal_governor_update_tz(struct t
- 				enum thermal_notify_event reason);
-=20
- /* Helpers */
-=2D#define for_each_trip(__tz, __trip)	\
-=2D	for (__trip =3D __tz->trips; __trip - __tz->trips < __tz->num_trips; __=
-trip++)
-+#define for_each_trip_desc(__tz, __td)	\
-+	for (__td =3D __tz->trips; __td - __tz->trips < __tz->num_trips; __td++)
-+
-+#define trip_to_trip_desc(__trip)	\
-+	container_of(__trip, struct thermal_trip_desc, trip)
-=20
- void __thermal_zone_set_trips(struct thermal_zone_device *tz);
- int thermal_zone_trip_id(const struct thermal_zone_device *tz,
-Index: linux-pm/drivers/thermal/thermal_sysfs.c
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-=2D-- linux-pm.orig/drivers/thermal/thermal_sysfs.c
-+++ linux-pm/drivers/thermal/thermal_sysfs.c
-@@ -88,7 +88,7 @@ trip_point_type_show(struct device *dev,
- 	if (sscanf(attr->attr.name, "trip_point_%d_type", &trip_id) !=3D 1)
- 		return -EINVAL;
-=20
-=2D	switch (tz->trips[trip_id].type) {
-+	switch (tz->trips[trip_id].trip.type) {
- 	case THERMAL_TRIP_CRITICAL:
- 		return sprintf(buf, "critical\n");
- 	case THERMAL_TRIP_HOT:
-@@ -120,7 +120,7 @@ trip_point_temp_store(struct device *dev
-=20
- 	mutex_lock(&tz->lock);
-=20
-=2D	trip =3D &tz->trips[trip_id];
-+	trip =3D &tz->trips[trip_id].trip;
-=20
- 	if (temp !=3D trip->temperature) {
- 		if (tz->ops.set_trip_temp) {
-@@ -150,7 +150,7 @@ trip_point_temp_show(struct device *dev,
- 	if (sscanf(attr->attr.name, "trip_point_%d_temp", &trip_id) !=3D 1)
- 		return -EINVAL;
-=20
-=2D	return sprintf(buf, "%d\n", tz->trips[trip_id].temperature);
-+	return sprintf(buf, "%d\n", tz->trips[trip_id].trip.temperature);
- }
-=20
- static ssize_t
-@@ -171,7 +171,7 @@ trip_point_hyst_store(struct device *dev
-=20
- 	mutex_lock(&tz->lock);
-=20
-=2D	trip =3D &tz->trips[trip_id];
-+	trip =3D &tz->trips[trip_id].trip;
-=20
- 	if (hyst !=3D trip->hysteresis) {
- 		trip->hysteresis =3D hyst;
-@@ -194,7 +194,7 @@ trip_point_hyst_show(struct device *dev,
- 	if (sscanf(attr->attr.name, "trip_point_%d_hyst", &trip_id) !=3D 1)
- 		return -EINVAL;
-=20
-=2D	return sprintf(buf, "%d\n", tz->trips[trip_id].hysteresis);
-+	return sprintf(buf, "%d\n", tz->trips[trip_id].trip.hysteresis);
- }
-=20
- static ssize_t
-@@ -393,7 +393,7 @@ static const struct attribute_group *the
-  */
- static int create_trip_attrs(struct thermal_zone_device *tz)
- {
-=2D	const struct thermal_trip *trip;
-+	const struct thermal_trip_desc *td;
- 	struct attribute **attrs;
-=20
- 	/* This function works only for zones with at least one trip */
-@@ -429,8 +429,8 @@ static int create_trip_attrs(struct ther
- 		return -ENOMEM;
- 	}
-=20
-=2D	for_each_trip(tz, trip) {
-=2D		int indx =3D thermal_zone_trip_id(tz, trip);
-+	for_each_trip_desc(tz, td) {
-+		int indx =3D thermal_zone_trip_id(tz, &td->trip);
-=20
- 		/* create trip type attribute */
- 		snprintf(tz->trip_type_attrs[indx].name, THERMAL_NAME_LENGTH,
-@@ -452,7 +452,7 @@ static int create_trip_attrs(struct ther
- 						tz->trip_temp_attrs[indx].name;
- 		tz->trip_temp_attrs[indx].attr.attr.mode =3D S_IRUGO;
- 		tz->trip_temp_attrs[indx].attr.show =3D trip_point_temp_show;
-=2D		if (trip->flags & THERMAL_TRIP_FLAG_RW_TEMP) {
-+		if (td->trip.flags & THERMAL_TRIP_FLAG_RW_TEMP) {
- 			tz->trip_temp_attrs[indx].attr.attr.mode |=3D S_IWUSR;
- 			tz->trip_temp_attrs[indx].attr.store =3D
- 							trip_point_temp_store;
-@@ -467,7 +467,7 @@ static int create_trip_attrs(struct ther
- 					tz->trip_hyst_attrs[indx].name;
- 		tz->trip_hyst_attrs[indx].attr.attr.mode =3D S_IRUGO;
- 		tz->trip_hyst_attrs[indx].attr.show =3D trip_point_hyst_show;
-=2D		if (trip->flags & THERMAL_TRIP_FLAG_RW_HYST) {
-+		if (td->trip.flags & THERMAL_TRIP_FLAG_RW_HYST) {
- 			tz->trip_hyst_attrs[indx].attr.attr.mode |=3D S_IWUSR;
- 			tz->trip_hyst_attrs[indx].attr.store =3D
- 					trip_point_hyst_store;
-Index: linux-pm/drivers/thermal/thermal_debugfs.c
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-=2D-- linux-pm.orig/drivers/thermal/thermal_debugfs.c
-+++ linux-pm/drivers/thermal/thermal_debugfs.c
-@@ -744,7 +744,7 @@ static void tze_seq_stop(struct seq_file
- static int tze_seq_show(struct seq_file *s, void *v)
- {
- 	struct thermal_zone_device *tz =3D s->private;
-=2D	struct thermal_trip *trip;
-+	struct thermal_trip_desc *td;
- 	struct tz_episode *tze;
- 	const char *type;
- 	int trip_id;
-@@ -757,7 +757,9 @@ static int tze_seq_show(struct seq_file
-=20
- 	seq_printf(s, "| trip |     type | temp(=C2=B0mC) | hyst(=C2=B0mC) |  dur=
-ation  |  avg(=C2=B0mC) |  min(=C2=B0mC) |  max(=C2=B0mC) |\n");
-=20
-=2D	for_each_trip(tz, trip) {
-+	for_each_trip_desc(tz, td) {
-+		const struct thermal_trip *trip =3D &td->trip;
-+
- 		/*
- 		 * There is no possible mitigation happening at the
- 		 * critical trip point, so the stats will be always
-Index: linux-pm/drivers/thermal/thermal_netlink.c
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-=2D-- linux-pm.orig/drivers/thermal/thermal_netlink.c
-+++ linux-pm/drivers/thermal/thermal_netlink.c
-@@ -442,7 +442,7 @@ out_cancel_nest:
- static int thermal_genl_cmd_tz_get_trip(struct param *p)
- {
- 	struct sk_buff *msg =3D p->msg;
-=2D	const struct thermal_trip *trip;
-+	const struct thermal_trip_desc *td;
- 	struct thermal_zone_device *tz;
- 	struct nlattr *start_trip;
- 	int id;
-@@ -462,7 +462,9 @@ static int thermal_genl_cmd_tz_get_trip(
-=20
- 	mutex_lock(&tz->lock);
-=20
-=2D	for_each_trip(tz, trip) {
-+	for_each_trip_desc(tz, td) {
-+		const struct thermal_trip *trip =3D &td->trip;
-+
- 		if (nla_put_u32(msg, THERMAL_GENL_ATTR_TZ_TRIP_ID,
- 				thermal_zone_trip_id(tz, trip)) ||
- 		    nla_put_u32(msg, THERMAL_GENL_ATTR_TZ_TRIP_TYPE, trip->type) ||
-Index: linux-pm/drivers/thermal/thermal_trip.c
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-=2D-- linux-pm.orig/drivers/thermal/thermal_trip.c
-+++ linux-pm/drivers/thermal/thermal_trip.c
-@@ -13,11 +13,11 @@ int for_each_thermal_trip(struct thermal
- 			  int (*cb)(struct thermal_trip *, void *),
- 			  void *data)
- {
-=2D	struct thermal_trip *trip;
-+	struct thermal_trip_desc *td;
- 	int ret;
-=20
-=2D	for_each_trip(tz, trip) {
-=2D		ret =3D cb(trip, data);
-+	for_each_trip_desc(tz, td) {
-+		ret =3D cb(&td->trip, data);
- 		if (ret)
- 			return ret;
- 	}
-@@ -63,7 +63,7 @@ EXPORT_SYMBOL_GPL(thermal_zone_get_num_t
-  */
- void __thermal_zone_set_trips(struct thermal_zone_device *tz)
- {
-=2D	const struct thermal_trip *trip;
-+	const struct thermal_trip_desc *td;
- 	int low =3D -INT_MAX, high =3D INT_MAX;
- 	int ret;
-=20
-@@ -72,7 +72,8 @@ void __thermal_zone_set_trips(struct the
- 	if (!tz->ops.set_trips)
- 		return;
-=20
-=2D	for_each_trip(tz, trip) {
-+	for_each_trip_desc(tz, td) {
-+		const struct thermal_trip *trip =3D &td->trip;
- 		int trip_low;
-=20
- 		trip_low =3D trip->temperature - trip->hysteresis;
-@@ -110,7 +111,7 @@ int __thermal_zone_get_trip(struct therm
- 	if (!tz || trip_id < 0 || trip_id >=3D tz->num_trips || !trip)
- 		return -EINVAL;
-=20
-=2D	*trip =3D tz->trips[trip_id];
-+	*trip =3D tz->trips[trip_id].trip;
- 	return 0;
- }
- EXPORT_SYMBOL_GPL(__thermal_zone_get_trip);
-@@ -135,7 +136,7 @@ int thermal_zone_trip_id(const struct th
- 	 * Assume the trip to be located within the bounds of the thermal
- 	 * zone's trips[] table.
- 	 */
-=2D	return trip - tz->trips;
-+	return trip_to_trip_desc(trip) - tz->trips;
- }
- void thermal_zone_trip_updated(struct thermal_zone_device *tz,
- 			       const struct thermal_trip *trip)
-Index: linux-pm/drivers/thermal/gov_fair_share.c
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-=2D-- linux-pm.orig/drivers/thermal/gov_fair_share.c
-+++ linux-pm/drivers/thermal/gov_fair_share.c
-@@ -17,10 +17,13 @@
-=20
- static int get_trip_level(struct thermal_zone_device *tz)
- {
-=2D	const struct thermal_trip *trip, *level_trip =3D NULL;
-+	const struct thermal_trip *level_trip =3D NULL;
-+	const struct thermal_trip_desc *td;
- 	int trip_level =3D -1;
-=20
-=2D	for_each_trip(tz, trip) {
-+	for_each_trip_desc(tz, td) {
-+		const struct thermal_trip *trip =3D &td->trip;
-+
- 		if (trip->temperature >=3D tz->temperature)
- 			continue;
-=20
-Index: linux-pm/drivers/thermal/gov_power_allocator.c
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-=2D-- linux-pm.orig/drivers/thermal/gov_power_allocator.c
-+++ linux-pm/drivers/thermal/gov_power_allocator.c
-@@ -496,9 +496,11 @@ static void get_governor_trips(struct th
- 	const struct thermal_trip *first_passive =3D NULL;
- 	const struct thermal_trip *last_passive =3D NULL;
- 	const struct thermal_trip *last_active =3D NULL;
-=2D	const struct thermal_trip *trip;
-+	const struct thermal_trip_desc *td;
-+
-+	for_each_trip_desc(tz, td) {
-+		const struct thermal_trip *trip =3D &td->trip;
-=20
-=2D	for_each_trip(tz, trip) {
- 		switch (trip->type) {
- 		case THERMAL_TRIP_PASSIVE:
- 			if (!first_passive) {
-Index: linux-pm/drivers/thermal/thermal_helpers.c
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-=2D-- linux-pm.orig/drivers/thermal/thermal_helpers.c
-+++ linux-pm/drivers/thermal/thermal_helpers.c
-@@ -50,7 +50,7 @@ get_thermal_instance(struct thermal_zone
- 	mutex_lock(&tz->lock);
- 	mutex_lock(&cdev->lock);
-=20
-=2D	trip =3D &tz->trips[trip_index];
-+	trip =3D &tz->trips[trip_index].trip;
-=20
- 	list_for_each_entry(pos, &tz->thermal_instances, tz_node) {
- 		if (pos->tz =3D=3D tz && pos->trip =3D=3D trip && pos->cdev =3D=3D cdev)=
- {
-@@ -82,7 +82,7 @@ EXPORT_SYMBOL(get_thermal_instance);
-  */
- int __thermal_zone_get_temp(struct thermal_zone_device *tz, int *temp)
- {
-=2D	const struct thermal_trip *trip;
-+	const struct thermal_trip_desc *td;
- 	int crit_temp =3D INT_MAX;
- 	int ret =3D -EINVAL;
-=20
-@@ -91,7 +91,9 @@ int __thermal_zone_get_temp(struct therm
- 	ret =3D tz->ops.get_temp(tz, temp);
-=20
- 	if (IS_ENABLED(CONFIG_THERMAL_EMULATION) && tz->emul_temperature) {
-=2D		for_each_trip(tz, trip) {
-+		for_each_trip_desc(tz, td) {
-+			const struct thermal_trip *trip =3D &td->trip;
-+
- 			if (trip->type =3D=3D THERMAL_TRIP_CRITICAL) {
- 				crit_temp =3D trip->temperature;
- 				break;
-
-
-
+PiBGcm9tOiBMZW4gQnJvd24gPGxlbmJAa2VybmVsLm9yZz4NCj4gU2VudDogVHVlc2RheSwgQXBy
+aWwgMiwgMjAyNCAxMjo0NiBQTQ0KPiANCj4gVGhhbmtzIGZvciB0aGUgcGF0Y2gsIEp1c3RpbiwN
+Cj4gDQo+IExvb2tzIGxpa2UgdGhlIHByb2JlIHBhcnQgb2YgdGhpcyB3YXMgYWxyZWFkeSBmaXhl
+ZCBpbiBteSBnaXQgdHJlZSwgc28NCj4gSSBsb3BwZWQgb2ZmIHRoYXQgaHVuayBhbmQga2VwdCB5
+b3VyIDFzdCBodW5rLg0KPiANCj4gTGV0IG1lIGtub3cgaWYgaXQgd29ya3MsIG9yIGlmIEkgc2Ny
+ZXdlZCBpdCB1cC4NCg0KSXQgd29ya3MhIEkgdGVzdGVkIG9uIGEgMTYtc29ja2V0IHN5c3RlbSB3
+aXRoICIuLi4sIHBhY2thZ2VfMTBfZGllXzAwLywgcGFja2FnZV8xMV9kaWVfMDAvLCBldGMiIGRp
+cmVjdG9yaWVzIHByZXNlbnQuDQoNClRoYW5rcyBmb3IgdGhlIGxpbmsgdG8geW91ciBsYXRlc3Qg
+dHJlZS4gSXQgbWFkZSBpdCB2ZXJ5IGVhc3kgdG8gYnVpbGQgYW5kIHRlc3QgeW91ciBwYXRjaC4N
+Cg0KQ2hlZXJzLA0KLUp1c3Rpbg0KDQo+IA0KPiBsYXRlc3QgaXMgaW4gdGhpcyB0cmVlOg0KPiBo
+dHRwczovL2dpdC5rZXJuZWwub3JnL3B1Yi9zY20vbGludXgva2VybmVsL2dpdC9sZW5iL2xpbnV4
+LmdpdC8NCj4gDQo+IHRoYW5rcywNCj4gLUxlbg0KPiANCj4gT24gRnJpLCBNYXIgOCwgMjAyNCBh
+dCAzOjUw4oCvUE0gSnVzdGluIEVybnN0IDxqdXN0aW4uZXJuc3RAaHBlLmNvbT4gd3JvdGU6DQo+
+ID4NCj4gPiBSdW5uaW5nIHR1cmJvc3RhdCBvbiBhIDE2IHNvY2tldCBIUEUgU2NhbGUtdXAgQ29t
+cHV0ZSAzMjAwIChTYXBwaGlyZVJhcGlkcykgZmFpbHMgd2l0aDoNCj4gPiB0dXJib3N0YXQ6IC9z
+eXMvZGV2aWNlcy9zeXN0ZW0vY3B1L2ludGVsX3VuY29yZV9mcmVxdWVuY3kvcGFja2FnZV8wMTBf
+ZGllXzAwL2N1cnJlbnRfZnJlcV9raHo6IG9wZW4NCj4gZmFpbGVkOiBObyBzdWNoIGZpbGUgb3Ig
+ZGlyZWN0b3J5DQo+ID4NCj4gPiBXZSBvYnNlcnZlIHRoZSBzeXNmcyB1bmNvcmUgZnJlcXVlbmN5
+IGRpcmVjdG9yaWVzIG5hbWVkOg0KPiA+IC4uLg0KPiA+IHBhY2thZ2VfMDlfZGllXzAwLw0KPiA+
+IHBhY2thZ2VfMTBfZGllXzAwLw0KPiA+IHBhY2thZ2VfMTFfZGllXzAwLw0KPiA+IC4uLg0KPiA+
+IHBhY2thZ2VfMTVfZGllXzAwLw0KPiA+DQo+ID4gVGhlIGN1bHByaXQgaXMgYW4gaW5jb3JyZWN0
+IHNwcmludGYgZm9ybWF0IHN0cmluZyAicGFja2FnZV8wJWRfZGllXzAlZCIgdXNlZA0KPiA+IHdp
+dGggZWFjaCBpbnN0YW5jZSBvZiByZWFkaW5nIHVuY29yZSBmcmVxdWVuY3kgZmlsZXMuIHVuY29y
+ZS1mcmVxdWVuY3ktY29tbW9uLmMNCj4gPiBjcmVhdGVzIHRoZSBzeXNmcyBkaXJlY3Rvcnkgd2l0
+aCB0aGUgZm9ybWF0ICJwYWNrYWdlXyUwMmRfZGllXyUwMmQiLiBPbmNlIHRoZQ0KPiA+IHBhY2th
+Z2UgdmFsdWUgcmVhY2hlcyBkb3VibGUgZGlnaXRzLCB0aGUgZm9ybWF0cyBkaXZlcmdlLg0KPiA+
+DQo+ID4gQ2hhbmdlIGVhY2ggaW5zdGFuY2Ugb2YgInBhY2thZ2VfMCVkX2RpZV8wJWQiIHRvICJw
+YWNrYWdlXyUwMmRfZGllXyUwMmQiLg0KPiA+DQo+ID4gU2lnbmVkLW9mZi1ieTogSnVzdGluIEVy
+bnN0IDxqdXN0aW4uZXJuc3RAaHBlLmNvbT4NCj4gPiAtLS0NCj4gPiAgdG9vbHMvcG93ZXIveDg2
+L3R1cmJvc3RhdC90dXJib3N0YXQuYyB8IDEwICsrKysrLS0tLS0NCj4gPiAgMSBmaWxlIGNoYW5n
+ZWQsIDUgaW5zZXJ0aW9ucygrKSwgNSBkZWxldGlvbnMoLSkNCj4gPg0KPiA+IGRpZmYgLS1naXQg
+YS90b29scy9wb3dlci94ODYvdHVyYm9zdGF0L3R1cmJvc3RhdC5jIGIvdG9vbHMvcG93ZXIveDg2
+L3R1cmJvc3RhdC90dXJib3N0YXQuYw0KPiA+IGluZGV4IDdhMzM0Mzc3ZjkyYi4uMmExNWEyM2Ni
+NzI2IDEwMDY0NA0KPiA+IC0tLSBhL3Rvb2xzL3Bvd2VyL3g4Ni90dXJib3N0YXQvdHVyYm9zdGF0
+LmMNCj4gPiArKysgYi90b29scy9wb3dlci94ODYvdHVyYm9zdGF0L3R1cmJvc3RhdC5jDQo+ID4g
+QEAgLTI1OTksNyArMjU5OSw3IEBAIHVuc2lnbmVkIGxvbmcgbG9uZyBnZXRfdW5jb3JlX21oeihp
+bnQgcGFja2FnZSwgaW50IGRpZSkNCj4gPiAgew0KPiA+ICAgICAgICAgY2hhciBwYXRoWzEyOF07
+DQo+ID4NCj4gPiAtICAgICAgIHNwcmludGYocGF0aCwNCj4gIi9zeXMvZGV2aWNlcy9zeXN0ZW0v
+Y3B1L2ludGVsX3VuY29yZV9mcmVxdWVuY3kvcGFja2FnZV8wJWRfZGllXzAlZC9jdXJyZW50X2Zy
+ZXFfa2h6IiwgcGFja2FnZSwNCj4gPiArICAgICAgIHNwcmludGYocGF0aCwNCj4gIi9zeXMvZGV2
+aWNlcy9zeXN0ZW0vY3B1L2ludGVsX3VuY29yZV9mcmVxdWVuY3kvcGFja2FnZV8lMDJkX2RpZV8l
+MDJkL2N1cnJlbnRfZnJlcV9raHoiLCBwYWNrYWdlLA0KPiA+ICAgICAgICAgICAgICAgICBkaWUp
+Ow0KPiA+DQo+ID4gICAgICAgICByZXR1cm4gKHNuYXBzaG90X3N5c2ZzX2NvdW50ZXIocGF0aCkg
+LyAxMDAwKTsNCj4gPiBAQCAtNDU4OSwyMCArNDU4OSwyMCBAQCBzdGF0aWMgdm9pZCBwcm9iZV9p
+bnRlbF91bmNvcmVfZnJlcXVlbmN5KHZvaWQpDQo+ID4gICAgICAgICAgICAgICAgIGZvciAoaiA9
+IDA7IGogPCB0b3BvLm51bV9kaWU7ICsraikgew0KPiA+ICAgICAgICAgICAgICAgICAgICAgICAg
+IGludCBrLCBsOw0KPiA+DQo+ID4gLSAgICAgICAgICAgICAgICAgICAgICAgc3ByaW50ZihwYXRo
+LA0KPiAiL3N5cy9kZXZpY2VzL3N5c3RlbS9jcHUvaW50ZWxfdW5jb3JlX2ZyZXF1ZW5jeS9wYWNr
+YWdlXzAlZF9kaWVfMCVkL21pbl9mcmVxX2toeiIsDQo+ID4gKyAgICAgICAgICAgICAgICAgICAg
+ICAgc3ByaW50ZihwYXRoLA0KPiAiL3N5cy9kZXZpY2VzL3N5c3RlbS9jcHUvaW50ZWxfdW5jb3Jl
+X2ZyZXF1ZW5jeS9wYWNrYWdlXyUwMmRfZGllXyUwMmQvbWluX2ZyZXFfa2h6IiwNCj4gPiAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgIGksIGopOw0KPiA+ICAgICAgICAgICAgICAgICAg
+ICAgICAgIGsgPSByZWFkX3N5c2ZzX2ludChwYXRoKTsNCj4gPiAtICAgICAgICAgICAgICAgICAg
+ICAgICBzcHJpbnRmKHBhdGgsDQo+ICIvc3lzL2RldmljZXMvc3lzdGVtL2NwdS9pbnRlbF91bmNv
+cmVfZnJlcXVlbmN5L3BhY2thZ2VfMCVkX2RpZV8wJWQvbWF4X2ZyZXFfa2h6IiwNCj4gPiArICAg
+ICAgICAgICAgICAgICAgICAgICBzcHJpbnRmKHBhdGgsDQo+ICIvc3lzL2RldmljZXMvc3lzdGVt
+L2NwdS9pbnRlbF91bmNvcmVfZnJlcXVlbmN5L3BhY2thZ2VfJTAyZF9kaWVfJTAyZC9tYXhfZnJl
+cV9raHoiLA0KPiA+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgaSwgaik7DQo+ID4g
+ICAgICAgICAgICAgICAgICAgICAgICAgbCA9IHJlYWRfc3lzZnNfaW50KHBhdGgpOw0KPiA+ICAg
+ICAgICAgICAgICAgICAgICAgICAgIGZwcmludGYob3V0ZiwgIlVuY29yZSBGcmVxdWVuY3kgcGtn
+JWQgZGllJWQ6ICVkIC0gJWQgTUh6ICIsIGksIGosIGsgLyAxMDAwLA0KPiBsIC8gMTAwMCk7DQo+
+ID4NCj4gPiAgICAgICAgICAgICAgICAgICAgICAgICBzcHJpbnRmKHBhdGgsDQo+ID4gLQ0KPiAi
+L3N5cy9kZXZpY2VzL3N5c3RlbS9jcHUvaW50ZWxfdW5jb3JlX2ZyZXF1ZW5jeS9wYWNrYWdlXzAl
+ZF9kaWVfMCVkL2luaXRpYWxfbWluX2ZyZXFfa2h6IiwNCj4gPiArDQo+ICIvc3lzL2RldmljZXMv
+c3lzdGVtL2NwdS9pbnRlbF91bmNvcmVfZnJlcXVlbmN5L3BhY2thZ2VfJTAyZF9kaWVfJTAyZC9p
+bml0aWFsX21pbl9mcmVxX2toeiIsDQo+ID4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICBpLCBqKTsNCj4gPiAgICAgICAgICAgICAgICAgICAgICAgICBrID0gcmVhZF9zeXNmc19pbnQo
+cGF0aCk7DQo+ID4gICAgICAgICAgICAgICAgICAgICAgICAgc3ByaW50ZihwYXRoLA0KPiA+IC0N
+Cj4gIi9zeXMvZGV2aWNlcy9zeXN0ZW0vY3B1L2ludGVsX3VuY29yZV9mcmVxdWVuY3kvcGFja2Fn
+ZV8wJWRfZGllXzAlZC9pbml0aWFsX21heF9mcmVxX2toeiIsDQo+ID4gKw0KPiAiL3N5cy9kZXZp
+Y2VzL3N5c3RlbS9jcHUvaW50ZWxfdW5jb3JlX2ZyZXF1ZW5jeS9wYWNrYWdlXyUwMmRfZGllXyUw
+MmQvaW5pdGlhbF9tYXhfZnJlcV9raHoiLA0KPiA+ICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgaSwgaik7DQo+ID4gICAgICAgICAgICAgICAgICAgICAgICAgbCA9IHJlYWRfc3lzZnNf
+aW50KHBhdGgpOw0KPiA+ICAgICAgICAgICAgICAgICAgICAgICAgIGZwcmludGYob3V0ZiwgIigl
+ZCAtICVkIE1IeilcbiIsIGsgLyAxMDAwLCBsIC8gMTAwMCk7DQo+ID4gLS0NCj4gPiAyLjI2LjIN
+Cj4gPg0KPiANCj4gDQo+IC0tDQo+IExlbiBCcm93biwgSW50ZWwNCg==
 
