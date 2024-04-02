@@ -1,185 +1,112 @@
-Return-Path: <linux-kernel+bounces-127628-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-127630-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D3FEC894E9E
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 11:24:08 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 75E97894EA7
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 11:25:29 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 25294B2106D
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 09:24:06 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A75191C2187E
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 09:25:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3897958105;
-	Tue,  2 Apr 2024 09:23:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1CA7C58203;
+	Tue,  2 Apr 2024 09:25:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="mnrBuzK8"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="sQZucdhh";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="t7amywlH"
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5EDB51E525;
-	Tue,  2 Apr 2024 09:23:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C25C557323;
+	Tue,  2 Apr 2024 09:25:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712049836; cv=none; b=tYgzL/Ir7q9qEFN+KOqSSKsmDqpXjgG0ELBr2pin0Bh8hfZfSlq362d6bE60R+I3KRaBZ7rtFtFwV9MfhnbaYirwCWOG+vfN9MNkSS6fV1nZLlWNORGhuflcn+zckEEj5RWXPvAJqom/+U8gWdkdkGjLHun4iWsfb72vEJ+mvvA=
+	t=1712049917; cv=none; b=AFPgrTvZmFRE8IH8Fz7h3wCYHlJACVwxVN7j8k14AXQKzj+Z0C8eElpiI4+q0+wISlmz3K3FB2PEIjqMMoNANskX4h/D2xBlyB0/lITXkKam6j98H20L19GKN5fXlsNe5FzhY3i3V5pf70pMiPXxkzlyLEpH88JiPqi7kT5nKG4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712049836; c=relaxed/simple;
-	bh=uP3ZmE2O+vWIbuxP60+6a2e0IG8mb6uOK8upxIwNDxU=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Zw+XcjfYqRVltEPGykyZUMghs6uy2kwK8k2OYlftSw2JGh1aaEzzZEprDih69gBIOz8OD/FkFj2K1rotJvGokS5obWBtlXVc877d01ZZu0+oyRKyUEIblTrebSSt2pBzMIxcQMitHKWSXn8o+xkLZ3BSrw+CX1jaD7zy7TClqgk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=mnrBuzK8; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id F12EEC433F1;
-	Tue,  2 Apr 2024 09:23:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712049835;
-	bh=uP3ZmE2O+vWIbuxP60+6a2e0IG8mb6uOK8upxIwNDxU=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=mnrBuzK8nGsFabYx53PEMMB0te+6pec8eOp74nmqVq0bPhfoJRvQ9s0jywus8q4GD
-	 ead5w6G5Jmu6FlHmkbvWztAS+ZeB5qpDqd4Hogv2HZvsut4EcofECFqgcWKdTXr+pN
-	 wbtO4pXWFpOOP32lpu3KGLGfzcMfoQukNeCyIaZ2OiF2qlYLrLwpcOwQIJCVJWPOt1
-	 tmg+DukvgBG76/zUExNTDjjCdS/7i+rw3IS/rFQdV/EjP+Lrc+AfZJ+AIu+Dc9wyCG
-	 4RjCGCnAcp5PEqxq0BCNpG132uA8c04yLfHGfvET9e7ZeWwJhjVL/mji7a/HVSsWiP
-	 jxpJq83NbsbWA==
-Date: Tue, 2 Apr 2024 11:23:49 +0200
-From: Niklas Cassel <cassel@kernel.org>
-To: Manivannan Sadhasivam <mani@kernel.org>
-Cc: Bjorn Helgaas <helgaas@kernel.org>, Frank Li <Frank.Li@nxp.com>,
-	niklas.cassel@wdc.com, bhelgaas@google.com,
-	gustavo.pimentel@synopsys.com, imx@lists.linux.dev,
-	jdmason@kudzu.us, jingoohan1@gmail.com, kw@linux.com,
-	linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
-	lpieralisi@kernel.org, robh@kernel.org
-Subject: Re: [PATCH v2 1/1] PCI: dwc: Fix index 0 incorrectly being
- interpreted as a free ATU slot
-Message-ID: <ZgvOpTcNKPantiHg@ryzen>
-References: <20240321171345.GA2385@thinkpad>
- <20240321180732.GA1329092@bhelgaas>
- <20240322052623.GA4092@thinkpad>
- <Zf0i1X5fg-E59NWx@ryzen>
- <20240402051228.GH2933@thinkpad>
+	s=arc-20240116; t=1712049917; c=relaxed/simple;
+	bh=D+pmTJbWD+F5FqLLVUmPGKhvuuWcaJlICv2fiuRLyOA=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=BiMtNEjEZyJkTlGaRJ2TsJZ9y1j9M3fW2ULkFCT4Qm3cYkDRyIr4UW1Gba4Hx3LMTU6MGsvpZHZvUFAAuxTnKJNSBPo8kXQi5J5ZlZtSfUoYbx8dwz1vJfw0KZakXG3QhWiSzNnCIPVQgiDljsqjvWkV9KKpFw2W/+uTMKdz/QQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=sQZucdhh; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=t7amywlH; arc=none smtp.client-ip=193.142.43.55
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
+From: Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020; t=1712049908;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=gxnU7oHDRvp2KKF4I0w+Kk9loooljsfq/6TvcopJ+7o=;
+	b=sQZucdhhQgMO5Ub+2Bs5zKZwhGZhWDZq8Mzo8Nb6wtWyyY8QiM6jWdXjFlN1EzlOxDD8GS
+	3mq6hIH/aPV9iVke03eUBejlFlW5yYzEkfTdoUZKgnpMD6Lb+/n2wuV0JPlP8u5ArNpCgA
+	Dx12Z25LyjjUJPiGJsrhWpHJOl+R30Qv2pGyq5eholxM2Qn9nnUUVkIX5yqqu41iZcTZQK
+	pybYPVzDYdB9rdXq1OlYPJ8ubMLy1de8gRySvOznWT2ffzJaAAEz0kW/lZUGw5335D92Qu
+	pnMgy/B3GR7ml4RHAspOuGp4hpotADKcxTmFW+kfAGoNs6/JIyn94/fUfY6S6g==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020e; t=1712049908;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=gxnU7oHDRvp2KKF4I0w+Kk9loooljsfq/6TvcopJ+7o=;
+	b=t7amywlHQ/7Ooi3w3AkZlkjifY46KwOg8Sjbg0P2ctA3ECbK6LB+5mh1AhvWM28e7KRWuZ
+	7k9GgRKqQPwWpsBQ==
+To: =?utf-8?B?TWFoZXNoIEJhbmRld2FyICjgpK7gpLngpYfgpLYg4KSs4KSC4KSh4KWH4KS1?=
+ =?utf-8?B?4KS+4KSwKQ==?= <maheshb@google.com>
+Cc: Sagi Maimon <maimon.sagi@gmail.com>, richardcochran@gmail.com,
+ luto@kernel.org, mingo@redhat.com, bp@alien8.de,
+ dave.hansen@linux.intel.com, x86@kernel.org, hpa@zytor.com, arnd@arndb.de,
+ geert@linux-m68k.org, peterz@infradead.org, hannes@cmpxchg.org,
+ sohil.mehta@intel.com, rick.p.edgecombe@intel.com, nphamcs@gmail.com,
+ palmer@sifive.com, keescook@chromium.org, legion@kernel.org,
+ mark.rutland@arm.com, mszeredi@redhat.com, casey@schaufler-ca.com,
+ reibax@gmail.com, davem@davemloft.net, brauner@kernel.org,
+ linux-kernel@vger.kernel.org, linux-api@vger.kernel.org,
+ linux-arch@vger.kernel.org, netdev@vger.kernel.org
+Subject: Re: [PATCH v7] posix-timers: add clock_compare system call
+In-Reply-To: <CAF2d9jjA8iM1AoPUhQPK62tdd7gPnCnt51f_NMhOAs546rU3dA@mail.gmail.com>
+References: <CAMuE1bHBky9NGP22PVHKdi2+WniwxiLSmMnwRM6wm36sU8W4jA@mail.gmail.com>
+ <878r29hjds.ffs@tglx>
+ <CAMuE1bF9ioo39_08Eh26X4WOtnvJ1geJ=WRVt5DhU8gEbYJNdA@mail.gmail.com>
+ <87o7asdd65.ffs@tglx>
+ <CAF2d9jjA8iM1AoPUhQPK62tdd7gPnCnt51f_NMhOAs546rU3dA@mail.gmail.com>
+Date: Tue, 02 Apr 2024 11:24:59 +0200
+Message-ID: <87il10ce1g.ffs@tglx>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240402051228.GH2933@thinkpad>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-On Tue, Apr 02, 2024 at 10:42:28AM +0530, Manivannan Sadhasivam wrote:
-> On Fri, Mar 22, 2024 at 07:19:01AM +0100, Niklas Cassel wrote:
-> > On Fri, Mar 22, 2024 at 10:56:23AM +0530, Manivannan Sadhasivam wrote:
-> > > On Thu, Mar 21, 2024 at 01:07:32PM -0500, Bjorn Helgaas wrote:
-> > > > On Thu, Mar 21, 2024 at 10:43:45PM +0530, Manivannan Sadhasivam wrote:
-> > > > > On Mon, Mar 04, 2024 at 05:46:16PM -0500, Frank Li wrote:
-> > > > > > dw_pcie_ep_inbound_atu()
-> > > > > > {
-> > > > > > 	...
-> > > > > > 	if (!ep->bar_to_atu[bar])
-> > > > > > 		free_win = find_first_zero_bit(ep->ib_window_map, pci->num_ib_windows);
-> > > > > > 	else
-> > > > > > 		free_win = ep->bar_to_atu[bar];
-> > > > > > 	...
-> > > > > > }
-> > > > > > 
-> > > > > > The atu index 0 is valid case for atu number. The find_first_zero_bit()
-> > > > > > will return 6 when second time call into this function if atu is 0. Suppose
-> > > > > > it should use branch 'free_win = ep->bar_to_atu[bar]'.
-> > > > > > 
-> > > > > > Change 'bar_to_atu' to free_win + 1. Initialize bar_to_atu as 0 to indicate
-> > > > > > it have not allocate atu to the bar.
-> > > > > 
-> > > > > I'd rewrite the commit message as below:
-> > > > > 
-> > > > > "The mapping between PCI BAR and iATU inbound window are maintained in the
-> > > > > dw_pcie_ep::bar_to_atu[] array. While allocating a new inbound iATU map for a
-> > > > > BAR, dw_pcie_ep_inbound_atu() API will first check for the availability of the
-> > > > > existing mapping in the array and if it is not found (i.e., value in the array
-> > > > > indexed by the BAR is found to be 0), then it will allocate a new map value
-> > > > > using find_first_zero_bit().
-> > > > > 
-> > > > > The issue here is, the existing logic failed to consider the fact that the map
-> > > > > value '0' is a valid value for BAR0. Because, find_first_zero_bit() will return
-> > > > > '0' as the map value for BAR0 (note that it returns the first zero bit
-> > > > > position).
-> > > > > 
-> > > > > Due to this, when PERST# assert + deassert happens on the PERST# supported
-> > > > > platforms, the inbound window allocation restarts from BAR0 and the existing
-> > > > > logic to find the BAR mapping will return '6' for BAR0 instead of '0' due to the
-> > > > > fact that it considers '0' as an invalid map value.
-> > > > > 
-> > > > > So fix this issue by always incrementing the map value before assigning to
-> > > > > bar_to_atu[] array and then decrementing it while fetching. This will make sure
-> > > > > that the map value '0' always represents the invalid mapping."
-> > > > 
-> > > > This translates C code to English in great detail, but still doesn't
-> > > > tell me what's broken from a user's point of view, how urgent the fix
-> > > > is, or how it should be handled.
-> > > > 
-> > > > DMA doesn't work because ATU setup is wrong?  Driver MMIO access to
-> > > > the device doesn't work?  OS crashes?  How?  Incorrectly routed access
-> > > > causes UR response?  Happens on every boot?  Only after a reboot or
-> > > > controller reset?  What platforms are affected?  "PERST# supported
-> > > > platforms" is not actionable without a lot of research or pre-existing
-> > > > knowledge.  Should this be backported to -stable?
-> > > > 
-> > > 
-> > > Severity is less for the bug fixed by this patch. We have 8 inbound iATU windows
-> > > on almost all of the platforms and after PERST# assert + deassert, BAR0 uses map
-> > > '6' instead of '0'.
-> > > 
-> > > This has no user visibility since the mapping will go fine and we have only 6
-> > > BARs. So I'd not mark this as as critical fix that needs special attention.
-> > 
-> > So we will have 6 mappings configured, but only 5 BARs, so two mappings for
-> > BAR0. The iATU looks at them in order, so index 0 will override index 6.
-> > 
-> > We are lucky that the endpoint subsystem does not clean up allocations properly
-> > right now (you have an outstanding series which fixes this).
-> > 
-> > If the endpoint subsystem did clean up resources properly, we would DMA to the
-> > area that was previously allocated for BAR0, instead of the new area for BAR0.
-> > 
-> 
-> How would DMA happen to the previously allocated area? When the BARs are cleared
-> properly and then allocated again, BAR0 will get the map of 0 again and then the
-> iATU will map window 0 with BAR0. Only if we don't clear the BARs properly (as
-> like now), then it will result in BAR0 having 2 identical mappings and even with
-> that there won't be any issue since both map 0 and 6 are valid.
-> 
-> Am I missing anything?
+On Mon, Apr 01 2024 at 22:42, Mahesh Bandewar (=E0=A4=AE=E0=A4=B9=E0=A5=87=
+=E0=A4=B6 =E0=A4=AC=E0=A4=82=E0=A4=A1=E0=A5=87=E0=A4=B5=E0=A4=BE=E0=A4=B0) =
+wrote:
+> On Mon, Apr 1, 2024 at 1:46=E2=80=AFPM Thomas Gleixner <tglx@linutronix.d=
+e> wrote:
+>> So if there is a backwards compability issue with PTP_SYS_OFFSET2, then
+>> you need to introduce PTP_SYS_OFFSET3. The PTP_SYS_*2 variants were
+>> introduced to avoid backwards compatibility issues as well, but
+>> unfortunately that did not address the reserved fields problem for
+>> PTP_SYS_OFFSET2. PTP_SYS_OFFSET_EXTENDED2 should just work, but maybe
+>> the PTP maintainers want a full extension to '3'. Either way is fine.
+>>
+> https://patchwork.kernel.org/project/netdevbpf/patch/20240104212436.32760=
+57-1-maheshb@google.com/
+>
+> This was my attempt to solve a similar issue with the new ioctl op to
+> avoid backward compatibility issues.  Instead of flags I used the
+> clockid_t in a similar fashion.
 
-Like Bjorn summarize it:
-"We dodge the bullet as long as the mappings for BAR 0 are identical,
-which doesn't feel like much comfort."
+Works as well. I'm not seing the point for CLOCK_MONOTONIC and the
+change logs are not really telling anything about the problem being
+solved....
 
-Yes, right now we don't have a cleanup of either the backing memory for
-the BAR, or the iATUs mapping the PCI address to backing memory.
-(We allocate the backing memory for the BARs in .bind(), and free it in
-unbind().)
+Thanks,
 
-So the superfluous iATU6 mapping will be the same as the iATU0 mapping.
-
-After your series, we will still allocate and free the backing memory
-in .bind()/.unbind(), but we will set/clear the iATU mapping in the
-init()/.deinit() EPF callbacks.
-
-
-> 
-> > Perhaps just include this fix in your series that actually cleans up the BARs?
-> > 
-> 
-> Yeah, makes sense. Once we agree on a finalized commit message in this thread,
-> I'll include this patch in my series.
-
-I think that we have spent too much time on this patch already.
-
-My suggestion is that you simply apply it to pci/endpoint branch directly and
-fixup the commit message (like Bjorn usually does with [bhelgaas: commit log])
-after Frank's Sign-off.
-
-
-Kind regards,
-Niklas
+        tglx
 
