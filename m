@@ -1,553 +1,192 @@
-Return-Path: <linux-kernel+bounces-128757-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-128758-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 983BA895F56
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 00:08:13 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 36051895F5E
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 00:10:06 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DDD3C284D82
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 22:08:11 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 91FA7B216FA
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 22:10:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5C0AB15E80A;
-	Tue,  2 Apr 2024 22:08:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E929A15E808;
+	Tue,  2 Apr 2024 22:09:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="HlCgCprj"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="lr3f/Eaa"
+Received: from NAM12-DM6-obe.outbound.protection.outlook.com (mail-dm6nam12on2122.outbound.protection.outlook.com [40.107.243.122])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B80D315AAA7;
-	Tue,  2 Apr 2024 22:08:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712095684; cv=none; b=l5q2YjNPnyF0zYUbNZBh8Vera2W29IsyrEHNNrj7GVZMmVpPx1xZ8EhbEnN7yY690ZH9ZJ/UvXcvXKhcCSCl7Gl+ARXSzav4GWLuO0cZomt+0heu/suT6Q5kV7BiX+gTw5lRXnaNg0htP6vsOsDXZMQ7xFFQgpudE4QvPdSZ540=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712095684; c=relaxed/simple;
-	bh=52IXVa6E1QnG8PbtUDFqA8s3LSUXhQyV2QObUcv3SBk=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=f6bDIzgmo0Fu/ksC9e9GibZak9R6+0Qe8N0IdUIxZCWDm9e8r3HswfpZPG2KLAc1l4Q0/od7FCYjo9JCEC73ORK+BMYK+H9DrYfz9Eo+Lm4pk4CS3hIsWxr+liBd2EsTza5OLoLRsYlfSuzqvlmEjP/YOIZw0oVZANN+FVtPr1A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=HlCgCprj; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BB147C433F1;
-	Tue,  2 Apr 2024 22:08:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712095684;
-	bh=52IXVa6E1QnG8PbtUDFqA8s3LSUXhQyV2QObUcv3SBk=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=HlCgCprjp23vQ4/+porol9q+TFCMxmcfLf5U2S00OjUf1lVVo714G2F8GcUeyweN4
-	 L9BW5ex02RwTXhhOkjCq689kX2lTIoOIk/HTeUI4LKAmH1R3HE7FVchnhIaILXC49G
-	 +3WjFyiB7XcEDTebimidoHm3CaTjYuJI+DNfF9eDVm+5mlmek2Sgvy2N3xHkhfdZDE
-	 oMMHAq2P7/fG7y5KWQfN+wD19VCmO6C+9PacRFIq6dfMNlR/XlTYzf28gjCctHEfdy
-	 rrGx8KaXea4xS3qK1Ce61yds9jLK3rQlccSHxsysXMFm84tFNsF5Be1n2XQkKcAu4o
-	 1SYsY76sA/W3g==
-Date: Tue, 2 Apr 2024 19:08:01 -0300
-From: Arnaldo Carvalho de Melo <acme@kernel.org>
-To: Namhyung Kim <namhyung@kernel.org>
-Cc: Ian Rogers <irogers@google.com>, Kan Liang <kan.liang@linux.intel.com>,
-	Jiri Olsa <jolsa@kernel.org>,
-	Adrian Hunter <adrian.hunter@intel.com>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Ingo Molnar <mingo@kernel.org>, LKML <linux-kernel@vger.kernel.org>,
-	linux-perf-users@vger.kernel.org
-Subject: Re: [PATCH v2 3/5] perf annotate: Split out util/disasm.c
-Message-ID: <ZgyBwTWv8OZlbl9m@x1>
-References: <20240329215812.537846-1-namhyung@kernel.org>
- <20240329215812.537846-4-namhyung@kernel.org>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 396DD5BAD7;
+	Tue,  2 Apr 2024 22:09:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.243.122
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1712095796; cv=fail; b=b1O2JK1Cp8Q4CJezgGmH/vomiPYBD9qs4AtmIAlm/bHtS6V5VOHnCsJC60aLk9RbStfOqr1vhjevHRGlfJdrER9roNFAKuC9k+mwlRxHhyjBH/+AEaqI1Y9E40e+0LGUrWQkwhBbndDNFrnEvsbSbtwz518AKDMWzmVlxCw0w6Q=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1712095796; c=relaxed/simple;
+	bh=8wDfBSc7Y4zaj/asYfxx/2rlCl7pdnmjKzGyPcrZItI=;
+	h=Message-ID:Date:To:Cc:References:From:Subject:In-Reply-To:
+	 Content-Type:MIME-Version; b=JpsuVCCTOFs7JVEhwr4XhxtLwkomnfwBAAF0t4753JoJqSKT7+buFOxIGi6Gr/g46fQL20vrzfA1HCPlKUbWzbfYsHvlNBMGwaZ2qTUwSrNd21Mpt2iVstord8tVjVNGdojBCWzMJFxUZsuD/4lMqj/ZEN3IRKQB4DQXmo6f5EQ=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=lr3f/Eaa; arc=fail smtp.client-ip=40.107.243.122
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=QzlPdRDnwah2Gnr170GLJNqfJBkasZb+O5A6b8kHO+X5K2t+lh+YC2XHQloFJwj+8GamjSRST0wLUxOt1ItEUpQ0/amD1+RKIIfjgUV6Oh1Ter3JT+d/DEsfVQYkzOcMAUc2KX42LcKrKQUTM6R7ypqbfxIcBCzDqnXzJbMLxki92hRMqrW7zz9Jw2MRD2dn5fFF7z/z/a3QZOUq87SXsNNkD2dHesm1II4hTzN6DB30wIvonoDiFTlBxPCshTOJzgHbtOA0bgJV5yXn/cq5iG9/9pVQOEdlxVa3riEWIEH1WLqDOFKmS1Ul9huSC1aFVYEqk+N0ScvVXrmi++1sIQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=j7gyIN8eEPMJdfYxBUjL4Xf3oNRzNzJM2M9fjx754W8=;
+ b=UTWgXz0BBgHU3iUudwSer10CEoYaQVzpy+70j++5vzyNmZRemP/UqnTPXTboH4PoSn4P5KiO78CvHu+w79a4ESk3vm/vyfuJpfKDQ6jVQ2tgGI5MnqaM33ch3CMYUQ+lMEi8awgsnHOtWWg9zaKR11xg622wUTZL203BHlcOaojqdCbgTGAvhZOe1GFF2heSTE+6GQ7STHpIjmyuAALqC8xDdQEAr9yn3XMtT9ilYPF/hmvHR+KRbBaWD0UB/CpZmp6cdOrxKzK5ms75zyAl5bwJ1t6wjgyI4RnN/kldhuduJAWLBsqZ4/i/SoGdZka2ErhFjBTHTaqr0DT8Snso9A==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=j7gyIN8eEPMJdfYxBUjL4Xf3oNRzNzJM2M9fjx754W8=;
+ b=lr3f/EaaiMK3S0v4J+LfOp1RUO5KA1cY5qkgC5NOgMUIR4qGI6PgooP9AfGvmfhPWw9MiDgU7e3AORpm9pVrALsQJK39fIZn8r08WyeRtvjFZgS0zVzt87/RfmT2RNgSH8OETX9TPIdDEfQCdS508VcjXnzWazkvnZ1nLyvUQ2Q=
+Received: from BL1PR12MB5732.namprd12.prod.outlook.com (2603:10b6:208:387::17)
+ by PH8PR12MB7327.namprd12.prod.outlook.com (2603:10b6:510:215::8) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7409.46; Tue, 2 Apr
+ 2024 22:09:50 +0000
+Received: from BL1PR12MB5732.namprd12.prod.outlook.com
+ ([fe80::1032:4da5:7572:508]) by BL1PR12MB5732.namprd12.prod.outlook.com
+ ([fe80::1032:4da5:7572:508%6]) with mapi id 15.20.7409.042; Tue, 2 Apr 2024
+ 22:09:46 +0000
+Message-ID: <b1822884-cba3-4009-d685-81a36dbb4353@amd.com>
+Date: Tue, 2 Apr 2024 17:09:44 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Content-Language: en-US
+To: Ashish Kalra <Ashish.Kalra@amd.com>, linux-tip-commits@vger.kernel.org
+Cc: bp@alien8.de, michael.roth@amd.com, x86@kernel.org,
+ linux-kernel@vger.kernel.org
+References: <20240312184757.52699-1-Ashish.Kalra@amd.com>
+From: Tom Lendacky <thomas.lendacky@amd.com>
+Subject: Re: [PATCH] x86/sev: Apply RMP table fixups for kexec.
+In-Reply-To: <20240312184757.52699-1-Ashish.Kalra@amd.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: SN7P222CA0010.NAMP222.PROD.OUTLOOK.COM
+ (2603:10b6:806:124::33) To BL1PR12MB5732.namprd12.prod.outlook.com
+ (2603:10b6:208:387::17)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20240329215812.537846-4-namhyung@kernel.org>
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: BL1PR12MB5732:EE_|PH8PR12MB7327:EE_
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	QujCDaRhCY0ACK1q7LSpF01jauPGlboaS9IF4L+M9gUO4NbGQtgx5F5F6vpJDqfREIKp7YEdmkMZRlZLI14ArjCS1L9ZkzONhucemnY3g7K53/6Sk0AcQK7PuP79POVbHVqs6fc7BhLMiKvRYnVa8ybxEQhAk6tnENmRlxTG6acrcUr6FiBuDNlZr7We7U83NN3AaKfpN+cm6USpsOWxFLWt2i9GfR+QyjRL3AFyNEv9JwhuqG28ybiTqjlF5HSdMrwHJoeNne9+kFksFsihJzkdeS8QvJwG6zsWXCWyBR4EXIt/w8tw2nb/qw0DM33lnwC4aFCnROuW8mn79C7eydeoecsjc65lO3vzIo+aVv+S+CJgsn/UhiNi3os6sYPbFnMK+8oNuojESu5MbXqfaXAnTF9HG/OIrdjeehpg/Njvb9FigAK2Qyur8vALQl8EnERqnGEyvJml83pFRLR7er4JHh1oUTnW1Hoe8YOaEA87U3ze51/3X13a2Hx64CpRvD1b6fqg1ixARK158n0CKO5C6xLGLDgZKuqxCmtkNQUxDccKROz8Jps+vHuxG+zK/C/dKSOChqoY3z99j+PVYbqO6tQt+ORq1vyLaR1W+Ev794dUs1Y9s2FAn22b5lSAripAk7Bt8toJg66xylGfEc2uMMFBUskyYH+dqu4sxC8=
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL1PR12MB5732.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376005)(1800799015)(366007);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?utf-8?B?Y3UweTNiaWFwM012RzBucGJMWnByNzI2NXE5TmRQYmF3UUVRK29NRjZTbThG?=
+ =?utf-8?B?L3lTM2FLclMrckNaRjZGc2hWbDU2bC9iV1dWcmVla1o1RUZtL2g2amZVNmlY?=
+ =?utf-8?B?emRqRHFYMmYzSUlPdlpGQ3FUc3VTQ1g0VTNmRXJYY3hDdXFiRGE4Ykp0UW8y?=
+ =?utf-8?B?VHZuMGM5Q28rZXFpeUQyVjJIVXZMV0NZU3JPbnI2ZkpWWWdjNktUejlYbmpV?=
+ =?utf-8?B?S3FZcndSdkJsMklmNHp0bkFsN3pFdHUvNTZyWXpjUENJK2czMkw5bmJDZjJ0?=
+ =?utf-8?B?d0E0YUpyRk5kYmNCTzlXUGN4T3phUlM1WlhuYzNRNE5uTmVuL09OUU9VVWlj?=
+ =?utf-8?B?V0NvWk1xN3hzZjB2Mk5hK05JVTk0WnBsSGl6d3hGWHcwWE9OOXF3N3RkTVdH?=
+ =?utf-8?B?UDdpaVlFck5zK29qbXlKbk1kdS9pSlFUTDhCOUppdE9ZcVJBcjRlb2NNMHVC?=
+ =?utf-8?B?ODQwSWxxSVhiU0RvYVVEMTZQODBaajhwUkhVdC8xWVcreG4xOHoxQVNvNExX?=
+ =?utf-8?B?dXZoMloycERPVW1QRlA4L0U1cmluUU11WHZRZ2R6MTFFVWl4R0RSQ3dKd2Jx?=
+ =?utf-8?B?ZFltdXhZd1oyNGZCYUdXd2RScm82b05HOXh4eXZ5Uk1TbG1KQ28xWGgrOVRn?=
+ =?utf-8?B?V3FKZklWVXVOMHNLaURianl4OGI5K1Y5RTRDNnpTWUE1NWZ4MmZUNXdGOUJ2?=
+ =?utf-8?B?bjdqeVZVWEJqMkxSeW4zYytBQVdCUWlRM0l4NklhdW5iUWc1bk5yQkN0NTR3?=
+ =?utf-8?B?aXV5bDJnQUx1Z2hseHRpS0EwWVIyT1R3Yy9GSU4rVjlCTHBPWkFuZEFiNFM2?=
+ =?utf-8?B?c1ZtRDljblhhdlRGTmZjaVdCZE5sc2dodGFFK3I0dG9zWW9aYXJ4RG9lc2kz?=
+ =?utf-8?B?NFFRUXVhMndsOEZFM1A5dmNHSlFvVEdxRVBlWUVYRXRvSjFVY3pORU9Jak9Y?=
+ =?utf-8?B?K3lpMXhuc0dsMlNOWGNkZndFZmFFN0czMGwvZnhyUXA0dlN4N2M5aUxLaSti?=
+ =?utf-8?B?TTNRSGxCalZZRVR4RFRRd0pkVFdvSlRISjBzNU1QdU1PNE9OQzVtRlRnVkV0?=
+ =?utf-8?B?b0xiTkYzSjlTU2FwQVJ3VnlVRk1QaGVlSFlTeDBkajhaV0F6enhOMVlLcWUv?=
+ =?utf-8?B?SzNDbHJoRkwxS3c2WlVaK1F4bldybG9FU3BPSUFXQmZORzRETWxuTjNLdlZB?=
+ =?utf-8?B?QzFpYkJ2SmtIYjBTZ0xrUllYVFluMldYSjNLbVBhMFRmN1VObVRTcGh1MklV?=
+ =?utf-8?B?UGxGcVA3bnlZSEF3QStZM0dLbVlsOVE4R01MMFU1QnFkQU8zK1QzUmNrTjVV?=
+ =?utf-8?B?UEkxbWxpTE5hU25LOGlUNjY1Q2xLcDdHR0V4TFI3Vyt4dWtVWGtIL3dZUkxu?=
+ =?utf-8?B?enR1RDFuSURRZkVPbnA0RTBGbWNRRmhzaThWWFc0eGZjNE9tdnh5cVVQQlJq?=
+ =?utf-8?B?M1NjMFQ5cUdCRW5XeUZiLzRaSFYwQ3k5Z0hqZS9GVkliYmFxeEkvTVFweTJw?=
+ =?utf-8?B?UERacWdRKzV4Q0xsZTZkdyt0Y1JtbUhKUGJLeGdxN0pkR0V6aE1BMzVJSVh2?=
+ =?utf-8?B?SHg4M0J3Rmg2K1FFcjBYenk2TjdOdFhwMEkwcUFlTlczOVdOVlNDVFhRSG1H?=
+ =?utf-8?B?QlpNbUw5YytJb0pxL2d6M1VUNi9rQmZmQzl3eEhqTVZSWFBUVUh2RW01cHdC?=
+ =?utf-8?B?YzYvM2dvWDhqY0NNbUJpTzhFN1pHUGR3MGk5Q3JYSW02V2lKbzVmTEJ1d2Jj?=
+ =?utf-8?B?L0JTYkNnWnIvclZoYWRMdnJaakEzZHhCTW1NV0JXbHE3UnFaMVdVOFFKOTkr?=
+ =?utf-8?B?UjdFVGJkRWJ5VGR1YjVSUFBTQy9NSVVkbGVsTHB4cHFSNEV1RGxabGgxa1Vj?=
+ =?utf-8?B?blVkKzJNMjJNaEthenI2Q0xNT2VlQ0xETUpZZzhMQkI1T2tlMlB2TlVPM3ov?=
+ =?utf-8?B?akE4VEMvTjQ0UEVCNmUxYldWdVJYdHYrcHJ3UWJtaGE2YlA2N1ZVTjduM2E1?=
+ =?utf-8?B?N1V4cHB0YlN6Q3ZUT09ld1MxVk9tRFhpcDVEdTRaaHM5Qk9KU2EvUFZ3MHZW?=
+ =?utf-8?B?aFRaOHJ4czZrZWUrZjE0VDkyN2FFSi82ajZ4TlFHNEpDSmdUOFo4OFVBbHNy?=
+ =?utf-8?Q?zFyYodq1Hm5S9rbNLJWYS2aD8?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: ded3e391-619a-4fdb-74b1-08dc53619b82
+X-MS-Exchange-CrossTenant-AuthSource: BL1PR12MB5732.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 02 Apr 2024 22:09:46.7525
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: DyrhXZEg4rgz1J4Tlqw/GLpqMWP0bvtr98hzzWB2wR6Ufp4c8AgJ/FZ155qxKMOyz1YD/G+8NzRzNRsLdfs8kQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH8PR12MB7327
 
-On Fri, Mar 29, 2024 at 02:58:10PM -0700, Namhyung Kim wrote:
-> The util/annotate.c code has both disassembly and sample annotation
-> related codes.  Factor out the disasm part so that it can be handled
-> more easily.
+On 3/12/24 13:47, Ashish Kalra wrote:
+> From: Ashish Kalra <ashish.kalra@amd.com>
 > 
-> No functional changes intended.
+> RMP table start and end physical range may not be aligned to 2MB in
+> the e820 tables causing fatal RMP page faults during kexec boot when
+> new page allocations are done in the same 2MB page as the RMP table.
+> Check if RMP table start and end physical range in e820_table is not
+> aligned to 2MB and in that case use e820__range_update() to map this
+> range to reserved.
 > 
+> Override e820__memory_setup_default() to check and apply these RMP table
+> fixups in e820_table before e820_table is used to setup
+> e280_table_firmware and e820_table_kexec.
+> 
+> Fixes: c3b86e61b756 ("x86/cpufeatures: Enable/unmask SEV-SNP CPU feature")
+> Signed-off-by: Ashish Kalra <ashish.kalra@amd.com>
+> ---
+>   arch/x86/virt/svm/sev.c | 52 +++++++++++++++++++++++++++++++++++++++++
+>   1 file changed, 52 insertions(+)
+> 
+> diff --git a/arch/x86/virt/svm/sev.c b/arch/x86/virt/svm/sev.c
+> index cffe1157a90a..e0d7584df28f 100644
+> --- a/arch/x86/virt/svm/sev.c
+> +++ b/arch/x86/virt/svm/sev.c
+> @@ -65,6 +65,8 @@ static u64 probed_rmp_base, probed_rmp_size;
+>   static struct rmpentry *rmptable __ro_after_init;
+>   static u64 rmptable_max_pfn __ro_after_init;
+>   
+> +static char *__init snp_rmptable_e820_fixup(void);
+> +
+>   static LIST_HEAD(snp_leaked_pages_list);
+>   static DEFINE_SPINLOCK(snp_leaked_pages_list_lock);
+>   
+> @@ -160,9 +162,59 @@ bool snp_probe_rmptable_info(void)
+>   	pr_info("RMP table physical range [0x%016llx - 0x%016llx]\n",
+>   		probed_rmp_base, probed_rmp_base + probed_rmp_size - 1);
+>   
+> +	/*
+> +	 * Override e820__memory_setup_default() to do any RMP table fixups
+> +	 * for kexec if required.
+> +	 */
+> +	x86_init.resources.memory_setup = snp_rmptable_e820_fixup;
 
-Unsure if here, will check and fix later, detected with: 
+This produces a build warning:
 
-  make -C tools/perf build-test'
+WARNING: modpost: vmlinux: section mismatch in reference: snp_probe_rmptable_info+0x95 (section: .text) -> x86_init (section: .init.data)
+WARNING: modpost: vmlinux: section mismatch in reference: snp_probe_rmptable_info+0x99 (section: .text) -> snp_rmptable_e820_fixup (section: .init.text)
 
-- Arnaldo
+Thanks,
+Tom
 
-cd . && make BUILD_NONDISTRO=1 FEATURES_DUMP=/home/acme/git/perf-tools-next/tools/perf/BUILD_TEST_FEATURE_DUMP -j28 O=/tmp/tmp.8dFJIAFkfV DESTDIR=/tmp/tmp.Wm6UA35mIC
-  BUILD:   Doing 'make -j28' parallel build
-  HOSTCC  /tmp/tmp.8dFJIAFkfV/fixdep.o
-  HOSTLD  /tmp/tmp.8dFJIAFkfV/fixdep-in.o
-  LINK    /tmp/tmp.8dFJIAFkfV/fixdep
-Warning: Kernel ABI header differences:
-  diff -u tools/include/uapi/drm/i915_drm.h include/uapi/drm/i915_drm.h
-  diff -u tools/include/uapi/linux/kvm.h include/uapi/linux/kvm.h
-  diff -u tools/include/linux/bits.h include/linux/bits.h
-  diff -u tools/arch/x86/include/asm/disabled-features.h arch/x86/include/asm/disabled-features.h
-  diff -u tools/arch/x86/include/asm/cpufeatures.h arch/x86/include/asm/cpufeatures.h
-  diff -u tools/arch/x86/include/asm/msr-index.h arch/x86/include/asm/msr-index.h
-  diff -u tools/arch/x86/include/uapi/asm/kvm.h arch/x86/include/uapi/asm/kvm.h
-  diff -u tools/arch/powerpc/include/uapi/asm/kvm.h arch/powerpc/include/uapi/asm/kvm.h
-  diff -u tools/arch/s390/include/uapi/asm/kvm.h arch/s390/include/uapi/asm/kvm.h
-  diff -u tools/arch/arm64/include/uapi/asm/kvm.h arch/arm64/include/uapi/asm/kvm.h
-  diff -u tools/arch/arm64/include/asm/cputype.h arch/arm64/include/asm/cputype.h
-  diff -u tools/perf/trace/beauty/arch/x86/include/asm/irq_vectors.h arch/x86/include/asm/irq_vectors.h
-  diff -u tools/perf/trace/beauty/include/uapi/linux/fs.h include/uapi/linux/fs.h
-  diff -u tools/perf/trace/beauty/include/uapi/linux/vhost.h include/uapi/linux/vhost.h
-  diff -u tools/perf/trace/beauty/include/uapi/sound/asound.h include/uapi/sound/asound.h
-Makefile.config:1147: No openjdk development package found, please install JDK package, e.g. openjdk-8-jdk, java-1.8.0-openjdk-devel
-
-  GEN     /tmp/tmp.8dFJIAFkfV/common-cmds.h
-  CC      /tmp/tmp.8dFJIAFkfV/dlfilters/dlfilter-test-api-v0.o
-  CC      /tmp/tmp.8dFJIAFkfV/dlfilters/dlfilter-test-api-v2.o
-  CC      /tmp/tmp.8dFJIAFkfV/dlfilters/dlfilter-show-cycles.o
-  LINK    /tmp/tmp.8dFJIAFkfV/dlfilters/dlfilter-test-api-v0.so
-  LINK    /tmp/tmp.8dFJIAFkfV/dlfilters/dlfilter-test-api-v2.so
-  GEN     /tmp/tmp.8dFJIAFkfV/arch/arm64/include/generated/asm/sysreg-defs.h
-  LINK    /tmp/tmp.8dFJIAFkfV/dlfilters/dlfilter-show-cycles.so
-  PERF_VERSION = 6.8.g4619ca4cfefa
-  GEN     perf-iostat
-  GEN     perf-archive
-  INSTALL /tmp/tmp.8dFJIAFkfV/libsubcmd/include/subcmd/help.h
-  INSTALL /tmp/tmp.8dFJIAFkfV/libsubcmd/include/subcmd/pager.h
-  INSTALL /tmp/tmp.8dFJIAFkfV/libsubcmd/include/subcmd/exec-cmd.h
-  INSTALL /tmp/tmp.8dFJIAFkfV/libsubcmd/include/subcmd/run-command.h
-  INSTALL /tmp/tmp.8dFJIAFkfV/libsubcmd/include/subcmd/parse-options.h
-  CC      /tmp/tmp.8dFJIAFkfV/libsubcmd/exec-cmd.o
-  CC      /tmp/tmp.8dFJIAFkfV/libsubcmd/help.o
-  CC      /tmp/tmp.8dFJIAFkfV/libsubcmd/pager.o
-  CC      /tmp/tmp.8dFJIAFkfV/libsubcmd/parse-options.o
-  CC      /tmp/tmp.8dFJIAFkfV/libsubcmd/run-command.o
-  CC      /tmp/tmp.8dFJIAFkfV/libsubcmd/sigchain.o
-  CC      /tmp/tmp.8dFJIAFkfV/libsubcmd/subcmd-config.o
-  INSTALL libsubcmd_headers
-  MKDIR   /tmp/tmp.8dFJIAFkfV/util/bpf_skel/.tmp/bootstrap/libbpf/include/bpf
-  MKDIR   /tmp/tmp.8dFJIAFkfV/util/bpf_skel/.tmp/bootstrap/
-  MKDIR   /tmp/tmp.8dFJIAFkfV/util/bpf_skel/.tmp/bootstrap/libbpf/
-  INSTALL /tmp/tmp.8dFJIAFkfV/util/bpf_skel/.tmp/bootstrap/libbpf/include/bpf/hashmap.h
-  INSTALL /tmp/tmp.8dFJIAFkfV/util/bpf_skel/.tmp/bootstrap/libbpf/include/bpf/libbpf_internal.h
-  INSTALL /tmp/tmp.8dFJIAFkfV/util/bpf_skel/.tmp/bootstrap/libbpf/include/bpf/relo_core.h
-  INSTALL /tmp/tmp.8dFJIAFkfV/libperf/include/perf/bpf_perf.h
-  INSTALL /tmp/tmp.8dFJIAFkfV/libperf/include/perf/core.h
-  INSTALL /tmp/tmp.8dFJIAFkfV/libperf/include/perf/cpumap.h
-  INSTALL /tmp/tmp.8dFJIAFkfV/libperf/include/perf/threadmap.h
-  INSTALL /tmp/tmp.8dFJIAFkfV/libsymbol/include/symbol/kallsyms.h
-  INSTALL /tmp/tmp.8dFJIAFkfV/libperf/include/perf/evlist.h
-  INSTALL /tmp/tmp.8dFJIAFkfV/libapi/include/api/cpu.h
-  INSTALL /tmp/tmp.8dFJIAFkfV/libperf/include/perf/evsel.h
-  INSTALL /tmp/tmp.8dFJIAFkfV/libperf/include/perf/event.h
-  INSTALL /tmp/tmp.8dFJIAFkfV/libapi/include/api/debug.h
-  CC      /tmp/tmp.8dFJIAFkfV/libperf/core.o
-  CC      /tmp/tmp.8dFJIAFkfV/libsymbol/kallsyms.o
-  INSTALL /tmp/tmp.8dFJIAFkfV/libperf/include/perf/mmap.h
-  CC      /tmp/tmp.8dFJIAFkfV/libperf/cpumap.o
-  INSTALL /tmp/tmp.8dFJIAFkfV/libperf/include/internal/cpumap.h
-  INSTALL libsymbol_headers
-  INSTALL /tmp/tmp.8dFJIAFkfV/libperf/include/internal/evlist.h
-  CC      /tmp/tmp.8dFJIAFkfV/libperf/threadmap.o
-  INSTALL /tmp/tmp.8dFJIAFkfV/libperf/include/internal/evsel.h
-  INSTALL /tmp/tmp.8dFJIAFkfV/libapi/include/api/io.h
-  CC      /tmp/tmp.8dFJIAFkfV/libapi/cpu.o
-  MKDIR   /tmp/tmp.8dFJIAFkfV/libapi/fd/
-  INSTALL /tmp/tmp.8dFJIAFkfV/libapi/include/api/fd/array.h
-  MKDIR   /tmp/tmp.8dFJIAFkfV/libapi/fs/
-  CC      /tmp/tmp.8dFJIAFkfV/libapi/debug.o
-  INSTALL /tmp/tmp.8dFJIAFkfV/libperf/include/internal/lib.h
-  CC      /tmp/tmp.8dFJIAFkfV/libapi/fd/array.o
-  INSTALL /tmp/tmp.8dFJIAFkfV/libapi/include/api/fs/fs.h
-  INSTALL /tmp/tmp.8dFJIAFkfV/libperf/include/internal/mmap.h
-  CC      /tmp/tmp.8dFJIAFkfV/libapi/fs/fs.o
-  INSTALL /tmp/tmp.8dFJIAFkfV/libperf/include/internal/rc_check.h
-  MKDIR   /tmp/tmp.8dFJIAFkfV/libapi/fs/
-  GEN     /tmp/tmp.8dFJIAFkfV/libbpf/bpf_helper_defs.h
-  INSTALL /tmp/tmp.8dFJIAFkfV/libapi/include/api/fs/tracing_path.h
-  CC      /tmp/tmp.8dFJIAFkfV/libapi/fs/cgroup.o
-  INSTALL /tmp/tmp.8dFJIAFkfV/libperf/include/internal/threadmap.h
-  INSTALL /tmp/tmp.8dFJIAFkfV/libbpf/include/bpf/bpf.h
-  INSTALL /tmp/tmp.8dFJIAFkfV/libbpf/include/bpf/libbpf.h
-  CC      /tmp/tmp.8dFJIAFkfV/libapi/fs/tracing_path.o
-  INSTALL /tmp/tmp.8dFJIAFkfV/libperf/include/internal/xyarray.h
-  CC      /tmp/tmp.8dFJIAFkfV/libperf/evsel.o
-  INSTALL /tmp/tmp.8dFJIAFkfV/libbpf/include/bpf/btf.h
-  CC      /tmp/tmp.8dFJIAFkfV/libperf/evlist.o
-  INSTALL libapi_headers
-  CC      /tmp/tmp.8dFJIAFkfV/libapi/str_error_r.o
-  INSTALL /tmp/tmp.8dFJIAFkfV/libbpf/include/bpf/libbpf_common.h
-  CC      /tmp/tmp.8dFJIAFkfV/libperf/mmap.o
-  CC      /tmp/tmp.8dFJIAFkfV/libperf/zalloc.o
-  GEN     /tmp/tmp.8dFJIAFkfV/util/bpf_skel/.tmp/bootstrap/libbpf/bpf_helper_defs.h
-  INSTALL /tmp/tmp.8dFJIAFkfV/libbpf/include/bpf/libbpf_legacy.h
-  INSTALL /tmp/tmp.8dFJIAFkfV/util/bpf_skel/.tmp/bootstrap/libbpf/include/bpf/bpf.h
-  CC      /tmp/tmp.8dFJIAFkfV/libperf/xyarray.o
-  INSTALL /tmp/tmp.8dFJIAFkfV/util/bpf_skel/.tmp/bootstrap/libbpf/include/bpf/libbpf.h
-  INSTALL /tmp/tmp.8dFJIAFkfV/util/bpf_skel/.tmp/bootstrap/libbpf/include/bpf/btf.h
-  INSTALL libperf_headers
-  INSTALL /tmp/tmp.8dFJIAFkfV/util/bpf_skel/.tmp/bootstrap/libbpf/include/bpf/libbpf_common.h
-  INSTALL /tmp/tmp.8dFJIAFkfV/util/bpf_skel/.tmp/bootstrap/libbpf/include/bpf/libbpf_legacy.h
-  CC      /tmp/tmp.8dFJIAFkfV/libperf/lib.o
-  INSTALL /tmp/tmp.8dFJIAFkfV/libbpf/include/bpf/bpf_helpers.h
-  INSTALL /tmp/tmp.8dFJIAFkfV/util/bpf_skel/.tmp/bootstrap/libbpf/include/bpf/bpf_helpers.h
-  INSTALL /tmp/tmp.8dFJIAFkfV/libbpf/include/bpf/bpf_tracing.h
-  INSTALL /tmp/tmp.8dFJIAFkfV/util/bpf_skel/.tmp/bootstrap/libbpf/include/bpf/bpf_tracing.h
-  INSTALL /tmp/tmp.8dFJIAFkfV/util/bpf_skel/.tmp/bootstrap/libbpf/include/bpf/bpf_endian.h
-  INSTALL /tmp/tmp.8dFJIAFkfV/libbpf/include/bpf/bpf_endian.h
-  INSTALL /tmp/tmp.8dFJIAFkfV/util/bpf_skel/.tmp/bootstrap/libbpf/include/bpf/bpf_core_read.h
-  INSTALL /tmp/tmp.8dFJIAFkfV/libbpf/include/bpf/bpf_core_read.h
-  INSTALL /tmp/tmp.8dFJIAFkfV/libbpf/include/bpf/skel_internal.h
-  INSTALL /tmp/tmp.8dFJIAFkfV/util/bpf_skel/.tmp/bootstrap/libbpf/include/bpf/skel_internal.h
-  INSTALL /tmp/tmp.8dFJIAFkfV/libbpf/include/bpf/libbpf_version.h
-  INSTALL /tmp/tmp.8dFJIAFkfV/libbpf/include/bpf/usdt.bpf.h
-  INSTALL /tmp/tmp.8dFJIAFkfV/util/bpf_skel/.tmp/bootstrap/libbpf/include/bpf/libbpf_version.h
-  INSTALL /tmp/tmp.8dFJIAFkfV/util/bpf_skel/.tmp/bootstrap/libbpf/include/bpf/usdt.bpf.h
-  LD      /tmp/tmp.8dFJIAFkfV/libapi/fd/libapi-in.o
-  INSTALL /tmp/tmp.8dFJIAFkfV/libbpf/include/bpf/bpf_helper_defs.h
-  MKDIR   /tmp/tmp.8dFJIAFkfV/libbpf/staticobjs/
-  MKDIR   /tmp/tmp.8dFJIAFkfV/libbpf/staticobjs/
-  INSTALL libbpf_headers
-  MKDIR   /tmp/tmp.8dFJIAFkfV/libbpf/staticobjs/
-  MKDIR   /tmp/tmp.8dFJIAFkfV/libbpf/staticobjs/
-  MKDIR   /tmp/tmp.8dFJIAFkfV/libbpf/staticobjs/
-  LD      /tmp/tmp.8dFJIAFkfV/libsymbol/libsymbol-in.o
-  MKDIR   /tmp/tmp.8dFJIAFkfV/libbpf/staticobjs/
-  CC      /tmp/tmp.8dFJIAFkfV/libbpf/staticobjs/libbpf.o
-  CC      /tmp/tmp.8dFJIAFkfV/libbpf/staticobjs/bpf.o
-  CC      /tmp/tmp.8dFJIAFkfV/libbpf/staticobjs/netlink.o
-  CC      /tmp/tmp.8dFJIAFkfV/libbpf/staticobjs/nlattr.o
-  CC      /tmp/tmp.8dFJIAFkfV/libbpf/staticobjs/btf.o
-  CC      /tmp/tmp.8dFJIAFkfV/libbpf/staticobjs/libbpf_errno.o
-  CC      /tmp/tmp.8dFJIAFkfV/libbpf/staticobjs/str_error.o
-  CC      /tmp/tmp.8dFJIAFkfV/libbpf/staticobjs/bpf_prog_linfo.o
-  CC      /tmp/tmp.8dFJIAFkfV/libbpf/staticobjs/libbpf_probes.o
-  CC      /tmp/tmp.8dFJIAFkfV/libbpf/staticobjs/hashmap.o
-  CC      /tmp/tmp.8dFJIAFkfV/libbpf/staticobjs/btf_dump.o
-  CC      /tmp/tmp.8dFJIAFkfV/libbpf/staticobjs/ringbuf.o
-  CC      /tmp/tmp.8dFJIAFkfV/libbpf/staticobjs/strset.o
-  CC      /tmp/tmp.8dFJIAFkfV/libbpf/staticobjs/linker.o
-  CC      /tmp/tmp.8dFJIAFkfV/libbpf/staticobjs/gen_loader.o
-  CC      /tmp/tmp.8dFJIAFkfV/libbpf/staticobjs/relo_core.o
-  AR      /tmp/tmp.8dFJIAFkfV/libsymbol/libsymbol.a
-  CC      /tmp/tmp.8dFJIAFkfV/libbpf/staticobjs/usdt.o
-  CC      /tmp/tmp.8dFJIAFkfV/libbpf/staticobjs/zip.o
-  MKDIR   /tmp/tmp.8dFJIAFkfV/util/bpf_skel/.tmp/bootstrap/libbpf/staticobjs/
-  CC      /tmp/tmp.8dFJIAFkfV/util/bpf_skel/.tmp/bootstrap/libbpf/staticobjs/libbpf.o
-  MKDIR   /tmp/tmp.8dFJIAFkfV/util/bpf_skel/.tmp/bootstrap/libbpf/staticobjs/
-  CC      /tmp/tmp.8dFJIAFkfV/util/bpf_skel/.tmp/bootstrap/libbpf/staticobjs/bpf.o
-  LD      /tmp/tmp.8dFJIAFkfV/libapi/fs/libapi-in.o
-  LD      /tmp/tmp.8dFJIAFkfV/libapi/libapi-in.o
-  CC      /tmp/tmp.8dFJIAFkfV/libbpf/staticobjs/elf.o
-  INSTALL /tmp/tmp.8dFJIAFkfV/util/bpf_skel/.tmp/bootstrap/libbpf/include/bpf/bpf_helper_defs.h
-  INSTALL libbpf_headers
-  CC      /tmp/tmp.8dFJIAFkfV/libbpf/staticobjs/features.o
-  CC      /tmp/tmp.8dFJIAFkfV/util/bpf_skel/.tmp/bootstrap/libbpf/staticobjs/nlattr.o
-  CC      /tmp/tmp.8dFJIAFkfV/util/bpf_skel/.tmp/bootstrap/libbpf/staticobjs/btf.o
-  AR      /tmp/tmp.8dFJIAFkfV/libapi/libapi.a
-  CC      /tmp/tmp.8dFJIAFkfV/util/bpf_skel/.tmp/bootstrap/libbpf/staticobjs/libbpf_errno.o
-  LD      /tmp/tmp.8dFJIAFkfV/libperf/libperf-in.o
-  CC      /tmp/tmp.8dFJIAFkfV/util/bpf_skel/.tmp/bootstrap/libbpf/staticobjs/str_error.o
-  AR      /tmp/tmp.8dFJIAFkfV/libperf/libperf.a
-  CC      /tmp/tmp.8dFJIAFkfV/util/bpf_skel/.tmp/bootstrap/libbpf/staticobjs/netlink.o
-  CC      /tmp/tmp.8dFJIAFkfV/util/bpf_skel/.tmp/bootstrap/libbpf/staticobjs/bpf_prog_linfo.o
-  CC      /tmp/tmp.8dFJIAFkfV/util/bpf_skel/.tmp/bootstrap/libbpf/staticobjs/libbpf_probes.o
-  CC      /tmp/tmp.8dFJIAFkfV/util/bpf_skel/.tmp/bootstrap/libbpf/staticobjs/hashmap.o
-  CC      /tmp/tmp.8dFJIAFkfV/util/bpf_skel/.tmp/bootstrap/libbpf/staticobjs/btf_dump.o
-  CC      /tmp/tmp.8dFJIAFkfV/util/bpf_skel/.tmp/bootstrap/libbpf/staticobjs/ringbuf.o
-  CC      /tmp/tmp.8dFJIAFkfV/util/bpf_skel/.tmp/bootstrap/libbpf/staticobjs/strset.o
-  CC      /tmp/tmp.8dFJIAFkfV/util/bpf_skel/.tmp/bootstrap/libbpf/staticobjs/linker.o
-  CC      /tmp/tmp.8dFJIAFkfV/util/bpf_skel/.tmp/bootstrap/libbpf/staticobjs/gen_loader.o
-  CC      /tmp/tmp.8dFJIAFkfV/util/bpf_skel/.tmp/bootstrap/libbpf/staticobjs/relo_core.o
-  CC      /tmp/tmp.8dFJIAFkfV/util/bpf_skel/.tmp/bootstrap/libbpf/staticobjs/usdt.o
-  CC      /tmp/tmp.8dFJIAFkfV/util/bpf_skel/.tmp/bootstrap/libbpf/staticobjs/zip.o
-  CC      /tmp/tmp.8dFJIAFkfV/util/bpf_skel/.tmp/bootstrap/libbpf/staticobjs/elf.o
-  LD      /tmp/tmp.8dFJIAFkfV/libsubcmd/libsubcmd-in.o
-  CC      /tmp/tmp.8dFJIAFkfV/util/bpf_skel/.tmp/bootstrap/libbpf/staticobjs/features.o
-  AR      /tmp/tmp.8dFJIAFkfV/libsubcmd/libsubcmd.a
-  GEN     /tmp/tmp.8dFJIAFkfV/python/perf.cpython-312-x86_64-linux-gnu.so
-  LD      /tmp/tmp.8dFJIAFkfV/util/bpf_skel/.tmp/bootstrap/libbpf/staticobjs/libbpf-in.o
-  LD      /tmp/tmp.8dFJIAFkfV/libbpf/staticobjs/libbpf-in.o
-  LINK    /tmp/tmp.8dFJIAFkfV/util/bpf_skel/.tmp/bootstrap/libbpf/libbpf.a
-  LINK    /tmp/tmp.8dFJIAFkfV/libbpf/libbpf.a
-  CC      /tmp/tmp.8dFJIAFkfV/util/bpf_skel/.tmp/bootstrap/main.o
-  CC      /tmp/tmp.8dFJIAFkfV/util/bpf_skel/.tmp/bootstrap/common.o
-  CC      /tmp/tmp.8dFJIAFkfV/util/bpf_skel/.tmp/bootstrap/json_writer.o
-  CC      /tmp/tmp.8dFJIAFkfV/util/bpf_skel/.tmp/bootstrap/gen.o
-  CC      /tmp/tmp.8dFJIAFkfV/util/bpf_skel/.tmp/bootstrap/btf.o
-  CC      /tmp/tmp.8dFJIAFkfV/util/bpf_skel/.tmp/bootstrap/xlated_dumper.o
-  CC      /tmp/tmp.8dFJIAFkfV/util/bpf_skel/.tmp/bootstrap/btf_dumper.o
-  CC      /tmp/tmp.8dFJIAFkfV/util/bpf_skel/.tmp/bootstrap/disasm.o
-  LINK    /tmp/tmp.8dFJIAFkfV/util/bpf_skel/.tmp/bootstrap/bpftool
-  CLANG   /tmp/tmp.8dFJIAFkfV/util/bpf_skel/.tmp/bpf_prog_profiler.bpf.o
-  CLANG   /tmp/tmp.8dFJIAFkfV/util/bpf_skel/.tmp/bperf_leader.bpf.o
-  CLANG   /tmp/tmp.8dFJIAFkfV/util/bpf_skel/.tmp/bperf_follower.bpf.o
-  CLANG   /tmp/tmp.8dFJIAFkfV/util/bpf_skel/.tmp/bperf_cgroup.bpf.o
-  CLANG   /tmp/tmp.8dFJIAFkfV/util/bpf_skel/.tmp/func_latency.bpf.o
-  CLANG   /tmp/tmp.8dFJIAFkfV/util/bpf_skel/.tmp/off_cpu.bpf.o
-  CLANG   /tmp/tmp.8dFJIAFkfV/util/bpf_skel/.tmp/lock_contention.bpf.o
-  CLANG   /tmp/tmp.8dFJIAFkfV/util/bpf_skel/.tmp/kwork_trace.bpf.o
-  CLANG   /tmp/tmp.8dFJIAFkfV/util/bpf_skel/.tmp/sample_filter.bpf.o
-  CLANG   /tmp/tmp.8dFJIAFkfV/util/bpf_skel/.tmp/kwork_top.bpf.o
-  CLANG   /tmp/tmp.8dFJIAFkfV/util/bpf_skel/.tmp/bench_uprobe.bpf.o
-  CLANG   /tmp/tmp.8dFJIAFkfV/util/bpf_skel/.tmp/augmented_raw_syscalls.bpf.o
-  GENSKEL /tmp/tmp.8dFJIAFkfV/util/bpf_skel/bperf_leader.skel.h
-  GENSKEL /tmp/tmp.8dFJIAFkfV/util/bpf_skel/bench_uprobe.skel.h
-  GENSKEL /tmp/tmp.8dFJIAFkfV/util/bpf_skel/bperf_follower.skel.h
-  GENSKEL /tmp/tmp.8dFJIAFkfV/util/bpf_skel/sample_filter.skel.h
-  GENSKEL /tmp/tmp.8dFJIAFkfV/util/bpf_skel/augmented_raw_syscalls.skel.h
-  GENSKEL /tmp/tmp.8dFJIAFkfV/util/bpf_skel/bpf_prog_profiler.skel.h
-  GENSKEL /tmp/tmp.8dFJIAFkfV/util/bpf_skel/func_latency.skel.h
-  GENSKEL /tmp/tmp.8dFJIAFkfV/util/bpf_skel/bperf_cgroup.skel.h
-  GENSKEL /tmp/tmp.8dFJIAFkfV/util/bpf_skel/off_cpu.skel.h
-  GENSKEL /tmp/tmp.8dFJIAFkfV/util/bpf_skel/kwork_trace.skel.h
-  GENSKEL /tmp/tmp.8dFJIAFkfV/util/bpf_skel/kwork_top.skel.h
-  GENSKEL /tmp/tmp.8dFJIAFkfV/util/bpf_skel/lock_contention.skel.h
-  CC      /tmp/tmp.8dFJIAFkfV/builtin-bench.o
-  CC      /tmp/tmp.8dFJIAFkfV/builtin-annotate.o
-  CC      /tmp/tmp.8dFJIAFkfV/builtin-config.o
-  CC      /tmp/tmp.8dFJIAFkfV/builtin-diff.o
-  CC      /tmp/tmp.8dFJIAFkfV/builtin-evlist.o
-  CC      /tmp/tmp.8dFJIAFkfV/builtin-ftrace.o
-  CC      /tmp/tmp.8dFJIAFkfV/builtin-help.o
-  CC      /tmp/tmp.8dFJIAFkfV/builtin-buildid-list.o
-  CC      /tmp/tmp.8dFJIAFkfV/builtin-buildid-cache.o
-  CC      /tmp/tmp.8dFJIAFkfV/builtin-kallsyms.o
-  CC      /tmp/tmp.8dFJIAFkfV/builtin-list.o
-  CC      /tmp/tmp.8dFJIAFkfV/builtin-record.o
-  MKDIR   /tmp/tmp.8dFJIAFkfV/pmu-events/
-  CC      /tmp/tmp.8dFJIAFkfV/builtin-report.o
-  CC      /tmp/tmp.8dFJIAFkfV/builtin-stat.o
-  CC      /tmp/tmp.8dFJIAFkfV/builtin-top.o
-  CC      /tmp/tmp.8dFJIAFkfV/builtin-script.o
-  TEST    /tmp/tmp.8dFJIAFkfV/pmu-events/metric_test.log
-  CC      /tmp/tmp.8dFJIAFkfV/builtin-kvm.o
-  CC      /tmp/tmp.8dFJIAFkfV/builtin-inject.o
-  CC      /tmp/tmp.8dFJIAFkfV/builtin-mem.o
-  CC      /tmp/tmp.8dFJIAFkfV/builtin-data.o
-  CC      /tmp/tmp.8dFJIAFkfV/builtin-version.o
-  CC      /tmp/tmp.8dFJIAFkfV/builtin-c2c.o
-  CC      /tmp/tmp.8dFJIAFkfV/builtin-daemon.o
-  CC      /tmp/tmp.8dFJIAFkfV/builtin-kmem.o
-  CC      /tmp/tmp.8dFJIAFkfV/builtin-kwork.o
-  CC      /tmp/tmp.8dFJIAFkfV/builtin-lock.o
-  GEN     /tmp/tmp.8dFJIAFkfV/pmu-events/pmu-events.c
-  CC      /tmp/tmp.8dFJIAFkfV/builtin-sched.o
-  CC      /tmp/tmp.8dFJIAFkfV/builtin-timechart.o
-  CC      /tmp/tmp.8dFJIAFkfV/builtin-trace.o
-  CC      /tmp/tmp.8dFJIAFkfV/trace/beauty/clone.o
-  MKDIR   /tmp/tmp.8dFJIAFkfV/bench/
-  CC      /tmp/tmp.8dFJIAFkfV/bench/sched-messaging.o
-  MKDIR   /tmp/tmp.8dFJIAFkfV/tests/
-  MKDIR   /tmp/tmp.8dFJIAFkfV/bench/
-  CC      /tmp/tmp.8dFJIAFkfV/tests/builtin-test.o
-  CC      /tmp/tmp.8dFJIAFkfV/trace/beauty/fcntl.o
-  CC      /tmp/tmp.8dFJIAFkfV/bench/sched-pipe.o
-  CC      /tmp/tmp.8dFJIAFkfV/bench/sched-seccomp-notify.o
-  CC      /tmp/tmp.8dFJIAFkfV/bench/syscall.o
-  MKDIR   /tmp/tmp.8dFJIAFkfV/tests/
-  CC      /tmp/tmp.8dFJIAFkfV/trace/beauty/flock.o
-  CC      /tmp/tmp.8dFJIAFkfV/tests/tests-scripts.o
-  CC      /tmp/tmp.8dFJIAFkfV/tests/parse-events.o
-  CC      /tmp/tmp.8dFJIAFkfV/tests/dso-data.o
-  CC      /tmp/tmp.8dFJIAFkfV/tests/attr.o
-  CC      /tmp/tmp.8dFJIAFkfV/trace/beauty/fs_at_flags.o
-  CC      /tmp/tmp.8dFJIAFkfV/bench/mem-functions.o
-  CC      /tmp/tmp.8dFJIAFkfV/trace/beauty/fsmount.o
-  CC      /tmp/tmp.8dFJIAFkfV/tests/vmlinux-kallsyms.o
-  CC      /tmp/tmp.8dFJIAFkfV/tests/openat-syscall.o
-  CC      /tmp/tmp.8dFJIAFkfV/trace/beauty/fspick.o
-  CC      /tmp/tmp.8dFJIAFkfV/bench/futex-hash.o
-  CC      /tmp/tmp.8dFJIAFkfV/trace/beauty/ioctl.o
-  CC      /tmp/tmp.8dFJIAFkfV/arch/common.o
-  CC      /tmp/tmp.8dFJIAFkfV/trace/beauty/kcmp.o
-  CC      /tmp/tmp.8dFJIAFkfV/util/arm64-frame-pointer-unwind-support.o
-  MKDIR   /tmp/tmp.8dFJIAFkfV/ui/
-  CC      /tmp/tmp.8dFJIAFkfV/util/addr_location.o
-  CC      /tmp/tmp.8dFJIAFkfV/ui/setup.o
-  MKDIR   /tmp/tmp.8dFJIAFkfV/scripts/perl/Perf-Trace-Util/
-  CC      /tmp/tmp.8dFJIAFkfV/scripts/perl/Perf-Trace-Util/Context.o
-  MKDIR   /tmp/tmp.8dFJIAFkfV/ui/
-  CC      /tmp/tmp.8dFJIAFkfV/trace/beauty/mount_flags.o
-  CC      /tmp/tmp.8dFJIAFkfV/ui/helpline.o
-  MKDIR   /tmp/tmp.8dFJIAFkfV/arch/x86/util/
-  CC      /tmp/tmp.8dFJIAFkfV/arch/x86/util/header.o
-  MKDIR   /tmp/tmp.8dFJIAFkfV/arch/x86/util/
-  CC      /tmp/tmp.8dFJIAFkfV/arch/x86/util/tsc.o
-  CC      /tmp/tmp.8dFJIAFkfV/arch/x86/util/pmu.o
-  MKDIR   /tmp/tmp.8dFJIAFkfV/arch/x86/tests/
-  CC      /tmp/tmp.8dFJIAFkfV/tests/openat-syscall-all-cpus.o
-  CC      /tmp/tmp.8dFJIAFkfV/arch/x86/tests/regs_load.o
-  MKDIR   /tmp/tmp.8dFJIAFkfV/arch/x86/tests/
-  CC      /tmp/tmp.8dFJIAFkfV/bench/futex-wake.o
-  CC      /tmp/tmp.8dFJIAFkfV/arch/x86/tests/dwarf-unwind.o
-  CC      /tmp/tmp.8dFJIAFkfV/bench/futex-wake-parallel.o
-  CC      /tmp/tmp.8dFJIAFkfV/util/annotate.o
-  CC      /tmp/tmp.8dFJIAFkfV/util/block-info.o
-  CC      /tmp/tmp.8dFJIAFkfV/trace/beauty/move_mount.o
-  CC      /tmp/tmp.8dFJIAFkfV/ui/progress.o
-  CC      /tmp/tmp.8dFJIAFkfV/tests/openat-syscall-tp-fields.o
-  CC      /tmp/tmp.8dFJIAFkfV/ui/util.o
-  CC      /tmp/tmp.8dFJIAFkfV/ui/hist.o
-  MKDIR   /tmp/tmp.8dFJIAFkfV/ui/stdio/
-  CC      /tmp/tmp.8dFJIAFkfV/ui/stdio/hist.o
-  CC      /tmp/tmp.8dFJIAFkfV/trace/beauty/pkey_alloc.o
-  CC      /tmp/tmp.8dFJIAFkfV/tests/mmap-basic.o
-  CC      /tmp/tmp.8dFJIAFkfV/arch/x86/tests/arch-tests.o
-  CC      /tmp/tmp.8dFJIAFkfV/builtin-probe.o
-  CC      /tmp/tmp.8dFJIAFkfV/bench/futex-requeue.o
-  CC      /tmp/tmp.8dFJIAFkfV/ui/browser.o
-  CC      /tmp/tmp.8dFJIAFkfV/arch/x86/util/kvm-stat.o
-  CC      /tmp/tmp.8dFJIAFkfV/arch/x86/tests/sample-parsing.o
-  CC      /tmp/tmp.8dFJIAFkfV/trace/beauty/arch_prctl.o
-  MKDIR   /tmp/tmp.8dFJIAFkfV/scripts/python/Perf-Trace-Util/
-  CC      /tmp/tmp.8dFJIAFkfV/trace/beauty/prctl.o
-  CC      /tmp/tmp.8dFJIAFkfV/scripts/python/Perf-Trace-Util/Context.o
-  CC      /tmp/tmp.8dFJIAFkfV/util/block-range.o
-  CC      /tmp/tmp.8dFJIAFkfV/arch/x86/util/perf_regs.o
-  CC      /tmp/tmp.8dFJIAFkfV/perf.o
-  CC      /tmp/tmp.8dFJIAFkfV/trace/beauty/renameat.o
-  CC      /tmp/tmp.8dFJIAFkfV/util/build-id.o
-  CC      /tmp/tmp.8dFJIAFkfV/tests/perf-record.o
-  CC      /tmp/tmp.8dFJIAFkfV/arch/x86/tests/hybrid.o
-  CC      /tmp/tmp.8dFJIAFkfV/trace/beauty/sockaddr.o
-  CC      /tmp/tmp.8dFJIAFkfV/trace/beauty/socket.o
-  CC      /tmp/tmp.8dFJIAFkfV/arch/x86/tests/intel-pt-test.o
-  CC      /tmp/tmp.8dFJIAFkfV/bench/futex-lock-pi.o
-  MKDIR   /tmp/tmp.8dFJIAFkfV/ui/browsers/
-  CC      /tmp/tmp.8dFJIAFkfV/ui/browsers/annotate.o
-  CC      /tmp/tmp.8dFJIAFkfV/arch/x86/util/topdown.o
-  CC      /tmp/tmp.8dFJIAFkfV/trace/beauty/statx.o
-  CC      /tmp/tmp.8dFJIAFkfV/arch/x86/tests/bp-modify.o
-  CC      /tmp/tmp.8dFJIAFkfV/trace/beauty/sync_file_range.o
-  CC      /tmp/tmp.8dFJIAFkfV/tests/evsel-roundtrip-name.o
-  CC      /tmp/tmp.8dFJIAFkfV/bench/epoll-wait.o
-  CC      /tmp/tmp.8dFJIAFkfV/arch/x86/util/machine.o
-  MKDIR   /tmp/tmp.8dFJIAFkfV/ui/browsers/
-  CC      /tmp/tmp.8dFJIAFkfV/trace/beauty/timespec.o
-  CC      /tmp/tmp.8dFJIAFkfV/ui/browsers/hists.o
-  MKDIR   /tmp/tmp.8dFJIAFkfV/ui/tui/
-  CC      /tmp/tmp.8dFJIAFkfV/ui/tui/setup.o
-  CC      /tmp/tmp.8dFJIAFkfV/arch/x86/util/event.o
-  CC      /tmp/tmp.8dFJIAFkfV/tests/evsel-tp-sched.o
-  CC      /tmp/tmp.8dFJIAFkfV/bench/epoll-ctl.o
-  CC      /tmp/tmp.8dFJIAFkfV/util/cacheline.o
-  CC      /tmp/tmp.8dFJIAFkfV/ui/browsers/map.o
-  CC      /tmp/tmp.8dFJIAFkfV/arch/x86/tests/amd-ibs-via-core-pmu.o
-  LD      /tmp/tmp.8dFJIAFkfV/scripts/python/Perf-Trace-Util/perf-in.o
-  CC      /tmp/tmp.8dFJIAFkfV/arch/x86/util/evlist.o
-  CC      /tmp/tmp.8dFJIAFkfV/util/config.o
-  CC      /tmp/tmp.8dFJIAFkfV/util/copyfile.o
-  MKDIR   /tmp/tmp.8dFJIAFkfV/trace/beauty/tracepoints/
-  CC      /tmp/tmp.8dFJIAFkfV/util/ctype.o
-  CC      /tmp/tmp.8dFJIAFkfV/trace/beauty/tracepoints/x86_irq_vectors.o
-  CC      /tmp/tmp.8dFJIAFkfV/tests/fdarray.o
-  CC      /tmp/tmp.8dFJIAFkfV/arch/x86/util/mem-events.o
-  CC      /tmp/tmp.8dFJIAFkfV/tests/pmu.o
-  MKDIR   /tmp/tmp.8dFJIAFkfV/ui/tui/
-  CC      /tmp/tmp.8dFJIAFkfV/ui/tui/util.o
-  CC      /tmp/tmp.8dFJIAFkfV/ui/tui/helpline.o
-  MKDIR   /tmp/tmp.8dFJIAFkfV/trace/beauty/tracepoints/
-  CC      /tmp/tmp.8dFJIAFkfV/trace/beauty/tracepoints/x86_msr.o
-  LD      /tmp/tmp.8dFJIAFkfV/arch/x86/tests/perf-in.o
-  CC      /tmp/tmp.8dFJIAFkfV/arch/x86/util/evsel.o
-  CC      /tmp/tmp.8dFJIAFkfV/ui/browsers/scripts.o
-  CC      /tmp/tmp.8dFJIAFkfV/ui/tui/progress.o
-  CC      /tmp/tmp.8dFJIAFkfV/tests/pmu-events.o
-  LD      /tmp/tmp.8dFJIAFkfV/scripts/perl/Perf-Trace-Util/perf-in.o
-  CC      /tmp/tmp.8dFJIAFkfV/tests/hists_common.o
-  LD      /tmp/tmp.8dFJIAFkfV/scripts/perf-in.o
-  CC      /tmp/tmp.8dFJIAFkfV/tests/hists_link.o
-  LD      /tmp/tmp.8dFJIAFkfV/trace/beauty/tracepoints/perf-in.o
-  CC      /tmp/tmp.8dFJIAFkfV/arch/x86/util/iostat.o
-  LD      /tmp/tmp.8dFJIAFkfV/trace/beauty/perf-in.o
-  CC      /tmp/tmp.8dFJIAFkfV/bench/synthesize.o
-  CC      /tmp/tmp.8dFJIAFkfV/ui/browsers/header.o
-  CC      /tmp/tmp.8dFJIAFkfV/ui/browsers/res_sample.o
-  CC      /tmp/tmp.8dFJIAFkfV/util/db-export.o
-  CC      /tmp/tmp.8dFJIAFkfV/tests/hists_filter.o
-  CC      /tmp/tmp.8dFJIAFkfV/arch/x86/util/env.o
-  CC      /tmp/tmp.8dFJIAFkfV/util/disasm.o
-  CC      /tmp/tmp.8dFJIAFkfV/tests/hists_output.o
-  CC      /tmp/tmp.8dFJIAFkfV/bench/kallsyms-parse.o
-  CC      /tmp/tmp.8dFJIAFkfV/util/env.o
-  CC      /tmp/tmp.8dFJIAFkfV/arch/x86/util/dwarf-regs.o
-  CC      /tmp/tmp.8dFJIAFkfV/bench/find-bit-bench.o
-  CC      /tmp/tmp.8dFJIAFkfV/tests/hists_cumulate.o
-  LD      /tmp/tmp.8dFJIAFkfV/ui/tui/perf-in.o
-  CC      /tmp/tmp.8dFJIAFkfV/arch/x86/util/unwind-libunwind.o
-  CC      /tmp/tmp.8dFJIAFkfV/util/event.o
-  CC      /tmp/tmp.8dFJIAFkfV/util/evlist.o
-  CC      /tmp/tmp.8dFJIAFkfV/arch/x86/util/auxtrace.o
-  CC      /tmp/tmp.8dFJIAFkfV/util/sideband_evlist.o
-  CC      /tmp/tmp.8dFJIAFkfV/tests/python-use.o
-  CC      /tmp/tmp.8dFJIAFkfV/util/evsel.o
-  CC      /tmp/tmp.8dFJIAFkfV/arch/x86/util/archinsn.o
-  CC      /tmp/tmp.8dFJIAFkfV/arch/x86/util/intel-pt.o
-  CC      /tmp/tmp.8dFJIAFkfV/bench/inject-buildid.o
-  CC      /tmp/tmp.8dFJIAFkfV/bench/evlist-open-close.o
-  CC      /tmp/tmp.8dFJIAFkfV/tests/bp_signal.o
-  CC      /tmp/tmp.8dFJIAFkfV/arch/x86/util/intel-bts.o
-  CC      /tmp/tmp.8dFJIAFkfV/tests/bp_signal_overflow.o
-  CC      /tmp/tmp.8dFJIAFkfV/bench/breakpoint.o
-  CC      /tmp/tmp.8dFJIAFkfV/tests/bp_account.o
-  CC      /tmp/tmp.8dFJIAFkfV/util/evsel_fprintf.o
-  CC      /tmp/tmp.8dFJIAFkfV/tests/wp.o
-  CC      /tmp/tmp.8dFJIAFkfV/util/perf_event_attr_fprintf.o
-  CC      /tmp/tmp.8dFJIAFkfV/bench/pmu-scan.o
-util/disasm.c: In function ‘symbol__disassemble_bpf’:
-util/disasm.c:1202:9: error: implicit declaration of function ‘perf_exe’ [-Werror=implicit-function-declaration]
- 1202 |         perf_exe(tpath, sizeof(tpath));
-      |         ^~~~~~~~
-util/disasm.c:1222:21: error: implicit declaration of function ‘perf_env__find_bpf_prog_info’ [-Werror=implicit-function-declaration]
- 1222 |         info_node = perf_env__find_bpf_prog_info(dso->bpf_prog.env,
-      |                     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~
-util/disasm.c:1222:19: error: assignment to ‘struct bpf_prog_info_node *’ from ‘int’ makes pointer from integer without a cast [-Werror=int-conversion]
- 1222 |         info_node = perf_env__find_bpf_prog_info(dso->bpf_prog.env,
-      |                   ^
-util/disasm.c:1228:32: error: invalid use of undefined type ‘struct bpf_prog_info_node’
- 1228 |         info_linear = info_node->info_linear;
-      |                                ^~
-util/disasm.c:1231:54: error: invalid use of undefined type ‘struct perf_bpil’
- 1231 |         info.buffer = (void *)(uintptr_t)(info_linear->info.jited_prog_insns);
-      |                                                      ^~
-util/disasm.c:1232:41: error: invalid use of undefined type ‘struct perf_bpil’
- 1232 |         info.buffer_length = info_linear->info.jited_prog_len;
-      |                                         ^~
-util/disasm.c:1234:24: error: invalid use of undefined type ‘struct perf_bpil’
- 1234 |         if (info_linear->info.nr_line_info)
-      |                        ^~
-util/disasm.c:1235:62: error: invalid use of undefined type ‘struct perf_bpil’
- 1235 |                 prog_linfo = bpf_prog_linfo__new(&info_linear->info);
-      |                                                              ^~
-util/disasm.c:1237:24: error: invalid use of undefined type ‘struct perf_bpil’
- 1237 |         if (info_linear->info.btf_id) {
-      |                        ^~
-util/disasm.c:1240:24: error: implicit declaration of function ‘perf_env__find_btf’ [-Werror=implicit-function-declaration]
- 1240 |                 node = perf_env__find_btf(dso->bpf_prog.env,
-      |                        ^~~~~~~~~~~~~~~~~~
-util/disasm.c:1241:54: error: invalid use of undefined type ‘struct perf_bpil’
- 1241 |                                           info_linear->info.btf_id);
-      |                                                      ^~
-util/disasm.c:1243:53: error: invalid use of undefined type ‘struct btf_node’
- 1243 |                         btf = btf__new((__u8 *)(node->data),
-      |                                                     ^~
-util/disasm.c:1244:44: error: invalid use of undefined type ‘struct btf_node’
- 1244 |                                        node->data_size);
-      |                                            ^~
-util/disasm.c:1268:60: error: invalid use of undefined type ‘struct perf_bpil’
- 1268 |                 addr = pc + ((u64 *)(uintptr_t)(info_linear->info.jited_ksyms))[sub_id];
-      |                                                            ^~
-cc1: all warnings being treated as errors
-make[6]: *** [/home/acme/git/perf-tools-next/tools/build/Makefile.build:106: /tmp/tmp.8dFJIAFkfV/util/disasm.o] Error 1
-  CC      /tmp/tmp.8dFJIAFkfV/tests/task-exit.o
-make[6]: *** Waiting for unfinished jobs....
-  CC      /tmp/tmp.8dFJIAFkfV/tests/sw-clock.o
-  CC      /tmp/tmp.8dFJIAFkfV/tests/mmap-thread-lookup.o
-  CC      /tmp/tmp.8dFJIAFkfV/bench/uprobe.o
-  CC      /tmp/tmp.8dFJIAFkfV/bench/mem-memcpy-x86-64-asm.o
-  CC      /tmp/tmp.8dFJIAFkfV/tests/thread-maps-share.o
-  CC      /tmp/tmp.8dFJIAFkfV/bench/mem-memset-x86-64-asm.o
-  CC      /tmp/tmp.8dFJIAFkfV/tests/switch-tracking.o
-
+> +
+>   	return true;
+>   }
 
