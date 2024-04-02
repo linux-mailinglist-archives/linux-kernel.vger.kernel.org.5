@@ -1,86 +1,57 @@
-Return-Path: <linux-kernel+bounces-127606-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-127607-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 79CBD894E50
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 11:07:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 864F5894E54
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 11:07:44 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9D1921C21918
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 09:06:59 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A9C461C2224E
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 09:07:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0BE6257875;
-	Tue,  2 Apr 2024 09:06:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 05DDC5731E;
+	Tue,  2 Apr 2024 09:07:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b="HMZ4D16r"
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [78.32.30.218])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AAD8F4C601;
-	Tue,  2 Apr 2024 09:06:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=78.32.30.218
+	dkim=pass (1024-bit key) header.d=yeah.net header.i=@yeah.net header.b="i71bd1oB"
+Received: from mail-177132.yeah.net (mail-177132.yeah.net [123.58.177.132])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 95E0D17C7C;
+	Tue,  2 Apr 2024 09:07:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=123.58.177.132
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712048807; cv=none; b=nxFJhcIdRkbJkjA3uevjxPd1ylpq0Pdmkk4kB1c+PhSAcau985fqDHu0KFhyXIzngc8THiFQiCkdD0/abSNYK6wfl/F9YwRLpzMBvSy2RVMuuepRnsfa3s5rySU6q+vnsJ3hrJZa3rY3s4cGs9e3Km12KsB3idWwCGdOZZyrqUw=
+	t=1712048854; cv=none; b=H2KPJc4ArfWlywywBpiK5fXZT/ywu5/OdV173FMnzUUsm6fJGb4DmXNmpFOHq/ABnSlEhSG3bfNYxahyhDCWzaX/zixaaYJ9IP11ueX1AcosZgulAaNb7gHIw5piYpj21GhdfQI+ZNWWMzmw55sOBaxCEjHU9za3GIdkMmifP1s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712048807; c=relaxed/simple;
-	bh=FQEak5E1HEqcxJrgVbcIT/r41+ZFxfg8E9RnhjWqjik=;
+	s=arc-20240116; t=1712048854; c=relaxed/simple;
+	bh=D6WrjkDPoDGOGRdjF9W8yG6nCD7d5fEpEm8TrvcfTFM=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=SQXeJ3P7GCF/hUbKBY3H9JIdkMAWp0sv/h4qFPr2PCqHDsPy/RCzbbIBMs1sLa80QmVDJ8lcf+u4FVpaApR6gJCwzhVK6SqyvrfRdU9rHeC2F+i9pBVDA1lPxllyLs3eOELwv/SRmMrZk8Pe7ZKJ20t6mFUi1SfYrNM0v4DWItc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=armlinux.org.uk; spf=none smtp.mailfrom=armlinux.org.uk; dkim=pass (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b=HMZ4D16r; arc=none smtp.client-ip=78.32.30.218
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=armlinux.org.uk
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=armlinux.org.uk
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
-	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-	List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-	bh=WgxlhgEkcesCrm0cyV5cBT67pvB35pzQ8uy7zKzfp+U=; b=HMZ4D16rZ4NjHb0nRxusf1y0kp
-	Cx5U4CsEc8hjD87M5joxCqf43Nf8iHiSgSJ53nUQ3ONne0X66Ilnfra1FqSSLvfpPDNPy+Y9LiDRi
-	mwYySxCAqSTrdPN7G3EoRaDGHB0ff8dEbdZg4awRtHwukV5uUv10YwDiyqyP1QCszCr3lXzB6/RlI
-	Y/L06XUwq8xclYYFmGHii89HDcgjeJHrj4la1fIWmiMccdHABe1Qu142qY+Zk0nTjb+2dmNw4xz/3
-	6bpNOGMzk85ZH71n21PSr7CPz+CwmhehjqWCLFkAhkPJsq24F5YKDx9ImMYYYsiarY0PGRs4vZ1FI
-	b/pWTLcQ==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:57496)
-	by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.96)
-	(envelope-from <linux@armlinux.org.uk>)
-	id 1rra60-00063X-1q;
-	Tue, 02 Apr 2024 10:06:20 +0100
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
-	(envelope-from <linux@shell.armlinux.org.uk>)
-	id 1rra5v-0006pn-Cg; Tue, 02 Apr 2024 10:06:15 +0100
-Date: Tue, 2 Apr 2024 10:06:15 +0100
-From: "Russell King (Oracle)" <linux@armlinux.org.uk>
-To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Cc: Suzuki K Poulose <suzuki.poulose@arm.com>,
-	Mike Leach <mike.leach@linaro.org>,
-	James Clark <james.clark@arm.com>,
-	Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-	Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-	Alexandre Torgue <alexandre.torgue@foss.st.com>,
-	Linus Walleij <linus.walleij@linaro.org>,
-	Andi Shyti <andi.shyti@kernel.org>,
-	Olivia Mackall <olivia@selenic.com>,
-	Herbert Xu <herbert@gondor.apana.org.au>,
-	Vinod Koul <vkoul@kernel.org>,
-	Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-	Miquel Raynal <miquel.raynal@bootlin.com>,
-	Michal Simek <michal.simek@amd.com>,
-	Eric Auger <eric.auger@redhat.com>,
-	Alex Williamson <alex.williamson@redhat.com>,
-	linux-kernel@vger.kernel.org, coresight@lists.linaro.org,
-	linux-arm-kernel@lists.infradead.org,
-	linux-stm32@st-md-mailman.stormreply.com, linux-i2c@vger.kernel.org,
-	linux-crypto@vger.kernel.org, dmaengine@vger.kernel.org,
-	linux-input@vger.kernel.org, kvm@vger.kernel.org
-Subject: Re: [PATCH 00/19] amba: store owner from modules with
- amba_driver_register()
-Message-ID: <ZgvKh/Cwudh3gCDr@shell.armlinux.org.uk>
-References: <20240326-module-owner-amba-v1-0-4517b091385b@linaro.org>
- <f514d9e1-61fa-4c55-aea1-d70c955bb96a@linaro.org>
- <ZgvIMRDfeQaeVxYt@shell.armlinux.org.uk>
+	 Content-Type:Content-Disposition:In-Reply-To; b=l8QHvE/k0T4ionf6WF5jY6ICOopuXlt2e6T00J8UaNVDiVcQpWEfEfpCx/n++28Y5eFdjn5e3gt25w5If524pZCj90OF13TkDf5+ju7YRPtmyLKmdTmL7MMq5i1CLHFEYzcawo7O/8jLZTtIhDAOAUaznomcN5lwc9pTWUVzd1s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=yeah.net; spf=pass smtp.mailfrom=yeah.net; dkim=pass (1024-bit key) header.d=yeah.net header.i=@yeah.net header.b=i71bd1oB; arc=none smtp.client-ip=123.58.177.132
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=yeah.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=yeah.net
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yeah.net;
+	s=s110527; h=Date:From:Subject:Message-ID:MIME-Version:
+	Content-Type; bh=v7Irp6bBJXCNebn36Vh9yPqqXllV/JsIy2dz+cR9M1U=;
+	b=i71bd1oBVnbF2weU2rijlRWhD80QnleM+MIkGvEuKtUZ0fiSSP1mr6DnM7Jruk
+	5ZVPZVq9CmyjchKiLVd3k4jlC/UBPbafA1tdsuqOu2pbx/iZbbgGtcLSxuyfSPOl
+	XahU3ZEsKYmpjll6AxDnGAPOgRzkRPNwLUA5Y5Yqi8y2s=
+Received: from dragon (unknown [223.68.79.243])
+	by smtp2 (Coremail) with SMTP id C1UQrABHrxi1ygtm5xGoAg--.42276S3;
+	Tue, 02 Apr 2024 17:07:02 +0800 (CST)
+Date: Tue, 2 Apr 2024 17:07:01 +0800
+From: Shawn Guo <shawnguo2@yeah.net>
+To: Xu Yang <xu.yang_2@nxp.com>
+Cc: gregkh@linuxfoundation.org, robh+dt@kernel.org,
+	krzysztof.kozlowski+dt@linaro.org, shawnguo@kernel.org,
+	conor+dt@kernel.org, s.hauer@pengutronix.de, kernel@pengutronix.de,
+	festevam@gmail.com, linux-imx@nxp.com, peter.chen@kernel.org,
+	jun.li@nxp.com, linux-usb@vger.kernel.org,
+	devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+	imx@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v10 09/11] arm64: dts: imx93-11x11-evk: enable usb and
+ typec nodes
+Message-ID: <ZgvKteCEZJxShA/j@dragon>
+References: <20240321081439.541799-1-xu.yang_2@nxp.com>
+ <20240321081439.541799-9-xu.yang_2@nxp.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -89,131 +60,203 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <ZgvIMRDfeQaeVxYt@shell.armlinux.org.uk>
-Sender: Russell King (Oracle) <linux@armlinux.org.uk>
+In-Reply-To: <20240321081439.541799-9-xu.yang_2@nxp.com>
+X-CM-TRANSID:C1UQrABHrxi1ygtm5xGoAg--.42276S3
+X-Coremail-Antispam: 1Uf129KBjvJXoWxCr17Jw4kuF4DGF1ktrW7XFb_yoWrAF4DpF
+	ZxC395Xr4xXr13Aa98JF17GF93C3ZYgFy09rnFg343A39ruwsxJr45Kr1Ygr1qkFsrXw4a
+	qFWv9rWIgwnFgw7anT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07jqlksUUUUU=
+X-CM-SenderInfo: pvkd40hjxrjqh1hdxhhqhw/1tbiDha0ZVszYdVKJwAAs4
 
-On Tue, Apr 02, 2024 at 09:56:17AM +0100, Russell King (Oracle) wrote:
-> On Sat, Mar 30, 2024 at 01:18:30PM +0100, Krzysztof Kozlowski wrote:
-> > On 26/03/2024 21:23, Krzysztof Kozlowski wrote:
-> > > Merging
-> > > =======
-> > > All further patches depend on the first amba patch, therefore please ack
-> > > and this should go via one tree.
-> > > 
-> > > Description
-> > > ===========
-> > > Modules registering driver with amba_driver_register() often forget to
-> > > set .owner field.
-> > > 
-> > > Solve the problem by moving this task away from the drivers to the core
-> > > amba bus code, just like we did for platform_driver in commit
-> > > 9447057eaff8 ("platform_device: use a macro instead of
-> > > platform_driver_register").
-> > > 
-> > > Best regards,
-> > 
-> > I tried to submit this series to Russell patch tracker and failed. This
-> > is ridiculous. It's 2024 and instead of normal process, like every other
-> > maintainer, so b4 or Patchwork, we have some unusable system rejecting
-> > standard patches.
+On Thu, Mar 21, 2024 at 04:14:37PM +0800, Xu Yang wrote:
+> There are 2 Type-C ports and 2 USB controllers on i.MX93. Enable them.
 > 
-> Sorry but no. Stop being offensive.
+> Signed-off-by: Xu Yang <xu.yang_2@nxp.com>
 > 
-> > First, it depends some weird, duplicated signed-off-by's.
+> ---
+> Changes in v2:
+>  - remove status property in ptn5110 nodes
+>  - fix dt-schema warnings
+> Changes in v3:
+>  - no changes
+> Changes in v4:
+>  - no changes
+> Changes in v5:
+>  - no changes
+> Changes in v6:
+>  - no changes
+> Changes in v7:
+>  - no changes
+> Changes in v8:
+>  - no changes
+> Changes in v9:
+>  - use compatible "nxp,ptn5110", "tcpci"
+> Changes in v10:
+>  - no changes
+> ---
+>  .../boot/dts/freescale/imx93-11x11-evk.dts    | 118 ++++++++++++++++++
+>  1 file changed, 118 insertions(+)
 > 
-> Eh? There is no such logic in there.
-> 
-> > Second it > submitting patch-by-patch, all with clicking on some web
-> > (!!!) interface.
-> 
-> Again, no it doesn't, and you're just throwing crap out because you
-> failed. Unlike most of the "normal" processes, the patch system allows
-> you to submit both by *email* and also by *web* for those cases where
-> the emails get screwed up by ones company mail server. That's why the
-> web interface exists - to give people *flexibility*.
-> 
-> The fact is, the web interface is merely a front end interface that
-> generates an email and submits it in the usual way by email - an
-> email that you can perfectly well generate that is *very* close to
-> the standard email that git format-patch generates.
-> 
-> The *only* difference is that the patch system wants a KernelVersion:
-> tag in the email _somewhere_ and it doesn't matter where it appears.
-> Git even has support to do this.
-> 
->   git format-patch --add-header="KernelVersion: $foo"
-> 
-> Why does it want the kernel version? Because when we were running 2.4
-> and 2.5 kernel versions in parallel, it was important to know which
-> tree the patch was being submitted for. It has continued to be required
-> because it means when there's problems applying a patch, it gives me
-> the additional information about the base used for the patch (and it
-> keeps on being useful to have.)
-> 
-> > That's the response:
-> > -------------
-> > Your patch has not been logged because:
-> > 
-> > Error:   Please supply a summary subject line briefly describing
-> >          your patch.
-> > 
-> > 
-> > Error:   Please supply a "KernelVersion: " tag after "PATCH FOLLOWS" or
-> > "---".
-> > 
-> > Error:   the patch you are submitting has one or more missing or incorrect
-> >          Signed-off-by lines:
-> > 
-> >          - author signoff <krzkreg@gmail.com> is missing.
-> > 
-> >          Please see the file Documentation/SubmittingPatches, section 11
-> >          for details on signing off patches.
-> 
-> Lots of people use it without a problem. I've just run the parser
-> through its offline tests, and it parses email content correctly.
-> I've no idea what you're doing wrong, but it looks like something
-> pretty serious if it didn't parse the subject line.
-> 
-> Rather than getting stressed about it, why don't you send me an email
-> the first time something goes wrong so I can investigate, turn on
-> debugging to capture the problem email?
+> diff --git a/arch/arm64/boot/dts/freescale/imx93-11x11-evk.dts b/arch/arm64/boot/dts/freescale/imx93-11x11-evk.dts
+> index 9921ea13ab48..ecc01d872e95 100644
+> --- a/arch/arm64/boot/dts/freescale/imx93-11x11-evk.dts
+> +++ b/arch/arm64/boot/dts/freescale/imx93-11x11-evk.dts
+> @@ -5,6 +5,7 @@
+>  
+>  /dts-v1/;
+>  
+> +#include <dt-bindings/usb/pd.h>
+>  #include "imx93.dtsi"
+>  
+>  / {
+> @@ -104,6 +105,80 @@ &mu2 {
+>  	status = "okay";
+>  };
+>  
+> +&lpi2c3 {
+> +	#address-cells = <1>;
+> +	#size-cells = <0>;
+> +	clock-frequency = <400000>;
+> +	pinctrl-names = "default", "sleep";
+> +	pinctrl-0 = <&pinctrl_lpi2c3>;
+> +	pinctrl-1 = <&pinctrl_lpi2c3>;
 
-.. and I'll also point out one of the biggest problems is people.
-People who think it's more complex than it is, or who can't read
-instructions.
+Do you really need "sleep" pinctrl state?
 
-For example, trying to tell people to use the standard format subject
-line:
+> +	status = "okay";
+> +
+> +	ptn5110: tcpc@50 {
+> +		compatible = "nxp,ptn5110", "tcpci";
+> +		reg = <0x50>;
+> +		interrupt-parent = <&gpio3>;
+> +		interrupts = <27 IRQ_TYPE_LEVEL_LOW>;
+> +
+> +		typec1_con: connector {
+> +			compatible = "usb-c-connector";
+> +			label = "USB-C";
+> +			power-role = "dual";
+> +			data-role = "dual";
+> +			try-power-role = "sink";
+> +			source-pdos = <PDO_FIXED(5000, 3000, PDO_FIXED_USB_COMM)>;
+> +			sink-pdos = <PDO_FIXED(5000, 3000, PDO_FIXED_USB_COMM)
+> +				     PDO_VAR(5000, 20000, 3000)>;
+> +			op-sink-microwatt = <15000000>;
+> +			self-powered;
+> +
+> +			ports {
+> +				#address-cells = <1>;
+> +				#size-cells = <0>;
+> +
+> +				port@0 {
+> +					reg = <0>;
 
-	[PATCH ...] blah
+Have a newline between properties and child node.
 
-has proven to be hopeless - unless one states to them the exact
-sequence of keys on their keyboard to press - yes, it *really* takes
-that patronising level to get everyone to understand. If one tries to
-do it any other way, then you get stuff like:
+Shawn
 
-	"[PATCH ...] ..."
+> +					typec1_dr_sw: endpoint {
+> +						remote-endpoint = <&usb1_drd_sw>;
+> +					};
+> +				};
+> +			};
+> +		};
+> +	};
+> +
+> +	ptn5110_2: tcpc@51 {
+> +		compatible = "nxp,ptn5110", "tcpci";
+> +		reg = <0x51>;
+> +		interrupt-parent = <&gpio3>;
+> +		interrupts = <27 IRQ_TYPE_LEVEL_LOW>;
+> +
+> +		typec2_con: connector {
+> +			compatible = "usb-c-connector";
+> +			label = "USB-C";
+> +			power-role = "dual";
+> +			data-role = "dual";
+> +			try-power-role = "sink";
+> +			source-pdos = <PDO_FIXED(5000, 3000, PDO_FIXED_USB_COMM)>;
+> +			sink-pdos = <PDO_FIXED(5000, 3000, PDO_FIXED_USB_COMM)
+> +				     PDO_VAR(5000, 20000, 3000)>;
+> +			op-sink-microwatt = <15000000>;
+> +			self-powered;
+> +
+> +			ports {
+> +				#address-cells = <1>;
+> +				#size-cells = <0>;
+> +
+> +				port@0 {
+> +					reg = <0>;
+> +					typec2_dr_sw: endpoint {
+> +						remote-endpoint = <&usb2_drd_sw>;
+> +					};
+> +				};
+> +			};
+> +		};
+> +	};
+> +};
+> +
+>  &eqos {
+>  	pinctrl-names = "default";
+>  	pinctrl-0 = <&pinctrl_eqos>;
+> @@ -156,6 +231,42 @@ &lpuart5 {
+>  	status = "okay";
+>  };
+>  
+> +&usbotg1 {
+> +	dr_mode = "otg";
+> +	hnp-disable;
+> +	srp-disable;
+> +	adp-disable;
+> +	usb-role-switch;
+> +	disable-over-current;
+> +	samsung,picophy-pre-emp-curr-control = <3>;
+> +	samsung,picophy-dc-vol-level-adjust = <7>;
+> +	status = "okay";
+> +
+> +	port {
+> +		usb1_drd_sw: endpoint {
+> +			remote-endpoint = <&typec1_dr_sw>;
+> +		};
+> +	};
+> +};
+> +
+> +&usbotg2 {
+> +	dr_mode = "otg";
+> +	hnp-disable;
+> +	srp-disable;
+> +	adp-disable;
+> +	usb-role-switch;
+> +	disable-over-current;
+> +	samsung,picophy-pre-emp-curr-control = <3>;
+> +	samsung,picophy-dc-vol-level-adjust = <7>;
+> +	status = "okay";
+> +
+> +	port {
+> +		usb2_drd_sw: endpoint {
+> +			remote-endpoint = <&typec2_dr_sw>;
+> +		};
+> +	};
+> +};
+> +
+>  &usdhc1 {
+>  	pinctrl-names = "default", "state_100mhz", "state_200mhz";
+>  	pinctrl-0 = <&pinctrl_usdhc1>;
+> @@ -222,6 +333,13 @@ MX93_PAD_ENET2_TX_CTL__ENET1_RGMII_TX_CTL	0x57e
+>  		>;
+>  	};
+>  
+> +	pinctrl_lpi2c3: lpi2c3grp {
+> +		fsl,pins = <
+> +			MX93_PAD_GPIO_IO28__LPI2C3_SDA			0x40000b9e
+> +			MX93_PAD_GPIO_IO29__LPI2C3_SCL			0x40000b9e
+> +		>;
+> +	};
+> +
+>  	pinctrl_uart1: uart1grp {
+>  		fsl,pins = <
+>  			MX93_PAD_UART1_RXD__LPUART1_RX			0x31e
+> -- 
+> 2.34.1
+> 
 
-with the quotes. Or some other stupid variation.
-
-The patch system is as forgiving as possible. It takes standard git
-formatted patches (with the exception of wanting an additional tag).
-
-It is possible that bugs creep in - particularly when Debian updates
-get applied and change the way Perl works, but I don't think that's
-what has happened with your situation.
-
-I _guess_ you're putting the entire email-like output from git
-format-patch as the patch file. That won't work - that isn't a "patch
-file", that is an email/email template, and the patch system will
-attempt to parse that as the patch itself.
-
-I suppose you term "patch" to be the email as well, rather than what
-I interpret it to be, which is only the output of "diff" - call me
-old fashioned but that's what a patch file used to be before the
-waters got muddied by git "patch files".
-
--- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
 
