@@ -1,148 +1,157 @@
-Return-Path: <linux-kernel+bounces-128271-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-128272-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 219C6895882
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 17:46:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 4314B895885
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 17:46:51 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 538D81C23D1A
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 15:46:09 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 731AA1C23FBC
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 15:46:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3BA9013E6A7;
-	Tue,  2 Apr 2024 15:42:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3C582133406;
+	Tue,  2 Apr 2024 15:43:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="PktuTijw"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="d6c2O9cu"
 Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.11])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E241E13AD33
-	for <linux-kernel@vger.kernel.org>; Tue,  2 Apr 2024 15:42:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5FECB12DD92;
+	Tue,  2 Apr 2024 15:42:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.11
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712072557; cv=none; b=KRwHjr42KtJrj7Ja5HvgNqZywonb4DH97qeyZQRF2u2qb906ecO0Hl9/aZy4PPHyscah50HyUgFbEfCDvXLmxBE5FYa2ly3G0wPTFmXe5H6zbn0QnfHb7nncP0B05uJVb1s6s+nVcBcGKWR/dEUCiSvDZPjqjlImzRfn8M8YNSk=
+	t=1712072581; cv=none; b=QrsJGjVZ+M7jnKX/yD6kQ6VLmJFnGnRbZ4xmZohmCKzO6GNCXkbP6QpIZOJrU29tkk+Qqqg3BepSHEFwlAjecQQxHDe4/qdDdv7fMCfqy6ucNusR2qMu3XjIFnrl0hQpOLXvEPwvfKX1vO/BlPCv9u0JoT5MqCcj5OHGHFCUzzc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712072557; c=relaxed/simple;
-	bh=RZamI5f8/aC7oIQVbalM1Cimf9G3hUXqlyz/JLjpQQQ=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=NCpyP0LMiDDA7X7s7f87/wrOUc20QA2onzecRZST8PvZdpmxVdUyOYjXIxlwlIXaoz1U6EsqFGgBt1ct9cSmlM28IYaJiK+mz3g4Z0ogiXc20dJfd0rOKLRdUe7R4XVHb19uYet1XphkqDpOaxa2SUIeTB7ppZpkFQVNjIldfTw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=PktuTijw; arc=none smtp.client-ip=192.198.163.11
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+	s=arc-20240116; t=1712072581; c=relaxed/simple;
+	bh=LMUohvB/UKa9RdS6CcaGwa208bYJywDqPRBXkkbgk2E=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=O+loYEZJWAaf3QiQ4VnpG7p3zmV4RzAxedlMKfa00DuIrrJR6yK6vczmA/1MZ6IUGl6NPIZ6oPvHJ1rrMnSrv61BOFcpY8dYT5FdSKR8gL6mFiQ9tu5nD2tcXdrVnAv8YEB9SryRM/nNODFL+pInMrsBemSk+jUKMZAGiw+26Hs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=d6c2O9cu; arc=none smtp.client-ip=192.198.163.11
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1712072556; x=1743608556;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=RZamI5f8/aC7oIQVbalM1Cimf9G3hUXqlyz/JLjpQQQ=;
-  b=PktuTijwDsjPaZW6tsNQHDAPJcw8+RKGbZbK8a7jE9jrV9fj0+BFQeL9
-   dZCJ2lL7N+6OutZv8B9SEd1gZSkCx1tAbfXjsDeZ4oenja3fFzoetmlvl
-   eDKVKMWB+2ybpHGg9Yt7pnGqx5Syd+0TCn3w985VAqbA8k+FIHg4TOLnv
-   jvLgR/Jbk9SF8eMAeIA2ds6HMLmMHvkMGgx6M+rToWpd6mqU1MyJZdwBM
-   mTJUY95gT0VO2Z5uEdOaECClmA9UMFpWPGEtBca+A+V4+V3f/7dFvmojy
-   roRr1NmYeiofZr/QppYrDV5YMkjFclWzq7jjTjLMx1ZaQXYUWi9gAoGHz
-   A==;
-X-CSE-ConnectionGUID: cX8Cy9f5Si280igoXM7n5w==
-X-CSE-MsgGUID: bb9q9hDyRJ+zNiZGf7x8zg==
-X-IronPort-AV: E=McAfee;i="6600,9927,11032"; a="17870104"
+  t=1712072579; x=1743608579;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=LMUohvB/UKa9RdS6CcaGwa208bYJywDqPRBXkkbgk2E=;
+  b=d6c2O9cuUMibkhJW3SZarZXsXhw6QAaiJDwUnx8+Ovh8x/pePXJjDXWk
+   xcuwSgy5LNVXX/7grY5lJ9LJiJqSMXIvkY2ItvjXpddhm1864VgqER2U/
+   rhf5Smo6TgSiaN1QlsbQrc7K2NHcENSXic8nnhRM5db8m18yhuYpUnDk1
+   9TLfie5D48fDoWlmEf0EumRkjxnwP0adgZfqB96O/pyqabGInfhvgT6tP
+   +ifoiba0D0nAgZm2GGm9axxrdxF318LwYGvIRdijc/ExLumnyKwxY36oj
+   h44dhnIFPlqE2SWkoM4JI3tq2K241F5sswzpvOTgs1uJaR6g46tvKoVYR
+   Q==;
+X-CSE-ConnectionGUID: uCLEHMe4SlSaEN2wumwgMQ==
+X-CSE-MsgGUID: KnJu5E1+QcO3FNdKNFKldw==
+X-IronPort-AV: E=McAfee;i="6600,9927,11032"; a="17870161"
 X-IronPort-AV: E=Sophos;i="6.07,175,1708416000"; 
-   d="scan'208";a="17870104"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmvoesa105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Apr 2024 08:42:30 -0700
+   d="scan'208";a="17870161"
+Received: from fmviesa004.fm.intel.com ([10.60.135.144])
+  by fmvoesa105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Apr 2024 08:42:58 -0700
+X-CSE-ConnectionGUID: PKgMf9GeQXquyiRSOFuqaw==
+X-CSE-MsgGUID: jheAp996SdCaJYqnDCResQ==
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,11032"; a="937083654"
 X-IronPort-AV: E=Sophos;i="6.07,175,1708416000"; 
-   d="scan'208";a="937083654"
-Received: from black.fi.intel.com ([10.237.72.28])
-  by fmsmga001.fm.intel.com with ESMTP; 02 Apr 2024 08:42:25 -0700
-Received: by black.fi.intel.com (Postfix, from userid 1000)
-	id A10101C5; Tue,  2 Apr 2024 18:42:23 +0300 (EEST)
-Date: Tue, 2 Apr 2024 18:42:23 +0300
-From: "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
-To: Xiaoyao Li <xiaoyao.li@intel.com>
-Cc: Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, 
-	Borislav Petkov <bp@alien8.de>, Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org, 
-	"Rafael J. Wysocki" <rafael@kernel.org>, Peter Zijlstra <peterz@infradead.org>, 
-	Adrian Hunter <adrian.hunter@intel.com>, 
-	Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>, Elena Reshetova <elena.reshetova@intel.com>, 
-	Jun Nakajima <jun.nakajima@intel.com>, Rick Edgecombe <rick.p.edgecombe@intel.com>, 
-	Tom Lendacky <thomas.lendacky@amd.com>, "Kalra, Ashish" <ashish.kalra@amd.com>, 
-	Sean Christopherson <seanjc@google.com>, "Huang, Kai" <kai.huang@intel.com>, Baoquan He <bhe@redhat.com>, 
-	kexec@lists.infradead.org, linux-coco@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: Re: [PATCHv9 05/17] x86/kexec: Keep CR4.MCE set during kexec for TDX
- guest
-Message-ID: <j4s4n5slt6a234w5o5r4zjmb3xj53odnmwekt6ihotfzotd7ur@ghyvphwcki57>
-References: <20240325103911.2651793-1-kirill.shutemov@linux.intel.com>
- <20240325103911.2651793-6-kirill.shutemov@linux.intel.com>
- <b94c81ef-50f2-4e66-9533-461791777d10@intel.com>
- <dlixf7bld4efdh5goir5nreabkgtcwfbvv2rovjqrvjttplqss@auuqnt4h2llj>
+   d="scan'208";a="22757623"
+Received: from babailey-mobl2.amr.corp.intel.com (HELO [10.255.228.218]) ([10.255.228.218])
+  by fmviesa004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Apr 2024 08:42:57 -0700
+Message-ID: <18e84d04-0b75-4188-a94d-6b033f4edbf0@intel.com>
+Date: Tue, 2 Apr 2024 08:42:56 -0700
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <dlixf7bld4efdh5goir5nreabkgtcwfbvv2rovjqrvjttplqss@auuqnt4h2llj>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v9 15/15] selftests/sgx: Add scripts for EPC cgroup
+ testing
+To: Jarkko Sakkinen <jarkko@kernel.org>,
+ Haitao Huang <haitao.huang@linux.intel.com>, dave.hansen@linux.intel.com,
+ tj@kernel.org, mkoutny@suse.com, linux-kernel@vger.kernel.org,
+ linux-sgx@vger.kernel.org, x86@kernel.org, cgroups@vger.kernel.org,
+ tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, hpa@zytor.com,
+ sohil.mehta@intel.com, tim.c.chen@linux.intel.com
+Cc: zhiquan1.li@intel.com, kristen@linux.intel.com, seanjc@google.com,
+ zhanb@microsoft.com, anakrish@microsoft.com, mikko.ylinen@linux.intel.com,
+ yangjie@microsoft.com, chrisyan@microsoft.com
+References: <20240205210638.157741-1-haitao.huang@linux.intel.com>
+ <20240205210638.157741-16-haitao.huang@linux.intel.com>
+ <4be7b291010973c203ed8c7bcd25b626c1290231.camel@kernel.org>
+ <D04OVW6I8MUA.1OAIHFQ8943SM@kernel.org>
+ <op.2lbjl0oawjvjmi@hhuan26-mobl.amr.corp.intel.com>
+ <D071OAFZ80O6.XEDXJ8AF4PK9@kernel.org>
+Content-Language: en-US
+From: Dave Hansen <dave.hansen@intel.com>
+Autocrypt: addr=dave.hansen@intel.com; keydata=
+ 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
+In-Reply-To: <D071OAFZ80O6.XEDXJ8AF4PK9@kernel.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-On Fri, Mar 29, 2024 at 06:48:21PM +0200, Kirill A. Shutemov wrote:
-> On Fri, Mar 29, 2024 at 11:21:32PM +0800, Xiaoyao Li wrote:
-> > On 3/25/2024 6:38 PM, Kirill A. Shutemov wrote:
-> > > TDX guests are not allowed to clear CR4.MCE. Attempt to clear it leads
-> > > to #VE.
-> > 
-> > Will we consider making it more safe and compatible for future to guard
-> > against X86_FEATURE_MCE as well?
-> > 
-> > If in the future, MCE becomes configurable for TD guest, then CR4.MCE might
-> > not be fixed1.
-> 
-> Good point.
-> 
-> I guess we can leave it clear if it was clear. This should be easy
-> enough. But we might want to clear even if was set if clearing is allowed.
-> 
-> It would require some kind of indication that clearing MCE is fine. We
-> don't have such indication yet. Not sure we can reasonably future-proof
-> the code at this point.
-> 
-> But let me think more.
+On 3/30/24 04:23, Jarkko Sakkinen wrote:
+>>> I also wonder is cgroup-tools dependency absolutely required or could
+>>> you just have a function that would interact with sysfs?
+>> I should have checked email before hit the send button for v10 🙂.
+>>
+>> It'd be more complicated and less readable to do all the stuff without the  
+>> cgroup-tools, esp cgexec. I checked dependency, cgroup-tools only depends  
+>> on libc so I hope this would not cause too much inconvenience.
+> As per cgroup-tools, please prove this. It makes the job for more
+> complicated *for you* and you are making the job more  complicated
+> to every possible person in the planet running any kernel QA.
 
-I think I will go with the variant below.
+I don't see any other use of cgroup-tools in testing/selftests.
 
-diff --git a/arch/x86/kernel/relocate_kernel_64.S b/arch/x86/kernel/relocate_kernel_64.S
-index 56cab1bb25f5..8e2037d78a1f 100644
---- a/arch/x86/kernel/relocate_kernel_64.S
-+++ b/arch/x86/kernel/relocate_kernel_64.S
-@@ -5,6 +5,8 @@
-  */
- 
- #include <linux/linkage.h>
-+#include <linux/stringify.h>
-+#include <asm/alternative.h>
- #include <asm/page_types.h>
- #include <asm/kexec.h>
- #include <asm/processor-flags.h>
-@@ -145,11 +147,17 @@ SYM_CODE_START_LOCAL_NOALIGN(identity_mapped)
- 	 * Set cr4 to a known state:
- 	 *  - physical address extension enabled
- 	 *  - 5-level paging, if it was enabled before
-+	 *  - Machine check exception on TDX guest, if it was enabled before.
-+	 *    Clearing MCE might not allowed in TDX guests, depending on setup.
- 	 */
- 	movl	$X86_CR4_PAE, %eax
- 	testq	$X86_CR4_LA57, %r13
- 	jz	1f
- 	orl	$X86_CR4_LA57, %eax
-+1:
-+	testq	$X86_CR4_MCE, %r13
-+	jz	1f
-+	ALTERNATIVE "", __stringify(orl $X86_CR4_MCE, %eax), X86_FEATURE_TDX_GUEST
- 1:
- 	movq	%rax, %cr4
- 
--- 
-  Kiryl Shutsemau / Kirill A. Shutemov
+I *DO* see a ton of /bin/bash use though.  I wouldn't go to much trouble
+to make the thing ash-compatible.
+
+That said, the most important thing is to get some selftests in place.
+If using cgroup-tools means we get actual, runnable tests in place,
+that's a heck of a lot more important than making them perfect.
+Remember, almost nobody uses SGX.  It's available on *VERY* few systems
+from one CPU vendor and only in very specific hardware configurations.
 
