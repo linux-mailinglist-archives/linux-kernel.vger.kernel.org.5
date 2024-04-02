@@ -1,47 +1,47 @@
-Return-Path: <linux-kernel+bounces-128333-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-128334-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A587E895969
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 18:14:58 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5158489596C
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 18:15:29 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C992C1C2134A
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 16:14:57 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E412C1F23B8B
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 16:15:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5ED7714AD30;
-	Tue,  2 Apr 2024 16:14:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7A57A14AD2F;
+	Tue,  2 Apr 2024 16:15:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="fw2SRU1u"
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="AHillTm0"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 757CE14AD1D
-	for <linux-kernel@vger.kernel.org>; Tue,  2 Apr 2024 16:14:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9D8235FBA6;
+	Tue,  2 Apr 2024 16:15:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712074479; cv=none; b=bpv9CkIPeT+mOSbMN7v1rSf/OBdpuqZanFscP+mlj5T6OzNStGej6ytRBmmuaZr6kmkt/rBn+Vlg6g5PdJ7Vkqs46yrsfpiDYUrqyLoQhYSM7eLfVPhTcSWjOgQ/pnZ7SSQDdrvV9JyPAwBYSvuiIR4wFXCzNKDArLyhH06H4Os=
+	t=1712074519; cv=none; b=DsRWNONIJjub16ADTM17qQqsp01cs2rkHoBEcBXVqS7Ay2EziF9kfbRfAls9RppZwX/sUpwP/5prl6qlWRiupG/jxONkoxv3M8qNbeAaPVfjUP/uqoNOKJKki4EQZwIxtRqvbP1wPvtLD1CJF+eOdDGQvq0DyJxrtZDkiAtzQ6Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712074479; c=relaxed/simple;
-	bh=gyS4w7fTl56NdGVQKekpMW2uf40BBqJGE7Um5tPHirI=;
+	s=arc-20240116; t=1712074519; c=relaxed/simple;
+	bh=ME+pzcHTObWnKD4EPs/fLPEATEkqUZdr9joUj92h8P0=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=tN8A6wDDdsly21Yvc7qUu40MYyQaeeBcDxoYKtbbda0H/5HpqyUEc/CLwhvHuOS/9X95YOzijVPAbO7JqHprcR0kSjjeYFgHt9yb0oaeobYWKmxPmGLiCBVx4n+ZAhIfmwnupwO6PSCGp8gVuzfRb2juobF9jo1wGzxpg8IcebI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=fw2SRU1u; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 74D97C433C7;
-	Tue,  2 Apr 2024 16:14:36 +0000 (UTC)
+	 In-Reply-To:Content-Type; b=LkGaRl1FWNyMuhxl/syXVUG9prajk7W9WUrFD8SwEK3HoWdWcj+DUQX1dIqPmLFAMrUybVHKqSZ3PX96Am4ktm/pTDJ/wnM9bbDT6gOND2DBIOLGz4ipg/gARoHuAUNZEuih0TZIHLCNAFLadg5VQkjmK8D6cftfyM1sDb0ezDY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=AHillTm0; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 09E6DC433F1;
+	Tue,  2 Apr 2024 16:15:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712074479;
-	bh=gyS4w7fTl56NdGVQKekpMW2uf40BBqJGE7Um5tPHirI=;
+	s=k20201202; t=1712074519;
+	bh=ME+pzcHTObWnKD4EPs/fLPEATEkqUZdr9joUj92h8P0=;
 	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=fw2SRU1uZN8Z3nY+IRQSgEKDDIobXn3BbsMLteS9XJomDo2OyViOEGJL30tDQkJjN
-	 F4LfrJtodkILE9ezAqwupbMvmdaZbAh38TYfpCjVR/U2X4coe6WevckBRzc0sZQQqh
-	 TWS7CZewBS4Eel+lN8WlRhLbfPy9kcm+/CvQuNbIDlaUYUt2Nfycs26445ieeuXdFO
-	 lFwHJiW/180U14wm8cpdbyfEBYZea6kH7IF6Qwq6q0MK0LzmY/mNFVVr07+Lyq2Fst
-	 tCVNMG96KXKE05xQw193yRz1yhSmVPZ/Ij5sB8ASOl2a0QSIth9nltnmLY5D46wLQr
-	 JNOVh29+f+jHg==
-Message-ID: <9d302a8a-a8bf-4a26-b1fb-44db6a5f5eac@kernel.org>
-Date: Tue, 2 Apr 2024 18:14:33 +0200
+	b=AHillTm0AhbD0qaPNipUnWsYUEXbXPKZS2aipskpC5FN3AEDMruLI/z87PkF/5GUB
+	 4+eB9g8a0YgObhuP8+EIhbZ2VSVaxkKPnLR8VqLjTmCcqeXm9afYbN13tIzgBzPRTX
+	 VkgzzCHXsbz2LILXsvMzlO9ajxNGx7T0MHGmMYC71F49gHVfCk+eqelY5PaNIQq+vz
+	 pcA7FfXSD3nGYgyMFZXqecaSaKbYmuyNmu93ixO0PtywajkSWyFpnnktYm8tz0LvUl
+	 TRSSv0dHR+uW4FrSSScmcN6vZB1HxvhLPzVbFb21y52Q73XRihOaEoHriW6+PtivRy
+	 3OSjQiTx+ak8A==
+Message-ID: <c867156e-4333-44b1-be1d-11ad3c0f55fc@kernel.org>
+Date: Tue, 2 Apr 2024 18:15:14 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -49,14 +49,14 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC PATCH 4/6] regulator: bd96801: ROHM BD96801 PMIC regulators
+Subject: Re: [RFC PATCH 5/6] watchdog: ROHM BD96801 PMIC WDG driver
 To: Matti Vaittinen <mazziesaccount@gmail.com>,
  Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
-Cc: Lee Jones <lee@kernel.org>, Conor Dooley <conor+dt@kernel.org>,
- Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
- linux-kernel@vger.kernel.org
+Cc: Lee Jones <lee@kernel.org>, Wim Van Sebroeck <wim@linux-watchdog.org>,
+ Guenter Roeck <linux@roeck-us.net>, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-watchdog@vger.kernel.org
 References: <cover.1712058690.git.mazziesaccount@gmail.com>
- <3a6839e2663bd064100af41f6df0cace746cf2e4.1712058690.git.mazziesaccount@gmail.com>
+ <f8e743a6c49607de0dd7a27778383477e051b130.1712058690.git.mazziesaccount@gmail.com>
 Content-Language: en-US
 From: Krzysztof Kozlowski <krzk@kernel.org>
 Autocrypt: addr=krzk@kernel.org; keydata=
@@ -102,138 +102,36 @@ Autocrypt: addr=krzk@kernel.org; keydata=
  uZwJCLykjad45hsWcOGk3OcaAGQS6NDlfhM6O9aYNwGL6tGt/6BkRikNOs7VDEa4/HlbaSJo
  7FgndGw1kWmkeL6oQh7wBvYll2buKod4qYntmNKEicoHGU+x91Gcan8mCoqhJkbqrL7+nXG2
  5Q/GS5M9RFWS+nYyJh+c3OcfKqVcZQNANItt7+ULzdNJuhvTRRdC3g9hmCEuNSr+CLMdnRBY fv0=
-In-Reply-To: <3a6839e2663bd064100af41f6df0cace746cf2e4.1712058690.git.mazziesaccount@gmail.com>
+In-Reply-To: <f8e743a6c49607de0dd7a27778383477e051b130.1712058690.git.mazziesaccount@gmail.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 
-On 02/04/2024 15:10, Matti Vaittinen wrote:
-> The ROHM BD96801 "Scalable PMIC" is an automotive grade PMIC which can
-> scale to different applications by allowing chaining of PMICs. The PMIC
-> also supports various protection features which can be configured either
-> to fire IRQs - or to shut down power outputs when failure is detected.
+On 02/04/2024 15:11, Matti Vaittinen wrote:
+> Introduce driver for WDG block on ROHM BD96801 scalable PMIC.
 > 
+> This driver only supports watchdog with I2C feeding and delayed
+> response detection. Whether the watchdog toggles PRSTB pin or
+> just causes an interrupt can be configured via device-tree.
+> 
+> The BD96801 PMIC HW supports also window watchdog (too early
 
 ..
 
 > +
-> +static int initialize_pmic_data(struct device *dev,
-> +				struct bd96801_pmic_data *pdata)
-> +{
-> +	int r, i;
-> +
-> +	*pdata = bd96801_data;
-> +
-> +	/*
-> +	 * Allocate and initialize IRQ data for all of the regulators. We
-> +	 * wish to modify IRQ information independently for each driver
-> +	 * instance.
-> +	 */
-> +	for (r = 0; r < BD96801_NUM_REGULATORS; r++) {
-> +		const struct bd96801_irqinfo *template;
-> +		struct bd96801_irqinfo *new;
-> +		int num_infos;
-> +
-> +		template = pdata->regulator_data[r].irq_desc.irqinfo;
-> +		num_infos = pdata->regulator_data[r].irq_desc.num_irqs;
-> +
-> +		new = devm_kzalloc(dev, num_infos * sizeof(*new), GFP_KERNEL);
-
-Aren't you open coding devm_kcalloc?
-
-> +		if (!new)
-> +			return -ENOMEM;
-> +
-> +		pdata->regulator_data[r].irq_desc.irqinfo = new;
-> +
-> +		for (i = 0; i < num_infos; i++)
-> +			new[i] = template[i];
-> +	}
-> +
-> +	return 0;
-> +}
-> +
-
-
-..
-
-> +static int bd96801_probe(struct platform_device *pdev)
-> +{
-> +	struct device *parent;
-> +	int i, ret, irq;
-> +	void *retp;
-> +	struct regulator_config config = {};
-> +	struct bd96801_regulator_data *rdesc;
-> +	struct bd96801_pmic_data *pdata;
-> +	struct regulator_dev *ldo_errs_rdev_arr[BD96801_NUM_LDOS];
-> +	int ldo_errs_arr[BD96801_NUM_LDOS];
-> +	int temp_notif_ldos = 0;
-> +	struct regulator_dev *all_rdevs[BD96801_NUM_REGULATORS];
-> +	bool use_errb;
-> +
-> +	parent = pdev->dev.parent;
-> +
-> +	pdata = devm_kzalloc(&pdev->dev, sizeof(bd96801_data), GFP_KERNEL);
-
-This and assignment in initialize_pmic_data() could be probably
-devm_kmemdup() which would be a bit more obvious for the reader.
-
-> +	if (!pdata)
-> +		return -ENOMEM;
-> +
-> +	if (initialize_pmic_data(&pdev->dev, pdata))
-> +		return -ENOMEM;
-> +
-> +	pdata->regmap = dev_get_regmap(parent, NULL);
-> +	if (!pdata->regmap) {
-> +		dev_err(&pdev->dev, "No register map found\n");
-> +		return -ENODEV;
-> +	}
-> +
-> +	rdesc = &pdata->regulator_data[0];
-> +
-> +	config.driver_data = pdata;
-> +	config.regmap = pdata->regmap;
-> +	config.dev = parent;
-> +
-> +	ret = of_property_match_string(pdev->dev.parent->of_node,
-> +				       "interrupt-names", "errb");
-This does not guarantee that interrupts are properly set up. Don't you
-have some state shared between parent and this device where you could
-mark that interrupts are OK?
-
-> +	if (ret < 0)
-> +		use_errb = false;
-> +	else
-> +		use_errb = true;
-> +
-
-..
-
-> +
-> +	if (use_errb)
-> +		return bd96801_global_errb_irqs(pdev, all_rdevs,
-> +						ARRAY_SIZE(all_rdevs));
-> +
-> +	return 0;
-> +}
-> +
-> +static struct platform_driver bd96801_regulator = {
+> +static struct platform_driver bd96801_wdt = {
 > +	.driver = {
-> +		.name = "bd96801-pmic"
+> +		.name = "bd96801-wdt"
 > +	},
-> +	.probe = bd96801_probe,
+> +	.probe = bd96801_wdt_probe,
 > +};
-> +
-> +module_platform_driver(bd96801_regulator);
+> +module_platform_driver(bd96801_wdt);
 > +
 > +MODULE_AUTHOR("Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>");
-> +MODULE_DESCRIPTION("BD96801 voltage regulator driver");
+> +MODULE_DESCRIPTION("BD96801 watchdog driver");
 > +MODULE_LICENSE("GPL");
-> +MODULE_ALIAS("platform:bd96801-pmic");
+> +MODULE_ALIAS("platform:bd96801-wdt");
 
-Just add platform device ID table with MODULE_DEVICE_TABLE(). You should
-not need MODULE_ALIAS() in normal cases. MODULE_ALIAS() is not a
-substitute for incomplete ID table.
+Same comment on alias. Please use ID table.
 
 Best regards,
 Krzysztof
