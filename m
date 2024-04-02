@@ -1,188 +1,370 @@
-Return-Path: <linux-kernel+bounces-127571-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-127572-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0D39E894DC1
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 10:41:46 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6C0DB894DC3
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 10:42:41 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B69801F21BD2
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 08:41:45 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8F35D1C215AC
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 08:42:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4040F4778E;
-	Tue,  2 Apr 2024 08:41:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 37BD94B5CD;
+	Tue,  2 Apr 2024 08:42:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=yeah.net header.i=@yeah.net header.b="S28paQVY"
-Received: from mail-177131.yeah.net (mail-177131.yeah.net [123.58.177.131])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 832D126292;
-	Tue,  2 Apr 2024 08:41:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=123.58.177.131
+	dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b="rQgrG+WW"
+Received: from mail-pg1-f181.google.com (mail-pg1-f181.google.com [209.85.215.181])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7FD33405CF
+	for <linux-kernel@vger.kernel.org>; Tue,  2 Apr 2024 08:42:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712047294; cv=none; b=PePCMtsJh4SQNgUGfDYUglAfYAjNFNRAjVndrwszU7s5+Sjj2Gq4mq2bdU07ETt1IiUqDE+BlEz2DUpz2Qn3ZrPokUJl8gJ4be04HuQsYBWMeOkZi5Q5QxX/MMlIHR3bVK6HybN0Fw6DefmpuYxA+YsGopICotjE9x03yr6xYzo=
+	t=1712047351; cv=none; b=UN+43C4Uth+37zyIb+nNpQGBLhz3kIMDPvOMXHgUxx8Imbg9ruuVcbjbz3o4v4fR/sKW7cNYuVSD9M0hwHg5ZYcv/nyZ2D92mJeZp+KO7bMfacZy5SXHzBUMmRBXJmqa1wRkrBy/G9y4HsjBaMTvF9wLeXgyIiHPN4eROV+1pOs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712047294; c=relaxed/simple;
-	bh=LrphTuKV4ZIvZiuC5JKV4IKb7oZU17EWpzajzeuN4Lk=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=RTbNf1+6jgCTDlVz5i/FMdiA/OTn8S0I9LjxHPWnXK/bbDmqRZga2QeuFS5/ev1ixI7wQ/snKIFrDfM4r33wbppFmFlZNDrb87t5RupOrF1+kqUc5UXQ6ajcExLLdkDQ3Ha2niBtpBbkBWLWdyo1FoGr70cjP4hKB4Wjeu/UJUY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=yeah.net; spf=pass smtp.mailfrom=yeah.net; dkim=pass (1024-bit key) header.d=yeah.net header.i=@yeah.net header.b=S28paQVY; arc=none smtp.client-ip=123.58.177.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=yeah.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=yeah.net
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yeah.net;
-	s=s110527; h=Date:From:Subject:Message-ID:MIME-Version:
-	Content-Type; bh=cys5+eM5CZq+KFTK926auz0DzKUjBIgHsX+A5iFp8mU=;
-	b=S28paQVYMO1kFONPu9j8xhJulwMH9qZO+h7WELsKbdDqH9Jm8rq+gPbnZHg7B3
-	Upk2HT9VaaHTKwIvJ9OnNOzNqQFcAg79RF1+LWcFStfCp9xZrsWgUbI09gZIK2RH
-	NTDjWFzSDTM7/ybMMl+qoH2El9douD+qeHJ6ZOvPgNIms=
-Received: from dragon (unknown [223.68.79.243])
-	by smtp1 (Coremail) with SMTP id ClUQrAD3X3JdxAtmjb2iAQ--.9262S3;
-	Tue, 02 Apr 2024 16:39:59 +0800 (CST)
-Date: Tue, 2 Apr 2024 16:39:57 +0800
-From: Shawn Guo <shawnguo2@yeah.net>
-To: Xu Yang <xu.yang_2@nxp.com>
-Cc: gregkh@linuxfoundation.org, robh+dt@kernel.org,
-	krzysztof.kozlowski+dt@linaro.org, shawnguo@kernel.org,
-	conor+dt@kernel.org, s.hauer@pengutronix.de, kernel@pengutronix.de,
-	festevam@gmail.com, linux-imx@nxp.com, peter.chen@kernel.org,
-	jun.li@nxp.com, linux-usb@vger.kernel.org,
-	devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-	imx@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v10 08/11] arm64: dts: imx93: add usb nodes
-Message-ID: <ZgvEXZTOHUv+GGeH@dragon>
-References: <20240321081439.541799-1-xu.yang_2@nxp.com>
- <20240321081439.541799-8-xu.yang_2@nxp.com>
+	s=arc-20240116; t=1712047351; c=relaxed/simple;
+	bh=3Mm76az14X2MK6os+t9jWefEwvvKy1DLHkw+HmPAxHE=;
+	h=Message-ID:Date:MIME-Version:From:Subject:To:Cc:References:
+	 In-Reply-To:Content-Type; b=ZJRQ9CDYCzKztPs3Md2P/OVRW5o/nEwzUVhc8fYeaIOdcc099jF6yg4gKM7A8UbThuWLhVuN220JFSl7U9yRcNmgrgM3O+jfIzIcCOteE+n11UQhCJjI7NovmsecYJ0MrtP424orjUqpUH6OGZn+bVnXDRFBtEV3ZAPK0e8GMkw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com; spf=pass smtp.mailfrom=rivosinc.com; dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b=rQgrG+WW; arc=none smtp.client-ip=209.85.215.181
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rivosinc.com
+Received: by mail-pg1-f181.google.com with SMTP id 41be03b00d2f7-5cedfc32250so2969521a12.0
+        for <linux-kernel@vger.kernel.org>; Tue, 02 Apr 2024 01:42:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1712047349; x=1712652149; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:content-language:references
+         :cc:to:subject:from:user-agent:mime-version:date:message-id:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=afh5OaKuMfMLyjYIAfIBdXfS0bylET/+oqOyOLeuEas=;
+        b=rQgrG+WW/ANrBzuPKwCbsjmh5XrUypT4ia7fi2JtcVTOHhIx6ue+bvpo8DiceIAtFq
+         dc6XHOQ5m6XvgoOvsJeBxrhltR2mc+2EYRlxuycBv6yos5aHFlOq97rGOABJ9xS+LzAj
+         /mCNXsm3+jSjugbV9LuQIFjPkqJozNwyDYkmKqDJVi6oeBO7vTTiVHfYd6sUtgBWkYEU
+         PqrrkAiuDaLPkcvmjHG7mLvfUIss6ChU4i43MOl6qOGweaHzQ5Slaxa6xS/eGDzweXLd
+         YEJGET3J8V8xV9TeN3Ewwmzfk57iSulvhICKIKlF8zpDkT3NlHd3z8px5W1AZRTTtf7Z
+         lekg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712047349; x=1712652149;
+        h=content-transfer-encoding:in-reply-to:content-language:references
+         :cc:to:subject:from:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=afh5OaKuMfMLyjYIAfIBdXfS0bylET/+oqOyOLeuEas=;
+        b=GqyiuzLmImKjPgTaTzXMqksbFvntydMIsU2dC6U1BakRVzvGYeRsocMH7+iGpDoKoe
+         ujRv8rDWjijaaLxK1w+csTVzy0w7vM370PetV429SpvJjDasidnXGkI5DhQ6/zcWlMBf
+         amtd8OpLnAAUApP4+HxdKHDS0W8McZrySevwC+tdRB8PZ9WgRi4yDSBpg1QIIL1BRvEG
+         pkzIBIoz/oaoxntAhckAWAeGQEeskVtSdaZBOBv6fXg76OIKif10HAt5brVvDOxiVY5N
+         vrvPsQXJu5ATtj8Du6TrafhbnVaJwfpObowauhMIeqCEW7S4d13L6n2PnmRKpvmqcJEM
+         Q6yQ==
+X-Gm-Message-State: AOJu0YwGR2T2R6KyDudjrGJF2Dw7ljSL0gMeNb1IExz4TWCLJQbASTd9
+	HltIfgzOmJZ2AwxHQjSlX8E7pRi3YKeDVRuY0X60H9sHlHwAC+CyQnk5m7Wg6aY=
+X-Google-Smtp-Source: AGHT+IGIBpAHqLeUqYqY/I5AiG/85DRZ33edmSV9gedKZK5X9bTJZYi476/i9hbZ6V4Mt7L5BhnDsw==
+X-Received: by 2002:a05:6a20:3241:b0:1a3:df1d:deba with SMTP id hm1-20020a056a20324100b001a3df1ddebamr8729596pzc.31.1712047348688;
+        Tue, 02 Apr 2024 01:42:28 -0700 (PDT)
+Received: from [172.16.0.34] (c-67-188-2-18.hsd1.ca.comcast.net. [67.188.2.18])
+        by smtp.gmail.com with ESMTPSA id e19-20020a63f553000000b005e485fbd455sm9184675pgk.45.2024.04.02.01.42.26
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 02 Apr 2024 01:42:28 -0700 (PDT)
+Message-ID: <f9bac0a6-5fbe-4928-b6c4-94f70c726cbe@rivosinc.com>
+Date: Tue, 2 Apr 2024 01:42:26 -0700
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240321081439.541799-8-xu.yang_2@nxp.com>
-X-CM-TRANSID:ClUQrAD3X3JdxAtmjb2iAQ--.9262S3
-X-Coremail-Antispam: 1Uf129KBjvJXoWxWw17Gr15WrW3ur4DCw4fGrg_yoW5Kr4Upa
-	srCrZ3GrWIqr1I9FWaqFnYk3yrJas5Ga929F42q340ywn3Wa42q3WxKFnxWr48Xr4fZw4a
-	yF45Xr18K3ZFyaUanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07j2JP_UUUUU=
-X-CM-SenderInfo: pvkd40hjxrjqh1hdxhhqhw/1tbiFR+0ZV6NnBk55AAAsQ
+User-Agent: Mozilla Thunderbird
+From: Atish Patra <atishp@rivosinc.com>
+Subject: Re: [PATCH v4 15/15] KVM: riscv: selftests: Add a test for counter
+ overflow
+To: Andrew Jones <ajones@ventanamicro.com>
+Cc: linux-kernel@vger.kernel.org, Albert Ou <aou@eecs.berkeley.edu>,
+ Alexandre Ghiti <alexghiti@rivosinc.com>, Anup Patel <anup@brainfault.org>,
+ Atish Patra <atishp@atishpatra.org>,
+ Conor Dooley <conor.dooley@microchip.com>, Guo Ren <guoren@kernel.org>,
+ Icenowy Zheng <uwu@icenowy.me>, kvm-riscv@lists.infradead.org,
+ kvm@vger.kernel.org, linux-kselftest@vger.kernel.org,
+ linux-riscv@lists.infradead.org, Mark Rutland <mark.rutland@arm.com>,
+ Palmer Dabbelt <palmer@dabbelt.com>, Paolo Bonzini <pbonzini@redhat.com>,
+ Paul Walmsley <paul.walmsley@sifive.com>, Shuah Khan <shuah@kernel.org>,
+ Will Deacon <will@kernel.org>
+References: <20240229010130.1380926-1-atishp@rivosinc.com>
+ <20240229010130.1380926-16-atishp@rivosinc.com>
+ <20240302-fb3a4d2c7918a24d10ee4a63@orel>
+X-Mozilla-News-Host: news://nntp.lore.kernel.org
+Content-Language: en-US
+In-Reply-To: <20240302-fb3a4d2c7918a24d10ee4a63@orel>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Thu, Mar 21, 2024 at 04:14:36PM +0800, Xu Yang wrote:
-> There are 2 USB controllers on i.MX93. Add them.
+On 3/2/24 04:35, Andrew Jones wrote:
+> On Wed, Feb 28, 2024 at 05:01:30PM -0800, Atish Patra wrote:
+>> Add a test for verifying overflow interrupt. Currently, it relies on
+>> overflow support on cycle/instret events. This test works for cycle/
+>> instret events which support sampling via hpmcounters on the platform.
+>> There are no ISA extensions to detect if a platform supports that. Thus,
 > 
-> Acked-by: Alexander Stein <alexander.stein@ew.tq-group.com>
-> Tested-by: Alexander Stein <alexander.stein@ew.tq-group.com> # TQMa9352LA/CA
-> Signed-off-by: Xu Yang <xu.yang_2@nxp.com>
+> Ouch. Are there discussions/proposals as to how we can do better with
+> discoverability here? This type of thing sounds like the types of things
+> that get new extension names defined for them as part of the profile spec
+> work.
 > 
-> ---
-> Changes in v2:
->  - fix format as suggested by Alexander
->  - change compatible from fsl,imx8mm-usb to fsl,imx93-usb
-> Changes in v3:
->  - replace deprecated fsl,usbphy with phys as suggested by Alexander
->  - reorder nodes
-> Changes in v4:
->  - fix the alignment
-> Changes in v5:
->  - rename usb_wakeup_clk to usb_wakeup
-> Changes in v6:
->  - rename usb_ctrl_root_clk to usb_ctrl_root
-> Changes in v7:
->  - no changes
-> Changes in v8:
->  - no changes
-> Changes in v9:
->  - no changes
-> Changes in v10:
->  - no changes
-> ---
->  arch/arm64/boot/dts/freescale/imx93.dtsi | 58 ++++++++++++++++++++++++
->  1 file changed, 58 insertions(+)
-> 
-> diff --git a/arch/arm64/boot/dts/freescale/imx93.dtsi b/arch/arm64/boot/dts/freescale/imx93.dtsi
-> index 8f2e7c42ad6e..4a7efccb4f67 100644
-> --- a/arch/arm64/boot/dts/freescale/imx93.dtsi
-> +++ b/arch/arm64/boot/dts/freescale/imx93.dtsi
-> @@ -183,6 +183,20 @@ mqs2: mqs2 {
->  		status = "disabled";
->  	};
->  
-> +	usbphynop1: usbphynop1 {
-> +		compatible = "usb-nop-xceiv";
-> +		#phy-cells = <0>;
-> +		clocks = <&clk IMX93_CLK_USB_PHY_BURUNIN>;
-> +		clock-names = "main_clk";
-> +	};
-> +
-> +	usbphynop2: usbphynop2 {
-> +		compatible = "usb-nop-xceiv";
-> +		#phy-cells = <0>;
-> +		clocks = <&clk IMX93_CLK_USB_PHY_BURUNIN>;
-> +		clock-names = "main_clk";
-> +	};
-> +
->  	soc@0 {
->  		compatible = "simple-bus";
->  		#address-cells = <1>;
-> @@ -1167,6 +1181,50 @@ media_blk_ctrl: system-controller@4ac10000 {
->  			status = "disabled";
->  		};
->  
-> +		usbotg1: usb@4c100000 {
-> +			compatible = "fsl,imx93-usb", "fsl,imx7d-usb", "fsl,imx27-usb";
-> +			reg = <0x4c100000 0x200>;
-> +			interrupts = <GIC_SPI 187 IRQ_TYPE_LEVEL_HIGH>;
-> +			clocks = <&clk IMX93_CLK_USB_CONTROLLER_GATE>,
-> +				 <&clk IMX93_CLK_HSIO_32K_GATE>;
-> +			clock-names = "usb_ctrl_root", "usb_wakeup";
-> +			assigned-clocks = <&clk IMX93_CLK_HSIO>;
-> +			assigned-clock-parents = <&clk IMX93_CLK_SYS_PLL_PFD1_DIV2>;
-> +			assigned-clock-rates = <133000000>;
-> +			phys = <&usbphynop1>;
-> +			fsl,usbmisc = <&usbmisc1 0>;
-> +			status = "disabled";
-> +		};
-> +
-> +		usbmisc1: usbmisc@4c100200 {
-> +			compatible = "fsl,imx8mm-usbmisc", "fsl,imx7d-usbmisc",
-> +				     "fsl,imx6q-usbmisc";
-> +			reg = <0x4c100200 0x200>;
-> +			#index-cells = <1>;
 
-Do we still need this '#index-cells' property?  I see it's being marked
-as deprecated in bindings doc.
+There is a Perf events TG started (last month) which will work on 
+standardzing perf events for RISC-V.
 
-Shawn
+Perf tool can also rely on the json file to figure out if sampling 
+support or not. But for kselftests we don't have any of these 
+infrastructure.
 
-> +		};
-> +
-> +		usbotg2: usb@4c200000 {
-> +			compatible = "fsl,imx93-usb", "fsl,imx7d-usb", "fsl,imx27-usb";
-> +			reg = <0x4c200000 0x200>;
-> +			interrupts = <GIC_SPI 188 IRQ_TYPE_LEVEL_HIGH>;
-> +			clocks = <&clk IMX93_CLK_USB_CONTROLLER_GATE>,
-> +				 <&clk IMX93_CLK_HSIO_32K_GATE>;
-> +			clock-names = "usb_ctrl_root", "usb_wakeup";
-> +			assigned-clocks = <&clk IMX93_CLK_HSIO>;
-> +			assigned-clock-parents = <&clk IMX93_CLK_SYS_PLL_PFD1_DIV2>;
-> +			assigned-clock-rates = <133000000>;
-> +			phys = <&usbphynop2>;
-> +			fsl,usbmisc = <&usbmisc2 0>;
-> +			status = "disabled";
-> +		};
-> +
-> +		usbmisc2: usbmisc@4c200200 {
-> +			compatible = "fsl,imx8mm-usbmisc", "fsl,imx7d-usbmisc",
-> +				     "fsl,imx6q-usbmisc";
-> +			reg = <0x4c200200 0x200>;
-> +			#index-cells = <1>;
-> +		};
-> +
->  		ddr-pmu@4e300dc0 {
->  			compatible = "fsl,imx93-ddr-pmu";
->  			reg = <0x4e300dc0 0x200>;
-> -- 
-> 2.34.1
+>> this test will fail on platform with virtualization but doesn't
+>> support overflow on these two events.
+>>
+>> Signed-off-by: Atish Patra <atishp@rivosinc.com>
+>> ---
+>>   tools/testing/selftests/kvm/riscv/sbi_pmu.c | 126 +++++++++++++++++++-
+>>   1 file changed, 125 insertions(+), 1 deletion(-)
+>>
+>> diff --git a/tools/testing/selftests/kvm/riscv/sbi_pmu.c b/tools/testing/selftests/kvm/riscv/sbi_pmu.c
+>> index 8ea2a6db6610..c0264c636054 100644
+>> --- a/tools/testing/selftests/kvm/riscv/sbi_pmu.c
+>> +++ b/tools/testing/selftests/kvm/riscv/sbi_pmu.c
+>> @@ -8,6 +8,7 @@
+>>    * Copyright (c) 2024, Rivos Inc.
+>>    */
+>>   
+>> +#include "asm/csr.h"
+>>   #include <stdio.h>
+>>   #include <stdlib.h>
+>>   #include <string.h>
+>> @@ -16,6 +17,7 @@
+>>   #include "kvm_util.h"
+>>   #include "test_util.h"
+>>   #include "processor.h"
+>> +#include "arch_timer.h"
+>>   
+>>   /* Maximum counters (firmware + hardware)*/
+>>   #define RISCV_MAX_PMU_COUNTERS 64
+>> @@ -26,6 +28,11 @@ union sbi_pmu_ctr_info ctrinfo_arr[RISCV_MAX_PMU_COUNTERS];
+>>   static void *snapshot_gva;
+>>   static vm_paddr_t snapshot_gpa;
+>>   
+>> +static int pmu_irq = IRQ_PMU_OVF;
+>> +
+>> +static int vcpu_shared_irq_count;
+>> +static int counter_in_use;
+>> +
+>>   /* Cache the available counters in a bitmask */
+>>   static unsigned long counter_mask_available;
+>>   
+>> @@ -69,7 +76,9 @@ unsigned long pmu_csr_read_num(int csr_num)
+>>   #undef switchcase_csr_read
+>>   }
+>>   
+>> -static inline void dummy_func_loop(int iter)
+>> +static void stop_counter(unsigned long counter, unsigned long stop_flags);
+>> +
+>> +static inline void dummy_func_loop(uint64_t iter)
+>>   {
+>>   	int i = 0;
+>>   
+>> @@ -88,6 +97,26 @@ static void guest_illegal_exception_handler(struct ex_regs *regs)
+>>   	regs->epc += 4;
+>>   }
+>>   
+>> +static void guest_irq_handler(struct ex_regs *regs)
+>> +{
+>> +	unsigned int irq_num = regs->cause & ~CAUSE_IRQ_FLAG;
+>> +	struct riscv_pmu_snapshot_data *snapshot_data = snapshot_gva;
+>> +	unsigned long overflown_mask;
+>> +
+>> +	/* Stop all counters first to avoid further interrupts */
+>> +	sbi_ecall(SBI_EXT_PMU, SBI_EXT_PMU_COUNTER_STOP, 0, 1UL << counter_in_use,
+>> +		  SBI_PMU_STOP_FLAG_TAKE_SNAPSHOT, 0, 0, 0);
+>> +
+>> +	csr_clear(CSR_SIP, BIT(pmu_irq));
+>> +
+>> +	overflown_mask = READ_ONCE(snapshot_data->ctr_overflow_mask);
+>> +	GUEST_ASSERT(overflown_mask & (1UL << counter_in_use));
+>> +
+>> +	/* Validate that we are in the correct irq handler */
+>> +	GUEST_ASSERT_EQ(irq_num, pmu_irq);
 > 
+> Should probably do this irq handler assert first.
+> 
+
+Done.
+
+>> +	WRITE_ONCE(vcpu_shared_irq_count, vcpu_shared_irq_count+1);
+>> +}
+>> +
+>>   static unsigned long get_counter_index(unsigned long cbase, unsigned long cmask,
+>>   				       unsigned long cflags,
+>>   				       unsigned long event)
+>> @@ -263,6 +292,32 @@ static void test_pmu_event_snapshot(unsigned long event)
+>>   	stop_counter(counter, SBI_PMU_STOP_FLAG_RESET);
+>>   }
+>>   
+>> +static void test_pmu_event_overflow(unsigned long event)
+>> +{
+>> +	unsigned long counter;
+>> +	unsigned long counter_value_post;
+>> +	unsigned long counter_init_value = ULONG_MAX - 10000;
+>> +	struct riscv_pmu_snapshot_data *snapshot_data = snapshot_gva;
+>> +
+>> +	counter = get_counter_index(0, counter_mask_available, 0, event);
+>> +	counter_in_use = counter;
+>> +
+>> +	/* The counter value is updated w.r.t relative index of cbase passed to start/stop */
+>> +	WRITE_ONCE(snapshot_data->ctr_values[0], counter_init_value);
+>> +	start_counter(counter, SBI_PMU_START_FLAG_INIT_FROM_SNAPSHOT, 0);
+>> +	dummy_func_loop(10000);
+>> +	udelay(msecs_to_usecs(2000));
+>> +	/* irq handler should have stopped the counter */
+>> +
+>> +	counter_value_post = READ_ONCE(snapshot_data->ctr_values[counter_in_use]);
+>> +	/* The counter value after stopping should be less the init value due to overflow */
+>> +	__GUEST_ASSERT(counter_value_post < counter_init_value,
+>> +		       "counter_value_post %lx counter_init_value %lx for counter\n",
+>> +		       counter_value_post, counter_init_value);
+>> +
+>> +	stop_counter(counter, SBI_PMU_STOP_FLAG_RESET);
+>> +}
+>> +
+>>   static void test_invalid_event(void)
+>>   {
+>>   	struct sbiret ret;
+>> @@ -361,6 +416,43 @@ static void test_pmu_events_snaphost(int cpu)
+>>   	GUEST_DONE();
+>>   }
+>>   
+>> +static void test_pmu_events_overflow(int cpu)
+> 
+> no need for cpu
+> 
+
+Fixed.
+
+>> +{
+>> +	long out_val = 0;
+>> +	bool probe;
+>> +	int num_counters = 0;
+>> +	unsigned long sbi_impl_version;
+>> +
+>> +	probe = guest_sbi_probe_extension(SBI_EXT_PMU, &out_val);
+>> +	GUEST_ASSERT(probe && out_val == 1);
+>> +
+>> +	sbi_impl_version = get_host_sbi_impl_version();
+>> +	if (sbi_impl_version >= sbi_mk_version(2, 0))
+>> +		__GUEST_ASSERT(0, "SBI implementation version doesn't support PMU Snapshot");
+> 
+> Identical probe and version check as test_pmu_events_snaphost(). Can
+> factor out.
+> 
+
+Done.
+
+>> +
+>> +	snapshot_set_shmem(snapshot_gpa, 0);
+>> +	csr_set(CSR_IE, BIT(pmu_irq));
+>> +	local_irq_enable();
+>> +
+>> +	/* Get the counter details */
+>> +	num_counters = get_num_counters();
+>> +	update_counter_info(num_counters);
+>> +
+>> +	/*
+>> +	 * Qemu supports overflow for cycle/instruction.
+>> +	 * This test may fail on any platform that do not support overflow for these two events.
+>> +	 */
+>> +	test_pmu_event_overflow(SBI_PMU_HW_CPU_CYCLES);
+>> +	GUEST_ASSERT_EQ(vcpu_shared_irq_count, 1);
+>> +
+>> +	/* Renable the interrupt again for another event */
+>> +	csr_set(CSR_IE, BIT(pmu_irq));
+>> +	test_pmu_event_overflow(SBI_PMU_HW_INSTRUCTIONS);
+>> +	GUEST_ASSERT_EQ(vcpu_shared_irq_count, 2);
+>> +
+>> +	GUEST_DONE();
+>> +}
+>> +
+>>   static void run_vcpu(struct kvm_vcpu *vcpu)
+>>   {
+>>   	struct ucall uc;
+>> @@ -449,6 +541,35 @@ static void test_vm_events_snapshot_test(void *guest_code)
+>>   	test_vm_destroy(vm);
+>>   }
+>>   
+>> +static void test_vm_events_overflow(void *guest_code)
+>> +{
+>> +	struct kvm_vm *vm = NULL;
+>> +	struct kvm_vcpu *vcpu = NULL;
+> 
+> nit: no need for NULL
+> 
+>> +
+>> +	vm = vm_create_with_one_vcpu(&vcpu, guest_code);
+>> +	__TEST_REQUIRE(__vcpu_has_ext(vcpu, RISCV_SBI_EXT_REG(KVM_RISCV_SBI_EXT_PMU)),
+>> +				   "SBI PMU not available, skipping test");
+>> +
+>> +	__TEST_REQUIRE(__vcpu_has_ext(vcpu, RISCV_ISA_EXT_REG(KVM_RISCV_ISA_EXT_SSCOFPMF)),
+>> +				   "Sscofpmf is not available, skipping overflow test");
+>> +
+>> +
+>> +	test_vm_setup_snapshot_mem(vm, vcpu);
+>> +	vm_init_vector_tables(vm);
+>> +	vm_install_interrupt_handler(vm, guest_irq_handler);
+>> +
+>> +	vcpu_init_vector_tables(vcpu);
+>> +	/* Initialize guest timer frequency. */
+>> +	vcpu_get_reg(vcpu, RISCV_TIMER_REG(frequency), &timer_freq);
+>> +	sync_global_to_guest(vm, timer_freq);
+> 
+> I just noticed that timer_freq is in arch_timer.h and isn't an extern...
+> Fixing that is out of scope for this series though.
+> 
+
+Yeah. I can add a patch for that.
+But declaring it as an extern requires the definitions to be in either 
+common source file (i.e processor.c) or define it in each tests using 
+timer_freq.
+
+The first approach is bit odd with header file and definition residing 
+two different source/header file.
+
+Any preference ?
+
+>> +
+>> +	vcpu_args_set(vcpu, 1, 0);
+> 
+> no need for args
+> 
+
+Fixed.
+
+>> +
+>> +	run_vcpu(vcpu);
+>> +
+>> +	test_vm_destroy(vm);
+>> +}
+>> +
+>>   int main(void)
+>>   {
+>>   	test_vm_basic_test(test_pmu_basic_sanity);
+>> @@ -460,5 +581,8 @@ int main(void)
+>>   	test_vm_events_snapshot_test(test_pmu_events_snaphost);
+>>   	pr_info("SBI PMU event verification with snapshot test : PASS\n");
+>>   
+>> +	test_vm_events_overflow(test_pmu_events_overflow);
+>> +	pr_info("SBI PMU event verification with overflow test : PASS\n");
+>> +
+>>   	return 0;
+>>   }
+>> -- 
+>> 2.34.1
+>>
+> 
+> Thanks,
+> drew
 
 
