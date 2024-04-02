@@ -1,138 +1,276 @@
-Return-Path: <linux-kernel+bounces-127909-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-127910-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id E55658952B0
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 14:16:06 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8CBDB8952B3
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 14:16:15 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5941CB250E5
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 12:16:04 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 42C6A28528D
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 12:16:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D1311763EC;
-	Tue,  2 Apr 2024 12:15:53 +0000 (UTC)
-Received: from frasgout12.his.huawei.com (frasgout12.his.huawei.com [14.137.139.154])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F414A79DD4;
+	Tue,  2 Apr 2024 12:15:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=salutedevices.com header.i=@salutedevices.com header.b="h3Pv8g6A"
+Received: from mx1.sberdevices.ru (mx2.sberdevices.ru [45.89.224.132])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E52C06CDB3;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 320B274BF4;
 	Tue,  2 Apr 2024 12:15:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=14.137.139.154
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.89.224.132
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712060153; cv=none; b=oi7kSWF7zwXXo8gtwwxEDsVD+d7GWiHmqswvrD2lsnlWdHo3Gwbd6/25hVSim4rG0J8TBGqZnhgrjKpe+P+utMV1Y6gUGqwLzJIiXdWpqYitBAlFt+Qd7Z2vuA63IEyAcisbrCo+WIniy+lUiYZV1uZBxQZOd7rqoF9Kstbb/yU=
+	t=1712060154; cv=none; b=sfwu37eOOPywH3dkwvjSybgUZADGP2ZN3LhHPT6LshgDIJhmi+iRef8ZiaY+Wl+BaveAZLrNm4EJyOzDZHrb3t90MlQ4OphtQR40gI20cUbB0nE41p9E/goS/4iW4quzkk//A6aS8Ly0K5/Wk9bVwiyO33nfhZ7O8WCZJBeyhAQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712060153; c=relaxed/simple;
-	bh=aK3b3jUw7a1hW0R0pLU6JDxDOnmP/FeDrYujna8rGOI=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=Y7YTrTV4ueqnrlZ2IRzLE3dcjObDpZgGBTYhHjRZXzGRCqOteytFI3Kcj+XYP+1Gu7RyCt77QMMu/GhkvxvUQVCgg/gQNJFfeSFlmMwcCA4VMlXA0KFpyl8uzhF3dfKjIvXxNqjIa6C5/vPOJqd6FDjybRBnMhXbu3N27eqo3WA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=14.137.139.154
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.18.186.51])
-	by frasgout12.his.huawei.com (SkyGuard) with ESMTP id 4V85sq0CyKz9v7cS;
-	Tue,  2 Apr 2024 19:55:11 +0800 (CST)
-Received: from mail02.huawei.com (unknown [7.182.16.47])
-	by mail.maildlp.com (Postfix) with ESMTP id 56197140413;
-	Tue,  2 Apr 2024 20:15:41 +0800 (CST)
-Received: from [127.0.0.1] (unknown [10.204.63.22])
-	by APP1 (Coremail) with SMTP id LxC2BwAH_BTl9gtmt4V1BQ--.26589S2;
-	Tue, 02 Apr 2024 13:15:40 +0100 (CET)
-Message-ID: <24c1af6912b53e4da086cff7999be85d35a9ba40.camel@huaweicloud.com>
-Subject: Re: [GIT PULL] security changes for v6.9-rc3
-From: Roberto Sassu <roberto.sassu@huaweicloud.com>
-To: torvalds@linux-foundation.org
-Cc: linux-integrity@vger.kernel.org, linux-security-module@vger.kernel.org, 
-	linux-fsdevel@vger.kernel.org, linux-cifs@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, Roberto Sassu <roberto.sassu@huawei.com>
-Date: Tue, 02 Apr 2024 14:15:29 +0200
-In-Reply-To: <20240402092108.2520373-1-roberto.sassu@huaweicloud.com>
-References: <20240402092108.2520373-1-roberto.sassu@huaweicloud.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.44.4-0ubuntu2 
+	s=arc-20240116; t=1712060154; c=relaxed/simple;
+	bh=ewzAxxTaBnRdT6oO+knWQphhzHVCDmh0P1cdcSltxiQ=;
+	h=Date:From:To:CC:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=q4LHuvVVBSnvy5HGziSATUIqhsDrwt2+II+I52+5X+DMRvziXXh94Si/inpWlwq0ksh4WzpIUKHEUsDoR7/35DDwsyawBROwhFsfH3APEMI67oEE3AvJWGBU0FnfzLMacr+mWsGMOBlGI/4+GbP6dos0PkMcMHYsRskPBWmbG94=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=salutedevices.com; spf=pass smtp.mailfrom=salutedevices.com; dkim=pass (2048-bit key) header.d=salutedevices.com header.i=@salutedevices.com header.b=h3Pv8g6A; arc=none smtp.client-ip=45.89.224.132
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=salutedevices.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=salutedevices.com
+Received: from p-infra-ksmg-sc-msk02 (localhost [127.0.0.1])
+	by mx1.sberdevices.ru (Postfix) with ESMTP id 99DA1120002;
+	Tue,  2 Apr 2024 15:15:47 +0300 (MSK)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mx1.sberdevices.ru 99DA1120002
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=salutedevices.com;
+	s=mail; t=1712060147;
+	bh=ElpTZ1TrAlE8CP0mE0jFlYKQjyXNnVn6kDPBRqPutDI=;
+	h=Date:From:To:Subject:Message-ID:MIME-Version:Content-Type:From;
+	b=h3Pv8g6AY+VQuvPVaWfziPBCxqr344JkhvXY/zJB7BS0MiJa6oAsjk65LY8Nbza6L
+	 mW+QPOWfa7T6iGWeVvKntxMXBoOYy9BQ1bmjm0ZvaUe6ynMZ3Dd6hQKwXtGeTPNBHV
+	 ptTXlYMYJlveLsrJvLAE78+pXPJxppJWYDBmUmufDLDAqaZrpox5kUTSNGB5L6cdCA
+	 Om/8HBftrdji1dCm6zYVY8Eh4J1YmE9YNoETy8htKFMHh87/IWOheTw0jvc0Vnue8R
+	 Yp8J4RYi79zl1DPr9bCNmRwDKam740vmzedZ0kbWY4uQZpWXHuuidWG1MMq0YEYBFh
+	 8r+akjvJrTdOw==
+Received: from smtp.sberdevices.ru (p-i-exch-sc-m02.sberdevices.ru [172.16.192.103])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by mx1.sberdevices.ru (Postfix) with ESMTPS;
+	Tue,  2 Apr 2024 15:15:47 +0300 (MSK)
+Received: from localhost (100.64.160.123) by p-i-exch-sc-m02.sberdevices.ru
+ (172.16.192.103) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Tue, 2 Apr
+ 2024 15:15:46 +0300
+Date: Tue, 2 Apr 2024 15:15:46 +0300
+From: Dmitry Rokosov <ddrokosov@salutedevices.com>
+To: Jerome Brunet <jbrunet@baylibre.com>
+CC: <neil.armstrong@linaro.org>, <mturquette@baylibre.com>,
+	<sboyd@kernel.org>, <robh+dt@kernel.org>,
+	<krzysztof.kozlowski+dt@linaro.org>, <khilman@baylibre.com>,
+	<martin.blumenstingl@googlemail.com>, <kernel@salutedevices.com>,
+	<rockosov@gmail.com>, <linux-amlogic@lists.infradead.org>,
+	<linux-clk@vger.kernel.org>, <devicetree@vger.kernel.org>,
+	<linux-kernel@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>
+Subject: Re: [PATCH v1 2/6] clk: meson: a1: pll: support 'syspll'
+ general-purpose PLL for CPU clock
+Message-ID: <20240402121546.qrrc7r5un75464pb@CAB-WSD-L081021>
+References: <20240329205904.25002-1-ddrokosov@salutedevices.com>
+ <20240329205904.25002-3-ddrokosov@salutedevices.com>
+ <1j4jckjftk.fsf@starbuckisacylon.baylibre.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-CM-TRANSID:LxC2BwAH_BTl9gtmt4V1BQ--.26589S2
-X-Coremail-Antispam: 1UD129KBjvJXoW7CrW5Cry8JFyxJr47uFyrCrg_yoW8ZF4fpF
-	43KF47Crn5XFyxGF4kXF1UuFW8J3yrGr15J3Z5Jw1kZFy5CF15GF1vvr1SgryDGry7Kw1x
-	tw1jyFn8Gw1DAFUanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUyIb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
-	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Jr0_JF4l84ACjcxK6xIIjxv20xvEc7Cj
-	xVAFwI0_Jr0_Gr1l84ACjcxK6I8E87Iv67AKxVW8JVWxJwA2z4x0Y4vEx4A2jsIEc7CjxV
-	AFwI0_Gr0_Gr1UM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40E
-	x7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x
-	0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_
-	Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1V
-	AY17CE14v26r126r1DMIIYY7kG6xAYrwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v2
-	6r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVWUJVW8JwCI42IY6xAIw20EY4v20xvaj4
-	0_WFyUJVCq3wCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j
-	6r4UJbIYCTnIWIevJa73UjIFyTuYvjxUgCztUUUUU
-X-CM-SenderInfo: purev21wro2thvvxqx5xdzvxpfor3voofrz/1tbiAgABBF1jj5gDxAABso
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <1j4jckjftk.fsf@starbuckisacylon.baylibre.com>
+User-Agent: NeoMutt/20220415
+X-ClientProxiedBy: p-i-exch-sc-m02.sberdevices.ru (172.16.192.103) To
+ p-i-exch-sc-m02.sberdevices.ru (172.16.192.103)
+X-KSMG-Rule-ID: 10
+X-KSMG-Message-Action: clean
+X-KSMG-AntiSpam-Lua-Profiles: 184533 [Apr 02 2024]
+X-KSMG-AntiSpam-Version: 6.1.0.4
+X-KSMG-AntiSpam-Envelope-From: ddrokosov@salutedevices.com
+X-KSMG-AntiSpam-Rate: 0
+X-KSMG-AntiSpam-Status: not_detected
+X-KSMG-AntiSpam-Method: none
+X-KSMG-AntiSpam-Auth: dkim=none
+X-KSMG-AntiSpam-Info: LuaCore: 14 0.3.14 5a0c43d8a1c3c0e5b0916cc02a90d4b950c01f96, {Track_E25351}, {Tracking_from_domain_doesnt_match_to}, smtp.sberdevices.ru:7.1.1,5.0.1;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;127.0.0.199:7.1.2;100.64.160.123:7.1.2;salutedevices.com:7.1.1, FromAlignment: s, ApMailHostAddress: 100.64.160.123
+X-MS-Exchange-Organization-SCL: -1
+X-KSMG-AntiSpam-Interceptor-Info: scan successful
+X-KSMG-AntiPhishing: Clean
+X-KSMG-LinksScanning: Clean
+X-KSMG-AntiVirus: Kaspersky Secure Mail Gateway, version 2.0.1.6960, bases: 2024/04/02 07:07:00 #24571916
+X-KSMG-AntiVirus-Status: Clean, skipped
 
-On Tue, 2024-04-02 at 11:21 +0200, Roberto Sassu wrote:
-> From: Roberto Sassu <roberto.sassu@huawei.com>
->=20
-> Hi Linus
->=20
-> I have a small bug fix for this kernel version. Please pull.
+On Tue, Apr 02, 2024 at 11:00:42AM +0200, Jerome Brunet wrote:
+> 
+> On Fri 29 Mar 2024 at 23:58, Dmitry Rokosov <ddrokosov@salutedevices.com> wrote:
+> 
+> > The 'syspll' PLL, also known as the system PLL, is a general and
+> > essential PLL responsible for generating the CPU clock frequency.
+> > With its wide-ranging capabilities, it is designed to accommodate
+> > frequencies within the range of 768MHz to 1536MHz.
+> >
+> > Signed-off-by: Dmitry Rokosov <ddrokosov@salutedevices.com>
+> > ---
+> >  drivers/clk/meson/a1-pll.c | 78 ++++++++++++++++++++++++++++++++++++++
+> >  drivers/clk/meson/a1-pll.h |  6 +++
+> >  2 files changed, 84 insertions(+)
+> >
+> > diff --git a/drivers/clk/meson/a1-pll.c b/drivers/clk/meson/a1-pll.c
+> > index 60b2e53e7e51..02fd2d325cc6 100644
+> > --- a/drivers/clk/meson/a1-pll.c
+> > +++ b/drivers/clk/meson/a1-pll.c
+> > @@ -138,6 +138,81 @@ static struct clk_regmap hifi_pll = {
+> >  	},
+> >  };
+> >  
+> > +static const struct pll_mult_range sys_pll_mult_range = {
+> > +	.min = 32,
+> > +	.max = 64,
+> > +};
+> > +
+> > +/*
+> > + * We assume that the sys_pll_clk has already been set up by the low-level
+> > + * bootloaders as the main CPU PLL source. Therefore, it is not necessary to
+> > + * run the initialization sequence.
+> > + */
+> 
+> I see no reason to make such assumption.
+> This clock is no read-only, it apparently is able to re-lock so assuming
+> anything from the bootloader is just asking from trouble
+> 
 
-Ops, there is a spurious 'i' in the referenced commit ID, in the commit
-message. Please discard, will send a new pull request shortly.
+Indeed, I have implemented the following initialization sequence. I have
+dumped the bootloader setup and included it in the definition of my
+sys_pll. However, I have encountered an issue with the enable bit. If I
+leave the enable bit switched on by default, there is a possibility that
+the bootloader selects a fixed CPU clock while the sys_pll should be
+switched off. On the other hand, if I keep the enable bit switched off
+by default, the bootloader might configure the CPU clock to use sys_pll,
+resulting in the execution halting when the initialization sequence is
+run. This situation has led me to assume that we should place our trust
+in the bootloader setup.
 
-Roberto
+If you believe it is necessary to include the initialization sequence, I
+can prepare it with the sys_pll enabled by default.
 
-> PS: sorry for the email mismatch, @huawei.com emails resent from the
->     mailing list are classified by Gmail as spam, we are working on
->     fixing it.
->=20
-> Thanks
->=20
-> Roberto
->=20
->=20
-> The following changes since commit 026e680b0a08a62b1d948e5a8ca78700bfac0e=
-6e:
->=20
->   Merge tag 'pwm/for-6.9-rc3-fixes' of git://git.kernel.org/pub/scm/linux=
-/kernel/git/ukleinek/linux (2024-04-01 14:38:55 -0700)
->=20
-> are available in the Git repository at:
->=20
->   https://github.com/linux-integrity/linux.git tags/security-mknod-6.9-rc=
-3
->=20
-> for you to fetch changes up to 12d665b7d3fa743ec58160ceda8421d64b63f272:
->=20
->   security: Handle dentries without inode in security_path_post_mknod() (=
-2024-04-02 10:01:19 +0200)
->=20
-> ----------------------------------------------------------------
-> Here is a simple follow-up patch for the patch set to move IMA and EVM to
-> the LSM infrastructure.
->=20
-> It fixes a kernel panic in the newly introduced function
-> security_path_post_mknod(), when trying to check if an inode is private.
-> The panic occurs because not all dentries have an inode attached to them.
->=20
-> I'm sending this PR as IMA/EVM co-maintainer, even if the patch also
-> touches the LSM infrastructure itself (it is acked by Paul).
->=20
-> Signed-off-by: Roberto Sassu <roberto.sassu@huawei.com>
->=20
-> ----------------------------------------------------------------
-> Roberto Sassu (1):
->       security: Handle dentries without inode in security_path_post_mknod=
-()
->=20
->  security/integrity/evm/evm_main.c | 6 ++++--
->  security/integrity/ima/ima_main.c | 5 +++--
->  security/security.c               | 5 ++++-
->  3 files changed, 11 insertions(+), 5 deletions(-)
->=20
+> > +static struct clk_regmap sys_pll = {
+> > +	.data = &(struct meson_clk_pll_data){
+> > +		.en = {
+> > +			.reg_off = ANACTRL_SYSPLL_CTRL0,
+> > +			.shift   = 28,
+> > +			.width   = 1,
+> > +		},
+> > +		.m = {
+> > +			.reg_off = ANACTRL_SYSPLL_CTRL0,
+> > +			.shift   = 0,
+> > +			.width   = 8,
+> > +		},
+> > +		.n = {
+> > +			.reg_off = ANACTRL_SYSPLL_CTRL0,
+> > +			.shift   = 10,
+> > +			.width   = 5,
+> > +		},
+> > +		.frac = {
+> > +			.reg_off = ANACTRL_SYSPLL_CTRL1,
+> > +			.shift   = 0,
+> > +			.width   = 19,
+> > +		},
+> > +		.l = {
+> > +			.reg_off = ANACTRL_SYSPLL_STS,
+> > +			.shift   = 31,
+> > +			.width   = 1,
+> > +		},
+> > +		.current_en = {
+> > +			.reg_off = ANACTRL_SYSPLL_CTRL0,
+> > +			.shift   = 26,
+> > +			.width   = 1,
+> > +		},
+> > +		.l_detect = {
+> > +			.reg_off = ANACTRL_SYSPLL_CTRL2,
+> > +			.shift   = 6,
+> > +			.width   = 1,
+> > +		},
+> > +		.range = &sys_pll_mult_range,
+> > +	},
+> > +	.hw.init = &(struct clk_init_data){
+> > +		.name = "sys_pll",
+> > +		.ops = &meson_clk_pll_ops,
+> > +		.parent_names = (const char *[]){ "syspll_in" },
+> > +		.num_parents = 1,
+> > +		/*
+> > +		 * This clock is used as the main CPU PLL source in low-level
+> > +		 * bootloaders, and it is necessary to mark it as critical.
+> > +		 */
+> > +		.flags = CLK_IS_CRITICAL,
+> 
+> No I don't think so. Downstream consumer maybe critical but that one is
+> not, unless it is read-only.
+> 
+> A CPU pll, like on the g12 family, is unlikely to be read-only since the
+> PLL will need to relock to change rates. During this phase, there will
+> be no reate coming from the PLL so the PLL is not critical and you must
+> be able to "park" your CPU an another clock while poking this one
+> 
 
+Initially, I tagged it with CLK_IS_CRITICAL because I observed in the
+kernel start that CCF disables it. However, upon further understanding,
+I realized that this happened due to other reasons. I believe that if I
+provide an init sequence where sys_pll is enabled by default, CCF will
+not disable this clock.
+
+> > +	},
+> > +};
+> > +
+> > +static struct clk_fixed_factor sys_pll_div16 = {
+> > +	.mult = 1,
+> > +	.div = 16,
+> > +	.hw.init = &(struct clk_init_data){
+> > +		.name = "sys_pll_div16",
+> > +		.ops = &clk_fixed_factor_ops,
+> > +		.parent_hws = (const struct clk_hw *[]) {
+> > +			&sys_pll.hw
+> > +		},
+> > +		.num_parents = 1,
+> > +	},
+> > +};
+> > +
+> >  static struct clk_fixed_factor fclk_div2_div = {
+> >  	.mult = 1,
+> >  	.div = 2,
+> > @@ -283,6 +358,8 @@ static struct clk_hw *a1_pll_hw_clks[] = {
+> >  	[CLKID_FCLK_DIV5]	= &fclk_div5.hw,
+> >  	[CLKID_FCLK_DIV7]	= &fclk_div7.hw,
+> >  	[CLKID_HIFI_PLL]	= &hifi_pll.hw,
+> > +	[CLKID_SYS_PLL]		= &sys_pll.hw,
+> > +	[CLKID_SYS_PLL_DIV16]	= &sys_pll_div16.hw,
+> >  };
+> >  
+> >  static struct clk_regmap *const a1_pll_regmaps[] = {
+> > @@ -293,6 +370,7 @@ static struct clk_regmap *const a1_pll_regmaps[] = {
+> >  	&fclk_div5,
+> >  	&fclk_div7,
+> >  	&hifi_pll,
+> > +	&sys_pll,
+> >  };
+> >  
+> >  static struct regmap_config a1_pll_regmap_cfg = {
+> > diff --git a/drivers/clk/meson/a1-pll.h b/drivers/clk/meson/a1-pll.h
+> > index 4be17b2bf383..666d9b2137e9 100644
+> > --- a/drivers/clk/meson/a1-pll.h
+> > +++ b/drivers/clk/meson/a1-pll.h
+> > @@ -18,6 +18,12 @@
+> >  #define ANACTRL_FIXPLL_CTRL0	0x0
+> >  #define ANACTRL_FIXPLL_CTRL1	0x4
+> >  #define ANACTRL_FIXPLL_STS	0x14
+> > +#define ANACTRL_SYSPLL_CTRL0	0x80
+> > +#define ANACTRL_SYSPLL_CTRL1	0x84
+> > +#define ANACTRL_SYSPLL_CTRL2	0x88
+> > +#define ANACTRL_SYSPLL_CTRL3	0x8c
+> > +#define ANACTRL_SYSPLL_CTRL4	0x90
+> > +#define ANACTRL_SYSPLL_STS	0x94
+> >  #define ANACTRL_HIFIPLL_CTRL0	0xc0
+> >  #define ANACTRL_HIFIPLL_CTRL1	0xc4
+> >  #define ANACTRL_HIFIPLL_CTRL2	0xc8
+
+-- 
+Thank you,
+Dmitry
 
