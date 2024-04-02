@@ -1,307 +1,189 @@
-Return-Path: <linux-kernel+bounces-127574-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-127575-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id B646E894DCA
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 10:44:25 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 504DB894DCE
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 10:44:55 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D9DCC1C21032
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 08:44:24 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id BC1CD1F218D5
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 08:44:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BEA31481BF;
-	Tue,  2 Apr 2024 08:44:16 +0000 (UTC)
-Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5331A3FB14;
-	Tue,  2 Apr 2024 08:44:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=114.242.206.163
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B9C3D4B5CD;
+	Tue,  2 Apr 2024 08:44:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=bgdev-pl.20230601.gappssmtp.com header.i=@bgdev-pl.20230601.gappssmtp.com header.b="i/GPU6/P"
+Received: from mail-lj1-f177.google.com (mail-lj1-f177.google.com [209.85.208.177])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 40B4E3FB14
+	for <linux-kernel@vger.kernel.org>; Tue,  2 Apr 2024 08:44:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712047456; cv=none; b=EKlmClSB9g58b6FqVqvlZgxZvWm+ToLownvJvZECQuWaBkjffmiC5W/bkrXOHRg4DTOvUApHXZqYBHkJMqxkv2yuaETF/zW4zJHo4x+A4Rl8hpa+6BTBgm71Y7C+5WKZ0Uyn5gIGUKPAzEeb2sMTDc1spjQK5prbYd7h9ATx3nM=
+	t=1712047485; cv=none; b=qPrvNvP920v0wffs0JqESI7QOmyjnUbXwjwHDy9zLGOfOveLWMDHBmx0+YOFyh1kloagM0eI0uNsAjk+06abVwbe/IiAEU49XrRGX30Jn+3gkKhdVflir9MZt+Lgqp/+6zr0trv3QKX+djm7o0xMAzfs18PLq4esRuzQnadkQNU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712047456; c=relaxed/simple;
-	bh=2QS9C22Nsp15QOTHapTYNst3qyOy0U2BUE2u6hPUunw=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=oQ5y8P7ZY9UQARBnG1B8kwN/sd2GUYA88FM1kT0lfHmMeSu7+fkjwDFIJJdQE2u0CboI+eoNqsA5tAXOD47TFhjGfcTRv1TYJgteBliD9zOii0DFrObT4Xobpd99DZUTt22Y3vkitgVkdvNarGorW0kY+bkUXUPDSAAK8vOZ1tc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=loongson.cn; spf=pass smtp.mailfrom=loongson.cn; arc=none smtp.client-ip=114.242.206.163
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=loongson.cn
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=loongson.cn
-Received: from loongson.cn (unknown [10.2.5.213])
-	by gateway (Coremail) with SMTP id _____8DxvutRxQtmXEIiAA--.13043S3;
-	Tue, 02 Apr 2024 16:44:01 +0800 (CST)
-Received: from localhost.localdomain (unknown [10.2.5.213])
-	by localhost.localdomain (Coremail) with SMTP id AQAAf8CxLBNOxQtmGa9xAA--.23906S2;
-	Tue, 02 Apr 2024 16:43:58 +0800 (CST)
-From: Bibo Mao <maobibo@loongson.cn>
-To: Peter Zijlstra <peterz@infradead.org>,
-	Ingo Molnar <mingo@redhat.com>
-Cc: Ming Wang <wangming01@loongson.cn>,
-	Huacai Chen <chenhuacai@kernel.org>,
-	linux-kernel@vger.kernel.org,
-	linux-perf-users@vger.kernel.org
-Subject: [PATCH] perf kvm: Add kvm-stat for loongarch64
-Date: Tue,  2 Apr 2024 16:43:58 +0800
-Message-Id: <20240402084358.205003-1-maobibo@loongson.cn>
-X-Mailer: git-send-email 2.39.3
+	s=arc-20240116; t=1712047485; c=relaxed/simple;
+	bh=zcYPc3kIDg6rlnh2gZjjeIvpIPzvaeFy4b1q5o+QnUA=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=VH4J1hRp4+VvObEKZr/zNBFLlf1QRzQSJsqVc/JaMmR2tDEZRwMXK9RGQbZ2rwto+gQvdRk3fHjMV+hZB2w6RywNs2ZgnTN/se3gL9qBbLISIVIZxOaDo2LqhJWddc4Z6f0p3k/2szNwqkXz9dFJNn284fac50hvf7QzHoUgDQk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bgdev.pl; spf=none smtp.mailfrom=bgdev.pl; dkim=pass (2048-bit key) header.d=bgdev-pl.20230601.gappssmtp.com header.i=@bgdev-pl.20230601.gappssmtp.com header.b=i/GPU6/P; arc=none smtp.client-ip=209.85.208.177
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bgdev.pl
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=bgdev.pl
+Received: by mail-lj1-f177.google.com with SMTP id 38308e7fff4ca-2d52e65d4a8so68309931fa.0
+        for <linux-kernel@vger.kernel.org>; Tue, 02 Apr 2024 01:44:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bgdev-pl.20230601.gappssmtp.com; s=20230601; t=1712047482; x=1712652282; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=q3IzUDTGA+qb6viFGbq1/XCjFFQY+f33uVg0Jns5ZNU=;
+        b=i/GPU6/PwF05cXrBInMN32uDAecOmqunsSopmS7f2fLx/OBCz3G1VAkP0LnVoD607v
+         p+xtEvySzVcPnyDOLLmhRY4kBFmNkESzSuX9FpUupZweABiGd8PR0c7/lnZnxfq0VQNt
+         PC7+ZPklPJSuuPQR+aLjKMTxIPt2mzEyulW+gfAxblF7eiVWeOTRHO6FFrg+1BSCUOcL
+         Lbn48bawRY5XmNfHfk+nzBtClwohr6eRI0EWrAM9qZIrkldq5MLuyWtLpDPiH51Ublpv
+         iFA9SZGYrhdHb6kXPRoXvN9iBiDk3dvtPAV8+qCglbChIkq1pi3xbz8UVQ1q6qducfJP
+         iBxA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712047482; x=1712652282;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=q3IzUDTGA+qb6viFGbq1/XCjFFQY+f33uVg0Jns5ZNU=;
+        b=QM0ijFnn1WcP1dD4bqapgwR44N/hpCigTWVT/A29FtnGMTR9luD9rpktAaIXxagjkl
+         54ODh6jyoA78rFkIcti/PMQVA/be/W3OX5MjitJzaOkD6FZM8m61T9tAli9L1ryVKr74
+         mqCmQOaJYHII/jAnfQ6pU3LeDHctWUYBCuhD4VQ9O3Ph+kk6R6slrOewY5yzmXko86NU
+         7OyINDmRE9/FzU2/9pS4PINdjfyT8zFP/BoaWfpa6JzGOMJm82Sf9tBQn6XrX9e2wuGH
+         unC60KHUDBY/Jsd8OfbhcVUYqUSjtOl+bM3WM/Y+7pHeVQJjQBXhY5sqE83ueZNcOFD4
+         Qhpw==
+X-Forwarded-Encrypted: i=1; AJvYcCWwGBd+GkWS4rt57IJ4J/T/oOFpvoWmFjGi25g9trOVzNHvnCE3Z+BaWpX8ociqNdYONTNIPs83Z5yX4IlGQR+FYU5ojohLuOofGTS/
+X-Gm-Message-State: AOJu0YxS94zm/mtWnqppMacfN9ZEtAhgNWVQ/xiyNyCsgkH3F1mhciyF
+	EowlZ1hzO4cGJeY7VVgRTyi5Fk7kkAhSdkxJPo+Y7WpuupwtV+JOeZyKNTUKLcIBIaLlVSclza7
+	RzbH/8sDiTPBXW4asAEzm3eBlDnAVbgLXT5kmJA==
+X-Google-Smtp-Source: AGHT+IFkAYNM/XEAIBAAOr81EfU+jKUMoadzrsQHB7L061fV8T1Dmp/9EAGJYHlLGFygqdYZr9Z+bOn9ffLbuXiHoqQ=
+X-Received: by 2002:a2e:9d97:0:b0:2d8:2422:c1d3 with SMTP id
+ c23-20020a2e9d97000000b002d82422c1d3mr1876534ljj.44.1712047482269; Tue, 02
+ Apr 2024 01:44:42 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:AQAAf8CxLBNOxQtmGa9xAA--.23906S2
-X-CM-SenderInfo: xpdruxter6z05rqj20fqof0/
-X-Coremail-Antispam: 1Uk129KBjDUn29KB7ZKAUJUUUUU529EdanIXcx71UUUUU7KY7
-	ZEXasCq-sGcSsGvfJ3UbIjqfuFe4nvWSU5nxnvy29KBjDU0xBIdaVrnUUvcSsGvfC2Kfnx
-	nUUI43ZEXa7xR_UUUUUUUUU==
+References: <20240325100359.17001-1-brgl@bgdev.pl> <56e1c63a-4c09-4d92-9ef2-aad5390879cc@gmail.com>
+ <CAMRc=Mf_pvrh2VMfTVE-ZTypyO010p=to-cd8Q745DzSDXLGFw@mail.gmail.com>
+ <CAMRc=MfsVWcoMC-dB-fdxy332h-ucUPTfEUMAnCt5L-q3zJxWg@mail.gmail.com>
+ <82f94b54-82d1-49b9-badf-63d948b347fc@gmail.com> <97e1f121-9e84-4e63-9c9c-57e2de0b29d7@gmail.com>
+ <CAMRc=McLJFGcy-A6PZNmjgDXnvx8z0J4k-Dbak-txvWnycHG2A@mail.gmail.com>
+ <2b1dc031-d645-494c-9103-a2bb422ea60b@gmail.com> <CAMRc=MdoSPuedbGhy4toDEkw0vSzESDz2bXGpyt_=R4hqXW+Uw@mail.gmail.com>
+ <9b1e5ea0-bb32-4c42-b2e9-204bde31b905@gmail.com> <CACMJSesvM6_PhhR_2sP4JX6bR4ytVVg=MwWBEVrCHf5FNp2JXw@mail.gmail.com>
+ <9db0fc7b-f24a-4d76-b8bd-ec577ecba0c6@gmail.com> <CAMRc=Me9x1OXKXXxyhzZ6mxffmaoq=4QhMXCL6L71_xso2epWA@mail.gmail.com>
+In-Reply-To: <CAMRc=Me9x1OXKXXxyhzZ6mxffmaoq=4QhMXCL6L71_xso2epWA@mail.gmail.com>
+From: Bartosz Golaszewski <brgl@bgdev.pl>
+Date: Tue, 2 Apr 2024 10:44:30 +0200
+Message-ID: <CAMRc=Me0MamtJoPtQnucKyZx9pfkEPDAAZqWFWRU0CBcj+P50A@mail.gmail.com>
+Subject: Re: [PATCH v9 00/13] firmware: qcom: qseecom: convert to using the TZ allocator
+To: Maximilian Luz <luzmaximilian@gmail.com>
+Cc: Andy Gross <agross@kernel.org>, Bjorn Andersson <andersson@kernel.org>, 
+	Konrad Dybcio <konrad.dybcio@linaro.org>, Elliot Berman <quic_eberman@quicinc.com>, 
+	Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>, 
+	Guru Das Srinagesh <quic_gurus@quicinc.com>, Andrew Halaney <ahalaney@redhat.com>, 
+	Alex Elder <elder@linaro.org>, Srini Kandagatla <srinivas.kandagatla@linaro.org>, 
+	Arnd Bergmann <arnd@arndb.de>, linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	linux-arm-kernel@lists.infradead.org, kernel@quicinc.com, 
+	Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Add support for 'perf kvm stat' on loongarch64 platform, now only
-kvm exit event is supported.
+On Sat, Mar 30, 2024 at 8:16=E2=80=AFPM Bartosz Golaszewski <brgl@bgdev.pl>=
+ wrote:
+>
+> On Fri, 29 Mar 2024 20:57:52 +0100, Maximilian Luz <luzmaximilian@gmail.c=
+om> said:
+> > On 3/29/24 8:46 PM, Bartosz Golaszewski wrote:
+> >> On Fri, 29 Mar 2024 at 20:39, Maximilian Luz <luzmaximilian@gmail.com>=
+ wrote:
+> >>>
+> >>> On 3/29/24 8:26 PM, Bartosz Golaszewski wrote:
+> >>>> On Fri, 29 Mar 2024 at 20:22, Maximilian Luz <luzmaximilian@gmail.co=
+m> wrote:
+> >>>>>
+> >>>>> On 3/29/24 8:07 PM, Bartosz Golaszewski wrote:
+> >>>>>>
+> >>>>>> Both with and without SHM bridge?
+> >>>>>
+> >>>>> With CONFIG_QCOM_TZMEM_MODE_GENERIC=3Dy (and the upcoming fix) ever=
+ything
+> >>>>> works. With CONFIG_QCOM_TZMEM_MODE_SHMBRIDGE=3Dy things unfortunate=
+ly
+> >>>>> still get stuck at boot (regardless of the fix). I think that's
+> >>>>> happening even before anything efivar related should come up.
+> >>>>>
+> >>>>
+> >>>> This is on X13s? I will get one in 3 weeks. Can you get the bootlog
+> >>>> somehow? Does the laptop have any serial console?
+> >>>
+> >>> Surface Pro X (sc8180x), but it should be similar enough to the X13s =
+in
+> >>> that regard. At least from what people with access to the X13s told m=
+e,
+> >>> the qseecom stuff seems to behave the same.
+> >>>
+> >>> Unfortunately I don't have a direct serial console. Best I have is
+> >>> USB-serial, but it's not even getting there. I'll have to try and see=
+ if
+> >>> I can get some more info on the screen.
+> >>>
+> >>
+> >> I have access to a sc8180x-primus board, does it make sense to test
+> >> with this one? If so, could you give me instructions on how to do it?
+> >
+> > I guess it's worth a shot.
+> >
+> >  From what I can tell, there shouldn't be any patches in my tree that
+> > would conflict with it. So I guess it should just be building it with
+> > CONFIG_QCOM_TZMEM_MODE_SHMBRIDGE=3Dy and booting.
+> >
+> > I am currently testing it on top of a patched v6.8 tree though (but tha=
+t
+> > should just contain patches to get the Pro X running). You can find the
+> > full tree at
+> >
+> >      https://github.com/linux-surface/kernel/tree/spx/v6.8
+> >
+> > The last commit is the fix I mentioned, so you might want to revert
+> > that, since the shmem issue triggers regardless of that and it prevents
+> > your series from applying cleanly.
+> >
+> > Best regards,
+> > Max
+> >
+>
+> sc8180x-primus' support upstream is quite flaky. The board boots 50% of t=
+ime.
+> However it's true that with SHM bridge it gets to:
+>
+> mount: mounting efivarfs on /sys/firmware/efi/efivars failed: Operation n=
+ot supported
+>
+> and stops 100% of the time. Without SHM bridge I cannot boot it either be=
+cause
+> I suppose I need the patch you sent yesterday. I haven't had the time to
+> rebase it yet, it's quite intrusive to my series.
+>
+> I can confirm that with that patch the board still boots but still 50% of=
+ the
+> time.
+>
+> Bart
 
-Here is example output about "perf kvm --host stat report" command
+Hi!
 
-       Event name   Samples   Sample%    Time (ns)   Time%  Mean Time (ns)
-     Memory store     73427    50.00%    630743820  10.00%            8590
-      Memory read     36110    24.00%    109129170   1.00%            3022
-  Privilege Error     18921    12.00%   5231868450  87.00%          276511
-        Interrupt     10214     6.00%     13674060   0.00%            1338
-        Hypercall      5043     3.00%     14121450   0.00%            2800
-      FP Disabled      1850     1.00%      2798020   0.00%            1512
-           Ifecth       813     0.00%      2035340   0.00%            2503
-    Memory modify       362     0.00%       633070   0.00%            1748
-    LASX Disabled         3     0.00%         5440   0.00%            1813
-     LSX Disabled         2     0.00%         2670   0.00%            1335
+I was under the impression that until v8, the series worked on sc8180x
+but I'm seeing that even v7 has the same issue with SHM Bridge on
+sc8180x-primus. Could you confirm? Because I'm not sure if I should
+track the differences or the whole thing was broken for this platform
+from the beginning.
 
-Signed-off-by: Bibo Mao <maobibo@loongson.cn>
----
- tools/perf/arch/loongarch/Makefile        |  1 +
- tools/perf/arch/loongarch/util/Build      |  2 +
- tools/perf/arch/loongarch/util/header.c   | 85 ++++++++++++++++++++
- tools/perf/arch/loongarch/util/kvm-stat.c | 98 +++++++++++++++++++++++
- 4 files changed, 186 insertions(+)
- create mode 100644 tools/perf/arch/loongarch/util/header.c
- create mode 100644 tools/perf/arch/loongarch/util/kvm-stat.c
-
-diff --git a/tools/perf/arch/loongarch/Makefile b/tools/perf/arch/loongarch/Makefile
-index c392e7af4743..c8be64c5cdb4 100644
---- a/tools/perf/arch/loongarch/Makefile
-+++ b/tools/perf/arch/loongarch/Makefile
-@@ -4,6 +4,7 @@ PERF_HAVE_DWARF_REGS := 1
- endif
- PERF_HAVE_ARCH_REGS_QUERY_REGISTER_OFFSET := 1
- PERF_HAVE_JITDUMP := 1
-+HAVE_KVM_STAT_SUPPORT := 1
- 
- #
- # Syscall table generation for perf
-diff --git a/tools/perf/arch/loongarch/util/Build b/tools/perf/arch/loongarch/util/Build
-index d776125a2d06..e1a13761037b 100644
---- a/tools/perf/arch/loongarch/util/Build
-+++ b/tools/perf/arch/loongarch/util/Build
-@@ -1,5 +1,7 @@
- perf-y += perf_regs.o
-+perf-y += header.o
- 
-+perf-$(CONFIG_LIBTRACEEVENT) += kvm-stat.o
- perf-$(CONFIG_DWARF)     += dwarf-regs.o
- perf-$(CONFIG_LOCAL_LIBUNWIND) += unwind-libunwind.o
- perf-$(CONFIG_LIBDW_DWARF_UNWIND) += unwind-libdw.o
-diff --git a/tools/perf/arch/loongarch/util/header.c b/tools/perf/arch/loongarch/util/header.c
-new file mode 100644
-index 000000000000..8f7061cf6977
---- /dev/null
-+++ b/tools/perf/arch/loongarch/util/header.c
-@@ -0,0 +1,85 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+/*
-+ * Implementation of get_cpuid().
-+ *
-+ * Author: Nikita Shubin <n.shubin@yadro.com>
-+ */
-+
-+#include <stdio.h>
-+#include <stdlib.h>
-+#include <api/fs/fs.h>
-+#include <errno.h>
-+#include "util/debug.h"
-+#include "util/header.h"
-+
-+#define CPUINFO_MODEL	"Model Name"
-+#define CPUINFO		"/proc/cpuinfo"
-+
-+static char *_get_field(const char *line)
-+{
-+	char *line2, *nl;
-+
-+	line2 = strrchr(line, ' ');
-+	if (!line2)
-+		return NULL;
-+
-+	line2++;
-+	nl = strrchr(line, '\n');
-+	if (!nl)
-+		return NULL;
-+
-+	return strndup(line2, nl - line2);
-+}
-+
-+static char *_get_cpuid(void)
-+{
-+	char *line = NULL;
-+	char *model = NULL;
-+	char *cpuid = NULL;
-+	int read;
-+	unsigned long line_sz;
-+	FILE *cpuinfo;
-+
-+	cpuinfo = fopen(CPUINFO, "r");
-+	if (cpuinfo == NULL)
-+		return cpuid;
-+
-+	while ((read = getline(&line, &line_sz, cpuinfo)) != -1) {
-+		if (strncmp(line, CPUINFO_MODEL, strlen(CPUINFO_MODEL)))
-+			continue;
-+
-+		model = _get_field(line);
-+		if (!model)
-+			goto free;
-+		break;
-+	}
-+
-+	if (asprintf(&cpuid, "%s", model) < 0)
-+		cpuid = NULL;
-+
-+free:
-+	fclose(cpuinfo);
-+	free(model);
-+	return cpuid;
-+}
-+
-+int get_cpuid(char *buffer, size_t sz)
-+{
-+	char *cpuid = _get_cpuid();
-+	int ret = 0;
-+
-+	if (sz < strlen(cpuid)) {
-+		ret = -EINVAL;
-+		goto free;
-+	}
-+
-+	scnprintf(buffer, sz, "%s", cpuid);
-+free:
-+	free(cpuid);
-+	return ret;
-+}
-+
-+char *get_cpuid_str(struct perf_pmu *pmu __maybe_unused)
-+{
-+	return _get_cpuid();
-+}
-diff --git a/tools/perf/arch/loongarch/util/kvm-stat.c b/tools/perf/arch/loongarch/util/kvm-stat.c
-new file mode 100644
-index 000000000000..c69ab40e3ba6
---- /dev/null
-+++ b/tools/perf/arch/loongarch/util/kvm-stat.c
-@@ -0,0 +1,98 @@
-+// SPDX-License-Identifier: GPL-2.0
-+#include <errno.h>
-+#include <memory.h>
-+#include <errno.h>
-+#include "util/kvm-stat.h"
-+#include "util/parse-events.h"
-+#include "util/debug.h"
-+#include "util/evsel.h"
-+#include "util/evlist.h"
-+#include "util/pmus.h"
-+
-+#define LOONGARCH_EXCEPTION_INT		0
-+#define LOONGARCH_EXCEPTION_PIL		1
-+#define LOONGARCH_EXCEPTION_PIS		2
-+#define LOONGARCH_EXCEPTION_PIF		3
-+#define LOONGARCH_EXCEPTION_PME		4
-+#define LOONGARCH_EXCEPTION_PNR		5
-+#define LOONGARCH_EXCEPTION_PNX		6
-+#define LOONGARCH_EXCEPTION_PPI		7
-+#define LOONGARCH_EXCEPTION_FPD		15
-+#define LOONGARCH_EXCEPTION_SXD		16
-+#define LOONGARCH_EXCEPTION_ASXD	17
-+#define LOONGARCH_EXCEPTION_GSPR	22
-+#define LOONGARCH_EXCEPTION_HVC		23
-+#define LOONGARCH_EXCEPTION_GCM		24
-+
-+#define loongarch_exception_type				\
-+	{LOONGARCH_EXCEPTION_INT,  "Interrupt" },		\
-+	{LOONGARCH_EXCEPTION_PIL,  "Memory read" },		\
-+	{LOONGARCH_EXCEPTION_PIS,  "Memory store" },		\
-+	{LOONGARCH_EXCEPTION_PIF,  "Ifecth" },			\
-+	{LOONGARCH_EXCEPTION_PME,  "Memory modify" },		\
-+	{LOONGARCH_EXCEPTION_PNR,  "Memory NR" },		\
-+	{LOONGARCH_EXCEPTION_PNX,  "Memory NX" },		\
-+	{LOONGARCH_EXCEPTION_PPI,  "Memory Privilege" },	\
-+	{LOONGARCH_EXCEPTION_FPD,  "FP Disabled" },		\
-+	{LOONGARCH_EXCEPTION_SXD,  "LSX Disabled" },		\
-+	{LOONGARCH_EXCEPTION_ASXD, "LASX Disabled" },		\
-+	{LOONGARCH_EXCEPTION_GSPR, "Privilege Error" },		\
-+	{LOONGARCH_EXCEPTION_HVC,  "Hypercall" },		\
-+	{LOONGARCH_EXCEPTION_GCM,  "CSR modified" }
-+
-+define_exit_reasons_table(loongarch_exit_reasons, loongarch_exception_type);
-+
-+const char *vcpu_id_str = "vcpu_id";
-+const char *kvm_exit_reason = "reason";
-+const char *kvm_entry_trace = "kvm:kvm_enter";
-+const char *kvm_reenter_trace = "kvm:kvm_reenter";
-+const char *kvm_exit_trace = "kvm:kvm_exit";
-+
-+const char *kvm_events_tp[] = {
-+	"kvm:kvm_enter",
-+	"kvm:kvm_reenter",
-+	"kvm:kvm_exit",
-+	NULL,
-+};
-+
-+static bool event_end(struct evsel *evsel,
-+		struct perf_sample *sample __maybe_unused,
-+		struct event_key *key __maybe_unused)
-+{
-+	/*
-+	 * LoongArch kvm is a little different with other architectures
-+	 *
-+	 * There is kvm:kvm_reenter and kvm:kvm_enter event adjacent with
-+	 * kvm:kvm_exit event.
-+	 *   kvm:kvm_reenter means returning to guest immediately
-+	 *   kvm:kvm_enter   means returning to vmm and then to guest
-+	 */
-+	return evsel__name_is(evsel, kvm_entry_trace) ||
-+		evsel__name_is(evsel, kvm_reenter_trace);
-+}
-+
-+static struct kvm_events_ops exit_events = {
-+	.is_begin_event = exit_event_begin,
-+	.is_end_event = event_end,
-+	.decode_key = exit_event_decode_key,
-+	.name = "VM-EXIT"
-+};
-+
-+struct kvm_reg_events_ops kvm_reg_events_ops[] = {
-+	{
-+		.name	= "vmexit",
-+		.ops	= &exit_events,
-+	},
-+	{ NULL, NULL },
-+};
-+
-+const char * const kvm_skip_events[] = {
-+	NULL,
-+};
-+
-+int cpu_isa_init(struct perf_kvm_stat *kvm, const char *cpuid __maybe_unused)
-+{
-+	kvm->exit_reasons_isa = "loongarch64";
-+	kvm->exit_reasons = loongarch_exit_reasons;
-+	return 0;
-+}
--- 
-2.33.0
-
+Bart
 
