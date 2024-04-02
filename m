@@ -1,532 +1,174 @@
-Return-Path: <linux-kernel+bounces-127671-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-127643-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E03DB894F3C
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 11:56:26 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9DDF0894ED9
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 11:37:13 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0FA931C20B46
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 09:56:26 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9D8CC1C22B34
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 09:37:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 85B9E5914A;
-	Tue,  2 Apr 2024 09:56:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b="bR5DuJwZ"
-Received: from mail-lf1-f42.google.com (mail-lf1-f42.google.com [209.85.167.42])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4A59F5915C
-	for <linux-kernel@vger.kernel.org>; Tue,  2 Apr 2024 09:56:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E6FC558AB4;
+	Tue,  2 Apr 2024 09:36:38 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2366458AA1
+	for <linux-kernel@vger.kernel.org>; Tue,  2 Apr 2024 09:36:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712051764; cv=none; b=mNs1Y1dMgB/2gFO5R8fr7CnVd2e5t+lp/1uHXT2Q3UMUr1rWVTgPK5rP6FtBoFZrS7zO7CRF5wnwQiiTvRqMVXKGT7NRmCJYULj+8iNWB95Dd+iRQwEi9YlmD+ESW4fp/dQldQFwg7XI05O1C/Xboyjk+7NFldjj8nU2GbE2Pw8=
+	t=1712050598; cv=none; b=EG+5cuDAV95haAlzDIRDZ+Z1CS+dau9o+1D1t2rsu072Ql4P28pyBMxK/RgH1KBjKYtrULaEW4wQQi3RRsRn1kB1LQu25X0rwnnAb85dKZfla8JhAwHl7XluMOD1xOuXH72XjO0Po4NLsG5VLAG6Hqi6Olk9SVSVK+sZnsPbA3w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712051764; c=relaxed/simple;
-	bh=Zg/Nb5z09BCSjx6bM5WAlBfOZLieZhq5ePODfH3K2IA=;
-	h=References:From:To:Cc:Subject:Date:In-reply-to:Message-ID:
-	 MIME-Version:Content-Type; b=AxPcMon/8Al183FkCnCRxGCSkXG5UE6hVasZknsXzeIrHGZ5OFpgY207dsT+xk9EF70zJIK1dr6IFUYDKgOv/4+eYp/mEOD+0PTtW5yeaued9lAONvtu+qaQTBmGlEc4XLeA3m5FGFb/zCghz1K44Th/+EPwH9pCHzJeTu3KiBg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com; spf=pass smtp.mailfrom=baylibre.com; dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b=bR5DuJwZ; arc=none smtp.client-ip=209.85.167.42
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=baylibre.com
-Received: by mail-lf1-f42.google.com with SMTP id 2adb3069b0e04-516b324ad69so850670e87.1
-        for <linux-kernel@vger.kernel.org>; Tue, 02 Apr 2024 02:56:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20230601.gappssmtp.com; s=20230601; t=1712051758; x=1712656558; darn=vger.kernel.org;
-        h=mime-version:message-id:in-reply-to:date:subject:cc:to:from
-         :user-agent:references:from:to:cc:subject:date:message-id:reply-to;
-        bh=teUovhhU7jYUUy+FMKkZRNnju8wwgimsa3+RBtigHlI=;
-        b=bR5DuJwZG4ztgrT8CtlDO9GUA8kTP9S4mDcXW4NaHOFqDKqy6svU+TmJcjYKFFppIq
-         YD8z8OSQ7xh4w7XS+3BSffBtWS7DUTZO8fhiX8stlzueQ3oEOnLiVR09dspzB1TDKXaE
-         +cJyBoUkgcu7fTHzReQJydnq8OHbYrbcEoMhHx6qk3moJX0j+i3gbVVgGxNEfzKZEmvK
-         yU3m9ShWP7BA97CdT1n8ZycMgr4RxLz8Bl7Oc8EscYu1A3J69c0ksp27clf9x2SgUOzr
-         lLKTtYP3qlm6YA0zQQ/GK4V+WhSSUwHeNkG9/PLvwq6/sBYAju9awtlCf7EV0KqP8QYu
-         b+pw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712051758; x=1712656558;
-        h=mime-version:message-id:in-reply-to:date:subject:cc:to:from
-         :user-agent:references:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=teUovhhU7jYUUy+FMKkZRNnju8wwgimsa3+RBtigHlI=;
-        b=K2EDSbi6iYnURYLtg2og3UqdROkQ4Fex5nFNuxqPW3erPB205kSU2dxyALZuQppAAj
-         zjNGYa5qIWJ+oHI0Rrhsa1mtQ4uEE6QJF59rh0aVDsZTtpAsZeEEmMpFGP6kYtf+FnKV
-         h3t1sdrgM95Fl2MP/An3Tusd9d8LZKpMmCGA3qdNRnNeXHEZRM8ihoE7m37sEIchvii2
-         naP/IHTmeCm0G20Fj7ZMz1j/AdCeTCeoHpHrQbsdd7skFUoz62wwzy9CuxOBcM5yzbTa
-         IViGy7MCxxUcbxSG1Jt8wUBt30iLpbMf6kuwZgYHkUsbJ7ereixDLeyCJ2B8NdJ2N45I
-         3ytA==
-X-Forwarded-Encrypted: i=1; AJvYcCVWE1K+2pDqza4Qyk+uAt1ROw7TP4ePtpKibCqhxMBCCgIS0kfRRoyHXnPo2Ts3MRMXniG2Yzhaa79xAxWEbBG98GcrpMNz33SgeA6A
-X-Gm-Message-State: AOJu0Ywlwkwtpzs+fZj9A7Q/Qivg8FvF5vOQG6U/RZcQKOx+tMeESHSb
-	JloR8VL0j/2sbuFWahJfn9q7we4+cyOs1IIXofMpHB2O/ufydlIZwPHL0vp60HY=
-X-Google-Smtp-Source: AGHT+IFQ5H9jjQaRDQfxnu5M7E3EpzbSkR0hU/BZVBKm4eVRViJzbyBhUMfkzGcNYsqZCD+4X62LGA==
-X-Received: by 2002:a05:651c:ca:b0:2d8:8e5:58a4 with SMTP id 10-20020a05651c00ca00b002d808e558a4mr5816497ljr.49.1712051758290;
-        Tue, 02 Apr 2024 02:55:58 -0700 (PDT)
-Received: from localhost ([2a01:e0a:3c5:5fb1:db22:d5c9:a527:a4cf])
-        by smtp.gmail.com with ESMTPSA id q15-20020a7bce8f000000b0041547cdfbc7sm9044730wmj.0.2024.04.02.02.55.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 02 Apr 2024 02:55:57 -0700 (PDT)
-References: <20240329205904.25002-1-ddrokosov@salutedevices.com>
- <20240329205904.25002-7-ddrokosov@salutedevices.com>
-User-agent: mu4e 1.10.8; emacs 29.2
-From: Jerome Brunet <jbrunet@baylibre.com>
-To: Dmitry Rokosov <ddrokosov@salutedevices.com>
-Cc: neil.armstrong@linaro.org, jbrunet@baylibre.com,
- mturquette@baylibre.com, sboyd@kernel.org, robh+dt@kernel.org,
- krzysztof.kozlowski+dt@linaro.org, khilman@baylibre.com,
- martin.blumenstingl@googlemail.com, kernel@salutedevices.com,
- rockosov@gmail.com, linux-amlogic@lists.infradead.org,
- linux-clk@vger.kernel.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH v1 6/6] clk: meson: a1: add Amlogic A1 CPU clock
- controller driver
-Date: Tue, 02 Apr 2024 11:35:49 +0200
-In-reply-to: <20240329205904.25002-7-ddrokosov@salutedevices.com>
-Message-ID: <1jv850hyvm.fsf@starbuckisacylon.baylibre.com>
+	s=arc-20240116; t=1712050598; c=relaxed/simple;
+	bh=I87Swk8xDGHCuIDb6sqs1PP64vyg94WKNCeVuOo/9bA=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=dEXNotVOevp4mAp39Ss6DQE1XD+2i4LYcXcs3LsdWDYP9TyJIMgt94N+s5l3UN0jdoOQU8ORolVlnKPFFngvpizewmKIJqh24y8AY/Oc+pyT1gqa/S1Pl5acXOHsL6PIlzNarpfTp5hudLcAKRFS5KEhmvxWg47/MMCs06dcDKE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id B8FF51042;
+	Tue,  2 Apr 2024 02:37:05 -0700 (PDT)
+Received: from FVFF77S0Q05N (unknown [10.57.18.33])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 39B603F64C;
+	Tue,  2 Apr 2024 02:36:32 -0700 (PDT)
+Date: Tue, 2 Apr 2024 10:36:26 +0100
+From: Mark Rutland <mark.rutland@arm.com>
+To: "boy.wu" <boy.wu@mediatek.com>
+Cc: Russell King <linux@armlinux.org.uk>,
+	Matthias Brugger <matthias.bgg@gmail.com>,
+	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
+	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+	linux-mediatek@lists.infradead.org,
+	Andrey Ryabinin <ryabinin.a.a@gmail.com>,
+	Linus Walleij <linus.walleij@linaro.org>
+Subject: Re: [PATCH] arm: kasan: clear stale stack poison
+Message-ID: <ZgvRmhbvVoGHcLqu@FVFF77S0Q05N>
+References: <20231222022741.8223-1-boy.wu@mediatek.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231222022741.8223-1-boy.wu@mediatek.com>
 
+Hi,
 
-On Fri 29 Mar 2024 at 23:58, Dmitry Rokosov <ddrokosov@salutedevices.com> wrote:
+On Fri, Dec 22, 2023 at 10:27:41AM +0800, boy.wu wrote:
+> From: Boy Wu <boy.wu@mediatek.com>
+> 
+> We found below OOB crash:
+> 
+> [   33.452494] ==================================================================
+> [   33.453513] BUG: KASAN: stack-out-of-bounds in refresh_cpu_vm_stats.constprop.0+0xcc/0x2ec
+> [   33.454660] Write of size 164 at addr c1d03d30 by task swapper/0/0
+> [   33.455515]
+> [   33.455767] CPU: 0 PID: 0 Comm: swapper/0 Tainted: G           O       6.1.25-mainline #1
+> [   33.456880] Hardware name: Generic DT based system
+> [   33.457555]  unwind_backtrace from show_stack+0x18/0x1c
+> [   33.458326]  show_stack from dump_stack_lvl+0x40/0x4c
+> [   33.459072]  dump_stack_lvl from print_report+0x158/0x4a4
+> [   33.459863]  print_report from kasan_report+0x9c/0x148
+> [   33.460616]  kasan_report from kasan_check_range+0x94/0x1a0
+> [   33.461424]  kasan_check_range from memset+0x20/0x3c
+> [   33.462157]  memset from refresh_cpu_vm_stats.constprop.0+0xcc/0x2ec
+> [   33.463064]  refresh_cpu_vm_stats.constprop.0 from tick_nohz_idle_stop_tick+0x180/0x53c
+> [   33.464181]  tick_nohz_idle_stop_tick from do_idle+0x264/0x354
+> [   33.465029]  do_idle from cpu_startup_entry+0x20/0x24
+> [   33.465769]  cpu_startup_entry from rest_init+0xf0/0xf4
+> [   33.466528]  rest_init from arch_post_acpi_subsys_init+0x0/0x18
+> [   33.467397]
+> [   33.467644] The buggy address belongs to stack of task swapper/0/0
+> [   33.468493]  and is located at offset 112 in frame:
+> [   33.469172]  refresh_cpu_vm_stats.constprop.0+0x0/0x2ec
+> [   33.469917]
+> [   33.470165] This frame has 2 objects:
+> [   33.470696]  [32, 76) 'global_zone_diff'
+> [   33.470729]  [112, 276) 'global_node_diff'
+> [   33.471294]
+> [   33.472095] The buggy address belongs to the physical page:
+> [   33.472862] page:3cd72da8 refcount:1 mapcount:0 mapping:00000000 index:0x0 pfn:0x41d03
+> [   33.473944] flags: 0x1000(reserved|zone=0)
+> [   33.474565] raw: 00001000 ed741470 ed741470 00000000 00000000 00000000 ffffffff 00000001
+> [   33.475656] raw: 00000000
+> [   33.476050] page dumped because: kasan: bad access detected
+> [   33.476816]
+> [   33.477061] Memory state around the buggy address:
+> [   33.477732]  c1d03c00: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+> [   33.478630]  c1d03c80: 00 00 00 00 00 00 00 00 f1 f1 f1 f1 00 00 00 00
+> [   33.479526] >c1d03d00: 00 04 f2 f2 f2 f2 00 00 00 00 00 00 f1 f1 f1 f1
+> [   33.480415]                                                ^
+> [   33.481195]  c1d03d80: 00 00 00 00 00 00 00 00 00 00 04 f3 f3 f3 f3 f3
+> [   33.482088]  c1d03e00: f3 f3 f3 f3 00 00 00 00 00 00 00 00 00 00 00 00
+> [   33.482978] ==================================================================
+> 
+> We find the root cause of this OOB is that arm does not clear stale stack
+> poison in the case of cpuidle.
+> 
+> This patch refer to arch/arm64/kernel/sleep.S to resolve this issue.
+> 
+> Signed-off-by: Boy Wu <boy.wu@mediatek.com>
 
-> The CPU clock controller plays a general role in the Amlogic A1 SoC
-> family by generating CPU clocks. As an APB slave module, it offers the
-> capability to inherit the CPU clock from two sources: the internal fixed
-> clock known as 'cpu fixed clock' and the external input provided by the
-> A1 PLL clock controller, referred to as 'syspll'.
->
-> It is important for the driver to handle cpu_clk rate switching
-> effectively by transitioning to the CPU fixed clock to avoid any
-> potential execution freezes.
->
-> Signed-off-by: Dmitry Rokosov <ddrokosov@salutedevices.com>
+It looks like you're specifically referring to what arm64 did in commit:
+
+  0d97e6d8024c71cc ("arm64: kasan: clear stale stack poison")
+
+Where the commit message explained the problem:
+
+| Functions which the compiler has instrumented for KASAN place poison on
+| the stack shadow upon entry and remove this poison prior to returning.
+| 
+| In the case of cpuidle, CPUs exit the kernel a number of levels deep in
+| C code.  Any instrumented functions on this critical path will leave
+| portions of the stack shadow poisoned.
+| 
+| If CPUs lose context and return to the kernel via a cold path, we
+| restore a prior context saved in __cpu_suspend_enter are forgotten, and
+| we never remove the poison they placed in the stack shadow area by
+| functions calls between this and the actual exit of the kernel.
+| 
+| Thus, (depending on stackframe layout) subsequent calls to instrumented
+| functions may hit this stale poison, resulting in (spurious) KASAN
+| splats to the console.
+| 
+| To avoid this, clear any stale poison from the idle thread for a CPU
+| prior to bringing a CPU online.
+
+.. which we then extended to check for CONFIG_KASAN_STACK in commit:
+
+  d56a9ef84bd0e1e8 ("kasan, arm64: unpoison stack only with CONFIG_KASAN_STACK")
+
+If you can fold in the description above (i.e. cite commit 0d97e6d8024c71cc and
+a copy of its commit message):
+
+Reviewed-by: Mark Rutland <mark.rutland@arm.com>
+
+Mark.
+
 > ---
->  drivers/clk/meson/Kconfig  |  10 ++
->  drivers/clk/meson/Makefile |   1 +
->  drivers/clk/meson/a1-cpu.c | 324 +++++++++++++++++++++++++++++++++++++
->  drivers/clk/meson/a1-cpu.h |  16 ++
->  4 files changed, 351 insertions(+)
->  create mode 100644 drivers/clk/meson/a1-cpu.c
->  create mode 100644 drivers/clk/meson/a1-cpu.h
->
-> diff --git a/drivers/clk/meson/Kconfig b/drivers/clk/meson/Kconfig
-> index 80c4a18c83d2..148d4495eee3 100644
-> --- a/drivers/clk/meson/Kconfig
-> +++ b/drivers/clk/meson/Kconfig
-> @@ -111,6 +111,16 @@ config COMMON_CLK_AXG_AUDIO
->  	  Support for the audio clock controller on AmLogic A113D devices,
->  	  aka axg, Say Y if you want audio subsystem to work.
->  
-> +config COMMON_CLK_A1_CPU
-> +	tristate "Amlogic A1 SoC CPU controller support"
-> +	depends on ARM64
-> +	select COMMON_CLK_MESON_REGMAP
-> +	select COMMON_CLK_MESON_CLKC_UTILS
-> +	help
-> +	  Support for the CPU clock controller on Amlogic A113L based
-> +	  device, A1 SoC Family. Say Y if you want A1 CPU clock controller
-> +	  to work.
-> +
->  config COMMON_CLK_A1_PLL
->  	tristate "Amlogic A1 SoC PLL controller support"
->  	depends on ARM64
-> diff --git a/drivers/clk/meson/Makefile b/drivers/clk/meson/Makefile
-> index 4968fc7ad555..2a06eb0303d6 100644
-> --- a/drivers/clk/meson/Makefile
-> +++ b/drivers/clk/meson/Makefile
-> @@ -18,6 +18,7 @@ obj-$(CONFIG_COMMON_CLK_MESON_AUDIO_RSTC) += meson-audio-rstc.o
->  
->  obj-$(CONFIG_COMMON_CLK_AXG) += axg.o axg-aoclk.o
->  obj-$(CONFIG_COMMON_CLK_AXG_AUDIO) += axg-audio.o
-> +obj-$(CONFIG_COMMON_CLK_A1_CPU) += a1-cpu.o
->  obj-$(CONFIG_COMMON_CLK_A1_PLL) += a1-pll.o
->  obj-$(CONFIG_COMMON_CLK_A1_PERIPHERALS) += a1-peripherals.o
->  obj-$(CONFIG_COMMON_CLK_A1_AUDIO) += a1-audio.o
-> diff --git a/drivers/clk/meson/a1-cpu.c b/drivers/clk/meson/a1-cpu.c
-> new file mode 100644
-> index 000000000000..5f5d8ae112e5
-> --- /dev/null
-> +++ b/drivers/clk/meson/a1-cpu.c
-> @@ -0,0 +1,324 @@
-> +// SPDX-License-Identifier: GPL-2.0+
-> +/*
-> + * Amlogic A1 SoC family CPU Clock Controller driver.
-> + *
-> + * Copyright (c) 2024, SaluteDevices. All Rights Reserved.
-> + * Author: Dmitry Rokosov <ddrokosov@salutedevices.com>
-> + */
-> +
-> +#include <linux/clk.h>
-> +#include <linux/clk-provider.h>
-> +#include <linux/mod_devicetable.h>
-> +#include <linux/platform_device.h>
-> +#include "a1-cpu.h"
-> +#include "clk-regmap.h"
-> +#include "meson-clkc-utils.h"
-> +
-> +#include <dt-bindings/clock/amlogic,a1-cpu-clkc.h>
-> +
-> +static u32 cpu_fsource_sel_table[] = { 0, 1, 2 };
-> +static const struct clk_parent_data cpu_fsource_sel_parents[] = {
-> +	{ .fw_name = "xtal" },
-> +	{ .fw_name = "fclk_div2" },
-> +	{ .fw_name = "fclk_div3" },
-> +};
-> +
-> +static struct clk_regmap cpu_fsource_sel0 = {
-> +	.data = &(struct clk_regmap_mux_data) {
-> +		.offset = CPUCTRL_CLK_CTRL0,
-> +		.mask = 0x3,
-> +		.shift = 0,
-> +		.table = cpu_fsource_sel_table,
-> +	},
-> +	.hw.init = &(struct clk_init_data) {
-> +		.name = "cpu_fsource_sel0",
-> +		.ops = &clk_regmap_mux_ops,
-> +		.parent_data = cpu_fsource_sel_parents,
-> +		.num_parents = ARRAY_SIZE(cpu_fsource_sel_parents),
-> +		.flags = CLK_SET_RATE_PARENT,
-> +	},
-> +};
-> +
-> +static struct clk_regmap cpu_fsource_div0 = {
-> +	.data = &(struct clk_regmap_div_data) {
-> +		.offset = CPUCTRL_CLK_CTRL0,
-> +		.shift = 4,
-> +		.width = 6,
-> +	},
-> +	.hw.init = &(struct clk_init_data) {
-> +		.name = "cpu_fsource_div0",
-> +		.ops = &clk_regmap_divider_ops,
-> +		.parent_hws = (const struct clk_hw *[]) {
-> +			&cpu_fsource_sel0.hw
-> +		},
-> +		.num_parents = 1,
-> +		.flags = CLK_SET_RATE_PARENT,
-> +	},
-> +};
-> +
-> +static struct clk_regmap cpu_fsel0 = {
-> +	.data = &(struct clk_regmap_mux_data) {
-> +		.offset = CPUCTRL_CLK_CTRL0,
-> +		.mask = 0x1,
-> +		.shift = 2,
-> +	},
-> +	.hw.init = &(struct clk_init_data) {
-> +		.name = "cpu_fsel0",
-> +		.ops = &clk_regmap_mux_ops,
-> +		.parent_hws = (const struct clk_hw *[]) {
-> +			&cpu_fsource_sel0.hw,
-> +			&cpu_fsource_div0.hw,
-> +		},
-> +		.num_parents = 2,
-> +		.flags = CLK_SET_RATE_PARENT,
-> +	},
-> +};
-> +
-> +static struct clk_regmap cpu_fsource_sel1 = {
-> +	.data = &(struct clk_regmap_mux_data) {
-> +		.offset = CPUCTRL_CLK_CTRL0,
-> +		.mask = 0x3,
-> +		.shift = 16,
-> +		.table = cpu_fsource_sel_table,
-> +	},
-> +	.hw.init = &(struct clk_init_data) {
-> +		.name = "cpu_fsource_sel1",
-> +		.ops = &clk_regmap_mux_ops,
-> +		.parent_data = cpu_fsource_sel_parents,
-> +		.num_parents = ARRAY_SIZE(cpu_fsource_sel_parents),
-> +		.flags = CLK_SET_RATE_PARENT,
-> +	},
-> +};
-> +
-> +static struct clk_regmap cpu_fsource_div1 = {
-> +	.data = &(struct clk_regmap_div_data) {
-> +		.offset = CPUCTRL_CLK_CTRL0,
-> +		.shift = 20,
-> +		.width = 6,
-> +	},
-> +	.hw.init = &(struct clk_init_data) {
-> +		.name = "cpu_fsource_div1",
-> +		.ops = &clk_regmap_divider_ops,
-> +		.parent_hws = (const struct clk_hw *[]) {
-> +			&cpu_fsource_sel1.hw
-> +		},
-> +		.num_parents = 1,
-> +		.flags = CLK_SET_RATE_PARENT,
-> +	},
-> +};
-> +
-> +static struct clk_regmap cpu_fsel1 = {
-> +	.data = &(struct clk_regmap_mux_data) {
-> +		.offset = CPUCTRL_CLK_CTRL0,
-> +		.mask = 0x1,
-> +		.shift = 18,
-> +	},
-> +	.hw.init = &(struct clk_init_data) {
-> +		.name = "cpu_fsel1",
-> +		.ops = &clk_regmap_mux_ops,
-> +		.parent_hws = (const struct clk_hw *[]) {
-> +			&cpu_fsource_sel1.hw,
-> +			&cpu_fsource_div1.hw,
-> +		},
-> +		.num_parents = 2,
-> +		.flags = CLK_SET_RATE_PARENT,
-> +	},
-> +};
-> +
-> +static struct clk_regmap cpu_fclk = {
-> +	.data = &(struct clk_regmap_mux_data) {
-> +		.offset = CPUCTRL_CLK_CTRL0,
-> +		.mask = 0x1,
-> +		.shift = 10,
-> +	},
-> +	.hw.init = &(struct clk_init_data) {
-> +		.name = "cpu_fclk",
-> +		.ops = &clk_regmap_mux_ops,
-> +		.parent_hws = (const struct clk_hw *[]) {
-> +			&cpu_fsel0.hw,
-> +			&cpu_fsel1.hw,
-> +		},
-> +		.num_parents = 2,
-> +		.flags = CLK_SET_RATE_PARENT,
-> +	},
-> +};
-> +
-> +static struct clk_regmap cpu_clk = {
-> +	.data = &(struct clk_regmap_mux_data) {
-> +		.offset = CPUCTRL_CLK_CTRL0,
-> +		.mask = 0x1,
-> +		.shift = 11,
-> +	},
-> +	.hw.init = &(struct clk_init_data) {
-> +		.name = "cpu_clk",
-> +		.ops = &clk_regmap_mux_ops,
-> +		.parent_data = (const struct clk_parent_data []) {
-> +			{ .hw = &cpu_fclk.hw },
-> +			{ .fw_name = "sys_pll", },
-> +		},
-> +		.num_parents = 2,
-> +		.flags = CLK_SET_RATE_PARENT | CLK_IS_CRITICAL,
-> +	},
-> +};
-> +
-> +/* Array of all clocks registered by this provider */
-> +static struct clk_hw *a1_cpu_hw_clks[] = {
-> +	[CLKID_CPU_FSOURCE_SEL0]	= &cpu_fsource_sel0.hw,
-> +	[CLKID_CPU_FSOURCE_DIV0]	= &cpu_fsource_div0.hw,
-> +	[CLKID_CPU_FSEL0]		= &cpu_fsel0.hw,
-> +	[CLKID_CPU_FSOURCE_SEL1]	= &cpu_fsource_sel1.hw,
-> +	[CLKID_CPU_FSOURCE_DIV1]	= &cpu_fsource_div1.hw,
-> +	[CLKID_CPU_FSEL1]		= &cpu_fsel1.hw,
-> +	[CLKID_CPU_FCLK]		= &cpu_fclk.hw,
-> +	[CLKID_CPU_CLK]			= &cpu_clk.hw,
-> +};
-> +
-> +static struct clk_regmap *const a1_cpu_regmaps[] = {
-> +	&cpu_fsource_sel0,
-> +	&cpu_fsource_div0,
-> +	&cpu_fsel0,
-> +	&cpu_fsource_sel1,
-> +	&cpu_fsource_div1,
-> +	&cpu_fsel1,
-> +	&cpu_fclk,
-> +	&cpu_clk,
-> +};
-> +
-> +static struct regmap_config a1_cpu_regmap_cfg = {
-> +	.reg_bits   = 32,
-> +	.val_bits   = 32,
-> +	.reg_stride = 4,
-> +	.max_register = CPUCTRL_CLK_CTRL1,
-> +};
-> +
-> +static struct meson_clk_hw_data a1_cpu_clks = {
-> +	.hws = a1_cpu_hw_clks,
-> +	.num = ARRAY_SIZE(a1_cpu_hw_clks),
-> +};
-> +
-> +struct a1_cpu_clk_nb_data {
-> +	const struct clk_ops *mux_ops;
-
-That's fishy ...
-
-> +	struct clk_hw *cpu_clk;
-> +	struct notifier_block nb;
-> +	u8 parent;
-> +};
-> +
-> +#define MESON_A1_CPU_CLK_GET_PARENT(nbd) \
-> +	((nbd)->mux_ops->get_parent((nbd)->cpu_clk))
-> +#define MESON_A1_CPU_CLK_SET_PARENT(nbd, index) \
-> +	((nbd)->mux_ops->set_parent((nbd)->cpu_clk, index))
-
-.. Directly going for the mux ops ??!?? No way !
-
-We have a framework to handle the clocks, the whole point is to use it,
-not bypass it ! 
-
-> +
-> +static int meson_a1_cpu_clk_notifier_cb(struct notifier_block *nb,
-> +					unsigned long event, void *data)
-> +{
-> +	struct a1_cpu_clk_nb_data *nbd;
-> +	int ret = 0;
-> +
-> +	nbd = container_of(nb, struct a1_cpu_clk_nb_data, nb);
-> +
-> +	switch (event) {
-> +	case PRE_RATE_CHANGE:
-> +		nbd->parent = MESON_A1_CPU_CLK_GET_PARENT(nbd);
-> +		/* Fallback to the CPU fixed clock */
-> +		ret = MESON_A1_CPU_CLK_SET_PARENT(nbd, 0);
-> +		/* Wait for clock propagation */
-> +		udelay(100);
-> +		break;
-> +
-> +	case POST_RATE_CHANGE:
-> +	case ABORT_RATE_CHANGE:
-> +		/* Back to the original parent clock */
-> +		ret = MESON_A1_CPU_CLK_SET_PARENT(nbd, nbd->parent);
-> +		/* Wait for clock propagation */
-> +		udelay(100);
-> +		break;
-> +
-> +	default:
-> +		pr_warn("Unknown event %lu for %s notifier block\n",
-> +			event, clk_hw_get_name(nbd->cpu_clk));
-> +		break;
-> +	}
-> +
-> +	return notifier_from_errno(ret);
-> +}
-> +
-> +static struct a1_cpu_clk_nb_data a1_cpu_clk_nb_data = {
-> +	.mux_ops = &clk_regmap_mux_ops,
-> +	.cpu_clk = &cpu_clk.hw,
-> +	.nb.notifier_call = meson_a1_cpu_clk_notifier_cb,
-> +};
-> +
-> +static int meson_a1_dvfs_setup(struct platform_device *pdev)
-> +{
-> +	struct device *dev = &pdev->dev;
-> +	struct clk *notifier_clk;
-> +	int ret;
-> +
-> +	/* Setup clock notifier for cpu_clk */
-> +	notifier_clk = devm_clk_hw_get_clk(dev, &cpu_clk.hw, "dvfs");
-> +	if (IS_ERR(notifier_clk))
-> +		return dev_err_probe(dev, PTR_ERR(notifier_clk),
-> +				     "can't get cpu_clk as notifier clock\n");
-> +
-> +	ret = devm_clk_notifier_register(dev, notifier_clk,
-> +					 &a1_cpu_clk_nb_data.nb);
-> +	if (ret)
-> +		return dev_err_probe(dev, ret,
-> +				     "can't register cpu_clk notifier\n");
-> +
-> +	return ret;
-> +}
-> +
-> +static int meson_a1_cpu_probe(struct platform_device *pdev)
-> +{
-> +	struct device *dev = &pdev->dev;
-> +	void __iomem *base;
-> +	struct regmap *map;
-> +	int clkid, i, err;
-> +
-> +	base = devm_platform_ioremap_resource(pdev, 0);
-> +	if (IS_ERR(base))
-> +		return dev_err_probe(dev, PTR_ERR(base),
-> +				     "can't ioremap resource\n");
-> +
-> +	map = devm_regmap_init_mmio(dev, base, &a1_cpu_regmap_cfg);
-> +	if (IS_ERR(map))
-> +		return dev_err_probe(dev, PTR_ERR(map),
-> +				     "can't init regmap mmio region\n");
-> +
-> +	/* Populate regmap for the regmap backed clocks */
-> +	for (i = 0; i < ARRAY_SIZE(a1_cpu_regmaps); i++)
-> +		a1_cpu_regmaps[i]->map = map;
-> +
-> +	for (clkid = 0; clkid < a1_cpu_clks.num; clkid++) {
-> +		err = devm_clk_hw_register(dev, a1_cpu_clks.hws[clkid]);
-> +		if (err)
-> +			return dev_err_probe(dev, err,
-> +					     "clock[%d] registration failed\n",
-> +					     clkid);
-> +	}
-> +
-> +	err = devm_of_clk_add_hw_provider(dev, meson_clk_hw_get, &a1_cpu_clks);
-> +	if (err)
-> +		return dev_err_probe(dev, err, "can't add clk hw provider\n");
-
-I wonder if there is a window of opportunity to poke the syspll without
-your notifier here. That being said, the situation would be similar on g12.
-
-> +
-> +	return meson_a1_dvfs_setup(pdev);
-
-
-
-> +}
-> +
-> +static const struct of_device_id a1_cpu_clkc_match_table[] = {
-> +	{ .compatible = "amlogic,a1-cpu-clkc", },
-> +	{}
-> +};
-> +MODULE_DEVICE_TABLE(of, a1_cpu_clkc_match_table);
-> +
-> +static struct platform_driver a1_cpu_clkc_driver = {
-> +	.probe = meson_a1_cpu_probe,
-> +	.driver = {
-> +		.name = "a1-cpu-clkc",
-> +		.of_match_table = a1_cpu_clkc_match_table,
-> +	},
-> +};
-> +
-> +module_platform_driver(a1_cpu_clkc_driver);
-> +MODULE_AUTHOR("Dmitry Rokosov <ddrokosov@salutedevices.com>");
-> +MODULE_LICENSE("GPL");
-> diff --git a/drivers/clk/meson/a1-cpu.h b/drivers/clk/meson/a1-cpu.h
-> new file mode 100644
-> index 000000000000..e9af4117e26f
-> --- /dev/null
-> +++ b/drivers/clk/meson/a1-cpu.h
-
-There is not point putting the definition here in a header
-These are clearly not going to be shared with another driver.
-
-Please drop this file
-
-> @@ -0,0 +1,16 @@
-> +/* SPDX-License-Identifier: GPL-2.0+ */
-> +/*
-> + * Amlogic A1 CPU Clock Controller internals
-> + *
-> + * Copyright (c) 2024, SaluteDevices. All Rights Reserved.
-> + * Author: Dmitry Rokosov <ddrokosov@salutedevices.com>
-> + */
-> +
-> +#ifndef __A1_CPU_H
-> +#define __A1_CPU_H
-> +
-> +/* cpu clock controller register offset */
-> +#define CPUCTRL_CLK_CTRL0	0x80
-> +#define CPUCTRL_CLK_CTRL1	0x84
-
-You are claiming the registers from 0x00 to 0x84 (included), but only
-using these 2 registers ? What is the rest ? Are you sure there is only
-clocks in there ?
-
-> +
-> +#endif /* __A1_CPU_H */
-
-
--- 
-Jerome
+>  arch/arm/kernel/sleep.S | 4 ++++
+>  1 file changed, 4 insertions(+)
+> 
+> diff --git a/arch/arm/kernel/sleep.S b/arch/arm/kernel/sleep.S
+> index a86a1d4f3461..93afd1005b43 100644
+> --- a/arch/arm/kernel/sleep.S
+> +++ b/arch/arm/kernel/sleep.S
+> @@ -127,6 +127,10 @@ cpu_resume_after_mmu:
+>  	instr_sync
+>  #endif
+>  	bl	cpu_init		@ restore the und/abt/irq banked regs
+> +#if defined(CONFIG_KASAN) && defined(CONFIG_KASAN_STACK)
+> +	mov	r0, sp
+> +	bl	kasan_unpoison_task_stack_below
+> +#endif
+>  	mov	r0, #0			@ return zero on success
+>  	ldmfd	sp!, {r4 - r11, pc}
+>  ENDPROC(cpu_resume_after_mmu)
+> -- 
+> 2.18.0
+> 
+> 
 
