@@ -1,62 +1,75 @@
-Return-Path: <linux-kernel+bounces-127472-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-127474-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id CC4CA894C33
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 09:09:06 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8EB4A894C38
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 09:09:41 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6C0A91F22FEC
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 07:09:06 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 10F80B233B1
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 07:09:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 627E6383A4;
-	Tue,  2 Apr 2024 07:09:00 +0000 (UTC)
-Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C405136AEF;
+	Tue,  2 Apr 2024 07:09:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="GaHxsiTK"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EC70E364BE
-	for <linux-kernel@vger.kernel.org>; Tue,  2 Apr 2024 07:08:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3DC512C6B3;
+	Tue,  2 Apr 2024 07:09:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.19
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712041740; cv=none; b=O7YIJ1TCPhRCTUqn4N0r3gAX0LfbiXkWyVwI7JPzUK3Nmy09qF40ls90jwvHrVMN5VLCxNeeOmx0SJDZ/yiBd9mGeeGaqjW2XyAmfMyyX+/uQKLimbDhpPkjIVVkO3SOZIbF5lBRkxQ8ujmhxPubgc8xMyr4t+dSxeKdSVDTogQ=
+	t=1712041765; cv=none; b=NoRaBb1FzBLmf5pw5ie9OIi/kEbHgUwhJE92qcWdBeA8o6yAeZifpQxOVoK5nYJszbQd0w+DiZtyuMk1HdrUmmPfQpDfa1B++7+Nvfqtxt3hi/bkEOrTClaDzbexkEVx3i3xhDCUPxd4+PwcW2W67EvfGBubjIYUu3U2Rizn+hg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712041740; c=relaxed/simple;
-	bh=vVL1WWKaLXDtUUSbsz1I2qpNUvjQSsHeYGcRZRo6rm4=;
+	s=arc-20240116; t=1712041765; c=relaxed/simple;
+	bh=cIv6Tl+nzFjXY1TztO8FqRhEBSuJAbM93JA4OC3kQNg=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ape4gC82KW3iDE6UYDRYb12ToJaNyzm8oVERoWWdVaWkpmvpVvnTestu3bsPM/UyIpxygjsZQK1bFMiXtYUSHdX3DgsGpbdigi/l9OgK22In4VSwducBDDqbFBVZnPhWtu5iMKi9aNqn/irT3ziUwGsvs3j8PcvHoRdp7d93Dcc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
-Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
-	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-	(Exim 4.92)
-	(envelope-from <ore@pengutronix.de>)
-	id 1rrYGI-00046x-E6; Tue, 02 Apr 2024 09:08:50 +0200
-Received: from [2a0a:edc0:2:b01:1d::c5] (helo=pty.whiteo.stw.pengutronix.de)
-	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.94.2)
-	(envelope-from <ore@pengutronix.de>)
-	id 1rrYGH-009w6P-2e; Tue, 02 Apr 2024 09:08:49 +0200
-Received: from ore by pty.whiteo.stw.pengutronix.de with local (Exim 4.96)
-	(envelope-from <ore@pengutronix.de>)
-	id 1rrYGG-00AjC1-3A;
-	Tue, 02 Apr 2024 09:08:48 +0200
-Date: Tue, 2 Apr 2024 09:08:48 +0200
-From: Oleksij Rempel <o.rempel@pengutronix.de>
-To: Arun.Ramadoss@microchip.com
-Cc: andrew@lunn.ch, olteanv@gmail.com, davem@davemloft.net,
-	Woojung.Huh@microchip.com, pabeni@redhat.com, edumazet@google.com,
-	f.fainelli@gmail.com, kuba@kernel.org, kernel@pengutronix.de,
-	dsahern@kernel.org, san@skov.dk, willemb@google.com,
-	linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-	horms@kernel.org, UNGLinuxDriver@microchip.com
-Subject: Re: [PATCH net-next v1 7/9] net: dsa: microchip: enable ETS support
- for KSZ989X variants
-Message-ID: <ZguvAP1PHB9Rs74U@pengutronix.de>
-References: <20240328160518.2396238-1-o.rempel@pengutronix.de>
- <20240328160518.2396238-8-o.rempel@pengutronix.de>
- <b3229336ecdcba1adbca4a3392e5726c418647ad.camel@microchip.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=ekXwNW+jMHWqoqQjWU0vZKTfTAmFKDT8XOSuHlJSowHtmXXDymepXRiAdWNaaBb77nCszPD651BDaHBk0XDKsNFn+7DllEeR5uXEKbtoY/HL4hH+AqDBh8L68wBHkXfoDqUaCrQG0lpdC+uJ+vlJbXCEBLZUqwb3eD9nSpzsWyk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=GaHxsiTK; arc=none smtp.client-ip=192.198.163.19
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1712041763; x=1743577763;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=cIv6Tl+nzFjXY1TztO8FqRhEBSuJAbM93JA4OC3kQNg=;
+  b=GaHxsiTKll8PSozlewdyvCVNSP0XgL7OyOIyuUPkqviM4dwLt9I++cl1
+   Dn3rHI9BwNQldOBtmtKHG5QgrOib+Iz56ox5MDspswqzk0vaKdzcJB7bP
+   +QmgKzq773CGGyyJ8BbxsrhCK4jWYaKO7Jiv52kuSuO4yPxQITdUHi2Tx
+   vMYqKm4+bjVf/PU70yhT/VZQ94fpXnCKth8bVrhI1xEObWwWTGCKUjUh2
+   b0qicwQh2wLlViQGsRxGWtCdi+MGJF3W1eGxen/eDtS60vObzUpVIbxM4
+   1ad0rTwdtCP0nq1oi5vbQllAP44CEXLr2rwXws7/ytiD5CKGKVKRNhP1h
+   A==;
+X-CSE-ConnectionGUID: TTNmxK9nSI26C4yGrC0pfQ==
+X-CSE-MsgGUID: XP79r+snSde/fhmXGLPGbQ==
+X-IronPort-AV: E=McAfee;i="6600,9927,11031"; a="7061621"
+X-IronPort-AV: E=Sophos;i="6.07,174,1708416000"; 
+   d="scan'208";a="7061621"
+Received: from fmviesa008.fm.intel.com ([10.60.135.148])
+  by fmvoesa113.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Apr 2024 00:09:22 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,174,1708416000"; 
+   d="scan'208";a="18059189"
+Received: from ls.sc.intel.com (HELO localhost) ([172.25.112.31])
+  by fmviesa008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Apr 2024 00:09:22 -0700
+Date: Tue, 2 Apr 2024 00:09:21 -0700
+From: Isaku Yamahata <isaku.yamahata@intel.com>
+To: Chao Gao <chao.gao@intel.com>
+Cc: isaku.yamahata@intel.com, kvm@vger.kernel.org,
+	linux-kernel@vger.kernel.org, isaku.yamahata@gmail.com,
+	Paolo Bonzini <pbonzini@redhat.com>, erdemaktas@google.com,
+	Sean Christopherson <seanjc@google.com>,
+	Sagi Shahar <sagis@google.com>, Kai Huang <kai.huang@intel.com>,
+	chen.bo@intel.com, hang.yuan@intel.com, tina.zhang@intel.com,
+	isaku.yamahata@linux.intel.com
+Subject: Re: [PATCH v19 094/130] KVM: TDX: Implement methods to inject NMI
+Message-ID: <20240402070921.GZ2444378@ls.amr.corp.intel.com>
+References: <cover.1708933498.git.isaku.yamahata@intel.com>
+ <a7ce6023eb8dd824e61023a95475629bd7ae2278.1708933498.git.isaku.yamahata@intel.com>
+ <ZgYjOfkH2p/fSXuw@chao-email>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -65,46 +78,39 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <b3229336ecdcba1adbca4a3392e5726c418647ad.camel@microchip.com>
-X-Sent-From: Pengutronix Hildesheim
-X-URL: http://www.pengutronix.de/
-X-Accept-Language: de,en
-X-Accept-Content-Type: text/plain
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
-X-SA-Exim-Mail-From: ore@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+In-Reply-To: <ZgYjOfkH2p/fSXuw@chao-email>
 
-Hi Arun,
+On Fri, Mar 29, 2024 at 10:11:05AM +0800,
+Chao Gao <chao.gao@intel.com> wrote:
 
-On Tue, Apr 02, 2024 at 03:38:33AM +0000, Arun.Ramadoss@microchip.com wrote:
-> Hi Oleksij,
+> >+static void vt_set_nmi_mask(struct kvm_vcpu *vcpu, bool masked)
+> >+{
+> >+	if (is_td_vcpu(vcpu))
+> >+		return;
+> >+
+> >+	vmx_set_nmi_mask(vcpu, masked);
+> >+}
+> >+
+> >+static void vt_enable_nmi_window(struct kvm_vcpu *vcpu)
+> >+{
+> >+	/* Refer the comment in vt_get_nmi_mask(). */
+> >+	if (is_td_vcpu(vcpu))
+> >+		return;
+> >+
+> >+	vmx_enable_nmi_window(vcpu);
+> >+}
 > 
-> 
-> On Thu, 2024-03-28 at 17:05 +0100, Oleksij Rempel wrote:
-> > EXTERNAL EMAIL: Do not click links or open attachments unless you
-> > know the content is safe
-> > 
-> > I tested ETS support on KSZ9893, so it should work other KSZ989X
-> > variants too.
-> 
-> You have enabled ETS for KSZ9897, KSZ9896, KSZ9893. There are other
-> switches similar to KSZ9893,
-> 
-> KSZ9563 - Same as KSZ9893 but with PTP capability
-> KSZ8563 - Same as KSZ9563 but without gigabit
-> KSZ9567 - Same as KSZ9897 but with PTP capability
-> KSZ8567 - Same as KSZ9567 but without gigabit
-> 
-> Do we need enable ETS for those switches also.
+> The two actually request something to do done for the TD. But we make them nop
+> as TDX module doesn't support VMM to configure nmi mask and nmi window. Do you
+> think they are worth a WARN_ON_ONCE()? or adding WARN_ON_ONCE() requires a lot
+> of code factoring in KVM's NMI injection logics?
 
-No, this variants are already enabled.
+Because user space can reach those hooks with KVM_SET_VCPU_EVENTS, we shouldn't
+add WARN_ON_ONCE().  There are two choices.  Ignore the request (the current
+choice) or return error for unsupported request.
 
-Regards,
-Oleksij
+It's troublesome to allow error for them because we have to fix up the caller
+up to the user space.  The user space may abort on such error without fix.
 -- 
-Pengutronix e.K.                           |                             |
-Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
-31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
-Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
+Isaku Yamahata <isaku.yamahata@intel.com>
 
