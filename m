@@ -1,133 +1,175 @@
-Return-Path: <linux-kernel+bounces-127617-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-127612-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1424C894E6E
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 11:15:57 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 88143894E63
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 11:12:50 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 465501C2152F
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 09:15:56 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3CA582830C9
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 09:12:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1733058236;
-	Tue,  2 Apr 2024 09:15:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0F2EA57306;
+	Tue,  2 Apr 2024 09:12:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b="uCAfurDR"
-Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.153.233])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="qbfz5iA/"
+Received: from mail-vk1-f172.google.com (mail-vk1-f172.google.com [209.85.221.172])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D592256B8C;
-	Tue,  2 Apr 2024 09:15:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=68.232.153.233
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BA68A56763
+	for <linux-kernel@vger.kernel.org>; Tue,  2 Apr 2024 09:12:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712049333; cv=none; b=pNFqd2hvUojIu3QOf0JKx0WMqlzvow3yEeSTLaqfGCJtrLvKtt6shHgGeFz+rNUtQqKjsOx8n4tQ6QRjtAIfurKLwlwqQYPmbT34Iiku6BkX86Y+6htNQ5vy9Qj4Wqr2DDpnUUJAa9J1VWvc4PZVLq+maCb/KIlc8amkwcIpVgQ=
+	t=1712049164; cv=none; b=K3+acI7ZNV5wNZvD+JSOWT1obhXIrujYGYfmPE++a/wS7atLIgfym+m3c5R76UxCkXeb+aHJyA+cTyb0SF4ttzfIXpy6XE+E3UhFp2ZdQI2ry1Tc4A6C7u8h4Qs2bvxn14f87fXNfBwt7k6RVP/8e8/Ty4Kq7WKt/Hg0GTNzh5k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712049333; c=relaxed/simple;
-	bh=UeQLeDr70a3ljkig4FVMOaSWhJyxc3bQI9tRisg44XA=;
-	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=Zj9mOzBc4RkTizkW1caEZP8qFpNIKU506hNRoGdxiOrNVMxYrtzlnY+0ylsfBsYlkN2Q/Tw44zl1olFx4rtzO56ujbINVWEHQw3thpH0jv/FmYD0fLYFJoKEQIDoUYD9D4onF8G7Vgr9q976LyGcdzQPD4tt2vXMGhKs5Qwrs2E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=microchip.com; spf=pass smtp.mailfrom=microchip.com; dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b=uCAfurDR; arc=none smtp.client-ip=68.232.153.233
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=microchip.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=microchip.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1712049332; x=1743585332;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=UeQLeDr70a3ljkig4FVMOaSWhJyxc3bQI9tRisg44XA=;
-  b=uCAfurDR2kL48233xX2KXshxPOyg+REk9LKmSQSsVLSrm0J7WIjy+Am3
-   0YNTduVQvHNRT72UhKApR+GPxGzSloTMmU+Yt0LvGkeg1JBkRoQHksqw9
-   wfeBvHlgLy96YWIk3RWTtvR1VV3bDqFOvZZBsyJy83kGzzqbE2qiV++eD
-   ibBXTf5ehF3yQW/KLRhC6tm9b2zjXsJ4+XPOTmyQRraomKA2pezaTMz+t
-   +Y/6NTT1mCHw/h26iUYTNOqadlUUslRAqIsBrsS4YzwulFLB1hc5XEd3M
-   E9pZmnmtaVWtqtH/QJpdPc5frv/pLDpe428Ju+vpfb16f2n30/db+r8/g
-   Q==;
-X-CSE-ConnectionGUID: zFoxbXw+T1mGEU4GLhIt2g==
-X-CSE-MsgGUID: /vqn4v3ESrGT/2xXtmBRqw==
-X-IronPort-AV: E=Sophos;i="6.07,174,1708412400"; 
-   d="scan'208";a="249915458"
-X-Amp-Result: SKIPPED(no attachment in message)
-Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
-  by esa5.microchip.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 02 Apr 2024 02:15:29 -0700
-Received: from chn-vm-ex04.mchp-main.com (10.10.85.152) by
- chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Tue, 2 Apr 2024 02:14:59 -0700
-Received: from ROB-ULT-M76677.microchip.com (10.10.85.11) by
- chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server id
- 15.1.2507.35 via Frontend Transport; Tue, 2 Apr 2024 02:14:56 -0700
-From: Andrei Simion <andrei.simion@microchip.com>
-To: <robh@kernel.org>, <krzysztof.kozlowski+dt@linaro.org>,
-	<conor+dt@kernel.org>, <nicolas.ferre@microchip.com>,
-	<alexandre.belloni@bootlin.com>, <claudiu.beznea@tuxon.dev>,
-	<mihai.sain@microchip.com>
-CC: <linux-arm-kernel@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
-	<devicetree@vger.kernel.org>, Andrei Simion <andrei.simion@microchip.com>
-Subject: [PATCH 2/2] ARM: boot: dts: microchip: at91-sama7g54_curiosity: Replace regulator-suspend-voltage with the valid property
-Date: Tue, 2 Apr 2024 12:12:28 +0300
-Message-ID: <20240402091228.110362-3-andrei.simion@microchip.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20240402091228.110362-1-andrei.simion@microchip.com>
-References: <20240402091228.110362-1-andrei.simion@microchip.com>
+	s=arc-20240116; t=1712049164; c=relaxed/simple;
+	bh=l0kuH/gfbmiikxbhEulmwyHjIEKOY/iskP8dru6n0As=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=LpL3Tg2Rjv1BxAkO2JTtD56Mybn++j8UCHzk/Cy1ulR/QaefssteGKrc1Q5dl9uSDti4qlXOYkseavccmVEh23kO7nQABGa1HpaE+C2bB7Rn/X7SrXX87fFlCmqhOGBYlrrKM30TGEGY2vXIKyAKc3gFmu68W3T1WlHHqdMh6ro=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=qbfz5iA/; arc=none smtp.client-ip=209.85.221.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-vk1-f172.google.com with SMTP id 71dfb90a1353d-4d8804a553dso1853315e0c.1
+        for <linux-kernel@vger.kernel.org>; Tue, 02 Apr 2024 02:12:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1712049161; x=1712653961; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=+P752m0UXgMwu+wcLoyQGRKQoJ9RrigTqZcnP7ifrkk=;
+        b=qbfz5iA/L/iE1Xx5HuCZFaqpCGDwtQbwN4w6X3ej2oH1J+QV7he5WyJZarq7UxrRje
+         CGzH5mPThZZ7k/EjO1r04KwCMljJNRLAz69rHAe3MbiL6LLv0D3MZeyTWgMqB4xOJK/q
+         u4DMwN6dFfhOdDu/2ss9yEP13Y0nm+vrmIu5KseC9pgkrQPg1UiMseB4NfRVkx9Nop9J
+         EAuKIu5gTaAFZ9+F96zb97RmeYaUC5r3efE04UIXohZHoGI2n8oPikqsELl9/bf6xJ3Z
+         6uHmYiyh1w939YBntzKyS3jSRJj/FR+j83Yj47FCaidoRyh0qt/MaxyhAgC82+W3wEV8
+         pViA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712049161; x=1712653961;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=+P752m0UXgMwu+wcLoyQGRKQoJ9RrigTqZcnP7ifrkk=;
+        b=C++tOqHEFcThRumed+BeWdr+MXUVtiKzj14trIjn7HLf3FRScni82rJpIOMbXmbepW
+         mGCA8QP8ycGIN/Gs9fcc7DkuCP9bJLjsj/TtuqFOk/lbZ3BJJHjyJQScvAy8YIrJeHJt
+         /9Qfsk/myrbu9TkUL0BuImkOqu9uwErYuLOuAFMZgkOeRdMLHgcyoeI6iFVTbviY9nP9
+         RAxzSw2d+GljJ3ZKeOVj9xoKGZEQNPRZeUtkXJhF/ypxTbAVnL4tkQz6cvxzqTNjsNjH
+         fH0IlekmXl5itt/zORK0RpL0LBrxFgS7aJkoWmq9mI93UwLJWPWxFKZ26oYOvILxJ+/9
+         Yi+A==
+X-Forwarded-Encrypted: i=1; AJvYcCVXaKf87j8SoMC2EDum2UIqWwb7ZhZuJVEk2PwabDJTMnjVtwLXCaEI9gsQ2nBra/JEvVFp5qaSr1mmmRNv9pFgfQhUolUY1bFBfyYs
+X-Gm-Message-State: AOJu0YwpjtNX38kU887V8ajTbfxFYaML7dgCWIy6C6H2Z+bzCcONwAi3
+	HlvRHtdlceyjFLAGT7xA01t/bO8/Bqgi2uTrnwReCL/BNhaQnUiUHeyRGbnXgrUWsiQEXb6KMIo
+	wv/oCyV3+fZCNUAUq7xIpYdTw0WsPHX41mjdl8w==
+X-Google-Smtp-Source: AGHT+IGOwJVS4tsWfZd+Ju7r2YOHsi//JygXPETSWaASHl0frkCaqLwDK8NaKNahmunxLBxFRjKO4hlQwlv7FcfaS3o=
+X-Received: by 2002:a1f:fe4c:0:b0:4d8:37eb:9562 with SMTP id
+ l73-20020a1ffe4c000000b004d837eb9562mr7441662vki.0.1712049160602; Tue, 02 Apr
+ 2024 02:12:40 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
+References: <20240401152553.125349965@linuxfoundation.org>
+In-Reply-To: <20240401152553.125349965@linuxfoundation.org>
+From: Naresh Kamboju <naresh.kamboju@linaro.org>
+Date: Tue, 2 Apr 2024 14:42:29 +0530
+Message-ID: <CA+G9fYvc8axBi9Hm_WDac5v-4DiDmiFuKxk=Ghx80obEO9Uknw@mail.gmail.com>
+Subject: Re: [PATCH 6.7 000/432] 6.7.12-rc1 review
+To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: stable@vger.kernel.org, patches@lists.linux.dev, 
+	linux-kernel@vger.kernel.org, torvalds@linux-foundation.org, 
+	akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org, 
+	patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de, 
+	jonathanh@nvidia.com, f.fainelli@gmail.com, sudipm.mukherjee@gmail.com, 
+	srw@sladewatkins.net, rwarsow@gmx.de, conor@kernel.org, allen.lkml@gmail.com, 
+	broonie@kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Replace regulator-suspend-voltage with regulator-suspend-microvolt.
+On Mon, 1 Apr 2024 at 21:41, Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
+>
+> Note, this will be the LAST 6.7.y kernel release.  After this one it
+> will be end-of-life.  Please move to 6.8.y now.
+>
+> ------------------------------------------
+>
+> This is the start of the stable review cycle for the 6.7.12 release.
+> There are 432 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+>
+> Responses should be made by Wed, 03 Apr 2024 15:24:46 +0000.
+> Anything received after that time might be too late.
+>
+> The whole patch series can be found in one patch at:
+>         https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patch-=
+6.7.12-rc1.gz
+> or in the git tree and branch at:
+>         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
+-rc.git linux-6.7.y
+> and the diffstat can be found below.
+>
+> thanks,
+>
+> greg k-h
 
-Fixes: ebd6591f8ddb ("ARM: dts: microchip: sama7g54_curiosity: Add initial device tree of the board")
-Signed-off-by: Andrei Simion <andrei.simion@microchip.com>
----
- arch/arm/boot/dts/microchip/at91-sama7g54_curiosity.dts | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+Results from Linaro=E2=80=99s test farm.
+Regressions on arm64, arm, x86_64, and i386 with libgpiod tests.
 
-diff --git a/arch/arm/boot/dts/microchip/at91-sama7g54_curiosity.dts b/arch/arm/boot/dts/microchip/at91-sama7g54_curiosity.dts
-index 4f609e9e510e..009d2c832421 100644
---- a/arch/arm/boot/dts/microchip/at91-sama7g54_curiosity.dts
-+++ b/arch/arm/boot/dts/microchip/at91-sama7g54_curiosity.dts
-@@ -242,7 +242,7 @@ vddcore: VDD_CORE {
- 
- 					regulator-state-standby {
- 						regulator-on-in-suspend;
--						regulator-suspend-voltage = <1150000>;
-+						regulator-suspend-microvolt = <1150000>;
- 						regulator-mode = <4>;
- 					};
- 
-@@ -263,7 +263,7 @@ vddcpu: VDD_OTHER {
- 
- 					regulator-state-standby {
- 						regulator-on-in-suspend;
--						regulator-suspend-voltage = <1050000>;
-+						regulator-suspend-microvolt = <1050000>;
- 						regulator-mode = <4>;
- 					};
- 
-@@ -280,7 +280,7 @@ vldo1: LDO1 {
- 					regulator-always-on;
- 
- 					regulator-state-standby {
--						regulator-suspend-voltage = <1800000>;
-+						regulator-suspend-microvolt = <1800000>;
- 						regulator-on-in-suspend;
- 					};
- 
-@@ -296,7 +296,7 @@ vldo2: LDO2 {
- 					regulator-always-on;
- 
- 					regulator-state-standby {
--						regulator-suspend-voltage = <3300000>;
-+						regulator-suspend-microvolt = <3300000>;
- 						regulator-on-in-suspend;
- 					};
- 
--- 
-2.34.1
+libgpiod test regressions noticed on Linux stable-rc 6.8, 6.7 and 6.6
+and Linux next and mainline master.
 
+Anders bisected and found this first bad commit,
+  gpio: cdev: sanitize the label before requesting the interrupt
+  commit b34490879baa847d16fc529c8ea6e6d34f004b38 upstream.
+
+Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
+
+LKFT is running libgpiod test suite version
+  v2.0.1-0-gae275c3 (and also tested v2.1)
+
+libgpiod
+  - _gpiod_edge-event_edge_event_wait_timeout
+  - _gpiod_edge-event_event_copy
+  - _gpiod_edge-event_null_buffer
+  - _gpiod_edge-event_read_both_events
+  - _gpiod_edge-event_read_both_events_blocking
+  - _gpiod_edge-event_read_falling_edge_event
+  - _gpiod_edge-event_read_rising_edge_event
+  - _gpiod_edge-event_read_rising_edge_event_polled
+  - _gpiod_edge-event_reading_more_events_than_the_queue_contains_doesnt_bl=
+ock
+  - _gpiod_edge-event_seqno
+  - _gpiod_line-info_edge_detection_settings
+
+Test log:
+-------
+ok 16 /gpiod/edge-event/edge_event_buffer_max_capacity
+**
+gpiod-test:ERROR:tests-edge-event.c:52:_gpiod_test_func_edge_event_wait_tim=
+eout:
+'_request' should not be NULL
+# gpiod-test:ERROR:tests-edge-event.c:52:_gpiod_test_func_edge_event_wait_t=
+imeout:
+'_request' should not be NULL
+not ok 17 /gpiod/edge-event/edge_event_wait_timeout
+ok 18 /gpiod/edge-event/cannot_request_lines_in_output_mode_with_edge_detec=
+tion
+**
+gpiod-test:ERROR:tests-edge-event.c:125:_gpiod_test_func_read_both_events:
+'_request' should not be NULL
+# gpiod-test:ERROR:tests-edge-event.c:125:_gpiod_test_func_read_both_events=
+:
+'_request' should not be NULL
+not ok 19 /gpiod/edge-event/read_both_events
+
+Links:
+ - https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-6.7.y/build/v6.=
+7.11-433-gb15156435f06/testrun/23252698/suite/libgpiod/tests/
+
+--
+Linaro LKFT
+https://lkft.linaro.org
 
