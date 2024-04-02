@@ -1,196 +1,235 @@
-Return-Path: <linux-kernel+bounces-127244-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-127245-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 152038948AA
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 03:23:30 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E9E698948AE
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 03:26:55 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 95F791F223A5
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 01:23:29 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1821E1C219CE
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 01:26:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 46EFAD528;
-	Tue,  2 Apr 2024 01:23:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7C9D2DDA9;
+	Tue,  2 Apr 2024 01:26:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=microsoft.com header.i=@microsoft.com header.b="jaFbhW/+"
-Received: from SA9PR02CU001.outbound.protection.outlook.com (mail-southcentralusazon11021007.outbound.protection.outlook.com [40.93.193.7])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=paul-moore.com header.i=@paul-moore.com header.b="Wk/I++s7"
+Received: from mail-qk1-f175.google.com (mail-qk1-f175.google.com [209.85.222.175])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 78AAF3201;
-	Tue,  2 Apr 2024 01:23:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.93.193.7
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712020994; cv=fail; b=XqoOL780H8XTexRoldL0MNIpu+1Z4PBVUEz8VGd+l559cXS0oDpalzpK0Az4Ptl47C9uh7rHIeEIg3j9NlPaoDcMvzA9TsO+cT1K3PtdsA0EIms+sZDdDE6XkOnfK1BBh4kPWVr4bsbFlqGWsR9wx07ZDo/WHUtzGxa8Cdsn8E0=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712020994; c=relaxed/simple;
-	bh=jvohF1KZF2FVEQ5NrQ9XcahE6mtm+H3uD5pRgET/4rU=;
-	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=drx1g3hmsbpffMKMNR5efWe73YwwmtEKcrIu9VahTMEtlXcQmeZRxab50mnIsdENewDhmIL9LdYS14F52imcNJLiKMJb0mMSgX6ZREuX+mbC9PUEjvcY5iqQAbwhbhpyyfh1cDMxyy1j8Fyv9ZfIp4lSq8iQFV08xzaHItBq0Do=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=microsoft.com; spf=pass smtp.mailfrom=microsoft.com; dkim=pass (1024-bit key) header.d=microsoft.com header.i=@microsoft.com header.b=jaFbhW/+; arc=fail smtp.client-ip=40.93.193.7
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=microsoft.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=microsoft.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=dAkeSHTqBFxIdkgjM9fClJLpAgqxEpsP5Q9anwc90IhMQkafGUO6dNKbL0n0kqX3KVZ5CYo6uWCLKmGEIR7QHrT15xw/saVBuwrfWvd184VVuO6eshwocmu+VQ9oQW85jyixK2gl/BVOM+Fb5veDoN7RkWurvUyD5y0zkn9L155UIAc3i+pChPW8EPTYRJB/eYCJRImU55Go06LusO6bWCnwuyN/QX0Xg1OtRPatMPfC4a+uDxuKupN6v+9JPu7NoGEsCTgG3Euy7t/pn+GPF+MzAsrFMVCIoRO1LnhAL2IavcfOLq7TLhYq3jGUZSgM0v1PTrXZX4WiuFUz+s01Cw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=4JqC33zGfl6ZFNMpjHQXpdyqGqnLR0HtQABZvYYQN4o=;
- b=kP/w6hYZsm9CQSVKb1brFGCcq5rht+ddu1kBPaHo4y2o8tCxNLeXyu3VuWkxAU8yq0Kabzhw4udW8/3bZKHj5b1c2ahYqBK5nG85lrpP4OxTB/FcMVVDTQLOCqrTemSlJXWOJAmF/ooFth3pLHGg382AcdiHhgaPZPyWm2J83ouBpwPoCO/gUaPUsx1x55EKOFDvsJCst0UbUpyeyYhuYBFOpVj1QAZ2utdOY93kUfEHuF5DD9IOLXgqVVbd7JvG6o9xaDhQ/OagRr8VKx05kj8Llh+C1flec8NzPmPLJP7Pi8RriCc80d1jYS/RKoinE7hP+YodeI4McmSFcbcgAw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=microsoft.com; dmarc=pass action=none
- header.from=microsoft.com; dkim=pass header.d=microsoft.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=4JqC33zGfl6ZFNMpjHQXpdyqGqnLR0HtQABZvYYQN4o=;
- b=jaFbhW/+98F1AIiKMtVV3UX85xbVTvmoPcsLAOHJiQEdiu2EgwGuqc10Lv97GSGTR6aSyyz6pUUh1Ar3nCq0RUeNZkG/Y5llPkECeEFSD5RKlW3sh/8+8zrUUjpbLL0mQszHcVyvgOHusVE/Wnw9eaUR60PoFd9YyxCw9KePLLM=
-Received: from CY5PR21MB3759.namprd21.prod.outlook.com (2603:10b6:930:c::10)
- by SJ1PR21MB3531.namprd21.prod.outlook.com (2603:10b6:a03:451::11) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7472.7; Tue, 2 Apr
- 2024 01:23:08 +0000
-Received: from CY5PR21MB3759.namprd21.prod.outlook.com
- ([fe80::1c76:5d37:cef1:f135]) by CY5PR21MB3759.namprd21.prod.outlook.com
- ([fe80::1c76:5d37:cef1:f135%5]) with mapi id 15.20.7472.002; Tue, 2 Apr 2024
- 01:23:08 +0000
-From: Dexuan Cui <decui@microsoft.com>
-To: Haiyang Zhang <haiyangz@microsoft.com>, "linux-hyperv@vger.kernel.org"
-	<linux-hyperv@vger.kernel.org>, "netdev@vger.kernel.org"
-	<netdev@vger.kernel.org>, Wei Hu <weh@microsoft.com>
-CC: stephen <stephen@networkplumber.org>, KY Srinivasan <kys@microsoft.com>,
-	Paul Rosswurm <paulros@microsoft.com>, "olaf@aepfle.de" <olaf@aepfle.de>,
-	"vkuznets@redhat.com" <vkuznets@redhat.com>, "davem@davemloft.net"
-	<davem@davemloft.net>, "wei.liu@kernel.org" <wei.liu@kernel.org>,
-	"edumazet@google.com" <edumazet@google.com>, "kuba@kernel.org"
-	<kuba@kernel.org>, "pabeni@redhat.com" <pabeni@redhat.com>, "leon@kernel.org"
-	<leon@kernel.org>, Long Li <longli@microsoft.com>,
-	"ssengar@linux.microsoft.com" <ssengar@linux.microsoft.com>,
-	"linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-	"daniel@iogearbox.net" <daniel@iogearbox.net>, "john.fastabend@gmail.com"
-	<john.fastabend@gmail.com>, "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-	"ast@kernel.org" <ast@kernel.org>, "sharmaajay@microsoft.com"
-	<sharmaajay@microsoft.com>, "hawk@kernel.org" <hawk@kernel.org>,
-	"tglx@linutronix.de" <tglx@linutronix.de>, "shradhagupta@linux.microsoft.com"
-	<shradhagupta@linux.microsoft.com>, "linux-kernel@vger.kernel.org"
-	<linux-kernel@vger.kernel.org>, "stable@vger.kernel.org"
-	<stable@vger.kernel.org>
-Subject: RE: [PATCH net] net: mana: Fix Rx DMA datasize and skb_over_panic
-Thread-Topic: [PATCH net] net: mana: Fix Rx DMA datasize and skb_over_panic
-Thread-Index: AQHagiFTbDDISYHohEGBGDLC4qicc7FPUWYQgATA4gCAAB0LEA==
-Date: Tue, 2 Apr 2024 01:23:08 +0000
-Message-ID:
- <CY5PR21MB37590FD539C1E380FBDC96B0BF3E2@CY5PR21MB3759.namprd21.prod.outlook.com>
-References: <1711748213-30517-1-git-send-email-haiyangz@microsoft.com>
- <CY5PR21MB375904FD3437BA610E6BDBD1BF392@CY5PR21MB3759.namprd21.prod.outlook.com>
- <CH2PR21MB1480E02C74E7BB5A52A71859CA3F2@CH2PR21MB1480.namprd21.prod.outlook.com>
-In-Reply-To:
- <CH2PR21MB1480E02C74E7BB5A52A71859CA3F2@CH2PR21MB1480.namprd21.prod.outlook.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-msip_labels:
- MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ActionId=59ee9ed2-1d2f-476e-81a2-fdbc522a1f8e;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ContentBits=0;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Enabled=true;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Method=Standard;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Name=Internal;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SetDate=2024-03-29T22:45:42Z;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SiteId=72f988bf-86f1-41af-91ab-2d7cd011db47;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: CY5PR21MB3759:EE_|SJ1PR21MB3531:EE_
-x-ld-processed: 72f988bf-86f1-41af-91ab-2d7cd011db47,ExtAddr
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info:
- rmYcf8koOrW/LtdGzjbIzpHN5dODGqqAiko6MVdhhc7ISwTwH8AIAL6uMi1AQpqSXanP8K1cRGnxDPMxIye9oYUPzXLgVM/s3Fi7arAoXcBwlZ1FL3YBCqOjmSFIhY6THi4Tsw00RTNCbpPDesPUGd44/qE6yENp4v3XAENGgaXJo/oXFIsQSSSTE+h39AgAuhIFLLqSH9cAZ1fBLc5nq/btpQJa6WJLFo4n7uV4t0uc3ia2hKuKIF+/EgqFH/uxoYlaVhaoTXYa7EDVMwQmqjgvMNBT5BQrn8Z9ftb8ZogM1CaJcsMC0GQjRHPjf0im89SW3dbV/CX/wWW9yMHSqAH+DNwrDHpMiEb81IuzSm/y/UgVBL6CRYFYktKiVmrmqD3SeMmdmp77GP9qlmXDe4JhUcOp2gq6b7ie017wnnZT9UHTwts4LW9cBcQ3UQTAD5TbAvfgT5mVTNuHj7sjcjOdoiHonyRogf8h10cGGemjjXhQ4UQfMgVxYzkaLUlWrcdutSx359sk5vZrtndAap5p67QnqdV8l+n47PZcWV9rIvRJ5WC6ZQsKKa/mTW32IGNkqZSD0ah1ZFp7rYuoHAkR9a33lqE4s6oF+2pacqHiLSQbHq9uFrQZi7yZQJgc1Qix719UGxnPFBNCKF8dZnId4YUbyi2B9Q67ljAk4WY=
-x-forefront-antispam-report:
- CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CY5PR21MB3759.namprd21.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366007)(376005)(7416005)(1800799015);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0:
- =?us-ascii?Q?9qDMiw16jGqW+pZssGLuu0BK2/fjEgH65CQ138X9ERXyJejxx+DRVqvwb4gl?=
- =?us-ascii?Q?mS/zYWhCJbvAU6ZPqWfSwiJEwfMGM7BZ9qUFf7BCgI3OF68T5c7ypNfODVoi?=
- =?us-ascii?Q?8iQQBUxOs9abIsCCXmedTF5vJ5+uje4DpoVc5KmpKWDSs8b/n9z91nvVtVZh?=
- =?us-ascii?Q?AuaQZHxlpy3lQagKqDVEbYLDwHiFXUO80ctdOhLrOsE3nw8C/P7vQ9Z88I3C?=
- =?us-ascii?Q?uFBPpMNreVcuzRD4v/zA0K61fDXJHZLB3coI9Qh/9i1IHtvT4SPBzsLajUzZ?=
- =?us-ascii?Q?FRewa3ncnqnxjFjEm4vTBp9MI0Xb11oePn3jRiKHUKfodlqcHHLONlvE/Ka0?=
- =?us-ascii?Q?vaecxOTlg7pIMBN/NHIhasl6YnTXQFXCrJqdYE1kQj1YHMU7KTP8K/Hkv76l?=
- =?us-ascii?Q?GDWUcUHUmGma2N2IdTZA4L0SJsLJxN1E5QxalxsNlnBswy74As6xxkJsaVED?=
- =?us-ascii?Q?6WvNsHC5+/jUdxv9KniXxuwpx5yjZPdSL0sbYr9ItE/9PSS5fD1QAW1AsYp/?=
- =?us-ascii?Q?nFUjCaankfY+BxAHiFQeCL2CRWxBYBmtHn9kA98Ed6yO60rPOTJH2t5O9Avn?=
- =?us-ascii?Q?FgdRYv/AyAScAbd16hrSONvw8sbyS9IV896ZpkLcXZkc8r+53JfzWd+7eTG2?=
- =?us-ascii?Q?iVyMsOGCHU0Z0sWlar0z3fIFaodp6GBqIvAf8B1yL71hRYV8G0fY7Bzg+t5C?=
- =?us-ascii?Q?uqhtDc3R5cHHlvsXTPADGyQXHi7phsytQqrKQmSO7alQ22TOIvPuRqfJNOg7?=
- =?us-ascii?Q?UGLgNZyLfCc1FzCgPEMKr+9145nvcOcUsc7oDloqexQVurLziuKceRvzNOJ4?=
- =?us-ascii?Q?iafUsIrm4A4GJyNyohkew/bwub2HW1mxd/4JW55Rdx1Ik+Yv3L7jZis/ASDx?=
- =?us-ascii?Q?g32oBjPdylMR6RXrCg7ACdvTnhKRqzRO4rKeTVuP5i1WxrncXQa+rK7grbka?=
- =?us-ascii?Q?M1LpJPqXKjxSThUiZNiTRrvszr2sjmVKQmH0jFoOVlycvumEOq2eIfc8BDRy?=
- =?us-ascii?Q?ybbCNgcKzyq4Fkzg6Tu0Nd852vBxB2CHTwnjHnwFyloRiqNHg/M3S9207BTd?=
- =?us-ascii?Q?hMaVnFqbqmMpJ5jZMGD1zs9NNUrYk2cW+jQ++oSgJwpYCk7OrHMgYsW4V2cP?=
- =?us-ascii?Q?pB8KPMnmg5T+1OOTyS3Yv0im3SVB+ptm7VOfhalq56BPqMgrd3bipjq2RGNH?=
- =?us-ascii?Q?5HxXzpuZM/kMirTKk3uDODrqGSup+pvNNmLsKTe3rD7GZ89eUbmDgJzBWBBW?=
- =?us-ascii?Q?xGCql9/zYiQgrpWYZpomDQZqpYsKJoirOlWZEQFKGAFpYEITLc+jPk7PI23g?=
- =?us-ascii?Q?roT+aNR32SjFl7G3Z9Q8xhH8nvgbDdZHxe6b2V0Y01VhiRCHq7WuqvxLx3Cy?=
- =?us-ascii?Q?jM5GYQS8FaRzABGW77kvnCcaUR8RxbvaXzXkqTrOpWw3HUk/QibsRe0EzI+J?=
- =?us-ascii?Q?Xr1RyNmA5daRH9fAZ27RZ8eQ4H5UEw7WGTlqPgHCjDdfB4gT+yGoQkIMyUGF?=
- =?us-ascii?Q?a2BcvmbIJcShYUniBmmVzTuRyWAgHnVgQ1jiPxLNk2NU3DIipMFeGzCDcpNI?=
- =?us-ascii?Q?Mqiz+R+JVRMUohq2MUI7/JHPQAK6ZFRepK5AGSWPI6K5zUBTDxys6LiYloK7?=
- =?us-ascii?Q?S6TunUq7TBUW3Jy5WK2c2OYdBTsPBxQUwhvrHmSLXV4u?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 04BEB8BEC
+	for <linux-kernel@vger.kernel.org>; Tue,  2 Apr 2024 01:26:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.175
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1712021206; cv=none; b=nRhiniukTbVIx2gEquYKh4ZWMr8FQmaABsYIGIHBFF/qsfHdIOUmKMmVYmwCyHyAT8JxR43VBu8DWJy8FVTEWsyn5qxt+KnTveYDrAJPaRqr+7vGzeDMfAJylibkmNF3QjxcxqZqdIqjz2FN3iyXruWR+SROUWVtlArQiSBhHv8=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1712021206; c=relaxed/simple;
+	bh=aVxgl65qe63F9RG61q5/c/8ucEYTRdx9vtPoLeH3Y2k=;
+	h=Date:Message-ID:MIME-Version:Content-Type:Content-Disposition:
+	 From:To:Cc:Subject:References:In-Reply-To; b=lMHT4BJKGQ+Uj8AfEk/c/LATNdzdiFeNzIhLDLFO1KO4TW+sZ8WgnswWWfjuIgN6RgtRvMjPfoR8vPRATivMfQw3atj/LZkh9ySN7zWCSdOdnBIbp/6RnrMbft4fNpADF6hH0rhp4OSM6c/b0Fl0poEOg0NAIDEqAO5pbu9fop8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=paul-moore.com; spf=pass smtp.mailfrom=paul-moore.com; dkim=pass (2048-bit key) header.d=paul-moore.com header.i=@paul-moore.com header.b=Wk/I++s7; arc=none smtp.client-ip=209.85.222.175
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=paul-moore.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=paul-moore.com
+Received: by mail-qk1-f175.google.com with SMTP id af79cd13be357-789dbd9a6f1so335280185a.1
+        for <linux-kernel@vger.kernel.org>; Mon, 01 Apr 2024 18:26:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=paul-moore.com; s=google; t=1712021203; x=1712626003; darn=vger.kernel.org;
+        h=in-reply-to:references:subject:cc:to:from:content-transfer-encoding
+         :content-disposition:mime-version:message-id:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=R2O8HEb1FethHT20zhCThThb/BGPO8YtMtgX7GfGVZI=;
+        b=Wk/I++s7wtaQ/2FeEcZ38+tZpZp1W1jPudHa22FhK2Udi6xUU0Le9ilyyu2e5ca56f
+         sZTeM6lKEGBaGNN6qmjKv/gxRA/e9dyIusCcDaQecnFRRuaPBnOTM1f6AwUwx42CHzxJ
+         y9F1LJdJWwMi5lAOcrviZfuMxaFFZkTMFcasPSWmm2+EP1815JEJYvnWVIHaMIutXqC+
+         V+LO/zNlbCsDVTxq9eWDgi3zYUXBfHSstT9HigmwXnzVYxh8lZioolkSoZsEojV1wGGX
+         cmR7yfv2ajFGhqAr2iC9CZNS/dUs0WQY07vlVDXKGDxd2tqQb6v89ncIc/NNvWJcyByx
+         FYhA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712021203; x=1712626003;
+        h=in-reply-to:references:subject:cc:to:from:content-transfer-encoding
+         :content-disposition:mime-version:message-id:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=R2O8HEb1FethHT20zhCThThb/BGPO8YtMtgX7GfGVZI=;
+        b=prEjaQWQFfg8HX0nNQOn2nUDMqFukV/nESaAnP3dWVpSxFiOxzfyJvdJKFH4NYZs1P
+         p4vdUoh1rrlqoA30ILuwBgB/5DKgPVzR2WC6CPMbCy+DidL3vKqRDoewOE/YuYXtEGjO
+         JUOR+OJm+E9qitGGxckT34BpHfajpLqb4izIRVXrOHmq4tG3Jt592FNgJCTWbKKdqIum
+         Q2mPa67L3SiQVE9nTA7c7J82LnMEMrPEbzMv8KJq5e6JYM6BszNYUapihd49JlOwY9UA
+         fBHQOPZX6GRRmBvu+ioxOOmrbbbQlBYQn0lfF8mrNoo3DtDbGtHATFC6ArcRVaDJcsJC
+         u8FA==
+X-Forwarded-Encrypted: i=1; AJvYcCXGZkj2IRKqhnwanhzrCu+3g0xxZJwPx7nAcY5a6EH1mVwt5RQVCGTliTVvOhsQS3mg85Oy0toPLcF8JT4eI1h8CYiVqC6AGUV7hJP2
+X-Gm-Message-State: AOJu0Yz0J0hxFFtGyAvsHT2hYVcGjrF68D50gNFfNLmIE2ws8nr7R8K2
+	6lXJXObWZj6H20oBJihW52T1CnTmeCsrnlK+JOv8mOKXIm5qYouP6wxVSreDIw==
+X-Google-Smtp-Source: AGHT+IE++PDnPsCAN5ZlJzJBCsY9VL8rWCNTNagzE8bvtbG+6yPqmGk0WcKC3DLF/KWvtXLzI6otLg==
+X-Received: by 2002:ad4:404f:0:b0:699:1026:c0a4 with SMTP id r15-20020ad4404f000000b006991026c0a4mr2755001qvp.38.1712021202974;
+        Mon, 01 Apr 2024 18:26:42 -0700 (PDT)
+Received: from localhost ([70.22.175.108])
+        by smtp.gmail.com with ESMTPSA id fn3-20020ad45d63000000b00696934de5f7sm4964016qvb.62.2024.04.01.18.26.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 01 Apr 2024 18:26:42 -0700 (PDT)
+Date: Mon, 01 Apr 2024 21:26:42 -0400
+Message-ID: <18dfbc23f04422e88993a13ff15b6229@paul-moore.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-X-OriginatorOrg: microsoft.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: CY5PR21MB3759.namprd21.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: d9b243c7-2c95-4e11-d78a-08dc52b3748d
-X-MS-Exchange-CrossTenant-originalarrivaltime: 02 Apr 2024 01:23:08.7586
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 72f988bf-86f1-41af-91ab-2d7cd011db47
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: G8PaH9kqDJHybj9lcuOBrt4nbdWB9SCIwJwa7exSRSMMEqApAC+PfzYmst7pDxJSo/qmgdo+m/fuK0cwH+XgDg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ1PR21MB3531
+MIME-Version: 1.0 
+Content-Type: text/plain; charset=utf-8 
+Content-Disposition: inline 
+Content-Transfer-Encoding: 8bit
+From: Paul Moore <paul@paul-moore.com>
+To: Fan Wu <wufan@linux.microsoft.com>, corbet@lwn.net, zohar@linux.ibm.com, jmorris@namei.org, serge@hallyn.com, tytso@mit.edu, ebiggers@kernel.org, axboe@kernel.dk, agk@redhat.com, snitzer@kernel.org, eparis@redhat.com
+Cc: linux-doc@vger.kernel.org, linux-integrity@vger.kernel.org, linux-security-module@vger.kernel.org, fsverity@lists.linux.dev, linux-block@vger.kernel.org, dm-devel@lists.linux.dev, audit@vger.kernel.org, linux-kernel@vger.kernel.org, Deven Bowers <deven.desai@linux.microsoft.com>, Fan Wu <wufan@linux.microsoft.com>
+Subject: Re: [PATCH v16 11/20] block|security: add LSM blob to block_device
+References: <1711657047-10526-12-git-send-email-wufan@linux.microsoft.com>
+In-Reply-To: <1711657047-10526-12-git-send-email-wufan@linux.microsoft.com>
 
-> From: Haiyang Zhang <haiyangz@microsoft.com>
-> Sent: Monday, April 1, 2024 4:21 PM
-> > [...]
-> > I suggest the Fixes tag should be updated. Otherwise the fix
-> > looks good to me.
->=20
-> Thanks for the suggestion. I actually thought about this before
-> submission.
-> I was worried about someone back ports the jumbo frame feature,
-> they may not automatically know this patch should be backported
-> too.=20
+On Mar 28, 2024 Fan Wu <wufan@linux.microsoft.com> wrote:
+> 
+> Some block devices have valuable security properties that is only
+> accessible during the creation time.
 
-The jumbo frame commit (2fbbd712baf1) depends on the MTU
-commit (2fbbd712baf1), so adding "Fixes: 2fbbd712baf1" (
-instead of "Fixes: ca9c54d2d6a5") might make it easier for people
-to notice and pick up this fix.
+You should mention the new hook in the subject line, something like
+the following: "block,lsm: add LSM blob and new LSM hook for block
+devices".
 
-I'm OK if the patch remains as is. Just wanted to make  sure I
-understand the issue here.
+> For example, when creating a dm-verity block device, the dm-verity's
+> roothash and roothash signature, which are extreme important security
+> metadata, are passed to the kernel. However, the roothash will be saved
+> privately in dm-verity, which prevents the security subsystem to easily
+> access that information. Worse, in the current implementation the
+> roothash signature will be discarded after the verification, making it
+> impossible to utilize the roothash signature by the security subsystem.
+> 
+> With this patch, an LSM blob is added to the block_device structure.
+> This enables the security subsystem to store security-sensitive data
+> related to block devices within the security blob. For example, LSM can
+> use the new LSM blob to save the roothash signature of a dm-verity,
+> and LSM can make access decision based on the data inside the signature,
+> like the signer certificate.
+> 
+> The implementation follows the same approach used for security blobs in
+> other structures like struct file, struct inode, and struct superblock.
+> The initialization of the security blob occurs after the creation of the
+> struct block_device, performed by the security subsystem. Similarly, the
+> security blob is freed by the security subsystem before the struct
+> block_device is deallocated or freed.
+> 
+> This patch also introduces a new hook to save block device's integrity
+> data. For example, for dm-verity, LSMs can use this hook to save
+> the roothash signature of a dm-verity into the security blob,
+> and LSMs can make access decisions based on the data inside
+> the signature, like the signer certificate.
+> 
+> Signed-off-by: Deven Bowers <deven.desai@linux.microsoft.com>
+> Signed-off-by: Fan Wu <wufan@linux.microsoft.com>
+> ---
+> v2:
+>   + No Changes
+> 
+> v3:
+>   + Minor style changes from checkpatch --strict
+> 
+> v4:
+>   + No Changes
+> 
+> v5:
+>   + Allow multiple callers to call security_bdev_setsecurity
+> 
+> v6:
+>   + Simplify security_bdev_setsecurity break condition
+> 
+> v7:
+>   + Squash all dm-verity related patches to two patches,
+>     the additions to dm-verity/fs, and the consumption of
+>     the additions.
+> 
+> v8:
+>   + Split dm-verity related patches squashed in v7 to 3 commits based on
+>     topic:
+>       + New LSM hook
+>       + Consumption of hook outside LSM
+>       + Consumption of hook inside LSM.
+> 
+>   + change return of security_bdev_alloc / security_bdev_setsecurity
+>     to LSM_RET_DEFAULT instead of 0.
+> 
+>   + Change return code to -EOPNOTSUPP, bring inline with other
+>     setsecurity hooks.
+> 
+> v9:
+>   + Add Reviewed-by: Casey Schaufler <casey@schaufler-ca.com>
+>   + Remove unlikely when calling LSM hook
+>   + Make the security field dependent on CONFIG_SECURITY
+> 
+> v10:
+>   + No changes
+> 
+> v11:
+>   + No changes
+> 
+> v12:
+>   + No changes
+> 
+> v13:
+>   + No changes
+> 
+> v14:
+>   + No changes
+> 
+> v15:
+>   + Drop security_bdev_setsecurity() for new hook
+>     security_bdev_setintegrity() in the next commit
+>   + Update call_int_hook() for 260017f
+> 
+> v16:
+>   + Drop Reviewed-by tag for the new changes
+>   + Squash the security_bdev_setintegrity() into this commit
+>   + Rename enum from lsm_intgr_type to lsm_integrity_type
+>   + Switch to use call_int_hook() for bdev_setintegrity()
+>   + Correct comment
+>   + Fix return in security_bdev_alloc()
+> ---
+>  block/bdev.c                  |  7 +++
+>  include/linux/blk_types.h     |  3 ++
+>  include/linux/lsm_hook_defs.h |  5 ++
+>  include/linux/lsm_hooks.h     |  1 +
+>  include/linux/security.h      | 26 ++++++++++
+>  security/security.c           | 89 +++++++++++++++++++++++++++++++++++
+>  6 files changed, 131 insertions(+)
 
-> Also, I suspect that a bigger than MTU packet may cause
-> unexpected problem at NVA application.
 
-Good point. + Wei Hu, who can check the FreeBSD MANA driver and
-the DPDK MANA PMD. The code there may also need to be fixed.
 
-> If anyone have questions on back porting, I can provide a back
-> ported patch, which is just one line change.
->=20
-> - Haiyang
+> diff --git a/include/linux/security.h b/include/linux/security.h
+> index f35af7b6cfba..8e646189740e 100644
+> --- a/include/linux/security.h
+> +++ b/include/linux/security.h
+> @@ -1483,6 +1492,23 @@ static inline int lsm_fill_user_ctx(struct lsm_ctx __user *uctx,
+>  {
+>  	return -EOPNOTSUPP;
+>  }
+> +
+> +static inline int security_bdev_alloc(struct block_device *bdev)
+> +{
+> +	return 0;
+> +}
+> +
+> +static inline void security_bdev_free(struct block_device *bdev)
+> +{
+> +}
+> +
+> +static inline int security_bdev_setintegrity(struct block_device *bdev,
+> +					     enum lsm_integrity_type, type,
 
-If the patch remains as is, gregkg will send us "failed to apply"
-emails for v6.1.y and v5.15.y and we'll need to make a backport
-for the 2 stable kernels.
+I'm sure by now you've seen the reports about the errant comma ...
 
-With "Fixes: 2fbbd712baf1", we won't receive the "failed to apply"
-emails.
+> +					     const void *value, size_t size)
+> +{
+> +	return 0;
+> +}
+> +
+>  #endif	/* CONFIG_SECURITY */
 
-Thanks,
-Dexuan
-
+--
+paul-moore.com
 
