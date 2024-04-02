@@ -1,185 +1,172 @@
-Return-Path: <linux-kernel+bounces-127258-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-127259-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6B5958948D7
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 03:37:03 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id E89D68948D9
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 03:39:35 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8AF2E1C22CDD
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 01:37:02 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 80042B22C2F
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 01:39:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1921017732;
-	Tue,  2 Apr 2024 01:35:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ljones.dev header.i=@ljones.dev header.b="uN3cdGK3";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="sU5OpiXS"
-Received: from wfout3-smtp.messagingengine.com (wfout3-smtp.messagingengine.com [64.147.123.146])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 57E5AD2E6;
+	Tue,  2 Apr 2024 01:39:27 +0000 (UTC)
+Received: from relay.hostedemail.com (smtprelay0012.hostedemail.com [216.40.44.12])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7C3C5175AD;
-	Tue,  2 Apr 2024 01:35:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=64.147.123.146
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4ABB48F55;
+	Tue,  2 Apr 2024 01:39:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=216.40.44.12
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712021747; cv=none; b=HnEg1sdNtBxKkyQNYP1/w/CIu4l1JB9uaIAukBCYKPz4zwAnVf5wk1BnqwFaEKg1fxcwRx0j8wX8+fz6kj0EG9yl4XR8WPibaX0M25erDLZT+XBKvZWG5t4Ofi+2dR5nbg4N3iBxnA5GIDXL4T5OGEzcCRaQdFnNRPYat2NKczg=
+	t=1712021966; cv=none; b=h1ZjuVmN3wbwRflz3CP11vtWE/6+EV2D1l6lj4vUg0WHdZeWAfr3Nhn7pV1TNjZMXrYxECc/gg9z0HikDTGPD54Jr7UL1X4BOFu4MILbpo1OJXNSV3/rurA4kpSZMfHnlC18DldCJNuDqIGj2qqS6YRzycqlwRmTNPImroWiAv8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712021747; c=relaxed/simple;
-	bh=LWvRLZ6ZP/TG24Y7QiIJ886vAPHlgfmu6CJrx56yyWc=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=hnMSaR1QSAS/YLIOCzKE5UBSixgs1ZO0h8d/BTJ6ms9Syg6LaWT1KK9O4IAct5h07zx99vq1wQZ0k4PkT2RxgURgifSYkWKM43u2JPjnJ458k5dVm/jQYxqQCJVzAvOKNOtMFQ0c/YYot4rkx5KKfsAR0RgeyNEXUr+YJypCny0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ljones.dev; spf=none smtp.mailfrom=ljones.dev; dkim=pass (2048-bit key) header.d=ljones.dev header.i=@ljones.dev header.b=uN3cdGK3; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=sU5OpiXS; arc=none smtp.client-ip=64.147.123.146
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ljones.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=ljones.dev
-Received: from compute7.internal (compute7.nyi.internal [10.202.2.48])
-	by mailfout.west.internal (Postfix) with ESMTP id 75ADA1C000CA;
-	Mon,  1 Apr 2024 21:35:44 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute7.internal (MEProxy); Mon, 01 Apr 2024 21:35:45 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ljones.dev; h=cc
-	:cc:content-transfer-encoding:content-type:date:date:from:from
-	:in-reply-to:in-reply-to:message-id:mime-version:references
-	:reply-to:subject:subject:to:to; s=fm3; t=1712021743; x=
-	1712108143; bh=wqpLB8ycW4eZTT9R9plE9TxSPiwaqargq3piwMKd6n4=; b=u
-	N3cdGK3RN275pgn9YiiCkTZiY0kjZ8GQJBSqfeI5dV6RD333wIjK3GIFJTCOOjW6
-	2tj38b65EOyBe5wHOQA2/pHrC++6x+Qd8eZ3mj6iFYOejjyZdufbk7RN454+VkAf
-	wy16iicukeSz8/2HsBQue9fhD7JleLltrkWv1hxBzIix8xvdi423ZnmjJTHDUZvy
-	zdalZEmS+O7+5YF5aSvkiAUXtoKtPrYqLmxnikxAYZMZpQe83LU2sqm6vmrdbIxk
-	RBd0Aaee0De8xtvcbWQkKygMhZTS9/ABafxwYaHZ2zOsF2ZExsaMHA1iDdQYGJ5T
-	sHk7tIqI1R1BAIs2/HSjQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-transfer-encoding
-	:content-type:date:date:feedback-id:feedback-id:from:from
-	:in-reply-to:in-reply-to:message-id:mime-version:references
-	:reply-to:subject:subject:to:to:x-me-proxy:x-me-proxy
-	:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; t=1712021743; x=
-	1712108143; bh=wqpLB8ycW4eZTT9R9plE9TxSPiwaqargq3piwMKd6n4=; b=s
-	U5OpiXSP42ECADu6bl16rJiNPfUpIVYKbloIRU0RcRpKzCFV7D/HOLdZWU4CeZXu
-	IVMjHIA+baeOWy43UZDzHuiZLUmBIEYwmP7JnGL7BGn9hOLzcJdpFlfbwvZrByec
-	JWyDtIv963LgYcnypQ8KibIOhGzRibRbfLvFRmQZA0oeOHwza19t3MtpejzFMIMZ
-	Iz1SgpRB5jJwhJwaCXYBROQS4msURa3LdhLywpcYLhkY8tcq6ksPjvOBSH5iIlH0
-	KrQtWmx18sk/iXeJMI4JrD6iQRGtEytSpqMwpZAqVRj5E6lF680f6yv46HsM94Ow
-	AzlYgyTLsz9YCpf/cc2Dg==
-X-ME-Sender: <xms:72ALZpkscmtcaYnFR6FOe9e_-N7-OB_XkyzCtvHdZ33c4RombDCapA>
-    <xme:72ALZk2PsGZi2DNq6YTzOdd3F9LuX9Xt_1gaBVI6o9LOMci1uzGmgFLTmcQV_dQDe
-    dTL0ETNqgWSHuo4LFw>
-X-ME-Received: <xmr:72ALZvqJSDJCuraorMmkTTf5A1ehTVJMbzGQcyBJTI-QuVlIEqMWS8B_x7Ea>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrudefuddggeekucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucenucfjughrpefhvfevufffkffojghfggfgsedtke
-    ertdertddtnecuhfhrohhmpedfnfhukhgvucffrdculfhonhgvshdfuceolhhukhgvsehl
-    jhhonhgvshdruggvvheqnecuggftrfgrthhtvghrnhepgfetfedugfetudeuheetjefhue
-    fggfelleetvdevtefhueeujeefvdegleevhefgnecuvehluhhsthgvrhfuihiivgepfeen
-    ucfrrghrrghmpehmrghilhhfrhhomheplhhukhgvsehljhhonhgvshdruggvvh
-X-ME-Proxy: <xmx:72ALZpnHNNggkrZAfUliU-Xc35TRk8xcCsjSfefB1ctccyMpsR5opg>
-    <xmx:72ALZn02HGUrBlI0SqgBTOhdC-Zf8xike8tNjPYdAYGM9mQ8QOKAgA>
-    <xmx:72ALZosdGohhRAdukg5ljjZHSjkxPSj5MjgZxUGh3TuOe6OoASEQ9Q>
-    <xmx:72ALZrUHa6KjCPxV--yBrXzBoArqLEilvRpe8I1fwSYmPW3n6uSABA>
-    <xmx:72ALZhrqF22CzoV3ODJu-Jarum8trvLePR2nwyCwENpWTaQk6txsaO3NupU>
-Feedback-ID: i5ec1447f:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Mon,
- 1 Apr 2024 21:35:41 -0400 (EDT)
-From: "Luke D. Jones" <luke@ljones.dev>
-To: hdegoede@redhat.com
-Cc: corentin.chary@gmail.com,
-	ilpo.jarvinen@linux.intel.com,
-	platform-driver-x86@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	"Luke D. Jones" <luke@ljones.dev>
-Subject: [PATCH v1 9/9] platform/x86: asus-wmi: cleanup main struct to avoid some holes
-Date: Tue,  2 Apr 2024 14:34:53 +1300
-Message-ID: <20240402013453.18205-10-luke@ljones.dev>
-X-Mailer: git-send-email 2.44.0
-In-Reply-To: <20240402013453.18205-1-luke@ljones.dev>
-References: <20240402013453.18205-1-luke@ljones.dev>
+	s=arc-20240116; t=1712021966; c=relaxed/simple;
+	bh=vlhqz5KpBRf9749xRgTPKFO8TUdZ9RYNixw9VsfSU0M=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=qnMwttw9Yr11DDtNAz7RPbb9+TnlAUzTCbPAtfbCxbdlO6I6PLGqeMpXedlNanjvTpfV7QTymw1sHWSXHnjPWy5Zs6HPuEPBiT6iXhvQb/j8rQvLXvA/aHh8XTtKwnOgGqG/LJC+Qkrb+qLn8qWQUdT79ypPjjx7iLRWHJuAI8U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=perches.com; spf=pass smtp.mailfrom=perches.com; arc=none smtp.client-ip=216.40.44.12
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=perches.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=perches.com
+Received: from omf13.hostedemail.com (a10.router.float.18 [10.200.18.1])
+	by unirelay08.hostedemail.com (Postfix) with ESMTP id 85479140199;
+	Tue,  2 Apr 2024 01:39:22 +0000 (UTC)
+Received: from [HIDDEN] (Authenticated sender: joe@perches.com) by omf13.hostedemail.com (Postfix) with ESMTPA id 85F292000D;
+	Tue,  2 Apr 2024 01:39:17 +0000 (UTC)
+Message-ID: <3ea68e8fc46332d45e2af0d8de938628445b6691.camel@perches.com>
+Subject: Re: [PATCH v5 2/2] scripts: checkpatch: check unused parameters for
+ function-like macro
+From: Joe Perches <joe@perches.com>
+To: Mac Xu <mac.xxn@outlook.com>, Barry Song <21cnbao@gmail.com>, 
+	"akpm@linux-foundation.org"
+	 <akpm@linux-foundation.org>, "linux-doc@vger.kernel.org"
+	 <linux-doc@vger.kernel.org>, "workflows@vger.kernel.org"
+	 <workflows@vger.kernel.org>
+Cc: "apw@canonical.com" <apw@canonical.com>, "broonie@kernel.org"
+ <broonie@kernel.org>, "chenhuacai@loongson.cn" <chenhuacai@loongson.cn>, 
+ "chris@zankel.net" <chris@zankel.net>, "corbet@lwn.net" <corbet@lwn.net>, 
+ "dwaipayanray1@gmail.com" <dwaipayanray1@gmail.com>,
+ "herbert@gondor.apana.org.au" <herbert@gondor.apana.org.au>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "linux@roeck-us.net" <linux@roeck-us.net>,  "lukas.bulwahn@gmail.com"
+ <lukas.bulwahn@gmail.com>, "sfr@canb.auug.org.au" <sfr@canb.auug.org.au>, 
+ "v-songbaohua@oppo.com" <v-songbaohua@oppo.com>, Max Filippov
+ <jcmvbkbc@gmail.com>, Jeff Johnson <quic_jjohnson@quicinc.com>, Charlemagne
+ Lasse <charlemagnelasse@gmail.com>
+Date: Mon, 01 Apr 2024 18:39:16 -0700
+In-Reply-To: <MN0PR20MB471708D419907FFAF1DB0FC2F33E2@MN0PR20MB4717.namprd20.prod.outlook.com>
+References: <20240401012120.6052-1-21cnbao@gmail.com>
+	 <20240401012120.6052-3-21cnbao@gmail.com>
+	 <f5bb12d8602a03d28b2a8aeaffd8f74f001d692d.camel@perches.com>
+	 <MN0PR20MB471708D419907FFAF1DB0FC2F33E2@MN0PR20MB4717.namprd20.prod.outlook.com>
+Content-Type: text/plain; charset="ISO-8859-1"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-Rspamd-Queue-Id: 85F292000D
+X-Stat-Signature: 6ho5883h6gxd6usjtzscbx6e9uwzjpqi
+X-Rspamd-Server: rspamout04
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Session-ID: U2FsdGVkX1+vZ9mjWctkustVm6kw5YX3rWfz+BrXOao=
+X-HE-Tag: 1712021957-318462
+X-HE-Meta: U2FsdGVkX19ry6l9vQgZxv4Fb9Eb1aW7B+/HBhqXrlUOtlGQpxhNk8JdNQPrzJlak/pEzw0ZctqTBkStewNT8t4wXgswG8fAlqHmVOOMznK3hHXt6zv7YzxntmCnUSvmH59KTIkggyLMfjS2fChexa9S4528beBDHer9bpgp1DNkIQsOzWrGarR3tynjCgvlkmgTvTPaPJEzoEe5BQLVdnzH1isDxYupWV8pZ/kmntVtP3VG4uoCZ2EnGLMi11xe62pq4Zqed2rkH7ybMmV3wmK7XsOcTSP9R44dX+VPMikUFcx0Q8ZUeGRRYSPE7npRXm06LmQOsVCj052nPWHB+If09YfnORDWb7BK0BgaO5ahOzgALKVEOqfpIXNFyHywnHfdHi76BYEmwM3E4WIoFOEloEAweDtqO0AHxNn92Riu0YoLtne0CTjWE1zLvvHsf2dINtsOWJ4=
 
-Reorganises some attr-available calls to remove a few unrequired
-booleans in the main driver struct which combined with some
-reorganisation prevents a series of large holes seen with pahole.
+On Tue, 2024-04-02 at 00:16 +0000, Mac Xu wrote:
+> > On Mon, 2024-04-01 at 14:21 +1300, Barry Song wrote:
+> > > From: Xining Xu <mac.xxn@outlook.com>
+> > >=20
+> > > If function-like macros do not utilize a parameter, it might result i=
+n a
+> > > build warning.  In our coding style guidelines, we advocate for utili=
+zing
+> > > static inline functions to replace such macros.  This patch verifies
+> > > compliance with the new rule.
+> > >=20
+> > > For a macro such as the one below,
+> > >=20
+> > > =A0#define test(a) do { } while (0)
+> > >=20
+> > > The test result is as follows.
+> > >=20
+> > > =A0ERROR: Parameter 'a' is not used in function-like macro, please us=
+e static
+> > > =A0inline instead
+> > > =A0#21: FILE: mm/init-mm.c:20:
+> > > =A0+#define test(a) do { } while (0)
+> >=20
+> > This is no longer true.
+> > Please update the ERROR->WARN and message as below
+> >=20
+> > Ideally, this would have an update to
+> > Documentation/dev-tools/checkpatch.rst
+> >=20
+> > to describe the new --verbose message type
+>=20
+> Hi Joe,
+>=20
+> Thank you for the comments, here's the code:
+>=20
+> +# check if this is an unused argument
+> +if ($define_stmt !~ /\b$arg\b/) {
+> +	WARN("MACRO_ARG_UNUSED",
+> +		"Argument '$arg' is not used in function-like macro\n" . "$herectx");
+> +}
+>=20
+> and here's the document for it which is inserted into the "Macros, Attrib=
+utes and
+> Symbols" section of checkpatch.rst starting from line 909:
+> +
+> +  **MACRO_ARG_UNUSED**
+> +    If function-like macros do not utilize a parameter, it might result
+> +    in a build warning. We advocate for utilizing static inline function=
+s
+> +    to replace such macros.
+> +    For example, for a macro as below::
+> +
+> +      #define test(a) do { } while (0)
+> +
+> +    there would be a warning as below::
+> +
+> +      WARNING: Parameter 'a' is not used in function-like macro, please =
+use
+> +      static inline instead.
+>=20
+> Please let me know if the document needs further re-wording to make it he=
+lpful enough
+> to the readers.
 
-Signed-off-by: Luke D. Jones <luke@ljones.dev>
----
- drivers/platform/x86/asus-wmi.c | 17 ++++++-----------
- 1 file changed, 6 insertions(+), 11 deletions(-)
+Hi again Xining.
 
-diff --git a/drivers/platform/x86/asus-wmi.c b/drivers/platform/x86/asus-wmi.c
-index a6b648457908..7163cce7079c 100644
---- a/drivers/platform/x86/asus-wmi.c
-+++ b/drivers/platform/x86/asus-wmi.c
-@@ -243,6 +243,9 @@ struct asus_wmi {
- 	u32 tablet_switch_dev_id;
- 	bool tablet_switch_inverted;
- 
-+	/* The ROG Ally device requires the MCU USB device be disconnected before suspend */
-+	bool ally_mcu_usb_switch;
-+
- 	enum fan_type fan_type;
- 	enum fan_type gpu_fan_type;
- 	enum fan_type mid_fan_type;
-@@ -255,9 +258,7 @@ struct asus_wmi {
- 	u8 fan_boost_mode_mask;
- 	u8 fan_boost_mode;
- 
--	bool charge_mode_available;
- 	bool egpu_enable_available;
--	bool egpu_connect_available;
- 	bool dgpu_disable_available;
- 	u32 gpu_mux_dev;
- 
-@@ -298,9 +299,6 @@ struct asus_wmi {
- 
- 	bool fnlock_locked;
- 
--	/* The ROG Ally device requires the MCU USB device be disconnected before suspend */
--	bool ally_mcu_usb_switch;
--
- 	struct asus_wmi_debug debug;
- 
- 	struct asus_wmi_driver *driver;
-@@ -4373,11 +4371,11 @@ static umode_t asus_sysfs_is_visible(struct kobject *kobj,
- 	else if (attr == &dev_attr_als_enable.attr)
- 		devid = ASUS_WMI_DEVID_ALS_ENABLE;
- 	else if (attr == &dev_attr_charge_mode.attr)
--		ok = asus->charge_mode_available;
-+		devid = ASUS_WMI_DEVID_CHARGE_MODE;
- 	else if (attr == &dev_attr_egpu_enable.attr)
- 		ok = asus->egpu_enable_available;
- 	else if (attr == &dev_attr_egpu_connected.attr)
--		ok = asus->egpu_connect_available;
-+		devid = ASUS_WMI_DEVID_EGPU_CONNECTED;
- 	else if (attr == &dev_attr_dgpu_disable.attr)
- 		ok = asus->dgpu_disable_available;
- 	else if (attr == &dev_attr_gpu_mux_mode.attr)
-@@ -4405,7 +4403,7 @@ static umode_t asus_sysfs_is_visible(struct kobject *kobj,
- 	else if (attr == &dev_attr_boot_sound.attr)
- 		devid = ASUS_WMI_DEVID_BOOT_SOUND;
- 	else if (attr == &dev_attr_panel_od.attr)
--		ok = asus->panel_overdrive_available;
-+		devid = ASUS_WMI_DEVID_PANEL_OD;
- 	else if (attr == &dev_attr_mini_led_mode.attr)
- 		ok = asus->mini_led_dev_id != 0;
- 	else if (attr == &dev_attr_available_mini_led_mode.attr)
-@@ -4656,12 +4654,9 @@ static int asus_wmi_add(struct platform_device *pdev)
- 	asus->nv_dynamic_boost = 5;
- 	asus->nv_temp_target = 75;
- 
--	asus->charge_mode_available = asus_wmi_dev_is_present(asus, ASUS_WMI_DEVID_CHARGE_MODE);
- 	asus->egpu_enable_available = asus_wmi_dev_is_present(asus, ASUS_WMI_DEVID_EGPU);
--	asus->egpu_connect_available = asus_wmi_dev_is_present(asus, ASUS_WMI_DEVID_EGPU_CONNECTED);
- 	asus->dgpu_disable_available = asus_wmi_dev_is_present(asus, ASUS_WMI_DEVID_DGPU);
- 	asus->kbd_rgb_state_available = asus_wmi_dev_is_present(asus, ASUS_WMI_DEVID_TUF_RGB_STATE);
--	asus->panel_overdrive_available = asus_wmi_dev_is_present(asus, ASUS_WMI_DEVID_PANEL_OD);
- 	asus->ally_mcu_usb_switch = acpi_has_method(NULL, ASUS_USB0_PWR_EC0_CSEE)
- 						&& dmi_match(DMI_BOARD_NAME, "RC71L");
- 
--- 
-2.44.0
+Thanks.
+
+That looks good but it doesn't match the script output
+which doesn't use ", please use static inline instead."
+(and I believe the script should not output that too)
+
+Another good thing would be to add a line like:
+
+	See: https://www.kernel.org/doc/html/latest/process/coding-style.html#macr=
+os-enums-and-rtl
+
+For example, from: checkpatch.rst
+
+  **ALLOC_SIZEOF_STRUCT**
+    The allocation style is bad.  In general for family of
+    allocation functions using sizeof() to get memory size,
+    constructs like::
+
+      p =3D alloc(sizeof(struct foo), ...)
+
+    should be::
+
+      p =3D alloc(sizeof(*p), ...)
+
+    See: https://www.kernel.org/doc/html/latest/process/coding-style.html#a=
+llocating-memory
 
 
