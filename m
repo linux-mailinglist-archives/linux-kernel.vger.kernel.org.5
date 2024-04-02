@@ -1,157 +1,283 @@
-Return-Path: <linux-kernel+bounces-128503-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-128504-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id DD10D895BC1
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 20:30:24 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5688C895BC3
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 20:31:51 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5E3C51F22A83
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 18:30:24 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5DB2E1C227B5
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 18:31:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C258A15B121;
-	Tue,  2 Apr 2024 18:30:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C3AF215B11A;
+	Tue,  2 Apr 2024 18:31:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="biBREyki"
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="gueSDceB"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8437315B0ED;
-	Tue,  2 Apr 2024 18:30:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0CBD32E62E
+	for <linux-kernel@vger.kernel.org>; Tue,  2 Apr 2024 18:31:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712082617; cv=none; b=MN4N007MkqqjYbJmUmKWuQ4ZXw8j9r5YONSz3nPs7W1tuBzXqudRmihi5IRzeP37HwUFfKINhlPTBJCwYCSt3NtJ877/WpPNjsItHcXnffus9ksdz2XvPMkpv86yIBtgCPLs9yp0+CmBidvJqP+M5A9E7st0gVSo70mqcJFt2E8=
+	t=1712082702; cv=none; b=PkUqwQJiFbd9fjRTt3+1dobR4tEYnxRA5hcECYINrSjiKKcLgyNjJhr1jhzDfOxtKhmyKXLieaAEMqFtQWerOn0tv+/0T3wnFf9HfPM21QYXBKIlf18LJVIIKdyjpHo9Jk9l1C84kYDi4y6fnkI/YyMuFtOgsBbR+QOSlpm1XI8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712082617; c=relaxed/simple;
-	bh=uOOqOGJkcjNWVvkBUSEI7eW++vFoiDQBBlkzXOrfJ60=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=BtqCt/kFAhPGIHLaB1pnVNHGi1TSThc0bL3sFBBykoMaLia25j4V/XucIUpK1xLZ+Q847keL0JkCaIYzBWqNruxEW+5EH14Z3soach3qcAcq2Nz9ch819yL1hLojJm8czf+A3W/eMBDYp091meQR3mi9neVruz4IRRtJ4uf9NZ0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=biBREyki; arc=none smtp.client-ip=205.220.180.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279868.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 432HJS4D016776;
-	Tue, 2 Apr 2024 18:30:11 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	message-id:date:mime-version:subject:to:cc:references:from
-	:in-reply-to:content-type:content-transfer-encoding; s=
-	qcppdkim1; bh=/nhzaRCV/5qt6/+uWIVNFZNDsNUTGwbH39DgJi3ti+A=; b=bi
-	BREykiNDbn6PzmyItUuTVU2xyIOfVxVQ5Z3SFHFJ+IwDUfChTMhHVUE8ouVFrNE+
-	3JEfyn2ShLL7gu5ZT9I9DD6en7VaLC95w+GxXdyYv6MLHciZeFv08YASeCAAH4jq
-	oabGKybEnGkOXGhG8cxpMrxh+4Zg0N4CPYea6m4nC+lQxx955XGDay++qCjgOGHb
-	Rw9k6XdFu7KltoEb8mwBpfjMNu1CG4CwhGG6NXdNEmTP3SLB3MqDIaG5y8TqAgiH
-	3EYN9ZewpN5N8GY7NuT8RsEdrP1JeXcTTu4t+5xtcHTQcHjPgBSp7yEmeNCOo+X7
-	r5DNKz2OTHf6oMRQYVyw==
-Received: from nasanppmta05.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3x8fm1shy9-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 02 Apr 2024 18:30:10 +0000 (GMT)
-Received: from nasanex01b.na.qualcomm.com (nasanex01b.na.qualcomm.com [10.46.141.250])
-	by NASANPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 432IU9ZJ009732
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 2 Apr 2024 18:30:09 GMT
-Received: from [10.216.46.192] (10.80.80.8) by nasanex01b.na.qualcomm.com
- (10.46.141.250) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.4; Tue, 2 Apr 2024
- 11:30:00 -0700
-Message-ID: <62461275-16d6-935f-786a-e602b4b91dde@quicinc.com>
-Date: Tue, 2 Apr 2024 23:59:56 +0530
+	s=arc-20240116; t=1712082702; c=relaxed/simple;
+	bh=qDApzRLT64Qi6pbqkdTWjmJkL9+/WQNfFdxV94XLxFk=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=bH5fxqK4TuUlUtTwFS/A2lcps92u7/ZpM+ZY08mTWTgiaV+V8bzf+0D7cyRJnlQp3PGvpyQcqyv3fRvgc5yci8MV90mRqquCMVGb8hXEoUzdQicYwiROOopJ/9cn0bj4VuAiLlOADOJDvrSkYSo4q2cRncAEOLXjJ0yVnZnA7Xo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=gueSDceB; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1712082700;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=lMrQ/HyPcTUexiexGuHGYoI8R6rk48hQ9GiX28Xmjeo=;
+	b=gueSDceBOKrXll08xBP7p1ZoAY4dQKfSrd3zJ9fahLT1NrZA0YCgbnus2Wm/KgUL2zJ5ze
+	j6VRVfNd1WhoYoipzU/wRS5ncTLXnVS9WzeimD4h+e6FGixSrPFP6Ow907ENU+76/nBEWI
+	x7jmUH93f/yRaePIALXFVyaHXqquKjk=
+Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
+ [209.85.221.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-608-MTugMRCoPAKTLtGFsbj1tw-1; Tue, 02 Apr 2024 14:31:38 -0400
+X-MC-Unique: MTugMRCoPAKTLtGFsbj1tw-1
+Received: by mail-wr1-f71.google.com with SMTP id ffacd0b85a97d-341cdbcbd62so2064692f8f.1
+        for <linux-kernel@vger.kernel.org>; Tue, 02 Apr 2024 11:31:38 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712082697; x=1712687497;
+        h=content-transfer-encoding:in-reply-to:organization:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=lMrQ/HyPcTUexiexGuHGYoI8R6rk48hQ9GiX28Xmjeo=;
+        b=S+Vj9wN3uI6iqVtREYib7wmDLc3h/Y+WeUI/l88UqDjZ+l5lXlhziyZ9IOFLMrjlIe
+         r4xkHtMz8ODe6LtpQA86DLWDy2VDYLibjsKDD2Otf0ZBsGvLf/p2vqo/QweC0QhHF6lr
+         LarD1+1S7LJzUX5+P1BZdek3XfKsCc21BuX6ZoCAl9vyO7ULaN93dzIsce31Srj0Stim
+         M/TLRifIEWQriAM8VQEnsVVYUI4pc+cS5uTHALSZ240ttbWFUox3M7ijDvdLQYHJxt5i
+         ndOyyVNxZvRx7MHHx4hrXLcFB9MFmeeCEAOvWhf8R0rdqep8Vl3zp4foWjZci/BBPyYK
+         59IQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUFy+Y96KgIRRNIfulBC1kltYMhno7m3WHJAQDWwoi56njorVOkJmzVkIHg11KPBEPqY68FtQdShSxzEJ6+DaHPaX8Ojdz7s42EL8yl
+X-Gm-Message-State: AOJu0Yy3XZeKHVFBDZVocub+DauykNJNhlE/qcL49uDpyTsg9kHKByBR
+	dFlfQbEJoshF+LxAzMIxFYlon4z2TFjcrFAHhrS9A0baByG8f9JMG18WPAwNU4uErWsaP4wNAq3
+	ew2p8rGCEAt/SLpfka6MGlX8+pEQt1tPIMubw9+MNosMsFsfEA8Z5xzHc+WIXoQ==
+X-Received: by 2002:adf:b1da:0:b0:33e:ce15:85bb with SMTP id r26-20020adfb1da000000b0033ece1585bbmr7829884wra.59.1712082697491;
+        Tue, 02 Apr 2024 11:31:37 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IGILf5QxxKk9M6qng8emj8A3NI6qmWp3gBoZ7tdLmpspbS+wR+DOTTBPlsXkp7h+/Apayhn3A==
+X-Received: by 2002:adf:b1da:0:b0:33e:ce15:85bb with SMTP id r26-20020adfb1da000000b0033ece1585bbmr7829869wra.59.1712082696983;
+        Tue, 02 Apr 2024 11:31:36 -0700 (PDT)
+Received: from ?IPV6:2003:cb:c732:e600:4982:2903:710f:f20a? (p200300cbc732e60049822903710ff20a.dip0.t-ipconnect.de. [2003:cb:c732:e600:4982:2903:710f:f20a])
+        by smtp.gmail.com with ESMTPSA id bq24-20020a5d5a18000000b0033e45930f35sm15122595wrb.6.2024.04.02.11.31.35
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 02 Apr 2024 11:31:36 -0700 (PDT)
+Message-ID: <a2fff462-dfe6-4979-a7b2-131c6e0b5017@redhat.com>
+Date: Tue, 2 Apr 2024 20:31:35 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.11.2
-Subject: Re: [PATCH 6/7] dt-bindings: clock: qcom: Add GPUCC clocks for SM4450
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RFC PATCH 0/4] KVM: x86/mmu: Rework marking folios
+ dirty/accessed
+To: David Matlack <dmatlack@google.com>
+Cc: Sean Christopherson <seanjc@google.com>,
+ Paolo Bonzini <pbonzini@redhat.com>, kvm@vger.kernel.org,
+ linux-kernel@vger.kernel.org, David Stevens <stevensd@chromium.org>,
+ Matthew Wilcox <willy@infradead.org>
+References: <20240320005024.3216282-1-seanjc@google.com>
+ <4d04b010-98f3-4eae-b320-a7dd6104b0bf@redhat.com>
+ <CALzav=eLH+V_5Y6ZWsRkmnbEb6fxPa55B7xyWxP3o6qsrs_nHA@mail.gmail.com>
 Content-Language: en-US
-To: Krzysztof Kozlowski <krzk@kernel.org>,
-        Michael Turquette
-	<mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>, Rob Herring
-	<robh@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Vinod Koul <vkoul@kernel.org>,
-        Vladimir Zapolskiy <vladimir.zapolskiy@linaro.org>
-CC: <linux-arm-msm@vger.kernel.org>, <linux-clk@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, Taniya Das <quic_tdas@quicinc.com>,
-        "Jagadeesh Kona" <quic_jkona@quicinc.com>,
-        Imran Shaik
-	<quic_imrashai@quicinc.com>,
-        "Satya Priya Kakitapalli"
-	<quic_skakitap@quicinc.com>
-References: <20240330182817.3272224-1-quic_ajipan@quicinc.com>
- <20240330182817.3272224-7-quic_ajipan@quicinc.com>
- <06bcdb86-ad14-4b52-b61b-44191d6ca22d@kernel.org>
- <79dd5585-db7f-4a02-bb89-b83f91067956@kernel.org>
-From: Ajit Pandey <quic_ajipan@quicinc.com>
-In-Reply-To: <79dd5585-db7f-4a02-bb89-b83f91067956@kernel.org>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nasanex01b.na.qualcomm.com (10.46.141.250)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: UT1mo3sy_L6_RGT5Pgr2n9ncxebbx9KB
-X-Proofpoint-ORIG-GUID: UT1mo3sy_L6_RGT5Pgr2n9ncxebbx9KB
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-04-02_12,2024-04-01_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 spamscore=0
- clxscore=1011 impostorscore=0 bulkscore=0 adultscore=0 priorityscore=1501
- mlxlogscore=923 suspectscore=0 lowpriorityscore=0 phishscore=0 mlxscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.19.0-2403210001
- definitions=main-2404020137
+From: David Hildenbrand <david@redhat.com>
+Autocrypt: addr=david@redhat.com; keydata=
+ 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
+ WNyWQQ==
+Organization: Red Hat
+In-Reply-To: <CALzav=eLH+V_5Y6ZWsRkmnbEb6fxPa55B7xyWxP3o6qsrs_nHA@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-
-
-On 3/31/2024 2:00 PM, Krzysztof Kozlowski wrote:
-> On 31/03/2024 10:18, Krzysztof Kozlowski wrote:
->> On 30/03/2024 19:28, Ajit Pandey wrote:
->>> Add support for qcom display clock controller bindings
->>> for SM4450 platform.
->>>
->>> Signed-off-by: Ajit Pandey <quic_ajipan@quicinc.com>
->>> ---
+On 02.04.24 19:38, David Matlack wrote:
+> On Wed, Mar 20, 2024 at 5:56 AM David Hildenbrand <david@redhat.com> wrote:
 >>
->> Reviewed-by: Krzysztof Kozlowski <krzk@kernel.org>
+>> On 20.03.24 01:50, Sean Christopherson wrote:
+>>> Rework KVM to mark folios dirty when creating shadow/secondary PTEs (SPTEs),
+>>> i.e. when creating mappings for KVM guests, instead of when zapping or
+>>> modifying SPTEs, e.g. when dropping mappings.
+>>>
+>>> The motivation is twofold:
+>>>
+>>>     1. Marking folios dirty and accessed when zapping can be extremely
+>>>        expensive and wasteful, e.g. if KVM shattered a 1GiB hugepage into
+>>>        512*512 4KiB SPTEs for dirty logging, then KVM marks the huge folio
+>>>        dirty and accessed for all 512*512 SPTEs.
+>>>
+>>>     2. x86 diverges from literally every other architecture, which updates
+>>>        folios when mappings are created.  AFAIK, x86 is unique in that it's
+>>>        the only KVM arch that prefetches PTEs, so it's not quite an apples-
+>>>        to-apples comparison, but I don't see any reason for the dirty logic
+>>>        in particular to be different.
+>>>
+>>
+>> Already sorry for the lengthy reply.
+>>
+>>
+>> On "ordinary" process page tables on x86, it behaves as follows:
+>>
+>> 1) A page might be mapped writable but the PTE might not be dirty. Once
+>>      written to, HW will set the PTE dirty bit.
+>>
+>> 2) A page might be mapped but the PTE might not be young. Once accessed,
+>>      HW will set the PTE young bit.
+>>
+>> 3) When zapping a page (zap_present_folio_ptes), we transfer the dirty
+>>      PTE bit to the folio (folio_mark_dirty()), and the young PTE bit to
+>>      the folio (folio_mark_accessed()). The latter is done conditionally
+>>      only (vma_has_recency()).
+>>
+>> BUT, when zapping an anon folio, we don't do that, because there zapping
+>> implies "gone for good" and not "content must go to a file".
+>>
+>> 4) When temporarily unmapping a folio for migration/swapout, we
+>>      primarily only move the dirty PTE bit to the folio.
+>>
+>>
+>> GUP is different, because the PTEs might change after we pinned the page
+>> and wrote to it. We don't modify the PTEs and expect the GUP user to do
+>> the right thing (set dirty/accessed). For example,
+>> unpin_user_pages_dirty_lock() would mark the page dirty when unpinning,
+>> where the PTE might long be gone.
+>>
+>> So GUP does not really behave like HW access.
+>>
+>>
+>> Secondary page tables are different to ordinary GUP, and KVM ends up
+>> using GUP to some degree to simulate HW access; regarding NUMA-hinting,
+>> KVM already revealed to be very different to all other GUP users. [1]
+>>
+>> And I recall that at some point I raised that we might want to have a
+>> dedicate interface for these "mmu-notifier" based page table
+>> synchonization mechanism.
+>>
+>> But KVM ends up setting folio dirty/access flags itself, like other GUP
+>> users. I do wonder if secondary page tables should be messing with folio
+>> flags *at all*, and if there would be ways to to it differently using PTEs.
+>>
+>> We make sure to synchronize the secondary page tables to the process
+>> page tables using MMU notifiers: when we write-protect/unmap a PTE, we
+>> write-protect/unmap the SPTE. Yet, we handle accessed/dirty completely
+>> different.
 > 
-> Un-reviewed. I did not notice that this was not tested at all.
-> 
-> NAK
-> 
-> Please use scripts/get_maintainers.pl to get a list of necessary people
-> and lists to CC. It might happen, that command when run on an older
-> kernel, gives you outdated entries. Therefore please be sure you base
-> your patches on recent Linux kernel.
-> 
-> Tools like b4 or scripts/get_maintainer.pl provide you proper list of
-> people, so fix your workflow. Tools might also fail if you work on some
-> ancient tree (don't, instead use mainline), work on fork of kernel
-> (don't, instead use mainline) or you ignore some maintainers (really
-> don't). Just use b4 and everything should be fine, although remember
-> about `b4 prep --auto-to-cc` if you added new patches to the patchset.
-> 
-> You missed at least devicetree list (maybe more), so this won't be
-> tested by automated tooling. Performing review on untested code might be
-> a waste of time, thus I will skip this patch entirely till you follow
-> the process allowing the patch to be tested.
-> 
-> Please kindly resend and include all necessary To/Cc entries.
-> 
-> 
-> Best regards,
-> Krzysztof
+> Accessed bits have the test/clear young MMU-notifiers. But I agree
+> there aren't any notifiers for dirty tracking.
 > 
 
-Apologies somehow missed including device tree mailing list, Thanks for 
-review and suggestion will take care of this in next series.
+Yes, and I am questioning if the "test" part should exist -- or if 
+having a spte in the secondary MMU should require the access bit to be 
+set (derived from the primary MMU). (again, my explanation about fake HW 
+page table walkers)
+
+There might be a good reason to do it like that nowadays, so I'm only 
+raising it as something I was wondering. Likely, frequent clearing of 
+the access bit would result in many PTEs in the secondary MMU getting 
+invalidated, requiring a new GUP-fast lookup where we would set the 
+access bit in the primary MMU PTE. But I'm not an expert on the 
+implications with MMU notifiers and access bit clearing.
+
+> Are there any cases where the primary MMU transfers the PTE dirty bit
+> to the folio _other_ than zapping (which already has an MMU-notifier
+> to KVM). If not then there might not be any reason to add a new
+> notifier. Instead the contract should just be that secondary MMUs must
+> also transfer their dirty bits to folios in sync (or before) the
+> primary MMU zaps its PTE.
+
+Grepping for pte_mkclean(), there might be some cases. Many cases use 
+MMU notifier, because they either clear the PTE or also remove write 
+permissions.
+
+But these is madvise_free_pte_range() and 
+clean_record_shared_mapping_range()...->clean_record_pte(), that might 
+only clear the dirty bit without clearing/changing permissions and 
+consequently not calling MMU notifiers.
+
+Getting a writable PTE without the dirty bit set should be possible.
+
+So I am questioning whether having a writable PTE in the secondary MMU 
+with a clean PTE in the primary MMU should be valid to exist. It can 
+exist today, and I am not sure if that's the right approach.
+
+> 
+>>
+>>
+>> I once had the following idea, but I am not sure about all implications,
+>> just wanted to raise it because it matches the topic here:
+>>
+>> Secondary page tables kind-of behave like "HW" access. If there is a
+>> write access, we would expect the original PTE to become dirty, not the
+>> mapped folio.
+> 
+> Propagating SPTE dirty bits to folios indirectly via the primary MMU
+> PTEs won't work for guest_memfd where there is no primary MMU PTE. In
+> order to avoid having two different ways to propagate SPTE dirty bits,
+> KVM should probably be responsible for updating the folio directly.
+> 
+
+But who really cares about access/dirty bits for guest_memfd?
+
+guest_memfd already wants to disable/bypass all of core-MM, so different 
+rules are to be expected. This discussion is all about integration with 
+core-MM that relies on correct dirty bits, which does not really apply 
+to guest_memfd.
+
 -- 
-Thanks, and Regards
-Ajit
+Cheers,
+
+David / dhildenb
+
 
