@@ -1,134 +1,132 @@
-Return-Path: <linux-kernel+bounces-127748-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-127739-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id BFFB6895063
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 12:38:16 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0AFDA89503B
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 12:35:42 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F1C741C22071
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 10:38:15 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B1E431F2701B
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 10:35:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 84F008405C;
-	Tue,  2 Apr 2024 10:35:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CE37A6994C;
+	Tue,  2 Apr 2024 10:34:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="NdHPDFvM"
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="P+wvg4Xr";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="DU0xq7e6"
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 544DB83CC9;
-	Tue,  2 Apr 2024 10:35:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 905B8657B5;
+	Tue,  2 Apr 2024 10:34:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712054101; cv=none; b=IvSQHtr7IDVysbOYeAtD4Yj4Sx5TobBOBP5+ZnOliSkF129rq2Z1xPEMXVNg+bci3tXn8fIj9EtAuwhCSYb42uQZH+PHhv3lQZFJ+cCJVf4eW/6yB0V8ylm0vXwjpTmsJz5xodd0Ey2dhYuv5SEHZjo17nRu0w3JapQdEf6csN4=
+	t=1712054063; cv=none; b=m2hvFWAELyyWeLqWv4TuU4CKNI0lNclI+EM3N7JQ+KatEPKKZl9tyMes1G43K4EJRffTQxLZ6emY0d82BbqjWCIwJpF5oYzy95WOKKh1mFatafontaAsSUaiSQXkRwkA1tOP8aBXFfGhynnlbpfOhJngSSaI+rj5ObPRRGsD0d8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712054101; c=relaxed/simple;
-	bh=IZEDql9TaCbLvfokZOmzizHXTAThB8A099ulSk6bvJ0=;
-	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=S0DJzJVHRACdz18ln7QQeXREBl2/6LQOMptU/MlP3hUhrnsV23yl2EiXiw4JJzasF2Ddzo3I1ivjcQ4Cr2EMjDuoHrTm2+iTWpWNHDfYPJ9FWFgwCHbQ908DYai1K/DEbTVe7Echudd9LBu0kHOIMqFvJ6OT9gDZ3T3Z0pH7Qps=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=NdHPDFvM; arc=none smtp.client-ip=205.220.180.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279868.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 4329g5q2026665;
-	Tue, 2 Apr 2024 10:34:56 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	from:to:subject:date:message-id:in-reply-to:references
-	:mime-version:content-transfer-encoding:content-type; s=
-	qcppdkim1; bh=vbsLvSNhMWyG2feJnl0G6Ip7uTubwqd7zr/AbRWBdro=; b=Nd
-	HPDFvMVUcTT96xfIJ28jpe+rcEEqgaWbRiI83jj6kdAVwC1LwGUWen9FWvET4G1t
-	7lNDREDvhIPlgb0Td3Fsv88lg4Jl8vxbtpyV8Vh1zKPf59SIcHa1bWY5eT1foDe1
-	GX6vWA7XKAUkzIun7I1djL9x/Zy5Q0nEKO/lK83OJtUER9rlzPKuNU+JzqKdA85L
-	fExTT61oTFxa2yiSjdS7mLqhIhFq+c4FcYKDvA3UB/pJrjKSxto4WOd0eFpow7nM
-	Ru5g+X7dLAbLQ6PehMEgiUFos9uzK1RdQFV8zolU6ANy313jSd3LAtaMDw6xEOKl
-	fb2gbMkdtK2oXC++I6Ow==
-Received: from nasanppmta01.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3x8fm1r5nf-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 02 Apr 2024 10:34:56 +0000 (GMT)
-Received: from nasanex01b.na.qualcomm.com (nasanex01b.na.qualcomm.com [10.46.141.250])
-	by NASANPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 432AYts1017948
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 2 Apr 2024 10:34:55 GMT
-Received: from hu-varada-blr.qualcomm.com (10.80.80.8) by
- nasanex01b.na.qualcomm.com (10.46.141.250) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1544.4; Tue, 2 Apr 2024 03:34:50 -0700
-From: Varadarajan Narayanan <quic_varada@quicinc.com>
-To: <andersson@kernel.org>, <konrad.dybcio@linaro.org>,
-        <mturquette@baylibre.com>, <sboyd@kernel.org>, <robh@kernel.org>,
-        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
-        <djakov@kernel.org>, <quic_varada@quicinc.com>,
-        <dmitry.baryshkov@linaro.org>, <quic_anusha@quicinc.com>,
-        <linux-arm-msm@vger.kernel.org>, <linux-clk@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-pm@vger.kernel.org>
-Subject: [PATCH v6 6/6] arm64: dts: qcom: ipq9574: Add icc provider ability to gcc
-Date: Tue, 2 Apr 2024 16:04:06 +0530
-Message-ID: <20240402103406.3638821-7-quic_varada@quicinc.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20240402103406.3638821-1-quic_varada@quicinc.com>
-References: <20240402103406.3638821-1-quic_varada@quicinc.com>
+	s=arc-20240116; t=1712054063; c=relaxed/simple;
+	bh=Q4MlAhRm+AkBxTUeVkfth/yvDYTiPwojE4biBVagZF4=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=KjImjdoG4AuCJgfJusTzNBCCWhnKx/h43/HJK401KHH1kTkywfT4ThjHE0mDNETU3mCkmcek7GxGuiphFU6foUo1W6T6FRWB0/tZ1grsXZQj++uHD3nzxePyYqMP0SNe8ZPnGf5KZnCbFHyqwRaW0VtVDvoc7tyouBSwNE1Wjlo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=P+wvg4Xr; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=DU0xq7e6; arc=none smtp.client-ip=193.142.43.55
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
+Date: Tue, 2 Apr 2024 12:34:14 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020; t=1712054056;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=STfe/Rz3uPOTuqu4DrUcO9QjfwomKLwaXdLP6m2yfFc=;
+	b=P+wvg4XrkSa8qrUqLFplrxzRc04v5G0AvSoJPkYGlnle/rjdCGNtOirGpbAtrYWaEZXYxt
+	4MJNjH23Yd4yTmtC6fiUTr4j0YItovd5T8MM6bnEgHMaQd3WCYoVcqZJt98XClr1A2bQe2
+	86VQaBn4BpbWfcBmBxUvBtS0TWVcPjz5xNjJ68Yg7zn5kErEW5RBvG/JnPBoNim7zKkTLj
+	78kAn6brpoybVRsNrDCx9Yjbb2U7LYCZj13nQI4+NPCiAshU7C4wpu64BBEUVwNmIsEIhu
+	MbcWc1vc4KSf48ABCVdipi6cgNLlfjGLDXIDQQNwJeOtHVrG4JrSXM0zo9pt4Q==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020e; t=1712054056;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=STfe/Rz3uPOTuqu4DrUcO9QjfwomKLwaXdLP6m2yfFc=;
+	b=DU0xq7e60IJtZQNOzYay7B8VjNffiXJvrNL+NVaf3TXBUWY82qsg3vKThsIZFpW6m3IDhW
+	k+pyEg7w0w0dUpDQ==
+From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+To: "John B. Wyatt IV" <jwyatt@redhat.com>
+Cc: John Ogness <john.ogness@linutronix.de>, Petr Mladek <pmladek@suse.com>,
+	Clark Williams <williams@redhat.com>,
+	Juri Lelli <jlelli@redhat.com>, Derek Barbosa <debarbos@redhat.com>,
+	Bruno Goncalves <bgoncalv@redhat.com>,
+	"John B. Wyatt IV" <sageofredondo@gmail.com>,
+	LKML <linux-kernel@vger.kernel.org>,
+	linux-rt-users <linux-rt-users@vger.kernel.org>
+Subject: Re: NMIs reported by console_blast.sh with 6.6.20-rt25
+Message-ID: <20240402103414.KkkX5RuV@linutronix.de>
+References: <ZfSfrzak9WS0ZFv7@thinkpad2021>
+ <20240322122921.U3WRsO4X@linutronix.de>
+ <ZgSvVCDja6yFCC0Y@thinkpad2021>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nasanex01b.na.qualcomm.com (10.46.141.250)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: 6q9RLj5_sOpvdOjVX6d2GS411X_4Fj8I
-X-Proofpoint-ORIG-GUID: 6q9RLj5_sOpvdOjVX6d2GS411X_4Fj8I
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-04-02_04,2024-04-01_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 spamscore=0
- clxscore=1015 impostorscore=0 bulkscore=0 adultscore=0 priorityscore=1501
- mlxlogscore=999 suspectscore=0 lowpriorityscore=0 phishscore=0 mlxscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.19.0-2403210001
- definitions=main-2404020076
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <ZgSvVCDja6yFCC0Y@thinkpad2021>
 
-IPQ SoCs dont involve RPM in managing NoC related clocks and
-there is no NoC scaling. Linux itself handles these clocks.
-However, these should not be exposed as just clocks and align
-with other Qualcomm SoCs that handle these clocks from a
-interconnect provider.
+On 2024-03-27 19:44:20 [-0400], John B. Wyatt IV wrote:
+> > where is this output from? The `ret' opcode usually does not cause a
+> > trap. My guess is that the machine has been interrupted by an external
+> > user at this position.
+>=20
+> Just before the sysrq that crashes the system.
 
-Hence include icc provider capability to the gcc node so that
-peripherals can use the interconnect facility to enable these
-clocks.
+so this is intentional.
 
-Signed-off-by: Varadarajan Narayanan <quic_varada@quicinc.com>
----
- arch/arm64/boot/dts/qcom/ipq9574.dtsi | 2 ++
- 1 file changed, 2 insertions(+)
+=E2=80=A6
+> > Side note: This is using early_printk, correct?
+>=20
+> I believe so, but it might be preempted? This is the part it stopped in.
+>=20
+> static void io_serial_out(unsigned long addr, int offset, int value)
+> {
+> 	outb(value, addr + offset);
+> }
 
-diff --git a/arch/arm64/boot/dts/qcom/ipq9574.dtsi b/arch/arm64/boot/dts/qcom/ipq9574.dtsi
-index 7f2e5cbf3bbb..5b3e69379b1f 100644
---- a/arch/arm64/boot/dts/qcom/ipq9574.dtsi
-+++ b/arch/arm64/boot/dts/qcom/ipq9574.dtsi
-@@ -8,6 +8,7 @@
- 
- #include <dt-bindings/clock/qcom,apss-ipq.h>
- #include <dt-bindings/clock/qcom,ipq9574-gcc.h>
-+#include <dt-bindings/interconnect/qcom,ipq9574.h>
- #include <dt-bindings/interrupt-controller/arm-gic.h>
- #include <dt-bindings/reset/qcom,ipq9574-gcc.h>
- #include <dt-bindings/thermal/thermal.h>
-@@ -306,6 +307,7 @@ gcc: clock-controller@1800000 {
- 			#clock-cells = <1>;
- 			#reset-cells = <1>;
- 			#power-domain-cells = <1>;
-+			#interconnect-cells = <1>;
- 		};
- 
- 		tcsr_mutex: hwlock@1905000 {
--- 
-2.34.1
+The function is invoked in NMU context so it can't be preempted.
 
+> > According to this, someone issued a `crash' via sysrq. Why?
+> >=20
+>=20
+> This is part of the console_blast.sh script that John Ogness sent me.
+>=20
+> Please see below:
+=E2=80=A6
+
+Okay. Then everything works as it should=E2=80=A6
+
+> > > NMI Backtrace for 6.6.20-rt25 no forced preemption with tuned through=
+put-performance profile
+> > > -----------------------------
+> >=20
+> > This and the following backtrace shows the same picture: The CPU is
+> > crashing due to proc/sysrq request and does CPU-backtraces via NMI and
+> > polls in early_printk, waiting for the UART to become idle (probably).
+> >=20
+> > I don't see an issue here so far.
+>=20
+> Luis Goncalves discussed it with me after reading your response. Thank
+> you for your help. The NMI was needed to flush the buffers upon the
+> system crashing itself. Does this part about NMI watchdog need to be
+> documented?
+
+Not sure about that one. There is an _a_ _lot_ to be printed from NMI
+and the NMI watchdog might trigger if nothing is triggering the
+NMI-watchdog during the print job. Also, the crash was requested.
+
+Sebastian
 
