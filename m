@@ -1,132 +1,138 @@
-Return-Path: <linux-kernel+bounces-128406-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-128407-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id D21DA895A68
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 19:09:15 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 46FCE895A6A
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 19:09:31 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8412A281279
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 17:09:14 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 779211C22889
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 17:09:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DEDD8159916;
-	Tue,  2 Apr 2024 17:09:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 20086159919;
+	Tue,  2 Apr 2024 17:09:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ELw2t40z"
-Received: from mail-yw1-f172.google.com (mail-yw1-f172.google.com [209.85.128.172])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="VWviRR/q";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="Zo96D1JF"
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AECD0132C38
-	for <linux-kernel@vger.kernel.org>; Tue,  2 Apr 2024 17:09:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 97B1B132C38;
+	Tue,  2 Apr 2024 17:09:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712077749; cv=none; b=DaKNNZbvnW3zuJVgq0tqAME336NviDzIIvQAGzly5SyR47ABqcHDca3+ZPJ+gUNFhj185ieq76BekKYWe+4ShbbjVGC6UqzMDIhYCjAnMZmpFrXnQQ0ggzCwyTyo5l1o/q5VMaFzqGXf81cGf0QVWWtkyxQTAIPhNU0TpeIPk94=
+	t=1712077758; cv=none; b=tleRcDI99MCU7aBWM3OQToRlJGQy0yD0hGUp6WXVW15BWBHjc6uWIjQvAWIEpELYk4ASMncxOZfcNhdg3vt1cTSH9rfJ58ydNj3UAFa+86BuVPc9E7pdzcGwetb6TaQdIBv8Um1de5PqxgWw6ld2Ld1dPo4InaqGyMRH8CtJtN0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712077749; c=relaxed/simple;
-	bh=IKt3lo/htxFaVYMCmtSeXuUUKW1gUFfAxR/9OMSoD9A=;
-	h=MIME-Version:From:Date:Message-ID:Subject:To:Content-Type; b=t12RROgfKZiG8sv5UmDoubsL8qCW5yAv6COiQ8qeu8xgo967IZ1cGISZ/m1bsOg//1amPGlJQnLSNrq3MTGmw9MdY2XsXpcdgsVLG4p/mx1g6+JTFa2alC407tTKLZIDm8fUYUacmyi453KsThZByrViLQlnYh/cSgYtoNgA5yA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ELw2t40z; arc=none smtp.client-ip=209.85.128.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yw1-f172.google.com with SMTP id 00721157ae682-6098a20ab22so47549797b3.2
-        for <linux-kernel@vger.kernel.org>; Tue, 02 Apr 2024 10:09:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1712077746; x=1712682546; darn=vger.kernel.org;
-        h=to:subject:message-id:date:from:mime-version:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=faGsxrxfxhCbajyESqHsH8e/i4IjraIx5QTZl/zDAdU=;
-        b=ELw2t40zD7gCXXnKYJ1JA5xgxJn9tjCbqLoa4ssgaMMdUMdMVFULWRoanGBRI+1a6O
-         kyHupDw7RqIHLwLjR/2N20XTfoySHeAYZ2OrElx+bGpDu/ADdZGGn0EmJYNi29xVOz6A
-         Aj5xn4XbggcPPAjEaGQ27fZ0m3ZjyVqwKFiUKslmT4HpI+QdlxlGvXAiD6T/wCMkOqZz
-         SeUngwfkpvIdwbHdIMeEXoLTIGdKPzR99aCmL9qb/q8csXvgRVTjKA0qbx/MFWaTn5gx
-         betDNubMSiap1hbFTUFw0eCuJEJ576CpQDh92+OecWkFVYVeGk6/tRXBt+KeF7aYsf5P
-         nZgg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712077746; x=1712682546;
-        h=to:subject:message-id:date:from:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=faGsxrxfxhCbajyESqHsH8e/i4IjraIx5QTZl/zDAdU=;
-        b=OfzO01Q+8vivTaTNphZCc01q0LhPxZ/iY2CG80EQUhtGc8WjZ9g62go0/whnYLx5n9
-         Ve0gqemrD44R15vQjF00rR7twb6uZhgRjPJ3rJrAHzonGNhvjvp+q+UPuOG1MAH+dF0P
-         1suy9Jtg7PGMfI8FzCwhzl5LlUieEs+2/A3ZLBfPsViE91DjKRSpPTsiyLbhZF2xYXal
-         f3d1zHOho5DrV6dTwqu7ZXPXaXbVjyiqjTYcl9AJlLwKC7SEgufDpDxo90jtM6Cf0YfW
-         tssVSbrlapS29AtDCXeuFoTRIiiGd0nOdoJwreP2FiW/ou3NVFOFG8yu0MBwea0YHLkr
-         iizw==
-X-Gm-Message-State: AOJu0Yzr2Ta5a2pdsDLZhJpWNyH5T7UEFm0slc5RIwV8o8MIkgXOIf+4
-	S+aahfWNMC1+feDyZE/oMBE8KcfY0+UKSo/NqIVR3vl4An3jzAYOimQCc/eFJVNZFvLFBnHbl06
-	+JJfPJsm/bVGTiZnKrCqhzO70MH8D1o3e7Lg=
-X-Google-Smtp-Source: AGHT+IGAdlQCt+KfFgdTxlRdXyIKRWXDPKiQactbyUG2qB9wX1OfpzrGikcNzgFOFRRK4KL/OJsUa3jyx5DMRTvQY7o=
-X-Received: by 2002:a0d:eb47:0:b0:615:14d2:945d with SMTP id
- u68-20020a0deb47000000b0061514d2945dmr230180ywe.3.1712077746396; Tue, 02 Apr
- 2024 10:09:06 -0700 (PDT)
+	s=arc-20240116; t=1712077758; c=relaxed/simple;
+	bh=vrLrw4PZ2pbInWmXixTmINalXWw5pkUqlP1Cbc0VEPY=;
+	h=Date:From:To:Subject:Cc:MIME-Version:Message-ID:Content-Type; b=KosQISC49pUCzWtyUnOITHtVXc480Itme2+8ToUnLuDmcIXGu28OzCTa1jMJZhd8LTKcGrpQDK1YgBX9QlBw7ueVqcBnRap1puLAK8AfoOa4bpRuVoK378ZdpbwDpGYHx5Z53NC3tY0EGIDd2xkrpgVaB5NHWSjydkP6m8ggIck=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=VWviRR/q; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=Zo96D1JF; arc=none smtp.client-ip=193.142.43.55
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
+Date: Tue, 02 Apr 2024 17:09:13 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020; t=1712077754;
+	h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+	 content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
+	bh=EkUkhRyxrhRLwcnDLbcsaRp00vCMdcCteMROj6SGNos=;
+	b=VWviRR/qEUBGUkqKpn/7HJ8s3dqptv98MS16lIUCP3AtZ/n2EMV2lVRgMsoOfYQEAg7X3A
+	hFtpThU9obeTOqAWGQ7V7/e+oHl5byv5kuiBustqWfyFKO1uUfvRR/DAELvvz3VM5eNlQ6
+	daEgv4MO50BpLXd+e9tvkGi21XUSedw11/lqIrgsJBrXdN6UAno74oGqlOiXZPqu9F0a24
+	FH8GL/gEFLxF6eISuVNOKm7oot4i+RINFPE/Grz+Fe7yvecnc27cRqyeL+nw/MwMA90qmn
+	QDpqBhZdgu19ubQgTosMpKLJe7Q0Z8wncZD6ftT0lrh488Un45FiwMQQ2i/uLg==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020e; t=1712077754;
+	h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+	 content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
+	bh=EkUkhRyxrhRLwcnDLbcsaRp00vCMdcCteMROj6SGNos=;
+	b=Zo96D1JFWujbWb/9U7wUUnBxL97Avj8ta2tI1DEjwlPzggn/mh/jTt0H1j4h7HKr/PJCKI
+	X4exOjuqW+9Kf7AQ==
+From: "tip-bot2 for Dave Hansen" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To: linux-tip-commits@vger.kernel.org
+Subject:
+ [tip: x86/misc] Documentation/maintainer-tip: Clarify merge window policy
+Cc: Dave Hansen <dave.hansen@linux.intel.com>,
+ "Borislav Petkov (AMD)" <bp@alien8.de>, x86@kernel.org,
+ linux-kernel@vger.kernel.org
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-From: Felipe Contreras <felipe.contreras@gmail.com>
-Date: Tue, 2 Apr 2024 11:08:54 -0600
-Message-ID: <CAMP44s2=OAmLmoNN1VG7j3783ac9L7mk-4sTpNWA2gtUPHfpAA@mail.gmail.com>
-Subject: C skill issues and good taste
-To: Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, 
-	Linus Torvalds <torvalds@linux-foundation.org>
-Content-Type: text/plain; charset="UTF-8"
+Message-ID: <171207775367.10875.7993832027274159765.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe:
+ Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Precedence: bulk
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 
-Hi,
+The following commit has been merged into the x86/misc branch of tip:
 
-Recently it has been more apparent to me that there is a lot of desire
-to learn proper C, and the chasm between beginners and experts is huge.
+Commit-ID:     bdc42c8b9befcef6368be345004cee3da1ace955
+Gitweb:        https://git.kernel.org/tip/bdc42c8b9befcef6368be345004cee3da1ace955
+Author:        Dave Hansen <dave.hansen@linux.intel.com>
+AuthorDate:    Fri, 22 Mar 2024 11:34:03 -07:00
+Committer:     Dave Hansen <dave.hansen@linux.intel.com>
+CommitterDate: Tue, 02 Apr 2024 09:40:23 -07:00
 
-Linus Torvalds provided an example of what he considered "good taste" in
-code for his TED interview in 2016 [1]. I wasn't the only one that found
-this example interesting, since Marc Kirchner created an entire project
-devoted to explaining this code [2] and why it's good.
+Documentation/maintainer-tip: Clarify merge window policy
 
-I wasn't content with that, and I created yet another project that
-ultimately explains intrusive linked lists [3] using code from Linux.
+There are lots of maintainers "pings" during the merge window, even
+for trivial patches.
 
-While I'm OK with the end result, I wonder if Linux kernel developers
-would agree this is "good taste" code.
+Clarify that contributors should not expect progress on *any*
+non-urgent patches during the merge window.  This applies to all
+contributions, not just large ones.
 
-I understand that deleting a node in the middle of a singly linked list
-is not something that Linux developers would want to do, but this is the
-example Torvalds gave, and I would like to show code that does this in a
-proper way.
+Clarify the language around -rc1.  Trees really are closed during the
+merge window.
 
-So the following is my version of what llist_del would look like, and in
-my opinion the only tricky part is what to do in the case that the entry
-to remove is the first node. For that case we need to update the head's
-first pointer, but if we consider it a llist_node, it's the same as the
-next pointer.
+Signed-off-by: Dave Hansen <dave.hansen@linux.intel.com>
+Acked-by: Borislav Petkov (AMD) <bp@alien8.de>
+Link: https://lore.kernel.org/all/20240322183403.67BAEEFE%40davehans-spike.ostc.intel.com
+---
+ Documentation/process/maintainer-tip.rst | 18 +++++++++---------
+ 1 file changed, 9 insertions(+), 9 deletions(-)
 
-struct llist_node *llist_del(struct llist_head *list, struct llist_node *entry)
-{
-        struct llist_node *p;
-
-        llist_for_each(p, (struct llist_node *)list) {
-                if (p->next != entry) continue;
-                p->next = entry->next;
-                return entry;
-        }
-
-        return NULL;
-}
-
-Does this make sense for educational purposes? I'm not expecting this
-code to be merged, as I understand deleting a node in the middle of a
-single linked list doesn't offer good performance.
-
-But does this explain the point Linus Torvalds was trying to make in the
-Ted interview?
-
-Cheers.
-
-[1] https://www.youtube.com/watch?v=o8NPllzkFhE&t=858s
-[2] https://github.com/mkirchner/linked-list-good-taste
-[3] https://felipec.github.io/good-taste/parts/3.html
-
--- 
-Felipe Contreras
+diff --git a/Documentation/process/maintainer-tip.rst b/Documentation/process/maintainer-tip.rst
+index 497bb39..6473996 100644
+--- a/Documentation/process/maintainer-tip.rst
++++ b/Documentation/process/maintainer-tip.rst
+@@ -409,20 +409,20 @@ See :ref:`resend_reminders`.
+ Merge window
+ ^^^^^^^^^^^^
+ 
+-Please do not expect large patch series to be handled during the merge
+-window or even during the week before.  Such patches should be submitted in
+-mergeable state *at* *least* a week before the merge window opens.
+-Exceptions are made for bug fixes and *sometimes* for small standalone
+-drivers for new hardware or minimally invasive patches for hardware
+-enablement.
++Please do not expect patches to be reviewed or merged by tip
++maintainers around or during the merge window.  The trees are closed
++to all but urgent fixes during this time.  They reopen once the merge
++window closes and a new -rc1 kernel has been released.
++
++Large series should be submitted in mergeable state *at* *least* a week
++before the merge window opens.  Exceptions are made for bug fixes and
++*sometimes* for small standalone drivers for new hardware or minimally
++invasive patches for hardware enablement.
+ 
+ During the merge window, the maintainers instead focus on following the
+ upstream changes, fixing merge window fallout, collecting bug fixes, and
+ allowing themselves a breath. Please respect that.
+ 
+-The release candidate -rc1 is the starting point for new patches to be
+-applied which are targeted for the next merge window.
+-
+ So called _urgent_ branches will be merged into mainline during the
+ stabilization phase of each release.
+ 
 
