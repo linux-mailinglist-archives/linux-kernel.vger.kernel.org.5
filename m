@@ -1,135 +1,162 @@
-Return-Path: <linux-kernel+bounces-128418-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-128419-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 33162895A9A
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 19:23:39 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id F26A5895A91
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 19:22:35 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6C047B25D91
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 17:22:10 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A84E028741E
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 17:22:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9F91015A497;
-	Tue,  2 Apr 2024 17:22:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="rUsFC7g0"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 54B5515A49D;
+	Tue,  2 Apr 2024 17:22:26 +0000 (UTC)
+Received: from mail-io1-f71.google.com (mail-io1-f71.google.com [209.85.166.71])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C969D159915;
-	Tue,  2 Apr 2024 17:22:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 48C1C15A480
+	for <linux-kernel@vger.kernel.org>; Tue,  2 Apr 2024 17:22:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.71
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712078521; cv=none; b=lZ8WfDYuC9kl+bOSgieuvlOVNc2HbgfCLWnb5pa+5X6vn+EMubyAXgJ5LdFAKwaNj8ASD939tEsUEiT6MuM4CIvdgSlJ5mfmyTBwtpcYvR/fT0CbjTyvEJ5pNlf8uMpPjisrea3rNs4hxQG+j5mTEuwbUd5sQK5yDK0HaKDnzGk=
+	t=1712078545; cv=none; b=WlNJBgmXWGiFmMHxTAHubee5WU/0KD2LBm1+65YMPJIDFlR8SW0YlpTHU64gS4YwxtZzVbQyYzNnMN0kZcvY71PunzTp5578SQQ9qtLSkFcPacECuuZB4hM9eChcFizeEQb247AknDcAXjsM3zD03eLHwKbh03biffeVQpl9v2Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712078521; c=relaxed/simple;
-	bh=H8uWhCo1O/OYYi2drPcE1c99n/60JeLgX1yS8IFjOsk=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=JGjNJvIGiGFxZ35jwloiqOyX4lx1s7uKAagoiaDbI6kFisY5rIQHe7dCCwMtSZUPhlAN3SpNNa9DtWbtyJKI6VDlkLQyR+FzTMr6O+gYwE6uF83XOnsZrbys24cOTWffYgrkhfy7Lf/LKtdQsbcBFKiOpOh/O51Visq3xBA0CkA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=rUsFC7g0; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A42F3C43390;
-	Tue,  2 Apr 2024 17:21:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712078521;
-	bh=H8uWhCo1O/OYYi2drPcE1c99n/60JeLgX1yS8IFjOsk=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=rUsFC7g0Q8/lx515dHicpBE0b06tm9dIdiVGdJrsr/6FaGJR6vinlLAZH9bgWuqvl
-	 f4m31h7gXvhkrs0Dl8t1ul36NFUo6zzgt3NSRwa3AZxkWbcqfLL+Vlm95Rdg+9Dv8C
-	 WROYbTvaWiWyVC7ninEYSu2rSblY5/Pb1IXjdYYsIFsuw49/0sFPUwVcyf5kdR92rr
-	 KYKKG/aeS2u88JSqQHabJxVZo6DzmwNi1Acf2aV65bvZp9NvABFZtzSW/dL1Dv87dL
-	 ybQ6VcrhQTLubmx+epTLdNltL5zoO8PwmeYkORVX/BkT3fbVJSo+kxqxJjejJooHH9
-	 FYkLS5oUeTWng==
-Date: Tue, 2 Apr 2024 18:21:55 +0100
-From: Mark Brown <broonie@kernel.org>
-To: Marc Zyngier <maz@kernel.org>
-Cc: Catalin Marinas <catalin.marinas@arm.com>,
-	Will Deacon <will@kernel.org>,
-	Oliver Upton <oliver.upton@linux.dev>,
-	James Morse <james.morse@arm.com>,
-	Suzuki K Poulose <suzuki.poulose@arm.com>,
-	Jonathan Corbet <corbet@lwn.net>, Shuah Khan <shuah@kernel.org>,
-	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-	Dave Martin <Dave.Martin@arm.com>, kvmarm@lists.linux.dev,
-	linux-doc@vger.kernel.org, linux-kselftest@vger.kernel.org
-Subject: Re: [PATCH v6 2/5] KVM: arm64: Add newly allocated ID registers to
- register descriptions
-Message-ID: <73c6012f-adb0-470b-bd47-6093d28aea97@sirena.org.uk>
-References: <20240329-arm64-2023-dpisa-v6-0-ba42db6c27f3@kernel.org>
- <20240329-arm64-2023-dpisa-v6-2-ba42db6c27f3@kernel.org>
- <87le5ysm4l.wl-maz@kernel.org>
+	s=arc-20240116; t=1712078545; c=relaxed/simple;
+	bh=LBktxRSJW6FqJOM/haOQ9aZlZaZ+M2+WyyYEVud4ees=;
+	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=WqOwGW+kLIsmqeLwqci8YDe/8wpNuZ21PbRmDpSosqSiW6rjuJBZRVm+wjJAYy6IJVGDhVK3H0NfB9cr4IMU+13q5GZRlhzwfTlfA7zZDEifMVYGJvfrVSS+MhpDo9B+TR443qwCRKWGvH7PqRQPqAdUwvd6K+5HrNPPMm5amdU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.71
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-io1-f71.google.com with SMTP id ca18e2360f4ac-7cbfd9f04e3so7538239f.0
+        for <linux-kernel@vger.kernel.org>; Tue, 02 Apr 2024 10:22:24 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712078543; x=1712683343;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=tyZ4y+RtmwUpbBCKI17zVFEJ/EY3alOUhTWMMfA+maA=;
+        b=FYY5cMByfqhRjZQB1PNjtPFsURMrrNB6jMN0QFeq3nQlk3AaRccTOuOlCV+4r81f0C
+         COvZ8enNSHfKnGwxJn44Y7Ku6UUigedgYVNRLbU80kkLw5Q46ZtQOzlOE/A7OwFRQT89
+         +4yNVX3N+u5KnJpo88V2/3y5WIDjegRgcZ2mC9Ib8n6EYzQVtglPntPW3JCXbb33okjB
+         DWXnHXvk06QoGkIpJDk/Oht+zhIEc0UFgyFoPl+a5zqaY0788IjTbnWTlCSsUTwWwT5/
+         F0leQbjOoe+EfHIchkrrOAAX9vcCdnc7u8IEnUv8Uow9FRMGdqxAejaqnD54hcBErXvk
+         PafQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXfJTuhVRv09ENz0PYBqQWh4yewiNKFzvoGF6RUf2Egd5NwnpgB6qvIYhZXJHP1XhWZ5iuGBlwfoavRnNmNj2tx6TLg3w6rrsM8P/rX
+X-Gm-Message-State: AOJu0YwnkSTrYvHE5OVkILJZbFMFNZ/TJd0X2rK65sRaAWzTR1FfzV+q
+	D4y0tmgG1FQgcJPTrlAQp/x6qr/kKokyjaRNieE9l3KD2lKItAeClCYHMO6r61qYbSoT6o4yJ5E
+	BK6HoVRXBFwgZ8dGq2tGrNHzNaOrCkkL58fyJQ1Sus2AHg46y6+xolww=
+X-Google-Smtp-Source: AGHT+IE5sYOEGeW0Dq9TUU6KKmEsVku0KXM5A4AszSQ+g1aN9s9OafJG5FdmlE5Z9+ghoNOKg8Q5AHV20WrkTDprfIre4KzwBvME
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="pwE/A28+XRVGQBHe"
-Content-Disposition: inline
-In-Reply-To: <87le5ysm4l.wl-maz@kernel.org>
-X-Cookie: Knowledge is power.
+X-Received: by 2002:a05:6602:2c84:b0:7d0:690c:6a01 with SMTP id
+ i4-20020a0566022c8400b007d0690c6a01mr5504iow.1.1712078543509; Tue, 02 Apr
+ 2024 10:22:23 -0700 (PDT)
+Date: Tue, 02 Apr 2024 10:22:23 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <00000000000069edc606152059d4@google.com>
+Subject: [syzbot] [bpf?] KMSAN: uninit-value in percpu_array_map_lookup_percpu_elem
+From: syzbot <syzbot+aca389a8a7da35c070ce@syzkaller.appspotmail.com>
+To: andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org, 
+	daniel@iogearbox.net, eddyz87@gmail.com, haoluo@google.com, 
+	john.fastabend@gmail.com, jolsa@kernel.org, kpsingh@kernel.org, 
+	linux-kernel@vger.kernel.org, martin.lau@linux.dev, sdf@google.com, 
+	song@kernel.org, syzkaller-bugs@googlegroups.com, yonghong.song@linux.dev
+Content-Type: text/plain; charset="UTF-8"
+
+Hello,
+
+syzbot found the following issue on:
+
+HEAD commit:    39cd87c4eb2b Linux 6.9-rc2
+git tree:       upstream
+console+strace: https://syzkaller.appspot.com/x/log.txt?x=13891cc5180000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=5112b3f484393436
+dashboard link: https://syzkaller.appspot.com/bug?extid=aca389a8a7da35c070ce
+compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=11629a19180000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=169e86e5180000
+
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/dba7eac545d2/disk-39cd87c4.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/ddf1c8e07b17/vmlinux-39cd87c4.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/808527761eab/bzImage-39cd87c4.xz
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+aca389a8a7da35c070ce@syzkaller.appspotmail.com
+
+=====================================================
+BUG: KMSAN: uninit-value in percpu_array_map_lookup_percpu_elem+0x1cb/0x200 kernel/bpf/arraymap.c:257
+ percpu_array_map_lookup_percpu_elem+0x1cb/0x200 kernel/bpf/arraymap.c:257
+ ____bpf_map_lookup_percpu_elem kernel/bpf/helpers.c:133 [inline]
+ bpf_map_lookup_percpu_elem+0x67/0x90 kernel/bpf/helpers.c:130
+ ___bpf_prog_run+0x13fe/0xe0f0 kernel/bpf/core.c:1997
+ __bpf_prog_run288+0xb5/0xe0 kernel/bpf/core.c:2237
+ bpf_dispatcher_nop_func include/linux/bpf.h:1234 [inline]
+ __bpf_prog_run include/linux/filter.h:657 [inline]
+ bpf_prog_run include/linux/filter.h:664 [inline]
+ __bpf_trace_run kernel/trace/bpf_trace.c:2381 [inline]
+ bpf_trace_run8+0x1bd/0x3a0 kernel/trace/bpf_trace.c:2426
+ __bpf_trace_jbd2_handle_stats+0x51/0x70 include/trace/events/jbd2.h:210
+ trace_jbd2_handle_stats include/trace/events/jbd2.h:210 [inline]
+ jbd2_journal_stop+0x1157/0x12c0 fs/jbd2/transaction.c:1869
+ __ext4_journal_stop+0x115/0x310 fs/ext4/ext4_jbd2.c:134
+ ext4_do_writepages+0x1c3c/0x62e0 fs/ext4/inode.c:2692
+ ext4_writepages+0x312/0x830 fs/ext4/inode.c:2768
+ do_writepages+0x427/0xc30 mm/page-writeback.c:2612
+ __writeback_single_inode+0x10d/0x12c0 fs/fs-writeback.c:1650
+ writeback_sb_inodes+0xb48/0x1be0 fs/fs-writeback.c:1941
+ __writeback_inodes_wb+0x14c/0x440 fs/fs-writeback.c:2012
+ wb_writeback+0x4da/0xdf0 fs/fs-writeback.c:2119
+ wb_check_old_data_flush fs/fs-writeback.c:2223 [inline]
+ wb_do_writeback fs/fs-writeback.c:2276 [inline]
+ wb_workfn+0x110c/0x1940 fs/fs-writeback.c:2304
+ process_one_work kernel/workqueue.c:3254 [inline]
+ process_scheduled_works+0xa81/0x1bd0 kernel/workqueue.c:3335
+ worker_thread+0xea5/0x1560 kernel/workqueue.c:3416
+ kthread+0x3e2/0x540 kernel/kthread.c:388
+ ret_from_fork+0x6d/0x90 arch/x86/kernel/process.c:147
+ ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:243
+
+Local variable stack created at:
+ __bpf_prog_run288+0x45/0xe0 kernel/bpf/core.c:2237
+ bpf_dispatcher_nop_func include/linux/bpf.h:1234 [inline]
+ __bpf_prog_run include/linux/filter.h:657 [inline]
+ bpf_prog_run include/linux/filter.h:664 [inline]
+ __bpf_trace_run kernel/trace/bpf_trace.c:2381 [inline]
+ bpf_trace_run8+0x1bd/0x3a0 kernel/trace/bpf_trace.c:2426
+
+CPU: 1 PID: 1070 Comm: kworker/u8:7 Not tainted 6.9.0-rc2-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 03/27/2024
+Workqueue: writeback wb_workfn (flush-8:0)
+=====================================================
 
 
---pwE/A28+XRVGQBHe
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-On Sun, Mar 31, 2024 at 11:59:06AM +0100, Marc Zyngier wrote:
-> Mark Brown <broonie@kernel.org> wrote:
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
 
-> > The 2023 architecture extensions have allocated some new ID registers, add
-> > them to the KVM system register descriptions so that they are visible to
-> > guests.
+If the report is already addressed, let syzbot know by replying with:
+#syz fix: exact-commit-title
 
-> > We make the newly introduced dpISA features writeable, as well as
-> > allowing writes to ID_AA64ISAR3_EL1.CPA for FEAT_CPA which only
-> > introduces straigforward new instructions with no additional
-> > architectural state or traps.
+If you want syzbot to run the reproducer, reply with:
+#syz test: git://repo/address.git branch-or-commit-hash
+If you attach or paste a git patch, syzbot will apply it before testing.
 
-> FPMR actively gets trapped by HCRX_EL2.
+If you want to overwrite report's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
 
-Sure, I'm not clear what you're trying to say here?  The "no additional"
-bit is referring to FEAT_CPA.
+If the report is a duplicate of another one, reply with:
+#syz dup: exact-subject-of-another-report
 
-> > -	ID_UNALLOCATED(6,3),
-> > +	ID_WRITABLE(ID_AA64ISAR3_EL1, ~(ID_AA64ISAR2_EL1_RES0 |
-> > +					ID_AA64ISAR3_EL1_PACM |
-> > +					ID_AA64ISAR3_EL1_TLBIW)),
-> >  	ID_UNALLOCATED(6,4),
-> >  	ID_UNALLOCATED(6,5),
-> >  	ID_UNALLOCATED(6,6),
-
-> Where is the code that enforces the lack of support for MTEFAR,
-> MTESTOREONLY, and MTEPERM for SCTLR_ELx, EnPACM and EnFPM in HCRX_EL2?
-
-Could you please be more explicit regarding what you're expecting to see
-here?  Other than the writeability mask for the ID register I would have
-expected to need explicit code to enable new features rather than
-explicit code to keep currently unsupported features unsupported.  I'm
-sure what you're referencing will be obvious once I see it but I'm
-drawing a blank.
-
-> And I haven't checked whether TLBI VMALLWS2 can be trapped.
-
-I didn't see anything but I might not be aware of where to look, there
-doesn't seem to be anything for that specifically in HFGITR_EL2 or
-HFGITR2_EL2 which would be the main places I'd expect to find something.
-
---pwE/A28+XRVGQBHe
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmYMPrIACgkQJNaLcl1U
-h9CulwgAgH5V5RmaWYuHCCBQIUQDkouUTMklMpA9Df1ChBIBvmW1OZl0PeW56Sui
-640DAUobRml9J+gh6HsMUS3vnRLyGP11gEhxxTccwvoKuxH6ZsiBUaXkdN+f2Qfv
-R8XxRO7JYoC7un2DPg2IjgAuyEX9OB8XzPmnRnFj276YjsQHy/oYUkwqemOMCMvB
-3/rWpnLsoQ6/UC0RAfXCqN5jTPVG2fVBEFKcyiFi3eLqBxdDF/ugPgTIHtgP31Fz
-rPtAVmzDu6El/d+hpIqAtb70IH/mk8uqYzd1EoTuiTZlGnsIoZLjn5Yft89t0Ets
-B51k7JPujYgRrvFdBiC0WlPL3wYmjg==
-=Xh1Z
------END PGP SIGNATURE-----
-
---pwE/A28+XRVGQBHe--
+If you want to undo deduplication, reply with:
+#syz undup
 
