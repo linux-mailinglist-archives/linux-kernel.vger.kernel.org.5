@@ -1,115 +1,99 @@
-Return-Path: <linux-kernel+bounces-127322-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-127323-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 322558949AD
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 04:56:38 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6DE458949AE
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 04:56:52 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DE6A82840E8
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 02:56:36 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 276732840B8
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 02:56:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 85A9A15E88;
-	Tue,  2 Apr 2024 02:55:55 +0000 (UTC)
-Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A45E717597;
+	Tue,  2 Apr 2024 02:56:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="IUeqBLyK"
+Received: from out-183.mta0.migadu.com (out-183.mta0.migadu.com [91.218.175.183])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9C6131171A;
-	Tue,  2 Apr 2024 02:55:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.187
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 912EC17589
+	for <linux-kernel@vger.kernel.org>; Tue,  2 Apr 2024 02:56:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.183
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712026555; cv=none; b=Dx/CG7wouFZpjZqJd1/RxwO3Rpa13ZHUFsB49eu4ORsnft3SgtkZroMKxl09Cnccg7jGG1FVmVzi5l/2+xJoX1kuxCA2V+fb4jUyFoRC98VqzSToPHO5HI/bDAK1KcEPbQzGKWFiarjs+vfO3YCVrAB2072uREJbd1pgv7XAgVA=
+	t=1712026565; cv=none; b=hQH4mPE64IA40Y4azWaP0aM1YFzxVMbvXvt2Kz0C9NtBkhi4Hy4+BFmg4BrLNgxKN+z0gRLhxJmrZfeGncBL+ZMylGVk3ocvspjB8UriASaicNcuIAvaov3grLXVLgzjVUMTHTDCglFi+lsGgO3t3gRAGdeRegVPJObbL5SVlMY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712026555; c=relaxed/simple;
-	bh=0EzUwmjHLXlEJyvY/QgsJrzv5lndfqtai08FctYwwJE=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=ml51/aIJNct8Y6lZOALEksZ9LwCTHBlqC71pwtm0RBWd0OdNznGKd90k2I/cLxDWzjABFweTy2dDJX2F0RHsqYJdnotU8wTxEaaB83dEyZ8oo7OticWuslYFW6NYXFMebveiXZ8s0NhsdLSFhZBxABR0TymgkNJIORas6mDDw88=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=hisilicon.com; spf=pass smtp.mailfrom=hisilicon.com; arc=none smtp.client-ip=45.249.212.187
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=hisilicon.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=hisilicon.com
-Received: from mail.maildlp.com (unknown [172.19.88.105])
-	by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4V7sr82VT7zwR42;
-	Tue,  2 Apr 2024 10:52:56 +0800 (CST)
-Received: from kwepemi500006.china.huawei.com (unknown [7.221.188.68])
-	by mail.maildlp.com (Postfix) with ESMTPS id BFD591402C6;
-	Tue,  2 Apr 2024 10:55:42 +0800 (CST)
-Received: from [10.67.120.168] (10.67.120.168) by
- kwepemi500006.china.huawei.com (7.221.188.68) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.35; Tue, 2 Apr 2024 10:55:42 +0800
-Message-ID: <9bfc0185-dbd3-3511-23f2-983312c04f39@hisilicon.com>
-Date: Tue, 2 Apr 2024 10:55:41 +0800
+	s=arc-20240116; t=1712026565; c=relaxed/simple;
+	bh=xURg2q9cINBFrvUw1DAqxR9mcJsxmWIcZZENGnVqybE=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=hz02tJ3kuiYmzXx4qvEf7dNYEC+nGqLOXh3rWJzuplb041JV9rS4ZeXw3uvPdWQ5/NSex6k33c8tsA9eWyBN2GsrItmsS21wEIWTk00ZPtZ8tQhc94CET+p3fx5dOltSL2184Bde967NVQiLvC36lpVlizi86yYi71CvONDn+io=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=IUeqBLyK; arc=none smtp.client-ip=91.218.175.183
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Date: Mon, 1 Apr 2024 19:55:54 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1712026560;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=EfYSqIFiwGGtcDOZBDsw+9RR8EOi7+ataFBzYA1KAuI=;
+	b=IUeqBLyKZQqdy7WMTYBSYvGVlJX/NL+9BXvnQT3FAYEegaJus1eYOltymBQkb2wweOtMGP
+	dcLLM6zejySv2DxKrhd3PlOp8+Tx5Pw+2ZTYqx7GVJOL/F5YQ0IYGIz7SND+yjdrNpYBnf
+	a7kcIAmXAFDkoXhk81O5Nf4U5QKz9aw=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Roman Gushchin <roman.gushchin@linux.dev>
+To: Ubisectech Sirius <bugreport@ubisectech.com>
+Cc: linux-trace-kernel <linux-trace-kernel@vger.kernel.org>,
+	linux-kernel <linux-kernel@vger.kernel.org>,
+	hannes <hannes@cmpxchg.org>, mhocko <mhocko@kernel.org>,
+	"shakeel.butt" <shakeel.butt@linux.dev>
+Subject: Re: =?utf-8?B?5Zue5aSN77yaZ2VuZXJh?= =?utf-8?Q?l?= protection fault
+ in refill_obj_stock
+Message-ID: <Zgtzup7T4TMZWPuz@P9FQF9L96D>
+References: <91e1389e-0723-42e7-9ea4-396ec6b54e49.bugreport@ubisectech.com>
+ <ZgtIuBlUVE1Lj_Tc@P9FQF9L96D>
+ <a6b8148d-10b9-4fae-a987-39ae62bad0cb.bugreport@ubisectech.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.1.0
-Subject: Re: [PATCH for-next] RDMA/hns: Support DSCP
-Content-Language: en-US
-To: Leon Romanovsky <leon@kernel.org>
-CC: <jgg@ziepe.ca>, <linux-rdma@vger.kernel.org>, <linuxarm@huawei.com>,
-	<linux-kernel@vger.kernel.org>
-References: <20240315093551.1650088-1-huangjunxian6@hisilicon.com>
- <20240401114853.GA73174@unreal>
- <1f786e1b-e8ff-1d6f-7c4d-89724eda6712@hisilicon.com>
- <20240401181204.GC11187@unreal>
-From: Junxian Huang <huangjunxian6@hisilicon.com>
-In-Reply-To: <20240401181204.GC11187@unreal>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
- kwepemi500006.china.huawei.com (7.221.188.68)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <a6b8148d-10b9-4fae-a987-39ae62bad0cb.bugreport@ubisectech.com>
+X-Migadu-Flow: FLOW_OUT
 
-
-
-On 2024/4/2 2:12, Leon Romanovsky wrote:
-> On Mon, Apr 01, 2024 at 09:25:39PM +0800, Junxian Huang wrote:
->>
->>
->> On 2024/4/1 19:48, Leon Romanovsky wrote:
->>> On Fri, Mar 15, 2024 at 05:35:51PM +0800, Junxian Huang wrote:
->>>> Add support for DSCP configuration. For DSCP, get dscp-prio mapping
->>>> via hns3 nic driver api .get_dscp_prio() and fill the SL (in WQE for
->>>> UD or in QPC for RC) with the priority value. The prio-tc mapping is
->>>> configured to HW by hns3 nic driver. HW will select a corresponding
->>>> TC according to SL and the prio-tc mapping.
->>>>
->>>> Signed-off-by: Junxian Huang <huangjunxian6@hisilicon.com>
->>>> ---
->>>>  drivers/infiniband/hw/hns/hns_roce_ah.c     | 32 +++++---
->>>>  drivers/infiniband/hw/hns/hns_roce_device.h |  6 ++
->>>>  drivers/infiniband/hw/hns/hns_roce_hw_v2.c  | 86 ++++++++++++++++-----
->>>>  drivers/infiniband/hw/hns/hns_roce_qp.c     | 13 ++++
->>>>  include/uapi/rdma/hns-abi.h                 |  9 ++-
->>>>  5 files changed, 117 insertions(+), 29 deletions(-)
->>>
->>> 1. What is TC mode?
->>
->> TC mode indicates whether the HW is configured as DSCP mode or VLAN priority
->> mode currently.
->>
->>> 2. Did you post rdma-core PR?
->>
->> Not yet. I was meant to wait until this patch is applied. Should I post it
->> right now?
+On Tue, Apr 02, 2024 at 09:50:54AM +0800, Ubisectech Sirius wrote:
+> > On Mon, Apr 01, 2024 at 03:04:46PM +0800, Ubisectech Sirius wrote:
+> > Hello.
+> > We are Ubisectech Sirius Team, the vulnerability lab of China ValiantSec. Recently, our team has discovered a issue in Linux kernel 6.7. Attached to the email were a PoC file of the issue.
 > 
-> Yes, for any UAPI changes, we require to have rdma-core PR.
+> > Thank you for the report!
 > 
-> Thanks
+> > I tried to compile and run your test program for about half an hour
+> > on a virtual machine running 6.7 with enabled KASAN, but wasn't able
+> > to reproduce the problem.
 > 
+> > Can you, please, share a bit more information? How long does it take
+> > to reproduce? Do you mind sharing your kernel config? Is there anything special
+> > about your setup? What are exact steps to reproduce the problem?
+> > Is this problem reproducible on 6.6?
+> 
+> Hi. 
+>    The .config of linux kernel 6.7 has send to you as attachment.
 
-PR has been posted.
+Thanks!
 
-Thanks,
-Junxian
+How long it takes to reproduce a problem? Do you just start your reproducer and wait?
 
->>
->> Junxian
->>
->>>
->>> Thanks
+> And The problem is reproducible on 6.6.
+
+Hm, it rules out my recent changes.
+Did you try any older kernels? 6.5? 6.0? Did you try to bisect the problem?
+If it's fast to reproduce, it might be the best option.
+
+Also, are you running vanilla kernels or you do have some custom changes on top?
+
+Thanks!
 
