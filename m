@@ -1,127 +1,121 @@
-Return-Path: <linux-kernel+bounces-128400-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-128401-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id A2590895A59
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 19:06:28 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7FFF6895A69
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 19:09:20 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 301CE28171A
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 17:06:27 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D7B60B2AC7F
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 17:07:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9064415A48F;
-	Tue,  2 Apr 2024 17:06:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 50F09159915;
+	Tue,  2 Apr 2024 17:07:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="WGQNPioM"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="S5tUrQAE"
+Received: from mail-lf1-f44.google.com (mail-lf1-f44.google.com [209.85.167.44])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C76CC15990A
-	for <linux-kernel@vger.kernel.org>; Tue,  2 Apr 2024 17:06:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B7AFE1598FF
+	for <linux-kernel@vger.kernel.org>; Tue,  2 Apr 2024 17:07:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712077575; cv=none; b=PtOY8DoLy685iBvzN8jfbD/CTYznRKfHhGcLXVi/0M2chFWIiLxTEkho3a37QYJYAmMl9gH1oNij3eAqYqA1dG5JPOo2ZKupxGWpzc1ouKMVDgZrmhUd4Ny1ZYXFphEHQ5iFfDpFc1hAnj9qHM5WH6+ULw8PTiM//ok6GOJBXcA=
+	t=1712077635; cv=none; b=KFVBP4dmIEOGxj1ETxVCV+1Cvh1MdjOQ25XGzCm1F3iPxGUuJzi6RE6z6DD+bgmKGOLAYDgpz1i8W9Ri18hTFVlvYMXDppLgEHmNKnd4VIcPhOlobRhhP3b1JTNlIUHxqXz7Zg2UFRuOeci6r8FsFEkIfNu1e4AxLVFAagUVloM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712077575; c=relaxed/simple;
-	bh=zFVBrG14Q/wJvXNT4v5XkuPZUX6MI4x7Nq2iclshyPw=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Xt3XzmZ5QXufZo+IiEi0g23Zo5V9pVCxNnd/6vLx5K1cHKcxaEFS9RVfqLyA+D9S7RsgiJA2NIHt+3xEtJ4+0jd/qlIEZRow77xpTZVhh6y+vHzXysKgHpD6ZMzzV/jd6wdlEnbtTW7btLqXY0asM0/55A+jy4dWN/LytC3t3uI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=WGQNPioM; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5DF84C433F1;
-	Tue,  2 Apr 2024 17:06:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712077575;
-	bh=zFVBrG14Q/wJvXNT4v5XkuPZUX6MI4x7Nq2iclshyPw=;
-	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-	b=WGQNPioMRAvaQD6P4YA1VnBM++mI2Bs82fWBDiidC5A7FPrNjh+hAjseKra3dTwzE
-	 xtw2ih4KQ88FG7/2TH3uhlxhepBxT4bDqUImlkKNpReXE3faEKXXJbpNK9QbueFjb6
-	 araZa9DYTqDsmudYQOynHFvnUORnA6XA61yXJt2AgB1KquHVYAo1dRvKNi8wiQhlFO
-	 IvZlFIfUWSAK35otXOafw02K86eNXS/4vt3XvPOpAiqjV3ck68AQEThH3dxCK+rpI9
-	 WZ6NmbsV/eXmtorx/XBvG/IuWg37ElrdiY3Lb4mLOBjZfrORh/HmP8cyAq1VvlnXx5
-	 uJthdqdW/COqA==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id ED0E6CE0FF2; Tue,  2 Apr 2024 10:06:14 -0700 (PDT)
-Date: Tue, 2 Apr 2024 10:06:14 -0700
-From: "Paul E. McKenney" <paulmck@kernel.org>
-To: Arnd Bergmann <arnd@arndb.de>
-Cc: linux-kernel@vger.kernel.org, kernel-team@meta.com,
-	Vineet Gupta <vgupta@kernel.org>,
-	Andi Shyti <andi.shyti@linux.intel.com>,
-	Andrzej Hajda <andrzej.hajda@intel.com>,
-	Palmer Dabbelt <palmer@rivosinc.com>,
-	linux-snps-arc@lists.infradead.org
-Subject: Re: [PATCH RFC cmpxchg 3/8] ARC: Emulate one-byte and two-byte
- cmpxchg
-Message-ID: <32936b57-f451-460b-a2df-e74293e44f5c@paulmck-laptop>
-Reply-To: paulmck@kernel.org
-References: <31c82dcc-e203-48a9-aadd-f2fcd57d94c1@paulmck-laptop>
- <20240401213950.3910531-3-paulmck@kernel.org>
- <836df0c7-51a7-4786-8a65-a70efe9b6eec@app.fastmail.com>
+	s=arc-20240116; t=1712077635; c=relaxed/simple;
+	bh=PyZ6nf5pW6oLTbA/Il8yzhinXaig/Ih9w+i/c0+eUKY=;
+	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=ieoCbKJzw2JL0t8SSYtwKo8tj4eCdbhwVUNeatZh9/RaAjwZIWJzI8MdwnydlYzOj83Mp8odntkv/SpncnJ0/fHnlocfeG7jxuCGB0m9keH3szj5lSLifZsJsYGzxOHKJc2HORpyhUMr0cznA1OAecv8hfkct8m1XnaqKIdI/Ps=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=S5tUrQAE; arc=none smtp.client-ip=209.85.167.44
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-lf1-f44.google.com with SMTP id 2adb3069b0e04-515d55ab035so2366188e87.2
+        for <linux-kernel@vger.kernel.org>; Tue, 02 Apr 2024 10:07:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1712077632; x=1712682432; darn=vger.kernel.org;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=t0qX4V5dOuF+AyVy4H1pGmM8NKk2LMBP13hX/86nKyo=;
+        b=S5tUrQAEstzK+1BPU0zWqCcDyeu7Ii/qu7noAkPzPOLaSOXhOVDQeFVK3a8zKlUKJJ
+         DZ2/OvJMonpcAvQBNu2f4RtNCupWMatl1kjAHE2RMjlTjH37UDGmFr+NI4MlDUsYX3OQ
+         mwh+p3enZ0xI8U13jzleMAK9WE5hjiD3fmxtKFjvyk/WJ03nBoVq/QDC4JJ8jMJoBjSE
+         07Qq4gwzbfPtIMqgt0w/Nt9lN7ftsykIavQ8ik5MiHoFgeQ+BLasA+LBzrckU/36EwVy
+         elvRM3RDR8vag58gwjG2o61/nc/olUp8ziMfZeO74lEBnreJNMON0y33CFcdevTNKZLm
+         3Pbg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712077632; x=1712682432;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=t0qX4V5dOuF+AyVy4H1pGmM8NKk2LMBP13hX/86nKyo=;
+        b=KdmB9lreQtRhtenvUWheaVkL/Qn5umGwzBfr1+oy2p88rotYRg/FURKSg078+yf+c+
+         ososd8pt7Gbf2ExxHzpSUX9DBzooXePJixSwom/CZCgJtLybzznwhj8+buuFHsDNAFBK
+         DqQLYikzmSI6EKB+aKIbJfxy5+RGL/yTpQjopvOBhvzVTBeUSYXykJW/BXi6gXDmYULq
+         Ww6BhvlP7ecoxUPs6fQdHxQFAOjoOzfIaMKB7Zqi+hTO4gz1DRH8Qrq42pP3yk9I3J6q
+         tZ0h/oUkzsW81x+oA5NsdfBw9ZNmUGtOQpjYdjhzQuVEp7icT1/yf//Nhz+3fSsdcq48
+         xmhQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVNqt64odhEQMGdC47pRtGQI7DUBNdpSVVGmxTHNe0k5FFfOk2R2WBrp6SvgRb/zGQTMidPWm7rKPJBW0/+BdgBFFVD1Vxk+rQZwNVQ
+X-Gm-Message-State: AOJu0YyCKxsGujqg+qDYy5RvTo83xSCq4fIZLcWvJiB2n7ypKQ0fsFfd
+	RqK+ALAsMlu/x/TRBebo3Sif5DaU02d7zvgIEJCIOmDXotbTWBgJqUmbBvwa8gA=
+X-Google-Smtp-Source: AGHT+IFbKuOHROYclyFrXlXrX3WTp/q+L6iZdrC4TlZm6jq2X9VgDgB71x2MJXe87coZCCukYSa95g==
+X-Received: by 2002:a05:6512:48d:b0:513:cb0a:9632 with SMTP id v13-20020a056512048d00b00513cb0a9632mr7954720lfq.50.1712077631872;
+        Tue, 02 Apr 2024 10:07:11 -0700 (PDT)
+Received: from umbar.lan ([192.130.178.91])
+        by smtp.gmail.com with ESMTPSA id e12-20020ac2546c000000b00515cc53c5b3sm1603486lfn.125.2024.04.02.10.07.11
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 02 Apr 2024 10:07:11 -0700 (PDT)
+From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Subject: [PATCH 0/2] soc: qcom: pmic_glink: fix client handling
+Date: Tue, 02 Apr 2024 20:07:05 +0300
+Message-Id: <20240402-pmic-glink-fix-clients-v1-0-885440b81c65@linaro.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <836df0c7-51a7-4786-8a65-a70efe9b6eec@app.fastmail.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIADk7DGYC/x2M0QpAQBAAf0X7bOscIr8iD3dnsWHpTlK6f3d5n
+ KaZFwJ5pgBd9oKnmwMfkqDIM3CLkZmQx8Sgla5UpTSeOzucN5YVJ37QbUxyBazHSVljS2qbAlJ
+ 8ekr6H/dDjB+LM5X0aAAAAA==
+To: Bjorn Andersson <andersson@kernel.org>, 
+ Konrad Dybcio <konrad.dybcio@linaro.org>, 
+ Neil Armstrong <neil.armstrong@linaro.org>
+Cc: linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org, 
+ Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+X-Mailer: b4 0.13.0
+X-Developer-Signature: v=1; a=openpgp-sha256; l=696;
+ i=dmitry.baryshkov@linaro.org; h=from:subject:message-id;
+ bh=PyZ6nf5pW6oLTbA/Il8yzhinXaig/Ih9w+i/c0+eUKY=;
+ b=owEBbQGS/pANAwAKAYs8ij4CKSjVAcsmYgBmDDs+fFGcLjnsZRmpGubABsNWqLwowNjHewOIs
+ Lv8+UhmLJqJATMEAAEKAB0WIQRMcISVXLJjVvC4lX+LPIo+Aiko1QUCZgw7PgAKCRCLPIo+Aiko
+ 1Xh+B/wI9dzzVg0oUn6+Q8ChrL8hGLKPR2FpU+6PI5kdA/4lqXyZ3avW2+5mutX9TV5flrOwx4A
+ N61bwdeN6qMbRLnMj4fGB1MsFShUeGXqqWvSpiIuTOaOmZbWTRojU0/Nat10amVFROU3ukFdtV3
+ 0zncr3tvsRSV+ow2Nbi1/aTx82WU8e6m6uZpO0U7DrDzxOyNskwPmndwr66xef89K5alini5Ola
+ m3nM22LjFHcWCHXNXGEd8UdNAA/tBgNqpKAgcd4BiuVlYrClU16GY944PabnD439Pp27Goe7g+l
+ sFnOvwZ+h3NoSJNBSkav1CJeaB3/7Bb79cSZwiEWDa0NWRe0
+X-Developer-Key: i=dmitry.baryshkov@linaro.org; a=openpgp;
+ fpr=8F88381DD5C873E4AE487DA5199BF1243632046A
 
-On Tue, Apr 02, 2024 at 10:14:08AM +0200, Arnd Bergmann wrote:
-> On Mon, Apr 1, 2024, at 23:39, Paul E. McKenney wrote:
-> > Use the new cmpxchg_emu_u8() and cmpxchg_emu_u16() to emulate one-byte
-> > and two-byte cmpxchg() on arc.
-> >
-> > Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-> 
-> I'm missing the context here, is it now mandatory to have 16-bit
-> cmpxchg() everywhere? I think we've historically tried hard to
-> keep this out of common code since it's expensive on architectures
-> that don't have native 16-bit load/store instructions (alpha, armv3)
-> and or sub-word atomics (armv5, riscv, mips).
+Fix two issues with the way the pmic_glink driver handles its clients.
+First issue is mostly theoretical, while the second issue can easily be
+reproduced if the drivers are built as modules.
 
-I need 8-bit, and just added 16-bit because it was easy to do so.
-I would be OK dropping the 16-bit portions of this series, assuming
-that no-one needs it.  And assuming that it is easier to drop it than
-to explain why it is not available.  ;-)
+Signed-off-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+---
+Dmitry Baryshkov (2):
+      soc: qcom: pmic_glink: don't traverse clients list without a lock
+      soc: qcom: pmic_glink: notify clients about the current state
 
-> Does the code that uses this rely on working concurrently with
-> non-atomic stores to part of the 32-bit word? If we want to
-> allow that, we need to merge my alpha ev4/45/5 removal series
-> first.
+ drivers/soc/qcom/pmic_glink.c | 7 +++++++
+ 1 file changed, 7 insertions(+)
+---
+base-commit: a6bd6c9333397f5a0e2667d4d82fef8c970108f2
+change-id: 20240402-pmic-glink-fix-clients-5df0bab3e871
 
-For 8-but cmpxchg(), yes.  There are potentially concurrent
-smp_load_acquire() and smp_store_release() operations to this same byte.
+Best regards,
+-- 
+Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
 
-Or is your question specific to the 16-bit primitives?  (Full disclosure:
-I have no objection to removing Alpha ev4/45/5, having several times
-suggested removing Alpha entirely.  And having the scars to prove it.)
-
-> For the cmpxchg() interface, I would prefer to handle the
-> 8-bit and 16-bit versions the same way as cmpxchg64() and
-> provide separate cmpxchg8()/cmpxchg16()/cmpxchg32() functions
-> by architectures that operate on fixed-size integer values
-> but not compounds or pointers, and a generic cmpxchg() wrapper
-> in common code that can handle the abtraction for pointers,
-> long and (if absolutely necessary) compounds by multiplexing
-> between cmpxchg32() and cmpxchg64() where needed.
-
-So as to support _acquire(), _relaxed(), and _release()?
-
-If so, I don't have any use cases for other than full ordering.
-
-> I did a prototype a few years ago and found that there is
-> probably under a dozen users of the sub-word atomics in
-> the tree, so this mostly requires changes to architecture
-> code and less to drivers and core code.
-
-Given this approach, the predominance of changes to architecture code
-seems quite likely to me.
-
-But do we really wish to invest that much work into architectures that
-might not be all that long for the world?  (Quickly donning my old
-asbestos suit, the one with the tungsten pinstripes...)
-
-							Thanx, Paul
 
