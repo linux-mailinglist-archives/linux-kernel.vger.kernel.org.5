@@ -1,119 +1,139 @@
-Return-Path: <linux-kernel+bounces-128207-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-128205-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 63D228957AD
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 17:03:11 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 44BF7895787
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 16:53:45 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E9F0AB2501D
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 14:54:20 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F381E2820D9
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 14:53:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 372FD12F393;
-	Tue,  2 Apr 2024 14:53:44 +0000 (UTC)
-Received: from relmlie6.idc.renesas.com (relmlor2.renesas.com [210.160.252.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5ECCF12E1C1;
-	Tue,  2 Apr 2024 14:53:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=210.160.252.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C96BC12BEA1;
+	Tue,  2 Apr 2024 14:53:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="u9wM5BM1"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E8CD98595C;
+	Tue,  2 Apr 2024 14:53:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712069623; cv=none; b=tG19/dHXcSoNQ/MTgSigrIbbY7swUlGcT8Wb0irE0HUH50N2OlMfdr550w94qW6q3jM2fGLOcNTbnBhxH0Ymycb0KvsHSlCSc0mQACSkvUNhXwThCEMLA+LU7bLax6+uIlSxlpiIw1PbS0PPFLnYjdtoWedlTWzxR4O5fmfPfi4=
+	t=1712069617; cv=none; b=IQc5puMsMAKZO99uY5aqVJ+ExfzFV8QAetmlXBGMpR3bodV9UOrFNK1O0cR2i1MN+SlpTOyS2V5IPhVgeDvYUiVJtvw264Za+VnCN4oicacu+Cy9d9dobziRoEzjw6hE/piLuoNTdm2CBoiD34wCqb8aBwHDFl6zkoshzXU4s3Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712069623; c=relaxed/simple;
-	bh=yvWgqBRAemfrm35I3KIyriiHuR6znVWOdsVNvpWD4cg=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=XAyBkf/hgyrM73uudKHOuJ9/8zUGkraH21fBJk3AsH4kSogKkyeOiqX0v99pnWSwxAE9TALoqKiQRjRwDPmOyK2So7eS3l5C7SMac6U14w/eK/lj86ZuCCEKr3NHLkFh2Jxof1GwvyU03C9sfogHvd+OYF7EghQPZYvbpRAktd0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=bp.renesas.com; spf=pass smtp.mailfrom=bp.renesas.com; arc=none smtp.client-ip=210.160.252.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=bp.renesas.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bp.renesas.com
-X-IronPort-AV: E=Sophos;i="6.07,175,1708354800"; 
-   d="scan'208";a="204068020"
-Received: from unknown (HELO relmlir6.idc.renesas.com) ([10.200.68.152])
-  by relmlie6.idc.renesas.com with ESMTP; 02 Apr 2024 23:53:34 +0900
-Received: from renesas-deb12.cephei.uk (unknown [10.226.93.98])
-	by relmlir6.idc.renesas.com (Postfix) with ESMTP id 267BF4254193;
-	Tue,  2 Apr 2024 23:53:29 +0900 (JST)
-From: Paul Barker <paul.barker.ct@bp.renesas.com>
-To: Sergey Shtylyov <s.shtylyov@omp.ru>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>,
-	Paolo Abeni <pabeni@redhat.com>,
-	=?UTF-8?q?Niklas=20S=C3=B6derlund?= <niklas.soderlund+renesas@ragnatech.se>
-Cc: Paul Barker <paul.barker.ct@bp.renesas.com>,
-	netdev@vger.kernel.org,
-	linux-renesas-soc@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH v2 2/2] net: ravb: Always update error counters
-Date: Tue,  2 Apr 2024 15:53:05 +0100
-Message-Id: <20240402145305.82148-2-paul.barker.ct@bp.renesas.com>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20240402145305.82148-1-paul.barker.ct@bp.renesas.com>
-References: <20240402145305.82148-1-paul.barker.ct@bp.renesas.com>
+	s=arc-20240116; t=1712069617; c=relaxed/simple;
+	bh=vhQsnvRHzwOy3ox3OvUmqvwn0itwQb57/FmYwbndCXU=;
+	h=Date:Message-ID:From:To:Cc:Subject:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=tdhKOhAIJB09r6zXm66mKr7tPndtFmuX2mUgV6t7lsvvA4tCvhYdH6lpOcuCmWes+DYrUWhlY4sBxpm7LPCzWbFklpkx8DCfilIGIS5RzippkjiGbd20mDnpChP3MLrJpGaVbvJYaMtDbScXNrdE782nEfdejQanZYrIjwSGKwU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=u9wM5BM1; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 509FAC43390;
+	Tue,  2 Apr 2024 14:53:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1712069616;
+	bh=vhQsnvRHzwOy3ox3OvUmqvwn0itwQb57/FmYwbndCXU=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=u9wM5BM1zVlflI8QFJDAHZYDZYOnPeNYUCR981yXBTjIUiYAuk/3ukwrzYyE9RB94
+	 ggNYHgQ1aWLaJAIwPMuPzimCq9JWUddvfke5tuHoM0dsQKwtlwps5xe/l4EwBAzHDD
+	 rf1z2ocnPeEVj5O5c+AsMaSSwuS16ukcZIEKrjjEBxANfz4eCcf1IS4sLyBX7WGV4J
+	 X6bfAXGXEkMAukyHifrFowQ8fi42i71UHSa2nc5rdtHTyYs00rXjuHJJ55XSR2HdyJ
+	 0d0USc13F8w/JmKNxjLr8RyCue8Q7EheKu9KzyehW7omtUJefOH2yADQqrus5BNuSp
+	 yCsACeDACsJbQ==
+Received: from sofa.misterjones.org ([185.219.108.64] helo=goblin-girl.misterjones.org)
+	by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.95)
+	(envelope-from <maz@kernel.org>)
+	id 1rrfW1-000lX6-Ji;
+	Tue, 02 Apr 2024 15:53:33 +0100
+Date: Tue, 02 Apr 2024 15:53:33 +0100
+Message-ID: <86h6gju87m.wl-maz@kernel.org>
+From: Marc Zyngier <maz@kernel.org>
+To: Mark Brown <broonie@kernel.org>
+Cc: Catalin Marinas <catalin.marinas@arm.com>,
+	Will Deacon <will@kernel.org>,
+	Oliver Upton <oliver.upton@linux.dev>,
+	James Morse <james.morse@arm.com>,
+	Suzuki K Poulose <suzuki.poulose@arm.com>,
+	Jonathan Corbet <corbet@lwn.net>,
+	Shuah Khan <shuah@kernel.org>,
+	linux-arm-kernel@lists.infradead.org,
+	linux-kernel@vger.kernel.org,
+	Dave Martin <Dave.Martin@arm.com>,
+	kvmarm@lists.linux.dev,
+	linux-doc@vger.kernel.org,
+	linux-kselftest@vger.kernel.org
+Subject: Re: [PATCH v6 1/5] KVM: arm64: Share all userspace hardened thread data with the hypervisor
+In-Reply-To: <fb54d7b0-9c83-4a0c-a08b-b722c9381ca7@sirena.org.uk>
+References: <20240329-arm64-2023-dpisa-v6-0-ba42db6c27f3@kernel.org>
+	<20240329-arm64-2023-dpisa-v6-1-ba42db6c27f3@kernel.org>
+	<87msqesoty.wl-maz@kernel.org>
+	<fb54d7b0-9c83-4a0c-a08b-b722c9381ca7@sirena.org.uk>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/29.2
+ (aarch64-unknown-linux-gnu) MULE/6.0 (HANACHIRUSATO)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-SA-Exim-Connect-IP: 185.219.108.64
+X-SA-Exim-Rcpt-To: broonie@kernel.org, catalin.marinas@arm.com, will@kernel.org, oliver.upton@linux.dev, james.morse@arm.com, suzuki.poulose@arm.com, corbet@lwn.net, shuah@kernel.org, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, Dave.Martin@arm.com, kvmarm@lists.linux.dev, linux-doc@vger.kernel.org, linux-kselftest@vger.kernel.org
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 
-The error statistics should be updated each time the poll function is
-called, even if the full RX work budget has been consumed. This prevents
-the counts from becoming stuck when RX bandwidth usage is high.
+On Tue, 02 Apr 2024 15:34:27 +0100,
+Mark Brown <broonie@kernel.org> wrote:
+> 
+> [1  <text/plain; us-ascii (quoted-printable)>]
+> On Sun, Mar 31, 2024 at 11:00:41AM +0100, Marc Zyngier wrote:
+> > Mark Brown <broonie@kernel.org> wrote:
+> 
+> > > As part of the lazy FPSIMD state transitioning done by the hypervisor we
+> > > currently share the userpsace FPSIMD state in thread->uw.fpsimd_state with
+> > > the host. Since this struct is non-extensible userspace ABI we have to keep
+> 
+> > Using the same representation is just pure convenience, and nothing
+> > requires us to use the it in the kernel/hypervisor.
+> 
+> Indeed, the additional data seemed contained enough that it was a
+> reasonable tradeoff.
+> 
+> > > the definition as is but the addition of FPMR in the 2023 dpISA means that
+> > > we will want to share more storage with the host. To facilitate this
+> > > refactor the current code to share the entire thread->uw rather than just
+> > > the one field.
+> 
+> > So this increase the required sharing with EL2 from 528 bytes to
+> > 560. Not a huge deal, but definitely moving in the wrong direction. Is
+> > there any plans to add more stuff to this structure that wouldn't be
+> > *directly* relevant to the hypervisor?
+> 
+> I'm not aware of any current plans to extend this.
+> 
+> > > @@ -640,7 +641,7 @@ struct kvm_vcpu_arch {
+> > >  	struct kvm_guest_debug_arch vcpu_debug_state;
+> > >  	struct kvm_guest_debug_arch external_debug_state;
+> > >  
+> > > -	struct user_fpsimd_state *host_fpsimd_state;	/* hyp VA */
+> > > +	struct thread_struct_uw *host_uw;	/* hyp VA */
+> > >  	struct task_struct *parent_task;
+> 
+> > Well, this is going away, and you know it.
+> 
+> Sure, those patches are still in flight though.  It does seem reasonable
+> to target the current code.
 
-This also ensures that error counters are not updated after we've
-re-enabled interrupts as that could result in a race condition.
+Sure, if your intent is for this code not to be merged.
 
-Also drop an unnecessary space.
+Because it means this series assumes a different data life cycle, and
+the review effort spent on it will be invalidated once you move to the
+per-CPU state.
 
-Fixes: c156633f1353 ("Renesas Ethernet AVB driver proper")
-Signed-off-by: Paul Barker <paul.barker.ct@bp.renesas.com>
----
-Changes from v1:
-  * Use the correct 'Fixes' tag.
-  * Actually drop the space described in the commit message!
-    (I must have lost this when rebasing things)
+	M.
 
- drivers/net/ethernet/renesas/ravb_main.c | 17 +++++++++--------
- 1 file changed, 9 insertions(+), 8 deletions(-)
-
-diff --git a/drivers/net/ethernet/renesas/ravb_main.c b/drivers/net/ethernet/renesas/ravb_main.c
-index 48803050abdb..ba01c8cc3c90 100644
---- a/drivers/net/ethernet/renesas/ravb_main.c
-+++ b/drivers/net/ethernet/renesas/ravb_main.c
-@@ -1339,6 +1339,15 @@ static int ravb_poll(struct napi_struct *napi, int budget)
- 	netif_wake_subqueue(ndev, q);
- 	spin_unlock_irqrestore(&priv->lock, flags);
- 
-+	/* Receive error message handling */
-+	priv->rx_over_errors = priv->stats[RAVB_BE].rx_over_errors;
-+	if (info->nc_queues)
-+		priv->rx_over_errors += priv->stats[RAVB_NC].rx_over_errors;
-+	if (priv->rx_over_errors != ndev->stats.rx_over_errors)
-+		ndev->stats.rx_over_errors = priv->rx_over_errors;
-+	if (priv->rx_fifo_errors != ndev->stats.rx_fifo_errors)
-+		ndev->stats.rx_fifo_errors = priv->rx_fifo_errors;
-+
- 	if (!unmask)
- 		goto out;
- 
-@@ -1355,14 +1364,6 @@ static int ravb_poll(struct napi_struct *napi, int budget)
- 	}
- 	spin_unlock_irqrestore(&priv->lock, flags);
- 
--	/* Receive error message handling */
--	priv->rx_over_errors =  priv->stats[RAVB_BE].rx_over_errors;
--	if (info->nc_queues)
--		priv->rx_over_errors += priv->stats[RAVB_NC].rx_over_errors;
--	if (priv->rx_over_errors != ndev->stats.rx_over_errors)
--		ndev->stats.rx_over_errors = priv->rx_over_errors;
--	if (priv->rx_fifo_errors != ndev->stats.rx_fifo_errors)
--		ndev->stats.rx_fifo_errors = priv->rx_fifo_errors;
- out:
- 	return budget - quota;
- }
 -- 
-2.39.2
-
+Without deviation from the norm, progress is not possible.
 
