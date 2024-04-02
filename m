@@ -1,87 +1,82 @@
-Return-Path: <linux-kernel+bounces-127677-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-127678-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id DD332894F55
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 11:58:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 80406894F59
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 11:58:42 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 43B24B2436B
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 09:58:20 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 20399B2466E
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 09:58:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0A65C5A104;
-	Tue,  2 Apr 2024 09:57:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 884625916B;
+	Tue,  2 Apr 2024 09:58:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b="PQ7ZitOV"
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [78.32.30.218])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="lW/riFUL"
+Received: from mail-ed1-f49.google.com (mail-ed1-f49.google.com [209.85.208.49])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A15DB1E4A1;
-	Tue,  2 Apr 2024 09:57:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=78.32.30.218
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 258E61E4A1
+	for <linux-kernel@vger.kernel.org>; Tue,  2 Apr 2024 09:58:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712051871; cv=none; b=JN9szY8l4WP7bfqjmPvGeBxbJBbh86fEY2wrJXJabPeKk9+tCYtWrLvQTv7PINWNBM/4ukRrQNemvYnBy+VIssjcbhnVRBu51HcjEDIJDeImFl7ZnQuw+3f3LSLFgWYJFz2YgaTi9ua8Jo0kaWyDX9MJVgmE9dh1wGECiBK6RrE=
+	t=1712051896; cv=none; b=FtDQUYqDaOOCNeMV4JGBzRPG1dBEpVNmTKfjonk80MJv9vE7QO2vs0ApwgYnq8kjiD+QMbpRdrhlG4P1ciM60xzmoZ4bPubrjM59VoX2JCyyuCsJM5fqfS2xDNXFGLlLyGUOJ6fxwS88/7N2vNI+pcOOosvcv0EWTDNVg6bBNW0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712051871; c=relaxed/simple;
-	bh=46wpQUAYB7s/VR1+4+aKUov2+hj/kRjPrFrSrpFdrRo=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=jG2WlsUx1kzMIfGpBCB8saKbXxvzewtUiK3ergOHmYOPVPyaUIFBYUyqQytiC2kVAyPrZ0g/phaD9w8QxSYUryvd7Iq92SLEOJQ9oPO315rqbd7mmv8HxiWW7R20BRgKZZowFzI4jJ6wRSUH107GqRAX5Zi0fdVrDS4wQ4fo0Q4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=armlinux.org.uk; spf=none smtp.mailfrom=armlinux.org.uk; dkim=pass (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b=PQ7ZitOV; arc=none smtp.client-ip=78.32.30.218
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=armlinux.org.uk
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=armlinux.org.uk
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
-	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-	List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-	bh=fVDBciGSJCM1lbFvz9XZk/dHqAfnqhC4b511eXifG+U=; b=PQ7ZitOVReHmXLRhmyYqDikBKr
-	d78kgUjDj6zH+/5NuUS16O5s+2GmJiYRd5dtkS2/QsHucNII9FSlsge6iLc+aEJB643S6pCSGk3FU
-	L8kmFJoYi/vAJhWz9IO//GGAmzhbc3OZHPBrwqoYCfD6gEF6gsPpAKuEaCNTlnGs81Rq6UJh26RZZ
-	NTz4B7T4W9qe1h966HMzRcIMbPHv0K8vCDa/Yu2+5LgAD+NQRU5SRgSPYSe7A7ZKWyDji24EuxwNg
-	1W9fLhTSHylJcEjQ6EorH5Jmwurf64FC0OzZbcOfzk4VaMB/DxJEXnakiEPg1CRtHOijipBKCADX8
-	vMuzFEqQ==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:41498)
-	by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.96)
-	(envelope-from <linux@armlinux.org.uk>)
-	id 1rratQ-0006EU-3D;
-	Tue, 02 Apr 2024 10:57:25 +0100
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
-	(envelope-from <linux@shell.armlinux.org.uk>)
-	id 1rratL-0006ry-4S; Tue, 02 Apr 2024 10:57:19 +0100
-Date: Tue, 2 Apr 2024 10:57:19 +0100
-From: "Russell King (Oracle)" <linux@armlinux.org.uk>
-To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Cc: Suzuki K Poulose <suzuki.poulose@arm.com>,
-	Mike Leach <mike.leach@linaro.org>,
-	James Clark <james.clark@arm.com>,
-	Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-	Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-	Alexandre Torgue <alexandre.torgue@foss.st.com>,
-	Linus Walleij <linus.walleij@linaro.org>,
-	Andi Shyti <andi.shyti@kernel.org>,
-	Olivia Mackall <olivia@selenic.com>,
-	Herbert Xu <herbert@gondor.apana.org.au>,
-	Vinod Koul <vkoul@kernel.org>,
-	Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-	Miquel Raynal <miquel.raynal@bootlin.com>,
-	Michal Simek <michal.simek@amd.com>,
-	Eric Auger <eric.auger@redhat.com>,
-	Alex Williamson <alex.williamson@redhat.com>,
-	linux-kernel@vger.kernel.org, coresight@lists.linaro.org,
-	linux-arm-kernel@lists.infradead.org,
-	linux-stm32@st-md-mailman.stormreply.com, linux-i2c@vger.kernel.org,
-	linux-crypto@vger.kernel.org, dmaengine@vger.kernel.org,
-	linux-input@vger.kernel.org, kvm@vger.kernel.org
-Subject: Re: [PATCH 00/19] amba: store owner from modules with
- amba_driver_register()
-Message-ID: <ZgvWfhSEYIUaIn6h@shell.armlinux.org.uk>
-References: <20240326-module-owner-amba-v1-0-4517b091385b@linaro.org>
- <f514d9e1-61fa-4c55-aea1-d70c955bb96a@linaro.org>
- <ZgvIMRDfeQaeVxYt@shell.armlinux.org.uk>
- <324e9c02-c005-4e18-9872-8408695fb1fe@linaro.org>
+	s=arc-20240116; t=1712051896; c=relaxed/simple;
+	bh=i3dAA3EBuiwwRsOxrV8BH5VJ943ZUlY2pGSFcOqvWsw=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition; b=dmVzBtLVsWy9K1x8Pl3wedcZ48x+qgKU7Eg3xHMf6JMoR4YTOGZiK53uecvbD0B4w8aixi7r6UFUF01c67oszhbzcd6LIzkfojvTZi7ZR5HDoLQ9Fj1I3qLoULJg5IBRzDbfQItTwHpPs3JD20dzRdb5NntFKfijHw5cDPcTNIs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=lW/riFUL; arc=none smtp.client-ip=209.85.208.49
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-ed1-f49.google.com with SMTP id 4fb4d7f45d1cf-56b0af675deso5523580a12.1
+        for <linux-kernel@vger.kernel.org>; Tue, 02 Apr 2024 02:58:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1712051893; x=1712656693; darn=vger.kernel.org;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=ld5/UZMRVCPDO/dKTQcgFxFhH+C0bdjqoU583UYXs7Q=;
+        b=lW/riFULRJeVOWDl3FOtQ1mA7mgZZs3VeDZJhMPuHixSaBW/YqAfASuUZr+yY3T477
+         HuMkEpCUiKm1ONF2P4qWldjcuXHa+9et8ktaAQo6kfLRZ30L5cYzt7+ePek6EwbX18xR
+         bwqJIQmOq26Hs5M/b/jDwdfxnNaoeEcoZdcx0S8zc7dnyPiSNoFDfUvCCDq4vpGQk6bG
+         uL9xxE3ya/aTKjo/Ub49RpxPQhTPU+Sg/Eci1RI6vPihBC5hYGL5E9ZcEqwb4E30Sgv5
+         bIV2UMScktdCSkLT44zMkIdn6pvi7XfwbfV7wPEV+fyYnRIKqWHri+FZwI39HXu1RAOj
+         clLQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712051893; x=1712656693;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=ld5/UZMRVCPDO/dKTQcgFxFhH+C0bdjqoU583UYXs7Q=;
+        b=PL7Q+7QRzffBkNqvpUFMOz3+zZVV9ZyhSc3Tv1APi7F8XxJNxUtlfxXD3jMLxGgUir
+         OjWwaovDZw9IJe2r3tHzPjFx0VrqjTEFT06ffq5abp6h8pD7R9HLFQs8Xt9kW7/OgAct
+         pe+dX78EY4U62THb1AvhYXWrBUNaMbL10l1PW+aw/4Ml8sFf4wy+gP/V9BPHB7JixAzB
+         lwlNPWO04Oqvl75UXsV/xDcKEWvMqd+k9O7xX9TuPH5qTqvtKInOzT4chFYpCwXTpUNX
+         69rCYpkx8gwif79Y/qVXIYA5DmGbxO+4DY8WmqFYTmXzkjmTExhOSKWELIrcmi1gUjfD
+         FXQQ==
+X-Forwarded-Encrypted: i=1; AJvYcCU3x+saW/UHLvWWP5EbQQeH6ak0JUxOVkc5ylAgq7yLn1cc3Ark52nxXAtSxR0J/CH0Vv704Nkr9mg/YPRNr+E986WlerwD6HiLitiB
+X-Gm-Message-State: AOJu0YzbhHavtSESAvorDgXIJ5b8uc7eAdbcqF+qy+Fmo5pbyH6h/XUx
+	gd1xvDyLQ5254KOy1nXmhLiSOFOVmBbp+2377ES8ZYs3rnR+Kd+h0iOuQGZ4XDE=
+X-Google-Smtp-Source: AGHT+IFgDns4XbXtOdDo3mYfgf9w3lFqwUVjIK8JRoHpGzz1mCaGhgoZUM8ANRaz4ThKySFmuVQUqQ==
+X-Received: by 2002:a50:d4cc:0:b0:56b:9925:38a with SMTP id e12-20020a50d4cc000000b0056b9925038amr7967208edj.38.1712051893318;
+        Tue, 02 Apr 2024 02:58:13 -0700 (PDT)
+Received: from localhost ([102.222.70.76])
+        by smtp.gmail.com with ESMTPSA id u22-20020aa7d556000000b0056c63ba1387sm5295464edr.86.2024.04.02.02.58.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 02 Apr 2024 02:58:13 -0700 (PDT)
+Date: Tue, 2 Apr 2024 12:58:09 +0300
+From: Dan Carpenter <dan.carpenter@linaro.org>
+To: Boris Brezillon <boris.brezillon@collabora.com>
+Cc: Steven Price <steven.price@arm.com>, Liviu Dudau <liviu.dudau@arm.com>,
+	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+	Maxime Ripard <mripard@kernel.org>,
+	Thomas Zimmermann <tzimmermann@suse.de>,
+	David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
+	Grant Likely <grant.likely@linaro.org>,
+	Heiko Stuebner <heiko@sntech.de>, dri-devel@lists.freedesktop.org,
+	linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
+Subject: [PATCH] drm/panthor: Fix a couple -ENOMEM error codes
+Message-ID: <cf5bbba5-427e-4940-b91e-925f9fa71f8d@moroto.mountain>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -90,85 +85,45 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <324e9c02-c005-4e18-9872-8408695fb1fe@linaro.org>
-Sender: Russell King (Oracle) <linux@armlinux.org.uk>
+X-Mailer: git-send-email haha only kidding
 
-On Tue, Apr 02, 2024 at 11:48:08AM +0200, Krzysztof Kozlowski wrote:
-> On 02/04/2024 10:56, Russell King (Oracle) wrote:
-> > On Sat, Mar 30, 2024 at 01:18:30PM +0100, Krzysztof Kozlowski wrote:
-> >> On 26/03/2024 21:23, Krzysztof Kozlowski wrote:
-> >>> Merging
-> >>> =======
-> >>> All further patches depend on the first amba patch, therefore please ack
-> >>> and this should go via one tree.
-> >>>
-> >>> Description
-> >>> ===========
-> >>> Modules registering driver with amba_driver_register() often forget to
-> >>> set .owner field.
-> >>>
-> >>> Solve the problem by moving this task away from the drivers to the core
-> >>> amba bus code, just like we did for platform_driver in commit
-> >>> 9447057eaff8 ("platform_device: use a macro instead of
-> >>> platform_driver_register").
-> >>>
-> >>> Best regards,
-> >>
-> >> I tried to submit this series to Russell patch tracker and failed. This
-> >> is ridiculous. It's 2024 and instead of normal process, like every other
-> >> maintainer, so b4 or Patchwork, we have some unusable system rejecting
-> >> standard patches.
-> > 
-> > Sorry but no. Stop being offensive.
-> > 
-> >> First, it depends some weird, duplicated signed-off-by's.
-> > 
-> > Eh? There is no such logic in there.
-> 
-> In the web system there is - read the error message I pasted. It wants
-> another SoB from the unrelated email account, the one used purely for
-> registering in some web system, not the one used for code handling.
+These error paths forgot to set the error code to -ENOMEM.
 
-So you're disagreeing with the author of this system. Of course you
-know best, you know the code behind it. I have only one word for
-that kind of attitude: idiotic.
+Fixes: 647810ec2476 ("drm/panthor: Add the MMU/VM logical block")
+Signed-off-by: Dan Carpenter <dan.carpenter@linaro.org>
+---
+ drivers/gpu/drm/panthor/panthor_mmu.c | 8 ++++++--
+ 1 file changed, 6 insertions(+), 2 deletions(-)
 
-> >> Second it > submitting patch-by-patch, all with clicking on some web
-> >> (!!!) interface.
-> > 
-> > Again, no it doesn't, and you're just throwing crap out because you
-> > failed. Unlike most of the "normal" processes, the patch system allows
-> > you to submit both by *email* and also by *web* for those cases where
-> 
-> The email one requires additional steps, so this is unnecessary work
-> confusing submitters. I submit dozens or hundreds of patches every
-> release cycle. That's the only subsystem which is odd to use.
-
-Lots of people use it without issue. People even send patches to the
-mailing list copied to the patch system.
-
-> > the emails get screwed up by ones company mail server. That's why the
-> > web interface exists - to give people *flexibility*.
-> 
-> No, they are not. None of my emails are screwed by my company system.
-
-So why are you using the web interface?
-
-> > Why does it want the kernel version? Because when we were running 2.4
-> > and 2.5 kernel versions in parallel, it was important to know which
-> > tree the patch was being submitted for. It has continued to be required
-> 
-> Which is absolutely ridiculous now. Expecting submitters to adhere to
-> some rule for 20 year old kernel is not reasonable.
-
-You aren't listening to me, so it's pointless discussing this further.
-You have a bee in your bonet and you want to make it a huge issue
-rather than work constructively. Sorry but no, I'm not going to continue
-this confrontational exchange.
-
-You clearly don't want to understand anything.
-
+diff --git a/drivers/gpu/drm/panthor/panthor_mmu.c b/drivers/gpu/drm/panthor/panthor_mmu.c
+index fdd35249169f..a26b40aab261 100644
+--- a/drivers/gpu/drm/panthor/panthor_mmu.c
++++ b/drivers/gpu/drm/panthor/panthor_mmu.c
+@@ -1264,8 +1264,10 @@ static int panthor_vm_prepare_map_op_ctx(struct panthor_vm_op_ctx *op_ctx,
+ 	op_ctx->rsvd_page_tables.pages = kcalloc(pt_count,
+ 						 sizeof(*op_ctx->rsvd_page_tables.pages),
+ 						 GFP_KERNEL);
+-	if (!op_ctx->rsvd_page_tables.pages)
++	if (!op_ctx->rsvd_page_tables.pages) {
++		ret = -ENOMEM;
+ 		goto err_cleanup;
++	}
+ 
+ 	ret = kmem_cache_alloc_bulk(pt_cache, GFP_KERNEL, pt_count,
+ 				    op_ctx->rsvd_page_tables.pages);
+@@ -1318,8 +1320,10 @@ static int panthor_vm_prepare_unmap_op_ctx(struct panthor_vm_op_ctx *op_ctx,
+ 		op_ctx->rsvd_page_tables.pages = kcalloc(pt_count,
+ 							 sizeof(*op_ctx->rsvd_page_tables.pages),
+ 							 GFP_KERNEL);
+-		if (!op_ctx->rsvd_page_tables.pages)
++		if (!op_ctx->rsvd_page_tables.pages) {
++			ret = -ENOMEM;
+ 			goto err_cleanup;
++		}
+ 
+ 		ret = kmem_cache_alloc_bulk(pt_cache, GFP_KERNEL, pt_count,
+ 					    op_ctx->rsvd_page_tables.pages);
 -- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
+2.43.0
+
 
