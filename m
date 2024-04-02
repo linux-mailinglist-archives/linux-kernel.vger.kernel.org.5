@@ -1,107 +1,162 @@
-Return-Path: <linux-kernel+bounces-127934-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-127936-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4C55E8952F5
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 14:27:57 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id D0B898952FA
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 14:30:31 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7BF311C223F2
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 12:27:56 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0DCEE1C21871
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 12:30:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EF62077F2C;
-	Tue,  2 Apr 2024 12:27:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6362F79DDB;
+	Tue,  2 Apr 2024 12:30:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="J9MOySxE"
-Received: from mail-yb1-f178.google.com (mail-yb1-f178.google.com [209.85.219.178])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="PC4/IFUe"
+Received: from fllv0015.ext.ti.com (fllv0015.ext.ti.com [198.47.19.141])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 96E5A757EA
-	for <linux-kernel@vger.kernel.org>; Tue,  2 Apr 2024 12:27:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C3FC6335A7;
+	Tue,  2 Apr 2024 12:30:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.19.141
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712060869; cv=none; b=r33irGETRyejYEunUlEOx3uF81BFlPE+oANX8MtuII+jqA6jO4KU9La2hqbV/9zAs5GZeS6v+swUOe3r5RJaQRyAxmPkTCOhJXJdPnK4me4LR31uMg72qMcF2jyNjlNYwrJMSm3Vb4YV5ENVzul5HZxQLcSsGcXKYDF6VnzwpdM=
+	t=1712061019; cv=none; b=lViCyPhxAu6dt0EFjghEWld6t4vAWLJn+BvcjEHxxeHvYLRCzEdezm1D2VscHSdWdvWQmFcGrZB3EKOrdfe13qfqXf1brp9X3Acl39rhfQH0tHl8rUv2anYVNRs/ivJEsUL0yIWaLAwNiViA5tGkFDpB2m3fs1gYcdwOLfCqtdc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712060869; c=relaxed/simple;
-	bh=OX9aAE+rsyjd9rU04bvDW0rrl1vTrXrygAuB19dKSeA=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=QNEYfVZBP16ak5fqj74BDnyi1UfNM4gIjmqndEYkpgrt1ut7i+2R6P3UXB8KihrK3IR1FAHOP1d6ao9dCKXXLHnu0B4nuGKdUots0hkf3B8AaUJeb9zz5JYG7zZ5h3M75OR7YygrYLexSQk5kKtGMU2s4DtdG+YhNAfyyH7ougo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=J9MOySxE; arc=none smtp.client-ip=209.85.219.178
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-yb1-f178.google.com with SMTP id 3f1490d57ef6-dc25e12cc63so5376999276.0
-        for <linux-kernel@vger.kernel.org>; Tue, 02 Apr 2024 05:27:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1712060866; x=1712665666; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=7aFDDEzPr4uOdZH6qoLKZ/lmr4EJ2hpeblGOksnU/bU=;
-        b=J9MOySxEEL9t6SlReuknbNGO9TmlIEGngR/GFkyLTQKxRmAy9bWCjJY0qj9s311EG5
-         xK0Ah35Qq7RTxzq3yPADvaLX1r52trw9phx46DEnP8EGfjm/621gCkRYUyOPm2Dj6oHj
-         T/5w9M2v0X9vYeD6xMCTGxcC/rESI5NlK3+Of8NWdJbIUV9ifKz5My6kUUUmK+bOG8O9
-         GWWGj+ExmttxKtIdFGRmO4XXzeodR2z46Y4baYQhsq6i8/RkkXOBIhfMMExHFKJCF+eO
-         +fstjoY8ZVdYvvjiShUTRSQgkgy2Jysl4VmZuhiFxjA/LxhT9VEuVSXeYCNt8CfledRs
-         2F7Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712060866; x=1712665666;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=7aFDDEzPr4uOdZH6qoLKZ/lmr4EJ2hpeblGOksnU/bU=;
-        b=XgBIiCquRYZhRVTYmnpCTFL+5WtJxoDf7hdbSKm4qMTXVlvl1FUXYQyvrFKWJBuk6d
-         LElc5st+V8LvPbiIchZAI7PbRB4JEZRvUqO/Bf1fatZxs4AMaQATo/mK71EjnnbmfLbB
-         C69RjdxS1tdl0ctbGuWuHQHv3ghzlLek0wWdB23IDzkiHR8fVUHDzfazMyjB2kpTYHwj
-         Mohhc+zfvuLWiZMk7EDaslsRgbAk1hwzMQYYrGjJz5jsEwf2QA9Lwiw/manLT26e87Fs
-         B3msYd+qrwbBFDeQZflAbd/Ol9pBOib30+ajncPp74ybg8JNzywMyPjZhYNoW7RswXIj
-         oCZw==
-X-Forwarded-Encrypted: i=1; AJvYcCUx5r2XwBo8EWmUfjmVX+ZwhhkAmb8O4fq8nxRDz45bP8qeztzZIhQ3ebm0cEbLmadR1KzLBmf03NdqofjtdoDjD36/rXDxJylLFnrh
-X-Gm-Message-State: AOJu0YyT5ZoTiMvFWasj1QMOCTILujYDuB9Ss/pj2ck8lh1zMGXk9nNz
-	Vv4Hd1veXgJb3tcN6QLF9O4PJsDdga47uCb77Ku5nN6WssyLH0UHKDqbMp93qoApcbH8DN4OyS8
-	aFAKt0UmsaZLhsGp5P8DjXZPfro7bh5+lIjGWRQ==
-X-Google-Smtp-Source: AGHT+IF/MgDhH+cqpcl2n6iWdzGYhkD+F2Phv53TFG/u/SQ3SKg1xPykdw8tq9fQIh8eQPfxN74uIlXMMNpMJt8xVUE=
-X-Received: by 2002:a25:820d:0:b0:dcb:df38:1c20 with SMTP id
- q13-20020a25820d000000b00dcbdf381c20mr8434209ybk.24.1712060866715; Tue, 02
- Apr 2024 05:27:46 -0700 (PDT)
+	s=arc-20240116; t=1712061019; c=relaxed/simple;
+	bh=ITCvpKJ5crNKh2Mzg3Vl0P7uLJLninjN71HBR/CKb7c=;
+	h=Date:From:To:CC:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Ivye3u00YizWjedapZIUwpRXvN7/2lO6Gju7oySV2y0VWfdrOHNhc6uZJUWzwOgCLGmyqXo8LBu7Ci+0aVFjdNlYVdYcfhKf+TVfwr8sxNiOjqMsQXk7zcBfoWVJDCF3Zj5QElJmEkBRMkc6arlC8F7EefM1MRPtFr5Zsm6+DZ4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=PC4/IFUe; arc=none smtp.client-ip=198.47.19.141
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+	by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 432CU64D047428;
+	Tue, 2 Apr 2024 07:30:06 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+	s=ti-com-17Q1; t=1712061006;
+	bh=rGB3cBxrxbzfkvdRjNadDZ6vfn6sw2z3o275CLvw278=;
+	h=Date:From:To:CC:Subject:References:In-Reply-To;
+	b=PC4/IFUe05AXGx8mHQVVXUvyBHzEtHrFVPtrFW9ScWZJLJ+9tM2V0Nqv1yA7i+JIe
+	 FWxt3BBQKqPi88nL0vK0K0HbIJ1M8vjYxj8lPXlTQUbAQPnoxHODwUKJo+daDTvRdY
+	 +WtWeiI2TxyvFOyeFm5vc9Zw37ux5gITeIyeu6mg=
+Received: from DFLE106.ent.ti.com (dfle106.ent.ti.com [10.64.6.27])
+	by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 432CU2nT025956
+	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+	Tue, 2 Apr 2024 07:30:06 -0500
+Received: from DFLE109.ent.ti.com (10.64.6.30) by DFLE106.ent.ti.com
+ (10.64.6.27) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Tue, 2
+ Apr 2024 07:30:03 -0500
+Received: from lelvsmtp6.itg.ti.com (10.180.75.249) by DFLE109.ent.ti.com
+ (10.64.6.30) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Tue, 2 Apr 2024 07:30:03 -0500
+Received: from localhost (uda0492258.dhcp.ti.com [172.24.227.9])
+	by lelvsmtp6.itg.ti.com (8.15.2/8.15.2) with ESMTP id 432CU261087192;
+	Tue, 2 Apr 2024 07:30:03 -0500
+Date: Tue, 2 Apr 2024 18:00:02 +0530
+From: Siddharth Vadapalli <s-vadapalli@ti.com>
+To: Krzysztof Kozlowski <krzk@kernel.org>
+CC: Siddharth Vadapalli <s-vadapalli@ti.com>, <lee@kernel.org>,
+        <robh@kernel.org>, <krzk+dt@kernel.org>, <conor+dt@kernel.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>, <srk@ti.com>
+Subject: Re: [PATCH] dt-bindings: mfd: syscon: Add ti,am62p-cpsw-mac-efuse
+ compatible
+Message-ID: <30065bdc-ccef-4610-b1c1-7661f801b8e9@ti.com>
+References: <20240402105708.4114146-1-s-vadapalli@ti.com>
+ <2e9b6a91-43d3-4b23-830d-40e607505d8c@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240322132205.906729-1-arnd@kernel.org>
-In-Reply-To: <20240322132205.906729-1-arnd@kernel.org>
-From: Linus Walleij <linus.walleij@linaro.org>
-Date: Tue, 2 Apr 2024 14:27:36 +0200
-Message-ID: <CACRpkdbUZvAHSCD5C73rLize6XnPuPY1BCGFiTW_t_rM8sSngg@mail.gmail.com>
-Subject: Re: [PATCH] pinctrl: armada-37xx: remove an unused variable
-To: Arnd Bergmann <arnd@kernel.org>
-Cc: Andrew Lunn <andrew@lunn.ch>, Gregory Clement <gregory.clement@bootlin.com>, 
-	Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>, Arnd Bergmann <arnd@arndb.de>, 
-	linux-arm-kernel@lists.infradead.org, linux-gpio@vger.kernel.org, 
-	linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <2e9b6a91-43d3-4b23-830d-40e607505d8c@kernel.org>
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 
-On Fri, Mar 22, 2024 at 2:22=E2=80=AFPM Arnd Bergmann <arnd@kernel.org> wro=
-te:
+On Tue, Apr 02, 2024 at 02:08:32PM +0200, Krzysztof Kozlowski wrote:
+> On 02/04/2024 12:57, Siddharth Vadapalli wrote:
+> > The CTRLMMR_MAC_IDx registers within the CTRL_MMR space of TI's AM62p SoC
+> > contain the MAC Address programmed in the eFuse. Add compatible for
+> > allowing the CPSW driver to obtain a regmap for the CTRLMMR_MAC_IDx
+> > registers within the System Controller device-tree node. The default MAC
+> > Address for the interface corresponding to the first MAC port will be set
+> > to the value programmed in the eFuse.
+> > 
+> > Signed-off-by: Siddharth Vadapalli <s-vadapalli@ti.com>
+> > ---
+> > 
+> > This patch is based on linux-next tagged next-20240402.
+> 
+> Where is the DTS using it?
 
-> From: Arnd Bergmann <arnd@arndb.de>
->
-> This variable has never been used and can be removed to avoid a W=3D1 war=
-ning:
->
-> drivers/pinctrl/mvebu/pinctrl-armada-37xx.c:837:6: error: variable 'i' se=
-t but not used [-Werror,-Wunused-but-set-variable]
->   837 |         int i =3D 0;
->
-> Fixes: 87466ccd9401 ("pinctrl: armada-37xx: Add pin controller support fo=
-r Armada 37xx")
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+The current implementation in the device-tree for older TI K3 SoCs is as
+follows:
 
-Patch applied!
+	cpsw_port1: port@1 {
+		reg = <1>;
+		ti,mac-only;
+		label = "port1";
+		phys = <&phy_gmii_sel 1>;
+		mac-address = [00 00 00 00 00 00];
+		ti,syscon-efuse = <&wkup_conf 0x200>;
+	};
 
-Yours,
-Linus Walleij
+The "ti,syscon-efuse" property passes the reference to the System
+Controller node as well as the offset to the CTRLMMR_MAC_IDx registers
+within the CTRL_MMR space.
+
+This implementation works only when the System Controller node
+(wkup_conf or its equivalent depending on the SoC) has the compatible
+"syscon". From AM62p SoC onwards, it was decided that the System
+Controller nodes have to be modelled as a "simple-bus", due to which the
+"syscon" based regmapping within the driver that uses the
+"ti,syscon-efuse" property will no longer work directly. Therefore, with
+this patch, the upcoming device-tree changes for AM62p will be:
+
+1) Update in the System Controller node to use the newly added
+compatible for mapping the CTRLMMR_MAC_IDx registers:
+
+	wkup_conf: bus@43000000 {
+		compatible = "simple-bus";
+		reg = <0x00 0x43000000 0x00 0x20000>;
+		#address-cells = <1>;
+		#size-cells = <1>;
+		ranges = <0x00 0x00 0x43000000 0x20000>;
+		bootph-all;
+
+		chipid: chipid@14 {
+                        reg = <0x14 0x4>;
+                        bootph-all;
+                };
++
++               cpsw_mac_efuse: cpsw-mac-efuse@200 {
++                       compatible = "ti,am62p-cpsw-mac-efuse", "syscon";
++                       reg = <0x200 0x8>;
++               };
+        };
+
+2) Update within the cpsw_port1 node for passing the "cpsw_mac_efuse"
+node:
+
+		cpsw_port1: port@1 {
+			reg = <1>;
+			ti,mac-only;
+			label = "port1";
+			phys = <&phy_gmii_sel 1>;
+			mac-address = [00 00 00 00 00 00];
++			ti,syscon-efuse = <&cpsw_mac_efuse 0x0>;
+		};
+
+> 
+> Acked-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+
+Thank you for reviewing and acking this patch.
+
+Regards,
+Siddharth.
 
