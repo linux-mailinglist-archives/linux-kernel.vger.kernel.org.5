@@ -1,138 +1,131 @@
-Return-Path: <linux-kernel+bounces-128416-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-128417-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 99973895A87
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 19:18:39 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5849C895A9D
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 19:24:00 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3A1B71F2291C
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 17:18:39 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 62A9DB246CC
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 17:21:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4BD4215A490;
-	Tue,  2 Apr 2024 17:18:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 19ECC15A495;
+	Tue,  2 Apr 2024 17:21:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=hugovil.com header.i=@hugovil.com header.b="tyoLoxlb"
-Received: from mail.hugovil.com (mail.hugovil.com [162.243.120.170])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="kkR1LxWP"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4A9AA15990F;
-	Tue,  2 Apr 2024 17:18:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=162.243.120.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4CBFB14B07B;
+	Tue,  2 Apr 2024 17:21:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712078312; cv=none; b=CQbo5f0Nx61YOIXJbWp3EaTO1aQxWnQNd88ahhHeLmC9qJSFgi9gAxO5yg9V7eFeUE6lA1BzfRe4DuOK7stVjDTAt7KxnBcX6BCvb/EDhfPJBON7owD+VAIGv72CL03DUI6BOte0q0EHd7fZYSuZgpKBvvcwR/0U7UM2ymgCbdw=
+	t=1712078492; cv=none; b=J0Xr8pfEMX58vYxpLwFW1EqZq5wmDirqwKkkmkulMVPlw0jvHy63E50me5H2U2lnmJM9qHCJ1hQfW5jrgN9FWgiva0nWewoUL2D7AABXEV5RiWn0lo9rIXtJ5X/rLKgFUTHS4Ewn0U6dp5i7WmG1j+b3CpKICW+zgnKNE9AwTGI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712078312; c=relaxed/simple;
-	bh=gnyauasBEVKJlgRTyusXcYoUHHL80G7u43VYIjNqww0=;
-	h=Date:From:To:Cc:Message-Id:In-Reply-To:References:Mime-Version:
-	 Content-Type:Subject; b=XF4k5H2qMm+koF9eqRjEtdzSWfeUBu6qZPWj3vs4lawWij0hh3LC40LihdMXOzqrHG3K4DiukiEqlEMZ/vEE9pzV+Dm6sSiHcXCe91pN/mww/RJ95YQ8WpEyJ46PKBwVByRLDCemiQsUoTBjdx9nZ4whH+yPnx0YsHLLWDwNWAo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=hugovil.com; spf=pass smtp.mailfrom=hugovil.com; dkim=pass (1024-bit key) header.d=hugovil.com header.i=@hugovil.com header.b=tyoLoxlb; arc=none smtp.client-ip=162.243.120.170
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=hugovil.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=hugovil.com
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=hugovil.com
-	; s=x; h=Subject:Content-Transfer-Encoding:Mime-Version:Message-Id:Cc:To:From
-	:Date:subject:date:message-id:reply-to;
-	bh=yoiHiwETSu1iBvC11FxmDWnqf+yKtnHBsQkfmlSTe60=; b=tyoLoxlb0t/sgZZtHdClz6E2YM
-	FSy85kwC28U/ZhFvr/e+rhjRiTqEpR/wIk7XpfEJFZfwUmhcxOdgd0yoMHeSi5pcv3MSaz8edrF/g
-	85DjJZP6mRYNl6bnTVve4q2hm3h8GfUZTMbQs1IQYFqJWZn4it3DazmVc/zNsXTQyeRs=;
-Received: from modemcable168.174-80-70.mc.videotron.ca ([70.80.174.168]:44634 helo=pettiford)
-	by mail.hugovil.com with esmtpa (Exim 4.92)
-	(envelope-from <hugo@hugovil.com>)
-	id 1rrhmF-0007UU-Ov; Tue, 02 Apr 2024 13:18:28 -0400
-Date: Tue, 2 Apr 2024 13:18:27 -0400
-From: Hugo Villeneuve <hugo@hugovil.com>
-To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org, Jiri Slaby
- <jirislaby@kernel.org>
-Message-Id: <20240402131827.fdc429dfb6f62db4d291688f@hugovil.com>
-In-Reply-To: <20240402154219.3583679-3-andriy.shevchenko@linux.intel.com>
-References: <20240402154219.3583679-1-andriy.shevchenko@linux.intel.com>
-	<20240402154219.3583679-3-andriy.shevchenko@linux.intel.com>
-X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1712078492; c=relaxed/simple;
+	bh=DnpOibWeEhhYJWAo5GJdkNBTBKaVlT4nCoBWBnjQiTg=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=IXD9Ei78IpVr0rN2b0M6PgSBUrar1+0I2dqL3ObeNIPp7r6UylJXg5FUfUR6hWk+tNXCEjbH7H6g26EQsg6wgMG7MW96AGB/darrSsGMaOwkCkuG+TKqKFARRvIrMTgMwG/itFhJyBXzQnekZVImhIXlCcTQLKSefvhyA9jPL+U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=kkR1LxWP; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 879E7C433F1;
+	Tue,  2 Apr 2024 17:21:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1712078491;
+	bh=DnpOibWeEhhYJWAo5GJdkNBTBKaVlT4nCoBWBnjQiTg=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=kkR1LxWPiOyeNYU2wTg7krNhTXupOzH+yuLhG3Iv+H/QqOzbVHpk1rcdPtc/M1lRU
+	 tqr3GNmoceWktBQ8jqNGbwAy41Qtqbq10Li5hNplEEYfnXR0WlE6zkC18TmVn2XU+g
+	 SQLPNRsEPBV4N1gbp3O5uHPw2AyRVxQzusInycQmfyq0xWc4zDlSbpise0OugxksUJ
+	 HKvEnkkDyWpMQnBsUZmqp8dJCP3h9/OqsrbU9MxaPuHlZaQWW7mHsXs48GvN54zWeE
+	 p1NX0/yOEiYW/Fv57vWyBta9YswZqIDjwrkyK7wfEKMZBxHChHIZPu/G2Wj7YC1b5q
+	 slvAW9kE4DQSw==
+Date: Tue, 2 Apr 2024 12:21:28 -0500
+From: Rob Herring <robh@kernel.org>
+To: Richard Zhu <hongxing.zhu@nxp.com>
+Cc: vkoul@kernel.org, kishon@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+	frank.li@nxp.com, conor+dt@kernel.org,
+	linux-phy@lists.infradead.org, devicetree@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+	kernel@pengutronix.de, imx@lists.linux.dev
+Subject: Re: [PATCH v2 1/3] dt-bindings: phy: phy-imx8-pcie: Add binding for
+ i.MX8Q HSIO SerDes PHY
+Message-ID: <20240402172128.GA250151-robh@kernel.org>
+References: <1712036704-21064-1-git-send-email-hongxing.zhu@nxp.com>
+ <1712036704-21064-2-git-send-email-hongxing.zhu@nxp.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-SA-Exim-Connect-IP: 70.80.174.168
-X-SA-Exim-Mail-From: hugo@hugovil.com
-X-Spam-Level: 
-X-Spam-Report: 
-	* -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
-	* -0.4 NICE_REPLY_A Looks like a legit reply (A)
-Subject: Re: [PATCH v1 02/16] serial: max3100: Update uart_driver_registered
- on driver removal
-X-SA-Exim-Version: 4.2.1 (built Wed, 08 May 2019 21:11:16 +0000)
-X-SA-Exim-Scanned: Yes (on mail.hugovil.com)
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1712036704-21064-2-git-send-email-hongxing.zhu@nxp.com>
 
-On Tue,  2 Apr 2024 18:38:08 +0300
-Andy Shevchenko <andriy.shevchenko@linux.intel.com> wrote:
-
-Hi Andy,
-
-> The removal of the last MAX3100 device triggers the removal of
-> the driver. However, code doesn't update the respective global
-> variable and after insmod — rmmod — insmod cycle the kernel
-> oopses:
+On Tue, Apr 02, 2024 at 01:45:02PM +0800, Richard Zhu wrote:
+> Add binding for controller ID and HSIO configuration setting of the
+> i.MX8Q HSIO SerDes PHY.
 > 
->   max3100 spi-PRP0001:01: max3100_probe: adding port 0
->   BUG: kernel NULL pointer dereference, address: 0000000000000408
->   ...
->   RIP: 0010:serial_core_register_port+0xa0/0x840
->   ...
->    max3100_probe+0x1b6/0x280 [max3100]
->    spi_probe+0x8d/0xb0
-> 
-> Update the actual state so next time UART driver will be registered
-> again.
-> 
-> Fixes: 7831d56b0a35 ("tty: MAX3100")
-> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> Signed-off-by: Richard Zhu <hongxing.zhu@nxp.com>
+> Reviewed-by: Frank Li <Frank.Li@nxp.com>
 > ---
->  drivers/tty/serial/max3100.c | 1 +
->  1 file changed, 1 insertion(+)
+>  include/dt-bindings/phy/phy-imx8-pcie.h | 29 +++++++++++++++++++++++++
+>  1 file changed, 29 insertions(+)
 > 
-> diff --git a/drivers/tty/serial/max3100.c b/drivers/tty/serial/max3100.c
-> index 45022f2909f0..efe26f6d5ebf 100644
-> --- a/drivers/tty/serial/max3100.c
-> +++ b/drivers/tty/serial/max3100.c
-> @@ -841,6 +841,7 @@ static void max3100_remove(struct spi_device *spi)
->  		}
->  	pr_debug("removing max3100 driver\n");
->  	uart_unregister_driver(&max3100_uart_driver);
-> +	uart_driver_registered = 0;
-
-At the beginning of the probe function, we have:
-
------------------------
-if (!uart_driver_registered) {
-		uart_driver_registered = 1;
-		retval = uart_register_driver(&max3100_uart_driver);
-		if (retval) {
-			printk(KERN_ERR "Couldn't register max3100 uart
-driver\n"); mutex_unlock(&max3100s_lock);
-			return retval;
-..
------------------------
-
-If uart_register_driver() fails, uart_driver_registered would still be
-true and would it prevent any other subsequent devices from being
-properly registered? If yes, then maybe "uart_driver_registered = 1"
-should be set only after a sucessfull call to uart_register_driver()?
-
-Hugo.
-
-
+> diff --git a/include/dt-bindings/phy/phy-imx8-pcie.h b/include/dt-bindings/phy/phy-imx8-pcie.h
+> index 8bbe2d6538d8..3292c8be3354 100644
+> --- a/include/dt-bindings/phy/phy-imx8-pcie.h
+> +++ b/include/dt-bindings/phy/phy-imx8-pcie.h
+> @@ -11,4 +11,33 @@
+>  #define IMX8_PCIE_REFCLK_PAD_INPUT	1
+>  #define IMX8_PCIE_REFCLK_PAD_OUTPUT	2
 >  
->  	mutex_unlock(&max3100s_lock);
->  }
-> -- 
-> 2.43.0.rc1.1.gbec44491f096
-> 
-> 
+> +/*
+> + * i.MX8QM HSIO subsystem has three lane PHYs and three controllers:
+> + * PCIEA(2 lanes capapble PCIe controller), PCIEB (only support one
+
+capable
+
+> + * lane) and SATA.
+> + *
+> + * In the different use cases. PCIEA can be binded to PHY lane0, lane1
+
+s/binded/bound/
+
+And throughout your patches.
+
+> + * or Lane0 and lane1. PCIEB can be binded to lane1 or lane2 PHY. SATA
+> + * can only be binded to last lane2 PHY.
+> + *
+> + * Define i.MX8Q HSIO controller ID here to specify the controller
+> + * binded to the PHY.
+> + * Meanwhile, i.MX8QXP HSIO subsystem has one lane PHY and PCIEB(only
+> + * support one lane) controller.
+> + */
+> +#define IMX8Q_HSIO_PCIEA_ID	0
+> +#define IMX8Q_HSIO_PCIEB_ID	1
+> +#define IMX8Q_HSIO_SATA_ID	2
+
+Please use the standard phy mode defines.
+
+> +
+> +/*
+> + * On i.MX8QM, PCIEA is mandatory required if the HSIO is enabled.
+> + * Define configurations beside PCIEA is enabled.
+> + *
+> + * On i.MX8QXP, HSIO module only has PCIEB and one lane PHY.
+> + * The "IMX8Q_HSIO_CFG_PCIEB" can be used on i.MX8QXP platforms.
+> + */
+> +#define IMX8Q_HSIO_CFG_SATA		1
+> +#define IMX8Q_HSIO_CFG_PCIEB		2
+> +#define IMX8Q_HSIO_CFG_PCIEBSATA	3
+
+This seems somewhat redundant both as the 3rd define is just an OR of 
+the first 2 and all 3 overlap with the prior defines.
+
+Seems like with standard PHY modes, the only additional information you 
+might need is PCIEB vs. PCIEA.
+
+Rob
 
