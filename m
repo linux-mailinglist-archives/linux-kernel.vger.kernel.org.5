@@ -1,228 +1,357 @@
-Return-Path: <linux-kernel+bounces-127634-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-127635-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5DFF9894EB6
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 11:30:20 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 68AD8894EB8
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 11:31:40 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id CA4AC1F23E8E
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 09:30:19 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D2C6FB22E0B
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 09:31:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 893205820D;
-	Tue,  2 Apr 2024 09:30:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="LMArjkZT"
-Received: from casper.infradead.org (casper.infradead.org [90.155.50.34])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9AA8158213;
+	Tue,  2 Apr 2024 09:31:31 +0000 (UTC)
+Received: from relay9-d.mail.gandi.net (relay9-d.mail.gandi.net [217.70.183.199])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1876E57876;
-	Tue,  2 Apr 2024 09:30:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.50.34
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2B9BF57876;
+	Tue,  2 Apr 2024 09:31:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.199
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712050209; cv=none; b=kbUf6/KHDAwh3RM6TzQ3dGoqEcp2H0y4sd/kTWWmWlPogPmXisgaATX2Af+pk1Kf+4A57HXPzRIKOR+oGBHbDzOiDAPaqfjvY5cToBUbfMx4lAHeWEQpFOQM/SuE22uPcu0rxbj/LxdEnBDP6DT9Rjlr9vKLht0t7OG181xKCxQ=
+	t=1712050291; cv=none; b=CNqOhZDp8TQgZoTZic1dzVAV8tePR823OknOU21scQEwCXvO3Dgt93IlO00Uq4/tszmUSgVwKSdB67MDltrXnf/Bi1Kfqj6kLuYdqJIRdJlJ2wticAjo3UNGR6Rv7+mwy7zyzFG8NYfvT8BoRVf+TT7yqhhIuP0MIYrWmTYAT30=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712050209; c=relaxed/simple;
-	bh=Wz9TxMxDJiynKT2jiuGvp+69O7a2RoHyAZRFlziceEE=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=OrXvf+IDmhNBcPpZXKmqh3nAkCz8MeFMCvP2yDX0g/5DaWy0GgQZD0OGobKAvufxvdepktIf7xqVNoDV2mwdldLc9wzw+hqM8EcvaJD5yyuNgK1tvFnDPvd0Tw4YjUGmSofbypmRTd+py+r2i4HNIC7Pra51aH4wEihBPaPFJW0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=casper.srs.infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=LMArjkZT; arc=none smtp.client-ip=90.155.50.34
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=casper.srs.infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=casper.20170209; h=MIME-Version:Content-Type:References:
-	In-Reply-To:Date:Cc:To:From:Subject:Message-ID:Sender:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=Wz9TxMxDJiynKT2jiuGvp+69O7a2RoHyAZRFlziceEE=; b=LMArjkZTLuMjcFqgokLY4kTuNX
-	gX57l4NdOEPqMBwNX9UsJYS2KNwrzIPaO6A00vegqtj2yQVxX1J+L/EZw9sHO0vAwX3JT03uOncb8
-	7CK7ROyXEyiG8yoAioELQScpKTLSft6xJiEf87SD3yKT3vamfGiY0Tbrvj6UZI7quCjTjC3AWEFdP
-	Ma4p+CKKsmfzBJvjCO0f5Lo3a6j0r/sJRNg4VDCQqU0zD/+lmWFlvib7YOL4c5VRDJpBqWEN9RbqM
-	k4LoXjhNmDhCz4x/76178qkv4qCpbNAZB9uv8wqlJbtnNAZb2Nb+hrmX3z/h9aC9Tz5DItTwggnGM
-	WPGcas4Q==;
-Received: from [2001:8b0:10b:5:47e:ba9c:31c7:2ade] (helo=u3832b3a9db3152.ant.amazon.com)
-	by casper.infradead.org with esmtpsa (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rraSs-00000002hsJ-1kKM;
-	Tue, 02 Apr 2024 09:29:58 +0000
-Message-ID: <dbd60df4632e5ea9cef13cdc1a406b47bd8629da.camel@infradead.org>
-Subject: Re: [PATCH 2/2] arm64: acpi: Honour firmware_signature field of
- FACS, if it exists
-From: David Woodhouse <dwmw2@infradead.org>
-To: linux-arm-kernel@lists.infradead.org
-Cc: Catalin Marinas <catalin.marinas@arm.com>, Will Deacon
- <will@kernel.org>,  Robert Moore <robert.moore@intel.com>, "Rafael J.
- Wysocki" <rafael.j.wysocki@intel.com>, Len Brown <lenb@kernel.org>,
- mediou@amazon.de, alisaidi@amazon.com,  linux-kernel@vger.kernel.org,
- linux-acpi@vger.kernel.org,  acpica-devel@lists.linux.dev, Saket Dumbre
- <saket.dumbre@intel.com>
-Date: Tue, 02 Apr 2024 10:29:57 +0100
-In-Reply-To: <20240312134148.727454-2-dwmw2@infradead.org>
-References: <20240312134148.727454-1-dwmw2@infradead.org>
-	 <20240312134148.727454-2-dwmw2@infradead.org>
-Content-Type: multipart/signed; micalg="sha-256"; protocol="application/pkcs7-signature";
-	boundary="=-In9Pf205y6RkIPatJmhc"
-User-Agent: Evolution 3.44.4-0ubuntu2 
+	s=arc-20240116; t=1712050291; c=relaxed/simple;
+	bh=XcO6QrDyIRMglgpT78IcWpD3VE1qSUiB47QoEKtwnFw=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=tIYQZT/s5fGWtRMRu2f/9yc7s1NRNYOMpwqE6c448r++j3dDMSIpRsLugYBa6eE4jZYsEF8ueP/Gba3Af1edfg3mNuKuj+rMyfNxak+cgcnF0cIABlJc44jItv+VWFr41qcuRitpdVPlGR1Mvvi5t25Jg8h6rhVZXyVAE0bfBw8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ghiti.fr; spf=pass smtp.mailfrom=ghiti.fr; arc=none smtp.client-ip=217.70.183.199
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ghiti.fr
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ghiti.fr
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 24A7FFF810;
+	Tue,  2 Apr 2024 09:31:18 +0000 (UTC)
+Message-ID: <93e24c6c-65e6-4e99-ac56-aa264dbbf525@ghiti.fr>
+Date: Tue, 2 Apr 2024 11:31:18 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-SRS-Rewrite: SMTP reverse-path rewritten from <dwmw2@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 2/6] ACPI: RISCV: Add NUMA support based on SRAT and
+ SLIT
+Content-Language: en-US
+To: Haibo Xu <haibo1.xu@intel.com>
+Cc: Alison Schofield <alison.schofield@intel.com>,
+ Zong Li <zong.li@sifive.com>, "Rafael J. Wysocki" <rafael@kernel.org>,
+ Dave Hansen <dave.hansen@linux.intel.com>, linux-kernel@vger.kernel.org,
+ Conor Dooley <conor.dooley@microchip.com>, Guo Ren <guoren@kernel.org>,
+ Jisheng Zhang <jszhang@kernel.org>, James Morse <james.morse@arm.com>,
+ linux-riscv@lists.infradead.org, Ard Biesheuvel <ardb@kernel.org>,
+ Baoquan He <bhe@redhat.com>, Marc Zyngier <maz@kernel.org>,
+ acpica-devel@lists.linux.dev, Robert Moore <robert.moore@intel.com>,
+ linux-acpi@vger.kernel.org, Sami Tolvanen <samitolvanen@google.com>,
+ Greentime Hu <greentime.hu@sifive.com>, Len Brown <lenb@kernel.org>,
+ Albert Ou <aou@eecs.berkeley.edu>, Alexandre Ghiti <alexghiti@rivosinc.com>,
+ Arnd Bergmann <arnd@arndb.de>, Dan Williams <dan.j.williams@intel.com>,
+ Chen Jiahao <chenjiahao16@huawei.com>, Yuntao Wang <ytcoode@gmail.com>,
+ Paul Walmsley <paul.walmsley@sifive.com>,
+ =?UTF-8?B?Q2zDqW1lbnQgTO+/vT1BIDlnZXI=?= <cleger@rivosinc.com>,
+ xiaobo55x@gmail.com, Anup Patel <apatel@ventanamicro.com>,
+ Tony Luck <tony.luck@intel.com>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ "Russell King (Oracle)" <rmk+kernel@armlinux.org.uk>,
+ Samuel Holland <samuel.holland@sifive.com>, Evan Green <evan@rivosinc.com>,
+ Palmer Dabbelt <palmer@dabbelt.com>, ajones@ventanamicro.com
+References: <cover.1709780590.git.haibo1.xu@intel.com>
+ <7ca110c59cbb2fb358304a9ba4f9c7cbeb191345.1709780590.git.haibo1.xu@intel.com>
+From: Alexandre Ghiti <alex@ghiti.fr>
+In-Reply-To: <7ca110c59cbb2fb358304a9ba4f9c7cbeb191345.1709780590.git.haibo1.xu@intel.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-GND-Sasl: alex@ghiti.fr
+
+Hi Haibo,
+
+On 07/03/2024 09:47, Haibo Xu wrote:
+> Add acpi_numa.c file to enable parse NUMA information from
+> ACPI SRAT and SLIT tables. SRAT table provide CPUs(Hart) and
+> memory nodes to proximity domain mapping, while SLIT table
+> provide the distance metrics between proximity domains.
+>
+> Signed-off-by: Haibo Xu <haibo1.xu@intel.com>
+> ---
+>   arch/riscv/include/asm/acpi.h |  15 +++-
+>   arch/riscv/kernel/Makefile    |   1 +
+>   arch/riscv/kernel/acpi.c      |   5 --
+>   arch/riscv/kernel/acpi_numa.c | 131 ++++++++++++++++++++++++++++++++++
+>   arch/riscv/kernel/setup.c     |   4 +-
+>   arch/riscv/kernel/smpboot.c   |   2 -
+>   include/linux/acpi.h          |   6 ++
+>   7 files changed, 154 insertions(+), 10 deletions(-)
+>   create mode 100644 arch/riscv/kernel/acpi_numa.c
+>
+> diff --git a/arch/riscv/include/asm/acpi.h b/arch/riscv/include/asm/acpi.h
+> index 7dad0cf9d701..e0a1f84404f3 100644
+> --- a/arch/riscv/include/asm/acpi.h
+> +++ b/arch/riscv/include/asm/acpi.h
+> @@ -61,11 +61,14 @@ static inline void arch_fix_phys_package_id(int num, u32 slot) { }
+>   
+>   void acpi_init_rintc_map(void);
+>   struct acpi_madt_rintc *acpi_cpu_get_madt_rintc(int cpu);
+> -u32 get_acpi_id_for_cpu(int cpu);
+> +static inline u32 get_acpi_id_for_cpu(int cpu)
+> +{
+> +	return acpi_cpu_get_madt_rintc(cpu)->uid;
+> +}
+> +
+>   int acpi_get_riscv_isa(struct acpi_table_header *table,
+>   		       unsigned int cpu, const char **isa);
+>   
+> -static inline int acpi_numa_get_nid(unsigned int cpu) { return NUMA_NO_NODE; }
+>   void acpi_get_cbo_block_size(struct acpi_table_header *table, u32 *cbom_size,
+>   			     u32 *cboz_size, u32 *cbop_size);
+>   #else
+> @@ -87,4 +90,12 @@ static inline void acpi_get_cbo_block_size(struct acpi_table_header *table,
+>   
+>   #endif /* CONFIG_ACPI */
+>   
+> +#ifdef CONFIG_ACPI_NUMA
+> +int acpi_numa_get_nid(unsigned int cpu);
+> +void acpi_map_cpus_to_nodes(void);
+> +#else
+> +static inline int acpi_numa_get_nid(unsigned int cpu) { return NUMA_NO_NODE; }
+> +static inline void acpi_map_cpus_to_nodes(void) { }
+> +#endif /* CONFIG_ACPI_NUMA */
+> +
+>   #endif /*_ASM_ACPI_H*/
+> diff --git a/arch/riscv/kernel/Makefile b/arch/riscv/kernel/Makefile
+> index f71910718053..5d3e9cf89b76 100644
+> --- a/arch/riscv/kernel/Makefile
+> +++ b/arch/riscv/kernel/Makefile
+> @@ -105,3 +105,4 @@ obj-$(CONFIG_COMPAT)		+= compat_vdso/
+>   
+>   obj-$(CONFIG_64BIT)		+= pi/
+>   obj-$(CONFIG_ACPI)		+= acpi.o
+> +obj-$(CONFIG_ACPI_NUMA)	+= acpi_numa.o
+> diff --git a/arch/riscv/kernel/acpi.c b/arch/riscv/kernel/acpi.c
+> index e619edc8b0cc..040bdbfea2b4 100644
+> --- a/arch/riscv/kernel/acpi.c
+> +++ b/arch/riscv/kernel/acpi.c
+> @@ -191,11 +191,6 @@ struct acpi_madt_rintc *acpi_cpu_get_madt_rintc(int cpu)
+>   	return &cpu_madt_rintc[cpu];
+>   }
+>   
+> -u32 get_acpi_id_for_cpu(int cpu)
+> -{
+> -	return acpi_cpu_get_madt_rintc(cpu)->uid;
+> -}
+> -
+>   /*
+>    * __acpi_map_table() will be called before paging_init(), so early_ioremap()
+>    * or early_memremap() should be called here to for ACPI table mapping.
+> diff --git a/arch/riscv/kernel/acpi_numa.c b/arch/riscv/kernel/acpi_numa.c
+> new file mode 100644
+> index 000000000000..0231482d6946
+> --- /dev/null
+> +++ b/arch/riscv/kernel/acpi_numa.c
+> @@ -0,0 +1,131 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/*
+> + * ACPI 6.6 based NUMA setup for RISCV
+> + * Lots of code was borrowed from arch/arm64/kernel/acpi_numa.c
+> + *
+> + * Copyright 2004 Andi Kleen, SuSE Labs.
+> + * Copyright (C) 2013-2016, Linaro Ltd.
+> + *		Author: Hanjun Guo <hanjun.guo@linaro.org>
+> + * Copyright (C) 2024 Intel Corporation.
+> + *
+> + * Reads the ACPI SRAT table to figure out what memory belongs to which CPUs.
+> + *
+> + * Called from acpi_numa_init while reading the SRAT and SLIT tables.
+> + * Assumes all memory regions belonging to a single proximity domain
+> + * are in one chunk. Holes between them will be included in the node.
+> + */
+> +
+> +#define pr_fmt(fmt) "ACPI: NUMA: " fmt
+> +
+> +#include <linux/acpi.h>
+> +#include <linux/bitmap.h>
+> +#include <linux/kernel.h>
+> +#include <linux/mm.h>
+> +#include <linux/memblock.h>
+> +#include <linux/mmzone.h>
+> +#include <linux/module.h>
+> +#include <linux/topology.h>
+> +
+> +#include <asm/numa.h>
+> +
+> +static int acpi_early_node_map[NR_CPUS] __initdata = { NUMA_NO_NODE };
+> +
+> +int __init acpi_numa_get_nid(unsigned int cpu)
+> +{
+> +	return acpi_early_node_map[cpu];
+> +}
+> +
+> +static inline int get_cpu_for_acpi_id(u32 uid)
+> +{
+> +	int cpu;
+> +
+> +	for (cpu = 0; cpu < nr_cpu_ids; cpu++)
+> +		if (uid == get_acpi_id_for_cpu(cpu))
+> +			return cpu;
+> +
+> +	return -EINVAL;
+> +}
+> +
+> +static int __init acpi_parse_rintc_pxm(union acpi_subtable_headers *header,
+> +				       const unsigned long end)
+> +{
+> +	struct acpi_srat_rintc_affinity *pa;
+> +	int cpu, pxm, node;
+> +
+> +	if (srat_disabled())
+> +		return -EINVAL;
+> +
+> +	pa = (struct acpi_srat_rintc_affinity *)header;
+> +	if (!pa)
+> +		return -EINVAL;
+> +
+> +	if (!(pa->flags & ACPI_SRAT_RINTC_ENABLED))
+> +		return 0;
+> +
+> +	pxm = pa->proximity_domain;
+> +	node = pxm_to_node(pxm);
+> +
+> +	/*
+> +	 * If we can't map the UID to a logical cpu this
+> +	 * means that the UID is not part of possible cpus
+> +	 * so we do not need a NUMA mapping for it, skip
+> +	 * the SRAT entry and keep parsing.
+> +	 */
+> +	cpu = get_cpu_for_acpi_id(pa->acpi_processor_uid);
+> +	if (cpu < 0)
+> +		return 0;
+> +
+> +	acpi_early_node_map[cpu] = node;
+> +	pr_info("SRAT: PXM %d -> HARTID 0x%lx -> Node %d\n", pxm,
+> +		cpuid_to_hartid_map(cpu), node);
+> +
+> +	return 0;
+> +}
+> +
+> +void __init acpi_map_cpus_to_nodes(void)
+> +{
+> +	int i;
+> +
+> +	/*
+> +	 * In ACPI, SMP and CPU NUMA information is provided in separate
+> +	 * static tables, namely the MADT and the SRAT.
+> +	 *
+> +	 * Thus, it is simpler to first create the cpu logical map through
+> +	 * an MADT walk and then map the logical cpus to their node ids
+> +	 * as separate steps.
+> +	 */
+> +	acpi_table_parse_entries(ACPI_SIG_SRAT, sizeof(struct acpi_table_srat),
+> +				 ACPI_SRAT_TYPE_RINTC_AFFINITY, acpi_parse_rintc_pxm, 0);
+> +
+> +	for (i = 0; i < nr_cpu_ids; i++)
+> +		early_map_cpu_to_node(i, acpi_numa_get_nid(i));
+> +}
+> +
+> +/* Callback for Proximity Domain -> logical node ID mapping */
+> +void __init acpi_numa_rintc_affinity_init(struct acpi_srat_rintc_affinity *pa)
+> +{
+> +	int pxm, node;
+> +
+> +	if (srat_disabled())
+> +		return;
+> +
+> +	if (pa->header.length < sizeof(struct acpi_srat_rintc_affinity)) {
+> +		pr_err("SRAT: Invalid SRAT header length: %d\n", pa->header.length);
+> +		bad_srat();
+> +		return;
+> +	}
+> +
+> +	if (!(pa->flags & ACPI_SRAT_RINTC_ENABLED))
+> +		return;
+> +
+> +	pxm = pa->proximity_domain;
+> +	node = acpi_map_pxm_to_node(pxm);
+> +
+> +	if (node == NUMA_NO_NODE) {
+> +		pr_err("SRAT: Too many proximity domains %d\n", pxm);
+> +		bad_srat();
+> +		return;
+> +	}
+> +
+> +	node_set(node, numa_nodes_parsed);
+> +}
 
 
---=-In9Pf205y6RkIPatJmhc
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: base64
+What is riscv specific in the parsing of those tables? Can't we try to 
+merge this into generic ACPI code? I know that's a burden to try and 
+factorize code with other architectures instead of reusing it, but it 
+showed numerous times that duplicating was even worse (I have the NAPOT 
+code in mind).
 
-T24gVHVlLCAyMDI0LTAzLTEyIGF0IDEzOjQxICswMDAwLCBEYXZpZCBXb29kaG91c2Ugd3JvdGU6
-Cj4gRnJvbTogRGF2aWQgV29vZGhvdXNlIDxkd213QGFtYXpvbi5jby51az4KPiAKPiBJZiB0aGUg
-ZmlybXdhcmVfc2lnbmF0dXJlIGNoYW5nZXMgdGhlbiBPU1BNIHNob3VsZCBub3QgYXR0ZW1wdCB0
-byByZXN1bWUKPiBmcm9tIGhpYmVybmF0ZSwgYnV0IHNob3VsZCBpbnN0ZWFkIHBlcmZvcm0gYSBj
-bGVhbiByZWJvb3QuIFNldCB0aGUgZ2xvYmFsCj4gc3dzdXNwX2hhcmR3YXJlX3NpZ25hdHVyZSB0
-byBhbGxvdyB0aGUgZ2VuZXJpYyBjb2RlIHRvIGluY2x1ZGUgdGhlIHZhbHVlCj4gaW4gdGhlIHN3
-c3VzcCBoZWFkZXIgb24gZGlzaywgYW5kIHBlcmZvcm0gdGhlIGFwcHJvcHJpYXRlIGNoZWNrIG9u
-IHJlc3VtZS4KPiAKPiBTaWduZWQtb2ZmLWJ5OiBEYXZpZCBXb29kaG91c2UgPGR3bXdAYW1hem9u
-LmNvLnVrPgoKUGluZz8KCj4gLS0tCj4gwqBhcmNoL2FybTY0L2tlcm5lbC9hY3BpLmMgfCAxMCAr
-KysrKysrKysrCj4gwqAxIGZpbGUgY2hhbmdlZCwgMTAgaW5zZXJ0aW9ucygrKQo+IAo+IGRpZmYg
-LS1naXQgYS9hcmNoL2FybTY0L2tlcm5lbC9hY3BpLmMgYi9hcmNoL2FybTY0L2tlcm5lbC9hY3Bp
-LmMKPiBpbmRleCBkYmE4ZmNlYzdmMzMuLmUwZTdiOTNjMTZjYyAxMDA2NDQKPiAtLS0gYS9hcmNo
-L2FybTY0L2tlcm5lbC9hY3BpLmMKPiArKysgYi9hcmNoL2FybTY0L2tlcm5lbC9hY3BpLmMKPiBA
-QCAtMjYsNiArMjYsNyBAQAo+IMKgI2luY2x1ZGUgPGxpbnV4L2xpYmZkdC5oPgo+IMKgI2luY2x1
-ZGUgPGxpbnV4L3NtcC5oPgo+IMKgI2luY2x1ZGUgPGxpbnV4L3NlcmlhbF9jb3JlLmg+Cj4gKyNp
-bmNsdWRlIDxsaW51eC9zdXNwZW5kLmg+Cj4gwqAjaW5jbHVkZSA8bGludXgvcGd0YWJsZS5oPgo+
-IMKgCj4gwqAjaW5jbHVkZSA8YWNwaS9naGVzLmg+Cj4gQEAgLTIyNyw2ICsyMjgsMTUgQEAgdm9p
-ZCBfX2luaXQgYWNwaV9ib290X3RhYmxlX2luaXQodm9pZCkKPiDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoGlmIChlYXJseWNvbl9hY3BpX3NwY3JfZW5hYmxlKQo+IMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoGVhcmx5X2luaXRfZHRfc2Nhbl9j
-aG9zZW5fc3Rkb3V0KCk7Cj4gwqDCoMKgwqDCoMKgwqDCoH0gZWxzZSB7Cj4gKyNpZmRlZiBDT05G
-SUdfSElCRVJOQVRJT04KPiArwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgc3RydWN0IGFj
-cGlfdGFibGVfaGVhZGVyICpmYWNzID0gTlVMTDsKPiArwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgYWNwaV9nZXRfdGFibGUoQUNQSV9TSUdfRkFDUywgMSwgJmZhY3MpOwo+ICvCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqBpZiAoZmFjcykgewo+ICvCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgc3dzdXNwX2hhcmR3YXJlX3NpZ25hdHVyZSA9Cj4g
-K8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgKChzdHJ1Y3QgYWNwaV90YWJsZV9mYWNzICopZmFjcyktPmhhcmR3YXJlX3NpZ25hdHVy
-ZTsKPiArwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoGFjcGlf
-cHV0X3RhYmxlKGZhY3MpOwo+ICvCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqB9Cj4gKyNl
-bmRpZgo+IMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgYWNwaV9wYXJzZV9zcGNyKGVh
-cmx5Y29uX2FjcGlfc3Bjcl9lbmFibGUsIHRydWUpOwo+IMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgaWYgKElTX0VOQUJMRUQoQ09ORklHX0FDUElfQkdSVCkpCj4gwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgYWNwaV90YWJsZV9wYXJzZShBQ1BJ
-X1NJR19CR1JULCBhY3BpX3BhcnNlX2JncnQpOwoK
+Thanks,
+
+Alex
 
 
---=-In9Pf205y6RkIPatJmhc
-Content-Type: application/pkcs7-signature; name="smime.p7s"
-Content-Disposition: attachment; filename="smime.p7s"
-Content-Transfer-Encoding: base64
-
-MIAGCSqGSIb3DQEHAqCAMIACAQExDzANBglghkgBZQMEAgEFADCABgkqhkiG9w0BBwEAAKCCEkQw
-ggYQMIID+KADAgECAhBNlCwQ1DvglAnFgS06KwZPMA0GCSqGSIb3DQEBDAUAMIGIMQswCQYDVQQG
-EwJVUzETMBEGA1UECBMKTmV3IEplcnNleTEUMBIGA1UEBxMLSmVyc2V5IENpdHkxHjAcBgNVBAoT
-FVRoZSBVU0VSVFJVU1QgTmV0d29yazEuMCwGA1UEAxMlVVNFUlRydXN0IFJTQSBDZXJ0aWZpY2F0
-aW9uIEF1dGhvcml0eTAeFw0xODExMDIwMDAwMDBaFw0zMDEyMzEyMzU5NTlaMIGWMQswCQYDVQQG
-EwJHQjEbMBkGA1UECBMSR3JlYXRlciBNYW5jaGVzdGVyMRAwDgYDVQQHEwdTYWxmb3JkMRgwFgYD
-VQQKEw9TZWN0aWdvIExpbWl0ZWQxPjA8BgNVBAMTNVNlY3RpZ28gUlNBIENsaWVudCBBdXRoZW50
-aWNhdGlvbiBhbmQgU2VjdXJlIEVtYWlsIENBMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKC
-AQEAyjztlApB/975Rrno1jvm2pK/KxBOqhq8gr2+JhwpKirSzZxQgT9tlC7zl6hn1fXjSo5MqXUf
-ItMltrMaXqcESJuK8dtK56NCSrq4iDKaKq9NxOXFmqXX2zN8HHGjQ2b2Xv0v1L5Nk1MQPKA19xeW
-QcpGEGFUUd0kN+oHox+L9aV1rjfNiCj3bJk6kJaOPabPi2503nn/ITX5e8WfPnGw4VuZ79Khj1YB
-rf24k5Ee1sLTHsLtpiK9OjG4iQRBdq6Z/TlVx/hGAez5h36bBJMxqdHLpdwIUkTqT8se3ed0PewD
-ch/8kHPo5fZl5u1B0ecpq/sDN/5sCG52Ds+QU5O5EwIDAQABo4IBZDCCAWAwHwYDVR0jBBgwFoAU
-U3m/WqorSs9UgOHYm8Cd8rIDZsswHQYDVR0OBBYEFAnA8vwL2pTbX/4r36iZQs/J4K0AMA4GA1Ud
-DwEB/wQEAwIBhjASBgNVHRMBAf8ECDAGAQH/AgEAMB0GA1UdJQQWMBQGCCsGAQUFBwMCBggrBgEF
-BQcDBDARBgNVHSAECjAIMAYGBFUdIAAwUAYDVR0fBEkwRzBFoEOgQYY/aHR0cDovL2NybC51c2Vy
-dHJ1c3QuY29tL1VTRVJUcnVzdFJTQUNlcnRpZmljYXRpb25BdXRob3JpdHkuY3JsMHYGCCsGAQUF
-BwEBBGowaDA/BggrBgEFBQcwAoYzaHR0cDovL2NydC51c2VydHJ1c3QuY29tL1VTRVJUcnVzdFJT
-QUFkZFRydXN0Q0EuY3J0MCUGCCsGAQUFBzABhhlodHRwOi8vb2NzcC51c2VydHJ1c3QuY29tMA0G
-CSqGSIb3DQEBDAUAA4ICAQBBRHUAqznCFfXejpVtMnFojADdF9d6HBA4kMjjsb0XMZHztuOCtKF+
-xswhh2GqkW5JQrM8zVlU+A2VP72Ky2nlRA1GwmIPgou74TZ/XTarHG8zdMSgaDrkVYzz1g3nIVO9
-IHk96VwsacIvBF8JfqIs+8aWH2PfSUrNxP6Ys7U0sZYx4rXD6+cqFq/ZW5BUfClN/rhk2ddQXyn7
-kkmka2RQb9d90nmNHdgKrwfQ49mQ2hWQNDkJJIXwKjYA6VUR/fZUFeCUisdDe/0ABLTI+jheXUV1
-eoYV7lNwNBKpeHdNuO6Aacb533JlfeUHxvBz9OfYWUiXu09sMAviM11Q0DuMZ5760CdO2VnpsXP4
-KxaYIhvqPqUMWqRdWyn7crItNkZeroXaecG03i3mM7dkiPaCkgocBg0EBYsbZDZ8bsG3a08LwEsL
-1Ygz3SBsyECa0waq4hOf/Z85F2w2ZpXfP+w8q4ifwO90SGZZV+HR/Jh6rEaVPDRF/CEGVqR1hiuQ
-OZ1YL5ezMTX0ZSLwrymUE0pwi/KDaiYB15uswgeIAcA6JzPFf9pLkAFFWs1QNyN++niFhsM47qod
-x/PL+5jR87myx5uYdBEQkkDc+lKB1Wct6ucXqm2EmsaQ0M95QjTmy+rDWjkDYdw3Ms6mSWE3Bn7i
-5ZgtwCLXgAIe5W8mybM2JzCCBhQwggT8oAMCAQICEQDGvhmWZ0DEAx0oURL6O6l+MA0GCSqGSIb3
-DQEBCwUAMIGWMQswCQYDVQQGEwJHQjEbMBkGA1UECBMSR3JlYXRlciBNYW5jaGVzdGVyMRAwDgYD
-VQQHEwdTYWxmb3JkMRgwFgYDVQQKEw9TZWN0aWdvIExpbWl0ZWQxPjA8BgNVBAMTNVNlY3RpZ28g
-UlNBIENsaWVudCBBdXRoZW50aWNhdGlvbiBhbmQgU2VjdXJlIEVtYWlsIENBMB4XDTIyMDEwNzAw
-MDAwMFoXDTI1MDEwNjIzNTk1OVowJDEiMCAGCSqGSIb3DQEJARYTZHdtdzJAaW5mcmFkZWFkLm9y
-ZzCCAiIwDQYJKoZIhvcNAQEBBQADggIPADCCAgoCggIBALQ3GpC2bomUqk+91wLYBzDMcCj5C9m6
-oZaHwvmIdXftOgTbCJXADo6G9T7BBAebw2JV38EINgKpy/ZHh7htyAkWYVoFsFPrwHounto8xTsy
-SSePMiPlmIdQ10BcVSXMUJ3Juu16GlWOnAMJY2oYfEzmE7uT9YgcBqKCo65pTFmOnR/VVbjJk4K2
-xE34GC2nAdUQkPFuyaFisicc6HRMOYXPuF0DuwITEKnjxgNjP+qDrh0db7PAjO1D4d5ftfrsf+kd
-RR4gKVGSk8Tz2WwvtLAroJM4nXjNPIBJNT4w/FWWc/5qPHJy2U+eITZ5LLE5s45mX2oPFknWqxBo
-bQZ8a9dsZ3dSPZBvE9ZrmtFLrVrN4eo1jsXgAp1+p7bkfqd3BgBEmfsYWlBXO8rVXfvPgLs32VdV
-NZxb/CDWPqBsiYv0Hv3HPsz07j5b+/cVoWqyHDKzkaVbxfq/7auNVRmPB3v5SWEsH8xi4Bez2V9U
-KxfYCnqsjp8RaC2/khxKt0A552Eaxnz/4ly/2C7wkwTQnBmdlFYhAflWKQ03Ufiu8t3iBE3VJbc2
-5oMrglj7TRZrmKq3CkbFnX0fyulB+kHimrt6PIWn7kgyl9aelIl6vtbhMA+l0nfrsORMa4kobqQ5
-C5rveVgmcIad67EDa+UqEKy/GltUwlSh6xy+TrK1tzDvAgMBAAGjggHMMIIByDAfBgNVHSMEGDAW
-gBQJwPL8C9qU21/+K9+omULPyeCtADAdBgNVHQ4EFgQUzMeDMcimo0oz8o1R1Nver3ZVpSkwDgYD
-VR0PAQH/BAQDAgWgMAwGA1UdEwEB/wQCMAAwHQYDVR0lBBYwFAYIKwYBBQUHAwQGCCsGAQUFBwMC
-MEAGA1UdIAQ5MDcwNQYMKwYBBAGyMQECAQEBMCUwIwYIKwYBBQUHAgEWF2h0dHBzOi8vc2VjdGln
-by5jb20vQ1BTMFoGA1UdHwRTMFEwT6BNoEuGSWh0dHA6Ly9jcmwuc2VjdGlnby5jb20vU2VjdGln
-b1JTQUNsaWVudEF1dGhlbnRpY2F0aW9uYW5kU2VjdXJlRW1haWxDQS5jcmwwgYoGCCsGAQUFBwEB
-BH4wfDBVBggrBgEFBQcwAoZJaHR0cDovL2NydC5zZWN0aWdvLmNvbS9TZWN0aWdvUlNBQ2xpZW50
-QXV0aGVudGljYXRpb25hbmRTZWN1cmVFbWFpbENBLmNydDAjBggrBgEFBQcwAYYXaHR0cDovL29j
-c3Auc2VjdGlnby5jb20wHgYDVR0RBBcwFYETZHdtdzJAaW5mcmFkZWFkLm9yZzANBgkqhkiG9w0B
-AQsFAAOCAQEAyW6MUir5dm495teKqAQjDJwuFCi35h4xgnQvQ/fzPXmtR9t54rpmI2TfyvcKgOXp
-qa7BGXNFfh1JsqexVkIqZP9uWB2J+uVMD+XZEs/KYNNX2PvIlSPrzIB4Z2wyIGQpaPLlYflrrVFK
-v9CjT2zdqvy2maK7HKOQRt3BiJbVG5lRiwbbygldcALEV9ChWFfgSXvrWDZspnU3Gjw/rMHrGnql
-Htlyebp3pf3fSS9kzQ1FVtVIDrL6eqhTwJxe+pXSMMqFiN0whpBtXdyDjzBtQTaZJ7zTT/vlehc/
-tDuqZwGHm/YJy883Ll+GP3NvOkgaRGWEuYWJJ6hFCkXYjyR9IzCCBhQwggT8oAMCAQICEQDGvhmW
-Z0DEAx0oURL6O6l+MA0GCSqGSIb3DQEBCwUAMIGWMQswCQYDVQQGEwJHQjEbMBkGA1UECBMSR3Jl
-YXRlciBNYW5jaGVzdGVyMRAwDgYDVQQHEwdTYWxmb3JkMRgwFgYDVQQKEw9TZWN0aWdvIExpbWl0
-ZWQxPjA8BgNVBAMTNVNlY3RpZ28gUlNBIENsaWVudCBBdXRoZW50aWNhdGlvbiBhbmQgU2VjdXJl
-IEVtYWlsIENBMB4XDTIyMDEwNzAwMDAwMFoXDTI1MDEwNjIzNTk1OVowJDEiMCAGCSqGSIb3DQEJ
-ARYTZHdtdzJAaW5mcmFkZWFkLm9yZzCCAiIwDQYJKoZIhvcNAQEBBQADggIPADCCAgoCggIBALQ3
-GpC2bomUqk+91wLYBzDMcCj5C9m6oZaHwvmIdXftOgTbCJXADo6G9T7BBAebw2JV38EINgKpy/ZH
-h7htyAkWYVoFsFPrwHounto8xTsySSePMiPlmIdQ10BcVSXMUJ3Juu16GlWOnAMJY2oYfEzmE7uT
-9YgcBqKCo65pTFmOnR/VVbjJk4K2xE34GC2nAdUQkPFuyaFisicc6HRMOYXPuF0DuwITEKnjxgNj
-P+qDrh0db7PAjO1D4d5ftfrsf+kdRR4gKVGSk8Tz2WwvtLAroJM4nXjNPIBJNT4w/FWWc/5qPHJy
-2U+eITZ5LLE5s45mX2oPFknWqxBobQZ8a9dsZ3dSPZBvE9ZrmtFLrVrN4eo1jsXgAp1+p7bkfqd3
-BgBEmfsYWlBXO8rVXfvPgLs32VdVNZxb/CDWPqBsiYv0Hv3HPsz07j5b+/cVoWqyHDKzkaVbxfq/
-7auNVRmPB3v5SWEsH8xi4Bez2V9UKxfYCnqsjp8RaC2/khxKt0A552Eaxnz/4ly/2C7wkwTQnBmd
-lFYhAflWKQ03Ufiu8t3iBE3VJbc25oMrglj7TRZrmKq3CkbFnX0fyulB+kHimrt6PIWn7kgyl9ae
-lIl6vtbhMA+l0nfrsORMa4kobqQ5C5rveVgmcIad67EDa+UqEKy/GltUwlSh6xy+TrK1tzDvAgMB
-AAGjggHMMIIByDAfBgNVHSMEGDAWgBQJwPL8C9qU21/+K9+omULPyeCtADAdBgNVHQ4EFgQUzMeD
-Mcimo0oz8o1R1Nver3ZVpSkwDgYDVR0PAQH/BAQDAgWgMAwGA1UdEwEB/wQCMAAwHQYDVR0lBBYw
-FAYIKwYBBQUHAwQGCCsGAQUFBwMCMEAGA1UdIAQ5MDcwNQYMKwYBBAGyMQECAQEBMCUwIwYIKwYB
-BQUHAgEWF2h0dHBzOi8vc2VjdGlnby5jb20vQ1BTMFoGA1UdHwRTMFEwT6BNoEuGSWh0dHA6Ly9j
-cmwuc2VjdGlnby5jb20vU2VjdGlnb1JTQUNsaWVudEF1dGhlbnRpY2F0aW9uYW5kU2VjdXJlRW1h
-aWxDQS5jcmwwgYoGCCsGAQUFBwEBBH4wfDBVBggrBgEFBQcwAoZJaHR0cDovL2NydC5zZWN0aWdv
-LmNvbS9TZWN0aWdvUlNBQ2xpZW50QXV0aGVudGljYXRpb25hbmRTZWN1cmVFbWFpbENBLmNydDAj
-BggrBgEFBQcwAYYXaHR0cDovL29jc3Auc2VjdGlnby5jb20wHgYDVR0RBBcwFYETZHdtdzJAaW5m
-cmFkZWFkLm9yZzANBgkqhkiG9w0BAQsFAAOCAQEAyW6MUir5dm495teKqAQjDJwuFCi35h4xgnQv
-Q/fzPXmtR9t54rpmI2TfyvcKgOXpqa7BGXNFfh1JsqexVkIqZP9uWB2J+uVMD+XZEs/KYNNX2PvI
-lSPrzIB4Z2wyIGQpaPLlYflrrVFKv9CjT2zdqvy2maK7HKOQRt3BiJbVG5lRiwbbygldcALEV9Ch
-WFfgSXvrWDZspnU3Gjw/rMHrGnqlHtlyebp3pf3fSS9kzQ1FVtVIDrL6eqhTwJxe+pXSMMqFiN0w
-hpBtXdyDjzBtQTaZJ7zTT/vlehc/tDuqZwGHm/YJy883Ll+GP3NvOkgaRGWEuYWJJ6hFCkXYjyR9
-IzGCBMcwggTDAgEBMIGsMIGWMQswCQYDVQQGEwJHQjEbMBkGA1UECBMSR3JlYXRlciBNYW5jaGVz
-dGVyMRAwDgYDVQQHEwdTYWxmb3JkMRgwFgYDVQQKEw9TZWN0aWdvIExpbWl0ZWQxPjA8BgNVBAMT
-NVNlY3RpZ28gUlNBIENsaWVudCBBdXRoZW50aWNhdGlvbiBhbmQgU2VjdXJlIEVtYWlsIENBAhEA
-xr4ZlmdAxAMdKFES+jupfjANBglghkgBZQMEAgEFAKCCAeswGAYJKoZIhvcNAQkDMQsGCSqGSIb3
-DQEHATAcBgkqhkiG9w0BCQUxDxcNMjQwNDAyMDkyOTU3WjAvBgkqhkiG9w0BCQQxIgQg03yLq/k+
-7UxWK3SHUYJc2fyB6blnPXogxQA0kjYphYAwgb0GCSsGAQQBgjcQBDGBrzCBrDCBljELMAkGA1UE
-BhMCR0IxGzAZBgNVBAgTEkdyZWF0ZXIgTWFuY2hlc3RlcjEQMA4GA1UEBxMHU2FsZm9yZDEYMBYG
-A1UEChMPU2VjdGlnbyBMaW1pdGVkMT4wPAYDVQQDEzVTZWN0aWdvIFJTQSBDbGllbnQgQXV0aGVu
-dGljYXRpb24gYW5kIFNlY3VyZSBFbWFpbCBDQQIRAMa+GZZnQMQDHShREvo7qX4wgb8GCyqGSIb3
-DQEJEAILMYGvoIGsMIGWMQswCQYDVQQGEwJHQjEbMBkGA1UECBMSR3JlYXRlciBNYW5jaGVzdGVy
-MRAwDgYDVQQHEwdTYWxmb3JkMRgwFgYDVQQKEw9TZWN0aWdvIExpbWl0ZWQxPjA8BgNVBAMTNVNl
-Y3RpZ28gUlNBIENsaWVudCBBdXRoZW50aWNhdGlvbiBhbmQgU2VjdXJlIEVtYWlsIENBAhEAxr4Z
-lmdAxAMdKFES+jupfjANBgkqhkiG9w0BAQEFAASCAgCkER67emCmFmmfV1RtGDuJFoZ7GDBexbgX
-L9Kt9Ird/Nb/CIzrA5pDrKQdhBbCb56Wfrt77aMp3Ovr4guTzcCp1K/kmvWombYb7UJcCqi8PSbr
-6yBTUi9Ntv/W3r7+zjJyhbl19yymcVqYWW160ihzV+9sKLyhyIWYtygqhuS3UPNDyRJ72IRDPvIk
-Eq9ouDrmwq33AhFlJV0WVymf4oo+q8LuANd2ogUof/hXXWZxD5HtNL66Hppau4f0LS0VihrkI0PA
-e4IYiyT0i1x8jAoOOwn/nTjhGSBN/+vn8cLQlg9MyEpXW+0PV2bCAaWwlSOUh0giuV1np+bqfnZ+
-/qTSo0NI0TBmNaDijbRM/ZEGAfbCUOtSMDKEuL3A0J0YzhzqR9Gmy8UNoGLEelvIPUwatqeN8MPB
-X0L8U1I2Lw8Dn9vNAPQVWPeMm18qKrKDkcA1k4Amx8vOLRHDtBNrnxs0q19QcrC6eui+pcYBqkfS
-BojCjSDLgOyZr1tf82MU9ML+VQoeOWOas3nawyBoAzbpMWrlHKY8/bQZ47KXi1hyg7NsgAVnAQLR
-A1BQRv/Yknh6UeqhhQqnOng6L2X7Iry8NsK0HTWmUZr/E83OXe4cubok0wXQNURGbKG2ovBgVPZr
-E8MyV1+cVNGPVo1uvgkIdNaglWxqAfAWbKXmMhwaOgAAAAAAAA==
-
-
---=-In9Pf205y6RkIPatJmhc--
+> diff --git a/arch/riscv/kernel/setup.c b/arch/riscv/kernel/setup.c
+> index 4f73c0ae44b2..a2cde65b69e9 100644
+> --- a/arch/riscv/kernel/setup.c
+> +++ b/arch/riscv/kernel/setup.c
+> @@ -281,8 +281,10 @@ void __init setup_arch(char **cmdline_p)
+>   	setup_smp();
+>   #endif
+>   
+> -	if (!acpi_disabled)
+> +	if (!acpi_disabled) {
+>   		acpi_init_rintc_map();
+> +		acpi_map_cpus_to_nodes();
+> +	}
+>   
+>   	riscv_init_cbo_blocksizes();
+>   	riscv_fill_hwcap();
+> diff --git a/arch/riscv/kernel/smpboot.c b/arch/riscv/kernel/smpboot.c
+> index cfbe4b840d42..81a2aa77680c 100644
+> --- a/arch/riscv/kernel/smpboot.c
+> +++ b/arch/riscv/kernel/smpboot.c
+> @@ -100,7 +100,6 @@ static int __init acpi_parse_rintc(union acpi_subtable_headers *header, const un
+>   	if (hart == cpuid_to_hartid_map(0)) {
+>   		BUG_ON(found_boot_cpu);
+>   		found_boot_cpu = true;
+> -		early_map_cpu_to_node(0, acpi_numa_get_nid(cpu_count));
+>   		return 0;
+>   	}
+>   
+> @@ -110,7 +109,6 @@ static int __init acpi_parse_rintc(union acpi_subtable_headers *header, const un
+>   	}
+>   
+>   	cpuid_to_hartid_map(cpu_count) = hart;
+> -	early_map_cpu_to_node(cpu_count, acpi_numa_get_nid(cpu_count));
+>   	cpu_count++;
+>   
+>   	return 0;
+> diff --git a/include/linux/acpi.h b/include/linux/acpi.h
+> index b7165e52b3c6..f74c62956e07 100644
+> --- a/include/linux/acpi.h
+> +++ b/include/linux/acpi.h
+> @@ -269,6 +269,12 @@ acpi_numa_gicc_affinity_init(struct acpi_srat_gicc_affinity *pa) { }
+>   
+>   int acpi_numa_memory_affinity_init (struct acpi_srat_mem_affinity *ma);
+>   
+> +#ifdef CONFIG_RISCV
+> +void acpi_numa_rintc_affinity_init(struct acpi_srat_rintc_affinity *pa);
+> +#else
+> +static inline void acpi_numa_rintc_affinity_init(struct acpi_srat_rintc_affinity *pa) { }
+> +#endif
+> +
+>   #ifndef PHYS_CPUID_INVALID
+>   typedef u32 phys_cpuid_t;
+>   #define PHYS_CPUID_INVALID (phys_cpuid_t)(-1)
 
