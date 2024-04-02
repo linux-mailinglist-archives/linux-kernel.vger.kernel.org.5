@@ -1,93 +1,156 @@
-Return-Path: <linux-kernel+bounces-127231-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-127233-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 83596894862
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 02:17:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 67225894865
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 02:18:11 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B504D1C21249
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 00:17:52 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8AC7C1C22C46
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 00:18:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4F6A88F55;
-	Tue,  2 Apr 2024 00:16:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 967BBD50F;
+	Tue,  2 Apr 2024 00:16:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="OQcHond6"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=google.com header.i=@google.com header.b="3x54VzzE"
+Received: from mail-pl1-f176.google.com (mail-pl1-f176.google.com [209.85.214.176])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8BA5A4C6E;
-	Tue,  2 Apr 2024 00:16:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 60A4BEC4
+	for <linux-kernel@vger.kernel.org>; Tue,  2 Apr 2024 00:16:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712016993; cv=none; b=tEL2ApyOb92zjlDxFVN1EsNk7j1KaF8LcbXFw14A16UmNqcD6zLAI9Tu8FdQF0C4DBtVY5KQODFMs3S9SyR3A4xsyJuIhycdtvoGqBZC1TTimg6iw5Ff2oQyU7IemERF38VhVFQSA/cZfAbmNDQOvOUM5MpZx/r6MSkUvwu5wak=
+	t=1712017006; cv=none; b=UUTxaMMJ0Mr3cL3OijaO4Bm8KBfWM4s2QmfCrDb4T/RJ3ztDbpgRtereFNRvJo+hpgauTw9XedakmdOuy0Gd1kPxvG2Pe43bIayw+0/jjIH7DYp2UPp2uwNI/Q4ElZzcgRj2KpR75X6XtPmWDvpJNpPSePgmVP8EHvQh61fd0sc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712016993; c=relaxed/simple;
-	bh=HOZtlcs+tBZgNdNWUO+mWam6pkEhyoDsTLqIi26K4Ro=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=kw+Hl6liVTs0kIeFzKgGTi+tfv57aIaU4gCy5YPz3z65tbe+BIFvSFfy4Gep/+/tv4RAsvTuOvphJKqhpRLDYmlO2mbE95aXHizQCc2FcZS4NrxMefhQyz+8+k5E6gWewyvEe/KKOhG+lrlS0iTnMzB49SFpoXCkvr8c74G+iFE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=OQcHond6; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 20942C433C7;
-	Tue,  2 Apr 2024 00:16:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712016993;
-	bh=HOZtlcs+tBZgNdNWUO+mWam6pkEhyoDsTLqIi26K4Ro=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=OQcHond6VoT/QHlH+j25KOnWxMzoV9Xb6nobz+34SL785iYoBhP/VRKsHlFt+gh+r
-	 /FUrFxDtqsmn2zN4Q8G6JlzINYpGTTVZcsrGNilYIVqi2Xq/OoRwSM5+3uLNtGSMD9
-	 Y1j9jZotAzslnclpKYn3FZzJVN5NUdED9MSgqYrjjLEaDQSdj3JCTcuDFOqbLdBmvj
-	 4mKLaRPR2Y67Zs1irrMmcrCaL0hk9VY3rniPC9bqJaidux46+GGUqJ6XInmiyWBEpb
-	 pb2BvDec8sxYTCkOYRf3ARHjIwHH+5Hz7j1SWesAyss/VGA6Q4Nzy9uPGqpS9Fzi/a
-	 xrV370UDlR5ig==
-Message-ID: <f02767b9-66e9-43ad-bc81-3a6b40ff852c@kernel.org>
-Date: Tue, 2 Apr 2024 09:16:30 +0900
+	s=arc-20240116; t=1712017006; c=relaxed/simple;
+	bh=LzLZbEKpNDtOEiZfAv971eS133/igaEe3qFvFQHwi/U=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=kDBLseaxwUrleAaCedm0dToiFBfBOW+0hMmhf0VdCw93HuAAB2wpuUNr+Omh9dpv3KgVGDpNl5hlNYKwI3r8tUXRu7VV5A/QjTIAHAWZfmKpYQSIs+FgQfbkjeRr/uCyHY0egQ3XRAJQQCxepHYwI0h1nwHiAmBETiLhYf+F1Vc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=3x54VzzE; arc=none smtp.client-ip=209.85.214.176
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-pl1-f176.google.com with SMTP id d9443c01a7336-1e062f3a47bso538885ad.1
+        for <linux-kernel@vger.kernel.org>; Mon, 01 Apr 2024 17:16:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1712017004; x=1712621804; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=fyW4BCGaQS495oS/zQ0Useus0nHWJbq7KkRShOZB/QA=;
+        b=3x54VzzEt4sT3ICtwBiaTDZjWxhItLG3DDvH6cQh9yb+/jCXCqYFeJZfpOteyL2IyI
+         06DM6hggFuExeHNCs2uwtZh9xywPhQw/N0vKUvJBtmlh8Lbb7ofLbDEzDLPRJxiFvM2i
+         9bb98KG86srlSLFnT9ZDx3nukEObNUoTeds89NlT+xNO2Ka26rBR9WSO8zQED2IUqt9m
+         ik3k4CUz0EWHNir+g5ATFqKiZwl6ekLBOIIq22N+zSf9MFixSPmsci5JILDUPzPGKahj
+         dY6slXC2JrjNZ4wA673NVpZWtAtFmQbiL/Qy+LkjBKzi5U02MKFFiCs8JbgxJIrLxtjy
+         DG7g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712017004; x=1712621804;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=fyW4BCGaQS495oS/zQ0Useus0nHWJbq7KkRShOZB/QA=;
+        b=i3y2um+2A9BdVlccrW1EqjkfnvmL+Zv5m0aPD50vT/fqDoVjr1nY+k5UvOypZw1mfl
+         tYNGsQ38pAtOZVeoAyemcPtBlyN11ZLIkXwjZMi5iaVb7I/Trg5vfi/v81zP0c+ZOl7Q
+         NsJReLVO4AGAi5C1seLoIOuGgvF9GlPAjEmeaeE6KGP2F9mznNJU5n9SDgltMM4nXVMD
+         ljEqg0hMbBfIhaR9t5yq360ietBOPXadgAoaeHmJTxMnJMOLXbH/QbFh/UqsQhyygkrp
+         zA9r7udj7D5Ewlg+x8wgmGaFfI63cN3zyR56FO++G/ipHZilMtU0DsHKy2QpbswUUOH5
+         8zkA==
+X-Forwarded-Encrypted: i=1; AJvYcCWL96QTahUMJiDQ0lBZXl43sJwnymoGxK9Q9HovIitGidXz1EXUx9PijAuWB5no/ipmh37pD+oNAXE6tojNXavcx8d4rSq/KKzh7fJg
+X-Gm-Message-State: AOJu0YwciueluK6wo3E7h0orIhGCfwiV9PM/v61vF0PXbi24+RcsFCwg
+	s6STNKDiGcbzc8JXPMfxQcLoPLtvgg4VZs3svgSJ4R7Flwt5bmQ8Ka/pXK8j4W3at7b3ji8zpMI
+	5tBA5Z4SfXutpan3GZRVoz1IXm7+8nV5UVzIn
+X-Google-Smtp-Source: AGHT+IEmefmlOYptKLrsjrYXMZdGKtoAo0HMnv8wYVRtxPcevsDBQnJ/0sK3/0DKNIlibuR7D02mzHG0kdqh6knJRXg=
+X-Received: by 2002:a17:902:cec6:b0:1e0:f525:a831 with SMTP id
+ d6-20020a170902cec600b001e0f525a831mr710596plg.28.1712017004291; Mon, 01 Apr
+ 2024 17:16:44 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] scsi: sd: unregister device if device_add_disk() failed
- in sd_probe()
-To: Bart Van Assche <bvanassche@acm.org>, Yu Kuai <yukuai1@huaweicloud.com>,
- linan666@huaweicloud.com, jejb@linux.ibm.com, martin.petersen@oracle.com,
- mcgrof@kernel.org, hch@lst.de, "yukuai (C)" <yukuai3@huawei.com>
-Cc: linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
- linan122@huawei.com, yi.zhang@huawei.com, houtao1@huawei.com,
- yangerkun@huawei.com
-References: <20231208082335.1754205-1-linan666@huaweicloud.com>
- <6066205b-bdc8-4434-cc2d-3ce06004ae47@huaweicloud.com>
- <2af548ae-8877-4e8d-8dc2-541b3d6e6330@acm.org>
-Content-Language: en-US
-From: Damien Le Moal <dlemoal@kernel.org>
-Organization: Western Digital Research
-In-Reply-To: <2af548ae-8877-4e8d-8dc2-541b3d6e6330@acm.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+References: <20240215215907.20121-1-osalvador@suse.de> <20240215215907.20121-2-osalvador@suse.de>
+ <CA+fCnZddd82=Gp2j4sdks+NGpn-GSvZq8isYOwXDO=Y3TyBG1g@mail.gmail.com> <CAMn1gO680XrsvyxiKXQOcVvofEkuJNsjvoquNREtt0HxGWSqqA@mail.gmail.com>
+In-Reply-To: <CAMn1gO680XrsvyxiKXQOcVvofEkuJNsjvoquNREtt0HxGWSqqA@mail.gmail.com>
+From: Peter Collingbourne <pcc@google.com>
+Date: Mon, 1 Apr 2024 17:16:31 -0700
+Message-ID: <CAMn1gO6aaJG7V7ydNGpA-hL+Bsh2xtzVdJx_KuUtvusTbGbLbA@mail.gmail.com>
+Subject: Re: [PATCH v10 1/7] lib/stackdepot: Fix first entry having a 0-handle
+To: Andrey Konovalov <andreyknvl@gmail.com>
+Cc: Oscar Salvador <osalvador@suse.de>, Andrew Morton <akpm@linux-foundation.org>, 
+	linux-kernel@vger.kernel.org, linux-mm@kvack.org, 
+	Michal Hocko <mhocko@suse.com>, Vlastimil Babka <vbabka@suse.cz>, Marco Elver <elver@google.com>, 
+	Alexander Potapenko <glider@google.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 4/2/24 02:51, Bart Van Assche wrote:
-> On 3/31/24 18:31, Yu Kuai wrote:
->> I was shocked that this patch is still there. This patch is easy and
->> straightforward.
->>
->> LGTM
->> Reviewed-by: Yu Kuai <yukuai3@huawei.com>
->>
->> BTW, Nan, it will be better if you have a reporducer for this.
-> Agreed that a reproducer would help. No information is present in the
-> patch description about how this issue was detected nor about how it was
-> tested. That probably would have encouraged reviewers.
+On Thu, Feb 15, 2024 at 4:25=E2=80=AFPM Peter Collingbourne <pcc@google.com=
+> wrote:
+>
+> On Thu, Feb 15, 2024 at 3:37=E2=80=AFPM Andrey Konovalov <andreyknvl@gmai=
+l.com> wrote:
+> >
+> > On Thu, Feb 15, 2024 at 10:58=E2=80=AFPM Oscar Salvador <osalvador@suse=
+de> wrote:
+> > >
+> > > The very first entry of stack_record gets a handle of 0, but this is =
+wrong
+> > > because stackdepot treats a 0-handle as a non-valid one.
+> > > E.g: See the check in stack_depot_fetch()
+> > >
+> > > Fix this by adding and offset of 1.
+> > >
+> > > This bug has been lurking since the very beginning of stackdepot,
+> > > but no one really cared as it seems.
+> > > Because of that I am not adding a Fixes tag.
+> > >
+> > > Co-developed-by: Marco Elver <elver@google.com>
+> > > Signed-off-by: Marco Elver <elver@google.com>
+> > > Signed-off-by: Oscar Salvador <osalvador@suse.de>
+> > > Acked-by: Vlastimil Babka <vbabka@suse.cz>
+> > > ---
+> > >  lib/stackdepot.c | 16 +++++++++-------
+> > >  1 file changed, 9 insertions(+), 7 deletions(-)
+> > >
+> > > diff --git a/lib/stackdepot.c b/lib/stackdepot.c
+> > > index 4a7055a63d9f..c043a4186bc5 100644
+> > > --- a/lib/stackdepot.c
+> > > +++ b/lib/stackdepot.c
+> > > @@ -45,15 +45,16 @@
+> > >  #define DEPOT_POOL_INDEX_BITS (DEPOT_HANDLE_BITS - DEPOT_OFFSET_BITS=
+ - \
+> > >                                STACK_DEPOT_EXTRA_BITS)
+> > >  #define DEPOT_POOLS_CAP 8192
+> > > +/* The pool_index is offset by 1 so the first record does not have a=
+ 0 handle. */
+> > >  #define DEPOT_MAX_POOLS \
+> > > -       (((1LL << (DEPOT_POOL_INDEX_BITS)) < DEPOT_POOLS_CAP) ? \
+> > > -        (1LL << (DEPOT_POOL_INDEX_BITS)) : DEPOT_POOLS_CAP)
+> > > +       (((1LL << (DEPOT_POOL_INDEX_BITS)) - 1 < DEPOT_POOLS_CAP) ? \
+> > > +        (1LL << (DEPOT_POOL_INDEX_BITS)) - 1 : DEPOT_POOLS_CAP)
+> > >
+> > >  /* Compact structure that stores a reference to a stack. */
+> > >  union handle_parts {
+> > >         depot_stack_handle_t handle;
+> > >         struct {
+> > > -               u32 pool_index  : DEPOT_POOL_INDEX_BITS;
+> > > +               u32 pool_index  : DEPOT_POOL_INDEX_BITS; /* pool_inde=
+x is offset by 1 */
+>
+> Can we rename this, say to pool_index_plus_1? This will make the code
+> a bit clearer, as well as make it possible for debugging tools such as
+> drgn [1] to be able to tell when the off-by-one was introduced and
+> adapt accordingly.
+>
+> Peter
+>
+> [1] https://github.com/osandov/drgn/pull/376
 
-May be submit the reproducer as a blktest case while at it ?
+Unfortunately this message was not acted upon, and it looks like akpm
+picked up the patch and it made its way into Linus's tree. So I sent a
+followup to fix this here:
+https://lore.kernel.org/all/20240402001500.53533-1-pcc@google.com/
 
-> 
-> Bart.
-> 
-
--- 
-Damien Le Moal
-Western Digital Research
-
+Peter
 
