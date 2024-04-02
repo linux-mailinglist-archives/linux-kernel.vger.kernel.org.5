@@ -1,84 +1,93 @@
-Return-Path: <linux-kernel+bounces-127333-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-127337-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id AB2238949E1
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 05:19:54 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 54FFB8949FA
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 05:29:41 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 2F841B241C0
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 03:19:52 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E9D74B21E07
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 03:29:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 295D115E85;
-	Tue,  2 Apr 2024 03:19:42 +0000 (UTC)
-Received: from mail.nfschina.com (unknown [42.101.60.195])
-	by smtp.subspace.kernel.org (Postfix) with SMTP id C94CD2F52;
-	Tue,  2 Apr 2024 03:19:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=42.101.60.195
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6CB7D175A9;
+	Tue,  2 Apr 2024 03:29:23 +0000 (UTC)
+Received: from szxga03-in.huawei.com (szxga03-in.huawei.com [45.249.212.189])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B0C891759E;
+	Tue,  2 Apr 2024 03:29:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.189
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712027981; cv=none; b=qxwRVCfpDOHajoefNS+9o0B3GxHniPtpjv8dLNn0mkATSkAF1PHmheHzpFqXnL9vQwhs5jtz1AHM+SL48v2WXvYrY7UZg6hvQPHwzMYxocgvhxOsAVdhxZRSQ/i9KU13c0CvDQlbfNKcjJ3CMRkKEaMN/bxfOhuLpwki2RADQDU=
+	t=1712028563; cv=none; b=mC/IiEQyhggewA79ZtCjHRYjKJcgD7spYjVFH/VlqhSmVZ3JwI/BT0ov6ypQn+xKfhxB6eh9AwpTvpqUOHSrBhYydDJDrjHTdCx7IR0CxxRWFLIKzbUKiJGH9Hdyupk99PYg/9MAkcVNLtqZT6qptLfqR03zfxdEYjTsasizNsE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712027981; c=relaxed/simple;
-	bh=t7OGwSPTzMHZ3C/Fcp6Kle6Ak4fVZXc+vcW4hvY4BuM=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type; b=ddr6akNdIEThWDuyGXb1xGmyk9P5khCg0dxC7WkkiU0PiD7lSdXxUSBPtBiQ4E6BQyAhbfhWvEkjTuZppAx2vdzhbtSyPCE9PLTIaGbo3x53U6tAvUvQXTkPdpZl/da5DP3XbffJMm4pmd4Gc4Q/aiKgTBZz/W3nSXRpQI+ZCJo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nfschina.com; spf=pass smtp.mailfrom=nfschina.com; arc=none smtp.client-ip=42.101.60.195
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nfschina.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nfschina.com
-Received: from localhost.localdomain (unknown [219.141.250.2])
-	by mail.nfschina.com (Maildata Gateway V2.8.8) with ESMTPA id A1A1F60A51E62;
-	Tue,  2 Apr 2024 11:19:35 +0800 (CST)
-X-MD-Sfrom: kunyu@nfschina.com
-X-MD-SrcIP: 219.141.250.2
-From: Li kunyu <kunyu@nfschina.com>
-To: tytso@mit.edu,
-	adilger.kernel@dilger.ca
-Cc: linux-ext4@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Li kunyu <kunyu@nfschina.com>
-Subject: [PATCH] =?UTF-8?q?ext4:=20extents:=20Remove=20unnecessary=20?= =?UTF-8?q?=E2=80=980=E2=80=99=20values=20from=20error?=
-Date: Tue,  2 Apr 2024 11:19:28 +0800
-Message-Id: <20240402031928.33790-1-kunyu@nfschina.com>
-X-Mailer: git-send-email 2.18.2
+	s=arc-20240116; t=1712028563; c=relaxed/simple;
+	bh=djyVy8+fPyGzZPzPF4SjSGy7AW26La7QUjqbjM1zzqc=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=SrPzxzmayTmzYzXLV1Yvakv/tBUjZS5027rGlayd5o5DFqTCpPh79bqJxqKMzsWn60TQpOxeFvmUfZrdLAFWR7BMsj2GaZwt7NsCERovyVUOx7zlE8r0i/iXKcS3BC7pRMI7zSj5ihfBPWkMyE9ic+q4GfCApjwMca1XR8Gyv2Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.189
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.88.194])
+	by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4V7tbf6bY5zcbDt;
+	Tue,  2 Apr 2024 11:27:10 +0800 (CST)
+Received: from kwepemm600005.china.huawei.com (unknown [7.193.23.191])
+	by mail.maildlp.com (Postfix) with ESMTPS id 05A45140154;
+	Tue,  2 Apr 2024 11:29:18 +0800 (CST)
+Received: from huawei.com (10.50.165.33) by kwepemm600005.china.huawei.com
+ (7.193.23.191) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.1.2507.35; Tue, 2 Apr
+ 2024 11:29:17 +0800
+From: Longfang Liu <liulongfang@huawei.com>
+To: <alex.williamson@redhat.com>, <jgg@nvidia.com>,
+	<shameerali.kolothum.thodi@huawei.com>, <jonathan.cameron@huawei.com>
+CC: <kvm@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+	<linuxarm@openeuler.org>, <liulongfang@huawei.com>
+Subject: [PATCH v4 0/4] add debugfs to hisilicon migration driver
+Date: Tue, 2 Apr 2024 11:24:28 +0800
+Message-ID: <20240402032432.41004-1-liulongfang@huawei.com>
+X-Mailer: git-send-email 2.24.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
+ kwepemm600005.china.huawei.com (7.193.23.191)
 
-error is assigned first, so it does not need to initialize the assignment.
+Add a debugfs function to the hisilicon migration driver in VFIO to
+provide intermediate state values and data during device migration.
 
-Signed-off-by: Li kunyu <kunyu@nfschina.com>
----
- fs/ext4/extents.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+When the execution of live migration fails, the user can view the
+status and data during the migration process separately from the
+source and the destination, which is convenient for users to analyze
+and locate problems.
 
-diff --git a/fs/ext4/extents.c b/fs/ext4/extents.c
-index f3cb570951a7e..254e07a33eb9b 100644
---- a/fs/ext4/extents.c
-+++ b/fs/ext4/extents.c
-@@ -4977,7 +4977,7 @@ static int ext4_fiemap_check_ranges(struct inode *inode, u64 start, u64 *len)
- int ext4_fiemap(struct inode *inode, struct fiemap_extent_info *fieinfo,
- 		u64 start, u64 len)
- {
--	int error = 0;
-+	int error;
- 
- 	if (fieinfo->fi_flags & FIEMAP_FLAG_CACHE) {
- 		error = ext4_ext_precache(inode);
-@@ -5009,7 +5009,7 @@ int ext4_get_es_cache(struct inode *inode, struct fiemap_extent_info *fieinfo,
- {
- 	ext4_lblk_t start_blk, len_blks;
- 	__u64 last_blk;
--	int error = 0;
-+	int error;
- 
- 	if (ext4_has_inline_data(inode)) {
- 		int has_inline;
+Changes v3 -> v4
+	Rebased on kernel6.9
+
+Changes v2 -> v3
+	Solve debugfs serialization problem.
+
+Changes v1 -> v2
+	Solve the racy problem of io_base.
+
+Longfang Liu (4):
+  hisi_acc_vfio_pci: extract public functions for container_of
+  hisi_acc_vfio_pci: Create subfunction for data reading
+  hisi_acc_vfio_pci: register debugfs for hisilicon migration driver
+  Documentation: add debugfs description for hisi migration
+
+ .../ABI/testing/debugfs-hisi-migration        |  34 +++
+ MAINTAINERS                                   |   1 +
+ .../vfio/pci/hisilicon/hisi_acc_vfio_pci.c    | 281 ++++++++++++++++--
+ .../vfio/pci/hisilicon/hisi_acc_vfio_pci.h    |  14 +
+ 4 files changed, 298 insertions(+), 32 deletions(-)
+ create mode 100644 Documentation/ABI/testing/debugfs-hisi-migration
+
 -- 
-2.18.2
+2.24.0
 
 
