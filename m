@@ -1,74 +1,74 @@
-Return-Path: <linux-kernel+bounces-127966-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-127967-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 311E18953C2
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 14:45:54 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 78FD98953C4
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 14:46:47 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9B1481F24BA0
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 12:45:53 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C1C2BB22CA6
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 12:46:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 843367A705;
-	Tue,  2 Apr 2024 12:45:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BE5697A140;
+	Tue,  2 Apr 2024 12:46:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="QxxA+F4X"
-Received: from mail-pf1-f179.google.com (mail-pf1-f179.google.com [209.85.210.179])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Sw+vdo68"
+Received: from mail-pg1-f179.google.com (mail-pg1-f179.google.com [209.85.215.179])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 56A6A335A7;
-	Tue,  2 Apr 2024 12:45:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AE03378285;
+	Tue,  2 Apr 2024 12:46:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712061943; cv=none; b=pDclyoMILk8x73Z3+BSJfW5P14FmPbE3onvc37toYeCu0c/NlVz4Jtej25K9aTqnuMc/0/CaI0/Zuhx6DVxuj5Z2dU2VZWjaIfUpjpqlGFZrYMaP6RDCK8c8e5DHYFUB00DCRhKahNN3BRPCNrZIOYHRGxM42I9DRQTqUlEZLXU=
+	t=1712061994; cv=none; b=hWAmrzrQ2dvXWA6fW6iyMcRsibAR5fvG0jKSa3eoh3cUiHLybywA+yCouRI4lGb0kGdx+QphaQFoUT0Vv0LpALl5+OnGzBeVRecijSBg6HaiPfhguC5LcftnNItYFlviYVaB9qGSBFhonSPrw/4ilLnvnpsnDmgdGLXCvux7l1c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712061943; c=relaxed/simple;
+	s=arc-20240116; t=1712061994; c=relaxed/simple;
 	bh=0vaw1GFhhhzPHB1+ERUheM/ykQ5WliXyfzQBmILS9ak=;
 	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=sxSjYjTuPBrxhf/I00yMn3BIjO2Zohn5xAP5xXSBmIPwoH/Kc+eWfJnNUYYmzykDxIbvAhaz+N+EMp1QO1qCoZr72bnH2rdtEtE5RSypkZqyQ2DJi+ApfaeiyHl6XqrNMbua06PG03cn/nXX7NqBnpnJB18zIf4lAj5Cj7Dy0+w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=QxxA+F4X; arc=none smtp.client-ip=209.85.210.179
+	 In-Reply-To:Content-Type; b=V4qBBl1oBsx17uwDgdNwTpEMlES6UCvSmU0Y8I18ajIyxnIAnckb0lz4DqEtKpzL3bizCsNo01g4VWmFkf7X6jAiBfpxtkRKdgxikZgWEla7dWyxlFcwi3BJGpYUWqCw/XUqd0hfkKDfrhIJ/9qXh2w8E92fsFUJXld379Vw5OY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Sw+vdo68; arc=none smtp.client-ip=209.85.215.179
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f179.google.com with SMTP id d2e1a72fcca58-6ea8ee55812so5025775b3a.0;
-        Tue, 02 Apr 2024 05:45:41 -0700 (PDT)
+Received: by mail-pg1-f179.google.com with SMTP id 41be03b00d2f7-5dbf7b74402so2707998a12.0;
+        Tue, 02 Apr 2024 05:46:31 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1712061940; x=1712666740; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1712061991; x=1712666791; darn=vger.kernel.org;
         h=content-transfer-encoding:in-reply-to:autocrypt:from
          :content-language:references:to:subject:user-agent:mime-version:date
          :message-id:from:to:cc:subject:date:message-id:reply-to;
         bh=KmxO8jkSPJDfReP4Gy4yPtubDgLo4IL5/YODqwlo3d8=;
-        b=QxxA+F4XRY3LtuvB5OdwZ3U8wQLRW7HvGTeP91EKddDFVNHPM3rZlPAd3WBfaFhqV7
-         07P6hsZUsbBQKAh7H21veRFHD03P5YEuaVZTsMW9PLvaWKlzbxumuvFXQuIyp3usgXo5
-         /fOzGXB2yxJ44nnZoasP93kAeGtEiE0r2NM0I9PP9a3YQnXNG2RvNLwKxcweCkaZCDFl
-         L/GYJEotgAZNFrHiDWr+aP5fdqDCkSSIWnWL1jxLUAHeccV3c5ZTuY/Xa3Jin8F6fITz
-         55Cm/Y/Dx20HlttkK7ztSuvE+sS8FvKrTMSjuFoPEjpt9HqKbKbBqyEYGHp3l8Rjx7rq
-         m5NA==
+        b=Sw+vdo68m+Ozz3a703W/AoF5VLybS1zm1fpSfLFg1UQb3eZy6+KGyK1tsOhyD8bYXf
+         xtam7tmxC+f7atfKJkrgTQDDcxNEtehdluQ8k+94slcJw77tPAGo7wiptXVsEk5sQX2f
+         9oS6HXHzT+YS08PNTVzxGGGMGdfZxhgH4c+EcPYrSTWSOiv4o0JxdrEfsq2z1ASi5aHD
+         uK59PTNq8IGuKKax2epepnO1DsMkQu3p4HYW87shnxC8hvQbSvpayPIa32hZGp4tUmhm
+         fHoJeukPq5+FZ/Sp5eyuNcJOm9XZol15RurhouWUWOPk2UEKtOz11UIPktTtpMzjrP/4
+         +87w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712061940; x=1712666740;
+        d=1e100.net; s=20230601; t=1712061991; x=1712666791;
         h=content-transfer-encoding:in-reply-to:autocrypt:from
          :content-language:references:to:subject:user-agent:mime-version:date
          :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
         bh=KmxO8jkSPJDfReP4Gy4yPtubDgLo4IL5/YODqwlo3d8=;
-        b=KxRrYYcdzEuMUpSWMikM+cs9HalWe7lwUTYny5eSJTVOFOXBGCFb1MaLVqPWQ5IxiK
-         CCtHcRlPc2PhTJ3f50Sdg/HsJHBHX2JanFuf5qO2sEekOLNU/K+ijDOGIwMir/JVSnCU
-         iXMlSn1CSCtU4jMYiY1RKjXzaey5ozKPTr4prBCXt7pBE7IGUCq5WhX6IUGLDAoeDmd5
-         P7RqPkEOqrOVcztRjW4QqwNIa0TmerUHMM2C+IE5/a1Kr7Ry3304MnbdM1xMtOmt0QTU
-         PHbADgKc/bxi7Pfm/Idol/qc9p52AJfWiOK4SuO5dl/ZmA8G7TyhF6u2/uwXq6ND3nrD
-         nhlg==
-X-Forwarded-Encrypted: i=1; AJvYcCVN6k/z2cKZBh+CORGOYkEzCRJBbWsSxLp76T9wmOI2nAh+b4VrbzRC/TyoLnnKWjjM6bsh0JJMy7F0a8G0ypa9eCVsXD/ojjZj8W4UPfDjR5a1flhRuOnfLoaXzuikEWPQ4YgA
-X-Gm-Message-State: AOJu0YxFYfAO5f/sppAjxYT31WbSQiqO6QfUwHE4Ki1EO0w0FWR8S3cv
-	f13pz402haWBvgi7XIFlmWaxCBcD8P4orRb3cCBr/rBPmChuzkXsa8DPrCIv
-X-Google-Smtp-Source: AGHT+IFVzd6eUIP+OPmGmZis0tDFQRnDEc4TSe9GmjxBJUWfCJDIWVRdu0rUeEQVcBV8AzFP5crJOA==
-X-Received: by 2002:a05:6a00:1da7:b0:6e5:faca:3683 with SMTP id z39-20020a056a001da700b006e5faca3683mr14537167pfw.26.1712061940326;
-        Tue, 02 Apr 2024 05:45:40 -0700 (PDT)
+        b=KEmx9BlurzvN/5geH2oiqXKGP910HNjX2+J/bR91fAPsFweNXUr07N7ht+z2DZ+VCn
+         Q/eww+RaRS+J9H6Bzj0R3OIiS2S1vZYKHFD4x57cWJfDMFCyGP/bx9LqtfIrCkvsgBN5
+         E8rOpUCtdTi6MQyrOh9/mpngIlkgvzdEMih2WzfHmz1qVUeLXbW1JDO4/uOs0KPLgjAj
+         gLarkMHuPCmgw0BMTNNygeNXvuBdoXr3TSRW9anlhGeUxAJTUvQxszd/3dDU4pcwsKLo
+         D3dqtE9tcAoOvX8moXdvlIqXrAG2JrpXc9pcIVGebhtN/MgmmQlmfx80Rp+vm+suCJCs
+         g4ng==
+X-Forwarded-Encrypted: i=1; AJvYcCUIyK4UMSnJVDU23R6WgRR0uwdwjSuM5u4//rYi/ZEbPyKdA06UcKwW2mTEBRQZZjgGMpbys5PlBhLgBKYG/cJgBzJL4xQE/ljzgHlWhpZ5qAx+xIshKFJlOvgySJ4Yz5gyMF59
+X-Gm-Message-State: AOJu0YyDd1DsJquS6A+7lt3IfzZfTAPrKPd8i2tYdkAe0d4ZAJ9kntN7
+	6yNKK6ub7KVcgWVpMLp4YlzsdJBNeIBOJnfUUgaNVWntTYiOGC+g
+X-Google-Smtp-Source: AGHT+IESdEXmJWbPQCuiTKYZJca4pPyiJo+KKkqHalopozYwKfN092bDOvrEi4xs4YhFw9PjcKki9A==
+X-Received: by 2002:a17:903:249:b0:1e0:b1a7:473e with SMTP id j9-20020a170903024900b001e0b1a7473emr12249059plh.67.1712061991253;
+        Tue, 02 Apr 2024 05:46:31 -0700 (PDT)
 Received: from ?IPV6:2600:8802:b00:ba1:283f:ce3e:1cbd:c25b? ([2600:8802:b00:ba1:283f:ce3e:1cbd:c25b])
-        by smtp.gmail.com with ESMTPSA id ey12-20020a056a0038cc00b006eaaaf5e0a8sm9734647pfb.71.2024.04.02.05.45.37
+        by smtp.gmail.com with ESMTPSA id l11-20020a170903120b00b001dddaa7d046sm10971016plh.29.2024.04.02.05.46.28
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 02 Apr 2024 05:45:39 -0700 (PDT)
-Message-ID: <b208ddca-0615-4641-9147-1d19b7684d25@gmail.com>
-Date: Tue, 2 Apr 2024 05:45:36 -0700
+        Tue, 02 Apr 2024 05:46:30 -0700 (PDT)
+Message-ID: <ec92cc10-b4b9-4ced-ac1a-721e5acccdfe@gmail.com>
+Date: Tue, 2 Apr 2024 05:46:27 -0700
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -76,7 +76,7 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [net-next PATCH 1/2] net: dsa: microchip: drop driver owner
+Subject: Re: [net-next PATCH 2/2] net: dsa: sja1105: drop driver owner
  assignment
 To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
  Woojung Huh <woojung.huh@microchip.com>, UNGLinuxDriver@microchip.com,
@@ -85,6 +85,7 @@ To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
  Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
  netdev@vger.kernel.org, linux-kernel@vger.kernel.org
 References: <20240330211023.100924-1-krzysztof.kozlowski@linaro.org>
+ <20240330211023.100924-2-krzysztof.kozlowski@linaro.org>
 Content-Language: en-US
 From: Florian Fainelli <f.fainelli@gmail.com>
 Autocrypt: addr=f.fainelli@gmail.com; keydata=
@@ -120,7 +121,7 @@ Autocrypt: addr=f.fainelli@gmail.com; keydata=
  y5arMQorqTFWlEOgRA8OP47L9knl9i4xuR0euV6DChDrguup2aJVU8JPBBgRAgAPAhsMBQJU
  X9LxBQkeXB3fAAoJEGFXmRW1Y3YOj4UAn3nrFLPZekMeqX5aD/aq/dsbXSfyAKC45Go0YyxV
  HGuUuzv+GKZ6nsysJw==
-In-Reply-To: <20240330211023.100924-1-krzysztof.kozlowski@linaro.org>
+In-Reply-To: <20240330211023.100924-2-krzysztof.kozlowski@linaro.org>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 
