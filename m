@@ -1,62 +1,74 @@
-Return-Path: <linux-kernel+bounces-127725-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-127724-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 34C81895003
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 12:27:21 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id C1988895000
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 12:27:03 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A13F8B22D54
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 10:27:18 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 38EF71F220E7
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 10:27:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 14ACC5EE67;
-	Tue,  2 Apr 2024 10:27:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A6FDE5B682;
+	Tue,  2 Apr 2024 10:26:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="YSFNzLx/"
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="c3/Aew7R";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="J+OK/CSv"
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9DDB25D47B;
-	Tue,  2 Apr 2024 10:26:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F07D55914D
+	for <linux-kernel@vger.kernel.org>; Tue,  2 Apr 2024 10:26:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712053620; cv=none; b=PDew+OWt5qARoV+KX4kItj2DUJLvGiFBAf9WyaYtSQKlXLav+CoDOPWTRK3lqRpbbBmdDkCL2EKr+5QWpe/kd6t0PzK+ge4zf5R2T02Lzo0oLdH08C44i9iEYMuk2XOzjOU9eUHXhsGghOn/VGVIPriXfuaEpXkPNU+NJe6jfiY=
+	t=1712053615; cv=none; b=fw/eDj6PJiEv01XGU68y0Vb3es9oSS8LxmvFvEOVLp0Asx9u261DPUEWCgKhaJ4nxHtcYt+F8FmMsLF1kmmDya7LcQkQwJXhHr5IiWJ/CmpKD5R0FgeUuo03itW/v2G6wggLJMbX3gnCMPz3Vicrks7Gm5GSg3e7NTeRvzo2Kls=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712053620; c=relaxed/simple;
-	bh=+eFe3TBJLr87BtCWTElHnPERNcTzJNOrD7R50LH437Q=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=Cma6r07gw9ChoI4DICAfBvinzMnHkU3eNRlWF3mD8vd3qI1wW60bHI7km02T66veP7neanqEEdkUWAwADKxcjWl4ES9stnSDJ1imq8TZZt7mCZsp/fxhyRWHMUxiTngMZS2ayXRenfVoeLhUM0ggkX2X/n5dYGCEwWoeHR8MQs8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=YSFNzLx/; arc=none smtp.client-ip=205.220.168.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279867.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 4325HKeM031770;
-	Tue, 2 Apr 2024 10:26:55 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	message-id:date:mime-version:subject:to:cc:references:from
-	:in-reply-to:content-type:content-transfer-encoding; s=
-	qcppdkim1; bh=uksFEbTHLxU2cqRIXHLFh61JHGugwCO+k16/jtYBnrQ=; b=YS
-	FNzLx/+3/HEL784FHnepSpVEQIMwhtLSyJfH7F97XpvK2zveyf6HtNDZGi1h8ITM
-	lztHJxqT8MMAgIZeBKn9WTpo0vKJrmPie9384SnfCDF78t7utgTEhuR0YdiwX9SS
-	YtGMJqGbn0I9Zwg7AaL0o4AUq4+Cujiaj+HnKu59xfOM3yiYtvvJs3q2AxKkYUxh
-	sD8D595dWoxTwMNyo9RZJC6sqYNHam+W+wF1yrAKXsnJql8RMQzhnfVCQra4ibDU
-	2RVHR0YtIfue8uqu9yGwDNpuCdl/VT4zTONnOsq/LEU4FDvYAG5bK+IaNwcEpYSa
-	E/0e1gKTjfatyA8mPakA==
-Received: from nasanppmta01.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3x88eh91k9-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 02 Apr 2024 10:26:54 +0000 (GMT)
-Received: from nasanex01c.na.qualcomm.com (nasanex01c.na.qualcomm.com [10.45.79.139])
-	by NASANPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 432AQsD4031657
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 2 Apr 2024 10:26:54 GMT
-Received: from [10.218.22.190] (10.80.80.8) by nasanex01c.na.qualcomm.com
- (10.45.79.139) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.4; Tue, 2 Apr 2024
- 03:26:51 -0700
-Message-ID: <1b247a4b-a260-4f89-bdcb-e821a47914d3@quicinc.com>
-Date: Tue, 2 Apr 2024 15:56:47 +0530
+	s=arc-20240116; t=1712053615; c=relaxed/simple;
+	bh=Z4s92GPLQpERHtXq552PK4Et/Xyy0j6adzqg48pFqi8=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=pHx14gT6qu/7sp0zMr9XU/UucxwvPDIy74mI8dzXLWVYc+pdndvRmeeK3t4bmmt9vS4ZoYvSfWgEyxqEgjFAgb2fKgZhSxkfkFHApm3J7zdcuds2zAZAfz8wO43ftyX07QgfW3HXiMu54PEPSm7CAKzTPpx/DXlTjkWyjniExHY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=c3/Aew7R; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=J+OK/CSv; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:98])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 1980834583;
+	Tue,  2 Apr 2024 10:26:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1712053612; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=UsqZPy+24oMYT2lO+yB2VXDnHjznmcGdw0YcjOb204o=;
+	b=c3/Aew7Rs4mdHLOk5Jc6KLh6wLveDiD9l+S9NpQ9u1vHFW8N3srNpN/1R74L07LiS/Y1KE
+	aoQrxYTOXCZP9xQRY3G57KsmCvFA5ZTklQecxr2jvUn14NOKiIpk6vYOOKnpj8U1f4lzjQ
+	ibIYUEHiuSY1hzwtfuthlyeuqVJhAlw=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1712053612;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=UsqZPy+24oMYT2lO+yB2VXDnHjznmcGdw0YcjOb204o=;
+	b=J+OK/CSvXNWRf2bGQFKD2+SWhtkn244KMnJ5dJg17SZOJVmm96+OyCSanTMV4AEokgXU9Q
+	R/JaBST64QnCUOCw==
+Authentication-Results: smtp-out1.suse.de;
+	dkim=none
+Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id 0289013A90;
+	Tue,  2 Apr 2024 10:26:51 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap2.dmz-prg2.suse.org with ESMTPSA
+	id 9A4EAGzdC2bUFAAAn2gu4w
+	(envelope-from <vbabka@suse.cz>); Tue, 02 Apr 2024 10:26:51 +0000
+Message-ID: <50f31489-b5c3-480e-a7db-20edbbb2c9c2@suse.cz>
+Date: Tue, 2 Apr 2024 12:26:51 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -64,171 +76,127 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v1] i2c: i2c-qcom-geni: Serve transfer during early resume
- stage
+Subject: Re: [PATCH v3 3/3] mm,page_owner: Fix accounting of pages when
+ migrating
 Content-Language: en-US
-To: Andi Shyti <andi.shyti@kernel.org>
-CC: <konrad.dybcio@linaro.org>, <andersson@kernel.org>,
-        <linux-arm-msm@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-i2c@vger.kernel.org>, <quic_vdadhani@quicinc.com>,
-        Vinod Koul
-	<vkoul@kernel.org>
-References: <20240328123743.1713696-1-quic_msavaliy@quicinc.com>
- <j5zai7pw7pxe2owjsoq2ncwhsmwe2llmcvb7vp46xi757eamub@inefovgffgpp>
-From: Mukesh Kumar Savaliya <quic_msavaliy@quicinc.com>
-In-Reply-To: <j5zai7pw7pxe2owjsoq2ncwhsmwe2llmcvb7vp46xi757eamub@inefovgffgpp>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
+To: Oscar Salvador <osalvador@suse.de>,
+ Andrew Morton <akpm@linux-foundation.org>
+Cc: linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+ Michal Hocko <mhocko@suse.com>, Marco Elver <elver@google.com>,
+ Andrey Konovalov <andreyknvl@gmail.com>,
+ Alexander Potapenko <glider@google.com>
+References: <20240326063036.6242-1-osalvador@suse.de>
+ <20240326063036.6242-4-osalvador@suse.de>
+From: Vlastimil Babka <vbabka@suse.cz>
+In-Reply-To: <20240326063036.6242-4-osalvador@suse.de>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nasanex01c.na.qualcomm.com (10.45.79.139)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: E_nVZxps7922X-EC98fYyVfOLaUjSpNz
-X-Proofpoint-ORIG-GUID: E_nVZxps7922X-EC98fYyVfOLaUjSpNz
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-04-02_04,2024-04-01_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0 suspectscore=0
- clxscore=1015 lowpriorityscore=0 impostorscore=0 mlxscore=0 malwarescore=0
- adultscore=0 bulkscore=0 mlxlogscore=916 priorityscore=1501 phishscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.19.0-2403210001
- definitions=main-2404020075
+X-Spam-Score: -2.10
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+X-Spam-Flag: NO
+X-Spamd-Result: default: False [-2.10 / 50.00];
+	 ARC_NA(0.00)[];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 XM_UA_NO_VERSION(0.01)[];
+	 FROM_HAS_DN(0.00)[];
+	 TO_DN_SOME(0.00)[];
+	 FREEMAIL_ENVRCPT(0.00)[gmail.com];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 MIME_GOOD(-0.10)[text/plain];
+	 RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
+	 BAYES_HAM(-3.00)[100.00%];
+	 NEURAL_HAM_LONG(-1.00)[-0.998];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	 MX_GOOD(-0.01)[];
+	 NEURAL_HAM_SHORT(-0.20)[-1.000];
+	 RCPT_COUNT_SEVEN(0.00)[8];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 R_DKIM_NA(2.20)[];
+	 MIME_TRACE(0.00)[0:+];
+	 FREEMAIL_CC(0.00)[vger.kernel.org,kvack.org,suse.com,google.com,gmail.com];
+	 RCVD_TLS_ALL(0.00)[];
+	 MID_RHS_MATCH_FROM(0.00)[];
+	 RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:98:from]
+X-Spam-Level: 
+X-Rspamd-Queue-Id: 1980834583
 
-Thanks Andi !
+On 3/26/24 7:30 AM, Oscar Salvador wrote:
+> Upon migration, new allocated pages are being given the handle of the old
+> pages. This is problematic because it means that for the stack which
+> allocated the old page, we will be substracting the old page + the new one
+> when that page is freed, creating an accounting imbalance.
+> 
+> There is an interest in keeping it that way, as otherwise the output will
+> biased towards migration stacks should those operations occur often, but
+> that is not really helpful.
+> The link from the new page to the old stack is being performed by calling
+> __update_page_owner_handle() in __folio_copy_owner().
+> The only thing that is left is to link the migrate stack to the old
+> page, so the old page will be subtracted from the migrate stack,
+> avoiding by doing so any possible imbalance.
+> 
+> Fixes: 217b2119b9e2 ("mm,page_owner: implement the tracking of the stacks count")
+> Signed-off-by: Oscar Salvador <osalvador@suse.de>
+> ---
+>  mm/page_owner.c | 15 +++++++++++++++
+>  1 file changed, 15 insertions(+)
+> 
+> diff --git a/mm/page_owner.c b/mm/page_owner.c
+> index 5df0d6892bdc..b4476f45b376 100644
+> --- a/mm/page_owner.c
+> +++ b/mm/page_owner.c
+> @@ -366,9 +366,12 @@ void __split_page_owner(struct page *page, int old_order, int new_order)
+>  
+>  void __folio_copy_owner(struct folio *newfolio, struct folio *old)
+>  {
+> +	int i;
+>  	struct page_ext *old_ext;
+>  	struct page_ext *new_ext;
+>  	struct page_owner *old_page_owner;
+> +	struct page_owner *new_page_owner;
+> +	depot_stack_handle_t migrate_handle;
+>  
+>  	old_ext = page_ext_get(&old->page);
+>  	if (unlikely(!old_ext))
+> @@ -381,6 +384,8 @@ void __folio_copy_owner(struct folio *newfolio, struct folio *old)
+>  	}
+>  
+>  	old_page_owner = get_page_owner(old_ext);
+> +	new_page_owner = get_page_owner(new_ext);
+> +	migrate_handle = new_page_owner->handle;
+>  	__update_page_owner_handle(new_ext, old_page_owner->handle,
+>  				   old_page_owner->order, old_page_owner->gfp_mask,
+>  				   old_page_owner->last_migrate_reason,
+> @@ -395,6 +400,16 @@ void __folio_copy_owner(struct folio *newfolio, struct folio *old)
+>  					old_page_owner->free_pid,
+>  					old_page_owner->free_tgid,
+>  					old_page_owner->free_ts_nsec);
+> +	/*
+> +	 * We linked the original stack to the new folio, we need to do the same
+> +	 * for the new one and the old folio otherwise there will be an imbalance
+> +	 * when subtracting those pages from the stack.
+> +	 */
+> +	for (i = 0; i < (1 << new_page_owner->order); i++) {
+> +		old_page_owner->handle = migrate_handle;
+> +		old_ext = page_ext_next(old_ext);
+> +		old_page_owner = get_page_owner(old_ext);
+> +	}
 
-On 3/30/2024 3:24 AM, Andi Shyti wrote:
-> Hi Mukesh,
-> 
-> On Thu, Mar 28, 2024 at 06:07:43PM +0530, Mukesh Kumar Savaliya wrote:
->> pm_runtime_get_sync() function fails during PM early resume and returning
->> -EACCES because runtime PM for the device is disabled at the early stage
->> causing i2c transfer to fail. Make changes to serve transfer with force
->> resume.
->>
->> 1. Register interrupt with IRQF_EARLY_RESUME and IRQF_NO_SUSPEND flags
->>     to avoid timeout of transfer when IRQ is not enabled during early stage.
->> 2. Do force resume if pm_runtime_get_sync() is failing after system
->>     suspend when runtime PM is not enabled.
->> 3. Increment power usage count after forced resume to balance
->>     it against regular runtime suspend.
->>
->> Co-developed-by: Viken Dadhaniya <quic_vdadhani@quicinc.com>
->> Signed-off-by: Viken Dadhaniya <quic_vdadhani@quicinc.com>
->> Signed-off-by: Mukesh Kumar Savaliya <quic_msavaliy@quicinc.com>
-> 
-> Is this a fix? O mostly an improvement?
-It's an improvement to serve transfer during early resume time. Doesn't 
-fix any crash issue.
-> 
-> ...
-> 
->>   	gi2c->err = 0;
->>   	reinit_completion(&gi2c->done);
->> -	ret = pm_runtime_get_sync(gi2c->se.dev);
->> -	if (ret < 0) {
->> -		dev_err(gi2c->se.dev, "error turning SE resources:%d\n", ret);
->> -		pm_runtime_put_noidle(gi2c->se.dev);
->> -		/* Set device in suspended since resume failed */
->> -		pm_runtime_set_suspended(gi2c->se.dev);
->> -		return ret;
->> +
->> +	if (!pm_runtime_enabled(dev) && gi2c->suspended) {
->> +		dev_dbg(gi2c->se.dev, "RT_PM disabled, Do force resume, usage_count:%d\n",
-> 
-> dev
-> 
-Sure, Done.
+Can the migration still fail after __folio_copy_owner()? That goes again to
+the comment you changed in patch 1/3. If it can, this will kinda create a
+mess with the old folio's handles not reflecting reality? (although
+refcounts will be ok)
 
-> nit: you could leave a space after the ':'.
-> 
-Sure, Done.
+So if that case is possible, could we instead just dec_stack_record_count()
+for the handle that allocated the new folio (IIUC "migrate_handle" here) and
+inc_stack_record_count() for the original handle that we duplicated from the
+old to new. Then if either old is freed (successful migration) or new is
+freed (failed migration), we'll have the correct refcounts.
 
->> +			atomic_read(&dev->power.usage_count));
->> +		ret = geni_i2c_force_resume(gi2c);
->> +		if (ret)
->> +			return ret;
->> +	} else {
->> +		ret = pm_runtime_get_sync(dev);
->> +		if (ret == -EACCES && gi2c->suspended) {
->> +			dev_dbg(gi2c->se.dev, "PM get_sync() failed-%d, force resume\n", ret);
-> 
-> dev
-> 
-Done.
->> +			ret = geni_i2c_force_resume(gi2c);
->> +			if (ret)
->> +				return ret;
->> +		}
-> 
-> Are we missing some cases here? Do we need a few more else's?
-> 
-> Andi
-> 
-No More else cases required.
->>   	}
->>   
->>   	qcom_geni_i2c_conf(gi2c);
->> @@ -702,8 +730,15 @@ static int geni_i2c_xfer(struct i2c_adapter *adap,
->>   	else
->>   		ret = geni_i2c_fifo_xfer(gi2c, msgs, num);
->>   
->> -	pm_runtime_mark_last_busy(gi2c->se.dev);
->> -	pm_runtime_put_autosuspend(gi2c->se.dev);
->> +	if (!pm_runtime_enabled(dev) && !gi2c->suspended) {
->> +		pm_runtime_put_noidle(dev);
->> +		pm_runtime_set_suspended(dev);
-> 
-> this looks like repeated code, how about making it a function?
-> 
-Checked it, but seems we need additional flag too to be added at one 
-place where as common part is 2 lines of code. If this code continues to 
-be repeated, i can think of keeping under a wrapper function. Please let 
-me know if still needed to make a separate function.
->> +		gi2c->suspended = 0;
->> +	} else {
->> +		pm_runtime_mark_last_busy(gi2c->se.dev);
->> +		pm_runtime_put_autosuspend(gi2c->se.dev);
->> +	}
->> +
->>   	gi2c->cur = NULL;
->>   	gi2c->err = 0;
->>   	return ret;
->> @@ -820,7 +855,7 @@ static int geni_i2c_probe(struct platform_device *pdev)
->>   	init_completion(&gi2c->done);
->>   	spin_lock_init(&gi2c->lock);
->>   	platform_set_drvdata(pdev, gi2c);
->> -	ret = devm_request_irq(dev, gi2c->irq, geni_i2c_irq, 0,
->> +	ret = devm_request_irq(dev, gi2c->irq, geni_i2c_irq, IRQF_EARLY_RESUME | IRQF_NO_SUSPEND,
-> 
-> Can you provide a bit more information on how an early interrupt
-> would be handled once the device is resumed?
-> 
-Sure, Let me go little descriptive here.
-Post system suspend when system resume starts (because of PCI/touch 
-device wakeup interrupt or anything else).
+>  
+>  	page_ext_put(new_ext);
+>  	page_ext_put(old_ext);
 
-1.That time i2c client device handler will directly start i2c transfer, 
-but we could not serve transfer because device is runtime suspended and 
-runtime PM remains disabled. This happens during early_resume callback 
-time, hence we have added forced_resume()
-
-Basically system is still suspended and not reached to the point of 
-enabling runtime PM of the i2c master.
-
-2. If the IRQF_EARLY_RESUME is not registered, then we get timeout as 
-the interrupt is not enabled. kernel/irq/pm.c has function which Enables 
-interrupt lines having IRQF_EARLY_RESUME set during syscore instead of 
-device resume time.
-
-irq_pm_syscore_resume() => resume_irqs() => __enable_irq()
-
-> Thanks,
-> Andi
-> 
->>   			       dev_name(dev), gi2c);
->>   	if (ret) {
->>   		dev_err(dev, "Request_irq failed:%d: err:%d\n",
->> -- 
->> 2.25.1
->>
 
