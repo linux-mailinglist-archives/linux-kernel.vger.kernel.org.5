@@ -1,71 +1,71 @@
-Return-Path: <linux-kernel+bounces-128587-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-128588-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 46777895CC2
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 21:36:37 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 44F00895CC4
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 21:36:49 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C9AF8282B1B
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 19:36:35 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 75D7C1C2246D
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 19:36:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 90DAC15CD72;
-	Tue,  2 Apr 2024 19:35:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CB71D15D5BD;
+	Tue,  2 Apr 2024 19:36:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="UUgKvhEC"
-Received: from mail-pl1-f174.google.com (mail-pl1-f174.google.com [209.85.214.174])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="PcGaW36B"
+Received: from mail-pl1-f170.google.com (mail-pl1-f170.google.com [209.85.214.170])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 73D4D15CD59;
-	Tue,  2 Apr 2024 19:35:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C284A15D5AA;
+	Tue,  2 Apr 2024 19:36:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712086556; cv=none; b=UEG8xzN0uSxor/6yJ4OApB2ffN6OSA2x5b7qrFbaAlOuLyiGQ4TMqCKsFaZrITjLPhWMtzfO6FOg9qAqRjWgnwV/IlQpsgqw/VXtuYIJxWQ5OCDJjpjVQSVbAn990K9TJh5CFO8Em1PGEin6Go4cQrPlC/y8D8tQIbuEnJ/wRPw=
+	t=1712086563; cv=none; b=lQ7AD8y4N3yWLAwAfSAMaeeRLNI8WrqMJqZOYajOhb+rnjIsQYSYMDs0aXL4I4Xr5GwY16w7FYzJnn2fqbdhh3D5fLEZ8SQf3WSKgsMTZHflkPUhbD0+ecEoRQynJaBrRKDv0TnO3XFw24h7gMf/VYrDEo601QOWbjQ2zZhS0aM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712086556; c=relaxed/simple;
-	bh=0RvejRjIJPduOyyCTlLj3EvG2tcNMQT1bKnp5UWuaPs=;
+	s=arc-20240116; t=1712086563; c=relaxed/simple;
+	bh=jc7cebTA89vu3ctiegjexYTIxBYLjo1OtZ8qSUvC2Sg=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=tzaUxJrSKIWE1Ib99yXz2RRf9RXTHDQdvQsFSoNknHTwp7+vlACByQKg/ziS7pvmu8LSFryHGyHjX04FvrpliGQMvuEw/8iWQ3JCyCx5y/nbDoBpPIXoktqXmJzS60Jyos4HPRGZAUzb3t6bwga1F00RADA1FuGNDxpAsPSli5s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=UUgKvhEC; arc=none smtp.client-ip=209.85.214.174
+	 MIME-Version; b=czOhR0Vor2snU1ToZAtYxKK/+BA2fGsS8IdUxCeM9RRcmZtVudNMRsmfSIYoUok8B4IxFIgpyFJeONpTO41fL0tV4rpCjT0Me39qaMGsfkJsWJm+PLnXVwPqwH4IR8Y14oqP07Apr8dCKLNI9JkIIoEsCwvFQlfItgg/i+ooYCw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=PcGaW36B; arc=none smtp.client-ip=209.85.214.170
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f174.google.com with SMTP id d9443c01a7336-1def89f0cfdso1815465ad.0;
-        Tue, 02 Apr 2024 12:35:55 -0700 (PDT)
+Received: by mail-pl1-f170.google.com with SMTP id d9443c01a7336-1e244c7cbf8so24168015ad.0;
+        Tue, 02 Apr 2024 12:36:01 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1712086555; x=1712691355; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1712086561; x=1712691361; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=sHKgofjtLfTWJ/FAwhBqVxJWAROfQE6XjH/ZqxNReeE=;
-        b=UUgKvhECi4OqI3kJJXOQCW+7SoIUbCnYgUEUxUwQ/GeUrTp/xG6+Dks3UNHOmQIY/o
-         6sBVmxfsdIkRrI1KEH0z6sfbTePGWduWQ4a9Tf1g5yr5ICUTi0VjVDaFjRoSD0Db48Gy
-         GExjoTN6k9+9YeWWseOYKjTwILbK+7K9QSk7nRwJnatV70Z85tpBPwq+2hKAui5Otcgw
-         D8/tsAAvfapqtyLwp1l+L+QF2TyBCo4ZhRBYHxrRvpM/Q/QSgCg84tf/ZR6nf9VvuhS+
-         4+XnFsyqOa1BamBMKdIhSjYIQYOP3cMriNqhzLnw/YfL/3/DcRcaM2iDg5zJTJtpaG6C
-         vm2w==
+        bh=wi6o+FdEdaIXxVNO48cVV2DPK9TKjcoqynKwgHQO7GM=;
+        b=PcGaW36BCmUSfDXda3FdJuvkaRzpu3RiV26GwtiyMgSmBcYiECU/zNBXWVkKIZbMKC
+         m3tAmjIM90JuLajyeeZRu4BTckYI+SLm1GxzJtCp6cK/iXVFINX1JoTTPlWML6pWqokw
+         5dvCe7/z1KpUfWEPwEGPWp5FnlJSlxhsU8jT6ljIkWIXmSObawW0r5DOSRSz+IBUqpuW
+         oWvTH69PyL9EiL9hSYV1xJ0VYnzrJxf0UcIS7FIb+sQaC/pwAPEgjsyG8vQ4fUusXjf/
+         GgzvU7+2dFJOTZNy3kiBufcJTxmzz+1zP/waTuC6CgOlVlerbRMR4s/qHGdOSRJzCt5Z
+         Fq5w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712086555; x=1712691355;
+        d=1e100.net; s=20230601; t=1712086561; x=1712691361;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=sHKgofjtLfTWJ/FAwhBqVxJWAROfQE6XjH/ZqxNReeE=;
-        b=iT6t4rJmf0AXR6HXqV2pQSNgyHZ0i0IrkDS8LU6VB3DrM18xk7ti5uaDCiVIdVtL5R
-         GbgyTlNfkU6aJh1d+JIPCeYrWG41T/s+h11li6nxZUkCxIhvoPt8JyvsGEhWLqVhjS9Z
-         aokYy/l/TFMtP4JCSh/fEglDbcJq+kktCtWVhVFrpvRtVDTmiLp4cWrJA5ryw1YazZ81
-         F9BVt6mlXgG3o/ZDCowe2qpV4r1WXkGnihXD3TxAHIQHj9NZtFbs4F52g6nBVYxXVJ7p
-         kBR+hsz9bIqT/dsLS1s2URC8J/Mo2zulqcyyWP7bMguh+joozfUA3UrZA99TJqX7Ygw6
-         XlUg==
-X-Forwarded-Encrypted: i=1; AJvYcCWEqAnJyKIg9gYrLjmL0aRPOTGewbOVZVBNzOIP7dwFey2EnbHe4GQrzm5E61QOVTq+EOBIWV3M19SjcbNNCfXM9yWEY7G3tfAtGR0lkmfo12CobkvMvl7gTq/Po/zpZ9iQwVYqnbg0Rg==
-X-Gm-Message-State: AOJu0YwhuuWsAovIzt1dqz5nO/afFFMbCktJv3uFyAFzAus3tIL4+eZx
-	VLTZ/KTz9iK7DRB7EQcF5i0dZ13wqm0vBNPycAFxZf25l4pQFbRO
-X-Google-Smtp-Source: AGHT+IFo4t051oCixR4x2puMKN9+F3XA0BHfQTTOfa7GG3oxo+qvOGVEAXWPPM1McWQQCcoNyHTzLQ==
-X-Received: by 2002:a17:902:f54c:b0:1e2:76ad:caa with SMTP id h12-20020a170902f54c00b001e276ad0caamr580629plf.22.1712086554826;
-        Tue, 02 Apr 2024 12:35:54 -0700 (PDT)
+        bh=wi6o+FdEdaIXxVNO48cVV2DPK9TKjcoqynKwgHQO7GM=;
+        b=p9W2z3GKfMpPZdRGfyHMSm8kPlGTqShcYHDeDi67KprU0VXObmE/P/bh9p1crvJqGw
+         K+2ygYhd3gC5/+HQ8WvVQMrSB7hFqOilXooYILhe3KpIakGEwhG52nm2HUB53r2hyuxT
+         f3NADAFpX6NNMuwRCA370YVF5o+OF401vPpjCe2CMs6O+JCbZMzzaLKb76I0tFCqVTAV
+         uB8k72ZbuUnbWoWURYTe+lbQwLzg9+6VAN92CiDIxzg9HteZrz0wWebZJ21xEfpp5gUr
+         VPmCeZsXWuuX3Jmhp97FkkZRpvmjUr65znvDH/eekM4lCl/YpmehcimgGXHcXcQAtoZj
+         kmwA==
+X-Forwarded-Encrypted: i=1; AJvYcCVVF78Gb8k8bjerVJ4HWd4XAjSw2dux9xU9eunEl5gfIDlYMTRnQfGouQaDaQDc9TAWxS43i/n1bFKncjoqkrrh5iE5683zl9vwEBwT1InqzN6XZ1j8xaUvIbB1LlI78kJLmaUMq7PwtQ==
+X-Gm-Message-State: AOJu0YzLeqXlTUP2o46dS9x/eQ08/J3eVnPEfu0kWEIFedAyUTFNxkJ+
+	kpQHiQe6ADB7pmgBEzS2twRD8u+jIgXhiX+D7EMiXyn6fKM9oSqt
+X-Google-Smtp-Source: AGHT+IE9b9o1NE9CkTOar0PYXIBWXkbziM1GUuV4KDxWrSFl2kVLUyILKpmyGmu4ieeUNnr3lDCuFA==
+X-Received: by 2002:a17:903:11cc:b0:1e2:45cb:eb3d with SMTP id q12-20020a17090311cc00b001e245cbeb3dmr745523plh.3.1712086561123;
+        Tue, 02 Apr 2024 12:36:01 -0700 (PDT)
 Received: from frhdebian.. ([2804:14d:8084:b86e:ac17:f518:b547:13a8])
-        by smtp.gmail.com with ESMTPSA id g6-20020a1709026b4600b001dd59b54f9fsm7775841plt.136.2024.04.02.12.35.51
+        by smtp.gmail.com with ESMTPSA id g6-20020a1709026b4600b001dd59b54f9fsm7775841plt.136.2024.04.02.12.35.55
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 02 Apr 2024 12:35:54 -0700 (PDT)
+        Tue, 02 Apr 2024 12:35:58 -0700 (PDT)
 From: Hiago De Franco <hiagofranco@gmail.com>
 To: Shawn Guo <shawnguo@kernel.org>
 Cc: Sascha Hauer <s.hauer@pengutronix.de>,
@@ -79,9 +79,9 @@ Cc: Sascha Hauer <s.hauer@pengutronix.de>,
 	linux-arm-kernel@lists.infradead.org,
 	devicetree@vger.kernel.org,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH v1 1/4] arm64: dts: freescale: Add i.MX8DX dtsi
-Date: Tue,  2 Apr 2024 16:35:09 -0300
-Message-Id: <20240402193512.240417-2-hiagofranco@gmail.com>
+Subject: [PATCH v1 2/4] dt-bindings: arm: fsl: remove reduntant toradex,colibri-imx8x
+Date: Tue,  2 Apr 2024 16:35:10 -0300
+Message-Id: <20240402193512.240417-3-hiagofranco@gmail.com>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20240402193512.240417-1-hiagofranco@gmail.com>
 References: <20240402193512.240417-1-hiagofranco@gmail.com>
@@ -95,36 +95,27 @@ Content-Transfer-Encoding: 8bit
 
 From: Hiago De Franco <hiago.franco@toradex.com>
 
-Add DTSI for i.MX8DX processor. According to 'i.MX 8DualX Industrial
-Applications Processors Data Sheet', the GPU and shader use a clock of
-372MHz. Therefore, this dtsi includes the imx8dxp.dtsi and changes the
-clock accordingly.
+'toradex,colibri-imx8x' is already present as a constant value for
+'i.MX8QP Board with Toradex Colibri iMX8X Modules', so there is no need
+to keep it twice as a enum value for 'i.MX8QXP based Boards'.
 
 Signed-off-by: Hiago De Franco <hiago.franco@toradex.com>
 ---
- arch/arm64/boot/dts/freescale/imx8dx.dtsi | 13 +++++++++++++
- 1 file changed, 13 insertions(+)
- create mode 100644 arch/arm64/boot/dts/freescale/imx8dx.dtsi
+ Documentation/devicetree/bindings/arm/fsl.yaml | 1 -
+ 1 file changed, 1 deletion(-)
 
-diff --git a/arch/arm64/boot/dts/freescale/imx8dx.dtsi b/arch/arm64/boot/dts/freescale/imx8dx.dtsi
-new file mode 100644
-index 000000000000..ce76efc1a041
---- /dev/null
-+++ b/arch/arm64/boot/dts/freescale/imx8dx.dtsi
-@@ -0,0 +1,13 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+/*
-+ * Copyright (C) 2016 Freescale Semiconductor, Inc.
-+ * Copyright 2017-2020 NXP
-+ */
-+
-+/dts-v1/;
-+
-+#include "imx8dxp.dtsi"
-+
-+&gpu_3d0 {
-+	assigned-clock-rates = <372000000>, <372000000>;
-+};
+diff --git a/Documentation/devicetree/bindings/arm/fsl.yaml b/Documentation/devicetree/bindings/arm/fsl.yaml
+index 0027201e19f8..6fdfa10af43c 100644
+--- a/Documentation/devicetree/bindings/arm/fsl.yaml
++++ b/Documentation/devicetree/bindings/arm/fsl.yaml
+@@ -1218,7 +1218,6 @@ properties:
+           - enum:
+               - einfochips,imx8qxp-ai_ml  # i.MX8QXP AI_ML Board
+               - fsl,imx8qxp-mek           # i.MX8QXP MEK Board
+-              - toradex,colibri-imx8x     # Colibri iMX8X Modules
+           - const: fsl,imx8qxp
+ 
+       - description: i.MX8DXL based Boards
 -- 
 2.39.2
 
