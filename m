@@ -1,225 +1,279 @@
-Return-Path: <linux-kernel+bounces-128216-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-128217-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 67F6D8957B7
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 17:05:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id EDEFF8957C7
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 17:06:42 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1C78528523B
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 15:05:20 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A27E9285CE7
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 15:06:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BAFFE12BF37;
-	Tue,  2 Apr 2024 15:05:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 590E412FB01;
+	Tue,  2 Apr 2024 15:06:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="Sv4LJepa"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b="jjub1QkV"
+Received: from NAM02-SN1-obe.outbound.protection.outlook.com (mail-sn1nam02olkn2104.outbound.protection.outlook.com [40.92.44.104])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 34E3786128
-	for <linux-kernel@vger.kernel.org>; Tue,  2 Apr 2024 15:05:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712070312; cv=none; b=ixIWx0dwy71qniwJXnjHMS0cX7hCfJhOJRELvlAxGHDvI8sHRS04rk0byQFUSlxX96OCqVT9zpAdiI0QMi5uZ6LpygeN1qNVj7O9L/t04d84CThWmv5kAnAJLrXWXTejyAVKhrECChr6EbA11TLBeBQ64kDMmcVFT6JN7cqtuIw=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712070312; c=relaxed/simple;
-	bh=0zgHtiVe8xYLLsFCLpEBlvHEkoV6cJVT1KEvui+GKzo=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=E0ffgIAXOn5Pf9clKp3jJIEqAC3eqtxVwTL4XjJapkwQ7UxXS90Jz/leHPTvKewDKczMEXO9l0difSAa4EGGvKG2DfBH44xxpjIew55X36R9mkEI88b5FFmdlyyLJh5Gb53IxcZ8WpGasF4gdTepFrPkPOZ15WkC9WwSH4WqPvg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=Sv4LJepa; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1712070310;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=jLq2tKtQyU+Xs0r4v3F/+9g6JN1kAENgWuL95Uf8uiI=;
-	b=Sv4LJeparFXwEEaHSGPZ+pOCRBYknDee5bSw0+QKxopDIUmqb885BSqevy7SmtLTShJ/Z/
-	v4ILnAE5caWXbBSvYrXpPMdrTMMIHRsSyaRiZW05rxnAxOQ23MOofFXowIoLbii9za/PSz
-	ycdw/Km5at2G6Q0/YvWyWn9+sUHXRvs=
-Received: from mail-ej1-f70.google.com (mail-ej1-f70.google.com
- [209.85.218.70]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-349-A_W73WPmO7qZ77IfUZ03iA-1; Tue, 02 Apr 2024 11:05:08 -0400
-X-MC-Unique: A_W73WPmO7qZ77IfUZ03iA-1
-Received: by mail-ej1-f70.google.com with SMTP id a640c23a62f3a-a450265c7b6so282745566b.0
-        for <linux-kernel@vger.kernel.org>; Tue, 02 Apr 2024 08:05:08 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712070307; x=1712675107;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=jLq2tKtQyU+Xs0r4v3F/+9g6JN1kAENgWuL95Uf8uiI=;
-        b=p0b4sCeR81MOut8/bY2onKCjyBWY7mDJpfFHCdjfF6iMVjNOjDw22qTzajDSkEr7g5
-         N1jrgj7Z7W4sMSBgbgLLYUrggyBYlzr3IiYXnUbTY9joykwIxSikHZdfGvNQM6HzHqhP
-         p9uhJzp7xXRGNB1AARliEmFMiJdZo4rUcpTYO7glbT5D1hveWq38ZU5BBUX4BLL9uFiP
-         nvD8BSUzfGeXJYwhuU/tF6U1g2hvGuCEZMtV31sZ1AUkx/3lUy1mcAf5lXX663Ne7YWu
-         AdtYKXTZ4XBlrEyPpOTQF63KPQXnyr6FKgcoxUA4YgLEdPOm6lEO38yeJ1JZYrZWd6NF
-         ZBNA==
-X-Forwarded-Encrypted: i=1; AJvYcCXQjFUk/x/AwJ5fJKQPSlgMPcWQ20Cf0YSRG1g25mk2sTq1vnlOAqOZOhV6tXi6y03skja+f959L2oVKQrnE0PVpQfyHWDbxj8LRXvE
-X-Gm-Message-State: AOJu0YyGC5OAWQrB4TUVH3gYGXGbB0RKMlVnGxz/NMOcLMRCY3Q4qPGY
-	S1cn9sGB3Ig9GLIdfHMhweSkDYXvreqEHqe+yfSV0Q8z8kydHe91dIu/DMN8+Kfj1lpZeM6bTGB
-	1qaZCFs0IJuvlaO1PlK4jXxK/ddSyTmMfA5aEG/aQZoeEbqvn/4MdkhBJVSrqYA==
-X-Received: by 2002:a17:906:6152:b0:a4c:de71:54f7 with SMTP id p18-20020a170906615200b00a4cde7154f7mr8156484ejl.27.1712070307206;
-        Tue, 02 Apr 2024 08:05:07 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IErvFV/CA6M7Wb3IGxb9REEDxn3nHfFMnRbiWOefA61noi+7+L9ilwruGial88ntKLm0HuCtA==
-X-Received: by 2002:a17:906:6152:b0:a4c:de71:54f7 with SMTP id p18-20020a170906615200b00a4cde7154f7mr8156459ejl.27.1712070306609;
-        Tue, 02 Apr 2024 08:05:06 -0700 (PDT)
-Received: from ?IPV6:2001:1c00:2a07:3a01:e7a9:b143:57e6:261b? (2001-1c00-2a07-3a01-e7a9-b143-57e6-261b.cable.dynamic.v6.ziggo.nl. [2001:1c00:2a07:3a01:e7a9:b143:57e6:261b])
-        by smtp.gmail.com with ESMTPSA id ga13-20020a1709070c0d00b00a473f5ac943sm6588626ejc.37.2024.04.02.08.05.05
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 02 Apr 2024 08:05:06 -0700 (PDT)
-Message-ID: <12fc7d61-54c0-4089-b885-1ae124708ae6@redhat.com>
-Date: Tue, 2 Apr 2024 17:05:05 +0200
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8A68112BF22;
+	Tue,  2 Apr 2024 15:05:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.92.44.104
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1712070359; cv=fail; b=pzoRxqPuKx1RM+1fd8rpg1HMQpd3SZDuxELWN5nv7GVNKVSSxzMPLHGCIHhY2M5xfocBLCVlk/7NLaEy6GROI/XUHnfqRd6meNU/tz/+4KXUbnFsfXqjKGlA+w/20tcvyVF02vOfeXEgR2ulGH6iDnW7+Af8APhvvGKJSkgLVzA=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1712070359; c=relaxed/simple;
+	bh=nqPdktzCB7I8uk8mJnZx/Fi1rCAFXIJfxl0JzMmen3k=;
+	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
+	 Content-Type:MIME-Version; b=AuptDIsQnQYz7WHGjsee+OWvvi/+jbKu6IgLHsKITD6tk/hUdqDWZxqE386x25WYQYKpHpvctd2Vf8IUGVQQr7Jo8VdQDoJTAdxB19D9Bc7YTzglOyDm0RjPBJYWeSGiP9r2WWm4KvwhP9EIk+isHg1uj3gYFayX0+TFXkYDDYU=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com; spf=pass smtp.mailfrom=outlook.com; dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b=jjub1QkV; arc=fail smtp.client-ip=40.92.44.104
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=outlook.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=ZPMOzuCpt3N/Rq3KoAs2EBB/vHw0vH/6p5EIIikNSlMaT/7kmyjshgFUKGLkU7E+rRfv4d/sKcpgKTmnaEx9yBYczSfe8Bl2YIrwZwmrtwVKVMAPcqQB+MlK3GZJdb9ewKxeuIAsvh8zA42Pp2Vm2KTy+9iiEkLSroK9DpHxUE5HbIVSxMNkmgDR/V68//px2OzIrlj1RMdONJubS6q41gM7w5H4ot8iRsArutjF9eTz4iCCaP0SwXmJMYJQNWHitUnT2sm3W1GG2HPCqmuEqRVequHLJxcV5hUxfMvUV+QdTZ6EmX4GwMuEqx7ZHMcmr7t8zz5HeoLKuBfkC3jC0g==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=ngGHFfGwhXmpY83BmsTe59Vw/npZm98tyGuiiKBn7gY=;
+ b=T66PkyrwsDXIrgw5vh0j9ThJ+rp6lmEUjlTm7KifmLl1/K2No5Rgz4vhHvbGp0WdqMELZHyYXCzH1/l3VpRi5+3idLkI48ocGdu6fWzEkoJQcJYbCFHaCpl9vC+Cj+hD7LZRuip6C4UxmQNtzG0lB6CgYASiX+FAckrnQ0tibFiAbC4scm8NkXRjHqiohdD2rU6YMBqHh8aeTWG/JIqL3nv7Jjo89pzdrcVcFG+TCcpDXOzbyaTrkaDw8ZOM70TqvcPXMBvJxPeB2RLp/W1Rmhj61wzTahtRjtgsZSxmB1P/Y6/Z4QMITCTYiI8SQE5oABfo8Rtjsgsj5UqloBI1vw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
+ dkim=none; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=outlook.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=ngGHFfGwhXmpY83BmsTe59Vw/npZm98tyGuiiKBn7gY=;
+ b=jjub1QkV1c2+/4dJc+EcAUJegWPLJBWI4jzTL0SIBkM7kDoe7om1z0n1ZkCQ7YRkOyagGvo1MFt6KQbio951u/XKnkDNF6pIr4O1vWl8WeNsONQdtOd6Rz7PN+2azgHlGm7gdVn6Y81ev8b5nSccP9vzcLhFbPrPeK31gbfXCb/L5lePtbsz4PzvkQr6jGQ+nF4f4WUcC5cJuYTWlLNHPJAgxI2IqU+FrUVMxlJ3v1xRzi7lmM2kI6cdNZhgOeXoMhYMGOUIVGMmJONU1btS/4iMN0mq7zJlVd2vWqw3ZFz8BsqLIU9x2FWzAhebGCaqqnFA4Etk70muG2cktLuC8w==
+Received: from MN0PR20MB4717.namprd20.prod.outlook.com (2603:10b6:208:3cf::20)
+ by SJ1PR20MB4788.namprd20.prod.outlook.com (2603:10b6:a03:459::13) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7409.46; Tue, 2 Apr
+ 2024 15:05:51 +0000
+Received: from MN0PR20MB4717.namprd20.prod.outlook.com
+ ([fe80::e0a3:f058:e169:988b]) by MN0PR20MB4717.namprd20.prod.outlook.com
+ ([fe80::e0a3:f058:e169:988b%4]) with mapi id 15.20.7409.042; Tue, 2 Apr 2024
+ 15:05:51 +0000
+From: Mac Xu <mac.xxn@outlook.com>
+To: Joe Perches <joe@perches.com>, Barry Song <21cnbao@gmail.com>,
+	"akpm@linux-foundation.org" <akpm@linux-foundation.org>,
+	"linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
+	"workflows@vger.kernel.org" <workflows@vger.kernel.org>
+CC: "apw@canonical.com" <apw@canonical.com>, "broonie@kernel.org"
+	<broonie@kernel.org>, "chenhuacai@loongson.cn" <chenhuacai@loongson.cn>,
+	"chris@zankel.net" <chris@zankel.net>, "corbet@lwn.net" <corbet@lwn.net>,
+	"dwaipayanray1@gmail.com" <dwaipayanray1@gmail.com>,
+	"herbert@gondor.apana.org.au" <herbert@gondor.apana.org.au>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	"linux@roeck-us.net" <linux@roeck-us.net>, "lukas.bulwahn@gmail.com"
+	<lukas.bulwahn@gmail.com>, "sfr@canb.auug.org.au" <sfr@canb.auug.org.au>,
+	"v-songbaohua@oppo.com" <v-songbaohua@oppo.com>, Max Filippov
+	<jcmvbkbc@gmail.com>, Jeff Johnson <quic_jjohnson@quicinc.com>, Charlemagne
+ Lasse <charlemagnelasse@gmail.com>
+Subject: Re: [PATCH v5 2/2] scripts: checkpatch: check unused parameters for
+ function-like macro
+Thread-Topic: [PATCH v5 2/2] scripts: checkpatch: check unused parameters for
+ function-like macro
+Thread-Index: AQHag9MBE6nuZEX6x0OitxYUtdLwcLFSs1aAgAFq0i6AABdXAIAA3lZU
+Date: Tue, 2 Apr 2024 15:05:51 +0000
+Message-ID:
+ <MN0PR20MB47170F8BDF17A5B9914AC610F33E2@MN0PR20MB4717.namprd20.prod.outlook.com>
+References: <20240401012120.6052-1-21cnbao@gmail.com>
+	 <20240401012120.6052-3-21cnbao@gmail.com>
+	 <f5bb12d8602a03d28b2a8aeaffd8f74f001d692d.camel@perches.com>
+	 <MN0PR20MB471708D419907FFAF1DB0FC2F33E2@MN0PR20MB4717.namprd20.prod.outlook.com>
+ <3ea68e8fc46332d45e2af0d8de938628445b6691.camel@perches.com>
+In-Reply-To: <3ea68e8fc46332d45e2af0d8de938628445b6691.camel@perches.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+msip_labels:
+x-tmn: [U2M8j3arNbz5NBPmPg9APEnnaeB46ORM]
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: MN0PR20MB4717:EE_|SJ1PR20MB4788:EE_
+x-ms-office365-filtering-correlation-id: e158c523-79e6-4b0e-2cd7-08dc532662ca
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info:
+ FSzcqxX1xDL+R8hoZYt9SrpvJpO0M9Jxgk5PNhMKqszBYAZWbV7SOZhpy/+VKJZe8Mut0tM88dL9kaZP1fIP+hrM0Dar59PrPV7FDq/F80UiLkYm9M7VezrbsUAwL/knpbEClHur55urmMcTkBY0Hv2Agyh+x5zPTkHIbAR35l/RnzLBsaPJtoeURX2jhDt+h3oHLr1wN2ngLkv5QINRSKkK4hYC/5q/upwRwQqtsDWiqUj6rDnvb6orLdiVK9lskBc1+Tfv+sFJ6fux+uL7/w7ABv+YwQavAIXbBJWrtSBPyNzkoMknMh/jb1J1Dg4/neRznmnydy07sZ6A9qitHOnAKlf091/2v4TkbOLaSZZF1Nqnr1rk1tu9ReeFeeRi3BsfnZI+nefbCWQ+CO2HoVXREMMtKm+c8bOOwoZQ6bDnZPdR0DyW2hd3BzWv41mDG2kh7550jBZGGBHhQNj0KkbCthJlwRWmbsDyzb0k39sY8cThPt7Heb1UgXfaUAjxJMpU2m80aB+LLSLK06covtQCsTDkK8Drq+0OXXxtYIsHdZrY3nMhK4mUADgDAFeiRsHyEc4D8f4r16mGLWV/Z4SOfv4ZP6sRe4D1Utic+vijm4AFxnJ3HBPDb7CB4xNL0TX1Z/zQhTQUCEsFZwqx68wzQJsjnXuK9V/P9JCIi9Q=
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0:
+ =?iso-8859-1?Q?+5ekHNDnVBZPoIcJloAJ+5u4+YA3ZXJA27LpKSdtLJKv4KJ807TSeI7All?=
+ =?iso-8859-1?Q?Am9WmWtQCkjvAFX3xQRyRXUZ/d8ZKU/a3IKSB+Gp6sRvVLTZGttkvQsTe0?=
+ =?iso-8859-1?Q?hOp3Au9kmEmDPS9IvWn6lhau+UOOmoTfceZr4X1RyAavZOWjcq9HcaWSwG?=
+ =?iso-8859-1?Q?RCbLqJEE4vlFsT+d7CFlJNCDbxKWWo4le99252/VIwcK4uSsA1uY/YZdht?=
+ =?iso-8859-1?Q?pVCVWYBto8oAZYqLeX4RX1TRlOEgq+OAQqOtM/eS3T1e2c17JZisBkQcto?=
+ =?iso-8859-1?Q?FJSJh0FevPCbv2qicPn0V4NuFEWjA4hOUrlI9DN+8YPDhJpD82h5GA2Vie?=
+ =?iso-8859-1?Q?WS1s9lxMrr1EqBZkSedXJ6a42U5yOFiwlCtwIYGVm99I68f+mZkQHsMqlL?=
+ =?iso-8859-1?Q?r4oIWE82P2NpFgPpnKkZtMVWnJ2JxFVRPJGBr0EdxI1ADRvEsdLOLyFIPn?=
+ =?iso-8859-1?Q?Xawh8n9MLKQM+b1Iq9ji205bdFuZR5/pXtIcUwVXbdA4bwxF1Ct3XJTyfW?=
+ =?iso-8859-1?Q?s/wmks2V+c6Vstf662K8SZCEHJcx3o2reYdM3uzA5krHWtaivolRr2Hmo6?=
+ =?iso-8859-1?Q?DTtg8P5wGl5AYCCjwnt4zEpYql9egXrD44880zhqHwQHxacn5iS3Xxw0Kb?=
+ =?iso-8859-1?Q?DGfbcAsbvntdDYwFKG4Xbhu5OW2i0DeSzOiNRKRZ+/m3K1nOIccglcUz3M?=
+ =?iso-8859-1?Q?tdPTf1pCDjQ6pB3v6vM1SuiSXYF3UylQ0Nn+IOPVomEZMrjN19z7/CzY26?=
+ =?iso-8859-1?Q?+/Y2CM7TdlLJVmvbEDz49F73CrsxalpGsRRenIuq0itOC9LwRK9j/CQ+fU?=
+ =?iso-8859-1?Q?2phpVkZOBfjjNwwR0XfvIQ7oEEvUv3nLyRc36DRYB5GIXTt7tR9FVN9kNC?=
+ =?iso-8859-1?Q?RT3XX/MiVp6qMNlg0MEWtTv14YZJsQ7cm+kAdutl6y8/ExiJKeoi5BPiCA?=
+ =?iso-8859-1?Q?12d6VusH+/mR11a2DE9hZrVxjrDwSHvo+Sa7vpnsKihJ4Xu49KcgSl7P7p?=
+ =?iso-8859-1?Q?X0J0ygbyMST0aNa5G8WEmPlze0thZCFkTqd1Sc2mZlzWUvQIznlHqZEMTv?=
+ =?iso-8859-1?Q?Bq7BEqCYFD9W/QUG0jAD3aw7ICPIUnJim9tAto2NbstUN0L1fFijhbf0/p?=
+ =?iso-8859-1?Q?vhQDGsIrGo/e20ix3UpB2wuOs9PI3XbzW4HQhc2g8HTaJ4YdrgUs/3Lv3e?=
+ =?iso-8859-1?Q?WhkV/P/Zba2wBkXGpO1ifR9vBHWrI8rdD07cqtE6kkcTjTI4Xlb786fJia?=
+ =?iso-8859-1?Q?W9Kh+G9XWlZmAAcg4qVQ=3D=3D?=
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v4 10/10] drm/vboxvideo: fix mapping leaks
-To: Philipp Stanner <pstanner@redhat.com>, Bjorn Helgaas <helgaas@kernel.org>
-Cc: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
- Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>,
- David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
- Bjorn Helgaas <bhelgaas@google.com>, Sam Ravnborg <sam@ravnborg.org>,
- dakr@redhat.com, dri-devel@lists.freedesktop.org,
- linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
- stable@kernel.vger.org
-References: <20240328175549.GA1574238@bhelgaas>
- <ffe0e534166f14483d0a6a37342136b7aec9c850.camel@redhat.com>
-Content-Language: en-US
-From: Hans de Goede <hdegoede@redhat.com>
-In-Reply-To: <ffe0e534166f14483d0a6a37342136b7aec9c850.camel@redhat.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+X-OriginatorOrg: outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: MN0PR20MB4717.namprd20.prod.outlook.com
+X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg: 00000000-0000-0000-0000-000000000000
+X-MS-Exchange-CrossTenant-Network-Message-Id: e158c523-79e6-4b0e-2cd7-08dc532662ca
+X-MS-Exchange-CrossTenant-rms-persistedconsumerorg: 00000000-0000-0000-0000-000000000000
+X-MS-Exchange-CrossTenant-originalarrivaltime: 02 Apr 2024 15:05:51.0977
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ1PR20MB4788
 
-Hi,
-
-On 4/2/24 3:50 PM, Philipp Stanner wrote:
-> On Thu, 2024-03-28 at 12:55 -0500, Bjorn Helgaas wrote:
->> On Fri, Mar 01, 2024 at 12:29:58PM +0100, Philipp Stanner wrote:
->>> When the PCI devres API was introduced to this driver, it was
->>> wrongly
->>> assumed that initializing the device with pcim_enable_device()
->>> instead
->>> of pci_enable_device() will make all PCI functions managed.
->>>
->>> This is wrong and was caused by the quite confusing PCI devres API
->>> in
->>> which some, but not all, functions become managed that way.
->>>
->>> The function pci_iomap_range() is never managed.
->>>
->>> Replace pci_iomap_range() with the actually managed function
->>> pcim_iomap_range().
->>>
->>> CC: <stable@kernel.vger.org> # v5.10+
->>
->> This is marked for stable but depends on the preceding patches in
->> this
->> series, which are not marked for stable.
->>
->> The rest of this series might be picked up automatically for stable,
->> but I personally wouldn't suggest backporting it because it's quite a
->> lot of change and I don't think it fits per
->> Documentation/process/stable-kernel-rules.rst.
-> 
-> I agree, if I were a stable maintainer I wouldn't apply it.
-> I just put them in CC so that they can make this decision themselves.
-> 
->> So I think the best way to fix the vboxvideo leaks would be to fix
->> them independently of this series, then include as a separate patch a
->> conversion to the new pcim_iomap_range() in this series (or possibly
->> for the next merge window to avoid merge conflicts).
-> 
-> It is hard to fix independently of our new devres utility.
-> Reason being that it's _impossible_ to have partial BAR mappings *with*
-> the current PCI devres API.
-> 
-> Consequently, a portable vboxvideo would have to revert the entire
-> commit 8558de401b5f and become an unmanaged driver again.
-> 
-> I guess you could do a hacky fix where the regions are handled by
-> devres and the mappings are created and destroyed manually with
-> pci_iomap_range() – but do we really want that...?
-> 
-> The leak only occurs when driver and device detach, so how often does
-> that happen... and as far as I can tell it's also not an exploitable
-> leak, so one could make the decision to just leave it in the stable
-> kernels...
-> 
-> @Hans:
-> What do you say?
-
-In practice this has never been a problem, so I suggest we just drop
-the Cc: stable .
-
-Regards,
-
-Hans
-
-
-
-
->>> Fixes: 8558de401b5f ("drm/vboxvideo: use managed pci functions")
->>> Signed-off-by: Philipp Stanner <pstanner@redhat.com>
->>> ---
->>>  drivers/gpu/drm/vboxvideo/vbox_main.c | 20 +++++++++-----------
->>>  1 file changed, 9 insertions(+), 11 deletions(-)
->>>
->>> diff --git a/drivers/gpu/drm/vboxvideo/vbox_main.c
->>> b/drivers/gpu/drm/vboxvideo/vbox_main.c
->>> index 42c2d8a99509..d4ade9325401 100644
->>> --- a/drivers/gpu/drm/vboxvideo/vbox_main.c
->>> +++ b/drivers/gpu/drm/vboxvideo/vbox_main.c
->>> @@ -42,12 +42,11 @@ static int vbox_accel_init(struct vbox_private
->>> *vbox)
->>>         /* Take a command buffer for each screen from the end of
->>> usable VRAM. */
->>>         vbox->available_vram_size -= vbox->num_crtcs *
->>> VBVA_MIN_BUFFER_SIZE;
->>>  
->>> -       vbox->vbva_buffers = pci_iomap_range(pdev, 0,
->>> -                                            vbox-
->>>> available_vram_size,
->>> -                                            vbox->num_crtcs *
->>> -                                            VBVA_MIN_BUFFER_SIZE);
->>> -       if (!vbox->vbva_buffers)
->>> -               return -ENOMEM;
->>> +       vbox->vbva_buffers = pcim_iomap_range(
->>> +                       pdev, 0, vbox->available_vram_size,
->>> +                       vbox->num_crtcs * VBVA_MIN_BUFFER_SIZE);
->>> +       if (IS_ERR(vbox->vbva_buffers))
->>> +               return PTR_ERR(vbox->vbva_buffers);
->>>  
->>>         for (i = 0; i < vbox->num_crtcs; ++i) {
->>>                 vbva_setup_buffer_context(&vbox->vbva_info[i],
->>> @@ -116,11 +115,10 @@ int vbox_hw_init(struct vbox_private *vbox)
->>>         DRM_INFO("VRAM %08x\n", vbox->full_vram_size);
->>>  
->>>         /* Map guest-heap at end of vram */
->>> -       vbox->guest_heap =
->>> -           pci_iomap_range(pdev, 0, GUEST_HEAP_OFFSET(vbox),
->>> -                           GUEST_HEAP_SIZE);
->>> -       if (!vbox->guest_heap)
->>> -               return -ENOMEM;
->>> +       vbox->guest_heap = pcim_iomap_range(pdev, 0,
->>> +                       GUEST_HEAP_OFFSET(vbox), GUEST_HEAP_SIZE);
->>> +       if (IS_ERR(vbox->guest_heap))
->>> +               return PTR_ERR(vbox->guest_heap);
->>>  
->>>         /* Create guest-heap mem-pool use 2^4 = 16 byte chunks */
->>>         vbox->guest_pool = devm_gen_pool_create(vbox->ddev.dev, 4,
->>> -1,
->>> -- 
->>> 2.43.0
->>>
->>
-> 
-
+=0A=
+=0A=
+> On Tue, 2024-04-02 at 00:16 +0000, Mac Xu wrote:=0A=
+> > > On Mon, 2024-04-01 at 14:21 +1300, Barry Song wrote:=0A=
+> > > > From: Xining Xu <mac.xxn@outlook.com>=0A=
+> > > >=0A=
+> > > > If function-like macros do not utilize a parameter, it might result=
+ in a=0A=
+> > > > build warning.  In our coding style guidelines, we advocate for uti=
+lizing=0A=
+> > > > static inline functions to replace such macros.  This patch verifie=
+s=0A=
+> > > > compliance with the new rule.=0A=
+> > > >=0A=
+> > > > For a macro such as the one below,=0A=
+> > > >=0A=
+> > > >  #define test(a) do { } while (0)=0A=
+> > > >=0A=
+> > > > The test result is as follows.=0A=
+> > > >=0A=
+> > > >  ERROR: Parameter 'a' is not used in function-like macro, please us=
+e static=0A=
+> > > >  inline instead=0A=
+> > > >  #21: FILE: mm/init-mm.c:20:=0A=
+> > > >  +#define test(a) do { } while (0)=0A=
+> > >=0A=
+> > > This is no longer true.=0A=
+> > > Please update the ERROR->WARN and message as below=0A=
+> > >=0A=
+> > > Ideally, this would have an update to=0A=
+> > > Documentation/dev-tools/checkpatch.rst=0A=
+> > >=0A=
+> > > to describe the new --verbose message type=0A=
+> >=0A=
+> > Hi Joe,=0A=
+> >=0A=
+> > Thank you for the comments, here's the code:=0A=
+> >=0A=
+> > +# check if this is an unused argument=0A=
+> > +if ($define_stmt !~ /\b$arg\b/) {=0A=
+> > +     WARN("MACRO_ARG_UNUSED",=0A=
+> > +             "Argument '$arg' is not used in function-like macro\n" . =
+"$herectx");=0A=
+> > +}=0A=
+> >=0A=
+> > and here's the document for it which is inserted into the "Macros, Attr=
+ibutes and=0A=
+> > Symbols" section of checkpatch.rst starting from line 909:=0A=
+> > +=0A=
+> > +  **MACRO_ARG_UNUSED**=0A=
+> > +    If function-like macros do not utilize a parameter, it might resul=
+t=0A=
+> > +    in a build warning. We advocate for utilizing static inline functi=
+ons=0A=
+> > +    to replace such macros.=0A=
+> > +    For example, for a macro as below::=0A=
+> > +=0A=
+> > +      #define test(a) do { } while (0)=0A=
+> > +=0A=
+> > +    there would be a warning as below::=0A=
+> > +=0A=
+> > +      WARNING: Parameter 'a' is not used in function-like macro, pleas=
+e use=0A=
+> > +      static inline instead.=0A=
+> >=0A=
+> > Please let me know if the document needs further re-wording to make it =
+helpful enough=0A=
+> > to the readers.=0A=
+> =0A=
+> Hi again Xining.=0A=
+> =0A=
+> Thanks.=0A=
+> =0A=
+> That looks good but it doesn't match the script output=0A=
+> which doesn't use ", please use static inline instead."=0A=
+> (and I believe the script should not output that too)=0A=
+> =0A=
+> Another good thing would be to add a line like:=0A=
+> =0A=
+>         See: https://www.kernel.org/doc/html/latest/process/coding-style.=
+html#macros-enums-and-rtl=0A=
+> =0A=
+> For example, from: checkpatch.rst=0A=
+> =0A=
+>   **ALLOC_SIZEOF_STRUCT**=0A=
+>     The allocation style is bad.  In general for family of=0A=
+>     allocation functions using sizeof() to get memory size,=0A=
+>     constructs like::=0A=
+> =0A=
+>       p =3D alloc(sizeof(struct foo), ...)=0A=
+> =0A=
+>     should be::=0A=
+> =0A=
+>       p =3D alloc(sizeof(*p), ...)=0A=
+> =0A=
+>     See: https://www.kernel.org/doc/html/latest/process/coding-style.html=
+#allocating-memory=0A=
+> =0A=
+> =0A=
+=0A=
+Hi again Joe,=0A=
+=0A=
+Thanks again for the detailed comments.=0A=
+=0A=
+Here's the code (which keeps unchanged):=0A=
++# check if this is an unused argument=0A=
++if ($define_stmt !~ /\b$arg\b/) {=0A=
++  WARN("MACRO_ARG_UNUSED",=0A=
++    "Argument '$arg' is not used in function-like macro\n" . "$herectx");=
+=0A=
++}=0A=
+=0A=
+And here's the updated document, which drops the ", please use static inlin=
+e instead" from the=0A=
+warning message, and adds a link at the end of this document block:=0A=
++=0A=
++  **MACRO_ARG_UNUSED**=0A=
++    If function-like macros do not utilize a parameter, it might result=0A=
++    in a build warning. We advocate for utilizing static inline functions=
+=0A=
++    to replace such macros.=0A=
++    For example, for a macro such as the one below::=0A=
++=0A=
++      #define test(a) do { } while (0)=0A=
++=0A=
++    there would be a warning like below::=0A=
++=0A=
++      WARNING: Parameter 'a' is not used in function-like macro.=0A=
++=0A=
++    See: https://www.kernel.org/doc/html/latest/process/coding-style.html#=
+macros-enums-and-rtl=0A=
+=0A=
+=0A=
+Regards,=0A=
+Xining.=0A=
+=0A=
+=0A=
 
