@@ -1,103 +1,118 @@
-Return-Path: <linux-kernel+bounces-128566-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-128568-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 26677895C86
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 21:27:58 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id B404E895C8C
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 21:29:12 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D4BD6282576
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 19:27:56 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 53E641F26DCF
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 19:29:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C4F8415B575;
-	Tue,  2 Apr 2024 19:27:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0B57A15B96F;
+	Tue,  2 Apr 2024 19:29:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b="IAMIajiP"
-Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="CYqD8REK"
+Received: from mail-lj1-f172.google.com (mail-lj1-f172.google.com [209.85.208.172])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7108D15B963;
-	Tue,  2 Apr 2024 19:27:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=156.67.10.101
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B5BBE15B55A;
+	Tue,  2 Apr 2024 19:29:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712086030; cv=none; b=gRZWAIGoGNxcLa9n6PO6uDSdnhiqRXE+ImM3r5ASA0ogBwXJbPP+D/P+NumJXPGweM7PRxaATXF7SKJ1/SfmLn1aT7UA3cF/M8+L3QpUa2Gl/eVcd7hM19liZsp7kONnaVKVSz8wOu7WT03WBLnVmNNEvUP2s6c3MXSF7FIIWpw=
+	t=1712086145; cv=none; b=dVrkbamxmgTcsubJea2pdHn0xVhgM0U0qRWgtJnXeqb/Fbp5aqcUJpLpy2ia3hrUzOAnHoKt0fv4wskWBH6we+i1C125OxzKQzlu+3moejYD+JmWiHr4Qd4VH6oPHMk363yeAp/xpOBiv+iN7l0dIhakjvmV4C3nRJF8MfX3H6k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712086030; c=relaxed/simple;
-	bh=hg49FgYaH4GuMBzIb8C7D7yRNHB16wAyclAyJ4VU55A=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=abqXDlh0QuHxJOH62DSfWLY2xS5GmIR+3nxdVAZeGp74ECZgiSNJ7S7ZsaOY2J5sU/KfHav8xUzT0BRPsu6zZOfZNIVCWcd/7v6Ic65K+U1CVEygJsaFuGuFauY89sKP2Bak7to+rhxLF51WTm5KgLduiVsxdDb8KaSPbJA9B/s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch; spf=pass smtp.mailfrom=lunn.ch; dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b=IAMIajiP; arc=none smtp.client-ip=156.67.10.101
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lunn.ch
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-	s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
-	References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
-	Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
-	Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
-	bh=2IvxhZTeRGMzJtd2ZyOSnbmig+nTZ2hJJ3tE10xMgUk=; b=IAMIajiPWl4V8UpSiU0IzV5Cer
-	M197q8FTSCL5rAG9aEpZq39W0vV0WjuTvyg4kESmQ+V14cuO2Ckt65/r/5HL55E1WuY6fgnZCKUO9
-	G7zEMAMR4TSeaRPDynLkn6mEiCnEgIOoYvIRLXPQj7CpCHwdGVbr9vTm0B1+fMcVpm+0=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-	(envelope-from <andrew@lunn.ch>)
-	id 1rrjme-00Byla-Io; Tue, 02 Apr 2024 21:27:00 +0200
-Date: Tue, 2 Apr 2024 21:27:00 +0200
-From: Andrew Lunn <andrew@lunn.ch>
-To: Krzysztof Kozlowski <krzk@kernel.org>
-Cc: Robert Marko <robert.marko@sartura.hr>,
-	Gregory Clement <gregory.clement@bootlin.com>,
-	Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
-	Rob Herring <robh@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 3/3] arm64: dts: marvell: espressobin-ultra: fix Ethernet
- Switch unit address
-Message-ID: <09201a97-7e7b-4d72-8ada-f58f85887349@lunn.ch>
-References: <20240402183240.49193-1-krzk@kernel.org>
- <20240402183240.49193-3-krzk@kernel.org>
+	s=arc-20240116; t=1712086145; c=relaxed/simple;
+	bh=EhAHyl9cP3nWJoJwRMyp31F4H83JzTgrt3TBLtATRPM=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=OF5vwr1a/4zYTlv3gh4zpkzgLEyCzVy426NrEE6JEd1w3shn9YEvK4qs0JlzEpd3IKGORtXpyijYTvWp0ES7WzZr96psFLWmUqMlDCyQXO2ul49t+y+/qbvO+a0f91Jcx5PIX5W/BGfn5X7dopI6XkG5WRFXjI5amJHyPs+AlTI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=CYqD8REK; arc=none smtp.client-ip=209.85.208.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lj1-f172.google.com with SMTP id 38308e7fff4ca-2d82713f473so24118701fa.3;
+        Tue, 02 Apr 2024 12:29:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1712086142; x=1712690942; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=EhAHyl9cP3nWJoJwRMyp31F4H83JzTgrt3TBLtATRPM=;
+        b=CYqD8REKN8s0bzShPPTrMUmPTaJ5yO8+2g6JTiBSnULraNLy0jpDcdpJoqJZ/pgEB6
+         GVy53m0kTATygm+BTxaf9mjWaWmWLMxeCSF1c2KWi/n5rG/o9nF9m256aj/qGN6mlp1p
+         OHcCUxFU+CtYD7Mfs/wjJiafUn5Q0Hrr7OG/L9eme/oG4LEYGgRRSOGhpSjNNe7U3e8C
+         4/Qnj2o4XgSS993XNyQHrl2/4uFjDpd38FQuybLJMoBTk+RgI3tUzSnnVkb6qK2aJOoT
+         hJVCIFiKs9sDw8pXb4TFPLsHg8ZlZnT57PTTzEkk09EC1THkvydErx9pboqlU4IaODCA
+         wkgQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712086142; x=1712690942;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=EhAHyl9cP3nWJoJwRMyp31F4H83JzTgrt3TBLtATRPM=;
+        b=UCn4bEuPNVosP/arRS/nSZxSAzKImNWeQSPSYieuUD1FvnnqOQn9Rt65oHSR5MtOiD
+         Vi+Cg93Ckv3vLViRjyKy45uYy1L64B6K4oNKiOpsmCFKa35LEWWMmN7Ast+dQ90Mb3zM
+         HSwg+evYUUIMIo2Hfah7Z/BE+JnE0KMgC0PVvFwjbRBeTo2WD2wntQYNoyDDD0uJ89rn
+         tYZMHfRnh2pfsraWr6fTTCt8dLDw0N3aqWWtHUWSgUEuY098dRWvLXnjowYEGO+mywfd
+         9zJISZXZTyN2r4LQeGIf83bZbnJhPZV5NCJkjJ1xzYyQ82HVxGJwVrUVKGcCgUzUqPzO
+         I4zA==
+X-Forwarded-Encrypted: i=1; AJvYcCVbzJ7Q/sn74rQkxhnou+FVd93kQIL31KJijDy6zZ9go2Z8v6/e1kCm/yseEAISa4uKfkJf3PYd2tIs0PqXK8Nfpx9O9WA6cUlTfRJRti3LvTgOFuF397BSYXko+nyu08qhZpPPT3MOmcKY
+X-Gm-Message-State: AOJu0YxnSYae94H0hN/YeP95AsoF/TOzqSBYAB11+rpV9IXyEqfUnZqU
+	GAXfoyGfJeDBcZLGr/8q8S0pPJ7z7RtkpBgu05GpR/Pf5s2eIkU76xSQcvIqqSwBuupHBe/A7+1
+	WBDVuCKLd1CYv2aieDICziB4ZDxI=
+X-Google-Smtp-Source: AGHT+IG12UrZ+tZaBT8KWaGbUc2/tzG6TFzFBRGcHZSyJ3RrVBGA7RdiJS8Yv9Q/NVxawbm/Yyjoo42Z52vQNS2I/q0=
+X-Received: by 2002:a2e:a783:0:b0:2d4:132b:9f21 with SMTP id
+ c3-20020a2ea783000000b002d4132b9f21mr3160289ljf.6.1712086141578; Tue, 02 Apr
+ 2024 12:29:01 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240402183240.49193-3-krzk@kernel.org>
+References: <20240402174353.256627-1-hugo@hugovil.com> <20240402174353.256627-5-hugo@hugovil.com>
+In-Reply-To: <20240402174353.256627-5-hugo@hugovil.com>
+From: Andy Shevchenko <andy.shevchenko@gmail.com>
+Date: Tue, 2 Apr 2024 22:28:25 +0300
+Message-ID: <CAHp75VedAiB_wSaq+oaNriC3HfLC=ft21O=ZYW_wCARPS7v3QQ@mail.gmail.com>
+Subject: Re: [PATCH v3 4/5] serial: sc16is7xx: split into core and I2C/SPI
+ parts (sc16is7xx_lines)
+To: Hugo Villeneuve <hugo@hugovil.com>
+Cc: gregkh@linuxfoundation.org, jirislaby@kernel.org, 
+	linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org, 
+	Hugo Villeneuve <hvilleneuve@dimonoff.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Tue, Apr 02, 2024 at 08:32:40PM +0200, Krzysztof Kozlowski wrote:
-> The Espressobin Ultra DTS includes Espressobin DTSI which defines
-> ethernet-switch@1 node.  The Ultra DTS overrides "reg" to 3, but that
-> leaves still old unit address which conflicts with the new phy@1 node
-> (W=1 dtc warning):
-> 
->   armada-3720-espressobin.dtsi:148.29-203.4: Warning (unique_unit_address_if_enabled): /soc/internal-regs@d0000000/mdio@32004/ethernet-switch@1: duplicate unit-address (also used in node /soc/internal-regs@d0000000/mdio@32004/ethernet-phy@1)
-> 
-> Fix this by deleting ethernet-switch@1 node and merging original node
-> with code from Ultra DTS into new ethernet-switch@3.
+On Tue, Apr 2, 2024 at 8:45=E2=80=AFPM Hugo Villeneuve <hugo@hugovil.com> w=
+rote:
+>
+> From: Hugo Villeneuve <hvilleneuve@dimonoff.com>
+>
+> Before, sc16is7xx_lines was checked for a free (zero) bit first, and then
+> later it was set only if UART port registration succeeded. Now that
+> sc16is7xx_lines is shared for the I2C and SPI drivers, there is a
+> possibility that the two drivers can simultaneously try to reserve the sa=
+me
+> line bit at the same time.
+>
+> To prevent this, make sure line allocation is reserved atomically, and us=
+e
+> a new variable to hold the status of UART port regisration.
 
-That is a bit ugly, having the exact same code twice.
+registration
 
-Could the bulk of the switch node be put into a .dtsi file, and then
-included as needed
+> Now that we no longer need to search if a bit is set, it is now possible
+> to simplify sc16is7xx_lines allocation by using the IDA framework.
 
-&mdio {
-        switch0: ethernet-switch@1 {
-		reg = <1>;        
-		include "armada-3720-espressobin-switch.dtsi"
+..
 
-        }
-}
+> -static DECLARE_BITMAP(sc16is7xx_lines, SC16IS7XX_MAX_DEVS);
+> +static DEFINE_IDA(sc16is7xx_lines);
 
-&mdio {
-        switch0: ethernet-switch@3 {
-		reg = <3>;        
-		include "armada-3720-espressobin-switch.dtsi"
+Don't we need to replace bitmap.h with idr.h with this change in place?
 
-        }
-}
-
-	Andrew
+--=20
+With Best Regards,
+Andy Shevchenko
 
