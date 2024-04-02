@@ -1,121 +1,123 @@
-Return-Path: <linux-kernel+bounces-128064-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-128066-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5613C8955BB
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 15:50:02 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id B7C74895598
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 15:42:44 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9EA71B2E876
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 13:41:51 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 72767289505
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 13:42:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1C0BF86647;
-	Tue,  2 Apr 2024 13:40:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8F90986151;
+	Tue,  2 Apr 2024 13:41:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=marvell.com header.i=@marvell.com header.b="SWVb/P57"
-Received: from mx0b-0016f401.pphosted.com (mx0a-0016f401.pphosted.com [67.231.148.174])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b="2EZej/8t"
+Received: from mail-io1-f50.google.com (mail-io1-f50.google.com [209.85.166.50])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E80A786254;
-	Tue,  2 Apr 2024 13:40:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=67.231.148.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CEB4F82D86
+	for <linux-kernel@vger.kernel.org>; Tue,  2 Apr 2024 13:41:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712065248; cv=none; b=ginTTODiZqcuOmYVIEi9BvlAtaibGj2BeK9CbyUN2pdlbO6nEl+RyhPFXtMVN85i7i8mO9TW5PSZ4fyOxDthtW9MS56yZTsPkC9cDXuXkJmuSJDfs5zwjbmbUcplQEi4VGmyFA3CjtT/QwUpTa0kdYypDv5od+OjLcjnr66EMPI=
+	t=1712065301; cv=none; b=gq3F1p+uDXHoOSVwpRbN1RnyWEygBB2K44XHcmvNZS1hecZqt0bzS7nN4w/fY+ipcUyRHOsSe8Zfq1WJcoAxrk6D17qCFHRqfdRkJkQEIvxl/qr3YB/lBqpUlGPts0+HPKCKbZgJhECwtV/YxnR5qwbW2AhUnjZw6bWDFSJ2buU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712065248; c=relaxed/simple;
-	bh=0JMY6VdfKsSKx12FfWw6I+DdfcWxm4lbZgJjNmLKpZ8=;
-	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=BEzWo28wjFHppV9CILfWg1OP00fPNrdgsJ6/YY5gmfEEM2DhzEXOKBQ1bK3W+UGalFtFmDicq5LHmSw/T0ue31bj9o6hbl454q4OaYALNLdcfbTNf6Iq7iULjBlUZvNDiXevII1ope/hYVz9rqdFWaQhTUHpXZM9utiLc2fOB+w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=marvell.com; spf=pass smtp.mailfrom=marvell.com; dkim=pass (2048-bit key) header.d=marvell.com header.i=@marvell.com header.b=SWVb/P57; arc=none smtp.client-ip=67.231.148.174
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=marvell.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=marvell.com
-Received: from pps.filterd (m0045849.ppops.net [127.0.0.1])
-	by mx0a-0016f401.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 432C6u3Z015315;
-	Tue, 2 Apr 2024 06:40:45 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=
-	from:to:cc:subject:date:message-id:in-reply-to:references
-	:mime-version:content-transfer-encoding:content-type; s=
-	pfpt0220; bh=NPqbJ/EVM7J6lCGcpbFhwJx8Oa2Ct1SMsBvy5II9QgE=; b=SWV
-	b/P57exIoBwx4Mj5HkIG9cYJesA9l5I1PpyxGjn8SD2eZlDP+5iHS6sKn+nVwnj2
-	EEO+jemqWr3a9bFbQakdh2+z4sXNa7PQkJp53byNqwx6M7RKfO2qUZrIqisB1tb4
-	eTysNPE+ebGLYrdJj1ftyaw40OTTw083hlJaJaiNXIzj8mAN24fSPizHimk7Yxxu
-	PAJ5+UzHgYATfYyJJalofRlMYdIdnhPb5Pc487z18pOFfTExc/pSVWnntQgrYx+U
-	dQ3rq+ABjK2nnUnBL6pdl7gMknQC/nP4+xJ85PRS/UJINI2KP/y5mEXPTTtkhRvY
-	hQoO19C5QSbtuIjtigA==
-Received: from dc5-exch05.marvell.com ([199.233.59.128])
-	by mx0a-0016f401.pphosted.com (PPS) with ESMTPS id 3x8hr70c9h-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 02 Apr 2024 06:40:44 -0700 (PDT)
-Received: from DC5-EXCH05.marvell.com (10.69.176.209) by
- DC5-EXCH05.marvell.com (10.69.176.209) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1544.4; Tue, 2 Apr 2024 06:40:43 -0700
-Received: from maili.marvell.com (10.69.176.80) by DC5-EXCH05.marvell.com
- (10.69.176.209) with Microsoft SMTP Server id 15.2.1544.4 via Frontend
- Transport; Tue, 2 Apr 2024 06:40:43 -0700
-Received: from Dell2s-9.sclab.marvell.com (unknown [10.110.150.250])
-	by maili.marvell.com (Postfix) with ESMTP id 534043F706C;
-	Tue,  2 Apr 2024 06:40:43 -0700 (PDT)
-From: Piyush Malgujar <pmalgujar@marvell.com>
-To: <andi.shyti@kernel.org>, <linux-i2c@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-CC: <sgarapati@marvell.com>, <cchavva@marvell.com>, <jannadurai@marvell.com>,
-        Piyush Malgujar <pmalgujar@marvell.com>
-Subject: [PATCH v6 4/4] i2c: thunderx: Adding ioclk support
-Date: Tue, 2 Apr 2024 06:40:14 -0700
-Message-ID: <20240402134018.2686919-5-pmalgujar@marvell.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240402134018.2686919-1-pmalgujar@marvell.com>
-References: <20240402134018.2686919-1-pmalgujar@marvell.com>
+	s=arc-20240116; t=1712065301; c=relaxed/simple;
+	bh=0LtRApWIgSlpJ9ww/YIqK7ZhGrxEnPNn5T2jGau3Mqg=;
+	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=TP2J75XX+x8F0Oi2Ioi/q6pmFRVr3tSE0vI6zrkjswhnCJv6skyq3Lkzuh2wSJp+swVO0mtFPx+CjhuNTWPUEzq2WisRLMvUf0jafRQNJYqGpGcnAy9KX5MArtYe/j5nv40RPSB2JOItJIqNTMe9VBCBT6XTLlhqMkq67KVBCf8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk; spf=pass smtp.mailfrom=kernel.dk; dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b=2EZej/8t; arc=none smtp.client-ip=209.85.166.50
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.dk
+Received: by mail-io1-f50.google.com with SMTP id ca18e2360f4ac-7c8e4c0412dso32155539f.1
+        for <linux-kernel@vger.kernel.org>; Tue, 02 Apr 2024 06:41:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kernel-dk.20230601.gappssmtp.com; s=20230601; t=1712065299; x=1712670099; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=4ayu5f1JpVyjh9EymQM1sQHOrd/giDk3ss1JwfvraeE=;
+        b=2EZej/8tfFfaTOOX95T9KAJg10lp4PXkT6jn1C7LiXCjN5WS3dwzcy1DCWxNFCGGfv
+         8kiAglMtxO69/47BJASC6t5M0R4dE4M4+FvlzJcuICsomBrtDXmIP4VEzsquX648L6ZV
+         0hNcdiRxQGRMu9khCkr6mpOdLt3TOkmBaZHh4cg+0y2S9CvgcShknHjWeWdWWNJ77Lo0
+         gJxs9MPG67Mx3qdNOCUSIO+0i88BJki+DOeIa8ZxuTcrmIKOFqNRDu9labKWvMTg9Qpx
+         rhpkVkkCaAYyuJAS5meMpvzDjvqV3aKKsKhcu2XtEVSEhEW+ZNqT5EG6DU/cnV5zK+6R
+         XtUg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712065299; x=1712670099;
+        h=content-transfer-encoding:in-reply-to:from:references:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=4ayu5f1JpVyjh9EymQM1sQHOrd/giDk3ss1JwfvraeE=;
+        b=aeipADRxS3ScnbFWXPxuYJ3dsk+gTtnsbbIXghl9dIGoEpJeuv6WKmrOlY0Q2YEk31
+         i1GVCmaouUE5Uu1F9DrqCEBXHBWbB03MkMPe2E3Z3MyD3b1YNAqezOUZKQc9RzqitAnN
+         TgeoLHlaelIktAlwBRZ/9fc1eytBGyePx6BYGuVMzYbaI6yq5h7bU4165xhHc2MAT/1A
+         rSzvoC9w6SdHvt79URcKNSLSAvMpuBs/v7JyTNLV6+WilLg8xgFq3bQR4YWa4slSG2bA
+         tOw4wlrV8rdzGuMNLA0InSItwX/jWOHXtiFcq4+hTS1xUFfgEPozplpguUQpvKD31R+7
+         kn+A==
+X-Forwarded-Encrypted: i=1; AJvYcCUVDj9zlWoZWpBvuSbf81W5l7F2LNkDeKE5Cti8HLcasI7fCJSIRAS6e/6m6x8vvzy0Fr8Jymdx6oC4zbP4GCtO/mW9HDt79zMtQt/M
+X-Gm-Message-State: AOJu0Yzs3muREy4GGOBVJIhVHMWQ9N9eCPf4quz/Lh+1JXEWiYw9soTz
+	O3jIVJ3Sec/OPPwtoSoOvbecnik5mqD/yAwr+YXi5y80ycr28BsF155yAe9HkTjnTTc0k1xnKzb
+	Y
+X-Google-Smtp-Source: AGHT+IGDUMItsDY7XwZRAzi1VsGUdRgc2+dwdqgArOafC34sSXfwfBgED9VOJLRu6JugwPpSDO3KfQ==
+X-Received: by 2002:a6b:7d0c:0:b0:7d0:3f6b:6af9 with SMTP id c12-20020a6b7d0c000000b007d03f6b6af9mr12019000ioq.0.1712065298876;
+        Tue, 02 Apr 2024 06:41:38 -0700 (PDT)
+Received: from [192.168.1.116] ([96.43.243.2])
+        by smtp.gmail.com with ESMTPSA id it37-20020a05663885a500b00476f1daad44sm3194814jab.54.2024.04.02.06.41.38
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 02 Apr 2024 06:41:38 -0700 (PDT)
+Message-ID: <2ff5d891-2120-475d-be8e-82bf20a8b7b7@kernel.dk>
+Date: Tue, 2 Apr 2024 07:41:37 -0600
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Proofpoint-GUID: kEYOF7EZWBI5mAXJQT_AiYK-bt7kAz2Q
-X-Proofpoint-ORIG-GUID: kEYOF7EZWBI5mAXJQT_AiYK-bt7kAz2Q
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-04-02_06,2024-04-01_01,2023-05-22_02
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 6.8 015/715] io_uring: remove unconditional looping in
+ local task_work handling
+Content-Language: en-US
+To: Jiri Slaby <jirislaby@kernel.org>, Sasha Levin <sashal@kernel.org>,
+ linux-kernel@vger.kernel.org, stable@vger.kernel.org
+References: <20240324223455.1342824-1-sashal@kernel.org>
+ <20240324223455.1342824-16-sashal@kernel.org>
+ <bcf80774-98c2-4c14-a1e7-6efcb79a7fee@kernel.org>
+From: Jens Axboe <axboe@kernel.dk>
+In-Reply-To: <bcf80774-98c2-4c14-a1e7-6efcb79a7fee@kernel.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-Read the ioclk property as reference clock if sclk not present in acpi
-table to make it SOC agnostic.
-In case, it's not populated from dts/acpi table, use the default clock
-of 800 MHz which is optimal in either case of sclk/ioclk.
+On 4/2/24 2:12 AM, Jiri Slaby wrote:
+> On 24. 03. 24, 23:23, Sasha Levin wrote:
+>> From: Jens Axboe <axboe@kernel.dk>
+>>
+>> [ Upstream commit 9fe3eaea4a3530ca34a8d8ff00b1848c528789ca ]
+>>
+>> If we have a ton of notifications coming in, we can be looping in here
+>> for a long time. This can be problematic for various reasons, mostly
+>> because we can starve userspace. If the application is waiting on N
+>> events, then only re-run if we need more events.
+> 
+> This commit breaks test/recv-multishot.c from liburing:
+> early error: res 4
+> test stream=1 wait_each=0 recvmsg=0 early_error=0  defer=1 failed
+> 
+> The behaviour is the same in 6.9-rc2 (which contains the commit too).
+> 
+> Reverting the commit on the top of 6.8.2 makes it pass again.
+> 
+> Should the test be updated or is the commit wrong?
 
-Signed-off-by: Piyush Malgujar <pmalgujar@marvell.com>
----
- drivers/i2c/busses/i2c-thunderx-pcidrv.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+The commit is fine, it's the test that is buggy. Sometimes test cases
+make odd assumptions that are just wrong but happen to work, for some
+definition of work. Eg it would work fine on an idle system, but not
+necessarily if not. For this one, the fix is in liburing:
 
-diff --git a/drivers/i2c/busses/i2c-thunderx-pcidrv.c b/drivers/i2c/busses/i2c-thunderx-pcidrv.c
-index 31f11b77ab663626967c86086a03213876bf4a07..32d0e3930b675484138084e1bbed2e7cf898e1e1 100644
---- a/drivers/i2c/busses/i2c-thunderx-pcidrv.c
-+++ b/drivers/i2c/busses/i2c-thunderx-pcidrv.c
-@@ -27,7 +27,7 @@
- 
- #define PCI_DEVICE_ID_THUNDER_TWSI	0xa012
- 
--#define SYS_FREQ_DEFAULT		700000000
-+#define SYS_FREQ_DEFAULT		800000000
- #define OTX2_REF_FREQ_DEFAULT		100000000
- 
- #define TWSI_INT_ENA_W1C		0x1028
-@@ -100,7 +100,8 @@ static void thunder_i2c_clock_enable(struct device *dev, struct octeon_i2c *i2c)
- 		i2c->sys_freq = clk_get_rate(i2c->clk);
- 	} else {
- 		/* ACPI */
--		device_property_read_u32(dev, "sclk", &i2c->sys_freq);
-+		if (device_property_read_u32(dev, "sclk", &i2c->sys_freq))
-+			device_property_read_u32(dev, "ioclk", &i2c->sys_freq);
- 	}
- 
- skip:
+https://git.kernel.dk/cgit/liburing/commit/test/recv-multishot.c?id=a1d5e4b863a60af93d0cab9d4bbf578733337a90
+
 -- 
-2.43.0
+Jens Axboe
 
 
