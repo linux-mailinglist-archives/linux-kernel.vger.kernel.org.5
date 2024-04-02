@@ -1,187 +1,282 @@
-Return-Path: <linux-kernel+bounces-127403-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-127404-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D5A62894ADB
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 07:32:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id CD99B894ADF
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 07:33:50 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 00EFE1C21CC7
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 05:32:10 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F1D2B1C21D09
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 05:33:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0118F182D4;
-	Tue,  2 Apr 2024 05:32:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C429D1862B;
+	Tue,  2 Apr 2024 05:33:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Uf8l+RuJ"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.18])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="PIFWoRW2"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DFC7018035;
-	Tue,  2 Apr 2024 05:32:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.18
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D2AB018035;
+	Tue,  2 Apr 2024 05:33:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712035923; cv=none; b=IuLUtapkA/yjQvqSwIQzqbDU+9hNnk32zKFKah2Qzm3qGSYavu1QN7Y76e74o59MV7RUtNUQxGWO3VPlY9UtC6xUZHV5HLtiu1EuxOi2tjpIpKdxz2Pcz1ViqpuJAWLSn6Wt86bPWzp5q+hiGXmtxGZJ1S97uG6K97pA+cKlUfo=
+	t=1712036022; cv=none; b=BKpU/HYuSoXZFVHXiAjvr2QXvQkDhoWgEo807rmZsyTTlPdT3mNIyXSMcKTPPpeykKU9ajWJzvWNv2IrCbQXepdwzQuUQN95fYgEUIMKvOAQINj4dyY51gbnNi6ruJo7vejwAqyVxvwqMTto9wWWynpc/EwwCKXA+UH6dvfXdac=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712035923; c=relaxed/simple;
-	bh=E3OxKrI8a+NNFY3dgSsS36QrEUA1nRejBd6dBSa2G4U=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:To:Cc; b=LDXO0FQrd6jsQqSK6s8+9UvSxaA6HyK+FPWGZ+F+lpVyZ4f3IImc+Yyc6D9GfMp2KFge/FLdHohTp5vnfR2ZrLbswRoUOqkue59PCJocp1eX9Ni8y3jrwT2d/cP4UQy/87j5hqU3HwJ1skZo/outUFhATMAru7cFl8PREE6NKqg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Uf8l+RuJ; arc=none smtp.client-ip=198.175.65.18
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1712035922; x=1743571922;
-  h=from:date:subject:mime-version:content-transfer-encoding:
-   message-id:to:cc;
-  bh=E3OxKrI8a+NNFY3dgSsS36QrEUA1nRejBd6dBSa2G4U=;
-  b=Uf8l+RuJEnok/LIk2qZbSECW+tbsX0+Uvlm3VyD85kR3axs7C+6zUNiD
-   ZlVaRp8WwgKiIMaMu8nhCXX+vvwooAayV30MiCrLVi+j3Sak2tJBl/qfB
-   c98ABabsN4pZDhTJBkNWy/nPBMSUF/KcjPMysChDGupuPGj/6rzqhVEL4
-   8NhBSb5+UEAsCYkSYKAXusr18PaTTePUwCcIc041zUs4HfMdYcU8wxYFD
-   V4Dh7zF3XkEWLVhFd3iMq8E5KdiQQhqLhgx+nn4vlTa+EYeaHcgwxHHJb
-   FQu2zPlHZyuV6R75zcf/GVQqlzEsH9f/A7Jof8Y4j16CbNxyifJMIwKL6
-   Q==;
-X-CSE-ConnectionGUID: g/EN1RduShqnq3nUyUWVCA==
-X-CSE-MsgGUID: gOsQ3bsNQ5ui2z/A7CQ72g==
-X-IronPort-AV: E=McAfee;i="6600,9927,11031"; a="7342173"
-X-IronPort-AV: E=Sophos;i="6.07,174,1708416000"; 
-   d="scan'208";a="7342173"
-Received: from orviesa009.jf.intel.com ([10.64.159.149])
-  by orvoesa110.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Apr 2024 22:32:01 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,174,1708416000"; 
-   d="scan'208";a="17912241"
-Received: from iweiny-desk3.amr.corp.intel.com (HELO localhost) ([10.212.69.15])
-  by orviesa009-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Apr 2024 22:31:59 -0700
-From: Ira Weiny <ira.weiny@intel.com>
-Date: Mon, 01 Apr 2024 22:31:58 -0700
-Subject: [PATCH] cxl/test: Enhance event testing
+	s=arc-20240116; t=1712036022; c=relaxed/simple;
+	bh=U8GocIyJ8JL27TlL8K2vIcTd1SxG/GH4sOWgtewPVd0=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Ipzmggo0AiCICckJ1OQOmUpCV9jr7knucPlx5JdMrCvkwyhTwP/I9jg7b301/fpylUEvYkDwPulejaJW/l5jynQ87oY1F1J1ghvgPg7pgd1cZMKF5huRgGW9QTsN9nRES/MgVFOR70kxUKzAvWRzx+kQTC5gxcXCADKFLQjTVN8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=PIFWoRW2; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2614DC433C7;
+	Tue,  2 Apr 2024 05:33:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1712036021;
+	bh=U8GocIyJ8JL27TlL8K2vIcTd1SxG/GH4sOWgtewPVd0=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=PIFWoRW2gXP7c8uLZukF6x8hnwwzTQ+OEWDy1ES+2mfPMHWCKGXdzIRmlH//DSWvT
+	 TS0ccMARxy4ohUXryUYONPi49dNJXimJxZWiMaSjnokqhUsWfE1wiHlrt9cIIbeQg8
+	 K68siudlso5GckQKuXk4wIztje8QTAgxg4Y6UXFRED4R7pf1vfMyQRH5WqDLLOIga4
+	 EWoJY/3DFhDy/LM1hmoS6oTNvm/HvxTkqbHWcv5uunogeALOw6sQjXve2gYUNDVW5s
+	 AIV+KLuh7cnBNZF3doduBTZdA0M5bBgYzuuTJPjVZegNOpyLX5YbsxX5/dCyjZygdU
+	 +VgROHZKd8dTg==
+Date: Tue, 2 Apr 2024 11:03:32 +0530
+From: Manivannan Sadhasivam <mani@kernel.org>
+To: Shashank Babu Chinta Venkata <quic_schintav@quicinc.com>
+Cc: agross@kernel.org, andersson@kernel.org, konrad.dybcio@linaro.org,
+	quic_msarkar@quicinc.com, quic_kraravin@quicinc.com,
+	Lorenzo Pieralisi <lpieralisi@kernel.org>,
+	Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
+	Rob Herring <robh@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>,
+	Jingoo Han <jingoohan1@gmail.com>,
+	Gustavo Pimentel <gustavo.pimentel@synopsys.com>,
+	Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+	Serge Semin <fancer.lancer@gmail.com>,
+	Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
+	Conor Dooley <conor.dooley@microchip.com>,
+	linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
+	linux-arm-msm@vger.kernel.org
+Subject: Re: [PATCH v2 1/3] PCI: qcom: Refactor common code
+Message-ID: <20240402053332.GI2933@thinkpad>
+References: <20240320071527.13443-1-quic_schintav@quicinc.com>
+ <20240320071527.13443-2-quic_schintav@quicinc.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20240401-enhance-event-test-v1-1-6669a524ed38@intel.com>
-X-B4-Tracking: v=1; b=H4sIAE2YC2YC/x2MQQqAIBQFrxJ/3QcVg+oq0aLsWX9joRKBdPek5
- QzMFEqIgkRjUyjiliRnqKDbhtyxhB0sW2UyylhllWaEqh0YN0LmjJTZYYX3ne4Ht1ENrwgvzz+
- d5vf9AOLfcx5kAAAA
-To: Dave Jiang <dave.jiang@intel.com>
-Cc: Davidlohr Bueso <dave@stgolabs.net>, 
- Jonathan Cameron <jonathan.cameron@huawei.com>, 
- Alison Schofield <alison.schofield@intel.com>, 
- Vishal Verma <vishal.l.verma@intel.com>, 
- Dan Williams <dan.j.williams@intel.com>, linux-cxl@vger.kernel.org, 
- linux-kernel@vger.kernel.org, Kwangjin Ko <kwangjin.ko@sk.com>, 
- Ira Weiny <ira.weiny@intel.com>
-X-Mailer: b4 0.13-dev-2d940
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1712035918; l=3467;
- i=ira.weiny@intel.com; s=20221222; h=from:subject:message-id;
- bh=E3OxKrI8a+NNFY3dgSsS36QrEUA1nRejBd6dBSa2G4U=;
- b=zk2NHTRLM3/Yqo/M4+VqkKMYYbz78b9jmxqFheo9r86QZDGzlCAV5lGT96I28l2DH36ph48GN
- BhRSb8XY/BOC5GbBINhNC+CH+7Dx/rv3suLmhMdzWDl4FvTMZXbyZ7k
-X-Developer-Key: i=ira.weiny@intel.com; a=ed25519;
- pk=brwqReAJklzu/xZ9FpSsMPSQ/qkSalbg6scP3w809Ec=
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20240320071527.13443-2-quic_schintav@quicinc.com>
 
-An issue was found in the processing of event logs when the output
-buffer length was not reset.[1]
+On Wed, Mar 20, 2024 at 12:14:45AM -0700, Shashank Babu Chinta Venkata wrote:
+> Refactor common code from RC(Root Complex) and EP(End Point)
+> drivers and move them to a common repository. This acts as placeholder
 
-This bug was not caught with cxl-test for 2 reasons.  First, the test
-harness mbox_send command [mock_get_event()] does not set the output
-size based on the amount of data returned like the hardware command
-does.  Second, the simplistic event log testing always returned the same
-number of elements per-get command.
+s/repository/driver
 
-Enhance the simulation of the event log mailbox to better match the bug
-found with real hardware to cover potential regressions.
+> for common source code for both drivers avoiding duplication.
 
-NOTE: These changes will cause cxl-events.sh in ndctl to fail without
-the fix from Kwangjin.  However, no changes to the user space test was
-required.  Therefore ndctl itself will be compatible with old or new
-kernels once both patches land in the new kernel.
+'thus avoiding'
 
-[1] Link: https://lore.kernel.org/all/20240401091057.1044-1-kwangjin.ko@sk.com/
+> 
+> Signed-off-by: Shashank Babu Chinta Venkata <quic_schintav@quicinc.com>
+> ---
+>  drivers/pci/controller/dwc/Kconfig         |  5 ++
+>  drivers/pci/controller/dwc/Makefile        |  1 +
+>  drivers/pci/controller/dwc/pcie-qcom-cmn.c | 81 ++++++++++++++++++++++
 
-Cc: Kwangjin Ko <kwangjin.ko@sk.com>
-Signed-off-by: Ira Weiny <ira.weiny@intel.com>
----
- tools/testing/cxl/test/mem.c | 19 +++++++++++++++----
- 1 file changed, 15 insertions(+), 4 deletions(-)
+I'd prefer, pcie-qcom-common.c
 
-diff --git a/tools/testing/cxl/test/mem.c b/tools/testing/cxl/test/mem.c
-index 35ee41e435ab..6584443144de 100644
---- a/tools/testing/cxl/test/mem.c
-+++ b/tools/testing/cxl/test/mem.c
-@@ -127,7 +127,7 @@ static struct {
- #define CXL_TEST_EVENT_CNT_MAX 15
- 
- /* Set a number of events to return at a time for simulation.  */
--#define CXL_TEST_EVENT_CNT 3
-+#define CXL_TEST_EVENT_RET_MAX 4
- 
- struct mock_event_log {
- 	u16 clear_idx;
-@@ -222,6 +222,12 @@ static void mes_add_event(struct mock_event_store *mes,
- 	log->nr_events++;
- }
- 
-+/*
-+ * Vary the number of events returned to simulate events occuring while the
-+ * logs are being read.
-+ */
-+static int ret_limit = 0;
-+
- static int mock_get_event(struct device *dev, struct cxl_mbox_cmd *cmd)
- {
- 	struct cxl_get_event_payload *pl;
-@@ -233,14 +239,18 @@ static int mock_get_event(struct device *dev, struct cxl_mbox_cmd *cmd)
- 	if (cmd->size_in != sizeof(log_type))
- 		return -EINVAL;
- 
--	if (cmd->size_out < struct_size(pl, records, CXL_TEST_EVENT_CNT))
-+	ret_limit = (ret_limit + 1) % CXL_TEST_EVENT_RET_MAX;
-+	if (!ret_limit)
-+		ret_limit = 1;
-+
-+	if (cmd->size_out < struct_size(pl, records, ret_limit))
- 		return -EINVAL;
- 
- 	log_type = *((u8 *)cmd->payload_in);
- 	if (log_type >= CXL_EVENT_TYPE_MAX)
- 		return -EINVAL;
- 
--	memset(cmd->payload_out, 0, cmd->size_out);
-+	memset(cmd->payload_out, 0, struct_size(pl, records, 0));
- 
- 	log = event_find_log(dev, log_type);
- 	if (!log || event_log_empty(log))
-@@ -248,7 +258,7 @@ static int mock_get_event(struct device *dev, struct cxl_mbox_cmd *cmd)
- 
- 	pl = cmd->payload_out;
- 
--	for (i = 0; i < CXL_TEST_EVENT_CNT && !event_log_empty(log); i++) {
-+	for (i = 0; i < ret_limit && !event_log_empty(log); i++) {
- 		memcpy(&pl->records[i], event_get_current(log),
- 		       sizeof(pl->records[i]));
- 		pl->records[i].event.generic.hdr.handle =
-@@ -256,6 +266,7 @@ static int mock_get_event(struct device *dev, struct cxl_mbox_cmd *cmd)
- 		log->cur_idx++;
- 	}
- 
-+	cmd->size_out = struct_size(pl, records, i);
- 	pl->record_count = cpu_to_le16(i);
- 	if (!event_log_empty(log))
- 		pl->flags |= CXL_GET_EVENT_FLAG_MORE_RECORDS;
+>  drivers/pci/controller/dwc/pcie-qcom-cmn.h | 14 ++++
+>  drivers/pci/controller/dwc/pcie-qcom-ep.c  | 39 ++---------
+>  drivers/pci/controller/dwc/pcie-qcom.c     | 67 +++---------------
+>  6 files changed, 113 insertions(+), 94 deletions(-)
+>  create mode 100644 drivers/pci/controller/dwc/pcie-qcom-cmn.c
+>  create mode 100644 drivers/pci/controller/dwc/pcie-qcom-cmn.h
+> 
+> diff --git a/drivers/pci/controller/dwc/Kconfig b/drivers/pci/controller/dwc/Kconfig
+> index 8afacc90c63b..41d2746edc5f 100644
+> --- a/drivers/pci/controller/dwc/Kconfig
+> +++ b/drivers/pci/controller/dwc/Kconfig
+> @@ -265,12 +265,16 @@ config PCIE_DW_PLAT_EP
+>  	  order to enable device-specific features PCI_DW_PLAT_EP must be
+>  	  selected.
+>  
+> +config PCIE_QCOM_CMN
 
----
-base-commit: 8d025e2092e29bfd13e56c78e22af25fac83c8ec
-change-id: 20240401-enhance-event-test-cebeff5189cd
+I'd prefer, 'PCIE_QCOM_COMMON'.
 
-Best regards,
+> +	bool
+> +
+>  config PCIE_QCOM
+>  	bool "Qualcomm PCIe controller (host mode)"
+>  	depends on OF && (ARCH_QCOM || COMPILE_TEST)
+>  	depends on PCI_MSI
+>  	select PCIE_DW_HOST
+>  	select CRC8
+> +	select PCIE_QCOM_CMN
+>  	help
+>  	  Say Y here to enable PCIe controller support on Qualcomm SoCs. The
+>  	  PCIe controller uses the DesignWare core plus Qualcomm-specific
+> @@ -281,6 +285,7 @@ config PCIE_QCOM_EP
+>  	depends on OF && (ARCH_QCOM || COMPILE_TEST)
+>  	depends on PCI_ENDPOINT
+>  	select PCIE_DW_EP
+> +	select PCIE_QCOM_CMN
+>  	help
+>  	  Say Y here to enable support for the PCIe controllers on Qualcomm SoCs
+>  	  to work in endpoint mode. The PCIe controller uses the DesignWare core
+> diff --git a/drivers/pci/controller/dwc/Makefile b/drivers/pci/controller/dwc/Makefile
+> index bac103faa523..521572093ebf 100644
+> --- a/drivers/pci/controller/dwc/Makefile
+> +++ b/drivers/pci/controller/dwc/Makefile
+> @@ -14,6 +14,7 @@ obj-$(CONFIG_PCI_LAYERSCAPE) += pci-layerscape.o
+>  obj-$(CONFIG_PCI_LAYERSCAPE_EP) += pci-layerscape-ep.o
+>  obj-$(CONFIG_PCIE_QCOM) += pcie-qcom.o
+>  obj-$(CONFIG_PCIE_QCOM_EP) += pcie-qcom-ep.o
+> +obj-$(CONFIG_PCIE_QCOM_CMN) += pcie-qcom-cmn.o
+>  obj-$(CONFIG_PCIE_ARMADA_8K) += pcie-armada8k.o
+>  obj-$(CONFIG_PCIE_ARTPEC6) += pcie-artpec6.o
+>  obj-$(CONFIG_PCIE_ROCKCHIP_DW_HOST) += pcie-dw-rockchip.o
+> diff --git a/drivers/pci/controller/dwc/pcie-qcom-cmn.c b/drivers/pci/controller/dwc/pcie-qcom-cmn.c
+> new file mode 100644
+> index 000000000000..64fa412ec293
+> --- /dev/null
+> +++ b/drivers/pci/controller/dwc/pcie-qcom-cmn.c
+> @@ -0,0 +1,81 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/*
+> + * Copyright (c) 2014-2015, 2020 The Linux Foundation. All rights reserved.
+> + * Copyright 2015, 2021 Linaro Limited.
+
+Copyright (c)
+
+> + * Copyright (c) 2024 Qualcomm Innovation Center, Inc. All rights reserved.
+> + *
+> + */
+> +
+> +#include <linux/debugfs.h>
+
+Why do you need this header in this patch?
+
+> +#include <linux/pci.h>
+> +#include <linux/interconnect.h>
+> +
+> +#include "../../pci.h"
+> +#include "pcie-designware.h"
+> +#include "pcie-qcom-cmn.h"
+> +
+> +#define QCOM_PCIE_LINK_SPEED_TO_BW(speed) \
+> +		Mbps_to_icc(PCIE_SPEED2MBS_ENC(pcie_link_speed[speed]))
+> +
+> +int qcom_pcie_cmn_icc_get_resource(struct dw_pcie *pci, struct icc_path *icc_mem)
+
+qcom_pcie_common_icc_get?
+
+> +{
+> +	if (IS_ERR(pci))
+> +		return PTR_ERR(pci);
+
+Why this check is needed?
+
+> +
+> +	icc_mem = devm_of_icc_get(pci->dev, "pcie-mem");
+> +	if (IS_ERR(icc_mem))
+> +		return PTR_ERR(icc_mem);
+> +
+> +	return 0;
+> +}
+> +EXPORT_SYMBOL_GPL(qcom_pcie_cmn_icc_get_resource);
+> +
+> +int qcom_pcie_cmn_icc_init(struct dw_pcie *pci, struct icc_path *icc_mem)
+
+qcom_pcie_common_icc_init?
+
+> +{
+> +	int ret;
+> +
+> +	if (IS_ERR(pci))
+> +		return PTR_ERR(pci);
+> +
+
+Again, why this is needed?
+
+> +	if (IS_ERR(icc_mem))
+> +		return PTR_ERR(icc_mem);
+> +
+
+If 'devm_of_icc_get' has failed previously we wouldn't reach here. And also,
+there is no need to check for NULL since the ICC core already does that.
+
+> +	/*
+> +	 * Some Qualcomm platforms require interconnect bandwidth constraints
+> +	 * to be set before enabling interconnect clocks.
+> +	 *
+> +	 * Set an initial peak bandwidth corresponding to single-lane Gen 1
+> +	 * for the pcie-mem path.
+> +	 */
+> +	ret = icc_set_bw(icc_mem, 0, QCOM_PCIE_LINK_SPEED_TO_BW(1));
+> +	if (ret) {
+> +		dev_err(pci->dev, "failed to set interconnect bandwidth: %d\n",
+> +			ret);
+> +		return ret;
+> +	}
+> +
+> +	return 0;
+> +}
+> +EXPORT_SYMBOL_GPL(qcom_pcie_cmn_icc_init);
+> +
+> +void qcom_pcie_cmn_icc_update(struct dw_pcie *pci, struct icc_path *icc_mem)
+
+qcom_pcie_common_icc_update?
+
+> +{
+> +	u32 offset, status;
+> +	int speed, width;
+> +	int ret;
+> +
+> +	if (!icc_mem)
+> +		return;
+> +
+> +	offset = dw_pcie_find_capability(pci, PCI_CAP_ID_EXP);
+> +	status = readw(pci->dbi_base + offset + PCI_EXP_LNKSTA);
+> +
+
+You can keep the link check here since that should work for both RC and EP.
+
+> +	speed = FIELD_GET(PCI_EXP_LNKSTA_CLS, status);
+> +	width = FIELD_GET(PCI_EXP_LNKSTA_NLW, status);
+> +
+> +	ret = icc_set_bw(icc_mem, 0, width * QCOM_PCIE_LINK_SPEED_TO_BW(speed));
+> +	if (ret)
+> +		dev_err(pci->dev, "failed to set interconnect bandwidth: %d\n",
+> +			ret);
+> +}
+> +EXPORT_SYMBOL_GPL(qcom_pcie_cmn_icc_update);
+> diff --git a/drivers/pci/controller/dwc/pcie-qcom-cmn.h b/drivers/pci/controller/dwc/pcie-qcom-cmn.h
+> new file mode 100644
+> index 000000000000..845eda23ae59
+> --- /dev/null
+> +++ b/drivers/pci/controller/dwc/pcie-qcom-cmn.h
+> @@ -0,0 +1,14 @@
+> +/* SPDX-License-Identifier: GPL-2.0 */
+> +/*
+> + * Copyright (c) 2014-2015, 2020 The Linux Foundation. All rights reserved.
+> + * Copyright 2015, 2021 Linaro Limited.
+> + * Copyright (c) 2024 Qualcomm Innovation Center, Inc. All rights reserved.
+> + */
+> +
+> +#include <linux/pci.h>
+> +#include "../../pci.h"
+> +#include "pcie-designware.h"
+
+Again, headers should be included only if it is used in the same file itself.
+
+- Mani
+
 -- 
-Ira Weiny <ira.weiny@intel.com>
-
+மணிவண்ணன் சதாசிவம்
 
