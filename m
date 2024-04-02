@@ -1,105 +1,109 @@
-Return-Path: <linux-kernel+bounces-128072-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-128073-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id A24B48955AC
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 15:44:56 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 38BF18955AE
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 15:45:15 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4298B1F225E0
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 13:44:56 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id DD2321F224B2
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 13:45:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2A82B12A157;
-	Tue,  2 Apr 2024 13:43:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3CC7E85645;
+	Tue,  2 Apr 2024 13:43:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=crapouillou.net header.i=@crapouillou.net header.b="ECRmOs1l"
-Received: from aposti.net (aposti.net [89.234.176.197])
+	dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b="TkkLif0U"
+Received: from mail-io1-f44.google.com (mail-io1-f44.google.com [209.85.166.44])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D129879DD4;
-	Tue,  2 Apr 2024 13:43:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=89.234.176.197
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9E6678564C
+	for <linux-kernel@vger.kernel.org>; Tue,  2 Apr 2024 13:43:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712065406; cv=none; b=Lzgc2/Z1vlYOlmvGto1Ha7aM1fnCGf8o+WrCbTG/YMXisMyyxb2+S1I9IkLFt1aDnA+AZTCPudia47wEmt/tP2fgVlv1vWVXRIUxdTwd4/mlQko4iazKZCLE1IN9AmWrIAXd6QwQXOV5iEoztREOTkhWPGMmO+7UNL49NWhJofI=
+	t=1712065417; cv=none; b=kaPWoXu6u8XqkJ3NE8hhPHAB6a5/9NU0yqFTCy7KbBdBSKnF+LC2RJ+wW5t6+Yhe8JeNJKRCJe7cfuCIxesXckZ6cfjT3vgeJkC5O1kJgiMFCZN2e863SA0itg0pemYriAZJkSgJ+D4/FbiZLadYp1AWtG3zx+YtOHhh4Uo+UjY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712065406; c=relaxed/simple;
-	bh=uLL/QD2swy9RXoEFWUQrKxVhnE2lryN01o3p4amWQkM=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=isIAs/9BKP++NqgX+TrAFTt8+0SlfSqK+btOJefgwV3C0IVGw8DhAOQDDH5H9u6t6/Yk2r/nMOieFTRqFdwEveRjsdnbNUICpyaUqZ/18bhyndNJdql+48gso+cQABj3Iwx4y7r+FIniVPpM6NqfXYt9xD27iUx+MX21TN3K6nM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=crapouillou.net; spf=pass smtp.mailfrom=crapouillou.net; dkim=pass (1024-bit key) header.d=crapouillou.net header.i=@crapouillou.net header.b=ECRmOs1l; arc=none smtp.client-ip=89.234.176.197
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=crapouillou.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=crapouillou.net
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=crapouillou.net;
-	s=mail; t=1712065401;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=uLL/QD2swy9RXoEFWUQrKxVhnE2lryN01o3p4amWQkM=;
-	b=ECRmOs1lVmXkU2pmeiTxxFaHxqO6ic/wyUaYjJSu7Nz+LsicPuX98mvCl2NbgmKGCCQ2FQ
-	TTU5LuRhFdZkT1B+JqVAjOxqgpZzJqeuO/OXEhVKkkbRWHDSGkOi4rPZVLsg7rrWBFdc+U
-	upaQ9vT31B5dL9EN9EzZOpIUZDx8PB4=
-Message-ID: <5282d68815ac4a99c2e5031fc7d20e9e83f5a1d0.camel@crapouillou.net>
-Subject: Re: [PATCH 0/2][5.9-rc] USB FunctionFS DMABUF interface fixes
-From: Paul Cercueil <paul@crapouillou.net>
-To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: Christian =?ISO-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>, Daniel
- Vetter <daniel.vetter@ffwll.ch>, linux-usb@vger.kernel.org,
- linux-kernel@vger.kernel.org
-Date: Tue, 02 Apr 2024 15:43:20 +0200
-In-Reply-To: <2024040253-sanction-viewing-770e@gregkh>
-References: <20240402110951.16376-1-paul@crapouillou.net>
-	 <2024040253-sanction-viewing-770e@gregkh>
-Autocrypt: addr=paul@crapouillou.net; prefer-encrypt=mutual;
- keydata=mQENBF0KhcEBCADkfmrzdTOp/gFOMQX0QwKE2WgeCJiHPWkpEuPH81/HB2dpjPZNW03ZM
- LQfECbbaEkdbN4YnPfXgcc1uBe5mwOAPV1MBlaZcEt4M67iYQwSNrP7maPS3IaQJ18ES8JJ5Uf5Uz
- FZaUawgH+oipYGW+v31cX6L3k+dGsPRM0Pyo0sQt52fsopNPZ9iag0iY7dGNuKenaEqkYNjwEgTtN
- z8dt6s3hMpHIKZFL3OhAGi88wF/21isv0zkF4J0wlf9gYUTEEY3Eulx80PTVqGIcHZzfavlWIdzhe
- +rxHTDGVwseR2Y1WjgFGQ2F+vXetAB8NEeygXee+i9nY5qt9c07m8mzjABEBAAG0JFBhdWwgQ2VyY
- 3VlaWwgPHBhdWxAY3JhcG91aWxsb3UubmV0PokBTgQTAQoAOBYhBNdHYd8OeCBwpMuVxnPua9InSr
- 1BBQJdCoXBAhsDBQsJCAcCBhUKCQgLAgQWAgMBAh4BAheAAAoJEHPua9InSr1BgvIH/0kLyrI3V0f
- 33a6D3BJwc1grbygPVYGuC5l5eMnAI+rDmLR19E2yvibRpgUc87NmPEQPpbbtAZt8On/2WZoE5OIP
- dlId/AHNpdgAtGXo0ZX4LGeVPjxjdkbrKVHxbcdcnY+zzaFglpbVSvp76pxqgVg8PgxkAAeeJV+ET
- 4t0823Gz2HzCL/6JZhvKAEtHVulOWoBh368SYdolp1TSfORWmHzvQiCCCA+j0cMkYVGzIQzEQhX7U
- rf9N/nhU5/SGLFEi9DcBfXoGzhyQyLXflhJtKm3XGB1K/pPulbKaPcKAl6rIDWPuFpHkSbmZ9r4KF
- lBwgAhlGy6nqP7O3u7q23hRW5AQ0EXQqFwQEIAMo+MgvYHsyjX3Ja4Oolg1Txzm8woj30ch2nACFC
- qaO0R/1kLj2VVeLrDyQUOlXx9PD6IQI4M8wy8m0sR4wV2p/g/paw7k65cjzYYLh+FdLNyO7IWYXnd
- JO+wDPi3aK/YKUYepqlP+QsmaHNYNdXEQDRKqNfJg8t0f5rfzp9ryxd1tCnbV+tG8VHQWiZXNqN70
- 62DygSNXFUfQ0vZ3J2D4oAcIAEXTymRQ2+hr3Hf7I61KMHWeSkCvCG2decTYsHlw5Erix/jYWqVOt
- X0roOOLqWkqpQQJWtU+biWrAksmFmCp5fXIg1Nlg39v21xCXBGxJkxyTYuhdWyu1yDQ+LSIUAEQEA
- AYkBNgQYAQoAIBYhBNdHYd8OeCBwpMuVxnPua9InSr1BBQJdCoXBAhsMAAoJEHPua9InSr1B4wsH/
- Az767YCT0FSsMNt1jkkdLCBi7nY0GTW+PLP1a4zvVqFMo/vD6uz1ZflVTUAEvcTi3VHYZrlgjcxmc
- Gu239oruqUS8Qy/xgZBp9KF0NTWQSl1iBfVbIU5VV1vHS6r77W5x0qXgfvAUWOH4gmN3MnF01SH2z
- McLiaUGF+mcwl15rHbjnT3Nu2399aSE6cep86igfCAyFUOXjYEGlJy+c6UyT+DUylpjQg0nl8MlZ/
- 7Whg2fAU9+FALIbQYQzGlT4c71SibR9T741jnegHhlmV4WXXUD6roFt54t0MSAFSVxzG8mLcSjR2c
- LUJ3NIPXixYUSEn3tQhfZj07xIIjWxAYZo=
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+	s=arc-20240116; t=1712065417; c=relaxed/simple;
+	bh=PjNJYO/L5+j3tfKBrAUwuDdmDkPz9FEqzTqrQE3yBMI=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
+	 MIME-Version:Content-Type; b=GfnhU/T4/rzR04TpEnshiI+c/DjKJZPUfhvdWiJJJ75rxdmITw0CBACvkSfYUaeXthwP7n5YF4SkvsGJfhdVAdElFLu1PtBwijWo6DEro2OPJc0qJqOkVx1DvfGpYynyGNmk7WWRFJjwUn+Pi5Pt6+omqf4fwm/NC66KSFa9Iz0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk; spf=pass smtp.mailfrom=kernel.dk; dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b=TkkLif0U; arc=none smtp.client-ip=209.85.166.44
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.dk
+Received: by mail-io1-f44.google.com with SMTP id ca18e2360f4ac-7cc67249181so44026639f.1
+        for <linux-kernel@vger.kernel.org>; Tue, 02 Apr 2024 06:43:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kernel-dk.20230601.gappssmtp.com; s=20230601; t=1712065415; x=1712670215; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:date:message-id:subject
+         :references:in-reply-to:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=apUBHj8RIRW82oHM0rOVcMHYsUZG8rbpOjN5D3JuAew=;
+        b=TkkLif0UGPL7Yg0Ii9tBp2N8fRMb+liyVXgAezdQ2NlQipjWsnfg7rY9b862yDJVnO
+         +cmreGo3t/aI0So6eXHAgRO8JAOYJZJ+5732AVTVvZYNGEep99cHkgmPvkm9pNQV/04d
+         biulQcYPbk8x8FCwV9rpfxhesXHEn+ancJ7DpiAEDA31l9qb/TmVd6viYKHAOuBxfgI/
+         yOe+wne8/Wa76NcgwlWxC5ANLMQztiUZMv+PMQfFdaukmsPg4D5YPo4Bg7QT/zM8XJCt
+         wf5+2TjoargfyZYwNYOV9qbeZjpkwOnP+L97KH8ytQmw+jD/dUDCqJs3kP2Ff1JFu3s3
+         1GyA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712065415; x=1712670215;
+        h=content-transfer-encoding:mime-version:date:message-id:subject
+         :references:in-reply-to:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=apUBHj8RIRW82oHM0rOVcMHYsUZG8rbpOjN5D3JuAew=;
+        b=sl3AO9l/pqN03UGlvLkij3mLzuW4zE+5KKH2iEH0jXo6KDLpxICo131ow49r5UjjRA
+         rFk4lxR0AJgIa6eL/ejDHjnchJ+6uNejhIysDVk+Co2EIZpjOvpJWDOeLJ10hPKElBdz
+         xy1Ej//N5JxHUlMMHyyZf1uPE5StCDWumdHnbv315TPkrL1u9m5HiU3CkkgSLrOWTmcw
+         X3BHk1V9NjZBhl1soQjnWTgz2ZFUe2nObPMnlV1AMEiAwQoCixMuMkr/nUbcwlYBr7iP
+         HIrhztTvf+YoyBFcsKalKqEpPQ8A8M+2gFDz5ZNMTka6+nIiEQHPkLm1DzPZ3kRcZqVj
+         PUHw==
+X-Forwarded-Encrypted: i=1; AJvYcCVG0nKJNMqBMrjcWaO0Fe2jY3iX+5oH64aNplz/8f9a1W1qVvPngPX3jgnuaBWg8D8cmawZFADCxK/JZkCsedCyiuUbtM85mN4JvzZQ
+X-Gm-Message-State: AOJu0YzcfigL5yPIoG6hQ2ao/zjDsDPTA3nIchdRGiSH8lbFIjBfZ3u5
+	omigr1M1wUm1lA3aYPhKUeDvTt2tZQCHGVXIDT54oc/8gL9AJDnmZRvaaYODsls=
+X-Google-Smtp-Source: AGHT+IGpJDr7ZluMWoQLTy1X/eHuek1XHPY703URWBPiLdS7tEstbXt5tb72nM1T7IftTobzsNzJ2A==
+X-Received: by 2002:a05:6602:2b09:b0:7d0:a4d8:f285 with SMTP id p9-20020a0566022b0900b007d0a4d8f285mr12722710iov.0.1712065414734;
+        Tue, 02 Apr 2024 06:43:34 -0700 (PDT)
+Received: from [127.0.0.1] ([96.43.243.2])
+        by smtp.gmail.com with ESMTPSA id gh8-20020a056638698800b00479d7d5b61csm3197017jab.159.2024.04.02.06.43.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 02 Apr 2024 06:43:34 -0700 (PDT)
+From: Jens Axboe <axboe@kernel.dk>
+To: linan666@huaweicloud.com
+Cc: hch@lst.de, linux-block@vger.kernel.org, linux-kernel@vger.kernel.org, 
+ yukuai3@huawei.com, yi.zhang@huawei.com, houtao1@huawei.com, 
+ yangerkun@huawei.com
+In-Reply-To: <20240329012319.2034550-1-linan666@huaweicloud.com>
+References: <20240329012319.2034550-1-linan666@huaweicloud.com>
+Subject: Re: [PATCH] block: fix overflow in blk_ioctl_discard()
+Message-Id: <171206541390.1142385.3894757499421059664.b4-ty@kernel.dk>
+Date: Tue, 02 Apr 2024 07:43:33 -0600
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Mailer: b4 0.12.5-dev-2aabd
 
-Le mardi 02 avril 2024 =C3=A0 14:41 +0200, Greg Kroah-Hartman a =C3=A9crit=
-=C2=A0:
-> On Tue, Apr 02, 2024 at 01:09:49PM +0200, Paul Cercueil wrote:
-> > Hi Greg,
-> >=20
-> > Here are two patches that address issues that were noticed by
-> > Christian
-> > when reviewing the very similar IIO DMABUF interface (but the
-> > FunctionFS
-> > patchset was already merged at that point).
-> >=20
-> > Based on 5.9-rc2.
->=20
-> I think you mean "6.9-rc2", right?
->=20
 
-Yes, sorry.
+On Fri, 29 Mar 2024 09:23:19 +0800, linan666@huaweicloud.com wrote:
+> There is no check for overflow of 'start + len' in blk_ioctl_discard().
+> Hung task occurs if submit an discard ioctl with the following param:
+>   start = 0x80000000000ff000, len = 0x8000000000fff000;
+> Add the overflow validation now.
+> 
+> 
 
--Paul
+Applied, thanks!
+
+[1/1] block: fix overflow in blk_ioctl_discard()
+      commit: 22d24a544b0d49bbcbd61c8c0eaf77d3c9297155
+
+Best regards,
+-- 
+Jens Axboe
+
+
+
 
