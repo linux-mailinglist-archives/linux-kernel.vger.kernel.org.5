@@ -1,226 +1,315 @@
-Return-Path: <linux-kernel+bounces-128165-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-128166-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C2B4689571F
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 16:41:08 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3A2978957CC
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 17:08:50 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 77F5B286060
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 14:41:07 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 578ABB2B148
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 14:41:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CB4DB12AADD;
-	Tue,  2 Apr 2024 14:38:28 +0000 (UTC)
-Received: from mail-io1-f71.google.com (mail-io1-f71.google.com [209.85.166.71])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1C23117F3;
+	Tue,  2 Apr 2024 14:38:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=resnulli-us.20230601.gappssmtp.com header.i=@resnulli-us.20230601.gappssmtp.com header.b="D1b4kXsf"
+Received: from mail-wr1-f52.google.com (mail-wr1-f52.google.com [209.85.221.52])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 334ED1353E2
-	for <linux-kernel@vger.kernel.org>; Tue,  2 Apr 2024 14:38:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.71
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 96F8212BE80
+	for <linux-kernel@vger.kernel.org>; Tue,  2 Apr 2024 14:38:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712068707; cv=none; b=PDtQ9TAWzNITj48DLotcO32FkBOLEu1HnJY4PTAkBZJ0xv4aqGLw08w1ZwxTwI8KTkBAo5mzYzeGnNG40AvecPfEboO9WPNM6ONQGe1FIIeukr797Zb7FpIJ43+z44I4C/mhFbrLggjVoAbJdbGJPxKFlPaWDd12CndDkcfYpHA=
+	t=1712068721; cv=none; b=vFaYavoqnWRPIj46KT+04+e/MPG0Q/sV7BA0y1pOMCKHDcDdzaPs+GES4HFnqKsusgQf6ZeOhP7iPNJSozj2Po+AUrGFMQ0D45SyqJSuK9cEBcOqDgOvPzPMui3CStUTJvWtilOFdiNPRwxYdzQHv6wI1tevB14FhsRMjTAt0cU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712068707; c=relaxed/simple;
-	bh=XPcXEYcJJ/WyBS2lsYIXXkraZhwxK8dNLIWkGZ7mmY0=;
-	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
-	 Content-Type; b=XVV1Ti8//6NpCZvmhrqQWGRZdf5mnedpQtK92IErsX5XxZ2X/Ezmdl95zB1kYkON4v7qT4ZszRi66EcoQUquswfzP3eDL2xrTFgxvYRlPp7jN3PDG8hIXpp1EcoIh1jhhc00cNfLzkdD5EkmilCNB03lZW9Cs4QKyFHo1etrlvE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.71
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-io1-f71.google.com with SMTP id ca18e2360f4ac-7cc0a422d43so584499339f.2
-        for <linux-kernel@vger.kernel.org>; Tue, 02 Apr 2024 07:38:25 -0700 (PDT)
+	s=arc-20240116; t=1712068721; c=relaxed/simple;
+	bh=jZGiqbzIbi6mZpdXnOzxBOpMOfMMWsp7k2Lz2cz9N5U=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=YDqy1nS67bcgEBtouSPcWTtakZpJBgOS1NO3rWlFmlK3HPYhTZ4sk40kCa9EmYfkrqDFCQ9e9r36LPX8N3LmF1d1IT4nt6TzDPeeTYfc488ITMcAz0D+rN3k+zUMySEBRHkKwTARBknxJJlXQD6/xr2gvn51YrnwEvDCJcUMKJY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=resnulli.us; spf=none smtp.mailfrom=resnulli.us; dkim=pass (2048-bit key) header.d=resnulli-us.20230601.gappssmtp.com header.i=@resnulli-us.20230601.gappssmtp.com header.b=D1b4kXsf; arc=none smtp.client-ip=209.85.221.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=resnulli.us
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=resnulli.us
+Received: by mail-wr1-f52.google.com with SMTP id ffacd0b85a97d-34175878e3cso3946768f8f.0
+        for <linux-kernel@vger.kernel.org>; Tue, 02 Apr 2024 07:38:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=resnulli-us.20230601.gappssmtp.com; s=20230601; t=1712068716; x=1712673516; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=jb91MyD/GfnMjJ42GMj31sctff97Hftn6+nj+lz8QO0=;
+        b=D1b4kXsfl9YrDD8e4XhcZkcXdEQ7M1l7CptN8VBN5Ula+ijuD92Yq7EeWiUZqM5bWf
+         HyUEh8nkwGfPFyz+2vo4ThS2nTx1MXNyX36N7G7+LibZnG3Bhpg9Hpq8fbqNts6Um9kq
+         hXGdZAgQwzAmvWh3Qjh+wxSo7f4rWacU/sPE0vgPv7Jn9cWmcg3dX4ClmLmYtw90vfsi
+         55YnSrc6O6uBFEX3ykl4zXeGAGplV9cQ0D+gGlQJIeOYDaY6XIZngTwxYtsg3i4IC60d
+         wwzISZGbtJIDGv6GlMK9iBFvLuOxxcorY0xOSiukni8VhZe3mQrSSWdoMoI0Mep+pRB+
+         v9ew==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712068705; x=1712673505;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
+        d=1e100.net; s=20230601; t=1712068716; x=1712673516;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=m4BhvGm+79dtUpakYQBDCahsgl61NTLQEW72duDPoDg=;
-        b=Zp+C1BgYdKggu93p8r71bIfaIVgkGF7c+XYGZ+MQyd4D5Q0LQvJry8k09Yv+Bpcju/
-         q3c9dKVz8PGHcihHENmrBfPI0059my0SXm7nkb6bhbGkX0RcnaiAPpD5g0EZGMhpy3mU
-         TB/ksab8Y7XOOfkCCyDvFxhEDm6ckF+3bO/rA40c7clb4IokPNkqBjjUQazs6bDR3j6q
-         aZYmZEhYw0abOxdOC+1u5judNFMft7gkAN9y9AgMoTbghZaIo0mxr4SujXCNjXC1fI9O
-         18OGZJFPGnYUs3xAq/rcYBHJxLDXguquK1WyBaH86zo2ttQ1eVVKSlJGKnoUS6xHFSpw
-         GH6g==
-X-Forwarded-Encrypted: i=1; AJvYcCUihysJZQ8Mc2360uEKqMlDw+BKIFU99yrrcJD3uKt0/zxcHdbRDL6lyTtqSLzi+rHGPgPRk5xIU8Gl9EQkPJNp9nw08y293dh2SnsG
-X-Gm-Message-State: AOJu0YzyirzE06hOzg2pK+otY+UXBKHsEPU1tKSElMsW3c7j/5DUKWg4
-	+dQlkkX0vVv7Z6NKAZ/b8XOM5aHr2E8hbE3AVPsrphG/KkJEoOKNQLc6daFXvOXkxdCjTzbjUnT
-	XAqqpQFUu/qnopqQ6G2499Fz/UMKK3CgudiWEw9TEvdOc3zHuB5YDkrQ=
-X-Google-Smtp-Source: AGHT+IENNhNE/GDQmjAHYipmcF1H/AxFjMFf17QczdzHuoWrG0c2372dVZR/CCYhqnLZZBg25EKhjBbV/UCE6WJcbYeL21xTdKr7
+        bh=jb91MyD/GfnMjJ42GMj31sctff97Hftn6+nj+lz8QO0=;
+        b=nViuhjW2Aupmc5jhQOI42JlNAgNrKbtt35fZqvQw7yONLV4GE3OCA7EkR7Ez9mCs/N
+         no7oJ7QU6ToXmBe+p4nwCtkV+6imuf5VKu2ed8BGphwWyXcilHEQsXGWKTPbC3TSWfrY
+         e0Dpenp9rWv3B5o54sk+3m3RnoIssS/SmBvR4MeVuxEgbQ8r/NcLLZBNQonbsKXrXxR1
+         HwxPFwad58Pz4QbT2cE5/jsewcUB4QiEwQ2tAKZFZO+ZcyWo0tZxuf2MGvL7Hbr6fJN/
+         uEyTdFUBBWig5Ey4Rgfcj3UsFtrQJ+xF3nscKo0LImaDT41lykRaCSp4CYy5Wjb0TOnD
+         ozvA==
+X-Forwarded-Encrypted: i=1; AJvYcCWjGgtMMGKOuwBfj3bPC0GcBQoaNTjo5duWGmiw4zy+5HB4spSsR4H4r9Nz5mGt2N5l37rGs6qO8LiIMeBN1iPQDHuuXVOjAQKxnSEV
+X-Gm-Message-State: AOJu0Yw7dmUJPkQpzxYM8cHny0fRujkbR01Cl2XpiMQ52PJU/2gCgQWP
+	uqmiyjvfbysye+dehiXcEon8uRD5QoSqkkuTgHldW6RW2rwNvOSp1tYcksuwKlk=
+X-Google-Smtp-Source: AGHT+IFIqNO1IAuDmEGvalsUNnPRkm7aTf10+J9YuPNVfuj68WVf+nyhGTiSSpbChANmgbaQc+YBdg==
+X-Received: by 2002:a5d:648b:0:b0:343:53ca:cee1 with SMTP id o11-20020a5d648b000000b0034353cacee1mr4278272wri.13.1712068715849;
+        Tue, 02 Apr 2024 07:38:35 -0700 (PDT)
+Received: from localhost ([193.47.165.251])
+        by smtp.gmail.com with ESMTPSA id i13-20020adfe48d000000b00341bdbf0b07sm14249642wrm.50.2024.04.02.07.38.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 02 Apr 2024 07:38:35 -0700 (PDT)
+Date: Tue, 2 Apr 2024 16:38:31 +0200
+From: Jiri Pirko <jiri@resnulli.us>
+To: Karthik Sundaravel <ksundara@redhat.com>
+Cc: jesse.brandeburg@intel.com, wojciech.drewek@intel.com,
+	sumang@marvell.com, jacob.e.keller@intel.com,
+	anthony.l.nguyen@intel.com, davem@davemloft.net,
+	edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
+	intel-wired-lan@lists.osuosl.org, netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org, pmenzel@molgen.mpg.de,
+	michal.swiatkowski@linux.intel.com, rjarry@redhat.com,
+	aharivel@redhat.com, vchundur@redhat.com, cfontain@redhat.com
+Subject: Re: [PATCH v7] ice: Add get/set hw address for VFs using devlink
+ commands
+Message-ID: <ZgwYZ-_aiSknTGZj@nanopsycho>
+References: <20240402092254.3891-1-ksundara@redhat.com>
+ <20240402092254.3891-2-ksundara@redhat.com>
+ <ZgvqPHYj3jS7vGHO@nanopsycho>
+ <CAPh+B4LJokN=-ii7fMkpSsucsBK7uROHwDSwXypX+moDRkiKXw@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6602:3fc4:b0:7c8:c7ec:2b71 with SMTP id
- fc4-20020a0566023fc400b007c8c7ec2b71mr172499iob.3.1712068705362; Tue, 02 Apr
- 2024 07:38:25 -0700 (PDT)
-Date: Tue, 02 Apr 2024 07:38:25 -0700
-In-Reply-To: <000000000000fd0f2a061506cc93@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000003b8c406151e0fd1@google.com>
-Subject: Re: [syzbot] [nilfs?] KASAN: slab-out-of-bounds Read in wb_writeback
-From: syzbot <syzbot+7b219b86935220db6dd8@syzkaller.appspotmail.com>
-To: brauner@kernel.org, gregkh@linuxfoundation.org, jack@suse.cz, 
-	konishi.ryusuke@gmail.com, linux-fsdevel@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, linux-nilfs@vger.kernel.org, 
-	syzkaller-bugs@googlegroups.com, tj@kernel.org, viro@zeniv.linux.org.uk
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAPh+B4LJokN=-ii7fMkpSsucsBK7uROHwDSwXypX+moDRkiKXw@mail.gmail.com>
 
-syzbot has found a reproducer for the following issue on:
+Tue, Apr 02, 2024 at 03:57:35PM CEST, ksundara@redhat.com wrote:
+>On Tue, Apr 2, 2024 at 4:51 PM Jiri Pirko <jiri@resnulli.us> wrote:
+>>
+>> Tue, Apr 02, 2024 at 11:22:54AM CEST, ksundara@redhat.com wrote:
+>> >Changing the MAC address of the VFs is currently unsupported via devlink.
+>> >Add the function handlers to set and get the HW address for the VFs.
+>> >
+>> >Signed-off-by: Karthik Sundaravel <ksundara@redhat.com>
+>> >---
+>> > drivers/net/ethernet/intel/ice/ice_devlink.c | 63 +++++++++++++++++++-
+>> > drivers/net/ethernet/intel/ice/ice_sriov.c   | 62 +++++++++++++++++++
+>> > drivers/net/ethernet/intel/ice/ice_sriov.h   |  8 +++
+>> > 3 files changed, 132 insertions(+), 1 deletion(-)
+>> >
+>> >diff --git a/drivers/net/ethernet/intel/ice/ice_devlink.c b/drivers/net/ethernet/intel/ice/ice_devlink.c
+>> >index 80dc5445b50d..10735715403a 100644
+>> >--- a/drivers/net/ethernet/intel/ice/ice_devlink.c
+>> >+++ b/drivers/net/ethernet/intel/ice/ice_devlink.c
+>> >@@ -1576,6 +1576,66 @@ void ice_devlink_destroy_pf_port(struct ice_pf *pf)
+>> >       devlink_port_unregister(&pf->devlink_port);
+>> > }
+>> >
+>> >+/**
+>> >+ * ice_devlink_port_get_vf_fn_mac - .port_fn_hw_addr_get devlink handler
+>> >+ * @port: devlink port structure
+>> >+ * @hw_addr: MAC address of the port
+>> >+ * @hw_addr_len: length of MAC address
+>> >+ * @extack: extended netdev ack structure
+>> >+ *
+>> >+ * Callback for the devlink .port_fn_hw_addr_get operation
+>> >+ * Return: zero on success or an error code on failure.
+>> >+ */
+>> >+
+>> >+static int ice_devlink_port_get_vf_fn_mac(struct devlink_port *port,
+>> >+                                        u8 *hw_addr, int *hw_addr_len,
+>> >+                                        struct netlink_ext_ack *extack)
+>> >+{
+>> >+      struct ice_vf *vf = container_of(port, struct ice_vf, devlink_port);
+>> >+
+>> >+      ether_addr_copy(hw_addr, vf->dev_lan_addr);
+>> >+      *hw_addr_len = ETH_ALEN;
+>> >+
+>> >+      return 0;
+>> >+}
+>> >+
+>> >+/**
+>> >+ * ice_devlink_port_set_vf_fn_mac - .port_fn_hw_addr_set devlink handler
+>> >+ * @port: devlink port structure
+>> >+ * @hw_addr: MAC address of the port
+>> >+ * @hw_addr_len: length of MAC address
+>> >+ * @extack: extended netdev ack structure
+>> >+ *
+>> >+ * Callback for the devlink .port_fn_hw_addr_set operation
+>> >+ * Return: zero on success or an error code on failure.
+>> >+ */
+>> >+static int ice_devlink_port_set_vf_fn_mac(struct devlink_port *port,
+>> >+                                        const u8 *hw_addr,
+>> >+                                        int hw_addr_len,
+>> >+                                        struct netlink_ext_ack *extack)
+>> >+
+>> >+{
+>> >+      struct devlink_port_attrs *attrs = &port->attrs;
+>> >+      struct devlink_port_pci_vf_attrs *pci_vf;
+>> >+      struct devlink *devlink = port->devlink;
+>> >+      struct ice_pf *pf;
+>> >+      u8 mac[ETH_ALEN];
+>>
+>> Why you need this extra variable?
+>The function signature of ice_set_vf_fn_mac() is kept to match
 
-HEAD commit:    c0b832517f62 Add linux-next specific files for 20240402
-git tree:       linux-next
-console+strace: https://syzkaller.appspot.com/x/log.txt?x=14af7dd9180000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=afcaf46d374cec8c
-dashboard link: https://syzkaller.appspot.com/bug?extid=7b219b86935220db6dd8
-compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1729f003180000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=17fa4341180000
-
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/0d36ec76edc7/disk-c0b83251.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/6f9bb4e37dd0/vmlinux-c0b83251.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/2349287b14b7/bzImage-c0b83251.xz
-mounted in repro: https://storage.googleapis.com/syzbot-assets/9760c52a227c/mount_0.gz
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+7b219b86935220db6dd8@syzkaller.appspotmail.com
-
-==================================================================
-BUG: KASAN: slab-out-of-bounds in __lock_acquire+0x78/0x1fd0 kernel/locking/lockdep.c:5005
-Read of size 8 at addr ffff888020485fa8 by task kworker/u8:2/35
-
-CPU: 0 PID: 35 Comm: kworker/u8:2 Not tainted 6.9.0-rc2-next-20240402-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 03/27/2024
-Workqueue: writeback wb_workfn (flush-7:1)
-Call Trace:
- <TASK>
- __dump_stack lib/dump_stack.c:88 [inline]
- dump_stack_lvl+0x241/0x360 lib/dump_stack.c:114
- print_address_description mm/kasan/report.c:377 [inline]
- print_report+0x169/0x550 mm/kasan/report.c:488
- kasan_report+0x143/0x180 mm/kasan/report.c:601
- __lock_acquire+0x78/0x1fd0 kernel/locking/lockdep.c:5005
- lock_acquire+0x1ed/0x550 kernel/locking/lockdep.c:5754
- __raw_spin_lock include/linux/spinlock_api_smp.h:133 [inline]
- _raw_spin_lock+0x2e/0x40 kernel/locking/spinlock.c:154
- spin_lock include/linux/spinlock.h:351 [inline]
- wb_writeback+0x66f/0xd30 fs/fs-writeback.c:2160
- wb_check_old_data_flush fs/fs-writeback.c:2233 [inline]
- wb_do_writeback fs/fs-writeback.c:2286 [inline]
- wb_workfn+0xba1/0x1090 fs/fs-writeback.c:2314
- process_one_work kernel/workqueue.c:3218 [inline]
- process_scheduled_works+0xa2c/0x1830 kernel/workqueue.c:3299
- worker_thread+0x86d/0xd70 kernel/workqueue.c:3380
- kthread+0x2f0/0x390 kernel/kthread.c:388
- ret_from_fork+0x4b/0x80 arch/x86/kernel/process.c:147
- ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:243
- </TASK>
-
-Allocated by task 5052:
- kasan_save_stack mm/kasan/common.c:47 [inline]
- kasan_save_track+0x3f/0x80 mm/kasan/common.c:68
- poison_kmalloc_redzone mm/kasan/common.c:370 [inline]
- __kasan_kmalloc+0x98/0xb0 mm/kasan/common.c:387
- kasan_kmalloc include/linux/kasan.h:211 [inline]
- __do_kmalloc_node mm/slub.c:4048 [inline]
- __kmalloc_noprof+0x200/0x410 mm/slub.c:4061
- kmalloc_noprof include/linux/slab.h:664 [inline]
- tomoyo_realpath_from_path+0xcf/0x5e0 security/tomoyo/realpath.c:251
- tomoyo_get_realpath security/tomoyo/file.c:151 [inline]
- tomoyo_path_perm+0x2b7/0x740 security/tomoyo/file.c:822
- security_inode_getattr+0xd8/0x130 security/security.c:2269
- vfs_getattr+0x45/0x430 fs/stat.c:173
- vfs_fstat fs/stat.c:198 [inline]
- vfs_fstatat+0xd6/0x190 fs/stat.c:300
- __do_sys_newfstatat fs/stat.c:468 [inline]
- __se_sys_newfstatat fs/stat.c:462 [inline]
- __x64_sys_newfstatat+0x125/0x1b0 fs/stat.c:462
- do_syscall_64+0xfb/0x240
- entry_SYSCALL_64_after_hwframe+0x72/0x7a
-
-Freed by task 5052:
- kasan_save_stack mm/kasan/common.c:47 [inline]
- kasan_save_track+0x3f/0x80 mm/kasan/common.c:68
- kasan_save_free_info+0x40/0x50 mm/kasan/generic.c:579
- poison_slab_object+0xe0/0x150 mm/kasan/common.c:240
- __kasan_slab_free+0x37/0x60 mm/kasan/common.c:256
- kasan_slab_free include/linux/kasan.h:184 [inline]
- slab_free_hook mm/slub.c:2180 [inline]
- slab_free mm/slub.c:4363 [inline]
- kfree+0x149/0x350 mm/slub.c:4484
- tomoyo_realpath_from_path+0x5a9/0x5e0 security/tomoyo/realpath.c:286
- tomoyo_get_realpath security/tomoyo/file.c:151 [inline]
- tomoyo_path_perm+0x2b7/0x740 security/tomoyo/file.c:822
- security_inode_getattr+0xd8/0x130 security/security.c:2269
- vfs_getattr+0x45/0x430 fs/stat.c:173
- vfs_fstat fs/stat.c:198 [inline]
- vfs_fstatat+0xd6/0x190 fs/stat.c:300
- __do_sys_newfstatat fs/stat.c:468 [inline]
- __se_sys_newfstatat fs/stat.c:462 [inline]
- __x64_sys_newfstatat+0x125/0x1b0 fs/stat.c:462
- do_syscall_64+0xfb/0x240
- entry_SYSCALL_64_after_hwframe+0x72/0x7a
-
-The buggy address belongs to the object at ffff888020484000
- which belongs to the cache kmalloc-4k of size 4096
-The buggy address is located 4008 bytes to the right of
- allocated 4096-byte region [ffff888020484000, ffff888020485000)
-
-The buggy address belongs to the physical page:
-page: refcount:1 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x20480
-head: order:3 entire_mapcount:0 nr_pages_mapped:0 pincount:0
-flags: 0xfff80000000040(head|node=0|zone=1|lastcpupid=0xfff)
-page_type: 0xffffefff(slab)
-raw: 00fff80000000040 ffff888015042140 dead000000000100 dead000000000122
-raw: 0000000000000000 0000000000040004 00000001ffffefff 0000000000000000
-head: 00fff80000000040 ffff888015042140 dead000000000100 dead000000000122
-head: 0000000000000000 0000000000040004 00000001ffffefff 0000000000000000
-head: 00fff80000000003 ffffea0000812001 ffffea0000812048 00000000ffffffff
-head: 0000000800000000 0000000000000000 00000000ffffffff 0000000000000000
-page dumped because: kasan: bad access detected
-page_owner tracks the page as allocated
-page last allocated via order 3, migratetype Unmovable, gfp_mask 0xd20c0(__GFP_IO|__GFP_FS|__GFP_NOWARN|__GFP_NORETRY|__GFP_COMP|__GFP_NOMEMALLOC), pid 1, tgid -957297381 (swapper/0), ts 1, free_ts 0
- set_page_owner include/linux/page_owner.h:32 [inline]
- post_alloc_hook+0x1f3/0x230 mm/page_alloc.c:1490
- prep_new_page mm/page_alloc.c:1498 [inline]
- get_page_from_freelist+0x2e7e/0x2f40 mm/page_alloc.c:3454
- __alloc_pages_noprof+0x256/0x6c0 mm/page_alloc.c:4712
- __alloc_pages_node_noprof include/linux/gfp.h:244 [inline]
- alloc_pages_node_noprof include/linux/gfp.h:271 [inline]
- alloc_slab_page+0x5f/0x120 mm/slub.c:2249
- allocate_slab+0x5a/0x2e0 mm/slub.c:2412
- new_slab mm/slub.c:2465 [inline]
- ___slab_alloc+0xea8/0x1430 mm/slub.c:3599
- __slab_alloc+0x58/0xa0 mm/slub.c:3684
- __slab_alloc_node mm/slub.c:3737 [inline]
- slab_alloc_node mm/slub.c:3915 [inline]
- kmalloc_node_trace_noprof+0x20c/0x300 mm/slub.c:4087
- kmalloc_node_noprof include/linux/slab.h:677 [inline]
- bdi_alloc+0x4f/0x140 mm/backing-dev.c:894
- __alloc_disk_node+0xb8/0x590 block/genhd.c:1347
- __blk_mq_alloc_disk+0x17d/0x260 block/blk-mq.c:4166
- loop_add+0x448/0xba0 drivers/block/loop.c:2032
- loop_init+0x17a/0x230 drivers/block/loop.c:2275
- do_one_initcall+0x248/0x880 init/main.c:1258
- do_initcall_level+0x157/0x210 init/main.c:1320
- do_initcalls+0x3f/0x80 init/main.c:1336
-page_owner free stack trace missing
-
-Memory state around the buggy address:
- ffff888020485e80: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
- ffff888020485f00: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
->ffff888020485f80: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
-                                  ^
- ffff888020486000: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
- ffff888020486080: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-==================================================================
+Why? Why can't you just make the arg const?
 
 
----
-If you want syzbot to run the reproducer, reply with:
-#syz test: git://repo/address.git branch-or-commit-hash
-If you attach or paste a git patch, syzbot will apply it before testing.
+>ice_set_vf_mac(), and hence the ``u8 *mac`` is used instead of ``const
+>u8 *mac``.
+>A copy of the mac is made to facilitate the same.
+>Considering the usage of mac in ice_set_vf_fn_mac(), the function
+>signature could be modified to take a ``const u8 *mac`` as well.
+
+Yep.
+
+
+>>
+>>
+>> >+      u16 vf_id;
+>> >+
+>> >+      pf = devlink_priv(devlink);
+>> >+      pci_vf = &attrs->pci_vf;
+>> >+      vf_id = pci_vf->vf;
+>> >+
+>> >+      ether_addr_copy(mac, hw_addr);
+>> >+
+>> >+      return ice_set_vf_fn_mac(pf, vf_id, mac);
+>> >+}
+>> >+
+>> >+static const struct devlink_port_ops ice_devlink_vf_port_ops = {
+>> >+      .port_fn_hw_addr_get = ice_devlink_port_get_vf_fn_mac,
+>> >+      .port_fn_hw_addr_set = ice_devlink_port_set_vf_fn_mac,
+>> >+};
+>> >+
+>> > /**
+>> >  * ice_devlink_create_vf_port - Create a devlink port for this VF
+>> >  * @vf: the VF to create a port for
+>> >@@ -1611,7 +1671,8 @@ int ice_devlink_create_vf_port(struct ice_vf *vf)
+>> >       devlink_port_attrs_set(devlink_port, &attrs);
+>> >       devlink = priv_to_devlink(pf);
+>> >
+>> >-      err = devlink_port_register(devlink, devlink_port, vsi->idx);
+>> >+      err = devlink_port_register_with_ops(devlink, devlink_port,
+>> >+                                           vsi->idx, &ice_devlink_vf_port_ops);
+>> >       if (err) {
+>> >               dev_err(dev, "Failed to create devlink port for VF %d, error %d\n",
+>> >                       vf->vf_id, err);
+>> >diff --git a/drivers/net/ethernet/intel/ice/ice_sriov.c b/drivers/net/ethernet/intel/ice/ice_sriov.c
+>> >index 31314e7540f8..b1e5cd188fd7 100644
+>> >--- a/drivers/net/ethernet/intel/ice/ice_sriov.c
+>> >+++ b/drivers/net/ethernet/intel/ice/ice_sriov.c
+>> >@@ -1216,6 +1216,68 @@ ice_get_vf_cfg(struct net_device *netdev, int vf_id, struct ifla_vf_info *ivi)
+>> >       return ret;
+>> > }
+>> >
+>> >+/**
+>> >+ * ice_set_vf_fn_mac
+>> >+ * @pf: PF to be configure
+>> >+ * @vf_id: VF identifier
+>> >+ * @mac: MAC address
+>> >+ *
+>> >+ * program VF MAC address
+>> >+ */
+>> >+int ice_set_vf_fn_mac(struct ice_pf *pf, u16 vf_id, u8 *mac)
+>> >+{
+>> >+      struct device *dev;
+>> >+      struct ice_vf *vf;
+>> >+      int ret;
+>> >+
+>> >+      dev = ice_pf_to_dev(pf);
+>> >+      if (is_multicast_ether_addr(mac)) {
+>> >+              dev_err(dev, "%pM not a valid unicast address\n", mac);
+>> >+              return -EINVAL;
+>> >+      }
+>> >+
+>> >+      vf = ice_get_vf_by_id(pf, vf_id);
+>> >+      if (!vf)
+>> >+              return -EINVAL;
+>> >+
+>> >+      /* nothing left to do, unicast MAC already set */
+>> >+      if (ether_addr_equal(vf->dev_lan_addr, mac) &&
+>> >+          ether_addr_equal(vf->hw_lan_addr, mac)) {
+>> >+              ret = 0;
+>> >+              goto out_put_vf;
+>> >+      }
+>> >+
+>> >+      ret = ice_check_vf_ready_for_cfg(vf);
+>> >+      if (ret)
+>> >+              goto out_put_vf;
+>> >+
+>> >+      mutex_lock(&vf->cfg_lock);
+>> >+
+>> >+      /* VF is notified of its new MAC via the PF's response to the
+>> >+       * VIRTCHNL_OP_GET_VF_RESOURCES message after the VF has been reset
+>> >+       */
+>> >+      ether_addr_copy(vf->dev_lan_addr, mac);
+>> >+      ether_addr_copy(vf->hw_lan_addr, mac);
+>> >+      if (is_zero_ether_addr(mac)) {
+>> >+              /* VF will send VIRTCHNL_OP_ADD_ETH_ADDR message with its MAC */
+>> >+              vf->pf_set_mac = false;
+>> >+              dev_info(dev, "Removing MAC on VF %d. VF driver will be reinitialized\n",
+>> >+                       vf->vf_id);
+>> >+      } else {
+>> >+              /* PF will add MAC rule for the VF */
+>> >+              vf->pf_set_mac = true;
+>> >+              dev_info(dev, "Setting MAC %pM on VF %d. VF driver will be reinitialized\n",
+>> >+                       mac, vf_id);
+>> >+      }
+>> >+
+>> >+      ice_reset_vf(vf, ICE_VF_RESET_NOTIFY);
+>> >+      mutex_unlock(&vf->cfg_lock);
+>> >+
+>> >+out_put_vf:
+>> >+      ice_put_vf(vf);
+>> >+      return ret;
+>> >+}
+>> >+
+>> > /**
+>> >  * ice_set_vf_mac
+>> >  * @netdev: network interface device structure
+>> >diff --git a/drivers/net/ethernet/intel/ice/ice_sriov.h b/drivers/net/ethernet/intel/ice/ice_sriov.h
+>> >index 346cb2666f3a..11cc522b1d9f 100644
+>> >--- a/drivers/net/ethernet/intel/ice/ice_sriov.h
+>> >+++ b/drivers/net/ethernet/intel/ice/ice_sriov.h
+>> >@@ -28,6 +28,7 @@
+>> > #ifdef CONFIG_PCI_IOV
+>> > void ice_process_vflr_event(struct ice_pf *pf);
+>> > int ice_sriov_configure(struct pci_dev *pdev, int num_vfs);
+>> >+int ice_set_vf_fn_mac(struct ice_pf *pf, u16 vf_id, u8 *mac);
+>> > int ice_set_vf_mac(struct net_device *netdev, int vf_id, u8 *mac);
+>> > int
+>> > ice_get_vf_cfg(struct net_device *netdev, int vf_id, struct ifla_vf_info *ivi);
+>> >@@ -76,6 +77,13 @@ ice_sriov_configure(struct pci_dev __always_unused *pdev,
+>> >       return -EOPNOTSUPP;
+>> > }
+>> >
+>> >+static inline int
+>> >+ice_set_vf_fn_mac(struct ice_pf __always_unused *pf,
+>> >+                u16 __always_unused vf_id, u8 __always_unused *mac)
+>> >+{
+>> >+      return -EOPNOTSUPP;
+>> >+}
+>> >+
+>> > static inline int
+>> > ice_set_vf_mac(struct net_device __always_unused *netdev,
+>> >              int __always_unused vf_id, u8 __always_unused *mac)
+>> >--
+>> >2.39.3 (Apple Git-146)
+>> >
+>>
+>
 
