@@ -1,76 +1,115 @@
-Return-Path: <linux-kernel+bounces-127321-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-127322-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0FF548949AB
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 04:56:05 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 322558949AD
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 04:56:38 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 89450B25009
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 02:56:02 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DE6A82840E8
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 02:56:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C611B1401B;
-	Tue,  2 Apr 2024 02:55:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=yeah.net header.i=@yeah.net header.b="KQ2inAUl"
-Received: from mail-177132.yeah.net (mail-177132.yeah.net [123.58.177.132])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 71AA72CA9;
-	Tue,  2 Apr 2024 02:55:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=123.58.177.132
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 85A9A15E88;
+	Tue,  2 Apr 2024 02:55:55 +0000 (UTC)
+Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9C6131171A;
+	Tue,  2 Apr 2024 02:55:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.187
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712026553; cv=none; b=THySLI7k4D1uX5VnUIJB835GW7XEmm+u8Z0qnZ/y+GiHyUJfg1qZOpmJBE1I+HK9nsQfxCUQSVjIpTrw7xN9k3XfMzA+DZoDFpWZ5DMMnBpFRx9fOOOqrQxJuiq8+PIbJyOtv+lD6/LyUOkQFlJb3EAnlnj6JqqvxJ1aDiIW5lA=
+	t=1712026555; cv=none; b=Dx/CG7wouFZpjZqJd1/RxwO3Rpa13ZHUFsB49eu4ORsnft3SgtkZroMKxl09Cnccg7jGG1FVmVzi5l/2+xJoX1kuxCA2V+fb4jUyFoRC98VqzSToPHO5HI/bDAK1KcEPbQzGKWFiarjs+vfO3YCVrAB2072uREJbd1pgv7XAgVA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712026553; c=relaxed/simple;
-	bh=2XxlTwkV2RXhvAN4lsefPHFdrwKpoUD9ZvP4It6xCrk=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=lNw+3VK8u+aWCOLSeBRWKM/6/mNiJu7s1Hx0h29Nt+e5jcxbKlQMolz6+OfwUaqAFjtwFzKe/Qm7nT/vOUkHTgzX2IHHARAsWLF8CJhJcCqPmve0AZA23RRdEs67g3f2E3BFsOQNuqoTk/+JlHJ29u+oGDOkP8rmECxMDYjOCtw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=yeah.net; spf=pass smtp.mailfrom=yeah.net; dkim=pass (1024-bit key) header.d=yeah.net header.i=@yeah.net header.b=KQ2inAUl; arc=none smtp.client-ip=123.58.177.132
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=yeah.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=yeah.net
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yeah.net;
-	s=s110527; h=Date:From:Subject:Message-ID:MIME-Version:
-	Content-Type; bh=gWzTiP/4gt9taJuh7HtRu++n48u/+Sj2ewJjuoCFEPo=;
-	b=KQ2inAUl8l+yj6skJIHA7KlAGpy4YZHgR1U4rcxurwNbV8w2ZMcL+M2g5M9EZ0
-	7lXIh5kLLfH644lAUkdEj1zo/qjFrnQ0D5xuV5yBD1HYUhX+Ab+f/VoQ50kd9H7d
-	c93BghKrMQuZzarmiAoURElTExo6aFJLfbDe0o6/ze/6M=
-Received: from dragon (unknown [223.68.79.243])
-	by smtp2 (Coremail) with SMTP id C1UQrADnThiFcwtmFtmiAg--.40474S3;
-	Tue, 02 Apr 2024 10:55:03 +0800 (CST)
-Date: Tue, 2 Apr 2024 10:55:01 +0800
-From: Shawn Guo <shawnguo2@yeah.net>
-To: Alexander Stein <alexander.stein@ew.tq-group.com>
-Cc: Rob Herring <robh@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>, Shawn Guo <shawnguo@kernel.org>,
-	Sascha Hauer <s.hauer@pengutronix.de>,
-	Pengutronix Kernel Team <kernel@pengutronix.de>,
-	Fabio Estevam <festevam@gmail.com>, linux@ew.tq-group.com,
-	devicetree@vger.kernel.org, imx@lists.linux.dev,
-	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/2] ARM: dts: imx6qdl: mba6: Add missing vdd-supply for
- on-board USB hub
-Message-ID: <ZgtzhYBEM5QJSela@dragon>
-References: <20240314141736.2943858-1-alexander.stein@ew.tq-group.com>
+	s=arc-20240116; t=1712026555; c=relaxed/simple;
+	bh=0EzUwmjHLXlEJyvY/QgsJrzv5lndfqtai08FctYwwJE=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=ml51/aIJNct8Y6lZOALEksZ9LwCTHBlqC71pwtm0RBWd0OdNznGKd90k2I/cLxDWzjABFweTy2dDJX2F0RHsqYJdnotU8wTxEaaB83dEyZ8oo7OticWuslYFW6NYXFMebveiXZ8s0NhsdLSFhZBxABR0TymgkNJIORas6mDDw88=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=hisilicon.com; spf=pass smtp.mailfrom=hisilicon.com; arc=none smtp.client-ip=45.249.212.187
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=hisilicon.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=hisilicon.com
+Received: from mail.maildlp.com (unknown [172.19.88.105])
+	by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4V7sr82VT7zwR42;
+	Tue,  2 Apr 2024 10:52:56 +0800 (CST)
+Received: from kwepemi500006.china.huawei.com (unknown [7.221.188.68])
+	by mail.maildlp.com (Postfix) with ESMTPS id BFD591402C6;
+	Tue,  2 Apr 2024 10:55:42 +0800 (CST)
+Received: from [10.67.120.168] (10.67.120.168) by
+ kwepemi500006.china.huawei.com (7.221.188.68) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.35; Tue, 2 Apr 2024 10:55:42 +0800
+Message-ID: <9bfc0185-dbd3-3511-23f2-983312c04f39@hisilicon.com>
+Date: Tue, 2 Apr 2024 10:55:41 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240314141736.2943858-1-alexander.stein@ew.tq-group.com>
-X-CM-TRANSID:C1UQrADnThiFcwtmFtmiAg--.40474S3
-X-Coremail-Antispam: 1Uf129KBjDUn29KB7ZKAUJUUUUU529EdanIXcx71UUUUU7v73
-	VFW2AGmfu7bjvjm3AaLaJ3UbIYCTnIWIevJa73UjIFyTuYvjxUxtxhDUUUU
-X-CM-SenderInfo: pvkd40hjxrjqh1hdxhhqhw/1tbiDge0ZVszYdRR2QAAsN
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.1.0
+Subject: Re: [PATCH for-next] RDMA/hns: Support DSCP
+Content-Language: en-US
+To: Leon Romanovsky <leon@kernel.org>
+CC: <jgg@ziepe.ca>, <linux-rdma@vger.kernel.org>, <linuxarm@huawei.com>,
+	<linux-kernel@vger.kernel.org>
+References: <20240315093551.1650088-1-huangjunxian6@hisilicon.com>
+ <20240401114853.GA73174@unreal>
+ <1f786e1b-e8ff-1d6f-7c4d-89724eda6712@hisilicon.com>
+ <20240401181204.GC11187@unreal>
+From: Junxian Huang <huangjunxian6@hisilicon.com>
+In-Reply-To: <20240401181204.GC11187@unreal>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
+ kwepemi500006.china.huawei.com (7.221.188.68)
 
-On Thu, Mar 14, 2024 at 03:17:35PM +0100, Alexander Stein wrote:
-> This adds vdd-supply powering the USB hub.
+
+
+On 2024/4/2 2:12, Leon Romanovsky wrote:
+> On Mon, Apr 01, 2024 at 09:25:39PM +0800, Junxian Huang wrote:
+>>
+>>
+>> On 2024/4/1 19:48, Leon Romanovsky wrote:
+>>> On Fri, Mar 15, 2024 at 05:35:51PM +0800, Junxian Huang wrote:
+>>>> Add support for DSCP configuration. For DSCP, get dscp-prio mapping
+>>>> via hns3 nic driver api .get_dscp_prio() and fill the SL (in WQE for
+>>>> UD or in QPC for RC) with the priority value. The prio-tc mapping is
+>>>> configured to HW by hns3 nic driver. HW will select a corresponding
+>>>> TC according to SL and the prio-tc mapping.
+>>>>
+>>>> Signed-off-by: Junxian Huang <huangjunxian6@hisilicon.com>
+>>>> ---
+>>>>  drivers/infiniband/hw/hns/hns_roce_ah.c     | 32 +++++---
+>>>>  drivers/infiniband/hw/hns/hns_roce_device.h |  6 ++
+>>>>  drivers/infiniband/hw/hns/hns_roce_hw_v2.c  | 86 ++++++++++++++++-----
+>>>>  drivers/infiniband/hw/hns/hns_roce_qp.c     | 13 ++++
+>>>>  include/uapi/rdma/hns-abi.h                 |  9 ++-
+>>>>  5 files changed, 117 insertions(+), 29 deletions(-)
+>>>
+>>> 1. What is TC mode?
+>>
+>> TC mode indicates whether the HW is configured as DSCP mode or VLAN priority
+>> mode currently.
+>>
+>>> 2. Did you post rdma-core PR?
+>>
+>> Not yet. I was meant to wait until this patch is applied. Should I post it
+>> right now?
 > 
-> Signed-off-by: Alexander Stein <alexander.stein@ew.tq-group.com>
+> Yes, for any UAPI changes, we require to have rdma-core PR.
+> 
+> Thanks
+> 
 
-Applied both, thanks!
+PR has been posted.
 
+Thanks,
+Junxian
+
+>>
+>> Junxian
+>>
+>>>
+>>> Thanks
 
