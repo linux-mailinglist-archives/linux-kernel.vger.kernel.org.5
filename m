@@ -1,265 +1,119 @@
-Return-Path: <linux-kernel+bounces-127662-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-127664-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3CEAF894F21
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 11:51:59 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 82594894F27
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 11:52:38 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id BC7D61F24D03
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 09:51:58 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B3AAB1C2069E
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 09:52:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C31BC5914A;
-	Tue,  2 Apr 2024 09:51:49 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C183C5731E;
-	Tue,  2 Apr 2024 09:51:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BD9C559160;
+	Tue,  2 Apr 2024 09:52:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="emt2sI61"
+Received: from mail-qt1-f175.google.com (mail-qt1-f175.google.com [209.85.160.175])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9091658AC1
+	for <linux-kernel@vger.kernel.org>; Tue,  2 Apr 2024 09:52:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.175
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712051509; cv=none; b=Mz15UI3kDGGAtXfkMRVOxc9sxtl66T+EqJiG16zWFIf9TmMLo8A7AWd5+CQJfccDO/LpAdOKAi3Kw6k+onxxNDIpL5ZSghwGevRQAZJLeMauTPxYfeAeGwvkuGeDcZ4uOOpoQZ0b7/2VNAMfOMwhnE2sUisLkjrmVPcPjv5YrVg=
+	t=1712051547; cv=none; b=cEhmyQk4ZK0Rx++EVFFZGtwzo1cb+VZKUB+R04F99Vp8cTlzgBmGjmwr9tV8Jnw0EPCX4VpfBSbT73AMwBU4c0/cC44Cpg2KOoew/46qPcEpQYeh4PAfu73slOaD0FMDZy7EZl9GY+xDMR8gr8iDbyfknHVQz9RGlu58X496JGU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712051509; c=relaxed/simple;
-	bh=rOdi/4vFsvEtuu98vAyIokjgeKKsJDEXWo+b+t4gSN4=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=U+MigYapiPtN00Nf0W8siS4xXuzArq1W6gMypd6jQyokwJP4ig+dPT0eebascgEIq1CU07phvgU7hW3Z+dANgpnR/Nioxq+oHY7lPPbfW+tUoqivOLFnZPxuzNj4UVmEvBwU5dHMAZURvF2sn/pzHBJa+gKbFqjW5iZSyLVFYM4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 0F0201042;
-	Tue,  2 Apr 2024 02:52:18 -0700 (PDT)
-Received: from [10.57.72.194] (unknown [10.57.72.194])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id D73FF3F766;
-	Tue,  2 Apr 2024 02:51:44 -0700 (PDT)
-Message-ID: <2a04d77c-52b8-47f5-b8e7-c36936db99ac@arm.com>
-Date: Tue, 2 Apr 2024 10:51:48 +0100
+	s=arc-20240116; t=1712051547; c=relaxed/simple;
+	bh=bWtclbWQ3n4Y/lHPPnDws80AG6Kx8b+JA2wbGmJqKLQ=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=mQPTNJnd2SURlWzDeQcTp/QiGxkBGVvgH7F5PZKyFDQ5fwu0DREBYMpBlYb5r2czobPx+mrGkeyg93xv5uXHgQiS64sljtMmrKFtLtP4rtZF9iF7QSTDZC77d7O5prbMYlKg1TeUhPTccKPuv+Hzx88BhxBHbh2gwYD5zzDmC0s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=emt2sI61; arc=none smtp.client-ip=209.85.160.175
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-qt1-f175.google.com with SMTP id d75a77b69052e-42ee0c326e8so932011cf.0
+        for <linux-kernel@vger.kernel.org>; Tue, 02 Apr 2024 02:52:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1712051544; x=1712656344; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=WEX73cwwZrQ/BwJdhWVvfWhSUyNTeLuyTP3JLeqfiAw=;
+        b=emt2sI61SknS3BQuwNdzzw8d17XUWeKcXEf/DlQAfsa1L3O4h7cfUpyP/4AjfBDDa1
+         TlcMBEORQFLobnjlbzxWT4ELapUJwVQJjtpzdQcZHB3Q46zxWy4Az9ugoTGQZhkhfVkK
+         fu6q+N8M8Dd+KbY/ZNe36zz6BfcrX54ImraleFzQ0+6sFBZFnNRRKLNN52fMi8QMMsbE
+         n4A21EyLLit6H+E2SMuJD8AYDR8r+9K5dMJZZw5BfBwiqYSktrLWA6rXlNwOXeloGmIS
+         5rMuDAm7UxKP2C0Wmzup7+Uo3sU7m4iY2dkiK8BrQZeppS2AaI32+KhqnmWiG/WhZ2LP
+         TmEg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712051544; x=1712656344;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=WEX73cwwZrQ/BwJdhWVvfWhSUyNTeLuyTP3JLeqfiAw=;
+        b=dhkhA86NpZXSsKCtOBRxx5orTU8NCooWFAJUpwu3ite5AYURvRaBYj0iN6mBvw9o+2
+         JEVy0aIXi+7cdAUxxxMUUKoRvrJfEAIMAHtCuRKM3RCLcAc+p/tbzxSMO5uwBAyIvy3o
+         mwIdKUKLYa62aNOZ3NTE9JnIM4kD9ZA5dnhKsgIfO1QbsTAjmuMb7T73NimN66zvOimx
+         EFM4ZaNPEjONBwFVk97mHZdchnuHQprEPTlP/8V1cdtaHN2fxbwYqLVrFSF0U2iWKxvI
+         9SNb8FLMH12hZBiZKWDxMlaZTWSIFds2PUs/5pGEtsreRhVUq/dWqxfQiC5pyj6oujU1
+         7xjQ==
+X-Forwarded-Encrypted: i=1; AJvYcCW3nXY7gj8ROlCMa2w1kKejLP7J7cUj5PlgzaI84oJ+eTJe5e+c76bNN8j9HV4GIpX3Ev6YbfmJ4WKGdFTW4KSARonX6QUbIvOdLdBt
+X-Gm-Message-State: AOJu0Ywd99WruFpAGsvp8jMNTz7VNmYt5jS2/a1x91sEitsgiAXc1I/8
+	puaC9mIFMNqFoNG1O3z2koJ8Y0bKLCUnzpQ4EeIZHgVBRtGh2HxW8wQlS6fw3JNI9FRIt/bQFCR
+	deVSIgbdK4PSP5kNBkdoGq5rMxplL/6NupuRG
+X-Google-Smtp-Source: AGHT+IEoARSTG+8sB5mICzAnb2Podt2MnjgilxHofQTtmG4r4ftr5RqNKjsIYIGWH8oZkaWdS5FoBK0VUhKILjW99KU=
+X-Received: by 2002:a05:622a:6188:b0:431:5dd4:a67e with SMTP id
+ hh8-20020a05622a618800b004315dd4a67emr801320qtb.14.1712051543372; Tue, 02 Apr
+ 2024 02:52:23 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] thermal: gov_power_allocator: Allow binding without
- cooling devices
-Content-Language: en-US
-To: Nikita Travkin <nikitos.tr@gmail.com>
-Cc: Zhang Rui <rui.zhang@intel.com>, "Rafael J. Wysocki" <rafael@kernel.org>,
- Daniel Lezcano <daniel.lezcano@linaro.org>,
- "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>, linux-pm@vger.kernel.org,
- linux-kernel@vger.kernel.org
-References: <20240321-gpa-no-cooling-devs-v1-1-5c9e0ef2062e@trvn.ru>
- <CAJZ5v0jAq=iMKzYBz-Ni6Zqpbgxp3_0UYpPiAoSLcfGNJ8ruhQ@mail.gmail.com>
- <1bfcb1cf-fc08-404b-be36-b5e1863f7c59@arm.com>
- <3df783db-3243-4484-a429-4d3e64b9dbae@arm.com>
- <1467af1e-cdeb-4fe0-ad42-407de96dcf01@gmail.com>
-From: Lukasz Luba <lukasz.luba@arm.com>
-In-Reply-To: <1467af1e-cdeb-4fe0-ad42-407de96dcf01@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+References: <20240328142004.2144568-1-jackmanb@google.com> <CAGS_qxr_vdix2mnoZve+L4EZv4wO-XdnJ1burnn7fM-at6EuEg@mail.gmail.com>
+In-Reply-To: <CAGS_qxr_vdix2mnoZve+L4EZv4wO-XdnJ1burnn7fM-at6EuEg@mail.gmail.com>
+From: Brendan Jackman <jackmanb@google.com>
+Date: Tue, 2 Apr 2024 11:52:10 +0200
+Message-ID: <CA+i-1C2J1K4ruhunwVjCctbp1n40jdRcc1dHshbw=HB+8nKYxg@mail.gmail.com>
+Subject: Re: [PATCH] Documentation: kunit: Clarify test filter format
+To: Daniel Latypov <dlatypov@google.com>
+Cc: linux-kselftest@vger.kernel.org, kunit-dev@googlegroups.com, 
+	linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	Brendan Higgins <brendan.higgins@linux.dev>, davidgow@google.com, rmoar@google.com, 
+	corbet@lwn.net
+Content-Type: text/plain; charset="UTF-8"
 
+On Thu, 28 Mar 2024 at 19:27, Daniel Latypov <dlatypov@google.com> wrote:
+> This current wording and examples (before and after this change) might
+> make the user think otherwise, i.e. that it works like
+>   effective_name = suite_name + '.' + test_name
+>   return glob_matches(effective_name, filter_glob)
+>
+> E.g. given a test name like `suite.test_name` and glob='suite*name'
+> they might expect it to match, but it does *not*.
+>
+> The logic actually works like:
+>   suite_glob, test_glob = split(filter_glob)
+>   if not_glob_matches(suite_name, suite_glob):
+>      return False
+>   if test_glob and not glob_matches(test_name, test_glob):
+>      return False
+>   return True
+>
+> Perhaps expanding the list of examples to cover more of the edge cases
+> could help get the right intuition?
+>
+> E.g. perhaps these:
+>   kunit.py run <suite_name>  # runs all tests in a specific suite
+>   kunit.py run <suite_name>.<test_name>  # run a specific test
+>
+>   kunit.py run suite_prefix*  # what the current example shows
+>   kunit.py run *.*test_suffix  # matches all suites, only tests w/ a
+> certain suffix
+>   kunit.py run suite_prefix*.*test_suffix # combined version of above
+>
+> Thoughts?
 
-
-On 3/29/24 13:54, Nikita Travkin wrote:
-> Hi Lukasz, Rafael!
-> 
-> First of all, it seems like outlook mail server that serves @arm.com 
-> refuses
-> to communicate with mine so I can't send anything to it and it refuses to
-> send anything to me either...
-> 
-> I'm sorry for any inconvenience this may cause and I will deal with it 
-> somehow...
-> 
-> 28.03.2024 14:50, Lukasz Luba пишет:
->>
->>
->> On 3/28/24 09:12, Lukasz Luba wrote:
->>> Hi Rafael,
->>>
->>> On 3/27/24 15:25, Rafael J. Wysocki wrote:
->>>> On Thu, Mar 21, 2024 at 3:44 PM Nikita Travkin <nikita@trvn.ru> wrote:
->>>>>
->>>>> Commit e83747c2f8e3 ("thermal: gov_power_allocator: Set up trip 
->>>>> points earlier")
->>>>> added a check that would fail binding the governer if there is no
->>>>> cooling devices bound to the thermal zone. Unfortunately this causes
->>>>> issues in cases when the TZ is bound to the governer before the 
->>>>> cooling
->>>>> devices are attached to it. (I.e. when the tz is registered using
->>>>> thermal_zone_device_register_with_trips().)
->>>>>
->>>>> Additionally, the documentation across gov_power_allocator suggests 
->>>>> it's
->>>>> intended to allow it to be bound to thermal zones without cooling
->>>>> devices (and thus without passive/active trip points), however the 
->>>>> same
->>>>> change added a check for the trip point to be present, causing 
->>>>> those TZ
->>>>> to fail probing. 
->>
->> This patch description is mixing trips and cooling devices and refers to
->> a commit which is only for guarding the trip points number to be
->> not less than 2. In IPA we require 2 trip points.
-> 
-> I'm sorry, I probably worded this poorly. I meant that there may be
-> a TZ that has no trip points because it's not meant to be used with
-> any cooling device.
-
-The 'empty' thermal zone w/o trip points and w/o cooling devices, but
-w/ governor looks odd but still live.
-
-> 
->>>>>
->>>>> Those changes cause all thermal zones to fail on some devices (such as
->>>>> sc7180-acer-aspire1) and prevent the kernel from controlling the 
->>>>> cpu/gpu
->>>>> frequency based on the temperature, as well as losing all the other
->>>>> "informational" thermal zones if power_allocator is set as default.
->>>>>
->>>>> This commit partially reverts the referenced one by dropping the trip
->>>>> point check and by allowing the TZ to probe even if no actor buffer 
->>>>> was
->>>>> allocated to allow those TZ to probe again.
->>>>>
->>>>> Fixes: e83747c2f8e3 ("thermal: gov_power_allocator: Set up trip 
->>>>> points earlier") 
->>
->> Not that commit.
->>>>> Signed-off-by: Nikita Travkin <nikita@trvn.ru>
->>>>> ---
->>>>> I've noticed that all thermal zones fail probing with -EINVAL on my
->>>>> sc7180 based Acer Aspire 1 since 6.8. This commit allows me to bring
->>>>> them back. 
->>>>
->>>> Łukasz, any comments? 
->>>
->>> Let me check this today.
->>>>> ---
->>>>>   drivers/thermal/gov_power_allocator.c | 14 +++++---------
->>>>>   1 file changed, 5 insertions(+), 9 deletions(-)
->>>>>
->>>>> diff --git a/drivers/thermal/gov_power_allocator.c 
->>>>> b/drivers/thermal/gov_power_allocator.c
->>>>> index 1b17dc4c219c..4f2d7f3b7508 100644
->>>>> --- a/drivers/thermal/gov_power_allocator.c
->>>>> +++ b/drivers/thermal/gov_power_allocator.c
->>>>> @@ -679,11 +679,6 @@ static int power_allocator_bind(struct 
->>>>> thermal_zone_device *tz)
->>>>>                  return -ENOMEM;
->>>>>
->>>>>          get_governor_trips(tz, params);
->>>>> -       if (!params->trip_max) {
->>>>> -               dev_warn(&tz->device, "power_allocator: missing 
->>>>> trip_max\n"); 
->>
->> This if() guards the binding of TZ with less than 2 trip points,
->> not the cooling devices.
->>>>> - kfree(params);
->>>>> -               return -EINVAL;
->>>>> -       }
->>>>>
->>>>>          ret = check_power_actors(tz, params);
->>>>>          if (ret < 0) {
->>>>> @@ -693,7 +688,7 @@ static int power_allocator_bind(struct 
->>>>> thermal_zone_device *tz)
->>>>>          }
->>>>>
->>>>>          ret = allocate_actors_buffer(params, ret);
->>>>> -       if (ret) { 
->>
->> This if() is from different commit.
-> 
-> Hm you're right, I misread the commit I think and on a second thought
-> this patch combines two different issues. I will split it up into two.
-> 
->>>>> +       if (ret && ret != -EINVAL) { 
->>
->> This is about 0 cooling devices in the thermal zone, but IPA won't work
->> so why to even fake and forward binding?
->>
->> Rafael should we support binding with 0 cooling devices? 
-> 
-> As I understand it, cooling devices can attach to existing thermal zones
-> so it's possible that TZ is registered before any cooling devices has
-> attached to it. This is exactly what happens in my case: first the
-> IPA is probed for the TZ and after that the cooling device is attached.
-
-That's fair enough. IPA should support it.
-
-> 
-> check_power_actors() kerneldoc in IPA says:
-> 
->> * If all of the cooling  devices currently attached to @tz implement 
->> the power
->> * actor API, return the  number of them (which may be 0, because some 
->> cooling
->> * devices may be  attached later). Otherwise, return -EINVAL.
-> 
-> and afaiu this is exactly how it's used by 
-> thermal_zone_device_register_with_trips():
-> 
->      result = thermal_set_governor(tz, governor);
->      if (result) {
-> mutex_unlock(&thermal_governor_lock);
->          goto unregister;
->      }
->      (...)
->      /* Bind cooling devices for this zone */
->      bind_tz(tz);
-> 
->>>>> dev_warn(&tz->device, "power_allocator: allocation failed\n");
->>>>>                  kfree(params);
->>>>>                  return ret;
->>>>> @@ -714,9 +709,10 @@ static int power_allocator_bind(struct 
->>>>> thermal_zone_device *tz)
->>>>>          else
->>>>>                  params->sustainable_power = 
->>>>> tz->tzp->sustainable_power;
->>>>>
->>>>> -       estimate_pid_constants(tz, tz->tzp->sustainable_power,
->>>>> -                              params->trip_switch_on,
->>>>> - params->trip_max->temperature);
->>>>> +       if (params->trip_max) 
->>
->> This is not supported, we need those 2 trip points.
-> 
-> Yes, I understand that IPA is useless without trip points and/or cooling
-> devices. However from the snippet above the TZ won't be registered if
-> the governor fails to probe. This means that if one has IPA set as the
-> default, thermal core will try to probe it for TZ without trip points and,
-> when it fails, will fail to probe the whole TZ.
-> 
-> get_governor_trips() kerneldoc in IPA says:
-> 
->  > * on.  If there are no passive or active trip points, then the
->  > * governor won't do anything.  In fact, its throttle function
->  > * won't be called at all.
-> 
-> Which suggests to me that being bound to such TZ is expected.
-> 
-> Unless you have any thoughts on how to solve this better, I will split
-> this into two commits and resubmit in a few days:
-
-Yes, please split into 2 patches for different commits.
-
-> 
->   - Allow binding without cooling devices (allow -EINVAL after allocate)
-
-It won't be the fix, it's a hack. If the 0 cooling devices is going to 
-be the normal state, then it has to be handled not as error exception
-path.
-
-Please change the allocate_actors_buffer():
-          if (!num_actors) {
-                  ret = -EINVAL;   <--- ret = 0 here
-
-since it's normal state now.
-
->   - Allow binding without trip points (Rest of this patch)
-
-Yes, the rest of that patch looks good.
-
-
+Thanks yeah, good point. The result is pretty verbose but it doesn't
+create much cognitive load for the reader so might as well just be
+really explicit. v2 incoming if `make htmldocs` ever finishes....
 
