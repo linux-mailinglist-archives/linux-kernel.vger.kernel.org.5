@@ -1,134 +1,211 @@
-Return-Path: <linux-kernel+bounces-127507-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-127508-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E313E894CAE
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 09:33:50 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id EB854894CB1
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 09:34:28 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EA6CD1C2204E
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 07:33:49 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A1430282D09
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 07:34:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 267A43BBE3;
-	Tue,  2 Apr 2024 07:33:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CDE663B299;
+	Tue,  2 Apr 2024 07:34:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="q45gGveN"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (1024-bit key) header.d=natalenko.name header.i=@natalenko.name header.b="fxEklbVQ"
+Received: from prime.voidband.net (prime.voidband.net [199.247.17.104])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5A2D539AD5;
-	Tue,  2 Apr 2024 07:33:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 75C493AC08
+	for <linux-kernel@vger.kernel.org>; Tue,  2 Apr 2024 07:34:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=199.247.17.104
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712043221; cv=none; b=qi9UEs2ex1woO47XIbNat0xf8nQZ1jYN9R+rqCItDbPoPWuRPYXJl3L+NTLciK0UGe4G/1zRptF17FrmiTkYNlE2t8YyTCtyi4RGNNRS/xYGTdp61/PIbSr+gXK0nXHnsgYwGTl+UJ7OLZBlcLy8TuusSbyY3v8XRC/RZDZcjp0=
+	t=1712043261; cv=none; b=OnYUJohnCeAUCPosYPmLCrrfAUmGQ4rENWArqHSsum8LmMP//l+TuRuLVbClyPRY6O5LM1rOWnOBDGNqrMd+nevEZ93nKcOkDjdDEZhoZGNeee2/mJWwBZ4JHW/Pqw4r7pNymBw4wgFxtE9fWGGKKLjf5FoayQZRkfV7r7kbc3A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712043221; c=relaxed/simple;
-	bh=m/HmUPqKtAU2Uzx9nZeyjvyqOP6z3AWH/L98dSBa2eE=;
-	h=Date:Message-ID:From:To:Cc:Subject:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=j+nVhyR47v7rwaZyHSUYstn6pA4io4uaBrkAzT/SOnAWWxam6nzHbs9Cb9BqsJkvff9lTafSYhhCskB7p6xsK9Vg67LD5ATSAa0poFfgtPDUd0x/qGYGjxJebVxIXAZ4Gv+3al41ZDJ0Kpa7Ma/DvgjMLbg8szeZaNF9lZnEeuE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=q45gGveN; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D3DFEC433F1;
-	Tue,  2 Apr 2024 07:33:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712043220;
-	bh=m/HmUPqKtAU2Uzx9nZeyjvyqOP6z3AWH/L98dSBa2eE=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=q45gGveNzJJNmszpvI5WF3tatmQxt0nBrDNzXVfcUvtoKdEArlvelGXMiNea3muXS
-	 AwsWrkMjm2FR4+yXI6W5figU2Hc9V21fJTdwGugb+Eb/5lnFimTnLQZ4r6hMgIJkaW
-	 7NtTQTNsXB3hRf4d0NIa+qRqyyoxfl84SLzLpK33CGpGizwSVyKl03yHW8+Nyo4pdB
-	 I3OZQdjtoeD9WRNWs0VoQGpgdbqMq/HxtyDPjR5D2HLH6QkrBBi+Dj3s/u49291KC8
-	 yawsn9G89FH1p6za4/EEB17IMDpni4jtNxIbUIi+eFdq8Xh4zhEzzIbL3bOzXRcD7z
-	 XMa9VuwynDwrw==
-Received: from sofa.misterjones.org ([185.219.108.64] helo=goblin-girl.misterjones.org)
-	by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.95)
-	(envelope-from <maz@kernel.org>)
-	id 1rrYeI-000bjD-4I;
-	Tue, 02 Apr 2024 08:33:38 +0100
-Date: Tue, 02 Apr 2024 08:33:37 +0100
-Message-ID: <86bk6sz0a6.wl-maz@kernel.org>
-From: Marc Zyngier <maz@kernel.org>
-To: Yu Zhao <yuzhao@google.com>
-Cc: James Houghton <jthoughton@google.com>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Paolo Bonzini <pbonzini@redhat.com>,
-	David Matlack <dmatlack@google.com>,
-	Oliver Upton <oliver.upton@linux.dev>,
-	Sean Christopherson <seanjc@google.com>,
-	Jonathan Corbet <corbet@lwn.net>,
-	James Morse <james.morse@arm.com>,
-	Suzuki K Poulose <suzuki.poulose@arm.com>,
-	Zenghui Yu <yuzenghui@huawei.com>,
-	Catalin Marinas <catalin.marinas@arm.com>,
-	Will Deacon <will@kernel.org>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Ingo Molnar <mingo@redhat.com>,
-	Borislav Petkov <bp@alien8.de>,
-	Dave Hansen <dave.hansen@linux.intel.com>,
-	"H. Peter Anvin" <hpa@zytor.com>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Masami Hiramatsu <mhiramat@kernel.org>,
-	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-	Shaoqin Huang <shahuang@redhat.com>,
-	Gavin Shan <gshan@redhat.com>,
-	Ricardo Koller <ricarkol@google.com>,
-	Raghavendra Rao Ananta <rananta@google.com>,
-	Ryan Roberts <ryan.roberts@arm.com>,
-	David Rientjes <rientjes@google.com>,
-	Axel Rasmussen <axelrasmussen@google.com>,
-	linux-kernel@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org,
-	kvmarm@lists.linux.dev,
-	kvm@vger.kernel.org,
-	linux-mm@kvack.org,
-	linux-trace-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 6/7] KVM: arm64: Participate in bitmap-based PTE aging
-In-Reply-To: <CAOUHufaQ-g6L5roB-3K0GamuS3p9ACpPj9XM-NF67GgrjoTj_A@mail.gmail.com>
-References: <20240401232946.1837665-1-jthoughton@google.com>
-	<20240401232946.1837665-7-jthoughton@google.com>
-	<CAOUHufaQ-g6L5roB-3K0GamuS3p9ACpPj9XM-NF67GgrjoTj_A@mail.gmail.com>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
- FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/29.1
- (aarch64-unknown-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+	s=arc-20240116; t=1712043261; c=relaxed/simple;
+	bh=jSp8wWShlE2Mm6DBBA71MhGhBNRLWFmPrWpzbcc+LiQ=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=LtPZaKa5TwGq5LK4Clihy0R8KWJEtImTp9ocUdfCKjWwagT/59s9+glaBHAOrb0k7X9nZ4bygAwXrXwwanb2TTn3e/gFVvn+womOt2QorWoI5gLYDNrgYhvUVFEsH1DBU8KTI7mt63aBliu3P2G5rEJmgMcO5YcN82AizGTpNTE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=natalenko.name; spf=pass smtp.mailfrom=natalenko.name; dkim=pass (1024-bit key) header.d=natalenko.name header.i=@natalenko.name header.b=fxEklbVQ; arc=none smtp.client-ip=199.247.17.104
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=natalenko.name
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=natalenko.name
+Received: from spock.localnet (unknown [94.142.239.106])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
+	(No client certificate requested)
+	by prime.voidband.net (Postfix) with ESMTPSA id DE7EE6346550;
+	Tue,  2 Apr 2024 09:34:14 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=natalenko.name;
+	s=dkim-20170712; t=1712043255;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=jSp8wWShlE2Mm6DBBA71MhGhBNRLWFmPrWpzbcc+LiQ=;
+	b=fxEklbVQ2TRFIgjebUotwxx3d/i97UCQ/BE5MZFS5A65ODGls8rDM30USDfaEZuTOXWkRo
+	TyRD0MhqnC5IbK7vYIDYfkvxb3EZDgNm7d3vW11wPx7Gog1+aSXxm7APc9MXpQJiryT5y8
+	XHdN8n30j+X8GpktfAVUx/z3W1uQV18=
+From: Oleksandr Natalenko <oleksandr@natalenko.name>
+To: linux-kernel@vger.kernel.org
+Cc: vincentdelor@free.fr, Andrew Morton <akpm@linux-foundation.org>,
+ linux-mm@kvack.org
+Subject:
+ Re: Increase Default vm_max_map_count to Improve Compatibility with Modern
+ Games
+Date: Tue, 02 Apr 2024 09:34:03 +0200
+Message-ID: <13499186.uLZWGnKmhe@natalenko.name>
+In-Reply-To:
+ <566168554.272637693.1710968734203.JavaMail.root@zimbra54-e10.priv.proxad.net>
+References:
+ <566168554.272637693.1710968734203.JavaMail.root@zimbra54-e10.priv.proxad.net>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Content-Type: text/plain; charset=UTF-8
+MIME-Version: 1.0
+Content-Type: multipart/signed; boundary="nextPart2945100.e9J7NaK4W3";
+ micalg="pgp-sha256"; protocol="application/pgp-signature"
+
+--nextPart2945100.e9J7NaK4W3
 Content-Transfer-Encoding: quoted-printable
-X-SA-Exim-Connect-IP: 185.219.108.64
-X-SA-Exim-Rcpt-To: yuzhao@google.com, jthoughton@google.com, akpm@linux-foundation.org, pbonzini@redhat.com, dmatlack@google.com, oliver.upton@linux.dev, seanjc@google.com, corbet@lwn.net, james.morse@arm.com, suzuki.poulose@arm.com, yuzenghui@huawei.com, catalin.marinas@arm.com, will@kernel.org, tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, dave.hansen@linux.intel.com, hpa@zytor.com, rostedt@goodmis.org, mhiramat@kernel.org, mathieu.desnoyers@efficios.com, shahuang@redhat.com, gshan@redhat.com, ricarkol@google.com, rananta@google.com, ryan.roberts@arm.com, rientjes@google.com, axelrasmussen@google.com, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev, kvm@vger.kernel.org, linux-mm@kvack.org, linux-trace-kernel@vger.kernel.org
-X-SA-Exim-Mail-From: maz@kernel.org
-X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+Content-Type: text/plain; charset="utf-8"; protected-headers="v1"
+From: Oleksandr Natalenko <oleksandr@natalenko.name>
+To: linux-kernel@vger.kernel.org
+Date: Tue, 02 Apr 2024 09:34:03 +0200
+Message-ID: <13499186.uLZWGnKmhe@natalenko.name>
+MIME-Version: 1.0
 
-On Tue, 02 Apr 2024 05:06:56 +0100,
-Yu Zhao <yuzhao@google.com> wrote:
+Hello.
+
+On st=C5=99eda 20. b=C5=99ezna 2024 22:05:34, CEST vincentdelor@free.fr wro=
+te:
+> Hello,
 >=20
-> On Mon, Apr 1, 2024 at 7:30=E2=80=AFPM James Houghton <jthoughton@google.=
-com> wrote:
-> >
-> > Participate in bitmap-based aging while grabbing the KVM MMU lock for
-> > reading. Ideally we wouldn't need to grab this lock at all, but that
-> > would require a more intrustive and risky change.
->                        ^^^^^^^^^^ intrusive
-> This sounds subjective -- I'd just present the challenges and let
-> reviewers make their own judgements.
+> I am writing to highlight an issue impacting many Linux users, especially=
+ those who enjoy modern gaming. The current default setting of `vm_max_map_=
+count` at 65530 has been linked to crashes or launch failures in several co=
+ntemporary games.
+>=20
+> To address this, I have opened a detailed bug report (218616 =E2=80=93 In=
+crease Default vm_max_map_count to Improve Gaming Experience on Linux) avai=
+lable at: 218616 =E2=80=93 Increase Default vm_max_map_count to Improve Gam=
+ing Experience on Linux (kernel.org) .
+>=20
+>=20
+> We have identified that several modern games such as Hogwarts Legacy, Sta=
+r Citizen, and others experience crashes or fail to start on Linux due to t=
+he default `vm_max_map_count` being set to 65530. These issues can be mitig=
+ated by increasing the `vm_max_map_count` value to over 1048576, which has =
+been confirmed to resolve the crashes without introducing additional bugs r=
+elated to map handling.
+>=20
+> This issue affects a wide range of users and has been noted in distributi=
+ons like Fedora and Pop!_OS, which have already adjusted this value to acco=
+mmodate modern gaming requirements.
+>=20
+> For reference, here is the change for Fedora:
+> https://fedoraproject.org/wiki/Changes/IncreaseVmMaxMapCount
+>=20
+> Here is a list of games affected by this low value in vm_max_map_count as=
+ reported to Valve:
+>=20
+> THE FINALS
+> https://github.com/ValveSoftware/Proton/issues/7317#issuecomment-19748378=
+50
+>=20
+> Hogwarts Legacy
+> https://github.com/ValveSoftware/Proton/issues/6510#issuecomment-14227811=
+00
+>=20
+> DayZ
+> https://github.com/ValveSoftware/Proton/issues/3899#issuecomment-13043970=
+69
+>=20
+> Counter-Strike 2
+> https://github.com/ValveSoftware/Proton/issues/2704#issuecomment-17051997=
+88
+>=20
+>=20
+> **Steps to Reproduce:**
+> 1. Install Ubuntu or other distribution with `vm_max_map_count` being set=
+ to 65530 and attempt to run affected games such as Hogwarts Legacy or Star=
+ Citizen.
+> 2. Observe that the games crash or fail to start with the default `vm_max=
+_map_count` setting.
+> 3. Modify `/etc/sysctl.conf` to include `vm.max_map_count=3D1048576` (or =
+another sufficiently high value).
+> 4. Reboot the system and observe that the games now run without issue.
+>=20
+> **Expected Result:**
+> Games should run without crashing or failing to start due to `vm_max_map_=
+count` limitations.
+>=20
+> **Actual Result:**
+> Games crash or fail to start unless `vm_max_map_count` is manually increa=
+sed.
+>=20
+> **Suggested Fix:**
+> Increase the default `vm_max_map_count` value in Linux to a value greater=
+ than 1048576 to accommodate modern gaming software requirements.
+>=20
+> **Affected Games:**
+> - Hogwarts Legacy
+> - Star Citizen
+> - THE FINALS
+> - DayZ
+> - Counter-Strike 2
+> - Payday 2
+> - (and potentially others)
+>=20
+> **References:**
+> - Fedora's change documentation: https://fedoraproject.org/wiki/Changes/I=
+ncreaseVmMaxMapCount
+> - Various user reports and confirmations on gaming performance improvemen=
+t with increased `vm_max_map_count`.
+>=20
+> I appreciate your time and consideration and welcome any feedback or sugg=
+estions on this matter.
+>=20
+> Best regards,
+>=20
+> Vincent DELOR
+>=20
+>=20
 
-Quite the opposite.
+Adding more lists and people to Cc. This email was sent to LKML only meanin=
+g it is highly likely no one really saw it.
 
-This sort of comment actually indicates that the author has at least
-understood some of the complexity behind the proposed changes. It is a
-qualitative comment that conveys useful information to reviewers, and
-even more to the maintainers of this code.
+Andrew et al., what do you think?
 
-That's the difference between a human developer and a bot, and I'm not
-overly fond of bots.
+Thank you.
 
-	M.
+=2D-=20
+Oleksandr Natalenko (post-factum)
+--nextPart2945100.e9J7NaK4W3
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part.
+Content-Transfer-Encoding: 7Bit
 
---=20
-Without deviation from the norm, progress is not possible.
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCAAdFiEEZUOOw5ESFLHZZtOKil/iNcg8M0sFAmYLtOsACgkQil/iNcg8
+M0t0pRAAi5v1wzmT90iiaZzodeBoiin6A9PF350AvsWMQWIutVw8yfCZwZaCD90U
+25exHXJD90JGKTGNpAXtgBHS663BrLCOmfkTPxG5sKDUuFwLUhVpHggW8rxQzUHn
+h3Xgk123Upd84CfVJQmp25igW+2MKsH11omFNSQyz0I7pbU9AfvSTRSe7AWqgghA
+eVXI9FBugacfUUwFF53f5uAYnA1z/SgwJ/b40R/BG/ek5QBHbe97asgBbOmC/mYl
+dIvJq/U3zkgQcQEvjPS60YssPu80AhB99Wx+kCibSQgoiI+jhpISSfzmi19c5/Va
+AdcFDzPvQZ3knPln5gpDJ7NU/weXgShdEmQunuskdLSJhTjFnzbr+ySzrTamWw/t
+A9DFEp4yS8p/mNa/ZLO14i4MEVaXYTCnsFt0wWCN1wQ6Eu808HMcevbHhly+dmUd
+M5ASKFpGXnqRYTT/vy+LnEC9dk6W5iYKIaHtvdrLoCNmQlzeHYSPunm4Onowz3rW
+FlPe8OxlOmiokvPiWClu/AECXRzjC5dgzPfr9IuvZ8HdB98qC4tW1bSD9Q29bfXt
+bKWe3jWYa2XGrvwPMRD2ycvZ0pDvQDh0HIZ96xvGxUykCBQpDixGjt5jaZDdPqzU
+yKhqHB911P5Cn79jZhiuzSsVKskIfG+zAUmzDCtHey8XiTTN9MY=
+=3Qrh
+-----END PGP SIGNATURE-----
+
+--nextPart2945100.e9J7NaK4W3--
+
+
+
 
