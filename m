@@ -1,141 +1,89 @@
-Return-Path: <linux-kernel+bounces-128736-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-128737-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id B7C78895ED2
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 23:37:01 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 13462895ED5
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 23:37:43 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7272C289448
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 21:37:00 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 44AB71C208ED
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 21:37:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BAA1715E802;
-	Tue,  2 Apr 2024 21:36:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 22CB615E7F1;
+	Tue,  2 Apr 2024 21:37:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=paul-moore.com header.i=@paul-moore.com header.b="VFs56/kY"
-Received: from mail-yw1-f176.google.com (mail-yw1-f176.google.com [209.85.128.176])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="dYPk/mFO"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2E9C215E5D4
-	for <linux-kernel@vger.kernel.org>; Tue,  2 Apr 2024 21:36:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5AC4A5BAE4;
+	Tue,  2 Apr 2024 21:37:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712093804; cv=none; b=dqt8w9aGyo2frkz0N8GuHfP9u2oo4MH5SEVJxH49kdoMZnIYav9sttwTgTpNhu+sw4tbhf6amm3ALlI2KhutOXR1m9lgUnGHNEcmr7qKrX0QVFnkkgkpYU1S4PRwL4ohjdGkuJFWxeSkhkzWM3ucNGODKcPfaADamLRKE/Lrhsw=
+	t=1712093853; cv=none; b=YJob8j+TF/l+d4E2rsZFhHoKhprSa5vOaky6Uja8E772imD/bu1AC9DbSfWN1ZwzHbDgmSajPNpIucNXoa0trBjNTwrM7mwWGxdFzjNUnm3LFhlB2GaUtqqT4+yHNQUQggOimXAIkhz0EZtoBidXapAPaUWnzTnK5a7PdKceEds=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712093804; c=relaxed/simple;
-	bh=zRrJ7KggAH7cTt1Vhmiuiy2Df28+5h6/wPPYTkWVw04=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=ccYx5u1PqjeiMnT8C9JE4S+INuSomDEK5ER315wBqWXdF6NaLUHSE2fbKzA2IDbZde5GuVbKxYRSrU7XQMLS1LC26dzx3lyg0xf9OnPJuLWEMlFaecX9ywJiTL3626uBPXuD/GHfC4Ln0JGAL/AeJY9iIneNR/+d+kC3klb30m0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=paul-moore.com; spf=pass smtp.mailfrom=paul-moore.com; dkim=pass (2048-bit key) header.d=paul-moore.com header.i=@paul-moore.com header.b=VFs56/kY; arc=none smtp.client-ip=209.85.128.176
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=paul-moore.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=paul-moore.com
-Received: by mail-yw1-f176.google.com with SMTP id 00721157ae682-61461580403so39011627b3.2
-        for <linux-kernel@vger.kernel.org>; Tue, 02 Apr 2024 14:36:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=paul-moore.com; s=google; t=1712093801; x=1712698601; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=timWU9GFd6HZQcBIpJ1fDsofXUJOEA2GJUMxdnQeWyI=;
-        b=VFs56/kYlEJ/L6SfqNtsq2LSS+FXJEtIlml70yJZrVYGXT5pKgv9O1EfqVnfef2DHC
-         effgJPyzTa7fxIfft8tofMWxtRk6jmHDTs/yrjT89LI5jITiHeDxBltTiHMGm1NgfK0c
-         C/IyN5f7hATZMFKF4tDkZVaKw40iTbRHuRL92vkwITMIrS8aH/VZ2+qDNVtlfDd2CWfD
-         4JwBLd0t6R2N76LWeJCWujE/6aOaergy+OuNTXokJ3qZixcUjT3l+gdhN9qrThw4qDzV
-         aHjcDYvhpXIKiv7j7zkVSqOt6JiBpGFYEfXPT1uYaYV2WBffe/MmP7+wNEp2PnfMMkS0
-         L4Ow==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712093801; x=1712698601;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=timWU9GFd6HZQcBIpJ1fDsofXUJOEA2GJUMxdnQeWyI=;
-        b=k3yUqKKyoiLpMHkaJuD41tvsQtIppq8Rqn1egcxw3NrmRRaNboFEdlr8YYjpcJ7u4G
-         +vIix0MckU3Gl7+TGnLAYYT+PWIXfUQnIWRC//4X3dUtomLkPiPaQMLJw4FKOeNimGsE
-         0Y1LpOYCWnb74GTGRxkYfhTNKhAd3m9508E8ZTM1LSTnIaHM+59JO6sdUiVLSnBQXG2w
-         Vx9tDo13vIcpuaNK+bgLcyIq1CN6aetUJSxl1zT5zioLkVIBK1jjXCn0Da+lTasAF3mB
-         W4+wTsS6Eyx2KJMcCeKvHx64RO5SoD0rA1E7ipDsnEygIrNLa9K0wDQO2NXKNDNvZsmm
-         A+CA==
-X-Forwarded-Encrypted: i=1; AJvYcCWFd8/cA6/IFoyHQCBg9mp7g+evq7CmNX00v1uJ8UnHUT3DyjUwKndY8SYnoOBwgj597r7McPzd+yjqaAXvDJMesROAxEwwUNvQqjk7
-X-Gm-Message-State: AOJu0YyNahV7vPwAdyltvIOJzWLteBeoaioIltQB0/2iPr56fhW4X3vT
-	+aXHbndv3ecAnxAfI467G/oaHMaahJkOHoiU1B7qU4k+QMdudYhoQUpLMyIUZ8sIvH7Sm/MiJ4/
-	Q01Wzk1Q7IktvtLoAw2NwMbioijqMaNeNZ7Fo
-X-Google-Smtp-Source: AGHT+IFJTwImClpiwZnwMaF5ABMRExNpfaFRHdgXao7m2+19hKn+RgyYiVPx95ZPN4eHvFaQwRNeE+0VXYBbG7NAbBQ=
-X-Received: by 2002:a81:8544:0:b0:610:e9b2:f84a with SMTP id
- v65-20020a818544000000b00610e9b2f84amr12120598ywf.26.1712093801155; Tue, 02
- Apr 2024 14:36:41 -0700 (PDT)
+	s=arc-20240116; t=1712093853; c=relaxed/simple;
+	bh=sIBx7RwB2qvqQW6tyO38tW+0CwyoH7iyM/+YOWV6j2g=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=aEH0lFwD90JMJXM9i12lfrb6O25jwKhiB9wMdDuI6pRuHrFW7+dyAblROotwPL1RY6kdi0kTrbTgGUeVmE5YVrjq3/nb22lBLXQE/Uyfg8UHncAeP4JunvHGvRXyZtsaqVJHh7CcZZwyle1/dkNDXnXRu0VrhnV08rsuHAkzK0k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=dYPk/mFO; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6BC9EC433F1;
+	Tue,  2 Apr 2024 21:37:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1712093852;
+	bh=sIBx7RwB2qvqQW6tyO38tW+0CwyoH7iyM/+YOWV6j2g=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=dYPk/mFOIrLBeqSqXApAw9JLachGsiZgh4M8lzDFqhtSb/lMqDGerEkJSM+8n3wYm
+	 QAUOAh5E3q0PZ7QqPjm4l1MsWAmAREDtzDac/Hp/Vgm666MKBzzKe7t0MmLalkmhai
+	 p68d6fGuW0sSlV9OsBuP/aqQ0UaRwiAN+RywlAov6Ujv06nbWvZjUlMXScUQpa+znk
+	 VqtFyZtFSJ+cYkyrWgKDEKs72YdcQkAOLwtsCX2eJgLkRx7jmqaUJcaZbYL6dWcopE
+	 gBqtgZCOuj4BZryf4rIdeHSuT+hzxtZLFOvWFFmp7WMK1BcFxBujmMe5ugdQUJtREi
+	 hfqDfSYNCYI5A==
+Date: Tue, 2 Apr 2024 18:37:28 -0300
+From: Arnaldo Carvalho de Melo <acme@kernel.org>
+To: Namhyung Kim <namhyung@kernel.org>
+Cc: Ian Rogers <irogers@google.com>, Kan Liang <kan.liang@linux.intel.com>,
+	Jiri Olsa <jolsa@kernel.org>,
+	Adrian Hunter <adrian.hunter@intel.com>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Ingo Molnar <mingo@kernel.org>, LKML <linux-kernel@vger.kernel.org>,
+	linux-perf-users@vger.kernel.org, Song Liu <song@kernel.org>,
+	bpf@vger.kernel.org
+Subject: Re: [PATCH] perf lock contention: Add a missing NULL check
+Message-ID: <Zgx6mMda_X4pcAj6@x1>
+References: <20240402184543.898923-1-namhyung@kernel.org>
+ <ZgxgRJdFlwfESwKF@x1>
+ <CAM9d7ci7a2dbn1cz-OBkYF7P1fFA3yoBMuTzXRx=KP-yEnyfnQ@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240402141145.2685631-1-roberto.sassu@huaweicloud.com>
- <CAHk-=wgepVMJCYj9s7J50_Tpb5BWq9buBoF0J5HAa1xjet6B8A@mail.gmail.com>
- <CAHk-=wjjx3oZ55Uyaw9N_kboHdiScLkXAu05CmPF_p_UhQ-tbw@mail.gmail.com> <20240402210035.GI538574@ZenIV>
-In-Reply-To: <20240402210035.GI538574@ZenIV>
-From: Paul Moore <paul@paul-moore.com>
-Date: Tue, 2 Apr 2024 17:36:30 -0400
-Message-ID: <CAHC9VhSWiQQ3shgczkNr+xYX6G5PX+LgeP3bsMepnM_cp4Gd4g@mail.gmail.com>
-Subject: Re: [GIT PULL] security changes for v6.9-rc3
-To: Al Viro <viro@zeniv.linux.org.uk>
-Cc: Linus Torvalds <torvalds@linux-foundation.org>, 
-	Roberto Sassu <roberto.sassu@huaweicloud.com>, linux-integrity@vger.kernel.org, 
-	linux-security-module@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
-	linux-cifs@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	Roberto Sassu <roberto.sassu@huawei.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAM9d7ci7a2dbn1cz-OBkYF7P1fFA3yoBMuTzXRx=KP-yEnyfnQ@mail.gmail.com>
 
-On Tue, Apr 2, 2024 at 5:00=E2=80=AFPM Al Viro <viro@zeniv.linux.org.uk> wr=
-ote:
-> On Tue, Apr 02, 2024 at 12:57:28PM -0700, Linus Torvalds wrote:
->
-> > So in other cases we do handle the NULL, but it does seem like the
-> > other cases actually do validaly want to deal with this (ie the
-> > fsnotify case will say "the directory that mknod was done in was
-> > changed" even if it doesn't know what the change is.
-> >
-> > But for the security case, it really doesn't seem to make much sense
-> > to check a mknod() that you don't know the result of.
-> >
-> > I do wonder if that "!inode" test might also be more specific with
-> > "d_unhashed(dentry)". But that would only make sense if we moved this
-> > test from security_path_post_mknod() into the caller itself, ie we
-> > could possibly do something like this instead (or in addition to):
-> >
-> >   -     if (error)
-> >   -             goto out2;
-> >   -     security_path_post_mknod(idmap, dentry);
-> >   +     if (!error && !d_unhashed(dentry))
-> >   +             security_path_post_mknod(idmap, dentry);
-> >
-> > which might also be sensible.
-> >
-> > Al? Anybody?
->
-> Several things here:
->
->         1) location of that hook is wrong.  It's really "how do we catch
-> file creation that does not come through open() - yes, you can use
-> mknod(2) for that".  It should've been after the call of vfs_create(),
-> not the entire switch.  LSM folks have a disturbing fondness of inserting
-> hooks in various places, but IMO this one has no business being where
-> they'd placed it.
+On Tue, Apr 02, 2024 at 01:42:05PM -0700, Namhyung Kim wrote:
+> On Tue, Apr 2, 2024 at 12:45 PM Arnaldo Carvalho de Melo <acme@kernel.org> wrote:
+> > Acked-by: Arnaldo Carvalho de Melo <acme@redhat.com>
 
-I know it's everyone's favorite hobby to bash the LSM and LSM devs,
-but it's important to note that we don't add hooks without working
-with the associated subsystem devs to get approval.  In the cases
-where we don't get an explicit ACK, there is an on-list approval, or
-several ignored on-list attempts over weeks/months/years.  We want to
-be good neighbors.
+> > Are you going to have this merged into perf-tools?
 
-Roberto's original patch which converted from the IMA/EVM hook to the
-LSM hook was ACK'd by the VFS folks.
+> > A Fixes: tag isn't perhaps needed as it worked in the past?
+ 
+> Fixes: 1811e82767dcc ("perf lock contention: Track and show siglock
+> with address")
+ 
+> It was introduced in v6.4 and it should be fine to have this
+> even without the error.  I'll queue it to perf-tools.
 
-Regardless, Roberto if it isn't obvious by now, just move the hook
-back to where it was prior to v6.9-rc1.
+ok, better, people trying the tool with a recent kernel will experience
+this, so its the right thing to get it thru perf-tools.
 
---=20
-paul-moore.com
+Thanks!
+
+- Arnaldo
 
