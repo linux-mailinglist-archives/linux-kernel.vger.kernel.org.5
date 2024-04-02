@@ -1,133 +1,93 @@
-Return-Path: <linux-kernel+bounces-128109-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-128116-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 73D4A895641
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 16:10:07 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E91E5895652
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 16:11:51 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A0ED41C22B31
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 14:10:06 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 489FA284BA1
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 14:11:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7D10E1292C9;
-	Tue,  2 Apr 2024 14:09:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E96E7126F16;
+	Tue,  2 Apr 2024 14:10:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="OY3OBIdS"
-Received: from mail-ej1-f52.google.com (mail-ej1-f52.google.com [209.85.218.52])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="E9ejCqdl"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BE32985C4E
-	for <linux-kernel@vger.kernel.org>; Tue,  2 Apr 2024 14:09:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 08DBF74262;
+	Tue,  2 Apr 2024 14:10:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712066982; cv=none; b=io30CXnfnbYOe88U7BkldSVz8fxYuR9JwUv5BU+/CW7g0FVZJwt+4M85/JlPrHieYOPXH04gVddNrZBF1zXkZfdJulp86uIFPzRk2l165z5igtAzSLu1mdRwblnw6c2udtrc2j87O5u6j9EbalXdPCVOvNBX9fJOnYkYu6GAwpY=
+	t=1712067028; cv=none; b=I2DHBof16wX7+5GF+Jot3nwdpcA2CV81s+DWQWZzpVC6IY6GS/F262YfzFzw3+id4uzLNR8IlZ8JtG6Vog/lKMhsKwQ2X3xqisHo24s3nmp4MD4wjoDI3scWSwiQXhHMl0Kb5UixrliSZX1ktSYs/7lg8qMCTGJMgxBEr7ktCCk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712066982; c=relaxed/simple;
-	bh=LTkw8G/UbnzbJ69YL6GosvdrYC0acddZdwlT7ImDQUo=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=jv/f/w5vMk12XelJpIMzP65DW6XXzXGJutVJsWv5bvPR5AQo+CJyYKRVNl/CbY6k0cGIs2iDX9P4LTPza+ltpH1hTafgGpNS7aCst736yKDEotsuY8hLl3csGJUxTuo9OKJ2pextfmwK7D0bbGAUWJWRIngjxOhc6LDik/Wbr60=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=OY3OBIdS; arc=none smtp.client-ip=209.85.218.52
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ej1-f52.google.com with SMTP id a640c23a62f3a-a4e5ee91879so308391066b.3
-        for <linux-kernel@vger.kernel.org>; Tue, 02 Apr 2024 07:09:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1712066979; x=1712671779; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=Pd+8DVN5G2IkVOB54fyerdrNg9YmjMKBL8xpHTKHGmI=;
-        b=OY3OBIdSWblv0nToz3q181O1+CbQTm6FF84pyqm1+qlq+GLigNp3vbYxsrKcY8PbaE
-         HUgIX3/Hvue1FpHH+qAf2ULOCGgBBqbI6JUJhFLJN2aIhRua7nrFECSp9h0cfagTp7gz
-         7SOscx0ouyyzp24gon//1QVeB8L+s9o99V/r29hz4koQELs5EJtpG/j3zGxqYrp2ziJJ
-         EbmNgOd2T/JeNwCMlm3o8kHHesf0uCuiSoNxnvnAA2sSODuQXXXOG4OFbcjRpSAvhW9U
-         L9AhEBquNfemiOOOXU8mVTFjLDTJ352kw3Ul6row1abTE93QhH1m8jLm/fSK0x5lqZEl
-         eZRg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712066979; x=1712671779;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Pd+8DVN5G2IkVOB54fyerdrNg9YmjMKBL8xpHTKHGmI=;
-        b=S1PMRI55BkbuuD82952Xv3f7U6qTOLqLVJcZojUyuGc4wvBwFFUAAnbN9HigrYKQ8J
-         vFObunUp/v2CWGmZ7xwJAaP883P7AsjFuuHFPAMKMUgna57Tbn9TQJ9nyejqVI8zfNuH
-         I81osFzEgJnBjYQn5KqN/Pz2D0pooSmGuVHqXS3dQoxJKVKl54JrF1KfJNn9WldSPF/p
-         qx1Pw+5I7NFMso+I29kbxrV25e1Urto1ljeF210wzp5HDGn1xE1XMUvw1lgumTD6TSgO
-         fUA2WxWwXZfZb/l9Mu8bO5lGOhEtIZPZ2L+mhPNy+q5hIGcS8nBJzvmeRhovqeAZH7bD
-         hfkg==
-X-Forwarded-Encrypted: i=1; AJvYcCXnNZpmcCAuLYLwt4xqGl/XLp/WF3CeIhuEbAMS0mMGGGC4z8WHOZLxuCFAjRbsxvgQCYCYCgOScBcGw/MT4zVLAwx2/TZn98xCwZMd
-X-Gm-Message-State: AOJu0Yx5O27Btg6igUBbRlre28aP/6hbwjO/RIrH6TSyoo1nnCd/gF4F
-	ZqPcMo68zHVo1Dq282bUdODmCPO7gslaXB7fLtW4e9idSGnqowHfpN3L8j3LcNs=
-X-Google-Smtp-Source: AGHT+IHULZd7aTRgJq9Vh0DgCgeBzmCZLRHFYYSFMf78XHwA50Pp9CV+gJCGmkGqv9CBrWjPGxHVeQ==
-X-Received: by 2002:a17:907:7f12:b0:a4e:516b:2fea with SMTP id qf18-20020a1709077f1200b00a4e516b2feamr6665482ejc.50.1712066978929;
-        Tue, 02 Apr 2024 07:09:38 -0700 (PDT)
-Received: from localhost ([102.222.70.76])
-        by smtp.gmail.com with ESMTPSA id q2-20020a170906b28200b00a4655976025sm6534890ejz.82.2024.04.02.07.09.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 02 Apr 2024 07:09:38 -0700 (PDT)
-Date: Tue, 2 Apr 2024 17:09:34 +0300
-From: Dan Carpenter <dan.carpenter@linaro.org>
-To: Andy Shevchenko <andriy.shevchenko@intel.com>
-Cc: "Peng Fan (OSS)" <peng.fan@oss.nxp.com>,
-	Sudeep Holla <sudeep.holla@arm.com>,
-	Cristian Marussi <cristian.marussi@arm.com>,
-	Rob Herring <robh@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Linus Walleij <linus.walleij@linaro.org>,
-	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-	devicetree@vger.kernel.org, linux-gpio@vger.kernel.org,
-	Peng Fan <peng.fan@nxp.com>,
-	Oleksii Moisieiev <oleksii_moisieiev@epam.com>
-Subject: Re: [PATCH v7 4/4] pinctrl: Implementation of the generic
- scmi-pinctrl driver
-Message-ID: <c5bdf039-c43b-4611-9f0b-81585e296206@moroto.mountain>
-References: <20240402-pinctrl-scmi-v7-0-3ea519d12cf7@nxp.com>
- <20240402-pinctrl-scmi-v7-4-3ea519d12cf7@nxp.com>
- <ZgwGpZ6S13vjk8jh@smile.fi.intel.com>
+	s=arc-20240116; t=1712067028; c=relaxed/simple;
+	bh=6/gaVejmho+6gxtK4B1sWMwBKvhxjxSbV/MyNET8rRw=;
+	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
+	 In-Reply-To:To:Cc; b=QfJK2BCkSNAGOi1vmVUc4pzr7OTgq5pDlN9DSK0apn4Qfms12aPSzeEcGFLTxIjrYwaX+EkYEn+gY3Z/Q/p3pK4YMIqRGa/6UQua1xTQhJ39gahaX1IdR62YvvbDhhMvKSR0FbGia+Q+bpBBNqFt3RzkPB4BM7k8H3oI2pZuSRo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=E9ejCqdl; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 9370DC433F1;
+	Tue,  2 Apr 2024 14:10:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1712067027;
+	bh=6/gaVejmho+6gxtK4B1sWMwBKvhxjxSbV/MyNET8rRw=;
+	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+	b=E9ejCqdlolfsY80nizbS0Awh8t/GWEyC6EIf3L+vmEsiLa/VuNWGZHEW4oULhqS4H
+	 pgmLIkUVnlOvgDNVdg08Kz4QwZuSYwGggIq+aimDZZ1lh0/6DZp6pbrDA70RZ7e25S
+	 60up/ZHuB+m3Tgnsjmy/nVIeUZ7rJfGebZceZ2SCSNshzHasHXRAVzfxXtTYQRyKr7
+	 Gnys4jEPmrhXMjRn2TcadPymvzcEBrurUBqvV4sEzUppwdESoCwNUf+sggwPyL9M80
+	 fCHasAtWfLsanxmPSrpCJieHVasJDzJ9E0hS0Eep+6BaP9fxriEeMRnWMptCcX022B
+	 svffvgz8rqdYw==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 80279D9A158;
+	Tue,  2 Apr 2024 14:10:27 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZgwGpZ6S13vjk8jh@smile.fi.intel.com>
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH] bpf: fix typo in uapi doc comments
+From: patchwork-bot+netdevbpf@kernel.org
+Message-Id: 
+ <171206702752.6673.7807180542850602789.git-patchwork-notify@kernel.org>
+Date: Tue, 02 Apr 2024 14:10:27 +0000
+References: <20240329152900.398260-2-dlechner@baylibre.com>
+In-Reply-To: <20240329152900.398260-2-dlechner@baylibre.com>
+To: David Lechner <dlechner@baylibre.com>
+Cc: bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
+ andrii@kernel.org, martin.lau@linux.dev, eddyz87@gmail.com, song@kernel.org,
+ yonghong.song@linux.dev, john.fastabend@gmail.com, kpsingh@kernel.org,
+ sdf@google.com, haoluo@google.com, jolsa@kernel.org,
+ linux-kernel@vger.kernel.org
 
-On Tue, Apr 02, 2024 at 04:22:45PM +0300, Andy Shevchenko wrote:
-> On Tue, Apr 02, 2024 at 10:22:24AM +0800, Peng Fan (OSS) wrote:
-> > +static int pinctrl_scmi_get_pins(struct scmi_pinctrl *pmx,
-> > +				 struct pinctrl_desc *desc)
-> > +{
-> > +	struct pinctrl_pin_desc *pins;
-> > +	unsigned int npins;
-> > +	int ret, i;
-> > +
-> > +	npins = pinctrl_ops->count_get(pmx->ph, PIN_TYPE);
-> > +	/*
-> > +	 * npins will never be zero, the scmi pinctrl driver has bailed out
-> > +	 * if npins is zero.
-> > +	 */
+Hello:
+
+This patch was applied to bpf/bpf-next.git (master)
+by Daniel Borkmann <daniel@iogearbox.net>:
+
+On Fri, 29 Mar 2024 10:28:46 -0500 you wrote:
+> In a few places in the bpf uapi headers, EOPNOTSUPP is missing a "P" in
+> the doc comments. This adds the missing "P".
 > 
-> This is fragile, but at least it is documented.
-> 
+> Signed-off-by: David Lechner <dlechner@baylibre.com>
+> ---
+>  include/uapi/linux/bpf.h       | 4 ++--
+>  tools/include/uapi/linux/bpf.h | 4 ++--
+>  2 files changed, 4 insertions(+), 4 deletions(-)
 
-It was never clear to me where the crash would happen if npins was zero.
-Does some part of pinctrl internals assume we have at least one pin?
+Here is the summary with links:
+  - bpf: fix typo in uapi doc comments
+    https://git.kernel.org/bpf/bpf-next/c/ca4ddc26f8ac
 
-It's nice to be able to allocate zero element arrays and generally it
-works well in the kernel.  The one common bug with zero element arrays
-has to do with strings.  Something like this (garbage) example:
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
 
-	str = kmalloc(n_char, GFP_KERNEL);
-	copy_from_user(str, user_ptr, n_char);
-	str[n_char - 1] = '\0';
-
-If the str is zero bytes long it will lead to an Oops when we add a NUL
-terminator.
-
-regards,
-dan carpenter
 
 
