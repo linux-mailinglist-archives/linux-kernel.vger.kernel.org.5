@@ -1,161 +1,169 @@
-Return-Path: <linux-kernel+bounces-127347-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-127348-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id A3B0C894A21
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 05:41:06 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6ED47894A23
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 05:45:42 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D4E141C23556
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 03:41:05 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 98A2E285B38
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 03:45:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2DD6517584;
-	Tue,  2 Apr 2024 03:40:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E0E1317592;
+	Tue,  2 Apr 2024 03:45:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=netflix.com header.i=@netflix.com header.b="S1FDvp0T"
-Received: from mail-io1-f42.google.com (mail-io1-f42.google.com [209.85.166.42])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="Wq+KPU+3"
+Received: from out-174.mta1.migadu.com (out-174.mta1.migadu.com [95.215.58.174])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 27C2714A83
-	for <linux-kernel@vger.kernel.org>; Tue,  2 Apr 2024 03:40:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2E65317548
+	for <linux-kernel@vger.kernel.org>; Tue,  2 Apr 2024 03:45:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712029258; cv=none; b=YB4e2Eb1IDZWFQWBdKLctXkjjOBloeA95fzT2VcGtUrg7JzSEb8kllYgPB7p5O8ZOOQYA6YRsBeekXZnVj5uGnVSvU+HjheV33rxM/6ssED2Mpm7MoicB2gP4J0bDEbMCaFVXIK2lPLSXqKLl0rH2REXU1M9Lh3hRLZ0UuEscWo=
+	t=1712029534; cv=none; b=LN9CJ7wWIsdpushjtWmknfaMVSKVbPa8zf1NJ0j9VvfjTCeAuyaXnEQ5U3sfISAoH913k6fGql99Zdn81ri41kOSrrVbbPRVVHc3Y5g+WQId5CNhQKzD8OWdrlhOpF6mftJmil1XMiRkdkRWU1bC0x3SZNoc7qOIQEzeV586mPI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712029258; c=relaxed/simple;
-	bh=Sgh63qY1JfD8EdWXcI3hpU/Xo67ea599nAr0p4E7axw=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=Lqz9oIlk+4Zs35k3flckDexw1v1DPdsS2pWSZDeXddOrNflQDv0VeX08Zd8VICb6eEA9HxoS2nLkbXQhI2vQavX7N5wl5fUdoUeTIXtmuLthPGth7gx8TKcI3UHQponJ23VZLx1EN6IMPbxeMh4xTIvUhd7iy3DcXw4iEid2T3E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=netflix.com; spf=pass smtp.mailfrom=netflix.com; dkim=pass (1024-bit key) header.d=netflix.com header.i=@netflix.com header.b=S1FDvp0T; arc=none smtp.client-ip=209.85.166.42
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=netflix.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=netflix.com
-Received: by mail-io1-f42.google.com with SMTP id ca18e2360f4ac-7cc01644f51so270767739f.2
-        for <linux-kernel@vger.kernel.org>; Mon, 01 Apr 2024 20:40:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=netflix.com; s=google; t=1712029255; x=1712634055; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=uX8FY+yrv4e9F04J0bM9+L1yQ/5xwgRq+sJn0HZQg6k=;
-        b=S1FDvp0TCpC+mR3rNkqMxxSVnAr/kPdp7itzB5hejlT/qpveIMtQtN+9UpZ+zLYwCr
-         2bfVcnOqY86MxdHJp0vXR3Qr20BYzvyTXDv1F6f6ks4pRtb3XCxJZ9KUt/zzMsd5qL05
-         gP6r49eZ0GUehH62HRlR4taVmJcL3CJ4RK3i4=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712029255; x=1712634055;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=uX8FY+yrv4e9F04J0bM9+L1yQ/5xwgRq+sJn0HZQg6k=;
-        b=igSgSz+i0XRRWoJp+Y+kkftcCprzw2La3LGW5MVXK679pP/4vewVBR5gH+N0RK3re3
-         w5mNrvhFA7XE/FpCdntwDXb+RIp5hB7uePxn0qPxyjoriQJfApxaeBTmmEGtAggvHYx0
-         PcsW9ccBcEtYEfisWXsA+Qjqwlgxuo3DE1oUOCwkbcrg9PMkNEdIbEL7injxJhHudgF4
-         hSi5ZLyuQi9EyI9q4IXT9psIWEZSI+uTGCGcsEOM5rTqteq1+42sh+0NNTZFm9Vf2Lwp
-         cmS39igvr9ZIU1XbO9xh46ne5yDvz/0+m69TEe0NhQk8N2RQRGiHA10WaKf29aK7vwrz
-         RvSQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVNg+0WPT+fiNTqF9x4T/m2k9sIy5AK8YfbmtPR4XBH/3yceK7YfZqmrncTvflOcOhrgHxdkMqpu9g6gBby5ZMDx6CE3wMIHq8H6joa
-X-Gm-Message-State: AOJu0YwmY1xILxPWLDmG06VMVRJzJGsTPBJwl6FFbEJBa77FoAuiZP1A
-	pN2UPDcMOXcffTzRKKj09BbyPmxNNSu4e6RmINhHhYb6DBxrV0BZ+TS3F0I+GHw=
-X-Google-Smtp-Source: AGHT+IEVZFp5NogyCjeODd2w7QwpYPWEJeno9InvtwF7nz44KJMu9yq9vyGYzyosKFmM88AZh0ZkRA==
-X-Received: by 2002:a05:6602:2741:b0:7d0:883d:ee02 with SMTP id b1-20020a056602274100b007d0883dee02mr13010287ioe.18.1712029255281;
-        Mon, 01 Apr 2024 20:40:55 -0700 (PDT)
-Received: from localhost ([2601:285:8700:8f20:4221:ce52:3081:c975])
-        by smtp.gmail.com with UTF8SMTPSA id r15-20020a6b5d0f000000b007d03f311753sm3195270iob.51.2024.04.01.20.40.54
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 01 Apr 2024 20:40:54 -0700 (PDT)
-From: Jose Fernandez <josef@netflix.com>
-To: Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Martin KaFai Lau <martin.lau@linux.dev>,
-	Eduard Zingerman <eddyz87@gmail.com>,
-	Song Liu <song@kernel.org>,
-	Yonghong Song <yonghong.song@linux.dev>,
-	John Fastabend <john.fastabend@gmail.com>,
-	KP Singh <kpsingh@kernel.org>,
-	Stanislav Fomichev <sdf@google.com>,
-	Hao Luo <haoluo@google.com>,
-	Jiri Olsa <jolsa@kernel.org>
-Cc: bpf@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Jose Fernandez <josef@netflix.com>
-Subject: [PATCH bpf-next] bpf: Improve program stats run-time calculation
-Date: Mon,  1 Apr 2024 21:40:10 -0600
-Message-Id: <20240402034010.25060-1-josef@netflix.com>
-X-Mailer: git-send-email 2.34.1
+	s=arc-20240116; t=1712029534; c=relaxed/simple;
+	bh=7dgiUriDY4VZjwc2oAQqkax26dA3fiwMlLDWRorrSbk=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=gxA2tvSS/lXVwbvGl4URN+EFBSaIRGuDyZXb1sr6CNou5FNLqroPsQWkp97Z7z9qkBUexg4nH0g6gklAw/MxXKFH0UyBGfiQJZ21hGAL6TwltZ3rAmJ3Ov94cwvOSFq2o4rNSR/5PYV7ytg5LCKTmXeC5gJLGAiyMVe0+M813dk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=Wq+KPU+3; arc=none smtp.client-ip=95.215.58.174
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <cd42083e-ea53-48bd-aa32-a16fc9f73ffa@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1712029529;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=ctTsajfD2CFhooWbZgthbVIMHuKKMcgzYtu6va2X7T0=;
+	b=Wq+KPU+3aGgby5YAp/hOzF4o4cV84D9KTn5dccOP/qIjuiQLkUs8CP3K5j0bHgNbq15Lp3
+	2sfFFbnCYx0+OnTFfwWwo0P5nG5aYQtWfUQGEan35u6dgCBwmlPBnV2XgbnSeLDkmcW732
+	jyFSZZHPaihVL3Re3fLjeIRNMeFT0YA=
+Date: Tue, 2 Apr 2024 11:45:19 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH] slub: fix slub segmentation
+To: Ming Yang <yangming73@huawei.com>, cl@linux.com, penberg@kernel.org,
+ rientjes@google.com, iamjoonsoo.kim@lge.com, akpm@linux-foundation.org,
+ vbabka@suse.cz, roman.gushchin@linux.dev, 42.hyeyoo@gmail.com,
+ linux-mm@kvack.org, linux-kernel@vger.kernel.org
+Cc: zhangliang5@huawei.com, wangzhigang17@huawei.com, liushixin2@huawei.com,
+ alex.chen@huawei.com, pengyi.pengyi@huawei.com, xiqi2@huawei.com
+References: <20240402031025.1097-1-yangming73@huawei.com>
+Content-Language: en-US
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Chengming Zhou <chengming.zhou@linux.dev>
+In-Reply-To: <20240402031025.1097-1-yangming73@huawei.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Migadu-Flow: FLOW_OUT
 
-This patch improves the run-time calculation for program stats by
-capturing the duration as soon as possible after the program returns.
-Previously, the duration included u64_stats_t operations. While the
-instrumentation overhead is part of the total time spent when stats are
-enabled, distinguishing between the program's native execution time and
-the time spent due to instrumentation is crucial for accurate
-performance analysis. By making this change, the patch facilitates more
-precise optimization of BPF programs, enabling users to understand their
-performance in environments without stats enabled.
+On 2024/4/2 11:10, Ming Yang wrote:
+> When one of numa nodes runs out of memory and lots of processes still
+> booting, slabinfo shows much slub segmentation exits. The following
+> shows some of them:
+> 
+> tunables <limit> <batchcount> <sharedfactor> : slabdata <active_slabs>
+> <num_slabs> <sharedavail>
+> kmalloc-512        84309 380800   1024   32    8 :
+> tunables    0    0    0 : slabdata  11900  11900      0
+> kmalloc-256        65869 365408    512   32    4 :
+> tunables    0    0    0 : slabdata  11419  11419      0
+> 
+> 365408 "kmalloc-256" objects are alloced but only 65869 of them are
+> used; While 380800 "kmalloc-512" objects are alloced but only 84309
+> of them are used.
+> 
+> This problem exits in the following senario:
+> 1. Multiple numa nodes, e.g. four nodes.
+> 2. Lack of memory in any one node.
+> 3. Functions which alloc many slub memory in certain numa nodes,
+> like alloc_fair_sched_group.
+> 
+> The slub segmentation generated because of the following reason:
+> In function "___slab_alloc" a new slab is attempted to be gotten via
+> function "get_partial". If the argument 'node' is assigned but there
+> are neither partial memory nor buddy memory in that assigned node, no
+> slab could be gotten. And then the program attempt to alloc new slub
+> from buddy system, as mentationed before: no buddy memory in that
+> assigned node left, a new slub might be alloced from the buddy system
+> of other node directly, no matter whether there is free partil memory
+> left on other node. As a result slub segmentation generated.
+> 
+> The key point of above allocation flow is: the slab should be alloced
+> from the partial of other node first, instead of the buddy system of
+> other node directly.
+> 
+> In this commit a new slub allocation flow is proposed:
+> 1. Attempt to get a slab via function get_partial (first step in
+> new_objects lable).
+> 2. If no slab is gotten and 'node' is assigned, try to alloc a new
+> slab just from the assigned node instead of all node.
+> 3. If no slab could be alloced from the assigned node, try to alloc
+> slub from partial of other node.
+> 4. If the alloctation in step 3 fails, alloc a new slub from buddy
+> system of all node.
 
-I used a virtualized environment to measure the run-time over one minute
-for a basic raw_tracepoint/sys_enter program, which just increments a
-local counter. Although the virtualization introduced some performance
-degradation that could affect the results, I observed approximately a
-16% decrease in average run-time reported by stats with this change
-(310 -> 260 nsec).
+FYI, there is another patch to the very same problem:
 
-Signed-off-by: Jose Fernandez <josef@netflix.com>
----
- include/linux/filter.h  | 5 ++++-
- kernel/bpf/trampoline.c | 3 ++-
- 2 files changed, 6 insertions(+), 2 deletions(-)
+https://lore.kernel.org/all/20240330082335.29710-1-chenjun102@huawei.com/
 
-diff --git a/include/linux/filter.h b/include/linux/filter.h
-index 44934b968b57..2a8eb6fe2489 100644
---- a/include/linux/filter.h
-+++ b/include/linux/filter.h
-@@ -654,14 +654,17 @@ static __always_inline u32 __bpf_prog_run(const struct bpf_prog *prog,
- 	cant_migrate();
- 	if (static_branch_unlikely(&bpf_stats_enabled_key)) {
- 		struct bpf_prog_stats *stats;
-+		u64 duration;
- 		u64 start = sched_clock();
- 		unsigned long flags;
- 
- 		ret = dfunc(ctx, prog->insnsi, prog->bpf_func);
-+
-+		duration = sched_clock() - start;
- 		stats = this_cpu_ptr(prog->stats);
- 		flags = u64_stats_update_begin_irqsave(&stats->syncp);
- 		u64_stats_inc(&stats->cnt);
--		u64_stats_add(&stats->nsecs, sched_clock() - start);
-+		u64_stats_add(&stats->nsecs, duration);
- 		u64_stats_update_end_irqrestore(&stats->syncp, flags);
- 	} else {
- 		ret = dfunc(ctx, prog->insnsi, prog->bpf_func);
-diff --git a/kernel/bpf/trampoline.c b/kernel/bpf/trampoline.c
-index cc50607f8d8c..778453137b07 100644
---- a/kernel/bpf/trampoline.c
-+++ b/kernel/bpf/trampoline.c
-@@ -886,11 +886,12 @@ static void notrace update_prog_stats(struct bpf_prog *prog,
- 	     */
- 	    start > NO_START_TIME) {
- 		unsigned long flags;
-+		u64 duration = sched_clock() - start;
- 
- 		stats = this_cpu_ptr(prog->stats);
- 		flags = u64_stats_update_begin_irqsave(&stats->syncp);
- 		u64_stats_inc(&stats->cnt);
--		u64_stats_add(&stats->nsecs, sched_clock() - start);
-+		u64_stats_add(&stats->nsecs, duration);
- 		u64_stats_update_end_irqrestore(&stats->syncp, flags);
- 	}
- }
-
-base-commit: 623bdd58be3727318d374f0052f9dfff1e87b854
--- 
-2.34.1
-
+> 
+> Signed-off-by: Ming Yang <yangming73@huawei.com>
+> Signed-off-by: Liang Zhang <zhangliang5@huawei.com>
+> Signed-off-by: Zhigang Wang <wangzhigang17@huawei.com>
+> Reviewed-by: Shixin Liu <liushixin2@huawei.com>
+> ---
+> This patch can be tested and verified by following steps:
+> 1. First, try to run out memory on node0. echo 1000(depending on your memory) > 
+> /sys/devices/system/node/node0/hugepages/hugepages-2048kB/nr_hugepages.
+> 2. Second, boot 10000(depending on your memory) processes which use setsid 
+> systemcall, as the setsid systemcall may likely call function 
+> alloc_fair_sched_group.
+> 3. Last, check slabinfo, cat /proc/slabinfo.
+> 
+> Hardware info:
+> Memory : 8GiB
+> CPU (total #): 120
+> numa node: 4
+> 
+> Test clang code example:
+> int main() {
+>     void *p = malloc(1024);
+>     setsid();
+>     while(1);
+> }
+> 
+>  mm/slub.c | 11 +++++++++++
+>  1 file changed, 11 insertions(+)
+> 
+> diff --git a/mm/slub.c b/mm/slub.c
+> index 1bb2a93cf7..3eb2e7d386 100644
+> --- a/mm/slub.c
+> +++ b/mm/slub.c
+> @@ -3522,7 +3522,18 @@ static void *___slab_alloc(struct kmem_cache *s, gfp_t gfpflags, int node,
+>  	}
+>  
+>  	slub_put_cpu_ptr(s->cpu_slab);
+> +	if (node != NUMA_NO_NODE) {
+> +		slab = new_slab(s, gfpflags | __GFP_THISNODE, node);
+> +		if (slab)
+> +			goto slab_alloced;
+> +
+> +		slab = get_any_partial(s, &pc);
+> +		if (slab)
+> +			goto slab_alloced;
+> +	}
+>  	slab = new_slab(s, gfpflags, node);
+> +
+> +slab_alloced:
+>  	c = slub_get_cpu_ptr(s->cpu_slab);
+>  
+>  	if (unlikely(!slab)) {
 
