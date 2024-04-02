@@ -1,131 +1,108 @@
-Return-Path: <linux-kernel+bounces-128388-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-128389-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id A67F2895A2A
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 18:52:23 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 53755895A2B
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 18:52:50 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5B6CB1F23B62
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 16:52:23 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E5D481F2132B
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 16:52:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 887D715E5C8;
-	Tue,  2 Apr 2024 16:47:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B640C159908;
+	Tue,  2 Apr 2024 16:47:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="WWxNLNJQ"
-Received: from mail-ed1-f48.google.com (mail-ed1-f48.google.com [209.85.208.48])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="czbIuNM1"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0667C15AAB7
-	for <linux-kernel@vger.kernel.org>; Tue,  2 Apr 2024 16:47:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ECD1417BD4
+	for <linux-kernel@vger.kernel.org>; Tue,  2 Apr 2024 16:47:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712076424; cv=none; b=BKznkjDyw/jOTzruVLNPmbdtgdD2wKFoW/ks5j6C7thHGhP8nzQ6xndJP5WNh3Kujw/68E1GB5LeS5rF5k2JSqQMhPKpZ2nFv1HCBrnOYq39zSH420xWlRpbvJZZPeD54DAACXIIuQyFgnsm5LO98RVCIMOmDLGTBPPJL7pPvq4=
+	t=1712076458; cv=none; b=Bg/NhEqSXBfv2P34lN9+DKtscSxw+33kOmnxi4YvXxs8MS9CGsRvcbcsmVAKIIBWS/XarO6Nt/ZSNkbZGgALOGEh0+M2QIqLHU/nTbr8BefuhuAbc1yNZiW83ShruC+/PBvsIJW+ogrGVpCyJnsR5G6/M9bA4J+Mxrr2SCG30iU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712076424; c=relaxed/simple;
-	bh=wueQqgHgNfobgMl7ngnx77rJxYOAca9buPv+PhcY45A=;
+	s=arc-20240116; t=1712076458; c=relaxed/simple;
+	bh=hJ1GDaXq7VRG2pC36rEu0KysPFDAaxQq4vfTZyVpcMQ=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=NUqWsoa/4sIZy0QskeWKPmWTCV53mW3l5kNioO4JdTQw2Dge9X/tgpCeAUDnAIYbELSzYKXjrogNSdh8pw/SJOQ5fakAC1bhkXmPCVDhzHbOEOeBkZu1oDxgCPo9nIgTIy5RUA1TlPBhgGDxEFEL2FyedQYERMnifCbSjwvt5fY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=WWxNLNJQ; arc=none smtp.client-ip=209.85.208.48
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ed1-f48.google.com with SMTP id 4fb4d7f45d1cf-56dfb52d10cso328542a12.2
-        for <linux-kernel@vger.kernel.org>; Tue, 02 Apr 2024 09:47:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1712076421; x=1712681221; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=CgRCLxVPL6foOssar2VbNFyHEq1eN153oN+Bgv5BRW0=;
-        b=WWxNLNJQxYUF+kOo4phobOc1IUh8y+fcIOKL+x6oQds2MkQv1D0XzmsJhZY0bI6Vj+
-         1VfPVWo7YENSoZggkXvDxqwRyDP08yMwG/Chtx4E/KF+Z7c1k7Z0NOxgVUp1CICbEDWC
-         K23qLvGrgSYEXq/f4YiniASvNDy79d/gLD/Xn4MGr+Im41QKv+ui8b2P/Q4KJ4N+hYg3
-         CrNJcssrYi3wBV1JaObF9Cb13WWQfXaOmBn90d5scYcB7inhQItKijV8ync6eAmAtr09
-         clEUTI2kkH8YHblvca1lSYBPiQCVA03A+s1buoMsuRLVt/GXDBJBCFJQ+IwNeFuPDMeQ
-         zQPA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712076421; x=1712681221;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=CgRCLxVPL6foOssar2VbNFyHEq1eN153oN+Bgv5BRW0=;
-        b=wBqH2M1I9xRRr1CXwyb0PmrrF+AvwWkgdGb1/++GajsURNwFOykmpgeZlXoj5ENEX1
-         abDoRfoAOJ7ZOoHcACbwDKUJ1Avz9t59U/sUzYJOsxv0Xr5coP+y76YakCEXavBu8amY
-         VTbffRO6mDBT5Vc07fCxVR+TThRibaBOiX9e/wZ5+g5O4YGjjTOd3JiVHuCPGEBlALm9
-         eGMQohBXmq/63AzPG6WIiU1KxqX9vIzFiEjSwmgCdPFgHGlIAIVMzpjpa5zPHXQ/vYBF
-         vnJuPkNGj78Ok7wyxfX3iUtXlB31hq8118V+Wfo26YDtmi+PGIqWhiuxeF0DU+vuoOXj
-         ajdA==
-X-Forwarded-Encrypted: i=1; AJvYcCWWxWEl2jm9FotPEies9tU/gUQXh10iaalYbBahVqmZwypVG5OrqbtSv0PNQG58kHvCtK5SqP6FLnGuGrj7UwGR/iq+LwpXcLO38re4
-X-Gm-Message-State: AOJu0Ywk08Xfua4r0kRkNd8XvBspDAVOr7sV/4co+AI8eoJR2m0rIAnp
-	6M9T1i+xKd4OWySZxfEGM0Zptuy3RMzi1bVhVemQGqko3QHqqHw5R/NaYqtRcOg=
-X-Google-Smtp-Source: AGHT+IGekWANLpkZC1FyGzuPjK1/7OE3EWko5UnsSDR83c1+sNGh3cSBNrv0Gf8ykz8Q1y1BRVVhOg==
-X-Received: by 2002:a17:906:d9cc:b0:a4e:109f:7b4b with SMTP id qk12-20020a170906d9cc00b00a4e109f7b4bmr8891710ejb.41.1712076421210;
-        Tue, 02 Apr 2024 09:47:01 -0700 (PDT)
-Received: from localhost ([102.222.70.76])
-        by smtp.gmail.com with ESMTPSA id qf31-20020a1709077f1f00b00a4df4243473sm6683790ejc.4.2024.04.02.09.47.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 02 Apr 2024 09:47:00 -0700 (PDT)
-Date: Tue, 2 Apr 2024 19:46:57 +0300
-From: Dan Carpenter <dan.carpenter@linaro.org>
-To: Shahar Avidar <ikobh7@gmail.com>
-Cc: gregkh@linuxfoundation.org, hverkuil-cisco@xs4all.nl,
-	andriy.shevchenko@linux.intel.com, robh@kernel.org,
-	felixkimbu1@gmail.com, linux-staging@lists.linux.dev,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 5/6] staging: pi433: Remove duplicated code using the
- "goto" error recovery scheme.
-Message-ID: <068f3705-9f9b-4d61-be50-a131b9598703@moroto.mountain>
-References: <20240402111414.871089-1-ikobh7@gmail.com>
- <20240402111414.871089-6-ikobh7@gmail.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=OokjrkcXD74v7aj1Jsd8D7cuK6XZ91/zKqfvH166n/RXA02yooFmn+tK8p6tvqKslJerM54PqNQPgi7bGXTFcLCvc7pVWItF09AR8a8fLoq7vUs1ri8/M8X3zR7EquRWLwnYAEw4HsIjYwuDgojsB+TIi/hQ/3kFxEiXv81Pphw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=czbIuNM1; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 76DACC433C7;
+	Tue,  2 Apr 2024 16:47:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1712076457;
+	bh=hJ1GDaXq7VRG2pC36rEu0KysPFDAaxQq4vfTZyVpcMQ=;
+	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+	b=czbIuNM1WuqAuvWgwuzeL9WkK0zLRECs8PqcNzU4PumCnYJsXmlfQaKBxgueGgNEF
+	 RKyT40/15wU5vF/0o6Tp/HZDdk1ibxufWmhR6gH34xbJgrnUcjDOGqEFa/d8hDRTyz
+	 KITaIr6fEOO64LBos+DaVgNdHSnhLGih7g7cJxyCw6Z0tYolDnjDMvPr5A4+dQOWWT
+	 BS1IqPLL5+UBUMDS0IjSsD++JMvW12kSBhnYmX03gr204zzRy/OLrl7SA6nNO7khW8
+	 3BhkB3gsnDNrWGBEw89DeVFyHZiHxThkbqQiKqxiie+x8reIMV3PIdsUYfvMhBK7WT
+	 617hItteoif2A==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+	id 0C31DCE0FF2; Tue,  2 Apr 2024 09:47:37 -0700 (PDT)
+Date: Tue, 2 Apr 2024 09:47:37 -0700
+From: "Paul E. McKenney" <paulmck@kernel.org>
+To: Frederic Weisbecker <frederic@kernel.org>
+Cc: Thomas Gleixner <tglx@linutronix.de>,
+	LKML <linux-kernel@vger.kernel.org>, Ingo Molnar <mingo@kernel.org>,
+	Anna-Maria Behnsen <anna-maria@linutronix.de>
+Subject: Re: [PATCH 2/2] timers: Fix removed self-IPI on global timer's
+ enqueue in nohz_full
+Message-ID: <3f2597ea-81ba-4498-a0ee-84d7e4e3da59@paulmck-laptop>
+Reply-To: paulmck@kernel.org
+References: <20240318230729.15497-3-frederic@kernel.org>
+ <464f6be2-4a72-440d-be53-6a1035d56a4f@paulmck-laptop>
+ <1b5752c8-ef32-4ed4-b539-95d507ec99ce@paulmck-laptop>
+ <ZfsLtMijRrNZfqh6@localhost.localdomain>
+ <6a95b6ac-6681-4492-b155-e30c19bb3341@paulmck-laptop>
+ <ZfwdEROGFFmIbkCM@lothringen>
+ <bf8689c2-0749-47cb-9535-53cf66e34f5e@paulmck-laptop>
+ <797f44f9-701d-4fca-a9f4-d112a7178e7b@paulmck-laptop>
+ <ZgstlCZn0l9wSv7H@pavilion.home>
+ <ed13826a-d2d3-4999-8d9e-77dfc6245e1c@paulmck-laptop>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <20240402111414.871089-6-ikobh7@gmail.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <ed13826a-d2d3-4999-8d9e-77dfc6245e1c@paulmck-laptop>
 
-On Tue, Apr 02, 2024 at 02:14:13PM +0300, Shahar Avidar wrote:
-> pi433_init had "unregister_chrdev" called twice.
-> Remove it using goto statements.
+On Mon, Apr 01, 2024 at 05:04:10PM -0700, Paul E. McKenney wrote:
+> On Mon, Apr 01, 2024 at 11:56:36PM +0200, Frederic Weisbecker wrote:
+> > Le Mon, Apr 01, 2024 at 02:26:25PM -0700, Paul E. McKenney a écrit :
+> > > > > _ The RCU CPU Stall report. I strongly suspect the cause is the hrtimer
+> > > > >   enqueue to an offline CPU. Let's solve that and we'll see if it still
+> > > > >   triggers.
+> > > > 
+> > > > Sounds like a plan!
+> > > 
+> > > Just checking in on this one.  I did reproduce your RCU CPU stall report
+> > > and also saw a TREE03 OOM that might (or might not) be related.  Please
+> > > let me know if hammering TREE03 harder or adding some debug would help.
+> > > Otherwise, I will assume that you are getting sufficient bug reports
+> > > from your own testing to be getting along with.
+> > 
+> > Hehe, there are a lot indeed :-)
+> > 
+> > So there has been some discussion on CPUSET VS Hotplug, as a problem there
+> > is likely the cause of the hrtimer warning you saw, which in turn might
+> > be the cause of the RCU stalls.
+> > 
+> > Do you always see the hrtimer warning along the RCU stalls? Because if so, this
+> > might help:
+> > https://lore.kernel.org/lkml/20240401145858.2656598-1-longman@redhat.com/T/#m1bed4d298715d1a6b8289ed48e9353993c63c896
 > 
-> Signed-off-by: Shahar Avidar <ikobh7@gmail.com>
+> Not always, but why not give it a shot?
 
-Your commit message needs to mention all the other changes you made,
-especially the bug fix.  I feel like you're doing too many changes
-really.  Just use the gotos to clean up but don't re-order the calls.
+And no failures, though I would need to run much longer for this to
+mean much.  These were wide-spectrum tests, so my next step will be to
+run only TREE03 and TREE07.
 
-You need to add a Fixes tag.
-
-> ---
-> v2->v1:
-> Followed by Dan Carpenter's <dan.carpenter@linaro.org> comments:
->         - Remove empty "fail" goto tag.
->         - Reorder pi433 init & exit calls so they have reverse order.
-
-Keep the init calls the same.  Re-order the exit calls.  It's a bit of
-a gray area if you can re-order the exit calls in this same patch.  Do
-it in a separate patch just to be safe.
-
->         - Add "unreg_spi_drv" goto tag.
->         - Check "debugfs_create_dir" return value.
-
-No.  This is wrong.  Debugfs function are not supposed to be checked.
-https://staticthinking.wordpress.com/2023/07/24/debugfs-functions-are-not-supposed-to-be-checked/
-
->         - Update "if" statments for consistency.
-
-I like this cleanup, but it's not worth the effort.  Just leave it
-as-is unless you really really need to change it.  Do it in a separate
-patch.
-
-What qualifies as One Thing Per Patch is a bit of gray area.  Greg tends
-to want things split up into tiny patches.  You have to know your
-maintainer.
-
-regards,
-dan carpenter
-
+							Thanx, Paul
 
