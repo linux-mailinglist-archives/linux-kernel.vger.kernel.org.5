@@ -1,117 +1,149 @@
-Return-Path: <linux-kernel+bounces-127931-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-127932-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4C03F8952E0
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 14:24:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 8E4F38952EE
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 14:25:58 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7CD4F1C21CC2
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 12:24:03 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AF47C1C21019
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 12:25:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2D74D78685;
-	Tue,  2 Apr 2024 12:23:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A76887EF08;
+	Tue,  2 Apr 2024 12:25:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="JXRs1/Pd"
-Received: from mail-ed1-f50.google.com (mail-ed1-f50.google.com [209.85.208.50])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="Y/PM2lOG"
+Received: from mail-yw1-f181.google.com (mail-yw1-f181.google.com [209.85.128.181])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C7F5077623;
-	Tue,  2 Apr 2024 12:23:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 681D777F2C
+	for <linux-kernel@vger.kernel.org>; Tue,  2 Apr 2024 12:25:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712060630; cv=none; b=Sl8lH0d5U8lnj58jPts5lJYejhh8R0XuvhpM91hrmL5eLQlKhdEC5aBUAwcXHEO+aRHC/DLpfZIaehjPrrKOLw7jm/3Z1nfTkd2BNp7URch4m6NDj2hdnakItjsPshv0iilOaykamayzicVoT4GRZtufz1Q36PhXMx63qkK9l/g=
+	t=1712060731; cv=none; b=bg84Lg69Y9VKa/mZ++J5shGqMKSTsUHKg/3OdmK4hp7JUN3uSh8sGsNNHP3LrNftB1ZCZhPYbdQDNIPwWztjSVBuJ4dMqa2Dk+Y5cGXcmkT94EqbNRvPP5eNpA+gHShFa/sqyhp6rx4pS39fOfzEAO578efXv94vKEaF/QgSgsQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712060630; c=relaxed/simple;
-	bh=4QZLZAns8p7vUq4xXyL7Kp528hkrlWGkPY4oiD0R4zY=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=dNjUywvj48vF6ef7MJx/De4Nxo7BZlOjuKlWPReGwTOpdCeci49Jf+OnGnS25NhTr03LrnEwY0lKx1OsmYWw6M+WHj+EaCnkDoV8fPrNmiv95adjjsAPYuw6+9WdfwEGL0EXwpfvEFf3Lusz7QgnjeBzIWa6XAVoeg9CERfhpac=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=JXRs1/Pd; arc=none smtp.client-ip=209.85.208.50
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f50.google.com with SMTP id 4fb4d7f45d1cf-563cb3ba9daso4975677a12.3;
-        Tue, 02 Apr 2024 05:23:48 -0700 (PDT)
+	s=arc-20240116; t=1712060731; c=relaxed/simple;
+	bh=p/UeUz6BQzzlTj362U5Q+0hUyUg483V1OKi+HLKX4OI=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=bSbhbnstla9P8HmxlreKX1mjvForQZuEkbB75RHUbd4p3oIbnOhYr18pGoudnZdSO4kvXnr2hkeygO61KNrp3cOb9mP1oGZYtkhzJJ+NzkmJvlZQFe4x1z9E+neJM3S4gquxyJW9c9psBgzwflKRMtHsqJRWxlzs8AocndhAt+o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=Y/PM2lOG; arc=none smtp.client-ip=209.85.128.181
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-yw1-f181.google.com with SMTP id 00721157ae682-6151d79db7bso8011287b3.1
+        for <linux-kernel@vger.kernel.org>; Tue, 02 Apr 2024 05:25:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1712060627; x=1712665427; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=/unssVqP/tBj5M6lSsNX5+k+FjirzQl74biGWZLi7vY=;
-        b=JXRs1/PdC/LrklKqT+2oKK5gqLIrkWcUefEX2WzfF1zv6wxSvulPiN5B6fxTgc1JD+
-         SMOcbNnaRf3k+2LEb3D460f10LDW627pBIDY3xPSCLuvq+awg/LpW1eKbBYtLYhEJhna
-         H6NAXS5eikTFV/Ik53bNzKZn4xO5Zh/frIwON4aKGolB/KKfKR7XNgaMg8+Wv/BRtrIS
-         S6J63rw9RKmoNuhboLEMfZ6tODwQuaw+nkpECrD4SF7gtR9483KMWzbgzY7/n3uzrvlh
-         u1nVmmeghpdTpFIpFa2ZnPj7RVb8QgSbILvI+MawyelilRQX6wyJv6MXvbg3sDRIl9wy
-         SGnw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712060627; x=1712665427;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+        d=linaro.org; s=google; t=1712060727; x=1712665527; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=/unssVqP/tBj5M6lSsNX5+k+FjirzQl74biGWZLi7vY=;
-        b=lLaX0qZ5JrBHnOeoNERG9FRWAb5T4bmHyRTZ6oEacJT9nQzdaFDqvY1K2z6qA9XrqK
-         kw1ilVpDRHXTDZl91gYfCE7nwQeT2fRAhJdVnqWuaF8H6jlPW+8wAKCyPLIWk1NxkhGf
-         1J+1rOdA9Mowiyw8DD1VfhWtMrT5YeC8nLA6znk7iOa17gfQla7HM593msj0c88V5KLt
-         GJDhh41Kk665AxySSIcCTfqxUMQJSKXuc8h6lJw/M253qlcEETP5y1UiVYUw9qhtnPJZ
-         DFg4SoV0GxDGqiWBNr3I5I3agRIx/wEtRSDqTPE8tezEf7DZulrvpYRaUDiyqmfuVI7b
-         NsMw==
-X-Forwarded-Encrypted: i=1; AJvYcCWx38W3cfdObRIH8kmITIqHb7NMgkFr8g7NS5MRxvKbEJvWf4oS5+pt48bA9bsugwqh8aIgqSDHgbse+7H/vIlQ728TQhmN2U94E/B+
-X-Gm-Message-State: AOJu0Yw7L0B2M+DO9sktBpcBhv31X+XdJ1zmvMQSyjkge8++1PIXdFk5
-	PmfTpNLXpXuTiJQ+w9OiT4V6t6N95CM9jZ8r5EikcXoMQA5Rcdbq
-X-Google-Smtp-Source: AGHT+IEamF/yD6pmqhtSfavUbe4xrWX+kXF6DzNjAP+lKX91t5p2IpXkzvujMeoIPm+Pgq1cmq9sqg==
-X-Received: by 2002:a17:906:52d1:b0:a44:51c1:733c with SMTP id w17-20020a17090652d100b00a4451c1733cmr9691934ejn.39.1712060626861;
-        Tue, 02 Apr 2024 05:23:46 -0700 (PDT)
-Received: from skbuf ([2a02:2f04:d700:2000::b2c])
-        by smtp.gmail.com with ESMTPSA id wr1-20020a170907700100b00a473a0f3384sm6516024ejb.16.2024.04.02.05.23.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 02 Apr 2024 05:23:46 -0700 (PDT)
-Date: Tue, 2 Apr 2024 15:23:43 +0300
-From: Vladimir Oltean <olteanv@gmail.com>
-To: Joseph Huang <Joseph.Huang@garmin.com>
-Cc: netdev@vger.kernel.org, Andrew Lunn <andrew@lunn.ch>,
-	Florian Fainelli <f.fainelli@gmail.com>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Roopa Prabhu <roopa@nvidia.com>,
-	Nikolay Aleksandrov <razor@blackwall.org>,
-	Linus =?utf-8?Q?L=C3=BCssing?= <linus.luessing@c0d3.blue>,
-	linux-kernel@vger.kernel.org, bridge@lists.linux.dev
-Subject: Re: [PATCH RFC net-next 07/10] net: dsa: mv88e6xxx: Track bridge mdb
- objects
-Message-ID: <20240402122343.a7o5narxsctrkaoo@skbuf>
-References: <20240402001137.2980589-1-Joseph.Huang@garmin.com>
- <20240402001137.2980589-8-Joseph.Huang@garmin.com>
+        bh=XYDEIQksW8zQ45WbeyUEVn5ldQ4luRyFOVVyheFSkHo=;
+        b=Y/PM2lOGfwWISYEdLESt2KTtPtlHr8yg1/CGBA9FdtQYocQGHfZ+cW0YX8gg6woOzV
+         GW2SDVi0/W3ULE54zcjGLCvAVZmtCbh3VTBP3+tIbEtfDVbLhIKmqb1+a4TsXXIi5Yzk
+         SmHdUNPRN3zFBd10rSJY/qlNyGVwoVukAF36q+yItox15kUXELlUSRxcl8Mpdx9vLxmG
+         OY2lC+VOGMvXLQpb+r8L51QY+HHC99dDGGT3DX0N/M8WeSY9BE+U/oYh+6bWOLo9Abss
+         DlybL2mtVJawsbxg5WOsIutmwfbaMVxbHlwZxE2sF43N12B5PAMcfpnEeYIqUQTLlbrm
+         fqRA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712060727; x=1712665527;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=XYDEIQksW8zQ45WbeyUEVn5ldQ4luRyFOVVyheFSkHo=;
+        b=Et0oVE2ml10yWbeMlEu6PuM6nKZ23PllQLj76HYfmdtPMbrC4OIkBg+/GndGIHDz+8
+         nGAUDXubkJji2SwitwuMBW2ckgCZbKXfMIf5YfF0Ao/0KH1jqhzJYSqmlR8gpmEEZCrS
+         Ugjq6v9kQ8TwAF7RFqFowPnxm8Zryc8DyZstNhCZKH4tDTbJ+Gl+xaeBkOwnIiNwC/g/
+         7CJTOOIQoh8ZXxSGEcoIzG9ZvXGss4BAfhqrxfC5brltun2NLbquL474S0aQOC2O6VVG
+         T3Lb2i5kc9Qhcr3Fl365OEqavw3Onm4gSLfcwB3ca9R6jkQVWccOb3+ScJkQAUoP+qCx
+         /s5w==
+X-Gm-Message-State: AOJu0Yz0LQSciWHsNDocaNoMqDfNjc5MCdRvlMx4x68WakBqAqDpj9Q5
+	RpS0MZxccn8XEGvtY04JOC1DCkEikdLw/JN527Wgg21SeOFKCiZncxpW4SJzSJJIdSWk7tGnmqj
+	mNeGauQexOjFOQyKKujxrmZ2Bim+3tUIx1qz5WA==
+X-Google-Smtp-Source: AGHT+IFUrSspS0uEXi4Mtdf0lWq2f6Bt6/664idaePnQ5n7gs/Aofr4lkRbBJPYECBaOux5ZgxpPBc0T/C/GsKmHDRA=
+X-Received: by 2002:a5b:104:0:b0:dcc:ec02:38b0 with SMTP id
+ 4-20020a5b0104000000b00dccec0238b0mr8733778ybx.64.1712060727251; Tue, 02 Apr
+ 2024 05:25:27 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240402001137.2980589-8-Joseph.Huang@garmin.com>
+References: <20240327160314.9982-1-apais@linux.microsoft.com> <20240327160314.9982-3-apais@linux.microsoft.com>
+In-Reply-To: <20240327160314.9982-3-apais@linux.microsoft.com>
+From: Linus Walleij <linus.walleij@linaro.org>
+Date: Tue, 2 Apr 2024 14:25:15 +0200
+Message-ID: <CACRpkdaSBGe0EFm1gK-7qPK4e6T2H1dxFXjhJqO2hWCm1-bNdA@mail.gmail.com>
+Subject: Re: [PATCH 2/9] dma: Convert from tasklet to BH workqueue
+To: Allen Pais <apais@linux.microsoft.com>
+Cc: linux-kernel@vger.kernel.org, tj@kernel.org, keescook@chromium.org, 
+	vkoul@kernel.org, marcan@marcan.st, sven@svenpeter.dev, 
+	florian.fainelli@broadcom.com, rjui@broadcom.com, sbranden@broadcom.com, 
+	paul@crapouillou.net, Eugeniy.Paltsev@synopsys.com, 
+	manivannan.sadhasivam@linaro.org, vireshk@kernel.org, Frank.Li@nxp.com, 
+	leoyang.li@nxp.com, zw@zh-kernel.org, wangzhou1@hisilicon.com, 
+	haijie1@huawei.com, shawnguo@kernel.org, s.hauer@pengutronix.de, 
+	sean.wang@mediatek.com, matthias.bgg@gmail.com, 
+	angelogioacchino.delregno@collabora.com, afaerber@suse.de, 
+	logang@deltatee.com, daniel@zonque.org, haojian.zhuang@gmail.com, 
+	robert.jarzmik@free.fr, andersson@kernel.org, konrad.dybcio@linaro.org, 
+	orsonzhai@gmail.com, baolin.wang@linux.alibaba.com, zhang.lyra@gmail.com, 
+	patrice.chotard@foss.st.com, wens@csie.org, jernej.skrabec@gmail.com, 
+	peter.ujfalusi@gmail.com, kys@microsoft.com, haiyangz@microsoft.com, 
+	wei.liu@kernel.org, decui@microsoft.com, jassisinghbrar@gmail.com, 
+	mchehab@kernel.org, maintainers@bluecherrydvr.com, 
+	aubin.constans@microchip.com, ulf.hansson@linaro.org, manuel.lauss@gmail.com, 
+	mirq-linux@rere.qmqm.pl, jh80.chung@samsung.com, oakad@yahoo.com, 
+	hayashi.kunihiko@socionext.com, mhiramat@kernel.org, brucechang@via.com.tw, 
+	HaraldWelte@viatech.com, pierre@ossman.eu, duncan.sands@free.fr, 
+	stern@rowland.harvard.edu, oneukum@suse.com, 
+	openipmi-developer@lists.sourceforge.net, dmaengine@vger.kernel.org, 
+	asahi@lists.linux.dev, linux-arm-kernel@lists.infradead.org, 
+	linux-rpi-kernel@lists.infradead.org, linux-mips@vger.kernel.org, 
+	imx@lists.linux.dev, linuxppc-dev@lists.ozlabs.org, 
+	linux-mediatek@lists.infradead.org, linux-actions@lists.infradead.org, 
+	linux-arm-msm@vger.kernel.org, linux-riscv@lists.infradead.org, 
+	linux-sunxi@lists.linux.dev, linux-tegra@vger.kernel.org, 
+	linux-hyperv@vger.kernel.org, linux-rdma@vger.kernel.org, 
+	linux-media@vger.kernel.org, linux-mmc@vger.kernel.org, 
+	linux-omap@vger.kernel.org, linux-renesas-soc@vger.kernel.org, 
+	linux-s390@vger.kernel.org, netdev@vger.kernel.org, linux-usb@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Mon, Apr 01, 2024 at 08:11:06PM -0400, Joseph Huang wrote:
-> Keep track of bridge mdb objects in the driver.
-> 
-> Similar to the previous patch, since the driver doesn't get explicit
-> notifications about mdb group creation or destruction, just create
-> the mdb group when the first port joins the group via
-> mv88e6xxx_port_mdb_add(), and destroys the group when the last port left
-> the group via mv88e6xxx_port_mdb_del().
-> 
-> Use the group's L2 address together with the VLAN ID as the key to the list.
-> Port membership is again stored in a bitmask.
-> 
-> Signed-off-by: Joseph Huang <Joseph.Huang@garmin.com>
-> ---
+Hi Allen,
 
-Can you comment on the feasibility/infeasibility of Tobias' proposal of:
-"The bridge could just provide some MDB iterator to save us from having
-to cache all the configured groups."?
-https://lore.kernel.org/netdev/87sg31n04a.fsf@waldekranz.com/
+thanks for your patch!
 
-What is done here will have to be scaled to many drivers - potentially
-all existing DSA ones, as far as I'm aware.
+On Wed, Mar 27, 2024 at 5:03=E2=80=AFPM Allen Pais <apais@linux.microsoft.c=
+om> wrote:
+
+> The only generic interface to execute asynchronously in the BH context is
+> tasklet; however, it's marked deprecated and has some design flaws. To
+> replace tasklets, BH workqueue support was recently added. A BH workqueue
+> behaves similarly to regular workqueues except that the queued work items
+> are executed in the BH context.
+>
+> This patch converts drivers/dma/* from tasklet to BH workqueue.
+>
+> Based on the work done by Tejun Heo <tj@kernel.org>
+> Branch: git://git.kernel.org/pub/scm/linux/kernel/git/tj/wq.git for-6.10
+>
+> Signed-off-by: Allen Pais <allen.lkml@gmail.com>
+(...)
+> diff --git a/drivers/dma/ste_dma40.c b/drivers/dma/ste_dma40.c
+(...)
+>         if (d40c->pending_tx)
+> -               tasklet_schedule(&d40c->tasklet);
+> +               queue_work(system_bh_wq, &d40c->work);
+
+Why is "my" driver not allowed to use system_bh_highpri_wq?
+
+I can't see the reasoning between some drivers using system_bh_wq
+and others being highpri?
+
+Given the DMA usecase I would expect them all to be high prio.
+
+Yours,
+Linus Walleij
 
