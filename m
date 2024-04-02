@@ -1,235 +1,183 @@
-Return-Path: <linux-kernel+bounces-127640-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-127632-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1D5F0894ECD
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 11:35:55 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id B2625894EAF
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 11:28:19 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C7460283313
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 09:35:53 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 373B0281DB7
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 09:28:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 98E3E58ABD;
-	Tue,  2 Apr 2024 09:35:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2730658207;
+	Tue,  2 Apr 2024 09:28:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b="Xkj6mA52"
-Received: from mail-wr1-f41.google.com (mail-wr1-f41.google.com [209.85.221.41])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=leemhuis.info header.i=@leemhuis.info header.b="IJ6mmUkL"
+Received: from wp530.webpack.hosteurope.de (wp530.webpack.hosteurope.de [80.237.130.52])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5138158AA8
-	for <linux-kernel@vger.kernel.org>; Tue,  2 Apr 2024 09:35:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 14CD21E525;
+	Tue,  2 Apr 2024 09:28:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=80.237.130.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712050543; cv=none; b=kj/hOyEDAHkqiZocr8lsK7Z4sAbhOU/GqlGW0XR8MSda4KPD3bx6SlpgzrPAX0C/C1EYc5d27E+K7QQ1vYOV9g0IyntC9d6em5UwtGObc6+oSao7DqMn76lxHLWLxGHNi7iBBfy7a3+F+fU9/hi8tga9iqxXo+FPc1cz23lhE/w=
+	t=1712050090; cv=none; b=Dm9CCef0JY+GujxhyQUv1WiQlyRcz6heWrpiU+jmm64t3zBtJcJS2zdFC5S47FYp88+2h8vzFOMrVBm2BIXHMikYTKp5f4J7MXD/b+cbr5liWtcUeRfOOqE6JYtGfavrvtuTYOSejVEsIDAodqr77LR+I9WNo/rG1WgzcJno9R0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712050543; c=relaxed/simple;
-	bh=f9gGtJ5XnRkBgiXLLDIUwbhuajuBWtDh4xQcAdHy98M=;
-	h=References:From:To:Cc:Subject:Date:In-reply-to:Message-ID:
-	 MIME-Version:Content-Type; b=rwVxlvfZ2yyjI0s3Mhf9a/n4aX53xMHM/REeJZoOIpVGX7MEPOYzvSmxQtSUQOg6+RtrHaj+jIGbnHUiy1Jv0HQ18rxlj0vWUV/TOUMHmF23xTvg3IZaloKlUP/U1/r4tHZKb54Ls7eUIfx30EatIHfnQj+Ibc6/PfSDF0/MPrM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com; spf=pass smtp.mailfrom=baylibre.com; dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b=Xkj6mA52; arc=none smtp.client-ip=209.85.221.41
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=baylibre.com
-Received: by mail-wr1-f41.google.com with SMTP id ffacd0b85a97d-33ff53528ceso3554943f8f.0
-        for <linux-kernel@vger.kernel.org>; Tue, 02 Apr 2024 02:35:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20230601.gappssmtp.com; s=20230601; t=1712050540; x=1712655340; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:in-reply-to:date
-         :subject:cc:to:from:user-agent:references:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=t55JrH3SjWQfNiNN3GlWq9T+unk5wlRC/u7IUzNfWDo=;
-        b=Xkj6mA52fijYlp10DL90N8+vKNQ+6BYfI0H6C5iGQqCzKv67xKP7JE862O9/btKu0Y
-         bhCGlkhYilq/ZaFRYmbXOB4PpuWwdxYW2cM5rfRVt0MCII8rZdoK1ZJaiB9hXj8V7D3a
-         DFoUXx41kFhaP05HgL+C02UzasgVjzW70Hq0CNWW2xmVgnQqNoDFNR6y+h6XaAhzgv4R
-         w6GSC+pmKpMLRM3Q+2HnH+NDdaDRA0BzcMSWOTzQFBZIQp4fq5yNFqrTH8mhPgNWBMYS
-         EivHd2mgLoMp8WtXM8wSIUlCWi6X5VvASLp6DbK2273HHZXLrNmxpm7ZZxpepl8q6Sur
-         CoPw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712050540; x=1712655340;
-        h=content-transfer-encoding:mime-version:message-id:in-reply-to:date
-         :subject:cc:to:from:user-agent:references:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=t55JrH3SjWQfNiNN3GlWq9T+unk5wlRC/u7IUzNfWDo=;
-        b=ZEXSLQk+cBPYD7BRWAXH8tC1ZUwrc74S1bYx8W9ypwhtIZgiOVo9uTSJmMzCwFqImK
-         yempX+nmgP89qYhoSe1boipsYRJ2oIskwSHnBHfkgaPnifxw5N/Qnn7jupqiEQsbSWCn
-         S57golxT5CzFDww+sUO4lIgMg/7S935+RLE3piG4sDiEO/OYnI+MZECE14+zVtQpKGMZ
-         Y1sojX7ChI8wCi/juRwSeQc7lofHBWKbnjW9tyNhfT2wJF9Ohcspt4HVBzvu+WFVKkAE
-         vmql8vAnmwcWrtcqWbq8tNLQ5Gsnjyc4IRGu7DYjftkq1o6VPe/Qi3N76nz0hQbyno8f
-         gKHQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXrkDGEyx0AlyHQyv7YySch7wP/NUEVj1ops7f+Sibdh6FbBg6Dvv2QLPhFp2968XCb2SbzdpN0c+KddKlz6XxZvCVZpWqWfVLGUAcc
-X-Gm-Message-State: AOJu0Yw+G57z2wL7xfnmJbQvciwGJHF3hmQ7DPsS203qsHZGxGCNO77d
-	DBYpgC7nLXimJhl7tmBE8JLcH/fTxdCS5ESd2VDPNQPpiNQPsT1aXVXWkJGPEO2MSnoQST7Zhzs
-	AKa0=
-X-Google-Smtp-Source: AGHT+IHhm1TN2m/8h7xq9XVC6c2eoeVECv02Fp+GF4LtMIozj3PFQdmk7yKpQKnxTnferlbKIze4bQ==
-X-Received: by 2002:a5d:4c86:0:b0:343:79b4:5371 with SMTP id z6-20020a5d4c86000000b0034379b45371mr89238wrs.69.1712050534961;
-        Tue, 02 Apr 2024 02:35:34 -0700 (PDT)
-Received: from localhost ([2a01:e0a:3c5:5fb1:db22:d5c9:a527:a4cf])
-        by smtp.gmail.com with ESMTPSA id dn13-20020a0560000c0d00b00341b7d5054bsm13754980wrb.72.2024.04.02.02.35.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 02 Apr 2024 02:35:34 -0700 (PDT)
-References: <20240329205904.25002-1-ddrokosov@salutedevices.com>
- <20240329205904.25002-7-ddrokosov@salutedevices.com>
- <CAFBinCCC5KK-4_w41B-+ZJ3zdZckq_EDuAW+Kak2C0Ow8uuD6Q@mail.gmail.com>
- <20240401171237.qoewp2pgcdrqvc3e@CAB-WSD-L081021>
-User-agent: mu4e 1.10.8; emacs 29.2
-From: Jerome Brunet <jbrunet@baylibre.com>
-To: Dmitry Rokosov <ddrokosov@salutedevices.com>
-Cc: Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
- neil.armstrong@linaro.org, jbrunet@baylibre.com, mturquette@baylibre.com,
- sboyd@kernel.org, robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
- khilman@baylibre.com, kernel@salutedevices.com, rockosov@gmail.com,
- linux-amlogic@lists.infradead.org, linux-clk@vger.kernel.org,
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH v1 6/6] clk: meson: a1: add Amlogic A1 CPU clock
- controller driver
-Date: Tue, 02 Apr 2024 11:27:24 +0200
-In-reply-to: <20240401171237.qoewp2pgcdrqvc3e@CAB-WSD-L081021>
-Message-ID: <1jzfuchztl.fsf@starbuckisacylon.baylibre.com>
+	s=arc-20240116; t=1712050090; c=relaxed/simple;
+	bh=FbPLe7V7K5eiJlYqWL110p9H9wbc9kXV+qhEMNz/3YU=;
+	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=JQOBSG8TmWQqYqlmEZs+cOaMAZ5EgMiM23iS9lPvO4qpkpmrW9zDatjEd4yflAbJsEreV18UsgjwUZy6Km4auunXCJDU3ixY+0M4mczzj3jQbh+pT8VV1lwrWJmbhuxT2pJH7rc114kkeNmKdJDmmYk5yK+K1b8ExLRTBQrh8Og=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=leemhuis.info; spf=pass smtp.mailfrom=leemhuis.info; dkim=pass (2048-bit key) header.d=leemhuis.info header.i=@leemhuis.info header.b=IJ6mmUkL; arc=none smtp.client-ip=80.237.130.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=leemhuis.info
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=leemhuis.info
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=leemhuis.info; s=he214686; h=Content-Transfer-Encoding:Content-Type:
+	In-Reply-To:From:References:To:Subject:MIME-Version:Date:Message-ID:From:
+	Sender:Reply-To:Subject:Date:Message-ID:To:Cc:MIME-Version:Content-Type:
+	Content-Transfer-Encoding:Content-ID:Content-Description:In-Reply-To:
+	References; bh=Ta7ZEK0rmgLi5O4VE/68X27Ju/Jnf5hCRpkNmYKlBoc=; t=1712050088;
+	x=1712482088; b=IJ6mmUkLPZLJnDXIaXLi5/9pJp1RXFVoZK3B6cCHuD9njay0VS2nQ+0iBCs7a
+	0P9W7nt4oy/OIL4IOhBY+G9uICDxAjjiU19FeWSlv2CqvLnLn8LaRpqQOeamHhhqirbq2JgPvJ6zC
+	SfXHgygx51T9ZVL52fptqhUA/NwEuNXqABs84+VwUl+bdYDS0OH7J1iooHLos41BZPEhwArU8HKSf
+	WNUpmIhlA+FEW88YHmTS68i9o2maousDqjL7NsOMK1OsncaQYnkn2nkyUrFBiu6OrAPBs20RZfanC
+	hlIFxWKKF8R6OqTAF4+LveI8qGH3JGkobhdzjSi3jcnUT8SHXQ==;
+Received: from [2a02:8108:8980:2478:8cde:aa2c:f324:937e]; authenticated
+	by wp530.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
+	id 1rraQv-0007q5-Pe; Tue, 02 Apr 2024 11:27:57 +0200
+Message-ID: <5ea364e9-8a7d-4239-bf3b-1f4ae13f311b@leemhuis.info>
+Date: Tue, 2 Apr 2024 11:27:57 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 2/2] docs: handling-regressions.rst: clarify that
+ "Closes:" tags work too
+To: Randy Dunlap <rdunlap@infradead.org>, Karel Balej <balejk@matfyz.cz>,
+ Jonathan Corbet <corbet@lwn.net>, regressions@lists.linux.dev,
+ linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+ workflows@vger.kernel.org
+References: <20240328194342.11760-1-balejk@matfyz.cz>
+ <20240328194342.11760-3-balejk@matfyz.cz>
+ <dfa22ac1-36e9-48da-a2a8-8d7818c09187@leemhuis.info>
+ <b3b37454-df45-4826-ac5a-85c687f99d20@infradead.org>
+From: Thorsten Leemhuis <linux@leemhuis.info>
+Content-Language: en-US, de-DE
+Autocrypt: addr=linux@leemhuis.info; keydata=
+ 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 n7RI
+In-Reply-To: <b3b37454-df45-4826-ac5a-85c687f99d20@infradead.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-bounce-key: webpack.hosteurope.de;linux@leemhuis.info;1712050088;09f639c6;
+X-HE-SMSGID: 1rraQv-0007q5-Pe
 
+On 01.04.24 17:19, Randy Dunlap wrote:
+> On 4/1/24 1:38 AM, Thorsten Leemhuis wrote:
+>> On 28.03.24 20:29, Karel Balej wrote:
+>>> The regressions handling manual claims that regzbot associates patches
+>>> fixing an issue with the report based on the occurrence of the
+>>> appropriate "Link:" trailers. It reasons that this does not add any
+>>> burden on the maintainers/bug fix authors as this is already mandated by
+>>> the "Submitting patches" guide. In fact however, the guide encourages
+>>> using "Link:" tags for related discussions or issues which the patch
+>>> fixes only partially, recommending "Closes:" for full resolutions.
+>>>
+>>> Despite it not being mentioned anywhere in the "Handling regressions"
+>>> guide, regzbot does in fact take the "Closes:" tags into account and
+>>> seems to in fact treat them fully equivalently to "Link:" tags.
+>>>
+>>> Clarify this in the regressions handling guide by always mentioning both
+>>> of the tags.
+>>
+>> Many thx for this and the other patch. I had planned to do something
+>> like this myself, but never got around to.
+>>
+>> There is just one thing that makes me slightly unhappy: this tells
+>> readers that they can use both, but leaves the question "what's the
+>> difference" respectively "in which situation should I use one or the
+>> other" unanswered.
+>>
+>> To answer that question: in a ideal world developers would use "Closes:"
+>> when a change resolves an issue, and "Link" when it's somehow related to
+>> a report, but not resolving the problem.
+> 
+> I use Link: when I fix only part of an LKP report and Closes: when I fix
+> all of one.
 
-On Mon 01 Apr 2024 at 20:12, Dmitry Rokosov <ddrokosov@salutedevices.com> w=
-rote:
+Yup.
 
-> Hello Martin,
->
-> Thank you for quick response. Please find my thoughts below.
->
-> On Sun, Mar 31, 2024 at 11:40:13PM +0200, Martin Blumenstingl wrote:
->> Hi Dmitry,
->>=20
->> On Fri, Mar 29, 2024 at 9:59=E2=80=AFPM Dmitry Rokosov
->> <ddrokosov@salutedevices.com> wrote:
->> [...]
->> > +static struct clk_regmap cpu_fclk =3D {
->> > +       .data =3D &(struct clk_regmap_mux_data) {
->> > +               .offset =3D CPUCTRL_CLK_CTRL0,
->> > +               .mask =3D 0x1,
->> > +               .shift =3D 10,
->> > +       },
->> > +       .hw.init =3D &(struct clk_init_data) {
->> > +               .name =3D "cpu_fclk",
->> > +               .ops =3D &clk_regmap_mux_ops,
->> > +               .parent_hws =3D (const struct clk_hw *[]) {
->> > +                       &cpu_fsel0.hw,
->> > +                       &cpu_fsel1.hw,
->> Have you considered the CLK_SET_RATE_GATE flag for &cpu_fsel0.hw and
->> &cpu_fsel1.hw and then dropping the clock notifier below?
->> We use that approach with the Mali GPU clock on other SoCs, see for
->> example commit 8daeaea99caa ("clk: meson: meson8b: make the CCF use
->> the glitch-free mali mux").
->> It may differ from what Amlogic does in their BSP,
->
-> Amlogic in their BSP takes a different approach, which is slightly
-> different from mine. They cleverly change the parent of cpu_clk directly
-> by forking the cpufreq driver to a custom version. I must admit, it's
-> quite an "interesting and amazing" idea :) but it's not architecturally
-> correct totally.
+>> But we don't live in that world and I wonder if we ever reach that point
+>> where regzbot could act accordingly. Nevertheless I'd say it would be
+>> wise to write the docs towards that ideal world. E.g.: tell developers
+>> to uses 'Closes:', but in some places briefly hint that "'Link:' works
+>> for now, too".
+> 
+> I don't see Link: going away any time in the "near" future.
 
-I disagree. Martin's suggestion is correct for the fsel part which is
-symetric.
+Sure, I didn't mean to imply that! Just in the scope of the document and
+the sections where the tag is mentioned I think (but it would be good to
+recheck) it's always about a "resolving a reported regression", so
+Closes there makes more sense. But yeah, might be wise to spell that all
+out.
 
->
->> but I don't think
->> that there's any harm (if it works in general) because CCF (common
->> clock framework) will set all clocks in the "inactive" tree and then
->> as a last step just change the mux (&cpu_fclk.hw). So at no point in
->> time will we get any other rate than a) the original CPU clock rate
->> before the rate change b) the new desired CPU clock rate. This is
->> because we have two symmetric clock trees.
->
-> Now, let's dive into the specifics of the issue we're facing. I've
-> examined the CLK_SET_RATE_GATE flag, which, to my understanding, blocks
-> rate changes for the entire clock chain. However, in this particular
-> situation, it doesn't provide the solution we need.
->
-> Here's the problem we're dealing with:
->
-> 1) The CPU clock can have the following frequency points:
->
->   available frequency steps:  128 MHz, 256 MHz, 512 MHz, 768 MHz, 1.01 GH=
-z, 1.20 GHz
->
-> When we run the cpupower, we get the following information:
-> # cpupower -c 0,1 frequency-info
-> analyzing CPU 0:
->   driver: cpufreq-dt
->   CPUs which run at the same hardware frequency: 0 1
->   CPUs which need to have their frequency coordinated by software: 0 1
->   maximum transition latency: 50.0 us
->   hardware limits: 128 MHz - 1.20 GHz
->   available frequency steps:  128 MHz, 256 MHz, 512 MHz, 768 MHz, 1.01 GH=
-z, 1.20 GHz
->   available cpufreq governors: conservative ondemand userspace performanc=
-e schedutil
->   current policy: frequency should be within 128 MHz and 128 MHz.
->                   The governor "schedutil" may decide which speed to use
->                   within this range.
->   current CPU frequency: 128 MHz (asserted by call to hardware)
-> analyzing CPU 1:
->   driver: cpufreq-dt
->   CPUs which run at the same hardware frequency: 0 1
->   CPUs which need to have their frequency coordinated by software: 0 1
->   maximum transition latency: 50.0 us
->   hardware limits: 128 MHz - 1.20 GHz
->   available frequency steps:  128 MHz, 256 MHz, 512 MHz, 768 MHz, 1.01 GH=
-z, 1.20 GHz
->   available cpufreq governors: conservative ondemand userspace performanc=
-e schedutil
->   current policy: frequency should be within 128 MHz and 128 MHz.
->                   The governor "schedutil" may decide which speed to use
->                   within this range.
->   current CPU frequency: 128 MHz (asserted by call to hardware)
->
-> 2) For the frequency points 128 MHz, 256 MHz, and 512 MHz, the CPU fixed
-> clock should be used.
+Karel: if I'm asking too much here, I could pick up your patches and
+improve upon them to handle this. Or we simply wait until two other
+regzbot features are in place, then I could fix this as part of some
+other changes.
 
-Apparently, you are relying on the SYS PLL lowest possible rate to
-enfore this contraint, which I suppose is 24 * 32 =3D 768MHz. It would be
-nice to clearly say so.
+>> I also find the patch description a bit verbose; and it would be good to
+>> turn the text upside down: first outline what the patch, then maybe
+>> describe the "why".
+> It's almost amusing that you find something verbose.  ;)
 
-> Fortunately, we don't encounter any freeze
-> problems when we attempt to change its rate at these frequencies.
+:-D
 
-That does not sound very solid ...
+I often wonder what the main reason for that verbosity it. That I used
+to write for a mainstream computer magazine? Or that English is a second
+language to me? Whatever.
 
->
-> 3) However, for the frequency points 768 MHz, 1.01 GHz, and 1.20 GHz,
-> the sys_pll is used as the clock source because it's a faster option.
-> Now, let's imagine that we want to change the CPU clock from 768 MHz to
-> 1.01 GHz. Unfortunately, it's not possible due to the broken sys_pll,
-> and any execution attempts will result in a hang.
-
-.. Because PLL needs to relock, it is going to be off for a while. That
-is not "broken", unless there is something else ?
-
->
-> 4) As you can observe, in this case, we actually don't need to lock the
-> rate for the sys_pll chain.
-
-In which case ? I'm lost.
-
-> We want to change the rate instead.
-
-.. How are you going to do that without relocking the PLL ?
-
-> Hence,
-> I'm not aware of any other method to achieve this except by switching
-> the cpu_clk parent to a stable clock using clock notifier block.
-> Interestingly, I've noticed a similar approach in the CPU clock drivers
-> of Rockchip, Qualcomm, and Mediatek.
-
-There is an example of syspll notifier in the g12 clock controller.
-You should have a look at it
-
---=20
-Jerome
+Ciao, Thorsten
 
