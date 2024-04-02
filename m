@@ -1,239 +1,270 @@
-Return-Path: <linux-kernel+bounces-128032-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-128034-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 13C5E895538
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 15:21:57 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2A48189553E
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 15:22:58 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BC740289278
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 13:21:55 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D40DF28A041
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 13:22:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DBF8485624;
-	Tue,  2 Apr 2024 13:21:24 +0000 (UTC)
-Received: from irl.hu (irl.hu [95.85.9.111])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4842F60279;
+	Tue,  2 Apr 2024 13:22:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="XbOMNRwk";
+	dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b="j1PWAF00"
+Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8DF4480631;
-	Tue,  2 Apr 2024 13:21:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.85.9.111
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712064084; cv=none; b=G1izORQr+QoV/D6/tGMy63JQn52w8c3xxDVwqeLw1/9Rl06ALjFrQ/O/rbpMmwn8rLqTgrt0xVF9PQf5Ld0Wl6a/yIBrUtmZ9vGhgBY1KIbajnFOhskglxKTvQFuPP0BsY6SfAeUU9vWD6c3fJp/D8bRB8o4JitosSiQH0+t7wQ=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712064084; c=relaxed/simple;
-	bh=soN8FkpcgRBwdzzFH5CZlu5Cs9CmIZZdqx8WdcS451g=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 Mime-Version:Content-Type; b=iT0tCtPNDNEe+L5ptvgaCt0tq1EV9pPVJZsEH0aRlfx5+Iy1Xb7sYtCP0nP+eASLMwFNbvWeXf1W+O6ynbTgXZsgvgzhOJGc39t7oqXyW//BbgjvcJ2dhAG9BScEcsR3oOm/mRPkB3DZHGX/XyfV2Wj5zkgMWxpEDdmDuqk2W9M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=irl.hu; spf=pass smtp.mailfrom=irl.hu; arc=none smtp.client-ip=95.85.9.111
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=irl.hu
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=irl.hu
-Received: from fedori.lan (51b69867.dsl.pool.telekom.hu [::ffff:81.182.152.103])
-  (AUTH: CRAM-MD5 soyer@irl.hu, )
-  by irl.hu with ESMTPSA
-  id 00000000000644A9.00000000660C064A.002529D9; Tue, 02 Apr 2024 15:21:14 +0200
-From: Gergo Koteles <soyer@irl.hu>
-To: Ike Panhc <ike.pan@canonical.com>,
-  Hans de Goede <hdegoede@redhat.com>,
-  =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>,
-  Pavel Machek <pavel@ucw.cz>, Lee Jones <lee@kernel.org>,
-  Rob Herring <robh@kernel.org>,
-  Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-  Conor Dooley <conor+dt@kernel.org>
-Cc: platform-driver-x86@vger.kernel.org,
-  linux-kernel@vger.kernel.org, linux-leds@vger.kernel.org,
-  devicetree@vger.kernel.org, Gergo Koteles <soyer@irl.hu>
-Subject: [PATCH 3/3] platform/x86: ideapad-laptop: add FnLock LED class device
-Date: Tue,  2 Apr 2024 15:21:02 +0200
-Message-ID: <2db08c948568a8d5352780864956c3271b4e42ce.1712063200.git.soyer@irl.hu>
-X-Mailer: git-send-email 2.44.0
-In-Reply-To: <cover.1712063200.git.soyer@irl.hu>
-References: <cover.1712063200.git.soyer@irl.hu>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5B87077F08;
+	Tue,  2 Apr 2024 13:22:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=205.220.177.32
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1712064167; cv=fail; b=mZxpYPRV1xkowVmE3BUe2I8J7S5QG6wL0ukglMXp5o2xjhBlYO3CbAQCzh+JrKFvcS0e8NWatRY4+tooVl0KtlHxhlLqZPaUHR8N6iXGsTv1ydmhTwlnvhhB5xDdQxWZDB+JmD1OtMg4hdxUCLBbJqLospHy1lianQTYQOvTI0E=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1712064167; c=relaxed/simple;
+	bh=jSudKeMNYtCiStgytEsVaqtQZYbRv+0BnvJnsPi/pX0=;
+	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
+	 Content-Type:MIME-Version; b=M0Tz39UZ+qbbakYleb9ndyS3lPPs3eGoQLMtFFsPFal6IIzVKUTCLBwE/PtXMA7a59q8Q9Mi9Gk95+lSX7nKjtnGN6OoAiUM7bl1+FgNHHrZvo+s9u5T+kOjNhyV09QN1WpRXi6PGoxsd+veKvFJdH7TGfT4XZhs5St5MMP72fk=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=XbOMNRwk; dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b=j1PWAF00; arc=fail smtp.client-ip=205.220.177.32
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=oracle.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oracle.com
+Received: from pps.filterd (m0246631.ppops.net [127.0.0.1])
+	by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 4327hpuM014630;
+	Tue, 2 Apr 2024 13:22:27 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=message-id : date :
+ subject : to : cc : references : from : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=corp-2023-11-20;
+ bh=+pSeqX6Ix8+D8Tx7k9a0xV1y3dsR8yzYZhBS5WOHBfc=;
+ b=XbOMNRwkBluBB7yN++XwtZFecOgKreZraZbyJGUvH/32DHQliIkZDA0um8voLsPOfhbB
+ UaqK0PDghWJQm3egC0LQ48hBb524qQdepm4EKkkoDlfuHOXZ2HN9hu6+C21EnZORS5xv
+ va0/gUb1leLZ3n9MWxNpuzWvRtqSnCVjsvPys5o/tzOvaVNOpOaVaZsU7vlgPZO2YgR6
+ l7TjFJ8/eyvNYqxp18Tx385oF1VNlTZWYyXU33dFTazLxq0ul/1AG5/xTQRFQxyjfu2Q
+ +3L7jBqqIM2T2tcgkFvlo9WGr+9KgdveVoFVu44i43M1X0mUe4jqeh5o3b7Q/pOchQmn lA== 
+Received: from phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta03.appoci.oracle.com [138.1.37.129])
+	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3x69h4mnpb-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Tue, 02 Apr 2024 13:22:27 +0000
+Received: from pps.filterd (phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
+	by phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 432CleiA007161;
+	Tue, 2 Apr 2024 13:22:26 GMT
+Received: from nam12-bn8-obe.outbound.protection.outlook.com (mail-bn8nam12lp2169.outbound.protection.outlook.com [104.47.55.169])
+	by phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTPS id 3x696702c7-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Tue, 02 Apr 2024 13:22:26 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=ORIBFI0aWHXGDwyryp3ntED6cvY7lOcHXoeY3Vsm2A+zdohvFe0J4FrOkeij/COlq9U7g/uQ9N1TXysreJ1jMiVIIFMGbAwCAPiIE6HXSgoKRK4Wz68VmpM5VReZIffpSb1ZQPJz9Pv1WimMEzYs9fAjYsHok7N6ptrg/Kwxhb8Sw5KPqEJZJWQpG08CVKYfxbnCm1fPWh7E+wclTKVbuBRxV4GQzkGjpd5T7bMY/q3hxRfsk3wFrem6WzeWG4ZL6iDg2eUxfiD/CMhuhXgbOk+MXPqKVuvOo3xVY5ysd2uLYsSVHYewMI5XdtP4NUM7OxKygheDK4Hs+qVAc3pewQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=+pSeqX6Ix8+D8Tx7k9a0xV1y3dsR8yzYZhBS5WOHBfc=;
+ b=jGitGu5jhSEDcebjRFgrwsDxImRworQYCT3RLHhYohjw3BzM2xV985809zxuw9cZlyvfrFHFhu6vmtw7BViQABUtvw/AANVXbeNG4q2vBpqwk+TVAp359w/P2aSL9zHovEGGgW+/foDYRlXZaXv5BusfsuZMdTxsVinIdju7bTkSs2kNq7wWh9WCXHRb/ah1txnh+O2yZY4CtF90jyYTwI5izV6XQtexQtc99GsLGrtJLYkuUitGK6TvyIkdVDwNc3o3MoCGblQvwJ+hTZh6pzXANA6ACx6UAhYrWDEIz/zJzAIW1TU5Qtj5ceFXqqbcwSA/PhiMWksZ0Wyy2HUoDA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=+pSeqX6Ix8+D8Tx7k9a0xV1y3dsR8yzYZhBS5WOHBfc=;
+ b=j1PWAF00dOrct7Qx1Y9MIXdaZhoDxZORKN/V21jNKEdHYvQkXgZnimYw02Jbc5jC4AZ7ieovWlkzCPJRnof/lrCIDxnkUXDv2hFXZGIYwtRpn+sQy4A3psOj2RNYHWrdfuci9t6KswKIhJehYzfbtzZi33IGmwpL3+pvKk8XlFM=
+Received: from PH8PR10MB6290.namprd10.prod.outlook.com (2603:10b6:510:1c1::7)
+ by DS7PR10MB5199.namprd10.prod.outlook.com (2603:10b6:5:3aa::22) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7409.46; Tue, 2 Apr
+ 2024 13:22:23 +0000
+Received: from PH8PR10MB6290.namprd10.prod.outlook.com
+ ([fe80::f5ee:d47b:69b8:2e89]) by PH8PR10MB6290.namprd10.prod.outlook.com
+ ([fe80::f5ee:d47b:69b8:2e89%3]) with mapi id 15.20.7409.042; Tue, 2 Apr 2024
+ 13:22:23 +0000
+Message-ID: <99b0bc65-a3ce-4522-a1dd-a304498fc453@oracle.com>
+Date: Tue, 2 Apr 2024 18:52:12 +0530
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] drm/panthor: Fix NULL vs IS_ERR() bug in
+ panthor_ioctl_tiler_heap_destroy()
+To: Boris Brezillon <boris.brezillon@collabora.com>
+Cc: Steven Price <steven.price@arm.com>, Liviu Dudau <liviu.dudau@arm.com>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
+        Heiko Stuebner <heiko@sntech.de>, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org, dan.carpenter@linaro.org,
+        kernel-janitors@vger.kernel.org, error27@gmail.com
+References: <20240402103358.1689379-1-harshit.m.mogalapalli@oracle.com>
+ <20240402143337.38e864e9@collabora.com>
+Content-Language: en-US
+From: Harshit Mogalapalli <harshit.m.mogalapalli@oracle.com>
+In-Reply-To: <20240402143337.38e864e9@collabora.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: TYCP286CA0290.JPNP286.PROD.OUTLOOK.COM
+ (2603:1096:400:3c8::7) To PH8PR10MB6290.namprd10.prod.outlook.com
+ (2603:10b6:510:1c1::7)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-X-Mime-Autoconverted: from 8bit to 7bit by courier 1.0
+MIME-Version: 1.0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: PH8PR10MB6290:EE_|DS7PR10MB5199:EE_
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 
+	Fip2G07OEGGWvJIgKDgtT3D8r4S58vqaRteKmqTnzmaPr+XpfVdwWU8FLSYiDxR7zrhxm3+fq5m6rBdwRtBR5dHSgT6mLOvr/YAfecbP/TdszOT4AADVK1VBde/oVdWPOGIyhXG8Ssieept37ZPzVPU59lhiQLendfgkZSlfagmEjKIqDeG9e+7e0+B4KDJGKJszUDPHzjiwS2/MiI9eMf9F1LvY7xZABxJhOwC+BMdrTPECTVw7v8korPDScGXTN7YH/p2nDVD+kEX0FEWPl9OofuLQVTbOoy2pgBcAkax/azOCyQxqv+oY0tcv3FLLmArBQU6C78alNBaiIrbu6rBYMH/kBJda+RFdXRAaKBuGdJHaml7fLaHazGPutfffDtfV/dvPVpqwUnsXgV8i52Y6l/vntCXNY0uvg0yfvQ2jQdve5cU+9A54gv3lr+JHqx4xwIgXQeEi2BGmSiusOzHA9y0UsVRuUhkhXtkPSNDBAwRLjLsDKhSqt4r4Cx/vgbOn07YylfhHvIrnF/9dxTKBtOnNzNjHLT2xbr9SxYmAZkjaFeAJZUYkH8y4Ej6wVmdgu5fnTZbM4Ns1d3CV9wLV0u2k6DqVCsR55BGOkrdlFhU9qhfMdbK26QLyAVaVV0o51LNGEeR8Vq/xUJrUvP3Jaj44zKlGjWd3KhJOAK8=
+X-Forefront-Antispam-Report: 
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH8PR10MB6290.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376005)(7416005)(1800799015)(366007);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: 
+	=?utf-8?B?ekQ5bE5JNDZXcDdUYXlxdzlveWpmRUNJdlNoa0RFVXp4Y3M3WG0wcnZMZXRB?=
+ =?utf-8?B?djhBcWJXRzl6c2NpTk5kcTZtM202VnpZdWVRUThKWm1DYzE0ZEJmb001c0RO?=
+ =?utf-8?B?QjdwMmVxNUhVdmVlMUtwcmpLRzB1dURmVDRxMlV2VWZ4MHdMZEk2OWFGWjRt?=
+ =?utf-8?B?VnJUL0d2RkZ3QjV6b3c2azczMkRvV3ArS01PeWNSN3ZTQ1lxa2NZY0JZbHla?=
+ =?utf-8?B?bnc0bDVxZm8zb1o5VGU0UkszR21DcVZUUmYvZ1BDbEN4U0hwUUVUdFlNb01M?=
+ =?utf-8?B?SzFtWVdrUnJQYTdMK29taHNZSVdKc2xXSk9vbVFDQ25sVm10NWk2elFRSGdr?=
+ =?utf-8?B?RTNCRnB3NUMxNGprcEcxZ3NXa1pNeG9LeVpGK1N1REZTL0I0OTZFVnhSY3Nk?=
+ =?utf-8?B?RytDV3o4NTNzYUI2WFhWTk40Q3grRzRnQUtqTmphMmZxSTAvK1hGZ3VvVUR5?=
+ =?utf-8?B?OWU0N1l3ZFdzbmVoc3pZeE1GT3gxMldYU2tWVEx0TVNPekF6akkyMkZHQ3FN?=
+ =?utf-8?B?YldLTUpIZ014dW5MQ3FWQThLK0xwa2pyeTdSTTM5bUswY2xDak56SFVVcnFq?=
+ =?utf-8?B?cVNXTFI1NXppZEllNkszUURlNFBrTFZiT0ptaDlsR1pHMURTWlhKbmZTQkEz?=
+ =?utf-8?B?c2cyS3ZiUXhrK05valpQMzE5SEZEL3Q2WFc0NzZZZGtxZ05GTi9VaklBVE1S?=
+ =?utf-8?B?ek9wY2tESmt0L3B6WHJMQnQvc3VETi81SmNTc0RKOE5pMFA1Ni9qdDQ2RXBZ?=
+ =?utf-8?B?R3JIT0NGUytwU1dBYWpZTU5sbm9SOXFlSzBzUmNWbUEvam1aV3ZnSlpGV2l2?=
+ =?utf-8?B?dkRXSXlkeXNXeFVtZENBWHlNejN6M21qUFZZOEkyZ0NpS2ZpQWROZDBQSU5Y?=
+ =?utf-8?B?YVFOak54YVFCOGdoMnBSYkJOS2x0U0RmWC8xQUtyKzg1WkV5YTV3MTUwNFhJ?=
+ =?utf-8?B?N1A4UmpLUlE1WCtlaFRwS2s0Qm9MOTlycDh6Y0k0MGFmSTF1dUlkaGJOTEc4?=
+ =?utf-8?B?UTdNNW16OEI1dCtxaE9DeHg0STZJdTI2TWFBQktDdWNLUU1ZUStpUmhwMko0?=
+ =?utf-8?B?OU4vMWdBWlBWNHhROS9pZTJnenNRdk84MkYzY1QyV0R5NytWSEcxUXBNemJH?=
+ =?utf-8?B?NEVvbWRQRFhxSTJOU3J0L2p3MTJPUDZkUVFoZEF5eHBab2RkeTIwUEFQM21o?=
+ =?utf-8?B?dlg4M25MS21CejlRSFBaSUZmeStaT3IrdXlCSE5aM21IMGJuUmZ4bW1iVFhI?=
+ =?utf-8?B?WnpGSG5lSHJhem9YZTF2OVFRVTFTSmQybXA1bjhibURKcjVjTm9WR2x5cDh5?=
+ =?utf-8?B?SWJkOXZ4d0xpT0l3ekJJZkZ1UklOUURBVCtEZlRkMUQzd3dKTWVsZFdnR21C?=
+ =?utf-8?B?blpMZ1d0LzEzdG9wMWNCN2VzZFpiMHUyTjdnOUdoVDNaWW95cWRIdm9BK3NB?=
+ =?utf-8?B?TXFBMXBheldiMHJhaEUyWFJJdG1aV3dmRGJLeTRBc2k2ZjVTb1dJMkNQU0ZL?=
+ =?utf-8?B?eEszQ3ZTMnNXcFdXK1QwRDAyWHZObVVIRkpjbmhENy95Zk5kMGk1K2pEcllB?=
+ =?utf-8?B?UG1Dd09TYldnOEpoZGUzR3JOUXV4MDVFUkdFSmRkL3JTR3pRbzVJd1MxYVl2?=
+ =?utf-8?B?QzZXWEhrVzZWY3hDODdQemIxNE5iakJvSmlQelF5YTRsWkRVSEpFTFFSdkFZ?=
+ =?utf-8?B?MisrZUVmN1RybDZDWFZ6UlNKejF2ZStUWVVnRkJUZktmNjVaMUpVVDFwRGVt?=
+ =?utf-8?B?aHNSVmZPZEZtaDRNQXJQWjFxaGpnRFhGNmpBenZXYjZCR1MwaDdnNGRPTlA3?=
+ =?utf-8?B?aW9RQ3RwNDlab2pCQXhMSnY2UVBjenFjcjJwR0NzZXAzK0pTc3N3Nyt3R0cx?=
+ =?utf-8?B?WjBLK3lWTEh3TXFxSk9FcHd0d1Z0S3NuWUZXNUxiMHMrdmdzNWEwNy9zQTYz?=
+ =?utf-8?B?SFhoN0k5U0dMWWhJVXhCU2JkTlZKOXAyYkxoZk8xMHhzbXVBSHlTU2ZsaDlz?=
+ =?utf-8?B?Um93U1JEN0g5RmpWZVozWEZ6VkZIWkFXdUdRaGI5U0lVMDg5SlhXekxqMWY3?=
+ =?utf-8?B?ZEhLeEpRbVU3aEs0cThxUG1TVGxEV0Y4VTExWDBFa0VubzNkODlwTXhVc2ZT?=
+ =?utf-8?B?TDgxcGc4OVhBUDFPTHJmWW5JT0J2ZXNLWXkvTUcwOTgrTjZsbitwNGxnNXVR?=
+ =?utf-8?Q?XTmc0nhaItd7qjBkaFv8fYc=3D?=
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: 
+	1SM4d6S2jp/ce+YeYRkXhJTK/wBijr58hElmD+7VNSuwqrGMMqr6rXM8gZv6TZE0oy0p1siQAlAB3H5niDSMUKGgFkyBjoH9QCwYYNLsBbqY2KB4T+O2IwbDgA3/ipsscXxaza77qrYrUKv7spHY3KOz7KLj/QV/1wf4EW/NBAAnylZpF00akSIgla1Euqg5g0xCxmdVG3QXnhbK1AWV0MPGdlBgwhMo7SLl/6OwxgFdSi0SVoSCpW9SkTuYwJ3Ip36rk1tQcBJ7k2ri+Zz5U8/K3IInOGOPTpzLuMfjdAU7ZTkUFrpmd70+5SU2B5tPVfSOyc0TIgY7NB7KYsKSp6iBszs04TVPFTmI+CfuxWt5IS8YAx/mb9qtKsC+VlUwnjIcPEhvVhneRSPHSv9t7Kc3+kJTNlx+tXugFg8MjnHCDHNmtJojVPeDSl/XA1kaOlHpqWrHNjEMqdKc0VN7nRBzuew3ohbCUkiAhzNuLznwgmUo+uyrTQBfi37S1TYihLl8khDVNJ7fboWQ5/kKsH6hcOjtynMmDXtS+sZMdGrksL8ZFelMKKvPqTgXOQ1oliA6ZO+beXxDsmEBqsPX4OaDiiJpA+BatuBImGh1HrQ=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 98572261-dce6-4780-8b58-08dc5317eebf
+X-MS-Exchange-CrossTenant-AuthSource: PH8PR10MB6290.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 02 Apr 2024 13:22:23.6638
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: ZktIsPwHwx8zeIUidAPGUah7As3wKbZhlCHT3SuuTW64XynW1iWnId9rCx48Fcwh5M1T1OT8Hli3d8wSpSBnTkg/TTOEU/Z2GfTKZZfFBuqjiJp7vT/RRphdypYvFMQ7
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS7PR10MB5199
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-04-02_06,2024-04-01_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 malwarescore=0
+ mlxlogscore=999 adultscore=0 bulkscore=0 phishscore=0 mlxscore=0
+ suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2403210000 definitions=main-2404020098
+X-Proofpoint-ORIG-GUID: NJiZtu9h05yiXPrZJOxD25OeMsDn8SQC
+X-Proofpoint-GUID: NJiZtu9h05yiXPrZJOxD25OeMsDn8SQC
 
-Some Ideapad/Yoga Laptops have an FnLock LED in the Esc key.
+Hello Boris,
 
-Expose Fnlock as an LED class device for easier OSD support.
+On 02/04/24 18:03, Boris Brezillon wrote:
+> Hello Harshit,
+> 
+> On Tue,  2 Apr 2024 03:33:58 -0700
+> Harshit Mogalapalli <harshit.m.mogalapalli@oracle.com> wrote:
+> 
+>> panthor_vm_get_heap_pool() returns ERR_PTR on failure.
+>>
+>> Fixes: 4bdca1150792 ("drm/panthor: Add the driver frontend block")
+>> Signed-off-by: Harshit Mogalapalli <harshit.m.mogalapalli@oracle.com>
+>> ---
+>> This is spotted by smatch and the patch is only compile tested
+>> ---
+>>   drivers/gpu/drm/panthor/panthor_drv.c | 4 ++--
+>>   1 file changed, 2 insertions(+), 2 deletions(-)
+>>
+>> diff --git a/drivers/gpu/drm/panthor/panthor_drv.c b/drivers/gpu/drm/panthor/panthor_drv.c
+>> index 11b3ccd58f85..050b905b0453 100644
+>> --- a/drivers/gpu/drm/panthor/panthor_drv.c
+>> +++ b/drivers/gpu/drm/panthor/panthor_drv.c
+>> @@ -1090,8 +1090,8 @@ static int panthor_ioctl_tiler_heap_destroy(struct drm_device *ddev, void *data,
+>>   		return -EINVAL;
+>>   
+>>   	pool = panthor_vm_get_heap_pool(vm, false);
+>> -	if (!pool) {
+>> -		ret = -EINVAL;
+>> +	if (IS_ERR(pool)) {
+>> +		ret = PTR_ERR(pool);
+> 
+> Actually, panthor_vm_get_heap_pool() will return NULL if there's no
+> heap pool attached to this VM and create=false, so this was correct.
+> This being said, I'm fine making that consistent by returning
+> ERR_PTR(-ENOENT) instead of NULL in that case. This way we don't have
+> two different semantics based on the 'create' value.
+> 
 
-Signed-off-by: Gergo Koteles <soyer@irl.hu>
----
- drivers/platform/x86/ideapad-laptop.c | 97 ++++++++++++++++++++++++++-
- 1 file changed, 96 insertions(+), 1 deletion(-)
+Thanks for explaining. I missed the case where create is false and there 
+is no heap pool attached, so panthor_vm_get_heap_pool() can return NULL.
 
-diff --git a/drivers/platform/x86/ideapad-laptop.c b/drivers/platform/x86/ideapad-laptop.c
-index 529df08af548..8a5bef4eedfe 100644
---- a/drivers/platform/x86/ideapad-laptop.c
-+++ b/drivers/platform/x86/ideapad-laptop.c
-@@ -152,6 +152,11 @@ struct ideapad_private {
- 		struct led_classdev led;
- 		unsigned int last_brightness;
- 	} kbd_bl;
-+	struct {
-+		bool initialized;
-+		struct led_classdev led;
-+		unsigned int last_brightness;
-+	} fn_lock;
- };
- 
- static bool no_bt_rfkill;
-@@ -531,6 +536,19 @@ static int ideapad_fn_lock_set(struct ideapad_private *priv, bool state)
- 		state ? SALS_FNLOCK_ON : SALS_FNLOCK_OFF);
- }
- 
-+static void ideapad_fn_lock_led_notify(struct ideapad_private *priv, int brightness)
-+{
-+	if (!priv->fn_lock.initialized)
-+		return;
-+
-+	if (brightness == priv->fn_lock.last_brightness)
-+		return;
-+
-+	priv->fn_lock.last_brightness = brightness;
-+
-+	led_classdev_notify_brightness_hw_changed(&priv->fn_lock.led, brightness);
-+}
-+
- static ssize_t fn_lock_show(struct device *dev,
- 			    struct device_attribute *attr,
- 			    char *buf)
-@@ -561,6 +579,8 @@ static ssize_t fn_lock_store(struct device *dev,
- 	if (err)
- 		return err;
- 
-+	ideapad_fn_lock_led_notify(priv, state);
-+
- 	return count;
- }
- 
-@@ -1479,6 +1499,65 @@ static void ideapad_kbd_bl_exit(struct ideapad_private *priv)
- 	led_classdev_unregister(&priv->kbd_bl.led);
- }
- 
-+/*
-+ * FnLock LED
-+ */
-+static enum led_brightness ideapad_fn_lock_led_cdev_get(struct led_classdev *led_cdev)
-+{
-+	struct ideapad_private *priv = container_of(led_cdev, struct ideapad_private, fn_lock.led);
-+
-+	return ideapad_fn_lock_get(priv);
-+}
-+
-+static int ideapad_fn_lock_led_cdev_set(struct led_classdev *led_cdev,
-+	enum led_brightness brightness)
-+{
-+	struct ideapad_private *priv = container_of(led_cdev, struct ideapad_private, fn_lock.led);
-+
-+	return ideapad_fn_lock_set(priv, brightness);
-+}
-+
-+static int ideapad_fn_lock_led_init(struct ideapad_private *priv)
-+{
-+	int brightness, err;
-+
-+	if (!priv->features.fn_lock)
-+		return -ENODEV;
-+
-+	if (WARN_ON(priv->fn_lock.initialized))
-+		return -EEXIST;
-+
-+	priv->fn_lock.led.max_brightness = 1;
-+
-+	brightness = ideapad_fn_lock_get(priv);
-+	if (brightness < 0)
-+		return brightness;
-+
-+	priv->fn_lock.last_brightness = brightness;
-+	priv->fn_lock.led.name                    = "platform::" LED_FUNCTION_FNLOCK;
-+	priv->fn_lock.led.brightness_get          = ideapad_fn_lock_led_cdev_get;
-+	priv->fn_lock.led.brightness_set_blocking = ideapad_fn_lock_led_cdev_set;
-+	priv->fn_lock.led.flags                   = LED_BRIGHT_HW_CHANGED;
-+
-+	err = led_classdev_register(&priv->platform_device->dev, &priv->fn_lock.led);
-+	if (err)
-+		return err;
-+
-+	priv->fn_lock.initialized = true;
-+
-+	return 0;
-+}
-+
-+static void ideapad_fn_lock_led_exit(struct ideapad_private *priv)
-+{
-+	if (!priv->fn_lock.initialized)
-+		return;
-+
-+	priv->fn_lock.initialized = false;
-+
-+	led_classdev_unregister(&priv->fn_lock.led);
-+}
-+
- /*
-  * module init/exit
-  */
-@@ -1741,8 +1820,10 @@ static void ideapad_wmi_notify(struct wmi_device *wdev, union acpi_object *data)
- 		if (priv->features.set_fn_lock_led) {
- 			int brightness = ideapad_fn_lock_get(priv);
- 
--			if (brightness >= 0)
-+			if (brightness >= 0) {
- 				ideapad_fn_lock_set(priv, brightness);
-+				ideapad_fn_lock_led_notify(priv, brightness);
-+			}
- 		}
- 
- 		if (data->type != ACPI_TYPE_INTEGER) {
-@@ -1754,6 +1835,10 @@ static void ideapad_wmi_notify(struct wmi_device *wdev, union acpi_object *data)
- 		dev_dbg(&wdev->dev, "WMI fn-key event: 0x%llx\n",
- 			data->integer.value);
- 
-+		/* 0x02 FnLock, 0x03 Esc */
-+		if (data->integer.value == 0x02 || data->integer.value == 0x03)
-+			ideapad_fn_lock_led_notify(priv, data->integer.value == 0x02);
-+
- 		ideapad_input_report(priv,
- 				     data->integer.value | IDEAPAD_WMI_KEY);
- 
-@@ -1847,6 +1932,14 @@ static int ideapad_acpi_add(struct platform_device *pdev)
- 			dev_info(&pdev->dev, "Keyboard backlight control not available\n");
- 	}
- 
-+	err = ideapad_fn_lock_led_init(priv);
-+	if (err) {
-+		if (err != -ENODEV)
-+			dev_warn(&pdev->dev, "Could not set up FnLock LED: %d\n", err);
-+		else
-+			dev_info(&pdev->dev, "FnLock control not available\n");
-+	}
-+
- 	/*
- 	 * On some models without a hw-switch (the yoga 2 13 at least)
- 	 * VPCCMD_W_RF must be explicitly set to 1 for the wifi to work.
-@@ -1903,6 +1996,7 @@ static int ideapad_acpi_add(struct platform_device *pdev)
- 	for (i = 0; i < IDEAPAD_RFKILL_DEV_NUM; i++)
- 		ideapad_unregister_rfkill(priv, i);
- 
-+	ideapad_fn_lock_led_exit(priv);
- 	ideapad_kbd_bl_exit(priv);
- 	ideapad_input_exit(priv);
- 
-@@ -1930,6 +2024,7 @@ static void ideapad_acpi_remove(struct platform_device *pdev)
- 	for (i = 0; i < IDEAPAD_RFKILL_DEV_NUM; i++)
- 		ideapad_unregister_rfkill(priv, i);
- 
-+	ideapad_fn_lock_led_exit(priv);
- 	ideapad_kbd_bl_exit(priv);
- 	ideapad_input_exit(priv);
- 	ideapad_debugfs_exit(priv);
--- 
-2.44.0
+1878  *
+1879  * Return: A valid pointer on success, an ERR_PTR() otherwise.
+1880  */
+1881 struct panthor_heap_pool *panthor_vm_get_heap_pool(struct 
+panthor_vm *vm, bool create)
+
+The documentation says it returns ERR_PTR() on failure, so is it worth 
+doing something like:
+
+diff --git a/drivers/gpu/drm/panthor/panthor_mmu.c 
+b/drivers/gpu/drm/panthor/panthor_mmu.c
+index fdd35249169f..e1285cdb09ff 100644
+--- a/drivers/gpu/drm/panthor/panthor_mmu.c
++++ b/drivers/gpu/drm/panthor/panthor_mmu.c
+@@ -1893,6 +1893,8 @@ struct panthor_heap_pool 
+*panthor_vm_get_heap_pool(struct panthor_vm *vm, bool c
+                         vm->heaps.pool = panthor_heap_pool_get(pool);
+         } else {
+                 pool = panthor_heap_pool_get(vm->heaps.pool);
++               if (!pool)
++                       pool = ERR_PTR(-ENOENT);
+         }
+         mutex_unlock(&vm->heaps.lock);
+
+
+and change all callers of panthor_vm_get_heap_pool() to only check for 
+IS_ERR() ?
+
+
+> Oh, and please merge everything into a single patch instead of one patch
+> per call-site.
+> 
+
+Sure, I noticed one after the other. I will fix them together in v2.
+
+Thanks,
+Harshit
+> Regards,
+> 
+> Boris
+> 
+>>   		goto out_put_vm;
+>>   	}
+>>   
+> 
 
 
