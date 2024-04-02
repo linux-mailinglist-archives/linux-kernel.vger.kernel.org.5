@@ -1,141 +1,186 @@
-Return-Path: <linux-kernel+bounces-128245-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-128247-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E21D289583E
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 17:31:17 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0888E895842
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 17:31:54 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 99FBB282336
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 15:31:16 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D840B1C22D8B
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 15:31:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A53EC1332A5;
-	Tue,  2 Apr 2024 15:30:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CD13A1327ED;
+	Tue,  2 Apr 2024 15:31:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="ccWtYnl2"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	dkim=pass (1024-bit key) header.d=cisco.com header.i=@cisco.com header.b="j2lpEUgL"
+Received: from alln-iport-1.cisco.com (alln-iport-1.cisco.com [173.37.142.88])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 212E3132C39
-	for <linux-kernel@vger.kernel.org>; Tue,  2 Apr 2024 15:30:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F23ED13118A;
+	Tue,  2 Apr 2024 15:31:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=173.37.142.88
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712071821; cv=none; b=CPK8izU4ENT1v/9NVBnWdEACR8Fj2DWa9fwotlyPNNp1ZtrmYK4f1nyx8d3hY9cCw4UwDQfRaueczcSYbKMGo4xi42nonDQYQ7r9Xkat1aFbXSdl/8ZbXZ/c+BgRVFrwPPQnPzFh2bFwkbzH91f+sigj4EN30CiW+i5w+iZpb84=
+	t=1712071900; cv=none; b=q1m103HGB5Y6cB9eCXj33OJv2Ae2L/tvTXXO5OblTpRVOE8TEsVkQtLYAl4kDyUNN0cXj9c3r2Rk710Fl0sh52XatpZt+Yj3ogpBorctoAlhj9Ac1G/tEWoig5eVxURcemgK1LN+BH6qDro9RCd+inMij1NyCgIAjmLwdCu4ZIQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712071821; c=relaxed/simple;
-	bh=23qNJ4ftegx5H447MVacyBoGDIcrxV1t1VQ4lsSZJ/A=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=NrLqk0QA7tKGov7+ujbeYaJxnGKzm5i5LJSIRHNYGQvrYXN51iaV8TGWigQZJG2BDnXjqsTb1HzP5QmHqHuEmrxYwYcjC9kKOLPDkV7WZKquep6OQ+ITeH/g4zCzaGcRBdZAPjaxY7MJgPNYA5KAiPQ80D5YbH/Ca/rqizTIV+Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=ccWtYnl2; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1712071819;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=9CES7zO5vAsVp440eN4HWeKNk0OJ2Kki5eVVcnl1iPU=;
-	b=ccWtYnl23mrz3Nm3cutm92nzgcpcMKmTLd4LDdW8ugk+FodpvfVj+EthhezvqewwImJNxw
-	AOy/IUunSdxJSmqy3h7R/4vBzbhulOK3hecXhvyRK+gIjT7nossy0ITIPfd3bUmwGYrYgm
-	NJdWulTn3uLvmGE5tg9pOncEn2tRz/o=
-Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
- by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-611-mCLhMP9nP1GCXUty7wZCZQ-1; Tue,
- 02 Apr 2024 11:30:14 -0400
-X-MC-Unique: mCLhMP9nP1GCXUty7wZCZQ-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.rdu2.redhat.com [10.11.54.4])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 575BD1E441D0;
-	Tue,  2 Apr 2024 15:30:13 +0000 (UTC)
-Received: from [10.22.33.108] (unknown [10.22.33.108])
-	by smtp.corp.redhat.com (Postfix) with ESMTP id E66122022EA7;
-	Tue,  2 Apr 2024 15:30:11 +0000 (UTC)
-Message-ID: <548efd52-e45f-41fa-a477-bc5112d7b00c@redhat.com>
-Date: Tue, 2 Apr 2024 11:30:11 -0400
+	s=arc-20240116; t=1712071900; c=relaxed/simple;
+	bh=e69MTcmMVQRlw2pSk4NeN0iFCrZxVM43Fm6IIEyLoZA=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=W5W4bpK2diCPT/C7M39fkoA0fvwRKvEj2ApZZYjlUNZXJC6+Gi3yjNNKdCh7rtVTekJ2KGX/3aGnrbZcX82+7PdiB63Wy2B7boqihIbCBiEFaILIhqAmXm5SfFnKj7d+DjctYmAWbuyUARzqaQqpQVPXLIyP2HyBOrgjGy/tOWc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=cisco.com; spf=pass smtp.mailfrom=cisco.com; dkim=pass (1024-bit key) header.d=cisco.com header.i=@cisco.com header.b=j2lpEUgL; arc=none smtp.client-ip=173.37.142.88
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=cisco.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cisco.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=cisco.com; i=@cisco.com; l=2610; q=dns/txt; s=iport;
+  t=1712071899; x=1713281499;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=+6buokSRXxD5AHfqji+FJX+U612BchLgn5C5OOcHDp8=;
+  b=j2lpEUgLMF5U8UNjEAUELiasRz4r2QjOFg2yeNsxuJNMdxCxBDRU32AA
+   vCLgwn+oj4cEnunlNABIqAfPgqz4uHLxuC01+qI4sc9v7NaDmAydZ3iR9
+   eLkwF/RvYQvyFwwul/582wo/fLz2Fme8bHbTNs3csebiyW732s89CGdon
+   s=;
+X-CSE-ConnectionGUID: puciDyntTuO4io/BVrtvHQ==
+X-CSE-MsgGUID: 6/xQRmZbR+er6QTgIsyl1A==
+X-IPAS-Result: =?us-ascii?q?A0AwAQCYIwxmmIUNJK1aHgEBCxIMggQLgzVWQUiWPItzk?=
+ =?us-ascii?q?heBJQNWDwEBAQ8xEwQBAYUGiAgCJjQJDgECBAEBAQEDAgMBAQEBAQEBAQYBA?=
+ =?us-ascii?q?QUBAQECAQcFFAEBAQEBAQEBHhkFDhAnhW0Nhlw2AUaBPQESgwABgl8CAa8Wg?=
+ =?us-ascii?q?iyBAbMygWoYgTCMe4VhJxuBSUSCUI0zBIISgzeOW4RaiDaFO0qBJAOBBWsbE?=
+ =?us-ascii?q?B43ERATDQMIbh0CMToDBQMEMgoSDAsfBRJCA0AGSAsDAhoFAwMEgSwFCxoCE?=
+ =?us-ascii?q?CwmAwMSSQIQFAM4AwMGAwoxLk9BDFADZB8ZGAk8DwwaAhsUDSQjAiw+AwkKE?=
+ =?us-ascii?q?AIWAx0UBDARCQsmAyoGNgISDAYGBlwgFgkEIwMIBANQAyBwEQMEGgQLB3aDP?=
+ =?us-ascii?q?QQTRAMQgTIGihSDFQIFIymBd4ESGIMOToFWLQMJAwcFSUADCxgNSBEsNQYOG?=
+ =?us-ascii?q?wYiH28HpH0Bgm4BPT4UgSZKCIEqkkuSAYEynzeEHYwMlR0aM4VbpFQBmGIgp?=
+ =?us-ascii?q?ACEY4FkOoFbTSMVgyIJSRkPjjmDA50CIzU7AgcLAQEDCYpoAQE?=
+IronPort-Data: A9a23:m5HBra8aLg0w8bsVOYOJDrUDXn6TJUtcMsCJ2f8bNWPcYEJGY0x3n
+ 2ROD2GCM/ePN2Pxf9txO97i905T7ZPUy9NrSAFq+H9EQiMRo6IpJzg2wmQcns+2BpeeJK6yx
+ 5xGMrEsFOhtEzmE4E/ra+C9xZVF/fngbqLmD+LZMTxGSwZhSSMw4TpugOdRbrRA2bBVOCvT/
+ 4utyyHjEAX9gWIsbjpOs/jrRC5H5ZwehhtJ5jTSWtgT1LPuvyF9JI4SI6i3M0z5TuF8dgJtb
+ 7+epF0R1jqxEyYFUrtJoJ6iGqE5auK60Ty1t5Zjc/PKbi6uCcAF+v1T2PI0MS+7gtgS9jx74
+ I0lWZeYEW/FMkBQ8QgQe0EwLs1wAUFJ0KfaKnmToMqP81DhL3rrhN9QFl0oHbRNr46bAUkWn
+ RAZADkJahbGjOWszffiE69nh98oK4/gO4Z3VnNIlG6CS614B8mYBfyRvre03x9o7ixKNejVZ
+ 8cDbz1yRB/BeBZIfFwQDfrSmc/y2imhKGQB9wL9SawfvS/D9TZ04rLXc9fPJOW2SuROj0LBj
+ zeTl4j+KkpHbIPEk2XtHmiXruvOmz7rHYEfDru18tZ0j1CJgG8eEhsbUR28u/bRokq/Xc9Pb
+ k8e5ysqoYAs+0GxCNrwRRu1pDiDpBF0c9xRGOo+4RqlxKjd+AKUQGUZJhZHYcAmvckeRjEw0
+ FKN2dTzClRHtbSOQHKc7LCFhTC/Iy4YKSkFfyBscOcey9DnpId2hRXVQ5M6Sei+j8b+Hnf7x
+ DXiQDUCa6s7ldMA1omq+0z7nhXwp5+OZDAv+hv3Zzfwhu9mX7KNa4ut4FndyP9PKoeFU1WM1
+ ETofeDAtYji6rnTzkSwrPUxIV2/2xqS3NThbbNHFp0l8XGm/GSuONkJpjp/P0xudM0DfFcFg
+ XM/WysPuve/31PzMcebhr5d7exxlsAM8vy+CZjpgiJmOMQZSeN+1HgGibSs927silMwtqo0J
+ I2Wd82hZV5DVv09lGfoHLlEjOZ3rszb+Y81bc2rp/hA+efPDEN5tZ9VWLdzRrlgs/Pa+lm9H
+ yh3bpTSkn2zr9ESkgGMrNZMdgpVRZTKLZv3sMdQPvWSORZrHXppCvnah9scl39NwcxoehPz1
+ ijlACdwkQOn7VWecFniQi44MtvHA80gxU/XyARxZz5ELVB5P9b2hEreHrNqFYQaGBtLlqcuE
+ qVeIpzZXpyiiF3volwgUHU0l6Q6HDzDuO5EF3HNjOQXF3K4ezH0xw==
+IronPort-HdrOrdr: A9a23:YNyNIa4SsDzk1dGpMAPXwMfXdLJyesId70hD6qm+c3Bom6uj5q
+ KTdZsguyMc5Ax6ZJhCo6HiBED/exLhHPdOiOF7AV7IZmbbUQWTQb2KxLGSpgEIYxefygaYvp
+ 0QFJSXz7bLfDxHsfo=
+X-Talos-CUID: =?us-ascii?q?9a23=3AEJzxFWh/v0hpVKjmWoBNZEK3YzJuamDWzVvBJVO?=
+ =?us-ascii?q?EFEE1SbrSY2GK5L1Eqp87?=
+X-Talos-MUID: 9a23:QhcDEQkU6wznDguJOyzndno8c9dR2aGcAnpOnI9YgvWLFDdhP2602WE=
+X-IronPort-Anti-Spam-Filtered: true
+X-IronPort-AV: E=Sophos;i="6.07,175,1708387200"; 
+   d="scan'208";a="248631178"
+Received: from alln-core-11.cisco.com ([173.36.13.133])
+  by alln-iport-1.cisco.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Apr 2024 15:30:30 +0000
+Received: from sjc-ads-1541.cisco.com (sjc-ads-1541.cisco.com [171.70.59.233])
+	by alln-core-11.cisco.com (8.15.2/8.15.2) with ESMTP id 432FUTlY029489;
+	Tue, 2 Apr 2024 15:30:29 GMT
+From: Valerii Chernous <vchernou@cisco.com>
+To: Masahiro Yamada <masahiroy@kernel.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nicolas Schier <nicolas@fjasle.eu>
+Cc: xe-linux-external@cisco.com, linux-kbuild@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] Add MO(mod objs) variable to process ext modules with subdirs
+Date: Tue,  2 Apr 2024 08:30:27 -0700
+Message-Id: <20240402153028.1378868-1-vchernou@cisco.com>
+X-Mailer: git-send-email 2.35.6
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/2] cgroup/cpuset: Make cpuset hotplug processing
- synchronous
-Content-Language: en-US
-To: =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>
-Cc: Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
- Johannes Weiner <hannes@cmpxchg.org>, Thomas Gleixner <tglx@linutronix.de>,
- Peter Zijlstra <peterz@infradead.org>, "Rafael J. Wysocki"
- <rafael@kernel.org>, Len Brown <len.brown@intel.com>,
- Pavel Machek <pavel@ucw.cz>, Shuah Khan <shuah@kernel.org>,
- linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
- linux-pm@vger.kernel.org, linux-kselftest@vger.kernel.org,
- Frederic Weisbecker <frederic@kernel.org>,
- "Paul E. McKenney" <paulmck@kernel.org>, Ingo Molnar <mingo@kernel.org>,
- Valentin Schneider <vschneid@redhat.com>,
- Anna-Maria Behnsen <anna-maria@linutronix.de>, Alex Shi <alexs@kernel.org>,
- Vincent Guittot <vincent.guittot@linaro.org>,
- Barry Song <song.bao.hua@hisilicon.com>
-References: <20240401145858.2656598-1-longman@redhat.com>
- <20240401145858.2656598-2-longman@redhat.com>
- <kce74bx6aafxfuw5yovaschym4ze4kommfk74eq5totojytest@mdxnfvl2kdol>
-From: Waiman Long <longman@redhat.com>
-In-Reply-To: <kce74bx6aafxfuw5yovaschym4ze4kommfk74eq5totojytest@mdxnfvl2kdol>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.4
+X-Auto-Response-Suppress: DR, OOF, AutoReply
+X-Outbound-SMTP-Client: 171.70.59.233, sjc-ads-1541.cisco.com
+X-Outbound-Node: alln-core-11.cisco.com
 
+The change allow to build external modules with nested makefiles.
+With current unofficial way(using "src" variable) it is posible to build
+external(out of tree) kernel module with separating source and build
+artifacts dirs but with nested makefiles it doesn't work properly.
+Build system trap to recursion inside makefiles, articafts output dir
+path grow with each iteration until exceed max path len and build failed
+Providing "MO" variable and using "override" directive with declaring
+"src" variable solve the problem
+Usage example:
+make -C KERNEL_SOURCE_TREE MO=BUILD_OUT_DIR M=EXT_MOD_SRC_DIR modules
 
-On 4/2/24 10:13, Michal Koutný wrote:
-> Hello Waiman.
->
-> (I have no opinion on the overall locking reworks, only the bits about
-> v1 migrations caught my attention.)
->
-> On Mon, Apr 01, 2024 at 10:58:57AM -0400, Waiman Long <longman@redhat.com> wrote:
-> ...
->> @@ -4383,12 +4377,20 @@ hotplug_update_tasks_legacy(struct cpuset *cs,
->>   	/*
->>   	 * Move tasks to the nearest ancestor with execution resources,
->>   	 * This is full cgroup operation which will also call back into
->> -	 * cpuset. Should be done outside any lock.
->> +	 * cpuset. Execute it asynchronously using workqueue.
->                     ...to avoid deadlock on cpus_read_lock
->
-> Is this the reason?
-> Also, what happens with the tasks in the window till the migration
-> happens?
-> Is it handled gracefully that their cpu is gone?
+Cc: xe-linux-external@cisco.com
+Cc: Valerii Chernous <vchernou@cisco.com>
+Signed-off-by: Valerii Chernous <vchernou@cisco.com>
+---
+ Makefile               | 17 +++++++++++++++++
+ scripts/Makefile.build |  7 +++++++
+ 2 files changed, 24 insertions(+)
 
-Yes, there is a potential that a cpus_read_lock() may be called leading 
-to deadlock. So unless we reverse the current cgroup_mutex --> 
-cpu_hotplug_lock ordering, it is not safe to call 
-cgroup_transfer_tasks() directly.
-
-
->
->
->> -	if (is_empty) {
->> -		mutex_unlock(&cpuset_mutex);
->> -		remove_tasks_in_empty_cpuset(cs);
->> -		mutex_lock(&cpuset_mutex);
->> +	if (is_empty && css_tryget_online(&cs->css)) {
->> +		struct cpuset_remove_tasks_struct *s;
->> +
->> +		s = kzalloc(sizeof(*s), GFP_KERNEL);
-> Is there a benefit of having a work for each cpuset?
-> Instead of traversing whole top_cpuset once in the async work.
-
-We could do that too. It's just that we have the repeat the iteration 
-process once the workfn is invoked, but that has the advantage of not 
-needing to do memory allocation. I am OK with either way. Let's see what 
-other folks think about that.
-
-Cheers,
-Longman
+diff --git a/Makefile b/Makefile
+index 4bef6323c47d..5858708d357c 100644
+--- a/Makefile
++++ b/Makefile
+@@ -142,6 +142,7 @@ ifeq ("$(origin M)", "command line")
+   KBUILD_EXTMOD := $(M)
+ endif
+ 
++define kbuild_extmod_check_TEMPLATE
+ $(if $(word 2, $(KBUILD_EXTMOD)), \
+ 	$(error building multiple external modules is not supported))
+ 
+@@ -152,9 +153,25 @@ $(foreach x, % :, $(if $(findstring $x, $(KBUILD_EXTMOD)), \
+ ifneq ($(filter %/, $(KBUILD_EXTMOD)),)
+ KBUILD_EXTMOD := $(shell dirname $(KBUILD_EXTMOD).)
+ endif
++endef
++$(eval $(call kbuild_extmod_check_TEMPLATE))
+ 
+ export KBUILD_EXTMOD
+ 
++# Use make M=src_dir MO=ko_dir or set the environment variables:
++# KBUILD_EXTMOD_SRC, KBUILD_EXTMOD to specify separate directories of
++# external module sources and build artifacts.
++ifeq ("$(origin MO)", "command line")
++ifeq (KBUILD_EXTMOD,)
++	$(error Ext module objects without module sources is not supported))
++endif
++KBUILD_EXTMOD_SRC := $(KBUILD_EXTMOD)
++KBUILD_EXTMOD := $(MO)
++$(eval $(call kbuild_extmod_check_TEMPLATE))
++endif
++
++export KBUILD_EXTMOD_SRC
++
+ # backward compatibility
+ KBUILD_EXTRA_WARN ?= $(KBUILD_ENABLE_EXTRA_GCC_CHECKS)
+ 
+diff --git a/scripts/Makefile.build b/scripts/Makefile.build
+index baf86c0880b6..a293950e2e07 100644
+--- a/scripts/Makefile.build
++++ b/scripts/Makefile.build
+@@ -3,7 +3,14 @@
+ # Building
+ # ==========================================================================
+ 
++ifeq ($(KBUILD_EXTMOD_SRC),)
+ src := $(obj)
++else ifeq ($(KBUILD_EXTMOD),$(obj))
++override src := $(KBUILD_EXTMOD_SRC)
++else
++src_subdir := $(patsubst $(KBUILD_EXTMOD)/%,%,$(obj))
++override src := $(KBUILD_EXTMOD_SRC)/$(src_subdir)
++endif
+ 
+ PHONY := $(obj)/
+ $(obj)/:
+-- 
+2.35.6
 
 
