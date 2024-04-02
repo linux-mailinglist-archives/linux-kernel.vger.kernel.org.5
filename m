@@ -1,85 +1,156 @@
-Return-Path: <linux-kernel+bounces-128492-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-128493-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1C147895B90
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 20:17:30 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8C1F8895B95
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 20:19:23 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 46F361C221A0
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 18:17:29 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3CC6B284D63
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 18:19:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5878E15B0E4;
-	Tue,  2 Apr 2024 18:17:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6A08415ADA1;
+	Tue,  2 Apr 2024 18:19:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="j+yjw4zb"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7985915AD93;
-	Tue,  2 Apr 2024 18:17:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="DWioxHIz"
+Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3D95815A48E;
+	Tue,  2 Apr 2024 18:19:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=13.77.154.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712081831; cv=none; b=qDW2INzw0z1uaHJtOoF3RDfj1eWoOPRfaykjSgWBNm1b4G0Xs/E6gjA1etdQ5KeUo4Pr7WGhckbv37/Xw1TRMmYSzAzMj27vywnA7xBJNCbGLiSGRqlMHCpadzo4rXwwguVKNXY53R2au8D5jEy7MHiu+ljqC5xXNw+GG9/dMrI=
+	t=1712081952; cv=none; b=QyrdSA/qA8ueFNTMzl3LNcX/08G6n2oBStehJaZHjEm6GB9s1eiIrcbCyYba1OvBrsX6zYTszp6jv4OiByzcyJ+AjOn147omGeQ0mtfewHYvFb529ZKsG/SVEb+3oXhXX0I/rjjSqVta9i6TvLI2SNYV+JKj+W6X7rJm2fQO2C8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712081831; c=relaxed/simple;
-	bh=0ARxQ9cttIE0P2km3rZwYbhh6JliaUfiHYwzzaExkGE=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=nl7tryfoaBhtwZg0zYm85HH5uHtvPW2p3xeSIZgChNn1dWNwioTxOokKirEwA+uJVQ1lhYPSXN+LwhBoXKz5ynJFZLUnp3Kh5GwUO6v2HYVCDIgrPaj6wTtHcww0fjDoPOCoDFilWFNmo00KdtwKIsEc5fn6Qge6894vj3MTC+Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=j+yjw4zb; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 81759C43390;
-	Tue,  2 Apr 2024 18:17:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712081831;
-	bh=0ARxQ9cttIE0P2km3rZwYbhh6JliaUfiHYwzzaExkGE=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=j+yjw4zbZrlaNcUDJqfUE1ixZtxbFznrXU41+a50ZKjM18TdEcXy7iCKOK1++lPZC
-	 l56y++MenbvUEkO+T8DPS7RkQQTktGT31vMpgMvsDF/TquT2gp6WMPiv9fhhM685A1
-	 QWEW/yo54O55Hvv+3X/XoCgOxGGTZrRDzn3HRIi9LYU47NwkPyNor16r7gEFiCaEhK
-	 /2PVXeM1GJKFzq44zMrRda/Y1oNWRCm7FVvPshqW+P6tyilCpXVaMbvs7Skvorzf+R
-	 iU4CizFo8Y3jtTcCT9gRupQ9keLHAXkwj2zPJ7q3xEiWc3j5WulFe+Ffohs6F28Gc8
-	 MDboiPygc/dAQ==
-Date: Tue, 2 Apr 2024 11:17:09 -0700
-From: Jakub Kicinski <kuba@kernel.org>
-To: Leon Romanovsky <leon@kernel.org>
-Cc: Breno Leitao <leitao@debian.org>, "David S. Miller"
- <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, Paolo Abeni
- <pabeni@redhat.com>, quic_jjohnson@quicinc.com, kvalo@kernel.org,
- dennis.dalessandro@cornelisnetworks.com, Jiri Pirko <jiri@resnulli.us>,
- Simon Horman <horms@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
- Lorenzo Bianconi <lorenzo@kernel.org>, Coco Li <lixiaoyan@google.com>,
- "open list:NETWORKING DRIVERS" <netdev@vger.kernel.org>, open list
- <linux-kernel@vger.kernel.org>, Dennis Dalessandro
- <dennis.dalessandro@intel.com>, RDMA mailing list
- <linux-rdma@vger.kernel.org>
-Subject: Re: [PATCH net-next] net: create a dummy net_device allocator
-Message-ID: <20240402111709.1551dbca@kernel.org>
-In-Reply-To: <20240402180155.GM11187@unreal>
-References: <20240327200809.512867-1-leitao@debian.org>
-	<20240402180155.GM11187@unreal>
+	s=arc-20240116; t=1712081952; c=relaxed/simple;
+	bh=/w9MXgdMTxNQv40FLtRjoR1zTdQmpxiXVE83MAo9+yE=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=hCd5+7sJTMvZPXS/W3oFNDIi4V3cdGJnK+RtDAL53EueTK45IMluqcSSKdvJKyxAN+zebIMyt/g+UMl+v+wXfrxxFuIqjE2tXpIYL43EpVD7BQzcOyjvUlBbxjbDVJQyWdXKVVmXP2Y/F+L239Mpz6C3J5fprSUzyEMiNpZwggE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com; spf=pass smtp.mailfrom=linux.microsoft.com; dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b=DWioxHIz; arc=none smtp.client-ip=13.77.154.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.microsoft.com
+Received: from [100.64.232.220] (unknown [20.29.225.195])
+	by linux.microsoft.com (Postfix) with ESMTPSA id 44D9220E8BDC;
+	Tue,  2 Apr 2024 11:19:04 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 44D9220E8BDC
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+	s=default; t=1712081945;
+	bh=6CxfCTy2hvljG0KtnNfE1+yaCZUecQ3XXshhsgNm9Uw=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=DWioxHIzgS3pFY1uvHRovezlPv1RdDLcO2IT9/uxBMLrPIYLmaifrAV+YozRfQao5
+	 rn7ZeC4782fWxJ68W1tiLG19p3MAqbIzFdJeAEkZWoLgMwgJMeelbVPX1Afg8R8m6u
+	 UVRz1yN/74Ux892MYhIq1XY0LntOnyafVlWsWEQ4=
+Message-ID: <75428d6c-c40a-43d8-84e3-f9ed161c37e2@linux.microsoft.com>
+Date: Tue, 2 Apr 2024 11:19:03 -0700
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v0 03/14] drm/gma500,drm/i915: Make I2C terminology more
+ inclusive
+To: Jani Nikula <jani.nikula@linux.intel.com>,
+ Patrik Jakobsson <patrik.r.jakobsson@gmail.com>,
+ Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+ Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>,
+ David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
+ Rodrigo Vivi <rodrigo.vivi@intel.com>,
+ Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+ Tvrtko Ursulin <tursulin@ursulin.net>, Zhenyu Wang
+ <zhenyuw@linux.intel.com>, Zhi Wang <zhi.wang.linux@gmail.com>,
+ dri-devel@lists.freedesktop.org, open list <linux-kernel@vger.kernel.org>,
+ "open list:INTEL DRM DISPLAY FOR XE AND I915 DRIVERS"
+ <intel-gfx@lists.freedesktop.org>,
+ "open list:INTEL DRM DISPLAY FOR XE AND I915 DRIVERS"
+ <intel-xe@lists.freedesktop.org>,
+ "open list:INTEL GVT-g DRIVERS (Intel GPU Virtualization)"
+ <intel-gvt-dev@lists.freedesktop.org>
+Cc: Wolfram Sang <wsa+renesas@sang-engineering.com>,
+ "open list:RADEON and AMDGPU DRM DRIVERS" <amd-gfx@lists.freedesktop.org>,
+ "open list:DRM DRIVER FOR NVIDIA GEFORCE/QUADRO GPUS"
+ <nouveau@lists.freedesktop.org>,
+ "open list:I2C SUBSYSTEM HOST DRIVERS" <linux-i2c@vger.kernel.org>,
+ "open list:BTTV VIDEO4LINUX DRIVER" <linux-media@vger.kernel.org>,
+ "open list:FRAMEBUFFER LAYER" <linux-fbdev@vger.kernel.org>
+References: <20240329170038.3863998-1-eahariha@linux.microsoft.com>
+ <20240329170038.3863998-4-eahariha@linux.microsoft.com>
+ <87a5mcfbms.fsf@intel.com>
+ <7d5e6ed0-ffe9-46c2-b3b4-a4a47c09532e@linux.microsoft.com>
+ <87ttkjesx8.fsf@intel.com>
+ <fde7a0da-1981-48db-95e2-96d45655c11c@linux.microsoft.com>
+ <87o7aremfz.fsf@intel.com>
+Content-Language: en-CA
+From: Easwar Hariharan <eahariha@linux.microsoft.com>
+In-Reply-To: <87o7aremfz.fsf@intel.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 
-On Tue, 2 Apr 2024 21:01:55 +0300 Leon Romanovsky wrote:
-> > Suggested-by: Jakub Kicinski <kuba@kernel.org>
-> > Signed-off-by: Breno Leitao <leitao@debian.org>  
+On 4/2/2024 9:52 AM, Jani Nikula wrote:
+> On Tue, 02 Apr 2024, Easwar Hariharan <eahariha@linux.microsoft.com> wrote:
+>> On 4/2/2024 7:32 AM, Jani Nikula wrote:
+>>> On Tue, 02 Apr 2024, Easwar Hariharan <eahariha@linux.microsoft.com> wrote:
+>>>> On 4/2/2024 12:48 AM, Jani Nikula wrote:
+>>>>> On Fri, 29 Mar 2024, Easwar Hariharan <eahariha@linux.microsoft.com> wrote:
+>>>>>> I2C v7, SMBus 3.2, and I3C specifications have replaced "master/slave"
+>>>>>> with more appropriate terms. Inspired by and following on to Wolfram's
+>>>>>> series to fix drivers/i2c/[1], fix the terminology for users of
+>>>>>> I2C_ALGOBIT bitbanging interface, now that the approved verbiage exists
+>>>>>> in the specification.
+>>>>>
+>>>>> gma500 and i915 changes should be split. See MAINTAINERS.
+>>>>>
+>>>>> Might also split the i915 changes to smaller pieces, it's kind of
+>>>>> random. And the changes here are not strictly related to I2C AFAICT, so
+>>>>> the commit message should be updated.
+>>>>>
+>>>>> BR,
+>>>>> Jani.
+>>>>>
+>>>>>
+>>>>
+>>>> <snip>
+>>>>
+>>>> I will split gma500 and i915 into their respective patches if possible in v2.
+>>>>
+>>>> Can you say more about the changes being "not strictly related to I2C"? My
+>>>> heuristic was to grep for master/slave, and look in the surrounding context for
+>>>> i2c-related terminology (i2c_pin, 7-bit address, struct i2c_adapter, i2c_bus, etc)
+>>>> to confirm that they are i2c-related, then following the references around to
+>>>> make the compiler happy. For e.g., I did not change the many references to bigjoiner
+>>>> master and slave because I understood from context they were not i2c references.
+>>>>
+>>>> A couple examples would help me restrict the changes to I2C, since as mentioned in the
+>>>> discussion on Wolfram's thread, there are places where migrating away from master/slave
+>>>> terms in the code would conflict with the original technical manuals and reduce correlation
+>>>> and understanding of the code.
+>>>
+>>> I guess I was looking at the VBT changes in intel_bios.c. Granted, they
+>>> do end up being used as i2c addresses. No big deal.
+>>>
+>>> I think I'd expect the treewide i2c adapter changes to land first, via
+>>> i2c, and subsequent cleanups to happen next, via individual driver
+>>> trees. There's quite a bit of conflict potential merging this outside of
+>>> drm-intel-next, and there's really no need for that.
+>>>
+>>> BR,
+>>> Jani.
+>>>
+>>
+>> Great! Just so I'm clear, do you still want the i915 changes split up more, along with them being
+>> split off from gma500?
 > 
-> Exciting read for people who remember this conversation:
-> """
-> > I prefer to see some new wrapper over plain alloc_netdev, which will
-> > create this dummy netdevice. For example, alloc_dummy_netdev(...).  
+> If we can merge the i915 changes via drm-intel-next, it's probably fine
+> as a big i915 patch. Just the gma500 separated. (The struct
+> i2c_algorithm change etc. necessarily has to go via I2C tree of course.)
 > 
-> Nope, no bona fide APIs for hacky uses.
-> """
-> https://lore.kernel.org/linux-rdma/20240311112532.71f1cb35@kernel.org/
+> BR,
+> Jani.
+> 
 
-Still my preference, but there's only so many hours in the day
-to keep explaining things. I'd rather we made some progress.
+Got it. I'll send the split out in v1 (not v2 as mentioned earlier) since this is v0.
+
+Thanks,
+Easwar
+
 
