@@ -1,171 +1,160 @@
-Return-Path: <linux-kernel+bounces-128121-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-128123-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id A633C895667
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 16:14:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 5267D89566D
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 16:14:53 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 470341F22F3B
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 14:14:09 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id BEAAC1F230E4
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 14:14:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4F78D126F3C;
-	Tue,  2 Apr 2024 14:13:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F386F8662B;
+	Tue,  2 Apr 2024 14:14:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=suse.com header.i=@suse.com header.b="Y2B+7rff"
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="oUlVIx+q"
+Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AA6FB86259;
-	Tue,  2 Apr 2024 14:13:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 707D685C5E;
+	Tue,  2 Apr 2024 14:14:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.177.32
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712067230; cv=none; b=db0Plv7fct2Jz2osOdOnziEY7Rg4j0svbRpmDT1N4KXhhs+Chu4sCO1pIOAM/nJx6/4Jhv/9aFXybJOPc00LaoT6FEWaYzccnfC0kTOHiIiHrM4s29+D3JT6xhe+ISQcX4wj6UdNIBXcflShbHOUEqeRnVbIpM5E04pJzCY3gpQ=
+	t=1712067281; cv=none; b=p3dqSKkvBzPh8vo1UhEhCjMOOWcTB3WnkOeRQdw0YxtA0HejyYC7yJT2B16FAIyAjVHxHlydwzpI79Un2JylQgxV0wBvirf90vvbDWYL9JfcIuiZ3UfD4eNJZVNCxUs/rHGJI3gr9DoNM/PKhw7/pTEk37hXjQAgD8834rpSFBI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712067230; c=relaxed/simple;
-	bh=36P1uOtujsizwW2usw7mfkPhuqvi59s5Nt+PgGGqx0c=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=LcEW63i967IIA9Khq0BAlyAeMZNST+wDFXPISvneQIwhUhgAYWF93Jq01L9LldYNIiMcyCoMl2pTRbzPcrY9sNmBXRJLiGjyRdfgjwjLTtPaEBR9MzeXFiLAlIj3L5/WMNo9pEJoaTzNSfMQlP/LhOVoQIofUHIcFpg1gN8z5qE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=Y2B+7rff; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:98])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id DDFFA5BE2C;
-	Tue,  2 Apr 2024 14:13:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1712067226; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=KA7AVUof0UCDazD9kIzVR9xQgcPzIYUy3fkudyiEwWk=;
-	b=Y2B+7rffqbEm69uPQnaA7mdz2w0eK/38jkGPgDQNkMcQKA374UbUoeFc45NFeiLZyw3USB
-	LOnnWKV3sfhN0kfcSC946P9eJTPVNi6U3gYFCnc5aixSwPz2vhlDAxN1/XGc10nBRVDsys
-	F6ICdlUQn+ZzhTJsur2HWshIBvDb604=
-Authentication-Results: smtp-out2.suse.de;
-	dkim=none
-Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id C9C1A13A90;
-	Tue,  2 Apr 2024 14:13:46 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap2.dmz-prg2.suse.org with ESMTPSA
-	id GiIRMZoSDGboYwAAn2gu4w
-	(envelope-from <mkoutny@suse.com>); Tue, 02 Apr 2024 14:13:46 +0000
-Date: Tue, 2 Apr 2024 16:13:41 +0200
-From: Michal =?utf-8?Q?Koutn=C3=BD?= <mkoutny@suse.com>
-To: Waiman Long <longman@redhat.com>
-Cc: Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>, 
-	Johannes Weiner <hannes@cmpxchg.org>, Thomas Gleixner <tglx@linutronix.de>, 
-	Peter Zijlstra <peterz@infradead.org>, "Rafael J. Wysocki" <rafael@kernel.org>, 
-	Len Brown <len.brown@intel.com>, Pavel Machek <pavel@ucw.cz>, Shuah Khan <shuah@kernel.org>, 
-	linux-kernel@vger.kernel.org, cgroups@vger.kernel.org, linux-pm@vger.kernel.org, 
-	linux-kselftest@vger.kernel.org, Frederic Weisbecker <frederic@kernel.org>, 
-	"Paul E. McKenney" <paulmck@kernel.org>, Ingo Molnar <mingo@kernel.org>, 
-	Valentin Schneider <vschneid@redhat.com>, Anna-Maria Behnsen <anna-maria@linutronix.de>, 
-	Alex Shi <alexs@kernel.org>, Vincent Guittot <vincent.guittot@linaro.org>, 
-	Barry Song <song.bao.hua@hisilicon.com>
-Subject: Re: [PATCH 1/2] cgroup/cpuset: Make cpuset hotplug processing
- synchronous
-Message-ID: <kce74bx6aafxfuw5yovaschym4ze4kommfk74eq5totojytest@mdxnfvl2kdol>
-References: <20240401145858.2656598-1-longman@redhat.com>
- <20240401145858.2656598-2-longman@redhat.com>
+	s=arc-20240116; t=1712067281; c=relaxed/simple;
+	bh=5nE/dY2XK+s7Y9b96B3lhpPiyqH3SXlapVd0mPEUn70=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=GIiqOv+59wsaajXM6TWPLokaOySiARRcv6Tc3R8OGl73bPrF9KBzVd423DKDQAF1n9N2sv0WKG52Hi04UDdw+6dD1Z81V3ftkXvt0EKng3DK1zm9yxwpr1a1rPPuRADdyUzrfJBQyGNpvCCzbvFVAA8N4ESSTxsAvofy/88PtxE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=oUlVIx+q; arc=none smtp.client-ip=205.220.177.32
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=oracle.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oracle.com
+Received: from pps.filterd (m0246630.ppops.net [127.0.0.1])
+	by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 4327hwbi017554;
+	Tue, 2 Apr 2024 14:14:20 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-transfer-encoding;
+ s=corp-2023-11-20; bh=v2HrcQGRJwF/38229zNuOSoT5iFCenUIZiGrEgT0eU8=;
+ b=oUlVIx+qlCiBJdnmKtT34Xi8a+CJpF61LBYobKA+t+cvcrtLXNFGzeIyuA91anau/QKX
+ nOF7EN4C+GTTsbb5tlP0Qu7+cjoUd5KvdyFfg8RBlZpJiFu6vfgKbMwcPnQsQDU4rzwI
+ WSSEADXh4MJn3NTU+p74v+0glVeHHLE2CGbYmInJQrBlDZ2PfdH7RpyPdJsmxFT3PJPv
+ J64/uREZ0gfDk0blU9bdkIPEQ3AKdjfbfvXu4e5rUnGbg59WzJAtN8tb7CSqg0AwULW9
+ wMwvKLTMsmj5Xn5q/ZnIouBgq8ODIZjlXHSS5/VVzVPM03csUY/Bg1mDkUgY0GFE1p6C 0g== 
+Received: from phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta03.appoci.oracle.com [138.1.37.129])
+	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3x695emr7j-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Tue, 02 Apr 2024 14:14:20 +0000
+Received: from pps.filterd (phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
+	by phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 432DmWEH007409;
+	Tue, 2 Apr 2024 14:14:19 GMT
+Received: from pps.reinject (localhost [127.0.0.1])
+	by phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTPS id 3x69672dmb-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Tue, 02 Apr 2024 14:14:19 +0000
+Received: from phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
+	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 432EEIEU012872;
+	Tue, 2 Apr 2024 14:14:18 GMT
+Received: from ca-dev112.us.oracle.com (ca-dev112.us.oracle.com [10.129.136.47])
+	by phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTP id 3x69672dkg-1;
+	Tue, 02 Apr 2024 14:14:18 +0000
+From: Harshit Mogalapalli <harshit.m.mogalapalli@oracle.com>
+To: Boris Brezillon <boris.brezillon@collabora.com>,
+        Steven Price <steven.price@arm.com>, Liviu Dudau <liviu.dudau@arm.com>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
+        Heiko Stuebner <heiko@sntech.de>,
+        Grant Likely <grant.likely@linaro.org>,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+Cc: dan.carpenter@linaro.org, kernel-janitors@vger.kernel.org,
+        error27@gmail.com, harshit.m.mogalapalli@oracle.com
+Subject: [PATCH v3] drm/panthor: Fix couple of NULL vs IS_ERR() bugs
+Date: Tue,  2 Apr 2024 07:14:11 -0700
+Message-ID: <20240402141412.1707949-1-harshit.m.mogalapalli@oracle.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="m3jtt4lb3pupq4nw"
-Content-Disposition: inline
-In-Reply-To: <20240401145858.2656598-2-longman@redhat.com>
-X-Spam-Score: -1.19
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
-X-Spam-Flag: NO
-X-Spamd-Result: default: False [-1.19 / 50.00];
-	 ARC_NA(0.00)[];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 FROM_HAS_DN(0.00)[];
-	 TO_DN_SOME(0.00)[];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 NEURAL_HAM_LONG(-0.96)[-0.965];
-	 MIME_GOOD(-0.20)[multipart/signed,text/plain];
-	 MID_RHS_NOT_FQDN(0.50)[];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 DKIM_SIGNED(0.00)[suse.com:s=susede1];
-	 MX_GOOD(-0.01)[];
-	 NEURAL_HAM_SHORT(-0.20)[-0.999];
-	 RCPT_COUNT_TWELVE(0.00)[22];
-	 SIGNED_PGP(-2.00)[];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 R_DKIM_NA(2.20)[];
-	 MIME_TRACE(0.00)[0:+,1:+,2:~];
-	 RCVD_TLS_ALL(0.00)[];
-	 BAYES_HAM(-0.52)[80.23%];
-	 RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:98:from]
-X-Spam-Level: 
-X-Rspamd-Queue-Id: DDFFA5BE2C
+Content-Transfer-Encoding: 8bit
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-04-02_07,2024-04-01_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 malwarescore=0
+ mlxlogscore=999 adultscore=0 bulkscore=0 phishscore=0 mlxscore=0
+ suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2403210000 definitions=main-2404020105
+X-Proofpoint-GUID: Uwahn3WFgWDUokDpheBqzWErFRvBGWw_
+X-Proofpoint-ORIG-GUID: Uwahn3WFgWDUokDpheBqzWErFRvBGWw_
 
+Currently panthor_vm_get_heap_pool() returns both ERR_PTR() and
+NULL(when create is false and if there is no poool attached to the
+VM)
+	- Change the function to return error pointers, when pool is
+	  NULL return -ENOENT
+	- Also handle the callers to check for IS_ERR() on failure.
 
---m3jtt4lb3pupq4nw
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Fixes: 4bdca1150792 ("drm/panthor: Add the driver frontend block")
+Signed-off-by: Harshit Mogalapalli <harshit.m.mogalapalli@oracle.com>
+---
+This is spotted by smatch and the patch is only compile tested
 
-Hello Waiman.
+v1->v2: Fix the function panthor_vm_get_heap_pool() to only return error
+pointers and handle the caller sites [Suggested by Boris Brezillon]
+        - Also merge these IS_ERR() vs NULL bugs into same patch
 
-(I have no opinion on the overall locking reworks, only the bits about
-v1 migrations caught my attention.)
+v2->v3: pull out error checking for devm_drm_dev_alloc() failure.
+---
+ drivers/gpu/drm/panthor/panthor_drv.c   | 4 ++--
+ drivers/gpu/drm/panthor/panthor_mmu.c   | 2 ++
+ drivers/gpu/drm/panthor/panthor_sched.c | 2 +-
+ 3 files changed, 5 insertions(+), 3 deletions(-)
 
-On Mon, Apr 01, 2024 at 10:58:57AM -0400, Waiman Long <longman@redhat.com> wrote:
-..
-> @@ -4383,12 +4377,20 @@ hotplug_update_tasks_legacy(struct cpuset *cs,
->  	/*
->  	 * Move tasks to the nearest ancestor with execution resources,
->  	 * This is full cgroup operation which will also call back into
-> -	 * cpuset. Should be done outside any lock.
-> +	 * cpuset. Execute it asynchronously using workqueue.
+diff --git a/drivers/gpu/drm/panthor/panthor_drv.c b/drivers/gpu/drm/panthor/panthor_drv.c
+index 11b3ccd58f85..050b905b0453 100644
+--- a/drivers/gpu/drm/panthor/panthor_drv.c
++++ b/drivers/gpu/drm/panthor/panthor_drv.c
+@@ -1090,8 +1090,8 @@ static int panthor_ioctl_tiler_heap_destroy(struct drm_device *ddev, void *data,
+ 		return -EINVAL;
+ 
+ 	pool = panthor_vm_get_heap_pool(vm, false);
+-	if (!pool) {
+-		ret = -EINVAL;
++	if (IS_ERR(pool)) {
++		ret = PTR_ERR(pool);
+ 		goto out_put_vm;
+ 	}
+ 
+diff --git a/drivers/gpu/drm/panthor/panthor_mmu.c b/drivers/gpu/drm/panthor/panthor_mmu.c
+index fdd35249169f..e1285cdb09ff 100644
+--- a/drivers/gpu/drm/panthor/panthor_mmu.c
++++ b/drivers/gpu/drm/panthor/panthor_mmu.c
+@@ -1893,6 +1893,8 @@ struct panthor_heap_pool *panthor_vm_get_heap_pool(struct panthor_vm *vm, bool c
+ 			vm->heaps.pool = panthor_heap_pool_get(pool);
+ 	} else {
+ 		pool = panthor_heap_pool_get(vm->heaps.pool);
++		if (!pool)
++			pool = ERR_PTR(-ENOENT);
+ 	}
+ 	mutex_unlock(&vm->heaps.lock);
+ 
+diff --git a/drivers/gpu/drm/panthor/panthor_sched.c b/drivers/gpu/drm/panthor/panthor_sched.c
+index 5f7803b6fc48..617df2b980d0 100644
+--- a/drivers/gpu/drm/panthor/panthor_sched.c
++++ b/drivers/gpu/drm/panthor/panthor_sched.c
+@@ -1343,7 +1343,7 @@ static int group_process_tiler_oom(struct panthor_group *group, u32 cs_id)
+ 	if (unlikely(csg_id < 0))
+ 		return 0;
+ 
+-	if (!heaps || frag_end > vt_end || vt_end >= vt_start) {
++	if (IS_ERR(heaps) || frag_end > vt_end || vt_end >= vt_start) {
+ 		ret = -EINVAL;
+ 	} else {
+ 		/* We do the allocation without holding the scheduler lock to avoid
+-- 
+2.39.3
 
-                   ...to avoid deadlock on cpus_read_lock
-
-Is this the reason?
-Also, what happens with the tasks in the window till the migration
-happens?
-Is it handled gracefully that their cpu is gone?
-
-
-> -	if (is_empty) {
-> -		mutex_unlock(&cpuset_mutex);
-> -		remove_tasks_in_empty_cpuset(cs);
-> -		mutex_lock(&cpuset_mutex);
-> +	if (is_empty && css_tryget_online(&cs->css)) {
-> +		struct cpuset_remove_tasks_struct *s;
-> +
-> +		s = kzalloc(sizeof(*s), GFP_KERNEL);
-
-Is there a benefit of having a work for each cpuset?
-Instead of traversing whole top_cpuset once in the async work.
-
-
-Thanks,
-Michal
-
-
---m3jtt4lb3pupq4nw
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYKAB0WIQQpEWyjXuwGT2dDBqAGvrMr/1gcjgUCZgwSkwAKCRAGvrMr/1gc
-jku7AP4wunT3qTbn0gNfnNlgS+aZURi7eScVHpxboPBoGEeorgEA0EEpGH79hJUs
-C5xcOZLm/5ZRgE5MXKIx0kiWKBGt9QY=
-=8lGP
------END PGP SIGNATURE-----
-
---m3jtt4lb3pupq4nw--
 
