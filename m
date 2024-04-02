@@ -1,101 +1,124 @@
-Return-Path: <linux-kernel+bounces-128231-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-128232-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 872778957FA
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 17:17:59 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 23D198957FC
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 17:18:21 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3AD501F23421
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 15:17:59 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 55CFA1C222B4
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 15:18:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2158C12C813;
-	Tue,  2 Apr 2024 15:17:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6F4BD12CD96;
+	Tue,  2 Apr 2024 15:18:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="JmJ7UZYn"
-Received: from relay5-d.mail.gandi.net (relay5-d.mail.gandi.net [217.70.183.197])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="GkkeAzzv"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ADBD312BF26;
-	Tue,  2 Apr 2024 15:17:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.197
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 96B9D85283;
+	Tue,  2 Apr 2024 15:18:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712071072; cv=none; b=JH7EaiZtR9TC72x777XkUUb5CksANtQur9WDT2TJO0vW+gAi276eH1AJnQ57i6ZwlgLMvavDp7bFWZHBz6LNqYoPJViZk6zZDuhE28YxgfSaQqnj5OUXBgddai2D/TMblMkJZuxVsd3BjpjDubcYc/mE1XH+x0nANWHYk6wJIuM=
+	t=1712071093; cv=none; b=GeDq3Ei94br7nl1l+BLcrL7X6r3EwfrKi6Q9+pPYLaUK6QD3LYBcjQuSRb7I2L8gtkfPBL4ezU/oROUvbR7HIAiNXUUXTC6wujZm8tZ9JGwn82B5QmaB/pCmlGBzovilsiJ4F2g8Wuj4mVW1cV5VbR/vZ9Gy5ITO16eVhv4buc0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712071072; c=relaxed/simple;
-	bh=YTo9w2fHjpKrEKywxXucE0qQd92vHtW7IgMooVpRS9o=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=tzvQU84jVh8xmpZnebt8jYAnngbOiRDvRDPq2tULEq/HP/8clznQfe05/JdAM5pM84nvj0yJfwxWOCK70zce5NmqbKffDxE6NMbn6QokUczjwVBt9WisGOBFkP6IampfEXQQ8eccVybCzOYtWNYFYikgI1M1cf2kCKJ+0o3QkY0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=JmJ7UZYn; arc=none smtp.client-ip=217.70.183.197
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 1B1171C0005;
-	Tue,  2 Apr 2024 15:17:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1712071068;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=04oCEJRlkMn/3tUgO8X/PzKFEHTFoybfxCmD6Nb3NAU=;
-	b=JmJ7UZYnW6d2WwwDCJBioQvmfR/0wENnN0+GHBqHUBT0C8UWW4QPv75GW67eZ7d9CHfJ4W
-	THXQCdmlXk1ADwRJ0Xt7p1gQgujIo5celqmtTJhdfVxaxphlzlRT1dgBUxz37yew2Y70V9
-	u1hEeklAPmdxrvj3WJegzfcTEMyGER8cE1XBatf6wfkodLzUUCePCV8dUGUG4me6t2cUSk
-	c8MOTy0KXc1xNcs567HezP2oWvXBfMfGJFGa4/YDdpV3pjIJa8U/8vR1cbDfngUOGWEFIu
-	C863xUSRv8GEFYkLlBIPN644MMRIrn1RQ5f66lPbj1+doK95J9GKY/16vzSJXg==
-Date: Tue, 2 Apr 2024 17:17:45 +0200
-From: Luca Ceresoli <luca.ceresoli@bootlin.com>
-To: Mark Brown <broonie@kernel.org>
-Cc: Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>,
- Takashi Iwai <tiwai@suse.com>, Heiko Stuebner <heiko@sntech.de>, Thomas
- Petazzoni <thomas.petazzoni@bootlin.com>, linux-sound@vger.kernel.org,
- linux-kernel@vger.kernel.org, kernel test robot <lkp@intel.com>
-Subject: Re: [PATCH] ASoC: codecs: rk3308: add dependency on OF
-Message-ID: <20240402171745.2cae620a@booty>
-In-Reply-To: <ec02a779-0917-456e-9bad-c5b12528206e@sirena.org.uk>
-References: <20240329-rk3308-audio-codec-fix-warning-v1-1-b9d177fcd6c9@bootlin.com>
-	<ec02a779-0917-456e-9bad-c5b12528206e@sirena.org.uk>
-Organization: Bootlin
-X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.33; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1712071093; c=relaxed/simple;
+	bh=uoXTVBYmsXH4CuxeXyMn5r530R+RfFIEalMgma3ikU8=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=VEPhaiYuyV50W4CWuT//otKLrwt4v5uSNrPYbp/yyZhM2CHoRJiAWVcyAplropgcSyohD1MHuW+97INMxcjMfwmi9/yIGQOrnmZCtA4h+RYbAgMnDt9Tq1USaR9hiyu7eTWcqVVKHfWkK+QyFlath1QBWk/CmvcSNpKITayfw/M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=GkkeAzzv; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2430AC433C7;
+	Tue,  2 Apr 2024 15:18:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1712071093;
+	bh=uoXTVBYmsXH4CuxeXyMn5r530R+RfFIEalMgma3ikU8=;
+	h=From:To:Cc:Subject:Date:From;
+	b=GkkeAzzvoitP4WU/zFxkWc//dpYnH6fshYUVURDOBdBCnTMcOViE3rLVb7qjfIftR
+	 u05v8hsXMsKnKsgZ0uP3nlW7okuWUw7fLBIiI5a6kOWWc9bEQAb/yotcuOB5EIe4du
+	 kHNqDT9Gofxy9ntVZyfrSbTqQlQK/q03jgv1xxP2lWlzXT55XU1nGWQOuj2MXBb1kB
+	 Ga0l0d+yJbrxV6IU1CNDqRxv9Mz1/6ru+GPSchFSe8oCm1fK9s+GB+OEfVTI5EXdZe
+	 ShA0e5NbnQg83H8sTg74Og8DWz+WU4oxYFbQ5W3/9FA5qjnc4Szr4DHPNXWSWH0ckr
+	 cKA2qRVZ0zw/Q==
+From: Michael Walle <mwalle@kernel.org>
+To: Nishanth Menon <nm@ti.com>,
+	Vignesh Raghavendra <vigneshr@ti.com>,
+	Tero Kristo <kristo@kernel.org>,
+	Rob Herring <robh@kernel.org>,
+	Krzysztof Kozlowski <krzk+dt@kernel.org>,
+	Conor Dooley <conor+dt@kernel.org>
+Cc: linux-arm-kernel@lists.infradead.org,
+	devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Michael Walle <mwalle@kernel.org>
+Subject: [PATCH] arm64: dts: ti: k3-j722s: Disable ethernet ports by default
+Date: Tue,  2 Apr 2024 17:18:02 +0200
+Message-Id: <20240402151802.3803708-1-mwalle@kernel.org>
+X-Mailer: git-send-email 2.39.2
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-GND-Sasl: luca.ceresoli@bootlin.com
+Content-Transfer-Encoding: 8bit
 
-Hello Mark,
+Device tree best practice is to disable any external interface in the
+dtsi and just enable them if needed in the device tree. Thus, disable
+both ethernet ports by default and just enable the one used by the EVM
+in its device tree.
 
-On Tue, 2 Apr 2024 14:04:19 +0100
-Mark Brown <broonie@kernel.org> wrote:
+There is no functional change.
 
-> On Fri, Mar 29, 2024 at 09:44:47PM +0100, Luca Ceresoli wrote:
-> 
-> >  config SND_SOC_RK3308
-> >  	tristate "Rockchip RK3308 audio CODEC"
-> > +	depends on OF  
-> 
-> There's no actual build dependency on OF, please add an || COMPILE_TEST
-> to improve build coverage and help maintainability.
+Signed-off-by: Michael Walle <mwalle@kernel.org>
+---
+This should also be true for all the other SoCs. But I don't wanted to
+touch all the (older) device trees. j722s is pretty new, so there we
+should get it right.
+---
+ arch/arm64/boot/dts/ti/k3-j722s-evm.dts | 5 +----
+ arch/arm64/boot/dts/ti/k3-j722s.dtsi    | 8 ++++++++
+ 2 files changed, 9 insertions(+), 4 deletions(-)
 
-I see, thanks for the comment.
-
-While there, an even better improvement is probably:
-
-  depends on ARM64 || COMPILE_TEST
-
-using ARM64 because this codec is known to exist only on the RK3308 and
-ARM64 selects OF.
-
-Best regards,
-Luca
-
+diff --git a/arch/arm64/boot/dts/ti/k3-j722s-evm.dts b/arch/arm64/boot/dts/ti/k3-j722s-evm.dts
+index d045dc7dde0c..afe7f68e6a4b 100644
+--- a/arch/arm64/boot/dts/ti/k3-j722s-evm.dts
++++ b/arch/arm64/boot/dts/ti/k3-j722s-evm.dts
+@@ -224,14 +224,11 @@ cpsw3g_phy0: ethernet-phy@0 {
+ };
+ 
+ &cpsw_port1 {
++	status = "okay";
+ 	phy-mode = "rgmii-rxid";
+ 	phy-handle = <&cpsw3g_phy0>;
+ };
+ 
+-&cpsw_port2 {
+-	status = "disabled";
+-};
+-
+ &main_gpio1 {
+ 	status = "okay";
+ };
+diff --git a/arch/arm64/boot/dts/ti/k3-j722s.dtsi b/arch/arm64/boot/dts/ti/k3-j722s.dtsi
+index c75744edb143..d0451e6e7496 100644
+--- a/arch/arm64/boot/dts/ti/k3-j722s.dtsi
++++ b/arch/arm64/boot/dts/ti/k3-j722s.dtsi
+@@ -83,6 +83,14 @@ &inta_main_dmss {
+ 	ti,interrupt-ranges = <7 71 21>;
+ };
+ 
++&cpsw_port1 {
++	status = "disabled";
++};
++
++&cpsw_port2 {
++	status = "disabled";
++};
++
+ &oc_sram {
+ 	reg = <0x00 0x70000000 0x00 0x40000>;
+ 	ranges = <0x00 0x00 0x70000000 0x40000>;
 -- 
-Luca Ceresoli, Bootlin
-Embedded Linux and Kernel engineering
-https://bootlin.com
+2.39.2
+
 
