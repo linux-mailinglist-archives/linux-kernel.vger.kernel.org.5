@@ -1,87 +1,124 @@
-Return-Path: <linux-kernel+bounces-127311-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-127312-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 60F7889497C
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 04:37:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 7AF8689497D
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 04:38:23 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AD80F2865DF
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 02:37:18 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 370ED2865B4
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 02:38:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1ECDB1429A;
-	Tue,  2 Apr 2024 02:37:08 +0000 (UTC)
-Received: from mail-io1-f71.google.com (mail-io1-f71.google.com [209.85.166.71])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0BFA6111A3;
+	Tue,  2 Apr 2024 02:38:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="DXasRHP3"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.12])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 36E4814005
-	for <linux-kernel@vger.kernel.org>; Tue,  2 Apr 2024 02:37:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.71
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D2EF62CA9
+	for <linux-kernel@vger.kernel.org>; Tue,  2 Apr 2024 02:38:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.12
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712025427; cv=none; b=I4o9tdsw17ju1xHfzc30qyymmYTWTTlhO2TQLqCBZ9KYIhlkD/D/yRbqYWKHzbeiZhMVg82EdLe3X83O3kSKRacHqH9yzx3YkVZ+sJ/5jmAHtfGfZeyIhCozHjXuJQlKWLvTmpHJWKav6R3MeTmzBR2XlDcaln7sVmum3WM/8UU=
+	t=1712025497; cv=none; b=U8BAbthcKsMoQnlF/rLKtSNAASj8G3GkGBgOXTv/lw2ZhPJeUfrmlrCC8kH7pnND3zr8cUjiQTWBSzTNZaXw93i7Ev2A3jl/h6Zc/7R10oRuM+TrsuWhCTH6zPkM15bpzwkTfLnrsPtFD5kbm9yu4PEFBlOzZosu0bp3z5VZNxU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712025427; c=relaxed/simple;
-	bh=1D8Fcx9I2niZIgg+ny98cxQ3N3SAIb9PluzfNA8g07k=;
-	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
-	 Content-Type; b=feJSkPX4QOgWgZaRQSh4Zgn7k0bCPHZDkNRBhW4+0+cZDyVUDkch2iVCk71AHetnTm3G6nyUc4eBXwnkbpA3PpdNkc0B4RaX8u7hn/QjmDRRIEa10cfuNYGbkhOu9pouUfbDcjLlDajI6EhBTCLJYuos6XpRg2hmuGmd+8vEtsM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.71
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-io1-f71.google.com with SMTP id ca18e2360f4ac-7cc012893acso503827439f.2
-        for <linux-kernel@vger.kernel.org>; Mon, 01 Apr 2024 19:37:06 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712025425; x=1712630225;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=sYLqAM7NIoIIfW5ZL4tUtzxk41h0VIj7EelgtPa0Wn0=;
-        b=i1tZqBSJVoix12LaD7+U1V/ptOQEKw/LbSNb1YpkWnLialclEQqSdwaZnKTI1V3OFG
-         xMxrM2QRLVSXp/iRQmiNvzc4HXshAhPKoo3FvC8VBgNhdhfCHAxqVevqBkMoItVFIMPz
-         8EwS1E5LJZKVWs7E6NXJHDByRDjgQod756i6BbHZcY5tINvmgMtzombxTKOwu8O6FRp2
-         zC5oJCCPwUdhHpvXZwmc15cdrkWleKc5DzcUgcldYLbZcrAQpQLU7wGUCk0RT36h3MA3
-         T9b/VsCxxdvcEwjHDCj+y9bJB43pey/TywCYtoerPNJs0QRDKn399WMEjCFYtJgEKB5D
-         O6bA==
-X-Forwarded-Encrypted: i=1; AJvYcCUWRIX40O+vlfjNNk0o16cC64GUF+5p4DG2MqYeoeGEhszQQ79m7cCSACUSxTjkR6yt5ARtQFuAWTS/yZi+RkepOsDqjETsFUxzzCap
-X-Gm-Message-State: AOJu0Yy61dt+RZ1P8QPy0y8z/4kqeSf0Ft6JtAVwxTh679vQ7plHpmF6
-	4pUFVWPJswaXtf1S3zy6jpEz5rY/crejSo/yeCkiCot5t5erdtq6nAdT1KSYsgrhz/0q5O9EA7I
-	9vN3xFc6+fEAEsriJxmFG+Mr3DQZd0fpvd9+aRATbqHw93XYQ3+Dmyes=
-X-Google-Smtp-Source: AGHT+IHIqa+z+yjGrfER0ApYASlwuw4R8HPLGCxlrz/aag61j35+CkB4JH7QINu6wIwjQDUmA4S8hih4G1bGN8WTiRQCHSaicC7R
+	s=arc-20240116; t=1712025497; c=relaxed/simple;
+	bh=B0YkMpIL4lKGk1VzcKjuprcKufsRcCXzLubl9FFRhJk=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition; b=ZiaLzbertnD7RpHMlf1B0Y0CeL0pRWmFUcUj07w93AciS0KwMVdYQRwNORqgI8IfNcHG/6U1N1BaoTuOr+uI+6CeOQFONMm5gB1Ji+L6WCAS6f7C6HVeD6xh2rd6FyhCiqKbIW+C4GvlBOqvjQqC5AXO5s57nKmLVl9Pjvp1+uM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=DXasRHP3; arc=none smtp.client-ip=192.198.163.12
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1712025496; x=1743561496;
+  h=date:from:to:cc:subject:message-id:mime-version;
+  bh=B0YkMpIL4lKGk1VzcKjuprcKufsRcCXzLubl9FFRhJk=;
+  b=DXasRHP35kCawQpnRScLA145cndRc6fHpLuLFoXmbyyK4f80vlOMew+O
+   PKqC6VYacGyIvP0n7vWg5O9uXi8u3hsYe7xrsVCKtir208rhWjLq3dEya
+   SjeZp+x27RBo7LFNH3dryANNjvQOXjoOt8s6WaRdAGKNy3eQ3U5/+7QJl
+   6TAp+Xm8U1XU17cNbHfjfCw6ZYmyi4SRVggwOtMOFDaTJ7u3FgPZ7DqLP
+   7VNw5XQCzgss/D826j7nGby30O0lg9yzablO4Nj9yPKD0mPMsxLkm9T7u
+   XZRZy/49PHwRHTM0YCNNidQ6fAPAM39ikpSnsa/48c9GaoTV+Ukp8ivHC
+   A==;
+X-CSE-ConnectionGUID: U+0PHhcCSpSR3IuE4XePkg==
+X-CSE-MsgGUID: EsAq/pLaT2izHb4LmZmcAA==
+X-IronPort-AV: E=McAfee;i="6600,9927,11031"; a="10956752"
+X-IronPort-AV: E=Sophos;i="6.07,173,1708416000"; 
+   d="scan'208";a="10956752"
+Received: from orviesa006.jf.intel.com ([10.64.159.146])
+  by fmvoesa106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Apr 2024 19:38:15 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,173,1708416000"; 
+   d="scan'208";a="18365985"
+Received: from lkp-server02.sh.intel.com (HELO 90ee3aa53dbd) ([10.239.97.151])
+  by orviesa006.jf.intel.com with ESMTP; 01 Apr 2024 19:38:14 -0700
+Received: from kbuild by 90ee3aa53dbd with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1rrU2N-0000nz-0k;
+	Tue, 02 Apr 2024 02:38:11 +0000
+Date: Tue, 2 Apr 2024 10:38:07 +0800
+From: kernel test robot <lkp@intel.com>
+To: Marek =?iso-8859-1?Q?Beh=FAn?= <kabel@kernel.org>
+Cc: oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
+	Lee Jones <lee@kernel.org>
+Subject: drivers/leds/leds-turris-omnia.c:438:15: sparse: sparse: cast to
+ restricted __le16
+Message-ID: <202404021016.m87bJk3A-lkp@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6602:6b84:b0:7cc:39c:143d with SMTP id
- ii4-20020a0566026b8400b007cc039c143dmr394439iob.0.1712025425431; Mon, 01 Apr
- 2024 19:37:05 -0700 (PDT)
-Date: Mon, 01 Apr 2024 19:37:05 -0700
-In-Reply-To: <tencent_5E797A6E302C756D0494D4EAD2EEAACDB40A@qq.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000545ee1061513fbc9@google.com>
-Subject: Re: [syzbot] [gfs2?] KASAN: slab-use-after-free Write in
- gfs2_qd_dealloc (2)
-From: syzbot <syzbot+956651316bb16496a837@syzkaller.appspotmail.com>
-To: eadavis@qq.com, linux-kernel@vger.kernel.org, 
-	syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Hello,
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+head:   026e680b0a08a62b1d948e5a8ca78700bfac0e6e
+commit: 43e9082fbccc7df8b2028c1ba040c58cefda703f leds: turris-omnia: Add support for enabling/disabling HW gamma correction
+date:   5 months ago
+config: loongarch-randconfig-r034-20230511 (https://download.01.org/0day-ci/archive/20240402/202404021016.m87bJk3A-lkp@intel.com/config)
+compiler: loongarch64-linux-gcc (GCC) 12.3.0
+reproduce: (https://download.01.org/0day-ci/archive/20240402/202404021016.m87bJk3A-lkp@intel.com/reproduce)
 
-syzbot has tested the proposed patch and the reproducer did not trigger any issue:
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202404021016.m87bJk3A-lkp@intel.com/
 
-Reported-and-tested-by: syzbot+956651316bb16496a837@syzkaller.appspotmail.com
+sparse warnings: (new ones prefixed by >>)
+>> drivers/leds/leds-turris-omnia.c:438:15: sparse: sparse: cast to restricted __le16
+   drivers/leds/leds-turris-omnia.c:446:16: sparse: sparse: cast to restricted __le16
 
-Tested on:
+vim +438 drivers/leds/leds-turris-omnia.c
 
-commit:         18737353 Merge tag 'edac_urgent_for_v6.9_rc2' of git:/..
-git tree:       https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
-console output: https://syzkaller.appspot.com/x/log.txt?x=16ba04c5180000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=f64ec427e98bccd7
-dashboard link: https://syzkaller.appspot.com/bug?extid=956651316bb16496a837
-compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
-patch:          https://syzkaller.appspot.com/x/patch.diff?x=1542365e180000
+   426	
+   427	static int omnia_mcu_get_features(const struct i2c_client *client)
+   428	{
+   429		u16 reply;
+   430		int err;
+   431	
+   432		err = omnia_cmd_read_raw(client->adapter, OMNIA_MCU_I2C_ADDR,
+   433					 CMD_GET_STATUS_WORD, &reply, sizeof(reply));
+   434		if (err < 0)
+   435			return err;
+   436	
+   437		/* Check whether MCU firmware supports the CMD_GET_FEAUTRES command */
+ > 438		if (!(le16_to_cpu(reply) & STS_FEATURES_SUPPORTED))
+   439			return 0;
+   440	
+   441		err = omnia_cmd_read_raw(client->adapter, OMNIA_MCU_I2C_ADDR,
+   442					 CMD_GET_FEATURES, &reply, sizeof(reply));
+   443		if (err < 0)
+   444			return err;
+   445	
+   446		return le16_to_cpu(reply);
+   447	}
+   448	
 
-Note: testing is done by a robot and is best-effort only.
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
