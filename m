@@ -1,149 +1,171 @@
-Return-Path: <linux-kernel+bounces-127411-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-127420-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5E33D894AF4
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 07:48:06 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0451D894B18
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 08:03:38 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 94ACFB23631
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 05:48:03 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 806761F218C7
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 06:03:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AEEEE1862E;
-	Tue,  2 Apr 2024 05:47:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 545661863E;
+	Tue,  2 Apr 2024 06:03:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="rgEyTcHA"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ECA82CA6F;
-	Tue,  2 Apr 2024 05:47:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	dkim=pass (2048-bit key) header.d=sandeen.net header.i=@sandeen.net header.b="psIM+jxk"
+Received: from sandeen.net (sandeen.net [63.231.237.45])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5EED41862B;
+	Tue,  2 Apr 2024 06:03:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=63.231.237.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712036874; cv=none; b=kt5jzgXBuBip/x5F9wZOx222x8D5ZQzaw2IKj2/WTZ0sIM3iV+jAjJb81LiZsOuXGmn5cVQ8vo2fsseLYLCl+Cqy/UacXkIXsI0cxPMAHodH/YfIbnzypfvCaQgoLT+FQcWpm19AzCtOwPQeYLmq5woSlDkRh4mcm0aL4eZQdsw=
+	t=1712037809; cv=none; b=aT3/s8yNrqafz5H3DkQOtnTOc6gcTVLI4bOttPJ/6rNmPO+GnclqM1nbk33l3mCUl1MEwR/gN+sIA6Oyegzx6VJQMqwYq8VoLPJKHVC1OeECpSMWRQJEOtk2Ve0C3ttbdAxCzKsInh9Xf9oVv5KnvEg8wRHYoFw24ooQza6inIM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712036874; c=relaxed/simple;
-	bh=zXPakjJ2DckR/x2jHlfc1cEl8Lm1K6qgdabV8nrqeMo=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=XSPU7GQiXNRk0mVYI7+5k4b7K1e9q3EJoNhtbjrM7gXaPaGfrxZRiBhaXXHM9miJaWIKKP0ccz0MQT1UnLcQytBi7ivdHXV5wUXEOsB9uJT6B5RLrcxCbW4wpLxhdYAi7pNec/3KoXoZDo2z87SObaq9r4ILTNRbG4GutEmH6oo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=rgEyTcHA; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4C10FC433F1;
-	Tue,  2 Apr 2024 05:47:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712036873;
-	bh=zXPakjJ2DckR/x2jHlfc1cEl8Lm1K6qgdabV8nrqeMo=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=rgEyTcHA8nvqp5CpxkRw+PajIM+nTNglkN1Sh8ryp4T5XJmZqjK03HabsKNz9s80L
-	 eaIKCD2P9GyhYhRWLBWm/PPsKWPCb5oNMtwodhgMMSdoVLX12sIxw47C55LpXUQAuu
-	 SY9KO1nluGN5YG9Mo1cPDrcd1fUS/lglkKd+ZesY0mq4a+enePp0aL+Fi/sK6GNacd
-	 xw2515FRoylqAMSMwwb3NfKPNAcxBb0GKalUWBgqAsehK/S+0H9LtKFFS2X+THfoSB
-	 ZNnQPgGECfCrFIIkIkaJxsCxEuP4zpdN1/uxv/nbkTgehEHxCCLrBnGRl4XSu7OSTS
-	 sI9bDPFIhhvtw==
-Date: Tue, 2 Apr 2024 11:17:45 +0530
-From: Manivannan Sadhasivam <mani@kernel.org>
-To: Shashank Babu Chinta Venkata <quic_schintav@quicinc.com>
-Cc: agross@kernel.org, andersson@kernel.org, konrad.dybcio@linaro.org,
-	quic_msarkar@quicinc.com, quic_kraravin@quicinc.com,
-	Lorenzo Pieralisi <lpieralisi@kernel.org>,
-	Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
-	Rob Herring <robh@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>,
-	Jingoo Han <jingoohan1@gmail.com>,
-	Gustavo Pimentel <gustavo.pimentel@synopsys.com>,
-	Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
-	Serge Semin <fancer.lancer@gmail.com>,
-	Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
-	Conor Dooley <conor.dooley@microchip.com>,
-	linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
-	linux-arm-msm@vger.kernel.org
-Subject: Re: [PATCH v2 3/3] PCI: qcom: Add rx margining settings for gen4
-Message-ID: <20240402054745.GK2933@thinkpad>
-References: <20240320071527.13443-1-quic_schintav@quicinc.com>
- <20240320071527.13443-4-quic_schintav@quicinc.com>
+	s=arc-20240116; t=1712037809; c=relaxed/simple;
+	bh=0Bwj3k8d5hovVVaDv7fP+JtwH9U7MWbd2j/5DMgaikM=;
+	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=fPv8piU8yw7ofEKVL7UWS4LNP37RRMIiczfCtoBD2Sw4V17EOw5Ax0spwyHd/0/encjtQaytFpovoDKNQCZhBuHcfrMNc829Dn7V143lWojD+X5Xnk/DAAtTYttZAtHQhwXarWftzaTtksmbSFLG2A3ASK4EPX0hb2SLTcuqjUI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=sandeen.net; spf=pass smtp.mailfrom=sandeen.net; dkim=pass (2048-bit key) header.d=sandeen.net header.i=@sandeen.net header.b=psIM+jxk; arc=none smtp.client-ip=63.231.237.45
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=sandeen.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sandeen.net
+Received: from [10.0.0.71] (usg [10.0.0.1])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by sandeen.net (Postfix) with ESMTPSA id 4145C147573;
+	Tue,  2 Apr 2024 00:54:05 -0500 (CDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 sandeen.net 4145C147573
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sandeen.net;
+	s=default; t=1712037245;
+	bh=Yy+BZP28hP+o4Gt45N/r4iLMdVAh1Ejm3fngQ9hVRN8=;
+	h=Date:Subject:To:References:From:In-Reply-To:From;
+	b=psIM+jxkU9Dkop09cl0fzDTzMkU7TBLC9vEBBUQjlcymL01Os6/y10DBjpydO7OqK
+	 daYNDPYHd+EmftJgicOH7aGFhPBPOwsd+p/sghMNcPRZNWPLEbQYLXX7MKAvutF4ZR
+	 BYra+n4FGEVhoo3J1DzNUfysX7kb2+OiFDg8IAYQCAUGRRybX4c70XW59KRDDMFCTI
+	 nBFlkQtFuhxai8R//V4ZvIdx2sqjvw/Av8vN9lSIEZSV5f5vuQw67yhjgHNaGzllK3
+	 Hjy+wwGhUlVhBHbOtmVikS+6oqcI+ziNSNYDRdPpXiaiRQQmOibp4IAFTVYQkOI0Q3
+	 HMDzZoe9mfSjg==
+Message-ID: <32f02757-70e0-41ed-a0d0-23190a28dad3@sandeen.net>
+Date: Tue, 2 Apr 2024 00:54:04 -0500
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+User-Agent: Mozilla Thunderbird
+Subject: Re: A bug was found in Linux Kernel 5.15.148 and 5.15.150: KASAN:
+ use-after-free in xfs_allocbt_init_key_from_rec (with POC)
+To: =?UTF-8?B?5YiY6YCa?= <lyutoon@gmail.com>, leah.rumancik@gmail.com,
+ djwong@kernel.org, linux-xfs@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <CAEJPjCvT3Uag-pMTYuigEjWZHn1sGMZ0GCjVVCv29tNHK76Cgg@mail.gmail.com>
+Content-Language: en-US
+From: Eric Sandeen <sandeen@sandeen.net>
+In-Reply-To: <CAEJPjCvT3Uag-pMTYuigEjWZHn1sGMZ0GCjVVCv29tNHK76Cgg@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20240320071527.13443-4-quic_schintav@quicinc.com>
 
-On Wed, Mar 20, 2024 at 12:14:47AM -0700, Shashank Babu Chinta Venkata wrote:
-> Add rx margining settings for gen4 operation.
+On 3/7/24 1:23 AM, 刘通 wrote:
+> Hi upstream community,
+> 
+> I was fuzzing a LTS version of Linux kernel 5.15.148 with my modified
+> syzkaller and I found a bug named "KASAN: use-after-free in
+> xfs_allocbt_init_key_from_rec".
+> 
+> I tested the PoC on 5.15.148, 5.15.149 and 5.15.150 with sanitizer on
+> and found sanitizer through a panic as "KASAN: use-after-free in
+> xfs_allocbt_init_key_from_rec" on 5.15.148 and 5.15.150, but there was
+> no panic and sanitizer error in 5.15.149.
+> 
+> The syzkaller log, report, kernel config, PoC can be found here:
+> https://drive.google.com/file/d/1w6VKKewt4VQzb9FzcGtkELJUOwd1wMcC/view?usp=sharing
+> 
+> # Analysis (rough):
+> Because that I cannot understand the report0 clearly in the zip file
+> above, so I rerun the PoC on my vm (5.15.148) and I get another report
+> named as the same but it looks much clearer than the report0. The new
+> report can be found in:
+> https://drive.google.com/file/d/1Vg_4Qwueow6VgjLrijnUB8QbZVx902sv/view?usp=sharing
+> In this report, we can easily see that the memory allocation and free:
+> Allocation:
+
+As a PhD student interested in security analysis, you could do much more
+here.
+
+For starters, test this on an upstream/mainline kernel to see if it
+reproduces.
+
+Provide the filesystem image that seems to reproduce it, rather than
+an array in a C file.
+
+Look at your reproducer, and identify the ioctls and syscalls that you
+believe provoked the error. See what privileges are needed to invoke them,
+if you believe this may be a security flaw.
+
+Test your reproducer in isolation, and see if it actually reproduces your
+use after free (I don't think that it does.)
+
+If it doesn't, look back at the tests that ran before it, and see if
+something is corrupting memory, etc.
+
+It's far too easy for someone to turn a syzkaller crank, throw it over
+the wall, and move on. If you want to help, dig in, don't just pawn off
+the problem with no effort to investigate what you believe you've found.
+
+> ```
+> [   62.995194][ T6349] Allocated by task 6343:
+> [   62.995610][ T6349]  kasan_save_stack+0x1b/0x40
+> [   62.996044][ T6349]  __kasan_slab_alloc+0x61/0x80
+> [   62.996475][ T6349]  kmem_cache_alloc+0x18e/0x6b0
+> [   62.996918][ T6349]  getname_flags+0xd2/0x5b0
+> [   62.997335][ T6349]  user_path_at_empty+0x2b/0x60
+> [   62.997782][ T6349]  vfs_statx+0x13c/0x370
+> [   62.998193][ T6349]  __do_sys_newlstat+0x91/0x110
+> [   62.998634][ T6349]  do_syscall_64+0x35/0xb0
+> [   62.999033][ T6349]  entry_SYSCALL_64_after_hwframe+0x61/0xcb
+> ```
+> Free:
+> ```
+> [   62.999776][ T6349] Freed by task 6343:
+> [   63.000135][ T6349]  kasan_save_stack+0x1b/0x40
+> [   63.000555][ T6349]  kasan_set_track+0x1c/0x30
+> [   63.001053][ T6349]  kasan_set_free_info+0x20/0x30
+> [   63.001638][ T6349]  __kasan_slab_free+0xe1/0x110
+> [   63.002206][ T6349]  kmem_cache_free+0x82/0x5b0
+> [   63.002742][ T6349]  putname+0xfe/0x140
+> [   63.003103][ T6349]  user_path_at_empty+0x4d/0x60
+> [   63.003551][ T6349]  vfs_statx+0x13c/0x370
+> [   63.003943][ T6349]  __do_sys_newlstat+0x91/0x110
+> [   63.004378][ T6349]  do_syscall_64+0x35/0xb0
+> [   63.004841][ T6349]  entry_SYSCALL_64_after_hwframe+0x61/0xcb
+> ```
+> So this is a use-after-free bug: allocated by `kmem_cache_alloc` and
+> freed by `kmem_cache_free`.
+> And according to the report, the UAF occurs in
+> `xfs_allocbt_init_key_from_rec`, `key->alloc.ar_startblock =
+> rec->alloc.ar_startblock;` which indicates that maybe
+> `rec->alloc.ar_startblock` was freed before.
+> 
+> # Step to reproduce:
+> 1. download the zip file
+> 2. unzip it
+> 3. compile the kernel (5.15.148, 5.15.150) with kernel_config
+> 4. start the kernel with qemu vm
+> 5. scp repro.c to the vm
+> 6. compile the repro.c and run it: gcc repro.c -o exp && ./exp
+> 7. you will see the KASAN error
+
+AFAICT you won't. I did exactly this, and got no KASAN error.
+Did you, after following these steps on a fresh boot of the kernel?
+
+-Eric
+
+> # Note:
+> I didn't find any related reports on the internet, which indicates
+> that it may be a 0day. Hope the upstream can help check and fix it.
+> And I'll be happy to provide more information if needed.
+> 
+> Best,
+> Tong
 > 
 
-What is 'rx margining'? As mentioned in the previous patch, use 16 GT/s.
-
-> Signed-off-by: Shashank Babu Chinta Venkata <quic_schintav@quicinc.com>
-> ---
->  drivers/pci/controller/dwc/pcie-designware.h | 23 +++++++++++++
->  drivers/pci/controller/dwc/pcie-qcom-cmn.c   | 35 ++++++++++++++++++++
->  drivers/pci/controller/dwc/pcie-qcom-cmn.h   | 11 +++++-
->  drivers/pci/controller/dwc/pcie-qcom-ep.c    |  4 ++-
->  drivers/pci/controller/dwc/pcie-qcom.c       |  4 ++-
->  5 files changed, 74 insertions(+), 3 deletions(-)
-> 
-> diff --git a/drivers/pci/controller/dwc/pcie-designware.h b/drivers/pci/controller/dwc/pcie-designware.h
-> index 064744bfe35a..ce1c5f9c406a 100644
-> --- a/drivers/pci/controller/dwc/pcie-designware.h
-> +++ b/drivers/pci/controller/dwc/pcie-designware.h
-> @@ -206,6 +206,29 @@
->  
->  #define PCIE_PL_CHK_REG_ERR_ADDR			0xB28
->  
-> +/*
-> + * GEN4 lane margining register definitions
-> + */
-> +#define GEN4_LANE_MARGINING_1_OFF		0xb80
-> +#define MARGINING_MAX_VOLTAGE_OFFSET_MASK	GENMASK(29, 24)
-> +#define MARGINING_NUM_VOLTAGE_STEPS_MASK	GENMASK(22, 16)
-> +#define MARGINING_MAX_TIMING_OFFSET_MASK	GENMASK(13, 8)
-> +#define MARGINING_NUM_TIMING_STEPS_MASK		GENMASK(5, 0)
-> +#define MARGINING_MAX_VOLTAGE_OFFSET_SHIFT	24
-> +#define MARGINING_NUM_VOLTAGE_STEPS_SHIFT	16
-> +#define MARGINING_MAX_TIMING_OFFSET_SHIFT	8
-> +
-> +#define GEN4_LANE_MARGINING_2_OFF		0xb84
-> +#define MARGINING_IND_ERROR_SAMPLER		BIT(28)
-> +#define MARGINING_SAMPLE_REPORTING_METHOD	BIT(27)
-> +#define MARGINING_IND_LEFT_RIGHT_TIMING		BIT(26)
-> +#define MARGINING_IND_UP_DOWN_VOLTAGE		BIT(25)
-> +#define MARGINING_VOLTAGE_SUPPORTED		BIT(24)
-> +#define MARGINING_MAXLANES_MASK			GENMASK(20, 16)
-> +#define MARGINING_SAMPLE_RATE_TIMING_MASK	GENMASK(13, 8)
-> +#define MARGINING_SAMPLE_RATE_VOLTAGE_MASK	GENMASK(5, 0)
-> +#define MARGINING_MAXLANES_SHIFT		16
-> +#define MARGINING_SAMPLE_RATE_TIMING_SHIFT	8
-
-Add a newline
-
->  /*
->   * iATU Unroll-specific register definitions
->   * From 4.80 core version the address translation will be made by unroll
-> diff --git a/drivers/pci/controller/dwc/pcie-qcom-cmn.c b/drivers/pci/controller/dwc/pcie-qcom-cmn.c
-> index 208a55e8e9a1..bf6b27ee8327 100644
-> --- a/drivers/pci/controller/dwc/pcie-qcom-cmn.c
-> +++ b/drivers/pci/controller/dwc/pcie-qcom-cmn.c
-> @@ -53,6 +53,41 @@ void qcom_pcie_cmn_set_16gt_eq_settings(struct dw_pcie *pci)
->  }
->  EXPORT_SYMBOL_GPL(qcom_pcie_cmn_set_16gt_eq_settings);
->  
-> +void qcom_pcie_cmn_set_16gt_rx_margining_settings(struct dw_pcie *pci)
-> +{
-> +	u32 reg;
-> +
-> +	reg = dw_pcie_readl_dbi(pci, GEN4_LANE_MARGINING_1_OFF);
-> +	reg &= ~MARGINING_MAX_VOLTAGE_OFFSET_MASK;
-> +	reg |= (MARGINING_MAX_VOLTAGE_OFFSET_VAL <<
-> +		MARGINING_MAX_VOLTAGE_OFFSET_SHIFT);
-
-Same comment as previous patch to use FIELD_* macros.
-
-- Mani
-
--- 
-மணிவண்ணன் சதாசிவம்
 
