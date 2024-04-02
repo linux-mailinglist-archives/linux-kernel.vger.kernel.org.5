@@ -1,115 +1,141 @@
-Return-Path: <linux-kernel+bounces-128735-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-128736-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 74469895ECC
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 23:36:36 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id B7C78895ED2
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 23:37:01 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 146B1B256FA
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 21:36:34 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7272C289448
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 21:37:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2673515ECC1;
-	Tue,  2 Apr 2024 21:36:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BAA1715E802;
+	Tue,  2 Apr 2024 21:36:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="h/BcqB7h"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=paul-moore.com header.i=@paul-moore.com header.b="VFs56/kY"
+Received: from mail-yw1-f176.google.com (mail-yw1-f176.google.com [209.85.128.176])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 61A0415E80C;
-	Tue,  2 Apr 2024 21:36:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2E9C215E5D4
+	for <linux-kernel@vger.kernel.org>; Tue,  2 Apr 2024 21:36:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712093769; cv=none; b=HwvPkUYsptrkW3Zj7/qIkclWuYJehLPZEZyGtbGrxzCQOz5bmVBeuRXgrIXg8JhJwFdjucFQq0FPjywoca0Sz5Sr+nmesyj6+QsGsuvyTV8ELxE9xkFbQNeNlKzMsesyqddzB+8gJEBgpTpmT7eFqBlK1NkKjQCbsGDVHNNbRjk=
+	t=1712093804; cv=none; b=dqt8w9aGyo2frkz0N8GuHfP9u2oo4MH5SEVJxH49kdoMZnIYav9sttwTgTpNhu+sw4tbhf6amm3ALlI2KhutOXR1m9lgUnGHNEcmr7qKrX0QVFnkkgkpYU1S4PRwL4ohjdGkuJFWxeSkhkzWM3ucNGODKcPfaADamLRKE/Lrhsw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712093769; c=relaxed/simple;
-	bh=R77JGoAQZP5S0g5y2bfP8VgjOnnsNP41b6UnDI/qAyA=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=pXhzF57nzmxD3V4pVUAUe0+qEmXrQ+gSOhBGbHqM0roTWQloxciYUKLBQQp/fbmjtmCJPKXcIVPXP3/FmS2EHzEnSMLZYYjThCFt5NNRJglhxGiOmdD5cn9uImIyt8o9LeU5br9lq1dUqhFaYuDcQceYrgmyskPJvZlKsRLgt6w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=h/BcqB7h; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 61D3EC433F1;
-	Tue,  2 Apr 2024 21:36:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712093768;
-	bh=R77JGoAQZP5S0g5y2bfP8VgjOnnsNP41b6UnDI/qAyA=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=h/BcqB7h3KKw6rPNPsob8OeNn++N2NesXRaozpuCALGFb5dmPwqog8SHMB2Ki7yJs
-	 WGk9bpU/qzIjCiZDrww4dp/+8yfHoNRNvwtEVPZb7FDpdWN2GU6RKvNxeJZJphHyiM
-	 bgaIwuyQWob4F1Z3nY+af37edcbeNx4gdmvvY2jJ4Fww/9/q5y793Xs8FeLvogrzVU
-	 /1iotnjH9tOAUIN3/mWUiwiZsbslr9kWO8CGYGLaypYe9TnOMQvorV5VB0OWLzGGSk
-	 l/XZpW3/lmWfEZwKJ9LKL4dDKsTqw0heVE80YyN+K1XWLj2ZWM/E+ApcVBSyb8+ih3
-	 t4HBIwdScI4YA==
-Date: Tue, 2 Apr 2024 14:36:07 -0700
-From: Jakub Kicinski <kuba@kernel.org>
-To: Jason Gunthorpe <jgg@nvidia.com>
-Cc: Leon Romanovsky <leon@kernel.org>, David Ahern <dsahern@kernel.org>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Christoph Hellwig
- <hch@infradead.org>, Saeed Mahameed <saeed@kernel.org>, Arnd Bergmann
- <arnd@arndb.de>, Jiri Pirko <jiri@nvidia.com>, Leonid Bloch
- <lbloch@nvidia.com>, Itay Avraham <itayavr@nvidia.com>, Saeed Mahameed
- <saeedm@nvidia.com>, Aron Silverton <aron.silverton@oracle.com>,
- linux-kernel@vger.kernel.org, "netdev@vger.kernel.org"
- <netdev@vger.kernel.org>, Andy Gospodarek <andrew.gospodarek@broadcom.com>,
- Junxian Huang <huangjunxian6@hisilicon.com>
-Subject: Re: [PATCH V4 0/5] mlx5 ConnectX control misc driver
-Message-ID: <20240402143607.0357d71a@kernel.org>
-In-Reply-To: <20240402184554.GQ946323@nvidia.com>
-References: <9cc7127f-8674-43bc-b4d7-b1c4c2d96fed@kernel.org>
-	<2024032248-ardently-ribcage-a495@gregkh>
-	<510c1b6b-1738-4baa-bdba-54d478633598@kernel.org>
-	<Zf2n02q0GevGdS-Z@C02YVCJELVCG>
-	<20240322135826.1c4655e2@kernel.org>
-	<e5c61607-4d66-4cd8-bf45-0aac2b3af126@kernel.org>
-	<20240322154027.5555780a@kernel.org>
-	<1cd2a70c-17b8-4421-b70b-3c0199a84a6a@kernel.org>
-	<20240401123003.GC73174@unreal>
-	<20240401075003.70f5cb4b@kernel.org>
-	<20240402184554.GQ946323@nvidia.com>
+	s=arc-20240116; t=1712093804; c=relaxed/simple;
+	bh=zRrJ7KggAH7cTt1Vhmiuiy2Df28+5h6/wPPYTkWVw04=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=ccYx5u1PqjeiMnT8C9JE4S+INuSomDEK5ER315wBqWXdF6NaLUHSE2fbKzA2IDbZde5GuVbKxYRSrU7XQMLS1LC26dzx3lyg0xf9OnPJuLWEMlFaecX9ywJiTL3626uBPXuD/GHfC4Ln0JGAL/AeJY9iIneNR/+d+kC3klb30m0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=paul-moore.com; spf=pass smtp.mailfrom=paul-moore.com; dkim=pass (2048-bit key) header.d=paul-moore.com header.i=@paul-moore.com header.b=VFs56/kY; arc=none smtp.client-ip=209.85.128.176
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=paul-moore.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=paul-moore.com
+Received: by mail-yw1-f176.google.com with SMTP id 00721157ae682-61461580403so39011627b3.2
+        for <linux-kernel@vger.kernel.org>; Tue, 02 Apr 2024 14:36:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=paul-moore.com; s=google; t=1712093801; x=1712698601; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=timWU9GFd6HZQcBIpJ1fDsofXUJOEA2GJUMxdnQeWyI=;
+        b=VFs56/kYlEJ/L6SfqNtsq2LSS+FXJEtIlml70yJZrVYGXT5pKgv9O1EfqVnfef2DHC
+         effgJPyzTa7fxIfft8tofMWxtRk6jmHDTs/yrjT89LI5jITiHeDxBltTiHMGm1NgfK0c
+         C/IyN5f7hATZMFKF4tDkZVaKw40iTbRHuRL92vkwITMIrS8aH/VZ2+qDNVtlfDd2CWfD
+         4JwBLd0t6R2N76LWeJCWujE/6aOaergy+OuNTXokJ3qZixcUjT3l+gdhN9qrThw4qDzV
+         aHjcDYvhpXIKiv7j7zkVSqOt6JiBpGFYEfXPT1uYaYV2WBffe/MmP7+wNEp2PnfMMkS0
+         L4Ow==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712093801; x=1712698601;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=timWU9GFd6HZQcBIpJ1fDsofXUJOEA2GJUMxdnQeWyI=;
+        b=k3yUqKKyoiLpMHkaJuD41tvsQtIppq8Rqn1egcxw3NrmRRaNboFEdlr8YYjpcJ7u4G
+         +vIix0MckU3Gl7+TGnLAYYT+PWIXfUQnIWRC//4X3dUtomLkPiPaQMLJw4FKOeNimGsE
+         0Y1LpOYCWnb74GTGRxkYfhTNKhAd3m9508E8ZTM1LSTnIaHM+59JO6sdUiVLSnBQXG2w
+         Vx9tDo13vIcpuaNK+bgLcyIq1CN6aetUJSxl1zT5zioLkVIBK1jjXCn0Da+lTasAF3mB
+         W4+wTsS6Eyx2KJMcCeKvHx64RO5SoD0rA1E7ipDsnEygIrNLa9K0wDQO2NXKNDNvZsmm
+         A+CA==
+X-Forwarded-Encrypted: i=1; AJvYcCWFd8/cA6/IFoyHQCBg9mp7g+evq7CmNX00v1uJ8UnHUT3DyjUwKndY8SYnoOBwgj597r7McPzd+yjqaAXvDJMesROAxEwwUNvQqjk7
+X-Gm-Message-State: AOJu0YyNahV7vPwAdyltvIOJzWLteBeoaioIltQB0/2iPr56fhW4X3vT
+	+aXHbndv3ecAnxAfI467G/oaHMaahJkOHoiU1B7qU4k+QMdudYhoQUpLMyIUZ8sIvH7Sm/MiJ4/
+	Q01Wzk1Q7IktvtLoAw2NwMbioijqMaNeNZ7Fo
+X-Google-Smtp-Source: AGHT+IFJTwImClpiwZnwMaF5ABMRExNpfaFRHdgXao7m2+19hKn+RgyYiVPx95ZPN4eHvFaQwRNeE+0VXYBbG7NAbBQ=
+X-Received: by 2002:a81:8544:0:b0:610:e9b2:f84a with SMTP id
+ v65-20020a818544000000b00610e9b2f84amr12120598ywf.26.1712093801155; Tue, 02
+ Apr 2024 14:36:41 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+References: <20240402141145.2685631-1-roberto.sassu@huaweicloud.com>
+ <CAHk-=wgepVMJCYj9s7J50_Tpb5BWq9buBoF0J5HAa1xjet6B8A@mail.gmail.com>
+ <CAHk-=wjjx3oZ55Uyaw9N_kboHdiScLkXAu05CmPF_p_UhQ-tbw@mail.gmail.com> <20240402210035.GI538574@ZenIV>
+In-Reply-To: <20240402210035.GI538574@ZenIV>
+From: Paul Moore <paul@paul-moore.com>
+Date: Tue, 2 Apr 2024 17:36:30 -0400
+Message-ID: <CAHC9VhSWiQQ3shgczkNr+xYX6G5PX+LgeP3bsMepnM_cp4Gd4g@mail.gmail.com>
+Subject: Re: [GIT PULL] security changes for v6.9-rc3
+To: Al Viro <viro@zeniv.linux.org.uk>
+Cc: Linus Torvalds <torvalds@linux-foundation.org>, 
+	Roberto Sassu <roberto.sassu@huaweicloud.com>, linux-integrity@vger.kernel.org, 
+	linux-security-module@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
+	linux-cifs@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	Roberto Sassu <roberto.sassu@huawei.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Tue, 2 Apr 2024 15:45:54 -0300 Jason Gunthorpe wrote:
-> On Mon, Apr 01, 2024 at 07:50:03AM -0700, Jakub Kicinski wrote:
-> > On Mon, 1 Apr 2024 15:30:03 +0300 Leon Romanovsky wrote:  
-> > > HNS driver is a good example of such device. It has nothing to do with
-> > > netdev and needs common and reliable way to configure FW.  
-> > 
-> > Sorry, I have a completely different reading of that thread.
-> > Thanks for bringing it up, tho.
-> > 
-> > As I said multiple times I agree that configuring custom parameters
-> > in RDMA is a necessity. Junxian's approach of putting such code in
-> > the RDMA driver / subsystem is more than reasonable. Even better,
-> > it looks like the API is fairly narrowly defined.  
-> 
-> Uh, if I understand netdev rules aren't read/write sysfs created from
-> drivers banned? 
+On Tue, Apr 2, 2024 at 5:00=E2=80=AFPM Al Viro <viro@zeniv.linux.org.uk> wr=
+ote:
+> On Tue, Apr 02, 2024 at 12:57:28PM -0700, Linus Torvalds wrote:
+>
+> > So in other cases we do handle the NULL, but it does seem like the
+> > other cases actually do validaly want to deal with this (ie the
+> > fsnotify case will say "the directory that mknod was done in was
+> > changed" even if it doesn't know what the change is.
+> >
+> > But for the security case, it really doesn't seem to make much sense
+> > to check a mknod() that you don't know the result of.
+> >
+> > I do wonder if that "!inode" test might also be more specific with
+> > "d_unhashed(dentry)". But that would only make sense if we moved this
+> > test from security_path_post_mknod() into the caller itself, ie we
+> > could possibly do something like this instead (or in addition to):
+> >
+> >   -     if (error)
+> >   -             goto out2;
+> >   -     security_path_post_mknod(idmap, dentry);
+> >   +     if (!error && !d_unhashed(dentry))
+> >   +             security_path_post_mknod(idmap, dentry);
+> >
+> > which might also be sensible.
+> >
+> > Al? Anybody?
+>
+> Several things here:
+>
+>         1) location of that hook is wrong.  It's really "how do we catch
+> file creation that does not come through open() - yes, you can use
+> mknod(2) for that".  It should've been after the call of vfs_create(),
+> not the entire switch.  LSM folks have a disturbing fondness of inserting
+> hooks in various places, but IMO this one has no business being where
+> they'd placed it.
 
-Neither is that true as an absolute "netdev rule" nor relevant 
-to the discussion.
+I know it's everyone's favorite hobby to bash the LSM and LSM devs,
+but it's important to note that we don't add hooks without working
+with the associated subsystem devs to get approval.  In the cases
+where we don't get an explicit ACK, there is an on-list approval, or
+several ignored on-list attempts over weeks/months/years.  We want to
+be good neighbors.
 
-> So reasonable for RDMA but unacceptable to netdev?
+Roberto's original patch which converted from the IMA/EVM hook to the
+LSM hook was ACK'd by the VFS folks.
 
-I don't know or care what interface guidance you provide.
-What I called reasonable is putting that code in RDMA driver
-/ subsystem.
+Regardless, Roberto if it isn't obvious by now, just move the hook
+back to where it was prior to v6.9-rc1.
 
-> My brain hurts.
-
-Maybe brains are better suited for understanding what other people
-say rather than twisting and misinterpreting..
-
-> FWIW, I've been trying to push RDMA away from driver created sysfs for
-> a while now. Aside from the API complexity, implementations have
-> messed up using the sysfs APIs and resulted in some significant
-> problems :(
-
-Sure, agreed, but off-topic.
+--=20
+paul-moore.com
 
