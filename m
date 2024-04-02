@@ -1,445 +1,325 @@
-Return-Path: <linux-kernel+bounces-128386-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-128387-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7B63A895A29
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 18:51:58 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6D6D8895A40
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 18:54:49 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 30C18284924
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 16:51:57 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8BA44B28D91
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 16:52:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 940F015E5B0;
-	Tue,  2 Apr 2024 16:46:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="DYIuwfar"
-Received: from mail-lf1-f46.google.com (mail-lf1-f46.google.com [209.85.167.46])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4A16415E1EE;
-	Tue,  2 Apr 2024 16:46:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5AABF15AABF;
+	Tue,  2 Apr 2024 16:47:05 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6DF1915AAB5
+	for <linux-kernel@vger.kernel.org>; Tue,  2 Apr 2024 16:47:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712076415; cv=none; b=YsAiygmqtRmQt6529MehA8x2fl0Bd+/lqn4k4qijK6nuGksxvIqzF00ECiqGnr/sXRWUQKjQLWE8Yk8+P1cZcEMzPBfx6V7bXybOi3+OtVIUERE5j/FFHnDp+tmmMreoS9m4eYQOQPDbvsDR1dy88ZkOKcKtf6lC1nbBY/OtDXI=
+	t=1712076424; cv=none; b=Du3el6jA02atgghbSERDN449PDx2qAAbUG2R6VGGIA6Cd6dUeuPfTzNWkzewtH85XMe/Xg9j/yqH1qgoq846aRYCPOum4kRnkC6Dtu8ZHFtVlKmT80t/g3ffY5r4qYqaLeNpi3YU/Lcft86xfQ6jcopWFAiXZAiDUsoZZ+KYZ1A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712076415; c=relaxed/simple;
-	bh=YlPBAiolpMBCk/phP3YCBMYLa8+6A4wSIk5wRbGr4Kw=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=h3JI1lRY3DogAvfvGcnpjzhxMvSpLw4pNJi8HCEoCVQ4t/l62QZs1C2EKLD1K6cMHWGUdCwfvC3eyHE2jg5OUYt/3wQZYIXacTyrW2uAyPWANtDY4evAY6HAX1i2B6dhzkv6Mvypynp1cJuhwqjHV23ON484SqyxhlSvL6hvfcc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=DYIuwfar; arc=none smtp.client-ip=209.85.167.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lf1-f46.google.com with SMTP id 2adb3069b0e04-515c198e835so6272396e87.3;
-        Tue, 02 Apr 2024 09:46:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1712076411; x=1712681211; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=hNMb9LRZur2TtxQIwuV57MaLxR96qrgNMYsluidntg8=;
-        b=DYIuwfarQ+eZO25Hs8p/nwK4GoObxUENhg7XcRzt+Gtxd1KJV+0uhrjEefBONgkFzo
-         Z+EK4ytnI/+exsEPMxPv04BkQ5TDPSQ2txVGmhJDWtspyPhFlZWwgzoDmhl9iELsPcFU
-         YKB6cpGMfTgLSuPKj13Uy/PujjfJHlrs920GHT0iVps7BWGR50Das+ZMTG9vXiqCPYzE
-         RWvy6X+DPCns+BXwmiZUoh3avDbrQLOdvIOAsZqQUaGpNfyqUJ20xd4xYxcUD1E1bjBw
-         EnmrWwHF33XaMkj8waN34XVIrTUGI3RHqcjlpx3DW0LVkBmMijAzCIYlGMZ7z0SvxBF0
-         A3RA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712076411; x=1712681211;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=hNMb9LRZur2TtxQIwuV57MaLxR96qrgNMYsluidntg8=;
-        b=oLKIo8Nw5Cp4B22k4FtPbmn/tJXsvwMvsXpdZ520Cr46Dt/q04KJqn8gAOwTMhD2Wg
-         /U8Ru29kCD0WjKa96UBGdBonBAn3BZLR8qYkNwLXbV92oNNmCy5Zq+xOgr7tVHlGfucf
-         eh5lPDevqgLa16B7DhGc+NdIO5Qcg7iTSyullUxbU49Tw/u6Nk3wEP1LPajsY0nTPTfp
-         rWBZ2bNAyREGy5KsdCLas46IMu9DGeLq+KZi+qATGQfHffh50ZaXB4Rr7+M8hSd7cPiZ
-         n1Ub1LP2xgJ1nqRQR58dvN1s+hiKGl6tnoZtOZZvA45LTN12JQDukCFqNf8eYDHkTh5j
-         B/Xg==
-X-Forwarded-Encrypted: i=1; AJvYcCWx2fG6JzSPqZDw9SMVRHs3VcfBJ00v/B1w42b64XpZebbmx1ERhdiuqbfMMfemonDCDIb8xaLXGFVoMJexvHFgSaxvzflJHui98rqQ
-X-Gm-Message-State: AOJu0Yxg9uHBfk2kOS0W1IJDDg8Hv+mX4U12btctOkjD98NQosbcSJxs
-	pvI6it1wt9F2fZ/XzB1aTpT2a6MaTMg06bsZN2mUCLgia6WpbLtjoazVm27iYE8wlA==
-X-Google-Smtp-Source: AGHT+IE4+QUL2xVG+lG8l1klam//wckPzs+Ff/U4qhMEoQle4J0Gloj1futOEZEiuTcVNDCew8o46A==
-X-Received: by 2002:a05:6512:475:b0:515:cf44:904e with SMTP id x21-20020a056512047500b00515cf44904emr9220573lfd.46.1712076410925;
-        Tue, 02 Apr 2024 09:46:50 -0700 (PDT)
-Received: from localhost ([77.91.78.25])
-        by smtp.gmail.com with ESMTPSA id b4-20020ac247e4000000b0051596653cb6sm1761140lfp.100.2024.04.02.09.46.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 02 Apr 2024 09:46:50 -0700 (PDT)
-From: Mikhail Rudenko <mike.rudenko@gmail.com>
-To: linux-media@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Cc: Sakari Ailus <sakari.ailus@linux.intel.com>,
-	Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-	Jacopo Mondi <jacopo@jmondi.org>,
-	Tommaso Merciai <tomm.merciai@gmail.com>,
-	Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-	Dave Stevenson <dave.stevenson@raspberrypi.com>,
-	Mauro Carvalho Chehab <mchehab@kernel.org>,
-	Mikhail Rudenko <mike.rudenko@gmail.com>
-Subject: [PATCH v4 20/20] media: i2c: ov4689: Implement 2x2 binning
-Date: Tue,  2 Apr 2024 19:45:51 +0300
-Message-ID: <20240402164552.19171-21-mike.rudenko@gmail.com>
-X-Mailer: git-send-email 2.44.0
-In-Reply-To: <20240402164552.19171-1-mike.rudenko@gmail.com>
-References: <20240402164552.19171-1-mike.rudenko@gmail.com>
+	s=arc-20240116; t=1712076424; c=relaxed/simple;
+	bh=Kv9poY7gUr9bKNG6t2TeWlDmav3n2YQmt2LRy8WdEA0=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=rBVmPabjg+ZuVhEnJUxMUt4vS0hj7I5DqJlMtHBSS6Wy62UV1v+zxN1u+2VMklp58tBxeWYiUONsgbH9m5vwLsnTlPtHhwCG8ex2CakmG4+YuRgwpKmQLMKQ7B+gUa4zwG4uXOYj2iZwmkjjiswwljiv/h7v7Bu7DLbhCJpdtP8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id E35AB1007;
+	Tue,  2 Apr 2024 09:47:32 -0700 (PDT)
+Received: from [10.1.38.163] (XHFQ2J9959.cambridge.arm.com [10.1.38.163])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 6908D3F7B4;
+	Tue,  2 Apr 2024 09:46:58 -0700 (PDT)
+Message-ID: <f4aff3e9-1d78-4bb8-a6f3-2887b9928b54@arm.com>
+Date: Tue, 2 Apr 2024 17:46:57 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v4 13/13] mm/gup: Handle hugetlb in the generic
+ follow_page_mask code
+Content-Language: en-GB
+To: Peter Xu <peterx@redhat.com>, David Hildenbrand <david@redhat.com>
+Cc: linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+ Yang Shi <shy828301@gmail.com>, "Kirill A . Shutemov"
+ <kirill@shutemov.name>, Mike Kravetz <mike.kravetz@oracle.com>,
+ John Hubbard <jhubbard@nvidia.com>, Michael Ellerman <mpe@ellerman.id.au>,
+ Andrew Jones <andrew.jones@linux.dev>, Muchun Song <muchun.song@linux.dev>,
+ linux-riscv@lists.infradead.org, linuxppc-dev@lists.ozlabs.org,
+ Christophe Leroy <christophe.leroy@csgroup.eu>,
+ Andrew Morton <akpm@linux-foundation.org>,
+ Christoph Hellwig <hch@infradead.org>, Lorenzo Stoakes <lstoakes@gmail.com>,
+ Matthew Wilcox <willy@infradead.org>, Rik van Riel <riel@surriel.com>,
+ linux-arm-kernel@lists.infradead.org, Andrea Arcangeli
+ <aarcange@redhat.com>, "Aneesh Kumar K . V" <aneesh.kumar@kernel.org>,
+ Vlastimil Babka <vbabka@suse.cz>, James Houghton <jthoughton@google.com>,
+ Jason Gunthorpe <jgg@nvidia.com>, Mike Rapoport <rppt@kernel.org>,
+ Axel Rasmussen <axelrasmussen@google.com>
+References: <20240327152332.950956-1-peterx@redhat.com>
+ <20240327152332.950956-14-peterx@redhat.com>
+ <adfdd89b-ee56-4758-836e-c66a0be7de25@arm.com>
+ <5d9dd9a7-e544-4741-944c-469b79c2c649@redhat.com> <ZgwwOq3XXKlS_7LQ@x1n>
+From: Ryan Roberts <ryan.roberts@arm.com>
+In-Reply-To: <ZgwwOq3XXKlS_7LQ@x1n>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-Implement 2x2 binning support. Compute best binning mode (none or 2x2)
-from pad crop and pad format in ov4689_set_fmt. Use output frame size
-instead of analogue crop to compute control ranges and BLC anchors.
+On 02/04/2024 17:20, Peter Xu wrote:
+> On Tue, Apr 02, 2024 at 05:26:28PM +0200, David Hildenbrand wrote:
+>> On 02.04.24 16:48, Ryan Roberts wrote:
+>>> Hi Peter,
+> 
+> Hey, Ryan,
+> 
+> Thanks for the report!
+> 
+>>>
+>>> On 27/03/2024 15:23, peterx@redhat.com wrote:
+>>>> From: Peter Xu <peterx@redhat.com>
+>>>>
+>>>> Now follow_page() is ready to handle hugetlb pages in whatever form, and
+>>>> over all architectures.  Switch to the generic code path.
+>>>>
+>>>> Time to retire hugetlb_follow_page_mask(), following the previous
+>>>> retirement of follow_hugetlb_page() in 4849807114b8.
+>>>>
+>>>> There may be a slight difference of how the loops run when processing slow
+>>>> GUP over a large hugetlb range on cont_pte/cont_pmd supported archs: each
+>>>> loop of __get_user_pages() will resolve one pgtable entry with the patch
+>>>> applied, rather than relying on the size of hugetlb hstate, the latter may
+>>>> cover multiple entries in one loop.
+>>>>
+>>>> A quick performance test on an aarch64 VM on M1 chip shows 15% degrade over
+>>>> a tight loop of slow gup after the path switched.  That shouldn't be a
+>>>> problem because slow-gup should not be a hot path for GUP in general: when
+>>>> page is commonly present, fast-gup will already succeed, while when the
+>>>> page is indeed missing and require a follow up page fault, the slow gup
+>>>> degrade will probably buried in the fault paths anyway.  It also explains
+>>>> why slow gup for THP used to be very slow before 57edfcfd3419 ("mm/gup:
+>>>> accelerate thp gup even for "pages != NULL"") lands, the latter not part of
+>>>> a performance analysis but a side benefit.  If the performance will be a
+>>>> concern, we can consider handle CONT_PTE in follow_page().
+>>>>
+>>>> Before that is justified to be necessary, keep everything clean and simple.
+>>>>
+>>>> Reviewed-by: Jason Gunthorpe <jgg@nvidia.com>
+>>>> Signed-off-by: Peter Xu <peterx@redhat.com>
+>>>
+>>> Afraid I'm seeing an oops when running gup_longterm test on arm64 with current mm-unstable. Git bisect blames this patch. The oops reproduces for me every time on 2 different machines:
+>>>
+>>>
+>>> [    9.340416] kernel BUG at mm/gup.c:778!
+>>> [    9.340746] Internal error: Oops - BUG: 00000000f2000800 [#1] PREEMPT SMP
+>>> [    9.341199] Modules linked in:
+>>> [    9.341481] CPU: 1 PID: 1159 Comm: gup_longterm Not tainted 6.9.0-rc2-00210-g910ff1a347e4 #11
+>>> [    9.342232] Hardware name: linux,dummy-virt (DT)
+>>> [    9.342647] pstate: 60400005 (nZCv daif +PAN -UAO -TCO -DIT -SSBS BTYPE=--)
+>>> [    9.343195] pc : follow_page_mask+0x4d4/0x880
+>>> [    9.343580] lr : follow_page_mask+0x4d4/0x880
+>>> [    9.344018] sp : ffff8000898b3aa0
+>>> [    9.344345] x29: ffff8000898b3aa0 x28: fffffdffc53973e8 x27: 00003c0005d08000
+>>> [    9.345028] x26: ffff00014e5cfd08 x25: ffffd3513a40c000 x24: fffffdffc5d08000
+>>> [    9.345682] x23: ffffc1ffc0000000 x22: 0000000000080101 x21: ffff8000898b3ba8
+>>> [    9.346337] x20: 0000fffff4200000 x19: ffff00014e52d508 x18: 0000000000000010
+>>> [    9.347005] x17: 5f656e6f7a5f7369 x16: 2120262620296567 x15: 6170286461654865
+>>> [    9.347713] x14: 6761502128454741 x13: 2929656761702865 x12: 6761705f65636976
+>>> [    9.348371] x11: 65645f656e6f7a5f x10: ffffd3513b31d6e0 x9 : ffffd3513852f090
+>>> [    9.349062] x8 : 00000000ffffefff x7 : ffffd3513b31d6e0 x6 : 0000000000000000
+>>> [    9.349753] x5 : ffff00017ff98cc8 x4 : 0000000000000fff x3 : 0000000000000000
+>>> [    9.350397] x2 : 0000000000000000 x1 : ffff000190e8b480 x0 : 0000000000000052
+>>> [    9.351097] Call trace:
+>>> [    9.351312]  follow_page_mask+0x4d4/0x880
+>>> [    9.351700]  __get_user_pages+0xf4/0x3e8
+>>> [    9.352089]  __gup_longterm_locked+0x204/0xa70
+>>> [    9.352516]  pin_user_pages+0x88/0xc0
+>>> [    9.352873]  gup_test_ioctl+0x860/0xc40
+>>> [    9.353249]  __arm64_sys_ioctl+0xb0/0x100
+>>> [    9.353648]  invoke_syscall+0x50/0x128
+>>> [    9.354022]  el0_svc_common.constprop.0+0x48/0xf8
+>>> [    9.354488]  do_el0_svc+0x28/0x40
+>>> [    9.354822]  el0_svc+0x34/0xe0
+>>> [    9.355128]  el0t_64_sync_handler+0x13c/0x158
+>>> [    9.355489]  el0t_64_sync+0x190/0x198
+>>> [    9.355793] Code: aa1803e0 d000d8e1 91220021 97fff560 (d4210000)
+>>> [    9.356280] ---[ end trace 0000000000000000 ]---
+>>> [    9.356651] note: gup_longterm[1159] exited with irqs disabled
+>>> [    9.357141] note: gup_longterm[1159] exited with preempt_count 2
+>>> [    9.358033] ------------[ cut here ]------------
+>>> [    9.358800] WARNING: CPU: 1 PID: 0 at kernel/context_tracking.c:128 ct_kernel_exit.constprop.0+0x108/0x120
+>>> [    9.360157] Modules linked in:
+>>> [    9.360541] CPU: 1 PID: 0 Comm: swapper/1 Tainted: G      D            6.9.0-rc2-00210-g910ff1a347e4 #11
+>>> [    9.361626] Hardware name: linux,dummy-virt (DT)
+>>> [    9.362087] pstate: 204003c5 (nzCv DAIF +PAN -UAO -TCO -DIT -SSBS BTYPE=--)
+>>> [    9.362758] pc : ct_kernel_exit.constprop.0+0x108/0x120
+>>> [    9.363306] lr : ct_idle_enter+0x10/0x20
+>>> [    9.363845] sp : ffff8000801abdc0
+>>> [    9.364222] x29: ffff8000801abdc0 x28: 0000000000000000 x27: 0000000000000000
+>>> [    9.364961] x26: 0000000000000000 x25: ffff00014149d780 x24: 0000000000000000
+>>> [    9.365557] x23: 0000000000000000 x22: ffffd3513b299d48 x21: ffffd3513a785730
+>>> [    9.366239] x20: ffffd3513b299c28 x19: ffff00017ffa7da0 x18: 0000fffff5ffffff
+>>> [    9.366869] x17: 0000000000000000 x16: 1fffe0002a21a8c1 x15: 0000000000000000
+>>> [    9.367524] x14: 0000000000000000 x13: 0000000000000000 x12: 0000000000000002
+>>> [    9.368207] x11: 0000000000000001 x10: 0000000000000ad0 x9 : ffffd35138589230
+>>> [    9.369123] x8 : ffff00014149e2b0 x7 : 0000000000000000 x6 : 000000000f8c0fb2
+>>> [    9.370403] x5 : 4000000000000002 x4 : ffff2cb045825000 x3 : ffff8000801abdc0
+>>> [    9.371170] x2 : ffffd3513a782da0 x1 : 4000000000000000 x0 : ffffd3513a782da0
+>>> [    9.372279] Call trace:
+>>> [    9.372519]  ct_kernel_exit.constprop.0+0x108/0x120
+>>> [    9.373216]  ct_idle_enter+0x10/0x20
+>>> [    9.373562]  default_idle_call+0x3c/0x160
+>>> [    9.374055]  do_idle+0x21c/0x280
+>>> [    9.374394]  cpu_startup_entry+0x3c/0x50
+>>> [    9.374797]  secondary_start_kernel+0x140/0x168
+>>> [    9.375220]  __secondary_switched+0xb8/0xc0
+>>> [    9.375875] ---[ end trace 0000000000000000 ]---
+>>>
+>>>
+>>> The oops trigger is at mm/gup.c:778:
+>>> VM_BUG_ON_PAGE(!PageHead(page) && !is_zone_device_page(page), page);
+>>>
+>>>
+>>> This is the output of gup_longterm (last output is just before oops):
+>>>
+>>> # [INFO] detected hugetlb page size: 2048 KiB
+>>> # [INFO] detected hugetlb page size: 32768 KiB
+>>> # [INFO] detected hugetlb page size: 64 KiB
+>>> # [INFO] detected hugetlb page size: 1048576 KiB
+>>> TAP version 13
+>>> 1..70
+>>> # [RUN] R/W longterm GUP pin in MAP_SHARED file mapping ... with memfd
+>>> ok 1 Should have worked
+>>> # [RUN] R/W longterm GUP pin in MAP_SHARED file mapping ... with tmpfile
+>>> ok 2 Should have failed
+>>> # [RUN] R/W longterm GUP pin in MAP_SHARED file mapping ... with local tmpfile
+>>> ok 3 Should have failed
+>>> # [RUN] R/W longterm GUP pin in MAP_SHARED file mapping ... with memfd hugetlb (2048 kB)
+>>> ok 4 Should have worked
+>>> # [RUN] R/W longterm GUP pin in MAP_SHARED file mapping ... with memfd hugetlb (32768 kB)
+>>>
+>>>
+>>> So 2M passed ok, and its failing for 32M, which is cont-pmd. I'm guessing you're trying to iterate 2M into a cont-pmd folio and ending up with an unexpected tail page?
+>>
+>> I assume we find the expected tail page, it's just that the check
+>>
+>> VM_BUG_ON_PAGE(!PageHead(page) && !is_zone_device_page(page), page);
+>>
+>> Doesn't make sense with hugetlb folios. We might have a tail page mapped in
+>> a cont-pmd entry. As soon as we call follow_huge_pmd() on "not the first
+>> cont-pmd entry", we trigger this check.
+>>
+>> Likely this sanity check must also allow for hugetlb folios. Or we should
+>> just remove it completely.
+> 
+> Right, IMHO it'll be easier we remove it, actually I see there's one more
+> at the end, so I think we need to remove both.
+> 
+>>
+>> In the past, we wanted to make sure that we never get tail pages of THP from
+>> PMD entries, because something would currently be broken (we don't support
+>> THP > PMD).
+> 
+> There's probably one more thing we need to do, on allowing
+> PageAnonExclusive() to work with hugetlb tails. Even if we remove the
+> warnings and if I read the code right, we can BUG_ON again on checking tail
+> pages over anon-exclusive for PageHuge.
+> 
+> So I assume to fix it completely, we may need two changes: Patch 1 to
+> prepare PageAnonExclusive() to work on hugetlb tails, then patch 2 to be
+> squashed into the patch "mm/gup: handle huge pmd for follow_pmd_mask()".
+> Note: not this patch to fixup, as this patch only does the "switchover" to
+> the new path, the culprit should be the other patch..
 
-Also move ov4689_hts_min and ov4689_update_ctrl_ranges, since they are
-now also called from ov4689_set_fmt. Update frame timings to
-accommodate the requirements of binning mode and avoid visual
-artefacts. Additionally, report 2x2 binned mode in addition to
-non-binned one in ov4689_enum_frame_sizes.
+I'll leave you to do the testing on this, if that's ok.
 
-Signed-off-by: Mikhail Rudenko <mike.rudenko@gmail.com>
----
- drivers/media/i2c/ov4689.c | 192 +++++++++++++++++++++++++------------
- 1 file changed, 130 insertions(+), 62 deletions(-)
+Just to make my config explicit, I have this kernel command line, which reserves
+hugetlbs of all sizes for the tests:
 
-diff --git a/drivers/media/i2c/ov4689.c b/drivers/media/i2c/ov4689.c
-index e652d626f32f..83c7d0bae7d1 100644
---- a/drivers/media/i2c/ov4689.c
-+++ b/drivers/media/i2c/ov4689.c
-@@ -114,7 +114,7 @@
-  * Minimum working vertical blanking value. Found experimentally at
-  * minimum HTS values.
-  */
--#define OV4689_VBLANK_MIN		31
-+#define OV4689_VBLANK_MIN		35
- 
- static const char *const ov4689_supply_names[] = {
- 	"avdd", /* Analog power */
-@@ -256,6 +256,18 @@ static const struct cci_reg_sequence ov4689_common_regs[] = {
- 	{CCI_REG8(0x5503), 0x0f}, /* OTP_DPC_END_L otp_end_address[7:0] = 0x0f */
- };
- 
-+static const struct cci_reg_sequence ov4689_2x2_binning_regs[] = {
-+	{CCI_REG8(0x3632), 0x05}, /* ADC */
-+	{CCI_REG8(0x376b), 0x40}, /* Sensor control */
-+	{CCI_REG8(0x3814), 0x03}, /* H_INC_ODD */
-+	{CCI_REG8(0x3821), 0x07}, /* TIMING_FORMAT_2 hor_binning = 1*/
-+	{CCI_REG8(0x382a), 0x03}, /* V_INC_ODD */
-+	{CCI_REG8(0x3830), 0x08}, /* BLC_NUM_OPTION blc_use_num_2 = 1 */
-+	{CCI_REG8(0x3836), 0x02}, /* TIMING_REG_36 r_zline_use_num_2 = 1 */
-+	{CCI_REG8(0x4001), 0x50}, /* BLC DEBUG MODE */
-+	{CCI_REG8(0x4502), 0x44}, /* ADC synch control*/
-+};
-+
- static const u64 link_freq_menu_items[] = { 504000000 };
- 
- static const char *const ov4689_test_pattern_menu[] = {
-@@ -305,18 +317,96 @@ static const struct ov4689_gain_range ov4689_gain_ranges[] = {
- 	},
- };
- 
-+/*
-+ * For now, only 2x2 binning implemented in this driver.
-+ */
-+static int ov4689_best_binning(struct ov4689 *ov4689,
-+			       const struct v4l2_mbus_framefmt *format,
-+			       const struct v4l2_rect *crop,
-+			       unsigned int *binning)
-+{
-+	const struct v4l2_area candidates[] = {
-+		{ crop->width, crop->height },
-+		{ crop->width / 2, crop->height / 2 },
-+	};
-+
-+	const struct v4l2_area *best;
-+	int index;
-+
-+	best = v4l2_find_nearest_size(candidates, ARRAY_SIZE(candidates), width,
-+				      height, format->width, format->height);
-+	if (!best) {
-+		dev_err(ov4689->dev,
-+			"failed to find best binning for requested mode\n");
-+		return -EINVAL;
-+	}
-+
-+	index = best - candidates;
-+	*binning = index + 1;
-+
-+	dev_dbg(ov4689->dev,
-+		"best_binning: crop=%dx%d format=%dx%d binning=%d\n",
-+		crop->width, crop->height, format->width, format->height,
-+		*binning);
-+
-+	return 0;
-+}
-+
-+/*
-+ * Minimum working HTS value for given output width (found
-+ * experimentally).
-+ */
-+static unsigned int ov4689_hts_min(unsigned int width)
-+{
-+	return max_t(unsigned int, 3156, 224 + width * 19 / 16);
-+}
-+
-+static void ov4689_update_ctrl_ranges(struct ov4689 *ov4689, unsigned int width,
-+				      unsigned int height)
-+{
-+	struct v4l2_ctrl *exposure = ov4689->exposure;
-+	struct v4l2_ctrl *vblank = ov4689->vblank;
-+	struct v4l2_ctrl *hblank = ov4689->hblank;
-+	s64 def_val, min_val, max_val;
-+
-+	min_val = ov4689_hts_min(width) - width;
-+	max_val = OV4689_HTS_MAX - width;
-+	def_val = clamp_t(s64, hblank->default_value, min_val, max_val);
-+	__v4l2_ctrl_modify_range(hblank, min_val, max_val, hblank->step,
-+				 def_val);
-+
-+	min_val = OV4689_VBLANK_MIN;
-+	max_val = OV4689_HTS_MAX - width;
-+	def_val = clamp_t(s64, vblank->default_value, min_val, max_val);
-+	__v4l2_ctrl_modify_range(vblank, min_val, max_val, vblank->step,
-+				 def_val);
-+
-+	min_val = exposure->minimum;
-+	max_val = height + vblank->val - 4;
-+	def_val = clamp_t(s64, exposure->default_value, min_val, max_val);
-+	__v4l2_ctrl_modify_range(exposure, min_val, max_val, exposure->step,
-+				 def_val);
-+}
-+
- static int ov4689_set_fmt(struct v4l2_subdev *sd,
- 			  struct v4l2_subdev_state *sd_state,
- 			  struct v4l2_subdev_format *fmt)
- {
-+	struct ov4689 *ov4689 = to_ov4689(sd);
- 	struct v4l2_mbus_framefmt *format;
- 	struct v4l2_rect *crop;
-+	unsigned int binning;
-+	int ret;
- 
- 	crop = v4l2_subdev_state_get_crop(sd_state, fmt->pad);
- 	format = v4l2_subdev_state_get_format(sd_state, fmt->pad);
- 
--	format->width = crop->width;
--	format->height = crop->height;
-+	ret = ov4689_best_binning(ov4689, &fmt->format, crop, &binning);
-+	if (ret)
-+		return ret;
-+
-+	format->width = crop->width / binning;
-+	format->height = crop->height / binning;
- 
- 	format->code = MEDIA_BUS_FMT_SBGGR10_1X10;
- 	format->field = V4L2_FIELD_NONE;
-@@ -327,6 +417,9 @@ static int ov4689_set_fmt(struct v4l2_subdev *sd,
- 
- 	fmt->format = *format;
- 
-+	if (fmt->which == V4L2_SUBDEV_FORMAT_ACTIVE)
-+		ov4689_update_ctrl_ranges(ov4689, format->width, format->height);
-+
- 	return 0;
- }
- 
-@@ -346,8 +439,9 @@ static int ov4689_enum_frame_sizes(struct v4l2_subdev *sd,
- 				   struct v4l2_subdev_frame_size_enum *fse)
- {
- 	const struct v4l2_rect *crop;
-+	int binning;
- 
--	if (fse->index >= 1)
-+	if (fse->index >= 2)
- 		return -EINVAL;
- 
- 	if (fse->code != MEDIA_BUS_FMT_SBGGR10_1X10)
-@@ -355,10 +449,11 @@ static int ov4689_enum_frame_sizes(struct v4l2_subdev *sd,
- 
- 	crop = v4l2_subdev_state_get_crop(sd_state, 0);
- 
--	fse->min_width = crop->width;
--	fse->max_width = crop->width;
--	fse->max_height = crop->height;
--	fse->min_height = crop->height;
-+	binning = fse->index + 1;
-+	fse->min_width = crop->width / binning;
-+	fse->max_width = crop->width / binning;
-+	fse->max_height = crop->height / binning;
-+	fse->min_height = crop->height / binning;
- 
- 	return 0;
- }
-@@ -398,42 +493,6 @@ static int ov4689_get_selection(struct v4l2_subdev *sd,
- 	return -EINVAL;
- }
- 
--/*
-- * Minimum working HTS value for given output width (found
-- * experimentally).
-- */
--static unsigned int ov4689_hts_min(unsigned int width)
--{
--	return max_t(unsigned int, 3156, 224 + width * 19 / 16);
--}
--
--static void ov4689_update_ctrl_ranges(struct ov4689 *ov4689,
--				      struct v4l2_rect *crop)
--{
--	struct v4l2_ctrl *exposure = ov4689->exposure;
--	struct v4l2_ctrl *vblank = ov4689->vblank;
--	struct v4l2_ctrl *hblank = ov4689->hblank;
--	s64 def_val, min_val, max_val;
--
--	min_val = ov4689_hts_min(crop->width) - crop->width;
--	max_val = OV4689_HTS_MAX - crop->width;
--	def_val = clamp_t(s64, hblank->default_value, min_val, max_val);
--	__v4l2_ctrl_modify_range(hblank, min_val, max_val, hblank->step,
--				 def_val);
--
--	min_val = OV4689_VBLANK_MIN;
--	max_val = OV4689_HTS_MAX - crop->width;
--	def_val = clamp_t(s64, vblank->default_value, min_val, max_val);
--	__v4l2_ctrl_modify_range(vblank, min_val, max_val, vblank->step,
--				 def_val);
--
--	min_val = exposure->minimum;
--	max_val = crop->height + vblank->val - 4;
--	def_val = clamp_t(s64, exposure->default_value, min_val, max_val);
--	__v4l2_ctrl_modify_range(exposure, min_val, max_val, exposure->step,
--				 def_val);
--}
--
- static int ov4689_set_selection(struct v4l2_subdev *sd,
- 				struct v4l2_subdev_state *state,
- 				struct v4l2_subdev_selection *sel)
-@@ -470,7 +529,8 @@ static int ov4689_set_selection(struct v4l2_subdev *sd,
- 		format->height = rect.height;
- 
- 		if (sel->which == V4L2_SUBDEV_FORMAT_ACTIVE)
--			ov4689_update_ctrl_ranges(ov4689, &rect);
-+			ov4689_update_ctrl_ranges(ov4689, rect.width,
-+						  rect.height);
- 	}
- 
- 	*crop = rect;
-@@ -485,21 +545,27 @@ static int ov4689_setup_timings(struct ov4689 *ov4689,
- 	const struct v4l2_mbus_framefmt *format;
- 	struct regmap *rm = ov4689->regmap;
- 	const struct v4l2_rect *crop;
-+	const int v_offset = 2;
-+	unsigned int binning;
- 	int ret = 0;
- 
- 	format = v4l2_subdev_state_get_format(state, 0);
- 	crop = v4l2_subdev_state_get_crop(state, 0);
- 
-+	ret = ov4689_best_binning(ov4689, format, crop, &binning);
-+	if (ret)
-+		return ret;
-+
- 	cci_write(rm, OV4689_REG_H_CROP_START, crop->left, &ret);
--	cci_write(rm, OV4689_REG_V_CROP_START, crop->top, &ret);
--	cci_write(rm, OV4689_REG_H_CROP_END, crop->left + crop->width + 1, &ret);
--	cci_write(rm, OV4689_REG_V_CROP_END, crop->top + crop->height + 1, &ret);
-+	cci_write(rm, OV4689_REG_V_CROP_START, crop->top - v_offset, &ret);
-+	cci_write(rm, OV4689_REG_H_CROP_END, crop->left + crop->width + 3, &ret);
-+	cci_write(rm, OV4689_REG_V_CROP_END, crop->top + crop->height + 7, &ret);
- 
- 	cci_write(rm, OV4689_REG_H_OUTPUT_SIZE, format->width, &ret);
- 	cci_write(rm, OV4689_REG_V_OUTPUT_SIZE, format->height, &ret);
- 
- 	cci_write(rm, OV4689_REG_H_WIN_OFF, 0, &ret);
--	cci_write(rm, OV4689_REG_V_WIN_OFF, 0, &ret);
-+	cci_write(rm, OV4689_REG_V_WIN_OFF, v_offset, &ret);
- 
- 	/*
- 	 * Maximum working value of vfifo_read_start for given output
-@@ -507,6 +573,10 @@ static int ov4689_setup_timings(struct ov4689 *ov4689,
- 	 */
- 	cci_write(rm, OV4689_REG_VFIFO_CTRL_01, format->width / 16 - 1, &ret);
- 
-+	if (binning == 2)
-+		cci_multi_reg_write(ov4689->regmap, ov4689_2x2_binning_regs,
-+				    ARRAY_SIZE(ov4689_2x2_binning_regs),
-+				    &ret);
- 	return ret;
- }
- 
-@@ -519,20 +589,20 @@ static int ov4689_setup_blc_anchors(struct ov4689 *ov4689,
- 				    struct v4l2_subdev_state *state)
- {
- 	unsigned int width_def = OV4689_H_OUTPUT_SIZE_DEFAULT;
-+	const struct v4l2_mbus_framefmt *format;
- 	struct regmap *rm = ov4689->regmap;
--	const struct v4l2_rect *crop;
- 	int ret = 0;
- 
--	crop = v4l2_subdev_state_get_crop(state, 0);
-+	format = v4l2_subdev_state_get_format(state, 0);
- 
- 	cci_write(rm, OV4689_REG_ANCHOR_LEFT_START,
--		  OV4689_ANCHOR_LEFT_START_DEF * crop->width / width_def, &ret);
-+		  OV4689_ANCHOR_LEFT_START_DEF * format->width / width_def, &ret);
- 	cci_write(rm, OV4689_REG_ANCHOR_LEFT_END,
--		  OV4689_ANCHOR_LEFT_END_DEF * crop->width / width_def, &ret);
-+		  OV4689_ANCHOR_LEFT_END_DEF * format->width / width_def, &ret);
- 	cci_write(rm, OV4689_REG_ANCHOR_RIGHT_START,
--		  OV4689_ANCHOR_RIGHT_START_DEF * crop->width / width_def, &ret);
-+		  OV4689_ANCHOR_RIGHT_START_DEF * format->width / width_def, &ret);
- 	cci_write(rm, OV4689_REG_ANCHOR_RIGHT_END,
--		  OV4689_ANCHOR_RIGHT_END_DEF * crop->width / width_def, &ret);
-+		  OV4689_ANCHOR_RIGHT_END_DEF * format->width / width_def, &ret);
- 
- 	return ret;
- }
-@@ -749,19 +819,19 @@ static int ov4689_set_ctrl(struct v4l2_ctrl *ctrl)
- 	struct regmap *regmap = ov4689->regmap;
- 	struct v4l2_subdev_state *sd_state;
- 	struct device *dev = ov4689->dev;
--	struct v4l2_rect *crop;
-+	struct v4l2_mbus_framefmt *fmt;
- 	s64 max_expo, def_expo;
- 	int sensor_gain;
- 	int ret = 0;
- 
- 	sd_state = v4l2_subdev_get_locked_active_state(&ov4689->subdev);
--	crop = v4l2_subdev_state_get_crop(sd_state, 0);
-+	fmt = v4l2_subdev_state_get_format(sd_state, 0);
- 
- 	/* Propagate change of current control to all related controls */
- 	switch (ctrl->id) {
- 	case V4L2_CID_VBLANK:
- 		/* Update max exposure while meeting expected vblanking */
--		max_expo = crop->height + ctrl->val - 4;
-+		max_expo = fmt->height + ctrl->val - 4;
- 		def_expo = clamp_t(s64, ov4689->exposure->default_value,
- 				   ov4689->exposure->minimum, max_expo);
- 
-@@ -785,16 +855,14 @@ static int ov4689_set_ctrl(struct v4l2_ctrl *ctrl)
- 		cci_write(regmap, OV4689_REG_GAIN, sensor_gain, &ret);
- 		break;
- 	case V4L2_CID_VBLANK:
--		cci_write(regmap, OV4689_REG_VTS,
--			  ctrl->val + crop->height, &ret);
-+		cci_write(regmap, OV4689_REG_VTS, ctrl->val + fmt->height, &ret);
- 		break;
- 	case V4L2_CID_TEST_PATTERN:
- 		ret = ov4689_enable_test_pattern(ov4689, ctrl->val);
- 		break;
- 	case V4L2_CID_HBLANK:
- 		cci_write(regmap, OV4689_REG_HTS,
--			  (ctrl->val + crop->width) /
--			  OV4689_HTS_DIVIDER, &ret);
-+			  (ctrl->val + fmt->width) / OV4689_HTS_DIVIDER, &ret);
- 		break;
- 	case V4L2_CID_VFLIP:
- 		cci_update_bits(regmap, OV4689_REG_TIMING_FORMAT1,
--- 
-2.44.0
+"transparent_hugepage=madvise earlycon root=/dev/vda2 secretmem.enable
+hugepagesz=1G hugepages=0:2,1:2 hugepagesz=32M hugepages=0:2,1:2
+default_hugepagesz=2M hugepages=0:64,1:64 hugepagesz=64K hugepages=0:2,1:2"
+
+Thanks,
+Ryan
+
+> 
+> I have them attached below first, before I'll also go and see whether I can
+> run some arm tests later today or tomorrow.  David, any comments from
+> anon-exclusive side?
+> 
+> Thanks,
+> 
+> ===8<===
+> 
+> From 26f0670acea948945222c97a9cab58428782ca69 Mon Sep 17 00:00:00 2001
+> From: Peter Xu <peterx@redhat.com>
+> Date: Tue, 2 Apr 2024 11:52:28 -0400
+> Subject: [PATCH 1/2] mm: Allow anon exclusive check over hugetlb tail pages
+> 
+> PageAnonExclusive() used to forbid tail pages for hugetlbfs, as that used
+> to be called mostly in hugetlb specific paths and the head page was
+> guaranteed.
+> 
+> As we move forward towards merging hugetlb paths into generic mm, we may
+> start to pass in tail hugetlb pages (when with cont-pte/cont-pmd huge
+> pages) for such check.  Allow it to properly fetch the head, in which case
+> the anon-exclusiveness of the head will always represents the tail page.
+> 
+> There's already a sign of it when we look at the fast-gup which already
+> contain the hugetlb processing altogether: we used to have a specific
+> commit 5805192c7b72 ("mm/gup: handle cont-PTE hugetlb pages correctly in
+> gup_must_unshare() via GUP-fast") covering that area.  Now with this more
+> generic change, that can also go away.
+> 
+> Signed-off-by: Peter Xu <peterx@redhat.com>
+> ---
+>  include/linux/page-flags.h |  8 +++++++-
+>  mm/internal.h              | 10 ----------
+>  2 files changed, 7 insertions(+), 11 deletions(-)
+> 
+> diff --git a/include/linux/page-flags.h b/include/linux/page-flags.h
+> index 888353c209c0..225357f48a79 100644
+> --- a/include/linux/page-flags.h
+> +++ b/include/linux/page-flags.h
+> @@ -1095,7 +1095,13 @@ PAGEFLAG(Isolated, isolated, PF_ANY);
+>  static __always_inline int PageAnonExclusive(const struct page *page)
+>  {
+>  	VM_BUG_ON_PGFLAGS(!PageAnon(page), page);
+> -	VM_BUG_ON_PGFLAGS(PageHuge(page) && !PageHead(page), page);
+> +	/*
+> +	 * Allow the anon-exclusive check to work on hugetlb tail pages.
+> +	 * Here hugetlb pages will always guarantee the anon-exclusiveness
+> +	 * of the head page represents the tail pages.
+> +	 */
+> +	if (PageHuge(page) && !PageHead(page))
+> +		page = compound_head(page);
+>  	return test_bit(PG_anon_exclusive, &PF_ANY(page, 1)->flags);
+>  }
+>  
+> diff --git a/mm/internal.h b/mm/internal.h
+> index 9512de7398d5..87f6e4fd56a5 100644
+> --- a/mm/internal.h
+> +++ b/mm/internal.h
+> @@ -1259,16 +1259,6 @@ static inline bool gup_must_unshare(struct vm_area_struct *vma,
+>  	if (IS_ENABLED(CONFIG_HAVE_FAST_GUP))
+>  		smp_rmb();
+>  
+> -	/*
+> -	 * During GUP-fast we might not get called on the head page for a
+> -	 * hugetlb page that is mapped using cont-PTE, because GUP-fast does
+> -	 * not work with the abstracted hugetlb PTEs that always point at the
+> -	 * head page. For hugetlb, PageAnonExclusive only applies on the head
+> -	 * page (as it cannot be partially COW-shared), so lookup the head page.
+> -	 */
+> -	if (unlikely(!PageHead(page) && PageHuge(page)))
+> -		page = compound_head(page);
+> -
+>  	/*
+>  	 * Note that PageKsm() pages cannot be exclusive, and consequently,
+>  	 * cannot get pinned.
 
 
