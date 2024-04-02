@@ -1,162 +1,205 @@
-Return-Path: <linux-kernel+bounces-128481-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-128477-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id CF75C895B68
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 20:07:48 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 08F91895B5B
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 20:05:43 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 475991F23DDC
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 18:07:48 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2AE931C22606
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 18:05:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B6C2215A4B9;
-	Tue,  2 Apr 2024 18:07:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=o2.pl header.i=@o2.pl header.b="nD9wU31h"
-Received: from mx-out.tlen.pl (mx-out.tlen.pl [193.222.135.142])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C3C9715AACF;
+	Tue,  2 Apr 2024 18:05:34 +0000 (UTC)
+Received: from mail-io1-f71.google.com (mail-io1-f71.google.com [209.85.166.71])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 459A0219E0
-	for <linux-kernel@vger.kernel.org>; Tue,  2 Apr 2024 18:07:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.222.135.142
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AF36115A4BF
+	for <linux-kernel@vger.kernel.org>; Tue,  2 Apr 2024 18:05:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.71
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712081259; cv=none; b=LbVmfanOL530+kDUw5VdC2Vs3fKhxa2tu1V+8LmP34UvOD3fqjcZDDcj6lf76x6LK1yjM12RUx3sIUPzHLV6E/Kvwc7gKG8Gd8gMCYJ508lDCYa4hUozUNIwnJjN+p9//Ce+4aPJC0LkTRgScSp3+otSS1ZbQT39YThdfWka3+g=
+	t=1712081134; cv=none; b=INLcGgX3EFuse2dEvutYUendVqHMt4bjYOr8lDh5zCcEVA1BSjoHcT8bzFiDLYU53qQA2KOMSZYjhe2hisJzDjdMVilkkXOjQfPDQOtcuqpXtSNeNQGgAi+ryl0Jp8tZi1/a3Nf3aXhZ+qtT4cLJDNy++/wi2Y6wp05hd7nZIdU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712081259; c=relaxed/simple;
-	bh=YF9mt1xPV6SmzGUDBnOuK+ideXdolwq66JBggwvRZdg=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=DX/+I/Znmi2i18wdDWc29mCv2ncBS3uSBJc1kbSLft+1Bb3cZBqHtjhrBgnWZhXgsk67uJjXLOAwauiODXaeZ66Gl5nUAyoCPUtzEREyNuyPc9+e4bpsCVVT/S9cijlHHC1MxSxg18acp67D7aO6lJOdO5oVTwcxqVcbjvmKWqY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=o2.pl; spf=pass smtp.mailfrom=o2.pl; dkim=pass (1024-bit key) header.d=o2.pl header.i=@o2.pl header.b=nD9wU31h; arc=none smtp.client-ip=193.222.135.142
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=o2.pl
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=o2.pl
-Received: (wp-smtpd smtp.tlen.pl 15848 invoked from network); 2 Apr 2024 20:00:54 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=o2.pl; s=1024a;
-          t=1712080854; bh=UlyImwIdJiZpMK2AIxHwKQ2iFbqI6fAJrztUDQKXru4=;
-          h=Subject:To:Cc:From;
-          b=nD9wU31h+/iVlA/VP3F5BiX+3/Z7uAFPwHiayzV6CqenSbJ5pNbNksoK1oAjUj9Ay
-           s4BUNbXf6tS6/wXLJO8s2pTxLAiuzCQObeIdkyGD54XHewxvIJeszFbW0NKkzCSGS7
-           +UoPwU88HACXo9ZPhJ5X1BpSHlMsOY+nl92EEIeE=
-Received: from aaer216.neoplus.adsl.tpnet.pl (HELO [192.168.1.22]) (mat.jonczyk@o2.pl@[83.4.121.216])
-          (envelope-sender <mat.jonczyk@o2.pl>)
-          by smtp.tlen.pl (WP-SMTPD) with ECDHE-RSA-AES256-GCM-SHA384 encrypted SMTP
-          for <gregkh@linuxfoundation.org>; 2 Apr 2024 20:00:54 +0200
-Message-ID: <e643104e-b394-4be0-b0e8-b892d42b543f@o2.pl>
-Date: Tue, 2 Apr 2024 20:00:52 +0200
+	s=arc-20240116; t=1712081134; c=relaxed/simple;
+	bh=dkXQJP9gSp0LDBiscX5mx2dCkiLN5f8Yrt8fZ2cyQ/4=;
+	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=Me3iid+GVWBjbQ3ECQdr6wO8YgOQbhT+aSlQmmYq3vgl9p8JBJ3fNbtawQnRsPbrD73JONpdcz8NrY/HRKokLhaUJkF25fsI1V//RisCaV+z0R7p8aEZhvUWNDNb195fTosdaSYEi6jQkfQ1JKXaVikkRsQhj9FSfn+eI2ojJug=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.71
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-io1-f71.google.com with SMTP id ca18e2360f4ac-7cbf092a502so579896039f.0
+        for <linux-kernel@vger.kernel.org>; Tue, 02 Apr 2024 11:05:32 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712081132; x=1712685932;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=Fgn+HgfxTrwm3YOBIeLknr7d/C8EDy3eOMNmQ6Kchk0=;
+        b=UDDU5hK8olPyx3KCYimVgI2yu6Vm2TMk/XqVm2bqKD7EJ/zboY/t30P3XEDiJfszqM
+         NxY3S/YWy4YcEbwRmWTfrLMMgZB0utHA4pmGGLVromJzjNfnm9nj20b2+X3wdRChuv20
+         vaP0eSL049h96Wvr9vFyQKA89Jq5lD04/f9qtpYAUY+StenfYtLNLawZ2/LDxJaSbrll
+         FsibqmMhy6yd6jawfxn8o59HkXE0Zs1OltnzKOy/nj2zT0a/e5i75bl1dXft7HBc6pLf
+         1OkKZhjbxD6XdrtVdjiCx1J4nKATKBWd8oNZJEe5byTV+51vdY6Kayf4v6Q96cxb5Zgb
+         d5iQ==
+X-Gm-Message-State: AOJu0Yw8DkRKA9LRrKBg+2zvYVmY4f9NKNeSlRQHjiPyTgobjdfKjts1
+	5N+94QvU4UpTfZLNjUg6NX4NMXGvbJ0MHyPqWqV95G4imWfyK7ThZ77sYXISr0/Yc60it9blgnB
+	fi0lTnrrkKysu0NXvW7B9V0mVm9ga7MYtcTdtpi+fvgP/rLyA3oVt1yTrhA==
+X-Google-Smtp-Source: AGHT+IET7COpMwygSkjwekzFT7E4b9NFTwqdDC69UepXdwQnUMw79V3CHBx4m39A5WWQXheKB4OtgYNsEIcRwP65nnmHHUIb/ok5
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 6.1 000/272] 6.1.84-rc1 review
-To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, stable@vger.kernel.org
-Cc: patches@lists.linux.dev, linux-kernel@vger.kernel.org
-References: <20240401152530.237785232@linuxfoundation.org>
-Content-Language: en-GB
-From: =?UTF-8?Q?Mateusz_Jo=C5=84czyk?= <mat.jonczyk@o2.pl>
-Autocrypt: addr=mat.jonczyk@o2.pl; keydata=
- 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
- TANkZ3QqXNX2
-In-Reply-To: <20240401152530.237785232@linuxfoundation.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-WP-MailID: 851a5b2856e545195fd35fbc0daddf9c
-X-WP-AV: skaner antywirusowy Poczty o2
-X-WP-SPAM: NO 0000000 [wVM0]                               
+X-Received: by 2002:a05:6602:1543:b0:7cc:558:ee68 with SMTP id
+ h3-20020a056602154300b007cc0558ee68mr588841iow.1.1712081131944; Tue, 02 Apr
+ 2024 11:05:31 -0700 (PDT)
+Date: Tue, 02 Apr 2024 11:05:31 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000b24903061520f3e9@google.com>
+Subject: [syzbot] [kernel?] WARNING: suspicious RCU usage in __do_softirq
+From: syzbot <syzbot+dce04ed6d1438ad69656@syzkaller.appspotmail.com>
+To: linux-kernel@vger.kernel.org, peterz@infradead.org, 
+	syzkaller-bugs@googlegroups.com, tglx@linutronix.de
+Content-Type: text/plain; charset="UTF-8"
 
-W dniu 1.04.2024 o 17:43, Greg Kroah-Hartman pisze:
-> This is the start of the stable review cycle for the 6.1.84 release.
-> There are 272 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
->
-> Responses should be made by Wed, 03 Apr 2024 15:24:46 +0000.
-> Anything received after that time might be too late.
->
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patch-6.1.84-rc1.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-6.1.y
-> and the diffstat can be found below.
->
-> thanks,
->
-> greg k-h
 Hello,
 
-Tested on a HP 17-by0001nw laptop with an Intel Kaby Lake CPU and Ubuntu 20.04.
+syzbot found the following issue on:
 
-Stack:
-- amd64,
-- ext4 on top of LVM on top of LUKS on top of mdraid on top of
-  NVMe and SATA drives (the SATA drive in the write-mostly mode).
+HEAD commit:    c0b832517f62 Add linux-next specific files for 20240402
+git tree:       linux-next
+console output: https://syzkaller.appspot.com/x/log.txt?x=15f64776180000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=afcaf46d374cec8c
+dashboard link: https://syzkaller.appspot.com/bug?extid=dce04ed6d1438ad69656
+compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=10f00471180000
 
-Tested (lightly):
-- suspend to RAM,
-- suspend to disk,
-- GPU (Intel HD Graphics 620, with an old game on Wine and ~3 Unigine benchmarks)
-- WiFi (Realtek RTL8822BE),
-- Bluetooth (Realtek RTL8822BE),
-- PCI soundcard (Intel HD Audio),
-- USB soundcard (Logitech Pro X),
-- webcam,
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/0d36ec76edc7/disk-c0b83251.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/6f9bb4e37dd0/vmlinux-c0b83251.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/2349287b14b7/bzImage-c0b83251.xz
 
-Filesystems tested very lightly (mounting, listing and opening files):
-- NFS,
-- exFAT
-- vfat,
-- NTFS via FUSE
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+dce04ed6d1438ad69656@syzkaller.appspotmail.com
 
-Nitpicks:
-- I got the following error in dmesg from Bluetooth after resume from suspend:
-    [ 4058.056834] usb 1-3: 1:1: cannot get freq at ep 0x81
+=============================
+WARNING: suspicious RCU usage
+6.9.0-rc2-next-20240402-syzkaller #0 Not tainted
+-----------------------------
+kernel/rcu/tree.c:276 Illegal rcu_softirq_qs() in RCU read-side critical section!
 
-Tested-by: Mateusz Jończyk <mat.jonczyk@o2.pl>
+other info that might help us debug this:
 
-Greetings,
 
-Mateusz
+rcu_scheduler_active = 2, debug_locks = 1
+1 lock held by ksoftirqd/0/16:
+ #0: ffffffff8e334d20 (rcu_read_lock_sched){....}-{1:2}, at: rcu_lock_acquire include/linux/rcupdate.h:329 [inline]
+ #0: ffffffff8e334d20 (rcu_read_lock_sched){....}-{1:2}, at: rcu_read_lock_sched include/linux/rcupdate.h:933 [inline]
+ #0: ffffffff8e334d20 (rcu_read_lock_sched){....}-{1:2}, at: pfn_valid include/linux/mmzone.h:2019 [inline]
+ #0: ffffffff8e334d20 (rcu_read_lock_sched){....}-{1:2}, at: __virt_addr_valid+0x183/0x520 arch/x86/mm/physaddr.c:65
 
+stack backtrace:
+CPU: 0 PID: 16 Comm: ksoftirqd/0 Not tainted 6.9.0-rc2-next-20240402-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 03/27/2024
+Call Trace:
+ <IRQ>
+ __dump_stack lib/dump_stack.c:88 [inline]
+ dump_stack_lvl+0x241/0x360 lib/dump_stack.c:114
+ lockdep_rcu_suspicious+0x221/0x340 kernel/locking/lockdep.c:6712
+ rcu_softirq_qs+0xd9/0x370 kernel/rcu/tree.c:273
+ __do_softirq+0x5fd/0x980 kernel/softirq.c:568
+ invoke_softirq kernel/softirq.c:428 [inline]
+ __irq_exit_rcu+0xf2/0x1c0 kernel/softirq.c:633
+ irq_exit_rcu+0x9/0x30 kernel/softirq.c:645
+ instr_sysvec_apic_timer_interrupt arch/x86/kernel/apic/apic.c:1043 [inline]
+ sysvec_apic_timer_interrupt+0xa6/0xc0 arch/x86/kernel/apic/apic.c:1043
+ </IRQ>
+ <TASK>
+ asm_sysvec_apic_timer_interrupt+0x1a/0x20 arch/x86/include/asm/idtentry.h:702
+RIP: 0010:debug_lockdep_rcu_enabled+0xd/0x40 kernel/rcu/update.c:320
+Code: f5 90 0f 0b 90 90 90 eb c6 0f 1f 40 00 90 90 90 90 90 90 90 90 90 90 90 90 90 90 90 90 f3 0f 1e fa 31 c0 83 3d c7 0f 28 04 00 <74> 1e 83 3d 26 42 28 04 00 74 15 65 48 8b 0c 25 c0 d3 03 00 31 c0
+RSP: 0018:ffffc90000157a50 EFLAGS: 00000202
+RAX: 0000000000000000 RBX: 00000000000000a0 RCX: 0000000000000001
+RDX: dffffc0000000000 RSI: ffffffff8bcae740 RDI: ffffffff8c1f7ec0
+RBP: dffffc0000000000 R08: ffffffff92f3a527 R09: 1ffffffff25e74a4
+R10: dffffc0000000000 R11: fffffbfff25e74a5 R12: 0000000029373578
+R13: 1ffff9200002af64 R14: ffffffff814220f3 R15: ffff88813fff90a0
+ rcu_read_lock_sched include/linux/rcupdate.h:934 [inline]
+ pfn_valid include/linux/mmzone.h:2019 [inline]
+ __virt_addr_valid+0x1a9/0x520 arch/x86/mm/physaddr.c:65
+ kasan_addr_to_slab+0xd/0x80 mm/kasan/common.c:37
+ __kasan_record_aux_stack+0x11/0xc0 mm/kasan/generic.c:526
+ __call_rcu_common kernel/rcu/tree.c:3096 [inline]
+ call_rcu+0x167/0xa70 kernel/rcu/tree.c:3200
+ context_switch kernel/sched/core.c:5412 [inline]
+ __schedule+0x17f0/0x4a50 kernel/sched/core.c:6746
+ __schedule_loop kernel/sched/core.c:6823 [inline]
+ schedule+0x14b/0x320 kernel/sched/core.c:6838
+ smpboot_thread_fn+0x61e/0xa30 kernel/smpboot.c:160
+ kthread+0x2f0/0x390 kernel/kthread.c:388
+ ret_from_fork+0x4b/0x80 arch/x86/kernel/process.c:147
+ ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:243
+ </TASK>
+----------------
+Code disassembly (best guess):
+   0:	f5                   	cmc
+   1:	90                   	nop
+   2:	0f 0b                	ud2
+   4:	90                   	nop
+   5:	90                   	nop
+   6:	90                   	nop
+   7:	eb c6                	jmp    0xffffffcf
+   9:	0f 1f 40 00          	nopl   0x0(%rax)
+   d:	90                   	nop
+   e:	90                   	nop
+   f:	90                   	nop
+  10:	90                   	nop
+  11:	90                   	nop
+  12:	90                   	nop
+  13:	90                   	nop
+  14:	90                   	nop
+  15:	90                   	nop
+  16:	90                   	nop
+  17:	90                   	nop
+  18:	90                   	nop
+  19:	90                   	nop
+  1a:	90                   	nop
+  1b:	90                   	nop
+  1c:	90                   	nop
+  1d:	f3 0f 1e fa          	endbr64
+  21:	31 c0                	xor    %eax,%eax
+  23:	83 3d c7 0f 28 04 00 	cmpl   $0x0,0x4280fc7(%rip)        # 0x4280ff1
+* 2a:	74 1e                	je     0x4a <-- trapping instruction
+  2c:	83 3d 26 42 28 04 00 	cmpl   $0x0,0x4284226(%rip)        # 0x4284259
+  33:	74 15                	je     0x4a
+  35:	65 48 8b 0c 25 c0 d3 	mov    %gs:0x3d3c0,%rcx
+  3c:	03 00
+  3e:	31 c0                	xor    %eax,%eax
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+
+If the report is already addressed, let syzbot know by replying with:
+#syz fix: exact-commit-title
+
+If you want syzbot to run the reproducer, reply with:
+#syz test: git://repo/address.git branch-or-commit-hash
+If you attach or paste a git patch, syzbot will apply it before testing.
+
+If you want to overwrite report's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
+
+If the report is a duplicate of another one, reply with:
+#syz dup: exact-subject-of-another-report
+
+If you want to undo deduplication, reply with:
+#syz undup
 
