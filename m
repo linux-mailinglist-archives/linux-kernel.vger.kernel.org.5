@@ -1,107 +1,119 @@
-Return-Path: <linux-kernel+bounces-128527-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-128540-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0C7BF895C0B
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 20:55:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 2778A895C2F
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 21:06:47 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id AFD6C1F23747
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 18:55:33 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D0E061F23A03
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 19:06:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6C26715B13E;
-	Tue,  2 Apr 2024 18:55:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3DEA415DBD8;
+	Tue,  2 Apr 2024 19:05:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b="DSori6Xw"
-Received: from mail-io1-f49.google.com (mail-io1-f49.google.com [209.85.166.49])
+	dkim=pass (2048-bit key) header.d=wanadoo.fr header.i=@wanadoo.fr header.b="mwQdviqu"
+Received: from msa.smtpout.orange.fr (msa-209.smtpout.orange.fr [193.252.23.209])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7D57815AAAA
-	for <linux-kernel@vger.kernel.org>; Tue,  2 Apr 2024 18:55:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2EB3015B557;
+	Tue,  2 Apr 2024 19:05:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.252.23.209
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712084127; cv=none; b=FbADvhviUwtXm8eyV9qNMleyjeX27QIy0K31SzBCbFn89DbtEp/uX5b/ON9ioedV1/mABtQmODjIQdrqufEXmmW11NN4tUirEmWj8qsazCQCW3KACgmrujVfqjUrfRpWPxZdloRy5vK2x9m68VzcSaqeol2wZfzSXLn+KaS2X1U=
+	t=1712084708; cv=none; b=QRxf3nng5yS0TRviyfWbae9EeJRYKBabDG7TWzKXvfluYxb0N8SSL/CH70SDzePRPBG6gqSBo0Dnk/mTplHe2TSXtz8PfTqGQiZa4YR5pLOpBykxbZkbupFMRtAejq5J/Vr2icrcKWIxjWMD6/Zc9atZwSetJIINEF/W5fJjvFI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712084127; c=relaxed/simple;
-	bh=Dk00FlgdGaeX3yUPDWCaCFg4Gbj7+7kzsUBTGty4cm0=;
-	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=GFBEJnka1WIiX38WSRa3g6QNfQXX7SIwQ+kLm7nw5CeSaF5p4i4Jrm99ZNp1yiSag4iAbT6gNFrpEKl6uuzvYpFh3+hjqEo37peFbfcj8aaGyRnrr0mCU0elTJrH/KQoScVdU7VErJY6elKvwg3dQ+nWqF99hhx5cn22NTCl+RQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk; spf=pass smtp.mailfrom=kernel.dk; dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b=DSori6Xw; arc=none smtp.client-ip=209.85.166.49
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.dk
-Received: by mail-io1-f49.google.com with SMTP id ca18e2360f4ac-7cc5e664d52so70771339f.0
-        for <linux-kernel@vger.kernel.org>; Tue, 02 Apr 2024 11:55:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20230601.gappssmtp.com; s=20230601; t=1712084124; x=1712688924; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=Y9CEKYteE8uUUvJpYXds6TwWJm/m8kxE7cZKTVullfs=;
-        b=DSori6XwAipnquplkwt88IRAYxw1J1pIjZjUSDuvtjY/uIbH/eGq64IJnvXaB6QSSi
-         jJ+OFHOeHUH5xksQybnfnfeVeftdro7oe4Tuu4vgVYvy+3EDnc440RdvSQt+2pgfTTMJ
-         EqRCaEz9XvXGjqvk//FkqiyR18CzHlC4l2zR7D4JsMgS/deWVgL36gfzw9O1VQZ55SEv
-         /3kVyAQ3hp2EreuWwX258EbHjiFULRY2f1aEg6x7aRwWOu12r7W6SvNfgieZr2yCzyRJ
-         uXiqBYpwxha1Hlvi/Bh6Bs3Z4NltWKcZczu1dafk+LwEMUuuklXmgiECydT/WEDM/hX4
-         zELQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712084124; x=1712688924;
-        h=content-transfer-encoding:in-reply-to:from:references:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Y9CEKYteE8uUUvJpYXds6TwWJm/m8kxE7cZKTVullfs=;
-        b=XTsizr3RgtsBeLv5TC4oPs9wPNpP85fSBe2IZvYw7moXRs3o/EfLOltsYEA5ylGCxk
-         dXacCBkLv1T1kMdJzFizf4hThTHRXqw2jbxyKLGw4YkDmD/OuJYEhXJScVEAlqjFJGam
-         bsYcUt9wr3CrwdDHkzt4CuMyt0zxrNzhaRCQ7Szk7Z3f7WcHd96RHNYyM2mR9SIol9YM
-         ye55PzMZfnaOiH2AP86GxVMJGPjzBPXayHTct603GfwMybj22lRn7vCkgBFs6bvW/93f
-         ebiWEfFVQ5qbP4nePM580Cw9cOa6/Y9vTjfXX/u4kj3TDn7czM1JcvFjcnHRFGm1ruTZ
-         mYkA==
-X-Forwarded-Encrypted: i=1; AJvYcCV9qxn6rbrGZMZsAkOzToJNATDAYpU7wpQCnLQOrZwebMSi5Z4uwBNRUURGpQfclgmpsb9apwOZbmeldPNhYp8IqxgAL3a8syPcGUph
-X-Gm-Message-State: AOJu0Yz15vhxPTd7Wz6GJ1HwnMNbBO+cpKROcPDHX/3DEO91q/7WQdL+
-	/wnFQcB0yqmT/lmNZW/6QfdsccCF5dNgzYx7fvqEXv4fLGlnKSCnk+EALp88ECo=
-X-Google-Smtp-Source: AGHT+IEjGK6NxzKYxt51ZVO+1tkBY7glBsqdLv4qs0KMaJYsKOk/Z9a8P8Su7684Ypgt9899NjSJZQ==
-X-Received: by 2002:a5e:9914:0:b0:7d3:433a:d33d with SMTP id t20-20020a5e9914000000b007d3433ad33dmr489178ioj.2.1712084122903;
-        Tue, 02 Apr 2024 11:55:22 -0700 (PDT)
-Received: from [192.168.1.116] ([96.43.243.2])
-        by smtp.gmail.com with ESMTPSA id m4-20020a056638260400b0047ef03e3512sm1765520jat.135.2024.04.02.11.55.21
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 02 Apr 2024 11:55:22 -0700 (PDT)
-Message-ID: <727c3d14-b645-406a-8ba8-506e5753d646@kernel.dk>
-Date: Tue, 2 Apr 2024 12:55:20 -0600
+	s=arc-20240116; t=1712084708; c=relaxed/simple;
+	bh=kwS3OFemD+CoFC/VCnAgVw9Q22mZZPnHTqgKqaV9KE4=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=eEACIoI4+fTRmN9VMYHM2cGNjUU7j3ZnY5uzSTa9qAPH9PwYF8d5V5Udkm82J3+s9LAGVibg6Lq0XVAxOzLzgTR7jErPdKFA9SuS6qIKKQSWazzMb6e7b8qtDSrEr/FLTcoJKND5YtPhj/LCZMxgMBPRUrdiAgdUx906IgORg/M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wanadoo.fr; spf=pass smtp.mailfrom=wanadoo.fr; dkim=pass (2048-bit key) header.d=wanadoo.fr header.i=@wanadoo.fr header.b=mwQdviqu; arc=none smtp.client-ip=193.252.23.209
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wanadoo.fr
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=wanadoo.fr
+Received: from fedora.home ([86.243.17.157])
+	by smtp.orange.fr with ESMTPA
+	id rjIXreq63bxcHrjIYrcKYp; Tue, 02 Apr 2024 20:55:55 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wanadoo.fr;
+	s=t20230301; t=1712084155;
+	bh=l5BYZcX/ubDaEhlB2OsDSUhwIwWkP6ApQYe4UEhGpww=;
+	h=From:To:Subject:Date:Message-ID:MIME-Version;
+	b=mwQdviqu1SnMvOpCqr3ecoBAcjiyL3n3k9etd9llmy458xo9wrCbllEbtE4Bq7KGv
+	 sYnxteRKq2nV63ihrRR0xGT/HfYrFFF/tRdNqN5pjg3ZObsnlppGZObbapQ/o0TBvw
+	 Td5woGwM+mJi3rSLDJPZeWJy624kZsvciSrZLEuZST3vejkyKI8fG4vehFXnpsCRRq
+	 zTlwICc4cfaK4JeUaCJ4aOYpUpzRaokzrEi5GH2WXaeUc9yoj8658UwZgXJvHjqGQR
+	 jEjhqxW5v/OTx1kYgR2KUhaUGPjucd0xKA2dRx8bzBYMwWPibhEprFUhbU9JY0dBIp
+	 0LZFeqW8Cwhlw==
+X-ME-Helo: fedora.home
+X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
+X-ME-Date: Tue, 02 Apr 2024 20:55:55 +0200
+X-ME-IP: 86.243.17.157
+From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+To: Madalin Bucur <madalin.bucur@nxp.com>,
+	Sean Anderson <sean.anderson@seco.com>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>,
+	Paolo Abeni <pabeni@redhat.com>
+Cc: linux-kernel@vger.kernel.org,
+	kernel-janitors@vger.kernel.org,
+	Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+	netdev@vger.kernel.org
+Subject: [PATCH net-next] net: fman: Remove some unused fields in some structure
+Date: Tue,  2 Apr 2024 20:55:50 +0200
+Message-ID: <425222d4f6c584e8316ccb7b2ef415a85c96e455.1712084103.git.christophe.jaillet@wanadoo.fr>
+X-Mailer: git-send-email 2.44.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [syzbot] [io-uring?] kernel BUG in put_page
-Content-Language: en-US
-To: Pavel Begunkov <asml.silence@gmail.com>,
- syzbot <syzbot+324f30025b9b5d66fab9@syzkaller.appspotmail.com>,
- io-uring@vger.kernel.org, linux-kernel@vger.kernel.org,
- syzkaller-bugs@googlegroups.com
-References: <0000000000002464bf06151928ef@google.com>
- <a801e5e8-178b-41c5-bf76-352eabcabf45@gmail.com>
-From: Jens Axboe <axboe@kernel.dk>
-In-Reply-To: <a801e5e8-178b-41c5-bf76-352eabcabf45@gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 
-On 4/2/24 12:51 PM, Pavel Begunkov wrote:
-> On 4/2/24 09:47, syzbot wrote:
->> Hello,
->>
->> syzbot found the following issue on:
-> 
-> gmail decided to put it into spam, replying for visibility
-> in case I'm not the only one who missed it.
+In "struct muram_info", the 'size' field is unused.
+In "struct memac_cfg", the 'fixed_link' field is unused.
 
-First I see of them... I'll take a look at both, must be fallout
-from the mapping changes.
+Remove them.
 
+Found with cppcheck, unusedStructMember.
+
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+---
+Compile tested only.
+
+For fman_memac.c, I think that it is a left-over from commit 5d93cfcf7360
+("net: dpaa: Convert to phylink").
+Maybe, #include <linux/phy_fixed.h> can be removed too, but it is not the
+purpose of this patch.
+---
+ drivers/net/ethernet/freescale/fman/fman_memac.c | 1 -
+ drivers/net/ethernet/freescale/fman/fman_muram.c | 1 -
+ 2 files changed, 2 deletions(-)
+
+diff --git a/drivers/net/ethernet/freescale/fman/fman_memac.c b/drivers/net/ethernet/freescale/fman/fman_memac.c
+index 758535adc9ff..92b8f4ab26f1 100644
+--- a/drivers/net/ethernet/freescale/fman/fman_memac.c
++++ b/drivers/net/ethernet/freescale/fman/fman_memac.c
+@@ -267,7 +267,6 @@ struct memac_cfg {
+ 	bool reset_on_init;
+ 	bool pause_ignore;
+ 	bool promiscuous_mode_enable;
+-	struct fixed_phy_status *fixed_link;
+ 	u16 max_frame_length;
+ 	u16 pause_quanta;
+ 	u32 tx_ipg_length;
+diff --git a/drivers/net/ethernet/freescale/fman/fman_muram.c b/drivers/net/ethernet/freescale/fman/fman_muram.c
+index f557d68e5b76..1ed245a2ee01 100644
+--- a/drivers/net/ethernet/freescale/fman/fman_muram.c
++++ b/drivers/net/ethernet/freescale/fman/fman_muram.c
+@@ -12,7 +12,6 @@
+ struct muram_info {
+ 	struct gen_pool *pool;
+ 	void __iomem *vbase;
+-	size_t size;
+ 	phys_addr_t pbase;
+ };
+ 
 -- 
-Jens Axboe
-
+2.44.0
 
 
