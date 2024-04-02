@@ -1,118 +1,133 @@
-Return-Path: <linux-kernel+bounces-127789-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-127802-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 59B47895102
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 12:56:53 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 21C2E89512C
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 13:00:13 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C6E78B23B3E
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 10:56:50 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 533711C22B8F
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 11:00:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 29B5F5FDDB;
-	Tue,  2 Apr 2024 10:56:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=yeah.net header.i=@yeah.net header.b="VNu7cS6I"
-Received: from mail-177131.yeah.net (mail-177131.yeah.net [123.58.177.131])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B86F6605BA;
-	Tue,  2 Apr 2024 10:56:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=123.58.177.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F31D6839FF;
+	Tue,  2 Apr 2024 10:58:09 +0000 (UTC)
+Received: from smtpbguseast1.qq.com (smtpbguseast1.qq.com [54.204.34.129])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 77CBB664C6;
+	Tue,  2 Apr 2024 10:58:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=54.204.34.129
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712055396; cv=none; b=qCvLL8SxaWToRjG8DYTaWnzPdG1CV5VwwTN4/foX1P1FL10recUxnlPIu5mL/02yZsCn+SrAbr/RRgVPJ6tUHtwy77oVaMkxHvgarJJlNlc4w3yDtxcPxPGi8UbQkfMs69BYFO4pY87PIFAj/fujeI+4D0Gch6q0O82R9P0zlHA=
+	t=1712055489; cv=none; b=FHai8MOysveU+udNGvNy5J50MZf8x/4UJ1zYvoXzH30DTMgfHcbvm7wP0WCsOeP0sjYZNgAgVDe5SYHVm0chuse+5K0QOkif1ooWbGLFBT5bZDA75maQbjIkeAQ5Zcqf0/1pE5vSB6iB68fKJr7U6yRtBUGAw3jve4r8SX+6+C0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712055396; c=relaxed/simple;
-	bh=ZsQBIyXKKSheuF7mF3S6XPB3YrTCv+P0r+MuG3O/sww=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=I/px1oBa4HdlOGejlsfOQhSUM+BPuT0Pk80fQxbnC+kKx1pxn/08QgT6LmkzzDvHuWGk8OdGO+GII6+n2DoppJiiQ9iUDSQLmRAYI8k99oZspy2G01N1/Y+m7zI7r16CKp7Kdz18eLlg9hEECe+Qi1kl0H4zzpC96u4ymmDtTy4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=yeah.net; spf=pass smtp.mailfrom=yeah.net; dkim=pass (1024-bit key) header.d=yeah.net header.i=@yeah.net header.b=VNu7cS6I; arc=none smtp.client-ip=123.58.177.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=yeah.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=yeah.net
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yeah.net;
-	s=s110527; h=Date:From:Subject:Message-ID:MIME-Version:
-	Content-Type; bh=HL6yYIAfmTq4orQz8KSraMu08Ey5PkjYaek7rExViLg=;
-	b=VNu7cS6INVdcwM+6pNaYKAjz3A2GHUDmyqhZWbK0VIuHzo3qOD2TYP6ttmW+WW
-	5G48e74VnTMRoqYxj503QRPPyOYOO2x1V4SqFTj2ev6EzArNOowif4jDTu27L7hS
-	Or5iqK9IVHUewtXmEY/uHA73Qu626ycrTUftGDkl05PNk=
-Received: from dragon (unknown [223.68.79.243])
-	by smtp1 (Coremail) with SMTP id ClUQrAD3HyBE5AtmXiWkAQ--.64379S3;
-	Tue, 02 Apr 2024 18:56:05 +0800 (CST)
-Date: Tue, 2 Apr 2024 18:56:04 +0800
-From: Shawn Guo <shawnguo2@yeah.net>
-To: Frank Li <Frank.Li@nxp.com>
-Cc: Rob Herring <robh@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>, Shawn Guo <shawnguo@kernel.org>,
-	Sascha Hauer <s.hauer@pengutronix.de>,
-	Pengutronix Kernel Team <kernel@pengutronix.de>,
-	Fabio Estevam <festevam@gmail.com>,
-	Dong Aisheng <aisheng.dong@nxp.com>,
-	"open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" <devicetree@vger.kernel.org>,
-	"open list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" <imx@lists.linux.dev>,
-	"moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" <linux-arm-kernel@lists.infradead.org>,
-	open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 1/1] arm64: dts: imx8-ss-conn: fix usdhc wrong lpcg clock
- order
-Message-ID: <ZgvkRFxkNzQ2Z8re@dragon>
-References: <20240322164706.2626088-1-Frank.Li@nxp.com>
+	s=arc-20240116; t=1712055489; c=relaxed/simple;
+	bh=ogaNYTk5qfBchXVMhHi6q9EXDm5FtzGo5QVXZl2LRJs=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=GNMkU0cLbGFGmEOzcw6bEf/8J/P++/Rsl53wmqKNNl0f7K9sjaFJ4zFdS6GeG31PfqQ3W305I5uNTCR+UFo/Hkm7Urg7C7/KFozqD1KFafz88sLGK3Qr6yQBNA6Q0j4qgglfhC7mklw7/M3DDrv5uz3kMeCndMo5LiP1hxY8nlg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=shingroup.cn; spf=pass smtp.mailfrom=shingroup.cn; arc=none smtp.client-ip=54.204.34.129
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=shingroup.cn
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=shingroup.cn
+X-QQ-mid: bizesmtp82t1712055417txrsjps3
+X-QQ-Originating-IP: Zhhf+oUY7YGq4uJEDWQ5xEym8nwZtAJnOprlRBQnsy0=
+Received: from localhost ( [112.0.147.175])
+	by bizesmtp.qq.com (ESMTP) with 
+	id ; Tue, 02 Apr 2024 18:56:56 +0800 (CST)
+X-QQ-SSF: 01400000000000704000000A0000000
+X-QQ-FEAT: +ynUkgUhZJmh3bbpLZOdWsh1CuXcwJwfQmOYzh1es10m+h9VDxJ9F7Ia34mv/
+	nL8o8GlT62IzqZsPbFmA9QTSXK0zi31huiF9hyD/60DsLQb9NprTXGqon/YX9c14WR6LtqO
+	Z/4d67SIP3vjyRbxhj8sR5zqCLemk+AIx7ozWCuNf3f9XwDNvC9mJYgvlndMT/+IIKvxNYF
+	l8IZtDjohfhN8ZtW4tbL+rsoA8JqOAHPtPZyvmt0w0dbykyjy0s3TlkFHtbhaSjxoD9LRyR
+	GKAkLJTSZ1OjxP9jWS0SVgNV1kme4FtDS3QRSLgxwQkBAQ8XCZ6DkoofJLwRgKjzyCRRvXY
+	AdsCz/ZZwfjCtB/lUNnix1CXy3J27RwvMYHgFa0eZez8/WwJMVSpcXhf/Mb/Dcv9dovGqv4
+	caksZ5TvYjcs8jz7BpOGqA==
+X-QQ-GoodBg: 2
+X-BIZMAIL-ID: 711303368774048342
+From: Dawei Li <dawei.li@shingroup.cn>
+To: will@kernel.org,
+	mark.rutland@arm.com
+Cc: xueshuai@linux.alibaba.com,
+	renyu.zj@linux.alibaba.com,
+	yangyicong@hisilicon.com,
+	jonathan.cameron@huawei.com,
+	andersson@kernel.org,
+	konrad.dybcio@linaro.org,
+	linux-arm-kernel@lists.infradead.org,
+	linux-kernel@vger.kernel.org,
+	linux-arm-msm@vger.kernel.org,
+	Dawei Li <dawei.li@shingroup.cn>
+Subject: [PATCH 3/9] perf/arm_cspmu: Avoid explicit cpumask var allocation from stack
+Date: Tue,  2 Apr 2024 18:56:04 +0800
+Message-Id: <20240402105610.1695644-4-dawei.li@shingroup.cn>
+X-Mailer: git-send-email 2.27.0
+In-Reply-To: <20240402105610.1695644-1-dawei.li@shingroup.cn>
+References: <20240402105610.1695644-1-dawei.li@shingroup.cn>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240322164706.2626088-1-Frank.Li@nxp.com>
-X-CM-TRANSID:ClUQrAD3HyBE5AtmXiWkAQ--.64379S3
-X-Coremail-Antispam: 1Uf129KBjvdXoW7GF1rZr43Aw4DJryfAFWrKrg_yoWkKwb_Xw
-	18Xrn5KFZrurZayF95ArWxu3y8K3W7Ar1UJas2yr4xXF98G3yUCr1UJ3yrurn8WFnFqws8
-	AF4DJrWkJryS9jkaLaAFLSUrUUUUjb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-	9fnUUvcSsGvfC2KfnxnUUI43ZEXa7IU0kwIDUUUUU==
-X-CM-SenderInfo: pvkd40hjxrjqh1hdxhhqhw/1tbiDQe0ZVszXX2VXgAAsY
+Content-Transfer-Encoding: 8bit
+X-QQ-SENDSIZE: 520
+Feedback-ID: bizesmtp:shingroup.cn:qybglogicsvrgz:qybglogicsvrgz5a-1
 
-On Fri, Mar 22, 2024 at 12:47:05PM -0400, Frank Li wrote:
-> The actual clock show wrong frequency:
-> 
->    echo on >/sys/devices/platform/bus\@5b000000/5b010000.mmc/power/control
->    cat /sys/kernel/debug/mmc0/ios
-> 
->    clock:          200000000 Hz
->    actual clock:   166000000 Hz
->                    ^^^^^^^^^
->    .....
-> 
-> According to
-> 
-> sdhc0_lpcg: clock-controller@5b200000 {
->                 compatible = "fsl,imx8qxp-lpcg";
->                 reg = <0x5b200000 0x10000>;
->                 #clock-cells = <1>;
->                 clocks = <&clk IMX_SC_R_SDHC_0 IMX_SC_PM_CLK_PER>,
->                          <&conn_ipg_clk>, <&conn_axi_clk>;
->                 clock-indices = <IMX_LPCG_CLK_0>, <IMX_LPCG_CLK_4>,
->                                 <IMX_LPCG_CLK_5>;
->                 clock-output-names = "sdhc0_lpcg_per_clk",
->                                      "sdhc0_lpcg_ipg_clk",
->                                      "sdhc0_lpcg_ahb_clk";
->                 power-domains = <&pd IMX_SC_R_SDHC_0>;
->         }
-> 
-> "per_clk" should be IMX_LPCG_CLK_0 instead of IMX_LPCG_CLK_5.
-> 
-> After correct clocks order:
-> 
->    echo on >/sys/devices/platform/bus\@5b000000/5b010000.mmc/power/control
->    cat /sys/kernel/debug/mmc0/ios
-> 
->    clock:          200000000 Hz
->    actual clock:   198000000 Hz
->                    ^^^^^^^^
->    ...
-> 
-> Fixes: 16c4ea7501b1 ("arm64: dts: imx8: switch to new lpcg clock binding")
-> Signed-off-by: Frank Li <Frank.Li@nxp.com>
+For CONFIG_CPUMASK_OFFSTACK=y kernel, explicit allocation of cpumask
+variable on stack is not recommended since it can cause potential stack
+overflow.
 
-Applied, thanks!
+Instead, kernel code should always use *cpumask_var API(s) to allocate
+cpumask var in config- neutral way, leaving allocation strategy to
+CONFIG_CPUMASK_OFFSTACK.
+
+Use *cpumask_var API(s) to address it.
+
+Signed-off-by: Dawei Li <dawei.li@shingroup.cn>
+---
+ drivers/perf/arm_cspmu/arm_cspmu.c | 13 +++++++++----
+ 1 file changed, 9 insertions(+), 4 deletions(-)
+
+diff --git a/drivers/perf/arm_cspmu/arm_cspmu.c b/drivers/perf/arm_cspmu/arm_cspmu.c
+index b9a252272f1e..8fa7c26aec28 100644
+--- a/drivers/perf/arm_cspmu/arm_cspmu.c
++++ b/drivers/perf/arm_cspmu/arm_cspmu.c
+@@ -1322,8 +1322,8 @@ static int arm_cspmu_cpu_online(unsigned int cpu, struct hlist_node *node)
+ 
+ static int arm_cspmu_cpu_teardown(unsigned int cpu, struct hlist_node *node)
+ {
++	cpumask_var_t online_supported;
+ 	int dst;
+-	struct cpumask online_supported;
+ 
+ 	struct arm_cspmu *cspmu =
+ 		hlist_entry_safe(node, struct arm_cspmu, cpuhp_node);
+@@ -1332,17 +1332,22 @@ static int arm_cspmu_cpu_teardown(unsigned int cpu, struct hlist_node *node)
+ 	if (!cpumask_test_and_clear_cpu(cpu, &cspmu->active_cpu))
+ 		return 0;
+ 
++	if (!alloc_cpumask_var(&online_supported, GFP_KERNEL))
++		return 0;
++
+ 	/* Choose a new CPU to migrate ownership of the PMU to */
+-	cpumask_and(&online_supported, &cspmu->associated_cpus,
++	cpumask_and(online_supported, &cspmu->associated_cpus,
+ 		    cpu_online_mask);
+-	dst = cpumask_any_but(&online_supported, cpu);
++	dst = cpumask_any_but(online_supported, cpu);
+ 	if (dst >= nr_cpu_ids)
+-		return 0;
++		goto __free_cpumask;
+ 
+ 	/* Use this CPU for event counting */
+ 	perf_pmu_migrate_context(&cspmu->pmu, cpu, dst);
+ 	arm_cspmu_set_active_cpu(dst, cspmu);
+ 
++__free_cpumask:
++	free_cpumask_var(online_supported);
+ 	return 0;
+ }
+ 
+-- 
+2.27.0
 
 
