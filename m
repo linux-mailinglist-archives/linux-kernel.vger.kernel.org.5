@@ -1,69 +1,71 @@
-Return-Path: <linux-kernel+bounces-128366-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-128367-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 448468959FE
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 18:46:20 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3E385895A00
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 18:46:34 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B08771F24710
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 16:46:19 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 616621C22CE5
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 16:46:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1F2C215990C;
-	Tue,  2 Apr 2024 16:46:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 888D915A498;
+	Tue,  2 Apr 2024 16:46:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="gSNR2RN4"
-Received: from mail-lj1-f176.google.com (mail-lj1-f176.google.com [209.85.208.176])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ZHR+Ax2x"
+Received: from mail-lf1-f42.google.com (mail-lf1-f42.google.com [209.85.167.42])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 88E362AD1E;
-	Tue,  2 Apr 2024 16:46:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 882151598FF;
+	Tue,  2 Apr 2024 16:46:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712076370; cv=none; b=guLtX0llfNNVnN4mGAv7O1HwvFYdkqWk5TckI4VIvjqtZfuVjTQYUegD95Iq5FhzXs6TnVp/94l0UOT/N1yY5Yj9lt4dKcc8vDs2jDRz/gkV5uZ5jhdn9do+eDotE/Vd8/q6uFwM3rv7SoQ5SWFuYN7Z/ci7okSLSulAuyas5xU=
+	t=1712076372; cv=none; b=PtVZ+D4rNtQL3baNRqE63XvB/pzqLOmmI/IBXkdLIOB+JoPYimYTGWBVjJG3Y3T0UzwSJh7XtY6dZNfXt2EF3g9zVRTyYR2ktJvil+98IxBR7wsq2JuROYqPiE8/H8qBlSOlVs7B6Lg23pK3pAYvWICY/EH7umFqPdNoYksg+IQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712076370; c=relaxed/simple;
-	bh=wyuqyuVzJtDl4MDlHcF/zgxnGC0Eo+7SnHjQK5bofCQ=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=nMSdirUG1FUrvAKbbqx3YvGFWYz4As4OIkdUZgDWQclzbg0zTAN4pHDUheEg7tUR3DILLJr6cn4AeALpqzlV/ACqqMEdAmlJsaRZFrM63+SNzD/NCqg/yfX5/g75OfiL5eaBUI1Zd1q7cXlPuM28AM5OnEE479O+BaSfBGlcDg8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=gSNR2RN4; arc=none smtp.client-ip=209.85.208.176
+	s=arc-20240116; t=1712076372; c=relaxed/simple;
+	bh=tNyudCfI8nIaoWCUz4JDrm7FfPtbqNMchXjzoHlA2JY=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=ErhylJ3T9i9CyAg/B6NfgXJAm0a9eDxf6vz6mZgkrDFzlbTA/tAeImlkqmXIRYTNsB8mzXItDkSdiRJI0ziRjo+bGWLHZiFz1svq1dIO9zqr4vtB1eeUfFR4h8x3C1J0aBSNajwW4XbzDzvW5HWvd35G1RJUmtOz16pWkc0kTWA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ZHR+Ax2x; arc=none smtp.client-ip=209.85.167.42
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lj1-f176.google.com with SMTP id 38308e7fff4ca-2d485886545so89415731fa.2;
-        Tue, 02 Apr 2024 09:46:08 -0700 (PDT)
+Received: by mail-lf1-f42.google.com with SMTP id 2adb3069b0e04-515a81928faso6651984e87.1;
+        Tue, 02 Apr 2024 09:46:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1712076366; x=1712681166; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=aUHjpil4rDvGTV3dOF5Z7yYlhI4sqmrtKZfpfHGbHjo=;
-        b=gSNR2RN4d33ap0162aVcu426ocXn50GOqqQoZuOvVyNm7TtE+Fdorc048QndcHce66
-         ufjSqDVqgcStjzVjPjSkPfPExo7H8Fl2k19FefxcqNWnUyHeUZRZ5rf2UxDgWBbsYs1H
-         78FWWYpQ+m7Vsk9OtBYlcEil3EnBoXugipfb3HTQjt6SDa2Ay5G/leDM7E9DgbLzSWK9
-         HmbkXAeJtM4g3IlfrBxOMAjdKHFFqlIodDiGZjTsk56LTxk2XQ8WB9wWHCG7LBcReNVq
-         DdUdX02GTZJbW/xg/O8014uKBFxLUNISvUqs33o6ev2oavmqQ0NdIgalxi/jWDN7tkho
-         DHEA==
+        d=gmail.com; s=20230601; t=1712076368; x=1712681168; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=MiXVwBpmdhxqVuQZIEcjbyM82TQdxZfjXwc4rPEin04=;
+        b=ZHR+Ax2xjOv8DleUALNufSbTFmxZz45Cu5M86ozoUXoRQ5/NYW9nu90IczzdsuMEKf
+         h2LSjOHWZFQB57P4Ob8QC7uE+jc/HrGcZoMyXKyyCBDE2CYYh0lIKrKa0VlVs9iad2nf
+         YaUqsuokolwkHNwfFe5YadD0Sf5/Lnn/vndMVDh07tMsILkxQ4p3pRxVLV5D/FCEk2lw
+         cn+eNL0x5ylVL1jLyLhP/o1VzhEe+22h1ap6nTCU+0JA8fMmYmbYhBkqHsM4BbNOIBzS
+         XhFlDWAzGE+qQMSLbBEc2wyAy2+645nttJ5wNsB95D0IaCxuToDEGbpegOW/ZnQwaihU
+         JqZw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712076366; x=1712681166;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=aUHjpil4rDvGTV3dOF5Z7yYlhI4sqmrtKZfpfHGbHjo=;
-        b=Vc7jK/1Qj5XZhKnhu5IpNzBWtZQZqclMelvbknLUXs2ImcU7hz6uXglT4nmYarufiJ
-         61e5oAHGLDOBgXU3wv6y4IjwSq537GoROfMqmKWNMJ8lKWCdllW9/kS9XESITRum42sy
-         9LypXfCZMZuE8lQbI9FW89QXnZESp0f5KbxgRviqehcYVmuJA3Qwg55+UXn81f16FK1B
-         AcVV/C8JAteXi/Lj3eddDZaIhbumcjByJzYDSfWahhlHx1f1DUN8UJUfNuOoiVaH1nJp
-         zZo4s0qZu2VKQbCfzAmajv2PQbZitunJTLUvGw2NqAx8BpPhwKvlTduzRBlEzxqzJ0MH
-         QH3w==
-X-Forwarded-Encrypted: i=1; AJvYcCXMY+ZFg1++WYnVNSv2dKzEjNky74+EH8jY3WZcd4RNgi70QgDEA8IZ7HTtxTJ8308BDOLeMJYsKvqca42xfWExSmik5TZIGav5hHxe
-X-Gm-Message-State: AOJu0YxZfpfECK2AGXZnwPA/GfOhOgQ6YBD2i8r4+gT/aAQZ0TQT+DIt
-	vkOusrD85wM2luRYUVAC1TwqppRJ79EHe6R7OQSkiERWdDss5Bc3wnFyI3JiMEqLMw==
-X-Google-Smtp-Source: AGHT+IFlJ9whIuvxmPUHk3VJHfOQsHQwG7Lb9S9kKtTnPa3yOWqqTuFwE0iHnYVl2EODAwrEYoxkvw==
-X-Received: by 2002:a2e:7207:0:b0:2d6:8e88:5a8b with SMTP id n7-20020a2e7207000000b002d68e885a8bmr1931713ljc.32.1712076365372;
-        Tue, 02 Apr 2024 09:46:05 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1712076368; x=1712681168;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=MiXVwBpmdhxqVuQZIEcjbyM82TQdxZfjXwc4rPEin04=;
+        b=GuU3WVnQCgtboKbulARb4JktnV2AZz/NXAWd9gBG6pwnZ5ExIS3POqRYBkHoX4obUg
+         UqkZzOPillbIp0+qcz/1iGftfHEo/mn66HqH+MSSg5/M7aGOjjcd8UHcHsDjialBr+LH
+         mxqh1l5/2o4pd0s7SBOZ/S8MiHUp/ONDlX1VRUwvh2bcUTEThCzH3jyK3pVzKNgz8kZh
+         gdNKs0C7Wn2Dj+im7aVkfYAqQ/1Sly1qhyUttqnmGhNMBW4zWPo7c98ZtPmSrnc1BMFc
+         wJfEB3tGWOivAXPM2xpp8+akyN9P7npuUDSa8TDcza/olQ4qQ9nSHh0HaEbTJMGIB7wy
+         wX2w==
+X-Forwarded-Encrypted: i=1; AJvYcCXHA/SMACkheJPDmURGlI76lxQz6sBvQOIEPldopo01XfbDisbxBc7p7UdJfoIU7stslHuv4EcGC8isDK74hG2R1fnYrpcIxi0sg4fG
+X-Gm-Message-State: AOJu0Yyg9Zf5YbltCSqb5faILPGdKz6BN91UtaVSeiGkvfSGfaoldU7/
+	1g8vuEZm7uePiLfVs7Ilf1ioFwxZAcNFfmnZtaZKDIDh6xmj38AEf0z2X+wllKLq6g==
+X-Google-Smtp-Source: AGHT+IG1iUtprh4AvoTVLamWpsRk7xNiMkuHvt/kYVCJTN3pvj+XE2o1fs/lIy/aIbMBRggoAShtPw==
+X-Received: by 2002:ac2:4ac6:0:b0:513:4b90:ae9a with SMTP id m6-20020ac24ac6000000b005134b90ae9amr59482lfp.67.1712076367737;
+        Tue, 02 Apr 2024 09:46:07 -0700 (PDT)
 Received: from localhost ([77.91.78.25])
-        by smtp.gmail.com with ESMTPSA id u11-20020a2eb80b000000b002d436e25f83sm1731976ljo.46.2024.04.02.09.46.04
+        by smtp.gmail.com with ESMTPSA id i31-20020a0565123e1f00b00516a2a48395sm905559lfv.273.2024.04.02.09.46.06
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 02 Apr 2024 09:46:04 -0700 (PDT)
+        Tue, 02 Apr 2024 09:46:07 -0700 (PDT)
 From: Mikhail Rudenko <mike.rudenko@gmail.com>
 To: linux-media@vger.kernel.org,
 	linux-kernel@vger.kernel.org
@@ -75,10 +77,12 @@ Cc: Sakari Ailus <sakari.ailus@linux.intel.com>,
 	Dave Stevenson <dave.stevenson@raspberrypi.com>,
 	Mauro Carvalho Chehab <mchehab@kernel.org>,
 	Mikhail Rudenko <mike.rudenko@gmail.com>
-Subject: [PATCH v4 00/20] Omnivision OV4689 refactoring and improvements
-Date: Tue,  2 Apr 2024 19:45:31 +0300
-Message-ID: <20240402164552.19171-1-mike.rudenko@gmail.com>
+Subject: [PATCH v4 01/20] media: i2c: ov4689: Clean up and annotate the register table
+Date: Tue,  2 Apr 2024 19:45:32 +0300
+Message-ID: <20240402164552.19171-2-mike.rudenko@gmail.com>
 X-Mailer: git-send-email 2.44.0
+In-Reply-To: <20240402164552.19171-1-mike.rudenko@gmail.com>
+References: <20240402164552.19171-1-mike.rudenko@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -87,89 +91,239 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Hi,
+Many values in the register table are actually power-on
+defaults. Remove those and also unused HDR exposures and gains.
+Annotate the remaining values using the publicly available datasheet
+to facilitate further development. No functional change intended.
 
-this is the fourth revision of the series containing refactoring and new
-features implementation for the Omnivision OV4689 sensor
-driver. Specifically, patches 1, 2, 3, 5, 6, 10, 15, 16, 18, and 19
-are refactorings, and are not supposed to introduce any functional
-change. Patches 4 and 7 perform migration to CCI helpers and subdevice
-active state respectively, and should not introduce any hardware-
-and/or user-visible change either. Patch 8 fixes a possible race
-condition due to v4l2_async_register_subdev_sensor being called too
-early in ov4689_probe, and patch 9 migrates power management to PM
-autosuspend.
+Signed-off-by: Mikhail Rudenko <mike.rudenko@gmail.com>
+Acked-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+---
+ drivers/media/i2c/ov4689.c | 203 +++++++++++++++++++++----------------
+ 1 file changed, 118 insertions(+), 85 deletions(-)
 
-Patches 11-14 expose more sensor controls to the userspace, such as
-(read-write) HBLANK, VFLIP/HFLIP, digital gain, and color
-balance. Patch 17 implements configurable analogue crop rectangle via
-set_selection callback. And finally, patch 20 enables 2x2 binning
-option. It should be noted that publicly available sensor
-documentation is lacking description of many registers and their value
-ranges, so a lot of values had to be found by experimentation.
-
-Changes in v4:
-- rebase on top of media_stage
-- collect Reviewed-by's from v3
-- add comments "Horizontal" and "Vertical" to TIMING_FORMAT registers
-- fix a typo in the commit message in patch 17/20
-- remove "__" prefix from stream on/off functions
-- rename the label in ov4689_stream_off and remove extra space
-
-Changes in v3:
-- rebase on top of media_stage
-- collect Reviewed-by and Acked-by from v2
-- update copyright year
-- zero-initialize ret in ov4689_set_ctrl
-- get back blank line before return in ov4689_set_ctrl
-- move `sd->flags |= V4L2_SUBDEV_FL_HAS_DEVNODE` before
-  `ov4689_initialize_controls()` in ov4689_probe
-- remove blank line after `v4l2_subdev_init_finalize(sd)`
-- use pm_runtime_put instead of pm_runtime_put_sync
-- add comment for dummy columns/rows defines
-- fix OV4689_PIXEL_ARRAY_WIDTH use instead of OV4689_PIXEL_ARRAY_HEIGHT
-  in ov4689_get_selection
-- split s_stream into two functions for start and stop
-
-Changes in v2:
-- collect Laurent's r-b's
-- squash together "CCI conversion" and "Set gain in one 16 bit write"
-- use ctrl->val in ov4689_set_ctrl
-- rename try_fmt to fmt in ov4689_init_cfg and drop corresponding comment
-- rebase on top of media-stage and rename init_cfg->init_state
-- sort register definitions by address throughout the whole series
-- fix number of controls hint in v4l2_ctrl_handler_init
-- make all hexadecimal constants lowercase
-- disable runtime pm in probe error path
-- implement pm autosuspend
-
-
-Mikhail Rudenko (20):
-  media: i2c: ov4689: Clean up and annotate the register table
-  media: i2c: ov4689: Sort register definitions by address
-  media: i2c: ov4689: Fix typo in a comment
-  media: i2c: ov4689: CCI conversion
-  media: i2c: ov4689: Remove i2c_client from ov4689 struct
-  media: i2c: ov4689: Refactor ov4689_set_ctrl
-  media: i2c: ov4689: Use sub-device active state
-  media: i2c: ov4689: Enable runtime PM before registering sub-device
-  media: i2c: ov4689: Use runtime PM autosuspend
-  media: i2c: ov4689: Remove max_fps field from struct ov4689_mode
-  media: i2c: ov4689: Make horizontal blanking configurable
-  media: i2c: ov4689: Implement vflip/hflip controls
-  media: i2c: ov4689: Implement digital gain control
-  media: i2c: ov4689: Implement manual color balance controls
-  media: i2c: ov4689: Move pixel array size out of struct ov4689_mode
-  media: i2c: ov4689: Set timing registers programmatically
-  media: i2c: ov4689: Configurable analogue crop
-  media: i2c: ov4689: Eliminate struct ov4689_mode
-  media: i2c: ov4689: Refactor ov4689_s_stream
-  media: i2c: ov4689: Implement 2x2 binning
-
- drivers/media/i2c/Kconfig  |    1 +
- drivers/media/i2c/ov4689.c | 1003 ++++++++++++++++++++++--------------
- 2 files changed, 618 insertions(+), 386 deletions(-)
-
---
+diff --git a/drivers/media/i2c/ov4689.c b/drivers/media/i2c/ov4689.c
+index 403091651885..5a509e908e3c 100644
+--- a/drivers/media/i2c/ov4689.c
++++ b/drivers/media/i2c/ov4689.c
+@@ -3,7 +3,7 @@
+  * ov4689 driver
+  *
+  * Copyright (C) 2017 Fuzhou Rockchip Electronics Co., Ltd.
+- * Copyright (C) 2022 Mikhail Rudenko
++ * Copyright (C) 2022, 2024 Mikhail Rudenko
+  */
+ 
+ #include <linux/clk.h>
+@@ -123,90 +123,123 @@ struct ov4689_gain_range {
+  * mipi_datarate per lane 1008Mbps
+  */
+ static const struct regval ov4689_2688x1520_regs[] = {
+-	{0x0103, 0x01}, {0x3638, 0x00}, {0x0300, 0x00},
+-	{0x0302, 0x2a}, {0x0303, 0x00}, {0x0304, 0x03},
+-	{0x030b, 0x00}, {0x030d, 0x1e}, {0x030e, 0x04},
+-	{0x030f, 0x01}, {0x0312, 0x01}, {0x031e, 0x00},
+-	{0x3000, 0x20}, {0x3002, 0x00}, {0x3018, 0x72},
+-	{0x3020, 0x93}, {0x3021, 0x03}, {0x3022, 0x01},
+-	{0x3031, 0x0a}, {0x303f, 0x0c}, {0x3305, 0xf1},
+-	{0x3307, 0x04}, {0x3309, 0x29}, {0x3500, 0x00},
+-	{0x3501, 0x60}, {0x3502, 0x00}, {0x3503, 0x04},
+-	{0x3504, 0x00}, {0x3505, 0x00}, {0x3506, 0x00},
+-	{0x3507, 0x00}, {0x3508, 0x00}, {0x3509, 0x80},
+-	{0x350a, 0x00}, {0x350b, 0x00}, {0x350c, 0x00},
+-	{0x350d, 0x00}, {0x350e, 0x00}, {0x350f, 0x80},
+-	{0x3510, 0x00}, {0x3511, 0x00}, {0x3512, 0x00},
+-	{0x3513, 0x00}, {0x3514, 0x00}, {0x3515, 0x80},
+-	{0x3516, 0x00}, {0x3517, 0x00}, {0x3518, 0x00},
+-	{0x3519, 0x00}, {0x351a, 0x00}, {0x351b, 0x80},
+-	{0x351c, 0x00}, {0x351d, 0x00}, {0x351e, 0x00},
+-	{0x351f, 0x00}, {0x3520, 0x00}, {0x3521, 0x80},
+-	{0x3522, 0x08}, {0x3524, 0x08}, {0x3526, 0x08},
+-	{0x3528, 0x08}, {0x352a, 0x08}, {0x3602, 0x00},
+-	{0x3603, 0x40}, {0x3604, 0x02}, {0x3605, 0x00},
+-	{0x3606, 0x00}, {0x3607, 0x00}, {0x3609, 0x12},
+-	{0x360a, 0x40}, {0x360c, 0x08}, {0x360f, 0xe5},
+-	{0x3608, 0x8f}, {0x3611, 0x00}, {0x3613, 0xf7},
+-	{0x3616, 0x58}, {0x3619, 0x99}, {0x361b, 0x60},
+-	{0x361c, 0x7a}, {0x361e, 0x79}, {0x361f, 0x02},
+-	{0x3632, 0x00}, {0x3633, 0x10}, {0x3634, 0x10},
+-	{0x3635, 0x10}, {0x3636, 0x15}, {0x3646, 0x86},
+-	{0x364a, 0x0b}, {0x3700, 0x17}, {0x3701, 0x22},
+-	{0x3703, 0x10}, {0x370a, 0x37}, {0x3705, 0x00},
+-	{0x3706, 0x63}, {0x3709, 0x3c}, {0x370b, 0x01},
+-	{0x370c, 0x30}, {0x3710, 0x24}, {0x3711, 0x0c},
+-	{0x3716, 0x00}, {0x3720, 0x28}, {0x3729, 0x7b},
+-	{0x372a, 0x84}, {0x372b, 0xbd}, {0x372c, 0xbc},
+-	{0x372e, 0x52}, {0x373c, 0x0e}, {0x373e, 0x33},
+-	{0x3743, 0x10}, {0x3744, 0x88}, {0x3745, 0xc0},
+-	{0x374a, 0x43}, {0x374c, 0x00}, {0x374e, 0x23},
+-	{0x3751, 0x7b}, {0x3752, 0x84}, {0x3753, 0xbd},
+-	{0x3754, 0xbc}, {0x3756, 0x52}, {0x375c, 0x00},
+-	{0x3760, 0x00}, {0x3761, 0x00}, {0x3762, 0x00},
+-	{0x3763, 0x00}, {0x3764, 0x00}, {0x3767, 0x04},
+-	{0x3768, 0x04}, {0x3769, 0x08}, {0x376a, 0x08},
+-	{0x376b, 0x20}, {0x376c, 0x00}, {0x376d, 0x00},
+-	{0x376e, 0x00}, {0x3773, 0x00}, {0x3774, 0x51},
+-	{0x3776, 0xbd}, {0x3777, 0xbd}, {0x3781, 0x18},
+-	{0x3783, 0x25}, {0x3798, 0x1b}, {0x3800, 0x00},
+-	{0x3801, 0x08}, {0x3802, 0x00}, {0x3803, 0x04},
+-	{0x3804, 0x0a}, {0x3805, 0x97}, {0x3806, 0x05},
+-	{0x3807, 0xfb}, {0x3808, 0x0a}, {0x3809, 0x80},
+-	{0x380a, 0x05}, {0x380b, 0xf0}, {0x380c, 0x0a},
+-	{0x380d, 0x0e}, {0x380e, 0x06}, {0x380f, 0x12},
+-	{0x3810, 0x00}, {0x3811, 0x08}, {0x3812, 0x00},
+-	{0x3813, 0x04}, {0x3814, 0x01}, {0x3815, 0x01},
+-	{0x3819, 0x01}, {0x3820, 0x00}, {0x3821, 0x06},
+-	{0x3829, 0x00}, {0x382a, 0x01}, {0x382b, 0x01},
+-	{0x382d, 0x7f}, {0x3830, 0x04}, {0x3836, 0x01},
+-	{0x3837, 0x00}, {0x3841, 0x02}, {0x3846, 0x08},
+-	{0x3847, 0x07}, {0x3d85, 0x36}, {0x3d8c, 0x71},
+-	{0x3d8d, 0xcb}, {0x3f0a, 0x00}, {0x4000, 0xf1},
+-	{0x4001, 0x40}, {0x4002, 0x04}, {0x4003, 0x14},
+-	{0x400e, 0x00}, {0x4011, 0x00}, {0x401a, 0x00},
+-	{0x401b, 0x00}, {0x401c, 0x00}, {0x401d, 0x00},
+-	{0x401f, 0x00}, {0x4020, 0x00}, {0x4021, 0x10},
+-	{0x4022, 0x07}, {0x4023, 0xcf}, {0x4024, 0x09},
+-	{0x4025, 0x60}, {0x4026, 0x09}, {0x4027, 0x6f},
+-	{0x4028, 0x00}, {0x4029, 0x02}, {0x402a, 0x06},
+-	{0x402b, 0x04}, {0x402c, 0x02}, {0x402d, 0x02},
+-	{0x402e, 0x0e}, {0x402f, 0x04}, {0x4302, 0xff},
+-	{0x4303, 0xff}, {0x4304, 0x00}, {0x4305, 0x00},
+-	{0x4306, 0x00}, {0x4308, 0x02}, {0x4500, 0x6c},
+-	{0x4501, 0xc4}, {0x4502, 0x40}, {0x4503, 0x01},
+-	{0x4601, 0xa7}, {0x4800, 0x04}, {0x4813, 0x08},
+-	{0x481f, 0x40}, {0x4829, 0x78}, {0x4837, 0x10},
+-	{0x4b00, 0x2a}, {0x4b0d, 0x00}, {0x4d00, 0x04},
+-	{0x4d01, 0x42}, {0x4d02, 0xd1}, {0x4d03, 0x93},
+-	{0x4d04, 0xf5}, {0x4d05, 0xc1}, {0x5000, 0xf3},
+-	{0x5001, 0x11}, {0x5004, 0x00}, {0x500a, 0x00},
+-	{0x500b, 0x00}, {0x5032, 0x00}, {0x5040, 0x00},
+-	{0x5050, 0x0c}, {0x5500, 0x00}, {0x5501, 0x10},
+-	{0x5502, 0x01}, {0x5503, 0x0f}, {0x8000, 0x00},
+-	{0x8001, 0x00}, {0x8002, 0x00}, {0x8003, 0x00},
+-	{0x8004, 0x00}, {0x8005, 0x00}, {0x8006, 0x00},
+-	{0x8007, 0x00}, {0x8008, 0x00}, {0x3638, 0x00},
++	/* System control*/
++	{0x0103, 0x01}, /* SC_CTRL0103 software_reset = 1 */
++	{0x3000, 0x20}, /* SC_CMMN_PAD_OEN0 FSIN_output_enable = 1 */
++	{0x3021, 0x03}, /*
++			 * SC_CMMN_MISC_CTRL fst_stby_ctr = 0,
++			 * sleep_no_latch_enable = 0
++			 */
++
++	/* AEC PK */
++	{0x3503, 0x04}, /* AEC_MANUAL gain_input_as_sensor_gain_format = 1 */
++	{0x352a, 0x08}, /* DIG_GAIN_FRAC_LONG dig_gain_long[14:8] = 0x08 (2x) */
++
++	/* ADC and analog control*/
++	{0x3603, 0x40},
++	{0x3604, 0x02},
++	{0x3609, 0x12},
++	{0x360c, 0x08},
++	{0x360f, 0xe5},
++	{0x3608, 0x8f},
++	{0x3611, 0x00},
++	{0x3613, 0xf7},
++	{0x3616, 0x58},
++	{0x3619, 0x99},
++	{0x361b, 0x60},
++	{0x361e, 0x79},
++	{0x3634, 0x10},
++	{0x3635, 0x10},
++	{0x3636, 0x15},
++	{0x3646, 0x86},
++	{0x364a, 0x0b},
++
++	/* Sensor control */
++	{0x3700, 0x17},
++	{0x3701, 0x22},
++	{0x3703, 0x10},
++	{0x370a, 0x37},
++	{0x3706, 0x63},
++	{0x3709, 0x3c},
++	{0x370c, 0x30},
++	{0x3710, 0x24},
++	{0x3720, 0x28},
++	{0x3729, 0x7b},
++	{0x372b, 0xbd},
++	{0x372c, 0xbc},
++	{0x372e, 0x52},
++	{0x373c, 0x0e},
++	{0x373e, 0x33},
++	{0x3743, 0x10},
++	{0x3744, 0x88},
++	{0x3745, 0xc0},
++	{0x374c, 0x00},
++	{0x374e, 0x23},
++	{0x3751, 0x7b},
++	{0x3753, 0xbd},
++	{0x3754, 0xbc},
++	{0x3756, 0x52},
++	{0x376b, 0x20},
++	{0x3774, 0x51},
++	{0x3776, 0xbd},
++	{0x3777, 0xbd},
++	{0x3781, 0x18},
++	{0x3783, 0x25},
++	{0x3798, 0x1b},
++
++	/* Timing control */
++	{0x3801, 0x08}, /* H_CROP_START_L h_crop_start[7:0] = 0x08 */
++	{0x3805, 0x97}, /* H_CROP_END_L h_crop_end[7:0] = 0x97 */
++	{0x380c, 0x0a}, /* TIMING_HTS_H hts[14:8] = 0x0a */
++	{0x380d, 0x0e}, /* TIMING_HTS_L hts[7:0] = 0x0e */
++	{0x3811, 0x08}, /* H_WIN_OFF_L h_win_off[7:0] = 0x08*/
++	{0x3813, 0x04}, /* V_WIN_OFF_L v_win_off[7:0] = 0x04 */
++	{0x3819, 0x01}, /* VSYNC_END_L vsync_end_point[7:0] = 0x01 */
++	{0x3821, 0x06}, /* TIMING_FORMAT2 array_h_mirror = 1, digital_h_mirror = 1 */
++
++	/* OTP control */
++	{0x3d85, 0x36}, /* OTP_REG85 OTP_power_up_load_setting_enable = 1,
++			 * OTP_power_up_load_data_enable = 1,
++			 * OTP_bist_select = 1 (compare with zero)
++			 */
++	{0x3d8c, 0x71}, /* OTP_SETTING_STT_ADDRESS_H */
++	{0x3d8d, 0xcb}, /* OTP_SETTING_STT_ADDRESS_L */
++
++	/* BLC registers*/
++	{0x4001, 0x40}, /* DEBUG_MODE */
++	{0x401b, 0x00}, /* DEBUG_MODE */
++	{0x401d, 0x00}, /* DEBUG_MODE */
++	{0x401f, 0x00}, /* DEBUG_MODE */
++	{0x4020, 0x00}, /* ANCHOR_LEFT_START_H anchor_left_start[11:8] = 0 */
++	{0x4021, 0x10}, /* ANCHOR_LEFT_START_L anchor_left_start[7:0] = 0x10 */
++	{0x4022, 0x07}, /* ANCHOR_LEFT_END_H anchor_left_end[11:8] = 0x07 */
++	{0x4023, 0xcf}, /* ANCHOR_LEFT_END_L anchor_left_end[7:0] = 0xcf */
++	{0x4024, 0x09}, /* ANCHOR_RIGHT_START_H anchor_right_start[11:8] = 0x09 */
++	{0x4025, 0x60}, /* ANCHOR_RIGHT_START_L anchor_right_start[7:0] = 0x60 */
++	{0x4026, 0x09}, /* ANCHOR_RIGHT_END_H anchor_right_end[11:8] = 0x09 */
++	{0x4027, 0x6f}, /* ANCHOR_RIGHT_END_L anchor_right_end[7:0] = 0x6f */
++
++	/* ADC sync control */
++	{0x4500, 0x6c}, /* ADC_SYNC_CTRL */
++	{0x4503, 0x01}, /* ADC_SYNC_CTRL */
++
++	/* VFIFO */
++	{0x4601, 0xa7}, /* VFIFO_CTRL_01 r_vfifo_read_start[7:0] = 0xa7 */
++
++	/* Temperature monitor */
++	{0x4d00, 0x04}, /* TPM_CTRL_00 tmp_slope[15:8] = 0x04 */
++	{0x4d01, 0x42}, /* TPM_CTRL_01 tmp_slope[7:0] = 0x42 */
++	{0x4d02, 0xd1}, /* TPM_CTRL_02 tpm_offset[31:24] = 0xd1 */
++	{0x4d03, 0x93}, /* TPM_CTRL_03 tpm_offset[23:16] = 0x93 */
++	{0x4d04, 0xf5}, /* TPM_CTRL_04 tpm_offset[15:8]  = 0xf5 */
++	{0x4d05, 0xc1}, /* TPM_CTRL_05 tpm_offset[7:0]   = 0xc1 */
++
++	/* pre-ISP control */
++	{0x5050, 0x0c}, /* DEBUG_MODE */
++
++	/* OTP-DPC control */
++	{0x5501, 0x10}, /* OTP_DPC_START_L otp_start_address[7:0] = 0x10 */
++	{0x5503, 0x0f}, /* OTP_DPC_END_L otp_end_address[7:0] = 0x0f */
+ 	{REG_NULL, 0x00},
+ };
+ 
+-- 
 2.44.0
+
 
