@@ -1,163 +1,213 @@
-Return-Path: <linux-kernel+bounces-127590-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-127591-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id BF204894E11
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 10:58:06 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0218C894E14
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 10:58:31 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EA9691C22328
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 08:58:05 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6EF431F23687
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 08:58:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B61E051C4A;
-	Tue,  2 Apr 2024 08:57:58 +0000 (UTC)
-Received: from mail-yb1-f171.google.com (mail-yb1-f171.google.com [209.85.219.171])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E0E7153815;
+	Tue,  2 Apr 2024 08:58:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="Yb1g7Sly"
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 42CB51755A;
-	Tue,  2 Apr 2024 08:57:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4B5823D544
+	for <linux-kernel@vger.kernel.org>; Tue,  2 Apr 2024 08:58:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.158.5
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712048278; cv=none; b=i4aURAQLj3qVGPZJjZr8H9pvIdidQanLZeAHn2LbQHWp7QaWVrRNrF8EXgHAaNvxzah4tIPS8eGWEWl0sjPcHNF7Gq4mAw4wFN4nJwV+rGOAWJWNv4C3olHwyhHDtH0EvZ05ZKvPced3QDvZ+k+ALqURtdbaK4C2BU0nJHwEmXQ=
+	t=1712048306; cv=none; b=AWR9MQsaCA0rgGLhaLc2sAMQhVadwMMK1CGDMWFpjH+Gc58tkGP9z1bP8DtXzMiy7g61zkPmcOtgiJkoQCuPP6lJRWeIzDFQrsZijCFkXMNkAbH0bElcqrHUY76W8im4tOEwluahJvMmv0UHqUbabXcxgxNCqhHfu+WAWoCVHkQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712048278; c=relaxed/simple;
-	bh=4mGyip3A2vxVFiIMykn/ckhzlQc9ZJ9gaeuHR/O/fZs=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=FojOsJwOw199AYJAfM0mWLtZvS48/fuFc0vHDEnMJCMhz6V/Zsikvs3cNtZ7YGrEyocNSW4CQZkktfNxoDw1z7zKQES9HscMIcfk9CuDHGDEvvQcQKMFuBtqeih6saKkTfamswnOmdgghkLhQ5U4babX4uP5gMBFhvOHryPlLWw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.219.171
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yb1-f171.google.com with SMTP id 3f1490d57ef6-d9b9adaf291so4679269276.1;
-        Tue, 02 Apr 2024 01:57:56 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712048274; x=1712653074;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=aVhWIofaeGGyMSfZkv2tkxmuwwN8jEo36pNRCgIT+Ys=;
-        b=ObOhPGt8GfG/i3NRtnPqde2CXyJeWx/eyHo/TYmzGWK55NL7IL3wxC3vSIdr931noa
-         iTI3iJ2pOzFeJ8pmDe5lkG5HxW+MZLzO0eUZBfEMcxAb8ZJkUclZ67bNGKaBqdk6clYK
-         kSADdoBz/gvGm59kgjk/YA7O/TjUuPQ7UqDXal7T85Vmc8JloWH6m2ecHH0kw0D8w3Uf
-         RTNo5CWasW1e8jiqXMTnmyaLtDUaHm8Zbc9tMx+KtYBvn6d1+UlM9zmWVHbJ3WN+VaR7
-         S1vGRhMjXxvFUOhyyQ3V4cWSOksJ+gF5DGQictLbFL1p6ohhEkMGpzZHPFoBnhYin/OT
-         v0EA==
-X-Forwarded-Encrypted: i=1; AJvYcCXuB7rrlB3gNodQ1sVsvasHDeDXkbF0GacSCTyeAnLcsX5ISxTkQUto+Z7L2a4Xj1eBhmrKY83VQky5lhFruFqeILErlIZd
-X-Gm-Message-State: AOJu0YxTJkb34vxKv0eJqYeHWTaMs0O5BgbSSDOaxYIBk7QA1WKDFs3a
-	ZiAb0tvE0+lrSicGxOD/dYswDrEx60UjtVplW65kSi1hp9tDlhKzqO4Hpmd5fYE=
-X-Google-Smtp-Source: AGHT+IEbgoiD9Uu1JaAjRsoE9MbIs5GzOHUG3wheIAsp2wKPthdyM/m5DBYTJyIRgXbL5j+Qy/GYuQ==
-X-Received: by 2002:a5b:b91:0:b0:dd0:467:2e48 with SMTP id l17-20020a5b0b91000000b00dd004672e48mr9645824ybq.40.1712048274460;
-        Tue, 02 Apr 2024 01:57:54 -0700 (PDT)
-Received: from mail-yb1-f174.google.com (mail-yb1-f174.google.com. [209.85.219.174])
-        by smtp.gmail.com with ESMTPSA id m3-20020a255803000000b00dcd25ce965esm2440779ybb.41.2024.04.02.01.57.54
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 02 Apr 2024 01:57:54 -0700 (PDT)
-Received: by mail-yb1-f174.google.com with SMTP id 3f1490d57ef6-d9b9adaf291so4679252276.1;
-        Tue, 02 Apr 2024 01:57:54 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCWeMlcabTQARu1weLQD4DTgF5b8MLpZKDgJ3q/fCOE7Q+emTlIKiXpJ3ZBTOqSgcvQ7h//7fwm9ud6+X/FEaaCTIbvE9uAP
-X-Received: by 2002:a25:5f0a:0:b0:dd9:20d6:fd2 with SMTP id
- t10-20020a255f0a000000b00dd920d60fd2mr8002219ybb.27.1712048273931; Tue, 02
- Apr 2024 01:57:53 -0700 (PDT)
+	s=arc-20240116; t=1712048306; c=relaxed/simple;
+	bh=o1gq+NXOPOISE9vCvWrjHc8SwRXA4CCcrp26JlijL8M=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=cRkKZdSzArSaJo8cz+Bn8kFfVioD0eDPA83pGzORC2ImNTTF+HyjbhFEyCHzlr4QK6YzregUW0j1ag5noqKVVkt1Qg1WhZXvYSdiLfGnvcisl3VsVBbnl38dehWmyx59k4zsYlvKC+VfbQKSZhTGZAWONWnxNPNIgFflb4F+TUQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=Yb1g7Sly; arc=none smtp.client-ip=148.163.158.5
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
+Received: from pps.filterd (m0356516.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 4328vnw5010477;
+	Tue, 2 Apr 2024 08:58:07 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=vjeLiKB25shTPfBbKnNL5XlTVHkDE3ktnIcrN/G3DQc=;
+ b=Yb1g7SlyVxG9WmSOXEYHfKwh/e/jHhoLJbK6RVhMAC/GqJQWvH7kK/HDYI3j3hGbcYZI
+ GsgAYw/O7A7AxI3QMmwHthr9A17lsPPgN+tbztD4QTOuL4y7o6Ltadnlw4AbpKvkFSiO
+ uVR/p+VkYcVs51EZUkU+6vEkk06hchNIebAIz5ufzcwa+nEdkrP5BrIuFLBn1/wPlgM2
+ 3p5VkK34jqAawDlsdr3LBGiFkosP2LIwRt1xiW5P1a7dhL9FjWWbqja6cv89xX1uy4Xe
+ icoNFiO/2mndE6TQTws/+3mmpiTO2gxEcK3sp9AoaF7hWxuxcvkFmmh9jhLEYfel0l9y eA== 
+Received: from pps.reinject (localhost [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3x8eyag01n-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 02 Apr 2024 08:58:07 +0000
+Received: from m0356516.ppops.net (m0356516.ppops.net [127.0.0.1])
+	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 4328w6e5010629;
+	Tue, 2 Apr 2024 08:58:06 GMT
+Received: from ppma22.wdc07v.mail.ibm.com (5c.69.3da9.ip4.static.sl-reverse.com [169.61.105.92])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3x8eyag01g-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 02 Apr 2024 08:58:06 +0000
+Received: from pps.filterd (ppma22.wdc07v.mail.ibm.com [127.0.0.1])
+	by ppma22.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 43275IAv027165;
+	Tue, 2 Apr 2024 08:58:05 GMT
+Received: from smtprelay05.wdc07v.mail.ibm.com ([172.16.1.72])
+	by ppma22.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3x6wf05mfw-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 02 Apr 2024 08:58:05 +0000
+Received: from smtpav02.dal12v.mail.ibm.com (smtpav02.dal12v.mail.ibm.com [10.241.53.101])
+	by smtprelay05.wdc07v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 4328w3Di23855838
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Tue, 2 Apr 2024 08:58:05 GMT
+Received: from smtpav02.dal12v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id DE6A258066;
+	Tue,  2 Apr 2024 08:58:02 +0000 (GMT)
+Received: from smtpav02.dal12v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id BDC5758060;
+	Tue,  2 Apr 2024 08:57:58 +0000 (GMT)
+Received: from [9.171.24.250] (unknown [9.171.24.250])
+	by smtpav02.dal12v.mail.ibm.com (Postfix) with ESMTP;
+	Tue,  2 Apr 2024 08:57:58 +0000 (GMT)
+Message-ID: <3b411431-1a04-4ac4-a6ae-56dd188da0f9@linux.ibm.com>
+Date: Tue, 2 Apr 2024 14:27:57 +0530
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240324233458.1352854-1-sashal@kernel.org> <20240324233458.1352854-111-sashal@kernel.org>
-In-Reply-To: <20240324233458.1352854-111-sashal@kernel.org>
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Date: Tue, 2 Apr 2024 10:57:41 +0200
-X-Gmail-Original-Message-ID: <CAMuHMdW9yQsq15Lc_uqULw4LXAzrKwOZe+KCGLrCkiFG9kuVnw@mail.gmail.com>
-Message-ID: <CAMuHMdW9yQsq15Lc_uqULw4LXAzrKwOZe+KCGLrCkiFG9kuVnw@mail.gmail.com>
-Subject: Re: [PATCH 5.15 110/317] arm64: dts: renesas: r8a779a0: Update to
- R-Car Gen4 compatible values
-To: Sasha Levin <sashal@kernel.org>
-Cc: linux-kernel@vger.kernel.org, stable@vger.kernel.org, 
-	Wolfram Sang <wsa+renesas@sang-engineering.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2] sched/fair: fix initial util_avg calculation
+To: Vincent Guittot <vincent.guittot@linaro.org>
+Cc: Dawei Li <daweilics@gmail.com>, Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>, Ben Segall <bsegall@google.com>,
+        Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira
+ <bristot@redhat.com>,
+        Valentin Schneider <vschneid@redhat.com>, linux-kernel@vger.kernel.org
+References: <20240315015916.21545-1-daweilics@gmail.com>
+ <ZgqOEJ5sCANkkk5N@linux.ibm.com>
+ <CAG5MgCq3GT=CVj7Hz8rUMfNG1c9ypVsTSDKNESHV9tY_qWSt2g@mail.gmail.com>
+ <e7d5bec3-be2a-4eea-b946-7f1739b0b4d0@linux.ibm.com>
+ <CAKfTPtCVQ7ooRuN-OroK90GGa2T7=HyK3kovmvJcgojvJhbwPQ@mail.gmail.com>
+Content-Language: en-US
+From: Vishal Chourasia <vishalc@linux.ibm.com>
+In-Reply-To: <CAKfTPtCVQ7ooRuN-OroK90GGa2T7=HyK3kovmvJcgojvJhbwPQ@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: KjqsdLRmrjnB0M2yj2TmkkQvMvNceNHS
+X-Proofpoint-ORIG-GUID: 9-5bqLNX5hz24agdTNLHmju4I-nBm1BH
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-04-02_03,2024-04-01_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=999 spamscore=0
+ impostorscore=0 suspectscore=0 adultscore=0 lowpriorityscore=0
+ phishscore=0 priorityscore=1501 mlxscore=0 bulkscore=0 malwarescore=0
+ clxscore=1015 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2403210000 definitions=main-2404020063
 
-Hi Sasha,
+On 02/04/24 2:19 pm, Vincent Guittot wrote:
+> On Tue, 2 Apr 2024 at 10:44, Vishal Chourasia <vishalc@linux.ibm.com> wrote:
+>>
+>> On 02/04/24 11:17 am, Dawei Li wrote:
+>>> Hi Vishal
+>>>
+>>> Thanks for the comment!
+>>> Do you suggest using scale_load_down() in place of se_weight()?
+>> scale_load_down should be better.
+> 
+> se_weight is used for computing sched_entity's pelt signal so keep
+> using it looks better but all this clearly just nitpick because that
+> doesn't make any difference
+Alright. Thank you for the clarification.
+> 
+>>> It's a soft bug we should fix one way or another before what the
+>>> comment mentions really happens.
+>> IIUC, We should be moving towards using full load resolution
+>> for all the calculations. In that case, we need not worry about scaling load at
+>> all. Maybe someone could provide context here.
+>>
+>>> I am actually confused that we have both se_weight() and
+>>> scale_load_down(), and they do the same thing.
+>>>
+>>> Best regards,
+>>> Dawei
+>>>
+>>> On Mon, Apr 1, 2024 at 3:36 AM Vishal Chourasia <vishalc@linux.ibm.com> wrote:
+>>>>
+>>>> On Thu, Mar 14, 2024 at 06:59:16PM -0700, Dawei Li wrote:
+>>>>> Change se->load.weight to se_weight(se) in the calculation for the
+>>>>> initial util_avg to avoid unnecessarily inflating the util_avg by 1024
+>>>>> times.
+>>>>>
+>>>>> The reason is that se->load.weight has the unit/scale as the scaled-up
+>>>>> load, while cfs_rg->avg.load_avg has the unit/scale as the true task
+>>>>> weight (as mapped directly from the task's nice/priority value). With
+>>>>> CONFIG_32BIT, the scaled-up load is equal to the true task weight. With
+>>>>> CONFIG_64BIT, the scaled-up load is 1024 times the true task weight.
+>>>>> Thus, the current code may inflate the util_avg by 1024 times. The
+>>>>> follow-up capping will not allow the util_avg value to go wild. But the
+>>>>> calculation should have the correct logic.
+>>>>>
+>>>>> Signed-off-by: Dawei Li <daweilics@gmail.com>
+>>>>> ---
+>>>>> Changes in v2:
+>>>>> - update the commit message
+>>>>> ---
+>>>>>  kernel/sched/fair.c | 5 +++--
+>>>>>  1 file changed, 3 insertions(+), 2 deletions(-)
+>>>>>
+>>>>> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+>>>>> index a19ea290b790..5f98f639bdb9 100644
+>>>>> --- a/kernel/sched/fair.c
+>>>>> +++ b/kernel/sched/fair.c
+>>>>> @@ -1031,7 +1031,8 @@ void init_entity_runnable_average(struct sched_entity *se)
+>>>>>   * With new tasks being created, their initial util_avgs are extrapolated
+>>>>>   * based on the cfs_rq's current util_avg:
+>>>>>   *
+>>>>> - *   util_avg = cfs_rq->util_avg / (cfs_rq->load_avg + 1) * se.load.weight
+>>>>> + *   util_avg = cfs_rq->avg.util_avg / (cfs_rq->avg.load_avg + 1)
+>>>>> + *           * se_weight(se)
+>>>>>   *
+>>>>>   * However, in many cases, the above util_avg does not give a desired
+>>>>>   * value. Moreover, the sum of the util_avgs may be divergent, such
+>>>>> @@ -1078,7 +1079,7 @@ void post_init_entity_util_avg(struct task_struct *p)
+>>>>>
+>>>>>       if (cap > 0) {
+>>>>>               if (cfs_rq->avg.util_avg != 0) {
+>>>>> -                     sa->util_avg  = cfs_rq->avg.util_avg * se->load.weight;
+>>>>> +                     sa->util_avg  = cfs_rq->avg.util_avg * se_weight(se);
+>>>> Hi,
+>>>>
+>>>> The comment above the declaration of se_weight function says we should be
+>>>> using full load resolution and get rid of this helper.
+>>>>
+>>>> Should we be adding new user of the helper?
+>>>>
+>>>> /*
+>>>>  * XXX we want to get rid of these helpers and use the full load resolution.
+>>>>  */
+>>>> static inline long se_weight(struct sched_entity *se)
+>>>> {
+>>>>         return scale_load_down(se->load.weight);
+>>>> }
+>>>>
+>>>>
+>>>>>                       sa->util_avg /= (cfs_rq->avg.load_avg + 1);
+>>>>>
+>>>>>                       if (sa->util_avg > cap)
+>>>>> --
+>>>>> 2.40.1
+>>>>>
+>>
 
-Looks like I missed some things in my previous review...
-
-On Mon, Mar 25, 2024 at 12:36=E2=80=AFAM Sasha Levin <sashal@kernel.org> wr=
-ote:
-> From: Geert Uytterhoeven <geert+renesas@glider.be>
->
-> [ Upstream commit a1721bbbdb5c6687d157f8b8714bba837f6028ac ]
-
-This is not the corresponding upstream commit for this commit
-(a022251c2f950cd2 in v5.15.153).
-It should be a1ca409cc050166a9e8ed183c1d4192f511cf6a2.
-How could that happen? Interestingly, the backport in v6.1.83
-(efab55e16c55c637) does have the correct upstream commit.
-
-> Despite the name, R-Car V3U is the first member of the R-Car Gen4
-> family.  Hence update the compatible properties in various device nodes
-> to include family-specific compatible values for R-Car Gen4 instead of
-> R-Car Gen3:
->   - DMAC,
->   - (H)SCIF,
->   - I2C,
->   - IPMMU,
->   - WDT.
-
-Likewise, the description should be:
-
-    Despite the name, R-Car V3U is the first member of the R-Car Gen4
-    family.  Hence update the compatible properties in various device nodes
-    to include family-specific compatible values for R-Car Gen4 instead of
-    R-Car Gen3:
-      - EtherAVB,
-      - MSIOF.
-
-> Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
-> Reviewed-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
-
-Likewise, bogus tag never given...
-
-> Link: https://lore.kernel.org/r/73cea9d5e1a6639422c67e4df4285042e31c9fd5.=
-1651497071.git.geert+renesas@glider.be
-
-and a wrong link.
-
-> Stable-dep-of: 0c51912331f8 ("arm64: dts: renesas: r8a779a0: Correct avb[=
-01] reg sizes")
-> Signed-off-by: Sasha Levin <sashal@kernel.org>
-
-> --- a/arch/arm64/boot/dts/renesas/r8a779a0.dtsi
-> +++ b/arch/arm64/boot/dts/renesas/r8a779a0.dtsi
-
-> @@ -935,7 +935,7 @@ scif4: serial@e6c40000 {
->
->                 msiof0: spi@e6e90000 {
->                         compatible =3D "renesas,msiof-r8a779a0",
-> -                                    "renesas,rcar-gen3-msiof";
-> +                                    "renesas,rcar-gen4-msiof";
-
-The Renesas MSIOF driver in v5.15.153 does not handle
-"renesas,rcar-gen4-msiof" yet.  Please backport commit ea9d001550abaf2f
-("spi: sh-msiof: add generic Gen4 binding") in v6.1 to fix that.
-
->                         reg =3D <0 0xe6e90000 0 0x0064>;
->                         interrupts =3D <GIC_SPI 245 IRQ_TYPE_LEVEL_HIGH>;
->                         clocks =3D <&cpg CPG_MOD 618>;
-
-Thanks!
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k=
-org
-
-In personal conversations with technical people, I call myself a hacker. Bu=
-t
-when I'm talking to journalists I just say "programmer" or something like t=
-hat.
-                                -- Linus Torvalds
 
