@@ -1,162 +1,94 @@
-Return-Path: <linux-kernel+bounces-128228-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-128229-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5065E8957F1
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 17:16:11 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0C17F8957F3
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 17:16:50 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E46B41F23240
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 15:16:10 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3D1051C21D3E
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 15:16:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9259112D1E0;
-	Tue,  2 Apr 2024 15:16:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 915EB12CD82;
+	Tue,  2 Apr 2024 15:16:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="RBiDW8md"
-Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="aDsvp13q"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2FB6412BF26;
-	Tue,  2 Apr 2024 15:16:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BF33212C526;
+	Tue,  2 Apr 2024 15:16:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712070961; cv=none; b=Kav4utdzQTNGab6reTwQVvepAOlE67j7OpAjZonbfB6vEoRuAJNYQ99NK6IAgUUGWRyw0P0dyMg+gbluCUFWUbXi0VY69FkyH7Yu/gUgMw+gaRBcee3bNNa/tLqmB+MBXtPN62pjFORIAMdBLm0sQtZ2a8dNgGQ8tg5SHRL8QCg=
+	t=1712071002; cv=none; b=BkaZlchLpV8xK3xyHo+CShhyiXoA0sgMfkxDhWakiTIkP61Et39eK+rV4XKkBEeubXCpLxXdPQbPY62bKxtQGHGcbzln3qDhLi7utvaDRNqHWNtJTWp05U5w9meEXwe72LvvB+lNFZvGONsVivE4xYpDfgXpXLwKSLgYXnzFOMk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712070961; c=relaxed/simple;
-	bh=GXhvZfSf7YECAxV/84N1Fg6bLWjEnFuy4JkVVvzvWzQ=;
-	h=Message-ID:Date:MIME-Version:Cc:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=BeToLwTQB7Ya+7p0S+yMSM6bMCAA8bmgNClBplwzjd8pbl0n7HVQ9p2YdIRB967pLWAQUzzrOChbJma6zorz7gx4TDcTBxgzZ2/yiIxqm/aHVEI6M5kXy0Xj6WAano6YUCs5+rjUSSM3ZkRkDVHGFmzyGd25Un2EGRso7LXz6HY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=RBiDW8md; arc=none smtp.client-ip=46.235.227.194
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-	s=mail; t=1712070958;
-	bh=GXhvZfSf7YECAxV/84N1Fg6bLWjEnFuy4JkVVvzvWzQ=;
-	h=Date:Cc:Subject:To:References:From:In-Reply-To:From;
-	b=RBiDW8mdInVUnysarnambAqLqWtsl+BAL08wH5uMBupCQ30qCIWbw52CF9D7BZ6kv
-	 RQTil7RymCSw6D+fWT7D56AqssAyKEC5sKX7cW/OF0/W0NKTYTjwHIqQam8oHfwg6s
-	 V7j9+JFaGf00zhjbSR5SS6JHPZwyqsutHN2h7+9Bnd1CrUsp7hDBL+ljqGDrUj+3eR
-	 AOooX0th5M2jBtyXavfFBsOt608A59pOFpJv47Sled/ORbaYQrIdRYOfJH61x+k1x4
-	 x8/wzhKv3EHE4pa2cjqqQNxiu16gzRDoVMj8MXKAQxEbcVhFyATy+Scl/ikPSdlYcV
-	 boiUGJPkZ52Qw==
-Received: from [10.193.1.1] (broslavsky.collaboradmins.com [68.183.210.73])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	(Authenticated sender: usama.anjum)
-	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 422FD3780626;
-	Tue,  2 Apr 2024 15:15:54 +0000 (UTC)
-Message-ID: <cfecd6ea-8fa3-477f-bd32-4087aefee2af@collabora.com>
-Date: Tue, 2 Apr 2024 20:16:25 +0500
+	s=arc-20240116; t=1712071002; c=relaxed/simple;
+	bh=bGQKsjg01/1kGo3cS43aTtLbJmlbte8HsmSPUewqK4c=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=dDT6uURC/SrxXBhDClkln/TTENT8OtWCD39GGsoj4BErxct/NURpYb6nddfQFZwuM6BEEnDfPEvuqLll0sszbK4I9IXk3zLvpherLNiXuDC90ybIctDj3vnEIuYNeLvwxMdaia12uqvpTj8eXzYvxcJig/5NM8xJwbtU4SHNO1g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=aDsvp13q; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 345E2C433C7;
+	Tue,  2 Apr 2024 15:16:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1712071002;
+	bh=bGQKsjg01/1kGo3cS43aTtLbJmlbte8HsmSPUewqK4c=;
+	h=From:To:Cc:Subject:Date:From;
+	b=aDsvp13qUtPGompTjj99ZDOgpeGCchKSuS4Kt3/8fcUrO4qBxru1iRdTO7Kej+mad
+	 N5GXzmUfOfy1WVRvEwb99BGvX2gX6MIk/ZmCYxOKeY48gXMZCL8es4257wKeIzdCum
+	 s1ClbqXQ0pItPSkDw41fgd3fb3hhoMfTArcamb+DoOttqMk/jsBGX8p0FPZo1490Ey
+	 Q+3hOrzLtGevCfIJj6Fd3wRiOPtxv1AWl5Zme4QvUyyFwiT+HZz37lntZIaHMbP53/
+	 MUUZERJYrevfk6f0Poxwh23JR//tO4uKj72Xk/jo8A2GzFTc+ABxVg3CCveIMHPlW0
+	 6c0IsDuMUOp8A==
+From: Michael Walle <mwalle@kernel.org>
+To: Nishanth Menon <nm@ti.com>,
+	Vignesh Raghavendra <vigneshr@ti.com>,
+	Tero Kristo <kristo@kernel.org>,
+	Rob Herring <robh@kernel.org>,
+	Krzysztof Kozlowski <krzk+dt@kernel.org>,
+	Conor Dooley <conor+dt@kernel.org>
+Cc: linux-arm-kernel@lists.infradead.org,
+	devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Michael Walle <mwalle@kernel.org>
+Subject: [PATCH] arm64: dts: ti: k3-j722s-evm: Enable eMMC support
+Date: Tue,  2 Apr 2024 17:16:35 +0200
+Message-Id: <20240402151635.3803406-1-mwalle@kernel.org>
+X-Mailer: git-send-email 2.39.2
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Cc: Muhammad Usama Anjum <usama.anjum@collabora.com>, kernel@collabora.com,
- linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
- linux-kselftest@vger.kernel.org
-Subject: Re: [PATCH bpf-next v3] selftests/bpf: Move test_dev_cgroup to
- prog_tests
-To: Yonghong Song <yonghong.song@linux.dev>,
- Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
- Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau
- <martin.lau@linux.dev>, Eduard Zingerman <eddyz87@gmail.com>,
- Song Liu <song@kernel.org>, John Fastabend <john.fastabend@gmail.com>,
- KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>,
- Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
- Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>
-References: <20240401123455.1377896-1-usama.anjum@collabora.com>
- <92e1cce6-5f26-4a49-86b6-81e1e80d1aaa@linux.dev>
-Content-Language: en-US
-From: Muhammad Usama Anjum <usama.anjum@collabora.com>
-In-Reply-To: <92e1cce6-5f26-4a49-86b6-81e1e80d1aaa@linux.dev>
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 
-Yonghong Song,
+The J722S EVM has an on-board eMMC. Enable the SDHC interface for it.
+There is no pinmuxing required because the interface has dedicated pins.
 
-Thank you so much for replying. I was missing how to run pipeline manually.
-Thanks a ton.
+Signed-off-by: Michael Walle <mwalle@kernel.org>
+---
+ arch/arm64/boot/dts/ti/k3-j722s-evm.dts | 7 +++++++
+ 1 file changed, 7 insertions(+)
 
-On 4/1/24 11:53 PM, Yonghong Song wrote:
-> 
-> On 4/1/24 5:34 AM, Muhammad Usama Anjum wrote:
->> Move test_dev_cgroup.c to prog_tests/dev_cgroup.c to be able to run it
->> with test_progs. Replace dev_cgroup.bpf.o with skel header file,
->> dev_cgroup.skel.h and load program from it accourdingly.
->>
->>    ./test_progs -t dev_cgroup
->>    mknod: /tmp/test_dev_cgroup_null: Operation not permitted
->>    64+0 records in
->>    64+0 records out
->>    32768 bytes (33 kB, 32 KiB) copied, 0.000856684 s, 38.2 MB/s
->>    dd: failed to open '/dev/full': Operation not permitted
->>    dd: failed to open '/dev/random': Operation not permitted
->>    #72     test_dev_cgroup:OK
->>    Summary: 1/0 PASSED, 0 SKIPPED, 0 FAILED
->> Signed-off-by: Muhammad Usama Anjum <usama.anjum@collabora.com>
->> ---
->> Changes since v2:
->> - Replace test_dev_cgroup with serial_test_dev_cgroup as there is
->>    probability that the test is racing against another cgroup test
->> - Minor changes to the commit message above
->>
->> I've tested the patch with vmtest.sh on bpf-next/for-next and linux
->> next. It is passing on both. Not sure why it was failed on BPFCI.
->> Test run with vmtest.h:
->> sudo LDLIBS=-static PKG_CONFIG='pkg-config --static' ./vmtest.sh
->> ./test_progs -t dev_cgroup
->> ./test_progs -t dev_cgroup
->> mknod: /tmp/test_dev_cgroup_null: Operation not permitted
->> 64+0 records in
->> 64+0 records out
->> 32768 bytes (33 kB, 32 KiB) copied, 0.000403432 s, 81.2 MB/s
->> dd: failed to open '/dev/full': Operation not permitted
->> dd: failed to open '/dev/random': Operation not permitted
->>   #69      dev_cgroup:OK
->> Summary: 1/0 PASSED, 0 SKIPPED, 0 FAILED
-> 
-> The CI failure:
-> 
-> 
-> Error: #72 dev_cgroup
-> serial_test_dev_cgroup:PASS:skel_open_and_load 0 nsec
-> serial_test_dev_cgroup:PASS:cgroup_setup_and_join 0 nsec
-> serial_test_dev_cgroup:PASS:bpf_attach 0 nsec
-> serial_test_dev_cgroup:PASS:bpf_query 0 nsec
-> serial_test_dev_cgroup:PASS:bpf_query 0 nsec
-> serial_test_dev_cgroup:PASS:rm 0 nsec
-> serial_test_dev_cgroup:PASS:mknod 0 nsec
-> serial_test_dev_cgroup:PASS:rm 0 nsec
-> serial_test_dev_cgroup:PASS:rm 0 nsec
-> serial_test_dev_cgroup:FAIL:mknod unexpected mknod: actual 256 != expected 0
-> serial_test_dev_cgroup:PASS:rm 0 nsec
-> serial_test_dev_cgroup:PASS:dd 0 nsec
-> serial_test_dev_cgroup:PASS:dd 0 nsec
-> serial_test_dev_cgroup:PASS:dd 0 nsec
-> 
-> (cgroup_helpers.c:353: errno: Device or resource busy) umount cgroup2
-> 
-> The error code 256 means mknod execution has some issues. Maybe you need to
-> find specific errno to find out what is going on. I think you can do ci
-> on-demanding test to debug.
-errno is 2 --> No such file or directory
-
-Locally I'm unable to reproduce it until I don't remove
-rm -f /tmp/test_dev_cgroup_zero such that the /tmp/test_dev_cgroup_zero
-node is present before test execution. The error code is 256 with errno 2.
-I'm debugging by placing system("ls /tmp 1>&2"); to find out which files
-are already present in /tmp. But ls's output doesn't appear on the CI logs.
-
-> 
-> https://www.kernel.org/doc/Documentation/bpf/bpf_devel_QA.rst
-> 
-
+diff --git a/arch/arm64/boot/dts/ti/k3-j722s-evm.dts b/arch/arm64/boot/dts/ti/k3-j722s-evm.dts
+index cee3a8661d5e..d045dc7dde0c 100644
+--- a/arch/arm64/boot/dts/ti/k3-j722s-evm.dts
++++ b/arch/arm64/boot/dts/ti/k3-j722s-evm.dts
+@@ -369,6 +369,13 @@ partition@3fc0000 {
+ 
+ };
+ 
++&sdhci0 {
++	status = "okay";
++	ti,driver-strength-ohm = <50>;
++	disable-wp;
++	bootph-all;
++};
++
+ &sdhci1 {
+ 	/* SD/MMC */
+ 	vmmc-supply = <&vdd_mmc1>;
 -- 
-BR,
-Muhammad Usama Anjum
+2.39.2
+
 
