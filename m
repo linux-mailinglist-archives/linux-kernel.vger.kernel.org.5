@@ -1,182 +1,188 @@
-Return-Path: <linux-kernel+bounces-128673-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-128674-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id EE175895DF5
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 22:45:02 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 15563895DF8
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 22:46:18 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1C5791C2258B
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 20:45:02 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 37EE21C232D1
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 20:46:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E12BC15E1EC;
-	Tue,  2 Apr 2024 20:44:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 77CB415E1F1;
+	Tue,  2 Apr 2024 20:46:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="gU/YeZI8"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.20])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="S3it5SL7"
+Received: from mail-ej1-f51.google.com (mail-ej1-f51.google.com [209.85.218.51])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A047215ADB1;
-	Tue,  2 Apr 2024 20:44:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.20
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E9AF015D5CB;
+	Tue,  2 Apr 2024 20:46:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712090695; cv=none; b=dCXDxb2MDnXwF98gCWflSHvDINbiY9jl+159ZoMt53UlQNMYZK+8q95uC3zXYRfj070E5z/QLubNBtGXwPR+jB00c9BrLm47FiYoaK9NM3+1cW6zul9aw/SQyko3TrVnUeIBjVKzz8rzqKjdzrNv6LpZ4+QXrPwg2cJezRm4exg=
+	t=1712090767; cv=none; b=MuJwYdSRm4YyIWkqVaC4/RiIgFGTyUHZNINIL0ycJmgUaNk0+1OThulSJKHB+FIiYIneAgoC8HYmfADnDJJqMZAUsCAKYh/4whsw5SggkRKk9O9Sn4bIbWIhGmXt3S4lcTsqqMALYUIeQE2cm6FFYXJkgRQqyvhaRxtMlyEtZao=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712090695; c=relaxed/simple;
-	bh=vcrKVU++LGt1iRwlSiCMBR0ER4wiRkTCi/zpxSgyE6g=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=o/OwIotO8yUEQ8z0Rkubkz/lAvMi8btwvPpOMsAEu/pOKma31nBRZ8VH4+d7378fSS41dMAm2wh0Ijo1WMqS4RR2H8fMIPv7PqQWyZb7c1teBXDDdbOOYFR3T7rsFvYs9W0d6046gBfWIcLoy8gncN5lRaGC0l5kjoUueD+kl68=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=gU/YeZI8; arc=none smtp.client-ip=198.175.65.20
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1712090693; x=1743626693;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=vcrKVU++LGt1iRwlSiCMBR0ER4wiRkTCi/zpxSgyE6g=;
-  b=gU/YeZI8Y8D63sYcWTbCM3//6IRGn4Fv+RIuJUOprb4RCE2PiBbFjw1M
-   hMatmF4hR+xLP/+S5a2kmMYkYsQAXM+rd52tt/hDbuSnbbIs4r5CFGLsH
-   CXF/qJINHq/C0LRkxMW3w5CzIIx71ig2pRLndLmHWp2PKNGpLIS1VrjlP
-   SJSftWVlAtWTvnYvwL6OvHpod+gE6r0IQk4zeI0BJRRHeWtu535X6PDFw
-   6CUlQt2ZMjGWKeF68LSu6sHRAyaxc+X1pWJcVdwWY33H6h/lOimn86e22
-   ZdwRlCNLl2wcnlDwPDemkwp1ExtEUYmzp93EAbmhXSPTy3uNYfPiKDCGv
-   A==;
-X-CSE-ConnectionGUID: gjb1uiXmQwWtG685ajzOKw==
-X-CSE-MsgGUID: fwS7P0tlSa+ZvC7QkTmFhw==
-X-IronPort-AV: E=McAfee;i="6600,9927,11032"; a="7188486"
-X-IronPort-AV: E=Sophos;i="6.07,176,1708416000"; 
-   d="scan'208";a="7188486"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by orvoesa112.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Apr 2024 13:44:52 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,11032"; a="937083805"
-X-IronPort-AV: E=Sophos;i="6.07,176,1708416000"; 
-   d="scan'208";a="937083805"
-Received: from black.fi.intel.com ([10.237.72.28])
-  by fmsmga001.fm.intel.com with ESMTP; 02 Apr 2024 13:44:49 -0700
-Received: by black.fi.intel.com (Postfix, from userid 1003)
-	id EEEC21C5; Tue,  2 Apr 2024 23:44:48 +0300 (EEST)
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To: Hans de Goede <hdegoede@redhat.com>,
-	Mauro Carvalho Chehab <mchehab@kernel.org>,
-	Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-	linux-media@vger.kernel.org,
-	linux-staging@lists.linux.dev,
-	linux-kernel@vger.kernel.org
-Cc: Sakari Ailus <sakari.ailus@linux.intel.com>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Subject: [PATCH v1 1/1] media: atomisp: Get rid of PCI device ID hack check
-Date: Tue,  2 Apr 2024 23:44:47 +0300
-Message-ID: <20240402204447.294280-1-andriy.shevchenko@linux.intel.com>
-X-Mailer: git-send-email 2.43.0.rc1.1.gbec44491f096
+	s=arc-20240116; t=1712090767; c=relaxed/simple;
+	bh=5hHpzI6HyHcS+FulCNSl/epqWvWlTMhwAJLmlEdFBcE=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=RXXitDVbJSh2AmNBx7tPAFI2EtrmKsxcwWnTMwEj9qklI3j+4XNGHp1RFu0qJwXd7RZXn7dG/FcU9INfEaZoanARoBfGv5v8oVDOoqbTTxdSyM+YMzzXy5rHSECfkiKUitZk+4809qgShuWc2MEu0quKeNt7o9tEayVzc77qkx0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=S3it5SL7; arc=none smtp.client-ip=209.85.218.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ej1-f51.google.com with SMTP id a640c23a62f3a-a4e62f3e63dso330882466b.0;
+        Tue, 02 Apr 2024 13:46:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1712090764; x=1712695564; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=MQiI7BxLmggkQQzq0/Zcf0rP2ERdhgPoF6NdWm8XFzU=;
+        b=S3it5SL7wUbjhrjMMiaU5Yg+D5EFLILB0bf3wV+y4jTJgW1PFfrF7lA89KQzJdPZYx
+         ogNsa9BziDoqbf2hvhdaYcTgW1wK8k7oIyarp0Ee3wqdE/17hWNsVvor28E90MOMYoLz
+         EMnawYeIuiVrLu2IgpD387K5eCmaGOgQBk0/WgR6gyKxXJGkjKyWjTezUBt2NG914LOv
+         WQxOXH/trQiDYWOKee/lKzToGLPV2Fy0HLzjLZR6AQoDH6i+V0Cy3UoRMNGtOCYQ1PAZ
+         woZiHEAhQNajK63ypJj8eyf8jR1scTUMp+RVdr+mken/ex9KNPq2T9/Bu6O6pSRgw792
+         vtyQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712090764; x=1712695564;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=MQiI7BxLmggkQQzq0/Zcf0rP2ERdhgPoF6NdWm8XFzU=;
+        b=d0Xpsvqfgz/0WNP/RiDQE2oqOXDrPh/2QlEDkqqsEHmxgcGnouwa8DEqF6E5BkJM70
+         HhUIPLc098hI4wtfONX0Fnk6o4R6iOjjOdSeQA81qnTcvzTJGHgIx6VZMlj9vGJS77yg
+         opOtzr35JR33CghXsoS6/AMFQmuYOIlqf+vWnByacHlhGXgVF6UKCQ5Y+lFTNik/lym9
+         A5CZkNChpN0a37o0cM1ycD/5Efp2d3hrygurmeK1D28JGgqZlDHsB2KHQRN9B96sV8tJ
+         i+SgDrk/Avv6QM4RsGseaRhLD+N6RnJ9I5pgZyPseovyLwrGkVTPjD5cBoYUAk/LqF97
+         B/5A==
+X-Forwarded-Encrypted: i=1; AJvYcCWrvthCz1HD5ObMqfN8ISRWQpIOEzEjNjKOxhvuZQSehEJjhel2JTFViXqn3+k4W86ah8W1rtsuhLQvkzqXxjuQ0xT6O6lINZ6zkN/Q8wWEkzmxsAg5SnhihdQ0UUUrvNnPsnn7
+X-Gm-Message-State: AOJu0YyFHzSHZDOYVhqaxOfHdnMiKUQK93zIy/YEMOaJwAin/AhzliCj
+	uefXcYGtAl//tOeO2ACuYD4Vb8u/4d+XCkxAL2Iqvo9hNwtqkhoN
+X-Google-Smtp-Source: AGHT+IFVmraJ2Ul4LRhcIdzwgvxmCNsrp6LyqCYKiZeHElLm1rMS/EmFJ0j2KzOaa05JxnSRknGnLA==
+X-Received: by 2002:a17:906:c42:b0:a47:3526:2e0f with SMTP id t2-20020a1709060c4200b00a4735262e0fmr8185538ejf.75.1712090763903;
+        Tue, 02 Apr 2024 13:46:03 -0700 (PDT)
+Received: from skbuf ([2a02:2f04:d700:2000::b2c])
+        by smtp.gmail.com with ESMTPSA id k5-20020a1709062a4500b00a4dacd6b8b3sm6967956eje.68.2024.04.02.13.46.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 02 Apr 2024 13:46:03 -0700 (PDT)
+Date: Tue, 2 Apr 2024 23:46:00 +0300
+From: Vladimir Oltean <olteanv@gmail.com>
+To: Nikolay Aleksandrov <razor@blackwall.org>
+Cc: Joseph Huang <Joseph.Huang@garmin.com>, netdev@vger.kernel.org,
+	Andrew Lunn <andrew@lunn.ch>,
+	Florian Fainelli <f.fainelli@gmail.com>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	Roopa Prabhu <roopa@nvidia.com>,
+	Linus =?utf-8?Q?L=C3=BCssing?= <linus.luessing@c0d3.blue>,
+	linux-kernel@vger.kernel.org, bridge@lists.linux.dev
+Subject: Re: [PATCH RFC net-next 00/10] MC Flood disable and snooping
+Message-ID: <20240402204600.5ep4xlzrhleqzw7k@skbuf>
+References: <20240402001137.2980589-1-Joseph.Huang@garmin.com>
+ <7fc8264a-a383-4682-a144-8d91fe3971d9@blackwall.org>
+ <20240402174348.wosc37adyub5o7xu@skbuf>
+ <a8968719-a63b-4969-a971-173c010d708f@blackwall.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <a8968719-a63b-4969-a971-173c010d708f@blackwall.org>
 
-Always check exact PCI ID match and drop hack checks.
+On Tue, Apr 02, 2024 at 09:50:51PM +0300, Nikolay Aleksandrov wrote:
+> On 4/2/24 20:43, Vladimir Oltean wrote:
+> > Hi Nikolai,
+> > 
+> > On Tue, Apr 02, 2024 at 12:28:38PM +0300, Nikolay Aleksandrov wrote:
+> > > For the bridge patches:
+> > > Nacked-by: Nikolay Aleksandrov <razor@blackwall.org>
+> > > 
+> > > You cannot break the multicast flood flag to add support for a custom
+> > > use-case. This is unacceptable. The current bridge behaviour is correct
+> > > your patch 02 doesn't fix anything, you should configure the bridge
+> > > properly to avoid all those problems, not break protocols.
+> > > 
+> > > Your special use case can easily be solved by a user-space helper or
+> > > eBPF and nftables. You can set the mcast flood flag and bypass the
+> > > bridge for these packets. I basically said the same in 2021, if this is
+> > > going to be in the bridge it should be hidden behind an option that is
+> > > default off. But in my opinion adding an option to solve such special
+> > > cases is undesirable, they can be easily solved with what's currently
+> > > available.
+> > 
+> > I appreciate your time is limited, but could you please translate your
+> > suggestion, and detail your proposed alternative a bit, for those of us
+> > who are not very familiar with IP multicast snooping?
+> > 
+> 
+> My suggestion is not related to snooping really, but to the goal of
+> patches 01-03. The bridge patches in this set are trying to forward
+> traffic that is not supposed to be forwarded with the proposed
+> configuration,
 
-Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
----
- .../media/atomisp/pci/atomisp_internal.h      |  3 +-
- .../staging/media/atomisp/pci/atomisp_v4l2.c  | 40 +++++++++----------
- 2 files changed, 21 insertions(+), 22 deletions(-)
+Correct up to a point. Reinterpreting the given user space configuration
+and trying to make it do something else seems like a mistake, but in
+principle one could also look at alternative bridge configurations like
+the one I described here:
+https://lore.kernel.org/netdev/20240402180805.yhhwj2f52sdc4dl2@skbuf/
 
-diff --git a/drivers/staging/media/atomisp/pci/atomisp_internal.h b/drivers/staging/media/atomisp/pci/atomisp_internal.h
-index bba9bc64d447..e6a090d9f310 100644
---- a/drivers/staging/media/atomisp/pci/atomisp_internal.h
-+++ b/drivers/staging/media/atomisp/pci/atomisp_internal.h
-@@ -49,14 +49,13 @@
- 	(((isp)->media_dev.hw_revision & ATOMISP_HW_REVISION_MASK) == \
- 	 ((rev) << ATOMISP_HW_REVISION_SHIFT))
- 
--#define ATOMISP_PCI_DEVICE_SOC_MASK	0xfff8
-+#define ATOMISP_PCI_DEVICE_SOC_BYT	0x0f38
- /* MRFLD with 0x1178: ISP freq can burst to 457MHz */
- #define ATOMISP_PCI_DEVICE_SOC_MRFLD	0x1178
- /* MRFLD with 0x1179: max ISP freq limited to 400MHz */
- #define ATOMISP_PCI_DEVICE_SOC_MRFLD_1179	0x1179
- /* MRFLD with 0x117a: max ISP freq is 400MHz and max freq at Vmin is 200MHz */
- #define ATOMISP_PCI_DEVICE_SOC_MRFLD_117A	0x117a
--#define ATOMISP_PCI_DEVICE_SOC_BYT	0x0f38
- #define ATOMISP_PCI_DEVICE_SOC_ANN	0x1478
- #define ATOMISP_PCI_DEVICE_SOC_CHT	0x22b8
- 
-diff --git a/drivers/staging/media/atomisp/pci/atomisp_v4l2.c b/drivers/staging/media/atomisp/pci/atomisp_v4l2.c
-index f736e54c7df3..4f414b812408 100644
---- a/drivers/staging/media/atomisp/pci/atomisp_v4l2.c
-+++ b/drivers/staging/media/atomisp/pci/atomisp_v4l2.c
-@@ -1238,7 +1238,8 @@ static int atomisp_pci_probe(struct pci_dev *pdev, const struct pci_device_id *i
- 	const struct atomisp_platform_data *pdata;
- 	struct atomisp_device *isp;
- 	unsigned int start;
--	int err, val;
-+	u32 val;
-+	int err;
- 
- 	/* Pointer to struct device. */
- 	atomisp_dev = &pdev->dev;
-@@ -1266,8 +1267,10 @@ static int atomisp_pci_probe(struct pci_dev *pdev, const struct pci_device_id *i
- 
- 	pci_set_drvdata(pdev, isp);
- 
--	switch (id->device & ATOMISP_PCI_DEVICE_SOC_MASK) {
-+	switch (id->device) {
- 	case ATOMISP_PCI_DEVICE_SOC_MRFLD:
-+	case ATOMISP_PCI_DEVICE_SOC_MRFLD_1179:
-+	case ATOMISP_PCI_DEVICE_SOC_MRFLD_117A:
- 		isp->media_dev.hw_revision =
- 		    (ATOMISP_HW_REVISION_ISP2400
- 		     << ATOMISP_HW_REVISION_SHIFT) |
-@@ -1420,28 +1423,25 @@ static int atomisp_pci_probe(struct pci_dev *pdev, const struct pci_device_id *i
- 	 */
- 	atomisp_css2_hw_store_32(MRFLD_CSI_RECEIVER_SELECTION_REG, 1);
- 
--	if ((id->device & ATOMISP_PCI_DEVICE_SOC_MASK) ==
--	    ATOMISP_PCI_DEVICE_SOC_MRFLD) {
--		u32 csi_afe_trim;
--
-+	switch (id->device) {
-+	case ATOMISP_PCI_DEVICE_SOC_MRFLD:
-+	case ATOMISP_PCI_DEVICE_SOC_MRFLD_1179:
-+	case ATOMISP_PCI_DEVICE_SOC_MRFLD_117A:
- 		/*
- 		 * Workaround for imbalance data eye issue which is observed
- 		 * on TNG B0.
- 		 */
--		pci_read_config_dword(pdev, MRFLD_PCI_CSI_AFE_TRIM_CONTROL, &csi_afe_trim);
--		csi_afe_trim &= ~((MRFLD_PCI_CSI_HSRXCLKTRIM_MASK <<
--				   MRFLD_PCI_CSI1_HSRXCLKTRIM_SHIFT) |
--				  (MRFLD_PCI_CSI_HSRXCLKTRIM_MASK <<
--				   MRFLD_PCI_CSI2_HSRXCLKTRIM_SHIFT) |
--				  (MRFLD_PCI_CSI_HSRXCLKTRIM_MASK <<
--				   MRFLD_PCI_CSI3_HSRXCLKTRIM_SHIFT));
--		csi_afe_trim |= (MRFLD_PCI_CSI1_HSRXCLKTRIM <<
--				 MRFLD_PCI_CSI1_HSRXCLKTRIM_SHIFT) |
--				(MRFLD_PCI_CSI2_HSRXCLKTRIM <<
--				 MRFLD_PCI_CSI2_HSRXCLKTRIM_SHIFT) |
--				(MRFLD_PCI_CSI3_HSRXCLKTRIM <<
--				 MRFLD_PCI_CSI3_HSRXCLKTRIM_SHIFT);
--		pci_write_config_dword(pdev, MRFLD_PCI_CSI_AFE_TRIM_CONTROL, csi_afe_trim);
-+		pci_read_config_dword(pdev, MRFLD_PCI_CSI_AFE_TRIM_CONTROL, &val);
-+		val &= ~((MRFLD_PCI_CSI_HSRXCLKTRIM_MASK << MRFLD_PCI_CSI1_HSRXCLKTRIM_SHIFT) |
-+			 (MRFLD_PCI_CSI_HSRXCLKTRIM_MASK << MRFLD_PCI_CSI2_HSRXCLKTRIM_SHIFT) |
-+			 (MRFLD_PCI_CSI_HSRXCLKTRIM_MASK << MRFLD_PCI_CSI3_HSRXCLKTRIM_SHIFT));
-+		val |= (MRFLD_PCI_CSI1_HSRXCLKTRIM << MRFLD_PCI_CSI1_HSRXCLKTRIM_SHIFT) |
-+		       (MRFLD_PCI_CSI2_HSRXCLKTRIM << MRFLD_PCI_CSI2_HSRXCLKTRIM_SHIFT) |
-+		       (MRFLD_PCI_CSI3_HSRXCLKTRIM << MRFLD_PCI_CSI3_HSRXCLKTRIM_SHIFT);
-+		pci_write_config_dword(pdev, MRFLD_PCI_CSI_AFE_TRIM_CONTROL, val);
-+		break;
-+	default:
-+		break;
- 	}
- 
- 	err = atomisp_initialize_modules(isp);
--- 
-2.43.0.rc1.1.gbec44491f096
+> so that can be done by a user-space helper that installs
+> rules to bypass the bridge specifically for those packets while
+> monitoring the bridge state to implement a policy and manage these rules
+> in order to keep snooping working.
+> 
+> > Bypass the bridge for which packets? General IGMP/MLD queries? Wouldn't
+> > that break snooping? And then do what with the packets, forward them in
+> > another software layer than the bridge?
+> > 
+> 
+> The ones that are not supposed to be forwarded in the proposed config
+> and are needed for this use case (control traffic and link-local). Obviously
+> to have proper snooping you'd need to manage these bypass
+> rules and use them only while needed.
 
+I think Joseph will end up in a situation where he needs IGMP control
+messages both in the bridge data path and outside of it :)
+
+Also, your proposal eliminates the possibility of cooperating with a
+hardware accelerator which can forward the IGMP messages where they need
+to go.
+
+As far as I understand, I don't think Joseph has a very "special" use case.
+Disabling flooding of unregistered multicast in the data plane sounds
+reasonable. There seems to be a gap in the bridge API, in that this
+operation also affects the control plane, which he is trying to fix with
+this "force flooding", because of insufficiently fine grained control.
+
+> > I also don't quite understand the suggestion of turning on mcast flooding:
+> > isn't Joseph saying that he wants it off for the unregistered multicast
+> > data traffic?
+> 
+> Ah my bad, I meant to turn off flooding and bypass the bridge for those
+> packets and ports while necessary, under necessary can be any policy
+> that the user-space helper wants to implement.
+> 
+> In any case, if this is going to be yet another kernel solution then it
+> must be a new option that is default off, and doesn't break current mcast
+> flood flag behaviour.
+
+Yeah, maybe something like this, simple and with clear offload
+semantics, as seen in existing hardware (not Marvell though):
+
+mcast_flood == off:
+- mcast_ipv4_ctrl_flood: don't care (maybe can force to "off")
+- mcast_ipv4_data_flood: don't care
+- mcast_ipv6_ctrl_flood: don't care
+- mcast_ipv6_data_flood: don't care
+- mcast_l2_flood: don't care
+mcast_flood == on:
+- Flood 224.0.0.x according to mcast_ipv4_ctrl_flood
+- Flood all other IPv4 multicast according to mcast_ipv4_data_flood
+- Flood ff02::/16 according to mcast_ipv6_ctrl_flood
+- Flood all other IPv6 multicast according to mcast_ipv6_data_flood
+- Flood L2 according to mcast_l2_flood
 
