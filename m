@@ -1,109 +1,244 @@
-Return-Path: <linux-kernel+bounces-128413-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-128414-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id BE4C8895A7A
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 19:15:12 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3016D895A7E
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 19:15:40 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EEDF41C22A0F
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 17:15:11 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D9991287405
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 17:15:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D204A15A490;
-	Tue,  2 Apr 2024 17:15:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 51592159918;
+	Tue,  2 Apr 2024 17:15:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="AemAqCtV"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.10])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="CSXhCtpU"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8FC4814C5B0;
-	Tue,  2 Apr 2024 17:15:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.10
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6974B15A48F;
+	Tue,  2 Apr 2024 17:15:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712078103; cv=none; b=VbWi0/45OlKseEOXVep7cFwvZhdyabS6l1kPmhqiIuAzUFh5tnXD1NIFxGC2T/RzKN/0TK2OZKscc339SHpUnLA6/4vdA0ShRK6kzW1lHE5yxCVcOcZhNKaS/vnsbLCN0FbJeiF6U8VpdF002ypXTisz7bp/Dg2k6bO7hQcOYIQ=
+	t=1712078131; cv=none; b=WMxk8z2Mn/wiYjmT5H++d/ynu8tADXJptcbo/h0v9lGubtpfdaxInBs5UU8fgb9wrcrJsp2Or3ymXBwwlKyEHTZFmen84PcgGgwON0+ZRgmtdRDQiwGQ0oaWQtN/Ai8GdL/gsQWwOuexNO8EnIVgZxK1gEr46/dKf6+yeoPxsmQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712078103; c=relaxed/simple;
-	bh=2BaXhVcstFW0jvQeiK33wxM461j7UJUM44Ukbw+ZOCw=;
-	h=Date:From:To:cc:Subject:In-Reply-To:Message-ID:References:
-	 MIME-Version:Content-Type; b=Dyj/uHM8JD6JI9TJo3cLpRguqYRQdZ7vG7SJ5KOU7QLgNAm3+P+LIwFu6W23NTEsfAGnT9Jqt+aONLwkRHvUHHKYxY+CgBmSxoyzGFYHvsrwhS/R4d2oAMT5q5waCLEBg/IZ/NMy397kZURyL6/UNHVed/je91ABKfNW9hmQ1/U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=AemAqCtV; arc=none smtp.client-ip=192.198.163.10
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1712078102; x=1743614102;
-  h=date:from:to:cc:subject:in-reply-to:message-id:
-   references:mime-version;
-  bh=2BaXhVcstFW0jvQeiK33wxM461j7UJUM44Ukbw+ZOCw=;
-  b=AemAqCtVwMI3RjKHQsgfLlZLbgc0f9Kh6S0UGybiSIc/To01ThXJdOF7
-   VGec9XM5YZKY9JlAyjzmEKU8np5LRMBKkcIGcAzTtbW/4TJoMPXC7wEZi
-   TH9LYTb7/YqntY99nYhkPGjHnG/8g53Nmbzjz5/vTtYWggCXYRh2kgsry
-   x9+u3e6gvnWTQ3W6CKCzmtQcTr7LvYR3PIC1WhByxRTCiv5rwxU6iTeM8
-   bQPmZJ8PXcV1LBeJ+KWVsfXnH+lNjH2kKFBwr4xdNP/lgU7GFiBRMrhlS
-   4CAx8sQHJ0TVqpF5ts9GcnxC53O7xLSULwmf2YbiKMhT/d35Q5rOV+txH
-   g==;
-X-CSE-ConnectionGUID: 1YWu1/t2ShSymp+Vuh06Hw==
-X-CSE-MsgGUID: ntl/8rF5TB6q0aEmhambQw==
-X-IronPort-AV: E=McAfee;i="6600,9927,11032"; a="18628480"
-X-IronPort-AV: E=Sophos;i="6.07,175,1708416000"; 
-   d="scan'208";a="18628480"
-Received: from orviesa009.jf.intel.com ([10.64.159.149])
-  by fmvoesa104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Apr 2024 10:15:01 -0700
-X-CSE-ConnectionGUID: jDvXfXfAQhSacly1OhphUw==
-X-CSE-MsgGUID: Z9fPpwCqQKqqvIQtGi/ASQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,175,1708416000"; 
-   d="scan'208";a="18122645"
-Received: from sj-4150-psse-sw-opae-dev2.sj.intel.com ([10.233.115.162])
-  by orviesa009-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Apr 2024 10:15:01 -0700
-Date: Tue, 2 Apr 2024 10:14:52 -0700 (PDT)
-From: matthew.gerlach@linux.intel.com
-X-X-Sender: mgerlach@sj-4150-psse-sw-opae-dev2
-To: Bjorn Helgaas <helgaas@kernel.org>
-cc: joyce.ooi@intel.com, bhelgaas@google.com, lpieralisi@kernel.org, 
-    kw@linux.com, robh@kernel.org, krzysztof.kozlowski+dt@linaro.org, 
-    conor+dt@kernel.org, linux-pci@vger.kernel.org, devicetree@vger.kernel.org, 
-    linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] dt-bindings: pci: altera: covert to yaml
-In-Reply-To: <20240401224447.GA1762763@bhelgaas>
-Message-ID: <alpine.DEB.2.22.394.2404021012530.364942@sj-4150-psse-sw-opae-dev2>
-References: <20240401224447.GA1762763@bhelgaas>
-User-Agent: Alpine 2.22 (DEB 394 2020-01-19)
+	s=arc-20240116; t=1712078131; c=relaxed/simple;
+	bh=i0Rfu6SWIYZ1pofNcmLBgtBwkK4cgqVmGSoORGPj8PA=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=mnpHpGXhFSf+Sda2urdeWeGvpgbDbGWZghw+vg6Z9nUmcMolW61VtSRwT8egxgcRbPnMZJl+7K1ej48Y4WcewLDb8avRzaiwDpxeR+LVHpQkACCMsigFM93X7jNBruwPc2VyqL75Y3FzPVfsvkzj7WA2wRCsRICH+QRYyiq/XVM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=CSXhCtpU; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E5E1DC43390;
+	Tue,  2 Apr 2024 17:15:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1712078130;
+	bh=i0Rfu6SWIYZ1pofNcmLBgtBwkK4cgqVmGSoORGPj8PA=;
+	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+	b=CSXhCtpU6KLYaoGW8emqnDKHK4BFjrrKp+RKIR4IP7n/9leB07ZXGckWuXTJX5ga2
+	 /HFLp03HQ1VmLTwaG5hzdjtzcQUCPRyPZT/VZFYXFG2AQlvNs2bIT1Hf+iJ5hOTf47
+	 1T7lUFCOh3kT3j0j+Uzu/uo4hTGUaAOR0p71JWenm++jSC0VSEErpFIWlJgS260S6L
+	 SGN6pr/e2p6qPeVwaDQ2iAyMmj/BNE9N8qFhtLqXGHizbMp20nCTwBCC3wMFeSMjJw
+	 GQ9dtNhJ7JhU6HrhwhfSQ75ayjM4jO2Q6Ab4BUuikwnQQ9XOY6KD7oScbtRiE3McoE
+	 3xSPYHpNRmfsw==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+	id 8536ACE0FF2; Tue,  2 Apr 2024 10:15:30 -0700 (PDT)
+Date: Tue, 2 Apr 2024 10:15:30 -0700
+From: "Paul E. McKenney" <paulmck@kernel.org>
+To: Marco Elver <elver@google.com>
+Cc: linux-kernel@vger.kernel.org, kernel-team@meta.com,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	"Peter Zijlstra (Intel)" <peterz@infradead.org>,
+	Douglas Anderson <dianders@chromium.org>,
+	Petr Mladek <pmladek@suse.com>, linux-arch@vger.kernel.org
+Subject: Re: [PATCH RFC cmpxchg 1/8] lib: Add one-byte and two-byte cmpxchg()
+ emulation functions
+Message-ID: <40eafe84-09c2-4345-b8a1-e02f7d0d68bb@paulmck-laptop>
+Reply-To: paulmck@kernel.org
+References: <31c82dcc-e203-48a9-aadd-f2fcd57d94c1@paulmck-laptop>
+ <20240401213950.3910531-1-paulmck@kernel.org>
+ <CANpmjNNSCWSndpf-N7=ifSUFhLWjYJibRf58hETjHeW25RzWYg@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII; format=flowed
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CANpmjNNSCWSndpf-N7=ifSUFhLWjYJibRf58hETjHeW25RzWYg@mail.gmail.com>
 
+On Tue, Apr 02, 2024 at 03:07:22PM +0200, Marco Elver wrote:
+> On Mon, 1 Apr 2024 at 23:39, Paul E. McKenney <paulmck@kernel.org> wrote:
+> >
+> > Architectures are required to provide four-byte cmpxchg() and 64-bit
+> > architectures are additionally required to provide eight-byte cmpxchg().
+> > However, there are cases where one-byte and two-byte cmpxchg()
+> > would be extremely useful.  Therefore, provide cmpxchg_emu_u8() and
+> > cmpxchg_emu_u16() that emulate one-byte and two-byte cmpxchg() in terms
+> > of four-byte cmpxchg().
+> >
+> > Note that these emulations are fully ordered, and can (for example)
+> > cause one-byte cmpxchg_relaxed() to incur the overhead of full ordering.
+> > If this causes problems for a given architecture, that architecture is
+> > free to provide its own lighter-weight primitives.
+> >
+> > [ paulmck: Apply Marco Elver feedback. ]
+> > [ paulmck: Apply kernel test robot feedback. ]
+> >
+> > Link: https://lore.kernel.org/all/0733eb10-5e7a-4450-9b8a-527b97c842ff@paulmck-laptop/
+> >
+> > Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+> > Cc: Marco Elver <elver@google.com>
+> > Cc: Andrew Morton <akpm@linux-foundation.org>
+> > Cc: Thomas Gleixner <tglx@linutronix.de>
+> > Cc: "Peter Zijlstra (Intel)" <peterz@infradead.org>
+> > Cc: Douglas Anderson <dianders@chromium.org>
+> > Cc: Petr Mladek <pmladek@suse.com>
+> > Cc: <linux-arch@vger.kernel.org>
+> 
+> Acked-by: Marco Elver <elver@google.com>
 
+Thank you!  I will apply on my next rebase.
 
-On Mon, 1 Apr 2024, Bjorn Helgaas wrote:
+							Thanx, Paul
 
-> "git log --oneline Documentation/devicetree/bindings/pci/" says the
-> typical style would be:
->
->  dt-bindings: PCI: altera: Convert to YAML
-
-Good suggestion about the 'git log --oneline ...' I will update title in 
-v2.
-
->
-> On Fri, Mar 29, 2024 at 12:00:31PM -0500, matthew.gerlach@linux.intel.com wrote:
->> From: Matthew Gerlach <matthew.gerlach@linux.intel.com>
->>
->> Covert the device tree bindings for the Altera Root
->> Port controller from text to yaml.
->
-> s/covert/convert/ (both in subject and commit log).
->
-> Rewrap to fill 80 columns.
->
-
-Thanks for catching the spelling error. Wrapping and spelling fix will be 
-included in v2.
-
-Matthew Gerlach
+> > ---
+> >  arch/Kconfig                |  3 ++
+> >  include/linux/cmpxchg-emu.h | 16 ++++++++
+> >  lib/Makefile                |  1 +
+> >  lib/cmpxchg-emu.c           | 74 +++++++++++++++++++++++++++++++++++++
+> >  4 files changed, 94 insertions(+)
+> >  create mode 100644 include/linux/cmpxchg-emu.h
+> >  create mode 100644 lib/cmpxchg-emu.c
+> >
+> > diff --git a/arch/Kconfig b/arch/Kconfig
+> > index ae4a4f37bbf08..01093c60952a5 100644
+> > --- a/arch/Kconfig
+> > +++ b/arch/Kconfig
+> > @@ -1609,4 +1609,7 @@ config CC_HAS_SANE_FUNCTION_ALIGNMENT
+> >         # strict alignment always, even with -falign-functions.
+> >         def_bool CC_HAS_MIN_FUNCTION_ALIGNMENT || CC_IS_CLANG
+> >
+> > +config ARCH_NEED_CMPXCHG_1_2_EMU
+> > +       bool
+> > +
+> >  endmenu
+> > diff --git a/include/linux/cmpxchg-emu.h b/include/linux/cmpxchg-emu.h
+> > new file mode 100644
+> > index 0000000000000..fee8171fa05eb
+> > --- /dev/null
+> > +++ b/include/linux/cmpxchg-emu.h
+> > @@ -0,0 +1,16 @@
+> > +/* SPDX-License-Identifier: GPL-2.0+ */
+> > +/*
+> > + * Emulated 1-byte and 2-byte cmpxchg operations for architectures
+> > + * lacking direct support for these sizes.  These are implemented in terms
+> > + * of 4-byte cmpxchg operations.
+> > + *
+> > + * Copyright (C) 2024 Paul E. McKenney.
+> > + */
+> > +
+> > +#ifndef __LINUX_CMPXCHG_EMU_H
+> > +#define __LINUX_CMPXCHG_EMU_H
+> > +
+> > +uintptr_t cmpxchg_emu_u8(volatile u8 *p, uintptr_t old, uintptr_t new);
+> > +uintptr_t cmpxchg_emu_u16(volatile u16 *p, uintptr_t old, uintptr_t new);
+> > +
+> > +#endif /* __LINUX_CMPXCHG_EMU_H */
+> > diff --git a/lib/Makefile b/lib/Makefile
+> > index ffc6b2341b45a..1d93b61a7ecbe 100644
+> > --- a/lib/Makefile
+> > +++ b/lib/Makefile
+> > @@ -236,6 +236,7 @@ obj-$(CONFIG_FUNCTION_ERROR_INJECTION) += error-inject.o
+> >  lib-$(CONFIG_GENERIC_BUG) += bug.o
+> >
+> >  obj-$(CONFIG_HAVE_ARCH_TRACEHOOK) += syscall.o
+> > +obj-$(CONFIG_ARCH_NEED_CMPXCHG_1_2_EMU) += cmpxchg-emu.o
+> >
+> >  obj-$(CONFIG_DYNAMIC_DEBUG_CORE) += dynamic_debug.o
+> >  #ensure exported functions have prototypes
+> > diff --git a/lib/cmpxchg-emu.c b/lib/cmpxchg-emu.c
+> > new file mode 100644
+> > index 0000000000000..a88c4f3c88430
+> > --- /dev/null
+> > +++ b/lib/cmpxchg-emu.c
+> > @@ -0,0 +1,74 @@
+> > +/* SPDX-License-Identifier: GPL-2.0+ */
+> > +/*
+> > + * Emulated 1-byte and 2-byte cmpxchg operations for architectures
+> > + * lacking direct support for these sizes.  These are implemented in terms
+> > + * of 4-byte cmpxchg operations.
+> > + *
+> > + * Copyright (C) 2024 Paul E. McKenney.
+> > + */
+> > +
+> > +#include <linux/types.h>
+> > +#include <linux/export.h>
+> > +#include <linux/instrumented.h>
+> > +#include <linux/atomic.h>
+> > +#include <linux/panic.h>
+> > +#include <linux/bug.h>
+> > +#include <asm-generic/rwonce.h>
+> > +#include <linux/cmpxchg-emu.h>
+> > +
+> > +union u8_32 {
+> > +       u8 b[4];
+> > +       u32 w;
+> > +};
+> > +
+> > +/* Emulate one-byte cmpxchg() in terms of 4-byte cmpxchg. */
+> > +uintptr_t cmpxchg_emu_u8(volatile u8 *p, uintptr_t old, uintptr_t new)
+> > +{
+> > +       u32 *p32 = (u32 *)(((uintptr_t)p) & ~0x3);
+> > +       int i = ((uintptr_t)p) & 0x3;
+> > +       union u8_32 old32;
+> > +       union u8_32 new32;
+> > +       u32 ret;
+> > +
+> > +       ret = READ_ONCE(*p32);
+> > +       do {
+> > +               old32.w = ret;
+> > +               if (old32.b[i] != old)
+> > +                       return old32.b[i];
+> > +               new32.w = old32.w;
+> > +               new32.b[i] = new;
+> > +               instrument_atomic_read_write(p, 1);
+> > +               ret = data_race(cmpxchg(p32, old32.w, new32.w));
+> > +       } while (ret != old32.w);
+> > +       return old;
+> > +}
+> > +EXPORT_SYMBOL_GPL(cmpxchg_emu_u8);
+> > +
+> > +union u16_32 {
+> > +       u16 h[2];
+> > +       u32 w;
+> > +};
+> > +
+> > +/* Emulate two-byte cmpxchg() in terms of 4-byte cmpxchg. */
+> > +uintptr_t cmpxchg_emu_u16(volatile u16 *p, uintptr_t old, uintptr_t new)
+> > +{
+> > +       u32 *p32 = (u32 *)(((uintptr_t)p) & ~0x3);
+> > +       int i = (((uintptr_t)p) & 0x2) / 2;
+> > +       union u16_32 old32;
+> > +       union u16_32 new32;
+> > +       u32 ret;
+> > +
+> > +       WARN_ON_ONCE(((uintptr_t)p) & 0x1);
+> > +       ret = READ_ONCE(*p32);
+> > +       do {
+> > +               old32.w = ret;
+> > +               if (old32.h[i] != old)
+> > +                       return old32.h[i];
+> > +               new32.w = old32.w;
+> > +               new32.h[i] = new;
+> > +               instrument_atomic_read_write(p, 2);
+> > +               ret = data_race(cmpxchg(p32, old32.w, new32.w));
+> > +       } while (ret != old32.w);
+> > +       return old;
+> > +}
+> > +EXPORT_SYMBOL_GPL(cmpxchg_emu_u16);
+> > --
+> > 2.40.1
+> >
 
