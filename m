@@ -1,147 +1,176 @@
-Return-Path: <linux-kernel+bounces-128510-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-128511-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 38DA5895BD5
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 20:35:56 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B54CD895BD8
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 20:38:25 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id CD9A51F23378
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 18:35:55 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E33341C22579
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 18:38:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C5CFA8495;
-	Tue,  2 Apr 2024 18:35:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5F18C15B12D;
+	Tue,  2 Apr 2024 18:38:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="KlD6xera"
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+	dkim=pass (2048-bit key) header.d=wantyapps.xyz header.i=@wantyapps.xyz header.b="mpHq3mLG"
+Received: from mail.wantyapps.xyz (mail.wantyapps.xyz [66.135.5.160])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B16A4219E0;
-	Tue,  2 Apr 2024 18:35:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C38898495;
+	Tue,  2 Apr 2024 18:38:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=66.135.5.160
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712082939; cv=none; b=u70UgAyJOQtDQiv07zXixFUhb8M6JFJHC75myRUNett33HGQqIrk+jskWDe3YyKCsFs26iTLJc/UZRQdgmrZxqdnqJM7kEiG3d6QUbw37i5m325qJJWIxSws9vMs/nGyXzFDeP2DgB4KX3F/w47G/qEjST5PGqdsbsPSfoKEWJ8=
+	t=1712083095; cv=none; b=Bdab9A39dNgorgRY5K2bd7DdNMBCXG+v5jfo6LjruxOWdsSHzpBc+odz74h3RCBugr1Oo418if5s39iEv4Ha3InolxZn8b3/pbhEiWYTyb/E7NkhNu+roPH19vMePJctGc5S0XX4JHwSgJS4r6QXcjb05AiBN50zE6KZKCBJ6qY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712082939; c=relaxed/simple;
-	bh=6iTeA9V6p1tBO/Pmz+o6WiGHGo9CjWuecrmEVBvePM4=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=Dx4eNjc5l6lUs7at6sQRMTlLHOnZx/SPcA+fftoFbze6Ji6nXHbBYPABMrTkLEC9IYidl5rHKPtx/GtcOMWHj80pr/M+QwniqX55ctPOd25CdTCMuDM1gvwJ85tJ99bjp3kPyUHf7l1LIZOrAYDL8xr7Pg0WshIIPtfGhdGJmd0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=KlD6xera; arc=none smtp.client-ip=205.220.168.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279867.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 432HDuPW014036;
-	Tue, 2 Apr 2024 18:35:30 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	message-id:date:mime-version:subject:to:cc:references:from
-	:in-reply-to:content-type:content-transfer-encoding; s=
-	qcppdkim1; bh=7v9FT9Zi0K8PmmSREucDBeJVDzHRbgSradEMlX0VBHQ=; b=Kl
-	D6xeraVuAPidVSYQkdUPslPbXwwlHlC4fZTm7rIp5nsUby2tX8GCjwR6vTiXw8/c
-	bxhIEZwS+Lb/uiGqOblqGMnQPIGYOXXgHuu396sanzaiYjGI4/Jfo/keSyqSwDVh
-	uGsQxRZjd7jNb5SG0KEaj9u5a01LJr8lheEXPyxV/8VoIMMcHzJrR0xX3JWOS4sz
-	4hgULRObkqVwxmwm7pZiYApBAwmVGBABBTCZaaPH7K+faQg/Y7X9qktW048QhlYA
-	0eSs71F7eGX18Ud3sDceFozjxXbgxW09qATEMZDbdAdyxFNv7UI50OsPDQQ/igFa
-	fcoEv9aJc4GB52pWbMBg==
-Received: from nasanppmta04.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3x8h5es6qp-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 02 Apr 2024 18:35:30 +0000 (GMT)
-Received: from nasanex01b.na.qualcomm.com (nasanex01b.na.qualcomm.com [10.46.141.250])
-	by NASANPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 432IZTJN020750
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 2 Apr 2024 18:35:29 GMT
-Received: from [10.216.46.192] (10.80.80.8) by nasanex01b.na.qualcomm.com
- (10.46.141.250) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.4; Tue, 2 Apr 2024
- 11:35:19 -0700
-Message-ID: <e2f108d8-0b25-d799-fbe4-ab6256966982@quicinc.com>
-Date: Wed, 3 Apr 2024 00:05:13 +0530
+	s=arc-20240116; t=1712083095; c=relaxed/simple;
+	bh=HhaPo8p+l4ugT5iV2J7FKycZxcYWiG4CD/2/oEp97F4=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=G7eqdUcffozHmlSloE6iByyeJpWC0QWWLIGEyEtuXP7Pvc9m9sokHaRqAUwi7nMh3gee8AxdXd9riGP0cAJ1n/YjWO08UgCKaoD5elzQhm4TosyB7lptB/3cU80z+IKcbJjlMGrM/Rnfn1Oz2/8cPj5gQjmnjS0ljbREqwaplLg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=wantyapps.xyz; spf=pass smtp.mailfrom=wantyapps.xyz; dkim=pass (2048-bit key) header.d=wantyapps.xyz header.i=@wantyapps.xyz header.b=mpHq3mLG; arc=none smtp.client-ip=66.135.5.160
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=wantyapps.xyz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=wantyapps.xyz
+Received: from multivac.localdomain (unknown [147.235.205.62])
+	by mail.wantyapps.xyz (Postfix) with ESMTPSA id 7620893C6F;
+	Tue,  2 Apr 2024 18:38:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=wantyapps.xyz;
+	s=mail; t=1712083088;
+	bh=HhaPo8p+l4ugT5iV2J7FKycZxcYWiG4CD/2/oEp97F4=;
+	h=From:To:Cc:Subject:Date:From;
+	b=mpHq3mLGer51ZCGSPiMBmMV93fF3Y0AwjwCSRRqnVlwh0WrJnw9U1YAwWmMlw3DGr
+	 nAbSsU8s/lWucsAdGplNstTBEy4V8JSneGk6txUPGqOvybJ6QelqA5uGyqauG18NId
+	 vI/8eeoxvT+LVreue2gEgV938955bQIrj9AXZC179wVuGC4lloZTlrWUKcevUKpjJ6
+	 ZLykB0G0HoxeIHkEpLWD9fU3v3HsigCo8QFAqxIYq+ncbfyZxo8zhoH7AvvyWKac69
+	 yT0BpOzh7gusP0x0hfvE0MNkZ4ThzkhFmlwtWnsjS1A4cWZuzMBUqQZUwGWy70LGEj
+	 h64dmbvmUDQ5w==
+From: me@wantyapps.xyz
+To: 
+Cc: me@wantyapps.xyz,
+	Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
+	Marcel Holtmann <marcel@holtmann.org>,
+	linux-bluetooth@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH v2] Bluetooth: hci_intel: Fix multiple issues reported by checkpatch.pl
+Date: Tue,  2 Apr 2024 21:37:45 +0300
+Message-ID: <20240402183751.107948-1-me@wantyapps.xyz>
+X-Mailer: git-send-email 2.44.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.11.2
-Subject: Re: [PATCH 1/7] clk: qcom: clk-alpha-pll: Fix CAL_L_VAL override for
- LUCID EVO PLL
-Content-Language: en-US
-To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        Michael Turquette
-	<mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>, Rob Herring
-	<robh@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Vinod Koul <vkoul@kernel.org>,
-        Vladimir Zapolskiy <vladimir.zapolskiy@linaro.org>
-CC: <linux-arm-msm@vger.kernel.org>, <linux-clk@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, Taniya Das <quic_tdas@quicinc.com>,
-        "Jagadeesh Kona" <quic_jkona@quicinc.com>,
-        Imran Shaik
-	<quic_imrashai@quicinc.com>,
-        "Satya Priya Kakitapalli"
-	<quic_skakitap@quicinc.com>
-References: <20240330182817.3272224-1-quic_ajipan@quicinc.com>
- <20240330182817.3272224-2-quic_ajipan@quicinc.com>
- <d8c0ca00-7e14-454e-8a65-5dcf14ed7796@linaro.org>
-From: Ajit Pandey <quic_ajipan@quicinc.com>
-In-Reply-To: <d8c0ca00-7e14-454e-8a65-5dcf14ed7796@linaro.org>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nasanex01b.na.qualcomm.com (10.46.141.250)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: yH-2pW9lwhdszkxmIWpXzX8fqjEeM4Rk
-X-Proofpoint-ORIG-GUID: yH-2pW9lwhdszkxmIWpXzX8fqjEeM4Rk
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-04-02_12,2024-04-01_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501 mlxscore=0
- lowpriorityscore=0 spamscore=0 mlxlogscore=814 suspectscore=0 adultscore=0
- bulkscore=0 impostorscore=0 clxscore=1011 malwarescore=0 phishscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.19.0-2403210001
- definitions=main-2404020138
+Content-Transfer-Encoding: 8bit
 
+From: Uri Arev <me@wantyapps.xyz>
 
+This fixes the following CHECKs, WARNINGs, and ERRORs reported in
+hci_intel.c
 
-On 3/31/2024 12:49 AM, Krzysztof Kozlowski wrote:
-> On 30/03/2024 19:28, Ajit Pandey wrote:
->> In LUCID EVO PLL CAL_L_VAL and L_VAL bitfields are part of single
->> PLL_L_VAL register. Update for L_VAL bitfield values in PLL_L_VAL
->> register using regmap_write() API in __alpha_pll_trion_set_rate
->> callback will override LUCID EVO PLL initial configuration related
->> to PLL_CAL_L_VAL bit fields in PLL_L_VAL register.
->>
->> Observed random PLL lock failures during PLL enable due to such
->> override in PLL calibration value. Use regmap_update_bits() with
->> L_VAL bitfield mask instead of regmap_write() API to update only
->> PLL_L_VAL bitfields in __alpha_pll_trion_set_rate callback.
->>
->> Fixes: 260e36606a03 ("clk: qcom: clk-alpha-pll: add Lucid EVO PLL configuration interfaces")
->>
-> 
-> No blank lines between tags.
-> 
-> Add Cc-stable tag.
-> 
-Sure, will update in next series
+Reported by checkpatch.pl:
+-----------
+hci_intel.c
+-----------
+WARNING: Prefer using '"%s...", __func__' to using 'intel_setup', this
+        function's name, in a string
++       bt_dev_dbg(hdev, "start intel_setup");
 
-> Please do not combine fixes with new features.
->  > Best regards,
-> Krzysztof
-> 
+ERROR: code indent should use tabs where possible
++        /* Check for supported iBT hardware variants of this firmware$
 
-Actually this fix is required for correct scaling for few frequencies in 
-this patch series, hence combined them together and pushed this fix as 
-first patch in series so that they get mainlined together and feature 
-functionality will not get impacted.
+ERROR: code indent should use tabs where possible
++         * loading method.$
+
+ERROR: code indent should use tabs where possible
++         *$
+
+ERROR: code indent should use tabs where possible
++         * This check has been put in place to ensure correct forward$
+
+ERROR: code indent should use tabs where possible
++         * compatibility options when newer hardware variants come along.$
+
+ERROR: code indent should use tabs where possible
++         */$
+
+CHECK: No space is necessary after a cast
++       duration = (unsigned long long) ktime_to_ns(delta) >> 10;
+
+CHECK: No space is necessary after a cast
++       duration = (unsigned long long) ktime_to_ns(delta) >> 10;
+
+WARNING: Missing a blank line after declarations
++               int err = PTR_ERR(intel->rx_skb);
++               bt_dev_err(hu->hdev, "Frame reassembly failed (%d)", err);
+
+Signed-off-by: Uri Arev <me@wantyapps.xyz>
+Suggested-by: Luiz Augusto von Dentz <luiz.dentz@gmail.com>
+---
+Changes in v2:
+Changed bt_dev_dbg(hdev, "start intel_setup"); to bt_dev_dbg(hdev, "");
+as suggested by Luiz Augusto von Dentz
+---
+ drivers/bluetooth/hci_intel.c | 19 ++++++++++---------
+ 1 file changed, 10 insertions(+), 9 deletions(-)
+
+diff --git a/drivers/bluetooth/hci_intel.c b/drivers/bluetooth/hci_intel.c
+index 78afb9a348e7..53e394676f6b 100644
+--- a/drivers/bluetooth/hci_intel.c
++++ b/drivers/bluetooth/hci_intel.c
+@@ -537,7 +537,7 @@ static int intel_setup(struct hci_uart *hu)
+ 	int speed_change = 0;
+ 	int err;
+ 
+-	bt_dev_dbg(hdev, "start intel_setup");
++	bt_dev_dbg(hdev, "");
+ 
+ 	hu->hdev->set_diag = btintel_set_diag;
+ 	hu->hdev->set_bdaddr = btintel_set_bdaddr;
+@@ -591,12 +591,12 @@ static int intel_setup(struct hci_uart *hu)
+ 		return -EINVAL;
+ 	}
+ 
+-        /* Check for supported iBT hardware variants of this firmware
+-         * loading method.
+-         *
+-         * This check has been put in place to ensure correct forward
+-         * compatibility options when newer hardware variants come along.
+-         */
++	/* Check for supported iBT hardware variants of this firmware
++	 * loading method.
++	 *
++	 * This check has been put in place to ensure correct forward
++	 * compatibility options when newer hardware variants come along.
++	 */
+ 	switch (ver.hw_variant) {
+ 	case 0x0b:	/* LnP */
+ 	case 0x0c:	/* WsP */
+@@ -777,7 +777,7 @@ static int intel_setup(struct hci_uart *hu)
+ 
+ 	rettime = ktime_get();
+ 	delta = ktime_sub(rettime, calltime);
+-	duration = (unsigned long long) ktime_to_ns(delta) >> 10;
++	duration = (unsigned long long)ktime_to_ns(delta) >> 10;
+ 
+ 	bt_dev_info(hdev, "Firmware loaded in %llu usecs", duration);
+ 
+@@ -822,7 +822,7 @@ static int intel_setup(struct hci_uart *hu)
+ 
+ 	rettime = ktime_get();
+ 	delta = ktime_sub(rettime, calltime);
+-	duration = (unsigned long long) ktime_to_ns(delta) >> 10;
++	duration = (unsigned long long)ktime_to_ns(delta) >> 10;
+ 
+ 	bt_dev_info(hdev, "Device booted in %llu usecs", duration);
+ 
+@@ -977,6 +977,7 @@ static int intel_recv(struct hci_uart *hu, const void *data, int count)
+ 				    ARRAY_SIZE(intel_recv_pkts));
+ 	if (IS_ERR(intel->rx_skb)) {
+ 		int err = PTR_ERR(intel->rx_skb);
++
+ 		bt_dev_err(hu->hdev, "Frame reassembly failed (%d)", err);
+ 		intel->rx_skb = NULL;
+ 		return err;
 -- 
-Thanks, and Regards
-Ajit
+2.44.0
+
 
