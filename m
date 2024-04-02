@@ -1,201 +1,142 @@
-Return-Path: <linux-kernel+bounces-127576-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-127577-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B3515894DCF
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 10:45:09 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 45217894DD3
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 10:46:17 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D5ECB1C22010
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 08:45:08 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0157D2833D4
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 08:46:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5154A47A53;
-	Tue,  2 Apr 2024 08:45:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BBCB050278;
+	Tue,  2 Apr 2024 08:46:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="CdtGYgcE"
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Wl3U/pMq"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A7F4E4501C
-	for <linux-kernel@vger.kernel.org>; Tue,  2 Apr 2024 08:44:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.1
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5D93A4501C;
+	Tue,  2 Apr 2024 08:46:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712047499; cv=none; b=k7qG8c6aAMvqIEumrvvIjWnAXwKhFmXV1db11Ji9g8wmBos2JQc3v4h1g42CM01/ryWOlY/R10IkHoyUJ+DrVXTR3CrhVE90AnfTstSu0tznBUyhBixc0PzjVk+o8XwREH/4IsM0cDssohIp67SgdC3VrAKROEp6ISpaHcAutPg=
+	t=1712047568; cv=none; b=Y5jhffmfXR9KrioEaUAMhSYXAhfZ6J97HErmywm6H4+PPq9TuwrU6Yz1Yo7raZDT3WAJMVD6BrAauY/oJX4O3ha/JKzCvSV6fOvMM0RFLGnRjc6qiuvudDzF/2zuoqEVxp+ZgW7Y9OT3vj79X3/eLnFMoz1kI9yiDY0bhKF43Gw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712047499; c=relaxed/simple;
-	bh=UPJFjRhrLx6xuVnzzr1LBNaG+sncLe5vQRUrXN6iQFs=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=VsQqLUDWZtL06xnTO/FBgo9IS0UAjC3qvOc2FQwlG1QYxrDtbBkFS8AbBmC97Ih5BG3jjIjXpGz7ndfZ0uW9mOLvr1raZOBiIfBQum2lFChNG51gKHtaz5pyaNZVx7Ia/3z+oFPXolm/bmVPojNN7g9xw7amhhDfeVi3RV7MjKo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=CdtGYgcE; arc=none smtp.client-ip=148.163.156.1
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0353728.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 4328EUxe022447;
-	Tue, 2 Apr 2024 08:44:43 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=T2zL8Y0GWuFkfIzMrk8rH4N2RawDCFmZokkUku3EQYA=;
- b=CdtGYgcEA7zVMomED6k909skV2nqT6rQNtnaGbk9q61KwOhLAa83/YLUVHAS6hl026vH
- glUstFx4sSidh/FIu046e6QR3JaoyZrFeN9+ji5zc+sWNlWpBnqu7dgqPuvte6C8XV1E
- 7gHxTbH9pdsekx57PtQsZxNas73TR2d+kJGubpr0T2ir1AmvBvepUPRpo7twY4DhmoeY
- RL8PEQ2nRBGjnhQoHwhyp3jHSAJ44fE+VGsLyhzjqI3vF+QO3myMuZFZcwdznFG+RB8u
- yuSRjG34DmAVScQ3IJG7mBdhdcTMp6PFxHU9GSDFkzYfUPGixBsuJEov4gGirWtlIrtx 8Q== 
-Received: from pps.reinject (localhost [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3x8ea40343-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 02 Apr 2024 08:44:42 +0000
-Received: from m0353728.ppops.net (m0353728.ppops.net [127.0.0.1])
-	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 4328igUt012610;
-	Tue, 2 Apr 2024 08:44:42 GMT
-Received: from ppma23.wdc07v.mail.ibm.com (5d.69.3da9.ip4.static.sl-reverse.com [169.61.105.93])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3x8ea4033w-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 02 Apr 2024 08:44:42 +0000
-Received: from pps.filterd (ppma23.wdc07v.mail.ibm.com [127.0.0.1])
-	by ppma23.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 4325Utjt002194;
-	Tue, 2 Apr 2024 08:44:40 GMT
-Received: from smtprelay07.wdc07v.mail.ibm.com ([172.16.1.74])
-	by ppma23.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3x6xjmd7af-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 02 Apr 2024 08:44:40 +0000
-Received: from smtpav02.dal12v.mail.ibm.com (smtpav02.dal12v.mail.ibm.com [10.241.53.101])
-	by smtprelay07.wdc07v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 4328icEc29229628
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Tue, 2 Apr 2024 08:44:40 GMT
-Received: from smtpav02.dal12v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 0011D5805E;
-	Tue,  2 Apr 2024 08:44:37 +0000 (GMT)
-Received: from smtpav02.dal12v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 271DC58051;
-	Tue,  2 Apr 2024 08:44:34 +0000 (GMT)
-Received: from [9.171.24.250] (unknown [9.171.24.250])
-	by smtpav02.dal12v.mail.ibm.com (Postfix) with ESMTP;
-	Tue,  2 Apr 2024 08:44:33 +0000 (GMT)
-Message-ID: <e7d5bec3-be2a-4eea-b946-7f1739b0b4d0@linux.ibm.com>
-Date: Tue, 2 Apr 2024 14:14:31 +0530
+	s=arc-20240116; t=1712047568; c=relaxed/simple;
+	bh=Fh4xaBSV/7KMplnOoseILgEOyANlTljnCuikIBL5YzE=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=Eo89vudUdm5Tu1Ixde8HtVkfDEA9pvTTH5VX1TPdzJbfAbodK8y7htnYpBqGbqdTmzEIz/4Z78y4/+AuTd5UZb3v2SQiAdRx0JU2ADMkWsp49whXB86At7MiBxqw/to6WLQYGm4kSaedJPhnPHpYt9b75GWErEM0khlS3o3KDyY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Wl3U/pMq; arc=none smtp.client-ip=198.175.65.18
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1712047566; x=1743583566;
+  h=message-id:subject:from:to:cc:date:in-reply-to:
+   references:content-transfer-encoding:mime-version;
+  bh=Fh4xaBSV/7KMplnOoseILgEOyANlTljnCuikIBL5YzE=;
+  b=Wl3U/pMqKxjKP71jo63XFFK4GXgw9YupQZ2KsMyrxad5VB9irM4CAyDC
+   KMs1pi/ROhPtT4R25yC6dF2rL6WMjSkjW6RkI7i87B/mHysjgWVqs21GH
+   DAJUpSXKsTMiIFfKHfQfZqiYsHDilQf9MYo559K4rwnkZuMQWkSdABHp9
+   18XtBsLatiRYXqZj9eSDjT/dpPVwPtU5fQ8tYQ/XROWVQYQzjRWMGWwJ+
+   CdH5CF3PkpWEJmgLJzLjEZGyF2+fwQjkVkMzP7tCb8UVuMVSdHZBGoik/
+   Tv644hEkqkA0aqfZlUtaFaEuFbfTLzf/B2XWdTnnwviPXOravHIzBFo1I
+   A==;
+X-CSE-ConnectionGUID: Ox1ritnBS/+7t4Gtg/t/Ag==
+X-CSE-MsgGUID: wFDtkneSQeWrcU/ttCVEAw==
+X-IronPort-AV: E=McAfee;i="6600,9927,11031"; a="7361897"
+X-IronPort-AV: E=Sophos;i="6.07,174,1708416000"; 
+   d="scan'208";a="7361897"
+Received: from fmviesa007.fm.intel.com ([10.60.135.147])
+  by orvoesa110.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Apr 2024 01:46:06 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,174,1708416000"; 
+   d="scan'208";a="18067477"
+Received: from spandruv-desk1.amr.corp.intel.com ([10.209.67.49])
+  by fmviesa007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Apr 2024 01:46:05 -0700
+Message-ID: <2a3e223f3f248e8b02a8aeb47ab2ab15a6225889.camel@linux.intel.com>
+Subject: Re: [PATCH v1 0/6] intel_pstate: Turbo disabled handling rework
+From: srinivas pandruvada <srinivas.pandruvada@linux.intel.com>
+To: "Rafael J. Wysocki" <rjw@rjwysocki.net>, Linux PM
+ <linux-pm@vger.kernel.org>
+Cc: LKML <linux-kernel@vger.kernel.org>
+Date: Tue, 02 Apr 2024 01:46:04 -0700
+In-Reply-To: <13494237.uLZWGnKmhe@kreacher>
+References: <13494237.uLZWGnKmhe@kreacher>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2] sched/fair: fix initial util_avg calculation
-To: Dawei Li <daweilics@gmail.com>
-Cc: Ingo Molnar <mingo@redhat.com>, Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>, Ben Segall <bsegall@google.com>,
-        Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira
- <bristot@redhat.com>,
-        Valentin Schneider <vschneid@redhat.com>, linux-kernel@vger.kernel.org
-References: <20240315015916.21545-1-daweilics@gmail.com>
- <ZgqOEJ5sCANkkk5N@linux.ibm.com>
- <CAG5MgCq3GT=CVj7Hz8rUMfNG1c9ypVsTSDKNESHV9tY_qWSt2g@mail.gmail.com>
-Content-Language: en-US
-From: Vishal Chourasia <vishalc@linux.ibm.com>
-In-Reply-To: <CAG5MgCq3GT=CVj7Hz8rUMfNG1c9ypVsTSDKNESHV9tY_qWSt2g@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: ynuwsyN2aW7spXZR0D0ysFIuzWOCUfEO
-X-Proofpoint-ORIG-GUID: TUxFKjYrMOauX0CIA4ArSeUGQRh8kytR
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-04-02_03,2024-04-01_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 phishscore=0
- mlxlogscore=999 malwarescore=0 clxscore=1015 bulkscore=0 spamscore=0
- priorityscore=1501 impostorscore=0 adultscore=0 suspectscore=0
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2403210000 definitions=main-2404020061
 
-On 02/04/24 11:17 am, Dawei Li wrote:
-> Hi Vishal
-> 
-> Thanks for the comment!
-> Do you suggest using scale_load_down() in place of se_weight()?
-scale_load_down should be better.
-> It's a soft bug we should fix one way or another before what the
-> comment mentions really happens.
-IIUC, We should be moving towards using full load resolution
-for all the calculations. In that case, we need not worry about scaling load at
-all. Maybe someone could provide context here.
+On Mon, 2024-03-25 at 18:00 +0100, Rafael J. Wysocki wrote:
+> Hi Everyone,
+>=20
+> This series reworks the handling of disabling turbo in intel_pstate
+> on top of the previous series of cleanups
+>=20
+> https://lore.kernel.org/linux-pm/12409658.O9o76ZdvQC@kreacher/
+>=20
+> The underlying problem is that disabling turbo is handled quite
+> consistently
+> in intel_pstate and basically it can get disabled at any time
+> (through
+> MSR_IA32_MISC_ENABLE_TURBO_DISABLE) without much coordination with
+> the
+> cpufreq core or anything else.
+>=20
+> Disabling turbo through the "no_turbo" sysfs attribute is more
+> consistent,
+> but it has issues too (for example, if turbo is disabled via
+> "no_turbo",
+> the frequency-invariance code gets notified on the turbo status
+> change,
+> but the actual maximum frequency of the CPU is only updated if the
+> MSR_IA32_MISC_ENABLE_TURBO_DISABLE value changes either, which need
+> not
+> happen at the same time or even at all).
+>=20
+> The first patch is not really related to the rest of the series, it's
+> just a cleanup and can be applied separately.
+>=20
+> Patch [2/6] uses the observation that it should be necessary to read
+> MSR_IA32_MISC_ENABLE_TURBO_DISABLE after driver initialization to
+> remove
+> in-flight reads on that MSR and turbo state updates related to them.
+>=20
+> Patch [3/6] builds on top of the previous one to adjust the
+> "no_turbo"
+> attribute "store" and "show" callbacks.
+>=20
+> Patch [4/6] adds READ_ONCE() annotations to global.no_turbo accesses
+> and
+> makes some related simplifications.
+>=20
+> Patch [5/6] replaces the cached MSR_IA32_MISC_ENABLE_TURBO_DISABLE
+> value in some checks with global.no_turbo for consistency.
+>=20
+> Patch [6/6] makes all of the code paths where the maximum CPU
+> frequency
+> can change to do that consistently by using the same set of
+> functions.
+>=20
+> Details are described in the individual patch changelogs.
+>=20
 
-> I am actually confused that we have both se_weight() and
-> scale_load_down(), and they do the same thing.
-> 
-> Best regards,
-> Dawei
-> 
-> On Mon, Apr 1, 2024 at 3:36 AM Vishal Chourasia <vishalc@linux.ibm.com> wrote:
->>
->> On Thu, Mar 14, 2024 at 06:59:16PM -0700, Dawei Li wrote:
->>> Change se->load.weight to se_weight(se) in the calculation for the
->>> initial util_avg to avoid unnecessarily inflating the util_avg by 1024
->>> times.
->>>
->>> The reason is that se->load.weight has the unit/scale as the scaled-up
->>> load, while cfs_rg->avg.load_avg has the unit/scale as the true task
->>> weight (as mapped directly from the task's nice/priority value). With
->>> CONFIG_32BIT, the scaled-up load is equal to the true task weight. With
->>> CONFIG_64BIT, the scaled-up load is 1024 times the true task weight.
->>> Thus, the current code may inflate the util_avg by 1024 times. The
->>> follow-up capping will not allow the util_avg value to go wild. But the
->>> calculation should have the correct logic.
->>>
->>> Signed-off-by: Dawei Li <daweilics@gmail.com>
->>> ---
->>> Changes in v2:
->>> - update the commit message
->>> ---
->>>  kernel/sched/fair.c | 5 +++--
->>>  1 file changed, 3 insertions(+), 2 deletions(-)
->>>
->>> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
->>> index a19ea290b790..5f98f639bdb9 100644
->>> --- a/kernel/sched/fair.c
->>> +++ b/kernel/sched/fair.c
->>> @@ -1031,7 +1031,8 @@ void init_entity_runnable_average(struct sched_entity *se)
->>>   * With new tasks being created, their initial util_avgs are extrapolated
->>>   * based on the cfs_rq's current util_avg:
->>>   *
->>> - *   util_avg = cfs_rq->util_avg / (cfs_rq->load_avg + 1) * se.load.weight
->>> + *   util_avg = cfs_rq->avg.util_avg / (cfs_rq->avg.load_avg + 1)
->>> + *           * se_weight(se)
->>>   *
->>>   * However, in many cases, the above util_avg does not give a desired
->>>   * value. Moreover, the sum of the util_avgs may be divergent, such
->>> @@ -1078,7 +1079,7 @@ void post_init_entity_util_avg(struct task_struct *p)
->>>
->>>       if (cap > 0) {
->>>               if (cfs_rq->avg.util_avg != 0) {
->>> -                     sa->util_avg  = cfs_rq->avg.util_avg * se->load.weight;
->>> +                     sa->util_avg  = cfs_rq->avg.util_avg * se_weight(se);
->> Hi,
->>
->> The comment above the declaration of se_weight function says we should be
->> using full load resolution and get rid of this helper.
->>
->> Should we be adding new user of the helper?
->>
->> /*
->>  * XXX we want to get rid of these helpers and use the full load resolution.
->>  */
->> static inline long se_weight(struct sched_entity *se)
->> {
->>         return scale_load_down(se->load.weight);
->> }
->>
->>
->>>                       sa->util_avg /= (cfs_rq->avg.load_avg + 1);
->>>
->>>                       if (sa->util_avg > cap)
->>> --
->>> 2.40.1
->>>
+Acked-by: Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
+
+Thanks,
+Srinivas
+
+> Thanks!
+>=20
+>=20
+>=20
+>=20
 
 
