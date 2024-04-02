@@ -1,234 +1,156 @@
-Return-Path: <linux-kernel+bounces-128094-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-128096-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 651B189560B
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 16:02:37 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8058189560F
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 16:03:02 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 19D312841EB
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 14:02:36 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 34FE8284729
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 14:03:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4334E85958;
-	Tue,  2 Apr 2024 14:02:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D211186AE6;
+	Tue,  2 Apr 2024 14:02:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="GW0iibiz"
-Received: from mail-qk1-f174.google.com (mail-qk1-f174.google.com [209.85.222.174])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="aynbUfgX"
+Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BC81184A22;
-	Tue,  2 Apr 2024 14:02:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5FFCA86266;
+	Tue,  2 Apr 2024 14:02:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712066546; cv=none; b=hNciZRhUasbHm1/jo8OBQgfJoZv80dhGR9iV0Iewz+vK1jw7ov5voQ1c8z3zABQzX9sKrzbaXT02ecPcN4ubkjFQ2raLw0dkxS5f6waja+uN+oqBsxWh3oscApFocf2/eLwGxwxFHmMFcxOJRh0XfMfa2v/4605DFGEH5lGuyCw=
+	t=1712066552; cv=none; b=OSw4uTE5xG1rmt9SWSdOSuzT60mc8iQuPg7fZHvk75C57STISI5Y1l7BYtkSAq1vi3N4vOpsr7ZhlK2snUFa/SqNJG4Rx8qeOjeAZ+pwQEWTDGaOkLOzzT9Fv8XiwpUtjihzSvRl+86zuldhAtyd7KnmZs1gHYPG8ECQlJ/uAzE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712066546; c=relaxed/simple;
-	bh=UO9L6r+vy9lR2lIAPzgynVMMD8ptxjYlJtiwB4qr5Rg=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=itTeIOmd5I2+SDvAA9GR2/UPgIYikoBUtMtCLdF4Gk9/6TBnIIBEYNdBCTIrmkBuK2Sw+iQy5Nhxao5ChmHhHhqGgno1739I4E3kyO1XNHr68g8HZjeiogpn0oQ55GZxea800IxezPs+Om7/cdgpTyWRezdBWuUhh7AdfLRB/RM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=GW0iibiz; arc=none smtp.client-ip=209.85.222.174
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-qk1-f174.google.com with SMTP id af79cd13be357-78a746759b4so379296785a.2;
-        Tue, 02 Apr 2024 07:02:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1712066543; x=1712671343; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=QHSoMgHSVCnzk9XY/4SW/zti9qPkDr59hKAE7jpY8Tg=;
-        b=GW0iibizMDfs4tL2jAt3gwJn9oRMyIWxqcPsdSw9pp6Ik6E1wDXST7YfyN8GXu95sU
-         7cRy0aIaSNM1UIbzfc936BAF4mcKnYCbZKAysnKKYOf5jEhX6qVnXI4bJAAhUiG0iOly
-         t8rw2BbrcZqIlJT6ekbQEgh2XhsJ3Dl1z4oedHOkxYWXIisEEWRURsjC+jNl2ftQLxkt
-         z7FpyLdkt/vSqOsEkXgNKRW/erZWgYhD04An+QzgSneBEX4GUAgkwC1aR8UsNkKc68MS
-         aC/9a7ED0F1tjfVOKTJNy1OxeydtqVCY/RN9DORTHr6lMr/iIdCx7yqghTRNcvSbisqW
-         gMng==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712066543; x=1712671343;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=QHSoMgHSVCnzk9XY/4SW/zti9qPkDr59hKAE7jpY8Tg=;
-        b=inZr0bB92Ya1gIjv8BEZ3IULhoqEiYGIb7DkqXPQ6a7AcwUdYruKnRmEfl3ahySCE+
-         ik0vs5cM7A5cJ/q1sKZyY+2uKP9fZMhe5GZaONUgtvmp057d67A6swHJuJLauI2ZlAVB
-         C9BdFpDfLQgR9alanTPNsS2h9hrOAEpGOO0C6x0W/PPhD57S3r+1ceNQt8g3M+r5OiJh
-         5rzStoicNz9ywsgqLNeXlz366YWyrCJ/94iRGRmXYk4Inxjyf5QmZk6vKNohJD5Brwzc
-         6L2oUBaN/wBpfN7jDrUjCAQQJ1ANVBa5p7owgTEJW4GuWq7IHfgZ+Pnf1PFxNUGUhMhO
-         ouBA==
-X-Forwarded-Encrypted: i=1; AJvYcCVsv2T08F2L/H8fmPfOFCDCfFG99h+lrRjQiROdsVRW2h962uJvEya9m0sORJnB7MuZWvnDpfncaUJzEpUjvkVvoDSJFBXntNlBuQxCBUEMS0P8B38fLg+DmuhIEqYUgR2FTiFRjmAVDTqAGA==
-X-Gm-Message-State: AOJu0YwprDNxwUD+SNtkuSqG25xZuAQ3y4Q+Xg/5zwoO+oeTSTqzLa0o
-	f4XLWBylOhyVB6W7KFSY8hLCsCrS5jTVJ1Nbs9ZCeDvOnFrfoF7q3LA4M/sBwAAWrDSm7DqkLAm
-	P2FMuIRSyhX1Eh7zAhCoPGVoQAAA=
-X-Google-Smtp-Source: AGHT+IE3Ie6UqpwR2ahcExp5xoKdrL6D3srT7/FC+clGzi0IT7DyqDbvdiFN6ftWm9TmZrO0LeCLO9dpE3KzPEnQxIA=
-X-Received: by 2002:ad4:4e62:0:b0:699:514:3031 with SMTP id
- ec2-20020ad44e62000000b0069905143031mr5645451qvb.20.1712066543293; Tue, 02
- Apr 2024 07:02:23 -0700 (PDT)
+	s=arc-20240116; t=1712066552; c=relaxed/simple;
+	bh=+5RKOetbmxrtVOG6OyPkEeOWhTsHnv/SA812/SjWp1s=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=JIIzsc03SrGJ1UbJJ9z2eMbr4m5wJMDgWYaPYx0ki5+JbnW0nwlxdCAwvAVZoBywc2rd/4Sln2hWGQfSiuFRLkfrrV7omn3KE7fL16weYWa47mWXHB76uOTxmkMJU9uL45v1PRixq5Zs2wbgU1uL2JMJ3ubnwkl/dYecb9DF2XA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=aynbUfgX; arc=none smtp.client-ip=46.235.227.194
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+	s=mail; t=1712066548;
+	bh=+5RKOetbmxrtVOG6OyPkEeOWhTsHnv/SA812/SjWp1s=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=aynbUfgXtmFBI2TkptFysjrYmTBYsmBpzDAsaLfwmUIC7bzDKk3tRel1qxR3Yd2PO
+	 7wn1yQ9mDlU942oV1kE7MudRx9/gFwjYYkewplyD7Gdmcouah6y6wdTXzrd/rhF5yl
+	 /blDxRT+es9nJHjkpXG71Hr1+ytOFUCJN89m3J9WXRFageVYQpJjQvDYhDH1r2muks
+	 a5WiQKUJs1+V+bkYNyYL9HRfgLvA+OVO4HtqYOhkDg+juj3jdmaPXDjwM+qaig6QAl
+	 heJYINY1FBgn3/3E7+u8Wxsyg4F76rvXqPuZUhQ1OPbG4BvoVBumCsNONcdEtVwEoA
+	 WLFXE366ysDZw==
+Received: from localhost (cola.collaboradmins.com [195.201.22.229])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	(Authenticated sender: bbrezillon)
+	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 981343780624;
+	Tue,  2 Apr 2024 14:02:27 +0000 (UTC)
+Date: Tue, 2 Apr 2024 16:02:26 +0200
+From: Boris Brezillon <boris.brezillon@collabora.com>
+To: Harshit Mogalapalli <harshit.m.mogalapalli@oracle.com>
+Cc: Steven Price <steven.price@arm.com>, Liviu Dudau <liviu.dudau@arm.com>,
+ Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, Maxime Ripard
+ <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>, David Airlie
+ <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>, Heiko Stuebner
+ <heiko@sntech.de>, Grant Likely <grant.likely@linaro.org>,
+ dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+ dan.carpenter@linaro.org, kernel-janitors@vger.kernel.org,
+ error27@gmail.com
+Subject: Re: [PATCH v2] drm/panthor: Fix couple of NULL vs IS_ERR() bugs
+Message-ID: <20240402160226.4a1ac2d1@collabora.com>
+In-Reply-To: <20240402134709.1706323-1-harshit.m.mogalapalli@oracle.com>
+References: <20240402134709.1706323-1-harshit.m.mogalapalli@oracle.com>
+Organization: Collabora
+X-Mailer: Claws Mail 4.2.0 (GTK 3.24.41; x86_64-redhat-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240402-setlease-v2-1-b098a5f9295d@kernel.org>
- <8a8e8c0d-7878-4289-b490-cb9bf17e56b9@fastmail.fm> <f6bbdf158f0ca7a12de9b9f980d4d7fa31399ed9.camel@kernel.org>
-In-Reply-To: <f6bbdf158f0ca7a12de9b9f980d4d7fa31399ed9.camel@kernel.org>
-From: Amir Goldstein <amir73il@gmail.com>
-Date: Tue, 2 Apr 2024 17:02:12 +0300
-Message-ID: <CAOQ4uxiv7xSUS7RDK3esa1Crp8reYXewxkr5fFbhG623P20PwA@mail.gmail.com>
-Subject: Re: [PATCH v2] fuse: allow FUSE drivers to declare themselves free
- from outside changes
-To: Jeff Layton <jlayton@kernel.org>
-Cc: Bernd Schubert <bernd.schubert@fastmail.fm>, Miklos Szeredi <miklos@szeredi.hu>, 
-	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-On Tue, Apr 2, 2024 at 4:29=E2=80=AFPM Jeff Layton <jlayton@kernel.org> wro=
-te:
->
-> On Tue, 2024-04-02 at 15:23 +0200, Bernd Schubert wrote:
-> >
-> > On 4/2/24 15:10, Jeff Layton wrote:
-> > > Traditionally, we've allowed people to set leases on FUSE inodes.  So=
-me
-> > > FUSE drivers are effectively local filesystems and should be fine wit=
-h
-> > > kernel-internal lease support. Others are backed by a network server
-> > > that may have multiple clients, or may be backed by something non-fil=
-e
-> > > like entirely. On those, we don't want to allow leases.
-> > >
-> > > Have the filesytem driver to set a fuse_conn flag to indicate whether
-> > > the inodes are subject to outside changes, not done via kernel APIs. =
- If
-> > > the flag is unset (the default), then setlease attempts will fail wit=
-h
-> > > -EINVAL, indicating that leases aren't supported on that inode.
-> > >
-> > > Local-ish filesystems may want to start setting this value to true to
-> > > preserve the ability to set leases.
-> > >
-> > > Signed-off-by: Jeff Layton <jlayton@kernel.org>
-> > > ---
-> > > This is only tested for compilation, but it's fairly straightforward.
-> > >
-> > > I've left the default the "safe" value of false, so that we assume th=
-at
-> > > outside changes are possible unless told otherwise.
-> > > ---
-> > > Changes in v2:
-> > > - renamed flag to FUSE_NO_OUTSIDE_CHANGES
-> > > - flesh out comment describing the new flag
-> > > ---
-> > >  fs/fuse/file.c            | 11 +++++++++++
-> > >  fs/fuse/fuse_i.h          |  5 +++++
-> > >  fs/fuse/inode.c           |  4 +++-
-> > >  include/uapi/linux/fuse.h |  1 +
-> > >  4 files changed, 20 insertions(+), 1 deletion(-)
-> > >
-> > > diff --git a/fs/fuse/file.c b/fs/fuse/file.c
-> > > index a56e7bffd000..79c7152c0d12 100644
-> > > --- a/fs/fuse/file.c
-> > > +++ b/fs/fuse/file.c
-> > > @@ -3298,6 +3298,16 @@ static ssize_t fuse_copy_file_range(struct fil=
-e *src_file, loff_t src_off,
-> > >     return ret;
-> > >  }
-> > >
-> > > +static int fuse_setlease(struct file *file, int arg,
-> > > +                    struct file_lease **flp, void **priv)
-> > > +{
-> > > +   struct fuse_conn *fc =3D get_fuse_conn(file_inode(file));
-> > > +
-> > > +   if (fc->no_outside_changes)
-> > > +           return generic_setlease(file, arg, flp, priv);
-> > > +   return -EINVAL;
-> > > +}
-> > > +
-> > >  static const struct file_operations fuse_file_operations =3D {
-> > >     .llseek         =3D fuse_file_llseek,
-> > >     .read_iter      =3D fuse_file_read_iter,
-> > > @@ -3317,6 +3327,7 @@ static const struct file_operations fuse_file_o=
-perations =3D {
-> > >     .poll           =3D fuse_file_poll,
-> > >     .fallocate      =3D fuse_file_fallocate,
-> > >     .copy_file_range =3D fuse_copy_file_range,
-> > > +   .setlease       =3D fuse_setlease,
-> > >  };
-> > >
-> > >  static const struct address_space_operations fuse_file_aops  =3D {
-> > > diff --git a/fs/fuse/fuse_i.h b/fs/fuse/fuse_i.h
-> > > index b24084b60864..49d44a07b0db 100644
-> > > --- a/fs/fuse/fuse_i.h
-> > > +++ b/fs/fuse/fuse_i.h
-> > > @@ -860,6 +860,11 @@ struct fuse_conn {
-> > >     /** Passthrough support for read/write IO */
-> > >     unsigned int passthrough:1;
-> > >
-> > > +   /** Can we assume that the only changes will be done via the loca=
-l
-> > > +    *  kernel? If the driver represents a network filesystem or is a=
- front
-> > > +    *  for data that can change on its own, set this to false. */
-> > > +   unsigned int no_outside_changes:1;
-> > > +
-> > >     /** Maximum stack depth for passthrough backing files */
-> > >     int max_stack_depth;
-> > >
-> > > diff --git a/fs/fuse/inode.c b/fs/fuse/inode.c
-> > > index 3a5d88878335..f33aedccdb26 100644
-> > > --- a/fs/fuse/inode.c
-> > > +++ b/fs/fuse/inode.c
-> > > @@ -1330,6 +1330,8 @@ static void process_init_reply(struct fuse_moun=
-t *fm, struct fuse_args *args,
-> > >                     }
-> > >                     if (flags & FUSE_NO_EXPORT_SUPPORT)
-> > >                             fm->sb->s_export_op =3D &fuse_export_fid_=
-operations;
-> > > +                   if (flags & FUSE_NO_OUTSIDE_CHANGES)
-> > > +                           fc->no_outside_changes =3D 1;
-> > >             } else {
-> > >                     ra_pages =3D fc->max_read / PAGE_SIZE;
-> > >                     fc->no_lock =3D 1;
-> > > @@ -1377,7 +1379,7 @@ void fuse_send_init(struct fuse_mount *fm)
-> > >             FUSE_HANDLE_KILLPRIV_V2 | FUSE_SETXATTR_EXT | FUSE_INIT_E=
-XT |
-> > >             FUSE_SECURITY_CTX | FUSE_CREATE_SUPP_GROUP |
-> > >             FUSE_HAS_EXPIRE_ONLY | FUSE_DIRECT_IO_ALLOW_MMAP |
-> > > -           FUSE_NO_EXPORT_SUPPORT | FUSE_HAS_RESEND;
-> > > +           FUSE_NO_EXPORT_SUPPORT | FUSE_HAS_RESEND | FUSE_NO_OUTSID=
-E_CHANGES;
-> > >  #ifdef CONFIG_FUSE_DAX
-> > >     if (fm->fc->dax)
-> > >             flags |=3D FUSE_MAP_ALIGNMENT;
-> > > diff --git a/include/uapi/linux/fuse.h b/include/uapi/linux/fuse.h
-> > > index d08b99d60f6f..703d149d45ff 100644
-> > > --- a/include/uapi/linux/fuse.h
-> > > +++ b/include/uapi/linux/fuse.h
-> > > @@ -463,6 +463,7 @@ struct fuse_file_lock {
-> > >  #define FUSE_PASSTHROUGH   (1ULL << 37)
-> > >  #define FUSE_NO_EXPORT_SUPPORT     (1ULL << 38)
-> > >  #define FUSE_HAS_RESEND            (1ULL << 39)
-> > > +#define FUSE_NO_OUTSIDE_CHANGES    (1ULL << 40)
-> >
-> > Above all of these flags are comments explaining the flags, so that one
-> > doesn't need to look up in kernel sources what the exact meaning is.
-> >
-> > Could you please add something like below?
-> >
-> > FUSE_NO_OUTSIDE_CHANGES: No file changes through other mounts / clients
-> >
->
-> Definitely. I've added that in my local branch. I can either resend
-> later, or maybe Miklos can just add that if he's otherwise OK with this
-> patch.
+On Tue,  2 Apr 2024 06:47:08 -0700
+Harshit Mogalapalli <harshit.m.mogalapalli@oracle.com> wrote:
 
-Don't love the name but don't have any suggestions either.
+> 1. The devm_drm_dev_alloc() function returns error pointers.
+>    Update the error handling to check for error pointers instead of NULL.
+> 2. Currently panthor_vm_get_heap_pool() returns both ERR_PTR() and
+>    NULL(when create is false and if there is no poool attached to the
+>    VM)
+> 	- Change the function to return error pointers, when pool is
+> 	  NULL return -ENOENT
+> 	- Also handle the callers to check for IS_ERR() on failure.
+> 
+> Fixes: 4bdca1150792 ("drm/panthor: Add the driver frontend block")
+> Signed-off-by: Harshit Mogalapalli <harshit.m.mogalapalli@oracle.com>
+> ---
+> This is spotted by smatch and the patch is only compile tested
+> 
+> v1->v2: Fix the function panthor_vm_get_heap_pool() to only return error
+> pointers and handle the caller sites [Suggested by Boris Brezillon]
+> 	- Also merge these IS_ERR() vs NULL bugs into same patch
+> ---
+>  drivers/gpu/drm/panthor/panthor_drv.c   | 6 +++---
+>  drivers/gpu/drm/panthor/panthor_mmu.c   | 2 ++
+>  drivers/gpu/drm/panthor/panthor_sched.c | 2 +-
+>  3 files changed, 6 insertions(+), 4 deletions(-)
+> 
+> diff --git a/drivers/gpu/drm/panthor/panthor_drv.c b/drivers/gpu/drm/panthor/panthor_drv.c
+> index 11b3ccd58f85..c8374cd4a30d 100644
+> --- a/drivers/gpu/drm/panthor/panthor_drv.c
+> +++ b/drivers/gpu/drm/panthor/panthor_drv.c
+> @@ -1090,8 +1090,8 @@ static int panthor_ioctl_tiler_heap_destroy(struct drm_device *ddev, void *data,
+>  		return -EINVAL;
+>  
+>  	pool = panthor_vm_get_heap_pool(vm, false);
+> -	if (!pool) {
+> -		ret = -EINVAL;
+> +	if (IS_ERR(pool)) {
+> +		ret = PTR_ERR(pool);
+>  		goto out_put_vm;
+>  	}
+>  
+> @@ -1385,7 +1385,7 @@ static int panthor_probe(struct platform_device *pdev)
+>  
+>  	ptdev = devm_drm_dev_alloc(&pdev->dev, &panthor_drm_driver,
+>  				   struct panthor_device, base);
+> -	if (!ptdev)
+> +	if (IS_ERR(ptdev))
+>  		return -ENOMEM;
+>  
 
-I am wondering out loud, if we have such a mode for the fs,
-if and how should it affect caching configuration?
+Sorry, that one deserves a separate patch.
 
-Thanks,
-Amir.
+>  	platform_set_drvdata(pdev, ptdev);
+> diff --git a/drivers/gpu/drm/panthor/panthor_mmu.c b/drivers/gpu/drm/panthor/panthor_mmu.c
+> index fdd35249169f..e1285cdb09ff 100644
+> --- a/drivers/gpu/drm/panthor/panthor_mmu.c
+> +++ b/drivers/gpu/drm/panthor/panthor_mmu.c
+> @@ -1893,6 +1893,8 @@ struct panthor_heap_pool *panthor_vm_get_heap_pool(struct panthor_vm *vm, bool c
+>  			vm->heaps.pool = panthor_heap_pool_get(pool);
+>  	} else {
+>  		pool = panthor_heap_pool_get(vm->heaps.pool);
+> +		if (!pool)
+> +			pool = ERR_PTR(-ENOENT);
+>  	}
+>  	mutex_unlock(&vm->heaps.lock);
+>  
+> diff --git a/drivers/gpu/drm/panthor/panthor_sched.c b/drivers/gpu/drm/panthor/panthor_sched.c
+> index 5f7803b6fc48..617df2b980d0 100644
+> --- a/drivers/gpu/drm/panthor/panthor_sched.c
+> +++ b/drivers/gpu/drm/panthor/panthor_sched.c
+> @@ -1343,7 +1343,7 @@ static int group_process_tiler_oom(struct panthor_group *group, u32 cs_id)
+>  	if (unlikely(csg_id < 0))
+>  		return 0;
+>  
+> -	if (!heaps || frag_end > vt_end || vt_end >= vt_start) {
+> +	if (IS_ERR(heaps) || frag_end > vt_end || vt_end >= vt_start) {
+>  		ret = -EINVAL;
+>  	} else {
+>  		/* We do the allocation without holding the scheduler lock to avoid
+
 
