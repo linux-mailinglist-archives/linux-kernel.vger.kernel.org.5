@@ -1,230 +1,135 @@
-Return-Path: <linux-kernel+bounces-128307-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-128308-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B050589591E
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 18:01:26 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5FA0589591F
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 18:01:36 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id F0ED3B217D0
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 16:01:23 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 133E51F22E30
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 16:01:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CD1A5134CE0;
-	Tue,  2 Apr 2024 15:59:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 80FFB134CDC;
+	Tue,  2 Apr 2024 16:00:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="FxER6vrc"
-Received: from mail-qk1-f169.google.com (mail-qk1-f169.google.com [209.85.222.169])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="R2IN4t4h"
+Received: from casper.infradead.org (casper.infradead.org [90.155.50.34])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3E9A413340D;
-	Tue,  2 Apr 2024 15:59:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C7B6F133426
+	for <linux-kernel@vger.kernel.org>; Tue,  2 Apr 2024 16:00:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.50.34
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712073594; cv=none; b=HyNOJl0QOA8FlkajhUxpUT6fMGznjvYC0+VSDHMVsx3fujRG2pEv1W7EzesiSd4uAErQ1TLIqrJ/ASdPhPV85u+PWJlu9uRZZ5TZ4AGHXtmRF+oyU1ooHeC3dtA9z7PuZ/Z11W+H5VU3vxmFV9GsVTcie/gYdqtKeeOY0uPDNUQ=
+	t=1712073615; cv=none; b=a4JXSNKrHFY1a5OQqbJrEkuDfsQnwVGSBP3OAT2+6fgao3iZ187NstTUKdBMxoMnNt9D8SxROMm9+tUHmtVhKDzH06BhFKL7X2VIVMkR1q4ZuH+Eo1p5UGQSPrIHYIA2kFB1BYuf0Ol8DK06bTiR7ZMT04PcVxHeOWKfImQvbv4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712073594; c=relaxed/simple;
-	bh=9h0ja0fzbpqt/scnHosHOcw3nHfUNNwfNkOqdpgC51o=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=ifI9Ftsn1bk+VSBa/yrXfOPHQqXMvg8M5SYA1bTEhX4qMrmIIE+Q8nJbD2HXpCdarFjb665C9g0I8uA43gtc3ydywh8lAQHNkiKUbYUzH2SHquVN3MNLlp7hvXr8zlgKGvZMDr/KT76TJFkELJ1u4noyujHXSPyl4mnB2BJI2kA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=FxER6vrc; arc=none smtp.client-ip=209.85.222.169
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-qk1-f169.google.com with SMTP id af79cd13be357-78bc322a55cso302354985a.1;
-        Tue, 02 Apr 2024 08:59:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1712073591; x=1712678391; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=1iMupQUHAsYvjV/fM+O/DYp3vUVspONAX/mj9N6Emok=;
-        b=FxER6vrcSosT4dpSVmtIpBQ0Vj0IJd2F9Mjr7aqn/jnTBB2Y0VIohq1FM/D23wI3rk
-         z2507T3nJj34Grm9bkYzzLmls4jcCk04JmUy6+264uMJaX9Uu7t3zsnDmPEES0hvNjcg
-         yMsUH9S76ld9gHBLlea6UIHZkIF72Yyx+CRBxnamiM50Zp/34n26sLa5dTM0F7u8FICy
-         5WAeKvBGA8rmrbRuu7yivsH3XQSxlGQbT6dKrvGZsR+PV2Pkwwg92Q0kfo7O4aHkccmE
-         nj8xRIVoNP+5xt1slxdk4ipGNsmhGZfOqvl7kSY2OsET7gmdXCe7SPPBmhzD1qvZsNYB
-         F3og==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712073591; x=1712678391;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=1iMupQUHAsYvjV/fM+O/DYp3vUVspONAX/mj9N6Emok=;
-        b=wYuCMYxye0DjO2LueGGUpCJn6uF6dQczD1agiLoLuH/weeDVlqerJ1haDnLG9ee+T2
-         uOXLfP9wMsfWmzLQlI6Pka5/6yXVnk8UxOHjhia7pW1wo5fE7QHCCuAFqeQxlLf9C6kP
-         yEZIRSxNZpQs1O3ZGEyIhqqkw2xgH9qQhBbCbVxKDNqo4QjPTD1BVQvKetXzrj7QNsQk
-         zEqFj6K800FAw8Oc4P7xvrAtB9Qwz3rAtjc7AGAGI57S2bNq5gX8C5oCsrrasi75RqZL
-         6O/ggorszJUbrNLAEL2ghBWg9vK/vk2VMpH/iQ8pj3hJAcor/Zc2PSzu6ahn+ShxKwxt
-         lE6w==
-X-Forwarded-Encrypted: i=1; AJvYcCUZsPgOsCvMqunWWNlWp+sPLhl3KyFWK102Cmpf5IBE+Y0vyPxzd2rapDWdd3sDGOCwozxsut8TtzNmeN0nfN9QOAoPpNAs14bcP0HL
-X-Gm-Message-State: AOJu0YwJUdWYHeu8NRKI3HZhnNpWz+fcTRlOISf7SVpq6YwDKHXAvz06
-	ZuQ9PJ12SZLobtEDC0wr4rbDrMOKcoXJS8lh/bm3QNAOm5ergoVORQThzKp2IQQ+5yNPT6IZk0N
-	/8vJz2vMnXcqAJvibFUij5K7Kwy9Stsbq+b0=
-X-Google-Smtp-Source: AGHT+IGPHg/9HglXdc6tls4Z75LO/pZfrCaLGGUa/G+QAANEau2vAKO2EPIan4VWLJmB8BdAd9NwinEhaMetg3yDkwg=
-X-Received: by 2002:a0c:ecd0:0:b0:699:245c:bcc8 with SMTP id
- o16-20020a0cecd0000000b00699245cbcc8mr202370qvq.19.1712073590911; Tue, 02 Apr
- 2024 08:59:50 -0700 (PDT)
+	s=arc-20240116; t=1712073615; c=relaxed/simple;
+	bh=glPQcANoMPYmlHAantIAhv8Mlq5+J3XDSxE2rm8p4n0=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Q9TcR3sREL39niR1u+PAb/fblT+syUC1ia8lFyVTV/Rh9Qt81YuaMaJqqbfkQbx7Yy524xxIcWoNsvCYv2K6x5WA/IQPoeY4wixYtMLCq4+mbgAqN+E5eamBC1/0mLV6qkaCtLos1MPRO+SyZEAFeH8UBGyH05bTEgmISt3XRYk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=R2IN4t4h; arc=none smtp.client-ip=90.155.50.34
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=J1C2/bPg/F9WrdiBHSYL5RX039VeHvKnxuGgTbDm1H0=; b=R2IN4t4he6Ikh2eCoolYn2D1ln
+	bR/xnpgwp5nTMZdagY0yP7uhv+3h48ujjYE5yB9UplVKqXGoqHhQDFx6Jkksdob89JG3X92Toiy2n
+	tpdQXC31wQj8/IoO4Y+ZlLIelTem8wG91gEnWIZCkA/fbYyUxmEHFosVKc03Os3c8PAmqwJMB0gB9
+	hyAJUfPQ7tDBLByuN78X7TsKnwe4D8xS+YIdylZ9PDwDcfTzdsT+W4Zn0ntQp+aMaESEJLalvpLlI
+	gcDIt6Sh0qyQ2cSKN8hyf81O7nNdTQGTV5wXPOX30EbVaeNoRNVmi6sGvQxqceiq9vEjpBDFFKqBe
+	GnoA5Zzw==;
+Received: from willy by casper.infradead.org with local (Exim 4.97.1 #2 (Red Hat Linux))
+	id 1rrgYO-00000003OYG-2Yps;
+	Tue, 02 Apr 2024 16:00:04 +0000
+Date: Tue, 2 Apr 2024 17:00:04 +0100
+From: Matthew Wilcox <willy@infradead.org>
+To: David Hildenbrand <david@redhat.com>
+Cc: Ryan Roberts <ryan.roberts@arm.com>, peterx@redhat.com,
+	linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+	Yang Shi <shy828301@gmail.com>,
+	"Kirill A . Shutemov" <kirill@shutemov.name>,
+	Mike Kravetz <mike.kravetz@oracle.com>,
+	John Hubbard <jhubbard@nvidia.com>,
+	Michael Ellerman <mpe@ellerman.id.au>,
+	Andrew Jones <andrew.jones@linux.dev>,
+	Muchun Song <muchun.song@linux.dev>,
+	linux-riscv@lists.infradead.org, linuxppc-dev@lists.ozlabs.org,
+	Christophe Leroy <christophe.leroy@csgroup.eu>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Christoph Hellwig <hch@infradead.org>,
+	Lorenzo Stoakes <lstoakes@gmail.com>,
+	Rik van Riel <riel@surriel.com>,
+	linux-arm-kernel@lists.infradead.org,
+	Andrea Arcangeli <aarcange@redhat.com>,
+	"Aneesh Kumar K . V" <aneesh.kumar@kernel.org>,
+	Vlastimil Babka <vbabka@suse.cz>,
+	James Houghton <jthoughton@google.com>,
+	Jason Gunthorpe <jgg@nvidia.com>, Mike Rapoport <rppt@kernel.org>,
+	Axel Rasmussen <axelrasmussen@google.com>
+Subject: Re: [PATCH v4 13/13] mm/gup: Handle hugetlb in the generic
+ follow_page_mask code
+Message-ID: <ZgwrhKuypBtSpKdI@casper.infradead.org>
+References: <20240327152332.950956-1-peterx@redhat.com>
+ <20240327152332.950956-14-peterx@redhat.com>
+ <adfdd89b-ee56-4758-836e-c66a0be7de25@arm.com>
+ <5d9dd9a7-e544-4741-944c-469b79c2c649@redhat.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231226135243.1393780-1-masahiroy@kernel.org> <20231226135243.1393780-6-masahiroy@kernel.org>
-In-Reply-To: <20231226135243.1393780-6-masahiroy@kernel.org>
-From: Robert Nelson <robertcnelson@gmail.com>
-Date: Tue, 2 Apr 2024 10:59:24 -0500
-Message-ID: <CAOCHtYiCcxssYNvPwq5RoSv30+hkWOJD4=uRaGQmatOdJR9n0A@mail.gmail.com>
-Subject: Re: [PATCH 6/6] kbuild: deb-pkg: use more debhelper commands in builddeb
-To: Masahiro Yamada <masahiroy@kernel.org>
-Cc: linux-kbuild@vger.kernel.org, Ben Hutchings <ben@decadent.org.uk>, 
-	Nicolas Schier <n.schier@avm.de>, Nathan Chancellor <nathan@kernel.org>, 
-	Nick Desaulniers <ndesaulniers@google.com>, Nicolas Schier <nicolas@fjasle.eu>, 
-	linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <5d9dd9a7-e544-4741-944c-469b79c2c649@redhat.com>
 
-On Tue, Dec 26, 2023 at 7:54=E2=80=AFAM Masahiro Yamada <masahiroy@kernel.o=
-rg> wrote:
->
-> Commit 36862e14e316 ("kbuild: deb-pkg: use dh_listpackages to know
-> enabled packages") started to require the debhelper tool suite.
->
-> Use more dh_* commands in create_package():
->
->  - dh_installdocs to install copyright
->  - dh_installchangelogs to install changelog
->  - dh_compress to compress changelog
->  - dh_fixperms to replace the raw chmod command
->  - dh_gencontrol to replace the raw dpkg-gencontrol command
->  - dh_md5sums to record the md5sum of included files
->  - dh_builddeb to replace the raw dpkg-deb command
->
-> Set DEB_RULES_REQUIRES_ROOT to 'no' in case debian/rules is executed
-> directly.
->
-> Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
-> Reviewed-by: Nicolas Schier <n.schier@avm.de>
-> ---
->
->  scripts/package/builddeb     | 23 ++++++++---------------
->  scripts/package/debian/rules |  2 ++
->  scripts/package/mkdebian     |  2 +-
->  3 files changed, 11 insertions(+), 16 deletions(-)
->
-> diff --git a/scripts/package/builddeb b/scripts/package/builddeb
-> index 2eb4910f0ef3..436d55a83ab0 100755
-> --- a/scripts/package/builddeb
-> +++ b/scripts/package/builddeb
-> @@ -26,23 +26,16 @@ if_enabled_echo() {
->
->  create_package() {
->         local pname=3D"$1" pdir=3D"$2"
-> -       local dpkg_deb_opts
->
-> -       mkdir -m 755 -p "$pdir/DEBIAN"
-> -       mkdir -p "$pdir/usr/share/doc/$pname"
-> -       cp debian/copyright "$pdir/usr/share/doc/$pname/"
-> -       cp debian/changelog "$pdir/usr/share/doc/$pname/changelog.Debian"
-> -       gzip -n -9 "$pdir/usr/share/doc/$pname/changelog.Debian"
-> -       sh -c "cd '$pdir'; find . -type f ! -path './DEBIAN/*' -printf '%=
-P\0' \
-> -               | xargs -r0 md5sum > DEBIAN/md5sums"
-> +       export DH_OPTIONS=3D"-p${pname} -P${pdir}"
->
-> -       # a+rX in case we are in a restrictive umask environment like 007=
-7
-> -       # ug-s in case we build in a setuid/setgid directory
-> -       chmod -R go-w,a+rX,ug-s "$pdir"
-> -
-> -       # Create the package
-> -       dpkg-gencontrol -p$pname -P"$pdir"
-> -       dpkg-deb --root-owner-group ${KDEB_COMPRESS:+-Z$KDEB_COMPRESS} --=
-build "$pdir" ..
-> +       dh_installdocs
-> +       dh_installchangelogs
-> +       dh_compress
-> +       dh_fixperms
-> +       dh_gencontrol
-> +       dh_md5sums
-> +       dh_builddeb -- ${KDEB_COMPRESS:+-Z$KDEB_COMPRESS}
->  }
->
->  install_linux_image () {
-> diff --git a/scripts/package/debian/rules b/scripts/package/debian/rules
-> index 36d51f60f98d..1f56938ea5d4 100755
-> --- a/scripts/package/debian/rules
-> +++ b/scripts/package/debian/rules
-> @@ -1,6 +1,8 @@
->  #!/usr/bin/make -f
->  # SPDX-License-Identifier: GPL-2.0-only
->
-> +export DEB_RULES_REQUIRES_ROOT :=3D no
-> +
->  include debian/rules.vars
->
->  ifneq (,$(filter-out parallel=3D1,$(filter parallel=3D%,$(DEB_BUILD_OPTI=
-ONS))))
-> diff --git a/scripts/package/mkdebian b/scripts/package/mkdebian
-> index 93a24712b9a1..070149c985fe 100755
-> --- a/scripts/package/mkdebian
-> +++ b/scripts/package/mkdebian
-> @@ -193,7 +193,7 @@ Section: kernel
->  Priority: optional
->  Maintainer: $maintainer
->  Rules-Requires-Root: no
-> -Build-Depends: debhelper
-> +Build-Depends: debhelper-compat (=3D 12)
+On Tue, Apr 02, 2024 at 05:26:28PM +0200, David Hildenbrand wrote:
+> > The oops trigger is at mm/gup.c:778:
+> > VM_BUG_ON_PAGE(!PageHead(page) && !is_zone_device_page(page), page);
+> > 
+> > So 2M passed ok, and its failing for 32M, which is cont-pmd. I'm guessing you're trying to iterate 2M into a cont-pmd folio and ending up with an unexpected tail page?
+> 
+> I assume we find the expected tail page, it's just that the check
+> 
+> VM_BUG_ON_PAGE(!PageHead(page) && !is_zone_device_page(page), page);
+> 
+> Doesn't make sense with hugetlb folios. We might have a tail page mapped in
+> a cont-pmd entry. As soon as we call follow_huge_pmd() on "not the first
+> cont-pmd entry", we trigger this check.
+> 
+> Likely this sanity check must also allow for hugetlb folios. Or we should
+> just remove it completely.
+> 
+> In the past, we wanted to make sure that we never get tail pages of THP from
+> PMD entries, because something would currently be broken (we don't support
+> THP > PMD).
 
-make ARCH=3Darm  CROSS_COMPILE=3D  bindeb-pkg
+That was a practical limitation on my part.  We have various parts of
+the MM which assume that pmd_page() returns a head page and until we
+get all of those fixed, adding support for folios larger than PMD_SIZE
+was only going to cause trouble for no significant wins.
 
-I'm seeing a fun issue with Ubuntu 24.04 (Noble)... 13.14.1ubuntu5:
-https://launchpad.net/ubuntu/+source/debhelper
+I agree with you we should get rid of this assertion entirely.  We should
+fix all the places which assume that pmd_page() returns a head page,
+but that may take some time.
 
-dpkg-buildpackage --build=3Dbinary --no-pre-clean --unsigned-changes
--R'make -f debian/rules' -j1 -a$(cat debian/arch)
-dpkg-buildpackage: info: source package linux-upstream
-dpkg-buildpackage: info: source version 1noble
-dpkg-buildpackage: info: source distribution noble
-dpkg-buildpackage: info: source changed by rcn-ee <robertcnelson@gmail.com>
- dpkg-source --before-build .
-dpkg-buildpackage: info: host architecture armhf
-dpkg-checkbuilddeps: error: Unmet build dependencies: debhelper-compat (=3D=
- 12)
-dpkg-buildpackage: warning: build dependencies/conflicts unsatisfied; abort=
-ing
-dpkg-buildpackage: warning: (Use -d flag to override.)
+As an example, filemap_map_pmd() has:
 
-Where as Debian (testing) Trixie and Sid: 13.15.3
-https://packages.debian.org/source/trixie/debhelper
+       if (pmd_none(*vmf->pmd) && folio_test_pmd_mappable(folio)) {
+                struct page *page = folio_file_page(folio, start);
+                vm_fault_t ret = do_set_pmd(vmf, page);
 
-dpkg-buildpackage --build=3Dbinary --no-pre-clean --unsigned-changes
--R'make -f debian/rules' -j1 -a$(cat debian/arch)
-dpkg-buildpackage: info: source package linux-upstream
-dpkg-buildpackage: info: source version 1trixie
-dpkg-buildpackage: info: source distribution trixie
-dpkg-buildpackage: info: source changed by rcn-ee <robertcnelson@gmail.com>
- dpkg-source --before-build .
-dpkg-buildpackage: info: host architecture armhf
- make -f debian/rules binary
+and then do_set_pmd() has:
 
-dpkg-buildpackage --build=3Dbinary --no-pre-clean --unsigned-changes
--R'make -f debian/rules' -j1 -a$(cat debian/arch)
-dpkg-buildpackage: info: source package linux-upstream
-dpkg-buildpackage: info: source version 1sid
-dpkg-buildpackage: info: source distribution trixie
-dpkg-buildpackage: info: source changed by rcn-ee <robertcnelson@gmail.com>
- dpkg-source --before-build .
-dpkg-buildpackage: info: host architecture armhf
- make -f debian/rules binary
+        if (page != &folio->page || folio_order(folio) != HPAGE_PMD_ORDER)
+                return ret;
 
+so we'd simply refuse to use a PMD to map a folio larger than PMD_SIZE.
+There's a lot of work to be done to make this work generally (not to
+mention figuring out how to handle mapcount for such folios ;-).
 
-Not really sure why Noble is failing, but wonder if, would fix it..
-Build-Depends: debhelper-compat (>=3D 12)
-
-Regards,
-
---=20
-Robert Nelson
-https://rcn-ee.com/
+This particular case seems straightforward though.  Just remove the
+assertion.
 
