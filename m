@@ -1,167 +1,281 @@
-Return-Path: <linux-kernel+bounces-128130-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-128139-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4ED56895688
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 16:25:16 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 25C088956BF
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 16:33:12 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 56A6A1C22256
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 14:25:15 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4946C1C20E45
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 14:33:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2E22786ACA;
-	Tue,  2 Apr 2024 14:25:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 59DE512A157;
+	Tue,  2 Apr 2024 14:33:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="vQOYY85c"
-Received: from mail-ej1-f51.google.com (mail-ej1-f51.google.com [209.85.218.51])
+	dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b="ASbBU2eN"
+Received: from mail-wm1-f46.google.com (mail-wm1-f46.google.com [209.85.128.46])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 99B778615E
-	for <linux-kernel@vger.kernel.org>; Tue,  2 Apr 2024 14:25:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D11F77E766
+	for <linux-kernel@vger.kernel.org>; Tue,  2 Apr 2024 14:33:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712067906; cv=none; b=k0/JojgLYVjZNcgaSi2FdEwBb30ydW+fIiDNiIYSvsNbt45sM3IaFWkYmM2Y1s2AFRLmrk/fVPWgHYHKVF/JytOR0oai9B+WbMupK7fGNwy9uYAhOOrfQzWgwfwsETgIzzKB0QmP1yNEaqwveHL3Tyla4qO6ALR2EKPYrBoHkos=
+	t=1712068383; cv=none; b=EcTXiwjyDdguqKsf2n0NvcI/DOz2QdamGPJbPOiSNI1Vx3TYbGu5cVynTKAdiZ54/OHhpUKWrXDDF+ypmwOaBsRBPnOtk2FK+5wU//Wy+1mDOfUti+a4VM/uWeERCtou5SAEHypNDpG885IRTvp9C9nF6gRK+K6B96VIJC6EOAs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712067906; c=relaxed/simple;
-	bh=5wsKlMW6zuiZvmqCr9BLGY7yhgdT6UjqJaE2/GK7Dqw=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=eL36/Rde8YMNjE2Z3hSvHE+ngFR/w0gPlP4SQzkTTXlMNAoSuShyiAcATiRgbzYWiV6PCJ5wgJ3sH+GQ7QDopyxAQHh5+guJVlcnp/uEHIV4Px/93erYDzN6j27VnaPt/LvvM144dsGu1SugAqg2Ub63DPBDd10+EhjFB0J2G1U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=vQOYY85c; arc=none smtp.client-ip=209.85.218.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ej1-f51.google.com with SMTP id a640c23a62f3a-a46de423039so303114466b.0
-        for <linux-kernel@vger.kernel.org>; Tue, 02 Apr 2024 07:25:03 -0700 (PDT)
+	s=arc-20240116; t=1712068383; c=relaxed/simple;
+	bh=KWrZusQJQMji6aE2OtrhtDKPN3yVC7+g4kaaFj0WaeA=;
+	h=References:From:To:Cc:Subject:Date:In-reply-to:Message-ID:
+	 MIME-Version:Content-Type; b=lDtdzxK12SRKIbVGU1PqI/vA387D/lfqKsfQSIfq4S8N1qxpdNWysrae6AOMyfQ92awfMhe3MFqK0xoCFrogQhvetDiRUcauyIqQg2s+apdM1sgfYWdGSLsNvvgshThkAJjZxEXb9X9dUmNz3QsB9Du3eKwdaq9weDpGRp6o17E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com; spf=pass smtp.mailfrom=baylibre.com; dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b=ASbBU2eN; arc=none smtp.client-ip=209.85.128.46
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=baylibre.com
+Received: by mail-wm1-f46.google.com with SMTP id 5b1f17b1804b1-41569f1896dso11836255e9.2
+        for <linux-kernel@vger.kernel.org>; Tue, 02 Apr 2024 07:33:00 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1712067902; x=1712672702; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=4hWsU1/H1ichuozopazuwmACCLdHZgCpChahByKTRKc=;
-        b=vQOYY85c7GcsJT5xtHv6+xdsQgN0rDTZLGxAqvoK7T3MSzi8jvEbztR7Ior3IRz1me
-         OgiGjXathKQZP7Bt4yrBYtHC/W52bYsqloya5W6Wuxy9D6MchipMMFOwaWRvqbcrbOtk
-         3SgSON4lLauchGcCEbKQzOhYjzM6vywRBE0TxRTjm1aFiQXmVTWtQzH4blTJMRIjc114
-         s8zCdvF2d2vBdAc18ogTWyc1cgyrdAWJFCRmOw9YWluFD8ipSc0EtDZoukeiVXImv8fU
-         AF3qMe40/8vYJwk5XS8ZPoGf1HxlhBGr9Rg0ZU04v+Nc4IXo+2y17fKqTD1ItRq+Sieg
-         XycQ==
+        d=baylibre-com.20230601.gappssmtp.com; s=20230601; t=1712068379; x=1712673179; darn=vger.kernel.org;
+        h=mime-version:message-id:in-reply-to:date:subject:cc:to:from
+         :user-agent:references:from:to:cc:subject:date:message-id:reply-to;
+        bh=HEtsCpz4MIzWRds8geMwgNxbFpu0vjPrqmUI/UEAmeE=;
+        b=ASbBU2eNpktN1mASt2oIkJxJ+ag6imn6E+y8qQnsr5iljeUmqYaZes82eS0glp9xd1
+         MYAQdtILkTVuW4ylfKsVS9b4Bf/lrpo6FhCbTEFQbVNqlAQN35b5j0cbFQPugqksXNRz
+         a8jr89LAwQTc9nfAL2X3oX6BClfc+uUCShfu4OiubPMpZFLZDtT1f2pDLMT9kOmptfge
+         zsV0aJaRjyhmvQze3wFThHDp4D6QzMeiY0JimY1CntMnBrzo0RC2h8hgTVQsPBwYOS9M
+         c30rwKMjV1DbK7xrImUnnC+U846tN52Pyyp0Y6fHXl38GslAC6R0fHGQhBZ/TXK8exLZ
+         d+xA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712067902; x=1712672702;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:x-gm-message-state:from:to:cc:subject:date
+        d=1e100.net; s=20230601; t=1712068379; x=1712673179;
+        h=mime-version:message-id:in-reply-to:date:subject:cc:to:from
+         :user-agent:references:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=4hWsU1/H1ichuozopazuwmACCLdHZgCpChahByKTRKc=;
-        b=jX2Ubsq6P8046g8QqDgVqvK/5Bw08UD9ORFSwJZgwniLjQwpnfUrGeKzbZWN7QRGwY
-         aPXMqRzlGaopoQQjtrdokfdFneyjbQ44HKeRqE8wxN/piVn3az5VKDtAHfxPkjg6VRb4
-         YyjRdZXrFIObKWbrB61ldytP4Yy3vUA7/naQmI9CAVE62tUnJXB3bymf+rL9c0G2z3wR
-         JcvjWj8ayqmLmFGrjffaKNclLT1tpFYJ905emnu7476ixPAvB5zfH7KCrriTmST4PPGo
-         W2+UVbXPkeuMZ8lJsqTmnkNPAyLpT1pB8Q/6yhwsR2iNwe+nxngBpBsdXHmo9FQlBwXW
-         NVnQ==
-X-Forwarded-Encrypted: i=1; AJvYcCU9sVKHfnW3B09j/rfD7YeDeJVsGZpkdMxBntsPV6/MEBYtX9deum4DQ/zRb/IKU2kqo9SMig5tAKtTvuMZgI3rIMvJ+2XKtiVYQoPI
-X-Gm-Message-State: AOJu0Yy+T5C9n74JgHMshqNeH43Em0QnC/KTXYvylOn1VXBA3qtHB+rl
-	6i7Uu6vrgjbK4we+JADdW7bdktJsT+HwcnWlQtot+17aQMD1wKsTaJ3zx7owWQQ/HusM/ki6Mir
-	Y
-X-Google-Smtp-Source: AGHT+IE5yfHNcLZvYypEgIbF5cB/0sM4sPMsaHd89klD+N6G/0DtQYDrwwsOfaryz+F6DY+dpQM1Jg==
-X-Received: by 2002:a50:9fa7:0:b0:56c:995:5b with SMTP id c36-20020a509fa7000000b0056c0995005bmr1678629edf.11.1712067901982;
-        Tue, 02 Apr 2024 07:25:01 -0700 (PDT)
-Received: from [192.168.92.47] (078088045141.garwolin.vectranet.pl. [78.88.45.141])
-        by smtp.gmail.com with ESMTPSA id y11-20020aa7c24b000000b0056bdec673c3sm6997639edo.38.2024.04.02.07.24.59
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 02 Apr 2024 07:25:01 -0700 (PDT)
-Message-ID: <51c84af2-73f7-4af4-8676-2276b6c7786d@linaro.org>
-Date: Tue, 2 Apr 2024 16:24:58 +0200
+        bh=HEtsCpz4MIzWRds8geMwgNxbFpu0vjPrqmUI/UEAmeE=;
+        b=pR9a2lboP19NAwGNUlC7K2g35yG5byvAtphc5wwijyu31Lo7TIhw0dTdJJb0ZU9QJC
+         UNEQluT+h79kLOs0QAKDfK/fR7B/oNscHXJ5EVccB1NUOdNLC49VO5k3dT+N/NZLKJ/0
+         M4bSLWOPSXRp4cqHG/R8/kBQ/3VcoqdQyDq8+0HYYSbOIgNxNBderSJidstbJBcjX0sD
+         yxnC834gOezxrnqVumKTYbMNvlF2P9We1q3Em1I/P9/6/FlPiaaklsLpqtSdAbIcfbSf
+         biYFNMt5qvZXeI0HxazuFxt2R5ShsMIxSuDS2b4VTZnPTo5tPf1hGXk1GDqwlXre8zn2
+         LSag==
+X-Forwarded-Encrypted: i=1; AJvYcCWSY60xD3hVxcvxVvE6YaNNsvzeJ+ilwLjaUPbZ94WfazB6UAJrB8aAv8zPycDNrrP8dmKyluvTLW8FWXzrYPuhxrG7YAAw3rivbhwB
+X-Gm-Message-State: AOJu0YwTBucmoYj9rzhNcUf6VfvAiG1rTmTQL0S3g8amrRhQse/LfQI5
+	PQTuhn9IYneeOmtC0sAFOYhPAWyXnDD59jtYPIOKorO2swiSGtO14/q/64YMn08=
+X-Google-Smtp-Source: AGHT+IGjNhWiDBYNmq+K/GKR39m/w7jR+0GLSVTnRUJMeSZ9vwCrOhr9OwZtV2iO8DIQ0nlr/sftPA==
+X-Received: by 2002:a5d:69cd:0:b0:33e:cf4e:86ba with SMTP id s13-20020a5d69cd000000b0033ecf4e86bamr6631161wrw.63.1712068379089;
+        Tue, 02 Apr 2024 07:32:59 -0700 (PDT)
+Received: from localhost ([2a01:e0a:3c5:5fb1:2b3:4f20:7b45:be58])
+        by smtp.gmail.com with ESMTPSA id k4-20020a05600c1c8400b00414807ef8dfsm18315928wms.5.2024.04.02.07.32.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 02 Apr 2024 07:32:58 -0700 (PDT)
+References: <20240329205904.25002-1-ddrokosov@salutedevices.com>
+ <20240329205904.25002-3-ddrokosov@salutedevices.com>
+ <1j4jckjftk.fsf@starbuckisacylon.baylibre.com>
+ <20240402121546.qrrc7r5un75464pb@CAB-WSD-L081021>
+User-agent: mu4e 1.10.8; emacs 29.2
+From: Jerome Brunet <jbrunet@baylibre.com>
+To: Dmitry Rokosov <ddrokosov@salutedevices.com>
+Cc: Jerome Brunet <jbrunet@baylibre.com>, neil.armstrong@linaro.org,
+ mturquette@baylibre.com, sboyd@kernel.org, robh+dt@kernel.org,
+ krzysztof.kozlowski+dt@linaro.org, khilman@baylibre.com,
+ martin.blumenstingl@googlemail.com, kernel@salutedevices.com,
+ rockosov@gmail.com, linux-amlogic@lists.infradead.org,
+ linux-clk@vger.kernel.org, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH v1 2/6] clk: meson: a1: pll: support 'syspll'
+ general-purpose PLL for CPU clock
+Date: Tue, 02 Apr 2024 16:27:17 +0200
+In-reply-to: <20240402121546.qrrc7r5un75464pb@CAB-WSD-L081021>
+Message-ID: <1jmsqbj0md.fsf@starbuckisacylon.baylibre.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2] i2c: i2c-qcom-geni: Add support to share an I2C SE
- from two subsystem
-To: Mukesh Kumar Savaliya <quic_msavaliy@quicinc.com>, andersson@kernel.org,
- andi.shyti@kernel.org, linux-arm-msm@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-i2c@vger.kernel.org,
- dmaengine@vger.kernel.org
-Cc: quic_vdadhani@quicinc.com, Vinod Koul <vkoul@kernel.org>
-References: <20240402062131.9836-1-quic_msavaliy@quicinc.com>
-Content-Language: en-US
-From: Konrad Dybcio <konrad.dybcio@linaro.org>
-Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
- 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
- izWDgYvmBE8=
-In-Reply-To: <20240402062131.9836-1-quic_msavaliy@quicinc.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
 
-On 2.04.2024 8:21 AM, Mukesh Kumar Savaliya wrote:
-> Add feature to share an I2C serial engine between two subsystems(SS) so
-> that individual clients from different subsystems can access the same bus.
-> For example single i2c slave device can be accessed by Client driver from
-> APPS OR modem subsystem image. Same way we can have slave being accessed
-> between APPS and TZ subsystems.
-> 
-> This is possible in GSI mode where driver queues the TREs with required
-> descriptors and ensures to execute TREs in an mutually exclusive way.
-> Issue a "Lock TRE" command at the start of the transfer and an "Unlock TRE"
-> command at the end of the transfer. This prevents other subsystems from
-> concurrently performing DMA transfers and avoids disturbance to data path.
-> Change MAX_TRE macro to 5 from 3 because of these two additional TREs.
-> 
-> Since the GPIOs are also shared for the i2c bus, do not touch GPIO
-> configuration while going to runtime suspend and only turn off the
-> clocks. This will allow other SS to continue to transfer the data.
-> 
-> This feature needs to be controlled by DTSI flag to make it flexible
-> based on the usecase, hence during probe check the same from i2c driver.
-> 
-> Export function geni_se_clks_off() to call explicitly instead of
-> geni_se_resources_off() to not modify TLMM configuration as other SS might
-> perform the transfer while APPS SS can go to sleep.
-> 
-> Signed-off-by: Mukesh Kumar Savaliya <quic_msavaliy@quicinc.com>
-> ---
-> v1 -> v2:
-> - Addressed review comments.
 
-The biggest one ("too many changes across the board") is still not
-addressed and the patch will not be further reviewed until that is done.
+On Tue 02 Apr 2024 at 15:15, Dmitry Rokosov <ddrokosov@salutedevices.com> wrote:
 
-Each subsystem has different owners and each change requires an explanation
-(maintainers always "expect your patch to be wrong" and you need to
-convince them otherwise through commit messages)
+> On Tue, Apr 02, 2024 at 11:00:42AM +0200, Jerome Brunet wrote:
+>> 
+>> On Fri 29 Mar 2024 at 23:58, Dmitry Rokosov <ddrokosov@salutedevices.com> wrote:
+>> 
+>> > The 'syspll' PLL, also known as the system PLL, is a general and
+>> > essential PLL responsible for generating the CPU clock frequency.
+>> > With its wide-ranging capabilities, it is designed to accommodate
+>> > frequencies within the range of 768MHz to 1536MHz.
+>> >
+>> > Signed-off-by: Dmitry Rokosov <ddrokosov@salutedevices.com>
+>> > ---
+>> >  drivers/clk/meson/a1-pll.c | 78 ++++++++++++++++++++++++++++++++++++++
+>> >  drivers/clk/meson/a1-pll.h |  6 +++
+>> >  2 files changed, 84 insertions(+)
+>> >
+>> > diff --git a/drivers/clk/meson/a1-pll.c b/drivers/clk/meson/a1-pll.c
+>> > index 60b2e53e7e51..02fd2d325cc6 100644
+>> > --- a/drivers/clk/meson/a1-pll.c
+>> > +++ b/drivers/clk/meson/a1-pll.c
+>> > @@ -138,6 +138,81 @@ static struct clk_regmap hifi_pll = {
+>> >  	},
+>> >  };
+>> >  
+>> > +static const struct pll_mult_range sys_pll_mult_range = {
+>> > +	.min = 32,
+>> > +	.max = 64,
+>> > +};
+>> > +
+>> > +/*
+>> > + * We assume that the sys_pll_clk has already been set up by the low-level
+>> > + * bootloaders as the main CPU PLL source. Therefore, it is not necessary to
+>> > + * run the initialization sequence.
+>> > + */
+>> 
+>> I see no reason to make such assumption.
+>> This clock is no read-only, it apparently is able to re-lock so assuming
+>> anything from the bootloader is just asking from trouble
+>> 
+>
+> Indeed, I have implemented the following initialization sequence. I have
+> dumped the bootloader setup and included it in the definition of my
+> sys_pll. However, I have encountered an issue with the enable bit. If I
+> leave the enable bit switched on by default, there is a possibility that
+> the bootloader selects a fixed CPU clock while the sys_pll should be
+> switched off. On the other hand, if I keep the enable bit switched off
+> by default, the bootloader might configure the CPU clock to use sys_pll,
+> resulting in the execution halting when the initialization sequence is
+> run. This situation has led me to assume that we should place our trust
+> in the bootloader setup.
+>
+> If you believe it is necessary to include the initialization sequence, I
+> can prepare it with the sys_pll enabled by default.
 
-Konrad
+I just noted your initial comment is misleading.
+
+You could submit a patch to apply the init sequence only if the PLL is
+not already enabled. Maybe even condition that to flag in the pll data
+to avoid applying it to the other platforms for now.
+
+>
+>> > +static struct clk_regmap sys_pll = {
+>> > +	.data = &(struct meson_clk_pll_data){
+>> > +		.en = {
+>> > +			.reg_off = ANACTRL_SYSPLL_CTRL0,
+>> > +			.shift   = 28,
+>> > +			.width   = 1,
+>> > +		},
+>> > +		.m = {
+>> > +			.reg_off = ANACTRL_SYSPLL_CTRL0,
+>> > +			.shift   = 0,
+>> > +			.width   = 8,
+>> > +		},
+>> > +		.n = {
+>> > +			.reg_off = ANACTRL_SYSPLL_CTRL0,
+>> > +			.shift   = 10,
+>> > +			.width   = 5,
+>> > +		},
+>> > +		.frac = {
+>> > +			.reg_off = ANACTRL_SYSPLL_CTRL1,
+>> > +			.shift   = 0,
+>> > +			.width   = 19,
+>> > +		},
+>> > +		.l = {
+>> > +			.reg_off = ANACTRL_SYSPLL_STS,
+>> > +			.shift   = 31,
+>> > +			.width   = 1,
+>> > +		},
+>> > +		.current_en = {
+>> > +			.reg_off = ANACTRL_SYSPLL_CTRL0,
+>> > +			.shift   = 26,
+>> > +			.width   = 1,
+>> > +		},
+>> > +		.l_detect = {
+>> > +			.reg_off = ANACTRL_SYSPLL_CTRL2,
+>> > +			.shift   = 6,
+>> > +			.width   = 1,
+>> > +		},
+>> > +		.range = &sys_pll_mult_range,
+>> > +	},
+>> > +	.hw.init = &(struct clk_init_data){
+>> > +		.name = "sys_pll",
+>> > +		.ops = &meson_clk_pll_ops,
+>> > +		.parent_names = (const char *[]){ "syspll_in" },
+>> > +		.num_parents = 1,
+>> > +		/*
+>> > +		 * This clock is used as the main CPU PLL source in low-level
+>> > +		 * bootloaders, and it is necessary to mark it as critical.
+>> > +		 */
+>> > +		.flags = CLK_IS_CRITICAL,
+>> 
+>> No I don't think so. Downstream consumer maybe critical but that one is
+>> not, unless it is read-only.
+>> 
+>> A CPU pll, like on the g12 family, is unlikely to be read-only since the
+>> PLL will need to relock to change rates. During this phase, there will
+>> be no reate coming from the PLL so the PLL is not critical and you must
+>> be able to "park" your CPU an another clock while poking this one
+>> 
+>
+> Initially, I tagged it with CLK_IS_CRITICAL because I observed in the
+> kernel start that CCF disables it.
+> However, upon further understanding,
+> I realized that this happened due to other reasons. I believe that if I
+> provide an init sequence where sys_pll is enabled by default, CCF will
+> not disable this clock.
+>
+>> > +	},
+>> > +};
+>> > +
+>> > +static struct clk_fixed_factor sys_pll_div16 = {
+>> > +	.mult = 1,
+>> > +	.div = 16,
+>> > +	.hw.init = &(struct clk_init_data){
+>> > +		.name = "sys_pll_div16",
+>> > +		.ops = &clk_fixed_factor_ops,
+>> > +		.parent_hws = (const struct clk_hw *[]) {
+>> > +			&sys_pll.hw
+>> > +		},
+>> > +		.num_parents = 1,
+>> > +	},
+>> > +};
+>> > +
+>> >  static struct clk_fixed_factor fclk_div2_div = {
+>> >  	.mult = 1,
+>> >  	.div = 2,
+>> > @@ -283,6 +358,8 @@ static struct clk_hw *a1_pll_hw_clks[] = {
+>> >  	[CLKID_FCLK_DIV5]	= &fclk_div5.hw,
+>> >  	[CLKID_FCLK_DIV7]	= &fclk_div7.hw,
+>> >  	[CLKID_HIFI_PLL]	= &hifi_pll.hw,
+>> > +	[CLKID_SYS_PLL]		= &sys_pll.hw,
+>> > +	[CLKID_SYS_PLL_DIV16]	= &sys_pll_div16.hw,
+>> >  };
+>> >  
+>> >  static struct clk_regmap *const a1_pll_regmaps[] = {
+>> > @@ -293,6 +370,7 @@ static struct clk_regmap *const a1_pll_regmaps[] = {
+>> >  	&fclk_div5,
+>> >  	&fclk_div7,
+>> >  	&hifi_pll,
+>> > +	&sys_pll,
+>> >  };
+>> >  
+>> >  static struct regmap_config a1_pll_regmap_cfg = {
+>> > diff --git a/drivers/clk/meson/a1-pll.h b/drivers/clk/meson/a1-pll.h
+>> > index 4be17b2bf383..666d9b2137e9 100644
+>> > --- a/drivers/clk/meson/a1-pll.h
+>> > +++ b/drivers/clk/meson/a1-pll.h
+>> > @@ -18,6 +18,12 @@
+>> >  #define ANACTRL_FIXPLL_CTRL0	0x0
+>> >  #define ANACTRL_FIXPLL_CTRL1	0x4
+>> >  #define ANACTRL_FIXPLL_STS	0x14
+>> > +#define ANACTRL_SYSPLL_CTRL0	0x80
+>> > +#define ANACTRL_SYSPLL_CTRL1	0x84
+>> > +#define ANACTRL_SYSPLL_CTRL2	0x88
+>> > +#define ANACTRL_SYSPLL_CTRL3	0x8c
+>> > +#define ANACTRL_SYSPLL_CTRL4	0x90
+>> > +#define ANACTRL_SYSPLL_STS	0x94
+>> >  #define ANACTRL_HIFIPLL_CTRL0	0xc0
+>> >  #define ANACTRL_HIFIPLL_CTRL1	0xc4
+>> >  #define ANACTRL_HIFIPLL_CTRL2	0xc8
+
+
+-- 
+Jerome
 
