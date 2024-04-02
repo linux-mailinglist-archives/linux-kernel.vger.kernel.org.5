@@ -1,184 +1,294 @@
-Return-Path: <linux-kernel+bounces-127459-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-127458-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 582BC894BCD
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 08:50:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 5608E894BC8
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 08:49:27 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D6AA91F22CB9
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 06:50:08 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D2DA71F22AF8
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 06:49:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E58E136AEF;
-	Tue,  2 Apr 2024 06:49:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A0F0C2DF9C;
+	Tue,  2 Apr 2024 06:49:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b="OXUppOut"
-Received: from out162-62-58-216.mail.qq.com (out162-62-58-216.mail.qq.com [162.62.58.216])
+	dkim=pass (2048-bit key) header.d=vivo.com header.i=@vivo.com header.b="obh08nam"
+Received: from APC01-PSA-obe.outbound.protection.outlook.com (mail-psaapc01on2134.outbound.protection.outlook.com [40.107.255.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 98C472D047;
-	Tue,  2 Apr 2024 06:49:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=162.62.58.216
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712040575; cv=none; b=SrH0cdX+ug8OkNsK7S60QxrnurSGkv/KpELnQ/AO7a1md0t0zzQVeldS/BHj1ymZFi5JbaKuNHDTlMSM1W+WJLF+6CLV49bbJetparEerMVDZPAHHaBOwBWeBMhqRS2oJQaO3jByg4pimdyCB7vruF9KCZvFdjUqeXWQH6etObA=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712040575; c=relaxed/simple;
-	bh=FX1mhRPjrQcVo6/MwRTXpGujzWFlQHWn2tP9zw5Zpo0=;
-	h=Message-ID:From:To:Cc:Subject:Date:In-Reply-To:References:
-	 MIME-Version; b=XygfKTAKkNjrXVYYm2qEcZ5gD0dC8SooFXzyW4GpDbxydOkqJkbAHmd5U0RzkRgg0DZO2Zhp2nB0DGIBEVH45QKFgY5nvVdBvp0XA4/f6EkZrFfdmjzhBzLOoVV5o3BjFpTCP8teK4Wul4iN64O+6eOXk3hWUpNX2KF99rcJJzo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com; spf=pass smtp.mailfrom=qq.com; dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b=OXUppOut; arc=none smtp.client-ip=162.62.58.216
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=qq.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qq.com; s=s201512;
-	t=1712040567; bh=oupitrM2yejVC+b6Kh6tNCCOKCcRagrln1bhHAMnUp4=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References;
-	b=OXUppOutvWLamMNAIjpkBJliAyFjht/RG7QLudA9h/id5lDLo6sOf9SG6LbaWsaiw
-	 SkLw6SlPxjAWs/64IjQ9uJhHLt810MIh+D+CLY5Sdw7u4bid1IHWeJ2OaWxklW2vO7
-	 eAvcNXP7zW+pyvgkBffKaklecquom3nHkcKh2BG4=
-Received: from pek-lxu-l1.wrs.com ([111.198.228.153])
-	by newxmesmtplogicsvrsza7-0.qq.com (NewEsmtp) with SMTP
-	id BD7246B6; Tue, 02 Apr 2024 14:47:23 +0800
-X-QQ-mid: xmsmtpt1712040443t0ex17cyl
-Message-ID: <tencent_44291B84257ABAB7BB7B33C49E0E1BC74B08@qq.com>
-X-QQ-XMAILINFO: NPwBlS1YPCihBRUi30VSRvMAtQcxCWcrLxmJqxAl64AOrThjPBv8h6ySZkVfVD
-	 kluoIhQoxqL2lpQCok1hZGHQlsv/DT354resDxeYv7eJovDlLjojYVbnLBGpKcWbclgxitGx7WUK
-	 ExF8mUg56zzntPsJKTCbzdzfJx+zRPg3LNJts3tvunRz8Ij8ZFlNgczNIoONLPKe45Yusuf/s+8z
-	 ofxslIuSjNh0gqDUatcIvzhJD4LmJ3Su/k8ZuDvrWmaBMDuB9Qeq8YAWs3dcsHnaVzc9qebQh1WA
-	 /A7e7+hGraUDKhErEzGowcGr8phS09b2BoZIPnWwTd7yk1lFjBbgC7Mem4KxUxEhyE4XBXD/Pt72
-	 6paaaox8xoUb4Htyu/D5JDBfNERSnj62hJVjM3gtoqAlVFVGH0WThIDVd0qrlkwdFVNs6SuYUejl
-	 6EqJrYFpxGQ/BFDOBeKs5p2BzVVTCoKvWzXdKf4T9sfE3frVhcRskTidtFiyYZ/D4lAHNEOE2VwN
-	 LFfWCiJ4qgu/M6rwA2L+VUrWLTOejKEuMMTepL4T1bOl/WnDQZ3x5nJSlle0tkI4ToMuh8EaQIm2
-	 62Xn2kJXNLeZ86B0ye9qSwvp5pj09Z5VO3egp+TP5NZK8rKqYV2TL7ryy9xEEhEHg6CUDdl3w/zW
-	 Pfp1K4sN3KEV8fk6aip63Iz6dTRj7UfbR+UgB94k5DGMs7mqPqu/PtD3SxdJmb+nihV/X566Icjj
-	 LW670M6+On9B7EDelcbeUQRPRrHmr27EcsY9ZaaRz5CaR2SHQacaNFFF1oBDBFuWr4wV0UjE5K5z
-	 T+q2YnIgBVYVqo6eSXTvr1m4SzY0zsqs6J7IAA4p28aEETJg9dLlQcd0nEUzbpPVZEsExmuwx3Xh
-	 V2/afV9xGfKk4V6TZ9kWW4lNgUJsYAgVqeJp8zcu57zPCWFA2NEObW9Fb1G5AR6fnNYKCGlD38jn
-	 amuYDmn10=
-X-QQ-XMRINFO: Mp0Kj//9VHAxr69bL5MkOOs=
-From: Edward Adam Davis <eadavis@qq.com>
-To: syzbot+7fb05ccf7b3d2f9617b3@syzkaller.appspotmail.com
-Cc: linux-kernel@vger.kernel.org,
-	linux-sound@vger.kernel.org,
-	linux-usb@vger.kernel.org,
-	perex@perex.cz,
-	syzkaller-bugs@googlegroups.com,
-	tiwai@suse.com
-Subject: [PATCH] ALSA: line6: fix uninit-value in line6_pod_process_message
-Date: Tue,  2 Apr 2024 14:47:24 +0800
-X-OQ-MSGID: <20240402064723.2153044-2-eadavis@qq.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <00000000000084b18706150bcca5@google.com>
-References: <00000000000084b18706150bcca5@google.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ABF481D6AA;
+	Tue,  2 Apr 2024 06:49:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.255.134
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1712040557; cv=fail; b=Dv2+0da1Guzx0aDc4ar62JaqpV0ZhBg76xnd0oI+kgqWyRktYGGpRw5Fl6fy5ZL+08/anwsd/8EtlIeLd0qK+8Bcp/kpl/n9ToDyOFPhQc0kSADzkDjzk9KNdV/1f7GCoa/f2nxfjm6I9sT7JACqMkAFyvGKJ3CFGdOY+BEg8fQ=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1712040557; c=relaxed/simple;
+	bh=DaIyXyCUtv5h1lPf36WbqcnZ/Gw0gbirsdS+o1OPEfk=;
+	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
+	 Content-Type:MIME-Version; b=rf/m4eR+Hynjo22l5GwUuRCduLqGsPqLdHSXAIsdeQrnWsnu55/NAFk1Z/OYfP0zeIF4jsp8Hygs7Z5LpZgvDZglcbt3A69k9MM6McafNAdbYogyiOQmuV4PBXcFlZj3LEbjv5b1slCzoK30MZd6FOf7K8TktnU6NT+wkhfLGtQ=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=vivo.com; spf=pass smtp.mailfrom=vivo.com; dkim=pass (2048-bit key) header.d=vivo.com header.i=@vivo.com header.b=obh08nam; arc=fail smtp.client-ip=40.107.255.134
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=vivo.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=vivo.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=bvOt5MKKynq9YA6fV84J3c6Wm0W1RpLuR+mN7+iPNQrUBcr7+h5UiPa4XcQNHC4L5FnN9qSkA4nQCyL9Ay5RHCDUoQsqk0puHygHb+u1syb6Z5d9aeE7IBkEUD723tN5i7I/xY51ut9mJbIiLoVXlHgEEXAryqwQE3Tv1Y/0n1ZKxkiwYnDVx7v2YZJHeD1m5oZcUeUQeem/PdghbQmys0SSNhM8s/aIKsGWVg4T6+gNlzji1wpsp4RZcLgoq/T77OvprZGdKXgDaldI1yPJ0wJd9lR0lBtmEYkis7bZ6rQzbhXNg/kbvmRAIg1WXvu4ejd1WfLpGMewHHScfuvtCg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=ZB4CjZECDohEvB3rdQL2kHj1nkaVzQZAK5Byd6oZ2t8=;
+ b=EN9jzT+YbWIrflgvzURmdQBGWCVE6kk12JdK+x7cWVc8t0+dsk0kqPK/4FJmobAXqaY1+YPHzRC2XqZa2DD9UIWqPi6SMzz/L2aL3rsvy+qH99bnL3CishtiHfSQADIe7NHuRPGR+gN+A8pKjMAesyfuImuhodokwX1uCokwYYH0Ccw+Km2dRJ+OFFzUpSyq1b/nXAcEU/L6Lp1UfkL/LEnOhCk7PD4v98SH1nm13dd+VIwcHGz+C6245JQyiH5QTp6EoPqO1BYlNEo7TxJq4Kldd6u45n/ZXlVtCoxocBpY1OsAMs+kf6MJdIpNWGnO5TDOvx2lfjiwH6hVpZnvYQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=vivo.com; dmarc=pass action=none header.from=vivo.com;
+ dkim=pass header.d=vivo.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=vivo.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=ZB4CjZECDohEvB3rdQL2kHj1nkaVzQZAK5Byd6oZ2t8=;
+ b=obh08namAGsHY6eDzQwG8r06alpXAeP9kYV/8JisE4DOHwA28162ZvBZ6b1zuSmRMAgWczTMj1exVBNCVECUYLC4xbjvCgaTkLwNMGSsxBzfd2ljVg/32rqYdjzRVWkuty8NNaHSLSPE4C3i1Ub2j4tlwcixbkxXQJUZ9qPtno0jKuYUiaBtGvX6jx8Tcht7/Z9nwsRMFomINe4pFlwFeNjsdNAl6QsXLYG8GGWTz4dtZuLcbmHowBo2PhAIpNcwHiBhC+c+BSyxGn90rVBspxgEMt0mKxdYx/3AucqvHOqKn7E3aN9KqOxdpqGzkZwwk914oObHW70aCV6DyFWcUA==
+Received: from JH0PR06MB6849.apcprd06.prod.outlook.com (2603:1096:990:47::12)
+ by SEZPR06MB5365.apcprd06.prod.outlook.com (2603:1096:101:7d::9) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7409.46; Tue, 2 Apr
+ 2024 06:49:11 +0000
+Received: from JH0PR06MB6849.apcprd06.prod.outlook.com
+ ([fe80::ed24:a6cd:d489:c5ed]) by JH0PR06MB6849.apcprd06.prod.outlook.com
+ ([fe80::ed24:a6cd:d489:c5ed%2]) with mapi id 15.20.7409.042; Tue, 2 Apr 2024
+ 06:49:10 +0000
+Message-ID: <cc7defae-60c1-4cc8-aee5-475d4460e574@vivo.com>
+Date: Tue, 2 Apr 2024 14:49:07 +0800
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] dmabuf: fix dmabuf file poll uaf issue
+To: =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
+ Sumit Semwal <sumit.semwal@linaro.org>, linux-media@vger.kernel.org,
+ dri-devel@lists.freedesktop.org, linaro-mm-sig@lists.linaro.org,
+ linux-kernel@vger.kernel.org
+Cc: opensource.kernel@vivo.com
+References: <20240327022903.776-1-justinjiang@vivo.com>
+ <5cf29162-a29d-4af7-b68e-aac5c862d20e@amd.com>
+From: zhiguojiang <justinjiang@vivo.com>
+In-Reply-To: <5cf29162-a29d-4af7-b68e-aac5c862d20e@amd.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: SG2PR04CA0203.apcprd04.prod.outlook.com
+ (2603:1096:4:187::22) To JH0PR06MB6849.apcprd06.prod.outlook.com
+ (2603:1096:990:47::12)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: JH0PR06MB6849:EE_|SEZPR06MB5365:EE_
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	dh3VPhUdF4Xqh1uxCWbdIh6Pf2XKgryacWtdfGpR5mIAwzToqMG8T0hso8qUXlbLnho1c9GkCqC4yEs0lTMZO9661K+DH+4ShWVOh4YdudluVmRiJjcTxiFWPaNVjlGRjY7m9Q1A7DqLp/tzu6WYgFQA5fAyK742zZ1iDXx1JxNW8b81bvr0gFfs6A3HdNjpS29SKaKJSriEJKKzYh/bxFiuwLRnKU50DgKUs1grGqPP2satcPO1bXGtsT53OiffheetwwmGaaIDDne2Yd5fkbsCRTACKCBjTm69hCkJg3KMkZ4AXrxFu3qPImnKNmAzMzf8wrrhMzu/uejDgcQ5by3xzTvSLA8yB37/kh+nuMNAHM/2us0NLCuDkRAlIEdP/GOecIsp1oiKryRqZVQdvo6gu1aKyvsgXw/5LyedQWKPrbhGkVrQ69A4G/EGpH+TGADzzZh25vyneMgO7A5yLdC3v97bE6RQ2Wi/Ylvb1AF4SRGNRaRi/WcJ4/17f/0IRtVl8DT4rQyqk7jRzD7K0nydmmOxlPtvtCCi1i8b5kzYE5Chc4spPh20FthU9NR+FrvsLbf4Fv65ni/Ellrd6+h00Vm1WbNIcI8RbkjJb53o1JH35PIM5ab7P85LV7BNcMkeLZ4dQL1tx1svk2j9ABO7z+IQjv/baEkVtTupsywmrb2/DQT20SYs1/ZtAFOGkDfwSLG5hsH1jvljosOkCIEL6X1xQyCqTL+84y6Y2cfK/HCmCkRM8iNxkMqOKEB2
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:JH0PR06MB6849.apcprd06.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(52116005)(376005)(1800799015)(366007)(38350700005)(43062008);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?utf-8?B?NkZkL0ZidnNtaHNiR1BMMzFLYTUwa3BtZnNKRnB2eUU4OEtZdjRSVDFqMktI?=
+ =?utf-8?B?dUtGRWw1eGpRZHZIS0w2UGZLMXlQa3VncXV2RDJleG9Ob09xSjBHeUtBQldN?=
+ =?utf-8?B?WFZCNnE5dWxaenA1S3MvT3dkOVRTSTQ3WmJUSFU5VmZRNkJkZ081aUV1dGd4?=
+ =?utf-8?B?OStKbkdzZkYzWTJoSVhqcE96WWZKc3dodHJPbmhCYjdWa1ZYdmRpMlQyUU5q?=
+ =?utf-8?B?YysrYUdQZGdCL0xleXNlT0xkUkJhRHVzQWN6WkZmSksxc2RNOVU3YkhSVUMw?=
+ =?utf-8?B?WjExcHJCeHgwNnFzQm9BRm15Z2c1V3FpVmJ5ZWhYWU1XMklUUmdJQWZ4YUM0?=
+ =?utf-8?B?a1JrL212cm9iaU9sYmRodEVpNGw2TVhTUzRPVmFnc2dqN3NQamtURHVSeHdW?=
+ =?utf-8?B?YmFtVTN6bGIyNDdDNmpmazN2WWYrV3pGS0tHT2pjc0dHRjdMdUxubDVXd3hs?=
+ =?utf-8?B?MUZPQ05HZE16MVFiYXdzNEJXcnljUVQ2N1E1ck1PU1FULzE4NmprMnh5cHNq?=
+ =?utf-8?B?cVgwOVREWVNvZ2YxUlA3SXh4aHVwaHpxekdCbWlzbmZPOC9GVXBpRFVSMCtJ?=
+ =?utf-8?B?TzZBQXRRQUFGRnRXNnppRithTllaQmxVRDVTQW5NdkhGMXlrUldpSmdjbUgz?=
+ =?utf-8?B?ZXE4ODM1NTBTQy82ckZ2MTJvSDBFcHJRNWRTQkYyc0NXVFp6Nyt4U1UrbXpt?=
+ =?utf-8?B?WUd1MnZmVWNNdWJwVlQ2RFVVTm4rR1BLeGV1SHlra0k4c0Z5S1JDN29PcVlj?=
+ =?utf-8?B?Z1NHZ1JkREZhcjVqNkNrbXZ0YXcvZjFjNDFMTHJKTm5JYmhmOE5tYlhBd1hl?=
+ =?utf-8?B?dXpSQWRqT1Q3WVBYS0p4aUNYaWtodGFxWkw1TGNPc3dkK29hMW5ybXRJUHZn?=
+ =?utf-8?B?ZTZjbDU5WkpMTnNLT0Yya3MwSkZvd2lCSHJTUGQ0Z0htcERuaGl2Zis0LzZu?=
+ =?utf-8?B?SC90MzVOSkhJRzhmWFprTTlDWmxhVUN0NDcwbG9xYXkweGhIUXdFYkRFMEN2?=
+ =?utf-8?B?UUVVSHBVci9uc0YxMUlMbjhScEpNVWorU001Z3FXdGI0eW52ZmN1YjVVQktm?=
+ =?utf-8?B?WlhBTFlYejByR1JjQUpqeXhOWCszeDBUeHVRNlQvVU44OUJtZjVESVpHaS9h?=
+ =?utf-8?B?eUNEVTlsZFNYS0VtVUUvcisyc1lzeFZ1dEo5NUFYcHJlL3hQSHdBZldFdUdV?=
+ =?utf-8?B?V0N1SkZyM01mYXdmdlBMR2o2RlB4SVg2N0ErZUFJelR4YmRJbGM4RkcwUHBl?=
+ =?utf-8?B?MHk1d1R4NVhhbUI5NTJqY3hLaXZFTjRiU0Z3NHVYbzZrMHVtS1RpOCsrVnJH?=
+ =?utf-8?B?VFQycmVPa1llSGtjaGpPVVA0ZTlzeE45ODFHNzVmWjE3OHlpdUJHc3JYSHBR?=
+ =?utf-8?B?TEk5VFFhK2JuTjU5SjdvaUU4cTY1RnNuWUFOTFZmUnNMOHpHSEFHZERXRnNK?=
+ =?utf-8?B?VGZiRkh6dnFHbDU3VFpzRXpqT2RrOFdXWUZETXMvVVoxeldpL0pmRHpsWW55?=
+ =?utf-8?B?STN4b3R1Z3crZEFPREo0UWJtZVoyYXE5OTdiTjBFZk5tdEZDcFFneXZIMEpq?=
+ =?utf-8?B?c2VFZWphY1VmYjEzK1BCTVZlc0ViM3Yya0xlYThlWjEyZlV3U2NiYytFNTFM?=
+ =?utf-8?B?M01jT3p1QzJBWmk4bU83QjVtdy9zdU0vWWJreXJqQ1VCYkx6Z09idDVFQ0pr?=
+ =?utf-8?B?Z3ZOSEVuUmFuWVJZUDVOR3dnRUZRSG9PVk8zZlJNM01KOVFGb0MxSnBtTjF3?=
+ =?utf-8?B?MktjMXRFS0I2L3dZa3JmWklPeExEZVpXTk9TOExmM3loYnltVEUvRWxCMS85?=
+ =?utf-8?B?VHpIMHRCTHo5cHZaL3JSR0RRbUI3RkRxdDQra3JhTlBrY21LeVJEYnlNVmNX?=
+ =?utf-8?B?U0lSUGFraGl5K1JsTC8wUFV3ZmhCNUxOVzBES25nUDFxdHJhc202N1YxRWpI?=
+ =?utf-8?B?ejI1Z3hhNHJ1OSsvdkYrMTR0YVVIVGF6dFZES1ZaaVRsRmhqMW0wYlpoZjFR?=
+ =?utf-8?B?eVU3anlzMnFYaU1JVHFBbzM0OXVOWk14b2pvZ0dTUSszNWFtejdlYUJZYzFa?=
+ =?utf-8?B?SVNBcW5zK0c0UDdMdytEVnIyQy84bXBXcGl5SStEY1VnMHliT3VHTTlzYmhx?=
+ =?utf-8?Q?dWMrJytSTlMDnjuTAkDbWCAM5?=
+X-OriginatorOrg: vivo.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 86f4a8cb-e1e6-485b-d98f-08dc52e1006b
+X-MS-Exchange-CrossTenant-AuthSource: JH0PR06MB6849.apcprd06.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 02 Apr 2024 06:49:10.9089
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 923e42dc-48d5-4cbe-b582-1a797a6412ed
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: pNma3lpOpF+W4MoNXaVzP+mnbulXBvCnOVAlY/Ouv0azA1bHG2UyKVChPxC/BvSSgD3vdzsPp9naLc81bTWJYQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SEZPR06MB5365
 
-[Syzbot reported]
-BUG: KMSAN: uninit-value in line6_pod_process_message+0x72f/0x7b0 sound/usb/line6/pod.c:201
- line6_pod_process_message+0x72f/0x7b0 sound/usb/line6/pod.c:201
- line6_data_received+0x5db/0x7e0 sound/usb/line6/driver.c:317
- __usb_hcd_giveback_urb+0x508/0x770 drivers/usb/core/hcd.c:1648
- usb_hcd_giveback_urb+0x157/0x720 drivers/usb/core/hcd.c:1732
- dummy_timer+0xd93/0x6b10 drivers/usb/gadget/udc/dummy_hcd.c:1987
- call_timer_fn+0x49/0x580 kernel/time/timer.c:1793
- expire_timers kernel/time/timer.c:1844 [inline]
- __run_timers kernel/time/timer.c:2418 [inline]
- __run_timer_base+0x84e/0xe90 kernel/time/timer.c:2429
- run_timer_base kernel/time/timer.c:2438 [inline]
- run_timer_softirq+0x3a/0x70 kernel/time/timer.c:2448
- __do_softirq+0x1c0/0x7d7 kernel/softirq.c:554
- invoke_softirq kernel/softirq.c:428 [inline]
- __irq_exit_rcu kernel/softirq.c:633 [inline]
- irq_exit_rcu+0x6a/0x130 kernel/softirq.c:645
- instr_sysvec_apic_timer_interrupt arch/x86/kernel/apic/apic.c:1043 [inline]
- sysvec_apic_timer_interrupt+0x83/0x90 arch/x86/kernel/apic/apic.c:1043
- asm_sysvec_apic_timer_interrupt+0x1f/0x30 arch/x86/include/asm/idtentry.h:702
- native_safe_halt arch/x86/include/asm/irqflags.h:48 [inline]
- arch_safe_halt arch/x86/include/asm/irqflags.h:86 [inline]
- acpi_safe_halt+0x25/0x30 drivers/acpi/processor_idle.c:112
- acpi_idle_do_entry+0x22/0x40 drivers/acpi/processor_idle.c:573
- acpi_idle_enter+0xa1/0xc0 drivers/acpi/processor_idle.c:707
- cpuidle_enter_state+0xcb/0x250 drivers/cpuidle/cpuidle.c:267
- cpuidle_enter+0x7f/0xf0 drivers/cpuidle/cpuidle.c:388
- call_cpuidle kernel/sched/idle.c:155 [inline]
- cpuidle_idle_call kernel/sched/idle.c:236 [inline]
- do_idle+0x551/0x750 kernel/sched/idle.c:332
- cpu_startup_entry+0x65/0x80 kernel/sched/idle.c:430
- rest_init+0x1e8/0x260 init/main.c:732
- start_kernel+0x927/0xa70 init/main.c:1074
- x86_64_start_reservations+0x2e/0x30 arch/x86/kernel/head64.c:507
- x86_64_start_kernel+0x98/0xa0 arch/x86/kernel/head64.c:488
- common_startup_64+0x12c/0x137
+> As far as I can see that's not because of the DMA-buf code, but 
+> because you are somehow using this interface incorrectly.
+>
+> When dma_buf_poll() is called it is mandatory for the caller to hold a 
+> reference to the file descriptor on which the poll operation is executed.
+>
+> So adding code like "if (!file_count(file))" in the beginning of 
+> dma_buf_poll() is certainly broken.
+>
+> My best guess is that you have some unbalanced 
+> dma_buf_get()/dma_buf_put() somewhere instead.
+>
+>
+Hi Christian,
 
-Uninit was created at:
- slab_post_alloc_hook mm/slub.c:3804 [inline]
- slab_alloc_node mm/slub.c:3845 [inline]
- kmalloc_trace+0x578/0xba0 mm/slub.c:3992
- kmalloc include/linux/slab.h:628 [inline]
- line6_init_cap_control+0x4f1/0x770 sound/usb/line6/driver.c:700
- line6_probe+0xeae/0x1120 sound/usb/line6/driver.c:797
- pod_probe+0x79/0x90 sound/usb/line6/pod.c:522
- usb_probe_interface+0xd6f/0x1350 drivers/usb/core/driver.c:399
- really_probe+0x4db/0xd90 drivers/base/dd.c:656
- __driver_probe_device+0x2ab/0x5d0 drivers/base/dd.c:798
- driver_probe_device+0x72/0x890 drivers/base/dd.c:828
- __device_attach_driver+0x568/0x9e0 drivers/base/dd.c:956
- bus_for_each_drv+0x403/0x620 drivers/base/bus.c:457
- __device_attach+0x3c1/0x650 drivers/base/dd.c:1028
- device_initial_probe+0x32/0x40 drivers/base/dd.c:1077
- bus_probe_device+0x3dc/0x5c0 drivers/base/bus.c:532
- device_add+0x1475/0x1c90 drivers/base/core.c:3705
- usb_set_configuration+0x31c9/0x38d0 drivers/usb/core/message.c:2210
- usb_generic_driver_probe+0x109/0x2a0 drivers/usb/core/generic.c:254
- usb_probe_device+0x3a7/0x690 drivers/usb/core/driver.c:294
- really_probe+0x4db/0xd90 drivers/base/dd.c:656
- __driver_probe_device+0x2ab/0x5d0 drivers/base/dd.c:798
- driver_probe_device+0x72/0x890 drivers/base/dd.c:828
- __device_attach_driver+0x568/0x9e0 drivers/base/dd.c:956
- bus_for_each_drv+0x403/0x620 drivers/base/bus.c:457
- __device_attach+0x3c1/0x650 drivers/base/dd.c:1028
- device_initial_probe+0x32/0x40 drivers/base/dd.c:1077
- bus_probe_device+0x3dc/0x5c0 drivers/base/bus.c:532
- device_add+0x1475/0x1c90 drivers/base/core.c:3705
- usb_new_device+0x15ff/0x2470 drivers/usb/core/hub.c:2643
- hub_port_connect drivers/usb/core/hub.c:5512 [inline]
- hub_port_connect_change drivers/usb/core/hub.c:5652 [inline]
- port_event drivers/usb/core/hub.c:5812 [inline]
- hub_event+0x4ff8/0x72d0 drivers/usb/core/hub.c:5894
- process_one_work kernel/workqueue.c:3254 [inline]
- process_scheduled_works+0xa81/0x1bd0 kernel/workqueue.c:3335
- worker_thread+0xea5/0x1560 kernel/workqueue.c:3416
- kthread+0x3e2/0x540 kernel/kthread.c:388
- ret_from_fork+0x6d/0x90 arch/x86/kernel/process.c:147
- ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:243
-[Fix]
-Let's clear all the content of the buffer message during alloc.
+The kernel dma_buf_poll() code shound not cause system crashes due to 
+the user mode usage logical issues ?
 
-Reported-and-tested-by: syzbot+7fb05ccf7b3d2f9617b3@syzkaller.appspotmail.com
-Signed-off-by: Edward Adam Davis <eadavis@qq.com>
----
- sound/usb/line6/driver.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Thanks
 
-diff --git a/sound/usb/line6/driver.c b/sound/usb/line6/driver.c
-index b67617b68e50..8fd9d42aa8e2 100644
---- a/sound/usb/line6/driver.c
-+++ b/sound/usb/line6/driver.c
-@@ -697,7 +697,7 @@ static int line6_init_cap_control(struct usb_line6 *line6)
- 		return -ENOMEM;
- 
- 	if (line6->properties->capabilities & LINE6_CAP_CONTROL_MIDI) {
--		line6->buffer_message = kmalloc(LINE6_MIDI_MESSAGE_MAXLEN, GFP_KERNEL);
-+		line6->buffer_message = kzalloc(LINE6_MIDI_MESSAGE_MAXLEN, GFP_KERNEL);
- 		if (!line6->buffer_message)
- 			return -ENOMEM;
- 
--- 
-2.43.0
+
+在 2024/4/1 20:22, Christian König 写道:
+> Am 27.03.24 um 03:29 schrieb Zhiguo Jiang:
+>> The issue is a UAF issue of dmabuf file fd. Throght debugging, we found
+>> that the dmabuf file fd is added to the epoll event listener list, and
+>> when it is released, it is not removed from the epoll list, which leads
+>> to the UAF(Use-After-Free) issue.
+>
+> As far as I can see that's not because of the DMA-buf code, but 
+> because you are somehow using this interface incorrectly.
+>
+> When dma_buf_poll() is called it is mandatory for the caller to hold a 
+> reference to the file descriptor on which the poll operation is executed.
+>
+> So adding code like "if (!file_count(file))" in the beginning of 
+> dma_buf_poll() is certainly broken.
+>
+> My best guess is that you have some unbalanced 
+> dma_buf_get()/dma_buf_put() somewhere instead.
+>
+> Regards,
+> Christian.
+>
+>>
+>> The UAF issue can be solved by checking dmabuf file->f_count value and
+>> skipping the poll operation for the closed dmabuf file in the
+>> dma_buf_poll(). We have tested this solved patch multiple times and
+>> have not reproduced the uaf issue.
+>>
+>> crash dump:
+>> list_del corruption, ffffff8a6f143a90->next is LIST_POISON1
+>> (dead000000000100)
+>> ------------[ cut here ]------------
+>> kernel BUG at lib/list_debug.c:55!
+>> Internal error: Oops - BUG: 00000000f2000800 [#1] PREEMPT SMP
+>> pc : __list_del_entry_valid+0x98/0xd4
+>> lr : __list_del_entry_valid+0x98/0xd4
+>> sp : ffffffc01d413d00
+>> x29: ffffffc01d413d00 x28: 00000000000000c0 x27: 0000000000000020
+>> x26: 0000000000000000 x25: 0000000000000000 x24: 0000000000080007
+>> x23: ffffff8b22e5dcc0 x22: ffffff88a6be12d0 x21: ffffff8b22e572b0
+>> x20: ffffff80254ed0a0 x19: ffffff8a6f143a00 x18: ffffffda5efed3c0
+>> x17: 6165642820314e4f x16: 53494f505f545349 x15: 4c20736920747865
+>> x14: 6e3e2d3039613334 x13: 2930303130303030 x12: 0000000000000018
+>> x11: ffffff8b6c188000 x10: 00000000ffffffff x9 : 6c8413a194897b00
+>> x8 : 6c8413a194897b00 x7 : 74707572726f6320 x6 : 6c65645f7473696c
+>> x5 : ffffff8b6c3b2a3e x4 : ffffff8b6c3b2a40 x3 : ffff103000001005
+>> x2 : 0000000000000001 x1 : 00000000000000c0 x0 : 000000000000004e
+>> Call trace:
+>>   __list_del_entry_valid+0x98/0xd4
+>>   dma_buf_file_release+0x48/0x90
+>>   __fput+0xf4/0x280
+>>   ____fput+0x10/0x20
+>>   task_work_run+0xcc/0xf4
+>>   do_notify_resume+0x2a0/0x33c
+>>   el0_svc+0x5c/0xa4
+>>   el0t_64_sync_handler+0x68/0xb4
+>>   el0t_64_sync+0x1a0/0x1a4
+>> Code: d0006fe0 912c5000 f2fbd5a2 94231a01 (d4210000)
+>> ---[ end trace 0000000000000000 ]---
+>> Kernel panic - not syncing: Oops - BUG: Fatal exception
+>> SMP: stopping secondary CPUs
+>>
+>> Signed-off-by: Zhiguo Jiang <justinjiang@vivo.com>
+>> ---
+>>   drivers/dma-buf/dma-buf.c | 28 ++++++++++++++++++++++++----
+>>   1 file changed, 24 insertions(+), 4 deletions(-)
+>>   mode change 100644 => 100755 drivers/dma-buf/dma-buf.c
+>>
+>> diff --git a/drivers/dma-buf/dma-buf.c b/drivers/dma-buf/dma-buf.c
+>> index 8fe5aa67b167..e469dd9288cc
+>> --- a/drivers/dma-buf/dma-buf.c
+>> +++ b/drivers/dma-buf/dma-buf.c
+>> @@ -240,6 +240,10 @@ static __poll_t dma_buf_poll(struct file *file, 
+>> poll_table *poll)
+>>       struct dma_resv *resv;
+>>       __poll_t events;
+>>   +    /* Check if the file exists */
+>> +    if (!file_count(file))
+>> +        return EPOLLERR;
+>> +
+>>       dmabuf = file->private_data;
+>>       if (!dmabuf || !dmabuf->resv)
+>>           return EPOLLERR;
+>> @@ -266,8 +270,15 @@ static __poll_t dma_buf_poll(struct file *file, 
+>> poll_table *poll)
+>>           spin_unlock_irq(&dmabuf->poll.lock);
+>>             if (events & EPOLLOUT) {
+>> -            /* Paired with fput in dma_buf_poll_cb */
+>> -            get_file(dmabuf->file);
+>> +            /*
+>> +             * Paired with fput in dma_buf_poll_cb,
+>> +             * Skip poll for the closed file.
+>> +             */
+>> +            if (!get_file_rcu(&dmabuf->file)) {
+>> +                events &= ~EPOLLOUT;
+>> +                dcb->active = 0;
+>> +                goto clear_out_event;
+>> +            }
+>>                 if (!dma_buf_poll_add_cb(resv, true, dcb))
+>>                   /* No callback queued, wake up any other waiters */
+>> @@ -277,6 +288,7 @@ static __poll_t dma_buf_poll(struct file *file, 
+>> poll_table *poll)
+>>           }
+>>       }
+>>   +clear_out_event:
+>>       if (events & EPOLLIN) {
+>>           struct dma_buf_poll_cb_t *dcb = &dmabuf->cb_in;
+>>   @@ -289,8 +301,15 @@ static __poll_t dma_buf_poll(struct file 
+>> *file, poll_table *poll)
+>>           spin_unlock_irq(&dmabuf->poll.lock);
+>>             if (events & EPOLLIN) {
+>> -            /* Paired with fput in dma_buf_poll_cb */
+>> -            get_file(dmabuf->file);
+>> +            /*
+>> +             * Paired with fput in dma_buf_poll_cb,
+>> +             * Skip poll for the closed file.
+>> +             */
+>> +            if (!get_file_rcu(&dmabuf->file)) {
+>> +                events &= ~EPOLLIN;
+>> +                dcb->active = 0;
+>> +                goto clear_in_event;
+>> +            }
+>>                 if (!dma_buf_poll_add_cb(resv, false, dcb))
+>>                   /* No callback queued, wake up any other waiters */
+>> @@ -300,6 +319,7 @@ static __poll_t dma_buf_poll(struct file *file, 
+>> poll_table *poll)
+>>           }
+>>       }
+>>   +clear_in_event:
+>>       dma_resv_unlock(resv);
+>>       return events;
+>>   }
+>
 
 
