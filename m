@@ -1,135 +1,103 @@
-Return-Path: <linux-kernel+bounces-128824-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-128825-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 12328896001
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 01:20:47 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C0C70896003
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 01:21:19 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2B6EC1C2109C
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 23:20:46 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 2D037B21CEE
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 23:21:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E40C145019;
-	Tue,  2 Apr 2024 23:20:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C2E91446B6;
+	Tue,  2 Apr 2024 23:21:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=acm.org header.i=@acm.org header.b="lBdxX7h/"
-Received: from 008.lax.mailroute.net (008.lax.mailroute.net [199.89.1.11])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="mSr+xnQt"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 958434205F;
-	Tue,  2 Apr 2024 23:20:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=199.89.1.11
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0A727224FA;
+	Tue,  2 Apr 2024 23:21:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712100039; cv=none; b=lyF9xBUIf11x1XhLQeak90mMIcZoBTG5l7jp/kIl0b+GFCFMK0OCFt2ZaxWX5N6mmkMp2+Lt1EQRwGKrItCdRbHyKLrrnPBOUsNSyDGyEjJz9JAC4eRX/lS1vofCrdPvlcCFM3UGzWwSqPY8Qcd4ltmNx9YzAaMTJhgUQuzMd7A=
+	t=1712100068; cv=none; b=HOESzb0VQ+p74EZJIgxuVlZt1hRGGHwU8UI2IaG5i7hOHqnrJG9bSHrYQt71GObe2g50USbdAD7XwUFOhD0zVo01ejfXirbNgiG2j7HDrrdx3TWnAAYIzEnWcTWBy5JoAi02Q7zEjW1gpPksfSLW3WL9uYkU+mm6Ll/Pri+wTaY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712100039; c=relaxed/simple;
-	bh=rNRsMENYdMf0E/dZdciD6PG8aHTONVFr4fPxjmhlAOc=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=gFgLvzRTO+vpt5FfgPQ135SBIw4oLHBLO59X9qtzX5NCUNKpopsRe0mmV1R53YgHc/RnPWXHaWt+PKoa7J979XVPd6bShp1qu1xKw77tNUCdUlk9nxXMSgzrLChUAcyk5edCa7z6QurzijjDOobhuZo9c8LH03y+y7IKJcAX5oo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=acm.org; spf=pass smtp.mailfrom=acm.org; dkim=pass (2048-bit key) header.d=acm.org header.i=@acm.org header.b=lBdxX7h/; arc=none smtp.client-ip=199.89.1.11
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=acm.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=acm.org
-Received: from localhost (localhost [127.0.0.1])
-	by 008.lax.mailroute.net (Postfix) with ESMTP id 4V8P4Z6wr8z6Cnk8s;
-	Tue,  2 Apr 2024 23:20:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=acm.org; h=
-	content-transfer-encoding:content-type:content-type:in-reply-to
-	:from:from:content-language:references:subject:subject
-	:user-agent:mime-version:date:date:message-id:received:received;
-	 s=mr01; t=1712100027; x=1714692028; bh=mNK0VmkJz6J6xiyneJZ80sBK
-	QSOoXTWzA0U3O29ARB0=; b=lBdxX7h/BB4QtMNRc4va8Uo6qo/F8h/EvnOIBy0I
-	qq/1TKKJJx+t6Ur6lOCKNwtMEFq0g8OWA9JIy2UnvpRZxNYklgyYA33wxnNTVB19
-	Ad5TPGnvK649+u9p2nBWA/zK/g/gjaLVuZZR2viqnWH4KlyoPGT6lAN6A6F3aDXr
-	SzOg9PHlRuyj8383HTYDM8zc2JD2kFYEkaB3n5ukBIyIA6/EggID1w0rFXbZULVE
-	W+kAN9s743TqWTlv9sKa9uOfbOxzoqrZaZnM1lkyIHNGl7QbGe6QpjdgLAGm7Lwe
-	Eeiv9r1h/TyKX2t4SQ+CVbdIayXlU8zBk28w6wOLaYQMaw==
-X-Virus-Scanned: by MailRoute
-Received: from 008.lax.mailroute.net ([127.0.0.1])
- by localhost (008.lax [127.0.0.1]) (mroute_mailscanner, port 10029) with LMTP
- id pRb1OrAT1Uhl; Tue,  2 Apr 2024 23:20:27 +0000 (UTC)
-Received: from [192.168.3.219] (c-73-231-117-72.hsd1.ca.comcast.net [73.231.117.72])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	(Authenticated sender: bvanassche@acm.org)
-	by 008.lax.mailroute.net (Postfix) with ESMTPSA id 4V8P4S6SlGz6Cnk8m;
-	Tue,  2 Apr 2024 23:20:24 +0000 (UTC)
-Message-ID: <c56a1d54-6d7d-4105-8109-d6a81bc1adbc@acm.org>
-Date: Tue, 2 Apr 2024 16:20:22 -0700
+	s=arc-20240116; t=1712100068; c=relaxed/simple;
+	bh=cX+vqzisIaO+Ki2taFXWqjs59rFDcLk4j/9kjaZxcoo=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=DgMXQzD16Pb5lFump+19v7VH13cjC7+IjzFzCYmfjwEbgFJDNpcH+m31etulYItefXq3WlOOay5QVts+MrLB3dVFziRIW+NBnhmF5yUOhjAI9eScP29NjD2++vM51zniGtivpQg5HPx72iFgbcxGJprJZokYCzvQrFV8JUKdEDA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=mSr+xnQt; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0D811C433C7;
+	Tue,  2 Apr 2024 23:21:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1712100067;
+	bh=cX+vqzisIaO+Ki2taFXWqjs59rFDcLk4j/9kjaZxcoo=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=mSr+xnQtCqlsnDXqJW+hxekB0mMivwMlYiG2WjLkXZM7jKOcWaxEO81IfBqBShDAD
+	 BHi92j4RZeX+ZvmL0lFfK09+Lbo+zkaBvX9zcwmjXw+umzS8iQhZmuKCDXph/DOZV7
+	 IWJm+OQbt/FQn2ulp0qZvMyQwxPmhkPXkfAUsCFKA6tB82Ch0VtjSGhR2IEDIrJijs
+	 OsdZEHZISeI/v+r9tS/P0OHGWzBJeD7pp/+Eo01IFWEGCWsmrD6eUqV2WT6DIAs3Yx
+	 EzsB/KqpfrKXcl4o8HgY8FfNlLbmVYEuVWm12FJ8/felKWiMKAyWRi3fliIO8+z2qe
+	 edHU3fl4BlQzQ==
+Date: Tue, 2 Apr 2024 16:21:06 -0700
+From: Jakub Kicinski <kuba@kernel.org>
+To: Jason Gunthorpe <jgg@nvidia.com>
+Cc: Leon Romanovsky <leon@kernel.org>, David Ahern <dsahern@kernel.org>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Christoph Hellwig
+ <hch@infradead.org>, Saeed Mahameed <saeed@kernel.org>, Arnd Bergmann
+ <arnd@arndb.de>, Jiri Pirko <jiri@nvidia.com>, Leonid Bloch
+ <lbloch@nvidia.com>, Itay Avraham <itayavr@nvidia.com>, Saeed Mahameed
+ <saeedm@nvidia.com>, Aron Silverton <aron.silverton@oracle.com>,
+ linux-kernel@vger.kernel.org, "netdev@vger.kernel.org"
+ <netdev@vger.kernel.org>, Andy Gospodarek <andrew.gospodarek@broadcom.com>,
+ Junxian Huang <huangjunxian6@hisilicon.com>
+Subject: Re: [PATCH V4 0/5] mlx5 ConnectX control misc driver
+Message-ID: <20240402162106.11112e99@kernel.org>
+In-Reply-To: <20240402224632.GT946323@nvidia.com>
+References: <510c1b6b-1738-4baa-bdba-54d478633598@kernel.org>
+	<Zf2n02q0GevGdS-Z@C02YVCJELVCG>
+	<20240322135826.1c4655e2@kernel.org>
+	<e5c61607-4d66-4cd8-bf45-0aac2b3af126@kernel.org>
+	<20240322154027.5555780a@kernel.org>
+	<1cd2a70c-17b8-4421-b70b-3c0199a84a6a@kernel.org>
+	<20240401123003.GC73174@unreal>
+	<20240401075003.70f5cb4b@kernel.org>
+	<20240402184554.GQ946323@nvidia.com>
+	<20240402143607.0357d71a@kernel.org>
+	<20240402224632.GT946323@nvidia.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] block/mq-deadline: Fix WARN when set async_depth by sysfs
-To: Zhiguo Niu <niuzhiguo84@gmail.com>
-Cc: Zhiguo Niu <zhiguo.niu@unisoc.com>, axboe@kernel.dk,
- linux-kernel@vger.kernel.org, linux-block@vger.kernel.org,
- ke.wang@unisoc.com, hongyu.jin@unisoc.com,
- Damien Le Moal <dlemoal@kernel.org>
-References: <1711680261-5789-1-git-send-email-zhiguo.niu@unisoc.com>
- <890bd06d-2a94-4138-9854-4a7ed74e0e51@acm.org>
- <CAHJ8P3K9OL6MHNrSrqmf0esbr2h1HJ3mVRmxDNVpf95ZMHQcqg@mail.gmail.com>
- <92e45c93-e2ff-4d34-b70f-7772f0596e68@acm.org>
- <CAHJ8P3KgU-tFDAgCNc5GcPbUBtDDyFmcfza2HsoD9TJ3h1DS=Q@mail.gmail.com>
-Content-Language: en-US
-From: Bart Van Assche <bvanassche@acm.org>
-In-Reply-To: <CAHJ8P3KgU-tFDAgCNc5GcPbUBtDDyFmcfza2HsoD9TJ3h1DS=Q@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-On 4/1/24 10:44 PM, Zhiguo Niu wrote:
-> On Tue, Apr 2, 2024 at 5:23=E2=80=AFAM Bart Van Assche <bvanassche@acm.=
-org> wrote:
->> Oops, I misread your patch. After having taken another look, my
->> conclusions are as follows:
->> * sbitmap_queue_min_shallow_depth() is called. This causes
->>     sbq->wake_batch to be modified but I don't think that it is a prop=
-er
->>     fix for dd_limit_depth().
-> yes, it will affect sbq->wake_batch,  But judging from the following co=
-de:
-> [ ... ]
+On Tue, 2 Apr 2024 19:46:32 -0300 Jason Gunthorpe wrote:
+> On Tue, Apr 02, 2024 at 02:36:07PM -0700, Jakub Kicinski wrote:
+> > > FWIW, I've been trying to push RDMA away from driver created sysfs for
+> > > a while now. Aside from the API complexity, implementations have
+> > > messed up using the sysfs APIs and resulted in some significant
+> > > problems :(  
+> >
+> > Sure, agreed, but off-topic.  
+> 
+> It is not - I don't want a huge amount of sysfs in drivers to replace
+> what fwctl will do for pretty solid technical reasons.
+> 
+> I do object, as snarky as I was, to you saying RDMA should take on a
+> whole bunch of read/write sysfs in drivers that netdev would not
+> accept as a "reasonable" direction.
 
-If we want to allow small values of dd->async_depth, min_shallow_depth
-must be 1. The BFQ I/O scheduler also follows this approach.
-
->> * dd_limit_depth() still assigns a number in the range 1..nr_requests =
-to
->>     data->shallow_depth while a number in the range 1..(1<<bt->sb.shif=
-t)
->>     should be assigned.
-> yes, In order to avoid the performance regression problem that Harshit
-> Mogalapalli reported, this patch will not directly modify
-> dd->async_depth,
-> but user can modify dd->async_depth from sysfs according to user's
-> request. which will modify data->shallow_depth after user modify it by
-> sysfs.
-
-It seems like there is no other option than keeping the current default
-depth limit for async requests ...
-
-> My personal opinion is to keep the current dd->aync_depth unchanged to
-> avoid causing performance regression,
-> but it should  allow users to set it by sysfs, and the WARN mentioned
-> best to be solved.
-> and just only change this part?
->   -       sbitmap_queue_min_shallow_depth(&tags->bitmap_tags, dd->async=
-_depth);
->   +       sbitmap_queue_min_shallow_depth(&tags->bitmap_tags, 1);
-> thanks!
-
-The above change will suppress the kernel warning. I think the other
-changes from patch 2/2 are also necessary. Otherwise the unit of
-"async_depth" will depend on sbitmap word shift parameter. I don't think
-that users should have to worry about which shift value has been chosen
-by the sbitmap implementation.
-
-Thanks,
-
-Bart.
-
+Repeating myself a bit - I'm not saying you should take the sysfs
+patches. Just that RDMA configuration belongs in the RDMA subsystem.
+I don't want to suggest another solution, because frankly given
+our "no direct FW interface exposure" I don't have much experience
+maintaining such APIs upstream. It'd be vain of me to make suggestions.
+Also I don't want to sound like I'm giving you my "blessing" to do
+whatever, since my personal beliefs(?) remain unchanged. But they
+carry little weight when netdevs or traffic which ends up in netdev
+are not involved.
 
