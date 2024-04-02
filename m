@@ -1,152 +1,553 @@
-Return-Path: <linux-kernel+bounces-128756-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-128757-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 01E25895F53
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 00:06:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 983BA895F56
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 00:08:13 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A96C1284C94
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 22:06:53 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DDD3C284D82
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 22:08:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AE41515E80C;
-	Tue,  2 Apr 2024 22:06:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5C0AB15E80A;
+	Tue,  2 Apr 2024 22:08:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="yMy6OuHc"
-Received: from mail-yb1-f201.google.com (mail-yb1-f201.google.com [209.85.219.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="HlCgCprj"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7500415ADB1
-	for <linux-kernel@vger.kernel.org>; Tue,  2 Apr 2024 22:06:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B80D315AAA7;
+	Tue,  2 Apr 2024 22:08:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712095606; cv=none; b=NoKt9G7PShKbV4LWKwuEXORhywo6waOMsjiCmngSHhOoSouuT3wDykv2NrkpRTnjL4aQ4iTcPxauGWSaPBhP5TkO+TzTTFZ1L7lSfKJoq3ET0kQN28wkKg4qpeSS2KlNIag/amFspbf2VhW18CGUuTESfKqyNxvgcv4KgDKcvGg=
+	t=1712095684; cv=none; b=l5q2YjNPnyF0zYUbNZBh8Vera2W29IsyrEHNNrj7GVZMmVpPx1xZ8EhbEnN7yY690ZH9ZJ/UvXcvXKhcCSCl7Gl+ARXSzav4GWLuO0cZomt+0heu/suT6Q5kV7BiX+gTw5lRXnaNg0htP6vsOsDXZMQ7xFFQgpudE4QvPdSZ540=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712095606; c=relaxed/simple;
-	bh=gc67t4TQZdhFsLXrfYpX3irGFaSP2P1z4uhMPfeyJJ0=;
-	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=KkfGlTECm5ubbIF7zpq259legoQdnTRiNSlTorgJDcW9rDUa7KmnV7xXbs5NBPti8THHw+jXYjcbMyTv87zF3bhJFitxClVx0qIO7ExHdMjPRaO/20gOeIq52Kqb8sY3gAqm9WlXiHYWSF/vlf8II0F+oqYN3fOntGc7rxF/WAQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=yMy6OuHc; arc=none smtp.client-ip=209.85.219.201
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
-Received: by mail-yb1-f201.google.com with SMTP id 3f1490d57ef6-ddaf165a8d9so9068750276.1
-        for <linux-kernel@vger.kernel.org>; Tue, 02 Apr 2024 15:06:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1712095603; x=1712700403; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=LbzcEkoH2vtS5gyXSIOr3X9yBMy7dAbhnmUeGdXluDE=;
-        b=yMy6OuHcrwCzUuWaSekIWU/G1xfADTs8bZuMq4VApsDp4a/4BysPX/VVIwVSRJqivc
-         8YZH8pOSBYnQC8WL8HpfYqSKB3ffkB199R3eV+hj/V28se6+gvgk6PFeJNH+dn0GZcWU
-         Bvzq1KrLtgglROEcUzanw2Zw0b4b6PnoLkvCG9qvYytIuw4TMmzmR8Fhl8DkJZcYr4F0
-         Wl2Ue/E+1Jq67kOkalrBOjhoX+M3VWSGpfe78XxgdJuNxKU8kjWO++QuKabRe82kNC3E
-         /e1dr1lGoofCL4BHX6L47sCWjH0NBd1GIVuDr6fSF/P5EuglvfUA1pM+HCVW9k2iy8rM
-         L0Rg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712095603; x=1712700403;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=LbzcEkoH2vtS5gyXSIOr3X9yBMy7dAbhnmUeGdXluDE=;
-        b=J+BCPP5OtTY7SHnuZ+jtxhPZr15veJnCJd31q5twh2QyJ9BNKb1KMVt1YYupg3TaU/
-         C4QQLaY/MwLVroZciBDmUTLTX606bNJDZHKUfXV3xTV0KIoUKjYACmu/rLlAhwUFNHEZ
-         kz07u+0Ueef3lSdnCq5Pp+OlyWzruWjk7sCpsbn83gIqDh8UXusm5vFbdumTKkhnYBhA
-         nlOkeM9GUbCOA2yt4UXqv7SX+r0h4z+5sGdc4ccoRlJ0xgFEqpOSp5pmx3IXNp09QMoJ
-         7yrGxDp8bhWfNX8GBwiyM/DJCei/uBSpD0xVjE9IsZqScR1WWP8LoH9Z9drelVaXJKtE
-         uW5A==
-X-Forwarded-Encrypted: i=1; AJvYcCUVKx6k4Cs07+T8yDlmW97oKlYYxLLrO3nsYq4xcBOT42iRW2VAcnRqjyuU17tfwMdBJcaBO0jL26HtJAwuEuSa9S16b89OdRiO87I3
-X-Gm-Message-State: AOJu0Yx3C0D4OU5Q4MlELtBdOcZ5KYFOdXG4124D3XKNt4j36jSZjmyZ
-	f8vseWzzfyx2GngTOZMAVbP9aZV4gxHAGER9J2bAr0HBQp5yWjbfwXDboYmUk2c3dDfOzot9qVg
-	XYA==
-X-Google-Smtp-Source: AGHT+IErw3oJaU9VeTKiQJeJdv90U2YEVLX/zdD+RuNVUMd125M6qwXoPy2Jo10L4HeVxq+yacNv1PV2bl0=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a05:6902:2309:b0:dbe:a0c2:df25 with SMTP id
- do9-20020a056902230900b00dbea0c2df25mr1151159ybb.8.1712095603556; Tue, 02 Apr
- 2024 15:06:43 -0700 (PDT)
-Date: Tue, 2 Apr 2024 15:06:42 -0700
-In-Reply-To: <1e063b73-0f9a-4956-9634-2552e6e63ee1@intel.com>
+	s=arc-20240116; t=1712095684; c=relaxed/simple;
+	bh=52IXVa6E1QnG8PbtUDFqA8s3LSUXhQyV2QObUcv3SBk=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=f6bDIzgmo0Fu/ksC9e9GibZak9R6+0Qe8N0IdUIxZCWDm9e8r3HswfpZPG2KLAc1l4Q0/od7FCYjo9JCEC73ORK+BMYK+H9DrYfz9Eo+Lm4pk4CS3hIsWxr+liBd2EsTza5OLoLRsYlfSuzqvlmEjP/YOIZw0oVZANN+FVtPr1A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=HlCgCprj; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BB147C433F1;
+	Tue,  2 Apr 2024 22:08:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1712095684;
+	bh=52IXVa6E1QnG8PbtUDFqA8s3LSUXhQyV2QObUcv3SBk=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=HlCgCprjp23vQ4/+porol9q+TFCMxmcfLf5U2S00OjUf1lVVo714G2F8GcUeyweN4
+	 L9BW5ex02RwTXhhOkjCq689kX2lTIoOIk/HTeUI4LKAmH1R3HE7FVchnhIaILXC49G
+	 +3WjFyiB7XcEDTebimidoHm3CaTjYuJI+DNfF9eDVm+5mlmek2Sgvy2N3xHkhfdZDE
+	 oMMHAq2P7/fG7y5KWQfN+wD19VCmO6C+9PacRFIq6dfMNlR/XlTYzf28gjCctHEfdy
+	 rrGx8KaXea4xS3qK1Ce61yds9jLK3rQlccSHxsysXMFm84tFNsF5Be1n2XQkKcAu4o
+	 1SYsY76sA/W3g==
+Date: Tue, 2 Apr 2024 19:08:01 -0300
+From: Arnaldo Carvalho de Melo <acme@kernel.org>
+To: Namhyung Kim <namhyung@kernel.org>
+Cc: Ian Rogers <irogers@google.com>, Kan Liang <kan.liang@linux.intel.com>,
+	Jiri Olsa <jolsa@kernel.org>,
+	Adrian Hunter <adrian.hunter@intel.com>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Ingo Molnar <mingo@kernel.org>, LKML <linux-kernel@vger.kernel.org>,
+	linux-perf-users@vger.kernel.org
+Subject: Re: [PATCH v2 3/5] perf annotate: Split out util/disasm.c
+Message-ID: <ZgyBwTWv8OZlbl9m@x1>
+References: <20240329215812.537846-1-namhyung@kernel.org>
+ <20240329215812.537846-4-namhyung@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-References: <20240309012725.1409949-1-seanjc@google.com> <20240309012725.1409949-9-seanjc@google.com>
- <ZfRtSKcXTI/lAQxE@intel.com> <ZfSLRrf1CtJEGZw2@google.com> <1e063b73-0f9a-4956-9634-2552e6e63ee1@intel.com>
-Message-ID: <ZgyBckwbrijACeB1@google.com>
-Subject: Re: [PATCH v6 8/9] KVM: VMX: Open code VMX preemption timer rate mask
- in its accessor
-From: Sean Christopherson <seanjc@google.com>
-To: Xiaoyao Li <xiaoyao.li@intel.com>
-Cc: Zhao Liu <zhao1.liu@intel.com>, Thomas Gleixner <tglx@linutronix.de>, 
-	Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, 
-	Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org, 
-	Paolo Bonzini <pbonzini@redhat.com>, Andy Lutomirski <luto@kernel.org>, 
-	Peter Zijlstra <peterz@infradead.org>, linux-kernel@vger.kernel.org, kvm@vger.kernel.org, 
-	Shan Kang <shan.kang@intel.com>, Kai Huang <kai.huang@intel.com>, Xin Li <xin3.li@intel.com>
-Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20240329215812.537846-4-namhyung@kernel.org>
 
-On Mon, Apr 01, 2024, Xiaoyao Li wrote:
-> On 3/16/2024 1:54 AM, Sean Christopherson wrote:
-> > On Fri, Mar 15, 2024, Zhao Liu wrote:
-> > > On Fri, Mar 08, 2024 at 05:27:24PM -0800, Sean Christopherson wrote:
-> > > > Use vmx_misc_preemption_timer_rate() to get the rate in hardware_setup(),
-> > > > and open code the rate's bitmask in vmx_misc_preemption_timer_rate() so
-> > > > that the function looks like all the helpers that grab values from
-> > > > VMX_BASIC and VMX_MISC MSR values.
-> > 
-> > ...
-> > 
-> > > > -#define VMX_MISC_PREEMPTION_TIMER_RATE_MASK	GENMASK_ULL(4, 0)
-> > > >   #define VMX_MISC_SAVE_EFER_LMA			BIT_ULL(5)
-> > > >   #define VMX_MISC_ACTIVITY_HLT			BIT_ULL(6)
-> > > >   #define VMX_MISC_ACTIVITY_SHUTDOWN		BIT_ULL(7)
-> > > > @@ -162,7 +161,7 @@ static inline u32 vmx_basic_vmcs_mem_type(u64 vmx_basic)
-> > > >   static inline int vmx_misc_preemption_timer_rate(u64 vmx_misc)
-> > > >   {
-> > > > -	return vmx_misc & VMX_MISC_PREEMPTION_TIMER_RATE_MASK;
-> > > > +	return vmx_misc & GENMASK_ULL(4, 0);
-> > > >   }
-> > > 
-> > > I feel keeping VMX_MISC_PREEMPTION_TIMER_RATE_MASK is clearer than
-> > > GENMASK_ULL(4, 0), and the former improves code readability.
-> > > 
-> > > May not need to drop VMX_MISC_PREEMPTION_TIMER_RATE_MASK?
-> > 
-> > I don't necessarily disagree, but in this case I value consistency over one
-> > individual case.  As called out in the changelog, the motivation is to make
-> > vmx_misc_preemption_timer_rate() look like all the surrounding helpers.
-> > 
-> > _If_ we want to preserve the mask, then we should add #defines for vmx_misc_cr3_count(),
-> > vmx_misc_max_msr(), etc.
-> > 
-> > I don't have a super strong preference, though I think my vote would be to not
-> > add the masks and go with this patch.  These helpers are intended to be the _only_
-> > way to access the fields, i.e. they effectively _are_ the mask macros, just in
-> > function form.
-> > 
+On Fri, Mar 29, 2024 at 02:58:10PM -0700, Namhyung Kim wrote:
+> The util/annotate.c code has both disassembly and sample annotation
+> related codes.  Factor out the disasm part so that it can be handled
+> more easily.
 > 
-> +1.
+> No functional changes intended.
 > 
-> However, it seems different for vmx_basic_vmcs_mem_type() in patch 5, that I
-> just recommended to define the MASK.
-> 
-> Because we already have
-> 
-> 	#define VMX_BASIC_MEM_TYPE_SHIFT	50
-> 
-> and it has been used in vmx/nested.c,
-> 
-> static inline u32 vmx_basic_vmcs_mem_type(u64 vmx_basic)
-> {
-> 	return (vmx_basic & GENMASK_ULL(53, 50)) >>
-> 		VMX_BASIC_MEM_TYPE_SHIFT;
-> }
-> 
-> looks not intuitive than original patch.
 
-Yeah, agreed, that's taking the worst of both worlds.  I'll update patch 5 to drop
-VMX_BASIC_MEM_TYPE_SHIFT when effectively "moving" it into vmx_basic_vmcs_mem_type().
+Unsure if here, will check and fix later, detected with: 
 
-Thanks!
+  make -C tools/perf build-test'
+
+- Arnaldo
+
+cd . && make BUILD_NONDISTRO=1 FEATURES_DUMP=/home/acme/git/perf-tools-next/tools/perf/BUILD_TEST_FEATURE_DUMP -j28 O=/tmp/tmp.8dFJIAFkfV DESTDIR=/tmp/tmp.Wm6UA35mIC
+  BUILD:   Doing 'make -j28' parallel build
+  HOSTCC  /tmp/tmp.8dFJIAFkfV/fixdep.o
+  HOSTLD  /tmp/tmp.8dFJIAFkfV/fixdep-in.o
+  LINK    /tmp/tmp.8dFJIAFkfV/fixdep
+Warning: Kernel ABI header differences:
+  diff -u tools/include/uapi/drm/i915_drm.h include/uapi/drm/i915_drm.h
+  diff -u tools/include/uapi/linux/kvm.h include/uapi/linux/kvm.h
+  diff -u tools/include/linux/bits.h include/linux/bits.h
+  diff -u tools/arch/x86/include/asm/disabled-features.h arch/x86/include/asm/disabled-features.h
+  diff -u tools/arch/x86/include/asm/cpufeatures.h arch/x86/include/asm/cpufeatures.h
+  diff -u tools/arch/x86/include/asm/msr-index.h arch/x86/include/asm/msr-index.h
+  diff -u tools/arch/x86/include/uapi/asm/kvm.h arch/x86/include/uapi/asm/kvm.h
+  diff -u tools/arch/powerpc/include/uapi/asm/kvm.h arch/powerpc/include/uapi/asm/kvm.h
+  diff -u tools/arch/s390/include/uapi/asm/kvm.h arch/s390/include/uapi/asm/kvm.h
+  diff -u tools/arch/arm64/include/uapi/asm/kvm.h arch/arm64/include/uapi/asm/kvm.h
+  diff -u tools/arch/arm64/include/asm/cputype.h arch/arm64/include/asm/cputype.h
+  diff -u tools/perf/trace/beauty/arch/x86/include/asm/irq_vectors.h arch/x86/include/asm/irq_vectors.h
+  diff -u tools/perf/trace/beauty/include/uapi/linux/fs.h include/uapi/linux/fs.h
+  diff -u tools/perf/trace/beauty/include/uapi/linux/vhost.h include/uapi/linux/vhost.h
+  diff -u tools/perf/trace/beauty/include/uapi/sound/asound.h include/uapi/sound/asound.h
+Makefile.config:1147: No openjdk development package found, please install JDK package, e.g. openjdk-8-jdk, java-1.8.0-openjdk-devel
+
+  GEN     /tmp/tmp.8dFJIAFkfV/common-cmds.h
+  CC      /tmp/tmp.8dFJIAFkfV/dlfilters/dlfilter-test-api-v0.o
+  CC      /tmp/tmp.8dFJIAFkfV/dlfilters/dlfilter-test-api-v2.o
+  CC      /tmp/tmp.8dFJIAFkfV/dlfilters/dlfilter-show-cycles.o
+  LINK    /tmp/tmp.8dFJIAFkfV/dlfilters/dlfilter-test-api-v0.so
+  LINK    /tmp/tmp.8dFJIAFkfV/dlfilters/dlfilter-test-api-v2.so
+  GEN     /tmp/tmp.8dFJIAFkfV/arch/arm64/include/generated/asm/sysreg-defs.h
+  LINK    /tmp/tmp.8dFJIAFkfV/dlfilters/dlfilter-show-cycles.so
+  PERF_VERSION = 6.8.g4619ca4cfefa
+  GEN     perf-iostat
+  GEN     perf-archive
+  INSTALL /tmp/tmp.8dFJIAFkfV/libsubcmd/include/subcmd/help.h
+  INSTALL /tmp/tmp.8dFJIAFkfV/libsubcmd/include/subcmd/pager.h
+  INSTALL /tmp/tmp.8dFJIAFkfV/libsubcmd/include/subcmd/exec-cmd.h
+  INSTALL /tmp/tmp.8dFJIAFkfV/libsubcmd/include/subcmd/run-command.h
+  INSTALL /tmp/tmp.8dFJIAFkfV/libsubcmd/include/subcmd/parse-options.h
+  CC      /tmp/tmp.8dFJIAFkfV/libsubcmd/exec-cmd.o
+  CC      /tmp/tmp.8dFJIAFkfV/libsubcmd/help.o
+  CC      /tmp/tmp.8dFJIAFkfV/libsubcmd/pager.o
+  CC      /tmp/tmp.8dFJIAFkfV/libsubcmd/parse-options.o
+  CC      /tmp/tmp.8dFJIAFkfV/libsubcmd/run-command.o
+  CC      /tmp/tmp.8dFJIAFkfV/libsubcmd/sigchain.o
+  CC      /tmp/tmp.8dFJIAFkfV/libsubcmd/subcmd-config.o
+  INSTALL libsubcmd_headers
+  MKDIR   /tmp/tmp.8dFJIAFkfV/util/bpf_skel/.tmp/bootstrap/libbpf/include/bpf
+  MKDIR   /tmp/tmp.8dFJIAFkfV/util/bpf_skel/.tmp/bootstrap/
+  MKDIR   /tmp/tmp.8dFJIAFkfV/util/bpf_skel/.tmp/bootstrap/libbpf/
+  INSTALL /tmp/tmp.8dFJIAFkfV/util/bpf_skel/.tmp/bootstrap/libbpf/include/bpf/hashmap.h
+  INSTALL /tmp/tmp.8dFJIAFkfV/util/bpf_skel/.tmp/bootstrap/libbpf/include/bpf/libbpf_internal.h
+  INSTALL /tmp/tmp.8dFJIAFkfV/util/bpf_skel/.tmp/bootstrap/libbpf/include/bpf/relo_core.h
+  INSTALL /tmp/tmp.8dFJIAFkfV/libperf/include/perf/bpf_perf.h
+  INSTALL /tmp/tmp.8dFJIAFkfV/libperf/include/perf/core.h
+  INSTALL /tmp/tmp.8dFJIAFkfV/libperf/include/perf/cpumap.h
+  INSTALL /tmp/tmp.8dFJIAFkfV/libperf/include/perf/threadmap.h
+  INSTALL /tmp/tmp.8dFJIAFkfV/libsymbol/include/symbol/kallsyms.h
+  INSTALL /tmp/tmp.8dFJIAFkfV/libperf/include/perf/evlist.h
+  INSTALL /tmp/tmp.8dFJIAFkfV/libapi/include/api/cpu.h
+  INSTALL /tmp/tmp.8dFJIAFkfV/libperf/include/perf/evsel.h
+  INSTALL /tmp/tmp.8dFJIAFkfV/libperf/include/perf/event.h
+  INSTALL /tmp/tmp.8dFJIAFkfV/libapi/include/api/debug.h
+  CC      /tmp/tmp.8dFJIAFkfV/libperf/core.o
+  CC      /tmp/tmp.8dFJIAFkfV/libsymbol/kallsyms.o
+  INSTALL /tmp/tmp.8dFJIAFkfV/libperf/include/perf/mmap.h
+  CC      /tmp/tmp.8dFJIAFkfV/libperf/cpumap.o
+  INSTALL /tmp/tmp.8dFJIAFkfV/libperf/include/internal/cpumap.h
+  INSTALL libsymbol_headers
+  INSTALL /tmp/tmp.8dFJIAFkfV/libperf/include/internal/evlist.h
+  CC      /tmp/tmp.8dFJIAFkfV/libperf/threadmap.o
+  INSTALL /tmp/tmp.8dFJIAFkfV/libperf/include/internal/evsel.h
+  INSTALL /tmp/tmp.8dFJIAFkfV/libapi/include/api/io.h
+  CC      /tmp/tmp.8dFJIAFkfV/libapi/cpu.o
+  MKDIR   /tmp/tmp.8dFJIAFkfV/libapi/fd/
+  INSTALL /tmp/tmp.8dFJIAFkfV/libapi/include/api/fd/array.h
+  MKDIR   /tmp/tmp.8dFJIAFkfV/libapi/fs/
+  CC      /tmp/tmp.8dFJIAFkfV/libapi/debug.o
+  INSTALL /tmp/tmp.8dFJIAFkfV/libperf/include/internal/lib.h
+  CC      /tmp/tmp.8dFJIAFkfV/libapi/fd/array.o
+  INSTALL /tmp/tmp.8dFJIAFkfV/libapi/include/api/fs/fs.h
+  INSTALL /tmp/tmp.8dFJIAFkfV/libperf/include/internal/mmap.h
+  CC      /tmp/tmp.8dFJIAFkfV/libapi/fs/fs.o
+  INSTALL /tmp/tmp.8dFJIAFkfV/libperf/include/internal/rc_check.h
+  MKDIR   /tmp/tmp.8dFJIAFkfV/libapi/fs/
+  GEN     /tmp/tmp.8dFJIAFkfV/libbpf/bpf_helper_defs.h
+  INSTALL /tmp/tmp.8dFJIAFkfV/libapi/include/api/fs/tracing_path.h
+  CC      /tmp/tmp.8dFJIAFkfV/libapi/fs/cgroup.o
+  INSTALL /tmp/tmp.8dFJIAFkfV/libperf/include/internal/threadmap.h
+  INSTALL /tmp/tmp.8dFJIAFkfV/libbpf/include/bpf/bpf.h
+  INSTALL /tmp/tmp.8dFJIAFkfV/libbpf/include/bpf/libbpf.h
+  CC      /tmp/tmp.8dFJIAFkfV/libapi/fs/tracing_path.o
+  INSTALL /tmp/tmp.8dFJIAFkfV/libperf/include/internal/xyarray.h
+  CC      /tmp/tmp.8dFJIAFkfV/libperf/evsel.o
+  INSTALL /tmp/tmp.8dFJIAFkfV/libbpf/include/bpf/btf.h
+  CC      /tmp/tmp.8dFJIAFkfV/libperf/evlist.o
+  INSTALL libapi_headers
+  CC      /tmp/tmp.8dFJIAFkfV/libapi/str_error_r.o
+  INSTALL /tmp/tmp.8dFJIAFkfV/libbpf/include/bpf/libbpf_common.h
+  CC      /tmp/tmp.8dFJIAFkfV/libperf/mmap.o
+  CC      /tmp/tmp.8dFJIAFkfV/libperf/zalloc.o
+  GEN     /tmp/tmp.8dFJIAFkfV/util/bpf_skel/.tmp/bootstrap/libbpf/bpf_helper_defs.h
+  INSTALL /tmp/tmp.8dFJIAFkfV/libbpf/include/bpf/libbpf_legacy.h
+  INSTALL /tmp/tmp.8dFJIAFkfV/util/bpf_skel/.tmp/bootstrap/libbpf/include/bpf/bpf.h
+  CC      /tmp/tmp.8dFJIAFkfV/libperf/xyarray.o
+  INSTALL /tmp/tmp.8dFJIAFkfV/util/bpf_skel/.tmp/bootstrap/libbpf/include/bpf/libbpf.h
+  INSTALL /tmp/tmp.8dFJIAFkfV/util/bpf_skel/.tmp/bootstrap/libbpf/include/bpf/btf.h
+  INSTALL libperf_headers
+  INSTALL /tmp/tmp.8dFJIAFkfV/util/bpf_skel/.tmp/bootstrap/libbpf/include/bpf/libbpf_common.h
+  INSTALL /tmp/tmp.8dFJIAFkfV/util/bpf_skel/.tmp/bootstrap/libbpf/include/bpf/libbpf_legacy.h
+  CC      /tmp/tmp.8dFJIAFkfV/libperf/lib.o
+  INSTALL /tmp/tmp.8dFJIAFkfV/libbpf/include/bpf/bpf_helpers.h
+  INSTALL /tmp/tmp.8dFJIAFkfV/util/bpf_skel/.tmp/bootstrap/libbpf/include/bpf/bpf_helpers.h
+  INSTALL /tmp/tmp.8dFJIAFkfV/libbpf/include/bpf/bpf_tracing.h
+  INSTALL /tmp/tmp.8dFJIAFkfV/util/bpf_skel/.tmp/bootstrap/libbpf/include/bpf/bpf_tracing.h
+  INSTALL /tmp/tmp.8dFJIAFkfV/util/bpf_skel/.tmp/bootstrap/libbpf/include/bpf/bpf_endian.h
+  INSTALL /tmp/tmp.8dFJIAFkfV/libbpf/include/bpf/bpf_endian.h
+  INSTALL /tmp/tmp.8dFJIAFkfV/util/bpf_skel/.tmp/bootstrap/libbpf/include/bpf/bpf_core_read.h
+  INSTALL /tmp/tmp.8dFJIAFkfV/libbpf/include/bpf/bpf_core_read.h
+  INSTALL /tmp/tmp.8dFJIAFkfV/libbpf/include/bpf/skel_internal.h
+  INSTALL /tmp/tmp.8dFJIAFkfV/util/bpf_skel/.tmp/bootstrap/libbpf/include/bpf/skel_internal.h
+  INSTALL /tmp/tmp.8dFJIAFkfV/libbpf/include/bpf/libbpf_version.h
+  INSTALL /tmp/tmp.8dFJIAFkfV/libbpf/include/bpf/usdt.bpf.h
+  INSTALL /tmp/tmp.8dFJIAFkfV/util/bpf_skel/.tmp/bootstrap/libbpf/include/bpf/libbpf_version.h
+  INSTALL /tmp/tmp.8dFJIAFkfV/util/bpf_skel/.tmp/bootstrap/libbpf/include/bpf/usdt.bpf.h
+  LD      /tmp/tmp.8dFJIAFkfV/libapi/fd/libapi-in.o
+  INSTALL /tmp/tmp.8dFJIAFkfV/libbpf/include/bpf/bpf_helper_defs.h
+  MKDIR   /tmp/tmp.8dFJIAFkfV/libbpf/staticobjs/
+  MKDIR   /tmp/tmp.8dFJIAFkfV/libbpf/staticobjs/
+  INSTALL libbpf_headers
+  MKDIR   /tmp/tmp.8dFJIAFkfV/libbpf/staticobjs/
+  MKDIR   /tmp/tmp.8dFJIAFkfV/libbpf/staticobjs/
+  MKDIR   /tmp/tmp.8dFJIAFkfV/libbpf/staticobjs/
+  LD      /tmp/tmp.8dFJIAFkfV/libsymbol/libsymbol-in.o
+  MKDIR   /tmp/tmp.8dFJIAFkfV/libbpf/staticobjs/
+  CC      /tmp/tmp.8dFJIAFkfV/libbpf/staticobjs/libbpf.o
+  CC      /tmp/tmp.8dFJIAFkfV/libbpf/staticobjs/bpf.o
+  CC      /tmp/tmp.8dFJIAFkfV/libbpf/staticobjs/netlink.o
+  CC      /tmp/tmp.8dFJIAFkfV/libbpf/staticobjs/nlattr.o
+  CC      /tmp/tmp.8dFJIAFkfV/libbpf/staticobjs/btf.o
+  CC      /tmp/tmp.8dFJIAFkfV/libbpf/staticobjs/libbpf_errno.o
+  CC      /tmp/tmp.8dFJIAFkfV/libbpf/staticobjs/str_error.o
+  CC      /tmp/tmp.8dFJIAFkfV/libbpf/staticobjs/bpf_prog_linfo.o
+  CC      /tmp/tmp.8dFJIAFkfV/libbpf/staticobjs/libbpf_probes.o
+  CC      /tmp/tmp.8dFJIAFkfV/libbpf/staticobjs/hashmap.o
+  CC      /tmp/tmp.8dFJIAFkfV/libbpf/staticobjs/btf_dump.o
+  CC      /tmp/tmp.8dFJIAFkfV/libbpf/staticobjs/ringbuf.o
+  CC      /tmp/tmp.8dFJIAFkfV/libbpf/staticobjs/strset.o
+  CC      /tmp/tmp.8dFJIAFkfV/libbpf/staticobjs/linker.o
+  CC      /tmp/tmp.8dFJIAFkfV/libbpf/staticobjs/gen_loader.o
+  CC      /tmp/tmp.8dFJIAFkfV/libbpf/staticobjs/relo_core.o
+  AR      /tmp/tmp.8dFJIAFkfV/libsymbol/libsymbol.a
+  CC      /tmp/tmp.8dFJIAFkfV/libbpf/staticobjs/usdt.o
+  CC      /tmp/tmp.8dFJIAFkfV/libbpf/staticobjs/zip.o
+  MKDIR   /tmp/tmp.8dFJIAFkfV/util/bpf_skel/.tmp/bootstrap/libbpf/staticobjs/
+  CC      /tmp/tmp.8dFJIAFkfV/util/bpf_skel/.tmp/bootstrap/libbpf/staticobjs/libbpf.o
+  MKDIR   /tmp/tmp.8dFJIAFkfV/util/bpf_skel/.tmp/bootstrap/libbpf/staticobjs/
+  CC      /tmp/tmp.8dFJIAFkfV/util/bpf_skel/.tmp/bootstrap/libbpf/staticobjs/bpf.o
+  LD      /tmp/tmp.8dFJIAFkfV/libapi/fs/libapi-in.o
+  LD      /tmp/tmp.8dFJIAFkfV/libapi/libapi-in.o
+  CC      /tmp/tmp.8dFJIAFkfV/libbpf/staticobjs/elf.o
+  INSTALL /tmp/tmp.8dFJIAFkfV/util/bpf_skel/.tmp/bootstrap/libbpf/include/bpf/bpf_helper_defs.h
+  INSTALL libbpf_headers
+  CC      /tmp/tmp.8dFJIAFkfV/libbpf/staticobjs/features.o
+  CC      /tmp/tmp.8dFJIAFkfV/util/bpf_skel/.tmp/bootstrap/libbpf/staticobjs/nlattr.o
+  CC      /tmp/tmp.8dFJIAFkfV/util/bpf_skel/.tmp/bootstrap/libbpf/staticobjs/btf.o
+  AR      /tmp/tmp.8dFJIAFkfV/libapi/libapi.a
+  CC      /tmp/tmp.8dFJIAFkfV/util/bpf_skel/.tmp/bootstrap/libbpf/staticobjs/libbpf_errno.o
+  LD      /tmp/tmp.8dFJIAFkfV/libperf/libperf-in.o
+  CC      /tmp/tmp.8dFJIAFkfV/util/bpf_skel/.tmp/bootstrap/libbpf/staticobjs/str_error.o
+  AR      /tmp/tmp.8dFJIAFkfV/libperf/libperf.a
+  CC      /tmp/tmp.8dFJIAFkfV/util/bpf_skel/.tmp/bootstrap/libbpf/staticobjs/netlink.o
+  CC      /tmp/tmp.8dFJIAFkfV/util/bpf_skel/.tmp/bootstrap/libbpf/staticobjs/bpf_prog_linfo.o
+  CC      /tmp/tmp.8dFJIAFkfV/util/bpf_skel/.tmp/bootstrap/libbpf/staticobjs/libbpf_probes.o
+  CC      /tmp/tmp.8dFJIAFkfV/util/bpf_skel/.tmp/bootstrap/libbpf/staticobjs/hashmap.o
+  CC      /tmp/tmp.8dFJIAFkfV/util/bpf_skel/.tmp/bootstrap/libbpf/staticobjs/btf_dump.o
+  CC      /tmp/tmp.8dFJIAFkfV/util/bpf_skel/.tmp/bootstrap/libbpf/staticobjs/ringbuf.o
+  CC      /tmp/tmp.8dFJIAFkfV/util/bpf_skel/.tmp/bootstrap/libbpf/staticobjs/strset.o
+  CC      /tmp/tmp.8dFJIAFkfV/util/bpf_skel/.tmp/bootstrap/libbpf/staticobjs/linker.o
+  CC      /tmp/tmp.8dFJIAFkfV/util/bpf_skel/.tmp/bootstrap/libbpf/staticobjs/gen_loader.o
+  CC      /tmp/tmp.8dFJIAFkfV/util/bpf_skel/.tmp/bootstrap/libbpf/staticobjs/relo_core.o
+  CC      /tmp/tmp.8dFJIAFkfV/util/bpf_skel/.tmp/bootstrap/libbpf/staticobjs/usdt.o
+  CC      /tmp/tmp.8dFJIAFkfV/util/bpf_skel/.tmp/bootstrap/libbpf/staticobjs/zip.o
+  CC      /tmp/tmp.8dFJIAFkfV/util/bpf_skel/.tmp/bootstrap/libbpf/staticobjs/elf.o
+  LD      /tmp/tmp.8dFJIAFkfV/libsubcmd/libsubcmd-in.o
+  CC      /tmp/tmp.8dFJIAFkfV/util/bpf_skel/.tmp/bootstrap/libbpf/staticobjs/features.o
+  AR      /tmp/tmp.8dFJIAFkfV/libsubcmd/libsubcmd.a
+  GEN     /tmp/tmp.8dFJIAFkfV/python/perf.cpython-312-x86_64-linux-gnu.so
+  LD      /tmp/tmp.8dFJIAFkfV/util/bpf_skel/.tmp/bootstrap/libbpf/staticobjs/libbpf-in.o
+  LD      /tmp/tmp.8dFJIAFkfV/libbpf/staticobjs/libbpf-in.o
+  LINK    /tmp/tmp.8dFJIAFkfV/util/bpf_skel/.tmp/bootstrap/libbpf/libbpf.a
+  LINK    /tmp/tmp.8dFJIAFkfV/libbpf/libbpf.a
+  CC      /tmp/tmp.8dFJIAFkfV/util/bpf_skel/.tmp/bootstrap/main.o
+  CC      /tmp/tmp.8dFJIAFkfV/util/bpf_skel/.tmp/bootstrap/common.o
+  CC      /tmp/tmp.8dFJIAFkfV/util/bpf_skel/.tmp/bootstrap/json_writer.o
+  CC      /tmp/tmp.8dFJIAFkfV/util/bpf_skel/.tmp/bootstrap/gen.o
+  CC      /tmp/tmp.8dFJIAFkfV/util/bpf_skel/.tmp/bootstrap/btf.o
+  CC      /tmp/tmp.8dFJIAFkfV/util/bpf_skel/.tmp/bootstrap/xlated_dumper.o
+  CC      /tmp/tmp.8dFJIAFkfV/util/bpf_skel/.tmp/bootstrap/btf_dumper.o
+  CC      /tmp/tmp.8dFJIAFkfV/util/bpf_skel/.tmp/bootstrap/disasm.o
+  LINK    /tmp/tmp.8dFJIAFkfV/util/bpf_skel/.tmp/bootstrap/bpftool
+  CLANG   /tmp/tmp.8dFJIAFkfV/util/bpf_skel/.tmp/bpf_prog_profiler.bpf.o
+  CLANG   /tmp/tmp.8dFJIAFkfV/util/bpf_skel/.tmp/bperf_leader.bpf.o
+  CLANG   /tmp/tmp.8dFJIAFkfV/util/bpf_skel/.tmp/bperf_follower.bpf.o
+  CLANG   /tmp/tmp.8dFJIAFkfV/util/bpf_skel/.tmp/bperf_cgroup.bpf.o
+  CLANG   /tmp/tmp.8dFJIAFkfV/util/bpf_skel/.tmp/func_latency.bpf.o
+  CLANG   /tmp/tmp.8dFJIAFkfV/util/bpf_skel/.tmp/off_cpu.bpf.o
+  CLANG   /tmp/tmp.8dFJIAFkfV/util/bpf_skel/.tmp/lock_contention.bpf.o
+  CLANG   /tmp/tmp.8dFJIAFkfV/util/bpf_skel/.tmp/kwork_trace.bpf.o
+  CLANG   /tmp/tmp.8dFJIAFkfV/util/bpf_skel/.tmp/sample_filter.bpf.o
+  CLANG   /tmp/tmp.8dFJIAFkfV/util/bpf_skel/.tmp/kwork_top.bpf.o
+  CLANG   /tmp/tmp.8dFJIAFkfV/util/bpf_skel/.tmp/bench_uprobe.bpf.o
+  CLANG   /tmp/tmp.8dFJIAFkfV/util/bpf_skel/.tmp/augmented_raw_syscalls.bpf.o
+  GENSKEL /tmp/tmp.8dFJIAFkfV/util/bpf_skel/bperf_leader.skel.h
+  GENSKEL /tmp/tmp.8dFJIAFkfV/util/bpf_skel/bench_uprobe.skel.h
+  GENSKEL /tmp/tmp.8dFJIAFkfV/util/bpf_skel/bperf_follower.skel.h
+  GENSKEL /tmp/tmp.8dFJIAFkfV/util/bpf_skel/sample_filter.skel.h
+  GENSKEL /tmp/tmp.8dFJIAFkfV/util/bpf_skel/augmented_raw_syscalls.skel.h
+  GENSKEL /tmp/tmp.8dFJIAFkfV/util/bpf_skel/bpf_prog_profiler.skel.h
+  GENSKEL /tmp/tmp.8dFJIAFkfV/util/bpf_skel/func_latency.skel.h
+  GENSKEL /tmp/tmp.8dFJIAFkfV/util/bpf_skel/bperf_cgroup.skel.h
+  GENSKEL /tmp/tmp.8dFJIAFkfV/util/bpf_skel/off_cpu.skel.h
+  GENSKEL /tmp/tmp.8dFJIAFkfV/util/bpf_skel/kwork_trace.skel.h
+  GENSKEL /tmp/tmp.8dFJIAFkfV/util/bpf_skel/kwork_top.skel.h
+  GENSKEL /tmp/tmp.8dFJIAFkfV/util/bpf_skel/lock_contention.skel.h
+  CC      /tmp/tmp.8dFJIAFkfV/builtin-bench.o
+  CC      /tmp/tmp.8dFJIAFkfV/builtin-annotate.o
+  CC      /tmp/tmp.8dFJIAFkfV/builtin-config.o
+  CC      /tmp/tmp.8dFJIAFkfV/builtin-diff.o
+  CC      /tmp/tmp.8dFJIAFkfV/builtin-evlist.o
+  CC      /tmp/tmp.8dFJIAFkfV/builtin-ftrace.o
+  CC      /tmp/tmp.8dFJIAFkfV/builtin-help.o
+  CC      /tmp/tmp.8dFJIAFkfV/builtin-buildid-list.o
+  CC      /tmp/tmp.8dFJIAFkfV/builtin-buildid-cache.o
+  CC      /tmp/tmp.8dFJIAFkfV/builtin-kallsyms.o
+  CC      /tmp/tmp.8dFJIAFkfV/builtin-list.o
+  CC      /tmp/tmp.8dFJIAFkfV/builtin-record.o
+  MKDIR   /tmp/tmp.8dFJIAFkfV/pmu-events/
+  CC      /tmp/tmp.8dFJIAFkfV/builtin-report.o
+  CC      /tmp/tmp.8dFJIAFkfV/builtin-stat.o
+  CC      /tmp/tmp.8dFJIAFkfV/builtin-top.o
+  CC      /tmp/tmp.8dFJIAFkfV/builtin-script.o
+  TEST    /tmp/tmp.8dFJIAFkfV/pmu-events/metric_test.log
+  CC      /tmp/tmp.8dFJIAFkfV/builtin-kvm.o
+  CC      /tmp/tmp.8dFJIAFkfV/builtin-inject.o
+  CC      /tmp/tmp.8dFJIAFkfV/builtin-mem.o
+  CC      /tmp/tmp.8dFJIAFkfV/builtin-data.o
+  CC      /tmp/tmp.8dFJIAFkfV/builtin-version.o
+  CC      /tmp/tmp.8dFJIAFkfV/builtin-c2c.o
+  CC      /tmp/tmp.8dFJIAFkfV/builtin-daemon.o
+  CC      /tmp/tmp.8dFJIAFkfV/builtin-kmem.o
+  CC      /tmp/tmp.8dFJIAFkfV/builtin-kwork.o
+  CC      /tmp/tmp.8dFJIAFkfV/builtin-lock.o
+  GEN     /tmp/tmp.8dFJIAFkfV/pmu-events/pmu-events.c
+  CC      /tmp/tmp.8dFJIAFkfV/builtin-sched.o
+  CC      /tmp/tmp.8dFJIAFkfV/builtin-timechart.o
+  CC      /tmp/tmp.8dFJIAFkfV/builtin-trace.o
+  CC      /tmp/tmp.8dFJIAFkfV/trace/beauty/clone.o
+  MKDIR   /tmp/tmp.8dFJIAFkfV/bench/
+  CC      /tmp/tmp.8dFJIAFkfV/bench/sched-messaging.o
+  MKDIR   /tmp/tmp.8dFJIAFkfV/tests/
+  MKDIR   /tmp/tmp.8dFJIAFkfV/bench/
+  CC      /tmp/tmp.8dFJIAFkfV/tests/builtin-test.o
+  CC      /tmp/tmp.8dFJIAFkfV/trace/beauty/fcntl.o
+  CC      /tmp/tmp.8dFJIAFkfV/bench/sched-pipe.o
+  CC      /tmp/tmp.8dFJIAFkfV/bench/sched-seccomp-notify.o
+  CC      /tmp/tmp.8dFJIAFkfV/bench/syscall.o
+  MKDIR   /tmp/tmp.8dFJIAFkfV/tests/
+  CC      /tmp/tmp.8dFJIAFkfV/trace/beauty/flock.o
+  CC      /tmp/tmp.8dFJIAFkfV/tests/tests-scripts.o
+  CC      /tmp/tmp.8dFJIAFkfV/tests/parse-events.o
+  CC      /tmp/tmp.8dFJIAFkfV/tests/dso-data.o
+  CC      /tmp/tmp.8dFJIAFkfV/tests/attr.o
+  CC      /tmp/tmp.8dFJIAFkfV/trace/beauty/fs_at_flags.o
+  CC      /tmp/tmp.8dFJIAFkfV/bench/mem-functions.o
+  CC      /tmp/tmp.8dFJIAFkfV/trace/beauty/fsmount.o
+  CC      /tmp/tmp.8dFJIAFkfV/tests/vmlinux-kallsyms.o
+  CC      /tmp/tmp.8dFJIAFkfV/tests/openat-syscall.o
+  CC      /tmp/tmp.8dFJIAFkfV/trace/beauty/fspick.o
+  CC      /tmp/tmp.8dFJIAFkfV/bench/futex-hash.o
+  CC      /tmp/tmp.8dFJIAFkfV/trace/beauty/ioctl.o
+  CC      /tmp/tmp.8dFJIAFkfV/arch/common.o
+  CC      /tmp/tmp.8dFJIAFkfV/trace/beauty/kcmp.o
+  CC      /tmp/tmp.8dFJIAFkfV/util/arm64-frame-pointer-unwind-support.o
+  MKDIR   /tmp/tmp.8dFJIAFkfV/ui/
+  CC      /tmp/tmp.8dFJIAFkfV/util/addr_location.o
+  CC      /tmp/tmp.8dFJIAFkfV/ui/setup.o
+  MKDIR   /tmp/tmp.8dFJIAFkfV/scripts/perl/Perf-Trace-Util/
+  CC      /tmp/tmp.8dFJIAFkfV/scripts/perl/Perf-Trace-Util/Context.o
+  MKDIR   /tmp/tmp.8dFJIAFkfV/ui/
+  CC      /tmp/tmp.8dFJIAFkfV/trace/beauty/mount_flags.o
+  CC      /tmp/tmp.8dFJIAFkfV/ui/helpline.o
+  MKDIR   /tmp/tmp.8dFJIAFkfV/arch/x86/util/
+  CC      /tmp/tmp.8dFJIAFkfV/arch/x86/util/header.o
+  MKDIR   /tmp/tmp.8dFJIAFkfV/arch/x86/util/
+  CC      /tmp/tmp.8dFJIAFkfV/arch/x86/util/tsc.o
+  CC      /tmp/tmp.8dFJIAFkfV/arch/x86/util/pmu.o
+  MKDIR   /tmp/tmp.8dFJIAFkfV/arch/x86/tests/
+  CC      /tmp/tmp.8dFJIAFkfV/tests/openat-syscall-all-cpus.o
+  CC      /tmp/tmp.8dFJIAFkfV/arch/x86/tests/regs_load.o
+  MKDIR   /tmp/tmp.8dFJIAFkfV/arch/x86/tests/
+  CC      /tmp/tmp.8dFJIAFkfV/bench/futex-wake.o
+  CC      /tmp/tmp.8dFJIAFkfV/arch/x86/tests/dwarf-unwind.o
+  CC      /tmp/tmp.8dFJIAFkfV/bench/futex-wake-parallel.o
+  CC      /tmp/tmp.8dFJIAFkfV/util/annotate.o
+  CC      /tmp/tmp.8dFJIAFkfV/util/block-info.o
+  CC      /tmp/tmp.8dFJIAFkfV/trace/beauty/move_mount.o
+  CC      /tmp/tmp.8dFJIAFkfV/ui/progress.o
+  CC      /tmp/tmp.8dFJIAFkfV/tests/openat-syscall-tp-fields.o
+  CC      /tmp/tmp.8dFJIAFkfV/ui/util.o
+  CC      /tmp/tmp.8dFJIAFkfV/ui/hist.o
+  MKDIR   /tmp/tmp.8dFJIAFkfV/ui/stdio/
+  CC      /tmp/tmp.8dFJIAFkfV/ui/stdio/hist.o
+  CC      /tmp/tmp.8dFJIAFkfV/trace/beauty/pkey_alloc.o
+  CC      /tmp/tmp.8dFJIAFkfV/tests/mmap-basic.o
+  CC      /tmp/tmp.8dFJIAFkfV/arch/x86/tests/arch-tests.o
+  CC      /tmp/tmp.8dFJIAFkfV/builtin-probe.o
+  CC      /tmp/tmp.8dFJIAFkfV/bench/futex-requeue.o
+  CC      /tmp/tmp.8dFJIAFkfV/ui/browser.o
+  CC      /tmp/tmp.8dFJIAFkfV/arch/x86/util/kvm-stat.o
+  CC      /tmp/tmp.8dFJIAFkfV/arch/x86/tests/sample-parsing.o
+  CC      /tmp/tmp.8dFJIAFkfV/trace/beauty/arch_prctl.o
+  MKDIR   /tmp/tmp.8dFJIAFkfV/scripts/python/Perf-Trace-Util/
+  CC      /tmp/tmp.8dFJIAFkfV/trace/beauty/prctl.o
+  CC      /tmp/tmp.8dFJIAFkfV/scripts/python/Perf-Trace-Util/Context.o
+  CC      /tmp/tmp.8dFJIAFkfV/util/block-range.o
+  CC      /tmp/tmp.8dFJIAFkfV/arch/x86/util/perf_regs.o
+  CC      /tmp/tmp.8dFJIAFkfV/perf.o
+  CC      /tmp/tmp.8dFJIAFkfV/trace/beauty/renameat.o
+  CC      /tmp/tmp.8dFJIAFkfV/util/build-id.o
+  CC      /tmp/tmp.8dFJIAFkfV/tests/perf-record.o
+  CC      /tmp/tmp.8dFJIAFkfV/arch/x86/tests/hybrid.o
+  CC      /tmp/tmp.8dFJIAFkfV/trace/beauty/sockaddr.o
+  CC      /tmp/tmp.8dFJIAFkfV/trace/beauty/socket.o
+  CC      /tmp/tmp.8dFJIAFkfV/arch/x86/tests/intel-pt-test.o
+  CC      /tmp/tmp.8dFJIAFkfV/bench/futex-lock-pi.o
+  MKDIR   /tmp/tmp.8dFJIAFkfV/ui/browsers/
+  CC      /tmp/tmp.8dFJIAFkfV/ui/browsers/annotate.o
+  CC      /tmp/tmp.8dFJIAFkfV/arch/x86/util/topdown.o
+  CC      /tmp/tmp.8dFJIAFkfV/trace/beauty/statx.o
+  CC      /tmp/tmp.8dFJIAFkfV/arch/x86/tests/bp-modify.o
+  CC      /tmp/tmp.8dFJIAFkfV/trace/beauty/sync_file_range.o
+  CC      /tmp/tmp.8dFJIAFkfV/tests/evsel-roundtrip-name.o
+  CC      /tmp/tmp.8dFJIAFkfV/bench/epoll-wait.o
+  CC      /tmp/tmp.8dFJIAFkfV/arch/x86/util/machine.o
+  MKDIR   /tmp/tmp.8dFJIAFkfV/ui/browsers/
+  CC      /tmp/tmp.8dFJIAFkfV/trace/beauty/timespec.o
+  CC      /tmp/tmp.8dFJIAFkfV/ui/browsers/hists.o
+  MKDIR   /tmp/tmp.8dFJIAFkfV/ui/tui/
+  CC      /tmp/tmp.8dFJIAFkfV/ui/tui/setup.o
+  CC      /tmp/tmp.8dFJIAFkfV/arch/x86/util/event.o
+  CC      /tmp/tmp.8dFJIAFkfV/tests/evsel-tp-sched.o
+  CC      /tmp/tmp.8dFJIAFkfV/bench/epoll-ctl.o
+  CC      /tmp/tmp.8dFJIAFkfV/util/cacheline.o
+  CC      /tmp/tmp.8dFJIAFkfV/ui/browsers/map.o
+  CC      /tmp/tmp.8dFJIAFkfV/arch/x86/tests/amd-ibs-via-core-pmu.o
+  LD      /tmp/tmp.8dFJIAFkfV/scripts/python/Perf-Trace-Util/perf-in.o
+  CC      /tmp/tmp.8dFJIAFkfV/arch/x86/util/evlist.o
+  CC      /tmp/tmp.8dFJIAFkfV/util/config.o
+  CC      /tmp/tmp.8dFJIAFkfV/util/copyfile.o
+  MKDIR   /tmp/tmp.8dFJIAFkfV/trace/beauty/tracepoints/
+  CC      /tmp/tmp.8dFJIAFkfV/util/ctype.o
+  CC      /tmp/tmp.8dFJIAFkfV/trace/beauty/tracepoints/x86_irq_vectors.o
+  CC      /tmp/tmp.8dFJIAFkfV/tests/fdarray.o
+  CC      /tmp/tmp.8dFJIAFkfV/arch/x86/util/mem-events.o
+  CC      /tmp/tmp.8dFJIAFkfV/tests/pmu.o
+  MKDIR   /tmp/tmp.8dFJIAFkfV/ui/tui/
+  CC      /tmp/tmp.8dFJIAFkfV/ui/tui/util.o
+  CC      /tmp/tmp.8dFJIAFkfV/ui/tui/helpline.o
+  MKDIR   /tmp/tmp.8dFJIAFkfV/trace/beauty/tracepoints/
+  CC      /tmp/tmp.8dFJIAFkfV/trace/beauty/tracepoints/x86_msr.o
+  LD      /tmp/tmp.8dFJIAFkfV/arch/x86/tests/perf-in.o
+  CC      /tmp/tmp.8dFJIAFkfV/arch/x86/util/evsel.o
+  CC      /tmp/tmp.8dFJIAFkfV/ui/browsers/scripts.o
+  CC      /tmp/tmp.8dFJIAFkfV/ui/tui/progress.o
+  CC      /tmp/tmp.8dFJIAFkfV/tests/pmu-events.o
+  LD      /tmp/tmp.8dFJIAFkfV/scripts/perl/Perf-Trace-Util/perf-in.o
+  CC      /tmp/tmp.8dFJIAFkfV/tests/hists_common.o
+  LD      /tmp/tmp.8dFJIAFkfV/scripts/perf-in.o
+  CC      /tmp/tmp.8dFJIAFkfV/tests/hists_link.o
+  LD      /tmp/tmp.8dFJIAFkfV/trace/beauty/tracepoints/perf-in.o
+  CC      /tmp/tmp.8dFJIAFkfV/arch/x86/util/iostat.o
+  LD      /tmp/tmp.8dFJIAFkfV/trace/beauty/perf-in.o
+  CC      /tmp/tmp.8dFJIAFkfV/bench/synthesize.o
+  CC      /tmp/tmp.8dFJIAFkfV/ui/browsers/header.o
+  CC      /tmp/tmp.8dFJIAFkfV/ui/browsers/res_sample.o
+  CC      /tmp/tmp.8dFJIAFkfV/util/db-export.o
+  CC      /tmp/tmp.8dFJIAFkfV/tests/hists_filter.o
+  CC      /tmp/tmp.8dFJIAFkfV/arch/x86/util/env.o
+  CC      /tmp/tmp.8dFJIAFkfV/util/disasm.o
+  CC      /tmp/tmp.8dFJIAFkfV/tests/hists_output.o
+  CC      /tmp/tmp.8dFJIAFkfV/bench/kallsyms-parse.o
+  CC      /tmp/tmp.8dFJIAFkfV/util/env.o
+  CC      /tmp/tmp.8dFJIAFkfV/arch/x86/util/dwarf-regs.o
+  CC      /tmp/tmp.8dFJIAFkfV/bench/find-bit-bench.o
+  CC      /tmp/tmp.8dFJIAFkfV/tests/hists_cumulate.o
+  LD      /tmp/tmp.8dFJIAFkfV/ui/tui/perf-in.o
+  CC      /tmp/tmp.8dFJIAFkfV/arch/x86/util/unwind-libunwind.o
+  CC      /tmp/tmp.8dFJIAFkfV/util/event.o
+  CC      /tmp/tmp.8dFJIAFkfV/util/evlist.o
+  CC      /tmp/tmp.8dFJIAFkfV/arch/x86/util/auxtrace.o
+  CC      /tmp/tmp.8dFJIAFkfV/util/sideband_evlist.o
+  CC      /tmp/tmp.8dFJIAFkfV/tests/python-use.o
+  CC      /tmp/tmp.8dFJIAFkfV/util/evsel.o
+  CC      /tmp/tmp.8dFJIAFkfV/arch/x86/util/archinsn.o
+  CC      /tmp/tmp.8dFJIAFkfV/arch/x86/util/intel-pt.o
+  CC      /tmp/tmp.8dFJIAFkfV/bench/inject-buildid.o
+  CC      /tmp/tmp.8dFJIAFkfV/bench/evlist-open-close.o
+  CC      /tmp/tmp.8dFJIAFkfV/tests/bp_signal.o
+  CC      /tmp/tmp.8dFJIAFkfV/arch/x86/util/intel-bts.o
+  CC      /tmp/tmp.8dFJIAFkfV/tests/bp_signal_overflow.o
+  CC      /tmp/tmp.8dFJIAFkfV/bench/breakpoint.o
+  CC      /tmp/tmp.8dFJIAFkfV/tests/bp_account.o
+  CC      /tmp/tmp.8dFJIAFkfV/util/evsel_fprintf.o
+  CC      /tmp/tmp.8dFJIAFkfV/tests/wp.o
+  CC      /tmp/tmp.8dFJIAFkfV/util/perf_event_attr_fprintf.o
+  CC      /tmp/tmp.8dFJIAFkfV/bench/pmu-scan.o
+util/disasm.c: In function ‘symbol__disassemble_bpf’:
+util/disasm.c:1202:9: error: implicit declaration of function ‘perf_exe’ [-Werror=implicit-function-declaration]
+ 1202 |         perf_exe(tpath, sizeof(tpath));
+      |         ^~~~~~~~
+util/disasm.c:1222:21: error: implicit declaration of function ‘perf_env__find_bpf_prog_info’ [-Werror=implicit-function-declaration]
+ 1222 |         info_node = perf_env__find_bpf_prog_info(dso->bpf_prog.env,
+      |                     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~
+util/disasm.c:1222:19: error: assignment to ‘struct bpf_prog_info_node *’ from ‘int’ makes pointer from integer without a cast [-Werror=int-conversion]
+ 1222 |         info_node = perf_env__find_bpf_prog_info(dso->bpf_prog.env,
+      |                   ^
+util/disasm.c:1228:32: error: invalid use of undefined type ‘struct bpf_prog_info_node’
+ 1228 |         info_linear = info_node->info_linear;
+      |                                ^~
+util/disasm.c:1231:54: error: invalid use of undefined type ‘struct perf_bpil’
+ 1231 |         info.buffer = (void *)(uintptr_t)(info_linear->info.jited_prog_insns);
+      |                                                      ^~
+util/disasm.c:1232:41: error: invalid use of undefined type ‘struct perf_bpil’
+ 1232 |         info.buffer_length = info_linear->info.jited_prog_len;
+      |                                         ^~
+util/disasm.c:1234:24: error: invalid use of undefined type ‘struct perf_bpil’
+ 1234 |         if (info_linear->info.nr_line_info)
+      |                        ^~
+util/disasm.c:1235:62: error: invalid use of undefined type ‘struct perf_bpil’
+ 1235 |                 prog_linfo = bpf_prog_linfo__new(&info_linear->info);
+      |                                                              ^~
+util/disasm.c:1237:24: error: invalid use of undefined type ‘struct perf_bpil’
+ 1237 |         if (info_linear->info.btf_id) {
+      |                        ^~
+util/disasm.c:1240:24: error: implicit declaration of function ‘perf_env__find_btf’ [-Werror=implicit-function-declaration]
+ 1240 |                 node = perf_env__find_btf(dso->bpf_prog.env,
+      |                        ^~~~~~~~~~~~~~~~~~
+util/disasm.c:1241:54: error: invalid use of undefined type ‘struct perf_bpil’
+ 1241 |                                           info_linear->info.btf_id);
+      |                                                      ^~
+util/disasm.c:1243:53: error: invalid use of undefined type ‘struct btf_node’
+ 1243 |                         btf = btf__new((__u8 *)(node->data),
+      |                                                     ^~
+util/disasm.c:1244:44: error: invalid use of undefined type ‘struct btf_node’
+ 1244 |                                        node->data_size);
+      |                                            ^~
+util/disasm.c:1268:60: error: invalid use of undefined type ‘struct perf_bpil’
+ 1268 |                 addr = pc + ((u64 *)(uintptr_t)(info_linear->info.jited_ksyms))[sub_id];
+      |                                                            ^~
+cc1: all warnings being treated as errors
+make[6]: *** [/home/acme/git/perf-tools-next/tools/build/Makefile.build:106: /tmp/tmp.8dFJIAFkfV/util/disasm.o] Error 1
+  CC      /tmp/tmp.8dFJIAFkfV/tests/task-exit.o
+make[6]: *** Waiting for unfinished jobs....
+  CC      /tmp/tmp.8dFJIAFkfV/tests/sw-clock.o
+  CC      /tmp/tmp.8dFJIAFkfV/tests/mmap-thread-lookup.o
+  CC      /tmp/tmp.8dFJIAFkfV/bench/uprobe.o
+  CC      /tmp/tmp.8dFJIAFkfV/bench/mem-memcpy-x86-64-asm.o
+  CC      /tmp/tmp.8dFJIAFkfV/tests/thread-maps-share.o
+  CC      /tmp/tmp.8dFJIAFkfV/bench/mem-memset-x86-64-asm.o
+  CC      /tmp/tmp.8dFJIAFkfV/tests/switch-tracking.o
+
 
