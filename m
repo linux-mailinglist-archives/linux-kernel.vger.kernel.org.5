@@ -1,315 +1,138 @@
-Return-Path: <linux-kernel+bounces-128711-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-128713-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 68B76895E7E
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 23:16:31 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 20E5A895E86
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 23:17:25 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D26F21F26182
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 21:16:30 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 522091C23A22
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 21:17:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4006615E5B0;
-	Tue,  2 Apr 2024 21:16:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0B02E15E7FA;
+	Tue,  2 Apr 2024 21:17:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Fj3Cjnl7"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.15])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=google.com header.i=@google.com header.b="Di+SrmgW"
+Received: from mail-wm1-f51.google.com (mail-wm1-f51.google.com [209.85.128.51])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4D9F115ADB1;
-	Tue,  2 Apr 2024 21:16:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.15
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9070C15E5D4
+	for <linux-kernel@vger.kernel.org>; Tue,  2 Apr 2024 21:16:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712092583; cv=none; b=SH8mb72JxfBuXywxImhNgE0GewqYYttA7uwPLFDAULvSHTYYdyScypS4DMtzciQWMZUfdvR0Jep9eTsXPyqcmYg1CAZ1oTFfII1Yrqplr3D6o3WwcsxcwUnti5sXbQi18FdVcRq33kAGW0CprFcnM+J/8tLH9crpAxq3AHeEuAo=
+	t=1712092621; cv=none; b=H6EQc/hK1K9fXdgMqhc4Sx/+nXrv3N0GiugE6ovLrAGD6vMsCBdFt0edm8CFmWQ/2goRIBfTZmIVOfxBfZgvQbBt6XkrYODxfgCpdzPai8ze50JKOmG+d9qnkjzrlVUZmq0ZSmUxU+SZ/alk/g6ucBtXOBM4TWvF6a7PPyER1L0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712092583; c=relaxed/simple;
-	bh=X3VZ6npZQzckzPwMwoU3Fg+1K/GTEYupbhuCvZ8/KA8=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=sfGb7OBjidzjPAY+486JTw8kRIUO9Mhwc7eDorwbb/qa+UwWDv66OEmn6kiWgwKYjLTy7iIlbSNf7bvYHcduwdmL6gnxg5l8+tcbzEei1KYvOMBlwKZjgZUzeIRQpEVGWbrN3rwFUHXcgbMA9uPL4fc4dT63fBQHeivFRCcEOic=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Fj3Cjnl7; arc=none smtp.client-ip=198.175.65.15
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1712092581; x=1743628581;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=X3VZ6npZQzckzPwMwoU3Fg+1K/GTEYupbhuCvZ8/KA8=;
-  b=Fj3Cjnl7UyNbjcgpsO6hcx/j1rSOxr/NGruflfNzunCxsZOyF6rznve8
-   N+mAPuBJIZJQlE277137pRA7yz2KxGV7Dhtcrf+oKTA2lW0zldwcmG5Gm
-   6O0sci2VrwvoK3f8dZFWCbC0vkQu59cprjxBduOPUbzJu2Li3jGSLVb05
-   RnxwX+KszpIydVfco/75mJvjwS4n57C02aATVX1urTkRx3atYyO4Rv3xR
-   jQVS89aq65KX6Ps1+XfO83n1H88h2AQ1EXqXE91S87163dJN7K8W/l5FX
-   fYTzYTpeenLI1c+UTT7ta1sVxRotzSYt2BhDiylJJUB+wdgPIBaJBsuQt
-   g==;
-X-CSE-ConnectionGUID: +w8D/8jpQvKsRcxhCLbeNw==
-X-CSE-MsgGUID: JdiHH6YiSxW6lNXvpx1WmA==
-X-IronPort-AV: E=McAfee;i="6600,9927,11032"; a="11114877"
-X-IronPort-AV: E=Sophos;i="6.07,176,1708416000"; 
-   d="scan'208";a="11114877"
-Received: from orviesa006.jf.intel.com ([10.64.159.146])
-  by orvoesa107.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Apr 2024 14:16:20 -0700
-X-CSE-ConnectionGUID: pnUMbvePRpSvbr1aLBWtww==
-X-CSE-MsgGUID: NEB0yKCwTWGx0ul98JVOGw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,176,1708416000"; 
-   d="scan'208";a="18654012"
-Received: from ooginni-mobl.amr.corp.intel.com (HELO [10.209.114.45]) ([10.209.114.45])
-  by orviesa006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Apr 2024 14:16:20 -0700
-Message-ID: <ef3457fb-f1ae-4ab2-a040-d2e6990d6952@linux.intel.com>
-Date: Tue, 2 Apr 2024 14:16:20 -0700
+	s=arc-20240116; t=1712092621; c=relaxed/simple;
+	bh=kCy/Wy416R2rVioMdi/DEMNv60kp/brycrF56GzT6Zs=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=K8qR6Rt6Q+yOf1o1Mc65Ui8FXJL99CvXh2pAlMXhXaXv9/dR9491SSDGVci47tl4hE1NT7Q04ORrMceDHipvOraApnQw5pps7WW2raf7rAwT2XkD9/Ho/HWjSl+kDGjiyD80aaf1kfZ+jOxyBsZCUcOfhYpoHtc942yHL0/Xn4s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=Di+SrmgW; arc=none smtp.client-ip=209.85.128.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-wm1-f51.google.com with SMTP id 5b1f17b1804b1-4161bd0a4ecso8101755e9.1
+        for <linux-kernel@vger.kernel.org>; Tue, 02 Apr 2024 14:16:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1712092618; x=1712697418; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=/OAizWUKAAnKBZ/2O8nQbOOvDnazCRfTEF/N4t89OGY=;
+        b=Di+SrmgWXOiBHfJ8I0xwFoJ1ZUDTUE8RmXyPmGDISmH4oKe6R7UmsCzmqOB7GMPrda
+         PrO1fL1YFywWpPTFeBMTyy/XQhsh8rU2ii6+a5x+wS0fndq+AIQmMUINyLpbxCQqZHC0
+         cYYquKYbILoVybCTlP2GROsxApXLoJL9c/JT/Hoc8cO2CkYZBCtWPgux7/2HsqwNzZ+Q
+         yWgWvqG5bAouyp0JovtBi+9M3Pgp//9wTMHtojuNbJPKkEyBf5nzstOtiY2bT5OLyY4e
+         aBaBKk9Udfo5q2fDJRuGwzCFaUmFSdw1npTKKbXtkNWpaer+4TS9FCiFCmfp+qCfsWgN
+         KRsQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712092618; x=1712697418;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=/OAizWUKAAnKBZ/2O8nQbOOvDnazCRfTEF/N4t89OGY=;
+        b=j1mJ5IErjfm/3HahxaYkMxHhVRpKv4AhYctK7KDfyk59/knGoO5nPPTDCIwjIv7piT
+         SXA0Kul4siLw4ToHUnpiN4pW+A7xg5oVhrNm0OWJwQlvS1x2KfL1UyQsV4quCevrirtq
+         8lEmY3UzvrV1A8YRiDK9RzVMyEWfBvRwYpysa8tZ0mcCvXYPlf17PVSJ5z21gbteQrsl
+         L8Tfghsy3y8w698vbRpgNrKOnmsbNdyp47US0zU2W310Bve9E4fxf+XJrrPltgJJZy/B
+         /g/BlRsK3WzernPiphDy6e8x4ygNFQQlYb/9zryCG5LntZ1wWXsB0xPtZBmI2EesGD6C
+         p1lA==
+X-Forwarded-Encrypted: i=1; AJvYcCVUsoPynXtJQ4Tzd5ZY6cSe2i0uJAJ144CpTwpcG/W8UPMlenL87d22om6Z7q8OjYRIK9qS5vpuXKW2oL4MH9lrvfJ+86NZqJgy1lwL
+X-Gm-Message-State: AOJu0YyVsMWRsnXZuPMOVpc1T60zYeUFj0jwUQIA/vxcXFpzqER0H96T
+	YDXHl+u7+nR2NhY7WgK9lQXL+ktcufo8pZl2+2oilCt4Ur8lQ3Mh6UBHD5i7F+my4B4QyOgGvX/
+	EJu8grpONHe41YOJ/1Q6HapW917VfKqNpWgcW
+X-Google-Smtp-Source: AGHT+IH5S3wHyM0LW8kSGJtaML71ldIEGY4qs+Y1EPNU4RCyS1cvM5MraL2y3w2xh6lWwiPJTbTpV1msXzG68jMUxAY=
+X-Received: by 2002:a7b:c358:0:b0:415:4b1a:683b with SMTP id
+ l24-20020a7bc358000000b004154b1a683bmr642867wmj.41.1712092617721; Tue, 02 Apr
+ 2024 14:16:57 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 4/4] platform/x86: wmi: Add driver development guide
-To: Armin Wolf <W_Armin@gmx.de>, hdegoede@redhat.com,
- ilpo.jarvinen@linux.intel.com
-Cc: corbet@lwn.net, linux-doc@vger.kernel.org,
- platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20240402143059.8456-1-W_Armin@gmx.de>
- <20240402143059.8456-4-W_Armin@gmx.de>
-Content-Language: en-US
-From: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
-In-Reply-To: <20240402143059.8456-4-W_Armin@gmx.de>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+References: <CAMuE1bHBky9NGP22PVHKdi2+WniwxiLSmMnwRM6wm36sU8W4jA@mail.gmail.com>
+ <878r29hjds.ffs@tglx> <CAMuE1bF9ioo39_08Eh26X4WOtnvJ1geJ=WRVt5DhU8gEbYJNdA@mail.gmail.com>
+ <87o7asdd65.ffs@tglx> <CAF2d9jjA8iM1AoPUhQPK62tdd7gPnCnt51f_NMhOAs546rU3dA@mail.gmail.com>
+ <87il10ce1g.ffs@tglx>
+In-Reply-To: <87il10ce1g.ffs@tglx>
+From: =?UTF-8?B?TWFoZXNoIEJhbmRld2FyICjgpK7gpLngpYfgpLYg4KSs4KSC4KSh4KWH4KS14KS+4KSwKQ==?= <maheshb@google.com>
+Date: Tue, 2 Apr 2024 14:16:30 -0700
+Message-ID: <CAF2d9jj6km7aVSqgcOE-b-A-WDH2TJNGzGy-5MRyw5HrzbqhaA@mail.gmail.com>
+Subject: Re: [PATCH v7] posix-timers: add clock_compare system call
+To: Thomas Gleixner <tglx@linutronix.de>
+Cc: Sagi Maimon <maimon.sagi@gmail.com>, richardcochran@gmail.com, luto@kernel.org, 
+	mingo@redhat.com, bp@alien8.de, dave.hansen@linux.intel.com, x86@kernel.org, 
+	hpa@zytor.com, arnd@arndb.de, geert@linux-m68k.org, peterz@infradead.org, 
+	hannes@cmpxchg.org, sohil.mehta@intel.com, rick.p.edgecombe@intel.com, 
+	nphamcs@gmail.com, palmer@sifive.com, keescook@chromium.org, 
+	legion@kernel.org, mark.rutland@arm.com, mszeredi@redhat.com, 
+	casey@schaufler-ca.com, reibax@gmail.com, davem@davemloft.net, 
+	brauner@kernel.org, linux-kernel@vger.kernel.org, linux-api@vger.kernel.org, 
+	linux-arch@vger.kernel.org, netdev@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
+On Tue, Apr 2, 2024 at 2:25=E2=80=AFAM Thomas Gleixner <tglx@linutronix.de>=
+ wrote:
+>
+> On Mon, Apr 01 2024 at 22:42, Mahesh Bandewar (=E0=A4=AE=E0=A4=B9=E0=A5=
+=87=E0=A4=B6 =E0=A4=AC=E0=A4=82=E0=A4=A1=E0=A5=87=E0=A4=B5=E0=A4=BE=E0=A4=
+=B0) wrote:
+> > On Mon, Apr 1, 2024 at 1:46=E2=80=AFPM Thomas Gleixner <tglx@linutronix=
+de> wrote:
+> >> So if there is a backwards compability issue with PTP_SYS_OFFSET2, the=
+n
+> >> you need to introduce PTP_SYS_OFFSET3. The PTP_SYS_*2 variants were
+> >> introduced to avoid backwards compatibility issues as well, but
+> >> unfortunately that did not address the reserved fields problem for
+> >> PTP_SYS_OFFSET2. PTP_SYS_OFFSET_EXTENDED2 should just work, but maybe
+> >> the PTP maintainers want a full extension to '3'. Either way is fine.
+> >>
+> > https://patchwork.kernel.org/project/netdevbpf/patch/20240104212436.327=
+6057-1-maheshb@google.com/
+> >
+> > This was my attempt to solve a similar issue with the new ioctl op to
+> > avoid backward compatibility issues.  Instead of flags I used the
+> > clockid_t in a similar fashion.
+>
+> Works as well. I'm not seing the point for CLOCK_MONOTONIC and the
+> change logs are not really telling anything about the problem being
+> solved....
+>
+https://lore.kernel.org/lkml/20240104212431.3275688-1-maheshb@google.com/T/=
+#:~:text=3D*%20[PATCHv3%20net%2Dnext%200/3]%20add%20ptp_gettimex64any()%20A=
+PI,21:24%20Mahesh%20Bandewar%200%20siblings%2C%200%20replies;
 
-On 4/2/24 7:30 AM, Armin Wolf wrote:
-> Since 2010, an LWN article covering WMI drivers exists:
->
-> 	https://lwn.net/Articles/391230/
->
-> Since the introduction of the modern bus-based interface
-> and other userspace tooling (bmfdec, lswmi, ...), this
-> article is outdated and causes people to still submit new
-> WMI drivers using the deprecated GUID-based interface.
-> Fix this by adding a short guide on how to develop WMI drivers
-> using the modern bus-based interface.
->
-> Signed-off-by: Armin Wolf <W_Armin@gmx.de>
-> ---
+This is the cover letter where I tried to explain the need for this.
 
-LGTM
+Granted, my current use case is for CLOCK_MONOTONIC_RAW but just
+because I don't have a use case doesn't mean someone else may not have
+it and hence added it. In either way it's just a matter of
+adding/removing another flag/clock-id.
 
-Reviewed-by: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
-
-> Changes since v1:
-> - use footnote for lwn article link
-> - wording fixes
-> ---
->  .../wmi/driver-development-guide.rst          | 178 ++++++++++++++++++
->  Documentation/wmi/index.rst                   |   1 +
->  2 files changed, 179 insertions(+)
->  create mode 100644 Documentation/wmi/driver-development-guide.rst
+Thanks,
+--mahesh..
+> Thanks,
 >
-> diff --git a/Documentation/wmi/driver-development-guide.rst b/Documentation/wmi/driver-development-guide.rst
-> new file mode 100644
-> index 000000000000..429137b2f632
-> --- /dev/null
-> +++ b/Documentation/wmi/driver-development-guide.rst
-> @@ -0,0 +1,178 @@
-> +.. SPDX-License-Identifier: GPL-2.0-or-later
-> +
-> +============================
-> +WMI driver development guide
-> +============================
-> +
-> +The WMI subsystem provides a rich driver API for implementing WMI drivers,
-> +documented at Documentation/driver-api/wmi.rst. This document will serve
-> +as an introductory guide for WMI driver writers using this API. It is supposed
-> +to be a successor to the original LWN article [1]_ which deals with WMI drivers
-> +using the deprecated GUID-based WMI interface.
-> +
-> +Obtaining WMI device information
-> +--------------------------------
-> +
-> +Before developing an WMI driver, information about the WMI device in question
-> +must be obtained. The `lswmi <https://pypi.org/project/lswmi>`_ utility can be
-> +used to extract detailed WMI device information using the following command:
-> +
-> +::
-> +
-> +  lswmi -V
-> +
-> +The resulting output will contain information about all WMI devices available on
-> +a given machine, plus some extra information.
-> +
-> +In order to find out more about the interface used to communicate with a WMI device,
-> +the `bmfdec <https://github.com/pali/bmfdec>`_ utilities can be used to decode
-> +the Binary MOF (Managed Object Format) information used to describe WMI devices.
-> +The ``wmi-bmof`` driver exposes this information to userspace, see
-> +Documentation/wmi/devices/wmi-bmof.rst.
-> +
-> +In order to retrieve the decoded Binary MOF information, use the following command (requires root):
-> +
-> +::
-> +
-> +  ./bmf2mof /sys/bus/wmi/devices/05901221-D566-11D1-B2F0-00A0C9062910[-X]/bmof
-> +
-> +Sometimes, looking at the disassembled ACPI tables used to describe the WMI device
-> +helps in understanding how the WMI device is supposed to work. The path of the ACPI
-> +method associated with a given WMI device can be retrieved using the ``lswmi`` utility
-> +as mentioned above.
-> +
-> +Basic WMI driver structure
-> +--------------------------
-> +
-> +The basic WMI driver is build around the struct wmi_driver, which is then bound
-> +to matching WMI devices using a struct wmi_device_id table:
-> +
-> +::
-> +
-> +  static const struct wmi_device_id foo_id_table[] = {
-> +         { "936DA01F-9ABD-4D9D-80C7-02AF85C822A8", NULL },
-> +         { }
-> +  };
-> +  MODULE_DEVICE_TABLE(wmi, foo_id_table);
-> +
-> +  static struct wmi_driver foo_driver = {
-> +        .driver = {
-> +                .name = "foo",
-> +                .probe_type = PROBE_PREFER_ASYNCHRONOUS,        /* recommended */
-> +                .pm = pm_sleep_ptr(&foo_dev_pm_ops),            /* optional */
-> +        },
-> +        .id_table = foo_id_table,
-> +        .probe = foo_probe,
-> +        .remove = foo_remove,         /* optional, devres is preferred */
-> +        .notify = foo_notify,         /* optional, for event handling */
-> +        .no_notify_data = true,       /* optional, enables events containing no additional data */
-> +        .no_singleton = true,         /* required for new WMI drivers */
-> +  };
-> +  module_wmi_driver(foo_driver);
-> +
-> +The probe() callback is called when the WMI driver is bound to a matching WMI device. Allocating
-> +driver-specific data structures and initialising interfaces to other kernel subsystems should
-> +normally be done in this function.
-> +
-> +The remove() callback is then called when the WMI driver is unbound from a WMI device. In order
-> +to unregister interfaces to other kernel subsystems and release resources, devres should be used.
-> +This simplifies error handling during probe and often allows to omit this callback entirely, see
-> +Documentation/driver-api/driver-model/devres.rst for details.
-> +
-> +Please note that new WMI drivers are required to be able to be instantiated multiple times,
-> +and are forbidden from using any deprecated GUID-based WMI functions. This means that the
-> +WMI driver should be prepared for the scenario that multiple matching WMI devices are present
-> +on a given machine.
-> +
-> +Because of this, WMI drivers should use the state container design pattern as described in
-> +Documentation/driver-api/driver-model/design-patterns.rst.
-> +
-> +WMI method drivers
-> +------------------
-> +
-> +WMI drivers can call WMI device methods using wmidev_evaluate_method(), the
-> +structure of the ACPI buffer passed to this function is device-specific and usually
-> +needs some tinkering to get right. Looking at the ACPI tables containing the WMI
-> +device usually helps here. The method id and instance number passed to this function
-> +are also device-specific, looking at the decoded Binary MOF is usually enough to
-> +find the right values.
-> +
-> +The maximum instance number can be retrieved during runtime using wmidev_instance_count().
-> +
-> +Take a look at drivers/platform/x86/inspur_platform_profile.c for an example WMI method driver.
-> +
-> +WMI data block drivers
-> +----------------------
-> +
-> +WMI drivers can query WMI device data blocks using wmidev_block_query(), the
-> +structure of the returned ACPI object is again device-specific. Some WMI devices
-> +also allow for setting data blocks using wmidev_block_set().
-> +
-> +The maximum instance number can also be retrieved using wmidev_instance_count().
-> +
-> +Take a look at drivers/platform/x86/intel/wmi/sbl-fw-update.c for an example
-> +WMI data block driver.
-> +
-> +WMI event drivers
-> +-----------------
-> +
-> +WMI drivers can receive WMI events via the notify() callback inside the struct wmi_driver.
-> +The WMI subsystem will then take care of setting up the WMI event accordingly. Please note that
-> +the structure of the ACPI object passed to this callback is device-specific, and freeing the
-> +ACPI object is being done by the WMI subsystem, not the driver.
-> +
-> +The WMI driver core will take care that the notify() callback will only be called after
-> +the probe() callback has been called, and that no events are being received by the driver
-> +right before and after calling its remove() callback.
-> +
-> +However WMI driver developers should be aware that multiple WMI events can be received concurrently,
-> +so any locking (if necessary) needs to be provided by the WMI driver itself.
-> +
-> +In order to be able to receive WMI events containing no additional event data,
-> +the ``no_notify_data`` flag inside struct wmi_driver should be set to ``true``.
-> +
-> +Take a look at drivers/platform/x86/xiaomi-wmi.c for an example WMI event driver.
-> +
-> +Handling multiple WMI devices at once
-> +-------------------------------------
-> +
-> +There are many cases of firmware vendors using multiple WMI devices to control different aspects
-> +of a single physical device. This can make developing WMI drivers complicated, as those drivers
-> +might need to communicate with each other to present a unified interface to userspace.
-> +
-> +On such case involves a WMI event device which needs to talk to a WMI data block device or WMI
-> +method device upon receiving an WMI event. In such a case, two WMI drivers should be developed,
-> +one for the WMI event device and one for the other WMI device.
-> +
-> +The WMI event device driver has only one purpose: to receive WMI events, validate any additional
-> +event data and invoke a notifier chain. The other WMI driver adds itself to this notifier chain
-> +during probing and thus gets notified every time a WMI event is received. This WMI driver might
-> +then process the event further for example by using an input device.
-> +
-> +For other WMI device constellations, similar mechanisms can be used.
-> +
-> +Things to avoid
-> +---------------
-> +
-> +When developing WMI drivers, there are a couple of things which should be avoided:
-> +
-> +- usage of the deprecated GUID-based WMI interface which uses GUIDs instead of WMI device structs
-> +- bypassing of the WMI subsystem when talking to WMI devices
-> +- WMI drivers which cannot be instantiated multiple times.
-> +
-> +Many older WMI drivers violate one or more points from this list. The reason for
-> +this is that the WMI subsystem evolved significantly over the last two decades,
-> +so there is a lot of legacy cruft inside older WMI drivers.
-> +
-> +New WMI drivers are also required to conform to the linux kernel coding style as specified in
-> +Documentation/process/coding-style.rst. The checkpatch utility can catch many common coding style
-> +violations, you can invoke it with the following command:
-> +
-> +::
-> +
-> +  ./scripts/checkpatch.pl --strict <path to driver file>
-> +
-> +References
-> +==========
-> +
-> +.. [1] https://lwn.net/Articles/391230/
-> diff --git a/Documentation/wmi/index.rst b/Documentation/wmi/index.rst
-> index 537cff188e14..fec4b6ae97b3 100644
-> --- a/Documentation/wmi/index.rst
-> +++ b/Documentation/wmi/index.rst
-> @@ -8,6 +8,7 @@ WMI Subsystem
->     :maxdepth: 1
->
->     acpi-interface
-> +   driver-development-guide
->     devices/index
->
->  .. only::  subproject and html
-> --
-> 2.39.2
->
->
--- 
-Sathyanarayanan Kuppuswamy
-Linux Kernel Developer
-
+>         tglx
 
