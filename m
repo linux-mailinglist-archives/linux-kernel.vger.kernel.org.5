@@ -1,56 +1,62 @@
-Return-Path: <linux-kernel+bounces-128690-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-128691-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 245B2895E34
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 23:00:43 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A96FA895E3B
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 23:01:05 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B76661F22F35
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 21:00:42 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E0965B242A4
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 21:01:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A400615E209;
-	Tue,  2 Apr 2024 21:00:36 +0000 (UTC)
-Received: from relay04.th.seeweb.it (relay04.th.seeweb.it [5.144.164.165])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3B98815E5C1;
+	Tue,  2 Apr 2024 21:00:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=linux.org.uk header.i=@linux.org.uk header.b="i8ufSoak"
+Received: from zeniv.linux.org.uk (zeniv.linux.org.uk [62.89.141.173])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7850179DD4
-	for <linux-kernel@vger.kernel.org>; Tue,  2 Apr 2024 21:00:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=5.144.164.165
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 587DC15E5B6;
+	Tue,  2 Apr 2024 21:00:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=62.89.141.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712091636; cv=none; b=ux72IXL/NW4grIMjhbT7MiIEswbBhCxiee+qM4xDiIU/pnCMeTQBKwPmPNphAoymRI1hzpoQtehiiB5N7QcOX64sR6+Lk2y4ROgq8b6w5kvFxlVWqABah5jDXGVGN3wOOai8j90UrL3330QWHxoxxEYobRsuzfwLQMp85VJJFOw=
+	t=1712091643; cv=none; b=Vqhsz3hchdnVH9a9Tw0rAI2/qYbTLg62/lusF/km8PH4q19D8QgLGeawuRv3m0CWAMguWJB2BghJZxdxlt8l/mRUXkd/SsqvP1okq/SaX4U8DstWmzYyNRoDdlfh2+bYpQNkqIZ73JEwT8M/lwmy1vjAnFqnqrAhAC4lE7bxHXE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712091636; c=relaxed/simple;
-	bh=8NTqXgOWWcuq40W6UaNmXdNJpMviS07rSOpM1sm2UEY=;
+	s=arc-20240116; t=1712091643; c=relaxed/simple;
+	bh=mmlsy0glwQjZjzYz4GUf3NdQiCwzbIVvgkGnZVN/MHI=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=GZxTwOGeapgxXxfl7t/CKImWV8rUx0c+4GaTsEISCZFJhvaOrfic12CNqVYLSQlmrcGEIBlOIzSOMs+FkX9RzFX+9YVKQ0y7DTjD6GxibnNq/uIGB5TeVOLomSQNXkbzTRFar48AD73kj1aubtQR2HFhXqP5Z8fBEMaPet7z4Ms=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=somainline.org; spf=pass smtp.mailfrom=somainline.org; arc=none smtp.client-ip=5.144.164.165
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=somainline.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=somainline.org
-Received: from SoMainline.org (94-211-6-86.cable.dynamic.v4.ziggo.nl [94.211.6.86])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (prime256v1) server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by m-r1.th.seeweb.it (Postfix) with ESMTPSA id CF73D1F509;
-	Tue,  2 Apr 2024 23:00:31 +0200 (CEST)
-Date: Tue, 2 Apr 2024 23:00:30 +0200
-From: Marijn Suijten <marijn.suijten@somainline.org>
-To: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Cc: Sumit Semwal <sumit.semwal@linaro.org>, 
-	Caleb Connolly <caleb.connolly@linaro.org>, Neil Armstrong <neil.armstrong@linaro.org>, 
-	Jessica Zhang <quic_jesszhan@quicinc.com>, Sam Ravnborg <sam@ravnborg.org>, 
-	David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>, 
-	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, Maxime Ripard <mripard@kernel.org>, 
-	Thomas Zimmermann <tzimmermann@suse.de>, Rob Herring <robh@kernel.org>, 
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
-	dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-arm-msm@vger.kernel.org
-Subject: Re: [PATCH v3 2/4] drm/mipi-dsi: use correct return type for the DSC
- functions
-Message-ID: <rqj27ry5bvh5mcnstptshynm4t74jjcnvnr2qw4d7plqy4nkxi@xlisoqjblidj>
-References: <20240402-lg-sw43408-panel-v3-0-144f17a11a56@linaro.org>
- <20240402-lg-sw43408-panel-v3-2-144f17a11a56@linaro.org>
+	 Content-Type:Content-Disposition:In-Reply-To; b=DRj8kFwTsbEZWueAjuDn9q2NTnZoGr9uEWTTAjfRTg00HHqEx11ZmYgF2NlEdxPVRxBbTOF30nzVMnLwWJJT2LNjPoQfpj3CMkuliwqXruDDc0gTdvp1TS6x1oPQBgZqGVi+734ftxOR2BK7bPstC6Lb1Fd8SIqQ2lehKQJsxEQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zeniv.linux.org.uk; spf=none smtp.mailfrom=ftp.linux.org.uk; dkim=pass (2048-bit key) header.d=linux.org.uk header.i=@linux.org.uk header.b=i8ufSoak; arc=none smtp.client-ip=62.89.141.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zeniv.linux.org.uk
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=ftp.linux.org.uk
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=linux.org.uk; s=zeniv-20220401; h=Sender:In-Reply-To:Content-Type:
+	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=rnZFeGv4CURRmMTLk2PI3PHUPW4f8QH+Dl/k7a2oeuE=; b=i8ufSoakMqzaxH9TQ72e9wUEZM
+	NDIoVPNSQL0XuCa37FuFw4DvU6AnTXybND7/vDBnSOBE8QqZYTOtS64RbKGmFvljaxMWA/74jSmI0
+	K66GMFddggVi3YgUfJ7ZVjOlCdIMqIuekCx7rng4CSkaToLjmH2RfAS+yt+rMN5SDWbWUHEA+AbSW
+	f5Yy/kaXnEAxZMWoTOxAoxM7FmCOBNlCobX/w9rdPAf0atcR6hoqQRbtczUh6HXOOSUV5dtIkqTew
+	LhdjU4LSsW88aTaQckskwa1V+tvKSk6gC9z990ih70l/iZUaWub7jBAOJQZ5L2fNLMxWPLMiXn4Ps
+	4s50TMJQ==;
+Received: from viro by zeniv.linux.org.uk with local (Exim 4.96 #2 (Red Hat Linux))
+	id 1rrlFD-004Q20-08;
+	Tue, 02 Apr 2024 21:00:35 +0000
+Date: Tue, 2 Apr 2024 22:00:35 +0100
+From: Al Viro <viro@zeniv.linux.org.uk>
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: Roberto Sassu <roberto.sassu@huaweicloud.com>,
+	linux-integrity@vger.kernel.org,
+	linux-security-module@vger.kernel.org,
+	linux-fsdevel@vger.kernel.org, linux-cifs@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Roberto Sassu <roberto.sassu@huawei.com>
+Subject: Re: [GIT PULL] security changes for v6.9-rc3
+Message-ID: <20240402210035.GI538574@ZenIV>
+References: <20240402141145.2685631-1-roberto.sassu@huaweicloud.com>
+ <CAHk-=wgepVMJCYj9s7J50_Tpb5BWq9buBoF0J5HAa1xjet6B8A@mail.gmail.com>
+ <CAHk-=wjjx3oZ55Uyaw9N_kboHdiScLkXAu05CmPF_p_UhQ-tbw@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -59,67 +65,67 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240402-lg-sw43408-panel-v3-2-144f17a11a56@linaro.org>
+In-Reply-To: <CAHk-=wjjx3oZ55Uyaw9N_kboHdiScLkXAu05CmPF_p_UhQ-tbw@mail.gmail.com>
+Sender: Al Viro <viro@ftp.linux.org.uk>
 
-On 2024-04-02 02:51:13, Dmitry Baryshkov wrote:
-> The functions mipi_dsi_compression_mode() and
-> mipi_dsi_picture_parameter_set() return 0-or-error rather than a buffer
-> size. Follow example of other similar MIPI DSI functions and use int
-> return type instead of size_t.
-> 
-> Fixes: f4dea1aaa9a1 ("drm/dsi: add helpers for DSI compression mode and PPS packets")
-> Signed-off-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+On Tue, Apr 02, 2024 at 12:57:28PM -0700, Linus Torvalds wrote:
 
-Reviewed-by: Marijn Suijten <marijn.suijten@somainline.org>
+> So in other cases we do handle the NULL, but it does seem like the
+> other cases actually do validaly want to deal with this (ie the
+> fsnotify case will say "the directory that mknod was done in was
+> changed" even if it doesn't know what the change is.
+> 
+> But for the security case, it really doesn't seem to make much sense
+> to check a mknod() that you don't know the result of.
+> 
+> I do wonder if that "!inode" test might also be more specific with
+> "d_unhashed(dentry)". But that would only make sense if we moved this
+> test from security_path_post_mknod() into the caller itself, ie we
+> could possibly do something like this instead (or in addition to):
+> 
+>   -     if (error)
+>   -             goto out2;
+>   -     security_path_post_mknod(idmap, dentry);
+>   +     if (!error && !d_unhashed(dentry))
+>   +             security_path_post_mknod(idmap, dentry);
+> 
+> which might also be sensible.
+> 
+> Al? Anybody?
 
-> ---
->  drivers/gpu/drm/drm_mipi_dsi.c | 6 +++---
->  include/drm/drm_mipi_dsi.h     | 6 +++---
->  2 files changed, 6 insertions(+), 6 deletions(-)
-> 
-> diff --git a/drivers/gpu/drm/drm_mipi_dsi.c b/drivers/gpu/drm/drm_mipi_dsi.c
-> index ef6e416522f8..9874ff6d4718 100644
-> --- a/drivers/gpu/drm/drm_mipi_dsi.c
-> +++ b/drivers/gpu/drm/drm_mipi_dsi.c
-> @@ -654,7 +654,7 @@ EXPORT_SYMBOL(mipi_dsi_set_maximum_return_packet_size);
->   *
->   * Return: 0 on success or a negative error code on failure.
->   */
-> -ssize_t mipi_dsi_compression_mode(struct mipi_dsi_device *dsi, bool enable)
-> +int mipi_dsi_compression_mode(struct mipi_dsi_device *dsi, bool enable)
->  {
->  	/* Note: Needs updating for non-default PPS or algorithm */
->  	u8 tx[2] = { enable << 0, 0 };
-> @@ -679,8 +679,8 @@ EXPORT_SYMBOL(mipi_dsi_compression_mode);
->   *
->   * Return: 0 on success or a negative error code on failure.
->   */
-> -ssize_t mipi_dsi_picture_parameter_set(struct mipi_dsi_device *dsi,
-> -				       const struct drm_dsc_picture_parameter_set *pps)
-> +int mipi_dsi_picture_parameter_set(struct mipi_dsi_device *dsi,
-> +				   const struct drm_dsc_picture_parameter_set *pps)
->  {
->  	struct mipi_dsi_msg msg = {
->  		.channel = dsi->channel,
-> diff --git a/include/drm/drm_mipi_dsi.h b/include/drm/drm_mipi_dsi.h
-> index c0aec0d4d664..3011d33eccbd 100644
-> --- a/include/drm/drm_mipi_dsi.h
-> +++ b/include/drm/drm_mipi_dsi.h
-> @@ -241,9 +241,9 @@ int mipi_dsi_shutdown_peripheral(struct mipi_dsi_device *dsi);
->  int mipi_dsi_turn_on_peripheral(struct mipi_dsi_device *dsi);
->  int mipi_dsi_set_maximum_return_packet_size(struct mipi_dsi_device *dsi,
->  					    u16 value);
-> -ssize_t mipi_dsi_compression_mode(struct mipi_dsi_device *dsi, bool enable);
-> -ssize_t mipi_dsi_picture_parameter_set(struct mipi_dsi_device *dsi,
-> -				       const struct drm_dsc_picture_parameter_set *pps);
-> +int mipi_dsi_compression_mode(struct mipi_dsi_device *dsi, bool enable);
-> +int mipi_dsi_picture_parameter_set(struct mipi_dsi_device *dsi,
-> +				   const struct drm_dsc_picture_parameter_set *pps);
->  
->  ssize_t mipi_dsi_generic_write(struct mipi_dsi_device *dsi, const void *payload,
->  			       size_t size);
-> 
-> -- 
-> 2.39.2
-> 
+Several things here:
+
+	1) location of that hook is wrong.  It's really "how do we catch
+file creation that does not come through open() - yes, you can use
+mknod(2) for that".  It should've been after the call of vfs_create(),
+not the entire switch.  LSM folks have a disturbing fondness of inserting
+hooks in various places, but IMO this one has no business being where
+they'd placed it.  Bikeshedding regarding the name/arguments/etc. for
+that thing is, IMO, not interesting...
+
+	2) the only ->mknod() instance in the tree that tries to leave
+dentry unhashed negative on success is CIFS (and only one case in it).
+From conversation with CIFS folks it's actually cheaper to instantiate
+in that case as well - leaving instantiation to the next lookup will
+cost several extra roundtrips for no good reason.
+
+	3) documentation (in vfs.rst) is way too vague.  The actual
+rules are
+	* ->create() must instantiate on success
+	* ->mkdir() is allowed to return unhashed negative on success and
+it might be forced to do so in some cases.  If a caller of vfs_mkdir()
+wants the damn thing positive, it should account for such possibility and do
+a lookup.  Normal callers don't care; see e.g. nfsd and overlayfs for example
+of those that do.
+	* ->mknod() is interesting - historically it had been "may leave
+unhashed negative", but e.g. unix_bind() expected that it won't do so;
+the reason it didn't blow up for CIFS is that this case (SFU) of their mknod()
+does not support FIFOs and sockets anyway.  Considering how few instances
+try to make use of that option and how it doesn't actually save them
+anything, I would prefer to declare that ->mknod() should act as ->create().
+	* ->symlink() - not sure; there are instances that make use of that
+option (coda and hostfs).  OTOH, the only callers of vfs_symlink() that
+care either way are nfsd and overlayfs, and neither is usable with coda
+or hostfs...  Could go either way, but we need to say it clearly in the
+docs, whichever way we choose.
 
