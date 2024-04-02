@@ -1,53 +1,54 @@
-Return-Path: <linux-kernel+bounces-128227-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-128228-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7E8CB8957ED
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 17:14:04 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5065E8957F1
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 17:16:11 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 32F171F2319C
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 15:14:04 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E46B41F23240
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 15:16:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6CA6E12C53A;
-	Tue,  2 Apr 2024 15:13:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9259112D1E0;
+	Tue,  2 Apr 2024 15:16:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=tuxedocomputers.com header.i=@tuxedocomputers.com header.b="Kj2In7m7"
-Received: from mail.tuxedocomputers.com (mail.tuxedocomputers.com [157.90.84.7])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="RBiDW8md"
+Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7F6C912BF23
-	for <linux-kernel@vger.kernel.org>; Tue,  2 Apr 2024 15:13:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=157.90.84.7
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2FB6412BF26;
+	Tue,  2 Apr 2024 15:16:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712070836; cv=none; b=RdUgOimylfGzbOhGQ1jLfj3bYa59hxwhm8XTbKe8npVUeajzx16y2g1gCc6ElfC4k1BcpbWawSbCAkQbl09+A/a+e0/AufK1v8GSMchsUzWfC73vVaRMTNWvIrIFfdW/PhP16D3HM5twPCyWUuLi+PBsI31mra3vSeWUrqeG0vE=
+	t=1712070961; cv=none; b=Kav4utdzQTNGab6reTwQVvepAOlE67j7OpAjZonbfB6vEoRuAJNYQ99NK6IAgUUGWRyw0P0dyMg+gbluCUFWUbXi0VY69FkyH7Yu/gUgMw+gaRBcee3bNNa/tLqmB+MBXtPN62pjFORIAMdBLm0sQtZ2a8dNgGQ8tg5SHRL8QCg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712070836; c=relaxed/simple;
-	bh=Sg8GnwOt4sP/I59dWNL7SnjRb5adsH8IbzdV5LUB0kk=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=VbDgJtVGrOMpb2bv8beBfgGdGSojeaEzUdtJdAF9J7cH5RrJxv4/rJqxkbJtnGLlu2Ae7n5azEjy8fv0wl5cIXQCLi1ywCX+QtclDrJPG47njiB3eWbLSMSyDacTcpGb2Tbd5VjQBMKdUvDtiuS7JWTEA3FC/3r5Y6Hvx9MZK/g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=tuxedocomputers.com; spf=pass smtp.mailfrom=tuxedocomputers.com; dkim=pass (1024-bit key) header.d=tuxedocomputers.com header.i=@tuxedocomputers.com header.b=Kj2In7m7; arc=none smtp.client-ip=157.90.84.7
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=tuxedocomputers.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=tuxedocomputers.com
-Received: from [192.168.175.29] (host-88-217-226-44.customer.m-online.net [88.217.226.44])
-	(Authenticated sender: g.gottleuber@tuxedocomputers.com)
-	by mail.tuxedocomputers.com (Postfix) with ESMTPSA id 55A6F2FC0052;
-	Tue,  2 Apr 2024 17:13:49 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=tuxedocomputers.com;
-	s=default; t=1712070829;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=VTZDTry4iLRYYk7znZMyIwOmtb4mpRhpVQzIYKZgUBM=;
-	b=Kj2In7m7Cv9V3hoWpJUxThUI0AEr+NmsjEaGwl/dI+e3fkN6KMCa4TLYXPD9IawmNsWrnO
-	QoM72gDZkYsEyfcDvgeOHzeHEzH+6sGgQx6oIjGFzDU6QXljCkyZ4Ge5r3Ff07lVNrMz3Y
-	N5e8YBUAmUZhvvuw+ax5yK4HORBLh18=
-Authentication-Results: mail.tuxedocomputers.com;
-	auth=pass smtp.auth=g.gottleuber@tuxedocomputers.com smtp.mailfrom=g.gottleuber@tuxedocomputers.com
-Message-ID: <230e3f41-9f6b-42fd-a411-567abbaebbbe@tuxedocomputers.com>
-Date: Tue, 2 Apr 2024 17:13:48 +0200
+	s=arc-20240116; t=1712070961; c=relaxed/simple;
+	bh=GXhvZfSf7YECAxV/84N1Fg6bLWjEnFuy4JkVVvzvWzQ=;
+	h=Message-ID:Date:MIME-Version:Cc:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=BeToLwTQB7Ya+7p0S+yMSM6bMCAA8bmgNClBplwzjd8pbl0n7HVQ9p2YdIRB967pLWAQUzzrOChbJma6zorz7gx4TDcTBxgzZ2/yiIxqm/aHVEI6M5kXy0Xj6WAano6YUCs5+rjUSSM3ZkRkDVHGFmzyGd25Un2EGRso7LXz6HY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=RBiDW8md; arc=none smtp.client-ip=46.235.227.194
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+	s=mail; t=1712070958;
+	bh=GXhvZfSf7YECAxV/84N1Fg6bLWjEnFuy4JkVVvzvWzQ=;
+	h=Date:Cc:Subject:To:References:From:In-Reply-To:From;
+	b=RBiDW8mdInVUnysarnambAqLqWtsl+BAL08wH5uMBupCQ30qCIWbw52CF9D7BZ6kv
+	 RQTil7RymCSw6D+fWT7D56AqssAyKEC5sKX7cW/OF0/W0NKTYTjwHIqQam8oHfwg6s
+	 V7j9+JFaGf00zhjbSR5SS6JHPZwyqsutHN2h7+9Bnd1CrUsp7hDBL+ljqGDrUj+3eR
+	 AOooX0th5M2jBtyXavfFBsOt608A59pOFpJv47Sled/ORbaYQrIdRYOfJH61x+k1x4
+	 x8/wzhKv3EHE4pa2cjqqQNxiu16gzRDoVMj8MXKAQxEbcVhFyATy+Scl/ikPSdlYcV
+	 boiUGJPkZ52Qw==
+Received: from [10.193.1.1] (broslavsky.collaboradmins.com [68.183.210.73])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	(Authenticated sender: usama.anjum)
+	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 422FD3780626;
+	Tue,  2 Apr 2024 15:15:54 +0000 (UTC)
+Message-ID: <cfecd6ea-8fa3-477f-bd32-4087aefee2af@collabora.com>
+Date: Tue, 2 Apr 2024 20:16:25 +0500
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -55,56 +56,107 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] nvme-pci: Add sleep quirk for Samsung 990 Evo
-To: Christoph Hellwig <hch@lst.de>, Werner Sembach <wse@tuxedocomputers.com>
-Cc: Keith Busch <kbusch@kernel.org>, Jens Axboe <axboe@kernel.dk>,
- Sagi Grimberg <sagi@grimberg.me>, Georg Gottleuber
- <ggo@tuxedocomputers.com>, linux-nvme@lists.infradead.org,
- linux-kernel@vger.kernel.org
-References: <20240328130923.61752-1-wse@tuxedocomputers.com>
- <20240402131658.GA31963@lst.de>
+Cc: Muhammad Usama Anjum <usama.anjum@collabora.com>, kernel@collabora.com,
+ linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
+ linux-kselftest@vger.kernel.org
+Subject: Re: [PATCH bpf-next v3] selftests/bpf: Move test_dev_cgroup to
+ prog_tests
+To: Yonghong Song <yonghong.song@linux.dev>,
+ Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
+ Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau
+ <martin.lau@linux.dev>, Eduard Zingerman <eddyz87@gmail.com>,
+ Song Liu <song@kernel.org>, John Fastabend <john.fastabend@gmail.com>,
+ KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>,
+ Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+ Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>
+References: <20240401123455.1377896-1-usama.anjum@collabora.com>
+ <92e1cce6-5f26-4a49-86b6-81e1e80d1aaa@linux.dev>
 Content-Language: en-US
-From: Georg Gottleuber <g.gottleuber@tuxedocomputers.com>
-In-Reply-To: <20240402131658.GA31963@lst.de>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+From: Muhammad Usama Anjum <usama.anjum@collabora.com>
+In-Reply-To: <92e1cce6-5f26-4a49-86b6-81e1e80d1aaa@linux.dev>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-Am 02.04.24 um 15:16 schrieb Christoph Hellwig:
-> On Thu, Mar 28, 2024 at 02:09:22PM +0100, Werner Sembach wrote:
->> From: Georg Gottleuber <ggo@tuxedocomputers.com>
->>
->> On some TUXEDO platforms, a Samsung 990 Evo NVMe leads to a high
->> power consumption in s2idle sleep (2-3 watts).
->>
->> This patch applies 'Force No Simple Suspend' quirk to achieve a
->> sleep with a lower power consumption, typically around 0.5 watts.
+Yonghong Song,
+
+Thank you so much for replying. I was missing how to run pipeline manually.
+Thanks a ton.
+
+On 4/1/24 11:53 PM, Yonghong Song wrote:
 > 
-> Does this only apply to a specific SSD or all SSDs on this platform?
-> How do these platforms even get into the conditional?  Probably
-> through acpi_storage_d3 setting, which probably is set incorrectly
-> for the platform?  Any chance to just fix that?
+> On 4/1/24 5:34 AM, Muhammad Usama Anjum wrote:
+>> Move test_dev_cgroup.c to prog_tests/dev_cgroup.c to be able to run it
+>> with test_progs. Replace dev_cgroup.bpf.o with skel header file,
+>> dev_cgroup.skel.h and load program from it accourdingly.
+>>
+>>    ./test_progs -t dev_cgroup
+>>    mknod: /tmp/test_dev_cgroup_null: Operation not permitted
+>>    64+0 records in
+>>    64+0 records out
+>>    32768 bytes (33 kB, 32 KiB) copied, 0.000856684 s, 38.2 MB/s
+>>    dd: failed to open '/dev/full': Operation not permitted
+>>    dd: failed to open '/dev/random': Operation not permitted
+>>    #72     test_dev_cgroup:OK
+>>    Summary: 1/0 PASSED, 0 SKIPPED, 0 FAILED
+>> Signed-off-by: Muhammad Usama Anjum <usama.anjum@collabora.com>
+>> ---
+>> Changes since v2:
+>> - Replace test_dev_cgroup with serial_test_dev_cgroup as there is
+>>    probability that the test is racing against another cgroup test
+>> - Minor changes to the commit message above
+>>
+>> I've tested the patch with vmtest.sh on bpf-next/for-next and linux
+>> next. It is passing on both. Not sure why it was failed on BPFCI.
+>> Test run with vmtest.h:
+>> sudo LDLIBS=-static PKG_CONFIG='pkg-config --static' ./vmtest.sh
+>> ./test_progs -t dev_cgroup
+>> ./test_progs -t dev_cgroup
+>> mknod: /tmp/test_dev_cgroup_null: Operation not permitted
+>> 64+0 records in
+>> 64+0 records out
+>> 32768 bytes (33 kB, 32 KiB) copied, 0.000403432 s, 81.2 MB/s
+>> dd: failed to open '/dev/full': Operation not permitted
+>> dd: failed to open '/dev/random': Operation not permitted
+>>   #69      dev_cgroup:OK
+>> Summary: 1/0 PASSED, 0 SKIPPED, 0 FAILED
+> 
+> The CI failure:
+> 
+> 
+> Error: #72 dev_cgroup
+> serial_test_dev_cgroup:PASS:skel_open_and_load 0 nsec
+> serial_test_dev_cgroup:PASS:cgroup_setup_and_join 0 nsec
+> serial_test_dev_cgroup:PASS:bpf_attach 0 nsec
+> serial_test_dev_cgroup:PASS:bpf_query 0 nsec
+> serial_test_dev_cgroup:PASS:bpf_query 0 nsec
+> serial_test_dev_cgroup:PASS:rm 0 nsec
+> serial_test_dev_cgroup:PASS:mknod 0 nsec
+> serial_test_dev_cgroup:PASS:rm 0 nsec
+> serial_test_dev_cgroup:PASS:rm 0 nsec
+> serial_test_dev_cgroup:FAIL:mknod unexpected mknod: actual 256 != expected 0
+> serial_test_dev_cgroup:PASS:rm 0 nsec
+> serial_test_dev_cgroup:PASS:dd 0 nsec
+> serial_test_dev_cgroup:PASS:dd 0 nsec
+> serial_test_dev_cgroup:PASS:dd 0 nsec
+> 
+> (cgroup_helpers.c:353: errno: Device or resource busy) umount cgroup2
+> 
+> The error code 256 means mknod execution has some issues. Maybe you need to
+> find specific errno to find out what is going on. I think you can do ci
+> on-demanding test to debug.
+errno is 2 --> No such file or directory
 
-Yes, this only apply to a specific SSD. I tested these SSDs (on 
-PH4PRX1_PH6PRX1):
-* Kingston NV1, SNVS250G
-* Samsung 980, MZ-V8V500
-* Samsung 970 Evo, S46DNX0K900454D
-* Samsung 980 Pro, S69ENX0T709932L
+Locally I'm unable to reproduce it until I don't remove
+rm -f /tmp/test_dev_cgroup_zero such that the /tmp/test_dev_cgroup_zero
+node is present before test execution. The error code is 256 with errno 2.
+I'm debugging by placing system("ls /tmp 1>&2"); to find out which files
+are already present in /tmp. But ls's output doesn't appear on the CI logs.
 
-S2idle consumes around 0.4 watts with these SSDs. But with a Samsung 990 
-Evo s2idle on this platform consumes 3.7 to 4.4 watts (6.8 vs 6.5 kernel).
+> 
+> https://www.kernel.org/doc/Documentation/bpf/bpf_devel_QA.rst
+> 
 
-With my quirk s2idle sleep consumption is at the same level of all other 
-SSDs tested.
-
-Other boards have different values (a bit less drastic: factor 3 to 8).
-
-All measurements were taken with the battery disconnected and a
-modified adapter plug.
-
-Because of the isolated problems with this SSD I have not debugged 
-acpi_storage_d3. Do you think that would make sense?
-
-Kind regards,
-Georg Gottleuber
+-- 
+BR,
+Muhammad Usama Anjum
 
