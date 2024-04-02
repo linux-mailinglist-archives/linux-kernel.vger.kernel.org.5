@@ -1,100 +1,98 @@
-Return-Path: <linux-kernel+bounces-128567-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-128569-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 768D0895C8A
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 21:28:56 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id A624A895C8E
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 21:30:11 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 28D8B1F26BC1
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 19:28:56 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D68A81C22039
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 19:30:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0C39715B96D;
-	Tue,  2 Apr 2024 19:28:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CACD715B96E;
+	Tue,  2 Apr 2024 19:30:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Y7rGORmk"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="DrqzinkJ"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4CFF415B55A;
-	Tue,  2 Apr 2024 19:28:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 131CC15B55A;
+	Tue,  2 Apr 2024 19:30:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712086129; cv=none; b=Pv3wwKN13ukDRbMl6EKreLPJCd+2n0EaEIyJ6dVY7xKdRyrKslSXPbwx3S/CdLGAYCWklPfgRTwag+tm9e6RipI+fIalcIncj2xaZj7UTshKqBCen5HzfHDAbmWfDtq1dTBb4u3fVtDlKh51dUT3UlqBwLdJRFPZ+MKgla9TUhE=
+	t=1712086204; cv=none; b=nRjpRCBU54Na9qvZbQJDengsaJsLk5IkwcNAgubgeJMBUuUNIQD2UQo6X8BpDFodZTvHCa/SEgZbG9RHd7FOzVbWff09b9lqJZsloAWHvdbYzSNfBoR7Vgy3nUiwz/Q1Mrn+UgZaHZbSLIMR32q/r2T4Eox5OFf5xTqp5TmJcfE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712086129; c=relaxed/simple;
-	bh=NAIlNAyqZ5xFb7S0Rck0DUTBUV83tvWCe1Tb0Ugx5hA=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=K3VHsOKvWUpUvCC58MK2s3nPNo1m+RVpZeQi7WjpOG8dFbobf1yaxj7BDEyOl9AgDjJXkuuBNfjcJo4zOcLkCh/z5Sspo8x1XGlUc4/bBEVX5684Ll1LcuLwK5m7Ad1xTCiblAQuMTZ2Yd9nzJUNWYJlZ9F5wXjdG9YWOLPqgWw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Y7rGORmk; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 50FECC433C7;
-	Tue,  2 Apr 2024 19:28:41 +0000 (UTC)
+	s=arc-20240116; t=1712086204; c=relaxed/simple;
+	bh=sOk+iFeGrB7RJDCmCXpr4eaC6JFEv4sFYHZVkhAL1qA=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
+	 MIME-Version:Content-Type; b=W4zf6KELMCHLPPeTDBWRGKd5QZSjaoxAP38k/xF8L5n3PZIhYjVM8bmZn0IwJpArbRqiH0qnuaDepr7LoWMpSpECHFFC2mVPGXiHsGSbY0ZVu2kHzyJdnArei6i1g8wLyM597FxX/y1Sq1rdODM/nbY3RJAv+9oTzUmdVEdJpF0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=DrqzinkJ; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1DBDDC433C7;
+	Tue,  2 Apr 2024 19:30:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712086129;
-	bh=NAIlNAyqZ5xFb7S0Rck0DUTBUV83tvWCe1Tb0Ugx5hA=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=Y7rGORmknipAl9T3i3EjAhORqJ7u26iZykkth0KDXI2iGCw7LBLmRiisGZkTxGEpA
-	 bWo/jp375JwcJoLaV3qJ84540XCe1wyyhuNBo3J9ISJnV14eWVlpzUyZazWaXKTm5X
-	 1cqqvqOIVQAuyoohD6gQ369KZX0VRLWBY4fbKV6MiBwCyuGFeOSiloTQk/GfS98LSk
-	 9nYG6J+CjD09+8QNU9GtH8byaDMG/6qOFBlUjz1lJdB58BEOEvU8mb3X7xJ7A628pf
-	 UtPhPVg9NEc+9WavbS4UlPrpbX2FivqOHcaoXhqFF2BAMR1GNfyYMFA6Y9fi6/2ddw
-	 a4EuESHZGQvxA==
-Date: Tue, 2 Apr 2024 21:28:36 +0200
-From: Marek =?UTF-8?B?QmVow7pu?= <kabel@kernel.org>
-To: Krzysztof Kozlowski <krzk@kernel.org>
-Cc: Robert Marko <robert.marko@sartura.hr>, Andrew Lunn <andrew@lunn.ch>,
- Gregory Clement <gregory.clement@bootlin.com>, Sebastian Hesselbarth
- <sebastian.hesselbarth@gmail.com>, Rob Herring <robh@kernel.org>, Krzysztof
- Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley
- <conor+dt@kernel.org>, linux-arm-kernel@lists.infradead.org,
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/3] arm64: dts: marvell: turris-mox: drop unneeded
- flash address/size-cells
-Message-ID: <20240402212836.13d7cf11@thinkpad>
-In-Reply-To: <20240402183240.49193-2-krzk@kernel.org>
-References: <20240402183240.49193-1-krzk@kernel.org>
-	<20240402183240.49193-2-krzk@kernel.org>
-X-Mailer: Claws Mail 4.1.1 (GTK 3.24.39; x86_64-pc-linux-gnu)
+	s=k20201202; t=1712086203;
+	bh=sOk+iFeGrB7RJDCmCXpr4eaC6JFEv4sFYHZVkhAL1qA=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+	b=DrqzinkJCwbtPSjQcw1FiH2Yl+aWDrNmmeOSvZGQyDCTEFu4X/Y1FTMeiDcnOg8Gc
+	 pEXBsEPOpUnQEIY0oHXqGwCM+/ehzi7dyV4/U6vWEarsM15r/WY+uUz/Lq8sMJTIqB
+	 FqWGmx6g7NGJpXtO1eFieK8HFfBRlC8VfVY8ZTsjRyA7nBggMrhhSCvrnf2td3+NM0
+	 xUEMNM71ReXaXzi9FJqpE0TZQbU8qUCSnp75u9s/B3YxNuHaMb205t8dkc4pD53KyB
+	 h3/GzV/ElUPqNWrk5cYPI8IMOJ2aGv/8AQ/MHVQn1TgCc64jIWha0ODZG+XUYXlq7V
+	 Qf64pHr1DrGUQ==
+From: Mark Brown <broonie@kernel.org>
+To: lgirdwood@gmail.com, Seven Lee <wtli@nuvoton.com>
+Cc: perex@perex.cz, tiwai@suse.com, linux-sound@vger.kernel.org, 
+ linux-kernel@vger.kernel.org, YHCHuang@nuvoton.com, KCHSU0@nuvoton.com, 
+ CTLIN0@nuvoton.com, SJLIN0@nuvoton.com, scott6986@gmail.com, 
+ supercraig0719@gmail.com, dardar923@gmail.com
+In-Reply-To: <20240401104753.3432507-1-wtli@nuvoton.com>
+References: <20240401104753.3432507-1-wtli@nuvoton.com>
+Subject: Re: [PATCH] ASoC: nau8325: Revise soc_enum structure definition.
+Message-Id: <171208620085.89523.17981494000577046407.b4-ty@kernel.org>
+Date: Tue, 02 Apr 2024 20:30:00 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Mailer: b4 0.14-dev
 
-On Tue,  2 Apr 2024 20:32:39 +0200
-Krzysztof Kozlowski <krzk@kernel.org> wrote:
+On Mon, 01 Apr 2024 18:47:53 +0800, Seven Lee wrote:
+> This patch is modified nau8325_dac_oversampl_enum enumerated.
+> Use SOC_VALUE_ENUM instead to hide empty (presumably invalid) options.
+> 
+> 
 
-> Flash node uses single "partition" node to describe partitions, so
-> remove deprecated address/size-cells properties to also fix dtc W=3D1
-> warnings:
->=20
->   armada-3720-turris-mox.dts:218.10-255.4: Warning (avoid_unnecessary_add=
-r_size): /soc/internal-regs@d0000000/spi@10600/flash@0: unnecessary #addres=
-s-cells/#size-cells without "ranges" or child "reg" property
->=20
-> Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
-> ---
->  arch/arm64/boot/dts/marvell/armada-3720-turris-mox.dts | 2 --
->  1 file changed, 2 deletions(-)
->=20
-> diff --git a/arch/arm64/boot/dts/marvell/armada-3720-turris-mox.dts b/arc=
-h/arm64/boot/dts/marvell/armada-3720-turris-mox.dts
-> index f1a9f2234359..54453b0a91f9 100644
-> --- a/arch/arm64/boot/dts/marvell/armada-3720-turris-mox.dts
-> +++ b/arch/arm64/boot/dts/marvell/armada-3720-turris-mox.dts
-> @@ -216,8 +216,6 @@ &spi0 {
->  	assigned-clock-rates =3D <20000000>;
-> =20
->  	flash@0 {
-> -		#address-cells =3D <1>;
-> -		#size-cells =3D <1>;
->  		compatible =3D "jedec,spi-nor";
->  		reg =3D <0>;
->  		spi-max-frequency =3D <20000000>;
+Applied to
 
-Reviewed-by: Marek Beh=C3=BAn <kabel@kernel.org>
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
+
+Thanks!
+
+[1/1] ASoC: nau8325: Revise soc_enum structure definition.
+      commit: 91ebd32eee6cd7714b49ca4463a0f315bc26ce0e
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
+
 
