@@ -1,83 +1,133 @@
-Return-Path: <linux-kernel+bounces-127326-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-127325-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id B9C918949D0
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 05:05:01 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1FF988949CD
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 05:04:33 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 59F86B23191
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 03:04:59 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1973D1C2208C
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 03:04:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AAD2F14AA7;
-	Tue,  2 Apr 2024 03:04:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=yeah.net header.i=@yeah.net header.b="UWogBxFD"
-Received: from mail-177132.yeah.net (mail-177132.yeah.net [123.58.177.132])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E94041758C;
-	Tue,  2 Apr 2024 03:04:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=123.58.177.132
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D1D6E14F61;
+	Tue,  2 Apr 2024 03:04:23 +0000 (UTC)
+Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B872814005;
+	Tue,  2 Apr 2024 03:04:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=114.242.206.163
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712027092; cv=none; b=UJYLRkkQJUdH18A3TBIu8utJkhuOs5bFz2Qhg6s9RZ/Ss2xF1YwxZuWrGymzDNLym/+FLXvTMGfkVlmbyDKVIUoBMMUK8juPrpbxYLbHBz/qcNgghybYXeR/8Gc9m8w0AKWn5AhrlMgSda6D4iT5erEg+rhhBm1uJbaxjBrvNy8=
+	t=1712027063; cv=none; b=cjG7ZY1qRKlohv6asSAGdhs8DujVYe/FjlUM/I7mAR/ek51de1nG5PObT5hCeWyIuxiEPfxWy6sMfv5aQTz2sSxrIuWSiWFGKxhrMvJZr3uUTKnVG3JPj4Am2Y75I4VGJbSuAJytB700VDTUCkP7LHi5bqkE26XHClrIzODFxRA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712027092; c=relaxed/simple;
-	bh=eAXc09xEKhzdLACdh70tJItL4IIbJf5hovpipkhS+KA=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=THCzNkHqdIrNlVQwKT+ShjaTn/CFdzmKIePRaOQLYqnExSpIQkJ+b7YeM3Q0Vu5bjY7/586WUX4ZUlPz78NyDaQjs7jwVPE5BCFwr6RyHqUJW7ojAwmM+DMqpGXDPKvyNrHtKamsmW3y1iVOq9qMeSZaYC6isd3JXdBkbFUC5RM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=yeah.net; spf=pass smtp.mailfrom=yeah.net; dkim=pass (1024-bit key) header.d=yeah.net header.i=@yeah.net header.b=UWogBxFD; arc=none smtp.client-ip=123.58.177.132
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=yeah.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=yeah.net
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yeah.net;
-	s=s110527; h=Date:From:Subject:Message-ID:MIME-Version:
-	Content-Type; bh=jZdmlIK9BLALrTRQhLlnaYBmJtd1g54qxC+APchnqLQ=;
-	b=UWogBxFDIp1JPn5zvSMptp7eRGlQUyMCv5Ni9qMmF6t9Rn+li5HeD8dWMvg808
-	mBwR6AKsfYhyB6PMlKFVUB7+yJFILDyikTanniuoDaLcNKnElj2TJ14RTENFaLLa
-	n1LBiFKLozkZt4caM65z2Ecvt8yqs3R0qssE3/5/zXiq0=
-Received: from dragon (unknown [223.68.79.243])
-	by smtp2 (Coremail) with SMTP id C1UQrAD332ijdQtmQAejAg--.52779S3;
-	Tue, 02 Apr 2024 11:04:04 +0800 (CST)
-Date: Tue, 2 Apr 2024 11:04:03 +0800
-From: Shawn Guo <shawnguo2@yeah.net>
-To: Marek Vasut <marex@denx.de>
-Cc: linux-arm-kernel@lists.infradead.org,
-	Conor Dooley <conor+dt@kernel.org>,
-	Fabio Estevam <festevam@gmail.com>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	NXP Linux Team <linux-imx@nxp.com>,
-	Pengutronix Kernel Team <kernel@pengutronix.de>,
-	Rob Herring <robh+dt@kernel.org>,
-	Sascha Hauer <s.hauer@pengutronix.de>,
-	Shawn Guo <shawnguo@kernel.org>, devicetree@vger.kernel.org,
-	imx@lists.linux.dev, kernel@dh-electronics.com,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] arm64: dts: imx8mp: Describe CSI2 GPIO expander on
- i.MX8MP DHCOM PDK3 board
-Message-ID: <Zgt1o/CT29hPBvOP@dragon>
-References: <20240319043733.134728-1-marex@denx.de>
+	s=arc-20240116; t=1712027063; c=relaxed/simple;
+	bh=PvVrXqrvcv3iZaoE9GUEQP+k7DvSvTH2paZ7ANGjqqc=;
+	h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
+	 In-Reply-To:Content-Type; b=Xl9R185tRs8NQymzuoA3ukPpwwCv0JcGIlmfzkzWs9I9doZ1WN2YfjZEofMib8FZl5GERgbUdR6HeW8biwryBJhINM3wvQk+qqdWK/YD1q1o/XUP27/1MEkZRBVjt9d8dn8p59sZdMoLY8y+5PdO9+Cx2b1enNK0I48oVmAH03Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=loongson.cn; spf=pass smtp.mailfrom=loongson.cn; arc=none smtp.client-ip=114.242.206.163
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=loongson.cn
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=loongson.cn
+Received: from loongson.cn (unknown [10.20.42.173])
+	by gateway (Coremail) with SMTP id _____8DxmfCxdQtmOC8iAA--.13732S3;
+	Tue, 02 Apr 2024 11:04:17 +0800 (CST)
+Received: from [10.20.42.173] (unknown [10.20.42.173])
+	by localhost.localdomain (Coremail) with SMTP id AQAAf8DxdRGudQtm8FtxAA--.12242S3;
+	Tue, 02 Apr 2024 11:04:17 +0800 (CST)
+Subject: Re: [PATCH v7 3/7] LoongArch: KVM: Add cpucfg area for kvm hypervisor
+To: Xi Ruoyao <xry111@xry111.site>, WANG Xuerui <kernel@xen0n.name>,
+ Huacai Chen <chenhuacai@kernel.org>, Tianrui Zhao <zhaotianrui@loongson.cn>,
+ Juergen Gross <jgross@suse.com>, Paolo Bonzini <pbonzini@redhat.com>,
+ Jonathan Corbet <corbet@lwn.net>
+Cc: loongarch@lists.linux.dev, linux-kernel@vger.kernel.org,
+ virtualization@lists.linux.dev, kvm@vger.kernel.org
+References: <20240315080710.2812974-1-maobibo@loongson.cn>
+ <20240315080710.2812974-4-maobibo@loongson.cn>
+ <4668e606-a7b5-49b7-a68d-1c2af86f7d76@xen0n.name>
+ <57e66ff5-1cb6-06bd-ee6f-a3c3dadd6aef@loongson.cn>
+ <b7d91c1a42470821983a811a16f9fc1c55cfe699.camel@xry111.site>
+From: maobibo <maobibo@loongson.cn>
+Message-ID: <4d35124d-527d-ec1c-1eb1-2d98e9d0da46@loongson.cn>
+Date: Tue, 2 Apr 2024 11:04:14 +0800
+User-Agent: Mozilla/5.0 (X11; Linux loongarch64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240319043733.134728-1-marex@denx.de>
-X-CM-TRANSID:C1UQrAD332ijdQtmQAejAg--.52779S3
-X-Coremail-Antispam: 1Uf129KBjDUn29KB7ZKAUJUUUUU529EdanIXcx71UUUUU7v73
-	VFW2AGmfu7bjvjm3AaLaJ3UbIYCTnIWIevJa73UjIFyTuYvjxUxCJmUUUUU
-X-CM-SenderInfo: pvkd40hjxrjqh1hdxhhqhw/1tbiGAW0ZV6NnqdSYgAAsW
+In-Reply-To: <b7d91c1a42470821983a811a16f9fc1c55cfe699.camel@xry111.site>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID:AQAAf8DxdRGudQtm8FtxAA--.12242S3
+X-CM-SenderInfo: xpdruxter6z05rqj20fqof0/
+X-Coremail-Antispam: 1Uk129KBj93XoW7tw4rXry7CF1rGF1UJFy3WrX_yoW8CFWkpa
+	yYkasxAF4qqryxZw4kZ3WxXFyIkwn3JF45urnxCF15Z3s8Cryrtw4akFyY9FZ2yr1Ikr1j
+	vrs0q395C39rArXCm3ZEXasCq-sJn29KB7ZKAUJUUUUx529EdanIXcx71UUUUU7KY7ZEXa
+	sCq-sGcSsGvfJ3Ic02F40EFcxC0VAKzVAqx4xG6I80ebIjqfuFe4nvWSU5nxnvy29KBjDU
+	0xBIdaVrnRJUUUPab4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26cxKx2
+	IYs7xG6rWj6s0DM7CIcVAFz4kK6r1Y6r17M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48v
+	e4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Gr0_Xr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI
+	0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVCY1x0267AK
+	xVW8Jr0_Cr1UM2kKe7AKxVWUAVWUtwAS0I0E0xvYzxvE52x082IY62kv0487Mc804VCY07
+	AIYIkI8VC2zVCFFI0UMc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWU
+	AVWUtwAv7VC2z280aVAFwI0_Gr0_Cr1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcVAKI4
+	8JMxk0xIA0c2IEe2xFo4CEbIxvr21lc7CjxVAaw2AFwI0_JF0_Jw1l42xK82IYc2Ij64vI
+	r41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1l4IxYO2xFxVAFwI0_JF0_Jw1lx2IqxVAqx4xG67
+	AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43MIIY
+	rxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_JFI_Gr1lIxAIcVC0I7IYx2IY6xkF7I0E14
+	v26r1j6r4UMIIF0xvE42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVW8JVWx
+	JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjxU4SoGDU
+	UUU
 
-On Tue, Mar 19, 2024 at 05:37:09AM +0100, Marek Vasut wrote:
-> The production PDK3 carrier board rev.200 contains additional GPIO
-> expander to control power and reset signals for each CSI2 plug
-> separately. Describe this expander in the carrier board DT. The
-> label is used by sensor DTOs to reference the expander and its
-> signals.
+
+
+On 2024/4/2 上午10:49, Xi Ruoyao wrote:
+> On Tue, 2024-04-02 at 09:43 +0800, maobibo wrote:
+>>> Sorry for the late reply, but I think it may be a bit non-constructive
+>>> to repeatedly submit the same code without due explanation in our
+>>> previous review threads. Let me try to recollect some of the details
+>>> though...
+>> Because your review comments about hypercall method is wrong, I need not
+>> adopt it.
 > 
-> Signed-off-by: Marek Vasut <marex@denx.de>
+> Again it's unfair to say so considering the lack of LVZ documentation.
+> 
+> /* snip */
+> 
+>>
+>> 1. T0-T7 are scratch registers during SYSCALL ABI, this is what you
+>> suggest, does there exist information leaking to user space from T0-T7
+>> registers?
+> 
+> It's not a problem.  When syscall returns RESTORE_ALL_AND_RET is invoked
+> despite T0-T7 are not saved.  So a "junk" value will be read from the
+> leading PT_SIZE bytes of the kernel stack for this thread.
+For you it is "junk" value, some guys maybe thinks it is useful.
 
-Applied, thanks!
+There is another issue, since kernel restore T0-T7 registers and user 
+space save T0-T7. Why T0-T7 is scratch registers rather than preserve 
+registers like other architecture? What is the advantage if it is 
+scratch registers?
+
+Regards
+Bibo Mao
+> 
+> The leading PT_SIZE bytes of the kernel stack is dedicated for storing
+> the struct pt_regs representing the reg file of the thread in the
+> userspace.
+> 
+> Thus we may only read out the userspace T0-T7 value stored when the same
+> thread was interrupted or trapped last time, or 0 (if the thread was
+> never interrupted or trapped before).
+> 
+> And it's impossible to read some data used by the kernel internally, or
+> some data of another thread.
+> 
+> But indeed there is some improvement here.  Zeroing these registers
+> seems cleaner than reading out the junk values, and also faster (move
+> $t0, $r0 is faster than ld.d $t0, $sp, PT_R12).  Not sure if it's worthy
+> to violate Huacai's "keep things simple" aspiration though.
+> 
 
 
