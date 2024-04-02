@@ -1,101 +1,119 @@
-Return-Path: <linux-kernel+bounces-127669-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-127670-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 57788894F37
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 11:55:55 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id A3281894F39
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 11:56:11 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 10F7E281D76
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 09:55:54 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D35971C20EE3
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 09:56:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BEFB55914D;
-	Tue,  2 Apr 2024 09:55:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BDB2F59178;
+	Tue,  2 Apr 2024 09:55:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="KsvBWpxz"
-Received: from mail-vs1-f49.google.com (mail-vs1-f49.google.com [209.85.217.49])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="rTFJYYP6"
+Received: from fllv0016.ext.ti.com (fllv0016.ext.ti.com [198.47.19.142])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9DCEA59148
-	for <linux-kernel@vger.kernel.org>; Tue,  2 Apr 2024 09:55:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.217.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 41F545A0E6;
+	Tue,  2 Apr 2024 09:55:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.19.142
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712051747; cv=none; b=X5EsJAfGe+bEoUobgutTS/iLEk1WvLeFCcXa7QurmwkU6wlXhAa66R7KvJlYl9k7/bQVHCfYPQbF/CF7krBQBc6KTWFzitCAHjxEV56JpcLVZAePK2q8ZIlGBTV+CJxK0Im6sP1CXjyAIDmtKojIexskwDCZ5YQY3q3Wu/dlw5s=
+	t=1712051755; cv=none; b=nxmLHfaLACqi6MVp0xfyiFo+larkHcSdv59429uro6ydFooGOpJLJ71xoN8jd+7rOKZWkOaCzoY5yirtfWGgEu7fHt7JFEtyF5VNR5meazFT5XWkPBfq7cfZt9Wrbyx2fa8Gs44vlcvxRYfPAG5va5aQgZX8QiyaWtr4PdMpKfI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712051747; c=relaxed/simple;
-	bh=a+YljDVrbcAwyR/tcUOKBAwbhaSbQeo8lJMXH+opy20=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=I+0EcCJDeMzjjQGOryQsEcXWKLZKXuxzesHfahkBoxnRypzBBznDZPQMQi63qxE2ukZjXfB/5fZWVMXVcu2fvT+CuLOAnTP6ibq7wu3DlVhF5pyt8Bh6gyJcB8+GGs08iPv72zH0TY9dr0Q084uPzkjk8MbP5myHgBmQSWE76KQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=KsvBWpxz; arc=none smtp.client-ip=209.85.217.49
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-vs1-f49.google.com with SMTP id ada2fe7eead31-4788b354e67so261222137.3
-        for <linux-kernel@vger.kernel.org>; Tue, 02 Apr 2024 02:55:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1712051744; x=1712656544; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=a+YljDVrbcAwyR/tcUOKBAwbhaSbQeo8lJMXH+opy20=;
-        b=KsvBWpxzvxZIGoUiZxoyoVLoBnnOQr5jJFGAmVj6Bcex884PDy5mjSF17mTEouKYav
-         YL8DKHYIb1th5ZQ15mYwGhM0GdCx1U8+dc8SjF5ao7dkQUfmENfVzzEkPSdMpSTS1RVS
-         yhHVhvePqYceW4HzwvFWhAFk2tJUbyr/wDLgJQuzTrrz5kicjj/bl/icy4SxmOsPN+Un
-         /J+JdCRrjw1HeEGRKtjjiAMfgYQ79JVj53+/GkX6Aonx54orFhtm3Z/z7icotcunvbnH
-         vpg8IY1kSrXtrC+ecIrcYqXkXOcgDuX27ppYT07j0VSq5vnRvCv4oYodj1EkK+r/fIsn
-         sEbg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712051744; x=1712656544;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=a+YljDVrbcAwyR/tcUOKBAwbhaSbQeo8lJMXH+opy20=;
-        b=dnfmcld2AMu7LTR+SJ9BLtvwRePYJPkfeBtjC7dQmAIOImybV9AsrNZqt2nM6vFxlW
-         PWdC8gNu5y0DLYNMpqMxJMWe8qlOE/d0ZYP0/xqK5AsZWL277feTxztXwoIcR0p4h4O9
-         fXrNpGwAdhwiFCKupeMn7t/xiP9+5vqaONyh0arcc/ZHhSS6uzno3crffpoGzz+vf58e
-         gIusnU+2l4mtGun8JhiGPDnwKMgTOfWKkbkzWFqdu6mSBzZW1zOLrcCdO7wOUp8skwIO
-         jjF0ePM3SBXtEcqyKdSf5MmbJ46WSqKLahnKOhDkelaJ/UE6ziR/OGls6eXojbGPtpTd
-         R+6w==
-X-Forwarded-Encrypted: i=1; AJvYcCVSNmm87IAScfjUPPud+1CNzVQRA6yUc8jCFnwtGCa1jirrYf3bdM+gxLipyViKAvWB8v9cwKSRHwtqXNeuLd69liT8EK87j/7GIXWR
-X-Gm-Message-State: AOJu0YwwN5mz+yztqBUsfyTQSL3QxuyPNbbih2+0Zun7BaQghWFbyD0Z
-	bIU8/PfiBj0UW73GSk/dvTwxkpVYr0LhQpp7b6kV7oy02cpKckZRqcsJtifKBH0czwUW5Co4fld
-	pvq8k5J662sGRe+Y6EuFmigbSpx1aEf9hWNna
-X-Google-Smtp-Source: AGHT+IGv3VAH51GyjjtjsnXbb/DrFswdNA8szNO89cktWs1ewiqSuc3VC/AWKEjqHLDt3jRpmLOWygntlWniMVRckAo=
-X-Received: by 2002:a05:6102:378:b0:475:fe59:f33 with SMTP id
- f24-20020a056102037800b00475fe590f33mr6501047vsa.29.1712051744314; Tue, 02
- Apr 2024 02:55:44 -0700 (PDT)
+	s=arc-20240116; t=1712051755; c=relaxed/simple;
+	bh=tHZve99TYGe5gNjplIO+OMlRgYRT+zacRBJQUYgCQNc=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=LzYBuq4BnMNmy6xPVOdr8g8W5spajs3IvEeF4OSOLKLg6UdPbD+jlyb7oU3MaqLunjTr1CBB5n2lA1FHVVSSqr1MOIDGl40sT4WRl6678mMGigdtPbtRYpvlGJHepkEop2OUMS8oY0e0r+prMceOaRLqCHMb2LnrNaqmI5QIaNc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=rTFJYYP6; arc=none smtp.client-ip=198.47.19.142
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
+Received: from fllv0034.itg.ti.com ([10.64.40.246])
+	by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 4329tj3u003526;
+	Tue, 2 Apr 2024 04:55:45 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+	s=ti-com-17Q1; t=1712051745;
+	bh=6plU258MKNWNf6Pe5QtUrip4m8bCxbcCEzAHVTV5AJ0=;
+	h=Date:Subject:To:CC:References:From:In-Reply-To;
+	b=rTFJYYP6wVVX9TCe98ddb734sOU0SPwHMwNoTBBl4ssVAm5VGsmnOHyH81GD+Z9YN
+	 7G+HkdSOqb8c3dNnzRzl+W2+usZDGlR1b8teJJuahrbN48/X6hovKLJE18tm01/rK/
+	 Te9ZTo7+0ihZSL/vPPhwOLg395gC+TexL9OiVzfc=
+Received: from DLEE108.ent.ti.com (dlee108.ent.ti.com [157.170.170.38])
+	by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 4329tjA4000463
+	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+	Tue, 2 Apr 2024 04:55:45 -0500
+Received: from DLEE105.ent.ti.com (157.170.170.35) by DLEE108.ent.ti.com
+ (157.170.170.38) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Tue, 2
+ Apr 2024 04:55:45 -0500
+Received: from fllvsmtp8.itg.ti.com (10.64.41.158) by DLEE105.ent.ti.com
+ (157.170.170.35) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Tue, 2 Apr 2024 04:55:45 -0500
+Received: from [172.24.227.94] (uda0132425.dhcp.ti.com [172.24.227.94])
+	by fllvsmtp8.itg.ti.com (8.15.2/8.15.2) with ESMTP id 4329tf89090281;
+	Tue, 2 Apr 2024 04:55:42 -0500
+Message-ID: <ae04c041-688c-4413-8f15-b37b4ea44aac@ti.com>
+Date: Tue, 2 Apr 2024 15:25:41 +0530
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240217002602.57270-1-ojeda@kernel.org>
-In-Reply-To: <20240217002602.57270-1-ojeda@kernel.org>
-From: Alice Ryhl <aliceryhl@google.com>
-Date: Tue, 2 Apr 2024 11:55:33 +0200
-Message-ID: <CAH5fLggb8jr2yaQwcQFmrP935_h+SRPT=xH+tRQe7dngiLB2fA@mail.gmail.com>
-Subject: Re: [PATCH] kbuild: rust: use `-Zdwarf-version` to support DWARFv5
-To: Miguel Ojeda <ojeda@kernel.org>
-Cc: Wedson Almeida Filho <wedsonaf@gmail.com>, Alex Gaynor <alex.gaynor@gmail.com>, 
-	Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>, 
-	=?UTF-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>, 
-	Benno Lossin <benno.lossin@proton.me>, Andreas Hindborg <a.hindborg@samsung.com>, 
-	Masahiro Yamada <masahiroy@kernel.org>, linux-kbuild@vger.kernel.org, 
-	rust-for-linux@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	patches@lists.linux.dev
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] arm64: dts: ti: k3-am62p-main: use eFuse MAC Address for
+ CPSW3G Port 1
+To: Siddharth Vadapalli <s-vadapalli@ti.com>, <nm@ti.com>, <kristo@kernel.org>,
+        <robh@kernel.org>, <krzysztof.kozlowski+dt@linaro.org>,
+        <conor+dt@kernel.org>
+CC: <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>, <srk@ti.com>
+References: <20240402094200.4036076-1-s-vadapalli@ti.com>
+From: Vignesh Raghavendra <vigneshr@ti.com>
+Content-Language: en-US
+In-Reply-To: <20240402094200.4036076-1-s-vadapalli@ti.com>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 
-On Sat, Feb 17, 2024 at 1:26=E2=80=AFAM Miguel Ojeda <ojeda@kernel.org> wro=
-te:
->
-> Rust 1.64.0 introduced (unstable) support for the `-Zdwarf-version`
-> flag, which allows to select DWARFv5, thus use it.
->
-> Link: https://github.com/rust-lang/rust/issues/103057
-> Link: https://github.com/rust-lang/rust/pull/98350
-> Signed-off-by: Miguel Ojeda <ojeda@kernel.org>
 
-Reviewed-by: Alice Ryhl <aliceryhl@google.com>
+
+On 02/04/24 15:12, Siddharth Vadapalli wrote:
+> Assign the MAC Address programmed in the eFuse registers as the default
+> MAC Address for CPSW3G MAC Port 1. Utilize the "ti,syscon-efuse"
+> device-tree property to do so.
+> 
+> Signed-off-by: Siddharth Vadapalli <s-vadapalli@ti.com>
+> ---
+> 
+> This patch is based on linux-next tagged next-20240402.
+> 
+> Regards,
+> Siddharth.
+> 
+>  arch/arm64/boot/dts/ti/k3-am62p-main.dtsi | 1 +
+>  1 file changed, 1 insertion(+)
+> 
+> diff --git a/arch/arm64/boot/dts/ti/k3-am62p-main.dtsi b/arch/arm64/boot/dts/ti/k3-am62p-main.dtsi
+> index 7337a9e13535..eb126f4a04dd 100644
+> --- a/arch/arm64/boot/dts/ti/k3-am62p-main.dtsi
+> +++ b/arch/arm64/boot/dts/ti/k3-am62p-main.dtsi
+> @@ -696,6 +696,7 @@ cpsw_port1: port@1 {
+>  				label = "port1";
+>  				phys = <&phy_gmii_sel 1>;
+>  				mac-address = [00 00 00 00 00 00];
+> +				ti,syscon-efuse = <&wkup_conf 0x200>;
+
+Sorry, how does this work? wkup_conf is not marked as "syscon" compatible?
+
+>  			};
+>  
+>  			cpsw_port2: port@2 {
+
+-- 
+Regards
+Vignesh
 
