@@ -1,169 +1,135 @@
-Return-Path: <linux-kernel+bounces-128077-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-128078-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9D8B08955DF
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 15:57:01 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C93668955C0
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 15:50:25 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 28726B291B6
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 13:47:49 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E7E471C22105
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 13:50:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3918D84A52;
-	Tue,  2 Apr 2024 13:47:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 661EC84FD5;
+	Tue,  2 Apr 2024 13:50:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="RSPlsexI"
-Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b="WiBOleVC"
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [78.32.30.218])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 663A933D1;
-	Tue,  2 Apr 2024 13:47:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.177.32
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 512D15D47A;
+	Tue,  2 Apr 2024 13:50:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=78.32.30.218
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712065657; cv=none; b=pPt3npkwxxeIWg+Kv526p+Scq5XpNiRsuUQ8FTBFMAva+x6hExenaJNqsrDIovaKtZTKDuPoQVP14ZU7VXDKtyhpRV2eT3csmUzfsnooPgVlAi5qhbg/4HZrtm9RA3vybuh4AA3YQPN1VpcoGL/mq/6uu4SxnTZWCUo0JvpTuPU=
+	t=1712065813; cv=none; b=Ot+BlLdtbmlCBtbEHhlmU07sz5pYSvo/QMUzjoILJwT0lUY94Bab8xb9T6BFcWusLDsNZqJJLLqBQUz0vsB89PDEuOG8rL/lmLQMnnbUvT3Vui7ce4JSLsMWKfm1OwIEdttvWGoTZedpqhuaKpRSjdFPjqNZeaVyr84JbZDPWWw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712065657; c=relaxed/simple;
-	bh=vGn66XkpBDDZFkr8QUJL1l6IKJXYOGPf9g22hUi8pRg=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=oZpSLbfxH8qt1+xzVGwpAIA4lSsVOMtAsvz+1o7LFEUaQGwG0qwGFjIvOdOw4QEs1ifv6EzckpwurTFfrbd1xv32330c2L3UB/rVoc+/GD7cz3mXzwd03BKkqehkXcWUBiH8NQd5K9AciTFzR3h3uIdhgUvUcGc8jWGvs6MU2FU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=RSPlsexI; arc=none smtp.client-ip=205.220.177.32
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=oracle.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oracle.com
-Received: from pps.filterd (m0333520.ppops.net [127.0.0.1])
-	by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 4327hqKL020065;
-	Tue, 2 Apr 2024 13:47:14 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
- subject : date : message-id : mime-version : content-transfer-encoding;
- s=corp-2023-11-20; bh=2VVY6Eqd01Tnl+nUtZiZ06ERpIzu3oNa0E/idaAnNtw=;
- b=RSPlsexIHr4h3ZvtmydsX/wJdfqSpgJXZ/IMbRresyAWC+shDaBocKWy358u8uo+MimY
- xt6FhfzLiQmle22lpUmRXhHrCCNUJSd/PSettbiLjP9ipVAQ2hHaUFX2G94371IRc39O
- t9A7vj3McAiZVUUEM2DVKtEfDUmWA5SqYO9DLp/Wj31MryivB/ySk1Pv4KHLraFq8Zw3
- thlkJHth6NumjR8LO+ne+BnVlZQ8Oj3uGylw6qJ63zOr8Dy+zS2o4rgPudLWxM/Gq3R9
- /yJUUGfSLgHT4+LurfzjsROt+3DDrHSOUZkQ/1JAPmt+wEYb5GMMdfbvelEvAqrUWXAl tQ== 
-Received: from phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta02.appoci.oracle.com [147.154.114.232])
-	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3x7tb9tpxj-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Tue, 02 Apr 2024 13:47:14 +0000
-Received: from pps.filterd (phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
-	by phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 432Cu6so015463;
-	Tue, 2 Apr 2024 13:47:13 GMT
-Received: from pps.reinject (localhost [127.0.0.1])
-	by phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTPS id 3x6966tswv-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Tue, 02 Apr 2024 13:47:13 +0000
-Received: from phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
-	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 432DlCFe004519;
-	Tue, 2 Apr 2024 13:47:12 GMT
-Received: from ca-dev112.us.oracle.com (ca-dev112.us.oracle.com [10.129.136.47])
-	by phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTP id 3x6966tswc-1;
-	Tue, 02 Apr 2024 13:47:12 +0000
-From: Harshit Mogalapalli <harshit.m.mogalapalli@oracle.com>
-To: Boris Brezillon <boris.brezillon@collabora.com>,
-        Steven Price <steven.price@arm.com>, Liviu Dudau <liviu.dudau@arm.com>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
-        Heiko Stuebner <heiko@sntech.de>,
-        Grant Likely <grant.likely@linaro.org>,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
-Cc: dan.carpenter@linaro.org, kernel-janitors@vger.kernel.org,
-        error27@gmail.com, harshit.m.mogalapalli@oracle.com
-Subject: [PATCH v2] drm/panthor: Fix couple of NULL vs IS_ERR() bugs
-Date: Tue,  2 Apr 2024 06:47:08 -0700
-Message-ID: <20240402134709.1706323-1-harshit.m.mogalapalli@oracle.com>
-X-Mailer: git-send-email 2.43.0
+	s=arc-20240116; t=1712065813; c=relaxed/simple;
+	bh=GSsExJ2Cweiqv3U9XKAHuGsEXUUvZAgvUg0YJmbTYl0=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=e4UklczkKTqPvBH5EOoerj1+2aVOSri7IPMZ9H0Q9f7i0Zs3vHp/1QeWb8o9jbMsPuKbpuih8v5caiGL8SDC+O+jmLMDztwsxpyffYMkc230Var9T9HrfMi+UveHMWDk+Rv/tPYHX7x7bt9WfP87/VKUF66XUNPqipRYv0rxsf8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=armlinux.org.uk; spf=none smtp.mailfrom=armlinux.org.uk; dkim=pass (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b=WiBOleVC; arc=none smtp.client-ip=78.32.30.218
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=armlinux.org.uk
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=armlinux.org.uk
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
+	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+	List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+	bh=GbhkBxn+Q4MglL3Lf04y1O0cOhqs2SZS9H0XUJs9VK0=; b=WiBOleVCJwBRPqHpBXE8Ef/U+G
+	OXNriYeqoB6MRc7eicL0W9EYhGR5ajRr5dPJ3uNYPlNNIbBC0HxhOjk7DX+2wrYxTMNRua2n+Ouyd
+	DcF7rtkkHvFur+rvqAyiGx3S/0gqFEQDFnWt/53GQX4zgJY1vfLs/j7thO2twHL23gXVKutcSLr+t
+	NeyTrxfYKNeV1LKFgJ6lvMdTakw5Id9g+QsR+G9BFveVUS00EP3jajyAUvlglUWEbHpm7lDgYooWA
+	4eTco3FzRs32jC95CiPlQWcfUG6OgLsQ8riL7aDKCl/kqEz3RxVb1iYaSkQowHA0A5pYpDU9hP4uD
+	ELWzNoKg==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:37898)
+	by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.96)
+	(envelope-from <linux@armlinux.org.uk>)
+	id 1rreWN-0006no-2a;
+	Tue, 02 Apr 2024 14:49:51 +0100
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
+	(envelope-from <linux@shell.armlinux.org.uk>)
+	id 1rreWK-00070E-DE; Tue, 02 Apr 2024 14:49:48 +0100
+Date: Tue, 2 Apr 2024 14:49:48 +0100
+From: "Russell King (Oracle)" <linux@armlinux.org.uk>
+To: Romain Gantois <romain.gantois@bootlin.com>
+Cc: "David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	Rob Herring <robh@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Geert Uytterhoeven <geert+renesas@glider.be>,
+	Magnus Damm <magnus.damm@gmail.com>,
+	Alexandre Torgue <alexandre.torgue@foss.st.com>,
+	Jose Abreu <joabreu@synopsys.com>,
+	Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+	=?iso-8859-1?Q?Cl=E9ment_L=E9ger?= <clement.leger@bootlin.com>,
+	Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+	netdev@vger.kernel.org, devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
+	linux-stm32@st-md-mailman.stormreply.com,
+	linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH net-next 2/3] net: stmmac: add support for RZ/N1 GMAC
+Message-ID: <ZgwM/FIKTuN4vkQA@shell.armlinux.org.uk>
+References: <20240402-rzn1-gmac1-v1-0-5be2b2894d8c@bootlin.com>
+ <20240402-rzn1-gmac1-v1-2-5be2b2894d8c@bootlin.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-04-02_07,2024-04-01_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 mlxlogscore=999
- bulkscore=0 spamscore=0 suspectscore=0 phishscore=0 adultscore=0
- mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2403210000 definitions=main-2404020101
-X-Proofpoint-GUID: K5O4oPvkf_P70AWbgGnCTEuzg9lQhAJy
-X-Proofpoint-ORIG-GUID: K5O4oPvkf_P70AWbgGnCTEuzg9lQhAJy
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240402-rzn1-gmac1-v1-2-5be2b2894d8c@bootlin.com>
+Sender: Russell King (Oracle) <linux@armlinux.org.uk>
 
-1. The devm_drm_dev_alloc() function returns error pointers.
-   Update the error handling to check for error pointers instead of NULL.
-2. Currently panthor_vm_get_heap_pool() returns both ERR_PTR() and
-   NULL(when create is false and if there is no poool attached to the
-   VM)
-	- Change the function to return error pointers, when pool is
-	  NULL return -ENOENT
-	- Also handle the callers to check for IS_ERR() on failure.
+On Tue, Apr 02, 2024 at 02:37:01PM +0200, Romain Gantois wrote:
+> +	ret = stmmac_dvr_probe(dev, plat_dat, &stmmac_res);
+> +	if (ret)
+> +		return ret;
+> +
+> +	ndev = platform_get_drvdata(pdev);
+> +	priv = netdev_priv(ndev);
+> +
+> +	pcs_node = of_parse_phandle(np, "pcs-handle", 0);
+> +	if (pcs_node) {
+> +		pcs = miic_create(dev, pcs_node);
+> +		of_node_put(pcs_node);
+> +		if (IS_ERR(pcs))
+> +			return PTR_ERR(pcs);
+> +
+> +		priv->hw->phylink_pcs = pcs;
+> +	}
 
-Fixes: 4bdca1150792 ("drm/panthor: Add the driver frontend block")
-Signed-off-by: Harshit Mogalapalli <harshit.m.mogalapalli@oracle.com>
----
-This is spotted by smatch and the patch is only compile tested
+I'm afraid that this fails at one of the most basic principles of kernel
+multi-threaded programming. stmmac_dvr_probe() as part of its work calls
+register_netdev() which publishes to userspace the network device.
 
-v1->v2: Fix the function panthor_vm_get_heap_pool() to only return error
-pointers and handle the caller sites [Suggested by Boris Brezillon]
-	- Also merge these IS_ERR() vs NULL bugs into same patch
----
- drivers/gpu/drm/panthor/panthor_drv.c   | 6 +++---
- drivers/gpu/drm/panthor/panthor_mmu.c   | 2 ++
- drivers/gpu/drm/panthor/panthor_sched.c | 2 +-
- 3 files changed, 6 insertions(+), 4 deletions(-)
+Everything that is required must be setup _prior_ to publication to
+userspace to avoid races, because as soon as the network device is
+published, userspace can decide to bring that interface up. If one
+hasn't finished the initialisation, the interface can be brought up
+before that initialisation is complete.
 
-diff --git a/drivers/gpu/drm/panthor/panthor_drv.c b/drivers/gpu/drm/panthor/panthor_drv.c
-index 11b3ccd58f85..c8374cd4a30d 100644
---- a/drivers/gpu/drm/panthor/panthor_drv.c
-+++ b/drivers/gpu/drm/panthor/panthor_drv.c
-@@ -1090,8 +1090,8 @@ static int panthor_ioctl_tiler_heap_destroy(struct drm_device *ddev, void *data,
- 		return -EINVAL;
- 
- 	pool = panthor_vm_get_heap_pool(vm, false);
--	if (!pool) {
--		ret = -EINVAL;
-+	if (IS_ERR(pool)) {
-+		ret = PTR_ERR(pool);
- 		goto out_put_vm;
- 	}
- 
-@@ -1385,7 +1385,7 @@ static int panthor_probe(struct platform_device *pdev)
- 
- 	ptdev = devm_drm_dev_alloc(&pdev->dev, &panthor_drm_driver,
- 				   struct panthor_device, base);
--	if (!ptdev)
-+	if (IS_ERR(ptdev))
- 		return -ENOMEM;
- 
- 	platform_set_drvdata(pdev, ptdev);
-diff --git a/drivers/gpu/drm/panthor/panthor_mmu.c b/drivers/gpu/drm/panthor/panthor_mmu.c
-index fdd35249169f..e1285cdb09ff 100644
---- a/drivers/gpu/drm/panthor/panthor_mmu.c
-+++ b/drivers/gpu/drm/panthor/panthor_mmu.c
-@@ -1893,6 +1893,8 @@ struct panthor_heap_pool *panthor_vm_get_heap_pool(struct panthor_vm *vm, bool c
- 			vm->heaps.pool = panthor_heap_pool_get(pool);
- 	} else {
- 		pool = panthor_heap_pool_get(vm->heaps.pool);
-+		if (!pool)
-+			pool = ERR_PTR(-ENOENT);
- 	}
- 	mutex_unlock(&vm->heaps.lock);
- 
-diff --git a/drivers/gpu/drm/panthor/panthor_sched.c b/drivers/gpu/drm/panthor/panthor_sched.c
-index 5f7803b6fc48..617df2b980d0 100644
---- a/drivers/gpu/drm/panthor/panthor_sched.c
-+++ b/drivers/gpu/drm/panthor/panthor_sched.c
-@@ -1343,7 +1343,7 @@ static int group_process_tiler_oom(struct panthor_group *group, u32 cs_id)
- 	if (unlikely(csg_id < 0))
- 		return 0;
- 
--	if (!heaps || frag_end > vt_end || vt_end >= vt_start) {
-+	if (IS_ERR(heaps) || frag_end > vt_end || vt_end >= vt_start) {
- 		ret = -EINVAL;
- 	} else {
- 		/* We do the allocation without holding the scheduler lock to avoid
+I don't see anything obvious in the stmmac data structures that would
+allow you to hook in at an appropriate point before the
+register_netdev() but after the netdev has been created. The
+priv->hw data structure is created by stmmac_hwif_init()
+
+I see that drivers/net/ethernet/stmicro/stmmac/dwmac-socfpga.c is also
+guilty of this as well, and should be fixed. It's even worse because it
+does a truck load of stuff after stmmac_dvr_probe() which it most
+definitely should not be doing.
+
+I definitely get the feeling that the structure of the stmmac driver
+is really getting out of hand, and is making stuff harder for people,
+and it's not improving over time - in fact, it's getting worse. It
+needs a *lot* of work to bring it back to a sane model.
+
 -- 
-2.39.3
-
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
 
