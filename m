@@ -1,77 +1,105 @@
-Return-Path: <linux-kernel+bounces-127554-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-127555-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 79495894D91
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 10:33:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 89D6D894D98
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 10:33:44 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 187361F221E2
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 08:33:18 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 297021F221A5
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 08:33:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4051A56B9E;
-	Tue,  2 Apr 2024 08:32:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AF1E951C4A;
+	Tue,  2 Apr 2024 08:32:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="r+EwSNn5"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="WEXqphu8"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7F3BD26292;
-	Tue,  2 Apr 2024 08:32:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3F97A3D57A
+	for <linux-kernel@vger.kernel.org>; Tue,  2 Apr 2024 08:32:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712046745; cv=none; b=XZoIqWV/fADLiNcBghkSqbkZJFk81A+7N+U3zOyjDJZGdh3JqE139az+1Bk/ZXRC5fJqzonQfuvbxILfyYqUWGu8YiCOccRB2uJ/RRxZHrdCPBXdv3LN+UIge5sjk87PjQRLacMruJY20jfBhl1utDELjPTWtj7kwXkr/8+TXz0=
+	t=1712046774; cv=none; b=CKf+iVYGhYn2sKeBxYQ4xMXENq09xUQBrDlU2FiJnclM+sYV2CPQ6Vkp7/cG0B9DnAIIaBLWsWyHyvengv4YoJHcjdc5tJFIvpGfEw0UHcWVIMWurf2bGLND/tC6uJ2r7coDhDj5b5LMFJOtFb6SWghkMSHyy0uJlLsDG0Uq1es=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712046745; c=relaxed/simple;
-	bh=OwSfI/lp7ZaOCrZ00Y4Ap44N0xgja+JeYa4l5qKaGg0=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=SEwP9nDfpZpW4i10Chrr56rHTNoPEA4IbppPxxQBFPB9Mjo19bAY+dZcvcrt8y7DYqXecMvO8+6qHJoxWS3Z8hAgos5hV9hIv8I6KLO/Oef9DP2vwCeERHGB0uwwCxQpVgQjUi/IPqljpvYVhXF1ymyfcmoXEIkvgT36DzOkNoc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=r+EwSNn5; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B5F51C433C7;
-	Tue,  2 Apr 2024 08:32:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712046744;
-	bh=OwSfI/lp7ZaOCrZ00Y4Ap44N0xgja+JeYa4l5qKaGg0=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=r+EwSNn5TLvnG+t1weCH4tYHuYd6p9/t7G8uKeX5r1NYv6h1aVbRLOH5oUsozXe6S
-	 dJ1Ted5gU3Oc2Z29UOho4Kr6waOZ0PmJ+JAjH6DhY+uwtlTjhR5apkuYZiblcInGuz
-	 D3/6PIL1Luow2Ciiq4S5wwGHp5fy+g0gPR0DKA+v1NhImI5+wtNtnpiqX7Bq8v4TYx
-	 962fZjkl/aZt3vLQ6RZqevfufbgo+iWmHvSfr3cG+Ply59rOZa+sstunHoh5cjZYXV
-	 ee1IVUGV3uVG8JOhtLqKVEeiTlmjg6VA/VDqJthRa8lkHu9FCt/csmdQayfUm+Ii3k
-	 jpbh+rq7teTjQ==
-Date: Tue, 2 Apr 2024 09:32:19 +0100
-From: Simon Horman <horms@kernel.org>
-To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Cc: Woojung Huh <woojung.huh@microchip.com>, UNGLinuxDriver@microchip.com,
-	Andrew Lunn <andrew@lunn.ch>,
-	Florian Fainelli <f.fainelli@gmail.com>,
-	Vladimir Oltean <olteanv@gmail.com>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [net-next PATCH 2/2] net: dsa: sja1105: drop driver owner
- assignment
-Message-ID: <20240402083219.GK26556@kernel.org>
-References: <20240330211023.100924-1-krzysztof.kozlowski@linaro.org>
- <20240330211023.100924-2-krzysztof.kozlowski@linaro.org>
+	s=arc-20240116; t=1712046774; c=relaxed/simple;
+	bh=SbhTatDUNlFMsocczlgnCcBAF0CiyLb5vhHsAQLt2SU=;
+	h=From:In-Reply-To:References:To:Cc:Subject:MIME-Version:
+	 Content-Type:Date:Message-ID; b=Wcr7xT9I9CbvD9pudv/yofnaIupK47sxWdtSh58IUY3w6RJm7SNX7PfXRQy+Nm2lqJkx92PpTHqrfijUI1eOp8pqKFAnMrMQlVVMAwi6TmkiSzdXxPd3o2wqDxtwO4T4tX4/RFKx511JffQUBJSVQ3XUOmtLpTFtLtFbCvTOTUE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=WEXqphu8; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1712046772;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=Y+sMESiDiEk7NQ7Fx8r6KwgieS1M3kfYVE+bjq9Liog=;
+	b=WEXqphu8N5LujXWmpTtqdMmO1AiQFzi7mSjpWxLJi/qojf1BVsJl6Rj5oavNlimgB/4bde
+	MPbqaOOl9Hjkw5IloA9nktjlKHG7F+FV391/a3r0gdTInE3JhJQoITE2yqXxpbzOS8MHVw
+	mWRGUaluQsQ+Kv/DCnPtHFWJm+73WEA=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-367-5i1cRV1HP_OxdCzQ3Kdzqw-1; Tue, 02 Apr 2024 04:32:47 -0400
+X-MC-Unique: 5i1cRV1HP_OxdCzQ3Kdzqw-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.rdu2.redhat.com [10.11.54.8])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 8F188879844;
+	Tue,  2 Apr 2024 08:32:46 +0000 (UTC)
+Received: from warthog.procyon.org.uk (unknown [10.42.28.146])
+	by smtp.corp.redhat.com (Postfix) with ESMTP id 66B2CC1576F;
+	Tue,  2 Apr 2024 08:32:42 +0000 (UTC)
+Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
+	Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
+	Kingdom.
+	Registered in England and Wales under Company Registration No. 3798903
+From: David Howells <dhowells@redhat.com>
+In-Reply-To: <20240401135351.GD26556@kernel.org>
+References: <20240401135351.GD26556@kernel.org> <20240328163424.2781320-1-dhowells@redhat.com> <20240328163424.2781320-27-dhowells@redhat.com>
+To: Simon Horman <horms@kernel.org>
+Cc: dhowells@redhat.com, Christian Brauner <christian@brauner.io>,
+    Jeff Layton <jlayton@kernel.org>,
+    Gao Xiang <hsiangkao@linux.alibaba.com>,
+    Dominique Martinet <asmadeus@codewreck.org>,
+    Matthew Wilcox <willy@infradead.org>,
+    Steve French <smfrench@gmail.com>,
+    Marc Dionne <marc.dionne@auristor.com>,
+    Paulo Alcantara <pc@manguebit.com>,
+    Shyam Prasad N <sprasad@microsoft.com>, Tom Talpey <tom@talpey.com>,
+    Eric Van Hensbergen <ericvh@kernel.org>,
+    Ilya Dryomov <idryomov@gmail.com>, netfs@lists.linux.dev,
+    linux-cachefs@redhat.com, linux-afs@lists.infradead.org,
+    linux-cifs@vger.kernel.org, linux-nfs@vger.kernel.org,
+    ceph-devel@vger.kernel.org, v9fs@lists.linux.dev,
+    linux-erofs@lists.ozlabs.org, linux-fsdevel@vger.kernel.org,
+    linux-mm@kvack.org, netdev@vger.kernel.org,
+    linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 26/26] netfs, afs: Use writeback retry to deal with alternate keys
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240330211023.100924-2-krzysztof.kozlowski@linaro.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <3002685.1712046757.1@warthog.procyon.org.uk>
+Date: Tue, 02 Apr 2024 09:32:37 +0100
+Message-ID: <3002686.1712046757@warthog.procyon.org.uk>
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.8
 
-On Sat, Mar 30, 2024 at 10:10:23PM +0100, Krzysztof Kozlowski wrote:
-> Core in spi_register_driver() already sets the .owner, so driver
-> does not need to.
+Simon Horman <horms@kernel.org> wrote:
+
+> > +	op->store.size		= len,
 > 
-> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+> nit: this is probably more intuitively written using len;
 
-Reviewed-by: Simon Horman <horms@kernel.org>
+I'm not sure it makes a difference, but switching 'size' to 'len' in kafs is a
+separate thing that doesn't need to be part of this patchset.
+
+David
 
 
