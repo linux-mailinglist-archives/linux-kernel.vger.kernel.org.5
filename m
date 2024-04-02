@@ -1,139 +1,98 @@
-Return-Path: <linux-kernel+bounces-128205-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-128208-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 44BF7895787
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 16:53:45 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id CD97E89578F
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 16:54:39 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F381E2820D9
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 14:53:43 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0B8091C21D6A
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 14:54:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C96BC12BEA1;
-	Tue,  2 Apr 2024 14:53:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9477612BF1F;
+	Tue,  2 Apr 2024 14:54:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="u9wM5BM1"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=szeredi.hu header.i=@szeredi.hu header.b="CzgL9RzM"
+Received: from mail-ed1-f49.google.com (mail-ed1-f49.google.com [209.85.208.49])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E8CD98595C;
-	Tue,  2 Apr 2024 14:53:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2D4CD126F16
+	for <linux-kernel@vger.kernel.org>; Tue,  2 Apr 2024 14:54:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712069617; cv=none; b=IQc5puMsMAKZO99uY5aqVJ+ExfzFV8QAetmlXBGMpR3bodV9UOrFNK1O0cR2i1MN+SlpTOyS2V5IPhVgeDvYUiVJtvw264Za+VnCN4oicacu+Cy9d9dobziRoEzjw6hE/piLuoNTdm2CBoiD34wCqb8aBwHDFl6zkoshzXU4s3Y=
+	t=1712069672; cv=none; b=Q4mkhbiQkUgAZxdkQ6qz7nxsaMMD9wEfXcwz2Apm8/Af70nX2PnphmAteMfO0dkv3qu1wVBt6x0v7yU30k61YZ9dqVUg7IbWRiavXGY/89ioLnOYbwKT+Auy/CckibRrN0CeSpUruL5lh6XQzmjFXYiugJZejaMiw8NiSc+nGkU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712069617; c=relaxed/simple;
-	bh=vhQsnvRHzwOy3ox3OvUmqvwn0itwQb57/FmYwbndCXU=;
-	h=Date:Message-ID:From:To:Cc:Subject:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=tdhKOhAIJB09r6zXm66mKr7tPndtFmuX2mUgV6t7lsvvA4tCvhYdH6lpOcuCmWes+DYrUWhlY4sBxpm7LPCzWbFklpkx8DCfilIGIS5RzippkjiGbd20mDnpChP3MLrJpGaVbvJYaMtDbScXNrdE782nEfdejQanZYrIjwSGKwU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=u9wM5BM1; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 509FAC43390;
-	Tue,  2 Apr 2024 14:53:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712069616;
-	bh=vhQsnvRHzwOy3ox3OvUmqvwn0itwQb57/FmYwbndCXU=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=u9wM5BM1zVlflI8QFJDAHZYDZYOnPeNYUCR981yXBTjIUiYAuk/3ukwrzYyE9RB94
-	 ggNYHgQ1aWLaJAIwPMuPzimCq9JWUddvfke5tuHoM0dsQKwtlwps5xe/l4EwBAzHDD
-	 rf1z2ocnPeEVj5O5c+AsMaSSwuS16ukcZIEKrjjEBxANfz4eCcf1IS4sLyBX7WGV4J
-	 X6bfAXGXEkMAukyHifrFowQ8fi42i71UHSa2nc5rdtHTyYs00rXjuHJJ55XSR2HdyJ
-	 0d0USc13F8w/JmKNxjLr8RyCue8Q7EheKu9KzyehW7omtUJefOH2yADQqrus5BNuSp
-	 yCsACeDACsJbQ==
-Received: from sofa.misterjones.org ([185.219.108.64] helo=goblin-girl.misterjones.org)
-	by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.95)
-	(envelope-from <maz@kernel.org>)
-	id 1rrfW1-000lX6-Ji;
-	Tue, 02 Apr 2024 15:53:33 +0100
-Date: Tue, 02 Apr 2024 15:53:33 +0100
-Message-ID: <86h6gju87m.wl-maz@kernel.org>
-From: Marc Zyngier <maz@kernel.org>
-To: Mark Brown <broonie@kernel.org>
-Cc: Catalin Marinas <catalin.marinas@arm.com>,
-	Will Deacon <will@kernel.org>,
-	Oliver Upton <oliver.upton@linux.dev>,
-	James Morse <james.morse@arm.com>,
-	Suzuki K Poulose <suzuki.poulose@arm.com>,
-	Jonathan Corbet <corbet@lwn.net>,
-	Shuah Khan <shuah@kernel.org>,
-	linux-arm-kernel@lists.infradead.org,
-	linux-kernel@vger.kernel.org,
-	Dave Martin <Dave.Martin@arm.com>,
-	kvmarm@lists.linux.dev,
-	linux-doc@vger.kernel.org,
-	linux-kselftest@vger.kernel.org
-Subject: Re: [PATCH v6 1/5] KVM: arm64: Share all userspace hardened thread data with the hypervisor
-In-Reply-To: <fb54d7b0-9c83-4a0c-a08b-b722c9381ca7@sirena.org.uk>
-References: <20240329-arm64-2023-dpisa-v6-0-ba42db6c27f3@kernel.org>
-	<20240329-arm64-2023-dpisa-v6-1-ba42db6c27f3@kernel.org>
-	<87msqesoty.wl-maz@kernel.org>
-	<fb54d7b0-9c83-4a0c-a08b-b722c9381ca7@sirena.org.uk>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
- FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/29.2
- (aarch64-unknown-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+	s=arc-20240116; t=1712069672; c=relaxed/simple;
+	bh=XhHqbYUE6Sx2oXD4UwzUkAidMzUAqX4XcQB43g8/Juk=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=grWAKoSZM8EnNspmBRONezxF7oHOV5deORvWTnRdWXdCLDxRCWhXDcdWkjL+l1qppeVeUatYGMNkaZdSPw7kGuplQTKPBygIvjgDz//7uXBIjY8UvkCCeBJF77/j1chQPUDaz287vSkL38WpmBjpGCAhtdPLmZkj+WP6xzbEwQE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=szeredi.hu; spf=pass smtp.mailfrom=szeredi.hu; dkim=pass (1024-bit key) header.d=szeredi.hu header.i=@szeredi.hu header.b=CzgL9RzM; arc=none smtp.client-ip=209.85.208.49
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=szeredi.hu
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=szeredi.hu
+Received: by mail-ed1-f49.google.com with SMTP id 4fb4d7f45d1cf-565c6cf4819so10052361a12.1
+        for <linux-kernel@vger.kernel.org>; Tue, 02 Apr 2024 07:54:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=szeredi.hu; s=google; t=1712069669; x=1712674469; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=XhHqbYUE6Sx2oXD4UwzUkAidMzUAqX4XcQB43g8/Juk=;
+        b=CzgL9RzMGnY0+BA1XuU0yV6fA2fMLzh14fbb1EUNV8bPAXX9mn9Oo5pgYxhlLWgYm7
+         7yR20Jy/Y+uZFal8F4S1gMDg6SebWCirAtoxgobYw1QFwv7EtRF3gQ89OA9cxslhdavd
+         +QsuajtlLfo5zGMpPiGls0tkeISAQGGcDU6us=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712069669; x=1712674469;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=XhHqbYUE6Sx2oXD4UwzUkAidMzUAqX4XcQB43g8/Juk=;
+        b=U0h3o2DXYddhu8TV45CNTKene0KCMPKS9qL/99HmCCqvdkdZf+TUMZtAks0+l4G2s1
+         VFt2dZlex7I+Eea0ZmeySsqPKlPCvJ3BdkCIboKYBVPo39MUs0Q9St4cMLgWHTCuuoHu
+         HizgTCwEUY63FCZ+RgWxso4Xk72uTCWRnbZJP46Ryfim+ig3mhO+ie7jSSDUSw5kF0YX
+         sf4UaDwiaTinpgYZRFUUqRoX+ov+Q9J0MMhPExvjzl9bikuO5zF4ejlI/f1ORCnr+IbD
+         b6N+pC4aRxcGB+hW4oNTQ6ojKvzoQarjUpb2voPBNU63IVCVBPqGIHnxpY3P5BfIUMEr
+         QaLw==
+X-Forwarded-Encrypted: i=1; AJvYcCUT6H1lKXeVeXiPEC1UOVrFFTmIT2cngWjKuQV54Jej9JpgonDu23ZIN17rVSK0XQdMFVAYxXvEboohwmENoY7bx4w3CpkaK6AW1WsU
+X-Gm-Message-State: AOJu0Yxq44krBilxIAok5FpCHXNWqWLkOapvY+5HZTnzDqvyAV/no0hC
+	KCNwEZB7UfNxn6OMCPE9eM6QgTjr0sX4tCeOz3P5sJnJuu+87Vym76BYo1Obk9aw9nsJ3weC+zs
+	ez9mSVeM4LCQf1T5koDL5fcP50hkU1Rmyp39jaQ==
+X-Google-Smtp-Source: AGHT+IEfPsC0av5KNUW2YwqX9Ii2cWfCfOzCgMFH2tQFtuKqbx1k0z9SiaRv2Dtswp06nVXO7FYfzwuU2PtAB+0IZeA=
+X-Received: by 2002:a17:906:f591:b0:a4e:1d5f:73ae with SMTP id
+ cm17-20020a170906f59100b00a4e1d5f73aemr14164406ejd.12.1712069669482; Tue, 02
+ Apr 2024 07:54:29 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Content-Type: text/plain; charset=US-ASCII
-X-SA-Exim-Connect-IP: 185.219.108.64
-X-SA-Exim-Rcpt-To: broonie@kernel.org, catalin.marinas@arm.com, will@kernel.org, oliver.upton@linux.dev, james.morse@arm.com, suzuki.poulose@arm.com, corbet@lwn.net, shuah@kernel.org, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, Dave.Martin@arm.com, kvmarm@lists.linux.dev, linux-doc@vger.kernel.org, linux-kselftest@vger.kernel.org
-X-SA-Exim-Mail-From: maz@kernel.org
-X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+MIME-Version: 1.0
+References: <20240402-setlease-v2-1-b098a5f9295d@kernel.org>
+ <8a8e8c0d-7878-4289-b490-cb9bf17e56b9@fastmail.fm> <f6bbdf158f0ca7a12de9b9f980d4d7fa31399ed9.camel@kernel.org>
+ <CAOQ4uxiv7xSUS7RDK3esa1Crp8reYXewxkr5fFbhG623P20PwA@mail.gmail.com>
+ <CAJfpegvRDKS1kKrMPyqzmuSs8KXZ2ohpwp0nEzEf7e3vv940xg@mail.gmail.com> <fbd0b9e5fb765eaea98fef23e9e36f266d7926ea.camel@kernel.org>
+In-Reply-To: <fbd0b9e5fb765eaea98fef23e9e36f266d7926ea.camel@kernel.org>
+From: Miklos Szeredi <miklos@szeredi.hu>
+Date: Tue, 2 Apr 2024 16:54:17 +0200
+Message-ID: <CAJfpeguWCNDzAuDndB8pbcai5c+ux3KLtrAaAOuh74+wCtZBXA@mail.gmail.com>
+Subject: Re: [PATCH v2] fuse: allow FUSE drivers to declare themselves free
+ from outside changes
+To: Jeff Layton <jlayton@kernel.org>
+Cc: Amir Goldstein <amir73il@gmail.com>, Bernd Schubert <bernd.schubert@fastmail.fm>, 
+	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
-On Tue, 02 Apr 2024 15:34:27 +0100,
-Mark Brown <broonie@kernel.org> wrote:
-> 
-> [1  <text/plain; us-ascii (quoted-printable)>]
-> On Sun, Mar 31, 2024 at 11:00:41AM +0100, Marc Zyngier wrote:
-> > Mark Brown <broonie@kernel.org> wrote:
-> 
-> > > As part of the lazy FPSIMD state transitioning done by the hypervisor we
-> > > currently share the userpsace FPSIMD state in thread->uw.fpsimd_state with
-> > > the host. Since this struct is non-extensible userspace ABI we have to keep
-> 
-> > Using the same representation is just pure convenience, and nothing
-> > requires us to use the it in the kernel/hypervisor.
-> 
-> Indeed, the additional data seemed contained enough that it was a
-> reasonable tradeoff.
-> 
-> > > the definition as is but the addition of FPMR in the 2023 dpISA means that
-> > > we will want to share more storage with the host. To facilitate this
-> > > refactor the current code to share the entire thread->uw rather than just
-> > > the one field.
-> 
-> > So this increase the required sharing with EL2 from 528 bytes to
-> > 560. Not a huge deal, but definitely moving in the wrong direction. Is
-> > there any plans to add more stuff to this structure that wouldn't be
-> > *directly* relevant to the hypervisor?
-> 
-> I'm not aware of any current plans to extend this.
-> 
-> > > @@ -640,7 +641,7 @@ struct kvm_vcpu_arch {
-> > >  	struct kvm_guest_debug_arch vcpu_debug_state;
-> > >  	struct kvm_guest_debug_arch external_debug_state;
-> > >  
-> > > -	struct user_fpsimd_state *host_fpsimd_state;	/* hyp VA */
-> > > +	struct thread_struct_uw *host_uw;	/* hyp VA */
-> > >  	struct task_struct *parent_task;
-> 
-> > Well, this is going away, and you know it.
-> 
-> Sure, those patches are still in flight though.  It does seem reasonable
-> to target the current code.
+On Tue, 2 Apr 2024 at 16:51, Jeff Layton <jlayton@kernel.org> wrote:
+>
+> I'm fine with whatever verbiage you prefer. Let me know if you need me
+> to resend.
 
-Sure, if your intent is for this code not to be merged.
+I'll do this, no need to resend.
 
-Because it means this series assumes a different data life cycle, and
-the review effort spent on it will be invalidated once you move to the
-per-CPU state.
+> Another thing to consider: what about fsnotify? Should notifications be
+> allowed when this flag isn't set?
 
-	M.
+Aren't local notification done for all network filesystems?
 
--- 
-Without deviation from the norm, progress is not possible.
+Thanks,
+Miklos
 
