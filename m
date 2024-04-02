@@ -1,49 +1,50 @@
-Return-Path: <linux-kernel+bounces-128677-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-128679-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 02AF4895E0B
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 22:53:09 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 39E8F895E13
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 22:53:48 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2633B1C221D7
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 20:53:08 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E335C289BAC
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 20:53:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7B7A815E20A;
-	Tue,  2 Apr 2024 20:52:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E18E915E7EB;
+	Tue,  2 Apr 2024 20:53:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="h1AFYWMz"
-Received: from NAM12-MW2-obe.outbound.protection.outlook.com (mail-mw2nam12on2094.outbound.protection.outlook.com [40.107.244.94])
+	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="ZyVaUReg"
+Received: from NAM12-MW2-obe.outbound.protection.outlook.com (mail-mw2nam12on2130.outbound.protection.outlook.com [40.107.244.130])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0062F15E1EA;
-	Tue,  2 Apr 2024 20:52:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.244.94
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E993215E5A6;
+	Tue,  2 Apr 2024 20:52:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.244.130
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712091175; cv=fail; b=hENzImX4YuzVqlM8OQLSMGg9QY0zIbUM2G9b0Jb1UN8icolR6eV3oZ/PdS+6AN6iFUJ5zHldsE1J0C2y/2Um6LEdWZvDdQh2pFFdg6NcmzLKNei2H80+/tkTJcHWzXbBMmnLDWzSvwaEVaFQYQ51wfJHRUYKWU/D7Rdzw33Bdus=
+	t=1712091180; cv=fail; b=B3jSnKFSeIb+foUz8J9Bjdj2qBs3kW/r+kYpltk0wc8GRPFGIi6w6jRyxDmAXxpHsU+3a6MgPiONMVgyBclMSDI/u+XJaT6QlWh2JPjWuWw5N3SQ3UUuAt1FWEvsxFPRjKI5U1zbId2K05UjAAtwJeX5YMGdHY1xPgdPOXmN+SM=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712091175; c=relaxed/simple;
-	bh=te53pUWiMTvwgjQk1Pif6eAJDkvgLYazkDyznj0GtGA=;
-	h=From:To:Cc:Subject:Date:Message-ID:Content-Type:MIME-Version; b=A6cCOQFCYH/aEN1NepIccBIARMpKzK24mSE3ErVHuTVMYBF5YRnSrFAZs/tkv7o0yQA5bKLBnbIygDmRUl+JU6bnjvSRnY4ii2QPEorHCUcy0zufAxNG6QAh0KvguOmnT5aO0JiT9SnNuShKTMhR8dIhlU9ot58S3qNWZjYbrLc=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=h1AFYWMz; arc=fail smtp.client-ip=40.107.244.94
+	s=arc-20240116; t=1712091180; c=relaxed/simple;
+	bh=j6stmcY22YZ0xweGD3iFWeL6dMCnH8/BRpBH1YzqmaE=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=goZZ7q907F26uEVZk2cmqKZO9uPAxt7Cc9CekrC+yokvo3Y64fnGQakQ67pul3DjUBkak9kUItk5oXlsF4YBxQfP243T35DHUc465KRufiScgF6qeKGT4u2Y7TB0l57ugqgbbFD6DXfwnQn/+VRdWswT58Je1UqnBSOzWJZa34E=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=ZyVaUReg; arc=fail smtp.client-ip=40.107.244.130
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
 Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=a8VgzTQt08mhVEGrbQcZFHIwgbdq3BRXofRA2uUwCL6g/lUA1hBHT57NXff9FRVYvfklzmZFpUK4/oHeQ2yaJ0cqNz7+gxZLY+CIPCdofjUbfXQitMWvVE2axLbjCNmatdYhRZ7ARID5ADcPH/A9DpHLROGDmb042/jKIRZOlJ8SZY5EyR1mbh5nnwQh5iIZDZCFQx6phNU9tY+if1TlXyQpsgy3B0aVFghWwMmZGvhjSpYO4w0mSS3XxbokeJRXxTwanacLRuYLrARA789l97/VAIO4Azcd1pyrqcCknZ3NE/1J0rzt8BZqj9Orzbbfazw9LJ1NM77WxUWiHtCANA==
+ b=N0tTRhcKfvLFiSLYpodR3t8tfKqaH0Yoh1vc1BGL9rP9kFBBCPXxcnXMuJ097O4jC9QYUqUFseaZRDbPQnK9Zx6hQw63C9l4ZPvoQPJOWqi5aw2vrWwQtS2kV0JCAbPFdBv3NziLw4Stk8w+4F3xeOyt7c3j9OlktJc4P1rr67bJR6k1EJIoWjPjQBSMg9/N/QOLmaSAKvyVaq1b/qqV71bugWzKsmxFPWrst5UqDfplUGtKq8Je6RbBf6rVVXSghMtYG9GFnZxyQmAXazPC6Ggl+2FY3fZU7ZSqLcNoOR1Ijw/F0qaswWMX7xxM2hszrFCuvlGXw+deDIJPS8dLVA==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=aojyshXktIhBLzR6Q/R/KKR09nDQ82BUPUJcuZwXTDQ=;
- b=fixV3REYrRGneey7DBuNaWoq2giSpqSLrCW1fS0BK5ocRSIOa9iZxCmT6e8R9SNFJe3wrPFyahxEGEGMIZaywkYEuFcvnmpoUIDNdE/5Te0+uoZXwtCZTN5daAJGWPM/jShAOPaa0YAICovfmSyCouXcL4VxZCekXI87wudZcmYsheRPQLoqTdfqisuoP96Xc3IphtV4OrsGSDg1tiBU0BLMTla635FjVWfZKlGF1qXQJe5KAxv3zqMMlz51ef3ygEFv7sozIK5zIKUjesfPC2JPYTDPs307TqOK8vyfOXdOMPysgrpZwcEMOLYVrRER8yjTYpg0rkChHytqclZUlg==
+ bh=+53jNI38qiikc0vyHelGLzbgxCEV/EElUoregCyvTGQ=;
+ b=QArp/1Q46ICFyjGYlO1rOWvFZhQ+/74DUhYLkUn90ucXDRNI+3fOKj8gJaLF8iH4oP1YlLzP5lzUqcWtRNfAIV6HiVC16+kcBy0KMkqxs9RKYL3DIgAiT4z7s3Yyul30riRA1d4ZY1PaWcnaA4HdQhYKZeDoz+Ot3Ha61GwUog1ZAfZGzBz31CF4Zobg0kLLooj89DSzmv7Kz9UkdXMJPosLGwGjn9MChv9uC8644/Zu//kG/vscGeY7lhQP1bwYc0Odp3oIOsaquNIr4mgizxHjeVIroVwVdAPrQRPGLsDccw2355PFcN1Atybu7AVle4Ssu3TNHQ9JwPi2rF7ZSA==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
  dkim=pass header.d=nvidia.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
  s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=aojyshXktIhBLzR6Q/R/KKR09nDQ82BUPUJcuZwXTDQ=;
- b=h1AFYWMz58e6xcrS7eNsKGaYRI8qQYiS2HE7EmQV8KxiKnz6Zf5cE3WwcEtDHO681w2Vc4Th62zEPuvHmaDuK3KCjd3yUpLN2q7noNi/QyRdWdXxgA0l3rQ8vgt4EBnYVQqjSBKNGcn7nI92JLJoSm0ZTe9PO9l3CJBrOKJr096rM2iXUD0pd0ObIGdBsWIqa78wwymyEl8l7Na9K2zsuAaWlJliV9XaycBx5M2z9do6N8l0ENNCUPm2JvtSKfm3XzYM21DWpD4x54KIKiWRsY2WwOSeYoeSMo+Qcw4YD/5riwYJyCqN/0CxWpL03QsBEFucDAnubQXhQ8CEIxFNhQ==
+ bh=+53jNI38qiikc0vyHelGLzbgxCEV/EElUoregCyvTGQ=;
+ b=ZyVaURegBO19WaCTGhAELxHW1Eqn3a+VtGLYfne5e3RspcBpibKrDJ9X37gU3d2AqyWb7lKBIuYgWb51WQxtylT9dPRs5IicY/+FZgYn/YrFY6zl1asL5cDWqBNqlhjKRIx1dKKSpfI+XzQhvtoojJoQZkYWUlpizVAKsWsJjDKtUe/1QyYb/k59YTgJP6R8TbyXD5Gi540dgdhyIycmsT4xvRQLifjGsx5whxcsm/wQP0KjbuxeVWAK4vaYxoT2jXQsZHOhH1ZX0x7F5kAMswxdWk3HS6gqdkoApxDQ22idoDZQjdSikm8hJv7I6Aw2Y7Q1fBL0lifewd+bmUdWTw==
 Received: from BYAPR12MB2743.namprd12.prod.outlook.com (2603:10b6:a03:61::28)
  by MW3PR12MB4393.namprd12.prod.outlook.com (2603:10b6:303:2c::22) with
  Microsoft SMTP Server (version=TLS1_2,
@@ -88,14 +89,16 @@ Cc: ahmed.zaki@intel.com,
 	vladimir.oltean@nxp.com,
 	wojciech.drewek@intel.com,
 	Rahul Rameshbabu <rrameshbabu@nvidia.com>
-Subject: [PATCH net-next v1 0/6] ethtool HW timestamping statistics
-Date: Tue,  2 Apr 2024 13:52:00 -0700
-Message-ID: <20240402205223.137565-1-rrameshbabu@nvidia.com>
+Subject: [PATCH net-next v1 1/6] ethtool: add interface to read Tx hardware timestamping statistics
+Date: Tue,  2 Apr 2024 13:52:01 -0700
+Message-ID: <20240402205223.137565-2-rrameshbabu@nvidia.com>
 X-Mailer: git-send-email 2.42.0
+In-Reply-To: <20240402205223.137565-1-rrameshbabu@nvidia.com>
+References: <20240402205223.137565-1-rrameshbabu@nvidia.com>
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
-X-ClientProxiedBy: SJ0PR13CA0097.namprd13.prod.outlook.com
- (2603:10b6:a03:2c5::12) To BYAPR12MB2743.namprd12.prod.outlook.com
+X-ClientProxiedBy: SJ0PR03CA0285.namprd03.prod.outlook.com
+ (2603:10b6:a03:39e::20) To BYAPR12MB2743.namprd12.prod.outlook.com
  (2603:10b6:a03:61::28)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -109,98 +112,314 @@ X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
 X-Microsoft-Antispam-Message-Info:
-	KvhEAU0IOq8w1Ic5lu3rybRgMryKwBj3C2DVcHPZoSCZnnuU7DL1X8R1QwXcGnazcb8m5GV/KXSJeAjdIxAixX5ayFTja95GaIzXJ+PbOvZP7J+0tsQeN06N/yD18WpaVBVrqK/08aQ5Mr2+ImhMbjYqWuSzXZ7IAZ5nKKH02yTBz3Vr/g4hJq6zDh4FyDg4wKDRm868ASCgjujj/0yvMnMeOyX16YUtu5q2EcswXXf1VqAg/feMoG4xu+KJWCdmYzJn2I2kFbCFGLv64/vMLMbWahCv4+sQ11XSg7sW84AgoUecZzE8jGoR0ikR1rxlNPDVVvZwrmsWtotTlFWVTXzXXjNLjaiH8T22wa7Vx3HkV5Zk8E3DX8bm1tFnq2ogjG80ZWNo0xT51rERSJov3WH7lyrfbs3GI8WynokIq+PmVqfuHl0yGei9uLwWkpC4HT3BPiVvw3wF/G9D/ak+0vXbiXfvcGZSweoeWiAXny0SnWGUSCOrAinlm/nRua5pVGreH4Xx+PhREtokxz9RcjIqpGQd2hn0dFirsOPGYZqgyVWMANUF0cWGk6uOvDHlrYlOuB+32Pw2O6df/CrwxszUQTS/iE+BgajoNVvW4GjwI/UAgViWaMdTr34DeyqjJQOwyC0vdpj8gWbG5MFsLA==
+	QACBuQBVNwYdsvLChoNoXMQLM8BxxIYDo9/c61viO/4Njr4LinLfzlaczRvtxn16D9NPFt1X4WOlYjlo3Kfot2MhXoirE60q4vS5qjnUtcTNvMsFAraQB3FgWz+SLmCoft7GZDh8pbYwnEmr7TIkvKN76Ow6NVwX/U0xz6VyUQ2U6azPM22gMs03C/S82dUcHVeccchoKpDWzRqCNRVl+3SD2BkCc2HNi3mMQY0C+5p45vjmnEtfmAppTZUb+H5+DzKksTdo9hVufFVxfRseXzFo9qjGFCrRIHFxWa8RVGVMuLaxetJ+UZ2AmQZX+AOuQGSOUCkbeRzKb2XnG2mqyvGwK9IfJl7IpLzeCmoUYVxoj9rDjMDM0+ZhPvEOCcwczZnEvB0Bj+6aGzheC2Gn0AlRMbjOJJDBosVW7T7kWdmG5sz3tn2MKin4yromkbEdjXnDPj8KBvLx1OhpniBveBY+6tIibswqTFspWlcJTuCwVBLcgjWAY97FUQ2oC8QRb7YHOmyoBvUQ391NYiliJ5FeGbuKQkbexvDGEsw+tc6akjQfMn1Hxlm8KFr/o0ePV7mlomzOD2wlIw1NrTGLijqUm0CKG/96kXm2uIAixEUusLnCjOrGRZrhmvVuNVi0G947Vem4rPWa0E2Mq1VAIg==
 X-Forefront-Antispam-Report:
 	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR12MB2743.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376005)(1800799015)(7416005)(366007);DIR:OUT;SFP:1102;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
 X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?h/gZrLMrWQKXhh5RffWATGWrJhoTZ6ffzkFbBTQ04YhLntxm+2lhluVD5Fy0?=
- =?us-ascii?Q?8VYj9pXEuAlwfooB9XL8FYmDYP4gkpXE+MMLPICqrj8uXVwZfZxh6KwzhDVp?=
- =?us-ascii?Q?+eGfdTp4WfcbUNLTJmNMpUltl9Y2mM4P3BmRsPbuLVTwHs/65fGIRNRkA21G?=
- =?us-ascii?Q?3EK6gGL4Nz2hf24mGdCpvda2eEPJ5tOJakFT0/W/IJRExwKrp9huM0iRGAET?=
- =?us-ascii?Q?bKFTC162qs2EmyfZim4kdQyhmkvuFYV8cZG0UoAZeexyAAs9Zl4KuLCsqFp/?=
- =?us-ascii?Q?0ZR1wwXmZ3EUwYuJ3TblkF7PgWFtnSV6lDmhKqXI9qnN/I5iWzZgrxvhk7Q1?=
- =?us-ascii?Q?zunxfXumF4ZLxL6jYTKlFZB+LMEsU7iMZDUmz4T1zm7JT7MFHfLGsytIpueb?=
- =?us-ascii?Q?YreUU/23CZvKSznBILwmu7aRdkIzAsIgcsJJr/ybbt9yR4ZtaUPhIdwcJnEx?=
- =?us-ascii?Q?n48I0LzxMr3VFBXkozAKywnDHGuDsNpXxSUbJ9/mY//YHoOIEiQ5sOrsT1CW?=
- =?us-ascii?Q?eFy3Utv9XdPceMFcM4zh+OJeJr75nTvXJRqgXrKcP+pwRn0MgqUheRDeAjof?=
- =?us-ascii?Q?p4uy7Ub2PaYlrtAT1TYXQNQSFrTQMyMTNMngmPCwrhUAC7MjmIU2vL/aKiMo?=
- =?us-ascii?Q?VZKjbXhT6wnKtiLNpOwSSnu0ySJu1o6ArFdufTWpr0ePVPZf2D/+0iAqux7T?=
- =?us-ascii?Q?L2whOjc9TzewZN7c4Flfw69aCS64VrsE8iH/xnqXXXjloyFa2OP28d/xci24?=
- =?us-ascii?Q?cH5BD2VVrlcRpLEba+1o82pVba8ALHpuYkMRSUKQaFxcQza1ymgvaLGIuW9U?=
- =?us-ascii?Q?rCVufmO1kdh53DQGzu57+WNT0fZn2mpON4kZUIDFgFhCslHoq9Ug3m8zTFgz?=
- =?us-ascii?Q?v3y74L4kCAwNxxAUhSZP7JQxl460YVaa7djF1TLxBwHGhflEAuV0pkE/h/RE?=
- =?us-ascii?Q?Af9jcwFwERFGiRjS+xkmtQ+9mR60s7aAbUDb0T59V7KSMYWF0Ulo51j8ewWP?=
- =?us-ascii?Q?7n5oxxz038iEazwF+/33IOQ9Fj+F29nTvIYf3RYb6c6+tEuj0EZ43LRVxv8k?=
- =?us-ascii?Q?Wp7Sznvg+LRrBjeYn8W+qIKG8n6QWGZrDL5i7ypXEVV3ksObxMTecKz28H1u?=
- =?us-ascii?Q?40ow5yhNPgSTL34cuOmmireiVxAJpAC6VUfgglxDsNBCeBDpyBvFItoU7JAa?=
- =?us-ascii?Q?jVeJwijPajbtmIoQdR0m3aLulkEcGwCj0lJR1oJ0DlbyvV6VhNqHpwFStRqC?=
- =?us-ascii?Q?y3vp+GA83sE4lMuikBP6gvnA6EEAihHQr5jyJ67OPENHLyizDYQtlWKYVRCB?=
- =?us-ascii?Q?d0ZI2tJfnNogx+2/CYRsnSxeBVy8+vvZVtgFO9QFwNJQOuSDYu8pgFvDPAbO?=
- =?us-ascii?Q?a2v4+M4TbJp1hOh3UAlPcI9GRFfnmmlXOfn8pJnt/4ZTWsUoZXGevSqssdtW?=
- =?us-ascii?Q?u9LADyT2jYY9kvmphtCguiweqqwlpO12p1RGIh+91ZVoqyeTk37T267YKzYY?=
- =?us-ascii?Q?77XPvrIsogkCPeznn+aELeUBq76q1Mvh1SKYzW55Qmss7YbT0N7HmrnPeQ6T?=
- =?us-ascii?Q?XtlLV6q0PiVWp5E1MUE667WVgA0fpzurIA0yxZZjzpv8tTW8DP/5t+PtOclh?=
- =?us-ascii?Q?Dg=3D=3D?=
+	=?us-ascii?Q?hccMaao0kLALirdvrx3YjTQjy6Vcuq7BwTESz850p3ft4sY3IP9tgCjpoOmF?=
+ =?us-ascii?Q?RdvFqU3oBOVd+HS44OMPulT/lR7T/PmtM5xxMehZN35YDIVHKfKNpX58A4A/?=
+ =?us-ascii?Q?p1HvBPOfc4Tml2/tYsP+SwPqzn4EgJpmwi0UIZ4CTl3heswTReo/UK8/8GLn?=
+ =?us-ascii?Q?YBXgianKtpK0EVZutwSZKeG7EjxBS1uZ1Re8prFT9cFORCh60DTjFrvgZGhA?=
+ =?us-ascii?Q?OfAKY3pir0k/GO8E+67zQrYSFCBxiSFE+BSfH/LuwxZgpiElTqsHpnkIKi0y?=
+ =?us-ascii?Q?lhPSQ20Ma0/hg5Sl1a1ZH2ah1V6KCVLD3vFxr8z6Xo19SC8zGXMK67f+HUmA?=
+ =?us-ascii?Q?UwNmyHNzs9iRhTmPRnb88nCK2ZfKbs+7Bb96XVkKlUaq9jQ7UjHEBGlSR9y2?=
+ =?us-ascii?Q?XDzu1DU8G0Zoi7qihh46reqKea4PRlb+24TbSkVwW4H4weEvUQThRC5U34pz?=
+ =?us-ascii?Q?TevU1aPPukbjqfM45T1Yp7RvGCyp/5HHRQf0Ztobc5RlXXfiUzDw38sCxJbG?=
+ =?us-ascii?Q?sDjeLSgswza0z0eJy4wezDxIcwQucbAAZbtqY+XTseCrGKoe52BTo5Zjo8P4?=
+ =?us-ascii?Q?df3/o+2CRYXEtPZpIeQ6c6SQVrU/GIKBWScQ364LPbG77EtRUk9bhg+wPInJ?=
+ =?us-ascii?Q?+w6QNccVgrg8xTz1yKYMMLZC2LmW7NziBmWY2wG5v4/1HxFOXIGGoByLcPVh?=
+ =?us-ascii?Q?NUIfhAkTn32X7dy1obAPkZ1e7Q9zz7yAXN3/zi/AIIkRsH3eP0SWJur5z+A8?=
+ =?us-ascii?Q?y4UNPI2xDXZsgBrxov4c2QvTlMVdRxJg6iFO54xFK9damVdVRnoi8OMEWktH?=
+ =?us-ascii?Q?rB1zACTdiw/mdXnokbd35APGumbx5jCcFT7nGlldPsKKIR9sdK7D4dMx6THT?=
+ =?us-ascii?Q?UnlkO7YLsnxJlKcJW36tj38tlnAYTuBzEwZrVmNz+AYfgojNaKfsGUkJFFd8?=
+ =?us-ascii?Q?5NHDeJcOnEKEPQOR0A52BXAdFtAUiskTj4MCaqR9uu9gmO2ztASgyzrNkxXY?=
+ =?us-ascii?Q?UVJizOP6YfQD3sdoR3OHSCbuowfkJXtU6hKDC8i87oKRc5lJhSahu6MJkin5?=
+ =?us-ascii?Q?HdHH2PL60kVkDakvhuxfJGtXr6hPceprYr9mmLeiSlYuyiuSkq+gY/HB51kk?=
+ =?us-ascii?Q?37zA0Htzv417lvShPfuinaTmKfkU4D2JpiIleGBLFkfmTwcVyiPcrGSxoMj1?=
+ =?us-ascii?Q?MIMTKoaBu203uxT1z362Jtp+wIBra2NywXNWZuVO4QA/687HTZvBMrjtyXXs?=
+ =?us-ascii?Q?NVMClK3mjOAmd1vU1kK9EYE/yM7zTQtsqdmlDq6/lXOqaoRWUS9A3tck/1Kp?=
+ =?us-ascii?Q?KGrIss8D0IAAzFFqCBxY7a/VupBYiNguLk6UGUtPDHO1YF2AMvOQOK9EVvIt?=
+ =?us-ascii?Q?VKsAXlh5VgvaqHX1u31Xj9pfyP+90T1z/C7TnMQZif4rAZ0ePY+B0+upEPPW?=
+ =?us-ascii?Q?UOX7vMbqnZ9XhbhFsaIHfh4Nm3FSMilVeG3Tnnr0K8gPedFBpqLUX0MKbTst?=
+ =?us-ascii?Q?B6Hbi/fUjnecWr65+6yoVRlt293Mdh7+JXXlXfG3CykMYMilogf41UGsDe4v?=
+ =?us-ascii?Q?Mxfqb1sXwxk4Ybc/BZy6gczQJAOkw9vHSo3OeRLbW1oEh0KXMKmWSEKaHB1H?=
+ =?us-ascii?Q?Lw=3D=3D?=
 X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 69fcb85e-dd37-45bd-9da8-08dc5356ce00
+X-MS-Exchange-CrossTenant-Network-Message-Id: 2d7e4233-5eea-4b10-02bc-08dc5356ce46
 X-MS-Exchange-CrossTenant-AuthSource: BYAPR12MB2743.namprd12.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 02 Apr 2024 20:52:26.9316
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 02 Apr 2024 20:52:27.4126
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: au55vSoE1bddlkEuB+DfgVOcVA23lXNQEVgZQbCtBfioD8hrzm0HI5VmVaEL+fThx3gcTgFG7h4vcapAQmXcqw==
+X-MS-Exchange-CrossTenant-UserPrincipalName: qe5vH2iG5LKe4rU6NViTpmMsH17lDmVEq1SwOuK+iVHpAgo8ikWBXuKS25V6yCV6gjSitWplD5UlWM5qajNC2w==
 X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW3PR12MB4393
 
-The goal of this patch series is to introduce a common set of ethtool statistics
-for hardware timestamping that a driver implementer can hook into. The
-statistics counters added are based on what I believe are common
-patterns/behaviors found across various hardware timestamping implementations
-seen in the kernel tree today. The mlx5 family of devices is used as the PoC for
-this patch series. Other vendors are more than welcome to chim in on this
-series.
+Multiple network devices that support hardware timestamping appear to have
+common behavior with regards to timestamp handling. Implement common Tx
+hardware timestamping statistics in a tx_stats struct_group. Common Rx
+hardware timestamping statistics can subsequently be implemented in a
+rx_stats struct_group for ethtool_ts_stats.
 
-Changes since RFC v1:
-        - Dropped the late statistics counter since that was not general enough
-        - Dropped the layer selection attribute for timestamping statistics
-        - Take Jakub's suggestion and converted to ETHTOOL_FLAG_STATS
-        - Provided a working interface to query these new statistics from
-          tools/net/ynl/ethtool.py
-
-Changes since RFC v2:
-        - Applied suggestion by Jakub for implementing an enumeration for
-          ethtool header flags
-
-Link: https://lore.kernel.org/netdev/20240309084440.299358-1-rrameshbabu@nvidia.com/
-Link: https://lore.kernel.org/netdev/20240223192658.45893-1-rrameshbabu@nvidia.com/
 Signed-off-by: Rahul Rameshbabu <rrameshbabu@nvidia.com>
+Reviewed-by: Dragos Tatulea <dtatulea@nvidia.com>
 ---
-Rahul Rameshbabu (6):
-  ethtool: add interface to read Tx hardware timestamping statistics
-  net/mlx5e: Introduce lost_cqe statistic counter for PTP Tx port
-    timestamping CQ
-  net/mlx5e: Introduce timestamps statistic counter for Tx DMA layer
-  net/mlx5e: Implement ethtool hardware timestamping statistics
-  netlink: specs: ethtool: add header-flags enumeration
-  tools: ynl: ethtool.py: Output timestamping statistics from tsinfo-get
-    operation
+ Documentation/netlink/specs/ethtool.yaml     | 17 +++++++
+ Documentation/networking/ethtool-netlink.rst |  9 ++++
+ include/linux/ethtool.h                      | 28 ++++++++++-
+ include/uapi/linux/ethtool_netlink.h         | 14 ++++++
+ net/ethtool/tsinfo.c                         | 52 +++++++++++++++++++-
+ 5 files changed, 118 insertions(+), 2 deletions(-)
 
- Documentation/netlink/specs/ethtool.yaml      | 22 ++++++++
- .../ethernet/mellanox/mlx5/counters.rst       | 11 ++++
- Documentation/networking/ethtool-netlink.rst  |  9 ++++
- .../net/ethernet/mellanox/mlx5/core/en/ptp.c  |  1 +
- .../ethernet/mellanox/mlx5/core/en_ethtool.c  |  9 ++++
- .../ethernet/mellanox/mlx5/core/en_stats.c    | 48 +++++++++++++++++
- .../ethernet/mellanox/mlx5/core/en_stats.h    |  4 ++
- .../net/ethernet/mellanox/mlx5/core/en_tx.c   |  6 ++-
- include/linux/ethtool.h                       | 28 +++++++++-
- include/uapi/linux/ethtool_netlink.h          | 25 ++++++---
- net/ethtool/tsinfo.c                          | 52 ++++++++++++++++++-
- tools/net/ynl/ethtool.py                      | 11 +++-
- 12 files changed, 215 insertions(+), 11 deletions(-)
-
+diff --git a/Documentation/netlink/specs/ethtool.yaml b/Documentation/netlink/specs/ethtool.yaml
+index 197208f419dc..f5aa1e7f3383 100644
+--- a/Documentation/netlink/specs/ethtool.yaml
++++ b/Documentation/netlink/specs/ethtool.yaml
+@@ -559,6 +559,18 @@ attribute-sets:
+       -
+         name: tx-lpi-timer
+         type: u32
++  -
++    name: ts-stat
++    attributes:
++      -
++        name: tx-pkts
++        type: uint
++      -
++        name: tx-lost
++        type: uint
++      -
++        name: tx-err
++        type: uint
+   -
+     name: tsinfo
+     attributes:
+@@ -581,6 +593,10 @@ attribute-sets:
+       -
+         name: phc-index
+         type: u32
++      -
++        name: stats
++        type: nest
++        nested-attributes: ts-stat
+   -
+     name: cable-result
+     attributes:
+@@ -1388,6 +1404,7 @@ operations:
+             - tx-types
+             - rx-filters
+             - phc-index
++            - stats
+       dump: *tsinfo-get-op
+     -
+       name: cable-test-act
+diff --git a/Documentation/networking/ethtool-netlink.rst b/Documentation/networking/ethtool-netlink.rst
+index d583d9abf2f8..08d330b0f50f 100644
+--- a/Documentation/networking/ethtool-netlink.rst
++++ b/Documentation/networking/ethtool-netlink.rst
+@@ -1237,12 +1237,21 @@ Kernel response contents:
+   ``ETHTOOL_A_TSINFO_TX_TYPES``          bitset  supported Tx types
+   ``ETHTOOL_A_TSINFO_RX_FILTERS``        bitset  supported Rx filters
+   ``ETHTOOL_A_TSINFO_PHC_INDEX``         u32     PTP hw clock index
++  ``ETHTOOL_A_TSINFO_STATS``             nested  HW timestamping statistics
+   =====================================  ======  ==========================
+ 
+ ``ETHTOOL_A_TSINFO_PHC_INDEX`` is absent if there is no associated PHC (there
+ is no special value for this case). The bitset attributes are omitted if they
+ would be empty (no bit set).
+ 
++Additional hardware timestamping statistics response contents:
++
++  =====================================  ======  ===================================
++  ``ETHTOOL_A_TS_STAT_TX_PKTS``          u64     Packets with Tx HW timestamps
++  ``ETHTOOL_A_TS_STAT_TX_LOST``          u64     Tx HW timestamp not arrived count
++  ``ETHTOOL_A_TS_STAT_TX_ERR``           u64     HW error request Tx timestamp count
++  =====================================  ======  ===================================
++
+ CABLE_TEST
+ ==========
+ 
+diff --git a/include/linux/ethtool.h b/include/linux/ethtool.h
+index 9901e563f706..4b5ca7628700 100644
+--- a/include/linux/ethtool.h
++++ b/include/linux/ethtool.h
+@@ -480,6 +480,27 @@ struct ethtool_rmon_stats {
+ 	);
+ };
+ 
++/**
++ * struct ethtool_ts_stats - HW timestamping statistics
++ * @tx_stats: struct group for TX HW timestamping
++ *	@pkts: Number of packets successfully timestamped by the hardware.
++ *	@lost: Number of hardware timestamping requests where the timestamping
++ *		information from the hardware never arrived for submission with
++ *		the skb.
++ *	@err: Number of arbitrary timestamp generation error events that the
++ *		hardware encountered, exclusive of @lost statistics. Cases such
++ *		as resource exhaustion, unavailability, firmware errors, and
++ *		detected illogical timestamp values not submitted with the skb
++ *		are inclusive to this counter.
++ */
++struct ethtool_ts_stats {
++	struct_group(tx_stats,
++		u64 pkts;
++		u64 lost;
++		u64 err;
++	);
++};
++
+ #define ETH_MODULE_EEPROM_PAGE_LEN	128
+ #define ETH_MODULE_MAX_I2C_ADDRESS	0x7f
+ 
+@@ -755,7 +776,10 @@ struct ethtool_rxfh_param {
+  * @get_ts_info: Get the time stamping and PTP hardware clock capabilities.
+  *	It may be called with RCU, or rtnl or reference on the device.
+  *	Drivers supporting transmit time stamps in software should set this to
+- *	ethtool_op_get_ts_info().
++ *	ethtool_op_get_ts_info(). Drivers must not zero statistics which they
++ *	don't report. The stats	structure is initialized to ETHTOOL_STAT_NOT_SET
++ *	indicating driver does not report statistics.
++ * @get_ts_stats: Query the device hardware timestamping statistics.
+  * @get_module_info: Get the size and type of the eeprom contained within
+  *	a plug-in module.
+  * @get_module_eeprom: Get the eeprom information from the plug-in module
+@@ -898,6 +922,8 @@ struct ethtool_ops {
+ 				 struct ethtool_dump *, void *);
+ 	int	(*set_dump)(struct net_device *, struct ethtool_dump *);
+ 	int	(*get_ts_info)(struct net_device *, struct ethtool_ts_info *);
++	void	(*get_ts_stats)(struct net_device *dev,
++				struct ethtool_ts_stats *ts_stats);
+ 	int     (*get_module_info)(struct net_device *,
+ 				   struct ethtool_modinfo *);
+ 	int     (*get_module_eeprom)(struct net_device *,
+diff --git a/include/uapi/linux/ethtool_netlink.h b/include/uapi/linux/ethtool_netlink.h
+index 3f89074aa06c..8dfd714c2308 100644
+--- a/include/uapi/linux/ethtool_netlink.h
++++ b/include/uapi/linux/ethtool_netlink.h
+@@ -478,12 +478,26 @@ enum {
+ 	ETHTOOL_A_TSINFO_TX_TYPES,			/* bitset */
+ 	ETHTOOL_A_TSINFO_RX_FILTERS,			/* bitset */
+ 	ETHTOOL_A_TSINFO_PHC_INDEX,			/* u32 */
++	ETHTOOL_A_TSINFO_STATS,				/* nest - _A_TSINFO_STAT */
+ 
+ 	/* add new constants above here */
+ 	__ETHTOOL_A_TSINFO_CNT,
+ 	ETHTOOL_A_TSINFO_MAX = (__ETHTOOL_A_TSINFO_CNT - 1)
+ };
+ 
++enum {
++	ETHTOOL_A_TS_STAT_UNSPEC,
++
++	ETHTOOL_A_TS_STAT_TX_PKTS,			/* u64 */
++	ETHTOOL_A_TS_STAT_TX_LOST,			/* u64 */
++	ETHTOOL_A_TS_STAT_TX_ERR,			/* u64 */
++
++	/* add new constants above here */
++	__ETHTOOL_A_TS_STAT_CNT,
++	ETHTOOL_A_TS_STAT_MAX = (__ETHTOOL_A_TS_STAT_CNT - 1)
++
++};
++
+ /* PHC VCLOCKS */
+ 
+ enum {
+diff --git a/net/ethtool/tsinfo.c b/net/ethtool/tsinfo.c
+index 9daed0aab162..be2755c8d8fd 100644
+--- a/net/ethtool/tsinfo.c
++++ b/net/ethtool/tsinfo.c
+@@ -13,14 +13,18 @@ struct tsinfo_req_info {
+ struct tsinfo_reply_data {
+ 	struct ethnl_reply_data		base;
+ 	struct ethtool_ts_info		ts_info;
++	struct ethtool_ts_stats		stats;
+ };
+ 
+ #define TSINFO_REPDATA(__reply_base) \
+ 	container_of(__reply_base, struct tsinfo_reply_data, base)
+ 
++#define ETHTOOL_TS_STAT_CNT \
++	(__ETHTOOL_A_TS_STAT_CNT - (ETHTOOL_A_TS_STAT_UNSPEC + 1))
++
+ const struct nla_policy ethnl_tsinfo_get_policy[] = {
+ 	[ETHTOOL_A_TSINFO_HEADER]		=
+-		NLA_POLICY_NESTED(ethnl_header_policy),
++		NLA_POLICY_NESTED(ethnl_header_policy_stats),
+ };
+ 
+ static int tsinfo_prepare_data(const struct ethnl_req_info *req_base,
+@@ -34,6 +38,12 @@ static int tsinfo_prepare_data(const struct ethnl_req_info *req_base,
+ 	ret = ethnl_ops_begin(dev);
+ 	if (ret < 0)
+ 		return ret;
++	if (req_base->flags & ETHTOOL_FLAG_STATS &&
++	    dev->ethtool_ops->get_ts_stats) {
++		ethtool_stats_init((u64 *)&data->stats,
++				   sizeof(data->stats) / sizeof(u64));
++		dev->ethtool_ops->get_ts_stats(dev, &data->stats);
++	}
+ 	ret = __ethtool_get_ts_info(dev, &data->ts_info);
+ 	ethnl_ops_complete(dev);
+ 
+@@ -79,10 +89,47 @@ static int tsinfo_reply_size(const struct ethnl_req_info *req_base,
+ 	}
+ 	if (ts_info->phc_index >= 0)
+ 		len += nla_total_size(sizeof(u32));	/* _TSINFO_PHC_INDEX */
++	if (req_base->flags & ETHTOOL_FLAG_STATS)
++		len += nla_total_size(0) + /* _TSINFO_STATS */
++		       nla_total_size_64bit(sizeof(u64)) * ETHTOOL_TS_STAT_CNT;
+ 
+ 	return len;
+ }
+ 
++static int tsinfo_put_stat(struct sk_buff *skb, u64 val, u16 attrtype)
++{
++	if (val == ETHTOOL_STAT_NOT_SET)
++		return 0;
++	if (nla_put_uint(skb, attrtype, val))
++		return -EMSGSIZE;
++	return 0;
++}
++
++static int tsinfo_put_stats(struct sk_buff *skb,
++			    const struct ethtool_ts_stats *stats)
++{
++	struct nlattr *nest;
++
++	nest = nla_nest_start(skb, ETHTOOL_A_TSINFO_STATS);
++	if (!nest)
++		return -EMSGSIZE;
++
++	if (tsinfo_put_stat(skb, stats->tx_stats.pkts,
++			    ETHTOOL_A_TS_STAT_TX_PKTS) ||
++	    tsinfo_put_stat(skb, stats->tx_stats.lost,
++			    ETHTOOL_A_TS_STAT_TX_LOST) ||
++	    tsinfo_put_stat(skb, stats->tx_stats.err,
++			    ETHTOOL_A_TS_STAT_TX_ERR))
++		goto err_cancel;
++
++	nla_nest_end(skb, nest);
++	return 0;
++
++err_cancel:
++	nla_nest_cancel(skb, nest);
++	return -EMSGSIZE;
++}
++
+ static int tsinfo_fill_reply(struct sk_buff *skb,
+ 			     const struct ethnl_req_info *req_base,
+ 			     const struct ethnl_reply_data *reply_base)
+@@ -119,6 +166,9 @@ static int tsinfo_fill_reply(struct sk_buff *skb,
+ 	if (ts_info->phc_index >= 0 &&
+ 	    nla_put_u32(skb, ETHTOOL_A_TSINFO_PHC_INDEX, ts_info->phc_index))
+ 		return -EMSGSIZE;
++	if (req_base->flags & ETHTOOL_FLAG_STATS &&
++	    tsinfo_put_stats(skb, &data->stats))
++		return -EMSGSIZE;
+ 
+ 	return 0;
+ }
 -- 
 2.42.0
 
