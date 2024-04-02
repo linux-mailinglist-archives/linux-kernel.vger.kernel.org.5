@@ -1,189 +1,94 @@
-Return-Path: <linux-kernel+bounces-128812-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-128813-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id A6C86895FE0
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 00:58:56 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8ED7F895FE2
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 01:03:55 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 59F09282977
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 22:58:55 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 45CAB1F2409C
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 23:03:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4631A3DB9A;
-	Tue,  2 Apr 2024 22:58:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="XIxUAIsf"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.12])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7C3433B193;
+	Tue,  2 Apr 2024 23:03:47 +0000 (UTC)
+Received: from mail-pg1-f170.google.com (mail-pg1-f170.google.com [209.85.215.170])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AFB4045019;
-	Tue,  2 Apr 2024 22:58:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.12
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B539E2260B;
+	Tue,  2 Apr 2024 23:03:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712098724; cv=none; b=VNA99uRmaIKNYuA5rqLs3wQh7rzXzjLRiYOi19pWVy9wSuqnXyTQ/+gCdoLaB49Whj+wOCKFCUYdQzS31d0efDQZW+iOX0sX93JJ+Bu+Px4aIV17GFMcqd6vR+3ZJvBlRbdunkyug+oZ4B+tSv5bZBySx4jw2CMg/72HmabdcAw=
+	t=1712099027; cv=none; b=NdJbh4bhYTUWm5MqSUPlRQI8tA3rCp6BapuyulItaRtsQhpfdsgY5m4/fZeWH7V46nw9LnUXOfGdXUvW0R/fpP8vtQAxjR1ocOogmeEhNeUNAPs0L0Qu25wSjs3ENKZ1er8gjFd5tVsrauUEw4eSRFrlCB/oS6fduahczgZmank=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712098724; c=relaxed/simple;
-	bh=n9PG5Gd9QCdKP+TIsy1Z2jPRkRgvC7X2SZe2L3r5+MM=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=f/CWpOr0L5hsGQxSZ6cFk80kqj8jJ32l2h7VsDf9yREDBhB0VUrYJclsUV/blmHxCWcOzCl/VbFOdxclX2XM3oTinPPplhmqyvggbqEVV+GFvUE2Ch+KbVBGW/Gn2L6x2ov0yi7tiAwNI0+rrXBoWAKz34nGx6+4ZkaOpeokXXI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=XIxUAIsf; arc=none smtp.client-ip=198.175.65.12
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1712098723; x=1743634723;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=n9PG5Gd9QCdKP+TIsy1Z2jPRkRgvC7X2SZe2L3r5+MM=;
-  b=XIxUAIsfwatXWsk4GUiREKxtgYU1ZlWAI+Ot0B3xiZSnfncipP0Le+jI
-   WJihhgwX9UUFNgnayNk1CqGx5ncImsQks1bY3gYo1GdYrxJmrbs8R3xm9
-   jhUmbmgV5cEg7oMzSbaFxpK03bl1Yov3paPYuKyWWZk9fpdTqroKbSean
-   GSyWbgOAYO2aHiAsb1u/VN/LtCn5SqK2h9WXhQYIniKAh3bx9BMYEryN8
-   kDg83tp48ZvCtsVSUQTMfZ8YE0P62Xhvpi+QnPUsxYUfPrU2ZtF/mMbkA
-   F0gUShIPh5vHYMkPnsdTOf2X8Tolwahh2/QMB0pLcz7GWvUx9q5fsGoF0
-   Q==;
-X-CSE-ConnectionGUID: flQpB5klTSaYsqDzPd/27g==
-X-CSE-MsgGUID: wHs1siJORuCL/0hwUmY5gw==
-X-IronPort-AV: E=McAfee;i="6600,9927,11032"; a="18747114"
-X-IronPort-AV: E=Sophos;i="6.07,176,1708416000"; 
-   d="scan'208";a="18747114"
-Received: from orviesa004.jf.intel.com ([10.64.159.144])
-  by orvoesa104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Apr 2024 15:58:42 -0700
-X-CSE-ConnectionGUID: G+hY9GcpQa2do2OYHO31bA==
-X-CSE-MsgGUID: yZLG52nDTMerl9bXyvsizQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,176,1708416000"; 
-   d="scan'208";a="22978988"
-Received: from ls.sc.intel.com (HELO localhost) ([172.25.112.31])
-  by orviesa004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Apr 2024 15:58:41 -0700
-Date: Tue, 2 Apr 2024 15:58:40 -0700
-From: Isaku Yamahata <isaku.yamahata@intel.com>
-To: Michael Roth <michael.roth@amd.com>
-Cc: Paolo Bonzini <pbonzini@redhat.com>, kvm@vger.kernel.org,
-	linux-coco@lists.linux.dev, linux-mm@kvack.org,
-	linux-crypto@vger.kernel.org, x86@kernel.org,
-	linux-kernel@vger.kernel.org, tglx@linutronix.de, mingo@redhat.com,
-	jroedel@suse.de, thomas.lendacky@amd.com, hpa@zytor.com,
-	ardb@kernel.org, seanjc@google.com, vkuznets@redhat.com,
-	jmattson@google.com, luto@kernel.org, dave.hansen@linux.intel.com,
-	slp@redhat.com, pgonda@google.com, peterz@infradead.org,
-	srinivas.pandruvada@linux.intel.com, rientjes@google.com,
-	dovmurik@linux.ibm.com, tobin@ibm.com, bp@alien8.de, vbabka@suse.cz,
-	kirill@shutemov.name, ak@linux.intel.com, tony.luck@intel.com,
-	sathyanarayanan.kuppuswamy@linux.intel.com, alpergun@google.com,
-	jarkko@kernel.org, ashish.kalra@amd.com, nikunj.dadhania@amd.com,
-	pankaj.gupta@amd.com, liam.merwick@oracle.com,
-	Brijesh Singh <brijesh.singh@amd.com>,
-	Xu Yilun <yilun.xu@linux.intel.com>,
-	Binbin Wu <binbin.wu@linux.intel.com>,
-	Xiaoyao Li <xiaoyao.li@intel.com>, isaku.yamahata@intel.com,
-	isaku.yamahata@linux.intel.com
-Subject: Re: [PATCH v12 11/29] KVM: SEV: Add KVM_SEV_SNP_LAUNCH_UPDATE command
-Message-ID: <20240402225840.GB2444378@ls.amr.corp.intel.com>
-References: <20240329225835.400662-1-michael.roth@amd.com>
- <20240329225835.400662-12-michael.roth@amd.com>
- <8c3685a6-833c-4b3c-83f4-c0bd78bba36e@redhat.com>
- <20240401222229.qpnpozdsr6b2sntk@amd.com>
+	s=arc-20240116; t=1712099027; c=relaxed/simple;
+	bh=ScF6QNSnuOKd9KNJpYsFm03BlNSwOxnA/QZp3srCbNA=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=ZhcQOd9aKXlyahk8fM2/6PkFXO38RDdRhjlb5AT9lktcNywQosq35A65CZlsGGNzKRRrC60Gr4Qd7tv5J2fN25+wNRy3SeIlDjQjBD1smpr6/aTj8cHfREX1J6JaYJTI1XJBO/C0c3dc32WRWKl2BGIJ4lPu8R5PQEJ8vhRiknM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.215.170
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pg1-f170.google.com with SMTP id 41be03b00d2f7-5d3912c9a83so3412645a12.3;
+        Tue, 02 Apr 2024 16:03:45 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712099025; x=1712703825;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=wzCXitGPhuYyMfQTaMVMsMslYOPk+D4W9QEmIyDGsKY=;
+        b=rUqSKQZ82jNZsKTk4fJTo3FaDs0pAVwkELurCTPqaGvPP4MhjjwpCyEl6A5w/+unRA
+         mmRU055Ng3XnQ283vPUrGDjraTr1TmYgC1U+62WifYbH1CfBj4P7QlMcpXyX3qzqQjT8
+         YboI6G4hEMXy9sFO1GHXKiE6OYrFCZI7EAl498keeeHKK4jMz51Kvs+XON0ZZov/pZaa
+         jqty5oEYk1ydfky97ed7eI/de5XAeEnBMwTh6Ew8SgAenUJpLCamajAPEs2x+ZC+qwXn
+         hZzT50ngEoZ5NlXC+oFPKf0jB7R7pODstSGVRFeHDY5sd2kAZR4DJ38l1qe64XzIeoOm
+         BiCA==
+X-Forwarded-Encrypted: i=1; AJvYcCU31/0iRnq7MORXYRBIeR+sKCDV3qhSCG3bfU3IGRlwG4iM05tfHmeEWsplm5tkUrdDPP/ESdiSebNABX+orQ6VGDh9ryvmA/JgoTKbRYyGixIpM3sd4DMkRmM+1xD0oNwvd5Ap3fNJVhySZbKmsQ==
+X-Gm-Message-State: AOJu0Yxqx3YwKu2NmUU3sYU21YlPSZfTh5G1er84xER7aUrLuaZLGXMO
+	FQTkhsS8PwGmyT8uRsxutx8wjijok0TES9ZT+H2UsXt0+SxOkMGDtTHGnwNCJmmj9O7FduZ42OO
+	Md6GNFoEBoC8YVDoCh+70reaFlAM=
+X-Google-Smtp-Source: AGHT+IGszTCneZu4ykuvLxJsvsUgt2mSghjdJCooBB86zYzoye45jsKqEZ1uuYbwuK8XVNcTAPmAZ5SB1MvmjwiiMz4=
+X-Received: by 2002:a17:90b:4b10:b0:2a2:672f:ef6d with SMTP id
+ lx16-20020a17090b4b1000b002a2672fef6dmr921013pjb.49.1712099024988; Tue, 02
+ Apr 2024 16:03:44 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20240401222229.qpnpozdsr6b2sntk@amd.com>
+References: <20240329215812.537846-1-namhyung@kernel.org> <20240329215812.537846-4-namhyung@kernel.org>
+ <ZgyBwTWv8OZlbl9m@x1> <ZgyCkETBtsTX3tA8@x1>
+In-Reply-To: <ZgyCkETBtsTX3tA8@x1>
+From: Namhyung Kim <namhyung@kernel.org>
+Date: Tue, 2 Apr 2024 16:03:33 -0700
+Message-ID: <CAM9d7cgyeaeTPyw5fZjX2OsVrGqv-VrqpU_RPgUu8yWN+qTDsg@mail.gmail.com>
+Subject: Re: [PATCH v2 3/5] perf annotate: Split out util/disasm.c
+To: Arnaldo Carvalho de Melo <acme@kernel.org>
+Cc: Ian Rogers <irogers@google.com>, Kan Liang <kan.liang@linux.intel.com>, 
+	Jiri Olsa <jolsa@kernel.org>, Adrian Hunter <adrian.hunter@intel.com>, 
+	Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@kernel.org>, 
+	LKML <linux-kernel@vger.kernel.org>, linux-perf-users@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Mon, Apr 01, 2024 at 05:22:29PM -0500,
-Michael Roth <michael.roth@amd.com> wrote:
+On Tue, Apr 2, 2024 at 3:11=E2=80=AFPM Arnaldo Carvalho de Melo <acme@kerne=
+l.org> wrote:
+>
+> On Tue, Apr 02, 2024 at 07:08:04PM -0300, Arnaldo Carvalho de Melo wrote:
+> > On Fri, Mar 29, 2024 at 02:58:10PM -0700, Namhyung Kim wrote:
+> > > The util/annotate.c code has both disassembly and sample annotation
+> > > related codes.  Factor out the disasm part so that it can be handled
+> > > more easily.
+> > >
+> > > No functional changes intended.
+> > >
+> >
+> > Unsure if here, will check and fix later, detected with:
+> >
+> >   make -C tools/perf build-test'
+>
+> did it, added the missing env.h header to disasm.c
 
-> On Sat, Mar 30, 2024 at 09:31:40PM +0100, Paolo Bonzini wrote:
-> > On 3/29/24 23:58, Michael Roth wrote:
-> 
-> Cc'ing some more TDX folks.
-> 
-> > > +	memslot = gfn_to_memslot(kvm, params.gfn_start);
-> > > +	if (!kvm_slot_can_be_private(memslot)) {
-> > > +		ret = -EINVAL;
-> > > +		goto out;
-> > > +	}
-> > > +
-> > 
-> > This can be moved to kvm_gmem_populate.
-> 
-> That does seem nicer, but I hadn't really seen that pattern for
-> kvm_gmem_get_pfn()/etc. so wasn't sure if that was by design or not. I
-> suppose in those cases the memslot is already available at the main
-> KVM page-fault call-sites so maybe it was just unecessary to do the
-> lookup internally there.
-> 
-> > 
-> > > +	populate_args.src = u64_to_user_ptr(params.uaddr);
-> > 
-> > This is not used if !do_memcpy, and in fact src is redundant with do_memcpy.
-> > Overall the arguments can be "kvm, gfn, src, npages, post_populate, opaque"
-> > which are relatively few and do not need the struct.
-> 
-> This was actually a consideration for TDX that was discussed during the
-> "Finalizing internal guest_memfd APIs for SNP/TDX" PUCK call. In that
-> case, they have a TDH_MEM_PAGE_ADD seamcall that takes @src and encrypts
-> it, loads it into the destination page, and then maps it into SecureEPT
-> through a single call. So in that particular case, @src would be
-> initialized, but the memcpy() would be unecessary.
-> 
-> It's not actually clear TDX plans to use this interface. In v19 they still
-> used a KVM MMU hook (set_private_spte) that gets triggered through a call
-> to KVM_MAP_MEMORY->kvm_mmu_map_tdp_page() prior to starting the guest. But
-> more recent discussion[1] suggests that KVM_MAP_MEMORY->kvm_mmu_map_tdp_page()
-> would now only be used to create upper levels of SecureEPT, and the
-> actual mapping/encrypting of the leaf page would be handled by a
-> separate TDX-specific interface.
-
-I think TDX can use it with slight change. Pass vcpu instead of KVM, page pin
-down and mmu_lock.  TDX requires non-leaf Secure page tables to be populated
-before adding a leaf.  Maybe with the assumption that vcpu doesn't run, GFN->PFN
-relation is stable so that mmu_lock isn't needed? What about punch hole?
-
-The flow would be something like as follows.
-
-- lock slots_lock
-
-- kvm_gmem_populate(vcpu)
-  - pin down source page instead of do_memcopy.
-  - get pfn with __kvm_gmem_get_pfn()
-
-  - read lock mmu_lock
-  - in the post_populate callback
-    - lookup tdp mmu page table to check if the table is populated.
-      lookup only version of kvm_tdp_mmu_map().
-      We need vcpu instead of kvm.
-    - TDH_MEM_PAGE_ADD
-  - read unlock mmu_lock
-
-- unlock slots_lock
-
-Thanks,
-
-> With that model, the potential for using kvm_gmem_populate() seemed
-> plausible to I was trying to make it immediately usable for that
-> purpose. But maybe the TDX folks can confirm whether this would be
-> usable for them or not. (kvm_gmem_populate was introduced here[2] for
-> reference/background)
-> 
-> -Mike
-> 
-> [1] https://lore.kernel.org/kvm/20240319155349.GE1645738@ls.amr.corp.intel.com/T/#m8580d8e39476be565534d6ff5f5afa295fe8d4f7
-> [2] https://lore.kernel.org/kvm/20240329212444.395559-3-michael.roth@amd.com/T/#m3aeba660fcc991602820d3703b1265722b871025)
-> 
-> 
-> > 
-> > I'll do that when posting the next version of the patches in kvm-coco-queue.
-> > 
-> > Paolo
-> > 
-> 
-
--- 
-Isaku Yamahata <isaku.yamahata@intel.com>
+Thanks a lot!
+Namhyung
 
