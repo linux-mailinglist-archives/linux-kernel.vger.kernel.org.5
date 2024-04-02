@@ -1,213 +1,688 @@
-Return-Path: <linux-kernel+bounces-127591-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-127592-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0218C894E14
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 10:58:31 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 77CA7894E1A
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 10:59:29 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6EF431F23687
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 08:58:30 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 03481283E8F
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 08:59:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E0E7153815;
-	Tue,  2 Apr 2024 08:58:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8932256444;
+	Tue,  2 Apr 2024 08:59:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="Yb1g7Sly"
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=denx.de header.i=@denx.de header.b="g27EmfI7"
+Received: from phobos.denx.de (phobos.denx.de [85.214.62.61])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4B5823D544
-	for <linux-kernel@vger.kernel.org>; Tue,  2 Apr 2024 08:58:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.158.5
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BD8CA4778E;
+	Tue,  2 Apr 2024 08:59:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=85.214.62.61
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712048306; cv=none; b=AWR9MQsaCA0rgGLhaLc2sAMQhVadwMMK1CGDMWFpjH+Gc58tkGP9z1bP8DtXzMiy7g61zkPmcOtgiJkoQCuPP6lJRWeIzDFQrsZijCFkXMNkAbH0bElcqrHUY76W8im4tOEwluahJvMmv0UHqUbabXcxgxNCqhHfu+WAWoCVHkQ=
+	t=1712048355; cv=none; b=SyLMLOd0GwQduwMHRJGcAylC5+0wPylNykkx9s/kievHx1vmLTumk/WBrc08sqchuDhPtObHITavYW3mybXI8zJNHQs4uJnF50MA+xyOx0HuY1BrRovFuT0oXOZUQxVjKsevmXwnpzona0cI+NvSrMu9gSMG9LALBXY6h40gTmA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712048306; c=relaxed/simple;
-	bh=o1gq+NXOPOISE9vCvWrjHc8SwRXA4CCcrp26JlijL8M=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=cRkKZdSzArSaJo8cz+Bn8kFfVioD0eDPA83pGzORC2ImNTTF+HyjbhFEyCHzlr4QK6YzregUW0j1ag5noqKVVkt1Qg1WhZXvYSdiLfGnvcisl3VsVBbnl38dehWmyx59k4zsYlvKC+VfbQKSZhTGZAWONWnxNPNIgFflb4F+TUQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=Yb1g7Sly; arc=none smtp.client-ip=148.163.158.5
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0356516.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 4328vnw5010477;
-	Tue, 2 Apr 2024 08:58:07 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=vjeLiKB25shTPfBbKnNL5XlTVHkDE3ktnIcrN/G3DQc=;
- b=Yb1g7SlyVxG9WmSOXEYHfKwh/e/jHhoLJbK6RVhMAC/GqJQWvH7kK/HDYI3j3hGbcYZI
- GsgAYw/O7A7AxI3QMmwHthr9A17lsPPgN+tbztD4QTOuL4y7o6Ltadnlw4AbpKvkFSiO
- uVR/p+VkYcVs51EZUkU+6vEkk06hchNIebAIz5ufzcwa+nEdkrP5BrIuFLBn1/wPlgM2
- 3p5VkK34jqAawDlsdr3LBGiFkosP2LIwRt1xiW5P1a7dhL9FjWWbqja6cv89xX1uy4Xe
- icoNFiO/2mndE6TQTws/+3mmpiTO2gxEcK3sp9AoaF7hWxuxcvkFmmh9jhLEYfel0l9y eA== 
-Received: from pps.reinject (localhost [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3x8eyag01n-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 02 Apr 2024 08:58:07 +0000
-Received: from m0356516.ppops.net (m0356516.ppops.net [127.0.0.1])
-	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 4328w6e5010629;
-	Tue, 2 Apr 2024 08:58:06 GMT
-Received: from ppma22.wdc07v.mail.ibm.com (5c.69.3da9.ip4.static.sl-reverse.com [169.61.105.92])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3x8eyag01g-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 02 Apr 2024 08:58:06 +0000
-Received: from pps.filterd (ppma22.wdc07v.mail.ibm.com [127.0.0.1])
-	by ppma22.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 43275IAv027165;
-	Tue, 2 Apr 2024 08:58:05 GMT
-Received: from smtprelay05.wdc07v.mail.ibm.com ([172.16.1.72])
-	by ppma22.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3x6wf05mfw-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 02 Apr 2024 08:58:05 +0000
-Received: from smtpav02.dal12v.mail.ibm.com (smtpav02.dal12v.mail.ibm.com [10.241.53.101])
-	by smtprelay05.wdc07v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 4328w3Di23855838
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Tue, 2 Apr 2024 08:58:05 GMT
-Received: from smtpav02.dal12v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id DE6A258066;
-	Tue,  2 Apr 2024 08:58:02 +0000 (GMT)
-Received: from smtpav02.dal12v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id BDC5758060;
-	Tue,  2 Apr 2024 08:57:58 +0000 (GMT)
-Received: from [9.171.24.250] (unknown [9.171.24.250])
-	by smtpav02.dal12v.mail.ibm.com (Postfix) with ESMTP;
-	Tue,  2 Apr 2024 08:57:58 +0000 (GMT)
-Message-ID: <3b411431-1a04-4ac4-a6ae-56dd188da0f9@linux.ibm.com>
-Date: Tue, 2 Apr 2024 14:27:57 +0530
+	s=arc-20240116; t=1712048355; c=relaxed/simple;
+	bh=1T8CAulg/NSn0U3zfpC6VwlnMWzGnZsptw7ZcLLR6ug=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=g62GgAfuA0UByCQ9YVo7Vw95TbOIEiBsuUB6mgCjgri2jXxRzeKVVng0ASNM9L0BEjIVMWZN/WOhbLvxCwvvGmYG1LxaK0n9VYQW6gAbe4qEzc9ZxQl3iRZeN1taFYF9EbHu9Ln1jSTHJ1xHFW4vF/nj6JDYZNpwil6fWETIpUg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=denx.de; spf=pass smtp.mailfrom=denx.de; dkim=pass (2048-bit key) header.d=denx.de header.i=@denx.de header.b=g27EmfI7; arc=none smtp.client-ip=85.214.62.61
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=denx.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=denx.de
+Received: from localhost.localdomain (85-222-111-42.dynamic.chello.pl [85.222.111.42])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
+	(No client certificate requested)
+	(Authenticated sender: lukma@denx.de)
+	by phobos.denx.de (Postfix) with ESMTPSA id 9DEF1880F4;
+	Tue,  2 Apr 2024 10:59:08 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=denx.de;
+	s=phobos-20191101; t=1712048349;
+	bh=o2uB/ZufpOdMOxwOdVbtq/g7Ic/ZE3BDOw+JAXCbU8k=;
+	h=From:To:Cc:Subject:Date:From;
+	b=g27EmfI7DZMbvFews7l959TeuUN3WFvgnSg0fWVXDa0sq36/vXDp31gQ5VcCcJNoP
+	 ut8uq6XJygTaG3nTamG0i7/3ikpoAwApbtx+bJ6RxZ23XFfDf7f9wYar/728TUkmxg
+	 8xgvAbfG71rvyTIP0xlSgCdZkBBlkTncqmTL1QnWhVAooRA86OsDyv5LHP6KJAPQE6
+	 PAMs15jULglyeaZ/mFcs2uvMP5B28HQS/hdNUz+6bi0NYfKfV7GbaFtKDsKGcq7brk
+	 PeZZvxJCyQo/QjKkCMt9w8wDhCm3KyIuKhPobgRjwRH5les2ztFZqFWuIJ7wR0JY2U
+	 Nc+QrqvF/GJ8g==
+From: Lukasz Majewski <lukma@denx.de>
+To: netdev@vger.kernel.org
+Cc: Andrew Lunn <andrew@lunn.ch>,
+	Eric Dumazet <edumazet@google.com>,
+	Vladimir Oltean <olteanv@gmail.com>,
+	"David S. Miller" <davem@davemloft.net>,
+	Jakub Kicinski <kuba@kernel.org>,
+	Oleksij Rempel <o.rempel@pengutronix.de>,
+	Tristram.Ha@microchip.com,
+	Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+	Paolo Abeni <pabeni@redhat.com>,
+	Ravi Gunasekaran <r-gunasekaran@ti.com>,
+	Simon Horman <horms@kernel.org>,
+	Nikita Zhandarovich <n.zhandarovich@fintech.ru>,
+	Murali Karicheri <m-karicheri2@ti.com>,
+	Jiri Pirko <jiri@resnulli.us>,
+	Dan Carpenter <dan.carpenter@linaro.org>,
+	Ziyang Xuan <william.xuanziyang@huawei.com>,
+	Shigeru Yoshida <syoshida@redhat.com>,
+	linux-kernel@vger.kernel.org,
+	Lukasz Majewski <lukma@denx.de>
+Subject: [PATCH v4] net: hsr: Provide RedBox support (HSR-SAN)
+Date: Tue,  2 Apr 2024 10:58:50 +0200
+Message-Id: <20240402085850.229058-1-lukma@denx.de>
+X-Mailer: git-send-email 2.39.2
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2] sched/fair: fix initial util_avg calculation
-To: Vincent Guittot <vincent.guittot@linaro.org>
-Cc: Dawei Li <daweilics@gmail.com>, Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>, Ben Segall <bsegall@google.com>,
-        Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira
- <bristot@redhat.com>,
-        Valentin Schneider <vschneid@redhat.com>, linux-kernel@vger.kernel.org
-References: <20240315015916.21545-1-daweilics@gmail.com>
- <ZgqOEJ5sCANkkk5N@linux.ibm.com>
- <CAG5MgCq3GT=CVj7Hz8rUMfNG1c9ypVsTSDKNESHV9tY_qWSt2g@mail.gmail.com>
- <e7d5bec3-be2a-4eea-b946-7f1739b0b4d0@linux.ibm.com>
- <CAKfTPtCVQ7ooRuN-OroK90GGa2T7=HyK3kovmvJcgojvJhbwPQ@mail.gmail.com>
-Content-Language: en-US
-From: Vishal Chourasia <vishalc@linux.ibm.com>
-In-Reply-To: <CAKfTPtCVQ7ooRuN-OroK90GGa2T7=HyK3kovmvJcgojvJhbwPQ@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: KjqsdLRmrjnB0M2yj2TmkkQvMvNceNHS
-X-Proofpoint-ORIG-GUID: 9-5bqLNX5hz24agdTNLHmju4I-nBm1BH
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-04-02_03,2024-04-01_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=999 spamscore=0
- impostorscore=0 suspectscore=0 adultscore=0 lowpriorityscore=0
- phishscore=0 priorityscore=1501 mlxscore=0 bulkscore=0 malwarescore=0
- clxscore=1015 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2403210000 definitions=main-2404020063
+X-Virus-Scanned: clamav-milter 0.103.8 at phobos.denx.de
+X-Virus-Status: Clean
 
-On 02/04/24 2:19 pm, Vincent Guittot wrote:
-> On Tue, 2 Apr 2024 at 10:44, Vishal Chourasia <vishalc@linux.ibm.com> wrote:
->>
->> On 02/04/24 11:17 am, Dawei Li wrote:
->>> Hi Vishal
->>>
->>> Thanks for the comment!
->>> Do you suggest using scale_load_down() in place of se_weight()?
->> scale_load_down should be better.
-> 
-> se_weight is used for computing sched_entity's pelt signal so keep
-> using it looks better but all this clearly just nitpick because that
-> doesn't make any difference
-Alright. Thank you for the clarification.
-> 
->>> It's a soft bug we should fix one way or another before what the
->>> comment mentions really happens.
->> IIUC, We should be moving towards using full load resolution
->> for all the calculations. In that case, we need not worry about scaling load at
->> all. Maybe someone could provide context here.
->>
->>> I am actually confused that we have both se_weight() and
->>> scale_load_down(), and they do the same thing.
->>>
->>> Best regards,
->>> Dawei
->>>
->>> On Mon, Apr 1, 2024 at 3:36 AM Vishal Chourasia <vishalc@linux.ibm.com> wrote:
->>>>
->>>> On Thu, Mar 14, 2024 at 06:59:16PM -0700, Dawei Li wrote:
->>>>> Change se->load.weight to se_weight(se) in the calculation for the
->>>>> initial util_avg to avoid unnecessarily inflating the util_avg by 1024
->>>>> times.
->>>>>
->>>>> The reason is that se->load.weight has the unit/scale as the scaled-up
->>>>> load, while cfs_rg->avg.load_avg has the unit/scale as the true task
->>>>> weight (as mapped directly from the task's nice/priority value). With
->>>>> CONFIG_32BIT, the scaled-up load is equal to the true task weight. With
->>>>> CONFIG_64BIT, the scaled-up load is 1024 times the true task weight.
->>>>> Thus, the current code may inflate the util_avg by 1024 times. The
->>>>> follow-up capping will not allow the util_avg value to go wild. But the
->>>>> calculation should have the correct logic.
->>>>>
->>>>> Signed-off-by: Dawei Li <daweilics@gmail.com>
->>>>> ---
->>>>> Changes in v2:
->>>>> - update the commit message
->>>>> ---
->>>>>  kernel/sched/fair.c | 5 +++--
->>>>>  1 file changed, 3 insertions(+), 2 deletions(-)
->>>>>
->>>>> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
->>>>> index a19ea290b790..5f98f639bdb9 100644
->>>>> --- a/kernel/sched/fair.c
->>>>> +++ b/kernel/sched/fair.c
->>>>> @@ -1031,7 +1031,8 @@ void init_entity_runnable_average(struct sched_entity *se)
->>>>>   * With new tasks being created, their initial util_avgs are extrapolated
->>>>>   * based on the cfs_rq's current util_avg:
->>>>>   *
->>>>> - *   util_avg = cfs_rq->util_avg / (cfs_rq->load_avg + 1) * se.load.weight
->>>>> + *   util_avg = cfs_rq->avg.util_avg / (cfs_rq->avg.load_avg + 1)
->>>>> + *           * se_weight(se)
->>>>>   *
->>>>>   * However, in many cases, the above util_avg does not give a desired
->>>>>   * value. Moreover, the sum of the util_avgs may be divergent, such
->>>>> @@ -1078,7 +1079,7 @@ void post_init_entity_util_avg(struct task_struct *p)
->>>>>
->>>>>       if (cap > 0) {
->>>>>               if (cfs_rq->avg.util_avg != 0) {
->>>>> -                     sa->util_avg  = cfs_rq->avg.util_avg * se->load.weight;
->>>>> +                     sa->util_avg  = cfs_rq->avg.util_avg * se_weight(se);
->>>> Hi,
->>>>
->>>> The comment above the declaration of se_weight function says we should be
->>>> using full load resolution and get rid of this helper.
->>>>
->>>> Should we be adding new user of the helper?
->>>>
->>>> /*
->>>>  * XXX we want to get rid of these helpers and use the full load resolution.
->>>>  */
->>>> static inline long se_weight(struct sched_entity *se)
->>>> {
->>>>         return scale_load_down(se->load.weight);
->>>> }
->>>>
->>>>
->>>>>                       sa->util_avg /= (cfs_rq->avg.load_avg + 1);
->>>>>
->>>>>                       if (sa->util_avg > cap)
->>>>> --
->>>>> 2.40.1
->>>>>
->>
+Introduce RedBox support (HSR-SAN to be more precise) for HSR networks.
+Following traffic reduction optimizations have been implemented:
+- Do not send HSR supervisory frames to Port C (interlink)
+- Do not forward to HSR ring frames addressed to Port C
+- Do not forward to Port C frames from HSR ring
+- Do not send duplicate HSR frame to HSR ring when destination is Port C
+
+The corresponding patch to modify iptable2 sources has already been sent:
+https://lore.kernel.org/netdev/20240308145729.490863-1-lukma@denx.de/T/
+
+Testing procedure:
+------------------
+The EVB-KSZ9477 has been used for testing on net-next branch
+(SHA1: 5fc68320c1fb3c7d456ddcae0b4757326a043e6f).
+
+Ports 4/5 were used for SW managed HSR (hsr1) as first hsr0 for ports 1/2
+(with HW offloading for ksz9477) was created. Port 3 has been used as
+interlink port (single USB-ETH dongle).
+
+Configuration - RedBox (EVB-KSZ9477):
+if link set lan1 down;ip link set lan2 down
+ip link add name hsr0 type hsr slave1 lan1 slave2 lan2 supervision 45 version 1
+ip link add name hsr1 type hsr slave1 lan4 slave2 lan5 interlink lan3 supervision 45 version 1
+ip link set lan4 up;ip link set lan5 up
+ip link set lan3 up
+ip addr add 192.168.0.11/24 dev hsr1
+ip link set hsr1 up
+
+Configuration - DAN-H (EVB-KSZ9477):
+
+ip link set lan1 down;ip link set lan2 down
+ip link add name hsr0 type hsr slave1 lan1 slave2 lan2 supervision 45 version 1
+ip link add name hsr1 type hsr slave1 lan4 slave2 lan5 supervision 45 version 1
+ip link set lan4 up;ip link set lan5 up
+ip addr add 192.168.0.12/24 dev hsr1
+ip link set hsr1 up
+
+This approach uses only SW based HSR devices (hsr1).
+
+--------------          -----------------       ------------
+DAN-H  Port5 | <------> | Port5         |       |
+       Port4 | <------> | Port4   Port3 | <---> | PC
+             |          | (RedBox)      |       | (USB-ETH)
+EVB-KSZ9477  |          | EVB-KSZ9477   |       |
+--------------          -----------------       ------------
+
+Signed-off-by: Lukasz Majewski <lukma@denx.de>
+
+---
+Changes for v2:
+
+- Add deleting of HSR_PT_INTERLINK node to hsr_del_ports()
+- Rewrite handle_std_frame() to awoid code duplication
+- Fix reverse christmas tree in hsr_prune_proxy_nodes() as well as
+  remove stale node indication as interlink doesn't need this detection
+  (only check if node is inactive for more than HSR_PROXY_NODE_FORGET_TIME
+  is required)
+- Rewrite commit message
+
+Changes for v3:
+
+- Modify frame passed Port C (Interlink) to have RedBox's source address (SA)
+  This fixes issue with connecting L2 switch to Interlink Port as switches
+  drop frames with SA other than one registered in their (internal) routing
+  tables.
+
+- Do not forward to port C (Interlink) frames from nodes A and B if DA is
+  in NodeTable.
+
+- Fix problem with ProxyNodeTable being pollued by nodes already registered
+  in HSR ring.
+
+- Prevent from sending frames to HSR ring when destination addresses (DA)
+  are in ProxyNodeTable
+
+Changes for v4:
+
+- Replace memcpy() with dedicated ether_addr_copy() function
+
+- Update commit message description to replace ifconfig with ip command
+  usage
+---
+ include/uapi/linux/if_link.h |  1 +
+ net/hsr/hsr_device.c         | 36 ++++++++++++++-
+ net/hsr/hsr_device.h         |  4 +-
+ net/hsr/hsr_forward.c        | 85 ++++++++++++++++++++++++++++++++----
+ net/hsr/hsr_framereg.c       | 52 ++++++++++++++++++++++
+ net/hsr/hsr_framereg.h       |  6 +++
+ net/hsr/hsr_main.h           |  7 +++
+ net/hsr/hsr_netlink.c        | 29 ++++++++++--
+ net/hsr/hsr_slave.c          |  1 +
+ 9 files changed, 205 insertions(+), 16 deletions(-)
+
+diff --git a/include/uapi/linux/if_link.h b/include/uapi/linux/if_link.h
+index ffa637b38c93..e9f10860ec8e 100644
+--- a/include/uapi/linux/if_link.h
++++ b/include/uapi/linux/if_link.h
+@@ -1771,6 +1771,7 @@ enum {
+ 	IFLA_HSR_PROTOCOL,		/* Indicate different protocol than
+ 					 * HSR. For example PRP.
+ 					 */
++	IFLA_HSR_INTERLINK,		/* HSR interlink network device */
+ 	__IFLA_HSR_MAX,
+ };
+ 
+diff --git a/net/hsr/hsr_device.c b/net/hsr/hsr_device.c
+index e9d45133d641..05d484b9cea4 100644
+--- a/net/hsr/hsr_device.c
++++ b/net/hsr/hsr_device.c
+@@ -146,6 +146,9 @@ static int hsr_dev_open(struct net_device *dev)
+ 		case HSR_PT_SLAVE_B:
+ 			designation = "Slave B";
+ 			break;
++		case HSR_PT_INTERLINK:
++			designation = "Interlink";
++			break;
+ 		default:
+ 			designation = "Unknown";
+ 		}
+@@ -285,6 +288,7 @@ static void send_hsr_supervision_frame(struct hsr_port *master,
+ 	struct hsr_priv *hsr = master->hsr;
+ 	__u8 type = HSR_TLV_LIFE_CHECK;
+ 	struct hsr_sup_payload *hsr_sp;
++	struct hsr_sup_tlv *hsr_stlv;
+ 	struct hsr_sup_tag *hsr_stag;
+ 	struct sk_buff *skb;
+ 
+@@ -324,6 +328,16 @@ static void send_hsr_supervision_frame(struct hsr_port *master,
+ 	hsr_sp = skb_put(skb, sizeof(struct hsr_sup_payload));
+ 	ether_addr_copy(hsr_sp->macaddress_A, master->dev->dev_addr);
+ 
++	if (hsr->redbox) {
++		hsr_stlv = skb_put(skb, sizeof(struct hsr_sup_tlv));
++		hsr_stlv->HSR_TLV_type = PRP_TLV_REDBOX_MAC;
++		hsr_stlv->HSR_TLV_length = sizeof(struct hsr_sup_payload);
++
++		/* Payload: MacAddressRedBox */
++		hsr_sp = skb_put(skb, sizeof(struct hsr_sup_payload));
++		ether_addr_copy(hsr_sp->macaddress_A, hsr->macaddress_redbox);
++	}
++
+ 	if (skb_put_padto(skb, ETH_ZLEN)) {
+ 		spin_unlock_bh(&hsr->seqnr_lock);
+ 		return;
+@@ -408,6 +422,10 @@ void hsr_del_ports(struct hsr_priv *hsr)
+ 	port = hsr_port_get_hsr(hsr, HSR_PT_MASTER);
+ 	if (port)
+ 		hsr_del_port(port);
++
++	port = hsr_port_get_hsr(hsr, HSR_PT_INTERLINK);
++	if (port)
++		hsr_del_port(port);
+ }
+ 
+ static void hsr_set_rx_mode(struct net_device *dev)
+@@ -534,8 +552,8 @@ static const unsigned char def_multicast_addr[ETH_ALEN] __aligned(2) = {
+ };
+ 
+ int hsr_dev_finalize(struct net_device *hsr_dev, struct net_device *slave[2],
+-		     unsigned char multicast_spec, u8 protocol_version,
+-		     struct netlink_ext_ack *extack)
++		     struct net_device *interlink, unsigned char multicast_spec,
++		     u8 protocol_version, struct netlink_ext_ack *extack)
+ {
+ 	bool unregister = false;
+ 	struct hsr_priv *hsr;
+@@ -544,6 +562,7 @@ int hsr_dev_finalize(struct net_device *hsr_dev, struct net_device *slave[2],
+ 	hsr = netdev_priv(hsr_dev);
+ 	INIT_LIST_HEAD(&hsr->ports);
+ 	INIT_LIST_HEAD(&hsr->node_db);
++	INIT_LIST_HEAD(&hsr->proxy_node_db);
+ 	spin_lock_init(&hsr->list_lock);
+ 
+ 	eth_hw_addr_set(hsr_dev, slave[0]->dev_addr);
+@@ -569,6 +588,7 @@ int hsr_dev_finalize(struct net_device *hsr_dev, struct net_device *slave[2],
+ 	/* Overflow soon to find bugs easier: */
+ 	hsr->sequence_nr = HSR_SEQNR_START;
+ 	hsr->sup_sequence_nr = HSR_SUP_SEQNR_START;
++	hsr->interlink_sequence_nr = HSR_SEQNR_START;
+ 
+ 	timer_setup(&hsr->announce_timer, hsr_announce, 0);
+ 	timer_setup(&hsr->prune_timer, hsr_prune_nodes, 0);
+@@ -604,6 +624,18 @@ int hsr_dev_finalize(struct net_device *hsr_dev, struct net_device *slave[2],
+ 	if (res)
+ 		goto err_unregister;
+ 
++	if (interlink) {
++		res = hsr_add_port(hsr, interlink, HSR_PT_INTERLINK, extack);
++		if (res)
++			goto err_unregister;
++
++		hsr->redbox = true;
++		ether_addr_copy(hsr->macaddress_redbox, interlink->dev_addr);
++		timer_setup(&hsr->prune_proxy_timer, hsr_prune_proxy_nodes, 0);
++		mod_timer(&hsr->prune_proxy_timer,
++			  jiffies + msecs_to_jiffies(PRUNE_PROXY_PERIOD));
++	}
++
+ 	hsr_debugfs_init(hsr, hsr_dev);
+ 	mod_timer(&hsr->prune_timer, jiffies + msecs_to_jiffies(PRUNE_PERIOD));
+ 
+diff --git a/net/hsr/hsr_device.h b/net/hsr/hsr_device.h
+index 9060c92168f9..655284095b78 100644
+--- a/net/hsr/hsr_device.h
++++ b/net/hsr/hsr_device.h
+@@ -16,8 +16,8 @@
+ void hsr_del_ports(struct hsr_priv *hsr);
+ void hsr_dev_setup(struct net_device *dev);
+ int hsr_dev_finalize(struct net_device *hsr_dev, struct net_device *slave[2],
+-		     unsigned char multicast_spec, u8 protocol_version,
+-		     struct netlink_ext_ack *extack);
++		     struct net_device *interlink, unsigned char multicast_spec,
++		     u8 protocol_version, struct netlink_ext_ack *extack);
+ void hsr_check_carrier_and_operstate(struct hsr_priv *hsr);
+ int hsr_get_max_mtu(struct hsr_priv *hsr);
+ #endif /* __HSR_DEVICE_H */
+diff --git a/net/hsr/hsr_forward.c b/net/hsr/hsr_forward.c
+index 5d68cb181695..05a61b8286ec 100644
+--- a/net/hsr/hsr_forward.c
++++ b/net/hsr/hsr_forward.c
+@@ -377,6 +377,15 @@ static int hsr_xmit(struct sk_buff *skb, struct hsr_port *port,
+ 		 */
+ 		ether_addr_copy(eth_hdr(skb)->h_source, port->dev->dev_addr);
+ 	}
++
++	/* When HSR node is used as RedBox - the frame received from HSR ring
++	 * requires source MAC address (SA) replacement to one which can be
++	 * recognized by SAN devices (otherwise, frames are dropped by switch)
++	 */
++	if (port->type == HSR_PT_INTERLINK)
++		ether_addr_copy(eth_hdr(skb)->h_source,
++				port->hsr->macaddress_redbox);
++
+ 	return dev_queue_xmit(skb);
+ }
+ 
+@@ -390,9 +399,57 @@ bool prp_drop_frame(struct hsr_frame_info *frame, struct hsr_port *port)
+ 
+ bool hsr_drop_frame(struct hsr_frame_info *frame, struct hsr_port *port)
+ {
++	struct sk_buff *skb;
++
+ 	if (port->dev->features & NETIF_F_HW_HSR_FWD)
+ 		return prp_drop_frame(frame, port);
+ 
++	/* RedBox specific frames dropping policies
++	 *
++	 * Do not send HSR supervisory frames to SAN devices
++	 */
++	if (frame->is_supervision && port->type == HSR_PT_INTERLINK)
++		return true;
++
++	/* Do not forward to other HSR port (A or B) unicast frames which
++	 * are addressed to interlink port (and are in the ProxyNodeTable).
++	 */
++	skb = frame->skb_hsr;
++	if (skb && prp_drop_frame(frame, port) &&
++	    is_unicast_ether_addr(eth_hdr(skb)->h_dest) &&
++	    hsr_is_node_in_db(&port->hsr->proxy_node_db,
++			      eth_hdr(skb)->h_dest)) {
++		return true;
++	}
++
++	/* Do not forward to port C (Interlink) frames from nodes A and B
++	 * if DA is in NodeTable.
++	 */
++	if ((frame->port_rcv->type == HSR_PT_SLAVE_A ||
++	     frame->port_rcv->type == HSR_PT_SLAVE_B) &&
++	    port->type == HSR_PT_INTERLINK) {
++		skb = frame->skb_hsr;
++		if (skb && is_unicast_ether_addr(eth_hdr(skb)->h_dest) &&
++		    hsr_is_node_in_db(&port->hsr->node_db,
++				      eth_hdr(skb)->h_dest)) {
++			return true;
++		}
++	}
++
++	/* Do not forward to port A and B unicast frames received on the
++	 * interlink port if it is addressed to one of nodes registered in
++	 * the ProxyNodeTable.
++	 */
++	if ((port->type == HSR_PT_SLAVE_A || port->type == HSR_PT_SLAVE_B) &&
++	    frame->port_rcv->type == HSR_PT_INTERLINK) {
++		skb = frame->skb_std;
++		if (skb && is_unicast_ether_addr(eth_hdr(skb)->h_dest) &&
++		    hsr_is_node_in_db(&port->hsr->proxy_node_db,
++				      eth_hdr(skb)->h_dest)) {
++			return true;
++		}
++	}
++
+ 	return false;
+ }
+ 
+@@ -448,13 +505,14 @@ static void hsr_forward_do(struct hsr_frame_info *frame)
+ 		}
+ 
+ 		/* Check if frame is to be dropped. Eg. for PRP no forward
+-		 * between ports.
++		 * between ports, or sending HSR supervision to RedBox.
+ 		 */
+ 		if (hsr->proto_ops->drop_frame &&
+ 		    hsr->proto_ops->drop_frame(frame, port))
+ 			continue;
+ 
+-		if (port->type != HSR_PT_MASTER)
++		if (port->type == HSR_PT_SLAVE_A ||
++		    port->type == HSR_PT_SLAVE_B)
+ 			skb = hsr->proto_ops->create_tagged_frame(frame, port);
+ 		else
+ 			skb = hsr->proto_ops->get_untagged_frame(frame, port);
+@@ -469,7 +527,9 @@ static void hsr_forward_do(struct hsr_frame_info *frame)
+ 			hsr_deliver_master(skb, port->dev, frame->node_src);
+ 		} else {
+ 			if (!hsr_xmit(skb, port, frame))
+-				sent = true;
++				if (port->type == HSR_PT_SLAVE_A ||
++				    port->type == HSR_PT_SLAVE_B)
++					sent = true;
+ 		}
+ 	}
+ }
+@@ -503,10 +563,12 @@ static void handle_std_frame(struct sk_buff *skb,
+ 	frame->skb_prp = NULL;
+ 	frame->skb_std = skb;
+ 
+-	if (port->type != HSR_PT_MASTER) {
++	if (port->type != HSR_PT_MASTER)
+ 		frame->is_from_san = true;
+-	} else {
+-		/* Sequence nr for the master node */
++
++	if (port->type == HSR_PT_MASTER ||
++	    port->type == HSR_PT_INTERLINK) {
++		/* Sequence nr for the master/interlink node */
+ 		lockdep_assert_held(&hsr->seqnr_lock);
+ 		frame->sequence_nr = hsr->sequence_nr;
+ 		hsr->sequence_nr++;
+@@ -564,6 +626,7 @@ static int fill_frame_info(struct hsr_frame_info *frame,
+ {
+ 	struct hsr_priv *hsr = port->hsr;
+ 	struct hsr_vlan_ethhdr *vlan_hdr;
++	struct list_head *n_db;
+ 	struct ethhdr *ethhdr;
+ 	__be16 proto;
+ 	int ret;
+@@ -574,9 +637,13 @@ static int fill_frame_info(struct hsr_frame_info *frame,
+ 
+ 	memset(frame, 0, sizeof(*frame));
+ 	frame->is_supervision = is_supervision_frame(port->hsr, skb);
+-	frame->node_src = hsr_get_node(port, &hsr->node_db, skb,
+-				       frame->is_supervision,
+-				       port->type);
++
++	n_db = &hsr->node_db;
++	if (port->type == HSR_PT_INTERLINK)
++		n_db = &hsr->proxy_node_db;
++
++	frame->node_src = hsr_get_node(port, n_db, skb,
++				       frame->is_supervision, port->type);
+ 	if (!frame->node_src)
+ 		return -1; /* Unknown node and !is_supervision, or no mem */
+ 
+diff --git a/net/hsr/hsr_framereg.c b/net/hsr/hsr_framereg.c
+index 26329db09210..614df9649794 100644
+--- a/net/hsr/hsr_framereg.c
++++ b/net/hsr/hsr_framereg.c
+@@ -71,6 +71,14 @@ static struct hsr_node *find_node_by_addr_A(struct list_head *node_db,
+ 	return NULL;
+ }
+ 
++/* Check if node for a given MAC address is already present in data base
++ */
++bool hsr_is_node_in_db(struct list_head *node_db,
++		       const unsigned char addr[ETH_ALEN])
++{
++	return !!find_node_by_addr_A(node_db, addr);
++}
++
+ /* Helper for device init; the self_node is used in hsr_rcv() to recognize
+  * frames from self that's been looped over the HSR ring.
+  */
+@@ -223,6 +231,15 @@ struct hsr_node *hsr_get_node(struct hsr_port *port, struct list_head *node_db,
+ 		}
+ 	}
+ 
++	/* Check if required node is not in proxy nodes table */
++	list_for_each_entry_rcu(node, &hsr->proxy_node_db, mac_list) {
++		if (ether_addr_equal(node->macaddress_A, ethhdr->h_source)) {
++			if (hsr->proto_ops->update_san_info)
++				hsr->proto_ops->update_san_info(node, is_sup);
++			return node;
++		}
++	}
++
+ 	/* Everyone may create a node entry, connected node to a HSR/PRP
+ 	 * device.
+ 	 */
+@@ -418,6 +435,10 @@ void hsr_addr_subst_dest(struct hsr_node *node_src, struct sk_buff *skb,
+ 
+ 	node_dst = find_node_by_addr_A(&port->hsr->node_db,
+ 				       eth_hdr(skb)->h_dest);
++	if (!node_dst && port->hsr->redbox)
++		node_dst = find_node_by_addr_A(&port->hsr->proxy_node_db,
++					       eth_hdr(skb)->h_dest);
++
+ 	if (!node_dst) {
+ 		if (port->hsr->prot_version != PRP_V1 && net_ratelimit())
+ 			netdev_err(skb->dev, "%s: Unknown node\n", __func__);
+@@ -561,6 +582,37 @@ void hsr_prune_nodes(struct timer_list *t)
+ 		  jiffies + msecs_to_jiffies(PRUNE_PERIOD));
+ }
+ 
++void hsr_prune_proxy_nodes(struct timer_list *t)
++{
++	struct hsr_priv *hsr = from_timer(hsr, t, prune_proxy_timer);
++	unsigned long timestamp;
++	struct hsr_node *node;
++	struct hsr_node *tmp;
++
++	spin_lock_bh(&hsr->list_lock);
++	list_for_each_entry_safe(node, tmp, &hsr->proxy_node_db, mac_list) {
++		timestamp = node->time_in[HSR_PT_INTERLINK];
++
++		/* Prune old entries */
++		if (time_is_before_jiffies(timestamp +
++				msecs_to_jiffies(HSR_PROXY_NODE_FORGET_TIME))) {
++			hsr_nl_nodedown(hsr, node->macaddress_A);
++			if (!node->removed) {
++				list_del_rcu(&node->mac_list);
++				node->removed = true;
++				/* Note that we need to free this entry later: */
++				kfree_rcu(node, rcu_head);
++			}
++		}
++	}
++
++	spin_unlock_bh(&hsr->list_lock);
++
++	/* Restart timer */
++	mod_timer(&hsr->prune_proxy_timer,
++		  jiffies + msecs_to_jiffies(PRUNE_PROXY_PERIOD));
++}
++
+ void *hsr_get_next_node(struct hsr_priv *hsr, void *_pos,
+ 			unsigned char addr[ETH_ALEN])
+ {
+diff --git a/net/hsr/hsr_framereg.h b/net/hsr/hsr_framereg.h
+index b23556251d62..67456a75d8fe 100644
+--- a/net/hsr/hsr_framereg.h
++++ b/net/hsr/hsr_framereg.h
+@@ -46,6 +46,7 @@ int hsr_register_frame_out(struct hsr_port *port, struct hsr_node *node,
+ 			   u16 sequence_nr);
+ 
+ void hsr_prune_nodes(struct timer_list *t);
++void hsr_prune_proxy_nodes(struct timer_list *t);
+ 
+ int hsr_create_self_node(struct hsr_priv *hsr,
+ 			 const unsigned char addr_a[ETH_ALEN],
+@@ -63,10 +64,15 @@ int hsr_get_node_data(struct hsr_priv *hsr,
+ 		      int *if2_age,
+ 		      u16 *if2_seq);
+ 
++void hsr_handle_san_frame(bool san, enum hsr_port_type port,
++			  struct hsr_node *node);
+ void prp_handle_san_frame(bool san, enum hsr_port_type port,
+ 			  struct hsr_node *node);
+ void prp_update_san_info(struct hsr_node *node, bool is_sup);
+ 
++bool hsr_is_node_in_db(struct list_head *node_db,
++		       const unsigned char addr[ETH_ALEN]);
++
+ struct hsr_node {
+ 	struct list_head	mac_list;
+ 	/* Protect R/W access to seq_out */
+diff --git a/net/hsr/hsr_main.h b/net/hsr/hsr_main.h
+index 18e01791ad79..23850b16d1ea 100644
+--- a/net/hsr/hsr_main.h
++++ b/net/hsr/hsr_main.h
+@@ -21,6 +21,7 @@
+  */
+ #define HSR_LIFE_CHECK_INTERVAL		 2000 /* ms */
+ #define HSR_NODE_FORGET_TIME		60000 /* ms */
++#define HSR_PROXY_NODE_FORGET_TIME	60000 /* ms */
+ #define HSR_ANNOUNCE_INTERVAL		  100 /* ms */
+ #define HSR_ENTRY_FORGET_TIME		  400 /* ms */
+ 
+@@ -35,6 +36,7 @@
+  * HSR_NODE_FORGET_TIME?
+  */
+ #define PRUNE_PERIOD			 3000 /* ms */
++#define PRUNE_PROXY_PERIOD		 3000 /* ms */
+ #define HSR_TLV_EOT				   0  /* End of TLVs */
+ #define HSR_TLV_ANNOUNCE		   22
+ #define HSR_TLV_LIFE_CHECK		   23
+@@ -192,11 +194,14 @@ struct hsr_priv {
+ 	struct rcu_head		rcu_head;
+ 	struct list_head	ports;
+ 	struct list_head	node_db;	/* Known HSR nodes */
++	struct list_head	proxy_node_db;	/* RedBox HSR proxy nodes */
+ 	struct hsr_self_node	__rcu *self_node;	/* MACs of slaves */
+ 	struct timer_list	announce_timer;	/* Supervision frame dispatch */
+ 	struct timer_list	prune_timer;
++	struct timer_list	prune_proxy_timer;
+ 	int announce_count;
+ 	u16 sequence_nr;
++	u16 interlink_sequence_nr; /* Interlink port seq_nr */
+ 	u16 sup_sequence_nr;	/* For HSRv1 separate seq_nr for supervision */
+ 	enum hsr_version prot_version;	/* Indicate if HSRv0, HSRv1 or PRPv1 */
+ 	spinlock_t seqnr_lock;	/* locking for sequence_nr */
+@@ -209,6 +214,8 @@ struct hsr_priv {
+ 				 * of lan_id
+ 				 */
+ 	bool fwd_offloaded;	/* Forwarding offloaded to HW */
++	bool redbox;            /* Device supports HSR RedBox */
++	unsigned char		macaddress_redbox[ETH_ALEN];
+ 	unsigned char		sup_multicast_addr[ETH_ALEN] __aligned(sizeof(u16));
+ 				/* Align to u16 boundary to avoid unaligned access
+ 				 * in ether_addr_equal
+diff --git a/net/hsr/hsr_netlink.c b/net/hsr/hsr_netlink.c
+index 78fe40eb9f01..86eae49009cb 100644
+--- a/net/hsr/hsr_netlink.c
++++ b/net/hsr/hsr_netlink.c
+@@ -23,6 +23,7 @@ static const struct nla_policy hsr_policy[IFLA_HSR_MAX + 1] = {
+ 	[IFLA_HSR_SUPERVISION_ADDR]	= { .len = ETH_ALEN },
+ 	[IFLA_HSR_SEQ_NR]		= { .type = NLA_U16 },
+ 	[IFLA_HSR_PROTOCOL]		= { .type = NLA_U8 },
++	[IFLA_HSR_INTERLINK]		= { .type = NLA_U32 },
+ };
+ 
+ /* Here, it seems a netdevice has already been allocated for us, and the
+@@ -35,8 +36,8 @@ static int hsr_newlink(struct net *src_net, struct net_device *dev,
+ 	enum hsr_version proto_version;
+ 	unsigned char multicast_spec;
+ 	u8 proto = HSR_PROTOCOL_HSR;
+-	struct net_device *link[2];
+ 
++	struct net_device *link[2], *interlink = NULL;
+ 	if (!data) {
+ 		NL_SET_ERR_MSG_MOD(extack, "No slave devices specified");
+ 		return -EINVAL;
+@@ -67,6 +68,20 @@ static int hsr_newlink(struct net *src_net, struct net_device *dev,
+ 		return -EINVAL;
+ 	}
+ 
++	if (data[IFLA_HSR_INTERLINK])
++		interlink = __dev_get_by_index(src_net,
++					       nla_get_u32(data[IFLA_HSR_INTERLINK]));
++
++	if (interlink && interlink == link[0]) {
++		NL_SET_ERR_MSG_MOD(extack, "Interlink and Slave1 are the same");
++		return -EINVAL;
++	}
++
++	if (interlink && interlink == link[1]) {
++		NL_SET_ERR_MSG_MOD(extack, "Interlink and Slave2 are the same");
++		return -EINVAL;
++	}
++
+ 	if (!data[IFLA_HSR_MULTICAST_SPEC])
+ 		multicast_spec = 0;
+ 	else
+@@ -96,10 +111,17 @@ static int hsr_newlink(struct net *src_net, struct net_device *dev,
+ 		}
+ 	}
+ 
+-	if (proto == HSR_PROTOCOL_PRP)
++	if (proto == HSR_PROTOCOL_PRP) {
+ 		proto_version = PRP_V1;
++		if (interlink) {
++			NL_SET_ERR_MSG_MOD(extack,
++					   "Interlink only works with HSR");
++			return -EINVAL;
++		}
++	}
+ 
+-	return hsr_dev_finalize(dev, link, multicast_spec, proto_version, extack);
++	return hsr_dev_finalize(dev, link, interlink, multicast_spec,
++				proto_version, extack);
+ }
+ 
+ static void hsr_dellink(struct net_device *dev, struct list_head *head)
+@@ -114,6 +136,7 @@ static void hsr_dellink(struct net_device *dev, struct list_head *head)
+ 
+ 	hsr_del_self_node(hsr);
+ 	hsr_del_nodes(&hsr->node_db);
++	hsr_del_nodes(&hsr->proxy_node_db);
+ 
+ 	unregister_netdevice_queue(dev, head);
+ }
+diff --git a/net/hsr/hsr_slave.c b/net/hsr/hsr_slave.c
+index 1b6457f357bd..af6cf64a00e0 100644
+--- a/net/hsr/hsr_slave.c
++++ b/net/hsr/hsr_slave.c
+@@ -55,6 +55,7 @@ static rx_handler_result_t hsr_handle_frame(struct sk_buff **pskb)
+ 	protocol = eth_hdr(skb)->h_proto;
+ 
+ 	if (!(port->dev->features & NETIF_F_HW_HSR_TAG_RM) &&
++	    port->type != HSR_PT_INTERLINK &&
+ 	    hsr->proto_ops->invalid_dan_ingress_frame &&
+ 	    hsr->proto_ops->invalid_dan_ingress_frame(protocol))
+ 		goto finish_pass;
+-- 
+2.20.1
 
 
