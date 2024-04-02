@@ -1,66 +1,107 @@
-Return-Path: <linux-kernel+bounces-128209-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-128210-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id D6DAC895792
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 16:55:23 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1139289579A
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 16:57:54 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8BFE9280F2F
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 14:55:22 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 42A711C21EEC
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 14:57:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E900E12B16E;
-	Tue,  2 Apr 2024 14:55:16 +0000 (UTC)
-Received: from www262.sakura.ne.jp (www262.sakura.ne.jp [202.181.97.72])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A549E12BF1E;
+	Tue,  2 Apr 2024 14:57:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="qtcSN0Ml";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="1uVgVveT"
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CF13E8662E
-	for <linux-kernel@vger.kernel.org>; Tue,  2 Apr 2024 14:55:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=202.181.97.72
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 715CE17BD8;
+	Tue,  2 Apr 2024 14:57:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712069716; cv=none; b=nADGc6KhzqZH8VVAtIkpDUulcGO8IBD08LqB+p6f8Y45JPLHODhGzmLHYGXcqpuzIBeCMeuvmCzaK4Lb7ocWbvLnNjUOFdmD/ifRlW0HTYJBTuoQKPv5laQ3K/f5hus3yQFDo7b+tw/73VoXMNZMQZpyZXvD8N/0NV9LknlzSnI=
+	t=1712069865; cv=none; b=fOTOoKgzc5kULlzDc7xE1MPgblE4p9DVFzDotGLK1Vvm8XFsvDlbjceY60ZDDKpB74hhCT7bu9TFuSVwYO9vHv88VPj1ewYsJWP0ZaOYAKjn20iscbqJ+a3MXuj1uDMhT5hNbtm/1FI1cdBWZ79vWPrv/1/+YBFDtHpEFoTWwGM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712069716; c=relaxed/simple;
-	bh=G/6KdXu31T1VAui/RJwqf6i/24VbdcZQazuZ9wjU2fQ=;
-	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=l4hkNkdIq0wnyg0AZumiCBQLtbQ2L4MM4R0WaYmpfAD6BmO+rikXWPSjhG49H+UeMQFFjZxX34rlzpMI8dFljBRydRKYfWCeCiAXwm8lhIGgf3tToL0tAcKEr/9cWAEkOimVG1D0bM6YU9/WcutjzH4W1oC2jA6maIlApEZmnjI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=I-love.SAKURA.ne.jp; spf=pass smtp.mailfrom=I-love.SAKURA.ne.jp; arc=none smtp.client-ip=202.181.97.72
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=I-love.SAKURA.ne.jp
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=I-love.SAKURA.ne.jp
-Received: from fsav113.sakura.ne.jp (fsav113.sakura.ne.jp [27.133.134.240])
-	by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTP id 432Et2T7078334;
-	Tue, 2 Apr 2024 23:55:02 +0900 (JST)
-	(envelope-from penguin-kernel@I-love.SAKURA.ne.jp)
-Received: from www262.sakura.ne.jp (202.181.97.72)
- by fsav113.sakura.ne.jp (F-Secure/fsigk_smtp/550/fsav113.sakura.ne.jp);
- Tue, 02 Apr 2024 23:55:02 +0900 (JST)
-X-Virus-Status: clean(F-Secure/fsigk_smtp/550/fsav113.sakura.ne.jp)
-Received: from [192.168.1.6] (M106072142033.v4.enabler.ne.jp [106.72.142.33])
-	(authenticated bits=0)
-	by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTPSA id 432Et2Qg078331
-	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NO);
-	Tue, 2 Apr 2024 23:55:02 +0900 (JST)
-	(envelope-from penguin-kernel@I-love.SAKURA.ne.jp)
-Message-ID: <578d7908-c140-460f-92c9-f2a4e85f6f6d@I-love.SAKURA.ne.jp>
-Date: Tue, 2 Apr 2024 23:54:59 +0900
+	s=arc-20240116; t=1712069865; c=relaxed/simple;
+	bh=5fZg5QWgvKLZtjYce+k9weQ/XmQqOIU56cLlpWouz1U=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=azHpFG/ufl8ADeZxwzQEIpUw6pIw+JwKmltlX/evFcPxKA6UYrL+D38ENGc76tkySIXeezPWeFRv6jNm8VhyF5YEwHE6llk6DO9EH493qsRs44bOXIStaV0SWJtqL6Wet6tbJdyOXWVsh3gca7vOVSQZMMKaDfUTfoFGGFSKjog=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=qtcSN0Ml; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=1uVgVveT; arc=none smtp.client-ip=193.142.43.55
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
+From: Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020; t=1712069862;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=NIf2A5XgT+mSuLeFeNcerJGYHIuW/buAb+x1UGGwSvc=;
+	b=qtcSN0Ml+uulz1MBPI5yX3dxO+D+BxS0GQB9loNAx+1qy8o8f6+08TJdS1yPqvCCZRS5ZL
+	Vh8IA+n+yInbBJYszYKIVGNzObdD8SnGPs2FvsvfWlsxdiLXOv4Ulevvhbpyqk83xkIR7F
+	b98/XBV2uVbowtiNEhZ/yDBbUIADwwQD0hoKEOI3UFzp3PVNZU2PTrab11N5zWR6atqf+f
+	2RDgeaAvI9zBaZc1BYZFxprWY2jeQoDC3VVYGgUrtc5IH0Fu5WaRxLYtw4yxYpgJRBxvbh
+	VjYhALIE1hnqdY51w+5f2NN3RUmP2JxlnaLswQD0HAdidlPqum0MxRI+UKNicA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020e; t=1712069862;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=NIf2A5XgT+mSuLeFeNcerJGYHIuW/buAb+x1UGGwSvc=;
+	b=1uVgVveT8jsAq2IsPas3JyTp+ZuLAZAUuFrNVw2wPOpr24nhGjd8RuBTFQ6NW+lJIHkHNI
+	EwMq2PfkSoKDYPDA==
+To: John Stultz <jstultz@google.com>, Marco Elver <elver@google.com>
+Cc: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@kernel.org>,
+ Oleg Nesterov <oleg@redhat.com>, "Eric W. Biederman"
+ <ebiederm@xmission.com>, linux-kernel@vger.kernel.org,
+ linux-kselftest@vger.kernel.org, Dmitry Vyukov <dvyukov@google.com>,
+ kasan-dev@googlegroups.com, Edward Liaw <edliaw@google.com>, Carlos Llamas
+ <cmllamas@google.com>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Subject: Re: [PATCH v6 1/2] posix-timers: Prefer delivery of signals to the
+ current thread
+In-Reply-To: <CANDhNCqBGnAr_MSBhQxWo+-8YnPPggxoVL32zVrDB+NcoKXVPQ@mail.gmail.com>
+References: <20230316123028.2890338-1-elver@google.com>
+ <CANDhNCqBGnAr_MSBhQxWo+-8YnPPggxoVL32zVrDB+NcoKXVPQ@mail.gmail.com>
+Date: Tue, 02 Apr 2024 16:57:42 +0200
+Message-ID: <87frw3dd7d.ffs@tglx>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [syzbot] [reiserfs?] INFO: task hung in deactivate_super (2)
-Content-Language: en-US
-To: syzbot <syzbot+aa7397130ec6a8c2e2d9@syzkaller.appspotmail.com>,
-        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
-References: <0000000000001ea9dc06151c9630@google.com>
-From: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
-In-Reply-To: <0000000000001ea9dc06151c9630@google.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
 
-#syz fix: fs: Block writes to mounted block devices
+On Mon, Apr 01 2024 at 13:17, John Stultz wrote:
+> Apologies for drudging up this old thread.
+> I wanted to ask if anyone had objections to including this in the -stable trees?
+>
+> After this and the follow-on patch e797203fb3ba
+> ("selftests/timers/posix_timers: Test delivery of signals across
+> threads") landed, folks testing older kernels with the latest
+> selftests started to see the new test checking for this behavior to
+> stall.  Thomas did submit an adjustment to the test here to avoid the
+> stall: https://lore.kernel.org/lkml/20230606142031.071059989@linutronix.de/,
+> but it didn't seem to land, however that would just result in the test
+> failing instead of hanging.
+
+Thanks for reminding me about this series. I completely forgot about it.
+
+> This change does seem to cherry-pick cleanly back to at least
+> stable/linux-5.10.y cleanly, so it looks simple to pull this change
+> back. But I wanted to make sure there wasn't anything subtle I was
+> missing before sending patches.
+
+This test in particular exercises new functionality/behaviour, which
+really has no business to be backported into stable just to make the
+relevant test usable on older kernels.
+
+Why would testing with latest tests against an older kernel be valid per
+se?
+
+Thanks,
+
+        tglx
 
 
