@@ -1,74 +1,74 @@
-Return-Path: <linux-kernel+bounces-127819-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-127820-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 267F6895160
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 13:05:57 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2B4DF895165
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 13:06:13 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 489881C23146
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 11:05:56 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D54811F24B53
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 11:06:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BE33F60BB6;
-	Tue,  2 Apr 2024 11:05:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B153E64CF9;
+	Tue,  2 Apr 2024 11:05:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=salutedevices.com header.i=@salutedevices.com header.b="tIGp7vPJ"
-Received: from mx1.sberdevices.ru (mx1.sberdevices.ru [37.18.73.165])
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="V3XpspGH"
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E347E5D749;
-	Tue,  2 Apr 2024 11:05:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=37.18.73.165
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4205961694;
+	Tue,  2 Apr 2024 11:05:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712055948; cv=none; b=Cpx3FOkbvjGGXcg1k3cVqr/R3nEvXSWkEA9hEHmJJFXRKiapI5x5xHQgw3duV7amp2cnH/8QP/0Ti8z6s+YSWnYdSsGSrAVXdIofJ3X5Bpl0PnmrsS/jrrJFGPYjD2R0jPV6ChQJsARUSDaTLM5jl+JMhhGxBdORHEoA23sAerw=
+	t=1712055954; cv=none; b=oR1bwONwTCi54rdavDBvqW0wJ+5K/WxFO2GI47y0JOP5zYLOzWGs6+MlEJx6cNP5QsOh5VK1ySTEeSdxZjfJCboCVwtLUHQA9WfPaGBauZBXSv0oMv+FLugpMLw/WY3xyuT9R8luhuOZWCSU2Q5h0vBPwkV/i2s7nbxbqIbUHvI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712055948; c=relaxed/simple;
-	bh=v2uqEuJRDObKVtYYtyMiEaIkp1oEemTLr7aNi2kC6JU=;
+	s=arc-20240116; t=1712055954; c=relaxed/simple;
+	bh=maViU9w6Nq35eCSuJ9xeR8E4q+7Mo7Gd2IyWeQelOXk=;
 	h=Date:From:To:CC:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=eMhPKaW0MPPFMrizTCc02S2h5N2BOOiPvFiThDHz5vXUi2p+6XKYm9k/2kP2i88pKMgr7r3V5A8bHVV8Vm6Tvp1IDpZBsiK4bQWknFzOWLtpxiWGvgvm3HfygUAzUw6KAzxXIRdBB4eaXUQFcpCQOct3jgVIfWPCPeW7NSu5H94=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=salutedevices.com; spf=pass smtp.mailfrom=salutedevices.com; dkim=pass (2048-bit key) header.d=salutedevices.com header.i=@salutedevices.com header.b=tIGp7vPJ; arc=none smtp.client-ip=37.18.73.165
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=salutedevices.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=salutedevices.com
-Received: from p-infra-ksmg-sc-msk01 (localhost [127.0.0.1])
-	by mx1.sberdevices.ru (Postfix) with ESMTP id 76DEA100008;
-	Tue,  2 Apr 2024 14:05:39 +0300 (MSK)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mx1.sberdevices.ru 76DEA100008
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=salutedevices.com;
-	s=mail; t=1712055939;
-	bh=v7d2hFvtdZK/EVVR9Oa7orKyxjG+K4OhKLmXsCLZQXk=;
-	h=Date:From:To:Subject:Message-ID:MIME-Version:Content-Type:From;
-	b=tIGp7vPJwel1NlwBlTB39JSknbgZoUwzUVDHsc+aR0+Rqqs6pm1UTXyX5X8aSijQM
-	 J//rit9HbI1rX/XyXJzpy7l+3Mgahj7cq/wHf+4aws2LMAgNQMRitjI+nqk7UqdTFb
-	 G5vagr0bWqR+AH4oE+dROxf5+cdJFwYthb46Rr8XtaNj1uLqHfcAhtk6ci1yzHbqcb
-	 Fo888Y9+vd9whKkU/q9ATTuvK+qaHmy/Eet/dMY3D8/sGsWF+p4DGV7UuiCaQZTUjQ
-	 /x5LIAtesJLeC14yjZgtHXIMeqvFext8/EDFEKl3iBmRr9LFpSPqCdH3QQpgAhkGtF
-	 ne3fS3BLRys1w==
-Received: from smtp.sberdevices.ru (p-i-exch-sc-m02.sberdevices.ru [172.16.192.103])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by mx1.sberdevices.ru (Postfix) with ESMTPS;
-	Tue,  2 Apr 2024 14:05:39 +0300 (MSK)
-Received: from localhost (100.64.160.123) by p-i-exch-sc-m02.sberdevices.ru
- (172.16.192.103) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Tue, 2 Apr
- 2024 14:05:38 +0300
-Date: Tue, 2 Apr 2024 14:05:38 +0300
-From: Dmitry Rokosov <ddrokosov@salutedevices.com>
-To: Jerome Brunet <jbrunet@baylibre.com>
-CC: <neil.armstrong@linaro.org>, <mturquette@baylibre.com>,
-	<sboyd@kernel.org>, <robh+dt@kernel.org>,
-	<krzysztof.kozlowski+dt@linaro.org>, <khilman@baylibre.com>,
-	<martin.blumenstingl@googlemail.com>, <kernel@salutedevices.com>,
-	<rockosov@gmail.com>, <linux-amlogic@lists.infradead.org>,
-	<linux-clk@vger.kernel.org>, <devicetree@vger.kernel.org>,
-	<linux-kernel@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>
-Subject: Re: [PATCH v1 6/6] clk: meson: a1: add Amlogic A1 CPU clock
- controller driver
-Message-ID: <20240402110538.ayectwxnhlu6o65d@CAB-WSD-L081021>
-References: <20240329205904.25002-1-ddrokosov@salutedevices.com>
- <20240329205904.25002-7-ddrokosov@salutedevices.com>
- <1jv850hyvm.fsf@starbuckisacylon.baylibre.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=P75g7747tIVjRGjhNv6LDU66XK/ZHcFFzl1agpc3+9m3s8rUF9p/Da7LSLm+nvT4R59PqQdR4pyAP0oDcccMOMCWTiNzH02VNOVBvXS0WaHsBDaT1shWbJrkb4c0zYzkVG4EcqgTARxGq7Y2uxxw6oclmY4bfVYPXsSOxGUnGUo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=V3XpspGH; arc=none smtp.client-ip=205.220.168.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279867.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 4329pvKM019506;
+	Tue, 2 Apr 2024 11:05:49 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	date:from:to:cc:subject:message-id:references:mime-version
+	:content-type:in-reply-to; s=qcppdkim1; bh=02KKFCEynacobuhUj1x0R
+	gS0xlhYe7MiuCfxt6p8Ol4=; b=V3XpspGHpx/rSFtezGiclTP4yZWO43ZzL7Qfb
+	8d324RRd/SpBhrac4arjI+/sfPwVOvkyr8lFwKV1BX+QK12XzMdcdDgojGs9DwKe
+	bUkGeeZ0kBk0P5dssZtDPuGdPURJ0qLjdkIvni24aPM/cHlNIHWhMZBrTUIUmMw8
+	aWkvz+rmNXV//smcLz7ZuDFK7cThetbo3ifBsOycBI+gi3d6+Ko7oYJnee/pPREf
+	XDLJu6wOZnZ5plmVnSyg85/iuTe7UkfX/KRuqcB4yAmoY0APttIuVZgKsn35m+Mb
+	XC2UxH6CRp1PKQLckzCKCe4bNrXnfWG8f0I9U5vPjCGamCwAA==
+Received: from nasanppmta02.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3x88eh96dg-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 02 Apr 2024 11:05:48 +0000 (GMT)
+Received: from nasanex01b.na.qualcomm.com (nasanex01b.na.qualcomm.com [10.46.141.250])
+	by NASANPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 432B5lF7001201
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 2 Apr 2024 11:05:47 GMT
+Received: from hu-varada-blr.qualcomm.com (10.80.80.8) by
+ nasanex01b.na.qualcomm.com (10.46.141.250) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1544.4; Tue, 2 Apr 2024 04:05:43 -0700
+Date: Tue, 2 Apr 2024 16:35:39 +0530
+From: Varadarajan Narayanan <quic_varada@quicinc.com>
+To: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+CC: <andersson@kernel.org>, <konrad.dybcio@linaro.org>,
+        <mturquette@baylibre.com>, <sboyd@kernel.org>, <robh@kernel.org>,
+        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
+        <djakov@kernel.org>, <quic_anusha@quicinc.com>,
+        <linux-arm-msm@vger.kernel.org>, <linux-clk@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-pm@vger.kernel.org>
+Subject: Re: [PATCH v6 4/6] clk: qcom: common: Add interconnect clocks support
+Message-ID: <ZgvmgyINMh2Rs7Yu@hu-varada-blr.qualcomm.com>
+References: <20240402103406.3638821-1-quic_varada@quicinc.com>
+ <20240402103406.3638821-5-quic_varada@quicinc.com>
+ <CAA8EJprP0m53B=g7jafAkfcqAQP4kE2ZvtxPXEe4s7ALjFXGSQ@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -77,533 +77,154 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Disposition: inline
-In-Reply-To: <1jv850hyvm.fsf@starbuckisacylon.baylibre.com>
-User-Agent: NeoMutt/20220415
-X-ClientProxiedBy: p-i-exch-sc-m02.sberdevices.ru (172.16.192.103) To
- p-i-exch-sc-m02.sberdevices.ru (172.16.192.103)
-X-KSMG-Rule-ID: 10
-X-KSMG-Message-Action: clean
-X-KSMG-AntiSpam-Lua-Profiles: 184530 [Apr 02 2024]
-X-KSMG-AntiSpam-Version: 6.1.0.4
-X-KSMG-AntiSpam-Envelope-From: ddrokosov@salutedevices.com
-X-KSMG-AntiSpam-Rate: 0
-X-KSMG-AntiSpam-Status: not_detected
-X-KSMG-AntiSpam-Method: none
-X-KSMG-AntiSpam-Auth: dkim=none
-X-KSMG-AntiSpam-Info: LuaCore: 14 0.3.14 5a0c43d8a1c3c0e5b0916cc02a90d4b950c01f96, {Tracking_uf_ne_domains}, {Track_E25351}, {Tracking_from_domain_doesnt_match_to}, d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;elixir.bootlin.com:7.1.1;127.0.0.199:7.1.2;smtp.sberdevices.ru:5.0.1,7.1.1;100.64.160.123:7.1.2;salutedevices.com:7.1.1, FromAlignment: s, ApMailHostAddress: 100.64.160.123
-X-MS-Exchange-Organization-SCL: -1
-X-KSMG-AntiSpam-Interceptor-Info: scan successful
-X-KSMG-AntiPhishing: Clean, bases: 2024/04/02 10:25:00
-X-KSMG-LinksScanning: Clean, bases: 2024/04/02 10:25:00
-X-KSMG-AntiVirus: Kaspersky Secure Mail Gateway, version 2.0.1.6960, bases: 2024/04/02 07:07:00 #24571916
-X-KSMG-AntiVirus-Status: Clean, skipped
+In-Reply-To: <CAA8EJprP0m53B=g7jafAkfcqAQP4kE2ZvtxPXEe4s7ALjFXGSQ@mail.gmail.com>
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nasanex01b.na.qualcomm.com (10.46.141.250)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: UJQjXE2A8GDRI9hgD7s8nizicLLdoEgH
+X-Proofpoint-ORIG-GUID: UJQjXE2A8GDRI9hgD7s8nizicLLdoEgH
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-04-02_05,2024-04-01_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0 suspectscore=0
+ clxscore=1015 lowpriorityscore=0 impostorscore=0 mlxscore=0 malwarescore=0
+ adultscore=0 bulkscore=0 mlxlogscore=844 priorityscore=1501 phishscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.19.0-2403210001
+ definitions=main-2404020080
 
-Hello Jerome,
-
-On Tue, Apr 02, 2024 at 11:35:49AM +0200, Jerome Brunet wrote:
-> 
-> On Fri 29 Mar 2024 at 23:58, Dmitry Rokosov <ddrokosov@salutedevices.com> wrote:
-> 
-> > The CPU clock controller plays a general role in the Amlogic A1 SoC
-> > family by generating CPU clocks. As an APB slave module, it offers the
-> > capability to inherit the CPU clock from two sources: the internal fixed
-> > clock known as 'cpu fixed clock' and the external input provided by the
-> > A1 PLL clock controller, referred to as 'syspll'.
+On Tue, Apr 02, 2024 at 01:48:14PM +0300, Dmitry Baryshkov wrote:
+> On Tue, 2 Apr 2024 at 13:34, Varadarajan Narayanan
+> <quic_varada@quicinc.com> wrote:
 > >
-> > It is important for the driver to handle cpu_clk rate switching
-> > effectively by transitioning to the CPU fixed clock to avoid any
-> > potential execution freezes.
+> > Unlike MSM platforms that manage NoC related clocks and scaling
+> > from RPM, IPQ SoCs dont involve RPM in managing NoC related
+> > clocks and there is no NoC scaling.
 > >
-> > Signed-off-by: Dmitry Rokosov <ddrokosov@salutedevices.com>
+> > However, there is a requirement to enable some NoC interface
+> > clocks for accessing the peripheral controllers present on
+> > these NoCs. Though exposing these as normal clocks would work,
+> > having a minimalistic interconnect driver to handle these clocks
+> > would make it consistent with other Qualcomm platforms resulting
+> > in common code paths. This is similar to msm8996-cbf's usage of
+> > icc-clk framework.
+> >
+> > Signed-off-by: Varadarajan Narayanan <quic_varada@quicinc.com>
 > > ---
-> >  drivers/clk/meson/Kconfig  |  10 ++
-> >  drivers/clk/meson/Makefile |   1 +
-> >  drivers/clk/meson/a1-cpu.c | 324 +++++++++++++++++++++++++++++++++++++
-> >  drivers/clk/meson/a1-cpu.h |  16 ++
-> >  4 files changed, 351 insertions(+)
-> >  create mode 100644 drivers/clk/meson/a1-cpu.c
-> >  create mode 100644 drivers/clk/meson/a1-cpu.h
+> > v6: first_id -> icc_first_node_id
+> >     Remove clock get so that the peripheral that uses the clock
+> >     can do the clock get
+> > v5: Split changes in common.c to separate patch
+> >     Fix error handling
+> >     Use devm_icc_clk_register instead of icc_clk_register
+> > v4: Use clk_hw instead of indices
+> >     Do icc register in qcom_cc_probe() call stream
+> >     Add icc clock info to qcom_cc_desc structure
+> > v3: Use indexed identifiers here to avoid confusion
+> >     Fix error messages and move to common.c
+> > v2: Move DTS to separate patch
+> >     Update commit log
+> >     Auto select CONFIG_INTERCONNECT & CONFIG_INTERCONNECT_CLK to fix build error
+> > ---
+> >  drivers/clk/qcom/common.c | 38 +++++++++++++++++++++++++++++++++++++-
+> >  drivers/clk/qcom/common.h |  3 +++
+> >  2 files changed, 40 insertions(+), 1 deletion(-)
 > >
-> > diff --git a/drivers/clk/meson/Kconfig b/drivers/clk/meson/Kconfig
-> > index 80c4a18c83d2..148d4495eee3 100644
-> > --- a/drivers/clk/meson/Kconfig
-> > +++ b/drivers/clk/meson/Kconfig
-> > @@ -111,6 +111,16 @@ config COMMON_CLK_AXG_AUDIO
-> >  	  Support for the audio clock controller on AmLogic A113D devices,
-> >  	  aka axg, Say Y if you want audio subsystem to work.
-> >  
-> > +config COMMON_CLK_A1_CPU
-> > +	tristate "Amlogic A1 SoC CPU controller support"
-> > +	depends on ARM64
-> > +	select COMMON_CLK_MESON_REGMAP
-> > +	select COMMON_CLK_MESON_CLKC_UTILS
-> > +	help
-> > +	  Support for the CPU clock controller on Amlogic A113L based
-> > +	  device, A1 SoC Family. Say Y if you want A1 CPU clock controller
-> > +	  to work.
-> > +
-> >  config COMMON_CLK_A1_PLL
-> >  	tristate "Amlogic A1 SoC PLL controller support"
-> >  	depends on ARM64
-> > diff --git a/drivers/clk/meson/Makefile b/drivers/clk/meson/Makefile
-> > index 4968fc7ad555..2a06eb0303d6 100644
-> > --- a/drivers/clk/meson/Makefile
-> > +++ b/drivers/clk/meson/Makefile
-> > @@ -18,6 +18,7 @@ obj-$(CONFIG_COMMON_CLK_MESON_AUDIO_RSTC) += meson-audio-rstc.o
-> >  
-> >  obj-$(CONFIG_COMMON_CLK_AXG) += axg.o axg-aoclk.o
-> >  obj-$(CONFIG_COMMON_CLK_AXG_AUDIO) += axg-audio.o
-> > +obj-$(CONFIG_COMMON_CLK_A1_CPU) += a1-cpu.o
-> >  obj-$(CONFIG_COMMON_CLK_A1_PLL) += a1-pll.o
-> >  obj-$(CONFIG_COMMON_CLK_A1_PERIPHERALS) += a1-peripherals.o
-> >  obj-$(CONFIG_COMMON_CLK_A1_AUDIO) += a1-audio.o
-> > diff --git a/drivers/clk/meson/a1-cpu.c b/drivers/clk/meson/a1-cpu.c
-> > new file mode 100644
-> > index 000000000000..5f5d8ae112e5
-> > --- /dev/null
-> > +++ b/drivers/clk/meson/a1-cpu.c
-> > @@ -0,0 +1,324 @@
-> > +// SPDX-License-Identifier: GPL-2.0+
-> > +/*
-> > + * Amlogic A1 SoC family CPU Clock Controller driver.
-> > + *
-> > + * Copyright (c) 2024, SaluteDevices. All Rights Reserved.
-> > + * Author: Dmitry Rokosov <ddrokosov@salutedevices.com>
-> > + */
-> > +
-> > +#include <linux/clk.h>
-> > +#include <linux/clk-provider.h>
-> > +#include <linux/mod_devicetable.h>
-> > +#include <linux/platform_device.h>
-> > +#include "a1-cpu.h"
-> > +#include "clk-regmap.h"
-> > +#include "meson-clkc-utils.h"
-> > +
-> > +#include <dt-bindings/clock/amlogic,a1-cpu-clkc.h>
-> > +
-> > +static u32 cpu_fsource_sel_table[] = { 0, 1, 2 };
-> > +static const struct clk_parent_data cpu_fsource_sel_parents[] = {
-> > +	{ .fw_name = "xtal" },
-> > +	{ .fw_name = "fclk_div2" },
-> > +	{ .fw_name = "fclk_div3" },
-> > +};
-> > +
-> > +static struct clk_regmap cpu_fsource_sel0 = {
-> > +	.data = &(struct clk_regmap_mux_data) {
-> > +		.offset = CPUCTRL_CLK_CTRL0,
-> > +		.mask = 0x3,
-> > +		.shift = 0,
-> > +		.table = cpu_fsource_sel_table,
-> > +	},
-> > +	.hw.init = &(struct clk_init_data) {
-> > +		.name = "cpu_fsource_sel0",
-> > +		.ops = &clk_regmap_mux_ops,
-> > +		.parent_data = cpu_fsource_sel_parents,
-> > +		.num_parents = ARRAY_SIZE(cpu_fsource_sel_parents),
-> > +		.flags = CLK_SET_RATE_PARENT,
-> > +	},
-> > +};
-> > +
-> > +static struct clk_regmap cpu_fsource_div0 = {
-> > +	.data = &(struct clk_regmap_div_data) {
-> > +		.offset = CPUCTRL_CLK_CTRL0,
-> > +		.shift = 4,
-> > +		.width = 6,
-> > +	},
-> > +	.hw.init = &(struct clk_init_data) {
-> > +		.name = "cpu_fsource_div0",
-> > +		.ops = &clk_regmap_divider_ops,
-> > +		.parent_hws = (const struct clk_hw *[]) {
-> > +			&cpu_fsource_sel0.hw
-> > +		},
-> > +		.num_parents = 1,
-> > +		.flags = CLK_SET_RATE_PARENT,
-> > +	},
-> > +};
-> > +
-> > +static struct clk_regmap cpu_fsel0 = {
-> > +	.data = &(struct clk_regmap_mux_data) {
-> > +		.offset = CPUCTRL_CLK_CTRL0,
-> > +		.mask = 0x1,
-> > +		.shift = 2,
-> > +	},
-> > +	.hw.init = &(struct clk_init_data) {
-> > +		.name = "cpu_fsel0",
-> > +		.ops = &clk_regmap_mux_ops,
-> > +		.parent_hws = (const struct clk_hw *[]) {
-> > +			&cpu_fsource_sel0.hw,
-> > +			&cpu_fsource_div0.hw,
-> > +		},
-> > +		.num_parents = 2,
-> > +		.flags = CLK_SET_RATE_PARENT,
-> > +	},
-> > +};
-> > +
-> > +static struct clk_regmap cpu_fsource_sel1 = {
-> > +	.data = &(struct clk_regmap_mux_data) {
-> > +		.offset = CPUCTRL_CLK_CTRL0,
-> > +		.mask = 0x3,
-> > +		.shift = 16,
-> > +		.table = cpu_fsource_sel_table,
-> > +	},
-> > +	.hw.init = &(struct clk_init_data) {
-> > +		.name = "cpu_fsource_sel1",
-> > +		.ops = &clk_regmap_mux_ops,
-> > +		.parent_data = cpu_fsource_sel_parents,
-> > +		.num_parents = ARRAY_SIZE(cpu_fsource_sel_parents),
-> > +		.flags = CLK_SET_RATE_PARENT,
-> > +	},
-> > +};
-> > +
-> > +static struct clk_regmap cpu_fsource_div1 = {
-> > +	.data = &(struct clk_regmap_div_data) {
-> > +		.offset = CPUCTRL_CLK_CTRL0,
-> > +		.shift = 20,
-> > +		.width = 6,
-> > +	},
-> > +	.hw.init = &(struct clk_init_data) {
-> > +		.name = "cpu_fsource_div1",
-> > +		.ops = &clk_regmap_divider_ops,
-> > +		.parent_hws = (const struct clk_hw *[]) {
-> > +			&cpu_fsource_sel1.hw
-> > +		},
-> > +		.num_parents = 1,
-> > +		.flags = CLK_SET_RATE_PARENT,
-> > +	},
-> > +};
-> > +
-> > +static struct clk_regmap cpu_fsel1 = {
-> > +	.data = &(struct clk_regmap_mux_data) {
-> > +		.offset = CPUCTRL_CLK_CTRL0,
-> > +		.mask = 0x1,
-> > +		.shift = 18,
-> > +	},
-> > +	.hw.init = &(struct clk_init_data) {
-> > +		.name = "cpu_fsel1",
-> > +		.ops = &clk_regmap_mux_ops,
-> > +		.parent_hws = (const struct clk_hw *[]) {
-> > +			&cpu_fsource_sel1.hw,
-> > +			&cpu_fsource_div1.hw,
-> > +		},
-> > +		.num_parents = 2,
-> > +		.flags = CLK_SET_RATE_PARENT,
-> > +	},
-> > +};
-> > +
-> > +static struct clk_regmap cpu_fclk = {
-> > +	.data = &(struct clk_regmap_mux_data) {
-> > +		.offset = CPUCTRL_CLK_CTRL0,
-> > +		.mask = 0x1,
-> > +		.shift = 10,
-> > +	},
-> > +	.hw.init = &(struct clk_init_data) {
-> > +		.name = "cpu_fclk",
-> > +		.ops = &clk_regmap_mux_ops,
-> > +		.parent_hws = (const struct clk_hw *[]) {
-> > +			&cpu_fsel0.hw,
-> > +			&cpu_fsel1.hw,
-> > +		},
-> > +		.num_parents = 2,
-> > +		.flags = CLK_SET_RATE_PARENT,
-> > +	},
-> > +};
-> > +
-> > +static struct clk_regmap cpu_clk = {
-> > +	.data = &(struct clk_regmap_mux_data) {
-> > +		.offset = CPUCTRL_CLK_CTRL0,
-> > +		.mask = 0x1,
-> > +		.shift = 11,
-> > +	},
-> > +	.hw.init = &(struct clk_init_data) {
-> > +		.name = "cpu_clk",
-> > +		.ops = &clk_regmap_mux_ops,
-> > +		.parent_data = (const struct clk_parent_data []) {
-> > +			{ .hw = &cpu_fclk.hw },
-> > +			{ .fw_name = "sys_pll", },
-> > +		},
-> > +		.num_parents = 2,
-> > +		.flags = CLK_SET_RATE_PARENT | CLK_IS_CRITICAL,
-> > +	},
-> > +};
-> > +
-> > +/* Array of all clocks registered by this provider */
-> > +static struct clk_hw *a1_cpu_hw_clks[] = {
-> > +	[CLKID_CPU_FSOURCE_SEL0]	= &cpu_fsource_sel0.hw,
-> > +	[CLKID_CPU_FSOURCE_DIV0]	= &cpu_fsource_div0.hw,
-> > +	[CLKID_CPU_FSEL0]		= &cpu_fsel0.hw,
-> > +	[CLKID_CPU_FSOURCE_SEL1]	= &cpu_fsource_sel1.hw,
-> > +	[CLKID_CPU_FSOURCE_DIV1]	= &cpu_fsource_div1.hw,
-> > +	[CLKID_CPU_FSEL1]		= &cpu_fsel1.hw,
-> > +	[CLKID_CPU_FCLK]		= &cpu_fclk.hw,
-> > +	[CLKID_CPU_CLK]			= &cpu_clk.hw,
-> > +};
-> > +
-> > +static struct clk_regmap *const a1_cpu_regmaps[] = {
-> > +	&cpu_fsource_sel0,
-> > +	&cpu_fsource_div0,
-> > +	&cpu_fsel0,
-> > +	&cpu_fsource_sel1,
-> > +	&cpu_fsource_div1,
-> > +	&cpu_fsel1,
-> > +	&cpu_fclk,
-> > +	&cpu_clk,
-> > +};
-> > +
-> > +static struct regmap_config a1_cpu_regmap_cfg = {
-> > +	.reg_bits   = 32,
-> > +	.val_bits   = 32,
-> > +	.reg_stride = 4,
-> > +	.max_register = CPUCTRL_CLK_CTRL1,
-> > +};
-> > +
-> > +static struct meson_clk_hw_data a1_cpu_clks = {
-> > +	.hws = a1_cpu_hw_clks,
-> > +	.num = ARRAY_SIZE(a1_cpu_hw_clks),
-> > +};
-> > +
-> > +struct a1_cpu_clk_nb_data {
-> > +	const struct clk_ops *mux_ops;
-> 
-> That's fishy ...
-> 
-> > +	struct clk_hw *cpu_clk;
-> > +	struct notifier_block nb;
-> > +	u8 parent;
-> > +};
-> > +
-> > +#define MESON_A1_CPU_CLK_GET_PARENT(nbd) \
-> > +	((nbd)->mux_ops->get_parent((nbd)->cpu_clk))
-> > +#define MESON_A1_CPU_CLK_SET_PARENT(nbd, index) \
-> > +	((nbd)->mux_ops->set_parent((nbd)->cpu_clk, index))
-> 
-> ... Directly going for the mux ops ??!?? No way !
-> 
-> We have a framework to handle the clocks, the whole point is to use it,
-> not bypass it ! 
-> 
-
-I suppose you understand my approach, which is quite similar to what is
-happening in the Mediatek driver:
-
-https://elixir.bootlin.com/linux/latest/source/drivers/clk/mediatek/clk-mux.c#L295
-
-Initially, I attempted to set the parent using the clk_set_parent() API.
-However, I encountered a problem with recursive calling of the
-notifier_block. This issue arises because the parent triggers
-notifications for its children, leading to repeated calls to the
-notifier_block.
-
-I find it puzzling why I cannot call an internal function or callback
-within the internal driver context. After all, the notifier block is
-just a part of the set_rate() flow. From a global Clock Control
-Framework perspective, the context should not change.
-
-> > +
-> > +static int meson_a1_cpu_clk_notifier_cb(struct notifier_block *nb,
-> > +					unsigned long event, void *data)
+> > diff --git a/drivers/clk/qcom/common.c b/drivers/clk/qcom/common.c
+> > index 75f09e6e057e..d5c008048994 100644
+> > --- a/drivers/clk/qcom/common.c
+> > +++ b/drivers/clk/qcom/common.c
+> > @@ -8,6 +8,7 @@
+> >  #include <linux/regmap.h>
+> >  #include <linux/platform_device.h>
+> >  #include <linux/clk-provider.h>
+> > +#include <linux/interconnect-clk.h>
+> >  #include <linux/reset-controller.h>
+> >  #include <linux/of.h>
+> >
+> > @@ -234,6 +235,41 @@ static struct clk_hw *qcom_cc_clk_hw_get(struct of_phandle_args *clkspec,
+> >         return cc->rclks[idx] ? &cc->rclks[idx]->hw : NULL;
+> >  }
+> >
+> > +static int qcom_cc_icc_register(struct device *dev,
+> > +                               const struct qcom_cc_desc *desc)
 > > +{
-> > +	struct a1_cpu_clk_nb_data *nbd;
-> > +	int ret = 0;
+> > +       struct icc_clk_data *icd;
+> > +       int i;
 > > +
-> > +	nbd = container_of(nb, struct a1_cpu_clk_nb_data, nb);
+> > +       if (!IS_ENABLED(CONFIG_INTERCONNECT_CLK))
+> > +               return 0;
 > > +
-> > +	switch (event) {
-> > +	case PRE_RATE_CHANGE:
-> > +		nbd->parent = MESON_A1_CPU_CLK_GET_PARENT(nbd);
-> > +		/* Fallback to the CPU fixed clock */
-> > +		ret = MESON_A1_CPU_CLK_SET_PARENT(nbd, 0);
-> > +		/* Wait for clock propagation */
-> > +		udelay(100);
-> > +		break;
+> > +       if (!desc->icc_hws)
+> > +               return 0;
 > > +
-> > +	case POST_RATE_CHANGE:
-> > +	case ABORT_RATE_CHANGE:
-> > +		/* Back to the original parent clock */
-> > +		ret = MESON_A1_CPU_CLK_SET_PARENT(nbd, nbd->parent);
-> > +		/* Wait for clock propagation */
-> > +		udelay(100);
-> > +		break;
+> > +       icd = devm_kcalloc(dev, desc->num_icc_hws, sizeof(*icd), GFP_KERNEL);
+> > +       if (!icd)
+> > +               return -ENOMEM;
 > > +
-> > +	default:
-> > +		pr_warn("Unknown event %lu for %s notifier block\n",
-> > +			event, clk_hw_get_name(nbd->cpu_clk));
-> > +		break;
-> > +	}
+> > +       for (i = 0; i < desc->num_icc_hws; i++) {
+> > +               /*
+> > +                * get_clk will be done by the peripheral device using this
+> > +                * clock with devm_clk_hw_get_clk() so that we can associate
+> > +                * the clk handle with the consumer device. It would also help
+> > +                * us make it so that drivers defer probe until their
+> > +                * clk isn't an orphan.
+>
+> How the clock instance returned to the peripheral driver is supposed
+> to correspond to the clock instance used by the icc-clk?
+> > +                */
+> > +               icd[i].clk = desc->icc_hws[i]->clk;
+>
+> You again are abusing clk_hw->clk. Please don't do that.
+
+Ok, will clk_get in both the places.
+
+Thanks
+Varada
+
+> > +               if (!icd[i].clk)
+> > +                       return dev_err_probe(dev, -ENOENT,
+> > +                                            "(%d) clock entry is null\n", i);
+> > +               icd[i].name = clk_hw_get_name(desc->icc_hws[i]);
+> > +       }
 > > +
-> > +	return notifier_from_errno(ret);
+> > +       return PTR_ERR_OR_ZERO(devm_icc_clk_register(dev, desc->icc_first_node_id,
+> > +                                                    desc->num_icc_hws, icd));
 > > +}
 > > +
-> > +static struct a1_cpu_clk_nb_data a1_cpu_clk_nb_data = {
-> > +	.mux_ops = &clk_regmap_mux_ops,
-> > +	.cpu_clk = &cpu_clk.hw,
-> > +	.nb.notifier_call = meson_a1_cpu_clk_notifier_cb,
-> > +};
-> > +
-> > +static int meson_a1_dvfs_setup(struct platform_device *pdev)
-> > +{
-> > +	struct device *dev = &pdev->dev;
-> > +	struct clk *notifier_clk;
-> > +	int ret;
-> > +
-> > +	/* Setup clock notifier for cpu_clk */
-> > +	notifier_clk = devm_clk_hw_get_clk(dev, &cpu_clk.hw, "dvfs");
-> > +	if (IS_ERR(notifier_clk))
-> > +		return dev_err_probe(dev, PTR_ERR(notifier_clk),
-> > +				     "can't get cpu_clk as notifier clock\n");
-> > +
-> > +	ret = devm_clk_notifier_register(dev, notifier_clk,
-> > +					 &a1_cpu_clk_nb_data.nb);
-> > +	if (ret)
-> > +		return dev_err_probe(dev, ret,
-> > +				     "can't register cpu_clk notifier\n");
-> > +
-> > +	return ret;
-> > +}
-> > +
-> > +static int meson_a1_cpu_probe(struct platform_device *pdev)
-> > +{
-> > +	struct device *dev = &pdev->dev;
-> > +	void __iomem *base;
-> > +	struct regmap *map;
-> > +	int clkid, i, err;
-> > +
-> > +	base = devm_platform_ioremap_resource(pdev, 0);
-> > +	if (IS_ERR(base))
-> > +		return dev_err_probe(dev, PTR_ERR(base),
-> > +				     "can't ioremap resource\n");
-> > +
-> > +	map = devm_regmap_init_mmio(dev, base, &a1_cpu_regmap_cfg);
-> > +	if (IS_ERR(map))
-> > +		return dev_err_probe(dev, PTR_ERR(map),
-> > +				     "can't init regmap mmio region\n");
-> > +
-> > +	/* Populate regmap for the regmap backed clocks */
-> > +	for (i = 0; i < ARRAY_SIZE(a1_cpu_regmaps); i++)
-> > +		a1_cpu_regmaps[i]->map = map;
-> > +
-> > +	for (clkid = 0; clkid < a1_cpu_clks.num; clkid++) {
-> > +		err = devm_clk_hw_register(dev, a1_cpu_clks.hws[clkid]);
-> > +		if (err)
-> > +			return dev_err_probe(dev, err,
-> > +					     "clock[%d] registration failed\n",
-> > +					     clkid);
-> > +	}
-> > +
-> > +	err = devm_of_clk_add_hw_provider(dev, meson_clk_hw_get, &a1_cpu_clks);
-> > +	if (err)
-> > +		return dev_err_probe(dev, err, "can't add clk hw provider\n");
-> 
-> I wonder if there is a window of opportunity to poke the syspll without
-> your notifier here. That being said, the situation would be similar on g12.
-> 
-
-Yes, I have taken into account what you did in the G12A CPU clock
-relations. My thoughts were that it might not be applicable for the A1
-case. This is because the sys_pll should be located in a different
-driver from a logical perspective. Consequently, we cannot configure the
-sys_pll notifier block to manage the cpu_clk from a different driver.
-However, if I were to move the sys_pll clock object to the A1 CPU clock
-controller, I believe the g12a sys_pll notifier approach would work.
-
-> > +
-> > +	return meson_a1_dvfs_setup(pdev);
-> 
-> 
-> 
-> > +}
-> > +
-> > +static const struct of_device_id a1_cpu_clkc_match_table[] = {
-> > +	{ .compatible = "amlogic,a1-cpu-clkc", },
-> > +	{}
-> > +};
-> > +MODULE_DEVICE_TABLE(of, a1_cpu_clkc_match_table);
-> > +
-> > +static struct platform_driver a1_cpu_clkc_driver = {
-> > +	.probe = meson_a1_cpu_probe,
-> > +	.driver = {
-> > +		.name = "a1-cpu-clkc",
-> > +		.of_match_table = a1_cpu_clkc_match_table,
-> > +	},
-> > +};
-> > +
-> > +module_platform_driver(a1_cpu_clkc_driver);
-> > +MODULE_AUTHOR("Dmitry Rokosov <ddrokosov@salutedevices.com>");
-> > +MODULE_LICENSE("GPL");
-> > diff --git a/drivers/clk/meson/a1-cpu.h b/drivers/clk/meson/a1-cpu.h
-> > new file mode 100644
-> > index 000000000000..e9af4117e26f
-> > --- /dev/null
-> > +++ b/drivers/clk/meson/a1-cpu.h
-> 
-> There is not point putting the definition here in a header
-> These are clearly not going to be shared with another driver.
-> 
-> Please drop this file
-> 
-
-The same approach was applied to the Peripherals and PLL A1 drivers.
-Honestly, I am not a fan of having different file organization within a
-single logical code folder.
-
-Please refer to:
-
-drivers/clk/meson/a1-peripherals.h
-drivers/clk/meson/a1-pll.h
-
-> > @@ -0,0 +1,16 @@
-> > +/* SPDX-License-Identifier: GPL-2.0+ */
-> > +/*
-> > + * Amlogic A1 CPU Clock Controller internals
-> > + *
-> > + * Copyright (c) 2024, SaluteDevices. All Rights Reserved.
-> > + * Author: Dmitry Rokosov <ddrokosov@salutedevices.com>
-> > + */
-> > +
-> > +#ifndef __A1_CPU_H
-> > +#define __A1_CPU_H
-> > +
-> > +/* cpu clock controller register offset */
-> > +#define CPUCTRL_CLK_CTRL0	0x80
-> > +#define CPUCTRL_CLK_CTRL1	0x84
-> 
-> You are claiming the registers from 0x00 to 0x84 (included), but only
-> using these 2 registers ? What is the rest ? Are you sure there is only
-> clocks in there ?
-> 
-
-Yes, unfortunately, the register map for this IP is not described in the
-A1 Datasheet. The only available information about it can be found in
-the vendor clock driver, which provides details for only two registers
-used to configure the CPU clock.
-
-From vendor kernel dtsi:
-
-	clkc: clock-controller {
-		compatible = "amlogic,a1-clkc";
-		#clock-cells = <1>;
-		reg = <0x0 0xfe000800 0x0 0x100>,
-		      <0x0 0xfe007c00 0x0 0x21c>,
-		      <0x0 0xfd000000 0x0 0x88>; <==== CPU clock regmap
-		reg-names = "basic", "pll",
-			    "cpu_clk";
-		clocks = <&xtal>;
-		clock-names = "core";
-		status = "okay";
-	};
-
-From vendor clkc driver:
-
-	/*
-	 * CPU clok register offset
-	 * APB_BASE:  APB1_BASE_ADDR = 0xfd000000
-	 */
-
-	#define CPUCTRL_CLK_CTRL0		0x80
-	#define CPUCTRL_CLK_CTRL1		0x84
-
-[...]
-
--- 
-Thank you,
-Dmitry
+> >  int qcom_cc_really_probe(struct platform_device *pdev,
+> >                          const struct qcom_cc_desc *desc, struct regmap *regmap)
+> >  {
+> > @@ -303,7 +339,7 @@ int qcom_cc_really_probe(struct platform_device *pdev,
+> >         if (ret)
+> >                 return ret;
+> >
+> > -       return 0;
+> > +       return qcom_cc_icc_register(dev, desc);
+> >  }
+> >  EXPORT_SYMBOL_GPL(qcom_cc_really_probe);
+> >
+> > diff --git a/drivers/clk/qcom/common.h b/drivers/clk/qcom/common.h
+> > index 9c8f7b798d9f..9058ffd46260 100644
+> > --- a/drivers/clk/qcom/common.h
+> > +++ b/drivers/clk/qcom/common.h
+> > @@ -29,6 +29,9 @@ struct qcom_cc_desc {
+> >         size_t num_gdscs;
+> >         struct clk_hw **clk_hws;
+> >         size_t num_clk_hws;
+> > +       struct clk_hw **icc_hws;
+> > +       size_t num_icc_hws;
+> > +       unsigned int icc_first_node_id;
+> >  };
+> >
+> >  /**
+> > --
+> > 2.34.1
+> >
+>
+>
+> --
+> With best wishes
+>
+> Dmitry
 
