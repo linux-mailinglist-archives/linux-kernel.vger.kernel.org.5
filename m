@@ -1,92 +1,89 @@
-Return-Path: <linux-kernel+bounces-127793-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-127794-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 33EAA895110
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 12:58:14 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5FC83895113
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 12:58:30 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C894A1F23BA3
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 10:58:13 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id F1170B26221
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 10:58:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 43A696996E;
-	Tue,  2 Apr 2024 10:57:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B64CC74262;
+	Tue,  2 Apr 2024 10:57:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="uobyZy9N"
-Received: from mail-yb1-f180.google.com (mail-yb1-f180.google.com [209.85.219.180])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="iW6au1Wo"
+Received: from mail-yw1-f171.google.com (mail-yw1-f171.google.com [209.85.128.171])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 13E1C66B57
-	for <linux-kernel@vger.kernel.org>; Tue,  2 Apr 2024 10:57:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 843E36A8A5
+	for <linux-kernel@vger.kernel.org>; Tue,  2 Apr 2024 10:57:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712055455; cv=none; b=tdcszr564oZkOoVPphQfW+W8x+lwsrYY7Ixl9gI45LwuOaWc8BnefHJlozUdCkwr1V4hSqFJtVqRniQHu9E2OSdjawEoZFwPa/f8R4Sx0ld3Bv4zR5RKqCnlqlEj748fnnQBfaUie5t6WS4vbBYJ0rZZI9GygDDVXSSZkAQN+zk=
+	t=1712055460; cv=none; b=XPgArUeJx7VuZCpTA3k2yS+GIpwi5PxIAWU/pLBzAT3qH2wrLK01+KCuBH3LZKj+QySI6zEZWwTaAzOoy8TtfUZj8wIYu8phehUJoOXngETjBQtrQGxQLWAoLF/fz66UyCUe+G+WQWmXLvYVCL70q3aXseD7ZUuBjz2f3vHJ2IA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712055455; c=relaxed/simple;
-	bh=vqO89eEBR/ktnLPEQMdwBobaFGHWU1KaYv7JeHQaYdc=;
+	s=arc-20240116; t=1712055460; c=relaxed/simple;
+	bh=wzQQNRkk/cIJeNXurzU1rbOp4yzYxebV0qz2Ei6O5JI=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=pS54Twb6emcprtydlJPMtq/Yl2ysmmDasq7sWz3mD0FOpM8oWMdc33aPYV/WA8gXhuYGNcRcCak2r3oAJPSS9slwxfQ6lDG0EOOH4jOfavEM57hM8/oiu3iM7cuDoLX0yqbyhLUnSoBEraUOOkdYfN4DeP1IWtrwAjEJtrva44o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=uobyZy9N; arc=none smtp.client-ip=209.85.219.180
+	 To:Cc:Content-Type; b=SiT3GLJy50N6kMZkSFaf6h4nFd7L79oe6Ix2qY4UbAfPZVefqlezz9I5ON54uiZb01nWM1eD70xRFjROvYYrchCGGlUb1l0W0xyalnmnukqpqPexQ5WlZmbDz5nncSAj+zEou01+2W+4vbohGTEflFMWfrf/o4k9yuPJA+38k2U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=iW6au1Wo; arc=none smtp.client-ip=209.85.128.171
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-yb1-f180.google.com with SMTP id 3f1490d57ef6-dc742543119so4921513276.0
-        for <linux-kernel@vger.kernel.org>; Tue, 02 Apr 2024 03:57:33 -0700 (PDT)
+Received: by mail-yw1-f171.google.com with SMTP id 00721157ae682-61453963883so39599227b3.1
+        for <linux-kernel@vger.kernel.org>; Tue, 02 Apr 2024 03:57:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1712055453; x=1712660253; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1712055457; x=1712660257; darn=vger.kernel.org;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=yVXc1Bs+lpB1RIEnPb5YwNz2pgwy6ujAacaSwqfyeHo=;
-        b=uobyZy9NKaUBGNXzkFnGopX75NrEOqO0RCxYx4AZ1qb2gkqq+3CraffwwXEEydaQhh
-         /GTsKkc6WrT4DcPj2okLoCJ+AWCVEx0NhXhFcuD9hgzGm+WSx8S4WrqnmY6lSq4kuKwH
-         xWRtsjPZXvoZrG8b0FD54YwB/lzq06pQrgwM2I+8wyGr4Opu9/DRvfAYmw7S3z+x2Ohc
-         +UScUOIPfZvS7sAsjzdcEPtusJQ574hE6sxr+8KgXggJX3uOU+5HM8fhZ6ruuYkiuON7
-         cuweW1ZwypaJMR7kGuRyJCy06QsdDEdgcH3yrHxKmmySukiHjtDV8X3Zie9awVYOhz6O
-         /ghg==
+        bh=4YHqSqNnvCBnfvFBqJv11ufJI1u3AY17gf0vN4REjDw=;
+        b=iW6au1Wo7YSYvo37ijC5j0qTZTJV02WByLo7dB5iGY8QVEfxo454hmIKusFtg0syvi
+         ONFe+HeV8x2IKzLY/kdUVsg5jh2N8gfq5I6mOGfT9/PNaMFfIVKEH5BZY0XD7RH2rwOw
+         cGZm2mxF+Dn3psM2n3T4r8ydRT5G6SFfSl1sjBOgXhlEOI4KEmTTWaji1SeYbHWU9SaI
+         KPJv8LadsP5rEANsXtlQZYKbAkCz9+AeuLT8kmwYs5c9M5PXM+ic0GYGwqNLmcLA4Nn8
+         yEPuNmU/PTaf8zqq8BSnR6cBklqZBaQ7xsBsrj8ZZYvG3pj9u56ovME17NaRB/pJ2hrB
+         HlVQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712055453; x=1712660253;
+        d=1e100.net; s=20230601; t=1712055457; x=1712660257;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=yVXc1Bs+lpB1RIEnPb5YwNz2pgwy6ujAacaSwqfyeHo=;
-        b=fzps5asyYnF4gE+rF/yUATLEeZ3ohjPrCygLWqOV6+pDttI1V/PVlxCcFRI0yU0i6l
-         cO2AwHV+o4QfBsLQp7dcxFB1K8sS+Rt1SEKwkM29OngVJN70T33hU+GhSaLx45zsjkQS
-         BLrkVFNug/p/zog6I6UvFSMIgnwrU4isdFiD0zzmR1pjYRdOBySy2Y/n0QLuBLLY3Lmg
-         DAbWDm+8IAL4X1aaVvVKdi/N2uNOrH7pbxV1YCwB4lcPUeb+Gq8EZucrw64WhzNJCir9
-         448quZgs/Qxcw+RX1TYd3rFPoZ0UhXbpZkhPoGlid3kwPcXg8g6ezoceWH7McnunLsYr
-         Xs+Q==
-X-Forwarded-Encrypted: i=1; AJvYcCXEY7y0FD17ObM5Fh0qvx1T3/Ap2dej8H+MApT1RdXTV9rEd67aZMOVD1XI2fmHbprWobvDrcYoBlCKdsmlo5q4SH0wuVCxsOZzfHb6
-X-Gm-Message-State: AOJu0Yyk7NHUVZOpOJMqSY6sZkCJXxdCi/ZYWtMjLtnPsT5aoVHwZ8Q+
-	p5wvqXDUMB+leKr5PWnOBYNXr/jr34rkI6kcSrITDGOi0j8nu5Ebj9EZsgR33ZP1nTUrxxSniQj
-	bVSSElioBQxc/Wb9N2yJQQwHI0IjMfApnd0jqwecr9iJugHQe
-X-Google-Smtp-Source: AGHT+IFg1hu4FwOjpqGBH/SGeVvovCBllWh1O5bBs6IVNCKUcnc1PpAomYGLskhTJ+VShxhyKPmS5NFMVCtcej5YTDQ=
-X-Received: by 2002:a0d:c145:0:b0:60c:d22b:8541 with SMTP id
- c66-20020a0dc145000000b0060cd22b8541mr9859110ywd.49.1712055452835; Tue, 02
- Apr 2024 03:57:32 -0700 (PDT)
+        bh=4YHqSqNnvCBnfvFBqJv11ufJI1u3AY17gf0vN4REjDw=;
+        b=gIkRzuvNEmVqDe02ygTg2Aw874JwTG2GZjUuZ4KKilbVngDyrj5PYuzRsAk7Zifs80
+         FJPuitDviJcxFZ1akBcEwVJLPWBSa6//mog5Vy0PNBgVSlvybsfsWc0pzMRlFwH3F0pf
+         AbR2I3OVA+kDk1/omTTROGEKN/c0miBgE9XpgNYgv4RmLD6cCJgJP7XsxUqtrpgxhhVQ
+         1yShibPm4mi9n8PM0Q6bH77CiJl1sTAlJ/YOVbgYiPjpX6YwOvYrMJd3ibrp05+XjdQa
+         I0IqS/XMJUilLH7oOUPi7KGP6+3NK1GF4rtYL0rfiJ2LrajiRGIZQ5tYpzGsQUZpGTH8
+         spMQ==
+X-Gm-Message-State: AOJu0YzgbChwsNWh6G0EMbVJwoMvm7FtlXu+qxJRySUd4RI3ayzkMXL4
+	7apgpLvg/Bkizi5Jg5UOG3nOb6OJSa+EGeyFtKzwUiyK5dORIHhVq/cCeMzC1xP7fzonGHpr8GK
+	sLtu3X9HouwHRvY7k3RM2+wqUR+4FPxudiBt7ivIICQTuBBp6
+X-Google-Smtp-Source: AGHT+IGgzSZ2JPE3HDf7VGawmgSPSJjQToKcv+LLCVOO4BPYFSbmLubksF4TLEbW5Dw4jfNw/sq7EGDlqA7OfMewmEQ=
+X-Received: by 2002:a81:710b:0:b0:60a:74d:7ff3 with SMTP id
+ m11-20020a81710b000000b0060a074d7ff3mr11793721ywc.47.1712055456211; Tue, 02
+ Apr 2024 03:57:36 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240326094215.212930-1-r.czerwinski@pengutronix.de> <20240326094215.212930-2-r.czerwinski@pengutronix.de>
-In-Reply-To: <20240326094215.212930-2-r.czerwinski@pengutronix.de>
+References: <20240326164733.15271-1-adureghello@baylibre.com>
+In-Reply-To: <20240326164733.15271-1-adureghello@baylibre.com>
 From: Ulf Hansson <ulf.hansson@linaro.org>
-Date: Tue, 2 Apr 2024 12:56:57 +0200
-Message-ID: <CAPDyKFpUkAOd3h_s-zCArPWBhxqGHJ=dS6K6Bv+b6t0norMMeg@mail.gmail.com>
-Subject: Re: [PATCH 2/2] mmc: debugfs: add card entry for quirks
-To: Rouven Czerwinski <r.czerwinski@pengutronix.de>
-Cc: kernel@pengutronix.de, linux-mmc@vger.kernel.org, 
-	linux-kernel@vger.kernel.org
+Date: Tue, 2 Apr 2024 12:57:00 +0200
+Message-ID: <CAPDyKFruMSy0CQphbP6Z8YVeC1xP=N68C+MTV8jzVkdvjyEUuA@mail.gmail.com>
+Subject: Re: [PATCH] MAINTAINERS: update Angelo Dureghello e-mail address
+To: Angelo Dureghello <adureghello@baylibre.com>
+Cc: linux-kernel@vger.kernel.org, linux-mmc@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 
-On Tue, 26 Mar 2024 at 10:42, Rouven Czerwinski
-<r.czerwinski@pengutronix.de> wrote:
+On Tue, 26 Mar 2024 at 17:49, Angelo Dureghello
+<adureghello@baylibre.com> wrote:
 >
-> This is useful to check if a quirk has been applied for the connected
-> mmc card.
+> Update my e-mail address to adureghello@baylibre.com.
 >
-> Signed-off-by: Rouven Czerwinski <r.czerwinski@pengutronix.de>
+> Signed-off-by: Angelo Dureghello <adureghello@baylibre.com>
 
 Applied for next, thanks!
 
@@ -95,22 +92,24 @@ Uffe
 
 
 > ---
->  drivers/mmc/core/debugfs.c | 1 +
->  1 file changed, 1 insertion(+)
+>  MAINTAINERS | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 >
-> diff --git a/drivers/mmc/core/debugfs.c b/drivers/mmc/core/debugfs.c
-> index 6dbab860e453..f10a4dcf1f95 100644
-> --- a/drivers/mmc/core/debugfs.c
-> +++ b/drivers/mmc/core/debugfs.c
-> @@ -389,6 +389,7 @@ void mmc_add_card_debugfs(struct mmc_card *card)
->         card->debugfs_root = root;
+> diff --git a/MAINTAINERS b/MAINTAINERS
+> index aa3b947fb080..c3e365b9d759 100644
+> --- a/MAINTAINERS
+> +++ b/MAINTAINERS
+> @@ -8512,7 +8512,7 @@ F:        Documentation/devicetree/bindings/crypto/fsl,sec-v4.0*
+>  F:     drivers/crypto/caam/
 >
->         debugfs_create_x32("state", 0400, root, &card->state);
-> +       debugfs_create_x32("quirks", 0400, root, &card->quirks);
->  }
->
->  void mmc_remove_card_debugfs(struct mmc_card *card)
+>  FREESCALE COLDFIRE M5441X MMC DRIVER
+> -M:     Angelo Dureghello <angelo.dureghello@timesys.com>
+> +M:     Angelo Dureghello <adureghello@baylibre.com>
+>  L:     linux-mmc@vger.kernel.org
+>  S:     Maintained
+>  F:     drivers/mmc/host/sdhci-esdhc-mcf.c
 > --
-> 2.44.0
+> 2.43.1
+>
 >
 
