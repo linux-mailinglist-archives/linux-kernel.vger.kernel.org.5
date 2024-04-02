@@ -1,565 +1,150 @@
-Return-Path: <linux-kernel+bounces-128787-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-128788-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4F96B895F87
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 00:17:14 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 82374895F8A
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 00:17:43 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 72A781C2415A
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 22:17:13 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 378361F27D36
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 22:17:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7292816ABE3;
-	Tue,  2 Apr 2024 22:11:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4618515E81A;
+	Tue,  2 Apr 2024 22:17:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="m++Glsj3";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="pphhqj2A"
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="gRX11BvT"
+Received: from mail-pf1-f180.google.com (mail-pf1-f180.google.com [209.85.210.180])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 13387161B56
-	for <linux-kernel@vger.kernel.org>; Tue,  2 Apr 2024 22:11:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D6A7115E1FD;
+	Tue,  2 Apr 2024 22:17:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712095914; cv=none; b=scZREIJpVaiANAwdt85GulHJ4tZc6LbEC/ySYnqBJ983LtCukHHKRAXChIB3XvFTBTD1zkh5FB0QJuBzKhmc3asaROAVptIfMWcgJAS2wxXc59csWeUGqfRstNVfeXVcDiRLUc0EakBYIOEZ+z7OW8UipqCw7/TC8bEwIhtw+KE=
+	t=1712096256; cv=none; b=ATFVV97+EXf6evbGpQHv1EQkT8Ps0TuxUuS0+zpS/UqEwLW7qJAZM2FbjeJDlnlGUUnFmby86lgK1wzd/p1ROXqy33JOVp9/FXzb+vQBOzl7lhSVl6XBlCZGK7VS2BghlyyDCMt7JqrPw9nKLOksL+nh4fzzH2w1UMg3Gd+bRcI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712095914; c=relaxed/simple;
-	bh=Fz+6ghLU6cuNsspdKh2jKQNyrr0w/MXxwLKzXAPSTY4=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=S2HXqAkWgH+o1hDsBYz8qETQ4xT0PMoXWvoF55z/66s6d/qv+z1Kzh+4VlOFTrwqXb15/6FxiePBXt7CIl5Lg/z1146JiEHRwxyDa1+OyIE4bqgBW9hq2koEIq9vXduH0ce1YlESOaWNSXiYbIjYY3cwhUdObvU+GVSllp4QEoU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=m++Glsj3; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=pphhqj2A; arc=none smtp.client-ip=193.142.43.55
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
-From: John Ogness <john.ogness@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1712095910;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=CO7KUNjF5smgMIXwjoa7feK/SnbzBGmL0SPNqnsQ0MY=;
-	b=m++Glsj3NT3O7hMbUHu69ZOthwa/9m1JFD8Dsw8Vhe5MQQEu63/sej2ydONMAFYVUaH5uu
-	2V4yhOyCcdvVBfJwMDz8y8RayelMcvRmUGlibpwcx6/6z1CmLncbeReAlL7ZopiX/q2mKa
-	7jaiNLyJv30qHe6W8POzZX9izItab8oLNj+U3aSIPjDHzZaIDvgApmJKkWZBgXHEpNX1C5
-	N4KjWEWn/DEHEzsQSs50uLZ220d4gJUKNqksxo1GPS410qAkP/J6pIZqcMnpXxyUT6swpY
-	lLCL6ZpOh1UrlOg0Ft3E+fgcCNboDZpfX1XcKasneagLeyi/By/SCORE/3pJBg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1712095910;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=CO7KUNjF5smgMIXwjoa7feK/SnbzBGmL0SPNqnsQ0MY=;
-	b=pphhqj2Ah49yCaQnL+6U/PE74NZu+DjG14U9wY0BQyfQPa9szg1tDENsErAtl/ialHhU3V
-	r0XgRuYDxSBCxeCQ==
-To: Petr Mladek <pmladek@suse.com>
-Cc: Sergey Senozhatsky <senozhatsky@chromium.org>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	linux-kernel@vger.kernel.org,
-	Peter Zijlstra <peterz@infradead.org>,
-	Ingo Molnar <mingo@redhat.com>,
-	Will Deacon <will@kernel.org>,
-	Waiman Long <longman@redhat.com>,
-	Boqun Feng <boqun.feng@gmail.com>
-Subject: [PATCH printk v4 27/27] lockdep: Mark emergency sections in lockdep splats
-Date: Wed,  3 Apr 2024 00:17:29 +0206
-Message-Id: <20240402221129.2613843-28-john.ogness@linutronix.de>
-In-Reply-To: <20240402221129.2613843-1-john.ogness@linutronix.de>
-References: <20240402221129.2613843-1-john.ogness@linutronix.de>
+	s=arc-20240116; t=1712096256; c=relaxed/simple;
+	bh=I1SS2EYHeKThx7SBcEsrCukx4A/m3YQjVwFFscGKb7w=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=RVSbgpeBzDvx4Z0yx54sCoK/CvU9oX8Bw14yeZznt984G5xGIzgf6twhSPJ2QJBkXr0X/gv88AzBUtSl40q9tRJMhW1unh0LtySqzlkhKdLi2USH1jqJhou93e05Y8Nmna7K2cON03/mTaZydxSYo2N3EGputifIERuZJ9JcJ5w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=gRX11BvT; arc=none smtp.client-ip=209.85.210.180
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pf1-f180.google.com with SMTP id d2e1a72fcca58-6e7425a6714so4720479b3a.0;
+        Tue, 02 Apr 2024 15:17:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1712096254; x=1712701054; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:sender
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=fYOqDUYU14d+HKeuMfI8yAvYETR9CFmfgJMPALruc3M=;
+        b=gRX11BvT/ecAERBJyuaeMbAbgpxbBK0/kK9qEolhuQPWeAfuYfrMonDXFi/JT7V+eq
+         jQbNcEhPW0eBNBycOflieSKLEdZXznaPwEyOL7F506J8WEpmgp+EbMGf+N7DYH07cY//
+         TE8g7oeZQZviTk6trhSI7UJUGMepBuEmZ2ZOG67/y1Q9cxUqLFxMeKpMl5e7qdVa730w
+         hT6YVkhsCuw5z0x8ehJyD3iBLxDD3g7L87zddeKEE2UD6t7NbA6Bfi7kPtV2HZ/TWkZ1
+         ljd/C+Mw51L3L9tVKPDCUSWSdHVuzJCxruUSDmEJ6N2CPDAuNnSWpgVp9VKgD0puD1L+
+         GX8g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712096254; x=1712701054;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:sender
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=fYOqDUYU14d+HKeuMfI8yAvYETR9CFmfgJMPALruc3M=;
+        b=mrYlop1L0egnLClFY8UWYqLpbFlTS1F8innESx9G1SsI3cS/kv3Q350g1HgGDHkFFu
+         QokgVimUDLOK2Qt4OjR/3UnPLRZlay8/M3Xz8bqe/s3+VpewaVtR3PjmgJCwqOnqKbrk
+         NM5PIrfjWECoRGkh+a+KKnNE2AAcsZMG+Up+R4KL3RGK2yh5HTaKp/6wPx/4IVWY/ZmA
+         g5V0/OD5lvZKU3S8auv4oy/NEP8svw3u9H/0fj669wqwIR0m3uzSRxhAEP4qp+A1sB5s
+         0tWT3YpWIkoej+iK9lqcePAyRym+OGCxvqtxqniC96IEnsfs2Kd92Ig6mD/g/69nVICd
+         Retw==
+X-Forwarded-Encrypted: i=1; AJvYcCXk7fjCqcH8gDItP8htoXSjLZ+hpdhh4deSeJarsuTLgOe6gkcGNgjbOBNva1n5VAhImjQbL5EqsiX0fCPvNKKloj2xAFd4xygrmAmB/ptmMT1CzbyCzjJ1r5MXWJwbjwgQdvG4eGL6GAg=
+X-Gm-Message-State: AOJu0YyaEYFGaEkGMRzQ/zy1NcPLgq4m1fLxCheXrsZgd36/1pgX4rau
+	d2trnh8wd1CSwqpGLF3i9+i111zy1uxMcXmteiHMpR7ZhToDWKxq
+X-Google-Smtp-Source: AGHT+IFUuET2kH1Eihd9g4y1585pgzr2R9iU6IYcNA4yZUeVLHoWOnLqlugXCo0lssdNEZbcxPPvRQ==
+X-Received: by 2002:a05:6a00:9295:b0:6ea:ad01:354f with SMTP id jw21-20020a056a00929500b006eaad01354fmr14121172pfb.18.1712096254022;
+        Tue, 02 Apr 2024 15:17:34 -0700 (PDT)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id c21-20020aa78c15000000b006ea8c030c1esm10297976pfd.211.2024.04.02.15.17.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 02 Apr 2024 15:17:33 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Date: Tue, 2 Apr 2024 15:17:32 -0700
+From: Guenter Roeck <linux@roeck-us.net>
+To: Chris Packham <Chris.Packham@alliedtelesis.co.nz>
+Cc: "jdelvare@suse.com" <jdelvare@suse.com>,
+	"linux-hwmon@vger.kernel.org" <linux-hwmon@vger.kernel.org>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: hwmon: label vs temp%d_label
+Message-ID: <2dabfc85-3f87-4dfc-a7d4-9c11bc5b357e@roeck-us.net>
+References: <9a09bf46-d097-4e5b-bdb3-cc9dc6f5d01c@alliedtelesis.co.nz>
+ <fdd952dd-2f3c-4f66-8e73-68f1dadde237@roeck-us.net>
+ <448b5cfb-b433-4b38-98ae-066bda44f1fd@alliedtelesis.co.nz>
+ <9f58389e-0eb6-4ff1-9152-aa38dbfc5f8b@alliedtelesis.co.nz>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <9f58389e-0eb6-4ff1-9152-aa38dbfc5f8b@alliedtelesis.co.nz>
 
-Mark emergency sections wherever multiple lines of
-lock debugging output are generated. In an emergency
-section the CPU will not perform console output for the
-printk() calls. Instead, a flushing of the console
-output is triggered when exiting the emergency section.
-This allows the full message block to be stored as
-quickly as possible in the ringbuffer.
+On Tue, Apr 02, 2024 at 09:57:44PM +0000, Chris Packham wrote:
+> 
+> On 3/04/24 10:22, Chris Packham wrote:
+> >
+> > On 3/04/24 09:59, Guenter Roeck wrote:
+> >> On Tue, Apr 02, 2024 at 08:24:37PM +0000, Chris Packham wrote:
+> >>> Hi Guenter, Jean,
+> >>>
+> >>> I've got a requirement to add some meaningful names to some hwmon
+> >>> sensors (LM75 specifically) so that we can provide some indication of
+> >>> where on a board the sensor is located (e.g. "Intake" vs "Exhaust" vs
+> >>> "Near that really hot chip").
+> >>>
+> >>> I see that the sysfs ABI documents both "label" for the chip and
+> >>> "temp[1-*]_label" (as well as similar fan and Vin attributes). The
+> >>> latter seem to be supported by the hwmon core but I don't see anything
+> >>> for the former (I'm struggling to find any driver that supports a
+> >>> chip-wide label).
+> >>>
+> >>> Assuming I want to have a label added in the device tree to a lm75 
+> >>> would
+> >>> something like the following be acceptable
+> >>>
+> >>>         sensor@48 {
+> >>>           compatible = "national,lm75";
+> >>>           reg = <0x48>;
+> >>>           label = "Intake";
+> >>>         };
+> >>>
+> >>> I'd then update the lm75 driver to grab that from the devicetree and 
+> >>> use
+> >>> it to provide the hwmon_temp_label attribute.
+> >>>
+> >> Have you tried just declaring the label property as you suggested above
+> >> in your system without doing anything else, and looked at the generated
+> >> sysfs attributes ?
+> >
+> > I have not. But in my defense I'm also using an older kernel LTS that 
+> > doesn't have commit e1c9d6d61ddf ("hwmon: Add "label" attribute"). But 
+> > now that I know it exists I can carry it as a local patch until we 
+> > next update.
+> 
+> Related is there an lm-sensors change that uses this attribute for 
+> display purposes?
+> 
+Sorry, I don't know. I stopped paying attention to the lm-sensors package
+a long time ago, and I don't know its status. I just don't have the time.
 
-Signed-off-by: John Ogness <john.ogness@linutronix.de>
----
- kernel/locking/lockdep.c | 91 ++++++++++++++++++++++++++++++++++++++--
- 1 file changed, 88 insertions(+), 3 deletions(-)
+> I do have a couple of PRs open on the lm-sensors github project I'd like 
+> to see merged but given recent events this should absolutely not be 
+> construed as a criticism of anyone maintaining lm-sensors merely a query 
+> as to whether PRs are the right path for changes or if they should be 
+> sent to a mailing list somewhere.
+> 
+I have no idea, sorry.
 
-diff --git a/kernel/locking/lockdep.c b/kernel/locking/lockdep.c
-index 151bd3de5936..80cfbe7b340e 100644
---- a/kernel/locking/lockdep.c
-+++ b/kernel/locking/lockdep.c
-@@ -56,6 +56,7 @@
- #include <linux/kprobes.h>
- #include <linux/lockdep.h>
- #include <linux/context_tracking.h>
-+#include <linux/console.h>
- 
- #include <asm/sections.h>
- 
-@@ -574,8 +575,10 @@ static struct lock_trace *save_trace(void)
- 		if (!debug_locks_off_graph_unlock())
- 			return NULL;
- 
-+		nbcon_cpu_emergency_enter();
- 		print_lockdep_off("BUG: MAX_STACK_TRACE_ENTRIES too low!");
- 		dump_stack();
-+		nbcon_cpu_emergency_exit();
- 
- 		return NULL;
- 	}
-@@ -782,6 +785,8 @@ static void lockdep_print_held_locks(struct task_struct *p)
- {
- 	int i, depth = READ_ONCE(p->lockdep_depth);
- 
-+	nbcon_cpu_emergency_enter();
-+
- 	if (!depth)
- 		printk("no locks held by %s/%d.\n", p->comm, task_pid_nr(p));
- 	else
-@@ -792,11 +797,13 @@ static void lockdep_print_held_locks(struct task_struct *p)
- 	 * and it's not the current task.
- 	 */
- 	if (p != current && task_is_running(p))
--		return;
-+		goto out;
- 	for (i = 0; i < depth; i++) {
- 		printk(" #%d: ", i);
- 		print_lock(p->held_locks + i);
- 	}
-+out:
-+	nbcon_cpu_emergency_exit();
- }
- 
- static void print_kernel_ident(void)
-@@ -888,11 +895,13 @@ look_up_lock_class(const struct lockdep_map *lock, unsigned int subclass)
- 	if (unlikely(subclass >= MAX_LOCKDEP_SUBCLASSES)) {
- 		instrumentation_begin();
- 		debug_locks_off();
-+		nbcon_cpu_emergency_enter();
- 		printk(KERN_ERR
- 			"BUG: looking up invalid subclass: %u\n", subclass);
- 		printk(KERN_ERR
- 			"turning off the locking correctness validator.\n");
- 		dump_stack();
-+		nbcon_cpu_emergency_exit();
- 		instrumentation_end();
- 		return NULL;
- 	}
-@@ -969,11 +978,13 @@ static bool assign_lock_key(struct lockdep_map *lock)
- 	else {
- 		/* Debug-check: all keys must be persistent! */
- 		debug_locks_off();
-+		nbcon_cpu_emergency_enter();
- 		pr_err("INFO: trying to register non-static key.\n");
- 		pr_err("The code is fine but needs lockdep annotation, or maybe\n");
- 		pr_err("you didn't initialize this object before use?\n");
- 		pr_err("turning off the locking correctness validator.\n");
- 		dump_stack();
-+		nbcon_cpu_emergency_exit();
- 		return false;
- 	}
- 
-@@ -1317,8 +1328,10 @@ register_lock_class(struct lockdep_map *lock, unsigned int subclass, int force)
- 			return NULL;
- 		}
- 
-+		nbcon_cpu_emergency_enter();
- 		print_lockdep_off("BUG: MAX_LOCKDEP_KEYS too low!");
- 		dump_stack();
-+		nbcon_cpu_emergency_exit();
- 		return NULL;
- 	}
- 	nr_lock_classes++;
-@@ -1350,11 +1363,13 @@ register_lock_class(struct lockdep_map *lock, unsigned int subclass, int force)
- 	if (verbose(class)) {
- 		graph_unlock();
- 
-+		nbcon_cpu_emergency_enter();
- 		printk("\nnew class %px: %s", class->key, class->name);
- 		if (class->name_version > 1)
- 			printk(KERN_CONT "#%d", class->name_version);
- 		printk(KERN_CONT "\n");
- 		dump_stack();
-+		nbcon_cpu_emergency_exit();
- 
- 		if (!graph_lock()) {
- 			return NULL;
-@@ -1393,8 +1408,10 @@ static struct lock_list *alloc_list_entry(void)
- 		if (!debug_locks_off_graph_unlock())
- 			return NULL;
- 
-+		nbcon_cpu_emergency_enter();
- 		print_lockdep_off("BUG: MAX_LOCKDEP_ENTRIES too low!");
- 		dump_stack();
-+		nbcon_cpu_emergency_exit();
- 		return NULL;
- 	}
- 	nr_list_entries++;
-@@ -2040,6 +2057,8 @@ static noinline void print_circular_bug(struct lock_list *this,
- 
- 	depth = get_lock_depth(target);
- 
-+	nbcon_cpu_emergency_enter();
-+
- 	print_circular_bug_header(target, depth, check_src, check_tgt);
- 
- 	parent = get_lock_parent(target);
-@@ -2058,6 +2077,8 @@ static noinline void print_circular_bug(struct lock_list *this,
- 
- 	printk("\nstack backtrace:\n");
- 	dump_stack();
-+
-+	nbcon_cpu_emergency_exit();
- }
- 
- static noinline void print_bfs_bug(int ret)
-@@ -2570,6 +2591,8 @@ print_bad_irq_dependency(struct task_struct *curr,
- 	if (!debug_locks_off_graph_unlock() || debug_locks_silent)
- 		return;
- 
-+	nbcon_cpu_emergency_enter();
-+
- 	pr_warn("\n");
- 	pr_warn("=====================================================\n");
- 	pr_warn("WARNING: %s-safe -> %s-unsafe lock order detected\n",
-@@ -2619,11 +2642,13 @@ print_bad_irq_dependency(struct task_struct *curr,
- 	pr_warn(" and %s-irq-unsafe lock:\n", irqclass);
- 	next_root->trace = save_trace();
- 	if (!next_root->trace)
--		return;
-+		goto out;
- 	print_shortest_lock_dependencies(forwards_entry, next_root);
- 
- 	pr_warn("\nstack backtrace:\n");
- 	dump_stack();
-+out:
-+	nbcon_cpu_emergency_exit();
- }
- 
- static const char *state_names[] = {
-@@ -2988,6 +3013,8 @@ print_deadlock_bug(struct task_struct *curr, struct held_lock *prev,
- 	if (!debug_locks_off_graph_unlock() || debug_locks_silent)
- 		return;
- 
-+	nbcon_cpu_emergency_enter();
-+
- 	pr_warn("\n");
- 	pr_warn("============================================\n");
- 	pr_warn("WARNING: possible recursive locking detected\n");
-@@ -3010,6 +3037,8 @@ print_deadlock_bug(struct task_struct *curr, struct held_lock *prev,
- 
- 	pr_warn("\nstack backtrace:\n");
- 	dump_stack();
-+
-+	nbcon_cpu_emergency_exit();
- }
- 
- /*
-@@ -3607,6 +3636,8 @@ static void print_collision(struct task_struct *curr,
- 			struct held_lock *hlock_next,
- 			struct lock_chain *chain)
- {
-+	nbcon_cpu_emergency_enter();
-+
- 	pr_warn("\n");
- 	pr_warn("============================\n");
- 	pr_warn("WARNING: chain_key collision\n");
-@@ -3623,6 +3654,8 @@ static void print_collision(struct task_struct *curr,
- 
- 	pr_warn("\nstack backtrace:\n");
- 	dump_stack();
-+
-+	nbcon_cpu_emergency_exit();
- }
- #endif
- 
-@@ -3713,8 +3746,10 @@ static inline int add_chain_cache(struct task_struct *curr,
- 		if (!debug_locks_off_graph_unlock())
- 			return 0;
- 
-+		nbcon_cpu_emergency_enter();
- 		print_lockdep_off("BUG: MAX_LOCKDEP_CHAINS too low!");
- 		dump_stack();
-+		nbcon_cpu_emergency_exit();
- 		return 0;
- 	}
- 	chain->chain_key = chain_key;
-@@ -3731,8 +3766,10 @@ static inline int add_chain_cache(struct task_struct *curr,
- 		if (!debug_locks_off_graph_unlock())
- 			return 0;
- 
-+		nbcon_cpu_emergency_enter();
- 		print_lockdep_off("BUG: MAX_LOCKDEP_CHAIN_HLOCKS too low!");
- 		dump_stack();
-+		nbcon_cpu_emergency_exit();
- 		return 0;
- 	}
- 
-@@ -3971,6 +4008,8 @@ print_usage_bug(struct task_struct *curr, struct held_lock *this,
- 	if (!debug_locks_off() || debug_locks_silent)
- 		return;
- 
-+	nbcon_cpu_emergency_enter();
-+
- 	pr_warn("\n");
- 	pr_warn("================================\n");
- 	pr_warn("WARNING: inconsistent lock state\n");
-@@ -3999,6 +4038,8 @@ print_usage_bug(struct task_struct *curr, struct held_lock *this,
- 
- 	pr_warn("\nstack backtrace:\n");
- 	dump_stack();
-+
-+	nbcon_cpu_emergency_exit();
- }
- 
- /*
-@@ -4033,6 +4074,8 @@ print_irq_inversion_bug(struct task_struct *curr,
- 	if (!debug_locks_off_graph_unlock() || debug_locks_silent)
- 		return;
- 
-+	nbcon_cpu_emergency_enter();
-+
- 	pr_warn("\n");
- 	pr_warn("========================================================\n");
- 	pr_warn("WARNING: possible irq lock inversion dependency detected\n");
-@@ -4073,11 +4116,13 @@ print_irq_inversion_bug(struct task_struct *curr,
- 	pr_warn("\nthe shortest dependencies between 2nd lock and 1st lock:\n");
- 	root->trace = save_trace();
- 	if (!root->trace)
--		return;
-+		goto out;
- 	print_shortest_lock_dependencies(other, root);
- 
- 	pr_warn("\nstack backtrace:\n");
- 	dump_stack();
-+out:
-+	nbcon_cpu_emergency_exit();
- }
- 
- /*
-@@ -4154,6 +4199,8 @@ void print_irqtrace_events(struct task_struct *curr)
- {
- 	const struct irqtrace_events *trace = &curr->irqtrace;
- 
-+	nbcon_cpu_emergency_enter();
-+
- 	printk("irq event stamp: %u\n", trace->irq_events);
- 	printk("hardirqs last  enabled at (%u): [<%px>] %pS\n",
- 		trace->hardirq_enable_event, (void *)trace->hardirq_enable_ip,
-@@ -4167,6 +4214,8 @@ void print_irqtrace_events(struct task_struct *curr)
- 	printk("softirqs last disabled at (%u): [<%px>] %pS\n",
- 		trace->softirq_disable_event, (void *)trace->softirq_disable_ip,
- 		(void *)trace->softirq_disable_ip);
-+
-+	nbcon_cpu_emergency_exit();
- }
- 
- static int HARDIRQ_verbose(struct lock_class *class)
-@@ -4687,10 +4736,12 @@ static int mark_lock(struct task_struct *curr, struct held_lock *this,
- 	 * We must printk outside of the graph_lock:
- 	 */
- 	if (ret == 2) {
-+		nbcon_cpu_emergency_enter();
- 		printk("\nmarked lock as {%s}:\n", usage_str[new_bit]);
- 		print_lock(this);
- 		print_irqtrace_events(curr);
- 		dump_stack();
-+		nbcon_cpu_emergency_exit();
- 	}
- 
- 	return ret;
-@@ -4731,6 +4782,8 @@ print_lock_invalid_wait_context(struct task_struct *curr,
- 	if (debug_locks_silent)
- 		return 0;
- 
-+	nbcon_cpu_emergency_enter();
-+
- 	pr_warn("\n");
- 	pr_warn("=============================\n");
- 	pr_warn("[ BUG: Invalid wait context ]\n");
-@@ -4750,6 +4803,8 @@ print_lock_invalid_wait_context(struct task_struct *curr,
- 	pr_warn("stack backtrace:\n");
- 	dump_stack();
- 
-+	nbcon_cpu_emergency_exit();
-+
- 	return 0;
- }
- 
-@@ -4954,6 +5009,8 @@ print_lock_nested_lock_not_held(struct task_struct *curr,
- 	if (debug_locks_silent)
- 		return;
- 
-+	nbcon_cpu_emergency_enter();
-+
- 	pr_warn("\n");
- 	pr_warn("==================================\n");
- 	pr_warn("WARNING: Nested lock was not taken\n");
-@@ -4974,6 +5031,8 @@ print_lock_nested_lock_not_held(struct task_struct *curr,
- 
- 	pr_warn("\nstack backtrace:\n");
- 	dump_stack();
-+
-+	nbcon_cpu_emergency_exit();
- }
- 
- static int __lock_is_held(const struct lockdep_map *lock, int read);
-@@ -5019,11 +5078,13 @@ static int __lock_acquire(struct lockdep_map *lock, unsigned int subclass,
- 	debug_class_ops_inc(class);
- 
- 	if (very_verbose(class)) {
-+		nbcon_cpu_emergency_enter();
- 		printk("\nacquire class [%px] %s", class->key, class->name);
- 		if (class->name_version > 1)
- 			printk(KERN_CONT "#%d", class->name_version);
- 		printk(KERN_CONT "\n");
- 		dump_stack();
-+		nbcon_cpu_emergency_exit();
- 	}
- 
- 	/*
-@@ -5150,6 +5211,7 @@ static int __lock_acquire(struct lockdep_map *lock, unsigned int subclass,
- #endif
- 	if (unlikely(curr->lockdep_depth >= MAX_LOCK_DEPTH)) {
- 		debug_locks_off();
-+		nbcon_cpu_emergency_enter();
- 		print_lockdep_off("BUG: MAX_LOCK_DEPTH too low!");
- 		printk(KERN_DEBUG "depth: %i  max: %lu!\n",
- 		       curr->lockdep_depth, MAX_LOCK_DEPTH);
-@@ -5157,6 +5219,7 @@ static int __lock_acquire(struct lockdep_map *lock, unsigned int subclass,
- 		lockdep_print_held_locks(current);
- 		debug_show_all_locks();
- 		dump_stack();
-+		nbcon_cpu_emergency_exit();
- 
- 		return 0;
- 	}
-@@ -5176,6 +5239,8 @@ static void print_unlock_imbalance_bug(struct task_struct *curr,
- 	if (debug_locks_silent)
- 		return;
- 
-+	nbcon_cpu_emergency_enter();
-+
- 	pr_warn("\n");
- 	pr_warn("=====================================\n");
- 	pr_warn("WARNING: bad unlock balance detected!\n");
-@@ -5192,6 +5257,8 @@ static void print_unlock_imbalance_bug(struct task_struct *curr,
- 
- 	pr_warn("\nstack backtrace:\n");
- 	dump_stack();
-+
-+	nbcon_cpu_emergency_exit();
- }
- 
- static noinstr int match_held_lock(const struct held_lock *hlock,
-@@ -5895,6 +5962,8 @@ static void print_lock_contention_bug(struct task_struct *curr,
- 	if (debug_locks_silent)
- 		return;
- 
-+	nbcon_cpu_emergency_enter();
-+
- 	pr_warn("\n");
- 	pr_warn("=================================\n");
- 	pr_warn("WARNING: bad contention detected!\n");
-@@ -5911,6 +5980,8 @@ static void print_lock_contention_bug(struct task_struct *curr,
- 
- 	pr_warn("\nstack backtrace:\n");
- 	dump_stack();
-+
-+	nbcon_cpu_emergency_exit();
- }
- 
- static void
-@@ -6524,6 +6595,8 @@ print_freed_lock_bug(struct task_struct *curr, const void *mem_from,
- 	if (debug_locks_silent)
- 		return;
- 
-+	nbcon_cpu_emergency_enter();
-+
- 	pr_warn("\n");
- 	pr_warn("=========================\n");
- 	pr_warn("WARNING: held lock freed!\n");
-@@ -6536,6 +6609,8 @@ print_freed_lock_bug(struct task_struct *curr, const void *mem_from,
- 
- 	pr_warn("\nstack backtrace:\n");
- 	dump_stack();
-+
-+	nbcon_cpu_emergency_exit();
- }
- 
- static inline int not_in_range(const void* mem_from, unsigned long mem_len,
-@@ -6582,6 +6657,8 @@ static void print_held_locks_bug(void)
- 	if (debug_locks_silent)
- 		return;
- 
-+	nbcon_cpu_emergency_enter();
-+
- 	pr_warn("\n");
- 	pr_warn("====================================\n");
- 	pr_warn("WARNING: %s/%d still has locks held!\n",
-@@ -6591,6 +6668,8 @@ static void print_held_locks_bug(void)
- 	lockdep_print_held_locks(current);
- 	pr_warn("\nstack backtrace:\n");
- 	dump_stack();
-+
-+	nbcon_cpu_emergency_exit();
- }
- 
- void debug_check_no_locks_held(void)
-@@ -6609,6 +6688,7 @@ void debug_show_all_locks(void)
- 		pr_warn("INFO: lockdep is turned off.\n");
- 		return;
- 	}
-+	nbcon_cpu_emergency_enter();
- 	pr_warn("\nShowing all locks held in the system:\n");
- 
- 	rcu_read_lock();
-@@ -6623,6 +6703,7 @@ void debug_show_all_locks(void)
- 
- 	pr_warn("\n");
- 	pr_warn("=============================================\n\n");
-+	nbcon_cpu_emergency_exit();
- }
- EXPORT_SYMBOL_GPL(debug_show_all_locks);
- #endif
-@@ -6648,6 +6729,7 @@ asmlinkage __visible void lockdep_sys_exit(void)
- 	if (unlikely(curr->lockdep_depth)) {
- 		if (!debug_locks_off())
- 			return;
-+		nbcon_cpu_emergency_enter();
- 		pr_warn("\n");
- 		pr_warn("================================================\n");
- 		pr_warn("WARNING: lock held when returning to user space!\n");
-@@ -6656,6 +6738,7 @@ asmlinkage __visible void lockdep_sys_exit(void)
- 		pr_warn("%s/%d is leaving the kernel with locks still held!\n",
- 				curr->comm, curr->pid);
- 		lockdep_print_held_locks(curr);
-+		nbcon_cpu_emergency_exit();
- 	}
- 
- 	/*
-@@ -6672,6 +6755,7 @@ void lockdep_rcu_suspicious(const char *file, const int line, const char *s)
- 	bool rcu = warn_rcu_enter();
- 
- 	/* Note: the following can be executed concurrently, so be careful. */
-+	nbcon_cpu_emergency_enter();
- 	pr_warn("\n");
- 	pr_warn("=============================\n");
- 	pr_warn("WARNING: suspicious RCU usage\n");
-@@ -6710,6 +6794,7 @@ void lockdep_rcu_suspicious(const char *file, const int line, const char *s)
- 	lockdep_print_held_locks(curr);
- 	pr_warn("\nstack backtrace:\n");
- 	dump_stack();
-+	nbcon_cpu_emergency_exit();
- 	warn_rcu_exit(rcu);
- }
- EXPORT_SYMBOL_GPL(lockdep_rcu_suspicious);
--- 
-2.39.2
-
+Guenter
 
