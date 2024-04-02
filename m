@@ -1,559 +1,145 @@
-Return-Path: <linux-kernel+bounces-128057-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-128058-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id F0B3989557F
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 15:36:07 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 94DA68955C4
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 15:51:26 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 37046287F0A
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 13:36:06 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id CE9D6B2D7D9
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 13:38:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D748684A4B;
-	Tue,  2 Apr 2024 13:35:58 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9C35460DE9;
-	Tue,  2 Apr 2024 13:35:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3D6FD84037;
+	Tue,  2 Apr 2024 13:38:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="h6ltzsmq"
+Received: from mail-pf1-f171.google.com (mail-pf1-f171.google.com [209.85.210.171])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C526279DD4
+	for <linux-kernel@vger.kernel.org>; Tue,  2 Apr 2024 13:38:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712064958; cv=none; b=D0KCRGV/VKURrEom1zalAFxRDfxVm02frMYYqR+8WpLBKGrW566wL2zxRP++mBn6rnmwpWKYTdvtG1e2KomFQ4u1tLnhWG9Fj6eaq5+CELuAIX+i7mI46xY/Fw2qIqqPR1tMRr5OqbOPvpQ9+Zm2Uj87++NvmfmmfO73jPiQ28Q=
+	t=1712065127; cv=none; b=gCxrJu/UcwlgA/rz9D1aLq5SNFjRGrcaW1irB5YpqMm3kdRM71YXcl3xdJVOVTXJNuHXwxUJ0z23hNVE1L5Eyqd7qA18m7xdRs40Mh/fpKn8YQja4het5bXdf0pM9CIO02vvq9xhBkm01EwmpfThFlXR+3KTrdRhRD8bHlKNqtM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712064958; c=relaxed/simple;
-	bh=W9Akjb1Ge7CkOTaOHcq6o7jMt/E6hNknct9z20sHbus=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=LuAKabOmDfAcgqtSaJemAeXKdaPdYgMOlo2kUGZPcfESlopXwlo4cc6TGsVBAow7KyMto/c+YNGnp1Vt0ty4uTtEKp9DIXRJOErRsrKWTs4GJD6fbU8qJR+Wq+MuXWNGWY9Cibe2PkS7WIyc9DvdPY4aW+iO4ALIJQBUVzLJclA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id A35FC1007;
-	Tue,  2 Apr 2024 06:36:26 -0700 (PDT)
-Received: from FVFF77S0Q05N (unknown [10.57.18.33])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 8BA3E3F766;
-	Tue,  2 Apr 2024 06:35:50 -0700 (PDT)
-Date: Tue, 2 Apr 2024 14:35:44 +0100
-From: Mark Rutland <mark.rutland@arm.com>
-To: Puranjay Mohan <puranjay12@gmail.com>
-Cc: Catalin Marinas <catalin.marinas@arm.com>,
-	Will Deacon <will@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Martin KaFai Lau <martin.lau@linux.dev>,
-	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>,
-	Yonghong Song <yonghong.song@linux.dev>,
-	John Fastabend <john.fastabend@gmail.com>,
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>,
-	Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-	Zi Shen Lim <zlim.lnx@gmail.com>,
-	Suzuki K Poulose <suzuki.poulose@arm.com>,
-	Mark Brown <broonie@kernel.org>,
-	linux-arm-kernel@lists.infradead.org,
-	open list <linux-kernel@vger.kernel.org>,
-	"open list:BPF [GENERAL] (Safe Dynamic Programs and Tools)" <bpf@vger.kernel.org>,
-	Josh Poimboeuf <jpoimboe@kernel.org>
-Subject: Re: [PATCH bpf-next v2 1/1] arm64/cfi,bpf: Support kCFI + BPF on
- arm64
-Message-ID: <ZgwJsJPUyPVNdpZb@FVFF77S0Q05N>
-References: <20240324211518.93892-1-puranjay12@gmail.com>
- <20240324211518.93892-2-puranjay12@gmail.com>
- <ZgMbFqWpmZgahiV6@FVFF77S0Q05N.cambridge.arm.com>
- <mb61pv858vdah.fsf@gmail.com>
+	s=arc-20240116; t=1712065127; c=relaxed/simple;
+	bh=oy6TSCppR0FL8FKnxmd6Ok1rnWwYEeT4sUvfAhd/HpA=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=YH6ud3XWs0Sa4M2tyCfg/n15IAhao/ZNS2eSPm2J31l5kLgimplI7Ozlk3oyZJKyPTG09iRRUC79UFZqCabE4WiPXrf6d4oW8rDaaBP71la2TDvMljalydIiEi7rsAmlQ0ODI3rG899WYDkGqmMKp9Clo/81pfqqPREyC+EUT6o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=h6ltzsmq; arc=none smtp.client-ip=209.85.210.171
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pf1-f171.google.com with SMTP id d2e1a72fcca58-6e8f765146fso4339400b3a.0
+        for <linux-kernel@vger.kernel.org>; Tue, 02 Apr 2024 06:38:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1712065125; x=1712669925; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:sender:from:to:cc:subject:date:message-id:reply-to;
+        bh=jIQOkXAPzRTIsXCLQrCNO/btC95b+DW8Kc5c+5fkvh0=;
+        b=h6ltzsmqg1LWf59d46X/Dwr9jVh9Kj3Cl3N3vS+/NafT6UB5ShAJPeHTpBOKfeQO0E
+         NABgbdHpG5ip2udWQkmrr27i2empFhkiSix66WLFczVluSiXntHB1Jo/tkXl3dWjnaHd
+         2SaD0faA4mI9+NV8fzjE3tkD2m1SUTh+wX+JCiPTOuSBTAnSRAjcery7/LD2e+8gBHKH
+         nXCBGqLrBxS3O+SIcE3w0jOYgRRsKrBwLO4G2Br6DCBOV1GcS3U5B51LOLbaMEKtmtJA
+         sq1Lo4d5avMYjgxckeWu3vxzmCN31yEQk0q+zrsHZhLp4W6OQz/uTlLGIzhnitzCcubg
+         awEg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712065125; x=1712669925;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:sender:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=jIQOkXAPzRTIsXCLQrCNO/btC95b+DW8Kc5c+5fkvh0=;
+        b=v8sbi349zhGHnSf3Qa7vbzlxy7AFgBUj4gOtS4HeO8QiPS9RJoueInq+M4Gyq9HFmR
+         /plEI7aB+2WlaBj/PiTzIsAloj3cZ6Fw1dAvBArmcaLJ3V851yO+y2GFH5clpjvTazqW
+         CqM18FYk5XDOODxbJxgTlhTGopXyzO+sD9q/uTlF7WCB6oXnGF1J3qhRF97oLRJXiZdT
+         ejrrZzZiZoPWEcUZxRb6xCQ1e10JRh+ufUz788ZvJUPYgACQrCSIBUN7MoLdkyJ7H2AZ
+         +rwVhnqP0ON7G374rCvacxrrrTmnUNYNX5nmJB1822aLuxTWiZnOWhELq3hC/C2IwIaR
+         PAmQ==
+X-Gm-Message-State: AOJu0Yw2jVpQxMLxpLEjjC0g3Birpo8X4n921nuEUupoQcnfDDbt23ce
+	2S1La6pnw6fq40+4vbIKt/Tf4emAhqhSczYqFQOyoJ+fs9Ne5e0o
+X-Google-Smtp-Source: AGHT+IF390TovvkC6+QyYCy4RwGWahE/gPHKWGE/HLIR1BlC+7C6X414ToBdcrxXfWP8JhVWGnNE+g==
+X-Received: by 2002:a05:6a00:2403:b0:6e6:f9e1:fd07 with SMTP id z3-20020a056a00240300b006e6f9e1fd07mr11956503pfh.10.1712065125000;
+        Tue, 02 Apr 2024 06:38:45 -0700 (PDT)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id fm26-20020a056a002f9a00b006e5360f1cffsm9820266pfb.180.2024.04.02.06.38.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 02 Apr 2024 06:38:43 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+From: Guenter Roeck <linux@roeck-us.net>
+To: Andrew Morton <akpm@linux-foundation.org>
+Cc: linux-kernel@vger.kernel.org,
+	Guenter Roeck <linux@roeck-us.net>,
+	Oliver Glitta <glittao@gmail.com>,
+	Vlastimil Babka <vbabka@suse.cz>,
+	Daniel Latypov <dlatypov@google.com>,
+	Marco Elver <elver@google.com>
+Subject: [PATCH] mm/slub, kunit: Use inverted data to corrupt kmem cache
+Date: Tue,  2 Apr 2024 06:38:39 -0700
+Message-Id: <20240402133839.283793-1-linux@roeck-us.net>
+X-Mailer: git-send-email 2.39.2
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <mb61pv858vdah.fsf@gmail.com>
+Content-Transfer-Encoding: 8bit
 
-On Tue, Mar 26, 2024 at 10:28:06PM +0000, Puranjay Mohan wrote:
-> Mark Rutland <mark.rutland@arm.com> writes:
-> 
-> > Hi Puranjay,
-> >
-> > On Sun, Mar 24, 2024 at 09:15:18PM +0000, Puranjay Mohan wrote:
-> >> Currently, bpf_dispatcher_*_func() is marked with `__nocfi` therefore
-> >> calling BPF programs from this interface doesn't cause CFI warnings.
-> >> 
-> >> When BPF programs are called directly from C: from BPF helpers or
-> >> struct_ops, CFI warnings are generated.
-> >> 
-> >> Implement proper CFI prologues for the BPF programs and callbacks and
-> >> drop __nocfi for arm64. Fix the trampoline generation code to emit kCFI
-> >> prologue when a struct_ops trampoline is being prepared.
-> >> 
-> >> Signed-off-by: Puranjay Mohan <puranjay12@gmail.com>
-> >
-> > Presumably this'll need a Cc stable and a Fixes tag?
-> 
-> Thanks for mentioning, I will find out from what commit this is broken.
-> 
-> >
-> >> ---
-> >>  arch/arm64/include/asm/cfi.h    | 23 ++++++++++++++
-> >>  arch/arm64/kernel/alternative.c | 54 +++++++++++++++++++++++++++++++++
-> >>  arch/arm64/net/bpf_jit_comp.c   | 28 +++++++++++++----
-> >>  3 files changed, 99 insertions(+), 6 deletions(-)
-> >>  create mode 100644 arch/arm64/include/asm/cfi.h
-> >> 
-> >> diff --git a/arch/arm64/include/asm/cfi.h b/arch/arm64/include/asm/cfi.h
-> >> new file mode 100644
-> >> index 000000000000..670e191f8628
-> >> --- /dev/null
-> >> +++ b/arch/arm64/include/asm/cfi.h
-> >> @@ -0,0 +1,23 @@
-> >> +/* SPDX-License-Identifier: GPL-2.0 */
-> >> +#ifndef _ASM_ARM64_CFI_H
-> >> +#define _ASM_ARM64_CFI_H
-> >> +
-> >> +#ifdef CONFIG_CFI_CLANG
-> >> +#define __bpfcall
-> >> +static inline int cfi_get_offset(void)
-> >> +{
-> >> +	return 4;
-> >> +}
-> >> +#define cfi_get_offset cfi_get_offset
-> >> +extern u32 cfi_bpf_hash;
-> >> +extern u32 cfi_bpf_subprog_hash;
-> >> +extern u32 cfi_get_func_hash(void *func);
-> >> +#else
-> >> +#define cfi_bpf_hash 0U
-> >> +#define cfi_bpf_subprog_hash 0U
-> >> +static inline u32 cfi_get_func_hash(void *func)
-> >> +{
-> >> +	return 0;
-> >> +}
-> >> +#endif /* CONFIG_CFI_CLANG */
-> >> +#endif /* _ASM_ARM64_CFI_H */
-> >> diff --git a/arch/arm64/kernel/alternative.c b/arch/arm64/kernel/alternative.c
-> >> index 8ff6610af496..1715da7df137 100644
-> >> --- a/arch/arm64/kernel/alternative.c
-> >> +++ b/arch/arm64/kernel/alternative.c
-> >> @@ -13,6 +13,7 @@
-> >>  #include <linux/elf.h>
-> >>  #include <asm/cacheflush.h>
-> >>  #include <asm/alternative.h>
-> >> +#include <asm/cfi.h>
-> >>  #include <asm/cpufeature.h>
-> >>  #include <asm/insn.h>
-> >>  #include <asm/module.h>
-> >> @@ -298,3 +299,56 @@ noinstr void alt_cb_patch_nops(struct alt_instr *alt, __le32 *origptr,
-> >>  		updptr[i] = cpu_to_le32(aarch64_insn_gen_nop());
-> >>  }
-> >>  EXPORT_SYMBOL(alt_cb_patch_nops);
-> >> +
-> >> +#ifdef CONFIG_CFI_CLANG
-> >> +struct bpf_insn;
-> >> +
-> >> +/* Must match bpf_func_t / DEFINE_BPF_PROG_RUN() */
-> >> +extern unsigned int __bpf_prog_runX(const void *ctx,
-> >> +				    const struct bpf_insn *insn);
-> >> +
-> >> +/*
-> >> + * Force a reference to the external symbol so the compiler generates
-> >> + * __kcfi_typid.
-> >> + */
-> >> +__ADDRESSABLE(__bpf_prog_runX);
-> >> +
-> >> +/* u32 __ro_after_init cfi_bpf_hash = __kcfi_typeid___bpf_prog_runX; */
-> >> +asm (
-> >> +"	.pushsection	.data..ro_after_init,\"aw\",@progbits	\n"
-> >> +"	.type	cfi_bpf_hash,@object				\n"
-> >> +"	.globl	cfi_bpf_hash					\n"
-> >> +"	.p2align	2, 0x0					\n"
-> >> +"cfi_bpf_hash:							\n"
-> >> +"	.word	__kcfi_typeid___bpf_prog_runX			\n"
-> >> +"	.size	cfi_bpf_hash, 4					\n"
-> >> +"	.popsection						\n"
-> >> +);
-> >> +
-> >> +/* Must match bpf_callback_t */
-> >> +extern u64 __bpf_callback_fn(u64, u64, u64, u64, u64);
-> >> +
-> >> +__ADDRESSABLE(__bpf_callback_fn);
-> >> +
-> >> +/* u32 __ro_after_init cfi_bpf_subprog_hash = __kcfi_typeid___bpf_callback_fn; */
-> >> +asm (
-> >> +"	.pushsection	.data..ro_after_init,\"aw\",@progbits	\n"
-> >> +"	.type	cfi_bpf_subprog_hash,@object			\n"
-> >> +"	.globl	cfi_bpf_subprog_hash				\n"
-> >> +"	.p2align	2, 0x0					\n"
-> >> +"cfi_bpf_subprog_hash:						\n"
-> >> +"	.word	__kcfi_typeid___bpf_callback_fn			\n"
-> >> +"	.size	cfi_bpf_subprog_hash, 4				\n"
-> >> +"	.popsection						\n"
-> >> +);
-> >> +
-> >> +u32 cfi_get_func_hash(void *func)
-> >> +{
-> >> +	u32 hash;
-> >> +
-> >> +	if (get_kernel_nofault(hash, func - cfi_get_offset()))
-> >> +		return 0;
-> >> +
-> >> +	return hash;
-> >> +}
-> >> +#endif
-> >
-> > I realise this is following the example of x86, but this has nothing to do with
-> > alternatives, so could we please place it elsewhere? e.g. add a new
-> > arch/arm64/net/bpf_cfi.c?
-> 
-> Sure, a new file would work.
-> How about: arch/arm64/kernel/cfi.c
+Two failure patterns are seen randomly when running slub_kunit tests with
+CONFIG_SLAB_FREELIST_RANDOM and CONFIG_SLAB_FREELIST_HARDENED enabled.
 
-Looking again, I don't think we actually need a new file. We should:
+Pattern 1:
+     # test_clobber_zone: pass:1 fail:0 skip:0 total:1
+     ok 1 test_clobber_zone
+     # test_next_pointer: EXPECTATION FAILED at lib/slub_kunit.c:72
+     Expected 3 == slab_errors, but
+         slab_errors == 0 (0x0)
+     # test_next_pointer: EXPECTATION FAILED at lib/slub_kunit.c:84
+     Expected 2 == slab_errors, but
+         slab_errors == 0 (0x0)
+     # test_next_pointer: pass:0 fail:1 skip:0 total:1
+     not ok 2 test_next_pointer
 
-(1) Add a generic macro to define a variable with a KCFI type, and migrate
-    existing code to this. See the patch at the end of this email.
+In this case, test_next_pointer() overwrites p[s->offset], but the data
+at p[s->offset] is already 0x12.
 
-(2) Use that macro within arch/arm64/net/bpf_jit_comp.c, which also avoids the
-    need to define cfi_bpf_hash or cfi_bpf_subprog_hash in the asm/cfi.h
-    header.
+Pattern 2:
+     ok 1 test_clobber_zone
+     # test_next_pointer: EXPECTATION FAILED at lib/slub_kunit.c:72
+     Expected 3 == slab_errors, but
+         slab_errors == 2 (0x2)
+     # test_next_pointer: pass:0 fail:1 skip:0 total:1
+     not ok 2 test_next_pointer
 
-(3) Place cfi_get_func_hash() in the asm/cfi.h header for now.
+In this case, p[s->offset] has a value other than 0x12, but one of the
+expected failures is nevertheless missing.
 
-> > Which functions is cfi_get_func_hash() used against? The comment in the code
-> > below says:
-> >
-> > 	if (flags & BPF_TRAMP_F_INDIRECT) {
-> > 		/*
-> > 		 * Indirect call for bpf_struct_ops
-> > 		 */
-> > 		emit_kcfi(cfi_get_func_hash(func_addr), ctx);
-> > 	}
-> >
-> > ... but it's not clear to me which functions specifically would be in that
-> > 'func_addr', not why returning 0 is fine -- surely we should fail compilation
-> > if the provided function pointer causes a fault and we don't have a valid
-> > typeid?
-> 
-> 'func_addr' will have one of the cfi_stubs like in net/ipv4/bpf_tcp_ca.c
-> Explained in more detail below:
+Invert data instead of writing a fixed value to corrupt the cache data
+structures to fix the problem.
 
-I see, so this is a stub function which will branch to the trampoline.
-
-That explains which functions this'll be used for, but it doesn't explain why
-we'd expect those to fault, not we why try to handle that by returning 0.
-
-For CFI to work at all those should *never* fault, so we should be able to
-write:
-
-u32 cfi_get_func_hash(void *func)
-{
-	u32 *hashp = func - cfi_get_offset();
-	return READ_ONCE(*hashp);
-}
-
-.. right? Or do we expect some of the stubs to be NULL?
-
-> >> diff --git a/arch/arm64/net/bpf_jit_comp.c b/arch/arm64/net/bpf_jit_comp.c
-> >> index bc16eb694657..2372812bb47c 100644
-> >> --- a/arch/arm64/net/bpf_jit_comp.c
-> >> +++ b/arch/arm64/net/bpf_jit_comp.c
-> >> @@ -17,6 +17,7 @@
-> >>  #include <asm/asm-extable.h>
-> >>  #include <asm/byteorder.h>
-> >>  #include <asm/cacheflush.h>
-> >> +#include <asm/cfi.h>
-> >>  #include <asm/debug-monitors.h>
-> >>  #include <asm/insn.h>
-> >>  #include <asm/patching.h>
-> >> @@ -158,6 +159,12 @@ static inline void emit_bti(u32 insn, struct jit_ctx *ctx)
-> >>  		emit(insn, ctx);
-> >>  }
-> >>  
-> >> +static inline void emit_kcfi(u32 hash, struct jit_ctx *ctx)
-> >> +{
-> >> +	if (IS_ENABLED(CONFIG_CFI_CLANG))
-> >> +		emit(hash, ctx);
-> >> +}
-> >> +
-> >>  /*
-> >>   * Kernel addresses in the vmalloc space use at most 48 bits, and the
-> >>   * remaining bits are guaranteed to be 0x1. So we can compose the address
-> >> @@ -295,7 +302,7 @@ static bool is_lsi_offset(int offset, int scale)
-> >>  #define PROLOGUE_OFFSET (BTI_INSNS + 2 + PAC_INSNS + 8)
-> >>  
-> >>  static int build_prologue(struct jit_ctx *ctx, bool ebpf_from_cbpf,
-> >> -			  bool is_exception_cb)
-> >> +			  bool is_exception_cb, bool is_subprog)
-> >>  {
-> >>  	const struct bpf_prog *prog = ctx->prog;
-> >>  	const bool is_main_prog = !bpf_is_subprog(prog);
-> >> @@ -306,7 +313,6 @@ static int build_prologue(struct jit_ctx *ctx, bool ebpf_from_cbpf,
-> >>  	const u8 fp = bpf2a64[BPF_REG_FP];
-> >>  	const u8 tcc = bpf2a64[TCALL_CNT];
-> >>  	const u8 fpb = bpf2a64[FP_BOTTOM];
-> >> -	const int idx0 = ctx->idx;
-> >>  	int cur_offset;
-> >>  
-> >>  	/*
-> >> @@ -332,6 +338,8 @@ static int build_prologue(struct jit_ctx *ctx, bool ebpf_from_cbpf,
-> >>  	 *
-> >>  	 */
-> >>  
-> >> +	emit_kcfi(is_subprog ? cfi_bpf_subprog_hash : cfi_bpf_hash, ctx);
-> >> +	const int idx0 = ctx->idx;
-> >>  	/* bpf function may be invoked by 3 instruction types:
-> >>  	 * 1. bl, attached via freplace to bpf prog via short jump
-> >>  	 * 2. br, attached via freplace to bpf prog via long jump
-> >> @@ -1648,7 +1656,8 @@ struct bpf_prog *bpf_int_jit_compile(struct bpf_prog *prog)
-> >>  	 * BPF line info needs ctx->offset[i] to be the offset of
-> >>  	 * instruction[i] in jited image, so build prologue first.
-> >>  	 */
-> >> -	if (build_prologue(&ctx, was_classic, prog->aux->exception_cb)) {
-> >> +	if (build_prologue(&ctx, was_classic, prog->aux->exception_cb,
-> >> +			   bpf_is_subprog(prog))) {
-> >>  		prog = orig_prog;
-> >>  		goto out_off;
-> >>  	}
-> >> @@ -1696,7 +1705,8 @@ struct bpf_prog *bpf_int_jit_compile(struct bpf_prog *prog)
-> >>  	ctx.idx = 0;
-> >>  	ctx.exentry_idx = 0;
-> >>  
-> >> -	build_prologue(&ctx, was_classic, prog->aux->exception_cb);
-> >> +	build_prologue(&ctx, was_classic, prog->aux->exception_cb,
-> >> +		       bpf_is_subprog(prog));
-> >>  
-> >>  	if (build_body(&ctx, extra_pass)) {
-> >>  		prog = orig_prog;
-> >> @@ -1745,9 +1755,9 @@ struct bpf_prog *bpf_int_jit_compile(struct bpf_prog *prog)
-> >>  		jit_data->ro_header = ro_header;
-> >>  	}
-> >>  
-> >> -	prog->bpf_func = (void *)ctx.ro_image;
-> >> +	prog->bpf_func = (void *)ctx.ro_image + cfi_get_offset();
-> >>  	prog->jited = 1;
-> >> -	prog->jited_len = prog_size;
-> >> +	prog->jited_len = prog_size - cfi_get_offset();
-> >>  
-> >>  	if (!prog->is_func || extra_pass) {
-> >>  		int i;
-> >> @@ -2011,6 +2021,12 @@ static int prepare_trampoline(struct jit_ctx *ctx, struct bpf_tramp_image *im,
-> >>  	/* return address locates above FP */
-> >>  	retaddr_off = stack_size + 8;
-> >>  
-> >> +	if (flags & BPF_TRAMP_F_INDIRECT) {
-> >> +		/*
-> >> +		 * Indirect call for bpf_struct_ops
-> >> +		 */
-> >> +		emit_kcfi(cfi_get_func_hash(func_addr), ctx);
-> >> +	}
-> >
-> > I'm confused; why does the trampoline need this?
-> >
-> > The code that branches to the trampoline doesn't check the type hash: either
-> > the callsite branches directly (hence no check), or the common ftrace
-> > trampoline does so indirectly, and the latter doesn't know the expected typeid,
-> > so it cannot check.
-> 
-> This is not used when the trampoline is attached to the entry of a
-> kernel function and called through a direct call or from ftrace_caller.
-> 
-> This is only used when we are building a trampoline for bpf_struct_ops.
-> 
-> Here a kernel subsystem can call this trampoline through a function
-> pointer.
-> 
-> See: tools/testing/selftests/bpf/progs/bpf_dctcp.c
-> 
-> Here tcp_congestion_ops functions are implemented in BPF and
-> registered with the networking subsystem.
-> 
-> So, the networking subsystem will call them directly for example like:
-> 
-> struct tcp_congestion_ops *ca_ops = ....
-> 
-> ca_ops->cwnd_event(sk, event);
-> 
-> cwnd_event() is implemented in BPF and this call will land on a
-> trampoline. Because this is being called from the kernel through a
-> function pointer, type_id will be checked. So, the landing location in
-> the trampoline should have a type_id above it.
-> 
-> In the above example kernel is calling a function of type
-> void cwnd_event(struct sock *sk, enum tcp_ca_event ev);
-> 
-> so the calling code will fetch the type_id from above the destination
-> and compare it with the type_id of the above prototype.
-> 
-> To make this work with BPF trampolines, we define stubs while
-> registering these struct_ops with the BPF subsystem.
-> 
-> Like in net/ipv4/bpf_tcp_ca.c
-> a stub is defined like following:
-> 
-> static void bpf_tcp_ca_cwnd_event(struct sock *sk, enum tcp_ca_event ev)
-> {
-> }
-> 
-> This is what `func_addr` will have in the prepare_trampoline() function
-> and we use cfi_get_func_hash() to fetch the type_id and put it above the
-> landing location in the trampoline.
-
-Thanks, that makes sense.
-
-Mark.
----->8----
-From 90fe9fa0850216e86daa37c430a3878462ba3e88 Mon Sep 17 00:00:00 2001
-From: Mark Rutland <mark.rutland@arm.com>
-Date: Tue, 2 Apr 2024 13:56:44 +0100
-Subject: [PATCH] cfi: add C CFI type macro
-
-Currently x86 and riscv open-code 4 instances of the same logic to
-define a u32 variable with the KCFI typeid of a given function.
-
-Replace the duplicate logic with a common macro.
-
-Signed-off-by: Mark Rutland <mark.rutland@arm.com>
+Fixes: 1f9f78b1b376 ("mm/slub, kunit: add a KUnit test for SLUB debugging functionality")
+Cc: Oliver Glitta <glittao@gmail.com>
+Cc: Vlastimil Babka <vbabka@suse.cz>
+CC: Daniel Latypov <dlatypov@google.com>
+Cc: Marco Elver <elver@google.com>
+Signed-off-by: Guenter Roeck <linux@roeck-us.net>
 ---
- arch/riscv/kernel/cfi.c       | 34 ++--------------------------------
- arch/x86/kernel/alternative.c | 35 +++--------------------------------
- include/linux/cfi_types.h     | 23 +++++++++++++++++++++++
- 3 files changed, 28 insertions(+), 64 deletions(-)
+ lib/slub_kunit.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/riscv/kernel/cfi.c b/arch/riscv/kernel/cfi.c
-index 64bdd3e1ab8ca..b78a6f41df22d 100644
---- a/arch/riscv/kernel/cfi.c
-+++ b/arch/riscv/kernel/cfi.c
-@@ -82,41 +82,11 @@ struct bpf_insn;
- /* Must match bpf_func_t / DEFINE_BPF_PROG_RUN() */
- extern unsigned int __bpf_prog_runX(const void *ctx,
- 				    const struct bpf_insn *insn);
--
--/*
-- * Force a reference to the external symbol so the compiler generates
-- * __kcfi_typid.
-- */
--__ADDRESSABLE(__bpf_prog_runX);
--
--/* u32 __ro_after_init cfi_bpf_hash = __kcfi_typeid___bpf_prog_runX; */
--asm (
--"	.pushsection	.data..ro_after_init,\"aw\",@progbits	\n"
--"	.type	cfi_bpf_hash,@object				\n"
--"	.globl	cfi_bpf_hash					\n"
--"	.p2align	2, 0x0					\n"
--"cfi_bpf_hash:							\n"
--"	.word	__kcfi_typeid___bpf_prog_runX			\n"
--"	.size	cfi_bpf_hash, 4					\n"
--"	.popsection						\n"
--);
-+DEFINE_CFI_TYPE(cfi_bpf_hash, __bpf_prog_runX);
+diff --git a/lib/slub_kunit.c b/lib/slub_kunit.c
+index d4a3730b08fa..4ce960438806 100644
+--- a/lib/slub_kunit.c
++++ b/lib/slub_kunit.c
+@@ -55,7 +55,7 @@ static void test_next_pointer(struct kunit *test)
  
- /* Must match bpf_callback_t */
- extern u64 __bpf_callback_fn(u64, u64, u64, u64, u64);
--
--__ADDRESSABLE(__bpf_callback_fn);
--
--/* u32 __ro_after_init cfi_bpf_subprog_hash = __kcfi_typeid___bpf_callback_fn; */
--asm (
--"	.pushsection	.data..ro_after_init,\"aw\",@progbits	\n"
--"	.type	cfi_bpf_subprog_hash,@object			\n"
--"	.globl	cfi_bpf_subprog_hash				\n"
--"	.p2align	2, 0x0					\n"
--"cfi_bpf_subprog_hash:						\n"
--"	.word	__kcfi_typeid___bpf_callback_fn			\n"
--"	.size	cfi_bpf_subprog_hash, 4				\n"
--"	.popsection						\n"
--);
-+DEFINE_CFI_TYPE(cfi_bpf_subprog_hash, __bpf_callback_fn);
+ 	ptr_addr = (unsigned long *)(p + s->offset);
+ 	tmp = *ptr_addr;
+-	p[s->offset] = 0x12;
++	p[s->offset] = ~p[s->offset];
  
- u32 cfi_get_func_hash(void *func)
- {
-diff --git a/arch/x86/kernel/alternative.c b/arch/x86/kernel/alternative.c
-index 45a280f2161cd..a822699a40ddd 100644
---- a/arch/x86/kernel/alternative.c
-+++ b/arch/x86/kernel/alternative.c
-@@ -1,6 +1,7 @@
- // SPDX-License-Identifier: GPL-2.0-only
- #define pr_fmt(fmt) "SMP alternatives: " fmt
- 
-+#include <linux/cfi_types.h>
- #include <linux/module.h>
- #include <linux/sched.h>
- #include <linux/perf_event.h>
-@@ -918,41 +919,11 @@ struct bpf_insn;
- /* Must match bpf_func_t / DEFINE_BPF_PROG_RUN() */
- extern unsigned int __bpf_prog_runX(const void *ctx,
- 				    const struct bpf_insn *insn);
--
--/*
-- * Force a reference to the external symbol so the compiler generates
-- * __kcfi_typid.
-- */
--__ADDRESSABLE(__bpf_prog_runX);
--
--/* u32 __ro_after_init cfi_bpf_hash = __kcfi_typeid___bpf_prog_runX; */
--asm (
--"	.pushsection	.data..ro_after_init,\"aw\",@progbits	\n"
--"	.type	cfi_bpf_hash,@object				\n"
--"	.globl	cfi_bpf_hash					\n"
--"	.p2align	2, 0x0					\n"
--"cfi_bpf_hash:							\n"
--"	.long	__kcfi_typeid___bpf_prog_runX			\n"
--"	.size	cfi_bpf_hash, 4					\n"
--"	.popsection						\n"
--);
-+DEFINE_CFI_TYPE(cfi_bpf_hash, __bpf_prog_runX);
- 
- /* Must match bpf_callback_t */
- extern u64 __bpf_callback_fn(u64, u64, u64, u64, u64);
--
--__ADDRESSABLE(__bpf_callback_fn);
--
--/* u32 __ro_after_init cfi_bpf_subprog_hash = __kcfi_typeid___bpf_callback_fn; */
--asm (
--"	.pushsection	.data..ro_after_init,\"aw\",@progbits	\n"
--"	.type	cfi_bpf_subprog_hash,@object			\n"
--"	.globl	cfi_bpf_subprog_hash				\n"
--"	.p2align	2, 0x0					\n"
--"cfi_bpf_subprog_hash:						\n"
--"	.long	__kcfi_typeid___bpf_callback_fn			\n"
--"	.size	cfi_bpf_subprog_hash, 4				\n"
--"	.popsection						\n"
--);
-+DEFINE_CFI_TYPE(cfi_bpf_subprog_hash, __bpf_callback_fn);
- 
- u32 cfi_get_func_hash(void *func)
- {
-diff --git a/include/linux/cfi_types.h b/include/linux/cfi_types.h
-index 6b87136757655..f510e62ca8b18 100644
---- a/include/linux/cfi_types.h
-+++ b/include/linux/cfi_types.h
-@@ -41,5 +41,28 @@
- 	SYM_TYPED_START(name, SYM_L_GLOBAL, SYM_A_ALIGN)
- #endif
- 
-+#else /* __ASSEMBLY__ */
-+
-+#ifdef CONFIG_CFI_CLANG
-+#define DEFINE_CFI_TYPE(name, func)						\
-+	/*									\
-+	 * Force a reference to the function so the compiler generates		\
-+	 * __kcfi_typeid_<func>.						\
-+	 */									\
-+	__ADDRESSABLE(func);							\
-+	/* u32 name = __kcfi_typeid_<func> */					\
-+	extern u32 name;							\
-+	asm (									\
-+	"	.pushsection	.data..ro_after_init,\"aw\",@progbits	\n"	\
-+	"	.type	" #name ",@object				\n"	\
-+	"	.globl	" #name "					\n"	\
-+	"	.p2align	2, 0x0					\n"	\
-+	#name ":							\n"	\
-+	"	.long	__kcfi_typeid_" #func "				\n"	\
-+	"	.size	" #name ", 4					\n"	\
-+	"	.popsection						\n"	\
-+	);
-+#endif
-+
- #endif /* __ASSEMBLY__ */
- #endif /* _LINUX_CFI_TYPES_H */
+ 	/*
+ 	 * Expecting three errors.
 -- 
-2.30.2
+2.39.2
 
 
