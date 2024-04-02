@@ -1,147 +1,141 @@
-Return-Path: <linux-kernel+bounces-127513-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-127514-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 63296894CC6
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 09:40:24 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id DDFD0894CC9
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 09:43:40 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 98AFBB222D3
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 07:40:21 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7D03F1F22775
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 07:43:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5865A3BBC3;
-	Tue,  2 Apr 2024 07:40:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 765603C684;
+	Tue,  2 Apr 2024 07:43:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="QICgIq5T";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="+fxZRqGX"
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="rNMMpQJi"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E7A5818635
-	for <linux-kernel@vger.kernel.org>; Tue,  2 Apr 2024 07:40:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B000432C8B;
+	Tue,  2 Apr 2024 07:43:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712043615; cv=none; b=RhQUcWcHiyIBk19+DRq0Z/tkt+D+PSks0N/F4OZN13C8v7k8sSf2FdfvTzB3L3Zct8rZe4tiMa3JFs7sEuCp6fObxJz+a2JfdVou716wDt1993zIqcTv16pnAnhYGCoyF4itTdKZnaLSe46Y5/hVL3DA1t2VgS9zYCsK6zwdCvQ=
+	t=1712043812; cv=none; b=Nz13lVrFoCQNjDqXZNywdp6vDkVOPJz4hPp2V8yQmd4HmCqOUMWBxUmhbiVsBPymK21THzGh09jS6yPmhwXZkcnTlz+o5JZNq9NaDl9m9KdR2n8widF7jZSXwNJAOq8ImZRiSsUROJgQaJLmMwnQDERWf6oPgrwq6JvICT3aalw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712043615; c=relaxed/simple;
-	bh=4CDXvCSs/l9q6MgwceuIcm4RO1YM+MS0w/p0tGlk4AU=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=NV7AmGOQ+wH4tLiaj+K6B4gqZanMKLWYOa2mdtHAvH7PMrPzvwF2ZJ1jnjlQ4oSFuYksQpkD/jXL+osrfftsP+KMbR4+9BWgUuCrYKlpavE0H6OzLaDvafwU2/w9wCVGAMisrVUDEW+1Il79FlpZCs9Hsv2d6FVtxC9IEISY1q0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=QICgIq5T; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=+fxZRqGX; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [10.150.64.98])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id ED4E820D91;
-	Tue,  2 Apr 2024 07:40:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1712043605; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=F0O8XWaOhNB18VZt8keyCi8JOGWnMUiDcfFZIJVXWXI=;
-	b=QICgIq5TxOCGpnTid58Hbyfg7aogHixN+Fe5Nz4dmFjanHt9MTqP/aqd6+sZvJ52E2zlXP
-	i9OvHCUHzfhlapfMIwdY2/0/xtpFM1R98Fp6iwC75zEFEGux/rm8r+uIQNt2CKRjkOeh1e
-	Ko/JqfmeaipzthcqGTOVsTZDpMM2y2M=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1712043605;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=F0O8XWaOhNB18VZt8keyCi8JOGWnMUiDcfFZIJVXWXI=;
-	b=+fxZRqGXQufOam6e+PeEbpg6DvKHd3ClmqR5cpOW+AO7dis0VBut1ZMmjFHdV9yMuqcChQ
-	Xo3PeLgS69vI7nCA==
-Authentication-Results: smtp-out2.suse.de;
-	none
-Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id D0EBF13A90;
-	Tue,  2 Apr 2024 07:40:05 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap2.dmz-prg2.suse.org with ESMTPSA
-	id GY9jMlW2C2a1UwAAn2gu4w
-	(envelope-from <vbabka@suse.cz>); Tue, 02 Apr 2024 07:40:05 +0000
-Message-ID: <1cd77a44-6526-431b-89ba-cd6345a7e835@suse.cz>
-Date: Tue, 2 Apr 2024 09:40:05 +0200
+	s=arc-20240116; t=1712043812; c=relaxed/simple;
+	bh=lOeUlS13nUasibcKAc+APQJ2GhDUpD5w9apCgLzBdJE=;
+	h=Mime-Version:Content-Type:Date:Message-Id:To:Cc:Subject:From:
+	 References:In-Reply-To; b=hMUxfn3yIFCN8LB1lem57NR7B3xHKbHZq6d167b3Atb9zi3m1IaLIkVZL7phtx9v2MKlRrRQSzmGuxDb5qrnVY6sX1UqHQn17Vb13WBbJ7t8amimsgvjYbzyPkp1Q+wlVJegDmHP5EGedGbNdWAgRxjeBPBbDQdF5F/qEEamWmk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=rNMMpQJi; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BD2DFC433C7;
+	Tue,  2 Apr 2024 07:43:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1712043812;
+	bh=lOeUlS13nUasibcKAc+APQJ2GhDUpD5w9apCgLzBdJE=;
+	h=Date:To:Cc:Subject:From:References:In-Reply-To:From;
+	b=rNMMpQJi+z+zXGyHrgy/DaCtRevEEQ2tWUaeN8zXTqLSVU39HoUSZ+2WR1yJCDzUW
+	 DCJjUe6N6V+1DAlLXPtlQ5ZHQbWc8ZdmJjOjW4ZtIqFqI1QhOx9tT0eH/478GSmmju
+	 hnl7rpHkzPa+GYy9qktz7b9hScg9TGVHIHsFc0Bnd3yarZf6p2X+Gf7WCmeR5MNeSX
+	 mop2J/pam1R2GlPb6+5DbUXYdqb6Sgsy5NT6AYUr92tPb+wzghIA2/n5ieiUm28lDw
+	 91DOnwCWeBfJ/kdIWnQPR7WfeUpUEbq1sR1Ga6r4kCY7dsO2rlGYxaJ/T8PvgK/bNY
+	 UWsTtxzmgfyOA==
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] mm/slab_common: Modify mismatched function name
-Content-Language: en-US
-To: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>, cl@linux.com,
- akpm@linux-foundation.org
-Cc: penberg@kernel.org, rientjes@google.com, iamjoonsoo.kim@lge.com,
- roman.gushchin@linux.dev, 42.hyeyoo@gmail.com, linux-mm@kvack.org,
- linux-kernel@vger.kernel.org, Abaci Robot <abaci@linux.alibaba.com>
-References: <20240328020711.125070-1-jiapeng.chong@linux.alibaba.com>
-From: Vlastimil Babka <vbabka@suse.cz>
-In-Reply-To: <20240328020711.125070-1-jiapeng.chong@linux.alibaba.com>
+Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Score: 0.19
-X-Spamd-Result: default: False [0.19 / 50.00];
-	 ARC_NA(0.00)[];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 XM_UA_NO_VERSION(0.01)[];
-	 FROM_HAS_DN(0.00)[];
-	 TO_DN_SOME(0.00)[];
-	 FREEMAIL_ENVRCPT(0.00)[gmail.com];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 TAGGED_RCPT(0.00)[];
-	 MIME_GOOD(-0.10)[text/plain];
-	 NEURAL_HAM_LONG(-1.00)[-1.000];
-	 MID_RHS_MATCH_FROM(0.00)[];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	 NEURAL_HAM_SHORT(-0.20)[-0.998];
-	 BAYES_HAM(-0.02)[52.44%];
-	 RCPT_COUNT_SEVEN(0.00)[11];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 FREEMAIL_CC(0.00)[kernel.org,google.com,lge.com,linux.dev,gmail.com,kvack.org,vger.kernel.org,linux.alibaba.com];
-	 RCVD_TLS_ALL(0.00)[];
-	 SUSPICIOUS_RECIPS(1.50)[]
-X-Spam-Level: 
-X-Spam-Flag: NO
+Date: Tue, 02 Apr 2024 10:43:25 +0300
+Message-Id: <D09GVMLN1O4Z.2RXQUH4ZY5IVF@kernel.org>
+To: "Haitao Huang" <haitao.huang@linux.intel.com>
+Cc: <anakrish@microsoft.com>, <bp@alien8.de>, <cgroups@vger.kernel.org>,
+ <chrisyan@microsoft.com>, <dave.hansen@linux.intel.com>, <hpa@zytor.com>,
+ <kai.huang@intel.com>, <kristen@linux.intel.com>,
+ <linux-kernel@vger.kernel.org>, <linux-sgx@vger.kernel.org>,
+ <mikko.ylinen@linux.intel.com>, <mingo@redhat.com>, <mkoutny@suse.com>,
+ <seanjc@google.com>, <sohil.mehta@intel.com>, <tglx@linutronix.de>,
+ <tim.c.chen@linux.intel.com>, <tj@kernel.org>, <x86@kernel.org>,
+ <yangjie@microsoft.com>, <zhanb@microsoft.com>, <zhiquan1.li@intel.com>
+Subject: Re: [PATCH v2] selftests/sgx: Improve cgroup test scripts
+From: "Jarkko Sakkinen" <jarkko@kernel.org>
+X-Mailer: aerc 0.17.0
+References: <D08UQJ2XQY6L.1XEOEJ6HIUJ8Y@kernel.org>
+ <20240402014254.27717-1-haitao.huang@linux.intel.com>
+In-Reply-To: <20240402014254.27717-1-haitao.huang@linux.intel.com>
 
-On 3/28/24 3:07 AM, Jiapeng Chong wrote:
-> No functional modification involved.
-> 
-> mm/slab_common.c:1215: warning: expecting prototype for krealloc(). Prototype was for krealloc_noprof() instead.
-> 
-> Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-> Closes: https://bugzilla.openanolis.cn/show_bug.cgi?id=8659
-> Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-
-Seems like a fix-up for the alloc tagging series in mm.
-
+On Tue Apr 2, 2024 at 4:42 AM EEST, Haitao Huang wrote:
+> Make cgroup test scripts ash compatible.
+> Remove cg-tools dependency.
+> Add documentation for functions.
+>
+> Tested with busybox on Ubuntu.
+>
+> Signed-off-by: Haitao Huang <haitao.huang@linux.intel.com>
 > ---
->  mm/slab_common.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/mm/slab_common.c b/mm/slab_common.c
-> index 8664da88e843..8af45e9bd2b2 100644
-> --- a/mm/slab_common.c
-> +++ b/mm/slab_common.c
-> @@ -1199,7 +1199,7 @@ __do_krealloc(const void *p, size_t new_size, gfp_t flags)
->  }
->  
->  /**
-> - * krealloc - reallocate memory. The contents will remain unchanged.
-> + * krealloc_noprof - reallocate memory. The contents will remain unchanged.
->   * @p: object to reallocate memory for.
->   * @new_size: how many bytes of memory are required.
->   * @flags: the type of memory to allocate.
+> v2:
+> - Fixes for v2 cgroup
+> - Turn off swapping before memcontrol tests and back on after
+> - Add comments and reformat
+> ---
+>  tools/testing/selftests/sgx/ash_cgexec.sh     |  57 ++++++
+>  .../selftests/sgx/run_epc_cg_selftests.sh     | 187 +++++++++++-------
+>  .../selftests/sgx/watch_misc_for_tests.sh     |  13 +-
+>  3 files changed, 179 insertions(+), 78 deletions(-)
+>  create mode 100755 tools/testing/selftests/sgx/ash_cgexec.sh
+>
+> diff --git a/tools/testing/selftests/sgx/ash_cgexec.sh b/tools/testing/se=
+lftests/sgx/ash_cgexec.sh
+> new file mode 100755
+> index 000000000000..9607784378df
+> --- /dev/null
+> +++ b/tools/testing/selftests/sgx/ash_cgexec.sh
+> @@ -0,0 +1,57 @@
+> +#!/usr/bin/env sh
+> +# SPDX-License-Identifier: GPL-2.0
+> +# Copyright(c) 2024 Intel Corporation.
+> +
+> +# Move the current shell process to the specified cgroup
+> +# Arguments:
+> +# 	$1 - The cgroup controller name, e.g., misc, memory.
+> +#	$2 - The path of the cgroup,
+> +#		relative to /sys/fs/cgroup for cgroup v2,
+> +#		relative to /sys/fs/cgroup/$1 for v1.
+> +move_to_cgroup() {
+> +    controllers=3D"$1"
+> +    path=3D"$2"
+> +
+> +    # Check if cgroup v2 is in use
+> +    if [ ! -d "/sys/fs/cgroup/misc" ]; then
+> +        # Cgroup v2 logic
+> +        cgroup_full_path=3D"/sys/fs/cgroup/${path}"
+> +        echo $$ > "${cgroup_full_path}/cgroup.procs"
+> +    else
+> +        # Cgroup v1 logic
+> +        OLD_IFS=3D"$IFS"
+> +        IFS=3D','
+> +        for controller in $controllers; do
+> +            cgroup_full_path=3D"/sys/fs/cgroup/${controller}/${path}"
+> +            echo $$ > "${cgroup_full_path}/tasks"
+> +        done
+> +        IFS=3D"$OLD_IFS"
+> +    fi
 
+I think that if you could point me to git v10 and all this I could
+then quite easily create test image and see what I get from that.
+
+I will code review the whole thing but this is definitely good
+enough to start testing this series properly! Thanks for the
+effort with this. The payback from this comes after the feature
+is mainline. We have now sort of reference of the usage patterns
+and less layers when we need to debug any possible (likely) bugs
+in the future.
+
+This is definitely to the right direction. I'm just wondering do
+we want to support v1 cgroups or would it make sense support only
+v2?
+=20
+BR, Jarkko
 
