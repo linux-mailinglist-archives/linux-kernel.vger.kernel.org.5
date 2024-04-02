@@ -1,45 +1,45 @@
-Return-Path: <linux-kernel+bounces-127289-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-127290-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id D51C6894946
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 04:22:04 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 67045894947
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 04:22:20 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 753431F21C4B
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 02:22:04 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 98A0F1C23534
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 02:22:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EF5EB14AAD;
-	Tue,  2 Apr 2024 02:21:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CFF9D17548;
+	Tue,  2 Apr 2024 02:21:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="FBa9pnIH"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="jHgSVI7g"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3CDF514AA7;
-	Tue,  2 Apr 2024 02:21:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 21336168DD;
+	Tue,  2 Apr 2024 02:21:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712024490; cv=none; b=MVC7/0V9xWAzsXFTkjS7swoQbls9iHUjmphKYDtyvxrUXGYN3W+MImn4aqFHy1QCKKbUAAYUjNhi8GgNdRUoG07H1CvLRYuLl4g1x9Ukxsy8aX7v9YtLgcrWhhJ9hXZtUuBehI2Ik6HPU98u97l9GDHAI5aX/BYwLgRl3GpWU2g=
+	t=1712024493; cv=none; b=SVoQPMy/DxrGabqAzPxlwfZq8HZR6MsPuuaO5oifVvI83VtOO/J2s9NWMZInRQ1+VUAY5Xv/q+gvc/0sTJTEUPp8jSWWeADsi80Lo8dF349Tz/lapO1bpM1holho/NJs/J66SrEG5qjpHwBPIGYw9m01WwTxMjrdzniezQhz/LM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712024490; c=relaxed/simple;
-	bh=x+EBMifWShV+xw46OrW58BPsP2ML8vpkbmBPBYU3nCI=;
+	s=arc-20240116; t=1712024493; c=relaxed/simple;
+	bh=6rtaBnzG8vSA41sp68PKabBNfcq1hfqROrFmhJ0TClQ=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=MoXq1vqfENGyAbOKyHbN3rQaWGZJfR+z27gr8CKbPjU2ZB+lG3OjsmTTWxptfQyDFHvYK+8dcr8VH9/TlAqbjyvg3sT5xcPTLJxNsvc3rXhf3U4d1G4iR5zml9Wd/elOYCzWMCMigiAdLQgDNfayG74Ag3JxSPdnI6L9HhSQ5fI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=FBa9pnIH; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8B9ABC43390;
-	Tue,  2 Apr 2024 02:21:29 +0000 (UTC)
+	 MIME-Version; b=Hn56ZdL22e1JS3Uh/xwYFa35Mu0UYq4dgrLf2gga0kzmmzDZmGIbR/ng6SWwToTqcNntcOycXesLD10EoawsFBS7m99eRPa1uUQqnwdE3moulSDYD1A7jfD6uBDrmUWFQ63Tdwrtel5nwwanpMjJzQ8Ukoynkrs4hsC1WvrveMU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=jHgSVI7g; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C0939C43390;
+	Tue,  2 Apr 2024 02:21:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712024489;
-	bh=x+EBMifWShV+xw46OrW58BPsP2ML8vpkbmBPBYU3nCI=;
+	s=k20201202; t=1712024493;
+	bh=6rtaBnzG8vSA41sp68PKabBNfcq1hfqROrFmhJ0TClQ=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=FBa9pnIHd7ML3Xor/8I+/wtyWRzP7rK6hndhTgSCjVmCuAAQQnDSbAnmPhu9gv9DJ
-	 7uyrszuGDGjNJxpfv3Jp/CxaB1vxZ/yh7flC0qibYwfX72ClQplijZlQRL4GXoOqFL
-	 G25hOx2mPZ6eJGkdGoZRrac5CEoc+IKctXVJfGarUm3OUouWSbdDnUd1opIqANiRS0
-	 OpyZp0np2bl+cDcczR41aHUFEnWExNa7Ggoix561YzG/bu0UqPkGbd0bREa9cUgPGv
-	 /rB/C6/PzwmJloMZbs8vKNPtiOhiOgpNxilS2CZlL6b4pLLhAniQ+68v44Gq2C62WQ
-	 QPD5AHSBgpz9g==
+	b=jHgSVI7gFh855zKKprdhejHDxxnNdRFIUomOb88p4rYvbFK5xBGPO/I6/ZKHqoER0
+	 QD07NgCrCa5tdAdUcxhT+n7M+GwVZb9BrrL8pbeIuT2J7Gs4jxJA2Mpn64Nlc2eTxQ
+	 52ZAmvf5RRP5YEAQq8OWe/bTYX/nzBF94Jn0gfrzQwDkm2uWZdfNXHZShWG4TK6OsK
+	 p80lIO6Rbz9RCwVnCQK3DpZUKfgRX1zzXwtVfe2osTRKVBX70ibVNUxXT+PtOEZ+A0
+	 fIhIdEAGpUYbj9SETgn3q25MT4x23FDpVlsFcrNn0/wK4uox0lnitmEAjJAJpXhJpU
+	 +Ye2+WB7Hp9hA==
 From: Andrii Nakryiko <andrii@kernel.org>
 To: x86@kernel.org,
 	peterz@infradead.org,
@@ -52,9 +52,9 @@ Cc: bpf@vger.kernel.org,
 	kernel-team@meta.com,
 	Andrii Nakryiko <andrii@kernel.org>,
 	Sandipan Das <sandipan.das@amd.com>
-Subject: [PATCH v5 2/4] perf/x86/amd: avoid taking branches before disabling LBR
-Date: Mon,  1 Apr 2024 19:21:16 -0700
-Message-ID: <20240402022118.1046049-3-andrii@kernel.org>
+Subject: [PATCH v5 3/4] perf/x86/amd: support capturing LBR from software events
+Date: Mon,  1 Apr 2024 19:21:17 -0700
+Message-ID: <20240402022118.1046049-4-andrii@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240402022118.1046049-1-andrii@kernel.org>
 References: <20240402022118.1046049-1-andrii@kernel.org>
@@ -66,73 +66,91 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-In the following patches we will enable LBR capture on AMD CPUs at
-arbitrary point in time, which means that LBR recording won't be frozen
-by hardware automatically as part of hardware overflow event. So we need
-to take care to minimize amount of branches and function calls/returns
-on the path to freezing LBR, minimizing LBR snapshot altering as much as
-possible.
+Upstream commit c22ac2a3d4bd ("perf: Enable branch record for software
+events") added ability to capture LBR (Last Branch Records) on Intel CPUs
+from inside BPF program at pretty much any arbitrary point. This is
+extremely useful capability that allows to figure out otherwise
+hard to debug problems, because LBR is now available based on some
+application-defined conditions, not just hardware-supported events.
 
-As such, split out LBR disabling logic from the sanity checking logic
-inside amd_pmu_lbr_disable_all(). This will ensure that no branches are
-taken before LBR is frozen in the functionality added in the next patch.
-Use __always_inline to also eliminate any possible function calls.
+retsnoop ([0]) is one such tool that takes a huge advantage of this
+functionality and has proved to be an extremely useful tool in
+practice.
+
+Now, AMD Zen4 CPUs got support for similar LBR functionality, but
+necessary wiring inside the kernel is not yet setup. This patch seeks to
+rectify this and follows a similar approach to the original patch
+for Intel CPUs. We implement an AMD-specific callback set to be called
+through perf_snapshot_branch_stack static call.
+
+Previous preparatory patches ensured that amd_pmu_core_disable_all() and
+__amd_pmu_lbr_disable() will be completely inlined and will have no
+branches, so LBR snapshot contamination will be minimized.
+
+This was tested on AMD Bergamo CPU and worked well when utilized from
+the aforementioned retsnoop tool.
+
+  [0] https://github.com/anakryiko/retsnoop
 
 Reviewed-by: Sandipan Das <sandipan.das@amd.com>
 Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
 ---
- arch/x86/events/amd/lbr.c    |  9 +--------
- arch/x86/events/perf_event.h | 13 +++++++++++++
- 2 files changed, 14 insertions(+), 8 deletions(-)
+ arch/x86/events/amd/core.c | 35 +++++++++++++++++++++++++++++++++++
+ 1 file changed, 35 insertions(+)
 
-diff --git a/arch/x86/events/amd/lbr.c b/arch/x86/events/amd/lbr.c
-index 5149830c7c4f..33d0a45c0cd3 100644
---- a/arch/x86/events/amd/lbr.c
-+++ b/arch/x86/events/amd/lbr.c
-@@ -414,18 +414,11 @@ void amd_pmu_lbr_enable_all(void)
- void amd_pmu_lbr_disable_all(void)
- {
- 	struct cpu_hw_events *cpuc = this_cpu_ptr(&cpu_hw_events);
--	u64 dbg_ctl, dbg_extn_cfg;
- 
- 	if (!cpuc->lbr_users || !x86_pmu.lbr_nr)
- 		return;
- 
--	rdmsrl(MSR_AMD_DBG_EXTN_CFG, dbg_extn_cfg);
--	wrmsrl(MSR_AMD_DBG_EXTN_CFG, dbg_extn_cfg & ~DBG_EXTN_CFG_LBRV2EN);
--
--	if (cpu_feature_enabled(X86_FEATURE_AMD_LBR_PMC_FREEZE)) {
--		rdmsrl(MSR_IA32_DEBUGCTLMSR, dbg_ctl);
--		wrmsrl(MSR_IA32_DEBUGCTLMSR, dbg_ctl & ~DEBUGCTLMSR_FREEZE_LBRS_ON_PMI);
--	}
-+	__amd_pmu_lbr_disable();
+diff --git a/arch/x86/events/amd/core.c b/arch/x86/events/amd/core.c
+index 9b15afda0326..1fc4ce44e743 100644
+--- a/arch/x86/events/amd/core.c
++++ b/arch/x86/events/amd/core.c
+@@ -907,6 +907,37 @@ static int amd_pmu_handle_irq(struct pt_regs *regs)
+ 	return amd_pmu_adjust_nmi_window(handled);
  }
  
- __init int amd_pmu_lbr_init(void)
-diff --git a/arch/x86/events/perf_event.h b/arch/x86/events/perf_event.h
-index fb56518356ec..72b022a1e16c 100644
---- a/arch/x86/events/perf_event.h
-+++ b/arch/x86/events/perf_event.h
-@@ -1329,6 +1329,19 @@ void amd_pmu_lbr_enable_all(void);
- void amd_pmu_lbr_disable_all(void);
- int amd_pmu_lbr_hw_config(struct perf_event *event);
- 
-+static __always_inline void __amd_pmu_lbr_disable(void)
++/*
++ * AMD-specific callback invoked through perf_snapshot_branch_stack static
++ * call, defined in include/linux/perf_event.h. See its definition for API
++ * details. It's up to caller to provide enough space in *entries* to fit all
++ * LBR records, otherwise returned result will be truncated to *cnt* entries.
++ */
++static int amd_pmu_v2_snapshot_branch_stack(struct perf_branch_entry *entries, unsigned int cnt)
 +{
-+	u64 dbg_ctl, dbg_extn_cfg;
++	struct cpu_hw_events *cpuc;
++	unsigned long flags;
 +
-+	rdmsrl(MSR_AMD_DBG_EXTN_CFG, dbg_extn_cfg);
-+	wrmsrl(MSR_AMD_DBG_EXTN_CFG, dbg_extn_cfg & ~DBG_EXTN_CFG_LBRV2EN);
++	/*
++	 * The sequence of steps to freeze LBR should be completely inlined
++	 * and contain no branches to minimize contamination of LBR snapshot
++	 */
++	local_irq_save(flags);
++	amd_pmu_core_disable_all();
++	__amd_pmu_lbr_disable();
 +
-+	if (cpu_feature_enabled(X86_FEATURE_AMD_LBR_PMC_FREEZE)) {
-+		rdmsrl(MSR_IA32_DEBUGCTLMSR, dbg_ctl);
-+		wrmsrl(MSR_IA32_DEBUGCTLMSR, dbg_ctl & ~DEBUGCTLMSR_FREEZE_LBRS_ON_PMI);
-+	}
++	cpuc = this_cpu_ptr(&cpu_hw_events);
++
++	amd_pmu_lbr_read();
++	cnt = min(cnt, x86_pmu.lbr_nr);
++	memcpy(entries, cpuc->lbr_entries, sizeof(struct perf_branch_entry) * cnt);
++
++	amd_pmu_v2_enable_all(0);
++	local_irq_restore(flags);
++
++	return cnt;
 +}
 +
- #ifdef CONFIG_PERF_EVENTS_AMD_BRS
- 
- #define AMD_FAM19H_BRS_EVENT 0xc4 /* RETIRED_TAKEN_BRANCH_INSTRUCTIONS */
+ static int amd_pmu_v2_handle_irq(struct pt_regs *regs)
+ {
+ 	struct cpu_hw_events *cpuc = this_cpu_ptr(&cpu_hw_events);
+@@ -1443,6 +1474,10 @@ static int __init amd_core_pmu_init(void)
+ 		static_call_update(amd_pmu_branch_reset, amd_pmu_lbr_reset);
+ 		static_call_update(amd_pmu_branch_add, amd_pmu_lbr_add);
+ 		static_call_update(amd_pmu_branch_del, amd_pmu_lbr_del);
++
++		/* Only support branch_stack snapshot on perfmon v2 */
++		if (x86_pmu.handle_irq == amd_pmu_v2_handle_irq)
++			static_call_update(perf_snapshot_branch_stack, amd_pmu_v2_snapshot_branch_stack);
+ 	} else if (!amd_brs_init()) {
+ 		/*
+ 		 * BRS requires special event constraints and flushing on ctxsw.
 -- 
 2.43.0
 
