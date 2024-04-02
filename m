@@ -1,112 +1,166 @@
-Return-Path: <linux-kernel+bounces-128290-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-128291-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id DC52F8958DF
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 17:52:42 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 56D228958E5
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 17:53:10 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DB3E71C245FD
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 15:52:41 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D23C5B21C72
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 15:53:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6F329134725;
-	Tue,  2 Apr 2024 15:50:18 +0000 (UTC)
-Received: from mx01.omp.ru (mx01.omp.ru [90.154.21.10])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 12D651353E2;
+	Tue,  2 Apr 2024 15:52:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b="xdmmtHtw"
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [78.32.30.218])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 953C213340D;
-	Tue,  2 Apr 2024 15:50:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.154.21.10
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 93032131750;
+	Tue,  2 Apr 2024 15:51:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=78.32.30.218
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712073017; cv=none; b=bM66XG8qheJDh4523xuzfSsnurSgR0ef9iQckBH+dOFjKj54Rf0JVv4jCasVwYI7900XtD2O/iTEC4ICHIy3OQhHBeYmM0sZeVAQDDkCB4WpLAjAwIfkHE/A+2656iFDfYeRQJm6F2e2gdlXckftOTJpefeDNEyjTwCruuOiZbM=
+	t=1712073121; cv=none; b=Wi9lVZ5xjM/OKjH0Pz3zHxxRQ5tKVbOTYV25LNEhJ3Conw/sr4nybQmMbmTFwC3E4BwdaEAH/2W9FH2Wznd03QUl/pM47zz681IT/D3vMiC+YRxaMqY2yZa+n4ubSL0gMnb0Un1PgYnXzk1nUy4ijLlUdCySUZg0DTNp6rCjFhQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712073017; c=relaxed/simple;
-	bh=UPJybvXsRGGOwk1KAGhjXT8xHw0nFOE166nBj48KWY8=;
-	h=Subject:To:CC:References:From:Message-ID:Date:MIME-Version:
-	 In-Reply-To:Content-Type; b=GLP/EIL1smdDuFk2mcY4yI33C+0ohtzsvENbe29EiXz51Y1+5Ra5Mm+2j21lPtjMo5+roXIG4dNSlVnUHJq1BhSe1O2Mm6M+o+3EadJQaEtOrCeDWUhFZoNGe9IqtCZtEWIrSrHH439NW4cAXN7PnICsrcW9BELkw2lt4tzTKC0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=omp.ru; spf=pass smtp.mailfrom=omp.ru; arc=none smtp.client-ip=90.154.21.10
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=omp.ru
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=omp.ru
-Received: from [192.168.1.105] (31.173.87.46) by msexch01.omp.ru (10.188.4.12)
- with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id 15.2.1258.12; Tue, 2 Apr
- 2024 18:50:12 +0300
-Subject: Re: [PATCH v2 2/2] net: ravb: Always update error counters
-To: Paul Barker <paul.barker.ct@bp.renesas.com>, "David S. Miller"
-	<davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, Jakub Kicinski
-	<kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	=?UTF-8?Q?Niklas_S=c3=b6derlund?= <niklas.soderlund+renesas@ragnatech.se>
-CC: <netdev@vger.kernel.org>, <linux-renesas-soc@vger.kernel.org>,
-	<linux-kernel@vger.kernel.org>
-References: <20240402145305.82148-1-paul.barker.ct@bp.renesas.com>
- <20240402145305.82148-2-paul.barker.ct@bp.renesas.com>
-From: Sergey Shtylyov <s.shtylyov@omp.ru>
-Organization: Open Mobile Platform
-Message-ID: <a463ade5-63c3-b1ba-7438-7ab57f56480e@omp.ru>
-Date: Tue, 2 Apr 2024 18:50:11 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
+	s=arc-20240116; t=1712073121; c=relaxed/simple;
+	bh=L5QGc/wHh7ih1payKh5DQ6wM8WxgsGe+ZBegw9ypRf4=;
+	h=In-Reply-To:References:From:To:Cc:Subject:MIME-Version:
+	 Content-Disposition:Content-Type:Message-Id:Date; b=pcFTZkli/OZJxUKoyIoJ1IEvzrDvQjYSjIMXtV2aQ0bKq42uQeCc0zkIWC/MicXznZwMRugKhBgGpM6B30NqANIOnWVubbg7nrHRjl/6ax/9E2MV3hSSxznkDezYY5W0CnjxUT7noWiEbO4XBX8bUVsdWcGLZuY6TgxONZT4+z0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=armlinux.org.uk; spf=none smtp.mailfrom=armlinux.org.uk; dkim=pass (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b=xdmmtHtw; arc=none smtp.client-ip=78.32.30.218
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=armlinux.org.uk
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=armlinux.org.uk
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=armlinux.org.uk; s=pandora-2019; h=Date:Sender:Message-Id:Content-Type:
+	Content-Transfer-Encoding:MIME-Version:Subject:Cc:To:From:References:
+	In-Reply-To:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
+	List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+	bh=PXpSDMwoudBQQUvwRwf46Fwc8o8+Vle+EwFXwBBNUhQ=; b=xdmmtHtwZUS1EkgJDhgYJ6230L
+	V63f79UsEb3MsGPvSllt3H5Qm+Fc6YCzpMj/hqAu2+gjF+Xdic6CT0A/6auASKucYVgXo3d/6u7df
+	P/dIDT0l3M1vTZDs93ghl+HPeTGusJ3Rn6yn3m/6D7t4P/G3cLv8B7M941Kh9EKjUVTXMndA1o1jA
+	8Gk+XQpGTTpXPR9h6tChpvpP8bH0XLfC9VZanN5kio5JbfT0Mkh4ilGb5unrWw9dvNhOMWS/7BbHB
+	fr9+HbxscnxX17YgI3ZNqYrVOUAsb1izzEQXkYs06E4F0Y41j6yE894m5IWGlLYmR+qALVPtj1bAo
+	zU6ZoNJQ==;
+Received: from e0022681537dd.dyn.armlinux.org.uk ([fd8f:7570:feb6:1:222:68ff:fe15:37dd]:55404 helo=rmk-PC.armlinux.org.uk)
+	by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.96)
+	(envelope-from <rmk@armlinux.org.uk>)
+	id 1rrgQJ-00070v-06;
+	Tue, 02 Apr 2024 16:51:43 +0100
+Received: from rmk by rmk-PC.armlinux.org.uk with local (Exim 4.94.2)
+	(envelope-from <rmk@rmk-PC.armlinux.org.uk>)
+	id 1rrgQJ-005ZO4-GB; Tue, 02 Apr 2024 16:51:43 +0100
+In-Reply-To: <ZgwoygldsA1V8fs9@shell.armlinux.org.uk>
+References: <ZgwoygldsA1V8fs9@shell.armlinux.org.uk>
+From: "Russell King (Oracle)" <rmk+kernel@armlinux.org.uk>
+To: Romain Gantois <romain.gantois@bootlin.com>
+Cc: "David S. Miller" <davem@davemloft.net>,
+	 Eric Dumazet <edumazet@google.com>,
+	 Jakub Kicinski <kuba@kernel.org>,
+	 Paolo Abeni <pabeni@redhat.com>,
+	 Rob Herring <robh@kernel.org>,
+	 Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	 Conor Dooley <conor+dt@kernel.org>,
+	 Geert Uytterhoeven <geert+renesas@glider.be>,
+	 Magnus Damm <magnus.damm@gmail.com>,
+	 Alexandre Torgue <alexandre.torgue@foss.st.com>,
+	 Jose Abreu <joabreu@synopsys.com>,
+	 Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+	 =?iso-8859-1?Q?Cl=E9ment_L=E9ger?= <clement.leger@bootlin.com>,
+	 Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+	 netdev@vger.kernel.org,
+	 devicetree@vger.kernel.org,
+	 linux-kernel@vger.kernel.org,
+	 linux-renesas-soc@vger.kernel.org,
+	 linux-stm32@st-md-mailman.stormreply.com,
+	 linux-arm-kernel@lists.infradead.org
+Subject: [PATCH net-next 1/2] net: stmmac: introduce pcs_init/pcs_exit stmmac
+ operations
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <20240402145305.82148-2-paul.barker.ct@bp.renesas.com>
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
 Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: msexch01.omp.ru (10.188.4.12) To msexch01.omp.ru
- (10.188.4.12)
-X-KSE-ServerInfo: msexch01.omp.ru, 9
-X-KSE-AntiSpam-Interceptor-Info: scan successful
-X-KSE-AntiSpam-Version: 6.1.0, Database issued on: 04/02/2024 15:31:06
-X-KSE-AntiSpam-Status: KAS_STATUS_NOT_DETECTED
-X-KSE-AntiSpam-Method: none
-X-KSE-AntiSpam-Rate: 0
-X-KSE-AntiSpam-Info: Lua profiles 184540 [Apr 02 2024]
-X-KSE-AntiSpam-Info: Version: 6.1.0.4
-X-KSE-AntiSpam-Info: Envelope from: s.shtylyov@omp.ru
-X-KSE-AntiSpam-Info: LuaCore: 14 0.3.14
- 5a0c43d8a1c3c0e5b0916cc02a90d4b950c01f96
-X-KSE-AntiSpam-Info: {rep_avail}
-X-KSE-AntiSpam-Info: {Tracking_from_domain_doesnt_match_to}
-X-KSE-AntiSpam-Info:
-	127.0.0.199:7.1.2;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;omp.ru:7.1.1
-X-KSE-AntiSpam-Info: ApMailHostAddress: 31.173.87.46
-X-KSE-AntiSpam-Info: Rate: 0
-X-KSE-AntiSpam-Info: Status: not_detected
-X-KSE-AntiSpam-Info: Method: none
-X-KSE-AntiSpam-Info: Auth:dmarc=temperror header.from=omp.ru;spf=temperror
- smtp.mailfrom=omp.ru;dkim=none
-X-KSE-Antiphishing-Info: Clean
-X-KSE-Antiphishing-ScanningType: Heuristic
-X-KSE-Antiphishing-Method: None
-X-KSE-Antiphishing-Bases: 04/02/2024 15:34:00
-X-KSE-Antivirus-Interceptor-Info: scan successful
-X-KSE-Antivirus-Info: Clean, bases: 4/2/2024 12:55:00 PM
-X-KSE-Attachment-Filter-Triggered-Rules: Clean
-X-KSE-Attachment-Filter-Triggered-Filters: Clean
-X-KSE-BulkMessagesFiltering-Scan-Result: InTheLimit
+Message-Id: <E1rrgQJ-005ZO4-GB@rmk-PC.armlinux.org.uk>
+Sender: Russell King <rmk@armlinux.org.uk>
+Date: Tue, 02 Apr 2024 16:51:43 +0100
 
-On 4/2/24 5:53 PM, Paul Barker wrote:
+Introduce a mechanism whereby platforms can create their PCS instances
+prior to the network device being published to userspace, but after
+some of the core stmmac initialisation has been completed. This means
+that the data structures that platforms need will be available.
 
-> The error statistics should be updated each time the poll function is
-> called, even if the full RX work budget has been consumed. This prevents
-> the counts from becoming stuck when RX bandwidth usage is high.
-> 
-> This also ensures that error counters are not updated after we've
-> re-enabled interrupts as that could result in a race condition.
-> 
-> Also drop an unnecessary space.
-> 
-> Fixes: c156633f1353 ("Renesas Ethernet AVB driver proper")
-> Signed-off-by: Paul Barker <paul.barker.ct@bp.renesas.com>
+Signed-off-by: Russell King (Oracle) <rmk+kernel@armlinux.org.uk>
+---
+ drivers/net/ethernet/stmicro/stmmac/stmmac_main.c | 14 ++++++++++++++
+ include/linux/stmmac.h                            |  2 ++
+ 2 files changed, 16 insertions(+)
 
-Reviewed-by: Sergey Shtylyov <s.shtylyov@omp.ru>
+diff --git a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
+index fe3498e86de9..25fa33ae7017 100644
+--- a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
++++ b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
+@@ -7208,6 +7208,12 @@ static int stmmac_hw_init(struct stmmac_priv *priv)
+ 	if (ret)
+ 		return ret;
+ 
++	if (priv->plat->pcs_init) {
++		ret = priv->plat->pcs_init(priv, priv->hw);
++		if (ret)
++			return ret;
++	}
++
+ 	/* Get the HW capability (new GMAC newer than 3.50a) */
+ 	priv->hw_cap_support = stmmac_get_hw_features(priv);
+ 	if (priv->hw_cap_support) {
+@@ -7290,6 +7296,12 @@ static int stmmac_hw_init(struct stmmac_priv *priv)
+ 	return 0;
+ }
+ 
++static void stmmac_hw_exit(struct stmmac_priv *priv)
++{
++	if (priv->plat->pcs_exit)
++		priv->plat->pcs_exit(priv, priv->hw);
++}
++
+ static void stmmac_napi_add(struct net_device *dev)
+ {
+ 	struct stmmac_priv *priv = netdev_priv(dev);
+@@ -7804,6 +7816,7 @@ int stmmac_dvr_probe(struct device *device,
+ 	    priv->hw->pcs != STMMAC_PCS_RTBI)
+ 		stmmac_mdio_unregister(ndev);
+ error_mdio_register:
++	stmmac_hw_exit(priv);
+ 	stmmac_napi_del(ndev);
+ error_hw_init:
+ 	destroy_workqueue(priv->wq);
+@@ -7844,6 +7857,7 @@ void stmmac_dvr_remove(struct device *dev)
+ 	if (priv->hw->pcs != STMMAC_PCS_TBI &&
+ 	    priv->hw->pcs != STMMAC_PCS_RTBI)
+ 		stmmac_mdio_unregister(ndev);
++	stmmac_hw_exit(priv);
+ 	destroy_workqueue(priv->wq);
+ 	mutex_destroy(&priv->lock);
+ 	bitmap_free(priv->af_xdp_zc_qps);
+diff --git a/include/linux/stmmac.h b/include/linux/stmmac.h
+index dfa1828cd756..941fde506e51 100644
+--- a/include/linux/stmmac.h
++++ b/include/linux/stmmac.h
+@@ -285,6 +285,8 @@ struct plat_stmmacenet_data {
+ 	int (*crosststamp)(ktime_t *device, struct system_counterval_t *system,
+ 			   void *ctx);
+ 	void (*dump_debug_regs)(void *priv);
++	int (*pcs_init)(struct stmmac_priv *priv, struct mac_device_info *hw);
++	void (*pcs_exit)(struct stmmac_priv *priv, struct mac_device_info *hw);
+ 	void *bsp_priv;
+ 	struct clk *stmmac_clk;
+ 	struct clk *pclk;
+-- 
+2.30.2
 
-[...]
-
-MBR, Sergey
 
