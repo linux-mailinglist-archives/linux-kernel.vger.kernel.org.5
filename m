@@ -1,102 +1,129 @@
-Return-Path: <linux-kernel+bounces-127494-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-127498-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 542F7894C7C
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 09:16:36 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 14F0B894C83
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 09:18:20 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 86B4028263E
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 07:16:34 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 64314B23B30
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 07:18:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C37AE38DFC;
-	Tue,  2 Apr 2024 07:16:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CE9073A1C5;
+	Tue,  2 Apr 2024 07:18:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b="klVBU1LA"
-Received: from mout.web.de (mout.web.de [212.227.15.14])
+	dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b="IAtvSeqI"
+Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.153.233])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A4FF23839A;
-	Tue,  2 Apr 2024 07:16:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.15.14
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9AA3A2BD00;
+	Tue,  2 Apr 2024 07:18:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=68.232.153.233
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712042184; cv=none; b=ii5reXlyQrlszFBiZfEWz8BwgChpNcmVXx1+phDQrjZ8BzwTJUK7Ex5L6YtBrPp669wwMG14FnW5mtsy09Rd+9xDnZwbNwvPCZ8ypsT+rSrLlt4aFPKu4Il1M8K1OrbolyCRbuzZ/MxLYEH+e7nyhSFhFAs8QpC2N/59w27oy7g=
+	t=1712042288; cv=none; b=ay63G4QzhoF/NTY4R9E4ye8TOzdnU9rmkihHkOi5EdyZv1sovt/oZx0peFfq8BvRu1T2xbWrZpDMHzVVfx2BV+AUiSCwHRJ4hMnvuIXYmILIpx9FlzdJzZsbA9NZf9Yzpvfc29tkbh6/o8TI3aZJiqx3i/XJBFCCfgzcw6WiqMc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712042184; c=relaxed/simple;
-	bh=RDW+zwDa2CBhzAKEQWv7lUSIpXm7MGCiMSp3c7znYCA=;
-	h=Message-ID:Date:MIME-Version:To:Cc:References:Subject:From:
-	 In-Reply-To:Content-Type; b=SOH2d4nDPfLyD1NkbNtetL26YtqHVUa7iaRdInvwLdgecnJ+ScohcQtJUwrjG8mDFWkJGTI+vuap/o6xIQBvaXpa2u+QqtPMNmfsbKA1BpW5ElkLzhsS6U736Uz27k28hdyY+fepUDHjsChyXE0oUuUsoKA7Q08tHbRe9Hwkc7o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de; spf=pass smtp.mailfrom=web.de; dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b=klVBU1LA; arc=none smtp.client-ip=212.227.15.14
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=web.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=web.de;
-	s=s29768273; t=1712042138; x=1712646938; i=markus.elfring@web.de;
-	bh=RDW+zwDa2CBhzAKEQWv7lUSIpXm7MGCiMSp3c7znYCA=;
-	h=X-UI-Sender-Class:Date:To:Cc:References:Subject:From:
-	 In-Reply-To;
-	b=klVBU1LApA5mIHVuMI6quyFsihVv8LzhIcTfdvNXNyI9zDmW9vvyrSPapEuB31IJ
-	 3+gzlmAlKl7UOwV4Ub4j6QZPuQuXEuLDhPpr8bJDsxdJ+c2cnpjGinpA5H6lMfztU
-	 k663VM4upYOUdgzzPS3zBaY8KspXEFYk5XpVufKyOECOz7J8iPfEDlvGBVO8HHrtC
-	 Z097LNP96ylALTvHfvh2x/cY6fQVwHGHAXNEFunpxRYIUJJQZkXXLBNbOBcVW1GPb
-	 EcAKmE3etEOIyz1vs44vj1tNlrGo+UXmPmFhb8wvgvevnSEdimWMCqKhHRjzB+3nG
-	 egtEextJn6dr5IgNcQ==
-X-UI-Sender-Class: 814a7b36-bfc1-4dae-8640-3722d8ec6cd6
-Received: from [192.168.178.21] ([94.31.90.95]) by smtp.web.de (mrweb006
- [213.165.67.108]) with ESMTPSA (Nemesis) id 1MFrxr-1s2nB70qQZ-00HLVA; Tue, 02
- Apr 2024 09:15:38 +0200
-Message-ID: <e4776c82-e255-4eab-b6c4-8087e02f384f@web.de>
-Date: Tue, 2 Apr 2024 09:15:17 +0200
+	s=arc-20240116; t=1712042288; c=relaxed/simple;
+	bh=AIIUnIQYVsm7lRDeuM3Eiv+P07h/G4w5XeAzewovPAM=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=EVbOwr52kg9pV0B3P1COBCX0WJdq5yLpJX90mdVS4IyDSmS2OuPZhg+yg5VBxA7MkYniTS+8eIYcYczMBAqsDUOP2Te6Sdt6PcyzvAbI0UIy6fuDPaqLdlEGwjqb/nSNcBZYYpYLtDQZkYZUsh8jrpkJqAne5bYuP5VpzJ31Drw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=microchip.com; spf=pass smtp.mailfrom=microchip.com; dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b=IAtvSeqI; arc=none smtp.client-ip=68.232.153.233
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=microchip.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=microchip.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1712042286; x=1743578286;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=AIIUnIQYVsm7lRDeuM3Eiv+P07h/G4w5XeAzewovPAM=;
+  b=IAtvSeqIrAM7p+VEDzBHvQ8V+w1q3OJKxgvYsZc0xu8iO7m1rIV48UHs
+   6v25Bk4x6aGEqosrcMvPwjMqDt1Eoi93WkTuiN+q4IQ+cOpOG1eZ3yF8q
+   fXrTBj4BBwPFKYwTjy264ybc62wT9eGvnOIQ3YeACvNGwnR+SEtEZnDkI
+   gg2jhpv2fVVAUUahengX2DoMdkUjpIFdvLNsR5ZZST1KXSunRqrIXd3g/
+   iHH0Ts/pUR3o6KfblnRYm8a8xaF0/EZTIQmbmNREyyP3UKswPrc66baZb
+   fCp6JogOQVbJy15NGcFonl0tDCw3CzlXZb0YxFQJnhuXOWMrv3WEIP2r3
+   A==;
+X-CSE-ConnectionGUID: YYBWl9GrQb6mGB1zAkjL6g==
+X-CSE-MsgGUID: f6W66RxjRf+27EMubxg8/A==
+X-IronPort-AV: E=Sophos;i="6.07,174,1708412400"; 
+   d="scan'208";a="19119228"
+X-Amp-Result: SKIPPED(no attachment in message)
+Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
+  by esa3.microchip.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 02 Apr 2024 00:18:05 -0700
+Received: from chn-vm-ex01.mchp-main.com (10.10.85.143) by
+ chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Tue, 2 Apr 2024 00:17:46 -0700
+Received: from DEN-DL-M31836.microsemi.net (10.10.85.11) by
+ chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server id
+ 15.1.2507.35 via Frontend Transport; Tue, 2 Apr 2024 00:17:44 -0700
+From: Horatiu Vultur <horatiu.vultur@microchip.com>
+To: <andrew@lunn.ch>, <hkallweit1@gmail.com>, <linux@armlinux.org.uk>,
+	<davem@davemloft.net>, <edumazet@google.com>, <kuba@kernel.org>,
+	<pabeni@redhat.com>, <richardcochran@gmail.com>,
+	<Divya.Koppera@microchip.com>
+CC: <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+	<UNGLinuxDriver@microchip.com>, Horatiu Vultur <horatiu.vultur@microchip.com>
+Subject: [PATCH net] net: phy: micrel: lan8814: Fix when enabling/disabling 1-step timestamping
+Date: Tue, 2 Apr 2024 09:16:34 +0200
+Message-ID: <20240402071634.2483524-1-horatiu.vultur@microchip.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-To: Kevin Tian <kevin.tian@intel.com>, Dan Williams
- <dan.j.williams@intel.com>, linux-doc@vger.kernel.org,
- linux-pci@vger.kernel.org, kernel-janitors@vger.kernel.org
-Cc: Bjorn Helgaas <bhelgaas@google.com>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- =?UTF-8?Q?Ilpo_J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>,
- Ira Weiny <ira.weiny@intel.com>,
- Jesse Brandeburg <jesse.brandeburg@intel.com>,
- Jonathan Cameron <Jonathan.Cameron@huawei.com>,
- Julia Lawall <Julia.Lawall@inria.fr>, Lukas Wunner <lukas.wunner@intel.com>,
- Matthew Wilcox <willy@infradead.org>, Peter Zijlstra <peterz@infradead.org>,
- Linus Torvalds <torvalds@linux-foundation.org>,
- Jonathan Corbet <corbet@lwn.net>, LKML <linux-kernel@vger.kernel.org>
-References: <BL1PR11MB5271DB63688BF220D0317AC08C3F2@BL1PR11MB5271.namprd11.prod.outlook.com>
-Subject: RE: [v3] cleanup: Add usage and style documentation
-Content-Language: en-GB
-From: Markus Elfring <Markus.Elfring@web.de>
-In-Reply-To: <BL1PR11MB5271DB63688BF220D0317AC08C3F2@BL1PR11MB5271.namprd11.prod.outlook.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Provags-ID: V03:K1:JTNDDC3fQbZw22eedVtgOny1uIqThPnTxOxFVbrDzjp4rYzGaFw
- 3eJP2d0xCDlTZakMdes3GX7bxJ1ofpe9kWhpKILziqx02qyE5lICdlFkefUJaaqo1Pn+Eq+
- viv7ysn21bw6ZfmyNgTMDdwnMNeMf1OEe9Ms4Y6PmRelsZPM2hT/UgyXkfZOI4jscCZi5hQ
- 3pebzI942P5GQrR5Wlr0w==
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:wqufEvOOBnU=;3sjX2UJscXMIMeiT2ovpJaBmB2f
- l9zRzPgxe4xxclVIw6AtlLYNXNaIafESCTJXewjjt/mow2bTXaXzulvshkQE4HYLinFSHG0PA
- MYydAQzVF8U/jS2Gctuyeg1hf6EB/kVPPdm5ey1Tm6muUfkSohuqTi7OhdvtK/Ml1Y2buDJoQ
- F0IjWKpOgXbxK8yKoitYUdlU6h4V5nd6O/nTB27NZtNHBa4U2pqSSTOTen4dnmSAXaCjbgLS/
- AzmpbHd3Wc8d3L1zBsY7T6tCjXji++bwKFZUR1OHawXWYQMwJ22OzVpb2zDHIPWT9I6wUfdz6
- VP3yc6Nol2UEsVhMZvjWyYoQHhLqWirsectx4sX8agQ7ipTpUUSVg5CySNY+n64lg7l/VmQN5
- gg3qSDxzuOJtUymIftZcUsJcoEcs5U8+USGYFKipJ+btRIVi0PuaDonTI4Az3MKK3rd/v2h3Z
- 3ToIkQ0HxOVuJyCGCbFWFZJ9qGCyi+wFdhhJxNdic4Cx5J6DGqVmODOp6evwO0KGwTbqk4pWa
- EhT2G6fpzM9T+DzBU79Qy6Wdf2/uOIUNe56A0Qc/dRb6/t6ELKz7A/hT/a0J5mZaDT28Q/SaK
- uE243V8rni1TP8R+S+s6HWC0qQBhgffqdSf1BeHh0jEn2Lbp9u0U/eLhhmmtem+CIltnk7msS
- QRwrTKpC7L/ontclCOCxbABz708USgh7V1mb4Zc/1ZWO8TlWN/RL8SM0X+onI/kMdg5BrxSth
- rFTtF/MWbc9v7A28evW0pemBWGWv22NInEUiwG0OqDshO8rvlMTaZ62o6Ft52qplKpMvXYVLq
- cc9ux5nBbLV09+/xfNJeqBrrSCswsKDCmpxACnPpjjenw=
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 
-> Reviewed-by: Kevin Tian <kevin.tian@intel.com>
+There are 2 issues with the blamed commit.
+1. When the phy is initialized, it would enable the disabled of UDPv4
+   checksums. The UDPv6 checksum is already enabled by default. So when
+   1-step is configured then it would clear these flags.
+2. After the 1-step is configured, then if 2-step is configured then the
+   1-step would be still configured because it is not clearing the flag.
+   So the sync frames will still have origin timestamps set.
 
-Did you take any of my review comments into account for this patch version so far?
+Fix this by reading first the value of the register and then
+just change bit 12 as this one determines if the timestamp needs to
+be inserted in the frame, without changing any other bits.
 
-Regards,
-Markus
+Fixes: ece19502834d ("net: phy: micrel: 1588 support for LAN8814 phy")
+Signed-off-by: Horatiu Vultur <horatiu.vultur@microchip.com>
+---
+ drivers/net/phy/micrel.c | 10 ++++++++--
+ 1 file changed, 8 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/net/phy/micrel.c b/drivers/net/phy/micrel.c
+index 8b8634600c519..242f433d9184d 100644
+--- a/drivers/net/phy/micrel.c
++++ b/drivers/net/phy/micrel.c
+@@ -2431,6 +2431,7 @@ static int lan8814_hwtstamp(struct mii_timestamper *mii_ts,
+ 	struct lan8814_ptp_rx_ts *rx_ts, *tmp;
+ 	int txcfg = 0, rxcfg = 0;
+ 	int pkt_ts_enable;
++	int tx_mod;
+ 
+ 	ptp_priv->hwts_tx_type = config->tx_type;
+ 	ptp_priv->rx_filter = config->rx_filter;
+@@ -2477,9 +2478,14 @@ static int lan8814_hwtstamp(struct mii_timestamper *mii_ts,
+ 	lanphy_write_page_reg(ptp_priv->phydev, 5, PTP_RX_TIMESTAMP_EN, pkt_ts_enable);
+ 	lanphy_write_page_reg(ptp_priv->phydev, 5, PTP_TX_TIMESTAMP_EN, pkt_ts_enable);
+ 
+-	if (ptp_priv->hwts_tx_type == HWTSTAMP_TX_ONESTEP_SYNC)
++	tx_mod = lanphy_read_page_reg(ptp_priv->phydev, 5, PTP_TX_MOD);
++	if (ptp_priv->hwts_tx_type == HWTSTAMP_TX_ONESTEP_SYNC) {
+ 		lanphy_write_page_reg(ptp_priv->phydev, 5, PTP_TX_MOD,
+-				      PTP_TX_MOD_TX_PTP_SYNC_TS_INSERT_);
++				      tx_mod | PTP_TX_MOD_TX_PTP_SYNC_TS_INSERT_);
++	} else if (ptp_priv->hwts_tx_type == HWTSTAMP_TX_ON) {
++		lanphy_write_page_reg(ptp_priv->phydev, 5, PTP_TX_MOD,
++				      tx_mod & ~PTP_TX_MOD_TX_PTP_SYNC_TS_INSERT_);
++	}
+ 
+ 	if (config->rx_filter != HWTSTAMP_FILTER_NONE)
+ 		lan8814_config_ts_intr(ptp_priv->phydev, true);
+-- 
+2.34.1
+
 
