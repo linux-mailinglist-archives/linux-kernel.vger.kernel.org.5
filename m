@@ -1,219 +1,144 @@
-Return-Path: <linux-kernel+bounces-128839-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-128841-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 82E2089604E
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 01:39:53 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id BC20089605E
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 01:46:28 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id EDD801F22CBB
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 23:39:52 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EE0201C2284C
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 23:46:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0FAD358AAC;
-	Tue,  2 Apr 2024 23:39:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2C1FE86243;
+	Tue,  2 Apr 2024 23:46:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=codeconstruct.com.au header.i=@codeconstruct.com.au header.b="ZXHLJUfK"
-Received: from codeconstruct.com.au (pi.codeconstruct.com.au [203.29.241.158])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="avX4J5MT"
+Received: from mail-wm1-f45.google.com (mail-wm1-f45.google.com [209.85.128.45])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AA3FC2260B;
-	Tue,  2 Apr 2024 23:39:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=203.29.241.158
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C14292260B
+	for <linux-kernel@vger.kernel.org>; Tue,  2 Apr 2024 23:46:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712101185; cv=none; b=rMM2mExWqF0IwlBXEKq+Ip5CNp73DdNwJRFhB9jaCkOTOA1yfd4kFU9J3EZ4qroBS586Pv6lKDxbXC/zgEdaWVR3QQkQXBWhWeKq87N26QYE4PR0YBo7XeRjq0Ilj2422vg//RgrMZICXbtcqqb1ciKzTpWteZllKZvHBpPo8lw=
+	t=1712101582; cv=none; b=MPs8Oc/TZ/bkkoUMTruyNmJ0F8z1z26B+Nso7ajMDW+LQe82vWTucmgTsH81KVHeA5t2oD0z3kqkLQtwvJ8RFDS7UkHoe80TK10iDMibLDRA815UsHS/boNqyzIQdhueunUaD8YtaBo5NKyXAt0Ge9afGGoXi4BG+rRZKgJju3E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712101185; c=relaxed/simple;
-	bh=ac3kZ5j3Emu12FGS8I9RXckwDThegE5k/mdyDspS2CY=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=WL8wyUtL4Kd5/+GABsShYxAaBizFpGfgv98C1zOO4++GyXBmeWLmYvKYibI5oOWX7eg+Ia418mDhn9ZDb7rTtEO0fVYXBMjSq74D14bG1PCb72KFGbN8WLddFI8vRaNH2+RNCaaEsYFMLM3Qu4I4vz8nJOu3P5g7qLQUyPa7F4I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=codeconstruct.com.au; spf=pass smtp.mailfrom=codeconstruct.com.au; dkim=pass (2048-bit key) header.d=codeconstruct.com.au header.i=@codeconstruct.com.au header.b=ZXHLJUfK; arc=none smtp.client-ip=203.29.241.158
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=codeconstruct.com.au
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=codeconstruct.com.au
-Received: from [192.168.68.112] (ppp118-210-182-70.adl-adc-lon-bras34.tpg.internode.on.net [118.210.182.70])
-	by mail.codeconstruct.com.au (Postfix) with ESMTPSA id 806F420075;
-	Wed,  3 Apr 2024 07:39:38 +0800 (AWST)
+	s=arc-20240116; t=1712101582; c=relaxed/simple;
+	bh=8rjYFhZ2XZOMdRtdKWh5HY7bv+xevdxUD/lIqWYydlc=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=foOCczAMF0qLz+M1TiMk34b8B9AcbIqriZwNOe6Ht9e1H6VQ5yTQrvx9AVeZgcUywMxP/4rT7sL2SjevFJZBwA8lKnuScE4eQBOoq5YpdYOzS8UAL6DMz6Kr9kxCR/NQGSOV/PZndQIizESCw4IeSnfWlW2CetjarI/dzdzigog=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=avX4J5MT; arc=none smtp.client-ip=209.85.128.45
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-wm1-f45.google.com with SMTP id 5b1f17b1804b1-41549a13fabso17505e9.1
+        for <linux-kernel@vger.kernel.org>; Tue, 02 Apr 2024 16:46:20 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-	d=codeconstruct.com.au; s=2022a; t=1712101179;
-	bh=TYTY5ED6B4EfxtLOSSjN5VvpvocVSJ4sFiS7mfpMhBs=;
-	h=Subject:From:To:Cc:Date:In-Reply-To:References;
-	b=ZXHLJUfKEfTPo/L5jQPCZ2RoFiql/3S//f0byjixfY7jvhq3TUlwuUCEv504O1Pnz
-	 GU3oWpyf9rtcRApqMsANR9qfcPAHakXe233AWncmTBYt1rCNzgBFw6jWlFf30CHwKI
-	 U2HTxNYc9mVrs30mOx1fI9xcm/NAxlJ9+dXwTRr5/8mr5zliRxw6wp++iUTFwnuq06
-	 Qi8Gc5XjjzBKjMeX+9iuE9Ozn/CoV1x1TXlFyowx6iJNby/0ng74NBlMkLQvyF9n0w
-	 ZzWop2iZlpYwO4f8U2Vk1nnJr20/9DT03gq0hD0l2K++SexJY2T4jlocIiZwgUtYs8
-	 P/ZJCSDEyICkA==
-Message-ID: <99fa05be32787c88150c6df2f882e31582aebf90.camel@codeconstruct.com.au>
-Subject: Re: [PATCH] dt-bindings: watchdog: Convert Aspeed binding to DT
- schema
-From: Andrew Jeffery <andrew@codeconstruct.com.au>
-To: Zev Weiss <zev@bewilderbeest.net>
-Cc: wim@linux-watchdog.org, linux@roeck-us.net, robh@kernel.org, 
-	krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org, joel@jms.id.au, 
-	linux-watchdog@vger.kernel.org, devicetree@vger.kernel.org, 
-	linux-arm-kernel@lists.infradead.org, linux-aspeed@lists.ozlabs.org, 
-	linux-kernel@vger.kernel.org
-Date: Wed, 03 Apr 2024 10:09:37 +1030
-In-Reply-To: <65722a59-2e94-4616-81e1-835615b0e600@hatter.bewilderbeest.net>
-References: <20240402120118.282035-1-andrew@codeconstruct.com.au>
-	 <65722a59-2e94-4616-81e1-835615b0e600@hatter.bewilderbeest.net>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.46.4-2 
+        d=google.com; s=20230601; t=1712101579; x=1712706379; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=YUNb1EO5EhlkTVd2eVYclB+K26JgugQcOcoodC1uf8I=;
+        b=avX4J5MT5tpRpo+mrOOp5qYjieJknCfCkWEpOXPVzT7uS5tSueI/7kIvZmdSLxBfYS
+         Gi6tg+dO3RRNiOVNpy20RDGc4BsrfOBmyfGS83/q6HwZ3LNzQqYF67v48+qZEzjKZuP6
+         rpsMDD1e765ATdJpnC+Jgk4dpfMW1T0Tv3isrpamg2GdkT9im6mr+5ay1ygyAFIz7//G
+         EERbK4P2SlzymvLhJEKj1K+swWUsxjS3xsbs9sFIavKvwYkiJYwienhSSKM0dE18gMO9
+         oQB5RUgg2fv72nXr0qdgvZrvBQ7riADWpMGCyBE1oDeJHlQFJn7HAElkT3NisVQkmlnK
+         FyPg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712101579; x=1712706379;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=YUNb1EO5EhlkTVd2eVYclB+K26JgugQcOcoodC1uf8I=;
+        b=L+X8o3u45/Mj5Y2YaWU+zaPWLvtV3LDyQP3jjLy56gWauLxfKQYb7nHYW3Vh4lXcC7
+         8z38YNb3h9gkqqS7TyR1b56/bfGNqFn7uROiEQXao8QbGTWPKekq7IZPIrhytlXylpW5
+         4SSeJ1nP+kv2HdEpRYeD4VcH+Kw/kvrpHGsbu7ObQ9eiicWXNDHpTQwObt55WzL9MxAl
+         I6R9LK/3YH/ZQKB+mzHrOhQ2lGZaRLbNlv8VyLMgGvZ21Ed90t/XNOtyRgddk662SeGh
+         ZUcWQ9yPR3uFcIdDyYE4xtNcXMaYXWy9p5VPn3vATM82rwnuxZthI1u6My22wOrfjQpp
+         QmKw==
+X-Forwarded-Encrypted: i=1; AJvYcCUvEAxxW7TNNWfyAcICqOhhz3z1ozd4lyOHcLJUiT8lsBIohWGKC/dNw1pBAeeOA+vP5hOnHbsUzxx/pUZeBhJHSGmQS9eDDwlLj8tE
+X-Gm-Message-State: AOJu0Ywpjn+rTziBPIFXLdPHIg3zhbd5pY8xKqlaFft/thw/UaBVRMVB
+	aO1Tdo4e5/kzKYYo1DAtA6Beh+hXY4kL+xAaL22CQDP12Rl+hk7oHJEORVkKbsCNnhwtquk04CS
+	PtTn7xbDbF2GOSNwys317Lsu5lwGI/asQFxU=
+X-Google-Smtp-Source: AGHT+IEmYVbIjpVLK/TMJN0yY1My4fZGvskmgZhqDxCmuone6eq2XC2v7DwNW4m9fNY6Q0NitdNoOS1JB5uIbrqrtbU=
+X-Received: by 2002:a05:600c:1c12:b0:415:615c:b98b with SMTP id
+ j18-20020a05600c1c1200b00415615cb98bmr38387wms.5.1712101579027; Tue, 02 Apr
+ 2024 16:46:19 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+References: <CGME20230901010734epcas2p4aadced02d68d3db407fda23de34601d2@epcas2p4.samsung.com>
+ <20230901010704.18493-1-bongkyu7.kim@samsung.com>
+In-Reply-To: <20230901010704.18493-1-bongkyu7.kim@samsung.com>
+From: John Stultz <jstultz@google.com>
+Date: Tue, 2 Apr 2024 16:46:06 -0700
+Message-ID: <CANDhNCoFRr=qizswLm-dzxJK0fHuCx98Z2B1pUspdwGqBEejYg@mail.gmail.com>
+Subject: Re: [PATCH v2 0/2] Make reader optimistic spinning optional
+To: Bongkyu Kim <bongkyu7.kim@samsung.com>
+Cc: peterz@infradead.org, mingo@redhat.com, will@kernel.org, 
+	longman@redhat.com, boqun.feng@gmail.com, linux-kernel@vger.kernel.org, 
+	gregkh@linuxfoundation.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Tue, 2024-04-02 at 16:30 -0700, Zev Weiss wrote:
-> On Tue, Apr 02, 2024 at 05:01:18AM PDT, Andrew Jeffery wrote:
-> > Squash warnings such as:
-> >=20
-> > ```
-> > arch/arm/boot/dts/aspeed/aspeed-bmc-facebook-galaxy100.dtb: /ahb/apb@1e=
-600000/watchdog@1e785000: failed to match any schema with compatible: ['asp=
-eed,ast2400-wdt']
-> > ```
-> >=20
-> > Signed-off-by: Andrew Jeffery <andrew@codeconstruct.com.au>
-> > ---
-> > .../bindings/watchdog/aspeed,ast2400-wdt.yaml | 130 ++++++++++++++++++
-> > .../bindings/watchdog/aspeed-wdt.txt          |  73 ----------
-> > 2 files changed, 130 insertions(+), 73 deletions(-)
-> > create mode 100644 Documentation/devicetree/bindings/watchdog/aspeed,as=
-t2400-wdt.yaml
-> > delete mode 100644 Documentation/devicetree/bindings/watchdog/aspeed-wd=
-t.txt
-> >=20
-> > diff --git a/Documentation/devicetree/bindings/watchdog/aspeed,ast2400-=
-wdt.yaml b/Documentation/devicetree/bindings/watchdog/aspeed,ast2400-wdt.ya=
-ml
-> > new file mode 100644
-> > index 000000000000..10fcb50c4051
-> > --- /dev/null
-> > +++ b/Documentation/devicetree/bindings/watchdog/aspeed,ast2400-wdt.yam=
-l
-> > @@ -0,0 +1,130 @@
-> > +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> > +%YAML 1.2
-> > +---
-> > +$id: http://devicetree.org/schemas/watchdog/aspeed,ast2400-wdt.yaml#
-> > +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> > +
-> > +title: Aspeed watchdog timer controllers
-> > +
-> > +maintainers:
-> > +  - Andrew Jeffery <andrew@codeconstruct.com.au>
-> > +
-> > +properties:
-> > +  compatible:
-> > +    enum:
-> > +      - aspeed,ast2400-wdt
-> > +      - aspeed,ast2500-wdt
-> > +      - aspeed,ast2600-wdt
-> > +
-> > +  reg:
-> > +    maxItems: 1
-> > +
-> > +  clocks: true
-> > +
-> > +  aspeed,reset-type:
-> > +    enum:
-> > +      - cpu
-> > +      - soc
-> > +      - system
-> > +      - none
-> > +    description: |
-> > +      Reset behaviour - The watchdog can be programmed to generate one=
- of three
-> > +      different types of reset when a timeout occcurs.
-> > +
-> > +      Specifying 'cpu' will only reset the processor on a timeout even=
-t.
-> > +
-> > +      Specifying 'soc' will reset a configurable subset of the SoC's c=
-ontrollers
->=20
-> Might be worth clarifying that it's configurable only on ast2500 &=20
-> ast2600, and which property (aspeed,reset-mask) configures it?
+On Thu, Aug 31, 2023 at 6:07=E2=80=AFPM Bongkyu Kim <bongkyu7.kim@samsung.c=
+om> wrote:
+>
+> This is rework of the following discussed patch.
+> https://lore.kernel.org/all/20230613043308.GA1027@KORCO045595.samsungds.n=
+et/
+>
+> Changes from the previous patch
+> - Split to revert and modify patches
+> - Change according to Waiman Long's review
+>     More wording to documentation part
+>     Change module_param to early_param
+>     Code change by Waiman Long's suggestion
+>
+> In mobile environment, reader optimistic spinning is still useful
+> because there're not many readers. In my test result at android device,
+> it improves application startup time about 3.8%
+> App startup time is most important factor for android user expriences.
+> So, re-enable reader optimistic spinning by this commit. And,
+> make it optional feature by cmdline.
+>
+> Test result:
+> This is 15 application startup performance in our exynos soc.
+> - Cortex A78*2 + Cortex A55*6
+> - unit: ms (lower is better)
+>
+> Application             base  opt_rspin  Diff  Diff(%)
+> --------------------  ------  ---------  ----  -------
+> * Total(geomean)         343        330   -13    +3.8%
+> --------------------  ------  ---------  ----  -------
+> helloworld               110        108    -2    +1.8%
+> Amazon_Seller            397        388    -9    +2.3%
+> Whatsapp                 311        304    -7    +2.3%
+> Simple_PDF_Reader        500        463   -37    +7.4%
+> FaceApp                  330        317   -13    +3.9%
+> Timestamp_Camera_Free    451        443    -8    +1.8%
+> Kindle                   629        597   -32    +5.1%
+> Coinbase                 243        233   -10    +4.1%
+> Firefox                  425        399   -26    +6.1%
+> Candy_Crush_Soda         552        538   -14    +2.5%
+> Hill_Climb_Racing        245        230   -15    +6.1%
+> Call_Recorder            437        426   -11    +2.5%
+> Color_Fill_3D            190        180   -10    +5.3%
+> eToro                    512        505    -7    +1.4%
+> GroupMe                  281        266   -15    +5.3%
+>
 
-Good point, will do.
+Hey Bongkyu,
+  I wanted to reach out to see what the current status of this patch
+set? I'm seeing other parties trying to work around the loss of the
+optimistic spinning functionality since commit 617f3ef95177
+("locking/rwsem: Remove reader optimistic spinning") as well, with
+their own custom variants (providing some substantial gains), and
+would really like to have a common solution.
 
->=20
-> > +      on a timeout event. Controllers critical to the SoC's operation =
-may remain untouched.
-> > +
-> > +      Specifying 'system' will reset all controllers on a timeout even=
-t, as if EXTRST had been asserted.
-> > +      Specifying "none" will cause the timeout event to have no reset =
-effect.
->=20
-> Tiny nit: quoting (single vs. double) is slightly inconsistent between=
-=20
-> values here.
-
-Ack.
-
->=20
-> > +      Another watchdog engine on the chip must be used for chip reset =
-operations.
-> > +
-> > +      The default reset type is "system"
-> > +
-> > +  aspeed,alt-boot:
-> > +    $ref: /schemas/types.yaml#/definitions/flag
-> > +    description: |
-> > +      Direct the watchdog to configure the SoC to boot from the altern=
-ative boot
-> > +      region if a timeout occurs.
-> > +
-> > +  aspeed,external-signal:
-> > +    $ref: /schemas/types.yaml#/definitions/flag
-> > +    description: |
-> > +      Assert the timeout event on an external signal pin associated wi=
-th the
-> > +      watchdog controller instance. The pin must be muxed appropriatel=
-y.
-> > +
-> > +  aspeed,ext-pulse-duration:
-> > +    $ref: /schemas/types.yaml#/definitions/uint32
-> > +    description: |
-> > +      The duration, in microseconds, of the pulse emitted on the exter=
-nal signal pin
-> > +
-> > +  aspeed,ext-push-pull:
-> > +    $ref: /schemas/types.yaml#/definitions/flag
-> > +    description: |
-> > +      If aspeed,external-signal is specified in the node, set the exte=
-rnal
-> > +      signal pin's drive type to push-pull. If aspeed,ext-push-pull is=
- not
-> > +      specified then the pin is configured as open-drain.
-> > +
-> > +  aspeed,ext-active-high:
-> > +    $ref: /schemas/types.yaml#/definitions/flag
-> > +    description: |
-> > +      If both aspeed,external-signal and aspeed,ext-push-pull are spec=
-ified in
-> > +      the node, set the pulse polarity to active-high. If aspeed,ext-a=
-ctive-high
-> > +      is not specified then the pin is configured as active-low.
-> > +
-> > +  aspeed,reset-mask:
-> > +    $ref: /schemas/types.yaml#/definitions/uint32-array
-> > +    minItems: 1
-> > +    maxItems: 2
-> > +    description: |
-> > +      A bitmaks indicating which peripherals will be reset if the watc=
-hdog
->=20
-> Typo: "bitmask"
-
-Good catch.
-
-Thanks,
-
-Andrew
+thanks
+-john
 
