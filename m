@@ -1,115 +1,157 @@
-Return-Path: <linux-kernel+bounces-128726-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-128728-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id F39FF895EAE
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 23:23:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 26DF5895EB5
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 23:31:03 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 315831C2190E
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 21:23:12 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 589091C23BCC
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 21:31:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B3B6C15E7EB;
-	Tue,  2 Apr 2024 21:22:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 59A3415E5D6;
+	Tue,  2 Apr 2024 21:30:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=alliedtelesis.co.nz header.i=@alliedtelesis.co.nz header.b="IKg2GcXA"
-Received: from gate2.alliedtelesis.co.nz (gate2.alliedtelesis.co.nz [202.36.163.20])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="giK7ekR2"
+Received: from mail-lj1-f173.google.com (mail-lj1-f173.google.com [209.85.208.173])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0E8D815E804
-	for <linux-kernel@vger.kernel.org>; Tue,  2 Apr 2024 21:22:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=202.36.163.20
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E251215AAA7;
+	Tue,  2 Apr 2024 21:30:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712092961; cv=none; b=aRlJzGSbFPFdbzQ8cFHce9OpGUs01Zj0NEtt0GHo4hHQ5GfvN35YO4cyaq6aY1NKk2LCdPOrSAlN/1SEFZNj1uO/DBvQetTmNsBIWDYDdCA6dRgS4X2xDXpr5D1PvqBq2LE42U5WC5ntEz/npeh4s8z1mpnlO7jP48BYWOZg3mQ=
+	t=1712093454; cv=none; b=mefoCZ4Lbc6KJ8JHyvm3FFkmS6tO67VZDEeZU+h2zefZXlXQ1JSfriqKj065UyddC8qDHVW8nhotvkMHM+koJgRZCOGZBbkXps+1zCloToUywUX6m6+UYZsPWBmHCDs9vcrWdSfFEHNDNIdmg/P/fxxRnwZlSz7J0g8Z3DFcCfs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712092961; c=relaxed/simple;
-	bh=QUoOOq239FWfIM+7L2bUVe4hfJusbR6KJkTFIMaw8fg=;
-	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=Sev/DJwuMVVYeM60utqPlN+p1cHvXQNpvOWnJWkYZHnRoNwB84eGWg0xI3cVpoI2Ef2ysCcEU0QQl6mlM+4hgmLPegkL3Aaquy9qLG1Z8jTXp52y3/gH4RySfPoLVNv4LgN+sKYysuEHK5udwbS1aPJZj+nUbJI5ssojPRCjlnY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=alliedtelesis.co.nz; spf=pass smtp.mailfrom=alliedtelesis.co.nz; dkim=pass (2048-bit key) header.d=alliedtelesis.co.nz header.i=@alliedtelesis.co.nz header.b=IKg2GcXA; arc=none smtp.client-ip=202.36.163.20
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=alliedtelesis.co.nz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alliedtelesis.co.nz
-Received: from svr-chch-seg1.atlnz.lc (mmarshal3.atlnz.lc [10.32.18.43])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(Client did not present a certificate)
-	by gate2.alliedtelesis.co.nz (Postfix) with ESMTPS id 9CAC32C02E0;
-	Wed,  3 Apr 2024 10:22:36 +1300 (NZDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alliedtelesis.co.nz;
-	s=mail181024; t=1712092956;
-	bh=QUoOOq239FWfIM+7L2bUVe4hfJusbR6KJkTFIMaw8fg=;
-	h=From:To:CC:Subject:Date:References:In-Reply-To:From;
-	b=IKg2GcXAjtxm8/cQX08HescMQYZYJfI9Rkb/9g+swaCT5eXdsabGq1t/woT1ub+oo
-	 kq600bcPbf/OXnvOUcPcgOjZX/PwZ9OhDS1/GXhmX6FaeoOxgOlSPyu6aAJ6dWx3tW
-	 Fei5DVa08UCyW54PsTS64/x6ZRWvM2wav3DB//4a/EMbCuJC0RgXLoA8E8L/SKYmSl
-	 QSBfK3ETZLTNW54j/LU+uZetysNhyslHUqeVoBY+BJa+UwVPQbgGFhCdGhSeYkbwgD
-	 dVZJtXo3ZYc+9SR4/akKIVk6oZXUK0QWIpDaWfGbiRjDcoeo/91NYyYsWhsZRPgYV0
-	 KZ8e13Nqy1QfQ==
-Received: from svr-chch-ex2.atlnz.lc (Not Verified[2001:df5:b000:bc8::76]) by svr-chch-seg1.atlnz.lc with Trustwave SEG (v8,2,6,11305)
-	id <B660c771c0001>; Wed, 03 Apr 2024 10:22:36 +1300
-Received: from svr-chch-ex2.atlnz.lc (2001:df5:b000:bc8::76) by
- svr-chch-ex2.atlnz.lc (2001:df5:b000:bc8::76) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1544.9; Wed, 3 Apr 2024 10:22:36 +1300
-Received: from svr-chch-ex2.atlnz.lc ([fe80::a9eb:c9b7:8b52:9567]) by
- svr-chch-ex2.atlnz.lc ([fe80::a9eb:c9b7:8b52:9567%15]) with mapi id
- 15.02.1544.009; Wed, 3 Apr 2024 10:22:36 +1300
-From: Chris Packham <Chris.Packham@alliedtelesis.co.nz>
-To: Guenter Roeck <linux@roeck-us.net>
-CC: "jdelvare@suse.com" <jdelvare@suse.com>, "linux-hwmon@vger.kernel.org"
-	<linux-hwmon@vger.kernel.org>, "linux-kernel@vger.kernel.org"
-	<linux-kernel@vger.kernel.org>
-Subject: Re: hwmon: label vs temp%d_label
-Thread-Topic: hwmon: label vs temp%d_label
-Thread-Index: AQHahTvINn4/LiD+qEqZV7u6Rj72trFUnPeAgAAGZwA=
-Date: Tue, 2 Apr 2024 21:22:36 +0000
-Message-ID: <448b5cfb-b433-4b38-98ae-066bda44f1fd@alliedtelesis.co.nz>
-References: <9a09bf46-d097-4e5b-bdb3-cc9dc6f5d01c@alliedtelesis.co.nz>
- <fdd952dd-2f3c-4f66-8e73-68f1dadde237@roeck-us.net>
-In-Reply-To: <fdd952dd-2f3c-4f66-8e73-68f1dadde237@roeck-us.net>
-Accept-Language: en-NZ, en-US
-Content-Language: en-US
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <2D3FD5929821634B9CB59D6C5620BFD7@atlnz.lc>
-Content-Transfer-Encoding: base64
+	s=arc-20240116; t=1712093454; c=relaxed/simple;
+	bh=hNVDekXEPKdNQ8nGR4QQ1IEFyjTV+QlVT98R13nD3NA=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=ElLKx2MSdHIKC6pUuxJgcfK7mmAFpWmyaSzOmVqKY4RQwEClEc4bUUxeFkRrbv3kO9bHo01X6e35fAUg7SI5h52SyAtYJD4u2Ka5bWOhFmsprJRKAHad5ttVKrz/2gDDDWZrz2pGCi09pfXvST/qMCoC0RxKsyWntGXoTBPBQ+k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=giK7ekR2; arc=none smtp.client-ip=209.85.208.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lj1-f173.google.com with SMTP id 38308e7fff4ca-2d6ff0422a2so77713781fa.2;
+        Tue, 02 Apr 2024 14:30:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1712093451; x=1712698251; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=d4wUD2z9yRcsRFUV0GZ2KtedkGxq+PRtlFMNXAo0fIc=;
+        b=giK7ekR2UB0FPjvOEL+TYfwb0jxbOdvWlPQex1xu9TqM5R+pAiNdh0DpRuKYA0GLg8
+         hzrpfyCAxW1netCc6OBHl+6jR36Sj7W7gZTvUd4Ofs331cw3AaLp2ehCQyHtHjskAsQP
+         6dREn8E3cHh1ybmTiphQoMblE25JHZvw8Mmb1ceRHPFnP7j98JIvTnnFxj6qzir82CUz
+         5v4VdeHFG6xOjhNBBhvAnyi5KJPIoTntcY7vLIeJB3BzkzLouJH8dh5QY0vRWYWJi7tN
+         DPeNkKyJofExWmzz8x5XwHLJBxPwBYRwTVJWaP7pID94Y7U1c7PMEnhh6OEfxAYZ4zaF
+         xK3Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712093451; x=1712698251;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=d4wUD2z9yRcsRFUV0GZ2KtedkGxq+PRtlFMNXAo0fIc=;
+        b=NvCUvQPxWuConnn/sbffnd2AASp/xmnhemraIeHKVhnbdZCrUAGL+o/9kjh40Ymjz3
+         LXA1ngf03KJwtKuOdAdnLrM7L0IqI+PgoaQlyjLObG9Jdjvbn99Hv5gAQwL/T9RG2sRZ
+         UX4Sm21mX3Ez0lpL65Jg9h0K1A1cfw/PqlUeCk5fVYth4kSszktp2Ierif0qr0pA251h
+         cdyjC9dqx817TVHPeQ3ftsDjGpEcw/yS2qtjusTtKuVWPzFvhjhXjQ+lg6VU1AghtDY4
+         MSwBSjGl6ITBwGaPu0IEjzamLVnEt8cbHZCXYRyrk+Aze9ilXpFMYEUiF18SnqHrPeNY
+         7T5A==
+X-Forwarded-Encrypted: i=1; AJvYcCWog9qEwpDT7yLwS9+rpVWdHDoyUlJwzV0IEQ//L2KCpi4w5Met2AEt04raEFUlEgaUPSlgFLHPPMgi4pzf+7lIMAfD+SbgQ/sP0TWeRx4qUqikDbVJOBIIIT2HVSyUVRc6hvNE
+X-Gm-Message-State: AOJu0YxljPyIanbk5au94NbdpS0L6jdd+1ZKGSVe9eLx6EOSK19t+mq1
+	PEQvefns+8QK8giIT+TjEBuqAZjfNvPBE/2K6/neNQnefuIXA7JBg3hEMpBF
+X-Google-Smtp-Source: AGHT+IGHiDlGzpUaByzv1Mat8TWtJADllDTg3rUOQ7RF+vs2KUWXAyysTRN4kWevr3lyuN9B1n3rEA==
+X-Received: by 2002:a2e:96cb:0:b0:2d5:b33c:1f64 with SMTP id d11-20020a2e96cb000000b002d5b33c1f64mr8253135ljj.38.1712093450818;
+        Tue, 02 Apr 2024 14:30:50 -0700 (PDT)
+Received: from localhost.localdomain (host-79-35-252-101.retail.telecomitalia.it. [79.35.252.101])
+        by smtp.googlemail.com with ESMTPSA id g18-20020a05600c4ed200b0041495d17992sm19232476wmq.34.2024.04.02.14.30.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 02 Apr 2024 14:30:50 -0700 (PDT)
+From: Christian Marangi <ansuelsmth@gmail.com>
+To: =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <rafal@milecki.pl>,
+	Miquel Raynal <miquel.raynal@bootlin.com>,
+	Richard Weinberger <richard@nod.at>,
+	Vignesh Raghavendra <vigneshr@ti.com>,
+	Michael Walle <michael@walle.cc>,
+	linux-mtd@lists.infradead.org,
+	linux-kernel@vger.kernel.org
+Cc: Christian Marangi <ansuelsmth@gmail.com>,
+	stable@vger.kernel.org
+Subject: [PATCH v4] mtd: limit OTP NVMEM Cell parse to non Nand devices
+Date: Tue,  2 Apr 2024 23:23:19 +0200
+Message-ID: <20240402212331.27328-1-ansuelsmth@gmail.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-SEG-SpamProfiler-Analysis: v=2.4 cv=KIH5D0Fo c=1 sm=1 tr=0 ts=660c771c a=Xf/6aR1Nyvzi7BryhOrcLQ==:117 a=xqWC_Br6kY4A:10 a=X1bIBW7fO_EA:10 a=75chYTbOgJ0A:10 a=IkcTkHD0fZMA:10 a=raytVjVEu-sA:10 a=VNa-VUgOKwxTY--yjHkA:9 a=3ZKOabzyN94A:10 a=QEXdDO2ut3YA:10
-X-SEG-SpamProfiler-Score: 0
+Content-Transfer-Encoding: 8bit
 
-DQpPbiAzLzA0LzI0IDA5OjU5LCBHdWVudGVyIFJvZWNrIHdyb3RlOg0KPiBPbiBUdWUsIEFwciAw
-MiwgMjAyNCBhdCAwODoyNDozN1BNICswMDAwLCBDaHJpcyBQYWNraGFtIHdyb3RlOg0KPj4gSGkg
-R3VlbnRlciwgSmVhbiwNCj4+DQo+PiBJJ3ZlIGdvdCBhIHJlcXVpcmVtZW50IHRvIGFkZCBzb21l
-IG1lYW5pbmdmdWwgbmFtZXMgdG8gc29tZSBod21vbg0KPj4gc2Vuc29ycyAoTE03NSBzcGVjaWZp
-Y2FsbHkpIHNvIHRoYXQgd2UgY2FuIHByb3ZpZGUgc29tZSBpbmRpY2F0aW9uIG9mDQo+PiB3aGVy
-ZSBvbiBhIGJvYXJkIHRoZSBzZW5zb3IgaXMgbG9jYXRlZCAoZS5nLiAiSW50YWtlIiB2cyAiRXho
-YXVzdCIgdnMNCj4+ICJOZWFyIHRoYXQgcmVhbGx5IGhvdCBjaGlwIikuDQo+Pg0KPj4gSSBzZWUg
-dGhhdCB0aGUgc3lzZnMgQUJJIGRvY3VtZW50cyBib3RoICJsYWJlbCIgZm9yIHRoZSBjaGlwIGFu
-ZA0KPj4gInRlbXBbMS0qXV9sYWJlbCIgKGFzIHdlbGwgYXMgc2ltaWxhciBmYW4gYW5kIFZpbiBh
-dHRyaWJ1dGVzKS4gVGhlDQo+PiBsYXR0ZXIgc2VlbSB0byBiZSBzdXBwb3J0ZWQgYnkgdGhlIGh3
-bW9uIGNvcmUgYnV0IEkgZG9uJ3Qgc2VlIGFueXRoaW5nDQo+PiBmb3IgdGhlIGZvcm1lciAoSSdt
-IHN0cnVnZ2xpbmcgdG8gZmluZCBhbnkgZHJpdmVyIHRoYXQgc3VwcG9ydHMgYQ0KPj4gY2hpcC13
-aWRlIGxhYmVsKS4NCj4+DQo+PiBBc3N1bWluZyBJIHdhbnQgdG8gaGF2ZSBhIGxhYmVsIGFkZGVk
-IGluIHRoZSBkZXZpY2UgdHJlZSB0byBhIGxtNzUgd291bGQNCj4+IHNvbWV0aGluZyBsaWtlIHRo
-ZSBmb2xsb3dpbmcgYmUgYWNjZXB0YWJsZQ0KPj4NCj4+ICAgwqDCoMKgwqDCoCBzZW5zb3JANDgg
-ew0KPj4gICDCoMKgwqDCoMKgwqDCoCBjb21wYXRpYmxlID0gIm5hdGlvbmFsLGxtNzUiOw0KPj4g
-ICDCoMKgwqDCoMKgwqDCoCByZWcgPSA8MHg0OD47DQo+PiAgIMKgwqDCoMKgwqDCoMKgIGxhYmVs
-ID0gIkludGFrZSI7DQo+PiAgIMKgwqDCoMKgwqAgfTsNCj4+DQo+PiBJJ2QgdGhlbiB1cGRhdGUg
-dGhlIGxtNzUgZHJpdmVyIHRvIGdyYWIgdGhhdCBmcm9tIHRoZSBkZXZpY2V0cmVlIGFuZCB1c2UN
-Cj4+IGl0IHRvIHByb3ZpZGUgdGhlIGh3bW9uX3RlbXBfbGFiZWwgYXR0cmlidXRlLg0KPj4NCj4g
-SGF2ZSB5b3UgdHJpZWQganVzdCBkZWNsYXJpbmcgdGhlIGxhYmVsIHByb3BlcnR5IGFzIHlvdSBz
-dWdnZXN0ZWQgYWJvdmUNCj4gaW4geW91ciBzeXN0ZW0gd2l0aG91dCBkb2luZyBhbnl0aGluZyBl
-bHNlLCBhbmQgbG9va2VkIGF0IHRoZSBnZW5lcmF0ZWQNCj4gc3lzZnMgYXR0cmlidXRlcyA/DQoN
-CkkgaGF2ZSBub3QuIEJ1dCBpbiBteSBkZWZlbnNlIEknbSBhbHNvIHVzaW5nIGFuIG9sZGVyIGtl
-cm5lbCBMVFMgdGhhdCANCmRvZXNuJ3QgaGF2ZSBjb21taXQgZTFjOWQ2ZDYxZGRmICgiaHdtb246
-IEFkZCAibGFiZWwiIGF0dHJpYnV0ZSIpLiBCdXQgDQpub3cgdGhhdCBJIGtub3cgaXQgZXhpc3Rz
-IEkgY2FuIGNhcnJ5IGl0IGFzIGEgbG9jYWwgcGF0Y2ggdW50aWwgd2UgbmV4dCANCnVwZGF0ZS4N
-Cg0KVGhhbmtzLA0KQ2hyaXMNCg==
+MTD OTP logic is very fragile on parsing NVMEM Cell and can be
+problematic with some specific kind of devices.
+
+The problem was discovered by e87161321a40 ("mtd: rawnand: macronix:
+OTP access for MX30LFxG18AC") where OTP support was added to a NAND
+device. With the case of NAND devices, it does require a node where ECC
+info are declared and all the fixed partitions, and this cause the OTP
+codepath to parse this node as OTP NVMEM Cells, making probe fail and
+the NAND device registration fail.
+
+MTD OTP parsing should have been limited to always using compatible to
+prevent this error by using node with compatible "otp-user" or
+"otp-factory".
+
+NVMEM across the years had various iteration on how Cells could be
+declared in DT, in some old implementation, no_of_node should have been
+enabled but now add_legacy_fixed_of_cells should be used to disable
+NVMEM to parse child node as NVMEM Cell.
+
+To fix this and limit any regression with other MTD that makes use of
+declaring OTP as direct child of the dev node, disable
+add_legacy_fixed_of_cells if we detect the MTD type is Nand.
+
+With the following logic, the OTP NVMEM entry is correctly created with
+no Cells and the MTD Nand is correctly probed and partitions are
+correctly exposed.
+
+Fixes: 4b361cfa8624 ("mtd: core: add OTP nvmem provider support")
+Cc: <stable@vger.kernel.org> # v6.7+
+Signed-off-by: Christian Marangi <ansuelsmth@gmail.com>
+---
+
+To backport this to v6.6 and previous,
+
+config.no_of_node = mtd_type_is_nand(mtd);
+
+should be used as it does pose the same usage of
+add_legacy_fixed_of_cells.
+
+Changes v4:
+- Add info on how to backport this to previous kernel
+- Fix Fixes tag
+- Reformat commit description as it was unprecise and
+  had false statement
+Changes v3:
+- Fix commit description
+Changes v2:
+- Use mtd_type_is_nand instead of node name check
+
+ drivers/mtd/mtdcore.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/mtd/mtdcore.c b/drivers/mtd/mtdcore.c
+index 5887feb347a4..0de87bc63840 100644
+--- a/drivers/mtd/mtdcore.c
++++ b/drivers/mtd/mtdcore.c
+@@ -900,7 +900,7 @@ static struct nvmem_device *mtd_otp_nvmem_register(struct mtd_info *mtd,
+ 	config.name = compatible;
+ 	config.id = NVMEM_DEVID_AUTO;
+ 	config.owner = THIS_MODULE;
+-	config.add_legacy_fixed_of_cells = true;
++	config.add_legacy_fixed_of_cells = !mtd_type_is_nand(mtd);
+ 	config.type = NVMEM_TYPE_OTP;
+ 	config.root_only = true;
+ 	config.ignore_wp = true;
+-- 
+2.43.0
+
 
