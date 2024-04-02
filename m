@@ -1,278 +1,145 @@
-Return-Path: <linux-kernel+bounces-128104-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-128103-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id C351089562E
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 16:06:34 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id EFBA989562D
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 16:06:20 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E65761C223C1
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 14:06:33 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A3C471F24466
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 14:06:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 81B0086253;
-	Tue,  2 Apr 2024 14:06:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9927D85958;
+	Tue,  2 Apr 2024 14:06:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="ndcEVVla";
-	dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b="BXAuMLEU"
-Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="jxZSCTPV"
+Received: from mail-pg1-f169.google.com (mail-pg1-f169.google.com [209.85.215.169])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6A8BB86243;
-	Tue,  2 Apr 2024 14:06:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=205.220.177.32
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712066779; cv=fail; b=IjMDJIscwViXny8nhDuckPdXPVpnxtz3QEbASmGjLWZlhTAmaTmlWSFfEMiSJhQfKJhQPotIdcX7malCeAoKe+aU7C8jlvk+pNPCJlJeKHoqtS2BwsDR3lvexcSZe+C+67emGwDm5mv1otHbtbuOKeV/xUoX111Uv3fVPndyygM=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712066779; c=relaxed/simple;
-	bh=qqLzUp334CeeqjFRBjAqhVCDtl77IppIQ36q+FwdpvE=;
-	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
-	 Content-Type:MIME-Version; b=pzi10SzJzOSfiUjO8x3IuW0jzxUcpwiYDdW/qVMMp7aJfwWE0om9lDE0xztyhlAbYGidrTyJDTbDtdhNqQalIPPdnvqIseEUKpbkRSsSzYOijcgm4LBmMERRNKFYRWolCb7sF+g3padfwSA4AmZ7cvlwxMCwAO1rzv3sBGSlicQ=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=ndcEVVla; dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b=BXAuMLEU; arc=fail smtp.client-ip=205.220.177.32
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=oracle.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oracle.com
-Received: from pps.filterd (m0333520.ppops.net [127.0.0.1])
-	by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 4327hqr2020074;
-	Tue, 2 Apr 2024 14:05:57 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=message-id : date :
- subject : to : cc : references : from : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=corp-2023-11-20;
- bh=kpWrjS3zr0Dh06PCqItw29WJLCw3h+wq1OXQF0szMrw=;
- b=ndcEVVla+z3G4ZvqV5Dm2lU8tZgh5aVktdU59lKDFJ1tKEdro/3hvLGSFHrxoKnXhLGq
- 6gQMjnWBZ7akJCSMjvIN1y/rqBB/1KyinN8oBBz8vSmE+lQ3BNvVmPsSzdyTx8HotXor
- 1AgNrLTWQNO+0X2ZmxOpwMyqoWOT1jIYCvgY3lwDG94QJd0iVoI43TujzP0aaloI3dtl
- +hPSZzbedZwqtsn7VO5Q/rbtaOiLtfNDAdhtYPnKM372VRzbcTmKWIOb1LSf2wyaSci/
- M6LyOObFxOhqZcJsz6tGk9nZ/gO6TBCqLBNk6WmFpBziGAykb+8ZZlIdNYnvs6zfn26y IA== 
-Received: from phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta01.appoci.oracle.com [138.1.114.2])
-	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3x7tb9trey-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Tue, 02 Apr 2024 14:05:57 +0000
-Received: from pps.filterd (phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
-	by phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 432Ctxsi031038;
-	Tue, 2 Apr 2024 14:05:56 GMT
-Received: from nam12-bn8-obe.outbound.protection.outlook.com (mail-bn8nam12lp2168.outbound.protection.outlook.com [104.47.55.168])
-	by phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTPS id 3x6966uq5e-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Tue, 02 Apr 2024 14:05:56 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=et3luYum5JZ/YQTayQy4m4a3MvJrjwsPiHyvPM8B9LW5e0SYHA/tsQ3wnL5Xvc/LkogGi5PU+DtPN1Kd4gpLehyaQTIpDwV9NvruBaVz/kHCpBg2QU7n4qoBgWcsgdw3mln+uE/PIhMF0NjyO5LngOCvPsYZReq5YD9/XLZF9jHXYYeAa/m/vyhg/RByLcowBQ2PvqQ+9mV+d3N6i8alx5mek80Q4Imnlv4ar6DCVEVNJFTqe6Q0FBBO9bQAeWdKZNCSycqGARtvW5IxA3rZkyZNmD5X3v7xWpQgEFE7ZZ7pb0e22nV4XHZL9rKPK3VUPaooAma1gchOgZAb4QpQfw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=kpWrjS3zr0Dh06PCqItw29WJLCw3h+wq1OXQF0szMrw=;
- b=CfEsNotg81q3F//IQ1awaA/c06IFSj+hVTNGzacSbNpKZe8GtY2xxzVv24Wv4kuWOFWbUIeHE7aNvtrAt/+A95MI1TOeUyCTPQ+V9CL8VBjlSSCXcDN6u95IQz2c0ojObT20oz1bcvdWu3Ap3doX6s7D8vU2IEDLyd+Z5GL6MPAtyQzmtLG2GYpWfdY4eCBdfjcJQ18KzalmzBELVeWZ3SVK36Ral9wvKCPkpdo71b+Uo/b+A6nsAv7T0wU+AcCnObI26V+sCv4CUlZW4N6mBEQxGZ1IdBKxORN5Z5ge8RcThUZ5BUoUOowF9wVCP829INfONdQpFC2iAMLbs8Ievw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6EC8184FA5;
+	Tue,  2 Apr 2024 14:06:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.169
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1712066773; cv=none; b=ee6nXokCGIY5k4DjKEJb8jo0NzqQ7b3IHMMcgXZje1dnW5jTIZKcAV2KT8wCG1CpbBszMmwTc2hqEx23F0cDmHMOvpy1YY3YbppSXdb4EuFocIDG0CJST3jIcCJtW//Ka5CqI3Eqpo7tnaYpT4fpzPSBpOVq+KMFqGoWsWEcZ1M=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1712066773; c=relaxed/simple;
+	bh=Vvt5mnf6spmL9Bj9mTkjxxdRRvLUW5hBDEJkgWuz6Pk=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=YLe9+o4bUaqzMNsH08uIMSWYziJ20P3Xhd41eeMCUz8Jyc/nNFlJMqGE8uIErcZnFsLHrlMj6SCDYFlTWQgBzbJuLHBXuiGynjtwzq8WfBQXghJR77dcE4hUGd+8PxznLbLHTTB2zEGsWyoJ2Zp8z5Oyk4Yv2EpumLl40SWRsOM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=jxZSCTPV; arc=none smtp.client-ip=209.85.215.169
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pg1-f169.google.com with SMTP id 41be03b00d2f7-5e8470c1cb7so3185800a12.2;
+        Tue, 02 Apr 2024 07:06:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=kpWrjS3zr0Dh06PCqItw29WJLCw3h+wq1OXQF0szMrw=;
- b=BXAuMLEUmkNjAww33WSl9EDaEMh9IHkTj0W8hdvvbkogVVyJYPI39QAIISj2amROTROSiHN5L0tMSJdilarEsrd6aBNDD+oiQ9wTLZq9ZyEHmnX6wsOv3l3mLz8U6OqLclzc9lS5J7nR9fNILirpUCbSvgvrlXmQfxE5n4sItg8=
-Received: from PH8PR10MB6290.namprd10.prod.outlook.com (2603:10b6:510:1c1::7)
- by SA1PR10MB5709.namprd10.prod.outlook.com (2603:10b6:806:22b::15) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7409.46; Tue, 2 Apr
- 2024 14:05:53 +0000
-Received: from PH8PR10MB6290.namprd10.prod.outlook.com
- ([fe80::f5ee:d47b:69b8:2e89]) by PH8PR10MB6290.namprd10.prod.outlook.com
- ([fe80::f5ee:d47b:69b8:2e89%3]) with mapi id 15.20.7409.042; Tue, 2 Apr 2024
- 14:05:53 +0000
-Message-ID: <b35d0de5-be46-42a1-b7e7-b24a72d945c7@oracle.com>
-Date: Tue, 2 Apr 2024 19:35:41 +0530
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2] drm/panthor: Fix couple of NULL vs IS_ERR() bugs
-To: Boris Brezillon <boris.brezillon@collabora.com>
-Cc: Steven Price <steven.price@arm.com>, Liviu Dudau <liviu.dudau@arm.com>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
-        Heiko Stuebner <heiko@sntech.de>,
-        Grant Likely <grant.likely@linaro.org>,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        dan.carpenter@linaro.org, kernel-janitors@vger.kernel.org,
-        error27@gmail.com
-References: <20240402134709.1706323-1-harshit.m.mogalapalli@oracle.com>
- <20240402160226.4a1ac2d1@collabora.com>
-Content-Language: en-US
-From: Harshit Mogalapalli <harshit.m.mogalapalli@oracle.com>
-In-Reply-To: <20240402160226.4a1ac2d1@collabora.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: TYCP301CA0032.JPNP301.PROD.OUTLOOK.COM
- (2603:1096:400:380::15) To PH8PR10MB6290.namprd10.prod.outlook.com
- (2603:10b6:510:1c1::7)
+        d=gmail.com; s=20230601; t=1712066771; x=1712671571; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=SRsvCMsfTonmyjxjOpazHdFxU06P7bQCfx5JSVpO6Oo=;
+        b=jxZSCTPVUssCvqRzjCKb4FUCGxkbtVLzB2dnbPf9krJ3/1LPKod3nyRbbUQH58rypU
+         1k3gfNGuB53b+L3WXye8nzalDT8krTzdfn64TodDevXpXUZF5ZMxmqR7xNyPjoBFOOMO
+         ClAyUWcBnpz5kR+8dpXJs6oz6bhFTeu8KJ5DvKLgqzdUv0rR6u/8KVpKtBpK/LlZ4/M1
+         exKysWVrhkbcuF6Nlz6IFt0XmQNvSNnHF7EKy/jvOGAs7O8h6RcU6ll7XucoInaqN/Wi
+         n7RDLIkgsn2/Am3EOZZTxqmrKXAwOlFz3iMIrrmsU3PInFtpsCp0nV55h3amChZPUniM
+         xJeQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712066771; x=1712671571;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=SRsvCMsfTonmyjxjOpazHdFxU06P7bQCfx5JSVpO6Oo=;
+        b=IY/BsGdjc0y2lHi8GBawIarsSjJJzXDIu2vPfDBsj10QK9hhcYIipkA5NXbNkDYjvL
+         g/8EqUeZpG/wIZ/XpHRw7OeCvXAmeCWFpPPZ6akysiCQGTwgg6fSF0aot1rQGJLCTG1m
+         jHg0q9KZRVXyG1e8Pas/4/JSxbrby/c6PY9iHfCztffWovre5SRCwifYg+PTDsvjql4z
+         urT61JBLngNDos7Owfkwb+Ut+JJdN7PETD3WztKEPdt7N4UsiXKRKO7jfI4Duwx5Que3
+         TmuDns+nJgBBH/uAneKM8NhZgJTDMHfioc1X9MEuKKGEGCJ/PRBF53Q34VNS7HgLXIkn
+         hysA==
+X-Forwarded-Encrypted: i=1; AJvYcCUK/bhg5kTn4gBm7Sg6TelP7hOA2UtTUtHBm/RAHJQJpN/gMRHFhWChDPgtKySqKVPpwTTHc/Q869oGT5Htyz/7VI2yzuCcXlqWVnByLrhFtkwqz4UZGaQYrZd9H2h1ZGy1M6iB720=
+X-Gm-Message-State: AOJu0YwJ77YoOWGl64Vj8NMKUXSPCKIUDFrs6tMJdRBQmgsQrCiFOkDV
+	Q11VJgjL7cqSmMf5oFkyJk7U2iqSHGh4H4yVn+n0PihZB600R5UO
+X-Google-Smtp-Source: AGHT+IFv2uzi3zbj43YEcQbEoMt6P4GKKzFQhhBekCAxoGrsz+UV65Epz2Dew1HronxR1aB7zZlxcw==
+X-Received: by 2002:a17:90a:d14a:b0:2a0:7ee2:1abc with SMTP id t10-20020a17090ad14a00b002a07ee21abcmr8972596pjw.41.1712066771472;
+        Tue, 02 Apr 2024 07:06:11 -0700 (PDT)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id m5-20020a17090b068500b0029fbfb620cdsm9717028pjz.28.2024.04.02.07.06.10
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 02 Apr 2024 07:06:10 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Date: Tue, 2 Apr 2024 07:06:09 -0700
+From: Guenter Roeck <linux@roeck-us.net>
+To: John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
+	Yoshinori Sato <ysato@users.sourceforge.jp>
+Cc: Rich Felker <dalias@libc.org>, linux-sh@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] Revert "sh: Handle calling csum_partial with misaligned
+ data"
+Message-ID: <cb8d3d2a-b843-49d5-a219-10a29b5877d0@roeck-us.net>
+References: <20240324231804.841099-1-linux@roeck-us.net>
+ <059d03a5da257660fa0bc188c6cc8d0152e97704.camel@physik.fu-berlin.de>
+ <a9ac59cd-82db-45a0-9f85-ec3880c54dbf@roeck-us.net>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: PH8PR10MB6290:EE_|SA1PR10MB5709:EE_
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 
-	8VaV/wmZyEexd1h0f2xlf7BuWnrlhVDHU4RDZQF7kU4X1KvpIPis/khkWvplBQG7//aKyknjXXMl8FcEunIDVJo/LY4dt3eRYgH91XJmPAAsHq9LvFzSMeaLZBwABPL4sIiNqpJMDli55Ir2od4BcSwCNwoCC/ivEynxd3yNf2meK2KpBofUrKSgcqS4P1z/769Hd8nwE8InOBbi1IP/Ran6u5cBuqvzx7Z36oQH3AyAhn9T09DWKhXUMVvtMGp96SzXHgToUV78mbUcX08pyWGBGW+XCTQtpoCDPFSZA1SDWC8Eame7PiaA/6m9074SyTGzI9xl46povSo4gu/vzETJzAvU5Tw76WqbrCP3p5oGRok8xl9vW1vJxCoz6PhgHWl5tkGoACLV5E1qWb39qFvuFb4oTqIzzB9M0kOhdCGWwo/7zivub8pWwqLjJWAzT+dgOO3nNOd4DKBsy7ujTmAd/iZaxYFduZyRuSwujoAn1qGM6VMM/k5tBnJGq10w3+Kqh+Fb7x7NBQHWXOHUUPq/t3PEh5z+tK5pjgPJIqAy52g/Q4hA2P1etweX5JUz93a9l6nPi3f+uncLXLCtawADE3j8vZ3s6ZdL0zIuFGk=
-X-Forefront-Antispam-Report: 
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH8PR10MB6290.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(7416005)(376005)(1800799015)(366007);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: 
-	=?utf-8?B?QmlLL0Vka053SUtNMHNldEowQ2hQM3JNa0xZTTg2TitQVkxxeGdReXpQMTRu?=
- =?utf-8?B?UlVVZ3poeGM1Y1U4cnhaZlRKOWt3MEM1SUtVcm5WdFJtZWVxYk5Na3lNVDln?=
- =?utf-8?B?MDlTWFJGRnAwcy9IY1dsRkZzQmI4NlUyNUdHcnorUVdQTTVzQUZvQ1FOWHJj?=
- =?utf-8?B?NkJWUjdJU0ZNdks3ekZwNTVhTFNNQVhzV0Fwc0lBMVZKMmV3YTJzM2dHWENG?=
- =?utf-8?B?UEFYZjltZEFQL0RzTWg3V0tBd3lrNXh0V21EQ0tMb1l1a0xHcFlKcDBkWGYx?=
- =?utf-8?B?bDRsTFJZUUVpN2I0QW5kWkdUT2haNm5FNzlXc0FPSUlCNzFFbXNLWEpzQ1hB?=
- =?utf-8?B?UWJyWklrT0UrUXBRNHRuTjRrSHYza1R1czJNSnVjOUcxa1QvQVF2UVlQdDh0?=
- =?utf-8?B?YW82Z2NxZGhqcndUVVF4eXdKTEYxNHJaZUFuTnlmUFFncXh3Nm9LQjRrVkhM?=
- =?utf-8?B?MzZLN1U0R25JWFVRWWN3eURoeGV1Q1NJRElYL29JVlRjRjFLc3hhdjM0b1Bn?=
- =?utf-8?B?U2VTUVpaQXdjUnFXNFlwWEtUeXYzcmhsOENiMTVyQTF3cThCeTk4RU5mZ1JO?=
- =?utf-8?B?VzNqQ0ZXMlhUcVlyNlhVekZ1czREUFZVMkpLWU9lTTdCQ0ZVVnJia1FWT25j?=
- =?utf-8?B?YXRvR3FMTU1sNXc4TWhoblhIYzZrMzdIN1dIdnN4b0hDM0IvSElCUjJWT3k1?=
- =?utf-8?B?ZTdJZFNOOTNsV1JsejI5aEFnaXRXWWRrSksxd1h6eTZOVk56TkZESEdYWUsv?=
- =?utf-8?B?cHVGdEtJYVkzcjNMRVdzM0FNM0FxZ0FZeGgwVE93YUJyQzgxcHc3RGxMYlN4?=
- =?utf-8?B?VkMvMEtNRzRZQXZjZVlQVkZzNlVGQUJhSmNPSWtCT0IycVFVTEVFWkFKTlBY?=
- =?utf-8?B?VEVJWHhRdEV3ektNdCtyK0s0MlcrWit3bk03QUVGZHVhSXphTFRpdnpndjJp?=
- =?utf-8?B?RzZ6NzJONlZCTmVBNHkvZG9waXpub25qU0hvMVlCSGtLT2ZFZWFlY2t0dm9M?=
- =?utf-8?B?REwrSDFsZUdjb3l3aXFIY1YzVmo5Z2xIVHJLSEFkeHMxYTJnaWVsZkZHbWlT?=
- =?utf-8?B?eERrL0prdWsxWTM3SllQaHZKUi9YU3lQaDVKR2NtcFJpTFdMRytjTHArcjEr?=
- =?utf-8?B?RXFPUlVONGVadno1eWNOMHVER3RGRzYzZ1U4eUNKaWY1OWhoWDA5NjRnT1h1?=
- =?utf-8?B?NDJuRGMzYXRsSmJ0V0x6SEZkZFl2NEQzL2lYMTYxOUZhV3F2YnhZOE1pYURa?=
- =?utf-8?B?KzcyVzc4cGtxcnVuckRTSEJ3QnZpTnVYbjRrZWJrT1p5RmRXQVJBWHpWbktE?=
- =?utf-8?B?U2RtakoyUFdBVUxwWlM5dmlxdUJReFpUN3Y0ZHpVaFFtVi8rM2hZS2FvUGRE?=
- =?utf-8?B?ZVpXVmFjWmtVSFJYNSttUlVRZS9CNWI5dTVOTDJ0T1NNV0d6ampuekFQOU44?=
- =?utf-8?B?Vzh0SEJKalpwWVRJOWFGWjRXbFhDaklPZkhVUUJ0TU13cmh5VDNvL3Q2cmZv?=
- =?utf-8?B?cFJBcHlNVHk1ZzVsaUUwQkw4WGZRZXRBUFRXYlZmeVNNd0NFMHdkaVRlTG4v?=
- =?utf-8?B?TStxc2E0cVhlMmliU0p6ZDJPQzdkTVY2LzRGUkVGb0x1a0pGUkF0THhyQjVD?=
- =?utf-8?B?Y2hyb0VKS1ZGZWtwYkVOdVpFQU95NXN5WDNmeThSS0FZU3Y5blJlM1FtS2Zo?=
- =?utf-8?B?Y2J4N2l3TEpCeVR6ajNlMUlRUkhwNkVOODllcE44N01kRW1UalJhSnNNcTJz?=
- =?utf-8?B?Vit3THFYVTRqUHNQNlVJTEZCYlpCZkJ3YXhUQ1pxVkpxK0Q4OWVma0hCdzdK?=
- =?utf-8?B?aDZmMXR5K2ZPY0NxdGRpUjBDQ2tlT2lFbnRaVjRiallQWUdlRStwYzBQUDh0?=
- =?utf-8?B?UmNwVzZmL04rNGdNMDI1dUdRNkNQcXk5bHZEeFQyYWgvQlpiMDB5SGhvZFpG?=
- =?utf-8?B?eDh6dEJmbndTaFpXbHdjakFMZWEzclhqeHA2UzlMNWR3d2gzWjI1dHlCOHVh?=
- =?utf-8?B?VmNUVEVFUGVKWVRkOHBQck0xWkFWWGdDdUlURXJtNTZ6VzNhc0VXOGdBTTRj?=
- =?utf-8?B?U0pVY0d1NysxM0h0UzJwc2JlajIybFhPYksxSW9LazV2NXI4Mzg0ODM1Sy9P?=
- =?utf-8?B?SG5Qc2piT0RVWXNrUlhvejNaUWg1K1VyNS9WRitHSU5PdGc4Y3JFUlI5S2FD?=
- =?utf-8?Q?ECJ+ElfDVN6Ioh9RgqmGhpE=3D?=
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: 
-	OVQ0cOkElWhsb2TV1PF/+thxi/MTgjRE+ozWilNX17ujTJLthr1F7mT21x8kSfaVOK6B9E8xnvGgLUbKFiwdpURtO9KAzXdA90icHCL9hfB3EJ0L40+XbVRWmcRU8fQubXNMOUmI2YWMklpMmBppTDd7dHFSYgrkjVcyiA+0PmLjI1aE36ptkfKEz5VnGfS/pW7fuK4oKKyyE1YafT9/dSwP+o2JHx9lurQBEXhwi35SaP9Wps8HKu/PtB9lVySbSSRNeNGZH2enBoAEe20UKFuG++yFJkLRWzonPGRUegchLRSbVbPBkHvgloKr6/dwZ7XQTX+VPOsPbYwpXPCXCcmFDFHp1ZGz+wpkufkx8a7xvoeroIZz5DQBilO8dX7HhsK0+7EWCNGXSzHGS8XNytKCocvkm46+LwwMmg4EkAf/KpMRIwbvutxRtiYkeWzi1wm9SPleJDozA+jHGYqLlFDakGo/YaMlHPfcrep2aADmY7n3XGZpZmyWTc/fi0IOBXsmX7vBq8J57eTdbB5ohUqEZF5+eEAMvB1IEPy5kkcL37BTyb+qOA0bBjDbCXS+WCZxk5+NkoY7m0lo5ig2YfgrD3adRB+kh2yhgU3nI9M=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 22b84a58-0efe-4f2c-31c9-08dc531e0234
-X-MS-Exchange-CrossTenant-AuthSource: PH8PR10MB6290.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 02 Apr 2024 14:05:53.3270
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: UCuTCaKS/XliQp+GZSdw0LEN9Tma68TuQnMJNfgPrwWxpAqXozHKmVWfk7yQQiU2NhJ/IvgCCGKgITLBkAULK8XhFLM03roFtmjTui4pFxj9YOa9ri6Jr0kTUkTSvJxY
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA1PR10MB5709
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-04-02_07,2024-04-01_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 mlxscore=0 adultscore=0
- spamscore=0 phishscore=0 bulkscore=0 suspectscore=0 malwarescore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2403210000
- definitions=main-2404020103
-X-Proofpoint-GUID: Dy65GmtL6TwWSCUkfN8MP8xNUND7_Nz3
-X-Proofpoint-ORIG-GUID: Dy65GmtL6TwWSCUkfN8MP8xNUND7_Nz3
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <a9ac59cd-82db-45a0-9f85-ec3880c54dbf@roeck-us.net>
 
-Hi Boris,
-On 02/04/24 19:32, Boris Brezillon wrote:
-> On Tue,  2 Apr 2024 06:47:08 -0700
-> Harshit Mogalapalli <harshit.m.mogalapalli@oracle.com> wrote:
+Hi,
+
+On Mon, Mar 25, 2024 at 07:34:00AM -0700, Guenter Roeck wrote:
+> On 3/25/24 00:39, John Paul Adrian Glaubitz wrote:
+> > Hi Guenter,
+> > 
+> > On Sun, 2024-03-24 at 16:18 -0700, Guenter Roeck wrote:
+> > > This reverts commit cadc4e1a2b4d20d0cc0e81f2c6ba0588775e54e5.
+> > > 
+> > > Commit cadc4e1a2b4d ("sh: Handle calling csum_partial with misaligned
+> > > data") causes bad checksum calculations on unaligned data. Reverting
+> > > it fixes the problem.
+> > > 
+> > >      # Subtest: checksum
+> > >      # module: checksum_kunit
+> > >      1..5
+> > >      # test_csum_fixed_random_inputs: ASSERTION FAILED at lib/checksum_kunit.c:500
+> > >      Expected ( u64)result == ( u64)expec, but
+> > >          ( u64)result == 53378 (0xd082)
+> > >          ( u64)expec == 33488 (0x82d0)
+> > >      # test_csum_fixed_random_inputs: pass:0 fail:1 skip:0 total:1
+> > >      not ok 1 test_csum_fixed_random_inputs
+> > >      # test_csum_all_carry_inputs: ASSERTION FAILED at lib/checksum_kunit.c:525
+> > >      Expected ( u64)result == ( u64)expec, but
+> > >          ( u64)result == 65281 (0xff01)
+> > >          ( u64)expec == 65280 (0xff00)
+> > >      # test_csum_all_carry_inputs: pass:0 fail:1 skip:0 total:1
+> > >      not ok 2 test_csum_all_carry_inputs
+> > >      # test_csum_no_carry_inputs: ASSERTION FAILED at lib/checksum_kunit.c:573
+> > >      Expected ( u64)result == ( u64)expec, but
+> > >          ( u64)result == 65535 (0xffff)
+> > >          ( u64)expec == 65534 (0xfffe)
+> > >      # test_csum_no_carry_inputs: pass:0 fail:1 skip:0 total:1
+> > >      not ok 3 test_csum_no_carry_inputs
+> > >      # test_ip_fast_csum: pass:1 fail:0 skip:0 total:1
+> > >      ok 4 test_ip_fast_csum
+> > >      # test_csum_ipv6_magic: pass:1 fail:0 skip:0 total:1
+> > >      ok 5 test_csum_ipv6_magic
+> > >   # checksum: pass:2 fail:3 skip:0 total:5
+> > >   # Totals: pass:2 fail:3 skip:0 total:5
+> > > not ok 22 checksum
+> > 
+> > Can you tell me how the tests are run so I can try to verify this on real hardware?
+> > 
 > 
->> 1. The devm_drm_dev_alloc() function returns error pointers.
->>     Update the error handling to check for error pointers instead of NULL.
->> 2. Currently panthor_vm_get_heap_pool() returns both ERR_PTR() and
->>     NULL(when create is false and if there is no poool attached to the
->>     VM)
->> 	- Change the function to return error pointers, when pool is
->> 	  NULL return -ENOENT
->> 	- Also handle the callers to check for IS_ERR() on failure.
->>
->> Fixes: 4bdca1150792 ("drm/panthor: Add the driver frontend block")
->> Signed-off-by: Harshit Mogalapalli <harshit.m.mogalapalli@oracle.com>
->> ---
->> This is spotted by smatch and the patch is only compile tested
->>
->> v1->v2: Fix the function panthor_vm_get_heap_pool() to only return error
->> pointers and handle the caller sites [Suggested by Boris Brezillon]
->> 	- Also merge these IS_ERR() vs NULL bugs into same patch
->> ---
->>   drivers/gpu/drm/panthor/panthor_drv.c   | 6 +++---
->>   drivers/gpu/drm/panthor/panthor_mmu.c   | 2 ++
->>   drivers/gpu/drm/panthor/panthor_sched.c | 2 +-
->>   3 files changed, 6 insertions(+), 4 deletions(-)
->>
->> diff --git a/drivers/gpu/drm/panthor/panthor_drv.c b/drivers/gpu/drm/panthor/panthor_drv.c
->> index 11b3ccd58f85..c8374cd4a30d 100644
->> --- a/drivers/gpu/drm/panthor/panthor_drv.c
->> +++ b/drivers/gpu/drm/panthor/panthor_drv.c
->> @@ -1090,8 +1090,8 @@ static int panthor_ioctl_tiler_heap_destroy(struct drm_device *ddev, void *data,
->>   		return -EINVAL;
->>   
->>   	pool = panthor_vm_get_heap_pool(vm, false);
->> -	if (!pool) {
->> -		ret = -EINVAL;
->> +	if (IS_ERR(pool)) {
->> +		ret = PTR_ERR(pool);
->>   		goto out_put_vm;
->>   	}
->>   
->> @@ -1385,7 +1385,7 @@ static int panthor_probe(struct platform_device *pdev)
->>   
->>   	ptdev = devm_drm_dev_alloc(&pdev->dev, &panthor_drm_driver,
->>   				   struct panthor_device, base);
->> -	if (!ptdev)
->> +	if (IS_ERR(ptdev))
->>   		return -ENOMEM;
->>   
-> 
-> Sorry, that one deserves a separate patch.
+> Enabling CONFIG_KUNIT and CHECKSUM_KUNIT and booting with those tests enabled
+> should do it.
 > 
 
-Ah okay, I was confused about the same.
-So I will send a V3 removing that part and could you please use the 
-independent patch that I sent before ?
-
-https://lore.kernel.org/all/20240402104041.1689951-1-harshit.m.mogalapalli@oracle.com/
+Did you have time to test this on real hardware ?
 
 Thanks,
-Harshit
-
->>   	platform_set_drvdata(pdev, ptdev);
->> diff --git a/drivers/gpu/drm/panthor/panthor_mmu.c b/drivers/gpu/drm/panthor/panthor_mmu.c
->> index fdd35249169f..e1285cdb09ff 100644
->> --- a/drivers/gpu/drm/panthor/panthor_mmu.c
->> +++ b/drivers/gpu/drm/panthor/panthor_mmu.c
->> @@ -1893,6 +1893,8 @@ struct panthor_heap_pool *panthor_vm_get_heap_pool(struct panthor_vm *vm, bool c
->>   			vm->heaps.pool = panthor_heap_pool_get(pool);
->>   	} else {
->>   		pool = panthor_heap_pool_get(vm->heaps.pool);
->> +		if (!pool)
->> +			pool = ERR_PTR(-ENOENT);
->>   	}
->>   	mutex_unlock(&vm->heaps.lock);
->>   
->> diff --git a/drivers/gpu/drm/panthor/panthor_sched.c b/drivers/gpu/drm/panthor/panthor_sched.c
->> index 5f7803b6fc48..617df2b980d0 100644
->> --- a/drivers/gpu/drm/panthor/panthor_sched.c
->> +++ b/drivers/gpu/drm/panthor/panthor_sched.c
->> @@ -1343,7 +1343,7 @@ static int group_process_tiler_oom(struct panthor_group *group, u32 cs_id)
->>   	if (unlikely(csg_id < 0))
->>   		return 0;
->>   
->> -	if (!heaps || frag_end > vt_end || vt_end >= vt_start) {
->> +	if (IS_ERR(heaps) || frag_end > vt_end || vt_end >= vt_start) {
->>   		ret = -EINVAL;
->>   	} else {
->>   		/* We do the allocation without holding the scheduler lock to avoid
-> 
-> 
-
+Guenter
 
