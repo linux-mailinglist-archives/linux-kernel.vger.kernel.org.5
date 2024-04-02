@@ -1,553 +1,220 @@
-Return-Path: <linux-kernel+bounces-128822-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-128823-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 372BC895FFB
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 01:17:01 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 514BE895FFF
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 01:19:17 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6DF1CB21FE6
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 23:16:58 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id BCAA01F24799
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 23:19:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DC5E9446B2;
-	Tue,  2 Apr 2024 23:16:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8E55245008;
+	Tue,  2 Apr 2024 23:19:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="gvutjaRg";
-	dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b="w/MFVTpA"
-Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
+	dkim=pass (2048-bit key) header.d=synopsys.com header.i=@synopsys.com header.b="dNUdxq9C";
+	dkim=pass (2048-bit key) header.d=synopsys.com header.i=@synopsys.com header.b="SG2Smpp+";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=synopsys.com header.i=@synopsys.com header.b="lga2bufj"
+Received: from mx0b-00230701.pphosted.com (mx0b-00230701.pphosted.com [148.163.158.9])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CA9E3224FA;
-	Tue,  2 Apr 2024 23:16:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=205.220.177.32
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 61836224FA;
+	Tue,  2 Apr 2024 23:19:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=148.163.158.9
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712099807; cv=fail; b=eses2dFpDr6XgIHeqxRyLRc2187RzGf5dncYJSHxje6hGCF3xyPaCpaTg8dw4Oi6ywWSxJ7t6rb+kW/hpCSzGNtaK04Rp1jI8Qvd+86MFfoyHcIHZl3jn9hs9fpomcqey3WW+B5H3fbhCFVzetFs0SoDFFxrg7w57MVz/d6S9tE=
+	t=1712099946; cv=fail; b=MVEfNF7oyns0aADrWM0ezkJ8oSbOyCTSbH5zQPNuUFJRebSxSgK40VUctiImKqOYeFZqOCfc+OEF/p8okOB8UEuG8LfK4YpnrTRitAq7SWipKGZDFuz/JTqKc7sb+JkvfKmYwlswLfhGaTIuGhiUFK9PgfqIX0QLuT8Uj+2oz4s=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712099807; c=relaxed/simple;
-	bh=bttwJnl62tEnQ3mW7vUbaoHDXq4tVeN0QLuDprWUwE0=;
-	h=References:From:To:Cc:Subject:In-reply-to:Date:Message-ID:
-	 Content-Type:MIME-Version; b=HM5jyXxp0gf8nia7GfzXOKkevgW66f4N+6M/dO1kzWtdMXzAZpGYUQUu4Mm3u4Z9/TM7+EeJR0GJnqYIIwkWC5LkRTRkBta+wQ7DcMcTX0JCmXneU2Fp72T59n+s6dSQMyVHVnoEhMwxKlLMS9gAq3g2Hrt+oBe6zHjsW2tMHGY=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=gvutjaRg; dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b=w/MFVTpA; arc=fail smtp.client-ip=205.220.177.32
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=oracle.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oracle.com
-Received: from pps.filterd (m0246630.ppops.net [127.0.0.1])
-	by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 432MFuCU017577;
-	Tue, 2 Apr 2024 23:16:31 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=references : from :
- to : cc : subject : in-reply-to : date : message-id : content-type :
- mime-version; s=corp-2023-11-20;
- bh=8f6+2cg2wzjgKVguY2+QhOkXf2h5CECF8uqmkC3svXQ=;
- b=gvutjaRgPWYuTk9VUOYCvAUg1mGKVI8/sFJzh6vLa+3gWuRHmtJdsZwGkmMWBD4p2ypt
- UFiFAlmIOScdfWVuC0U6aXHFCDqVY0nZS9Ur5UogNRHfk6xvWva5hiWWI5pliO/pCg0b
- MctJFpoilP21dsSa/Sb2R6CthFDI3uglr2C5Zn600gzpoYgUcz6L5dTY8LmeP32QoSyg
- wUgeLG3zfFaO3ExjJUd/KuynMUMUQI+I6WcYz1YQQfj+y3RCCq2ZtG9imai/zFFB8DaU
- IwJkkQApwTXKOW8lRxIMi29yvqKT7gxkimK0F6WAEw/h8AE9qmjYLqAlppZGVm8In6WJ sQ== 
-Received: from phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta01.appoci.oracle.com [138.1.114.2])
-	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3x695enwve-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Tue, 02 Apr 2024 23:16:30 +0000
-Received: from pps.filterd (phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
-	by phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 432M2ijf031119;
-	Tue, 2 Apr 2024 23:16:29 GMT
-Received: from nam10-bn7-obe.outbound.protection.outlook.com (mail-bn7nam10lp2101.outbound.protection.outlook.com [104.47.70.101])
-	by phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTPS id 3x6967hcdh-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Tue, 02 Apr 2024 23:16:29 +0000
+	s=arc-20240116; t=1712099946; c=relaxed/simple;
+	bh=p8qLC5HmvVL1v064zpcy5j6uEMIb1Zor/fJUjBjrDvA=;
+	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
+	 Content-Type:MIME-Version; b=EXSNDQjwtAwAxY9ERO64IuZcQ0P95J2Fxvf2ccLqGLOHTP7wVVGNKNFbQfPsCXHL182Ed5p4sZUeN8gxoro2GMt+WD9sWvnr8ZR6KgKaJwDNh2icVS9dPy0GWAAdD1B5DChh8uDj7wQF/qXw2BB8nrPz7RxvqYpSNqugtsmkfYA=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=synopsys.com; spf=pass smtp.mailfrom=synopsys.com; dkim=pass (2048-bit key) header.d=synopsys.com header.i=@synopsys.com header.b=dNUdxq9C; dkim=pass (2048-bit key) header.d=synopsys.com header.i=@synopsys.com header.b=SG2Smpp+; dkim=fail (1024-bit key) header.d=synopsys.com header.i=@synopsys.com header.b=lga2bufj reason="signature verification failed"; arc=fail smtp.client-ip=148.163.158.9
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=synopsys.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=synopsys.com
+Received: from pps.filterd (m0297265.ppops.net [127.0.0.1])
+	by mx0a-00230701.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 432IO41H011105;
+	Tue, 2 Apr 2024 16:18:58 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=synopsys.com; h=
+	from:to:cc:subject:date:message-id:references:in-reply-to
+	:content-type:content-id:content-transfer-encoding:mime-version;
+	 s=pfptdkimsnps; bh=p8qLC5HmvVL1v064zpcy5j6uEMIb1Zor/fJUjBjrDvA=; b=
+	dNUdxq9CQ9QN74oDdRJgZIAbbRhVj+p3GXMeYAw6hV0AubthLgMisHDS9UlYsC8a
+	Z0icq/r1RzHmgrJ4cKQjzaC0Lba71JnmDFrH1LEuwtz14vJwxWnHq0W4esWNw9Dq
+	18ArL9T84egMQ5XGpdvPyX7h5p/OuEOTVPFTb+N3th67I8yHpkcmj/T/A4E5Bux9
+	oTwmgZ75xlehqjY+Ah7IQ3cImIPTjJL0Sb2KtMBuglM4vM7SWMTTabQv5HpTBWq6
+	mSObMq0myvg0+/iG7dTkNiaSFyI3RIGMOQVvIQ5vhs6GhhPKGE4FiQSuKPZDIVmS
+	fi9JUNxn/0N0YHHmzRollw==
+Received: from smtprelay-out1.synopsys.com (smtprelay-out1.synopsys.com [149.117.73.133])
+	by mx0a-00230701.pphosted.com (PPS) with ESMTPS id 3x8q82114s-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 02 Apr 2024 16:18:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=synopsys.com; s=mail;
+	t=1712099937; bh=p8qLC5HmvVL1v064zpcy5j6uEMIb1Zor/fJUjBjrDvA=;
+	h=From:To:CC:Subject:Date:References:In-Reply-To:From;
+	b=SG2Smpp+FQM/p/5jXeXOvOAsOtIkO6ncp1AH1TstQ3YLDAf4Gm2KzZuRo90d4Glg4
+	 UxRTd/5SOG07j/tjBrFroyX1f/QDEbjLeUy5BocMRH04FnGq9v8XmNQo30h0evJKro
+	 UdlcGk5Qkzoj5QwqpKQ09siW6AelENQXAEcptTAQTAux1vkFe8OfJCfCp7hJb0Fp6d
+	 P4W41LK9wQapK0xkxniLVHk666zQ3nE+gefbTLj5EbuoMp4gO6FMhaxY1dPFgKfyyf
+	 4XVluoxG8TUgTFMvnlH9EV2w5E8KvUrlmmucqlgtfxjVT3zw+xtaKiPUmdBY4jXtDp
+	 3KwDG1WGtQMoA==
+Received: from mailhost.synopsys.com (us03-mailhost1.synopsys.com [10.4.17.17])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits)
+	 client-signature RSA-PSS (2048 bits))
+	(Client CN "mailhost.synopsys.com", Issuer "SNPSica2" (verified OK))
+	by smtprelay-out1.synopsys.com (Postfix) with ESMTPS id D53BA404AC;
+	Tue,  2 Apr 2024 23:18:56 +0000 (UTC)
+Received: from o365relay-in.synopsys.com (sv2-o365relay1.synopsys.com [10.202.1.137])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
+	(Client CN "o365relay-in.synopsys.com", Issuer "Entrust Certification Authority - L1K" (verified OK))
+	by mailhost.synopsys.com (Postfix) with ESMTPS id 4E78AA0261;
+	Tue,  2 Apr 2024 23:18:55 +0000 (UTC)
+Authentication-Results: o365relay-in.synopsys.com; dmarc=pass (p=reject dis=none) header.from=synopsys.com
+Authentication-Results: o365relay-in.synopsys.com; spf=pass smtp.mailfrom=synopsys.com
+Authentication-Results: o365relay-in.synopsys.com;
+	dkim=pass (1024-bit key; unprotected) header.d=synopsys.com header.i=@synopsys.com header.a=rsa-sha256 header.s=selector1 header.b=lga2bufj;
+	dkim-atps=neutral
+Received: from NAM04-MW2-obe.outbound.protection.outlook.com (mail-mw2nam04lp2168.outbound.protection.outlook.com [104.47.73.168])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(Client CN "mail.protection.outlook.com", Issuer "DigiCert Cloud Services CA-1" (verified OK))
+	by o365relay-in.synopsys.com (Postfix) with ESMTPS id 2A51140123;
+	Tue,  2 Apr 2024 23:18:54 +0000 (UTC)
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=SC4A5sC2CDyJ7K7VtsUTu/Cbq8DCa1kL7WTufWLTOEM4fBsyRoQ5GRxPZjr6cUqRHHYRnyu0lIgl51qt4uDlULLCVpf+Pu5dV1er6wTghiAUaIE7TwH9Vz0+PtBTrsDCUHRjfJvkO//zZ/CyeM6JoyZOzNxer8XH96tnKPaM9qzdyKsHp3dmn9cRd3nz9EXmTtBG6P6uEJWTIeBa7AoNuU5yWdXZWdodyQYT5mL8zQ+1h1nPT59UwzcNqXA5QphMSGielPVlEko/5wQ/TcLlDYAYCK4ZhC3Zxj/4/+Oom7HBFtMwjSs/q6xg5PP55aZuefjeWdHD3kvF4LCZbhs2IQ==
+ b=iYpP1Vrie/8l+mb8NtKXA83fODsi4bDOvy/YtrtqEoyKKSBqTfq0+JgpBomdVWWxpZdoorwDPnYhgQtybbyw8b/MfErDoY9JMIHlyuvtPc+ua/UXE44CvqMg3IuolMh/J87e9YL05ouY1QYI+MstqIB5LSp4H8e86zkzTAV0GRHojwWdEQ+gGERT7ajw5o/Wh9RmtuRWv6k9NVvUMWVjMuVYdJiFZK8gWNvlvY4yxs25ESp/zDJFPE4qCHTQaj0DOSJRRacpyYhHjfbuOdw6JjO1ydXm1ayNrNb22nrsd1z0UL03Qn1BH1zSa8KGx2UQTw6E1PMj7yIn/npjxkbOvA==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=8f6+2cg2wzjgKVguY2+QhOkXf2h5CECF8uqmkC3svXQ=;
- b=eFSttPavMnY15/LGO/hvkt/0ihpxGYvkI4psT8dFTYoS9ED2LkNRXWGYwDQgd5vPcRp4LF70pCTTtPlzsUmXbn64qVlPo2fKBWequHcr5jsC33cNmXfXARUAPTh4KeGHpbLgBN6+x0qOeRTyENnMRBL7kUmsUcjYM5i6hzSSDO3HFvJ9PfEBrT54ijZg6gpk1N8XObOzlAPuTHAeobdc2OXfrw6t/tSkzHlQ2rfSrT1d/SIyz+ippRPNGt3MNsnGKCIB1xtwZvmfYKaIRjngdLGKhqw2HQ5UBAu+HHwOYuSPFbg7EP2+ZZtts63cLDG6BBybA2Ce4s6IEq7IaFqvFA==
+ bh=p8qLC5HmvVL1v064zpcy5j6uEMIb1Zor/fJUjBjrDvA=;
+ b=bC/pl+d5P1Nq67DFivxm0QoBO5534AAUIFgBiftJLISWibS44sOqYWZXU22mubhp3J4SdT4GWllrczehxXsn5lVHEzsd5CVRPvUNj53NndyFRvjQtVCfj8bcat3wW9gPWTRge6XAg4S4/jS2kZdISDfRF+/XhsngioKIVwZa9/g1cXDfnUSle8yGfskUPa1z2lAWw4ImYV61PYA5sBQb4zfijM/JwulozLyaytQPXeV4QkPmTBE92YyJT6LnVxEP3Hy04rQm7dfxmnPeHr3+l679vs+4C7LgnSdDave7iwhC+Dr4Q1EMqb42XsVMMXPOMBPx/VR5F1rrVCyExC6V2A==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ smtp.mailfrom=synopsys.com; dmarc=pass action=none header.from=synopsys.com;
+ dkim=pass header.d=synopsys.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=synopsys.com;
+ s=selector1;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=8f6+2cg2wzjgKVguY2+QhOkXf2h5CECF8uqmkC3svXQ=;
- b=w/MFVTpAwwmoLJEX1MKNpTbJ6hGmn+wP4iEfBSUQOZtQUKHji7vQERwwyHyALfLrpQjwvHjOiYkwcAVDIb62Diqwnlahqp5WCibUN4CA3c1q4cQhDNEQWpotz23WIbgg+bUgZkdFZSp4K5r8RmrFEyh9eJslUm7Lauz4Gu88DM8=
-Received: from CO6PR10MB5409.namprd10.prod.outlook.com (2603:10b6:5:357::14)
- by CO6PR10MB5620.namprd10.prod.outlook.com (2603:10b6:303:14b::22) with
+ bh=p8qLC5HmvVL1v064zpcy5j6uEMIb1Zor/fJUjBjrDvA=;
+ b=lga2bufjyT9y1TSVITbhDiVOQuHjru5jYiQ8w6GmSm7jKLP2XomjoDu2jI8iVdcWpiZkXMOU3WCdx1FqiLjyjBBZYhKQRvIRGjZXPVZ5v9lviFA6HuTD2D6RvDA3KZPmHLIkoHpJt+1mTbLrdFZL8uc0AyWUkr68P/wBncdPYxI=
+Received: from LV2PR12MB5990.namprd12.prod.outlook.com (2603:10b6:408:170::16)
+ by DM4PR12MB7597.namprd12.prod.outlook.com (2603:10b6:8:10b::16) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7409.46; Tue, 2 Apr
- 2024 23:16:27 +0000
-Received: from CO6PR10MB5409.namprd10.prod.outlook.com
- ([fe80::4104:529:ba06:fcb8]) by CO6PR10MB5409.namprd10.prod.outlook.com
- ([fe80::4104:529:ba06:fcb8%7]) with mapi id 15.20.7409.042; Tue, 2 Apr 2024
- 23:16:27 +0000
-References: <20240402014706.3969151-1-harisokn@amazon.com>
- <20240402014706.3969151-3-harisokn@amazon.com>
- <Zgw--fHBH9kEQsi0@FVFF77S0Q05N>
-User-agent: mu4e 1.4.10; emacs 27.2
-From: Ankur Arora <ankur.a.arora@oracle.com>
-To: Mark Rutland <mark.rutland@arm.com>
-Cc: Haris Okanovic <harisokn@amazon.com>, linux-kernel@vger.kernel.org,
-        linux-pm@vger.kernel.org, linux-assembly@vger.kernel.org,
-        peterz@infradead.org, Ali Saidi <alisaidi@amazon.com>,
-        Geoff Blake
- <blakgeof@amazon.com>, Brian Silver <silverbr@amazon.com>
-Subject: Re: [PATCH 3/3] arm64: cpuidle: Add arm_poll_idle
-In-reply-to: <Zgw--fHBH9kEQsi0@FVFF77S0Q05N>
-Date: Tue, 02 Apr 2024 16:17:10 -0700
-Message-ID: <87a5mb5p8p.fsf@oracle.com>
-Content-Type: text/plain
-X-ClientProxiedBy: MW4PR02CA0009.namprd02.prod.outlook.com
- (2603:10b6:303:16d::20) To CO6PR10MB5409.namprd10.prod.outlook.com
- (2603:10b6:5:357::14)
+ 2024 23:18:52 +0000
+Received: from LV2PR12MB5990.namprd12.prod.outlook.com
+ ([fe80::c87:4fbe:a367:419c]) by LV2PR12MB5990.namprd12.prod.outlook.com
+ ([fe80::c87:4fbe:a367:419c%3]) with mapi id 15.20.7409.042; Tue, 2 Apr 2024
+ 23:18:52 +0000
+X-SNPS-Relay: synopsys.com
+From: Thinh Nguyen <Thinh.Nguyen@synopsys.com>
+To: Michael Grzeschik <m.grzeschik@pengutronix.de>
+CC: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v2] usb: dwc3: gadget: check drained isoc ep
+Thread-Topic: [PATCH v2] usb: dwc3: gadget: check drained isoc ep
+Thread-Index: AQHahUf+Fjbt0R5rsESCdAPrKfiIcbFVmhGAgAADmgA=
+Date: Tue, 2 Apr 2024 23:18:52 +0000
+Message-ID: <20240402231848.4hzzrxegjrcmdab2@synopsys.com>
+References: 
+ <20240307-dwc3-gadget-complete-irq-v2-1-8c5e9b35f7b9@pengutronix.de>
+ <20240402230555.xgt5uilc42diyr4m@synopsys.com>
+In-Reply-To: <20240402230555.xgt5uilc42diyr4m@synopsys.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: LV2PR12MB5990:EE_|DM4PR12MB7597:EE_
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: 
+ as2eghEUOYnCkalGgNSUcLQZXCTmfiFT/zFgyN0fuhcy5b9Y3DbIlL6VtYknVelvMA/6d13FgStu5qZXVCxSfjm5bltnzoTFhVczbgIpSr19Vqsd+pZDmo+rG5qT9b51KdKxdyeq+ftMKwwqWCSm9O2hSDRpICyNL+O9hOLNQfjer2hgsFmhDUu8yFZkrmKqim4VGprkz3EHGgF5PKySrENU6c7oH9eCSBXR8qtFUZUM9Nj2f33yzY1LM71HPF34DR7zW6c7u3WvbzPX+9SRDpTnssAlT6/1Ol5+M8axkC1Af6UiHZ5rX7Leo5Cbab4i+kiIBQAs9og0AaT117/ZKA5MdCoV5lT1/nq7zQmKz4dAtUEL5gHkK5Txsr+PDzCaxma+rBgTnhZK6WGmwlgmEeqSGstqGyBNrV6umvP8y2RMZgFlvG0qAr2sR51aWzUucjuEduWJ1Aq8gWTW0I9cPcG8Z4L5KbVeYeIksCN5g22tZJSVVC+S8mr5qXSA/ot4ukmvcNPuQwzMZJJnBqYe3F2JQZC1W2aIMQOpMBMskpmu4j2shZuNVYUoQg1MQIqf9LNglXqDRM3ryS4NN75p6JTAHpVJSDi5fBoWDzEjNNbD8CREsddY4I7xlABF3liTjpmrkym+0gLs+8yVt+HicbXxI7vrM12R/nVI04xJh4U=
+x-forefront-antispam-report: 
+ CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:LV2PR12MB5990.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366007)(376005)(1800799015);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: 
+ =?utf-8?B?dHc2MXY1TVFraGNneTM2MVBtNnE0ZVJwb3h2dDF5UFlGVkpPc2w2RzFrUlp0?=
+ =?utf-8?B?MFlZZkVvZE15RWYxSWVrLzFKSGNCSldsK2s1eUpXMVREM2dyMDlrQWQ4U1Q4?=
+ =?utf-8?B?VjV2dHA2NEtJY01VZjYxcXBJVkpmdVRRclIxRmgwT2VxREI3UUdqbytFZ0VF?=
+ =?utf-8?B?eHlidisxSEYvMVRETjFYS05sVytmNk15czlnOGtLUzBHZmkwcTMvaXJHRDFG?=
+ =?utf-8?B?aTFhaEV0K01MNkY2WTl2eng0S2pPWWVxZWJtK1Q0aUdLTWNUdkxyV1RkQTNj?=
+ =?utf-8?B?L1BYeFRlS0dZazBhV29CTEtSTTBzRXRVaUxWK1g2d2ZXN1NMY0VYaHVDeCta?=
+ =?utf-8?B?MU5rYlVFU3QvMkVvSWUwWWdWeTVUZWFSb3dneHpFOTB0MWtRWEgwSjd5eE1w?=
+ =?utf-8?B?elNnaVErbGFhRHpNMnM0Z3RWOExYL1BNV293bDFlTzREUllTdHBUWm9kM0tD?=
+ =?utf-8?B?TCsxWWFqRUlXTjNvNVROREEzMTlLQnU5NVN6b0pwWitzRGZ2VDdwdTRNdmVh?=
+ =?utf-8?B?QUVQTVdvNlprSjVScFRyR3FmcHpWNEp3SEJRYWcvY2liU01lclc2UHYxd2NO?=
+ =?utf-8?B?NW9obnh6K3ZUWDVxNnllRjF4VVNNMnFEZVFmTTIrSGliYVNsSFYzMm9xNXNL?=
+ =?utf-8?B?U0IxSTMwNng4dFNQd3d1THF5R0VGaGUreUxTb1pZOUcxUmFRWlhvU0xvSndi?=
+ =?utf-8?B?NHRuTGtSczd3TlVxRHV3Y042NFBzR1Zkdjl5TGRWUXVuOFdpZk9oZWJ5OURV?=
+ =?utf-8?B?YUFrLy9lUEplb2FmL1JMWWg1ZVJvampIOEoxU25Oc05BcStsM0hZbGtRd21p?=
+ =?utf-8?B?bTRkWWV3c2tsNHJnSlRzOGcyaVlDbG4wbE5TaDFuYVNTZEdndkx4dnZLUHhq?=
+ =?utf-8?B?bVp5ZWpBZ3picHFSVzR3QlFOcEc1UWVlQm9jZjNDNzRXSHp3YysxV2FlU2Ra?=
+ =?utf-8?B?OU9kMHNwUlZ3VHlvbU00UlhTMXRLVTM0OFloOUpBWDFnQVVqUCtnbDArcVJQ?=
+ =?utf-8?B?VkR1eWRtc0ZFZXBYbGlVRU1kVkEwMGExTm52MHZKQk9OdGsyZWtPWHRXcnNZ?=
+ =?utf-8?B?TE51eVRzVFMxeWJvUVBiSzBoQXJoREVNQSt0M0ZCQ3FtV2I0Z0s5Um83MVJa?=
+ =?utf-8?B?MjZ2MTgxRXF3QytWR3NFVno2aGhCQXErTlFuRTFKTEprQkcvc0FOWVVQT1Av?=
+ =?utf-8?B?Zk5GU0VVeWpETEJQVUE3WVhHWEthcmxCNWxFWVk5V1BIcmhGUlRGZm5FQ0Vo?=
+ =?utf-8?B?NFRraWFPSjZEVCtrd3JWT2ZSZE1ub1VnV2VzRkFBVTVxTnhvOEkrUFVucFh3?=
+ =?utf-8?B?K2Ira1pPVUZCSGNHTzdGdW1UVUNpaDNVV3BNRkVYWGxLTDJmQTQ4Rm9ZcDJl?=
+ =?utf-8?B?SXFJL1FQUUhlbjNqV2dVUVdrWWY3QktIenptaU5MY0g0MUg0amJMK1dFWnpo?=
+ =?utf-8?B?czd0dVhoQW5zbnEwb3Y1RTQ2UTg2MzFVMUpuVmdMdmxyT200ZmxTUmFjckpX?=
+ =?utf-8?B?K1p1ODYzNHJYTXhWWHF6Zjk4QjR3aWZxWDNOU3Yvblgvazd2djVselQ5Wkx1?=
+ =?utf-8?B?SFVpOU5SWkFrUzk2UmpRMmEremZxa2lTWGVuRnE3SUVWR1QyZHY0amVGbWpt?=
+ =?utf-8?B?WEVkZE9YRDBkbjNVTnVUakxzTXpOVTZNdkkrZUNSRytPSVdna05MY1J6N2pB?=
+ =?utf-8?B?OHZxOGFseWhJYlR3Wks4T1hxTTVPM2JMV0VMUHdIVm9JYjR5TTZaZlI0TGpu?=
+ =?utf-8?B?ZGp1OU1hSGRscEVqWG8vV0xOamhFMTZ3K1NOT1lSUmF0eXhhaGVia01MQTlL?=
+ =?utf-8?B?R2tBNldtbHVudnoyZ2hnUkd2eGFNcGE4U1AvbGc4OW15dVlqOEY2SVJSbzdI?=
+ =?utf-8?B?ejZva2d0YzJRQ1FqaDh1K3B5YkFFaXBmbzdtQVQ1R05PeW9teXBXbDVJbStX?=
+ =?utf-8?B?NlpuRVh4SzZIc3pZS1hsZ1ZyeHNOc3lSNkpzMzFEeW56UXZHVUlhd3ljY0hl?=
+ =?utf-8?B?Z3dNV3Q0a3FxUzNNaHpQOGlEaHhDRFBRb3k4cmlzNnZGUmV0aGFESDlzelZC?=
+ =?utf-8?B?M1B0anlOODJsUDV5emlqeWR2eTEyblVpWHlRT2pJNDhmN2xMNGFFa01zRGRF?=
+ =?utf-8?B?OWVLd2ZxblpOdFN5RG9xMElpamNPQU5QY25aeXUrMDUyZzBoZ1p1dVhMcHg4?=
+ =?utf-8?B?MHc9PQ==?=
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <9201B37ED7804840B524B586039FC3B2@namprd12.prod.outlook.com>
+Content-Transfer-Encoding: base64
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: CO6PR10MB5409:EE_|CO6PR10MB5620:EE_
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 
-	nlomiOf+JRsz+Hv5V9brkHTwDBZWmVcQCqligSVbr39b68e9HWQlqUgdd1c7wTXI11Z/sZSJYdZO42DNJuIO/Oj6A368idzHBE4Q6/r6ZYTTYh9WBRI8wLaFjBACbPQkHXAYC0wNDgc+7EcYGwjy/nfTbFW9KWpPbp3b2GjtQRXk/h0C77U0v8MPXL0nWXHUUatErPEo48fe7yawmTSGL735SIc8G6QsMv6OVJA75sxJpOOi4AqHHslHqFVfUOdWbbvOsg0fWb1ADugvdRoMgOGyXbyaryayscs82fNjBOHghXdW1YyMZLrINvUvgPTdAAYbb+UgasNQroAYo+2LUkqV3Mf+UDKyLsnnPQe93qcjbuyChcwR5+qZDvmTqjA7G/my3jO5iafGnxdQcn0WJ6QibjmbTtEBJHZ4Pw185ndP5dubGVzC7Pm5fX7zIwtBmsq7h7C7Gy+lO+EhNCISh+0QrdrZqpldGaJ7hMTW/JwTEeZGC3ePwOz3Z26fAPv9Y8xtdx72PWs04SihhZyzFBUKlm7yuaXQNX3CldolpXib2Wiz9Tjkrgs6PKJEQEuqy1vYMszcrRYvmsNbKjCX79kRovmyijtuptLgCIYLG0Cp4mcsiioHy0qF9hNtAKpS
-X-Forefront-Antispam-Report: 
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CO6PR10MB5409.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366007)(376005)(1800799015);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: 
-	=?us-ascii?Q?P7RjPaTUxmbu0SWy7DGjaqSOJR1zsz1lu4lWVvFT0PczTmfMlMmJW52U0CJR?=
- =?us-ascii?Q?fAc0ZwxhYrsHxzskBoXOTwUo1mnQAhOFzfB0jexOAwxJOiO/X9M+yXd/I815?=
- =?us-ascii?Q?nQyfsC3fpHmvsbYZHGSgI3OEthEDNYR/2pd5u5+ZcZEP5vvbGzEDbLGLjFpE?=
- =?us-ascii?Q?RNNETEND7mIEUZUY4TDX2gOdNtaNxS6WYg93gDDHeAoq6nCp8unI45lK6LsH?=
- =?us-ascii?Q?OdsAt8Mx7f8OUc9tQxaTGtqkH38a8rYVzOyYjs1Zs1kQZJI2/jPyi3z2DQ70?=
- =?us-ascii?Q?BTDfNDGgF6fQKF0aD93LbT4oDnyIZr08tggYU1Fm8zqzLAtQIO6jAHMFTEEa?=
- =?us-ascii?Q?dukbRqhJXUhplQrQJetNgk3f0e0Jm2NaWT2vQveRSWisMf9NcTQ1rWBS9hZ4?=
- =?us-ascii?Q?/WqAFq9i+BUVSfjb7GqF4jV8xFTGYnL5bw6iivH3yh5rDo95zEposwBmigAj?=
- =?us-ascii?Q?KQRO1Y++puYrMpPnNQchsldOrpapnnYws76Z2vmGV+trVobcMS0a3zIeNLjA?=
- =?us-ascii?Q?YiqjL8KjqbI8S3OQLbDr27jMIew/A2xCqFBPmrzdLy1jxFSPzyNXNbQ70p4B?=
- =?us-ascii?Q?nlU/Kg6Y8Uh2J2Xv+j0pm6p19g+J29KqDb3g5i0O5ib0EVvi35JPpCWJHxg6?=
- =?us-ascii?Q?Dk+D4fKTCzM3fSIZ8EwK4+tBNasq08pmNggXU8tmT79f37WhdsUaVtSGoTC3?=
- =?us-ascii?Q?utWhfnf2FAGyCl1c8CSOo0CavPjB2mXmO4RAojT03VaOdEc5ehuWyBmUI450?=
- =?us-ascii?Q?KIuRQDZBZzjidc4FzQBwepwAhZX4LnIsdgqtogCPiID3xiEicHuhlpptPBjF?=
- =?us-ascii?Q?KvSLJzvpLDFSIv7Tq5R822L6e7g5L9N9+6kxwWinXLw8aHY0zteZ9CuUBI2L?=
- =?us-ascii?Q?2aLj+CjOIQAYEvoDzFNjTlv1S24QQe2MHIrMO7dVnEL4wW/N89E4/8D9nf/O?=
- =?us-ascii?Q?PD3/X0uKI4wf+mkY2ubIpw0XXZ0tlSnZDO6d4S46Abs4+JqtooyV7Ly6AWFQ?=
- =?us-ascii?Q?pg1HkmWHNy9qN/ZInBuRTWlcuqupsUf/yloWDzGQ5S2df1C5tpTHwSmcf9C6?=
- =?us-ascii?Q?2qnQgtypAFKXmqvUdVlJd/vWdYV3T40uLXwKKZyQLIBatVrIWzkSOUbzb9pN?=
- =?us-ascii?Q?cuD8JZlL2FAH0gFjVy5xpcenIJEQsJKaNyxX8lIWsKGB7k23hHSD6o6v+Jov?=
- =?us-ascii?Q?5NsaBHQBCWAFNb2ttpu8VhzeKzGjBtFOV6A/wI025iljixdgO7ZtWq/ATwPQ?=
- =?us-ascii?Q?qcZLPVvYXdxVTQtE7HLDj/okSJ0/juru7dVhc4rHsx7BWADbGtSAzOZ0QRFW?=
- =?us-ascii?Q?hv6hxa+eA8pK5P7ceBxtviXuETNy5vLHDQuxBV2FIYQ05LUCXewdeu/nqwPK?=
- =?us-ascii?Q?UP3BhtfZtCFlR9X18YpEXMW0pLTjHakn4B3DpZKc+cKToklQ/pYgbDD9bB5X?=
- =?us-ascii?Q?lC5GCdjokyUSC9Q8ieYsk/Sn975Ao6JhPAi+3r4xIw4MdQVJGp66Sr3zUwd5?=
- =?us-ascii?Q?2n3caBgJP6h+Zkox550SMWfI3ZJaOVgS61pgt4FmuWS+aHhBQ0EZSS4wPpSk?=
- =?us-ascii?Q?ceqXPg1U7ZMS/n4U/bJ841YicD3JgofuE5iWOVJomSPo2USB/b29C8jze3sG?=
- =?us-ascii?Q?yA=3D=3D?=
 X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
 X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: 
-	SSsX09Z5p+GOYngHLC0ees/q19nd1fdBk/AAYTmhxfhDu83uiCeLuUWRpyFD9a1JuaXv5OLDA7je62bHCdyFK3SRw+wAda4d2hY0bcosFDmiWRuqvPfiwF5g+MFpg3wpzk4bQ4OXl6IiQXcrcWd9PPha6qElwZfiXjEl5wB0FLUcKVtsYRbXLkw1Uyl4ZUZx0cwPwN74klmiiGHrPAg7JDLSCBKEVY8fPGxbXyoXk6UZkTX6Ei/VMVdxLJMXD+ZzTbqITTQ/D4c9BkOKN7M8ZqqloGHSVBKaIumVi59G8cuL9+M1+3hCsL4ulbmhYfc/Jc44Zey32LLPdptTvhP1lZvXLnDvM4FAJiy/kBSp+p/PAEdd6C9Umhi/HTnCzkLHa7MqkBIb3D7cOgfVGpPPFrwdF5qWSFH9F6RHKwP36UQXtZB0KncMfjpVu1KLqJrxxmDsQzvGLQAENfIX+wUVcm9k1GvI68+ops1t3eEutRivysrfIQJ64NQu0v2GlT5IC5jXsk7UOxiLJUOfn8O5nY6V8vwMLLVMMVbOIdcunzqj1gpOKSps6I66wbCq1vahlo7I9xQpJtp8pC0+khOGyL5zcrM/CrVJTwTySh3pnZY=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 9a96be07-322e-4c2e-8c29-08dc536aebbe
-X-MS-Exchange-CrossTenant-AuthSource: CO6PR10MB5409.namprd10.prod.outlook.com
+	c471mtG6vFSzG3a45aDoyxVCo/TAJLL6wXTIzzagmkqlc9IChfvkbq968y9kFCx1QjH5pmKg1jo76jw/kXwk9gjBXSiZJskvp4Kkt83Sr5c5JnVh9ClQqsgwrHeg1AkACNWDxJsrfXv9EpEUrxkuIA8N6NBIFqhxzw9R22Rpd1t2WoamPMyXlUj1SgX5Zv9tCXPmGDMQIeG2xXFnuFtjSV7wGZqB+5puXhy1qOTlQIQyo3sv6sJGK1uKONwStMJsNHK9mjrhUdnOmheWQujsa85FNrPA9lmtZn9+ewtiyFWR9iF8vUcLVO+WQ6OYc8xw6eKogm4jWXcyVkFsUCbtg7/unwtgjedF++gfSrzfHjetTjDrg8obroLyPjXJZ1zjwj38YH+Mz7eDILY/T5dVC25M9K2S953IToZRVpaFt2uRln7WBPIn6FP31XS4Ms7vnAsW9HcknTN07qgKZ9Tn20zpXp+3VCmmYoeGH7VHuUVDbaaJJ+fyyunqJ8P0rjz2jCMYCqzD24RkQ5dtKGRDY90N6+h3x0LL8Lk2FgtCt8OEi1lJJ6yK7LMQv4k6GhlgJdC3KGuhHBZxrKpz09koxt4uH2YOMNqOl6CoEIDQueEtyM6sBUwY/qJn+09GIpwIIUX0EiEoDG9a3o2V0I8jAQ==
+X-OriginatorOrg: synopsys.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 02 Apr 2024 23:16:27.2756
+X-MS-Exchange-CrossTenant-AuthSource: LV2PR12MB5990.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: aae3246f-e504-4696-a3ea-08dc536b4275
+X-MS-Exchange-CrossTenant-originalarrivaltime: 02 Apr 2024 23:18:52.1147
  (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: anFZI67/PGw0jQXDwT0NEAeZdLRVNDBCDqHTVYWcTBsXab2M08vVdzpsnLZvrpXyYRI/cVzFjoZldr6uY8o3pEcPEHX9nCNB9EO2ybX9+AM=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CO6PR10MB5620
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: c33c9f88-1eb7-4099-9700-16013fd9e8aa
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: TSiYfJJwojXQi7FxJGIAaQplv5v+OEZLDNs+lk8JRrvGYQKMTa4YHgbLOfsdrG3qNLS8unPn+etnHrYVJYyUaA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM4PR12MB7597
+X-Proofpoint-GUID: Y_iMIMFSW0VCROLZro-GG8uaEQ_PZjSn
+X-Proofpoint-ORIG-GUID: Y_iMIMFSW0VCROLZro-GG8uaEQ_PZjSn
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
  definitions=2024-04-02_14,2024-04-01_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 mlxscore=0 adultscore=0
- spamscore=0 phishscore=0 bulkscore=0 suspectscore=0 malwarescore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2403210000
- definitions=main-2404020171
-X-Proofpoint-GUID: aCZznXRV16BLzvuFHkaZL3pCvsEKpM8T
-X-Proofpoint-ORIG-GUID: aCZznXRV16BLzvuFHkaZL3pCvsEKpM8T
+X-Proofpoint-Spam-Details: rule=outbound_active_cloned_notspam policy=outbound_active_cloned score=0
+ phishscore=0 bulkscore=0 mlxlogscore=629 mlxscore=0 malwarescore=0
+ clxscore=1015 adultscore=0 spamscore=0 impostorscore=0 suspectscore=0
+ lowpriorityscore=0 priorityscore=1501 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.19.0-2403210001 definitions=main-2404020171
 
-
-Mark Rutland <mark.rutland@arm.com> writes:
-
-> On Mon, Apr 01, 2024 at 08:47:06PM -0500, Haris Okanovic wrote:
->> An arm64 cpuidle driver with two states: (1) First polls for new runable
->> tasks up to 100 us (by default) before (2) a wfi idle and awoken by
->> interrupt (the current arm64 behavior). It allows CPUs to return from
->> idle more quickly by avoiding the longer interrupt wakeup path, which
->> may require EL1/EL2 transition in certain VM scenarios.
->
-> Please start off with an explanation of the problem you're trying to solve
-> (which IIUC is to wake up more quickly in certain cases), before describing the
-> solution. That makes it *significantly* easier for people to review this, since
-> once you have the problem statement in mind it's much easier to understand how
-> the solution space follows from that.
->
->> Poll duration is optionally configured at load time via the poll_limit
->> module parameter.
->
-> Why should this be a configurable parameter?
->
-> (note, at this point you haven't introduced any of the data below, so the
-> trade-off isn't clear to anyone).
->
->> The default 100 us duration was experimentally chosen, by measuring QPS
->> (queries per sec) of the MLPerf bert inference benchmark, which seems
->> particularly susceptible to this change; see procedure below. 100 us is
->> the inflection point where QPS stopped growing in a range of tested
->> values. All results are from AWS m7g.16xlarge instances (Graviton3 SoC)
->> with dedicated tenancy (dedicated hardware).
->>
->> | before | 10us  | 25us | 50us | 100us | 125us | 150us | 200us | 300us |
->> | 5.87   | 5.91  | 5.96 | 6.01 | 6.06  | 6.07  | 6.06  | 6.06  | 6.06  |
->>
->> Perf's scheduler benchmarks also improve with a range of poll_limit
->> values >= 10 us. Higher limits produce near identical results within a
->> 3% noise margin. The following tables are `perf bench sched` results,
->> run times in seconds.
->>
->> `perf bench sched messaging -l 80000`
->> | AWS instance  | SoC       | Before | After  | % Change |
->> | c6g.16xl (VM) | Graviton2 | 18.974 | 18.400 | none     |
->> | c7g.16xl (VM) | Graviton3 | 13.852 | 13.859 | none     |
->> | c6g.metal     | Graviton2 | 17.621 | 16.744 | none     |
->> | c7g.metal     | Graviton3 | 13.430 | 13.404 | none     |
->>
->> `perf bench sched pipe -l 2500000`
->> | AWS instance  | SoC       | Before | After  | % Change |
->> | c6g.16xl (VM) | Graviton2 | 30.158 | 15.181 | -50%     |
->> | c7g.16xl (VM) | Graviton3 | 18.289 | 12.067 | -34%     |
->> | c6g.metal     | Graviton2 | 17.609 | 15.170 | -14%     |
->> | c7g.metal     | Graviton3 | 14.103 | 12.304 | -13%     |
->>
->> `perf bench sched seccomp-notify -l 2500000`
->> | AWS instance  | SoC       | Before | After  | % Change |
->> | c6g.16xl (VM) | Graviton2 | 28.784 | 13.754 | -52%     |
->> | c7g.16xl (VM) | Graviton3 | 16.964 | 11.430 | -33%     |
->> | c6g.metal     | Graviton2 | 15.717 | 13.536 | -14%     |
->> | c7g.metal     | Graviton3 | 13.301 | 11.491 | -14%     |
->
-> Ok, so perf numbers for a busy workload go up.
->
-> What happens for idle state residency on a mostly idle system?
->
->> Steps to run MLPerf bert inference on Ubuntu 22.04:
->>  sudo apt install build-essential python3 python3-pip
->>  pip install "pybind11[global]" tensorflow  transformers
->>  export TF_ENABLE_ONEDNN_OPTS=1
->>  export DNNL_DEFAULT_FPMATH_MODE=BF16
->>  git clone https://github.com/mlcommons/inference.git --recursive
->>  cd inference
->>  git checkout v2.0
->>  cd loadgen
->>  CFLAGS="-std=c++14" python3 setup.py bdist_wheel
->>  pip install dist/*.whl
->>  cd ../language/bert
->>  make setup
->>  python3 run.py --backend=tf --scenario=SingleStream
->>
->> Suggested-by: Ali Saidi <alisaidi@amazon.com>
->> Reviewed-by: Ali Saidi <alisaidi@amazon.com>
->> Reviewed-by: Geoff Blake <blakgeof@amazon.com>
->> Cc: Brian Silver <silverbr@amazon.com>
->> Signed-off-by: Haris Okanovic <harisokn@amazon.com>
->> ---
->>  drivers/cpuidle/Kconfig.arm           |  13 ++
->>  drivers/cpuidle/Makefile              |   1 +
->>  drivers/cpuidle/cpuidle-arm-polling.c | 171 ++++++++++++++++++++++++++
->>  3 files changed, 185 insertions(+)
->>  create mode 100644 drivers/cpuidle/cpuidle-arm-polling.c
->>
->> diff --git a/drivers/cpuidle/Kconfig.arm b/drivers/cpuidle/Kconfig.arm
->> index a1ee475d180d..484666dda38d 100644
->> --- a/drivers/cpuidle/Kconfig.arm
->> +++ b/drivers/cpuidle/Kconfig.arm
->> @@ -14,6 +14,19 @@ config ARM_CPUIDLE
->>  	  initialized by calling the CPU operations init idle hook
->>  	  provided by architecture code.
->>
->> +config ARM_POLL_CPUIDLE
->> +	bool "ARM64 CPU idle Driver with polling"
->> +	depends on ARM64
->> +	depends on ARM_ARCH_TIMER_EVTSTREAM
->> +	select CPU_IDLE_MULTIPLE_DRIVERS
->> +	help
->> +	  Select this to enable a polling cpuidle driver for ARM64:
->> +	  The first state polls TIF_NEED_RESCHED for best latency on short
->> +	  sleep intervals. The second state falls back to arch_cpu_idle() to
->> +	  wait for interrupt. This is can be helpful in workloads that
->> +	  frequently block/wake at short intervals or VMs where wakeup IPIs
->> +	  are more expensive.
->
-> Why is this a separate driver rather than an optional feature in the existing
-> driver?
->
-> The fact that this duplicates a bunch of code indicates to me that this should
-> not be a separate driver.
-
-Also, the cpuidle-haltpoll driver is meant to do something quite similar.
-That driver polls adaptively based on the haltpoll governor's tuning of
-the polling period.
-
-However, cpuidle-haltpoll is currently x86 only. Mihai (also from Oracle)
-posted patches [1] adding support for ARM64.
-
-Haris, could you take a look at it and see if it does what you are
-looking for? The polling path in the linked version also uses
-smp_cond_load_relaxed() so even the mechanisms for both of these
-are fairly similar.
-
-(I'll be sending out the next version shortly. Happy to Cc you if you
-would like to try that out.)
-
-Thanks
-Ankur
-
-[1] https://lore.kernel.org/lkml/1707982910-27680-1-git-send-email-mihai.carabas@oracle.com/
-
->
->> +
->>  config ARM_PSCI_CPUIDLE
->>  	bool "PSCI CPU idle Driver"
->>  	depends on ARM_PSCI_FW
->> diff --git a/drivers/cpuidle/Makefile b/drivers/cpuidle/Makefile
->> index d103342b7cfc..23c21422792d 100644
->> --- a/drivers/cpuidle/Makefile
->> +++ b/drivers/cpuidle/Makefile
->> @@ -22,6 +22,7 @@ obj-$(CONFIG_ARM_U8500_CPUIDLE)         += cpuidle-ux500.o
->>  obj-$(CONFIG_ARM_AT91_CPUIDLE)          += cpuidle-at91.o
->>  obj-$(CONFIG_ARM_EXYNOS_CPUIDLE)        += cpuidle-exynos.o
->>  obj-$(CONFIG_ARM_CPUIDLE)		+= cpuidle-arm.o
->> +obj-$(CONFIG_ARM_POLL_CPUIDLE)		+= cpuidle-arm-polling.o
->>  obj-$(CONFIG_ARM_PSCI_CPUIDLE)		+= cpuidle-psci.o
->>  obj-$(CONFIG_ARM_PSCI_CPUIDLE_DOMAIN)	+= cpuidle-psci-domain.o
->>  obj-$(CONFIG_ARM_TEGRA_CPUIDLE)		+= cpuidle-tegra.o
->> diff --git a/drivers/cpuidle/cpuidle-arm-polling.c b/drivers/cpuidle/cpuidle-arm-polling.c
->> new file mode 100644
->> index 000000000000..bca128568114
->> --- /dev/null
->> +++ b/drivers/cpuidle/cpuidle-arm-polling.c
->> @@ -0,0 +1,171 @@
->> +// SPDX-License-Identifier: GPL-2.0
->> +/*
->> + * ARM64 CPU idle driver using wfe polling
->> + *
->> + * Copyright 2024 Amazon.com, Inc. or its affiliates. All rights reserved.
->> + *
->> + * Authors:
->> + *   Haris Okanovic <harisokn@amazon.com>
->> + *   Brian Silver <silverbr@amazon.com>
->> + *
->> + * Based on cpuidle-arm.c
->> + * Copyright (C) 2014 ARM Ltd.
->> + * Author: Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
->> + */
->> +
->> +#include <linux/cpu.h>
->> +#include <linux/cpu_cooling.h>
->> +#include <linux/cpuidle.h>
->> +#include <linux/sched/clock.h>
->> +
->> +#include <asm/cpuidle.h>
->> +#include <asm/readex.h>
->> +
->> +#include "dt_idle_states.h"
->> +
->> +/* Max duration of the wfe() poll loop in us, before transitioning to
->> + * arch_cpu_idle()/wfi() sleep.
->> + */
->
-> /*
->  * Comments should have the leading '/*' on a separate line.
->  * See https://www.kernel.org/doc/html/v6.8/process/coding-style.html#commenting
->  */
->
->> +#define DEFAULT_POLL_LIMIT_US 100
->> +static unsigned int poll_limit __read_mostly = DEFAULT_POLL_LIMIT_US;
->> +
->> +/*
->> + * arm_idle_wfe_poll - Polls state in wfe loop until reschedule is
->> + * needed or timeout
->> + */
->> +static int __cpuidle arm_idle_wfe_poll(struct cpuidle_device *dev,
->> +				struct cpuidle_driver *drv, int idx)
->> +{
->> +	u64 time_start, time_limit;
->> +
->> +	time_start = local_clock();
->> +	dev->poll_time_limit = false;
->> +
->> +	local_irq_enable();
->
-> Why enable IRQs here? We don't do that in the regular cpuidle-arm driver, nor
-> the cpuidle-psci driver, and there's no explanation here or in the commit message.
->
-> How does this interact with RCU? Is that still watching or are we in an
-> extended quiescent state? For PSCI idle states we enter an EQS, and it seems
-> like we probably should here...
->
->> +
->> +	if (current_set_polling_and_test())
->> +		goto end;
->> +
->> +	time_limit = cpuidle_poll_time(drv, dev);
->> +
->> +	do {
->> +		// exclusive read arms the monitor for wfe
->> +		if (__READ_ONCE_EX(current_thread_info()->flags) & _TIF_NEED_RESCHED)
->> +			goto end;
->> +
->> +		// may exit prematurely, see ARM_ARCH_TIMER_EVTSTREAM
->> +		wfe();
->> +	} while (local_clock() - time_start < time_limit);
->
-> .. and if the EVTSTREAM is disabled, we'll sit in WFE forever rather than
-> entering a deeper idle state, which doesn't seem desirable.
->
-> It's worth noting that now that we have WFET, we'll probably want to disable
-> the EVTSTREAM by default at some point, at least in some configurations, since
-> that'll be able to sit in a WFE state for longer while also reliably waking up
-> when required.
->
-> I suspect we want something like an smp_load_acquire_timeout() here to do the
-> wait in arch code (allowing us to use WFET), and enabling this state will
-> depend on either having WFET or EVTSTREAM.
->
->> +
->> +	dev->poll_time_limit = true;
->> +
->> +end:
->> +	current_clr_polling();
->> +	return idx;
->> +}
->> +
->> +/*
->> + * arm_idle_wfi - Places cpu in lower power state until interrupt,
->> + * a fallback to polling
->> + */
->> +static int __cpuidle arm_idle_wfi(struct cpuidle_device *dev,
->> +				struct cpuidle_driver *drv, int idx)
->> +{
->> +	if (current_clr_polling_and_test()) {
->> +		local_irq_enable();
->> +		return idx;
->> +	}
->
-> Same as above, why enable IRQs here?
->
->> +	arch_cpu_idle();
->> +	return idx;
->
-> .. and if we need to enable IRQs in the other cases above, why do we *not*
-> need to enable them here?
->
->> +}
->> +
->> +static struct cpuidle_driver arm_poll_idle_driver __initdata = {
->> +	.name = "arm_poll_idle",
->> +	.owner = THIS_MODULE,
->> +	.states = {
->> +		{
->> +			.enter			= arm_idle_wfe_poll,
->> +			.exit_latency		= 0,
->> +			.target_residency	= 0,
->> +			.exit_latency_ns	= 0,
->> +			.power_usage		= UINT_MAX,
->> +			.flags			= CPUIDLE_FLAG_POLLING,
->> +			.name			= "WFE",
->> +			.desc			= "ARM WFE",
->> +		},
->> +		{
->> +			.enter			= arm_idle_wfi,
->> +			.exit_latency		= DEFAULT_POLL_LIMIT_US,
->> +			.target_residency	= DEFAULT_POLL_LIMIT_US,
->> +			.power_usage		= UINT_MAX,
->> +			.name			= "WFI",
->> +			.desc			= "ARM WFI",
->> +		},
->> +	},
->> +	.state_count = 2,
->> +};
->
-> How does this interact with the existing driver?
->
-> How does DEFAULT_POLL_LIMIT_US compare with PSCI idle states?
->
->> +
->> +/*
->> + * arm_poll_init_cpu - Initializes arm cpuidle polling driver for one cpu
->> + */
->> +static int __init arm_poll_init_cpu(int cpu)
->> +{
->> +	int ret;
->> +	struct cpuidle_driver *drv;
->> +
->> +	drv = kmemdup(&arm_poll_idle_driver, sizeof(*drv), GFP_KERNEL);
->> +	if (!drv)
->> +		return -ENOMEM;
->> +
->> +	drv->cpumask = (struct cpumask *)cpumask_of(cpu);
->> +	drv->states[1].exit_latency = poll_limit;
->> +	drv->states[1].target_residency = poll_limit;
->> +
->> +	ret = cpuidle_register(drv, NULL);
->> +	if (ret) {
->> +		pr_err("failed to register driver: %d, cpu %d\n", ret, cpu);
->> +		goto out_kfree_drv;
->> +	}
->> +
->> +	pr_info("registered driver cpu %d\n", cpu);
->
-> This does not need to be printed for each CPU.
->
-> Mark.
->
->> +
->> +	cpuidle_cooling_register(drv);
->> +
->> +	return 0;
->> +
->> +out_kfree_drv:
->> +	kfree(drv);
->> +	return ret;
->> +}
->> +
->> +/*
->> + * arm_poll_init - Initializes arm cpuidle polling driver
->> + */
->> +static int __init arm_poll_init(void)
->> +{
->> +	int cpu, ret;
->> +	struct cpuidle_driver *drv;
->> +	struct cpuidle_device *dev;
->> +
->> +	for_each_possible_cpu(cpu) {
->> +		ret = arm_poll_init_cpu(cpu);
->> +		if (ret)
->> +			goto out_fail;
->> +	}
->> +
->> +	return 0;
->> +
->> +out_fail:
->> +	pr_info("de-register all");
->> +	while (--cpu >= 0) {
->> +		dev = per_cpu(cpuidle_devices, cpu);
->> +		drv = cpuidle_get_cpu_driver(dev);
->> +		cpuidle_unregister(drv);
->> +		kfree(drv);
->> +	}
->> +
->> +	return ret;
->> +}
->> +
->> +module_param(poll_limit, uint, 0444);
->> +device_initcall(arm_poll_init);
->> --
->> 2.34.1
->>
->>
-
-
---
-ankur
+T24gVHVlLCBBcHIgMDIsIDIwMjQsIFRoaW5oIE5ndXllbiB3cm90ZToNCj4gTXkgY29uY2VybiBo
+ZXJlIGlzIGZvciB0aGUgY2FzZSB3aGVyZSB0cmFuc2Zlcl9pbl9mbGlnaHQgPT0gdHJ1ZSBhbmQN
+Cg0KSSBtZWFuIHRyYW5zZmVyX2luX2ZsaWdodCA9PSBmYWxzZQ0KDQo+IGxpc3RfZW1wdHkoc3Rh
+cnRlZF9saXN0KSA9PSBmYWxzZS4gVGhhdCBtZWFucyB0aGF0IHRoZSByZXF1ZXN0cyBpbiB0aGUN
+Cj4gc3RhcnRlZF9saXN0IGFyZSBjb21wbGV0ZWQgYnV0IGFyZSBub3QgZ2l2ZW4gYmFjayB0byB0
+aGUgZ2FkZ2V0IGRyaXZlci4NCj4gDQo+IFNpbmNlIHRoZXkgcmVtYWluZWQgaW4gdGhlIHN0YXJ0
+ZWRfbGlzdCwgdGhleSB3aWxsIGJlIHJlc3VibWl0dGVkIGFnYWluDQo+IG9uIHRoZSBuZXh0IHVz
+Yl9lcF9xdWV1ZS4gV2UgbWF5IHNlbmQgZHVwbGljYXRlIHRyYW5zZmVycyByaWdodD8NCj4gDQo+
+IFlvdSBjYW4gdHJ5IHRvIGNsZWFudXAgcmVxdWVzdHMgaW4gdGhlIHN0YXJ0ZWRfbGlzdCwgYnV0
+IHlvdSBuZWVkIHRvIGJlDQo+IGNhcmVmdWwgdG8gbWFrZSBzdXJlIHlvdSdyZSBub3Qgb3V0IG9m
+IHN5bmMgd2l0aCB0aGUgdHJhbnNmZXIgY29tcGxldGlvbg0KPiBldmVudHMgYW5kIG5ldyByZXF1
+ZXN0cyBmcm9tIGdhZGdldCBkcml2ZXIuDQo+IA==
 
