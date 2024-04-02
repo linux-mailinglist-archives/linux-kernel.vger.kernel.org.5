@@ -1,141 +1,126 @@
-Return-Path: <linux-kernel+bounces-128345-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-128346-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4E4C8895990
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 18:21:14 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A1D708959C1
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 18:29:55 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 09234283CA7
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 16:21:13 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id DB5F6B2CCB5
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 16:21:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8E29514BFA1;
-	Tue,  2 Apr 2024 16:20:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C5D0C14C584;
+	Tue,  2 Apr 2024 16:20:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="Rj3Ojj+f"
-Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2AA6514B064;
-	Tue,  2 Apr 2024 16:20:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=13.77.154.182
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="sc1KfrtT"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DD6D414B077;
+	Tue,  2 Apr 2024 16:20:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712074837; cv=none; b=eE+2AOqQZQIwfD6cCNejK1O6ZyzkG8CBeBXcDr5gR65JtsHYe9htaMCNVX4LzwZdEI73oppE1J1nCe7qV2d+rl9q1+Xxx1LnnnDo8M/JdjDtezxnOMxoijHislRHvRX+PUGPpJYXJj+Bjy1Rd/ErA+sDC0CBTHhgudey3pjOmlY=
+	t=1712074843; cv=none; b=Q5vM6WaGSz7TSYnMPh3v2KE2xvyMKZzthk6OJvFLaHWFGG8yHAenRLA6W6ezEnVDDAEMKqUF4dQ7r31cvhOY93aRcvTa+MfQxRmJg+Jstnkn3vPqgABXVjiT/3WTZSYWFrg/+1phIdIsVUW4rLEbYfIeo4hOKgjJCmZGtoV0Ewo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712074837; c=relaxed/simple;
-	bh=7t81tRuRY2DXAWxIDyrDV45IaZjnq1EEvWtokKa6SOk=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=XxSLLWad4CxYzYWNZ6oa8XOPGngtlSgHd0412qvAWB6pTfrA2lc5/8k9ezYQs4dROZW8SaXfymD6Q6c/8PRS8sJL/HtYjFXw4r3nfkUrwQ4bsc28FLU8RAxnvVC+iPVr+cBSkvtrRWLahqHqCMMQ7uWGGS4zfHnePelLh1MyiZs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com; spf=pass smtp.mailfrom=linux.microsoft.com; dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b=Rj3Ojj+f; arc=none smtp.client-ip=13.77.154.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.microsoft.com
-Received: from [100.64.232.220] (unknown [20.29.225.195])
-	by linux.microsoft.com (Postfix) with ESMTPSA id 90A6D20E8BEB;
-	Tue,  2 Apr 2024 09:20:34 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 90A6D20E8BEB
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-	s=default; t=1712074835;
-	bh=diMLxdSPqVbdaJFyTeRrOWtjesbV9nks1RgdOComYig=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=Rj3Ojj+f8L4oLg5jPxJITV4lljtaNQ1MZ7dSIzWZF5J+LfZs3X5diAKiUWhTUVFe0
-	 FUnY9QuJZFaj3I6g90zBj9Bl1fU2tfaf4JxF0B4epu6O6DxnLXUVrTwkNb92FpwqlH
-	 y1p3X2h3VTCj1AN7QMru6U7yC6w74c0lVL9oSGbg=
-Message-ID: <fde7a0da-1981-48db-95e2-96d45655c11c@linux.microsoft.com>
-Date: Tue, 2 Apr 2024 09:20:33 -0700
+	s=arc-20240116; t=1712074843; c=relaxed/simple;
+	bh=1nEuOFAWZ57fj7SwvMx9awMLbIaQIeYglVGlMpWXeQs=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=T89A9h7lOhawF0MmjI/cqXcZ4lR4P0uf6lce7GAlHeJ/Yjay/aUz/jsCaWp0wxBkKOja/qblxdO2poH9gZE92Gu4JTTMcP9rToljA8vrO5kTZEr1Cy5auMy3U8rK3EdY2oCIYAtqGP+WbMdvVZqxTqFaEXPdEitIktyfEjPpFa4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=sc1KfrtT; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A64C1C433F1;
+	Tue,  2 Apr 2024 16:20:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1712074842;
+	bh=1nEuOFAWZ57fj7SwvMx9awMLbIaQIeYglVGlMpWXeQs=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=sc1KfrtToUvAjh9YwNkASIEnW2mKzUNCuV7C5CoOKKA68BM1WZcr63qdMLRvbOfdn
+	 5tPViqvFFNvnb3yhZ4Yv9ijd8gFBfRuUtEvRKmid8CR8lq+kSkauZLdvnAMU52RPqZ
+	 QA1iZyLMa/qz7/mghKhjCpds4O4Zmyq/glyN/k6LYahZjcyImQ4A7OQkpQ1laZ7GgV
+	 ip7cPgWNZJIDGusABNuZLmquTrGlpNTGUA7G+PqxMl2PW0lIyPgEzNU3wqb9LmOjOF
+	 IoEZG8Iy1Z1eNOZbs707mv1vd593dmo3EPIF3nrywfERER2Jmk3aiDQaMldIz1kkz5
+	 g/yJlS9czCHmg==
+Date: Tue, 2 Apr 2024 17:20:36 +0100
+From: Mark Brown <broonie@kernel.org>
+To: Marc Zyngier <maz@kernel.org>
+Cc: Catalin Marinas <catalin.marinas@arm.com>,
+	Will Deacon <will@kernel.org>,
+	Oliver Upton <oliver.upton@linux.dev>,
+	James Morse <james.morse@arm.com>,
+	Suzuki K Poulose <suzuki.poulose@arm.com>,
+	Jonathan Corbet <corbet@lwn.net>, Shuah Khan <shuah@kernel.org>,
+	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+	Dave Martin <Dave.Martin@arm.com>, kvmarm@lists.linux.dev,
+	linux-doc@vger.kernel.org, linux-kselftest@vger.kernel.org
+Subject: Re: [PATCH v6 1/5] KVM: arm64: Share all userspace hardened thread
+ data with the hypervisor
+Message-ID: <562e1ddb-75e5-4c02-83ea-b946b88d35c8@sirena.org.uk>
+References: <20240329-arm64-2023-dpisa-v6-0-ba42db6c27f3@kernel.org>
+ <20240329-arm64-2023-dpisa-v6-1-ba42db6c27f3@kernel.org>
+ <87msqesoty.wl-maz@kernel.org>
+ <fb54d7b0-9c83-4a0c-a08b-b722c9381ca7@sirena.org.uk>
+ <86h6gju87m.wl-maz@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v0 03/14] drm/gma500,drm/i915: Make I2C terminology more
- inclusive
-To: Jani Nikula <jani.nikula@linux.intel.com>,
- Patrik Jakobsson <patrik.r.jakobsson@gmail.com>,
- Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
- Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>,
- David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
- Rodrigo Vivi <rodrigo.vivi@intel.com>,
- Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
- Tvrtko Ursulin <tursulin@ursulin.net>, Zhenyu Wang
- <zhenyuw@linux.intel.com>, Zhi Wang <zhi.wang.linux@gmail.com>,
- dri-devel@lists.freedesktop.org, open list <linux-kernel@vger.kernel.org>,
- "open list:INTEL DRM DISPLAY FOR XE AND I915 DRIVERS"
- <intel-gfx@lists.freedesktop.org>,
- "open list:INTEL DRM DISPLAY FOR XE AND I915 DRIVERS"
- <intel-xe@lists.freedesktop.org>,
- "open list:INTEL GVT-g DRIVERS (Intel GPU Virtualization)"
- <intel-gvt-dev@lists.freedesktop.org>
-Cc: Wolfram Sang <wsa+renesas@sang-engineering.com>,
- "open list:RADEON and AMDGPU DRM DRIVERS" <amd-gfx@lists.freedesktop.org>,
- "open list:DRM DRIVER FOR NVIDIA GEFORCE/QUADRO GPUS"
- <nouveau@lists.freedesktop.org>,
- "open list:I2C SUBSYSTEM HOST DRIVERS" <linux-i2c@vger.kernel.org>,
- "open list:BTTV VIDEO4LINUX DRIVER" <linux-media@vger.kernel.org>,
- "open list:FRAMEBUFFER LAYER" <linux-fbdev@vger.kernel.org>
-References: <20240329170038.3863998-1-eahariha@linux.microsoft.com>
- <20240329170038.3863998-4-eahariha@linux.microsoft.com>
- <87a5mcfbms.fsf@intel.com>
- <7d5e6ed0-ffe9-46c2-b3b4-a4a47c09532e@linux.microsoft.com>
- <87ttkjesx8.fsf@intel.com>
-Content-Language: en-CA
-From: Easwar Hariharan <eahariha@linux.microsoft.com>
-In-Reply-To: <87ttkjesx8.fsf@intel.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="ZsRoYufVRq8HDIbM"
+Content-Disposition: inline
+In-Reply-To: <86h6gju87m.wl-maz@kernel.org>
+X-Cookie: Knowledge is power.
 
-On 4/2/2024 7:32 AM, Jani Nikula wrote:
-> On Tue, 02 Apr 2024, Easwar Hariharan <eahariha@linux.microsoft.com> wrote:
->> On 4/2/2024 12:48 AM, Jani Nikula wrote:
->>> On Fri, 29 Mar 2024, Easwar Hariharan <eahariha@linux.microsoft.com> wrote:
->>>> I2C v7, SMBus 3.2, and I3C specifications have replaced "master/slave"
->>>> with more appropriate terms. Inspired by and following on to Wolfram's
->>>> series to fix drivers/i2c/[1], fix the terminology for users of
->>>> I2C_ALGOBIT bitbanging interface, now that the approved verbiage exists
->>>> in the specification.
->>>
->>> gma500 and i915 changes should be split. See MAINTAINERS.
->>>
->>> Might also split the i915 changes to smaller pieces, it's kind of
->>> random. And the changes here are not strictly related to I2C AFAICT, so
->>> the commit message should be updated.
->>>
->>> BR,
->>> Jani.
->>>
->>>
->>
->> <snip>
->>
->> I will split gma500 and i915 into their respective patches if possible in v2.
->>
->> Can you say more about the changes being "not strictly related to I2C"? My
->> heuristic was to grep for master/slave, and look in the surrounding context for
->> i2c-related terminology (i2c_pin, 7-bit address, struct i2c_adapter, i2c_bus, etc)
->> to confirm that they are i2c-related, then following the references around to
->> make the compiler happy. For e.g., I did not change the many references to bigjoiner
->> master and slave because I understood from context they were not i2c references.
->>
->> A couple examples would help me restrict the changes to I2C, since as mentioned in the
->> discussion on Wolfram's thread, there are places where migrating away from master/slave
->> terms in the code would conflict with the original technical manuals and reduce correlation
->> and understanding of the code.
-> 
-> I guess I was looking at the VBT changes in intel_bios.c. Granted, they
-> do end up being used as i2c addresses. No big deal.
-> 
-> I think I'd expect the treewide i2c adapter changes to land first, via
-> i2c, and subsequent cleanups to happen next, via individual driver
-> trees. There's quite a bit of conflict potential merging this outside of
-> drm-intel-next, and there's really no need for that.
-> 
-> BR,
-> Jani.
-> 
 
-Great! Just so I'm clear, do you still want the i915 changes split up more, along with them being
-split off from gma500?
+--ZsRoYufVRq8HDIbM
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Thanks,
-Easwar
+On Tue, Apr 02, 2024 at 03:53:33PM +0100, Marc Zyngier wrote:
+> Mark Brown <broonie@kernel.org> wrote:
+
+> > Sure, those patches are still in flight though.  It does seem reasonable
+> > to target the current code.
+
+> Sure, if your intent is for this code not to be merged.
+
+> Because it means this series assumes a different data life cycle, and
+> the review effort spent on it will be invalidated once you move to the
+> per-CPU state.
+
+I don't have any visibility on when those patches are likely to get
+merged or the general practices with in flight serieses here, last time
+around with some of the serieses that were in flight it was quite late
+which did make it unclear if things would go in during that release
+cycle at all.
+
+The amount of churn in KVM recently and long periods where the relevant
+patches are apparently pre accepted but for various not always clear
+reasons not actually merged is making it quite hard to target, you're
+obviously going to be a lot more in the loop so this is doubtless
+clearer to you than to me.  It's also been a little unclear what the
+expectations are for basing things on - some people do prefer to do
+their own merging for example, and while you have mentioned your in
+flight serieses your communication style means that it's not been
+entirely clear if you're just noting the overlap.  Is it just that
+refactoring series you want taking into account here or are there other
+in flight serieses that should be rolled into a base?
+
+--ZsRoYufVRq8HDIbM
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmYMMFQACgkQJNaLcl1U
+h9BDVQf/cg+fzd23KIrGiAWOOdVY4LvIfnSbQLI4D21tWm3gJlGZ6eImlJ62QQAU
+8JaTbACh3U8/tV6s/6g6FUKVobLvFA/iU1+n4VZEQ48Ff4f3o+TWJQVAwpGq2PXJ
+mkpNQmxOHLPIoE2oGDz3sSBu+6A888trmpCyidGfy8NA5+5N6JPAV8wlv57XBo/C
+tN+utUoWo9Kk4wQEcuimfo1hCIKWQDY/wtDLfCsgjTdEvelyGo/fdGQwmb4fskoV
+LIi/ZxVwlhrToV8IqnwYirKQLt0eeE5oy0ExSfR26SJP8d6uFzhEFzyhSPx3aCJd
+LcbhFstoGtpCqu90KCaYfleTeza12g==
+=lAvr
+-----END PGP SIGNATURE-----
+
+--ZsRoYufVRq8HDIbM--
 
