@@ -1,34 +1,34 @@
-Return-Path: <linux-kernel+bounces-128778-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-128779-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B8B23895F7C
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 00:15:03 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4E795895F7D
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 00:15:23 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 73FB22863A3
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 22:15:02 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7B2DEB2792A
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 22:15:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 39F3F161907;
-	Tue,  2 Apr 2024 22:11:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 149DC16192D;
+	Tue,  2 Apr 2024 22:11:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="iVqydypU";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="zFndZ9+h"
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="Bs5z6lCt";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="JtVI6yVM"
 Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 892C316079C
-	for <linux-kernel@vger.kernel.org>; Tue,  2 Apr 2024 22:11:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4B5431607BF
+	for <linux-kernel@vger.kernel.org>; Tue,  2 Apr 2024 22:11:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712095907; cv=none; b=cGljrNoOl7zGV1TBg4dNYa6CHfhBE26lV+dYCD4aLiTuPt3AOkP6dtHsaUT/uPObuLjW3NFMP02BfkmPEZ7NA1ffhGm6I/6lHs7KUf0LSglDwWfQh7ggU4IurAFjaDty1bpFWYuGb9uydkbM2lufOSPPDpjutNF2917H3gi/MEU=
+	t=1712095908; cv=none; b=t0Yj/GNeeGIRyCniTMyEQ1H+Qev4kemh5QOed6pdWGSfmkYcGKzTS9WwGtjAF1OiDE3ra5q//qa4AKdvIeSPvLkQUAtrYUlnRWn3I5hrAWuNDPqccfMn7Gefmt+edHvbKbGbdk8IfvfHz0avlntVHjz0ERZDQFKT6L7oEfIAt00=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712095907; c=relaxed/simple;
-	bh=/yzLu1pIIII3CwMbKuTCCS8fK4EldDhvROOaEuVQjWA=;
+	s=arc-20240116; t=1712095908; c=relaxed/simple;
+	bh=vknBybsjEs93x4cnJ5nN/M/uvYkr0NDGiVf9T/dwPxE=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=kau4q9xgeGatmizdiZHBw9ako/DblJNX+tukknNOaLxpt0EUE8mM26rhYxys5bEAXRWwqLS0j0PxwQf+AhJb7JUL2G0k2tc3+pMmNei1qLIOkvCr/MS7ql5n5KTPG3yKHCY1xVOJzbYzR935LBv5ihgG1rXwdOxp+ZyYlGgUS/k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=iVqydypU; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=zFndZ9+h; arc=none smtp.client-ip=193.142.43.55
+	 MIME-Version; b=ilT3E/GuDlbAhJh+/uLRBM45DRG5Xw2vrzO0pHHn7Dkj1I9djzoLCOc3790nUir0iGbBDWwOT2OpSWSysFh2RFMk3gtJ8qFiksS/sEd/K+6ZT1qTJ9roao9JYzTIqfbKuilRcVwk+sTJhzkOJBbJ3tbyfTyYH9UnbnRLwWW1mLU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=Bs5z6lCt; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=JtVI6yVM; arc=none smtp.client-ip=193.142.43.55
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
 From: John Ogness <john.ogness@linutronix.de>
@@ -38,29 +38,36 @@ DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=MJEBBwWx+7a9Zf6U00LLvkq51McCiYjQLaxDLROSFw4=;
-	b=iVqydypUc7tJSDm6VB9QaXe/HXQ5DEwl210/4AxLpwljFtDmsSN//45eB0hNGYdxPPPPf6
-	ZW4tVFFVt7Wb4wEfjk+JXJ+v3KyMDR64Gc4ANWk5O/lYRu9/OPA1U7UCJbtiTcFGVkAwUp
-	y+bgkmFe0fN0fLnTW52dX3+cK+/V2kOlF+6ySyulcwjujOi6UVwYBUBGBQSNNDTAb5//bd
-	hEQilKsodOpvulQrvVDtE3Fu2DivKoDpwg2/ptrIqrwnuA+TgF62Ogu8p6Y4nhSLASzHq2
-	hEDjTSfN5dYN7kjvYUIRfBR+wTwRsZSk5uW5AHlFYLBVwl3sCSiN0HgRVrwL2Q==
+	bh=FlH5Xlqmpyf6Et7+NQWZIZIzLlU2T3ZP6VsVzNw72mg=;
+	b=Bs5z6lCtmnNc5XRPHCnYQsQr9aG+m3hMM5gVtuaaqvnX277wxTBV3Ohmwel+mP49sQR38M
+	sO7n/93qbiQG5FZRI2eiItg5pIZOGyYIPhs42Hi9GlppjzefnbkF0MG2v8wfICQmrKKgqW
+	3VCoqBqKtJsJVCIV3MkwilmLPCjX4Ns5WMJcUB7vE/ZXDz6PDfkcSI1SDb2raChMKWJx2O
+	uyxD0J2EZJ02wCPbuG8/jjari/P9pXSSqB0RwBhQ5pX3Fc6SgJzfEvRVMruveWqxwEn/67
+	b8uTjf1nrhZ/YepPG/tAWPob/8OaEp9dwoYkKnlfdrog7qtZrTOK4Y0NaKNRYg==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
 	s=2020e; t=1712095904;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=MJEBBwWx+7a9Zf6U00LLvkq51McCiYjQLaxDLROSFw4=;
-	b=zFndZ9+h4vcpEiCP4WGOKnhKSrlI9j9E+NdpsnYdNYmJgrGqOTD4vBUNhvwy1EG1OKAGHu
-	P3LjnK4RZMIRECDQ==
+	bh=FlH5Xlqmpyf6Et7+NQWZIZIzLlU2T3ZP6VsVzNw72mg=;
+	b=JtVI6yVMNrELdLxgZ0YH2PNE9ECFwujqpVs58sZ65U+8+Z0KRpO5pAd/SMhxjEHWqcmN9u
+	l5+ci4ri6AH3uNBw==
 To: Petr Mladek <pmladek@suse.com>
 Cc: Sergey Senozhatsky <senozhatsky@chromium.org>,
 	Steven Rostedt <rostedt@goodmis.org>,
 	Thomas Gleixner <tglx@linutronix.de>,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH printk v4 18/27] printk: nbcon: Assign priority based on CPU state
-Date: Wed,  3 Apr 2024 00:17:20 +0206
-Message-Id: <20240402221129.2613843-19-john.ogness@linutronix.de>
+	linux-kernel@vger.kernel.org,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Josh Poimboeuf <jpoimboe@kernel.org>,
+	"Peter Zijlstra (Intel)" <peterz@infradead.org>,
+	Lukas Wunner <lukas@wunner.de>,
+	Arnd Bergmann <arnd@arndb.de>,
+	Uros Bizjak <ubizjak@gmail.com>,
+	Kefeng Wang <wangkefeng.wang@huawei.com>
+Subject: [PATCH printk v4 19/27] printk: nbcon: Add unsafe flushing on panic
+Date: Wed,  3 Apr 2024 00:17:21 +0206
+Message-Id: <20240402221129.2613843-20-john.ogness@linutronix.de>
 In-Reply-To: <20240402221129.2613843-1-john.ogness@linutronix.de>
 References: <20240402221129.2613843-1-john.ogness@linutronix.de>
 Precedence: bulk
@@ -71,88 +78,131 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Use the current state of the CPU to determine which priority to
-assign to the printing context.
+Add nbcon_atomic_flush_unsafe() to flush all nbcon consoles
+using the write_atomic() callback and allowing unsafe hostile
+takeovers. Call this at the end of panic() as a final attempt
+to flush any pending messages.
 
-The EMERGENCY priority handling is added in a follow-up commit.
-It will use a per-CPU variable.
-
-Note: nbcon_driver_acquire(), which is used by console drivers
-      to acquire the nbcon console for non-printing activities,
-      will always use NORMAL priority.
+Note that legacy consoles use unsafe methods for flushing
+from the beginning of panic (see bust_spinlocks()). Therefore,
+systems using both legacy and nbcon consoles may still fail to
+see panic messages due to unsafe legacy console usage.
 
 Signed-off-by: John Ogness <john.ogness@linutronix.de>
-Reviewed-by: Petr Mladek <pmladek@suse.com>
 ---
- kernel/printk/internal.h |  2 ++
- kernel/printk/nbcon.c    | 20 ++++++++++++++++++--
- 2 files changed, 20 insertions(+), 2 deletions(-)
+ include/linux/printk.h |  5 +++++
+ kernel/panic.c         |  1 +
+ kernel/printk/nbcon.c  | 26 +++++++++++++++++++++-----
+ 3 files changed, 27 insertions(+), 5 deletions(-)
 
-diff --git a/kernel/printk/internal.h b/kernel/printk/internal.h
-index acf53c35b7a0..bcf2105a5c5c 100644
---- a/kernel/printk/internal.h
-+++ b/kernel/printk/internal.h
-@@ -86,6 +86,7 @@ void nbcon_seq_force(struct console *con, u64 seq);
- bool nbcon_alloc(struct console *con);
- void nbcon_init(struct console *con);
- void nbcon_free(struct console *con);
-+enum nbcon_prio nbcon_get_default_prio(void);
- void nbcon_atomic_flush_pending(void);
- bool nbcon_legacy_emit_next_record(struct console *con, bool *handover,
- 				   int cookie);
-@@ -143,6 +144,7 @@ static inline void nbcon_seq_force(struct console *con, u64 seq) { }
- static inline bool nbcon_alloc(struct console *con) { return false; }
- static inline void nbcon_init(struct console *con) { }
- static inline void nbcon_free(struct console *con) { }
-+static inline enum nbcon_prio nbcon_get_default_prio(void) { return NBCON_PRIO_NONE; }
- static inline void nbcon_atomic_flush_pending(void) { }
- static inline bool nbcon_legacy_emit_next_record(struct console *con, bool *handover,
- 						 int cookie) { return false; }
-diff --git a/kernel/printk/nbcon.c b/kernel/printk/nbcon.c
-index 599fff3c0ab3..fe5a96ab1f40 100644
---- a/kernel/printk/nbcon.c
-+++ b/kernel/printk/nbcon.c
-@@ -967,6 +967,22 @@ static bool nbcon_atomic_emit_one(struct nbcon_write_context *wctxt)
- 	return ctxt->backlog;
+diff --git a/include/linux/printk.h b/include/linux/printk.h
+index 0ad3ee752635..866683a293af 100644
+--- a/include/linux/printk.h
++++ b/include/linux/printk.h
+@@ -197,6 +197,7 @@ extern asmlinkage void dump_stack(void) __cold;
+ void printk_trigger_flush(void);
+ extern void nbcon_driver_acquire(struct console *con);
+ extern void nbcon_driver_release(struct console *con);
++void nbcon_atomic_flush_unsafe(void);
+ #else
+ static inline __printf(1, 0)
+ int vprintk(const char *s, va_list args)
+@@ -285,6 +286,10 @@ static inline void nbcon_driver_release(struct console *con)
+ {
  }
  
-+/**
-+ * nbcon_get_default_prio - The appropriate nbcon priority to use for nbcon
-+ *				printing on the current CPU
-+ *
-+ * Context:	Any context which could not be migrated to another CPU.
-+ * Return:	The nbcon_prio to use for acquiring an nbcon console in this
-+ *		context for printing.
-+ */
-+enum nbcon_prio nbcon_get_default_prio(void)
++static inline void nbcon_atomic_flush_unsafe(void)
 +{
-+	if (this_cpu_in_panic())
-+		return NBCON_PRIO_PANIC;
-+
-+	return NBCON_PRIO_NORMAL;
 +}
 +
- /**
-  * nbcon_legacy_emit_next_record - Print one record for an nbcon console
-  *					in legacy contexts
-@@ -1001,7 +1017,7 @@ bool nbcon_legacy_emit_next_record(struct console *con, bool *handover,
- 	stop_critical_timings();
+ #endif
  
- 	ctxt->console	= con;
--	ctxt->prio	= NBCON_PRIO_NORMAL;
-+	ctxt->prio	= nbcon_get_default_prio();
+ bool this_cpu_in_panic(void);
+diff --git a/kernel/panic.c b/kernel/panic.c
+index f22d8f33ea14..c039f8e1ddae 100644
+--- a/kernel/panic.c
++++ b/kernel/panic.c
+@@ -453,6 +453,7 @@ void panic(const char *fmt, ...)
+ 	 * Explicitly flush the kernel log buffer one last time.
+ 	 */
+ 	console_flush_on_panic(CONSOLE_FLUSH_PENDING);
++	nbcon_atomic_flush_unsafe();
  
- 	progress = nbcon_atomic_emit_one(&wctxt);
- 
-@@ -1032,7 +1048,7 @@ static bool __nbcon_atomic_flush_pending_con(struct console *con, u64 stop_seq)
- 
+ 	local_irq_enable();
+ 	for (i = 0; ; i += PANIC_TIMER_STEP) {
+diff --git a/kernel/printk/nbcon.c b/kernel/printk/nbcon.c
+index fe5a96ab1f40..47f39402a22b 100644
+--- a/kernel/printk/nbcon.c
++++ b/kernel/printk/nbcon.c
+@@ -1033,6 +1033,7 @@ bool nbcon_legacy_emit_next_record(struct console *con, bool *handover,
+  *					write_atomic() callback
+  * @con:			The nbcon console to flush
+  * @stop_seq:			Flush up until this record
++ * @allow_unsafe_takeover:	True, to allow unsafe hostile takeovers
+  *
+  * Return:	True if taken over while printing. Otherwise false.
+  *
+@@ -1041,7 +1042,8 @@ bool nbcon_legacy_emit_next_record(struct console *con, bool *handover,
+  * there are no more records available to read or this context is not allowed
+  * to acquire the console.
+  */
+-static bool __nbcon_atomic_flush_pending_con(struct console *con, u64 stop_seq)
++static bool __nbcon_atomic_flush_pending_con(struct console *con, u64 stop_seq,
++					     bool allow_unsafe_takeover)
+ {
+ 	struct nbcon_write_context wctxt = { };
+ 	struct nbcon_context *ctxt = &ACCESS_PRIVATE(&wctxt, ctxt);
+@@ -1049,6 +1051,7 @@ static bool __nbcon_atomic_flush_pending_con(struct console *con, u64 stop_seq)
  	ctxt->console			= con;
  	ctxt->spinwait_max_us		= 2000;
--	ctxt->prio			= NBCON_PRIO_NORMAL;
-+	ctxt->prio			= nbcon_get_default_prio();
+ 	ctxt->prio			= nbcon_get_default_prio();
++	ctxt->allow_unsafe_takeover	= allow_unsafe_takeover;
  
  	if (!nbcon_context_try_acquire(ctxt))
  		return false;
+@@ -1075,8 +1078,9 @@ static bool __nbcon_atomic_flush_pending_con(struct console *con, u64 stop_seq)
+  * __nbcon_atomic_flush_pending - Flush all nbcon consoles using their
+  *					write_atomic() callback
+  * @stop_seq:			Flush up until this record
++ * @allow_unsafe_takeover:	True, to allow unsafe hostile takeovers
+  */
+-static void __nbcon_atomic_flush_pending(u64 stop_seq)
++static void __nbcon_atomic_flush_pending(u64 stop_seq, bool allow_unsafe_takeover)
+ {
+ 	struct console *con;
+ 	bool should_retry;
+@@ -1109,8 +1113,8 @@ static void __nbcon_atomic_flush_pending(u64 stop_seq)
+ 			 */
+ 			local_irq_save(irq_flags);
+ 
+-			should_retry |= __nbcon_atomic_flush_pending_con(con, stop_seq);
+-
++			should_retry |= __nbcon_atomic_flush_pending_con(con, stop_seq,
++									 allow_unsafe_takeover);
+ 			local_irq_restore(irq_flags);
+ 		}
+ 		console_srcu_read_unlock(cookie);
+@@ -1127,7 +1131,19 @@ static void __nbcon_atomic_flush_pending(u64 stop_seq)
+  */
+ void nbcon_atomic_flush_pending(void)
+ {
+-	__nbcon_atomic_flush_pending(prb_next_reserve_seq(prb));
++	__nbcon_atomic_flush_pending(prb_next_reserve_seq(prb), false);
++}
++
++/**
++ * nbcon_atomic_flush_unsafe - Flush all nbcon consoles using their
++ *	write_atomic() callback and allowing unsafe hostile takeovers
++ *
++ * Flush the backlog up through the currently newest record. Unsafe hostile
++ * takeovers will be performed, if necessary.
++ */
++void nbcon_atomic_flush_unsafe(void)
++{
++	__nbcon_atomic_flush_pending(prb_next_reserve_seq(prb), true);
+ }
+ 
+ /**
 -- 
 2.39.2
 
