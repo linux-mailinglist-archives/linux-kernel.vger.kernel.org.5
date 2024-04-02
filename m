@@ -1,87 +1,129 @@
-Return-Path: <linux-kernel+bounces-128313-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-128314-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 37662895938
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 18:04:50 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id A54B789593D
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 18:05:58 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E1DEB288E87
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 16:04:48 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 590B01F2264F
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 16:05:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 03EF913FD7F;
-	Tue,  2 Apr 2024 16:04:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 32551142625;
+	Tue,  2 Apr 2024 16:05:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=lwn.net header.i=@lwn.net header.b="h8yobq7g"
-Received: from ms.lwn.net (ms.lwn.net [45.79.88.28])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="RQLj9Vkq"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D431A13DDCD;
-	Tue,  2 Apr 2024 16:04:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.79.88.28
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5572013F44C;
+	Tue,  2 Apr 2024 16:05:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712073881; cv=none; b=PrtDKaEg1LtOQooMTVnuWG+ABh1OX53DDRB1IatweXkWD9lIuZqrTaT+siNXWVSkwVO4qrYVF35NkRAj10ih9I6DERvl9OzWfFWNSoa96UL8o+9FJe26MDVzI1Od36gGNddRAfslDp1pzuRSuwRDZrGtS+j74PMmX2t95Ddup4c=
+	t=1712073948; cv=none; b=birTFyLJS9Q0EwzztbB8udfFzTpFym7n4CH0pDY5G4+EWxYp7PqBDWS8zmuz7ceVtpRJ4b3uhMZD3Ui0P2Gk0NQIgWxZeLWXhcqv8IYvR6mQY9yWgyq50iSM/vx0ZGFuwBW1OsBcjlaennU/z8Sw5SUvzdMVqq8Bovi/G6LlzJY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712073881; c=relaxed/simple;
-	bh=r3rXkjJCXBAjJQaXMwZ1SYdQThC6q0B48cUjEJI3E9c=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=tnjLbgcQPhU8FzzPw7qWtO34fUqSTM17etpXc0N491w7Qk0EEp6AYKQRrR/61Tubw+r1MNerGtXXHbw7FoF2EQ8F/J0Sg4YDz0RURoXXPKn3UPaaeyg2ZUIoyg2yWEHVVkhCQhrUhmvIcQgNA96qOzDVGwOTsN04jh4cqjwd6dI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lwn.net; spf=pass smtp.mailfrom=lwn.net; dkim=pass (2048-bit key) header.d=lwn.net header.i=@lwn.net header.b=h8yobq7g; arc=none smtp.client-ip=45.79.88.28
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lwn.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lwn.net
-DKIM-Filter: OpenDKIM Filter v2.11.0 ms.lwn.net 1388F47C3C
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lwn.net; s=20201203;
-	t=1712073879; bh=XA/dHmCc2XwjIelH6niwtn8npP/q5+SSqhyQukiun7A=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-	b=h8yobq7gndSF1BcXzZ3nu+4jSRkncbKDo6EhXYJDel50j4F0tfcIyhPbECr+ACgb+
-	 0Etgtl7n6QTk6l69n52FgvMb5Ef7Jo7T/43fVGjZahOa0enCc/0zkfCj2zooGDK5tQ
-	 EC6+VbbI2DtR8vx06WlhgksW5+ozUeZPTE8/WNXu2PXy39Gjkl0dc96C0fTP0c8xHj
-	 Sa+quF7yjpQ73rp/sMuYM+x2owy119xwAUWOs8cymEgSUF1iBY1HYS5YXomHdrE8ec
-	 SiyhKfuDMX2MDNib03WB8yibguHRxOsP/GfhbPYBPCb9RrSt0Y+HGo80LknnxZXRKl
-	 uFjBdzJBYEfqw==
-Received: from localhost (unknown [IPv6:2601:280:5e00:625::646])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by ms.lwn.net (Postfix) with ESMTPSA id 1388F47C3C;
-	Tue,  2 Apr 2024 16:04:39 +0000 (UTC)
-From: Jonathan Corbet <corbet@lwn.net>
-To: Dongliang Mu <dzm91@hust.edu.cn>, Alex Shi <alexs@kernel.org>, Yanteng
- Si <siyanteng@loongson.cn>, Nathan Chancellor <nathan@kernel.org>, Nick
- Desaulniers <ndesaulniers@google.com>, Bill Wendling <morbo@google.com>,
- Justin Stitt <justinstitt@google.com>, Vegard Nossum
- <vegard.nossum@oracle.com>
-Cc: Dongliang Mu <dzm91@hust.edu.cn>, linux-doc@vger.kernel.org,
- linux-kernel@vger.kernel.org, llvm@lists.linux.dev
-Subject: Re: [PATCH] docs/zh_CN: Add dev-tools/ubsan Chinese translation
-In-Reply-To: <20240302140058.1527765-1-dzm91@hust.edu.cn>
-References: <20240302140058.1527765-1-dzm91@hust.edu.cn>
-Date: Tue, 02 Apr 2024 10:04:38 -0600
-Message-ID: <87v84zvjhl.fsf@meer.lwn.net>
+	s=arc-20240116; t=1712073948; c=relaxed/simple;
+	bh=7cOFNsG+sn2clFX8iSG+nyW2cjK90YkAvpcESEHfbyI=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=XieNO0mBE7zXtfyhRV1UC/aiYw89AwCg/04LJBDfKZaRyTMqxfhKed0wPuAtORoAEEn1kPTmDSZ5fESJsEat6Dbd1agzbtxevoKdCO3E7zAXyZm/8gsIP1x+mHXrG0ToTquTE2Df8EFBmwlN4Knyeyxm3iqGEBEOJYsBJe1UkAo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=RQLj9Vkq; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 964B1C433C7;
+	Tue,  2 Apr 2024 16:05:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1712073947;
+	bh=7cOFNsG+sn2clFX8iSG+nyW2cjK90YkAvpcESEHfbyI=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=RQLj9VkqL3Yd4bSTm8AXVoKsGxa3g49q6+f+v62RoIq0pOxCw55n5OU32s1E9xsoM
+	 vV16QvE/R1ptCV/dQahrvTwSdkqXDpHHNV6d+mAmEMy0qeZvS21T05jfUYN13kzRgB
+	 BdsoSnIMyCdSOndCPyt9lDfujYsAiPcV+FZH/sy/7uoB5gd4MmyrorTPHY8/aH/6VL
+	 F7727KkSiANEH2iTd4cWiI/u+EjNQJHLDDoDTnYy3Fh8PQ3nYOLDxgaJH76VILSxyV
+	 WmWFh7YAbrZmODjN2Mn/ML259REGCAnDwKZ3Y0TVzigI58N6Q3ZLvhXjcQ4SRZWSiz
+	 /TsTw2GOH8ozw==
+Date: Tue, 2 Apr 2024 11:05:45 -0500
+From: Rob Herring <robh@kernel.org>
+To: Satya Priya Kakitapalli <quic_skakitap@quicinc.com>
+Cc: Bjorn Andersson <andersson@kernel.org>,
+	Konrad Dybcio <konrad.dybcio@linaro.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Michael Turquette <mturquette@baylibre.com>,
+	Stephen Boyd <sboyd@kernel.org>,
+	Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+	Ajit Pandey <quic_ajipan@quicinc.com>,
+	Imran Shaik <quic_imrashai@quicinc.com>,
+	Taniya Das <quic_tdas@quicinc.com>,
+	Jagadeesh Kona <quic_jkona@quicinc.com>,
+	linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-clk@vger.kernel.org
+Subject: Re: [PATCH v2 1/2] dt-bindings: clock: qcom: Update SM8150 videocc
+ bindings
+Message-ID: <20240402160545.GA223060-robh@kernel.org>
+References: <20240401-videocc-sm8150-dt-node-v2-0-3b87cd2add96@quicinc.com>
+ <20240401-videocc-sm8150-dt-node-v2-1-3b87cd2add96@quicinc.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240401-videocc-sm8150-dt-node-v2-1-3b87cd2add96@quicinc.com>
 
-Dongliang Mu <dzm91@hust.edu.cn> writes:
+On Mon, Apr 01, 2024 at 04:44:23PM +0530, Satya Priya Kakitapalli wrote:
+> Update the clocks list for SM8150 to add both AHB and XO clocks,
+> as it needs both of them.
 
-> Translate dev-tools/ubsan.rst into Chinese, add it into
-> zh_CN/dev-tools/index.rst.
->
-> Signed-off-by: Dongliang Mu <dzm91@hust.edu.cn>
+I read this as you are adding 2 clocks, but it is really just 1 you are 
+adding (iface).
+
+This should have more detail on why breaking the ABI is okay here.
+
+> 
+> Fixes: 35d26e9292e2 ("dt-bindings: clock: Add YAML schemas for the QCOM VIDEOCC clock bindings")
+> Signed-off-by: Satya Priya Kakitapalli <quic_skakitap@quicinc.com>
 > ---
->  .../translations/zh_CN/dev-tools/index.rst    |  2 +-
->  .../translations/zh_CN/dev-tools/ubsan.rst    | 91 +++++++++++++++++++
->  2 files changed, 92 insertions(+), 1 deletion(-)
->  create mode 100644 Documentation/translations/zh_CN/dev-tools/ubsan.rst
-
-This is (finally) applied, apologies for the delay.
-
-Thanks,
-
-jon
+>  .../devicetree/bindings/clock/qcom,videocc.yaml         | 17 ++++++++++++++++-
+>  1 file changed, 16 insertions(+), 1 deletion(-)
+> 
+> diff --git a/Documentation/devicetree/bindings/clock/qcom,videocc.yaml b/Documentation/devicetree/bindings/clock/qcom,videocc.yaml
+> index 6999e36ace1b..68bac801adb0 100644
+> --- a/Documentation/devicetree/bindings/clock/qcom,videocc.yaml
+> +++ b/Documentation/devicetree/bindings/clock/qcom,videocc.yaml
+> @@ -75,7 +75,6 @@ allOf:
+>            enum:
+>              - qcom,sc7180-videocc
+>              - qcom,sdm845-videocc
+> -            - qcom,sm8150-videocc
+>      then:
+>        properties:
+>          clocks:
+> @@ -101,6 +100,22 @@ allOf:
+>              - const: bi_tcxo
+>              - const: bi_tcxo_ao
+>  
+> +  - if:
+> +      properties:
+> +        compatible:
+> +          enum:
+> +            - qcom,sm8150-videocc
+> +    then:
+> +      properties:
+> +        clocks:
+> +          items:
+> +            - description: AHB
+> +            - description: Board XO source
+> +        clock-names:
+> +          items:
+> +            - const: iface
+> +            - const: bi_tcxo
+> +
+>    - if:
+>        properties:
+>          compatible:
+> 
+> -- 
+> 2.25.1
+> 
 
