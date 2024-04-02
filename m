@@ -1,145 +1,116 @@
-Return-Path: <linux-kernel+bounces-127907-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-127908-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2AB6789529D
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 14:12:29 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9CC5D8952AA
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 14:14:39 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id AD616B23364
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 12:12:26 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CE42E1C2201B
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 12:14:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9AD2076F17;
-	Tue,  2 Apr 2024 12:12:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4176C77F12;
+	Tue,  2 Apr 2024 12:14:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="AcA7VeuH"
-Received: from mail-yb1-f171.google.com (mail-yb1-f171.google.com [209.85.219.171])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="RbDENW0l"
+Received: from mail-ej1-f43.google.com (mail-ej1-f43.google.com [209.85.218.43])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 408AB6A03F
-	for <linux-kernel@vger.kernel.org>; Tue,  2 Apr 2024 12:12:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CE64B76C61;
+	Tue,  2 Apr 2024 12:14:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712059937; cv=none; b=NJ9Y0TNV4YTZScZGW1v/DrFmR8JJk5/FgwHRQxRqcvMNbfh5ve698w+zKf7QhC+bRZLOiV9DKH0nHKhKj6uESm3CVW8HnZlAWnk7yUA8jvnhm3g5hSuBwNvsQzi2XAtMWjz8ITmECI4vPX+kRZmpJ9uhglGQJ1Q4SffWabTIGeo=
+	t=1712060071; cv=none; b=PC0lLoxJ2Rh9i86y34W+E6OEPKeepFTl2reJquU1Gwsu5l6GYzSkuUlyR8tDMQllfVYvqrKmJUpDsgd6aIHmlzImF9yiCoN+WM3i7B8Ef2psImRH4NgKmml/uCFuo9waSDacaQPa0k+JDer61s1tOa4GY6UTmhcg1rl5b9PTzkU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712059937; c=relaxed/simple;
-	bh=ZU19AXGy1gTKu3ZdKgEYCn04X7EzHEkd9RdcAo9TIfw=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=FPTb9cWNeRwfVRX3d9P3igaoHazq7BhOxqAJbx6gXCQBpj+6KKpXmZQjpN8Lz/LJ256SatTEoDXdVnjBO6/UvUYAnNc5BTm+IVzA6efJJqEFWodUJF3PyjFpwukLkqnKlPvmIcNx1wXwRlzGRyfyhIAP0tIPKfEWDuJwmwikDfA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=AcA7VeuH; arc=none smtp.client-ip=209.85.219.171
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-yb1-f171.google.com with SMTP id 3f1490d57ef6-dc745927098so4770358276.3
-        for <linux-kernel@vger.kernel.org>; Tue, 02 Apr 2024 05:12:16 -0700 (PDT)
+	s=arc-20240116; t=1712060071; c=relaxed/simple;
+	bh=e7f9ClCzIprx8T/6sYnbbRpgI85tID2BPT+5Vs7gAwM=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=pVDK4+NaPZUB6R4BHxOOG+Jf6RiQIflrV9b3VSmV16fEeLnHMq6fkhzQVEST0tcFXze7VrPlgO2dkE6GqSVZrBYBF+Genj0TktjbCEAXtz282OoAL7BFzL+hC53S80Tv3hgKo8l8kjBP1FXUFYjGvUWhCSMa+Pg/ENc+tunSezQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=RbDENW0l; arc=none smtp.client-ip=209.85.218.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ej1-f43.google.com with SMTP id a640c23a62f3a-a466e53f8c0so666530366b.1;
+        Tue, 02 Apr 2024 05:14:29 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1712059935; x=1712664735; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=59+8zgH9nKJkFqI+MIO5KUM5XCs5xUxjBY89iFUie7c=;
-        b=AcA7VeuH1lsru5Ic48tq2Mzw+fYeKQfYxFjlYwjbhNZqZiMZrNGnc49AfTH8KtU+0b
-         DwDdB06Yx0nGgRNQr+uRvtwU83f8Hp8Q3YDSknC+GKmD/9yb6AB6eCA9x8viSNQueEZt
-         uYM8BxMdZSBpD3/RlNksTZVVg7LbwVtnYBUo0fvBEt5o++7H3fmcd2+eG1yPEfDqc7T+
-         1a2hctcRPBQCQPZ3M+Mo+QUefjmwhsdkQ3xpeXIZV13P9tReqlvrlhdMvX/0ta0IyCJA
-         ipaVJnjftUGu38a9Mzynj+RSBpim/6yNCWqHBf5dNy/Y9Z+t1p63iXWoXgRy1kI0ZPin
-         hawg==
+        d=gmail.com; s=20230601; t=1712060067; x=1712664867; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=lTHANYFS7U6nUICR+q0D94lhFAasgzjgVW1g2kkoD+8=;
+        b=RbDENW0l/EAUfsKfmkh1XTgPlOCh6LpozMPSfBFx7gyT6rBjYWfZ89Qv/H2sVtQjvI
+         l/6D8TL5DcmDdSnDjbwDiI+JtIB3V1n85mJwcuRfo/CiCPXOQ1eUFCXQt0n/dBBDTxR/
+         KmCuOC3AYtWVMMr2y98yVlGq81TT9/Nfw6RhcLg+AdTEw6xxCN1e7WjTE5QTr/02TVpq
+         l4ZSEtlKrb9MP0YVJTfJuERFPntJaJ8r2dXJYhc8odLY3mvbYntzc/nk/P/ZqaQ8onZj
+         P0gRTdvuWuiNHZd6dvKuvRdbAbr105FXoVnlqjI6uQwYBahkCT3VA99XjqB5L0zQF3I/
+         0eTg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712059935; x=1712664735;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+        d=1e100.net; s=20230601; t=1712060067; x=1712664867;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=59+8zgH9nKJkFqI+MIO5KUM5XCs5xUxjBY89iFUie7c=;
-        b=kHdnf8TLSUnR4yLaBaqlVkx3sCpRaOGz9YVcRKhA5/Gy/yRaZ/Bu1eD/dB1nZXAHhQ
-         QJNfNi03DN7uEFj0VGdSo5S23O0pHwPugZbt64ktPDza6lR9atKtdHYXEnyf7UBDVPVh
-         bXY7X3xtNrNKHzVH1/bME8o7b8AozEHA6XlQ33jmeBVRmInHHCftxKMGEpxFmrDUAvVu
-         VWXj9kXd3Fl/4xCwaCOCsdimZhR8NcbB6DyXKc77j/f8Khw9+ajNkBCWgpTjKfrXgMM8
-         G5sH+IOtcvmCu9MkNVqZ5/r4P+zwUoJcE+o0st2poRAlZprmM5V6H9AHDC6B3HZxckf3
-         OZgg==
-X-Forwarded-Encrypted: i=1; AJvYcCV888Un8xTE5Jm2zgB0nDtplqycjiWchiEaawBMx1UJElxQpKAYuIme58vxEVTN2bC6gJiKRR7bbPMwzoSTMrCg7P1OowgJx3gRiAPJ
-X-Gm-Message-State: AOJu0YwB2VBdf9D3LKeHQoIgoeyDRwQ0GT+kSa2VDsfL+Sb9gckpvrRG
-	7tfko0a5m1o2tw8YU18X6Slz5EfzMoAmxycH/Lyd4sVc2eiDabN4hklFIMogHLWiuEL4KvFYA70
-	g/ZPKqNMEfTy0efttakBoza8A6ujfXit4HJqZzA==
-X-Google-Smtp-Source: AGHT+IFkuZ7UzLaijf9AS20sbPh65/6NkxIIfNCV/NSfdOu3MxTu2vQNwQDFXF16gKf/9sOjZBiIcPSc2VfwYBA43k4=
-X-Received: by 2002:a25:8590:0:b0:dcc:a5dc:e9d6 with SMTP id
- x16-20020a258590000000b00dcca5dce9d6mr10343762ybk.30.1712059935303; Tue, 02
- Apr 2024 05:12:15 -0700 (PDT)
+        bh=lTHANYFS7U6nUICR+q0D94lhFAasgzjgVW1g2kkoD+8=;
+        b=i3RwkQ66JWzkS4kJ3OBvs1/6KDZjBPAx4gtrnigBy/Gisz0rQWmc21DHoPbwcnI0so
+         Zb56tPs4HuAKC4zuw9EsxFyVcpdH5Cxq8QTr9FMgguhOsTISjDqMSNp9ZbNAaNxCoh8Q
+         HZvKcbwcMey/NvGy+7jOryRpvxrwjqOoo28lxkzJd+ov7kXge9Tl9D0fLJi8/hIRKA4x
+         oGc1KVI9aP+OEOhG20LmGxKbUSHJLIh2F8XIw4OkC1yE+YnaV5d5j5cUtjfG2q9mE6Wm
+         WwWtUhrmm1MjJgD42u7Vo6PJFoS6kYnn944mYxMvWiAhQucIUiwqQTJXZIP59NFaz+17
+         0JbQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVFUSObaNLlgu78LUDxRJb3QapjXgZmLA4EGlfSS1uX6DqhFbeHtnd2XKtMb83+ZS9dveGJGfElELmcxVmakD5nI1s7R13m2ZUiCFKl
+X-Gm-Message-State: AOJu0Yy5BFvMcyVqzctRexGg3oC+DOeygDfcd5o7j9YZ8V/CNvMXm8+G
+	MjtuacllIxEJZfIxXubRJIqeKpqKnpNh+I/yTsBNxZlHu0sGqCWHC1v4YSHiAEE=
+X-Google-Smtp-Source: AGHT+IF04rWtU/s4ho0E40kFwkrILba273Bs094Jazm8h8eORDs9pC83NwZXAjAnJKmcsVgEzUt1VQ==
+X-Received: by 2002:a17:906:7f07:b0:a4e:14e5:5737 with SMTP id d7-20020a1709067f0700b00a4e14e55737mr9618569ejr.45.1712060067397;
+        Tue, 02 Apr 2024 05:14:27 -0700 (PDT)
+Received: from LMI-NB77.. ([2a02:908:1d8:8f00:cda9:e760:34d7:4af1])
+        by smtp.googlemail.com with ESMTPSA id js19-20020a170906ca9300b00a4e8353be19sm992638ejb.224.2024.04.02.05.14.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 02 Apr 2024 05:14:27 -0700 (PDT)
+From: Abdelrahman Morsy <abdelrahmanhesham94@gmail.com>
+To: linux-input@vger.kernel.org
+Cc: linux-i2c@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	gupt21@gmail.com,
+	jikos@kernel.org,
+	benjamin.tissoires@redhat.com,
+	Abdelrahman Morsy <abdelrahmanhesham94@gmail.com>
+Subject: [PATCH] HID: mcp-2221: cancel delayed_work only when CONFIG_IIO is enabled
+Date: Tue,  2 Apr 2024 14:14:06 +0200
+Message-Id: <20240402121406.1703500-1-abdelrahmanhesham94@gmail.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240402103406.3638821-1-quic_varada@quicinc.com>
- <20240402103406.3638821-4-quic_varada@quicinc.com> <CAA8EJpphk_kqzBE7cKb73ipdpTi29t9ZSOOdSfq7pAGSs5NKeg@mail.gmail.com>
- <CAA8EJpo=TMhu+Te+JE0cQzmjLOTDPi-Vv-h5Bch0Wfr_7iVi2w@mail.gmail.com>
- <ZgvlrbvvPNA6HRiL@hu-varada-blr.qualcomm.com> <CAA8EJpp2dgy0DcLoUuo6gz-8ee0RRwJ_mvCLGDbdvF-gVhREFg@mail.gmail.com>
- <ZgvqkhF2mTG82Rx2@hu-varada-blr.qualcomm.com>
-In-Reply-To: <ZgvqkhF2mTG82Rx2@hu-varada-blr.qualcomm.com>
-From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Date: Tue, 2 Apr 2024 15:12:04 +0300
-Message-ID: <CAA8EJprN3TuMF-v5PeFW_JUKk+a+MxB7poccZbi9biZNniRnTQ@mail.gmail.com>
-Subject: Re: [PATCH v6 3/6] interconnect: icc-clk: Add devm_icc_clk_register
-To: Varadarajan Narayanan <quic_varada@quicinc.com>
-Cc: andersson@kernel.org, konrad.dybcio@linaro.org, mturquette@baylibre.com, 
-	sboyd@kernel.org, robh@kernel.org, krzysztof.kozlowski+dt@linaro.org, 
-	conor+dt@kernel.org, djakov@kernel.org, quic_anusha@quicinc.com, 
-	linux-arm-msm@vger.kernel.org, linux-clk@vger.kernel.org, 
-	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-pm@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 
-On Tue, 2 Apr 2024 at 14:23, Varadarajan Narayanan
-<quic_varada@quicinc.com> wrote:
->
-> On Tue, Apr 02, 2024 at 02:16:56PM +0300, Dmitry Baryshkov wrote:
-> > On Tue, 2 Apr 2024 at 14:02, Varadarajan Narayanan
-> > <quic_varada@quicinc.com> wrote:
-> > >
-> > > On Tue, Apr 02, 2024 at 01:48:08PM +0300, Dmitry Baryshkov wrote:
-> > > > On Tue, 2 Apr 2024 at 13:40, Dmitry Baryshkov
-> > > > <dmitry.baryshkov@linaro.org> wrote:
-> > > > >
-> > > > > On Tue, 2 Apr 2024 at 13:34, Varadarajan Narayanan
-> > > > > <quic_varada@quicinc.com> wrote:
-> > > > > >
-> > > > > > Wrap icc_clk_register to create devm_icc_clk_register to be
-> > > > > > able to release the resources properly.
-> > > > > >
-> > > > > > Signed-off-by: Varadarajan Narayanan <quic_varada@quicinc.com>
-> > > > > > ---
-> > > > > > v5: Introduced devm_icc_clk_register
-> > > > > > ---
-> > > > > >  drivers/interconnect/icc-clk.c   | 29 +++++++++++++++++++++++++++++
-> > > > > >  include/linux/interconnect-clk.h |  4 ++++
-> > > > > >  2 files changed, 33 insertions(+)
-> > > > >
-> > > > > Reviewed-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-> > > >
-> > > > Wait. Actually,
-> > > >
-> > > > Unreviewed-by: me
-> > > >
-> > > > Please return int from devm_icc_clk_register instead of returning the pointer.
-> > >
-> > > Wouldn't returning int break the general assumption that
-> > > devm_foo(), returns the same type as foo(). For example
-> > > devm_clk_hw_get_clk and clk_hw_get_clk return struct clk *?
-> >
-> > Not always. The only reason to return icc_provider was to make it
-> > possible to destroy it. With devres-managed function you don't have to
-> > do anything.
->
-> Ok. Will change as follows
->
->         return prov; -> return PTR_ERR_OR_ZERO(prov);
->
+If the device is unplugged and CONFIG_IIO is not supported, this will
+result in a warning message at kernel/workqueue.
 
-I think the code might become simpler if you first allocate the ICC
-provider and then just 'return devm_add_action_or_reset(dev,
-your_icc_clk_release, provider)'
+Only cancel delayed work in mcp2221_remove(), when CONFIG_IIO is enabled.
 
+Signed-off-by: Abdelrahman Morsy <abdelrahmanhesham94@gmail.com>
+---
+ drivers/hid/hid-mcp2221.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
+diff --git a/drivers/hid/hid-mcp2221.c b/drivers/hid/hid-mcp2221.c
+index f9cceaeffd08..da5ea5a23b08 100644
+--- a/drivers/hid/hid-mcp2221.c
++++ b/drivers/hid/hid-mcp2221.c
+@@ -944,9 +944,11 @@ static void mcp2221_hid_unregister(void *ptr)
+ /* This is needed to be sure hid_hw_stop() isn't called twice by the subsystem */
+ static void mcp2221_remove(struct hid_device *hdev)
+ {
++#if IS_REACHABLE(CONFIG_IIO)
+ 	struct mcp2221 *mcp = hid_get_drvdata(hdev);
+ 
+ 	cancel_delayed_work_sync(&mcp->init_work);
++#endif
+ }
+ 
+ #if IS_REACHABLE(CONFIG_IIO)
 -- 
-With best wishes
-Dmitry
+2.34.1
+
 
