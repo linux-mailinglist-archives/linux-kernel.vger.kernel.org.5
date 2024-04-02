@@ -1,245 +1,155 @@
-Return-Path: <linux-kernel+bounces-128595-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-128594-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 004DD895CE5
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 21:40:59 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5168F895CE3
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 21:40:47 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7E8621F214F4
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 19:40:59 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E53671F2195C
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 19:40:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 88B7A15CD59;
-	Tue,  2 Apr 2024 19:40:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A7D0E15CD59;
+	Tue,  2 Apr 2024 19:40:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="c+w9BqWg"
-Received: from mail-ej1-f53.google.com (mail-ej1-f53.google.com [209.85.218.53])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ue84BwGu"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0610915B98D;
-	Tue,  2 Apr 2024 19:40:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D4CF515B98D;
+	Tue,  2 Apr 2024 19:40:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712086846; cv=none; b=h2/C0m9mTfoA0vODFCaMkt+Tze9Qog0NYiE49aECtW26aG2zqYwOXesXZlrPxpnqqRELg7Z2mPgKDzBwFg8XEd4y3eU7XgpMNJ1ywAPnKLxPAXeJlmm3jzlpH+P/W5wxwBjF2TCidxxKJZNnHpxZVsxhx1mvzTb2qtq2ilmNqEc=
+	t=1712086839; cv=none; b=r1zm7h4TnuuqEVJWeMwCUhXb2tXpXwQ1ct8jquhexHurHYkWfqd3PH8PMbjjgpfUEEMuhOTSjJ6E6/1xKH8MbOWjO87GVtXpRKDH8IWr8dWaxsUbRY1EpmiUXKh3qsdI8HtYUmPkl0H9uQHrsqZXXqpNVsPx9hLc6Q60obnWNGs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712086846; c=relaxed/simple;
-	bh=uyf/Pl8TfA3/sDo0PLePDpCjIGDzGYe1T2UiXjFKfhY=;
+	s=arc-20240116; t=1712086839; c=relaxed/simple;
+	bh=JjsMiAsMrx1FADRwbTcj5FR+rfAA0/BlPrYl94uuDFI=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=cDN/GyEzNApiP5Bzc9JU8yEvwIOP8COdNk/b6ygzyoReqVaLOQ38hILp3ghLn0Y7vptRBlqkwb6yN4RSsA+hkDAgG32Fp2efEhAvoK+dNJ5w5zYs42ds/NIgFw3SoA39A6coQNewjWDTXDm8qOYPeBqF1R33Z0zgr+fu50p4UIM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=c+w9BqWg; arc=none smtp.client-ip=209.85.218.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f53.google.com with SMTP id a640c23a62f3a-a4644bde1d4so753330266b.3;
-        Tue, 02 Apr 2024 12:40:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1712086843; x=1712691643; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=QFlszyiWnk5HTRYNcbVHpUgDW/C34zJ91mv8A40Foz8=;
-        b=c+w9BqWgvc+om4ZXWgjAGUw9X8tQSrKNAzqfeiCgROSFonWeG9IX3Ovg//IZz3Y4gy
-         yCk9b/cYj/2SnTPRIgEcDDMCOfYYiZOCFoJR/IKBNqgEsSABG4QCt2R60mWfbABjh2/X
-         sznt3A/WYbzOc0VHqZFrt4l9wJm2FZpUr/dgT0z0OZfGyQNzJLG0UJErmn+D/EtHglPb
-         40JP/nV9g59FK1xHJks0Nw8a8ZdKrARvGd/rHU45UM6KCOhHjswn/kZ9Af7GqLgKOdJD
-         flcI20CxRC0GBvqBcwMUknd4MXBi5nn+CJszfxo1U9Q5nq3KSiXrigHI5tMeCbEsYlGO
-         N+ww==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712086843; x=1712691643;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=QFlszyiWnk5HTRYNcbVHpUgDW/C34zJ91mv8A40Foz8=;
-        b=V7UdLQ+Icden5RfUHul70I3w0ZQHYZK38fVAoyoi8ssS31Opero6l7yXf+KnlbIHW2
-         iz4Vzr3SHwFMLYMoxu3bMOZrbWuwx5ybhGQKA2ClEifXbdmWg8qY7nwPrCn8ODrMcCiN
-         d3YkmWs8RYPANKLqw0HaXlF7EaWeV6f3XZA5yz6QrqIGuZLosNyNIPX8B8924oXmkiAA
-         G3Dk7QYmy8iFxeE7vcgt9ssjR7YDne1BMTaDm0383DQIvMebFYJPcw71kr/h/e7uUBnC
-         0FXz+v8si57qkZC9M+ay8FznCWMhqnJzdYXKOAR5JXge5r1WX1BTlZJC3JWWjlvZbB1X
-         3v1w==
-X-Forwarded-Encrypted: i=1; AJvYcCW4NLTgh9ASYqC1nQjYD6ia+TqQzdexH+jTlK5YTVq1NhY/qSZTV+3gSr8C+fmqkHH33+nvroEE3S37jIFgpQT47UtRP6rnlkmRzl5iVsDGuvmLSA3Woqt0qNjf4aTVRLWkS3pwiV9Oo5eM
-X-Gm-Message-State: AOJu0Yz1tzqrpIy5KtpnJGESh8A4nFy3q1wRd/DvYo2ZBAg5lyNzzDZI
-	TgiboYtEXgSQvt+9tPS1boKUhvmfGThmD+OP220olQB2IzJSmWgtiBd96DCnMjodb2ay2eXOLbN
-	3WFYm0USPADWTkCyrfy2g1Vqo1MU=
-X-Google-Smtp-Source: AGHT+IHhe5CMOmVwSalChAbGoM0MlF5r97iJJx2O6zlFWmiGUpBUNF5mSVKS71RwkL5/0gCjNJJWw6saPU1v7QvCIyY=
-X-Received: by 2002:a17:906:5782:b0:a4e:207e:b71 with SMTP id
- k2-20020a170906578200b00a4e207e0b71mr9204641ejq.6.1712086843139; Tue, 02 Apr
- 2024 12:40:43 -0700 (PDT)
+	 To:Cc:Content-Type; b=V7A8ycHr/0w54IWmAMSwrc6GObEe+ri2wm6HpS6zFsBJc7IRUO3m8co6Uuu6SojlHYBqCgRYA2wpbd+8xT/dM8GSlGh8j1fRr75dHXiCPtKRiOCwxHsf1dw4r6zS8I8mUvNrwwaKKmhcKL1Q78bBUKByRwNvrpIKrvvO3/+NFqg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ue84BwGu; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A932CC43390;
+	Tue,  2 Apr 2024 19:40:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1712086839;
+	bh=JjsMiAsMrx1FADRwbTcj5FR+rfAA0/BlPrYl94uuDFI=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=ue84BwGuwO8F7y/5bSnkVDiho4U7LPqhLfhO/tV3HemCWFbuML/HabHOr/1Vrf44k
+	 MyCkJQ8NvWpauNVCWjwpMFiSKzQhDp1zXQPrZFvfk1P1hwFiOgAxbluXaNQXG34J26
+	 puJWL5EOOJTa2qHrbqpEqwDjJYODw0xqpII2yC1Hz3KQqSj4Jbezt0Kl97f4tstsRz
+	 zr32TrpT5j7INkNEv33To1HkHKy5pOBrRxjZ4Y0IV6glxD+s0y1JCJfupSo2gL8Uq5
+	 2yeXXpyI8VS/MTogQ77ds6ymrOHnHsLvX+3U7sGOVwe/hEklVQSRHXuV8rS/9v07o6
+	 q2Of1FgJGBsNQ==
+Received: by mail-oo1-f42.google.com with SMTP id 006d021491bc7-5a4930d9c48so1088889eaf.1;
+        Tue, 02 Apr 2024 12:40:39 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCWQxz1Sw4fZKKuC7L11Bo7vhZ1TxI6qHp/1j2Y/mkGkOGreG0KlYGt79pQyfdisO02CiyeX9RBIhHgFN0goGgLsubXGXPTk0Myv+14n1RpopgaS4F7hOZbQL0tJp6EVXmAD9Lt+bQCzQQ==
+X-Gm-Message-State: AOJu0Yxr4L6Ugzw3eOKzDLMPdU238qyA5B+I109iLW+L8iKYguSBTOhO
+	gqoduaP9txlPrZWWYplYMSzziMjVAR11CvFq55x6CxF1HCpjRVHBrEzBifuo0jjJUqr8LOcjQYM
+	c+1tLlGWhxmroMV1cePvvySwIoH8=
+X-Google-Smtp-Source: AGHT+IGFh/PeKcJPPYYo87cIDkTkH10FJMqvAD+DIqZbrEV1a1HQyycrPF7kCmTxHnlFz1L2mu0wPm9H+zv8DnVWH0Q=
+X-Received: by 2002:a05:6820:2289:b0:5a4:6e23:e335 with SMTP id
+ ck9-20020a056820228900b005a46e23e335mr15513677oob.0.1712086838999; Tue, 02
+ Apr 2024 12:40:38 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240402174353.256627-1-hugo@hugovil.com> <20240402174353.256627-4-hugo@hugovil.com>
-In-Reply-To: <20240402174353.256627-4-hugo@hugovil.com>
-From: Andy Shevchenko <andy.shevchenko@gmail.com>
-Date: Tue, 2 Apr 2024 22:40:07 +0300
-Message-ID: <CAHp75VdZ5yYVx7Df7G4X4Y7ZvJ3LAdq=A0fVNzNfMcdywJC-dQ@mail.gmail.com>
-Subject: Re: [PATCH v3 3/5] serial: sc16is7xx: split into core and I2C/SPI
- parts (core)
-To: Hugo Villeneuve <hugo@hugovil.com>
-Cc: gregkh@linuxfoundation.org, jirislaby@kernel.org, 
-	linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org, 
-	Hugo Villeneuve <hvilleneuve@dimonoff.com>
+References: <SY4P282MB3063A002007A252337A416DEC5382@SY4P282MB3063.AUSP282.PROD.OUTLOOK.COM>
+In-Reply-To: <SY4P282MB3063A002007A252337A416DEC5382@SY4P282MB3063.AUSP282.PROD.OUTLOOK.COM>
+From: "Rafael J. Wysocki" <rafael@kernel.org>
+Date: Tue, 2 Apr 2024 21:40:27 +0200
+X-Gmail-Original-Message-ID: <CAJZ5v0icbgfNbt_5TibMWuxU=+SgdQxy8S0xFQkSY5MoPN77hg@mail.gmail.com>
+Message-ID: <CAJZ5v0icbgfNbt_5TibMWuxU=+SgdQxy8S0xFQkSY5MoPN77hg@mail.gmail.com>
+Subject: Re: [PATCH v2] ACPI: thermal: Continue registering thermal zones even
+ if trip points fail validation
+To: Stephen Horvath <s.horvath@outlook.com.au>
+Cc: "Rafael J. Wysocki" <rafael@kernel.org>, Zhang Rui <rui.zhang@intel.com>, Len Brown <lenb@kernel.org>, 
+	linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, Apr 2, 2024 at 8:45=E2=80=AFPM Hugo Villeneuve <hugo@hugovil.com> w=
-rote:
+On Sun, Mar 31, 2024 at 10:37=E2=80=AFAM Stephen Horvath
+<s.horvath@outlook.com.au> wrote:
 >
-> From: Hugo Villeneuve <hvilleneuve@dimonoff.com>
+> Some laptops where the thermal control is handled by the EC may
+> provide trip points that fail the kernels new validation, but still have
+> working temperature sensors. An example of this is the Framework 13 AMD.
 >
-> Split the common code from sc16is7xx driver and move the I2C and SPI bus
-> parts into interface-specific source files.
+> This patch allows the thermal zone to still be registered without trip
+> points if the trip points fail validation, allowing the temperature
+> sensor to be viewed and used by the user.
 >
-> sc16is7xx becomes the core functions which can support multiple bus
-> interfaces like I2C and SPI.
+> Closes: https://bugzilla.kernel.org/show_bug.cgi?id=3D218586
+> Fixes: 9c8647224e9f ("ACPI: thermal: Use library functions to obtain trip=
+ point temperature values")
+> Signed-off-by: Stephen Horvath <s.horvath@outlook.com.au>
+> ---
+>  V1 -> V2: Referenced bug tracker in commit, and switched to using
+>                 `thermal_tripless_zone_device_register` as per the
+>                 suggestion of Rafael J. Wysocki.
 >
-> No functional change intended.
-
-..
-
-> -config SERIAL_SC16IS7XX_CORE
-> -       tristate
-> -
->  config SERIAL_SC16IS7XX
->         tristate "SC16IS7xx serial support"
->         select SERIAL_CORE
-> -       depends on (SPI_MASTER && !I2C) || I2C
-> +       depends on SPI_MASTER || I2C
-
-Is it?
-
->         help
->           Core driver for NXP SC16IS7xx serial ports.
->           Supported ICs are:
-> @@ -1042,22 +1039,18 @@ config SERIAL_SC16IS7XX
->           drivers below.
+>  drivers/acpi/thermal.c | 20 ++++++++++----------
+>  1 file changed, 10 insertions(+), 10 deletions(-)
 >
->  config SERIAL_SC16IS7XX_I2C
-> -       bool "SC16IS7xx for I2C interface"
-> +       tristate "SC16IS7xx for I2C interface"
->         depends on SERIAL_SC16IS7XX
->         depends on I2C
-> -       select SERIAL_SC16IS7XX_CORE if SERIAL_SC16IS7XX
-> -       select REGMAP_I2C if I2C
-> -       default y
-> +       select REGMAP_I2C
->         help
-> -         Enable SC16IS7xx driver on I2C bus,
-> -         enabled by default to support oldconfig.
-> +         Enable SC16IS7xx driver on I2C bus.
+> diff --git a/drivers/acpi/thermal.c b/drivers/acpi/thermal.c
+> index 302dce0b2b50..10044c56b85e 100644
+> --- a/drivers/acpi/thermal.c
+> +++ b/drivers/acpi/thermal.c
+> @@ -662,14 +662,16 @@ static int acpi_thermal_register_thermal_zone(struc=
+t acpi_thermal *tz,
+>  {
+>         int result;
 >
->  config SERIAL_SC16IS7XX_SPI
-> -       bool "SC16IS7xx for spi interface"
-> +       tristate "SC16IS7xx for SPI interface"
->         depends on SERIAL_SC16IS7XX
->         depends on SPI_MASTER
-> -       select SERIAL_SC16IS7XX_CORE if SERIAL_SC16IS7XX
-> -       select REGMAP_SPI if SPI_MASTER
-> +       select REGMAP_SPI
->         help
->           Enable SC16IS7xx driver on SPI bus.
-
-Hmm... What I was thinking about is more like dropping
- the SERIAL_SC16IS7XX and having I2C/SPI to select the core.
-
-See many examples under drivers/iio on how it's done.
-
-..
-
-> +EXPORT_SYMBOL_GPL(sc16is74x_devtype);
-
-Is it namespaced? Please make sure we are not polluting the global
-namespace with these.
-
-..
-
-> +#ifndef _SC16IS7XX_H_
-> +#define _SC16IS7XX_H_
+> -       tz->thermal_zone =3D thermal_zone_device_register_with_trips("acp=
+itz",
+> -                                                                  trip_t=
+able,
+> -                                                                  trip_c=
+ount,
+> -                                                                  tz,
+> -                                                                  &acpi_=
+thermal_zone_ops,
+> -                                                                  NULL,
+> -                                                                  passiv=
+e_delay,
+> -                                                                  tz->po=
+lling_frequency * 100);
+> +       if (trip_count) {
+> +               tz->thermal_zone =3D thermal_zone_device_register_with_tr=
+ips(
+> +                       "acpitz", trip_table, trip_count, tz,
+> +                       &acpi_thermal_zone_ops, NULL, passive_delay,
+> +                       tz->polling_frequency * 100);
+> +       } else {
+> +               tz->thermal_zone =3D thermal_tripless_zone_device_registe=
+r(
+> +                       "acpitz", tz, &acpi_thermal_zone_ops, NULL);
+> +       }
 > +
-> +#include <linux/device.h>
+>         if (IS_ERR(tz->thermal_zone))
+>                 return PTR_ERR(tz->thermal_zone);
+>
+> @@ -903,8 +905,6 @@ static int acpi_thermal_add(struct acpi_device *devic=
+e)
+>
+>         if (trip =3D=3D trip_table) {
+>                 pr_warn(FW_BUG "No valid trip points!\n");
+> -               result =3D -ENODEV;
+> -               goto free_memory;
+>         }
+>
+>         result =3D acpi_thermal_register_thermal_zone(tz, trip_table,
+>
+> base-commit: 4cece764965020c22cff7665b18a012006359095
+> --
 
-Not used (by this file).
+Applied as 6.9-rc material under a modified subject ("ACPI: thermal:
+Register thermal zones without valid trip points"), with some
+redundant braces removed and with some white space adjusted.
 
-> +#include <linux/mod_devicetable.h>
-
-> +#include <linux/regmap.h>
-
-> +#include <linux/serial_core.h>
-
-Not used.
-
-> +#include <linux/types.h>
-
-> +extern const struct of_device_id __maybe_unused sc16is7xx_dt_ids[];
-
-No __maybe_unused. Just have it always be added.
-
-> +const char *sc16is7xx_regmap_name(u8 port_id);
-> +
-> +unsigned int sc16is7xx_regmap_port_mask(unsigned int port_id);
-> +
-> +int sc16is7xx_probe(struct device *dev, const struct sc16is7xx_devtype *=
-devtype,
-> +                   struct regmap *regmaps[], int irq);
-
-> +void sc16is7xx_remove(struct device *dev);
-
-Will require forward declaration
-
-#include ...
-
-struct device;
-
-> +#endif /* _SC16IS7XX_H_ */
-
-..
-
-> +#include <linux/i2c.h>
-> +#include <linux/mod_devicetable.h>
-> +#include <linux/module.h>
-> +#include <linux/regmap.h>
-
-Follow the IWYU principle (include what you use).
-
-..
-
-> +               return dev_err_probe(&i2c->dev, -ENODEV, "Failed to match=
- device\n");
-
-+ dev_printk.h
-
-..
-
-> +static int __init sc16is7xx_i2c_init(void)
-> +{
-> +       return i2c_add_driver(&sc16is7xx_i2c_driver);
-> +}
-> +module_init(sc16is7xx_i2c_init);
-> +
-> +static void __exit sc16is7xx_i2c_exit(void)
-> +{
-> +       i2c_del_driver(&sc16is7xx_i2c_driver);
-> +}
-> +module_exit(sc16is7xx_i2c_exit);
-
-This is now module_i2c_driver().
-
-..
-
-> +MODULE_LICENSE("GPL");
-> +MODULE_DESCRIPTION("SC16IS7xx I2C interface driver");
-
-+ MODULE_IMPORT_NS()
-
-..
-
-> +++ b/drivers/tty/serial/sc16is7xx_spi.c
-
-Similar/same comments as per i2c counterpart.
-
---=20
-With Best Regards,
-Andy Shevchenko
+Please verify the result at
+https://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-pm.git/commit/=
+?h=3Dbleeding-edge&id=3D8a4ff5452dd0cdcc35940460bb777d836bece11c
 
