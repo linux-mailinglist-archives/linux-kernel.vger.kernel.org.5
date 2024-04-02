@@ -1,79 +1,51 @@
-Return-Path: <linux-kernel+bounces-128193-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-128191-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id DB6E3895762
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 16:49:14 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id C7C89895757
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 16:48:37 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 185B91C222C0
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 14:49:14 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EBB1D1C219A0
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 14:48:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B2110131748;
-	Tue,  2 Apr 2024 14:45:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=yeah.net header.i=@yeah.net header.b="I8eFhD78"
-Received: from mail-177131.yeah.net (mail-177131.yeah.net [123.58.177.131])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 757E712C544;
-	Tue,  2 Apr 2024 14:45:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=123.58.177.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AC26612BF27;
+	Tue,  2 Apr 2024 14:42:08 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B9F8B135A6D;
+	Tue,  2 Apr 2024 14:42:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712069103; cv=none; b=Qo8olfDyVa+tmGWj/zst9hOYCbq6t5Bxuoj8EdrHM6+xDk6C2LEIcgAVszyQfU9rrQ2/S3oWtBU1uDpc700EMoZaASMlPqfSVbOkO2leeXDTj27ltqqynRC8DZPVJZVuzENn21RlMXkr/UyybCOOoqfzmiwBjcX8/5KOUFiPfTg=
+	t=1712068928; cv=none; b=aAlWJvXc3+bLi0jg0mQz+mQHMxrfAlLsjvVLhSyJfVk9xxTy1oKCPSs/dpKuGewa4YTXqnwnN3K+r4t4vczPnKGyhrznGvHtGtAUYyc1xqvhhS0brnSaD5xojocbGbV1gP0hcKaX3LjYvQarLpNyBoNahfQg4j89PgIctc9G1Hc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712069103; c=relaxed/simple;
-	bh=UoAIQh6T2R5yd03vS3etflEo5KsJFR7Ir5HehSGj0qU=;
+	s=arc-20240116; t=1712068928; c=relaxed/simple;
+	bh=/AAqIDQjFV7gvCRqscag5yk5TdtfYJl3vulAQY42ikA=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=I0kOnoH9UXN6za2tjzjus/yr9ubGTrx+ZMTF6DCJrFNTmf90WEYKdNyl9FVD4R2KPHSzjVWn/ldGLWVULwiqltYEXPl1K79WFwBKKCXXFG7iHE7K1GCJKW0voZkRKOBxMz9sK9kVf9+rYzsL9n3YJXoIERnF9MVoUccWPHmXn3Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=yeah.net; spf=pass smtp.mailfrom=yeah.net; dkim=pass (1024-bit key) header.d=yeah.net header.i=@yeah.net header.b=I8eFhD78; arc=none smtp.client-ip=123.58.177.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=yeah.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=yeah.net
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yeah.net;
-	s=s110527; h=Date:From:Subject:Message-ID:MIME-Version:
-	Content-Type; bh=sNp+AZXGX0bUEOLXo2ZGNsWH+ua3wPGWHS+AYi2Sy94=;
-	b=I8eFhD78wX/KsGbMXjYCDiOI/4+iFV21AYAWatCGUUr9GlU1h2acMWQGuPSVc+
-	dx/49bGRy+cZNIPU8xEzxUJyuHI1B54xWKQtEVBWlgFH9jKZKfWhBJcVDnNc6yHq
-	oHplaASZd4k0BeDzmHPOoPw7UtMFu9iVBlqw2a1m1zi4I=
-Received: from dragon (unknown [223.68.79.243])
-	by smtp1 (Coremail) with SMTP id ClUQrADnr0IuGQxm_E+mAQ--.45967S3;
-	Tue, 02 Apr 2024 22:41:51 +0800 (CST)
-Date: Tue, 2 Apr 2024 22:41:50 +0800
-From: Shawn Guo <shawnguo2@yeah.net>
-To: Wadim Mueller <wafgo01@gmail.com>
-Cc: Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Ulf Hansson <ulf.hansson@linaro.org>,
-	Shawn Guo <shawnguo@kernel.org>,
-	Sascha Hauer <s.hauer@pengutronix.de>,
-	Pengutronix Kernel Team <kernel@pengutronix.de>,
-	Fabio Estevam <festevam@gmail.com>,
-	NXP Linux Team <linux-imx@nxp.com>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Jiri Slaby <jirislaby@kernel.org>,
-	Chester Lin <chester62515@gmail.com>,
-	Andreas =?iso-8859-1?Q?F=E4rber?= <afaerber@suse.de>,
-	Matthias Brugger <mbrugger@suse.com>,
-	NXP S32 Linux Team <s32@nxp.com>,
-	Tim Harvey <tharvey@gateworks.com>,
-	Marco Felsch <m.felsch@pengutronix.de>, Marek Vasut <marex@denx.de>,
-	Gregor Herburger <gregor.herburger@ew.tq-group.com>,
-	Hugo Villeneuve <hvilleneuve@dimonoff.com>,
-	Joao Paulo Goncalves <joao.goncalves@toradex.com>,
-	Markus Niebel <Markus.Niebel@ew.tq-group.com>,
-	Matthias Schiffer <matthias.schiffer@tq-group.com>,
-	Stefan Wahren <stefan.wahren@chargebyte.com>,
-	Bjorn Helgaas <bhelgaas@google.com>,
-	Philippe Schenker <philippe.schenker@toradex.com>,
-	Josua Mayer <josua@solid-run.com>, Li Yang <leoyang.li@nxp.com>,
-	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-mmc@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-	linux-serial@vger.kernel.org
-Subject: Re: [PATCH v4 4/4] arm64: dts: S32G3: Introduce device tree for
- S32G-VNP-RDB3
-Message-ID: <ZgwZLkpBf11rHNrG@dragon>
-References: <20240324214329.29988-1-wafgo01@gmail.com>
- <20240324214329.29988-5-wafgo01@gmail.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=uqhBm6ZKHdV2NVU/qf5CEesPLaRNseHU7izgn1iFGUZaO3rtAcwoZpE+auKec13W/3SeJEHkBFfsaBBitMUD/MY+m3nU/R4JnXeHVj07SK0LaENPwDZ4A5qetb7plXaRwNrpHpjAOrmUScEN71ktgLgcdNp6T9nsOrryV4bGCDQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 6268A1007;
+	Tue,  2 Apr 2024 07:42:36 -0700 (PDT)
+Received: from FVFF77S0Q05N (unknown [10.57.17.184])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id C08043F64C;
+	Tue,  2 Apr 2024 07:42:02 -0700 (PDT)
+Date: Tue, 2 Apr 2024 15:41:51 +0100
+From: Mark Rutland <mark.rutland@arm.com>
+To: Dawei Li <dawei.li@shingroup.cn>
+Cc: will@kernel.org, xueshuai@linux.alibaba.com, renyu.zj@linux.alibaba.com,
+	yangyicong@hisilicon.com, jonathan.cameron@huawei.com,
+	andersson@kernel.org, konrad.dybcio@linaro.org,
+	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+	linux-arm-msm@vger.kernel.org
+Subject: Re: [PATCH 0/9] perf: Avoid explicit cpumask var allocation from
+ stack
+Message-ID: <ZgwZL679Tc1S3AxH@FVFF77S0Q05N>
+References: <20240402105610.1695644-1-dawei.li@shingroup.cn>
+ <ZgvoMunpbaE-x3jV@FVFF77S0Q05N>
+ <190FE91C35AB9AE8+ZgwKuORh3VzTkfeJ@centos8>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -82,67 +54,220 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240324214329.29988-5-wafgo01@gmail.com>
-X-CM-TRANSID:ClUQrADnr0IuGQxm_E+mAQ--.45967S3
-X-Coremail-Antispam: 1Uf129KBjvJXoW7Cw1xGry8Zw1DCFWfuryUWrg_yoW5Jr1fpa
-	yrCrZ3GrZ7Gr17Zayaga1kWFyqvws5JFWYkry5ury8tr45Zr9Yqr10krsIgr47Xrn5Aayr
-	CF1F9ryxu3WYy3DanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07j34SrUUUUU=
-X-CM-SenderInfo: pvkd40hjxrjqh1hdxhhqhw/1tbiFRC0ZV6NnBoE+QAAs8
+In-Reply-To: <190FE91C35AB9AE8+ZgwKuORh3VzTkfeJ@centos8>
 
-On Sun, Mar 24, 2024 at 10:43:26PM +0100, Wadim Mueller wrote:
-> This commit adds device tree support for the NXP S32G3-based
-> S32G-VNP-RDB3 Board [1].
+On Tue, Apr 02, 2024 at 09:40:08PM +0800, Dawei Li wrote:
+> Hi Mark,
 > 
-> The S32G3 features an 8-core ARM Cortex-A53 based SoC developed by NXP.
+> Thanks for the quick review.
 > 
-> The device tree files are derived from the official NXP downstream
-> Linux tree [2].
+> On Tue, Apr 02, 2024 at 12:12:50PM +0100, Mark Rutland wrote:
+> > On Tue, Apr 02, 2024 at 06:56:01PM +0800, Dawei Li wrote:
+> > > Hi,
+> > > 
+> > > This series try to eliminate direct cpumask var allocation from stack
+> > > for perf subsystem.
+> > > 
+> > > Direct/explicit allocation of cpumask on stack could be dangerous since
+> > > it can lead to stack overflow for systems with big NR_CPUS or
+> > > CONFIG_CPUMASK_OFFSTACK=y.
+> > > 
+> > > For arm64, it's more urgent since commit 3fbd56f0e7c1 ("ARM64: Dynamically
+> > > allocate cpumasks and increase supported CPUs to 512").
+> > > 
+> > > It's sort of a pattern that almost every cpumask var in perf subystem
+> > > occurs in teardown callback of cpuhp. In which case, if dynamic
+> > > allocation failed(which is unlikely), we choose return 0 rather than
+> > > -ENOMEM to caller cuz:
+> > > @teardown is not supposed to fail and if it does, system crashes:
+> > 
+> > .. but we've left the system in an incorrect state, so that makes no sense.
+> > 
+> > As I commented on the first patch, NAK to dynamically allocating cpumasks in
+> > the CPUHP callbacks. Please allocate the necessry cpumasks up-front when we
+> > probe the PMU. At that time we can handle an allocation failure by cleaning up
+> > and failing to probe the PMU, and then the CPUHP callbacks don't need to
+> > allocate memory to offline a CPU...
 > 
-> This addition encompasses a limited selection of peripherals that
-> are upstream-supported. Apart from the ARM System Modules
-> (GIC, Generic Timer, etc.), the following IPs have been validated:
+> Agreed that dynamically allocation in callbacks lead to inconsistency
+> to system.
 > 
->     * UART: fsl-linflexuart
->     * SDHC: fsl-imx-esdhc
+> My (original)alternative plan is simple but ugly, just make cpumask var
+> _static_ and add extra static lock to protect it.
 > 
-> Clock settings for the chip rely on ATF Firmware [3].
-> Pin control integration into the device tree is pending and currently
-> relies on Firmware/U-Boot settings [4].
-> 
-> These changes were validated using BSP39 Firmware/U-Boot from NXP [5].
-> 
-> The modifications enable booting the official Ubuntu 22.04 from NXP on
-> the RDB3 with default settings from the SD card and eMMC.
-> 
-> [1] https://www.nxp.com/design/design-center/designs/s32g3-vehicle-networking-reference-design:S32G-VNP-RDB3
-> [2] https://github.com/nxp-auto-linux/linux
-> [3] https://github.com/nxp-auto-linux/arm-trusted-firmware
-> [4] https://github.com/nxp-auto-linux/u-boot
-> [5] https://github.com/nxp-auto-linux/auto_yocto_bsp
-> 
-> Signed-off-by: Wadim Mueller <wafgo01@gmail.com>
-> ---
->  arch/arm64/boot/dts/freescale/Makefile        |   1 +
->  arch/arm64/boot/dts/freescale/s32g3.dtsi      | 233 ++++++++++++++++++
->  .../boot/dts/freescale/s32g399a-rdb3.dts      |  45 ++++
->  3 files changed, 279 insertions(+)
->  create mode 100644 arch/arm64/boot/dts/freescale/s32g3.dtsi
->  create mode 100644 arch/arm64/boot/dts/freescale/s32g399a-rdb3.dts
-> 
-> diff --git a/arch/arm64/boot/dts/freescale/Makefile b/arch/arm64/boot/dts/freescale/Makefile
-> index 2cb0212b63c6..e701008dbc7b 100644
-> --- a/arch/arm64/boot/dts/freescale/Makefile
-> +++ b/arch/arm64/boot/dts/freescale/Makefile
-> @@ -252,3 +252,4 @@ dtb-$(CONFIG_ARCH_MXC) += imx8mp-venice-gw74xx-rpidsi.dtb
->  dtb-$(CONFIG_ARCH_S32) += s32g274a-evb.dtb
->  dtb-$(CONFIG_ARCH_S32) += s32g274a-rdb2.dtb
->  dtb-$(CONFIG_ARCH_S32) += s32v234-evb.dtb
-> +dtb-$(CONFIG_ARCH_S32) += s32g399a-rdb3.dtb
+> The only difference between solution above and your proposal is static/
+> dynamic alloction. CPUHP's teardown cb is supposed to run in targetted
+> cpuhp thread for most cases, and it's racy. Even the cpumask var is
+> wrapped in dynamically allocated struct xxx_pmu, it's still shareable
+> between different threads/contexts and needs proper protection.
 
-The list is alphabetically sorted, so it should be added before
-s32v234-evb.dtb.  I fixed it up and applied the patch.
+I was under the impression that the cpuhp callbacks were *strictly* serialised.
+If that's not the case, the existing offlining callbacks are horrendously
+broken.
 
-Shawn
+Are you *certain* these can race?
 
+Regardless, adding additional locking here is not ok.
+
+> Simple as this(_untested_):
+> 
+> diff --git a/drivers/perf/arm-cmn.c b/drivers/perf/arm-cmn.c
+> index 7ef9c7e4836b..fa89c3db4d7d 100644
+> --- a/drivers/perf/arm-cmn.c
+> +++ b/drivers/perf/arm-cmn.c
+> @@ -1950,18 +1950,24 @@ static int arm_cmn_pmu_offline_cpu(unsigned int cpu, struct hlist_node *cpuhp_no
+>         struct arm_cmn *cmn;
+>         unsigned int target;
+>         int node;
+> -       cpumask_t mask;
+> +       static cpumask_t mask;
+> +       static DEFINE_SPINLOCK(cpumask_lock);
+> 
+>         cmn = hlist_entry_safe(cpuhp_node, struct arm_cmn, cpuhp_node);
+>         if (cpu != cmn->cpu)
+>                 return 0;
+> 
+> +       spin_lock(&cpumask_lock);
+> +
+>         node = dev_to_node(cmn->dev);
+>         if (cpumask_and(&mask, cpumask_of_node(node), cpu_online_mask) &&
+>             cpumask_andnot(&mask, &mask, cpumask_of(cpu)))
+>                 target = cpumask_any(&mask);
+>         else
+>                 target = cpumask_any_but(cpu_online_mask, cpu);
+> +
+> +       spin_unlock(&cpumask_lock);
+> +
+>         if (target < nr_cpu_ids)
+>                 arm_cmn_migrate(cmn, target);
+>         return 0;
+
+Looking at this case, the only reason we need the mask is because it made the
+logic a little easier to write. All we really want is to choose some CPU in the
+intersection of two masks ignoring a specific CPU, and there was no helper
+function to do that.
+
+We can add a new helper to do that for us, which would avoid redundant work to
+manipulate the entire mask, and it would make the existing code simpler.  I had
+a series a few years back to add cpumask_any_and_but():
+
+  https://lore.kernel.org/lkml/1486381132-5610-1-git-send-email-mark.rutland@arm.com/
+
+.. and that's easy to use here, e.g.
+
+| diff --git a/drivers/perf/arm-cmn.c b/drivers/perf/arm-cmn.c
+| index 7ef9c7e4836b7..c6bbd387ccf8b 100644
+| --- a/drivers/perf/arm-cmn.c
+| +++ b/drivers/perf/arm-cmn.c
+| @@ -1950,17 +1950,15 @@ static int arm_cmn_pmu_offline_cpu(unsigned int cpu, struct hlist_node *cpuhp_no
+|         struct arm_cmn *cmn;
+|         unsigned int target;
+|         int node;
+| -       cpumask_t mask;
+|  
+|         cmn = hlist_entry_safe(cpuhp_node, struct arm_cmn, cpuhp_node);
+|         if (cpu != cmn->cpu)
+|                 return 0;
+|  
+|         node = dev_to_node(cmn->dev);
+| -       if (cpumask_and(&mask, cpumask_of_node(node), cpu_online_mask) &&
+| -           cpumask_andnot(&mask, &mask, cpumask_of(cpu)))
+| -               target = cpumask_any(&mask);
+| -       else
+| +       target = cpumask_any_and_but(cpu_online_mask, cpumask_of_node(node),
+| +                                    cpu);
+| +       if (target >= nr_cpu_ids)
+|                 target = cpumask_any_but(cpu_online_mask, cpu);
+|         if (target < nr_cpu_ids)
+|                 arm_cmn_migrate(cmn, target);
+
+It doesn't trivially rebase since the cpumask code has changed a fair amount,
+but I've managed to do that locally, and I can send that out as a
+seven-years-late v2 if it's useful.
+
+From a quick scan, it looks like that'd handle all cases in this series. Are
+there any patterns in this series for which that would not be sufficient?
+
+Mark.
+
+> 
+> And yes, static allocation is evil :) 
+> 
+> 
+> Thanks,
+> 
+>     Dawei
+> 
+> > 
+> > Also, for the titles it'd be better to say something like "avoid placing
+> > cpumasks on the stack", because "explicit cpumask var allocation" sounds like
+> > the use of alloc_cpumask_var().
+> 
+> Sound great! I will update it.
+> 
+> > 
+> > Mark.
+> > 
+> > > 
+> > > static int cpuhp_issue_call(int cpu, enum cpuhp_state state, bool bringup,
+> > >                             struct hlist_node *node)
+> > > {
+> > >         struct cpuhp_step *sp = cpuhp_get_step(state);
+> > >         int ret;
+> > > 
+> > >         /*
+> > >          * If there's nothing to do, we done.
+> > >          * Relies on the union for multi_instance.
+> > >          */
+> > >         if (cpuhp_step_empty(bringup, sp))
+> > >                 return 0;
+> > >         /*
+> > >          * The non AP bound callbacks can fail on bringup. On teardown
+> > >          * e.g. module removal we crash for now.
+> > >          */
+> > > 	#ifdef CONFIG_SMP
+> > >         if (cpuhp_is_ap_state(state))
+> > >                 ret = cpuhp_invoke_ap_callback(cpu, state, bringup, node);
+> > >         else
+> > >                 ret = cpuhp_invoke_callback(cpu, state, bringup, node,
+> > > 		NULL);
+> > > 	#else
+> > >         ret = cpuhp_invoke_callback(cpu, state, bringup, node, NULL);
+> > > 	#endif
+> > >         BUG_ON(ret && !bringup);
+> > >         return ret;
+> > > }
+> > > 
+> > > Dawei Li (9):
+> > >   perf/alibaba_uncore_drw: Avoid explicit cpumask var allocation from
+> > >     stack
+> > >   perf/arm-cmn: Avoid explicit cpumask var allocation from stack
+> > >   perf/arm_cspmu: Avoid explicit cpumask var allocation from stack
+> > >   perf/arm_dsu: Avoid explicit cpumask var allocation from stack
+> > >   perf/dwc_pcie: Avoid explicit cpumask var allocation from stack
+> > >   perf/hisi_pcie: Avoid explicit cpumask var allocation from stack
+> > >   perf/hisi_uncore: Avoid explicit cpumask var allocation from stack
+> > >   perf/qcom_l2: Avoid explicit cpumask var allocation from stack
+> > >   perf/thunder_x2: Avoid explicit cpumask var allocation from stack
+> > > 
+> > >  drivers/perf/alibaba_uncore_drw_pmu.c    | 13 +++++++++----
+> > >  drivers/perf/arm-cmn.c                   | 13 +++++++++----
+> > >  drivers/perf/arm_cspmu/arm_cspmu.c       | 13 +++++++++----
+> > >  drivers/perf/arm_dsu_pmu.c               | 18 +++++++++++++-----
+> > >  drivers/perf/dwc_pcie_pmu.c              | 17 +++++++++++------
+> > >  drivers/perf/hisilicon/hisi_pcie_pmu.c   | 15 ++++++++++-----
+> > >  drivers/perf/hisilicon/hisi_uncore_pmu.c | 13 +++++++++----
+> > >  drivers/perf/qcom_l2_pmu.c               | 15 ++++++++++-----
+> > >  drivers/perf/thunderx2_pmu.c             | 20 ++++++++++++--------
+> > >  9 files changed, 92 insertions(+), 45 deletions(-)
+> > > 
+> > > 
+> > > Thanks,
+> > > 
+> > >     Dawei
+> > > 
+> > > -- 
+> > > 2.27.0
+> > > 
+> > 
 
