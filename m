@@ -1,58 +1,56 @@
-Return-Path: <linux-kernel+bounces-128296-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-128298-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7D6F58958FA
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 17:56:45 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id E53C6895900
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 17:59:07 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 37F9128DA45
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 15:56:44 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 223441C22B20
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 15:59:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 05001133401;
-	Tue,  2 Apr 2024 15:56:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=wantyapps.xyz header.i=@wantyapps.xyz header.b="QfVU6kTu"
-Received: from mail.wantyapps.xyz (mail.wantyapps.xyz [66.135.5.160])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1EF001E480;
-	Tue,  2 Apr 2024 15:56:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=66.135.5.160
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E5884133439;
+	Tue,  2 Apr 2024 15:58:52 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5E9E6131751;
+	Tue,  2 Apr 2024 15:58:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712073396; cv=none; b=Na3wTjCURBdRKJygXb0+J01/YjbmlZ2AnuvMRXk/3ZnBTuMyioyxtheB/g0oK54z4YtVG6xseCbpzy5t8A8Y+14+ZHcIwZeCyQ5gTZ6dbziHa/kcwNAykzuqTnjduZQ/gQ7QCwTfL3NCfgSbB08AGV89RK/wCZSkr4fplHtS0Ws=
+	t=1712073532; cv=none; b=iD4bKMCSdWt3olfoeI3uE3NjSeZ5Ij7DZBcq6oxwWCTKr5NwR1Lvw4X3dba0zlyztYGT2fHzUisqMWRs/99Drpp9QwIqNUiIZ9XAnD7x+P40lzF3pXQDMzdXh+6RNaBXCPsE1EQeQ9DE+aWJtEu8YbzOSp8hk+TjoaltJjkNT0Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712073396; c=relaxed/simple;
-	bh=3uUdxpNMJCSv/whZqF+Y9KRjEax86QarR254jAZl9Yk=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=n0sk6NRkc54MQXVJag8yyyWNzoNZ7MXdEHUr6txJEVMIgDJ7qqxpfbCsrFrvlLaAgdE56s5i611aFkdUtdDG2zlnvHTP4+5Fa8h/F8ngxwP6VigA57cd8ozUop+3Z3i2UaC9fxYz8lZZlzui+wZCCi4c9fcR+nJWf37wb6PP8nk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=wantyapps.xyz; spf=pass smtp.mailfrom=wantyapps.xyz; dkim=pass (2048-bit key) header.d=wantyapps.xyz header.i=@wantyapps.xyz header.b=QfVU6kTu; arc=none smtp.client-ip=66.135.5.160
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=wantyapps.xyz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=wantyapps.xyz
-Received: from multivac.localdomain (unknown [147.235.205.62])
-	by mail.wantyapps.xyz (Postfix) with ESMTPSA id 511EE93B8D;
-	Tue,  2 Apr 2024 15:56:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=wantyapps.xyz;
-	s=mail; t=1712073388;
-	bh=3uUdxpNMJCSv/whZqF+Y9KRjEax86QarR254jAZl9Yk=;
-	h=From:To:Cc:Subject:Date:From;
-	b=QfVU6kTuNxAmCn40yRCWmwiXs5oahcAAdwl6+mD5HGXHiPqbuuMc5Qi30vucXyPnB
-	 RzxEreWWA2qmbt15BSjFox8EV6Y4Qh2KX1t1Cz1bg0o2/P21j1MsTcCPj+fewPLjhO
-	 Oizd914Iem9wFMdpDgZZjL1xCUeKbD+GHMA3mmuRWEiATrm297T6nV1wyyTRoteUPV
-	 Nb/nMWqV4h7Rc5Ug5VpK1HTCCUdyk2x2D/bzJWNzrScR4zG32r8zlTuXmssdwL6Qrl
-	 YdjPkZVy7QYUc2cVcyUKFbZK34jj21aDnPOcn5mQLTyLplNi3qtSZco6dmWDh8xwOv
-	 jU6X5vSSrGCdg==
-From: me@wantyapps.xyz
-To: 
-Cc: me@wantyapps.xyz,
-	Marcel Holtmann <marcel@holtmann.org>,
-	Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
-	linux-bluetooth@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH] Bluetooth: hci_intel: Fix multiple issues reported by checkpatch.pl
-Date: Tue,  2 Apr 2024 18:55:38 +0300
-Message-ID: <20240402155543.36856-1-me@wantyapps.xyz>
-X-Mailer: git-send-email 2.44.0
+	s=arc-20240116; t=1712073532; c=relaxed/simple;
+	bh=8lpID7tMtIEmyGjb2Y3jIWs4aR03dvcFiUx/N9ij9Hw=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=h8lt4O8OQk7aZwOfOwhz5B5ayx3k0lzKZHpAnk6BBE/zMCseissKzMkuFC6a7V4wQZWICPffFX8TpiUykQVUz7rMKlmI+tPmDuLaRW3q3SQyjg5ktcX3jPz+7KE2sVt0w1wYspf4Xr8q10XLR7654YKy6QeoJKTnOukoPsNqK3A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id DBD791042;
+	Tue,  2 Apr 2024 08:59:20 -0700 (PDT)
+Received: from e129166.arm.com (unknown [10.57.72.194])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 1DE993F64C;
+	Tue,  2 Apr 2024 08:58:42 -0700 (PDT)
+From: Lukasz Luba <lukasz.luba@arm.com>
+To: linux-kernel@vger.kernel.org,
+	linux-pm@vger.kernel.org,
+	rafael@kernel.org
+Cc: lukasz.luba@arm.com,
+	dietmar.eggemann@arm.com,
+	linux-arm-kernel@lists.infradead.org,
+	sboyd@kernel.org,
+	nm@ti.com,
+	linux-samsung-soc@vger.kernel.org,
+	daniel.lezcano@linaro.org,
+	viresh.kumar@linaro.org,
+	krzysztof.kozlowski@linaro.org,
+	alim.akhtar@samsung.com,
+	m.szyprowski@samsung.com,
+	mhiramat@kernel.org
+Subject: [PATCH v4 0/4] Update Energy Model after chip binning adjusted voltages
+Date: Tue,  2 Apr 2024 16:58:18 +0100
+Message-Id: <20240402155822.505491-1-lukasz.luba@arm.com>
+X-Mailer: git-send-email 2.25.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -61,110 +59,60 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-From: Uri Arev <me@wantyapps.xyz>
+Hi all,
 
-This fixes the following CHECKs, WARNINGs, and ERRORs reported in
-hci_intel.c
+This is a follow-up patch aiming to add EM modification due to chip binning.
+The first RFC and the discussion can be found here [1].
 
-Reported by checkpatch.pl:
------------
-hci_intel.c
------------
-WARNING: Prefer using '"%s...", __func__' to using 'intel_setup', this function's name, in a string
-+	bt_dev_dbg(hdev, "start intel_setup");
+It uses Exynos chip driver code as a 1st user. The EM framework has been
+extended to handle this use case easily, when the voltage has been changed
+after setup. On my Odroid-xu4 in some OPPs I can observe ~20% power difference.
+According to that data in driver tables it could be up to ~29%.
 
-ERROR: code indent should use tabs where possible
-+        /* Check for supported iBT hardware variants of this firmware$
+This chip binning is applicable to a lot of SoCs, so the EM framework should
+make it easy to update. It uses the existing OPP and DT information to
+re-calculate the new power values.
 
-ERROR: code indent should use tabs where possible
-+         * loading method.$
+It has dependency on Exynos SoC driver tree.
 
-ERROR: code indent should use tabs where possible
-+         *$
+Changes:
+v4:
+- added asterisk in the comment section (test robot)
+- change the patch 2/4 header name and use 'Refactor'
+v3:
+- updated header description patch 2/4 (Dietmar)
+- removed 2 sentences from comment and adjusted in patch 3/4 (Dietmar)
+- patch 4/4 re-phrased code comment (Dietmar)
+- collected tags (Krzysztof, Viresh)
+v2:
+- removed 'ret' from error message which wasn't initialized (Christian)
+v1:
+- exported the OPP calculation function from the OPP/OF so it can be
+  used from EM fwk (Viresh)
+- refactored EM updating function to re-use common code
+- added new EM function which can be used by chip device drivers which
+  modify the voltage in OPPs
+RFC is at [1]
 
-ERROR: code indent should use tabs where possible
-+         * This check has been put in place to ensure correct forward$
+Regards,
+Lukasz Luba
 
-ERROR: code indent should use tabs where possible
-+         * compatibility options when newer hardware variants come along.$
+[1] https://lore.kernel.org/lkml/20231220110339.1065505-1-lukasz.luba@arm.com/
 
-ERROR: code indent should use tabs where possible
-+         */$
+Lukasz Luba (4):
+  OPP: OF: Export dev_opp_pm_calc_power() for usage from EM
+  PM: EM: Refactor em_adjust_new_capacity()
+  PM: EM: Add em_dev_update_chip_binning()
+  soc: samsung: exynos-asv: Update Energy Model after adjusting voltage
 
-CHECK: No space is necessary after a cast
-+	duration = (unsigned long long) ktime_to_ns(delta) >> 10;
+ drivers/opp/of.c                 |  17 +++--
+ drivers/soc/samsung/exynos-asv.c |  11 +++-
+ include/linux/energy_model.h     |   5 ++
+ include/linux/pm_opp.h           |   8 +++
+ kernel/power/energy_model.c      | 106 +++++++++++++++++++++++++------
+ 5 files changed, 122 insertions(+), 25 deletions(-)
 
-CHECK: No space is necessary after a cast
-+	duration = (unsigned long long) ktime_to_ns(delta) >> 10;
-
-WARNING: Missing a blank line after declarations
-+		int err = PTR_ERR(intel->rx_skb);
-+		bt_dev_err(hu->hdev, "Frame reassembly failed (%d)", err);
-
-Signed-off-by: Uri Arev <me@wantyapps.xyz>
----
- drivers/bluetooth/hci_intel.c | 19 ++++++++++---------
- 1 file changed, 10 insertions(+), 9 deletions(-)
-
-diff --git a/drivers/bluetooth/hci_intel.c b/drivers/bluetooth/hci_intel.c
-index 78afb9a348e7..44731de1a2d6 100644
---- a/drivers/bluetooth/hci_intel.c
-+++ b/drivers/bluetooth/hci_intel.c
-@@ -537,7 +537,7 @@ static int intel_setup(struct hci_uart *hu)
- 	int speed_change = 0;
- 	int err;
- 
--	bt_dev_dbg(hdev, "start intel_setup");
-+	bt_dev_dbg(hdev, "start %s", __func__);
- 
- 	hu->hdev->set_diag = btintel_set_diag;
- 	hu->hdev->set_bdaddr = btintel_set_bdaddr;
-@@ -591,12 +591,12 @@ static int intel_setup(struct hci_uart *hu)
- 		return -EINVAL;
- 	}
- 
--        /* Check for supported iBT hardware variants of this firmware
--         * loading method.
--         *
--         * This check has been put in place to ensure correct forward
--         * compatibility options when newer hardware variants come along.
--         */
-+	/* Check for supported iBT hardware variants of this firmware
-+	 * loading method.
-+	 *
-+	 * This check has been put in place to ensure correct forward
-+	 * compatibility options when newer hardware variants come along.
-+	 */
- 	switch (ver.hw_variant) {
- 	case 0x0b:	/* LnP */
- 	case 0x0c:	/* WsP */
-@@ -777,7 +777,7 @@ static int intel_setup(struct hci_uart *hu)
- 
- 	rettime = ktime_get();
- 	delta = ktime_sub(rettime, calltime);
--	duration = (unsigned long long) ktime_to_ns(delta) >> 10;
-+	duration = (unsigned long long)ktime_to_ns(delta) >> 10;
- 
- 	bt_dev_info(hdev, "Firmware loaded in %llu usecs", duration);
- 
-@@ -822,7 +822,7 @@ static int intel_setup(struct hci_uart *hu)
- 
- 	rettime = ktime_get();
- 	delta = ktime_sub(rettime, calltime);
--	duration = (unsigned long long) ktime_to_ns(delta) >> 10;
-+	duration = (unsigned long long)ktime_to_ns(delta) >> 10;
- 
- 	bt_dev_info(hdev, "Device booted in %llu usecs", duration);
- 
-@@ -977,6 +977,7 @@ static int intel_recv(struct hci_uart *hu, const void *data, int count)
- 				    ARRAY_SIZE(intel_recv_pkts));
- 	if (IS_ERR(intel->rx_skb)) {
- 		int err = PTR_ERR(intel->rx_skb);
-+
- 		bt_dev_err(hu->hdev, "Frame reassembly failed (%d)", err);
- 		intel->rx_skb = NULL;
- 		return err;
 -- 
-2.44.0
+2.25.1
 
 
