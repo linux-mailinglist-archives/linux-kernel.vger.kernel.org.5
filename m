@@ -1,137 +1,110 @@
-Return-Path: <linux-kernel+bounces-127885-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-127886-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 670C1895240
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 13:58:55 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 60357895241
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 13:59:02 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 06EC81F245B4
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 11:58:55 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 923FB1C21EEA
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 11:59:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B8ACB69D2F;
-	Tue,  2 Apr 2024 11:58:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 05761757FC;
+	Tue,  2 Apr 2024 11:58:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="r7I6yrQd"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="LiQw91jq"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EC72D5A4C7;
-	Tue,  2 Apr 2024 11:58:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3F9B46A8A8
+	for <linux-kernel@vger.kernel.org>; Tue,  2 Apr 2024 11:58:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712059127; cv=none; b=m4mMh/alJCIg1xdYS46MAuhJn9mWRW53oRFaLjtRno3m5WUUwmUm5XIxrTttTcCrsWC6FBr4pW8pKBdSlFRVry/gAifpH5E148K3yV16FuEk9mQAijYFkaPfnqFpZUAvbgInsoGlWsaXUNvnRP+MLRSgTByKDlTdqa0zYM9KYM4=
+	t=1712059128; cv=none; b=ErGN9U8/0l5LazrDwWHUkNIuCgeMKDMEPvWDqUK7m8JI9hPGgilvb9O38qSUBXwL/1lErUtZPL+L+2W5ZBse9Si4V7zlMi6oiWMBGmkUGYPqMO+mn77/KfuD/0c7yFSTRieGlcEL0/qBmwaXREh1ipY59riHHNKb9tBVSW80Lxk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712059127; c=relaxed/simple;
-	bh=DY/Q/EiQtNhm8+8sgNFGHo2U1UZo69cenu2M0qwUy4E=;
-	h=Mime-Version:Content-Type:Date:Message-Id:From:To:Cc:Subject:
-	 References:In-Reply-To; b=pQPx19Av3CyhEmcOZF216O4ZGA3rq9DVCqBU06QaSbJBtYtKcqYQz4PDcuTcpWbuEJtJCZjpWDf39y41OWV8bb9yWoxkqoh8qYdqrxarOWNeYrAOZcPwcE/vV2c/gkwuZyEwIKqT5pj9yOmlttE89wqnA8Tyg1lLDzbbNa5IgzU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=r7I6yrQd; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8790FC433C7;
-	Tue,  2 Apr 2024 11:58:42 +0000 (UTC)
+	s=arc-20240116; t=1712059128; c=relaxed/simple;
+	bh=Hw2vaUWp3gpk6uvfspN8upqqDYFfDn7KHW0rB6j9DgY=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=gLtRTnvqI+J3p83sMjAx3cwaKec+Z1KBq4Kjb32WIkyx6H7AtJG5qXDJhn5FF4h73VUOxnipjQ6WbP+s6TyfvdMKMJZbfPQTC72/4ftuP41BThdBo0CVq5PUcuDjML1/R6yaK7++UlpGBgjQx3JazXns9XgzNyalvLNo2VFyoME=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=LiQw91jq; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8532EC433F1;
+	Tue,  2 Apr 2024 11:58:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712059126;
-	bh=DY/Q/EiQtNhm8+8sgNFGHo2U1UZo69cenu2M0qwUy4E=;
+	s=k20201202; t=1712059127;
+	bh=Hw2vaUWp3gpk6uvfspN8upqqDYFfDn7KHW0rB6j9DgY=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=r7I6yrQdxowtdndTnB+j9jV3eTIiBbOcXzK1nyoOfp2DdZQoDCAcwG4h72t+6kCib
-	 OrdXSrcFLDAvQ9ipGp3a+/NYka+UxZvk5CLssrqTYYvuxJ6UqKsJzfeu3ftp4HykC7
-	 SdCxFdLw03TYZ42N1NvWc7bsNbCouE+patdQDdKJpVVN+pqFMq77IlXr/5Ru+pFefc
-	 U3oVIEv3TzGlRFGcFGh/h5MKOCgqecTjln4Fv3Cqd4ue37u2wVm5jaCoSz05Tho/H1
-	 LeT8g7v/JI3DNByUqaw5NMrzv2kMtAs2+44UgtlfD2K98MsDT96ofwWLU7yl/rNBiA
-	 oCX2q8VHpTLLQ==
+	b=LiQw91jqMXzj+GnAus9ZnNmyXuwlBxk79xApuMWpOro87vP8LfnM8Z3F8HZblWQP1
+	 LXco6b2zuavEqtVQyHH5dwiuLIAMHzaYV+qDceHd+uzStg+zRXSln1l1bDW00owuGh
+	 3h5QRf4bF+Or77b7X8UhC5rdcNYw9+rA7M96Ckn0DuUuLwS8XgaNetyb9NDFqq5ws8
+	 6UtbFp6xTNEFLzTCtgkThDbayqqVXzQM3WO90fO0jx6bnqGP/GMZEtWwtzIUSq5xSh
+	 b7Fp51XBVPAm7YX7OJM3Qnv9vpE5vDNCDNh3+rmJ3DTpqp6DDxlyoLtIHIgjEWcb4X
+	 NOMBOfvJwxQ5Q==
+Date: Tue, 2 Apr 2024 12:58:41 +0100
+From: Will Deacon <will@kernel.org>
+To: Seongsu Park <sgsu.park@samsung.com>
+Cc: catalin.marinas@arm.com, ardb@kernel.org, mark.rutland@arm.com,
+	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+	Leem ChaeHoon <infinite.run@gmail.com>,
+	Gyeonggeon Choi <gychoi@student.42seoul.kr>,
+	Soomin Cho <to.soomin@gmail.com>, DaeRo Lee <skseofh@gmail.com>,
+	kmasta <kmasta.study@gmail.com>
+Subject: Re: [PATCH] arm64: Fix double TCR_T0SZ_OFFSET shift
+Message-ID: <20240402115841.GA16533@willie-the-truck>
+References: <CGME20240402104955epcas1p3dd15334a1305b99f3e1b82000e3c7c42@epcas1p3.samsung.com>
+ <20240402104950.170632-1-sgsu.park@samsung.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset=UTF-8
-Date: Tue, 02 Apr 2024 14:58:40 +0300
-Message-Id: <D09MB26IPFFW.3UBD7M0S17SG6@kernel.org>
-From: "Jarkko Sakkinen" <jarkko@kernel.org>
-To: =?utf-8?q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>
-Cc: "Haitao Huang" <haitao.huang@linux.intel.com>,
- <dave.hansen@linux.intel.com>, <tj@kernel.org>,
- <linux-kernel@vger.kernel.org>, <linux-sgx@vger.kernel.org>,
- <x86@kernel.org>, <cgroups@vger.kernel.org>, <tglx@linutronix.de>,
- <mingo@redhat.com>, <bp@alien8.de>, <hpa@zytor.com>,
- <sohil.mehta@intel.com>, <tim.c.chen@linux.intel.com>,
- <zhiquan1.li@intel.com>, <kristen@linux.intel.com>, <seanjc@google.com>,
- <zhanb@microsoft.com>, <anakrish@microsoft.com>,
- <mikko.ylinen@linux.intel.com>, <yangjie@microsoft.com>,
- <chrisyan@microsoft.com>
-Subject: Re: [PATCH v9 15/15] selftests/sgx: Add scripts for EPC cgroup
- testing
-X-Mailer: aerc 0.17.0
-References: <20240205210638.157741-1-haitao.huang@linux.intel.com>
- <20240205210638.157741-16-haitao.huang@linux.intel.com>
- <4be7b291010973c203ed8c7bcd25b626c1290231.camel@kernel.org>
- <D04OVW6I8MUA.1OAIHFQ8943SM@kernel.org>
- <op.2lbjl0oawjvjmi@hhuan26-mobl.amr.corp.intel.com>
- <D071OAFZ80O6.XEDXJ8AF4PK9@kernel.org>
- <D071QIHLW7MP.UM9R3VYETIOK@kernel.org>
- <htiz5jgsby5v262saphhomcsxtixb2u7ot6jcghpfhvgz65ht6@qlz3gpdwapaa>
-In-Reply-To: <htiz5jgsby5v262saphhomcsxtixb2u7ot6jcghpfhvgz65ht6@qlz3gpdwapaa>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240402104950.170632-1-sgsu.park@samsung.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 
-On Tue Apr 2, 2024 at 2:23 PM EEST, Michal Koutn=C3=BD wrote:
-> Hello.
->
-> On Sat, Mar 30, 2024 at 01:26:08PM +0200, Jarkko Sakkinen <jarkko@kernel.=
-org> wrote:
-> > > > It'd be more complicated and less readable to do all the stuff with=
-out the =20
-> > > > cgroup-tools, esp cgexec. I checked dependency, cgroup-tools only d=
-epends =20
-> > > > on libc so I hope this would not cause too much inconvenience.
-> > >
-> > > As per cgroup-tools, please prove this. It makes the job for more
-> > > complicated *for you* and you are making the job more  complicated
-> > > to every possible person in the planet running any kernel QA.
-> > >
-> > > I weight the latter more than the former. And it is exactly the
-> > > reason why we did custom user space kselftest in the first place.
-> > > Let's keep the tradition. All I can say is that kselftest is=20
-> > > unfinished in its current form.
-> > >
-> > > What is "esp cgexec"?
-> >=20
-> > Also in kselftest we don't drive ultimate simplicity, we drive
-> > efficient CI/QA. By open coding something like subset of
-> > cgroup-tools needed to run the test you also help us later
-> > on to backtrack the kernel changes. With cgroups-tools you
-> > would have to use strace to get the same info.
->
-> FWIW, see also functions in
-> tools/testing/selftests/cgroup/cgroup_util.{h,c}.
-> They likely cover what you need already -- if the tests are in C.
->
-> (I admit that stuff in tools/testing/selftests/cgroup/ is best
-> understood with strace.)
+On Tue, Apr 02, 2024 at 07:49:50PM +0900, Seongsu Park wrote:
+> We have already shifted the value of t0sz in TCR_T0SZ by TCR_T0SZ_OFFSET.
+> So, the TCR_T0SZ_OFFSET shift here should be removed.
+> 
+> Co-developed-by: Leem ChaeHoon <infinite.run@gmail.com>
+> Signed-off-by: Leem ChaeHoon <infinite.run@gmail.com>
+> Co-developed-by: Gyeonggeon Choi <gychoi@student.42seoul.kr>
+> Signed-off-by: Gyeonggeon Choi <gychoi@student.42seoul.kr>
+> Co-developed-by: Soomin Cho <to.soomin@gmail.com>
+> Signed-off-by: Soomin Cho <to.soomin@gmail.com>
+> Co-developed-by: DaeRo Lee <skseofh@gmail.com>
+> Signed-off-by: DaeRo Lee <skseofh@gmail.com>
+> Co-developed-by: kmasta <kmasta.study@gmail.com>
+> Signed-off-by: kmasta <kmasta.study@gmail.com>
+> Signed-off-by: Seongsu Park <sgsu.park@samsung.com>
 
-Thanks!
+heh, that's quite a lot of people. Did you remove three chars each? :p
 
-My conclusions are that:
+> ---
+>  arch/arm64/include/asm/mmu_context.h | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/arch/arm64/include/asm/mmu_context.h b/arch/arm64/include/asm/mmu_context.h
+> index c768d16b81a4..58de99836d2e 100644
+> --- a/arch/arm64/include/asm/mmu_context.h
+> +++ b/arch/arm64/include/asm/mmu_context.h
+> @@ -76,7 +76,7 @@ static inline void __cpu_set_tcr_t0sz(unsigned long t0sz)
+>  		return;
+>  
+>  	tcr &= ~TCR_T0SZ_MASK;
+> -	tcr |= t0sz << TCR_T0SZ_OFFSET;
+> +	tcr |= t0sz;
 
-1. We probably cannot move the test part of cgroup test itself
-   given the enclave payload dependency.
-2. I think it makes sense to still follow the same pattern as
-   other cgroups test and re-use cgroup_util.[ch] functionaltiy.
+Thankfully, TCR_T0SZ_OFFSET is 0 so this isn't as alarming as it looks.
+Even so, if we're going to make the code consistent, then shouldn't the
+earlier conditional be updated too?
 
-So yeah I guess we need two test programs instead of one.
+	if ((tcr & TCR_T0SZ_MASK) >> TCR_T0SZ_OFFSET == t0sz)
+		return;
 
-Something along the lines:
+seems to assume that t0sz is unshifted.
 
-1. main.[ch] -> test_sgx.[ch]
-2. introduce test_sgx_cgroup.c
-
-And test_sgx_cgroup.c would be implement similar test as the shell
-script and would follow the structure of existing cgroups tests.
-
->
-> HTH,
-> Michal
-
-BR, Jarkko
+Will
 
