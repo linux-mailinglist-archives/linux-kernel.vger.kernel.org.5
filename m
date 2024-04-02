@@ -1,181 +1,110 @@
-Return-Path: <linux-kernel+bounces-128083-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-128084-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id BA5748955D3
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 15:53:28 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A4FB78955D9
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 15:55:03 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DCB8F1C22218
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 13:53:27 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B7E021C22369
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 13:55:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7260B84FC5;
-	Tue,  2 Apr 2024 13:53:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6B71684FCC;
+	Tue,  2 Apr 2024 13:54:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="GYOArCvz";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="oVQiqqsS"
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="OtvqWuGV"
+Received: from mail-ed1-f48.google.com (mail-ed1-f48.google.com [209.85.208.48])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D8F588405D;
-	Tue,  2 Apr 2024 13:53:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0F94065BBB
+	for <linux-kernel@vger.kernel.org>; Tue,  2 Apr 2024 13:54:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712065998; cv=none; b=nRnvRjkavISD8jnurV7kRZUQ2x7RR1kSioSSrq4JJ7J3gw/yeOWH5Pm4aSrPv47q0Y9fnHgeNm+F8BaXcb2OTkMGFdv3gq+8Y6BWt86XBauuFtwn2ID7LNu3UCjSsg6iyUwb5l9zwFRVkr6eNTPTmQJaDdzHO9+4vHUuViTpV5U=
+	t=1712066092; cv=none; b=uztdcLUeeX+QbkHZvwlg7talNH00jLvRXCaEuxPCaIXOey4Vt/TVpaKRI5LM1wZKtQdJASdf8pxBqYt6t5xYOGfLeMteQNiceIJ6kiYMeaZL3igZBlSU0IMjE4R6lb1Bnf0P+OaNFlIdGdntTr4YKyfO7vGFLgmpRsrKAG53sNM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712065998; c=relaxed/simple;
-	bh=LyoTfqRjN9j3MoNuZhUjYR5rfEWeY5pb4kTEkVb3zX0=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=IM3iK0DbJqcAQP7o9sy4BlqSPWLerVGeOR9wyi99wo7ATT74o7K7Mer3H1K6OzsXNmJIPrUdT1LBy4I5ulihc5UPA4KuFzGv1S0iwSqTlBRWH0crfSg8nH6KuI/Hzm6+k49AEQiNuEIXfmWiiw88t/Ynvc1Ddbbim4TsRSUFn0o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=GYOArCvz; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=oVQiqqsS; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [10.150.64.98])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 0E8905BDF2;
-	Tue,  2 Apr 2024 13:53:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1712065995; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=FGcfQklvUedGwDv0N6DFd1u+IVz+5qx/4hMKzVEGwI8=;
-	b=GYOArCvzuT6FP3IcfS3UQE4mfVipbv0+wGzv1Ht12S5KDzRcG57i9bzNKECetfosW/EZDK
-	FRdJRkOOFBB6VFLVFHPeAmoIGmsgiAIgaPsCi6V5QKWP4TNnUjjPWb3YXBWnSwqC/9dxvV
-	hDYNPljnvTDAxZHNHxUmWJ69XJi7Hkk=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1712065995;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=FGcfQklvUedGwDv0N6DFd1u+IVz+5qx/4hMKzVEGwI8=;
-	b=oVQiqqsSkWTMu+wnMPetAL7KPG+bdsPQACuZiBPlnhEX6ceCgZlAPkxLH3PTMYeoCTe+EP
-	ymdF70jwspkycOCg==
-Authentication-Results: smtp-out2.suse.de;
-	none
-Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id F0AD913A90;
-	Tue,  2 Apr 2024 13:53:14 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap2.dmz-prg2.suse.org with ESMTPSA
-	id mM66OsoNDGYaXQAAn2gu4w
-	(envelope-from <jack@suse.cz>); Tue, 02 Apr 2024 13:53:14 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-	id 92DB2A0813; Tue,  2 Apr 2024 15:53:06 +0200 (CEST)
-Date: Tue, 2 Apr 2024 15:53:06 +0200
-From: Jan Kara <jack@suse.cz>
-To: Kemeng Shi <shikemeng@huaweicloud.com>
-Cc: Jan Kara <jack@suse.cz>, Tejun Heo <tj@kernel.org>,
-	akpm@linux-foundation.org, linux-mm@kvack.org,
-	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-	willy@infradead.org, bfoster@redhat.com, dsterba@suse.com,
-	mjguzik@gmail.com, dhowells@redhat.com, peterz@infradead.org
-Subject: Re: [PATCH 6/6] writeback: remove unneeded GDTC_INIT_NO_WB
-Message-ID: <20240402135306.kluke2jjcmh5f4ei@quack3>
-References: <20240320110222.6564-1-shikemeng@huaweicloud.com>
- <20240320110222.6564-7-shikemeng@huaweicloud.com>
- <Zfr9my_tfxO-N6HS@mtj.duckdns.org>
- <becdb16b-a318-ec05-61d2-d190541ae997@huaweicloud.com>
- <20240327093309.ejuzjus2zcixb4qt@quack3>
- <c2fc01e2-f15a-d331-6c4f-64319f3adc8a@huaweicloud.com>
+	s=arc-20240116; t=1712066092; c=relaxed/simple;
+	bh=OhezKoMk0ZpyNgIu9VoaSTemJc67M5kb5EmMZp2QqP8=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=tm3aYB8FwWFcdcZoz3xI7xp/A+QvBCXhRUE/hXja7w5wv1KGvDjp6cFOcD6/TzadvGnwbHaJRFdi4Wu3z5Zvz07x6TsYYb6BUsMIBf0/gwzPhwnvB3c9s1x5qm+cDvlFDXsI/T+PaGFuRzESsHrnDJJaorzjHzQ1bII2D8/0Z08=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=OtvqWuGV; arc=none smtp.client-ip=209.85.208.48
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-ed1-f48.google.com with SMTP id 4fb4d7f45d1cf-56bde8ea904so63115a12.0
+        for <linux-kernel@vger.kernel.org>; Tue, 02 Apr 2024 06:54:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1712066089; x=1712670889; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=OhezKoMk0ZpyNgIu9VoaSTemJc67M5kb5EmMZp2QqP8=;
+        b=OtvqWuGVMjQxa0QqW+DpWBq1xbzmZ91At7CsbHDLVXACCkGA34tqX3bsHr1BnBFPIz
+         LEooi/ejuFqpky9yFdDOVqxP1WTAJ4aD8pKEiaTIJfzHjdm9cD1MwtgbCKwkD3WVi6+5
+         NUTpaYCieBT5VcPQUTBYUtbM9nJvxDjY8EECa2NFzvJIjxv6ACiOYvfpLq00limcvmZ6
+         oAuQ3EtsmAwDjpCqLEATDVjlTOKtoizLPzWgh6gfn9hDuS0ZIVMYXOpeBtYrPSJEqaWO
+         124l/09RGVdnJnb26Iyl0yhPXiLmOuY++rU9KvITHEKhpauSQ/z59acV5lI2yA8Vyg2n
+         VuYA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712066089; x=1712670889;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=OhezKoMk0ZpyNgIu9VoaSTemJc67M5kb5EmMZp2QqP8=;
+        b=oDA4GKP1lTlFCWt3KHDv8+P6NKEJI8tLeqV3gKFEjwmrbyE1TwMUFSsT0AOG/dPcaM
+         FqnCLyy4zpvVbkk/Cj8Q1g9n7pFV+2/Fb9qOMDSaehJZrIsih/gXfjM1Ht4hANrWLgIt
+         sXmyjGIl29nIHGx2/TGBgq2DUWxrnkOp1De9+GzjQ2U3I3L6OsCNQ9YyAeGNfn3jnMWG
+         fmXgoYzCiECLmONMJLZZp9SFRPgzuxNivPZ6QZlCkYlq3mbm3y/mnn8nfJmDBUDhlQZd
+         CQbLb7MwYQ5x6X93StS0qqsaeqL7Jn4C20qb8oET2rGoBm6TI6lxVoGMRxz30SjGqCs9
+         x11A==
+X-Forwarded-Encrypted: i=1; AJvYcCU2QdpqbgL2Ons1BRZqY4x0q32QTEX/gBfPoMWhVgmo17Y25bZRYhMxzk80XQVXx3I2Dqa/3wkFaf2mbd7C2Cges2PH2yRS1CEvwwLX
+X-Gm-Message-State: AOJu0YzwEI/KB5ebeiZfgxUTkovtdQgq5tAIbQ0LFWBbyXWtEgA+1Rx8
+	zcVlYxAcWHOjoiu2bYJ7fsbZfUfpLuC3s36WZNDkRQWOiO9UcUU7nap4Wm4d+pxApM5ii3en/f9
+	PvN+5gsRykV4mp1TeEBoCVn8PC7S+dhQQsLUkUx89+9m5yis2JQ==
+X-Google-Smtp-Source: AGHT+IFkFummJ8EVqYQbMMRY/DoS7KDISq3fii/tRJEgKUeKeL7aK3elsQSlRTCe7QYCweZPOWt3PdPoUpKnCcbikVs=
+X-Received: by 2002:a05:6402:5256:b0:56d:e27:369c with SMTP id
+ t22-20020a056402525600b0056d0e27369cmr668695edd.3.1712066089193; Tue, 02 Apr
+ 2024 06:54:49 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <c2fc01e2-f15a-d331-6c4f-64319f3adc8a@huaweicloud.com>
-X-Spam-Score: -3.80
-X-Spamd-Result: default: False [-3.80 / 50.00];
-	 ARC_NA(0.00)[];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 FROM_HAS_DN(0.00)[];
-	 TO_DN_SOME(0.00)[];
-	 FREEMAIL_ENVRCPT(0.00)[gmail.com];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 MIME_GOOD(-0.10)[text/plain];
-	 NEURAL_HAM_LONG(-1.00)[-1.000];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	 NEURAL_HAM_SHORT(-0.20)[-0.997];
-	 RCPT_COUNT_TWELVE(0.00)[13];
-	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 MID_RHS_NOT_FQDN(0.50)[];
-	 FREEMAIL_CC(0.00)[suse.cz,kernel.org,linux-foundation.org,kvack.org,vger.kernel.org,infradead.org,redhat.com,suse.com,gmail.com];
-	 RCVD_TLS_ALL(0.00)[];
-	 BAYES_HAM(-3.00)[100.00%]
-X-Spam-Level: 
-X-Spam-Flag: NO
+References: <20240306111157.29327-1-petr@tesarici.cz> <20240311182516.1e2eebd8@meshulam.tesarici.cz>
+ <CANn89iKQpSaF5KG5=dT_o=WBeZtCiLcN768eUdYvUew-dLbKaA@mail.gmail.com>
+ <20240311192118.31cfc1fb@meshulam.tesarici.cz> <764f2b10-9791-4861-9bef-7160fdb8f3ae@leemhuis.info>
+ <72e39571-7122-4f6a-9252-83e663e4b703@leemhuis.info> <CANn89iKfMTGyyMB-x74J5bgzhM1RxSvuNhvXyWWv4DO8MZakSQ@mail.gmail.com>
+In-Reply-To: <CANn89iKfMTGyyMB-x74J5bgzhM1RxSvuNhvXyWWv4DO8MZakSQ@mail.gmail.com>
+From: Eric Dumazet <edumazet@google.com>
+Date: Tue, 2 Apr 2024 15:54:38 +0200
+Message-ID: <CANn89iKPh0uR2mq4ThokwaF5iJA-N=9sXawi2H=-vLDn5Xfmug@mail.gmail.com>
+Subject: Re: [PATCH 1/1] u64_stats: fix u64_stats_init() for lockdep when used
+ repeatedly in one file
+To: Linux regressions mailing list <regressions@lists.linux.dev>
+Cc: =?UTF-8?B?UGV0ciBUZXNhxZnDrWs=?= <petr@tesarici.cz>, 
+	"David S. Miller" <davem@davemloft.net>, open list <linux-kernel@vger.kernel.org>, stable@kernel.org, 
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, netdev <netdev@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Thu 28-03-24 09:49:59, Kemeng Shi wrote:
-> on 3/27/2024 5:33 PM, Jan Kara wrote:
-> > On Thu 21-03-24 15:12:21, Kemeng Shi wrote:
-> >>
-> >>
-> >> on 3/20/2024 11:15 PM, Tejun Heo wrote:
-> >>> Hello,
-> >>>
-> >>> On Wed, Mar 20, 2024 at 07:02:22PM +0800, Kemeng Shi wrote:
-> >>>> We never use gdtc->dom set with GDTC_INIT_NO_WB, just remove unneeded
-> >>>> GDTC_INIT_NO_WB
-> >>>>
-> >>>> Signed-off-by: Kemeng Shi <shikemeng@huaweicloud.com>
-> >>> ...
-> >>>>  void global_dirty_limits(unsigned long *pbackground, unsigned long *pdirty)
-> >>>>  {
-> >>>> -	struct dirty_throttle_control gdtc = { GDTC_INIT_NO_WB };
-> >>>> +	struct dirty_throttle_control gdtc = { };
-> >>>
-> >>> Even if it's currently not referenced, wouldn't it still be better to always
-> >>> guarantee that a dtc's dom is always initialized? I'm not sure what we get
-> >>> by removing this.
-> >> As we explicitly use GDTC_INIT_NO_WB to set global_wb_domain before
-> >> calculating dirty limit with domain_dirty_limits, I intuitively think the
-> >> dirty limit calculation in domain_dirty_limits is related to
-> >> global_wb_domain when CONFIG_WRITEBACK_CGROUP is enabled while the truth
-> >> is not. So this is a little confusing to me.
-> > 
-> Hi Jan,
-> > I'm not sure I understand your confusion. domain_dirty_limits() calculates
-> > the dirty limit (and background dirty limit) for the dirty_throttle_control
-> > passed in. If you pass dtc initialized with GDTC_INIT[_NO_WB], it will
-> > compute global dirty limits. If the dtc passed in is initialized with
-> > MDTC_INIT() it will compute cgroup specific dirty limits.
-> No doubt about this.
-> > 
-> > Now because domain_dirty_limits() does not scale the limits based on each
-> > device throughput - that is done only later in __wb_calc_thresh() to avoid> relatively expensive computations when we don't need them - and also
-> > because the effective dirty limit (dtc->dom->dirty_limit) is not updated by
-> > domain_dirty_limits(), domain_dirty_limits() does not need dtc->dom at all.
-> Acutally, here is the thing confusing me. For wb_calc_thresh, we always pass
-> dtc initialized with a wb (GDTC_INIT(wb) or MDTC_INIT(wb,..). The dtc
-> initialized with _NO_WB is only passed to domain_dirty_limits. However, The
-> dom initialized by _NO_WB for domain_dirty_limits is not needed at all.
-> > But that is a technical detail of implementation and I don't want this
-> > technical detail to be relied on by even more code.
-> Yes, I agree with this. So I wonder if it's acceptable to simply define
-> GDTC_INIT_NO_WB to empty for now instead of remove defination of
-> GDTC_INIT_NO_WB. When implementation of domain_dirty_limits() or any
-> other low level function in future using GDTC_INIT(_NO_WB) changes to
-> need dtc->domain, we re-define GDTC_INIT_NO_WB to proper value.
-> As this only looks confusing to me. I will drop this one in next version
-> if you still prefer to keep definatino of GDTC_INIT_NO_WB in the old way.
+On Tue, Apr 2, 2024 at 3:42=E2=80=AFPM Eric Dumazet <edumazet@google.com> w=
+rote:
+>
+> On Tue, Apr 2, 2024 at 3:40=E2=80=AFPM Linux regression tracking (Thorste=
+n
+> Leemhuis) <regressions@leemhuis.info> wrote:
+> >
+> > Hi. Top-posting for once, to make this easily accessible to everyone.
+> >
+> > Hmmm, looks like Petr's patch for a (minor) 6.8 regression didn't make
+> > any progress in the past two weeks.
+> >
+> > Does nobody care? Did nobody merge it because no tree feels really
+> > appropriate? Or am I missing something obvious and making a fool out of
+> > myself by asking these questions? :D
+>
+> It happens, please resend the patch.
 
-Yeah, please keep the code as is for now. I agree this needs some cleanups
-but what you suggest is IMHO not an improvement.
-
-								Honza
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+By 'resend' the patch, I meant : sending it to netdev@ mailing list so
+that netdev patchwork can see it.
 
