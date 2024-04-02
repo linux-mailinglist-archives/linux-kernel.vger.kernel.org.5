@@ -1,372 +1,108 @@
-Return-Path: <linux-kernel+bounces-127611-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-127615-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id CD237894E5F
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 11:11:54 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5B1E0894E6B
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 11:15:42 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5BDBE282C13
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 09:11:53 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 03F5FB22743
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 09:15:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id ACF0A57315;
-	Tue,  2 Apr 2024 09:11:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6AF355733B;
+	Tue,  2 Apr 2024 09:15:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="SQ2aFLqN"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b="utgsGpse"
+Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.153.233])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0BFCF56754
-	for <linux-kernel@vger.kernel.org>; Tue,  2 Apr 2024 09:11:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 43A8133D1;
+	Tue,  2 Apr 2024 09:15:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=68.232.153.233
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712049107; cv=none; b=UrJOhC6Kk8GrbAGHC+F/ZV0iYmz9+CThdB39g42bA57GXaQ3kxKX/OfdTrmpPNzeg+2bQ5wsCktSdRWG7CSa23XEHyaYuhw2mkIgcJ0ht3xl1rXHL7ZNQyeKP1TSnGcs20WEgBtXAW8gYnVuplfCDnhtAT/efG7HqruR7Nxw1Sc=
+	t=1712049331; cv=none; b=ubrGIdjN5QZ9cBO4zhm8/Q9XEwGUU7uzdjZ8+DapLeOUzfeMq5OS4CWoy04B3zoZX+gf1tfXjmkrl1OaSeCVp59UBrwlrbX+6B3hDMKvUYfcoE1WamFHuRtzC7i2C08in8x7laUs2yChhEpaFCmoBmfHi0R/HA2ygR0Sxd4SFck=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712049107; c=relaxed/simple;
-	bh=Ufsf8Ys+y12vfFaxzhFUVQNvx9fbprXgZ9fhLlosrjA=;
-	h=From:To:cc:Subject:MIME-Version:Content-Type:Date:Message-ID; b=jwC4BalrojEuWlP38w8ZCfLlpLi0Z43YPg4R7nGLKqNd5UJrjNoa9D+bNOFy14GsISO8NneehZtOJVmee+hg56ZrRXVryG5yc5UwU2FxpeLD+0XvrUO84GEP+s8ruEvQRamu/BlRktvdfoF8RoY8aGhxKO7JDyxJFI9GldzVdWY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=SQ2aFLqN; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1712049105;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=InWKpQOJVyYt3xjobxVfkuAKETKZj7013hZtbeHtbiw=;
-	b=SQ2aFLqNK/iIwuJo7y7Ceu3JIB89EiunNOn/9hnzkGY7IS5T1T582UUFisVzUmzhGBUgMh
-	WzY+nWaw4c1nHujmsJfborPqjubsY/h/VrEFm0Pg4Wws0JVH04OBSwkI5jAOpFmNt9HzUv
-	tGIqpW2ZDnwPgyMWqUODTQWPTFuuElE=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-186-c7Su77-IMW6i8SCLCFF3dw-1; Tue, 02 Apr 2024 05:11:41 -0400
-X-MC-Unique: c7Su77-IMW6i8SCLCFF3dw-1
-Received: from smtp.corp.redhat.com (int-mx10.intmail.prod.int.rdu2.redhat.com [10.11.54.10])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 2861E85A588;
-	Tue,  2 Apr 2024 09:11:41 +0000 (UTC)
-Received: from warthog.procyon.org.uk (unknown [10.42.28.146])
-	by smtp.corp.redhat.com (Postfix) with ESMTP id C863A492BCD;
-	Tue,  2 Apr 2024 09:11:39 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-	Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-	Kingdom.
-	Registered in England and Wales under Company Registration No. 3798903
-From: David Howells <dhowells@redhat.com>
-To: Steve French <sfrench@samba.org>
-cc: dhowells@redhat.com, Shyam Prasad N <nspmangalore@gmail.com>,
-    Rohith Surabattula <rohiths.msft@gmail.com>,
-    Jeff Layton <jlayton@kernel.org>,
-    Naveen Mamindlapalli <naveenm@marvell.com>,
-    linux-cifs@vger.kernel.org, netfs@lists.linux.dev,
-    linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] cifs: Fix caching to try to do open O_WRONLY as rdwr on server
+	s=arc-20240116; t=1712049331; c=relaxed/simple;
+	bh=rAwYcdGVio0uX/UWINAikdZ1Y/EW96aT37KzWfgNLh0=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=Cwxl23XoJpc4/xQWT/pISNwnG/UuLSJwBlS26VB9ZCO0Y+L1XGwUIi9muV1QIC/gGj9CED6yi7hrZEw/mENZLrH8imKga7dyrCZC106npNV8MnuzX/6RBywPrmBsiA886eApXcOSx9fspXOfiANZC9qej1SvR2KAC2BUZ4TXnf4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=microchip.com; spf=pass smtp.mailfrom=microchip.com; dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b=utgsGpse; arc=none smtp.client-ip=68.232.153.233
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=microchip.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=microchip.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1712049330; x=1743585330;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=rAwYcdGVio0uX/UWINAikdZ1Y/EW96aT37KzWfgNLh0=;
+  b=utgsGpsel3HOJNNT2moo4uxvwuiFirvJ1Fbw3LabwHGTychOCwnQWyfs
+   vDfnMKnNL47iGrc3HrBsTaD5g6tReO+NWtXSfkyGUm3ZEDI8z5MSrxrDK
+   E24WE7zNg7ZpHXJCYYHHn5Tb/1mFaMVLOTaQJ2RYO/+3e9vuGL59fIxG/
+   w8WETb3LeajxFCUBANJiQvFFVHRaFCQmYc05vpWgAvvD2GAb0pHIv0DJh
+   sEx0QqFsiIdy0BOccQrwFT44G+j/W8+dTEtRXfjcBrdZVBmRmZDF57nQ3
+   hlYYkyUsCdUIX6QIoyetSODQQf+dDcJHWEW1SzPNnIDcgrS3iODvwAAjX
+   Q==;
+X-CSE-ConnectionGUID: zFoxbXw+T1mGEU4GLhIt2g==
+X-CSE-MsgGUID: WLSS4/PNReG367SmyZjNsQ==
+X-IronPort-AV: E=Sophos;i="6.07,174,1708412400"; 
+   d="scan'208";a="249915446"
+X-Amp-Result: SKIPPED(no attachment in message)
+Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
+  by esa5.microchip.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 02 Apr 2024 02:15:28 -0700
+Received: from chn-vm-ex04.mchp-main.com (10.10.85.152) by
+ chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Tue, 2 Apr 2024 02:14:53 -0700
+Received: from ROB-ULT-M76677.microchip.com (10.10.85.11) by
+ chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server id
+ 15.1.2507.35 via Frontend Transport; Tue, 2 Apr 2024 02:14:51 -0700
+From: Andrei Simion <andrei.simion@microchip.com>
+To: <robh@kernel.org>, <krzysztof.kozlowski+dt@linaro.org>,
+	<conor+dt@kernel.org>, <nicolas.ferre@microchip.com>,
+	<alexandre.belloni@bootlin.com>, <claudiu.beznea@tuxon.dev>,
+	<mihai.sain@microchip.com>
+CC: <linux-arm-kernel@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
+	<devicetree@vger.kernel.org>, Andrei Simion <andrei.simion@microchip.com>
+Subject: [PATCH 0/2] Fix the regulator-state-standby definition
+Date: Tue, 2 Apr 2024 12:12:26 +0300
+Message-ID: <20240402091228.110362-1-andrei.simion@microchip.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <3059442.1712049095.1@warthog.procyon.org.uk>
-Content-Transfer-Encoding: quoted-printable
-Date: Tue, 02 Apr 2024 10:11:35 +0100
-Message-ID: <3059443.1712049095@warthog.procyon.org.uk>
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.10
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 
-When we're engaged in local caching of a cifs filesystem, we cannot perfor=
-m
-caching of a partially written cache granule unless we can read the rest o=
-f
-the granule.  This can result in unexpected access errors being reported t=
-o
-the user.
+make dtbs_check DT_SCHEMA_FILES=microchip,mcp16502.yaml
 
-Fix this by the following: if a file is opened O_WRONLY locally, but the
-mount was given the "-o fsc" flag, try first opening the remote file with
-GENERIC_READ|GENERIC_WRITE and if that returns -EACCES, try dropping the
-GENERIC_READ and doing the open again.  If that last succeeds, invalidate
-the cache for that file as for O_DIRECT.
+at91-sama7g5ek.dtb: mcp16502@5b: regulators:VDD_(CORE|OTHER)|LDO[1-2]:
+regulator-state-standby 'regulator-suspend-voltage' does not match any of
+the regexes 'pinctrl-[0-9]+' from schema
+$id: http://devicetree.org/schemas/regulator/microchip,mcp16502.yaml#
 
-Fixes: 70431bfd825d ("cifs: Support fscache indexing rewrite")
-Signed-off-by: David Howells <dhowells@redhat.com>
-cc: Steve French <sfrench@samba.org>
-cc: Shyam Prasad N <nspmangalore@gmail.com>
-cc: Rohith Surabattula <rohiths.msft@gmail.com>
-cc: Jeff Layton <jlayton@kernel.org>
-cc: linux-cifs@vger.kernel.org
-cc: netfs@lists.linux.dev
-cc: linux-fsdevel@vger.kernel.org
----
- fs/smb/client/dir.c     |   15 +++++++++++++++
- fs/smb/client/file.c    |   48 ++++++++++++++++++++++++++++++++++++++----=
-------
- fs/smb/client/fscache.h |    6 ++++++
- 3 files changed, 59 insertions(+), 10 deletions(-)
+at91-sama7g54_curiosity.dtb: pmic@5b: regulators:VDD_(CORE|OTHER)|LDO[1-2]:
+regulator-state-standby 'regulator-suspend-voltage' does not match any of
+the regexes 'pinctrl-[0-9]+' from schema
+$id: http://devicetree.org/schemas/regulator/microchip,mcp16502.yaml#
 
-diff --git a/fs/smb/client/dir.c b/fs/smb/client/dir.c
-index d11dc3aa458b..864b194dbaa0 100644
---- a/fs/smb/client/dir.c
-+++ b/fs/smb/client/dir.c
-@@ -189,6 +189,7 @@ static int cifs_do_create(struct inode *inode, struct =
-dentry *direntry, unsigned
- 	int disposition;
- 	struct TCP_Server_Info *server =3D tcon->ses->server;
- 	struct cifs_open_parms oparms;
-+	int rdwr_for_fscache =3D 0;
- =
+This patch series proposes to correct the typo that was entered by mistake
+into devicetree definition regulator-state-standby by replacing
+regulator-suspend-voltage with regulator-suspend-microvolt.
 
- 	*oplock =3D 0;
- 	if (tcon->ses->server->oplocks)
-@@ -200,6 +201,10 @@ static int cifs_do_create(struct inode *inode, struct=
- dentry *direntry, unsigned
- 		return PTR_ERR(full_path);
- 	}
- =
+Andrei Simion (2):
+  ARM: boot: dts: microchip: at91-sama7g5ek: Replace
+    regulator-suspend-voltage with the valid property
+  ARM: boot: dts: microchip: at91-sama7g54_curiosity: Replace
+    regulator-suspend-voltage with the valid property
 
-+	/* If we're caching, we need to be able to fill in around partial writes=
- */
-+	if (cifs_fscache_enabled(inode) && (oflags & O_ACCMODE) =3D=3D O_WRONLY)
-+		rdwr_for_fscache =3D 1;
-+
- #ifdef CONFIG_CIFS_ALLOW_INSECURE_LEGACY
- 	if (tcon->unix_ext && cap_unix(tcon->ses) && !tcon->broken_posix_open &&
- 	    (CIFS_UNIX_POSIX_PATH_OPS_CAP &
-@@ -276,6 +281,8 @@ static int cifs_do_create(struct inode *inode, struct =
-dentry *direntry, unsigned
- 		desired_access |=3D GENERIC_READ; /* is this too little? */
- 	if (OPEN_FMODE(oflags) & FMODE_WRITE)
- 		desired_access |=3D GENERIC_WRITE;
-+	if (rdwr_for_fscache =3D=3D 1)
-+		desired_access |=3D GENERIC_READ;
- =
+ arch/arm/boot/dts/microchip/at91-sama7g54_curiosity.dts | 8 ++++----
+ arch/arm/boot/dts/microchip/at91-sama7g5ek.dts          | 8 ++++----
+ 2 files changed, 8 insertions(+), 8 deletions(-)
 
- 	disposition =3D FILE_OVERWRITE_IF;
- 	if ((oflags & (O_CREAT | O_EXCL)) =3D=3D (O_CREAT | O_EXCL))
-@@ -304,6 +311,7 @@ static int cifs_do_create(struct inode *inode, struct =
-dentry *direntry, unsigned
- 	if (!tcon->unix_ext && (mode & S_IWUGO) =3D=3D 0)
- 		create_options |=3D CREATE_OPTION_READONLY;
- =
-
-+retry_open:
- 	oparms =3D (struct cifs_open_parms) {
- 		.tcon =3D tcon,
- 		.cifs_sb =3D cifs_sb,
-@@ -317,8 +325,15 @@ static int cifs_do_create(struct inode *inode, struct=
- dentry *direntry, unsigned
- 	rc =3D server->ops->open(xid, &oparms, oplock, buf);
- 	if (rc) {
- 		cifs_dbg(FYI, "cifs_create returned 0x%x\n", rc);
-+		if (rc =3D=3D -EACCES && rdwr_for_fscache =3D=3D 1) {
-+			desired_access &=3D ~GENERIC_READ;
-+			rdwr_for_fscache =3D 2;
-+			goto retry_open;
-+		}
- 		goto out;
- 	}
-+	if (rdwr_for_fscache =3D=3D 2)
-+		cifs_invalidate_cache(inode, FSCACHE_INVAL_DIO_WRITE);
- =
-
- #ifdef CONFIG_CIFS_ALLOW_INSECURE_LEGACY
- 	/*
-diff --git a/fs/smb/client/file.c b/fs/smb/client/file.c
-index 59da572d3384..1541a4f6045d 100644
---- a/fs/smb/client/file.c
-+++ b/fs/smb/client/file.c
-@@ -206,12 +206,12 @@ cifs_mark_open_files_invalid(struct cifs_tcon *tcon)
- 	 */
- }
- =
-
--static inline int cifs_convert_flags(unsigned int flags)
-+static inline int cifs_convert_flags(unsigned int flags, int rdwr_for_fsc=
-ache)
- {
- 	if ((flags & O_ACCMODE) =3D=3D O_RDONLY)
- 		return GENERIC_READ;
- 	else if ((flags & O_ACCMODE) =3D=3D O_WRONLY)
--		return GENERIC_WRITE;
-+		return rdwr_for_fscache =3D=3D 1 ? (GENERIC_READ | GENERIC_WRITE) : GEN=
-ERIC_WRITE;
- 	else if ((flags & O_ACCMODE) =3D=3D O_RDWR) {
- 		/* GENERIC_ALL is too much permission to request
- 		   can cause unnecessary access denied on create */
-@@ -348,11 +348,16 @@ static int cifs_nt_open(const char *full_path, struc=
-t inode *inode, struct cifs_
- 	int create_options =3D CREATE_NOT_DIR;
- 	struct TCP_Server_Info *server =3D tcon->ses->server;
- 	struct cifs_open_parms oparms;
-+	int rdwr_for_fscache =3D 0;
- =
-
- 	if (!server->ops->open)
- 		return -ENOSYS;
- =
-
--	desired_access =3D cifs_convert_flags(f_flags);
-+	/* If we're caching, we need to be able to fill in around partial writes=
- */
-+	if (cifs_fscache_enabled(inode) && (f_flags & O_ACCMODE) =3D=3D O_WRONLY=
-)
-+		rdwr_for_fscache =3D 1;
-+
-+	desired_access =3D cifs_convert_flags(f_flags, rdwr_for_fscache);
- =
-
- /*********************************************************************
-  *  open flag mapping table:
-@@ -389,6 +394,7 @@ static int cifs_nt_open(const char *full_path, struct =
-inode *inode, struct cifs_
- 	if (f_flags & O_DIRECT)
- 		create_options |=3D CREATE_NO_BUFFER;
- =
-
-+retry_open:
- 	oparms =3D (struct cifs_open_parms) {
- 		.tcon =3D tcon,
- 		.cifs_sb =3D cifs_sb,
-@@ -400,8 +406,16 @@ static int cifs_nt_open(const char *full_path, struct=
- inode *inode, struct cifs_
- 	};
- =
-
- 	rc =3D server->ops->open(xid, &oparms, oplock, buf);
--	if (rc)
-+	if (rc) {
-+		if (rc =3D=3D -EACCES && rdwr_for_fscache =3D=3D 1) {
-+			desired_access =3D cifs_convert_flags(f_flags, 0);
-+			rdwr_for_fscache =3D 2;
-+			goto retry_open;
-+		}
- 		return rc;
-+	}
-+	if (rdwr_for_fscache =3D=3D 2)
-+		cifs_invalidate_cache(inode, FSCACHE_INVAL_DIO_WRITE);
- =
-
- 	/* TODO: Add support for calling posix query info but with passing in fi=
-d */
- 	if (tcon->unix_ext)
-@@ -834,11 +848,11 @@ int cifs_open(struct inode *inode, struct file *file=
-)
- use_cache:
- 	fscache_use_cookie(cifs_inode_cookie(file_inode(file)),
- 			   file->f_mode & FMODE_WRITE);
--	if (file->f_flags & O_DIRECT &&
--	    (!((file->f_flags & O_ACCMODE) !=3D O_RDONLY) ||
--	     file->f_flags & O_APPEND))
--		cifs_invalidate_cache(file_inode(file),
--				      FSCACHE_INVAL_DIO_WRITE);
-+	if (!(file->f_flags & O_DIRECT))
-+		goto out;
-+	if ((file->f_flags & (O_ACCMODE | O_APPEND)) =3D=3D O_RDONLY)
-+		goto out;
-+	cifs_invalidate_cache(file_inode(file), FSCACHE_INVAL_DIO_WRITE);
- =
-
- out:
- 	free_dentry_path(page);
-@@ -903,6 +917,7 @@ cifs_reopen_file(struct cifsFileInfo *cfile, bool can_=
-flush)
- 	int disposition =3D FILE_OPEN;
- 	int create_options =3D CREATE_NOT_DIR;
- 	struct cifs_open_parms oparms;
-+	int rdwr_for_fscache =3D 0;
- =
-
- 	xid =3D get_xid();
- 	mutex_lock(&cfile->fh_mutex);
-@@ -966,7 +981,11 @@ cifs_reopen_file(struct cifsFileInfo *cfile, bool can=
-_flush)
- 	}
- #endif /* CONFIG_CIFS_ALLOW_INSECURE_LEGACY */
- =
-
--	desired_access =3D cifs_convert_flags(cfile->f_flags);
-+	/* If we're caching, we need to be able to fill in around partial writes=
- */
-+	if (cifs_fscache_enabled(inode) && (cfile->f_flags & O_ACCMODE) =3D=3D O=
-_WRONLY)
-+		rdwr_for_fscache =3D 1;
-+
-+	desired_access =3D cifs_convert_flags(cfile->f_flags, rdwr_for_fscache);
- =
-
- 	/* O_SYNC also has bit for O_DSYNC so following check picks up either */
- 	if (cfile->f_flags & O_SYNC)
-@@ -978,6 +997,7 @@ cifs_reopen_file(struct cifsFileInfo *cfile, bool can_=
-flush)
- 	if (server->ops->get_lease_key)
- 		server->ops->get_lease_key(inode, &cfile->fid);
- =
-
-+retry_open:
- 	oparms =3D (struct cifs_open_parms) {
- 		.tcon =3D tcon,
- 		.cifs_sb =3D cifs_sb,
-@@ -1003,6 +1023,11 @@ cifs_reopen_file(struct cifsFileInfo *cfile, bool c=
-an_flush)
- 		/* indicate that we need to relock the file */
- 		oparms.reconnect =3D true;
- 	}
-+	if (rc =3D=3D -EACCES && rdwr_for_fscache =3D=3D 1) {
-+		desired_access =3D cifs_convert_flags(cfile->f_flags, 0);
-+		rdwr_for_fscache =3D 2;
-+		goto retry_open;
-+	}
- =
-
- 	if (rc) {
- 		mutex_unlock(&cfile->fh_mutex);
-@@ -1011,6 +1036,9 @@ cifs_reopen_file(struct cifsFileInfo *cfile, bool ca=
-n_flush)
- 		goto reopen_error_exit;
- 	}
- =
-
-+	if (rdwr_for_fscache =3D=3D 2)
-+		cifs_invalidate_cache(inode, FSCACHE_INVAL_DIO_WRITE);
-+
- #ifdef CONFIG_CIFS_ALLOW_INSECURE_LEGACY
- reopen_success:
- #endif /* CONFIG_CIFS_ALLOW_INSECURE_LEGACY */
-diff --git a/fs/smb/client/fscache.h b/fs/smb/client/fscache.h
-index a3d73720914f..1f2ea9f5cc9a 100644
---- a/fs/smb/client/fscache.h
-+++ b/fs/smb/client/fscache.h
-@@ -109,6 +109,11 @@ static inline void cifs_readahead_to_fscache(struct i=
-node *inode,
- 		__cifs_readahead_to_fscache(inode, pos, len);
- }
- =
-
-+static inline bool cifs_fscache_enabled(struct inode *inode)
-+{
-+	return fscache_cookie_enabled(cifs_inode_cookie(inode));
-+}
-+
- #else /* CONFIG_CIFS_FSCACHE */
- static inline
- void cifs_fscache_fill_coherency(struct inode *inode,
-@@ -124,6 +129,7 @@ static inline void cifs_fscache_release_inode_cookie(s=
-truct inode *inode) {}
- static inline void cifs_fscache_unuse_inode_cookie(struct inode *inode, b=
-ool update) {}
- static inline struct fscache_cookie *cifs_inode_cookie(struct inode *inod=
-e) { return NULL; }
- static inline void cifs_invalidate_cache(struct inode *inode, unsigned in=
-t flags) {}
-+static inline bool cifs_fscache_enabled(struct inode *inode) { return fal=
-se; }
- =
-
- static inline int cifs_fscache_query_occupancy(struct inode *inode,
- 					       pgoff_t first, unsigned int nr_pages,
+-- 
+2.34.1
 
 
