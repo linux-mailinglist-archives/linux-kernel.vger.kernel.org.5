@@ -1,119 +1,141 @@
-Return-Path: <linux-kernel+bounces-127522-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-127523-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id D580C894D09
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 09:58:35 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8A392894D18
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 10:00:07 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8E4BA282D29
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 07:58:34 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BA9EF1C21AE4
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 08:00:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2F5A63D38D;
-	Tue,  2 Apr 2024 07:58:30 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3E7B92BD1C
-	for <linux-kernel@vger.kernel.org>; Tue,  2 Apr 2024 07:58:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 04C2C3D544;
+	Tue,  2 Apr 2024 08:00:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="xbxCM2x/";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="X3Q3/owZ"
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A79A23D3A5
+	for <linux-kernel@vger.kernel.org>; Tue,  2 Apr 2024 07:59:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712044709; cv=none; b=IskmnUKkbgkxSZC6HktM1fejvs5HgC5kkqBGu04+wxBEzCBaStJE531OWyu2d8LF8V8QatPHTnasOQLuvZX9bpwZHEGhhgSIZfydK9BO6TRqCxkDfs6IiSFWjtJDa1cq+3qN9SPCcEWGnVlMMjVZifde+vaBsuXVHT8SRPw0lOY=
+	t=1712044801; cv=none; b=r+cFWsAURoJm+0xsU7yBOsGx2Z5I63wZoKKck7EfkFR4sU16jKm5+YnGPCNPkXyMAxnl5XAlBek4Xsw9uaCKKMOloVxJJEnktBM6jhstfAo2lrsK5NBmtw5/PJItZaPevXKRia13VIL04asF7JI/K8sirNmn1aDMGcr6T+bn+0c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712044709; c=relaxed/simple;
-	bh=Iu2KxyyynVxbq6gjxe89goGC/9h4PqUNeJWtGGqhlqI=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Yg88Das6WXQg0APUnbZNFrG7aNfwBXW6B7kmqfuXDPdBUrDPG52b5JyLW8WS5gSN6C35V16zoCT95VfKeECCZQsfVe33VzJ/1ygJdMMpg+cNw0OMdN8gVMaaVGwzFcZmFNJmWL/JF7wyogntwuvEU1bl0bsZddcdp+jeLpuROc0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 8516A1042;
-	Tue,  2 Apr 2024 00:58:59 -0700 (PDT)
-Received: from [10.57.73.65] (unknown [10.57.73.65])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id E991F3F64C;
-	Tue,  2 Apr 2024 00:58:23 -0700 (PDT)
-Message-ID: <a18b46b1-7b7d-4cd0-aa68-d715b0c16822@arm.com>
-Date: Tue, 2 Apr 2024 08:58:22 +0100
+	s=arc-20240116; t=1712044801; c=relaxed/simple;
+	bh=LtT0e9h0lXVwDIP6I5Un017mzXnY6egsLRSS147sOPg=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=GAovdLQEm6j5vNMZCUnX3hDJFIwBzuSwxRU5azXJW7olFp55HELCQGnbXEOi+Da/MIYBS+vMs9U3eYsYkyrlphoS/hfpmbG/+Gt+mACvLDFyguON+TTEgwwVS3UNtoloyx5FQcjS6aLsX6M4Gz7X6RBxM7XqfRbb//KuvR5C9jA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=xbxCM2x/; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=X3Q3/owZ; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
+Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:98])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id A72DC34425;
+	Tue,  2 Apr 2024 07:59:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1712044797; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=RP9RLjMVbq6a75Dz/QpdRnh/IGmkM/3rb1FTFURpAMo=;
+	b=xbxCM2x/bJD4HdWoiZb1cKC8CAA9RQNPT8nVdiN8EfX+4JSQNpjWyVnlB50FLRwQPraGOq
+	LH7i7LdfyNmTnCSxxXnk47cnjsAHmUEBTTpw4/VNeP1NlzJNs+1P5ujPp+dvdxwg8Zy3Gg
+	6q8y3Tkx3pivB8i5U9/CQfMJkXV4M7A=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1712044797;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=RP9RLjMVbq6a75Dz/QpdRnh/IGmkM/3rb1FTFURpAMo=;
+	b=X3Q3/owZH0O5AM0hWchtsbxVchJJno1eRfpFd6zLInlSx987+9m8H7gfyqM1R1Wqwy9ARg
+	igIWi+3SP3yL5eDQ==
+Authentication-Results: smtp-out1.suse.de;
+	dkim=none
+Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id 1609613A90;
+	Tue,  2 Apr 2024 07:59:57 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap2.dmz-prg2.suse.org with ESMTPSA
+	id mQGoAv26C2YiWwAAn2gu4w
+	(envelope-from <osalvador@suse.de>); Tue, 02 Apr 2024 07:59:57 +0000
+Date: Tue, 2 Apr 2024 10:01:22 +0200
+From: Oscar Salvador <osalvador@suse.de>
+To: Peter Collingbourne <pcc@google.com>
+Cc: Andrey Konovalov <andreyknvl@gmail.com>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+	Michal Hocko <mhocko@suse.com>, Vlastimil Babka <vbabka@suse.cz>,
+	Marco Elver <elver@google.com>,
+	Alexander Potapenko <glider@google.com>,
+	Omar Sandoval <osandov@fb.com>
+Subject: Re: [PATCH] stackdepot: Rename pool_index to pool_index_plus_1
+Message-ID: <Zgu7UoJt1Vi5gH0v@localhost.localdomain>
+References: <20240402001500.53533-1-pcc@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] mm: alloc_anon_folio: avoid doing vma_thp_gfp_mask in
- fallback cases
-Content-Language: en-GB
-To: Barry Song <21cnbao@gmail.com>, akpm@linux-foundation.org,
- linux-mm@kvack.org
-Cc: linux-kernel@vger.kernel.org, Barry Song <v-songbaohua@oppo.com>,
- Kefeng Wang <wangkefeng.wang@huawei.com>, John Hubbard
- <jhubbard@nvidia.com>, David Hildenbrand <david@redhat.com>,
- Alistair Popple <apopple@nvidia.com>,
- Anshuman Khandual <anshuman.khandual@arm.com>,
- Catalin Marinas <catalin.marinas@arm.com>,
- David Rientjes <rientjes@google.com>, "Huang, Ying" <ying.huang@intel.com>,
- Hugh Dickins <hughd@google.com>, Itaru Kitayama <itaru.kitayama@gmail.com>,
- "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
- Luis Chamberlain <mcgrof@kernel.org>, Matthew Wilcox <willy@infradead.org>,
- Vlastimil Babka <vbabka@suse.cz>, Yang Shi <shy828301@gmail.com>,
- Yin Fengwei <fengwei.yin@intel.com>, Yu Zhao <yuzhao@google.com>,
- Zi Yan <ziy@nvidia.com>
-References: <20240329073750.20012-1-21cnbao@gmail.com>
-From: Ryan Roberts <ryan.roberts@arm.com>
-In-Reply-To: <20240329073750.20012-1-21cnbao@gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240402001500.53533-1-pcc@google.com>
+X-Rspamd-Queue-Id: A72DC34425
+X-Spamd-Result: default: False [-3.30 / 50.00];
+	BAYES_HAM(-3.00)[100.00%];
+	NEURAL_HAM_SHORT(-0.19)[-0.968];
+	MIME_GOOD(-0.10)[text/plain];
+	MX_GOOD(-0.01)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	RCVD_TLS_ALL(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	TO_DN_SOME(0.00)[];
+	RCPT_COUNT_SEVEN(0.00)[10];
+	ARC_NA(0.00)[];
+	MISSING_XM_UA(0.00)[];
+	R_DKIM_NA(0.00)[];
+	FREEMAIL_ENVRCPT(0.00)[gmail.com];
+	DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+	FROM_HAS_DN(0.00)[];
+	FREEMAIL_CC(0.00)[gmail.com,linux-foundation.org,vger.kernel.org,kvack.org,suse.com,suse.cz,google.com,fb.com];
+	SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:98:from];
+	FROM_EQ_ENVFROM(0.00)[];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	RCVD_COUNT_TWO(0.00)[2];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[imap2.dmz-prg2.suse.org:rdns,imap2.dmz-prg2.suse.org:helo,suse.de:email]
+X-Rspamd-Action: no action
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Spam-Score: -3.30
+X-Spam-Level: 
+X-Spam-Flag: NO
 
-On 29/03/2024 07:37, Barry Song wrote:
-> From: Barry Song <v-songbaohua@oppo.com>
+On Mon, Apr 01, 2024 at 05:14:58PM -0700, Peter Collingbourne wrote:
+> Commit 3ee34eabac2a ("lib/stackdepot: fix first entry having a
+> 0-handle") changed the meaning of the pool_index field to mean "the
+> pool index plus 1". This made the code accessing this field less
+> self-documenting, as well as causing debuggers such as drgn to not
+> be able to easily remain compatible with both old and new kernels,
+> because they typically do that by testing for presence of the new
+> field. Because stackdepot is a debugging tool, we should make sure
+> that it is debugger friendly. Therefore, give the field a different
+> name to improve readability as well as enabling debugger backwards
+> compatibility.
 > 
-> Fallback rates surpassing 90% have been observed on phones utilizing 64KiB
-> CONT-PTE mTHP. In these scenarios, when one out of every 16 PTEs fails
-> to allocate large folios, the remaining 15 PTEs fallback. Consequently,
-> invoking vma_thp_gfp_mask seems redundant in such cases. Furthermore,
-> abstaining from its use can also contribute to improved code readability.
-> 
-> Cc: Ryan Roberts <ryan.roberts@arm.com>
-> Cc: Kefeng Wang <wangkefeng.wang@huawei.com>
-> Cc: John Hubbard <jhubbard@nvidia.com>
-> Cc: David Hildenbrand <david@redhat.com>
-> Cc: Alistair Popple <apopple@nvidia.com>
-> Cc: Anshuman Khandual <anshuman.khandual@arm.com>
-> Cc: Catalin Marinas <catalin.marinas@arm.com>
-> Cc: David Rientjes <rientjes@google.com>
-> Cc: "Huang, Ying" <ying.huang@intel.com>
-> Cc: Hugh Dickins <hughd@google.com>
-> Cc: Itaru Kitayama <itaru.kitayama@gmail.com>
-> Cc: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
-> Cc: Luis Chamberlain <mcgrof@kernel.org>
-> Cc: Matthew Wilcox (Oracle) <willy@infradead.org>
-> Cc: Vlastimil Babka <vbabka@suse.cz>
-> Cc: Yang Shi <shy828301@gmail.com>
-> Cc: Yin Fengwei <fengwei.yin@intel.com>
-> Cc: Yu Zhao <yuzhao@google.com>
-> Cc: Zi Yan <ziy@nvidia.com>
-> Signed-off-by: Barry Song <v-songbaohua@oppo.com>
+> Signed-off-by: Peter Collingbourne <pcc@google.com>
+> Link: https://linux-review.googlesource.com/id/Ib3e70c36c1d230dd0a118dc22649b33e768b9f88
 
-Reviewed-by: Ryan Roberts <ryan.roberts@arm.com>
+Acked-by: Oscar Salvador <osalvador@suse.de>
 
-> ---
->  mm/memory.c | 3 +++
->  1 file changed, 3 insertions(+)
-> 
-> diff --git a/mm/memory.c b/mm/memory.c
-> index c9c1031c2ecb..010e7bb20d2b 100644
-> --- a/mm/memory.c
-> +++ b/mm/memory.c
-> @@ -4353,6 +4353,9 @@ static struct folio *alloc_anon_folio(struct vm_fault *vmf)
->  
->  	pte_unmap(pte);
->  
-> +	if (!orders)
-> +		goto fallback;
-> +
->  	/* Try allocating the highest of the remaining orders. */
->  	gfp = vma_thp_gfp_mask(vma);
->  	while (orders) {
 
+-- 
+Oscar Salvador
+SUSE Labs
 
