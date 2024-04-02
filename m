@@ -1,154 +1,197 @@
-Return-Path: <linux-kernel+bounces-127585-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-127583-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8C121894DEF
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 10:50:54 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 70122894DEB
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 10:50:22 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 12369B23395
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 08:50:52 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 931AD1C225D9
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 08:50:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0659D5788B;
-	Tue,  2 Apr 2024 08:50:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 39BC95336D;
+	Tue,  2 Apr 2024 08:50:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b="PGVqg6pX"
-Received: from mail-ot1-f65.google.com (mail-ot1-f65.google.com [209.85.210.65])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="Uw95NDyf"
+Received: from mail-pj1-f51.google.com (mail-pj1-f51.google.com [209.85.216.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8680E56B99
-	for <linux-kernel@vger.kernel.org>; Tue,  2 Apr 2024 08:50:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.65
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C5F5F46B80
+	for <linux-kernel@vger.kernel.org>; Tue,  2 Apr 2024 08:50:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712047817; cv=none; b=EeE2F/ime7LrdQRsTenbO1AvHaHlfMXxfolkUuayBbvuxdbtshQDbaPfHShDQeJb6GT8mekXWwn0fJRf4z3q1hQR9LWg7CODkkjQzH0trSQ1duM8SvjXEpeIy8L41TcSvkzN0ghOLgq9ZnEB9Jq5H2uAmRIu3ejgs1Z1HHM4qBA=
+	t=1712047810; cv=none; b=HVTDhwofAQvQiP+u1dpScU0lGmQtCqerGiA6ORLrpQSJgaR8omWbX6hMzJW6gvhSThFffbIRWiLwwCOycjLoejbzUP2jCUyrBkAIzz4P5g7mROHEpE8DWeWLFEKLq84O+Xcw3uHbI+W2i7o1L1J+Vb2P0ngqnCTLH3XzRos+dx0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712047817; c=relaxed/simple;
-	bh=/4YkSTRdE7M7Xu8XMpog4hak/3PlwZ+3b3bqKoB55qo=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=usFZtWdsFks47iMvwqRRV3Gdziu6uLBuUVku9MKzgGZdl6ars/OY8qwApcscKMsw3eMBXeypXaNKX8iiPdY4SB5F8RyYqVr+YlhQxtxVSwVOkfyUQTuYG9oeoLtql2HzIHnySuM5kYahE/o9j2iSUGzq10jhKlRmgG/k1tyrgME=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com; spf=fail smtp.mailfrom=broadcom.com; dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b=PGVqg6pX; arc=none smtp.client-ip=209.85.210.65
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=broadcom.com
-Received: by mail-ot1-f65.google.com with SMTP id 46e09a7af769-6e0f43074edso3305874a34.1
-        for <linux-kernel@vger.kernel.org>; Tue, 02 Apr 2024 01:50:15 -0700 (PDT)
+	s=arc-20240116; t=1712047810; c=relaxed/simple;
+	bh=efnEV+jz+9UHrcY2jlfavBbD8PHpHnq48JZQ1nNzHus=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=G/LVLwENnYthyNziPhpJ2jCcSA0xeKw7WMnJrnrx7D9mSkQiz3i87hSbU7pGvAFoRBLP3BnOJxvflWWTx4TCsrCCfm9zDyaomeRsQ/7LUOQh1q7LNu5rvDFDnkbvKGN0HjIR0jhvIahC0G0wLdCrwzELZwQS8FL+8WrsRwQuB9o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=Uw95NDyf; arc=none smtp.client-ip=209.85.216.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-pj1-f51.google.com with SMTP id 98e67ed59e1d1-29f749b6667so3382633a91.0
+        for <linux-kernel@vger.kernel.org>; Tue, 02 Apr 2024 01:50:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google; t=1712047814; x=1712652614; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=Jc5qKirKkUEsGA81ePv/IEQCmdT5wmxUd63NYwufXHA=;
-        b=PGVqg6pX2i8bDe9YZ1wt+ROkmooz+OIQQkoUp6QqTud2NrbhSJihFvtaBLO4Nb38wR
-         QgLI1MZTkP1H5QWRNainq3fv7PcM1+6gApBwjOnC2MqYXJtRtzP2XM8bl9p+yce9Inhb
-         hT/9jQfUsEkqAkg5qxx8IePJwuQ52FnJdQan8=
+        d=linaro.org; s=google; t=1712047808; x=1712652608; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=cz7rwc4geH+1dxlJ323CGCG7tEqlqWjReSINIJGPJKU=;
+        b=Uw95NDyfLvUcd40aP83taY4Kfll3UA2QFAkPhfEH4R5selYNLNazDANvTtdm6mZ1fo
+         dEsZe6neuj0eItcvXJTFHP76s+66C+S7IlZatCHqV15I+j1LYDIJ8giavZAzrRluoLvQ
+         EDSvY8EgiOvLglj9BxI8QyAlh/T4mLvisHmiXFxufi8aEEekbO4zMksQvBxzdkWQGzoH
+         Rntwx5sfIEFyhsRjisSodhoLiEfLbeiyW6c1W+VVNykFtoiHuFc3apoZZlHEoaqqH//k
+         fQWlM75SqmGVi2CawulwUNldWlNn8Wddecc9pmpIBywYOsonuRSL1KUYKxPFMNe6Cyll
+         4avA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712047814; x=1712652614;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=Jc5qKirKkUEsGA81ePv/IEQCmdT5wmxUd63NYwufXHA=;
-        b=AX7gyR3zD8wFWVALltVVvrBpUUItzqSh40WLfjk34Qad1PB6nYuFzDlKwKlejG5E3U
-         PZ9wvEGgC+w00TMyvSylTWc1GHVKaIn3WnOmrk10GH1cvUhT45qimLvfS3rUPDybqsI5
-         ULxTHcLqt4W4DRzHUcDA7nKXP29FQ3BJidY1tA7wx06kWI+DpXyrkOKakDO1RYwc7WpE
-         kdhm/8hkgRwx+Z7FOv9FKuJJfzB2JjH2QqnWXogpDbS9g+4l0CaOBOcJE+WVhJgQYUcl
-         Dz4Pns60Hd+8PjUiNQuUgkox75pAUM1K0yUSZlY1VkZzSou0GVy5mNazWUfn3w2yjISI
-         nBig==
-X-Forwarded-Encrypted: i=1; AJvYcCXwpuENUtXw2dzyy/2liZF7eyXF9ckxLLxp443UFZg7uxcRREQI1tygfohT6o+sZP9DRTbBEWApWfxsofsTcTsGQpV0hS1sC7a4Lfw0
-X-Gm-Message-State: AOJu0Yy2F8XM5AgZ97ovXwhA5vtLqwf0XX4ok5ShirthH4UYPn8/pUD/
-	a9sh8wCDqasbkoE2zPBbqcapTvYo/2Noo4Xtt/+gHLMfZ+hMl1ZxzUYoQIWRDQ==
-X-Google-Smtp-Source: AGHT+IGAeogQj7OWBty6lfzImr9aptLfny9tqOJXUIZvSX740VF/rVNywUCKCnybxk/NBzbcGcioMQ==
-X-Received: by 2002:a54:4004:0:b0:3c3:de8b:7bdf with SMTP id x4-20020a544004000000b003c3de8b7bdfmr9601570oie.57.1712047814503;
-        Tue, 02 Apr 2024 01:50:14 -0700 (PDT)
-Received: from kashwindayan-virtual-machine.eng.vmware.com ([152.65.205.51])
-        by smtp.gmail.com with ESMTPSA id a5-20020a63e405000000b005dc36761ad1sm9193042pgi.33.2024.04.02.01.50.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 02 Apr 2024 01:50:14 -0700 (PDT)
-From: Ashwin Dayanand Kamat <ashwin.kamat@broadcom.com>
-To: stable@vger.kernel.org,
-	gregkh@linuxfoundation.org
-Cc: axboe@kernel.dk,
-	linux-block@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	ajay.kaher@broadcom.com,
-	alexey.makhalov@broadcom.com,
-	vasavi.sirnapalli@broadcom.com,
-	Min Li <min15.li@samsung.com>,
-	Damien Le Moal <dlemoal@kernel.org>,
-	Chaitanya Kulkarni <kch@nvidia.com>,
-	Christoph Hellwig <hch@lst.de>,
-	Ashwin Dayanand Kamat <ashwin.kamat@broadcom.com>
-Subject: [PATCH v5.10] block: add check that partition length needs to be aligned with block size
-Date: Tue,  2 Apr 2024 14:19:55 +0530
-Message-Id: <20240402084955.82273-1-ashwin.kamat@broadcom.com>
-X-Mailer: git-send-email 2.34.1
+        d=1e100.net; s=20230601; t=1712047808; x=1712652608;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=cz7rwc4geH+1dxlJ323CGCG7tEqlqWjReSINIJGPJKU=;
+        b=QMXCL75FQE/VdO+6cha/Fd0zSoGZcXO2Cuh2UL4iySfdqYAL/5rm329d5NLrwjwr5k
+         IAYX9MOl17iO0HJmpz/LVZwjI1qAqJP9Rgb11xEXDI+uUfBHhF5cJryUMMewj/fRmSWL
+         YbAZzDD0RiQqREbUzzofkfqcXXuuTMSTWZnfF6N4NDLzYCgvnWdDCCTx5J9n4sASAtWO
+         IERro4ZePrZAM38gH3xNcKr0ZHviyEoHJsrLleBglcbr51tNxXIr8WktiPFx/xZWZnhH
+         +DyBwc///9434lHwnL4QRzJxuPuXraOrqD7mlOJyV4ZdMBXcU65s9TENsBcTTz8p1byB
+         EEMQ==
+X-Forwarded-Encrypted: i=1; AJvYcCX9KaLrouzpSyTPRuAtVJqOfidjxlGekegKi+dX9mZCvqpX5SgziPm9St863fYWnq32RDTmKXtJ/RilRot962X/PDzBMaflrPHCivbt
+X-Gm-Message-State: AOJu0YzDTAW1Jmy3k9PJbQ7vnKJOD3O1RZpMjGklxVH4FHrAjzFY0PRr
+	VK6lrbsXAbt7bg45udG6H0r8iyAld+m16Jp/19StasJtNjNJGd0uv3k1cjwQul1tswYVl0Tz/HN
+	ax1QguFSf7XDAbB0nCmrCryxlxTYvSV9V8emM3g==
+X-Google-Smtp-Source: AGHT+IFvJQlp+Burer3fvv1JlHoCyo4mxNBegfM0FSNZz2/mzilX0eYZN2AjeoVWsWMpj5C+SKTCju0yQPQS6KLpi5k=
+X-Received: by 2002:a17:90b:46c6:b0:2a2:176f:fba9 with SMTP id
+ jx6-20020a17090b46c600b002a2176ffba9mr9417095pjb.43.1712047808026; Tue, 02
+ Apr 2024 01:50:08 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20240315015916.21545-1-daweilics@gmail.com> <ZgqOEJ5sCANkkk5N@linux.ibm.com>
+ <CAG5MgCq3GT=CVj7Hz8rUMfNG1c9ypVsTSDKNESHV9tY_qWSt2g@mail.gmail.com> <e7d5bec3-be2a-4eea-b946-7f1739b0b4d0@linux.ibm.com>
+In-Reply-To: <e7d5bec3-be2a-4eea-b946-7f1739b0b4d0@linux.ibm.com>
+From: Vincent Guittot <vincent.guittot@linaro.org>
+Date: Tue, 2 Apr 2024 10:49:56 +0200
+Message-ID: <CAKfTPtCVQ7ooRuN-OroK90GGa2T7=HyK3kovmvJcgojvJhbwPQ@mail.gmail.com>
+Subject: Re: [PATCH v2] sched/fair: fix initial util_avg calculation
+To: Vishal Chourasia <vishalc@linux.ibm.com>
+Cc: Dawei Li <daweilics@gmail.com>, Ingo Molnar <mingo@redhat.com>, 
+	Peter Zijlstra <peterz@infradead.org>, Juri Lelli <juri.lelli@redhat.com>, 
+	Dietmar Eggemann <dietmar.eggemann@arm.com>, Steven Rostedt <rostedt@goodmis.org>, 
+	Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>, 
+	Daniel Bristot de Oliveira <bristot@redhat.com>, Valentin Schneider <vschneid@redhat.com>, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-From: Min Li <min15.li@samsung.com>
+On Tue, 2 Apr 2024 at 10:44, Vishal Chourasia <vishalc@linux.ibm.com> wrote=
+:
+>
+> On 02/04/24 11:17 am, Dawei Li wrote:
+> > Hi Vishal
+> >
+> > Thanks for the comment!
+> > Do you suggest using scale_load_down() in place of se_weight()?
+> scale_load_down should be better.
 
-[ Upstream commit 6f64f866aa1ae6975c95d805ed51d7e9433a0016]
+se_weight is used for computing sched_entity's pelt signal so keep
+using it looks better but all this clearly just nitpick because that
+doesn't make any difference
 
-Before calling add partition or resize partition, there is no check
-on whether the length is aligned with the logical block size.
-If the logical block size of the disk is larger than 512 bytes,
-then the partition size maybe not the multiple of the logical block size,
-and when the last sector is read, bio_truncate() will adjust the bio size,
-resulting in an IO error if the size of the read command is smaller than
-the logical block size.If integrity data is supported, this will also
-result in a null pointer dereference when calling bio_integrity_free.
-
-Cc:  <stable@vger.kernel.org>
-Signed-off-by: Min Li <min15.li@samsung.com>
-Reviewed-by: Damien Le Moal <dlemoal@kernel.org>
-Reviewed-by: Chaitanya Kulkarni <kch@nvidia.com>
-Reviewed-by: Christoph Hellwig <hch@lst.de>
-Link: https://lore.kernel.org/r/20230629142517.121241-1-min15.li@samsung.com
-Signed-off-by: Jens Axboe <axboe@kernel.dk>
-Signed-off-by: Ashwin Dayanand Kamat <ashwin.kamat@broadcom.com>
----
- block/ioctl.c | 11 +++++++----
- 1 file changed, 7 insertions(+), 4 deletions(-)
-
-diff --git a/block/ioctl.c b/block/ioctl.c
-index e7eed7dad..c490d67fe 100644
---- a/block/ioctl.c
-+++ b/block/ioctl.c
-@@ -17,7 +17,7 @@ static int blkpg_do_ioctl(struct block_device *bdev,
- 			  struct blkpg_partition __user *upart, int op)
- {
- 	struct blkpg_partition p;
--	long long start, length;
-+	sector_t start, length;
- 
- 	if (!capable(CAP_SYS_ADMIN))
- 		return -EACCES;
-@@ -32,6 +32,12 @@ static int blkpg_do_ioctl(struct block_device *bdev,
- 	if (op == BLKPG_DEL_PARTITION)
- 		return bdev_del_partition(bdev, p.pno);
- 
-+	if (p.start < 0 || p.length <= 0 || p.start + p.length < 0)
-+		return -EINVAL;
-+	/* Check that the partition is aligned to the block size */
-+	if (!IS_ALIGNED(p.start | p.length, bdev_logical_block_size(bdev)))
-+		return -EINVAL;
-+
- 	start = p.start >> SECTOR_SHIFT;
- 	length = p.length >> SECTOR_SHIFT;
- 
-@@ -46,9 +52,6 @@ static int blkpg_do_ioctl(struct block_device *bdev,
- 
- 	switch (op) {
- 	case BLKPG_ADD_PARTITION:
--		/* check if partition is aligned to blocksize */
--		if (p.start & (bdev_logical_block_size(bdev) - 1))
--			return -EINVAL;
- 		return bdev_add_partition(bdev, p.pno, start, length);
- 	case BLKPG_RESIZE_PARTITION:
- 		return bdev_resize_partition(bdev, p.pno, start, length);
--- 
-2.35.6
-
+> > It's a soft bug we should fix one way or another before what the
+> > comment mentions really happens.
+> IIUC, We should be moving towards using full load resolution
+> for all the calculations. In that case, we need not worry about scaling l=
+oad at
+> all. Maybe someone could provide context here.
+>
+> > I am actually confused that we have both se_weight() and
+> > scale_load_down(), and they do the same thing.
+> >
+> > Best regards,
+> > Dawei
+> >
+> > On Mon, Apr 1, 2024 at 3:36=E2=80=AFAM Vishal Chourasia <vishalc@linux.=
+ibm.com> wrote:
+> >>
+> >> On Thu, Mar 14, 2024 at 06:59:16PM -0700, Dawei Li wrote:
+> >>> Change se->load.weight to se_weight(se) in the calculation for the
+> >>> initial util_avg to avoid unnecessarily inflating the util_avg by 102=
+4
+> >>> times.
+> >>>
+> >>> The reason is that se->load.weight has the unit/scale as the scaled-u=
+p
+> >>> load, while cfs_rg->avg.load_avg has the unit/scale as the true task
+> >>> weight (as mapped directly from the task's nice/priority value). With
+> >>> CONFIG_32BIT, the scaled-up load is equal to the true task weight. Wi=
+th
+> >>> CONFIG_64BIT, the scaled-up load is 1024 times the true task weight.
+> >>> Thus, the current code may inflate the util_avg by 1024 times. The
+> >>> follow-up capping will not allow the util_avg value to go wild. But t=
+he
+> >>> calculation should have the correct logic.
+> >>>
+> >>> Signed-off-by: Dawei Li <daweilics@gmail.com>
+> >>> ---
+> >>> Changes in v2:
+> >>> - update the commit message
+> >>> ---
+> >>>  kernel/sched/fair.c | 5 +++--
+> >>>  1 file changed, 3 insertions(+), 2 deletions(-)
+> >>>
+> >>> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+> >>> index a19ea290b790..5f98f639bdb9 100644
+> >>> --- a/kernel/sched/fair.c
+> >>> +++ b/kernel/sched/fair.c
+> >>> @@ -1031,7 +1031,8 @@ void init_entity_runnable_average(struct sched_=
+entity *se)
+> >>>   * With new tasks being created, their initial util_avgs are extrapo=
+lated
+> >>>   * based on the cfs_rq's current util_avg:
+> >>>   *
+> >>> - *   util_avg =3D cfs_rq->util_avg / (cfs_rq->load_avg + 1) * se.loa=
+d.weight
+> >>> + *   util_avg =3D cfs_rq->avg.util_avg / (cfs_rq->avg.load_avg + 1)
+> >>> + *           * se_weight(se)
+> >>>   *
+> >>>   * However, in many cases, the above util_avg does not give a desire=
+d
+> >>>   * value. Moreover, the sum of the util_avgs may be divergent, such
+> >>> @@ -1078,7 +1079,7 @@ void post_init_entity_util_avg(struct task_stru=
+ct *p)
+> >>>
+> >>>       if (cap > 0) {
+> >>>               if (cfs_rq->avg.util_avg !=3D 0) {
+> >>> -                     sa->util_avg  =3D cfs_rq->avg.util_avg * se->lo=
+ad.weight;
+> >>> +                     sa->util_avg  =3D cfs_rq->avg.util_avg * se_wei=
+ght(se);
+> >> Hi,
+> >>
+> >> The comment above the declaration of se_weight function says we should=
+ be
+> >> using full load resolution and get rid of this helper.
+> >>
+> >> Should we be adding new user of the helper?
+> >>
+> >> /*
+> >>  * XXX we want to get rid of these helpers and use the full load resol=
+ution.
+> >>  */
+> >> static inline long se_weight(struct sched_entity *se)
+> >> {
+> >>         return scale_load_down(se->load.weight);
+> >> }
+> >>
+> >>
+> >>>                       sa->util_avg /=3D (cfs_rq->avg.load_avg + 1);
+> >>>
+> >>>                       if (sa->util_avg > cap)
+> >>> --
+> >>> 2.40.1
+> >>>
+>
 
