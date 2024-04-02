@@ -1,138 +1,124 @@
-Return-Path: <linux-kernel+bounces-127947-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-127948-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5E4CF89532B
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 14:36:48 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5053989532D
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 14:37:10 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1736E284BD6
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 12:36:47 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8118E1C2311D
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 12:37:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7E60983CC5;
-	Tue,  2 Apr 2024 12:35:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9C45279B87;
+	Tue,  2 Apr 2024 12:36:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Sc4zse2B"
-Received: from mail-ed1-f50.google.com (mail-ed1-f50.google.com [209.85.208.50])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="U80+1NCT"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.15])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 161F37829B;
-	Tue,  2 Apr 2024 12:35:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1F912335A7;
+	Tue,  2 Apr 2024 12:36:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.15
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712061353; cv=none; b=RVv2QFIEj4d26YIYIpXx4CjPqnNJBhVm7qDHkQvwVvOpo+w1O7HXciGbE/WiJgEckfXB+v+n5JZXmodErCUL5J3JoU1vLN6+ebXUF9vW9CfT9xMH4JwRVXsrK6DAH9++Fg/XvNjb3xX9lqgrOZz3pEdlWerQDuvZlESUs3Rjd1Y=
+	t=1712061389; cv=none; b=Uz6UFLcD4DYLB6ITcC9MpH+UuiPuvDnro5Dy1Xd6uLP7VyooHv1/2U97BuwnZYfbJI8Ayn5byRaXQX6oKuf88Ygav0dbO7gB8gdOWM32OMP95//o6Jjc7IY2g+u46hwaQ/y4rHhGmrYN+KtfA4lju2y5ZE0YqbGp6cwLmJxxrA4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712061353; c=relaxed/simple;
-	bh=QGWIv2WWvyCrLtr4xkkotCp2unFTxp9w1QhuXHQjPO8=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=W58O5A4wzGbi/gV8rF5d39qDzai33GHRPs9WV9Lqwn0sJrjeoDwAcGalq4r0xZDaZOTnQEZkyk6KBytqfi+hE0hAPWTIOOBCIoCnqlyTdY3hIDkz5Tev813G0FarONjaX5ApyUnRWFUlBNwOXXGyFhu6jgnWuEzrSP8Lx/BPF94=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Sc4zse2B; arc=none smtp.client-ip=209.85.208.50
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f50.google.com with SMTP id 4fb4d7f45d1cf-565c6cf4819so9770651a12.1;
-        Tue, 02 Apr 2024 05:35:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1712061350; x=1712666150; darn=vger.kernel.org;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=1cpmHlgTYvdBo5BqX4Qj555ThK3EAgjQXbR8aGueU4U=;
-        b=Sc4zse2B1UIYq2YXLq8YAUhTIqrlQrXY7ocaKvSKbkgQCJatVaa5IJ48DTvA5P67Z3
-         zVDCUAnPTP0SsqLdLMFKkoppukCW2rbpQREzgT2xxvl6EFFrn+lf5+pv5z25QXVzoC9R
-         tdqxqXk1kfoWbP4OENQpN/1AHeW5F6KV2qIksmBK7veAQPgjHsn/uIGG6cNwwSEBaZ8J
-         LbkGAA+1Dx6OIBmRwGT7+53NkeocY2LZ53zT1ng8RcgD19RSTV5oNeEq87Fe9fV+Q0Ph
-         k4vCUqoyjLlelv2I3VCSif4i+sPL0f/rul43NQnRIz5CEsRghYcvN1bJrs/xg+vcjt+m
-         hmaw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712061350; x=1712666150;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=1cpmHlgTYvdBo5BqX4Qj555ThK3EAgjQXbR8aGueU4U=;
-        b=H7aMbCDSiyVShG4QUKMcdBqH3zxzCszEnJahzRU31n5VNe55ws7U/+SiijBVqiwRhg
-         KlnT2oeNcnch5NG1O1p8K2lBiTYmUGFqgbrFbDSRBMsumMwQr9U4OQDVlqfXusrmMJJ9
-         NBryHn4gmIW/tL1WLpCX3ZYZeEPWwrqXvcWSn8p14H41vyskSfq3whqQ7g73HH6hcWVJ
-         64+sZ30VQMMXeP2AwYqYGT4TG7Ezkiqs+g/gg1dAf+e2KEUHv01X25xsjO8E6/BAq9Xq
-         lak0PnAXJLamdUbFTx8YA66T4Z0NL910Hf2XLF0SXj0TvBuJckwmRtMrPqmFBCNml59k
-         CstQ==
-X-Forwarded-Encrypted: i=1; AJvYcCW0+sockB+mmtsgTvHLf4K9695kltqzew8Z1ELd4tzh1M8XkGo+68vMiauHGl7Qqrh5Gq4MoQndQg+ySDvgIIxsl6TK5DD74iUCDPH3DtrRlFCjVNLdtI7rmnX0+cZhPWZ/dBl46MF8bQL63hS3fNhHR/NId2/0HJkOBunyb9LQiYdBpJLmkPQ=
-X-Gm-Message-State: AOJu0Yyr9gjuQ01y0n9SmDpx6OkNRLwAuOYMOVMQZPYhaJG68xjKcBee
-	v8YMF1KgHdO1f7YiwpAyzPIm7h6QVPlftKS8kIj5pb7AI/bAx5WgG2USVVCE5iY=
-X-Google-Smtp-Source: AGHT+IHUmVMD2FluIhr5k+EwxnCdR9bLzUngmN30gx8pzy2d+rsyrBAY+OZ6dbnVYL8kqsJgXMospg==
-X-Received: by 2002:a17:906:714a:b0:a4e:f91:4694 with SMTP id z10-20020a170906714a00b00a4e0f914694mr13159492ejj.27.1712061350286;
-        Tue, 02 Apr 2024 05:35:50 -0700 (PDT)
-Received: from [127.0.0.1] (net-93-65-126-18.cust.vodafonedsl.it. [93.65.126.18])
-        by smtp.googlemail.com with ESMTPSA id x18-20020a1709060a5200b00a46ab3adea5sm6467506ejf.113.2024.04.02.05.35.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 02 Apr 2024 05:35:50 -0700 (PDT)
-From: Gianluca Boiano <morf3089@gmail.com>
-Date: Tue, 02 Apr 2024 14:35:44 +0200
-Subject: [PATCH 3/3] dt-bindings: leds: leds-qcom-lpg: Add support for
- PMI8950 PWM
+	s=arc-20240116; t=1712061389; c=relaxed/simple;
+	bh=LSeP6HN3z5K0OrmN8QMXYgQgBRdsW+fePyJf3hdOeBM=;
+	h=From:Date:To:cc:Subject:In-Reply-To:Message-ID:References:
+	 MIME-Version:Content-Type; b=SclKaaRfzdLQO6+D6GqrvbHmebeEmCUKi53DdOS1eV2cTKw+sN0mgNWrpgvjzF0X54pY4Y86YGHL8MdhyQkPUXCW8tJpHNo3L7XM6AULzSsE7cIJIp9JZ+HkI8wh4/Q/MLA2UYIlaWse04cAYfzSjPXB2T/+ceZhxcv3E2dtslY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=U80+1NCT; arc=none smtp.client-ip=192.198.163.15
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1712061388; x=1743597388;
+  h=from:date:to:cc:subject:in-reply-to:message-id:
+   references:mime-version;
+  bh=LSeP6HN3z5K0OrmN8QMXYgQgBRdsW+fePyJf3hdOeBM=;
+  b=U80+1NCTpJVptOlpbA3DqcvAx+wofy2mw5B3N9faYVVPXlAQjtLIdOAn
+   XFB9A5ILVhWkTYlT68wVOUsGGQoLeBnjTD5KdRMIcIc4ugeSAVztp4/Ok
+   D35oNtaR9Ut0TXad2h4C/SF954O9PsQ0/OvZFwlFrgdgG0C+5xmDA1Kwu
+   0fO3f009gwTTMxtY+WAJPXV4+0Scss/3dCYFjxdeJsqaBdq7QPcckTjQm
+   aYGr+sSZRJS4J2ZE1Y+ixEuDZjesJ0t8wwiOy2PRo0C+awxdiat0duKn/
+   qpat3cOgwBIYU+l61YjdBhT3MeDTJI/caIalLfQyacwlmTYlKS1/eZ1WN
+   g==;
+X-CSE-ConnectionGUID: o0qCbYu6R3ioGQ3VYgVAWA==
+X-CSE-MsgGUID: MAd9wtCLSxuCRZ96H8jq/g==
+X-IronPort-AV: E=McAfee;i="6600,9927,11031"; a="7415864"
+X-IronPort-AV: E=Sophos;i="6.07,174,1708416000"; 
+   d="scan'208";a="7415864"
+Received: from fmviesa005.fm.intel.com ([10.60.135.145])
+  by fmvoesa109.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Apr 2024 05:36:27 -0700
+X-CSE-ConnectionGUID: bpp0ap3QQ02FGnbHYhaZeg==
+X-CSE-MsgGUID: OGqpTPEnRY6nrhf+1VUPGw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,174,1708416000"; 
+   d="scan'208";a="22507089"
+Received: from ijarvine-desk1.ger.corp.intel.com (HELO localhost) ([10.245.247.23])
+  by fmviesa005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Apr 2024 05:36:24 -0700
+From: =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
+Date: Tue, 2 Apr 2024 15:36:21 +0300 (EEST)
+To: Maxim Korotkov <korotkov.maxim.s@gmail.com>
+cc: Armin Wolf <W_Armin@gmx.de>, Kenneth Chan <kenneth.t.chan@gmail.com>, 
+    Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>, 
+    Len Brown <len.brown@intel.com>, 
+    Henrique de Moraes Holschuh <hmh@hmh.eng.br>, 
+    Harald Welte <laforge@gnumonks.org>, Matthew Garrett <mjg@redhat.com>, 
+    Ivan Kapranov <i.kapranov@securitycode.ru>, lvc-project@linuxtesting.org, 
+    platform-driver-x86@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] platform/x86: panasonic-laptop: fix NULL dereference
+In-Reply-To: <9c4cfaf8-7738-4ba8-951e-5b91a3414f37@gmail.com>
+Message-ID: <ab04ebea-235b-e3ec-5982-e1f7907bcc64@linux.intel.com>
+References: <20240328103518.169604-1-korotkov.maxim.s@gmail.com> <da442a04-9db8-4951-98b4-3e149ea06415@gmx.de> <9c4cfaf8-7738-4ba8-951e-5b91a3414f37@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20240402-pmi8950-pwm-support-v1-3-1a66899eeeb3@gmail.com>
-References: <20240402-pmi8950-pwm-support-v1-0-1a66899eeeb3@gmail.com>
-In-Reply-To: <20240402-pmi8950-pwm-support-v1-0-1a66899eeeb3@gmail.com>
-To: Pavel Machek <pavel@ucw.cz>, Lee Jones <lee@kernel.org>, 
- Bjorn Andersson <andersson@kernel.org>, 
- Konrad Dybcio <konrad.dybcio@linaro.org>, Rob Herring <robh@kernel.org>, 
- Krzysztof Kozlowski <krzk+dt@kernel.org>, 
- Conor Dooley <conor+dt@kernel.org>
-Cc: linux-leds@vger.kernel.org, linux-kernel@vger.kernel.org, 
- linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org, 
- Gianluca Boiano <morf3089@gmail.com>
-X-Mailer: b4 0.13.0
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1712061344; l=1158;
- i=morf3089@gmail.com; s=20240402; h=from:subject:message-id;
- bh=QGWIv2WWvyCrLtr4xkkotCp2unFTxp9w1QhuXHQjPO8=;
- b=K3FDOdLTXCrHYVq2laeBVzZJD6MHFNiwfQA9ZD2q523SR3ZZFWZ8TE7yT88PodZFbgYksusEo
- UtWqtgYf1e5ASs8lV6Svh+AoZsdGj+EtPcQ33pPYA5GDgKfOeizR/Ue
-X-Developer-Key: i=morf3089@gmail.com; a=ed25519;
- pk=HsGrEQ3ia8BGGGO8/nUM2K2UX9JKvRPV+nbrVDGrYhA=
+Content-Type: text/plain; charset=US-ASCII
 
-Update leds-qcom-lpg binding to support PMI8950 PWM.
+On Fri, 29 Mar 2024, Maxim Korotkov wrote:
+> On 29.03.2024 03:21, Armin Wolf wrote:
+> > > Added a pointer check to ensure that it is valid
+> > > before using it for pcc initialization.
+> > 
+> > is this check even needed? I think the ACPI driver core takes care
+> > of passing a valid ACPI device pointer to acpi_pcc_hotkey_remove().
+> 
+> I proceeded from the assumption that the current check was not redundant.
+> Kuppuswamy correctly noted in the message that the device would most likely be
+> valid for the function of removal.
+> 
+> However, in my opinion, checking for NULL is a good coding practice, and has
+> now been implemented incorrectly in this case.
+> 
+> Eliminating NULL checks could potentially cause bugs in this context.
 
-Signed-off-by: Gianluca Boiano <morf3089@gmail.com>
----
- Documentation/devicetree/bindings/leds/leds-qcom-lpg.yaml | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+Hi,
 
-diff --git a/Documentation/devicetree/bindings/leds/leds-qcom-lpg.yaml b/Documentation/devicetree/bindings/leds/leds-qcom-lpg.yaml
-index 7b9e0ad1ecaa..8b82c45d1a48 100644
---- a/Documentation/devicetree/bindings/leds/leds-qcom-lpg.yaml
-+++ b/Documentation/devicetree/bindings/leds/leds-qcom-lpg.yaml
-@@ -27,6 +27,7 @@ properties:
-           - qcom,pm8994-lpg
-           - qcom,pmc8180c-lpg
-           - qcom,pmi632-lpg
-+          - qcom,pmi8950-pwm
-           - qcom,pmi8994-lpg
-           - qcom,pmi8998-lpg
-           - qcom,pmk8550-pwm
-@@ -146,6 +147,7 @@ allOf:
-               - qcom,pm8941-lpg
-               - qcom,pm8994-lpg
-               - qcom,pmc8180c-lpg
-+              - qcom,pmi8950-pwm
-               - qcom,pmi8994-lpg
-               - qcom,pmi8998-lpg
-               - qcom,pmk8550-pwm
-@@ -294,5 +296,3 @@ examples:
-         label = "blue";
-       };
-     };
--
--...
+If you're going to be submitting patches based on some automated tool 
+which finds "bugs" in kernel, you need to be ready to go through the hoops 
+of the review process and not just assume the patches are good as is.
+
+We do not do pointless NULL checks in the kernel, this is not a matter of 
+opinion. If there are unnecessary NULL checks, they should to be 
+eventually removed (and definitely not used as an excuse to add more).
+
+If the NULL check is not required as was implied to you by the reviewers, 
+the correct response is to go check that the what the reviewers pointed 
+out is true and _adapt_ the patch based on that. Then send a v2 of the 
+patch. It how the kernel development process works. You might sometimes 
+find the reviewers are wrong too, if that happens you can come back and 
+point out why the patch is correct.
+
+Either removing that check adds a bug or it doesn't. Not "potentially" 
+which is just an excuse for not wanting to figure it out from the code.
+It takes time and significant effort, I know, but spending time is 
+required if you want to participate in the kernel development.
 
 -- 
-2.44.0
+ i.
 
 
