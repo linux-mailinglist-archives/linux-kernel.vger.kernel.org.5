@@ -1,77 +1,124 @@
-Return-Path: <linux-kernel+bounces-127766-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-127767-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1847A8950A1
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 12:46:42 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9CA188950A5
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 12:47:23 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2F8711C2306D
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 10:46:41 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3717E1F2236E
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 10:47:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5DC145FB98;
-	Tue,  2 Apr 2024 10:46:33 +0000 (UTC)
-Received: from smtpbg153.qq.com (smtpbg153.qq.com [13.245.218.24])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 690645F873;
+	Tue,  2 Apr 2024 10:47:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="maHAiFEF"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 15E305E093;
-	Tue,  2 Apr 2024 10:46:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=13.245.218.24
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3CE4E39852;
+	Tue,  2 Apr 2024 10:47:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712054792; cv=none; b=iPbvWtBGGba58II9fXQIRMYh0QltGcWlKX/xUTFpNXQjjTS6oAjqrhcYcWGWW744sa463ycgmUw9busEkCkdq0KCjIHL8R+BrTDQWhvsbI1jszQNTYoJ7bc3y5SPDSU+zw2HgHFX8YcFHLhAM5YPbhFgrspoTd4v4aQhDB+e8o8=
+	t=1712054835; cv=none; b=d6JSTt3+YbMioCjEBFfdHzmv5z9/1fg1mEefaO5qkx5jc8k/codKGUN7YMznwS+SbtwJnSRFF4om4jBd4HaGDnqn0+c5wlNSDF0AZL18x4cv3N1A8Y5yWa/bZmwJuQky1OMRokJSLW3fTHj0gQ0XnhkXe6wAICftqzobtHFafeg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712054792; c=relaxed/simple;
-	bh=BwFIqznhYSYPd8an0Q2AyYq224PV4XlpCYp/tz+LHdU=;
-	h=From:To:Cc:Subject:Mime-Version:Content-Type:Date:Message-ID:
-	 References:In-Reply-To; b=gZP0ssFXjePsGSTPXvmbv2ko0J23v2ojk9g163d18WwaBz3cGbIkUCb+VZkgp249ceK9LxMQSX8qo+pJvl6Tjtf+ZKMAhC+AJFg91QTQLAbD6xl1m+1CRasuY6CjRusbGLAcPfVZnBuX7Vo4ZL4TnwZ/ylvc/y4RsSHWZm6nf8Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=uniontech.com; spf=pass smtp.mailfrom=uniontech.com; arc=none smtp.client-ip=13.245.218.24
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=uniontech.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=uniontech.com
-X-QQ-GoodBg: 1
-X-QQ-SSF: 00400000000000F0
-X-QQ-XMRINFO: M/715EihBoGSf6IYSX1iLFg=
-X-QQ-FEAT: +ynUkgUhZJkXJ2GkVrAA9ITwCMeqGEJyg7gbtaR1iiaMCqpI6vaifUXdwjFYG
-	5U1zWO3XFcFaZ62i3wALBksaW6ZaL1uoFOV0eBC9Y7tpf6+apvRrZ7cES1KFu2PW59/go/k
-	WQ8pAOp73PrC5E/iWVNf68gxgIzYAkzuZvoz19mwB+j2ebVefaAzbUGnkTs+b+IQg/rpf2T
-	6omaPTc5D/nODZkslWljv/UPRXGjvWYkpDzd3D9dUH7U4r7S1Rgn9LKzhXGxVu7I95HgxWt
-	hcaLd3NEE8pG2KklyhD1azaU/MMS/Xy6Z1dQ6t97MvdZ1Q0fFU9XrhNnQpiXhT/ZzHq3Ju4
-	hRRGffWAnX+irMmcl4Q4aa+vhAIKMzI5bkzF+9TN2Ef7YNk0sT9BlpX68pPHw==
-X-QQ-BUSINESS-ORIGIN: 2
-X-QQ-Originating-IP: B4F1NIpmc8L+ioATNeMek/eIAECDvCDomBf9TwzzcB8=
-X-QQ-STYLE: 
-X-QQ-mid: t5gz7a-2t1712054752t2506555
-From: "=?utf-8?B?V2VudGFvIEd1YW4=?=" <guanwentao@uniontech.com>
-To: "=?utf-8?B?WGkgUnVveWFv?=" <xry111@xry111.site>, "=?utf-8?B?emhhb3RpYW5ydWk=?=" <zhaotianrui@loongson.cn>
-Cc: "=?utf-8?B?bG9vbmdhcmNo?=" <loongarch@lists.linux.dev>, "=?utf-8?B?bGludXgta2VybmVs?=" <linux-kernel@vger.kernel.org>, "=?utf-8?B?546L5pix5Yqb?=" <wangyuli@uniontech.com>, "=?utf-8?B?a3Zt?=" <kvm@vger.kernel.org>
-Subject: Re: [PATCH] LoongArch: KVM: Remove useless MODULE macro for MODULE_DEVICE_TABLE
+	s=arc-20240116; t=1712054835; c=relaxed/simple;
+	bh=k022nX6/YPPR4BsOYglV2JlAfDksERSZMxLVjKjzuAU=;
+	h=From:Date:To:cc:Subject:In-Reply-To:Message-ID:References:
+	 MIME-Version:Content-Type; b=qNXmF46radDhNaMkJzK7VwN/BaLjHnQLBmGJfOnqRcCn/EW/B+ZzfBik+Uvl6CZkmh+5lPlTGiYm3Yu9EP9WzcssGpRd0vbQNxbRnv3o7hZ2gimsk0mvQngj+hv73Iu+0oANZkj1aM0G7EnEwZ9wdutnb3iCZXagdhYU5+tO/5s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=maHAiFEF; arc=none smtp.client-ip=192.198.163.18
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1712054834; x=1743590834;
+  h=from:date:to:cc:subject:in-reply-to:message-id:
+   references:mime-version;
+  bh=k022nX6/YPPR4BsOYglV2JlAfDksERSZMxLVjKjzuAU=;
+  b=maHAiFEFLN4zS7kEi2cO9UyJSfVFTnmzqUCiaFUj4Qc9ItKQKonVIWMC
+   +TuLpoAvsnikacB7cgm0gCfcatawxS1bZ+rcHAkDovLLRWSUAZt6pswid
+   Cuq8MiN6iRn+kN+2H0OOXfuGxZ62n8Qwazmu4wlf4tYufQXUcmYszfHoc
+   sl7C0PoOfmDy8AA7PgOg1NZxh4WqyoPXh38/UfxjGJwlHqptx+lNQ8KW+
+   3VS4PNWeJsRb91ADgitvtiI5qd2RNpfttD7cb0fE0LbtzHrOFUk8Z2D4F
+   xnHPPVkRtdztix6pGAPdaGWj9cGSZHOrFCckwWlTfgdGahzKlUeUyaJzK
+   A==;
+X-CSE-ConnectionGUID: pOdqULfMQJu2HEFKRwA0GA==
+X-CSE-MsgGUID: 02SfIspGS4CMQVu17wv7RQ==
+X-IronPort-AV: E=McAfee;i="6600,9927,11031"; a="7056453"
+X-IronPort-AV: E=Sophos;i="6.07,174,1708416000"; 
+   d="scan'208";a="7056453"
+Received: from orviesa010.jf.intel.com ([10.64.159.150])
+  by fmvoesa112.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Apr 2024 03:47:13 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,174,1708416000"; 
+   d="scan'208";a="17857033"
+Received: from ijarvine-desk1.ger.corp.intel.com (HELO localhost) ([10.245.247.23])
+  by orviesa010-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Apr 2024 03:47:12 -0700
+From: =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
+Date: Tue, 2 Apr 2024 13:47:08 +0300 (EEST)
+To: "Luke D. Jones" <luke@ljones.dev>
+cc: Hans de Goede <hdegoede@redhat.com>, corentin.chary@gmail.com, 
+    platform-driver-x86@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v2 4/9] platform/x86: asus-wmi: support toggling POST
+ sound
+In-Reply-To: <20240402022607.34625-5-luke@ljones.dev>
+Message-ID: <0c8635b9-db16-9125-63bc-7761800e3e96@linux.intel.com>
+References: <20240402022607.34625-1-luke@ljones.dev> <20240402022607.34625-5-luke@ljones.dev>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Type: text/plain;
-	charset="utf-8"
-Content-Transfer-Encoding: base64
-Date: Tue, 2 Apr 2024 10:45:51 +0000
-X-Priority: 3
-Message-ID: <tencent_411F127936C0F14A261A445E@qq.com>
-X-QQ-MIME: TCMime 1.0 by Tencent
-X-Mailer: QQMail 2.x
-X-QQ-Mailer: QQMail 2.x
-References: <20240402103942.20049-1-guanwentao@uniontech.com>
-	<453b49801d789523f7366507d1620728315b1097.camel@xry111.site>
-In-Reply-To: <453b49801d789523f7366507d1620728315b1097.camel@xry111.site>
-X-QQ-ReplyHash: 4178647614
-X-BIZMAIL-ID: 486678769786288338
-X-QQ-SENDSIZE: 520
-Received: from qq.com (unknown [127.0.0.1])
-	by smtp.qq.com (ESMTP) with SMTP
-	id ; Tue, 02 Apr 2024 18:45:53 +0800 (CST)
-Feedback-ID: t:uniontech.com:qybglogicsvrgz:qybglogicsvrgz8a-1
+MIME-Version: 1.0
+Content-Type: multipart/mixed; boundary="8323328-1894852132-1712054828=:1019"
 
-T0ssIGl0IHdpbGwgcmVzZW5kIGluIFBBVENIIFYyLg0KSSBoYXZlIGEgbWlzdGFrZSB0byBu
-b3QgYWRkICJfX21heWJlX3VudXNlZCIgaW4gY3B1X2ZlYXR1cmUgc3RydWN0dXJlLg==
+  This message is in MIME format.  The first part should be readable text,
+  while the remaining parts are likely unreadable without MIME-aware tools.
 
+--8323328-1894852132-1712054828=:1019
+Content-Type: text/plain; charset=ISO-8859-15
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+
+On Tue, 2 Apr 2024, Luke D. Jones wrote:
+
+> Add support for toggling the BIOS POST sound on some ASUS laptops.
+>=20
+> Signed-off-by: Luke D. Jones <luke@ljones.dev>
+> ---
+>  .../ABI/testing/sysfs-platform-asus-wmi       |  9 ++++
+>  drivers/platform/x86/asus-wmi.c               | 51 +++++++++++++++++++
+>  include/linux/platform_data/x86/asus-wmi.h    |  3 ++
+>  3 files changed, 63 insertions(+)
+>=20
+> diff --git a/Documentation/ABI/testing/sysfs-platform-asus-wmi b/Document=
+ation/ABI/testing/sysfs-platform-asus-wmi
+> index ef1ac1a20a71..41b92e53e88a 100644
+> --- a/Documentation/ABI/testing/sysfs-platform-asus-wmi
+> +++ b/Documentation/ABI/testing/sysfs-platform-asus-wmi
+> @@ -194,3 +194,12 @@ Contact:=09"Luke Jones" <luke@ljones.dev>
+>  Description:
+>  =09=09Set the target temperature limit of the Nvidia dGPU:
+>  =09=09=09* min=3D75, max=3D87
+> +
+> +What:=09=09/sys/devices/platform/<platform>/boot_sound
+> +Date:=09=09Apr 2024
+> +KernelVersion:=096.10
+> +Contact:=09"Luke Jones" <luke@ljones.dev>
+> +Description:
+> +=09=09Set if the BIOS POST sound is played on boot.
+> +=09=09=09* 0 - False,
+> +=09=09=09* 1 - True
+> \ No newline at end of file
+
+Add the last newline please.
+
+After fixing that, please add:
+
+Reviewed-by: Ilpo J=E4rvinen <ilpo.jarvinen@linux.intel.com>
+
+
+--=20
+ i.
+--8323328-1894852132-1712054828=:1019--
 
