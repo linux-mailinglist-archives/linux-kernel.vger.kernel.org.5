@@ -1,109 +1,200 @@
-Return-Path: <linux-kernel+bounces-127733-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-127751-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id CE1BD895026
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 12:34:11 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8B59A89506F
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 12:39:35 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 89E39284A8D
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 10:34:10 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AEE8E1C21CB9
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 10:39:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C01A25EE82;
-	Tue,  2 Apr 2024 10:33:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4C4F085926;
+	Tue,  2 Apr 2024 10:35:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="GI7y1VqX"
-Received: from mail-yw1-f178.google.com (mail-yw1-f178.google.com [209.85.128.178])
+	dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b="qn4PmMW3"
+Received: from mail-wr1-f52.google.com (mail-wr1-f52.google.com [209.85.221.52])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 985223EA72
-	for <linux-kernel@vger.kernel.org>; Tue,  2 Apr 2024 10:33:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6ADBE84FAD
+	for <linux-kernel@vger.kernel.org>; Tue,  2 Apr 2024 10:35:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712054038; cv=none; b=EyaUpaIVSKcR5tHer4RF1LSgnlt9Fk0B7mMRVUa0pdgqPZimkwcLoGBj3ppdEiV8/s242BlyjgNz4O1cDdCVOjS2szaOwlmfHS700TyTv/1MIiUZhMzb/L1kT4k1iAugOTxmIz9s+sw4gd7AeqXs4+Ubk3hpCGT3KTikvpW1vKA=
+	t=1712054133; cv=none; b=CofpiQGloJQ0p2eZNKeMrV5ciCja+o2od+ZQFgUchzSKnOOj/sFAiHZ13PPyQ3LV2rhsUzzNTfNdtUzpDNZ4BW4rJvma3rzUmX1+/jISSbbo6IFiXIlcU+6Sn9Gekf8EaCYgny81H5iNiJlTU/DmdrlEg98uIPcMoH3BU/w0Ztg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712054038; c=relaxed/simple;
-	bh=qu9ShLrPQMIkNvbhjhLBUtPyucHuzPdWe9LUMWcl8vo=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=s23tkW+/VxRpKxZ7M2WhZ+/Qy4xU07PdVK1MDWIY1arnipOzVzUaGTpYmc0ShVhAoqzDU9CrdxeIjDIXrW6OL0WeiT0MV9iVmINvRU3SHaUJ8ZMdVz5dqyf+W9LcRM1wV1PbmYSM50rOlZpy87OA9krztBxYd1gY3uvNkzNUUsQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=GI7y1VqX; arc=none smtp.client-ip=209.85.128.178
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-yw1-f178.google.com with SMTP id 00721157ae682-6151d2489b4so6960337b3.0
-        for <linux-kernel@vger.kernel.org>; Tue, 02 Apr 2024 03:33:56 -0700 (PDT)
+	s=arc-20240116; t=1712054133; c=relaxed/simple;
+	bh=JqK9X2irpyaetN9XKh1gA7fVuUNk/TXTEORE3XbD6OA=;
+	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
+	 In-Reply-To:To:Cc; b=SaaNxu+/iT3D1DsGykXFiK8FAADMmA576Y8GufO9CP3rPjm4zLpgGqKqDrxrqYHsuaFzLIrzEKqxqXhSdLn3x8HaHFd8CMVNdBk2n8X/IQkxJ6bENXecNOA3eJJNkr36tKch5f4X31C4vLzDSqvEtFxC5Fp4KpHsCjX8YK1VLX0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com; spf=pass smtp.mailfrom=baylibre.com; dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b=qn4PmMW3; arc=none smtp.client-ip=209.85.221.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=baylibre.com
+Received: by mail-wr1-f52.google.com with SMTP id ffacd0b85a97d-3436b096690so305468f8f.1
+        for <linux-kernel@vger.kernel.org>; Tue, 02 Apr 2024 03:35:30 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1712054035; x=1712658835; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=MWwVzYWrWmvvKy3bQx9GVyakGKirqAQ+7eqOMn8Hdd4=;
-        b=GI7y1VqXg4mxS1WS9UbTNigScyb9HKWlCrAZoIFEwQgJDrZOzTmw72WIqVNLr8hgVF
-         WrWLNB8I6F5Voy4HEY4a0yJhxASfX+b8NfoTHWq/Icj/+6+P6KUcn9yIEnJc1DhX42kx
-         SollTLK4n2WItiwpzZxzmxdaSKkdKVdgVtE3syjrl40VjGNV9lnjjTX0bVTd+d06QSQC
-         x8IKzjyeiBLADYaUXLFJExFm36MzwvcB6V3yeYgPi8ucSMcf2DYDFZRrrHU2MEu9MuoA
-         S1Y668159TQgu5xpF2TwCfKntztLIyLDqVpvYDTu/kOizjr19I1KX8QwDj7f7NyfiLo8
-         1E7A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712054035; x=1712658835;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+        d=baylibre-com.20230601.gappssmtp.com; s=20230601; t=1712054129; x=1712658929; darn=vger.kernel.org;
+        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
+         :mime-version:subject:date:from:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=MWwVzYWrWmvvKy3bQx9GVyakGKirqAQ+7eqOMn8Hdd4=;
-        b=Can6LpG55D7jdRIjPJxKVB/5CnQP4cuNR11U11+/pwy0BFDhBbMUnLF1J3pD2yV9oR
-         EuyUDW+lvVDAyiqKyEf1/CSfS9mAI9HyLaAQzeRZgAIjlQJIZ4jx9A5sGZ//W+kTTf47
-         cglnH8B3MB6yunYtKD+8PKwxVf0M2ylZvyUIZG9F7DHuPImIQ0Y9r1e7IkGOXaebYrjl
-         X+QIB3WGcNSE481vt80uCEVcosfSfu0OFI0V+E5Jm0KvPTB3oq+UbIo8qffFrHVycZe9
-         2yPokQW3F04iX7wOt/0tWcwAO+HcPyoHPC4Tw1/IJXGBKV3ffP1kHtXuOI9UWKb87hhj
-         W7BA==
-X-Forwarded-Encrypted: i=1; AJvYcCUg4qh515220Hr0F4ab+3nHnAxqhXykVbgRi+roQgiya+gzGN057SkzUCyOs3z3HNtqIXykxWG0S6+OJWtT96qa11KD5bjLOeZy4L0w
-X-Gm-Message-State: AOJu0YwpbGrNK3/iPmjF7qbjdzt5Ez6xpJMDMHo75eCTfpepOHXG4a+v
-	4UWqksWIPDpIxsmQKAedGH+VwF/+AIfwOrpCKOtwURPs4t2eSjT6Ame/3CrU/Q85h5XEIqvls49
-	Jx9Oo/mtZ/v+ZKCtkb3vVW2Bd47Ueoz6DK7RTQ2i9MuMEsCN5
-X-Google-Smtp-Source: AGHT+IGdA7+Mw3wgNp+BztbolUTPAWjuEexFLMEyJS8XuGlLJbUGAceuF7Y90mTButztt/iNjInqR50NU+ZERpjg38U=
-X-Received: by 2002:a25:870e:0:b0:dc7:3165:2db1 with SMTP id
- a14-20020a25870e000000b00dc731652db1mr9075771ybl.49.1712054035607; Tue, 02
- Apr 2024 03:33:55 -0700 (PDT)
+        bh=McEKzkmjcf11I9OhkP/1LlQGEjlZMSP7VYzBPCvWmZI=;
+        b=qn4PmMW3ZtsuePMH0p1NR7ic/57c82mFlHV4/U2XjytW5SdLPEkrTCKJEMaAGeKfoC
+         rgkwN4vp76pZEOvIZDx/rR0Eu7O5jaXr9R63l8tBXrbGGSbhd4F1ecTUxDJ6XTmVmXOl
+         K7Lvf1krrjW8CEGq+rNLcumhUdjoARJcaxkn7xJZyqO2wdQXtKNJ30yeeX97anjGOSPw
+         pkEnYDz6OrcdfUiiPyBUMQBYBz5twGA80Y2GyfjkJkjGgara4+9pcliJLcKq8cHEl9V/
+         I3bVpYkH+PceeOQ89momXeGTjGx78al38uFwf8AlBO/IWhjsBh9BP1hBjtSdYhKYus2S
+         vDog==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712054129; x=1712658929;
+        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
+         :mime-version:subject:date:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=McEKzkmjcf11I9OhkP/1LlQGEjlZMSP7VYzBPCvWmZI=;
+        b=sOVLdEFOylcfGhwXPIG16I+OcDqKZeE4Qf7RYOOTciBdjyeRk0tXM52mGYkegK0pdn
+         FiGg9cN/bYOssvTQka10H3upQiC3RLhLDD3RuEqozB+k78CIf2VNSPrUZ6MWSHSwt/sb
+         m0+qwZQf8FR1D1UdnHu1CPjhfPqWApPyAySnD4SEI7uc1A2yzqFJz2lGlel+O5yuRFP2
+         Q6gKLpXLr7FJekn0dEKC2rm1M2x1S4R6t8sUxLT7eYnSpTXPgw20rOWoMMC8TDFKnl+5
+         SajlAtALSRvWarOdYghIgg1+j81VszK2+dzjqxVzHvbXgFZCPsHF6XDN+3Qlpag9luC1
+         MHgw==
+X-Forwarded-Encrypted: i=1; AJvYcCWaqA5WrMqQqKAPtq5aNeMjXWPMVz8akFem5QTgFoKm5URv3/DVzjVTVXpk0+6TN4Gbdk8AFejHtIVS4NylC9Rvkt02SoLjqE23BTTf
+X-Gm-Message-State: AOJu0YyW4W8tG2hCCoach6qhCGc0djnMpN6pooCSVGbs86wj/X2ronWh
+	8kFWOt4e/1Dg92RlHuqKNSd1l0EKeWj8U880ED1LQbfPydXi/QxNA1jgXke761PHqtHITsYoncF
+	d
+X-Google-Smtp-Source: AGHT+IGRSK/fl84w6cZBBgj9gS95ddEk1o8Np66jcKd23QVuHMJ1s5FpuAz37cfNRE6vOLx7p0CPJw==
+X-Received: by 2002:a5d:590e:0:b0:33e:2d7b:c5a8 with SMTP id v14-20020a5d590e000000b0033e2d7bc5a8mr12175864wrd.17.1712054128881;
+        Tue, 02 Apr 2024 03:35:28 -0700 (PDT)
+Received: from [127.0.1.1] ([84.102.31.74])
+        by smtp.gmail.com with ESMTPSA id bu7-20020a056000078700b00343587cfa7dsm1825769wrb.77.2024.04.02.03.35.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 02 Apr 2024 03:35:28 -0700 (PDT)
+From: Julien Panis <jpanis@baylibre.com>
+Date: Tue, 02 Apr 2024 12:33:44 +0200
+Subject: [PATCH net-next v6 2/3] net: ethernet: ti: Add desc_infos member
+ to struct k3_cppi_desc_pool
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240401-typec-fix-sm8250-v3-0-604dce3ad103@linaro.org>
- <20240401-typec-fix-sm8250-v3-3-604dce3ad103@linaro.org> <7088e678-dd0a-4a5d-bef3-e0816a38ce60@linaro.org>
-In-Reply-To: <7088e678-dd0a-4a5d-bef3-e0816a38ce60@linaro.org>
-From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Date: Tue, 2 Apr 2024 13:33:44 +0300
-Message-ID: <CAA8EJpqdevzsN12m-EnxdFbCa5WgiSDMDhtjyf80th1NZwoD6Q@mail.gmail.com>
-Subject: Re: [PATCH v3 3/9] arm64: dts: qcom: sm8250: describe HS signals properly
-To: "Bryan O'Donoghue" <bryan.odonoghue@linaro.org>
-Cc: Bjorn Andersson <andersson@kernel.org>, Konrad Dybcio <konrad.dybcio@linaro.org>, 
-	Rob Herring <robh@kernel.org>, Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
-	Conor Dooley <conor+dt@kernel.org>, linux-arm-msm@vger.kernel.org, 
-	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	Luca Weiss <luca.weiss@fairphone.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Message-Id: <20240223-am65-cpsw-xdp-basic-v6-2-212eeff5bd5f@baylibre.com>
+References: <20240223-am65-cpsw-xdp-basic-v6-0-212eeff5bd5f@baylibre.com>
+In-Reply-To: <20240223-am65-cpsw-xdp-basic-v6-0-212eeff5bd5f@baylibre.com>
+To: "David S. Miller" <davem@davemloft.net>, 
+ Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, 
+ Paolo Abeni <pabeni@redhat.com>, Russell King <linux@armlinux.org.uk>, 
+ Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+ Jesper Dangaard Brouer <hawk@kernel.org>, 
+ John Fastabend <john.fastabend@gmail.com>, 
+ Sumit Semwal <sumit.semwal@linaro.org>, 
+ =?utf-8?q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>, 
+ Simon Horman <horms@kernel.org>, Andrew Lunn <andrew@lunn.ch>, 
+ Ratheesh Kannoth <rkannoth@marvell.com>, 
+ Naveen Mamindlapalli <naveenm@marvell.com>, 
+ "Russell King (Oracle)" <linux@armlinux.org.uk>
+Cc: netdev@vger.kernel.org, linux-kernel@vger.kernel.org, 
+ bpf@vger.kernel.org, linux-media@vger.kernel.org, 
+ dri-devel@lists.freedesktop.org, linaro-mm-sig@lists.linaro.org, 
+ Julien Panis <jpanis@baylibre.com>
+X-Mailer: b4 0.12.2
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1712054122; l=3534;
+ i=jpanis@baylibre.com; s=20230526; h=from:subject:message-id;
+ bh=JqK9X2irpyaetN9XKh1gA7fVuUNk/TXTEORE3XbD6OA=;
+ b=NS6rVlJ3bzM/qBzed/AFmshpOzte0/YsVsF/Bd275btEdYT5ruh1Os605yzuE8eOQ9Js1Wq2K
+ CAL9sQWzCK4DoSA6oUoVVlu+qgyQmARelBrVHoAdrJ+rPsRdVLlSkbm
+X-Developer-Key: i=jpanis@baylibre.com; a=ed25519;
+ pk=8eSM4/xkiHWz2M1Cw1U3m2/YfPbsUdEJPCWY3Mh9ekQ=
 
-On Tue, 2 Apr 2024 at 12:42, Bryan O'Donoghue
-<bryan.odonoghue@linaro.org> wrote:
->
-> On 01/04/2024 21:33, Dmitry Baryshkov wrote:
-> > Instead
-> > there is a HighSpeed signal lane between DWC3 controller and the USB-C
-> > connector.
->
-> I still don't think this is an accurate statement. The upstream names
-> and labels should be followed for consistency but role-switching and the
-> DP/DN lines on the type-c port are not related.
+This patch introduces a member and the related accessors which can be
+used to store descriptor specific additional information. This member
+can store, for instance, an ID to differentiate a skb TX buffer type
+from a xdpf TX buffer type.
 
-I fully agree with you. And that's why I'm replacing the labels. If
-you open the bindings for usb-c-connector and for the snps,dwc3 host,
-you will see that both bindings describe HS/SS ports. DWC3 also
-describes a single port for usb-data-role switching, which can be used
-instead of HS/SS ports, but usb-c-connector doesn't have this option.
+Signed-off-by: Julien Panis <jpanis@baylibre.com>
+---
+ drivers/net/ethernet/ti/k3-cppi-desc-pool.c | 25 +++++++++++++++++++++++++
+ drivers/net/ethernet/ti/k3-cppi-desc-pool.h |  2 ++
+ 2 files changed, 27 insertions(+)
 
+diff --git a/drivers/net/ethernet/ti/k3-cppi-desc-pool.c b/drivers/net/ethernet/ti/k3-cppi-desc-pool.c
+index 414bcac9dcc6..3c4e576a44db 100644
+--- a/drivers/net/ethernet/ti/k3-cppi-desc-pool.c
++++ b/drivers/net/ethernet/ti/k3-cppi-desc-pool.c
+@@ -22,6 +22,7 @@ struct k3_cppi_desc_pool {
+ 	size_t			mem_size;
+ 	size_t			num_desc;
+ 	struct gen_pool		*gen_pool;
++	void			**desc_infos;
+ };
+ 
+ void k3_cppi_desc_pool_destroy(struct k3_cppi_desc_pool *pool)
+@@ -37,6 +38,8 @@ void k3_cppi_desc_pool_destroy(struct k3_cppi_desc_pool *pool)
+ 		dma_free_coherent(pool->dev, pool->mem_size, pool->cpumem,
+ 				  pool->dma_addr);
+ 
++	kfree(pool->desc_infos);
++
+ 	gen_pool_destroy(pool->gen_pool);	/* frees pool->name */
+ }
+ EXPORT_SYMBOL_GPL(k3_cppi_desc_pool_destroy);
+@@ -72,6 +75,14 @@ k3_cppi_desc_pool_create_name(struct device *dev, size_t size,
+ 		goto gen_pool_create_fail;
+ 	}
+ 
++	pool->desc_infos = kcalloc(pool->num_desc, sizeof(*pool->desc_infos), GFP_KERNEL);
++	if (!pool->desc_infos) {
++		ret = -ENOMEM;
++		dev_err(pool->dev, "pool descriptor infos alloc failed %d\n", ret);
++		kfree_const(pool_name);
++		goto gen_pool_desc_infos_alloc_fail;
++	}
++
+ 	pool->gen_pool->name = pool_name;
+ 
+ 	pool->cpumem = dma_alloc_coherent(pool->dev, pool->mem_size,
+@@ -94,6 +105,8 @@ k3_cppi_desc_pool_create_name(struct device *dev, size_t size,
+ 	dma_free_coherent(pool->dev, pool->mem_size, pool->cpumem,
+ 			  pool->dma_addr);
+ dma_alloc_fail:
++	kfree(pool->desc_infos);
++gen_pool_desc_infos_alloc_fail:
+ 	gen_pool_destroy(pool->gen_pool);	/* frees pool->name */
+ gen_pool_create_fail:
+ 	devm_kfree(pool->dev, pool);
+@@ -144,5 +157,17 @@ void *k3_cppi_desc_pool_cpuaddr(const struct k3_cppi_desc_pool *pool)
+ }
+ EXPORT_SYMBOL_GPL(k3_cppi_desc_pool_cpuaddr);
+ 
++void k3_cppi_desc_pool_desc_info_set(struct k3_cppi_desc_pool *pool, int desc_idx, void *info)
++{
++	pool->desc_infos[desc_idx] = info;
++}
++EXPORT_SYMBOL_GPL(k3_cppi_desc_pool_desc_info_set);
++
++void *k3_cppi_desc_pool_desc_info(const struct k3_cppi_desc_pool *pool, int desc_idx)
++{
++	return pool->desc_infos[desc_idx];
++}
++EXPORT_SYMBOL_GPL(k3_cppi_desc_pool_desc_info);
++
+ MODULE_LICENSE("GPL");
+ MODULE_DESCRIPTION("TI K3 CPPI5 descriptors pool API");
+diff --git a/drivers/net/ethernet/ti/k3-cppi-desc-pool.h b/drivers/net/ethernet/ti/k3-cppi-desc-pool.h
+index 3c6aed0bed71..63b96fd53b13 100644
+--- a/drivers/net/ethernet/ti/k3-cppi-desc-pool.h
++++ b/drivers/net/ethernet/ti/k3-cppi-desc-pool.h
+@@ -28,5 +28,7 @@ void k3_cppi_desc_pool_free(struct k3_cppi_desc_pool *pool, void *addr);
+ size_t k3_cppi_desc_pool_avail(struct k3_cppi_desc_pool *pool);
+ size_t k3_cppi_desc_pool_desc_size(const struct k3_cppi_desc_pool *pool);
+ void *k3_cppi_desc_pool_cpuaddr(const struct k3_cppi_desc_pool *pool);
++void k3_cppi_desc_pool_desc_info_set(struct k3_cppi_desc_pool *pool, int desc_idx, void *info);
++void *k3_cppi_desc_pool_desc_info(const struct k3_cppi_desc_pool *pool, int desc_idx);
+ 
+ #endif /* K3_CPPI_DESC_POOL_H_ */
 
 -- 
-With best wishes
-Dmitry
+2.37.3
+
 
