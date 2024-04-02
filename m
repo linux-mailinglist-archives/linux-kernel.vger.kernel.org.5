@@ -1,77 +1,76 @@
-Return-Path: <linux-kernel+bounces-127464-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-127462-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id E372E894BF5
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 08:57:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id DD44D894BDB
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 08:53:07 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 209841C21B1E
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 06:57:57 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 150491C21B3D
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 06:53:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 17C832C68F;
-	Tue,  2 Apr 2024 06:57:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B992232C8B;
+	Tue,  2 Apr 2024 06:52:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="W98QVcbY"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.7])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Gc52YStr"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.20])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5F75D2C18D;
-	Tue,  2 Apr 2024 06:57:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.7
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6D33B2C689;
+	Tue,  2 Apr 2024 06:52:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.20
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712041071; cv=none; b=jrOFkM3fJKDjBHvcGnwRprJG/qk+IxhL33yP/38ayGIh99PR7qstZJiPxJ7eBJ6F4Rs/Pq7tspBIOjfrYJJL/J/lbGmUmaV1VhJsxk7jlg+/JYGvVkgY0KfaiO/5W1HKTXk3gdl7x673EjIIJ7O9S5t3i4M78g7anEVtDwSlapc=
+	t=1712040778; cv=none; b=QkmIxn2zOH8OmQN0XRyO1B7/8aplc2Hmp2ghO0KzOGmF7OsiKsJV9JM07wOsiQCwD5rcceyqXMPvNeni4dSnPWBW1uL6rW5DFznE2t1AY2dvQdNS90pzlXp1d5sbOkqPFWxQoN2xnb/1bFMCAaSq7kO5zwfld0UUVxVFrzbMkCo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712041071; c=relaxed/simple;
-	bh=C9VufDIku+v7A3R5bMpDMYs7kJPjF5QoKcrVsdVl56I=;
+	s=arc-20240116; t=1712040778; c=relaxed/simple;
+	bh=8U+o5ZPPyeR6k/u71wLfHh1u9kvqRkSFl8fCN0tDQ0s=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=piR0eC07d8BxM3VMC4ME457EDkG0+uEjX8CfdyM2i41uMVESmwG7ukpdk+//VG8y+eqSfoxjKjA1nq58KwLHqyLkQ1UhH0s2nePL47iv5YyspM1QVo/jtGp7CQyA0FBh6GXkvSUUGpeIqXO89E79aAOizdI8HK+VwEvnYYzwLrY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=W98QVcbY; arc=none smtp.client-ip=192.198.163.7
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+	 Content-Type:Content-Disposition:In-Reply-To; b=sisbg8bK/xwsuZNbhfnXdVv5EcSw3xHiDebjj4hwjn7CoCRWCOX80p96cdxR95H21Oj3G5fv/B/ye+5Fu1zgW5VDF3jxjWGzXJOwoQzqP20kgvwhMb8NzbH1TmSoTJM6Et62BA1UsAdrl+ZgxX4Aiufb2zGsq8Al4LX9tFvNj7Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Gc52YStr; arc=none smtp.client-ip=198.175.65.20
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1712041069; x=1743577069;
+  t=1712040775; x=1743576775;
   h=date:from:to:cc:subject:message-id:references:
-   mime-version:content-transfer-encoding:in-reply-to;
-  bh=C9VufDIku+v7A3R5bMpDMYs7kJPjF5QoKcrVsdVl56I=;
-  b=W98QVcbYcj7bmpBX2nQtQ1aTYf3WEXZ4W1XRE5g56QJaI8p24eIeD67y
-   Xe3jYUd9vWgvseJheeR46Et5faQn7Wmpg4Qi7BPiGRQ+ACqg/CCJyZHYc
-   JJpESWNkVpLNox5R7Tq6Q9dDpuaFeblTpjbLtwXO1umBWUSj4QyKKKMV0
-   opu9l6Y2zVSIjDig9ub0iStD0DL65Op3t7uJOQ0ZDipLtVrohJd5KEQ/F
-   pAxdckazB2QPs/10RuEhl3vsfOH7XQZz6Tl2C96Chz6sDZldOBghREg3z
-   zrevPeBQX89Q/prjyvVgozCyN2WkBnjEZW4Dvz4EHtYL9OeLMmE9Q583l
-   A==;
-X-CSE-ConnectionGUID: KdII90wSTe2CmLF8Ate07A==
-X-CSE-MsgGUID: tOC8/gaoT3G/chtI3mR+Lw==
-X-IronPort-AV: E=McAfee;i="6600,9927,11031"; a="32592787"
+   mime-version:in-reply-to;
+  bh=8U+o5ZPPyeR6k/u71wLfHh1u9kvqRkSFl8fCN0tDQ0s=;
+  b=Gc52YStrdzIIIEeUgDrpxBK8ktSVfvANZCcH9jlco4zGRv+WnLXRtVaB
+   4JFrYdxwvwhisChcYrACnLgNyQOF6/2xzO/qi01zkK6gj0YVPDGRyajSW
+   xahiHX4mfSadQRHwKtCqk+dH+dF4XBRweOKDHQXam2m5lj22oHb57WC6V
+   IQKl3iT5DiHVoD77z0IHw8uFmgJ5dvYyCws3g8TnKvQJyxubjf6BRHxpr
+   y9KKgNAoDs9JWFZmCAYc5a2ZZe+vQVV7uRl75qnv0ZGb4cL7oeYPxhQDK
+   cBIwq1YHDetanHVf05Ukik9IXKPdnC3Mem36vScgwe7LRU4HRTcTkLb7S
+   Q==;
+X-CSE-ConnectionGUID: uleWtztsRvac2Q32WZWFEQ==
+X-CSE-MsgGUID: 5XhIILKkQZy15smCwQVA+w==
+X-IronPort-AV: E=McAfee;i="6600,9927,11031"; a="7095788"
 X-IronPort-AV: E=Sophos;i="6.07,174,1708416000"; 
-   d="scan'208";a="32592787"
-Received: from fmviesa007.fm.intel.com ([10.60.135.147])
-  by fmvoesa101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Apr 2024 23:57:42 -0700
+   d="scan'208";a="7095788"
+Received: from fmviesa005.fm.intel.com ([10.60.135.145])
+  by orvoesa112.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Apr 2024 23:52:54 -0700
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.07,174,1708416000"; 
-   d="scan'208";a="18044671"
-Received: from yilunxu-optiplex-7050.sh.intel.com (HELO localhost) ([10.239.159.165])
-  by fmviesa007.fm.intel.com with ESMTP; 01 Apr 2024 23:57:39 -0700
-Date: Tue, 2 Apr 2024 14:52:48 +0800
-From: Xu Yilun <yilun.xu@linux.intel.com>
-To: Russ Weight <russ.weight@linux.dev>
-Cc: Peter Colberg <peter.colberg@intel.com>,
-	Moritz Fischer <mdf@kernel.org>, Wu Hao <hao.wu@intel.com>,
-	Xu Yilun <yilun.xu@intel.com>, Tom Rix <trix@redhat.com>,
-	Lee Jones <lee@kernel.org>, linux-fpga@vger.kernel.org,
-	linux-kernel@vger.kernel.org, Marco Pagani <marpagan@redhat.com>,
-	Matthew Gerlach <matthew.gerlach@linux.intel.com>,
-	Ilpo =?utf-8?B?SsOkcnZpbmVu?= <ilpo.jarvinen@linux.intel.com>,
-	Russ Weight <russell.h.weight@intel.com>
-Subject: Re: [PATCH] mfd: intel-m10-bmc: Change staging size to a variable
-Message-ID: <ZgurQETbga0Q/PVE@yilunxu-OptiPlex-7050>
-References: <20240328233559.6949-1-peter.colberg@intel.com>
- <ZgqCdfCSatazEkIj@yilunxu-OptiPlex-7050>
- <20240401170905.v2xin3fzoe3m3tmz@4VRSMR2-DT.corp.robot.car>
- <20240401171947.dncdvc3gxna33nxq@4VRSMR2-DT.corp.robot.car>
+   d="scan'208";a="22409021"
+Received: from ls.sc.intel.com (HELO localhost) ([172.25.112.31])
+  by fmviesa005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Apr 2024 23:52:54 -0700
+Date: Mon, 1 Apr 2024 23:52:54 -0700
+From: Isaku Yamahata <isaku.yamahata@intel.com>
+To: Chao Gao <chao.gao@intel.com>
+Cc: isaku.yamahata@intel.com, kvm@vger.kernel.org,
+	linux-kernel@vger.kernel.org, isaku.yamahata@gmail.com,
+	Paolo Bonzini <pbonzini@redhat.com>, erdemaktas@google.com,
+	Sean Christopherson <seanjc@google.com>,
+	Sagi Shahar <sagis@google.com>, Kai Huang <kai.huang@intel.com>,
+	chen.bo@intel.com, hang.yuan@intel.com, tina.zhang@intel.com,
+	isaku.yamahata@linux.intel.com
+Subject: Re: [PATCH v19 093/130] KVM: TDX: Implements vcpu
+ request_immediate_exit
+Message-ID: <20240402065254.GY2444378@ls.amr.corp.intel.com>
+References: <cover.1708933498.git.isaku.yamahata@intel.com>
+ <3fd2824a8f77412476b58155776e88dfe84a8c73.1708933498.git.isaku.yamahata@intel.com>
+ <ZgYfPAPToxbgGZLp@chao-email>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -80,49 +79,30 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20240401171947.dncdvc3gxna33nxq@4VRSMR2-DT.corp.robot.car>
+In-Reply-To: <ZgYfPAPToxbgGZLp@chao-email>
 
-On Mon, Apr 01, 2024 at 10:19:47AM -0700, Russ Weight wrote:
+On Fri, Mar 29, 2024 at 09:54:04AM +0800,
+Chao Gao <chao.gao@intel.com> wrote:
+
+> On Mon, Feb 26, 2024 at 12:26:35AM -0800, isaku.yamahata@intel.com wrote:
+> >From: Isaku Yamahata <isaku.yamahata@intel.com>
+> >
+> >Now we are able to inject interrupts into TDX vcpu, it's ready to block TDX
+> >vcpu.  Wire up kvm x86 methods for blocking/unblocking vcpu for TDX.  To
+> >unblock on pending events, request immediate exit methods is also needed.
 > 
-> On Mon, Apr 01, 2024 at 10:09:05AM -0700, Russ Weight wrote:
-> > On Mon, Apr 01, 2024 at 05:46:29PM +0800, Xu Yilun wrote:
-> > > On Thu, Mar 28, 2024 at 07:35:59PM -0400, Peter Colberg wrote:
-> > > > From: Ilpo Järvinen <ilpo.jarvinen@linux.intel.com>
-> > > > 
-> > > > The size of the staging area in FLASH for FPGA updates is dependent on the
-> > > > size of the FPGA. Currently, the staging size is defined as a constant.
-> > > > Larger FPGAs are coming soon and it will soon be necessary to support
-> > > 
-> > > Soon? When? You cannot add some feature without a user case. If you do
-> > > have a use case, put the patch in the same patchset.
-> > 
-> > There may never be an up-streamed use-case. This is a very small
-> > change intended to make it easier for a third-party vendor to
-> > build a card that requires a larger staging area in FLASH. They
-> > would have to add a new "struct m10bmc_csr_map", but they
-> > wouldn't have to refactor this code as part of the change
-
-I'm OK with this description.
-
-Peter, is that what you mean? Or you do have a board type to follow, in
-which case you need to submit the new board type as well.
-
-> > 
-> > This change does not introduce an unused function or variable.
-> > It is more of a clean-up, making the code more flexible.
-> > 
-> > Can it not be taken as is?
+> TDX doesn't support this immediate exit. It is considered as a potential
+> attack to TDs. TDX module deploys 0/1-step mitigations to prevent this.
+> Even KVM issues a self-IPI before TD-entry, TD-exit will happen after
+> the guest runs a random number of instructions.
 > 
-> Would it be acceptable to just change the commit message to something
-> like:
-> 
-> Do not hardwire the staging size in the secure update driver. Move
-> the staging size to the m10bmc_csr_map structure to make the size
-> assignment more flexible.
+> KVM shouldn't request immediate exits in the first place. Just emit a
+> warning if KVM tries to do this.
 
-That would be much better.
-
-Thanks,
-Yilun
+0ec3d6d1f169
+("KVM: x86: Fully defer to vendor code to decide how to force immediate exit")
+removed the hook.  This patch will be dropped and tdx_vcpu_run() will ignore
+force_immediate_exit.
+-- 
+Isaku Yamahata <isaku.yamahata@intel.com>
 
