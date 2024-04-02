@@ -1,99 +1,156 @@
-Return-Path: <linux-kernel+bounces-127382-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-127383-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9FD85894A8C
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 06:42:17 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6B0E5894A8E
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 06:43:13 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D0ED11C21315
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 04:42:16 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id CAF57B234B4
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 04:43:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C5A5817C6A;
-	Tue,  2 Apr 2024 04:42:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B9FC617C67;
+	Tue,  2 Apr 2024 04:43:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=codeconstruct.com.au header.i=@codeconstruct.com.au header.b="Q806oSm5"
-Received: from codeconstruct.com.au (pi.codeconstruct.com.au [203.29.241.158])
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="R/cS9EBR"
+Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CB7712581;
-	Tue,  2 Apr 2024 04:42:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=203.29.241.158
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 598012581;
+	Tue,  2 Apr 2024 04:43:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712032929; cv=none; b=Q5lcm9QklBNwWb8a16pcFSe7thNfrTZXCZHLmMSFWVsbmzXQ7vD4Ker2aOhUul+mj7dZbDEYaWLOSnUsZRcmKYEWreFqmGOpcj9kBalzxoKYSjhUnPV3LqDWc2rW18geV3mOxAWX33uMVq0Hd4+Y462xus6LWnKZn6CzNQ4rCV8=
+	t=1712032983; cv=none; b=VT5jqNVaJeqFCssMHUhP3ktmA7p3Z6DVC3gCYjNEj6GjLCEneFwtdyBNdclv4bd1ntlO4UdQ84n3juexabD/lC2KmgqtRtXFhlkEbZWtWECQ1lqVP3e26t3oV323pnHm2rGY9Q6Bmxob4YtYwbWr12h10DSX1BnRAM0L7VSo+1I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712032929; c=relaxed/simple;
-	bh=Cq4y5V9tgRGo3LoHQcADYNRf6oy3wrq7fzGOaXsz42c=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=cSbC8kVWIOrX/q/2DDrfWiJ4BX35Jyd0ibKOM8f2vUAqfDT6R9QEo2OUzY6GhRskrx2WDbeTxlWO5rhbhBjYAVdbkdmePmDg0JeYEnQhGLAVd4h7GRkLjjHQTvgWR0L3q3Iz+L9ksIimc8GaP3+eX3DnoRen3lCyKDyyV3ZaZxc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=codeconstruct.com.au; spf=pass smtp.mailfrom=codeconstruct.com.au; dkim=pass (2048-bit key) header.d=codeconstruct.com.au header.i=@codeconstruct.com.au header.b=Q806oSm5; arc=none smtp.client-ip=203.29.241.158
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=codeconstruct.com.au
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=codeconstruct.com.au
-Received: from [192.168.68.112] (ppp118-210-182-70.adl-adc-lon-bras34.tpg.internode.on.net [118.210.182.70])
-	by mail.codeconstruct.com.au (Postfix) with ESMTPSA id 4011420016;
-	Tue,  2 Apr 2024 12:41:56 +0800 (AWST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-	d=codeconstruct.com.au; s=2022a; t=1712032918;
-	bh=fRcs8rvk7aWDd3jH1iz3Wdk5wU4Tj0kt/f5n2x/Nrm4=;
-	h=Subject:From:To:Cc:Date:In-Reply-To:References;
-	b=Q806oSm5OfEMDMJ/wLaqtQwDlfkPA1UW3d3kM0I97eEHY8VnrfYoNhex0sFxwKvNU
-	 6ABUEJQjE84Nt41hQNrgJIZg172+oSPEcLDq42RZfwDIwJSHxrSx07P9n4ymSCw8ep
-	 +3/OO15E0JLuAoaxhHDtcqt7DckH201EFNTyTtAlt8kfEbsZPjrDK11b/4nQxhqlOp
-	 pnuud1xzxMRIV1k5kjs2qYfX9hIKg2uqZaLV7UkvbkXu4RWSM58ygdljZA0e3q22f7
-	 4ff5N3+gQpp+ZU95Tu7iwprzzaRA9m/KlKiBgz7PD4BtQl9Mp4u8XX5sDt8zsANeZW
-	 eR68bplZPpB9Q==
-Message-ID: <3aad5148383ba9e8fd905b09690ffa9c378b31de.camel@codeconstruct.com.au>
-Subject: Re: [PATCH v1] Revise duty cycle for SMB9 and SMB10
-From: Andrew Jeffery <andrew@codeconstruct.com.au>
-To: Delphine CC Chiu <Delphine_CC_Chiu@Wiwynn.com>, patrick@stwcx.xyz, Rob
- Herring <robh@kernel.org>, Krzysztof Kozlowski
- <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>,
- Joel Stanley <joel@jms.id.au>
-Cc: devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
-	linux-aspeed@lists.ozlabs.org, linux-kernel@vger.kernel.org
-Date: Tue, 02 Apr 2024 15:11:55 +1030
-In-Reply-To: <20240401090509.2338027-1-Delphine_CC_Chiu@Wiwynn.com>
-References: <20240401090509.2338027-1-Delphine_CC_Chiu@Wiwynn.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.46.4-2 
+	s=arc-20240116; t=1712032983; c=relaxed/simple;
+	bh=VY23z033UnkfMFSKC7qGity31SFRLGUYYweOjQ/nK54=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=hyXu03vA67sWzRDf+iXlOFKKxVMzc8UpxVsmB6fUaJBQppjEJ3HASUjDmzcYvUMk1oIWoc9UzzcbkM7npoLk+5SeEsz1jQWY4xDeMqqMqyTUBvF0EFVwfXQW1qnhbbQV2Ps8AhicfxWd7ehjCSv9FTh4+wwLlLDgS9cXELwv/vQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=R/cS9EBR; arc=none smtp.client-ip=198.137.202.133
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
+	Message-ID:Sender:Reply-To:Content-ID:Content-Description;
+	bh=zalD8cbpimqALrAnhU1MWxa0W1J+AI9zH7OB+CRpPSc=; b=R/cS9EBRYUnM4DUW2L+dBpBzHP
+	3CFf/FIwz7bEtUrbvMoOTa6p/Tu2IIWE9DLthRDasfNtKxmToM1E1hCq3fVbYiVv9ZCUk+yt0OmEB
+	M+9ab6kAVXgfAOj5nIsevvB6BBU8uR/1UO4yxCYQLAX9yM4eLYJk6f5ptFXibEmpQ5bTlcg3BVKcx
+	QtquFm/WheleB72QpICoaV6xtHXfpT4xNB37YTH28POVHfy3kunIMew26EfL+VnKZ9htPINjPmM/D
+	WlNj7xL8QvZ/FUCE7ZAlgFdVM6BUBjBRxyNR4Uxn2gkfrdEfY8oZ4BWSzwfs4xW/R6ql4lDiwHX88
+	flU5LD+A==;
+Received: from [50.53.2.121] (helo=[192.168.254.15])
+	by bombadil.infradead.org with esmtpsa (Exim 4.97.1 #2 (Red Hat Linux))
+	id 1rrVz8-00000009hUR-1LGs;
+	Tue, 02 Apr 2024 04:42:58 +0000
+Message-ID: <fb49e921-a765-4828-bcfe-b2b4e623c5ea@infradead.org>
+Date: Mon, 1 Apr 2024 21:42:54 -0700
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] fpga: dfl: fme: fix kernel-doc comments for some
+ functions
+To: Xu Yilun <yilun.xu@linux.intel.com>,
+ Peter Colberg <peter.colberg@intel.com>
+Cc: Wu Hao <hao.wu@intel.com>, Tom Rix <trix@redhat.com>,
+ Moritz Fischer <mdf@kernel.org>, Xu Yilun <yilun.xu@intel.com>,
+ Alan Tull <atull@kernel.org>, Shiva Rao <shiva.rao@intel.com>,
+ Kang Luwei <luwei.kang@intel.com>, Enno Luebbers <enno.luebbers@intel.com>,
+ linux-fpga@vger.kernel.org, linux-kernel@vger.kernel.org,
+ Russ Weight <russ.weight@linux.dev>, Marco Pagani <marpagan@redhat.com>,
+ Matthew Gerlach <matthew.gerlach@linux.intel.com>,
+ kernel test robot <lkp@intel.com>
+References: <20240329001542.8099-1-peter.colberg@intel.com>
+ <Zgt/wftzm4xthfio@yilunxu-OptiPlex-7050>
+Content-Language: en-US
+From: Randy Dunlap <rdunlap@infradead.org>
+In-Reply-To: <Zgt/wftzm4xthfio@yilunxu-OptiPlex-7050>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Mon, 2024-04-01 at 17:05 +0800, Delphine CC Chiu wrote:
-> ARM: dts: aspeed: yosemite4:
-> Revise duty cycle for SMB9 and SMB10 to 40:60
-> To meet 400kHz-i2c clock low time spec (> 1.3 us).
->=20
-> Signed-off-by: Delphine CC Chiu <Delphine_CC_Chiu@Wiwynn.com>
-> ---
->  arch/arm/boot/dts/aspeed/aspeed-bmc-facebook-yosemite4.dts | 2 ++
->  1 file changed, 2 insertions(+)
->=20
-> diff --git a/arch/arm/boot/dts/aspeed/aspeed-bmc-facebook-yosemite4.dts b=
-/arch/arm/boot/dts/aspeed/aspeed-bmc-facebook-yosemite4.dts
-> index 64075cc41d92..b3a2aa8f53a5 100644
-> --- a/arch/arm/boot/dts/aspeed/aspeed-bmc-facebook-yosemite4.dts
-> +++ b/arch/arm/boot/dts/aspeed/aspeed-bmc-facebook-yosemite4.dts
-> @@ -257,6 +257,7 @@ power-sensor@40 {
->  &i2c8 {
->  	status =3D "okay";
->  	bus-frequency =3D <400000>;
-> +	i2c-clk-high-min-percent =3D <40>;
 
-A grep of the 6.9-rc2 tree doesn't turn up any mention of this property
-name.
 
-More work needs to be done if this is meant to have any effect.
+On 4/1/24 8:47 PM, Xu Yilun wrote:
+> On Thu, Mar 28, 2024 at 08:15:42PM -0400, Peter Colberg wrote:
+>> From: Xu Yilun <yilun.xu@intel.com>
+> 
+> I didn't remember I wrote this exact patch, but anyway the patch itself
+> is confusing.
+> 
+>>
+>> lkp reported 2 build warnings:
+>>
+>>    drivers/fpga/dfl/dfl-fme-pr.c:175: warning: Function parameter or member 'feature' not described in 'dfl_fme_create_mgr'
+>>
+>>>> drivers/fpga/dfl/dfl-fme-pr.c:280: warning: expecting prototype for
+>>>> dfl_fme_destroy_bridge(). Prototype was for dfl_fme_destroy_bridges()
+>>>> instead
+>>
+>> Fixes: 29de76240e86 ("fpga: dfl: fme: add partial reconfiguration sub feature support")
+>> Reported-by: kernel test robot <lkp@intel.com>
+>> Signed-off-by: Xu Yilun <yilun.xu@intel.com>
+>> Signed-off-by: Peter Colberg <peter.colberg@intel.com>
 
-What tree are you developing your patches against? If you're sending
-them upstream then you must do your work (and test) in the context of
-upstream.
+All kernel-doc issues with this source file are already fixed in linux-next
+by this commit:
 
-Andrew
+commit 782d8e61b5d6
+Author: Randy Dunlap <rdunlap@infradead.org>
+Date:   Thu Jan 12 22:37:20 2023 -0800
+
+    fpga: dfl: kernel-doc corrections
+    
+    Fix W=1 kernel-doc warnings in drivers/fpga/:
+
+
+>> ---
+>>  drivers/fpga/dfl-fme-pr.c | 3 ++-
+>>  1 file changed, 2 insertions(+), 1 deletion(-)
+>>
+>> diff --git a/drivers/fpga/dfl-fme-pr.c b/drivers/fpga/dfl-fme-pr.c
+>> index cdcf6dea4cc9..96cb24787ab1 100644
+>> --- a/drivers/fpga/dfl-fme-pr.c
+>> +++ b/drivers/fpga/dfl-fme-pr.c
+>> @@ -166,6 +166,7 @@ static int fme_pr(struct platform_device *pdev, unsigned long arg)
+>>   * dfl_fme_create_mgr - create fpga mgr platform device as child device
+>>   * @feature: sub feature info
+> 
+> The member 'feature' is described here. It still causes build warning?
+> 
+>>   * @pdata: fme platform_device's pdata
+>> + * @feature: the dfl fme PR sub feature
+> 
+> Why adding a duplicated item would fix the warning?
+> 
+>>   *
+>>   * Return: mgr platform device if successful, and error code otherwise.
+>>   */
+>> @@ -273,7 +274,7 @@ static void dfl_fme_destroy_bridge(struct dfl_fme_bridge *fme_br)
+>>  }
+>>  
+>>  /**
+>> - * dfl_fme_destroy_bridges - destroy all fpga bridge platform device
+> 
+> The prototype is for dfl_fme_destroy_bridges(), why the warning?
+> 
+>> + * dfl_fme_destroy_bridges - destroy all fpga bridge platform devices
+> 
+> Correct the plural form in description would fix the warning?
+> 
+>>   * @pdata: fme platform device's pdata
+>>   */
+>>  static void dfl_fme_destroy_bridges(struct dfl_feature_platform_data *pdata)
+>> -- 
+>> 2.44.0
+>>
+>>
+> 
+
+-- 
+#Randy
 
