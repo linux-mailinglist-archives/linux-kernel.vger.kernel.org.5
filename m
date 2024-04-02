@@ -1,141 +1,122 @@
-Return-Path: <linux-kernel+bounces-127510-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-127511-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7351A894CBA
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 09:37:09 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8170A894CBD
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 09:37:31 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2ECA1281FE6
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 07:37:08 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AFA0C1C21FB8
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 07:37:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3ACBD3C471;
-	Tue,  2 Apr 2024 07:37:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4458E3C471;
+	Tue,  2 Apr 2024 07:37:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="iSBKhc4J"
-Received: from mail-pg1-f175.google.com (mail-pg1-f175.google.com [209.85.215.175])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="i+MXyVQi"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 365AD36AEF;
-	Tue,  2 Apr 2024 07:36:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7565438DFC;
+	Tue,  2 Apr 2024 07:37:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712043419; cv=none; b=PYlSxJFrHFpN8aUx0o374fCA4Lcn26cxazdA42Ewa5EsrZetFfdqu0z0+uZsr3MW49ukRpClnUbxWT7ydnGLfQTiFcOqnb1Shybcf4xJpc92L+FcQj3ikV/lh+3A95RSwnHcH2c8tPhhCrI6irXqtZMqnSdF4JZY4yJRt2Q0BCE=
+	t=1712043443; cv=none; b=D+M64flo6/OInlH974iqB0dpLOe4iuVRH2GAGdM8jaHXK9qj4C5ZhE+trfG+GZ/zeN+T+9R5SVOnljrd0aauDOSF0J4UtjT5ppgkfdRySMkri91WukoMJC2SddB1yDqRmmGw9xRk9Fdv6VakWfzzE35D2ntyXgaaNQxlXgjhGSc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712043419; c=relaxed/simple;
-	bh=nQuUXMffA4WwM69FITwsN2YbrcKETHbVPRcQPamcnj0=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=e/nUP44Ia5atEEnVZ2PSqp0gAOklpo2Gat9Ev88NRW17TsVFu0UVVuqIktz1dhkgwFBG7k8dR8uxdVgxm6CVhsqjuKb+GsoX/g+yFyRpt+noISVsHwqcsSAfWHpJKlArf5qcvXOJ1o7m+SRREGxILCsWXWXbxbRA6nYzHKGwRS4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=iSBKhc4J; arc=none smtp.client-ip=209.85.215.175
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f175.google.com with SMTP id 41be03b00d2f7-517ab9a4a13so3667831a12.1;
-        Tue, 02 Apr 2024 00:36:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1712043417; x=1712648217; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=mvA4XlQG31Oac/CL2P251TxTxsp49nq3BgjpTreKMJo=;
-        b=iSBKhc4J0fLiZHJFzTEsrZoYb911aMeYgBp97QuH3W5IsnFLAShnCWTzFobouO/DJo
-         EvPWVNaysKbRLrpj4ykfWIxd+ICqdiyCBodZsX7vhXdIQ/QK2EVPe7YTRXPPzqf/gWAg
-         1sk2Ru3Ht/AR7WwgeRP874olMDOnrXYqWLuMRK7fWakQFBfHsvkIo2QNCIY30i/iyBi6
-         q5jy6ITCxVyMn2OSZPIsKYThlTJBLh53of2tk/CjW0KETvMTgJWuPR+sbrZwq+L3r1S8
-         6BoEamGG7LRpkK9hlBhZaqOgn9tQxyWF58/wSb4CsDjIvN3rSdle24Hvx42891rI9+ti
-         2DUw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712043417; x=1712648217;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=mvA4XlQG31Oac/CL2P251TxTxsp49nq3BgjpTreKMJo=;
-        b=U9BBRf8GxcZ+K43ZCaYcPwI1UI41p9eQCTAZpb/5RNmPSkFNsYsuTqlmqWkwrPYTHj
-         anWyZBHvcDJfEGAsFmMeZofT8EMrT/kS9Mj3oTjUmWX0ZrLS/ZYF4lIz5u0F+gCy1Rd0
-         QZxHEv62IUYDGA2EulS98/cryDJKcoS7SCSv7NdcMrljv4iKTadVxvo/Ka2VGO/jPar5
-         sAl83S00Yn7QnOMndEDHfWfbWMBXZtA0M2X9p/dMT1O4/ruCnnZUCINURzPb8ed9VlOJ
-         BrFmV+CHDRHEE5z+h8Y2sH2UzowgsOVKrNV9bTsRQoeiaTRjjWkN0leaRC07na9d0D66
-         hxOQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXF/SMVWsLoJ2rKmYWhTSZoYLes1m7bJRbn4q2SDD62Fh42LZU93ldnFj05zyRbgXvUBo0Ab0T5GdcihwyzOLB+Yi9frr9egR1BmSAVIgeSytTTrIEQbJEwFfXERPSH819K7BPSaRWSha34Y2t99THb7kSarEzed9BbXrXarZgj7jGQq0Q=
-X-Gm-Message-State: AOJu0YwX5BKOpNxnHtF6BpLVmmXihOckRgRVRNpjoyWo+54DJK8dg2dp
-	9kUQ7dZHzFJkdo6fdi8eKK85VwVzC+r3ha6wKBbeexuVA+Kq3Y4sNI9s8hykpl/helS4iA+5H5Y
-	6UTjoDXZa9G8LrqZ7v4v1EIzKPUk=
-X-Google-Smtp-Source: AGHT+IFEUvd1yE1nbw06r4wTEb1sXFYeMkMQN2S0bow6ijv/7I5Tx828lFINSC7g7909AWI8L2qEgfI3K3LGOORaszA=
-X-Received: by 2002:a17:90b:3907:b0:2a2:40c4:5175 with SMTP id
- ob7-20020a17090b390700b002a240c45175mr4290548pjb.14.1712043417507; Tue, 02
- Apr 2024 00:36:57 -0700 (PDT)
+	s=arc-20240116; t=1712043443; c=relaxed/simple;
+	bh=cH+r679GLg7sc3w++DZ/mMD0Uay9boc3WR6bkpgvMkI=;
+	h=Mime-Version:Content-Type:Date:Message-Id:To:Cc:Subject:From:
+	 References:In-Reply-To; b=GlMVRwNmBJEnNPOabD8WhP9t0rayTe5sl7dVywC5W+06qNR6tMWB4AKdA346csGoVht6vNRmwbSMgYp27vq+eIv1ghQYpa/y3O11qduMjU90JkyXwdsFOXZMwL4aBIJ0+DoAl4j4Vk3fag46TTdDSzAcKAhfT1UWVY8twktoo8g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=i+MXyVQi; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 83778C43390;
+	Tue,  2 Apr 2024 07:37:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1712043443;
+	bh=cH+r679GLg7sc3w++DZ/mMD0Uay9boc3WR6bkpgvMkI=;
+	h=Date:To:Cc:Subject:From:References:In-Reply-To:From;
+	b=i+MXyVQi5q4SpByi/8aZTmrvtlUfV2LRzv0Mv4BqzTeE5SYvxZPgE/mluTtq/MRaT
+	 Iu/aIvj6yv1AAxHOTxaxRRp09DQ02ikbHXR+XUlxHBjvw3zl3rOwWtC1ajKLtYmBlG
+	 eeyegtNehG8qXFHFebXKWATvSdmEcvOkQtYSZ2QT/5Rcl2F/rF6u5hWpIHdQjSdm8Y
+	 Hr7AJxEVJAVT8tvVe6sUJwyzEOuZic/VFaWN6+Xb9k6WizS++Fx453oazLA9DJFWGr
+	 f8UEmXZmyb71xtG6Uq543QyoaGCcYy0cj2mVxdQG9zlj0rN8QU3KukToaZKyju1fum
+	 SjTvtnVSep81Q==
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-References: <9D0C95D2-6239-4A3B-B9DD-66299B9911EF@me.com>
-In-Reply-To: <9D0C95D2-6239-4A3B-B9DD-66299B9911EF@me.com>
-From: Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
-Date: Tue, 2 Apr 2024 09:36:22 +0200
-Message-ID: <CANiq72n72jO9v5Yo380VXTyaKiKG58U67f8XCP_--g2fHzeAzw@mail.gmail.com>
-Subject: Re: [PATCH v2] rust: init: remove impl Zeroable for Infallible
-To: Laine Taffin Altman <alexanderaltman@me.com>
-Cc: Miguel Ojeda <ojeda@kernel.org>, Alex Gaynor <alex.gaynor@gmail.com>, 
-	Wedson Almeida Filho <wedsonaf@gmail.com>, Boqun Feng <boqun.feng@gmail.com>, 
-	=?UTF-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>, 
-	Benno Lossin <benno.lossin@proton.me>, Andreas Hindborg <a.hindborg@samsung.com>, 
-	Alice Ryhl <aliceryhl@google.com>, Martin Rodriguez Reboredo <yakoyoku@gmail.com>, stable@vger.kernel.org, 
-	rust-for-linux@vger.kernel.org, lkml <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
+Date: Tue, 02 Apr 2024 10:37:16 +0300
+Message-Id: <D09GQWZOJDCJ.1NTCEQPH0H5ZJ@kernel.org>
+To: "Haitao Huang" <haitao.huang@linux.intel.com>
+Cc: <anakrish@microsoft.com>, <bp@alien8.de>, <cgroups@vger.kernel.org>,
+ <chrisyan@microsoft.com>, <dave.hansen@linux.intel.com>, <hpa@zytor.com>,
+ <kai.huang@intel.com>, <kristen@linux.intel.com>,
+ <linux-kernel@vger.kernel.org>, <linux-sgx@vger.kernel.org>,
+ <mikko.ylinen@linux.intel.com>, <mingo@redhat.com>, <mkoutny@suse.com>,
+ <seanjc@google.com>, <sohil.mehta@intel.com>, <tglx@linutronix.de>,
+ <tim.c.chen@linux.intel.com>, <tj@kernel.org>, <x86@kernel.org>,
+ <yangjie@microsoft.com>, <zhanb@microsoft.com>, <zhiquan1.li@intel.com>
+Subject: Re: [PATCH] selftests/sgx: Improve cgroup test scripts
+From: "Jarkko Sakkinen" <jarkko@kernel.org>
+X-Mailer: aerc 0.17.0
+References: <D071SWVSOJLN.2C9H7NTS4PHGI@kernel.org>
+ <20240331174442.51019-1-haitao.huang@linux.intel.com>
+ <D08UQJ2XQY6L.1XEOEJ6HIUJ8Y@kernel.org>
+ <op.2lkm90y3wjvjmi@hhuan26-mobl.amr.corp.intel.com>
+In-Reply-To: <op.2lkm90y3wjvjmi@hhuan26-mobl.amr.corp.intel.com>
 
-On Tue, Apr 2, 2024 at 3:53=E2=80=AFAM Laine Taffin Altman
-<alexanderaltman@me.com> wrote:
+On Tue Apr 2, 2024 at 1:55 AM EEST, Haitao Huang wrote:
+> On Mon, 01 Apr 2024 09:22:21 -0500, Jarkko Sakkinen <jarkko@kernel.org> =
+=20
+> wrote:
 >
-> A type is inhabited if at least one valid value of that type exists; a ty=
-pe is uninhabited if no valid values of that type exist.  The terms "inhabi=
-ted" and "uninhabited" in this sense originate in type theory, a branch of =
-mathematics.
+> > On Sun Mar 31, 2024 at 8:44 PM EEST, Haitao Huang wrote:
+> >> Make cgroup test scripts ash compatible.
+> >> Remove cg-tools dependency.
+> >> Add documentation for functions.
+> >>
+> >> Tested with busybox on Ubuntu.
+> >>
+> >> Signed-off-by: Haitao Huang <haitao.huang@linux.intel.com>
+> >
+> > I'll run this next week on good old NUC7. Thank you.
+> >
+> > I really wish that either (hopefully both) Intel or AMD would bring up
+> > for developers home use meant platform to develop on TDX and SNP. It is
+> > a shame that the latest and greatest is from 2018.
+> >
+> > BR, Jarkko
+> >
 >
-> In Rust, producing an invalid value of any type is immediate undefined be=
-havior (UB); this includes via zeroing memory.  Therefore, since an uninhab=
-ited type has no valid values, producing any values at all for it is UB.
+> Argh, missed a few changes for v2 cgroup:
 >
-> The Rust standard library type `core::convert::Infallible` is uninhabited=
-, by virtue of having been declared as an enum with no cases, which always =
-produces uninhabited types in Rust.
+> --- a/tools/testing/selftests/sgx/run_epc_cg_selftests.sh
+> +++ b/tools/testing/selftests/sgx/run_epc_cg_selftests.sh
+> @@ -15,6 +15,8 @@ CG_MEM_ROOT=3D/sys/fs/cgroup
+>   CG_V1=3D0
+>   if [ ! -d "/sys/fs/cgroup/misc" ]; then
+>       echo "# cgroup V2 is in use."
+> +    echo "+misc" >  $CG_MISC_ROOT/cgroup.subtree_control
+> +    echo "+memory" > $CG_MEM_ROOT/cgroup.subtree_control
+>   else
+>       echo "# cgroup V1 is in use."
+>       CG_MISC_ROOT=3D/sys/fs/cgroup/misc
+> @@ -26,6 +28,11 @@ mkdir -p $CG_MISC_ROOT/$TEST_CG_SUB2
+>   mkdir -p $CG_MISC_ROOT/$TEST_CG_SUB3
+>   mkdir -p $CG_MISC_ROOT/$TEST_CG_SUB4
 >
-> The current kernel code allows this UB to be triggered, for example by co=
-de like:
-> `pr_info!("{}=E2=80=9D, Box::<core::convert::Infallible>::init(kernel::in=
-it::zeroed())?);`
->
-> Thus, remove the implementation of `Zeroable` for `Infallible`, thereby a=
-voiding the UB.
+> +if [ $CG_V1 -eq 0 ]; then
+> +echo "+misc" >  $CG_MISC_ROOT/$TEST_ROOT_CG/cgroup.subtree_control
+> +echo "+misc" >  $CG_MISC_ROOT/$TEST_CG_SUB1/cgroup.subtree_control
+> +fi
 
-Do you agree with replacing the last part here with "avoiding the
-unsoundness issue" or similar instead?
+Maybe it would be most convenient just to +1 the kselftest patch?
 
-i.e. there is no UB in the kernel (related to this), so it isn't
-avoided in that sense. Of course, you mean that we avoid potential UB
-to be written in the future, but I think it is useful to distinguish
-between patches for "holes" in the extra layer of "protection" vs.
-patches that actually triggered UB.
+Alternatively you could point out to a Git branch with the series
+and the updated patch.
 
-> +    // SAFETY: These are inhabited ZSTs; there is nothing to zero and a =
-valid value exists.
-
-Typically we would add an empty line here, and we would put the SAFETY
-comment below (i.e. closer to the code) while the rest above.
-
-> +    // Note: do not add uninhabited types (such as ! or Infallible) to t=
-his list; creating an instance of an uninhabited type is immediate undefine=
-d behavior.
-
-Nit: this could use Markdown (`!`, `Infallible`).
-
-Otherwise, apart from these nits and the formatting bit, it looks good to m=
-e.
-
-If you could send a quick v4, that would be great, thanks a lot!
-
-Cheers,
-Miguel
+BR, Jarkko
 
