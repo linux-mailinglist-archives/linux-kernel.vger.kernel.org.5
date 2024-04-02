@@ -1,51 +1,62 @@
-Return-Path: <linux-kernel+bounces-127436-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-127437-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 28AB6894B51
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 08:23:58 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 60024894B56
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 08:24:52 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5A2351C22529
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 06:23:57 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7378EB23AA5
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 06:24:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1D27C1CF87;
-	Tue,  2 Apr 2024 06:23:48 +0000 (UTC)
-Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4DFA61B7F4;
+	Tue,  2 Apr 2024 06:24:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="b27jE85r"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DC54218654
-	for <linux-kernel@vger.kernel.org>; Tue,  2 Apr 2024 06:23:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3E10318654;
+	Tue,  2 Apr 2024 06:24:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.19
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712039027; cv=none; b=HxHvTRyMWVlQFW11OBF5e0JFIyJeEaox727bMDkOwu2aj/4GLo+vzUsBIat4Frf3HDoyZ54WVMY6ZU3iqRnLYhlah1UGjDGiBlecKyK2qXuHLsw8fFwGxCNzhheW45FizA6ziZ3QhNAwxh0s1ZleksTCJJOVKIYspWpGS+oyO6I=
+	t=1712039080; cv=none; b=pwQVGu53ywanmVIIkjA62pY2xWNGi0xG0zYvu485CEbSi7onv67fOsUJFQnMNIkfNjEFBvYbIZcAsfv5GO9/aVhkujBQamaBFvPB+aTbUT5wdIv0Eo9ivaV/qE4q3LNVEhcCjqKG7QyweVrB4qraqITPuUqQE5AfXacWZtEPDUI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712039027; c=relaxed/simple;
-	bh=PPPuY5Hg0Y0DNWRkltz48L7HE6kprcKtqSFqK38Z/U0=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:To:Cc; b=IMpqe77ats0fdDIF2a2O5O3QYslSJg7cHI95+yRWwG+jHmwg0MHBUa46MLlUWjgDgqRI8Ajgrkm6gkn0H1OZCV+NniTuhRjVh4ATy5bVTMVZMQjxAEDT+OZ0Ult0+WNJ8Pzy571bryP58cikd5Z75kCIPKVfe+FDI8XVN2YuUhg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
-Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
-	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-	(Exim 4.92)
-	(envelope-from <m.grzeschik@pengutronix.de>)
-	id 1rrXYe-0004sT-20; Tue, 02 Apr 2024 08:23:44 +0200
-Received: from [2a0a:edc0:0:1101:1d::ac] (helo=dude04.red.stw.pengutronix.de)
-	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.94.2)
-	(envelope-from <m.grzeschik@pengutronix.de>)
-	id 1rrXYd-009vdf-Fz; Tue, 02 Apr 2024 08:23:43 +0200
-Received: from localhost ([::1] helo=dude04.red.stw.pengutronix.de)
-	by dude04.red.stw.pengutronix.de with esmtp (Exim 4.96)
-	(envelope-from <m.grzeschik@pengutronix.de>)
-	id 1rrXYd-00EkSU-1P;
-	Tue, 02 Apr 2024 08:23:43 +0200
-From: Michael Grzeschik <m.grzeschik@pengutronix.de>
-Date: Tue, 02 Apr 2024 08:23:43 +0200
-Subject: [PATCH] usb: chipidea: move ci_ulpi_init after the phy
- initialization
+	s=arc-20240116; t=1712039080; c=relaxed/simple;
+	bh=Avcgwic9to73qYuJOM9j0RdxPlc4XVJ76Q8h7Wk8SVw=;
+	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:To:Cc; b=ZQDTHGgqVj1/NM5tPjSvlSxR1dSheX0E2NqywO7NUuq5ssQ5f4oJew19BhICEMOQ/CbMvog+IoLAW8BFA5Jgv1gpXXZR0eN4cEMNy+ro5DpmHctvKuOO6/gEPJhAvsGJ4b1w44o93roRkx628XNl4h3c6QRHbrhEsdX+pFlgcuY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=b27jE85r; arc=none smtp.client-ip=198.175.65.19
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1712039078; x=1743575078;
+  h=from:date:subject:mime-version:content-transfer-encoding:
+   message-id:to:cc;
+  bh=Avcgwic9to73qYuJOM9j0RdxPlc4XVJ76Q8h7Wk8SVw=;
+  b=b27jE85rimEtydns06rOqz73TOGE5LtJPzUqoE/vPCCtKBo2WiGkGxLx
+   2ljsSdn6hAJvBsEYxhthBE1v1q+X7vCtMe8b/Q9jQeIgtJDXIuy5uKGIT
+   DRD/mMPLW7Q4AOnyEN0Z+Rxkk0SwlLv/ETt0sxJbNrHlsqvz0x33AZuXF
+   9fdIraWPdS9VlgCKgC/pMCsM0A7t3c/Q4qDRbyGIgN1EEiNEFRlqYuHls
+   jDJO9ybt4/Y6jDn089vYA28VzLTZht1noVztDQGmIRJxzZuVZwmtQLEY+
+   ztfHQ3YFOQYw1OFo7l35mSS2W1TnZsfagM68Ev6e3YQyZr43E1pwevnqO
+   g==;
+X-CSE-ConnectionGUID: /zZfD8keSGK7YtiULng4/Q==
+X-CSE-MsgGUID: yzMFefd8QoWfAE8nsTH8+Q==
+X-IronPort-AV: E=McAfee;i="6600,9927,11031"; a="7044663"
+X-IronPort-AV: E=Sophos;i="6.07,174,1708416000"; 
+   d="scan'208";a="7044663"
+Received: from fmviesa008.fm.intel.com ([10.60.135.148])
+  by orvoesa111.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Apr 2024 23:24:37 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,174,1708416000"; 
+   d="scan'208";a="18040555"
+Received: from vverma7-desk1.amr.corp.intel.com (HELO [192.168.1.200]) ([10.212.66.53])
+  by fmviesa008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Apr 2024 23:24:37 -0700
+From: Vishal Verma <vishal.l.verma@intel.com>
+Date: Tue, 02 Apr 2024 00:24:28 -0600
+Subject: [PATCH] dax/bus.c: replace WARN_ON_ONCE() with lockdep asserts
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -54,97 +65,161 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20240328-chipidea-phy-misc-v1-1-907d9de5d4df@pengutronix.de>
-X-B4-Tracking: v=1; b=H4sIAG6kC2YC/x2N0QqDMAwAf0XyvIDWwsp+RXxoY1wDrisNE4f47
- wt7vIPjTlBuwgqP7oTGu6i8i8Fw64ByLE9GWYzB9c73owtIWaosHLHmL75ECdO4ukRh8Pfgwbo
- UlTG1WChbWT7bZrI2XuX4j6b5un6FV/z7eAAAAA==
-To: Peter Chen <peter.chen@kernel.org>, 
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org, 
- Michael Grzeschik <m.grzeschik@pengutronix.de>
-X-Mailer: b4 0.12.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1878;
- i=m.grzeschik@pengutronix.de; h=from:subject:message-id;
- bh=PPPuY5Hg0Y0DNWRkltz48L7HE6kprcKtqSFqK38Z/U0=;
- b=owEBbQKS/ZANAwAKAb9pWET5cfSrAcsmYgBmC6RvfNzHPWGSTzAesud7hzhjuUOv2iCGDHlgz
- +WMmsbz4gqJAjMEAAEKAB0WIQQV2+2Fpbqd6fvv0Gi/aVhE+XH0qwUCZgukbwAKCRC/aVhE+XH0
- q7+YEACkOuX13NKcmJGgkose0F3MPD8UJZETRgJUxU+eZEKIenMN4a6uAsKhgOnGDp9rjQ16LWP
- VoeaQwlRLty0VzpPswjJsouoDeMmMZWw1Um+qab6E8yLhGxEvp7PjsED5i0Gq6VyBEBCm1iocOu
- PIDOsmZkP8Wk/aTwTeMZ3UPzDhuzpKZPPpdzN3uvKebh2YaOkFxCv5MiSulqJMC9LJ6Towv4jNM
- nnXZ2p3w4VeMNlm8kS3oIeegL6pkbrix2v14LxhFxZRlP8HtDxBgC6v0HnBFj5IRk8wDwvLUh44
- gwkGsZeEUjNSmvU3VQ07UjL8w21rAOhD+AiUxLIFe9e1kdYX7TYVQlzhsa7VGgga8/9MMuUoXsW
- vVPqvztqt0EgMBU9zm1heazA+inRPSIZxsdoj86cUouRT8H80n48T31p5gwmMaGOPT7V+D/lgaJ
- qj1XkdX3IuYhCSmrR82OV1EzsdU4N334yhb8nZTxkMfy/gValRXfJu+n0enYVFHOLtEalq1vu8P
- xuwghYlomD2ODkNB2NJ/EHehP+ZDpF2+EWmobAdNPpnHv5aabnBQTKnsLyXt1h1dj38owPiG29r
- ETiyyiR2eKEvKCOgWyfxY7K8+W702lBeT1IwRGCM3poAc95f+3gYNb+LvQlY86DX8qmb6FPCWfg
- KvysDv7McMG188A==
-X-Developer-Key: i=m.grzeschik@pengutronix.de; a=openpgp;
- fpr=957BC452CE953D7EA60CF4FC0BE9E3157A1E2C64
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
-X-SA-Exim-Mail-From: m.grzeschik@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+Message-Id: <20240402-vv-dax_abi_fixes-v1-1-c3e0fdbafba5@intel.com>
+X-B4-Tracking: v=1; b=H4sIAJukC2YC/x3LTQqAIBBA4avIrBNs+iG6SoRMOdZsKhRECO+et
+ Px4vBciB+EIs3ohcJIo91XRNgr2k66DtbhqQIO96Q3qlLSjbGkT6yVz1BP5bhu9Rx4I6vYE/kO
+ 9lrWUD3zE2/hiAAAA
+To: Dan Williams <dan.j.williams@intel.com>, 
+ Dave Jiang <dave.jiang@intel.com>, 
+ Alison Schofield <alison.schofield@intel.com>, 
+ Andrew Morton <akpm@linux-foundation.org>
+Cc: linux-mm@kvack.org, nvdimm@lists.linux.dev, linux-cxl@vger.kernel.org, 
+ linux-kernel@vger.kernel.org, Vishal Verma <vishal.l.verma@intel.com>
+X-Mailer: b4 0.14-dev-5ce50
+X-Developer-Signature: v=1; a=openpgp-sha256; l=5236;
+ i=vishal.l.verma@intel.com; h=from:subject:message-id;
+ bh=Avcgwic9to73qYuJOM9j0RdxPlc4XVJ76Q8h7Wk8SVw=;
+ b=owGbwMvMwCXGf25diOft7jLG02pJDGncSxb4pTYHHd8tzN3jmrJ/kapw7kyTslmLJiQqZjJY7
+ 0t7ztLWUcrCIMbFICumyPJ3z0fGY3Lb83kCExxh5rAygQxh4OIUgIlk3Gf4H8U1qX8DWxHjF+ut
+ uqpvupjfJrvse8Wd3n+sUZnz9r+e9wx/5a8v4ZjPGzlToPeKjPel6sxFvMIa529F1DqbCFcka9/
+ kAwA=
+X-Developer-Key: i=vishal.l.verma@intel.com; a=openpgp;
+ fpr=F8682BE134C67A12332A2ED07AFA61BEA3B84DFF
 
-The function ci_usb_phy_init is already handling the
-hw_phymode_configure path which is also only possible after we have
-a valid phy. So we move the ci_ulpi_init after the phy initialization
-to be really sure to be able to communicate with the ulpi phy.
+In [1], Dan points out that all of the WARN_ON_ONCE() usage in the
+referenced patch should be replaced with lockdep_assert_held(_write)().
 
-Signed-off-by: Michael Grzeschik <m.grzeschik@pengutronix.de>
+Replace those, and additionally, replace a couple of other
+WARN_ON_ONCE() introduced in the same patch for actual failure
+cases (i.e. when acquiring a semaphore fails in a remove / unregister
+path) with dev_WARN_ONCE() as is the precedent here.
+
+Recall that previously, unregistration paths was implicitly protected by
+overloading the device lock, which the patch in [1] sought to remove.
+This meant adding a semaphore acquisition in these unregistration paths.
+Since that can fail, and it doesn't make sense to return errors from
+these paths, retain the two instances of (now) dev_WARN_ONCE().
+
+Link: https://lore.kernel.org/r/65f0b5ef41817_aa222941a@dwillia2-mobl3.amr.corp.intel.com.notmuch [1]
+Fixes: c05ae9d85b47 ("dax/bus.c: replace driver-core lock usage by a local rwsem")
+Cc: Andrew Morton <akpm@linux-foundation.org>
+Reported-by: Dan Williams <dan.j.williams@intel.com>
+Signed-off-by: Vishal Verma <vishal.l.verma@intel.com>
 ---
- drivers/usb/chipidea/core.c | 8 ++++----
- drivers/usb/chipidea/ulpi.c | 5 -----
- 2 files changed, 4 insertions(+), 9 deletions(-)
+ drivers/dax/bus.c | 23 +++++++++++++----------
+ 1 file changed, 13 insertions(+), 10 deletions(-)
 
-diff --git a/drivers/usb/chipidea/core.c b/drivers/usb/chipidea/core.c
-index 835bf2428dc6e..bada13f704b62 100644
---- a/drivers/usb/chipidea/core.c
-+++ b/drivers/usb/chipidea/core.c
-@@ -1084,10 +1084,6 @@ static int ci_hdrc_probe(struct platform_device *pdev)
- 		return -ENODEV;
- 	}
+diff --git a/drivers/dax/bus.c b/drivers/dax/bus.c
+index 797e1ebff299..d89c8c3b62f7 100644
+--- a/drivers/dax/bus.c
++++ b/drivers/dax/bus.c
+@@ -192,7 +192,7 @@ static u64 dev_dax_size(struct dev_dax *dev_dax)
+ 	u64 size = 0;
+ 	int i;
  
--	ret = ci_ulpi_init(ci);
--	if (ret)
--		return ret;
--
- 	if (ci->platdata->phy) {
- 		ci->phy = ci->platdata->phy;
- 	} else if (ci->platdata->usb_phy) {
-@@ -1142,6 +1138,10 @@ static int ci_hdrc_probe(struct platform_device *pdev)
- 		goto ulpi_exit;
- 	}
+-	WARN_ON_ONCE(!rwsem_is_locked(&dax_dev_rwsem));
++	lockdep_assert_held(&dax_dev_rwsem);
  
-+	ret = ci_ulpi_init(ci);
-+	if (ret)
-+		return ret;
-+
- 	ci->hw_bank.phys = res->start;
+ 	for (i = 0; i < dev_dax->nr_range; i++)
+ 		size += range_len(&dev_dax->ranges[i].range);
+@@ -302,7 +302,7 @@ static unsigned long long dax_region_avail_size(struct dax_region *dax_region)
+ 	resource_size_t size = resource_size(&dax_region->res);
+ 	struct resource *res;
  
- 	ci->irq = platform_get_irq(pdev, 0);
-diff --git a/drivers/usb/chipidea/ulpi.c b/drivers/usb/chipidea/ulpi.c
-index dfec07e8ae1d2..89fb51e2c3ded 100644
---- a/drivers/usb/chipidea/ulpi.c
-+++ b/drivers/usb/chipidea/ulpi.c
-@@ -68,11 +68,6 @@ int ci_ulpi_init(struct ci_hdrc *ci)
- 	if (ci->platdata->phy_mode != USBPHY_INTERFACE_MODE_ULPI)
- 		return 0;
+-	WARN_ON_ONCE(!rwsem_is_locked(&dax_region_rwsem));
++	lockdep_assert_held(&dax_region_rwsem);
  
--	/*
--	 * Set PORTSC correctly so we can read/write ULPI registers for
--	 * identification purposes
--	 */
--	hw_phymode_configure(ci);
+ 	for_each_dax_region_resource(dax_region, res)
+ 		size -= resource_size(res);
+@@ -447,7 +447,7 @@ static void trim_dev_dax_range(struct dev_dax *dev_dax)
+ 	struct range *range = &dev_dax->ranges[i].range;
+ 	struct dax_region *dax_region = dev_dax->region;
  
- 	ci->ulpi_ops.read = ci_ulpi_read;
- 	ci->ulpi_ops.write = ci_ulpi_write;
+-	WARN_ON_ONCE(!rwsem_is_locked(&dax_region_rwsem));
++	lockdep_assert_held_write(&dax_region_rwsem);
+ 	dev_dbg(&dev_dax->dev, "delete range[%d]: %#llx:%#llx\n", i,
+ 		(unsigned long long)range->start,
+ 		(unsigned long long)range->end);
+@@ -471,6 +471,7 @@ static void __unregister_dev_dax(void *dev)
+ 
+ 	dev_dbg(dev, "%s\n", __func__);
+ 
++	lockdep_assert_held_write(&dax_region_rwsem);
+ 	kill_dev_dax(dev_dax);
+ 	device_del(dev);
+ 	free_dev_dax_ranges(dev_dax);
+@@ -482,7 +483,8 @@ static void unregister_dev_dax(void *dev)
+ 	if (rwsem_is_locked(&dax_region_rwsem))
+ 		return __unregister_dev_dax(dev);
+ 
+-	if (WARN_ON_ONCE(down_write_killable(&dax_region_rwsem) != 0))
++	if (dev_WARN_ONCE(dev, down_write_killable(&dax_region_rwsem) != 0,
++			  "unable to acquire region rwsem\n"))
+ 		return;
+ 	__unregister_dev_dax(dev);
+ 	up_write(&dax_region_rwsem);
+@@ -507,7 +509,7 @@ static int __free_dev_dax_id(struct dev_dax *dev_dax)
+ 	struct dax_region *dax_region;
+ 	int rc = dev_dax->id;
+ 
+-	WARN_ON_ONCE(!rwsem_is_locked(&dax_dev_rwsem));
++	lockdep_assert_held_write(&dax_dev_rwsem);
+ 
+ 	if (!dev_dax->dyn_id || dev_dax->id < 0)
+ 		return -1;
+@@ -713,7 +715,7 @@ static void __unregister_dax_mapping(void *data)
+ 
+ 	dev_dbg(dev, "%s\n", __func__);
+ 
+-	WARN_ON_ONCE(!rwsem_is_locked(&dax_region_rwsem));
++	lockdep_assert_held_write(&dax_region_rwsem);
+ 
+ 	dev_dax->ranges[mapping->range_id].mapping = NULL;
+ 	mapping->range_id = -1;
+@@ -726,7 +728,8 @@ static void unregister_dax_mapping(void *data)
+ 	if (rwsem_is_locked(&dax_region_rwsem))
+ 		return __unregister_dax_mapping(data);
+ 
+-	if (WARN_ON_ONCE(down_write_killable(&dax_region_rwsem) != 0))
++	if (dev_WARN_ONCE(data, down_write_killable(&dax_region_rwsem) != 0,
++			  "unable to acquire region rwsem\n"))
+ 		return;
+ 	__unregister_dax_mapping(data);
+ 	up_write(&dax_region_rwsem);
+@@ -830,7 +833,7 @@ static int devm_register_dax_mapping(struct dev_dax *dev_dax, int range_id)
+ 	struct device *dev;
+ 	int rc;
+ 
+-	WARN_ON_ONCE(!rwsem_is_locked(&dax_region_rwsem));
++	lockdep_assert_held_write(&dax_region_rwsem);
+ 
+ 	if (dev_WARN_ONCE(&dev_dax->dev, !dax_region->dev->driver,
+ 				"region disabled\n"))
+@@ -876,7 +879,7 @@ static int alloc_dev_dax_range(struct dev_dax *dev_dax, u64 start,
+ 	struct resource *alloc;
+ 	int i, rc;
+ 
+-	WARN_ON_ONCE(!rwsem_is_locked(&dax_region_rwsem));
++	lockdep_assert_held_write(&dax_region_rwsem);
+ 
+ 	/* handle the seed alloc special case */
+ 	if (!size) {
+@@ -935,7 +938,7 @@ static int adjust_dev_dax_range(struct dev_dax *dev_dax, struct resource *res, r
+ 	struct device *dev = &dev_dax->dev;
+ 	int rc;
+ 
+-	WARN_ON_ONCE(!rwsem_is_locked(&dax_region_rwsem));
++	lockdep_assert_held_write(&dax_region_rwsem);
+ 
+ 	if (dev_WARN_ONCE(dev, !size, "deletion is handled by dev_dax_shrink\n"))
+ 		return -EINVAL;
 
 ---
-base-commit: 5bab5dc780c9ed0c69fc2f828015532acf4a7848
-change-id: 20240328-chipidea-phy-misc-b3f2bc814784
+base-commit: 39cd87c4eb2b893354f3b850f916353f2658ae6f
+change-id: 20240402-vv-dax_abi_fixes-8af3b6ff2e5a
 
 Best regards,
 -- 
-Michael Grzeschik <m.grzeschik@pengutronix.de>
+Vishal Verma <vishal.l.verma@intel.com>
 
 
