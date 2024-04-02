@@ -1,109 +1,129 @@
-Return-Path: <linux-kernel+bounces-128719-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-128720-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id EE89C895E9B
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 23:19:25 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 608BA895E9E
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 23:20:38 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 73CDEB26BFD
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 21:19:23 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1C8F5283587
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 21:20:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6B5BA15E5BF;
-	Tue,  2 Apr 2024 21:19:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F2DCF15E5B4;
+	Tue,  2 Apr 2024 21:20:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="HVPJSl8v"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b="epXMOtcH"
+Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9EC3415E1F9;
-	Tue,  2 Apr 2024 21:19:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DB25915E1ED;
+	Tue,  2 Apr 2024 21:20:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=65.109.113.108
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712092753; cv=none; b=BeyxdpQqmJkVzdO0l9HhyCynXhAwpd+B31DVSm5/E1psZ8EJAj79iltjKK2+D9WDATUhOEgu9SMKu6l35/IvCPqj+h8GOIYTU9dWXRJN8PhuCpyOQrUiM1j996218P+VehOm2Jsnrw+kyZNH9O/AnlYifMB1ByISLrG7eXDDRlI=
+	t=1712092831; cv=none; b=KwF9C49r1TtXZ11+7p70t041JMVLWkf7YeGAUwCp3ugJKvQtP6pZz9xng3H/bzcsJfHSQbX499Qdt5++PgshZKI6HhZYMsEVwADLZ0EFGHApqkxCE9w5snzwhl80uST3NtVOjXi6lKkudIND6jByKmEfnSaEMnnUBvoahip+IEY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712092753; c=relaxed/simple;
-	bh=QXVrWT4sxWYAXoce45NeFHniylOx/vOwE7xWnCnJBBw=;
-	h=From:To:In-Reply-To:References:Subject:Message-Id:Date:
-	 MIME-Version:Content-Type; b=USvCQUnIFviSV3feenrp/zh32NxfaPSE4OMkwWY0Asn4WrElmUa6NyId3r43Zez3vc9XkB76Tqt5gtGzgFI7Khjdr/AOsqAt8/elVQjw93wlxqsS/m3T3bKU1USI0CeyxHAZieUIlZiY4E0oUQkv0V9VxOMiV1yVjb5EkXHgsEo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=HVPJSl8v; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 62FA6C433F1;
-	Tue,  2 Apr 2024 21:19:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712092753;
-	bh=QXVrWT4sxWYAXoce45NeFHniylOx/vOwE7xWnCnJBBw=;
-	h=From:To:In-Reply-To:References:Subject:Date:From;
-	b=HVPJSl8v8suOYXGSagYAS12EA/xAp5XMdBVeEL3bs7WSiBJdQow0GPthrzIuprDef
-	 eVWaqKu5RVxhdOrgySfsOqGi8tyl+XJgnVfihWzd60nfm6y81P3RcGjflR6u7O085S
-	 WUFXumKISAyGdwYTSg7anOZ2FYY+Sk4NLL5yFfeA65jYr6VTRNi37QyhX8fliEMvk4
-	 ulTikFNnB/ght/ukngzXTe08ReRFo6tKwI51grhvUBsiFXp0h5vu1YIePtpo6/a6qD
-	 xl5Ylx1TdCt8Tw5+Vdf7YcEqYnvMhSOU41BuYdURgmZtd5sdmYWZgvqIfM63oAfMnU
-	 k7qTQ1p/AnZqw==
-From: Mark Brown <broonie@kernel.org>
-To: lgirdwood@gmail.com, robh+dt@kernel.org, 
- krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org, 
- shengjiu.wang@gmail.com, linux-sound@vger.kernel.org, 
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, 
- shawnguo@kernel.org, s.hauer@pengutronix.de, kernel@pengutronix.de, 
- festevam@gmail.com, imx@lists.linux.dev, 
- linux-arm-kernel@lists.infradead.org, Shengjiu Wang <shengjiu.wang@nxp.com>
-In-Reply-To: <1711976056-19884-1-git-send-email-shengjiu.wang@nxp.com>
-References: <1711976056-19884-1-git-send-email-shengjiu.wang@nxp.com>
-Subject: Re: (subset) [PATCH v2 0/2] ASoC: dt-bindings: convert
- fsl-asoc-card.txt to YAML
-Message-Id: <171209275013.212774.10957892545109249722.b4-ty@kernel.org>
-Date: Tue, 02 Apr 2024 22:19:10 +0100
+	s=arc-20240116; t=1712092831; c=relaxed/simple;
+	bh=PbJBzqx/lsFGDJR0ovIcDgCqmRfvfod3VfDgwbV/Uqo=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=As/V+7NSxIxiFZtannuLsO7A+5grV9C1cNwJMH6stA4TJ6S/5gdb/+uNCya3sInVp+Bp/Q22ULW1NZCQQfSyxYC7KradkESxAsn8BbkhT8EWFK6oK35P/05E70kfOqg+AYIu2CeZXEmegVFEMrIizXlqovNTCtVLLbkNy14lcMs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de; spf=pass smtp.mailfrom=alien8.de; dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b=epXMOtcH; arc=none smtp.client-ip=65.109.113.108
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alien8.de
+Received: from localhost (localhost.localdomain [127.0.0.1])
+	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id 8A31940E00B2;
+	Tue,  2 Apr 2024 21:20:25 +0000 (UTC)
+X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
+Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
+	header.d=alien8.de
+Received: from mail.alien8.de ([127.0.0.1])
+	by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
+	with ESMTP id hYV6f0ddzFA4; Tue,  2 Apr 2024 21:20:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
+	t=1712092821; bh=VCuf++VjbGdwzOxmI7rmPEokbNsMqpfPelO3955p8Jo=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=epXMOtcHzP77gnPQOLqAHF1b3yzppkXnh/NwvRQ1EK7M02A3m44UBW/YsBkDuksTU
+	 knMVuEjKErl/GwSyAHpK6DcdV6g/L8oOtop+C8eet8wx2NErNIZ0o40FsyitcPAI3V
+	 rXSIFu6cYrZEUeLz6SosX6Sk8GHe1PvsPFUV3vs8TObzFy15LGWcq5F5EzvYpKON1Q
+	 29509K91zcszHY0T5yxapEP075OfbaOh1D1vwTJDc6GBGeCY4bESSgMqHBSWT8eTA7
+	 jx0NE0oMOJWGeZJVmpksioTK30rvLIJvkqBQwtiaCko5q3mmXw7SmTOqdy0FiJafYV
+	 1/6EUi1OlzzpTUcB2Lju1apIjAzTZUw4QBhclHKqloZJx16bsAG6NPL8lsvuN0bLMo
+	 Ixki3Gx1JfduE3O8+5LuKeOE0Wk5oHKdwDMdNwlAx0BmNZBG45scd4PlsujcT5qlzH
+	 jVA9kopu/txhlso5vyiEr3IJNq8i2yGNWf7QalCqqrJThc2GxtAif3diTkPLGDoCA2
+	 cW2Jg+qDH+PA0bIlZBzMa9KW8gqKmxe/bTIvkHD3MwjtOivAcmgVU8LvhvOLt32x0E
+	 kXCHmq+/Vy496CDahgZaLWqlJgr9QalAnkfzKWsJVTp+2pDwEIWp24pOOWeOty9S7N
+	 E/RmsnvTuH+tK10N0Bh0IXwk=
+Received: from zn.tnic (p5de8ecf7.dip0.t-ipconnect.de [93.232.236.247])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
+	(No client certificate requested)
+	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 3764B40E019C;
+	Tue,  2 Apr 2024 21:20:14 +0000 (UTC)
+Date: Tue, 2 Apr 2024 23:20:09 +0200
+From: Borislav Petkov <bp@alien8.de>
+To: "Kalra, Ashish" <ashish.kalra@amd.com>
+Cc: bp@kernel.org, thomas.lendacky@amd.com, linux-kernel@vger.kernel.org,
+	linux-tip-commits@vger.kernel.org, michael.roth@amd.com,
+	x86@kernel.org
+Subject: Re: [PATCH] x86/sev: Apply RMP table fixups for kexec.
+Message-ID: <20240402212009.GEZgx2iZC_Plx-ajKW@fat_crate.local>
+References: <2ab14f6f-2690-056b-cf9e-38a12dafd728@amd.com>
+ <20240402163412.19325-1-bp@kernel.org>
+ <6f0d2ccf-243c-4073-a470-21e2f404595a@amd.com>
+ <359264a1-e4ef-438c-8f24-32848e131272@amd.com>
+ <20240402174540.GAZgxERNxsRJUCb1yp@fat_crate.local>
+ <37321af9-aee4-4ba6-81ac-0df4cef38644@amd.com>
+ <20240402185039.GBZgxTfwvEP45OxVjm@fat_crate.local>
+ <8daf448f-eb52-4b1f-9f98-099a83665321@amd.com>
+ <20240402202118.GCZgxovu-pgPKYvner@fat_crate.local>
+ <6fdb98f8-b4e2-474d-b8e9-c3092e77e56e@amd.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.14-dev
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <6fdb98f8-b4e2-474d-b8e9-c3092e77e56e@amd.com>
 
-On Mon, 01 Apr 2024 20:54:14 +0800, Shengjiu Wang wrote:
-> Convert fsl-asoc-card.txt to YAML. In order to pass the checking,
-> add some used compatible string from devicetree.
+On Tue, Apr 02, 2024 at 04:00:03PM -0500, Kalra, Ashish wrote:
+> The main issue with doing that in snp_rmptable_init() is that there is no
+> e820 API interfaces available to update the e820_table_kexec and
+> e820_table_firmware and e820_table_firmware has already been exposed to
+> sysfs.
+
+And?
+
+You can't change it later? Tried?
+
+> The e820 API only exports e820__range_update() which *only* fixes
+> e820_table.
 > 
-> change cpu-dai in imx6sx-nitrogen6sx to ssi-controller.
-> 
-> changes in v2:
-> - update commit message for reason why add compatible strings
->   which are not in txt file.
-> - add deprecated
-> - add $ref for bitclock-master and others.
-> 
-> [...]
+> The important point to note here is that in most cases BIOS would have
+> reserved RMP table start and end aligned to 2M boundary and setup the e820
+> table which the BIOS passes to the kernel as such,
 
-Applied to
+So what was this "RMP table start and end physical range may not be
+aligned to 2MB" in your commit message?
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
+/me is completely confused now.
 
-Thanks!
+Or does "most cases" mean that there can be cases where the RMP table
+placement in the BIOS is not 2M aligned and then the kexec kernel could
+try to allocate from within that chunk and there's RMP faults?
 
-[2/2] ASoC: dt-bindings: fsl-asoc-card: convert to YAML
-      commit: 4189b54220e5af15e948a48524b45d5ea2e5660d
+And you want to allocate those chunks up to the 2M boundary
+unconditionally, regardless of SNP enablement?
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
+Now look at your original commit message and tell me how much of what
+came out on this thread, was in it?
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
+Not a lot, I'd say...
 
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
+-- 
+Regards/Gruss,
+    Boris.
 
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
-
+https://people.kernel.org/tglx/notes-about-netiquette
 
