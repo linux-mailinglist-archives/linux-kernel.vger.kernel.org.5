@@ -1,150 +1,145 @@
-Return-Path: <linux-kernel+bounces-128626-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-128627-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id CF1A6895D2D
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 21:57:22 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 41B89895D32
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 21:58:02 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6FBEFB25645
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 19:57:20 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D4F4B1F272A8
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 19:58:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BB61915D5D3;
-	Tue,  2 Apr 2024 19:57:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C835015D5A4;
+	Tue,  2 Apr 2024 19:57:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="KtQm2YaS"
-Received: from mail-ej1-f53.google.com (mail-ej1-f53.google.com [209.85.218.53])
+	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="LNtqNNSK"
+Received: from mail-ej1-f45.google.com (mail-ej1-f45.google.com [209.85.218.45])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 536B015CD53;
-	Tue,  2 Apr 2024 19:56:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2356015B146
+	for <linux-kernel@vger.kernel.org>; Tue,  2 Apr 2024 19:57:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712087821; cv=none; b=QqEeXcbgza/dkAunEUTFihJxOppRGiqHNNSZJQMbrJXU2tpq17PGa0TbMA+LQpQoDYh5jpEAKkI6/Q2i6fTTQ18Oq+W2a2OmNlVp0zw8Bh324lO1xHmRCbyOkm2qxVCha+hkIlk7Nn+98OtC3QXXLbsj/uXgrYX30wuhRV5h7yw=
+	t=1712087870; cv=none; b=Et153bRxUS72a7BIKhiD7t83AuDb+HKd8ZGQq7kuDaepoefx+C7VyBpIxz5TebT3CjaGbdoc7HuM4h65LzrJTMvlQeoe5UALERHaFSuvXSfKcMa2wURXRskmr4aFjpUKVdeNolZA/dyhA5mySSJcHAvWtRcceIqbxb2lSqKhOiI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712087821; c=relaxed/simple;
-	bh=H+CJwRc2912b6nD2Ih3u13fV2MljjiN6PEppvJcgp20=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=s9oNaqv9t0XU86LNxvj7ot7rMo7Hhu0XlYNBGkaM0GYQgZpzM5c1DGreZwwxVyV3AcXwDaXbuL37/J5eAarChSmLyM/Sw61lkmn3WB9lDO6i+StCsdtn7STrAOoOuxBucf+cxtrwGn1Hv6nOz+aaXf9vaeeKB5vyox7dHEGteOc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=KtQm2YaS; arc=none smtp.client-ip=209.85.218.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f53.google.com with SMTP id a640c23a62f3a-a4644bde1d4so755222066b.3;
-        Tue, 02 Apr 2024 12:56:58 -0700 (PDT)
+	s=arc-20240116; t=1712087870; c=relaxed/simple;
+	bh=dktNbJSE4AMUUSXBqDMDbOSzD2AIdHi/2em6bOnXPak=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=sLV/IfllqhI59XOI03WIRTqk6zmH6Y7+OG7ijEGJR3XJC1c2FljtiTf5xZwcOt3fXD1lSI/vOBTr//UHG32zo7czk1eAI0HPGL9r7iP9fpUHoz3TJ1VcWOmedphCZHTgqAAv/7jAhDB6j7yxKOaNClkXS27qWGMG75RTx0V7QNI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org; spf=pass smtp.mailfrom=linuxfoundation.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=LNtqNNSK; arc=none smtp.client-ip=209.85.218.45
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
+Received: by mail-ej1-f45.google.com with SMTP id a640c23a62f3a-a466e53f8c0so735856466b.1
+        for <linux-kernel@vger.kernel.org>; Tue, 02 Apr 2024 12:57:47 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1712087817; x=1712692617; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=tVIGx7ik4JbWBNp+SY29/AwVMNtIA1b6xEQoLQV5riA=;
-        b=KtQm2YaS21CdKI47hT4Mu28X9YkzJqih6DbvX8u9jLFgJjHqwojvanyYi62Oqel0Dv
-         CtA8eagmj7UlOUpafv48rRom4ePni/mRFjXk/V+SJRw+IEANe+q6aA1zvV/x3mF5Hj22
-         u+c6Y284ss7t9+Wn4k6CevXXKQJj90mpqf+tI8N4CQY66b2QghKi7EJV5aFImXXmU+oI
-         AULP1CbiWEzEmqPK/B26JnN4M/8dNc/QyB00f9gZtVgu7aXsVGTr4E/CCNZWXwGwYowT
-         sxVWBc5fdSOfwLpXJTV8vnlL0zqV20z9Hj2EWo0MKmSieByXgea18gTb9T+JAvZyDwOS
-         c0ZA==
+        d=linux-foundation.org; s=google; t=1712087866; x=1712692666; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=xZSMPyJcLDwQQyPD929o3b508jAKY9ueBln0f3F7O4Q=;
+        b=LNtqNNSK2bxx5ZBmRwBbbisytbYWfxwNUm4pCONxSDiyQA4x40LNM9pwUOlV9l6SBd
+         dq3annfM35j9CkSniihaifFKA/I9XrLJv1LyYi9GqAKPmLaNy4iSI/Xcr8gfRZo5AXsE
+         30yfgTyqewyZ1yQ9OivJubpMkTgvXkjWl0ff8=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712087817; x=1712692617;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=tVIGx7ik4JbWBNp+SY29/AwVMNtIA1b6xEQoLQV5riA=;
-        b=Rhyy/auXGn9QAcNAyurgHN9OYyY5PLFFtb7cbuleOEHWbs0LSfDy0d0Q0mQxbql6QW
-         sS2GKPBT6zRsBLNF6ubGDY18phsyDOD3tUIc/Vw8ZStPeFeNkRnpdhkKH3PqKunn3fNb
-         tJEqdTuR87t9PC0eCx6F+x+yOMmke9v90AEdWoKO0O10ctETJPaB8vm5zR7AGLNrW4P0
-         H5fuQoUuKeu4xLsIcHzZbhX4cxJpHXa5yC9dYpLoS9MF4gHCtw4N/nL7D0SDaSXKcV39
-         6S3oQRsqgc9VN1peeJfjbx6DFpiw1Z2B8LQPsBzDz/yPI2GkvYFrB+5mjRoKN4CcV0v5
-         6tNQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXAUBIn8T0K5wHZCL+yoKVMyWgyZM8j6Bi3JupE0Xyrcgonfqe4rnVg1489+bIuO258JZdM4qxieOfLn9u+MyT+O6tziMUkl3xOaP9o1j0esUVfJvkXQ4pbLDuZtjM++aIhHEAELWaB7DTY4zQ5pWvzkqcLxUgAuqfmjJbUTAoC2W1/pZkPYrA=
-X-Gm-Message-State: AOJu0YxOzNjXxXXsMNmCY4lGEDw+PgGoRx8cqOlcPtfx3UVazBcsnO0G
-	5isRjC2YUOFx+wnmoKYfnVi41Ajo/6Rwjp5uNPyEIaV5sfu+SLoQlJe6brF7
-X-Google-Smtp-Source: AGHT+IHd34X6G0IdGs3i8h40+amOyl+iU7TtyG8nE4zHIVY0wUHrry8OcOvNzFNz5x84BnJUYlloOQ==
-X-Received: by 2002:a17:906:594:b0:a47:32b3:18c5 with SMTP id 20-20020a170906059400b00a4732b318c5mr7875589ejn.68.1712087817348;
-        Tue, 02 Apr 2024 12:56:57 -0700 (PDT)
-Received: from [192.168.26.149] (031011218106.poznan.vectranet.pl. [31.11.218.106])
-        by smtp.googlemail.com with ESMTPSA id l3-20020a1709067d4300b00a466af74ef2sm6871329ejp.2.2024.04.02.12.56.56
+        d=1e100.net; s=20230601; t=1712087866; x=1712692666;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=xZSMPyJcLDwQQyPD929o3b508jAKY9ueBln0f3F7O4Q=;
+        b=O+BXNUdSe+iJwZxRm78r5ZRQsD5Zp8d+oY1bP4BghGWJU2Im70FHjJGVVvH7DVPgEf
+         4iEdUEoiBnqZ1xzVynKs5FIoIzVcXDBbviNTdn+4o3njyXqAuhz0tSMsEa0GvgvcpBF4
+         Qt+ztFvWR4Nj4TMWJcBvyEdmkwF/Vz1PxImPhs9IOIGpaaYmAvK3JIlqNgBuBGCYVsAk
+         vdcoiKodMEE9fdMZut1Wx4NdBSOUiUuSuEYNBLgFj3kUOWTWUQqvEevVm0du3PYGjM3C
+         tAJXTPPgg3I5pIzOqFPE8xqLzaXsCOX9KfFZ3/CMS/mt/8Zh5sN/gyjULe8aNui93gyo
+         K0ew==
+X-Forwarded-Encrypted: i=1; AJvYcCWlQtkCWpvegSrzaJTfZRz/jqqK63E6Sb/QyyFWVqO1qOQAX/18cidj8mBW/t0mQ9UjNmLh8ilQdoU7plaBCAV5uacT/+TPjhOzcR6e
+X-Gm-Message-State: AOJu0Yxc34xSwJ9Em+ONmF7jrQpc5qpMTurSu7kWJcqRQ8iNKVAjQQ4M
+	sRH38vXhfpv84hrcH8RFlYiFmf3euf/QD8YHmRfQ967PSSSRjTVP5Qg1tu8/Rb5QbAFPewVJJPW
+	IaKY=
+X-Google-Smtp-Source: AGHT+IGSRUogylczAMlJ3YJqYheuVqinrlm/rv0jhNgzxb8cLrJckbJ2i8QVHQ3ZLhTJEl28EF4Myw==
+X-Received: by 2002:a17:906:5290:b0:a4e:2d07:70a6 with SMTP id c16-20020a170906529000b00a4e2d0770a6mr9794605ejm.44.1712087866394;
+        Tue, 02 Apr 2024 12:57:46 -0700 (PDT)
+Received: from mail-ej1-f52.google.com (mail-ej1-f52.google.com. [209.85.218.52])
+        by smtp.gmail.com with ESMTPSA id lo3-20020a170906fa0300b00a46a3ad035esm6996305ejb.179.2024.04.02.12.57.45
+        for <linux-kernel@vger.kernel.org>
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 02 Apr 2024 12:56:56 -0700 (PDT)
-Message-ID: <3f817155-3660-439f-b6e5-8d32c866f5cf@gmail.com>
-Date: Tue, 2 Apr 2024 21:56:55 +0200
+        Tue, 02 Apr 2024 12:57:45 -0700 (PDT)
+Received: by mail-ej1-f52.google.com with SMTP id a640c23a62f3a-a4e39f5030dso560611166b.0
+        for <linux-kernel@vger.kernel.org>; Tue, 02 Apr 2024 12:57:45 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCVCmeoSvmz9hdmT04LVUk7a04zLRYt1+vkoxalcCb9VH/8W5TMZr3+64FYcrPzbwpsiSD/GrtLUK5ko6aWP/KzPKtOPV+qAbvzKzS3l
+X-Received: by 2002:a17:906:5794:b0:a4e:7b8e:35ae with SMTP id
+ k20-20020a170906579400b00a4e7b8e35aemr3749307ejq.38.1712087865212; Tue, 02
+ Apr 2024 12:57:45 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 5/7] dt-bindings: phy: qcom,ipq8074-qmp-pcie: add ipq9574
- gen3x2 PHY
-Content-Language: en-US
-To: Alexandru Gagniuc <mr.nuke.me@gmail.com>,
- Bjorn Andersson <andersson@kernel.org>,
- Konrad Dybcio <konrad.dybcio@linaro.org>, Vinod Koul <vkoul@kernel.org>,
- Kishon Vijay Abraham I <kishon@kernel.org>, Rob Herring <robh@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>
-Cc: ansuelsmth@gmail.com, robimarko@gmail.com, linux-arm-msm@vger.kernel.org,
- linux-phy@lists.infradead.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org
-References: <20240402192555.1955204-1-mr.nuke.me@gmail.com>
- <20240402192555.1955204-5-mr.nuke.me@gmail.com>
-From: =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
-In-Reply-To: <20240402192555.1955204-5-mr.nuke.me@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+References: <20240402141145.2685631-1-roberto.sassu@huaweicloud.com> <CAHk-=wgepVMJCYj9s7J50_Tpb5BWq9buBoF0J5HAa1xjet6B8A@mail.gmail.com>
+In-Reply-To: <CAHk-=wgepVMJCYj9s7J50_Tpb5BWq9buBoF0J5HAa1xjet6B8A@mail.gmail.com>
+From: Linus Torvalds <torvalds@linux-foundation.org>
+Date: Tue, 2 Apr 2024 12:57:28 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wjjx3oZ55Uyaw9N_kboHdiScLkXAu05CmPF_p_UhQ-tbw@mail.gmail.com>
+Message-ID: <CAHk-=wjjx3oZ55Uyaw9N_kboHdiScLkXAu05CmPF_p_UhQ-tbw@mail.gmail.com>
+Subject: Re: [GIT PULL] security changes for v6.9-rc3
+To: Roberto Sassu <roberto.sassu@huaweicloud.com>
+Cc: linux-integrity@vger.kernel.org, linux-security-module@vger.kernel.org, 
+	linux-fsdevel@vger.kernel.org, linux-cifs@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, Roberto Sassu <roberto.sassu@huawei.com>
+Content-Type: text/plain; charset="UTF-8"
 
-One minor mistake (I believe)
+On Tue, 2 Apr 2024 at 12:39, Linus Torvalds
+<torvalds@linux-foundation.org> wrote:
+>
 
-On 2.04.2024 21:25, Alexandru Gagniuc wrote:
-> @@ -61,6 +61,43 @@ required:
->     - clock-output-names
->     - "#phy-cells"
->   
-> +allOf:
-> +  - if:
-> +      properties:
-> +        compatible:
-> +          contains:
-> +            enum:
-> +              - qcom,ipq6018-qmp-pcie-phy
-> +              - qcom,ipq8074-qmp-gen3-pcie-phy
-> +              - qcom,ipq8074-qmp-pcie-phy
-> +    then:
-> +      properties:
-> +        clocks:
-> +          maxItems: 3
-> +        clock-names:
-> +          items:
-> +            - const: aux
-> +            - const: cfg_ahb
-> +            - const: pipe
-> +
-> +  - if:
-> +      properties:
-> +        compatible:
-> +          contains:
-> +            enum:
-> +              - qcom,ipq9574-qmp-gen3x2-pcie-phy
-> +    then:
-> +      properties:
-> +        clocks:
-> +          maxItems: 5
+>    void security_path_post_mknod(struct mnt_idmap *idmap, struct dentry *dentry)
+>    {
+>   -     if (unlikely(IS_PRIVATE(d_backing_inode(dentry))))
+>   +     struct inode *inode = d_backing_inode(dentry);
+>   +     if (unlikely(!inode || IS_PRIVATE(inode)))
+>                 return;
+>         call_void_hook(path_post_mknod, idmap, dentry);
 
-This should probably be minItems: 5.
-You already have maxItems: 5 at global property.
+Hmm. We do have other hooks that get called for this case.
 
+For fsnotify_create() we actually have a comment about this:
 
-> +        clock-names:
-> +          items:
-> +            - const: aux
-> +            - const: cfg_ahb
-> +            - const: pipe
-> +            - const: anoc
-> +            - const: snoc
-> +
->   additionalProperties: false
->   
->   examples:
+ * fsnotify_create - 'name' was linked in
+ *
+ * Caller must make sure that dentry->d_name is stable.
+ * Note: some filesystems (e.g. kernfs) leave @dentry negative and instantiate
+ * ->d_inode later
 
+and audit_inode_child() ends up having a
+
+        if (inode)
+                handle_one(inode);
+
+in it.
+
+So in other cases we do handle the NULL, but it does seem like the
+other cases actually do validaly want to deal with this (ie the
+fsnotify case will say "the directory that mknod was done in was
+changed" even if it doesn't know what the change is.
+
+But for the security case, it really doesn't seem to make much sense
+to check a mknod() that you don't know the result of.
+
+I do wonder if that "!inode" test might also be more specific with
+"d_unhashed(dentry)". But that would only make sense if we moved this
+test from security_path_post_mknod() into the caller itself, ie we
+could possibly do something like this instead (or in addition to):
+
+  -     if (error)
+  -             goto out2;
+  -     security_path_post_mknod(idmap, dentry);
+  +     if (!error && !d_unhashed(dentry))
+  +             security_path_post_mknod(idmap, dentry);
+
+which might also be sensible.
+
+Al? Anybody?
+
+                Linus
 
