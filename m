@@ -1,943 +1,296 @@
-Return-Path: <linux-kernel+bounces-127470-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-127471-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8FEED894C21
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 09:05:34 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id D9EC0894C2B
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 09:07:36 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 457562841C8
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 07:05:33 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 496981F22F74
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 07:07:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 96B5D374F7;
-	Tue,  2 Apr 2024 07:05:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4B1ED38DE4;
+	Tue,  2 Apr 2024 07:07:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="4TKfpL3k"
-Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="GhT0642b"
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5D591175BC
-	for <linux-kernel@vger.kernel.org>; Tue,  2 Apr 2024 07:05:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EC52A323D;
+	Tue,  2 Apr 2024 07:07:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.1
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712041529; cv=none; b=SWI5A2Lhh2Vf8gKVy2N1yZN3O/pAn1oB10J0vfGe9fzWJbwDgwOaG2u9TfUIUKBXZF2rV37Z03hz5HhTDSvRxiLj2S06WgnCnzIRqClSSVD4RHa03B6q6z1Ai42FvSC0VR0LU1TYXm5yN5U6M94hrWTu9/O2cGys6CGjHqr56k8=
+	t=1712041646; cv=none; b=qnyzaOF/B8+cIhxeOyh7XOnGlnCs9ImyGH769a3mLYIMuTnxFlS6JHPvXMLsQobKAKZZN1l/R5gSuc7v169tkjkAfUWXRpz87sDnFdJDj/CQqsO2fZ/PI3vNYpgVHdVGDsIvlzzzVTJu4+YEvA+QoaDOKDyR2JzLt7DH5Jqn2cg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712041529; c=relaxed/simple;
-	bh=T4ht30cCt8fRM9V9ES+Gif8MnE5YP5kWUv9a/36PPsk=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=lXTEsvBmToZ9+f7jF7xdoG/MuakpVZQOxTV3TMERyPPhfSMFxFo5K6MRPxvFonCCdH23Q/XHAhKgfKtiN2ksrUXkoKvBYToXaPuejLX9wREyCDDmnxlfOe9tyyYMMH292GuzvtMT8n4UqaDsl06s0NgNdMpUBU7nslHsAojb7VY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=4TKfpL3k; arc=none smtp.client-ip=46.235.227.194
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-	s=mail; t=1712041523;
-	bh=T4ht30cCt8fRM9V9ES+Gif8MnE5YP5kWUv9a/36PPsk=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=4TKfpL3kmtzaliLEHN80p7E4+9Y0RF3qm/wtZg6y/mTkO4e0puDYIhLZQSx/mIeVM
-	 69FVhkIsRc5gRY1vsb6GWkE4a/1mTk49DYJmAQyCrU/0N/ImzfZBYEx6iKIxtJWkVw
-	 QH8AoShxdSeXrPVGYVX3hO3cihexIFFf4FJo1gvpdBQ+YDkaVuT7LvOtThAbTRfAZ+
-	 zHeKINoHQ1hfe2lRYYlmpiknsZXYkgFnMzhdpYMQUvfPGXM/xaPheXGh6WCfCblfqj
-	 qNeYazEq1SRt4pWdnNnpghtJh7H2/0YnNDTXgf/e6N9Oq3nG2bhlJN5liU+JHRMH3o
-	 dpYUyh1Z/6Z/Q==
-Received: from [100.66.96.193] (cola.collaboradmins.com [195.201.22.229])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	(Authenticated sender: vignesh)
-	by madrid.collaboradmins.com (Postfix) with ESMTPSA id A50D03782089;
-	Tue,  2 Apr 2024 07:05:19 +0000 (UTC)
-Message-ID: <8c200bb1-d2a1-42e0-8823-f6147c2b8607@collabora.com>
-Date: Tue, 2 Apr 2024 12:35:17 +0530
+	s=arc-20240116; t=1712041646; c=relaxed/simple;
+	bh=tcFzoDY3XRhQ8ges3DMfZEQq7MNzbdcOJiYVUJhEdPI=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=hXnWMCLv+8yxA2rLEA8bQPjw+6UElBGDLJtI9gjYi/krXiSwF29quqBGWUGp/74Snp9F8Hci7WzAECl7BN4cGQEMDL1nA3JSlTzh+4mPCT2vLtKzKamM4t+zJ74wQ/hY3Kro23yYryAJT7B+pC3LUuDJHfxjfnollp0gNqMv0D8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=GhT0642b; arc=none smtp.client-ip=148.163.156.1
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
+Received: from pps.filterd (m0353729.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 43272SPC009272;
+	Tue, 2 Apr 2024 07:07:08 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding; s=pp1;
+ bh=zPf8nvbtR1VwdXaV/q4NFfhamJ5cSXtXOtKkHLGJwxw=;
+ b=GhT0642bmy5b6RfAGtDepMedr8EQDJehDhGKteF6mGe4kH17OdEhqYKKkHRvkaeRF2F/
+ iQx87anPi6f+pr2+K3idOcAqfOyzVsniiZbnz0D5p1+B6HfSryd+kvixBoYZjSDkdMPY
+ 8yHhDLMbT2yacR/33OY2lXj7qI2ntLB6HdoeCAhDVxNxGY2mk6PcEylbN5U3VHlnrBve
+ usMVoFcjIK7oOsYPHaMCC1KnejmHUe4dLZFg7rGK09HxzH6SaSrtmNdFt2hZ6w6ru1kg
+ 6jAa0zBM96FBfcF/7oYGJ3uuamDlA3QTUYZyCYjLUhE4ZdegnsAeqetNGdZCZL6TiLW5 +Q== 
+Received: from pps.reinject (localhost [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3x8d9600cj-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 02 Apr 2024 07:07:08 +0000
+Received: from m0353729.ppops.net (m0353729.ppops.net [127.0.0.1])
+	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 432777Su015681;
+	Tue, 2 Apr 2024 07:07:07 GMT
+Received: from ppma23.wdc07v.mail.ibm.com (5d.69.3da9.ip4.static.sl-reverse.com [169.61.105.93])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3x8d9600cg-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 02 Apr 2024 07:07:07 +0000
+Received: from pps.filterd (ppma23.wdc07v.mail.ibm.com [127.0.0.1])
+	by ppma23.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 4324qNjv002195;
+	Tue, 2 Apr 2024 07:07:06 GMT
+Received: from smtprelay05.fra02v.mail.ibm.com ([9.218.2.225])
+	by ppma23.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3x6xjmct14-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 02 Apr 2024 07:07:06 +0000
+Received: from smtpav06.fra02v.mail.ibm.com (smtpav06.fra02v.mail.ibm.com [10.20.54.105])
+	by smtprelay05.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 432770Cu44237152
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Tue, 2 Apr 2024 07:07:02 GMT
+Received: from smtpav06.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 8BB1A2004F;
+	Tue,  2 Apr 2024 07:07:00 +0000 (GMT)
+Received: from smtpav06.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id A4F2F20040;
+	Tue,  2 Apr 2024 07:06:58 +0000 (GMT)
+Received: from li-c6426e4c-27cf-11b2-a85c-95d65bc0de0e.in.ibm.com (unknown [9.204.206.66])
+	by smtpav06.fra02v.mail.ibm.com (Postfix) with ESMTP;
+	Tue,  2 Apr 2024 07:06:58 +0000 (GMT)
+From: Gautam Menghani <gautam@linux.ibm.com>
+To: mpe@ellerman.id.au, npiggin@gmail.com, christophe.leroy@csgroup.eu,
+        aneesh.kumar@kernel.org, naveen.n.rao@linux.ibm.com
+Cc: Gautam Menghani <gautam@linux.ibm.com>, linuxppc-dev@lists.ozlabs.org,
+        kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Vaibhav Jain <vaibhav@linux.ibm.com>
+Subject: [PATCH v5 RESEND] arch/powerpc/kvm: Add support for reading VPA counters for pseries guests
+Date: Tue,  2 Apr 2024 12:36:54 +0530
+Message-ID: <20240402070656.28441-1-gautam@linux.ibm.com>
+X-Mailer: git-send-email 2.44.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v5 03/10] drm/ci: uprev IGT and update testlist
-Content-Language: en-US
-To: =?UTF-8?Q?Ma=C3=ADra_Canal?= <mcanal@igalia.com>,
- dri-devel@lists.freedesktop.org, dmitry.baryshkov@linaro.org
-Cc: daniels@collabora.com, helen.koike@collabora.com, airlied@gmail.com,
- daniel@ffwll.ch, emma@anholt.net, robdclark@gmail.com,
- david.heidelberg@collabora.com, guilherme.gallo@collabora.com,
- sergi.blanch.torne@collabora.com, hamohammed.sa@gmail.com,
- rodrigosiqueiramelo@gmail.com, melissa.srw@gmail.com, mairacanal@riseup.net,
- linux-mediatek@lists.infradead.org, linux-amlogic@lists.infradead.org,
- linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org
-References: <20240401061235.192713-1-vignesh.raman@collabora.com>
- <20240401061235.192713-4-vignesh.raman@collabora.com>
- <5f811b8c-b56b-4a63-ad96-09d59069772e@igalia.com>
-From: Vignesh Raman <vignesh.raman@collabora.com>
-In-Reply-To: <5f811b8c-b56b-4a63-ad96-09d59069772e@igalia.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: 4cApKOoZx3yn2iZn-1RzTVf9o8o9FF0h
+X-Proofpoint-ORIG-GUID: eySWvBzcEfyBKqMG5Ts0AFqo7pcrbVqX
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-04-02_02,2024-04-01_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0 mlxscore=0
+ lowpriorityscore=0 mlxlogscore=999 priorityscore=1501 malwarescore=0
+ suspectscore=0 bulkscore=0 impostorscore=0 clxscore=1015 adultscore=0
+ phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2403210000 definitions=main-2404020049
 
-Hi Maíra,
+PAPR hypervisor has introduced three new counters in the VPA area of
+LPAR CPUs for KVM L2 guest (see [1] for terminology) observability - 2
+for context switches from host to guest and vice versa, and 1 counter
+for getting the total time spent inside the KVM guest. Add a tracepoint
+that enables reading the counters for use by ftrace/perf. Note that this
+tracepoint is only available for nestedv2 API (i.e, KVM on PowerVM).
 
-On 01/04/24 22:33, Maíra Canal wrote:
-> On 4/1/24 03:12, Vignesh Raman wrote:
->> Uprev IGT and add amd, v3d, vc4 and vgem specific tests to
->> testlist and skip driver-specific tests. Also add testlist
->> to the MAINTAINERS file and update xfails.
->>
->> Signed-off-by: Vignesh Raman <vignesh.raman@collabora.com>
->> ---
->>
->> v3:
->>    - New patch in series to uprev IGT and update testlist.
->>
->> v4:
->>    - Add testlists to the MAINTAINERS file and remove amdgpu xfails 
->> changes.
->>
->> v5:
->>    - Keep single testlist and update xfails. Skip driver specific tests.
-> 
-> Looks a bit odd to me to have a single testlist with the specific tests
-> in it. We will need to skip the specific tests on all *-skips.txt. Could
-> you justify this choice in the commit message?
+Also maintain an aggregation of the context switch times in vcpu->arch.
+This will be useful in getting the aggregate times with a pmu driver
+which will be upstreamed in the near future.
 
-The reason for choosing this option was a suggestion from Dmitry,
-https://www.spinics.net/lists/dri-devel/msg437901.html
+[1] Terminology:
+a. L1 refers to the VM (LPAR) booted on top of PAPR hypervisor
+b. L2 refers to the KVM guest booted on top of L1.
 
-Also to keep it similar to IGT which has a single testlist. I will add 
-this justification in the commit message.
+Signed-off-by: Vaibhav Jain <vaibhav@linux.ibm.com>
+Signed-off-by: Gautam Menghani <gautam@linux.ibm.com>
+---
+v5 RESEND: 
+1. Add the changelog
 
-Regards,
-Vignesh
+v4 -> v5:
+1. Define helper functions for getting/setting the accumulation counter
+in L2's VPA
 
-> Best Regards,
-> - Maíra
-> 
->>
->> ---
->>   MAINTAINERS                                   |   8 +
->>   drivers/gpu/drm/ci/gitlab-ci.yml              |   2 +-
->>   drivers/gpu/drm/ci/testlist.txt               | 321 ++++++++++++++++++
->>   .../gpu/drm/ci/xfails/amdgpu-stoney-fails.txt |  25 +-
->>   .../drm/ci/xfails/amdgpu-stoney-flakes.txt    |  10 +-
->>   .../gpu/drm/ci/xfails/amdgpu-stoney-skips.txt |  23 +-
->>   drivers/gpu/drm/ci/xfails/i915-amly-skips.txt |   9 +-
->>   drivers/gpu/drm/ci/xfails/i915-apl-skips.txt  |   9 +-
->>   drivers/gpu/drm/ci/xfails/i915-cml-skips.txt  |   7 +
->>   drivers/gpu/drm/ci/xfails/i915-glk-skips.txt  |   9 +-
->>   drivers/gpu/drm/ci/xfails/i915-kbl-skips.txt  |   9 +-
->>   drivers/gpu/drm/ci/xfails/i915-tgl-skips.txt  |   9 +-
->>   drivers/gpu/drm/ci/xfails/i915-whl-skips.txt  |   9 +-
->>   .../drm/ci/xfails/mediatek-mt8173-skips.txt   |   6 +
->>   .../drm/ci/xfails/mediatek-mt8183-skips.txt   |   6 +
->>   .../gpu/drm/ci/xfails/meson-g12b-skips.txt    |   6 +
->>   .../gpu/drm/ci/xfails/msm-apq8016-skips.txt   |   5 +
->>   .../gpu/drm/ci/xfails/msm-apq8096-skips.txt   |   8 +-
->>   .../msm-sc7180-trogdor-kingoftown-skips.txt   |   6 +
->>   ...sm-sc7180-trogdor-lazor-limozeen-skips.txt |   6 +
->>   .../gpu/drm/ci/xfails/msm-sdm845-skips.txt    |   6 +
->>   .../drm/ci/xfails/rockchip-rk3288-skips.txt   |   9 +-
->>   .../drm/ci/xfails/rockchip-rk3399-skips.txt   |   7 +
->>   .../drm/ci/xfails/virtio_gpu-none-skips.txt   |   9 +-
->>   24 files changed, 511 insertions(+), 13 deletions(-)
->>   create mode 100644 drivers/gpu/drm/ci/xfails/mediatek-mt8173-skips.txt
->>   create mode 100644 drivers/gpu/drm/ci/xfails/mediatek-mt8183-skips.txt
->>   create mode 100644 drivers/gpu/drm/ci/xfails/meson-g12b-skips.txt
->>   create mode 100644 drivers/gpu/drm/ci/xfails/msm-apq8016-skips.txt
->>
->> diff --git a/MAINTAINERS b/MAINTAINERS
->> index 3bc7e122a094..f7d0040a6c21 100644
->> --- a/MAINTAINERS
->> +++ b/MAINTAINERS
->> @@ -1665,6 +1665,7 @@ L:    dri-devel@lists.freedesktop.org
->>   S:    Supported
->>   T:    git git://anongit.freedesktop.org/drm/drm-misc
->>   F:    Documentation/gpu/panfrost.rst
->> +F:    drivers/gpu/drm/ci/testlist.txt
->>   F:    drivers/gpu/drm/panfrost/
->>   F:    include/uapi/drm/panfrost_drm.h
->> @@ -6753,6 +6754,7 @@ S:    Maintained
->>   B:    https://gitlab.freedesktop.org/drm/msm/-/issues
->>   T:    git https://gitlab.freedesktop.org/drm/msm.git
->>   F:    Documentation/devicetree/bindings/display/msm/
->> +F:    drivers/gpu/drm/ci/testlist.txt
->>   F:    drivers/gpu/drm/ci/xfails/msm*
->>   F:    drivers/gpu/drm/msm/
->>   F:    include/uapi/drm/msm_drm.h
->> @@ -7047,6 +7049,7 @@ T:    git 
->> git://anongit.freedesktop.org/drm/drm-misc
->>   F:    
->> Documentation/devicetree/bindings/display/amlogic,meson-dw-hdmi.yaml
->>   F:    Documentation/devicetree/bindings/display/amlogic,meson-vpu.yaml
->>   F:    Documentation/gpu/meson.rst
->> +F:    drivers/gpu/drm/ci/testlist.txt
->>   F:    drivers/gpu/drm/ci/xfails/meson*
->>   F:    drivers/gpu/drm/meson/
->> @@ -7160,6 +7163,7 @@ L:    dri-devel@lists.freedesktop.org
->>   L:    linux-mediatek@lists.infradead.org (moderated for 
->> non-subscribers)
->>   S:    Supported
->>   F:    Documentation/devicetree/bindings/display/mediatek/
->> +F:    drivers/gpu/drm/ci/testlist.txt
->>   F:    drivers/gpu/drm/ci/xfails/mediatek*
->>   F:    drivers/gpu/drm/mediatek/
->>   F:    drivers/phy/mediatek/phy-mtk-dp.c
->> @@ -7211,6 +7215,7 @@ L:    dri-devel@lists.freedesktop.org
->>   S:    Maintained
->>   T:    git git://anongit.freedesktop.org/drm/drm-misc
->>   F:    Documentation/devicetree/bindings/display/rockchip/
->> +F:    drivers/gpu/drm/ci/testlist.txt
->>   F:    drivers/gpu/drm/ci/xfails/rockchip*
->>   F:    drivers/gpu/drm/rockchip/
->> @@ -10739,6 +10744,7 @@ C:    irc://irc.oftc.net/intel-gfx
->>   T:    git git://anongit.freedesktop.org/drm-intel
->>   F:    Documentation/ABI/testing/sysfs-driver-intel-i915-hwmon
->>   F:    Documentation/gpu/i915.rst
->> +F:    drivers/gpu/drm/ci/testlist.txt
->>   F:    drivers/gpu/drm/ci/xfails/i915*
->>   F:    drivers/gpu/drm/i915/
->>   F:    include/drm/i915*
->> @@ -18255,6 +18261,7 @@ C:    irc://irc.oftc.net/radeon
->>   T:    git https://gitlab.freedesktop.org/agd5f/linux.git
->>   F:    Documentation/gpu/amdgpu/
->>   F:    drivers/gpu/drm/amd/
->> +F:    drivers/gpu/drm/ci/testlist.txt
->>   F:    drivers/gpu/drm/ci/xfails/amd*
->>   F:    drivers/gpu/drm/radeon/
->>   F:    include/uapi/drm/amdgpu_drm.h
->> @@ -23303,6 +23310,7 @@ L:    dri-devel@lists.freedesktop.org
->>   L:    virtualization@lists.linux.dev
->>   S:    Maintained
->>   T:    git git://anongit.freedesktop.org/drm/drm-misc
->> +F:    drivers/gpu/drm/ci/testlist.txt
->>   F:    drivers/gpu/drm/ci/xfails/virtio*
->>   F:    drivers/gpu/drm/virtio/
->>   F:    include/uapi/linux/virtio_gpu.h
->> diff --git a/drivers/gpu/drm/ci/gitlab-ci.yml 
->> b/drivers/gpu/drm/ci/gitlab-ci.yml
->> index 2f9a5e217f5c..d03d76692f0e 100644
->> --- a/drivers/gpu/drm/ci/gitlab-ci.yml
->> +++ b/drivers/gpu/drm/ci/gitlab-ci.yml
->> @@ -5,7 +5,7 @@ variables:
->>     UPSTREAM_REPO: git://anongit.freedesktop.org/drm/drm
->>     TARGET_BRANCH: drm-next
->> -  IGT_VERSION: d2af13d9f5be5ce23d996e4afd3e45990f5ab977
->> +  IGT_VERSION: b0cc8160ebdc87ce08b7fd83bb3c99ff7a4d8610
->>     DEQP_RUNNER_GIT_URL: 
->> https://gitlab.freedesktop.org/anholt/deqp-runner.git
->>     DEQP_RUNNER_GIT_TAG: v0.15.0
->> diff --git a/drivers/gpu/drm/ci/testlist.txt 
->> b/drivers/gpu/drm/ci/testlist.txt
->> index 3377f002f8c5..8a5967a4b3bd 100644
->> --- a/drivers/gpu/drm/ci/testlist.txt
->> +++ b/drivers/gpu/drm/ci/testlist.txt
->> @@ -2759,3 +2759,324 @@ msm_submit@invalid-duplicate-bo-submit
->>   msm_submit@invalid-cmd-idx-submit
->>   msm_submit@invalid-cmd-type-submit
->>   msm_submit@valid-submit
->> +prime_vgem@basic-read
->> +prime_vgem@basic-write
->> +prime_vgem@basic-gtt
->> +prime_vgem@basic-blt
->> +prime_vgem@shrink
->> +prime_vgem@coherency-gtt
->> +prime_vgem@coherency-blt
->> +prime_vgem@sync
->> +prime_vgem@busy
->> +prime_vgem@wait
->> +prime_vgem@basic-fence-read
->> +prime_vgem@basic-fence-mmap
->> +prime_vgem@basic-fence-blt
->> +prime_vgem@basic-fence-flip
->> +prime_vgem@fence-read-hang
->> +prime_vgem@fence-write-hang
->> +prime_vgem@fence-flip-hang
->> +prime_vgem@fence-wait
->> +vgem_basic@unload
->> +vgem_basic@setversion
->> +vgem_basic@second-client
->> +vgem_basic@create
->> +vgem_basic@mmap
->> +vgem_basic@bad-flag
->> +vgem_basic@bad-pad
->> +vgem_basic@bad-handle
->> +vgem_basic@bad-fence
->> +vgem_basic@busy-fence
->> +vgem_basic@dmabuf-export
->> +vgem_basic@dmabuf-mmap
->> +vgem_basic@dmabuf-fence
->> +vgem_basic@dmabuf-fence-before
->> +vgem_basic@sysfs
->> +vgem_basic@debugfs
->> +vgem_slow@nohang
->> +amdgpu/amd_abm@dpms_cycle
->> +amdgpu/amd_abm@backlight_monotonic_basic
->> +amdgpu/amd_abm@backlight_monotonic_abm
->> +amdgpu/amd_abm@abm_enabled
->> +amdgpu/amd_abm@abm_gradual
->> +amdgpu/amd_bo@amdgpu_bo_export_import
->> +amdgpu/amd_bo@amdgpu_bo_metadata
->> +amdgpu/amd_bo@amdgpu_bo_map_unmap
->> +amdgpu/amd_bo@amdgpu_memory_alloc
->> +amdgpu/amd_bo@amdgpu_mem_fail_alloc
->> +amdgpu/amd_bo@amdgpu_bo_find_by_cpu_mapping
->> +amdgpu/amd_cp_dma_misc@GTT_to_VRAM-AMDGPU_HW_IP_GFX0
->> +amdgpu/amd_cp_dma_misc@GTT_to_VRAM-AMDGPU_HW_IP_COMPUTE0
->> +amdgpu/amd_cp_dma_misc@VRAM_to_GTT-AMDGPU_HW_IP_GFX0
->> +amdgpu/amd_cp_dma_misc@VRAM_to_GTT-AMDGPU_HW_IP_COMPUTE0
->> +amdgpu/amd_cp_dma_misc@VRAM_to_VRAM-AMDGPU_HW_IP_GFX0
->> +amdgpu/amd_cp_dma_misc@VRAM_to_VRAM-AMDGPU_HW_IP_COMPUTE0
->> +amdgpu/amd_dispatch@amdgpu-dispatch-test-compute-with-IP-COMPUTE
->> +amdgpu/amd_dispatch@amdgpu-dispatch-test-gfx-with-IP-GFX
->> +amdgpu/amd_dispatch@amdgpu-dispatch-hang-test-gfx-with-IP-GFX
->> +amdgpu/amd_dispatch@amdgpu-dispatch-hang-test-compute-with-IP-COMPUTE
->> +amdgpu/amd_dispatch@amdgpu-reset-test-gfx-with-IP-GFX-and-COMPUTE
->> +amdgpu/amd_hotplug@basic
->> +amdgpu/amd_hotplug@basic-suspend
->> +amdgpu/amd_jpeg_dec@amdgpu_cs_jpeg_decode
->> +amdgpu/amd_max_bpc@4k-mode-max-bpc
->> +amdgpu/amd_module_load@reload
->> +amdgpu/amd_plane@test-mpo-4k
->> +amdgpu/amd_plane@mpo-swizzle-toggle
->> +amdgpu/amd_plane@mpo-swizzle-toggle-multihead
->> +amdgpu/amd_plane@mpo-pan-rgb
->> +amdgpu/amd_plane@mpo-pan-rgb-multihead
->> +amdgpu/amd_plane@mpo-pan-nv12
->> +amdgpu/amd_plane@mpo-pan-nv12-multihead
->> +amdgpu/amd_plane@mpo-pan-p010
->> +amdgpu/amd_plane@mpo-pan-p010-multihead
->> +amdgpu/amd_plane@mpo-pan-multi-rgb
->> +amdgpu/amd_plane@mpo-pan-multi-nv12
->> +amdgpu/amd_plane@mpo-pan-multi-p010
->> +amdgpu/amd_plane@multi-overlay
->> +amdgpu/amd_plane@multi-overlay-invalid
->> +amdgpu/amd_plane@mpo-scale-rgb
->> +amdgpu/amd_plane@mpo-scale-rgb-multihead
->> +amdgpu/amd_plane@mpo-scale-nv12
->> +amdgpu/amd_plane@mpo-scale-nv12-multihead
->> +amdgpu/amd_plane@mpo-scale-p010
->> +amdgpu/amd_plane@mpo-scale-p010-multihead
->> +amdgpu/amd_pstate@amdgpu_pstate
->> +amdgpu/amd_subvp@dual-4k60
->> +amdgpu/amd_uvd_enc@uvd_enc_create
->> +amdgpu/amd_uvd_enc@amdgpu_uvd_enc_session_init
->> +amdgpu/amd_uvd_enc@amdgpu_uvd_enc_encode
->> +amdgpu/amd_uvd_enc@uvd_enc_destroy
->> +amdgpu/amd_vm@vmid-reserve-test
->> +amdgpu/amd_vm@amdgpu-vm-unaligned-map
->> +amdgpu/amd_vm@amdgpu-vm-mapping-test
->> +amdgpu/amd_assr@assr-links
->> +amdgpu/amd_assr@assr-links-dpms
->> +amdgpu/amd_assr@assr-links-suspend
->> +amdgpu/amd_bypass@8bpc-bypass-mode
->> +amdgpu/amd_cs_nop@cs-nops-with-nop-compute0
->> +amdgpu/amd_cs_nop@cs-nops-with-nop-gfx0
->> +amdgpu/amd_cs_nop@cs-nops-with-sync-compute0
->> +amdgpu/amd_cs_nop@cs-nops-with-sync-gfx0
->> +amdgpu/amd_cs_nop@cs-nops-with-fork-compute0
->> +amdgpu/amd_cs_nop@cs-nops-with-fork-gfx0
->> +amdgpu/amd_cs_nop@cs-nops-with-sync-fork-compute0
->> +amdgpu/amd_cs_nop@cs-nops-with-sync-fork-gfx0
->> +amdgpu/amd_dp_dsc@dsc-enable-basic
->> +amdgpu/amd_dp_dsc@dsc-slice-dimensions-change
->> +amdgpu/amd_dp_dsc@dsc-link-settings
->> +amdgpu/amd_dp_dsc@dsc-bpc
->> +amdgpu/amd_ilr@ilr-link-training-configs
->> +amdgpu/amd_ilr@ilr-policy
->> +amdgpu/amd_link_settings@link-training-configs
->> +amdgpu/amd_mem_leak@connector-suspend-resume
->> +amdgpu/amd_mem_leak@connector-hotplug
->> +amdgpu/amd_odm@odm-combine-2-to-1-4k144
->> +amdgpu/amd_prime@i915-to-amd
->> +amdgpu/amd_prime@amd-to-i915
->> +amdgpu/amd_prime@shrink
->> +amdgpu/amd_ras@RAS-basic
->> +amdgpu/amd_ras@RAS-query
->> +amdgpu/amd_ras@RAS-inject
->> +amdgpu/amd_ras@RAS-disable
->> +amdgpu/amd_ras@RAS-enable
->> +amdgpu/amd_syncobj@amdgpu_syncobj_timeline
->> +amdgpu/amd_vce_dec@amdgpu_cs_vce_create
->> +amdgpu/amd_vce_dec@amdgpu_cs_vce_encode
->> +amdgpu/amd_vce_dec@amdgpu_cs_vce_destroy
->> +amdgpu/amd_vpe@vpe-fence-test
->> +amdgpu/amd_vpe@vpe-blit-test
->> +amdgpu/amd_basic@memory-alloc
->> +amdgpu/amd_basic@userptr-with-IP-DMA
->> +amdgpu/amd_basic@cs-gfx-with-IP-GFX
->> +amdgpu/amd_basic@cs-compute-with-IP-COMPUTE
->> +amdgpu/amd_basic@cs-multi-fence-with-IP-GFX
->> +amdgpu/amd_basic@cs-sdma-with-IP-DMA
->> +amdgpu/amd_basic@semaphore-with-IP-GFX-and-IP-DMA
->> +amdgpu/amd_basic@eviction-test-with-IP-DMA
->> +amdgpu/amd_basic@sync-dependency-test-with-IP-GFX
->> +amdgpu/amd_color@crtc-linear-degamma
->> +amdgpu/amd_color@crtc-linear-regamma
->> +amdgpu/amd_color@crtc-lut-accuracy
->> +amdgpu/amd_deadlock@amdgpu-deadlock-sdma
->> +amdgpu/amd_deadlock@amdgpu-gfx-illegal-reg-access
->> +amdgpu/amd_deadlock@amdgpu-gfx-illegal-mem-access
->> +amdgpu/amd_deadlock@amdgpu-deadlock-gfx
->> +amdgpu/amd_deadlock@amdgpu-deadlock-compute
->> +amdgpu/amd_deadlock@amdgpu-deadlock-sdma-corrupted-header-test
->> +amdgpu/amd_deadlock@amdgpu-deadlock-sdma-slow-linear-copy
->> +amdgpu/amd_freesync_video_mode@freesync-base-to-various
->> +amdgpu/amd_freesync_video_mode@freesync-lower-to-higher
->> +amdgpu/amd_freesync_video_mode@freesync-non-preferred-to-freesync
->> +amdgpu/amd_freesync_video_mode@freesync-custom-mode
->> +amdgpu/amd_info@query-firmware-version
->> +amdgpu/amd_info@query-timestamp
->> +amdgpu/amd_info@query-timestamp-while-idle
->> +amdgpu/amd_mall@static-screen
->> +amdgpu/amd_mode_switch@mode-switch-first-last-pipe-0
->> +amdgpu/amd_mode_switch@mode-switch-first-last-pipe-1
->> +amdgpu/amd_mode_switch@mode-switch-first-last-pipe-2
->> +amdgpu/amd_mode_switch@mode-switch-first-last-pipe-3
->> +amdgpu/amd_mode_switch@mode-switch-first-last-pipe-4
->> +amdgpu/amd_mode_switch@mode-switch-first-last-pipe-5
->> +amdgpu/amd_pci_unplug@amdgpu_hotunplug_simple
->> +amdgpu/amd_pci_unplug@amdgpu_hotunplug_with_cs
->> +amdgpu/amd_pci_unplug@amdgpu_hotunplug_with_exported_bo
->> +amdgpu/amd_pci_unplug@amdgpu_hotunplug_with_exported_fence
->> +amdgpu/amd_psr@psr_enable
->> +amdgpu/amd_psr@psr_enable_null_crtc
->> +amdgpu/amd_psr@psr_su_mpo
->> +amdgpu/amd_psr@psr_su_ffu
->> +amdgpu/amd_psr@psr_su_cursor
->> +amdgpu/amd_psr@psr_su_cursor_mpo
->> +amdgpu/amd_psr@psr_su_mpo_scaling_1_5
->> +amdgpu/amd_psr@psr_su_mpo_scaling_0_75
->> +amdgpu/amd_security@amdgpu-security-alloc-buf-test
->> +amdgpu/amd_security@sdma-write-linear-helper-secure
->> +amdgpu/amd_security@gfx-write-linear-helper-secure
->> +amdgpu/amd_security@amdgpu-secure-bounce
->> +amdgpu/amd_uvd_dec@amdgpu_uvd_dec_create
->> +amdgpu/amd_uvd_dec@amdgpu_uvd_decode
->> +amdgpu/amd_uvd_dec@amdgpu_uvd_dec_destroy
->> +amdgpu/amd_vcn@vcn-decoder-create-decode-destroy
->> +amdgpu/amd_vcn@vcn-encoder-create-encode-destroy
->> +amdgpu/amd_vrr_range@freesync-parsing
->> +amdgpu/amd_vrr_range@freesync-parsing-suspend
->> +amdgpu/amd_vrr_range@freesync-range
->> +amdgpu/amd_vrr_range@freesync-range-suspend
->> +panfrost_get_param@base-params
->> +panfrost_get_param@get-bad-param
->> +panfrost_get_param@get-bad-padding
->> +panfrost_gem_new@gem-new-4096
->> +panfrost_gem_new@gem-new-0
->> +panfrost_gem_new@gem-new-zeroed
->> +panfrost_prime@gem-prime-import
->> +panfrost_submit@pan-submit
->> +panfrost_submit@pan-submit-error-no-jc
->> +panfrost_submit@pan-submit-error-bad-in-syncs
->> +panfrost_submit@pan-submit-error-bad-bo-handles
->> +panfrost_submit@pan-submit-error-bad-requirements
->> +panfrost_submit@pan-submit-error-bad-out-sync
->> +panfrost_submit@pan-reset
->> +panfrost_submit@pan-submit-and-close
->> +panfrost_submit@pan-unhandled-pagefault
->> +v3d_create_bo@create-bo-invalid-flags
->> +v3d_create_bo@create-bo-0
->> +v3d_create_bo@create-bo-4096
->> +v3d_create_bo@create-bo-zeroed
->> +v3d_get_bo_offset@create-get-offsets
->> +v3d_get_bo_offset@get-bad-handle
->> +v3d_get_param@base-params
->> +v3d_get_param@get-bad-param
->> +v3d_get_param@get-bad-flags
->> +v3d_job_submission@array-job-submission
->> +v3d_job_submission@multiple-singlesync-to-multisync
->> +v3d_job_submission@threaded-job-submission
->> +v3d_mmap@mmap-bad-flags
->> +v3d_mmap@mmap-bad-handle
->> +v3d_mmap@mmap-bo
->> +v3d_perfmon@create-perfmon-0
->> +v3d_perfmon@create-perfmon-exceed
->> +v3d_perfmon@create-perfmon-invalid-counters
->> +v3d_perfmon@create-single-perfmon
->> +v3d_perfmon@create-two-perfmon
->> +v3d_perfmon@get-values-invalid-pad
->> +v3d_perfmon@get-values-invalid-perfmon
->> +v3d_perfmon@get-values-invalid-pointer
->> +v3d_perfmon@get-values-valid-perfmon
->> +v3d_perfmon@destroy-invalid-perfmon
->> +v3d_perfmon@destroy-valid-perfmon
->> +v3d_submit_cl@bad-pad
->> +v3d_submit_cl@bad-flag
->> +v3d_submit_cl@bad-extension
->> +v3d_submit_cl@bad-bo
->> +v3d_submit_cl@bad-perfmon
->> +v3d_submit_cl@bad-in-sync
->> +v3d_submit_cl@bad-multisync-pad
->> +v3d_submit_cl@bad-multisync-extension
->> +v3d_submit_cl@bad-multisync-out-sync
->> +v3d_submit_cl@bad-multisync-in-sync
->> +v3d_submit_cl@valid-submission
->> +v3d_submit_cl@single-out-sync
->> +v3d_submit_cl@single-in-sync
->> +v3d_submit_cl@simple-flush-cache
->> +v3d_submit_cl@valid-multisync-submission
->> +v3d_submit_cl@multisync-out-syncs
->> +v3d_submit_cl@multi-and-single-sync
->> +v3d_submit_cl@multiple-job-submission
->> +v3d_submit_cl@job-perfmon
->> +v3d_submit_csd@bad-pad
->> +v3d_submit_csd@bad-flag
->> +v3d_submit_csd@bad-extension
->> +v3d_submit_csd@bad-bo
->> +v3d_submit_csd@bad-perfmon
->> +v3d_submit_csd@bad-in-sync
->> +v3d_submit_csd@bad-multisync-pad
->> +v3d_submit_csd@bad-multisync-extension
->> +v3d_submit_csd@bad-multisync-out-sync
->> +v3d_submit_csd@bad-multisync-in-sync
->> +v3d_submit_csd@valid-submission
->> +v3d_submit_csd@single-out-sync
->> +v3d_submit_csd@single-in-sync
->> +v3d_submit_csd@valid-multisync-submission
->> +v3d_submit_csd@multisync-out-syncs
->> +v3d_submit_csd@multi-and-single-sync
->> +v3d_submit_csd@multiple-job-submission
->> +v3d_submit_csd@job-perfmon
->> +v3d_wait_bo@bad-bo
->> +v3d_wait_bo@bad-pad
->> +v3d_wait_bo@unused-bo-0ns
->> +v3d_wait_bo@unused-bo-1ns
->> +v3d_wait_bo@map-bo-0ns
->> +v3d_wait_bo@map-bo-1ns
->> +v3d_wait_bo@used-bo-0ns
->> +v3d_wait_bo@used-bo-1ns
->> +v3d_wait_bo@used-bo
->> +vc4_create_bo@create-bo-4096
->> +vc4_create_bo@create-bo-0
->> +vc4_create_bo@create-bo-zeroed
->> +vc4_dmabuf_poll@poll-write-waits-until-write-done
->> +vc4_dmabuf_poll@poll-read-waits-until-write-done
->> +vc4_label_bo@set-label
->> +vc4_label_bo@set-bad-handle
->> +vc4_label_bo@set-bad-name
->> +vc4_label_bo@set-kernel-name
->> +vc4_lookup_fail@bad-color-write
->> +vc4_mmap@mmap-bad-handle
->> +vc4_mmap@mmap-bo
->> +vc4_perfmon@create-perfmon-0
->> +vc4_perfmon@create-perfmon-exceed
->> +vc4_perfmon@create-perfmon-invalid-events
->> +vc4_perfmon@create-single-perfmon
->> +vc4_perfmon@create-two-perfmon
->> +vc4_perfmon@get-values-invalid-perfmon
->> +vc4_perfmon@get-values-invalid-pointer
->> +vc4_perfmon@get-values-valid-perfmon
->> +vc4_perfmon@destroy-invalid-perfmon
->> +vc4_perfmon@destroy-valid-perfmon
->> +vc4_purgeable_bo@mark-willneed
->> +vc4_purgeable_bo@mark-purgeable
->> +vc4_purgeable_bo@mark-purgeable-twice
->> +vc4_purgeable_bo@mark-unpurgeable-twice
->> +vc4_purgeable_bo@access-purgeable-bo-mem
->> +vc4_purgeable_bo@access-purged-bo-mem
->> +vc4_purgeable_bo@mark-unpurgeable-check-retained
->> +vc4_purgeable_bo@mark-unpurgeable-purged
->> +vc4_purgeable_bo@free-purged-bo
->> +vc4_tiling@get-bad-handle
->> +vc4_tiling@set-bad-handle
->> +vc4_tiling@get-bad-flags
->> +vc4_tiling@set-bad-flags
->> +vc4_tiling@get-bad-modifier
->> +vc4_tiling@set-bad-modifier
->> +vc4_tiling@set-get
->> +vc4_tiling@get-after-free
->> +vc4_wait_bo@bad-bo
->> +vc4_wait_bo@bad-pad
->> +vc4_wait_bo@unused-bo-0ns
->> +vc4_wait_bo@unused-bo-1ns
->> +vc4_wait_bo@used-bo-0ns
->> +vc4_wait_bo@used-bo-1ns
->> +vc4_wait_bo@used-bo
->> +vc4_wait_seqno@bad-seqno-0ns
->> +vc4_wait_seqno@bad-seqno-1ns
->> diff --git a/drivers/gpu/drm/ci/xfails/amdgpu-stoney-fails.txt 
->> b/drivers/gpu/drm/ci/xfails/amdgpu-stoney-fails.txt
->> index ea87dc46bc2b..30d3252adddf 100644
->> --- a/drivers/gpu/drm/ci/xfails/amdgpu-stoney-fails.txt
->> +++ b/drivers/gpu/drm/ci/xfails/amdgpu-stoney-fails.txt
->> @@ -1,3 +1,21 @@
->> +amdgpu/amd_assr@assr-links,Fail
->> +amdgpu/amd_assr@assr-links-dpms,Fail
->> +amdgpu/amd_deadlock@amdgpu-deadlock-compute,Timeout
->> +amdgpu/amd_ilr@ilr-policy,Fail
->> +amdgpu/amd_mall@static-screen,Crash
->> +amdgpu/amd_mode_switch@mode-switch-first-last-pipe-2,Crash
->> +amdgpu/amd_pci_unplug@amdgpu_hotunplug_with_exported_bo,Fail
->> +amdgpu/amd_plane@mpo-pan-nv12,Fail
->> +amdgpu/amd_plane@mpo-pan-p010,Fail
->> +amdgpu/amd_plane@mpo-pan-rgb,Crash
->> +amdgpu/amd_plane@mpo-scale-nv12,Fail
->> +amdgpu/amd_plane@mpo-scale-p010,Fail
->> +amdgpu/amd_plane@mpo-scale-rgb,Crash
->> +amdgpu/amd_plane@mpo-swizzle-toggle,Fail
->> +amdgpu/amd_uvd_dec@amdgpu_uvd_decode,Fail
->> +amdgpu/amd_vce_dec@amdgpu_cs_vce_destroy,Fail
->> +amdgpu/amd_vce_dec@amdgpu_cs_vce_encode,Fail
->> +amdgpu/amd_vrr_range@freesync-parsing,Timeout
->>   kms_addfb_basic@bad-pitch-65536,Fail
->>   kms_addfb_basic@bo-too-small,Fail
->>   kms_addfb_basic@too-high,Fail
->> @@ -14,7 +32,13 @@ kms_bw@linear-tiling-1-displays-3840x2160p,Fail
->>   kms_bw@linear-tiling-2-displays-3840x2160p,Fail
->>   kms_bw@linear-tiling-3-displays-1920x1080p,Fail
->>   kms_color@degamma,Fail
->> +kms_cursor_crc@cursor-onscreen-64x21,Fail
->> +kms_cursor_crc@cursor-onscreen-64x64,Fail
->> +kms_cursor_crc@cursor-random-64x21,Fail
->> +kms_cursor_crc@cursor-random-64x64,Fail
->>   kms_cursor_crc@cursor-size-change,Fail
->> +kms_cursor_crc@cursor-sliding-64x21,Fail
->> +kms_cursor_crc@cursor-sliding-64x64,Fail
->>   kms_cursor_crc@pipe-A-cursor-size-change,Fail
->>   kms_cursor_crc@pipe-B-cursor-size-change,Fail
->>   kms_flip@flip-vs-modeset-vs-hang,Fail
->> @@ -23,5 +47,4 @@ kms_hdr@bpc-switch,Fail
->>   kms_hdr@bpc-switch-dpms,Fail
->>   kms_plane@pixel-format,Fail
->>   kms_plane_multiple@atomic-pipe-A-tiling-none,Fail
->> -kms_rmfb@close-fd,Fail
->>   kms_rotation_crc@primary-rotation-180,Fail
->> diff --git a/drivers/gpu/drm/ci/xfails/amdgpu-stoney-flakes.txt 
->> b/drivers/gpu/drm/ci/xfails/amdgpu-stoney-flakes.txt
->> index 6faf75e667d3..c5085c5571eb 100644
->> --- a/drivers/gpu/drm/ci/xfails/amdgpu-stoney-flakes.txt
->> +++ b/drivers/gpu/drm/ci/xfails/amdgpu-stoney-flakes.txt
->> @@ -1 +1,9 @@
->> -kms_async_flips@async-flip-with-page-flip-events
->> +# Board Name: hp-11A-G6-EE-grunt
->> +# Bug Report: 
->> https://lore.kernel.org/dri-devel/903b01f7-3f0d-18b7-a4b7-301c118c9321@collabora.com/T/#u
->> +# IGT Version: 1.28-gb0cc8160e
->> +# Linux Version: 6.7.0-rc3
->> +
->> +# Reported by deqp-runner
->> +kms_async_flips@crc
->> +amdgpu/amd_pci_unplug@amdgpu_hotunplug_simple
->> +amdgpu/amd_pci_unplug@amdgpu_hotunplug_with_exported_bo
->> diff --git a/drivers/gpu/drm/ci/xfails/amdgpu-stoney-skips.txt 
->> b/drivers/gpu/drm/ci/xfails/amdgpu-stoney-skips.txt
->> index e2c538a0f954..6e6200e6392c 100644
->> --- a/drivers/gpu/drm/ci/xfails/amdgpu-stoney-skips.txt
->> +++ b/drivers/gpu/drm/ci/xfails/amdgpu-stoney-skips.txt
->> @@ -1,2 +1,23 @@
->>   # Suspend to RAM seems to be broken on this machine
->> -.*suspend.*
->> \ No newline at end of file
->> +.*suspend.*
->> +
->> +# Skip driver specific tests
->> +msm_.*
->> +panfrost_.*
->> +v3d_.*
->> +vc4_.*
->> +
->> +# GPU reset seen and it hangs the machine
->> +amdgpu/amd_deadlock@amdgpu-deadlock-sdma
->> +amdgpu/amd_deadlock@amdgpu-gfx-illegal-reg-access
->> +amdgpu/amd_dispatch@amdgpu-reset-test-gfx-with-IP-GFX-and-COMPUTE
->> +
->> +# Hangs the machine and timeout occurs
->> +amdgpu/amd_pci_unplug@amdgpu_hotunplug_simple
->> +amdgpu/amd_pci_unplug@amdgpu_hotunplug_with_cs
->> +amdgpu/amd_pci_unplug@amdgpu_hotunplug_with_exported_bo
->> +amdgpu/amd_pci_unplug@amdgpu_hotunplug_with_exported_fence
->> +
->> +# Skip this test as core_getrevision fails with
->> +# Module amdgpu already inserted
->> +amdgpu/amd_module_load@reload
->> diff --git a/drivers/gpu/drm/ci/xfails/i915-amly-skips.txt 
->> b/drivers/gpu/drm/ci/xfails/i915-amly-skips.txt
->> index fe55540a3f9a..33369735c821 100644
->> --- a/drivers/gpu/drm/ci/xfails/i915-amly-skips.txt
->> +++ b/drivers/gpu/drm/ci/xfails/i915-amly-skips.txt
->> @@ -1,4 +1,11 @@
->>   # Suspend to RAM seems to be broken on this machine
->>   .*suspend.*
->>   # This is generating kernel oops with divide error
->> -kms_plane_scaling@invalid-parameters
->> \ No newline at end of file
->> +kms_plane_scaling@invalid-parameters
->> +
->> +# Skip driver specific tests
->> +msm_.*
->> +^amdgpu.*
->> +panfrost_.*
->> +v3d_.*
->> +vc4_.*
->> diff --git a/drivers/gpu/drm/ci/xfails/i915-apl-skips.txt 
->> b/drivers/gpu/drm/ci/xfails/i915-apl-skips.txt
->> index 3430b215c06e..9804805984dc 100644
->> --- a/drivers/gpu/drm/ci/xfails/i915-apl-skips.txt
->> +++ b/drivers/gpu/drm/ci/xfails/i915-apl-skips.txt
->> @@ -3,4 +3,11 @@
->>   # This is generating kernel oops with divide error
->>   kms_plane_scaling@invalid-parameters
->>   # This is cascading issues
->> -kms_3d
->> \ No newline at end of file
->> +kms_3d
->> +
->> +# Skip driver specific tests
->> +msm_.*
->> +^amdgpu.*
->> +panfrost_.*
->> +v3d_.*
->> +vc4_.*
->> diff --git a/drivers/gpu/drm/ci/xfails/i915-cml-skips.txt 
->> b/drivers/gpu/drm/ci/xfails/i915-cml-skips.txt
->> index 6d3d7ddc377f..e2c542d76e75 100644
->> --- a/drivers/gpu/drm/ci/xfails/i915-cml-skips.txt
->> +++ b/drivers/gpu/drm/ci/xfails/i915-cml-skips.txt
->> @@ -1,2 +1,9 @@
->>   # This is generating kernel oops with divide error
->>   kms_plane_scaling@invalid-parameters
->> +
->> +# Skip driver specific tests
->> +msm_.*
->> +^amdgpu.*
->> +panfrost_.*
->> +v3d_.*
->> +vc4_.*
->> diff --git a/drivers/gpu/drm/ci/xfails/i915-glk-skips.txt 
->> b/drivers/gpu/drm/ci/xfails/i915-glk-skips.txt
->> index 4c7d00ce14bc..76d987f9b397 100644
->> --- a/drivers/gpu/drm/ci/xfails/i915-glk-skips.txt
->> +++ b/drivers/gpu/drm/ci/xfails/i915-glk-skips.txt
->> @@ -2,4 +2,11 @@
->>   .*suspend.*
->>   # This is generating kernel oops with divide error
->> -kms_plane_scaling@invalid-parameters
->> \ No newline at end of file
->> +kms_plane_scaling@invalid-parameters
->> +
->> +# Skip driver specific tests
->> +msm_.*
->> +^amdgpu.*
->> +panfrost_.*
->> +v3d_.*
->> +vc4_.*
->> diff --git a/drivers/gpu/drm/ci/xfails/i915-kbl-skips.txt 
->> b/drivers/gpu/drm/ci/xfails/i915-kbl-skips.txt
->> index 4c7d00ce14bc..76d987f9b397 100644
->> --- a/drivers/gpu/drm/ci/xfails/i915-kbl-skips.txt
->> +++ b/drivers/gpu/drm/ci/xfails/i915-kbl-skips.txt
->> @@ -2,4 +2,11 @@
->>   .*suspend.*
->>   # This is generating kernel oops with divide error
->> -kms_plane_scaling@invalid-parameters
->> \ No newline at end of file
->> +kms_plane_scaling@invalid-parameters
->> +
->> +# Skip driver specific tests
->> +msm_.*
->> +^amdgpu.*
->> +panfrost_.*
->> +v3d_.*
->> +vc4_.*
->> diff --git a/drivers/gpu/drm/ci/xfails/i915-tgl-skips.txt 
->> b/drivers/gpu/drm/ci/xfails/i915-tgl-skips.txt
->> index 1d0621750b14..c27412db3041 100644
->> --- a/drivers/gpu/drm/ci/xfails/i915-tgl-skips.txt
->> +++ b/drivers/gpu/drm/ci/xfails/i915-tgl-skips.txt
->> @@ -8,4 +8,11 @@ gem_eio.*
->>   kms_flip@absolute-wf_vblank@a-edp1
->>   # This is generating kernel oops with divide error
->> -kms_plane_scaling@invalid-parameters
->> \ No newline at end of file
->> +kms_plane_scaling@invalid-parameters
->> +
->> +# Skip driver specific tests
->> +msm_.*
->> +^amdgpu.*
->> +panfrost_.*
->> +v3d_.*
->> +vc4_.*
->> diff --git a/drivers/gpu/drm/ci/xfails/i915-whl-skips.txt 
->> b/drivers/gpu/drm/ci/xfails/i915-whl-skips.txt
->> index f3be0888a214..e2c542d76e75 100644
->> --- a/drivers/gpu/drm/ci/xfails/i915-whl-skips.txt
->> +++ b/drivers/gpu/drm/ci/xfails/i915-whl-skips.txt
->> @@ -1,2 +1,9 @@
->>   # This is generating kernel oops with divide error
->> -kms_plane_scaling@invalid-parameters
->> \ No newline at end of file
->> +kms_plane_scaling@invalid-parameters
->> +
->> +# Skip driver specific tests
->> +msm_.*
->> +^amdgpu.*
->> +panfrost_.*
->> +v3d_.*
->> +vc4_.*
->> diff --git a/drivers/gpu/drm/ci/xfails/mediatek-mt8173-skips.txt 
->> b/drivers/gpu/drm/ci/xfails/mediatek-mt8173-skips.txt
->> new file mode 100644
->> index 000000000000..f1a96db6a64e
->> --- /dev/null
->> +++ b/drivers/gpu/drm/ci/xfails/mediatek-mt8173-skips.txt
->> @@ -0,0 +1,6 @@
->> +# Skip driver specific tests
->> +msm_.*
->> +^amdgpu.*
->> +panfrost_.*
->> +v3d_.*
->> +vc4_.*
->> diff --git a/drivers/gpu/drm/ci/xfails/mediatek-mt8183-skips.txt 
->> b/drivers/gpu/drm/ci/xfails/mediatek-mt8183-skips.txt
->> new file mode 100644
->> index 000000000000..f1a96db6a64e
->> --- /dev/null
->> +++ b/drivers/gpu/drm/ci/xfails/mediatek-mt8183-skips.txt
->> @@ -0,0 +1,6 @@
->> +# Skip driver specific tests
->> +msm_.*
->> +^amdgpu.*
->> +panfrost_.*
->> +v3d_.*
->> +vc4_.*
->> diff --git a/drivers/gpu/drm/ci/xfails/meson-g12b-skips.txt 
->> b/drivers/gpu/drm/ci/xfails/meson-g12b-skips.txt
->> new file mode 100644
->> index 000000000000..f1a96db6a64e
->> --- /dev/null
->> +++ b/drivers/gpu/drm/ci/xfails/meson-g12b-skips.txt
->> @@ -0,0 +1,6 @@
->> +# Skip driver specific tests
->> +msm_.*
->> +^amdgpu.*
->> +panfrost_.*
->> +v3d_.*
->> +vc4_.*
->> diff --git a/drivers/gpu/drm/ci/xfails/msm-apq8016-skips.txt 
->> b/drivers/gpu/drm/ci/xfails/msm-apq8016-skips.txt
->> new file mode 100644
->> index 000000000000..83d9bba9cafd
->> --- /dev/null
->> +++ b/drivers/gpu/drm/ci/xfails/msm-apq8016-skips.txt
->> @@ -0,0 +1,5 @@
->> +# Skip driver specific tests
->> +^amdgpu.*
->> +panfrost_.*
->> +v3d_.*
->> +vc4_.*
->> diff --git a/drivers/gpu/drm/ci/xfails/msm-apq8096-skips.txt 
->> b/drivers/gpu/drm/ci/xfails/msm-apq8096-skips.txt
->> index cd49c8ce2059..66b7fde54bd1 100644
->> --- a/drivers/gpu/drm/ci/xfails/msm-apq8096-skips.txt
->> +++ b/drivers/gpu/drm/ci/xfails/msm-apq8096-skips.txt
->> @@ -1,2 +1,8 @@
->>   # Whole machine hangs
->> -kms_cursor_legacy@all-pipes-torture-move
->> \ No newline at end of file
->> +kms_cursor_legacy@all-pipes-torture-move
->> +
->> +# Skip driver specific tests
->> +^amdgpu.*
->> +panfrost_.*
->> +v3d_.*
->> +vc4_.*
->> diff --git 
->> a/drivers/gpu/drm/ci/xfails/msm-sc7180-trogdor-kingoftown-skips.txt 
->> b/drivers/gpu/drm/ci/xfails/msm-sc7180-trogdor-kingoftown-skips.txt
->> index 327039f70252..57beedbbedf6 100644
->> --- a/drivers/gpu/drm/ci/xfails/msm-sc7180-trogdor-kingoftown-skips.txt
->> +++ b/drivers/gpu/drm/ci/xfails/msm-sc7180-trogdor-kingoftown-skips.txt
->> @@ -1,2 +1,8 @@
->>   # Suspend to RAM seems to be broken on this machine
->>   .*suspend.*
->> +
->> +# Skip driver specific tests
->> +^amdgpu.*
->> +panfrost_.*
->> +v3d_.*
->> +vc4_.*
->> diff --git 
->> a/drivers/gpu/drm/ci/xfails/msm-sc7180-trogdor-lazor-limozeen-skips.txt b/drivers/gpu/drm/ci/xfails/msm-sc7180-trogdor-lazor-limozeen-skips.txt
->> index 327039f70252..57beedbbedf6 100644
->> --- 
->> a/drivers/gpu/drm/ci/xfails/msm-sc7180-trogdor-lazor-limozeen-skips.txt
->> +++ 
->> b/drivers/gpu/drm/ci/xfails/msm-sc7180-trogdor-lazor-limozeen-skips.txt
->> @@ -1,2 +1,8 @@
->>   # Suspend to RAM seems to be broken on this machine
->>   .*suspend.*
->> +
->> +# Skip driver specific tests
->> +^amdgpu.*
->> +panfrost_.*
->> +v3d_.*
->> +vc4_.*
->> diff --git a/drivers/gpu/drm/ci/xfails/msm-sdm845-skips.txt 
->> b/drivers/gpu/drm/ci/xfails/msm-sdm845-skips.txt
->> index 618e3a3a7277..5018fc3f0495 100644
->> --- a/drivers/gpu/drm/ci/xfails/msm-sdm845-skips.txt
->> +++ b/drivers/gpu/drm/ci/xfails/msm-sdm845-skips.txt
->> @@ -5,3 +5,9 @@ kms_bw.*
->>   # 
->> https://gitlab.freedesktop.org/gfx-ci/linux/-/commit/4b49f902ec6f2bb382cbbf489870573f4b43371e
->>   # 
->> https://gitlab.freedesktop.org/gfx-ci/linux/-/commit/38cdf4c5559771e2474ae0fecef8469f65147bc1
->>   msm_mapping@*
->> +
->> +# Skip driver specific tests
->> +^amdgpu.*
->> +panfrost_.*
->> +v3d_.*
->> +vc4_.*
->> diff --git a/drivers/gpu/drm/ci/xfails/rockchip-rk3288-skips.txt 
->> b/drivers/gpu/drm/ci/xfails/rockchip-rk3288-skips.txt
->> index f20c3574b75a..a90fbb96520d 100644
->> --- a/drivers/gpu/drm/ci/xfails/rockchip-rk3288-skips.txt
->> +++ b/drivers/gpu/drm/ci/xfails/rockchip-rk3288-skips.txt
->> @@ -49,4 +49,11 @@ kms_plane_lowres@pipe-F-tiling-y
->>   kms_cursor_crc.*
->>   # Machine is hanging in this test, so skip it
->> -kms_pipe_crc_basic@disable-crc-after-crtc
->> \ No newline at end of file
->> +kms_pipe_crc_basic@disable-crc-after-crtc
->> +
->> +# Skip driver specific tests
->> +msm_.*
->> +^amdgpu.*
->> +panfrost_.*
->> +v3d_.*
->> +vc4_.*
->> diff --git a/drivers/gpu/drm/ci/xfails/rockchip-rk3399-skips.txt 
->> b/drivers/gpu/drm/ci/xfails/rockchip-rk3399-skips.txt
->> index 10c3d81a919a..dc8221151d74 100644
->> --- a/drivers/gpu/drm/ci/xfails/rockchip-rk3399-skips.txt
->> +++ b/drivers/gpu/drm/ci/xfails/rockchip-rk3399-skips.txt
->> @@ -3,3 +3,10 @@
->>   # Too unstable, machine ends up hanging after lots of Oopses
->>   kms_cursor_legacy.*
->> +
->> +# Skip driver specific tests
->> +msm_.*
->> +^amdgpu.*
->> +panfrost_.*
->> +v3d_.*
->> +vc4_.*
->> diff --git a/drivers/gpu/drm/ci/xfails/virtio_gpu-none-skips.txt 
->> b/drivers/gpu/drm/ci/xfails/virtio_gpu-none-skips.txt
->> index 78be18174012..4e4a087ce49a 100644
->> --- a/drivers/gpu/drm/ci/xfails/virtio_gpu-none-skips.txt
->> +++ b/drivers/gpu/drm/ci/xfails/virtio_gpu-none-skips.txt
->> @@ -3,4 +3,11 @@
->>   kms_cursor_legacy.*
->>   # Job just hangs without any output
->> -kms_flip@flip-vs-suspend.*
->> \ No newline at end of file
->> +kms_flip@flip-vs-suspend.*
->> +
->> +# Skip driver specific tests
->> +msm_.*
->> +^amdgpu.*
->> +panfrost_.*
->> +v3d_.*
->> +vc4_.*
+v3 -> v4:
+1. After vcpu_run, check the VPA flag instead of checking for tracepoint
+being enabled for disabling the cs time accumulation.
+
+v2 -> v3:
+1. Move the counter disabling and zeroing code to a different function.
+2. Move the get_lppaca() inside the tracepoint_enabled() branch.
+3. Add the aggregation logic to maintain total context switch time.
+
+v1 -> v2:
+1. Fix the build error due to invalid struct member reference.
+
+ arch/powerpc/include/asm/kvm_host.h |  5 ++++
+ arch/powerpc/include/asm/lppaca.h   | 11 +++++---
+ arch/powerpc/kvm/book3s_hv.c        | 40 +++++++++++++++++++++++++++++
+ arch/powerpc/kvm/trace_hv.h         | 25 ++++++++++++++++++
+ 4 files changed, 78 insertions(+), 3 deletions(-)
+
+diff --git a/arch/powerpc/include/asm/kvm_host.h b/arch/powerpc/include/asm/kvm_host.h
+index 8abac532146e..d953b32dd68a 100644
+--- a/arch/powerpc/include/asm/kvm_host.h
++++ b/arch/powerpc/include/asm/kvm_host.h
+@@ -847,6 +847,11 @@ struct kvm_vcpu_arch {
+ 	gpa_t nested_io_gpr;
+ 	/* For nested APIv2 guests*/
+ 	struct kvmhv_nestedv2_io nestedv2_io;
++
++	/* Aggregate context switch and guest run time info (in ns) */
++	u64 l1_to_l2_cs_agg;
++	u64 l2_to_l1_cs_agg;
++	u64 l2_runtime_agg;
+ #endif
+ 
+ #ifdef CONFIG_KVM_BOOK3S_HV_EXIT_TIMING
+diff --git a/arch/powerpc/include/asm/lppaca.h b/arch/powerpc/include/asm/lppaca.h
+index 61ec2447dabf..bda6b86b9f13 100644
+--- a/arch/powerpc/include/asm/lppaca.h
++++ b/arch/powerpc/include/asm/lppaca.h
+@@ -62,7 +62,8 @@ struct lppaca {
+ 	u8	donate_dedicated_cpu;	/* Donate dedicated CPU cycles */
+ 	u8	fpregs_in_use;
+ 	u8	pmcregs_in_use;
+-	u8	reserved8[28];
++	u8	l2_accumul_cntrs_enable;  /* Enable usage of counters for KVM guest */
++	u8	reserved8[27];
+ 	__be64	wait_state_cycles;	/* Wait cycles for this proc */
+ 	u8	reserved9[28];
+ 	__be16	slb_count;		/* # of SLBs to maintain */
+@@ -92,9 +93,13 @@ struct lppaca {
+ 	/* cacheline 4-5 */
+ 
+ 	__be32	page_ins;		/* CMO Hint - # page ins by OS */
+-	u8	reserved12[148];
++	u8	reserved12[28];
++	volatile __be64 l1_to_l2_cs_tb;
++	volatile __be64 l2_to_l1_cs_tb;
++	volatile __be64 l2_runtime_tb;
++	u8 reserved13[96];
+ 	volatile __be64 dtl_idx;	/* Dispatch Trace Log head index */
+-	u8	reserved13[96];
++	u8	reserved14[96];
+ } ____cacheline_aligned;
+ 
+ #define lppaca_of(cpu)	(*paca_ptrs[cpu]->lppaca_ptr)
+diff --git a/arch/powerpc/kvm/book3s_hv.c b/arch/powerpc/kvm/book3s_hv.c
+index 8e86eb577eb8..fea1c1429975 100644
+--- a/arch/powerpc/kvm/book3s_hv.c
++++ b/arch/powerpc/kvm/book3s_hv.c
+@@ -4108,6 +4108,37 @@ static void vcpu_vpa_increment_dispatch(struct kvm_vcpu *vcpu)
+ 	}
+ }
+ 
++static inline int kvmhv_get_l2_accumul(void)
++{
++	return get_lppaca()->l2_accumul_cntrs_enable;
++}
++
++static inline void kvmhv_set_l2_accumul(int val)
++{
++	get_lppaca()->l2_accumul_cntrs_enable = val;
++}
++
++static void do_trace_nested_cs_time(struct kvm_vcpu *vcpu)
++{
++	struct lppaca *lp = get_lppaca();
++	u64 l1_to_l2_ns, l2_to_l1_ns, l2_runtime_ns;
++
++	l1_to_l2_ns = tb_to_ns(be64_to_cpu(lp->l1_to_l2_cs_tb));
++	l2_to_l1_ns = tb_to_ns(be64_to_cpu(lp->l2_to_l1_cs_tb));
++	l2_runtime_ns = tb_to_ns(be64_to_cpu(lp->l2_runtime_tb));
++	trace_kvmppc_vcpu_exit_cs_time(vcpu, l1_to_l2_ns, l2_to_l1_ns,
++					l2_runtime_ns);
++	lp->l1_to_l2_cs_tb = 0;
++	lp->l2_to_l1_cs_tb = 0;
++	lp->l2_runtime_tb = 0;
++	kvmhv_set_l2_accumul(0);
++
++	// Maintain an aggregate of context switch times
++	vcpu->arch.l1_to_l2_cs_agg += l1_to_l2_ns;
++	vcpu->arch.l2_to_l1_cs_agg += l2_to_l1_ns;
++	vcpu->arch.l2_runtime_agg += l2_runtime_ns;
++}
++
+ static int kvmhv_vcpu_entry_nestedv2(struct kvm_vcpu *vcpu, u64 time_limit,
+ 				     unsigned long lpcr, u64 *tb)
+ {
+@@ -4130,6 +4161,11 @@ static int kvmhv_vcpu_entry_nestedv2(struct kvm_vcpu *vcpu, u64 time_limit,
+ 	kvmppc_gse_put_u64(io->vcpu_run_input, KVMPPC_GSID_LPCR, lpcr);
+ 
+ 	accumulate_time(vcpu, &vcpu->arch.in_guest);
++
++	/* Enable the guest host context switch time tracking */
++	if (unlikely(trace_kvmppc_vcpu_exit_cs_time_enabled()))
++		kvmhv_set_l2_accumul(1);
++
+ 	rc = plpar_guest_run_vcpu(0, vcpu->kvm->arch.lpid, vcpu->vcpu_id,
+ 				  &trap, &i);
+ 
+@@ -4156,6 +4192,10 @@ static int kvmhv_vcpu_entry_nestedv2(struct kvm_vcpu *vcpu, u64 time_limit,
+ 
+ 	timer_rearm_host_dec(*tb);
+ 
++	/* Record context switch and guest_run_time data */
++	if (kvmhv_get_l2_accumul())
++		do_trace_nested_cs_time(vcpu);
++
+ 	return trap;
+ }
+ 
+diff --git a/arch/powerpc/kvm/trace_hv.h b/arch/powerpc/kvm/trace_hv.h
+index 8d57c8428531..ab19977c91b4 100644
+--- a/arch/powerpc/kvm/trace_hv.h
++++ b/arch/powerpc/kvm/trace_hv.h
+@@ -491,6 +491,31 @@ TRACE_EVENT(kvmppc_run_vcpu_enter,
+ 	TP_printk("VCPU %d: tgid=%d", __entry->vcpu_id, __entry->tgid)
+ );
+ 
++TRACE_EVENT(kvmppc_vcpu_exit_cs_time,
++	TP_PROTO(struct kvm_vcpu *vcpu, u64 l1_to_l2_cs, u64 l2_to_l1_cs,
++		u64 l2_runtime),
++
++	TP_ARGS(vcpu, l1_to_l2_cs, l2_to_l1_cs, l2_runtime),
++
++	TP_STRUCT__entry(
++		__field(int,		vcpu_id)
++		__field(__u64,		l1_to_l2_cs_ns)
++		__field(__u64,		l2_to_l1_cs_ns)
++		__field(__u64,		l2_runtime_ns)
++	),
++
++	TP_fast_assign(
++		__entry->vcpu_id  = vcpu->vcpu_id;
++		__entry->l1_to_l2_cs_ns = l1_to_l2_cs;
++		__entry->l2_to_l1_cs_ns = l2_to_l1_cs;
++		__entry->l2_runtime_ns = l2_runtime;
++	),
++
++	TP_printk("VCPU %d: l1_to_l2_cs_time=%llu-ns l2_to_l1_cs_time=%llu-ns l2_runtime=%llu-ns",
++		__entry->vcpu_id,  __entry->l1_to_l2_cs_ns,
++		__entry->l2_to_l1_cs_ns, __entry->l2_runtime_ns)
++);
++
+ TRACE_EVENT(kvmppc_run_vcpu_exit,
+ 	TP_PROTO(struct kvm_vcpu *vcpu),
+ 
+-- 
+2.43.2
+
 
