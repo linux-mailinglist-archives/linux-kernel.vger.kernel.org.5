@@ -1,118 +1,218 @@
-Return-Path: <linux-kernel+bounces-127308-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-127309-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0E1C1894978
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 04:30:51 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id AD23E89497A
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 04:35:38 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B66E91F2426F
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 02:30:50 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 244BB1F232E8
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 02:35:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BE4861171A;
-	Tue,  2 Apr 2024 02:30:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E393110A12;
+	Tue,  2 Apr 2024 02:35:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amazon.com header.i=@amazon.com header.b="h1uzAWgw"
-Received: from smtp-fw-80006.amazon.com (smtp-fw-80006.amazon.com [99.78.197.217])
+	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="k4IUJvhE"
+Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A788A7E6;
-	Tue,  2 Apr 2024 02:30:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=99.78.197.217
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1A78B7E6
+	for <linux-kernel@vger.kernel.org>; Tue,  2 Apr 2024 02:35:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712025040; cv=none; b=Vdx6e9uxaSrPz6YJ27DJ1YUv2KWjNsoXqspR3cAWm/krsBkgC1Jm18zRQR8Uhbv7G4Zn3RNNQhMrJszX/lRDMps7qZNmrB7qEDOuO81z2GR303lom6tk4eAoMTmL/0gOyNrOIHdGify/9/TaN+4im6W62AYpoVNrdbjftbvDPaE=
+	t=1712025332; cv=none; b=CQCUGoei37x3FZrLaw09F5QE+40LyntZIwI/rcF6QSo4m+/TCx5UguAB1herwxZ2AT/4GvCZIGKbQGHcgxmFH8W7lCSdh2XXY3QfN+aquym8+UrU3e+VSa/wBVi6MpPf5ksHj77+jC5QkMyrlTg0prgmWzXJMa5HQzFqy/772jk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712025040; c=relaxed/simple;
-	bh=PpSXo1QhcMevwm7I+K7iRFo96h88oIV/8+9o9/wUcnU=;
-	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=nV5gSzlyiCxLTPW78rXLDGTTNT09MgeiynIkgDCoAFnHBKvbCRnolYxdO26C7CUouGk3C2kVoyuO2vq9kTfcdy1w9C4xUJpSPXShFGSSw2jrdt+68VP41/MCOmxsZR3cLTEXU3qRs46jpUvsIkTPBKYbr7EkfrcP5d/6rfUQkSs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.com; spf=pass smtp.mailfrom=amazon.com; dkim=pass (1024-bit key) header.d=amazon.com header.i=@amazon.com header.b=h1uzAWgw; arc=none smtp.client-ip=99.78.197.217
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=amazon.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1712025039; x=1743561039;
-  h=from:to:cc:subject:date:message-id:references:
-   in-reply-to:content-id:content-transfer-encoding:
-   mime-version;
-  bh=PpSXo1QhcMevwm7I+K7iRFo96h88oIV/8+9o9/wUcnU=;
-  b=h1uzAWgwI7ITpOhT1CRD4wRPpUbXcgkHo67+ubu1QKQHgMiWTMjBtnxM
-   Y2dOnwtdyoTycs2mj/ikSs+6sutqF/WoAlbuAEkBf3UoE+2YkD546Amca
-   EI61fL54lysqTAWIxOqK6vzbhqMKrN/4/5cQizBPZXCX07906zIkheJ59
-   M=;
-X-IronPort-AV: E=Sophos;i="6.07,173,1708387200"; 
-   d="scan'208";a="284455721"
-Received: from pdx4-co-svc-p1-lb2-vlan3.amazon.com (HELO smtpout.prod.us-west-2.prod.farcaster.email.amazon.dev) ([10.25.36.214])
-  by smtp-border-fw-80006.pdx80.corp.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Apr 2024 02:30:33 +0000
-Received: from EX19MTAUWC002.ant.amazon.com [10.0.38.20:38275]
- by smtpin.naws.us-west-2.prod.farcaster.email.amazon.dev [10.0.56.234:2525] with esmtp (Farcaster)
- id b76e8157-aec4-494c-8c62-9b3ebbe5bb57; Tue, 2 Apr 2024 02:30:24 +0000 (UTC)
-X-Farcaster-Flow-ID: b76e8157-aec4-494c-8c62-9b3ebbe5bb57
-Received: from EX19D002UWA002.ant.amazon.com (10.13.138.246) by
- EX19MTAUWC002.ant.amazon.com (10.250.64.143) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1258.28; Tue, 2 Apr 2024 02:30:24 +0000
-Received: from EX19D001UWA003.ant.amazon.com (10.13.138.211) by
- EX19D002UWA002.ant.amazon.com (10.13.138.246) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA) id 15.2.1258.28;
- Tue, 2 Apr 2024 02:30:24 +0000
-Received: from EX19D001UWA003.ant.amazon.com ([fe80::256a:26de:3ee6:48a2]) by
- EX19D001UWA003.ant.amazon.com ([fe80::256a:26de:3ee6:48a2%7]) with mapi id
- 15.02.1258.028; Tue, 2 Apr 2024 02:30:24 +0000
-From: "Okanovic, Haris" <harisokn@amazon.com>
-To: "linux-pm@vger.kernel.org" <linux-pm@vger.kernel.org>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	"linux-assembly@vger.kernel.org" <linux-assembly@vger.kernel.org>
-CC: "peterz@infradead.org" <peterz@infradead.org>, "Saidi, Ali"
-	<alisaidi@amazon.com>, "Blake, Geoff" <blakgeof@amazon.com>, "Silver, Brian"
-	<silverbr@amazon.com>
-Subject: Re: [PATCH 3/3] arm64: cpuidle: Add arm_poll_idle
-Thread-Topic: [PATCH 3/3] arm64: cpuidle: Add arm_poll_idle
-Thread-Index: AQHahJ/D8+a2/m+FEk+Q2bqBNHXo/LFUQbcA
-Date: Tue, 2 Apr 2024 02:30:23 +0000
-Message-ID: <738769693c52ed23e35850325ee414ab131a06ea.camel@amazon.com>
-References: <20240402014706.3969151-1-harisokn@amazon.com>
-	 <20240402014706.3969151-3-harisokn@amazon.com>
-In-Reply-To: <20240402014706.3969151-3-harisokn@amazon.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <A5B816E60B1093468C4B39A6876BD3EC@amazon.com>
-Content-Transfer-Encoding: base64
+	s=arc-20240116; t=1712025332; c=relaxed/simple;
+	bh=n3HEiQwTgU1n3dd42xTGPFIwh4+BE6gSSHieGE86TrQ=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=boJTIE8dhqVO6Hs187qlYfuJNhEC5XzBAR9GiHPp8DwOHoSANVZKt/Y/WOAA+unXdUPtCvc8jMcuhsoXhD88AWTUAH4UWHFJKiciR4CL1s1KxeCl89zUz3c5t6GH/ERdyy9P2xpeTdXmoRPNtjs/eWSlEk7bW1jlcSguc0hKaTc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=k4IUJvhE; arc=none smtp.client-ip=46.235.227.194
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+	s=mail; t=1712025328;
+	bh=n3HEiQwTgU1n3dd42xTGPFIwh4+BE6gSSHieGE86TrQ=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=k4IUJvhEY+VVvdclR9buStNwX+4rWx11vuQY+nKLUj9ILV0Mxo9eG1OZIhf97k01G
+	 p1kkVQUg+ltDXlFTCP7EOR/H5YMCzSSmmuiNOFeheszY0c0uaki2lQ3BObfGINbO2J
+	 XachFgF0N5OPYDvn3UqznwNGIiIMEd2tNRZz06LeP7iVwuZZbZZQ69HfeuRYRYxZ34
+	 DMd45x1Ei5FxeVMGm+S4GekLLvV+oZCHU14GGF4ffrKpafTwZW7O9jnKNdLsh/TCi9
+	 C8G1pAMd/gl4cjEjcT/0WKDWfv+CDNEtKYQKVOxSKz6kIjo/ZKbLapzPlbpuDsJ/Q5
+	 jH0hzqma7mI1g==
+Received: from [100.66.96.193] (cola.collaboradmins.com [195.201.22.229])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	(Authenticated sender: vignesh)
+	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 8D19237800DE;
+	Tue,  2 Apr 2024 02:35:23 +0000 (UTC)
+Message-ID: <53dddbeb-6b99-f838-ba05-21852fe2ff38@collabora.com>
+Date: Tue, 2 Apr 2024 08:05:21 +0530
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH v5 00/10] drm/ci: Add support for GPU and display testing
+To: Christian Hewitt <christianshewitt@gmail.com>
+Cc: dri-devel@lists.freedesktop.org, daniels@collabora.com,
+ Helen Koike <helen.koike@collabora.com>, David Airlie <airlied@gmail.com>,
+ Daniel Vetter <daniel@ffwll.ch>, emma@anholt.net, robdclark@gmail.com,
+ david.heidelberg@collabora.com, guilherme.gallo@collabora.com,
+ sergi.blanch.torne@collabora.com, hamohammed.sa@gmail.com,
+ rodrigosiqueiramelo@gmail.com, melissa.srw@gmail.com, mairacanal@riseup.net,
+ mcanal@igalia.com, linux-mediatek@lists.infradead.org,
+ linux-amlogic@lists.infradead.org, linux-rockchip@lists.infradead.org,
+ linux-kernel@vger.kernel.org
+References: <20240401061235.192713-1-vignesh.raman@collabora.com>
+ <43FF2E86-D0C7-4497-8203-E598E80FFA1B@gmail.com>
+Content-Language: en-US
+From: Vignesh Raman <vignesh.raman@collabora.com>
+In-Reply-To: <43FF2E86-D0C7-4497-8203-E598E80FFA1B@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-T24gTW9uLCAyMDI0LTA0LTAxIGF0IDIwOjQ3IC0wNTAwLCBIYXJpcyBPa2Fub3ZpYyB3cm90ZToK
-PiArc3RhdGljIGludCBfX2NwdWlkbGUgYXJtX2lkbGVfd2ZlX3BvbGwoc3RydWN0IGNwdWlkbGVf
-ZGV2aWNlICpkZXYsCj4gK8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgc3RydWN0IGNwdWlkbGVfZHJpdmVyICpkcnYsIGludCBpZHgp
-Cj4gK3sKPiArwqDCoMKgwqDCoMKgwqB1NjQgdGltZV9zdGFydCwgdGltZV9saW1pdDsKPiArCj4g
-K8KgwqDCoMKgwqDCoMKgdGltZV9zdGFydCA9IGxvY2FsX2Nsb2NrKCk7Cj4gK8KgwqDCoMKgwqDC
-oMKgZGV2LT5wb2xsX3RpbWVfbGltaXQgPSBmYWxzZTsKPiArCj4gK8KgwqDCoMKgwqDCoMKgbG9j
-YWxfaXJxX2VuYWJsZSgpOwoKUmUgdGhpcyBjb21tZW50IGZyb20gUGV0ZXIgWmlqbHN0cmEgWzFd
-LCBzaG91bGQgSSB1c2UKcmF3X2xvY2FsX2lycV9lbmFibGUoKSBpbnN0ZWFkPyBJIHNlZSBleGFt
-cGxlcyBvZiBib3RoIHVuZGVyCmRyaXZlcnMvY3B1aWRsZS8uCgpbMV0KaHR0cHM6Ly9lbGl4aXIu
-Ym9vdGxpbi5jb20vbGludXgvdjYuOS1yYzIvc291cmNlL2luY2x1ZGUvbGludXgvY3B1aWRsZS5o
-I0wxMTkKCj4gKwo+ICvCoMKgwqDCoMKgwqDCoGlmIChjdXJyZW50X3NldF9wb2xsaW5nX2FuZF90
-ZXN0KCkpCj4gK8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoGdvdG8gZW5kOwo+ICsKPiAr
-wqDCoMKgwqDCoMKgwqB0aW1lX2xpbWl0ID0gY3B1aWRsZV9wb2xsX3RpbWUoZHJ2LCBkZXYpOwo+
-ICsKPiArwqDCoMKgwqDCoMKgwqBkbyB7Cj4gK8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oC8vIGV4Y2x1c2l2ZSByZWFkIGFybXMgdGhlIG1vbml0b3IgZm9yIHdmZQo+ICvCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqBpZiAoX19SRUFEX09OQ0VfRVgoY3VycmVudF90aHJlYWRfaW5m
-bygpLT5mbGFncykgJgo+IF9USUZfTkVFRF9SRVNDSEVEKQo+ICvCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgZ290byBlbmQ7Cj4gKwo+ICvCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqAvLyBtYXkgZXhpdCBwcmVtYXR1cmVseSwgc2VlIEFSTV9BUkNIX1RJ
-TUVSX0VWVFNUUkVBTQo+ICvCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqB3ZmUoKTsKPiAr
-wqDCoMKgwqDCoMKgwqB9IHdoaWxlIChsb2NhbF9jbG9jaygpIC0gdGltZV9zdGFydCA8IHRpbWVf
-bGltaXQpOwo+ICsKPiArwqDCoMKgwqDCoMKgwqBkZXYtPnBvbGxfdGltZV9saW1pdCA9IHRydWU7
-Cj4gKwo+ICtlbmQ6Cj4gK8KgwqDCoMKgwqDCoMKgY3VycmVudF9jbHJfcG9sbGluZygpOwo+ICvC
-oMKgwqDCoMKgwqDCoHJldHVybiBpZHg7Cj4gK30KPiArCgpUaGFua3MsCkhhcmlzIE9rYW5vdmlj
-Cgo=
+Hi Christian,
+
+On 01/04/24 22:39, Christian Hewitt wrote:
+>> On 1 Apr 2024, at 10:12 am, Vignesh Raman <vignesh.raman@collabora.com> wrote:
+>>
+>> Some ARM SOCs have a separate display controller and GPU, each with
+>> different drivers. For mediatek mt8173, the GPU driver is powervr,
+>> and the display driver is mediatek. In the case of mediatek mt8183,
+>> the GPU driver is panfrost, and the display driver is mediatek.
+>> With rockchip rk3288/rk3399, the GPU driver is panfrost, while the
+>> display driver is rockchip. For amlogic meson, the GPU driver is
+>> panfrost, and the display driver is meson.
+> 
+> I’m not sure if this is describing the contents of a test lab or making
+> a statement on the Amlogic platform; but (being the pedant I am) I’ll
+> point out that Amlogic G12A/SM1 (Mali G31) and G12B (Mali G52) boards
+> do use panfrost, but the GXBB/GXL/GXM boards (Mali450) use lima.
+
+It is describing the contents of the test lab. Sorry for not being 
+clear. The device type is meson-g12b-a311d-khadas-vim3 which is based on 
+the Amlogic Meson G12B (A311D) SoC family . I will update this in commit 
+message. Thanks.
+
+Regards,
+Vignesh
+
+> 
+> CH.
+> 
+>> IGT tests run various tests with different xfails and can test both
+>> GPU devices and KMS/display devices. Currently, in drm-ci for MediaTek,
+>> Rockchip, and Amlogic Meson platforms, only the GPU driver is tested.
+>> This leads to incomplete coverage since the display is never tested on
+>> these platforms. This commit series adds support in drm-ci to run tests
+>> for both GPU and display drivers for MediaTek, Rockchip, and Amlogic
+>> Meson platforms.
+>>
+>> Uprev mesa and IGT in drm-ci and add amd, v3d, vc4 and vgem specific
+>> tests to testlist. Add testlists to the MAINTAINERS file and skip
+>> driver-specific tests.
+>>
+>> This series also includes patch to add vkms testing to drm-ci.
+>>
+>> Working pipeline link,
+>> https://gitlab.freedesktop.org/vigneshraman/linux/-/pipelines/1140647
+>>
+>> Vignesh Raman (10):
+>>   drm/ci: arm64.config: Enable CONFIG_DRM_ANALOGIX_ANX7625
+>>   drm/ci: uprev mesa version
+>>   drm/ci: uprev IGT and update testlist
+>>   drm/ci: mediatek: Refactor existing mediatek jobs
+>>   drm/ci: mediatek: Add job to test panfrost and powervr GPU driver
+>>   drm/ci: meson: Refactor existing meson jobs
+>>   drm/ci: meson: Add job to test panfrost GPU driver
+>>   drm/ci: rockchip: Refactor existing rockchip jobs
+>>   drm/ci: rockchip: Add job to test panfrost GPU driver
+>>   drm/ci: add tests on vkms
+>>
+>> MAINTAINERS                                   |  11 +
+>> drivers/gpu/drm/ci/arm64.config               |   1 +
+>> drivers/gpu/drm/ci/build.sh                   |   2 +-
+>> drivers/gpu/drm/ci/container.yml              |   6 +-
+>> drivers/gpu/drm/ci/gitlab-ci.yml              |  18 +-
+>> drivers/gpu/drm/ci/igt_runner.sh              |  16 +-
+>> drivers/gpu/drm/ci/image-tags.yml             |   5 +-
+>> drivers/gpu/drm/ci/test.yml                   | 138 ++++++--
+>> drivers/gpu/drm/ci/testlist.txt               | 321 ++++++++++++++++++
+>> drivers/gpu/drm/ci/x86_64.config              |   1 +
+>> .../gpu/drm/ci/xfails/amdgpu-stoney-fails.txt |  25 +-
+>> .../drm/ci/xfails/amdgpu-stoney-flakes.txt    |  10 +-
+>> .../gpu/drm/ci/xfails/amdgpu-stoney-skips.txt |  23 +-
+>> drivers/gpu/drm/ci/xfails/i915-amly-skips.txt |   9 +-
+>> drivers/gpu/drm/ci/xfails/i915-apl-skips.txt  |   9 +-
+>> drivers/gpu/drm/ci/xfails/i915-cml-skips.txt  |   7 +
+>> drivers/gpu/drm/ci/xfails/i915-glk-skips.txt  |   9 +-
+>> drivers/gpu/drm/ci/xfails/i915-kbl-skips.txt  |   9 +-
+>> drivers/gpu/drm/ci/xfails/i915-tgl-skips.txt  |   9 +-
+>> drivers/gpu/drm/ci/xfails/i915-whl-skips.txt  |   9 +-
+>> .../drm/ci/xfails/mediatek-mt8173-fails.txt   |  15 -
+>> .../drm/ci/xfails/mediatek-mt8173-flakes.txt  |  13 +
+>> .../drm/ci/xfails/mediatek-mt8173-skips.txt   |   6 +
+>> .../drm/ci/xfails/mediatek-mt8183-fails.txt   |  21 +-
+>> .../drm/ci/xfails/mediatek-mt8183-flakes.txt  |   8 +
+>> .../drm/ci/xfails/mediatek-mt8183-skips.txt   |   6 +
+>> .../gpu/drm/ci/xfails/meson-g12b-fails.txt    |   5 -
+>> .../gpu/drm/ci/xfails/meson-g12b-skips.txt    |   6 +
+>> .../gpu/drm/ci/xfails/msm-apq8016-skips.txt   |   5 +
+>> .../gpu/drm/ci/xfails/msm-apq8096-skips.txt   |   8 +-
+>> .../msm-sc7180-trogdor-kingoftown-skips.txt   |   6 +
+>> ...sm-sc7180-trogdor-lazor-limozeen-skips.txt |   6 +
+>> .../gpu/drm/ci/xfails/msm-sdm845-skips.txt    |   6 +
+>> .../gpu/drm/ci/xfails/panfrost-g12b-fails.txt |   1 +
+>> .../gpu/drm/ci/xfails/panfrost-g12b-skips.txt |   8 +
+>> .../drm/ci/xfails/panfrost-mt8183-fails.txt   |   1 +
+>> .../drm/ci/xfails/panfrost-mt8183-skips.txt   |   8 +
+>> .../drm/ci/xfails/panfrost-rk3288-fails.txt   |   1 +
+>> .../drm/ci/xfails/panfrost-rk3288-skips.txt   |   8 +
+>> .../drm/ci/xfails/panfrost-rk3399-fails.txt   |   1 +
+>> .../drm/ci/xfails/panfrost-rk3399-skips.txt   |   8 +
+>> .../drm/ci/xfails/rockchip-rk3288-fails.txt   |  50 +--
+>> .../drm/ci/xfails/rockchip-rk3288-flakes.txt  |  21 ++
+>> .../drm/ci/xfails/rockchip-rk3288-skips.txt   |  15 +-
+>> .../drm/ci/xfails/rockchip-rk3399-fails.txt   |  38 +--
+>> .../drm/ci/xfails/rockchip-rk3399-flakes.txt  |  28 +-
+>> .../drm/ci/xfails/rockchip-rk3399-skips.txt   |  11 +
+>> .../drm/ci/xfails/virtio_gpu-none-fails.txt   |   1 -
+>> .../drm/ci/xfails/virtio_gpu-none-skips.txt   |   9 +-
+>> drivers/gpu/drm/ci/xfails/vkms-none-fails.txt |  33 ++
+>> .../gpu/drm/ci/xfails/vkms-none-flakes.txt    |  20 ++
+>> drivers/gpu/drm/ci/xfails/vkms-none-skips.txt |  23 ++
+>> 52 files changed, 890 insertions(+), 144 deletions(-)
+>> create mode 100644 drivers/gpu/drm/ci/xfails/mediatek-mt8173-flakes.txt
+>> create mode 100644 drivers/gpu/drm/ci/xfails/mediatek-mt8173-skips.txt
+>> create mode 100644 drivers/gpu/drm/ci/xfails/mediatek-mt8183-flakes.txt
+>> create mode 100644 drivers/gpu/drm/ci/xfails/mediatek-mt8183-skips.txt
+>> create mode 100644 drivers/gpu/drm/ci/xfails/meson-g12b-skips.txt
+>> create mode 100644 drivers/gpu/drm/ci/xfails/msm-apq8016-skips.txt
+>> create mode 100644 drivers/gpu/drm/ci/xfails/panfrost-g12b-fails.txt
+>> create mode 100644 drivers/gpu/drm/ci/xfails/panfrost-g12b-skips.txt
+>> create mode 100644 drivers/gpu/drm/ci/xfails/panfrost-mt8183-fails.txt
+>> create mode 100644 drivers/gpu/drm/ci/xfails/panfrost-mt8183-skips.txt
+>> create mode 100644 drivers/gpu/drm/ci/xfails/panfrost-rk3288-fails.txt
+>> create mode 100644 drivers/gpu/drm/ci/xfails/panfrost-rk3288-skips.txt
+>> create mode 100644 drivers/gpu/drm/ci/xfails/panfrost-rk3399-fails.txt
+>> create mode 100644 drivers/gpu/drm/ci/xfails/panfrost-rk3399-skips.txt
+>> create mode 100644 drivers/gpu/drm/ci/xfails/rockchip-rk3288-flakes.txt
+>> create mode 100644 drivers/gpu/drm/ci/xfails/vkms-none-fails.txt
+>> create mode 100644 drivers/gpu/drm/ci/xfails/vkms-none-flakes.txt
+>> create mode 100644 drivers/gpu/drm/ci/xfails/vkms-none-skips.txt
+>>
+>> -- 
+>> 2.40.1
+>>
+>>
+>> _______________________________________________
+>> linux-amlogic mailing list
+>> linux-amlogic@lists.infradead.org
+>> http://lists.infradead.org/mailman/listinfo/linux-amlogic
+> 
 
