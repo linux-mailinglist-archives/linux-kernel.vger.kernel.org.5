@@ -1,94 +1,93 @@
-Return-Path: <linux-kernel+bounces-128246-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-128248-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E99DE895840
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 17:31:46 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4FC38895848
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 17:33:30 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A4F40286947
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 15:31:45 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7EE961C220D9
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 15:33:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C7CE8131748;
-	Tue,  2 Apr 2024 15:31:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3627513174F;
+	Tue,  2 Apr 2024 15:33:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="DGRbbx23"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.16])
+	dkim=pass (2048-bit key) header.d=lwn.net header.i=@lwn.net header.b="CL6v63oR"
+Received: from ms.lwn.net (ms.lwn.net [45.79.88.28])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D77AA12BF3D
-	for <linux-kernel@vger.kernel.org>; Tue,  2 Apr 2024 15:31:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.16
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3D62A1292CA;
+	Tue,  2 Apr 2024 15:33:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.79.88.28
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712071900; cv=none; b=dsC8zxMAzNB2A1KVoRMuFaTpMHipD0ipSTMKR971hw0yccNkN1RDb6ZVwc3XiaeaxbhTcY8WQ2GMlnDWHxb7W6mLXiwC3IKhOGRJcLt1qhOZWNxu+lTEvTewkb/m652VP/Mlk+l3Kmr8Zvj8HRgvu4cHGRjJBjjXdedCwQEUVmM=
+	t=1712072002; cv=none; b=liG1h7kj/cVEJG+rRy8fd5V+C1Yfv1wIpYvRXFiy5UhzvqmNe/b6Zy9bN4baNJLDILYapBQk8Y8TSMbOqaRMOsYlm+Ye0fmTDfCzQB7BaMO/hxmOj5cqn1uMUVfYcY52JZNiiifIVpYYMF1HcZ6Cf2ym8tO7HhExr3UnGVx98as=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712071900; c=relaxed/simple;
-	bh=pBASrkS4prxfkCqb8ad8wDSpfxM6yP5/Zpbw0jLSIiU=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=tHMpFiBp4srA3EGxOdjIyvZNIgiYNYZkb0c2Umq2HSmbOH1pPuZ07yCjhDsJGwykjc+c6xlAzUcNfRv2G/Sa7cP78OScGyOwgk6O+tpu0n2/TDAnUXBX1Y2MyeRTH1h8tO24MymRI2ZH2lp5SePUPTKFCQfdC08O3xFTXm1IEvQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=DGRbbx23; arc=none smtp.client-ip=198.175.65.16
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1712071899; x=1743607899;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=pBASrkS4prxfkCqb8ad8wDSpfxM6yP5/Zpbw0jLSIiU=;
-  b=DGRbbx23ttlb8IPommJ/z2t9rEAA+iIjlXvsmkGQxFPygdvQKRg45frE
-   GLwSApuUMOWRZ6RXzJrmyLjdReRDvrbycsZrZ/8H/Rw2KnYaauDyejywl
-   AWjwaVibF0Smy1gQouRa/1Rpbm+6NNrJ5YHJBZlAEo4P9t6c03GVKKXJM
-   +YMb2ZqZksnLqVZloyajaBmYhj2j3F6fiZMEW72/u/aCfRPHPlzqDCBOP
-   eLF9M/ElFxGmcf/S5hPXQ5Mx5xyTIiJy+5BoPDOoLraUiwqhbjAHZyYMs
-   0jJcOnhuYHPq4HWzCdkI4Z5l68mhxQ2mbcOhEXD8M/d/kHrUzG0ZbcVmP
-   g==;
-X-CSE-ConnectionGUID: vYggQ9wZTemoXAESlLetjQ==
-X-CSE-MsgGUID: OADEtOH0QIuXKkDs1RonEg==
-X-IronPort-AV: E=McAfee;i="6600,9927,11032"; a="7377327"
-X-IronPort-AV: E=Sophos;i="6.07,175,1708416000"; 
-   d="scan'208";a="7377327"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by orvoesa108.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Apr 2024 08:31:38 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,11032"; a="915144670"
-X-IronPort-AV: E=Sophos;i="6.07,175,1708416000"; 
-   d="scan'208";a="915144670"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.72.54])
-  by fmsmga002.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Apr 2024 08:31:37 -0700
-Received: from andy by smile with local (Exim 4.97)
-	(envelope-from <andriy.shevchenko@linux.intel.com>)
-	id 1rrg6p-00000000qZQ-01iL;
-	Tue, 02 Apr 2024 18:31:35 +0300
-Date: Tue, 2 Apr 2024 18:31:34 +0300
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To: linux-kernel@vger.kernel.org
-Cc: Lee Jones <lee@kernel.org>
-Subject: Re: [PATCH v1 0/6] mfd: kempld: A few cleanups
-Message-ID: <Zgwk1tr7x4HnnlD9@smile.fi.intel.com>
-References: <20240223195113.880121-1-andriy.shevchenko@linux.intel.com>
+	s=arc-20240116; t=1712072002; c=relaxed/simple;
+	bh=nCxLLPJHebodPG2k3MpRrm+DJLqcXUj28bzwSsbOYqg=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=HuZHXyabXshO1F1pWya4S+f8pqeAUtr9LnhtkYx8XVwA9YkhAncvsYMT5Xml144WCy19EJwig4+wzl5qSmOTcGmGbv07BFs6wiVYiqU7cttlOBRwyfe7heUK7Meo962APwSahAz8FzGoscJjsqPTF4wcPrClrtWWE34uJb9gGec=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lwn.net; spf=pass smtp.mailfrom=lwn.net; dkim=pass (2048-bit key) header.d=lwn.net header.i=@lwn.net header.b=CL6v63oR; arc=none smtp.client-ip=45.79.88.28
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lwn.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lwn.net
+DKIM-Filter: OpenDKIM Filter v2.11.0 ms.lwn.net 6941547C1D
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lwn.net; s=20201203;
+	t=1712072000; bh=j4ZZRIZKI5PCRswsmoJpAy8RY59uVx96GRTr8tMX/CI=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+	b=CL6v63oRzhx++bViJYDfvGYqKctwQfF/y8Zr8jf+WTCyOraK1NL713qBFdSRQV5II
+	 QNmjksvDSuAOCeTGYiEOFzUXUwVMCDnbQmRePI5YhOtpAVQ1+SX9PeY/qA8Uhf8Gxr
+	 9mH8lei+MzzqdTBco2ZBOWmFOXDuON/mW/M0PAs7nGJJmX8BL4vMqv9OKvkbrKco2t
+	 kh1UEc7utCGAqTu+qTb17tnpfd4+xkaauHkzxjfg695mcddcBaEKs5Zbq2/m/p5HWR
+	 JN0v7SJ+m9guHDyqCVA2qkE510CI+09mfS/iCxaydiwgiMRmSqQSQP4A/vuoKW2EDt
+	 0ouMQpJHRsjHg==
+Received: from localhost (unknown [IPv6:2601:280:5e00:625::646])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by ms.lwn.net (Postfix) with ESMTPSA id 6941547C1D;
+	Tue,  2 Apr 2024 15:33:20 +0000 (UTC)
+From: Jonathan Corbet <corbet@lwn.net>
+To: Sarat Mandava <mandavasarat@gmail.com>, mathieu.desnoyers@efficios.com,
+ mhiramat@kernel.org, rostedt@goodmis.org
+Cc: Sarat Mandava <mandavasarat@gmail.com>, linux-doc@vger.kernel.org,
+ linux-trace-kernel@vger.kernel.org, linux-kernel@vger.kernel.org,
+ shuah@kernel.org, javier.carrasco.cruz@gmail.com
+Subject: Re: [PATCH] trace doc: Minor grammatical correction
+In-Reply-To: <20240321112757.17502-1-mandavasarat@gmail.com>
+References: <20240321112757.17502-1-mandavasarat@gmail.com>
+Date: Tue, 02 Apr 2024 09:33:19 -0600
+Message-ID: <87le5vwzi8.fsf@meer.lwn.net>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240223195113.880121-1-andriy.shevchenko@linux.intel.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+Content-Type: text/plain
 
-On Fri, Feb 23, 2024 at 09:49:49PM +0200, Andy Shevchenko wrote:
-> Just a set of ad-hoc cleanups. No functional change intended.
+Sarat Mandava <mandavasarat@gmail.com> writes:
 
-Any comments?
+> Use the correct relative pronoun.
+>
+> Signed-off-by: Sarat Mandava <mandavasarat@gmail.com>
+> ---
+>  Documentation/trace/tracepoints.rst | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/Documentation/trace/tracepoints.rst b/Documentation/trace/tracepoints.rst
+> index 0cb8d9ca3d60..decabcc77b56 100644
+> --- a/Documentation/trace/tracepoints.rst
+> +++ b/Documentation/trace/tracepoints.rst
+> @@ -27,7 +27,7 @@ the tracepoint site).
+>  
+>  You can put tracepoints at important locations in the code. They are
+>  lightweight hooks that can pass an arbitrary number of parameters,
+> -which prototypes are described in a tracepoint declaration placed in a
+> +whose prototypes are described in a tracepoint declaration placed in a
+>  header file.
+>  
 
-(I assume the 6+ weeks in the mailing list is enough for all kind of CIs
- to complain. But they hadn't AFAICS.)
+Applied, thanks.
 
--- 
-With Best Regards,
-Andy Shevchenko
-
-
+jon
 
