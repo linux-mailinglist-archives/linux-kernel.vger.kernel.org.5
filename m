@@ -1,59 +1,100 @@
-Return-Path: <linux-kernel+bounces-128669-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-128671-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 00DD9895DE7
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 22:40:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 7634D895DEC
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 22:41:25 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AE935282A66
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 20:40:18 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0270F283D20
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 20:41:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1C6BA15E1EE;
-	Tue,  2 Apr 2024 20:40:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B769815B556;
+	Tue,  2 Apr 2024 20:41:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="OCfTRQNG"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=canonical.com header.i=@canonical.com header.b="NlR0z7oH"
+Received: from smtp-relay-internal-1.canonical.com (smtp-relay-internal-1.canonical.com [185.125.188.123])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4E16A15DBC5;
-	Tue,  2 Apr 2024 20:40:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AB27015ADB1
+	for <linux-kernel@vger.kernel.org>; Tue,  2 Apr 2024 20:41:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.125.188.123
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712090413; cv=none; b=e2mBIYXMyuIXdsOqNlOl0NMlogllkobIKPlt/CVglCgttL4LzH5eb4j3rPhxROAHnNigTihZT0YlAO16WSjGdG6lfnikt9Gm1MenOcS8ioaB2qUFLczGiCyc1CTzrbVWvtgu1YbEvGJ/bd+Qgp9zaTXiRrZhVk0DIpyW9N5Ugpg=
+	t=1712090481; cv=none; b=QPCxaEykN1iSeHyvPGuPx2dxcZjKr9c0vUO2YPBmvE5jRTA8VRADQMVxEqZYn7P8t4AiGg02Luarlx23pDVhondWouAtKn2auHz3lUtwK3hFkCzgMaQLlph2ptgowYwtM3GhMZL0o5SEIt8M/FMvOMxCbRb6ITNZpND1/Udasfk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712090413; c=relaxed/simple;
-	bh=QDZNTpJuyP7aLWGIsgsagZLgjLOYqAjgx9+HQirqdUU=;
+	s=arc-20240116; t=1712090481; c=relaxed/simple;
+	bh=HWzEiqBuHaYZ2Kx2tIo/D4Y6kZ6jM/wJf3n0FgK2h7U=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=phIGmkgPAJVbL1wDeIcvGjyLkd3gG+JYw7yKnNVSY2Fo/HLVmKo5UUHRjZ3STqhPkHUimsNuA3vokk3FIGoQEZbdZtt4fkeqDL5AfEoWfcz+LG+G6mpALfDVOGuyKw5hOuI8f3MzUESkHhKLqiAYRE26eUvSFQEKUl3ufHrxcq8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=OCfTRQNG; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5C32EC433F1;
-	Tue,  2 Apr 2024 20:40:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712090412;
-	bh=QDZNTpJuyP7aLWGIsgsagZLgjLOYqAjgx9+HQirqdUU=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=OCfTRQNGK7CwcA16/gLj36P5+CX840TopJQPgiksEHuMhwe4k5ktDeorHs5+JnnV4
-	 7IWvIXOFyytRM84h2HGU2Oi3tA7Fkskp4IMbSgrkzP6zbmacT33vmeY0hV6igvF0su
-	 zveS1PuBndJyZO4QaS8RtKp9a0mCUfC0vsxHDPoFa1NWGHOMXmut6gyEuUjUv7fdsJ
-	 1Z1H0QcGv1/iy8ICihNbBsL2+TgQYYll+z+aEXqrvpCNMZzrKXpw6K7WBNEcROt44M
-	 JACSMG9y8LbN1fz612F2SrG7dwWhVSQcgbtv8IklbSM3p2eaFRXTssi50FS05YfZIe
-	 RIS9qnHvdZmZg==
-Date: Tue, 2 Apr 2024 17:40:09 -0300
-From: Arnaldo Carvalho de Melo <acme@kernel.org>
-To: "Liang, Kan" <kan.liang@linux.intel.com>
-Cc: Namhyung Kim <namhyung@kernel.org>, Ian Rogers <irogers@google.com>,
-	Jiri Olsa <jolsa@kernel.org>,
-	Adrian Hunter <adrian.hunter@intel.com>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Ingo Molnar <mingo@kernel.org>, LKML <linux-kernel@vger.kernel.org>,
-	linux-perf-users@vger.kernel.org
-Subject: Re: [PATCH 1/2] perf annotate: Get rid of duplicate --group option
- item
-Message-ID: <ZgxtKVSwAbFXK01k@x1>
-References: <20240322224313.423181-1-namhyung@kernel.org>
- <9cfa43c3-3698-455c-8a2f-85c30470733c@linux.intel.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=cS5OUtdtAEV+uibXCqhD9IqUpd4zyHmK4q2jSEUulAMpAeYffH9XULOvq26ETsOBBjMqo3LDj6ZEnMvpLVm5TnHjRsfA25mT6ogqsBy/BUghdemYa5KexgvVk+5BXQ0TxyUUUn60k7jwBy+YiON0NOCnZ2TFMOkBoWA5JTRZL6M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canonical.com; spf=pass smtp.mailfrom=canonical.com; dkim=pass (2048-bit key) header.d=canonical.com header.i=@canonical.com header.b=NlR0z7oH; arc=none smtp.client-ip=185.125.188.123
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canonical.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canonical.com
+Received: from mail-ej1-f71.google.com (mail-ej1-f71.google.com [209.85.218.71])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-relay-internal-1.canonical.com (Postfix) with ESMTPS id 0CAAB3F682
+	for <linux-kernel@vger.kernel.org>; Tue,  2 Apr 2024 20:41:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+	s=20210705; t=1712090472;
+	bh=CGkMB7imTwkGu5/eCOYqKNUHQM5FWRQ0y2vNVXy+Bfc=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:In-Reply-To;
+	b=NlR0z7oHcDPSPCV7lM6Pt53mr4A3FIBAgE+25FR/D4/13e/oo6fa4EpyE6JM9Vq5Y
+	 eLOPcOJfR6Fxtjpl4CjQ1KvwoWzD4NJHxfqro3vcoBrTRJwxuIfWvzKRzf46mbZz2R
+	 OSVOIwuy2dnrkVk6YCsi7t8EKONN2q04rRgW9QtvNd4KBkWg5NlFIWEyp0Hyqugsfr
+	 yOyfMkdgV9CZakaxpcq9Dunq6VAUlkDIZTYV+WtxwFdVpSfheVGsODA6sVSeP/WnkX
+	 STLyf1jfBBh/kVcvti4VeFM2MOLF0qda7EPkX+4bW5GcXy9OeBh4eXfpXZCeBWabSk
+	 NwD3sW5FSJQ9A==
+Received: by mail-ej1-f71.google.com with SMTP id a640c23a62f3a-a4751d1e7a2so209369166b.2
+        for <linux-kernel@vger.kernel.org>; Tue, 02 Apr 2024 13:41:12 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712090471; x=1712695271;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=CGkMB7imTwkGu5/eCOYqKNUHQM5FWRQ0y2vNVXy+Bfc=;
+        b=P7ougk5dCBLPjOxDStEQRP9OGvnCCU3EqlBzu92zDa4yvLYoywu9gBQVNobYA9Fa/3
+         TZuTd/bWmMHdY2oXwzSor92W5PjH3hfK7uOIww2IKhCs2UC8lQ9p3j4mtnremwzQraU3
+         zZ5M2hmiDvngVl59N9kFwiWzxReyJuhp7SlgQzrGzmvNomEPtElktcseIcgZ1haGS97q
+         UQMm5UWQYvYh/GFSADXSA+IL3Y382I02CkVi3Xo8RctcqWxUL1B8GDrmg6WiuOnC95mG
+         uJ8TX0EexoU7iX+pmGEOEL+OM8ItfCG0Ouk3avnZLKcCm1gsi+tgTd8Zo09v9qp6lUKz
+         9Lnw==
+X-Forwarded-Encrypted: i=1; AJvYcCU/sGlnSaPkQyzsW7BXaRRmM0pveKMuOULqIxKje0rz8PnyyD6PRtsAEQSVUwLCtIo47Qyd0MGLQOeeDmDiMvdXSZCYev+X0RMpGjaa
+X-Gm-Message-State: AOJu0Yx3TU8TGTi0qkXlCuj5AHMZUbLOEDWkSJVCj5F356NKhO7k0aoP
+	meGK2LSjPzKvIlTQ7wAL/z/RFPAzRNAo+HUZiCUwLHSGUODLCxbzbcQim+n4YAXU/P4ddJQYG4m
+	bDEfQSvD4E5xiWeBBZfb4gOHnWPOFcaYwtsjjIQTQihIlX1EsxFsbWWTyI1ImiQvJT8mseKtYGd
+	C03g==
+X-Received: by 2002:a17:906:e203:b0:a46:22a3:479f with SMTP id gf3-20020a170906e20300b00a4622a3479fmr10516950ejb.21.1712090471603;
+        Tue, 02 Apr 2024 13:41:11 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IGJwazTnWb26fCC8OgOWgbFx8/0qWiEQkvDFj7yoQDRDAlOAX8koYzmXeu5UnVOTOyeF5Y39g==
+X-Received: by 2002:a17:906:e203:b0:a46:22a3:479f with SMTP id gf3-20020a170906e20300b00a4622a3479fmr10516925ejb.21.1712090470909;
+        Tue, 02 Apr 2024 13:41:10 -0700 (PDT)
+Received: from localhost (host-95-248-169-71.retail.telecomitalia.it. [95.248.169.71])
+        by smtp.gmail.com with ESMTPSA id wt9-20020a170906ee8900b00a4e76e922a3sm2145674ejb.218.2024.04.02.13.41.10
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 02 Apr 2024 13:41:10 -0700 (PDT)
+Date: Tue, 2 Apr 2024 22:41:09 +0200
+From: Andrea Righi <andrea.righi@canonical.com>
+To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc: Andrii Nakryiko <andrii@kernel.org>,
+	Eduard Zingerman <eddyz87@gmail.com>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>,
+	Yonghong Song <yonghong.song@linux.dev>,
+	John Fastabend <john.fastabend@gmail.com>,
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>,
+	Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+	David Vernet <void@manifault.com>, Tejun Heo <tj@kernel.org>,
+	bpf@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 2/2] libbpf: Add ring__consume_max /
+ ring_buffer__consume_max
+Message-ID: <ZgxtZSFKddlMz3s6@gpd>
+References: <20240401073159.16668-1-andrea.righi@canonical.com>
+ <20240401073159.16668-3-andrea.righi@canonical.com>
+ <CAEf4BzYuMxF6JDi4gG+cfikXqrOsBqiZRw8Ur4K5=YwQKAqKXg@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -62,33 +103,22 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <9cfa43c3-3698-455c-8a2f-85c30470733c@linux.intel.com>
+In-Reply-To: <CAEf4BzYuMxF6JDi4gG+cfikXqrOsBqiZRw8Ur4K5=YwQKAqKXg@mail.gmail.com>
 
-On Mon, Mar 25, 2024 at 09:56:50AM -0400, Liang, Kan wrote:
+On Tue, Apr 02, 2024 at 11:04:39AM -0700, Andrii Nakryiko wrote:
+..
+> > + * negative number if any of the callbacks return an error.
+> > + */
+> > +LIBBPF_API int ring__consume_max(struct ring *r, size_t max_items);
 > 
-> 
-> On 2024-03-22 6:43 p.m., Namhyung Kim wrote:
-> > The options array in cmd_annotate() has duplicate --group options.  It
-> > only needs one and let's get rid of the other.
-> > 
-> >   $ perf annotate -h 2>&1 | grep group
-> >         --group           Show event group information together
-> >         --group           Show event group information together
-> > 
-> > Fixes: 7ebaf4890f63 ("perf annotate: Support '--group' option")
-> > Signed-off-by: Namhyung Kim <namhyung@kernel.org>
-> 
-> For the series,
-> 
-> Reviewed-by: Kan Liang <kan.liang@linux.intel.com>
+> I'm bikeshedding here, of course, but I prefer `ring__consume_n` and
+> max_items -> n.
 
-For 'b4' sake, next time please send the Reviewed-by to the cover letter
-in the series so that it picks your Reviewed-by for all patches, not
-just for the one that you replied to, as in this case.
+I actually like "_n" more than "_max" (same with max_items -> n).
 
-I'm adding it to this whole series,
+I'll change this (with all the other suggestions) and will send a new
+version.
 
-Thanks!
-
-- Arnaldo
+Thanks for the review!
+-Andrea
 
