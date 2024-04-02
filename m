@@ -1,293 +1,102 @@
-Return-Path: <linux-kernel+bounces-127763-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-127764-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 655AB895098
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 12:43:48 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id DC3D489509A
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 12:44:34 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 882D81C22488
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 10:43:47 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8FD911F225C6
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 10:44:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 294DF5FDB3;
-	Tue,  2 Apr 2024 10:43:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7BC275E060;
+	Tue,  2 Apr 2024 10:44:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="nim0KH4c"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.9])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Ruuw4q5b"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.14])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9F9515FB87;
-	Tue,  2 Apr 2024 10:43:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.9
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 741F25D8EB;
+	Tue,  2 Apr 2024 10:44:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.14
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712054613; cv=none; b=QE2dtRyooj39sYEUQdNX7OfJkiiMUMxUacek8kQsJWirHIx6l+sdljHKacK/HbAu43IWUau5dpayuVbk+1Q9fHWIRa7aoG9F3yKGt5Jnu4Orhd15kF8gSPobikhZNE6TFxUhlNju4DBCqnWfFr3CU5FBG9pQFaJcQMF/hOy/DJc=
+	t=1712054667; cv=none; b=PR6WlRQhh05/vl/Tj/Apt9n1KBk1h32aQwTpel0AUxNcMEtROx8rDYIm0ZFSEhCwIW3F23kRgwbMj1kFcEF/wTxbFM1FPS5ij8EGg6LMIOUjh54a5cApQNylGFwpXePhMIdSh5xoJ+k+3VQ3e5nTtltN4iI/Yiuzr/YBcGnrGUI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712054613; c=relaxed/simple;
-	bh=2E/VcTORLT4MZBHqARbP5tVglYCe7QzuB6aizFMeckA=;
+	s=arc-20240116; t=1712054667; c=relaxed/simple;
+	bh=XdiyO3QMFuwJYuIh4+gWB/Jf/gbm121Q5dupOJmCe58=;
 	h=From:Date:To:cc:Subject:In-Reply-To:Message-ID:References:
-	 MIME-Version:Content-Type; b=jUCBnpJa/wYArzhTtesXMmufh5JvjJ5nrxoQ1eRiDqjuELHE/2hGTvt+ma7Drd/I4xkQTsCarFxsvRLM++JNxVWfT1KmXaWb7Yn/YDFQydARiIsSd/Pv1DdmIz2yE8vhcmDE5aaZc7fd0HG1n4kwmmHkM6KfBeQ02JD5XaMzpVE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=nim0KH4c; arc=none smtp.client-ip=192.198.163.9
+	 MIME-Version:Content-Type; b=FsmEUWnSFv9zYs1yOw7z2FsgwtFmu4AqFC0G8C8TqwGQJEghMN1Vs0jhfKXUqo42XGhkYaQpLq3boi9KRxYYvWUrxY4d4Ea1NBRLtaBIt+HZFdBaPgQfaM1gF3pkl5uWU77jOSiURqBW1ylEhmlZdUX4up/vba6cLBgZINKq4Tg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Ruuw4q5b; arc=none smtp.client-ip=198.175.65.14
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1712054611; x=1743590611;
+  t=1712054667; x=1743590667;
   h=from:date:to:cc:subject:in-reply-to:message-id:
    references:mime-version;
-  bh=2E/VcTORLT4MZBHqARbP5tVglYCe7QzuB6aizFMeckA=;
-  b=nim0KH4cFVnHnlQEgRKrDg+aEiDI4kv6xkImrwV2h0Kg/y6BOdIqYitF
-   a8ggaxTwYOh8S7SQPyt41Nanl1OSzV0oCg1LxwVQJKDUQ6NBVfARr3HRn
-   xEcr29O7YHWUTp9hPujlQLMLOupcvhiqV7fQUwowRmtDKzJEr3yjXj43R
-   Fdxu8yMFR9maSTIyfUF7tMFPQXxXh0N+nHzLRxV2Z9UHQlUXsN7ijeT9P
-   eDV7i1twcOV+cQWVVTXzmqTAPALkeTQ+Vfe9jZKKV/JZ93lJzu2miYV8K
-   fMfqSpQEMzCY9uU7AdBYvVtpGZU8Z650xDEISOnbWN5cfuRNMdOzM0thV
-   g==;
-X-CSE-ConnectionGUID: XSJxXvtxSPuoINDEhfa+CA==
-X-CSE-MsgGUID: T8uAT5FAQn2PSxmTK2HGuQ==
-X-IronPort-AV: E=McAfee;i="6600,9927,11031"; a="17943776"
+  bh=XdiyO3QMFuwJYuIh4+gWB/Jf/gbm121Q5dupOJmCe58=;
+  b=Ruuw4q5bzEN1A8rcjMLbsJ6sMGHEuHyOhdvSYdRZpB+SUevs5PdqP5vh
+   MbvVuij5Z6qWYQtFHA2oa9Z8FFzZcqLX4fMGDgI5MT+P592Nw0sIyAxUI
+   SbshJkiGN9zVH+oly55OFChPISGA0s/Pw5G/2DGzZ0yIimQ767vOHrfCO
+   o60tUoQhPvzWPC5ImOvjPQ4tz48coqyirge1AH/NgilW3uPcafLaHDHAu
+   dfvPZrJqyQk6ozz/vsqL5ZsaP1tWRyQX5UerqYioJyTdVYscXY66xU10g
+   XdvaiGi712U/NaSBIS9RKCFrEYPB/3kjVpgtl93/QRdVABZ36wd/sTIU0
+   w==;
+X-CSE-ConnectionGUID: vB5RTDPaRFWrf8KrfChxlA==
+X-CSE-MsgGUID: 4SCEEKA6SBiBL9fF2iBdig==
+X-IronPort-AV: E=McAfee;i="6600,9927,11031"; a="11049222"
 X-IronPort-AV: E=Sophos;i="6.07,174,1708416000"; 
-   d="scan'208";a="17943776"
-Received: from orviesa009.jf.intel.com ([10.64.159.149])
-  by fmvoesa103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Apr 2024 03:43:31 -0700
+   d="scan'208";a="11049222"
+Received: from fmviesa005.fm.intel.com ([10.60.135.145])
+  by orvoesa106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Apr 2024 03:44:26 -0700
+X-CSE-ConnectionGUID: EZamX/HmQj+9A7LOJlW8fQ==
+X-CSE-MsgGUID: 1sGAsfLuRwWdBcSylYkKYw==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.07,174,1708416000"; 
-   d="scan'208";a="18000623"
+   d="scan'208";a="22476458"
 Received: from ijarvine-desk1.ger.corp.intel.com (HELO localhost) ([10.245.247.23])
-  by orviesa009-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Apr 2024 03:43:28 -0700
+  by fmviesa005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Apr 2024 03:44:23 -0700
 From: =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
-Date: Tue, 2 Apr 2024 13:43:25 +0300 (EEST)
+Date: Tue, 2 Apr 2024 13:44:20 +0300 (EEST)
 To: "Luke D. Jones" <luke@ljones.dev>
 cc: Hans de Goede <hdegoede@redhat.com>, corentin.chary@gmail.com, 
     platform-driver-x86@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v2 1/9] platform/x86: asus-wmi: add support for 2024 ROG
- Mini-LED
-In-Reply-To: <20240402022607.34625-2-luke@ljones.dev>
-Message-ID: <d1ec4c78-0b1e-28ec-7324-806b29ed77c9@linux.intel.com>
-References: <20240402022607.34625-1-luke@ljones.dev> <20240402022607.34625-2-luke@ljones.dev>
+Subject: Re: [PATCH v2 2/9] platform/x86: asus-wmi: add support for Vivobook
+ GPU MUX
+In-Reply-To: <20240402022607.34625-3-luke@ljones.dev>
+Message-ID: <2fb961af-258a-9c9c-531d-0bd4f0e70f37@linux.intel.com>
+References: <20240402022607.34625-1-luke@ljones.dev> <20240402022607.34625-3-luke@ljones.dev>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: multipart/mixed; boundary="8323328-275081869-1712054660=:1019"
+
+  This message is in MIME format.  The first part should be readable text,
+  while the remaining parts are likely unreadable without MIME-aware tools.
+
+--8323328-275081869-1712054660=:1019
+Content-Type: text/plain; charset=ISO-8859-15
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 
 On Tue, 2 Apr 2024, Luke D. Jones wrote:
 
-> Support the 2024 mini-led backlight and adjust the related functions
-> to select the relevant dev-id. Also add `available_mini_led_mode` to the
-> platform sysfs since the available mini-led levels can be different.
-> 
+> Add support for the Vivobook dgpu MUX available on the ASUS Viviobook
+> and some of the other ranges (Zen).
+>=20
+> This MUX functions exactly the same as the existing ROG MUX support so
+> the existing functionality now detects which MUX is available and uses
+> that for control.
+>=20
 > Signed-off-by: Luke D. Jones <luke@ljones.dev>
-> ---
->  .../ABI/testing/sysfs-platform-asus-wmi       |  8 ++
->  drivers/platform/x86/asus-wmi.c               | 80 ++++++++++++++++---
->  include/linux/platform_data/x86/asus-wmi.h    |  1 +
->  3 files changed, 78 insertions(+), 11 deletions(-)
-> 
-> diff --git a/Documentation/ABI/testing/sysfs-platform-asus-wmi b/Documentation/ABI/testing/sysfs-platform-asus-wmi
-> index 8a7e25bde085..ef1ac1a20a71 100644
-> --- a/Documentation/ABI/testing/sysfs-platform-asus-wmi
-> +++ b/Documentation/ABI/testing/sysfs-platform-asus-wmi
-> @@ -126,6 +126,14 @@ Description:
->  		Change the mini-LED mode:
->  			* 0 - Single-zone,
->  			* 1 - Multi-zone
-> +			* 2 - Multi-zone strong (available on newer generation mini-led)
-> +
-> +What:		/sys/devices/platform/<platform>/available_mini_led_mode
-> +Date:		Apr 2024
-> +KernelVersion:	6.10
-> +Contact:	"Luke Jones" <luke@ljones.dev>
-> +Description:
-> +		List the available mini-led modes.
->  
->  What:		/sys/devices/platform/<platform>/ppt_pl1_spl
->  Date:		Jun 2023
-> diff --git a/drivers/platform/x86/asus-wmi.c b/drivers/platform/x86/asus-wmi.c
-> index 3f07bbf809ef..2330f02ff76f 100644
-> --- a/drivers/platform/x86/asus-wmi.c
-> +++ b/drivers/platform/x86/asus-wmi.c
-> @@ -288,7 +288,7 @@ struct asus_wmi {
->  	bool battery_rsoc_available;
->  
->  	bool panel_overdrive_available;
-> -	bool mini_led_mode_available;
-> +	u32 mini_led_dev_id;
->  
->  	struct hotplug_slot hotplug_slot;
->  	struct mutex hotplug_lock;
-> @@ -2108,13 +2108,30 @@ static ssize_t mini_led_mode_show(struct device *dev,
->  				   struct device_attribute *attr, char *buf)
->  {
->  	struct asus_wmi *asus = dev_get_drvdata(dev);
-> -	int result;
-> +	u32 value;
->  
-> -	result = asus_wmi_get_devstate_simple(asus, ASUS_WMI_DEVID_MINI_LED_MODE);
-> -	if (result < 0)
-> -		return result;
-> +	asus_wmi_get_devstate(asus, asus->mini_led_dev_id, &value);
 
-Error handling missing.
+Reviewed-by: Ilpo J=E4rvinen <ilpo.jarvinen@linux.intel.com>
 
-> +	value = value & 0x03; // only 3 modes on 2024 version
-
-Add #define XX GENMASK(1, 0) for this.
-
->  
-> -	return sysfs_emit(buf, "%d\n", result);
-> +	/* Remap the mode values to match previous generation mini-led.
-> +	 * Some BIOSes return -19 instead of 2, which is "mini-LED off", this
-> +	 * appears to be a  BIOS bug.
-
-Is this comment still 100% valid now or should it be removed completely? 
-There's no handling for -19 in ASUS_WMI_DEVID_MINI_LED_MODE2 block?
-
-There's also a double space in the comment.
-
-> +	 */
-> +	if (asus->mini_led_dev_id == ASUS_WMI_DEVID_MINI_LED_MODE2) {
-> +		switch (value) {
-> +		case 0:
-> +			value = 1;
-> +			break;
-> +		case 1:
-> +			value = 2;
-> +			break;
-> +		case 2:
-> +			value = 0;
-
-Add break here too.
-
-These literals 0-2 should be named with #defines as it would make the code 
-readable, current way of the mapping between literal numbers 
-unintelligible magic.
-
-> +		}
-> +	} else if (value < 0) {
-
-This will never be true because value is u32 and also because of & 0x03 
-even if you'd change the type.
-
-I don't quite follow what you're trying to do here. Why this only applies 
-to cases != ASUS_WMI_DEVID_MINI_LED_MODE2?
-
-> +		return value;
-> +	}
-> +	return sysfs_emit(buf, "%d\n", value);
->  }
->  
->  static ssize_t mini_led_mode_store(struct device *dev,
-> @@ -2130,11 +2147,28 @@ static ssize_t mini_led_mode_store(struct device *dev,
->  	if (result)
->  		return result;
->  
-> -	if (mode > 1)
-> +	if (mode > 1 && asus->mini_led_dev_id == ASUS_WMI_DEVID_MINI_LED_MODE)
->  		return -EINVAL;
-> +	if (mode > 2 && asus->mini_led_dev_id == ASUS_WMI_DEVID_MINI_LED_MODE2)
-> +		return -EINVAL;
-> +	/*
-> +	 * Remap the mode values so expected behaviour is the same as the last
-> +	 * generation of mini-LED
-
-Missing .
-
--- 
+--=20
  i.
 
-> +	 */
-> +	if (asus->mini_led_dev_id == ASUS_WMI_DEVID_MINI_LED_MODE2) {
-> +		switch (mode) {
-> +		case 0:
-> +			mode = 2;
-> +			break;
-> +		case 1:
-> +			mode = 0;
-> +			break;
-> +		case 2:
-> +			mode = 1;
-> +		}
-> +	}
->  
-> -	err = asus_wmi_set_devstate(ASUS_WMI_DEVID_MINI_LED_MODE, mode, &result);
-> -
-> +	err = asus_wmi_set_devstate(asus->mini_led_dev_id, mode, &result);
->  	if (err) {
->  		pr_warn("Failed to set mini-LED: %d\n", err);
->  		return err;
-> @@ -2151,6 +2185,23 @@ static ssize_t mini_led_mode_store(struct device *dev,
->  }
->  static DEVICE_ATTR_RW(mini_led_mode);
->  
-> +static ssize_t available_mini_led_mode_show(struct device *dev,
-> +				  struct device_attribute *attr, char *buf)
-> +{
-> +	struct asus_wmi *asus = dev_get_drvdata(dev);
-> +
-> +	switch (asus->mini_led_dev_id) {
-> +	case ASUS_WMI_DEVID_MINI_LED_MODE:
-> +		return sysfs_emit(buf, "0 1\n");
-> +	case ASUS_WMI_DEVID_MINI_LED_MODE2:
-> +		return sysfs_emit(buf, "0 1 2\n");
-> +	}
-> +
-> +	return sysfs_emit(buf, "0\n");
-> +}
-> +
-> +static DEVICE_ATTR_RO(available_mini_led_mode);
-> +
->  /* Quirks *********************************************************************/
->  
->  static void asus_wmi_set_xusb2pr(struct asus_wmi *asus)
-> @@ -4139,6 +4190,7 @@ static struct attribute *platform_attributes[] = {
->  	&dev_attr_nv_temp_target.attr,
->  	&dev_attr_panel_od.attr,
->  	&dev_attr_mini_led_mode.attr,
-> +	&dev_attr_available_mini_led_mode.attr,
->  	NULL
->  };
->  
-> @@ -4191,7 +4243,9 @@ static umode_t asus_sysfs_is_visible(struct kobject *kobj,
->  	else if (attr == &dev_attr_panel_od.attr)
->  		ok = asus->panel_overdrive_available;
->  	else if (attr == &dev_attr_mini_led_mode.attr)
-> -		ok = asus->mini_led_mode_available;
-> +		ok = asus->mini_led_dev_id != 0;
-> +	else if (attr == &dev_attr_available_mini_led_mode.attr)
-> +		ok = asus->mini_led_dev_id != 0;
->  
->  	if (devid != -1)
->  		ok = !(asus_wmi_get_devstate_simple(asus, devid) < 0);
-> @@ -4444,10 +4498,14 @@ static int asus_wmi_add(struct platform_device *pdev)
->  	asus->nv_dyn_boost_available = asus_wmi_dev_is_present(asus, ASUS_WMI_DEVID_NV_DYN_BOOST);
->  	asus->nv_temp_tgt_available = asus_wmi_dev_is_present(asus, ASUS_WMI_DEVID_NV_THERM_TARGET);
->  	asus->panel_overdrive_available = asus_wmi_dev_is_present(asus, ASUS_WMI_DEVID_PANEL_OD);
-> -	asus->mini_led_mode_available = asus_wmi_dev_is_present(asus, ASUS_WMI_DEVID_MINI_LED_MODE);
->  	asus->ally_mcu_usb_switch = acpi_has_method(NULL, ASUS_USB0_PWR_EC0_CSEE)
->  						&& dmi_match(DMI_BOARD_NAME, "RC71L");
->  
-> +	if (asus_wmi_dev_is_present(asus, ASUS_WMI_DEVID_MINI_LED_MODE))
-> +		asus->mini_led_dev_id = ASUS_WMI_DEVID_MINI_LED_MODE;
-> +	else if (asus_wmi_dev_is_present(asus, ASUS_WMI_DEVID_MINI_LED_MODE2))
-> +		asus->mini_led_dev_id = ASUS_WMI_DEVID_MINI_LED_MODE2;
-> +
->  	err = fan_boost_mode_check_present(asus);
->  	if (err)
->  		goto fail_fan_boost_mode;
-> diff --git a/include/linux/platform_data/x86/asus-wmi.h b/include/linux/platform_data/x86/asus-wmi.h
-> index ab1c7deff118..9cadce10ad9a 100644
-> --- a/include/linux/platform_data/x86/asus-wmi.h
-> +++ b/include/linux/platform_data/x86/asus-wmi.h
-> @@ -71,6 +71,7 @@
->  #define ASUS_WMI_DEVID_LID_FLIP		0x00060062
->  #define ASUS_WMI_DEVID_LID_FLIP_ROG	0x00060077
->  #define ASUS_WMI_DEVID_MINI_LED_MODE	0x0005001E
-> +#define ASUS_WMI_DEVID_MINI_LED_MODE2	0x0005002E
->  
->  /* Storage */
->  #define ASUS_WMI_DEVID_CARDREADER	0x00080013
-> 
+--8323328-275081869-1712054660=:1019--
 
