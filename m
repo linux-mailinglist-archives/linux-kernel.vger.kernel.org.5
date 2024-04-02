@@ -1,144 +1,105 @@
-Return-Path: <linux-kernel+bounces-128070-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-128072-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8BDCD8955A5
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 15:44:15 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id A24B48955AC
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 15:44:56 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9B838282ED0
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 13:44:13 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4298B1F225E0
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 13:44:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DB99984A2C;
-	Tue,  2 Apr 2024 13:43:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2A82B12A157;
+	Tue,  2 Apr 2024 13:43:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="bsmWv/1V"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=crapouillou.net header.i=@crapouillou.net header.b="ECRmOs1l"
+Received: from aposti.net (aposti.net [89.234.176.197])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 17E8C79DD4
-	for <linux-kernel@vger.kernel.org>; Tue,  2 Apr 2024 13:43:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D129879DD4;
+	Tue,  2 Apr 2024 13:43:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=89.234.176.197
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712065390; cv=none; b=oOtOsaxR6TkIxWnlPW+wb3zqk1oH4ZTLj4rHactg/2OlpTzH/8A6wFEb/Pwh0jC2A+I76LHi6YQz9DO6Dehb/RW1bHgSXAGBMW6+vHHWcEZJ1oCE6/tlkP8L3TC4bCKwYBfxov/9qL3fmhXDPYEooSbgehSPxZtO1wboVqfy3kk=
+	t=1712065406; cv=none; b=Lzgc2/Z1vlYOlmvGto1Ha7aM1fnCGf8o+WrCbTG/YMXisMyyxb2+S1I9IkLFt1aDnA+AZTCPudia47wEmt/tP2fgVlv1vWVXRIUxdTwd4/mlQko4iazKZCLE1IN9AmWrIAXd6QwQXOV5iEoztREOTkhWPGMmO+7UNL49NWhJofI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712065390; c=relaxed/simple;
-	bh=lHAIMJbRpkpZnFYxuHbp5mo0756mPGZYrjOw83NTj+A=;
-	h=Date:Message-ID:From:To:Cc:Subject:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=cQ60SsWpjBgTn8BakXs0twLpTACK5ibvpuL7m/Q0OatwSuIlO0+uvs4hMNRQl/WjUVZ9uFId4pJmtVNp6tcWBmvK8smaSlXIuoXoIaCRxuhkIye2OWejjKueGee6ep1B8NxWUYkdhNF4xfAySniHr4BSKolXOxZUW0y93cgMIYE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=bsmWv/1V; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D64C7C433C7;
-	Tue,  2 Apr 2024 13:43:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712065388;
-	bh=lHAIMJbRpkpZnFYxuHbp5mo0756mPGZYrjOw83NTj+A=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=bsmWv/1V++OheJjcDWeNNUReX6C0aCmibGVpEJA9U5yN6WoRvBC6oL1On5ITORUsx
-	 1Un5hVt/w7qqraTdyo69oy8Elv+a5KIX7+4AD3S2dZdMqpgyryEYXcnISg84V0iG/S
-	 CFApnSqsDWE/TSqcKIEXlShoTNNOCOU8kF3KvMIUNZCgwaVVHuLX7DvQZ4ZihKO4pl
-	 tJX14xWWz2wJKDJIkOndvzGJIlJFA9IEKosWUYXxnLZVCL6KgnG06nOAPdqYBsuZU/
-	 6f+gKeWIP6G4iashmZ+JTLy56P6mwP9/vqq0L5LmcsyraEJ5AqyVUPkhF3rn7OgzhQ
-	 7dfe7s3umVdYg==
-Received: from sofa.misterjones.org ([185.219.108.64] helo=goblin-girl.misterjones.org)
-	by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.95)
-	(envelope-from <maz@kernel.org>)
-	id 1rrePq-000jmk-HR;
-	Tue, 02 Apr 2024 14:43:06 +0100
-Date: Tue, 02 Apr 2024 14:43:06 +0100
-Message-ID: <86il0zubh1.wl-maz@kernel.org>
-From: Marc Zyngier <maz@kernel.org>
-To: Tangnianyao <tangnianyao@huawei.com>
-Cc: <tglx@linutronix.de>,
-	<linux-arm-kernel@lists.infradead.org>,
-	<linux-kernel@vger.kernel.org>,
-	<guoyang2@huawei.com>,
-	<wangwudi@hisilicon.com>
-Subject: Re: [PATCH] irqchip/gic-v3-its: Don't need VSYNC if VMAPP with {V, Alloc}=={0, x}
-In-Reply-To: <8532b19b-361e-2234-92db-83f4d56bae19@huawei.com>
-References: <20240402114147.3788881-1-tangnianyao@huawei.com>
-	<86jzlgt014.wl-maz@kernel.org>
-	<8532b19b-361e-2234-92db-83f4d56bae19@huawei.com>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
- FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/29.2
- (aarch64-unknown-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+	s=arc-20240116; t=1712065406; c=relaxed/simple;
+	bh=uLL/QD2swy9RXoEFWUQrKxVhnE2lryN01o3p4amWQkM=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=isIAs/9BKP++NqgX+TrAFTt8+0SlfSqK+btOJefgwV3C0IVGw8DhAOQDDH5H9u6t6/Yk2r/nMOieFTRqFdwEveRjsdnbNUICpyaUqZ/18bhyndNJdql+48gso+cQABj3Iwx4y7r+FIniVPpM6NqfXYt9xD27iUx+MX21TN3K6nM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=crapouillou.net; spf=pass smtp.mailfrom=crapouillou.net; dkim=pass (1024-bit key) header.d=crapouillou.net header.i=@crapouillou.net header.b=ECRmOs1l; arc=none smtp.client-ip=89.234.176.197
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=crapouillou.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=crapouillou.net
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=crapouillou.net;
+	s=mail; t=1712065401;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=uLL/QD2swy9RXoEFWUQrKxVhnE2lryN01o3p4amWQkM=;
+	b=ECRmOs1lVmXkU2pmeiTxxFaHxqO6ic/wyUaYjJSu7Nz+LsicPuX98mvCl2NbgmKGCCQ2FQ
+	TTU5LuRhFdZkT1B+JqVAjOxqgpZzJqeuO/OXEhVKkkbRWHDSGkOi4rPZVLsg7rrWBFdc+U
+	upaQ9vT31B5dL9EN9EzZOpIUZDx8PB4=
+Message-ID: <5282d68815ac4a99c2e5031fc7d20e9e83f5a1d0.camel@crapouillou.net>
+Subject: Re: [PATCH 0/2][5.9-rc] USB FunctionFS DMABUF interface fixes
+From: Paul Cercueil <paul@crapouillou.net>
+To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: Christian =?ISO-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>, Daniel
+ Vetter <daniel.vetter@ffwll.ch>, linux-usb@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+Date: Tue, 02 Apr 2024 15:43:20 +0200
+In-Reply-To: <2024040253-sanction-viewing-770e@gregkh>
+References: <20240402110951.16376-1-paul@crapouillou.net>
+	 <2024040253-sanction-viewing-770e@gregkh>
+Autocrypt: addr=paul@crapouillou.net; prefer-encrypt=mutual;
+ keydata=mQENBF0KhcEBCADkfmrzdTOp/gFOMQX0QwKE2WgeCJiHPWkpEuPH81/HB2dpjPZNW03ZM
+ LQfECbbaEkdbN4YnPfXgcc1uBe5mwOAPV1MBlaZcEt4M67iYQwSNrP7maPS3IaQJ18ES8JJ5Uf5Uz
+ FZaUawgH+oipYGW+v31cX6L3k+dGsPRM0Pyo0sQt52fsopNPZ9iag0iY7dGNuKenaEqkYNjwEgTtN
+ z8dt6s3hMpHIKZFL3OhAGi88wF/21isv0zkF4J0wlf9gYUTEEY3Eulx80PTVqGIcHZzfavlWIdzhe
+ +rxHTDGVwseR2Y1WjgFGQ2F+vXetAB8NEeygXee+i9nY5qt9c07m8mzjABEBAAG0JFBhdWwgQ2VyY
+ 3VlaWwgPHBhdWxAY3JhcG91aWxsb3UubmV0PokBTgQTAQoAOBYhBNdHYd8OeCBwpMuVxnPua9InSr
+ 1BBQJdCoXBAhsDBQsJCAcCBhUKCQgLAgQWAgMBAh4BAheAAAoJEHPua9InSr1BgvIH/0kLyrI3V0f
+ 33a6D3BJwc1grbygPVYGuC5l5eMnAI+rDmLR19E2yvibRpgUc87NmPEQPpbbtAZt8On/2WZoE5OIP
+ dlId/AHNpdgAtGXo0ZX4LGeVPjxjdkbrKVHxbcdcnY+zzaFglpbVSvp76pxqgVg8PgxkAAeeJV+ET
+ 4t0823Gz2HzCL/6JZhvKAEtHVulOWoBh368SYdolp1TSfORWmHzvQiCCCA+j0cMkYVGzIQzEQhX7U
+ rf9N/nhU5/SGLFEi9DcBfXoGzhyQyLXflhJtKm3XGB1K/pPulbKaPcKAl6rIDWPuFpHkSbmZ9r4KF
+ lBwgAhlGy6nqP7O3u7q23hRW5AQ0EXQqFwQEIAMo+MgvYHsyjX3Ja4Oolg1Txzm8woj30ch2nACFC
+ qaO0R/1kLj2VVeLrDyQUOlXx9PD6IQI4M8wy8m0sR4wV2p/g/paw7k65cjzYYLh+FdLNyO7IWYXnd
+ JO+wDPi3aK/YKUYepqlP+QsmaHNYNdXEQDRKqNfJg8t0f5rfzp9ryxd1tCnbV+tG8VHQWiZXNqN70
+ 62DygSNXFUfQ0vZ3J2D4oAcIAEXTymRQ2+hr3Hf7I61KMHWeSkCvCG2decTYsHlw5Erix/jYWqVOt
+ X0roOOLqWkqpQQJWtU+biWrAksmFmCp5fXIg1Nlg39v21xCXBGxJkxyTYuhdWyu1yDQ+LSIUAEQEA
+ AYkBNgQYAQoAIBYhBNdHYd8OeCBwpMuVxnPua9InSr1BBQJdCoXBAhsMAAoJEHPua9InSr1B4wsH/
+ Az767YCT0FSsMNt1jkkdLCBi7nY0GTW+PLP1a4zvVqFMo/vD6uz1ZflVTUAEvcTi3VHYZrlgjcxmc
+ Gu239oruqUS8Qy/xgZBp9KF0NTWQSl1iBfVbIU5VV1vHS6r77W5x0qXgfvAUWOH4gmN3MnF01SH2z
+ McLiaUGF+mcwl15rHbjnT3Nu2399aSE6cep86igfCAyFUOXjYEGlJy+c6UyT+DUylpjQg0nl8MlZ/
+ 7Whg2fAU9+FALIbQYQzGlT4c71SibR9T741jnegHhlmV4WXXUD6roFt54t0MSAFSVxzG8mLcSjR2c
+ LUJ3NIPXixYUSEn3tQhfZj07xIIjWxAYZo=
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Content-Type: text/plain; charset=US-ASCII
-X-SA-Exim-Connect-IP: 185.219.108.64
-X-SA-Exim-Rcpt-To: tangnianyao@huawei.com, tglx@linutronix.de, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, guoyang2@huawei.com, wangwudi@hisilicon.com
-X-SA-Exim-Mail-From: maz@kernel.org
-X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+MIME-Version: 1.0
 
-On Tue, 02 Apr 2024 14:32:40 +0100,
-Tangnianyao <tangnianyao@huawei.com> wrote:
-> 
-> 
-> 
-> On 4/2/2024 20:35, Marc Zyngier wrote:
-> > On Tue, 02 Apr 2024 12:41:47 +0100,
-> > t00849498 <tangnianyao@huawei.com> wrote:
-> >> From GIC spec, a VMAPP with {V, Alloc}=={0, x} is self-synchronizing,
-> > It'd be nice to quote the part of the spec (5.3.19).
-> yes, that's quote from GIC spec.
-> >> This means the ITS command queue does not show the command as
-> >> consumed until all of its effects are completed. A VSYNC with unmapped
-> >> vpeid is not needed.
-> >>
-> >> Signed-off-by: t00849498 <tangnianyao@huawei.com>
-> > Previous contributions with the same email address had the name
-> > "Nianyao Tang" associated with it. Was it wrong in the past? Or is the
-> > above wrong?
-> Sorry, the above name is wrong, should be "Nianyao Tang".
-> >
-> >> ---
-> >>  drivers/irqchip/irq-gic-v3-its.c | 4 ++++
-> >>  1 file changed, 4 insertions(+)
-> >>
-> >> diff --git a/drivers/irqchip/irq-gic-v3-its.c b/drivers/irqchip/irq-gic-v3-its.c
-> >> index fca888b36680..a0ca5dcbb245 100644
-> >> --- a/drivers/irqchip/irq-gic-v3-its.c
-> >> +++ b/drivers/irqchip/irq-gic-v3-its.c
-> >> @@ -789,6 +789,7 @@ static struct its_vpe *its_build_vmapp_cmd(struct its_node *its,
-> >>  	unsigned long vpt_addr, vconf_addr;
-> >>  	u64 target;
-> >>  	bool alloc;
-> >> +	bool unmap_v4_1 = !desc->its_vmapp_cmd.valid && is_v4_1(its);
-> >>
-> >>  	its_encode_cmd(cmd, GITS_CMD_VMAPP);
-> >>  	its_encode_vpeid(cmd, desc->its_vmapp_cmd.vpe->vpe_id);
-> >> @@ -832,6 +833,9 @@ static struct its_vpe *its_build_vmapp_cmd(struct its_node *its,
-> >>  out:
-> >>  	its_fixup_cmd(cmd);
-> >>  
-> >> +	if (unmap_v4_1)
-> >> +		return NULL;
-> >> +
-> >>  	return valid_vpe(its, desc->its_vmapp_cmd.vpe);
-> >>  }
-> >>  
-> > This is a bit ugly. We already have a whole block dedicated to
-> > handling VMAPP with V=0 and GICv4.1, and it'd be more readable to keep
-> > all that code together. Something like the untested patch below.
-> 
-> Thank you for quick fix, it would be great to remove this VSYNC. ITS handling VSYNC unmap
-> vpeid may waste some time, trigger exception and needed to be
-> handled.
+Le mardi 02 avril 2024 =C3=A0 14:41 +0200, Greg Kroah-Hartman a =C3=A9crit=
+=C2=A0:
+> On Tue, Apr 02, 2024 at 01:09:49PM +0200, Paul Cercueil wrote:
+> > Hi Greg,
+> >=20
+> > Here are two patches that address issues that were noticed by
+> > Christian
+> > when reviewing the very similar IIO DMABUF interface (but the
+> > FunctionFS
+> > patchset was already merged at that point).
+> >=20
+> > Based on 5.9-rc2.
+>=20
+> I think you mean "6.9-rc2", right?
+>=20
 
-Do you actually see an exception being delivered from this?
+Yes, sorry.
 
-In any case, feel free to respin the patch after having tested this
-diff, with the commit message fixed and a Fixes: tag attached to it.
-
-Thanks,
-
-	M.
-
--- 
-Without deviation from the norm, progress is not possible.
+-Paul
 
