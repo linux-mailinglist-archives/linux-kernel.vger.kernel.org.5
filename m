@@ -1,458 +1,188 @@
-Return-Path: <linux-kernel+bounces-128437-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-128439-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id AE42A895ACF
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 19:38:36 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8183D895AD2
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 19:39:08 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 27BF71F21C1D
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 17:38:36 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A47EC1C227FA
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 17:39:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8BB3915A4A6;
-	Tue,  2 Apr 2024 17:38:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3520515AAA7;
+	Tue,  2 Apr 2024 17:38:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=candelatech.com header.i=@candelatech.com header.b="hsdlIBS7"
-Received: from dispatch1-us1.ppe-hosted.com (dispatch1-us1.ppe-hosted.com [67.231.154.164])
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="cwB2i7Ue"
+Received: from mail-wm1-f52.google.com (mail-wm1-f52.google.com [209.85.128.52])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 043D717582
-	for <linux-kernel@vger.kernel.org>; Tue,  2 Apr 2024 17:38:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=67.231.154.164
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8C51117582
+	for <linux-kernel@vger.kernel.org>; Tue,  2 Apr 2024 17:38:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712079509; cv=none; b=Um1che+a9khqdVDSxyuZZ+PBoiatglofjYgzYLPVEGtCGT9+2FaELkF/IqSWMfFtvuYkPfI6e7UGmz48bLK6+4Y6VpkyU8lnSTGTjii8JWXqsTWgZKJWHmdV3kF+yNqxlsctqQrkoRklEWK1jZhKm4UsVoyzSQFuW7H7H+MVhNk=
+	t=1712079536; cv=none; b=b2gwLSda4x2MQLmWcuLsCBnbdQ8jw7yw3eJUEZ1LFZR+c2mebsPSv8HeyiSQkHUKIUKHDx96TGQvz7rjaEPZqoyVlo1bFD4oPvjiWWkFxPj4UkvWhcktQslxkATpkipgkQx5CYhCl2hBTB12AvgyjRGh0JhoSfLz5qj7SD8YqSc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712079509; c=relaxed/simple;
-	bh=ir+4+naPsdWX8LSyAClpF/Nf2lvpor8zHNPk4Dagn/Q=;
-	h=Message-ID:Date:MIME-Version:Subject:From:To:References:
-	 In-Reply-To:Content-Type; b=F5cpuFVZ0sFIyXWDU4BZ/XT4wmvNbidiBV1rvmiKUZGKAx4n1sKfxL/lmN3E4FKkx79HXh/M9ctuLHPsd+8fJKFJg7BcvkkEG3MPwfMvRRBCq5BQTrVC6cOOXuVrChKXwzeBbqxZQXfEdm9zmbtKAVkBAbW0Djce9B5wRJIImtE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=candelatech.com; spf=pass smtp.mailfrom=candelatech.com; dkim=pass (1024-bit key) header.d=candelatech.com header.i=@candelatech.com header.b=hsdlIBS7; arc=none smtp.client-ip=67.231.154.164
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=candelatech.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=candelatech.com
-X-Virus-Scanned: Proofpoint Essentials engine
-Received: from mail3.candelatech.com (mail2.candelatech.com [208.74.158.173])
-	by mx1-us1.ppe-hosted.com (PPE Hosted ESMTP Server) with ESMTP id 3590C3C0071
-	for <linux-kernel@vger.kernel.org>; Tue,  2 Apr 2024 17:38:19 +0000 (UTC)
-Received: from [192.168.100.159] (unknown [50.251.239.81])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by mail3.candelatech.com (Postfix) with ESMTPSA id AB6C213C2B0
-	for <linux-kernel@vger.kernel.org>; Tue,  2 Apr 2024 10:38:18 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mail3.candelatech.com AB6C213C2B0
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=candelatech.com;
-	s=default; t=1712079498;
-	bh=ir+4+naPsdWX8LSyAClpF/Nf2lvpor8zHNPk4Dagn/Q=;
-	h=Date:Subject:From:To:References:In-Reply-To:From;
-	b=hsdlIBS7uNxfcZOIFrqvTHzPPsk+uR4R4uzK04ob5fC7a3vzrW//WQmiqIejk7uv2
-	 ahcoqQKV207ruP6tw1RF1cwtBSOyF1qlxHhs1iDTJkQ5GouMsZ9V85uzjcyLBegdry
-	 7q8y9LD/XlOm3UU1P/Q2eCg48J8QUjrRrbVz1ik4=
-Message-ID: <30819e01-43ce-638f-0cc6-067d6a8d03c7@candelatech.com>
-Date: Tue, 2 Apr 2024 10:38:18 -0700
+	s=arc-20240116; t=1712079536; c=relaxed/simple;
+	bh=LqX3r9GksoEpc+7Ng+4MLLxjUZmC19R39O+V0rsX580=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=En97q5qVrllvrZIHZeeeISjsqxg1SHMD5fg0nLpSutkAHp49JvrjbOC8wU8uwS9z5ggiIu37o5cfDTKY2IqqmZSFqwL+/StGD2fXYRu1Z0pk4U2+LbdohhiwygBc3QshIL7msC3lI+vNYi0irXPK2MpUB9KvORWPIwaA6KuDlJc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=cwB2i7Ue; arc=none smtp.client-ip=209.85.128.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-wm1-f52.google.com with SMTP id 5b1f17b1804b1-4161dae0c02so5118175e9.1
+        for <linux-kernel@vger.kernel.org>; Tue, 02 Apr 2024 10:38:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1712079533; x=1712684333; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=tqLsic/9tND6Pn/uxBhTD9J9JZInJHfRGv9OavLb+Kc=;
+        b=cwB2i7Uetq9KpupJpR8qKKsEl1se7gP4/taVXa+n/nbSY/jkWSwYX+1k4K9NxiSxb/
+         hmynfuObfFG9SWBZYAZ2rPlAKyr2F2WCPIkcoyl1zHvk2jao8tEQ0maVuRvhDcJhXj7q
+         GSMrov1hiBGVFykOIR83n+H4VV39vWd8h4Nng3Dn4OQ15NzC8XNz5if6X1IJdqoZiHPQ
+         doj1T2bWBuCpkxcejU1cC/vfoiwWJeTJYnYkuTRzTVHzJKVsIm6rGTnCNUjh7yH8eJe2
+         TWFPPJPuW+ujJpIqkdQmgYVEl1wIQ3aqt3eA+RBjcxC5oTQhDnmJKcOCJ/VgRt2Z3bFw
+         3CNQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712079533; x=1712684333;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=tqLsic/9tND6Pn/uxBhTD9J9JZInJHfRGv9OavLb+Kc=;
+        b=eCD3ZwlOanHi5esciNeTioZtJQQ8Ch5gAUeh9SIObW/E0jThiqvk+KBoSjBDn79Tv3
+         HCdZRTUt2alX0Um4bv7fBqjHO+4YEtrlzgxtOaqm28+C+S6v43yFQT5kA/ZixXSybmOY
+         iFKAlgDqj6pRbpnimkAPuujKwXaSfcROrw1QGOEK8Ik2vx7oxfpksj5o5wo85zeONpjs
+         2rSgLjyz201VHEf1bWjcl0XaXfjnWAsW/XsxEPRKx8I2mQIB+qJloFrbvt6pj8XPT1wP
+         IXWPTEYnuwvPnilynehHpd4IEgwp/VemkZccqzJzBe++jO8vr0lakP/vERmBiKYffkJC
+         v+sA==
+X-Forwarded-Encrypted: i=1; AJvYcCXz8HbQtc9BBXG6NThaIRPYvc8W30zRBLCZaUAraJ2+kY0jlqDE/V/Pz3d0MoF+8LxRq/dqMnq0X/q+O/jZgPT0D/4VMaur4iBjPecG
+X-Gm-Message-State: AOJu0YyhgPHPTuRnnQzyM0qhi9Of6Y+SsnL0UnuYBeI5SGf9gS/Fr6T2
+	gn4ZMFwCxJrQVgTxgScgSgv5wcHOM6+hgpuKjuy+UY8RZoz4T653woNGkeUJoOEb78yeZW1jOOH
+	chRz9kxiAyxLDX60OKVQq7JVT3CZawNcszEsK
+X-Google-Smtp-Source: AGHT+IFFyLIP3mR1zj4IaklXwtmu1mxobLIzc/R6TIuT+vDflQw1wN326QIep6Kb8BVCU6ATRG+ZawrfQqCuQdO0Aqc=
+X-Received: by 2002:adf:fe52:0:b0:343:8236:3c2c with SMTP id
+ m18-20020adffe52000000b0034382363c2cmr483190wrs.69.1712079532870; Tue, 02 Apr
+ 2024 10:38:52 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: 6.9.0-rc2+ kernel hangs on boot.
-Content-Language: en-US
-From: Ben Greear <greearb@candelatech.com>
-To: LKML <linux-kernel@vger.kernel.org>
-References: <30f757e3-73c5-5473-c1f8-328bab98fd7d@candelatech.com>
-Organization: Candela Technologies
-In-Reply-To: <30f757e3-73c5-5473-c1f8-328bab98fd7d@candelatech.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-MDID: 1712079499-4ffM3zQ6kniz
-X-MDID-O:
- us5;at1;1712079499;4ffM3zQ6kniz;<greearb@candelatech.com>;c71d53d8b4bf163c84f4470b0e4d7294
+References: <20240320005024.3216282-1-seanjc@google.com> <4d04b010-98f3-4eae-b320-a7dd6104b0bf@redhat.com>
+In-Reply-To: <4d04b010-98f3-4eae-b320-a7dd6104b0bf@redhat.com>
+From: David Matlack <dmatlack@google.com>
+Date: Tue, 2 Apr 2024 10:38:24 -0700
+Message-ID: <CALzav=eLH+V_5Y6ZWsRkmnbEb6fxPa55B7xyWxP3o6qsrs_nHA@mail.gmail.com>
+Subject: Re: [RFC PATCH 0/4] KVM: x86/mmu: Rework marking folios dirty/accessed
+To: David Hildenbrand <david@redhat.com>
+Cc: Sean Christopherson <seanjc@google.com>, Paolo Bonzini <pbonzini@redhat.com>, kvm@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, David Stevens <stevensd@chromium.org>, 
+	Matthew Wilcox <willy@infradead.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 4/2/24 09:37, Ben Greear wrote:
-> Hello,
-> 
-> Sometime between rc1 and today's rc2, my system quit booting.
-> I'm not seeing any splats, it just stops.  Evidently before
-> sysrq is enabled.
-> 
-> [  OK  ] Started Flush Journal to Persistent Storage.
-> [  OK  ] Started udev Coldplug all Devices.
->           Starting udev Wait for Complete Device Initialization...
-> [  OK  ] Listening on Load/Save RF …itch Status /dev/rfkill Watch.
-> [  OK  ] Created slice system-lvm2\x2dpvscan.slice.
->           Starting LVM2 PV scan on device 8:19...
->           Starting LVM2 PV scan on device 8:3...
-> [  OK  ] Started Device-mapper event daemon.
-> iwlwifi 0000:04:00.0: WRT: Invalid buffer destination: 0
-> sysrq: This sysrq operation is disabled.
-> 
-> I can start a bisect, but in case anyone knows the answer already, please let me know.
-> 
-> Thanks,
-> Ben
-> 
+On Wed, Mar 20, 2024 at 5:56=E2=80=AFAM David Hildenbrand <david@redhat.com=
+> wrote:
+>
+> On 20.03.24 01:50, Sean Christopherson wrote:
+> > Rework KVM to mark folios dirty when creating shadow/secondary PTEs (SP=
+TEs),
+> > i.e. when creating mappings for KVM guests, instead of when zapping or
+> > modifying SPTEs, e.g. when dropping mappings.
+> >
+> > The motivation is twofold:
+> >
+> >    1. Marking folios dirty and accessed when zapping can be extremely
+> >       expensive and wasteful, e.g. if KVM shattered a 1GiB hugepage int=
+o
+> >       512*512 4KiB SPTEs for dirty logging, then KVM marks the huge fol=
+io
+> >       dirty and accessed for all 512*512 SPTEs.
+> >
+> >    2. x86 diverges from literally every other architecture, which updat=
+es
+> >       folios when mappings are created.  AFAIK, x86 is unique in that i=
+t's
+> >       the only KVM arch that prefetches PTEs, so it's not quite an appl=
+es-
+> >       to-apples comparison, but I don't see any reason for the dirty lo=
+gic
+> >       in particular to be different.
+> >
+>
+> Already sorry for the lengthy reply.
+>
+>
+> On "ordinary" process page tables on x86, it behaves as follows:
+>
+> 1) A page might be mapped writable but the PTE might not be dirty. Once
+>     written to, HW will set the PTE dirty bit.
+>
+> 2) A page might be mapped but the PTE might not be young. Once accessed,
+>     HW will set the PTE young bit.
+>
+> 3) When zapping a page (zap_present_folio_ptes), we transfer the dirty
+>     PTE bit to the folio (folio_mark_dirty()), and the young PTE bit to
+>     the folio (folio_mark_accessed()). The latter is done conditionally
+>     only (vma_has_recency()).
+>
+> BUT, when zapping an anon folio, we don't do that, because there zapping
+> implies "gone for good" and not "content must go to a file".
+>
+> 4) When temporarily unmapping a folio for migration/swapout, we
+>     primarily only move the dirty PTE bit to the folio.
+>
+>
+> GUP is different, because the PTEs might change after we pinned the page
+> and wrote to it. We don't modify the PTEs and expect the GUP user to do
+> the right thing (set dirty/accessed). For example,
+> unpin_user_pages_dirty_lock() would mark the page dirty when unpinning,
+> where the PTE might long be gone.
+>
+> So GUP does not really behave like HW access.
+>
+>
+> Secondary page tables are different to ordinary GUP, and KVM ends up
+> using GUP to some degree to simulate HW access; regarding NUMA-hinting,
+> KVM already revealed to be very different to all other GUP users. [1]
+>
+> And I recall that at some point I raised that we might want to have a
+> dedicate interface for these "mmu-notifier" based page table
+> synchonization mechanism.
+>
+> But KVM ends up setting folio dirty/access flags itself, like other GUP
+> users. I do wonder if secondary page tables should be messing with folio
+> flags *at all*, and if there would be ways to to it differently using PTE=
+s.
+>
+> We make sure to synchronize the secondary page tables to the process
+> page tables using MMU notifiers: when we write-protect/unmap a PTE, we
+> write-protect/unmap the SPTE. Yet, we handle accessed/dirty completely
+> different.
 
-So, deadlock I guess....
+Accessed bits have the test/clear young MMU-notifiers. But I agree
+there aren't any notifiers for dirty tracking.
 
-  INFO: task kworker/5:13:648 blocked for more than 180 seconds.
-       Not tainted 6.9.0-rc2+ #23
-"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
-task:kworker/5:13    state:D stack:0     pid:648   tgid:648   ppid:2      flags:0x00004000
-Workqueue: events deferred_probe_timeout_work_func
-Call Trace:
-  <TASK>
-  __schedule+0x43d/0xe20
-  schedule+0x31/0x130
-  schedule_timeout+0x1b9/0x1d0
-  ? mark_held_locks+0x49/0x70
-  ? lockdep_hardirqs_on_prepare+0xd6/0x170
-  __wait_for_common+0xb9/0x1d0
-  ? usleep_range_state+0xb0/0xb0
-  ? __flush_work+0x1ff/0x460
-  __flush_work+0x287/0x460
-  ? flush_workqueue_prep_pwqs+0x120/0x120
-  deferred_probe_timeout_work_func+0x2b/0xa0
-  process_one_work+0x212/0x710
-  ? lock_is_held_type+0xa5/0x110
-  worker_thread+0x188/0x340
-  ? rescuer_thread+0x380/0x380
-  kthread+0xd7/0x110
-  ? kthread_complete_and_exit+0x20/0x20
-  ret_from_fork+0x28/0x40
-  ? kthread_complete_and_exit+0x20/0x20
-  ret_from_fork_asm+0x11/0x20
-  </TASK>
-INFO: task udevadm:763 blocked for more than 180 seconds.
-       Not tainted 6.9.0-rc2+ #23
-"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
-task:udevadm         state:D stack:0     pid:763   tgid:763   ppid:1      flags:0x00000000
-Call Trace:
-  <TASK>
-  __schedule+0x43d/0xe20
-  schedule+0x31/0x130
-  schedule_timeout+0x1b9/0x1d0
-  ? __wait_for_common+0xb0/0x1d0
-  ? lock_release+0xc6/0x290
-  ? lockdep_hardirqs_on_prepare+0xd6/0x170
-  __wait_for_common+0xb9/0x1d0
-  ? usleep_range_state+0xb0/0xb0
-  ? __flush_work+0x1ff/0x460
-  __flush_work+0x287/0x460
-  ? flush_workqueue_prep_pwqs+0x120/0x120
-  fsnotify_destroy_group+0x66/0xf0
-  inotify_release+0x12/0x40
-  __fput+0xa6/0x2d0
-  __x64_sys_close+0x33/0x70
-  do_syscall_64+0x6c/0x170
-  entry_SYSCALL_64_after_hwframe+0x46/0x4e
-RIP: 0033:0x7f744d5bc878
-RSP: 002b:00007ffcef12f8d8 EFLAGS: 00000246 ORIG_RAX: 0000000000000003
-RAX: ffffffffffffffda RBX: 00007f744cd048c0 RCX: 00007f744d5bc878
-RDX: ffffffffffffff80 RSI: 0000000000000000 RDI: 0000000000000003
-RBP: 0000000000000003 R08: 000055f9ce349fb0 R09: 0000000000000000
-R10: 00007ffcef12f8f0 R11: 0000000000000246 R12: 0000000000000002
-R13: 0000000007270e00 R14: 000055f99670c9b8 R15: 0000000000000002
-  </TASK>
-INFO: task modprobe:968 blocked for more than 180 seconds.
-       Not tainted 6.9.0-rc2+ #23
-"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
-task:modprobe        state:D stack:0     pid:968   tgid:968   ppid:65     flags:0x00000000
-Call Trace:
-  <TASK>
-  __schedule+0x43d/0xe20
-  schedule+0x31/0x130
-  schedule_timeout+0x1b9/0x1d0
-  ? __wait_for_common+0xb0/0x1d0
-  ? lock_release+0xc6/0x290
-  ? lockdep_hardirqs_on_prepare+0xd6/0x170
-  __wait_for_common+0xb9/0x1d0
-  ? usleep_range_state+0xb0/0xb0
-  idempotent_init_module+0x1ae/0x290
-  __x64_sys_finit_module+0x55/0xb0
-  do_syscall_64+0x6c/0x170
-  entry_SYSCALL_64_after_hwframe+0x46/0x4e
-RIP: 0033:0x7fde25530ddd
-RSP: 002b:00007fffac078518 EFLAGS: 00000246 ORIG_RAX: 0000000000000139
-RAX: ffffffffffffffda RBX: 0000558758e28ef0 RCX: 00007fde25530ddd
-RDX: 0000000000000000 RSI: 000055873cebf358 RDI: 0000000000000001
-RBP: 0000000000040000 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000001 R11: 0000000000000246 R12: 000055873cebf358
-R13: 0000000000000000 R14: 0000558758e29020 R15: 0000558758e28ef0
-  </TASK>
-INFO: task modprobe:969 blocked for more than 180 seconds.
-       Not tainted 6.9.0-rc2+ #23
-"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
-task:modprobe        state:D stack:0     pid:969   tgid:969   ppid:93     flags:0x00000000
-Call Trace:
-  <TASK>
-  __schedule+0x43d/0xe20
-  schedule+0x31/0x130
-  schedule_timeout+0x1b9/0x1d0
-  ? __wait_for_common+0xb0/0x1d0
-  ? lock_release+0xc6/0x290
-  ? lockdep_hardirqs_on_prepare+0xd6/0x170
-  __wait_for_common+0xb9/0x1d0
-  ? usleep_range_state+0xb0/0xb0
-  idempotent_init_module+0x1ae/0x290
-  __x64_sys_finit_module+0x55/0xb0
-  do_syscall_64+0x6c/0x170
-  entry_SYSCALL_64_after_hwframe+0x46/0x4e
-RIP: 0033:0x7f338d516ddd
-RSP: 002b:00007ffd155cd1e8 EFLAGS: 00000246 ORIG_RAX: 0000000000000139
-RAX: ffffffffffffffda RBX: 000056092cb0def0 RCX: 00007f338d516ddd
-RDX: 0000000000000000 RSI: 00005608ecb4a358 RDI: 0000000000000001
-RBP: 0000000000040000 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000001 R11: 0000000000000246 R12: 00005608ecb4a358
-R13: 0000000000000000 R14: 000056092cb0e020 R15: 000056092cb0def0
-  </TASK>
-INFO: task modprobe:1044 blocked for more than 180 seconds.
-       Not tainted 6.9.0-rc2+ #23
-"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
-task:modprobe        state:D stack:0     pid:1044  tgid:1044  ppid:10     flags:0x00000000
-Call Trace:
-  <TASK>
-  __schedule+0x43d/0xe20
-  schedule+0x31/0x130
-  schedule_timeout+0x1b9/0x1d0
-  ? __wait_for_common+0xb0/0x1d0
-  ? lock_release+0xc6/0x290
-  ? lockdep_hardirqs_on_prepare+0xd6/0x170
-  __wait_for_common+0xb9/0x1d0
-  ? usleep_range_state+0xb0/0xb0
-  idempotent_init_module+0x1ae/0x290
-  __x64_sys_finit_module+0x55/0xb0
-  do_syscall_64+0x6c/0x170
-  entry_SYSCALL_64_after_hwframe+0x46/0x4e
-RIP: 0033:0x7f7637b30ddd
-RSP: 002b:00007ffe6251da78 EFLAGS: 00000246 ORIG_RAX: 0000000000000139
-RAX: ffffffffffffffda RBX: 000055b889cb3ef0 RCX: 00007f7637b30ddd
-RDX: 0000000000000000 RSI: 000055b854eea358 RDI: 0000000000000001
-RBP: 0000000000040000 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000001 R11: 0000000000000246 R12: 000055b854eea358
-R13: 0000000000000000 R14: 000055b889cb4020 R15: 000055b889cb3ef0
-  </TASK>
-INFO: task modprobe:1047 blocked for more than 180 seconds.
-       Not tainted 6.9.0-rc2+ #23
-"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
-task:modprobe        state:D stack:0     pid:1047  tgid:1047  ppid:113    flags:0x00000000
-Call Trace:
-  <TASK>
-  __schedule+0x43d/0xe20
-  schedule+0x31/0x130
-  schedule_timeout+0x1b9/0x1d0
-  ? __wait_for_common+0xb0/0x1d0
-  ? lock_release+0xc6/0x290
-  ? lockdep_hardirqs_on_prepare+0xd6/0x170
-  __wait_for_common+0xb9/0x1d0
-  ? usleep_range_state+0xb0/0xb0
-  idempotent_init_module+0x1ae/0x290
-  __x64_sys_finit_module+0x55/0xb0
-  do_syscall_64+0x6c/0x170
-  entry_SYSCALL_64_after_hwframe+0x46/0x4e
-RIP: 0033:0x7f3907130ddd
-RSP: 002b:00007ffc36e4eb08 EFLAGS: 00000246 ORIG_RAX: 0000000000000139
-RAX: ffffffffffffffda RBX: 000056100a856ef0 RCX: 00007f3907130ddd
-RDX: 0000000000000000 RSI: 0000560fff0ec358 RDI: 0000000000000001
-RBP: 0000000000040000 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000001 R11: 0000000000000246 R12: 0000560fff0ec358
-R13: 0000000000000000 R14: 000056100a857020 R15: 000056100a856ef0
-  </TASK>
-INFO: task modprobe:1056 blocked for more than 180 seconds.
-       Not tainted 6.9.0-rc2+ #23
-"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
-task:modprobe        state:D stack:0     pid:1056  tgid:1056  ppid:1045   flags:0x00000000
-Call Trace:
-  <TASK>
-  __schedule+0x43d/0xe20
-  schedule+0x31/0x130
-  schedule_timeout+0x1b9/0x1d0
-  ? __wait_for_common+0xb0/0x1d0
-  ? lock_release+0xc6/0x290
-  ? lockdep_hardirqs_on_prepare+0xd6/0x170
-  __wait_for_common+0xb9/0x1d0
-  ? usleep_range_state+0xb0/0xb0
-  idempotent_init_module+0x1ae/0x290
-  __x64_sys_finit_module+0x55/0xb0
-  do_syscall_64+0x6c/0x170
-  entry_SYSCALL_64_after_hwframe+0x46/0x4e
-RIP: 0033:0x7fcb1e730ddd
-RSP: 002b:00007ffc692d0ad8 EFLAGS: 00000246 ORIG_RAX: 0000000000000139
-RAX: ffffffffffffffda RBX: 000055f8d8828ef0 RCX: 00007fcb1e730ddd
-RDX: 0000000000000000 RSI: 000055f8bff36358 RDI: 0000000000000001
-RBP: 0000000000040000 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000001 R11: 0000000000000246 R12: 000055f8bff36358
-R13: 0000000000000000 R14: 000055f8d8829020 R15: 000055f8d8828ef0
-  </TASK>
-INFO: task modprobe:1058 blocked for more than 180 seconds.
-       Not tainted 6.9.0-rc2+ #23
-"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
-task:modprobe        state:D stack:0     pid:1058  tgid:1058  ppid:1051   flags:0x00000000
-Call Trace:
-  <TASK>
-  __schedule+0x43d/0xe20
-  schedule+0x31/0x130
-  schedule_timeout+0x1b9/0x1d0
-  ? __wait_for_common+0xb0/0x1d0
-  ? lock_release+0xc6/0x290
-  ? lockdep_hardirqs_on_prepare+0xd6/0x170
-  __wait_for_common+0xb9/0x1d0
-  ? usleep_range_state+0xb0/0xb0
-  idempotent_init_module+0x1ae/0x290
-  __x64_sys_finit_module+0x55/0xb0
-  do_syscall_64+0x6c/0x170
-  entry_SYSCALL_64_after_hwframe+0x46/0x4e
-RIP: 0033:0x7f0a17b30ddd
-RSP: 002b:00007fff56d619e8 EFLAGS: 00000246 ORIG_RAX: 0000000000000139
-RAX: ffffffffffffffda RBX: 000055abd6741ef0 RCX: 00007f0a17b30ddd
-RDX: 0000000000000000 RSI: 000055abc6586358 RDI: 0000000000000001
-RBP: 0000000000040000 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000001 R11: 0000000000000246 R12: 000055abc6586358
-R13: 0000000000000000 R14: 000055abd6742020 R15: 000055abd6741ef0
-  </TASK>
-INFO: task modprobe:1060 blocked for more than 181 seconds.
-       Not tainted 6.9.0-rc2+ #23
-"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
-task:modprobe        state:D stack:0     pid:1060  tgid:1060  ppid:1057   flags:0x00000000
-Call Trace:
-  <TASK>
-  __schedule+0x43d/0xe20
-  schedule+0x31/0x130
-  schedule_timeout+0x1b9/0x1d0
-  ? __wait_for_common+0xb0/0x1d0
-  ? lock_release+0xc6/0x290
-  ? lockdep_hardirqs_on_prepare+0xd6/0x170
-  __wait_for_common+0xb9/0x1d0
-  ? usleep_range_state+0xb0/0xb0
-  idempotent_init_module+0x1ae/0x290
-  __x64_sys_finit_module+0x55/0xb0
-  do_syscall_64+0x6c/0x170
-  entry_SYSCALL_64_after_hwframe+0x46/0x4e
-RIP: 0033:0x7f12c0130ddd
-RSP: 002b:00007ffccdef0488 EFLAGS: 00000246 ORIG_RAX: 0000000000000139
-RAX: ffffffffffffffda RBX: 000056249db40ef0 RCX: 00007f12c0130ddd
-RDX: 0000000000000000 RSI: 0000562471e4d358 RDI: 0000000000000001
-RBP: 0000000000040000 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000001 R11: 0000000000000246 R12: 0000562471e4d358
-R13: 0000000000000000 R14: 000056249db41020 R15: 000056249db40ef0
-  </TASK>
+Are there any cases where the primary MMU transfers the PTE dirty bit
+to the folio _other_ than zapping (which already has an MMU-notifier
+to KVM). If not then there might not be any reason to add a new
+notifier. Instead the contract should just be that secondary MMUs must
+also transfer their dirty bits to folios in sync (or before) the
+primary MMU zaps its PTE.
 
-Showing all locks held in the system:
-2 locks held by systemd/1:
-  #0: ffff88812a7a10a0 (&tty->ldisc_sem){++++}-{0:0}, at: tty_ldisc_ref_wait+0x1f/0x50
-  #1: ffff88812a7a1130 (&tty->atomic_write_lock){+.+.}-{4:4}, at: file_tty_write.constprop.0+0xab/0x330
-2 locks held by kworker/0:1/9:
-  #0: ffff88812006c548 ((wq_completion)events){+.+.}-{0:0}, at: process_one_work+0x41e/0x710
-  #1: ffffc900000afe50 ((work_completion)(&fw_work->work)){+.+.}-{0:0}, at: process_one_work+0x1d1/0x710
-2 locks held by kworker/u32:0/10:
-  #0: ffff888120070948 ((wq_completion)events_unbound){+.+.}-{0:0}, at: process_one_work+0x41e/0x710
-  #1: ffffc900000b7e50 ((work_completion)(&sub_info->work)){+.+.}-{0:0}, at: process_one_work+0x1d1/0x710
-2 locks held by kworker/3:0/37:
-  #0: ffff88812006c548 ((wq_completion)events){+.+.}-{0:0}, at: process_one_work+0x41e/0x710
-  #1: ffffc900001cbe50 ((work_completion)(&fw_work->work)){+.+.}-{0:0}, at: process_one_work+0x1d1/0x710
-2 locks held by kworker/7:0/61:
-  #0: ffff88812006c548 ((wq_completion)events){+.+.}-{0:0}, at: process_one_work+0x41e/0x710
-  #1: ffffc9000029be50 ((work_completion)(&fw_work->work)){+.+.}-{0:0}, at: process_one_work+0x1d1/0x710
-2 locks held by kworker/u32:1/65:
-  #0: ffff888120070948 ((wq_completion)events_unbound){+.+.}-{0:0}, at: process_one_work+0x41e/0x710
-  #1: ffffc900002bfe50 ((work_completion)(&sub_info->work)){+.+.}-{0:0}, at: process_one_work+0x1d1/0x710
-1 lock held by khungtaskd/66:
-  #0: ffffffff8296e760 (rcu_read_lock){....}-{1:3}, at: debug_show_all_locks+0x32/0x1c0
-2 locks held by kworker/1:1/79:
-  #0: ffff88812006c548 ((wq_completion)events){+.+.}-{0:0}, at: process_one_work+0x41e/0x710
-  #1: ffffc9000032fe50 ((work_completion)(&fw_work->work)){+.+.}-{0:0}, at: process_one_work+0x1d1/0x710
-2 locks held by kworker/u32:2/93:
-  #0: ffff888120070948 ((wq_completion)events_unbound){+.+.}-{0:0}, at: process_one_work+0x41e/0x710
-  #1: ffffc900003d3e50 ((work_completion)(&sub_info->work)){+.+.}-{0:0}, at: process_one_work+0x1d1/0x710
-2 locks held by kworker/6:1/94:
-  #0: ffff88812006c548 ((wq_completion)events){+.+.}-{0:0}, at: process_one_work+0x41e/0x710
-  #1: ffffc900003dbe50 ((work_completion)(&fw_work->work)){+.+.}-{0:0}, at: process_one_work+0x1d1/0x710
-2 locks held by kworker/3:1/96:
-  #0: ffff88812006c548 ((wq_completion)events){+.+.}-{0:0}, at: process_one_work+0x41e/0x710
-  #1: ffffc900003ebe50 ((work_completion)(&fw_work->work)){+.+.}-{0:0}, at: process_one_work+0x1d1/0x710
-2 locks held by kworker/1:2/102:
-  #0: ffff88812006c548 ((wq_completion)events){+.+.}-{0:0}, at: process_one_work+0x41e/0x710
-  #1: ffffc90000eabe50 ((work_completion)(&fw_work->work)){+.+.}-{0:0}, at: process_one_work+0x1d1/0x710
-2 locks held by kworker/u32:3/107:
-  #0: ffff888120070948 ((wq_completion)events_unbound){+.+.}-{0:0}, at: process_one_work+0x41e/0x710
-  #1: ffffc90000ed3e50 ((work_completion)(&sub_info->work)){+.+.}-{0:0}, at: process_one_work+0x1d1/0x710
-2 locks held by kworker/u32:4/113:
-  #0: ffff888120070948 ((wq_completion)events_unbound){+.+.}-{0:0}, at: process_one_work+0x41e/0x710
-  #1: ffffc90000f03e50 ((work_completion)(&sub_info->work)){+.+.}-{0:0}, at: process_one_work+0x1d1/0x710
-2 locks held by kworker/6:2/189:
-  #0: ffff88812006c548 ((wq_completion)events){+.+.}-{0:0}, at: process_one_work+0x41e/0x710
-  #1: ffffc90000e0fe50 ((work_completion)(&fw_work->work)){+.+.}-{0:0}, at: process_one_work+0x1d1/0x710
-2 locks held by kworker/6:5/196:
-  #0: ffff88812006c548 ((wq_completion)events){+.+.}-{0:0}, at: process_one_work+0x41e/0x710
-  #1: ffffc90000f13e50 ((work_completion)(&fw_work->work)){+.+.}-{0:0}, at: process_one_work+0x1d1/0x710
-2 locks held by kworker/6:6/197:
-  #0: ffff88812006c548 ((wq_completion)events){+.+.}-{0:0}, at: process_one_work+0x41e/0x710
-  #1: ffffc90000f23e50 ((work_completion)(&(&hda->probe_work)->work)){+.+.}-{0:0}, at: process_one_work+0x1d1/0x710
-2 locks held by kworker/6:8/199:
-  #0: ffff88812006c548 ((wq_completion)events){+.+.}-{0:0}, at: process_one_work+0x41e/0x710
-  #1: ffffc90000f53e50 ((work_completion)(&fw_work->work)){+.+.}-{0:0}, at: process_one_work+0x1d1/0x710
-2 locks held by kworker/7:2/296:
-  #0: ffff88812006c548 ((wq_completion)events){+.+.}-{0:0}, at: process_one_work+0x41e/0x710
-  #1: ffffc9000105be50 ((work_completion)(&fw_work->work)){+.+.}-{0:0}, at: process_one_work+0x1d1/0x710
-2 locks held by kworker/7:3/297:
-  #0: ffff88812006c548 ((wq_completion)events){+.+.}-{0:0}, at: process_one_work+0x41e/0x710
-  #1: ffffc90001043e50 ((work_completion)(&fw_work->work)){+.+.}-{0:0}, at: process_one_work+0x1d1/0x710
-2 locks held by kworker/7:4/298:
-  #0: ffff88812006c548 ((wq_completion)events){+.+.}-{0:0}, at: process_one_work+0x41e/0x710
-  #1: ffffc90001063e50 ((work_completion)(&fw_work->work)){+.+.}-{0:0}, at: process_one_work+0x1d1/0x710
-2 locks held by kworker/7:5/320:
-  #0: ffff88812006c548 ((wq_completion)events){+.+.}-{0:0}, at: process_one_work+0x41e/0x710
-  #1: ffffc90001003e50 ((work_completion)(&fw_work->work)){+.+.}-{0:0}, at: process_one_work+0x1d1/0x710
-2 locks held by kworker/2:2/371:
-  #0: ffff88812006c548 ((wq_completion)events){+.+.}-{0:0}, at: process_one_work+0x41e/0x710
-  #1: ffffc9000104be50 ((work_completion)(&fw_work->work)){+.+.}-{0:0}, at: process_one_work+0x1d1/0x710
-2 locks held by kworker/5:13/648:
-  #0: ffff88812006c548 ((wq_completion)events){+.+.}-{0:0}, at: process_one_work+0x41e/0x710
-  #1: ffffc9000198fe50 ((deferred_probe_timeout_work).work){+.+.}-{0:0}, at: process_one_work+0x1d1/0x710
-2 locks held by kworker/5:14/649:
-  #0: ffff88812006c548 ((wq_completion)events){+.+.}-{0:0}, at: process_one_work+0x41e/0x710
-  #1: ffffc90001997e50 ((work_completion)(&fw_work->work)){+.+.}-{0:0}, at: process_one_work+0x1d1/0x710
-2 locks held by kworker/5:15/650:
-  #0: ffff88812006c548 ((wq_completion)events){+.+.}-{0:0}, at: process_one_work+0x41e/0x710
-  #1: ffffc9000199fe50 ((work_completion)(&fw_work->work)){+.+.}-{0:0}, at: process_one_work+0x1d1/0x710
-2 locks held by kworker/5:16/651:
-  #0: ffff88812006c548 ((wq_completion)events){+.+.}-{0:0}, at: process_one_work+0x41e/0x710
-  #1: ffffc900019a7e50 ((work_completion)(&fw_work->work)){+.+.}-{0:0}, at: process_one_work+0x1d1/0x710
-2 locks held by kworker/4:3/722:
-  #0: ffff88812006c548 ((wq_completion)events){+.+.}-{0:0}, at: process_one_work+0x41e/0x710
-  #1: ffffc90001a27e50 ((work_completion)(&fw_work->work)){+.+.}-{0:0}, at: process_one_work+0x1d1/0x710
-2 locks held by kworker/1:4/768:
-  #0: ffff88812006c548 ((wq_completion)events){+.+.}-{0:0}, at: process_one_work+0x41e/0x710
-  #1: ffffc900010d7e50 ((work_completion)(&fw_work->work)){+.+.}-{0:0}, at: process_one_work+0x1d1/0x710
-2 locks held by kworker/1:5/769:
-  #0: ffff88812006c548 ((wq_completion)events){+.+.}-{0:0}, at: process_one_work+0x41e/0x710
-  #1: ffffc900010dfe50 ((work_completion)(&fw_work->work)){+.+.}-{0:0}, at: process_one_work+0x1d1/0x710
-2 locks held by kworker/0:2/849:
-  #0: ffff88812006c548 ((wq_completion)events){+.+.}-{0:0}, at: process_one_work+0x41e/0x710
-  #1: ffffc90001353e50 ((work_completion)(&fw_work->work)){+.+.}-{0:0}, at: process_one_work+0x1d1/0x710
-2 locks held by lvm/860:
-  #0: ffff8881323c19a8 (&md->type_lock){+.+.}-{4:4}, at: table_load+0xc9/0x400
-  #1: ffff88813200c3b8 (&mddev->reconfig_mutex){+.+.}-{4:4}, at: raid_ctr+0x13b3/0x2860 [dm_raid]
-2 locks held by modprobe/1019:
-  #0: ffffffffa0ca7b68 (iwlwifi_opmode_table_mtx){+.+.}-{4:4}, at: iwl_opmode_register+0x27/0xd0 [iwlwifi]
-  #1: ffff888139f88270 (&led_cdev->led_access){+.+.}-{4:4}, at: led_classdev_register_ext+0x195/0x450
-2 locks held by kworker/u32:5/1045:
-  #0: ffff888120070948 ((wq_completion)events_unbound){+.+.}-{0:0}, at: process_one_work+0x41e/0x710
-  #1: ffffc90004367e50 ((work_completion)(&sub_info->work)){+.+.}-{0:0}, at: process_one_work+0x1d1/0x710
-2 locks held by kworker/u32:6/1051:
-  #0: ffff888120070948 ((wq_completion)events_unbound){+.+.}-{0:0}, at: process_one_work+0x41e/0x710
-  #1: ffffc90004703e50 ((work_completion)(&sub_info->work)){+.+.}-{0:0}, at: process_one_work+0x1d1/0x710
-2 locks held by kworker/u32:7/1057:
-  #0: ffff888120070948 ((wq_completion)events_unbound){+.+.}-{0:0}, at: process_one_work+0x41e/0x710
-  #1: ffffc90004a97e50 ((work_completion)(&sub_info->work)){+.+.}-{0:0}, at: process_one_work+0x1d1/0x710
-2 locks held by kworker/3:3/1111:
-  #0: ffff88812006c548 ((wq_completion)events){+.+.}-{0:0}, at: process_one_work+0x41e/0x710
-  #1: ffffc90005bafe50 ((work_completion)(&fw_work->work)){+.+.}-{0:0}, at: process_one_work+0x1d1/0x710
-2 locks held by kworker/3:4/1132:
-  #0: ffff88812006c548 ((wq_completion)events){+.+.}-{0:0}, at: process_one_work+0x41e/0x710
-  #1: ffffc90005e13e50 ((work_completion)(&fw_work->work)){+.+.}-{0:0}, at: process_one_work+0x1d1/0x710
+>
+>
+> I once had the following idea, but I am not sure about all implications,
+> just wanted to raise it because it matches the topic here:
+>
+> Secondary page tables kind-of behave like "HW" access. If there is a
+> write access, we would expect the original PTE to become dirty, not the
+> mapped folio.
 
-=============================================
-
+Propagating SPTE dirty bits to folios indirectly via the primary MMU
+PTEs won't work for guest_memfd where there is no primary MMU PTE. In
+order to avoid having two different ways to propagate SPTE dirty bits,
+KVM should probably be responsible for updating the folio directly.
 
