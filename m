@@ -1,263 +1,104 @@
-Return-Path: <linux-kernel+bounces-128650-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-128651-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id D5204895D80
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 22:24:32 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id BCF99895D83
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 22:24:51 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3CD1BB2619B
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 20:24:30 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7066D1F22F3C
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 20:24:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9FDA615D5D1;
-	Tue,  2 Apr 2024 20:24:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8FD6615D5C9;
+	Tue,  2 Apr 2024 20:24:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="dadBzVxF"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=alliedtelesis.co.nz header.i=@alliedtelesis.co.nz header.b="utKT8FIb"
+Received: from gate2.alliedtelesis.co.nz (gate2.alliedtelesis.co.nz [202.36.163.20])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BB24A59B41;
-	Tue,  2 Apr 2024 20:24:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 11AED14AD2A
+	for <linux-kernel@vger.kernel.org>; Tue,  2 Apr 2024 20:24:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=202.36.163.20
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712089461; cv=none; b=i/lVL1MM8ysMEZ3FNZjaelwYTh4m/MyP6d/sWzCo2OqXA5H4GD46hqZXOhxQbcf0lgdqSYbfndchCM+D5/tKe810C4Dcz+x+K3GUO2DgwcOR9OKGZL0rHwOjprCvL43Lgla+NfHnAXPi7uKjiviuJWpL+aw448sxalvxVtGaDmQ=
+	t=1712089483; cv=none; b=EpBRC+XfXvyOTfQ1BeAj0Ca7pooDd7qB5wWgCYqCZc87nko45ZslQQj9oTICR9h3O3Ft2NbvMBVnw/Kq1vSbPklpfRVl91cXHJ8dlkReyO8K/a4tqRZvbbGTVN3NiQQVzbk65LrRiyLgmUWrBzYnoDVw/gyQqRRUEEUgZ6zmjjs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712089461; c=relaxed/simple;
-	bh=ueMPMa7Wa04+ZFktkd2Z6B4anKiLlzjqo1vxs3xrVm0=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=NK/ARPqlTztucd5YiTz6k7v2jWlrF/6kT3PuMGTT+xaeA4SiTab/5pm7EQSJff26FNZNlgaRJpepdH8QqZxh753AY7xWGKrYLjVj7PPIjqdk6e/fR+mTtAHztoGLXhd8taYOJu9VYP5chKEk77jM9jPDFWGmLEBVvL16wvPaQrU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=dadBzVxF; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1D310C43394;
-	Tue,  2 Apr 2024 20:24:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712089461;
-	bh=ueMPMa7Wa04+ZFktkd2Z6B4anKiLlzjqo1vxs3xrVm0=;
-	h=From:To:Cc:Subject:Date:From;
-	b=dadBzVxF0eifc7/RW5NahmvsfQtrZYmXy4zPDfmszEjxWMsKn+HiiNHNBUm01JxYu
-	 cAxM+B741Lhl7hPPxWl3u/sI+tm9UXIS808eD7ogPzIpmCMuI7m6ZkMz1U1t5t1030
-	 nXjPGxq0r+s6QZUG0EQAFe8MRl5RSqsAxgaYpr+GD8RapWqws1PCcAJeJew7Qhar2O
-	 +pLmMbwruGXhTXSkUANq5LkOgi6Dz8VYHt8UPQjB/lm7biLyDG367t6UUCHMNE4qY6
-	 cUygLGS3GSHTXts0wQMfCSxRPVzoGiGp9fmzYbEeap1SI+VFMPlkxIVILjnHUgT6Cp
-	 RxB9QkE6O4fjQ==
-From: Rob Herring <robh@kernel.org>
-To: Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Andrew Lunn <andrew@lunn.ch>,
-	Gregory Clement <gregory.clement@bootlin.com>,
-	Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
-	Lee Jones <lee@kernel.org>,
-	Ray Jui <rjui@broadcom.com>,
-	Scott Branden <sbranden@broadcom.com>,
-	Broadcom internal kernel review list <bcm-kernel-feedback-list@broadcom.com>,
-	Matthias Brugger <matthias.bgg@gmail.com>,
-	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
-Cc: devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org,
-	linux-mediatek@lists.infradead.org
-Subject: [PATCH] dt-bindings: mfd: syscon: Add missing simple syscon compatibles
-Date: Tue,  2 Apr 2024 15:24:11 -0500
-Message-ID: <20240402202413.757283-1-robh@kernel.org>
-X-Mailer: git-send-email 2.43.0
+	s=arc-20240116; t=1712089483; c=relaxed/simple;
+	bh=R205FE43OH6rrOt4iwtgF3+kwicEz8ULkm/QpFGb2aY=;
+	h=From:To:CC:Subject:Date:Message-ID:Content-Type:MIME-Version; b=cWxqw8qe6GuNP132fpnzXyft9xV3px4MHGulP5XZaTOIwbwU0jm1KV8+7mJv2+qduHxRiHZKtWxySUbBsIwLQd3YGyhBFt8sA5zO8HKzR9wcUyXBx9UWKlHJY9g1sCPAOEcT00aMZ2l5m9Bmz4c7BHn1E0bJzYsJpx62Y+HSsA4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=alliedtelesis.co.nz; spf=pass smtp.mailfrom=alliedtelesis.co.nz; dkim=pass (2048-bit key) header.d=alliedtelesis.co.nz header.i=@alliedtelesis.co.nz header.b=utKT8FIb; arc=none smtp.client-ip=202.36.163.20
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=alliedtelesis.co.nz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alliedtelesis.co.nz
+Received: from svr-chch-seg1.atlnz.lc (mmarshal3.atlnz.lc [10.32.18.43])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(Client did not present a certificate)
+	by gate2.alliedtelesis.co.nz (Postfix) with ESMTPS id B4D4E2C03B0;
+	Wed,  3 Apr 2024 09:24:38 +1300 (NZDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alliedtelesis.co.nz;
+	s=mail181024; t=1712089478;
+	bh=R205FE43OH6rrOt4iwtgF3+kwicEz8ULkm/QpFGb2aY=;
+	h=From:To:CC:Subject:Date:From;
+	b=utKT8FIbmRzBwl1qsJ3QrpZ2uCOfTX/LTNj1gjg8R9+4+dHEfPnPf04oYC26rYOqI
+	 +g5KPPL2lEQLJDpq/NDahcDR8MCe07YQDcroAmcy5P3xBiPpNKaPV0x0Rkj6d+Dnae
+	 DIpzKt7mZhGR8EnY+S/T7lcvudYbwmAM9+8QhvqIlwAiM1rT/Z7u49xzogtjx0NQg6
+	 8/RTI0p5o5toL2eFSmqDQbPbW3/IYkG48/AGOm8u4DI6OwayzvJOzbBNZT0zcTUsbs
+	 sCnG/nT5boCGMoGDn7BQXTVjiMDdv/XfjwxewKS/LP+KkQOvv9vC0MDSSXmlxslLIZ
+	 oPJxRN5t8UUWg==
+Received: from svr-chch-ex2.atlnz.lc (Not Verified[2001:df5:b000:bc8::76]) by svr-chch-seg1.atlnz.lc with Trustwave SEG (v8,2,6,11305)
+	id <B660c69860001>; Wed, 03 Apr 2024 09:24:38 +1300
+Received: from svr-chch-ex1.atlnz.lc (2001:df5:b000:bc8::77) by
+ svr-chch-ex2.atlnz.lc (2001:df5:b000:bc8::76) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ 15.2.1544.9; Wed, 3 Apr 2024 09:24:38 +1300
+Received: from svr-chch-ex2.atlnz.lc (2001:df5:b000:bc8::76) by
+ svr-chch-ex1.atlnz.lc (2001:df5:b000:bc8::77) with Microsoft SMTP Server
+ (TLS) id 15.0.1497.48; Wed, 3 Apr 2024 09:24:38 +1300
+Received: from svr-chch-ex2.atlnz.lc ([fe80::a9eb:c9b7:8b52:9567]) by
+ svr-chch-ex2.atlnz.lc ([fe80::a9eb:c9b7:8b52:9567%15]) with mapi id
+ 15.02.1544.009; Wed, 3 Apr 2024 09:24:38 +1300
+From: Chris Packham <Chris.Packham@alliedtelesis.co.nz>
+To: Guenter Roeck <linux@roeck-us.net>, "jdelvare@suse.com"
+	<jdelvare@suse.com>
+CC: "linux-hwmon@vger.kernel.org" <linux-hwmon@vger.kernel.org>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: hwmon: label vs temp%d_label
+Thread-Topic: hwmon: label vs temp%d_label
+Thread-Index: AQHahTvINn4/LiD+qEqZV7u6Rj72tg==
+Date: Tue, 2 Apr 2024 20:24:37 +0000
+Message-ID: <9a09bf46-d097-4e5b-bdb3-cc9dc6f5d01c@alliedtelesis.co.nz>
+Accept-Language: en-NZ, en-US
+Content-Language: en-US
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <55A81BE23C67E9428E7C391E9D84968D@atlnz.lc>
+Content-Transfer-Encoding: base64
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-SEG-SpamProfiler-Analysis: v=2.4 cv=KIH5D0Fo c=1 sm=1 tr=0 ts=660c6986 a=Xf/6aR1Nyvzi7BryhOrcLQ==:117 a=xqWC_Br6kY4A:10 a=X1bIBW7fO_EA:10 a=75chYTbOgJ0A:10 a=IkcTkHD0fZMA:10 a=raytVjVEu-sA:10 a=HnSBbm6KEwkWcQZ2umYA:9 a=3ZKOabzyN94A:10 a=QEXdDO2ut3YA:10
+X-SEG-SpamProfiler-Score: 0
 
-Add various "simple" syscon compatibles which were undocumented or
-still documented with old text bindings.
-
-apm,xgene-csw, apm,xgene-efuse, apm,xgene-mcb, apm,xgene-rb,
-fsl,ls1088a-reset, marvell,armada-3700-cpu-misc,
-mediatek,mt2712-pctl-a-syscfg, mediatek,mt6397-pctl-pmic-syscfg, and
-mediatek,mt8173-pctl-a-syscfg were all undocumented, but are in use
-already. Remove the old text binding docs for the others.
-
-Signed-off-by: Rob Herring <robh@kernel.org>
----
- .../arm/altera/socfpga-sdram-controller.txt   | 12 -------
- .../devicetree/bindings/arm/apm/scu.txt       | 17 ----------
- .../bindings/arm/marvell/armada-37xx.txt      | 32 -------------------
- .../bindings/mfd/brcm,iproc-cdru.txt          | 16 ----------
- .../bindings/mfd/brcm,iproc-mhb.txt           | 18 -----------
- .../devicetree/bindings/mfd/syscon.yaml       | 15 +++++++++
- 6 files changed, 15 insertions(+), 95 deletions(-)
- delete mode 100644 Documentation/devicetree/bindings/arm/altera/socfpga-sdram-controller.txt
- delete mode 100644 Documentation/devicetree/bindings/arm/apm/scu.txt
- delete mode 100644 Documentation/devicetree/bindings/arm/marvell/armada-37xx.txt
- delete mode 100644 Documentation/devicetree/bindings/mfd/brcm,iproc-cdru.txt
- delete mode 100644 Documentation/devicetree/bindings/mfd/brcm,iproc-mhb.txt
-
-diff --git a/Documentation/devicetree/bindings/arm/altera/socfpga-sdram-controller.txt b/Documentation/devicetree/bindings/arm/altera/socfpga-sdram-controller.txt
-deleted file mode 100644
-index 77ca635765e1..000000000000
---- a/Documentation/devicetree/bindings/arm/altera/socfpga-sdram-controller.txt
-+++ /dev/null
-@@ -1,12 +0,0 @@
--Altera SOCFPGA SDRAM Controller
--
--Required properties:
--- compatible : Should contain "altr,sdr-ctl" and "syscon".
--  syscon is required by the Altera SOCFPGA SDRAM EDAC.
--- reg : Should contain 1 register range (address and length)
--
--Example:
--	sdr: sdr@ffc25000 {
--		compatible = "altr,sdr-ctl", "syscon";
--		reg = <0xffc25000 0x1000>;
--	};
-diff --git a/Documentation/devicetree/bindings/arm/apm/scu.txt b/Documentation/devicetree/bindings/arm/apm/scu.txt
-deleted file mode 100644
-index b45be06625fd..000000000000
---- a/Documentation/devicetree/bindings/arm/apm/scu.txt
-+++ /dev/null
-@@ -1,17 +0,0 @@
--APM X-GENE SoC series SCU Registers
--
--This system clock unit contain various register that control block resets,
--clock enable/disables, clock divisors and other deepsleep registers.
--
--Properties:
-- - compatible : should contain two values. First value must be:
--		   - "apm,xgene-scu"
--		second value must be always "syscon".
--
-- - reg : offset and length of the register set.
--
--Example :
--	scu: system-clk-controller@17000000 {
--		compatible = "apm,xgene-scu","syscon";
--		reg = <0x0 0x17000000 0x0 0x400>;
--	};
-diff --git a/Documentation/devicetree/bindings/arm/marvell/armada-37xx.txt b/Documentation/devicetree/bindings/arm/marvell/armada-37xx.txt
-deleted file mode 100644
-index 29fa93dad52b..000000000000
---- a/Documentation/devicetree/bindings/arm/marvell/armada-37xx.txt
-+++ /dev/null
-@@ -1,32 +0,0 @@
--Power management
------------------
--
--For power management (particularly DVFS and AVS), the North Bridge
--Power Management component is needed:
--
--Required properties:
--- compatible     : should contain "marvell,armada-3700-nb-pm", "syscon";
--- reg            : the register start and length for the North Bridge
--		    Power Management
--
--Example:
--
--nb_pm: syscon@14000 {
--	compatible = "marvell,armada-3700-nb-pm", "syscon";
--	reg = <0x14000 0x60>;
--}
--
--AVS
-----
--
--For AVS an other component is needed:
--
--Required properties:
--- compatible     : should contain "marvell,armada-3700-avs", "syscon";
--- reg            : the register start and length for the AVS
--
--Example:
--avs: avs@11500 {
--	compatible = "marvell,armada-3700-avs", "syscon";
--	reg = <0x11500 0x40>;
--}
-diff --git a/Documentation/devicetree/bindings/mfd/brcm,iproc-cdru.txt b/Documentation/devicetree/bindings/mfd/brcm,iproc-cdru.txt
-deleted file mode 100644
-index 82f82e069563..000000000000
---- a/Documentation/devicetree/bindings/mfd/brcm,iproc-cdru.txt
-+++ /dev/null
-@@ -1,16 +0,0 @@
--Broadcom iProc Chip Device Resource Unit (CDRU)
--
--Various Broadcom iProc SoCs have a set of registers that provide various
--chip specific device and resource configurations. This node allows access to
--these CDRU registers via syscon.
--
--Required properties:
--- compatible: should contain:
--		"brcm,sr-cdru", "syscon" for Stingray
--- reg: base address and range of the CDRU registers
--
--Example:
--	cdru: syscon@6641d000 {
--		compatible = "brcm,sr-cdru", "syscon";
--		reg = <0 0x6641d000 0 0x400>;
--	};
-diff --git a/Documentation/devicetree/bindings/mfd/brcm,iproc-mhb.txt b/Documentation/devicetree/bindings/mfd/brcm,iproc-mhb.txt
-deleted file mode 100644
-index 4421e9771b8a..000000000000
---- a/Documentation/devicetree/bindings/mfd/brcm,iproc-mhb.txt
-+++ /dev/null
-@@ -1,18 +0,0 @@
--Broadcom iProc Multi Host Bridge (MHB)
--
--Certain Broadcom iProc SoCs have a multi host bridge (MHB) block that controls
--the connection and configuration of 1) internal PCIe serdes; 2) PCIe endpoint
--interface; 3) access to the Nitro (network processing) engine
--
--This node allows access to these MHB registers via syscon.
--
--Required properties:
--- compatible: should contain:
--		"brcm,sr-mhb", "syscon" for Stingray
--- reg: base address and range of the MHB registers
--
--Example:
--	mhb: syscon@60401000 {
--		compatible = "brcm,sr-mhb", "syscon";
--		reg = <0 0x60401000 0 0x38c>;
--	};
-diff --git a/Documentation/devicetree/bindings/mfd/syscon.yaml b/Documentation/devicetree/bindings/mfd/syscon.yaml
-index 9d55bee155ce..0327e779e327 100644
---- a/Documentation/devicetree/bindings/mfd/syscon.yaml
-+++ b/Documentation/devicetree/bindings/mfd/syscon.yaml
-@@ -38,11 +38,20 @@ properties:
-               - allwinner,sun8i-h3-system-controller
-               - allwinner,sun8i-v3s-system-controller
-               - allwinner,sun50i-a64-system-controller
-+              - altr,sdr-ctl
-               - amd,pensando-elba-syscon
-+              - apm,xgene-csw
-+              - apm,xgene-efuse
-+              - apm,xgene-mcb
-+              - apm,xgene-rb
-+              - apm,xgene-scu
-               - brcm,cru-clkset
-+              - brcm,sr-cdru
-+              - brcm,sr-mhb
-               - freecom,fsg-cs2-system-controller
-               - fsl,imx93-aonmix-ns-syscfg
-               - fsl,imx93-wakeupmix-syscfg
-+              - fsl,ls1088a-reset
-               - hisilicon,dsa-subctrl
-               - hisilicon,hi6220-sramctrl
-               - hisilicon,pcie-sas-subctrl
-@@ -51,9 +60,15 @@ properties:
-               - intel,lgm-syscon
-               - loongson,ls1b-syscon
-               - loongson,ls1c-syscon
-+              - marvell,armada-3700-cpu-misc
-+              - marvell,armada-3700-nb-pm
-+              - marvell,armada-3700-avs
-               - marvell,armada-3700-usb2-host-misc
-+              - mediatek,mt2712-pctl-a-syscfg
-+              - mediatek,mt6397-pctl-pmic-syscfg
-               - mediatek,mt8135-pctl-a-syscfg
-               - mediatek,mt8135-pctl-b-syscfg
-+              - mediatek,mt8173-pctl-a-syscfg
-               - mediatek,mt8365-syscfg
-               - microchip,lan966x-cpu-syscon
-               - microchip,sparx5-cpu-syscon
--- 
-2.43.0
-
+SGkgR3VlbnRlciwgSmVhbiwNCg0KSSd2ZSBnb3QgYSByZXF1aXJlbWVudCB0byBhZGQgc29tZSBt
+ZWFuaW5nZnVsIG5hbWVzIHRvIHNvbWUgaHdtb24gDQpzZW5zb3JzIChMTTc1IHNwZWNpZmljYWxs
+eSkgc28gdGhhdCB3ZSBjYW4gcHJvdmlkZSBzb21lIGluZGljYXRpb24gb2YgDQp3aGVyZSBvbiBh
+IGJvYXJkIHRoZSBzZW5zb3IgaXMgbG9jYXRlZCAoZS5nLiAiSW50YWtlIiB2cyAiRXhoYXVzdCIg
+dnMgDQoiTmVhciB0aGF0IHJlYWxseSBob3QgY2hpcCIpLg0KDQpJIHNlZSB0aGF0IHRoZSBzeXNm
+cyBBQkkgZG9jdW1lbnRzIGJvdGggImxhYmVsIiBmb3IgdGhlIGNoaXAgYW5kIA0KInRlbXBbMS0q
+XV9sYWJlbCIgKGFzIHdlbGwgYXMgc2ltaWxhciBmYW4gYW5kIFZpbiBhdHRyaWJ1dGVzKS4gVGhl
+IA0KbGF0dGVyIHNlZW0gdG8gYmUgc3VwcG9ydGVkIGJ5IHRoZSBod21vbiBjb3JlIGJ1dCBJIGRv
+bid0IHNlZSBhbnl0aGluZyANCmZvciB0aGUgZm9ybWVyIChJJ20gc3RydWdnbGluZyB0byBmaW5k
+IGFueSBkcml2ZXIgdGhhdCBzdXBwb3J0cyBhIA0KY2hpcC13aWRlIGxhYmVsKS4NCg0KQXNzdW1p
+bmcgSSB3YW50IHRvIGhhdmUgYSBsYWJlbCBhZGRlZCBpbiB0aGUgZGV2aWNlIHRyZWUgdG8gYSBs
+bTc1IHdvdWxkIA0Kc29tZXRoaW5nIGxpa2UgdGhlIGZvbGxvd2luZyBiZSBhY2NlcHRhYmxlDQoN
+CiDCoMKgwqDCoMKgIHNlbnNvckA0OCB7DQogwqDCoMKgwqDCoMKgwqAgY29tcGF0aWJsZSA9ICJu
+YXRpb25hbCxsbTc1IjsNCiDCoMKgwqDCoMKgwqDCoCByZWcgPSA8MHg0OD47DQogwqDCoMKgwqDC
+oMKgwqAgbGFiZWwgPSAiSW50YWtlIjsNCiDCoMKgwqDCoMKgIH07DQoNCkknZCB0aGVuIHVwZGF0
+ZSB0aGUgbG03NSBkcml2ZXIgdG8gZ3JhYiB0aGF0IGZyb20gdGhlIGRldmljZXRyZWUgYW5kIHVz
+ZSANCml0IHRvIHByb3ZpZGUgdGhlIGh3bW9uX3RlbXBfbGFiZWwgYXR0cmlidXRlLg0KDQpUaGFu
+a3MsDQpDaHJpcw0K
 
