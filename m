@@ -1,152 +1,144 @@
-Return-Path: <linux-kernel+bounces-127269-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-127270-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 969CE894901
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 03:51:50 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 99F80894906
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 03:53:55 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4C74F2844D2
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 01:51:49 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 04663281B0A
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 01:53:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8C3CBD27E;
-	Tue,  2 Apr 2024 01:51:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B0E2FDDA9;
+	Tue,  2 Apr 2024 01:53:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ljones.dev header.i=@ljones.dev header.b="X4y7ooI/";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="By5EdEgK"
-Received: from wfhigh3-smtp.messagingengine.com (wfhigh3-smtp.messagingengine.com [64.147.123.154])
+	dkim=pass (2048-bit key) header.d=me.com header.i=@me.com header.b="DtY4M0Vu"
+Received: from mr85p00im-ztdg06021101.me.com (mr85p00im-ztdg06021101.me.com [17.58.23.180])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 22A7B79F5;
-	Tue,  2 Apr 2024 01:51:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=64.147.123.154
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 92F30BA2D
+	for <linux-kernel@vger.kernel.org>; Tue,  2 Apr 2024 01:53:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=17.58.23.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712022702; cv=none; b=HGpCG91CfKkp8V74jje/u8WtvJJNPf3v+w4dOlFJwJ6FC1ZcMP5I0Uzkrw0getYEn8VNXds82MsJ9ckLITUgNmkDZGoXNIeIk3roI3yHmJcHO4pD5RWnpaAcguvxKavIEIFfjG39CVaEymKN3yaRTUCxxDSuFQaol5xiaGfRzcI=
+	t=1712022827; cv=none; b=Rsr4lAR7CqEN2JuOsb/p3HMzvb1vDJw0I1IYhoOFETek0KQBFX6xKdblwxlljTCEJgzLtMs4Z0Qt9JqiC4I5Q4SIk88NC0fnk0peeV9gPJJHJY7/eZWt8ned7WvUzssFsfhpjIQ5gh1o3AjZjM3+ybn32atFWqysT7/GDy8NfUQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712022702; c=relaxed/simple;
-	bh=yVklnQZkvuukUb5TI3+wA5MCAtaQ8hORKgo5k4bzUCI=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=JOe4xLDrf8faKHAOy8pKpATfXcat3P07jSz/WeEWjglHDW9Vpox5qaSktwwATWlrkUF28H5qJvolKe997VSs7nb8xY+nyM8nY2YOZxBkyq2zNYyxCJlEYZQYxlX6wcgthL/yDzSfYFae/G1jomaaqHwm4Y7jEYzL4lVnqYW4uCc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ljones.dev; spf=none smtp.mailfrom=ljones.dev; dkim=pass (2048-bit key) header.d=ljones.dev header.i=@ljones.dev header.b=X4y7ooI/; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=By5EdEgK; arc=none smtp.client-ip=64.147.123.154
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ljones.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=ljones.dev
-Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
-	by mailfhigh.west.internal (Postfix) with ESMTP id 2A143180008F;
-	Mon,  1 Apr 2024 21:51:39 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute5.internal (MEProxy); Mon, 01 Apr 2024 21:51:40 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ljones.dev; h=cc
-	:cc:content-transfer-encoding:content-type:date:date:from:from
-	:in-reply-to:message-id:mime-version:reply-to:subject:subject:to
-	:to; s=fm3; t=1712022698; x=1712109098; bh=wKpiPWBbBrJfJ1GZmz9eV
-	aeSFAsiH0SYmwmSOg718gI=; b=X4y7ooI/Mv4GEBIMWodAe/qTWZYvyJnqAXYMG
-	SXmupajCMzJRSnrr4CIU7N6epm1aFKUjk28STQq3rpi6sXMi0Jn9FcP3jUEdhDuV
-	ttBlhQUhqtIGX8eJyTDn/qGd+nk063hqt422m1/4tYLKIGkLVJMhOk7TYZvGE0ht
-	kjVSLVaCqLjt75G/WDJ6CtivM+8SppNnWRxPhtdPPlfvmVjhHLugUVRXyZWMksZa
-	+CufLRcnxFrIYab08YJSIfZ93JLaxxTqN3Qt90C0nO0fxdJMX2GXS50HdljzT4ju
-	XAkRAU4ibUjABXAR0PDckCHynJTyLWM/4p5p2eVfLWhp31cGg==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-transfer-encoding
-	:content-type:date:date:feedback-id:feedback-id:from:from
-	:in-reply-to:message-id:mime-version:reply-to:subject:subject:to
-	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-	fm2; t=1712022698; x=1712109098; bh=wKpiPWBbBrJfJ1GZmz9eVaeSFAsi
-	H0SYmwmSOg718gI=; b=By5EdEgKA991Sut2s1QMithRDFoUUuSthQZvNMJk3ZjZ
-	I+C8Ctb2P58cCN94GYBK9DO4f4xJoI8kQ/Rd+hI4OeKD/UfGDV5aIywmDvouf9jE
-	jLH+/KF7hQ/PdNxK5OqjyRkTGDIa7i+NiAvmuv5K9soQ1WcXQMmAqPKHGt1mVgA2
-	DnhSm/3iiQL42EOcgMhkuW7RQZ3ka4OUxnek8kkXJ3czOmdRP65N0ZMPNMLw/L/7
-	8c5ch1YHxcNLqtAwdudqdqA+upcdau0GPpNCbFruOaD1SSMw+5RtAdTbjthCeUXg
-	2EjGTAXmP4MC5qXvV4MLm+JzzNOaIBQO1kz8tAqRAQ==
-X-ME-Sender: <xms:qGQLZntOi2jHlO4ynoYwRh_Y0_v_t1gKo9q43jYufo_f0P5GRlq25A>
-    <xme:qGQLZocILfesoGYJNQ0UvaGjWb3ZUk6P5cpIqz21FzQdLDbpgl1bP74uy-z9XVHKx
-    -38CjjsaQDGTF5Aw9c>
-X-ME-Received: <xmr:qGQLZqxDqplJFZXvcG-ZpGP4fdeWfonXjxxlb_FHvwKcFZoh-meQfbqMB6Mc>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrudefuddgheduucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucenucfjughrpefhvfevufffkffoggfgsedtkeertd
-    ertddtnecuhfhrohhmpedfnfhukhgvucffrdculfhonhgvshdfuceolhhukhgvsehljhho
-    nhgvshdruggvvheqnecuggftrfgrthhtvghrnhepgfdujedthfduudekffefkeeiffdttd
-    dvhfegudduueffuefhfefggeefteevvdegnecuvehluhhsthgvrhfuihiivgeptdenucfr
-    rghrrghmpehmrghilhhfrhhomheplhhukhgvsehljhhonhgvshdruggvvh
-X-ME-Proxy: <xmx:qGQLZmPEvjU2R71cMKi-xsDn3_TIvfkR8zI5_yW2wLJLNBERIpGVjw>
-    <xmx:qGQLZn9UMmgtJ2JkcVAw2M7fJYXYQiHv4ki40TapBA2gszG5MfbhOQ>
-    <xmx:qGQLZmWwUh0rGm-qqwaGekDbG9CCS2gwsLFpU46d0hdBZBmQcc7TsQ>
-    <xmx:qGQLZodqaWxZCArrQLvsZ3bsJyG2bCzRcckGyvKjXfDxbyIADemAHA>
-    <xmx:qmQLZtcRll8JUMgVHPgbydl6a4IjDHL6v4MA9BzBGFHUPg6vOLmoknSz4jg>
-Feedback-ID: i5ec1447f:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Mon,
- 1 Apr 2024 21:51:32 -0400 (EDT)
-From: "Luke D. Jones" <luke@ljones.dev>
-To: tiwai@suse.com
-Cc: james.schulman@cirrus.com,
-	david.rhodes@cirrus.com,
-	rf@opensource.cirrus.com,
-	perex@perex.cz,
-	alsa-devel@alsa-project.org,
-	patches@opensource.cirrus.com,
-	linux-sound@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	kailang@realtek.com,
-	shenghao-ding@ti.com,
-	foss@athaariq.my.id,
-	"Luke D. Jones" <luke@ljones.dev>
-Subject: [PATCH] ALSA: hda/realtek: cs35l41: Support ASUS ROG G634JYR
-Date: Tue,  2 Apr 2024 14:51:26 +1300
-Message-ID: <20240402015126.21115-1-luke@ljones.dev>
-X-Mailer: git-send-email 2.44.0
+	s=arc-20240116; t=1712022827; c=relaxed/simple;
+	bh=xo0xyMSV0jNOIMVjhXr3ayA4jB+lb62eMckivVCAKgU=;
+	h=From:Content-Type:Mime-Version:Subject:Message-Id:Date:Cc:To; b=oa5X+ugir6NJRLX3YL+7ltca0gydPFYI2u48d34KiJOWlmY4Ip/eMA3gL1WxB2vNFam2qQ+nC5IuXhq7FZMdybDHGs0tsuIJyF96eNa8F1ssjSvW+HGf8bQxCZX+ekmQyn211cYSYtOFWE1onvYuLdOSKFgkHdVhnPYtjmVbBUw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=me.com; spf=pass smtp.mailfrom=me.com; dkim=pass (2048-bit key) header.d=me.com header.i=@me.com header.b=DtY4M0Vu; arc=none smtp.client-ip=17.58.23.180
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=me.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=me.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=me.com; s=1a1hai;
+	t=1712022825; bh=a9BDp/1jjLjWeDQ44X53i+aMmbsiLzmj4SIBII6L6qg=;
+	h=From:Content-Type:Mime-Version:Subject:Message-Id:Date:To;
+	b=DtY4M0VuaqJ1HkCHLKbouGac6BCyQWa/zlBPxDWcwDdae9XCXKlvcOKfQKL+ZkSFa
+	 uaFSu4mEDEsGF/b0vo3o+lx1rvxb7SB8XOKbviH561lsFTU33BiPKCHVpaLllJkcGK
+	 MsBHi61BRad+4kKh3CAPfBnFsk5DN2xeQa1L4xkUeSfr7t71saj9aXZK7fTQFnPhNI
+	 mXrVirKYD3e3pjMuu6IsYTB7K9k7KQGN7MW9UJab2hEzDHMLC5PlDnbuQx5bvMF7/M
+	 gYN8+/xT8pYoYsOakKsxa7kBnUXGoFIbz2LRhjIOST/L88EfjTExxx05Y+YaRpcuj/
+	 qEC388jsoUwnQ==
+Received: from smtpclient.apple (mr38p00im-dlb-asmtp-mailmevip.me.com [17.57.152.18])
+	by mr85p00im-ztdg06021101.me.com (Postfix) with ESMTPSA id 55F1F802E7;
+	Tue,  2 Apr 2024 01:53:43 +0000 (UTC)
+From: Laine Taffin Altman <alexanderaltman@me.com>
+Content-Type: text/plain;
+	charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Mime-Version: 1.0 (Mac OS X Mail 16.0 \(3774.500.171.1.1\))
+Subject: [PATCH v2] rust: init: remove impl Zeroable for Infallible
+Message-Id: <9D0C95D2-6239-4A3B-B9DD-66299B9911EF@me.com>
+Date: Mon, 1 Apr 2024 18:53:31 -0700
+Cc: Laine Taffin Altman <alexanderaltman@me.com>,
+ stable@vger.kernel.org,
+ rust-for-linux@vger.kernel.org,
+ lkml <linux-kernel@vger.kernel.org>
+To: Miguel Ojeda <ojeda@kernel.org>,
+ Alex Gaynor <alex.gaynor@gmail.com>,
+ Wedson Almeida Filho <wedsonaf@gmail.com>,
+ Boqun Feng <boqun.feng@gmail.com>,
+ =?utf-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>,
+ Benno Lossin <benno.lossin@proton.me>,
+ Andreas Hindborg <a.hindborg@samsung.com>,
+ Alice Ryhl <aliceryhl@google.com>,
+ Martin Rodriguez Reboredo <yakoyoku@gmail.com>
+X-Mailer: Apple Mail (2.3774.500.171.1.1)
+X-Proofpoint-GUID: DYwoeEeKxN9Zee3bPJz-tAkjniafdXqO
+X-Proofpoint-ORIG-GUID: DYwoeEeKxN9Zee3bPJz-tAkjniafdXqO
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-04-01_18,2024-04-01_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 malwarescore=0
+ bulkscore=0 clxscore=1015 mlxscore=0 suspectscore=0 phishscore=0
+ spamscore=0 adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2308100000 definitions=main-2404020012
 
-Fixes the realtek quirk to initialise the Cirrus amp correctly and adds
-related quirk for missing DSD properties. This model laptop has slightly
-updated internals compared to the previous version with Realtek Codec
-ID of 0x1caf.
+A type is inhabited if at least one valid value of that type exists; a =
+type is uninhabited if no valid values of that type exist.  The terms =
+"inhabited" and "uninhabited" in this sense originate in type theory, a =
+branch of mathematics.
 
-Signed-off-by: Luke D. Jones <luke@ljones.dev>
----
- sound/pci/hda/cs35l41_hda_property.c | 2 ++
- sound/pci/hda/patch_realtek.c        | 2 +-
- 2 files changed, 3 insertions(+), 1 deletion(-)
+In Rust, producing an invalid value of any type is immediate undefined =
+behavior (UB); this includes via zeroing memory.  Therefore, since an =
+uninhabited type has no valid values, producing any values at all for it =
+is UB.
 
-diff --git a/sound/pci/hda/cs35l41_hda_property.c b/sound/pci/hda/cs35l41_hda_property.c
-index 72ec872afb8d..25c117db3317 100644
---- a/sound/pci/hda/cs35l41_hda_property.c
-+++ b/sound/pci/hda/cs35l41_hda_property.c
-@@ -108,6 +108,7 @@ static const struct cs35l41_config cs35l41_config_table[] = {
- 	{ "10431F12", 2, INTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 0, 1, -1, 1000, 4500, 24 },
- 	{ "10431F1F", 2, EXTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 1, -1, 0, 0, 0, 0 },
- 	{ "10431F62", 2, EXTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 1, 2, 0, 0, 0, 0 },
-+	{ "10433A60", 2, INTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 1, 2, 0, 1000, 4500, 24 },
- 	{ "17AA386F", 2, EXTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 0, -1, -1, 0, 0, 0 },
- 	{ "17AA38A9", 2, EXTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 0, 2, -1, 0, 0, 0 },
- 	{ "17AA38AB", 2, EXTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 0, 2, -1, 0, 0, 0 },
-@@ -496,6 +497,7 @@ static const struct cs35l41_prop_model cs35l41_prop_model_table[] = {
- 	{ "CSC3551", "10431F12", generic_dsd_config },
- 	{ "CSC3551", "10431F1F", generic_dsd_config },
- 	{ "CSC3551", "10431F62", generic_dsd_config },
-+	{ "CSC3551", "10433A60", generic_dsd_config },
- 	{ "CSC3551", "17AA386F", generic_dsd_config },
- 	{ "CSC3551", "17AA38A9", generic_dsd_config },
- 	{ "CSC3551", "17AA38AB", generic_dsd_config },
-diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
-index a17c36a36aa5..8da2827bb3c3 100644
---- a/sound/pci/hda/patch_realtek.c
-+++ b/sound/pci/hda/patch_realtek.c
-@@ -10133,7 +10133,7 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
- 	SND_PCI_QUIRK(0x1043, 0x3a30, "ASUS G814JVR/JIR", ALC245_FIXUP_CS35L41_SPI_2),
- 	SND_PCI_QUIRK(0x1043, 0x3a40, "ASUS G814JZR", ALC245_FIXUP_CS35L41_SPI_2),
- 	SND_PCI_QUIRK(0x1043, 0x3a50, "ASUS G834JYR/JZR", ALC245_FIXUP_CS35L41_SPI_2),
--	SND_PCI_QUIRK(0x1043, 0x3a60, "ASUS G634JYR/JZR", ALC245_FIXUP_CS35L41_SPI_2),
-+	SND_PCI_QUIRK(0x1043, 0x3a60, "ASUS G634JYR/JZR", ALC285_FIXUP_ASUS_SPI_REAR_SPEAKERS),
- 	SND_PCI_QUIRK(0x1043, 0x831a, "ASUS P901", ALC269_FIXUP_STEREO_DMIC),
- 	SND_PCI_QUIRK(0x1043, 0x834a, "ASUS S101", ALC269_FIXUP_STEREO_DMIC),
- 	SND_PCI_QUIRK(0x1043, 0x8398, "ASUS P1005", ALC269_FIXUP_STEREO_DMIC),
--- 
-2.44.0
+The Rust standard library type `core::convert::Infallible` is =
+uninhabited, by virtue of having been declared as an enum with no cases, =
+which always produces uninhabited types in Rust.
 
+The current kernel code allows this UB to be triggered, for example by =
+code like:
+`pr_info!("{}=E2=80=9D, =
+Box::<core::convert::Infallible>::init(kernel::init::zeroed())?);`
+
+Thus, remove the implementation of `Zeroable` for `Infallible`, thereby =
+avoiding the UB.
+
+Cc: stable@vger.kernel.org
+Fixes: 38cde0bd7b67 ("rust: init: add `Zeroable` trait and =
+`init::zeroed` function")
+Closes: https://github.com/Rust-for-Linux/pinned-init/pull/13
+Signed-off-by: Laine Taffin Altman <alexanderaltman@me.com>
+Reviewed-by: Alice Ryhl <aliceryhl@google.com>
+Reviewed-by: Boqun Feng <boqun.feng@gmail.com>
+=E2=80=94
+V1 -> V2: Added more documentation to the comment, with links; also =
+added more details to the commit message.
+
+ rust/kernel/init.rs | 7 +++++--
+ 1 file changed, 5 insertions(+), 2 deletions(-)
+
+diff --git a/rust/kernel/init.rs b/rust/kernel/init.rs
+index 424257284d16..9353c9919fd4 100644
+--- a/rust/kernel/init.rs
++++ b/rust/kernel/init.rs
+@@ -1292,8 +1292,11 @@ macro_rules! impl_zeroable {
+     i8, i16, i32, i64, i128, isize,
+     f32, f64,
+=20
+-    // SAFETY: These are ZSTs, there is nothing to zero.
+-    {<T: ?Sized>} PhantomData<T>, core::marker::PhantomPinned, =
+Infallible, (),
++    // SAFETY: These are inhabited ZSTs; there is nothing to zero and a =
+valid value exists.
++    // Note: do not add uninhabited types (such as ! or Infallible) to =
+this list; creating an instance of an uninhabited type is immediate =
+undefined behavior.
++    // For more on uninhabited/empty types, consult The Rustonomicon: =
+https://doc.rust-lang.org/stable/nomicon/exotic-sizes.html#empty-types
++    // The Rust Reference also has information on undefined behavior: =
+https://doc.rust-lang.org/stable/reference/behavior-considered-undefined.h=
+tml
++    {<T: ?Sized>} PhantomData<T>, core::marker::PhantomPinned, (),
+=20
+     // SAFETY: Type is allowed to take any value, including all zeros.
+     {<T>} MaybeUninit<T>,
+--=20
+2.44.0=
 
