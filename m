@@ -1,138 +1,164 @@
-Return-Path: <linux-kernel+bounces-127877-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-127881-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id D62F1895224
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 13:44:29 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id D49F089522E
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 13:45:40 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 76C8F1F24762
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 11:44:29 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E9AB81C228C1
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 11:45:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2A5A769979;
-	Tue,  2 Apr 2024 11:44:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5D63D6997A;
+	Tue,  2 Apr 2024 11:45:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="keTjQP/T"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="B3KDF5r+"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.13])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2A0B71EA8D;
-	Tue,  2 Apr 2024 11:44:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 68D18664AB
+	for <linux-kernel@vger.kernel.org>; Tue,  2 Apr 2024 11:45:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.13
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712058257; cv=none; b=fGzAEjT/u+RPHqPBMtIEY7Ee7iriLqe/fFkjtjPmFTfufx119PIRXsIAZSoqgb5CHkkUMs+HrMJHYf4790+/80RjQexYqp3xh30yKuc6eiIZQG/Vlh4QCJxlUCr0xK3wipuj76jcnhSEXFHZSbgbHzYtUDFwTWDeL3tbTyv924k=
+	t=1712058321; cv=none; b=tDypdVt6agNwTwkErdjcN+zho2qPEn6mqfiB/BDqU731024WIukuEgIiVpaFGKsj2jcrze4Vn9HLn/6ozokLtINT4Xj/vdpizxUQXTfG0+cW8b1hNavNvSLWSSdPug4y1xEHJd1AzaVtpiWJjDOCHVH7runpdfWXwuZ8rWiToIA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712058257; c=relaxed/simple;
-	bh=DpQ1x3R3SARZhczID3H+l6QkUcoWZQNWBI3Aop4zjd4=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=sr5tSKqmxPUA1RAqyWbDvhscOD2twTAjnVq/+8RToSiAMraj0O71OcosxA6/dEVZIDgErECUu3/27D06CddbVaWTC2Huvwh48SzJ0QLe3Skc2EFYFxhIjPWDprHpFFBHHrczQH2n6uk9P8OYyK8Dwu7qzS7qKT89tyytpsjWbn0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=keTjQP/T; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E0A7EC43390;
-	Tue,  2 Apr 2024 11:44:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-	s=korg; t=1712058256;
-	bh=DpQ1x3R3SARZhczID3H+l6QkUcoWZQNWBI3Aop4zjd4=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=keTjQP/TuNEFmuDJ/ndqUWVWzKYfOvgfFKfqNN1VFR3mFZpD/bcMF19oRva66l40J
-	 TP/WZx/xGTr8svgzpHSpdKh5uRIaL6B1pdxeAPF1TKw+E7yTlclI8Iukm0ycrapwyk
-	 tHj9SQQbNxN8roAmHWpZH3e6duGhE77ioZFxRHhk=
-Date: Tue, 2 Apr 2024 13:44:12 +0200
-From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To: Dan Carpenter <dan.carpenter@linaro.org>
-Cc: Alexander Wetzel <alexander@wetzel-home.de>,
-	Naresh Kamboju <naresh.kamboju@linaro.org>, stable@vger.kernel.org,
-	patches@lists.linux.dev, linux-kernel@vger.kernel.org,
-	torvalds@linux-foundation.org, akpm@linux-foundation.org,
-	linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
-	lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-	f.fainelli@gmail.com, sudipm.mukherjee@gmail.com,
-	srw@sladewatkins.net, rwarsow@gmx.de, conor@kernel.org,
-	allen.lkml@gmail.com, broonie@kernel.org,
-	Bart Van Assche <bvanassche@acm.org>,
-	"Martin K. Petersen" <martin.petersen@oracle.com>,
-	Arnd Bergmann <arnd@arndb.de>,
-	Anders Roxell <anders.roxell@linaro.org>,
-	LTP List <ltp@lists.linux.it>
-Subject: Re: [PATCH 6.6 000/396] 6.6.24-rc1 review
-Message-ID: <2024040258-disk-smokiness-5baf@gregkh>
-References: <20240401152547.867452742@linuxfoundation.org>
- <CA+G9fYvewkbwR_i07HHTM=8E2yS-0wRhOT-C45LP3SNtzgd+4Q@mail.gmail.com>
- <29a7a1e5-da67-47fc-b1fd-ef65902ec252@wetzel-home.de>
- <1d1071f3-641a-4b7c-bd35-a629ba8d5a7b@moroto.mountain>
+	s=arc-20240116; t=1712058321; c=relaxed/simple;
+	bh=J3vcQZxpdCuFkFzGgNmgmy5MLAq/HWsIDZHYrStWpC0=;
+	h=From:Date:To:cc:Subject:In-Reply-To:Message-ID:References:
+	 MIME-Version:Content-Type; b=aFWu+71JspDr0i4kfIp6fHfPhgnw+d23wTcAWIA9IT3icKaBNWlPdJ5W7lYizR48jn10IkfW+nAGFKD0Za5JOiAID3FwhPNvxToRSPZb+Xs1E5Wsf34aNxPbK2YV7hglm6OpRtTisgqoJUlyNTW/MjJdhK5qityO7rh69YAatNk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=B3KDF5r+; arc=none smtp.client-ip=192.198.163.13
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1712058320; x=1743594320;
+  h=from:date:to:cc:subject:in-reply-to:message-id:
+   references:mime-version;
+  bh=J3vcQZxpdCuFkFzGgNmgmy5MLAq/HWsIDZHYrStWpC0=;
+  b=B3KDF5r+zLP/n1LbOJwXfpshdxPgtCwPqm4OmKvgPIT7UjwTG3xQdlbX
+   Or4I8YNtd770zI+EJglvJXUNjqp/PEyNA8pzU620sc4isema6B1jf11Hp
+   nCpVsDuwv8tcPL29WPUUgEJ4/RmfBdUM+QbMT67dtXMn304Z5XI4yl/ln
+   X1UtTf+jezwLdCFOCQUriX/aEJa52f9uWS559eSkXzv1+UdHETBmBvT0y
+   YdpXYW/ho+IMH+L0EOw/x8o7EibyTgowcWjW51T6J9Q4uPDCqp8UoCU2V
+   SjWpEgu4d8l6KkR+ORJs9PPLCbkjpuS2pNMwUBIywMf41TksMXxgGPjR8
+   Q==;
+X-CSE-ConnectionGUID: WC73gDX3QhWDQEj03bETyg==
+X-CSE-MsgGUID: 7GrwS8vTQcGT2blo0inCmQ==
+X-IronPort-AV: E=McAfee;i="6600,9927,11031"; a="10185374"
+X-IronPort-AV: E=Sophos;i="6.07,174,1708416000"; 
+   d="scan'208";a="10185374"
+Received: from orviesa005.jf.intel.com ([10.64.159.145])
+  by fmvoesa107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Apr 2024 04:45:19 -0700
+X-CSE-ConnectionGUID: uGgf1K3ASECt5D83I2EHwA==
+X-CSE-MsgGUID: jstpzW8eQhe2y+qgl1SR6w==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,174,1708416000"; 
+   d="scan'208";a="22737103"
+Received: from ijarvine-desk1.ger.corp.intel.com (HELO localhost) ([10.245.247.23])
+  by orviesa005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Apr 2024 04:45:17 -0700
+From: =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
+Date: Tue, 2 Apr 2024 14:45:12 +0300 (EEST)
+To: "fengchunguo@126.com" <fengchunguo@126.com>
+cc: Andy Shevchenko <andriy.shevchenko@linux.intel.com>, 
+    Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
+    Jiri Slaby <jirislaby@kernel.org>, LKML <linux-kernel@vger.kernel.org>, 
+    Gary Feng <chunguo.feng@semidrive.com>
+Subject: Re: [PATCH] tty: serial: fixed uart irq maybe cause irq storm
+In-Reply-To: <1711966746-225228-1-git-send-email-fengchunguo@126.com>
+Message-ID: <d7bf7c90-1d02-3058-3e8e-a5770010e52e@linux.intel.com>
+References: <1711966746-225228-1-git-send-email-fengchunguo@126.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1d1071f3-641a-4b7c-bd35-a629ba8d5a7b@moroto.mountain>
+Content-Type: text/plain; charset=US-ASCII
 
-On Tue, Apr 02, 2024 at 01:37:50PM +0300, Dan Carpenter wrote:
-> On Mon, Apr 01, 2024 at 09:22:52PM +0200, Alexander Wetzel wrote:
-> > 
-> > > Following kernel warnings have been noticed on qemu-x86_64 while running LTP
-> > > cve ioctl_sg01 tests the kernel with stable-rc 6.6.24-rc1, 6.7.12-rc1 and
-> > > 6.8.3-rc1.
-> > > 
-> > > We have started bi-secting this issue.
-> > > Always reproduced.
-> > > 
-> > > Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
-> > > 
-> > > ioctl_sg01.c:81: TINFO: Found SCSI device /dev/sg0
-> > > ------------[ cut here ]------------
-> > > [   36.606841] WARNING: CPU: 0 PID: 8 at drivers/scsi/sg.c:2237
-> > > sg_remove_sfp_usercontext+0x145/0x150
-> > > [   36.609445] Modules linked in:
-> > > [   36.610793] CPU: 0 PID: 8 Comm: kworker/0:0 Not tainted 6.6.24-rc1 #1
-> > > [   36.611568] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009),
-> > > BIOS 1.16.3-debian-1.16.3-2~bpo12+1 04/01/2014
-> > > [   36.612872] Workqueue: events sg_remove_sfp_usercontext
-> > > [   36.613691] RIP: 0010:sg_remove_sfp_usercontext+0x145/0x150
-> > > 
-> > > <trim>
-> > > 
-> > > [   36.621539] Call Trace:
-> > > [   36.621953]  <TASK>
-> > > [   36.622444]  ? show_regs+0x69/0x80
-> > > [   36.622819]  ? __warn+0x8d/0x150
-> > > [   36.623078]  ? sg_remove_sfp_usercontext+0x145/0x150
-> > > [   36.623558]  ? report_bug+0x171/0x1a0
-> > > [   36.623881]  ? handle_bug+0x42/0x80
-> > > [   36.624070]  ? exc_invalid_op+0x1c/0x70
-> > > [   36.624491]  ? asm_exc_invalid_op+0x1f/0x30
-> > > [   36.624897]  ? sg_remove_sfp_usercontext+0x145/0x150
-> > > [   36.625408]  process_one_work+0x141/0x300
-> > > [   36.625769]  worker_thread+0x2f6/0x430
-> > > [   36.626073]  ? __pfx_worker_thread+0x10/0x10
-> > > [   36.626529]  kthread+0x105/0x140
-> > > [   36.626778]  ? __pfx_kthread+0x10/0x10
-> > > [   36.627059]  ret_from_fork+0x41/0x60
-> > > [   36.627441]  ? __pfx_kthread+0x10/0x10
-> > > [   36.627735]  ret_from_fork_asm+0x1b/0x30
-> > > [   36.628293]  </TASK>
-> > > [   36.628604] ---[ end trace 0000000000000000 ]---
-> > > ioctl_sg01.c:122: TPASS: Output buffer is empty, no data leaked
-> > > 
-> > > Suspecting commit:
-> > > -----
-> > > scsi: sg: Avoid sg device teardown race
-> > > commit 27f58c04a8f438078583041468ec60597841284d upstream.
-> > > 
-> > 
-> > Correct. The issue is already been worked on.
-> > 
-> > commit 27f58c04a8f4 ("scsi: sg: Avoid sg device teardown race") fixed a real
-> > issue. But also added an incorrect WARN_ON_ONCE(). Thus the scary - but
-> > otherwise harmless - error message.
+On Mon, 1 Apr 2024, fengchunguo@126.com wrote:
+
+> From: "Gary Feng" <chunguo.feng@semidrive.com>
 > 
-> If you have Reboot on Oops turned on (apparently Android enables this)
-> then WARN() will reboot the system so it can be pretty annoying.
+> if not disable uart irq before disable clk,  uart irq maybe triggered after
+> disabled clk immediately, then maybe cause irq storm.
+> 
+> Reproduced the below call trace, see i2c not be connected, but irq storm
+> was triggered.
 
-Agreed, I've dropped this stable change for now because of this.
+This doesn't really explain what's going on here. Why is the irq being 
+triggered? You even seem to imply that nothing is connected so what 
+triggers is triggering that irq? Can we selectively disable only that 
+part, if it's e.g. empty tx condition or something?
 
-greg k-h
+> i2c_designware 30b70000.i2c: controller timed out
+> CPU: 2 PID: 2932 Comm: gnss@1.0-servic 
+> Tainted: G O 5.14.61-00094-geaa0149416cc-dirty #8
+> Hardware name: Semidrive kunlun x9 REF Board (DT)
+> Call trace:
+> [<ffff00000808a3cc>] dump_backtrace+0x0/0x3c0
+> [<ffff00000808a7a0>] show_stack+0x14/0x1c
+> [<ffff000008cef43c>] dump_stack+0xc4/0xfc
+> [<ffff00000814eb80>] __report_bad_irq+0x50/0xe0
+> [<ffff00000814eaec>] note_interrupt+0x248/0x28c
+> [<ffff00000814c0e8>] handle_irq_event+0x78/0xa4
+> [<ffff00000814fcb8>] handle_fasteoi_irq+0xe4/0x1b4
+> [<ffff00000814b060>] __handle_domain_irq+0x7c/0xbc
+> [<ffff00000808176c>] gic_handle_irq+0x4c/0xb8
+> [<ffff000008083230>] el1_irq+0xb0/0x124
+> [<ffff000008d09f5c>] _raw_spin_unlock_irqrestore+0x10/0x44
+> [<ffff00000865b784>] dw8250_set_termios+0x48/0xf4
+> [<ffff0000086545a4>] serial8250_set_termios+0x14/0x28
+> [<ffff00000864c4f4>] uart_change_speed+0x38/0x10c
+> [<ffff00000864e458>] uart_set_termios+0xd0/0x17c
+> [<ffff000008630ad4>] tty_set_termios+0x160/0x1e4
+> [<ffff00000863165c>] set_termios+0x32c/0x3bc
+> [<ffff000008631248>] tty_mode_ioctl+0x6f0/0x7d8
+> [<ffff000008631a6c>] n_tty_ioctl_helper+0x10c/0x1e8
+> [<ffff00000862d2c4>] n_tty_ioctl+0x120/0x194
+> [<ffff00000862a724>] tty_ioctl+0x658/0xa34
+> [<ffff0000082a8f40>] do_vfs_ioctl+0x554/0x810
+> [<ffff0000082a9368>] SyS_ioctl+0x88/0x94
+> Exception stack(0xffff00000ccf3ec0 to 0xffff00000ccf4000
+> 
+> Signed-off-by: chunguo.feng <chunguo.feng@semidrive.com>
+
+Use your real name on signed-off line too. On From line you seem to 
+provide different name as here.
+
+-- 
+ i.
+
+> ---
+>  drivers/tty/serial/8250/8250_dw.c | 9 +++++++++
+>  1 file changed, 9 insertions(+)
+> 
+> diff --git a/drivers/tty/serial/8250/8250_dw.c b/drivers/tty/serial/8250/8250_dw.c
+> index c1d43f0..133c24e 100644
+> --- a/drivers/tty/serial/8250/8250_dw.c
+> +++ b/drivers/tty/serial/8250/8250_dw.c
+> @@ -359,6 +359,12 @@ static void dw8250_set_termios(struct uart_port *p, struct ktermios *termios,
+>  
+>  	rate = clk_round_rate(d->clk, newrate);
+>  	if (rate > 0 && p->uartclk != rate) {
+> +		/*Need disable uart irq before disabled clk, because uart irq maybe triggered after
+> +		 * disabled clk immediately, then cause irq storm.
+> +		 */
+> +		if (p->irq)
+> +			disabled_irq(p->irq);
+> +
+>  		clk_disable_unprepare(d->clk);
+>  		/*
+>  		 * Note that any clock-notifer worker will block in
+> @@ -368,6 +374,9 @@ static void dw8250_set_termios(struct uart_port *p, struct ktermios *termios,
+>  		if (!ret)
+>  			p->uartclk = rate;
+>  		clk_prepare_enable(d->clk);
+> +
+> +		if (p->irq)
+> +			enable_irq(p->irq);
+>  	}
+>  
+>  	dw8250_do_set_termios(p, termios, old);
+> 
 
