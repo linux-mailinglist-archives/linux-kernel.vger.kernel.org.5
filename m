@@ -1,136 +1,181 @@
-Return-Path: <linux-kernel+bounces-128470-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-128471-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id EAE78895B3E
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 19:58:34 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B372E895B40
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 19:58:58 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8A4ECB24716
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 17:58:32 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D66A41C21DDE
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 17:58:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 72B6715AAC7;
-	Tue,  2 Apr 2024 17:58:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3AF1015AAD2;
+	Tue,  2 Apr 2024 17:58:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="UhTNg/XP"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="er8760qY"
+Received: from mail-pl1-f175.google.com (mail-pl1-f175.google.com [209.85.214.175])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5641D15AABA
-	for <linux-kernel@vger.kernel.org>; Tue,  2 Apr 2024 17:58:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 08B2215AABA;
+	Tue,  2 Apr 2024 17:58:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.175
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712080704; cv=none; b=mV4WJF2dA1hK317evuqfqO0TB23qTq982zIY5ayK4ClucOOCq8LArXKTgm7tsr42FsBifXWWIdu6mx4kEzIex7xuKppWiUSvbImplvhi2soQSmB6tbz/1dAZBJFvt+xHoeqrDLFVrlXBw3uRmdtQqy0v+2BnN3NqmZiK421G0Fg=
+	t=1712080728; cv=none; b=YNCD6oS/KB8esx8wtTailQnHp/TtMasd/bBl/umF+Q0l9mVPdwHrRIG6CSXKtEN+uw6zQxkqRwUNhJOzI6DvB5IuLqjk1riPMQD/NHw6tb5xrhMURVRC+gdJy6cJZtF59r5qXS22ZYaBVj1lXdliwF73NSNf2Zqv3HKBF2wVfNQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712080704; c=relaxed/simple;
-	bh=FBUk2UKTm5C5jiObsig5cVysbNmOkY70P/QraBD/Y7Y=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=kyHJSrsy1+7gwtXxSV/K8jbqSGESITTYuXoJ4z2LHLw3eKY7trFCNtcsRo1ewibOHOJVsMiRHo+E2a5I1TM+OQeLSG4Eva/U6H2lR8UXpWNCM1w2q0T4Tkp2tUiwY0oNkSJ/2gMM+b/BDi9RFFzkIJFun3DzS5g6DrVvAIGpsLo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=UhTNg/XP; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1712080702;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=QbOtfO/Dg9m2AlUnDgJHatWmb8CbT3I2rXBSbFfhdJY=;
-	b=UhTNg/XPtc7hgQsz8u4FV1NdMiuxMAnM/F9vzyvMFTahGOWlBYPy2RK1YiDt3E5/r5wvnx
-	uU4FBhVU+oM39GSFc9thnjr/lEqz+8k4yBd1NE3QsNCPsH8/vBJJZG0dctaC/Vo6VdOKE9
-	8Okvzgp112eqIkOqRtmGjrOA+QgL/eA=
-Received: from mail-vk1-f199.google.com (mail-vk1-f199.google.com
- [209.85.221.199]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-572-6VvuqlXcPYWRqDozlribJg-1; Tue, 02 Apr 2024 13:58:18 -0400
-X-MC-Unique: 6VvuqlXcPYWRqDozlribJg-1
-Received: by mail-vk1-f199.google.com with SMTP id 71dfb90a1353d-4d455b9df33so333458e0c.0
-        for <linux-kernel@vger.kernel.org>; Tue, 02 Apr 2024 10:58:18 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712080698; x=1712685498;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+	s=arc-20240116; t=1712080728; c=relaxed/simple;
+	bh=CckikFIEdka9zckJdLB6X9WogvFT5kc+ADx3ZTqUgSw=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=p/HnpoHWaNRleN0Xz9XpckIvvBTDZz5ClB+WHb8n1qUTslstQ6hsj9h0AgFe8Hvlbr0BsSwZRSHGQv025OLgVYSzQmbrsbsh4F26B2Us81/5LAp0hhNFjQmN7CGnPta6CCl0dhz9bCrsHnUoGZSebBWF6aZkTVq5rG3izm6eNzI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=er8760qY; arc=none smtp.client-ip=209.85.214.175
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f175.google.com with SMTP id d9443c01a7336-1e244c7cbf8so23258395ad.0;
+        Tue, 02 Apr 2024 10:58:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1712080726; x=1712685526; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=QbOtfO/Dg9m2AlUnDgJHatWmb8CbT3I2rXBSbFfhdJY=;
-        b=dG1T2tqCt8ud0OuuN2hq2CuLJT3WvXe0lWhH3S060LFwUOCcMmzepQJ+tkne/1w/d5
-         KwNDo1kiFtemttM8lO+Pov5bt5jS3QuXTd8+dpx4xV7Rvw1XcofGk3aEkX79OaOG3e8U
-         q8J4s99HTckgSWqL7H8ipT5Copo856sQqjeocDLuOiGzDBwP9SLTrE98zp5P9vhSeO1T
-         hiOuJlapb1q+yWbLCAUHNuTSJEBExqAico4FOaKOradzS+Lju1WiuZ0czv1E7qytSTyJ
-         ak6kRB7wofQGVnn/zZrMVyPjopiUO8+w7UTndpI4OSQH/lkL/3KKc/pNQvR4cvysgWmh
-         H67A==
-X-Forwarded-Encrypted: i=1; AJvYcCXeK1fK8x+pYoGUMdAiv9JBzrRj5W3xaVmaAteFwpAX2crm8bQekZt87qkEdii325tKLZOBxW2vtG38bJMM/WAcQQk7JlTjY9rFgjvd
-X-Gm-Message-State: AOJu0Yxvd5qJpmalmXOaCeSXPxUal+3dZiNfpkC8aa0kEQ0xtZib5Km2
-	DH1wLW/3Sra+08zMYMVCZk+93c03L7ZOajgAis9S5gxY9cGO1PbFz4dnSQO/+ucfcfvvTHTPzDR
-	YlNLnde07E/H3EduOoGeY76YevjqjJfliK1vg9xOHXH6IN/pimnQNTlKnn2bmeQ==
-X-Received: by 2002:a05:6102:93:b0:476:e72e:94ef with SMTP id t19-20020a056102009300b00476e72e94efmr9650791vsp.3.1712080697546;
-        Tue, 02 Apr 2024 10:58:17 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IF8b3uQ69B5cqo+ud6RtEbqNi2TEDMHUU32VESs2Pw1E24CP/zf32LkrpOQk6Mcp1ToEoA3Uw==
-X-Received: by 2002:a05:6102:93:b0:476:e72e:94ef with SMTP id t19-20020a056102009300b00476e72e94efmr9650757vsp.3.1712080696946;
-        Tue, 02 Apr 2024 10:58:16 -0700 (PDT)
-Received: from x1n ([99.254.121.117])
-        by smtp.gmail.com with ESMTPSA id kk15-20020a056214508f00b00696a78b9cc6sm5720428qvb.53.2024.04.02.10.58.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 02 Apr 2024 10:58:16 -0700 (PDT)
-Date: Tue, 2 Apr 2024 13:58:12 -0400
-From: Peter Xu <peterx@redhat.com>
-To: Ryan Roberts <ryan.roberts@arm.com>
-Cc: David Hildenbrand <david@redhat.com>, linux-mm@kvack.org,
-	linux-kernel@vger.kernel.org, Yang Shi <shy828301@gmail.com>,
-	"Kirill A . Shutemov" <kirill@shutemov.name>,
-	Mike Kravetz <mike.kravetz@oracle.com>,
-	John Hubbard <jhubbard@nvidia.com>,
-	Michael Ellerman <mpe@ellerman.id.au>,
-	Andrew Jones <andrew.jones@linux.dev>,
-	Muchun Song <muchun.song@linux.dev>,
-	linux-riscv@lists.infradead.org, linuxppc-dev@lists.ozlabs.org,
-	Christophe Leroy <christophe.leroy@csgroup.eu>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Christoph Hellwig <hch@infradead.org>,
-	Lorenzo Stoakes <lstoakes@gmail.com>,
-	Matthew Wilcox <willy@infradead.org>,
-	Rik van Riel <riel@surriel.com>,
-	linux-arm-kernel@lists.infradead.org,
-	Andrea Arcangeli <aarcange@redhat.com>,
-	"Aneesh Kumar K . V" <aneesh.kumar@kernel.org>,
-	Vlastimil Babka <vbabka@suse.cz>,
-	James Houghton <jthoughton@google.com>,
-	Jason Gunthorpe <jgg@nvidia.com>, Mike Rapoport <rppt@kernel.org>,
-	Axel Rasmussen <axelrasmussen@google.com>
-Subject: Re: [PATCH v4 13/13] mm/gup: Handle hugetlb in the generic
- follow_page_mask code
-Message-ID: <ZgxHNKbDnIIs7n2r@x1n>
-References: <20240327152332.950956-1-peterx@redhat.com>
- <20240327152332.950956-14-peterx@redhat.com>
- <adfdd89b-ee56-4758-836e-c66a0be7de25@arm.com>
- <5d9dd9a7-e544-4741-944c-469b79c2c649@redhat.com>
- <ZgwwOq3XXKlS_7LQ@x1n>
- <f4aff3e9-1d78-4bb8-a6f3-2887b9928b54@arm.com>
+        bh=E+eeJaOo2zbz2WTbCF4Si6uwF5B92wp+mvI31Obgdqw=;
+        b=er8760qYfH0a5PhmgOhiseQXy7e6PZ4NpjCOWvntt0y4YG1ATppHrjIlmHD7K5lKXS
+         1HHfAyz/Xu2A5+ZP79V/JuAPdzeJRG8l2EzBI+vrOOapSzTU3rj8P3lFjg56Tl7HfcaM
+         3+cuViVlruX+4UZflTt3nN6wTxPAmfmnTd5YsEu9s58hac7jj+g1iLiwG0qYlqgcthU2
+         D4FS1MsElurmDuD3M5Mb4noO6bU3V5NXt84uGOx/yruecYQzQ3Wmrmwq5zXmB1WjzF27
+         ufnR76aQJKoZ+33m6u7bAlMi7lGVRlYyuW80kQlSVV8jZsK30xxfBFEubGdU/H+ksdDF
+         7tJw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712080726; x=1712685526;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=E+eeJaOo2zbz2WTbCF4Si6uwF5B92wp+mvI31Obgdqw=;
+        b=WoyBfM0Q77HRUPIGtLSbRQgG0uK1yCGVcrMwFlcyFhTUH53IxSwB3JeVJzMGEBencW
+         KOccZJKR/pzBKMHGXyrKy0daULX/i4FLTCmoUqbwobmxauafRHQT/iwBWXBmKaj5tGus
+         KwPgSlBbIGYsXh/pmX2q6/LDvMotCQ+JRg/xnypFoaWXpfBR9GdwQIXRtnXrGaktRU3c
+         8XQHVXE8j6XN34jNvKDqIr5hsiG/jX3fH61SLJyZQsh/0zb5pNHRyX7Sku89CLFCTTIz
+         o1dabC2yW1eJVtoHpY2JyCElbcqpRWBI0/zsUTHARt9lx+X0PMNg8NLaiemzouMy2YYM
+         fkSg==
+X-Forwarded-Encrypted: i=1; AJvYcCXTjDZCbqUrN3FdudjRaX2RGWei4GVOHXsUQBqqBUc2C7zmmKVK0Tvsafd5B0FxXh4zAhwSl214aidCWO+WlL4+B/O+jqatxhtXOcRZt6Nxpvi3b2FeXO5XFsj2GbXO5u3x
+X-Gm-Message-State: AOJu0YzW/M3sWR6UxfCYgJ7h0gPByIXgn5pdrb+2yH1gyQyWzoip4kVz
+	wNg47n31yrmFfajaPzu9f1SSQTn4xG0WDRRJsPRFu59412/kO5AK4J1AMtsN98LQDa7zsx5ZBz+
+	Icodn2LPS3tBoxTipkJHBU48bZak=
+X-Google-Smtp-Source: AGHT+IEok5isFVFKmsQdGq2BkvHNiNZArRXmmLtHuhQhirxy9paVnrknUWcindrLjLmMS4jDaxct0el+kIfHgvRll+Y=
+X-Received: by 2002:a17:902:f606:b0:1e2:88fd:c220 with SMTP id
+ n6-20020a170902f60600b001e288fdc220mr425236plg.44.1712080725946; Tue, 02 Apr
+ 2024 10:58:45 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <f4aff3e9-1d78-4bb8-a6f3-2887b9928b54@arm.com>
+References: <20240401073159.16668-1-andrea.righi@canonical.com> <20240401073159.16668-2-andrea.righi@canonical.com>
+In-Reply-To: <20240401073159.16668-2-andrea.righi@canonical.com>
+From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date: Tue, 2 Apr 2024 10:58:33 -0700
+Message-ID: <CAEf4BzbJE-Y72VqYXCDfwRXjhknVK+GHYjRfxdajzAEwjUkwUg@mail.gmail.com>
+Subject: Re: [PATCH 1/2] libbpf: ringbuf: allow to consume up to a certain
+ amount of items
+To: Andrea Righi <andrea.righi@canonical.com>
+Cc: Andrii Nakryiko <andrii@kernel.org>, Eduard Zingerman <eddyz87@gmail.com>, 
+	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>, 
+	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, 
+	Jiri Olsa <jolsa@kernel.org>, David Vernet <void@manifault.com>, Tejun Heo <tj@kernel.org>, 
+	bpf@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Tue, Apr 02, 2024 at 05:46:57PM +0100, Ryan Roberts wrote:
-> I'll leave you to do the testing on this, if that's ok.
+On Mon, Apr 1, 2024 at 12:32=E2=80=AFAM Andrea Righi <andrea.righi@canonica=
+l.com> wrote:
+>
+> In some cases, instead of always consuming all items from ring buffers
+> in a greedy way, we may want to consume up to a certain amount of items,
+> for example when we need to copy items from the BPF ring buffer to a
+> limited user buffer.
+>
+> This change allows to set an upper limit to the amount of items consumed
+> from one or more ring buffers.
+>
+> Link: https://lore.kernel.org/lkml/20240310154726.734289-1-andrea.righi@c=
+anonical.com/T
+> Signed-off-by: Andrea Righi <andrea.righi@canonical.com>
+> ---
+>  tools/lib/bpf/ringbuf.c | 29 +++++++++++++++++------------
+>  1 file changed, 17 insertions(+), 12 deletions(-)
+>
+> diff --git a/tools/lib/bpf/ringbuf.c b/tools/lib/bpf/ringbuf.c
+> index aacb64278a01..81df535040d1 100644
+> --- a/tools/lib/bpf/ringbuf.c
+> +++ b/tools/lib/bpf/ringbuf.c
+> @@ -231,7 +231,7 @@ static inline int roundup_len(__u32 len)
+>         return (len + 7) / 8 * 8;
+>  }
+>
+> -static int64_t ringbuf_process_ring(struct ring *r)
+> +static int64_t ringbuf_process_ring(struct ring *r, int64_t max_items)
+>  {
+>         int *len_ptr, len, err;
+>         /* 64-bit to avoid overflow in case of extreme application behavi=
+or */
+> @@ -264,7 +264,14 @@ static int64_t ringbuf_process_ring(struct ring *r)
+>                                                           cons_pos);
+>                                         return err;
+>                                 }
+> -                               cnt++;
+> +                               if (++cnt >=3D max_items) {
+> +                                       /* update consumer pos and return=
+ the
+> +                                        * total amount of items consumed=
+.
+> +                                        */
+> +                                       smp_store_release(r->consumer_pos=
+,
+> +                                                         cons_pos);
 
-Definitely.  I'll test and send formal patches.
+Does this fit on a single line under 100 characters? If yes, please
+keep it as a single line
 
-> 
-> Just to make my config explicit, I have this kernel command line, which reserves
-> hugetlbs of all sizes for the tests:
-> 
-> "transparent_hugepage=madvise earlycon root=/dev/vda2 secretmem.enable
-> hugepagesz=1G hugepages=0:2,1:2 hugepagesz=32M hugepages=0:2,1:2
-> default_hugepagesz=2M hugepages=0:64,1:64 hugepagesz=64K hugepages=0:2,1:2"
+but actually it seems cleaner to keep cnt++ intact, let
+smp_store_release() below happen, and then check the exit condition.
+Were you afraid to do unnecessary checks on discarded samples? I
+wouldn't worry about that.
 
-This helps, thanks.
+> +                                       goto done;
+> +                               }
+>                         }
+>
+>                         smp_store_release(r->consumer_pos, cons_pos);
+> @@ -281,19 +288,18 @@ static int64_t ringbuf_process_ring(struct ring *r)
+>   */
+>  int ring_buffer__consume(struct ring_buffer *rb)
+>  {
+> -       int64_t err, res =3D 0;
+> +       int64_t err, res =3D 0, max_items =3D INT_MAX;
 
--- 
-Peter Xu
+I'm wondering if it might be better to have a convention that zero
+means "no limit", which might allow the compiler to eliminate the
+condition in ringbuf_process_ring altogether due to constant
+propagation. WDYT?
 
+>         int i;
+>
+>         for (i =3D 0; i < rb->ring_cnt; i++) {
+>                 struct ring *ring =3D rb->rings[i];
+>
+> -               err =3D ringbuf_process_ring(ring);
+> +               err =3D ringbuf_process_ring(ring, max_items);
+>                 if (err < 0)
+>                         return libbpf_err(err);
+>                 res +=3D err;
+> +               max_items -=3D err;
+>         }
+> -       if (res > INT_MAX)
+> -               return INT_MAX;
+>         return res;
+>  }
+
+[...]
 
