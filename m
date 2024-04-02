@@ -1,82 +1,111 @@
-Return-Path: <linux-kernel+bounces-127242-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-127243-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1E54389488B
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 02:58:03 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 471918948A3
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 03:16:13 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id BFAC61F21ADA
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 00:58:02 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7E029282D79
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 01:16:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2C0536FB1;
-	Tue,  2 Apr 2024 00:57:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linux.org.uk header.i=@linux.org.uk header.b="V5MN0H9A"
-Received: from zeniv.linux.org.uk (zeniv.linux.org.uk [62.89.141.173])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C626F10E4
-	for <linux-kernel@vger.kernel.org>; Tue,  2 Apr 2024 00:57:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=62.89.141.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AACF1C8C7;
+	Tue,  2 Apr 2024 01:16:01 +0000 (UTC)
+Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7F1CB6FD9;
+	Tue,  2 Apr 2024 01:15:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=114.242.206.163
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712019475; cv=none; b=kvH2WiziWQK7x6UByDVl3ulXOOwNyu9MYaKKGpIQa6DL5vuV6qvOs8VOGRXfyslW4Ed31IHQFBfVkJG+OBXoL5mFYd5x7OLCRVubKF90Niawo1JtqrPjR4RyUZOG10enMXXXz18DNYeRAPAUjb35lCV4fc9XsAHGnkhDXl+hAx4=
+	t=1712020561; cv=none; b=GhblaXKWhzLeT5F4jceQ0T2K9xDLc3Ig5UMJC9rRr1N3EppVhUPwbQRFc6WhILB5xZ71z4AfvCq0+ogGVcD2IvWXw29AYmltRzuJV4dPrdEY4aHpUnRlS/JRaC+jNGG2mU2SegMYw9QaS8YkPcPqd4p/hXexP3mBSC7gaOAoJlA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712019475; c=relaxed/simple;
-	bh=mdX/zocFGi8Z/qg02EaM5C4nmq6umUxIBi5Es44T1RM=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ay/MIe2DY6Br6flatVCCcrvC4YjmqJogQylKyBcrWaHpye5iPWSDTrN1wTfqBdib9c4UKirzhRrJusU1ds0BpB9kMP7VU41pJIwlGU0sQ2WuHimUg1ZKabyZ01EAaRciwihmhiUIlbyG37PV3nxaPKEHS5pwmhR3epquXKnk5jE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zeniv.linux.org.uk; spf=none smtp.mailfrom=ftp.linux.org.uk; dkim=pass (2048-bit key) header.d=linux.org.uk header.i=@linux.org.uk header.b=V5MN0H9A; arc=none smtp.client-ip=62.89.141.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zeniv.linux.org.uk
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=ftp.linux.org.uk
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=linux.org.uk; s=zeniv-20220401; h=Sender:In-Reply-To:Content-Type:
-	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=suK68QcHJYTLzDpzyhvm9yLtrwLoePi2gZr24hTu5zc=; b=V5MN0H9AvSSw0EyKTUczgrq8w2
-	DnGO5vK5wCWjumK8zm143W+JqNDbEEndW6W11OEHS/VVX22te+4VqGdPSlgroN7f6ZjrkBXvDjPPL
-	lTDW01rDeUm5+8i9Nj/dGNM93z+XoC3RIm0UTVlBxCtnrE9qweJ4a5gPcx04XhY+rXzSuhI8Vr//R
-	X7SOVBGSsab1CnZoI+GmEjTDkfGhKrvFzz85DcD05jecqoce8SsS3PYJyzmctLP195txLnxR1v9j1
-	DjP62f2Z0aqTW0Xlmse+JJ/YcW09OuO+LxpkOa5CLUgEOuHYmCUm3AxQW/rkImWcoWClxQjesnPiJ
-	nos73Krg==;
-Received: from viro by zeniv.linux.org.uk with local (Exim 4.96 #2 (Red Hat Linux))
-	id 1rrSTG-003qhS-0e;
-	Tue, 02 Apr 2024 00:57:50 +0000
-Date: Tue, 2 Apr 2024 01:57:50 +0100
-From: Al Viro <viro@zeniv.linux.org.uk>
-To: Maxim Moskalets <maximmosk4@gmail.com>
-Cc: linux-kernel@vger.kernel.org,
-	Maxim Moskalets <Maxim.Moskalets@kaspersky.com>
-Subject: Re: [PATCH 0/8] kernel: replace seq_puts by seq_putc
-Message-ID: <20240402005750.GD538574@ZenIV>
-References: <20240326184514.8478-1-Maxim.Moskalets@kaspersky.com>
+	s=arc-20240116; t=1712020561; c=relaxed/simple;
+	bh=8xe9EHnD1Z7Ql0v2jfMirkIGsHMGEqtuaUuaCXmxea4=;
+	h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
+	 In-Reply-To:Content-Type; b=r3VF/Ky781p16lecqQSdwVAl0YBasq4Y06p5RuIdtk1Jd+0xFYjRThjUyYqMyRwLw7gAZAYZ9kEB8ooZDZndFZguijdKgNLkWnTdhqMU3Tpu7Y7KtJxxWiyQWRYCZjDylAOHIoKW8b92YIZOxG5H3clrGF/7C80BQ3koOGzIJC8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=loongson.cn; spf=pass smtp.mailfrom=loongson.cn; arc=none smtp.client-ip=114.242.206.163
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=loongson.cn
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=loongson.cn
+Received: from loongson.cn (unknown [10.20.42.173])
+	by gateway (Coremail) with SMTP id _____8AxafBMXAtmRSgiAA--.13600S3;
+	Tue, 02 Apr 2024 09:15:56 +0800 (CST)
+Received: from [10.20.42.173] (unknown [10.20.42.173])
+	by localhost.localdomain (Coremail) with SMTP id AQAAf8AxxxFHXAtmbT5xAA--.12076S3;
+	Tue, 02 Apr 2024 09:15:53 +0800 (CST)
+Subject: Re: [PATCH v7 7/7] Documentation: KVM: Add hypercall for LoongArch
+To: WANG Xuerui <kernel@xen0n.name>, Huacai Chen <chenhuacai@kernel.org>,
+ Tianrui Zhao <zhaotianrui@loongson.cn>, Juergen Gross <jgross@suse.com>,
+ Paolo Bonzini <pbonzini@redhat.com>, Jonathan Corbet <corbet@lwn.net>
+Cc: loongarch@lists.linux.dev, linux-kernel@vger.kernel.org,
+ virtualization@lists.linux.dev, kvm@vger.kernel.org
+References: <20240315080710.2812974-1-maobibo@loongson.cn>
+ <20240315081104.2813031-1-maobibo@loongson.cn>
+ <68473508-dbf1-4875-a392-88ca09f7ea63@xen0n.name>
+From: maobibo <maobibo@loongson.cn>
+Message-ID: <0bdcaf41-c54d-9f39-0dd2-3b3d2a954649@loongson.cn>
+Date: Tue, 2 Apr 2024 09:15:51 +0800
+User-Agent: Mozilla/5.0 (X11; Linux loongarch64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240326184514.8478-1-Maxim.Moskalets@kaspersky.com>
-Sender: Al Viro <viro@ftp.linux.org.uk>
+In-Reply-To: <68473508-dbf1-4875-a392-88ca09f7ea63@xen0n.name>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID:AQAAf8AxxxFHXAtmbT5xAA--.12076S3
+X-CM-SenderInfo: xpdruxter6z05rqj20fqof0/
+X-Coremail-Antispam: 1Uk129KBj9xXoWrtr4xCw17tFy7CF18Zr4fZwc_yoWDKFgEv3
+	y0qF4UGws0gr4293W8Cr43XrW2vFWDGryIqw4qqasrZryftayDGFWDur93CF4xJFW3Jr1Y
+	93Z0gw4S9wnruosvyTuYvTs0mTUanT9S1TB71UUUUj7qnTZGkaVYY2UrUUUUj1kv1TuYvT
+	s0mT0YCTnIWjqI5I8CrVACY4xI64kE6c02F40Ex7xfYxn0WfASr-VFAUDa7-sFnT9fnUUI
+	cSsGvfJTRUUUbDkYFVCjjxCrM7AC8VAFwI0_Jr0_Gr1l1xkIjI8I6I8E6xAIw20EY4v20x
+	vaj40_Wr0E3s1l1IIY67AEw4v_Jrv_JF1l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0rcxS
+	w2x7M28EF7xvwVC0I7IYx2IY67AKxVW8JVW5JwA2z4x0Y4vE2Ix0cI8IcVCY1x0267AKxV
+	W8JVWxJwA2z4x0Y4vEx4A2jsIE14v26r4j6F4UM28EF7xvwVC2z280aVCY1x0267AKxVW8
+	JVW8Jr1ln4kS14v26r126r1DM2AIxVAIcxkEcVAq07x20xvEncxIr21l57IF6xkI12xvs2
+	x26I8E6xACxx1l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r126r1D
+	McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lc7
+	I2V7IY0VAS07AlzVAYIcxG8wCY1x0262kKe7AKxVWUAVWUtwCF04k20xvY0x0EwIxGrwCF
+	x2IqxVCFs4IE7xkEbVWUJVW8JwCFI7km07C267AKxVWUAVWUtwC20s026c02F40E14v26r
+	1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_Jw0_GFylIxkGc2Ij
+	64vIr41lIxAIcVC0I7IYx2IY67AKxVWUCVW8JwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Jr
+	0_Gr1lIxAIcVCF04k26cxKx2IYs7xG6r1j6r1xMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF
+	0xvEx4A2jsIEc7CjxVAFwI0_Jr0_GrUvcSsGvfC2KfnxnUUI43ZEXa7IU8Dl1DUUUUU==
 
-On Tue, Mar 26, 2024 at 09:45:14PM +0300, Maxim Moskalets wrote:
-> Using seq_putc for single characters is faster and more appropriate
-> than seq_puts, since only one character is passed and there is no need
-> to use a more powerful and less fast function.
 
-Could we simply do this:
 
-static inline void seq_puts(struct seq_file *m, const char *s)
-{
-	if (__builtin_constant_p(*s) && s[0] && !s[1])
-		seq_putc(m, s[0]);
-	else
-		__seq_puts(m, s);
-}
+On 2024/3/24 上午2:40, WANG Xuerui wrote:
+> On 3/15/24 16:11, Bibo Mao wrote:
+>> [snip]
+>> +KVM hypercall ABI
+>> +=================
+>> +
+>> +Hypercall ABI on KVM is simple, only one scratch register a0 and at most
+>> +five generic registers used as input parameter. FP register and 
+>> vector register
+>> +is not used for input register and should not be modified during 
+>> hypercall.
+>> +Hypercall function can be inlined since there is only one scratch 
+>> register.
+> 
+> Maybe it's better to describe the list of preserved registers with an 
+> expression such as "all non-GPR registers shall remain unmodified after 
+> returning from the hypercall", to guard ourselves against future ISA 
+> state additions.
+Sorry, I do not understand. What is the meaning of "all non-GPR 
+registers"?  Can you give an example?
 
-IIRC, __builtin_constant_p(*s) is true when s is a string literal.
-Works for recent gcc and clang...
+Regards
+Bibo Mao
+> 
+> But I still maintain that it's better to promise less here, and only 
+> hint on the extensive preservation of context as an implementation 
+> detail. It is for not losing our ability to save/restore less in the 
+> future, should we decide to do so.
+> 
+
 
