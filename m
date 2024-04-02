@@ -1,39 +1,74 @@
-Return-Path: <linux-kernel+bounces-128199-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-128200-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id CC674895773
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 16:51:08 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6339F895776
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 16:51:26 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 82012283F85
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 14:51:07 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 956701C22AEC
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 14:51:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F3AF612F362;
-	Tue,  2 Apr 2024 14:48:24 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6DA6912BE80
-	for <linux-kernel@vger.kernel.org>; Tue,  2 Apr 2024 14:48:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9E3BE12F39B;
+	Tue,  2 Apr 2024 14:48:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="nba6eKTl"
+Received: from mail-lf1-f46.google.com (mail-lf1-f46.google.com [209.85.167.46])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 126AE12BF23
+	for <linux-kernel@vger.kernel.org>; Tue,  2 Apr 2024 14:48:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712069304; cv=none; b=JtSHmjlhjRXZzA/a69MujqZvzrvwJ8lZRSdO6BIR131Ds6SNHvwhtmXOqPgWcTyhxuolZXqt0jqDS33MwsJLDjB8xW/7d9U/nbl1APaHf1r+B+LmScW1K93peTcohWbONLXAEceChPQk5okwUUvcxn5RPUIwoDVrEJjkCvmsXZg=
+	t=1712069326; cv=none; b=puBGloWAnPvoBVzyG54THcHSscUmKuEfts1m7SlSd4REe3CU4Wn4/eOd+lzK+48xgsa43JNewdHMMXDsCYgErHY/UDgUKQXq4EGTl9gung147kIhayHZerd5y6ZOwjDeEp4XWRrElkTUhRCu3tRrkR/5aLCgoYc8PuHEV4SGWHY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712069304; c=relaxed/simple;
-	bh=MyCn+89ePQh9H3ekwTWPNjtTEv7moIOCy/FgCJWx+Ns=;
+	s=arc-20240116; t=1712069326; c=relaxed/simple;
+	bh=ic4V7WnlJtfSyGKZ2TLFxgkfjXXzDHkprmFCWInZtUY=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=oHR3vubPoLkzdo9WmQTHaB+LDAcTBKY1a5eo3re/6BuFl4pKaPcFe5U6mtHB0Bp3YgWL6PZ2DvB5+aS1DMChrDD7D2lh8zBnD3pfUYFLbHW/cKiYWTL4hBzYjWFLziAPslxaJH6uXJY4RTq1fx8STVZbg3k5bDlQjIn+Sfya+6c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 00D961007;
-	Tue,  2 Apr 2024 07:48:52 -0700 (PDT)
-Received: from [10.1.38.163] (XHFQ2J9959.cambridge.arm.com [10.1.38.163])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 7C1E13F64C;
-	Tue,  2 Apr 2024 07:48:17 -0700 (PDT)
-Message-ID: <adfdd89b-ee56-4758-836e-c66a0be7de25@arm.com>
-Date: Tue, 2 Apr 2024 15:48:16 +0100
+	 In-Reply-To:Content-Type; b=WClixxPm2y7ZiCEqP4VEuCM07K9Qgjvdyc4HLR4ls2yPbWL9dWBB3YVRzR+lbGVDIi3BfaZZCRMVYW7uFFgP5kSeZwUllActquzjjzQK0ydJEHummAL5Mev5Ye7m8DQ8WqqD0thJiLQ78adWEa6O2NT9aMeZgRHMsOBGoFQYDeM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=nba6eKTl; arc=none smtp.client-ip=209.85.167.46
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-lf1-f46.google.com with SMTP id 2adb3069b0e04-516b80252c6so595284e87.0
+        for <linux-kernel@vger.kernel.org>; Tue, 02 Apr 2024 07:48:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1712069323; x=1712674123; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
+        bh=UKa91rDf1nIX7qAe0v7E10VCzydbtalm9L4mheenyOk=;
+        b=nba6eKTlfP5lSR8pz8sNsMaDeB3SWjDvgGB9f6VTML5NtQ7nwLN/FqHyaa6+bzbtD5
+         chnXWAJKmZgm9RF8XA9/YgeyUTpJtib5Myhj0zdwX7l9Gw9x6KQu/XDYwXiKd/h+OTUo
+         SnNpsk/dIm2FiGk9Sw1TenVyB+VbX0y7jgduum40mH7msU5TULlfVoHwEwI3b68uAg6b
+         ENrAnDJ76IwQnbPWu7PS4G145u3xKrmXj2tK0Or0eHMpuMwxWcspGlWJzbyqTL05UNd6
+         chDB56FrZvuLcJB2cwwXgBuWWI5fvg1ZtrVXhyhZrAP1rP5qNPFDNwulq1c27JCUd1KH
+         VTsA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712069323; x=1712674123;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=UKa91rDf1nIX7qAe0v7E10VCzydbtalm9L4mheenyOk=;
+        b=KTZxFT5DMJckv9HgNo3tos718jHzy4sK8ZVcPyaJtBzmxXVMTWxJu/XSH/bQEfJnN9
+         qcWp+lLOpGbkb3SHfcsdAm070dxpUQ1m6R/HMZOQbItOvgWVaSMLJ+6MsxlMcYoWD+pZ
+         ciMGCuGlkXlFwzi5mDZBI68Oa4r2TaSJmSa3guuiAZkV2ptF5OlEOQYNVBgZJI+zTEpf
+         jIGuwxfIiHtFBH5QcnbV7+4OMwYAZTN+JlzC5tb23x20T+YZJylfZiBfm9MBnfLXgSsM
+         bCbPkcjowjKdgjBA1IkBKKHAD/Oa4FZFiAkFR9QYOaeI7ao2VxeGx+HzIloqmwVfRmoX
+         NtiA==
+X-Forwarded-Encrypted: i=1; AJvYcCVlyAw+zaudu0OhyMpQRLJNBZ58691MAqCr2+Kk0jN3dnargoU2ZKrMFVinQaz+nNe6LNqGkv8N+LKIi6RCekLtSsQ3kHVpkmLO9Hwr
+X-Gm-Message-State: AOJu0Yxq3ODM2NmoA0/REgvuIJUNkype/JMib5kYyKYVA1EVCa0HyQyN
+	+LoM/3s6FBHQrrZwGavKcnJCGqA16PQceIfU4RQ3I04d+EGfEpHq6V6Q2ggI8Zg=
+X-Google-Smtp-Source: AGHT+IHDLBLNlhpjUxt6Kq3W/EygVN2qBukJRlMwGqfKKGDXH79X1SJfTm9XdmaPjLnSeKf3QNaGZg==
+X-Received: by 2002:a05:6512:943:b0:513:3d98:43f with SMTP id u3-20020a056512094300b005133d98043fmr7331964lft.61.1712069323025;
+        Tue, 02 Apr 2024 07:48:43 -0700 (PDT)
+Received: from [192.168.92.47] (078088045141.garwolin.vectranet.pl. [78.88.45.141])
+        by smtp.gmail.com with ESMTPSA id ew12-20020a056402538c00b0056a033fa007sm6780885edb.64.2024.04.02.07.48.41
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 02 Apr 2024 07:48:42 -0700 (PDT)
+Message-ID: <e2206445-d560-43ad-8fb1-f0b4967493f2@linaro.org>
+Date: Tue, 2 Apr 2024 16:48:40 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -41,329 +76,69 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v4 13/13] mm/gup: Handle hugetlb in the generic
- follow_page_mask code
-Content-Language: en-GB
-To: peterx@redhat.com, linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Cc: Yang Shi <shy828301@gmail.com>, "Kirill A . Shutemov"
- <kirill@shutemov.name>, Mike Kravetz <mike.kravetz@oracle.com>,
- John Hubbard <jhubbard@nvidia.com>, Michael Ellerman <mpe@ellerman.id.au>,
- Andrew Jones <andrew.jones@linux.dev>, Muchun Song <muchun.song@linux.dev>,
- linux-riscv@lists.infradead.org, linuxppc-dev@lists.ozlabs.org,
- Christophe Leroy <christophe.leroy@csgroup.eu>,
- Andrew Morton <akpm@linux-foundation.org>,
- Christoph Hellwig <hch@infradead.org>, Lorenzo Stoakes <lstoakes@gmail.com>,
- Matthew Wilcox <willy@infradead.org>, Rik van Riel <riel@surriel.com>,
- linux-arm-kernel@lists.infradead.org, Andrea Arcangeli
- <aarcange@redhat.com>, David Hildenbrand <david@redhat.com>,
- "Aneesh Kumar K . V" <aneesh.kumar@kernel.org>,
- Vlastimil Babka <vbabka@suse.cz>, James Houghton <jthoughton@google.com>,
- Jason Gunthorpe <jgg@nvidia.com>, Mike Rapoport <rppt@kernel.org>,
- Axel Rasmussen <axelrasmussen@google.com>
-References: <20240327152332.950956-1-peterx@redhat.com>
- <20240327152332.950956-14-peterx@redhat.com>
-From: Ryan Roberts <ryan.roberts@arm.com>
-In-Reply-To: <20240327152332.950956-14-peterx@redhat.com>
+Subject: Re: [PATCH] scsi: ufs: qcom: Add missing interconnect bandwidth
+ values for Gear 5
+To: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+ Bjorn Andersson <andersson@kernel.org>,
+ "James E.J. Bottomley" <jejb@linux.ibm.com>,
+ "Martin K. Petersen" <martin.petersen@oracle.com>
+Cc: linux-arm-msm@vger.kernel.org, linux-scsi@vger.kernel.org,
+ linux-kernel@vger.kernel.org, Amit Pundir <amit.pundir@linaro.org>
+References: <20240401-ufs-icc-fix-v1-1-3bac41bdfa7a@linaro.org>
+Content-Language: en-US
+From: Konrad Dybcio <konrad.dybcio@linaro.org>
+Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
+ 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
+ izWDgYvmBE8=
+In-Reply-To: <20240401-ufs-icc-fix-v1-1-3bac41bdfa7a@linaro.org>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 
-Hi Peter,
-
-On 27/03/2024 15:23, peterx@redhat.com wrote:
-> From: Peter Xu <peterx@redhat.com>
+On 1.04.2024 5:09 PM, Manivannan Sadhasivam wrote:
+> These entries are necessary to scale the interconnect bandwidth while
+> operating in Gear 5.
 > 
-> Now follow_page() is ready to handle hugetlb pages in whatever form, and
-> over all architectures.  Switch to the generic code path.
-> 
-> Time to retire hugetlb_follow_page_mask(), following the previous
-> retirement of follow_hugetlb_page() in 4849807114b8.
-> 
-> There may be a slight difference of how the loops run when processing slow
-> GUP over a large hugetlb range on cont_pte/cont_pmd supported archs: each
-> loop of __get_user_pages() will resolve one pgtable entry with the patch
-> applied, rather than relying on the size of hugetlb hstate, the latter may
-> cover multiple entries in one loop.
-> 
-> A quick performance test on an aarch64 VM on M1 chip shows 15% degrade over
-> a tight loop of slow gup after the path switched.  That shouldn't be a
-> problem because slow-gup should not be a hot path for GUP in general: when
-> page is commonly present, fast-gup will already succeed, while when the
-> page is indeed missing and require a follow up page fault, the slow gup
-> degrade will probably buried in the fault paths anyway.  It also explains
-> why slow gup for THP used to be very slow before 57edfcfd3419 ("mm/gup:
-> accelerate thp gup even for "pages != NULL"") lands, the latter not part of
-> a performance analysis but a side benefit.  If the performance will be a
-> concern, we can consider handle CONT_PTE in follow_page().
-> 
-> Before that is justified to be necessary, keep everything clean and simple.
-> 
-> Reviewed-by: Jason Gunthorpe <jgg@nvidia.com>
-> Signed-off-by: Peter Xu <peterx@redhat.com>
-
-Afraid I'm seeing an oops when running gup_longterm test on arm64 with current mm-unstable. Git bisect blames this patch. The oops reproduces for me every time on 2 different machines:
-
-
-[    9.340416] kernel BUG at mm/gup.c:778!
-[    9.340746] Internal error: Oops - BUG: 00000000f2000800 [#1] PREEMPT SMP
-[    9.341199] Modules linked in:
-[    9.341481] CPU: 1 PID: 1159 Comm: gup_longterm Not tainted 6.9.0-rc2-00210-g910ff1a347e4 #11
-[    9.342232] Hardware name: linux,dummy-virt (DT)
-[    9.342647] pstate: 60400005 (nZCv daif +PAN -UAO -TCO -DIT -SSBS BTYPE=--)
-[    9.343195] pc : follow_page_mask+0x4d4/0x880
-[    9.343580] lr : follow_page_mask+0x4d4/0x880
-[    9.344018] sp : ffff8000898b3aa0
-[    9.344345] x29: ffff8000898b3aa0 x28: fffffdffc53973e8 x27: 00003c0005d08000
-[    9.345028] x26: ffff00014e5cfd08 x25: ffffd3513a40c000 x24: fffffdffc5d08000
-[    9.345682] x23: ffffc1ffc0000000 x22: 0000000000080101 x21: ffff8000898b3ba8
-[    9.346337] x20: 0000fffff4200000 x19: ffff00014e52d508 x18: 0000000000000010
-[    9.347005] x17: 5f656e6f7a5f7369 x16: 2120262620296567 x15: 6170286461654865
-[    9.347713] x14: 6761502128454741 x13: 2929656761702865 x12: 6761705f65636976
-[    9.348371] x11: 65645f656e6f7a5f x10: ffffd3513b31d6e0 x9 : ffffd3513852f090
-[    9.349062] x8 : 00000000ffffefff x7 : ffffd3513b31d6e0 x6 : 0000000000000000
-[    9.349753] x5 : ffff00017ff98cc8 x4 : 0000000000000fff x3 : 0000000000000000
-[    9.350397] x2 : 0000000000000000 x1 : ffff000190e8b480 x0 : 0000000000000052
-[    9.351097] Call trace:
-[    9.351312]  follow_page_mask+0x4d4/0x880
-[    9.351700]  __get_user_pages+0xf4/0x3e8
-[    9.352089]  __gup_longterm_locked+0x204/0xa70
-[    9.352516]  pin_user_pages+0x88/0xc0
-[    9.352873]  gup_test_ioctl+0x860/0xc40
-[    9.353249]  __arm64_sys_ioctl+0xb0/0x100
-[    9.353648]  invoke_syscall+0x50/0x128
-[    9.354022]  el0_svc_common.constprop.0+0x48/0xf8
-[    9.354488]  do_el0_svc+0x28/0x40
-[    9.354822]  el0_svc+0x34/0xe0
-[    9.355128]  el0t_64_sync_handler+0x13c/0x158
-[    9.355489]  el0t_64_sync+0x190/0x198
-[    9.355793] Code: aa1803e0 d000d8e1 91220021 97fff560 (d4210000) 
-[    9.356280] ---[ end trace 0000000000000000 ]---
-[    9.356651] note: gup_longterm[1159] exited with irqs disabled
-[    9.357141] note: gup_longterm[1159] exited with preempt_count 2
-[    9.358033] ------------[ cut here ]------------
-[    9.358800] WARNING: CPU: 1 PID: 0 at kernel/context_tracking.c:128 ct_kernel_exit.constprop.0+0x108/0x120
-[    9.360157] Modules linked in:
-[    9.360541] CPU: 1 PID: 0 Comm: swapper/1 Tainted: G      D            6.9.0-rc2-00210-g910ff1a347e4 #11
-[    9.361626] Hardware name: linux,dummy-virt (DT)
-[    9.362087] pstate: 204003c5 (nzCv DAIF +PAN -UAO -TCO -DIT -SSBS BTYPE=--)
-[    9.362758] pc : ct_kernel_exit.constprop.0+0x108/0x120
-[    9.363306] lr : ct_idle_enter+0x10/0x20
-[    9.363845] sp : ffff8000801abdc0
-[    9.364222] x29: ffff8000801abdc0 x28: 0000000000000000 x27: 0000000000000000
-[    9.364961] x26: 0000000000000000 x25: ffff00014149d780 x24: 0000000000000000
-[    9.365557] x23: 0000000000000000 x22: ffffd3513b299d48 x21: ffffd3513a785730
-[    9.366239] x20: ffffd3513b299c28 x19: ffff00017ffa7da0 x18: 0000fffff5ffffff
-[    9.366869] x17: 0000000000000000 x16: 1fffe0002a21a8c1 x15: 0000000000000000
-[    9.367524] x14: 0000000000000000 x13: 0000000000000000 x12: 0000000000000002
-[    9.368207] x11: 0000000000000001 x10: 0000000000000ad0 x9 : ffffd35138589230
-[    9.369123] x8 : ffff00014149e2b0 x7 : 0000000000000000 x6 : 000000000f8c0fb2
-[    9.370403] x5 : 4000000000000002 x4 : ffff2cb045825000 x3 : ffff8000801abdc0
-[    9.371170] x2 : ffffd3513a782da0 x1 : 4000000000000000 x0 : ffffd3513a782da0
-[    9.372279] Call trace:
-[    9.372519]  ct_kernel_exit.constprop.0+0x108/0x120
-[    9.373216]  ct_idle_enter+0x10/0x20
-[    9.373562]  default_idle_call+0x3c/0x160
-[    9.374055]  do_idle+0x21c/0x280
-[    9.374394]  cpu_startup_entry+0x3c/0x50
-[    9.374797]  secondary_start_kernel+0x140/0x168
-[    9.375220]  __secondary_switched+0xb8/0xc0
-[    9.375875] ---[ end trace 0000000000000000 ]---
-
-
-The oops trigger is at mm/gup.c:778:
-VM_BUG_ON_PAGE(!PageHead(page) && !is_zone_device_page(page), page);
-
-
-This is the output of gup_longterm (last output is just before oops):
-
-# [INFO] detected hugetlb page size: 2048 KiB
-# [INFO] detected hugetlb page size: 32768 KiB
-# [INFO] detected hugetlb page size: 64 KiB
-# [INFO] detected hugetlb page size: 1048576 KiB
-TAP version 13
-1..70
-# [RUN] R/W longterm GUP pin in MAP_SHARED file mapping ... with memfd
-ok 1 Should have worked
-# [RUN] R/W longterm GUP pin in MAP_SHARED file mapping ... with tmpfile
-ok 2 Should have failed
-# [RUN] R/W longterm GUP pin in MAP_SHARED file mapping ... with local tmpfile
-ok 3 Should have failed
-# [RUN] R/W longterm GUP pin in MAP_SHARED file mapping ... with memfd hugetlb (2048 kB)
-ok 4 Should have worked
-# [RUN] R/W longterm GUP pin in MAP_SHARED file mapping ... with memfd hugetlb (32768 kB)
-
-
-So 2M passed ok, and its failing for 32M, which is cont-pmd. I'm guessing you're trying to iterate 2M into a cont-pmd folio and ending up with an unexpected tail page?
-
-
-I'm running with defconfig plus these:
-
-/scripts/config --enable CONFIG_SQUASHFS_LZ4
-/scripts/config --enable CONFIG_SQUASHFS_LZO
-/scripts/config --enable CONFIG_SQUASHFS_XZ
-/scripts/config --enable CONFIG_SQUASHFS_ZSTD
-/scripts/config --enable CONFIG_XFS_FS
-/scripts/config --enable CONFIG_FTRACE
-/scripts/config --enable CONFIG_FUNCTION_TRACER
-/scripts/config --enable CONFIG_KPROBES
-/scripts/config --enable CONFIG_HIST_TRIGGERS
-/scripts/config --enable CONFIG_FTRACE_SYSCALLS
-/scripts/config --enable CONFIG_DEBUG_VM
-/scripts/config --enable CONFIG_DEBUG_VM_MAPLE_TREE
-/scripts/config --enable CONFIG_DEBUG_VM_RB
-/scripts/config --enable CONFIG_DEBUG_VM_PGFLAGS
-/scripts/config --enable CONFIG_DEBUG_VM_PGTABLE
-/scripts/config --enable CONFIG_PAGE_TABLE_CHECK
-/scripts/config --enable CONFIG_USERFAULTFD
-/scripts/config --enable CONFIG_TEST_VMALLOC
-/scripts/config --enable CONFIG_GUP_TEST
-
-
-Thanks,
-Ryan
-
-
-
-
+> Cc: Amit Pundir <amit.pundir@linaro.org>
+> Fixes: 03ce80a1bb86 ("scsi: ufs: qcom: Add support for scaling interconnects")
+> Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
 > ---
->  include/linux/hugetlb.h |  7 ----
->  mm/gup.c                | 15 +++------
->  mm/hugetlb.c            | 71 -----------------------------------------
->  3 files changed, 5 insertions(+), 88 deletions(-)
-> 
-> diff --git a/include/linux/hugetlb.h b/include/linux/hugetlb.h
-> index 294c78b3549f..a546140f89cd 100644
-> --- a/include/linux/hugetlb.h
-> +++ b/include/linux/hugetlb.h
-> @@ -328,13 +328,6 @@ static inline void hugetlb_zap_end(
->  {
->  }
->  
-> -static inline struct page *hugetlb_follow_page_mask(
-> -    struct vm_area_struct *vma, unsigned long address, unsigned int flags,
-> -    unsigned int *page_mask)
-> -{
-> -	BUILD_BUG(); /* should never be compiled in if !CONFIG_HUGETLB_PAGE*/
-> -}
-> -
->  static inline int copy_hugetlb_page_range(struct mm_struct *dst,
->  					  struct mm_struct *src,
->  					  struct vm_area_struct *dst_vma,
-> diff --git a/mm/gup.c b/mm/gup.c
-> index a02463c9420e..c803d0b0f358 100644
-> --- a/mm/gup.c
-> +++ b/mm/gup.c
-> @@ -1135,18 +1135,11 @@ static struct page *follow_page_mask(struct vm_area_struct *vma,
->  {
->  	pgd_t *pgd;
->  	struct mm_struct *mm = vma->vm_mm;
-> +	struct page *page;
->  
-> -	ctx->page_mask = 0;
-> -
-> -	/*
-> -	 * Call hugetlb_follow_page_mask for hugetlb vmas as it will use
-> -	 * special hugetlb page table walking code.  This eliminates the
-> -	 * need to check for hugetlb entries in the general walking code.
-> -	 */
-> -	if (is_vm_hugetlb_page(vma))
-> -		return hugetlb_follow_page_mask(vma, address, flags,
-> -						&ctx->page_mask);
-> +	vma_pgtable_walk_begin(vma);
->  
-> +	ctx->page_mask = 0;
->  	pgd = pgd_offset(mm, address);
->  
->  	if (unlikely(is_hugepd(__hugepd(pgd_val(*pgd)))))
-> @@ -1157,6 +1150,8 @@ static struct page *follow_page_mask(struct vm_area_struct *vma,
->  	else
->  		page = follow_p4d_mask(vma, address, pgd, flags, ctx);
->  
-> +	vma_pgtable_walk_end(vma);
-> +
->  	return page;
->  }
->  
-> diff --git a/mm/hugetlb.c b/mm/hugetlb.c
-> index 65b9c9a48fd2..cc79891a3597 100644
-> --- a/mm/hugetlb.c
-> +++ b/mm/hugetlb.c
-> @@ -6870,77 +6870,6 @@ int hugetlb_mfill_atomic_pte(pte_t *dst_pte,
->  }
->  #endif /* CONFIG_USERFAULTFD */
->  
-> -struct page *hugetlb_follow_page_mask(struct vm_area_struct *vma,
-> -				      unsigned long address, unsigned int flags,
-> -				      unsigned int *page_mask)
-> -{
-> -	struct hstate *h = hstate_vma(vma);
-> -	struct mm_struct *mm = vma->vm_mm;
-> -	unsigned long haddr = address & huge_page_mask(h);
-> -	struct page *page = NULL;
-> -	spinlock_t *ptl;
-> -	pte_t *pte, entry;
-> -	int ret;
-> -
-> -	hugetlb_vma_lock_read(vma);
-> -	pte = hugetlb_walk(vma, haddr, huge_page_size(h));
-> -	if (!pte)
-> -		goto out_unlock;
-> -
-> -	ptl = huge_pte_lock(h, mm, pte);
-> -	entry = huge_ptep_get(pte);
-> -	if (pte_present(entry)) {
-> -		page = pte_page(entry);
-> -
-> -		if (!huge_pte_write(entry)) {
-> -			if (flags & FOLL_WRITE) {
-> -				page = NULL;
-> -				goto out;
-> -			}
-> -
-> -			if (gup_must_unshare(vma, flags, page)) {
-> -				/* Tell the caller to do unsharing */
-> -				page = ERR_PTR(-EMLINK);
-> -				goto out;
-> -			}
-> -		}
-> -
-> -		page = nth_page(page, ((address & ~huge_page_mask(h)) >> PAGE_SHIFT));
-> -
-> -		/*
-> -		 * Note that page may be a sub-page, and with vmemmap
-> -		 * optimizations the page struct may be read only.
-> -		 * try_grab_page() will increase the ref count on the
-> -		 * head page, so this will be OK.
-> -		 *
-> -		 * try_grab_page() should always be able to get the page here,
-> -		 * because we hold the ptl lock and have verified pte_present().
-> -		 */
-> -		ret = try_grab_page(page, flags);
-> -
-> -		if (WARN_ON_ONCE(ret)) {
-> -			page = ERR_PTR(ret);
-> -			goto out;
-> -		}
-> -
-> -		*page_mask = (1U << huge_page_order(h)) - 1;
-> -	}
-> -out:
-> -	spin_unlock(ptl);
-> -out_unlock:
-> -	hugetlb_vma_unlock_read(vma);
-> -
-> -	/*
-> -	 * Fixup retval for dump requests: if pagecache doesn't exist,
-> -	 * don't try to allocate a new page but just skip it.
-> -	 */
-> -	if (!page && (flags & FOLL_DUMP) &&
-> -	    !hugetlbfs_pagecache_present(h, vma, address))
-> -		page = ERR_PTR(-EFAULT);
-> -
-> -	return page;
-> -}
-> -
->  long hugetlb_change_protection(struct vm_area_struct *vma,
->  		unsigned long address, unsigned long end,
->  		pgprot_t newprot, unsigned long cp_flags)
 
+Skimming through the code, could ufs_qcom_get_bw_table use a
+WARN_ON_ONCE(nullcheck)?
+
+FWIW, this change looks sane (without checking the numbers)
+
+Konrad
 
