@@ -1,121 +1,147 @@
-Return-Path: <linux-kernel+bounces-127940-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-127942-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 44249895309
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 14:33:52 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id E74CA895314
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 14:35:46 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F09562822B4
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 12:33:50 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 150721C22FE7
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 12:35:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2AB8678285;
-	Tue,  2 Apr 2024 12:33:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1E03B7A151;
+	Tue,  2 Apr 2024 12:35:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="MPao5FQW"
-Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="uqLL0PKI"
+Received: from mail-yb1-f181.google.com (mail-yb1-f181.google.com [209.85.219.181])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E5F60BE5E;
-	Tue,  2 Apr 2024 12:33:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 10DD67A158
+	for <linux-kernel@vger.kernel.org>; Tue,  2 Apr 2024 12:35:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712061223; cv=none; b=oTaWGB3G8Xw872e27q05OBhO/xJdrA8hTA8S0blpELecWJpPUZIXethjS9WSbUtDAi3GwWu9LWPbAP7RsMr4qlONO5WWfULOEZsOYVROrpetFlHQAziaEw+N0vugvUyOyzUIrltieu0U0oLHmL97K1UyPSKQoi1+iPc1rZzuung=
+	t=1712061332; cv=none; b=VF048tLZzcLx/PKksC3lENdEI7vSC2MXpx26FnGnh80uo368hizObxm4YUy83Qg2zHmJcL0c4GbnEgKU3Hyi+a0lBLQmeAHT/qzze7+43NIM9IIjzQDV80Dq5+Hh5TjrleHdSGlz5FtuIJO6jGaAuozytxXK6cB7N1GGUo0UO50=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712061223; c=relaxed/simple;
-	bh=JLmZSWuKKx+DVDXAfY3j+SHJ7sahDXjArNMQEbFiR2A=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=tJr5WE6ebX4xZ/IQS9ui8B8ZmZxQgFZmZZgoDsQf1HU67ZIvhGj2wjXuMTIYvdQil4EQyiqoUlp+bnTviz8tBY0B+x6Hvk1vVhaejWmdUlrTbLDOrem5qEHXwWEV+wOVKYJkluRq7Vj/T8fuzOn3LgbT6cuUiYdot/ej6iNR7GU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=MPao5FQW; arc=none smtp.client-ip=46.235.227.194
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-	s=mail; t=1712061220;
-	bh=JLmZSWuKKx+DVDXAfY3j+SHJ7sahDXjArNMQEbFiR2A=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=MPao5FQWlgblzY4+H4T7w1x53Xgi2A22qSAWdaDILfOuL0LXfVA7Ebap+eNPpKBCu
-	 ovvfKyrcDo8wWY8OOLpZLu8qAfNNwyv7vgWJKw66R4NWee0dPjZnBEUUyKf1enABbS
-	 ofcyWYPSxJ0XpbPG9AkzQVTbEiE1SWojFlRLTcBNbgDTOlovCMgxx2lZwYuYRUbM2f
-	 F5TLUFOpRqUpQuNJX3dc2myKejsI/JPKOCalAnSU88jdmyVRo9M6xKTWPkIdvVJBlx
-	 U63np1fBvPCJEm8q9HZ1OqjGSZnwEVQKUDp0vaHrcBCtKU77bOUtkO1h7fellVI6/i
-	 tQOFBfmce5LwQ==
-Received: from localhost (cola.collaboradmins.com [195.201.22.229])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	(Authenticated sender: bbrezillon)
-	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 3DC1A3781144;
-	Tue,  2 Apr 2024 12:33:39 +0000 (UTC)
-Date: Tue, 2 Apr 2024 14:33:37 +0200
-From: Boris Brezillon <boris.brezillon@collabora.com>
-To: Harshit Mogalapalli <harshit.m.mogalapalli@oracle.com>
-Cc: Steven Price <steven.price@arm.com>, Liviu Dudau <liviu.dudau@arm.com>,
- Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, Maxime Ripard
- <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>, David Airlie
- <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>, Heiko Stuebner
- <heiko@sntech.de>, dri-devel@lists.freedesktop.org,
- linux-kernel@vger.kernel.org, dan.carpenter@linaro.org,
- kernel-janitors@vger.kernel.org, error27@gmail.com
-Subject: Re: [PATCH] drm/panthor: Fix NULL vs IS_ERR() bug in
- panthor_ioctl_tiler_heap_destroy()
-Message-ID: <20240402143337.38e864e9@collabora.com>
-In-Reply-To: <20240402103358.1689379-1-harshit.m.mogalapalli@oracle.com>
-References: <20240402103358.1689379-1-harshit.m.mogalapalli@oracle.com>
-Organization: Collabora
-X-Mailer: Claws Mail 4.2.0 (GTK 3.24.41; x86_64-redhat-linux-gnu)
+	s=arc-20240116; t=1712061332; c=relaxed/simple;
+	bh=ZhodAsfbqQph/6Oss9KdocUA4jNT8v1VGBe4Vmslbbg=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=KJtwfRmV2XPwxHIz50QbIN5lK/896VNjQH8aJWCEpYRYcfYG1Ca9ArJEGNYhTJXJmDf4UiykOaaZXh3cQhpzHVOPOwjVSFoIoLLECqR4NIxFqtCwzxFHaY/LNhaxIZxUrssU1gyKAbjnruWu2Cb4XqeayeWHQc5vJ8swhThkHFM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=uqLL0PKI; arc=none smtp.client-ip=209.85.219.181
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-yb1-f181.google.com with SMTP id 3f1490d57ef6-dcc80d6004bso4634002276.0
+        for <linux-kernel@vger.kernel.org>; Tue, 02 Apr 2024 05:35:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1712061329; x=1712666129; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=ZhodAsfbqQph/6Oss9KdocUA4jNT8v1VGBe4Vmslbbg=;
+        b=uqLL0PKItSDctSUqxZsS/uT7vhnfgQzNItY7LTWQwGtERIAfDHkmi9vTKM/KWSOnZG
+         5cWY4VnZ/zB0EU9JaX8HcKrzWY6Bfiyn9ZjC8emWdaKirfIk5c6cfhLRmfgpLLUReKr9
+         yRjumjg65uKbF7b/xAwkcwPx7RQ3tjsiJ3eg7KVDrDx5qEpqbRUaH0ee2bQTWeK8yRDw
+         IZeIcTsL4ZN8lmj5lCAuHZlu//3WUHVTZLeAUR178ssgzwE8qeahHVjiEj3sK9F9hh1f
+         udU2TW8C/q7xEaGt7K/yviWJwTmaKvKoOb960rlGVp9GAq3tJB90z8axILGKqiHa0Kpd
+         L6yQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712061329; x=1712666129;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=ZhodAsfbqQph/6Oss9KdocUA4jNT8v1VGBe4Vmslbbg=;
+        b=mKZ11ap0Xi0hF8nUZbN2h9x3DFCi2qGsdisZrbBleX6tk0kMN1Ao5LCDMUjHznr+YQ
+         D8KONj/e8O7BAdWGul8SVnmyJu+0akfXgCIxnZz+Dn2i4zmXiJZZYYixWsVuAkg9oaRA
+         seHsQ/NxzN/0d48x0Ub+1Q1wQ8wGgfSTs6ZxPR0Hvl5NjvdMRZfJWmilAGZ3KpNTc74t
+         LnPETJwRkdaH/ntFHw0mfbOY2TateWjpwGZVULEdIxu+YdlCUuY4QeP0z8ESM40FM/R4
+         Fg6L9lSYBkRCST4KNkE94DX65eeAVXEHQAxeqtvfWsBIL18Fe0feWtceBO7dPbrCa0ZL
+         LWDg==
+X-Forwarded-Encrypted: i=1; AJvYcCUA6pVnbRHoUM7GDkwuPTyeZDPeJ/lhQkMQ8Ad0knNoHFluy91RYZQJyx2zMmP88spRjbWDOFbP3VZYsiAVRqJ7csPmjhZlTcKgc4zE
+X-Gm-Message-State: AOJu0YxxqcR8vRmnTf8a37RFOWgiShw5d3zSg73RIcGWXw7+NqKk9gaH
+	/UiieP0OgPEWcLBwfeziRi9ReS1bTybqlYLDvTykMprNzHYUdlLcaQXXRLQcyOMBIEZMtlxb8Ba
+	NmWJPuWtpgOEmUeRskQ4E2OvcvRcyIeRLzvxyCw==
+X-Google-Smtp-Source: AGHT+IG5hxT/EMYnHoU6u7S6MkbvLw5l9U/Ss0P2rks8Fb0m+zQTGqjqkjSlSz0lY1KsLwpjx1moujtIXAN3uBffPV8=
+X-Received: by 2002:a25:6d86:0:b0:dc2:2d75:5fde with SMTP id
+ i128-20020a256d86000000b00dc22d755fdemr10687728ybc.29.1712061328813; Tue, 02
+ Apr 2024 05:35:28 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+References: <20240322132619.6389-1-wsa+renesas@sang-engineering.com> <20240322132619.6389-65-wsa+renesas@sang-engineering.com>
+In-Reply-To: <20240322132619.6389-65-wsa+renesas@sang-engineering.com>
+From: Linus Walleij <linus.walleij@linaro.org>
+Date: Tue, 2 Apr 2024 14:35:17 +0200
+Message-ID: <CACRpkdbtRoDtWN4mnyZY_yEfWQFPCQaVudjBki8N1sOXxXWupQ@mail.gmail.com>
+Subject: Re: [PATCH 64/64] i2c: reword i2c_algorithm in drivers according to
+ newest specification
+To: Wolfram Sang <wsa+renesas@sang-engineering.com>
+Cc: linux-i2c@vger.kernel.org, Elie Morisse <syniurge@gmail.com>, 
+	Shyam Sundar S K <shyam-sundar.s-k@amd.com>, Andi Shyti <andi.shyti@kernel.org>, 
+	Codrin Ciubotariu <codrin.ciubotariu@microchip.com>, 
+	Nicolas Ferre <nicolas.ferre@microchip.com>, 
+	Alexandre Belloni <alexandre.belloni@bootlin.com>, Claudiu Beznea <claudiu.beznea@tuxon.dev>, 
+	Krzysztof Adamski <krzysztof.adamski@nokia.com>, Benson Leung <bleung@chromium.org>, 
+	Guenter Roeck <groeck@chromium.org>, Jarkko Nikula <jarkko.nikula@linux.intel.com>, 
+	Andy Shevchenko <andriy.shevchenko@linux.intel.com>, 
+	Mika Westerberg <mika.westerberg@linux.intel.com>, Jan Dabros <jsd@semihalf.com>, 
+	Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>, Alim Akhtar <alim.akhtar@samsung.com>, 
+	Jean-Marie Verdun <verdun@hpe.com>, Nick Hawkins <nick.hawkins@hpe.com>, 
+	Yicong Yang <yangyicong@hisilicon.com>, Oleksij Rempel <o.rempel@pengutronix.de>, 
+	Pengutronix Kernel Team <kernel@pengutronix.de>, Shawn Guo <shawnguo@kernel.org>, 
+	Sascha Hauer <s.hauer@pengutronix.de>, Fabio Estevam <festevam@gmail.com>, 
+	Paul Cercueil <paul@crapouillou.net>, Neil Armstrong <neil.armstrong@linaro.org>, 
+	Kevin Hilman <khilman@baylibre.com>, Jerome Brunet <jbrunet@baylibre.com>, 
+	Martin Blumenstingl <martin.blumenstingl@googlemail.com>, Khalil Blaiech <kblaiech@nvidia.com>, 
+	Asmaa Mnebhi <asmaa@nvidia.com>, Qii Wang <qii.wang@mediatek.com>, 
+	Matthias Brugger <matthias.bgg@gmail.com>, 
+	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>, 
+	Avi Fishman <avifishman70@gmail.com>, Tomer Maimon <tmaimon77@gmail.com>, 
+	Tali Perry <tali.perry1@gmail.com>, Patrick Venture <venture@google.com>, 
+	Nancy Yuen <yuenn@google.com>, Benjamin Fair <benjaminfair@google.com>, 
+	Ajay Gupta <ajayg@nvidia.com>, Peter Korsgaard <peter@korsgaard.com>, Andrew Lunn <andrew@lunn.ch>, 
+	Robert Richter <rric@kernel.org>, Aaro Koskinen <aaro.koskinen@iki.fi>, 
+	Janusz Krzysztofik <jmkrzyszt@gmail.com>, Tony Lindgren <tony@atomide.com>, Vignesh R <vigneshr@ti.com>, 
+	Michael Ellerman <mpe@ellerman.id.au>, Nicholas Piggin <npiggin@gmail.com>, 
+	Christophe Leroy <christophe.leroy@csgroup.eu>, "Aneesh Kumar K.V" <aneesh.kumar@kernel.org>, 
+	"Naveen N. Rao" <naveen.n.rao@linux.ibm.com>, Hector Martin <marcan@marcan.st>, 
+	Sven Peter <sven@svenpeter.dev>, Alyssa Rosenzweig <alyssa@rosenzweig.io>, 
+	Vladimir Zapolskiy <vz@mleia.com>, Loic Poulain <loic.poulain@linaro.org>, Robert Foss <rfoss@kernel.org>, 
+	Bjorn Andersson <andersson@kernel.org>, Konrad Dybcio <konrad.dybcio@linaro.org>, 
+	Fabrizio Castro <fabrizio.castro.jz@renesas.com>, 
+	Pierre-Yves MORDRET <pierre-yves.mordret@foss.st.com>, Alain Volmat <alain.volmat@foss.st.com>, 
+	Maxime Coquelin <mcoquelin.stm32@gmail.com>, Alexandre Torgue <alexandre.torgue@foss.st.com>, 
+	Thierry Reding <thierry.reding@gmail.com>, Jonathan Hunter <jonathanh@nvidia.com>, 
+	Laxman Dewangan <ldewangan@nvidia.com>, Dmitry Osipenko <digetx@gmail.com>, 
+	Conghui Chen <conghui.chen@intel.com>, Viresh Kumar <viresh.kumar@linaro.org>, 
+	Michal Simek <michal.simek@amd.com>, linux-kernel@vger.kernel.org, 
+	linux-arm-kernel@lists.infradead.org, chrome-platform@lists.linux.dev, 
+	linux-samsung-soc@vger.kernel.org, imx@lists.linux.dev, 
+	linux-mips@vger.kernel.org, linux-amlogic@lists.infradead.org, 
+	linux-mediatek@lists.infradead.org, openbmc@lists.ozlabs.org, 
+	linux-omap@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, 
+	asahi@lists.linux.dev, linux-arm-msm@vger.kernel.org, 
+	linux-renesas-soc@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com, 
+	linux-tegra@vger.kernel.org, virtualization@lists.linux.dev
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Hello Harshit,
+On Fri, Mar 22, 2024 at 2:27=E2=80=AFPM Wolfram Sang
+<wsa+renesas@sang-engineering.com> wrote:
 
-On Tue,  2 Apr 2024 03:33:58 -0700
-Harshit Mogalapalli <harshit.m.mogalapalli@oracle.com> wrote:
+> Match the wording in i2c_algorithm in I2C drivers wrt. the newest I2C
+> v7, SMBus 3.2, I3C specifications and replace "master/slave" with more
+> appropriate terms. For some drivers, this means no more conversions are
+> needed. For the others more work needs to be done but this will be
+> performed incrementally along with API changes/improvements. All these
+> changes here are simple search/replace results.
+>
+> Signed-off-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
 
-> panthor_vm_get_heap_pool() returns ERR_PTR on failure.
-> 
-> Fixes: 4bdca1150792 ("drm/panthor: Add the driver frontend block")
-> Signed-off-by: Harshit Mogalapalli <harshit.m.mogalapalli@oracle.com>
-> ---
-> This is spotted by smatch and the patch is only compile tested
-> ---
->  drivers/gpu/drm/panthor/panthor_drv.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/gpu/drm/panthor/panthor_drv.c b/drivers/gpu/drm/panthor/panthor_drv.c
-> index 11b3ccd58f85..050b905b0453 100644
-> --- a/drivers/gpu/drm/panthor/panthor_drv.c
-> +++ b/drivers/gpu/drm/panthor/panthor_drv.c
-> @@ -1090,8 +1090,8 @@ static int panthor_ioctl_tiler_heap_destroy(struct drm_device *ddev, void *data,
->  		return -EINVAL;
->  
->  	pool = panthor_vm_get_heap_pool(vm, false);
-> -	if (!pool) {
-> -		ret = -EINVAL;
-> +	if (IS_ERR(pool)) {
-> +		ret = PTR_ERR(pool);
+Acked-by: Linus Walleij <linus.walleij@linaro.org>
 
-Actually, panthor_vm_get_heap_pool() will return NULL if there's no
-heap pool attached to this VM and create=false, so this was correct.
-This being said, I'm fine making that consistent by returning
-ERR_PTR(-ENOENT) instead of NULL in that case. This way we don't have
-two different semantics based on the 'create' value.
-
-Oh, and please merge everything into a single patch instead of one patch
-per call-site.
-
-Regards,
-
-Boris
-
->  		goto out_put_vm;
->  	}
->  
-
+Yours,
+Linus Walleij
 
