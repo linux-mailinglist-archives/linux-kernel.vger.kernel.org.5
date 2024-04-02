@@ -1,146 +1,117 @@
-Return-Path: <linux-kernel+bounces-127239-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-127240-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D49B1894878
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 02:27:56 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id E003789487D
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 02:31:25 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 994CC283363
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 00:27:55 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 950F51F229E3
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 00:31:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EF41E33DD;
-	Tue,  2 Apr 2024 00:27:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DFE2C8801;
+	Tue,  2 Apr 2024 00:31:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b="joenTY2f"
+	dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b="f/A3RYnB"
 Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0D2E6ECF;
-	Tue,  2 Apr 2024 00:27:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 61B576FB5;
+	Tue,  2 Apr 2024 00:31:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=150.107.74.76
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712017671; cv=none; b=Q57yBlD3sOB5Do/i/2OY5wGGpZ0qT+NrOPHlqI7JAesk+mnQvT9ir7SfF9NFb/Qfk9Z0/vI5tKEZdtW+k0wuU9tPSzdvV9dPgmpX6K4Biwd5RCYzY/Bc/paBSAzxI3FGFvw215OU57cj1ri4XcxC8+as4vVMhACiX60i896IJn4=
+	t=1712017881; cv=none; b=gS1FUF1Dpjoyp6X9IZhg+rZeDa0nXsaa9FT7weGqPQ46/O1UcYENP57aO2DJd7sKMUiUivbA8hNuZpQi/fcTm5hc94xm8RDadlA2mw8s4yQZ7jRH/XM93lZ/kU4lgY1H2RCIRdU4Dpq0hIM2XqBoxzYPQBTIdbfv1+EIFw1u7bs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712017671; c=relaxed/simple;
-	bh=6jlFcAuxxoQdEkeDSU9uqT7eAMtD4R0vSIfzBlfF7J8=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type; b=rKN0ubs9o6mRcB1NQ+wXwLuGtVjX9NGJZHbgBXi6v+cEtsGtXCN3Yjn+40jI+zeCFBJuUfCUn4EqhrfaZroWesHDzCd+GkPvxmDsDjTwFaTi6JdIOhvasIwyQQyG9wd5VUhIw324qLZUY3TX4J8CJ08x+1O1RZG+49TMi0JMjV0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au; spf=pass smtp.mailfrom=canb.auug.org.au; dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b=joenTY2f; arc=none smtp.client-ip=150.107.74.76
+	s=arc-20240116; t=1712017881; c=relaxed/simple;
+	bh=p/kYRXCG3EXldmhrwvxNFSPURefbLJ52Olitn6V1PFY=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type; b=hRpC+xSawT83b4Pvn8xDV2gvUm5nUARiIqY+eqV3btvRTCSF/CxvXEm2RRIDm0ch1KYSa1uXBuVxgwi4YtKYFddKahSa2DfkLy9QKWAoSCMDjCWp7dBA9zyaPekxqCU/raxKfVHiBouCpcNHIn5rIqURkb8AoLvK03aJoQGbdd8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au; spf=pass smtp.mailfrom=canb.auug.org.au; dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b=f/A3RYnB; arc=none smtp.client-ip=150.107.74.76
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canb.auug.org.au
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-	s=201702; t=1712017667;
-	bh=jaHzo1qsg1YeMeDhBu188OTMGpmSBamVzfdb+BTdZDc=;
+	s=201702; t=1712017877;
+	bh=fZrvENVuJ9o11XvfUl1+MD5rilFuz8GnYSSSRU27Z2g=;
 	h=Date:From:To:Cc:Subject:From;
-	b=joenTY2funCnXlyGTKAOt9cYNd4ttZlk7RHVXRrqd843NIESN2ptQ9N4KyOFusEzH
-	 FFFWrdzK3L7+bY55RfNRE29vuQCoWiHLQHQpLWGtsx+reptYwsvvWrYZi1rbrO7wqo
-	 jnQLnmKsdG+ECR6X1lke0txoP3h19LGM0etPebQFormNJO3blZ3xUWaWhUJ44DtY61
-	 6YEfGN6bPFAM3Rhb/kQNP4tnU/axgLXd5e0Xb27r6oc7l4zM9W6S6MXMSjBOJD0OIf
-	 ZvllToLic2bUboLosoKfVloG2lpjfnYCS9vYDOoK4MJ6BNbr84NNhOej6047jNF9yJ
-	 HM7CEDJi8I7Og==
+	b=f/A3RYnBavwlL5rCX5HwtCxR7SCOxlvXz0lh4urozQypKM7+DsLmf+kZFweQQeko0
+	 bfh7LdAjKnLo4JlShgF/D3dF3a7L/rYMhPFsni+RtrZ2WAsYnJzXLq1ahVN2joYigm
+	 /t0yEPFOR3VUmXd0uwQshXd8oSOFCq+Qp4omeAfccmVIomF9KPxfHORh5bf9ogFS3a
+	 8tLzg9LQuyjR1TMmz78ypJqwRIO3Ux3dt/OSroCMSLEvh+EBQ/e3vLMRa3pvLeBj8Q
+	 OhD++FCnPt0CNYsDXaN26svo0f6AdNeMGKB40vA5J1BNqYjg2X591KOBhpn6gaJS1K
+	 YjClfp82rFfTA==
 Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by mail.ozlabs.org (Postfix) with ESMTPSA id 4V7pcf4x2Fz4wxt;
-	Tue,  2 Apr 2024 11:27:46 +1100 (AEDT)
-Date: Tue, 2 Apr 2024 11:27:46 +1100
+	by mail.ozlabs.org (Postfix) with ESMTPSA id 4V7phh55b6z4wcn;
+	Tue,  2 Apr 2024 11:31:16 +1100 (AEDT)
+Date: Tue, 2 Apr 2024 11:31:16 +1100
 From: Stephen Rothwell <sfr@canb.auug.org.au>
-To: Jens Axboe <axboe@kernel.dk>, Andrew Morton <akpm@linux-foundation.org>
-Cc: Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Linux Next
- Mailing List <linux-next@vger.kernel.org>, Rick Edgecombe
- <rick.p.edgecombe@intel.com>
-Subject: linux-next: manual merge of the block tree with the mm tree
-Message-ID: <20240402112746.3864d8a6@canb.auug.org.au>
+To: Lee Jones <lee@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>, Lorenzo
+ Pieralisi <lpieralisi@kernel.org>, Krzysztof =?UTF-8?B?V2lsY3p5xYRza2k=?=
+ <kw@linux.com>
+Cc: Andy Shevchenko <andriy.shevchenko@linux.intel.com>, Damien Le Moal
+ <dlemoal@kernel.org>, Linux Kernel Mailing List
+ <linux-kernel@vger.kernel.org>, Linux Next Mailing List
+ <linux-next@vger.kernel.org>
+Subject: linux-next: manual merge of the mfd tree with the pci tree
+Message-ID: <20240402113116.70d6a885@canb.auug.org.au>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/LHq.6lj5WucWIARp22HzB/I";
+Content-Type: multipart/signed; boundary="Sig_/fA3L7O4dNU2PELsc/ffE9/0";
  protocol="application/pgp-signature"; micalg=pgp-sha256
 
---Sig_/LHq.6lj5WucWIARp22HzB/I
+--Sig_/fA3L7O4dNU2PELsc/ffE9/0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: quoted-printable
 
 Hi all,
 
-FIXME: Add owner of second tree to To:
-       Add author(s)/SOB of conflicting commits.
+Today's linux-next merge of the mfd tree got a conflict in:
 
-Today's linux-next merge of the block tree got a conflict in:
-
-  io_uring/io_uring.c
+  drivers/mfd/intel-lpss-pci.c
 
 between commit:
 
-  d3329b3a9d72 ("mm: switch mm->get_unmapped_area() to a flag")
+  5133224938b9 ("mfd: intel-lpss: Use PCI_IRQ_INTX instead of PCI_IRQ_LEGAC=
+Y")
 
-from the mm-unstable branhc of the mm tree and commit:
+from the pci tree and commit:
 
-  624d801ce45b ("io_uring: move mapping/allocation helpers to a separate fi=
-le")
+  e42199bf13d4 ("mfd: intel-lpss: Switch over to MSI interrupts")
 
-from the block tree.
+from the mfd tree.
 
-I fixed it up (I used the latter version of this file and applied the
-following merge fix patch) and can carry the fix as necessary. This
-is now fixed as far as linux-next is concerned, but any non trivial
-conflicts should be mentioned to your upstream maintainer when your tree
-is submitted for merging.  You may also want to consider cooperating
-with the maintainer of the conflicting tree to minimise any particularly
-complex conflicts.
-
-From: Stephen Rothwell <sfr@canb.auug.org.au>
-Date: Tue, 2 Apr 2024 11:25:46 +1100
-Subject: [PATCH] fix up for "mm: switch mm->get_unmapped_area() to a flag"
-
-from the mm tree.
-
-Signed-off-by: Stephen Rothwell <sfr@canb.auug.org.au>
----
- io_uring/memmap.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/io_uring/memmap.c b/io_uring/memmap.c
-index acf5e8ca6b28..5c9e70132cd1 100644
---- a/io_uring/memmap.c
-+++ b/io_uring/memmap.c
-@@ -302,7 +302,7 @@ unsigned long io_uring_get_unmapped_area(struct file *f=
-ilp, unsigned long addr,
- #else
- 	addr =3D 0UL;
- #endif
--	return current->mm->get_unmapped_area(filp, addr, len, pgoff, flags);
-+	return mm_get_unmapped_area(current->mm, filp, addr, len, pgoff, flags);
- }
-=20
- #else /* !CONFIG_MMU */
---=20
-2.43.0
+I fixed it up (I just used the latter) and can carry the fix as
+necessary. This is now fixed as far as linux-next is concerned, but any
+non trivial conflicts should be mentioned to your upstream maintainer
+when your tree is submitted for merging.  You may also want to consider
+cooperating with the maintainer of the conflicting tree to minimise any
+particularly complex conflicts.
 
 --=20
 Cheers,
 Stephen Rothwell
 
---Sig_/LHq.6lj5WucWIARp22HzB/I
+--Sig_/fA3L7O4dNU2PELsc/ffE9/0
 Content-Type: application/pgp-signature
 Content-Description: OpenPGP digital signature
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmYLUQIACgkQAVBC80lX
-0GwjGwf9HOE0ss2ozYG1VeUfBrXbbsDsrcBJyZ89NUBSSWM8TetAsbl7dWDjNc9Q
-T9L7jfb0HGMtErUtjcAZ35O7cqv9Hq1Hpxbc7ty3xDJRP3ohK7RbhkpCORmyf7u3
-9SrhkZvQf+PTHVhpgXLWkUjaFu1SHyIyZ58fdRXxAxoUU7mJ5E3oexbCnBfbU4+L
-hpX0ROEs7bIZU51kauJj5EQQpZ5Cbodk2Xb/pirKT5oWrSH9RzhcXTIiCs6Rvb8n
-1nXqt5rL2c2Wu9isJaLgbNPS34rplHQPQ6BnIrt6vm7+DKLX1sOjk/+B2vJS5HRn
-ep4J5fxFJFPFTlx4xGpjiCrfRC6ZkA==
-=kQCt
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmYLUdQACgkQAVBC80lX
+0GzDIAf9ESRcmKxSd5rjJ7XD2ySrZXXgVr3ITndM2xQrulH4evuq8qzdk5YKWAnq
+YY+AKBWAG4OEx/pN6XwQp/GlT46cX988wtlb3tatO/GBBu4GQsTK8I2pW+viT2L3
+puOqx5UMX+CiPYK+I38v3WQ/mXgvp9I6fEe7/7qvi3gZDolEG+lkL+55vAoxEw3N
+CRJAZnLX0q1aEv5GwVwd4LTo+jJuuJkTvvFLR9Xtq+KMJrIwh1t32svDMgSlHzgG
+SFlTAHLUCpMdoM6WdnYp7wIOi0LnSH/zWvG35y1aHuHdQ9yI+OUUwCa7uE+uZgbL
+jZUYCp4lPcAVF6Y/VjO5VC4Xa3lgvQ==
+=fq+a
 -----END PGP SIGNATURE-----
 
---Sig_/LHq.6lj5WucWIARp22HzB/I--
+--Sig_/fA3L7O4dNU2PELsc/ffE9/0--
 
