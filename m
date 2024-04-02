@@ -1,173 +1,99 @@
-Return-Path: <linux-kernel+bounces-127381-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-127382-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id BE1FA894A88
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 06:36:02 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9FD85894A8C
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 06:42:17 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E21761C22172
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 04:36:01 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D0ED11C21315
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 04:42:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3890117C69;
-	Tue,  2 Apr 2024 04:35:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C5A5817C6A;
+	Tue,  2 Apr 2024 04:42:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="OaUrQT2K"
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+	dkim=pass (2048-bit key) header.d=codeconstruct.com.au header.i=@codeconstruct.com.au header.b="Q806oSm5"
+Received: from codeconstruct.com.au (pi.codeconstruct.com.au [203.29.241.158])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C78F52581;
-	Tue,  2 Apr 2024 04:35:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CB7712581;
+	Tue,  2 Apr 2024 04:42:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=203.29.241.158
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712032554; cv=none; b=ekaLWbCbiXoY+xsadiY0tKNdiJnr6KTajnorO7U4bvj+sY8Z/0GtHFXjI0aiqTOel87pmWFcjdNDwNNYtmOQFd6WsjFiD5bZzHyPrJMO95vky+Sc5mhuuQnZh8dwQ17HKsXmSXdknVSO8RxuzUY7SMWcluWUW8itxJFWhTO4JxE=
+	t=1712032929; cv=none; b=Q5lcm9QklBNwWb8a16pcFSe7thNfrTZXCZHLmMSFWVsbmzXQ7vD4Ker2aOhUul+mj7dZbDEYaWLOSnUsZRcmKYEWreFqmGOpcj9kBalzxoKYSjhUnPV3LqDWc2rW18geV3mOxAWX33uMVq0Hd4+Y462xus6LWnKZn6CzNQ4rCV8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712032554; c=relaxed/simple;
-	bh=6E0gncyahqLdIZmjYurjLKkiLv9IqAKbu9Y8s4D03c8=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=cc2PhW3gpFx2lOhZr/M2QJdTtNdGLU2S1LSfw+Ys2DKEXm7jlABMDuPlVjMXsHFOXNdyRRikMUobUUvkqhzgjlE9OrSiP32BBO/62D32GhbCD35dVkjEVHF3iE052MR1ZSpJFS2EYCAFuqIMyZ5o0ONJzLW21cDKVfwTB90+AXE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=OaUrQT2K; arc=none smtp.client-ip=205.220.168.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279867.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 432304np019450;
-	Tue, 2 Apr 2024 04:35:39 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	message-id:date:mime-version:subject:to:cc:references:from
-	:in-reply-to:content-type:content-transfer-encoding; s=
-	qcppdkim1; bh=lzKJU18hJQSyG8eJysHY81OevBjTN6oSacJs9+hF2cU=; b=Oa
-	UrQT2K3I+LnpC2jPFM8EHZwywPzNYMDbbRFmnBBwEmKMHBJTGKtf2fO7vOlnuHlJ
-	Jd4eu2hf0y8Z5TMymOVtWev7+VOiIdyjYyrvL50uEfzVDl9exvdAhwMTojiH0e2y
-	1FUCWKXPpshaZ1u+TgxMkH7JFVwI8ObLCmKA79nxHAP/jeQQsAw6PEAGul3w8TQq
-	jw10PClmaxDU/tiUbbq0+bCb3AwOsdazgivDiTo88/m5H8/o6pGIEjMwRQnIBzRH
-	vLjs2+vNbM83iVO8KPxZ0luO6E/Z8Pf324g4xGSVPf47iFkeRllz+WOi6TWpEj3g
-	7rmhizMUhdgP02VbGuMg==
-Received: from nasanppmta01.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3x88eh88s5-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 02 Apr 2024 04:35:39 +0000 (GMT)
-Received: from nasanex01b.na.qualcomm.com (nasanex01b.na.qualcomm.com [10.46.141.250])
-	by NASANPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 4324Zcev012366
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 2 Apr 2024 04:35:38 GMT
-Received: from [10.239.29.179] (10.80.80.8) by nasanex01b.na.qualcomm.com
- (10.46.141.250) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.4; Mon, 1 Apr 2024
- 21:35:36 -0700
-Message-ID: <e78382b5-428e-4de8-be0d-b319534238f1@quicinc.com>
-Date: Tue, 2 Apr 2024 12:34:33 +0800
+	s=arc-20240116; t=1712032929; c=relaxed/simple;
+	bh=Cq4y5V9tgRGo3LoHQcADYNRf6oy3wrq7fzGOaXsz42c=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=cSbC8kVWIOrX/q/2DDrfWiJ4BX35Jyd0ibKOM8f2vUAqfDT6R9QEo2OUzY6GhRskrx2WDbeTxlWO5rhbhBjYAVdbkdmePmDg0JeYEnQhGLAVd4h7GRkLjjHQTvgWR0L3q3Iz+L9ksIimc8GaP3+eX3DnoRen3lCyKDyyV3ZaZxc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=codeconstruct.com.au; spf=pass smtp.mailfrom=codeconstruct.com.au; dkim=pass (2048-bit key) header.d=codeconstruct.com.au header.i=@codeconstruct.com.au header.b=Q806oSm5; arc=none smtp.client-ip=203.29.241.158
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=codeconstruct.com.au
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=codeconstruct.com.au
+Received: from [192.168.68.112] (ppp118-210-182-70.adl-adc-lon-bras34.tpg.internode.on.net [118.210.182.70])
+	by mail.codeconstruct.com.au (Postfix) with ESMTPSA id 4011420016;
+	Tue,  2 Apr 2024 12:41:56 +0800 (AWST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+	d=codeconstruct.com.au; s=2022a; t=1712032918;
+	bh=fRcs8rvk7aWDd3jH1iz3Wdk5wU4Tj0kt/f5n2x/Nrm4=;
+	h=Subject:From:To:Cc:Date:In-Reply-To:References;
+	b=Q806oSm5OfEMDMJ/wLaqtQwDlfkPA1UW3d3kM0I97eEHY8VnrfYoNhex0sFxwKvNU
+	 6ABUEJQjE84Nt41hQNrgJIZg172+oSPEcLDq42RZfwDIwJSHxrSx07P9n4ymSCw8ep
+	 +3/OO15E0JLuAoaxhHDtcqt7DckH201EFNTyTtAlt8kfEbsZPjrDK11b/4nQxhqlOp
+	 pnuud1xzxMRIV1k5kjs2qYfX9hIKg2uqZaLV7UkvbkXu4RWSM58ygdljZA0e3q22f7
+	 4ff5N3+gQpp+ZU95Tu7iwprzzaRA9m/KlKiBgz7PD4BtQl9Mp4u8XX5sDt8zsANeZW
+	 eR68bplZPpB9Q==
+Message-ID: <3aad5148383ba9e8fd905b09690ffa9c378b31de.camel@codeconstruct.com.au>
+Subject: Re: [PATCH v1] Revise duty cycle for SMB9 and SMB10
+From: Andrew Jeffery <andrew@codeconstruct.com.au>
+To: Delphine CC Chiu <Delphine_CC_Chiu@Wiwynn.com>, patrick@stwcx.xyz, Rob
+ Herring <robh@kernel.org>, Krzysztof Kozlowski
+ <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>,
+ Joel Stanley <joel@jms.id.au>
+Cc: devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
+	linux-aspeed@lists.ozlabs.org, linux-kernel@vger.kernel.org
+Date: Tue, 02 Apr 2024 15:11:55 +1030
+In-Reply-To: <20240401090509.2338027-1-Delphine_CC_Chiu@Wiwynn.com>
+References: <20240401090509.2338027-1-Delphine_CC_Chiu@Wiwynn.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.46.4-2 
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] bus: mhi: host: Add sysfs entry to force device to enter
- EDL
-Content-Language: en-US
-To: Jeffrey Hugo <quic_jhugo@quicinc.com>,
-        Manivannan Sadhasivam
-	<mani@kernel.org>
-CC: <mhi@lists.linux.dev>, <linux-arm-msm@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <quic_cang@quicinc.com>,
-        <quic_mrana@quicinc.com>, Bhaumik Bhatt <quic_bbhatt@quicinc.com>
-References: <1703490474-84730-1-git-send-email-quic_qianyu@quicinc.com>
- <cff4b828-9566-a2bd-287a-138d74a76a59@quicinc.com>
- <20240102165229.GC4917@thinkpad>
- <90c0a654-a02f-46e2-96a9-34f6a30c95a0@quicinc.com>
- <a10439f1-0fcd-834c-12a3-677976529cf1@quicinc.com>
-From: Qiang Yu <quic_qianyu@quicinc.com>
-In-Reply-To: <a10439f1-0fcd-834c-12a3-677976529cf1@quicinc.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nasanex01b.na.qualcomm.com (10.46.141.250)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: Zje4CYopREeAD-Wvde_0CYqXrbZiWhvn
-X-Proofpoint-ORIG-GUID: Zje4CYopREeAD-Wvde_0CYqXrbZiWhvn
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-04-02_01,2024-04-01_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0 suspectscore=0
- clxscore=1011 lowpriorityscore=0 impostorscore=0 mlxscore=0 malwarescore=0
- adultscore=0 bulkscore=0 mlxlogscore=999 priorityscore=1501 phishscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.19.0-2403210001
- definitions=main-2404020030
 
+On Mon, 2024-04-01 at 17:05 +0800, Delphine CC Chiu wrote:
+> ARM: dts: aspeed: yosemite4:
+> Revise duty cycle for SMB9 and SMB10 to 40:60
+> To meet 400kHz-i2c clock low time spec (> 1.3 us).
+>=20
+> Signed-off-by: Delphine CC Chiu <Delphine_CC_Chiu@Wiwynn.com>
+> ---
+>  arch/arm/boot/dts/aspeed/aspeed-bmc-facebook-yosemite4.dts | 2 ++
+>  1 file changed, 2 insertions(+)
+>=20
+> diff --git a/arch/arm/boot/dts/aspeed/aspeed-bmc-facebook-yosemite4.dts b=
+/arch/arm/boot/dts/aspeed/aspeed-bmc-facebook-yosemite4.dts
+> index 64075cc41d92..b3a2aa8f53a5 100644
+> --- a/arch/arm/boot/dts/aspeed/aspeed-bmc-facebook-yosemite4.dts
+> +++ b/arch/arm/boot/dts/aspeed/aspeed-bmc-facebook-yosemite4.dts
+> @@ -257,6 +257,7 @@ power-sensor@40 {
+>  &i2c8 {
+>  	status =3D "okay";
+>  	bus-frequency =3D <400000>;
+> +	i2c-clk-high-min-percent =3D <40>;
 
-On 1/12/2024 3:08 AM, Jeffrey Hugo wrote:
-> On 1/9/2024 2:20 AM, Qiang Yu wrote:
->>
->> On 1/3/2024 12:52 AM, Manivannan Sadhasivam wrote:
->>> On Tue, Jan 02, 2024 at 08:31:15AM -0700, Jeffrey Hugo wrote:
->>>> On 12/25/2023 12:47 AM, Qiang Yu wrote:
->>>>> From: Bhaumik Bhatt <quic_bbhatt@quicinc.com>
->>>>>
->>>>> Forcing the device (eg. SDX75) to enter Emergency Download Mode 
->>>>> involves
->>>>> writing the 0xEDEDEDED cookie to the channel 91 doorbell register and
->>>>> forcing an SOC reset afterwards. Allow users of the MHI bus to 
->>>>> exercise the
->>>>> sequence using a sysfs entry.
->>>> I don't see this documented in the spec anywhere.  Is this standard 
->>>> behavior
->>>> for all MHI devices?
->>>>
->>>> What about devices that don't support EDL mode?
->>>>
->>>> How should the host avoid using this special cookie when EDL mode 
->>>> is not
->>>> desired?
->>>>
->>> All points raised by Jeff are valid. I had discussions with Hemant 
->>> and Bhaumik
->>> previously on allowing the devices to enter EDL mode in a generic 
->>> manner and we
->>> didn't conclude on one final approach.
->>>
->>> Whatever way we come up with, it should be properly described in the 
->>> MHI spec
->>> and _should_ be backwards compatible.
->>
->> Hi Mani, Jeff. The method of entering EDL mode is documented in MHI 
->> spec v1.2, Chapter 13.2.
->>
->> Could you please check once?
->
-> I do see it listed there.  However that was a FR for SDX55, so devices 
-> prior to that would not support this.  AIC100 predates this change and 
-> would not support the functionality.  I verified the AIC100 
-> implementation is not aware of this cookie.
->
-> Also, that functionality depends on channel 91 being reserved per the 
-> table 9-2, however that table only applies to modem class devices as 
-> it is under chapter 9 "Modem protocols over PCIe". Looking at the 
-> ath11k and ath12k implementations in upstream, it looks like they 
-> partially comply.  Other devices have different MHI channel definitions.
->
-> Chapter 9 doesn't appear to be in older versions of the spec that I 
-> have, so it is unclear if this functionality is backwards compatible 
-> (was channel 91 used for another purpose in pre-SDX55 modems).
->
-> I'm not convinced this belongs in the MHI core.  At a minimum, the MHI 
-> controller(s) for the applicable devices needs to opt-in to this.
->
-> -Jeff
-Hi Jeff
+A grep of the 6.9-rc2 tree doesn't turn up any mention of this property
+name.
 
-Sorry for reply so late. In older versions of the spec, there is no 
-description about EDL doorbell. However, in MHI spec v1.2, section 13.2,
-It explicitly says "To set the EDL cookie, the host writes 0xEDEDEDED to 
-channel doorbell 91." So I think every device based on MHI spec v1.2
-should reserve channel doorbell 91 for EDL mode.
+More work needs to be done if this is meant to have any effect.
 
-So can we add another flag called mhi_ver in mhi controller to indicate 
-its mhi version and then we can add mhi_ver checking to determine if this
-device supports EDL sysfs operation?
+What tree are you developing your patches against? If you're sending
+them upstream then you must do your work (and test) in the context of
+upstream.
 
-Thanks,
-Qiang
+Andrew
 
