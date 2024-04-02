@@ -1,96 +1,100 @@
-Return-Path: <linux-kernel+bounces-127566-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-127567-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 48781894DB9
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 10:37:16 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A1C92894DBA
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 10:37:35 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 95283B21E2F
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 08:37:13 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D37071C20A73
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 08:37:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7A9ED57880;
-	Tue,  2 Apr 2024 08:36:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 836B93F8F7;
+	Tue,  2 Apr 2024 08:37:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="uJz3ajES"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="P1IO3xRO"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AB3E93E479;
-	Tue,  2 Apr 2024 08:36:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C66071772D
+	for <linux-kernel@vger.kernel.org>; Tue,  2 Apr 2024 08:37:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712046991; cv=none; b=IVlcZZYK39gEznzCud9uQsGd4hGQ1ukNre/vtgNZHm2KDrDhTiskpwGCu6jJdkJ8BL4yxhewpN0S6JlByDsa5odKKAngyEsHYdr0bm4hGrLztgkR0dwbn2j8EEs1/13Tni6ilnFPGE/1AnLrqApknVp1MgqmHp/0j92cFESkfTM=
+	t=1712047047; cv=none; b=pHMyvnF+xUmRLG63uUStI6BqRWEp1MkuvMnnsfEck+FfEh0Oj3gJE9yVgdIk8hEb9CNmjvjYt4hZmf+5QAutOgoVvx8HLo251B2MlwzHZgb7U6Jrx2r4R+bM9/IaVE0XAhHpmAIP1845KJs8J4tt236abocbOxHRp+xaxz1qSeU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712046991; c=relaxed/simple;
-	bh=Tgjd0CDwYwOTXcNopkSwsdl4O9xxv3uVMD5zmI8KlHM=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=VxX4xBxpf4cfc961MvvjCpeMiol2I2bZOlcIbrxcyOLS1qMiFj81WfD9RGeCIhCbX+qsHu/Jh/8jdprhY9qyY/Jm/B7AKb5t2WKMqeNqFuz7pBtY4M/9vBcAxqZeL4OLvRelBD/yHye8xgFO4ysOoJBMRFFFKNdzXdpLGmYibdI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=uJz3ajES; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 67BCEC433C7;
-	Tue,  2 Apr 2024 08:36:28 +0000 (UTC)
+	s=arc-20240116; t=1712047047; c=relaxed/simple;
+	bh=OHCex86ejAIFqX000VOlgpmI23A1qiIbvTNM5wesSIU=;
+	h=Content-Type:Date:Message-Id:Subject:Cc:From:To:References:
+	 In-Reply-To; b=XlOcozchV1jf3NTyfa9LXWWMo6AVNnMcMn5UX5kKM+BYXZCvTY1z4ILNdxqj9cQygrsdnLj3pCRmwlY0i8JZW5g4pekXgDS3uTQKF2rjGb7yAmOPEtpOFAOn3OYNW3laVeVSpzOzZE7KY5Zs0kJ7Gc5akFa6KUOoLuY/Fd0n7v0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=P1IO3xRO; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5258AC433C7;
+	Tue,  2 Apr 2024 08:37:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712046990;
-	bh=Tgjd0CDwYwOTXcNopkSwsdl4O9xxv3uVMD5zmI8KlHM=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=uJz3ajESb40xBrf+1zV6Sn4eiV/xZGz/G0W0aOjo4/7hyNzePO/10G/U2oCX2SQvw
-	 PkOlI7CXfsHEZko1vOGid16innOTsdNIxFOD7Ua+lauJ/wumnyMTPjIAJQylOogbHb
-	 eqtpmdLNUaoJeLBJQIvYuj+ZL7xj6veAL99zTsXQm0Y3BHJ9yocjSrqlsD+dhNsUXm
-	 L1yJ2gKMWabQD5OiGL/OV9Ny818LP1ylcIzSH7zYcHChV+4EID8lhnAobTZ3fGOy4h
-	 5ttOCdSs2FVlfIQTB0mB5/edC+iXwXBaW6KwsR7gFJn08+aNxwADYdNSkFiRQba/H8
-	 AvLIcyLBQcYMQ==
-Date: Tue, 2 Apr 2024 09:36:26 +0100
-From: Simon Horman <horms@kernel.org>
-To: Jose Ignacio Tornos Martinez <jtornosm@redhat.com>
-Cc: davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
-	pabeni@redhat.com, linux-usb@vger.kernel.org,
-	netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-	stable@vger.kernel.org,
-	Dave Stevenson <dave.stevenson@raspberrypi.com>
-Subject: Re: [PATCH net v3] net: usb: ax88179_178a: avoid the interface
- always configured as random address
-Message-ID: <20240402083626.GN26556@kernel.org>
-References: <20240401082004.7412-1-jtornosm@redhat.com>
+	s=k20201202; t=1712047047;
+	bh=OHCex86ejAIFqX000VOlgpmI23A1qiIbvTNM5wesSIU=;
+	h=Date:Subject:Cc:From:To:References:In-Reply-To:From;
+	b=P1IO3xROQZGS2fCZ06UxWybjaAvUHfySV+PL9Lk/sdZX0HSDZqNn8TzMqg6B1atOP
+	 NpzgdA03rRe+GmeaDJS4XjpJ8owWSw7BMiAO2dINP7wuSImLIJ5730esclltvIC0or
+	 QwI+D87nzxVwJ3mpj8Oo4FKhGF+cNhfL8mWppEQzzaWBN7mASJ06fajusyPARVNTNQ
+	 ++nLF+qIwMOlMjSFXZeeIsFpqid0PTSKgiHnTPzzXKRU0EtV52dwWjnXKq+VYeIFUH
+	 BKLELzpvOVTvNNTC+AnYyiUfLL8p9RfuDY2TBDyKlq3CAjkK61BJ3vmbTndmkTbAh3
+	 KNHTlO9iKb91Q==
+Content-Type: multipart/signed;
+ boundary=da0864b69030f7d19a4d86df6475a90ba83b3b0f6fe192d174a168ba9ad7;
+ micalg=pgp-sha384; protocol="application/pgp-signature"
+Date: Tue, 02 Apr 2024 10:37:24 +0200
+Message-Id: <D09I0YEBGBV8.3SOV5AYONO5ZL@kernel.org>
+Subject: Re: [PATCH 1/3] nvmem: layouts: store owner from modules with
+ nvmem_layout_driver_register()
+Cc: <linux-kernel@vger.kernel.org>
+From: "Michael Walle" <mwalle@kernel.org>
+To: "Krzysztof Kozlowski" <krzysztof.kozlowski@linaro.org>, "Srinivas
+ Kandagatla" <srinivas.kandagatla@linaro.org>, "Miquel Raynal"
+ <miquel.raynal@bootlin.com>
+X-Mailer: aerc 0.16.0
+References: <20240329-module-owner-nvmem-v1-0-d700685f08e1@linaro.org>
+ <20240329-module-owner-nvmem-v1-1-d700685f08e1@linaro.org>
+In-Reply-To: <20240329-module-owner-nvmem-v1-1-d700685f08e1@linaro.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240401082004.7412-1-jtornosm@redhat.com>
 
-On Mon, Apr 01, 2024 at 10:19:50AM +0200, Jose Ignacio Tornos Martinez wrote:
-> After the commit d2689b6a86b9 ("net: usb: ax88179_178a: avoid two
-> consecutive device resets"), reset is not executed from bind operation and
-> mac address is not read from the device registers or the devicetree at that
-> moment. Since the check to configure if the assigned mac address is random
-> or not for the interface, happens after the bind operation from
-> usbnet_probe, the interface keeps configured as random address, although the
-> address is correctly read and set during open operation (the only reset
-> now).
-> 
-> In order to keep only one reset for the device and to avoid the interface
-> always configured as random address, after reset, configure correctly the
-> suitable field from the driver, if the mac address is read successfully from
-> the device registers or the devicetree.
-> 
-> cc: stable@vger.kernel.org # 6.6+
-> Fixes: d2689b6a86b9 ("net: usb: ax88179_178a: avoid two consecutive device resets")
-> Reported-by: Dave Stevenson  <dave.stevenson@raspberrypi.com>
-> Signed-off-by: Jose Ignacio Tornos Martinez <jtornosm@redhat.com>
-> ---
-> v3:
->   - Send the patch separately to net.
-> v2:
->   - Split the fix and the improvement in two patches as Simon Horman
-> suggests.
-> v1: https://lore.kernel.org/netdev/20240325173155.671807-1-jtornosm@redhat.com/
+--da0864b69030f7d19a4d86df6475a90ba83b3b0f6fe192d174a168ba9ad7
+Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
 
-Thanks for the updates.
+On Fri Mar 29, 2024 at 5:13 PM CET, Krzysztof Kozlowski wrote:
+> Modules registering driver with nvmem_layout_driver_register() might
+> forget to set .owner field.  The field is used by some of other kernel
+> parts for reference counting (try_module_get()), so it is expected that
+> drivers will set it.
+>
+> Solve the problem by moving this task away from the drivers to the core
+> code, just like we did for platform_driver in
+> commit 9447057eaff8 ("platform_device: use a macro instead of
+> platform_driver_register").
+>
+> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 
-Reviewed-by: Simon Horman <horms@kernel.org>
+Reviewed-by: Michael Walle <mwalle@kernel.org>
 
+-michael
+
+--da0864b69030f7d19a4d86df6475a90ba83b3b0f6fe192d174a168ba9ad7
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iKgEABMJADAWIQTIVZIcOo5wfU/AngkSJzzuPgIf+AUCZgvDxBIcbXdhbGxlQGtl
+cm5lbC5vcmcACgkQEic87j4CH/iyWwGApFLJ3/8u7BW1Nu9VLng/g6AXHPywIVXs
+y58D+lf5bN/DnIsCHk88i8axaeAc3XiEAX4gazxHDDv8Gg01blW6Jq6aE5pHrSeG
+lZpOUdqiPEEOo6WFxWDOn+/oh96hIDPcz9c=
+=avti
+-----END PGP SIGNATURE-----
+
+--da0864b69030f7d19a4d86df6475a90ba83b3b0f6fe192d174a168ba9ad7--
 
