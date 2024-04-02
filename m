@@ -1,57 +1,56 @@
-Return-Path: <linux-kernel+bounces-127564-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-127563-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id A73C8894DB2
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 10:36:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 04371894DAF
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 10:36:06 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 0C840B22943
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 08:36:32 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 971BFB21FA7
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 08:36:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6BCD545007;
-	Tue,  2 Apr 2024 08:35:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D29294D9FB;
+	Tue,  2 Apr 2024 08:35:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=yeah.net header.i=@yeah.net header.b="WY7ZjIS1"
-Received: from mail-177131.yeah.net (mail-177131.yeah.net [123.58.177.131])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 359A857315;
-	Tue,  2 Apr 2024 08:35:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=123.58.177.131
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="icB4wbFC"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 183D03EA73;
+	Tue,  2 Apr 2024 08:35:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712046957; cv=none; b=cP+IjKm1Z4bR5eoL2F4tB4uzLPVYB/m+x99M1wxULGZMbohntckSBMRiwcCFfuYVEbrPrKE5UAbIbiQ6opAiAjUJYLpEy6R4vzf69EJWOM3JZU6DMLaIUMNs8ilj6t1rUvsd1hLQgTKrsG+qpUFthBTpOu7qpnovUaC2sNHZEQo=
+	t=1712046947; cv=none; b=cYn7IDW14nZHBBDbCzdXWm+ga9gu/k26WbNY0LQBsxnB8gQ7Cw4pqgHTTWSytUBZnipjtJw2iL7+LBb4rV7SifqQCGKjXv8X7aLYJyevMQ4NzNDc5GoRJh19NlbnYnHTWrX4w+2NxjedvTJi1qqAomYK/ShXsG1m3KiEFUvPKzo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712046957; c=relaxed/simple;
-	bh=m1lsPFgluw1lDbgABtZXAsUlTb+3eksNMgaT//vCYKU=;
+	s=arc-20240116; t=1712046947; c=relaxed/simple;
+	bh=uR+WPn6LQ+T2m5pe49GHjccpQrV57vEXtJxgVft/4kQ=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=nXx4yI/vk5+xhd33+t2IibPxZJ9+EY+CDeHaX6x/05MsnDacozXnmKEAgbGG6deNtvDs6Zy4Wu4Fh1xlA8A/LlyH2EUTunVJxqt9m9seFPM6rj8AN+M8j8pjeaNCOAvG5PeVASP1j6nBApE1KZd4dvxQQMWt+y9D5DTKxoBVnqc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=yeah.net; spf=pass smtp.mailfrom=yeah.net; dkim=pass (1024-bit key) header.d=yeah.net header.i=@yeah.net header.b=WY7ZjIS1; arc=none smtp.client-ip=123.58.177.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=yeah.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=yeah.net
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yeah.net;
-	s=s110527; h=Date:From:Subject:Message-ID:MIME-Version:
-	Content-Type; bh=M3q2o7D5pZ85OztyvHOJ0Lrj1x7gKAWNHO9XsIQgyCI=;
-	b=WY7ZjIS1JceGpx3YMaJsQUOcbU7LHMV+fdhIi/fMaWrsVj/fiPhLOunx6UDLSf
-	SrX8WUN9X9uhFkcNlO4kuVlwUvI3uZkY70qlfT+uRmcgDI4gaNxELGkmSkWgdcBq
-	02hgY6gnV0xqhxnRJIKL8cehVJoHwlNkrY4zHZzfgB05A=
-Received: from dragon (unknown [223.68.79.243])
-	by smtp1 (Coremail) with SMTP id ClUQrADX_0ZMwwtm6q+iAQ--.45423S3;
-	Tue, 02 Apr 2024 16:35:25 +0800 (CST)
-Date: Tue, 2 Apr 2024 16:35:24 +0800
-From: Shawn Guo <shawnguo2@yeah.net>
-To: Xu Yang <xu.yang_2@nxp.com>
-Cc: gregkh@linuxfoundation.org, robh+dt@kernel.org,
-	krzysztof.kozlowski+dt@linaro.org, shawnguo@kernel.org,
-	conor+dt@kernel.org, s.hauer@pengutronix.de, kernel@pengutronix.de,
-	festevam@gmail.com, linux-imx@nxp.com, peter.chen@kernel.org,
-	jun.li@nxp.com, linux-usb@vger.kernel.org,
-	devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-	imx@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v10 03/11] arm64: dts: imx8ulp-evk: enable usb nodes and
- add ptn5150 nodes
-Message-ID: <ZgvDTPiBM65l3F+U@dragon>
-References: <20240321081439.541799-1-xu.yang_2@nxp.com>
- <20240321081439.541799-3-xu.yang_2@nxp.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=ZyYrOCXzBExG9ob+m55WFvG/de12dHLi85QnbkqBMra/ysXotV2w//1YNL628ZaYgO6nt2EYQLFcLVYjnCSykTlNFc1PFEfhKhwkooXwpLaqiekG0UzTXWu3bwEttnvOeKnCgsf4SjXdVBJzEhFe95793pAGhvjyToq0XGYOpQE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=icB4wbFC; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id F22DAC433A6;
+	Tue,  2 Apr 2024 08:35:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1712046946;
+	bh=uR+WPn6LQ+T2m5pe49GHjccpQrV57vEXtJxgVft/4kQ=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=icB4wbFC+ejSnDtKZ9C2ulym3AkjuJlcIZYJMwUNowa/UKPmKhwYOvutjSVEp72uA
+	 OHWPe6lURlXht/grYa+TfQzMGcJkn9388CDFxQRhj1EqSOtPr2hM50T09SqoT8ySSu
+	 oS/Qz3iXP8nbfM0UdhjuNxuq/XxHgT0W6SzlPY6CXjaLMTxUxvFLxEO7REqLqT1pM7
+	 XhmLlvy1t+hcl7DTvNlJwqIeNa5c8WLrSbhhoLKXY3UKBXsSIdirshffU358x/+DAS
+	 wx/CwkUfHG6JIot27bGOtT/elsPX9iqlMbvUfeZgAloM5zckb42fVzLg3e/pHY2yTP
+	 XVFM0vaOiv9sQ==
+Date: Tue, 2 Apr 2024 11:35:41 +0300
+From: Leon Romanovsky <leon@kernel.org>
+To: Konstantin Taranov <kotaranov@linux.microsoft.com>
+Cc: kotaranov@microsoft.com, sharmaajay@microsoft.com, longli@microsoft.com,
+	jgg@ziepe.ca, linux-rdma@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH rdma-next v3 1/4] RDMA/mana_ib: Introduce helpers to
+ create and destroy mana queues
+Message-ID: <20240402083541.GE11187@unreal>
+References: <1711483688-24358-1-git-send-email-kotaranov@linux.microsoft.com>
+ <1711483688-24358-2-git-send-email-kotaranov@linux.microsoft.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -60,155 +59,114 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240321081439.541799-3-xu.yang_2@nxp.com>
-X-CM-TRANSID:ClUQrADX_0ZMwwtm6q+iAQ--.45423S3
-X-Coremail-Antispam: 1Uf129KBjvJXoWxGw47AFyktw1fuFWfJr13Jwb_yoW5XFWkpr
-	9rGrsxXw17WF47KF98JrnxKr93Jan3Gr97uw12g340kr1Du347Jr10grn5Wrs8ur43Xw4a
-	yFsYgrW2grnF9wUanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07jseOLUUUUU=
-X-CM-SenderInfo: pvkd40hjxrjqh1hdxhhqhw/1tbiDQ20ZVszXX09xgAAsi
+In-Reply-To: <1711483688-24358-2-git-send-email-kotaranov@linux.microsoft.com>
 
-On Thu, Mar 21, 2024 at 04:14:31PM +0800, Xu Yang wrote:
-> Enable 2 USB nodes and add 2 PTN5150 nodes on i.MX8ULP evk board.
+On Tue, Mar 26, 2024 at 01:08:05PM -0700, Konstantin Taranov wrote:
+> From: Konstantin Taranov <kotaranov@microsoft.com>
 > 
-> Signed-off-by: Xu Yang <xu.yang_2@nxp.com>
+> Intoduce helpers to work with mana ib queues (struct mana_ib_queue).
+> A queue always consists of umem, gdma_region, and id.
+> A queue can become a WQ or a CQ.
 > 
+> Signed-off-by: Konstantin Taranov <kotaranov@microsoft.com>
+> Reviewed-by: Long Li <longli@microsoft.com>
 > ---
-> Changes in v2:
->  - fix format as suggusted by Fabio
->  - add PTN5150 nodes
-> Changes in v3:
->  - no changes
-> Changes in v4:
->  - no changes
-> Changes in v5:
->  - no changes
-> Changes in v6:
->  - no changes
-> Changes in v7:
->  - no changes
-> Changes in v8:
->  - no changes
-> Changes in v9:
->  - no changes
-> Changes in v10:
->  - no changes
-> ---
->  arch/arm64/boot/dts/freescale/imx8ulp-evk.dts | 84 +++++++++++++++++++
->  1 file changed, 84 insertions(+)
+>  drivers/infiniband/hw/mana/main.c    | 43 ++++++++++++++++++++++++++++
+>  drivers/infiniband/hw/mana/mana_ib.h | 10 +++++++
+>  2 files changed, 53 insertions(+)
 > 
-> diff --git a/arch/arm64/boot/dts/freescale/imx8ulp-evk.dts b/arch/arm64/boot/dts/freescale/imx8ulp-evk.dts
-> index 69dd8e31027c..bf418af31039 100644
-> --- a/arch/arm64/boot/dts/freescale/imx8ulp-evk.dts
-> +++ b/arch/arm64/boot/dts/freescale/imx8ulp-evk.dts
-> @@ -133,6 +133,64 @@ pcal6408: gpio@21 {
->  		gpio-controller;
->  		#gpio-cells = <2>;
->  	};
+> diff --git a/drivers/infiniband/hw/mana/main.c b/drivers/infiniband/hw/mana/main.c
+> index 71e33feee..4524c6b80 100644
+> --- a/drivers/infiniband/hw/mana/main.c
+> +++ b/drivers/infiniband/hw/mana/main.c
+> @@ -237,6 +237,49 @@ void mana_ib_dealloc_ucontext(struct ib_ucontext *ibcontext)
+>  		ibdev_dbg(ibdev, "Failed to destroy doorbell page %d\n", ret);
+>  }
+>  
+> +int mana_ib_create_queue(struct mana_ib_dev *mdev, u64 addr, u32 size,
+> +			 struct mana_ib_queue *queue)
+> +{
+> +	struct ib_umem *umem;
+> +	int err;
 > +
-> +	ptn5150_1: typec@1d {
+> +	queue->umem = NULL;
+> +	queue->id = INVALID_QUEUE_ID;
+> +	queue->gdma_region = GDMA_INVALID_DMA_REGION;
+> +
+> +	umem = ib_umem_get(&mdev->ib_dev, addr, size, IB_ACCESS_LOCAL_WRITE);
+> +	if (IS_ERR(umem)) {
+> +		err = PTR_ERR(umem);
+> +		ibdev_dbg(&mdev->ib_dev, "Failed to get umem, %d\n", err);
+> +		return err;
+> +	}
+> +
+> +	err = mana_ib_create_zero_offset_dma_region(mdev, umem, &queue->gdma_region);
+> +	if (err) {
+> +		ibdev_dbg(&mdev->ib_dev, "Failed to create dma region, %d\n", err);
+> +		goto free_umem;
+> +	}
+> +	queue->umem = umem;
+> +
+> +	ibdev_dbg(&mdev->ib_dev,
+> +		  "create_dma_region ret %d gdma_region 0x%llx\n",
+> +		  err, queue->gdma_region);
 
-Could you sort devices in unit-address?
+I see such prints in all code and patches, please remove them. We assume
+that the code works and you don't need to print about success.
 
-> +		compatible = "nxp,ptn5150";
-> +		reg = <0x1d>;
-> +		int-gpios = <&gpiof 3 IRQ_TYPE_EDGE_FALLING>;
-> +		pinctrl-names = "default";
-> +		pinctrl-0 = <&pinctrl_typec1>;
-> +		status = "disabled";
-> +	};
-> +
-> +	ptn5150_2: typec@3d {
-> +		compatible = "nxp,ptn5150";
-> +		reg = <0x3d>;
-> +		int-gpios = <&gpiof 5 IRQ_TYPE_EDGE_FALLING>;
-> +			pinctrl-names = "default";
+Also you are printing "err" too which is always 0 in this case.
 
-Broken indent?
+Thanks
 
-Shawn
-
-> +		pinctrl-0 = <&pinctrl_typec2>;
-> +		status = "disabled";
-> +	};
-> +};
 > +
-> +&usbotg1 {
-> +	pinctrl-names = "default";
-> +	pinctrl-0 = <&pinctrl_usb1>;
-> +	dr_mode = "otg";
-> +	hnp-disable;
-> +	srp-disable;
-> +	adp-disable;
-> +	over-current-active-low;
-> +	status = "okay";
-> +};
+> +	return 0;
+> +free_umem:
+> +	ib_umem_release(umem);
+> +	return err;
+> +}
 > +
-> +&usbphy1 {
-> +	fsl,tx-d-cal = <110>;
-> +	status = "okay";
-> +};
+> +void mana_ib_destroy_queue(struct mana_ib_dev *mdev, struct mana_ib_queue *queue)
+> +{
+> +	/* Ignore return code as there is not much we can do about it.
+> +	 * The error message is printed inside.
+> +	 */
+> +	mana_ib_gd_destroy_dma_region(mdev, queue->gdma_region);
+> +	ib_umem_release(queue->umem);
+> +}
 > +
-> +&usbmisc1 {
-> +	status = "okay";
-> +};
-> +
-> +&usbotg2 {
-> +	pinctrl-names = "default";
-> +	pinctrl-0 = <&pinctrl_usb2>;
-> +	dr_mode = "otg";
-> +	hnp-disable;
-> +	srp-disable;
-> +	adp-disable;
-> +	over-current-active-low;
-> +	status = "okay";
-> +};
-> +
-> +&usbphy2 {
-> +	fsl,tx-d-cal = <110>;
-> +	status = "okay";
-> +};
-> +
-> +&usbmisc2 {
-> +	status = "okay";
+>  static int
+>  mana_ib_gd_first_dma_region(struct mana_ib_dev *dev,
+>  			    struct gdma_context *gc,
+> diff --git a/drivers/infiniband/hw/mana/mana_ib.h b/drivers/infiniband/hw/mana/mana_ib.h
+> index f83390eeb..859fd3bfc 100644
+> --- a/drivers/infiniband/hw/mana/mana_ib.h
+> +++ b/drivers/infiniband/hw/mana/mana_ib.h
+> @@ -45,6 +45,12 @@ struct mana_ib_adapter_caps {
+>  	u32 max_inline_data_size;
 >  };
 >  
->  &usdhc0 {
-> @@ -224,6 +282,32 @@ MX8ULP_PAD_PTE13__LPI2C7_SDA	0x20
->  		>;
->  	};
+> +struct mana_ib_queue {
+> +	struct ib_umem *umem;
+> +	u64 gdma_region;
+> +	u64 id;
+> +};
+> +
+>  struct mana_ib_dev {
+>  	struct ib_device ib_dev;
+>  	struct gdma_dev *gdma_dev;
+> @@ -169,6 +175,10 @@ int mana_ib_create_dma_region(struct mana_ib_dev *dev, struct ib_umem *umem,
+>  int mana_ib_gd_destroy_dma_region(struct mana_ib_dev *dev,
+>  				  mana_handle_t gdma_region);
 >  
-> +	pinctrl_typec1: typec1grp {
-> +		fsl,pins = <
-> +			MX8ULP_PAD_PTF3__PTF3           0x3
-> +		>;
-> +	};
+> +int mana_ib_create_queue(struct mana_ib_dev *mdev, u64 addr, u32 size,
+> +			 struct mana_ib_queue *queue);
+> +void mana_ib_destroy_queue(struct mana_ib_dev *mdev, struct mana_ib_queue *queue);
 > +
-> +	pinctrl_typec2: typec2grp {
-> +		fsl,pins = <
-> +			MX8ULP_PAD_PTF5__PTF5           0x3
-> +		>;
-> +	};
-> +
-> +	pinctrl_usb1: usb1grp {
-> +		fsl,pins = <
-> +			MX8ULP_PAD_PTF2__USB0_ID	0x10003
-> +			MX8ULP_PAD_PTF4__USB0_OC	0x10003
-> +		>;
-> +	};
-> +
-> +	pinctrl_usb2: usb2grp {
-> +		fsl,pins = <
-> +			MX8ULP_PAD_PTD23__USB1_ID	0x10003
-> +			MX8ULP_PAD_PTF6__USB1_OC	0x10003
-> +		>;
-> +	};
-> +
->  	pinctrl_usdhc0: usdhc0grp {
->  		fsl,pins = <
->  			MX8ULP_PAD_PTD1__SDHC0_CMD	0x3
+>  struct ib_wq *mana_ib_create_wq(struct ib_pd *pd,
+>  				struct ib_wq_init_attr *init_attr,
+>  				struct ib_udata *udata);
 > -- 
-> 2.34.1
+> 2.43.0
 > 
-
+> 
 
