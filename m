@@ -1,218 +1,339 @@
-Return-Path: <linux-kernel+bounces-127727-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-127728-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2676E89500C
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 12:28:08 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8B81989500F
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 12:29:18 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 81410B235C3
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 10:28:05 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 17249284C3D
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 10:29:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9B2435C603;
-	Tue,  2 Apr 2024 10:27:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="A8HDP0fm"
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 265325914D;
-	Tue,  2 Apr 2024 10:27:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 67C3E5C90F;
+	Tue,  2 Apr 2024 10:29:10 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D6C655914D;
+	Tue,  2 Apr 2024 10:29:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712053675; cv=none; b=sHpC4e/Dr/H/gIlRkvyEhLcWtO13dbWwClon1uivnoH77174J2TNqkggTu8BmF90cmWBcTrZ4ChV6EhtdHJL9j34BprvYPFQ7PzcRvp2dZkmgfwF7kfg1aqkmR7K7yZU8aCp3qR6DClv1t4ULbQdGcNupLcP2wUPIfyiSh78oeQ=
+	t=1712053749; cv=none; b=bCZFmJFWQnj2KNMt7DZOftfeMZLAL3A2r4bRATj8F2ppVrSlLUlDNk6pTiPr1dFYZP0cQo8tZn3FiwUvdoUgSRB5edvtAvkDTnjJjgF8u3PUoCmdjbj8qCocnG5d3tdot61zgVirN/9/Kat2VjrZRA15fH6yVCC7Sxjrb+bNkXw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712053675; c=relaxed/simple;
-	bh=/DQ0J4jT+7O1YXt0ZOeAPIx33eGS+CdFq1XTe0cfZFA=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=TlpXNPX6UQxe8ZCujSDJkhi2FEFsaJ/G4Vxi4MoDfZ2h9wPJ6FsMcHzgUejIEafJi5/yrFvpV3cGUFjQP/yt0+01RnFBiwdQmrKK1U1bviqk9SZ0axKDofZTsQwV8QVVvTSLfrVJo0+1j9PcHL3uuiJ+JnKECQmUP4AiwjMqF+E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=qualcomm.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=A8HDP0fm; arc=none smtp.client-ip=205.220.168.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=qualcomm.com
-Received: from pps.filterd (m0279864.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 4326H81u024439;
-	Tue, 2 Apr 2024 10:27:50 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	from:to:cc:subject:date:message-id:mime-version
-	:content-transfer-encoding; s=qcppdkim1; bh=Cmpg8cecJbn7r1UDKMdr
-	24xUgseklzecMDt64aoeZ3Y=; b=A8HDP0fm/gw6Xe4pUIPDeabwRLVip1d36CfT
-	pV0TB6p6UQjeibz4ddpWc3JjijdH0z3iL8vw9Ydu15AuafhiAiVxsatqx9fuJmUQ
-	M9HRQf69oAFJLIPrqtaiOBD8slr8XPLfiYO7M+t2MIK+AWmjtUEjsUIRXHLCpmCJ
-	3rjsd1FtS8nchgv0l1FnU7OIFgmdSvQLyrExJNe2V+LXVyQQ64E65WQ01N8QBJPh
-	n/f04SH/BP3LFIiKJ4cK68o/Lyao4KlCWBAW9mOMf7hoRLW/X3pFR0CBVZRIyhza
-	4r8pGn7GEgVvvx81kEa7iL6+q248urrjpriEYFNRSJifp0X8Uw==
-Received: from apblrppmta02.qualcomm.com (blr-bdr-fw-01_GlobalNAT_AllZones-Outside.qualcomm.com [103.229.18.19])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3x8cm5gkq2-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 02 Apr 2024 10:27:50 +0000 (GMT)
-Received: from pps.filterd (APBLRPPMTA02.qualcomm.com [127.0.0.1])
-	by APBLRPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTP id 432ARj4S016769;
-	Tue, 2 Apr 2024 10:27:45 GMT
-Received: from pps.reinject (localhost [127.0.0.1])
-	by APBLRPPMTA02.qualcomm.com (PPS) with ESMTPS id 3x6btm596j-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 02 Apr 2024 10:27:45 +0000
-Received: from APBLRPPMTA02.qualcomm.com (APBLRPPMTA02.qualcomm.com [127.0.0.1])
-	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 432ARiO1016760;
-	Tue, 2 Apr 2024 10:27:44 GMT
-Received: from hu-maiyas-hyd.qualcomm.com (hu-msavaliy-hyd.qualcomm.com [10.213.110.207])
-	by APBLRPPMTA02.qualcomm.com (PPS) with ESMTPS id 432ARi1l016758
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 02 Apr 2024 10:27:44 +0000
-Received: by hu-maiyas-hyd.qualcomm.com (Postfix, from userid 429934)
-	id 9EAB1240F4; Tue,  2 Apr 2024 15:57:43 +0530 (+0530)
-From: Mukesh Kumar Savaliya <quic_msavaliy@quicinc.com>
-To: konrad.dybcio@linaro.org, andersson@kernel.org, andi.shyti@kernel.org,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-i2c@vger.kernel.org
-Cc: quic_vdadhani@quicinc.com, vkoul@kernel.org,
-        Mukesh Kumar Savaliya <quic_msavaliy@quicinc.com>
-Subject: [PATCH] i2c: i2c-qcom-geni: Serve transfer during early resume stage
-Date: Tue,  2 Apr 2024 15:57:41 +0530
-Message-Id: <20240402102741.128424-1-quic_msavaliy@quicinc.com>
-X-Mailer: git-send-email 2.25.1
+	s=arc-20240116; t=1712053749; c=relaxed/simple;
+	bh=rHe9zTeLCUNpEv2T8ZyDtYvDoeBuaQwap25Ev7nWSH4=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=J4nLCd1lu9b9P9T0d+pIIQtw3XaBNAly2G9eSqaDBLFVlLdy8LbbQd0sT/nP5E6ZdWTBMLxZ0Fr8ox6UinB0dj46SiFt1emgcZfVV0juAEoAeEB8H9iDX4Wrce5C54sbzy85MQJJLSb0XUHxUmWn+XAMFKRBCRbgsqVk6gJ7eH0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 0B7EBFEC;
+	Tue,  2 Apr 2024 03:29:39 -0700 (PDT)
+Received: from pluto (unknown [172.31.20.19])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 5E0AB3F766;
+	Tue,  2 Apr 2024 03:29:05 -0700 (PDT)
+Date: Tue, 2 Apr 2024 11:29:02 +0100
+From: Cristian Marussi <cristian.marussi@arm.com>
+To: "Peng Fan (OSS)" <peng.fan@oss.nxp.com>
+Cc: Sudeep Holla <sudeep.holla@arm.com>, Rob Herring <robh@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Linus Walleij <linus.walleij@linaro.org>,
+	Dan Carpenter <dan.carpenter@linaro.org>,
+	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+	devicetree@vger.kernel.org, linux-gpio@vger.kernel.org,
+	Peng Fan <peng.fan@nxp.com>,
+	Oleksii Moisieiev <oleksii_moisieiev@epam.com>
+Subject: Re: [PATCH v7 3/4] firmware: arm_scmi: Add SCMI v3.2 pincontrol
+ protocol basic support
+Message-ID: <Zgvd7npz1jdJSu-b@pluto>
+References: <20240402-pinctrl-scmi-v7-0-3ea519d12cf7@nxp.com>
+ <20240402-pinctrl-scmi-v7-3-3ea519d12cf7@nxp.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-QCInternal: smtphost
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: RXcenigXZ69eQtIagROOTbGoT0omNlKn
-X-Proofpoint-ORIG-GUID: RXcenigXZ69eQtIagROOTbGoT0omNlKn
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-04-02_04,2024-04-01_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0 impostorscore=0
- mlxscore=0 mlxlogscore=999 lowpriorityscore=0 suspectscore=0 clxscore=1015
- priorityscore=1501 malwarescore=0 adultscore=0 bulkscore=0 phishscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.19.0-2403210001
- definitions=main-2404020075
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240402-pinctrl-scmi-v7-3-3ea519d12cf7@nxp.com>
 
-pm_runtime_get_sync() function fails during PM early resume and returning
--EACCES because runtime PM for the device is disabled at the early stage
-causing i2c transfer to fail. Make changes to serve transfer with force
-resume.
+On Tue, Apr 02, 2024 at 10:22:23AM +0800, Peng Fan (OSS) wrote:
+> From: Peng Fan <peng.fan@nxp.com>
+> 
+> Add basic implementation of the SCMI v3.2 pincontrol protocol.
+> 
 
-1. Register interrupt with IRQF_EARLY_RESUME and IRQF_NO_SUSPEND flags
-   to avoid timeout of transfer when IRQ is not enabled during early stage.
-2. Do force resume if pm_runtime_get_sync() is failing after system
-   suspend when runtime PM is not enabled.
-3. Increment power usage count after forced resume to balance
-   it against regular runtime suspend.
+Hi,
 
-Co-developed-by: Viken Dadhaniya <quic_vdadhani@quicinc.com>
-Signed-off-by: Viken Dadhaniya <quic_vdadhani@quicinc.com>
-Signed-off-by: Mukesh Kumar Savaliya <quic_msavaliy@quicinc.com>
----
-v1 -> v2:
-- Changed gi2c->se.dev to dev during dev_dbg() calls.
-- Addressed review comments from Andi.
----
- drivers/i2c/busses/i2c-qcom-geni.c | 55 ++++++++++++++++++++++++------
- 1 file changed, 45 insertions(+), 10 deletions(-)
 
-diff --git a/drivers/i2c/busses/i2c-qcom-geni.c b/drivers/i2c/busses/i2c-qcom-geni.c
-index da94df466e83..30c335b02ac4 100644
---- a/drivers/i2c/busses/i2c-qcom-geni.c
-+++ b/drivers/i2c/busses/i2c-qcom-geni.c
-@@ -134,6 +134,8 @@ struct geni_i2c_clk_fld {
- 	u8	t_cycle_cnt;
+> Co-developed-by: Oleksii Moisieiev <oleksii_moisieiev@epam.com>
+> Signed-off-by: Oleksii Moisieiev <oleksii_moisieiev@epam.com>
+> Signed-off-by: Peng Fan <peng.fan@nxp.com>
+> ---
+
+[snip]
+
+
+> +struct scmi_settings_get_ipriv {
+> +	u32 selector;
+> +	enum scmi_pinctrl_selector_type type;
+> +	bool get_all;
+> +	enum scmi_pinctrl_conf_type *config_types;
+> +	u32 *config_values;
+> +};
+> +
+> +static void
+> +iter_pinctrl_settings_get_prepare_message(void *message, u32 desc_index,
+> +					  const void *priv)
+> +{
+> +	struct scmi_msg_settings_get *msg = message;
+> +	const struct scmi_settings_get_ipriv *p = priv;
+> +	u32 attributes;
+> +
+> +	attributes = FIELD_PREP(SELECTOR_MASK, p->type);
+> +
+> +	if (p->get_all) {
+> +		attributes |= FIELD_PREP(CONFIG_FLAG_MASK, 1) |
+> +			FIELD_PREP(SKIP_CONFIGS_MASK, desc_index);
+> +	} else {
+> +		attributes |= FIELD_PREP(CONFIG_TYPE_MASK, p->config_types[0]);
+> +	}
+> +
+> +	msg->attributes = cpu_to_le32(attributes);
+> +	msg->identifier = cpu_to_le32(p->selector);
+> +}
+> +
+> +static int
+> +iter_pinctrl_settings_get_update_state(struct scmi_iterator_state *st,
+> +				       const void *response, void *priv)
+> +{
+> +	const struct scmi_resp_settings_get *r = response;
+> +	struct scmi_settings_get_ipriv *p = priv;
+> +
+> +	if (p->get_all) {
+> +		st->num_returned = le32_get_bits(r->num_configs, GENMASK(7, 0));
+> +		st->num_remaining = le32_get_bits(r->num_configs, GENMASK(31, 24));
+> +	} else {
+> +		st->num_returned = 1;
+> +		st->num_remaining = 0;
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+> +static int
+> +iter_pinctrl_settings_get_process_response(const struct scmi_protocol_handle *ph,
+> +					   const void *response,
+> +					   struct scmi_iterator_state *st,
+> +					   void *priv)
+> +{
+> +	const struct scmi_resp_settings_get *r = response;
+> +	struct scmi_settings_get_ipriv *p = priv;
+> +	u32 type = le32_get_bits(r->configs[st->loop_idx * 2], GENMASK(7, 0));
+> +	u32 val = le32_to_cpu(r->configs[st->loop_idx * 2 + 1]);
+> +
+> +	if (p->get_all) {
+> +		p->config_types[st->desc_index + st->loop_idx] = type;
+> +	} else {
+> +		if (p->config_types[0] != type)
+> +			return -EINVAL;
+> +	}
+> +
+> +	p->config_values[st->desc_index + st->loop_idx] = val;
+> +
+> +	return 0;
+> +}
+> +
+> +static int
+> +scmi_pinctrl_settings_get(const struct scmi_protocol_handle *ph, u32 selector,
+> +			  enum scmi_pinctrl_selector_type type,
+> +			  enum scmi_pinctrl_conf_type config_type,
+> +			  u32 *config_value, bool get_all)
+> +{
+> +	int ret;
+> +	void *iter;
+> +	struct scmi_iterator_ops ops = {
+> +		.prepare_message = iter_pinctrl_settings_get_prepare_message,
+> +		.update_state = iter_pinctrl_settings_get_update_state,
+> +		.process_response = iter_pinctrl_settings_get_process_response,
+> +	};
+> +	struct scmi_settings_get_ipriv ipriv = {
+> +		.selector = selector,
+> +		.type = type,
+> +		.get_all = get_all,
+> +		.config_types = &config_type,
+> +		.config_values = config_value,
+> +	};
+> +
+> +	if (!config_value || type == FUNCTION_TYPE)
+> +		return -EINVAL;
+> +
+> +	ret = scmi_pinctrl_validate_id(ph, selector, type);
+> +	if (ret)
+> +		return ret;
+> +
+> +	iter = ph->hops->iter_response_init(ph, &ops, SCMI_PIN_OEM_END,
+> +					    PINCTRL_SETTINGS_GET,
+> +					    sizeof(struct scmi_msg_settings_get),
+> +					    &ipriv);
+> +	if (IS_ERR(iter))
+> +		return PTR_ERR(iter);
+> +
+> +	return ph->hops->iter_response_run(iter);
+> +}
+> +
+> +static int scmi_pinctrl_settings_get_one(const struct scmi_protocol_handle *ph,
+> +					 u32 selector,
+> +					 enum scmi_pinctrl_selector_type type,
+> +					 enum scmi_pinctrl_conf_type config_type,
+> +					 u32 *config_value)
+> +{
+> +	return scmi_pinctrl_settings_get(ph, selector, type, config_type,
+> +					 config_value, false);
+> +}
+> +
+> +static int scmi_pinctrl_settings_get_all(const struct scmi_protocol_handle *ph,
+> +					 u32 selector,
+> +					 enum scmi_pinctrl_selector_type type,
+> +					 enum scmi_pinctrl_conf_type config_type,
+> +					 u32 *config_value)
+> +{
+> +	return scmi_pinctrl_settings_get(ph, selector, type, config_type,
+> +					 config_value, true);
+> +}
+> +
+
+If you generalize the scmi_pinctrl_settings_get() and reintroduce a
+settings_get_all() ops (even though unused by pinctrl driver, I am fine
+with this..), you should take care to pass as an input parameter NOT only
+the array of config_values BUT also an array of config_types since you could
+get back up to 256 OEM types: for this reason you will need also to pass to
+scmi_pinctrl_settings_get() an input param that specifies the sizes of the
+2 array input params (in order to avoid oveflows) AND use that same inout
+param also as an output param to report at the end how many OEM types were
+effectively found and returned....
+
+IOW, I did this on top of your V7 to make the settings_get_all work:
+
+---8<---
+diff --git a/drivers/firmware/arm_scmi/pinctrl.c b/drivers/firmware/arm_scmi/pinctrl.c
+index b75af1dd75fa..f4937af66c4d 100644
+--- a/drivers/firmware/arm_scmi/pinctrl.c
++++ b/drivers/firmware/arm_scmi/pinctrl.c
+@@ -317,6 +317,7 @@ struct scmi_settings_get_ipriv {
+ 	u32 selector;
+ 	enum scmi_pinctrl_selector_type type;
+ 	bool get_all;
++	unsigned int *nr_configs;
+ 	enum scmi_pinctrl_conf_type *config_types;
+ 	u32 *config_values;
  };
- 
-+static int geni_i2c_runtime_resume(struct device *dev);
-+
- /*
-  * Hardware uses the underlying formula to calculate time periods of
-  * SCL clock cycle. Firmware uses some additional cycles excluded from the
-@@ -677,22 +679,48 @@ static int geni_i2c_fifo_xfer(struct geni_i2c_dev *gi2c,
- 	return num;
- }
- 
-+static int geni_i2c_force_resume(struct geni_i2c_dev *gi2c)
-+{
-+	struct device *dev = gi2c->se.dev;
-+	int ret;
-+
-+	ret = geni_i2c_runtime_resume(dev);
-+	if (ret) {
-+		dev_err(gi2c->se.dev, "Error turning SE resources:%d\n", ret);
-+		pm_runtime_put_noidle(dev);
-+		pm_runtime_set_suspended(dev);
-+		return ret;
-+	}
-+	pm_runtime_get_noresume(dev);
-+	pm_runtime_set_active(dev);
-+	return ret;
-+}
-+
- static int geni_i2c_xfer(struct i2c_adapter *adap,
- 			 struct i2c_msg msgs[],
- 			 int num)
- {
- 	struct geni_i2c_dev *gi2c = i2c_get_adapdata(adap);
-+	struct device *dev = gi2c->se.dev;
- 	int ret;
- 
- 	gi2c->err = 0;
- 	reinit_completion(&gi2c->done);
--	ret = pm_runtime_get_sync(gi2c->se.dev);
--	if (ret < 0) {
--		dev_err(gi2c->se.dev, "error turning SE resources:%d\n", ret);
--		pm_runtime_put_noidle(gi2c->se.dev);
--		/* Set device in suspended since resume failed */
--		pm_runtime_set_suspended(gi2c->se.dev);
--		return ret;
-+
-+	if (!pm_runtime_enabled(dev) && gi2c->suspended) {
-+		dev_dbg(dev, "RT_PM disabled, Do force resume, pm_usage_count: %d\n",
-+			atomic_read(&dev->power.usage_count));
-+		ret = geni_i2c_force_resume(gi2c);
-+		if (ret)
-+			return ret;
-+	} else {
-+		ret = pm_runtime_get_sync(dev);
-+		if (ret == -EACCES && gi2c->suspended) {
-+			dev_dbg(dev, "PM get_sync() failed-%d, force resume\n", ret);
-+			ret = geni_i2c_force_resume(gi2c);
-+			if (ret)
-+				return ret;
-+		}
+@@ -379,6 +380,7 @@ iter_pinctrl_settings_get_process_response(const struct scmi_protocol_handle *ph
  	}
  
- 	qcom_geni_i2c_conf(gi2c);
-@@ -702,8 +730,15 @@ static int geni_i2c_xfer(struct i2c_adapter *adap,
- 	else
- 		ret = geni_i2c_fifo_xfer(gi2c, msgs, num);
+ 	p->config_values[st->desc_index + st->loop_idx] = val;
++	++*p->nr_configs;
  
--	pm_runtime_mark_last_busy(gi2c->se.dev);
--	pm_runtime_put_autosuspend(gi2c->se.dev);
-+	if (!pm_runtime_enabled(dev) && !gi2c->suspended) {
-+		pm_runtime_put_noidle(dev);
-+		pm_runtime_set_suspended(dev);
-+		gi2c->suspended = 0;
-+	} else {
-+		pm_runtime_mark_last_busy(gi2c->se.dev);
-+		pm_runtime_put_autosuspend(gi2c->se.dev);
-+	}
+ 	return 0;
+ }
+@@ -386,11 +388,13 @@ iter_pinctrl_settings_get_process_response(const struct scmi_protocol_handle *ph
+ static int
+ scmi_pinctrl_settings_get(const struct scmi_protocol_handle *ph, u32 selector,
+ 			  enum scmi_pinctrl_selector_type type,
+-			  enum scmi_pinctrl_conf_type config_type,
+-			  u32 *config_value, bool get_all)
++			  unsigned int *nr_configs,
++			  enum scmi_pinctrl_conf_type *config_types,
++			  u32 *config_values)
+ {
+ 	int ret;
+ 	void *iter;
++	unsigned int max_configs = *nr_configs;
+ 	struct scmi_iterator_ops ops = {
+ 		.prepare_message = iter_pinctrl_settings_get_prepare_message,
+ 		.update_state = iter_pinctrl_settings_get_update_state,
+@@ -399,19 +403,22 @@ scmi_pinctrl_settings_get(const struct scmi_protocol_handle *ph, u32 selector,
+ 	struct scmi_settings_get_ipriv ipriv = {
+ 		.selector = selector,
+ 		.type = type,
+-		.get_all = get_all,
+-		.config_types = &config_type,
+-		.config_values = config_value,
++		.get_all = (max_configs > 1),
++		.nr_configs = nr_configs,
++		.config_types = config_types,
++		.config_values = config_values,
+ 	};
+ 
+-	if (!config_value || type == FUNCTION_TYPE)
++	if (!config_types || !config_values || type == FUNCTION_TYPE)
+ 		return -EINVAL;
+ 
+ 	ret = scmi_pinctrl_validate_id(ph, selector, type);
+ 	if (ret)
+ 		return ret;
+ 
+-	iter = ph->hops->iter_response_init(ph, &ops, SCMI_PIN_OEM_END,
++	/* Prepare to count returned configs */
++	*nr_configs = 0;
++	iter = ph->hops->iter_response_init(ph, &ops, max_configs,
+ 					    PINCTRL_SETTINGS_GET,
+ 					    sizeof(struct scmi_msg_settings_get),
+ 					    &ipriv);
+@@ -427,18 +434,24 @@ static int scmi_pinctrl_settings_get_one(const struct scmi_protocol_handle *ph,
+ 					 enum scmi_pinctrl_conf_type config_type,
+ 					 u32 *config_value)
+ {
+-	return scmi_pinctrl_settings_get(ph, selector, type, config_type,
+-					 config_value, false);
++	unsigned int nr_configs = 1;
 +
- 	gi2c->cur = NULL;
- 	gi2c->err = 0;
- 	return ret;
-@@ -820,7 +855,7 @@ static int geni_i2c_probe(struct platform_device *pdev)
- 	init_completion(&gi2c->done);
- 	spin_lock_init(&gi2c->lock);
- 	platform_set_drvdata(pdev, gi2c);
--	ret = devm_request_irq(dev, gi2c->irq, geni_i2c_irq, 0,
-+	ret = devm_request_irq(dev, gi2c->irq, geni_i2c_irq, IRQF_EARLY_RESUME | IRQF_NO_SUSPEND,
- 			       dev_name(dev), gi2c);
- 	if (ret) {
- 		dev_err(dev, "Request_irq failed:%d: err:%d\n",
--- 
-2.25.1
++	return scmi_pinctrl_settings_get(ph, selector, type, &nr_configs,
++					 &config_type, config_value);
+ }
+ 
+ static int scmi_pinctrl_settings_get_all(const struct scmi_protocol_handle *ph,
+ 					 u32 selector,
+ 					 enum scmi_pinctrl_selector_type type,
+-					 enum scmi_pinctrl_conf_type config_type,
+-					 u32 *config_value)
++					 unsigned int *nr_configs,
++					 enum scmi_pinctrl_conf_type *config_types,
++					 u32 *config_values)
+ {
+-	return scmi_pinctrl_settings_get(ph, selector, type, config_type,
+-					 config_value, true);
++	if (!nr_configs || *nr_configs == 0)
++		return -EINVAL;
++
++	return scmi_pinctrl_settings_get(ph, selector, type, nr_configs,
++					 config_types, config_values);
+ }
+ 
+ static int
+diff --git a/include/linux/scmi_protocol.h b/include/linux/scmi_protocol.h
+index abaf6122ea37..7915792efd81 100644
+--- a/include/linux/scmi_protocol.h
++++ b/include/linux/scmi_protocol.h
+@@ -882,8 +882,9 @@ struct scmi_pinctrl_proto_ops {
+ 	int (*settings_get_all)(const struct scmi_protocol_handle *ph,
+ 				u32 selector,
+ 				enum scmi_pinctrl_selector_type type,
+-				enum scmi_pinctrl_conf_type config_type,
+-				u32 *config_value);
++				unsigned int *nr_configs,
++				enum scmi_pinctrl_conf_type *config_types,
++				u32 *config_values);
+ 	int (*settings_conf)(const struct scmi_protocol_handle *ph,
+ 			     u32 selector, enum scmi_pinctrl_selector_type type,
+ 			     unsigned int nr_configs,
+--->8-----
 
+Please check if this addition sounds good to you and integrate into v8
+eventually...
+
+Thanks,
+Cristian
 
