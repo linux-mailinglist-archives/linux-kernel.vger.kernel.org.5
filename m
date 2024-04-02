@@ -1,138 +1,299 @@
-Return-Path: <linux-kernel+bounces-128050-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-128051-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id DF65C895564
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 15:29:28 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 58566895565
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 15:29:38 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1C1A51C21B24
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 13:29:28 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0DA2C2870D3
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 13:29:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B380C85286;
-	Tue,  2 Apr 2024 13:28:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 789208594C;
+	Tue,  2 Apr 2024 13:28:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="qUkzgNg/";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="n8qM02Mf"
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="CNa7jZ5w"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AAFFB84039;
-	Tue,  2 Apr 2024 13:28:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7A9608526C;
+	Tue,  2 Apr 2024 13:28:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712064516; cv=none; b=SdvB8YBB2WRjWnp6VTYHLb4QS6vGgJ9FIsRyLb6TFVIImc0AEGgJkQUDSqSI09atyfoeFnYV3tWAtqLWSD/3yyf6i4fC/aY2ukJxNUvAiEnQrKJjOH9bKYGr+a44oVZojCbXcgMVZpBzdQWx/LNBKWY7m/lqqoGnPBRXq2np2pQ=
+	t=1712064516; cv=none; b=B8npAjewq4rVMPfDbjQDQRSWwJuHGIUwmvYi6gEYIMnmo6mfSIghReGQNznM30G9eUr/M7BnCdnDi6oHzyreEGndomkkdrqWaw9RNyy1b7X0sQorqxB5wybx6j1LQqZqwJIwlMwSyiUKE++LUw2LSWESjl2wOF1eMMnQBr4SGZk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1712064516; c=relaxed/simple;
-	bh=RXbAtwMy42ElQNB3HQ3sNrOz2iVr2dp/A3YxBpbmuag=;
-	h=Date:From:To:Subject:Cc:In-Reply-To:References:MIME-Version:
-	 Message-ID:Content-Type; b=ZQVDbxgAQpIdwzdpfYC08QLvIp/ovNHwnzIHxqrm0sx8Zk/PzYEZbqb22jGHdvE4NX38hklaDfSRdBr1MSI97KiIdUVH+vNYErtUVtMbcGMzCn/S7CsDSWs/sURYLZWjydX50IdVGaj83ST6KSvn2EixQHqDv7LFfCEUHVCG8A0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=qUkzgNg/; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=n8qM02Mf; arc=none smtp.client-ip=193.142.43.55
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
-Date: Tue, 02 Apr 2024 13:28:29 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1712064510;
-	h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-	 content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=HqthSyu1ONMJcVYmPNQezj+3N69fQK1nHLGRpF+ZG+M=;
-	b=qUkzgNg/utr0FzZd074xnns7LMkjKMmLXJ8+1UGEnNqtc37I0WFJC4otAVkk39NB0g5YfB
-	hrkPTzRID+UVpF8aua3Z7mArdXARnFgp9c1aVoJZ8v4p5/B6HcF9aw81iLyUC/DD/OzNhD
-	77cOddhNlopnXoz3EoGwJo5LranHp1aL5F/0FrhFmWRXjjUUTVSoJChzLBETJq2P9d3Hyt
-	GYMo++yp4Eb4TQfWlr39TGvxCGnIuOeCUz56KbhQFHr+f5C/6glalelpQrCvtU7FYH5HFS
-	m6uIhO1nT2fSeKAH5hlbO8F+0uBmLi06KIrR8cyRmXcgcEd98f2jGzLXb02UFg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1712064510;
-	h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-	 content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=HqthSyu1ONMJcVYmPNQezj+3N69fQK1nHLGRpF+ZG+M=;
-	b=n8qM02Mf3WURARyMw8J/vEjdDkx0iC95LKTjbz+EswPyX4S+JVzNI9+FAfHKb5A92s7cNT
-	ZwLhFlbwKfhuSQDQ==
-From: "tip-bot2 for YueHaibing" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To: linux-tip-commits@vger.kernel.org
-Subject:
- [tip: x86/cleanups] x86/32: Remove unused IA32_STACK_TOP and two externs
-Cc: YueHaibing <yuehaibing@huawei.com>, "Borislav Petkov (AMD)" <bp@alien8.de>,
- x86@kernel.org, linux-kernel@vger.kernel.org
-In-Reply-To: <20230625125411.25840-1-yuehaibing@huawei.com>
-References: <20230625125411.25840-1-yuehaibing@huawei.com>
+	bh=gJ+tjsxOhWRYZLxqPN3VmcdtoCk55RCuOzh5/mLZ88Y=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=MI8lpTmcNSspNaLWDZ3SfQJYy1mMwafSkm01YvfVFbVfmH7uPkfza9QenBbRDjLFYxH9yhY4NVIDo1oJ8GnRJgvp7LSuKk5CqcPDQbtku48gToPBOhCog3I+cnPnj6NCrL1og05MKPz+1XG5adXy2HY9+JeEFvKs1Q6SxGrvQp0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=CNa7jZ5w; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 15CB9C433F1;
+	Tue,  2 Apr 2024 13:28:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1712064516;
+	bh=gJ+tjsxOhWRYZLxqPN3VmcdtoCk55RCuOzh5/mLZ88Y=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=CNa7jZ5wJPvUw0DqkPcwWDyVR9VZjUk8HE/K0B5WYaId84xXJTxA8EKyJnK9h3hV/
+	 5bd0n09EwQyNVAhHFKOnBOJRabBwBXvJkYng44glL2zGGE9RXKqTCefzda7Bpnql2N
+	 UMTr7HoX2MIHSFiF8n+E0P8nc9Nm2TAtsPVQCpEEuPpO7CY6w3MJf5WO5Pi/VC4fEi
+	 WWE8xwfkkAva+ocK24QvPfGiW8QhCG+loMHu1YkgXf517SRjh6BK4O9x1ui+DmdPW9
+	 xo7wZCkzfgYokg3JKzFFV4GC/sBlaB+cxzYPlTmjZ6tHK7KutbzHrfzboIyNCzrPjw
+	 VO1VLWcd3K3nw==
+Date: Tue, 2 Apr 2024 08:28:34 -0500
+From: Rob Herring <robh@kernel.org>
+To: Kory Maincent <kory.maincent@bootlin.com>
+Cc: "David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	Jonathan Corbet <corbet@lwn.net>,
+	Luis Chamberlain <mcgrof@kernel.org>,
+	Russ Weight <russ.weight@linux.dev>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	"Rafael J. Wysocki" <rafael@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Oleksij Rempel <o.rempel@pengutronix.de>,
+	Mark Brown <broonie@kernel.org>,
+	Frank Rowand <frowand.list@gmail.com>, Andrew Lunn <andrew@lunn.ch>,
+	Heiner Kallweit <hkallweit1@gmail.com>,
+	Russell King <linux@armlinux.org.uk>,
+	Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+	netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-doc@vger.kernel.org, devicetree@vger.kernel.org,
+	Dent Project <dentproject@linuxfoundation.org>
+Subject: Re: [PATCH net-next v6 14/17] dt-bindings: net: pse-pd: Add bindings
+ for PD692x0 PSE controller
+Message-ID: <20240402132834.GB3744978-robh@kernel.org>
+References: <20240326-feature_poe-v6-0-c1011b6ea1cb@bootlin.com>
+ <20240326-feature_poe-v6-14-c1011b6ea1cb@bootlin.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Message-ID: <171206450950.10875.3799270619287955319.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe:
- Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Precedence: bulk
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240326-feature_poe-v6-14-c1011b6ea1cb@bootlin.com>
 
-The following commit has been merged into the x86/cleanups branch of tip:
+On Tue, Mar 26, 2024 at 03:04:51PM +0100, Kory Maincent wrote:
+> From: Kory Maincent (Dent Project) <kory.maincent@bootlin.com>
+> 
+> Add the PD692x0 I2C Power Sourcing Equipment controller device tree
+> bindings documentation.
+> 
+> Signed-off-by: Kory Maincent <kory.maincent@bootlin.com>
+> ---
+> 
+> Changes in v2:
+> - Enhance ports-matrix description.
+> - Replace additionalProperties by unevaluatedProperties.
+> - Drop i2c suffix.
+> 
+> Changes in v3:
+> - Remove ports-matrix parameter.
+> - Add description of all physical ports and managers.
+> - Add pse_pis subnode moving to the API of pse-controller binding.
+> - Remove the MAINTAINERS section for this driver as I will be maintaining
+>   all pse-pd subsystem.
+> 
+> Changes in v5:
+> - Remove defs used only once.
+> - Replace underscore by dash.
+> - Add description.
+> ---
+>  .../bindings/net/pse-pd/microchip,pd692x0.yaml     | 158 +++++++++++++++++++++
+>  1 file changed, 158 insertions(+)
+> 
+> diff --git a/Documentation/devicetree/bindings/net/pse-pd/microchip,pd692x0.yaml b/Documentation/devicetree/bindings/net/pse-pd/microchip,pd692x0.yaml
+> new file mode 100644
+> index 000000000000..62ea4363cba3
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/net/pse-pd/microchip,pd692x0.yaml
+> @@ -0,0 +1,158 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/net/pse-pd/microchip,pd692x0.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Microchip PD692x0 Power Sourcing Equipment controller
+> +
+> +maintainers:
+> +  - Kory Maincent <kory.maincent@bootlin.com>
+> +
+> +allOf:
+> +  - $ref: pse-controller.yaml#
+> +
+> +properties:
+> +  compatible:
+> +    enum:
+> +      - microchip,pd69200
+> +      - microchip,pd69210
+> +      - microchip,pd69220
+> +
+> +  reg:
+> +    maxItems: 1
+> +
+> +  managers:
+> +    type: object
+> +    description:
+> +      List of the PD69208T4/PD69204T4/PD69208M PSE managers. Each manager
+> +      have 4 or 8 physical ports according to the chip version. No need to
+> +      specify the SPI chip select as it is automatically detected by the
+> +      PD692x0 PSE controller. The PSE managers have to be described from
+> +      the lowest chip select to the greatest one, which is the detection
+> +      behavior of the PD692x0 PSE controller. The PD692x0 support up to
+> +      12 PSE managers which can expose up to 96 physical ports. All
+> +      physical ports available on a manager have to be described in the
+> +      incremental order even if they are not used.
+> +
+> +    properties:
+> +      "#address-cells":
+> +        const: 1
+> +
+> +      "#size-cells":
+> +        const: 0
+> +
+> +    required:
+> +      - "#address-cells"
+> +      - "#size-cells"
+> +
+> +    patternProperties:
+> +      "^manager@0[0-9]|1[0-2]$":
 
-Commit-ID:     52b2c101b9ce3b954ebbed4c24396ec28f66fcd9
-Gitweb:        https://git.kernel.org/tip/52b2c101b9ce3b954ebbed4c24396ec28f66fcd9
-Author:        YueHaibing <yuehaibing@huawei.com>
-AuthorDate:    Sun, 25 Jun 2023 20:54:11 +08:00
-Committer:     Borislav Petkov (AMD) <bp@alien8.de>
-CommitterDate: Tue, 02 Apr 2024 15:01:40 +02:00
+Unit-addresses are typically in hex.
 
-x86/32: Remove unused IA32_STACK_TOP and two externs
+Is 'manager' something specific to this device or should be common?
 
-Since
+> +        $ref: /schemas/graph.yaml#/properties/ports
 
-  32974ad4907c ("[IA64] Remove COMPAT_IA32 support")
+This is not using the graph binding. Furthermore, I don't want to see 
+new cases of 'port' node names which are not graph nodes. We have it 
+already with ethernet switches, but 'ethernet-port' is preferred over 
+'port'.
 
-IA32_STACK_TOP and ia32_setup_arg_pages() are not used anymore.
+Why is this one 'managers' and the other device binding 'channels'?
 
-And
+> +        description:
+> +          PD69208T4/PD69204T4/PD69208M PSE manager exposing 4 or 8 physical
+> +          ports.
+> +
+> +        properties:
+> +          reg:
+> +            description:
+> +              Incremental index of the PSE manager starting from 0, ranging
+> +              from lowest to highest chip select, up to 12.
+> +            maxItems: 1
+> +
+> +        patternProperties:
+> +          '^port@[0-7]$':
+> +            type: object
+> +            required:
+> +              - reg
 
-  675a0813609f ("x86: unify mmap_{32|64}.c")
+Any property you want is allowed in this node. You are missing 
+'additionalProperties'.
 
-left behind ia32_pick_mmap_layout() extern declaration.
+> +
+> +        required:
+> +          - reg
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +  - pse-pis
+> +
+> +unevaluatedProperties: false
+> +
+> +examples:
+> +  - |
+> +    i2c {
+> +      #address-cells = <1>;
+> +      #size-cells = <0>;
+> +
+> +      ethernet-pse@3c {
+> +        compatible = "microchip,pd69200";
+> +        reg = <0x3c>;
+> +
+> +        managers {
+> +          #address-cells = <1>;
+> +          #size-cells = <0>;
+> +
+> +          manager@0 {
+> +            reg = <0>;
+> +            #address-cells = <1>;
+> +            #size-cells = <0>;
+> +
+> +            phys0: port@0 {
+> +              reg = <0>;
+> +            };
+> +
+> +            phys1: port@1 {
+> +              reg = <1>;
+> +            };
+> +
+> +            phys2: port@2 {
+> +              reg = <2>;
+> +            };
+> +
+> +            phys3: port@3 {
+> +              reg = <3>;
+> +            };
+> +          };
+> +
+> +          manager@1 {
+> +            reg = <1>;
+> +            #address-cells = <1>;
+> +            #size-cells = <0>;
+> +
+> +            phys4: port@0 {
+> +              reg = <0>;
+> +            };
+> +
+> +            phys5: port@1 {
+> +              reg = <1>;
+> +            };
+> +
+> +            phys6: port@2 {
+> +              reg = <2>;
+> +            };
+> +
+> +            phys7: port@3 {
+> +              reg = <3>;
+> +            };
+> +          };
+> +        };
+> +
+> +        pse-pis {
+> +          #address-cells = <1>;
+> +          #size-cells = <0>;
+> +
+> +          pse_pi0: pse-pi@0 {
+> +            reg = <0>;
+> +            #pse-cells = <0>;
+> +            pairset-names = "alternative-a", "alternative-b";
+> +            pairsets = <&phys0>, <&phys1>;
 
-Remove them all.
+It is very strange that you are describing the connections within a 
+device.
 
-  [ bp: Massage commit message. ]
 
-Signed-off-by: YueHaibing <yuehaibing@huawei.com>
-Signed-off-by: Borislav Petkov (AMD) <bp@alien8.de>
-Link: https://lore.kernel.org/r/20230625125411.25840-1-yuehaibing@huawei.com
----
- arch/x86/include/asm/ia32.h | 11 -----------
- 1 file changed, 11 deletions(-)
-
-diff --git a/arch/x86/include/asm/ia32.h b/arch/x86/include/asm/ia32.h
-index 4212c00..9d69f3f 100644
---- a/arch/x86/include/asm/ia32.h
-+++ b/arch/x86/include/asm/ia32.h
-@@ -56,17 +56,6 @@ struct stat64 {
- 	unsigned long long	st_ino;
- } __attribute__((packed));
- 
--#define IA32_STACK_TOP IA32_PAGE_OFFSET
--
--#ifdef __KERNEL__
--struct linux_binprm;
--extern int ia32_setup_arg_pages(struct linux_binprm *bprm,
--				unsigned long stack_top, int exec_stack);
--struct mm_struct;
--extern void ia32_pick_mmap_layout(struct mm_struct *mm);
--
--#endif
--
- extern bool __ia32_enabled;
- 
- static __always_inline bool ia32_enabled(void)
+> +            polarity-supported = "MDI", "S";
+> +          };
+> +          pse_pi1: pse-pi@1 {
+> +            reg = <1>;
+> +            #pse-cells = <0>;
+> +            pairset-names = "alternative-a";
+> +            pairsets = <&phys2>;
+> +            polarity-supported = "MDI";
+> +          };
+> +        };
+> +      };
+> +    };
+> 
+> -- 
+> 2.25.1
+> 
 
