@@ -1,116 +1,158 @@
-Return-Path: <linux-kernel+bounces-127912-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-127916-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 46BC18952BA
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 14:17:32 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 856AA8952C0
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 14:18:13 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A514EB25632
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 12:17:29 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id DCFACB26A31
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 12:18:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 964CF7764E;
-	Tue,  2 Apr 2024 12:17:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0AD217764E;
+	Tue,  2 Apr 2024 12:17:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="WpmdsWL3"
-Received: from relay5-d.mail.gandi.net (relay5-d.mail.gandi.net [217.70.183.197])
+	dkim=pass (1024-bit key) header.d=amazon.de header.i=@amazon.de header.b="RA9qqHZW"
+Received: from smtp-fw-80007.amazon.com (smtp-fw-80007.amazon.com [99.78.197.218])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 45C64634EA;
-	Tue,  2 Apr 2024 12:17:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.197
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4DEDA7A13A;
+	Tue,  2 Apr 2024 12:17:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=99.78.197.218
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712060241; cv=none; b=ZM7mTrDmSWXAMsykE8KZMf9xtl0ZZmc/x2EIfgPZUrPmek7Q2hQCL3RP3Z1WN5EfdBfzniSup58AX+FHD5nboY5hSBkar+SWNLeHPJ1OHJwQ19lfFcoXGd+hVhF72P7KxvYrDL45OrLykfKXIqbcQMiUXbGMwoENQzECjFa201E=
+	t=1712060249; cv=none; b=iAovvF0so57buiGulWg++mWsTxPo9DL4b9PTWhsYN+uqjg1y59GGUCKDvY4SCIedaysmxCoXMpB4TwGrOxSSwZF0V9wSrPUvkdA+9Gl7aq0iXBlgKAc3Afdk3Z/ILaHUxZwqlegHH9irRj6wkLNT2FBvqgXu4ZUOpRcyZY8gTe0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712060241; c=relaxed/simple;
-	bh=+PJl1XVFLkJu+n5tB+S3CJb6o62Vtp1lY3hBuuDSHnw=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=PaWFKUJ7MnXzMOCehdfePE+DoMwFMwz6Gcuy7cn19AeP5SXpaOAUg/eWpq/dA+cbatI9mrfzhnOQKggUG24UtRfYPpIbcxwFJ9cgRk9VrLhrssAIks43JmLkREXp9Edmpdu1NDAPfRVxNOhARGUfrdlN9cDLhTH3l1W/nW2Ey4o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=WpmdsWL3; arc=none smtp.client-ip=217.70.183.197
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
-Received: by mail.gandi.net (Postfix) with ESMTPSA id A94C01C0007;
-	Tue,  2 Apr 2024 12:17:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1712060231;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=hO0hGxLnoN3ueobt18N0TvoV+EUroS8WDZqsXk16514=;
-	b=WpmdsWL3cfrFq4LiSA1QwbtYoo2QKGBVBJfxOOOMABP7CUfGmHJ+1D44xcKhETphd2l2Ks
-	/wQ/GFxkO5M0/pKKD2fR6DF3V76iSpPEL1p2uysdxTzi2TN1pmo0N99jlcRZUc1a9HE8Rg
-	PLB2LocxPOtjQgtnpeVceWvhp0BfPK/UF4mFsgbA6bTWhHUxWOL/RZKkQSydeVKJy6Vsbf
-	qVUzjrbbfgRiTPnHBjqD7IhNop4mZBnJrEKs59oMJ04HUG+QjMIYldjol0xSVu+Bd/nXII
-	1wvCdHiUp4qPyRMGL8Vfcvp4NtGOc8JGbzx5nEmWQGJ/x/NU7QyAcdw5KqWTdw==
-From: Gregory CLEMENT <gregory.clement@bootlin.com>
-To: Andi Shyti <andi.shyti@kernel.org>, Sam Edwards <cfsworks@gmail.com>
-Cc: linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [RESEND v2 RFC 0/5] Enhancements for mv64xxx I2C driver
-In-Reply-To: <gj3bu52qixnf7agreb7olfwmsllr3k6mcybmyhiw76esxoevk7@nmfshpqp55l4>
-References: <65fa7599.5d0a0220.fe5f7.1f9f@mx.google.com>
- <gj3bu52qixnf7agreb7olfwmsllr3k6mcybmyhiw76esxoevk7@nmfshpqp55l4>
-Date: Tue, 02 Apr 2024 14:17:11 +0200
-Message-ID: <87le5w7yd4.fsf@BLaptop.bootlin.com>
+	s=arc-20240116; t=1712060249; c=relaxed/simple;
+	bh=4hEjMOf/NYnnalU9LSz9bSigo7540Wp8lxyJZKstsSo=;
+	h=Subject:From:To:CC:Date:Message-ID:References:In-Reply-To:
+	 Content-Type:MIME-Version; b=njyIFMgUSdfD++xirUo0qP9W06FR1qmFDwIkPVxngokMODipcLbiJvZk6GgQd/cO5tw4hss0RmC+cLD+VLPIbgztxk2SnQwp6kz1JAmE0vZfFULne5u9DkBB2dHf6VQ55jfsV2YUMSXqDF32mnXsP5RKJPV+ZrnWKPiVXTAMUg4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.de; spf=pass smtp.mailfrom=amazon.de; dkim=pass (1024-bit key) header.d=amazon.de header.i=@amazon.de header.b=RA9qqHZW; arc=none smtp.client-ip=99.78.197.218
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=amazon.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=amazon.de; i=@amazon.de; q=dns/txt; s=amazon201209;
+  t=1712060248; x=1743596248;
+  h=from:to:cc:date:message-id:references:in-reply-to:
+   content-id:mime-version:content-transfer-encoding:subject;
+  bh=4hEjMOf/NYnnalU9LSz9bSigo7540Wp8lxyJZKstsSo=;
+  b=RA9qqHZWl1mPWK1/JrGV5LrOA/1gwaf4bQ+ysY/HJkeJaRfZwc1puM8b
+   U7CLGoKKjUlkMmKqLdRyUD2MF2tSgJVChjJZgmgUDKfuXWxJX96i9PWcy
+   63CEUXF3eymCnsWt4+5tVhlJzzYMRKhFttI1ylQWk4qSRRm2jKKkQER8f
+   o=;
+X-IronPort-AV: E=Sophos;i="6.07,174,1708387200"; 
+   d="scan'208";a="285550647"
+Subject: Re: [PATCH 2/2] arm64: acpi: Honour firmware_signature field of FACS,
+ if it exists
+Thread-Topic: [PATCH 2/2] arm64: acpi: Honour firmware_signature field of FACS,
+ if it exists
+Received: from pdx4-co-svc-p1-lb2-vlan2.amazon.com (HELO smtpout.prod.us-west-2.prod.farcaster.email.amazon.dev) ([10.25.36.210])
+  by smtp-border-fw-80007.pdx80.corp.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Apr 2024 12:17:26 +0000
+Received: from EX19MTAUWA002.ant.amazon.com [10.0.38.20:39814]
+ by smtpin.naws.us-west-2.prod.farcaster.email.amazon.dev [10.0.50.222:2525] with esmtp (Farcaster)
+ id 5e1056fb-976d-4441-9bbb-62d2328f612c; Tue, 2 Apr 2024 12:17:25 +0000 (UTC)
+X-Farcaster-Flow-ID: 5e1056fb-976d-4441-9bbb-62d2328f612c
+Received: from EX19D002UWA004.ant.amazon.com (10.13.138.230) by
+ EX19MTAUWA002.ant.amazon.com (10.250.64.202) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1258.28; Tue, 2 Apr 2024 12:17:24 +0000
+Received: from EX19D026EUB001.ant.amazon.com (10.252.61.12) by
+ EX19D002UWA004.ant.amazon.com (10.13.138.230) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1258.28; Tue, 2 Apr 2024 12:17:23 +0000
+Received: from EX19D026EUB001.ant.amazon.com ([fe80::461a:a9c3:6352:d9d1]) by
+ EX19D026EUB001.ant.amazon.com ([fe80::461a:a9c3:6352:d9d1%4]) with mapi id
+ 15.02.1258.028; Tue, 2 Apr 2024 12:17:22 +0000
+From: "Mediouni, Mohamed" <mediou@amazon.de>
+To: Sudeep Holla <sudeep.holla@arm.com>
+CC: David Woodhouse <dwmw2@infradead.org>,
+	"linux-arm-kernel@lists.infradead.org"
+	<linux-arm-kernel@lists.infradead.org>, Catalin Marinas
+	<catalin.marinas@arm.com>, Will Deacon <will@kernel.org>, Robert Moore
+	<robert.moore@intel.com>, "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+	Len Brown <lenb@kernel.org>, "Saidi, Ali" <alisaidi@amazon.com>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	"linux-acpi@vger.kernel.org" <linux-acpi@vger.kernel.org>,
+	"acpica-devel@lists.linux.dev" <acpica-devel@lists.linux.dev>, Saket Dumbre
+	<saket.dumbre@intel.com>
+Thread-Index: AQHadIMiZU/jJeIGnU6Fy/VUAgcff7FU16CAgAAQqoCAAB4RAA==
+Date: Tue, 2 Apr 2024 12:17:22 +0000
+Message-ID: <70B4B352-08A5-4922-93A0-7F420374A831@amazon.de>
+References: <20240312134148.727454-1-dwmw2@infradead.org>
+ <20240312134148.727454-2-dwmw2@infradead.org>
+ <dbd60df4632e5ea9cef13cdc1a406b47bd8629da.camel@infradead.org>
+ <ZgveD6Hb2HbTNYNO@bogus>
+In-Reply-To: <ZgveD6Hb2HbTNYNO@bogus>
+Accept-Language: en-GB, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <78F138E12F3542458D20E71B702575CD@amazon.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-GND-Sasl: gregory.clement@bootlin.com
+Content-Transfer-Encoding: base64
 
-Hello Andi and Sam,
+DQoNCj4gT24gMi4gQXByIDIwMjQsIGF0IDEyOjI5LCBTdWRlZXAgSG9sbGEgPHN1ZGVlcC5ob2xs
+YUBhcm0uY29tPiB3cm90ZToNCj4gDQo+IA0KPiBPbiBUdWUsIEFwciAwMiwgMjAyNCBhdCAxMDoy
+OTo1N0FNICswMTAwLCBEYXZpZCBXb29kaG91c2Ugd3JvdGU6DQo+PiBPbiBUdWUsIDIwMjQtMDMt
+MTIgYXQgMTM6NDEgKzAwMDAsIERhdmlkIFdvb2Rob3VzZSB3cm90ZToNCj4+PiBGcm9tOiBEYXZp
+ZCBXb29kaG91c2UgPGR3bXdAYW1hem9uLmNvLnVrPg0KPj4+IA0KPj4+IElmIHRoZSBmaXJtd2Fy
+ZV9zaWduYXR1cmUgY2hhbmdlcyB0aGVuIE9TUE0gc2hvdWxkIG5vdCBhdHRlbXB0IHRvIHJlc3Vt
+ZQ0KPj4+IGZyb20gaGliZXJuYXRlLCBidXQgc2hvdWxkIGluc3RlYWQgcGVyZm9ybSBhIGNsZWFu
+IHJlYm9vdC4gU2V0IHRoZSBnbG9iYWwNCj4+PiBzd3N1c3BfaGFyZHdhcmVfc2lnbmF0dXJlIHRv
+IGFsbG93IHRoZSBnZW5lcmljIGNvZGUgdG8gaW5jbHVkZSB0aGUgdmFsdWUNCj4+PiBpbiB0aGUg
+c3dzdXNwIGhlYWRlciBvbiBkaXNrLCBhbmQgcGVyZm9ybSB0aGUgYXBwcm9wcmlhdGUgY2hlY2sg
+b24gcmVzdW1lLg0KPj4+IA0KPj4+IFNpZ25lZC1vZmYtYnk6IERhdmlkIFdvb2Rob3VzZSA8ZHdt
+d0BhbWF6b24uY28udWs+DQo+PiANCj4+IFBpbmc/DQo+PiANCj4+PiAtLS0NCj4+PiBhcmNoL2Fy
+bTY0L2tlcm5lbC9hY3BpLmMgfCAxMCArKysrKysrKysrDQo+Pj4gMSBmaWxlIGNoYW5nZWQsIDEw
+IGluc2VydGlvbnMoKykNCj4+PiANCj4+PiBkaWZmIC0tZ2l0IGEvYXJjaC9hcm02NC9rZXJuZWwv
+YWNwaS5jIGIvYXJjaC9hcm02NC9rZXJuZWwvYWNwaS5jDQo+Pj4gaW5kZXggZGJhOGZjZWM3ZjMz
+Li5lMGU3YjkzYzE2Y2MgMTAwNjQ0DQo+Pj4gLS0tIGEvYXJjaC9hcm02NC9rZXJuZWwvYWNwaS5j
+DQo+Pj4gKysrIGIvYXJjaC9hcm02NC9rZXJuZWwvYWNwaS5jDQo+Pj4gQEAgLTI2LDYgKzI2LDcg
+QEANCj4+PiAjaW5jbHVkZSA8bGludXgvbGliZmR0Lmg+DQo+Pj4gI2luY2x1ZGUgPGxpbnV4L3Nt
+cC5oPg0KPj4+ICNpbmNsdWRlIDxsaW51eC9zZXJpYWxfY29yZS5oPg0KPj4+ICsjaW5jbHVkZSA8
+bGludXgvc3VzcGVuZC5oPg0KPj4+ICNpbmNsdWRlIDxsaW51eC9wZ3RhYmxlLmg+DQo+Pj4gDQo+
+Pj4gI2luY2x1ZGUgPGFjcGkvZ2hlcy5oPg0KPj4+IEBAIC0yMjcsNiArMjI4LDE1IEBAIHZvaWQg
+X19pbml0IGFjcGlfYm9vdF90YWJsZV9pbml0KHZvaWQpDQo+Pj4gICAgICAgICAgICAgICAgaWYg
+KGVhcmx5Y29uX2FjcGlfc3Bjcl9lbmFibGUpDQo+Pj4gICAgICAgICAgICAgICAgICAgICAgICBl
+YXJseV9pbml0X2R0X3NjYW5fY2hvc2VuX3N0ZG91dCgpOw0KPj4+ICAgICAgICB9IGVsc2Ugew0K
+Pj4+ICsjaWZkZWYgQ09ORklHX0hJQkVSTkFUSU9ODQo+Pj4gKyAgICAgICAgICAgICAgIHN0cnVj
+dCBhY3BpX3RhYmxlX2hlYWRlciAqZmFjcyA9IE5VTEw7DQo+Pj4gKyAgICAgICAgICAgICAgIGFj
+cGlfZ2V0X3RhYmxlKEFDUElfU0lHX0ZBQ1MsIDEsICZmYWNzKTsNCj4+PiArICAgICAgICAgICAg
+ICAgaWYgKGZhY3MpIHsNCj4+PiArICAgICAgICAgICAgICAgICAgICAgICBzd3N1c3BfaGFyZHdh
+cmVfc2lnbmF0dXJlID0NCj4+PiArICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICgoc3Ry
+dWN0IGFjcGlfdGFibGVfZmFjcyAqKWZhY3MpLT5oYXJkd2FyZV9zaWduYXR1cmU7DQo+Pj4gKyAg
+ICAgICAgICAgICAgICAgICAgICAgYWNwaV9wdXRfdGFibGUoZmFjcyk7DQo+Pj4gKyAgICAgICAg
+ICAgICAgIH0NCj4+PiArI2VuZGlmDQo+IA0KPiBJIHRoaW5rIGl0IGlzIE9LIGFzIGEgdGVtcG9y
+YXJ5IHNvbHV0aW9uIGZvciBub3cuIEJ1dCB0aGVyZSB3YXMgc29tZQ0KPiBpbnZlc3RpZ2F0aW9u
+IGxhc3QgeWVhciBhcyBwYXJ0IG9mIHNvbWUgd29yayBpbiBMaW5hcm8gdG8gZW5hYmxlDQo+ICJk
+cml2ZXJzL2FjcGkvc2xlZXAuYyIgaW50byB0aGUgYnVpbGQgY2xlYW5pbmcgdXAgc29tZSB4ODYt
+bmVzcyBpbiB0aGVyZS4NCj4gYWNwaV9zbGVlcF9oaWJlcm5hdGVfc2V0dXAoKSBhbHJlYWR5IGRv
+ZXMgdGhpcyBidXQgZW5hYmxpbmcgc2xlZXAuYyBuZWVkDQo+IHNvbWUgY2FyZWZ1bCBpbnZlc3Rp
+Z2F0aW9uIHNvIHRoYXQgaXQgZG9lc24ndCBicmVhayBhbnkgZXhpc3RpbmcgYXJtNjQveDg2DQo+
+IHBsYXRmb3JtcyBhbmQgbWFkZSBuZWVkIHNvbWUgd29yZGluZ3MgY2xhcmlmaWNhdGlvbiBpbiB0
+aGUgQUNQSSBzcGVjLg0KPiBUb2RheSBzeXN0ZW0gc3VzcGVuZCB3b3JrIHZpYSBwc2NpIHN0ZCBw
+YXRoIGJ5cGFzc2luZyB0aGUgQUNQSSBwYXRocyB3aGljaA0KPiBtYXkgbm90IGJlIGlkZWFsIGFz
+IG5vbmUgb2YgdGhlIEFDUEkgbWV0aG9kcyBhcmUgaG9ub3VyZWQuIFNvbWUgYXJtNjQNCj4gcGxh
+dGZvcm1zIG1heSBpbXBsZW1lbnQgdGhlbSBhbmQgZXhwZWN0IHRvIGJlIGV4ZWN1dGVkIGluIHRo
+ZSBmdXR1cmUsDQo+IG1heWJlID8NCkN1cnJlbnQgV2luZG93cyBvbiBBcm0gcGxhdGZvcm1zIChz
+ZWVuIG9uIFNDODI4MFhQKSBkb27igJl0IGhhdmUgX0dUUw0Kb3IgX1BUUyBtZXRob2RzLCBhbmQg
+ZG9u4oCZdCBoYXZlIHNsZWVwaW5nIG9iamVjdHMgZWl0aGVyLg0KDQpBcyBzdWNoLCBJIGRvbuKA
+mXQgZXhwZWN0IGFueSB1c2VycyBmb3IgdGhhdCBwb3RlbnRpYWwgZnVuY3Rpb25hbGl0eS4gQW0g
+SSBtaXNzaW5nIHNvbWV0aGluZyANCm9yIGhpYmVybmF0aW9uIHNpZ25hbGxpbmcgdG8gZmlybXdh
+cmUgKG9uIEFSTTY0KSBjYW4gYmUgbWFkZSBQU0NJIG9ubHkgaW5kZWZpbml0ZWx5Pw0KDQpUaGFu
+ayB5b3UsDQotTW9oYW1lZA0KPiBTbywgdW50aWwgdGhhdCBoYXBwZW5zLCBJIHNlZSB0aGlzIGFz
+IGFuIHBvc3NpYmxlIGFsdGVybmF0aXZlIGFuZA0KPiB0ZW1wb3Jhcnkgc29sdXRpb24uDQo+IA0K
+PiBBY2tlZC1ieTogU3VkZWVwIEhvbGxhIDxzdWRlZXAuaG9sbGFAYXJtLmNvbT4NCj4gDQo+IC0t
+DQo+IFJlZ2FyZHMsDQo+IFN1ZGVlcA0KDQoKCgpBbWF6b24gRGV2ZWxvcG1lbnQgQ2VudGVyIEdl
+cm1hbnkgR21iSApLcmF1c2Vuc3RyLiAzOAoxMDExNyBCZXJsaW4KR2VzY2hhZWZ0c2Z1ZWhydW5n
+OiBDaHJpc3RpYW4gU2NobGFlZ2VyLCBKb25hdGhhbiBXZWlzcwpFaW5nZXRyYWdlbiBhbSBBbXRz
+Z2VyaWNodCBDaGFybG90dGVuYnVyZyB1bnRlciBIUkIgMTQ5MTczIEIKU2l0ejogQmVybGluClVz
+dC1JRDogREUgMjg5IDIzNyA4NzkKCgo=
 
-> Hi Gregory,
->
-> On Tue, Mar 19, 2024 at 06:44:56PM -0600, Sam Edwards wrote:
->> Salutations, Linux I2C team!
->
-> ...
->
->> In anticipation of that, I am preparing this series comprising five patches to
->> improve the functionality and reliability of the I2C adapter enough to support
->> this kind of device. I have heavily tested these changes on the Allwinner-style
->> mv64xxx core, but not the Marvell-style, and have not been able to test 10-bit
->> addressing. I would greatly appreciate if anyone here could test this series,
->> especially on non-Allwinner boards and/or boards with 10-bit devices.
->> 
->> I'm a bit skeptical of using I2C_M_NOSTART for this purpose. The driver does
->> not (and cannot) support "just any" use of I2C_M_NOSTART, so it may be
->> inappropriate to claim the I2C_FUNC_NOSTART capability. On the other hand, I
->> searched high and low and couldn't find any use of I2C_M_NOSTART that
->> *wouldn't* be supported by this change, so this could very well be exactly what
->> clients understand I2C_FUNC_NOSTART to mean. Given that the alternative would
->> be inventing a new flag ("I2C_M_READEXTRA"?) and figuring out how to supply
->> input bytes and output bytes in the same i2c_msg, I opted for the NOSTART
->> route instead.
->
-> any thought on this series? I believe here we might need a bit
-> more testing on other platforms.
-
-Sorry for the lack of answer. However I saw the series, I will have a
-closer look on it and give you feednacks.
-
-Regards,
-
-Gregory
-
->
-> Andi
->
->> 
->> I look forward to any feedback, bug reports, test results, questions, concerns,
->> commentary, or discussion that you can offer!
->> 
->> Best regards,
->> Sam
->> 
->> Sam Edwards (5):
->>   i2c: mv64xxx: Clear bus errors before transfer
->>   i2c: mv64xxx: Clean up the private data struct
->>   i2c: mv64xxx: Refactor FSM
->>   i2c: mv64xxx: Allow continuing after read
->>   i2c: mv64xxx: Implement I2C_FUNC_NOSTART
 
