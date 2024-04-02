@@ -1,157 +1,276 @@
-Return-Path: <linux-kernel+bounces-128817-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-128818-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4ACD5895FEB
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 01:10:08 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 11BC3895FEF
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 01:11:17 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F3E0F28383D
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 23:10:06 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7A6471F22F86
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 23:11:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3A5524206E;
-	Tue,  2 Apr 2024 23:09:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A81453E487;
+	Tue,  2 Apr 2024 23:11:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=proton.me header.i=@proton.me header.b="Hm+6z5W0"
-Received: from mail-4322.protonmail.ch (mail-4322.protonmail.ch [185.70.43.22])
+	dkim=pass (2048-bit key) header.d=codeconstruct.com.au header.i=@codeconstruct.com.au header.b="FrXBUrga"
+Received: from codeconstruct.com.au (pi.codeconstruct.com.au [203.29.241.158])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A115F2260B;
-	Tue,  2 Apr 2024 23:09:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.70.43.22
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 82A7A2260B;
+	Tue,  2 Apr 2024 23:11:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=203.29.241.158
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712099397; cv=none; b=mtR6/02H1ZFSJgWPWRtPQ2aSHrp2dd/Ua+4e4h7IneOFdNnAwaI2PCgbU/rf4ZcauYEA6udAzrJABajjZg8mmOKMVQWC5hPh2RabGs0QgOgfJtXseOt+9taYIRj73vpvJCYnL4DoPp0Y9nTORlPPLNw64HlDoKF801c/6+hADTY=
+	t=1712099467; cv=none; b=c2kNgKwWcjwLuvZKeoRJtMdC/Tu+C7BnF4NhRj3M6rSCt8QbgZXuXlg3eqmGfQg+WiHGF1/IhGpwbiZppJ6AYnQxv1L6rDD9A1r53aafrKPRu7OC1Iw1QFUpkQoY0lJan30D6EiZ980VTKZFxJNSIkiaaSysHUJZx5xYgtNhJVQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712099397; c=relaxed/simple;
-	bh=zTNnWCsplfyp5T2nWgn8oJWZzr3uiuiOLHN2o/GFkwI=;
-	h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=NjM/oh1p4yx5Yq6SOjpfypoCtqMA/hSz3Di83iuwSUDRqB0hNC8CyD8zeJXP5WlfXmr102V+5dDIJ6rDQx6AhZkooNZtrumyUI+F5bOgXYLaKxGcuXd/5PqZAUsjnpGjrSobal4zH7/UWRyQYnSiVNd+hGeebIkmwD3V9Fl8erk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=proton.me; spf=pass smtp.mailfrom=proton.me; dkim=pass (2048-bit key) header.d=proton.me header.i=@proton.me header.b=Hm+6z5W0; arc=none smtp.client-ip=185.70.43.22
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=proton.me
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=proton.me
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=proton.me;
-	s=protonmail; t=1712099393; x=1712358593;
-	bh=BwgrpotDzagmgWcu+/Ta2cDFG0k8Ub+uczrR9L3a+SM=;
-	h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
-	 Feedback-ID:From:To:Cc:Date:Subject:Reply-To:Feedback-ID:
-	 Message-ID:BIMI-Selector;
-	b=Hm+6z5W0XCTQzxG2hgNVqDN4l5wIcESAC+yGWiBo+D23KLk/IzuDXJdtVKuz5Iojy
-	 WQWi7fF+4z+QblXHDa1kYZ5f2Cu07vffSRhyv6PU/yRnarmWYAf29en3TpGwGsiDrX
-	 /nAlwoz6+ObdcnhSSBjdWSL4SYdJ+iS82Onom7XgVMaP5lTo/fekdAuTMlPpLkPUxT
-	 SVoNMLSCgpABTMGlsCbH09H4QfXVVgEFrx8l3rM+q3Zu+4WwMgZKPrCuAvCkJvFC+L
-	 25BMpu2Bo4SOwUi52YT31oYfQ85VJHeVFDo1z+pljh6Cr2rOgtp19+wHBFpL0KnvI1
-	 RJgdZHXLSuFjQ==
-Date: Tue, 02 Apr 2024 23:09:49 +0000
-To: Andreas Hindborg <nmi@metaspace.dk>
-From: Benno Lossin <benno.lossin@proton.me>
-Cc: Jens Axboe <axboe@kernel.dk>, Christoph Hellwig <hch@lst.de>, Keith Busch <kbusch@kernel.org>, Damien Le Moal <Damien.LeMoal@wdc.com>, Bart Van Assche <bvanassche@acm.org>, Hannes Reinecke <hare@suse.de>, "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>, Andreas Hindborg <a.hindborg@samsung.com>, Wedson Almeida Filho <wedsonaf@gmail.com>, Niklas Cassel <Niklas.Cassel@wdc.com>, Greg KH <gregkh@linuxfoundation.org>, Matthew Wilcox <willy@infradead.org>, Miguel Ojeda <ojeda@kernel.org>, Alex Gaynor <alex.gaynor@gmail.com>, Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>, =?utf-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>, Alice Ryhl <aliceryhl@google.com>, Chaitanya Kulkarni <chaitanyak@nvidia.com>, Luis Chamberlain <mcgrof@kernel.org>, Yexuan Yang <1182282462@bupt.edu.cn>, =?utf-8?Q?Sergio_Gonz=C3=A1lez_Collado?= <sergio.collado@gmail.com>, Joel Granados <j.granados@samsung.com>, "Pankaj Raghav (Samsung)" <kernel@pankajraghav.com>, Daniel Gomez
-	<da.gomez@samsung.com>, open list <linux-kernel@vger.kernel.org>, "rust-for-linux@vger.kernel.org" <rust-for-linux@vger.kernel.org>, "lsf-pc@lists.linux-foundation.org" <lsf-pc@lists.linux-foundation.org>, "gost.dev@samsung.com" <gost.dev@samsung.com>
-Subject: Re: [RFC PATCH 1/5] rust: block: introduce `kernel::block::mq` module
-Message-ID: <7ed2a8df-3088-42a1-b257-dba3c2c9fc92@proton.me>
-In-Reply-To: <871q7o54el.fsf@metaspace.dk>
-References: <86cd5566-5f1b-434a-9163-2b2d60a759d1@proton.me> <871q7o54el.fsf@metaspace.dk>
-Feedback-ID: 71780778:user:proton
+	s=arc-20240116; t=1712099467; c=relaxed/simple;
+	bh=iQbFPcT5bkTvOiaw3Ar/bC14ESOW5Lt2GUZ6v5VV1JU=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=MzmKIr9UMh0vpFdieelafSTBHAsZIXe92ioPpVJYxm+Uh9Vvy1rqXTsMtamEHd2qaYW96umjv1njomN5nGePFJNOLe3/dGEZmlof/deKmY/P4UYl5Htg0lFCCJIaEf0SuC0gf5hjIqjfYKBjHnzEvD5ZNT/G0IxQFo86djK/pr8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=codeconstruct.com.au; spf=pass smtp.mailfrom=codeconstruct.com.au; dkim=pass (2048-bit key) header.d=codeconstruct.com.au header.i=@codeconstruct.com.au header.b=FrXBUrga; arc=none smtp.client-ip=203.29.241.158
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=codeconstruct.com.au
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=codeconstruct.com.au
+Received: from [192.168.68.112] (ppp118-210-182-70.adl-adc-lon-bras34.tpg.internode.on.net [118.210.182.70])
+	by mail.codeconstruct.com.au (Postfix) with ESMTPSA id 63CEE20075;
+	Wed,  3 Apr 2024 07:10:55 +0800 (AWST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+	d=codeconstruct.com.au; s=2022a; t=1712099458;
+	bh=iuif0x0Ofo31gqORgNXcOWh8jcQ5qL5zLNFZaEZcCdA=;
+	h=Subject:From:To:Cc:Date:In-Reply-To:References;
+	b=FrXBUrgaQtHbvcweWF1VlRsmsh73gLQR6AFdBBQ3+/OiLS99ACu3Wj168ZYdQybWT
+	 kQYb/CzlAfThARZupumQ241w5uK9vS1dKRQVFPUEjZwNZnGNvnGhH00lfrGGyknXgs
+	 JhUZjADkr9Oil7R3kbLh5PwvY07AVibaunk6wsBMJiZ5MLYD4XVhFY03iib9BZ9U3p
+	 3B87bBrATIe8zuzC+Q2bvFQL9fgUun3wL4Kw2j8dzk7eGyR5eSoXFV4sNi4F1DIhYs
+	 wkaNqqYy+RvYqxSGnexrLNlXrOXheFrRuBHb5IAnJIoINAD25yFY+5QnbAnA5cY0zr
+	 5e1o39nMutU7Q==
+Message-ID: <37d2cc0d19cc4ace869eace13c8452525bad8609.camel@codeconstruct.com.au>
+Subject: Re: [PATCH] dt-bindings: watchdog: Convert Aspeed binding to DT
+ schema
+From: Andrew Jeffery <andrew@codeconstruct.com.au>
+To: Rob Herring <robh@kernel.org>
+Cc: wim@linux-watchdog.org, linux@roeck-us.net, 
+	krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org, joel@jms.id.au, 
+	zev@bewilderbeest.net, linux-watchdog@vger.kernel.org, 
+	devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
+	linux-aspeed@lists.ozlabs.org, linux-kernel@vger.kernel.org
+Date: Wed, 03 Apr 2024 09:40:51 +1030
+In-Reply-To: <20240402180718.GA358505-robh@kernel.org>
+References: <20240402120118.282035-1-andrew@codeconstruct.com.au>
+	 <20240402180718.GA358505-robh@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.46.4-2 
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
 
-On 23.03.24 07:32, Andreas Hindborg wrote:
-> Benno Lossin <benno.lossin@proton.me> writes:
->> On 3/13/24 12:05, Andreas Hindborg wrote:
->>> +//! implementations of the `Operations` trait.
->>> +//!
->>> +//! IO requests are passed to the driver as [`Request`] references. Th=
-e
->>> +//! `Request` type is a wrapper around the C `struct request`. The dri=
-ver must
->>> +//! mark start of request processing by calling [`Request::start`] and=
- end of
->>> +//! processing by calling one of the [`Request::end`], methods. Failur=
-e to do so
->>> +//! can lead to IO failures.
->>
->> I am unfamiliar with this, what are "IO failures"?
->> Do you think that it might be better to change the API to use a
->> callback? So instead of calling start and end, you would do
->>
->>       request.handle(|req| {
->>           // do the stuff that would be done between start and end
->>       });
->>
->> I took a quick look at the rnull driver and there you are calling
->> `Request::end_ok` from a different function. So my suggestion might not
->> be possible, since you really need the freedom.
->>
->> Do you think that a guard approach might work better? ie `start` returns
->> a guard that when dropped will call `end` and you need the guard to
->> operate on the request.
+On Tue, 2024-04-02 at 13:07 -0500, Rob Herring wrote:
+> On Tue, Apr 02, 2024 at 10:31:18PM +1030, Andrew Jeffery wrote:
+> > Squash warnings such as:
+> >=20
+> > ```
+> > arch/arm/boot/dts/aspeed/aspeed-bmc-facebook-galaxy100.dtb: /ahb/apb@1e=
+600000/watchdog@1e785000: failed to match any schema with compatible: ['asp=
+eed,ast2400-wdt']
+> > ```
+> >=20
+> > Signed-off-by: Andrew Jeffery <andrew@codeconstruct.com.au>
+> > ---
+> >  .../bindings/watchdog/aspeed,ast2400-wdt.yaml | 130 ++++++++++++++++++
+> >  .../bindings/watchdog/aspeed-wdt.txt          |  73 ----------
+> >  2 files changed, 130 insertions(+), 73 deletions(-)
+> >  create mode 100644 Documentation/devicetree/bindings/watchdog/aspeed,a=
+st2400-wdt.yaml
+> >  delete mode 100644 Documentation/devicetree/bindings/watchdog/aspeed-w=
+dt.txt
+> >=20
+> > diff --git a/Documentation/devicetree/bindings/watchdog/aspeed,ast2400-=
+wdt.yaml b/Documentation/devicetree/bindings/watchdog/aspeed,ast2400-wdt.ya=
+ml
+> > new file mode 100644
+> > index 000000000000..10fcb50c4051
+> > --- /dev/null
+> > +++ b/Documentation/devicetree/bindings/watchdog/aspeed,ast2400-wdt.yam=
+l
+> > @@ -0,0 +1,130 @@
+> > +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> > +%YAML 1.2
+> > +---
+> > +$id: http://devicetree.org/schemas/watchdog/aspeed,ast2400-wdt.yaml#
+> > +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> > +
+> > +title: Aspeed watchdog timer controllers
+> > +
+> > +maintainers:
+> > +  - Andrew Jeffery <andrew@codeconstruct.com.au>
+> > +
+> > +properties:
+> > +  compatible:
+> > +    enum:
+> > +      - aspeed,ast2400-wdt
+> > +      - aspeed,ast2500-wdt
+> > +      - aspeed,ast2600-wdt
+> > +
+> > +  reg:
+> > +    maxItems: 1
+> > +
+> > +  clocks: true
 >=20
-> I don't think that would fit, since the driver might not complete the
-> request immediately. We might be able to call `start` on behalf of the
-> driver.
+> # and order/function if more than 1 must be defined.
+
+Ack.
+
 >=20
-> At any rate, since the request is reference counted now, we can
-> automatically fail a request when the last reference is dropped and it
-> was not marked successfully completed. I would need to measure the
-> performance implications of such a feature.
+> Please note it was missing from the original binding in the commit=20
+> message.
 
-Are there cases where you still need access to the request after you
-have called `end`? If no, I think it would be better for the request to
-be consumed by the `end` function.
-This is a bit difficult with `ARef`, since the user can just clone it
-though... Do you think that it might be necessary to clone requests?
+Ack.
 
-Also what happens if I call `end_ok` and then `end_err` or vice versa?
-
->>> +    pub fn data_ref(&self) -> &T::RequestData {
->>> +        let request_ptr =3D self.0.get().cast::<bindings::request>();
->>> +
->>> +        // SAFETY: `request_ptr` is a valid `struct request` because `=
-ARef` is
->>> +        // `repr(transparent)`
->>> +        let p: *mut c_void =3D unsafe { bindings::blk_mq_rq_to_pdu(req=
-uest_ptr) };
->>> +
->>> +        let p =3D p.cast::<T::RequestData>();
->>> +
->>> +        // SAFETY: By C API contract, `p` is initialized by a call to
->>> +        // `OperationsVTable::init_request_callback()`. By existence o=
-f `&self`
->>> +        // it must be valid for use as a shared reference.
->>> +        unsafe { &*p }
->>> +    }
->>> +}
->>> +
->>> +// SAFETY: It is impossible to obtain an owned or mutable `Request`, s=
-o we can
->>
->> What do you mean by "mutable `Request`"? There is the function to obtain
->> a `&mut Request`.
 >=20
-> The idea behind this comment is that it is not possible to have an owned
-> `Request` instance. You can only ever have something that will deref
-> (shared) to `Request`. Construction of the `Request` type is not
-> possible in safe driver code. At least that is the intention.
+> > +
+> > +  aspeed,reset-type:
+> > +    enum:
+> > +      - cpu
+> > +      - soc
+> > +      - system
+> > +      - none
+> > +    description: |
+> > +      Reset behaviour - The watchdog can be programmed to generate one=
+ of three
+> > +      different types of reset when a timeout occcurs.
+> > +
+> > +      Specifying 'cpu' will only reset the processor on a timeout even=
+t.
+> > +
+> > +      Specifying 'soc' will reset a configurable subset of the SoC's c=
+ontrollers
+> > +      on a timeout event. Controllers critical to the SoC's operation =
+may remain untouched.
+> > +
+> > +      Specifying 'system' will reset all controllers on a timeout even=
+t, as if EXTRST had been asserted.
+> > +      Specifying "none" will cause the timeout event to have no reset =
+effect.
+> > +      Another watchdog engine on the chip must be used for chip reset =
+operations.
+> > +
+> > +      The default reset type is "system"
 >=20
-> The `from_ptr_mut` is unsafe, and could be downgraded to
-> `from_ptr`, since `Operations::complete` takes a shared reference
-> anyway. Bottom line is that user code does not handle `&mut Request`.
+> Express as schema:
+>=20
+> default: system
 
-Ah I see what you mean. But the user is able to have an `ARef<Request>`.
-Which you own, if it is the only refcount currently held on that
-request. When you drop it, you will run the destructor of the request.
+Ack.
 
-A more suitable safety comment would be "SAFETY: A `struct request` may
-be destroyed from any thread.".
+>=20
+> > +
+> > +  aspeed,alt-boot:
+> > +    $ref: /schemas/types.yaml#/definitions/flag
+> > +    description: |
+>=20
+> Don't need '|' if no formatting to preserve.
 
---=20
-Cheers,
-Benno
+Ack.
 
+>=20
+> > +      Direct the watchdog to configure the SoC to boot from the altern=
+ative boot
+> > +      region if a timeout occurs.
+> > +
+> > +  aspeed,external-signal:
+> > +    $ref: /schemas/types.yaml#/definitions/flag
+> > +    description: |
+> > +      Assert the timeout event on an external signal pin associated wi=
+th the
+> > +      watchdog controller instance. The pin must be muxed appropriatel=
+y.
+> > +
+> > +  aspeed,ext-pulse-duration:
+> > +    $ref: /schemas/types.yaml#/definitions/uint32
+> > +    description: |
+> > +      The duration, in microseconds, of the pulse emitted on the exter=
+nal signal pin
+>=20
+> Wrap at <80. Period at end needed.
+
+Ack for both.
+
+>=20
+> > +
+> > +  aspeed,ext-push-pull:
+> > +    $ref: /schemas/types.yaml#/definitions/flag
+> > +    description: |
+> > +      If aspeed,external-signal is specified in the node, set the exte=
+rnal
+> > +      signal pin's drive type to push-pull. If aspeed,ext-push-pull is=
+ not
+> > +      specified then the pin is configured as open-drain.
+> > +
+> > +  aspeed,ext-active-high:
+> > +    $ref: /schemas/types.yaml#/definitions/flag
+> > +    description: |
+> > +      If both aspeed,external-signal and aspeed,ext-push-pull are spec=
+ified in
+> > +      the node, set the pulse polarity to active-high. If aspeed,ext-a=
+ctive-high
+> > +      is not specified then the pin is configured as active-low.
+> > +
+> > +  aspeed,reset-mask:
+> > +    $ref: /schemas/types.yaml#/definitions/uint32-array
+> > +    minItems: 1
+> > +    maxItems: 2
+> > +    description: |
+> > +      A bitmaks indicating which peripherals will be reset if the watc=
+hdog
+> > +      timer expires. On AST2500 SoCs this should be a single word defi=
+ned using
+> > +      the AST2500_WDT_RESET_* macros; on AST2600 SoCs this should be a=
+ two-word
+> > +      array with the first word defined using the AST2600_WDT_RESET1_*=
+ macros,
+> > +      and the second word defined using the AST2600_WDT_RESET2_* macro=
+s.
+> > +
+> > +required:
+> > +  - compatible
+> > +  - reg
+> > +
+> > +allOf:
+> > +  - if:
+> > +      anyOf:
+> > +        - required:
+> > +            - aspeed,ext-push-pull
+> > +        - required:
+> > +            - aspeed,ext-active-high
+> > +        - required:
+> > +            - aspeed,reset-mask
+> > +    then:
+> > +      properties:
+> > +        compatible:
+> > +          enum:
+> > +            - aspeed,ast2500-wdt
+> > +            - aspeed,ast2600-wdt
+> > +  - if:
+> > +      required:
+> > +        - aspeed,ext-active-high
+> > +    then:
+> > +      required:
+> > +        - aspeed,ext-push-pull
+> > +
+> > +additionalProperties: false
+> > +
+> > +examples:
+> > +  - |
+> > +    wdt1: watchdog@1e785000 {
+>=20
+> Drop unused labels.
+
+Ack.
+
+Thanks for the feedback.
+
+Andrew
 
