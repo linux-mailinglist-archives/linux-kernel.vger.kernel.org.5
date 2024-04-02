@@ -1,188 +1,138 @@
-Return-Path: <linux-kernel+bounces-128674-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-128675-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 15563895DF8
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 22:46:18 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 08E14895E00
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 22:48:10 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 37EE21C232D1
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 20:46:17 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8C07D286315
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 20:48:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 77CB415E1F1;
-	Tue,  2 Apr 2024 20:46:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D5B8A15E1E4;
+	Tue,  2 Apr 2024 20:48:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="S3it5SL7"
-Received: from mail-ej1-f51.google.com (mail-ej1-f51.google.com [209.85.218.51])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="g3Qs0mFP"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.21])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E9AF015D5CB;
-	Tue,  2 Apr 2024 20:46:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 08BFA1E4AE;
+	Tue,  2 Apr 2024 20:47:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.21
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712090767; cv=none; b=MuJwYdSRm4YyIWkqVaC4/RiIgFGTyUHZNINIL0ycJmgUaNk0+1OThulSJKHB+FIiYIneAgoC8HYmfADnDJJqMZAUsCAKYh/4whsw5SggkRKk9O9Sn4bIbWIhGmXt3S4lcTsqqMALYUIeQE2cm6FFYXJkgRQqyvhaRxtMlyEtZao=
+	t=1712090882; cv=none; b=a6IYda1M4pYHXHM49NbLyPXxRhNhYEcBJAHRSTAsbP1/PqVmH8JTL87eYWsAPnqftAZ/O49Nz3aZdI9VqWhGxXFnVgrOVtiSYo0skHZPswPuU/wpo/P2HKZ0Ne+y/o6KlxMaNjq4bXqY9u6LuTn4LrfuiKnufJ+1V697Jk/WAjs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712090767; c=relaxed/simple;
-	bh=5hHpzI6HyHcS+FulCNSl/epqWvWlTMhwAJLmlEdFBcE=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=RXXitDVbJSh2AmNBx7tPAFI2EtrmKsxcwWnTMwEj9qklI3j+4XNGHp1RFu0qJwXd7RZXn7dG/FcU9INfEaZoanARoBfGv5v8oVDOoqbTTxdSyM+YMzzXy5rHSECfkiKUitZk+4809qgShuWc2MEu0quKeNt7o9tEayVzc77qkx0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=S3it5SL7; arc=none smtp.client-ip=209.85.218.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f51.google.com with SMTP id a640c23a62f3a-a4e62f3e63dso330882466b.0;
-        Tue, 02 Apr 2024 13:46:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1712090764; x=1712695564; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=MQiI7BxLmggkQQzq0/Zcf0rP2ERdhgPoF6NdWm8XFzU=;
-        b=S3it5SL7wUbjhrjMMiaU5Yg+D5EFLILB0bf3wV+y4jTJgW1PFfrF7lA89KQzJdPZYx
-         ogNsa9BziDoqbf2hvhdaYcTgW1wK8k7oIyarp0Ee3wqdE/17hWNsVvor28E90MOMYoLz
-         EMnawYeIuiVrLu2IgpD387K5eCmaGOgQBk0/WgR6gyKxXJGkjKyWjTezUBt2NG914LOv
-         WQxOXH/trQiDYWOKee/lKzToGLPV2Fy0HLzjLZR6AQoDH6i+V0Cy3UoRMNGtOCYQ1PAZ
-         woZiHEAhQNajK63ypJj8eyf8jR1scTUMp+RVdr+mken/ex9KNPq2T9/Bu6O6pSRgw792
-         vtyQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712090764; x=1712695564;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=MQiI7BxLmggkQQzq0/Zcf0rP2ERdhgPoF6NdWm8XFzU=;
-        b=d0Xpsvqfgz/0WNP/RiDQE2oqOXDrPh/2QlEDkqqsEHmxgcGnouwa8DEqF6E5BkJM70
-         HhUIPLc098hI4wtfONX0Fnk6o4R6iOjjOdSeQA81qnTcvzTJGHgIx6VZMlj9vGJS77yg
-         opOtzr35JR33CghXsoS6/AMFQmuYOIlqf+vWnByacHlhGXgVF6UKCQ5Y+lFTNik/lym9
-         A5CZkNChpN0a37o0cM1ycD/5Efp2d3hrygurmeK1D28JGgqZlDHsB2KHQRN9B96sV8tJ
-         i+SgDrk/Avv6QM4RsGseaRhLD+N6RnJ9I5pgZyPseovyLwrGkVTPjD5cBoYUAk/LqF97
-         B/5A==
-X-Forwarded-Encrypted: i=1; AJvYcCWrvthCz1HD5ObMqfN8ISRWQpIOEzEjNjKOxhvuZQSehEJjhel2JTFViXqn3+k4W86ah8W1rtsuhLQvkzqXxjuQ0xT6O6lINZ6zkN/Q8wWEkzmxsAg5SnhihdQ0UUUrvNnPsnn7
-X-Gm-Message-State: AOJu0YyFHzSHZDOYVhqaxOfHdnMiKUQK93zIy/YEMOaJwAin/AhzliCj
-	uefXcYGtAl//tOeO2ACuYD4Vb8u/4d+XCkxAL2Iqvo9hNwtqkhoN
-X-Google-Smtp-Source: AGHT+IFVmraJ2Ul4LRhcIdzwgvxmCNsrp6LyqCYKiZeHElLm1rMS/EmFJ0j2KzOaa05JxnSRknGnLA==
-X-Received: by 2002:a17:906:c42:b0:a47:3526:2e0f with SMTP id t2-20020a1709060c4200b00a4735262e0fmr8185538ejf.75.1712090763903;
-        Tue, 02 Apr 2024 13:46:03 -0700 (PDT)
-Received: from skbuf ([2a02:2f04:d700:2000::b2c])
-        by smtp.gmail.com with ESMTPSA id k5-20020a1709062a4500b00a4dacd6b8b3sm6967956eje.68.2024.04.02.13.46.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 02 Apr 2024 13:46:03 -0700 (PDT)
-Date: Tue, 2 Apr 2024 23:46:00 +0300
-From: Vladimir Oltean <olteanv@gmail.com>
-To: Nikolay Aleksandrov <razor@blackwall.org>
-Cc: Joseph Huang <Joseph.Huang@garmin.com>, netdev@vger.kernel.org,
-	Andrew Lunn <andrew@lunn.ch>,
-	Florian Fainelli <f.fainelli@gmail.com>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Roopa Prabhu <roopa@nvidia.com>,
-	Linus =?utf-8?Q?L=C3=BCssing?= <linus.luessing@c0d3.blue>,
-	linux-kernel@vger.kernel.org, bridge@lists.linux.dev
-Subject: Re: [PATCH RFC net-next 00/10] MC Flood disable and snooping
-Message-ID: <20240402204600.5ep4xlzrhleqzw7k@skbuf>
-References: <20240402001137.2980589-1-Joseph.Huang@garmin.com>
- <7fc8264a-a383-4682-a144-8d91fe3971d9@blackwall.org>
- <20240402174348.wosc37adyub5o7xu@skbuf>
- <a8968719-a63b-4969-a971-173c010d708f@blackwall.org>
+	s=arc-20240116; t=1712090882; c=relaxed/simple;
+	bh=O4EE+8JYmgEDbA6Lqhv249ruqQwRW5Y8TLOMHMU3C+A=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=AevVpg88FbQqUk9XFMCb2Nn6qTzewNmqVH9/DUQscycu4P86r1u+zTVTjW2aAFxkCXIGGn9/Mnfa6QRQgvTGhDX+9kIvfEAQdwM+piRHDvDCdfaVJ+X82VL4ay8/hg21NEdONIID9gWBE9q/cowiKvDr4VdFNmTgLDzqMCDnLf0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=g3Qs0mFP; arc=none smtp.client-ip=198.175.65.21
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1712090880; x=1743626880;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=O4EE+8JYmgEDbA6Lqhv249ruqQwRW5Y8TLOMHMU3C+A=;
+  b=g3Qs0mFPPAP43zvVo+xMmA2XsItASNbzwi91wNiRFkbldx+Z9uxY2t/p
+   dYmC9BPa80AmZu01eYqbC+xPhMFQVn90FF9k+ZzkiGxr/CSxXLmtmhEh5
+   f7uqqN0ihP7uONXklOUZpvJ/fOMEmqbwsdMMSQ4pRYtFNoeuzaXXef5Fi
+   DkOYh4hmV1gQ/GVF9OyIa5mu/yBLsktGxMGPMYzlTZK3DEQsABqlwbnGD
+   jghCiCaMR14ZfD7QMi4/P1G/AHbjxLbxj5TeKgELRGpOSWhKAN/ELVntC
+   3lpKohHRubPekHndbPzyrbp8wCDIFmXyhsT2DPmybwAJVk91pzSdNmh7u
+   A==;
+X-CSE-ConnectionGUID: ecvDZd2GTf+6l04+SFEVow==
+X-CSE-MsgGUID: JdBsFWU+QtSBpiyAwTD06Q==
+X-IronPort-AV: E=McAfee;i="6600,9927,11032"; a="7217060"
+X-IronPort-AV: E=Sophos;i="6.07,176,1708416000"; 
+   d="scan'208";a="7217060"
+Received: from fmviesa010.fm.intel.com ([10.60.135.150])
+  by orvoesa113.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Apr 2024 13:47:59 -0700
+X-CSE-ConnectionGUID: 7/Qh/N4PQ2ubLJuGzHCiYg==
+X-CSE-MsgGUID: SpK/FaZ+QtKGexKHXPoagQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,176,1708416000"; 
+   d="scan'208";a="18099330"
+Received: from sj-4150-psse-sw-opae-dev3.sj.intel.com ([10.233.115.74])
+  by fmviesa010-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Apr 2024 13:47:59 -0700
+From: Peter Colberg <peter.colberg@intel.com>
+To: Wu Hao <hao.wu@intel.com>,
+	Tom Rix <trix@redhat.com>,
+	Moritz Fischer <mdf@kernel.org>,
+	Xu Yilun <yilun.xu@intel.com>,
+	Alan Tull <atull@kernel.org>,
+	Shiva Rao <shiva.rao@intel.com>,
+	Kang Luwei <luwei.kang@intel.com>,
+	Enno Luebbers <enno.luebbers@intel.com>,
+	linux-fpga@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Cc: Russ Weight <russ.weight@linux.dev>,
+	Marco Pagani <marpagan@redhat.com>,
+	Matthew Gerlach <matthew.gerlach@linux.intel.com>,
+	kernel test robot <lkp@intel.com>,
+	Peter Colberg <peter.colberg@intel.com>
+Subject: [PATCH v2] fpga: dfl: fme: revise kernel-doc comments for some functions
+Date: Tue,  2 Apr 2024 16:47:43 -0400
+Message-ID: <20240402204743.1069624-1-peter.colberg@intel.com>
+X-Mailer: git-send-email 2.44.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <a8968719-a63b-4969-a971-173c010d708f@blackwall.org>
+Content-Transfer-Encoding: 8bit
 
-On Tue, Apr 02, 2024 at 09:50:51PM +0300, Nikolay Aleksandrov wrote:
-> On 4/2/24 20:43, Vladimir Oltean wrote:
-> > Hi Nikolai,
-> > 
-> > On Tue, Apr 02, 2024 at 12:28:38PM +0300, Nikolay Aleksandrov wrote:
-> > > For the bridge patches:
-> > > Nacked-by: Nikolay Aleksandrov <razor@blackwall.org>
-> > > 
-> > > You cannot break the multicast flood flag to add support for a custom
-> > > use-case. This is unacceptable. The current bridge behaviour is correct
-> > > your patch 02 doesn't fix anything, you should configure the bridge
-> > > properly to avoid all those problems, not break protocols.
-> > > 
-> > > Your special use case can easily be solved by a user-space helper or
-> > > eBPF and nftables. You can set the mcast flood flag and bypass the
-> > > bridge for these packets. I basically said the same in 2021, if this is
-> > > going to be in the bridge it should be hidden behind an option that is
-> > > default off. But in my opinion adding an option to solve such special
-> > > cases is undesirable, they can be easily solved with what's currently
-> > > available.
-> > 
-> > I appreciate your time is limited, but could you please translate your
-> > suggestion, and detail your proposed alternative a bit, for those of us
-> > who are not very familiar with IP multicast snooping?
-> > 
-> 
-> My suggestion is not related to snooping really, but to the goal of
-> patches 01-03. The bridge patches in this set are trying to forward
-> traffic that is not supposed to be forwarded with the proposed
-> configuration,
+From: Xu Yilun <yilun.xu@intel.com>
 
-Correct up to a point. Reinterpreting the given user space configuration
-and trying to make it do something else seems like a mistake, but in
-principle one could also look at alternative bridge configurations like
-the one I described here:
-https://lore.kernel.org/netdev/20240402180805.yhhwj2f52sdc4dl2@skbuf/
+This amends commit 782d8e61b5d6 ("fpga: dfl: kernel-doc corrections"),
+which separately addressed the kernel-doc warnings below. Add a more
+precise description of the feature argument to dfl_fme_create_mgr(),
+and also use plural in the description of dfl_fme_destroy_bridges().
 
-> so that can be done by a user-space helper that installs
-> rules to bypass the bridge specifically for those packets while
-> monitoring the bridge state to implement a policy and manage these rules
-> in order to keep snooping working.
-> 
-> > Bypass the bridge for which packets? General IGMP/MLD queries? Wouldn't
-> > that break snooping? And then do what with the packets, forward them in
-> > another software layer than the bridge?
-> > 
-> 
-> The ones that are not supposed to be forwarded in the proposed config
-> and are needed for this use case (control traffic and link-local). Obviously
-> to have proper snooping you'd need to manage these bypass
-> rules and use them only while needed.
+lkp reported 2 build warnings:
 
-I think Joseph will end up in a situation where he needs IGMP control
-messages both in the bridge data path and outside of it :)
+   drivers/fpga/dfl/dfl-fme-pr.c:175: warning: Function parameter or member 'feature' not described in 'dfl_fme_create_mgr'
 
-Also, your proposal eliminates the possibility of cooperating with a
-hardware accelerator which can forward the IGMP messages where they need
-to go.
+>> drivers/fpga/dfl/dfl-fme-pr.c:280: warning: expecting prototype for
+>> dfl_fme_destroy_bridge(). Prototype was for dfl_fme_destroy_bridges()
+>> instead
 
-As far as I understand, I don't think Joseph has a very "special" use case.
-Disabling flooding of unregistered multicast in the data plane sounds
-reasonable. There seems to be a gap in the bridge API, in that this
-operation also affects the control plane, which he is trying to fix with
-this "force flooding", because of insufficiently fine grained control.
+Fixes: 29de76240e86 ("fpga: dfl: fme: add partial reconfiguration sub feature support")
+Reported-by: kernel test robot <lkp@intel.com>
+Signed-off-by: Xu Yilun <yilun.xu@intel.com>
+Signed-off-by: Peter Colberg <peter.colberg@intel.com>
+---
+v2:
+- Correctly rebase patch onto commit 782d8e61b5d6.
+---
+ drivers/fpga/dfl-fme-pr.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-> > I also don't quite understand the suggestion of turning on mcast flooding:
-> > isn't Joseph saying that he wants it off for the unregistered multicast
-> > data traffic?
-> 
-> Ah my bad, I meant to turn off flooding and bypass the bridge for those
-> packets and ports while necessary, under necessary can be any policy
-> that the user-space helper wants to implement.
-> 
-> In any case, if this is going to be yet another kernel solution then it
-> must be a new option that is default off, and doesn't break current mcast
-> flood flag behaviour.
+diff --git a/drivers/fpga/dfl-fme-pr.c b/drivers/fpga/dfl-fme-pr.c
+index cdcf6dea4cc9..b66f2c1e10a9 100644
+--- a/drivers/fpga/dfl-fme-pr.c
++++ b/drivers/fpga/dfl-fme-pr.c
+@@ -164,7 +164,7 @@ static int fme_pr(struct platform_device *pdev, unsigned long arg)
+ 
+ /**
+  * dfl_fme_create_mgr - create fpga mgr platform device as child device
+- * @feature: sub feature info
++ * @feature: the dfl fme PR sub feature
+  * @pdata: fme platform_device's pdata
+  *
+  * Return: mgr platform device if successful, and error code otherwise.
+@@ -273,7 +273,7 @@ static void dfl_fme_destroy_bridge(struct dfl_fme_bridge *fme_br)
+ }
+ 
+ /**
+- * dfl_fme_destroy_bridges - destroy all fpga bridge platform device
++ * dfl_fme_destroy_bridges - destroy all fpga bridge platform devices
+  * @pdata: fme platform device's pdata
+  */
+ static void dfl_fme_destroy_bridges(struct dfl_feature_platform_data *pdata)
+-- 
+2.44.0
 
-Yeah, maybe something like this, simple and with clear offload
-semantics, as seen in existing hardware (not Marvell though):
-
-mcast_flood == off:
-- mcast_ipv4_ctrl_flood: don't care (maybe can force to "off")
-- mcast_ipv4_data_flood: don't care
-- mcast_ipv6_ctrl_flood: don't care
-- mcast_ipv6_data_flood: don't care
-- mcast_l2_flood: don't care
-mcast_flood == on:
-- Flood 224.0.0.x according to mcast_ipv4_ctrl_flood
-- Flood all other IPv4 multicast according to mcast_ipv4_data_flood
-- Flood ff02::/16 according to mcast_ipv6_ctrl_flood
-- Flood all other IPv6 multicast according to mcast_ipv6_data_flood
-- Flood L2 according to mcast_l2_flood
 
