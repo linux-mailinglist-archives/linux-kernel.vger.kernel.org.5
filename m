@@ -1,163 +1,110 @@
-Return-Path: <linux-kernel+bounces-127535-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-127536-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4386A894D44
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 10:15:21 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A07D7894D47
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 10:15:52 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id AE71AB2287C
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 08:15:18 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AF2AF1C21D97
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 08:15:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 44BCD3EA98;
-	Tue,  2 Apr 2024 08:15:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 58EFC3DBB2;
+	Tue,  2 Apr 2024 08:15:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b="zK2hD57U"
-Received: from mail-lf1-f45.google.com (mail-lf1-f45.google.com [209.85.167.45])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="kQwcj2r0"
+Received: from mail-lj1-f173.google.com (mail-lj1-f173.google.com [209.85.208.173])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BA5AE3F8F7
-	for <linux-kernel@vger.kernel.org>; Tue,  2 Apr 2024 08:15:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 18EF617C7C;
+	Tue,  2 Apr 2024 08:15:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712045706; cv=none; b=rBCLRV/W3U940mHRgP/WtFspKyW4A8WFUlBsSdmOXPLKJRK30Y/ftudGTEImpOWDDeCk+apmJO5Nt4HOlO4QUrerh5KCy3BcAP/O8oqXTbX4UxVKYkDEAVgvhM/CWJDkdzpqNkocUpZQW48+rjdFlfm6fzCoGui0PT2ukNQVvwk=
+	t=1712045742; cv=none; b=kuKLGN5kXgSrvD7iyIERaFJ8OC20WCDkEjJce7LdjWMr6xxIgN0Xv+ziyUnnY3yzuCE+6S0WY4ykHD9qaUze85WEbNcs+jlOq/elzybucsbQT+Ato1ExYwZieleE5aomyvrIbzB7vo+scg4cygkXSDlSJHHonAkBPvgyn8XSO8c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712045706; c=relaxed/simple;
-	bh=WHKlKK9EohBii9S28CpjTtid7am0PVMA0+L4lb8P/ck=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=pm7i19BJ3q6HYY8DJKgtqxOpj7IObLtrIPyEohd9paIgchi6f3wRwvJTUKyMNFjyWERSeRSAxBhOXe3aMrWICSu2QNHxEqfjpGNox29IRXEihNDjXHc00+RqX8P/UC5QOUV/O3W2+k6+DDb9G171OP4yi4/yxLKrbccR8+sP+qQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com; spf=pass smtp.mailfrom=baylibre.com; dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b=zK2hD57U; arc=none smtp.client-ip=209.85.167.45
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=baylibre.com
-Received: by mail-lf1-f45.google.com with SMTP id 2adb3069b0e04-515a81928faso5963716e87.1
-        for <linux-kernel@vger.kernel.org>; Tue, 02 Apr 2024 01:15:02 -0700 (PDT)
+	s=arc-20240116; t=1712045742; c=relaxed/simple;
+	bh=3iZPnAPI66QzUGmJLEWma+5qsOXYgGLymnqizxhUAR4=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type; b=Kjqs8jfIYqqT665lokGz0NtC7ULe/VhnT+zzUfAWTy9zP//xk3u67Sw/rvyP0GnsfI3TuCB/e52URgpJTcDUNTEfB/7yXJ2zi4LM7NQeMy4V8qkiCQvCtGErOnpoVVwjOt6s1p3Z20USpOnz2XOGu1QzYqesWe9CG52UHwBczg8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=kQwcj2r0; arc=none smtp.client-ip=209.85.208.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lj1-f173.google.com with SMTP id 38308e7fff4ca-2d4886a1cb4so60206161fa.0;
+        Tue, 02 Apr 2024 01:15:40 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20230601.gappssmtp.com; s=20230601; t=1712045701; x=1712650501; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=l3PznuhWiRn2DrV3csjzqryBja8/5+Nu4cCrKqzgvwQ=;
-        b=zK2hD57Uw4d7KcPwYwn5sX3nRvY2YGDGlEvIe5l4lk7nKT/VvFcw2R+QdQ7QoT5G7p
-         nO5Pw6mTZmgBOx1JGZkRiJNe03cyou23ZHYLTzDx0C1ePwD94rZlpkCiX6XLVHInIA78
-         PhbW0CZQNWDrwzGw9ZQvP4VdIu3ASQTQDbYRLbl8kJZ09hCzORVTUEFyWXgEcLTNH8/t
-         GC29W2lGGVxbHccSQ4wsdV8aU7Q27f72HGIGCun3VEUaNJe9XarbjQ/swMhuQkHoZIeW
-         /wRWBdjLhVkkCU1TYhMJ10EfBq0v811gSNHdkVPWBiW8YykadovXDCvNlPJHfYdL/FMz
-         L/LQ==
+        d=gmail.com; s=20230601; t=1712045739; x=1712650539; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=VbyV4WUgAMKjf0Mlsuuxt1eYx/2JWso6ImFJm4FWdFU=;
+        b=kQwcj2r0na1EoVFd1KNvNcWbeg3i1XtRVuHL9kmAbCFtlL2kxyCNiKtKM2KcA4Jjwd
+         5G2hrsR/e8m1Qs+Pm0h8vE1Ltao5sAmLpp3jC4ya+cCSE50kRbSdFEdJINgjb4Urie3Y
+         wRJY/RTyQgPMVRnyHrsg5/mktu/Z5wOsYd71w6oQ0gEQ3wUERUTW4+MxmMqRwqIhHGJX
+         jgeHrgWSYlCxfmmUyG4uYW+ekkXkvnMlkRrDKbsZSalecUEkvFj+W4T9usuzm/zAp0D1
+         2SZKG+DfgxNFnLuc+l4oet0J3Ppodl2wGBMoguhUIYeOpgUVHSoSNTGA47WmpOL2988R
+         j5Bw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712045701; x=1712650501;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=l3PznuhWiRn2DrV3csjzqryBja8/5+Nu4cCrKqzgvwQ=;
-        b=HdBoTABZ2TfykLRGECdaSMBL3DEAhDaAngwgeWkiuQZIcWAVJFRGjNoklOY8S+GuOq
-         jcZ0340a3hyet5TljLjhjFnGl+0kn62TX6edklhGFuYr4O233RiUJEJfiXmCispFbhfW
-         uREa/BtQNeSGU78RatWLAiaVqOnVXdgyrk9/kyJG3dttnxowNv6VEOwOWL51PxcXJyOM
-         6V7TOhuMHPyRrCmocPpyXakAFPFwWVzkPhDYduJ0rOb64a9whJfxqyDoVQfUJADrQXGi
-         4GoMCc7gPg+t81jlnZkfdYTxcGthKyQZbSYWyIGsSbxALnYBsx6mZx6X+mHN1GBn7gvy
-         fprA==
-X-Forwarded-Encrypted: i=1; AJvYcCVvaYUKj2yr8mpKIPWqfEfhIeZG0iu1ZRWeaU6Pxhd2oKjgm+f89gNaX8BDjKzst2ODFx/TlseqQLMnmiZNDMFof1wmezIhyFZHd21/
-X-Gm-Message-State: AOJu0YwZrD0b6vLuRKKm17+k3N6m970S84+Sm7Jdwf+gXmi2tDaxvcc0
-	t5wTLddvrKKCyoI6a1aaYlmmRNifXuZqLIeZYMtGYzL1fZuzs9abHQzGqKEu9nU=
-X-Google-Smtp-Source: AGHT+IHkFlWoscZhEInW5OhjLwpBACUlxhPfxaPo/RekIXvF+sTH5Dof1mRxSuBgUyl0Z87+l4jIwg==
-X-Received: by 2002:a05:6512:ba4:b0:513:ed0f:36c4 with SMTP id b36-20020a0565120ba400b00513ed0f36c4mr9690442lfv.43.1712045700495;
-        Tue, 02 Apr 2024 01:15:00 -0700 (PDT)
-Received: from blmsp ([2001:4091:a246:821e:6f3b:6b50:4762:8343])
-        by smtp.gmail.com with ESMTPSA id bg3-20020a05600c3c8300b0041481207b23sm17246308wmb.8.2024.04.02.01.14.59
+        d=1e100.net; s=20230601; t=1712045739; x=1712650539;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=VbyV4WUgAMKjf0Mlsuuxt1eYx/2JWso6ImFJm4FWdFU=;
+        b=eUXT3Q1zZpLgsuKoOODLfJzhbVZuVKaIu/t/fWUgkSEjHOnipvI+BaTYi0BkXb1T8f
+         qHrvdqNri91WDEicy+dB3z9Vtd2nspGBoXo7zPn07Fy3zyNA25DsPoOnRZRib3xShp2m
+         5dZUmYeVPxoQfYNQ1a0EADt9i4TgLbIjDdp6FCyfxYwkUKguIBWcKhYLF2UDOHYMeHsp
+         dLkI8ynhhZxLI6tPwRlEEQHOFo6Qcc1LqWtNbFNaFRiixHDubquApxfOMlNdZEbi9+3X
+         Cn1N2R89e4mNWONUCECDJBQPCJJdL9F9LxlLHDnAB+4sxeUQA2AuFRukOXTZ8w86Hvxq
+         ye+w==
+X-Forwarded-Encrypted: i=1; AJvYcCV71t1V9FARNnO9Q3AY4c/2BkcPAS9IQox2ha54+u9SDlKXux6Rx/Q51aPOhfpVIwSO9RtRIRf8SdMGSVwAqCLh+qV3Hwgs7CbdF2wjlugM/tiUa7zwg+0ebPFak68Yn3NyzeZVK/tM4SEN7yZy
+X-Gm-Message-State: AOJu0Yy12MWsWfpczfMJdsEJzgQkpvsx++jyFilYri4BoakQZI68UliZ
+	RfwkOKz0lLp93xB1gaK4iEcuxyBXOymVEg5+O0A2w7b1CEJZpufu1Q1LPSh7jR8=
+X-Google-Smtp-Source: AGHT+IHgua8TBONeiwUcNe4bMHjogMUN1adTlj7GLKrCh1fzmOQ8fxahTuSchvLoKTrtDhg7d1ySrQ==
+X-Received: by 2002:a05:651c:168c:b0:2d6:ba96:b9a8 with SMTP id bd12-20020a05651c168c00b002d6ba96b9a8mr6910192ljb.27.1712045738888;
+        Tue, 02 Apr 2024 01:15:38 -0700 (PDT)
+Received: from localhost (cpc154979-craw9-2-0-cust193.16-3.cable.virginm.net. [80.193.200.194])
+        by smtp.gmail.com with ESMTPSA id n18-20020a05600c4f9200b004148c3685ffsm17295591wmq.3.2024.04.02.01.15.38
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 02 Apr 2024 01:15:00 -0700 (PDT)
-Date: Tue, 2 Apr 2024 10:14:59 +0200
-From: Markus Schneider-Pargmann <msp@baylibre.com>
-To: Andrew Davis <afd@ti.com>
-Cc: Rob Herring <robh+dt@kernel.org>, 
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
-	Santosh Shilimkar <ssantosh@kernel.org>, Nishanth Menon <nm@ti.com>, 
-	Vignesh Raghavendra <vigneshr@ti.com>, devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
+        Tue, 02 Apr 2024 01:15:38 -0700 (PDT)
+From: Colin Ian King <colin.i.king@gmail.com>
+To: Andrew Morton <akpm@linux-foundation.org>,
+	Shuah Khan <shuah@kernel.org>,
+	linux-mm@kvack.org,
+	linux-kselftest@vger.kernel.org
+Cc: kernel-janitors@vger.kernel.org,
 	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/4] firmware: ti_sci: Use devm_register_restart_handler()
-Message-ID: <rurlwebigvl7xdttvw6khaaksf2gyybxyiq5li3dqaksgswrty@5ulps4fobiln>
-References: <20240326223730.54639-1-afd@ti.com>
- <20240326223730.54639-2-afd@ti.com>
+Subject: [PATCH][next] selftest/mm: Fix spelling mistake "skiped" -> "skipped"
+Date: Tue,  2 Apr 2024 09:15:37 +0100
+Message-Id: <20240402081537.1365939-1-colin.i.king@gmail.com>
+X-Mailer: git-send-email 2.39.2
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20240326223730.54639-2-afd@ti.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 
-On Tue, Mar 26, 2024 at 05:37:27PM -0500, Andrew Davis wrote:
-> Use device life-cycle managed register function to simplify probe.
-> 
-> Signed-off-by: Andrew Davis <afd@ti.com>
-> Reviewed-by: Gabriel Somlo <gsomlo@gmail.com>
+There is a spelling mistake in a ksft_test_result_skip message. Fix it.
 
-Reviewed-by: Markus Schneider-Pargmann <msp@baylibre.com>
+Signed-off-by: Colin Ian King <colin.i.king@gmail.com>
+---
+ tools/testing/selftests/mm/ksm_functional_tests.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Best
-Markus
+diff --git a/tools/testing/selftests/mm/ksm_functional_tests.c b/tools/testing/selftests/mm/ksm_functional_tests.c
+index 2d277620fad2..db845dca8d19 100644
+--- a/tools/testing/selftests/mm/ksm_functional_tests.c
++++ b/tools/testing/selftests/mm/ksm_functional_tests.c
+@@ -502,7 +502,7 @@ static void test_child_ksm_err(int status)
+ 	else if (status == -2)
+ 		ksft_test_result_fail("Merge in child failed\n");
+ 	else if (status == -3)
+-		ksft_test_result_skip("Merge in child skiped\n");
++		ksft_test_result_skip("Merge in child skipped\n");
+ }
+ 
+ /* Verify that prctl ksm flag is inherited. */
+-- 
+2.39.2
 
-> ---
->  drivers/firmware/ti_sci.c | 15 +++++----------
->  1 file changed, 5 insertions(+), 10 deletions(-)
-> 
-> diff --git a/drivers/firmware/ti_sci.c b/drivers/firmware/ti_sci.c
-> index 8b9a2556de16d..9885e1763591b 100644
-> --- a/drivers/firmware/ti_sci.c
-> +++ b/drivers/firmware/ti_sci.c
-> @@ -87,7 +87,6 @@ struct ti_sci_desc {
->   * struct ti_sci_info - Structure representing a TI SCI instance
->   * @dev:	Device pointer
->   * @desc:	SoC description for this instance
-> - * @nb:	Reboot Notifier block
->   * @d:		Debugfs file entry
->   * @debug_region: Memory region where the debug message are available
->   * @debug_region_size: Debug region size
-> @@ -103,7 +102,6 @@ struct ti_sci_desc {
->   */
->  struct ti_sci_info {
->  	struct device *dev;
-> -	struct notifier_block nb;
->  	const struct ti_sci_desc *desc;
->  	struct dentry *d;
->  	void __iomem *debug_region;
-> @@ -122,7 +120,6 @@ struct ti_sci_info {
->  
->  #define cl_to_ti_sci_info(c)	container_of(c, struct ti_sci_info, cl)
->  #define handle_to_ti_sci_info(h) container_of(h, struct ti_sci_info, handle)
-> -#define reboot_to_ti_sci_info(n) container_of(n, struct ti_sci_info, nb)
->  
->  #ifdef CONFIG_DEBUG_FS
->  
-> @@ -3254,10 +3251,9 @@ devm_ti_sci_get_resource(const struct ti_sci_handle *handle, struct device *dev,
->  }
->  EXPORT_SYMBOL_GPL(devm_ti_sci_get_resource);
->  
-> -static int tisci_reboot_handler(struct notifier_block *nb, unsigned long mode,
-> -				void *cmd)
-> +static int tisci_reboot_handler(struct sys_off_data *data)
->  {
-> -	struct ti_sci_info *info = reboot_to_ti_sci_info(nb);
-> +	struct ti_sci_info *info = data->cb_data;
->  	const struct ti_sci_handle *handle = &info->handle;
->  
->  	ti_sci_cmd_core_reboot(handle);
-> @@ -3400,10 +3396,9 @@ static int ti_sci_probe(struct platform_device *pdev)
->  	ti_sci_setup_ops(info);
->  
->  	if (reboot) {
-> -		info->nb.notifier_call = tisci_reboot_handler;
-> -		info->nb.priority = 128;
-> -
-> -		ret = register_restart_handler(&info->nb);
-> +		ret = devm_register_restart_handler(dev,
-> +						    tisci_reboot_handler,
-> +						    info);
->  		if (ret) {
->  			dev_err(dev, "reboot registration fail(%d)\n", ret);
->  			goto out;
-> -- 
-> 2.39.2
-> 
 
