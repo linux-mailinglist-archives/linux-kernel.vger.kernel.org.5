@@ -1,233 +1,307 @@
-Return-Path: <linux-kernel+bounces-127573-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-127574-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id B1922894DC8
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 10:43:59 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id B646E894DCA
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 10:44:25 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 69163281BE4
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 08:43:58 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D9DCC1C21032
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 08:44:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 324B34D5A0;
-	Tue,  2 Apr 2024 08:43:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b="YyTDyppR"
-Received: from mail-oo1-f51.google.com (mail-oo1-f51.google.com [209.85.161.51])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D1F8E3FB14
-	for <linux-kernel@vger.kernel.org>; Tue,  2 Apr 2024 08:43:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BEA31481BF;
+	Tue,  2 Apr 2024 08:44:16 +0000 (UTC)
+Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5331A3FB14;
+	Tue,  2 Apr 2024 08:44:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=114.242.206.163
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712047429; cv=none; b=BXdlUzk+k+/aLkFP7x+jiT2re6aHKZ2Z9l6aHXJVkxa/Sf4ICQavnxn7FOjjTKPZMwWYCl1MIvRiRMsC7rRL4VDL6qLE4SD1hnrjMhM0/0KHF05h39X4YIRdmz6q/2pbUaYgFbAP/ISrap35tSMzqUoGxESdQ2ezx4CkRlTi0pQ=
+	t=1712047456; cv=none; b=EKlmClSB9g58b6FqVqvlZgxZvWm+ToLownvJvZECQuWaBkjffmiC5W/bkrXOHRg4DTOvUApHXZqYBHkJMqxkv2yuaETF/zW4zJHo4x+A4Rl8hpa+6BTBgm71Y7C+5WKZ0Uyn5gIGUKPAzEeb2sMTDc1spjQK5prbYd7h9ATx3nM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712047429; c=relaxed/simple;
-	bh=lRW7ZLuKa0j9IDi6x5isHllL3lXa/vVHzH/iCRWfhwo=;
-	h=Message-ID:Date:MIME-Version:From:Subject:To:Cc:References:
-	 In-Reply-To:Content-Type; b=Q8uRnubfgmwnLMvlomc+fBdKFbDygAQTgolmKNEubn0fNO72YD4WONO2uYl3tvQd9vL3DGNPXxV/Dch+l/t8mtATtATD76shgnF9tO2p8MRNvx7ty2f8jSGdRmyx+XHcd4UL5NYYhabSXCaBNMQneGqhh8KYedvFntFwPbi1ZbI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com; spf=pass smtp.mailfrom=rivosinc.com; dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b=YyTDyppR; arc=none smtp.client-ip=209.85.161.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rivosinc.com
-Received: by mail-oo1-f51.google.com with SMTP id 006d021491bc7-5a4a14c52fcso2759927eaf.1
-        for <linux-kernel@vger.kernel.org>; Tue, 02 Apr 2024 01:43:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1712047427; x=1712652227; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:content-language:references
-         :cc:to:subject:from:user-agent:mime-version:date:message-id:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=1ao1EWfYPtfm1HGEz8PRLBvpnUq6uoeFW7iGA9WZBEg=;
-        b=YyTDyppR4qwNmp/vq3UfwdAUVnSHc26a0CViq8kV+ZMkNovCtkYoF45SMF90pL5Rif
-         2WwyjCJrtH5NqXsDVwwtHv824+kFYfoGjtFN2a2T31UrDrfMt7nQcZPMsRDC8qae80sf
-         GVXhCOqF2jZnA0pMr5lW5ncKOuGd8IjRVsBvWm/gfASIQkwLGRtmhF2AXmff59EYIX8V
-         gp76Evar07s9n38RdltdgPuk9mNv0+5gQWUNpKcCWq+yZ5UfGC9PQg5gMxuqKBEUZxpE
-         zP8mkEPkzl/b1xHuOU/UkDw0i7G/IkvpnIZujZW3aeiWPpv8y4CnOzCKmNSOWf7m6rTq
-         f2Hw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712047427; x=1712652227;
-        h=content-transfer-encoding:in-reply-to:content-language:references
-         :cc:to:subject:from:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=1ao1EWfYPtfm1HGEz8PRLBvpnUq6uoeFW7iGA9WZBEg=;
-        b=fcH3I8mlqjj+P8MS0/vI0mCqKVDq7ftTIM0P+CurcXC6SlAl5UobRXbp1jmtNf/Aro
-         M17bt5sXJJhCbzP3uaYIfO87gjFoR3fGWAYxMBXrUzbcTU/3gy1KHjAJG/cHi50DXPaQ
-         /63Fu4MV1OQT6zWMGYt6zaRvRiHBuPuJwXireeT1hRckDjU0ZZDSZAZ5+2otQDMzIQfA
-         G+aA/g7fNenRpXe1b4qUoo0czwM9ay6pp0xI0QmyxA3FETd2eYjrH7HaI2beIoY+hmPJ
-         hAdvHLcqEBgArmeT2uunrgu1G85BaIuTfhekWylhxqv0zl0+fTolyYAG2CUsRswSyTJJ
-         RVfg==
-X-Gm-Message-State: AOJu0YwbMqEsWXjXMF0/siiZSWSND2hemoh1Jbo1myDpPvY0GmuVJBxf
-	FT7CtXsd8woACr7zQXVVLDPOIo8xPfCFUff7CW1da3wugF2XOW+gnIehFGi++JU=
-X-Google-Smtp-Source: AGHT+IHeap9PtoP9dWxZ8Fxsi6MBW8mCRxu5nAbnRlzNqlVnyWHQm9bQqROV6m51/MeKVk/nOwVHCw==
-X-Received: by 2002:a05:6358:e484:b0:183:bd0c:d2c6 with SMTP id by4-20020a056358e48400b00183bd0cd2c6mr4187597rwb.11.1712047426879;
-        Tue, 02 Apr 2024 01:43:46 -0700 (PDT)
-Received: from [172.16.0.34] (c-67-188-2-18.hsd1.ca.comcast.net. [67.188.2.18])
-        by smtp.gmail.com with ESMTPSA id e19-20020a63f553000000b005e485fbd455sm9184675pgk.45.2024.04.02.01.43.45
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 02 Apr 2024 01:43:46 -0700 (PDT)
-Message-ID: <d382c616-5212-4da2-be63-6ed0a85e13f7@rivosinc.com>
-Date: Tue, 2 Apr 2024 01:43:45 -0700
+	s=arc-20240116; t=1712047456; c=relaxed/simple;
+	bh=2QS9C22Nsp15QOTHapTYNst3qyOy0U2BUE2u6hPUunw=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=oQ5y8P7ZY9UQARBnG1B8kwN/sd2GUYA88FM1kT0lfHmMeSu7+fkjwDFIJJdQE2u0CboI+eoNqsA5tAXOD47TFhjGfcTRv1TYJgteBliD9zOii0DFrObT4Xobpd99DZUTt22Y3vkitgVkdvNarGorW0kY+bkUXUPDSAAK8vOZ1tc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=loongson.cn; spf=pass smtp.mailfrom=loongson.cn; arc=none smtp.client-ip=114.242.206.163
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=loongson.cn
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=loongson.cn
+Received: from loongson.cn (unknown [10.2.5.213])
+	by gateway (Coremail) with SMTP id _____8DxvutRxQtmXEIiAA--.13043S3;
+	Tue, 02 Apr 2024 16:44:01 +0800 (CST)
+Received: from localhost.localdomain (unknown [10.2.5.213])
+	by localhost.localdomain (Coremail) with SMTP id AQAAf8CxLBNOxQtmGa9xAA--.23906S2;
+	Tue, 02 Apr 2024 16:43:58 +0800 (CST)
+From: Bibo Mao <maobibo@loongson.cn>
+To: Peter Zijlstra <peterz@infradead.org>,
+	Ingo Molnar <mingo@redhat.com>
+Cc: Ming Wang <wangming01@loongson.cn>,
+	Huacai Chen <chenhuacai@kernel.org>,
+	linux-kernel@vger.kernel.org,
+	linux-perf-users@vger.kernel.org
+Subject: [PATCH] perf kvm: Add kvm-stat for loongarch64
+Date: Tue,  2 Apr 2024 16:43:58 +0800
+Message-Id: <20240402084358.205003-1-maobibo@loongson.cn>
+X-Mailer: git-send-email 2.39.3
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-From: Atish Patra <atishp@rivosinc.com>
-Subject: Re: [PATCH v4 12/15] KVM: riscv: selftests: Add SBI PMU extension
- definitions
-To: Andrew Jones <ajones@ventanamicro.com>
-Cc: linux-kernel@vger.kernel.org, Albert Ou <aou@eecs.berkeley.edu>,
- Alexandre Ghiti <alexghiti@rivosinc.com>, Anup Patel <anup@brainfault.org>,
- Atish Patra <atishp@atishpatra.org>,
- Conor Dooley <conor.dooley@microchip.com>, Guo Ren <guoren@kernel.org>,
- Icenowy Zheng <uwu@icenowy.me>, kvm-riscv@lists.infradead.org,
- kvm@vger.kernel.org, linux-kselftest@vger.kernel.org,
- linux-riscv@lists.infradead.org, Mark Rutland <mark.rutland@arm.com>,
- Palmer Dabbelt <palmer@dabbelt.com>, Paolo Bonzini <pbonzini@redhat.com>,
- Paul Walmsley <paul.walmsley@sifive.com>, Shuah Khan <shuah@kernel.org>,
- Will Deacon <will@kernel.org>
-References: <20240229010130.1380926-1-atishp@rivosinc.com>
- <20240229010130.1380926-13-atishp@rivosinc.com>
- <20240302-698f4322ab7ba74fc3dba416@orel>
-X-Mozilla-News-Host: news://nntp.lore.kernel.org
-Content-Language: en-US
-In-Reply-To: <20240302-698f4322ab7ba74fc3dba416@orel>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID:AQAAf8CxLBNOxQtmGa9xAA--.23906S2
+X-CM-SenderInfo: xpdruxter6z05rqj20fqof0/
+X-Coremail-Antispam: 1Uk129KBjDUn29KB7ZKAUJUUUUU529EdanIXcx71UUUUU7KY7
+	ZEXasCq-sGcSsGvfJ3UbIjqfuFe4nvWSU5nxnvy29KBjDU0xBIdaVrnUUvcSsGvfC2Kfnx
+	nUUI43ZEXa7xR_UUUUUUUUU==
 
-On 3/2/24 03:00, Andrew Jones wrote:
-> On Wed, Feb 28, 2024 at 05:01:27PM -0800, Atish Patra wrote:
->> The SBI PMU extension definition is required for upcoming SBI PMU
->> selftests.
->>
->> Signed-off-by: Atish Patra <atishp@rivosinc.com>
->> ---
->>   .../selftests/kvm/include/riscv/processor.h   | 67 +++++++++++++++++++
->>   1 file changed, 67 insertions(+)
->>
->> diff --git a/tools/testing/selftests/kvm/include/riscv/processor.h b/tools/testing/selftests/kvm/include/riscv/processor.h
->> index f75c381fa35a..a49a39c8e8d4 100644
->> --- a/tools/testing/selftests/kvm/include/riscv/processor.h
->> +++ b/tools/testing/selftests/kvm/include/riscv/processor.h
-> 
-> We should probably create a new header (include/riscv/sbi.h) since
-> otherwise processor.h is very quickly going to look like an SBI
-> header with a few non-sbi things in it. Can we add a patch prior to
-> this one that moves the SBI stuff we currently have in processor.h
-> out to an sbi.h? Or, we could start synchronizing a copy of
-> arch/riscv/include/asm/sbi.h in tools/arch/riscv/include/asm like
-> we've done for csr.h
-> 
-A separate sbi.h makes sense. I have moved the definitions to sbi.h as 
-of now.
+Add support for 'perf kvm stat' on loongarch64 platform, now only
+kvm exit event is supported.
 
-There is still lot more changes in sbi.h which is not required for 
-selftests even after this patch. But I am okay with syncing with sbi.h
-But I am not sure what should be the synchronization policy for sbi.h.
+Here is example output about "perf kvm --host stat report" command
 
-As needed or regular sync with after every release? The csr.h is already 
-out of date even though it was created last MW (one change is part of 
-this series).
+       Event name   Samples   Sample%    Time (ns)   Time%  Mean Time (ns)
+     Memory store     73427    50.00%    630743820  10.00%            8590
+      Memory read     36110    24.00%    109129170   1.00%            3022
+  Privilege Error     18921    12.00%   5231868450  87.00%          276511
+        Interrupt     10214     6.00%     13674060   0.00%            1338
+        Hypercall      5043     3.00%     14121450   0.00%            2800
+      FP Disabled      1850     1.00%      2798020   0.00%            1512
+           Ifecth       813     0.00%      2035340   0.00%            2503
+    Memory modify       362     0.00%       633070   0.00%            1748
+    LASX Disabled         3     0.00%         5440   0.00%            1813
+     LSX Disabled         2     0.00%         2670   0.00%            1335
 
-Let me know if you have any thoughts about that. I can send another 
-version with that.
+Signed-off-by: Bibo Mao <maobibo@loongson.cn>
+---
+ tools/perf/arch/loongarch/Makefile        |  1 +
+ tools/perf/arch/loongarch/util/Build      |  2 +
+ tools/perf/arch/loongarch/util/header.c   | 85 ++++++++++++++++++++
+ tools/perf/arch/loongarch/util/kvm-stat.c | 98 +++++++++++++++++++++++
+ 4 files changed, 186 insertions(+)
+ create mode 100644 tools/perf/arch/loongarch/util/header.c
+ create mode 100644 tools/perf/arch/loongarch/util/kvm-stat.c
 
->> @@ -169,17 +169,84 @@ void vm_install_exception_handler(struct kvm_vm *vm, int vector, exception_handl
->>   enum sbi_ext_id {
->>   	SBI_EXT_BASE = 0x10,
->>   	SBI_EXT_STA = 0x535441,
->> +	SBI_EXT_PMU = 0x504D55,
->>   };
->>   
->>   enum sbi_ext_base_fid {
->>   	SBI_EXT_BASE_PROBE_EXT = 3,
->>   };
->>   
->> +enum sbi_ext_pmu_fid {
->> +	SBI_EXT_PMU_NUM_COUNTERS = 0,
->> +	SBI_EXT_PMU_COUNTER_GET_INFO,
->> +	SBI_EXT_PMU_COUNTER_CFG_MATCH,
->> +	SBI_EXT_PMU_COUNTER_START,
->> +	SBI_EXT_PMU_COUNTER_STOP,
->> +	SBI_EXT_PMU_COUNTER_FW_READ,
->> +	SBI_EXT_PMU_COUNTER_FW_READ_HI,
->> +	SBI_EXT_PMU_SNAPSHOT_SET_SHMEM,
->> +};
->> +
->> +union sbi_pmu_ctr_info {
->> +	unsigned long value;
->> +	struct {
->> +		unsigned long csr:12;
->> +		unsigned long width:6;
->> +#if __riscv_xlen == 32
->> +		unsigned long reserved:13;
->> +#else
->> +		unsigned long reserved:45;
->> +#endif
->> +		unsigned long type:1;
->> +	};
->> +};
->> +
->>   struct sbiret {
->>   	long error;
->>   	long value;
->>   };
->>   
->> +/** General pmu event codes specified in SBI PMU extension */
->> +enum sbi_pmu_hw_generic_events_t {
->> +	SBI_PMU_HW_NO_EVENT			= 0,
->> +	SBI_PMU_HW_CPU_CYCLES			= 1,
->> +	SBI_PMU_HW_INSTRUCTIONS			= 2,
->> +	SBI_PMU_HW_CACHE_REFERENCES		= 3,
->> +	SBI_PMU_HW_CACHE_MISSES			= 4,
->> +	SBI_PMU_HW_BRANCH_INSTRUCTIONS		= 5,
->> +	SBI_PMU_HW_BRANCH_MISSES		= 6,
->> +	SBI_PMU_HW_BUS_CYCLES			= 7,
->> +	SBI_PMU_HW_STALLED_CYCLES_FRONTEND	= 8,
->> +	SBI_PMU_HW_STALLED_CYCLES_BACKEND	= 9,
->> +	SBI_PMU_HW_REF_CPU_CYCLES		= 10,
->> +
->> +	SBI_PMU_HW_GENERAL_MAX,
->> +};
->> +
->> +/* SBI PMU counter types */
->> +enum sbi_pmu_ctr_type {
->> +	SBI_PMU_CTR_TYPE_HW = 0x0,
->> +	SBI_PMU_CTR_TYPE_FW,
->> +};
->> +
->> +/* Flags defined for config matching function */
->> +#define SBI_PMU_CFG_FLAG_SKIP_MATCH	(1 << 0)
->> +#define SBI_PMU_CFG_FLAG_CLEAR_VALUE	(1 << 1)
->> +#define SBI_PMU_CFG_FLAG_AUTO_START	(1 << 2)
->> +#define SBI_PMU_CFG_FLAG_SET_VUINH	(1 << 3)
->> +#define SBI_PMU_CFG_FLAG_SET_VSINH	(1 << 4)
->> +#define SBI_PMU_CFG_FLAG_SET_UINH	(1 << 5)
->> +#define SBI_PMU_CFG_FLAG_SET_SINH	(1 << 6)
->> +#define SBI_PMU_CFG_FLAG_SET_MINH	(1 << 7)
->> +
->> +/* Flags defined for counter start function */
->> +#define SBI_PMU_START_FLAG_SET_INIT_VALUE (1 << 0)
->> +#define SBI_PMU_START_FLAG_INIT_FROM_SNAPSHOT BIT(1)
->> +
->> +/* Flags defined for counter stop function */
->> +#define SBI_PMU_STOP_FLAG_RESET (1 << 0)
->> +#define SBI_PMU_STOP_FLAG_TAKE_SNAPSHOT BIT(1)
-> 
-> When changing shifts to BIT()'s, don't forget these (easy not to forget
-> if we go with the synch sbi.h to tools approach)
-> 
->> +
->>   struct sbiret sbi_ecall(int ext, int fid, unsigned long arg0,
->>   			unsigned long arg1, unsigned long arg2,
->>   			unsigned long arg3, unsigned long arg4,
->> -- 
->> 2.34.1
->>
-> 
-> Thanks,
-> drew
+diff --git a/tools/perf/arch/loongarch/Makefile b/tools/perf/arch/loongarch/Makefile
+index c392e7af4743..c8be64c5cdb4 100644
+--- a/tools/perf/arch/loongarch/Makefile
++++ b/tools/perf/arch/loongarch/Makefile
+@@ -4,6 +4,7 @@ PERF_HAVE_DWARF_REGS := 1
+ endif
+ PERF_HAVE_ARCH_REGS_QUERY_REGISTER_OFFSET := 1
+ PERF_HAVE_JITDUMP := 1
++HAVE_KVM_STAT_SUPPORT := 1
+ 
+ #
+ # Syscall table generation for perf
+diff --git a/tools/perf/arch/loongarch/util/Build b/tools/perf/arch/loongarch/util/Build
+index d776125a2d06..e1a13761037b 100644
+--- a/tools/perf/arch/loongarch/util/Build
++++ b/tools/perf/arch/loongarch/util/Build
+@@ -1,5 +1,7 @@
+ perf-y += perf_regs.o
++perf-y += header.o
+ 
++perf-$(CONFIG_LIBTRACEEVENT) += kvm-stat.o
+ perf-$(CONFIG_DWARF)     += dwarf-regs.o
+ perf-$(CONFIG_LOCAL_LIBUNWIND) += unwind-libunwind.o
+ perf-$(CONFIG_LIBDW_DWARF_UNWIND) += unwind-libdw.o
+diff --git a/tools/perf/arch/loongarch/util/header.c b/tools/perf/arch/loongarch/util/header.c
+new file mode 100644
+index 000000000000..8f7061cf6977
+--- /dev/null
++++ b/tools/perf/arch/loongarch/util/header.c
+@@ -0,0 +1,85 @@
++// SPDX-License-Identifier: GPL-2.0-only
++/*
++ * Implementation of get_cpuid().
++ *
++ * Author: Nikita Shubin <n.shubin@yadro.com>
++ */
++
++#include <stdio.h>
++#include <stdlib.h>
++#include <api/fs/fs.h>
++#include <errno.h>
++#include "util/debug.h"
++#include "util/header.h"
++
++#define CPUINFO_MODEL	"Model Name"
++#define CPUINFO		"/proc/cpuinfo"
++
++static char *_get_field(const char *line)
++{
++	char *line2, *nl;
++
++	line2 = strrchr(line, ' ');
++	if (!line2)
++		return NULL;
++
++	line2++;
++	nl = strrchr(line, '\n');
++	if (!nl)
++		return NULL;
++
++	return strndup(line2, nl - line2);
++}
++
++static char *_get_cpuid(void)
++{
++	char *line = NULL;
++	char *model = NULL;
++	char *cpuid = NULL;
++	int read;
++	unsigned long line_sz;
++	FILE *cpuinfo;
++
++	cpuinfo = fopen(CPUINFO, "r");
++	if (cpuinfo == NULL)
++		return cpuid;
++
++	while ((read = getline(&line, &line_sz, cpuinfo)) != -1) {
++		if (strncmp(line, CPUINFO_MODEL, strlen(CPUINFO_MODEL)))
++			continue;
++
++		model = _get_field(line);
++		if (!model)
++			goto free;
++		break;
++	}
++
++	if (asprintf(&cpuid, "%s", model) < 0)
++		cpuid = NULL;
++
++free:
++	fclose(cpuinfo);
++	free(model);
++	return cpuid;
++}
++
++int get_cpuid(char *buffer, size_t sz)
++{
++	char *cpuid = _get_cpuid();
++	int ret = 0;
++
++	if (sz < strlen(cpuid)) {
++		ret = -EINVAL;
++		goto free;
++	}
++
++	scnprintf(buffer, sz, "%s", cpuid);
++free:
++	free(cpuid);
++	return ret;
++}
++
++char *get_cpuid_str(struct perf_pmu *pmu __maybe_unused)
++{
++	return _get_cpuid();
++}
+diff --git a/tools/perf/arch/loongarch/util/kvm-stat.c b/tools/perf/arch/loongarch/util/kvm-stat.c
+new file mode 100644
+index 000000000000..c69ab40e3ba6
+--- /dev/null
++++ b/tools/perf/arch/loongarch/util/kvm-stat.c
+@@ -0,0 +1,98 @@
++// SPDX-License-Identifier: GPL-2.0
++#include <errno.h>
++#include <memory.h>
++#include <errno.h>
++#include "util/kvm-stat.h"
++#include "util/parse-events.h"
++#include "util/debug.h"
++#include "util/evsel.h"
++#include "util/evlist.h"
++#include "util/pmus.h"
++
++#define LOONGARCH_EXCEPTION_INT		0
++#define LOONGARCH_EXCEPTION_PIL		1
++#define LOONGARCH_EXCEPTION_PIS		2
++#define LOONGARCH_EXCEPTION_PIF		3
++#define LOONGARCH_EXCEPTION_PME		4
++#define LOONGARCH_EXCEPTION_PNR		5
++#define LOONGARCH_EXCEPTION_PNX		6
++#define LOONGARCH_EXCEPTION_PPI		7
++#define LOONGARCH_EXCEPTION_FPD		15
++#define LOONGARCH_EXCEPTION_SXD		16
++#define LOONGARCH_EXCEPTION_ASXD	17
++#define LOONGARCH_EXCEPTION_GSPR	22
++#define LOONGARCH_EXCEPTION_HVC		23
++#define LOONGARCH_EXCEPTION_GCM		24
++
++#define loongarch_exception_type				\
++	{LOONGARCH_EXCEPTION_INT,  "Interrupt" },		\
++	{LOONGARCH_EXCEPTION_PIL,  "Memory read" },		\
++	{LOONGARCH_EXCEPTION_PIS,  "Memory store" },		\
++	{LOONGARCH_EXCEPTION_PIF,  "Ifecth" },			\
++	{LOONGARCH_EXCEPTION_PME,  "Memory modify" },		\
++	{LOONGARCH_EXCEPTION_PNR,  "Memory NR" },		\
++	{LOONGARCH_EXCEPTION_PNX,  "Memory NX" },		\
++	{LOONGARCH_EXCEPTION_PPI,  "Memory Privilege" },	\
++	{LOONGARCH_EXCEPTION_FPD,  "FP Disabled" },		\
++	{LOONGARCH_EXCEPTION_SXD,  "LSX Disabled" },		\
++	{LOONGARCH_EXCEPTION_ASXD, "LASX Disabled" },		\
++	{LOONGARCH_EXCEPTION_GSPR, "Privilege Error" },		\
++	{LOONGARCH_EXCEPTION_HVC,  "Hypercall" },		\
++	{LOONGARCH_EXCEPTION_GCM,  "CSR modified" }
++
++define_exit_reasons_table(loongarch_exit_reasons, loongarch_exception_type);
++
++const char *vcpu_id_str = "vcpu_id";
++const char *kvm_exit_reason = "reason";
++const char *kvm_entry_trace = "kvm:kvm_enter";
++const char *kvm_reenter_trace = "kvm:kvm_reenter";
++const char *kvm_exit_trace = "kvm:kvm_exit";
++
++const char *kvm_events_tp[] = {
++	"kvm:kvm_enter",
++	"kvm:kvm_reenter",
++	"kvm:kvm_exit",
++	NULL,
++};
++
++static bool event_end(struct evsel *evsel,
++		struct perf_sample *sample __maybe_unused,
++		struct event_key *key __maybe_unused)
++{
++	/*
++	 * LoongArch kvm is a little different with other architectures
++	 *
++	 * There is kvm:kvm_reenter and kvm:kvm_enter event adjacent with
++	 * kvm:kvm_exit event.
++	 *   kvm:kvm_reenter means returning to guest immediately
++	 *   kvm:kvm_enter   means returning to vmm and then to guest
++	 */
++	return evsel__name_is(evsel, kvm_entry_trace) ||
++		evsel__name_is(evsel, kvm_reenter_trace);
++}
++
++static struct kvm_events_ops exit_events = {
++	.is_begin_event = exit_event_begin,
++	.is_end_event = event_end,
++	.decode_key = exit_event_decode_key,
++	.name = "VM-EXIT"
++};
++
++struct kvm_reg_events_ops kvm_reg_events_ops[] = {
++	{
++		.name	= "vmexit",
++		.ops	= &exit_events,
++	},
++	{ NULL, NULL },
++};
++
++const char * const kvm_skip_events[] = {
++	NULL,
++};
++
++int cpu_isa_init(struct perf_kvm_stat *kvm, const char *cpuid __maybe_unused)
++{
++	kvm->exit_reasons_isa = "loongarch64";
++	kvm->exit_reasons = loongarch_exit_reasons;
++	return 0;
++}
+-- 
+2.33.0
 
 
