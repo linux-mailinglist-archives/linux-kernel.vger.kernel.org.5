@@ -1,69 +1,69 @@
-Return-Path: <linux-kernel+bounces-127300-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-127302-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 12DA2894962
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 04:27:59 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4EBC8894966
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 04:28:27 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 913391F23BA6
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 02:27:58 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 728291C242CF
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 02:28:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 499D317BB4;
-	Tue,  2 Apr 2024 02:26:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2682F17BC9;
+	Tue,  2 Apr 2024 02:26:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ljones.dev header.i=@ljones.dev header.b="jFTKq/Tz";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="wUmjbMvL"
+	dkim=pass (2048-bit key) header.d=ljones.dev header.i=@ljones.dev header.b="L9GGML5O";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="g4ZqQrS4"
 Received: from wfout3-smtp.messagingengine.com (wfout3-smtp.messagingengine.com [64.147.123.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C7EE9179BC;
-	Tue,  2 Apr 2024 02:26:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A1D2017C7C;
+	Tue,  2 Apr 2024 02:26:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=64.147.123.146
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712024806; cv=none; b=VjJ2o1bt30UgP8694P0fstSqlvYwmcF71u33b6wLzIl92RLx2rE5rwEg7/JPvxI4dVYF7AnRRVRD+IQjst7EMeFq4NrePTok1Gp1/3junwNW/D4blo/6RoA+SVIo6wRhgLrTWeKNStiGENtFTHoKKVEp7ktBs1QBOpLR9Y18oOc=
+	t=1712024811; cv=none; b=Bl5dBv2A6TMKzg6UqgvIskKrMY1tUQn/CPIDRo12MszwFGfootjKZ9H7jagQ70kQT5u9jhiug7NFQbMf45djoKUA/VBf55gxJ2eBm2OeGPUbumNCSppR20ARFX5iyrLa1MoGNG3a38Q+0onlMZjvNZTTAJ90LIpRx48Aq35hj3I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712024806; c=relaxed/simple;
-	bh=+nJ1i4zjhw6QYZq9p+edmZbpJx6SUFFReBlnsuUMOXk=;
+	s=arc-20240116; t=1712024811; c=relaxed/simple;
+	bh=DpU+90yzllWC8NY3lXLp9lfHmboCaJNtCEDWV7RIZnw=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=FfXszV85MivtvJX0qfGnTkyLwaF7/08pL+s60viWZDzYHnOPwn6DBPl9LM9MbcQy8XPIB7EYBNSfAW2bOJDEZVY1NHiTRYwOIrsHGBnqspdd+vTIzaiDoP6o5AYY/jcKzqxtqq7FWdeE4xonciXV9AddrNPprvJsaCm9PhZr2rU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ljones.dev; spf=none smtp.mailfrom=ljones.dev; dkim=pass (2048-bit key) header.d=ljones.dev header.i=@ljones.dev header.b=jFTKq/Tz; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=wUmjbMvL; arc=none smtp.client-ip=64.147.123.146
+	 MIME-Version; b=Z4e29M4Mjw2H2Pkaq7frg6Nuf98MWOJ7/3V1MC5B79UCMZ4R0oBXTZs1r0/RM9JMXYyZsGsoAZLhKsh12ehRb7gDPxx/uS+92BMCJtPHyk36SnPwkIjQHZ4d4acQezDV+hJ41SxA4iHofe+ZcNA6yE7KxTsYGpyPZdi7U7Itljg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ljones.dev; spf=none smtp.mailfrom=ljones.dev; dkim=pass (2048-bit key) header.d=ljones.dev header.i=@ljones.dev header.b=L9GGML5O; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=g4ZqQrS4; arc=none smtp.client-ip=64.147.123.146
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ljones.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=ljones.dev
-Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
-	by mailfout.west.internal (Postfix) with ESMTP id C52CF1C000CC;
-	Mon,  1 Apr 2024 22:26:43 -0400 (EDT)
+Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
+	by mailfout.west.internal (Postfix) with ESMTP id 5C5561C000CC;
+	Mon,  1 Apr 2024 22:26:48 -0400 (EDT)
 Received: from mailfrontend2 ([10.202.2.163])
-  by compute3.internal (MEProxy); Mon, 01 Apr 2024 22:26:44 -0400
+  by compute1.internal (MEProxy); Mon, 01 Apr 2024 22:26:48 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ljones.dev; h=cc
 	:cc:content-transfer-encoding:content-type:date:date:from:from
 	:in-reply-to:in-reply-to:message-id:mime-version:references
-	:reply-to:subject:subject:to:to; s=fm3; t=1712024803; x=
-	1712111203; bh=341GqYNK58gKj+Y+aZKsOtylg69391aSNxN3HwJLYqw=; b=j
-	FTKq/TzUhPo+lRB0gcwn6iedHIHXrxIo8vwddX3btt2qZEQJTcHZQVWUSjTNygaH
-	S5GbxcwJn/Wo8GH1OrvqqS9wPRDbkqXTXCBniwl1B5OgOyn8dBdNd2a+sVkLTdUw
-	4lMqSDm/1C+zDkhTWyqKVLhRaI8Tj4yipvs5Q3QfryQCiwR9YnPAO3DaZeb23Cxm
-	3PuGtKO9xkVHRIkj8AJij21GD4e5N4mbiRcxfaGrn5+izFrbn3nzfjxquU5/XJAZ
-	+gF46/bqwmxYOzPg0IQG6tM0GH7V3ouuHQwYFlrtYMl4CGwsD966YM9X+gXgEMfm
-	vwkL7/7LKlj8heoHt37hQ==
+	:reply-to:subject:subject:to:to; s=fm3; t=1712024807; x=
+	1712111207; bh=EJJ/s7hSFzUoPuPOGWvFkDGMhyLn0Akl3eFtGSVwkcU=; b=L
+	9GGML5Odgd1DJJCPXJOIwmM9bwWHPF5rciuQefl424MIws360A/rqm/yaSkMRfri
+	QezjMzAzo86LbO3Xl1zxywFolnhv09vzCCCUNed9n0vHy/5UvBq/fdkqvO1amExs
+	UOoBJB2IEjj2KmWpXV3+Yjmw3tgdA4jUHj0IXakWDGTs7nq3+oizvbK20BX7fBKd
+	5Siomc+xxfQ94HCuMcrmYZOqSZI7y/BL6DFL30e2VH46Jdm6wxyhvtCpP9WWeQ/k
+	EIqsM41dSjWEJbplkQqBTwxs5Pop0Z5nQhbCvGERFhSmmUQEZFVjvIyHbMIqMxz1
+	9VyWRKqMzZYwues14G6pg==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
 	messagingengine.com; h=cc:cc:content-transfer-encoding
 	:content-type:date:date:feedback-id:feedback-id:from:from
 	:in-reply-to:in-reply-to:message-id:mime-version:references
 	:reply-to:subject:subject:to:to:x-me-proxy:x-me-proxy
-	:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; t=1712024803; x=
-	1712111203; bh=341GqYNK58gKj+Y+aZKsOtylg69391aSNxN3HwJLYqw=; b=w
-	UmjbMvLJSTQu2PS8qbOrpN6c2ytiZFlvBNB/qPPklPl6ywKj2Q9ETrSenrhDvZsi
-	9Mnp5GqKYZNqHzoxqOZTOp+gYYIoTc6gv4jLOCYCI+0awHV3Bzgv8YWU0DURgvRB
-	9geAqVU6GI27T4ZAIeFTwyJK11wx9Hqqnk09lDw/IvIU8wLNzvYb1F5K6Nq7tsTy
-	VNSi70NgeNwkhMzyd+ykMaODm1cWimV/33itjPCY9vGfWR39fsrqMF2NcxIv9Fx8
-	QtyvRUmVsIPPTaH4r3DZ5GHcYtgHxbONmpcBgg6J2MfInhEXtNEkpluzSQm1sSJ/
-	O+RVB9yMKys3+F9mpT3MQ==
-X-ME-Sender: <xms:42wLZgXfKBEkk2ZM62_BLzanIdgotzo0631sRpsMDfsNgWvWLC1pDA>
-    <xme:42wLZkmPVz1uGE-RyEfOEOyabWHKeUKBYrxiFFpiIrcytdC9wg7_YKqbbpvFjgkwI
-    k2QHJk-Kk4oWq1VpLA>
-X-ME-Received: <xmr:42wLZkbwryUKIOZlQfuGRwrZocj49qHIxQ4oxyQQRH7HoRgrnpb1cdaM1v9c>
+	:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; t=1712024807; x=
+	1712111207; bh=EJJ/s7hSFzUoPuPOGWvFkDGMhyLn0Akl3eFtGSVwkcU=; b=g
+	4ZqQrS47WlPdmwD50wT79tbEBQliHeAB3XgrWbZLH2e9ClqXVy/6XRiXyEv+BqYp
+	BZjdznbw5ToxeyiSwZAcr/+Xdmeyy5rnh/MN0pvLFm9bmL/jZPVRFBTsugOKgTQP
+	uxO1Eht+PYEVIGA+grK1eAMaXY//J16whGLy+0W3qcIIVcSwhTdd/0bqjRG4oL38
+	7Kq7Zf6sEQAI10HyyCILGcsJwYc5nsSYGvBVUu1duEGipvxJv9isqUWM259rTw/+
+	JaPoqt3KOqY0NUVvquyTuYYL1EalMz4sBdwy6LTIkbjsAnkZQdHEi1qU6kVPu5Lr
+	BjZk0qi33Qnaf+fXkbwFQ==
+X-ME-Sender: <xms:52wLZm025OFe6_M___rfmP-2XwqkzzzOwf11bswY3ufPMpnbctj6kg>
+    <xme:52wLZpE2gzEZA5DNIq-lP1iBsfvosmbRU4oZ5Fm3HGPcAef_2dwnj1WO_jhPZD9sY
+    CnKpEdZ7n86cyXmAXc>
+X-ME-Received: <xmr:52wLZu7Z8PpIJR5QFk8KSag7wbDgYI634ISUR6i93ZJ6oOXEpzrHxZO44xIy>
 X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrudefuddgheekucetufdoteggodetrfdotf
     fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
     uceurghilhhouhhtmecufedttdenucenucfjughrpefhvfevufffkffojghfggfgsedtke
@@ -71,14 +71,14 @@ X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrudefuddgheekucetufdoteggod
     jhhonhgvshdruggvvheqnecuggftrfgrthhtvghrnhepgfetfedugfetudeuheetjefhue
     fggfelleetvdevtefhueeujeefvdegleevhefgnecuvehluhhsthgvrhfuihiivgeptden
     ucfrrghrrghmpehmrghilhhfrhhomheplhhukhgvsehljhhonhgvshdruggvvh
-X-ME-Proxy: <xmx:42wLZvWdM5fSt8i8t-QbQt1wXScBOBtophiukJ1tlWJS6L8PalTpvg>
-    <xmx:42wLZqkjBBGzDVTn29BD1raexaQ17aF4QvMMkuCnwRrGKebe7JzDpw>
-    <xmx:42wLZkehf-W-i9h9-_ytUG50HgQMKDyooSA4gj7Ij1Kj8zYd4doKWg>
-    <xmx:42wLZsEGTxT44W1XHRSFe3MUZw6jbJfXOkWUmpCPQVs2-nkjFFXF5A>
-    <xmx:42wLZoYP0EZEzqkzYNitMEMKgd_nT2oyaRenXrQJz07c3EaGmjGrQ64vY0I>
+X-ME-Proxy: <xmx:52wLZn0KpMxnXQW9Jxmz1VAzdraKOGd7_ZnrtRDVSOfIYtwHemTtGw>
+    <xmx:52wLZpGJxNAudiF7n97fAJdcWlTY8vf-0b92olTIn9kgEQxSsvBZTg>
+    <xmx:52wLZg912Yf-uhLxwdg9mj5Z_uSiZLe9uPNTqORc8CJCZ4GqdvMQJg>
+    <xmx:52wLZuniM5VXBy77utBjX_t2jcmOBU6uIW6h-SvM7TPJKddFY7zDkA>
+    <xmx:52wLZu4QMFjT5vAFeglR13ifdupSll-ehBorPbFi5yxymLZoC0qJwvoG>
 Feedback-ID: i5ec1447f:Fastmail
 Received: by mail.messagingengine.com (Postfix) with ESMTPA; Mon,
- 1 Apr 2024 22:26:40 -0400 (EDT)
+ 1 Apr 2024 22:26:44 -0400 (EDT)
 From: "Luke D. Jones" <luke@ljones.dev>
 To: hdegoede@redhat.com
 Cc: corentin.chary@gmail.com,
@@ -86,9 +86,9 @@ Cc: corentin.chary@gmail.com,
 	platform-driver-x86@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
 	"Luke D. Jones" <luke@ljones.dev>
-Subject: [PATCH v2 6/9] platform/x86: asus-wmi: adjust formatting of ppt-<name>() functions
-Date: Tue,  2 Apr 2024 15:26:04 +1300
-Message-ID: <20240402022607.34625-7-luke@ljones.dev>
+Subject: [PATCH v2 7/9] platform/x86: asus-wmi: ROG Ally increase wait time, allow MCU powersave
+Date: Tue,  2 Apr 2024 15:26:05 +1300
+Message-ID: <20240402022607.34625-8-luke@ljones.dev>
 X-Mailer: git-send-email 2.44.0
 In-Reply-To: <20240402022607.34625-1-luke@ljones.dev>
 References: <20240402022607.34625-1-luke@ljones.dev>
@@ -100,109 +100,66 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Shift the call to dev_get_drvdata() up to top of the function block
-in all of the ppt_<name>() functions as part of a minor cleanup.
+The previous work to allow the MCU to be resumed correctly after sleep
+and resume tried to take the shortest possible time. However as work
+continues in various other parts of the s2idle subsystems it has shown
+that it wasn't entirely reliable.
+
+If the MCU disable/enable call is done correctly the MCU fully removes
+its USB endpoints, and this shows as a full USB device reconnection on
+resume. When we tried to short this as much as possible sometimes the
+MCU doesn't get to complete what it needs to do before going to low-power
+and this affected the reconnection.
+
+Through trial it is found that the minimum time required is approx 1200ms
+to allow a proper disconnect and disable, and the same amount of time on
+resume is required to prevent a rapid disconnect/reconnect happening on
+seemingly random occasions. To be safe the time is now 1500ms for msleep.
 
 Signed-off-by: Luke D. Jones <luke@ljones.dev>
 ---
- drivers/platform/x86/asus-wmi.c | 21 +++++++--------------
- 1 file changed, 7 insertions(+), 14 deletions(-)
+ drivers/platform/x86/asus-wmi.c | 12 ++----------
+ 1 file changed, 2 insertions(+), 10 deletions(-)
 
 diff --git a/drivers/platform/x86/asus-wmi.c b/drivers/platform/x86/asus-wmi.c
-index c80afa385532..1743ff1eb0ac 100644
+index 1743ff1eb0ac..ddf568ef8c5e 100644
 --- a/drivers/platform/x86/asus-wmi.c
 +++ b/drivers/platform/x86/asus-wmi.c
-@@ -997,11 +997,10 @@ static ssize_t ppt_pl2_sppt_store(struct device *dev,
- 				    struct device_attribute *attr,
- 				    const char *buf, size_t count)
- {
-+	struct asus_wmi *asus = dev_get_drvdata(dev);
- 	int result, err;
- 	u32 value;
+@@ -129,7 +129,7 @@ module_param(fnlock_default, bool, 0444);
+ /* Controls the power state of the USB0 hub on ROG Ally which input is on */
+ #define ASUS_USB0_PWR_EC0_CSEE "\\_SB.PCI0.SBRG.EC0.CSEE"
+ /* 300ms so far seems to produce a reliable result on AC and battery */
+-#define ASUS_USB0_PWR_EC0_CSEE_WAIT 300
++#define ASUS_USB0_PWR_EC0_CSEE_WAIT 1500
  
--	struct asus_wmi *asus = dev_get_drvdata(dev);
--
- 	result = kstrtou32(buf, 10, &value);
- 	if (result)
- 		return result;
-@@ -1041,11 +1040,10 @@ static ssize_t ppt_pl1_spl_store(struct device *dev,
- 				    struct device_attribute *attr,
- 				    const char *buf, size_t count)
- {
-+	struct asus_wmi *asus = dev_get_drvdata(dev);
- 	int result, err;
- 	u32 value;
+ static const char * const ashs_ids[] = { "ATK4001", "ATK4002", NULL };
  
--	struct asus_wmi *asus = dev_get_drvdata(dev);
--
- 	result = kstrtou32(buf, 10, &value);
- 	if (result)
- 		return result;
-@@ -1084,11 +1082,10 @@ static ssize_t ppt_fppt_store(struct device *dev,
- 				    struct device_attribute *attr,
- 				    const char *buf, size_t count)
- {
-+	struct asus_wmi *asus = dev_get_drvdata(dev);
- 	int result, err;
- 	u32 value;
+@@ -4811,6 +4811,7 @@ static int asus_hotk_resume_early(struct device *device)
+ 	struct asus_wmi *asus = dev_get_drvdata(device);
  
--	struct asus_wmi *asus = dev_get_drvdata(dev);
--
- 	result = kstrtou32(buf, 10, &value);
- 	if (result)
- 		return result;
-@@ -1128,11 +1125,10 @@ static ssize_t ppt_apu_sppt_store(struct device *dev,
- 				    struct device_attribute *attr,
- 				    const char *buf, size_t count)
+ 	if (asus->ally_mcu_usb_switch) {
++		/* sleep required to prevent USB0 being yanked then reappearing rapidly */
+ 		if (ACPI_FAILURE(acpi_execute_simple_method(NULL, ASUS_USB0_PWR_EC0_CSEE, 0xB8)))
+ 			dev_err(device, "ROG Ally MCU failed to connect USB dev\n");
+ 		else
+@@ -4822,17 +4823,8 @@ static int asus_hotk_resume_early(struct device *device)
+ static int asus_hotk_prepare(struct device *device)
  {
-+	struct asus_wmi *asus = dev_get_drvdata(dev);
- 	int result, err;
- 	u32 value;
+ 	struct asus_wmi *asus = dev_get_drvdata(device);
+-	int result, err;
  
--	struct asus_wmi *asus = dev_get_drvdata(dev);
--
- 	result = kstrtou32(buf, 10, &value);
- 	if (result)
- 		return result;
-@@ -1172,11 +1168,10 @@ static ssize_t ppt_platform_sppt_store(struct device *dev,
- 				    struct device_attribute *attr,
- 				    const char *buf, size_t count)
- {
-+	struct asus_wmi *asus = dev_get_drvdata(dev);
- 	int result, err;
- 	u32 value;
- 
--	struct asus_wmi *asus = dev_get_drvdata(dev);
--
- 	result = kstrtou32(buf, 10, &value);
- 	if (result)
- 		return result;
-@@ -1216,11 +1211,10 @@ static ssize_t nv_dynamic_boost_store(struct device *dev,
- 				    struct device_attribute *attr,
- 				    const char *buf, size_t count)
- {
-+	struct asus_wmi *asus = dev_get_drvdata(dev);
- 	int result, err;
- 	u32 value;
- 
--	struct asus_wmi *asus = dev_get_drvdata(dev);
--
- 	result = kstrtou32(buf, 10, &value);
- 	if (result)
- 		return result;
-@@ -1260,11 +1254,10 @@ static ssize_t nv_temp_target_store(struct device *dev,
- 				    struct device_attribute *attr,
- 				    const char *buf, size_t count)
- {
-+	struct asus_wmi *asus = dev_get_drvdata(dev);
- 	int result, err;
- 	u32 value;
- 
--	struct asus_wmi *asus = dev_get_drvdata(dev);
--
- 	result = kstrtou32(buf, 10, &value);
- 	if (result)
- 		return result;
+ 	if (asus->ally_mcu_usb_switch) {
+-		/* When powersave is enabled it causes many issues with resume of USB hub */
+-		result = asus_wmi_get_devstate_simple(asus, ASUS_WMI_DEVID_MCU_POWERSAVE);
+-		if (result == 1) {
+-			dev_warn(device, "MCU powersave enabled, disabling to prevent resume issues");
+-			err = asus_wmi_set_devstate(ASUS_WMI_DEVID_MCU_POWERSAVE, 0, &result);
+-			if (err || result != 1)
+-				dev_err(device, "Failed to set MCU powersave mode: %d\n", err);
+-		}
+ 		/* sleep required to ensure USB0 is disabled before sleep continues */
+ 		if (ACPI_FAILURE(acpi_execute_simple_method(NULL, ASUS_USB0_PWR_EC0_CSEE, 0xB7)))
+ 			dev_err(device, "ROG Ally MCU failed to disconnect USB dev\n");
 -- 
 2.44.0
 
