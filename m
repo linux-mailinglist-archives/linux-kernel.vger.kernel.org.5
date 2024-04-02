@@ -1,33 +1,33 @@
-Return-Path: <linux-kernel+bounces-127375-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-127376-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 44F49894A73
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 06:27:48 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0BFFA894A74
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 06:27:59 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 57CD61C222E7
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 04:27:42 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 91DA81F204C3
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 04:27:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F3EA018AE0;
-	Tue,  2 Apr 2024 04:27:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0DF7D1F94B;
+	Tue,  2 Apr 2024 04:27:14 +0000 (UTC)
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 89E62182C3
-	for <linux-kernel@vger.kernel.org>; Tue,  2 Apr 2024 04:27:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 98AA71C292
+	for <linux-kernel@vger.kernel.org>; Tue,  2 Apr 2024 04:27:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712032032; cv=none; b=VUbBzyv9tSMm8Mw0SVH6CZrT0oydF/lWfO7NNtsKIDnB4WsRx5vQqulG8jdkcnFYJ41v2m/uhRjwv1kbomOH3VVZJV4r46STvaQxJ1hlCVvJVdbqhFKiItrUgrghJAWxOF4x4zTSXAq1HjXe2Gmt8+sFP0su2dQr4gEbK0pgfY8=
+	t=1712032033; cv=none; b=Qy8yVpQDzNl9tJWbBQ9O7l2rJXNqBcJ6BRlnHgfAyL2ANrjH6PpaylET1siI0F07Amvg1nivnSGb+qSrd8iFoz/sluJPF/PGGX1aQQ4WiH5l3/J0GDk8zWmmi6D+ZKES75LobS/bbXKigLcca9tkImMm8LtuIYgOPrq7XDuk7WU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712032032; c=relaxed/simple;
-	bh=tg20vIYtQAbEjR/CpCzmgPfaaRyjY/cpsAH8T7IzX6o=;
+	s=arc-20240116; t=1712032033; c=relaxed/simple;
+	bh=RihDwvO58suRgQreoRv3uBrOoU2Kph2MBTIP+ZUHIpg=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=OpACuU0lGYdaMhmt2qvskKPC7Rljl14+GQOx2oryapghRJpPegwAtLPNVzd4KHvZt3/ohcuEtbo6s/6fnut7fuGQvR8pboGBZlXdesawyfxDpQWnoS4N/DqQIE/ZrjL6uoVWweczZXjJT+LUadd5toeJZGGYaListl/TsUry8TQ=
+	 MIME-Version; b=aZlS2FDIfa0AtTtx3JHfczxmNzVgrBUD40RgKdRt8yudkkF7Q9SSb220UybwQ1rAfeyKVo4it//EESV1RQ2W2k/e4/5IBQQ9K0DfvTAz2byAeqg8tzwkH9gOzhnPNaBKSRSV2kQ84LLiDAYzbJBsblLzZwSjdrHzrOM2YCDg5hk=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B7F6CC43399;
-	Tue,  2 Apr 2024 04:27:11 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 98CC1C43394;
+	Tue,  2 Apr 2024 04:27:12 +0000 (UTC)
 From: Al Viro <viro@zeniv.linux.org.uk>
 To: "Paul E. McKenney" <paulmck@kernel.org>
 Cc: linux-kernel@vger.kernel.org,
@@ -37,9 +37,9 @@ Cc: linux-kernel@vger.kernel.org,
 	Palmer Dabbelt <palmer@rivosinc.com>,
 	Arnd Bergmann <arnd@arndb.de>,
 	Marco Elver <elver@google.com>
-Subject: [PATCH 4/8] sparc32: add __cmpxchg_u{8,16}() and teach __cmpxchg() to handle those sizes
-Date: Tue,  2 Apr 2024 00:28:31 -0400
-Message-Id: <20240402042835.11815-4-viro@zeniv.linux.org.uk>
+Subject: [PATCH 5/8] parisc: __cmpxchg_u32(): lift conversion into the callers
+Date: Tue,  2 Apr 2024 00:28:32 -0400
+Message-Id: <20240402042835.11815-5-viro@zeniv.linux.org.uk>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20240402042835.11815-1-viro@zeniv.linux.org.uk>
 References: <20240402041138.GF538574@ZenIV>
@@ -52,56 +52,56 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-trivial now
+__cmpxchg_u32() return value is unsigned int explicitly cast to
+unsigned long.  Both callers are returns from functions that
+return unsigned long; might as well return have __cmpxchg_u32()
+return that unsigned int (aka u32) and let the callers convert
+implicitly.
 
 Signed-off-by: Al Viro <viro@zeniv.linux.org.uk>
 ---
- arch/sparc/include/asm/cmpxchg_32.h | 7 ++++++-
- arch/sparc/lib/atomic32.c           | 4 ++++
- 2 files changed, 10 insertions(+), 1 deletion(-)
+ arch/parisc/include/asm/cmpxchg.h | 3 +--
+ arch/parisc/lib/bitops.c          | 6 +++---
+ 2 files changed, 4 insertions(+), 5 deletions(-)
 
-diff --git a/arch/sparc/include/asm/cmpxchg_32.h b/arch/sparc/include/asm/cmpxchg_32.h
-index 86254c366477..1324984de36a 100644
---- a/arch/sparc/include/asm/cmpxchg_32.h
-+++ b/arch/sparc/include/asm/cmpxchg_32.h
-@@ -38,7 +38,8 @@ static __always_inline unsigned long __arch_xchg(unsigned long x, __volatile__ v
+diff --git a/arch/parisc/include/asm/cmpxchg.h b/arch/parisc/include/asm/cmpxchg.h
+index c1d776bb16b4..0924ebc576d2 100644
+--- a/arch/parisc/include/asm/cmpxchg.h
++++ b/arch/parisc/include/asm/cmpxchg.h
+@@ -57,8 +57,7 @@ __arch_xchg(unsigned long x, volatile void *ptr, int size)
+ extern void __cmpxchg_called_with_bad_pointer(void);
  
- /* bug catcher for when unsupported size is used - won't link */
- void __cmpxchg_called_with_bad_pointer(void);
--/* we only need to support cmpxchg of a u32 on sparc */
-+u8 __cmpxchg_u8(volatile u8 *m, u8 old, u8 new_);
-+u16 __cmpxchg_u16(volatile u16 *m, u16 old, u16 new_);
- u32 __cmpxchg_u32(volatile u32 *m, u32 old, u32 new_);
+ /* __cmpxchg_u32/u64 defined in arch/parisc/lib/bitops.c */
+-extern unsigned long __cmpxchg_u32(volatile unsigned int *m, unsigned int old,
+-				   unsigned int new_);
++extern u32 __cmpxchg_u32(volatile u32 *m, u32 old, u32 new_);
+ extern u64 __cmpxchg_u64(volatile u64 *ptr, u64 old, u64 new_);
+ extern u8 __cmpxchg_u8(volatile u8 *ptr, u8 old, u8 new_);
  
- /* don't worry...optimizer will get rid of most of this */
-@@ -46,6 +47,10 @@ static inline unsigned long
- __cmpxchg(volatile void *ptr, unsigned long old, unsigned long new_, int size)
+diff --git a/arch/parisc/lib/bitops.c b/arch/parisc/lib/bitops.c
+index 36a314199074..ae2231d92198 100644
+--- a/arch/parisc/lib/bitops.c
++++ b/arch/parisc/lib/bitops.c
+@@ -68,16 +68,16 @@ u64 notrace __cmpxchg_u64(volatile u64 *ptr, u64 old, u64 new)
+ 	return prev;
+ }
+ 
+-unsigned long notrace __cmpxchg_u32(volatile unsigned int *ptr, unsigned int old, unsigned int new)
++u32 notrace __cmpxchg_u32(volatile u32 *ptr, u32 old, u32 new)
  {
- 	switch (size) {
-+	case 1:
-+		return __cmpxchg_u8((u8 *)ptr, (u8)old, (u8)new_);
-+	case 2:
-+		return __cmpxchg_u16((u16 *)ptr, (u16)old, (u16)new_);
- 	case 4:
- 		return __cmpxchg_u32((u32 *)ptr, (u32)old, (u32)new_);
- 	default:
-diff --git a/arch/sparc/lib/atomic32.c b/arch/sparc/lib/atomic32.c
-index 0d215a772428..8ae880ebf07a 100644
---- a/arch/sparc/lib/atomic32.c
-+++ b/arch/sparc/lib/atomic32.c
-@@ -173,8 +173,12 @@ EXPORT_SYMBOL(sp32___change_bit);
- 		return prev;					\
- 	}
+ 	unsigned long flags;
+-	unsigned int prev;
++	u32 prev;
  
-+CMPXCHG(u8)
-+CMPXCHG(u16)
- CMPXCHG(u32)
- CMPXCHG(u64)
-+EXPORT_SYMBOL(__cmpxchg_u8);
-+EXPORT_SYMBOL(__cmpxchg_u16);
- EXPORT_SYMBOL(__cmpxchg_u32);
- EXPORT_SYMBOL(__cmpxchg_u64);
+ 	_atomic_spin_lock_irqsave(ptr, flags);
+ 	if ((prev = *ptr) == old)
+ 		*ptr = new;
+ 	_atomic_spin_unlock_irqrestore(ptr, flags);
+-	return (unsigned long)prev;
++	return prev;
+ }
  
+ u8 notrace __cmpxchg_u8(volatile u8 *ptr, u8 old, u8 new)
 -- 
 2.39.2
 
