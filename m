@@ -1,164 +1,138 @@
-Return-Path: <linux-kernel+bounces-128415-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-128416-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 08A8D895A8A
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 19:20:37 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 99973895A87
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 19:18:39 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7FB64B244F4
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 17:16:53 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3A1B71F2291C
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 17:18:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EEE3A15A498;
-	Tue,  2 Apr 2024 17:16:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4BD4215A490;
+	Tue,  2 Apr 2024 17:18:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="HyDNeoUo"
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=hugovil.com header.i=@hugovil.com header.b="tyoLoxlb"
+Received: from mail.hugovil.com (mail.hugovil.com [162.243.120.170])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 64E4015990F;
-	Tue,  2 Apr 2024 17:16:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4A9AA15990F;
+	Tue,  2 Apr 2024 17:18:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=162.243.120.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712078202; cv=none; b=KBe1BNEs+p8Utt7UMOp8o9wKunXLsxXXxMrtGtd2FNt1aIKwA6f4exP1Qv4QYg6/ZlpVQuMabfVUeqOBEgcwGvTld5ImhVXtMntLTODt75gEObO7YagF/ILl8UUcRnCAopMtNaeMZcOmi375UiyKXu6oauNh5x/f5IHIaTSFF4w=
+	t=1712078312; cv=none; b=CQbo5f0Nx61YOIXJbWp3EaTO1aQxWnQNd88ahhHeLmC9qJSFgi9gAxO5yg9V7eFeUE6lA1BzfRe4DuOK7stVjDTAt7KxnBcX6BCvb/EDhfPJBON7owD+VAIGv72CL03DUI6BOte0q0EHd7fZYSuZgpKBvvcwR/0U7UM2ymgCbdw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712078202; c=relaxed/simple;
-	bh=pP519wusPUAXRys+Pm1fP6WiHUMTu+p8h8uiy+wJCy0=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=mhN2ioAM1ciUs4CDbPC5zygsxd3URYjQXuGoz17kk8MorneA35V05UY/BIZ0ItY+fpZQj54EL2Ax2oLat2m0BFIgLLiWIlwHrlyU8pZauhRg9Dp8qFU5nEd2lv9Cdc+G1L2DMVuPX1L9A2fE6KFjj7IE8IRY4zvlK9pljnRBMu4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=HyDNeoUo; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [10.150.64.98])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 8637B34934;
-	Tue,  2 Apr 2024 17:16:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1712078198; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=pP519wusPUAXRys+Pm1fP6WiHUMTu+p8h8uiy+wJCy0=;
-	b=HyDNeoUoZJkyHWwJ8XCspPVKQE0grsOAe6fIzOJfL6spCvd8yGbYzAefLUZLCRHZcjQuWZ
-	P21owtoIlNmvKSzoFThdyX2PRKtb7ph/zuDKnK7aTsZtPYc5WbgwGy/kozkVocQijFMnGr
-	KxxnZHv5eGwVoSboBVG4imEzEAx39Mk=
-Authentication-Results: smtp-out1.suse.de;
-	none
-Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id 7240F13357;
-	Tue,  2 Apr 2024 17:16:38 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap2.dmz-prg2.suse.org with ESMTPSA
-	id vLDAG3Y9DGZiIgAAn2gu4w
-	(envelope-from <mkoutny@suse.com>); Tue, 02 Apr 2024 17:16:38 +0000
-Date: Tue, 2 Apr 2024 19:16:29 +0200
-From: Michal =?utf-8?Q?Koutn=C3=BD?= <mkoutny@suse.com>
-To: Djalal Harouni <tixxdz@gmail.com>
-Cc: Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>, 
-	Johannes Weiner <hannes@cmpxchg.org>, Alexei Starovoitov <ast@kernel.org>, 
-	Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, 
-	Martin KaFai Lau <martin.lau@linux.dev>, Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
-	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, 
-	Jiri Olsa <jolsa@kernel.org>, Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>, 
-	linux-kernel@vger.kernel.org, cgroups@vger.kernel.org, bpf@vger.kernel.org, 
-	linux-kselftest@vger.kernel.org
-Subject: Re: [RFC PATCH bpf-next 0/3] bpf: freeze a task cgroup from bpf
-Message-ID: <ex2uipr54lb2odxwzwp22ycvlwplsy4mm3shx26hczo3mjtkvz@uuzyk6535prw>
-References: <20240327-ccb56fc7a6e80136db80876c@djalal>
- <20240327225334.58474-1-tixxdz@gmail.com>
+	s=arc-20240116; t=1712078312; c=relaxed/simple;
+	bh=gnyauasBEVKJlgRTyusXcYoUHHL80G7u43VYIjNqww0=;
+	h=Date:From:To:Cc:Message-Id:In-Reply-To:References:Mime-Version:
+	 Content-Type:Subject; b=XF4k5H2qMm+koF9eqRjEtdzSWfeUBu6qZPWj3vs4lawWij0hh3LC40LihdMXOzqrHG3K4DiukiEqlEMZ/vEE9pzV+Dm6sSiHcXCe91pN/mww/RJ95YQ8WpEyJ46PKBwVByRLDCemiQsUoTBjdx9nZ4whH+yPnx0YsHLLWDwNWAo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=hugovil.com; spf=pass smtp.mailfrom=hugovil.com; dkim=pass (1024-bit key) header.d=hugovil.com header.i=@hugovil.com header.b=tyoLoxlb; arc=none smtp.client-ip=162.243.120.170
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=hugovil.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=hugovil.com
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=hugovil.com
+	; s=x; h=Subject:Content-Transfer-Encoding:Mime-Version:Message-Id:Cc:To:From
+	:Date:subject:date:message-id:reply-to;
+	bh=yoiHiwETSu1iBvC11FxmDWnqf+yKtnHBsQkfmlSTe60=; b=tyoLoxlb0t/sgZZtHdClz6E2YM
+	FSy85kwC28U/ZhFvr/e+rhjRiTqEpR/wIk7XpfEJFZfwUmhcxOdgd0yoMHeSi5pcv3MSaz8edrF/g
+	85DjJZP6mRYNl6bnTVve4q2hm3h8GfUZTMbQs1IQYFqJWZn4it3DazmVc/zNsXTQyeRs=;
+Received: from modemcable168.174-80-70.mc.videotron.ca ([70.80.174.168]:44634 helo=pettiford)
+	by mail.hugovil.com with esmtpa (Exim 4.92)
+	(envelope-from <hugo@hugovil.com>)
+	id 1rrhmF-0007UU-Ov; Tue, 02 Apr 2024 13:18:28 -0400
+Date: Tue, 2 Apr 2024 13:18:27 -0400
+From: Hugo Villeneuve <hugo@hugovil.com>
+To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org, Jiri Slaby
+ <jirislaby@kernel.org>
+Message-Id: <20240402131827.fdc429dfb6f62db4d291688f@hugovil.com>
+In-Reply-To: <20240402154219.3583679-3-andriy.shevchenko@linux.intel.com>
+References: <20240402154219.3583679-1-andriy.shevchenko@linux.intel.com>
+	<20240402154219.3583679-3-andriy.shevchenko@linux.intel.com>
+X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="jy46jtmbnpyw2njk"
-Content-Disposition: inline
-In-Reply-To: <20240327225334.58474-1-tixxdz@gmail.com>
-X-Spam-Score: -2.01
-X-Spamd-Result: default: False [-2.01 / 50.00];
-	 ARC_NA(0.00)[];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 BAYES_HAM(-0.62)[82.04%];
-	 FROM_HAS_DN(0.00)[];
-	 TO_DN_SOME(0.00)[];
-	 FREEMAIL_ENVRCPT(0.00)[gmail.com];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 TAGGED_RCPT(0.00)[];
-	 MIME_GOOD(-0.20)[multipart/signed,text/plain];
-	 NEURAL_HAM_LONG(-1.00)[-1.000];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 DKIM_SIGNED(0.00)[suse.com:s=susede1];
-	 NEURAL_HAM_SHORT(-0.19)[-0.971];
-	 RCPT_COUNT_TWELVE(0.00)[22];
-	 SIGNED_PGP(-2.00)[];
-	 FREEMAIL_TO(0.00)[gmail.com];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+,1:+,2:~];
-	 MID_RHS_NOT_FQDN(0.50)[];
-	 FREEMAIL_CC(0.00)[kernel.org,bytedance.com,cmpxchg.org,iogearbox.net,linux.dev,gmail.com,google.com,fb.com,vger.kernel.org];
-	 RCVD_TLS_ALL(0.00)[];
-	 SUSPICIOUS_RECIPS(1.50)[]
+Mime-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-SA-Exim-Connect-IP: 70.80.174.168
+X-SA-Exim-Mail-From: hugo@hugovil.com
 X-Spam-Level: 
-X-Spam-Flag: NO
+X-Spam-Report: 
+	* -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
+	* -0.4 NICE_REPLY_A Looks like a legit reply (A)
+Subject: Re: [PATCH v1 02/16] serial: max3100: Update uart_driver_registered
+ on driver removal
+X-SA-Exim-Version: 4.2.1 (built Wed, 08 May 2019 21:11:16 +0000)
+X-SA-Exim-Scanned: Yes (on mail.hugovil.com)
+
+On Tue,  2 Apr 2024 18:38:08 +0300
+Andy Shevchenko <andriy.shevchenko@linux.intel.com> wrote:
+
+Hi Andy,
+
+> The removal of the last MAX3100 device triggers the removal of
+> the driver. However, code doesn't update the respective global
+> variable and after insmod — rmmod — insmod cycle the kernel
+> oopses:
+> 
+>   max3100 spi-PRP0001:01: max3100_probe: adding port 0
+>   BUG: kernel NULL pointer dereference, address: 0000000000000408
+>   ...
+>   RIP: 0010:serial_core_register_port+0xa0/0x840
+>   ...
+>    max3100_probe+0x1b6/0x280 [max3100]
+>    spi_probe+0x8d/0xb0
+> 
+> Update the actual state so next time UART driver will be registered
+> again.
+> 
+> Fixes: 7831d56b0a35 ("tty: MAX3100")
+> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> ---
+>  drivers/tty/serial/max3100.c | 1 +
+>  1 file changed, 1 insertion(+)
+> 
+> diff --git a/drivers/tty/serial/max3100.c b/drivers/tty/serial/max3100.c
+> index 45022f2909f0..efe26f6d5ebf 100644
+> --- a/drivers/tty/serial/max3100.c
+> +++ b/drivers/tty/serial/max3100.c
+> @@ -841,6 +841,7 @@ static void max3100_remove(struct spi_device *spi)
+>  		}
+>  	pr_debug("removing max3100 driver\n");
+>  	uart_unregister_driver(&max3100_uart_driver);
+> +	uart_driver_registered = 0;
+
+At the beginning of the probe function, we have:
+
+-----------------------
+if (!uart_driver_registered) {
+		uart_driver_registered = 1;
+		retval = uart_register_driver(&max3100_uart_driver);
+		if (retval) {
+			printk(KERN_ERR "Couldn't register max3100 uart
+driver\n"); mutex_unlock(&max3100s_lock);
+			return retval;
+..
+-----------------------
+
+If uart_register_driver() fails, uart_driver_registered would still be
+true and would it prevent any other subsequent devices from being
+properly registered? If yes, then maybe "uart_driver_registered = 1"
+should be set only after a sucessfull call to uart_register_driver()?
+
+Hugo.
 
 
---jy46jtmbnpyw2njk
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-Hello.
-
-On Wed, Mar 27, 2024 at 11:53:22PM +0100, Djalal Harouni <tixxdz@gmail.com> wrote:
-> ...
-> For some cases we want to freeze the cgroup of a task based on some
-> signals, doing so from bpf is better than user space which could be
-> too late.
-
-Notice that freezer itself is not immediate -- tasks are frozen as if a
-signal (kill(2)) was delivered to them (i.e. returning to userspace).
-
-What kind of signals (also kill?) are you talking about for
-illustration?
-
-> Planned users of this feature are: tetragon and systemd when freezing
-> a cgroup hierarchy that could be a K8s pod, container, system service
-> or a user session.
-
-It sounds like the signals are related to a particular process. If so
-what is it good for to freeze unrelated processes in the same cgroup?
-
-I think those answers better clarify why this is needed.
-
-
-As for the generalization to any cgroup attribute (or kernfs). Can this
-be compared with sysctls -- I see there are helpers to intercept user
-writes but no helpers to affect sysctl values without an outer writer.
-What would justify different approaches between kernfs attributes and
-sysctls (direct writes vs modified writes)?
-
-
-Thanks,
-Michal
-
---jy46jtmbnpyw2njk
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYKAB0WIQQpEWyjXuwGT2dDBqAGvrMr/1gcjgUCZgw9awAKCRAGvrMr/1gc
-jkx3AP9q4yObx2ZVhnJrJtyuNXurHxN0CyA34JgyPMSJk2fz8wD/eQvPgsUzvuGS
-lms51KfenKpEwlwmmEfvlZSNXVAU1Qw=
-=rjUz
------END PGP SIGNATURE-----
-
---jy46jtmbnpyw2njk--
+>  
+>  	mutex_unlock(&max3100s_lock);
+>  }
+> -- 
+> 2.43.0.rc1.1.gbec44491f096
+> 
+> 
 
