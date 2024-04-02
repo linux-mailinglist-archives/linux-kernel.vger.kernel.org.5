@@ -1,69 +1,71 @@
-Return-Path: <linux-kernel+bounces-127234-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-127235-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9E893894867
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 02:18:35 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6A4DC89486A
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 02:18:44 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2B7CE1F21B36
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 00:18:35 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1DFF9285F1E
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 00:18:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 03816DDD8;
-	Tue,  2 Apr 2024 00:17:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 57381ECF;
+	Tue,  2 Apr 2024 00:17:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b="DppPx11t"
-Received: from mail-qv1-f47.google.com (mail-qv1-f47.google.com [209.85.219.47])
+	dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b="Nfd3Tfkm"
+Received: from mail-vs1-f48.google.com (mail-vs1-f48.google.com [209.85.217.48])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 305DEDF5C
-	for <linux-kernel@vger.kernel.org>; Tue,  2 Apr 2024 00:17:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7CC4CEAC7
+	for <linux-kernel@vger.kernel.org>; Tue,  2 Apr 2024 00:17:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.217.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712017065; cv=none; b=byPlUts0CvsekGeeQBT63ntLvlYsuwaDweTcZO8R9iBgEu6POHOiyS/E8S5dTnYe20gVwv08eXPXu690WdEtS9+J08F+bOs/P/RU0jDjY6+/NLhjV9DH5FTiE52VzXCFrGuKiYfc//hUk3drPTDPhbU0pmxDDJ3qHbF6qWcihuw=
+	t=1712017066; cv=none; b=LdHjsJufycW/9t+9LohbDP8ne6ApljZASL9Dm518t6xQjM5Zh3aYxeoOI2vmam29Rya2OlzI468I+ro7+Gx8nP5MQpBl6lHsDx0+prNDpWaJckFlyW7+JL0I9t4uLKQAKkTeLERaUWisUMLf0gfAtJHDjpCXBm921wDSvClnV8c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712017065; c=relaxed/simple;
-	bh=SCrDUhEkZxFSPTEl/r8bXpDqiMbz+gOCwj9dhEfB9cc=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=lkrlwfZ4pmgc9uKjp1vaFLbc4nagKURv8VPBUWlUw/KgL1PvnV3ju1wqAA9FezX7d3eg9gb1rCFgYuSo7E+pDP2bbRcVSxiabnCGRL+kx9LsxlvzkCnj+U5kLQLPXH6E8nkroYQn5Grh046B4Yweg3vd3asdpBJmV8L8TEEq8hA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com; spf=pass smtp.mailfrom=bytedance.com; dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b=DppPx11t; arc=none smtp.client-ip=209.85.219.47
+	s=arc-20240116; t=1712017066; c=relaxed/simple;
+	bh=vXOLrurzWw91h7eYCw90ZLDHh+I4uNd31lHySo7hGYw=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=TMX2AT1sBMSJCYo3R+YkalV4z2ZVJy9rcnQn67TQiqlC1S/bQ1iZ2PqMFmCKPozcwBtM3QkycorLhCTNSdxSd+b0qzCfMycAw4iEOSK8RZYS1HqGTehNT44RHG5QO2E9pNjZucvjn7mMZiz/087o1eJoh9nnS/ckUodk+bbSgnA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com; spf=pass smtp.mailfrom=bytedance.com; dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b=Nfd3Tfkm; arc=none smtp.client-ip=209.85.217.48
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bytedance.com
-Received: by mail-qv1-f47.google.com with SMTP id 6a1803df08f44-69185f093f5so32638026d6.3
-        for <linux-kernel@vger.kernel.org>; Mon, 01 Apr 2024 17:17:43 -0700 (PDT)
+Received: by mail-vs1-f48.google.com with SMTP id ada2fe7eead31-4766e56ccccso1744372137.0
+        for <linux-kernel@vger.kernel.org>; Mon, 01 Apr 2024 17:17:44 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance.com; s=google; t=1712017062; x=1712621862; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=gW68csmOvBMTYM9kf5jTmocSt+5Cfpv4k9wOl9BtKJ0=;
-        b=DppPx11t72+V7A0l0F9uCwbUMJ3EgBIJy3TQLpBd9vvlQv+TRQLQ+cAcXeZx/o7s6b
-         SpdDZN0dewMSrJgiP+uRfgBwC6AdKXuoFRIXbiRVZ56jVJPi99NmhXl2FPMRL9U5bC7O
-         vn3RiPH6D+vdVvYI6bfi/yNO7LDkLy32bzayH+mnZCHRbch1n9HcLl2+S6FS79P7ffo4
-         OiCYZD/GgO873tdhxuxut4OpJzbP5XKTMxW+VcnsFPTfuFKpWGyLFFTdbe0YoWwOoG5u
-         00OBm/n6OniAr1mgwdWr3h+5W0+SR7WdcR3zXGsAoPpDJ7ob8c4QypMbV10J712BSCNT
-         kMRQ==
+        d=bytedance.com; s=google; t=1712017063; x=1712621863; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=nM2K0D/X61aNkdsdtPeKZ1y9TeOUsh6nA3RvZQfcaBY=;
+        b=Nfd3Tfkm2/65kewYUQ4RHVUeH/I/YRMTnOTxB1AbadPlz3KP166fCe99/jg0SPD5uL
+         tkiypICy6t2Efl9iN5rwnzHqm5QiG0SZ64+YexNzbj2RsfIB1LQUtYH6r89/tebB9+3P
+         jWNVbtxJzXBBVfUx4QYrbv4rIQAIP0QAutmWxz81KK6Y8tn0s4UtuVL6qe47QofjgYWg
+         xWHKlH01GUis9x9vjLxfRWfkfym2bP/Xe8Ya5oltWh5tKm0++M2HJjq/88DfEdyA5STk
+         mi7gf2lErHjspC/YtFpN+B9rWirCywmtX3RqBg1W0TI8zWTbXu6OF1Ee6s5r+9FWmlUn
+         /k4Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712017062; x=1712621862;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=gW68csmOvBMTYM9kf5jTmocSt+5Cfpv4k9wOl9BtKJ0=;
-        b=eeMNX7iqHW8AFw18+Rxgg67EvP5ZqT+q5Igbh9K4ZpLoc0o/HgVYt2BKGTm32Mii89
-         JuksgG9gWKwrIFs27g4J6NFmIIdpc98TZe3mcFncn4DfAnIXMQFOiVddSFv69DXwI/5O
-         h/2ODodC2ZyFu3atSIW6E/RmPgTcDma2uT4ItXbHM4n61tS71xNhOcySTReh12n5rGNx
-         dndV/x0/shrQjMk+w2OBTXJEz6WzHkc/Gczes2Zv9Rua0gh/e0DkrbSTJi/Pg+6k3Ist
-         GrRxdIHKx7fcFOEEsVW5IzP/n9U4KSm4Ls2kot9yvbVWNfeH0Fm1rKF4WrtvOfA+ACuV
-         0RrA==
-X-Forwarded-Encrypted: i=1; AJvYcCVUf56a1kEyEMbL05ACW6aIfqRwivDWGdKaNWKag8luu+JrlOx/4ddr+f9bDn34Cis7LIc7ONobwS36l3GG/rwABrw5feHNyjpfb7xl
-X-Gm-Message-State: AOJu0YxhxmZmjp4w7OUavgTx5LmIq8acvSog3wK3vRAu0YHzUSqvLiQ+
-	SicPAT5HeNqHCWR8HhIoQUvlRAHsny4aClgYj5LIhnX7R3zamu/SzpncivLyat4=
-X-Google-Smtp-Source: AGHT+IHI1NovuRSzlyW3MYabIw0PVUmZGVgQf3UfVLAx8wFoGSl+V+dNtBDwUZKth1SSmnW9MKt4eA==
-X-Received: by 2002:a0c:f707:0:b0:699:bbd:7976 with SMTP id w7-20020a0cf707000000b006990bbd7976mr3538796qvn.22.1712017062196;
-        Mon, 01 Apr 2024 17:17:42 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1712017063; x=1712621863;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=nM2K0D/X61aNkdsdtPeKZ1y9TeOUsh6nA3RvZQfcaBY=;
+        b=WTi2BL8wl16l2dKB5yOnr+1qmOZ49SqBk8Lw7dnc4C4romv//j3pr2QJOoXWR09p3H
+         Pv3CbDsk8FwtAkEaYaNA5FPHCPhALP8nj8OCNd2qOEffyn2YrAOTD+7PmlR5r0ikmoGt
+         qO06JreWKQnLZcJ3qdowrNwlSUMYqfjkHEwYVdGShBD1SmIwP58oGUoTJnPJ2wBM0M4G
+         gV5ttIPIbcyJyjOxsmbYYVYHZMzva1UtAWZp+4pzPsM8e0bgza0gDe0myrmk1J6/eRfg
+         dUpkBAdkPbojWiIikQQToL1c1cRbf9Dc70UrYPpaHxZJRv6waVhErALcsXP4Sp8IPZ3o
+         7amA==
+X-Forwarded-Encrypted: i=1; AJvYcCUs3iQSGvvxUX7hMa/6MKA4LWJ/5yaB7USHyxgm+SE5RrZKloMzrq6ichc0DobIac4Rfx+19CFUDaiDSCkvl5VYKZhkYlYYaVaJK39p
+X-Gm-Message-State: AOJu0YygS8J6KKDo0bzNywSMPsfQY8awNe9vsyZv/E12gNoNnGD4iXBx
+	5sRTaWIkNv42FDUsWDpKbEKdUolSSbYvDNMreQmEpdsrUeQhtT4xt9gZ/YWrGl0=
+X-Google-Smtp-Source: AGHT+IFKAc3hYgC4iDc8epxfwQKN8USKmAQhU8ZxSXJUvVeCt1lZzEZqTAGJQdv/3QSxwj+j4d4QMw==
+X-Received: by 2002:a05:6102:4a11:b0:478:52cc:fc42 with SMTP id jw17-20020a0561024a1100b0047852ccfc42mr8638750vsb.10.1712017063419;
+        Mon, 01 Apr 2024 17:17:43 -0700 (PDT)
 Received: from n231-228-171.byted.org ([130.44.212.125])
-        by smtp.gmail.com with ESMTPSA id e10-20020a0562141d0a00b00698f9771822sm3013112qvd.83.2024.04.01.17.17.41
+        by smtp.gmail.com with ESMTPSA id e10-20020a0562141d0a00b00698f9771822sm3013112qvd.83.2024.04.01.17.17.42
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 01 Apr 2024 17:17:41 -0700 (PDT)
+        Mon, 01 Apr 2024 17:17:43 -0700 (PDT)
 From: "Ho-Ren (Jack) Chuang" <horenchuang@bytedance.com>
 To: "Huang, Ying" <ying.huang@intel.com>,
 	"Gregory Price" <gourry.memverge@gmail.com>,
@@ -89,10 +91,12 @@ Cc: "Ho-Ren (Jack) Chuang" <horenc@vt.edu>,
 	"Ho-Ren (Jack) Chuang" <horenchuang@bytedance.com>,
 	"Ho-Ren (Jack) Chuang" <horenchuang@gmail.com>,
 	qemu-devel@nongnu.org
-Subject: [PATCH v10 0/2] Improved Memory Tier Creation for CPUless NUMA Nodes
-Date: Tue,  2 Apr 2024 00:17:36 +0000
-Message-Id: <20240402001739.2521623-1-horenchuang@bytedance.com>
+Subject: [PATCH v10 1/2] memory tier: dax/kmem: introduce an abstract layer for finding, allocating, and putting memory types
+Date: Tue,  2 Apr 2024 00:17:37 +0000
+Message-Id: <20240402001739.2521623-2-horenchuang@bytedance.com>
 X-Mailer: git-send-email 2.20.1
+In-Reply-To: <20240402001739.2521623-1-horenchuang@bytedance.com>
+References: <20240402001739.2521623-1-horenchuang@bytedance.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -101,87 +105,133 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-When a memory device, such as CXL1.1 type3 memory, is emulated as
-normal memory (E820_TYPE_RAM), the memory device is indistinguishable from
-normal DRAM in terms of memory tiering with the current implementation.
-The current memory tiering assigns all detected normal memory nodes to
-the same DRAM tier. This results in normal memory devices with different
-attributions being unable to be assigned to the correct memory tier,
-leading to the inability to migrate pages between different
-types of memory.
-https://lore.kernel.org/linux-mm/PH0PR08MB7955E9F08CCB64F23963B5C3A860A@PH0PR08MB7955.namprd08.prod.outlook.com/T/
+Since different memory devices require finding, allocating, and putting
+memory types, these common steps are abstracted in this patch,
+enhancing the scalability and conciseness of the code.
 
-This patchset automatically resolves the issues. It delays the
-initialization of memory tiers for CPUless NUMA nodes until they obtain
-HMAT information and after all devices are initialized at boot time,
-eliminating the need for user intervention. If no HMAT is specified,
-it falls back to using `default_dram_type`.
+Signed-off-by: Ho-Ren (Jack) Chuang <horenchuang@bytedance.com>
+Reviewed-by: "Huang, Ying" <ying.huang@intel.com>
+---
+ drivers/dax/kmem.c           | 20 ++------------------
+ include/linux/memory-tiers.h | 13 +++++++++++++
+ mm/memory-tiers.c            | 32 ++++++++++++++++++++++++++++++++
+ 3 files changed, 47 insertions(+), 18 deletions(-)
 
-Example usecase:
-We have CXL memory on the host, and we create VMs with a new system memory
-device backed by host CXL memory. We inject CXL memory performance
-attributes through QEMU, and the guest now sees memory nodes with
-performance attributes in HMAT. With this change, we enable the
-guest kernel to construct the correct memory tiering for the memory nodes.
-
-- v10:
- Thanks to Andrew's and SeongJae's comments,
- * Address kunit compilation errors
- * Resolve the bug of not returning the correct error code in
-   `mt_perf_to_adistance`
--v9:
- * Address corner cases in `memory_tier_late_init`. Thank Ying's comments.
- * https://lore.kernel.org/lkml/20240329053353.309557-1-horenchuang@bytedance.com/T/#u
--v8:
- * Fix email format
- * https://lore.kernel.org/lkml/20240329004815.195476-1-horenchuang@bytedance.com/T/#u
--v7:
- * Add Reviewed-by: "Huang, Ying" <ying.huang@intel.com>
--v6:
- Thanks to Ying's comments,
- * Move `default_dram_perf_lock` to the function's beginning for clarity
- * Fix double unlocking at v5
- * https://lore.kernel.org/lkml/20240327072729.3381685-1-horenchuang@bytedance.com/T/#u
--v5:
- Thanks to Ying's comments,
- * Add comments about what is protected by `default_dram_perf_lock`
- * Fix an uninitialized pointer mtype
- * Slightly shorten the time holding `default_dram_perf_lock`
- * Fix a deadlock bug in `mt_perf_to_adistance`
- * https://lore.kernel.org/lkml/20240327041646.3258110-1-horenchuang@bytedance.com/T/#u
--v4:
- Thanks to Ying's comments,
- * Remove redundant code
- * Reorganize patches accordingly
- * https://lore.kernel.org/lkml/20240322070356.315922-1-horenchuang@bytedance.com/T/#u
--v3:
- Thanks to Ying's comments,
- * Make the newly added code independent of HMAT
- * Upgrade set_node_memory_tier to support more cases
- * Put all non-driver-initialized memory types into default_memory_types
-   instead of using hmat_memory_types
- * find_alloc_memory_type -> mt_find_alloc_memory_type
- * https://lore.kernel.org/lkml/20240320061041.3246828-1-horenchuang@bytedance.com/T/#u
--v2:
- Thanks to Ying's comments,
- * Rewrite cover letter & patch description
- * Rename functions, don't use _hmat
- * Abstract common functions into find_alloc_memory_type()
- * Use the expected way to use set_node_memory_tier instead of modifying it
- * https://lore.kernel.org/lkml/20240312061729.1997111-1-horenchuang@bytedance.com/T/#u
--v1:
- * https://lore.kernel.org/lkml/20240301082248.3456086-1-horenchuang@bytedance.com/T/#u
-
-Ho-Ren (Jack) Chuang (2):
-  memory tier: dax/kmem: introduce an abstract layer for finding,
-    allocating, and putting memory types
-  memory tier: create CPUless memory tiers after obtaining HMAT info
-
- drivers/dax/kmem.c           |  20 +-----
- include/linux/memory-tiers.h |  14 ++++
- mm/memory-tiers.c            | 127 ++++++++++++++++++++++++++++++-----
- 3 files changed, 126 insertions(+), 35 deletions(-)
-
+diff --git a/drivers/dax/kmem.c b/drivers/dax/kmem.c
+index 42ee360cf4e3..01399e5b53b2 100644
+--- a/drivers/dax/kmem.c
++++ b/drivers/dax/kmem.c
+@@ -55,21 +55,10 @@ static LIST_HEAD(kmem_memory_types);
+ 
+ static struct memory_dev_type *kmem_find_alloc_memory_type(int adist)
+ {
+-	bool found = false;
+ 	struct memory_dev_type *mtype;
+ 
+ 	mutex_lock(&kmem_memory_type_lock);
+-	list_for_each_entry(mtype, &kmem_memory_types, list) {
+-		if (mtype->adistance == adist) {
+-			found = true;
+-			break;
+-		}
+-	}
+-	if (!found) {
+-		mtype = alloc_memory_type(adist);
+-		if (!IS_ERR(mtype))
+-			list_add(&mtype->list, &kmem_memory_types);
+-	}
++	mtype = mt_find_alloc_memory_type(adist, &kmem_memory_types);
+ 	mutex_unlock(&kmem_memory_type_lock);
+ 
+ 	return mtype;
+@@ -77,13 +66,8 @@ static struct memory_dev_type *kmem_find_alloc_memory_type(int adist)
+ 
+ static void kmem_put_memory_types(void)
+ {
+-	struct memory_dev_type *mtype, *mtn;
+-
+ 	mutex_lock(&kmem_memory_type_lock);
+-	list_for_each_entry_safe(mtype, mtn, &kmem_memory_types, list) {
+-		list_del(&mtype->list);
+-		put_memory_type(mtype);
+-	}
++	mt_put_memory_types(&kmem_memory_types);
+ 	mutex_unlock(&kmem_memory_type_lock);
+ }
+ 
+diff --git a/include/linux/memory-tiers.h b/include/linux/memory-tiers.h
+index 69e781900082..a44c03c2ba3a 100644
+--- a/include/linux/memory-tiers.h
++++ b/include/linux/memory-tiers.h
+@@ -48,6 +48,9 @@ int mt_calc_adistance(int node, int *adist);
+ int mt_set_default_dram_perf(int nid, struct access_coordinate *perf,
+ 			     const char *source);
+ int mt_perf_to_adistance(struct access_coordinate *perf, int *adist);
++struct memory_dev_type *mt_find_alloc_memory_type(int adist,
++							struct list_head *memory_types);
++void mt_put_memory_types(struct list_head *memory_types);
+ #ifdef CONFIG_MIGRATION
+ int next_demotion_node(int node);
+ void node_get_allowed_targets(pg_data_t *pgdat, nodemask_t *targets);
+@@ -136,5 +139,15 @@ static inline int mt_perf_to_adistance(struct access_coordinate *perf, int *adis
+ {
+ 	return -EIO;
+ }
++
++struct memory_dev_type *mt_find_alloc_memory_type(int adist, struct list_head *memory_types)
++{
++	return NULL;
++}
++
++void mt_put_memory_types(struct list_head *memory_types)
++{
++
++}
+ #endif	/* CONFIG_NUMA */
+ #endif  /* _LINUX_MEMORY_TIERS_H */
+diff --git a/mm/memory-tiers.c b/mm/memory-tiers.c
+index 0537664620e5..974af10cfdd8 100644
+--- a/mm/memory-tiers.c
++++ b/mm/memory-tiers.c
+@@ -623,6 +623,38 @@ void clear_node_memory_type(int node, struct memory_dev_type *memtype)
+ }
+ EXPORT_SYMBOL_GPL(clear_node_memory_type);
+ 
++struct memory_dev_type *mt_find_alloc_memory_type(int adist, struct list_head *memory_types)
++{
++	bool found = false;
++	struct memory_dev_type *mtype;
++
++	list_for_each_entry(mtype, memory_types, list) {
++		if (mtype->adistance == adist) {
++			found = true;
++			break;
++		}
++	}
++	if (!found) {
++		mtype = alloc_memory_type(adist);
++		if (!IS_ERR(mtype))
++			list_add(&mtype->list, memory_types);
++	}
++
++	return mtype;
++}
++EXPORT_SYMBOL_GPL(mt_find_alloc_memory_type);
++
++void mt_put_memory_types(struct list_head *memory_types)
++{
++	struct memory_dev_type *mtype, *mtn;
++
++	list_for_each_entry_safe(mtype, mtn, memory_types, list) {
++		list_del(&mtype->list);
++		put_memory_type(mtype);
++	}
++}
++EXPORT_SYMBOL_GPL(mt_put_memory_types);
++
+ static void dump_hmem_attrs(struct access_coordinate *coord, const char *prefix)
+ {
+ 	pr_info(
 -- 
 Ho-Ren (Jack) Chuang
 
