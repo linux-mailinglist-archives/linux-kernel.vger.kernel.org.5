@@ -1,213 +1,191 @@
-Return-Path: <linux-kernel+bounces-128541-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-128552-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8CFF5895C35
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 21:07:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 40F04895C55
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 21:16:33 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 40B10286F6A
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 19:07:07 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EEB49280C2B
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 19:16:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 111F515B985;
-	Tue,  2 Apr 2024 19:05:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1ED5D15B98B;
+	Tue,  2 Apr 2024 19:16:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="hwwp3R1q"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (1024-bit key) header.d=narfation.org header.i=@narfation.org header.b="1cQ1X5a9"
+Received: from dvalin.narfation.org (dvalin.narfation.org [213.160.73.56])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1D3FB15B57E;
-	Tue,  2 Apr 2024 19:05:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D20E12C9D;
+	Tue,  2 Apr 2024 19:16:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.160.73.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712084753; cv=none; b=MZEv86kbgBRt7LbfZn0KF0iAlqSYnRISqUD+RXLaoGwPqbJfPkeKmV2abP6QWoa0aXHwOnIlim6Gds8CEodJaTnEJOKe8SQtfwrRvymnX8EI1SZzDk/PUVgnneyjcAosijfsBlxi+atooH4NEWUSnjyahVRtj8HUV6XxrXSOuYU=
+	t=1712085373; cv=none; b=lmH21WdVLTXHZr4pdPdB02FQtLfE3sdBc4KBqlM77ZfgWfXr8qr72KkCXzyEGcQp9T0Y2EkxNnJ4sFes6c8Le3otvDAQ90V4nolzCqtQlP3l9mZGyUxi8lAORnyQrm7+LofV6MgWsDBXsydSZp5DbsHpJ9eQoyomrPn9wj66aqM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712084753; c=relaxed/simple;
-	bh=ivObVSKpIkBqCwHlwbBnTW/chcdv4hxzzU2Dqfw4oFY=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=k94cpCcBp3zL5BBScVgBH7eXGMffADxNkW8scsAe16iSQ3FYjthDvPup0YFERWkw3kZyof+GsU3xDgZ43uXioBpfgtCvWPQ1CNlSk6w1ZJKcc4PKTMPWXTF3/Zt5RRPLE+VPzdnZZGbDdcdDZdEQyUqLBxKnvAtp5FeXlIirz7A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=hwwp3R1q; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 174E5C433C7;
-	Tue,  2 Apr 2024 19:05:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712084752;
-	bh=ivObVSKpIkBqCwHlwbBnTW/chcdv4hxzzU2Dqfw4oFY=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=hwwp3R1q+T6P3wBULlM9JHA7unNDdzQ7FyQAUtX0BWJYLvoTcSvvCHVjCZCIVdCpp
-	 P3hH9eiYczkxNqEPQVprmxEGBBjdTDkm2i0W/ywueVCqBxiyfNB/jd8/8ayTftnI02
-	 M4H/eOWh4bn/Ygw7g56bJeYODFwZcPWGYCkn3uSNTytEJ/MI/De15gQoC2yuWB5IGj
-	 wAuTXHpQOJnJxkjgdHehxG1bRSCJBtOySRaGeOy42ZdtKoUpS5CRRoEU1D0PnH0iBU
-	 8Uk+I9y88XUSxVMrMygH39vnWX8Uwf8mWiw+V7NK/hpKeE+IqP03OkudSXAlGSwaK8
-	 pTIHCarE2rCRw==
-Date: Tue, 2 Apr 2024 12:05:49 -0700
-From: Nathan Chancellor <nathan@kernel.org>
-To: peterx@redhat.com
-Cc: linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-	Yang Shi <shy828301@gmail.com>,
-	"Kirill A . Shutemov" <kirill@shutemov.name>,
-	Mike Kravetz <mike.kravetz@oracle.com>,
-	John Hubbard <jhubbard@nvidia.com>,
-	Michael Ellerman <mpe@ellerman.id.au>,
-	Andrew Jones <andrew.jones@linux.dev>,
-	Muchun Song <muchun.song@linux.dev>,
-	linux-riscv@lists.infradead.org, linuxppc-dev@lists.ozlabs.org,
-	Christophe Leroy <christophe.leroy@csgroup.eu>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Christoph Hellwig <hch@infradead.org>,
-	Lorenzo Stoakes <lstoakes@gmail.com>,
-	Matthew Wilcox <willy@infradead.org>,
-	Rik van Riel <riel@surriel.com>,
-	linux-arm-kernel@lists.infradead.org,
-	Andrea Arcangeli <aarcange@redhat.com>,
-	David Hildenbrand <david@redhat.com>,
-	"Aneesh Kumar K . V" <aneesh.kumar@kernel.org>,
-	Vlastimil Babka <vbabka@suse.cz>,
-	James Houghton <jthoughton@google.com>,
-	Jason Gunthorpe <jgg@nvidia.com>, Mike Rapoport <rppt@kernel.org>,
-	Axel Rasmussen <axelrasmussen@google.com>,
-	Huacai Chen <chenhuacai@kernel.org>,
-	WANG Xuerui <kernel@xen0n.name>, loongarch@lists.linux.dev
-Subject: Re: [PATCH v4 05/13] mm/arch: Provide pud_pfn() fallback
-Message-ID: <20240402190549.GA706730@dev-arch.thelio-3990X>
-References: <20240327152332.950956-1-peterx@redhat.com>
- <20240327152332.950956-6-peterx@redhat.com>
+	s=arc-20240116; t=1712085373; c=relaxed/simple;
+	bh=9JIPjNr0peSxZTcP+6cQZbMtmxMOiiyJXzs2wV8FEds=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=uk0QIBZzwzaaG+3EwFxoyRy7xp2kC0TOn/xytMQaXKusPrRFPc1HympfxPRXr1hA7/7jeLz1lyFiZTVD+CQxtEfZdjWQbPnHp5Ypwj59W6zI2wFiFoQucrj/kZoEozoIrA6dEo30wP/UNECHgvaml7JYVmnhJ5uyQzC2j7yGE84=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=narfation.org; spf=pass smtp.mailfrom=narfation.org; dkim=pass (1024-bit key) header.d=narfation.org header.i=@narfation.org header.b=1cQ1X5a9; arc=none smtp.client-ip=213.160.73.56
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=narfation.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=narfation.org
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=narfation.org;
+	s=20121; t=1712084798;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=8YOkmEuC9pUsK+tk/6J60XipwO318aL0a2KtV/Z5R7c=;
+	b=1cQ1X5a9FEnn7pUky3k2RC1MLWAVUsKjHvXV+ap0gIexfmavkuZDqhuJ1HK0vnBpvWmjhB
+	GwucBct323m5dXolJ/m+ZkFKfFNvdKgC/Laa7Zj59EKZWfHYEmnVuO7JS+isgTu2Xf0pWS
+	oABPA6SEHeL4iEo/8WK4zGw1cJ+c8Vk=
+From: Sven Eckelmann <sven@narfation.org>
+To: Marek Lindner <mareklindner@neomailbox.ch>,
+ Simon Wunderlich <sw@simonwunderlich.de>, Antonio Quartulli <a@unstable.cc>,
+ "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
+ Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+ Kees Cook <keescook@chromium.org>,
+ "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+ Erick Archer <erick.archer@outlook.com>
+Cc: Erick Archer <erick.archer@outlook.com>, b.a.t.m.a.n@lists.open-mesh.org,
+ linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+ linux-hardening@vger.kernel.org
+Subject: Re: [PATCH] batman-adv: Add flex array to struct batadv_tvlv_tt_data
+Date: Tue, 02 Apr 2024 21:06:35 +0200
+Message-ID: <5466543.Sb9uPGUboI@sven-l14>
+In-Reply-To:
+ <AS8PR02MB7237987BF9DFCA030B330F658B3E2@AS8PR02MB7237.eurprd02.prod.outlook.com>
+References:
+ <AS8PR02MB7237987BF9DFCA030B330F658B3E2@AS8PR02MB7237.eurprd02.prod.outlook.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240327152332.950956-6-peterx@redhat.com>
+Content-Type: multipart/signed; boundary="nextPart1984222.yKVeVyVuyW";
+ micalg="pgp-sha512"; protocol="application/pgp-signature"
 
-Hi Peter (and LoongArch folks),
+--nextPart1984222.yKVeVyVuyW
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"; protected-headers="v1"
+From: Sven Eckelmann <sven@narfation.org>
+Date: Tue, 02 Apr 2024 21:06:35 +0200
+Message-ID: <5466543.Sb9uPGUboI@sven-l14>
+MIME-Version: 1.0
 
-On Wed, Mar 27, 2024 at 11:23:24AM -0400, peterx@redhat.com wrote:
-> From: Peter Xu <peterx@redhat.com>
+On Tuesday, 2 April 2024 19:23:01 CEST Erick Archer wrote:
+> The "struct batadv_tvlv_tt_data" uses a dynamically sized set of
+> trailing elements. Specifically, it uses an array of structures of type
+> "batadv_tvlv_tt_vlan_data". So, use the preferred way in the kernel
+> declaring a flexible array [1].
 > 
-> The comment in the code explains the reasons.  We took a different approach
-> comparing to pmd_pfn() by providing a fallback function.
+> The order in which the structure batadv_tvlv_tt_data and the structure
+> batadv_tvlv_tt_vlan_data are defined must be swap to avoid an incomplete
+> type error.
 > 
-> Another option is to provide some lower level config options (compare to
-> HUGETLB_PAGE or THP) to identify which layer an arch can support for such
-> huge mappings.  However that can be an overkill.
+> Also, avoid the open-coded arithmetic in memory allocator functions [2]
+> using the "struct_size" macro and use the "flex_array_size" helper to
+> clarify some calculations, when possible.
 > 
-> Cc: Mike Rapoport (IBM) <rppt@kernel.org>
-> Cc: Matthew Wilcox <willy@infradead.org>
-> Reviewed-by: Jason Gunthorpe <jgg@nvidia.com>
-> Signed-off-by: Peter Xu <peterx@redhat.com>
+> Moreover, the new structure member also allow us to avoid the open-coded
+> arithmetic on pointers in some situations. Take advantage of this.
+> 
+> This code was detected with the help of Coccinelle, and audited and
+> modified manually.
+> 
+> Link: https://www.kernel.org/doc/html/next/process/deprecated.html#zero-length-and-one-element-arrays [1]
+> Link: https://www.kernel.org/doc/html/next/process/deprecated.html#open-coded-arithmetic-in-allocator-arguments [2]
+> Signed-off-by: Erick Archer <erick.archer@outlook.com>
+
 > ---
->  arch/riscv/include/asm/pgtable.h    |  1 +
->  arch/s390/include/asm/pgtable.h     |  1 +
->  arch/sparc/include/asm/pgtable_64.h |  1 +
->  arch/x86/include/asm/pgtable.h      |  1 +
->  include/linux/pgtable.h             | 10 ++++++++++
->  5 files changed, 14 insertions(+)
+> Hi,
 > 
-> diff --git a/arch/riscv/include/asm/pgtable.h b/arch/riscv/include/asm/pgtable.h
-> index 20242402fc11..0ca28cc8e3fa 100644
-> --- a/arch/riscv/include/asm/pgtable.h
-> +++ b/arch/riscv/include/asm/pgtable.h
-> @@ -646,6 +646,7 @@ static inline unsigned long pmd_pfn(pmd_t pmd)
->  
->  #define __pud_to_phys(pud)  (__page_val_to_pfn(pud_val(pud)) << PAGE_SHIFT)
->  
-> +#define pud_pfn pud_pfn
->  static inline unsigned long pud_pfn(pud_t pud)
->  {
->  	return ((__pud_to_phys(pud) & PUD_MASK) >> PAGE_SHIFT);
-> diff --git a/arch/s390/include/asm/pgtable.h b/arch/s390/include/asm/pgtable.h
-> index 1a71cb19c089..6cbbe473f680 100644
-> --- a/arch/s390/include/asm/pgtable.h
-> +++ b/arch/s390/include/asm/pgtable.h
-> @@ -1414,6 +1414,7 @@ static inline unsigned long pud_deref(pud_t pud)
->  	return (unsigned long)__va(pud_val(pud) & origin_mask);
->  }
->  
-> +#define pud_pfn pud_pfn
->  static inline unsigned long pud_pfn(pud_t pud)
->  {
->  	return __pa(pud_deref(pud)) >> PAGE_SHIFT;
-> diff --git a/arch/sparc/include/asm/pgtable_64.h b/arch/sparc/include/asm/pgtable_64.h
-> index 4d1bafaba942..26efc9bb644a 100644
-> --- a/arch/sparc/include/asm/pgtable_64.h
-> +++ b/arch/sparc/include/asm/pgtable_64.h
-> @@ -875,6 +875,7 @@ static inline bool pud_leaf(pud_t pud)
->  	return pte_val(pte) & _PAGE_PMD_HUGE;
->  }
->  
-> +#define pud_pfn pud_pfn
->  static inline unsigned long pud_pfn(pud_t pud)
->  {
->  	pte_t pte = __pte(pud_val(pud));
-> diff --git a/arch/x86/include/asm/pgtable.h b/arch/x86/include/asm/pgtable.h
-> index cefc7a84f7a4..273f7557218c 100644
-> --- a/arch/x86/include/asm/pgtable.h
-> +++ b/arch/x86/include/asm/pgtable.h
-> @@ -234,6 +234,7 @@ static inline unsigned long pmd_pfn(pmd_t pmd)
->  	return (pfn & pmd_pfn_mask(pmd)) >> PAGE_SHIFT;
->  }
->  
-> +#define pud_pfn pud_pfn
->  static inline unsigned long pud_pfn(pud_t pud)
->  {
->  	phys_addr_t pfn = pud_val(pud);
-> diff --git a/include/linux/pgtable.h b/include/linux/pgtable.h
-> index 600e17d03659..75fe309a4e10 100644
-> --- a/include/linux/pgtable.h
-> +++ b/include/linux/pgtable.h
-> @@ -1817,6 +1817,16 @@ typedef unsigned int pgtbl_mod_mask;
->  #define pte_leaf_size(x) PAGE_SIZE
->  #endif
->  
-> +/*
-> + * We always define pmd_pfn for all archs as it's used in lots of generic
-> + * code.  Now it happens too for pud_pfn (and can happen for larger
-> + * mappings too in the future; we're not there yet).  Instead of defining
-> + * it for all archs (like pmd_pfn), provide a fallback.
-> + */
-> +#ifndef pud_pfn
-> +#define pud_pfn(x) ({ BUILD_BUG(); 0; })
-> +#endif
-> +
->  /*
->   * Some architectures have MMUs that are configurable or selectable at boot
->   * time. These lead to variable PTRS_PER_x. For statically allocated arrays it
-> -- 
-> 2.44.0
+> I would like to add the "__counted_by(num_vlan)" tag to the new flex member
+> but I don't know if this line can affect it.
 > 
+> ntohs(tt_data->num_vlan)
 
-This BUILD_BUG() triggers for LoongArch with their defconfig, so it
-seems like they need to provide an implementation of pud_pfn()?
 
-  In function 'follow_huge_pud',
-      inlined from 'follow_pud_mask' at mm/gup.c:1075:10,
-      inlined from 'follow_p4d_mask' at mm/gup.c:1105:9,
-      inlined from 'follow_page_mask' at mm/gup.c:1151:10:
-  include/linux/compiler_types.h:460:45: error: call to '__compiletime_assert_382' declared with attribute error: BUILD_BUG failed
-    460 |         _compiletime_assert(condition, msg, __compiletime_assert_, __COUNTER__)
-        |                                             ^
-  include/linux/compiler_types.h:441:25: note: in definition of macro '__compiletime_assert'
-    441 |                         prefix ## suffix();                             \
-        |                         ^~~~~~
-  include/linux/compiler_types.h:460:9: note: in expansion of macro '_compiletime_assert'
-    460 |         _compiletime_assert(condition, msg, __compiletime_assert_, __COUNTER__)
-        |         ^~~~~~~~~~~~~~~~~~~
-  include/linux/build_bug.h:39:37: note: in expansion of macro 'compiletime_assert'
-     39 | #define BUILD_BUG_ON_MSG(cond, msg) compiletime_assert(!(cond), msg)
-        |                                     ^~~~~~~~~~~~~~~~~~
-  include/linux/build_bug.h:59:21: note: in expansion of macro 'BUILD_BUG_ON_MSG'
-     59 | #define BUILD_BUG() BUILD_BUG_ON_MSG(1, "BUILD_BUG failed")
-        |                     ^~~~~~~~~~~~~~~~
-  include/linux/pgtable.h:1887:23: note: in expansion of macro 'BUILD_BUG'
-   1887 | #define pud_pfn(x) ({ BUILD_BUG(); 0; })
-        |                       ^~~~~~~~~
-  mm/gup.c:679:29: note: in expansion of macro 'pud_pfn'
-    679 |         unsigned long pfn = pud_pfn(pud);
-        |                             ^~~~~~~
+Yes, num_vlan is a __be16. I could only identify the kernel-doc related 
+scripts as consumer. But maybe they are more - so I would defer this question 
+to kernel-hardening.
 
-Cheers,
-Nathan
+
+And with this change, I get a lot of additional warnings (-Wsparse-all)
+
+
+cfg: BLA=n DAT=y DEBUG=y TRACING=n NC=y MCAST=n BATMAN_V=n
+    net/batman-adv/translation-table.c:574:21: warning: using sizeof on a flexible structure
+    net/batman-adv/translation-table.c:859:25: warning: using sizeof on a flexible structure
+    net/batman-adv/translation-table.c:859:25: warning: using sizeof on a flexible structure
+    net/batman-adv/translation-table.c:938:25: warning: using sizeof on a flexible structure
+    net/batman-adv/translation-table.c:938:25: warning: using sizeof on a flexible structure
+    net/batman-adv/translation-table.c:2932:16: warning: using sizeof on a flexible structure
+    net/batman-adv/translation-table.c:2932:16: warning: using sizeof on a flexible structure
+    net/batman-adv/translation-table.c:3378:21: warning: using sizeof on a flexible structure
+    net/batman-adv/translation-table.c:3378:21: warning: using sizeof on a flexible structure
+    net/batman-adv/translation-table.c:3982:30: warning: using sizeof on a flexible structure
+    net/batman-adv/translation-table.c:3986:27: warning: using sizeof on a flexible structure
+    net/batman-adv/translation-table.c:4026:30: warning: using sizeof on a flexible structure
+    net/batman-adv/translation-table.c:4030:27: warning: using sizeof on a flexible structure
+    net/batman-adv/translation-table.c:4032:23: warning: cast from restricted __be16
+    net/batman-adv/translation-table.c:4032:23: warning: restricted __be16 degrades to integer
+    net/batman-adv/translation-table.c:4032:23: warning: incorrect type in argument 1 (different base types)
+    net/batman-adv/translation-table.c:4032:23:    expected unsigned long [usertype] factor1
+    net/batman-adv/translation-table.c:4032:23:    got restricted __be16 [usertype] num_vlan
+
+[...]
+>  	num_vlan = ntohs(tt_data->num_vlan);
+>  
+> -	if (tvlv_value_len < sizeof(*tt_vlan) * num_vlan)
+> +	flex_size = flex_array_size(tt_data, vlan_data, num_vlan);
+> +	if (tvlv_value_len < flex_size)
+>  		return;
+
+This helper would need an #include of <linux/overflow.h> in 
+net/batman-adv/translation-table.c
+
+[....]
+>  /**
+> @@ -4039,8 +4029,7 @@ static int batadv_tt_tvlv_unicast_handler_v1(struct batadv_priv *bat_priv,
+>  	tt_data = tvlv_value;
+>  	tvlv_value_len -= sizeof(*tt_data);
+>  
+> -	tt_vlan_len = sizeof(struct batadv_tvlv_tt_vlan_data);
+> -	tt_vlan_len *= ntohs(tt_data->num_vlan);
+> +	tt_vlan_len = flex_array_size(tt_data, vlan_data, tt_data->num_vlan);
+
+This is definitely wrong on little endian systems. You first need to convert 
+num_vlan from network (big endian) to host order.
+
+Kind regards,
+	Sven
+
+--nextPart1984222.yKVeVyVuyW
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part.
+Content-Transfer-Encoding: 7Bit
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEEF10rh2Elc9zjMuACXYcKB8Eme0YFAmYMVzsACgkQXYcKB8Em
+e0aCQBAAj3anzJhaGazYsoqA2U/5qDV64DoNdrlYz34rT3lYX3DTJKcA11cuSvN+
+aDVUaOi8G7Gn4sE+Ql8FGsBmXoCMvwyLJ/eQ6mrr1MGSWLodaZbvmjRxwPRzFbou
+wAK5ZE25usWliJxf2ds7gpSjm6TBFnsNIRAtQ2zz7b8dAhXOe79ASRsrl0P9QBiE
+fM8QeT6hB0gLY5RXmsugrRUfCpqQOfTS44b9siyICMN+mKbRG7GpDj4Ruf/6koNo
+Qy1Unmm+qhyuPUtoYBASGVzC/Gm3pDh7UXuiptY0vgU/o0yjyTHi683cFBtmD30V
+d+pNZDCa2YS0+j0N8Nh/oS3fOWb36I/eKiEaCdmgx9awQ4dO3CxZE5TsLeohNNUO
+OpTdwucSLW8gEo+r+BQI0G2y3+TPCtGv8vLRIXF1frSWjE7EPbXH3BjbcvoDaaYO
+uO1a7tyAAbZ4zZO9wO6qIcRjz1q3E0V8Dx9LRolzC5EA4IvnNa+WQ7OZdTGe8zu3
+GRlIYG/sedhar8Wla+bh8wi8oeInErE4k4pDFI6o1AS5GHTcpTR7Plp/vpnrAEPF
+LAjEHTQT1LOIRLIrzvGBWC/KNnjXd3q2TluOKRBxsNYAnn+nHL3aBmYSp8gCOg9g
+Sta4U5Vrs2QpAT3mk8CoAhQSujqZaOkM+fy63PcaWrhCMDh9mGo=
+=CYsH
+-----END PGP SIGNATURE-----
+
+--nextPart1984222.yKVeVyVuyW--
+
+
+
 
