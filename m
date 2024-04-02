@@ -1,104 +1,173 @@
-Return-Path: <linux-kernel+bounces-128454-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-128453-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 815C4895B0C
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 19:47:50 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A11D8895B06
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 19:46:36 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 0D44AB293C9
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 17:46:51 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5C39C2819BD
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 17:46:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0631815AAC7;
-	Tue,  2 Apr 2024 17:46:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b="TwyZmeRJ"
-Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EB75315AADD;
+	Tue,  2 Apr 2024 17:46:05 +0000 (UTC)
+Received: from mail-oa1-f46.google.com (mail-oa1-f46.google.com [209.85.160.46])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BE39A15AABA;
-	Tue,  2 Apr 2024 17:46:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=65.109.113.108
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 538CD159910;
+	Tue,  2 Apr 2024 17:46:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712079983; cv=none; b=MPf8pfl4n4F7E8cNy8jFMeUtiXXYM2XmyrZlZvdgkfZY8cjMOT64i6+G/LXk4KJnXYnCrJxPgc1FN5si7eVE1TTyzA9CBlLaJs37SWKD9M4VycSo3vlNnmBMWIW00ZDBUrSFB5FXNVwB1zdM8aosustcBcUIvxtKUx/7wn0G80M=
+	t=1712079965; cv=none; b=haqs8ZSXLYmJqmS48c/w9ovTKUf5K+D0F9yPImD4CsvKVEkjwe+9Lwya7XPGaDEcMk9qKYpBGgHPXONUBvAb8fzhWnyePkEGJQ6vPD+d3Cll9CHDokF3RO6/C8uGFVa+MB76djUi4gDTI0dBD7ngFv6LRooLE/Ejk40FzIWNUp8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712079983; c=relaxed/simple;
-	bh=pAUFdiwIlE1ioQQwbu0Wim5W+f/P5B5pF1oot4QK2eU=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=BaaSUy3GcR1kbBRhznIfMsX+luAWxEA7HxxGL5PwRhvGeeXcWbSmfRQvhaQDrlsY1+j7AXHucfW5mFmSX6fbOBP8l/mrHAOPP8iSQMe98fHcxdRWEBdz7W2aGjs8fsjDUm0PHjxvXxgxtxzVthU1+VJwbgj9YXkEY1UUtHFSXe4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de; spf=pass smtp.mailfrom=alien8.de; dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b=TwyZmeRJ; arc=none smtp.client-ip=65.109.113.108
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alien8.de
-Received: from localhost (localhost.localdomain [127.0.0.1])
-	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id 25AEE40E01A8;
-	Tue,  2 Apr 2024 17:46:12 +0000 (UTC)
-X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
-Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
-	header.d=alien8.de
-Received: from mail.alien8.de ([127.0.0.1])
-	by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
-	with ESMTP id gbEdqk9YiJaJ; Tue,  2 Apr 2024 17:46:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
-	t=1712079954; bh=wHbaVNqGVy1LWaXB4BlrvHPuKVAKWB8nGYxe0uVjbuI=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=TwyZmeRJFGNxqKzSbhpLs/WgSCPjZJHB3+etEoq5jacr1kcnmsu/jrKIVarlUZHPX
-	 mA3BCHiCaIDCpbyEvwdDZLGK28wHQ01iUpc8NgZpobz6YD5KKAs50FcsI6N9AAyrji
-	 mLm/efArrBI6OeF8HS3rRMHf8DkITOuJLD4krNoU7WPAJTGdbJJxPf7ukAe4CyQKN/
-	 GZqvb+FzREkQ7nxpF2HNOXXUmgyQTwde3fgn6S6ZbEP+04jsO0anhfJLEoNCpr438E
-	 JMOIHiQpc5UE0L0o9BZNjXN0m7uaxs3xImbIuDmrTxNzlEMP5MgZ3K+LnUVQA1iW+R
-	 Bx9rso1vn9MKQXiT8jBRTGhPF+fnIYEyuR1EbFye8dGNFiOz3+SyqwyDboqAErSGRZ
-	 /LY2IjpYqBmHRSteX++FShcY4N8D0TZ0/Fn2MhpHIN/7jd9t9ypzDLZ1isLDClGhug
-	 if65NC3Gchk9IkdVb3imb/kiBTx1sHrXG9Rt+i/inQ49cUJFiFpgIRzOlvzfhsqo/B
-	 SdPgFn7pfAmo7bFz2tkBlZbhTGxichcnII5g7yNtCb8hYT9GqvATqxVbmyJt+VdaTZ
-	 BEKwlKrofAyfas277zG+kQuVdePeDpctpQUhtAqem8TNo4w3l4dff9/hgrbemp4y+x
-	 V70/EELTQLcrfI/IcH42zjJI=
-Received: from zn.tnic (p5de8ecf7.dip0.t-ipconnect.de [93.232.236.247])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
-	(No client certificate requested)
-	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 8D9F340E01A1;
-	Tue,  2 Apr 2024 17:45:47 +0000 (UTC)
-Date: Tue, 2 Apr 2024 19:45:40 +0200
-From: Borislav Petkov <bp@alien8.de>
-To: "Kalra, Ashish" <ashish.kalra@amd.com>
-Cc: bp@kernel.org, thomas.lendacky@amd.com, linux-kernel@vger.kernel.org,
-	linux-tip-commits@vger.kernel.org, michael.roth@amd.com,
-	x86@kernel.org
-Subject: Re: [PATCH] x86/sev: Apply RMP table fixups for kexec.
-Message-ID: <20240402174540.GAZgxERNxsRJUCb1yp@fat_crate.local>
-References: <2ab14f6f-2690-056b-cf9e-38a12dafd728@amd.com>
- <20240402163412.19325-1-bp@kernel.org>
- <6f0d2ccf-243c-4073-a470-21e2f404595a@amd.com>
- <359264a1-e4ef-438c-8f24-32848e131272@amd.com>
+	s=arc-20240116; t=1712079965; c=relaxed/simple;
+	bh=y93SZIbrnH2U1PRuoMZgbJFzq72nN3iSwDY/ntn2yG4=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=g4MhYki6EqtD3XOY2bCm7m4pLUsq7DZZzCYnfD29PehkUiPLVFC85hE88YeL0Mui3ismoHF5yqhynf2yLcXBsMdenykK0drrRhiYO+puMdGhIvdRNFv/IMCEKEbSIKChhmA9Z0VImfGPXlGrfUwj9+bKTJ5c77K370KZ7+CbKWg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.160.46
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-oa1-f46.google.com with SMTP id 586e51a60fabf-22e82734a13so340260fac.2;
+        Tue, 02 Apr 2024 10:46:03 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712079962; x=1712684762;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=2uQrT4OPUnJJ7qwQbuOJ3w/i96EgMem11ZKbGpAMb2I=;
+        b=aFFTkTSB8K5BO/G7LsPLPxGWr+JEEIXSYsAFAYbp+XilZztyq87tJ3IpcYWGB4EcLq
+         6a/DhiyV47XRICYWOUi8qzH40IouOTqNgIMOsbiFBULMJubxWWaIu+RkQ24qm17nwQCN
+         QiJtAo2tT9gs/trxNiXfP0vAEXBsDmpVgTJl/fKAiw8wLOOMQFVi8+SzWrgCGRq1NCsh
+         TB8n4e0r1fFdl/5V7NJ2KHEdZw61+1FD6/iiDZA6aM8y8kVGGk+PNam217/xc61PGMhV
+         MqU4lhhinEI3/9xiDDb+SpVoEaFGD1uLoZEqqqhe3wXwovWi1kdnOs0I4koH7dDHvD+c
+         vLsg==
+X-Forwarded-Encrypted: i=1; AJvYcCX2UGh81Ai+h0ylBCJDvhF2DKdynhJguRjrz6zR7Tw/HjEKmstA3vE14V0cKyxrggtwM175u5rLs5H+10OSycVFPWCkDvXpDXsPSIdn
+X-Gm-Message-State: AOJu0YyC1xzLwdsfErStwyhSwvt4jleJQlKB/v5OyH6p7550UVgamkFb
+	JS+Ingvwo3wEEEvmiISd15qzJbEQ/Ijpjb/WcfS7afEJ2Bq9rlwUmNVSgKvKwNy1GJF1yM4Ca7t
+	miTvdHD6raEgMS5vr26KcWqLAvO0=
+X-Google-Smtp-Source: AGHT+IEOYGMciwLTpZJjgcMmo8Nro7C40F0fC2Llkhv4PjwwByG4OqSEXbHrQAStqnaR9XL0e+4gk0wcFr6hOxWRBOY=
+X-Received: by 2002:a05:6871:7a2:b0:222:a91a:63cd with SMTP id
+ o34-20020a05687107a200b00222a91a63cdmr12864139oap.45.1712079962239; Tue, 02
+ Apr 2024 10:46:02 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <359264a1-e4ef-438c-8f24-32848e131272@amd.com>
+References: <20240308204957.2007212-1-justin.ernst@hpe.com>
+In-Reply-To: <20240308204957.2007212-1-justin.ernst@hpe.com>
+From: Len Brown <lenb@kernel.org>
+Date: Tue, 2 Apr 2024 13:45:50 -0400
+Message-ID: <CAJvTdK=R+XQZ4Vov8iXGiMADShgrwSoDL8-Jqfhii7YruRLDsg@mail.gmail.com>
+Subject: Re: [PATCH] tools/power/turbostat: Fix uncore frequency file string
+To: Justin Ernst <justin.ernst@hpe.com>
+Cc: linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Tue, Apr 02, 2024 at 12:11:03PM -0500, Kalra, Ashish wrote:
-> > And if you mean the reservation in the kernel page tables (directmap)
-> > then that will not help as kexec uses it's own identity mapped page
-> > tables.
+Thanks for the patch, Justin,
 
-So how hard would it be to *always* reserve the chunk of memory at the
-2M boundary where the RMP table starts and up to the 2M boundary where
-the RMP  table ends?
+Looks like the probe part of this was already fixed in my git tree, so
+I lopped off that hunk and kept your 1st hunk.
 
-In *every* kernel.
+Let me know if it works, or if I screwed it up.
 
-By default.
+latest is in this tree:
+https://git.kernel.org/pub/scm/linux/kernel/git/lenb/linux.git/
 
-Thx.
+thanks,
+-Len
 
--- 
-Regards/Gruss,
-    Boris.
+On Fri, Mar 8, 2024 at 3:50=E2=80=AFPM Justin Ernst <justin.ernst@hpe.com> =
+wrote:
+>
+> Running turbostat on a 16 socket HPE Scale-up Compute 3200 (SapphireRapid=
+s) fails with:
+> turbostat: /sys/devices/system/cpu/intel_uncore_frequency/package_010_die=
+_00/current_freq_khz: open failed: No such file or directory
+>
+> We observe the sysfs uncore frequency directories named:
+> ...
+> package_09_die_00/
+> package_10_die_00/
+> package_11_die_00/
+> ...
+> package_15_die_00/
+>
+> The culprit is an incorrect sprintf format string "package_0%d_die_0%d" u=
+sed
+> with each instance of reading uncore frequency files. uncore-frequency-co=
+mmon.c
+> creates the sysfs directory with the format "package_%02d_die_%02d". Once=
+ the
+> package value reaches double digits, the formats diverge.
+>
+> Change each instance of "package_0%d_die_0%d" to "package_%02d_die_%02d".
+>
+> Signed-off-by: Justin Ernst <justin.ernst@hpe.com>
+> ---
+>  tools/power/x86/turbostat/turbostat.c | 10 +++++-----
+>  1 file changed, 5 insertions(+), 5 deletions(-)
+>
+> diff --git a/tools/power/x86/turbostat/turbostat.c b/tools/power/x86/turb=
+ostat/turbostat.c
+> index 7a334377f92b..2a15a23cb726 100644
+> --- a/tools/power/x86/turbostat/turbostat.c
+> +++ b/tools/power/x86/turbostat/turbostat.c
+> @@ -2599,7 +2599,7 @@ unsigned long long get_uncore_mhz(int package, int =
+die)
+>  {
+>         char path[128];
+>
+> -       sprintf(path, "/sys/devices/system/cpu/intel_uncore_frequency/pac=
+kage_0%d_die_0%d/current_freq_khz", package,
+> +       sprintf(path, "/sys/devices/system/cpu/intel_uncore_frequency/pac=
+kage_%02d_die_%02d/current_freq_khz", package,
+>                 die);
+>
+>         return (snapshot_sysfs_counter(path) / 1000);
+> @@ -4589,20 +4589,20 @@ static void probe_intel_uncore_frequency(void)
+>                 for (j =3D 0; j < topo.num_die; ++j) {
+>                         int k, l;
+>
+> -                       sprintf(path, "/sys/devices/system/cpu/intel_unco=
+re_frequency/package_0%d_die_0%d/min_freq_khz",
+> +                       sprintf(path, "/sys/devices/system/cpu/intel_unco=
+re_frequency/package_%02d_die_%02d/min_freq_khz",
+>                                 i, j);
+>                         k =3D read_sysfs_int(path);
+> -                       sprintf(path, "/sys/devices/system/cpu/intel_unco=
+re_frequency/package_0%d_die_0%d/max_freq_khz",
+> +                       sprintf(path, "/sys/devices/system/cpu/intel_unco=
+re_frequency/package_%02d_die_%02d/max_freq_khz",
+>                                 i, j);
+>                         l =3D read_sysfs_int(path);
+>                         fprintf(outf, "Uncore Frequency pkg%d die%d: %d -=
+ %d MHz ", i, j, k / 1000, l / 1000);
+>
+>                         sprintf(path,
+> -                               "/sys/devices/system/cpu/intel_uncore_fre=
+quency/package_0%d_die_0%d/initial_min_freq_khz",
+> +                               "/sys/devices/system/cpu/intel_uncore_fre=
+quency/package_%02d_die_%02d/initial_min_freq_khz",
+>                                 i, j);
+>                         k =3D read_sysfs_int(path);
+>                         sprintf(path,
+> -                               "/sys/devices/system/cpu/intel_uncore_fre=
+quency/package_0%d_die_0%d/initial_max_freq_khz",
+> +                               "/sys/devices/system/cpu/intel_uncore_fre=
+quency/package_%02d_die_%02d/initial_max_freq_khz",
+>                                 i, j);
+>                         l =3D read_sysfs_int(path);
+>                         fprintf(outf, "(%d - %d MHz)\n", k / 1000, l / 10=
+00);
+> --
+> 2.26.2
+>
 
-https://people.kernel.org/tglx/notes-about-netiquette
+
+--=20
+Len Brown, Intel
 
