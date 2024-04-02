@@ -1,45 +1,45 @@
-Return-Path: <linux-kernel+bounces-128461-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-128462-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id DA0AE895B21
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 19:51:47 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id BAF93895B25
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 19:52:03 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8AA1E2866C7
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 17:51:46 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EB0301C2108B
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 17:52:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8836915ADA8;
-	Tue,  2 Apr 2024 17:51:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B903515B0FB;
+	Tue,  2 Apr 2024 17:51:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="lNtP5E9M"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="OCJcD0IB"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8004415AD8C;
-	Tue,  2 Apr 2024 17:51:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DA71215B0E2;
+	Tue,  2 Apr 2024 17:51:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712080282; cv=none; b=KwmncF3bZ8K2Q02hfvMPwcelEX5LHxIN1DCXmlMzxIgQw0Gs/bSep3WxBqP7BGBZKfD/b4e28P54stpwrxgdYXt4MvXsf05hfl2Ns1ilqKaxZ/Hk9fu2YYrGSU6wuStnsi84Vx18JmD3+zBnTrherkO/JKP7A3VK3TgJbjHkRSQ=
+	t=1712080285; cv=none; b=C7Xj1xsHNzkJ1mluMXE9vvslziQSSwn1X8OmH6s/geOts7kZchb9dyYPgpyJL1nUlVlDQaBBTqISyuVB4DwyJe2d8wYQRP4K3aQoLWDkyd52XFFP0ZQQ65dyc1JTKTEOuurM51fc47F9eLE97u9eUE3l4uail/hxvzrPX82FuJ8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712080282; c=relaxed/simple;
-	bh=5WFj57pz2yfHy3ro+1UVQLaPmaxSgD5e6l15NEGTtrw=;
+	s=arc-20240116; t=1712080285; c=relaxed/simple;
+	bh=mcZpMvFtZwhSB7YYS+YmnPDFhAZDnH/C5k4Mpq9FzcY=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=F7c6Asj2Tih7INMrn4/rRSmF9kvCaExVxU0vAhqB1Tgg+Yhts1toKNfT14MMGgfwe0Da31+6EPIu6+JK5YpYfkKlgCYtFsoWLMojBtO4rDwj6j53LhmlAqB15MqTFFDKdnoDmYUVE0afZ1onrNoUlBTKqNL1B9e3APeycByaZVM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=lNtP5E9M; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8360EC433F1;
-	Tue,  2 Apr 2024 17:51:20 +0000 (UTC)
+	 MIME-Version; b=daAgC5pStZc6TMuD5ZmoGKqGNs4Lopt2v92e+aFUmc+3C7SMkEub/r1fbeDQvahKRypiU0tvbieQYRN6oItDxv0yZS6Rtj5IIPUrJUkI2sUgxlJpylGUi0hyID79NgzSO95Uo/5n7ifreYWIqZkGcSRyiFPVAdJfmCrh2hecX1s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=OCJcD0IB; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9A6ECC433C7;
+	Tue,  2 Apr 2024 17:51:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712080282;
-	bh=5WFj57pz2yfHy3ro+1UVQLaPmaxSgD5e6l15NEGTtrw=;
+	s=k20201202; t=1712080284;
+	bh=mcZpMvFtZwhSB7YYS+YmnPDFhAZDnH/C5k4Mpq9FzcY=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=lNtP5E9M5TPW/JKEzMoUnnxYrNvAPh8ISI9NbsGGd4lA/0OmkJdJOqJ6H2ewjufqx
-	 a8Eq61dGJIoM6vyl/gMRbxRwf94+W47nRy2R6C7j0/39YWqtA7B2khsytP6ttrpa3I
-	 HobuBeln7oUGux7kxQgdeJehY/KJ7r7WGt1zGWw1kclHh3OLbkxt8q79WJGkPBm055
-	 fLGKotEP4gJ8q6v0LYkIVtnWiy9SF9VZ+2B29lc36YZv/MycOUSzWVv/6b/wDLSyDQ
-	 36lUYWR4i5FmY8cMOlgXm6lYVKI/KeKbxbYpjV/AhsTUarsGOYhIHlbwhyZ75D7p+D
-	 g5fvMC+TB4f7A==
+	b=OCJcD0IBXDGg1DbWi/wLw28dQ4aN7qSRFaUDY8HSPDJOJY45G89fBV8qK9ZbAj8U8
+	 Juw1UUlJzRQGV2mZoijgalpdR9rgltpjtig2vHX6OeKEz4f1aLInqtCSVvOEcPSp2V
+	 TNVXZIF0GvBHHadHGDqq7AoX0K5ayf+2FPKbZFPNrVlnVFb8WiUbyUt2Wzt1JaI8iC
+	 mws7qRNrGMrQUOGIWdAQTiN80lCIpmuKnpQDWz6aaSG29DRgvajIqBN6OimsPWbbZz
+	 9Ag4t2nlkQ9QjMo3BdsNMCK2Oxd2vIzsIl2Lkl5QPrdt8Nt5TXx2kcZMxKPC5yif5c
+	 DzERlwbUwX/mA==
 From: Alexey Gladkov <legion@kernel.org>
 To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
 	Jiri Slaby <jirislaby@kernel.org>
@@ -47,10 +47,11 @@ Cc: LKML <linux-kernel@vger.kernel.org>,
 	kbd@lists.linux.dev,
 	linux-api@vger.kernel.org,
 	linux-fbdev@vger.kernel.org,
-	linux-serial@vger.kernel.org
-Subject: [PATCH v4 1/3] VT: Use macros to define ioctls
-Date: Tue,  2 Apr 2024 19:50:44 +0200
-Message-ID: <e4229fe2933a003341e338b558ab1ea8b63a51f6.1712080158.git.legion@kernel.org>
+	linux-serial@vger.kernel.org,
+	Helge Deller <deller@gmx.de>
+Subject: [PATCH v4 2/3] VT: Add KDFONTINFO ioctl
+Date: Tue,  2 Apr 2024 19:50:45 +0200
+Message-ID: <7cd32f988a147d7617742c9e074c753de0c6bc1f.1712080158.git.legion@kernel.org>
 X-Mailer: git-send-email 2.44.0
 In-Reply-To: <cover.1712080158.git.legion@kernel.org>
 References: <74ca50e0-61b1-4d4c-85dd-a5d920548c04@kernel.org> <cover.1712080158.git.legion@kernel.org>
@@ -62,212 +63,135 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-All other headers use _IOC() macros to describe ioctls for a long time
-now. This header is stuck in the last century.
+Each driver has its own restrictions on font size. There is currently no
+way to understand what the requirements are. The new ioctl allows
+userspace to get the minimum and maximum font size values.
 
-Simply use the _IO() macro. No other changes.
-
+Acked-by: Helge Deller <deller@gmx.de>
 Signed-off-by: Alexey Gladkov <legion@kernel.org>
 ---
- include/uapi/linux/kd.h | 96 +++++++++++++++++++++--------------------
- 1 file changed, 49 insertions(+), 47 deletions(-)
+ drivers/tty/vt/vt.c       | 24 ++++++++++++++++++++++++
+ drivers/tty/vt/vt_ioctl.c | 11 +++++++++++
+ include/linux/console.h   |  3 +++
+ include/linux/vt_kern.h   |  1 +
+ include/uapi/linux/kd.h   | 13 ++++++++++++-
+ 5 files changed, 51 insertions(+), 1 deletion(-)
 
+diff --git a/drivers/tty/vt/vt.c b/drivers/tty/vt/vt.c
+index 9b5b98dfc8b4..e8db0e9ea674 100644
+--- a/drivers/tty/vt/vt.c
++++ b/drivers/tty/vt/vt.c
+@@ -4851,6 +4851,30 @@ int con_font_op(struct vc_data *vc, struct console_font_op *op)
+ 	return -ENOSYS;
+ }
+ 
++int con_font_info(struct vc_data *vc, struct console_font_info *info)
++{
++	int rc;
++
++	info->min_height = 0;
++	info->max_height = max_font_height;
++
++	info->min_width = 0;
++	info->max_width = max_font_width;
++
++	info->flags = KD_FONT_INFO_FLAG_LOW_SIZE | KD_FONT_INFO_FLAG_HIGH_SIZE;
++
++	console_lock();
++	if (vc->vc_mode != KD_TEXT)
++		rc = -EINVAL;
++	else if (vc->vc_sw->con_font_info)
++		rc = vc->vc_sw->con_font_info(vc, info);
++	else
++		rc = -ENOSYS;
++	console_unlock();
++
++	return rc;
++}
++
+ /*
+  *	Interface exported to selection and vcs.
+  */
+diff --git a/drivers/tty/vt/vt_ioctl.c b/drivers/tty/vt/vt_ioctl.c
+index 4b91072f3a4e..40f9467f503d 100644
+--- a/drivers/tty/vt/vt_ioctl.c
++++ b/drivers/tty/vt/vt_ioctl.c
+@@ -479,6 +479,17 @@ static int vt_k_ioctl(struct tty_struct *tty, unsigned int cmd,
+ 		break;
+ 	}
+ 
++	case KDFONTINFO: {
++		struct console_font_info fnt_info;
++
++		ret = con_font_info(vc, &fnt_info);
++		if (ret)
++			return ret;
++		if (copy_to_user(up, &fnt_info, sizeof(fnt_info)))
++			return -EFAULT;
++		break;
++	}
++
+ 	default:
+ 		return -ENOIOCTLCMD;
+ 	}
+diff --git a/include/linux/console.h b/include/linux/console.h
+index 31a8f5b85f5d..4b798322aa01 100644
+--- a/include/linux/console.h
++++ b/include/linux/console.h
+@@ -21,6 +21,7 @@
+ #include <linux/vesa.h>
+ 
+ struct vc_data;
++struct console_font_info;
+ struct console_font_op;
+ struct console_font;
+ struct module;
+@@ -102,6 +103,8 @@ struct consw {
+ 	bool	(*con_switch)(struct vc_data *vc);
+ 	bool	(*con_blank)(struct vc_data *vc, enum vesa_blank_mode blank,
+ 			     bool mode_switch);
++	int	(*con_font_info)(struct vc_data *vc,
++				 struct console_font_info *info);
+ 	int	(*con_font_set)(struct vc_data *vc,
+ 				const struct console_font *font,
+ 				unsigned int vpitch, unsigned int flags);
+diff --git a/include/linux/vt_kern.h b/include/linux/vt_kern.h
+index d008c3d0a9bb..383b3a4f6113 100644
+--- a/include/linux/vt_kern.h
++++ b/include/linux/vt_kern.h
+@@ -33,6 +33,7 @@ void do_blank_screen(int entering_gfx);
+ void do_unblank_screen(int leaving_gfx);
+ void poke_blanked_console(void);
+ int con_font_op(struct vc_data *vc, struct console_font_op *op);
++int con_font_info(struct vc_data *vc, struct console_font_info *info);
+ int con_set_cmap(unsigned char __user *cmap);
+ int con_get_cmap(unsigned char __user *cmap);
+ void scrollback(struct vc_data *vc);
 diff --git a/include/uapi/linux/kd.h b/include/uapi/linux/kd.h
-index 6b384065c013..8ddb2219a84b 100644
+index 8ddb2219a84b..abaf4dd6bb93 100644
 --- a/include/uapi/linux/kd.h
 +++ b/include/uapi/linux/kd.h
-@@ -5,60 +5,61 @@
- #include <linux/compiler.h>
+@@ -185,8 +185,19 @@ struct console_font {
  
- /* 0x4B is 'K', to avoid collision with termios and vt */
-+#define KD_IOCTL_BASE	'K'
+ #define KD_FONT_FLAG_DONT_RECALC 	1	/* Don't recalculate hw charcell size [compat] */
  
--#define GIO_FONT	0x4B60	/* gets font in expanded form */
--#define PIO_FONT	0x4B61	/* use font in expanded form */
-+#define GIO_FONT	_IO(KD_IOCTL_BASE, 0x60)	/* gets font in expanded form */
-+#define PIO_FONT	_IO(KD_IOCTL_BASE, 0x61)	/* use font in expanded form */
++#define KDFONTINFO	_IO(KD_IOCTL_BASE, 0x73)	/* font information */
++
++#define KD_FONT_INFO_FLAG_LOW_SIZE	_BITUL(0) /* 256 */
++#define KD_FONT_INFO_FLAG_HIGH_SIZE	_BITUL(1) /* 512 */
++
++struct console_font_info {
++	unsigned int min_width, min_height;	/* minimal font size */
++	unsigned int max_width, max_height;	/* maximum font size */
++	unsigned int flags;			/* KD_FONT_INFO_FLAG_* */
++};
++
+ /* note: 0x4B00-0x4B4E all have had a value at some time;
+    don't reuse for the time being */
+-/* note: 0x4B60-0x4B6D, 0x4B70-0x4B72 used above */
++/* note: 0x4B60-0x4B6D, 0x4B70-0x4B73 used above */
  
--#define GIO_FONTX	0x4B6B	/* get font using struct consolefontdesc */
--#define PIO_FONTX	0x4B6C	/* set font using struct consolefontdesc */
-+#define GIO_FONTX	_IO(KD_IOCTL_BASE, 0x6B)	/* get font using struct consolefontdesc */
-+#define PIO_FONTX	_IO(KD_IOCTL_BASE, 0x6C)	/* set font using struct consolefontdesc */
- struct consolefontdesc {
- 	unsigned short charcount;	/* characters in font (256 or 512) */
- 	unsigned short charheight;	/* scan lines per character (1-32) */
- 	char __user *chardata;		/* font data in expanded form */
- };
- 
--#define PIO_FONTRESET   0x4B6D	/* reset to default font */
-+#define PIO_FONTRESET	_IO(KD_IOCTL_BASE, 0x6D)	/* reset to default font */
- 
--#define GIO_CMAP	0x4B70	/* gets colour palette on VGA+ */
--#define PIO_CMAP	0x4B71	/* sets colour palette on VGA+ */
-+#define GIO_CMAP	_IO(KD_IOCTL_BASE, 0x70)	/* gets colour palette on VGA+ */
-+#define PIO_CMAP	_IO(KD_IOCTL_BASE, 0x71)	/* sets colour palette on VGA+ */
- 
--#define KIOCSOUND	0x4B2F	/* start sound generation (0 for off) */
--#define KDMKTONE	0x4B30	/* generate tone */
-+#define KIOCSOUND	_IO(KD_IOCTL_BASE, 0x2F)	/* start sound generation (0 for off) */
-+#define KDMKTONE	_IO(KD_IOCTL_BASE, 0x30)	/* generate tone */
- 
--#define KDGETLED	0x4B31	/* return current led state */
--#define KDSETLED	0x4B32	/* set led state [lights, not flags] */
-+#define KDGETLED	_IO(KD_IOCTL_BASE, 0x31)	/* return current led state */
-+#define KDSETLED	_IO(KD_IOCTL_BASE, 0x32)	/* set led state [lights, not flags] */
- #define 	LED_SCR		0x01	/* scroll lock led */
- #define 	LED_NUM		0x02	/* num lock led */
- #define 	LED_CAP		0x04	/* caps lock led */
- 
--#define KDGKBTYPE	0x4B33	/* get keyboard type */
-+#define KDGKBTYPE	_IO(KD_IOCTL_BASE, 0x33)	/* get keyboard type */
- #define 	KB_84		0x01
- #define 	KB_101		0x02 	/* this is what we always answer */
- #define 	KB_OTHER	0x03
- 
--#define KDADDIO		0x4B34	/* add i/o port as valid */
--#define KDDELIO		0x4B35	/* del i/o port as valid */
--#define KDENABIO	0x4B36	/* enable i/o to video board */
--#define KDDISABIO	0x4B37	/* disable i/o to video board */
-+#define KDADDIO		_IO(KD_IOCTL_BASE, 0x34)	/* add i/o port as valid */
-+#define KDDELIO		_IO(KD_IOCTL_BASE, 0x35)	/* del i/o port as valid */
-+#define KDENABIO	_IO(KD_IOCTL_BASE, 0x36)	/* enable i/o to video board */
-+#define KDDISABIO	_IO(KD_IOCTL_BASE, 0x37)	/* disable i/o to video board */
- 
--#define KDSETMODE	0x4B3A	/* set text/graphics mode */
-+#define KDSETMODE	_IO(KD_IOCTL_BASE, 0x3A)	/* set text/graphics mode */
- #define		KD_TEXT		0x00
- #define		KD_GRAPHICS	0x01
- #define		KD_TEXT0	0x02	/* obsolete */
- #define		KD_TEXT1	0x03	/* obsolete */
--#define KDGETMODE	0x4B3B	/* get current mode */
-+#define KDGETMODE	_IO(KD_IOCTL_BASE, 0x3B)	/* get current mode */
- 
--#define KDMAPDISP	0x4B3C	/* map display into address space */
--#define KDUNMAPDISP	0x4B3D	/* unmap display from address space */
-+#define KDMAPDISP	_IO(KD_IOCTL_BASE, 0x3C)	/* map display into address space */
-+#define KDUNMAPDISP	_IO(KD_IOCTL_BASE, 0x3D)	/* unmap display from address space */
- 
- typedef char scrnmap_t;
- #define		E_TABSZ		256
--#define GIO_SCRNMAP	0x4B40	/* get screen mapping from kernel */
--#define PIO_SCRNMAP	0x4B41	/* put screen mapping table in kernel */
--#define GIO_UNISCRNMAP  0x4B69	/* get full Unicode screen mapping */
--#define PIO_UNISCRNMAP  0x4B6A  /* set full Unicode screen mapping */
-+#define GIO_SCRNMAP	_IO(KD_IOCTL_BASE, 0x40)	/* get screen mapping from kernel */
-+#define PIO_SCRNMAP	_IO(KD_IOCTL_BASE, 0x41)	/* put screen mapping table in kernel */
-+#define GIO_UNISCRNMAP	_IO(KD_IOCTL_BASE, 0x69)	/* get full Unicode screen mapping */
-+#define PIO_UNISCRNMAP	_IO(KD_IOCTL_BASE, 0x6A)	/* set full Unicode screen mapping */
- 
--#define GIO_UNIMAP	0x4B66	/* get unicode-to-font mapping from kernel */
-+#define GIO_UNIMAP	_IO(KD_IOCTL_BASE, 0x66)	/* get unicode-to-font mapping from kernel */
- struct unipair {
- 	unsigned short unicode;
- 	unsigned short fontpos;
-@@ -67,8 +68,8 @@ struct unimapdesc {
- 	unsigned short entry_ct;
- 	struct unipair __user *entries;
- };
--#define PIO_UNIMAP	0x4B67	/* put unicode-to-font mapping in kernel */
--#define PIO_UNIMAPCLR	0x4B68	/* clear table, possibly advise hash algorithm */
-+#define PIO_UNIMAP	_IO(KD_IOCTL_BASE, 0x67)	/* put unicode-to-font mapping in kernel */
-+#define PIO_UNIMAPCLR	_IO(KD_IOCTL_BASE, 0x68)	/* clear table, possibly advise hash algorithm */
- struct unimapinit {
- 	unsigned short advised_hashsize;  /* 0 if no opinion */
- 	unsigned short advised_hashstep;  /* 0 if no opinion */
-@@ -83,19 +84,19 @@ struct unimapinit {
- #define		K_MEDIUMRAW	0x02
- #define		K_UNICODE	0x03
- #define		K_OFF		0x04
--#define KDGKBMODE	0x4B44	/* gets current keyboard mode */
--#define KDSKBMODE	0x4B45	/* sets current keyboard mode */
-+#define KDGKBMODE	_IO(KD_IOCTL_BASE, 0x44)	/* gets current keyboard mode */
-+#define KDSKBMODE	_IO(KD_IOCTL_BASE, 0x45)	/* sets current keyboard mode */
- 
- #define		K_METABIT	0x03
- #define		K_ESCPREFIX	0x04
--#define KDGKBMETA	0x4B62	/* gets meta key handling mode */
--#define KDSKBMETA	0x4B63	/* sets meta key handling mode */
-+#define KDGKBMETA	_IO(KD_IOCTL_BASE, 0x62)	/* gets meta key handling mode */
-+#define KDSKBMETA	_IO(KD_IOCTL_BASE, 0x63)	/* sets meta key handling mode */
- 
- #define		K_SCROLLLOCK	0x01
- #define		K_NUMLOCK	0x02
- #define		K_CAPSLOCK	0x04
--#define	KDGKBLED	0x4B64	/* get led flags (not lights) */
--#define	KDSKBLED	0x4B65	/* set led flags (not lights) */
-+#define	KDGKBLED	_IO(KD_IOCTL_BASE, 0x64)	/* get led flags (not lights) */
-+#define	KDSKBLED	_IO(KD_IOCTL_BASE, 0x65)	/* set led flags (not lights) */
- 
- struct kbentry {
- 	unsigned char kb_table;
-@@ -107,15 +108,15 @@ struct kbentry {
- #define		K_ALTTAB	0x02
- #define		K_ALTSHIFTTAB	0x03
- 
--#define KDGKBENT	0x4B46	/* gets one entry in translation table */
--#define KDSKBENT	0x4B47	/* sets one entry in translation table */
-+#define KDGKBENT	_IO(KD_IOCTL_BASE, 0x46)	/* gets one entry in translation table */
-+#define KDSKBENT	_IO(KD_IOCTL_BASE, 0x47)	/* sets one entry in translation table */
- 
- struct kbsentry {
- 	unsigned char kb_func;
- 	unsigned char kb_string[512];
- };
--#define KDGKBSENT	0x4B48	/* gets one function key string entry */
--#define KDSKBSENT	0x4B49	/* sets one function key string entry */
-+#define KDGKBSENT	_IO(KD_IOCTL_BASE, 0x48)	/* gets one function key string entry */
-+#define KDSKBSENT	_IO(KD_IOCTL_BASE, 0x49)	/* sets one function key string entry */
- 
- struct kbdiacr {
-         unsigned char diacr, base, result;
-@@ -124,8 +125,8 @@ struct kbdiacrs {
-         unsigned int kb_cnt;    /* number of entries in following array */
- 	struct kbdiacr kbdiacr[256];    /* MAX_DIACR from keyboard.h */
- };
--#define KDGKBDIACR      0x4B4A  /* read kernel accent table */
--#define KDSKBDIACR      0x4B4B  /* write kernel accent table */
-+#define KDGKBDIACR	_IO(KD_IOCTL_BASE, 0x4A)  /* read kernel accent table */
-+#define KDSKBDIACR	_IO(KD_IOCTL_BASE, 0x4B)  /* write kernel accent table */
- 
- struct kbdiacruc {
- 	unsigned int diacr, base, result;
-@@ -134,16 +135,16 @@ struct kbdiacrsuc {
-         unsigned int kb_cnt;    /* number of entries in following array */
- 	struct kbdiacruc kbdiacruc[256];    /* MAX_DIACR from keyboard.h */
- };
--#define KDGKBDIACRUC    0x4BFA  /* read kernel accent table - UCS */
--#define KDSKBDIACRUC    0x4BFB  /* write kernel accent table - UCS */
-+#define KDGKBDIACRUC	_IO(KD_IOCTL_BASE, 0xFA)  /* read kernel accent table - UCS */
-+#define KDSKBDIACRUC	_IO(KD_IOCTL_BASE, 0xFB)  /* write kernel accent table - UCS */
- 
- struct kbkeycode {
- 	unsigned int scancode, keycode;
- };
--#define KDGETKEYCODE	0x4B4C	/* read kernel keycode table entry */
--#define KDSETKEYCODE	0x4B4D	/* write kernel keycode table entry */
-+#define KDGETKEYCODE	_IO(KD_IOCTL_BASE, 0x4C)	/* read kernel keycode table entry */
-+#define KDSETKEYCODE	_IO(KD_IOCTL_BASE, 0x4D)	/* write kernel keycode table entry */
- 
--#define KDSIGACCEPT	0x4B4E	/* accept kbd generated signals */
-+#define KDSIGACCEPT	_IO(KD_IOCTL_BASE, 0x4E)	/* accept kbd generated signals */
- 
- struct kbd_repeat {
- 	int delay;	/* in msec; <= 0: don't change */
-@@ -151,10 +152,11 @@ struct kbd_repeat {
- 			/* earlier this field was misnamed "rate" */
- };
- 
--#define KDKBDREP        0x4B52  /* set keyboard delay/repeat rate;
--				 * actually used values are returned */
-+#define KDKBDREP	_IO(KD_IOCTL_BASE, 0x52)	/* set keyboard delay/repeat rate;
-+							 * actually used values are returned
-+							 */
- 
--#define KDFONTOP	0x4B72	/* font operations */
-+#define KDFONTOP	_IO(KD_IOCTL_BASE, 0x72)	/* font operations */
- 
- struct console_font_op {
- 	unsigned int op;	/* operation code KD_FONT_OP_* */
+ #endif /* _UAPI_LINUX_KD_H */
 -- 
 2.44.0
 
