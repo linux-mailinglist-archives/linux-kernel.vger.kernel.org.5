@@ -1,132 +1,105 @@
-Return-Path: <linux-kernel+bounces-127739-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-127745-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0AFDA89503B
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 12:35:42 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 88C26895058
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 12:37:28 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B1E431F2701B
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 10:35:41 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 29B59B23C87
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 10:37:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CE37A6994C;
-	Tue,  2 Apr 2024 10:34:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F121D7FBC3;
+	Tue,  2 Apr 2024 10:34:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="P+wvg4Xr";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="DU0xq7e6"
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="tNq263To"
+Received: from mail-ej1-f52.google.com (mail-ej1-f52.google.com [209.85.218.52])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 905B8657B5;
-	Tue,  2 Apr 2024 10:34:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7DE577F7EC
+	for <linux-kernel@vger.kernel.org>; Tue,  2 Apr 2024 10:34:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712054063; cv=none; b=m2hvFWAELyyWeLqWv4TuU4CKNI0lNclI+EM3N7JQ+KatEPKKZl9tyMes1G43K4EJRffTQxLZ6emY0d82BbqjWCIwJpF5oYzy95WOKKh1mFatafontaAsSUaiSQXkRwkA1tOP8aBXFfGhynnlbpfOhJngSSaI+rj5ObPRRGsD0d8=
+	t=1712054091; cv=none; b=YJkL9hXfgffTXu7FmejIjj0Jd7ZcyONlBaQQlcj2Cyr2Zyh5Xfzdg76uEAjp0sZnfQNI1iw8tiL4Slu/Zs9ldVwIpT+U8HZaBB5WPSKsqsBJ6qEuUkjCvZDvcXegaWJCDfniYKAoMXoveirfIziUeahlURBf/6mGcz5Q3dmLj0c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712054063; c=relaxed/simple;
-	bh=Q4MlAhRm+AkBxTUeVkfth/yvDYTiPwojE4biBVagZF4=;
+	s=arc-20240116; t=1712054091; c=relaxed/simple;
+	bh=m4o/iU+AQ9jMOTYN6ooaE1NHa4LcKTSx7PoeD5OTS2I=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=KjImjdoG4AuCJgfJusTzNBCCWhnKx/h43/HJK401KHH1kTkywfT4ThjHE0mDNETU3mCkmcek7GxGuiphFU6foUo1W6T6FRWB0/tZ1grsXZQj++uHD3nzxePyYqMP0SNe8ZPnGf5KZnCbFHyqwRaW0VtVDvoc7tyouBSwNE1Wjlo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=P+wvg4Xr; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=DU0xq7e6; arc=none smtp.client-ip=193.142.43.55
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
-Date: Tue, 2 Apr 2024 12:34:14 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1712054056;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=STfe/Rz3uPOTuqu4DrUcO9QjfwomKLwaXdLP6m2yfFc=;
-	b=P+wvg4XrkSa8qrUqLFplrxzRc04v5G0AvSoJPkYGlnle/rjdCGNtOirGpbAtrYWaEZXYxt
-	4MJNjH23Yd4yTmtC6fiUTr4j0YItovd5T8MM6bnEgHMaQd3WCYoVcqZJt98XClr1A2bQe2
-	86VQaBn4BpbWfcBmBxUvBtS0TWVcPjz5xNjJ68Yg7zn5kErEW5RBvG/JnPBoNim7zKkTLj
-	78kAn6brpoybVRsNrDCx9Yjbb2U7LYCZj13nQI4+NPCiAshU7C4wpu64BBEUVwNmIsEIhu
-	MbcWc1vc4KSf48ABCVdipi6cgNLlfjGLDXIDQQNwJeOtHVrG4JrSXM0zo9pt4Q==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1712054056;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=STfe/Rz3uPOTuqu4DrUcO9QjfwomKLwaXdLP6m2yfFc=;
-	b=DU0xq7e60IJtZQNOzYay7B8VjNffiXJvrNL+NVaf3TXBUWY82qsg3vKThsIZFpW6m3IDhW
-	k+pyEg7w0w0dUpDQ==
-From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-To: "John B. Wyatt IV" <jwyatt@redhat.com>
-Cc: John Ogness <john.ogness@linutronix.de>, Petr Mladek <pmladek@suse.com>,
-	Clark Williams <williams@redhat.com>,
-	Juri Lelli <jlelli@redhat.com>, Derek Barbosa <debarbos@redhat.com>,
-	Bruno Goncalves <bgoncalv@redhat.com>,
-	"John B. Wyatt IV" <sageofredondo@gmail.com>,
-	LKML <linux-kernel@vger.kernel.org>,
-	linux-rt-users <linux-rt-users@vger.kernel.org>
-Subject: Re: NMIs reported by console_blast.sh with 6.6.20-rt25
-Message-ID: <20240402103414.KkkX5RuV@linutronix.de>
-References: <ZfSfrzak9WS0ZFv7@thinkpad2021>
- <20240322122921.U3WRsO4X@linutronix.de>
- <ZgSvVCDja6yFCC0Y@thinkpad2021>
+	 Content-Type:Content-Disposition:In-Reply-To; b=urtSJmGRpeIYg51MdZ1xRYYzWc/O4ws6Qk09E2txDfpswa3vShJDaqlLHvmm3iN+3GGCWYFEj6CN/XO3WzSPAw3hoFgglVeiGpHSXBDAf1yiHTycst/P0FNTNJYTgnFtXWzYkzF7lrODRIzqEfQOxpvv+OGTJXQmjWpaclqjmrQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=tNq263To; arc=none smtp.client-ip=209.85.218.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-ej1-f52.google.com with SMTP id a640c23a62f3a-a46a7208eedso645168766b.0
+        for <linux-kernel@vger.kernel.org>; Tue, 02 Apr 2024 03:34:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1712054088; x=1712658888; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=G16lC2YSuCH0nQG087sinHXSeTqOMb9VBJ6YVFLPItk=;
+        b=tNq263Toc7VoH3byY7jMhg3jmoiGqblXgMxytf7oSVv5KEnNQFjaPeFJ/uWs71LB6L
+         Hx0Kw635zRy8yJNUpcXeq4aEgfujk4sCvmOOmARsGuFvXo3xRsg01PyI6UW3kSD8T4NZ
+         jGcyGmvSChiQa3HBwNr1RBbmt8SZoAAhk44LSfYpR/l7SmxD9rotpE4ScXFhMvfPG9Y8
+         0Gzg2vVUGnhG3Ad9s8P1ZuvxQf9Ps2+1M5HEtX6xLwHXpkwgQm2tuvgp9/WeXY8NXVD1
+         eP6beIbXA6LYrP94eUzQC7utBl6eVJs+o+vyC/t3szCppWNpO0CjbeiWM2g2iFR+SOd7
+         9I7g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712054088; x=1712658888;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=G16lC2YSuCH0nQG087sinHXSeTqOMb9VBJ6YVFLPItk=;
+        b=fxz/1p4qA42e0BFZKdzUx4rgUBIwO9V1okGUrzYKtEJcaUT4Dfbg44l6iL1Iv3WfRC
+         aWpWGnUVWVk2Mk+Yu4J617p8q6OWlEwAWjDdzZi6CFh5qZxa+nSJyMzKBi6on7VCvROY
+         tFBzRICkhnHzsk2l2VkMF6zQ6tMihVbXVQTru1A/yVN0bBpcSeJjaa69z7UoihOKyE+v
+         AbwJ9lMohUGynRHhpeUCLMP3Kdk/FSpLjoHfD+t15+w3j22VwRAQ9G9FbfASEAQv4mH9
+         ZRiirxxIZ27WeweunZsaQhR6JPE3w6w6Bd5SqqZMsUH+7M62r3oLWOau06vUpDiwyezZ
+         uXww==
+X-Forwarded-Encrypted: i=1; AJvYcCVDSy89/oa7uiX7+cYKUuOGZsW6Tg+8lVjAHHkg5WQ040aCGITD2kMVQ0MDeWGO1WXlK3A838hU4npr83q1fSD/9aTeRvrozGzmBk1T
+X-Gm-Message-State: AOJu0YwrGaO1DsutQk6Otc5MTqh0ZEx+lQJ7YGVTs2fVaAr4cFSZQ+zY
+	4lKDBg+yXD9r7QCf9JutpB13kllKORlU/RudO6hLVvb9JTOXDT/i11wevoRcQsk=
+X-Google-Smtp-Source: AGHT+IH7mjufzReUXPa1rRJkfPuCBfvZvh+cNz4FnNh9ylUnbPbSVtG647+yZI90FUnmu2wp5DzR3Q==
+X-Received: by 2002:a17:906:c413:b0:a4e:904:3c7f with SMTP id u19-20020a170906c41300b00a4e09043c7fmr7047920ejz.50.1712054087537;
+        Tue, 02 Apr 2024 03:34:47 -0700 (PDT)
+Received: from localhost ([102.222.70.76])
+        by smtp.gmail.com with ESMTPSA id an3-20020a17090656c300b00a4e7c2b2070sm1338235ejc.8.2024.04.02.03.34.46
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 02 Apr 2024 03:34:47 -0700 (PDT)
+Date: Tue, 2 Apr 2024 13:34:43 +0300
+From: Dan Carpenter <dan.carpenter@linaro.org>
+To: Prasad Pandit <ppandit@redhat.com>
+Cc: Greg KH <gregkh@linuxfoundation.org>, florian.fainelli@broadcom.com,
+	bcm-kernel-feedback-list@broadcom.com,
+	linux-arm-kernel@lists.infradead.org, rjui@broadcom.com,
+	sbranden@broadcom.com, linux-staging@lists.linux.dev,
+	linux-rpi-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+	Prasad Pandit <pjp@fedoraproject.org>
+Subject: Re: [PATCH v4] staging: bcm2835-audio: add terminating new line to
+ Kconfig
+Message-ID: <6da2518b-19bd-4ec3-889e-ecf401ba0ee3@moroto.mountain>
+References: <20240330040411.3273337-1-ppandit@redhat.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <ZgSvVCDja6yFCC0Y@thinkpad2021>
+In-Reply-To: <20240330040411.3273337-1-ppandit@redhat.com>
 
-On 2024-03-27 19:44:20 [-0400], John B. Wyatt IV wrote:
-> > where is this output from? The `ret' opcode usually does not cause a
-> > trap. My guess is that the machine has been interrupted by an external
-> > user at this position.
->=20
-> Just before the sysrq that crashes the system.
+On Sat, Mar 30, 2024 at 09:34:11AM +0530, Prasad Pandit wrote:
+> From: Prasad Pandit <pjp@fedoraproject.org>
+> 
+> Add terminating new line to the Kconfig file. It helps while
+> displaying file with cat(1) command.
+> 
+> Signed-off-by: Prasad Pandit <pjp@fedoraproject.org>
+> ---
 
-so this is intentional.
+Acked-by: Dan Carpenter <dan.carpenter@linaro.org>
 
-=E2=80=A6
-> > Side note: This is using early_printk, correct?
->=20
-> I believe so, but it might be preempted? This is the part it stopped in.
->=20
-> static void io_serial_out(unsigned long addr, int offset, int value)
-> {
-> 	outb(value, addr + offset);
-> }
+regards,
+dan carpenter
 
-The function is invoked in NMU context so it can't be preempted.
-
-> > According to this, someone issued a `crash' via sysrq. Why?
-> >=20
->=20
-> This is part of the console_blast.sh script that John Ogness sent me.
->=20
-> Please see below:
-=E2=80=A6
-
-Okay. Then everything works as it should=E2=80=A6
-
-> > > NMI Backtrace for 6.6.20-rt25 no forced preemption with tuned through=
-put-performance profile
-> > > -----------------------------
-> >=20
-> > This and the following backtrace shows the same picture: The CPU is
-> > crashing due to proc/sysrq request and does CPU-backtraces via NMI and
-> > polls in early_printk, waiting for the UART to become idle (probably).
-> >=20
-> > I don't see an issue here so far.
->=20
-> Luis Goncalves discussed it with me after reading your response. Thank
-> you for your help. The NMI was needed to flush the buffers upon the
-> system crashing itself. Does this part about NMI watchdog need to be
-> documented?
-
-Not sure about that one. There is an _a_ _lot_ to be printed from NMI
-and the NMI watchdog might trigger if nothing is triggering the
-NMI-watchdog during the print job. Also, the crash was requested.
-
-Sebastian
 
