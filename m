@@ -1,69 +1,69 @@
-Return-Path: <linux-kernel+bounces-127917-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-127918-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1436D8952C1
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 14:18:31 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1E1928952C2
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 14:18:53 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 371671C21E8C
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 12:18:30 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 78128B26AE2
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 12:18:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 431AE82893;
-	Tue,  2 Apr 2024 12:17:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 060FD82899;
+	Tue,  2 Apr 2024 12:17:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="ydrkxjoa"
-Received: from mail-yb1-f201.google.com (mail-yb1-f201.google.com [209.85.219.201])
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="cyyOvmnG"
+Received: from mail-lj1-f201.google.com (mail-lj1-f201.google.com [209.85.208.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B5BE27F7EA
-	for <linux-kernel@vger.kernel.org>; Tue,  2 Apr 2024 12:17:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 58A118289C
+	for <linux-kernel@vger.kernel.org>; Tue,  2 Apr 2024 12:17:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712060251; cv=none; b=jtrHOjMxVXfWtFjfTF5anGeFHrVNASvhowOKJ/Sn7ebTBEPl7brab5+uuVK7M4LNwi0y3sByHJL+KB+ph04dETKHAky+1M3EIHA38Z6QLTpQK9j68MIo2rNgMkOiTA3oSVQc83+Kf1PCL2sIh2W2AzN4RRNYYC7Iygu+GRgp6Ug=
+	t=1712060254; cv=none; b=f4YmDxRNOC7tuup0N1DPWTHFdSxEpYiZh3pzCM+ezc/3QNAYH9Ic+cTwbGMq7G9VnGz3RitbtxNa4kvuGjywvVTlRJhujBNUGqmGppKcunJRTtB/swuy5AoZvQmw449fm3BDMUZEk7K775XjBmcjZPH1Ou8r86+TM275GrgEuGo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712060251; c=relaxed/simple;
-	bh=2PIcpJp9DT7VacmhqXAmL7iXpjNRwDR3ul+Ch/uIEhU=;
+	s=arc-20240116; t=1712060254; c=relaxed/simple;
+	bh=HqTvdg8fzcYf4HPXuYAv/EzwRzpXiMamY7vxsIqyqQI=;
 	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=E7SSUUDDV8YBSo0kGsFSHHEC5lwXiaGvnEVwqVl692sOvtEv22nQCuXqmqVVCuMNdSYrBoZthMGNxFzzIf/xHfA1/CUu0RNAgYeT8kmgegIiJcKocvlrI/+nGjOY6utWgBI32m8MrZHSHUMVUk/Qp1b5DxAPsXGDtiKChlm0XK4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--aliceryhl.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=ydrkxjoa; arc=none smtp.client-ip=209.85.219.201
+	 To:Cc:Content-Type; b=ZOoTWRYuDI/AhxiqvjNLDkX4PFxpTOTZoe9xCwHQr4Pc8ruZzurSLxKgq6PByw4AZ0WLMNI0GLe+21juEyb7KjpnkEyMBFm/NkBGrCCOs9NUm98bVJVqvA/pl7EBrlPyrutXnndmhTYEZkbHcMkmOL5Z8ZMHcuBEz4XNWB36KaA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--aliceryhl.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=cyyOvmnG; arc=none smtp.client-ip=209.85.208.201
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--aliceryhl.bounces.google.com
-Received: by mail-yb1-f201.google.com with SMTP id 3f1490d57ef6-dc6b269686aso7108540276.1
-        for <linux-kernel@vger.kernel.org>; Tue, 02 Apr 2024 05:17:28 -0700 (PDT)
+Received: by mail-lj1-f201.google.com with SMTP id 38308e7fff4ca-2d45c064742so51849351fa.3
+        for <linux-kernel@vger.kernel.org>; Tue, 02 Apr 2024 05:17:32 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1712060248; x=1712665048; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1712060250; x=1712665050; darn=vger.kernel.org;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=Vhv4LxRJZ6OxQtv+kEEl5Wq7dqUJQo6ze35BbQzNlO4=;
-        b=ydrkxjoaY/TlM8e9PL1P0qbWcShjQjKiWS+TL/D17jJRylybrXYKFHByLmyXm3an2M
-         h5n6zthcuCVsjUFVq48N05h4JrmvJOsez9m3TVHS6aeoFKmohhHfADpU+Fg6T717+Jcr
-         2q0n7Yjy+xWRTvRZcK/M8UKgy/QD69cpxq3/o5ZtJpEnE23W0VFG146ZLvByqv2DOe9L
-         pVitP2skwuYankQ7oPb8dlesEvR4cxWtXHJ+N9jW/wS6Q65eej1BdVACEq0+bMGAHzm5
-         f6GLSLp1jdVrD9toP6IW6B5ULNpKsGU1ip8Y+qPOLKghtTmGMSr5kONvVBGz9of8XmrG
-         cLvQ==
+        bh=VJ5h910JMlBSC/fYAKRLARZ1uSxij9BJ97PB2fg4buc=;
+        b=cyyOvmnGpPASiGWAdjt9Gbavog2RXcsEkEJUtZ6yGwAIZrxQYl4gZ+pA765qa9WkGW
+         3lvrbTdhwsKgxo3RRSqgAFd9i9Do4mynWhqmfC0bwQ0PcvrRyRO1uu9csWsJ9xu/NK7i
+         nEyNoWlyQQxl2diCEiNSb0cE/DiU4yKTDN/Rg1umsVNyMIhDCzF8bewSH+phtYU3SREX
+         xPaGlwwvqSUD7+sW/UJosKK8ob9uabhjuANsBK6KH9umy1ULF8DMPZUtGrO0lCgjJNBO
+         5jJ3E9xEs9YGr4Xvuikrnlze1PgcAsOvLDohdXnMNhkPVST6w5G+N/9VmWPyaCElxL3/
+         7nbQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712060248; x=1712665048;
+        d=1e100.net; s=20230601; t=1712060250; x=1712665050;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Vhv4LxRJZ6OxQtv+kEEl5Wq7dqUJQo6ze35BbQzNlO4=;
-        b=EgGxbRVxL5CdU9z7/rCdVv/2fAA3BwyMMVwwznDP52yG8Z3Eo2TDplqVC9x0FHq4XR
-         Sa8YP3baPs5FTrhycIvsP+IwkN4k9VrqIXmU4DTdqCzCI/de8w9GcyOoarhE3FQlieg7
-         E5LdeSjK5lu0j4qddJ4THX/ha8L6byVlgC2U7fASBsywe2dspBaSypY8mUmNSfQd0mat
-         /Iky6QeFMRgwAWKZ9jUzUaoabsxs7E4bCMRqtv+FboJ4D8Ydf/Yg1A5C6qW8y1jxOwhO
-         1RhthTftazDQNlkqaM6GJik6L3n8HGzzj3XUREUoIhddUAtvwEbr8Db5NO1RcAWztb6G
-         FEJA==
-X-Forwarded-Encrypted: i=1; AJvYcCXQWhYCo2tXjdLjQdiNUX7SMk/jSxfbKynPToWUHXotseTJuoVjjFX2/Xqm7yaW5XKM9mKaX8PN+XGzdTTl3q1TolCVMfikJB1u5l2u
-X-Gm-Message-State: AOJu0YyCaiMro+lvUDr9fVMjorTXkQ9+8NEKK5sjV8BRJ3SOL7SrfzQY
-	MC0UhdKNN6aUKx0pQkb0v3H8gSYZhQ7QzYjE6dVeM1iaQvf2N3b0CjfMoEVfeJ5F1PCVVVbm5Z7
-	64qswu9BuwRaeBQ==
-X-Google-Smtp-Source: AGHT+IFPeL2qwx829ZFPHGJYFkffe6dJwQ4bXNP9dPoxKP7o36b6Dqs5va8TK6Yn0yc6KOKjxZjuDd8dBh5Krq4=
+        bh=VJ5h910JMlBSC/fYAKRLARZ1uSxij9BJ97PB2fg4buc=;
+        b=Is2SiWI/qGmEYWnmpxvMIZy01yYXJl6W/+eHl5ji8ng4C0UiKvyuVxR9H1VLPUJe6r
+         4Kep2G7KFOnJztzbo0Up+5QqnhNbQa2Acd5vedkRvvff/Cw//ymd6Mg1eZU1hLxNb2RF
+         Yx+fonJ0/iwr0IAs1cH7AR6UFmijOMD64SAb8aKFz3SmzXQ5ta3yfF9KlW303DNjtBkn
+         egPlP082mFHH68wfWWMT2HTswnHAItlF77hU3bgk0SmWhWC3oiUqlFpTkI10v8DYekL0
+         LKHgqBPCrAgxvU4wvLrhHxqINpGOVmrc92rdRtfYabEgU2omkiMRRZUxzH01jMeInAXv
+         FxVQ==
+X-Forwarded-Encrypted: i=1; AJvYcCX0Flf9xflca0Tab/rIXZV0+xa39XyGb7quhuVhEdCfu5RI4/gb130R7T3SQvtNxjqbMDgsDF5fSLzqO/KlPwCFp5gVLhXVoCQoCoPS
+X-Gm-Message-State: AOJu0YziP3X7GzG95VHsQDVIi7I0I5KY66Mh4KYbsrYBnoPw4OcJkzNh
+	004nMJQUSBRCgEymdfXlnWJ8Y+gBlK2ZI+dGeP3vfngLC8MsxJ4qfV/qE9B3oim6tmQ25SHmmOA
+	Wkj1uWrAlMUewQQ==
+X-Google-Smtp-Source: AGHT+IGY135rOcGmNuA3jaXeb+vBROjCWlk+6yRzcegrd3BpG/SUap9iAg9KrrmEOxSrp+41hlvbyzovOg7VJTs=
 X-Received: from aliceryhl2.c.googlers.com ([fda3:e722:ac3:cc00:68:949d:c0a8:572])
- (user=aliceryhl job=sendgmr) by 2002:a05:6902:1883:b0:dce:30f5:6bc5 with SMTP
- id cj3-20020a056902188300b00dce30f56bc5mr954191ybb.4.1712060247742; Tue, 02
- Apr 2024 05:17:27 -0700 (PDT)
-Date: Tue, 02 Apr 2024 12:17:00 +0000
+ (user=aliceryhl job=sendgmr) by 2002:a2e:3814:0:b0:2d4:2b6a:bcd with SMTP id
+ f20-20020a2e3814000000b002d42b6a0bcdmr10846lja.6.1712060250553; Tue, 02 Apr
+ 2024 05:17:30 -0700 (PDT)
+Date: Tue, 02 Apr 2024 12:17:01 +0000
 In-Reply-To: <20240402-linked-list-v1-0-b1c59ba7ae3b@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -73,22 +73,22 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 Mime-Version: 1.0
 References: <20240402-linked-list-v1-0-b1c59ba7ae3b@google.com>
 X-Developer-Key: i=aliceryhl@google.com; a=openpgp; fpr=49F6C1FAA74960F43A5B86A1EE7A392FDE96209F
-X-Developer-Signature: v=1; a=openpgp-sha256; l=5967; i=aliceryhl@google.com;
- h=from:subject:message-id; bh=2PIcpJp9DT7VacmhqXAmL7iXpjNRwDR3ul+Ch/uIEhU=;
- b=owEBbQKS/ZANAwAKAQRYvu5YxjlGAcsmYgBmC/dJexiium8UT/OewJm7DPd0VgrTKGLZevB6+
- tW4etfZDoKJAjMEAAEKAB0WIQSDkqKUTWQHCvFIvbIEWL7uWMY5RgUCZgv3SQAKCRAEWL7uWMY5
- RpazD/4/uDlpm2FRIQJKp/aRWdG4z3cc4Dmds/xdrritb9hgsytKePUaWn43aBKudy+TqUgwywk
- GLl8g2S675hNtyAfEO8ppFQU3sRVRiGtSouPyeacJzW5hw63j+PLHznz6BP09t+Sl/k8eGpF/oT
- febc7azfxUrpOV44CT5JAxXeGhca7ebYsQpoO3YlidgHhB5BelV8EFX000wMym4AZKrxtIJUHT+
- +WCxUjO9+HE4R1XVqlhZEI8TpTbTYNJ9TzNnzWxnvWgS5RXNMRisaSiC3QMh4jsHRb0nccO7sD3
- G8eB7g4I5wf794iKi7K9GflmCAsBV9N/H7dNRydlvvLY6lRrK/epaVGxPcb77MXieVkxDUDVrao
- 7YyGR0HpsQjqjoapiXpNyAMUNr1jAjHthEmxtO0kWEAGBvps4P+mOvVpOoXNTHYqkG6kiM/kif9
- CZ6Zu5ra6Mpvd/CGjYujV43z8srPvbwCFelbZ4tl7XH9FmByJtcvQqZxX+exfkroG51/Uzq+j4P
- Hu2mmdwBslps6ShnZEQO6gBwL74lBFkKaEcnglZqQk7WUoEOvGs4TjLU+oYgXyr949TPln6cFCP
- IYWl/aDxUxumQnPwbtiy8Y45H7NIBIQ/Y7F31UJum8wRdW58zIIDcEDNp10cDhhTk9ewm14oK73 qzMwlEqoZ7kITaw==
+X-Developer-Signature: v=1; a=openpgp-sha256; l=4778; i=aliceryhl@google.com;
+ h=from:subject:message-id; bh=HqTvdg8fzcYf4HPXuYAv/EzwRzpXiMamY7vxsIqyqQI=;
+ b=owEBbQKS/ZANAwAKAQRYvu5YxjlGAcsmYgBmC/dJ7YNemYzY7yvbSfEA1iHpsFzU7rZlstsYb
+ O9jWvygNSyJAjMEAAEKAB0WIQSDkqKUTWQHCvFIvbIEWL7uWMY5RgUCZgv3SQAKCRAEWL7uWMY5
+ RhjvD/9y5D0AUnLuHOcIgpU790uliJQsxlpZJLrGzlPmYkLNNuCTCPmM5Oj7PsKZ1rPF2fXHpxH
+ dEuiscwI6rhP7+TapPrgvNR9ACM7Liz9eyy/XrdZ1v+tHxjoOoNlfUHm++gw0Dfonrp/h7mYVPi
+ 4EJZlCiHjLWr8R+AIAhi7zUAx4MVm7l0ANjQp/7UbiQeBLHuDtVD/bwsXokLscxubGUYdw5rXe+
+ blZu9Ue3m4ew7Mi6V4iEMMwtIpEEOGs+5LbJ+ii74ORiNJktmHpX6tUqeuMdgfXrukTLUed5A9F
+ 8FO1OTFJf9wWM1vDV4+a19o+e/JkQQkfPYg2jDjugaxKLROHdtgwY+pe2FoWLVVoTDy16KLsN3X
+ iRAI3nlCQGMCRSTcTJ1dPftYGPR0g/b9Ln+UrGaYCo5rEaGC3KSB+ZCvqgBmT2DUe9Lya4DV2gE
+ wRuAY8kOnoPbM5sNejk2Bk9nCoHjMtC0RcfMm8uUdWciD6zxKoGAprKnOq8GokXxpvPx4fYSuFA
+ t7VdCQTNgef3cJadOmWGRi+kT1qCtQ4MWpZ51m8r6F45jbI4cesuQ1ASgql+55mgP1lCnTdyEX3
+ X5/dvzc/jhYR1OoJauw9uyRkST6aONgOPDxW13pAQ8E8KbPvnRJQLH7gx04x8vHnnHDl0hSkUDB Sj4Fawr81lUDTlQ==
 X-Mailer: b4 0.13-dev-26615
-Message-ID: <20240402-linked-list-v1-3-b1c59ba7ae3b@google.com>
-Subject: [PATCH 3/9] rust: list: add struct with prev/next pointers
+Message-ID: <20240402-linked-list-v1-4-b1c59ba7ae3b@google.com>
+Subject: [PATCH 4/9] rust: list: add macro for implementing ListItem
 From: Alice Ryhl <aliceryhl@google.com>
 To: Miguel Ojeda <ojeda@kernel.org>, Andrew Morton <akpm@linux-foundation.org>
 Cc: Alex Gaynor <alex.gaynor@gmail.com>, Wedson Almeida Filho <wedsonaf@gmail.com>, 
@@ -102,155 +102,137 @@ Cc: Alex Gaynor <alex.gaynor@gmail.com>, Wedson Almeida Filho <wedsonaf@gmail.co
 	rust-for-linux@vger.kernel.org, Alice Ryhl <aliceryhl@google.com>
 Content-Type: text/plain; charset="utf-8"
 
-Define the ListLinks struct, which wraps the prev/next pointers that
-will be used to insert values into a List in a future patch. Also
-define the ListItem trait, which is implemented by structs that have a
-ListLinks field.
+Adds a macro for safely implementing the ListItem trait. As part of the
+implementation of the macro, we also provide a HasListLinks trait
+similar to the workqueue's HasWorkItem trait.
 
-The ListItem trait provides four different methods that are all
-essentially container_of or the reverse of container_of. Two of them are
-used before inserting/after removing an item from the list, and the two
-others are used when looking at a value without changing whether it is
-in a list. This distinction is introduced because it is needed for the
-patch that adds support for heterogeneous lists, which are implemented
-by adding a third pointer field with a fat pointer to the full struct.
-When inserting into the heterogeneous list, the pointer-to-self is
-updated to have the right vtable, and the container_of operation is
-implemented by just returning that pointer instead of using the real
-container_of operation.
+The HasListLinks trait is only necessary if you are implementing
+ListItem using the impl_list_item macro.
 
 Signed-off-by: Alice Ryhl <aliceryhl@google.com>
 ---
- rust/kernel/list.rs | 115 ++++++++++++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 115 insertions(+)
+ rust/kernel/list.rs                    |  3 ++
+ rust/kernel/list/impl_list_item_mod.rs | 98 ++++++++++++++++++++++++++++++++++
+ 2 files changed, 101 insertions(+)
 
 diff --git a/rust/kernel/list.rs b/rust/kernel/list.rs
-index c5caa0f6105c..76597c49fa56 100644
+index 76597c49fa56..7af5109500f2 100644
 --- a/rust/kernel/list.rs
 +++ b/rust/kernel/list.rs
-@@ -4,7 +4,122 @@
+@@ -8,6 +8,9 @@
+ use crate::types::Opaque;
+ use core::ptr;
  
- //! A linked list implementation.
- 
-+use crate::init::PinInit;
-+use crate::types::Opaque;
-+use core::ptr;
++mod impl_list_item_mod;
++pub use self::impl_list_item_mod::{impl_has_list_links, impl_list_item, HasListLinks};
 +
  mod arc;
  pub use self::arc::{
      impl_list_arc_safe, AtomicListArcTracker, ListArc, ListArcSafe, TryNewListArc,
- };
+diff --git a/rust/kernel/list/impl_list_item_mod.rs b/rust/kernel/list/impl_list_item_mod.rs
+new file mode 100644
+index 000000000000..9e2f6d6d4786
+--- /dev/null
++++ b/rust/kernel/list/impl_list_item_mod.rs
+@@ -0,0 +1,98 @@
++// SPDX-License-Identifier: GPL-2.0
 +
-+/// Implemented by types where a [`ListArc<Self>`] can be inserted into a `List`.
++// Copyright (C) 2024 Google LLC.
++
++//! Helpers for implementing list traits safely.
++
++use crate::list::ListLinks;
++
++/// Declares that this type has a `ListLinks<ID>` field at a fixed offset.
++///
++/// This trait is only used to help implement `ListItem` safely. If `ListItem` is implemented
++/// manually, then this trait is not needed.
 +///
 +/// # Safety
 +///
-+/// Implementers must ensure that they provide the guarantees documented on the three methods
-+/// below.
-+///
-+/// [`ListArc<Self>`]: ListArc
-+pub unsafe trait ListItem<const ID: u64 = 0>: ListArcSafe<ID> {
-+    /// Views the [`ListLinks`] for this value.
-+    ///
-+    /// # Guarantees
-+    ///
-+    /// * If there is a currently active call to `prepare_to_insert`, then this returns the same
-+    ///   pointer as the one returned by the currently active call to `prepare_to_insert`.
-+    /// * If there is no currently active call to `prepare_to_insert`, then the returned pointer
-+    ///   points at a read-only [`ListLinks`] with two null pointers.
++/// All values of this type must have a `ListLinks<ID>` field at the given offset.
++pub unsafe trait HasListLinks<const ID: u64 = 0> {
++    /// The offset of the `ListLinks` field.
++    const OFFSET: usize;
++
++    /// Returns a pointer to the [`ListLinks<T, ID>`] field.
 +    ///
 +    /// # Safety
 +    ///
-+    /// The provided pointer must point at a valid value. (It need not be in an `Arc`.)
-+    unsafe fn view_links(me: *const Self) -> *mut ListLinks<ID>;
-+
-+    /// View the full value given its [`ListLinks`] field.
++    /// The provided pointer must point at a valid struct of type `Self`.
 +    ///
-+    /// Can only be used when the value is in a list.
-+    ///
-+    /// # Guarantees
-+    ///
-+    /// * Returns the same pointer as the one passed to the previous call to `prepare_to_insert`.
-+    /// * The returned pointer is valid until the next call to `post_remove`.
-+    ///
-+    /// # Safety
-+    ///
-+    /// * The provided pointer must originate from the previous call to `prepare_to_insert`, or
-+    ///   from a call to `view_links` that happened after the previous call to `prepare_to_insert`.
-+    /// * Since the previous call to `prepare_to_insert`, the `post_remove` method must not have
-+    ///   been called.
-+    unsafe fn view_value(me: *mut ListLinks<ID>) -> *const Self;
-+
-+    /// This is called when an item is inserted into a `List`.
-+    ///
-+    /// # Guarantees
-+    ///
-+    /// The caller is granted exclusive access to the returned [`ListLinks`] until `post_remove` is
-+    /// called.
-+    ///
-+    /// # Safety
-+    ///
-+    /// * The provided pointer must point at a valid value in an [`Arc`].
-+    /// * Calls to `prepare_to_insert` and `post_remove` on the same value must alternate.
-+    /// * The caller must own the [`ListArc`] for this value.
-+    /// * The caller must not give up ownership of the [`ListArc`] unless `post_remove` has been
-+    ///   called after this call to `prepare_to_insert`.
-+    ///
-+    /// [`Arc`]: crate::sync::Arc
-+    unsafe fn prepare_to_insert(me: *const Self) -> *mut ListLinks<ID>;
-+
-+    /// This undoes a previous call to `prepare_to_insert`.
-+    ///
-+    /// # Guarantees
-+    ///
-+    /// The returned pointer is the pointer that was originally passed to `prepare_to_insert`.
-+    ///
-+    /// The caller is free to recreate the `ListArc` after this call.
-+    ///
-+    /// # Safety
-+    ///
-+    /// The provided pointer must be the pointer returned by the previous call to
-+    /// `prepare_to_insert`.
-+    unsafe fn post_remove(me: *mut ListLinks<ID>) -> *const Self;
-+}
-+
-+#[repr(C)]
-+#[derive(Copy, Clone)]
-+struct ListLinksFields {
-+    next: *mut ListLinksFields,
-+    prev: *mut ListLinksFields,
-+}
-+
-+/// The prev/next pointers for an item in a linked list.
-+///
-+/// # Invariants
-+///
-+/// The fields are null if and only if this item is not in a list.
-+#[repr(transparent)]
-+pub struct ListLinks<const ID: u64 = 0> {
-+    #[allow(dead_code)]
-+    inner: Opaque<ListLinksFields>,
-+}
-+
-+// SAFETY: The next/prev fields of a ListLinks can be moved across thread boundaries.
-+unsafe impl<const ID: u64> Send for ListLinks<ID> {}
-+// SAFETY: The type is opaque so immutable references to a ListLinks are useless. Therefore, it's
-+// okay to have immutable access to a ListLinks from several threads at once.
-+unsafe impl<const ID: u64> Sync for ListLinks<ID> {}
-+
-+impl<const ID: u64> ListLinks<ID> {
-+    /// Creates a new initializer for this type.
-+    pub fn new() -> impl PinInit<Self> {
-+        // INVARIANT: Pin-init initializers can't be used on an existing `Arc`, so this value will
-+        // not be constructed in an `Arc` that already has a `ListArc`.
-+        ListLinks {
-+            inner: Opaque::new(ListLinksFields {
-+                prev: ptr::null_mut(),
-+                next: ptr::null_mut(),
-+            }),
-+        }
++    /// [`ListLinks<T, ID>`]: ListLinks
++    // We don't really need this method, but it's necessary for the implementation of
++    // `impl_has_work!` to be correct.
++    #[inline]
++    unsafe fn raw_get_list_links(ptr: *mut Self) -> *mut ListLinks<ID> {
++        // SAFETY: The caller promises that the pointer is valid.
++        unsafe { (ptr as *mut u8).add(Self::OFFSET) as *mut ListLinks<ID> }
 +    }
 +}
++
++/// Implements the [`HasListLinks`] trait for the given type.
++#[macro_export]
++macro_rules! impl_has_list_links {
++    ($(impl$(<$($implarg:ident),*>)?
++       HasListLinks$(<$id:tt>)?
++       for $self:ident $(<$($selfarg:ty),*>)?
++       { self$(.$field:ident)* }
++    )*) => {$(
++        // SAFETY: The implementation of `raw_get_list_links` only compiles if the field has the
++        // right type.
++        unsafe impl$(<$($implarg),*>)? $crate::list::HasListLinks$(<$id>)? for
++            $self $(<$($selfarg),*>)?
++        {
++            const OFFSET: usize = ::core::mem::offset_of!(Self, $($field).*) as usize;
++
++            #[inline]
++            unsafe fn raw_get_list_links(ptr: *mut Self) -> *mut $crate::list::ListLinks$(<$id>)? {
++                // SAFETY: The caller promises that the pointer is not dangling.
++                unsafe {
++                    ::core::ptr::addr_of_mut!((*ptr)$(.$field)*)
++                }
++            }
++        }
++    )*};
++}
++pub use impl_has_list_links;
++
++/// Implements the [`ListItem`] trait for the given type.
++///
++/// Assumes that the type implements [`HasListLinks`].
++///
++/// [`ListItem`]: crate::list::ListItem
++#[macro_export]
++macro_rules! impl_list_item {
++    (
++        impl$({$($generics:tt)*})? ListItem<$num:tt> for $t:ty {
++            using ListLinks;
++        } $($rest:tt)*
++    ) => {
++        unsafe impl$(<$($generics)*>)? ListItem<$num> for $t {
++            unsafe fn view_links(me: *const Self) -> *mut ListLinks<$num> {
++                unsafe {
++                    <Self as HasListLinks<$num>>::raw_get_list_links(me.cast_mut())
++                }
++            }
++
++            unsafe fn view_value(me: *mut ListLinks<$num>) -> *const Self {
++                let offset = <Self as HasListLinks<$num>>::OFFSET;
++                unsafe { (me as *const u8).sub(offset) as *const Self }
++            }
++
++            unsafe fn prepare_to_insert(me: *const Self) -> *mut ListLinks<$num> {
++                unsafe { Self::view_links(me) }
++            }
++
++            unsafe fn post_remove(me: *mut ListLinks<$num>) -> *const Self {
++                unsafe { Self::view_value(me) }
++            }
++        }
++    };
++}
++pub use impl_list_item;
 
 -- 
 2.44.0.478.gd926399ef9-goog
