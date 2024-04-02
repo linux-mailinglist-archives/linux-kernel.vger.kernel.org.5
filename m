@@ -1,75 +1,76 @@
-Return-Path: <linux-kernel+bounces-127749-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-127750-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id E6DEE895066
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 12:38:41 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id A94F789506B
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 12:39:03 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7395A1F21DDE
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 10:38:41 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0ED9228484B
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 10:39:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1F37B634E5;
-	Tue,  2 Apr 2024 10:35:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 88C7A5EE67;
+	Tue,  2 Apr 2024 10:35:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b="cI+CGaOE"
-Received: from mail-wm1-f46.google.com (mail-wm1-f46.google.com [209.85.128.46])
+	dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b="lqIGMWpd"
+Received: from mail-wr1-f45.google.com (mail-wr1-f45.google.com [209.85.221.45])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4D1D45D74E
-	for <linux-kernel@vger.kernel.org>; Tue,  2 Apr 2024 10:35:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CBEF25D8FD
+	for <linux-kernel@vger.kernel.org>; Tue,  2 Apr 2024 10:35:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712054129; cv=none; b=tooepmjMHFsQjwr6wWLkhZJVsFjwAmdwBKxnv2IVG/dM1ICiOqCK9c/mXwomXOOJ9wtQjY4RsYnvppp7RwOIGi+y7tdvTBmS3c/Y6Dp8NefJ7r/Aj7RyrbBWcJ4lDGoHzq2l7haXBKIWFLcD8d6ch692AdpEGzimkvx8xecNl3o=
+	t=1712054130; cv=none; b=JUTUbbSb0CCa+rI8SXlS5WOaA9oqzuiw8U39xbRFhtkHq8IjIJoekaY9P/ieyLBXOw74UGXY8zPn7FNoTqfy2XQTRP+IfdatBwnUwnisdcfX7gynmHUl3ZWrs650M9JP5GgAKN3YVRO2bJMWqWDtKV9Rk46qUtJ5Ni5lKhXzbyU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712054129; c=relaxed/simple;
-	bh=gm/ub3GiZq9SNWEfLYxrU9N6dJbEL0XROTTbGOG4WtA=;
-	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=HgODWSee1kX4p8IYY8O1q5ajiCU8O0Xfddk6r1GcsTf4L6b2N0yDkDyg1iFeCovKU8dOt0hOVdwCJdSATUjMB7f3u7zoT7rX1Nce4wUFHB/8KnjT08tKSGm5CiNDlBYcETN8THI86d28XFEIR2TKFRkhqv4FFGPpA6vscLFjeTo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com; spf=pass smtp.mailfrom=baylibre.com; dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b=cI+CGaOE; arc=none smtp.client-ip=209.85.128.46
+	s=arc-20240116; t=1712054130; c=relaxed/simple;
+	bh=fA9wRh9BhzewgFnx03QdynOb7Uu7To/l82seA5HFPKw=;
+	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
+	 In-Reply-To:To:Cc; b=EipU8tjXMGEQr4aV31eNRI1m1xXYG3p1Nv58o55TbKbO7nv+1TjP8vJMyshtY+vzSJEb6oN7HRqWAugUJSSFhf5MvfweXkkTL4DXn6vWd48A4TCyLW9XNs2TifwKcRyNFbly9kuUf6H5zKcAqwriU6Wva5Zia6mSUq83LAOPzys=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com; spf=pass smtp.mailfrom=baylibre.com; dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b=lqIGMWpd; arc=none smtp.client-ip=209.85.221.45
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=baylibre.com
-Received: by mail-wm1-f46.google.com with SMTP id 5b1f17b1804b1-41569865b2fso11133145e9.3
-        for <linux-kernel@vger.kernel.org>; Tue, 02 Apr 2024 03:35:27 -0700 (PDT)
+Received: by mail-wr1-f45.google.com with SMTP id ffacd0b85a97d-3436fec6a70so218706f8f.2
+        for <linux-kernel@vger.kernel.org>; Tue, 02 Apr 2024 03:35:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20230601.gappssmtp.com; s=20230601; t=1712054125; x=1712658925; darn=vger.kernel.org;
-        h=cc:to:content-transfer-encoding:mime-version:message-id:date
-         :subject:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=VPpJN3A2gIdeLf753gUAk7Ivbl+pQSVyK6KyrqY9EVI=;
-        b=cI+CGaOEPuQRBCZDXbX/G778rm652y29jMckOX6jT5mmUpfKsUhylTUIFeyMorwKwP
-         sicnxrUK4m/wBNRbRsvOi035gLfuW4ppClwe+Y3/9FbM7WmpzHm6jtdlHXAlJ/cmIf2A
-         nm4nGpazAG9pKOWHhHAuQAjKKTZjWnZXrA1ZwpFL27wRHpXhyPJow0g9MDYoKO+sjv4e
-         aEBMCYfZtApYfQ7Vd0RwAsbdNagviJrsW0LFJEkWrYld4XeX8HimIdV7lLqfioCXvb5B
-         sdwve1ufUq7bSgxSfNIyUc+ZC5AUJgNHdKwG0VSIOTxdVwjfz+YYNvChB+jLFzE52GON
-         xm6Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712054125; x=1712658925;
-        h=cc:to:content-transfer-encoding:mime-version:message-id:date
-         :subject:from:x-gm-message-state:from:to:cc:subject:date:message-id
+        d=baylibre-com.20230601.gappssmtp.com; s=20230601; t=1712054127; x=1712658927; darn=vger.kernel.org;
+        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
+         :mime-version:subject:date:from:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=VPpJN3A2gIdeLf753gUAk7Ivbl+pQSVyK6KyrqY9EVI=;
-        b=JAdRW8TBngJSOfO2UzQnAgP/R2VblfVO8Rp5d2LLEqr1drW2wik+2AlLvHhlVyADXD
-         VCh7D2EdyZiMQJ65kAmF2JRXCqtlY4ZtVUbIzxFjrXdZce5O6ZuOxu7TP/COML28hlgZ
-         vmu01/ek+dWI1wwlvPCEe1yYlOdjy5VKcwK2iFGlS3BVaOoRplwXUZ9Dlr/t4XLIPnYg
-         bosDT21SDKIPO0aQ6y5Njpta1liBXVSJJCcWMSH/bhqasp/jLW/wu9MuJYTizz7jf0GA
-         z4agi31j6YBGdvBRvcI0JvFRWorXDp7guyjipYwhwq3hEzNF10bhwj0eV3lTG8Ojglpv
-         ncpA==
-X-Forwarded-Encrypted: i=1; AJvYcCWUqsO5m59KPuGCzxqZGs9piKhJUJmz7EPXY5faterYiL27gKPLuAml+QeJK3PUgpsWxbJb3l6Wlaa2cvcnPyGswUHx2x4EqpNBmSIV
-X-Gm-Message-State: AOJu0Yyir8MYtzoZfUN5GZzN4MdJhbhzW9dsWeTlVq0zrr/LhUSgB+9T
-	wr3kgty5YCGljKkfHCCZ66l48+OVVOOeEnIuiIvp4XZWGrZ/whhlmbMfXzlSQ+/Fj0c26+iVFuh
-	K
-X-Google-Smtp-Source: AGHT+IHsgrnrPNsVtFEYMmyvdA0IP4naNOkLV9wwcdrJ1kcXwbmMfv/ieru6N3dZglg6Qp/UJgrMNg==
-X-Received: by 2002:a05:600c:1391:b0:414:624c:aaf with SMTP id u17-20020a05600c139100b00414624c0aafmr7781328wmf.35.1712054125033;
-        Tue, 02 Apr 2024 03:35:25 -0700 (PDT)
+        bh=4AGag0SLGP6ZTz9ElordkjjCIrAOBl+sGfiLsyWtvf4=;
+        b=lqIGMWpduRSg7dCGx3iH7L2gEaAirMz2KCVH8RbFxDrWj6NNmUDgRNulKi1yi7da/s
+         QzVR835ncovEekfqpE/3uB3hkQRgtvw0NOjlqWhUp2cXv5gSooLHJitsFx53+sP3CZjq
+         Nnd10uoP88V+v5xJu6kV45qezzb0dRgVwsZ5NXCgHiCpKi4e1MtDZ+mDfNL7RGyWEgfn
+         hPNQ75pISQyH1TF+c/ZpOWZE2bg+Y4f70do2v3ZjkfH+QujRI2u1NnI6ZJVkNOjyWiDX
+         hJ3iuVAO/CptV+tWhvhPFDcSOJDcmFMWN/qD7Sxdh5wkY4FI2Dfg6RSX+cKIUIcJfNmr
+         O1xw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712054127; x=1712658927;
+        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
+         :mime-version:subject:date:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=4AGag0SLGP6ZTz9ElordkjjCIrAOBl+sGfiLsyWtvf4=;
+        b=xSoqX8/rdzhzHL5NMCzpYfhu8oHRTHpJXyVKugXVEKk8/kQ8gwSfFcFtXCQJNI3I7g
+         Gx2YqqqPeZctA1fFpWp81yn8LD4MD1cvRB8tQhWsQ3Ze7jjn74b/tAyYuz6e3ed+lEwf
+         W3VdnBNvmUH4NaCVLTnTF5Jq24ehU3B4lvqbPW+MrrgKrbcyFCV9tnR3HGYPgkl5Z2vK
+         yfU/Yg+QbWdWrucJL/nz3U64F1ek0JVXxOr6eode74mRr0x7LPor4TLB71ilXN8KKFIo
+         O19E445H6o4DHqI7Pm7yA4BMr/M6n2A+6xBT//DdIZbH79IvWpzjqlI+TRMKFlLknVku
+         4u2w==
+X-Forwarded-Encrypted: i=1; AJvYcCXJPSg5hUuhQg4+mfAqOJ1vTdUtXkDtN+w20n7dXA6PTNPjHhf814vpCxpxdzMswZw/j/9m11XzpEAxLzrTWTwDQq4EEJxK1SNpvB52
+X-Gm-Message-State: AOJu0YygohYsiZyBq92iC1qboWGEXlyeR1w7+SoAV3Ed1m8ADZ5MWn5H
+	8xOX6xG4xBqkq9KJnvG6576vpHW13g0GjCLy+hVH0lA2MkKcX9c7yugeeZAe4o8LPT/wBZo5sbv
+	g
+X-Google-Smtp-Source: AGHT+IEQauaBUmNUkNb7TaoMVMyvLQ0qDGx3fl3TpOL+J1TZ99oJpnwpFAty39JqZhEXAfZ3MSaptw==
+X-Received: by 2002:adf:a21a:0:b0:343:64be:b543 with SMTP id p26-20020adfa21a000000b0034364beb543mr1083680wra.57.1712054126878;
+        Tue, 02 Apr 2024 03:35:26 -0700 (PDT)
 Received: from [127.0.1.1] ([84.102.31.74])
-        by smtp.gmail.com with ESMTPSA id bu7-20020a056000078700b00343587cfa7dsm1825769wrb.77.2024.04.02.03.35.23
+        by smtp.gmail.com with ESMTPSA id bu7-20020a056000078700b00343587cfa7dsm1825769wrb.77.2024.04.02.03.35.25
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 02 Apr 2024 03:35:24 -0700 (PDT)
+        Tue, 02 Apr 2024 03:35:26 -0700 (PDT)
 From: Julien Panis <jpanis@baylibre.com>
-Subject: [PATCH net-next v6 0/3] Add minimal XDP support to TI AM65 CPSW
- Ethernet driver
-Date: Tue, 02 Apr 2024 12:33:42 +0200
-Message-Id: <20240223-am65-cpsw-xdp-basic-v6-0-212eeff5bd5f@baylibre.com>
+Date: Tue, 02 Apr 2024 12:33:43 +0200
+Subject: [PATCH net-next v6 1/3] net: ethernet: ti: Add accessors for
+ struct k3_cppi_desc_pool members
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -78,12 +79,9 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-X-B4-Tracking: v=1; b=H4sIAAbfC2YC/42Qy27CMBBFfyXyGrd+47Dqf1QVmrGH4oqYyEYpC
- PHvNdm1iqos53HPHM2dVSqJKtt1d1ZoSjWdcyvcpmPhCPmTeIqtZkooI5TSHAZneRjrN7/GkSP
- UFLiJ6JW3wqPxrCVblzgWyOH4zH6NkFN9bfv7AVI+pUz7STwXx0KHdJ3Pv7NMF57pemEfbXJM9
- XIut9lrkvP8X4VJcsn7g0AXMIKW4g3hdkpY6CWchxk5qRUYxQUXMrgAEADRLWD0CoxuGBt7Y6C
- P3sCSjVmBMQ2jvXYSnAbj8Tdm062IKzKWbKQgjF+wsCssbMNgkFvdy63A8Pcnj8fjB6OUq6lHA
- gAA
+Message-Id: <20240223-am65-cpsw-xdp-basic-v6-1-212eeff5bd5f@baylibre.com>
+References: <20240223-am65-cpsw-xdp-basic-v6-0-212eeff5bd5f@baylibre.com>
+In-Reply-To: <20240223-am65-cpsw-xdp-basic-v6-0-212eeff5bd5f@baylibre.com>
 To: "David S. Miller" <davem@davemloft.net>, 
  Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, 
  Paolo Abeni <pabeni@redhat.com>, Russell King <linux@armlinux.org.uk>, 
@@ -101,72 +99,59 @@ Cc: netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
  dri-devel@lists.freedesktop.org, linaro-mm-sig@lists.linaro.org, 
  Julien Panis <jpanis@baylibre.com>
 X-Mailer: b4 0.12.2
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1712054122; l=2651;
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1712054122; l=1876;
  i=jpanis@baylibre.com; s=20230526; h=from:subject:message-id;
- bh=gm/ub3GiZq9SNWEfLYxrU9N6dJbEL0XROTTbGOG4WtA=;
- b=GSlVZrWGJwzlJnxckCzDVEvZs4b14/SyDtoDMqNQbUxbb4fIckpjXClyULnbfZTkOkO9rfv6X
- 63aNWrMjj82DF7DIkGkelTjUAdpqND60CpJXCSwdsZSY/IT0LQXEina
+ bh=fA9wRh9BhzewgFnx03QdynOb7Uu7To/l82seA5HFPKw=;
+ b=GqnxSs6sWkav4QBgqTK6Qla5Q5wvipN8noKqaNjqxNHrJHznw3DVJ1MlICZa2wE+dcsAZICLj
+ LvjocVo2lrjB3euoYStafAEYdJ6COit/uJ7/9NeQw02Vahi+SUioXzb
 X-Developer-Key: i=jpanis@baylibre.com; a=ed25519;
  pk=8eSM4/xkiHWz2M1Cw1U3m2/YfPbsUdEJPCWY3Mh9ekQ=
 
-This patch adds XDP support to TI AM65 CPSW Ethernet driver.
-
-The following features are implemented: NETDEV_XDP_ACT_BASIC,
-NETDEV_XDP_ACT_REDIRECT, and NETDEV_XDP_ACT_NDO_XMIT.
-
-Zero-copy and non-linear XDP buffer supports are NOT implemented.
-
-Besides, the page pool memory model is used to get better performance.
+This patch adds accessors for desc_size and cpumem members. They may be
+used, for instance, to compute a descriptor index.
 
 Signed-off-by: Julien Panis <jpanis@baylibre.com>
 ---
-Changes in v6:
-- In k3_cppi_*() functions, use const qualifier when the content of
-pool is not modified.
-- Add allow_direct bool parameter to am65_cpsw_alloc_skb() function
-for direct use by page_pool_put_full_page().
-- Link to v5: https://lore.kernel.org/r/20240223-am65-cpsw-xdp-basic-v5-0-bc1739170bc6@baylibre.com
+ drivers/net/ethernet/ti/k3-cppi-desc-pool.c | 12 ++++++++++++
+ drivers/net/ethernet/ti/k3-cppi-desc-pool.h |  2 ++
+ 2 files changed, 14 insertions(+)
 
-Changes in v5:
-- In k3_cppi_desc_pool_destroy(), free memory allocated for desc_infos.
-- Link to v4: https://lore.kernel.org/r/20240223-am65-cpsw-xdp-basic-v4-0-2e45e5dec048@baylibre.com
+diff --git a/drivers/net/ethernet/ti/k3-cppi-desc-pool.c b/drivers/net/ethernet/ti/k3-cppi-desc-pool.c
+index 05cc7aab1ec8..414bcac9dcc6 100644
+--- a/drivers/net/ethernet/ti/k3-cppi-desc-pool.c
++++ b/drivers/net/ethernet/ti/k3-cppi-desc-pool.c
+@@ -132,5 +132,17 @@ size_t k3_cppi_desc_pool_avail(struct k3_cppi_desc_pool *pool)
+ }
+ EXPORT_SYMBOL_GPL(k3_cppi_desc_pool_avail);
+ 
++size_t k3_cppi_desc_pool_desc_size(const struct k3_cppi_desc_pool *pool)
++{
++	return pool->desc_size;
++}
++EXPORT_SYMBOL_GPL(k3_cppi_desc_pool_desc_size);
++
++void *k3_cppi_desc_pool_cpuaddr(const struct k3_cppi_desc_pool *pool)
++{
++	return pool->cpumem;
++}
++EXPORT_SYMBOL_GPL(k3_cppi_desc_pool_cpuaddr);
++
+ MODULE_LICENSE("GPL");
+ MODULE_DESCRIPTION("TI K3 CPPI5 descriptors pool API");
+diff --git a/drivers/net/ethernet/ti/k3-cppi-desc-pool.h b/drivers/net/ethernet/ti/k3-cppi-desc-pool.h
+index a7e3fa5e7b62..3c6aed0bed71 100644
+--- a/drivers/net/ethernet/ti/k3-cppi-desc-pool.h
++++ b/drivers/net/ethernet/ti/k3-cppi-desc-pool.h
+@@ -26,5 +26,7 @@ k3_cppi_desc_pool_dma2virt(struct k3_cppi_desc_pool *pool, dma_addr_t dma);
+ void *k3_cppi_desc_pool_alloc(struct k3_cppi_desc_pool *pool);
+ void k3_cppi_desc_pool_free(struct k3_cppi_desc_pool *pool, void *addr);
+ size_t k3_cppi_desc_pool_avail(struct k3_cppi_desc_pool *pool);
++size_t k3_cppi_desc_pool_desc_size(const struct k3_cppi_desc_pool *pool);
++void *k3_cppi_desc_pool_cpuaddr(const struct k3_cppi_desc_pool *pool);
+ 
+ #endif /* K3_CPPI_DESC_POOL_H_ */
 
-Changes in v4:
-- Add skb_mark_for_recycle() in am65_cpsw_nuss_rx_packets() function.
-- Specify napi page pool parameter in am65_cpsw_create_xdp_rxqs() function.
-- Add benchmark numbers (with VS without page pool) in the commit description.
-- Add xdp_do_flush() in am65_cpsw_run_xdp() function for XDP_REDIRECT case.
-- Link to v3: https://lore.kernel.org/r/20240223-am65-cpsw-xdp-basic-v3-0-5d944a9d84a0@baylibre.com
-
-Changes in v3:
-- Fix a potential issue with TX buffer type, which is now set for each buffer.
-- Link to v2: https://lore.kernel.org/r/20240223-am65-cpsw-xdp-basic-v2-0-01c6caacabb6@baylibre.com
-
-Changes in v2:
-- Use page pool memory model instead of MEM_TYPE_PAGE_ORDER0.
-- In am65_cpsw_alloc_skb(), release reference on the page pool page
-in case of error returned by build_skb().
-- [nit] Cleanup am65_cpsw_nuss_common_open/stop() functions.
-- [nit] Arrange local variables in reverse xmas tree order.
-- Link to v1: https://lore.kernel.org/r/20240223-am65-cpsw-xdp-basic-v1-1-9f0b6cbda310@baylibre.com
-
----
-Julien Panis (3):
-      net: ethernet: ti: Add accessors for struct k3_cppi_desc_pool members
-      net: ethernet: ti: Add desc_infos member to struct k3_cppi_desc_pool
-      net: ethernet: ti: am65-cpsw: Add minimal XDP support
-
- drivers/net/ethernet/ti/am65-cpsw-nuss.c    | 537 +++++++++++++++++++++++++---
- drivers/net/ethernet/ti/am65-cpsw-nuss.h    |  13 +
- drivers/net/ethernet/ti/k3-cppi-desc-pool.c |  37 ++
- drivers/net/ethernet/ti/k3-cppi-desc-pool.h |   4 +
- 4 files changed, 541 insertions(+), 50 deletions(-)
----
-base-commit: 6613476e225e090cc9aad49be7fa504e290dd33d
-change-id: 20240223-am65-cpsw-xdp-basic-4db828508b48
-
-Best regards,
 -- 
-Julien Panis <jpanis@baylibre.com>
+2.37.3
 
 
