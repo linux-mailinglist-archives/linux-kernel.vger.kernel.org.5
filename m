@@ -1,92 +1,129 @@
-Return-Path: <linux-kernel+bounces-128498-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-128499-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B87CE895BAB
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 20:24:03 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 63626895BAE
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 20:25:34 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6B524284177
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 18:24:02 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9039B1C2222F
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 18:25:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9C71115ADA2;
-	Tue,  2 Apr 2024 18:23:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2348915B0E2;
+	Tue,  2 Apr 2024 18:25:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Q4MCHV42"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (1024-bit key) header.d=iki.fi header.i=@iki.fi header.b="GFp57npU"
+Received: from meesny.iki.fi (meesny.iki.fi [195.140.195.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D5D2E159919;
-	Tue,  2 Apr 2024 18:23:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712082236; cv=none; b=Ss+fOY8fE5oL1F0tTZCAYRy+JImZau1LKuIlgpdxPosO1/H8FG80QKCBWwFZ80gokWG6rhFAGh29of6Pv4cnwZxQMeFEdfPj+/4LvogB+zgnyc4nq8ptxarpyBj7DFp/3AOYI6+baYCDLqVj7BcTSNWQLDZ9TYDt4pL9OJdbMUE=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712082236; c=relaxed/simple;
-	bh=Gia3PJ/pTbgS5Xu5S+L3NHjZx1rOFy/cQ21okp0HyKY=;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 73F7A15AD8C;
+	Tue,  2 Apr 2024 18:25:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=195.140.195.201
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1712082319; cv=pass; b=KN7Uc4t+PXA9erYZS8yCcJjUO0SAVnyinXNc/I77SZvPweoyOgbiuwu3m24HnvgiDYJxElLIAipYfsUmpw2kmztlm5r3/2Bsx7+9hZ5zRzaqF0wH1sVZy+EFlXAI8MCfIUFUymiZdIZn0Rh9vt2ooQJNpNgx6q7oTEbSW/s50cU=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1712082319; c=relaxed/simple;
+	bh=zLP5HGy7Eo8mQWxAiJSxR+5ytMdTAxmWJ9FAh8+ef9M=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=B+jNos2TcgANzgCpmiiWIwSH/PMstJI1ENzTnFsoj0DlAJuhvpEWV/1pJQE4yljUXx3ISYSNMt5DHUy8bjQsn48FBz8i5cJfAhgwwAmzp4s9hqxgbzFM7NlD781otQMz/5NLVg871FB+INmePuZa+PGZ8/tWekWGe/LKxmDNcJM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Q4MCHV42; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 70379C433C7;
-	Tue,  2 Apr 2024 18:23:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712082236;
-	bh=Gia3PJ/pTbgS5Xu5S+L3NHjZx1rOFy/cQ21okp0HyKY=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=Q4MCHV42LW7nqwJSDTI+Ivu6GUpR8atPJKCL2zodHhgr5IrwOngaWu+EI9v70Ebq7
-	 YziOddpg7xRx+0k8ISflaoFzHVQD7xluwQplriWaQSvIsLG9W1K/p/pXkY1J+Oa8xK
-	 imau/oI0X3A7Wk2HzSvknq8wWrWG5R6N0vW3MaH7O/MeA0B1oy1ZA/68nUyHr8cnwQ
-	 5LO2q+L2tHCkUR5Z9XnlzoH06xiL5N3a7oygjc4wnqk9QFo4aEzV9w8bIqU411p0zv
-	 Ru/0iEio5LVENI/e7m1lTB1vvhMhQvK12/Fu2c50GpnnqsoHaHpBvoJQumpZ24nR52
-	 Age9eRbyaJbyw==
-Date: Tue, 2 Apr 2024 19:23:52 +0100
-From: Conor Dooley <conor@kernel.org>
-To: Rob Herring <robh@kernel.org>
-Cc: Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Heiko Stuebner <heiko@sntech.de>, devicetree@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org,
-	linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] dt-bindings: rockchip: grf: Add missing type to
- 'pcie-phy' node
-Message-ID: <20240402-squabble-verbalize-eab2f023ab49@spud>
-References: <20240401204959.1698106-1-robh@kernel.org>
+	 Content-Type:Content-Disposition:In-Reply-To; b=I1vUTXhX42gf8HdEYGkDNYK1WOKBvXWtVvgYp+BIsnmw/NbMAKj2ldWPx4IhbWOOyIMwy50chJGF3dqFunWzf5cxdlCgps1akq0QEjamsyFyWQjiJbu44I+hKf6MQa+sz8PGLL4rmlJTLvh1gc1Unp7dSf37Ic495ql7FrVoloQ=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=iki.fi; spf=pass smtp.mailfrom=iki.fi; dkim=pass (1024-bit key) header.d=iki.fi header.i=@iki.fi header.b=GFp57npU; arc=pass smtp.client-ip=195.140.195.201
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=iki.fi
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=iki.fi
+Received: from darkstar.musicnaut.iki.fi (85-76-140-31-nat.elisa-mobile.fi [85.76.140.31])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (prime256v1) server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	(Authenticated sender: aaro.koskinen)
+	by meesny.iki.fi (Postfix) with ESMTPSA id 4V8GWs5jhNz101C;
+	Tue,  2 Apr 2024 21:25:13 +0300 (EEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=iki.fi; s=meesny;
+	t=1712082314;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=X3xbDHOLUh31Rvr0RX6usuhXdocLcppeNwZwP3eZpvE=;
+	b=GFp57npUZ4TtbvwjUMuO1v8q2BUytoXmoXjUDKCawofJb4C79Y8TCdGmmJWgW/txBCyYL7
+	3Hyx2BeKiZaQewG5AzKyix49tdOkB6pjVTIj/PSMBaXgPwKDC6Ir7a0cy5rbxT93IyRw3h
+	HiREkaRCkDmjd/b/C81ZngCQAitElz0=
+ARC-Seal: i=1; s=meesny; d=iki.fi; t=1712082314; a=rsa-sha256; cv=none;
+	b=ecVGnRlbvAh0/NjlKysFHtI/KIK09KYu4bX5WiH/gRrV7F1I3VfcVmgyoTpcDXGshWpteN
+	YtlKYRmWrBDDOsLjz0oIQr4xHPXe8MELq4O0fVrUUA8+8nXY+pPMD/m+s7O8VbKAZq6bj9
+	pdaXXW6P02k+NsofVxarXA4G10qQASM=
+ARC-Authentication-Results: i=1;
+	ORIGINATING;
+	auth=pass smtp.auth=aaro.koskinen smtp.mailfrom=aaro.koskinen@iki.fi
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=iki.fi;
+	s=meesny; t=1712082314;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=X3xbDHOLUh31Rvr0RX6usuhXdocLcppeNwZwP3eZpvE=;
+	b=xWTPLttcBKHc0cuPipsbWwbmNuukzpK5hg/WLK5fPPK8d1JrTXoLK2mDrxiExbRowWYZ5y
+	E9SBTlVewUfCtOHLkrSJVA91zmNl4gZnZbqkh8NJBVbnhGMMgBRpV1uu+Ku36BoJR5AeKy
+	ltIeF68SA/WWowzGUnR2gEIB+cSn4Kg=
+Date: Tue, 2 Apr 2024 21:25:11 +0300
+From: Aaro Koskinen <aaro.koskinen@iki.fi>
+To: Greg KH <gregkh@linuxfoundation.org>
+Cc: stable@vger.kernel.org, Waiman Long <longman@redhat.com>,
+	Mukesh Ojha <quic_mojha@quicinc.com>,
+	Peter Zijlstra <peterz@infradead.org>, mingo@redhat.com,
+	will@kernel.org, boqun.feng@gmail.com, linux-kernel@vger.kernel.org,
+	Gokul krishna Krishnakumar <quic_gokukris@quicinc.com>
+Subject: Re: [PATCH v2] locking/rwsem: Disable preemption while trying for
+ rwsem lock
+Message-ID: <20240402182511.GD91663@darkstar.musicnaut.iki.fi>
+References: <1662661467-24203-1-git-send-email-quic_mojha@quicinc.com>
+ <20240305110402.GA72649@darkstar.musicnaut.iki.fi>
+ <b92644e5-529b-4403-aba7-d316262cc8ac@redhat.com>
+ <20240402173032.GC91663@darkstar.musicnaut.iki.fi>
+ <2024040242-babbling-dreamy-6336@gregkh>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="QHSzEAA4z92jaQnw"
-Content-Disposition: inline
-In-Reply-To: <20240401204959.1698106-1-robh@kernel.org>
-
-
---QHSzEAA4z92jaQnw
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <2024040242-babbling-dreamy-6336@gregkh>
 
-On Mon, Apr 01, 2024 at 03:49:58PM -0500, Rob Herring wrote:
-> 'pcie-phy' is missing any type. Add 'type: object' to indicate it's a
-> node.
->=20
-> Signed-off-by: Rob Herring <robh@kernel.org>
+Hi,
 
-Acked-by: Conor Dooley <conor.dooley@microchip.com>
+On Tue, Apr 02, 2024 at 07:42:03PM +0200, Greg KH wrote:
+> On Tue, Apr 02, 2024 at 08:30:32PM +0300, Aaro Koskinen wrote:
+> > Stable team,
+> > 
+> > Please cherry-pick this patch into v5.15 stable:
+> > 
+> > 	locking/rwsem: Disable preemption while trying for rwsem lock
+> > 
+> > 	commit 48dfb5d2560d36fb16c7d430c229d1604ea7d185
+> > 
+> > It fixes the following bug present in v5.15:
+> > 
+> > > > > From: Gokul krishna Krishnakumar <quic_gokukris@quicinc.com>
+> > > > > We observe RT task is hogging CPU when trying to acquire rwsem lock
+> > > > > which was acquired by a kworker task but before the rwsem owner was set.
+> > > > > 
+> > > > > Here is the scenario:
+> > > > > 1. CFS task (affined to a particular CPU) takes rwsem lock.
+> > > > > 
+> > > > > 2. CFS task gets preempted by a RT task before setting owner.
+> > > > > 
+> > > > > 3. RT task (FIFO) is trying to acquire the lock, but spinning until
+> > > > > RT throttling happens for the lock as the lock was taken by CFS task.
+> > 
+> > If the RT throttling is disabled, the RT task will remain looping forever
+> > in the kernel. If the system is UP, it will lock up completely.
+> > 
+> > The issue can be easily reproduced by running RT task and normal task which
+> > are affined to the same CPU core.
+> 
+> Does this only affect the -rt patchset, or is this an issue with a
+> "clean" kernel release?
 
---QHSzEAA4z92jaQnw
-Content-Type: application/pgp-signature; name="signature.asc"
+It's with a normal "clean" kernel.
 
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZgxNOAAKCRB4tDGHoIJi
-0kbNAP9PTPDNx46FKB4FfxwYJkXcJno9c3xbpSnu/rzH75pDqQEAioZJxLQHq7uf
-NfEgWMGka5JijDJPseORnW26UuPh+AQ=
-=2XGU
------END PGP SIGNATURE-----
-
---QHSzEAA4z92jaQnw--
+A.
 
