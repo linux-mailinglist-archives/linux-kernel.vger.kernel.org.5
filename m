@@ -1,34 +1,34 @@
-Return-Path: <linux-kernel+bounces-128764-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-128766-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 796B9895F6C
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 00:12:17 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C4E3A895F6F
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 00:12:48 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 33D90287608
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 22:12:16 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 01F8B1C24476
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 22:12:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9A9C115EFC3;
-	Tue,  2 Apr 2024 22:11:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6453015F3F4;
+	Tue,  2 Apr 2024 22:11:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="JmpaqF7h";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="It7qU4S/"
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="24p1yYvz";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="yS099pn3"
 Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1164B15ECD9
-	for <linux-kernel@vger.kernel.org>; Tue,  2 Apr 2024 22:11:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AF71615ECFF
+	for <linux-kernel@vger.kernel.org>; Tue,  2 Apr 2024 22:11:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712095898; cv=none; b=q250+hZ1S/60hl5ndwclzvitLdNbifQk/56BRyJ/DGcfvbgBWkZFm8vxH50Xd9k1Yd7cJHB2AZNbLwDzCghQOU1NveTjuEsAtn26C/QQvfE+OAYrDUBr0WzR5CYLTqIKGHT7z2zRVHT+Eny30Q3BKmDGrUr5zpFDMuKo4Y7MdRs=
+	t=1712095900; cv=none; b=WYvorTAeCnSFt8cXIaYsLo33Hdm4TXsUhVcMGjJ7hzfvucAJj6TZqOzMPEHtnozflAULP+llyWnzNUB40PKzCVseMJMTrZQexGYYxv6TZIKMQsq+c8/1HicepYos+B+qE6vH/wokkXOeBAQAHsiOT4JhVBr0tlZZGv6X+HAf81k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712095898; c=relaxed/simple;
-	bh=jrBdWUk0rwcYI/oiQlw6iijdJI0T4nkboPn0QdreNXc=;
+	s=arc-20240116; t=1712095900; c=relaxed/simple;
+	bh=21FdHB8UvH4vxd4uNwfUpHVEPPOEDJI2uyu9KCT428w=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=MwVJwpDlYnyYT8hZC1owkeKDVAobBDOGVvVuEOaMgmXgny2S7ydZPwfDJ8sfpvW2IyzLP2CHhV6cgEi+yh8/Ymdgp19KJmSkR5Nu1kThXrZhJ38pmNT+BlRpsKEErNlz4v+KaAUkue1Oe2vHxBUv70nzccH7NS6r3OJDBt5SlyU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=JmpaqF7h; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=It7qU4S/; arc=none smtp.client-ip=193.142.43.55
+	 MIME-Version; b=adAH9XTJbzTOJcaiefOiJNbqO0PfrQrR3CziITJnV1INDf/gRuMRlDG2JfCx0cqb/7g67+vqkLTRPM47EpYkH2Z3PjeXVyMGIaIZPStT6Obyqvy4TrQ7pS7xO20gBfg1QNUMy0Ti4cSjVa2rqerSDQTLYsoAIqZE4DOeYwWaYNo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=24p1yYvz; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=yS099pn3; arc=none smtp.client-ip=193.142.43.55
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
 From: John Ogness <john.ogness@linutronix.de>
@@ -38,30 +38,30 @@ DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=j7f10dybj3FQO66c59r1wqvQXH3mAcKwMAOFWXgWZuw=;
-	b=JmpaqF7hZ4FLu5RF6TYpoK+3EfVmWLLlR1kWZ951pqeuaLSVsruuIVzTy6aaO/tC/Dxm9d
-	hFvGW0qCA4jzr8usSgmVTikp0EqQ/j+2QhvNHf6TWoN71TDBYcqiLZb5aTnNIn95gcVe/o
-	tPQ1jvi88p0C5VnvaBkElqTJbKX4X/ZQbHQH1C3tPgOb3uuj3Y8bg83Pj6sH4tigHzI3K5
-	4G+Hpcu8KxOKSNcfSeZVhnzpu/BvQVCjIqMmiAH73JUmRiUrOyWDANmc7Zf4RCoUqE+3u3
-	+eh7DqaBWXlJzVKJ8uMd78Mkus0+6QrmGMyBHEf4uqAiEMQYs91RjCzsrD/azQ==
+	bh=unFh0IQLca0RDLCECJ8AQ28E69e46Gh0slqQ0uqHhBI=;
+	b=24p1yYvzeQzyN6QpK1ZVxPWcIipV8U50Z1YXxDS27hUChffQRgSJxzSL2q60TmiMpB4y0G
+	FTNzV96KAGkgxLu3rGeTCN/eT5PlX8Dd+P6ipC8eKBD7LqbvVxe/sZMlGW+gn0ofXxZit5
+	UzyBXaEGEeyZygdFhQ0l+1cH+yznC2TUtwyi9Wzs+qRr1aTryJDf9iy9CL1zKBdKzxbcYr
+	C6E2hQxW/wfKczJR/q7VyYp5Mjsvvptu3dEEBo09+oX7SdbS8EfAOtXTaJeyF1kqGBFCg4
+	ZY7i08mmES+mkUWL10yxRi5tEK/lfTqvKhMVkK11Hsbzk3c5YlWnaop7b7EXsA==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
 	s=2020e; t=1712095895;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=j7f10dybj3FQO66c59r1wqvQXH3mAcKwMAOFWXgWZuw=;
-	b=It7qU4S/vnwflESxCbemUum5nBq739Y9mSUdt7m9223da5g7xjBH38haOBKxn7mA0UQIjv
-	VnrH766dSMsTngDg==
+	bh=unFh0IQLca0RDLCECJ8AQ28E69e46Gh0slqQ0uqHhBI=;
+	b=yS099pn3rNLKW/Tlevuw3AD/qCG4pMi+LEHd2tCQu4VNWmZxhaTMSIyT9dzpyaMjVQPEqI
+	fjZX4A1uQV5Iq7Ag==
 To: Petr Mladek <pmladek@suse.com>
 Cc: Sergey Senozhatsky <senozhatsky@chromium.org>,
 	Steven Rostedt <rostedt@goodmis.org>,
 	Thomas Gleixner <tglx@linutronix.de>,
 	linux-kernel@vger.kernel.org,
-	Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Subject: [PATCH printk v4 04/27] printk: Check printk_deferred_enter()/_exit() usage
-Date: Wed,  3 Apr 2024 00:17:06 +0206
-Message-Id: <20240402221129.2613843-5-john.ogness@linutronix.de>
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Subject: [PATCH printk v4 05/27] printk: nbcon: Add detailed doc for write_atomic()
+Date: Wed,  3 Apr 2024 00:17:07 +0206
+Message-Id: <20240402221129.2613843-6-john.ogness@linutronix.de>
 In-Reply-To: <20240402221129.2613843-1-john.ogness@linutronix.de>
 References: <20240402221129.2613843-1-john.ogness@linutronix.de>
 Precedence: bulk
@@ -72,82 +72,73 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+The write_atomic() callback has special requirements and is
+allowed to use special helper functions. Provide detailed
+documentation of the callback so that a developer has a
+chance of implementing it correctly.
 
-Add validation that printk_deferred_enter()/_exit() are called in
-non-migration contexts.
-
-Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 Signed-off-by: John Ogness <john.ogness@linutronix.de>
 Reviewed-by: Petr Mladek <pmladek@suse.com>
 ---
- include/linux/printk.h      |  9 +++++----
- kernel/printk/internal.h    |  3 +++
- kernel/printk/printk_safe.c | 12 ++++++++++++
- 3 files changed, 20 insertions(+), 4 deletions(-)
+ include/linux/console.h | 31 +++++++++++++++++++++++++++----
+ 1 file changed, 27 insertions(+), 4 deletions(-)
 
-diff --git a/include/linux/printk.h b/include/linux/printk.h
-index 2fde40cc9677..d8b3f51d9e98 100644
---- a/include/linux/printk.h
-+++ b/include/linux/printk.h
-@@ -157,15 +157,16 @@ int _printk(const char *fmt, ...);
-  */
- __printf(1, 2) __cold int _printk_deferred(const char *fmt, ...);
+diff --git a/include/linux/console.h b/include/linux/console.h
+index 54b98e4f0544..e4028d4079e1 100644
+--- a/include/linux/console.h
++++ b/include/linux/console.h
+@@ -285,7 +285,7 @@ struct nbcon_write_context {
+ /**
+  * struct console - The console descriptor structure
+  * @name:		The name of the console driver
+- * @write:		Write callback to output messages (Optional)
++ * @write:		Legacy write callback to output messages (Optional)
+  * @read:		Read callback for console input (Optional)
+  * @device:		The underlying TTY device driver (Optional)
+  * @unblank:		Callback to unblank the console (Optional)
+@@ -302,7 +302,6 @@ struct nbcon_write_context {
+  * @data:		Driver private data
+  * @node:		hlist node for the console list
+  *
+- * @write_atomic:	Write callback for atomic context
+  * @nbcon_state:	State for nbcon consoles
+  * @nbcon_seq:		Sequence number of the next record for nbcon to print
+  * @pbufs:		Pointer to nbcon private buffer
+@@ -327,8 +326,32 @@ struct console {
+ 	struct hlist_node	node;
  
--extern void __printk_safe_enter(void);
--extern void __printk_safe_exit(void);
-+extern void __printk_deferred_enter(void);
-+extern void __printk_deferred_exit(void);
+ 	/* nbcon console specific members */
+-	void			(*write_atomic)(struct console *con,
+-						struct nbcon_write_context *wctxt);
 +
- /*
-  * The printk_deferred_enter/exit macros are available only as a hack for
-  * some code paths that need to defer all printk console printing. Interrupts
-  * must be disabled for the deferred duration.
-  */
--#define printk_deferred_enter __printk_safe_enter
--#define printk_deferred_exit __printk_safe_exit
-+#define printk_deferred_enter() __printk_deferred_enter()
-+#define printk_deferred_exit() __printk_deferred_exit()
- 
- /*
-  * Please don't use printk_ratelimit(), because it shares ratelimiting state
-diff --git a/kernel/printk/internal.h b/kernel/printk/internal.h
-index 6c2afee5ef62..4e0edcb3c311 100644
---- a/kernel/printk/internal.h
-+++ b/kernel/printk/internal.h
-@@ -53,6 +53,9 @@ int vprintk_store(int facility, int level,
- __printf(1, 0) int vprintk_default(const char *fmt, va_list args);
- __printf(1, 0) int vprintk_deferred(const char *fmt, va_list args);
- 
-+void __printk_safe_enter(void);
-+void __printk_safe_exit(void);
++	/**
++	 * @write_atomic:
++	 *
++	 * NBCON callback to write out text in any context.
++	 *
++	 * This callback is called with the console already acquired. The
++	 * callback can use nbcon_can_proceed() at any time to verify that
++	 * it is still the owner of the console. In the case that it has
++	 * lost ownership, it is no longer allowed to go forward. In this
++	 * case it must back out immediately and carefully. The buffer
++	 * content is also no longer trusted since it no longer belongs to
++	 * the context.
++	 *
++	 * If the callback needs to perform actions where ownership is not
++	 * allowed to be taken over, nbcon_enter_unsafe() and
++	 * nbcon_exit_unsafe() can be used to mark such sections. These
++	 * functions are also points of possible ownership transfer. If
++	 * either function returns false, ownership has been lost.
++	 *
++	 * This callback can be called from any context (including NMI).
++	 * Therefore it must avoid usage of any locking and instead rely
++	 * on the console ownership for synchronization.
++	 */
++	void (*write_atomic)(struct console *con, struct nbcon_write_context *wctxt);
 +
- bool printk_percpu_data_ready(void);
- 
- #define printk_safe_enter_irqsave(flags)	\
-diff --git a/kernel/printk/printk_safe.c b/kernel/printk/printk_safe.c
-index 6d10927a07d8..4421ccac3113 100644
---- a/kernel/printk/printk_safe.c
-+++ b/kernel/printk/printk_safe.c
-@@ -26,6 +26,18 @@ void __printk_safe_exit(void)
- 	this_cpu_dec(printk_context);
- }
- 
-+void __printk_deferred_enter(void)
-+{
-+	cant_migrate();
-+	__printk_safe_enter();
-+}
-+
-+void __printk_deferred_exit(void)
-+{
-+	cant_migrate();
-+	__printk_safe_exit();
-+}
-+
- asmlinkage int vprintk(const char *fmt, va_list args)
- {
- #ifdef CONFIG_KGDB_KDB
+ 	atomic_t		__private nbcon_state;
+ 	atomic_long_t		__private nbcon_seq;
+ 	struct printk_buffers	*pbufs;
 -- 
 2.39.2
 
