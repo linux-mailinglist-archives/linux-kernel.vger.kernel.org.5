@@ -1,156 +1,322 @@
-Return-Path: <linux-kernel+bounces-128085-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-128086-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id A978F8955DE
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 15:56:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 8591C8955EA
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 15:58:28 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CD0071C22378
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 13:56:11 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8C77C1C22333
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 13:58:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 08D7685262;
-	Tue,  2 Apr 2024 13:56:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3ACFA86248;
+	Tue,  2 Apr 2024 13:57:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="fTVF+N5U"
-Received: from mail-lf1-f49.google.com (mail-lf1-f49.google.com [209.85.167.49])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="IQ0gDnea"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 69E2484A52
-	for <linux-kernel@vger.kernel.org>; Tue,  2 Apr 2024 13:56:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9125D85624
+	for <linux-kernel@vger.kernel.org>; Tue,  2 Apr 2024 13:57:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712066162; cv=none; b=Gkx4BSvcKjeul+SlE/pXSh+73XxLRLfqhSH39AVOO3d+jfCEOvQyNz+PFYPSxLc1eX9mn8VZjYIoyfk+6nm8XDXuVInp5R2O5G5PJn7G+KS1dTABa9n/76YwGiAsN30JJ592WT61fQGPlALoyM1cRPZlBEFDb0b4C9/IGN6fZog=
+	t=1712066272; cv=none; b=Kv2jhsydtTcR/PluKCbhOUxXxoWAON78zbreKh50rV+eLp/h/stUzAOoROoPate1MX59l6X18DGRPmZRK/LTXbL7G1DVe9gXEGTGOofGMSVT5f8W6Wc90/L2YpJgN7wVYjHJ4FBhg3DEGR5R8U4BVlmyBMACRH1RqAreGmUO31o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712066162; c=relaxed/simple;
-	bh=3RYlQMdAk1kSbFeG0UabxDH8CjbXI3Avrk756agQQy0=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=bZSjhWMggIU+VjCIPURpT4LO0gBTIUyhUXSxplHMgmMX3ak6loD5OJV0dPJMHZVemqUQScBNlBNCI2lLeUo441CXG4TUYxpBi0dhpMmW7rKPo/cz16rX68eznTzbawBKkemZFQt2rulPgDl5ktHZKI3/yLiyCangIyzHbm2e2tI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=fTVF+N5U; arc=none smtp.client-ip=209.85.167.49
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-lf1-f49.google.com with SMTP id 2adb3069b0e04-515c50dc2afso5701781e87.1
-        for <linux-kernel@vger.kernel.org>; Tue, 02 Apr 2024 06:56:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1712066158; x=1712670958; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=Rr/3jgsq/y6quIiVf2XQx3I3wZFyCdLaPeu+eAcGk/I=;
-        b=fTVF+N5U5Idxrygpw0jVY1d5bP5tyhHc07WlA3yUixXs9butsLipIchKH8Mh2+0TPA
-         IqiMIYCWBYkwFx5BhHXsy2eikDxw+UbiThRs4NZidFXKwOdjBq+GheUmVv16tIXIc+MN
-         vyhnmlvzSCcAQVoUAo7DIjPGsv5MXvsGEw6XsgC/CgBxW9aTmbbwiCXwsQaueQE1RXlk
-         JzlrjDFSft4Ym/MSs8IHUGsemLmtg8C9tpNwz5dxkw69FfsE8v6de7Wy99mguRW0rqkH
-         3jIQ5v8yvtsKcyfpKtfekbzDp508BgRlWN/4GV9LN0WMOjN6DqbUnPRZIzOTnPf2y+IF
-         b9ag==
+	s=arc-20240116; t=1712066272; c=relaxed/simple;
+	bh=/85xZO5dd7u340T2idNeO+B784thCkGA9CgRlZyEzjU=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=P8iLmMPFXgi+ICuSX7Yzqei8YUNOzg11W8NbeBxLBWMe2jEKEBRgMFqkopNnuxkM2iPPsv+KHmpCw+S6sseejhPaBvT4mgby7OijwgjkX8m6QH81mSPj5kQ2LePx7rhoIzcsIqCRZlaze6M4EpUSGk1tYLJGyYOiLtiEDqIE64Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=IQ0gDnea; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1712066269;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=BwIJukPzdelvXDcQMgUp/22xDxOhihi+wolcq3WNR8U=;
+	b=IQ0gDneavECPBbS9I2HNumWGMtA25FKk6z3Vz6ypNr2NBnxSDyIZJBmhVsvB/DmJhjb5XA
+	W8aOCFejeTAQEFZmqxwD83TqIcd4wEdeHHi16q7iocYD8PGVpEq9Vs64eWNwKgNH2GTB8u
+	w1gkXzrh3nvCnhOkwE7RCockyF6QIxE=
+Received: from mail-qv1-f70.google.com (mail-qv1-f70.google.com
+ [209.85.219.70]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-395-zAfygJyhPvGMJVdqeh7KdA-1; Tue, 02 Apr 2024 09:57:48 -0400
+X-MC-Unique: zAfygJyhPvGMJVdqeh7KdA-1
+Received: by mail-qv1-f70.google.com with SMTP id 6a1803df08f44-696ac7aec1dso57748556d6.1
+        for <linux-kernel@vger.kernel.org>; Tue, 02 Apr 2024 06:57:48 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712066158; x=1712670958;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Rr/3jgsq/y6quIiVf2XQx3I3wZFyCdLaPeu+eAcGk/I=;
-        b=BDb5RmLtByi4UOujtARh/wJJRp1v9N1d8wuIhR6ZnL38lcZo4fAh4HZMzWYIhUZMiZ
-         SnHbZBthJRI6fMGtORO5lJ6jmz8E9f2X58nwwdWMKNZLtnIbwtow4/hA3wvUx9OG3rRP
-         H0akY1QdMvWGxD+jHmWzzhqJSA3JL8HZjJQWy3DHKjBYp9MlHwlFXWsDRnCr8PLPJ7jg
-         c2zfLwzOud/b7v1iMV35R59kH8puaINgmPY21GD0BBo0vXzSPQANgE/kvvnDYiaI8dmj
-         LTZFfk9U/30NXDuenQ6t6jTKk5zMQKiYykV4Pg7H8DCybxXhq6+hx80v4Yj8R1oBu+u/
-         e6Tw==
-X-Forwarded-Encrypted: i=1; AJvYcCXZIRqB7fK0ImFxwTJ30AbnEEqmVgJy4netjg5fdb6WU8FU5gRvVzGWpawjyFu5SzWq43iLGr39UX6TT8w6qnxSHf6IuXOj1nfkk4uB
-X-Gm-Message-State: AOJu0YwFiBYSvdYpdiY/6W3+SClgqIFwu5xYGWriR9j6Obi0emQTIawS
-	hF8mjTOYOrhf72HTucC8GVLWkrlhEsfYv/3mfxQ6RHoO4CvN/oSkYKxdw3q73hM=
-X-Google-Smtp-Source: AGHT+IHF63flTEx8ct3nL+qzYKMao881y40Gb4WtlQQ9zGIwOpR9jnpo5n0Y2QLMMn5WL81JG3JifQ==
-X-Received: by 2002:ac2:4c16:0:b0:515:d3dc:43e with SMTP id t22-20020ac24c16000000b00515d3dc043emr6673463lfq.51.1712066158248;
-        Tue, 02 Apr 2024 06:55:58 -0700 (PDT)
-Received: from [192.168.1.20] ([178.197.223.16])
-        by smtp.gmail.com with ESMTPSA id r20-20020a17090638d400b00a4e59587f63sm3506762ejd.193.2024.04.02.06.55.56
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 02 Apr 2024 06:55:57 -0700 (PDT)
-Message-ID: <6b47886e-09ac-4cb9-ab53-ca64f5320005@linaro.org>
-Date: Tue, 2 Apr 2024 15:55:55 +0200
+        d=1e100.net; s=20230601; t=1712066267; x=1712671067;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=BwIJukPzdelvXDcQMgUp/22xDxOhihi+wolcq3WNR8U=;
+        b=E6awzGKMTjD+m8y6GESBYQPnRDJqwBiIaOUBhIeSkdgcKMky9UAlClKXJjBe2zByFZ
+         6l6qMZwgFX1RG2a930Pmx4+tKFYnTcMAFATW4FMAWg17Hd9VUFAeHBXQcIkDtEkiLlaW
+         7qibZIh9hzroCQ8cAFw2ZqYUcFYi8t9kBftWZxcmu3WMimmAHxaLsHByjCZGLhO+O5LM
+         Bg9lfQWN9PyvYEBpIVheVEVOLx7rWLwdYtpIXuw4t8uSLbgjSZXZaBLyLPiNo/pMwQcd
+         HqzBjtmAK+Kd6gMr7DTyvZO6jRUu6Q1EulXvAFsEycfvtYL0fg5KDx0j1gOgJHYr6931
+         OWMA==
+X-Forwarded-Encrypted: i=1; AJvYcCXypqN5rG9T9ypPsL/x/MpnwXjgnd3R6D7ugaXUdSdxXY54+CEzObMoj0OwuEnf7Hw3ZW+/ouTfMLXVdZ3FkrE4XZUM8OcAMqGZmsDk
+X-Gm-Message-State: AOJu0Yy1XHhQEBKR8mFgdIN8YjWq6NX1ARS7Syx16mkU4OtTIIfAxosU
+	3lybuPDldfQlwwYlkwEdssWZIQoPSp9Dpb6fsUdAYfyUltpJR1WUnEZXxYoHnQphTgxY64CgA42
+	1za4CP+shKYjZErJDD4SnZuOzfFkDShg+3Kh/G79SklnNuPNKtROKYJ5QPDqoMNi6Vy4mSYYMh4
+	WeaebhTSPECpId6ydMcS8zODnQWDkSUJRl0SEf
+X-Received: by 2002:a0c:cdcf:0:b0:696:ac91:41c2 with SMTP id a15-20020a0ccdcf000000b00696ac9141c2mr13131335qvn.48.1712066267639;
+        Tue, 02 Apr 2024 06:57:47 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IH/DCRnBSkIpLSO6upnOO5Tzpg9MZq14xq1VxJcq3TklZyO57ExfrbUAPMJpM/KYX4BnzjqDGw2LVs7yJ/z494=
+X-Received: by 2002:a0c:cdcf:0:b0:696:ac91:41c2 with SMTP id
+ a15-20020a0ccdcf000000b00696ac9141c2mr13131314qvn.48.1712066267330; Tue, 02
+ Apr 2024 06:57:47 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/3] dt-bindings: leds: add LED_FUNCTION_FNLOCK
-To: Gergo Koteles <soyer@irl.hu>, Ike Panhc <ike.pan@canonical.com>,
- Hans de Goede <hdegoede@redhat.com>,
- =?UTF-8?Q?Ilpo_J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>,
- Pavel Machek <pavel@ucw.cz>, Lee Jones <lee@kernel.org>,
- Rob Herring <robh@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>
-Cc: platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-leds@vger.kernel.org, devicetree@vger.kernel.org
-References: <cover.1712063200.git.soyer@irl.hu>
- <8ac95e85a53dc0b8cce1e27fc1cab6d19221543b.1712063200.git.soyer@irl.hu>
-Content-Language: en-US
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- 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
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <8ac95e85a53dc0b8cce1e27fc1cab6d19221543b.1712063200.git.soyer@irl.hu>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+References: <20240402092254.3891-1-ksundara@redhat.com> <20240402092254.3891-2-ksundara@redhat.com>
+ <ZgvqPHYj3jS7vGHO@nanopsycho>
+In-Reply-To: <ZgvqPHYj3jS7vGHO@nanopsycho>
+From: Karthik Sundaravel <ksundara@redhat.com>
+Date: Tue, 2 Apr 2024 19:27:35 +0530
+Message-ID: <CAPh+B4LJokN=-ii7fMkpSsucsBK7uROHwDSwXypX+moDRkiKXw@mail.gmail.com>
+Subject: Re: [PATCH v7] ice: Add get/set hw address for VFs using devlink commands
+To: Jiri Pirko <jiri@resnulli.us>
+Cc: jesse.brandeburg@intel.com, wojciech.drewek@intel.com, sumang@marvell.com, 
+	jacob.e.keller@intel.com, anthony.l.nguyen@intel.com, davem@davemloft.net, 
+	edumazet@google.com, kuba@kernel.org, pabeni@redhat.com, 
+	intel-wired-lan@lists.osuosl.org, netdev@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, pmenzel@molgen.mpg.de, 
+	michal.swiatkowski@linux.intel.com, rjarry@redhat.com, aharivel@redhat.com, 
+	vchundur@redhat.com, cfontain@redhat.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 02/04/2024 15:21, Gergo Koteles wrote:
-> Newer laptops have FnLock LED.
-> 
-> Add a define for this very common function.
-> 
-> Signed-off-by: Gergo Koteles <soyer@irl.hu>
-> ---
->  include/dt-bindings/leds/common.h | 1 +
-
-Do we really need to define all these possible LED functions? Please
-link to DTS user for this.
-
-Best regards,
-Krzysztof
+On Tue, Apr 2, 2024 at 4:51=E2=80=AFPM Jiri Pirko <jiri@resnulli.us> wrote:
+>
+> Tue, Apr 02, 2024 at 11:22:54AM CEST, ksundara@redhat.com wrote:
+> >Changing the MAC address of the VFs is currently unsupported via devlink=
+.
+> >Add the function handlers to set and get the HW address for the VFs.
+> >
+> >Signed-off-by: Karthik Sundaravel <ksundara@redhat.com>
+> >---
+> > drivers/net/ethernet/intel/ice/ice_devlink.c | 63 +++++++++++++++++++-
+> > drivers/net/ethernet/intel/ice/ice_sriov.c   | 62 +++++++++++++++++++
+> > drivers/net/ethernet/intel/ice/ice_sriov.h   |  8 +++
+> > 3 files changed, 132 insertions(+), 1 deletion(-)
+> >
+> >diff --git a/drivers/net/ethernet/intel/ice/ice_devlink.c b/drivers/net/=
+ethernet/intel/ice/ice_devlink.c
+> >index 80dc5445b50d..10735715403a 100644
+> >--- a/drivers/net/ethernet/intel/ice/ice_devlink.c
+> >+++ b/drivers/net/ethernet/intel/ice/ice_devlink.c
+> >@@ -1576,6 +1576,66 @@ void ice_devlink_destroy_pf_port(struct ice_pf *p=
+f)
+> >       devlink_port_unregister(&pf->devlink_port);
+> > }
+> >
+> >+/**
+> >+ * ice_devlink_port_get_vf_fn_mac - .port_fn_hw_addr_get devlink handle=
+r
+> >+ * @port: devlink port structure
+> >+ * @hw_addr: MAC address of the port
+> >+ * @hw_addr_len: length of MAC address
+> >+ * @extack: extended netdev ack structure
+> >+ *
+> >+ * Callback for the devlink .port_fn_hw_addr_get operation
+> >+ * Return: zero on success or an error code on failure.
+> >+ */
+> >+
+> >+static int ice_devlink_port_get_vf_fn_mac(struct devlink_port *port,
+> >+                                        u8 *hw_addr, int *hw_addr_len,
+> >+                                        struct netlink_ext_ack *extack)
+> >+{
+> >+      struct ice_vf *vf =3D container_of(port, struct ice_vf, devlink_p=
+ort);
+> >+
+> >+      ether_addr_copy(hw_addr, vf->dev_lan_addr);
+> >+      *hw_addr_len =3D ETH_ALEN;
+> >+
+> >+      return 0;
+> >+}
+> >+
+> >+/**
+> >+ * ice_devlink_port_set_vf_fn_mac - .port_fn_hw_addr_set devlink handle=
+r
+> >+ * @port: devlink port structure
+> >+ * @hw_addr: MAC address of the port
+> >+ * @hw_addr_len: length of MAC address
+> >+ * @extack: extended netdev ack structure
+> >+ *
+> >+ * Callback for the devlink .port_fn_hw_addr_set operation
+> >+ * Return: zero on success or an error code on failure.
+> >+ */
+> >+static int ice_devlink_port_set_vf_fn_mac(struct devlink_port *port,
+> >+                                        const u8 *hw_addr,
+> >+                                        int hw_addr_len,
+> >+                                        struct netlink_ext_ack *extack)
+> >+
+> >+{
+> >+      struct devlink_port_attrs *attrs =3D &port->attrs;
+> >+      struct devlink_port_pci_vf_attrs *pci_vf;
+> >+      struct devlink *devlink =3D port->devlink;
+> >+      struct ice_pf *pf;
+> >+      u8 mac[ETH_ALEN];
+>
+> Why you need this extra variable?
+The function signature of ice_set_vf_fn_mac() is kept to match
+ice_set_vf_mac(), and hence the ``u8 *mac`` is used instead of ``const
+u8 *mac``.
+A copy of the mac is made to facilitate the same.
+Considering the usage of mac in ice_set_vf_fn_mac(), the function
+signature could be modified to take a ``const u8 *mac`` as well.
+>
+>
+> >+      u16 vf_id;
+> >+
+> >+      pf =3D devlink_priv(devlink);
+> >+      pci_vf =3D &attrs->pci_vf;
+> >+      vf_id =3D pci_vf->vf;
+> >+
+> >+      ether_addr_copy(mac, hw_addr);
+> >+
+> >+      return ice_set_vf_fn_mac(pf, vf_id, mac);
+> >+}
+> >+
+> >+static const struct devlink_port_ops ice_devlink_vf_port_ops =3D {
+> >+      .port_fn_hw_addr_get =3D ice_devlink_port_get_vf_fn_mac,
+> >+      .port_fn_hw_addr_set =3D ice_devlink_port_set_vf_fn_mac,
+> >+};
+> >+
+> > /**
+> >  * ice_devlink_create_vf_port - Create a devlink port for this VF
+> >  * @vf: the VF to create a port for
+> >@@ -1611,7 +1671,8 @@ int ice_devlink_create_vf_port(struct ice_vf *vf)
+> >       devlink_port_attrs_set(devlink_port, &attrs);
+> >       devlink =3D priv_to_devlink(pf);
+> >
+> >-      err =3D devlink_port_register(devlink, devlink_port, vsi->idx);
+> >+      err =3D devlink_port_register_with_ops(devlink, devlink_port,
+> >+                                           vsi->idx, &ice_devlink_vf_po=
+rt_ops);
+> >       if (err) {
+> >               dev_err(dev, "Failed to create devlink port for VF %d, er=
+ror %d\n",
+> >                       vf->vf_id, err);
+> >diff --git a/drivers/net/ethernet/intel/ice/ice_sriov.c b/drivers/net/et=
+hernet/intel/ice/ice_sriov.c
+> >index 31314e7540f8..b1e5cd188fd7 100644
+> >--- a/drivers/net/ethernet/intel/ice/ice_sriov.c
+> >+++ b/drivers/net/ethernet/intel/ice/ice_sriov.c
+> >@@ -1216,6 +1216,68 @@ ice_get_vf_cfg(struct net_device *netdev, int vf_=
+id, struct ifla_vf_info *ivi)
+> >       return ret;
+> > }
+> >
+> >+/**
+> >+ * ice_set_vf_fn_mac
+> >+ * @pf: PF to be configure
+> >+ * @vf_id: VF identifier
+> >+ * @mac: MAC address
+> >+ *
+> >+ * program VF MAC address
+> >+ */
+> >+int ice_set_vf_fn_mac(struct ice_pf *pf, u16 vf_id, u8 *mac)
+> >+{
+> >+      struct device *dev;
+> >+      struct ice_vf *vf;
+> >+      int ret;
+> >+
+> >+      dev =3D ice_pf_to_dev(pf);
+> >+      if (is_multicast_ether_addr(mac)) {
+> >+              dev_err(dev, "%pM not a valid unicast address\n", mac);
+> >+              return -EINVAL;
+> >+      }
+> >+
+> >+      vf =3D ice_get_vf_by_id(pf, vf_id);
+> >+      if (!vf)
+> >+              return -EINVAL;
+> >+
+> >+      /* nothing left to do, unicast MAC already set */
+> >+      if (ether_addr_equal(vf->dev_lan_addr, mac) &&
+> >+          ether_addr_equal(vf->hw_lan_addr, mac)) {
+> >+              ret =3D 0;
+> >+              goto out_put_vf;
+> >+      }
+> >+
+> >+      ret =3D ice_check_vf_ready_for_cfg(vf);
+> >+      if (ret)
+> >+              goto out_put_vf;
+> >+
+> >+      mutex_lock(&vf->cfg_lock);
+> >+
+> >+      /* VF is notified of its new MAC via the PF's response to the
+> >+       * VIRTCHNL_OP_GET_VF_RESOURCES message after the VF has been res=
+et
+> >+       */
+> >+      ether_addr_copy(vf->dev_lan_addr, mac);
+> >+      ether_addr_copy(vf->hw_lan_addr, mac);
+> >+      if (is_zero_ether_addr(mac)) {
+> >+              /* VF will send VIRTCHNL_OP_ADD_ETH_ADDR message with its=
+ MAC */
+> >+              vf->pf_set_mac =3D false;
+> >+              dev_info(dev, "Removing MAC on VF %d. VF driver will be r=
+einitialized\n",
+> >+                       vf->vf_id);
+> >+      } else {
+> >+              /* PF will add MAC rule for the VF */
+> >+              vf->pf_set_mac =3D true;
+> >+              dev_info(dev, "Setting MAC %pM on VF %d. VF driver will b=
+e reinitialized\n",
+> >+                       mac, vf_id);
+> >+      }
+> >+
+> >+      ice_reset_vf(vf, ICE_VF_RESET_NOTIFY);
+> >+      mutex_unlock(&vf->cfg_lock);
+> >+
+> >+out_put_vf:
+> >+      ice_put_vf(vf);
+> >+      return ret;
+> >+}
+> >+
+> > /**
+> >  * ice_set_vf_mac
+> >  * @netdev: network interface device structure
+> >diff --git a/drivers/net/ethernet/intel/ice/ice_sriov.h b/drivers/net/et=
+hernet/intel/ice/ice_sriov.h
+> >index 346cb2666f3a..11cc522b1d9f 100644
+> >--- a/drivers/net/ethernet/intel/ice/ice_sriov.h
+> >+++ b/drivers/net/ethernet/intel/ice/ice_sriov.h
+> >@@ -28,6 +28,7 @@
+> > #ifdef CONFIG_PCI_IOV
+> > void ice_process_vflr_event(struct ice_pf *pf);
+> > int ice_sriov_configure(struct pci_dev *pdev, int num_vfs);
+> >+int ice_set_vf_fn_mac(struct ice_pf *pf, u16 vf_id, u8 *mac);
+> > int ice_set_vf_mac(struct net_device *netdev, int vf_id, u8 *mac);
+> > int
+> > ice_get_vf_cfg(struct net_device *netdev, int vf_id, struct ifla_vf_inf=
+o *ivi);
+> >@@ -76,6 +77,13 @@ ice_sriov_configure(struct pci_dev __always_unused *p=
+dev,
+> >       return -EOPNOTSUPP;
+> > }
+> >
+> >+static inline int
+> >+ice_set_vf_fn_mac(struct ice_pf __always_unused *pf,
+> >+                u16 __always_unused vf_id, u8 __always_unused *mac)
+> >+{
+> >+      return -EOPNOTSUPP;
+> >+}
+> >+
+> > static inline int
+> > ice_set_vf_mac(struct net_device __always_unused *netdev,
+> >              int __always_unused vf_id, u8 __always_unused *mac)
+> >--
+> >2.39.3 (Apple Git-146)
+> >
+>
 
 
