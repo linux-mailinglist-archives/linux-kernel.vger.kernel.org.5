@@ -1,129 +1,107 @@
-Return-Path: <linux-kernel+bounces-128535-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-128527-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 787FB895C24
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 21:05:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 0C7BF895C0B
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 20:55:34 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 261CB1F23AE8
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 19:05:14 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id AFD6C1F23747
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 18:55:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 964F415B963;
-	Tue,  2 Apr 2024 19:04:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6C26715B13E;
+	Tue,  2 Apr 2024 18:55:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=rjwysocki.net header.i=@rjwysocki.net header.b="FEkWLYqt"
-Received: from cloudserver094114.home.pl (cloudserver094114.home.pl [79.96.170.134])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b="DSori6Xw"
+Received: from mail-io1-f49.google.com (mail-io1-f49.google.com [209.85.166.49])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 96A7515B542;
-	Tue,  2 Apr 2024 19:04:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=79.96.170.134
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7D57815AAAA
+	for <linux-kernel@vger.kernel.org>; Tue,  2 Apr 2024 18:55:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712084690; cv=none; b=WTKxJ1L9pF7Xf32xwhiNC8bS4gky07nCElRNeCIzh90bU7arkDGm1Bp66UixpqjRfMHewJjJvqGs0iGvUTeO7rrp00pg7Y5pUS7FR9nqM6dyYSEGde9EJ9LHV992a9KPehjLesr13TTOnnApRCdLilL+PtHd1v5gw4ZoIrHbzz0=
+	t=1712084127; cv=none; b=FbADvhviUwtXm8eyV9qNMleyjeX27QIy0K31SzBCbFn89DbtEp/uX5b/ON9ioedV1/mABtQmODjIQdrqufEXmmW11NN4tUirEmWj8qsazCQCW3KACgmrujVfqjUrfRpWPxZdloRy5vK2x9m68VzcSaqeol2wZfzSXLn+KaS2X1U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712084690; c=relaxed/simple;
-	bh=Legyi8s1aj0iwNAVWc0C2wTLd3674Uc5QjKYYL+1Al0=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=Q70lw7X6Z8cwZXJT5GYVa3Q6JKi/9xt+t1v9EksXZO2ZawaY6nDcUD2qw6d7lI4qsLj39q/jOjbPg4e9Sv6lkLKRSEv4m2mwELk7a1VqgkXpqqzdYobHyGYRqMC1CnBei0MDc4dt86W/9I0Jrv5JbNbOA4BmyZkZHwjMfU8teSA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rjwysocki.net; spf=pass smtp.mailfrom=rjwysocki.net; dkim=pass (2048-bit key) header.d=rjwysocki.net header.i=@rjwysocki.net header.b=FEkWLYqt; arc=none smtp.client-ip=79.96.170.134
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rjwysocki.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rjwysocki.net
-Received: from localhost (127.0.0.1) (HELO v370.home.net.pl)
- by /usr/run/smtp (/usr/run/postfix/private/idea_relay_lmtp) via UNIX with SMTP (IdeaSmtpServer 6.0.0)
- id b02708ad7978d327; Tue, 2 Apr 2024 21:04:46 +0200
-Received: from kreacher.localnet (unknown [195.136.19.94])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by cloudserver094114.home.pl (Postfix) with ESMTPSA id 042FE66C5C5;
-	Tue,  2 Apr 2024 21:04:46 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=rjwysocki.net;
-	s=dkim; t=1712084686;
-	bh=Legyi8s1aj0iwNAVWc0C2wTLd3674Uc5QjKYYL+1Al0=;
-	h=From:To:Cc:Subject:Date;
-	b=FEkWLYqtD2wI5oe7DgTOvmUjX6ziE7c/PAnAZnEKCTw4IxRygARUa+0h7Gokhh2AO
-	 99AwTowzRQelDFH6ZAM8YyQRrMdmEOeCahQONhZFjqpbydzhb8NYakun3strdeNz1n
-	 +7nzBix6dYuk8ul3y7mVhOkkeK8mEPzD6TTfx1cz3KUr76tKhk57OMYeE+1E7XqhhG
-	 UhkMzzA+8GffRtNT08P2Ne+Du5mkO/ZSCgRNzt9nH7ezJ2RH2yVtRlSiQFlSRoAWdF
-	 MY/NF5p7Xb667gRcGTPOBEY5mKU7U5GSD9LjqKlAePkiD8h3rFdYtvQGs14E9M5jpO
-	 PUevZPzjzQ+cQ==
-From: "Rafael J. Wysocki" <rjw@rjwysocki.net>
-To: Linux PM <linux-pm@vger.kernel.org>
-Cc: LKML <linux-kernel@vger.kernel.org>,
- Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
- Daniel Lezcano <daniel.lezcano@linaro.org>,
- Lukasz Luba <lukasz.luba@arm.com>,
- AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
-Subject: [PATCH v3 0/6] thermal: More separation between the core and drivers
-Date: Tue, 02 Apr 2024 20:54:31 +0200
-Message-ID: <4558251.LvFx2qVVIh@kreacher>
+	s=arc-20240116; t=1712084127; c=relaxed/simple;
+	bh=Dk00FlgdGaeX3yUPDWCaCFg4Gbj7+7kzsUBTGty4cm0=;
+	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=GFBEJnka1WIiX38WSRa3g6QNfQXX7SIwQ+kLm7nw5CeSaF5p4i4Jrm99ZNp1yiSag4iAbT6gNFrpEKl6uuzvYpFh3+hjqEo37peFbfcj8aaGyRnrr0mCU0elTJrH/KQoScVdU7VErJY6elKvwg3dQ+nWqF99hhx5cn22NTCl+RQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk; spf=pass smtp.mailfrom=kernel.dk; dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b=DSori6Xw; arc=none smtp.client-ip=209.85.166.49
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.dk
+Received: by mail-io1-f49.google.com with SMTP id ca18e2360f4ac-7cc5e664d52so70771339f.0
+        for <linux-kernel@vger.kernel.org>; Tue, 02 Apr 2024 11:55:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kernel-dk.20230601.gappssmtp.com; s=20230601; t=1712084124; x=1712688924; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=Y9CEKYteE8uUUvJpYXds6TwWJm/m8kxE7cZKTVullfs=;
+        b=DSori6XwAipnquplkwt88IRAYxw1J1pIjZjUSDuvtjY/uIbH/eGq64IJnvXaB6QSSi
+         jJ+OFHOeHUH5xksQybnfnfeVeftdro7oe4Tuu4vgVYvy+3EDnc440RdvSQt+2pgfTTMJ
+         EqRCaEz9XvXGjqvk//FkqiyR18CzHlC4l2zR7D4JsMgS/deWVgL36gfzw9O1VQZ55SEv
+         /3kVyAQ3hp2EreuWwX258EbHjiFULRY2f1aEg6x7aRwWOu12r7W6SvNfgieZr2yCzyRJ
+         uXiqBYpwxha1Hlvi/Bh6Bs3Z4NltWKcZczu1dafk+LwEMUuuklXmgiECydT/WEDM/hX4
+         zELQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712084124; x=1712688924;
+        h=content-transfer-encoding:in-reply-to:from:references:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=Y9CEKYteE8uUUvJpYXds6TwWJm/m8kxE7cZKTVullfs=;
+        b=XTsizr3RgtsBeLv5TC4oPs9wPNpP85fSBe2IZvYw7moXRs3o/EfLOltsYEA5ylGCxk
+         dXacCBkLv1T1kMdJzFizf4hThTHRXqw2jbxyKLGw4YkDmD/OuJYEhXJScVEAlqjFJGam
+         bsYcUt9wr3CrwdDHkzt4CuMyt0zxrNzhaRCQ7Szk7Z3f7WcHd96RHNYyM2mR9SIol9YM
+         ye55PzMZfnaOiH2AP86GxVMJGPjzBPXayHTct603GfwMybj22lRn7vCkgBFs6bvW/93f
+         ebiWEfFVQ5qbP4nePM580Cw9cOa6/Y9vTjfXX/u4kj3TDn7czM1JcvFjcnHRFGm1ruTZ
+         mYkA==
+X-Forwarded-Encrypted: i=1; AJvYcCV9qxn6rbrGZMZsAkOzToJNATDAYpU7wpQCnLQOrZwebMSi5Z4uwBNRUURGpQfclgmpsb9apwOZbmeldPNhYp8IqxgAL3a8syPcGUph
+X-Gm-Message-State: AOJu0Yz15vhxPTd7Wz6GJ1HwnMNbBO+cpKROcPDHX/3DEO91q/7WQdL+
+	/wnFQcB0yqmT/lmNZW/6QfdsccCF5dNgzYx7fvqEXv4fLGlnKSCnk+EALp88ECo=
+X-Google-Smtp-Source: AGHT+IEjGK6NxzKYxt51ZVO+1tkBY7glBsqdLv4qs0KMaJYsKOk/Z9a8P8Su7684Ypgt9899NjSJZQ==
+X-Received: by 2002:a5e:9914:0:b0:7d3:433a:d33d with SMTP id t20-20020a5e9914000000b007d3433ad33dmr489178ioj.2.1712084122903;
+        Tue, 02 Apr 2024 11:55:22 -0700 (PDT)
+Received: from [192.168.1.116] ([96.43.243.2])
+        by smtp.gmail.com with ESMTPSA id m4-20020a056638260400b0047ef03e3512sm1765520jat.135.2024.04.02.11.55.21
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 02 Apr 2024 11:55:22 -0700 (PDT)
+Message-ID: <727c3d14-b645-406a-8ba8-506e5753d646@kernel.dk>
+Date: Tue, 2 Apr 2024 12:55:20 -0600
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="UTF-8"
-X-CLIENT-IP: 195.136.19.94
-X-CLIENT-HOSTNAME: 195.136.19.94
-X-VADE-SPAMSTATE: clean
-X-VADE-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedvledrudefvddgudeffecutefuodetggdotefrodftvfcurfhrohhfihhlvgemucfjqffogffrnfdpggftiffpkfenuceurghilhhouhhtmecuudehtdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujfgurhephffvvefufffkggfgtgesthfuredttddtjeenucfhrhhomhepfdftrghfrggvlhculfdrucghhihsohgtkhhifdcuoehrjhifsehrjhifhihsohgtkhhirdhnvghtqeenucggtffrrghtthgvrhhnpeegfffhudejlefhtdegffekteduhfethffhieettefhkeevgfdvgfefieekiefgheenucffohhmrghinhepkhgvrhhnvghlrdhorhhgnecukfhppeduleehrddufeeirdduledrleegnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehinhgvthepudelhedrudefiedrudelrdelgedphhgvlhhopehkrhgvrggthhgvrhdrlhhotggrlhhnvghtpdhmrghilhhfrhhomhepfdftrghfrggvlhculfdrucghhihsohgtkhhifdcuoehrjhifsehrjhifhihsohgtkhhirdhnvghtqedpnhgspghrtghpthhtohepiedprhgtphhtthhopehlihhnuhigqdhpmhesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehlihhnuhigqdhkvghrnhgvlhesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehsrhhinhhivhgrshdrphgrnhgurhhuvhgruggrsehlihhnuhigrdhinhhtvghlrdgtohhmpdhrtghpthhtohepuggr
- nhhivghlrdhlvgiitggrnhhosehlihhnrghrohdrohhrghdprhgtphhtthhopehluhhkrghsiidrlhhusggrsegrrhhmrdgtohhmpdhrtghpthhtoheprghnghgvlhhoghhiohgrtggthhhinhhordguvghlrhgvghhnohestgholhhlrggsohhrrgdrtghomh
-X-DCC--Metrics: v370.home.net.pl 1024; Body=6 Fuz1=6 Fuz2=6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [syzbot] [io-uring?] kernel BUG in put_page
+Content-Language: en-US
+To: Pavel Begunkov <asml.silence@gmail.com>,
+ syzbot <syzbot+324f30025b9b5d66fab9@syzkaller.appspotmail.com>,
+ io-uring@vger.kernel.org, linux-kernel@vger.kernel.org,
+ syzkaller-bugs@googlegroups.com
+References: <0000000000002464bf06151928ef@google.com>
+ <a801e5e8-178b-41c5-bf76-352eabcabf45@gmail.com>
+From: Jens Axboe <axboe@kernel.dk>
+In-Reply-To: <a801e5e8-178b-41c5-bf76-352eabcabf45@gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-Hi Everyone,
-
-This is an update of
-
-https://lore.kernel.org/linux-pm/4558384.LvFx2qVVIh@kreacher/
-
-and
-
-https://lore.kernel.org/linux-pm/2331888.ElGaqSPkdT@kreacher/
-
-which rebases the first patch on top of 6.9-rc2, adds 3 patches and adjusts
-the third patch from v2.
-
-The original description of the first two patches still applies:
-
-> Patch [1/2] is based on the observation that the threshold field in struct
-> thermal_trip really should be core-internal and to make that happen it
-> introduces a wrapper structure around struct thermal_trip for internal
-> use in the core.
+On 4/2/24 12:51 PM, Pavel Begunkov wrote:
+> On 4/2/24 09:47, syzbot wrote:
+>> Hello,
+>>
+>> syzbot found the following issue on:
 > 
-> Patch [2/2] moves the definition of the new structure and the struct
-> thermal_zone_device one to a local header file in the core to enforce
-> more separation between the core and drivers.
-> 
-> The patches are not expected to introduce any observable differences in
-> behavior, so please let me know if you see any of that.
+> gmail decided to put it into spam, replying for visibility
+> in case I'm not the only one who missed it.
 
-Note that these patches were first sent before the merge window and have not
-really changed since then (except for a minor rebase of the first patch in
-this series).  Moreover, no comments regarding the merit of these patches
-have been made shared, so if this continues, I will be considering them as
-good to go by the end of this week.
+First I see of them... I'll take a look at both, must be fallout
+from the mapping changes.
 
-Patch [3/6] is a rewrite of comments regarding trip crossing and threshold
-computations.
-
-Patch [4/6] updates the trip crossing detection code to consolidate the
-threshold initialization with trip crossing on the way up.
-
-Patch [5/6] ([3/3] in v2) adds a mechanism to sort notifications and debug
-calls taking place during one invocation of __thermal_zone_device_update() so
-they always go in temperature order.
-
-Patch [6/6] relocates the critical and trip point handling to avoid a
-redundant temperature check.
-
-The series applies on top of 6.9-rc2 and I'm planning to create a test
-branch containing it.
-
-Thanks!
-
+-- 
+Jens Axboe
 
 
 
