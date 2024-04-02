@@ -1,183 +1,180 @@
-Return-Path: <linux-kernel+bounces-127956-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-127957-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 459BA8953A9
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 14:42:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id ACBE58953AA
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 14:43:09 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B34F91F2320F
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 12:42:54 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2169F1F22FBB
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 12:43:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 606DF83A11;
-	Tue,  2 Apr 2024 12:40:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AA3DB83CD7;
+	Tue,  2 Apr 2024 12:40:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="X1C03tOi"
-Received: from NAM10-MW2-obe.outbound.protection.outlook.com (mail-mw2nam10on2132.outbound.protection.outlook.com [40.107.94.132])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="DGrRLnoe"
+Received: from mail-pf1-f177.google.com (mail-pf1-f177.google.com [209.85.210.177])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DFF5C7A151;
-	Tue,  2 Apr 2024 12:40:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.94.132
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712061605; cv=fail; b=awwFubHAF4Lc69SHZ4kc+aQhEoKlSJwSeOnwmVjHibteTjutntTNQRfK5WN4/yNaRd2Ni2phanXVbvgfwJSqL87rinPd/zt2m0CPq4VyquC8kO8+2fXwIpq8qGzbFhWcg7sZau8QnWa1hEt9DMqNe1dvYIiK6I/JzgT7+Z2O+jg=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712061605; c=relaxed/simple;
-	bh=E6oTosDaLW1ptJhurDkdP/67S6D/v2RnigILb3Mwiuo=;
-	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
-	 Content-Type:MIME-Version; b=eSP5I4JeiWhHSFllR2hp/5u2kSVgIgQjAyflUOG9W39JtFqBZitsUA0H9EaPs6vksBNPY++QAq6UQQ4pcfsO5OQ6SHUr7XHyAy4lgQ9MjqBmf97v3L3IbE+oMQeZ3dMPE7zhljjdh1Pd1Z9k20F1rmeKjJs5iHRcCkvGPDvgbUQ=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=X1C03tOi; arc=fail smtp.client-ip=40.107.94.132
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=f/PKTrm+GnSb2evSfxRLX1jJ9T3y1BnE3b78TH6BRplJlm2H7SvwK0uXcvBBgZxMdDsTlfp/Mw0+XJDaLzDW3uMLGW1DUw6ilXgx6w2Wd8k4PrDoAnE6KLCAlvtIZ0RnDyYvICuQmrURrvLLp35n+RlWxoSfbLziA++EjCnK5Wj3UzbL9WvLzH8BIaRn8Qv/xUo45m2D7rxJd7tz/RcoEKN5KVaegpV4iCPPX2bIlwIX1tizI4sLYagj0mDmHU0hBs2rsDKZJDnqh0zjQhzZqFWebZUJtTpwMMbFPkHyRqx6xwJ8y3iXp5Dd8fO9yzbzEmStvjcwOHWbl2/fubTS7g==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=HRhxySxByKilHpe/IBdmP9cHDa9d92LSdCdFIS2V2so=;
- b=WotPWnDfon+QxB8b2y1OP3soqOE4ao0KoTz0dXYOLnQ52xz1s9paVTp9h5piWTgT8Jj7b+XE+Ozzjrj/NINrd4MTYiwaD5tAr9zMkA/m/RFJDXJfW6dBL1KaR6MxShtbx5M/sH7PgFyJBlLXOmU+jeFU4aH+JDoUT/EB5VcELGLIEqW5337Ai5iWWjZOM8ONGg0v50YWUGOOUFVilalfKAAnW9gLKy2yMRkSvPJMpGDgbBteszZ3py6jj0iF9ARuPZz0pvRpbIwaYRnubxULtiHeFPGUw6NzGa5xjnkiIJ0jQUtzyn2eR6KBq/I8kIGCM/JX6aPlJmPGNFQEjsBxHQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=HRhxySxByKilHpe/IBdmP9cHDa9d92LSdCdFIS2V2so=;
- b=X1C03tOiSI1RCTbcrs29oez5KmoYOL+KQk/M8lDs9Srq0clV1E78dhCSFDDdkbU0Oa9l5Hbo9l44LivSqD+IfzTumaFMLrruY3n1Xaj3hby5ZAhOEjUFdss96Lj0BO50SJC1aUIKhsDYkUBzy0W42BkTgHtYeC3Hlk8bYxbKC6/RdSBzyynN+fYMGwvjvQOllRcrMDh/XYo3AdY6jO5b4g77kxkKj8yFuHONyYO+lWvZbLLIqiUKQxjeFOq+Xwl8NJrNQ4wE5ph5nOceOp54jTwom0dYd+jAFrF/eLMR3+HfqOdQ2HsKqC94ICyD0KjZ8OM+PWVQ1wXLl46hgGVtoA==
-Received: from CO6PR12MB5444.namprd12.prod.outlook.com (2603:10b6:5:35e::8) by
- BY5PR12MB4244.namprd12.prod.outlook.com (2603:10b6:a03:204::8) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.7409.46; Tue, 2 Apr 2024 12:40:00 +0000
-Received: from CO6PR12MB5444.namprd12.prod.outlook.com
- ([fe80::5159:5fc3:7933:24c0]) by CO6PR12MB5444.namprd12.prod.outlook.com
- ([fe80::5159:5fc3:7933:24c0%7]) with mapi id 15.20.7409.042; Tue, 2 Apr 2024
- 12:40:00 +0000
-Message-ID: <5f478d0e-5e7f-4e6d-a7d5-d6d50bb59722@nvidia.com>
-Date: Tue, 2 Apr 2024 13:39:55 +0100
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH V1] PCI: tegra194: Fix probe path for Endpoint mode
-Content-Language: en-US
-To: Vidya Sagar <vidyas@nvidia.com>, lpieralisi@kernel.org, kw@linux.com,
- robh@kernel.org, bhelgaas@google.com
-Cc: thierry.reding@gmail.com, linux-pci@vger.kernel.org,
- linux-tegra@vger.kernel.org, linux-kernel@vger.kernel.org,
- kthota@nvidia.com, mmaddireddy@nvidia.com, sagar.tv@gmail.com
-References: <20240401150116.298069-1-vidyas@nvidia.com>
-From: Jon Hunter <jonathanh@nvidia.com>
-In-Reply-To: <20240401150116.298069-1-vidyas@nvidia.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: LO4P265CA0024.GBRP265.PROD.OUTLOOK.COM
- (2603:10a6:600:2ae::19) To CO6PR12MB5444.namprd12.prod.outlook.com
- (2603:10b6:5:35e::8)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 60B7A7A151
+	for <linux-kernel@vger.kernel.org>; Tue,  2 Apr 2024 12:40:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.177
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1712061640; cv=none; b=ireG5yApPP/9tcwQQHk0iD5g+OcwFkEsacKuzGaBoNJ4h1mLx/PPMqzn4aSwf+RheSsdsFaDeyH2SENJ1PZnkvW3FBRlUxywG6z+SvY/wQ1yJomHKhZ/O4NOnxuMy5o7rs1HnRqOnM6adtOygEnQIwDpnf+luX5npsvqss9bhNY=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1712061640; c=relaxed/simple;
+	bh=0sNWHurwOJVBB17CbVkKuAQNe0MujrT3G7k4D7DMbc8=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=rFCIQdZ09/vcZ7u4G6SZ82+qxwJwHsoT3jMPKHjsja8klJQ+O8lsTrrjacONS4qfC2KLUQE5ivRs3uPQ8rLaI7sJNp7hsAJGAYfVqQqXA/obuzf6k5PPkN/FNHfvVVxdSHhepT6zil60CGW8LP/qh7APh6MOCX4fkriWQ0X/neE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=DGrRLnoe; arc=none smtp.client-ip=209.85.210.177
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pf1-f177.google.com with SMTP id d2e1a72fcca58-6ead4093f85so4748762b3a.3
+        for <linux-kernel@vger.kernel.org>; Tue, 02 Apr 2024 05:40:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1712061638; x=1712666438; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=z5G6GpIHkbgDMvuomt94iyreeKkPmpGXaASUVbfOhgI=;
+        b=DGrRLnoedesg/fj/mgoJezjEbgGnj/i0G5yiOkzbmVUaRxyygnSr7IEkQMBD5fFU15
+         pfSoMwkSre/hnKGyiEkzw6n39apNdohNBWEDo6UUSxH8HJegY5+sa37QlAF2J41nVqLg
+         SpmQJwWpJUKPtVRH2VpAYVc4AQVLOVEIpLGbl6gFBtBDNOP7a5Ofp9jM5AJ2cYRmOX8i
+         UHL2OxQrPOBNBTxLSVVDLrBbJ27ei+r7qbvIbTjw5RFXHVv3RBkXHCtJu3SnsI/bmoMB
+         L71hsKBDzsj+zRrjHoD7ustonlEhwv6Fl7NFDGThr1yZ2YfwRAIEkM3KwrU+Pwa8A4CD
+         XvdQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712061638; x=1712666438;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=z5G6GpIHkbgDMvuomt94iyreeKkPmpGXaASUVbfOhgI=;
+        b=ZE8gmzGGji/S1bPsvfKR+sQ/aLFu0gEx/0X4ATUE4TUmYfxXzvrHj8flVCYjALVcfa
+         7ig3PEXB771f3CB6gRwKQngNQU6mEnLWyE9OppE8q/od1nbEItz9UY8FsRwcHZQtpNYb
+         +ivVJXvNdd7637dobevY71/Ip96Q83Rs3NvHzCWgSkVnDvN1sFOgFrw5HmyjGLwJc5vL
+         LKUzXnBNOZl8wmWlrnbfi/ImaG/SCxnpLMNvUK4wQTtnNfCoZ+HPI4PCGKxy9Jzt2kzz
+         mpEzS5RK6bq+S6jBqwovmK7qLGqP1yfg2k/d543njvHKD+4Jq7V5+hbfFc9HDauuQv/N
+         XFNA==
+X-Forwarded-Encrypted: i=1; AJvYcCW5rKcwzhBMRQM2NFzBfZaZ2tWpEGeXCQpLpWl0G2+7tO9f1lndOB7vu4yidN2OwVgOyxper7vdF1xlmkeSeaxebbbNcI5P1KtNRati
+X-Gm-Message-State: AOJu0Yyx+j9X4epBv9U4XrsbaIk67k4fdF4/IaoQwixKB+Tb+HIbq9VD
+	aYI3gxBQjERKygTUKv2qFz2ZdRJN6P46fLjg7R3zw561KlGBB0P1
+X-Google-Smtp-Source: AGHT+IFU6JVlTIGq308kE/gMP4m+lWmDGW6KTg9wTf197WtftPYl4LndEzB7/UfG2/2McnwmBsYTvQ==
+X-Received: by 2002:a05:6a20:3947:b0:1a5:698e:505c with SMTP id r7-20020a056a20394700b001a5698e505cmr11809339pzg.10.1712061638605;
+        Tue, 02 Apr 2024 05:40:38 -0700 (PDT)
+Received: from LancedeMBP.lan ([112.10.225.9])
+        by smtp.gmail.com with ESMTPSA id h5-20020a62b405000000b006e664031f10sm9708232pfn.51.2024.04.02.05.40.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 02 Apr 2024 05:40:38 -0700 (PDT)
+From: Lance Yang <ioworker0@gmail.com>
+To: akpm@linux-foundation.org
+Cc: zokeefe@google.com,
+	ryan.roberts@arm.com,
+	21cnbao@gmail.com,
+	shy828301@gmail.com,
+	david@redhat.com,
+	mhocko@suse.com,
+	fengwei.yin@intel.com,
+	xiehuan09@gmail.com,
+	wangkefeng.wang@huawei.com,
+	songmuchun@bytedance.com,
+	peterx@redhat.com,
+	minchan@kernel.org,
+	linux-mm@kvack.org,
+	linux-kernel@vger.kernel.org,
+	Lance Yang <ioworker0@gmail.com>
+Subject: [PATCH v4 0/2] mm/madvise: enhance lazyfreeing with mTHP in madvise_free
+Date: Tue,  2 Apr 2024 20:40:27 +0800
+Message-Id: <20240402124029.47846-1-ioworker0@gmail.com>
+X-Mailer: git-send-email 2.33.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: CO6PR12MB5444:EE_|BY5PR12MB4244:EE_
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	tLHiW9jcWcEGn8EqsmT8zKrR1ih11/gVWpb3Hd77kVvGQSmJgFwULP2n6XhAq/I+HCj0fX1WY5rC1VziHiWf2lWC4L742FqwaHry8UEmMvlzFM6z1Yr/deyeB5npB3NRrOUIl5jJ9VYvQprUV8312bpc3kJFVMXrVboaIptJEDwj44BeJdfQzH9qayObnEzY/G6pLEe7FjTyWUUD4MTiw2d+zqJCXwwGkb7xsuCyZGoLdEx/0ncKcHUmCtBdew/KZKuWq1+Ho9mvyGI6i0CemEXzOC6oAaZwB9F64w9pTlTjpnxSd/tB5JobsWj6BLA1EfafFFA+WwR2AKnVxmDUr4sOi7pYyj8m/xoT/36AiSDw7Qx6+bHlYgzraHKroYuqhnohXRnepZQnWXyIEuUlPizbJJ/9FVnddF+soEif33qF9dziFBz6CAZPR9NVY5Sq1jLSsmZ+aoy3K5ZjykvYaEujF6ozUgVjUb8y0KSvANMwWp9dtqbd04HlA/i+nP2QpQn0cP2NljVGHUq2Wcv7YExB95GwdPQogGw2tInhSmFsoH8q1o7n9rLh7ZG+q2GRkb6rGUcH1QNrHYq9deJHtjOQnFr+5IVovIpAE+0Dc99YfERq/8Fu6l4HmanJ9NCo5EcCovuGyR/nlJMG+APZKDSWlg5wQ1ZMzaw3B0xo/nw=
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CO6PR12MB5444.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366007)(376005)(1800799015);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?K3FaRXZYT1BsU01BYktJRTNJZHM1ZTh1aGtvc0plYlFNNXlVdnZPREhVQ0Ri?=
- =?utf-8?B?TUg1czJUb01KNWNxUDE1cjBMcGRUd2oxQmJyVmNQQytobHlLNG5laVl1MFQy?=
- =?utf-8?B?VFpqTXdzVnVBVWhDRXBoQUtGeURkNjFWRCsrUFdWR1hJR1U3VHVFMUsvTXFT?=
- =?utf-8?B?Vncycm9MelRPTi9Qa2EyMS9uUitzUGZyZHZlTzRFcWw2c3RKNklJeklsVGhk?=
- =?utf-8?B?V1VrSGIwUFBxdjZXd1A0UndtUWpFai9HbmVGMjNMWWI0cmJMbmpBcGhMZ1V5?=
- =?utf-8?B?aE9Ta293ZmgzY0lhMVNYVDMxNWFodkxTZWNqZDc0QjBtV1VpS1ZEempjRC9K?=
- =?utf-8?B?Zlh0VTZVR08rL3VTTENKQit1ZDVFZHFWSmRXWXUrSWhGRm9USXRCbk9hUzhS?=
- =?utf-8?B?TzI3NmpEdnNJUWRVbUdXckFWbHVHSDU2S0h5dEhJL0QwMWpqVC9uWFNaZTg1?=
- =?utf-8?B?NEU0Tk56R25DQkNnUHZVUE85NmVLcFBncU5pOGx5eXY2bnNqajJ4OVdGelhq?=
- =?utf-8?B?eTY1MHB6TFRqVmFxNGNzY0JQcDdRckpIU3RuTURmbE0vTWdzV0JnQjlWd0Ri?=
- =?utf-8?B?cmMva0QyZCtKWnFScFc5L1Q3TWhvRVBvNmlaNTZ0WjlIeVd1RGgyWmdnRjBQ?=
- =?utf-8?B?NW1lNTNrdTJTZ082K1laRU9SdmEyYStEWElkbFRaZkpDN1cxTDZZMTIzYlBm?=
- =?utf-8?B?UzROYVZVN085VGFsQUtiOHAvVW96MXFtdjg2L1ZLc1F3NnFqRlZ2TUJXMlZr?=
- =?utf-8?B?bEZVRU1QRDVkcGtYUTJONE50WmVLL0dKeFB5ZktkcStIMU45UjA3T05ia3RL?=
- =?utf-8?B?V24xZnVoOXZCMC9lU2pYMlVVYUlmcWtaUDBXam8zdVZramZGZG9MWE5CSytz?=
- =?utf-8?B?T29WSzBrRUw4YnpnTjVra1doZjFJUFZuMkpaWHFveVkzMzY4dFdYYk4yYkxW?=
- =?utf-8?B?WDZ0V1NZcUJLUm5BVGUwbExHQ1MzbFpHRk4vbmhwTTMwSHdzR0ZGOVVkZU85?=
- =?utf-8?B?SWdLaXNLUFA3dkdDaVNNbmRxS2VBZlVnZ1NyWVdoVFE5eDRXei8rcnJPTUJV?=
- =?utf-8?B?Sy9NRm5KWFRyL1VVVlE3SVYzSWRub1Bkd0VxTzFhZXRyQnFrLy9pQjVONzNk?=
- =?utf-8?B?VGFBVU16UXVLemhTRFhBbFhnYmoydnlUelhqU08zdmd6bjJ4anB4WWVVS0RL?=
- =?utf-8?B?cFZiZk5WaTNQRFN5SG96djRKdVUwN2VudW9VV0t5ZDBOU3VEQjY2cksvVktQ?=
- =?utf-8?B?UjgwaXd6YTFGeW1ZN2x2T0dtcGs1OEluazN4RWlnSGZlNTl5S3J0TEdQQ1ZD?=
- =?utf-8?B?TW02VHJqM09BZllmQWpLZ3diUmErQnl4ck4zbEFnOEo4cjVEQmtYYldWbUpt?=
- =?utf-8?B?VjNtUE9aazI4aHppSFFWWVVTcFBzTEcxcktzTXpDTjJ6T3YrS1BxeDdoMzNZ?=
- =?utf-8?B?UkFKMkgrQUZldUZySElKREU3a1VIYVRGRkxCMTJCYnR3emJZNVdZRzRoWW16?=
- =?utf-8?B?YXg4cEpGcnNxT1hJTHdjVExqSGswQS9KWC94cHVCbmxNb0RQNzZYbUdRVk5o?=
- =?utf-8?B?Z2xsR0xFYkx4NU5uRVhuYWlRSWZ1cytwZGhLVVpCY1kvbjNzcXlSV1dKUm5R?=
- =?utf-8?B?U2F4cThRUm9qVy8rQW5ZdEVWTktjak95eXJ1R2Y3eG5PT1U2Zkx6VHdOL0xE?=
- =?utf-8?B?bmg5ZENuZGVob0ZBU2tnbEtwc2dJUTdiWlpKbldFMDR5TExTVzk4ZFJOSXcx?=
- =?utf-8?B?ZE9lQWlxcXZyU1N1ODcwbWpuanVJYWlsU0dKUTRuQjl5ZktTQk9mMmlJSWJs?=
- =?utf-8?B?b01YYmR6emptc2l3TUI5ZjdSSzRMb1o0NTFJNStaT0t2cmF3ZmVyYXJFN1FY?=
- =?utf-8?B?dXNNWEtpK3BZV2Y0SmNpMExBU0wxNGdwaUxIblV0ZmxqNEYrWnV0Q0lVMk41?=
- =?utf-8?B?c1dSSTJxREEweUoxYmQ3VW1MVmdKdEFQQlpPMWFWUWZnSGV3aTRJRGN2MGlZ?=
- =?utf-8?B?bnd2a3ZrUTZzaEtuNDFzYnFvZkIxWkRQQ0dLbmtPUmFzZ3Z2OWwrdDNEUGZV?=
- =?utf-8?B?eEtaMkpSTSsrWk5rZVdFRjAwckJOZHd6MUNtSXcxL05hTVdQVWxvajBsenRh?=
- =?utf-8?Q?mYOiNOcov4zqgoWsT8/z4nCJb?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 0e946729-5164-4340-fe49-08dc531202d0
-X-MS-Exchange-CrossTenant-AuthSource: CO6PR12MB5444.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 02 Apr 2024 12:40:00.4234
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: zW+aB48wBIC4RBoVq9Gd/QYhxg413KkIjFMsIAimm4tsomXrhN4Lvzryz3oPZdV7QWb4jxpXo5S64st2VE3UmQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR12MB4244
+Content-Transfer-Encoding: 8bit
 
+Hi All,
 
+This patchset adds support for lazyfreeing multi-size THP (mTHP) without
+needing to first split the large folio via split_folio(). However, we
+still need to split a large folio that is not fully mapped within the
+target range.
 
-On 01/04/2024 16:01, Vidya Sagar wrote:
-> Tegra194 PCIe probe path is taking failure path in success case for
-> Endpoint mode. Return success from the switch case instead of going
-> into the failure path.
-> 
-> Signed-off-by: Vidya Sagar <vidyas@nvidia.com>
+If a large folio is locked or shared, or if we fail to split it, we just
+leave it in place and advance to the next PTE in the range. But note that
+the behavior is changed; previously, any failure of this sort would cause
+the entire operation to give up. As large folios become more common,
+sticking to the old way could result in wasted opportunities.
 
-Fixes: c57247f940e8 ("PCI: tegra: Add support for PCIe endpoint mode in Tegra194")
+Performance Testing
+===================
 
-> ---
->   drivers/pci/controller/dwc/pcie-tegra194.c | 3 +++
->   1 file changed, 3 insertions(+)
-> 
-> diff --git a/drivers/pci/controller/dwc/pcie-tegra194.c b/drivers/pci/controller/dwc/pcie-tegra194.c
-> index 4bba31502ce1..1a8178dc899a 100644
-> --- a/drivers/pci/controller/dwc/pcie-tegra194.c
-> +++ b/drivers/pci/controller/dwc/pcie-tegra194.c
-> @@ -2273,11 +2273,14 @@ static int tegra_pcie_dw_probe(struct platform_device *pdev)
->   		ret = tegra_pcie_config_ep(pcie, pdev);
->   		if (ret < 0)
->   			goto fail;
-> +		else
-> +			return 0;
->   		break;
->   
->   	default:
->   		dev_err(dev, "Invalid PCIe device type %d\n",
->   			pcie->of_data->mode);
-> +		ret = -EINVAL;
->   	}
->   
->   fail:
+On an Intel I5 CPU, lazyfreeing a 1GiB VMA backed by PTE-mapped folios of
+the same size results in the following runtimes for madvise(MADV_FREE)
+in seconds (shorter is better):
 
+Folio Size |   Old    |   New    | Change
+------------------------------------------
+      4KiB | 0.590251 | 0.590259 |    0%
+     16KiB | 2.990447 | 0.185655 |  -94%
+     32KiB | 2.547831 | 0.104870 |  -95%
+     64KiB | 2.457796 | 0.052812 |  -97%
+    128KiB | 2.281034 | 0.032777 |  -99%
+    256KiB | 2.230387 | 0.017496 |  -99%
+    512KiB | 2.189106 | 0.010781 |  -99%
+   1024KiB | 2.183949 | 0.007753 |  -99%
+   2048KiB | 0.002799 | 0.002804 |    0%
 
-Otherwise ...
+---
+This patchset applies against mm-unstable (d4cd6840d1dc). 
 
-Reviewed-by: Jon Hunter <jonathanh@nvidia.com>
+The performance numbers are from v2. I did a quick benchmark run of v4 and
+nothing significantly changed.
 
-Jon
+Changes since v3 [3]
+====================
+ - Rename refresh_full_ptes -> mkold_clean_ptes (per Ryan Roberts)
+ - Override mkold_clean_ptes() for arm64 to make it faster (per Ryan Roberts)
+ - Update the changelog
+
+Changes since v2 [2]
+====================
+ - Only skip all the PTEs for nr_pages when the number of batched PTEs matches
+   nr_pages (per Barry Song)
+ - Change folio_pte_batch() to consume an optional *any_dirty and *any_young
+   function (per David Hildenbrand)
+ - Move the ptep_get_and_clear_full() loop into refresh_full_ptes() (per
+   David Hildenbrand)
+ - Follow a similar pattern for madvise_free_pte_range() (per Ryan Roberts)
+
+Changes since v1 [1]
+====================
+ - Update the performance numbers
+ - Update the changelog (per Ryan Roberts)
+ - Check the COW folio (per Yin Fengwei)
+ - Check if we are mapping all subpages (per Barry Song, David Hildenbrand,
+   Ryan Roberts)
+
+[1] https://lore.kernel.org/linux-mm/20240225123215.86503-1-ioworker0@gmail.com
+[2] https://lore.kernel.org/linux-mm/20240307061425.21013-1-ioworker0@gmail.com
+[3] https://lore.kernel.org/linux-mm/20240316102952.39233-1-ioworker0@gmail.com
+
+Thanks,
+Lance
+
+Lance Yang (2):
+ mm/madvise: introduce mkold_clean_ptes() batch helper
+ mm/madvise: optimize lazyfreeing with mTHP in madvise_free
+
+ arch/arm64/include/asm/pgtable.h |  36 +++++++++++++++++
+ arch/arm64/mm/contpte.c          |  10 +++++
+ include/linux/pgtable.h          |  30 ++++++++++++++
+ mm/internal.h                    |  12 +++++-
+ mm/madvise.c                     | 147 ++++++++++++++++++++++++++++++++++++--
+ mm/memory.c                      |   4 +-
+ 6 files changed, 164 insertions(+), 75 deletions(-)
 
 -- 
-nvpublic
+2.33.1
+
 
