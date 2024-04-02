@@ -1,127 +1,117 @@
-Return-Path: <linux-kernel+bounces-127537-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-127538-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 99BC0894D4B
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 10:17:08 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id DB760894D4D
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 10:17:26 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 53CE7283252
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 08:17:07 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0E17C1C21AE4
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 08:17:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4BD0C3D552;
-	Tue,  2 Apr 2024 08:17:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 69D7D3DB9A;
+	Tue,  2 Apr 2024 08:17:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Y1kWbiqs"
-Received: from mail-pl1-f180.google.com (mail-pl1-f180.google.com [209.85.214.180])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=leemhuis.info header.i=@leemhuis.info header.b="rpOaj/Pi"
+Received: from wp530.webpack.hosteurope.de (wp530.webpack.hosteurope.de [80.237.130.52])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5950F3D548;
-	Tue,  2 Apr 2024 08:16:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CB4D03D547;
+	Tue,  2 Apr 2024 08:17:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=80.237.130.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712045820; cv=none; b=nTZJHRkJcE2+71rHv7vYsOxG57+jXqKp+bXGbIAtauMurZXjP/DpqypUXbmH+2sXJaSUa8USuESsVHhaKyEFaOJ6M6knNcbojlY6a3cdFFq5x0jAPEMhGgz+a/SNT8klb1V+Zo3U/Mh2fb9amqTWkEu0dFjQkUCiL6FyHygC6J0=
+	t=1712045840; cv=none; b=a1lnxnIvsuFDqNc6teSWcLiBy1Xiy6sDyYqKgWZBmZ4FaduUTpA0bRL7l/mc787PR3RzRZFZ0YQ1KtgqFUr82mkqhN4oA0Hz35uVUSUyjImTM8xQzziGqfpjaaR+6RHwP5Ollbl3IwETJH4kcMF+kPnCFT/DItNLoDBemqvMTwA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712045820; c=relaxed/simple;
-	bh=fHfWBt+5+tlmiFF5W8s3mbBkeuPcLWeMDiItbwj7Tt8=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=A+2q4UmNaX8J3ciSCJjPHJ7ypVs6SQPlFYcbE1oYDzbkGGHGINuWXgUHtesruqlVqH+qiP6jJ6AJSHtBOpi6o+A0j8AxB+B3StScGmAwSRlDN2id1WwViMcw88ONSzlw7y8R1WpXPlpBZZiyz87lWgVG1QDvTEoD7twG4oQ6EMY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Y1kWbiqs; arc=none smtp.client-ip=209.85.214.180
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f180.google.com with SMTP id d9443c01a7336-1e0f2798cd8so39415475ad.3;
-        Tue, 02 Apr 2024 01:16:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1712045818; x=1712650618; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=XkNvR4qIQ0Db8em+0g0qh+1j9L+Q3Yqd9OtOLhE4ahQ=;
-        b=Y1kWbiqsorSy5rP1TzAPHtjglbubNyVvgxYL/MxfQwQjKOHCc3lebfNPwDaCFOAUXo
-         RNkT70nzRQipulm8a/MJngKp7Nk5bnDR7zZlHyrwzxtPbflj7A98i9A1FqNqhOFJDstj
-         4U1LuwppvcuvsxcumgVfGObYv3J9szlgCtvnI42EMIoxsKj0/LP/Ll5I/bP589HiFXgS
-         yMEckFV2kCwGx2HtJmHpKDxw7n8RT8zPI6KNlT+/yo7aDzXcp1Jo/Y3vWMSJMbHOzTt/
-         XWNSG1Vx4HQd+/3EkxgsfXwiu0wtLXyfc+9lN9roE6r1FohzLqhphbvuDWBsvfY5gG0M
-         HHHA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712045818; x=1712650618;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=XkNvR4qIQ0Db8em+0g0qh+1j9L+Q3Yqd9OtOLhE4ahQ=;
-        b=KMtTvNL0bpkEDnc+JzHiMPJGi52IsWShe2Efi1zk2UxMLqnu6kRUws5cFAnsR6QlnJ
-         Py0WMmOV3X3hys0r6O7oOPU9bkDrn8jnK9BIMvd4ylj73z6OCXYgb1OQZPDzKXnIl4lD
-         7Gtg0VRDwiD+/CyWY3nsikDc1NIm5PU+umv2r9v6dqKe5ASBzQ41aSOCRfe23e6J0htE
-         A+VrJbK/IKZ74RnFrbrKYmQAFauREHPvtiL7q9ArEuZ2yOm7hay/U5E1LlNUXkGA6DOs
-         +OlOECAq1ckuUktEyF0CvlUxbH0/3twsENI9Xff4XzL3um9DIbqkJPxF6crbkZ1N1Ln1
-         LdvQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXor2JTxf/aVXTkIkvRoRIEgThcmD0sjpzMkJyL4bIonzpQI1mGzMNScIeMwh1+ovYfNvSSh1rnRwh4Y9kgrn3pAI9t1i6DgniGbF11taJCkCBqCwr8DyhKNC77jN6S/1uElrLY
-X-Gm-Message-State: AOJu0Yz+yYBiKUbVRj2dHEDu1iZrn4H4SVDNw+iQi6Ne1aS0tXNDygqO
-	0k8c+2Rx0rZbKaK/4wC04B1yjp46Yys/o2M5nXbONuYyiGZhXQmi
-X-Google-Smtp-Source: AGHT+IFxd0fZOmFNHBnb+TBQTxGABlte5U58aCoKtKjlAKnzhZGF2G6G4Wy/MVJQ/Sdd/ZuNPOMopA==
-X-Received: by 2002:a17:902:ce8e:b0:1e0:b0d:5b7d with SMTP id f14-20020a170902ce8e00b001e00b0d5b7dmr11626393plg.36.1712045818498;
-        Tue, 02 Apr 2024 01:16:58 -0700 (PDT)
-Received: from archie.me ([103.124.138.155])
-        by smtp.gmail.com with ESMTPSA id p16-20020a1709027ed000b001e249843f3csm5680349plb.223.2024.04.02.01.16.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 02 Apr 2024 01:16:58 -0700 (PDT)
-Received: by archie.me (Postfix, from userid 1000)
-	id D40B21847976E; Tue,  2 Apr 2024 15:16:54 +0700 (WIB)
-Date: Tue, 2 Apr 2024 15:16:54 +0700
-From: Bagas Sanjaya <bagasdotme@gmail.com>
-To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, stable@vger.kernel.org
-Cc: patches@lists.linux.dev, linux-kernel@vger.kernel.org,
-	torvalds@linux-foundation.org, akpm@linux-foundation.org,
-	linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
-	lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-	f.fainelli@gmail.com, sudipm.mukherjee@gmail.com,
-	srw@sladewatkins.net, rwarsow@gmx.de, conor@kernel.org,
-	allen.lkml@gmail.com, broonie@kernel.org
-Subject: Re: [PATCH 6.8 000/399] 6.8.3-rc1 review
-Message-ID: <Zgu-9mXbrP7KnKLT@archie.me>
-References: <20240401152549.131030308@linuxfoundation.org>
+	s=arc-20240116; t=1712045840; c=relaxed/simple;
+	bh=xOg72kG8RE3Io6aICsy4zEqghWHs0WzVc9G+4UggKRI=;
+	h=Message-ID:Date:MIME-Version:From:To:Cc:Subject:Content-Type; b=UkdpmB91quxTAvCf/sWhuojS2aD5W1OqEZcjs8qBtba+dmWnRhqTO4dgPZdG83rTkB/AFuqfwpCY7ktIgGvrdQ+6TCO74nAJcx4vMN/COwnqbQcWrqpVd6z5qovuyMKBAjcKoJ9bkkzMmO8USotSgsJCs1/I7qjRmeNlKL4F8yo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=leemhuis.info; spf=pass smtp.mailfrom=leemhuis.info; dkim=pass (2048-bit key) header.d=leemhuis.info header.i=@leemhuis.info header.b=rpOaj/Pi; arc=none smtp.client-ip=80.237.130.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=leemhuis.info
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=leemhuis.info
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=leemhuis.info; s=he214686; h=Content-Transfer-Encoding:Content-Type:Subject
+	:Reply-To:Cc:To:From:MIME-Version:Date:Message-ID:From:Sender:Reply-To:
+	Subject:Date:Message-ID:To:Cc:MIME-Version:Content-Type:
+	Content-Transfer-Encoding:Content-ID:Content-Description:In-Reply-To:
+	References; bh=PIXKukvrVFtF2jLwToNr2JQD8OFYXFrclPIb2BcK3NM=; t=1712045838;
+	x=1712477838; b=rpOaj/PiK1BRSrwh2cB4E1DaOBbGy4pxdjw4ZBDkY34WG2Fr75Ty1eVH6kQjL
+	76AVAz8yv9L18WJBkVZ07fb2fEpyqcqn48qNMkf0RbO2iMiBSU1aT9UM2vJJt2qPXOquoWkiRSgLM
+	BKW/Gufv+tTpPqyEdkCh/wEpGscTfa97VULpul7BM64C8IbIpKw2UukULzw78dShQcPlot7Q3Nnge
+	es0zpjlCn4C8754Rl97bEputkFskT5AwzRUTA8euFd7hxixZNH3bHFdXCJLm0WI6fKBUFyCocl0Kz
+	r5EGJqAbaUUODeXr/bJJpCQi0W75GH4OecjC87Yf2rPXEW757A==;
+Received: from [2a02:8108:8980:2478:8cde:aa2c:f324:937e]; authenticated
+	by wp530.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
+	id 1rrZKW-0002LN-TB; Tue, 02 Apr 2024 10:17:16 +0200
+Message-ID: <5be248c6-cdda-4d2e-8fae-30fc2cc124c0@leemhuis.info>
+Date: Tue, 2 Apr 2024 10:17:16 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="2pA8USOwcFlMD1qA"
-Content-Disposition: inline
-In-Reply-To: <20240401152549.131030308@linuxfoundation.org>
+User-Agent: Mozilla Thunderbird
+From: "Linux regression tracking (Thorsten Leemhuis)"
+ <regressions@leemhuis.info>
+Content-Language: en-US, de-DE
+To: Tejun Heo <tj@kernel.org>
+Cc: Linux kernel regressions list <regressions@lists.linux.dev>,
+ LKML <linux-kernel@vger.kernel.org>
+Reply-To: Linux regressions mailing list <regressions@lists.linux.dev>
+Subject: Bug 218665 - nohz_full=0 prevents kernel from booting
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-bounce-key: webpack.hosteurope.de;regressions@leemhuis.info;1712045838;ac3989d0;
+X-HE-SMSGID: 1rrZKW-0002LN-TB
 
+Hi, Thorsten here, the Linux kernel's regression tracker.
 
---2pA8USOwcFlMD1qA
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+I noticed a regression report in bugzilla.kernel.org. As many (most?)
+kernel developers don't keep an eye on it, I decided to forward it by mail.
 
-On Mon, Apr 01, 2024 at 05:39:26PM +0200, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 6.8.3 release.
-> There are 399 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
->=20
+Tejun, apparently it's cause by a change of yours.
 
-Successfully compiled and installed the kernel on my computer (Acer
-Aspire E15, Intel Core i3 Haswell). No noticeable regressions.
+Note, you have to use bugzilla to reach the reporter, as I sadly[1] can
+not CCed them in mails like this.
 
-Tested-by: Bagas Sanjaya <bagasdotme@gmail.com>
+Quoting from https://bugzilla.kernel.org/show_bug.cgi?id=218665 :
 
---=20
-An old man doll... just what I always wanted! - Clara
+> booting the current kernel (6.9.0-rc1, master/712e1425) on x86_64
+> with nohz_full=0 cause a page fault and prevents the kernel from
+> booting.
+> 
+> Steps to reproduce:
+> - make defconfig
+> - set CONFIG_NO_HZ_FULL=y
+> - set CONFIG_SUSPEND=n and CONFIG_HIBERNATION=n (to get CONFIG_PM_SLEEP_SMP=n)
+> - make
+> - qemu-system-x86_64 -nographic -cpu qemu64 -smp cores=2 -m 1024 -kernel arch/x86/boot/bzImage -append "earlyprintk=ttyS0 console=ttyS0 root=/dev/dummy rootwait nohz_full=0"
+> 
+> I have attached the output of a failed nohz_full=0 boot as
+> nohz_full_0.txt and - for reference - the output of a nohz_full=1
+> boot as nohz_full_1.txt.
+> 
+> Interestingly enough, using the deprecated isolcpus parameter to
+> enable NO_HZ for cpu0 works. I've attached the output as
+> isolcpus_nohz_0.txt.
+> 
+> Bisecting showed 5797b1c18919cd9c289ded7954383e499f729ce0 as first bad commit.
 
---2pA8USOwcFlMD1qA
-Content-Type: application/pgp-signature; name="signature.asc"
+See the ticket for more details.
 
------BEGIN PGP SIGNATURE-----
+Ciao, Thorsten (wearing his 'the Linux kernel's regression tracker' hat)
+--
+Everything you wanna know about Linux kernel regression tracking:
+https://linux-regtracking.leemhuis.info/about/#tldr
+If I did something stupid, please tell me, as explained on that page.
 
-iHUEABYKAB0WIQSSYQ6Cy7oyFNCHrUH2uYlJVVFOowUCZgu+8gAKCRD2uYlJVVFO
-ozkaAP9vI+2/N+R4TCcyvBBlUBallO1Fb8t4vDeTkR3TW7qTxQEAnVLG01UHNXKC
-kkWlz1NayRaFHHVptcG2FT95HtwmqA8=
-=g7sZ
------END PGP SIGNATURE-----
+[1] because bugzilla.kernel.org tells users upon registration their
+"email address will never be displayed to logged out users"
 
---2pA8USOwcFlMD1qA--
+#regzbot introduced: 5797b1c18919cd9c289ded7954383e499f729ce0
+#regzbot from: Friedrich Oslage
+#regzbot duplicate https://bugzilla.kernel.org/show_bug.cgi?id=218665
+#regzbot title: workqueue: nohz_full=0 prevents booting
+#regzbot ignore-activity
 
