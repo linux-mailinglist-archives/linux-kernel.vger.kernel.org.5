@@ -1,182 +1,131 @@
-Return-Path: <linux-kernel+bounces-127703-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-127706-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2C99D894FB6
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 12:14:53 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 52628894FC2
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 12:16:08 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id AA47F1F220E7
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 10:14:52 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E7B0B1F22470
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 10:16:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C7FAF5A4CF;
-	Tue,  2 Apr 2024 10:14:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 322015FBB9;
+	Tue,  2 Apr 2024 10:15:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=mff.cuni.cz header.i=@mff.cuni.cz header.b="du3H3Kxj"
-Received: from smtp1.ms.mff.cuni.cz (smtp-in1.ms.mff.cuni.cz [195.113.20.234])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b="0beqMXVt"
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [78.32.30.218])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A3E5F5811B;
-	Tue,  2 Apr 2024 10:14:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.113.20.234
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A8ABA5A0E6;
+	Tue,  2 Apr 2024 10:15:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=78.32.30.218
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712052883; cv=none; b=AzpgIloMm8f0bqkeRePb15/GF3JvaFcQR1qIUZd1jaHq9pWiDYOBpMVNCbAn+pr4N5Vb0DnBo1Mt9qpFA9Tk44gzm/jHJzG64B4QLzmYpwOjtN6iJzt2sKdfAqctVHFGyexKeEUjLq3TJ1RB433FmVGrEBXUcJ6/bHeX0G+9o80=
+	t=1712052924; cv=none; b=QKRfKGrmREFwkF18p6R3OQ7regcIIQtcWkR/UJGFPDJDHT/BhX6sh9S5UTE7HswerzBTN8LkhqWyPKshq8QUQiECfmz8UqjX+lKJhFRnIH9f0s6N8anqkuZoDq0s4q1qgdy247i4WkacJ2JeVDgM8cgF1UOzwzOeJK4/Q8dzbKI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712052883; c=relaxed/simple;
-	bh=hlUCPDyMrcMVJPOFhZIUAAzhQs7Ot/u9oKA1OiN5DsA=;
-	h=Mime-Version:Content-Type:Date:Message-Id:Cc:Subject:To:From:
-	 References:In-Reply-To; b=vDTPSp53ccTma0ctR/LvoYEXyfMMeCeeUpw5F0F9hTdLLxcReXgfpW6khxgYJC0oGuHlfMngBMcQ6cbYLIwBtYHr2rrpug47rnk1MZ4nDaTrIjnB63JSJFwPD+rWyJ23k1ANcdbnV4Y0IeZChOp5DpEpG1Vw0KsYVpDdxiESnG8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=matfyz.cz; spf=pass smtp.mailfrom=matfyz.cz; dkim=pass (2048-bit key) header.d=mff.cuni.cz header.i=@mff.cuni.cz header.b=du3H3Kxj; arc=none smtp.client-ip=195.113.20.234
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=matfyz.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=matfyz.cz
-X-SubmittedBy: id balejk@matfyz.cz subject /postalCode=110+2000/O=Univerzita+20Karlova/street=Ovocn+5CxC3+5CxBD+20trh+20560/5/ST=Praha,+20Hlavn+5CxC3+5CxAD+20m+5CxC4+5Cx9Bsto/C=CZ/CN=Karel+20Balej/emailAddress=balejk@matfyz.cz
-	serial F5FD910E8FE2121B897F7E55B84E351D
-	issued by /C=NL/O=GEANT+20Vereniging/CN=GEANT+20Personal+20CA+204
-	auth type TLS.CUNI
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mff.cuni.cz;
-	s=submission; t=1712052842; x=1713352842;
-	bh=hlUCPDyMrcMVJPOFhZIUAAzhQs7Ot/u9oKA1OiN5DsA=; h=From;
-	b=du3H3KxjIpomuO6SxOG5G8zrXblGfU8e9B0rnTnrQQsBbtywtAnV4+MpWAaxgTOB0
-	 PfdJByEHG8uaDZ/xXyTV1dxyj3XK4dFDadX4bQEr7EzAwNlMvd4uaghS9BI1nG21oc
-	 M1OsWbg87VUSrslgmRRDYrAlrO81RLVGhFZPpZGTDWcFxJ1f9Q/+Y/A6lNpM538DlK
-	 GP4i/+qRf8wJ8bEKGnYb094FBuMV4872J3AF2WNRn6SoasrmHuN0c06HgGybYgBSn1
-	 h5sBfjrhnA+/qIbiTBJs3TcQ9FqDKw/751pmgGac5duLDqysvN5tL224qVZm2nwdUe
-	 +g6pCwFk1mo3Q==
-Received: from localhost (internet5.mraknet.com [185.200.108.250])
-	(authenticated)
-	by smtp1.ms.mff.cuni.cz (8.16.1/8.16.1) with ESMTPS id 432ADxkE089761
-	(version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384 bits=256 verify=OK);
-	Tue, 2 Apr 2024 12:14:00 +0200 (CEST)
-	(envelope-from balejk@matfyz.cz)
+	s=arc-20240116; t=1712052924; c=relaxed/simple;
+	bh=37Nx+JVFdZC7dJV7jOp/MYWR3xwxYi0DR8iWjs0SXzE=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=mk2whE9U7KwHGFzSneukEbbWQbhSqCYrKOfKyqQG8KGSXMuxjbBQ5H/PSHMj/Dr8tdzO6cf3B4XGG2GDlVSwDteVHY05xu1cAfRujEol60bgi/5to7xpFxFNpq+UtkzbVL+Mm07KBUQz8Tmin3Xw22HVVLcP1Q1AWOq7+GpbWwo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=armlinux.org.uk; spf=none smtp.mailfrom=armlinux.org.uk; dkim=pass (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b=0beqMXVt; arc=none smtp.client-ip=78.32.30.218
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=armlinux.org.uk
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=armlinux.org.uk
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
+	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+	List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+	bh=XcKQ6bjR8juooJeYFkyQvyoAYNtxrPcLEvnKdMTyFu8=; b=0beqMXVtPisgfQmEG2UBAidiVW
+	84+j9DAP25fOyTv08R6Sq+HES71u81tNt/O07QPZpGE3DDCsc5eMDgt27vYLJKa2vSrJUB6eGdSO5
+	2xJ8YAqid3EnAbCdEchOKgHRM6mT8Bh3x+TWFOFRLkGQzi1oOeTn/i76rfyD4ZQeL3NsvKLN8q0IY
+	fmtkpkXyq/aOlrrjHPexBzYFjdJw+8l6k3zqUvOk8FwKv5fXbzYrdOiDxKW9wPtZl12nlrQHZ1Neq
+	o2r6Pw+BMVTmSwN/IzPOC6ts0Evl8M5cISIt3onDGFUXRkQ7YQLJ8mm2VQ6+4UBLk83BeUAyaQGe6
+	90zRLFdQ==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:35944)
+	by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.96)
+	(envelope-from <linux@armlinux.org.uk>)
+	id 1rrbAc-0006J4-1Y;
+	Tue, 02 Apr 2024 11:15:10 +0100
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
+	(envelope-from <linux@shell.armlinux.org.uk>)
+	id 1rrbAb-0006t6-9b; Tue, 02 Apr 2024 11:15:09 +0100
+Date: Tue, 2 Apr 2024 11:15:09 +0100
+From: "Russell King (Oracle)" <linux@armlinux.org.uk>
+To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Cc: Suzuki K Poulose <suzuki.poulose@arm.com>,
+	Mike Leach <mike.leach@linaro.org>,
+	James Clark <james.clark@arm.com>,
+	Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+	Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+	Alexandre Torgue <alexandre.torgue@foss.st.com>,
+	Linus Walleij <linus.walleij@linaro.org>,
+	Andi Shyti <andi.shyti@kernel.org>,
+	Olivia Mackall <olivia@selenic.com>,
+	Herbert Xu <herbert@gondor.apana.org.au>,
+	Vinod Koul <vkoul@kernel.org>,
+	Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+	Miquel Raynal <miquel.raynal@bootlin.com>,
+	Michal Simek <michal.simek@amd.com>,
+	Eric Auger <eric.auger@redhat.com>,
+	Alex Williamson <alex.williamson@redhat.com>,
+	linux-kernel@vger.kernel.org, coresight@lists.linaro.org,
+	linux-arm-kernel@lists.infradead.org,
+	linux-stm32@st-md-mailman.stormreply.com, linux-i2c@vger.kernel.org,
+	linux-crypto@vger.kernel.org, dmaengine@vger.kernel.org,
+	linux-input@vger.kernel.org, kvm@vger.kernel.org
+Subject: Re: [PATCH 00/19] amba: store owner from modules with
+ amba_driver_register()
+Message-ID: <ZgvarVCRBam9anOm@shell.armlinux.org.uk>
+References: <20240326-module-owner-amba-v1-0-4517b091385b@linaro.org>
+ <f514d9e1-61fa-4c55-aea1-d70c955bb96a@linaro.org>
+ <ZgvIMRDfeQaeVxYt@shell.armlinux.org.uk>
+ <324e9c02-c005-4e18-9872-8408695fb1fe@linaro.org>
+ <ZgvWfhSEYIUaIn6h@shell.armlinux.org.uk>
+ <65f0ed39-4c2f-4cea-b488-2a8ba6fdbeff@linaro.org>
+ <ZgvaFNLTqgQrPeiO@shell.armlinux.org.uk>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset=UTF-8
-Date: Tue, 02 Apr 2024 12:13:58 +0200
-Message-Id: <D09K2WCTEKK9.2NJ2C8NVQXZ6D@matfyz.cz>
-Cc: "Randy Dunlap" <rdunlap@infradead.org>,
-        "Jonathan Corbet"
- <corbet@lwn.net>, <regressions@lists.linux.dev>,
-        <linux-doc@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <workflows@vger.kernel.org>
-Subject: Re: [PATCH 2/2] docs: handling-regressions.rst: clarify that
- "Closes:" tags work too
-To: "Thorsten Leemhuis" <linux@leemhuis.info>
-From: "Karel Balej" <balejk@matfyz.cz>
-References: <20240328194342.11760-1-balejk@matfyz.cz>
- <20240328194342.11760-3-balejk@matfyz.cz>
- <dfa22ac1-36e9-48da-a2a8-8d7818c09187@leemhuis.info>
- <b3b37454-df45-4826-ac5a-85c687f99d20@infradead.org>
- <5ea364e9-8a7d-4239-bf3b-1f4ae13f311b@leemhuis.info>
-In-Reply-To: <5ea364e9-8a7d-4239-bf3b-1f4ae13f311b@leemhuis.info>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZgvaFNLTqgQrPeiO@shell.armlinux.org.uk>
+Sender: Russell King (Oracle) <linux@armlinux.org.uk>
 
-Thorsten,
+On Tue, Apr 02, 2024 at 11:12:36AM +0100, Russell King (Oracle) wrote:
+> On Tue, Apr 02, 2024 at 12:04:07PM +0200, Krzysztof Kozlowski wrote:
+> > You brought no argument for keeping the kernel-version-header
+> > requirement nowadays, yet you call me of not working constructively. I
+> 
+> So add inability to read to your failings, because I _did_ state that
+> _I_ still _use_ it.
+> 
+> End of discussion, I'm not engaging with you in your current
+> confrontational mood where you clearly don't want to understand
+> anything (or intentionally misinterpreting) I'm writing - making it
+> pointless to continue.
+> 
+> I even think you're intentionally misinterpreting the responses
+> from the patch system.
+> 
+> Overall, I can only draw the conclusion that you are playing politics
+> and want the patch system gone, and you want me to use "standard"
+> tooling that will _increase_ the amount of effort I need to put in.
+> No, that's not going to happen.
 
-thank you very much for your feedback.
+.. and this is your final chance to change to a constructive discourse,
+if not, you are going to end up in my kill file. Whether you do is
+entirely up to the tone of your reply to this email.
 
-Thorsten Leemhuis, 2024-04-02T11:27:57+02:00:
-> On 01.04.24 17:19, Randy Dunlap wrote:
-> > On 4/1/24 1:38 AM, Thorsten Leemhuis wrote:
-> >> On 28.03.24 20:29, Karel Balej wrote:
-> >>> The regressions handling manual claims that regzbot associates patche=
-s
-> >>> fixing an issue with the report based on the occurrence of the
-> >>> appropriate "Link:" trailers. It reasons that this does not add any
-> >>> burden on the maintainers/bug fix authors as this is already mandated=
- by
-> >>> the "Submitting patches" guide. In fact however, the guide encourages
-> >>> using "Link:" tags for related discussions or issues which the patch
-> >>> fixes only partially, recommending "Closes:" for full resolutions.
-> >>>
-> >>> Despite it not being mentioned anywhere in the "Handling regressions"
-> >>> guide, regzbot does in fact take the "Closes:" tags into account and
-> >>> seems to in fact treat them fully equivalently to "Link:" tags.
-> >>>
-> >>> Clarify this in the regressions handling guide by always mentioning b=
-oth
-> >>> of the tags.
-> >>
-> >> Many thx for this and the other patch. I had planned to do something
-> >> like this myself, but never got around to.
-> >>
-> >> There is just one thing that makes me slightly unhappy: this tells
-> >> readers that they can use both, but leaves the question "what's the
-> >> difference" respectively "in which situation should I use one or the
-> >> other" unanswered.
+I am always more than willing to work with a submitter to diagnose
+what the problem is, but the tone of your emails make me want to
+ignore you.
 
-I see your point and I agree. I have perceived something similar when
-editing the document: I wondered whether it's really good to *always*
-spell out both variants or whether it would perhaps be enough in some
-places only.
-
-I think the way that I ultimately did it counts on the reader being
-familiar with the "Submitting patches" document and knowing the "true"
-meanings of both Closes: and Link: and when to use each. So my goal was
-only to mention it because the way it was written seemed to almost imply
-to me that Closes: does *not* work and is thus not recommended which
-seemed in conflict with the "Submitting patch" guide, which was even
-more confusing since it literally referred to it.
-
-In other words, it wasn't actually my goal to answer that question you
-pose, because that is already answered in the other document.
-
-I also didn't want to be too drastic with the changes because the
-prevalence of Link: seemed so strong that I thought that I must be
-missing something and that you have a good reason to write it like this.
-So I wanted to stay safe :-)
-
-Anyway, if you are OK with that, I can definitely change it to Closes:
-everywhere and only mention Link: marginally, saying that it works too
-and explaining the difference while referring the reader to "Submitting
-patches" for more information (not that there would be too much more on
-this subject).
-
-> Just in the scope of the document and the sections where the tag is
-> mentioned I think (but it would be good to recheck) it's always about
-> a "resolving a reported regression", so Closes there makes more sense.
-
-Exactly.
-
-> Karel: if I'm asking too much here, I could pick up your patches and
-> improve upon them to handle this. Or we simply wait until two other
-> regzbot features are in place, then I could fix this as part of some
-> other changes.
-
-Not at all, I will be happy to make the changes, if you don't mind that
-it might take me some time, but I would definitely get around to it
-eventually.
-
-Of course I wouldn't want to for example delay you so if you get around
-to it sooner than I will then feel free to make the changes either as a
-modification of this patch or just on its own.
-
-Perhaps you could take the first patch already if you have no
-reservations there and I will then just send v2 of this one?
-
-> >> I also find the patch description a bit verbose; and it would be
-> >> good to turn the text upside down: first outline what the patch,
-> >> then maybe describe the "why".
-
-I actually probably like it more this way. After all, the outline (or
-"what") is the patch subject, everything that comes after it in the body
-is usually meant to explain "why". But sure, I can swap it if you want
-:-)
-
-As for the verbosity, I will keep it in mind when working on v2,
-although I also generally don't consider verbosity a bad thing. I might
-have been too verbose, though, because as I have mentioned, I was
-confused why it isn't like this already and wanted to offer my full
-reasoning so that I could be shown where I err :-)
-
-One more thing that I wanted but ultimately forgot to mention in the
-cover letter: thank you very much for writing these guides in the first
-place, I find them very instructive and useful.
-
-Kind regards,
-K. B.
+-- 
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
 
