@@ -1,91 +1,144 @@
-Return-Path: <linux-kernel+bounces-127971-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-127972-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5223E8953D8
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 14:50:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id D7B8E8953DC
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 14:51:30 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C071AB26558
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 12:50:34 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 64DA5B222B5
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 12:51:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 055747EF10;
-	Tue,  2 Apr 2024 12:50:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E07BD7E788;
+	Tue,  2 Apr 2024 12:51:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=proton.me header.i=@proton.me header.b="fQ9D4KJY"
-Received: from mail-4316.protonmail.ch (mail-4316.protonmail.ch [185.70.43.16])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="WhPGom5Q"
+Received: from mail-wr1-f74.google.com (mail-wr1-f74.google.com [209.85.221.74])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A537A335A7
-	for <linux-kernel@vger.kernel.org>; Tue,  2 Apr 2024 12:50:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.70.43.16
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7F94F2A8E5
+	for <linux-kernel@vger.kernel.org>; Tue,  2 Apr 2024 12:51:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.74
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712062212; cv=none; b=l0lHbMjfak2CJvQMbfQsq6dXE8IOn9QKVuD0sl4zfISMFFnXo5OsjGspOgPPxzK9GuNGCm0FOBeleWa/BlWhVZ1/os4YrBXRQmYmnfXjYRnF+bs3dNdcnh9QKxtk3/flU72R++CU22X3I+brxJ5n5Gqsy36LklRmbqq28IK8ne8=
+	t=1712062280; cv=none; b=CNOT6vIMBnTvQsyqDITZFjFSQXvISngOv7GCFQeRTVvR+GCClZa+oBbe/Nb6iKCT58rREwISZmIaykTIt9JZPhC+TYniX76jSYRAx/LXiy/ulLKg48anj6/0fsfjhe5GcXuhvzqE/NJpyRHJDHK4qKeN104LPBXuJrKaKekopxY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712062212; c=relaxed/simple;
-	bh=YVfCRrIMjM3qNuE6jVIeiRm1+M5zgpz+svQs64HzCW0=;
-	h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=fSm9RcEbQPMbuMxws7MNQ+pX+REQDFYdwSxEyG9yQ+p5bDIc1gt+zCHZ4Z05w4sfrfJI9mcbHm5SCOQyp2BxmdsnhzD4tOBz4TBbb1N8mEGHlHOWH5oR8QgW+d/0/BbuicjUN7Zft9S7JbiyMGxgRG68MhY4oYkYoEpnySt6A0E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=proton.me; spf=pass smtp.mailfrom=proton.me; dkim=pass (2048-bit key) header.d=proton.me header.i=@proton.me header.b=fQ9D4KJY; arc=none smtp.client-ip=185.70.43.16
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=proton.me
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=proton.me
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=proton.me;
-	s=protonmail; t=1712062207; x=1712321407;
-	bh=ZUFnwo0hp9HoIfPTPou9zjyCN3N2Lvg27XoRrnqIoh0=;
-	h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
-	 Feedback-ID:From:To:Cc:Date:Subject:Reply-To:Feedback-ID:
-	 Message-ID:BIMI-Selector;
-	b=fQ9D4KJY95UiYMArX95Cts4UjPgLLnT/HzPfMsQYBPWBDdL/yQNLKDp5xLSDyg0nW
-	 xg88m7J2ayG01IAueCEPNQl6YxVwwJ9gAYJ8zXnHIEQdTUz9Amwvo7lOlcOsp3SZzI
-	 hyFHkJ35hY2+OCToMYVaXrmfxRUNCs0S32JdEc9PvCZ/rF0Iv4XlpcU+9NtxXn7a7k
-	 Z/UTfjZ83lik9QA4RCP0NO3mOMUTXnQ9EuO8IV5VhjhP5yINlbNtZX9P/5b8dLI4o0
-	 dvE8L/+hw5WxFYn5cygGxZJREviNxukFVacXSwC1wDcnKa3AkgyrSRyvcKh9Mz2LjY
-	 7XEpFRJ2jhLPQ==
-Date: Tue, 02 Apr 2024 12:49:58 +0000
-To: Boqun Feng <boqun.feng@gmail.com>, rust-for-linux@vger.kernel.org, linux-kernel@vger.kernel.org
-From: Benno Lossin <benno.lossin@proton.me>
-Cc: Miguel Ojeda <ojeda@kernel.org>, Alex Gaynor <alex.gaynor@gmail.com>, Wedson Almeida Filho <wedsonaf@gmail.com>, Gary Guo <gary@garyguo.net>, =?utf-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>, Andreas Hindborg <a.hindborg@samsung.com>, Alice Ryhl <aliceryhl@google.com>, Martin Rodriguez Reboredo <yakoyoku@gmail.com>, Obei Sideg <linux@obei.io>
-Subject: Re: [PATCH] rust: types: Make Opaque::get const
-Message-ID: <512ad3fa-37d0-470e-9f4c-bd185d9b897f@proton.me>
-In-Reply-To: <20240401214543.1242286-1-boqun.feng@gmail.com>
-References: <20240401214543.1242286-1-boqun.feng@gmail.com>
-Feedback-ID: 71780778:user:proton
+	s=arc-20240116; t=1712062280; c=relaxed/simple;
+	bh=oElAllZ5P13j3PQNwwFCGQdwmNrFpD3NdwRGZk5W9/I=;
+	h=Date:Mime-Version:Message-ID:Subject:From:To:Cc:Content-Type; b=GqxeP+556Na+jNelgZdYN/3d/t0cWDT1/cleWJTtLYP6r+U7UMwYsOG4rgAQrlC+3AZ5pysDnLv6aKhdansSuFWb72wblc4GAOMaBMs91kMpV5pO4VJLMylgbvazDfLn0ZUCZcMwTiTUNfNM3W72Dn11HuexiVLqGEsX2OPDFiw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--jackmanb.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=WhPGom5Q; arc=none smtp.client-ip=209.85.221.74
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--jackmanb.bounces.google.com
+Received: by mail-wr1-f74.google.com with SMTP id ffacd0b85a97d-34368c5cadfso331903f8f.3
+        for <linux-kernel@vger.kernel.org>; Tue, 02 Apr 2024 05:51:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1712062277; x=1712667077; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=OP/IorpMEPaYCSeI9noOVqFaOql+UUAA/5aBbuRUBgs=;
+        b=WhPGom5Qr05vODwOwaTYza70q//55pTRbPI01HS8jbimMeTxtWmnoS+wa3UUP1vfxy
+         yjcglvuj33MbRRaOQ4vNvnz+Ogdgo92XuhJnsVJusT6ja+5zZUo4ZKifDjzGq84KdFVg
+         O5lYvddvGLi38WF6OGEoQUzipfE+p3CjRRlskuQUdur07wzgw2VBZxvN5pereZaO+kcX
+         toOUvA3rvvXqMcBcW+UhWMvJ1Ae+EPNaAb7c8qFGwL927A9Dfe+K0iP6M0QdE+XWyPg+
+         +/WpFfj5/Y1bgoRrRtYPdhD1WQukpLbEwyejUfDeCk3/T4GQaiE1izvbNZV9r1ytRtT7
+         Ip9w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712062277; x=1712667077;
+        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=OP/IorpMEPaYCSeI9noOVqFaOql+UUAA/5aBbuRUBgs=;
+        b=jjHEfq4xPsWi8hGnp3NuKm7GN7s+ixp92X0cbIRw9ASqOghewDJ/dhN2Cq9xBHb2uk
+         k2A8wG2XlYC4EXnjR6Gb0c9PMEAuHqlansqkMl2U7DMB2OwJOc5WspZT9t6ESNMHM2Az
+         Zz02r0aOzQeOgLaX40pdMHNC1HgSZXYhbt2aPI0BLRMHrQZpHux4D7luUUZD5qozY0y/
+         aW2cLD05GScsF1k0ffIavsUYhJVyTfkQ82lMCEjkyeBPOPIGxLjxmgvcFM6sezXbqAzD
+         sOt1q070ggsefV10lSazpirJhSVWbwrxds3/4eDa+9102hpFfV42n1VbMnEAMgBkjMjb
+         q+YA==
+X-Forwarded-Encrypted: i=1; AJvYcCWSI5fQmX3Jhka2HIKDmULSfYNCTpL45wM75Hn1K6aNlLx8gt9IH0Qbx0oHSYPU7HX4iZlZZv7XRd1gx6vDl2CViGyvczw1/DViSwsc
+X-Gm-Message-State: AOJu0YwJsHSNrlj3mWt7J49yPvVsiFCAQmzZrBI3/MDpRb8L7cu444kr
+	sOb7IQ5yb5CX+ij4LpHbomETINnieWx/w6vqnG1MTRDBnZJ12IYEcpke+o/FZm2s5DHwHtZ6Ns1
+	wmG4ekc1nwQ==
+X-Google-Smtp-Source: AGHT+IEKQGJhcSfFP21Fqdj+QH/10fP9Zd12ZW+9WsU+VBFP3ePpDhwuu5yXNp94FAP98dcP14owPuAgMCR6Mg==
+X-Received: from beeg.c.googlers.com ([fda3:e722:ac3:cc00:28:9cb1:c0a8:11db])
+ (user=jackmanb job=sendgmr) by 2002:a5d:6608:0:b0:33e:d4b6:eac3 with SMTP id
+ n8-20020a5d6608000000b0033ed4b6eac3mr28105wru.6.1712062276866; Tue, 02 Apr
+ 2024 05:51:16 -0700 (PDT)
+Date: Tue,  2 Apr 2024 12:51:09 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.44.0.478.gd926399ef9-goog
+Message-ID: <20240402125109.1251232-1-jackmanb@google.com>
+Subject: [PATCH v2] Documentation: kunit: Clarify test filter format
+From: Brendan Jackman <jackmanb@google.com>
+To: linux-kselftest@vger.kernel.org, kunit-dev@googlegroups.com, 
+	linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	Daniel Latypov <dlatypov@google.com>
+Cc: Brendan Higgins <brendan.higgins@linux.dev>, davidgow@google.com, rmoar@google.com, 
+	corbet@lwn.net, Brendan Jackman <jackmanb@google.com>
+Content-Type: text/plain; charset="UTF-8"
 
-On 01.04.24 23:45, Boqun Feng wrote:
-> To support a potential usage:
->=20
->      static foo: Opaque<Foo> =3D ..; // Or defined in an extern block.
->=20
->      ...
->=20
->      fn bar() {
->          let ptr =3D foo.get();
->      }
->=20
-> `Opaque::get` need to be `const`, otherwise compiler will complain
-> because calls on statics are limited to const functions.
->=20
-> Also `Opaque::get` should be naturally `const` since it's a composition
-> of two `const` functions: `UnsafeCell::get` and `ptr::cast`.
->=20
-> Signed-off-by: Boqun Feng <boqun.feng@gmail.com>
-> ---
->   rust/kernel/types.rs | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
+It seems obvious once you know, but at first I didn't realise that the
+suite name is part of this format. Document it and add some examples.
 
-Reviewed-by: Benno Lossin <benno.lossin@proton.me>
+Signed-off-by: Brendan Jackman <jackmanb@google.com>
+---
+v1->v2: Expanded to clarify that suite_glob and test_glob are two separate
+	patterns. Also made some other trivial changes to formatting etc.
 
---=20
-Cheers,
-Benno
+ Documentation/dev-tools/kunit/run_wrapper.rst | 33 +++++++++++++++++--
+ 1 file changed, 30 insertions(+), 3 deletions(-)
+
+diff --git a/Documentation/dev-tools/kunit/run_wrapper.rst b/Documentation/dev-tools/kunit/run_wrapper.rst
+index 19ddf5e07013..b07252d3fa9d 100644
+--- a/Documentation/dev-tools/kunit/run_wrapper.rst
++++ b/Documentation/dev-tools/kunit/run_wrapper.rst
+@@ -156,12 +156,39 @@ Filtering tests
+ ===============
+ 
+ By passing a bash style glob filter to the ``exec`` or ``run``
+-commands, we can run a subset of the tests built into a kernel . For
+-example: if we only want to run KUnit resource tests, use:
++commands, we can run a subset of the tests built into a kernel,
++identified by a string like ``<suite_glob>[.<test_glob>]``.
++
++For example, to run the ``kunit-resource-test`` suite:
++
++.. code-block::
++
++	./tools/testing/kunit/kunit.py run kunit-resource-test
++
++To run a specific test from that suite:
++
++.. code-block::
++
++	./tools/testing/kunit/kunit.py run kunit-resource-test.kunit_resource_test
++
++To run all tests from suites whose names start with ``kunit``:
++
++.. code-block::
++
++	./tools/testing/kunit/kunit.py run 'kunit*'
++
++To run all tests whose name ends with ``remove_resource``:
++
++.. code-block::
++
++	./tools/testing/kunit/kunit.py run '*.*remove_resource'
++
++To run all tests whose name ends with ``remove_resource``, from suites whose
++names start with ``kunit``:
+ 
+ .. code-block::
+ 
+-	./tools/testing/kunit/kunit.py run 'kunit-resource*'
++	./tools/testing/kunit/kunit.py run 'kunit*.*remove_resource'
+ 
+ This uses the standard glob format with wildcard characters.
+ 
+-- 
+2.44.0.478.gd926399ef9-goog
 
 
