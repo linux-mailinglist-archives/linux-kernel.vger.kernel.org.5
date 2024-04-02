@@ -1,98 +1,106 @@
-Return-Path: <linux-kernel+bounces-127840-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-127842-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 76685895195
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 13:17:13 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5B6A289519D
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 13:17:47 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 117BC1F26D7C
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 11:17:13 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8D1BD1C2345C
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 11:17:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CF22E6217D;
-	Tue,  2 Apr 2024 11:17:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4D30664CF9;
+	Tue,  2 Apr 2024 11:17:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=resnulli-us.20230601.gappssmtp.com header.i=@resnulli-us.20230601.gappssmtp.com header.b="qLoRjEh9"
-Received: from mail-lj1-f171.google.com (mail-lj1-f171.google.com [209.85.208.171])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kemnade.info header.i=@kemnade.info header.b="2D060gjv"
+Received: from mail2.andi.de1.cc (vmd64148.contaboserver.net [161.97.139.27])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0AFE7604BB
-	for <linux-kernel@vger.kernel.org>; Tue,  2 Apr 2024 11:17:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0570C627FC;
+	Tue,  2 Apr 2024 11:17:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=161.97.139.27
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712056623; cv=none; b=DHd9ZXlG+shDwiOqueGXCXlpf6Er36Qu+TwuZImkE/3zyvz5AdscPIRSC9blyxQF/belVBV3CwTN2KXQuT5eGTmxFdJLZkyz8vv6SQNpRb4vtgLTsuZhNxxgcMAUIZvKRFwuwr0XhXgATAseYj3Onpin97l8Hu3aHHP8zJSLB0Q=
+	t=1712056640; cv=none; b=YU5NmI+9zoJgY+k2uUXV+6yWAkl5VvORUm4ZNC9FLPz9Qh7duM245Kexjra3TSWI/l6ZDlPhLWffE11d6bhEIdktTQkTOYLV7LS5FwfDDI+91Kp+jiLuv9m5TsK0u0CM53R+ik874mMtsCmA7OrjLMGanhN4xNIC3s3qzUy4XwY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712056623; c=relaxed/simple;
-	bh=AgLSSKVSmZ+TJd00RE4I+uJLkb4KSan/Eetpt3+KJXY=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=JZMCB+BkbkYvKOG8/ezWUGW9Sepw0TjVEomI0bjJN4f/dE0xwChLkRDHq+rdVRIYkb5+FrCr+Mx+W/3r5k2nfAAvr+OzZRAi3tYpBeP4imoV+SNYQAsbmSGysCd1hbbLgtDTlQ6+hdFGYpdRzZAo0Mm8gqyxgXRP+tutwP3cfsU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=resnulli.us; spf=none smtp.mailfrom=resnulli.us; dkim=pass (2048-bit key) header.d=resnulli-us.20230601.gappssmtp.com header.i=@resnulli-us.20230601.gappssmtp.com header.b=qLoRjEh9; arc=none smtp.client-ip=209.85.208.171
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=resnulli.us
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=resnulli.us
-Received: by mail-lj1-f171.google.com with SMTP id 38308e7fff4ca-2d6ff0422a2so69255061fa.2
-        for <linux-kernel@vger.kernel.org>; Tue, 02 Apr 2024 04:17:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=resnulli-us.20230601.gappssmtp.com; s=20230601; t=1712056619; x=1712661419; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=AgLSSKVSmZ+TJd00RE4I+uJLkb4KSan/Eetpt3+KJXY=;
-        b=qLoRjEh9GcHcEMjbQILykXRUOgSsvvhbXxnGkfMzP8t7n+y+qw8bt2vKlZFzGOnSF/
-         vRz3KUHW992RfKu4v8YDRDsA9J/4biPdlWOseia151Vq8RQdXetgi1sHiPTmhvhq8QWv
-         W5/nLEx+S6BQadjfHZxOag/a/I34ToGVSl0ElDOpFT3niq/xouShA6I/yQozFviWf9gH
-         V3jkGbFV9dvUfGOuNrXlHoTdSVk4DgR46dEiDFvA36BpsO9TiUw8lJAnQa6Z3M4BXaha
-         /mTSn6t6pPiUYiTqkHkUHvgRAJtoWMiAweHodBjM+dHQaibvsAldG+VSpDtL6r8y2Fik
-         ZLNg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712056619; x=1712661419;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=AgLSSKVSmZ+TJd00RE4I+uJLkb4KSan/Eetpt3+KJXY=;
-        b=qKny9vCDCvp3PhSJ6JRNgMNwKvS7ojQ7qVdSgAG4p1bFU4zAeeO32TY+hCuVUvvbG8
-         /4eg0vIf9or0nZEY7NqGOPRfhcLVA8ezrKu4covAy78qc+tgX9bjvtGQnYFnop2mEjEp
-         NBTUzesaDzawxBa15rApCPSMp5d5bxecSsLN6qMS9clhCGCZQdp7t4W+oKe1wfffZC0o
-         Xeq1DzsJErRElyvzyAgagOh9M25jGSVRhNI88gTKIwDZVXzqXLLO3GgtMrKmjK0G46dX
-         JBIL/6MNALqmcxX/IGpvS1qNcEi4X0j3HmL3E3VHm/CmQK+T0zkq6KhlDK9fQ63cVU1G
-         xMzA==
-X-Forwarded-Encrypted: i=1; AJvYcCXSHXnUtT6E+ruCW5AAZORgAyd/43xUyCwMvSaOtAAk/HKCzNiOdmuf/L3U8Ycmgq2IAWZH7myozlxwk7K5nAi5RIY5V8j1Hm3BYIRc
-X-Gm-Message-State: AOJu0Yzk/Sb0ID2E1I5x2AvnnbKawNHL36LYCM/AqFLvDIoQXiGuWMNN
-	DR00ti+SJbd8FXaxC/5WfCBWpALnt0XCRn57auBmOmJMHFSj+7hUMWdUoc7APlo=
-X-Google-Smtp-Source: AGHT+IHrfn5+qakoSjfF+eVmHdWpMnGzJDOCxp4hvlOHRl6xcuXO3Uw28u/M5GHuIJk6sqbBj3Wnxg==
-X-Received: by 2002:a2e:920c:0:b0:2d6:87e2:e11e with SMTP id k12-20020a2e920c000000b002d687e2e11emr6983150ljg.8.1712056618756;
-        Tue, 02 Apr 2024 04:16:58 -0700 (PDT)
-Received: from localhost ([86.61.181.4])
-        by smtp.gmail.com with ESMTPSA id bi21-20020a05600c3d9500b004161c690b80sm1225823wmb.13.2024.04.02.04.16.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 02 Apr 2024 04:16:57 -0700 (PDT)
-Date: Tue, 2 Apr 2024 13:16:56 +0200
-From: Jiri Pirko <jiri@resnulli.us>
-To: Jakub Kicinski <kuba@kernel.org>
-Cc: gaoxingwang <gaoxingwang1@huawei.com>, mkubecek@suse.cz,
-	idosch@nvidia.com, netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org, yanan@huawei.com, liaichun@huawei.com
-Subject: Re: [PATCH] netlink: fix typo
-Message-ID: <ZgvpKNFcBw-39SOD@nanopsycho>
-References: <20240322072456.1251387-1-gaoxingwang1@huawei.com>
- <Zf097_S2K9uxGsR5@nanopsycho>
- <20240322080727.786dd760@kernel.org>
+	s=arc-20240116; t=1712056640; c=relaxed/simple;
+	bh=3p55CVrq9iuOG18GVfPuvJM+1XznpjhKC1MOFnxHBco=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=Ox/4HIImMobpDTWSjmcH+1HhfaSHi3SbA1s2q7xttT+AsEhjHu/u0kFIyQsBIN83CcydX7YBe5VEPCbHYA/bwssRTQBzft3WELS7BZ9VHRZlb55UhG9F0038UQvXW0OSBa2Ci/sXhDX6M2j01ImF9vATSQZCWaGJhAHdsMjCKqc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kemnade.info; spf=pass smtp.mailfrom=kemnade.info; dkim=pass (2048-bit key) header.d=kemnade.info header.i=@kemnade.info header.b=2D060gjv; arc=none smtp.client-ip=161.97.139.27
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kemnade.info
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kemnade.info
+Received: from mail.andi.de1.cc ([2a02:c205:3004:2154::1])
+	by mail2.andi.de1.cc with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.96)
+	(envelope-from <andreas@kemnade.info>)
+	id 1rrc8c-003kp9-2C;
+	Tue, 02 Apr 2024 13:17:10 +0200
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=kemnade.info; s=20220719; h=Content-Transfer-Encoding:MIME-Version:
+	Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
+	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+	:Resent-Message-ID:In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:
+	List-Subscribe:List-Post:List-Owner:List-Archive;
+	bh=9MRqTZ5hji8Z4mdkDWZpaDS9fQ1NAcdQnKFC5GgJSMk=; b=2D060gjvyytlYEzcptGZF4jdhp
+	lTTTPssfZGO5HNXgULHUz8gfq43BQXCY4KbDZyldTf4koDAbTdfTfhnbjfeNbO09UACdgNCBb3c7Y
+	Nv2llr8tqzmOR97wYY+yIsjG/xNIcq9dF9COHs9wba0BfbjBNi+AX2kC8ex08ODknXQvs3+HYSMok
+	gk0cLDCQ6PtPKbPHaD1SvE89R+Ghs+FAStwQepfKaRG4RiohzFriS+shYS2ZxiI6hZV0+6PRftGD6
+	VisRFDbZUsNNC23zDwwFm/dzaPh8OEXLYU+5Glens0hekwaMQjIUGP1ADc+3boEUABh1WhxAlWTC1
+	Q46DuIng==;
+Received: from p2003010777026a001a3da2fffebfd33a.dip0.t-ipconnect.de ([2003:107:7702:6a00:1a3d:a2ff:febf:d33a] helo=aktux)
+	by mail.andi.de1.cc with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.96)
+	(envelope-from <andreas@kemnade.info>)
+	id 1rrc8b-000IAF-15;
+	Tue, 02 Apr 2024 13:17:09 +0200
+Received: from andi by aktux with local (Exim 4.96)
+	(envelope-from <andreas@kemnade.info>)
+	id 1rrc8b-0024W8-00;
+	Tue, 02 Apr 2024 13:17:09 +0200
+From: Andreas Kemnade <andreas@kemnade.info>
+To: lee@kernel.org,
+	robh+dt@kernel.org,
+	krzysztof.kozlowski+dt@linaro.org,
+	conor+dt@kernel.org,
+	mazziesaccount@gmail.com,
+	devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Cc: Andreas Kemnade <andreas@kemnade.info>
+Subject: [PATCH v3 0/2] mfd: rohm-bd71828: Add power off
+Date: Tue,  2 Apr 2024 13:16:58 +0200
+Message-Id: <20240402111700.494004-1-andreas@kemnade.info>
+X-Mailer: git-send-email 2.39.2
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240322080727.786dd760@kernel.org>
+Content-Transfer-Encoding: 8bit
 
-Fri, Mar 22, 2024 at 04:07:27PM CET, kuba@kernel.org wrote:
->On Fri, 22 Mar 2024 09:14:39 +0100 Jiri Pirko wrote:
->> "gaoxingwang" certainly is not.
->
->According to what rules? Honest question, I don't know much about
->transliteration of what I guess is a Chinese name.
+Add power off functionality. Marked as RFC because of magic numbers
+without a good source and strange delays. The only information source is
+a vendor kernel.
 
-At least capital letter would be nice :) But "Wang" looks like a surname
-and therefore a space would be appropriate too.
+Changes in v3:
+- define for poweroff bit
+- rmw operation to set only that bit
+
+Changes in v2:
+- style corrections
+- remove unnecessary writes and delays
+- correctly unregister handler
+
+Andreas Kemnade (2):
+  dt-bindings: mfd: Add ROHM BD71828 system-power-controller property
+  mfd: rohm-bd71828: Add power off functionality
+
+ .../bindings/mfd/rohm,bd71828-pmic.yaml       |  2 ++
+ drivers/mfd/rohm-bd71828.c                    | 36 ++++++++++++++++++-
+ include/linux/mfd/rohm-bd71828.h              |  3 ++
+ 3 files changed, 40 insertions(+), 1 deletion(-)
+
+-- 
+2.39.2
+
 
