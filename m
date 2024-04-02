@@ -1,241 +1,185 @@
-Return-Path: <linux-kernel+bounces-127858-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-127859-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1CF348951C0
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 13:24:34 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id F3B2A8951C2
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 13:24:41 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3FFFD1C234FC
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 11:24:33 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id ADD13283F92
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 11:24:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8D87964CE9;
-	Tue,  2 Apr 2024 11:24:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="V/0GGysc";
-	dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b="SNIdDyCr"
-Received: from mx0a-00069f02.pphosted.com (mx0a-00069f02.pphosted.com [205.220.165.32])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D7FBE62147;
-	Tue,  2 Apr 2024 11:24:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=205.220.165.32
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712057064; cv=fail; b=nxbNgLDfgDcI6SsKo7kCWAxwcbpdaJjYB3TDaKsmcWStyaUNucmTnnJdEDIdWWsEjEN4G+qu22ENCX0NIBpF51MZ0Q0MCKPZ7dN3YpO+lMFfnI2fXSIIPJDaEfexBBZP4AZMaFS4tqmJD3DSrbKrrPy9AtgkA+xx/kY7UqjA4GI=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712057064; c=relaxed/simple;
-	bh=PRBhFJtBjRJ74x8DO+HN/vBm4apmLTrRLmJmrBWrp7Q=;
-	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
-	 Content-Type:MIME-Version; b=s3dE6+q4290cNKJH/cYN3HxCmxlP8O+THAIjqrr6Ww8jOE0cao+wo2uvRQKXPpMKiLvohiKzZILg/jZfHfLWwQfz78uf0871CDLwmwtSZzrRm3SbFzymiJr8kuYhGCSJtw8aj68XtsM3FR79xdYXJTZw3S/r4UErO7Ww+Nv5ySY=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=V/0GGysc; dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b=SNIdDyCr; arc=fail smtp.client-ip=205.220.165.32
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=oracle.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oracle.com
-Received: from pps.filterd (m0333521.ppops.net [127.0.0.1])
-	by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 4327ibk5005854;
-	Tue, 2 Apr 2024 11:24:07 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=message-id : date :
- subject : to : cc : references : from : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=corp-2023-11-20;
- bh=RobBsQwgamdvtjqikdbxkKFcJc9hwjq6mRt5HtwphBg=;
- b=V/0GGyscRvZ5AyHxDA7cd8kzGtiu5JGU5aRjrRfKnTrfmxO8LTBwvcJ+eH7KhHt0T34c
- TIm02y0QDUf+mObRtXLwvWNurKE8LMZw3ykcPHG+jrkawynzCJ4EeKzEWq7wpANFsGxH
- 3iYf0vt1apTUktTq4HHf2m9C9/b0ZDQrJihGy8JECk1459FN/bQeEqHbENeJRuXQ38zV
- Xh3jxRtVFVPw3cr7GSGKb2G9DTDMMcPwV8WbUovFaRtZHpO7f7+gFnIFYa91YAfO63C/
- XWr6cGBU5wpf+Bl3PVCb8Vt0vsuwyE7JdrJtwhaaUnCD92yCJyJV6rLAroKYKtZqVKHk fw== 
-Received: from iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta02.appoci.oracle.com [147.154.18.20])
-	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3x69ncmfbp-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Tue, 02 Apr 2024 11:24:06 +0000
-Received: from pps.filterd (iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
-	by iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 432B23oR008507;
-	Tue, 2 Apr 2024 11:24:05 GMT
-Received: from nam10-mw2-obe.outbound.protection.outlook.com (mail-mw2nam10lp2101.outbound.protection.outlook.com [104.47.55.101])
-	by iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTPS id 3x696d6ed7-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Tue, 02 Apr 2024 11:24:05 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=PASyL6duXrU43XyT+u68R5RjYW+cTtR/RwX7TFqSrT+pK3xQlwzowYCKP/xpP/XZol+BtplpSX43ItOWWJhKybk2WGAwBk4Z93Iyoexqtt+YjGN3qbDSP4LDXUcaIRc+khCU9Z/HjvPeEz4atGpt+9gUdTOXfXH5H8JjvczmYcnOGCHa7hriuS68PQwleFQuO3aprY1T9eOZZx69mTjDuBZ0+IMIDkCDdcjCTt6aAtVGQ3MUdRtE+ZmQCd9oVqKkIc4nwEZ4JHoGbrPPNJgqYGVtr77AcdgtMh1s2JMpo142pakZ6WXvfT4KolGojB/LTl3ebSUBGCj4LTdgYHnSVw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=RobBsQwgamdvtjqikdbxkKFcJc9hwjq6mRt5HtwphBg=;
- b=LEKAnF4dOKdBmbWlGdgJlycuiXg0UMnfHb5Uh9LrxoISOnQ6J0CcffnZ13ax/FjYgnSYqk78GyUDcQ5PoeVYxJ5Dz8HXs0l+d9gJnlg/pxPoxkKTDtekVD07KbZmx4DcvtbpzZ+HiTm0SkxAb+27tPx6oFiMIRPss4d1iBD4zHyQ51FRhEbMUTLaCH7/zfai7bFW/7F9Ad4vKTpj01bAMQSIOcV8Tpz6h9W+OAmkFmdExUO4j1ND+PI+0qMlFpFrtMQrjqQ09v5/cVUY06SNevscO7FMfQJg9xC0uGU2RJRziXzcVM1fVnhopcHxuq66EanAjLpGflE2OQW5g0vcJw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=RobBsQwgamdvtjqikdbxkKFcJc9hwjq6mRt5HtwphBg=;
- b=SNIdDyCriU8NMaaxH3Ui4AMCzsbcUDgPI/czgw1580ElnxJLiQkkROve/ERdS+t3jPmQcRNjBCHdbMIq7fL/efhR1Pbyrz864177AwI898XQUHlGhDSAYiQkj5axxyrBxcRwQexOx0CqkdjtgtYWyGdiyxKWVjiBsXucW3abzMw=
-Received: from PH8PR10MB6290.namprd10.prod.outlook.com (2603:10b6:510:1c1::7)
- by PH7PR10MB6311.namprd10.prod.outlook.com (2603:10b6:510:1b2::12) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7409.46; Tue, 2 Apr
- 2024 11:24:02 +0000
-Received: from PH8PR10MB6290.namprd10.prod.outlook.com
- ([fe80::f5ee:d47b:69b8:2e89]) by PH8PR10MB6290.namprd10.prod.outlook.com
- ([fe80::f5ee:d47b:69b8:2e89%3]) with mapi id 15.20.7409.042; Tue, 2 Apr 2024
- 11:24:02 +0000
-Message-ID: <6a6ebf5a-da64-4c5b-b819-cbcbb097fb55@oracle.com>
-Date: Tue, 2 Apr 2024 16:53:53 +0530
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] drm/panthor: Fix IS_ERR() vs NULL bug in
- group_process_tiler_oom()
-To: Boris Brezillon <boris.brezillon@collabora.com>,
-        Steven Price <steven.price@arm.com>, Liviu Dudau <liviu.dudau@arm.com>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
-        Heiko Stuebner <heiko@sntech.de>, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org
-Cc: dan.carpenter@linaro.org, kernel-janitors@vger.kernel.org,
-        error27@gmail.com
-References: <20240402111740.1700310-1-harshit.m.mogalapalli@oracle.com>
-Content-Language: en-US
-From: Harshit Mogalapalli <harshit.m.mogalapalli@oracle.com>
-In-Reply-To: <20240402111740.1700310-1-harshit.m.mogalapalli@oracle.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: TY2PR01CA0002.jpnprd01.prod.outlook.com
- (2603:1096:404:a::14) To PH8PR10MB6290.namprd10.prod.outlook.com
- (2603:10b6:510:1c1::7)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E3EA769945;
+	Tue,  2 Apr 2024 11:24:27 +0000 (UTC)
+Received: from mx10.didiglobal.com (mx10.didiglobal.com [111.202.70.125])
+	by smtp.subspace.kernel.org (Postfix) with SMTP id 63FA664A98;
+	Tue,  2 Apr 2024 11:24:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=111.202.70.125
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1712057067; cv=none; b=VrV9IuzQYD5IaGjRTM2AICU57B+/ZezFCo4BpcPcIgc/3qGez/mY5OSgE6st/wYbKBhGE86GwPKa0BGcbAK37RV5n4+3lfRjLnV92O0Lqk9tpBcUqNhvNyy10HLxjcNXhy5xOgJe8SG5kLlesJa8p0rgyH9Z81wysCWXKgmQH04=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1712057067; c=relaxed/simple;
+	bh=CaTYjj8zdYnlQyXbzA5vWY5G6Z6GdB28oa29n6j0Xqw=;
+	h=Date:From:To:CC:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition:In-Reply-To; b=AL7bnQchj8u0OStRtRDt0BQtflLopGQqeRcQAYfnNRwwSFDnp2kpwQLz9nq6Fv5dEVNQM276fTXcSX94k6/V/O5UZNGl1sMixOBXsosacEoiJjGtOFuSTgSoPbDtsaE+/TrjF9wtepR20cw5ctiTWCMo5IrOogrQbtsKLiL5dQM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=didiglobal.com; spf=pass smtp.mailfrom=didiglobal.com; arc=none smtp.client-ip=111.202.70.125
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=didiglobal.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=didiglobal.com
+Received: from mail.didiglobal.com (unknown [10.79.65.12])
+	by mx10.didiglobal.com (MailData Gateway V2.8.8) with ESMTPS id E6CB118097DE79;
+	Tue,  2 Apr 2024 19:24:21 +0800 (CST)
+Received: from didi-ThinkCentre-M930t-N000 (10.79.64.101) by
+ ZJY02-ACTMBX-02.didichuxing.com (10.79.65.12) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Tue, 2 Apr 2024 19:24:21 +0800
+Date: Tue, 2 Apr 2024 19:24:15 +0800
+X-MD-Sfrom: tiozhang@didiglobal.com
+X-MD-SrcIP: 10.79.65.12
+From: Tio Zhang <tiozhang@didiglobal.com>
+To: <mingo@redhat.com>, <peterz@infradead.org>, <juri.lelli@redhat.com>,
+	<vincent.guittot@linaro.org>, <rostedt@goodmis.org>, <bsingharora@gmail.com>,
+	<corbet@lwn.net>, <akpm@linux-foundation.org>
+CC: <linux-kernel@vger.kernel.org>, <linux-doc@vger.kernel.org>,
+	<dietmar.eggemann@arm.com>, <bsegall@google.com>, <mgorman@suse.de>,
+	<bristot@redhat.com>, <vschneid@redhat.com>, <tiozhang@didiglobal.com>,
+	<zyhtheonly@gmail.com>, <zyhtheonly@yeah.net>, <fuyuanli@didiglobal.com>
+Subject: [PATCH 1/3] sched: make softirq cputime accounting separately in
+ irqtime
+Message-ID: <20240402112415.GA17946@didi-ThinkCentre-M930t-N000>
+Mail-Followup-To: mingo@redhat.com, peterz@infradead.org,
+	juri.lelli@redhat.com, vincent.guittot@linaro.org,
+	rostedt@goodmis.org, bsingharora@gmail.com, corbet@lwn.net,
+	akpm@linux-foundation.org, linux-kernel@vger.kernel.org,
+	linux-doc@vger.kernel.org, dietmar.eggemann@arm.com,
+	bsegall@google.com, mgorman@suse.de, bristot@redhat.com,
+	vschneid@redhat.com, zyhtheonly@gmail.com, zyhtheonly@yeah.net,
+	fuyuanli@didiglobal.com
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: PH8PR10MB6290:EE_|PH7PR10MB6311:EE_
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 
-	g583jLQVuenr2Dj0b7cIydy15X9f/yF9oM5ZpU+XM8YbBXvhGGjZvORV3kgM1miGaD0dviiIYfz4kjIhkItt2w9WmfhxkMQiPoT84Kjm0gXfxy7hPyrLe2oypxe++Dk8lXVj4ITOUqv4n4WCSX3Tevbz4f83pCADE06dYgMWWPvR+BIcLhMtlqOOrnyNYPAEGRR39vCBuUA9WX6XkHyVr2P5W3EYN84KXSaZ463qrtAn0leGbSb3fOnIRYBJ4SvGitg2gg4k+mADaVAFgC+ED+86lZKtb2PraL2DkFRyBpeUcQGVXGqPfQsbMJVxTT7r8gE/ubki9slSOtmP4rjkQW16Or9dX5qUPz3oVZLKMOpvsxv+VyTtTaqNZ9ECv/a9ibTWCRPh5tCNQub+74M4ST1CY+PlzWVkRjVjo4J7VWBWcrSZk0s9hGfR/TlpwYzracLaKbZndI8KcAYok5+aIhg/RvPeNg7E6gANxwzgRWfp474OT0yUH6tDulQmpZv2kgMJlGU8vxgv7idYIs95oB/b8Hwv18brEpiDh6nXLnA4sEko8z8Niidrbtu+xEGqFA948fHinbQT7zAr5zSU9+Y9039XHSrTlRkbk7Du6XHtvCMHOnOlq4VPhzuTIKLzCEccy0Q/+T8xw9iNlJBf0ZXM/TbWvOsMGbCrzU67bjDnRhDuaAX7txBqNIfUxeglCF3qwbpFkv9w1ccpk4AcDw==
-X-Forefront-Antispam-Report: 
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH8PR10MB6290.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376005)(7416005)(1800799015)(366007)(921011);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: 
-	=?utf-8?B?Rm51MlNBSHRKSDcyTzlEem9ic0xBcjI0OWFGTERZMGRXeVpnL1ZlVk1EMnR6?=
- =?utf-8?B?VEJtZTRVSUNuTDJDT0RLcEp5TjBKdFZKSFhqNWZGOVNUdXBhc0xlSzhlTmpt?=
- =?utf-8?B?c0F4aFFkWjJGUXhoYUpGNktMZDFOQWREWFROWDl5SXoyYm9OMnI4SDRCMlk1?=
- =?utf-8?B?Si8xdmFPZE1KemhYd2VVOHZIUExSNDBCUHYrTnhZOVI4TGxHaHA2Nm1jd1M5?=
- =?utf-8?B?dnVsbXZqa2ptWkQzMVpXSEU1azVOYks1YzBxUVpDQmVIZU5EMDJKMytCNHps?=
- =?utf-8?B?dGhmejhnSWtSOTJFZzBQNWxZaXlEd2lkMmlnZVBoYlp2UkpsdXpINGJWSWZM?=
- =?utf-8?B?UkN0UGkwUUxwbk1KaXRVTlJqU2RUN2dPZmJ3dDUyVWM3QStPb2lFZURnTGs3?=
- =?utf-8?B?TktQRWJSTGpNejJ2M3lka1RQYVV6YkdkZDdLWmk2UXp3KzFWSXdTZ0JHT29N?=
- =?utf-8?B?dm92Ulg0cmFoNXQzMU5VNlZuTWdPaG9jczZDTFUxaS85dGI5OUh6OGpkLytk?=
- =?utf-8?B?ci9VSEdFZXQxWnVzM0QvTmkwTmx1d2ZhZFN2NCs3WVVFY29yUGF6VDV3bGls?=
- =?utf-8?B?MWJ5YUF2bENsSU11aVFyc2t2S3ljakJqNFFOQW9aMFZkOFV5UmRHZ0tuK1JM?=
- =?utf-8?B?Zll6aDR3b0hhU3p2cFhPUkdnQVBVbEVIdGp6OTRGdXhRdzBCcFpONVZRODB0?=
- =?utf-8?B?TXY5a0tnQzNpbkczbmZiOGRCOGkybnJSVU9VMVlpdkY1R05QWXN5WXRPeHpR?=
- =?utf-8?B?S0pFeXZFQTZhbUVQM2FsVXlyQ3NNbVV3aUwwUFdDMm5oZEtVTHhnd1RhWklC?=
- =?utf-8?B?QWV0WmpMSnBSY3NzWE5HWUxKZXVxU215VVJWbERaclFpZHJEZm5QQW1nU1ly?=
- =?utf-8?B?OHJnWDhNeklWMjAzRllLUWxHV2xnb2Y2RHhLU3FZbnJQQzNUY1o1Zi9sQytP?=
- =?utf-8?B?MnU4cThXYTJFcmM1bllwWXZVcm84WjlOYnJHek1BMXlyM1IycGVFMURyd2g2?=
- =?utf-8?B?NVV5U285bFcrM2lqdzNQN0k5d2ZRZXB5T0xlS2tHVFY3OFBkOEpuS1FXeWs2?=
- =?utf-8?B?bTdvVXBDcEplU1d2UDlqV2ZzWTRxV2JNclVrd3FtbVJEUVh3b3RqNGZrZUI3?=
- =?utf-8?B?NGdMUUh2QXRYSWt4bkthaDhWMTY0OFRubCt2MjZFZ2dUWkdzRS9oMWJnUDRB?=
- =?utf-8?B?QUlMamZKeExmR2pLMUJPVDYrTkV4ZTBhVHJBa1U3djdUcytsd29qRklJN05N?=
- =?utf-8?B?RWZRUGY1NnVyNUZsTnowVHFqR1d2OFNJbFFzbitlc25pRUlnaWtkWlFWUEVk?=
- =?utf-8?B?WGJYeUowem9EQVMvL3NLK3g1em41cmZuRXJCY3dXRUJsQmxpNnNmUHcrb0lm?=
- =?utf-8?B?QldKeSt5R1Nabkx1M0Jna1BJNnNBM2Z1K2kvbCszVVhvWit5VHVnaXNya2Ew?=
- =?utf-8?B?SFd0VDRtZm9wZ2d2d0tERWR4Skw5WHZ1aWdOR1REcVV4Y3U5M0ZoQzdWdnhD?=
- =?utf-8?B?QWNjSE1DeGplRkcvd1BiT3BoTGRXTHJ0dGZCWjVKcUcyeldONEg2aTBkTWR3?=
- =?utf-8?B?WmVKZFVDT0VnVlNXSVdpVmpaRTZsTE5HRE5IcTEwMHg4dzFUK2ZkSTVhT0dt?=
- =?utf-8?B?RnBzZ3F5Z0wzdkE1c0xXOTZub2U1ejlKYVhSRGJwWThIeUdCbzgveHcxWW45?=
- =?utf-8?B?a09FVVFRdDBlNjlTYmUxc1hyVlJZYzYvbUJOVmxwUUJERGVhN0xzWWFGNU95?=
- =?utf-8?B?alhIbi9iYmFBWkd2d2o3TmVxM3phcitJM1orc0lXWFZNcytwQXcvdHhBVE8x?=
- =?utf-8?B?am43Zm1FanRtQXZIMDVaNE8ycjA2aVV0YU9BSXhBOFh4dmN5L0JFbkh0NzRt?=
- =?utf-8?B?U2xna1dvMjlBdjkxK29WTGtINnZRVm4wcGxvZGhnWC9PdHJ4K3d6TlZmaEJo?=
- =?utf-8?B?L2x4QXdqRmpZUXhtN3pXb3pmVHFsVFQvTVByMC9UNS9Ld2RTeGtHUTBGSk1B?=
- =?utf-8?B?aVlJU252cksrSGVvSVBCNExVSWptQzNxbnNZcml2RERCckxZYmN0SjlKaG1E?=
- =?utf-8?B?QmZ6di85ZGxSQjRTMXBnaFpNTVc4UjZsVnhuOUFuN2JpVWFpYmtFemF5Sm1K?=
- =?utf-8?B?K1ZuS2hPcit0M1F0a0FSMnFjR0hpQmJlMHliUkhkZnhVemtVVjNQN054TnVj?=
- =?utf-8?Q?TMkz+2Uv7IdZ0xGX8WtxJmk=3D?=
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: 
-	RVx51Tu+H5wiQzO9fs7tp92ghCOX5++wHikOBFlefZM2jVZ/2Deln0L1zA07NkCyNIRLyqhH0C0yuGEz9CxTlX4XfPjLJ/wtAJ+QHdgGiyWykFKotsm+UU6/Z3j2hfMyzGoa22LhBSAMms7aR4Kzi2PA6gRaAIt+oYAwuFWI6glIRjp1Dcbaoat3R/LXS9n0pY0ybLTrW40JtiJ65sjo4NTpYSOsDRu5mW5a+MpM/61vHSHTusgcIyVLpCcwB5sQRbXRY541u6gzTeD7RyvXw9mNlFI5/nnhAp9j0NZv9c+92tQsZFB2SeUvSaWaM6yEYOSw/ZkiWCXh4VKzG/7jb27PVmJACGunA06nl5C+Xx0sRSxC4mwzLdtHF9h7d0/X+xuOvuW745ylrfgpkQLRI4EPiDyFPlm+BUd6qdpcpuCaVcpMypmmKwXS+ytw4MPeLcmq4coflMWgZ/oORp7vrbs6bdBolaQstgal0W6hYpOK1bTMyQM/zZxEqg5YaLIIQw40txsgf3sq5HQnIPTCjMbTk2WBiPseAJwBciVtCU9ZFSjLCg+xlLHgAS0AWEuKqsvmngfVHOXP9kGorETbPhUcxzQBMI6Ud7UD8RlyOWQ=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: ac2358fe-0bc6-40b1-b055-08dc53076613
-X-MS-Exchange-CrossTenant-AuthSource: PH8PR10MB6290.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 02 Apr 2024 11:24:02.4259
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 9AkiFPeQ84NzL3OvCoYlj3snUZ64NvPqY1483hcVnefMbRfrkqjJCGU9GaLbvLfU5Z/yDpakNZSQriiZ6Bb7VxUb/CExWazf+cQA6JV9evMVoNtHUsWue+9SjcYwwNvf
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH7PR10MB6311
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-04-02_05,2024-04-01_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 suspectscore=0
- phishscore=0 bulkscore=0 spamscore=0 adultscore=0 mlxlogscore=999
- mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2403210000 definitions=main-2404020083
-X-Proofpoint-GUID: 8tj3uaY8VTqC0HVYnzhsaiJQRkLFRmd2
-X-Proofpoint-ORIG-GUID: 8tj3uaY8VTqC0HVYnzhsaiJQRkLFRmd2
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20240402112112.GA17370@didi-ThinkCentre-M930t-N000>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-ClientProxiedBy: ZJY01-PUBMBX-01.didichuxing.com (10.79.64.32) To
+ ZJY02-ACTMBX-02.didichuxing.com (10.79.65.12)
 
-Hi,
+Currently we account irq{,soft} time in "irqtime.total",
+when CONFIG_IRQ_TIME_ACCOUNTING=y. Since we account them in
+the same path (irq{,soft}_enter{,exit}), we can separately count them
+by filtering the offset.
+In order to not break backward compatibility, we do not change the meaning
+of "total", we only let softirq time to be accounted separately in
+a new field "total_soft".
+So interrupt time could also be calculated by "total" minus "total_soft".
 
-On 02/04/24 16:47, Harshit Mogalapalli wrote:
-> panthor_vm_get_heap_pool() returns ERR_PTR on failure, update the check
-> accordingly.
-> 
-> Fixes: de8548813824 ("drm/panthor: Add the scheduler logical block")
-> Signed-off-by: Harshit Mogalapalli <harshit.m.mogalapalli@oracle.com>
-> ---
-> This is based on static analysis with smatch, only compile tested.
-> ---
->   drivers/gpu/drm/panthor/panthor_sched.c | 5 ++++-
->   1 file changed, 4 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/gpu/drm/panthor/panthor_sched.c b/drivers/gpu/drm/panthor/panthor_sched.c
-> index 5f7803b6fc48..d34f213795a3 100644
-> --- a/drivers/gpu/drm/panthor/panthor_sched.c
-> +++ b/drivers/gpu/drm/panthor/panthor_sched.c
-> @@ -1343,7 +1343,10 @@ static int group_process_tiler_oom(struct panthor_group *group, u32 cs_id)
->   	if (unlikely(csg_id < 0))
->   		return 0;
->   
-> -	if (!heaps || frag_end > vt_end || vt_end >= vt_start) {
-> +	if (IS_ERR(heaps))
-> +		return PTR_ERR(heaps);
-> +
+This patch only let softirq cputime stats available in irqtime, do not
+make it in real usage.
 
-Please ignore this patch, doesn't look correct on looking at more closely.
+Signed-off-by: Tio Zhang <tiozhang@didiglobal.com>
+---
+ kernel/sched/cputime.c | 18 ++++++++++++++----
+ kernel/sched/sched.h   | 16 ++++++++++++++++
+ 2 files changed, 30 insertions(+), 4 deletions(-)
 
-I should have just done this:
-
-diff --git a/drivers/gpu/drm/panthor/panthor_sched.c 
-b/drivers/gpu/drm/panthor/panthor_sched.c
-index 5f7803b6fc48..617df2b980d0 100644
---- a/drivers/gpu/drm/panthor/panthor_sched.c
-+++ b/drivers/gpu/drm/panthor/panthor_sched.c
-@@ -1343,7 +1343,7 @@ static int group_process_tiler_oom(struct 
-panthor_group *group, u32 cs_id)
-         if (unlikely(csg_id < 0))
-                 return 0;
-
--       if (!heaps || frag_end > vt_end || vt_end >= vt_start) {
-+       if (IS_ERR(heaps) || frag_end > vt_end || vt_end >= vt_start) {
-                 ret = -EINVAL;
-         } else {
-                 /* We do the allocation without holding the scheduler 
-lock to avoid
-
-
-Thanks,
-Harshit
-
-
-> +	if (frag_end > vt_end || vt_end >= vt_start) {
->   		ret = -EINVAL;
->   	} else {
->   		/* We do the allocation without holding the scheduler lock to avoid
+diff --git a/kernel/sched/cputime.c b/kernel/sched/cputime.c
+index af7952f12e6c..23e4bca1e3e8 100644
+--- a/kernel/sched/cputime.c
++++ b/kernel/sched/cputime.c
+@@ -35,13 +35,14 @@ void disable_sched_clock_irqtime(void)
+ }
+ 
+ static void irqtime_account_delta(struct irqtime *irqtime, u64 delta,
+-				  enum cpu_usage_stat idx)
++				  u64 delta_soft, enum cpu_usage_stat idx)
+ {
+ 	u64 *cpustat = kcpustat_this_cpu->cpustat;
+ 
+ 	u64_stats_update_begin(&irqtime->sync);
+ 	cpustat[idx] += delta;
+ 	irqtime->total += delta;
++	irqtime->total_soft += delta_soft;
+ 	irqtime->tick_delta += delta;
+ 	u64_stats_update_end(&irqtime->sync);
+ }
+@@ -54,7 +55,7 @@ void irqtime_account_irq(struct task_struct *curr, unsigned int offset)
+ {
+ 	struct irqtime *irqtime = this_cpu_ptr(&cpu_irqtime);
+ 	unsigned int pc;
+-	s64 delta;
++	s64 delta, delta_soft = 0;
+ 	int cpu;
+ 
+ 	if (!sched_clock_irqtime)
+@@ -65,6 +66,15 @@ void irqtime_account_irq(struct task_struct *curr, unsigned int offset)
+ 	irqtime->irq_start_time += delta;
+ 	pc = irq_count() - offset;
+ 
++	/*
++	 * We only account softirq time when we are called by
++	 * account_softirq_enter{,exit}
++	 */
++	if ((offset & SOFTIRQ_OFFSET) || (pc & SOFTIRQ_OFFSET)) {
++		delta_soft = sched_clock_cpu(cpu) - irqtime->soft_start_time;
++		irqtime->soft_start_time += delta_soft;
++	}
++
+ 	/*
+ 	 * We do not account for softirq time from ksoftirqd here.
+ 	 * We want to continue accounting softirq time to ksoftirqd thread
+@@ -72,9 +82,9 @@ void irqtime_account_irq(struct task_struct *curr, unsigned int offset)
+ 	 * that do not consume any time, but still wants to run.
+ 	 */
+ 	if (pc & HARDIRQ_MASK)
+-		irqtime_account_delta(irqtime, delta, CPUTIME_IRQ);
++		irqtime_account_delta(irqtime, delta, delta_soft, CPUTIME_IRQ);
+ 	else if ((pc & SOFTIRQ_OFFSET) && curr != this_cpu_ksoftirqd())
+-		irqtime_account_delta(irqtime, delta, CPUTIME_SOFTIRQ);
++		irqtime_account_delta(irqtime, delta, delta_soft, CPUTIME_SOFTIRQ);
+ }
+ 
+ static u64 irqtime_tick_accounted(u64 maxtime)
+diff --git a/kernel/sched/sched.h b/kernel/sched/sched.h
+index 001fe047bd5d..f479c61b84b5 100644
+--- a/kernel/sched/sched.h
++++ b/kernel/sched/sched.h
+@@ -2931,8 +2931,10 @@ static inline void nohz_run_idle_balance(int cpu) { }
+ #ifdef CONFIG_IRQ_TIME_ACCOUNTING
+ struct irqtime {
+ 	u64			total;
++	u64			total_soft;
+ 	u64			tick_delta;
+ 	u64			irq_start_time;
++	u64			soft_start_time;
+ 	struct u64_stats_sync	sync;
+ };
+ 
+@@ -2956,6 +2958,20 @@ static inline u64 irq_time_read(int cpu)
+ 
+ 	return total;
+ }
++
++static inline u64 irq_time_read_soft(int cpu)
++{
++	struct irqtime *irqtime = &per_cpu(cpu_irqtime, cpu);
++	unsigned int seq;
++	u64 total_soft;
++
++	do {
++		seq = __u64_stats_fetch_begin(&irqtime->sync);
++		total_soft = irqtime->total_soft;
++	} while (__u64_stats_fetch_retry(&irqtime->sync, seq));
++
++	return total_soft;
++}
+ #endif /* CONFIG_IRQ_TIME_ACCOUNTING */
+ 
+ #ifdef CONFIG_CPU_FREQ
+-- 
+2.17.1
 
 
