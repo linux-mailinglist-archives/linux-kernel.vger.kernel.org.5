@@ -1,93 +1,82 @@
-Return-Path: <linux-kernel+bounces-128457-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-128458-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id AC966895B14
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 19:49:49 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1C088895B18
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 19:50:43 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DE8121C20A6C
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 17:49:48 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C495A1F22256
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 17:50:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0364D15AAC4;
-	Tue,  2 Apr 2024 17:49:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DC53C15AAC7;
+	Tue,  2 Apr 2024 17:50:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="NDkYPJtl"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="BX1vEauQ"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3454915AAB2;
-	Tue,  2 Apr 2024 17:49:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1942A175A1;
+	Tue,  2 Apr 2024 17:50:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712080181; cv=none; b=UVPp1nS68IKPImLxtgtChzq5YxVKfAtEkxq8Tq8DWi+xNbKlCtE6S0nyBS2Zy4Ds7b9ZsEMyLybFmEc5Q2VDmxvI5kcy1nmy1z6rx+HMeyMX0AtrZpK9hlvnN/7sq38e8CTZSMEe1R5gVlF8HI0nkvf6EhMGxQUBOnMNHaYts88=
+	t=1712080234; cv=none; b=Vknu90rX6q03FqLi4Or19946FgOZQOVmZfhCt0tqPc9+vc+KualZ6ilhBIPO07V3L54Wy5j90nwezmyHYfskdztbrras92iDetyEUa/klj5WCBcv+7vc9ley7SM3thQbNVrp31CVGxB+I5QN7MvfiLG1jq9TH7ry6A88FFyCdDU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712080181; c=relaxed/simple;
-	bh=566AJgdZXmrFN+ekvp09FWTpHUyB+KGinr1X4+QWtJw=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=jUYp97gqRxw1/qk71qXxKS4kgOi0kYyt+BagtVMxBdhw5YzM1URMIuy8A2sy9CQq4h0dLAPSN9vxRJMqIcARrVFoXDavgdKNrdJg+AjskiDaUzYL6mWZOEbkFhbhsyg1j4hR8JsMXK9fxh6IDC3o4AKfYdLQ1scP3mEDQzfTiPY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=NDkYPJtl; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9A090C433F1;
-	Tue,  2 Apr 2024 17:49:38 +0000 (UTC)
+	s=arc-20240116; t=1712080234; c=relaxed/simple;
+	bh=sZv0jlhFBFOdyS+sZClYNmbL18QFPsyfUOpriRYVglU=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=tGB8ekAk7d+PvBg+DOxBxqENkUuRNTerT7ZuDPD4XAfHcFO27cuGref9TfGWE6VcHPuf1OiSmr6+eeciqh2eBTHEd1aBGlpckXZRYVwCdy2GS6NzGRuv54rq3ib9zxDB89bLKDeg7V2gFN8vLl8wytCqXX8ak4BYWIA+bKXrhyw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=BX1vEauQ; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 82340C433C7;
+	Tue,  2 Apr 2024 17:50:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712080180;
-	bh=566AJgdZXmrFN+ekvp09FWTpHUyB+KGinr1X4+QWtJw=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=NDkYPJtl861/dTLCEZH4Eil9YfUeRUJaD9NFyUb8A7Sj/SSP/rdPdtZ9UrYRt8pAp
-	 wp7eI2cvrPtUIQjxdAqg76ULw004bo+4RAvyy+1n491MhL2LHgajPkAU10TpE+n5v/
-	 5HH4F0VmA70YC1j0DKtJl+kXIowosYYn5iXFXxd6V88/SJwTDPnCSup4+zuefWDhab
-	 kilRAxZ1WXl9HYOV/WAxr+7sgfrixLbbQtDOFiSpsmnqAn/hZmG7ktfVbmn17VHhVX
-	 Zy3FzP45PWq4TG0ojT4sxkjY450HOW+Ovr1wl+o1aDPqVW7flNe4IATw2b62eiPKOc
-	 pYBf5iK5LUs/Q==
-Date: Tue, 2 Apr 2024 18:49:36 +0100
-From: Conor Dooley <conor@kernel.org>
-To: Geert Uytterhoeven <geert+renesas@glider.be>
-Cc: Daniel Lezcano <daniel.lezcano@linaro.org>,
-	Thomas Gleixner <tglx@linutronix.de>, Rob Herring <robh@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>,
-	devicetree@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] dt-bindings: timer: renesas,cmt: Add R-Car V4M support
-Message-ID: <20240402-roaming-tablet-c2ac92e3f34e@spud>
-References: <3e8a7a93261d8ad264dec2fa2784fe1bbfc4a23c.1712068536.git.geert+renesas@glider.be>
+	s=k20201202; t=1712080234;
+	bh=sZv0jlhFBFOdyS+sZClYNmbL18QFPsyfUOpriRYVglU=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=BX1vEauQ4uo7+aH7/pSumiAjSQrcTvjP/XGtDLpOftSYvszVM0pyanntIHt+itXFA
+	 8dCnCoEvsyX3phNkuJQWRiJYFmJckAlWK2gJDJ2rtgi+iTORFTeuvt18YX0hiumKiz
+	 xUD0q1Z2cE554fckfLFQ7HXMMOkRJRS42/A/8xXEM5da+uXTiac5g0eWzc/aFbsZvS
+	 2R1qOSkQJUwW27RTqN2D7brRFHhYZYJqFFXOOAwjd8zkmSDvO4QNX9vEU/PH1TbjsR
+	 pMoO46qIT5PApQ52eSV30HdANxGvJJLJGM87dqiOYoOehotH8BVXUuYtixsgpKydP8
+	 PUbx2mULM8qjg==
+From: William Breathitt Gray <wbg@kernel.org>
+To: Vignesh Raghavendra <vigneshr@ti.com>,
+	Julien Panis <jpanis@baylibre.com>,
+	William Breathitt Gray <wbg@kernel.org>
+Cc: linux-iio@vger.kernel.org,
+	linux-omap@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Fabrice Gasnier <fabrice.gasnier@foss.st.com>,
+	syednwaris@gmail.com
+Subject: Re: [PATCH] counter: ti-ecap-capture: Utilize COUNTER_COMP_FREQUENCY macro
+Date: Tue,  2 Apr 2024 13:50:18 -0400
+Message-ID: <171208011376.11528.13757651083685639137.b4-ty@kernel.org>
+X-Mailer: git-send-email 2.44.0
+In-Reply-To: <ZfxhEKdSi1amfcJC@ishi>
+References: <ZfxhEKdSi1amfcJC@ishi>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="RgvgiAsiJwyNFvDx"
-Content-Disposition: inline
-In-Reply-To: <3e8a7a93261d8ad264dec2fa2784fe1bbfc4a23c.1712068536.git.geert+renesas@glider.be>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 
 
---RgvgiAsiJwyNFvDx
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+On Thu, 21 Mar 2024 12:32:16 -0400, William Breathitt Gray wrote:
+> Reduce boilerplate by leveraging the COUNTER_COMP_FREQUENCY() macro to
+> define the "frequency" extension.
+> 
+> 
 
-On Tue, Apr 02, 2024 at 04:36:05PM +0200, Geert Uytterhoeven wrote:
-> Document support for the Compare Match Timer Type0 (CMT0) and Type1
-> (CMT1) in the Renesas R-Car V4M (R8A779H0) SoC.
->=20
-> Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+Applied, thanks!
 
-Acked-by: Conor Dooley <conor.dooley@microchip.com>
+[1/1] counter: ti-ecap-capture: Utilize COUNTER_COMP_FREQUENCY macro
+      commit: 916baadd293a4d11e08a7ca1e2968314451ade6c
 
---RgvgiAsiJwyNFvDx
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZgxFMAAKCRB4tDGHoIJi
-0hEbAP9Ey3DDiFRcd/uXh82t6Zl2cmLLKCqJDt9tI//7dXlg4QD/Yx9Rxum1O0js
-PuPI7WN3qyYAVZ/E3zUMPWP0iAKHhQs=
-=3cvo
------END PGP SIGNATURE-----
-
---RgvgiAsiJwyNFvDx--
+Best regards,
+-- 
+William Breathitt Gray <wbg@kernel.org>
 
