@@ -1,152 +1,133 @@
-Return-Path: <linux-kernel+bounces-128122-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-128109-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 327CD89566B
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 16:14:38 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 73D4A895641
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 16:10:07 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 635B61C22993
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 14:14:37 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A0ED41C22B31
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 14:10:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AFE5186146;
-	Tue,  2 Apr 2024 14:14:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7D10E1292C9;
+	Tue,  2 Apr 2024 14:09:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=fu-berlin.de header.i=@fu-berlin.de header.b="OIojHHSc"
-Received: from outpost1.zedat.fu-berlin.de (outpost1.zedat.fu-berlin.de [130.133.4.66])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="OY3OBIdS"
+Received: from mail-ej1-f52.google.com (mail-ej1-f52.google.com [209.85.218.52])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C55385466B;
-	Tue,  2 Apr 2024 14:14:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=130.133.4.66
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BE32985C4E
+	for <linux-kernel@vger.kernel.org>; Tue,  2 Apr 2024 14:09:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712067271; cv=none; b=QL52B4kTSW/O7FYv1DqiBVxkF/p++gyjUJkTy7+VVhqIiAXumsvE1RaeDhFKKcC6syAfA302HdBKJKD/aJI7/i8xN9cuB7ld5ljsqruozygoBMhUOS+/P/0bnqiJbm6XBKxm8nJZpCwJZkkNS09gxFmGZCXm9KAkOxMlOaP+2B8=
+	t=1712066982; cv=none; b=io30CXnfnbYOe88U7BkldSVz8fxYuR9JwUv5BU+/CW7g0FVZJwt+4M85/JlPrHieYOPXH04gVddNrZBF1zXkZfdJulp86uIFPzRk2l165z5igtAzSLu1mdRwblnw6c2udtrc2j87O5u6j9EbalXdPCVOvNBX9fJOnYkYu6GAwpY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712067271; c=relaxed/simple;
-	bh=xGBS8087o4E2OFVrwhMP2Fd9XpiplM/rOINlshOr56M=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=PoIfIuUvne2l0Dhggb7w+uJhDu61LKh/+8i9b/sz2g2yiPmV2bPSftMb7sAlx09Cj+AtEOPVBifYX4dHuLClVxafX8JZV0aZaCTmu0Hpd5wKCnbivxTAV7JpaBxt+hftTkCa6kZfLPwxG1Uc3dnk5b04LXPJImRKgguhAFyzTyw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=physik.fu-berlin.de; spf=pass smtp.mailfrom=zedat.fu-berlin.de; dkim=pass (2048-bit key) header.d=fu-berlin.de header.i=@fu-berlin.de header.b=OIojHHSc; arc=none smtp.client-ip=130.133.4.66
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=physik.fu-berlin.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=zedat.fu-berlin.de
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=fu-berlin.de; s=fub01; h=MIME-Version:Content-Transfer-Encoding:
-	Content-Type:References:In-Reply-To:Date:Cc:To:From:Subject:Message-ID:Sender
-	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
-	List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-	bh=7FYEajHHZNrGHETCR6Q3fzJ6HNWJWU4r/hKJctcIepI=; t=1712067267; x=1712672067; 
-	b=OIojHHScqszIjU2KfVSb6eKfmUZQH0X+pj1tdpiI1K4mkXSrbysLEmAJJaUH7xlzFZMjTaFgqr7
-	4RoFGFsVfJuYcdtapDnnPw0w2DnxyPdjPO0JBcBewOl0Nfdfmzzahf+XdGq4Sq1QvIZpei35OlC6J
-	idjnrkUOkXMNTL94NGj3Hld93DiGmmxGsW4JC47SzDX/lBwpMTHdk/CpncC2EpXeAu6MOGURentPD
-	ue1qqauoBEKjc4Y6RvBHKbU/rUPEhKyoPnhC3zc8O7C8KIOOutYhOkNWaLVnVIFzfvtYKaz8SBawz
-	P9GgsxTBOE6z3X+X6wyjlTZ009wIb3SzAJ4Q==;
-Received: from inpost2.zedat.fu-berlin.de ([130.133.4.69])
-          by outpost.zedat.fu-berlin.de (Exim 4.97)
-          with esmtps (TLS1.3)
-          tls TLS_AES_256_GCM_SHA384
-          (envelope-from <glaubitz@zedat.fu-berlin.de>)
-          id 1rrepN-00000001CzR-2fhC; Tue, 02 Apr 2024 16:09:29 +0200
-Received: from p57bd9555.dip0.t-ipconnect.de ([87.189.149.85] helo=[192.168.178.20])
-          by inpost2.zedat.fu-berlin.de (Exim 4.97)
-          with esmtpsa (TLS1.3)
-          tls TLS_AES_256_GCM_SHA384
-          (envelope-from <glaubitz@physik.fu-berlin.de>)
-          id 1rrepN-00000000Hav-1nB3; Tue, 02 Apr 2024 16:09:29 +0200
-Message-ID: <1e77ade4fb1d924ffaf226cb946ba3314ba59a1d.camel@physik.fu-berlin.de>
-Subject: Re: [PATCH] Revert "sh: Handle calling csum_partial with misaligned
- data"
-From: John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
-To: Guenter Roeck <linux@roeck-us.net>, Yoshinori Sato
-	 <ysato@users.sourceforge.jp>
-Cc: Rich Felker <dalias@libc.org>, linux-sh@vger.kernel.org, 
-	linux-kernel@vger.kernel.org
-Date: Tue, 02 Apr 2024 16:09:28 +0200
-In-Reply-To: <cb8d3d2a-b843-49d5-a219-10a29b5877d0@roeck-us.net>
-References: <20240324231804.841099-1-linux@roeck-us.net>
-	 <059d03a5da257660fa0bc188c6cc8d0152e97704.camel@physik.fu-berlin.de>
-	 <a9ac59cd-82db-45a0-9f85-ec3880c54dbf@roeck-us.net>
-	 <cb8d3d2a-b843-49d5-a219-10a29b5877d0@roeck-us.net>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.52.0 
+	s=arc-20240116; t=1712066982; c=relaxed/simple;
+	bh=LTkw8G/UbnzbJ69YL6GosvdrYC0acddZdwlT7ImDQUo=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=jv/f/w5vMk12XelJpIMzP65DW6XXzXGJutVJsWv5bvPR5AQo+CJyYKRVNl/CbY6k0cGIs2iDX9P4LTPza+ltpH1hTafgGpNS7aCst736yKDEotsuY8hLl3csGJUxTuo9OKJ2pextfmwK7D0bbGAUWJWRIngjxOhc6LDik/Wbr60=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=OY3OBIdS; arc=none smtp.client-ip=209.85.218.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-ej1-f52.google.com with SMTP id a640c23a62f3a-a4e5ee91879so308391066b.3
+        for <linux-kernel@vger.kernel.org>; Tue, 02 Apr 2024 07:09:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1712066979; x=1712671779; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=Pd+8DVN5G2IkVOB54fyerdrNg9YmjMKBL8xpHTKHGmI=;
+        b=OY3OBIdSWblv0nToz3q181O1+CbQTm6FF84pyqm1+qlq+GLigNp3vbYxsrKcY8PbaE
+         HUgIX3/Hvue1FpHH+qAf2ULOCGgBBqbI6JUJhFLJN2aIhRua7nrFECSp9h0cfagTp7gz
+         7SOscx0ouyyzp24gon//1QVeB8L+s9o99V/r29hz4koQELs5EJtpG/j3zGxqYrp2ziJJ
+         EbmNgOd2T/JeNwCMlm3o8kHHesf0uCuiSoNxnvnAA2sSODuQXXXOG4OFbcjRpSAvhW9U
+         L9AhEBquNfemiOOOXU8mVTFjLDTJ352kw3Ul6row1abTE93QhH1m8jLm/fSK0x5lqZEl
+         eZRg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712066979; x=1712671779;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Pd+8DVN5G2IkVOB54fyerdrNg9YmjMKBL8xpHTKHGmI=;
+        b=S1PMRI55BkbuuD82952Xv3f7U6qTOLqLVJcZojUyuGc4wvBwFFUAAnbN9HigrYKQ8J
+         vFObunUp/v2CWGmZ7xwJAaP883P7AsjFuuHFPAMKMUgna57Tbn9TQJ9nyejqVI8zfNuH
+         I81osFzEgJnBjYQn5KqN/Pz2D0pooSmGuVHqXS3dQoxJKVKl54JrF1KfJNn9WldSPF/p
+         qx1Pw+5I7NFMso+I29kbxrV25e1Urto1ljeF210wzp5HDGn1xE1XMUvw1lgumTD6TSgO
+         fUA2WxWwXZfZb/l9Mu8bO5lGOhEtIZPZ2L+mhPNy+q5hIGcS8nBJzvmeRhovqeAZH7bD
+         hfkg==
+X-Forwarded-Encrypted: i=1; AJvYcCXnNZpmcCAuLYLwt4xqGl/XLp/WF3CeIhuEbAMS0mMGGGC4z8WHOZLxuCFAjRbsxvgQCYCYCgOScBcGw/MT4zVLAwx2/TZn98xCwZMd
+X-Gm-Message-State: AOJu0Yx5O27Btg6igUBbRlre28aP/6hbwjO/RIrH6TSyoo1nnCd/gF4F
+	ZqPcMo68zHVo1Dq282bUdODmCPO7gslaXB7fLtW4e9idSGnqowHfpN3L8j3LcNs=
+X-Google-Smtp-Source: AGHT+IHULZd7aTRgJq9Vh0DgCgeBzmCZLRHFYYSFMf78XHwA50Pp9CV+gJCGmkGqv9CBrWjPGxHVeQ==
+X-Received: by 2002:a17:907:7f12:b0:a4e:516b:2fea with SMTP id qf18-20020a1709077f1200b00a4e516b2feamr6665482ejc.50.1712066978929;
+        Tue, 02 Apr 2024 07:09:38 -0700 (PDT)
+Received: from localhost ([102.222.70.76])
+        by smtp.gmail.com with ESMTPSA id q2-20020a170906b28200b00a4655976025sm6534890ejz.82.2024.04.02.07.09.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 02 Apr 2024 07:09:38 -0700 (PDT)
+Date: Tue, 2 Apr 2024 17:09:34 +0300
+From: Dan Carpenter <dan.carpenter@linaro.org>
+To: Andy Shevchenko <andriy.shevchenko@intel.com>
+Cc: "Peng Fan (OSS)" <peng.fan@oss.nxp.com>,
+	Sudeep Holla <sudeep.holla@arm.com>,
+	Cristian Marussi <cristian.marussi@arm.com>,
+	Rob Herring <robh@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Linus Walleij <linus.walleij@linaro.org>,
+	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+	devicetree@vger.kernel.org, linux-gpio@vger.kernel.org,
+	Peng Fan <peng.fan@nxp.com>,
+	Oleksii Moisieiev <oleksii_moisieiev@epam.com>
+Subject: Re: [PATCH v7 4/4] pinctrl: Implementation of the generic
+ scmi-pinctrl driver
+Message-ID: <c5bdf039-c43b-4611-9f0b-81585e296206@moroto.mountain>
+References: <20240402-pinctrl-scmi-v7-0-3ea519d12cf7@nxp.com>
+ <20240402-pinctrl-scmi-v7-4-3ea519d12cf7@nxp.com>
+ <ZgwGpZ6S13vjk8jh@smile.fi.intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Original-Sender: glaubitz@physik.fu-berlin.de
-X-ZEDAT-Hint: PO
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZgwGpZ6S13vjk8jh@smile.fi.intel.com>
 
-On Tue, 2024-04-02 at 07:06 -0700, Guenter Roeck wrote:
-> Hi,
->=20
-> On Mon, Mar 25, 2024 at 07:34:00AM -0700, Guenter Roeck wrote:
-> > On 3/25/24 00:39, John Paul Adrian Glaubitz wrote:
-> > > Hi Guenter,
-> > >=20
-> > > On Sun, 2024-03-24 at 16:18 -0700, Guenter Roeck wrote:
-> > > > This reverts commit cadc4e1a2b4d20d0cc0e81f2c6ba0588775e54e5.
-> > > >=20
-> > > > Commit cadc4e1a2b4d ("sh: Handle calling csum_partial with misalign=
-ed
-> > > > data") causes bad checksum calculations on unaligned data. Revertin=
-g
-> > > > it fixes the problem.
-> > > >=20
-> > > >      # Subtest: checksum
-> > > >      # module: checksum_kunit
-> > > >      1..5
-> > > >      # test_csum_fixed_random_inputs: ASSERTION FAILED at lib/check=
-sum_kunit.c:500
-> > > >      Expected ( u64)result =3D=3D ( u64)expec, but
-> > > >          ( u64)result =3D=3D 53378 (0xd082)
-> > > >          ( u64)expec =3D=3D 33488 (0x82d0)
-> > > >      # test_csum_fixed_random_inputs: pass:0 fail:1 skip:0 total:1
-> > > >      not ok 1 test_csum_fixed_random_inputs
-> > > >      # test_csum_all_carry_inputs: ASSERTION FAILED at lib/checksum=
-_kunit.c:525
-> > > >      Expected ( u64)result =3D=3D ( u64)expec, but
-> > > >          ( u64)result =3D=3D 65281 (0xff01)
-> > > >          ( u64)expec =3D=3D 65280 (0xff00)
-> > > >      # test_csum_all_carry_inputs: pass:0 fail:1 skip:0 total:1
-> > > >      not ok 2 test_csum_all_carry_inputs
-> > > >      # test_csum_no_carry_inputs: ASSERTION FAILED at lib/checksum_=
-kunit.c:573
-> > > >      Expected ( u64)result =3D=3D ( u64)expec, but
-> > > >          ( u64)result =3D=3D 65535 (0xffff)
-> > > >          ( u64)expec =3D=3D 65534 (0xfffe)
-> > > >      # test_csum_no_carry_inputs: pass:0 fail:1 skip:0 total:1
-> > > >      not ok 3 test_csum_no_carry_inputs
-> > > >      # test_ip_fast_csum: pass:1 fail:0 skip:0 total:1
-> > > >      ok 4 test_ip_fast_csum
-> > > >      # test_csum_ipv6_magic: pass:1 fail:0 skip:0 total:1
-> > > >      ok 5 test_csum_ipv6_magic
-> > > >   # checksum: pass:2 fail:3 skip:0 total:5
-> > > >   # Totals: pass:2 fail:3 skip:0 total:5
-> > > > not ok 22 checksum
-> > >=20
-> > > Can you tell me how the tests are run so I can try to verify this on =
-real hardware?
-> > >=20
-> >=20
-> > Enabling CONFIG_KUNIT and CHECKSUM_KUNIT and booting with those tests e=
-nabled
-> > should do it.
-> >=20
->=20
-> Did you have time to test this on real hardware ?
+On Tue, Apr 02, 2024 at 04:22:45PM +0300, Andy Shevchenko wrote:
+> On Tue, Apr 02, 2024 at 10:22:24AM +0800, Peng Fan (OSS) wrote:
+> > +static int pinctrl_scmi_get_pins(struct scmi_pinctrl *pmx,
+> > +				 struct pinctrl_desc *desc)
+> > +{
+> > +	struct pinctrl_pin_desc *pins;
+> > +	unsigned int npins;
+> > +	int ret, i;
+> > +
+> > +	npins = pinctrl_ops->count_get(pmx->ph, PIN_TYPE);
+> > +	/*
+> > +	 * npins will never be zero, the scmi pinctrl driver has bailed out
+> > +	 * if npins is zero.
+> > +	 */
+> 
+> This is fragile, but at least it is documented.
+> 
 
-Not yet. I just returned from Easter holidays and need to get synced with w=
-ork first.
+It was never clear to me where the crash would happen if npins was zero.
+Does some part of pinctrl internals assume we have at least one pin?
 
-Adrian
+It's nice to be able to allocate zero element arrays and generally it
+works well in the kernel.  The one common bug with zero element arrays
+has to do with strings.  Something like this (garbage) example:
 
---=20
- .''`.  John Paul Adrian Glaubitz
-: :' :  Debian Developer
-`. `'   Physicist
-  `-    GPG: 62FF 8A75 84E0 2956 9546  0006 7426 3B37 F5B5 F913
+	str = kmalloc(n_char, GFP_KERNEL);
+	copy_from_user(str, user_ptr, n_char);
+	str[n_char - 1] = '\0';
+
+If the str is zero bytes long it will lead to an Oops when we add a NUL
+terminator.
+
+regards,
+dan carpenter
+
 
