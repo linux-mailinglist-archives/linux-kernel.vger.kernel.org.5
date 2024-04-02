@@ -1,33 +1,33 @@
-Return-Path: <linux-kernel+bounces-127374-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-127375-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 777BB894A72
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 06:27:37 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 44F49894A73
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 06:27:48 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 078D9B22AED
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 04:27:35 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 57CD61C222E7
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 04:27:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 738561805E;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F3EA018AE0;
 	Tue,  2 Apr 2024 04:27:12 +0000 (UTC)
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0D15D18028
-	for <linux-kernel@vger.kernel.org>; Tue,  2 Apr 2024 04:27:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 89E62182C3
+	for <linux-kernel@vger.kernel.org>; Tue,  2 Apr 2024 04:27:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712032032; cv=none; b=AxQxr6PIRKv62tjpabtfjgEEh88zGgE0pk/DzqpokrhGjJbENXxpoo2NHj/1ht8YnW9ozOZghIGYoUiPA24jixzwH1ir7QcdNQrXzCYtF+sT6BLZ+oyq0xpodTGy//asne6W2GWXkz1Xpu2j3r45DIjaKe7rHV0FuSgTbxaAU4M=
+	t=1712032032; cv=none; b=VUbBzyv9tSMm8Mw0SVH6CZrT0oydF/lWfO7NNtsKIDnB4WsRx5vQqulG8jdkcnFYJ41v2m/uhRjwv1kbomOH3VVZJV4r46STvaQxJ1hlCVvJVdbqhFKiItrUgrghJAWxOF4x4zTSXAq1HjXe2Gmt8+sFP0su2dQr4gEbK0pgfY8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1712032032; c=relaxed/simple;
-	bh=0ty19jRxcR5LG1UDzrTwUm/X+9XwoVNaxUPstJldl5w=;
+	bh=tg20vIYtQAbEjR/CpCzmgPfaaRyjY/cpsAH8T7IzX6o=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=gGAQNic9m6vMRi8JA8y8t7kfmPGwGCF0B4HgsQzwRf9oQfzXYa4PCACaWpgflqDz7m/v4eGd7RurKkcn7aqerkuHGQBCTUj8C7ejsxe0E28Ulkoh/OX2PEbb1LbBNUo6ldwRE6k1PhPeMtkuSjV4ljh7W22MDodOagIRO2pGa2A=
+	 MIME-Version; b=OpACuU0lGYdaMhmt2qvskKPC7Rljl14+GQOx2oryapghRJpPegwAtLPNVzd4KHvZt3/ohcuEtbo6s/6fnut7fuGQvR8pboGBZlXdesawyfxDpQWnoS4N/DqQIE/ZrjL6uoVWweczZXjJT+LUadd5toeJZGGYaListl/TsUry8TQ=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D7EC1C43390;
-	Tue,  2 Apr 2024 04:27:10 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B7F6CC43399;
+	Tue,  2 Apr 2024 04:27:11 +0000 (UTC)
 From: Al Viro <viro@zeniv.linux.org.uk>
 To: "Paul E. McKenney" <paulmck@kernel.org>
 Cc: linux-kernel@vger.kernel.org,
@@ -37,9 +37,9 @@ Cc: linux-kernel@vger.kernel.org,
 	Palmer Dabbelt <palmer@rivosinc.com>,
 	Arnd Bergmann <arnd@arndb.de>,
 	Marco Elver <elver@google.com>
-Subject: [PATCH 3/8] sparc32: unify __cmpxchg_u{32,64}
-Date: Tue,  2 Apr 2024 00:28:30 -0400
-Message-Id: <20240402042835.11815-3-viro@zeniv.linux.org.uk>
+Subject: [PATCH 4/8] sparc32: add __cmpxchg_u{8,16}() and teach __cmpxchg() to handle those sizes
+Date: Tue,  2 Apr 2024 00:28:31 -0400
+Message-Id: <20240402042835.11815-4-viro@zeniv.linux.org.uk>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20240402042835.11815-1-viro@zeniv.linux.org.uk>
 References: <20240402041138.GF538574@ZenIV>
@@ -52,67 +52,56 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Add a macro that expands to one of those when given u32 or u64
-as an argument - atomic32.c has a lot of similar stuff already.
+trivial now
 
 Signed-off-by: Al Viro <viro@zeniv.linux.org.uk>
 ---
- arch/sparc/lib/atomic32.c | 41 +++++++++++++++------------------------
- 1 file changed, 16 insertions(+), 25 deletions(-)
+ arch/sparc/include/asm/cmpxchg_32.h | 7 ++++++-
+ arch/sparc/lib/atomic32.c           | 4 ++++
+ 2 files changed, 10 insertions(+), 1 deletion(-)
 
+diff --git a/arch/sparc/include/asm/cmpxchg_32.h b/arch/sparc/include/asm/cmpxchg_32.h
+index 86254c366477..1324984de36a 100644
+--- a/arch/sparc/include/asm/cmpxchg_32.h
++++ b/arch/sparc/include/asm/cmpxchg_32.h
+@@ -38,7 +38,8 @@ static __always_inline unsigned long __arch_xchg(unsigned long x, __volatile__ v
+ 
+ /* bug catcher for when unsupported size is used - won't link */
+ void __cmpxchg_called_with_bad_pointer(void);
+-/* we only need to support cmpxchg of a u32 on sparc */
++u8 __cmpxchg_u8(volatile u8 *m, u8 old, u8 new_);
++u16 __cmpxchg_u16(volatile u16 *m, u16 old, u16 new_);
+ u32 __cmpxchg_u32(volatile u32 *m, u32 old, u32 new_);
+ 
+ /* don't worry...optimizer will get rid of most of this */
+@@ -46,6 +47,10 @@ static inline unsigned long
+ __cmpxchg(volatile void *ptr, unsigned long old, unsigned long new_, int size)
+ {
+ 	switch (size) {
++	case 1:
++		return __cmpxchg_u8((u8 *)ptr, (u8)old, (u8)new_);
++	case 2:
++		return __cmpxchg_u16((u16 *)ptr, (u16)old, (u16)new_);
+ 	case 4:
+ 		return __cmpxchg_u32((u32 *)ptr, (u32)old, (u32)new_);
+ 	default:
 diff --git a/arch/sparc/lib/atomic32.c b/arch/sparc/lib/atomic32.c
-index e15affbbb523..0d215a772428 100644
+index 0d215a772428..8ae880ebf07a 100644
 --- a/arch/sparc/lib/atomic32.c
 +++ b/arch/sparc/lib/atomic32.c
-@@ -159,32 +159,23 @@ unsigned long sp32___change_bit(unsigned long *addr, unsigned long mask)
- }
- EXPORT_SYMBOL(sp32___change_bit);
+@@ -173,8 +173,12 @@ EXPORT_SYMBOL(sp32___change_bit);
+ 		return prev;					\
+ 	}
  
--u32 __cmpxchg_u32(volatile u32 *ptr, u32 old, u32 new)
--{
--	unsigned long flags;
--	u32 prev;
--
--	spin_lock_irqsave(ATOMIC_HASH(ptr), flags);
--	if ((prev = *ptr) == old)
--		*ptr = new;
--	spin_unlock_irqrestore(ATOMIC_HASH(ptr), flags);
--
--	return prev;
--}
-+#define CMPXCHG(T)						\
-+	T __cmpxchg_##T(volatile T *ptr, T old, T new)		\
-+	{							\
-+		unsigned long flags;				\
-+		T prev;						\
-+								\
-+		spin_lock_irqsave(ATOMIC_HASH(ptr), flags);	\
-+		if ((prev = *ptr) == old)			\
-+			*ptr = new;				\
-+		spin_unlock_irqrestore(ATOMIC_HASH(ptr), flags);\
-+								\
-+		return prev;					\
-+	}
-+
-+CMPXCHG(u32)
-+CMPXCHG(u64)
++CMPXCHG(u8)
++CMPXCHG(u16)
+ CMPXCHG(u32)
+ CMPXCHG(u64)
++EXPORT_SYMBOL(__cmpxchg_u8);
++EXPORT_SYMBOL(__cmpxchg_u16);
  EXPORT_SYMBOL(__cmpxchg_u32);
--
--u64 __cmpxchg_u64(volatile u64 *ptr, u64 old, u64 new)
--{
--	unsigned long flags;
--	u64 prev;
--
--	spin_lock_irqsave(ATOMIC_HASH(ptr), flags);
--	if ((prev = *ptr) == old)
--		*ptr = new;
--	spin_unlock_irqrestore(ATOMIC_HASH(ptr), flags);
--
--	return prev;
--}
  EXPORT_SYMBOL(__cmpxchg_u64);
  
- unsigned long __xchg_u32(volatile u32 *ptr, u32 new)
 -- 
 2.39.2
 
