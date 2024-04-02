@@ -1,39 +1,39 @@
-Return-Path: <linux-kernel+bounces-127859-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-127860-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id F3B2A8951C2
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 13:24:41 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 95DEE8951CF
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 13:27:21 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id ADD13283F92
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 11:24:40 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 503C0282354
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 11:27:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E3EA769945;
-	Tue,  2 Apr 2024 11:24:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 35D9264A98;
+	Tue,  2 Apr 2024 11:27:13 +0000 (UTC)
 Received: from mx10.didiglobal.com (mx10.didiglobal.com [111.202.70.125])
-	by smtp.subspace.kernel.org (Postfix) with SMTP id 63FA664A98;
-	Tue,  2 Apr 2024 11:24:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with SMTP id A04694CB4A;
+	Tue,  2 Apr 2024 11:27:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=111.202.70.125
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712057067; cv=none; b=VrV9IuzQYD5IaGjRTM2AICU57B+/ZezFCo4BpcPcIgc/3qGez/mY5OSgE6st/wYbKBhGE86GwPKa0BGcbAK37RV5n4+3lfRjLnV92O0Lqk9tpBcUqNhvNyy10HLxjcNXhy5xOgJe8SG5kLlesJa8p0rgyH9Z81wysCWXKgmQH04=
+	t=1712057232; cv=none; b=pPmllmuMTbwl9s5JoPEuYJY7Y/CE3stDBApKiQaweBc8Li8KSxNGxgC8UIkeyb58ZaE1GIhoEoryJEkAKPdwmitR3bwYurgbtmxh7N/61b8o1ARNuQ+xWIh7Uju2HBbP5XKUz7usWdM5eK1+FY8/p3cfZ5m5uAenNthjpdS5UWA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712057067; c=relaxed/simple;
-	bh=CaTYjj8zdYnlQyXbzA5vWY5G6Z6GdB28oa29n6j0Xqw=;
+	s=arc-20240116; t=1712057232; c=relaxed/simple;
+	bh=Z50/tzj5KXaW5FqNbjgiT/MlV+E4o0YKBuzY4ut0BbI=;
 	h=Date:From:To:CC:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition:In-Reply-To; b=AL7bnQchj8u0OStRtRDt0BQtflLopGQqeRcQAYfnNRwwSFDnp2kpwQLz9nq6Fv5dEVNQM276fTXcSX94k6/V/O5UZNGl1sMixOBXsosacEoiJjGtOFuSTgSoPbDtsaE+/TrjF9wtepR20cw5ctiTWCMo5IrOogrQbtsKLiL5dQM=
+	 Content-Disposition:In-Reply-To; b=UOR27Gw+UERjiauZkugthMXrRRiv7jbbf3lkrcRaRdyRpMuLpQirxtovrMlxlyED3/jtToclNOuCf8BRd8yRyxm4933bxkwU6MVRUxi8/8I/QzW6g8NloIZTUKk+GKhcevYUKUTnUhjgSgGubqrbuUw2WO3B8W3C1P9B8XDX9VE=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=didiglobal.com; spf=pass smtp.mailfrom=didiglobal.com; arc=none smtp.client-ip=111.202.70.125
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=didiglobal.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=didiglobal.com
 Received: from mail.didiglobal.com (unknown [10.79.65.12])
-	by mx10.didiglobal.com (MailData Gateway V2.8.8) with ESMTPS id E6CB118097DE79;
-	Tue,  2 Apr 2024 19:24:21 +0800 (CST)
+	by mx10.didiglobal.com (MailData Gateway V2.8.8) with ESMTPS id B30B718097DE83;
+	Tue,  2 Apr 2024 19:27:06 +0800 (CST)
 Received: from didi-ThinkCentre-M930t-N000 (10.79.64.101) by
  ZJY02-ACTMBX-02.didichuxing.com (10.79.65.12) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Tue, 2 Apr 2024 19:24:21 +0800
-Date: Tue, 2 Apr 2024 19:24:15 +0800
+ 15.1.2507.35; Tue, 2 Apr 2024 19:27:06 +0800
+Date: Tue, 2 Apr 2024 19:27:00 +0800
 X-MD-Sfrom: tiozhang@didiglobal.com
 X-MD-SrcIP: 10.79.65.12
 From: Tio Zhang <tiozhang@didiglobal.com>
@@ -44,9 +44,8 @@ CC: <linux-kernel@vger.kernel.org>, <linux-doc@vger.kernel.org>,
 	<dietmar.eggemann@arm.com>, <bsegall@google.com>, <mgorman@suse.de>,
 	<bristot@redhat.com>, <vschneid@redhat.com>, <tiozhang@didiglobal.com>,
 	<zyhtheonly@gmail.com>, <zyhtheonly@yeah.net>, <fuyuanli@didiglobal.com>
-Subject: [PATCH 1/3] sched: make softirq cputime accounting separately in
- irqtime
-Message-ID: <20240402112415.GA17946@didi-ThinkCentre-M930t-N000>
+Subject: [PATCH 2/3] delayacct: get delay of SOFTIRQ
+Message-ID: <20240402112700.GA18519@didi-ThinkCentre-M930t-N000>
 Mail-Followup-To: mingo@redhat.com, peterz@infradead.org,
 	juri.lelli@redhat.com, vincent.guittot@linaro.org,
 	rostedt@goodmis.org, bsingharora@gmail.com, corbet@lwn.net,
@@ -63,122 +62,138 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Disposition: inline
-In-Reply-To: <20240402112112.GA17370@didi-ThinkCentre-M930t-N000>
+In-Reply-To: <20240402112415.GA17946@didi-ThinkCentre-M930t-N000>
 User-Agent: Mutt/1.9.4 (2018-02-28)
 X-ClientProxiedBy: ZJY01-PUBMBX-01.didichuxing.com (10.79.64.32) To
  ZJY02-ACTMBX-02.didichuxing.com (10.79.65.12)
 
-Currently we account irq{,soft} time in "irqtime.total",
-when CONFIG_IRQ_TIME_ACCOUNTING=y. Since we account them in
-the same path (irq{,soft}_enter{,exit}), we can separately count them
-by filtering the offset.
-In order to not break backward compatibility, we do not change the meaning
-of "total", we only let softirq time to be accounted separately in
-a new field "total_soft".
-So interrupt time could also be calculated by "total" minus "total_soft".
-
-This patch only let softirq cputime stats available in irqtime, do not
-make it in real usage.
+This patch makes SOFTIRQ time accounted by "irqtime.total_soft" in use
+by adding soft_delay accounts for Delay accounting.
 
 Signed-off-by: Tio Zhang <tiozhang@didiglobal.com>
 ---
- kernel/sched/cputime.c | 18 ++++++++++++++----
- kernel/sched/sched.h   | 16 ++++++++++++++++
- 2 files changed, 30 insertions(+), 4 deletions(-)
+ include/linux/delayacct.h | 11 +++++++----
+ kernel/delayacct.c        |  5 +++--
+ kernel/sched/core.c       |  6 ++++--
+ kernel/sched/sched.h      |  1 +
+ 4 files changed, 15 insertions(+), 8 deletions(-)
 
-diff --git a/kernel/sched/cputime.c b/kernel/sched/cputime.c
-index af7952f12e6c..23e4bca1e3e8 100644
---- a/kernel/sched/cputime.c
-+++ b/kernel/sched/cputime.c
-@@ -35,13 +35,14 @@ void disable_sched_clock_irqtime(void)
+diff --git a/include/linux/delayacct.h b/include/linux/delayacct.h
+index 6639f48dac36..bf1d45fcb505 100644
+--- a/include/linux/delayacct.h
++++ b/include/linux/delayacct.h
+@@ -49,12 +49,14 @@ struct task_delay_info {
+ 	u64 wpcopy_delay;	/* wait for write-protect copy */
+ 
+ 	u64 irq_delay;	/* wait for IRQ/SOFTIRQ */
++	u64 soft_delay;	/* wait for SOFTIRQ */
+ 
+ 	u32 freepages_count;	/* total count of memory reclaim */
+ 	u32 thrashing_count;	/* total count of thrash waits */
+ 	u32 compact_count;	/* total count of memory compact */
+ 	u32 wpcopy_count;	/* total count of write-protect copy */
+ 	u32 irq_count;	/* total count of IRQ/SOFTIRQ */
++	u32 soft_count;	/* total count of SOFTIRQ */
+ };
+ #endif
+ 
+@@ -84,7 +86,7 @@ extern void __delayacct_compact_start(void);
+ extern void __delayacct_compact_end(void);
+ extern void __delayacct_wpcopy_start(void);
+ extern void __delayacct_wpcopy_end(void);
+-extern void __delayacct_irq(struct task_struct *task, u32 delta);
++extern void __delayacct_irq(struct task_struct *task, u32 delta, u32 delta_soft);
+ 
+ static inline void delayacct_tsk_init(struct task_struct *tsk)
+ {
+@@ -219,13 +221,14 @@ static inline void delayacct_wpcopy_end(void)
+ 		__delayacct_wpcopy_end();
  }
  
- static void irqtime_account_delta(struct irqtime *irqtime, u64 delta,
--				  enum cpu_usage_stat idx)
-+				  u64 delta_soft, enum cpu_usage_stat idx)
+-static inline void delayacct_irq(struct task_struct *task, u32 delta)
++static inline void delayacct_irq(struct task_struct *task, u32 delta,
++					u32 delta_soft)
  {
- 	u64 *cpustat = kcpustat_this_cpu->cpustat;
+ 	if (!static_branch_unlikely(&delayacct_key))
+ 		return;
  
- 	u64_stats_update_begin(&irqtime->sync);
- 	cpustat[idx] += delta;
- 	irqtime->total += delta;
-+	irqtime->total_soft += delta_soft;
- 	irqtime->tick_delta += delta;
- 	u64_stats_update_end(&irqtime->sync);
+ 	if (task->delays)
+-		__delayacct_irq(task, delta);
++		__delayacct_irq(task, delta, delta_soft);
  }
-@@ -54,7 +55,7 @@ void irqtime_account_irq(struct task_struct *curr, unsigned int offset)
+ 
+ #else
+@@ -266,7 +269,7 @@ static inline void delayacct_wpcopy_start(void)
+ {}
+ static inline void delayacct_wpcopy_end(void)
+ {}
+-static inline void delayacct_irq(struct task_struct *task, u32 delta)
++static inline void delayacct_irq(struct task_struct *task, u32 delta, u32 delta_soft)
+ {}
+ 
+ #endif /* CONFIG_TASK_DELAY_ACCT */
+diff --git a/kernel/delayacct.c b/kernel/delayacct.c
+index 6f0c358e73d8..8517f1c1df88 100644
+--- a/kernel/delayacct.c
++++ b/kernel/delayacct.c
+@@ -278,13 +278,14 @@ void __delayacct_wpcopy_end(void)
+ 		      &current->delays->wpcopy_count);
+ }
+ 
+-void __delayacct_irq(struct task_struct *task, u32 delta)
++void __delayacct_irq(struct task_struct *task, u32 delta, u32 delta_soft)
  {
- 	struct irqtime *irqtime = this_cpu_ptr(&cpu_irqtime);
- 	unsigned int pc;
--	s64 delta;
-+	s64 delta, delta_soft = 0;
- 	int cpu;
+ 	unsigned long flags;
  
- 	if (!sched_clock_irqtime)
-@@ -65,6 +66,15 @@ void irqtime_account_irq(struct task_struct *curr, unsigned int offset)
- 	irqtime->irq_start_time += delta;
- 	pc = irq_count() - offset;
+ 	raw_spin_lock_irqsave(&task->delays->lock, flags);
+ 	task->delays->irq_delay += delta;
+ 	task->delays->irq_count++;
++	task->delays->soft_delay += delta_soft;
++	task->delays->soft_count++;
+ 	raw_spin_unlock_irqrestore(&task->delays->lock, flags);
+ }
+-
+diff --git a/kernel/sched/core.c b/kernel/sched/core.c
+index 9116bcc90346..2f5fd775b47b 100644
+--- a/kernel/sched/core.c
++++ b/kernel/sched/core.c
+@@ -698,10 +698,11 @@ static void update_rq_clock_task(struct rq *rq, s64 delta)
+  * In theory, the compile should just see 0 here, and optimize out the call
+  * to sched_rt_avg_update. But I don't trust it...
+  */
+-	s64 __maybe_unused steal = 0, irq_delta = 0;
++	s64 __maybe_unused steal = 0, irq_delta = 0, soft_delta = 0;
  
-+	/*
-+	 * We only account softirq time when we are called by
-+	 * account_softirq_enter{,exit}
-+	 */
-+	if ((offset & SOFTIRQ_OFFSET) || (pc & SOFTIRQ_OFFSET)) {
-+		delta_soft = sched_clock_cpu(cpu) - irqtime->soft_start_time;
-+		irqtime->soft_start_time += delta_soft;
-+	}
-+
+ #ifdef CONFIG_IRQ_TIME_ACCOUNTING
+ 	irq_delta = irq_time_read(cpu_of(rq)) - rq->prev_irq_time;
++	soft_delta = irq_time_read_soft(cpu_of(rq)) - rq->prev_soft_time;
+ 
  	/*
- 	 * We do not account for softirq time from ksoftirqd here.
- 	 * We want to continue accounting softirq time to ksoftirqd thread
-@@ -72,9 +82,9 @@ void irqtime_account_irq(struct task_struct *curr, unsigned int offset)
- 	 * that do not consume any time, but still wants to run.
- 	 */
- 	if (pc & HARDIRQ_MASK)
--		irqtime_account_delta(irqtime, delta, CPUTIME_IRQ);
-+		irqtime_account_delta(irqtime, delta, delta_soft, CPUTIME_IRQ);
- 	else if ((pc & SOFTIRQ_OFFSET) && curr != this_cpu_ksoftirqd())
--		irqtime_account_delta(irqtime, delta, CPUTIME_SOFTIRQ);
-+		irqtime_account_delta(irqtime, delta, delta_soft, CPUTIME_SOFTIRQ);
- }
+ 	 * Since irq_time is only updated on {soft,}irq_exit, we might run into
+@@ -722,9 +723,10 @@ static void update_rq_clock_task(struct rq *rq, s64 delta)
+ 		irq_delta = delta;
  
- static u64 irqtime_tick_accounted(u64 maxtime)
+ 	rq->prev_irq_time += irq_delta;
++	rq->prev_soft_time += soft_delta;
+ 	delta -= irq_delta;
+ 	psi_account_irqtime(rq->curr, irq_delta);
+-	delayacct_irq(rq->curr, irq_delta);
++	delayacct_irq(rq->curr, irq_delta, soft_delta);
+ #endif
+ #ifdef CONFIG_PARAVIRT_TIME_ACCOUNTING
+ 	if (static_key_false((&paravirt_steal_rq_enabled))) {
 diff --git a/kernel/sched/sched.h b/kernel/sched/sched.h
-index 001fe047bd5d..f479c61b84b5 100644
+index f479c61b84b5..abf96ad9c301 100644
 --- a/kernel/sched/sched.h
 +++ b/kernel/sched/sched.h
-@@ -2931,8 +2931,10 @@ static inline void nohz_run_idle_balance(int cpu) { }
+@@ -1105,6 +1105,7 @@ struct rq {
+ 
  #ifdef CONFIG_IRQ_TIME_ACCOUNTING
- struct irqtime {
- 	u64			total;
-+	u64			total_soft;
- 	u64			tick_delta;
- 	u64			irq_start_time;
-+	u64			soft_start_time;
- 	struct u64_stats_sync	sync;
- };
- 
-@@ -2956,6 +2958,20 @@ static inline u64 irq_time_read(int cpu)
- 
- 	return total;
- }
-+
-+static inline u64 irq_time_read_soft(int cpu)
-+{
-+	struct irqtime *irqtime = &per_cpu(cpu_irqtime, cpu);
-+	unsigned int seq;
-+	u64 total_soft;
-+
-+	do {
-+		seq = __u64_stats_fetch_begin(&irqtime->sync);
-+		total_soft = irqtime->total_soft;
-+	} while (__u64_stats_fetch_retry(&irqtime->sync, seq));
-+
-+	return total_soft;
-+}
- #endif /* CONFIG_IRQ_TIME_ACCOUNTING */
- 
- #ifdef CONFIG_CPU_FREQ
+ 	u64			prev_irq_time;
++	u64			prev_soft_time;
+ #endif
+ #ifdef CONFIG_PARAVIRT
+ 	u64			prev_steal_time;
 -- 
 2.17.1
 
