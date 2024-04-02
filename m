@@ -1,117 +1,180 @@
-Return-Path: <linux-kernel+bounces-127538-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-127539-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id DB760894D4D
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 10:17:26 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id B6A66894D53
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 10:19:06 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0E17C1C21AE4
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 08:17:26 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 2CCC9B2278F
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 08:19:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 69D7D3DB9A;
-	Tue,  2 Apr 2024 08:17:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=leemhuis.info header.i=@leemhuis.info header.b="rpOaj/Pi"
-Received: from wp530.webpack.hosteurope.de (wp530.webpack.hosteurope.de [80.237.130.52])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 34F5D3E47A;
+	Tue,  2 Apr 2024 08:18:52 +0000 (UTC)
+Received: from frasgout13.his.huawei.com (frasgout13.his.huawei.com [14.137.139.46])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CB4D03D547;
-	Tue,  2 Apr 2024 08:17:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=80.237.130.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DE42338DFC;
+	Tue,  2 Apr 2024 08:18:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=14.137.139.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712045840; cv=none; b=a1lnxnIvsuFDqNc6teSWcLiBy1Xiy6sDyYqKgWZBmZ4FaduUTpA0bRL7l/mc787PR3RzRZFZ0YQ1KtgqFUr82mkqhN4oA0Hz35uVUSUyjImTM8xQzziGqfpjaaR+6RHwP5Ollbl3IwETJH4kcMF+kPnCFT/DItNLoDBemqvMTwA=
+	t=1712045931; cv=none; b=fvYhPpm+CUf3d8mOkuDc6+4QrzT/m0NZWQ9QlKI42auZiAGsla55pVoNIqA2iVYQqfwS1pP6huhIwQCZdUKGnVVQc0MCN1iM7EhozVuTEITGYZwpO1AD5LuMtcle6uVhteX+0T60o4ikQSKuwrdmbCT8hCbfOQjW119BPjCv9Fs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712045840; c=relaxed/simple;
-	bh=xOg72kG8RE3Io6aICsy4zEqghWHs0WzVc9G+4UggKRI=;
-	h=Message-ID:Date:MIME-Version:From:To:Cc:Subject:Content-Type; b=UkdpmB91quxTAvCf/sWhuojS2aD5W1OqEZcjs8qBtba+dmWnRhqTO4dgPZdG83rTkB/AFuqfwpCY7ktIgGvrdQ+6TCO74nAJcx4vMN/COwnqbQcWrqpVd6z5qovuyMKBAjcKoJ9bkkzMmO8USotSgsJCs1/I7qjRmeNlKL4F8yo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=leemhuis.info; spf=pass smtp.mailfrom=leemhuis.info; dkim=pass (2048-bit key) header.d=leemhuis.info header.i=@leemhuis.info header.b=rpOaj/Pi; arc=none smtp.client-ip=80.237.130.52
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=leemhuis.info
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=leemhuis.info
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=leemhuis.info; s=he214686; h=Content-Transfer-Encoding:Content-Type:Subject
-	:Reply-To:Cc:To:From:MIME-Version:Date:Message-ID:From:Sender:Reply-To:
-	Subject:Date:Message-ID:To:Cc:MIME-Version:Content-Type:
-	Content-Transfer-Encoding:Content-ID:Content-Description:In-Reply-To:
-	References; bh=PIXKukvrVFtF2jLwToNr2JQD8OFYXFrclPIb2BcK3NM=; t=1712045838;
-	x=1712477838; b=rpOaj/PiK1BRSrwh2cB4E1DaOBbGy4pxdjw4ZBDkY34WG2Fr75Ty1eVH6kQjL
-	76AVAz8yv9L18WJBkVZ07fb2fEpyqcqn48qNMkf0RbO2iMiBSU1aT9UM2vJJt2qPXOquoWkiRSgLM
-	BKW/Gufv+tTpPqyEdkCh/wEpGscTfa97VULpul7BM64C8IbIpKw2UukULzw78dShQcPlot7Q3Nnge
-	es0zpjlCn4C8754Rl97bEputkFskT5AwzRUTA8euFd7hxixZNH3bHFdXCJLm0WI6fKBUFyCocl0Kz
-	r5EGJqAbaUUODeXr/bJJpCQi0W75GH4OecjC87Yf2rPXEW757A==;
-Received: from [2a02:8108:8980:2478:8cde:aa2c:f324:937e]; authenticated
-	by wp530.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
-	id 1rrZKW-0002LN-TB; Tue, 02 Apr 2024 10:17:16 +0200
-Message-ID: <5be248c6-cdda-4d2e-8fae-30fc2cc124c0@leemhuis.info>
-Date: Tue, 2 Apr 2024 10:17:16 +0200
+	s=arc-20240116; t=1712045931; c=relaxed/simple;
+	bh=SLsLFlu2RcD+M7Lg/AfoUXyJ6aDUqNOWQceuD8zlcRA=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=iuf9k6tsTi4Ow2bZvEKyCYlTmDs8UtnT60+muwiPTVbl0m/FgYP8EkPKp8YZM+rv63UirWV6mqgoN38Lrds0erin60Ud80qROoGR9kqCJZZ2Tj6cwJH55eSRFdHpYhCHeZWr+WUMzF8sLbIixmZ2s3pfSFv3spgL6I5Kpvqg3mM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=14.137.139.46
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.18.186.51])
+	by frasgout13.his.huawei.com (SkyGuard) with ESMTP id 4V80jJ44bTz9xGnY;
+	Tue,  2 Apr 2024 16:02:28 +0800 (CST)
+Received: from mail02.huawei.com (unknown [7.182.16.27])
+	by mail.maildlp.com (Postfix) with ESMTP id 7735B140429;
+	Tue,  2 Apr 2024 16:18:34 +0800 (CST)
+Received: from huaweicloud.com (unknown [10.204.63.22])
+	by APP2 (Coremail) with SMTP id GxC2BwCn4CRLvwtm5OBqBQ--.39080S2;
+	Tue, 02 Apr 2024 09:18:33 +0100 (CET)
+From: Roberto Sassu <roberto.sassu@huaweicloud.com>
+To: zohar@linux.ibm.com,
+	dmitry.kasatkin@gmail.com,
+	eric.snowberg@oracle.com,
+	paul@paul-moore.com,
+	jmorris@namei.org,
+	serge@hallyn.com
+Cc: linux-integrity@vger.kernel.org,
+	linux-security-module@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux-fsdevel@vger.kernel.org,
+	linux-cifs@vger.kernel.org,
+	viro@zeniv.linux.org.uk,
+	pc@manguebit.com,
+	christian@brauner.io,
+	Roberto Sassu <roberto.sassu@huawei.com>,
+	Steve French <smfrench@gmail.com>
+Subject: [PATCH v2] security: Handle dentries without inode in security_path_post_mknod()
+Date: Tue,  2 Apr 2024 10:18:05 +0200
+Message-Id: <20240402081805.2491789-1-roberto.sassu@huaweicloud.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-From: "Linux regression tracking (Thorsten Leemhuis)"
- <regressions@leemhuis.info>
-Content-Language: en-US, de-DE
-To: Tejun Heo <tj@kernel.org>
-Cc: Linux kernel regressions list <regressions@lists.linux.dev>,
- LKML <linux-kernel@vger.kernel.org>
-Reply-To: Linux regressions mailing list <regressions@lists.linux.dev>
-Subject: Bug 218665 - nohz_full=0 prevents kernel from booting
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-bounce-key: webpack.hosteurope.de;regressions@leemhuis.info;1712045838;ac3989d0;
-X-HE-SMSGID: 1rrZKW-0002LN-TB
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID:GxC2BwCn4CRLvwtm5OBqBQ--.39080S2
+X-Coremail-Antispam: 1UD129KBjvJXoWxXrWrAFWkCw4fAr45JF4xJFb_yoWrXFWxpF
+	4rK3WkJr95XFy8Wr18AFy7u3WrKay5WFWUWan5Wa1ayFnxXr1jqr1Iv34j9rW5Jr4UGryx
+	tw12yrsxua1qyr7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUkFb4IE77IF4wAFF20E14v26ryj6rWUM7CY07I20VC2zVCF04k2
+	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Jr0_JF4l84ACjcxK6xIIjxv20xvEc7Cj
+	xVAFwI0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVW8JVWxJwA2z4x0Y4vEx4A2jsIEc7CjxV
+	AFwI0_Gr0_Gr1UM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40E
+	x7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x
+	0Yz7v_Jr0_Gr1lF7xvr2IYc2Ij64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkIwI1l42xK82IY
+	c2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s
+	026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r4a6rW5MIIYrxkI7VAKI48JMIIF
+	0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r4j6F4UMIIF0x
+	vE42xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2
+	jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x07UZ18PUUUUU=
+X-CM-SenderInfo: purev21wro2thvvxqx5xdzvxpfor3voofrz/1tbiAgABBF1jj5gBFwABs5
 
-Hi, Thorsten here, the Linux kernel's regression tracker.
+From: Roberto Sassu <roberto.sassu@huawei.com>
 
-I noticed a regression report in bugzilla.kernel.org. As many (most?)
-kernel developers don't keep an eye on it, I decided to forward it by mail.
+Commit 08abce60d63fi ("security: Introduce path_post_mknod hook")
+introduced security_path_post_mknod(), to replace the IMA-specific call to
+ima_post_path_mknod().
 
-Tejun, apparently it's cause by a change of yours.
+For symmetry with security_path_mknod(), security_path_post_mknod() is
+called after a successful mknod operation, for any file type, rather than
+only for regular files at the time there was the IMA call.
 
-Note, you have to use bugzilla to reach the reporter, as I sadly[1] can
-not CCed them in mails like this.
+However, as reported by VFS maintainers, successful mknod operation does
+not mean that the dentry always has an inode attached to it (for example,
+not for FIFOs on a SAMBA mount).
 
-Quoting from https://bugzilla.kernel.org/show_bug.cgi?id=218665 :
+If that condition happens, the kernel crashes when
+security_path_post_mknod() attempts to verify if the inode associated to
+the dentry is private.
 
-> booting the current kernel (6.9.0-rc1, master/712e1425) on x86_64
-> with nohz_full=0 cause a page fault and prevents the kernel from
-> booting.
-> 
-> Steps to reproduce:
-> - make defconfig
-> - set CONFIG_NO_HZ_FULL=y
-> - set CONFIG_SUSPEND=n and CONFIG_HIBERNATION=n (to get CONFIG_PM_SLEEP_SMP=n)
-> - make
-> - qemu-system-x86_64 -nographic -cpu qemu64 -smp cores=2 -m 1024 -kernel arch/x86/boot/bzImage -append "earlyprintk=ttyS0 console=ttyS0 root=/dev/dummy rootwait nohz_full=0"
-> 
-> I have attached the output of a failed nohz_full=0 boot as
-> nohz_full_0.txt and - for reference - the output of a nohz_full=1
-> boot as nohz_full_1.txt.
-> 
-> Interestingly enough, using the deprecated isolcpus parameter to
-> enable NO_HZ for cpu0 works. I've attached the output as
-> isolcpus_nohz_0.txt.
-> 
-> Bisecting showed 5797b1c18919cd9c289ded7954383e499f729ce0 as first bad commit.
+Add an extra check to first verify if there is an inode attached to the
+dentry, before checking if the inode is private. Also add the same check to
+the current users of the path_post_mknod hook, ima_post_path_mknod() and
+evm_post_path_mknod().
 
-See the ticket for more details.
+Finally, use the proper helper, d_backing_inode(), to retrieve the inode
+from the dentry in ima_post_path_mknod().
 
-Ciao, Thorsten (wearing his 'the Linux kernel's regression tracker' hat)
---
-Everything you wanna know about Linux kernel regression tracking:
-https://linux-regtracking.leemhuis.info/about/#tldr
-If I did something stupid, please tell me, as explained on that page.
+Reported-by: Steve French <smfrench@gmail.com>
+Closes: https://lore.kernel.org/linux-kernel/CAH2r5msAVzxCUHHG8VKrMPUKQHmBpE6K9_vjhgDa1uAvwx4ppw@mail.gmail.com/
+Fixes: 08abce60d63f ("security: Introduce path_post_mknod hook")
+Signed-off-by: Roberto Sassu <roberto.sassu@huawei.com>
+Acked-by: Mimi Zohar <zohar@linux.ibm.com>
+Acked-by: Paul Moore <paul@paul-moore.com>
+---
+ security/integrity/evm/evm_main.c | 6 ++++--
+ security/integrity/ima/ima_main.c | 5 +++--
+ security/security.c               | 5 ++++-
+ 3 files changed, 11 insertions(+), 5 deletions(-)
 
-[1] because bugzilla.kernel.org tells users upon registration their
-"email address will never be displayed to logged out users"
+diff --git a/security/integrity/evm/evm_main.c b/security/integrity/evm/evm_main.c
+index 81dbade5b9b3..ec1659273fcf 100644
+--- a/security/integrity/evm/evm_main.c
++++ b/security/integrity/evm/evm_main.c
+@@ -1037,11 +1037,13 @@ static void evm_file_release(struct file *file)
+ static void evm_post_path_mknod(struct mnt_idmap *idmap, struct dentry *dentry)
+ {
+ 	struct inode *inode = d_backing_inode(dentry);
+-	struct evm_iint_cache *iint = evm_iint_inode(inode);
++	struct evm_iint_cache *iint;
+ 
+-	if (!S_ISREG(inode->i_mode))
++	/* path_post_mknod hook might pass dentries without attached inode. */
++	if (!inode || !S_ISREG(inode->i_mode))
+ 		return;
+ 
++	iint = evm_iint_inode(inode);
+ 	if (iint)
+ 		iint->flags |= EVM_NEW_FILE;
+ }
+diff --git a/security/integrity/ima/ima_main.c b/security/integrity/ima/ima_main.c
+index c84e8c55333d..afc883e60cf3 100644
+--- a/security/integrity/ima/ima_main.c
++++ b/security/integrity/ima/ima_main.c
+@@ -719,10 +719,11 @@ static void ima_post_create_tmpfile(struct mnt_idmap *idmap,
+ static void ima_post_path_mknod(struct mnt_idmap *idmap, struct dentry *dentry)
+ {
+ 	struct ima_iint_cache *iint;
+-	struct inode *inode = dentry->d_inode;
++	struct inode *inode = d_backing_inode(dentry);
+ 	int must_appraise;
+ 
+-	if (!ima_policy_flag || !S_ISREG(inode->i_mode))
++	/* path_post_mknod hook might pass dentries without attached inode. */
++	if (!ima_policy_flag || !inode || !S_ISREG(inode->i_mode))
+ 		return;
+ 
+ 	must_appraise = ima_must_appraise(idmap, inode, MAY_ACCESS,
+diff --git a/security/security.c b/security/security.c
+index 7e118858b545..391477687637 100644
+--- a/security/security.c
++++ b/security/security.c
+@@ -1801,7 +1801,10 @@ EXPORT_SYMBOL(security_path_mknod);
+  */
+ void security_path_post_mknod(struct mnt_idmap *idmap, struct dentry *dentry)
+ {
+-	if (unlikely(IS_PRIVATE(d_backing_inode(dentry))))
++	struct inode *inode = d_backing_inode(dentry);
++
++	/* Not all dentries have an inode attached after mknod. */
++	if (inode && unlikely(IS_PRIVATE(inode)))
+ 		return;
+ 	call_void_hook(path_post_mknod, idmap, dentry);
+ }
+-- 
+2.34.1
 
-#regzbot introduced: 5797b1c18919cd9c289ded7954383e499f729ce0
-#regzbot from: Friedrich Oslage
-#regzbot duplicate https://bugzilla.kernel.org/show_bug.cgi?id=218665
-#regzbot title: workqueue: nohz_full=0 prevents booting
-#regzbot ignore-activity
 
