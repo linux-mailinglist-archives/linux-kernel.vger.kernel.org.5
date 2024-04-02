@@ -1,78 +1,77 @@
-Return-Path: <linux-kernel+bounces-127844-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-127845-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C16258951A0
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 13:17:56 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 431C18951A4
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 13:18:26 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5114F2896AA
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 11:17:55 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 749A11C22698
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 11:18:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F1EB576048;
-	Tue,  2 Apr 2024 11:17:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B9C84629E4;
+	Tue,  2 Apr 2024 11:18:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kemnade.info header.i=@kemnade.info header.b="YYTQahLB"
-Received: from mail2.andi.de1.cc (vmd64148.contaboserver.net [161.97.139.27])
+	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="I0imACyH"
+Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 959E35A104;
-	Tue,  2 Apr 2024 11:17:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=161.97.139.27
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1CB0460DFB;
+	Tue,  2 Apr 2024 11:17:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.177.32
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712056641; cv=none; b=WDnNtL6T3co7i9O4jFvlsUZtvAWZ/lu5zy/JKjBG2wnTRDSvK+QwBQTznrKyIhYtCuJueiHa4eQwzlFEDKcGBBL/SZYwcSUE+FQVppJRAhaMOVn4Dewwx+qpkBXtWD70exicFruPi9LIqOUPEvRK0rffJbebDyOvwln8qKKkQdk=
+	t=1712056682; cv=none; b=g5WA2Yf0eeMLrvxrwogiXHu3N5Hg8rkoZS2X6dIbyNYkQdDIEXrdw3sKePkE1OSpwKdtC6YKj/2g8jE1RakiKsB+8HTtvlLcZR9HhVlp9ZouBaVqM5ivovvLs8dn33Dx5THpCPfD9CVmJoNepDkUSH+THeS65kTS8jLgUZDNgJ0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712056641; c=relaxed/simple;
-	bh=VdzlGO2dazYEGxZXvq8YoZL7jFRa9MHPBGcA2CCVUDI=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=rUgbS3xkdTsi+RBL07z2G80apHa+WxGZwrob9yTyzSewI4cU+pFX730FAV38uknCTMBraX+HbOU0iiNcD9M1GrHTqYZzvlw9IVrKDu6zaC8sQGYcXmeedHGGyNLMDZCpOD1TX4oEKiUWAfbPjBOdFgqYNKNdP/20nI1omUVqUCI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kemnade.info; spf=pass smtp.mailfrom=kemnade.info; dkim=pass (2048-bit key) header.d=kemnade.info header.i=@kemnade.info header.b=YYTQahLB; arc=none smtp.client-ip=161.97.139.27
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kemnade.info
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kemnade.info
-Received: from mail.andi.de1.cc ([2a02:c205:3004:2154::1])
-	by mail2.andi.de1.cc with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.96)
-	(envelope-from <andreas@kemnade.info>)
-	id 1rrc8d-003kpH-2l;
-	Tue, 02 Apr 2024 13:17:11 +0200
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=kemnade.info; s=20220719; h=Content-Transfer-Encoding:MIME-Version:
-	References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
-	Content-Type:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
-	List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-	bh=vex+9P2NxDOJXQQ0gKcOir6ALkPn8rxaOxG2WX61EBQ=; b=YYTQahLBZq5SfTqfuLaiNu6YY/
-	ZMp3clmi+vUmO7K0/ijIMfDu/BRT5HTefwocmoxCCCHiI1IUqKXYDWRQyNZopihN5MPnSJ12I97Bd
-	I6JY2zBrYZ07RDrn+Rj0u2x06RRgWvdiBCUv9y03b270miP6mY/i+oTxYGWD2rYpkcGOFlFIFElf3
-	3WMjfBoj2eSJhGPx10aXBOYxxnwuLGu2GRM+bBCi9WauVvs8bYundD80k3SPx9D4L1fls5ezdqsuD
-	mGrHHW+MbBUqfmBGEkoxsWSc1FXBlzSfYf6ihtl0vZP9ytKaKHeGuzQ/1PRBbn4syrHzkCTLDIlGd
-	G8XHzpjg==;
-Received: from p2003010777026a001a3da2fffebfd33a.dip0.t-ipconnect.de ([2003:107:7702:6a00:1a3d:a2ff:febf:d33a] helo=aktux)
-	by mail.andi.de1.cc with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.96)
-	(envelope-from <andreas@kemnade.info>)
-	id 1rrc8c-000IAQ-0Z;
-	Tue, 02 Apr 2024 13:17:10 +0200
-Received: from andi by aktux with local (Exim 4.96)
-	(envelope-from <andreas@kemnade.info>)
-	id 1rrc8c-0024WH-05;
-	Tue, 02 Apr 2024 13:17:10 +0200
-From: Andreas Kemnade <andreas@kemnade.info>
-To: lee@kernel.org,
-	robh+dt@kernel.org,
-	krzysztof.kozlowski+dt@linaro.org,
-	conor+dt@kernel.org,
-	mazziesaccount@gmail.com,
-	devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Cc: Andreas Kemnade <andreas@kemnade.info>
-Subject: [PATCH v3 2/2] mfd: rohm-bd71828: Add power off functionality
-Date: Tue,  2 Apr 2024 13:17:00 +0200
-Message-Id: <20240402111700.494004-3-andreas@kemnade.info>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20240402111700.494004-1-andreas@kemnade.info>
-References: <20240402111700.494004-1-andreas@kemnade.info>
+	s=arc-20240116; t=1712056682; c=relaxed/simple;
+	bh=0bhLmQsAUJaL5x/OICWEgSfO1n8lrNeGgWIGNPGZEfA=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=qCihFnwV7OjU1ODqSpvzhCn7VUF909PREdjOu3t06AplbwzRaoOYHOZaSXHwB3J4CohZU3/WranXcdGcETcG+vEp8XdjawPnlvG752f3tlQigmSWWweOoBaVynDjWRFfKKPAdiK73ybDaqTR+a3ACvWI3SBJ79kDwVVXts6FkUY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=I0imACyH; arc=none smtp.client-ip=205.220.177.32
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=oracle.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oracle.com
+Received: from pps.filterd (m0246632.ppops.net [127.0.0.1])
+	by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 4327hsVV021280;
+	Tue, 2 Apr 2024 11:17:45 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-transfer-encoding;
+ s=corp-2023-11-20; bh=x4uFkHBfZr5gLzCiwxnD9ABQcDyNK3J+4CO6ymkzwmk=;
+ b=I0imACyH07tBnNSWHApVFNcWSCa5FlTjuNaP6Jel9macdAtJorLsNMH44gfqRY35dVWl
+ KDG7wWoqJmPAeGg43yKTHU/H3l9aD6RcwhpP7SM4m1rMjxF66XhDMdVfbyAKs0VYulgU
+ 67MJnA5bMttghCGrli4t750Z3/D7XWLuWFYn4jhoji4rl+EuVBIZZMpKSwfnN7TjncyX
+ xVCI1G4F9rmr4ZN5f6vpgwvQf818qQkukmzXiwe9BgN4JQ32fM0fROxQJrWgFafVdD2Y
+ zjexxtuae8NIE8fut3fK4GNqsLbjMVMKvE5xI4wQcorPd3MiZWmuskqwmYYbAoSQhxUT Mg== 
+Received: from iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta03.appoci.oracle.com [130.35.103.27])
+	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3x6abucbyt-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Tue, 02 Apr 2024 11:17:45 +0000
+Received: from pps.filterd (iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
+	by iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 432B2aZ6006608;
+	Tue, 2 Apr 2024 11:17:44 GMT
+Received: from pps.reinject (localhost [127.0.0.1])
+	by iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTPS id 3x6966wbc5-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Tue, 02 Apr 2024 11:17:44 +0000
+Received: from iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
+	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 432BHi91004477;
+	Tue, 2 Apr 2024 11:17:44 GMT
+Received: from ca-dev112.us.oracle.com (ca-dev112.us.oracle.com [10.129.136.47])
+	by iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTP id 3x6966wbb2-1;
+	Tue, 02 Apr 2024 11:17:44 +0000
+From: Harshit Mogalapalli <harshit.m.mogalapalli@oracle.com>
+To: Boris Brezillon <boris.brezillon@collabora.com>,
+        Steven Price <steven.price@arm.com>, Liviu Dudau <liviu.dudau@arm.com>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
+        Heiko Stuebner <heiko@sntech.de>, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org
+Cc: dan.carpenter@linaro.org, kernel-janitors@vger.kernel.org,
+        error27@gmail.com, harshit.m.mogalapalli@oracle.com
+Subject: [PATCH] drm/panthor: Fix IS_ERR() vs NULL bug in group_process_tiler_oom()
+Date: Tue,  2 Apr 2024 04:17:39 -0700
+Message-ID: <20240402111740.1700310-1-harshit.m.mogalapalli@oracle.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -80,94 +79,44 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-04-02_04,2024-04-01_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 bulkscore=0
+ mlxlogscore=999 adultscore=0 malwarescore=0 spamscore=0 mlxscore=0
+ suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2403210000 definitions=main-2404020081
+X-Proofpoint-ORIG-GUID: fJ6_IRjHkqbCPM448T_3oltVdsYI62xz
+X-Proofpoint-GUID: fJ6_IRjHkqbCPM448T_3oltVdsYI62xz
 
-Since the chip can power off the system, add the corresponding
-functionality.
-Based on https://github.com/kobolabs/Kobo-Reader/raw/master/hw/imx6sll-clara2e/kernel.tar.bz2
+panthor_vm_get_heap_pool() returns ERR_PTR on failure, update the check
+accordingly.
 
-Signed-off-by: Andreas Kemnade <andreas@kemnade.info>
-Acked-by: Matti Vaittinen <mazziesaccount@gmail.com>
+Fixes: de8548813824 ("drm/panthor: Add the scheduler logical block")
+Signed-off-by: Harshit Mogalapalli <harshit.m.mogalapalli@oracle.com>
 ---
- drivers/mfd/rohm-bd71828.c       | 36 +++++++++++++++++++++++++++++++-
- include/linux/mfd/rohm-bd71828.h |  3 +++
- 2 files changed, 38 insertions(+), 1 deletion(-)
+This is based on static analysis with smatch, only compile tested.
+---
+ drivers/gpu/drm/panthor/panthor_sched.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/mfd/rohm-bd71828.c b/drivers/mfd/rohm-bd71828.c
-index 594718f7e8e1..4a1fa8a0d76a 100644
---- a/drivers/mfd/rohm-bd71828.c
-+++ b/drivers/mfd/rohm-bd71828.c
-@@ -464,6 +464,27 @@ static int set_clk_mode(struct device *dev, struct regmap *regmap,
- 				  OUT32K_MODE_CMOS);
- }
+diff --git a/drivers/gpu/drm/panthor/panthor_sched.c b/drivers/gpu/drm/panthor/panthor_sched.c
+index 5f7803b6fc48..d34f213795a3 100644
+--- a/drivers/gpu/drm/panthor/panthor_sched.c
++++ b/drivers/gpu/drm/panthor/panthor_sched.c
+@@ -1343,7 +1343,10 @@ static int group_process_tiler_oom(struct panthor_group *group, u32 cs_id)
+ 	if (unlikely(csg_id < 0))
+ 		return 0;
  
-+static struct i2c_client *bd71828_dev;
-+static void bd71828_power_off(void)
-+{
-+	while (true) {
-+		s32 val;
+-	if (!heaps || frag_end > vt_end || vt_end >= vt_start) {
++	if (IS_ERR(heaps))
++		return PTR_ERR(heaps);
 +
-+		/* We are not allowed to sleep, so do not use regmap involving mutexes here. */
-+		val = i2c_smbus_read_byte_data(bd71828_dev, BD71828_REG_PS_CTRL_1);
-+		if (val >= 0)
-+			i2c_smbus_write_byte_data(bd71828_dev,
-+						  BD71828_REG_PS_CTRL_1,
-+						  BD71828_MASK_STATE_HBNT | (u8)val);
-+		mdelay(500);
-+	}
-+}
-+
-+static void bd71828_remove_poweroff(void *data)
-+{
-+	pm_power_off = NULL;
-+}
-+
- static int bd71828_i2c_probe(struct i2c_client *i2c)
- {
- 	struct regmap_irq_chip_data *irq_data;
-@@ -542,7 +563,20 @@ static int bd71828_i2c_probe(struct i2c_client *i2c)
- 	ret = devm_mfd_add_devices(&i2c->dev, PLATFORM_DEVID_AUTO, mfd, cells,
- 				   NULL, 0, regmap_irq_get_domain(irq_data));
- 	if (ret)
--		dev_err_probe(&i2c->dev, ret, "Failed to create subdevices\n");
-+		return	dev_err_probe(&i2c->dev, ret, "Failed to create subdevices\n");
-+
-+	if (of_device_is_system_power_controller(i2c->dev.of_node) &&
-+	    chip_type == ROHM_CHIP_TYPE_BD71828) {
-+		if (!pm_power_off) {
-+			bd71828_dev = i2c;
-+			pm_power_off = bd71828_power_off;
-+			ret = devm_add_action_or_reset(&i2c->dev,
-+						       bd71828_remove_poweroff,
-+						       NULL);
-+		} else {
-+			dev_warn(&i2c->dev, "Poweroff callback already assigned\n");
-+		}
-+	}
- 
- 	return ret;
- }
-diff --git a/include/linux/mfd/rohm-bd71828.h b/include/linux/mfd/rohm-bd71828.h
-index 3b5f3a7db4bd..9776fde1262d 100644
---- a/include/linux/mfd/rohm-bd71828.h
-+++ b/include/linux/mfd/rohm-bd71828.h
-@@ -4,6 +4,7 @@
- #ifndef __LINUX_MFD_BD71828_H__
- #define __LINUX_MFD_BD71828_H__
- 
-+#include <linux/bits.h>
- #include <linux/mfd/rohm-generic.h>
- #include <linux/mfd/rohm-shared.h>
- 
-@@ -41,6 +42,8 @@ enum {
- #define BD71828_REG_PS_CTRL_2		0x05
- #define BD71828_REG_PS_CTRL_3		0x06
- 
-+#define BD71828_MASK_STATE_HBNT		BIT(1)
-+
- //#define BD71828_REG_SWRESET		0x06
- #define BD71828_MASK_RUN_LVL_CTRL	0x30
- 
++	if (frag_end > vt_end || vt_end >= vt_start) {
+ 		ret = -EINVAL;
+ 	} else {
+ 		/* We do the allocation without holding the scheduler lock to avoid
 -- 
-2.39.2
+2.39.3
 
 
