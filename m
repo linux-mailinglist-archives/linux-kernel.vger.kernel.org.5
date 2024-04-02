@@ -1,174 +1,126 @@
-Return-Path: <linux-kernel+bounces-128022-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-128023-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0458589550C
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 15:17:35 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8E15289550E
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 15:17:47 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 850731F253B1
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 13:17:34 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4800F2895B6
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 13:17:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C02F860279;
-	Tue,  2 Apr 2024 13:14:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 61D5983CCF;
+	Tue,  2 Apr 2024 13:16:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=intel.com header.i=@intel.com header.b="hNvqjAaL"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.7])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="JhnrdBlQ"
+Received: from mail-lf1-f44.google.com (mail-lf1-f44.google.com [209.85.167.44])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 36E177F7D3;
-	Tue,  2 Apr 2024 13:14:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.7
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E93907FBBF;
+	Tue,  2 Apr 2024 13:16:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712063680; cv=none; b=eeb1zP6iV6oQobFm/w2/g2toUxGubF0MMn5Jn7HxGE0oumjw2Y5b8KrX/joOlDPFDR0a/aRfI4zLr/rWacu0j96trq2hnetjZgLf8osA6KtBZdoqTl2esYRLItTi3igyyqWRG6ZkMwnft45itqkJGtxqRm01NNEopkTzAKeXUyA=
+	t=1712063763; cv=none; b=P6fMFUHQC5V8G/FNcmnrYJWigqvJOUrFpClsQOAbzusmoP8Y7wFwVLfcB2Tj3NPyhRoWixbnisxZQlWRKKH8ifzzbB/4RbDommr4PGbrmLRUbcbJiilAav+9fwmjZLkGNZRQUcqaYw6apPPrBToLb4Ev8oCC3C0zH0FbwSOSOJA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712063680; c=relaxed/simple;
-	bh=dNhWs1tSERBEqpT1H1jI1gPA9tR9hFX3rMeei4wKg3I=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=I134HRyrxsSzAy1HGBhTJfHT50fAtJzSYqdzO4v1QonQf1AONYVbrxQRtnf9rzI+vITmzwmlN2hVdWoldxGxCLVs6nNN44+CgclIf3MnWcAqMOK/voc+LfW307o9L4ZqMTc8Tym1dasHZQx5Vdr7ZiZXzUuFdGcHC/FEyDJM+YY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=hNvqjAaL; arc=none smtp.client-ip=192.198.163.7
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1712063678; x=1743599678;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=dNhWs1tSERBEqpT1H1jI1gPA9tR9hFX3rMeei4wKg3I=;
-  b=hNvqjAaLYDpyPnV29zeS0RCRihuhJ4+iuBXIlRjln1/7L1Izt20oRT1x
-   zfS4hQKklR4w/eDqQvPZUG2y1az0nFdk18TpPbo1ChFVNkGfwUcZWj+KJ
-   FjMuGFNZbOomFEd48FHGJW1kahivd7doYoLiNqs98mHBHYqKH3W1QVtTT
-   5UwWv4WkHQF+F3sqStjAA6v3WAH3auvVwptU5ew672nISWbe7wMsHyYzE
-   WhdoNAMw2nMljMZnbKIYeT2TtqNg88BU9tMslcEgEMAC0i2dwsMUYiVkw
-   2RJxsizkVIdALxc9l7jVrSlzZLUWykfI3UOixapWmu1yEDi+V0muR+gcO
-   g==;
-X-CSE-ConnectionGUID: 5FvuF+rFR/Wd59lPMsobUg==
-X-CSE-MsgGUID: S5p3n9rESEi3PJiQadbSug==
-X-IronPort-AV: E=McAfee;i="6600,9927,11031"; a="32630976"
-X-IronPort-AV: E=Sophos;i="6.07,175,1708416000"; 
-   d="scan'208";a="32630976"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by fmvoesa101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Apr 2024 06:14:37 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,11031"; a="915140683"
-X-IronPort-AV: E=Sophos;i="6.07,175,1708416000"; 
-   d="scan'208";a="915140683"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.72.54])
-  by fmsmga002.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Apr 2024 06:14:33 -0700
-Received: from andy by smile with local (Exim 4.97)
-	(envelope-from <andriy.shevchenko@intel.com>)
-	id 1rrdyB-00000000oc0-1Wc3;
-	Tue, 02 Apr 2024 16:14:31 +0300
-Date: Tue, 2 Apr 2024 16:14:31 +0300
-From: Andy Shevchenko <andriy.shevchenko@intel.com>
-To: "Peng Fan (OSS)" <peng.fan@oss.nxp.com>
-Cc: Sudeep Holla <sudeep.holla@arm.com>,
-	Cristian Marussi <cristian.marussi@arm.com>,
-	Rob Herring <robh@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Linus Walleij <linus.walleij@linaro.org>,
-	Dan Carpenter <dan.carpenter@linaro.org>,
-	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-	devicetree@vger.kernel.org, linux-gpio@vger.kernel.org,
-	Peng Fan <peng.fan@nxp.com>,
-	Oleksii Moisieiev <oleksii_moisieiev@epam.com>
-Subject: Re: [PATCH v7 3/4] firmware: arm_scmi: Add SCMI v3.2 pincontrol
- protocol basic support
-Message-ID: <ZgwEtxj-qi6uy_m2@smile.fi.intel.com>
-References: <20240402-pinctrl-scmi-v7-0-3ea519d12cf7@nxp.com>
- <20240402-pinctrl-scmi-v7-3-3ea519d12cf7@nxp.com>
+	s=arc-20240116; t=1712063763; c=relaxed/simple;
+	bh=JGtn5SmVXrfAeCXFcY4ds7iC9X9Kw8dEpb6xMjrR9i8=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=jBXHOyiHlpwtz7TRRU9RaO/Umzue1sZtZYqsfVEOunq/0Ee4GmKZxxVlogJYc62uw7BhrWr6sleV8Cupku1eq3XdEAi/wSGsjmBM0sCIzdKo5i530NXSY5vVACXJ0UJ99VcYSiyP1skDsLC6nD8JKrSlsPBanDzfCEHsn99f46w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=JhnrdBlQ; arc=none smtp.client-ip=209.85.167.44
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lf1-f44.google.com with SMTP id 2adb3069b0e04-513d23be0b6so5632427e87.0;
+        Tue, 02 Apr 2024 06:16:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1712063760; x=1712668560; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=gn8xWTJJGmsAJkVOyZ97/C/lX7XikjN5JjMJhiVZuvk=;
+        b=JhnrdBlQUgMJfLIbhRmonX3Ju+RXYEERJ7eziLa0zdGwdQYzQxiPjDx5aDk0936t3P
+         rtEo/v30NvVzQt9bKvAGgm1Eh8loAjZ7qJlZPMCfHLlWuLMbSVtcgW5PyEuT6W4rTBZ4
+         ZB73DYWulDFYdceem35dM/3992K5GdD1uqzPv2YuZm1OkKegtR6d5FXI5gBKnFAVk9z1
+         8eWzHgWmzi1sDm41lSTc6d2UfZQzni1rzHKQ6osBbXmVqouRf4p0JeYdqqSxgPEjmZSe
+         FLKQNl0vMi0eZOJ04xSLdYDTmozfrouwellhJjjuTkkUIfrpCCOMmDMX8NeQ16ChbkH3
+         kXjA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712063760; x=1712668560;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=gn8xWTJJGmsAJkVOyZ97/C/lX7XikjN5JjMJhiVZuvk=;
+        b=PPu6MAxnYjImxEcmMZsFP7EP8Xi449pXUVYPMOIhWGbmsmLPypeWPYXvjrFwENdOdI
+         B/iUFHlSjscXDy/cRY49hmdSdvhHh07sNbWoi2g66HweCRNGcZleISThsqSUxMivAsOe
+         2tVNO+ycfD39NJbsCyjVMZLyw2/LDCBcaYDZLGQDpy4iP6GwhSNi42yc69LN/5XYDBcl
+         /+0f91VA6yVMLPE5zKRIRZxUjUfTRqavIWYv2Ttngk/vsw0U/ISadNjbmSg6aQmqW2Ez
+         Xu/v9WCLp7oyGjVzSdpGkOutDaLhJypTR+56CKcCQ3AwXw1wg5Ie7DXRoYZO9OJiNAWX
+         g0SA==
+X-Forwarded-Encrypted: i=1; AJvYcCUrT9HjdYIo4E9LsdhZZzZHcabE5b+rDsVXAFGIKXZvylUYTm8eLBBZecUHxDwPXUykqI7XRWTeRIpzRnFd1hFMk2xxo1//XO0zbj91g+7aNA7RWYS/WFFyHNk1tDqmj+/XYFSSozvCSw==
+X-Gm-Message-State: AOJu0YzaA/X5/flULR6h+DfoKCPw53PyX0Hg0Sg2oH+DsG6zcnC46OuH
+	RNo72uLhBA4QzxJ5AzF9bamH/NUvOM0JiD0/G+2ZI3U4UaffmCnW
+X-Google-Smtp-Source: AGHT+IEiNyPSpS+I3gdpNA91ay19x/AAY6D2KAcqlZog4YX5tb4kY2Qp/S9fXwRCgSJpkqk4tHtAzw==
+X-Received: by 2002:a05:6512:2145:b0:513:ec2a:8fd1 with SMTP id s5-20020a056512214500b00513ec2a8fd1mr10196082lfr.47.1712063758766;
+        Tue, 02 Apr 2024 06:15:58 -0700 (PDT)
+Received: from [172.16.183.82] ([213.255.186.46])
+        by smtp.gmail.com with ESMTPSA id q9-20020ac25fc9000000b00513c86486b5sm1699383lfg.6.2024.04.02.06.15.57
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 02 Apr 2024 06:15:58 -0700 (PDT)
+Message-ID: <96250478-9b3c-4398-a60e-de5bd02ffbec@gmail.com>
+Date: Tue, 2 Apr 2024 16:15:57 +0300
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240402-pinctrl-scmi-v7-3-3ea519d12cf7@nxp.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3 1/2] dt-bindings: mfd: Add ROHM BD71828
+ system-power-controller property
+To: Andreas Kemnade <andreas@kemnade.info>, lee@kernel.org,
+ robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+ devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+References: <20240402111700.494004-1-andreas@kemnade.info>
+ <20240402111700.494004-2-andreas@kemnade.info>
+Content-Language: en-US, en-GB
+From: Matti Vaittinen <mazziesaccount@gmail.com>
+In-Reply-To: <20240402111700.494004-2-andreas@kemnade.info>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Tue, Apr 02, 2024 at 10:22:23AM +0800, Peng Fan (OSS) wrote:
+On 4/2/24 14:16, Andreas Kemnade wrote:
+> As the PMIC can power off the system, add the corresponding property.
+> 
+> Signed-off-by: Andreas Kemnade <andreas@kemnade.info>
+> Acked-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 
-..
+FWIW
+Acked-by: Matti Vaittinen <mazziesaccount@gmail.com>
 
-> +#include <linux/module.h>
-> +#include <linux/scmi_protocol.h>
-> +#include <linux/slab.h>
-
-Please, follow IWYU principle, a lot of headers are missed.
-
-> +#include "common.h"
-> +#include "protocols.h"
-
-..
-
-> +		ret = scmi_pinctrl_get_pin_info(ph, selector,
-> +						&pi->pins[selector]);
-
-It's netter as a single line.
-
-> +		if (ret)
-> +			return ret;
-> +	}
-
-..
-
-> +static int scmi_pinctrl_protocol_init(const struct scmi_protocol_handle *ph)
-> +{
-> +	int ret;
-> +	u32 version;
-> +	struct scmi_pinctrl_info *pinfo;
+> ---
+>   Documentation/devicetree/bindings/mfd/rohm,bd71828-pmic.yaml | 2 ++
+>   1 file changed, 2 insertions(+)
+> 
+> diff --git a/Documentation/devicetree/bindings/mfd/rohm,bd71828-pmic.yaml b/Documentation/devicetree/bindings/mfd/rohm,bd71828-pmic.yaml
+> index 11089aa89ec6..0b62f854bf6b 100644
+> --- a/Documentation/devicetree/bindings/mfd/rohm,bd71828-pmic.yaml
+> +++ b/Documentation/devicetree/bindings/mfd/rohm,bd71828-pmic.yaml
+> @@ -73,6 +73,8 @@ properties:
+>         used to mark the pins which should not be configured for GPIO. Please see
+>         the ../gpio/gpio.txt for more information.
+>   
+> +  system-power-controller: true
 > +
-> +	ret = ph->xops->version_get(ph, &version);
-> +	if (ret)
-> +		return ret;
-> +
-> +	dev_dbg(ph->dev, "Pinctrl Version %d.%d\n",
-> +		PROTOCOL_REV_MAJOR(version), PROTOCOL_REV_MINOR(version));
-> +
-> +	pinfo = devm_kzalloc(ph->dev, sizeof(*pinfo), GFP_KERNEL);
-> +	if (!pinfo)
-> +		return -ENOMEM;
-> +
-> +	ret = scmi_pinctrl_attributes_get(ph, pinfo);
-> +	if (ret)
-> +		return ret;
-> +
-> +	pinfo->pins = devm_kcalloc(ph->dev, pinfo->nr_pins,
-> +				   sizeof(*pinfo->pins), GFP_KERNEL);
-> +	if (!pinfo->pins)
-> +		return -ENOMEM;
-> +
-> +	pinfo->groups = devm_kcalloc(ph->dev, pinfo->nr_groups,
-> +				     sizeof(*pinfo->groups), GFP_KERNEL);
-> +	if (!pinfo->groups)
-> +		return -ENOMEM;
-> +
-> +	pinfo->functions = devm_kcalloc(ph->dev, pinfo->nr_functions,
-> +					sizeof(*pinfo->functions), GFP_KERNEL);
-> +	if (!pinfo->functions)
-> +		return -ENOMEM;
-> +
-> +	pinfo->version = version;
-> +
-> +	return ph->set_priv(ph, pinfo, version);
-
-Same comments as per previous version. devm_ here is simply wrong.
-It breaks the order of freeing resources.
-
-I.o.w. I see *no guarantee* that these init-deinit functions will be properly
-called from the respective probe-remove. Moreover the latter one may also have
-its own devm allocations (which are rightfully placed) and you get completely
-out of control the resource management.
-
-> +}
+>   required:
+>     - compatible
+>     - reg
 
 -- 
-With Best Regards,
-Andy Shevchenko
+Matti Vaittinen
+Linux kernel developer at ROHM Semiconductors
+Oulu Finland
 
+~~ When things go utterly wrong vim users can always type :help! ~~
 
 
