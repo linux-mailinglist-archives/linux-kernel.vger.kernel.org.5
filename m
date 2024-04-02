@@ -1,145 +1,117 @@
-Return-Path: <linux-kernel+bounces-128080-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-128081-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9DC7B8955CB
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 15:52:10 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 580BB8955F4
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 15:59:57 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 284B61F23165
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 13:52:10 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 797CBB298D1
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 13:52:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7260284A2C;
-	Tue,  2 Apr 2024 13:52:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C90C284A2C;
+	Tue,  2 Apr 2024 13:52:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="D8UnmUe+"
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="ExEutO3v"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 256FB634E5
-	for <linux-kernel@vger.kernel.org>; Tue,  2 Apr 2024 13:51:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.158.5
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9B9DF84A22
+	for <linux-kernel@vger.kernel.org>; Tue,  2 Apr 2024 13:52:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712065921; cv=none; b=oD0k8SXpNilGWv7pll7qXk+HeqW37DbOktCcwic22hFvxF22v+qrMCW9lUo83D5sGOLydqZpGdJZAVMjaWdQKtJwiIBPAM/UdKpqNvuOzMqjIfQ47lGv2SDRl4+vWgn+aTSBly+Y/HjlsycKMjyDUHGvDZDj5J+ZE2GszuP2gHo=
+	t=1712065958; cv=none; b=A1zcn5rN1aBDpUai0c92/xbFCs7FJ73oQxpyMqXdh0M5NUUUJ86v3wKbudlqay/k9Cg1/CvpU7895XgbITbnZnMCaaz7BBD+xFtUXQ1O/UHaC5gcI14dkyJXgRHja96bfKKN0pcBCHkpfLM21/it5pBwbghl2bVi87T6fXtjnn8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712065921; c=relaxed/simple;
-	bh=B4ma/e/KnR+uU5X9v8DluYFVCl1ZEucVYQW3EfXqAJ4=;
-	h=Message-ID:Date:MIME-Version:To:From:Subject:Cc:Content-Type; b=INqogvIkR1I9IMb3M3teAayMLdUhQgYy85z9IEqZxuKC9JZivx0vhjKTZoC7bMJR2YlMJkffr7+wDjAiI/9B3/VSi2E3Jh00I5gN2IrZs/7oIZ0xme0kispTmdR1wBAxcqkFmExjoroEDrnfKmHWcfdvLWusRwDApiNZ95aVS5Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.vnet.ibm.com; spf=none smtp.mailfrom=linux.vnet.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=D8UnmUe+; arc=none smtp.client-ip=148.163.158.5
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.vnet.ibm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.vnet.ibm.com
-Received: from pps.filterd (m0356516.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 432DgJAM021352;
-	Tue, 2 Apr 2024 13:51:40 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
- mime-version : to : from : subject : cc : content-type :
- content-transfer-encoding; s=pp1;
- bh=ZyUFALjx6viMMzdOywgL4/zB9g6cPayR5XSV8h2scQg=;
- b=D8UnmUe+TQp/rNg8uykrQb9D/aRlBxqXYhW0bfx7udPsSNippnBtG+eBImKhGwKRdluw
- yKqdNwUob3qh9s0LhaTK89Ki6Gk6Fuv37QjhSGJTRVMP8O94VNpxTVx8qBD+uxOTGPY2
- Tf+6XKCjEqj3fRVAbYiYIPF6r6yGuBhNCxDRe9u5FYOV70wM0NbeUFsSutWPoOIXLQ8I
- ygo+OMMX9k8Amf1XM+ywDDGzJkCzTeJAD7rJiQ2zBFDc9HmqxuQj4fL1AwCy5OS9kp9z
- bARPFZ/irp6ADBoaP+vcwePujQey+Eg9OdP1ma/flxncQDdGJY01zTlu7T5zBm+Tcr/a +w== 
-Received: from ppma12.dal12v.mail.ibm.com (dc.9e.1632.ip4.static.sl-reverse.com [50.22.158.220])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3x8k0mg131-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 02 Apr 2024 13:51:40 +0000
-Received: from pps.filterd (ppma12.dal12v.mail.ibm.com [127.0.0.1])
-	by ppma12.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 432Cuoeo008419;
-	Tue, 2 Apr 2024 13:51:38 GMT
-Received: from smtprelay05.wdc07v.mail.ibm.com ([172.16.1.72])
-	by ppma12.dal12v.mail.ibm.com (PPS) with ESMTPS id 3x6w2ty2hf-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 02 Apr 2024 13:51:38 +0000
-Received: from smtpav04.dal12v.mail.ibm.com (smtpav04.dal12v.mail.ibm.com [10.241.53.103])
-	by smtprelay05.wdc07v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 432DpZRC16909050
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Tue, 2 Apr 2024 13:51:37 GMT
-Received: from smtpav04.dal12v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 523D85806D;
-	Tue,  2 Apr 2024 13:51:35 +0000 (GMT)
-Received: from smtpav04.dal12v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id C0A465805E;
-	Tue,  2 Apr 2024 13:51:31 +0000 (GMT)
-Received: from [9.43.62.54] (unknown [9.43.62.54])
-	by smtpav04.dal12v.mail.ibm.com (Postfix) with ESMTP;
-	Tue,  2 Apr 2024 13:51:31 +0000 (GMT)
-Message-ID: <62efbf21-fdb5-4c3b-a370-085b39672b72@linux.vnet.ibm.com>
-Date: Tue, 2 Apr 2024 19:21:30 +0530
+	s=arc-20240116; t=1712065958; c=relaxed/simple;
+	bh=DPrcRRAqP1t9Y3kbn2V/yhUWU5FgxTbcD5//bRhvtjw=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=gLVgd7CY2WBWp04P2y6gvzm9vEEFfuUDHLz/LUbY8pF6/VMB6EvTvW8MJooVsrsVMflsB6djVEqpJyKmdFmyCZWfGb1wtUBN1woVF7oQ7YZ4ykDDkZCa2M3lJhM4Ja1WayKACrq2CcB61kEV2yocxgYntRhkot6rcuq/qsC8jWA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=ExEutO3v; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1712065955;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=DhTrdl+Lsun5myVNSpVrwdD2BVn4sbhl051ZYtiso+E=;
+	b=ExEutO3vx7tEx5TUBLXtzOefuDiZUpAJS5Odm32xdqa4Ej1FFEfV9GQZ73ZZBv5/Ej94kY
+	0zcp93VsOQege5C0bLhPG86YKttKUHWzAQRkR3fUDslN+SNBDnMlEoqztHWCWAA18xPOHr
+	q6OAVltVkTQl5nb4hp+Mf5lR31Ye0fE=
+Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
+ by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-206-V_eTs7JBMga5AQrHxfFSIA-1; Tue,
+ 02 Apr 2024 09:52:34 -0400
+X-MC-Unique: V_eTs7JBMga5AQrHxfFSIA-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.rdu2.redhat.com [10.11.54.4])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 7EB183C025B9;
+	Tue,  2 Apr 2024 13:52:33 +0000 (UTC)
+Received: from redhat.com (unknown [10.22.8.63])
+	by smtp.corp.redhat.com (Postfix) with ESMTPS id 28A092024517;
+	Tue,  2 Apr 2024 13:52:33 +0000 (UTC)
+Date: Tue, 2 Apr 2024 09:52:31 -0400
+From: Joe Lawrence <joe.lawrence@redhat.com>
+To: zhangwarden@gmail.com
+Cc: jpoimboe@kernel.org, mbenes@suse.cz, jikos@kernel.org, pmladek@suse.com,
+	live-patching@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] livepatch: Add KLP_IDLE state
+Message-ID: <ZgwNn5+/Ryh05OOm@redhat.com>
+References: <20240402030954.97262-1-zhangwarden@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Content-Language: en-GB
-To: Alexander@wetzel-home.de, bvanassche@acm.org, martin.petersen@oracle.com,
-        linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
-From: Venkat Rao Bagalkote <venkat88@linux.vnet.ibm.com>
-Subject: [Revert commit 27f58c04a8f438078583041468ec60597841284d] [linux-next]
- [6.9.0-rc1-next-20240328] WARNING: CPU: 9 PID: 209 at drivers/scsi/sg.c:2236
- sg_remove_sfp_usercontext+0x270/0x280 [sg]
-Cc: sfr@canb.auug.org.au, sachinp@linux.vnet.com, mpe@ellerman.id.au,
-        abdhalee@linux.vnet.ibm.com, mputtash@linux.vnet.com
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: pZ5TDoYdJf9sBdDIlbdMDid7UGTHjEdC
-X-Proofpoint-ORIG-GUID: pZ5TDoYdJf9sBdDIlbdMDid7UGTHjEdC
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-04-02_06,2024-04-01_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 spamscore=0
- impostorscore=0 mlxscore=0 lowpriorityscore=0 bulkscore=0 adultscore=0
- mlxlogscore=999 suspectscore=0 priorityscore=1501 clxscore=1011
- phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2403210000 definitions=main-2404020101
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240402030954.97262-1-zhangwarden@gmail.com>
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.4
 
-Greetings!!
+On Tue, Apr 02, 2024 at 11:09:54AM +0800, zhangwarden@gmail.com wrote:
+> From: Wardenjohn <zhangwarden@gmail.com>
+> 
+> In livepatch, using KLP_UNDEFINED is seems to be confused.
+> When kernel is ready, livepatch is ready too, which state is
+> idle but not undefined. What's more, if one livepatch process
+> is finished, the klp state should be idle rather than undefined.
+> 
+> Therefore, using KLP_IDLE to replace KLP_UNDEFINED is much better
+> in reading and understanding.
+> ---
+>  include/linux/livepatch.h     |  1 +
+>  kernel/livepatch/patch.c      |  2 +-
+>  kernel/livepatch/transition.c | 24 ++++++++++++------------
+>  3 files changed, 14 insertions(+), 13 deletions(-)
+> 
+> diff --git a/include/linux/livepatch.h b/include/linux/livepatch.h
+> index 9b9b38e89563..c1c53cd5b227 100644
+> --- a/include/linux/livepatch.h
+> +++ b/include/linux/livepatch.h
+> @@ -19,6 +19,7 @@
+>  
+>  /* task patch states */
+>  #define KLP_UNDEFINED	-1
+> +#define KLP_IDLE       -1
 
+Hi Wardenjohn,
 
-Below warnings is observed with the commit 
-27f58c04a8f438078583041468ec60597841284d.
+Quick question, does this patch intend to:
 
+- Completely replace KLP_UNDEFINED with KLP_IDLE
+- Introduce KLP_IDLE as an added, fourth potential state
+- Introduce KLP_IDLE as synonym of sorts for KLP_UNDEFINED under certain
+  conditions
 
-Once reverting the above commit id, issue is resloved.
+I ask because this patch leaves KLP_UNDEFINED defined and used in other
+parts of the tree (ie, init/init_task.c), yet KLP_IDLE is added and
+continues to use the same -1 enumeration.
 
-
-Please help in fixing this issue.
-
-
-   470.425710] ------------[ cut here ]------------
-[  470.425728] WARNING: CPU: 5 PID: 226 at drivers/scsi/sg.c:2236 sg_remove_sfp_usercontext+0x270/0x280 [sg]
-[  470.425739] Modules linked in: nvram nft_compat nf_tables libcrc32c nfnetlink rpadlpar_io rpaphp xsk_diag bonding tls rfkill binfmt_misc vmx_crypto pseries_rng dax_pmem drm drm_panel_orientation_quirks ext4 mbcache jbd2 dm_service_time sd_mod t10_pi crc64_rocksoft_generic crc64_rocksoft crc64 sg nd_pmem nd_btt ibmvfc papr_scm ibmvnic scsi_transport_fc ibmveth libnvdimm dm_multipath dm_mirror dm_region_hash dm_log dm_mod fuse
-[  470.425778] CPU: 5 PID: 226 Comm: kworker/5:1 Kdump: loaded Not tainted 6.9.0-rc1-next-20240328-auto #1
-[  470.425784] Hardware name: IBM,9080-HEX POWER10 (raw) 0x800200 0xf000006 of:IBM,FW1060.00 (NH1060_016) hv:phyp pSeries
-[  470.425788] Workqueue: events sg_remove_sfp_usercontext [sg]
-[  470.425794] NIP:  c008000004904110 LR: c008000004903ffc CTR: c0000000005391a0
-[  470.425799] REGS: c000000092297ae0 TRAP: 0700   Not tainted  (6.9.0-rc1-next-20240328-auto)
-[  470.425803] MSR:  800000000282b033 <SF,VEC,VSX,EE,FP,ME,IR,DR,RI,LE>  CR: 44000204  XER: 00000001
-[  470.425814] CFAR: c00800000490400c IRQMASK: 0
-[  470.425814] GPR00: c008000004903ffc c000000092297d80 c008000004928900 c000000090581298
-[  470.425814] GPR04: 00000000c0000000 0000000000001281 c0000000056e0000 0000000000001280
-[  470.425814] GPR08: 000000135acf0000 0000000000000002 0000000000000000 c008000004908bc0
-[  470.425814] GPR12: c0000000005391a0 c0000013ffff9300 c0000000001a2b5c c0000000995efac0
-[  470.425814] GPR16: 0000000000000000 0000000000000000 0000000000000000 0000000000000000
-[  470.425814] GPR20: c00000135cfb3b00 c0000000056fc030 c0000000056fc000 c0000000b15d3000
-[  470.425814] GPR24: 0000000000000000 c000000090581200 c0000000044e6c05 c0000000056fd330
-[  470.425814] GPR28: c00000135cfb3b00 c0000000056fc080 c0000000056fd328 c000000002fdee44
-[  470.425858] NIP [c008000004904110] sg_remove_sfp_usercontext+0x270/0x280 [sg]
-[  470.425864] LR [c008000004903ffc] sg_remove_sfp_usercontext+0x15c/0x280 [sg]
-[  470.425870] Call Trace:
-[  470.425872] [c000000092297d80] [c008000004903ffc] sg_remove_sfp_usercontext+0x15c/0x280 [sg] (unreliable)
-[  470.425879] [c000000092297e40] [c00000000019332c] process_one_work+0x20c/0x4f4
-[  470.425887] [c000000092297ef0] [c0000000001942ac] worker_thread+0x378/0x544
-[  470.425892] [c000000092297f90] [c0000000001a2c8c] kthread+0x138/0x140
-[  470.425898] [c000000092297fe0] [c00000000000df98] start_kernel_thread+0x14/0x18
-[  470.425903] Code: e8c98310 3d220000 e8698010 480044bd e8410018 7ec3b378 48004ac9 e8410018 38790098 81390098 2c090001 4182ff04 <0fe00000> 4bfffefc 000247e0 00000000
-[  470.425917] ---[ end trace 0000000000000000 ]---
-
-Regards,
-Venkat.
+--
+Joe
 
 
