@@ -1,119 +1,113 @@
-Return-Path: <linux-kernel+bounces-127759-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-127760-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id AA81189508C
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 12:42:09 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 76E2389508D
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 12:42:19 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 162B9B2446C
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 10:42:07 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A12071C218B6
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 10:42:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id ED566626DF;
-	Tue,  2 Apr 2024 10:41:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0BD7A4CDF9;
+	Tue,  2 Apr 2024 10:41:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="XO4n/LgT"
-Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="EB44lL3F"
+Received: from mail-yb1-f177.google.com (mail-yb1-f177.google.com [209.85.219.177])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B96A9604C8;
-	Tue,  2 Apr 2024 10:41:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.177.32
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C83115FDA5
+	for <linux-kernel@vger.kernel.org>; Tue,  2 Apr 2024 10:41:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712054471; cv=none; b=gFDJJa6KPSXs/7r+rxq2lrEQq5yLhF8tlnBkP5LylzlmnMnKV63R+LNo3KKnnlcxKFeqk3UtbNdaAL3MupJX9OjJLAPcH6tBabjZwhd59N23A1uAkcSsOIk117VwoSJifkrCj91mB4o05Pr/VaGwmH/+kLNBm/MadSc6Jlf3YUQ=
+	t=1712054493; cv=none; b=G7HrvrM6dXwAjRsvdGBQqUfkEW951GtIsJ7Fr48J5M6Pek8vR0DWZjZ0zBqRY/LaHOg6fYNLBOhHt6ButNluA+ziMUY1i2InO8apxgr3KQ3qVEWUZTs/8ZELDhcs9DWRpsry7gS8PWecF5Pa3xnvg1EZy9jLEQYOzmiiQE2zK60=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712054471; c=relaxed/simple;
-	bh=cxM78pKms/4lwSlDz7hbP/DmZncN6R7RsfyspvuOEmU=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=XjL+KgUm4it90yAw7jlq5q4QGSH1zRUhPaSC4B2CrQuElNfcZSKM3Vk/d83wTxNryjfagWRMHu7xCiVLawW77RSn3qFhAB8cW6aLwZftWyW9a12d/leNthlG/S8oWUXhZQhZgb8qDxD1MlQ/z+W58IQ1+VVIzEkahQaiYXsn2I0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=XO4n/LgT; arc=none smtp.client-ip=205.220.177.32
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=oracle.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oracle.com
-Received: from pps.filterd (m0246632.ppops.net [127.0.0.1])
-	by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 4327hnp8021239;
-	Tue, 2 Apr 2024 10:40:54 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
- subject : date : message-id : mime-version : content-transfer-encoding;
- s=corp-2023-11-20; bh=KneB49LPzOM38AMQBvSH5d/jF8EAr0Yt5QSa5AJ9wZQ=;
- b=XO4n/LgTzRsCDZWM27SVeuGn5x/8MtGyUc23GGjU6fzDwRF4qnTDQnqdK80MYNggTJ7p
- 4DcL66b6b8Yf1Lw+N5e9vmqlSaNEafsF/vkwwg7fElDRUS/NmQXoNvW2ka4/ue7J6uvj
- V3YS0TyymAtQ/R63dGRwatrF2f1NnFc0sTEDQeHugQr1yWM0geziheU8Ss6KG0wnvUH4
- eF3kTwAqBmN7/ocAyk9ry9l/ebtiyEKBcxMA26vnTuXMEPLSCf7lU1nFgD/vk6xQFyLA
- xqLrchDwZwz56gDkGNHFWundyC7W2i95tiSR3zZ78qgDKZYLPWZe06GhOtT8LqV0TL5U zQ== 
-Received: from phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta03.appoci.oracle.com [138.1.37.129])
-	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3x6abuc9uq-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Tue, 02 Apr 2024 10:40:54 +0000
-Received: from pps.filterd (phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
-	by phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 432AREFs040407;
-	Tue, 2 Apr 2024 10:40:53 GMT
-Received: from pps.reinject (localhost [127.0.0.1])
-	by phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTPS id 3x6966sr8u-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Tue, 02 Apr 2024 10:40:53 +0000
-Received: from phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
-	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 432Aeqei023453;
-	Tue, 2 Apr 2024 10:40:52 GMT
-Received: from ca-dev112.us.oracle.com (ca-dev112.us.oracle.com [10.129.136.47])
-	by phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTP id 3x6966sr8h-1;
-	Tue, 02 Apr 2024 10:40:52 +0000
-From: Harshit Mogalapalli <harshit.m.mogalapalli@oracle.com>
-To: Boris Brezillon <boris.brezillon@collabora.com>,
-        Steven Price <steven.price@arm.com>, Liviu Dudau <liviu.dudau@arm.com>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
-        Grant Likely <grant.likely@linaro.org>,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
-Cc: dan.carpenter@linaro.org, kernel-janitors@vger.kernel.org,
-        error27@gmail.com, harshit.m.mogalapalli@oracle.com
-Subject: [PATCH] drm/panthor: Fix NULL vs IS_ERR() bug in panthor_probe()
-Date: Tue,  2 Apr 2024 03:40:40 -0700
-Message-ID: <20240402104041.1689951-1-harshit.m.mogalapalli@oracle.com>
-X-Mailer: git-send-email 2.43.0
+	s=arc-20240116; t=1712054493; c=relaxed/simple;
+	bh=ApXaBVn2XS6OYYCjGNp8YjyB5+PeDb/eSjzi35GKmCY=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=HSjeM6hoMI8lSz4wtJpQXHp7lsXV40ZI5cpGCv1dgYGR+/xiq88GSTdXyAWmKTLHubnliVT3uSfIPyuFz95tSB2OvhX+/r0Ww6vjAtfUck2ayqTI6xB3AIS3rv2qC2ucUYto+4Z3YUKhcb8AVLZfM7vrLft2t19CUoKESZUEez0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=EB44lL3F; arc=none smtp.client-ip=209.85.219.177
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-yb1-f177.google.com with SMTP id 3f1490d57ef6-dcc71031680so4537549276.2
+        for <linux-kernel@vger.kernel.org>; Tue, 02 Apr 2024 03:41:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1712054491; x=1712659291; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=ApXaBVn2XS6OYYCjGNp8YjyB5+PeDb/eSjzi35GKmCY=;
+        b=EB44lL3FpzlGsm9N4cbetETvG6odV5D0g7nZNTNGZFmd6obJ5e/RpnQNWsGdr6O/UI
+         KqVoQWpmmpuJz3BpXnr5gMq2kyaBGEyRms/f6OTN3uGQWW/nXK0wtnOIK/2ykg9MPhe7
+         Z16MQlJoH94bJYfWFFXCKmksptyr05tPMNEkppIPMzRXSVko1AxBhLV3m1vb0eF0boaa
+         q8/Zq9XX7pjsgb23MH7t2xgu8IR087nJ6L8pARjIwhR9HO8tN6CQGx9J4jxhe78hMM+R
+         hA2HIBfbqmrHcjG/bJ1iWMV3nA8qdBjS12wYlhwzeLckICX6/Ujb2EMnZFxwGOw5Tbaa
+         P8sw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712054491; x=1712659291;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=ApXaBVn2XS6OYYCjGNp8YjyB5+PeDb/eSjzi35GKmCY=;
+        b=hPnyQUwqFtrW2nbfkGTOza2BeERsz+ZxJfJkJmqAl5Duqi4N8ty3t5njvnpGak6a0M
+         xDG9A6owwQpoaVHhQZNs0/Pk4gxu07P53LoyBGGZALtBpHSwje6Cu2BAkyrcuJh/NW6k
+         H2mEduyWkNJNjydwXx7q8REJ7NkGdDay1z97ZkPkQO+T7aoKmFOcaRKQHq95A0yuccFf
+         2s/3/LBzYPflCTCq6cK4UHxEf5hNsww/JiMRU02jLjY+XblhdbAdIgd96A0kebUgxiiV
+         jmY7bVB7grJdN5cZ6ZC21rHEzCOP4MXjGdXpYSQE+3Pkfoc30+yUqAhyqI1eW8LaENfi
+         SLqw==
+X-Forwarded-Encrypted: i=1; AJvYcCWg18j0bQoukKxo8BRvpWQxUVCsxAw9iPkO9HkvZt3ei+KAvLopBdp52zcw5gsntBShLQkpThQc3RylvxO7+Gzsjw9SM/O/FKNCk+pu
+X-Gm-Message-State: AOJu0YxNmN736GvZ3/xsqc2lHzGGqg611HTldcxQc9l20qETcH6ZRxk2
+	o7FQ2QMauUG8A9YMHvZTnR3BVKalmw1IZtZ1JKgg9qZd3+IM7tCQqWNSLELGqKPutIn5zyNXEP4
+	V7n6O2eCKeJgjkIHh4xWftWMVWP4RbKTJSTcVTg==
+X-Google-Smtp-Source: AGHT+IHFrOBcRfRRcNHSGMiQ/W4jMX2rXf1tkCXA4ATT8aem9b16esSs4RkJ1Tfl+2WaN6o0ECfwJ0rgttOE6KypifQ=
+X-Received: by 2002:a25:16c4:0:b0:dcd:4d96:741f with SMTP id
+ 187-20020a2516c4000000b00dcd4d96741fmr10305474ybw.10.1712054491019; Tue, 02
+ Apr 2024 03:41:31 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-04-02_04,2024-04-01_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 malwarescore=0
- mlxlogscore=999 adultscore=0 bulkscore=0 phishscore=0 mlxscore=0
- suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2403210000 definitions=main-2404020077
-X-Proofpoint-ORIG-GUID: bRNmNBiqVfRSvrPgK0gLxKD1AqCyVTOC
-X-Proofpoint-GUID: bRNmNBiqVfRSvrPgK0gLxKD1AqCyVTOC
+References: <20231222022741.8223-1-boy.wu@mediatek.com> <6837adc26ed09b9acd6a2239a14014cd3f16c87c.camel@mediatek.com>
+ <Zghbkx67hKErqui2@shell.armlinux.org.uk>
+In-Reply-To: <Zghbkx67hKErqui2@shell.armlinux.org.uk>
+From: Linus Walleij <linus.walleij@linaro.org>
+Date: Tue, 2 Apr 2024 12:41:20 +0200
+Message-ID: <CACRpkdaNtXDYOMbRbbsXb+frYa18+ErVWP966LFGt-GCXbL9iQ@mail.gmail.com>
+Subject: Re: [PATCH] arm: kasan: clear stale stack poison
+To: "Russell King (Oracle)" <linux@armlinux.org.uk>
+Cc: =?UTF-8?B?Qm95IFd1ICjlkLPli4Poqrwp?= <Boy.Wu@mediatek.com>, 
+	"matthias.bgg@gmail.com" <matthias.bgg@gmail.com>, 
+	"linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, 
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, 
+	"linux-mediatek@lists.infradead.org" <linux-mediatek@lists.infradead.org>, 
+	"kasan-dev@googlegroups.com" <kasan-dev@googlegroups.com>, 
+	"angelogioacchino.delregno@collabora.com" <angelogioacchino.delregno@collabora.com>, 
+	"linux-mm@kvack.org" <linux-mm@kvack.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-The devm_drm_dev_alloc() function returns error pointers.
-Update the error handling to check for error pointers instead of NULL.
+On Sat, Mar 30, 2024 at 7:36=E2=80=AFPM Russell King (Oracle)
+<linux@armlinux.org.uk> wrote:
 
-Fixes: 4bdca1150792 ("drm/panthor: Add the driver frontend block")
-Signed-off-by: Harshit Mogalapalli <harshit.m.mogalapalli@oracle.com>
----
-This is spotted by smatch and the patch is only compile tested
----
- drivers/gpu/drm/panthor/panthor_drv.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+> On Fri, Mar 29, 2024 at 03:17:39AM +0000, Boy Wu (=E5=90=B3=E5=8B=83=E8=
+=AA=BC) wrote:
+> > Hi Russell:
+> >
+> > Kingly ping
+>
+> I'm afraid I know nowt about KASAN. It was added to ARM32 by others.
+> I've no idea whether this is correct or not. Can we get someone who
+> knows KASAN to review this?
 
-diff --git a/drivers/gpu/drm/panthor/panthor_drv.c b/drivers/gpu/drm/panthor/panthor_drv.c
-index 11b3ccd58f85..1b588b37db98 100644
---- a/drivers/gpu/drm/panthor/panthor_drv.c
-+++ b/drivers/gpu/drm/panthor/panthor_drv.c
-@@ -1385,7 +1385,7 @@ static int panthor_probe(struct platform_device *pdev)
- 
- 	ptdev = devm_drm_dev_alloc(&pdev->dev, &panthor_drm_driver,
- 				   struct panthor_device, base);
--	if (!ptdev)
-+	if (IS_ERR(ptdev))
- 		return -ENOMEM;
- 
- 	platform_set_drvdata(pdev, ptdev);
--- 
-2.39.3
+I rewrote the patches from Andrey, Abbot and Ard into the current form
+and I tend to keep an eye on it, I can add a MAINTAINERS
+entry for arch/arm/mm/kasan_init.c pointing to me and Andrey
+so we (hopefully) get CC:ed on these patches. get_maintainer.pl
+won't help in cases like this patch though :/
 
+Yours,
+Linus Walleij
 
