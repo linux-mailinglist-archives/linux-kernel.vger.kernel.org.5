@@ -1,137 +1,117 @@
-Return-Path: <linux-kernel+bounces-128558-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-128559-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id EA7C6895C6C
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 21:25:56 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 70D0C895C71
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 21:26:11 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8C0B4B2222F
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 19:25:54 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 121931F24A63
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 19:26:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3F29A15B96D;
-	Tue,  2 Apr 2024 19:25:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4B08015B974;
+	Tue,  2 Apr 2024 19:26:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="eRUKtcdW"
-Received: from mail-yb1-f179.google.com (mail-yb1-f179.google.com [209.85.219.179])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="GkN7uyow"
+Received: from mail-ot1-f48.google.com (mail-ot1-f48.google.com [209.85.210.48])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D48E415B572
-	for <linux-kernel@vger.kernel.org>; Tue,  2 Apr 2024 19:25:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0DBE315B572;
+	Tue,  2 Apr 2024 19:25:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712085945; cv=none; b=i4F0lyGvPuYIGl6a5d96o9P48CJo24UmnrjbrqBim1cJTBflDuiYJ6B7Y1S37fnGTD3pwMNS0vNHQgJ6U4A2eCrZeRWzZtTa/pAAV4TWeYjaVwygnrPKj9a0Z9sVJLr/17phdM4ydj786U9hFjelFh5tUYxf5V994Yk1B5DIdtc=
+	t=1712085961; cv=none; b=P+vb+e+qwKtaSD7DXMlYJ32jzLQgUd8btUvEDiykmyyhbu21anuihVD5p1Ot05ZthU++DS40LMIkssIw19z8sV09lTDwnecAhAO/fGBVQ4I56aljv0yxT0luBqVtdQ6DlUyVGewPmLl8RVXkivXhakx3EWT3TKmUWjZtuKiZYCM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712085945; c=relaxed/simple;
-	bh=nuVk2rrPA+78ak46RlwfYXTFyzdDDE2jrqhHVoV+Z1A=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=rYLXGfum8yjisYoIVYEw/72WHBCB8+H2jJNcTQDxdXERcuIXZNM51DGMUz9oytqlVOzSPPPIn8b6hQncgZuH67iOKFxZLOgRigXkM10SXR+uqhx+y7Mcknetps+jsnWrUhYr2ghV7Y+nJ9ltZ57GGl+XyWr/5Au2ceiTitO+FAM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=eRUKtcdW; arc=none smtp.client-ip=209.85.219.179
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-yb1-f179.google.com with SMTP id 3f1490d57ef6-dd02fb9a31cso4837373276.3
-        for <linux-kernel@vger.kernel.org>; Tue, 02 Apr 2024 12:25:43 -0700 (PDT)
+	s=arc-20240116; t=1712085961; c=relaxed/simple;
+	bh=VAM/iIbG6sd0Vm+9c5LNdjtskIH9H5a/W1Fyy4k5ba4=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=IQDsKQ3ALSRFMQben0IY3oxFWgp8D5NmebXRlYnhI3aWTxKXPFG+fisjmh13TtuwCdza8SiAwazcEe7qO/BdQUztj3FrJW6OgXNVaSLCsjocslyV4HORJNDhpUJfeD6LPSXkwMnzKx0e3h8h2hC1CtBvrRk9FZIA+GG3Q/IlDAI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=GkN7uyow; arc=none smtp.client-ip=209.85.210.48
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ot1-f48.google.com with SMTP id 46e09a7af769-6e6d063e88bso4052058a34.3;
+        Tue, 02 Apr 2024 12:25:59 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1712085943; x=1712690743; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=Wt5s0i3Bf+a37LH9mW+EUzfbFaTvXfHBxqu8Vrd66jY=;
-        b=eRUKtcdWpe86riGzbCKgEMCvzWTToENpdJAPyKlfdEsr5PvWRL3utQ9r8TpBC7focN
-         j07zITPYqxGQRBL+l1Y4LFCUWZRVsv3h7iiDAqzKB2hKYt7EpYJfvDT2P4HFBl8zOkdj
-         V5AqF6oJ90MXGqdSsA2AAvv3q3yVeaY/vMkgcFUCUtX24PYWVSI4uXanASX1+EK/eipd
-         CKPiHMPgfO/+7VRw3s483x0njYoF4HaFXv4Qc/9SDT7YxBViSeyaAvK1HmwYT8zdxhKD
-         lX1KmDoIn3YEpBXpV/vqrOhV7jdbRtgjc1KvprkdxSwMzUiejJChi51BC8kFEcwylNww
-         fMmw==
+        d=gmail.com; s=20230601; t=1712085959; x=1712690759; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=Z7rhLLUMHrwedBH2pvRBxfgtMkIBfb1Wwm96WdNqdmI=;
+        b=GkN7uyowaDLZix+CkSyIoPeSHFu4zIjw+yamkUNh0I6Xj6ftCfnkfa8OoS1jUWnsju
+         2Jr30n5fmIrAizYTBO0aAW29uJBX0dd6PAHv0hrFQeuwLtJCYQdzbePxMWhn44Gbpjxd
+         Rw4o7Kd50IE3xmtOA3jodyX8eprupfLpwJQBIciJg8qOOiWhf9G+jOZgE7oQ22ojlfIf
+         SuQZ16OhFgVdoSvrQPC/ALQoGSzaEHDG/5WgMrJAKwjRKmNW4cjyQVyFthHH9K6d8hVl
+         keqBbvWDQ3mKxj8prLvd/GPtqkZgQsfkpGOrbWbxSmo+c6Fe5Rgc8ZjrBYkqsK0WUNjG
+         61lg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712085943; x=1712690743;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+        d=1e100.net; s=20230601; t=1712085959; x=1712690759;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=Wt5s0i3Bf+a37LH9mW+EUzfbFaTvXfHBxqu8Vrd66jY=;
-        b=WX87UoCosxvmFhUMhD8ZQdKHA3Wo7FCE0EW4DJkxiMadv8ku643nVeZUvkrBwjHly+
-         YU3MJa/1p6JG/yoDqx7aXytAf17JDTeBplHLKGbQcdSolLUYeWkIXNXuB6CzcBZSlR+f
-         pH/t9RJH9ZB8mVlwOOXgP03mu9hce9xL2sICLKWygE7NeI0H02oHjlwGbzOYKoKKRnES
-         jPojVVoacQAAkHox0XfxkZ8kLWLs5VCNU+GycFAJGA0dWagZWJTC/QO/ANfQnRVk5Tbb
-         f439OhxLZn+DdTpJpqwlHhxR2cEmMoXu9KHG15l3mi3klDM2JxW5uNoQbL0XVuu5zPY9
-         sXZQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUynEyQsbA6OitGsEjxGlAG2HsGs5BTDGlRaEOiq+J01T+Unb7c7yQ69MUXhBu/LQFSoeE4y1PhwqutE+HrEeCzwhFJ94stnvsf6wFl
-X-Gm-Message-State: AOJu0Yy94KDY0z5gByokjJYYtQ0AWdVJKptXGgVT7+1Y2HvjcI4dOQeM
-	nvaMqrXDvvYZanahGHsfftcavooLLBoksBErKKz134Ml8h04CI0cQDl5RitUskmszTxA2z72/xI
-	FtEyriacLbnYp+Y5FvKIJfLMUpEZFgMZvZ+5cXw==
-X-Google-Smtp-Source: AGHT+IF0NCPeZnC/FxDzoqpqrxq4T4tmylOUOl34+HGr8LAiprE09JWVEjadMflb9rYYLe9n6G9XkDK88BIiin+WUmw=
-X-Received: by 2002:a25:b90d:0:b0:dd1:2f58:292b with SMTP id
- x13-20020a25b90d000000b00dd12f58292bmr10593508ybj.9.1712085942918; Tue, 02
- Apr 2024 12:25:42 -0700 (PDT)
+        bh=Z7rhLLUMHrwedBH2pvRBxfgtMkIBfb1Wwm96WdNqdmI=;
+        b=wbyJWRN3RUsGot3LvdTYGs5d9wciPtItYHvXDLSbpHM0zDBZrydauNOV0YAgS2KIz9
+         GJkVQAEQY51RwxqV3yk2BFz8fUTG9niPP8ZpwS+Lb6HIoDC6lw6fyJ5eHW0+X4wd6ziY
+         FyT8IDY2CwoGlr56ST04xYk/SrWAHX1opDZzB41QzFCOrtzfN2MXM1D0hBYvZH9lVItE
+         aLD016tIr1LIjRAsXFbbcwwHYw9gDDZBXE2sQU5qpT3th0T4DFvTzy0+ir3UF+l/mqo0
+         1i/sBmGOhc/nILxSNM0unEn4PAtO9MaVUnV2wA5gT6NXSJzPgUhmMPATB236h+n+PMg8
+         wlkQ==
+X-Forwarded-Encrypted: i=1; AJvYcCViUfC8ZOB0BJCyODuZFIPgZGXpDnLc5yD8M7LpzL2FtD2GbfpORS5nsZ3ZyCqQxDDEx7QsxdDIS1fMnxYTU33wNn1V9+KEdSvR72jdUQte8acq8tGZkS9z8jwiGESiADhgG6Zpf0PNVHthnyUEnS5vHVG6gwxroD+dsMgCLwfWvmAkF0LqJPTM4p8jnqlrF52Dyu/IfaSvRS4tkCKABK2iZ7w=
+X-Gm-Message-State: AOJu0Yy0sqTCGd40iIqWNhLakCBZIzgDYPQ7kLyTckAFrRW0qUtW/HkA
+	lRfwseccT9xdzgqf4yT2O6uENo74Gp9KTHAL3MK0TSWQY6x5+v0t
+X-Google-Smtp-Source: AGHT+IEYE+r10McvEe1VUzjmFZOvDyoNfheZXGqnaJ8aS0qLvbp8v9xO8DDJgW+wgkaDNqWfMepAIw==
+X-Received: by 2002:a05:6870:fe8f:b0:21e:e6d1:616c with SMTP id qm15-20020a056870fe8f00b0021ee6d1616cmr15659554oab.31.1712085959028;
+        Tue, 02 Apr 2024 12:25:59 -0700 (PDT)
+Received: from nukework.lan (c-98-197-58-203.hsd1.tx.comcast.net. [98.197.58.203])
+        by smtp.gmail.com with ESMTPSA id ld22-20020a0568702b1600b0022e8f9fa89bsm75622oab.57.2024.04.02.12.25.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 02 Apr 2024 12:25:58 -0700 (PDT)
+From: Alexandru Gagniuc <mr.nuke.me@gmail.com>
+To: Bjorn Andersson <andersson@kernel.org>,
+	Konrad Dybcio <konrad.dybcio@linaro.org>,
+	Michael Turquette <mturquette@baylibre.com>,
+	Stephen Boyd <sboyd@kernel.org>,
+	Rob Herring <robh@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>
+Cc: ansuelsmth@gmail.com,
+	robimarko@gmail.com,
+	Alexandru Gagniuc <mr.nuke.me@gmail.com>,
+	linux-arm-msm@vger.kernel.org,
+	linux-clk@vger.kernel.org,
+	devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH 1/7] dt-bindings: clock: Add PCIe pipe related clocks for IPQ9574
+Date: Tue,  2 Apr 2024 14:25:49 -0500
+Message-Id: <20240402192555.1955204-1-mr.nuke.me@gmail.com>
+X-Mailer: git-send-email 2.40.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240129-ufs-core-reset-fix-v1-0-7ac628aa735f@linaro.org>
- <20240129-ufs-core-reset-fix-v1-3-7ac628aa735f@linaro.org>
- <CAA8EJpphzwoCaetGfnM8dE478ic1-BMqXKA3XVLeC9j5BBu3SA@mail.gmail.com>
- <20240130065550.GF32821@thinkpad> <CAA8EJpqZYp0C8rT8E=LoVo9fispLNhBn8CEgx1-iMqN_2MQXfg@mail.gmail.com>
- <g4a6gl47kfjx47ww36qnwp7zgvbd5gi5r7d26ibitfrybaa3l4@gvnz2mhsdf4s>
-In-Reply-To: <g4a6gl47kfjx47ww36qnwp7zgvbd5gi5r7d26ibitfrybaa3l4@gvnz2mhsdf4s>
-From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Date: Tue, 2 Apr 2024 22:25:32 +0300
-Message-ID: <CAA8EJppOPrSfD=VkHm8M0P07=mN_BikT=cGvLe6UFL3OpKVWzA@mail.gmail.com>
-Subject: Re: [PATCH 3/3] arm64: dts: qcom: msm8996: Add missing UFS host
- controller reset
-To: Bjorn Andersson <andersson@kernel.org>
-Cc: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>, 
-	Konrad Dybcio <konrad.dybcio@linaro.org>, Alim Akhtar <alim.akhtar@samsung.com>, 
-	Avri Altman <avri.altman@wdc.com>, Bart Van Assche <bvanassche@acm.org>, 
-	Rob Herring <robh+dt@kernel.org>, 
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
-	Andy Gross <agross@kernel.org>, Andy Gross <andy.gross@linaro.org>, 
-	"James E.J. Bottomley" <jejb@linux.ibm.com>, "Martin K. Petersen" <martin.petersen@oracle.com>, 
-	linux-arm-msm@vger.kernel.org, linux-scsi@vger.kernel.org, 
-	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 
-On Tue, 2 Apr 2024 at 20:35, Bjorn Andersson <andersson@kernel.org> wrote:
->
-> On Fri, Feb 09, 2024 at 10:16:25PM +0200, Dmitry Baryshkov wrote:
-> > On Tue, 30 Jan 2024 at 08:55, Manivannan Sadhasivam
-> > <manivannan.sadhasivam@linaro.org> wrote:
-> > >
-> > > On Mon, Jan 29, 2024 at 11:44:15AM +0200, Dmitry Baryshkov wrote:
-> > > > On Mon, 29 Jan 2024 at 09:55, Manivannan Sadhasivam
-> > > > <manivannan.sadhasivam@linaro.org> wrote:
-> > > > >
-> > > > > UFS host controller reset is required for the drivers to properly reset the
-> > > > > controller. Hence, add it.
-> > > > >
-> > > > > Fixes: 57fc67ef0d35 ("arm64: dts: qcom: msm8996: Add ufs related nodes")
-> > > > > Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-> > > >
-> > > > I think I had issues previously when I attempted to reset the
-> > > > controller, but it might be because of the incomplete clocks
-> > > > programming. Let met check whether it works first.
-> > > >
-> > >
-> > > Sure. Please let me know.
-> >
-> > With the clocking fixes in place (I'll send them in a few minutes) and
-> > with this patch the UFS breaks in the following way:
-> >
->
-> Was this further reviewed/investigated? What would you like me to do
-> with this patch?
+Add defines for the missing PCIe PIPE clocks.
 
-I'd say, hold until we can understand what is going on.
+Signed-off-by: Alexandru Gagniuc <mr.nuke.me@gmail.com>
+---
+ include/dt-bindings/clock/qcom,ipq9574-gcc.h | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-Mani, If you have any ideas what can be causing the issue, I'm open to
-testing any ideas or any patches from your side.
-Judging that the UFS breaks after toggling the reset, we might be
-missing some setup steps.
-
-
-
+diff --git a/include/dt-bindings/clock/qcom,ipq9574-gcc.h b/include/dt-bindings/clock/qcom,ipq9574-gcc.h
+index 08fd3a37acaa..52123c5a09fa 100644
+--- a/include/dt-bindings/clock/qcom,ipq9574-gcc.h
++++ b/include/dt-bindings/clock/qcom,ipq9574-gcc.h
+@@ -216,4 +216,8 @@
+ #define GCC_CRYPTO_AHB_CLK				207
+ #define GCC_USB0_PIPE_CLK				208
+ #define GCC_USB0_SLEEP_CLK				209
++#define GCC_PCIE0_PIPE_CLK				210
++#define GCC_PCIE1_PIPE_CLK				211
++#define GCC_PCIE2_PIPE_CLK				212
++#define GCC_PCIE3_PIPE_CLK				213
+ #endif
 -- 
-With best wishes
-Dmitry
+2.40.1
+
 
