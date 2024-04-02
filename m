@@ -1,119 +1,128 @@
-Return-Path: <linux-kernel+bounces-127785-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-127783-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 197698950F3
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 12:53:12 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 49A5C8950EB
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 12:52:43 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C9010287A97
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 10:53:10 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id F21761F25570
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 10:52:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 719EA64CE9;
-	Tue,  2 Apr 2024 10:52:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A02E2604B3;
+	Tue,  2 Apr 2024 10:52:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=toblux-com.20230601.gappssmtp.com header.i=@toblux-com.20230601.gappssmtp.com header.b="mMFzxVgl"
-Received: from mail-ed1-f53.google.com (mail-ed1-f53.google.com [209.85.208.53])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="n4MPsNrE"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EF5C860EC3
-	for <linux-kernel@vger.kernel.org>; Tue,  2 Apr 2024 10:52:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C51D85F84F;
+	Tue,  2 Apr 2024 10:52:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712055159; cv=none; b=b5ezapt/oNNel8N4CmEqpmlBYcjBbB8xYc8ToQrm9lAKb+G7vFckhZLgPGe16gBMMwYicY7RmN/pU3gI0L/BhwBH+wM7+6z18WllcKyL7aXsPFLdHGZK+Xcl9GJrsvvdc8t804NZo7Nog/CiElSNHUoDEM3qHT0TTp7LCAAI/d8=
+	t=1712055136; cv=none; b=mggMM/45j59a/Awn8SOuPtkKKzfjanUpmrkFZ510xP0IpLmA52CLuVPdKyetyiY7AnWCoPXP0/i9YBjCt/gVBwgKa7mrtFEE7KiX1bzBhc46DAvnWRGOT9okL2vcNlWf/lWlILiMZKMCsLyQuyHWVshN+AjRwRBusurQ1ndbIi4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712055159; c=relaxed/simple;
-	bh=FxRmJZ9KL9xpBpm4pOBuIBWeWydQ+wxCpl14xHng60Q=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=XILOihbCJVz1CxQ8oDACI5k6Uoi6Xv9TsSE1VFcCLJS5OFP/oUVRRiGjOgMkLbXPeBu7fwUyt8oOoRs77kBtQyzerT3VJJUeeBbD2BZjFjEVZ8YbTGf7Huv8oWyFIH6TwCHOzYFmYUF7dxbejG7HG2ngHYcSJZqgpTTD98S/z1k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toblux.com; spf=none smtp.mailfrom=toblux.com; dkim=pass (2048-bit key) header.d=toblux-com.20230601.gappssmtp.com header.i=@toblux-com.20230601.gappssmtp.com header.b=mMFzxVgl; arc=none smtp.client-ip=209.85.208.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toblux.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=toblux.com
-Received: by mail-ed1-f53.google.com with SMTP id 4fb4d7f45d1cf-568c714a9c7so5843847a12.2
-        for <linux-kernel@vger.kernel.org>; Tue, 02 Apr 2024 03:52:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toblux-com.20230601.gappssmtp.com; s=20230601; t=1712055156; x=1712659956; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=cTP+C6xMYT5Qm5c+52geS7X5NPkIi5DsshiYl5+1cnQ=;
-        b=mMFzxVglnO1eGpcECFfrzGp0UvKcvtdECusQp0QDQ1n/FgfiGjSl4CSngVUEFKW2qD
-         uoj0mJulw+/++cz2u0Dm+jR7S/mEIKkfqKpN0qskd02mTLGarFtdv44+w3qbXIady89W
-         NGmUik6LdAVEEA04XnybbmSy3PrJjwIgk9fsPFM5mOQycaG5CQ/mV1js5TA3csNz5cdQ
-         QcrtmZB4158iP76umfgb4JWn0TBaEzFN99/Uw0mE3Lt4jFIo8rFZQvX9d0GFYghNZabr
-         WKID1aEl39obIzPKjGBG5al6H/cmEIUrVcL+8OwyskHaghxWIsxQK6MfAo3Wc9/0pOh0
-         wrsA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712055156; x=1712659956;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=cTP+C6xMYT5Qm5c+52geS7X5NPkIi5DsshiYl5+1cnQ=;
-        b=qpOZlTsmoFY7400ua5qyyEFWa6LQjnDgRqT4N61oqvdj3FaIAGnhu4uMoaEfAy8WnV
-         a/3n+tuxl1Y5lwX76lFl9cRFml2kZg6FxFJfCsrBfWDa5P5bFvbwZEqrbbIDgXYxq6hs
-         fpy8hpLO4tglNroO3BNQGO4c8VNbGX2twEbGuOIK6I0zpGM155GB8JMVYr31y5g/tYef
-         eamNRen6UFfYXVVpsSyvu0wlNSCBmYp6pLQNokNGDeQN9z9o/qtSsMPjxioFKN6ICz7d
-         jYf1unHcMNeeIbgZnOulnf9s1jjpeGq32HBsDtUk9PYesB4iJRMRKC7D98WX5oLUVBQa
-         QbxA==
-X-Forwarded-Encrypted: i=1; AJvYcCX0iFzhKd5LsMes4HvD9S3Dzo3ZNPfBjkB1OacAh0drcKtdblQtndOMM+pvVnngKwy1iGONB8pwdpkznY0nqXgkjS1xzPUq2jjkq7Ui
-X-Gm-Message-State: AOJu0Yy+i+LrfN0BcJ5IWHqzsjmSwg1j3+IYURvBmtCgJXcrF/tXgm+0
-	WIoQvoCPjcipDRGLokOH7ij2QzpQ1uqBQjqCQOiVTgntcihr4DqL2u2bFV3/P4c=
-X-Google-Smtp-Source: AGHT+IEPB4lf+7AgxzD2ZzI90EcqqarZcmw7DFa1Hl54/l1ZvwyGEvz/POzaHyV9FGreF9kuK/Z3OA==
-X-Received: by 2002:a17:907:7e9a:b0:a47:4ae0:3bb9 with SMTP id qb26-20020a1709077e9a00b00a474ae03bb9mr9289912ejc.23.1712055156147;
-        Tue, 02 Apr 2024 03:52:36 -0700 (PDT)
-Received: from fedora.fritz.box (aftr-82-135-80-212.dynamic.mnet-online.de. [82.135.80.212])
-        by smtp.gmail.com with ESMTPSA id c3-20020a170906340300b00a4739efd7cesm6435520ejb.60.2024.04.02.03.52.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 02 Apr 2024 03:52:35 -0700 (PDT)
-From: Thorsten Blum <thorsten.blum@toblux.com>
-To: "Theodore Ts'o" <tytso@mit.edu>,
-	Jan Kara <jack@suse.com>
-Cc: linux-ext4@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Thorsten Blum <thorsten.blum@toblux.com>
-Subject: [PATCH] jbd2: Use str_plural() to fix Coccinelle warning
-Date: Tue,  2 Apr 2024 12:51:58 +0200
-Message-ID: <20240402105157.254389-2-thorsten.blum@toblux.com>
-X-Mailer: git-send-email 2.44.0
+	s=arc-20240116; t=1712055136; c=relaxed/simple;
+	bh=8SEISNTjMjd6fQgKPbae4xl+U7OguugiIa4T9Rb5u+k=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=V4NGGUgiw7ZfkW2Rtoa3kGu3u+i6NwBp0QLB2x6srCwQquSniUR7eictF99zcPRat32qm6yhxrUvPRD9X/h90/izEGD9u0hvV18YXcUYQrQXfbNPLR9f43xBQYi9Y2dgnyf+zOkjmb/cUAsKktT0ZjiifCkiFir7EmCEXey2c/E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=n4MPsNrE; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 680E6C43390;
+	Tue,  2 Apr 2024 10:52:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1712055136;
+	bh=8SEISNTjMjd6fQgKPbae4xl+U7OguugiIa4T9Rb5u+k=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=n4MPsNrE5cmbGK3k1jBmWUG04hQzuCE81mF2+4cRHKWApITQdHRfaZZkH+5ZaYL3I
+	 bpgZdFe9kyxMuSY3xTS2joBUZAwPhGareRD9eTIlfYy7Zp+2kJjK3SZhDiioGG0qb2
+	 WPKrIa/Hv//QJu7JPaIuP4knMhIpJQXNABg+G3B2Gw6zcSU5OgouIkux49LuCCghfq
+	 UKZZYA0JP7FTYeY++6H8GCzbdrFQ5QscjabQPb85kNJ8IafyjcdE2BdFzXnl7i1Wpv
+	 2K7ra/QO/nqfSQ9Hul2/wHBA7vGjhK+hX7L+oa7ssB3gngNSqCf2ivruu7waKNfmbc
+	 OxLdJaJ2WzRqw==
+Date: Tue, 2 Apr 2024 12:52:10 +0200
+From: Niklas Cassel <cassel@kernel.org>
+To: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+Cc: Lorenzo Pieralisi <lpieralisi@kernel.org>,
+	Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
+	Rob Herring <robh@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>,
+	Kishon Vijay Abraham I <kishon@kernel.org>,
+	Thierry Reding <thierry.reding@gmail.com>,
+	Jonathan Hunter <jonathanh@nvidia.com>,
+	Jingoo Han <jingoohan1@gmail.com>, linux-pci@vger.kernel.org,
+	linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+	mhi@lists.linux.dev, linux-tegra@vger.kernel.org
+Subject: Re: [PATCH v2 03/10] PCI: endpoint: Rename core_init() callback in
+ 'struct pci_epc_event_ops' to init()
+Message-ID: <ZgvjWtC0f1CY6DJs@ryzen>
+References: <20240401-pci-epf-rework-v2-0-970dbe90b99d@linaro.org>
+ <20240401-pci-epf-rework-v2-3-970dbe90b99d@linaro.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240401-pci-epf-rework-v2-3-970dbe90b99d@linaro.org>
 
-Fixes the following Coccinelle/coccicheck warning reported by
-string_choices.cocci:
+On Mon, Apr 01, 2024 at 09:20:29PM +0530, Manivannan Sadhasivam wrote:
+> core_init() callback is used to notify the EPC initialization event to the
+> EPF drivers. The 'core' prefix was used indicate that the controller IP
+> core has completed initialization. But it serves no purpose as the EPF
+> driver will only care about the EPC initialization as a whole and there is
+> no real benefit to distinguish the IP core part.
+> 
+> So let's rename the core_init() callback in 'struct pci_epc_event_ops' to
+> just init() to make it more clear.
+> 
+> Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+> ---
+>  drivers/pci/endpoint/functions/pci-epf-mhi.c  |  4 ++--
+>  drivers/pci/endpoint/functions/pci-epf-test.c |  4 ++--
+>  drivers/pci/endpoint/pci-epc-core.c           | 16 ++++++++--------
+>  include/linux/pci-epf.h                       |  4 ++--
+>  4 files changed, 14 insertions(+), 14 deletions(-)
+> 
+> diff --git a/drivers/pci/endpoint/functions/pci-epf-mhi.c b/drivers/pci/endpoint/functions/pci-epf-mhi.c
+> index 280863c0eeb9..b3c26ffd29a5 100644
+> --- a/drivers/pci/endpoint/functions/pci-epf-mhi.c
+> +++ b/drivers/pci/endpoint/functions/pci-epf-mhi.c
+> @@ -716,7 +716,7 @@ static void pci_epf_mhi_dma_deinit(struct pci_epf_mhi *epf_mhi)
+>  	epf_mhi->dma_chan_rx = NULL;
+>  }
+>  
+> -static int pci_epf_mhi_core_init(struct pci_epf *epf)
+> +static int pci_epf_mhi_epc_init(struct pci_epf *epf)
+>  {
+>  	struct pci_epf_mhi *epf_mhi = epf_get_drvdata(epf);
+>  	const struct pci_epf_mhi_ep_info *info = epf_mhi->info;
+> @@ -897,7 +897,7 @@ static void pci_epf_mhi_unbind(struct pci_epf *epf)
+>  }
+>  
+>  static const struct pci_epc_event_ops pci_epf_mhi_epc_event_ops = {
+> -	.core_init = pci_epf_mhi_core_init,
+> +	.init = pci_epf_mhi_epc_init,
+>  };
+>  
+>  static const struct pci_epc_bus_event_ops pci_epf_mhi_bus_event_ops = {
+> diff --git a/drivers/pci/endpoint/functions/pci-epf-test.c b/drivers/pci/endpoint/functions/pci-epf-test.c
+> index 973db0b1bde2..abcb6ca61c4e 100644
+> --- a/drivers/pci/endpoint/functions/pci-epf-test.c
+> +++ b/drivers/pci/endpoint/functions/pci-epf-test.c
+> @@ -731,7 +731,7 @@ static int pci_epf_test_set_bar(struct pci_epf *epf)
+>  	return 0;
+>  }
+>  
+> -static int pci_epf_test_core_init(struct pci_epf *epf)
+> +static int pci_epf_test_epc_init(struct pci_epf *epf)
 
-	opportunity for str_plural(dropped)
+On V1 you agreed that it is better to remove 'epc' from the naming.
+(For both pci-epf-test and pci-epf-mhi).
+You seem to have forgotten to address this for V2.
 
-Signed-off-by: Thorsten Blum <thorsten.blum@toblux.com>
----
- fs/jbd2/recovery.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/fs/jbd2/recovery.c b/fs/jbd2/recovery.c
-index 1f7664984d6e..af930c3d0d97 100644
---- a/fs/jbd2/recovery.c
-+++ b/fs/jbd2/recovery.c
-@@ -19,6 +19,7 @@
- #include <linux/errno.h>
- #include <linux/crc32.h>
- #include <linux/blkdev.h>
-+#include <linux/string_choices.h>
- #endif
- 
- /*
-@@ -374,7 +375,7 @@ int jbd2_journal_skip_recovery(journal_t *journal)
- 			be32_to_cpu(journal->j_superblock->s_sequence);
- 		jbd2_debug(1,
- 			  "JBD2: ignoring %d transaction%s from the journal.\n",
--			  dropped, (dropped == 1) ? "" : "s");
-+			  dropped, str_plural(dropped));
- #endif
- 		journal->j_transaction_sequence = ++info.end_transaction;
- 		journal->j_head = info.head_block;
--- 
-2.44.0
-
+Kind regards,
+Niklas
 
