@@ -1,111 +1,101 @@
-Return-Path: <linux-kernel+bounces-127361-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-127362-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8B6E3894A4E
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 06:11:49 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 55404894A54
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 06:12:51 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BB38C1C2201B
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 04:11:48 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D94A3B22877
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 04:12:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BE9FF175BD;
-	Tue,  2 Apr 2024 04:11:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1C1D417BBA;
+	Tue,  2 Apr 2024 04:12:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linux.org.uk header.i=@linux.org.uk header.b="jLVoQk3b"
-Received: from zeniv.linux.org.uk (zeniv.linux.org.uk [62.89.141.173])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="nkTzWbGD"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 69D49175BF
-	for <linux-kernel@vger.kernel.org>; Tue,  2 Apr 2024 04:11:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=62.89.141.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 43FA0168B1;
+	Tue,  2 Apr 2024 04:12:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712031104; cv=none; b=rkBy0kuOmO40twcYH0V5fEjpeW53CZWAf3exrH4dUSxuCSx4irfNfCUqNWbAyc2kioU5QNZh3/u9dU2N930j/+9+CZ5Kb3zxeh70oN3IOKrLVbWQ3bsAqbFdr8IdIbPU9pSA/1Chy19PZDcVkrNVogfGu+Ed2o1It++f4l2J+kY=
+	t=1712031155; cv=none; b=WWGAcXRZBG6WqcYFo/kcCH5a5j/yLX3toKSm3um8JujzmesowbABT1jaxLFhK01MotoXEK7xbLvvHu76aD6qN1DOIV/3AZecCXPoh0DI0AJfkap00rj8z3cUPVcpMSL9VUooBEYkZKaiIyHSZnscbQjhAZI9B3H2FMQIAI//u+c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712031104; c=relaxed/simple;
-	bh=HKrpCf5hdJblYPSdAfn+r9vPyscHYwnAwcdvv9YswjU=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Zje3LYNwDEDtC0bCP69rSaV3d9HO3D181H3wz29AfqWSqBBSm3j1VMS7OqxXAGgvqKNtMZ3Zq+eT7vop/vjauEgry2JdgOGRWV98jLhs3WdPI5F1M4DQs3+heZWmYVWRbNb3hWlLRpoqKTz/1CYoVcS5cwABwMQC8hE4WWNVjvQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zeniv.linux.org.uk; spf=none smtp.mailfrom=ftp.linux.org.uk; dkim=pass (2048-bit key) header.d=linux.org.uk header.i=@linux.org.uk header.b=jLVoQk3b; arc=none smtp.client-ip=62.89.141.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zeniv.linux.org.uk
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=ftp.linux.org.uk
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=linux.org.uk; s=zeniv-20220401; h=Sender:In-Reply-To:Content-Type:
-	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=on2uDY9xoIExekB3f+wnsHvu22s4kf//goF/Vx2reRk=; b=jLVoQk3b5lSeuqEwMknDHFsIn8
-	PIQmigKY348kr3rXQm1//TK18+YPP6Zhk4BGb6Hg2XcEKx+0ubXYuCwaa8eIm33wGez9mERw6f+cR
-	qo25ki1lliNH/2gmaaEl1Lz2nG09oEZCU1+1CVUVX+EymhEJmEnF+akdZdeAai9U3M08+X+1uo3Yl
-	5hR7Fpvfb3NH7MZ+Z61djHheRXx1/6SdjRY5oCACeD9cby9b4LzL5MrDEVn0kqv9lQbiVCNPEvOoo
-	gDyGmb6HVzJkKWuY9TYbILyj76vZWQGz18FbVmzJjE3rCu57KSMy/rOFL7QrARNwhEVSuyTUElUfT
-	T0mB6iew==;
-Received: from viro by zeniv.linux.org.uk with local (Exim 4.96 #2 (Red Hat Linux))
-	id 1rrVUo-003w0T-1B;
-	Tue, 02 Apr 2024 04:11:38 +0000
-Date: Tue, 2 Apr 2024 05:11:38 +0100
-From: Al Viro <viro@zeniv.linux.org.uk>
-To: "Paul E. McKenney" <paulmck@kernel.org>
-Cc: linux-kernel@vger.kernel.org, kernel-team@meta.com,
-	"David S. Miller" <davem@davemloft.net>,
-	Andreas Larsson <andreas@gaisler.com>,
-	Palmer Dabbelt <palmer@rivosinc.com>, Arnd Bergmann <arnd@arndb.de>,
-	Marco Elver <elver@google.com>
-Subject: Re: [PATCH RFC cmpxchg 2/8] sparc: Emulate one-byte and two-byte
- cmpxchg
-Message-ID: <20240402041138.GF538574@ZenIV>
-References: <31c82dcc-e203-48a9-aadd-f2fcd57d94c1@paulmck-laptop>
- <20240401213950.3910531-2-paulmck@kernel.org>
- <20240401223803.GZ538574@ZenIV>
- <114dc62e-e0fb-41c8-bf9c-a9fda8b19eb6@paulmck-laptop>
- <20240402000758.GC538574@ZenIV>
- <20240402033753.GE538574@ZenIV>
+	s=arc-20240116; t=1712031155; c=relaxed/simple;
+	bh=aI3eJF8HniXat2ib1QyBX8zCGp45TAApFBysvadGBQs=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=noVgS2SVCt8ST8HcgSW+vNT5yM6YTB2kvMzM5h9Md/Hyi/DhO+2/FLepbpY6osHTfoCDfVwIbX2PRmGxum5CO0NrgUgCWw+l9iiL+/XMMZ4y353fO0rgUexLmXMA7rdI4xD9yAkwUnVUluuuiGqV2AIBWLwRybJW8vH/kDDst3E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=nkTzWbGD; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 672A3C433C7;
+	Tue,  2 Apr 2024 04:12:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1712031154;
+	bh=aI3eJF8HniXat2ib1QyBX8zCGp45TAApFBysvadGBQs=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=nkTzWbGDGnmj8/6m7801zLy+B6JjA/ZXpJtp/FkRdEg9tN9IzGfm0CgMNlSQZ95KA
+	 HqxuhIuo0Z8jXpeg7+WS8AqPQMI3opBF15vPciltVh6dp1j4k9FufIgrSaC/5V2kCt
+	 YEPK5SKsvPPG6KBRWKu0WIHe8/jRr1UzS/lOZBFygL9M7mX0OYThU3fLemJ6C6UhXx
+	 eZZxq598IWatnRW/We9rCVsWeiyKs8JcHDpSLnBbSEV5DuEgCQtyF4olFeKEa5c0ou
+	 eYO3Jbd1Y/f6t6QROP/ViG0ZZliYkzMGtNSo1LuXTlS+lLNb7DndsBZc/K6DXHLcv+
+	 82IVNF+FUIJlA==
+Date: Mon, 1 Apr 2024 21:12:32 -0700
+From: Jakub Kicinski <kuba@kernel.org>
+To: Dexuan Cui <decui@microsoft.com>
+Cc: Haiyang Zhang <haiyangz@microsoft.com>, "linux-hyperv@vger.kernel.org"
+ <linux-hyperv@vger.kernel.org>, "netdev@vger.kernel.org"
+ <netdev@vger.kernel.org>, Wei Hu <weh@microsoft.com>, stephen
+ <stephen@networkplumber.org>, KY Srinivasan <kys@microsoft.com>, Paul
+ Rosswurm <paulros@microsoft.com>, "olaf@aepfle.de" <olaf@aepfle.de>,
+ "vkuznets@redhat.com" <vkuznets@redhat.com>, "davem@davemloft.net"
+ <davem@davemloft.net>, "wei.liu@kernel.org" <wei.liu@kernel.org>,
+ "edumazet@google.com" <edumazet@google.com>, "pabeni@redhat.com"
+ <pabeni@redhat.com>, "leon@kernel.org" <leon@kernel.org>, Long Li
+ <longli@microsoft.com>, "ssengar@linux.microsoft.com"
+ <ssengar@linux.microsoft.com>, "linux-rdma@vger.kernel.org"
+ <linux-rdma@vger.kernel.org>, "daniel@iogearbox.net"
+ <daniel@iogearbox.net>, "john.fastabend@gmail.com"
+ <john.fastabend@gmail.com>, "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+ "ast@kernel.org" <ast@kernel.org>, "sharmaajay@microsoft.com"
+ <sharmaajay@microsoft.com>, "hawk@kernel.org" <hawk@kernel.org>,
+ "tglx@linutronix.de" <tglx@linutronix.de>,
+ "shradhagupta@linux.microsoft.com" <shradhagupta@linux.microsoft.com>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "stable@vger.kernel.org" <stable@vger.kernel.org>
+Subject: Re: [PATCH net] net: mana: Fix Rx DMA datasize and skb_over_panic
+Message-ID: <20240401211232.57b17081@kernel.org>
+In-Reply-To: <CY5PR21MB37590FD539C1E380FBDC96B0BF3E2@CY5PR21MB3759.namprd21.prod.outlook.com>
+References: <1711748213-30517-1-git-send-email-haiyangz@microsoft.com>
+	<CY5PR21MB375904FD3437BA610E6BDBD1BF392@CY5PR21MB3759.namprd21.prod.outlook.com>
+	<CH2PR21MB1480E02C74E7BB5A52A71859CA3F2@CH2PR21MB1480.namprd21.prod.outlook.com>
+	<CY5PR21MB37590FD539C1E380FBDC96B0BF3E2@CY5PR21MB3759.namprd21.prod.outlook.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240402033753.GE538574@ZenIV>
-Sender: Al Viro <viro@ftp.linux.org.uk>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-On Tue, Apr 02, 2024 at 04:37:53AM +0100, Al Viro wrote:
-> On Tue, Apr 02, 2024 at 01:07:58AM +0100, Al Viro wrote:
-> 
-> > It does, IIRC.
+On Tue, 2 Apr 2024 01:23:08 +0000 Dexuan Cui wrote:
+> > > I suggest the Fixes tag should be updated. Otherwise the fix
+> > > looks good to me.  
 > > 
-> > > Would you like to do that patch?  If so, I would be happy to drop mine
-> > > in favor of yours.  If not, could I please have your Signed-off-by so
-> > > I can do the Co-developed-by dance?
-> > 
-> > Will do once I dig my way from under the pile of mail (sick for a week
-> > and subscribed to l-k, among other lists)...
+> > Thanks for the suggestion. I actually thought about this before
+> > submission.
+> > I was worried about someone back ports the jumbo frame feature,
+> > they may not automatically know this patch should be backported
+> > too.   
 > 
-> FWIW, parisc is in the same situation - atomics-by-cached-spinlocks.
-> 've a candidate branch, will post if it survives build...
+> The jumbo frame commit (2fbbd712baf1) depends on the MTU
+> commit (2fbbd712baf1), so adding "Fixes: 2fbbd712baf1" (
+> instead of "Fixes: ca9c54d2d6a5") might make it easier for people
+> to notice and pick up this fix.
+> 
+> I'm OK if the patch remains as is. Just wanted to make  sure I
+> understand the issue here.
 
-Seems to survive.  See
-git://git.kernel.org:/pub/scm/linux/kernel/git/viro/vfs.git misc.cmpxchg
-
-Completely untested; builds on several configs, but that's it.
-Al Viro (8):
-      sparc32: make __cmpxchg_u32() return u32
-      sparc32: make the first argument of __cmpxchg_u64() volatile u64 *
-      sparc32: unify __cmpxchg_u{32,64}
-      sparc32: add __cmpxchg_u{8,16}() and teach __cmpxchg() to handle those sizes
-      parisc: __cmpxchg_u32(): lift conversion into the callers
-      parisc: unify implementations of __cmpxchg_u{8,32,64}
-      parisc: add missing export of __cmpxchg_u8()
-      parisc: add u16 support to cmpxchg()
-
- arch/parisc/include/asm/cmpxchg.h   | 16 ++++++------
- arch/parisc/kernel/parisc_ksyms.c   |  2 ++
- arch/parisc/lib/bitops.c            | 52 ++++++++++++-------------------------
- arch/sparc/include/asm/cmpxchg_32.h | 11 +++++---
- arch/sparc/lib/atomic32.c           | 45 ++++++++++++++------------------
- 5 files changed, 55 insertions(+), 71 deletions(-)
-
-Individual patches in followups.
+Please update the tag to where the bug was actually first exposed.
 
