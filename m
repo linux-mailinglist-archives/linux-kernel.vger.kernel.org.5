@@ -1,45 +1,45 @@
-Return-Path: <linux-kernel+bounces-128507-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-128508-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2BECF895BCC
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 20:33:15 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id D9B4F895BCE
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 20:33:27 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DB9CA289317
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 18:33:13 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id ED8E21C22C40
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 18:33:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5CEE415B561;
-	Tue,  2 Apr 2024 18:32:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5582C15B542;
+	Tue,  2 Apr 2024 18:32:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="hSh7EaSx"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="WrOsOdEx"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9348515B557;
-	Tue,  2 Apr 2024 18:32:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8C78615B573;
+	Tue,  2 Apr 2024 18:32:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712082772; cv=none; b=gZfeFccPbtzFjc/c9ihEHkQn/XbUUu4rthqoDY4B2bX70AYIwt+6/+aAWqjMJoPQumxJYaz3A7XiSjjYa9dhU6r+F4G34IkpCR0/WGGdvMD7ranekLuf3FFKx5Gmwh1YjcAgI8Z3Pp9diJn4veFj5bj7Dw8gWTGoZmRvatjBz28=
+	t=1712082775; cv=none; b=hR+j99a7Lil32FP8FffD7paxQMl/tGfLAGY10PwHyF6uuBfMu6TPqx9BW5kKXWwbCIlbgCZfq7cNwdo4nA3/FjM4nm7aD83gtSGmAd/6ZX7+myufPRoUlnTzIFKsLE+2qJ64xWE9m0m0lFS5cAALV/aQrf0feqa6sM+G1iJVmvA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712082772; c=relaxed/simple;
-	bh=HH+V/3H6awlr40M37OnQraPrX1kzaiQ7vKPiegtxqzQ=;
+	s=arc-20240116; t=1712082775; c=relaxed/simple;
+	bh=Tkc1wkxhjy4lTBWpmN6ywzBBN9sIhelXSsaqaqbZTRA=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=K3MiOijZzgixQl0LgYMt87bmtRYZyfI3ey0GGUsKzjyS9uEKl7AlXAQPyvnVPVLg4Dg+t89bYLyOmdXVRmVtv2IG3ATwJR1AHzA+sn8P+w9bQDCt7ZNSUHZAtjnp35nopF/QDHClgTuQRzgsL3sj2Iq3raPKedAFg33Z2KCt0vI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=hSh7EaSx; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 57615C43390;
-	Tue,  2 Apr 2024 18:32:49 +0000 (UTC)
+	 MIME-Version; b=rNlP2DoXRWElgaWg08YGTEB0yzBPe0nm1V3LrDOMNjpPqXL5TJBVDCb4u+LNcootA2q/BrqIx7Fo5F0irE0/7io+SXgq2+oSn/PN6xScBgfZ+PK++cvtgHDn9ZfX/h9FdMYu63pAXOC7udZzA3O0m/LFQG1qDedvHGNHnItbB8w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=WrOsOdEx; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 86FCCC433F1;
+	Tue,  2 Apr 2024 18:32:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712082772;
-	bh=HH+V/3H6awlr40M37OnQraPrX1kzaiQ7vKPiegtxqzQ=;
+	s=k20201202; t=1712082775;
+	bh=Tkc1wkxhjy4lTBWpmN6ywzBBN9sIhelXSsaqaqbZTRA=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=hSh7EaSx7pR+liXOFW/xSmNayY4bSw6V623LoWlzL57G0E0ggitK5v3qlAEv48w5p
-	 Gln6HnXhoeK74m1FsTJY6ZBXfFPXq4pWzLhIQCsX1mLJA23F6be3Kt2TVUDl9c9V6Z
-	 d4G4Y3j7fo4nx7JWsKf4Ys7gh+ehzNJiSq0yGPXyoC9S6cHL31118j303+BPScZHJe
-	 lhdWXw0ThVfJBxkPLxt8rbB0vEv4DaxzjNv6fevlxfN3eqxU9FFyqKCr99aoBlWV4g
-	 va1PZJnKnl9ivzMnlUnjHs3x8NmJkE8OwOizvfZh64seSh7DWnKaX6RUeW3NtY8FNX
-	 4Tuwzvh3CXRKA==
+	b=WrOsOdEx9YsalLcENbahAGFye7mnX2y3D7cOgpoypb2pTm1URyl5GgAzWqnTSVOxX
+	 Z/IKX7ZVW90KNdO5s98eIUEROBRYoxQuJu9E28GVV/5UWZ0cXdHzUjFnzpm0Dzrwjl
+	 ceFOOODlI58CgTYbw3gyvgwavasfL4qHMAHtruHk5y1teu3oXDxEqgtstCrtHFLUpV
+	 VqDZdgz7y5cX/V9Trt98sOIUPbApm4WkOG1cD+JfLxuu88L9ILBOBEjrZLioliXP4t
+	 dlmyR41tYITuckKVL0K7wipww5qg/OqP1rVNE8bE5w7yeX2NOX8RAkcPhWwaUAlE+l
+	 JQQNd1AgZghMg==
 From: Krzysztof Kozlowski <krzk@kernel.org>
 To: Robert Marko <robert.marko@sartura.hr>,
 	Andrew Lunn <andrew@lunn.ch>,
@@ -52,9 +52,9 @@ To: Robert Marko <robert.marko@sartura.hr>,
 	devicetree@vger.kernel.org,
 	linux-kernel@vger.kernel.org
 Cc: Krzysztof Kozlowski <krzk@kernel.org>
-Subject: [PATCH 2/3] arm64: dts: marvell: turris-mox: drop unneeded flash address/size-cells
-Date: Tue,  2 Apr 2024 20:32:39 +0200
-Message-Id: <20240402183240.49193-2-krzk@kernel.org>
+Subject: [PATCH 3/3] arm64: dts: marvell: espressobin-ultra: fix Ethernet Switch unit address
+Date: Tue,  2 Apr 2024 20:32:40 +0200
+Message-Id: <20240402183240.49193-3-krzk@kernel.org>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20240402183240.49193-1-krzk@kernel.org>
 References: <20240402183240.49193-1-krzk@kernel.org>
@@ -66,30 +66,151 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Flash node uses single "partition" node to describe partitions, so
-remove deprecated address/size-cells properties to also fix dtc W=1
-warnings:
+The Espressobin Ultra DTS includes Espressobin DTSI which defines
+ethernet-switch@1 node.  The Ultra DTS overrides "reg" to 3, but that
+leaves still old unit address which conflicts with the new phy@1 node
+(W=1 dtc warning):
 
-  armada-3720-turris-mox.dts:218.10-255.4: Warning (avoid_unnecessary_addr_size): /soc/internal-regs@d0000000/spi@10600/flash@0: unnecessary #address-cells/#size-cells without "ranges" or child "reg" property
+  armada-3720-espressobin.dtsi:148.29-203.4: Warning (unique_unit_address_if_enabled): /soc/internal-regs@d0000000/mdio@32004/ethernet-switch@1: duplicate unit-address (also used in node /soc/internal-regs@d0000000/mdio@32004/ethernet-phy@1)
+
+Fix this by deleting ethernet-switch@1 node and merging original node
+with code from Ultra DTS into new ethernet-switch@3.
 
 Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
----
- arch/arm64/boot/dts/marvell/armada-3720-turris-mox.dts | 2 --
- 1 file changed, 2 deletions(-)
 
-diff --git a/arch/arm64/boot/dts/marvell/armada-3720-turris-mox.dts b/arch/arm64/boot/dts/marvell/armada-3720-turris-mox.dts
-index f1a9f2234359..54453b0a91f9 100644
---- a/arch/arm64/boot/dts/marvell/armada-3720-turris-mox.dts
-+++ b/arch/arm64/boot/dts/marvell/armada-3720-turris-mox.dts
-@@ -216,8 +216,6 @@ &spi0 {
- 	assigned-clock-rates = <20000000>;
+---
+
+Not tested on hardware.
+---
+ .../marvell/armada-3720-espressobin-ultra.dts | 104 +++++++++++-------
+ 1 file changed, 67 insertions(+), 37 deletions(-)
+
+diff --git a/arch/arm64/boot/dts/marvell/armada-3720-espressobin-ultra.dts b/arch/arm64/boot/dts/marvell/armada-3720-espressobin-ultra.dts
+index 870bb380a40a..b3cc2b7b5d19 100644
+--- a/arch/arm64/boot/dts/marvell/armada-3720-espressobin-ultra.dts
++++ b/arch/arm64/boot/dts/marvell/armada-3720-espressobin-ultra.dts
+@@ -114,54 +114,84 @@ &usb3 {
+ };
  
- 	flash@0 {
--		#address-cells = <1>;
--		#size-cells = <1>;
- 		compatible = "jedec,spi-nor";
- 		reg = <0>;
- 		spi-max-frequency = <20000000>;
+ &mdio {
++	/* Switch is @3, not @1 */
++	/delete-node/ ethernet-switch@1;
+ 	extphy: ethernet-phy@1 {
+ 		reg = <1>;
+ 
+ 		reset-gpios = <&gpionb 2 GPIO_ACTIVE_LOW>;
+ 	};
+-};
+ 
+-&switch0 {
+-	reg = <3>;
++	switch0: ethernet-switch@3 {
++		compatible = "marvell,mv88e6085";
++		reg = <3>;
+ 
+-	reset-gpios = <&gpiosb 23 GPIO_ACTIVE_LOW>;
++		reset-gpios = <&gpiosb 23 GPIO_ACTIVE_LOW>;
++		dsa,member = <0 0>;
+ 
+-	ethernet-ports {
+-		switch0port1: ethernet-port@1 {
+-			reg = <1>;
+-			label = "lan0";
+-			phy-handle = <&switch0phy0>;
++		ethernet-ports {
++			#address-cells = <1>;
++			#size-cells = <0>;
++
++			switch0port0: ethernet-port@0 {
++				reg = <0>;
++				label = "cpu";
++				ethernet = <&eth0>;
++				phy-mode = "rgmii-id";
++				fixed-link {
++					speed = <1000>;
++					full-duplex;
++				};
++			};
++
++			switch0port1: ethernet-port@1 {
++				reg = <1>;
++				label = "lan0";
++				phy-handle = <&switch0phy0>;
++			};
++
++			switch0port2: ethernet-port@2 {
++				reg = <2>;
++				label = "lan1";
++				phy-handle = <&switch0phy1>;
++			};
++
++			switch0port3: ethernet-port@3 {
++				reg = <3>;
++				label = "lan2";
++				phy-handle = <&switch0phy2>;
++			};
++
++			switch0port4: ethernet-port@4 {
++				reg = <4>;
++				label = "lan3";
++				phy-handle = <&switch0phy3>;
++			};
++
++			switch0port5: ethernet-port@5 {
++				reg = <5>;
++				label = "wan";
++				phy-handle = <&extphy>;
++				phy-mode = "sgmii";
++			};
+ 		};
+ 
+-		switch0port2: ethernet-port@2 {
+-			reg = <2>;
+-			label = "lan1";
+-			phy-handle = <&switch0phy1>;
+-		};
++		mdio {
++			#address-cells = <1>;
++			#size-cells = <0>;
+ 
+-		switch0port3: ethernet-port@3 {
+-			reg = <3>;
+-			label = "lan2";
+-			phy-handle = <&switch0phy2>;
+-		};
+-
+-		switch0port4: ethernet-port@4 {
+-			reg = <4>;
+-			label = "lan3";
+-			phy-handle = <&switch0phy3>;
+-		};
+-
+-		switch0port5: ethernet-port@5 {
+-			reg = <5>;
+-			label = "wan";
+-			phy-handle = <&extphy>;
+-			phy-mode = "sgmii";
+-		};
+-	};
+-
+-	mdio {
+-		switch0phy3: ethernet-phy@14 {
+-			reg = <0x14>;
++			switch0phy0: ethernet-phy@11 {
++				reg = <0x11>;
++			};
++			switch0phy1: ethernet-phy@12 {
++				reg = <0x12>;
++			};
++			switch0phy2: ethernet-phy@13 {
++				reg = <0x13>;
++			};
++			switch0phy3: ethernet-phy@14 {
++				reg = <0x14>;
++			};
+ 		};
+ 	};
+ };
 -- 
 2.34.1
 
