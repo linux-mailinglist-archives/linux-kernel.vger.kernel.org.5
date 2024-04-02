@@ -1,237 +1,238 @@
-Return-Path: <linux-kernel+bounces-127988-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-127989-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id BBA7489541E
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 14:58:39 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0BF18895421
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 14:59:13 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 34C871F23696
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 12:58:39 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B5EDB2863FB
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 12:59:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8B23383CC8;
-	Tue,  2 Apr 2024 12:58:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 667477F7EC;
+	Tue,  2 Apr 2024 12:59:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="f0xwaJ3v"
-Received: from mail-lf1-f48.google.com (mail-lf1-f48.google.com [209.85.167.48])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="fEPvEsah"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 875CA7F7FD
-	for <linux-kernel@vger.kernel.org>; Tue,  2 Apr 2024 12:58:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EFD757EF10
+	for <linux-kernel@vger.kernel.org>; Tue,  2 Apr 2024 12:59:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712062688; cv=none; b=QRtoYhIAfC57aargx9XkBjvzBBN9SbfPf/3IrUNiS9cGVULxc8pzx4WwtfwByDK960qg+PMJIG+PJsNU5UnsNivpmnI97QGOtOxxS3eBIF4OASnoLdEg0pq7R2kySY7TLGwzjn2Quce73dypsOQeR9L8UoKRz599pWOxtUHu544=
+	t=1712062745; cv=none; b=u3x4nudPcjCWj8yCjvrIXT89/a763ADSc9GP40kk0gumcFjyK1Of6SsOxypxnI327i4PV9Z3g37BAwFzzqXNnXPhwAmw2dOkRaPmMUDsi2FE3eT1SnyL9NL+stP6UAcbWWbYzMKZVM8A2nMo3OjsWERd3SAoxMkjBupYcWF62P4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712062688; c=relaxed/simple;
-	bh=mdY4dxhz2UTdQG4t+FrFFk3AOW100nipdCoXDUX5fj0=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=qbw+cYqTHT5tPN5gJqxMKJ2YhBbag60/2XnKwxqQ0VhTsnZrqYDcaYIu5MU8NUzuevcftPHh8jqBX886jjTrTZZAjEkBKR/eGnjie4Kh1gBcaoOZIkAx7XDhGG7Z4MUtwtUaLvcj3XLcyBNIwuNsiGbe1QmKZuVNmy6NAcCJRjI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=f0xwaJ3v; arc=none smtp.client-ip=209.85.167.48
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-lf1-f48.google.com with SMTP id 2adb3069b0e04-515a68d45faso5712625e87.3
-        for <linux-kernel@vger.kernel.org>; Tue, 02 Apr 2024 05:58:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1712062685; x=1712667485; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=sFx6hP8hvOPeUdfct+YUNkXorKxd3sUiyEh1lx2j5Y0=;
-        b=f0xwaJ3v74A7f887w6JazJTx2qnAKWjrvMEFrgNIzd0zR46OpINQUUQnmwtkL+Qsge
-         h9yXIU+61M2FPOAVDnCFK1AOesUV0szXajUnft1liuM1KbZa8uVFFD/gsA/mn3pXjZFQ
-         nhAW7NeXvlSFi1oVmelMtG4b0JvL2xacCD4CG/5HGSRI0F36MpoBcUfzYhgbizhCmy1s
-         zZZ84ax7yrR/DBHtrbJSTv/fcWuLkG0zrWzqCq3RgIqw7/Sp/aTa0sdSlwjWJ7Uo6eGe
-         m3VzdY55pcC0V/FghB2duqyZ/4a7ULGlHL/8uUXDISeTsKC5q/i6OKxQk3RU7nXN6+b6
-         c7lQ==
+	s=arc-20240116; t=1712062745; c=relaxed/simple;
+	bh=w7G5DdOk7rwBY1MtpU7UsFJo21O6wvzqvoKsO+sEzTw=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=gYzBgNQRqrSMtp2m2obLPtDPNwqNdfrPsf+kzuEjYSABGmkq+zluIha6E7qsjBKIitVjbfRELO5yV/V3J5Wruj4Hi42upoxYyXjiOpnNGsJZb7PeuJsbF1SVxKSi+PiRthKZIguSUTIUpGCaD3ZEA063/7+4HVEQO1s3gE3gJJg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=fEPvEsah; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1712062742;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=TmiKzNpoTThIDgDgzTh3VqdhrMkp9oIKMyB8Og+9cyc=;
+	b=fEPvEsahOU1p+aIPNgheuapeba+KE3U+WC2mHIGD6iyAIbIQ5zhwAS58yoUs+3MobvX/Ij
+	0xctA2a53Ng+JBICJ9uXo5ljoUKSRXYZMlg9xNLP3JpwxtWRDu3aAJiV0UdrUfPPAFP/Pb
+	1pVCvXWj62BXXw7uvBhPOpqwfKiQ3wY=
+Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
+ [209.85.221.70]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-623-k-JQlBogN_CAUU52oHjjhA-1; Tue, 02 Apr 2024 08:58:54 -0400
+X-MC-Unique: k-JQlBogN_CAUU52oHjjhA-1
+Received: by mail-wr1-f70.google.com with SMTP id ffacd0b85a97d-33ed2f873b4so2694738f8f.2
+        for <linux-kernel@vger.kernel.org>; Tue, 02 Apr 2024 05:58:54 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712062685; x=1712667485;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+        d=1e100.net; s=20230601; t=1712062733; x=1712667533;
+        h=content-transfer-encoding:in-reply-to:organization:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=sFx6hP8hvOPeUdfct+YUNkXorKxd3sUiyEh1lx2j5Y0=;
-        b=lLAysOJVxihGOj5i1f4xDR1PqZoj9ZMhc2TgqMfueBFnbKurrvwxk596DRKR0useQg
-         +QfIxNfUd6JAXeDsjJtJwLt3+qtgCyT007t6TeYjqtz9/ELeIbnL4iau1edAJIi8Ofgb
-         Yf2Ya1DxpBkGjE4jb9nLrP/DEKQZrkLF6PuDxre0EUFVX1FCdoqJC5kVnRiNkXJs0ojA
-         wGIkiR/y8XT7phM7N8nD/YCcanjWDfSr+9Isi2yZT0ZO+luQPlf23vfboOsSefBU7iGH
-         skxLIX82GqP3boiOvmeGjtEnzBKOAbq2VtACgofW+WAGHAIkwPLdNAa8vH4FX9JYRRVb
-         JveA==
-X-Forwarded-Encrypted: i=1; AJvYcCUoPVvfkzYyQXMCBdM1ZiDda71QQt2NsuoK/+YLy88w5K8HjEloA3xlyltECRiQJ8BAMvIbHdOlCkWVlISRg5UEQ/xqyIfhcTHn6czf
-X-Gm-Message-State: AOJu0Yx9aXERYL/qmrx5Qdy3vyu6IiJenbeJ4WHsInNG5+BjfG7xc+jn
-	eKeR8BCD7U4rNX0VqEgFrntw+wlVQRFhc8p8Th90tZEn1gfBF5rSrJz/pox3k3Q=
-X-Google-Smtp-Source: AGHT+IHWR0hLdOL78yMVv8MFgfNCo7t7ygA9mH2c/bUuGc7SlEtcmgj1HbUwD+5oLppZJcBjJKZHDQ==
-X-Received: by 2002:a05:6512:2815:b0:515:d198:694d with SMTP id cf21-20020a056512281500b00515d198694dmr10154546lfb.26.1712062684514;
-        Tue, 02 Apr 2024 05:58:04 -0700 (PDT)
-Received: from aspen.lan (aztw-34-b2-v4wan-166919-cust780.vm26.cable.virginm.net. [82.37.195.13])
-        by smtp.gmail.com with ESMTPSA id n7-20020a05600c500700b00415870e1e88sm2728986wmr.29.2024.04.02.05.58.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 02 Apr 2024 05:58:04 -0700 (PDT)
-Date: Tue, 2 Apr 2024 13:58:02 +0100
-From: Daniel Thompson <daniel.thompson@linaro.org>
-To: liu.yec@h3c.com
-Cc: gregkh@linuxfoundation.org, jirislaby@kernel.org, dianders@chromium.org,
-	jason.wessel@windriver.com, kgdb-bugreport@lists.sourceforge.net,
-	linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org
-Subject: Re: [PATCH V7] kdb: Fix the deadlock issue in KDB debugging.
-Message-ID: <20240402125802.GC25200@aspen.lan>
-References: <2024032630-croon-consuming-6ef9@gregkh>
- <20240326085407.1970686-1-liu.yec@h3c.com>
+        bh=TmiKzNpoTThIDgDgzTh3VqdhrMkp9oIKMyB8Og+9cyc=;
+        b=q6ITNl72ZrvHfHUPmWI2mFcW/FeHn4NJUTQ6yZmNpAR+mKpZa3/rqdcbGOkLGu4g1l
+         ArjXDm0TtOXGMn+KOzj/0VKgGPX7uL8iqx4k0xbt5DkbaKh2/xViR3F38425t5HpPl5h
+         TrIZhS5JAXpsN5xpupgKTC7QJRSqAJ7nXvqTqgrM9isDKUXzRRb4yGyXakOPZV7FC810
+         Fu7FC66cGbFMsewPjRXtyev05M5VvxS9AsXoG/cJSnM/SHA8wmKlhS6nJQoqngKX17kl
+         Tln1WdDakv+79rfSd2hXJVrXmJuMxCv7x/7RWtgyGvenIAk6J2UxedPMVRG7HQh8XO4h
+         oGaQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVlDPzJj0IPS/hQ/IFYOfcz7DJFxyO0mKEpCVLe5Eqy2UNe5OJR8DN3qsgMcaKO7oyTPqIGOGMl2f3rIQFZ3FRUSC2IppshoXkxHdMe
+X-Gm-Message-State: AOJu0Yxrn2aQlzx5APxMLX2C87t5SB6uKn2papwoTdKnOhxGRsbvcVdH
+	kw58auvoB5a6tUk9vAf6cfMZ2azPlkxP36hdA+aS0IJhYC20zER3+1bOB/xqzMZBlDJWJU2ykW0
+	Q0oBrILT6VGKIckFcqOUFTfH/6rZ3E9JgiOsSw/IH0WWsVEJkma3zQKpE2O1pqQ==
+X-Received: by 2002:adf:f18f:0:b0:341:a640:b516 with SMTP id h15-20020adff18f000000b00341a640b516mr8027082wro.70.1712062733622;
+        Tue, 02 Apr 2024 05:58:53 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IGaC3Eovc49fr7XF3UPg6ZNunFrc5iwvSdh0K2O0b9k6yhB6B5FpLiaHwTzO+LgFHTAXUGH/A==
+X-Received: by 2002:adf:f18f:0:b0:341:a640:b516 with SMTP id h15-20020adff18f000000b00341a640b516mr8027069wro.70.1712062733252;
+        Tue, 02 Apr 2024 05:58:53 -0700 (PDT)
+Received: from ?IPV6:2003:cb:c732:e600:4982:2903:710f:f20a? (p200300cbc732e60049822903710ff20a.dip0.t-ipconnect.de. [2003:cb:c732:e600:4982:2903:710f:f20a])
+        by smtp.gmail.com with ESMTPSA id bq21-20020a5d5a15000000b00341cb22a8d4sm14229799wrb.108.2024.04.02.05.58.52
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 02 Apr 2024 05:58:52 -0700 (PDT)
+Message-ID: <736b982a-57c9-441a-812c-87cdee2e096e@redhat.com>
+Date: Tue, 2 Apr 2024 14:58:50 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240326085407.1970686-1-liu.yec@h3c.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCHv2 1/1] mm: fix unproperly folio_put by changing API in
+ read_pages
+To: "zhaoyang.huang" <zhaoyang.huang@unisoc.com>,
+ Andrew Morton <akpm@linux-foundation.org>, NeilBrown <neilb@suse.de>,
+ linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+ Zhaoyang Huang <huangzhaoyang@gmail.com>, steve.kang@unisoc.com
+Cc: Matthew Wilcox <willy@infradead.org>,
+ Christoph Hellwig <hch@infradead.org>
+References: <20240401081734.1433755-1-zhaoyang.huang@unisoc.com>
+Content-Language: en-US
+From: David Hildenbrand <david@redhat.com>
+Autocrypt: addr=david@redhat.com; keydata=
+ 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
+ WNyWQQ==
+Organization: Red Hat
+In-Reply-To: <20240401081734.1433755-1-zhaoyang.huang@unisoc.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Tue, Mar 26, 2024 at 04:54:07PM +0800, liu.yec@h3c.com wrote:
-> From: LiuYe <liu.yeC@h3c.com>
->
-> Currently, if CONFIG_KDB_KEYBOARD is enabled, then kgdboc will
-> attempt to use schedule_work() to provoke a keyboard reset when
-> transitioning out of the debugger and back to normal operation.
-> This can cause deadlock because schedule_work() is not NMI-safe.
->
-> The stack trace below shows an example of the problem. In this
-> case the master cpu is not running from NMI but it has parked
-> the slave CPUs using an NMI and the parked CPUs is holding
-> spinlocks needed by schedule_work().
->
-> example:
->  BUG: spinlock lockup suspected on CPU#0, namex/10450
->  lock: 0xffff881ffe823980, .magic: dead4ead, .owner: namexx/21888, .owner_cpu: 1
->  ffff881741d00000 ffff881741c01000 0000000000000000 0000000000000000
->  ffff881740f58e78 ffff881741cffdd0 ffffffff8147a7fc ffff881740f58f20
-> Call Trace:
->  [<ffffffff81479e6d>] ? __schedule+0x16d/0xac0
->  [<ffffffff8147a7fc>] ? schedule+0x3c/0x90
->  [<ffffffff8147e71a>] ? schedule_hrtimeout_range_clock+0x10a/0x120
->  [<ffffffff8147d22e>] ? mutex_unlock+0xe/0x10
->  [<ffffffff811c839b>] ? ep_scan_ready_list+0x1db/0x1e0
->  [<ffffffff8147e743>] ? schedule_hrtimeout_range+0x13/0x20
->  [<ffffffff811c864a>] ? ep_poll+0x27a/0x3b0
->  [<ffffffff8108c540>] ? wake_up_q+0x70/0x70
->  [<ffffffff811c99a8>] ? SyS_epoll_wait+0xb8/0xd0
->  [<ffffffff8147f296>] ? entry_SYSCALL_64_fastpath+0x12/0x75
->  CPU: 0 PID: 10450 Comm: namex Tainted: G           O    4.4.65 #1
->  Hardware name: Insyde Purley/Type2 - Board Product Name1, BIOS 05.21.51.0036 07/19/2019
->   0000000000000000 ffff881ffe813c10 ffffffff8124e883 ffff881741c01000
->   ffff881ffe823980 ffff881ffe813c38 ffffffff810a7f7f ffff881ffe823980
->   000000007d2b7cd0 0000000000000001 ffff881ffe813c68 ffffffff810a80e0
->   Call Trace:
->   <#DB>  [<ffffffff8124e883>] dump_stack+0x85/0xc2
->   [<ffffffff810a7f7f>] spin_dump+0x7f/0x100
->   [<ffffffff810a80e0>] do_raw_spin_lock+0xa0/0x150
->   [<ffffffff8147eb55>] _raw_spin_lock+0x15/0x20
->   [<ffffffff8108c256>] try_to_wake_up+0x176/0x3d0
->   [<ffffffff8108c4c5>] wake_up_process+0x15/0x20
->   [<ffffffff8107b371>] insert_work+0x81/0xc0
->   [<ffffffff8107b4e5>] __queue_work+0x135/0x390
->   [<ffffffff8107b786>] queue_work_on+0x46/0x90
->   [<ffffffff81313d28>] kgdboc_post_exp_handler+0x48/0x70
->   [<ffffffff810ed488>] kgdb_cpu_enter+0x598/0x610
->   [<ffffffff810ed6e2>] kgdb_handle_exception+0xf2/0x1f0
->   [<ffffffff81054e21>] __kgdb_notify+0x71/0xd0
->   [<ffffffff81054eb5>] kgdb_notify+0x35/0x70
->   [<ffffffff81082e6a>] notifier_call_chain+0x4a/0x70
->   [<ffffffff8108304d>] notify_die+0x3d/0x50
->   [<ffffffff81017219>] do_int3+0x89/0x120
->   [<ffffffff81480fb4>] int3+0x44/0x80
->
-> We fix the problem by using irq_work to call schedule_work()
-> instead of calling it directly. irq_work is an NMI-safe deferred work
-> framework that performs the requested work from a hardirq context
-> (usually an IPI but it can be timer interrupt on some
-> architectures).
->
-> Note that we still need to a workqueue since we cannot resync
-> the keyboard state from the hardirq context provided by irq_work.
-> That must be done from task context for the calls into the input
-> subystem. Hence we must defer the work twice. First to safely
-> switch from the debug trap (NMI-like context) to hardirq and
-> then, secondly, to get from hardirq to the system workqueue.
->
-> Signed-off-by: LiuYe <liu.yeC@h3c.com>
-> Co-authored-by: Daniel Thompson <daniel.thompson@linaro.org>
-> Signed-off-by: Daniel Thompson <daniel.thompson@linaro.org>
->
-> ---
-> V6 -> V7: Add comments in the code.
-> V5 -> V6: Replace with a more professional and accurate answer.
-> V4 -> V5: Answer why schedule another work in the irq_work and not do the job directly.
-> V3 -> V4: Add changelogs
-> V2 -> V3: Add description information
-> V1 -> V2: using irq_work to solve this properly.
-> ---
-> ---
->  drivers/tty/serial/kgdboc.c | 22 +++++++++++++++++++++-
->  1 file changed, 21 insertions(+), 1 deletion(-)
->
-> diff --git a/drivers/tty/serial/kgdboc.c b/drivers/tty/serial/kgdboc.c
-> index 7ce7bb164..750ed66d2 100644
-> --- a/drivers/tty/serial/kgdboc.c
-> +++ b/drivers/tty/serial/kgdboc.c
-> @@ -22,6 +22,7 @@
->  #include <linux/module.h>
->  #include <linux/platform_device.h>
->  #include <linux/serial_core.h>
-> +#include <linux/irq_work.h>
->
->  #define MAX_CONFIG_LEN		40
->
-> @@ -98,11 +99,29 @@ static void kgdboc_restore_input_helper(struct work_struct *dummy)
->  }
->
->  static DECLARE_WORK(kgdboc_restore_input_work, kgdboc_restore_input_helper);
-> +/*
-> + * We fix the problem by using irq_work to call schedule_work()
-> + * instead of calling it directly.
+On 01.04.24 10:17, zhaoyang.huang wrote:
+> From: Zhaoyang Huang <zhaoyang.huang@unisoc.com>
+> 
+> An VM_BUG_ON in step 9 of [1] could happen as the refcnt is dropped
+> unproperly during the procedure of read_pages()->readahead_folio->folio_put.
+> This is introduced by commit 9fd472af84ab ("mm: improve cleanup when
+> ->readpages doesn't process all pages")'.
+> 
+> key steps of[1] in brief:
+> 2'. Thread_truncate get folio to its local fbatch by find_get_entry in step 2
+> 7'. Last refcnt remained which is not as expect as from alloc_pages
+>      but from thread_truncate's local fbatch in step 7
+> 8'. Thread_reclaim succeed to isolate the folio by the wrong refcnt(not
+>      the value but meaning) in step 8
+> 9'. Thread_truncate hit the VM_BUG_ON in step 9
+> 
+> [1]
+> Thread_readahead:
+> 0. folio = filemap_alloc_folio(gfp_mask, 0);
+>         (refcount 1: alloc_pages)
+> 1. ret = filemap_add_folio(mapping, folio, index + i, gfp_mask);
+>         (refcount 2: alloc_pages, page_cache)
+> 
+> Thread_truncate:
+> 2. folio = find_get_entries(&fbatch_truncate);
+>         (refcount 3: alloc_pages, page_cache, fbatch_truncate))
+> 
+> Thread_readahead:
+> 3. Then we call read_pages()
+>         First we call ->readahead() which for some reason stops early.
+> 4. Then we call readahead_folio() which calls folio_put()
+>         (refcount 2: page_cache, fbatch_truncate)
+> 5. Then we call folio_get()
+>         (refcount 3: page_cache, fbatch_truncate, read_pages_temp)
+> 6. Then we call filemap_remove_folio()
+>         (refcount 2: fbatch_truncate, read_pages_temp)
+> 7. Then we call folio_unlock() and folio_put()
+>         (refcount 1: fbatch_truncate)
+> 
+> Thread_reclaim:
+> 8. collect the page from LRU and call shrink_inactive_list->isolate_lru_folios
+>          shrink_inactive_list
+>          {
+>              isolate_lru_folios
+>              {
+>                 if (!folio_test_lru(folio)) //false
+>                     bail out;
+>                 if (!folio_try_get(folio)) //false
+>                     bail out;
+>              }
+>           }
+>           (refcount 2: fbatch_truncate, reclaim_isolate)
+> 
+> 9. call shrink_folio_list->__remove_mapping
+>          shrink_folio_list()
+>          {
+>              folio_try_lock(folio);
+>              __remove_mapping()
+>              {
+>                  if (!folio_ref_freeze(2)) //false
+>                      bail out;
+>              }
+>              folio_unlock(folio)
+>              list_add(folio, free_folios);
+>          }
+>          (folio has refcount 0)
+> 
+> Thread_truncate:
+> 10. Thread_truncate will hit the refcnt VM_BUG_ON(refcnt == 0) in
+> release_pages->folio_put_testzero
+>          truncate_inode_pages_range
+>          {
+>              folio = find_get_entries(&fbatch_truncate);
+>              truncate_inode_pages(&fbatch_truncate);
+>              folio_fbatch_release(&fbatch_truncate);
+>              {
+>                  folio_put_testzero(folio); //VM_BUG_ON here
+>              }
+>          }
+> 
+> fix: commit 9fd472af84ab ("mm: improve cleanup when ->readpages doesn't process all pages")'
 
-What problem?
+Something that would help here is an actual reproducer that triggersthis 
+issue.
 
-Put another way this text has been copy-pasted from
-the commit message without any editing to make it make sense. Text in
-the C file needs to be standalone!
+To me, it's unclear at this point if we are talking about an actual 
+issue or a theoretical issue?
 
-More like:
---- cut here ---
-This code ensures that the keyboard state, which is changed during kdb
-execution, is resynchronized when we leave the debug trap. The resync
-logic calls into the input subsystem to force a reset. The calls into
-the input subsystem must be executed from normal task context.
+-- 
+Cheers,
 
-We need to trigger the resync from the debug trap, which executes in an
-NMI (or similar) context. To make it safe to call into the input
-subsystem we end up having use two deferred execution techniques.
-Firstly, we use irq_work, which is NMI-safe, to provoke a callback from
-hardirq context. Then, from the hardirq callback we use the system
-workqueue to provoke the callback that actually performs the resync.
---- cut here ---
+David / dhildenb
 
->                                     irq_work is an NMI-safe deferred work
-> + * framework that performs the requested work from a hardirq context
-> + * (usually an IPI but it can be timer interrupt on some
-> + * architectures). Note that we still need to a workqueue since we cannot resync
-> + * the keyboard state from the hardirq context provided by irq_work.
-> + * That must be done from task context for the calls into the input
-> + * subystem. Hence we must defer the work twice. First to safely
-> + * switch from the debug trap (NMI-like context) to hardirq and
-> + * then, secondly, to get from hardirq to the system workqueue.
-> + */
-
-Please find a better place to anchor the comment. It should be further
-up in the file when the first bit of deferred work appears, perhaps near
-kgdboc_restore_input_helper().
-
-
-> +static void kgdboc_queue_restore_input_helper(struct irq_work *unused)
-> +{
-> +	schedule_work(&kgdboc_restore_input_work);
-> +}
-> +
-> +static DEFINE_IRQ_WORK(kgdboc_restore_input_irq_work, kgdboc_queue_restore_input_helper);
-
-
-Daniel.
 
