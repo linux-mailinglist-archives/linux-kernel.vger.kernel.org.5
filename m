@@ -1,211 +1,212 @@
-Return-Path: <linux-kernel+bounces-127508-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-127509-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id EB854894CB1
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 09:34:28 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7087D894CB5
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 09:35:50 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A1430282D09
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 07:34:27 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D9444B22308
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 07:35:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CDE663B299;
-	Tue,  2 Apr 2024 07:34:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=natalenko.name header.i=@natalenko.name header.b="fxEklbVQ"
-Received: from prime.voidband.net (prime.voidband.net [199.247.17.104])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E46EE3BBC2;
+	Tue,  2 Apr 2024 07:35:43 +0000 (UTC)
+Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 75C493AC08
-	for <linux-kernel@vger.kernel.org>; Tue,  2 Apr 2024 07:34:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=199.247.17.104
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E9D972BD1C
+	for <linux-kernel@vger.kernel.org>; Tue,  2 Apr 2024 07:35:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712043261; cv=none; b=OnYUJohnCeAUCPosYPmLCrrfAUmGQ4rENWArqHSsum8LmMP//l+TuRuLVbClyPRY6O5LM1rOWnOBDGNqrMd+nevEZ93nKcOkDjdDEZhoZGNeee2/mJWwBZ4JHW/Pqw4r7pNymBw4wgFxtE9fWGGKKLjf5FoayQZRkfV7r7kbc3A=
+	t=1712043343; cv=none; b=RJHDQsdsnR0gqM7CDLvTTLvQ24XwoPEBtbIbsA9DGH/YhbupbrS8aIg2tRUTVuZvqJ/HwpZt9HfgGXBy1kIWGCwwbPJ73cdwMXxB6nVgADGsWk9uGbgl3ExcVtX/LeDgTzI6hIApazNyuNeulrTdxdKOtO0BkZtQVucyQ2s6Rww=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712043261; c=relaxed/simple;
-	bh=jSp8wWShlE2Mm6DBBA71MhGhBNRLWFmPrWpzbcc+LiQ=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=LtPZaKa5TwGq5LK4Clihy0R8KWJEtImTp9ocUdfCKjWwagT/59s9+glaBHAOrb0k7X9nZ4bygAwXrXwwanb2TTn3e/gFVvn+womOt2QorWoI5gLYDNrgYhvUVFEsH1DBU8KTI7mt63aBliu3P2G5rEJmgMcO5YcN82AizGTpNTE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=natalenko.name; spf=pass smtp.mailfrom=natalenko.name; dkim=pass (1024-bit key) header.d=natalenko.name header.i=@natalenko.name header.b=fxEklbVQ; arc=none smtp.client-ip=199.247.17.104
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=natalenko.name
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=natalenko.name
-Received: from spock.localnet (unknown [94.142.239.106])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
-	(No client certificate requested)
-	by prime.voidband.net (Postfix) with ESMTPSA id DE7EE6346550;
-	Tue,  2 Apr 2024 09:34:14 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=natalenko.name;
-	s=dkim-20170712; t=1712043255;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=jSp8wWShlE2Mm6DBBA71MhGhBNRLWFmPrWpzbcc+LiQ=;
-	b=fxEklbVQ2TRFIgjebUotwxx3d/i97UCQ/BE5MZFS5A65ODGls8rDM30USDfaEZuTOXWkRo
-	TyRD0MhqnC5IbK7vYIDYfkvxb3EZDgNm7d3vW11wPx7Gog1+aSXxm7APc9MXpQJiryT5y8
-	XHdN8n30j+X8GpktfAVUx/z3W1uQV18=
-From: Oleksandr Natalenko <oleksandr@natalenko.name>
-To: linux-kernel@vger.kernel.org
-Cc: vincentdelor@free.fr, Andrew Morton <akpm@linux-foundation.org>,
- linux-mm@kvack.org
-Subject:
- Re: Increase Default vm_max_map_count to Improve Compatibility with Modern
- Games
-Date: Tue, 02 Apr 2024 09:34:03 +0200
-Message-ID: <13499186.uLZWGnKmhe@natalenko.name>
-In-Reply-To:
- <566168554.272637693.1710968734203.JavaMail.root@zimbra54-e10.priv.proxad.net>
-References:
- <566168554.272637693.1710968734203.JavaMail.root@zimbra54-e10.priv.proxad.net>
+	s=arc-20240116; t=1712043343; c=relaxed/simple;
+	bh=c77W4NtZGbO/mmksuHBSmPIGD/9bOAUrsvWJlCh/Zlg=;
+	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:To:Cc; b=rDIYDCAxJz5nmqrct05GQR8Mzfz+jF79yd2+Hb1s2LVTy72mGH0xhExLgokldzfW9HIzvWgJu36BsbASjPqH9wMiVDSv71xJvrPBID+DZ9cADI2VgCF65Sc6yRe3oRtk3v+XXZwIoUnN+y6pI9KJTfADwXYiO92XkrZzhEsJ85A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+	(Exim 4.92)
+	(envelope-from <m.grzeschik@pengutronix.de>)
+	id 1rrYgA-00082Y-FS; Tue, 02 Apr 2024 09:35:34 +0200
+Received: from [2a0a:edc0:0:1101:1d::ac] (helo=dude04.red.stw.pengutronix.de)
+	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.94.2)
+	(envelope-from <m.grzeschik@pengutronix.de>)
+	id 1rrYgA-009wCp-0x; Tue, 02 Apr 2024 09:35:34 +0200
+Received: from localhost ([::1] helo=dude04.red.stw.pengutronix.de)
+	by dude04.red.stw.pengutronix.de with esmtp (Exim 4.96)
+	(envelope-from <m.grzeschik@pengutronix.de>)
+	id 1rrYg9-00EoI0-37;
+	Tue, 02 Apr 2024 09:35:33 +0200
+From: Michael Grzeschik <m.grzeschik@pengutronix.de>
+Date: Tue, 02 Apr 2024 09:35:33 +0200
+Subject: [PATCH] arch: arm: mxc: phyCARD-i.MX27: Add USB support
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="nextPart2945100.e9J7NaK4W3";
- micalg="pgp-sha256"; protocol="application/pgp-signature"
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Message-Id: <20240328-pca100-v1-1-58df67c2c950@pengutronix.de>
+X-B4-Tracking: v=1; b=H4sIAES1C2YC/x2MQQqAMAzAviI9O6jbUPEr4qHOqgWZsqEI4t8tH
+ hNCHsichDN0xQOJL8myR4WqLCCsFBc2MimDRevR2dYcgSpEQzUiBe9azw1oPFJmMyaKYdU8ntu
+ m8kg8y/3f++F9P0ONOldtAAAA
+To: Rob Herring <robh@kernel.org>, 
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
+ Conor Dooley <conor+dt@kernel.org>, Shawn Guo <shawnguo@kernel.org>, 
+ Sascha Hauer <s.hauer@pengutronix.de>, 
+ Pengutronix Kernel Team <kernel@pengutronix.de>, 
+ Fabio Estevam <festevam@gmail.com>
+Cc: devicetree@vger.kernel.org, imx@lists.linux.dev, 
+ linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, 
+ Michael Grzeschik <m.grzeschik@pengutronix.de>
+X-Mailer: b4 0.12.0
+X-Developer-Signature: v=1; a=openpgp-sha256; l=3364;
+ i=m.grzeschik@pengutronix.de; h=from:subject:message-id;
+ bh=c77W4NtZGbO/mmksuHBSmPIGD/9bOAUrsvWJlCh/Zlg=;
+ b=owEBbQKS/ZANAwAKAb9pWET5cfSrAcsmYgBmC7VFuPpCUfj62coJX6rI+cIQLmIVSuuy8HtjE
+ QOcZ7AH6SmJAjMEAAEKAB0WIQQV2+2Fpbqd6fvv0Gi/aVhE+XH0qwUCZgu1RQAKCRC/aVhE+XH0
+ q0cSD/4wQ24fgJBtREm521bh0yJpIxVHDu2sqLgZ2zzd7lHgEgP7diUTKxBp2WwaDh+eyTpm/ZL
+ UPIGalYlZXS7vxSNI5rqMqLTGrWxn86T2w4x1mZA9nrNDRGimhU/nKlH4seZRmLJXpUmDVqwZm/
+ yxFP3CAz/ruAAUpRjvihuMoR6kiRz7YYMC4MzKITjkuBQtRkq8kFVfNdhUTlhTwDUj1LJ0TOyb7
+ kMDktkpEHhc3lrU1KIMoKN/rdx52POdrDhgE5Jfy8kw7KULDVn1bIRXbeqvJjOWvR61h875UMT3
+ 3qtWxJCuB6LsMNc2SXLmW8uun+EOkrLwNgLEArunh8pIDdoXSPHMhxS4ip4FKoOPKEVscix4A3f
+ dpDGtsiIjiv43fTkgsrYMtnpLdqJTxcUrQ7m3aZB4EZhSTnhyIiHA+/pTB7KsVsEwjIQfJnhp1q
+ LoDZM+pbOSGZw7iJLce47pP9B0Qw3RlJm+4gjhHmdIQJXPZn0eZa2VjrQPci+p7v/oLvNbzD19b
+ EnsVJHPq5Q1qiKz9g4PUVV2lFgzGU/7IAV2PllbiTvnu4SoN2TcmZ564F3ARIYHLNFOc6/c2uRC
+ 2cWYuOFlj1XcaU2rZavfMZdliit+nIOTcwuKoGDh7T0b2kOp+A78t5pobVYJOfI/mYSz9ZAaFQb
+ SSj0dDJNY2SbA5Q==
+X-Developer-Key: i=m.grzeschik@pengutronix.de; a=openpgp;
+ fpr=957BC452CE953D7EA60CF4FC0BE9E3157A1E2C64
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: m.grzeschik@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 
---nextPart2945100.e9J7NaK4W3
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset="utf-8"; protected-headers="v1"
-From: Oleksandr Natalenko <oleksandr@natalenko.name>
-To: linux-kernel@vger.kernel.org
-Date: Tue, 02 Apr 2024 09:34:03 +0200
-Message-ID: <13499186.uLZWGnKmhe@natalenko.name>
-MIME-Version: 1.0
+This patch adds the pinmux and nodes for usbotg and usbh2.
 
-Hello.
+In v6 revision of the pca100 the usb phys were changed to usb3320 which
+are connected by their reset pins. We add the phy configuration to the
+description.
 
-On st=C5=99eda 20. b=C5=99ezna 2024 22:05:34, CEST vincentdelor@free.fr wro=
-te:
-> Hello,
->=20
-> I am writing to highlight an issue impacting many Linux users, especially=
- those who enjoy modern gaming. The current default setting of `vm_max_map_=
-count` at 65530 has been linked to crashes or launch failures in several co=
-ntemporary games.
->=20
-> To address this, I have opened a detailed bug report (218616 =E2=80=93 In=
-crease Default vm_max_map_count to Improve Gaming Experience on Linux) avai=
-lable at: 218616 =E2=80=93 Increase Default vm_max_map_count to Improve Gam=
-ing Experience on Linux (kernel.org) .
->=20
->=20
-> We have identified that several modern games such as Hogwarts Legacy, Sta=
-r Citizen, and others experience crashes or fail to start on Linux due to t=
-he default `vm_max_map_count` being set to 65530. These issues can be mitig=
-ated by increasing the `vm_max_map_count` value to over 1048576, which has =
-been confirmed to resolve the crashes without introducing additional bugs r=
-elated to map handling.
->=20
-> This issue affects a wide range of users and has been noted in distributi=
-ons like Fedora and Pop!_OS, which have already adjusted this value to acco=
-mmodate modern gaming requirements.
->=20
-> For reference, here is the change for Fedora:
-> https://fedoraproject.org/wiki/Changes/IncreaseVmMaxMapCount
->=20
-> Here is a list of games affected by this low value in vm_max_map_count as=
- reported to Valve:
->=20
-> THE FINALS
-> https://github.com/ValveSoftware/Proton/issues/7317#issuecomment-19748378=
-50
->=20
-> Hogwarts Legacy
-> https://github.com/ValveSoftware/Proton/issues/6510#issuecomment-14227811=
-00
->=20
-> DayZ
-> https://github.com/ValveSoftware/Proton/issues/3899#issuecomment-13043970=
-69
->=20
-> Counter-Strike 2
-> https://github.com/ValveSoftware/Proton/issues/2704#issuecomment-17051997=
-88
->=20
->=20
-> **Steps to Reproduce:**
-> 1. Install Ubuntu or other distribution with `vm_max_map_count` being set=
- to 65530 and attempt to run affected games such as Hogwarts Legacy or Star=
- Citizen.
-> 2. Observe that the games crash or fail to start with the default `vm_max=
-_map_count` setting.
-> 3. Modify `/etc/sysctl.conf` to include `vm.max_map_count=3D1048576` (or =
-another sufficiently high value).
-> 4. Reboot the system and observe that the games now run without issue.
->=20
-> **Expected Result:**
-> Games should run without crashing or failing to start due to `vm_max_map_=
-count` limitations.
->=20
-> **Actual Result:**
-> Games crash or fail to start unless `vm_max_map_count` is manually increa=
-sed.
->=20
-> **Suggested Fix:**
-> Increase the default `vm_max_map_count` value in Linux to a value greater=
- than 1048576 to accommodate modern gaming software requirements.
->=20
-> **Affected Games:**
-> - Hogwarts Legacy
-> - Star Citizen
-> - THE FINALS
-> - DayZ
-> - Counter-Strike 2
-> - Payday 2
-> - (and potentially others)
->=20
-> **References:**
-> - Fedora's change documentation: https://fedoraproject.org/wiki/Changes/I=
-ncreaseVmMaxMapCount
-> - Various user reports and confirmations on gaming performance improvemen=
-t with increased `vm_max_map_count`.
->=20
-> I appreciate your time and consideration and welcome any feedback or sugg=
-estions on this matter.
->=20
-> Best regards,
->=20
-> Vincent DELOR
->=20
->=20
+Signed-off-by: Michael Grzeschik <m.grzeschik@pengutronix.de>
+---
+ .../dts/nxp/imx/imx27-phytec-phycard-s-som.dtsi    | 78 ++++++++++++++++++++++
+ 1 file changed, 78 insertions(+)
 
-Adding more lists and people to Cc. This email was sent to LKML only meanin=
-g it is highly likely no one really saw it.
+diff --git a/arch/arm/boot/dts/nxp/imx/imx27-phytec-phycard-s-som.dtsi b/arch/arm/boot/dts/nxp/imx/imx27-phytec-phycard-s-som.dtsi
+index abc9233c5a1b1..31b3fc972abbf 100644
+--- a/arch/arm/boot/dts/nxp/imx/imx27-phytec-phycard-s-som.dtsi
++++ b/arch/arm/boot/dts/nxp/imx/imx27-phytec-phycard-s-som.dtsi
+@@ -15,6 +15,22 @@ memory@a0000000 {
+ 		device_type = "memory";
+ 		reg = <0xa0000000 0x08000000>; /* 128MB */
+ 	};
++
++	usbotgphy: usbotgphy {
++		compatible = "usb-nop-xceiv";
++		pinctrl-names = "default";
++		pinctrl-0 = <&pinctrl_usbotgphy>;
++		reset-gpios = <&gpio2 25 GPIO_ACTIVE_LOW>;
++		#phy-cells = <0>;
++	};
++
++	usbh2phy: usbh2phy {
++		compatible = "usb-nop-xceiv";
++		pinctrl-names = "default";
++		pinctrl-0 = <&pinctrl_usbh2phy>;
++		reset-gpios = <&gpio2 22 GPIO_ACTIVE_LOW>;
++		#phy-cells = <0>;
++	};
+ };
+ 
+ &cspi1 {
+@@ -84,6 +100,52 @@ MX27_PAD_NFRE_B__NFRE_B 0x0
+ 				MX27_PAD_NFWE_B__NFWE_B 0x0
+ 			>;
+ 		};
++
++		pinctrl_usbotgphy: usbotgphygrp {
++			fsl,pins = <
++				MX27_PAD_USBH1_RCV__GPIO2_25		0x1 /* reset gpio */
++			>;
++		};
++
++		pinctrl_usbotg: usbotggrp {
++			fsl,pins = <
++				MX27_PAD_USBOTG_CLK__USBOTG_CLK		0x0
++				MX27_PAD_USBOTG_DIR__USBOTG_DIR		0x0
++				MX27_PAD_USBOTG_NXT__USBOTG_NXT		0x0
++				MX27_PAD_USBOTG_STP__USBOTG_STP		0x0
++				MX27_PAD_USBOTG_DATA0__USBOTG_DATA0	0x0
++				MX27_PAD_USBOTG_DATA1__USBOTG_DATA1	0x0
++				MX27_PAD_USBOTG_DATA2__USBOTG_DATA2	0x0
++				MX27_PAD_USBOTG_DATA3__USBOTG_DATA3	0x0
++				MX27_PAD_USBOTG_DATA4__USBOTG_DATA4	0x0
++				MX27_PAD_USBOTG_DATA5__USBOTG_DATA5	0x0
++				MX27_PAD_USBOTG_DATA6__USBOTG_DATA6	0x0
++				MX27_PAD_USBOTG_DATA7__USBOTG_DATA7	0x0
++			>;
++		};
++
++		pinctrl_usbh2phy: usbh2phygrp {
++			fsl,pins = <
++				MX27_PAD_USBH1_SUSP__GPIO2_22		0x0 /* reset gpio */
++			>;
++		};
++
++		pinctrl_usbh2: usbh2grp {
++			fsl,pins = <
++				MX27_PAD_USBH2_CLK__USBH2_CLK		0x0
++				MX27_PAD_USBH2_DIR__USBH2_DIR		0x0
++				MX27_PAD_USBH2_NXT__USBH2_NXT		0x0
++				MX27_PAD_USBH2_STP__USBH2_STP		0x0
++				MX27_PAD_CSPI2_SCLK__USBH2_DATA0	0x0
++				MX27_PAD_CSPI2_MOSI__USBH2_DATA1	0x0
++				MX27_PAD_CSPI2_MISO__USBH2_DATA2	0x0
++				MX27_PAD_CSPI2_SS1__USBH2_DATA3		0x0
++				MX27_PAD_CSPI2_SS2__USBH2_DATA4		0x0
++				MX27_PAD_CSPI1_SS2__USBH2_DATA5		0x0
++				MX27_PAD_CSPI2_SS0__USBH2_DATA6		0x0
++				MX27_PAD_USBH2_DATA7__USBH2_DATA7	0x0
++			>;
++		};
+ 	};
+ };
+ 
+@@ -95,3 +157,19 @@ &nfc {
+ 	nand-on-flash-bbt;
+ 	status = "okay";
+ };
++
++&usbotg {
++	pinctrl-names = "default";
++	pinctrl-0 = <&pinctrl_usbotg>;
++	phy_type = "ulpi";
++	phys = <&usbotgphy>;
++	status = "okay";
++};
++
++&usbh2 {
++	pinctrl-names = "default";
++	pinctrl-0 = <&pinctrl_usbh2>;
++	phy_type = "ulpi";
++	phys = <&usbh2phy>;
++	status = "okay";
++};
 
-Andrew et al., what do you think?
+---
+base-commit: 5bab5dc780c9ed0c69fc2f828015532acf4a7848
+change-id: 20240328-pca100-a600ac4384e7
 
-Thank you.
-
-=2D-=20
-Oleksandr Natalenko (post-factum)
---nextPart2945100.e9J7NaK4W3
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part.
-Content-Transfer-Encoding: 7Bit
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCAAdFiEEZUOOw5ESFLHZZtOKil/iNcg8M0sFAmYLtOsACgkQil/iNcg8
-M0t0pRAAi5v1wzmT90iiaZzodeBoiin6A9PF350AvsWMQWIutVw8yfCZwZaCD90U
-25exHXJD90JGKTGNpAXtgBHS663BrLCOmfkTPxG5sKDUuFwLUhVpHggW8rxQzUHn
-h3Xgk123Upd84CfVJQmp25igW+2MKsH11omFNSQyz0I7pbU9AfvSTRSe7AWqgghA
-eVXI9FBugacfUUwFF53f5uAYnA1z/SgwJ/b40R/BG/ek5QBHbe97asgBbOmC/mYl
-dIvJq/U3zkgQcQEvjPS60YssPu80AhB99Wx+kCibSQgoiI+jhpISSfzmi19c5/Va
-AdcFDzPvQZ3knPln5gpDJ7NU/weXgShdEmQunuskdLSJhTjFnzbr+ySzrTamWw/t
-A9DFEp4yS8p/mNa/ZLO14i4MEVaXYTCnsFt0wWCN1wQ6Eu808HMcevbHhly+dmUd
-M5ASKFpGXnqRYTT/vy+LnEC9dk6W5iYKIaHtvdrLoCNmQlzeHYSPunm4Onowz3rW
-FlPe8OxlOmiokvPiWClu/AECXRzjC5dgzPfr9IuvZ8HdB98qC4tW1bSD9Q29bfXt
-bKWe3jWYa2XGrvwPMRD2ycvZ0pDvQDh0HIZ96xvGxUykCBQpDixGjt5jaZDdPqzU
-yKhqHB911P5Cn79jZhiuzSsVKskIfG+zAUmzDCtHey8XiTTN9MY=
-=3Qrh
------END PGP SIGNATURE-----
-
---nextPart2945100.e9J7NaK4W3--
-
-
+Best regards,
+-- 
+Michael Grzeschik <m.grzeschik@pengutronix.de>
 
 
