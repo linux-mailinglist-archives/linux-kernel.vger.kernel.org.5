@@ -1,74 +1,74 @@
-Return-Path: <linux-kernel+bounces-127945-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-127946-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1520989531F
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 14:36:25 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 39E6489532A
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 14:36:43 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B8D761F26727
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 12:36:24 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B9A74B25EA0
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 12:36:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3C98880C0C;
-	Tue,  2 Apr 2024 12:35:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DFCFD83CAA;
+	Tue,  2 Apr 2024 12:35:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="iq9CgbTy"
-Received: from mail-ej1-f46.google.com (mail-ej1-f46.google.com [209.85.218.46])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="bh2fcw13"
+Received: from mail-ej1-f45.google.com (mail-ej1-f45.google.com [209.85.218.45])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C67D25E091;
-	Tue,  2 Apr 2024 12:35:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 72EEC7FBA2;
+	Tue,  2 Apr 2024 12:35:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712061351; cv=none; b=oOB5DNbQAE1apG6HkCdsaBh/FZbWQTW7yPOim+2p8K1WYyIHfpyftjGP/jMCUlKbyhvOAzOLDf7HoA/Uu8NgJGzq2JISrbCJtYT4ESniBQXmydKd75+qh0grNLWefk00jeDvfPK4j89nGlfvhubodre9fSfi+9Y2orHNTkVWh6o=
+	t=1712061353; cv=none; b=FtCHVFLBR8kWEA05wn9OE9UzSK868QkwOVw1EbU5YW5LxzWFO6216YQzm8a4nY8kFd+pYJOOwQHOtDH0Y7NqXc1iQ94kwlHPzfSKDxioUsBJo5+P05vkOmMXRYq8tQ3zyjprOZOmh0ecXuHm9S+Y14R8MlkzqJHfKQYHSlJVX3c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712061351; c=relaxed/simple;
-	bh=yttntcbGv1rjrMQwihDL4ilF0mWCvexOhZ1EdVdFMdw=;
+	s=arc-20240116; t=1712061353; c=relaxed/simple;
+	bh=0jbdH9Ql8R+qEmAML7a+oHlBemMnLwfohAf/hI8LVqM=;
 	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=TkoHDkFpg+/yNj+bIc3WLRo/KuuGsmUb/+KMpfK8oxxk3L9geZuHI/0Wt55hSI7Aq5Dq3AvdLNgSpR4B2630mT9aHJnO5aGj6eB9G0Feh7r72ZHe1EZ5mhf1mIz9x0ErMsmk0JuwKFNCi2x6le3rlrIZNS5I5UOUfgXVQVGOmHE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=iq9CgbTy; arc=none smtp.client-ip=209.85.218.46
+	 In-Reply-To:To:Cc; b=UVnCQEn8trTP2Pwyc0m6dw8Z5wEcHWhnFvtjuagHVUsteY3uSXFfTet7LTexWH2CNJyT6G40GE3Z7FFWpDB9bizAyflxwu9+qWRNhOz+L2cpeUP9+z1Jl2/I6NcuLZrquWq+KOL+JRZqxLwpbXP/w38HdK6qOETyJQ63mOtyHCU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=bh2fcw13; arc=none smtp.client-ip=209.85.218.45
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f46.google.com with SMTP id a640c23a62f3a-a46ba938de0so674674866b.3;
-        Tue, 02 Apr 2024 05:35:49 -0700 (PDT)
+Received: by mail-ej1-f45.google.com with SMTP id a640c23a62f3a-a467d8efe78so637819166b.3;
+        Tue, 02 Apr 2024 05:35:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1712061347; x=1712666147; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1712061349; x=1712666149; darn=vger.kernel.org;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=mO0VYY/uUQKVe3GaMZmIbsUsCB+b3zhOgmSKs8mfWUc=;
-        b=iq9CgbTyDFIRcf6VxLRkc38d6CQ1ctjYWHT9jYsXVndVhg25w8b8DECHNB89PKm/5q
-         XMpc65AQ4xMegwQtE77RS6b/EjXiRvYvQSqf1zT4Aa4DnN9eG7P+ZIpLJb/dzYZyAd8R
-         J6E/AJsEdksu0dwMXVVCtAIpbjQyRKt3GG2yQ6qlsc/tESk2ntHBa/vW+lPb3P0n5z15
-         k4cJZl4V/9gKytTRht4GLmUsoKOLd0+jL3qmZzz57/VHJEU0yKC9LT+qVzZi1NxCGA8x
-         EDUuLUoa7Il3/82QfYtoPGw7UPaaqCjrg74DcwRwc6V5KiQbmziWTF33RUcZHHxT/Tu/
-         oDDA==
+        bh=7/OZIOuCLTiXHJRPdAWFFRE3oTV8ohlKbGpa2Nuwerk=;
+        b=bh2fcw13HJtUQg8184CUg4qmAjQmXg1AINTDoAY+XeJuv5HIvtydDb/LM9dL7v/Uhw
+         2atb2I10hkWCLmBGfaEtj2fneAiVzH8xPon4hUFBv5m4MB0vNsif7DxXaSUlztMJwzsZ
+         +tFv35d2lBOTYNpD+Jx4/+nPiLjH+qftwQxTzjq0UJhBz3mL1MIlyJubdFUbnvI1g95K
+         7on+xsoWnSL5TmwWyIec9XXVxb1b2zBkA1hMrTEypuIe4sO3086TqzYL/3R/35vNy9oF
+         zilU2j3Kk0XjB/m7Aw7ffKA2ai18AaCPjU8UqD7oM+gh2hbCHzbxnIx9IayXMlxgwzRR
+         NusA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712061347; x=1712666147;
+        d=1e100.net; s=20230601; t=1712061349; x=1712666149;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=mO0VYY/uUQKVe3GaMZmIbsUsCB+b3zhOgmSKs8mfWUc=;
-        b=H0B7DduO+NPjsytU1t9I0ai42seFMrvm75+ktnrwivNA9ioYwUScEijUcXp8XGOzzt
-         2Ow8aEDNNwWuKK2VLOl5HJk5aF7nwlJXp25RIeIkle7Az9/zyfjNk1/tNFs5g3t3pdqV
-         27YppCZLsWT1E2VXIJgfxViRMcJhtL9FscAxNJ46VgvNDOeNY2n48VtIk/VbaKh7rWrs
-         7tThNmCAlMErC7lfJbR0qDjsekLhaBA6uSiyNptAIE5Ophk00uLgyMW5QrI1SktU0sKe
-         b94k1YSwgc1/Cy7LoXmPcwjbE5ptOJz9+n7hSPnkLZ6nMTIibEOaoXH4BVH6xX8d9NrB
-         JuoQ==
-X-Forwarded-Encrypted: i=1; AJvYcCU4dIB4ltE2ncLkg5qgpdRt+C5C2UheQE5ufR/jcxk9+IDKs2wXltuNHrd4g3vbspgqhxs+IaPRswBsquz3d9oAK0CIOQTCH6RBtjwDLqb3A4jqSU9yWArm7SV6uqVANS8oIlA5PxOHp7fyFW4UQZIDRRzzq9K+nDNQIt9tTuV72tDObZG0180=
-X-Gm-Message-State: AOJu0YxiX7wkTIEv0B5N/NWJWVPHMngb5r4FJu0b/1GvGRDXwb0INxew
-	mesedejwe1dMoWmyt/Wk1W8aDIQSjcBGv878ihCzGzuT3e8mFUBP2MH89OJCRQo=
-X-Google-Smtp-Source: AGHT+IF8oLB9vfdG3q5IIijqVLtZpBQOAI/Or52cw8Unoegbf2HaSAuZp0breyTnxt0qv+2+UvSX7Q==
-X-Received: by 2002:a17:907:174b:b0:a4e:2543:29f1 with SMTP id lf11-20020a170907174b00b00a4e254329f1mr9249630ejc.2.1712061347503;
-        Tue, 02 Apr 2024 05:35:47 -0700 (PDT)
+        bh=7/OZIOuCLTiXHJRPdAWFFRE3oTV8ohlKbGpa2Nuwerk=;
+        b=XelCNUmgVSaX0qHWR4Osupyp0cKCLGmZvWdPmuYMrjRp6xLz4nKwp2sMSygnuSTGMs
+         pIeko4rJ6awvYeeYniIMWMMbCb0JFJiVWcyXY6U9eUBEMQ91rOw9upT2FK/FfT9BhaJG
+         ppI4bZ3pV48DZIcrRN1x3sSmkbsYH0+DgOW3+tIZm0taBFQ7F4uGSS8c4lqBYHT9987k
+         AR7wNp2cNjURpFXekxhRmacjaQORDlguuucXtoMdKLG4hQfW6LTQoF5v7j4Jc/AvslqK
+         GlOkhEdCvqxWi43ASIEQEtnmNrZwSLebSN9Q1Rlc53nFjD3+Cviy/X6p0v+KwKHU5VLN
+         d3aw==
+X-Forwarded-Encrypted: i=1; AJvYcCWNM7zep1LZR0NGFrcsTf7Wye3Ir5Lq4TBvxht8F/uU4+zhQYy8uh5aFvqH0mHFYl7faZK64WOa+gWzNKEt12v3j9kHrNJg/HGBlgsTGaxvYpe4rAfi/zfnMrjqVqm7lam60/g7EYCHlB2KXm3isdnxv9VvACNCzGREBp125su9vG/aozfAzV4=
+X-Gm-Message-State: AOJu0YzPOUiyk0VhGPjJU4PtmHxQlc3A9YXVaXW2ggFJHqoEW4Vlzh5p
+	sYKXhrR9oB8JeWWde0M473F5N2dRJq41JD1vBLLIEak1CysTiVwUr1NK57iw1e4=
+X-Google-Smtp-Source: AGHT+IEUx18FgFtdiG0vOzXYtX/Rvj7Twi9ZPhnHktWmHFqEKskrY9ehX60f+5raORGsrBpxCJTKsg==
+X-Received: by 2002:a17:906:b2d4:b0:a4e:8875:71bf with SMTP id cf20-20020a170906b2d400b00a4e887571bfmr1507026ejb.70.1712061348878;
+        Tue, 02 Apr 2024 05:35:48 -0700 (PDT)
 Received: from [127.0.0.1] (net-93-65-126-18.cust.vodafonedsl.it. [93.65.126.18])
-        by smtp.googlemail.com with ESMTPSA id x18-20020a1709060a5200b00a46ab3adea5sm6467506ejf.113.2024.04.02.05.35.46
+        by smtp.googlemail.com with ESMTPSA id x18-20020a1709060a5200b00a46ab3adea5sm6467506ejf.113.2024.04.02.05.35.47
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 02 Apr 2024 05:35:47 -0700 (PDT)
+        Tue, 02 Apr 2024 05:35:48 -0700 (PDT)
 From: Gianluca Boiano <morf3089@gmail.com>
-Date: Tue, 02 Apr 2024 14:35:42 +0200
-Subject: [PATCH 1/3] leds: qcom-lpg: Add support for PMI8950 PWM
+Date: Tue, 02 Apr 2024 14:35:43 +0200
+Subject: [PATCH 2/3] arm64: dts: qcom: pmi8950: add pwm node
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -77,7 +77,7 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20240402-pmi8950-pwm-support-v1-1-1a66899eeeb3@gmail.com>
+Message-Id: <20240402-pmi8950-pwm-support-v1-2-1a66899eeeb3@gmail.com>
 References: <20240402-pmi8950-pwm-support-v1-0-1a66899eeeb3@gmail.com>
 In-Reply-To: <20240402-pmi8950-pwm-support-v1-0-1a66899eeeb3@gmail.com>
 To: Pavel Machek <pavel@ucw.cz>, Lee Jones <lee@kernel.org>, 
@@ -89,47 +89,41 @@ Cc: linux-leds@vger.kernel.org, linux-kernel@vger.kernel.org,
  linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org, 
  Gianluca Boiano <morf3089@gmail.com>
 X-Mailer: b4 0.13.0
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1712061344; l=1292;
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1712061344; l=819;
  i=morf3089@gmail.com; s=20240402; h=from:subject:message-id;
- bh=yttntcbGv1rjrMQwihDL4ilF0mWCvexOhZ1EdVdFMdw=;
- b=CgD8vsF+5yZPAgO4fIcSCzHI6meFW5vzh5De2I0Cwo5gClwLkvTQFuxFd2+0t79M/g8YDnGA/
- Fln/Y7qao5KAXIeskzzVRaEcfYlKYDoj2G6AoZZUj5koLzaiTtGw+FJ
+ bh=0jbdH9Ql8R+qEmAML7a+oHlBemMnLwfohAf/hI8LVqM=;
+ b=AZ+8QRj5tCUMSQLxuNn8VVFhtVKNeHZVrNlTEuPAc9+7hbeRk7G5/L/IOmQCtnfYZPAYyD6xu
+ wqN6NXu5+UuCXSFs5Mdtp7X1ON/rVozw8oT/gomQnNl6Z5s2/nZF+vq
 X-Developer-Key: i=morf3089@gmail.com; a=ed25519;
  pk=HsGrEQ3ia8BGGGO8/nUM2K2UX9JKvRPV+nbrVDGrYhA=
 
-The PMI8950 PMIC contains 1 PWM channel
+This node is actually found on some msm8953 devices (xiaomi-mido) and
+allows irled enablement
 
 Signed-off-by: Gianluca Boiano <morf3089@gmail.com>
 ---
- drivers/leds/rgb/leds-qcom-lpg.c | 8 ++++++++
+ arch/arm64/boot/dts/qcom/pmi8950.dtsi | 8 ++++++++
  1 file changed, 8 insertions(+)
 
-diff --git a/drivers/leds/rgb/leds-qcom-lpg.c b/drivers/leds/rgb/leds-qcom-lpg.c
-index 6bdc5b923f98..9467c796bd04 100644
---- a/drivers/leds/rgb/leds-qcom-lpg.c
-+++ b/drivers/leds/rgb/leds-qcom-lpg.c
-@@ -1693,6 +1693,13 @@ static const struct lpg_data pm8941_lpg_data = {
- 	},
- };
+diff --git a/arch/arm64/boot/dts/qcom/pmi8950.dtsi b/arch/arm64/boot/dts/qcom/pmi8950.dtsi
+index 1029f3b1bb9a..b4822cb17a37 100644
+--- a/arch/arm64/boot/dts/qcom/pmi8950.dtsi
++++ b/arch/arm64/boot/dts/qcom/pmi8950.dtsi
+@@ -84,6 +84,14 @@ pmic@3 {
+ 		#address-cells = <1>;
+ 		#size-cells = <0>;
  
-+static const struct lpg_data pmi8950_pwm_data = {
-+	.num_channels = 1,
-+	.channels = (const struct lpg_channel_data[]) {
-+		{ .base = 0xb000 },
-+	},
-+};
++		pmi8950_pwm: pwm@b000 {
++			compatible = "qcom,pmi8950-pwm";
++			reg = <0xb000 0x100>;
++			#pwm-cells = <2>;
 +
- static const struct lpg_data pm8994_lpg_data = {
- 	.lut_base = 0xb000,
- 	.lut_size = 64,
-@@ -1819,6 +1826,7 @@ static const struct of_device_id lpg_of_table[] = {
- 	{ .compatible = "qcom,pm8941-lpg", .data = &pm8941_lpg_data },
- 	{ .compatible = "qcom,pm8994-lpg", .data = &pm8994_lpg_data },
- 	{ .compatible = "qcom,pmi632-lpg", .data = &pmi632_lpg_data },
-+	{ .compatible = "qcom,pmi8950-pwm", .data = &pmi8950_pwm_data },
- 	{ .compatible = "qcom,pmi8994-lpg", .data = &pmi8994_lpg_data },
- 	{ .compatible = "qcom,pmi8998-lpg", .data = &pmi8998_lpg_data },
- 	{ .compatible = "qcom,pmc8180c-lpg", .data = &pm8150l_lpg_data },
++			status = "disabled";
++		};
++
+ 		pmi8950_wled: leds@d800 {
+ 			compatible = "qcom,pmi8950-wled";
+ 			reg = <0xd800>, <0xd900>;
 
 -- 
 2.44.0
