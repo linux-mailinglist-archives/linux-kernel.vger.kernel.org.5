@@ -1,129 +1,184 @@
-Return-Path: <linux-kernel+bounces-127985-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-127984-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7C56189540F
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 14:56:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 61F32895410
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 14:56:54 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1A75B1F2503C
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 12:56:50 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C6DC61F24F2F
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 12:56:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A711384A48;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CCDEB7FBB1;
 	Tue,  2 Apr 2024 12:56:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="cGRH6mq0"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="Or4i/ENo";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="9YvGzYa7"
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C373E83CC8
-	for <linux-kernel@vger.kernel.org>; Tue,  2 Apr 2024 12:55:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3C2A283CB9;
+	Tue,  2 Apr 2024 12:55:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712062561; cv=none; b=aX7ktW2vQXI62fIXo+pHC+B5zwcoJjyrv0EgD1UITkR7qsVctfTXAEB6PJ204YjfMRdLCM8iNbiY60cTruEkMsrXapFFfm0H4DCsPMMM/32nU1gTGZP68UTnWbMUoY1r5MNjeTA63yjmzuYb9uDY38e9X1Hplpz1Ytgih59/o90=
+	t=1712062561; cv=none; b=fnLAOp+OE8e9Vyx2J0UgyUdOaiw3m+vb45Cs9u9f+NsFSbvcN3ZarQ3bYPcyGL+DbbkCNnnYUuWdrOW1nSNAK28xeCLnqBNZ54cT+Hyz5lzuShsKWvCKdu5pgtCCDpQqIcpTxLPVP1zdqo3gOJcGukwOB9SosheATxdNWD80zFk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1712062561; c=relaxed/simple;
-	bh=zN8QbrS4azbPCsghFpZd2U9tA5iFf1lkMG/47l0YA4M=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=XNB4sJXTlvvbsgx6ZWCtZTlqpDUgB6GfXKuM3J5Qi9kl12YF+kzzx0BoR+N6bcldALqh79xpQXupnfhKdFyuFRY64JsTbHOPJg7Y34T2aSgxhIQa18e99vkQhyKx2eAmFL+3yBQuIs3B5f3mLMXSaBqyJdYKmvdCZgiKIBO1FRM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=cGRH6mq0; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1712062558;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=z7LWvvJr0ZLeVlbglQU3vOlFLqLTXjJjluvDd3mIpGc=;
-	b=cGRH6mq00r9f6LfVObRH44dZjgDCqvJuDTJeoap7TYf0bKd+oYDqV3RIxlVS+Y442i9aih
-	613/MpTtc/P4/PNXA2uFMqPSpCz8clMl8E3ZKqpp0e8o1Cehg4mYAxwUkA9TW+R/dVdBnh
-	3tzMrCEUYou2LaJpCwv6KlW8/4Ae8OM=
-Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
- by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-410-rp9IQ797NSqx0sgO2R02KQ-1; Tue,
- 02 Apr 2024 08:55:55 -0400
-X-MC-Unique: rp9IQ797NSqx0sgO2R02KQ-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.rdu2.redhat.com [10.11.54.1])
+	bh=TtZLtq8Hz8doC1J37xg6YqY30LO/H0F9ybpVFSesKt0=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=HaEjgy62JpE8YuLIZry/MAS+qnQRJNrYEPGylBd3bPN0elis6rkzifg3qY5u6zRMclkGCLSiy7jzzBzFtGKyKQeBwmF+MCrMmzjQoGQpaau9bIGUOkJyUx+euJ6pBQFIJ5Gb7Lm0C32XycXAXu2E/aCo/zoxzDsAjoJpNwK4qH4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=Or4i/ENo; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=9YvGzYa7; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:98])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 3FBAA2823F33;
-	Tue,  2 Apr 2024 12:55:54 +0000 (UTC)
-Received: from t14s.redhat.com (unknown [10.39.194.247])
-	by smtp.corp.redhat.com (Postfix) with ESMTP id 02C913C22;
-	Tue,  2 Apr 2024 12:55:50 +0000 (UTC)
-From: David Hildenbrand <david@redhat.com>
-To: linux-kernel@vger.kernel.org
-Cc: linux-mm@kvack.org,
-	David Hildenbrand <david@redhat.com>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Mike Rapoport <rppt@kernel.org>,
-	Jason Gunthorpe <jgg@nvidia.com>,
-	John Hubbard <jhubbard@nvidia.com>,
-	Peter Xu <peterx@redhat.com>,
-	linux-arm-kernel@lists.infradead.org,
-	loongarch@lists.linux.dev,
-	linux-mips@vger.kernel.org,
-	linuxppc-dev@lists.ozlabs.org,
-	linux-s390@vger.kernel.org,
-	linux-sh@vger.kernel.org,
-	linux-perf-users@vger.kernel.org,
-	linux-fsdevel@vger.kernel.org,
-	linux-riscv@lists.infradead.org,
-	x86@kernel.org
-Subject: [PATCH v1 3/3] mm: use "GUP-fast" instead "fast GUP" in remaining comments
-Date: Tue,  2 Apr 2024 14:55:16 +0200
-Message-ID: <20240402125516.223131-4-david@redhat.com>
-In-Reply-To: <20240402125516.223131-1-david@redhat.com>
-References: <20240402125516.223131-1-david@redhat.com>
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 17ADD5BD3D;
+	Tue,  2 Apr 2024 12:55:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1712062556; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=QVwsTL4VXfxmQnjRGfaT+5S6pqQmO4IL8cSJr05k2/4=;
+	b=Or4i/ENo7CiiZ589iN6rMHL38JcSTi9UPmnJ2Rjvx4aLBY7fBvcKc70W44UE4rMjJ0tFjv
+	lCiYvXQHjkbQTMbBvDqudo58qLeRQo5HkaQVha9hv3VX5Mg789mR4wNM0tPSobF0yHIYR7
+	c1nENf7lzNgIBhNNbRT76JFgQ0wB884=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1712062556;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=QVwsTL4VXfxmQnjRGfaT+5S6pqQmO4IL8cSJr05k2/4=;
+	b=9YvGzYa7eQPk5x2MdCr3lPY3PCCb3v4ndrCCWR+POUOJaK3EaZSIL3SfMeXX1m93x/QKzj
+	1Vj617lGCLCjM0DA==
+Authentication-Results: smtp-out2.suse.de;
+	dkim=none
+Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id 0CC3413357;
+	Tue,  2 Apr 2024 12:55:56 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap2.dmz-prg2.suse.org with ESMTPSA
+	id MQ4aA1wADGZnSQAAn2gu4w
+	(envelope-from <jack@suse.cz>); Tue, 02 Apr 2024 12:55:56 +0000
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+	id 9CE09A0813; Tue,  2 Apr 2024 14:55:55 +0200 (CEST)
+Date: Tue, 2 Apr 2024 14:55:55 +0200
+From: Jan Kara <jack@suse.cz>
+To: "yebin (H)" <yebin10@huawei.com>
+Cc: "Darrick J. Wong" <djwong@kernel.org>, tytso@mit.edu,
+	adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
+	linux-kernel@vger.kernel.org, jack@suse.cz
+Subject: Re: [PATCH] jbd2: use shrink_type type instead of bool type for
+ __jbd2_journal_clean_checkpoint_list()
+Message-ID: <20240402125555.kqxsfmzeaeqbsmdp@quack3>
+References: <20240401011614.3650958-1-yebin10@huawei.com>
+ <20240401024417.GA739535@frogsfrogsfrogs>
+ <660A5535.7080005@huawei.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.1
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <660A5535.7080005@huawei.com>
+X-Rspamd-Queue-Id: 17ADD5BD3D
+X-Spamd-Result: default: False [-2.81 / 50.00];
+	BAYES_HAM(-3.00)[100.00%];
+	MID_RHS_NOT_FQDN(0.50)[];
+	NEURAL_HAM_SHORT(-0.20)[-0.998];
+	MIME_GOOD(-0.10)[text/plain];
+	MX_GOOD(-0.01)[];
+	MISSING_XM_UA(0.00)[];
+	ARC_NA(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	TO_DN_SOME(0.00)[];
+	RCVD_COUNT_THREE(0.00)[3];
+	R_DKIM_NA(0.00)[];
+	SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:98:from];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	FROM_EQ_ENVFROM(0.00)[];
+	RCPT_COUNT_SEVEN(0.00)[7];
+	RCVD_TLS_LAST(0.00)[];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email,imap2.dmz-prg2.suse.org:rdns,imap2.dmz-prg2.suse.org:helo,huawei.com:email]
+X-Rspamd-Action: no action
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Spam-Score: -2.81
+X-Spam-Level: 
+X-Spam-Flag: NO
 
-Let's fixup the remaining comments to consistently call that thing
-"GUP-fast". With this change, we consistently call it "GUP-fast".
+On Mon 01-04-24 14:33:25, yebin (H) wrote:
+> On 2024/4/1 10:44, Darrick J. Wong wrote:
+> > On Mon, Apr 01, 2024 at 09:16:14AM +0800, Ye Bin wrote:
+> > > "enum shrink_type" can clearly express the meaning of the parameter of
+> > > __jbd2_journal_clean_checkpoint_list(), and there is no need to use the
+> > > bool type.
+> > > 
+> > > Signed-off-by: Ye Bin <yebin10@huawei.com>
+> > > ---
+> > >   fs/jbd2/checkpoint.c | 9 +++------
+> > >   fs/jbd2/commit.c     | 2 +-
+> > >   include/linux/jbd2.h | 4 +++-
+> > >   3 files changed, 7 insertions(+), 8 deletions(-)
+> > > 
+> > > diff --git a/fs/jbd2/checkpoint.c b/fs/jbd2/checkpoint.c
+> > > index 1c97e64c4784..d6e8b80a4078 100644
+> > > --- a/fs/jbd2/checkpoint.c
+> > > +++ b/fs/jbd2/checkpoint.c
+> > > @@ -337,8 +337,6 @@ int jbd2_cleanup_journal_tail(journal_t *journal)
+> > >   /* Checkpoint list management */
+> > > -enum shrink_type {SHRINK_DESTROY, SHRINK_BUSY_STOP, SHRINK_BUSY_SKIP};
+> > > -
+> > >   /*
+> > >    * journal_shrink_one_cp_list
+> > >    *
+> > > @@ -476,17 +474,16 @@ unsigned long jbd2_journal_shrink_checkpoint_list(journal_t *journal,
+> > >    *
+> > >    * Called with j_list_lock held.
+> > >    */
+> > > -void __jbd2_journal_clean_checkpoint_list(journal_t *journal, bool destroy)
+> > > +void __jbd2_journal_clean_checkpoint_list(journal_t *journal,
+> > > +					  enum shrink_type type)
 
-Reviewed-by: Mike Rapoport (IBM) <rppt@kernel.org>
-Signed-off-by: David Hildenbrand <david@redhat.com>
----
- mm/filemap.c    | 2 +-
- mm/khugepaged.c | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+The comment above this function needs updating after this change.
 
-diff --git a/mm/filemap.c b/mm/filemap.c
-index 387b394754fa..c668e11cd6ef 100644
---- a/mm/filemap.c
-+++ b/mm/filemap.c
-@@ -1810,7 +1810,7 @@ EXPORT_SYMBOL(page_cache_prev_miss);
-  * C. Return the page to the page allocator
-  *
-  * This means that any page may have its reference count temporarily
-- * increased by a speculative page cache (or fast GUP) lookup as it can
-+ * increased by a speculative page cache (or GUP-fast) lookup as it can
-  * be allocated by another user before the RCU grace period expires.
-  * Because the refcount temporarily acquired here may end up being the
-  * last refcount on the page, any page allocation must be freeable by
-diff --git a/mm/khugepaged.c b/mm/khugepaged.c
-index 38830174608f..6972fa05132e 100644
---- a/mm/khugepaged.c
-+++ b/mm/khugepaged.c
-@@ -1169,7 +1169,7 @@ static int collapse_huge_page(struct mm_struct *mm, unsigned long address,
- 	 * huge and small TLB entries for the same virtual address to
- 	 * avoid the risk of CPU bugs in that area.
- 	 *
--	 * Parallel fast GUP is fine since fast GUP will back off when
-+	 * Parallel GUP-fast is fine since GUP-fast will back off when
- 	 * it detects PMD is changed.
- 	 */
- 	_pmd = pmdp_collapse_flush(vma, address, pmd);
+> > >   {
+> > >   	transaction_t *transaction, *last_transaction, *next_transaction;
+> > > -	enum shrink_type type;
+> > >   	bool released;
+> > >   	transaction = journal->j_checkpoint_transactions;
+> > >   	if (!transaction)
+> > >   		return;
+> > > -	type = destroy ? SHRINK_DESTROY : SHRINK_BUSY_STOP;
+> > What is supposed to happen if the caller passes in SHRINK_BUSY_SKIP?
+> > 
+> > --D
+> 
+> If SHRING_BUSY_SKIP is passed, the buffers in use will be skipped during traversal
+> and release.Currently, SHRINKING_BUSY_SKIP is used in the memory reclamation process.
+
+I guess Darrick was wondering whether there's some usefulness in calling
+__jbd2_journal_clean_checkpoint_list() with SHRINKING_BUSY_SKIP. I agree it
+does no harm but as we have seen in the past, it just wastes CPU cycles
+scanning the buffer list in some cases so that's why we created
+SHRINKING_BUSY_STOP. I also agree the 'bool' argument isn't great and the
+enum is actually explaining more so I'm in favor of switching to enum but
+perhaps we can have WARN_ON_ONCE(type == SHRINKING_BUSY_SKIP) (perhaps with
+a short explanation in the comment above the function) to see if we
+accidentally didn't grow unexpected use.
+
+									Honza
 -- 
-2.44.0
-
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
 
