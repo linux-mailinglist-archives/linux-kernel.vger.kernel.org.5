@@ -1,185 +1,179 @@
-Return-Path: <linux-kernel+bounces-127463-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-127465-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id B6569894BE3
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 08:54:39 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0EFAA894BF8
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 08:58:30 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DA0B01C21B1E
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 06:54:38 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B82502840AE
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 06:58:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0673A2D600;
-	Tue,  2 Apr 2024 06:54:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="FarnXZ3W";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="/Sf7gBAw"
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 528D432C60;
+	Tue,  2 Apr 2024 06:58:23 +0000 (UTC)
+Received: from mail-il1-f197.google.com (mail-il1-f197.google.com [209.85.166.197])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6634B249E4
-	for <linux-kernel@vger.kernel.org>; Tue,  2 Apr 2024 06:54:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4347F22096
+	for <linux-kernel@vger.kernel.org>; Tue,  2 Apr 2024 06:58:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.197
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712040872; cv=none; b=JYWX1sadgqL14Vv469sc6uXeKICy4rN87Iq9ml8855zYA88Q2t4w3zW7Af8OxH43qebvsIFv6NQfabMEfxftsKasvlXJ87FC7KdfNlIyOgdNOl2Go/tqh8UdSdZRoWn9XkaNSgZ6e2hPJmiynUqTrsz5sag8dI/1a/PeAqTTOJg=
+	t=1712041102; cv=none; b=anVWLa9SN/2NiGYip0evnpYRKFnfjRbk+bycRhdU+aKq/hnV1BliRfai2/B+wTM3xoz2/XAaKs24YYRtKx8oBWQvkhgAg8GQ3IS+FNoqo8d09yMdvbsDfsReazY+sjBUqwOHsdIHQdUjfYaHYNrYPs74vSuxqJa6tXwdZsSYvrs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712040872; c=relaxed/simple;
-	bh=opx37VCoLcNHNfcnHdBIyzq9r1hkY+cMiLiMx3Y4TNo=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=cC8U/lALSCaSqbHCZTIhw/ajrSTlu59QiVKHDWx08uzFixvm+emm8OfmzC/hdZCzHiBQAfAEF+wrbqSHA04P09VvHJe5G5j9WeN4zbDtshM+5dvi1VvDTsvJEu6mQyTWwyVIhKfawA1Mow77JPl99zVsH80k/mwzF3y9CdFpz+k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=FarnXZ3W; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=/Sf7gBAw; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [10.150.64.98])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 807A120D0B;
-	Tue,  2 Apr 2024 06:54:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1712040868; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=qymx0oXlDxbLz6J14s2W5aAHw+ug/jiWzZ3y4+9QKVw=;
-	b=FarnXZ3WnwX/C+V+slPb6chTuWeME0W34cIpYhRH+d9Ov8Z3b0+9c6nu3HE1hDEtH+LX5W
-	ROqKAvKy4AoaroykLl2gdrc6Ehv6wPaOYwM6K6U7b/uDiCbesQcGYzYflqaqw2MFdNLvtK
-	Z3uzdRPVc1I/LTFRUqPsvkVRfQ3OJ34=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1712040868;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=qymx0oXlDxbLz6J14s2W5aAHw+ug/jiWzZ3y4+9QKVw=;
-	b=/Sf7gBAw4bj6/0IGFmdg8eAngYWP9dAyWqiMUsXrGTiOznFCdCrUpLa62GXNmH/Z14lpAz
-	BMhqNb+0OhKMt/AQ==
-Authentication-Results: smtp-out2.suse.de;
-	none
-Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id 639E913357;
-	Tue,  2 Apr 2024 06:54:28 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap2.dmz-prg2.suse.org with ESMTPSA
-	id 0ry6F6SrC2YPQwAAn2gu4w
-	(envelope-from <vbabka@suse.cz>); Tue, 02 Apr 2024 06:54:28 +0000
-Message-ID: <b939165e-a227-4b96-bdc8-12afba801c03@suse.cz>
-Date: Tue, 2 Apr 2024 08:54:28 +0200
+	s=arc-20240116; t=1712041102; c=relaxed/simple;
+	bh=KOBiFFdOgu+G4YhGzStdHddK7U5EAKUtPaUgIuYJXF8=;
+	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=YKQYlfN3TBudP4AoWNB6tsebnvBSEG9MUQXUksxoBK4pu3GRBmGoviYMbrWeSfSJQt6LC2Yjj8eObm0HI8WQFZvjueC3eInSms6NgFEf+jllqSpNhIa4N39RwNS08yLz3fJZXxFycsnhavKOshUwPpgVlBdfOdBuri0QFEvrfOI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.197
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-il1-f197.google.com with SMTP id e9e14a558f8ab-368a72042b9so46460945ab.1
+        for <linux-kernel@vger.kernel.org>; Mon, 01 Apr 2024 23:58:21 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712041100; x=1712645900;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=EQZ9CndAaskPdqnzv8xsN4+oHdlqmMTeeJQ9uYMCKpo=;
+        b=LGj73fXskcMUAugxokck3cOvFt0t8uwE42GO4oBzJLPDouAtSIkn6M4iOHr3jPaozE
+         TRJbnH3I2R6F/JAUrUWMd4P3I8g/JdBcQAnLQhlLBDuPrKyyZWdnqChjtip+1t0UJ2JC
+         c0ONqJ9zqqcIKvRJzPWg3chfDcl1n9NditDDr6J9Htf+tzKZ/vPmOGkmEcn9SzUpHSST
+         Ggk+MNai3i5kfUEL+3yAreFK8kHGklodW+l/9g2SIkUiERtZzg6/p2dkvDWFr1m2cShq
+         CMl77NAm9ZsT4PSTdqISqr1QBRgW0bKs8yO44VF08+7ECVf30r/pEzE8kBHR0GKG3dEk
+         VmaA==
+X-Forwarded-Encrypted: i=1; AJvYcCVmXmtKpnQMs3FqWhLrfg8mA5doLOSmIuyTkMxxdkM04RMp5rjVFUh3zQxEmUcgJrUns1R6HQrVAaIV29tmrUvSRjQYQdOw9nBZ068y
+X-Gm-Message-State: AOJu0YwZnIBKQ0JPEEPi1LyyBeBroupFv+bLtXgGHuuRvEcUOTTgsG1t
+	LOE+WnONOcrNRL/BTRt3TDXoHr7nzEVsorW5nKEfUxTDBKHKMQuN3Psm/WDcpyJTIwtQ7qdbXHn
+	2oILC4QoJrF010yxgl35XExvcC9RkfTZ5+At5fMJsUEcZSnCypjdUDJw=
+X-Google-Smtp-Source: AGHT+IHTHffaJgvHvpBhPg7KMnAEdaJhXSjZJt4HPNPHyxTT966CHDWDtzdZgYNAW7Z6My93h89gNHXHll2a+AL0AI5z93pfidq3
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] stackdepot: Rename pool_index to pool_index_plus_1
-To: Peter Collingbourne <pcc@google.com>,
- Andrey Konovalov <andreyknvl@gmail.com>, Oscar Salvador <osalvador@suse.de>
-Cc: Andrew Morton <akpm@linux-foundation.org>, linux-kernel@vger.kernel.org,
- linux-mm@kvack.org, Michal Hocko <mhocko@suse.com>,
- Marco Elver <elver@google.com>, Alexander Potapenko <glider@google.com>,
- Omar Sandoval <osandov@fb.com>
-References: <20240402001500.53533-1-pcc@google.com>
-Content-Language: en-US
-From: Vlastimil Babka <vbabka@suse.cz>
-In-Reply-To: <20240402001500.53533-1-pcc@google.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Score: -4.29
-X-Spamd-Result: default: False [-4.29 / 50.00];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 XM_UA_NO_VERSION(0.01)[];
-	 TO_DN_SOME(0.00)[];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 NEURAL_HAM_SHORT(-0.20)[-0.999];
-	 RCPT_COUNT_SEVEN(0.00)[10];
-	 FREEMAIL_TO(0.00)[google.com,gmail.com,suse.de];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 MID_RHS_MATCH_FROM(0.00)[];
-	 BAYES_HAM(-3.00)[100.00%];
-	 ARC_NA(0.00)[];
-	 FROM_HAS_DN(0.00)[];
-	 FREEMAIL_ENVRCPT(0.00)[gmail.com];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 MIME_GOOD(-0.10)[text/plain];
-	 NEURAL_HAM_LONG(-1.00)[-1.000];
-	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 RCVD_TLS_ALL(0.00)[]
-X-Spam-Level: 
-X-Spam-Flag: NO
+X-Received: by 2002:a05:6e02:1fee:b0:369:95dc:e4e5 with SMTP id
+ dt14-20020a056e021fee00b0036995dce4e5mr423341ilb.3.1712041100437; Mon, 01 Apr
+ 2024 23:58:20 -0700 (PDT)
+Date: Mon, 01 Apr 2024 23:58:20 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000a1ff78061517a148@google.com>
+Subject: [syzbot] [mm?] general protection fault in shmem_get_next_id
+From: syzbot <syzbot+05e63c0981a31f35f3fa@syzkaller.appspotmail.com>
+To: akpm@linux-foundation.org, linux-kernel@vger.kernel.org, 
+	linux-mm@kvack.org, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 
-On 4/2/24 2:14 AM, Peter Collingbourne wrote:
-> Commit 3ee34eabac2a ("lib/stackdepot: fix first entry having a
-> 0-handle") changed the meaning of the pool_index field to mean "the
-> pool index plus 1". This made the code accessing this field less
-> self-documenting, as well as causing debuggers such as drgn to not
-> be able to easily remain compatible with both old and new kernels,
-> because they typically do that by testing for presence of the new
-> field. Because stackdepot is a debugging tool, we should make sure
-> that it is debugger friendly. Therefore, give the field a different
-> name to improve readability as well as enabling debugger backwards
-> compatibility.
-> 
-> Signed-off-by: Peter Collingbourne <pcc@google.com>
-> Link: https://linux-review.googlesource.com/id/Ib3e70c36c1d230dd0a118dc22649b33e768b9f88
+Hello,
 
-Acked-by: Vlastimil Babka <vbabka@suse.cz>
+syzbot found the following issue on:
 
-> ---
-> Although this technically isn't a bug fix in the kernel,
-> I would appreciate if this could be picked up for 6.9
-> to avoid temporarily introducing a silent regression in drgn
-> (loud regressions are fine).
-> 
->  include/linux/stackdepot.h | 7 +++----
->  lib/stackdepot.c           | 4 ++--
->  2 files changed, 5 insertions(+), 6 deletions(-)
-> 
-> diff --git a/include/linux/stackdepot.h b/include/linux/stackdepot.h
-> index 3c6caa5abc7c..e9ec32fb97d4 100644
-> --- a/include/linux/stackdepot.h
-> +++ b/include/linux/stackdepot.h
-> @@ -44,10 +44,9 @@ typedef u32 depot_stack_handle_t;
->  union handle_parts {
->  	depot_stack_handle_t handle;
->  	struct {
-> -		/* pool_index is offset by 1 */
-> -		u32 pool_index	: DEPOT_POOL_INDEX_BITS;
-> -		u32 offset	: DEPOT_OFFSET_BITS;
-> -		u32 extra	: STACK_DEPOT_EXTRA_BITS;
-> +		u32 pool_index_plus_1	: DEPOT_POOL_INDEX_BITS;
-> +		u32 offset		: DEPOT_OFFSET_BITS;
-> +		u32 extra		: STACK_DEPOT_EXTRA_BITS;
->  	};
->  };
->  
-> diff --git a/lib/stackdepot.c b/lib/stackdepot.c
-> index af6cc19a2003..68c97387aa54 100644
-> --- a/lib/stackdepot.c
-> +++ b/lib/stackdepot.c
-> @@ -330,7 +330,7 @@ static struct stack_record *depot_pop_free_pool(void **prealloc, size_t size)
->  	stack = current_pool + pool_offset;
->  
->  	/* Pre-initialize handle once. */
-> -	stack->handle.pool_index = pool_index + 1;
-> +	stack->handle.pool_index_plus_1 = pool_index + 1;
->  	stack->handle.offset = pool_offset >> DEPOT_STACK_ALIGN;
->  	stack->handle.extra = 0;
->  	INIT_LIST_HEAD(&stack->hash_list);
-> @@ -441,7 +441,7 @@ static struct stack_record *depot_fetch_stack(depot_stack_handle_t handle)
->  	const int pools_num_cached = READ_ONCE(pools_num);
->  	union handle_parts parts = { .handle = handle };
->  	void *pool;
-> -	u32 pool_index = parts.pool_index - 1;
-> +	u32 pool_index = parts.pool_index_plus_1 - 1;
->  	size_t offset = parts.offset << DEPOT_STACK_ALIGN;
->  	struct stack_record *stack;
->  
+HEAD commit:    fe46a7dd189e Merge tag 'sound-6.9-rc1' of git://git.kernel..
+git tree:       upstream
+console+strace: https://syzkaller.appspot.com/x/log.txt?x=10c90795180000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=fe78468a74fdc3b7
+dashboard link: https://syzkaller.appspot.com/bug?extid=05e63c0981a31f35f3fa
+compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=17f51129180000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=150d3cee180000
 
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/0f7abe4afac7/disk-fe46a7dd.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/82598d09246c/vmlinux-fe46a7dd.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/efa23788c875/bzImage-fe46a7dd.xz
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+05e63c0981a31f35f3fa@syzkaller.appspotmail.com
+
+general protection fault, probably for non-canonical address 0xdffffc0000000000: 0000 [#1] PREEMPT SMP KASAN NOPTI
+KASAN: null-ptr-deref in range [0x0000000000000000-0x0000000000000007]
+CPU: 0 PID: 5070 Comm: syz-executor253 Not tainted 6.8.0-syzkaller-08951-gfe46a7dd189e #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 03/27/2024
+RIP: 0010:shmem_get_next_id+0x92/0x5c0 mm/shmem_quota.c:119
+Code: 04 db 49 8d 9c c6 90 02 00 00 48 89 d8 48 c1 e8 03 42 80 3c 38 00 74 08 48 89 df e8 f8 66 1b 00 48 8b 1b 48 89 d8 48 c1 e8 03 <42> 80 3c 38 00 74 08 48 89 df e8 df 66 1b 00 4c 8b 23 48 8d 5d 07
+RSP: 0018:ffffc900043a7be0 EFLAGS: 00010256
+RAX: 0000000000000000 RBX: 0000000000000000 RCX: ffff8880266c8000
+RDX: 0000000000000000 RSI: 0000000000000001 RDI: 0000000000000004
+RBP: ffffc900043a7d00 R08: ffffffff81dcdd47 R09: ffffffff822e7d5a
+R10: 0000000000000003 R11: ffffffff81dcdcf0 R12: 1ffff92000874fa0
+R13: ffff888022110000 R14: ffff888022110000 R15: dffffc0000000000
+FS:  0000555578677380(0000) GS:ffff8880b9400000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 0000000020001000 CR3: 000000007a384000 CR4: 0000000000350ef0
+Call Trace:
+ <TASK>
+ dquot_get_next_dqblk+0x75/0x3a0 fs/quota/dquot.c:2705
+ quota_getnextquota+0x2c7/0x6c0 fs/quota/quota.c:250
+ __do_sys_quotactl_fd fs/quota/quota.c:1002 [inline]
+ __se_sys_quotactl_fd+0x2a1/0x440 fs/quota/quota.c:973
+ do_syscall_64+0xfd/0x240
+ entry_SYSCALL_64_after_hwframe+0x6d/0x75
+RIP: 0033:0x7f5c0349b329
+Code: 48 83 c4 28 c3 e8 37 17 00 00 0f 1f 80 00 00 00 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007ffc39d71138 EFLAGS: 00000246 ORIG_RAX: 00000000000001bb
+RAX: ffffffffffffffda RBX: 0031656c69662f2e RCX: 00007f5c0349b329
+RDX: 0000000000000000 RSI: ffffffff80000901 RDI: 0000000000000003
+RBP: 00007f5c0350e610 R08: 0000000000000000 R09: 00007ffc39d71308
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000001
+R13: 00007ffc39d712f8 R14: 0000000000000001 R15: 0000000000000001
+ </TASK>
+Modules linked in:
+---[ end trace 0000000000000000 ]---
+RIP: 0010:shmem_get_next_id+0x92/0x5c0 mm/shmem_quota.c:119
+Code: 04 db 49 8d 9c c6 90 02 00 00 48 89 d8 48 c1 e8 03 42 80 3c 38 00 74 08 48 89 df e8 f8 66 1b 00 48 8b 1b 48 89 d8 48 c1 e8 03 <42> 80 3c 38 00 74 08 48 89 df e8 df 66 1b 00 4c 8b 23 48 8d 5d 07
+RSP: 0018:ffffc900043a7be0 EFLAGS: 00010256
+RAX: 0000000000000000 RBX: 0000000000000000 RCX: ffff8880266c8000
+RDX: 0000000000000000 RSI: 0000000000000001 RDI: 0000000000000004
+RBP: ffffc900043a7d00 R08: ffffffff81dcdd47 R09: ffffffff822e7d5a
+R10: 0000000000000003 R11: ffffffff81dcdcf0 R12: 1ffff92000874fa0
+R13: ffff888022110000 R14: ffff888022110000 R15: dffffc0000000000
+FS:  0000555578677380(0000) GS:ffff8880b9400000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 0000000020001000 CR3: 000000007a384000 CR4: 0000000000350ef0
+----------------
+Code disassembly (best guess):
+   0:	04 db                	add    $0xdb,%al
+   2:	49 8d 9c c6 90 02 00 	lea    0x290(%r14,%rax,8),%rbx
+   9:	00
+   a:	48 89 d8             	mov    %rbx,%rax
+   d:	48 c1 e8 03          	shr    $0x3,%rax
+  11:	42 80 3c 38 00       	cmpb   $0x0,(%rax,%r15,1)
+  16:	74 08                	je     0x20
+  18:	48 89 df             	mov    %rbx,%rdi
+  1b:	e8 f8 66 1b 00       	call   0x1b6718
+  20:	48 8b 1b             	mov    (%rbx),%rbx
+  23:	48 89 d8             	mov    %rbx,%rax
+  26:	48 c1 e8 03          	shr    $0x3,%rax
+* 2a:	42 80 3c 38 00       	cmpb   $0x0,(%rax,%r15,1) <-- trapping instruction
+  2f:	74 08                	je     0x39
+  31:	48 89 df             	mov    %rbx,%rdi
+  34:	e8 df 66 1b 00       	call   0x1b6718
+  39:	4c 8b 23             	mov    (%rbx),%r12
+  3c:	48 8d 5d 07          	lea    0x7(%rbp),%rbx
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+
+If the report is already addressed, let syzbot know by replying with:
+#syz fix: exact-commit-title
+
+If you want syzbot to run the reproducer, reply with:
+#syz test: git://repo/address.git branch-or-commit-hash
+If you attach or paste a git patch, syzbot will apply it before testing.
+
+If you want to overwrite report's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
+
+If the report is a duplicate of another one, reply with:
+#syz dup: exact-subject-of-another-report
+
+If you want to undo deduplication, reply with:
+#syz undup
 
