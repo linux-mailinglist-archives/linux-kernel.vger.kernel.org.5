@@ -1,378 +1,151 @@
-Return-Path: <linux-kernel+bounces-128137-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-128138-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 887BF8956B9
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 16:32:00 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id A38798956BA
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 16:32:06 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id ABA461C224DE
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 14:31:59 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B7D9DB24E54
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 14:32:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E2DE112CD8A;
-	Tue,  2 Apr 2024 14:31:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 422C11292D1;
+	Tue,  2 Apr 2024 14:31:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.de header.i=w_armin@gmx.de header.b="HTG6LFkc"
-Received: from mout.gmx.net (mout.gmx.net [212.227.15.15])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="UNc2H8In"
+Received: from mail-ej1-f43.google.com (mail-ej1-f43.google.com [209.85.218.43])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3052312BF2E;
-	Tue,  2 Apr 2024 14:31:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.15.15
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 656FB12BF35
+	for <linux-kernel@vger.kernel.org>; Tue,  2 Apr 2024 14:31:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712068283; cv=none; b=Cy2wnDsDtZcSefXtNR1iYIwN7v+QfQtnHLQllV65M16F3N4HXWw3FKsBfyNLOqWgndwoqVkMM9XM/5lirJqubpYU/RoO2cGbYaAQF/Oo0XJVHgTeIpEewef5/+FJmXXQG8Odb4iIxwQGQ9lbU0vUBSn+LqeEcFZIH5PHZMN1PVw=
+	t=1712068284; cv=none; b=qIC8OclAnmATCC7A+IlPPgLsO6N1dk875KFzspKRAL07yHnrmmNHTYreCi0A+pDOQjPhj8pc9unSzKCpkAowfupl+suAEz4LeIUjDM2W5hh0Vc7qIsJPEJpPGS/LRhgwApImd9z9iqkrjFTapHXsFPO0GNKbGttYff0IYybK6gY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712068283; c=relaxed/simple;
-	bh=2Bkhy71J5qlS5RrsFa5MKmbcnBZRPtNuBcoWl25nh10=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=KqPdp748CcbijNn+mhDQJaSwqL1jvIJWIZCveAZ+yQ9OsFldaRCPi9Q9Io/NCX++KuXw93TglI1mNCw1ITdyzlj7IsOoXUfc8WUHgDl3o7MbwXrdbcy+ND4ogpRc0nnxitv9HlbZp4YTQN/1myYILYm5jtrkBaZmqIxNwtVwb5Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.de; spf=pass smtp.mailfrom=gmx.de; dkim=pass (2048-bit key) header.d=gmx.de header.i=w_armin@gmx.de header.b=HTG6LFkc; arc=none smtp.client-ip=212.227.15.15
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.de;
-	s=s31663417; t=1712068270; x=1712673070; i=w_armin@gmx.de;
-	bh=VPDvKGPAbnbX62QiYPBfcbU9tv5ioaZTqMr7RjGug6w=;
-	h=X-UI-Sender-Class:From:To:Cc:Subject:Date:In-Reply-To:
-	 References;
-	b=HTG6LFkcRV6+VDZGDgRy12KxnAlgL8jWIAPpczvfJsMp4lqdER+uq++lu83GQJae
-	 S8gLopj0KwrQ2dhiTRBYOzYYeFYCQdkUyVEtun/amX47DWdeCFJG1hRMpVsAPkMLM
-	 BAXJXF9KD3WAgALVUzBJCPhpRe3SkdINF/i5BMGWaSBKU9kM+wZgMVnNUpFAhF57p
-	 PKt0gsSRWX1BuGQVfxxIYc3TpntSnYzXEIsCV//cs01sCdozTfAOqvPQWTxDscpKU
-	 MxKV0ch3BhSTwCVVcjaFn/u/vjxfczi33R8BtxNqnmIUfICpmo8MuHH6eLj8mOA68
-	 p+/eRAwbq/rAeWAOFQ==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from mx-amd-b650.users.agdsn.de ([141.30.226.129]) by mail.gmx.net
- (mrgmx004 [212.227.17.190]) with ESMTPSA (Nemesis) id
- 1M26vL-1rpkQB1Hmj-002XAE; Tue, 02 Apr 2024 16:31:10 +0200
-From: Armin Wolf <W_Armin@gmx.de>
-To: hdegoede@redhat.com,
-	ilpo.jarvinen@linux.intel.com
-Cc: corbet@lwn.net,
-	sathyanarayanan.kuppuswamy@linux.intel.com,
-	linux-doc@vger.kernel.org,
-	platform-driver-x86@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH v2 4/4] platform/x86: wmi: Add driver development guide
-Date: Tue,  2 Apr 2024 16:30:59 +0200
-Message-Id: <20240402143059.8456-4-W_Armin@gmx.de>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20240402143059.8456-1-W_Armin@gmx.de>
-References: <20240402143059.8456-1-W_Armin@gmx.de>
+	s=arc-20240116; t=1712068284; c=relaxed/simple;
+	bh=NwfiDMwPxJKgQCFrhmRtRWQVQ6ckkFHhu7WqccMtMZg=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=RV7ocOWIDOO080QdM6B1p8maBWwkMonxGcQ+UTEQhKGYge1heEtsNqXfI6YGJdd8IUx28ZrOym4Au/K+KNVtAybkyP1Pivt6P8bFcRdelOiJRbbHzAWCtHZP0fCxw19k/3Vzn+1UVWC/vWNJJyQxjyNsoJ7sjKGmf76Rj9G4JNc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=UNc2H8In; arc=none smtp.client-ip=209.85.218.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-ej1-f43.google.com with SMTP id a640c23a62f3a-a4e62f3e63dso279677966b.0
+        for <linux-kernel@vger.kernel.org>; Tue, 02 Apr 2024 07:31:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1712068280; x=1712673080; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
+        bh=m+iZGlcgikxz1gAky52yME4Ey0d0Q399g6xWgsA5b0c=;
+        b=UNc2H8In1ZEJan6aw2dbFE4eOmYC3on/vqGE7PhC1KgKu9lTmOO9ShsJsKG5+kwy//
+         hZdgKOgE9Lw/18aANJ6vGJfqovZ09HhbYmBFhypZ1VWNiuMaqdVlgN5al5NYy3trHVPh
+         Cv+HYy+stknzJ6jzioCfIe4WMTgDr0d+maVd7BXfQFNFJ0vLZteh5iCPHGx6Khr3pIWK
+         Xf6yMLNtgb77jetDtGbgBZKh5za8ez+Lo119/Ono9dmOyxZI4o2zT5SDhJSBWS95+HQ4
+         ICcGUfiDRk7MVIjpkqiJTsSQAYGxhid+gFhVHXyc7aiRJ5M92gCAx0L7GQbjyyfI2oM9
+         bULQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712068280; x=1712673080;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=m+iZGlcgikxz1gAky52yME4Ey0d0Q399g6xWgsA5b0c=;
+        b=toKYIIPl4m4SpOq835pINnw5mCZlJsQPohgQITJa52AQWLA9rNMzOIjqDo2dnZDsct
+         MA2xUI3rtVBcsYKI0K8vnOjkHRi3DypqolZQfh/EXVvz9fr7FnnfwzRkkGAiMUzDtw7S
+         pX0GDDX4UAZCBAywYZsXepwlKIKgiLAIiuEd+mVo2CdoT30ArSb8yWKOpG/t4S86T8SP
+         tdCKxGYbjJJS+q0MrVAJORQh4uHquhazU5QpQNol6tz7GtkqbzwfA0RO2O5GeKVcidFY
+         0FrRcaX/bQPY2JMsJrsLs/8qfd/Olo53GpwUAZk9bOWpf2+UKoqb6c/vabq5zolHR9Xo
+         JmeQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUjFXXkzjZ6OAK3/msU9bd2Z+7NK0mXd6Sce5koAJhAyDGWIsb9WbxuOOxRU5QPk139TYwA1OrMJrI8yl+CPAmODfAStK65sRWFTIVk
+X-Gm-Message-State: AOJu0YxPHz/hMvOkhNsIzOy2XjKwbFRRbvp8ijY9Vq3q5SQ/GLOMB8i/
+	h99sytZ/h7RFl4zPEDEbRosZmSbPUFoI/sTnLz3B4Pt1M+k75AZcH4RjzQrXSUw=
+X-Google-Smtp-Source: AGHT+IFWRjHyAcBDCQH42LTqIXtjYJnibbkqRP82NCqC80gZDFRxjFVFgCMIo9U3wAnIvQaS2BBVXA==
+X-Received: by 2002:a17:906:3a91:b0:a4d:f555:fd6 with SMTP id y17-20020a1709063a9100b00a4df5550fd6mr7599990ejd.29.1712068279722;
+        Tue, 02 Apr 2024 07:31:19 -0700 (PDT)
+Received: from [192.168.92.47] (078088045141.garwolin.vectranet.pl. [78.88.45.141])
+        by smtp.gmail.com with ESMTPSA id y17-20020a170906071100b00a4e6626ae21sm2874695ejb.0.2024.04.02.07.31.18
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 02 Apr 2024 07:31:19 -0700 (PDT)
+Message-ID: <31ec996a-5fff-4230-8987-66bb4d575c36@linaro.org>
+Date: Tue, 2 Apr 2024 16:31:17 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:fgY4JgX5GAfRIFCjvlKFSyEYOWycN7xPHzcl6k3zcuPynmJh6/z
- vN9WF6nbxYefL4B44VRP57NQLiizn1cbMfaqA4spouBRwy0UcCtTDDks4xW1ajAbaNmXp7g
- sSClKxh6K2EcboS1YE5VQbwAW1PD81z9TZj3cl3JlUZFG+ZjCy8Bc8NCbajnLnQYzLAENB7
- weXV3GyCzQBsT7tgI4bUg==
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:QFp6LdFrmnQ=;lf6V/umIJHQngdIL3wEGH+37K3e
- dCzMX5vNs7Nzo7idEvAD3dJM/Wpx9JzQPBF5AisdXjJfGXPufs2wp7DZcA0psTOdFk9Ramgyv
- hzseaI06zD1jq6FqvwaJBrIWS3WuZsl3AkTQWOKNIB+pyE6QSfmt+Uxnur8tY//4ir7p5v7Dg
- hYk0TA/5yedfSd2lWr46EIttlB/aMixBQmbvRRithRQfzgu25qadqWjnVj8mAAFeFjt01/F9L
- FRiW4W45uFgYHKtCerroy5EGtAZjsDWOdF9Zxju+3V4cDk6+aGnThUH871EXsMcDZEElSNdvB
- xEJ5Mo5q+amTrUUShRWwn6xWxS/YBOIqXM1m7rxMmMEC8bKkbGuOg9gCAMjBxvHo0gCZnMdBX
- gCYAlI/P8F0SwhIvIdqzRFslwaONxwuPVLeh5OPEybyU63QpqVTdjQqFPDugK7qKb61oQEIo7
- i/g1SXzgtXt09d+VYAvOEuKEHnei3IsA8/163JDw0UG1iMtvlZZs0ZTpJZkHKHVlvLbTPDip7
- mrbjn6z57yJu357YfmGXCTgw0VbISWB5Lh02A4jJPjNIJBUDPJbCT6xKNtwlUvc+5cniiQPAt
- N4S8YfyZus9uFxMuJcnOBAEBpO8ric2CzUPeR/RyXGGv6dDC9P+tC352Elp8q5FMykFslxVRp
- IAqJ7whB+DKBx52W7MXMzq1NAct3WqM3yKagg/UvkOrPYEqSMKxEKGBvaJ4P2EBNHpAfqE9vc
- OmFKDIK7BoR0j++xQ2x+/S2NyjdP+K3TnJobD47o61PExk+nbGEl7AWU7Io4SScqs1G/ntm9K
- QEv7+hZJMizBeCdJYN6+EoHf+ts9BMGGIcNvY9UtAy5gs=
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 2/3] arm64: dts: qcom: msm8996: add glink-edge nodes
+To: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+ Bjorn Andersson <andersson@kernel.org>, Rob Herring <robh@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>,
+ Mathieu Poirier <mathieu.poirier@linaro.org>,
+ Sibi Sankar <quic_sibis@quicinc.com>
+Cc: linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+ linux-remoteproc@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20240401-msm8996-remoteproc-v1-0-f02ab47fc728@linaro.org>
+ <20240401-msm8996-remoteproc-v1-2-f02ab47fc728@linaro.org>
+Content-Language: en-US
+From: Konrad Dybcio <konrad.dybcio@linaro.org>
+Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
+ 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
+ izWDgYvmBE8=
+In-Reply-To: <20240401-msm8996-remoteproc-v1-2-f02ab47fc728@linaro.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-Since 2010, an LWN article covering WMI drivers exists:
+On 31.03.2024 11:10 PM, Dmitry Baryshkov wrote:
+> MSM8996 provides limited glink support, so add corresponding device tree
+> nodes. For example the following interfaces are provided on db820c:
+> 
+> modem:
+> 2080000.remoteproc:glink-edge.LOOPBACK_CTL_MPSS.-1.-1
+> 2080000.remoteproc:glink-edge.glink_ssr.-1.-1
+> 2080000.remoteproc:glink-edge.rpmsg_chrdev.0.0
+> 
+> adsp:
+> 9300000.remoteproc:glink-edge.LOOPBACK_CTL_LPASS.-1.-1
+> 9300000.remoteproc:glink-edge.glink_ssr.-1.-1
+> 9300000.remoteproc:glink-edge.rpmsg_chrdev.0.0
+> 
+> Signed-off-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+> ---
 
-	https://lwn.net/Articles/391230/
+Reviewed-by: Konrad Dybcio <konrad.dybcio@linaro.org>
 
-Since the introduction of the modern bus-based interface
-and other userspace tooling (bmfdec, lswmi, ...), this
-article is outdated and causes people to still submit new
-WMI drivers using the deprecated GUID-based interface.
-Fix this by adding a short guide on how to develop WMI drivers
-using the modern bus-based interface.
-
-Signed-off-by: Armin Wolf <W_Armin@gmx.de>
-=2D--
-Changes since v1:
-- use footnote for lwn article link
-- wording fixes
-=2D--
- .../wmi/driver-development-guide.rst          | 178 ++++++++++++++++++
- Documentation/wmi/index.rst                   |   1 +
- 2 files changed, 179 insertions(+)
- create mode 100644 Documentation/wmi/driver-development-guide.rst
-
-diff --git a/Documentation/wmi/driver-development-guide.rst b/Documentatio=
-n/wmi/driver-development-guide.rst
-new file mode 100644
-index 000000000000..429137b2f632
-=2D-- /dev/null
-+++ b/Documentation/wmi/driver-development-guide.rst
-@@ -0,0 +1,178 @@
-+.. SPDX-License-Identifier: GPL-2.0-or-later
-+
-+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D
-+WMI driver development guide
-+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D
-+
-+The WMI subsystem provides a rich driver API for implementing WMI drivers=
-,
-+documented at Documentation/driver-api/wmi.rst. This document will serve
-+as an introductory guide for WMI driver writers using this API. It is sup=
-posed
-+to be a successor to the original LWN article [1]_ which deals with WMI d=
-rivers
-+using the deprecated GUID-based WMI interface.
-+
-+Obtaining WMI device information
-+--------------------------------
-+
-+Before developing an WMI driver, information about the WMI device in ques=
-tion
-+must be obtained. The `lswmi <https://pypi.org/project/lswmi>`_ utility c=
-an be
-+used to extract detailed WMI device information using the following comma=
-nd:
-+
-+::
-+
-+  lswmi -V
-+
-+The resulting output will contain information about all WMI devices avail=
-able on
-+a given machine, plus some extra information.
-+
-+In order to find out more about the interface used to communicate with a =
-WMI device,
-+the `bmfdec <https://github.com/pali/bmfdec>`_ utilities can be used to d=
-ecode
-+the Binary MOF (Managed Object Format) information used to describe WMI d=
-evices.
-+The ``wmi-bmof`` driver exposes this information to userspace, see
-+Documentation/wmi/devices/wmi-bmof.rst.
-+
-+In order to retrieve the decoded Binary MOF information, use the followin=
-g command (requires root):
-+
-+::
-+
-+  ./bmf2mof /sys/bus/wmi/devices/05901221-D566-11D1-B2F0-00A0C9062910[-X]=
-/bmof
-+
-+Sometimes, looking at the disassembled ACPI tables used to describe the W=
-MI device
-+helps in understanding how the WMI device is supposed to work. The path o=
-f the ACPI
-+method associated with a given WMI device can be retrieved using the ``ls=
-wmi`` utility
-+as mentioned above.
-+
-+Basic WMI driver structure
-+--------------------------
-+
-+The basic WMI driver is build around the struct wmi_driver, which is then=
- bound
-+to matching WMI devices using a struct wmi_device_id table:
-+
-+::
-+
-+  static const struct wmi_device_id foo_id_table[] =3D {
-+         { "936DA01F-9ABD-4D9D-80C7-02AF85C822A8", NULL },
-+         { }
-+  };
-+  MODULE_DEVICE_TABLE(wmi, foo_id_table);
-+
-+  static struct wmi_driver foo_driver =3D {
-+        .driver =3D {
-+                .name =3D "foo",
-+                .probe_type =3D PROBE_PREFER_ASYNCHRONOUS,        /* reco=
-mmended */
-+                .pm =3D pm_sleep_ptr(&foo_dev_pm_ops),            /* opti=
-onal */
-+        },
-+        .id_table =3D foo_id_table,
-+        .probe =3D foo_probe,
-+        .remove =3D foo_remove,         /* optional, devres is preferred =
-*/
-+        .notify =3D foo_notify,         /* optional, for event handling *=
-/
-+        .no_notify_data =3D true,       /* optional, enables events conta=
-ining no additional data */
-+        .no_singleton =3D true,         /* required for new WMI drivers *=
-/
-+  };
-+  module_wmi_driver(foo_driver);
-+
-+The probe() callback is called when the WMI driver is bound to a matching=
- WMI device. Allocating
-+driver-specific data structures and initialising interfaces to other kern=
-el subsystems should
-+normally be done in this function.
-+
-+The remove() callback is then called when the WMI driver is unbound from =
-a WMI device. In order
-+to unregister interfaces to other kernel subsystems and release resources=
-, devres should be used.
-+This simplifies error handling during probe and often allows to omit this=
- callback entirely, see
-+Documentation/driver-api/driver-model/devres.rst for details.
-+
-+Please note that new WMI drivers are required to be able to be instantiat=
-ed multiple times,
-+and are forbidden from using any deprecated GUID-based WMI functions. Thi=
-s means that the
-+WMI driver should be prepared for the scenario that multiple matching WMI=
- devices are present
-+on a given machine.
-+
-+Because of this, WMI drivers should use the state container design patter=
-n as described in
-+Documentation/driver-api/driver-model/design-patterns.rst.
-+
-+WMI method drivers
-+------------------
-+
-+WMI drivers can call WMI device methods using wmidev_evaluate_method(), t=
-he
-+structure of the ACPI buffer passed to this function is device-specific a=
-nd usually
-+needs some tinkering to get right. Looking at the ACPI tables containing =
-the WMI
-+device usually helps here. The method id and instance number passed to th=
-is function
-+are also device-specific, looking at the decoded Binary MOF is usually en=
-ough to
-+find the right values.
-+
-+The maximum instance number can be retrieved during runtime using wmidev_=
-instance_count().
-+
-+Take a look at drivers/platform/x86/inspur_platform_profile.c for an exam=
-ple WMI method driver.
-+
-+WMI data block drivers
-+----------------------
-+
-+WMI drivers can query WMI device data blocks using wmidev_block_query(), =
-the
-+structure of the returned ACPI object is again device-specific. Some WMI =
-devices
-+also allow for setting data blocks using wmidev_block_set().
-+
-+The maximum instance number can also be retrieved using wmidev_instance_c=
-ount().
-+
-+Take a look at drivers/platform/x86/intel/wmi/sbl-fw-update.c for an exam=
-ple
-+WMI data block driver.
-+
-+WMI event drivers
-+-----------------
-+
-+WMI drivers can receive WMI events via the notify() callback inside the s=
-truct wmi_driver.
-+The WMI subsystem will then take care of setting up the WMI event accordi=
-ngly. Please note that
-+the structure of the ACPI object passed to this callback is device-specif=
-ic, and freeing the
-+ACPI object is being done by the WMI subsystem, not the driver.
-+
-+The WMI driver core will take care that the notify() callback will only b=
-e called after
-+the probe() callback has been called, and that no events are being receiv=
-ed by the driver
-+right before and after calling its remove() callback.
-+
-+However WMI driver developers should be aware that multiple WMI events ca=
-n be received concurrently,
-+so any locking (if necessary) needs to be provided by the WMI driver itse=
-lf.
-+
-+In order to be able to receive WMI events containing no additional event =
-data,
-+the ``no_notify_data`` flag inside struct wmi_driver should be set to ``t=
-rue``.
-+
-+Take a look at drivers/platform/x86/xiaomi-wmi.c for an example WMI event=
- driver.
-+
-+Handling multiple WMI devices at once
-+-------------------------------------
-+
-+There are many cases of firmware vendors using multiple WMI devices to co=
-ntrol different aspects
-+of a single physical device. This can make developing WMI drivers complic=
-ated, as those drivers
-+might need to communicate with each other to present a unified interface =
-to userspace.
-+
-+On such case involves a WMI event device which needs to talk to a WMI dat=
-a block device or WMI
-+method device upon receiving an WMI event. In such a case, two WMI driver=
-s should be developed,
-+one for the WMI event device and one for the other WMI device.
-+
-+The WMI event device driver has only one purpose: to receive WMI events, =
-validate any additional
-+event data and invoke a notifier chain. The other WMI driver adds itself =
-to this notifier chain
-+during probing and thus gets notified every time a WMI event is received.=
- This WMI driver might
-+then process the event further for example by using an input device.
-+
-+For other WMI device constellations, similar mechanisms can be used.
-+
-+Things to avoid
-+---------------
-+
-+When developing WMI drivers, there are a couple of things which should be=
- avoided:
-+
-+- usage of the deprecated GUID-based WMI interface which uses GUIDs inste=
-ad of WMI device structs
-+- bypassing of the WMI subsystem when talking to WMI devices
-+- WMI drivers which cannot be instantiated multiple times.
-+
-+Many older WMI drivers violate one or more points from this list. The rea=
-son for
-+this is that the WMI subsystem evolved significantly over the last two de=
-cades,
-+so there is a lot of legacy cruft inside older WMI drivers.
-+
-+New WMI drivers are also required to conform to the linux kernel coding s=
-tyle as specified in
-+Documentation/process/coding-style.rst. The checkpatch utility can catch =
-many common coding style
-+violations, you can invoke it with the following command:
-+
-+::
-+
-+  ./scripts/checkpatch.pl --strict <path to driver file>
-+
-+References
-+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-+
-+.. [1] https://lwn.net/Articles/391230/
-diff --git a/Documentation/wmi/index.rst b/Documentation/wmi/index.rst
-index 537cff188e14..fec4b6ae97b3 100644
-=2D-- a/Documentation/wmi/index.rst
-+++ b/Documentation/wmi/index.rst
-@@ -8,6 +8,7 @@ WMI Subsystem
-    :maxdepth: 1
-
-    acpi-interface
-+   driver-development-guide
-    devices/index
-
- .. only::  subproject and html
-=2D-
-2.39.2
-
+Konrad
 
