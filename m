@@ -1,112 +1,145 @@
-Return-Path: <linux-kernel+bounces-127906-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-127907-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3F141895299
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 14:10:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 2AB6789529D
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 14:12:29 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id CF9A1B2654D
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 12:10:48 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id AD616B23364
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 12:12:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 205A67FBC3;
-	Tue,  2 Apr 2024 12:09:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9AD2076F17;
+	Tue,  2 Apr 2024 12:12:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=codeconstruct.com.au header.i=@codeconstruct.com.au header.b="kKT+zZZF"
-Received: from codeconstruct.com.au (pi.codeconstruct.com.au [203.29.241.158])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="AcA7VeuH"
+Received: from mail-yb1-f171.google.com (mail-yb1-f171.google.com [209.85.219.171])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A4D92757FB;
-	Tue,  2 Apr 2024 12:09:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=203.29.241.158
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 408AB6A03F
+	for <linux-kernel@vger.kernel.org>; Tue,  2 Apr 2024 12:12:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712059785; cv=none; b=pH1fpBrQkh/56Giqiq//B1brugB/jol6JYtK6fHCKDOFiiage7C5ZXrUtDujTFGEEctLanMhDZpiVeRSid3h0SQ1BGAZ5L5izJEQvF0Y20mAFT1Ik1upnRpnJ6DTL8NoOvrnP1DVssncmnXgDKD50zZbqnz91UVfLA6AevL/uBY=
+	t=1712059937; cv=none; b=NJ9Y0TNV4YTZScZGW1v/DrFmR8JJk5/FgwHRQxRqcvMNbfh5ve698w+zKf7QhC+bRZLOiV9DKH0nHKhKj6uESm3CVW8HnZlAWnk7yUA8jvnhm3g5hSuBwNvsQzi2XAtMWjz8ITmECI4vPX+kRZmpJ9uhglGQJ1Q4SffWabTIGeo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712059785; c=relaxed/simple;
-	bh=YwIUUX0x/WQwrkVO7VhtyyQYHpaR1vN10gFVa337qkM=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=KSpBXNFVMJllD1v87EIuOFzr5Kr20NBLShERIOeOhZSnLHeSjZTaxLwcqY6IS1G74TsgjAJHRDSXnuTttYkkg/m09q3rJY6/ODZgdSZQ1PmKe/A4CRCF+gtgEpdbgsWJ2d59tYfn0ywOHliA9PzWHNi/gsq96n0iJaoD50j2d+A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=codeconstruct.com.au; spf=pass smtp.mailfrom=codeconstruct.com.au; dkim=pass (2048-bit key) header.d=codeconstruct.com.au header.i=@codeconstruct.com.au header.b=kKT+zZZF; arc=none smtp.client-ip=203.29.241.158
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=codeconstruct.com.au
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=codeconstruct.com.au
-Received: from [192.168.68.112] (ppp118-210-182-70.adl-adc-lon-bras34.tpg.internode.on.net [118.210.182.70])
-	by mail.codeconstruct.com.au (Postfix) with ESMTPSA id 5ED4C200E0;
-	Tue,  2 Apr 2024 20:09:40 +0800 (AWST)
+	s=arc-20240116; t=1712059937; c=relaxed/simple;
+	bh=ZU19AXGy1gTKu3ZdKgEYCn04X7EzHEkd9RdcAo9TIfw=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=FPTb9cWNeRwfVRX3d9P3igaoHazq7BhOxqAJbx6gXCQBpj+6KKpXmZQjpN8Lz/LJ256SatTEoDXdVnjBO6/UvUYAnNc5BTm+IVzA6efJJqEFWodUJF3PyjFpwukLkqnKlPvmIcNx1wXwRlzGRyfyhIAP0tIPKfEWDuJwmwikDfA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=AcA7VeuH; arc=none smtp.client-ip=209.85.219.171
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-yb1-f171.google.com with SMTP id 3f1490d57ef6-dc745927098so4770358276.3
+        for <linux-kernel@vger.kernel.org>; Tue, 02 Apr 2024 05:12:16 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-	d=codeconstruct.com.au; s=2022a; t=1712059781;
-	bh=emjzUDDqOpO14ZhysyWQJh3ovWJjdiQOg95LkukSphw=;
-	h=Subject:From:To:Cc:Date:In-Reply-To:References;
-	b=kKT+zZZFOaNhupP6tEx0DyFImtF+6Wo0ztnhUlc5gxPF4+Pfk/3j0oCL/A10KJUPK
-	 RV+VoLqisLrabWfWiYigDtSLNIkECYXhHgcsvJvlfhIBEo7EgWC0Bg/eZXwIVck4Ai
-	 bgLdLs0Ip2od48f6AtTZM/k8u0HBqv6kbdVm4z1ufRukbJfIhnRJlNiakJOORYsso7
-	 9DAS1bv8lNQOezoNo5BtqnX3T9fdt90SXU75gYayzkH/IzPmysCTmc7lTODLwfwNCH
-	 M0dCwPoJm1MkLDKbYFxoQuqq7KYqvfXGVYsNStcrzFU1Hz2Twn3HfF5EXeOpO5Aqrv
-	 lJZf7Wvm6yrjw==
-Message-ID: <ab76b0549172cf3e33d6242fa9ea3e6a87b4a58e.camel@codeconstruct.com.au>
-Subject: Re: [PATCH v6 3/4] dt-bindings: watchdog: aspeed-wdt: Add aspeed,scu
-From: Andrew Jeffery <andrew@codeconstruct.com.au>
-To: Rob Herring <robh@kernel.org>, Peter Yin <peteryin.openbmc@gmail.com>
-Cc: patrick@stwcx.xyz, Wim Van Sebroeck <wim@linux-watchdog.org>, Guenter
- Roeck <linux@roeck-us.net>, Krzysztof Kozlowski
- <krzysztof.kozlowski+dt@linaro.org>,  Conor Dooley <conor+dt@kernel.org>,
- Joel Stanley <joel@jms.id.au>, linux-watchdog@vger.kernel.org, 
- devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
- linux-aspeed@lists.ozlabs.org, linux-kernel@vger.kernel.org
-Date: Tue, 02 Apr 2024 22:39:32 +1030
-In-Reply-To: <20240401135637.GA342928-robh@kernel.org>
-References: <20240328022231.3649741-1-peteryin.openbmc@gmail.com>
-	 <20240328022231.3649741-4-peteryin.openbmc@gmail.com>
-	 <20240401135637.GA342928-robh@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.46.4-2 
+        d=linaro.org; s=google; t=1712059935; x=1712664735; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=59+8zgH9nKJkFqI+MIO5KUM5XCs5xUxjBY89iFUie7c=;
+        b=AcA7VeuH1lsru5Ic48tq2Mzw+fYeKQfYxFjlYwjbhNZqZiMZrNGnc49AfTH8KtU+0b
+         DwDdB06Yx0nGgRNQr+uRvtwU83f8Hp8Q3YDSknC+GKmD/9yb6AB6eCA9x8viSNQueEZt
+         uYM8BxMdZSBpD3/RlNksTZVVg7LbwVtnYBUo0fvBEt5o++7H3fmcd2+eG1yPEfDqc7T+
+         1a2hctcRPBQCQPZ3M+Mo+QUefjmwhsdkQ3xpeXIZV13P9tReqlvrlhdMvX/0ta0IyCJA
+         ipaVJnjftUGu38a9Mzynj+RSBpim/6yNCWqHBf5dNy/Y9Z+t1p63iXWoXgRy1kI0ZPin
+         hawg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712059935; x=1712664735;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=59+8zgH9nKJkFqI+MIO5KUM5XCs5xUxjBY89iFUie7c=;
+        b=kHdnf8TLSUnR4yLaBaqlVkx3sCpRaOGz9YVcRKhA5/Gy/yRaZ/Bu1eD/dB1nZXAHhQ
+         QJNfNi03DN7uEFj0VGdSo5S23O0pHwPugZbt64ktPDza6lR9atKtdHYXEnyf7UBDVPVh
+         bXY7X3xtNrNKHzVH1/bME8o7b8AozEHA6XlQ33jmeBVRmInHHCftxKMGEpxFmrDUAvVu
+         VWXj9kXd3Fl/4xCwaCOCsdimZhR8NcbB6DyXKc77j/f8Khw9+ajNkBCWgpTjKfrXgMM8
+         G5sH+IOtcvmCu9MkNVqZ5/r4P+zwUoJcE+o0st2poRAlZprmM5V6H9AHDC6B3HZxckf3
+         OZgg==
+X-Forwarded-Encrypted: i=1; AJvYcCV888Un8xTE5Jm2zgB0nDtplqycjiWchiEaawBMx1UJElxQpKAYuIme58vxEVTN2bC6gJiKRR7bbPMwzoSTMrCg7P1OowgJx3gRiAPJ
+X-Gm-Message-State: AOJu0YwB2VBdf9D3LKeHQoIgoeyDRwQ0GT+kSa2VDsfL+Sb9gckpvrRG
+	7tfko0a5m1o2tw8YU18X6Slz5EfzMoAmxycH/Lyd4sVc2eiDabN4hklFIMogHLWiuEL4KvFYA70
+	g/ZPKqNMEfTy0efttakBoza8A6ujfXit4HJqZzA==
+X-Google-Smtp-Source: AGHT+IFkuZ7UzLaijf9AS20sbPh65/6NkxIIfNCV/NSfdOu3MxTu2vQNwQDFXF16gKf/9sOjZBiIcPSc2VfwYBA43k4=
+X-Received: by 2002:a25:8590:0:b0:dcc:a5dc:e9d6 with SMTP id
+ x16-20020a258590000000b00dcca5dce9d6mr10343762ybk.30.1712059935303; Tue, 02
+ Apr 2024 05:12:15 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+References: <20240402103406.3638821-1-quic_varada@quicinc.com>
+ <20240402103406.3638821-4-quic_varada@quicinc.com> <CAA8EJpphk_kqzBE7cKb73ipdpTi29t9ZSOOdSfq7pAGSs5NKeg@mail.gmail.com>
+ <CAA8EJpo=TMhu+Te+JE0cQzmjLOTDPi-Vv-h5Bch0Wfr_7iVi2w@mail.gmail.com>
+ <ZgvlrbvvPNA6HRiL@hu-varada-blr.qualcomm.com> <CAA8EJpp2dgy0DcLoUuo6gz-8ee0RRwJ_mvCLGDbdvF-gVhREFg@mail.gmail.com>
+ <ZgvqkhF2mTG82Rx2@hu-varada-blr.qualcomm.com>
+In-Reply-To: <ZgvqkhF2mTG82Rx2@hu-varada-blr.qualcomm.com>
+From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Date: Tue, 2 Apr 2024 15:12:04 +0300
+Message-ID: <CAA8EJprN3TuMF-v5PeFW_JUKk+a+MxB7poccZbi9biZNniRnTQ@mail.gmail.com>
+Subject: Re: [PATCH v6 3/6] interconnect: icc-clk: Add devm_icc_clk_register
+To: Varadarajan Narayanan <quic_varada@quicinc.com>
+Cc: andersson@kernel.org, konrad.dybcio@linaro.org, mturquette@baylibre.com, 
+	sboyd@kernel.org, robh@kernel.org, krzysztof.kozlowski+dt@linaro.org, 
+	conor+dt@kernel.org, djakov@kernel.org, quic_anusha@quicinc.com, 
+	linux-arm-msm@vger.kernel.org, linux-clk@vger.kernel.org, 
+	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	linux-pm@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
-On Mon, 2024-04-01 at 08:56 -0500, Rob Herring wrote:
-> On Thu, Mar 28, 2024 at 10:22:30AM +0800, Peter Yin wrote:
-> > To use the SCU register to obtain reset flags for supporting
-> > bootstatus.
-> >=20
-> > Signed-off-by: Peter Yin <peteryin.openbmc@gmail.com>
-> > ---
-> >  Documentation/devicetree/bindings/watchdog/aspeed-wdt.txt | 4 ++++
-> >  1 file changed, 4 insertions(+)
-> >=20
-> > diff --git a/Documentation/devicetree/bindings/watchdog/aspeed-wdt.txt =
-b/Documentation/devicetree/bindings/watchdog/aspeed-wdt.txt
-> > index 3208adb3e52e..80a1f58b5a2e 100644
-> > --- a/Documentation/devicetree/bindings/watchdog/aspeed-wdt.txt
-> > +++ b/Documentation/devicetree/bindings/watchdog/aspeed-wdt.txt
-> > @@ -8,6 +8,8 @@ Required properties:
-> > =20
-> >   - reg: physical base address of the controller and length of memory m=
-apped
-> >     region
-> > + - aspeed,scu: a reference to the System Control Unit node of the Aspe=
-ed
-> > +   SOC.
->=20
-> You cannot add new required properties as that is an ABI break.
->=20
-> If there's only 1 SCU instance, you can just fetch its node by=20
-> compatible with no DT change.
->=20
-> What's the plan for converting this binding to schema? This is the 2nd=
-=20
-> new property in 6 months.
+On Tue, 2 Apr 2024 at 14:23, Varadarajan Narayanan
+<quic_varada@quicinc.com> wrote:
+>
+> On Tue, Apr 02, 2024 at 02:16:56PM +0300, Dmitry Baryshkov wrote:
+> > On Tue, 2 Apr 2024 at 14:02, Varadarajan Narayanan
+> > <quic_varada@quicinc.com> wrote:
+> > >
+> > > On Tue, Apr 02, 2024 at 01:48:08PM +0300, Dmitry Baryshkov wrote:
+> > > > On Tue, 2 Apr 2024 at 13:40, Dmitry Baryshkov
+> > > > <dmitry.baryshkov@linaro.org> wrote:
+> > > > >
+> > > > > On Tue, 2 Apr 2024 at 13:34, Varadarajan Narayanan
+> > > > > <quic_varada@quicinc.com> wrote:
+> > > > > >
+> > > > > > Wrap icc_clk_register to create devm_icc_clk_register to be
+> > > > > > able to release the resources properly.
+> > > > > >
+> > > > > > Signed-off-by: Varadarajan Narayanan <quic_varada@quicinc.com>
+> > > > > > ---
+> > > > > > v5: Introduced devm_icc_clk_register
+> > > > > > ---
+> > > > > >  drivers/interconnect/icc-clk.c   | 29 +++++++++++++++++++++++++++++
+> > > > > >  include/linux/interconnect-clk.h |  4 ++++
+> > > > > >  2 files changed, 33 insertions(+)
+> > > > >
+> > > > > Reviewed-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+> > > >
+> > > > Wait. Actually,
+> > > >
+> > > > Unreviewed-by: me
+> > > >
+> > > > Please return int from devm_icc_clk_register instead of returning the pointer.
+> > >
+> > > Wouldn't returning int break the general assumption that
+> > > devm_foo(), returns the same type as foo(). For example
+> > > devm_clk_hw_get_clk and clk_hw_get_clk return struct clk *?
+> >
+> > Not always. The only reason to return icc_provider was to make it
+> > possible to destroy it. With devres-managed function you don't have to
+> > do anything.
+>
+> Ok. Will change as follows
+>
+>         return prov; -> return PTR_ERR_OR_ZERO(prov);
+>
 
-I had a patch converting it in a local branch which I've now sent:
+I think the code might become simpler if you first allocate the ICC
+provider and then just 'return devm_add_action_or_reset(dev,
+your_icc_clk_release, provider)'
 
-https://lore.kernel.org/all/20240402120118.282035-1-andrew@codeconstruct.co=
-m.au/
 
-Perhaps we can pull it into this series?
-
-Andrew
+-- 
+With best wishes
+Dmitry
 
