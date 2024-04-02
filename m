@@ -1,115 +1,141 @@
-Return-Path: <linux-kernel+bounces-128244-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-128245-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 152EF89583B
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 17:31:03 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E21D289583E
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 17:31:17 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2919C1C227A8
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 15:31:02 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 99FBB282336
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 15:31:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5C9C613174A;
-	Tue,  2 Apr 2024 15:30:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A53EC1332A5;
+	Tue,  2 Apr 2024 15:30:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=lwn.net header.i=@lwn.net header.b="taUuDJWC"
-Received: from ms.lwn.net (ms.lwn.net [45.79.88.28])
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="ccWtYnl2"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4813C134750;
-	Tue,  2 Apr 2024 15:30:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.79.88.28
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 212E3132C39
+	for <linux-kernel@vger.kernel.org>; Tue,  2 Apr 2024 15:30:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712071811; cv=none; b=d/b3MbDU62UpXPiKnFzfUaqFzMefwNaCY/4TE7tb+IhXJ4zgBth4h0kQpt/2WAObJ7ttM0mdgUjgAgl5C5rJU32JElPD9R3sfLiOSsSGqbuTOeXrdeQhKe/2BqgmeJGXusaN/ErBqQlENyeY2T7uSRMoulEbbSUk/dpp5qk/zPE=
+	t=1712071821; cv=none; b=CPK8izU4ENT1v/9NVBnWdEACR8Fj2DWa9fwotlyPNNp1ZtrmYK4f1nyx8d3hY9cCw4UwDQfRaueczcSYbKMGo4xi42nonDQYQ7r9Xkat1aFbXSdl/8ZbXZ/c+BgRVFrwPPQnPzFh2bFwkbzH91f+sigj4EN30CiW+i5w+iZpb84=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712071811; c=relaxed/simple;
-	bh=Mg63hoWgyu1emHztvlNxc4m7lNkXFrtqWqUTYT7EolU=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=Br24p420GIpiAogL53EiZ6Wnuy2RdIrOiva0EiVorcIy4xspkqAjgTwAZarLYNQMtSip84YeZF/gOeZjHCqcjhQ1gOiMlTJOX5m3MGswOdGEZqLYdwt3ad/k4wXO1nHoq22mjONl81pwVnFpjUDohwjmzSUlL3JhQMAXpFlse9U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lwn.net; spf=pass smtp.mailfrom=lwn.net; dkim=pass (2048-bit key) header.d=lwn.net header.i=@lwn.net header.b=taUuDJWC; arc=none smtp.client-ip=45.79.88.28
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lwn.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lwn.net
-DKIM-Filter: OpenDKIM Filter v2.11.0 ms.lwn.net 9544647C1D
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lwn.net; s=20201203;
-	t=1712071808; bh=4J0PiXaFUEU/W3BdK9lcYY6frY80SRk/ZG3pwh+Rm64=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-	b=taUuDJWCrpZlU8jTnqUYUaVQOpYy+qCmcyYYeTm+l/UWyE6+a2dvQZ3xahSdTOcZ2
-	 P3imBxmlYYhcbuf5NyKHSimE+BgsLsCJ23aqosTDgoz4wBog7nJUtiYQsJxLvNvxHf
-	 ZIf6tnsoPEwQxeEjusmealuOSlQDealbt1nv44KW9mj0LoUhD8dp+aau9EQrlglHrg
-	 x//jx/jg+WfAeLMJV9Z5tm54niTm1X1as5YrjSSuWJV/Ue8g8ge3yuHU+crnn62+vc
-	 vVjWj0W2smkiqL4ymza6wHI044jrclw0o8LtDScKILZl30VHEzxy95WoTwO3aF8dHX
-	 wOLkikqWyLX2g==
-Received: from localhost (unknown [IPv6:2601:280:5e00:625::646])
+	s=arc-20240116; t=1712071821; c=relaxed/simple;
+	bh=23qNJ4ftegx5H447MVacyBoGDIcrxV1t1VQ4lsSZJ/A=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=NrLqk0QA7tKGov7+ujbeYaJxnGKzm5i5LJSIRHNYGQvrYXN51iaV8TGWigQZJG2BDnXjqsTb1HzP5QmHqHuEmrxYwYcjC9kKOLPDkV7WZKquep6OQ+ITeH/g4zCzaGcRBdZAPjaxY7MJgPNYA5KAiPQ80D5YbH/Ca/rqizTIV+Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=ccWtYnl2; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1712071819;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=9CES7zO5vAsVp440eN4HWeKNk0OJ2Kki5eVVcnl1iPU=;
+	b=ccWtYnl23mrz3Nm3cutm92nzgcpcMKmTLd4LDdW8ugk+FodpvfVj+EthhezvqewwImJNxw
+	AOy/IUunSdxJSmqy3h7R/4vBzbhulOK3hecXhvyRK+gIjT7nossy0ITIPfd3bUmwGYrYgm
+	NJdWulTn3uLvmGE5tg9pOncEn2tRz/o=
+Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
+ by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-611-mCLhMP9nP1GCXUty7wZCZQ-1; Tue,
+ 02 Apr 2024 11:30:14 -0400
+X-MC-Unique: mCLhMP9nP1GCXUty7wZCZQ-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.rdu2.redhat.com [10.11.54.4])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
 	(No client certificate requested)
-	by ms.lwn.net (Postfix) with ESMTPSA id 9544647C1D;
-	Tue,  2 Apr 2024 15:30:08 +0000 (UTC)
-From: Jonathan Corbet <corbet@lwn.net>
-To: Thorsten Blum <thorsten.blum@toblux.com>, Mauro Carvalho Chehab
- <mchehab@kernel.org>
-Cc: linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org, Thorsten Blum
- <thorsten.blum@toblux.com>
-Subject: Re: [PATCH] scripts: sphinx-pre-install: Add pyyaml hint to other
- distros
-In-Reply-To: <20240323125837.2022-2-thorsten.blum@toblux.com>
-References: <20240323125837.2022-2-thorsten.blum@toblux.com>
-Date: Tue, 02 Apr 2024 09:30:07 -0600
-Message-ID: <87ttkjwznk.fsf@meer.lwn.net>
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 575BD1E441D0;
+	Tue,  2 Apr 2024 15:30:13 +0000 (UTC)
+Received: from [10.22.33.108] (unknown [10.22.33.108])
+	by smtp.corp.redhat.com (Postfix) with ESMTP id E66122022EA7;
+	Tue,  2 Apr 2024 15:30:11 +0000 (UTC)
+Message-ID: <548efd52-e45f-41fa-a477-bc5112d7b00c@redhat.com>
+Date: Tue, 2 Apr 2024 11:30:11 -0400
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 1/2] cgroup/cpuset: Make cpuset hotplug processing
+ synchronous
+Content-Language: en-US
+To: =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>
+Cc: Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
+ Johannes Weiner <hannes@cmpxchg.org>, Thomas Gleixner <tglx@linutronix.de>,
+ Peter Zijlstra <peterz@infradead.org>, "Rafael J. Wysocki"
+ <rafael@kernel.org>, Len Brown <len.brown@intel.com>,
+ Pavel Machek <pavel@ucw.cz>, Shuah Khan <shuah@kernel.org>,
+ linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
+ linux-pm@vger.kernel.org, linux-kselftest@vger.kernel.org,
+ Frederic Weisbecker <frederic@kernel.org>,
+ "Paul E. McKenney" <paulmck@kernel.org>, Ingo Molnar <mingo@kernel.org>,
+ Valentin Schneider <vschneid@redhat.com>,
+ Anna-Maria Behnsen <anna-maria@linutronix.de>, Alex Shi <alexs@kernel.org>,
+ Vincent Guittot <vincent.guittot@linaro.org>,
+ Barry Song <song.bao.hua@hisilicon.com>
+References: <20240401145858.2656598-1-longman@redhat.com>
+ <20240401145858.2656598-2-longman@redhat.com>
+ <kce74bx6aafxfuw5yovaschym4ze4kommfk74eq5totojytest@mdxnfvl2kdol>
+From: Waiman Long <longman@redhat.com>
+In-Reply-To: <kce74bx6aafxfuw5yovaschym4ze4kommfk74eq5totojytest@mdxnfvl2kdol>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.4
 
-Thorsten Blum <thorsten.blum@toblux.com> writes:
 
-> Extend commit 84b4cc8189f2 ("docs: scripts: sphinx-pre-install: Fix
-> building docs with pyyaml package") and add pyyaml as an optional
-> package to Mageia, ArchLinux, and Gentoo.
+On 4/2/24 10:13, Michal Koutný wrote:
+> Hello Waiman.
 >
-> The Python module pyyaml is required to build the docs, but it is only
-> listed in Documentation/sphinx/requirements.txt and is therefore missing
-> when Sphinx is installed as a package and not via pip/pypi.
+> (I have no opinion on the overall locking reworks, only the bits about
+> v1 migrations caught my attention.)
 >
-> Signed-off-by: Thorsten Blum <thorsten.blum@toblux.com>
-> ---
->  scripts/sphinx-pre-install | 3 +++
->  1 file changed, 3 insertions(+)
+> On Mon, Apr 01, 2024 at 10:58:57AM -0400, Waiman Long <longman@redhat.com> wrote:
+> ...
+>> @@ -4383,12 +4377,20 @@ hotplug_update_tasks_legacy(struct cpuset *cs,
+>>   	/*
+>>   	 * Move tasks to the nearest ancestor with execution resources,
+>>   	 * This is full cgroup operation which will also call back into
+>> -	 * cpuset. Should be done outside any lock.
+>> +	 * cpuset. Execute it asynchronously using workqueue.
+>                     ...to avoid deadlock on cpus_read_lock
 >
-> diff --git a/scripts/sphinx-pre-install b/scripts/sphinx-pre-install
-> index 4c781617ffe6..d4f05216ca23 100755
-> --- a/scripts/sphinx-pre-install
-> +++ b/scripts/sphinx-pre-install
-> @@ -514,6 +514,7 @@ sub give_mageia_hints()
->  {
->  	my %map = (
->  		"python-sphinx"		=> "python3-sphinx",
-> +		"yaml"			=> "python3-yaml",
->  		"virtualenv"		=> "python3-virtualenv",
->  		"dot"			=> "graphviz",
->  		"convert"		=> "ImageMagick",
-> @@ -557,6 +558,7 @@ sub give_mageia_hints()
->  sub give_arch_linux_hints()
->  {
->  	my %map = (
-> +		"yaml"			=> "python-yaml",
->  		"virtualenv"		=> "python-virtualenv",
->  		"dot"			=> "graphviz",
->  		"convert"		=> "imagemagick",
-> @@ -587,6 +589,7 @@ sub give_arch_linux_hints()
->  sub give_gentoo_hints()
->  {
->  	my %map = (
-> +		"yaml"			=> "dev-python/pyyaml",
->  		"virtualenv"		=> "dev-python/virtualenv",
->  		"dot"			=> "media-gfx/graphviz",
->  		"convert"		=> "media-gfx/imagemagick",
+> Is this the reason?
+> Also, what happens with the tasks in the window till the migration
+> happens?
+> Is it handled gracefully that their cpu is gone?
 
-Applied, thanks.
+Yes, there is a potential that a cpus_read_lock() may be called leading 
+to deadlock. So unless we reverse the current cgroup_mutex --> 
+cpu_hotplug_lock ordering, it is not safe to call 
+cgroup_transfer_tasks() directly.
 
-jon
+
+>
+>
+>> -	if (is_empty) {
+>> -		mutex_unlock(&cpuset_mutex);
+>> -		remove_tasks_in_empty_cpuset(cs);
+>> -		mutex_lock(&cpuset_mutex);
+>> +	if (is_empty && css_tryget_online(&cs->css)) {
+>> +		struct cpuset_remove_tasks_struct *s;
+>> +
+>> +		s = kzalloc(sizeof(*s), GFP_KERNEL);
+> Is there a benefit of having a work for each cpuset?
+> Instead of traversing whole top_cpuset once in the async work.
+
+We could do that too. It's just that we have the repeat the iteration 
+process once the workfn is invoked, but that has the advantage of not 
+needing to do memory allocation. I am OK with either way. Let's see what 
+other folks think about that.
+
+Cheers,
+Longman
+
 
