@@ -1,181 +1,160 @@
-Return-Path: <linux-kernel+bounces-128440-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-128441-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 180DD895AD9
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 19:40:17 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 02EBE895AEC
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 19:42:20 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0A43A1C22059
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 17:40:16 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 22245B28293
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 17:40:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AED1315AAA8;
-	Tue,  2 Apr 2024 17:40:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5CDF615AAC2;
+	Tue,  2 Apr 2024 17:40:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=wolfvision.net header.i=@wolfvision.net header.b="iWB9Tv8c"
-Received: from EUR05-VI1-obe.outbound.protection.outlook.com (mail-vi1eur05on2090.outbound.protection.outlook.com [40.107.21.90])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="MYizSPNJ"
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E33B817582;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CF17415991B;
+	Tue,  2 Apr 2024 17:40:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1712079608; cv=none; b=F3jZAYRLMgArQsGKR8kIS0j0kQHbxuheHfO2d8qy9aT346AnFt7kBTlNB9ZMP96yBJwwXwp3WriA013mTX5P8RrFaKySO2Hm6vdXbcbvKnZDPogNgcTaw5IAQ1CcgYogWmuGTj/2wMte+dqmDoUNI+IczEycLeg/xIGWWpkNmj0=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1712079608; c=relaxed/simple;
+	bh=+6iOyRz9ZaM1hjjBwv9H9tsp/d85fEt5HBevd/gKSYs=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=OKlm+3xHn9Vw3Lg94VtSTDp1ufXh3ofrq/NdZrO71wpkZEhar1cwD2mgUtBimjqrYMi8Eyj2qQsHv47aEmN0tGWHM1Vrew62YYWWYaQyJCckL3OnntR0sTCaCfZ+HmQ8FiPLSzWjZ3gQXcxktqIXd58mtXnutwTGBFt1m393nzo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=MYizSPNJ; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [10.150.64.98])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id CF2FD5C0B3;
 	Tue,  2 Apr 2024 17:40:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.21.90
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712079606; cv=fail; b=agzlWQkqqUQsTLLpoAEyhg/Djslu/UFEqXJ92QZ6f85dIWzBfmblbuKbhWgx7igP8/6ntzeagqrN5wetjEceTyb3+44W97sExItLbCWflSUYUyKcoUZ3SwUGn/M9qMdhK7voO1BwO3L0yFGjgxNhGoEEFYze2OVWrRQl5M2mb+U=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712079606; c=relaxed/simple;
-	bh=ndkyf17d88GtLZDqy4uKf555E+qOTfwQm+zGIAeLT5I=;
-	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
-	 Content-Type:MIME-Version; b=FL9EeQckaWYipXdSDj2RE37FiGMK56Ou9twvkHeqTJvUxzPCL1du432YorYNNJ2dCt3/MWLgnXeH3gxE9y1ttgWUDPdk4euVCP+MLa2gKtfZEgdd+q8+WVrCUco91tuOyil1IY9FnVW070tnDvvq7woUuqR/8c3qfFH6gJtwY1E=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wolfvision.net; spf=pass smtp.mailfrom=wolfvision.net; dkim=pass (1024-bit key) header.d=wolfvision.net header.i=@wolfvision.net header.b=iWB9Tv8c; arc=fail smtp.client-ip=40.107.21.90
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wolfvision.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=wolfvision.net
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=AAchN9emMnRbmioItN7G2Pn5dXXNz3ZOYTT8tCqJxQA/ki4e0QroFSJtfBzjQi7ZwHeBp20CgFSosjKHzIoKPO/LdZ54ERRwYzQBvbM8w7R4FvtNMNZ/q0DlRSRPZ5IGNDvm+/5n7QJadPWbaySFByBYkmagCw/o9mUcRLmzF18pyV2gTo1P8BdQzyn1VSXaavj8dRnibnhl1wDktg5p4eVMx/6MHI4wbuXPaSXse73TaxmcjvrYZw3vMFYGboztVE74r9t+6kQxvv3qRdpiBNF/0D1veeKbCFwwdYU2rg5qcHys0UHWWHI95eheWJthSs+adVuDnWtMX6ovcWAYSA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=u0+1lhClaOQP6shGr/eyxHY4NYspTPZyZx97ZYV9y08=;
- b=hrKWRdFxBdXJf0SvAQOfXOv7ZfYsahWpfGPqskJGxlP/qWOTmUccDyX1PlHm4+l9WCP25BnntiiQGkIA/F7hGDIiLvXGfjhAl88MN4wmg4WCXgDfTWE1RVlUf2kcLslIP2kgx9evmbg3eONbyOPMTu3IgorNuf0F4XoaQfyXYE3rFr82ny3U8y2w/+tt0EOkGOWhPqh8z5QDSHBKYjzZKK76YINlY0p106R4QX9ciAYJxBxwnCAefRRyzqm8eZ2sWXDHwYQNa2oHu8vp9OFz2yNDqXGOVZ2wYx2oOnJdI1qZIDA/23LlxaV+r+PoPFMgZbn5gPcmlzuC9LS899Eokg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=wolfvision.net; dmarc=pass action=none
- header.from=wolfvision.net; dkim=pass header.d=wolfvision.net; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wolfvision.net;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=u0+1lhClaOQP6shGr/eyxHY4NYspTPZyZx97ZYV9y08=;
- b=iWB9Tv8c2lUDXvtA0APE772kxIBSmbuGOLncgJdu1d7rGnvHhBMZhq4SGF+1cLgvBQuILIwwNZeJIK6pTS7wWqquPK8+QHzg7OTi+xN6xzssPvvQiClNd0dHh1XZvmNhKPwQ0AaI9j8g30p5H2WnAzP4lUN6o5PUksRiW6qxbD8=
-Received: from VE1PR08MB4974.eurprd08.prod.outlook.com (2603:10a6:803:111::15)
- by PA6PR08MB10568.eurprd08.prod.outlook.com (2603:10a6:102:3ce::5) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7409.46; Tue, 2 Apr
- 2024 17:39:59 +0000
-Received: from VE1PR08MB4974.eurprd08.prod.outlook.com
- ([fe80::9e35:6de9:e4fc:843f]) by VE1PR08MB4974.eurprd08.prod.outlook.com
- ([fe80::9e35:6de9:e4fc:843f%7]) with mapi id 15.20.7409.042; Tue, 2 Apr 2024
- 17:39:59 +0000
-Message-ID: <82e0f16a-8f25-4e69-97bb-ee3c78f2b183@wolfvision.net>
-Date: Tue, 2 Apr 2024 19:39:56 +0200
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH RESEND 0/2] usb: typec: tipd: fix event checking in
- interrupt service routines
-To: Heikki Krogerus <heikki.krogerus@linux.intel.com>
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- Abdel Alkuor <abdelalkuor@geotab.com>, linux-usb@vger.kernel.org,
- linux-kernel@vger.kernel.org, stable@vger.kernel.org
-References: <20240328-tps6598x_fix_event_handling-v1-0-502721ff705b@wolfvision.net>
- <ZgvcJPTJS7d4aYgr@kuha.fi.intel.com>
-Content-Language: en-US, de-AT
-From: Javier Carrasco <javier.carrasco@wolfvision.net>
-In-Reply-To: <ZgvcJPTJS7d4aYgr@kuha.fi.intel.com>
-Content-Type: text/plain; charset=UTF-8
-X-ClientProxiedBy: VI1PR0502CA0030.eurprd05.prod.outlook.com
- (2603:10a6:803:1::43) To VE1PR08MB4974.eurprd08.prod.outlook.com
- (2603:10a6:803:111::15)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1712079604; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=H5F6GGyhdpvo/TM/Z4dxkuGDKQ/Qzalz5AOzBbLucHQ=;
+	b=MYizSPNJqr9GMzaMQfyIO9JwnVNU2Ig6nmXsBZqXDBHJ8R1PdmkHgbClwifgWkc7CgH54D
+	XO8DenBimyBtFcyd6T79pGlsdamcvHECD+G8oRW9WBObAV/4bislB1VEBnuCLFy1WkmloS
+	TqO0dFxwCjwkJl2RBltQdDyhH0r/S+g=
+Authentication-Results: smtp-out2.suse.de;
+	none
+Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id AF26413A90;
+	Tue,  2 Apr 2024 17:40:04 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap2.dmz-prg2.suse.org with ESMTPSA
+	id n0+TKvRCDGaRKQAAn2gu4w
+	(envelope-from <mkoutny@suse.com>); Tue, 02 Apr 2024 17:40:04 +0000
+Date: Tue, 2 Apr 2024 19:40:03 +0200
+From: Michal =?utf-8?Q?Koutn=C3=BD?= <mkoutny@suse.com>
+To: Haitao Huang <haitao.huang@linux.intel.com>
+Cc: Jarkko Sakkinen <jarkko@kernel.org>, dave.hansen@linux.intel.com, 
+	tj@kernel.org, linux-kernel@vger.kernel.org, linux-sgx@vger.kernel.org, 
+	x86@kernel.org, cgroups@vger.kernel.org, tglx@linutronix.de, mingo@redhat.com, 
+	bp@alien8.de, hpa@zytor.com, sohil.mehta@intel.com, tim.c.chen@linux.intel.com, 
+	zhiquan1.li@intel.com, kristen@linux.intel.com, seanjc@google.com, zhanb@microsoft.com, 
+	anakrish@microsoft.com, mikko.ylinen@linux.intel.com, yangjie@microsoft.com, 
+	chrisyan@microsoft.com
+Subject: Re: Re: [PATCH v9 15/15] selftests/sgx: Add scripts for EPC cgroup
+ testing
+Message-ID: <yjremy4leipriqfd547wvjd6jt3r6t4tgz36eazy3slfuew4mc@v4iye7sm7yqn>
+References: <20240205210638.157741-1-haitao.huang@linux.intel.com>
+ <20240205210638.157741-16-haitao.huang@linux.intel.com>
+ <4be7b291010973c203ed8c7bcd25b626c1290231.camel@kernel.org>
+ <D04OVW6I8MUA.1OAIHFQ8943SM@kernel.org>
+ <op.2lbjl0oawjvjmi@hhuan26-mobl.amr.corp.intel.com>
+ <D071OAFZ80O6.XEDXJ8AF4PK9@kernel.org>
+ <D071QIHLW7MP.UM9R3VYETIOK@kernel.org>
+ <htiz5jgsby5v262saphhomcsxtixb2u7ot6jcghpfhvgz65ht6@qlz3gpdwapaa>
+ <D09MB26IPFFW.3UBD7M0S17SG6@kernel.org>
+ <op.2llzn7wgwjvjmi@hhuan26-mobl.amr.corp.intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: VE1PR08MB4974:EE_|PA6PR08MB10568:EE_
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	vifVaKIRQpOcazOtStNaCj2NYEcBwEFxlRe/uWaFXVPvlK6DfVz0xgRdLbanLXo4JL6uaRzUfzTdsu3x1yZnlfC/E2ew5qCwQXGJVhvGMCfY7XNYBuYvOJnCtK5eQ4mlUkp4zaHWODHLmICaTFk28xsXf+voA8BslKj1fZqjLQlS190GYmN3thvVhRthVmngWrN+gXYpsqkm5zd6BkyshbH2M7QROWTEcv05dIeGA7t59IYeQOjwiHikICpkquncIt29xxKxh8QNSfLkV6wz5O0Us7nmBxW5CVYMp9n35nyiQm9QNFDOAPS87i3DIwKsNVafh3O7Z/RubR6aNY0g2dHFoH/myE3eiN7pUIHMtNq6QZWFOyUGb+0uCNEtALV8cnMXsmuaZXzhaoPX81QNxDw1Esoa2ESLhmefoGMOF1enOrYSePZ1Srfh4HlMlPq+bSeNI3qef8snmOv7t0tqiSOKBLpbh6pOOQDCLENUNN4veaVDAdikPWThIkw5VgDfttgQ2UNOIlf2mziROmvhLe+bDf9Mb7MYTmcCCuSFA7A6uHVyrXFH0Rgs6wtsczP9+STQDAve5c03VuYpZeeilb70snwj1GGIOGIiBBBxAME=
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VE1PR08MB4974.eurprd08.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376005)(1800799015)(366007);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?VTIxcWd2TXVPd2d5eHJ3eWFFbmVXeTVpWFhEMmxQRTRvZDYyUEFzUGVTdFdK?=
- =?utf-8?B?dXdRUXVZVUZSK2JyTmNBamhWU2twQTlxbEw0Nkt4RFVRYTUrcnQ5L0xhdjlW?=
- =?utf-8?B?WmdIVmQ1UFhJelNNZy9pRzZTb1BUaTlmRkxFZWIzMUtLbXpzQldqUDFrN1d2?=
- =?utf-8?B?WkxSeWxvOTlKN09BRHd1TlRpeWtUUXlzNVZlaHZWd3RFMlpnRnd1aitzZ01t?=
- =?utf-8?B?MnNtZTA3TFRsSU1LYkwvVkZ0Wnk3UUJkK1hGaDg4bG05N3pDT3hoR2hpWUh5?=
- =?utf-8?B?RTJ6V2VDZTNjRDR6UmQ3SHNEbWtoWXJteEhjLzd4NHJndHpKYWZuQktCcnBu?=
- =?utf-8?B?REQ4SnRXdmNSRHN3QjU4dFVrRWkzbTlmWkFsTFJNRExLRUQ4QjBKZnVCb3FZ?=
- =?utf-8?B?M0FlVURGOTFkNHR0dnV0WTBiaENWa3ZTcnhESFhHZ2ZLbTlPR0pjb2xHTFNa?=
- =?utf-8?B?K0lTSjlkT0E4cVc2dVJLQVEydjRRTmdIeDZLZ0NXSll4QWRGbHR5UmwvN2Vu?=
- =?utf-8?B?Uis5V3F1SlFOdTdCZjRndmN3Y280Zjkzazh3cURnTFAyWmI5U0xQazdIc0pH?=
- =?utf-8?B?QU5EdHBWL2FyME15bG44ZFhqSWZNc1V0SjZEZlFrWUxHQThDSTE1TFc0TW1P?=
- =?utf-8?B?bnBkMytOZGRsOVIvbC8rWkRZZy9ndnNFcUl1clN1T01EQXNPOUgrVlJNbGZQ?=
- =?utf-8?B?MTZTM2E4UDN4Z3R0WXBWTVdRUXVsSDBxQUZhOUN1YUlucVF3MzNuQldtNWE4?=
- =?utf-8?B?SGQ5T2Y3Q1FqaVZNZW5zQzlJODhNY251SFZVNEFML0pzZ1dFbC9ocFZNUHV1?=
- =?utf-8?B?RFZ6ZHFmTVBJQWRuRWtCME9KY1pKbUhtZk05Y1VZK3J3S3YxSGZaTkFGQWIv?=
- =?utf-8?B?OFNNekprWVgyY2sweTNEYVl6ZzZCY2c0VTJweTRtN1lHVGk5eFdiRE0yN1VN?=
- =?utf-8?B?SGxsa2tVajl4Q0s3RjgxQ1lrM1RvbmFTSDlXZCtZUE5DdEdYZGZrOU1TRW1B?=
- =?utf-8?B?TlZiMzNDQ0NOSldhUEF2NnR3MitVWXZkQTkyNjRqZzU1WDI5WDlhWVpza0ln?=
- =?utf-8?B?eHlwRnhYeDRGYmo5aTBCeitLdkoxNllhVDhZVzNBV3JWemdvOFBoaUNqNUVY?=
- =?utf-8?B?ZDBOSWtvSkFZN2RHUktJSEpyK0NPN0txOEtieVpVRjY5T09ySFU2OFJQZWJQ?=
- =?utf-8?B?emZ4ekp0b3NXeTVLa0dnbytTcXVyRGM4Vko0M0lHcUg4YjcwcVJRTm5RYWwy?=
- =?utf-8?B?QkFaUm1EZXlNa0pZVTYxM3YwSWkxREhURjlnNXB1NTI5OTh2Z0pCVkd6MUlm?=
- =?utf-8?B?a1ZmRTdnMCs0QUFDUXJFL3FZdy9LOEVKZytWTWpEVFRNczFTcERIcDJ1c3Zx?=
- =?utf-8?B?dGY2RXF1dndZVHFIT1ZmZ1p0NENVQjZJZ1BoUHg2emoxSDZPejgyd0VyOSsz?=
- =?utf-8?B?NHBRTlhIeUMxeTVQMThWbTl2NDlLdFlkcUpXaWR2c1gyUmd3U0dmMGtQTmEz?=
- =?utf-8?B?MEpBdTk1T2IvQ29RL21NZ0IrUFk0MGMvdkhCYkJMWlpZTnZ2VGNJQ0pHdVVB?=
- =?utf-8?B?aVF1Q2xpbGt6aGMvQWdlbVd0SWpLT2JST2wyVmpEcXlXWC9aTGhzcnVyZ29O?=
- =?utf-8?B?VTV4aGNKS1pHbDEwT3JJLzlWK3JnYnZvMmtXN2Faa3UzRWtKVjhFMVRiK3dh?=
- =?utf-8?B?cEhQMTZDbWh3QnFMY1RydDdrUjZES0lycHJFcjZsY1FKbjRtUnJOeWNTS05l?=
- =?utf-8?B?Y0VhZFdmVkZqb0JMRXd0WEZsN3VwaUpYMGhjY05wbGdSZzZHSDJLc3hkRi83?=
- =?utf-8?B?OUphOG91MDFrVDcyNVBZR3JCYk0xYXUvNmVkMW1aM1F3UlhGOW0xSUZUY29q?=
- =?utf-8?B?THNzK3hVM1VndDhuU09zYy9jN0dGTVhOb21Ddm5qMHRSMkxJQUxyRlFKVW1B?=
- =?utf-8?B?cFFkL1VCK3owRXl6czRiK2U2Z1QwTmRVQStNdXJpeHlXK0JpK1ZWM0IvMVRC?=
- =?utf-8?B?QlJrYUY2enlJK2Y2YVBzcjE3UFFXK3JFbVVjWlh0VHdiV0Z6bmlic2VMNlJ6?=
- =?utf-8?B?UjFHem4zaXBXcHJCZytTZGRJd0x5VHBCWkdWaDRXMWYxVUM2eGxVUW13UHVI?=
- =?utf-8?B?VExVaHFrYU1wZE5UNUI2ckVySkhBZTVFOGVMWEJ2TW5GeGZ0Qk5TcFpaUHlk?=
- =?utf-8?B?MXc9PQ==?=
-X-OriginatorOrg: wolfvision.net
-X-MS-Exchange-CrossTenant-Network-Message-Id: 530d2136-080d-4735-aa1f-08dc533beb01
-X-MS-Exchange-CrossTenant-AuthSource: VE1PR08MB4974.eurprd08.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 02 Apr 2024 17:39:59.2426
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: e94ec9da-9183-471e-83b3-51baa8eb804f
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: C6JZKNhpev/TmRTZnkGYihb5gUrI1KdkvfJUxClwVQIL7k0jZqxR1U5cI7vIb6Mosq9ITGG5hMZgQAMeu8Yzpw6rqUhAqpBMmPxMVKERtrc=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PA6PR08MB10568
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="qtyyx7wt5l7xfjnz"
+Content-Disposition: inline
+In-Reply-To: <op.2llzn7wgwjvjmi@hhuan26-mobl.amr.corp.intel.com>
+X-Spamd-Result: default: False [-1.94 / 50.00];
+	SIGNED_PGP(-2.00)[];
+	MID_RHS_NOT_FQDN(0.50)[];
+	MIME_GOOD(-0.20)[multipart/signed,text/plain];
+	NEURAL_HAM_SHORT(-0.20)[-0.998];
+	BAYES_HAM(-0.04)[58.36%];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	DKIM_SIGNED(0.00)[suse.com:s=susede1];
+	ARC_NA(0.00)[];
+	RCPT_COUNT_TWELVE(0.00)[22];
+	MIME_TRACE(0.00)[0:+,1:+,2:~];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	RCVD_TLS_ALL(0.00)[];
+	FROM_EQ_ENVFROM(0.00)[];
+	TO_DN_SOME(0.00)[];
+	RCVD_COUNT_TWO(0.00)[2];
+	MISSING_XM_UA(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[intel.com:email,imap2.dmz-prg2.suse.org:rdns,imap2.dmz-prg2.suse.org:helo]
+X-Spam-Score: -1.94
+X-Spam-Level: 
+X-Spam-Flag: NO
 
-On 4/2/24 12:21, Heikki Krogerus wrote:
-> On Thu, Mar 28, 2024 at 05:55:50PM +0100, Javier Carrasco wrote:
->> The ISRs of the tps25750 and tps6598x do not handle generated events
->> properly under all circumstances.
->>
->> The tps6598x ISR does not read all bits of the INT_EVENTX registers,
->> leaving events signaled with bits above 64 unattended. Moreover, these
->> events are not cleared, leaving the interrupt enabled.
->>
->> The tps25750 reads all bits of the INT_EVENT1 register, but the event
->> checking is not right because the same event is checked in two different
->> regions of the same register by means of an OR operation.
->>
->> This series aims to fix both issues by reading all bits of the
->> INT_EVENTX registers, and limiting the event checking to the region
->> where the supported events are defined (currently they are limited to
->> the first 64 bits of the registers, as the are defined as BIT_ULL()).
->>
->> If the need for events above the first 64 bits of the INT_EVENTX
->> registers arises, a different mechanism might be required. But for the
->> current needs, all definitions can be left as they are.
->>
->> Note: resend to add the Cc tag for 'stable' (fixes in the series).
-> 
-> So this should be v3 (or v2?). Next time please follow the guide
-> when submitting patches:
-> https://www.kernel.org/doc/html/latest/process/submitting-patches.html#the-canonical-patch-format
-> 
-> thanks,
-> 
-The first resend only added 'stable' to Cc (which was wrong) with no
-modifications at all, and the second resend (this one) actually modified
-the commit description to include 'stable', which should have turned it
-into a v2.
 
-I will tag the next version as v3 to account for this, thanks for the
-feedback.
+--qtyyx7wt5l7xfjnz
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Best regards,
-Javier Carrasco
+On Tue, Apr 02, 2024 at 11:20:21AM -0500, Haitao Huang <haitao.huang@linux.intel.com> wrote:
+> Do we really want to have it implemented in c?
+
+I only pointed to the available C boilerplate.
+
+> There are much fewer lines of
+> code in shell scripts. Note we are not really testing basic cgroup stuff.
+> All we needed were creating/deleting cgroups and set limits which I think
+> have been demonstrated feasible in the ash scripts now.
+
+I assume you refer to
+Message-Id: <20240331174442.51019-1-haitao.huang@linux.intel.com>
+right?
+
+Could it be even simpler if you didn't stick to cgtools APIs and v1
+compatibility?
+
+Reducing ash_cgexec.sh to something like
+	echo 0 >$R/$1/cgroup.procs
+	shift
+	exec "$@"
+(with some small builerplate for $R and previous mkdirs)
+
+
+Thanks,
+Michal
+
+--qtyyx7wt5l7xfjnz
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYKAB0WIQQpEWyjXuwGT2dDBqAGvrMr/1gcjgUCZgxC8AAKCRAGvrMr/1gc
+jigRAP4mWe5bB10SBzjHzWt7c38yCgtq7Vmjj/SA7W8goippqAEAovEnsLpMZFKJ
+LXRH+hlVdIAOhf4njhycDoJINsgoUQ0=
+=Lkg+
+-----END PGP SIGNATURE-----
+
+--qtyyx7wt5l7xfjnz--
 
