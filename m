@@ -1,97 +1,77 @@
-Return-Path: <linux-kernel+bounces-127765-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-127766-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3049889509C
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 12:45:20 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1847A8950A1
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 12:46:42 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D08FF1F241A8
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 10:45:19 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2F8711C2306D
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 10:46:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3E94A5E093;
-	Tue,  2 Apr 2024 10:45:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="ZWTIfj+Y"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.9])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5DC145FB98;
+	Tue,  2 Apr 2024 10:46:33 +0000 (UTC)
+Received: from smtpbg153.qq.com (smtpbg153.qq.com [13.245.218.24])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 151EB58AB2;
-	Tue,  2 Apr 2024 10:45:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.9
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 15E305E093;
+	Tue,  2 Apr 2024 10:46:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=13.245.218.24
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712054712; cv=none; b=NvyN4ogtBze4Z0gI6wmUCQdOM40A1AdzbkwpPDD/pLpKiYRxb5TZIx/wl+/VnhT+pjcqVy8sWtlz42lE8M6fx5acOaKsvVz9TfaUDcvJvqAk3jphpHDuRHgalYxRrE5VH21iGnsLyU0/RIApxcehUuzCYYm3ybpqCC6q+9F5BVY=
+	t=1712054792; cv=none; b=iPbvWtBGGba58II9fXQIRMYh0QltGcWlKX/xUTFpNXQjjTS6oAjqrhcYcWGWW744sa463ycgmUw9busEkCkdq0KCjIHL8R+BrTDQWhvsbI1jszQNTYoJ7bc3y5SPDSU+zw2HgHFX8YcFHLhAM5YPbhFgrspoTd4v4aQhDB+e8o8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712054712; c=relaxed/simple;
-	bh=nmEP0AE09XNX95HP/Uf/VCja/Fdc09ns1eyOIE7J7qQ=;
-	h=From:Date:To:cc:Subject:In-Reply-To:Message-ID:References:
-	 MIME-Version:Content-Type; b=BxkKFz/67Ylh2Jk6IW0OY7/Z2JzxTLiXtTcEULwN/d0WNHfpI/riTOdvAmfp7t8U2p/b8mRLP0PGFHDQ/OQxlM/iFQGTay02bt8Wvqhydu4F+K9quuTZL3agvSY5UCsKs1oBkeqapnZARvbwmB4J3Gsq4dBmoSwcLm2C9pmu3LQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=ZWTIfj+Y; arc=none smtp.client-ip=198.175.65.9
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1712054711; x=1743590711;
-  h=from:date:to:cc:subject:in-reply-to:message-id:
-   references:mime-version;
-  bh=nmEP0AE09XNX95HP/Uf/VCja/Fdc09ns1eyOIE7J7qQ=;
-  b=ZWTIfj+YH5vQcwG5kwVmYX3granEKDYOlE4/2Ybt0dhFPlk112scLo4C
-   e9NWoT72fq+xhJEhgePS8C6lB6yHU3TehQR8EAPZ+yTGSD6Ul+1C4ASxv
-   3sKQN+wkaCVvWYDsLdLwW3LnHr94KsnYNtG+MJiaI/E53xcOl9RHa3ogU
-   M8ARPbsjCbk+Cgxc4kJts8UoX7XtGqZHGshgVsw71HR3XLzZxKceopZN3
-   pK0jVVF76r4VDLCWSFpIOBunoad2xaKl3Uz/HEInvW+UeHMSETNy5vTHD
-   zl4tJRhqEsIbjDiWrgZZX4Y7keXPMF0HfnQ+lTgRRJ8iqt/DKhx6ud+3f
-   A==;
-X-CSE-ConnectionGUID: UjcfWKe1RjmuhGsQUqOCPg==
-X-CSE-MsgGUID: 1GLqn3GdTKuWsZlsI0Dfuw==
-X-IronPort-AV: E=McAfee;i="6600,9927,11031"; a="29696452"
-X-IronPort-AV: E=Sophos;i="6.07,174,1708416000"; 
-   d="scan'208";a="29696452"
-Received: from orviesa008.jf.intel.com ([10.64.159.148])
-  by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Apr 2024 03:45:09 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,174,1708416000"; 
-   d="scan'208";a="18625610"
-Received: from ijarvine-desk1.ger.corp.intel.com (HELO localhost) ([10.245.247.23])
-  by orviesa008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Apr 2024 03:45:08 -0700
-From: =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
-Date: Tue, 2 Apr 2024 13:45:04 +0300 (EEST)
-To: "Luke D. Jones" <luke@ljones.dev>
-cc: Hans de Goede <hdegoede@redhat.com>, corentin.chary@gmail.com, 
-    platform-driver-x86@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v2 3/9] platform/x86: asus-wmi: add support variant of
- TUF RGB
-In-Reply-To: <20240402022607.34625-4-luke@ljones.dev>
-Message-ID: <481f5738-0667-70c2-5dfd-abad55e0d849@linux.intel.com>
-References: <20240402022607.34625-1-luke@ljones.dev> <20240402022607.34625-4-luke@ljones.dev>
+	s=arc-20240116; t=1712054792; c=relaxed/simple;
+	bh=BwFIqznhYSYPd8an0Q2AyYq224PV4XlpCYp/tz+LHdU=;
+	h=From:To:Cc:Subject:Mime-Version:Content-Type:Date:Message-ID:
+	 References:In-Reply-To; b=gZP0ssFXjePsGSTPXvmbv2ko0J23v2ojk9g163d18WwaBz3cGbIkUCb+VZkgp249ceK9LxMQSX8qo+pJvl6Tjtf+ZKMAhC+AJFg91QTQLAbD6xl1m+1CRasuY6CjRusbGLAcPfVZnBuX7Vo4ZL4TnwZ/ylvc/y4RsSHWZm6nf8Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=uniontech.com; spf=pass smtp.mailfrom=uniontech.com; arc=none smtp.client-ip=13.245.218.24
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=uniontech.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=uniontech.com
+X-QQ-GoodBg: 1
+X-QQ-SSF: 00400000000000F0
+X-QQ-XMRINFO: M/715EihBoGSf6IYSX1iLFg=
+X-QQ-FEAT: +ynUkgUhZJkXJ2GkVrAA9ITwCMeqGEJyg7gbtaR1iiaMCqpI6vaifUXdwjFYG
+	5U1zWO3XFcFaZ62i3wALBksaW6ZaL1uoFOV0eBC9Y7tpf6+apvRrZ7cES1KFu2PW59/go/k
+	WQ8pAOp73PrC5E/iWVNf68gxgIzYAkzuZvoz19mwB+j2ebVefaAzbUGnkTs+b+IQg/rpf2T
+	6omaPTc5D/nODZkslWljv/UPRXGjvWYkpDzd3D9dUH7U4r7S1Rgn9LKzhXGxVu7I95HgxWt
+	hcaLd3NEE8pG2KklyhD1azaU/MMS/Xy6Z1dQ6t97MvdZ1Q0fFU9XrhNnQpiXhT/ZzHq3Ju4
+	hRRGffWAnX+irMmcl4Q4aa+vhAIKMzI5bkzF+9TN2Ef7YNk0sT9BlpX68pPHw==
+X-QQ-BUSINESS-ORIGIN: 2
+X-QQ-Originating-IP: B4F1NIpmc8L+ioATNeMek/eIAECDvCDomBf9TwzzcB8=
+X-QQ-STYLE: 
+X-QQ-mid: t5gz7a-2t1712054752t2506555
+From: "=?utf-8?B?V2VudGFvIEd1YW4=?=" <guanwentao@uniontech.com>
+To: "=?utf-8?B?WGkgUnVveWFv?=" <xry111@xry111.site>, "=?utf-8?B?emhhb3RpYW5ydWk=?=" <zhaotianrui@loongson.cn>
+Cc: "=?utf-8?B?bG9vbmdhcmNo?=" <loongarch@lists.linux.dev>, "=?utf-8?B?bGludXgta2VybmVs?=" <linux-kernel@vger.kernel.org>, "=?utf-8?B?546L5pix5Yqb?=" <wangyuli@uniontech.com>, "=?utf-8?B?a3Zt?=" <kvm@vger.kernel.org>
+Subject: Re: [PATCH] LoongArch: KVM: Remove useless MODULE macro for MODULE_DEVICE_TABLE
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="8323328-2057758290-1712054704=:1019"
+Mime-Version: 1.0
+Content-Type: text/plain;
+	charset="utf-8"
+Content-Transfer-Encoding: base64
+Date: Tue, 2 Apr 2024 10:45:51 +0000
+X-Priority: 3
+Message-ID: <tencent_411F127936C0F14A261A445E@qq.com>
+X-QQ-MIME: TCMime 1.0 by Tencent
+X-Mailer: QQMail 2.x
+X-QQ-Mailer: QQMail 2.x
+References: <20240402103942.20049-1-guanwentao@uniontech.com>
+	<453b49801d789523f7366507d1620728315b1097.camel@xry111.site>
+In-Reply-To: <453b49801d789523f7366507d1620728315b1097.camel@xry111.site>
+X-QQ-ReplyHash: 4178647614
+X-BIZMAIL-ID: 486678769786288338
+X-QQ-SENDSIZE: 520
+Received: from qq.com (unknown [127.0.0.1])
+	by smtp.qq.com (ESMTP) with SMTP
+	id ; Tue, 02 Apr 2024 18:45:53 +0800 (CST)
+Feedback-ID: t:uniontech.com:qybglogicsvrgz:qybglogicsvrgz8a-1
 
-  This message is in MIME format.  The first part should be readable text,
-  while the remaining parts are likely unreadable without MIME-aware tools.
+T0ssIGl0IHdpbGwgcmVzZW5kIGluIFBBVENIIFYyLg0KSSBoYXZlIGEgbWlzdGFrZSB0byBu
+b3QgYWRkICJfX21heWJlX3VudXNlZCIgaW4gY3B1X2ZlYXR1cmUgc3RydWN0dXJlLg==
 
---8323328-2057758290-1712054704=:1019
-Content-Type: text/plain; charset=ISO-8859-15
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-
-On Tue, 2 Apr 2024, Luke D. Jones wrote:
-
-> Adds support for a second TUF RGB wmi call that some versions of the TUF
-> laptop come with. Also adjusts existing support to select whichever is
-> available.
->=20
-> Signed-off-by: Luke D. Jones <luke@ljones.dev>
-
-Reviewed-by: Ilpo J=E4rvinen <ilpo.jarvinen@linux.intel.com>
-
---=20
- i.
-
---8323328-2057758290-1712054704=:1019--
 
