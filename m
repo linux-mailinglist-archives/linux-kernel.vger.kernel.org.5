@@ -1,311 +1,167 @@
-Return-Path: <linux-kernel+bounces-128128-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-128130-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 18293895681
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 16:24:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 4ED56895688
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 16:25:16 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3B7471C224D3
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 14:24:10 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 56A6A1C22256
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 14:25:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 09C4986256;
-	Tue,  2 Apr 2024 14:24:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2E22786ACA;
+	Tue,  2 Apr 2024 14:25:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=nxp.com header.i=@nxp.com header.b="W/tzlu1M"
-Received: from EUR04-VI1-obe.outbound.protection.outlook.com (mail-vi1eur04on2091.outbound.protection.outlook.com [40.107.8.91])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="vQOYY85c"
+Received: from mail-ej1-f51.google.com (mail-ej1-f51.google.com [209.85.218.51])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CCD5084037;
-	Tue,  2 Apr 2024 14:23:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.8.91
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712067839; cv=fail; b=RsdQ2j0JXZYj3FPA6LzwovPOUdgtLCYoQ6rXMn7zliRHHHI6049Srf80xseEilGruWrz2+hmWW7ZwPeIkuNdRMo+EG6GGnH4PMXbkcn6y+JmxMqHFFLcDyx76o5cBeb9Q7AZBbQ5d6nQv9t3mtCak6g+LGkJ8UXscA5rCPYKyq4=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712067839; c=relaxed/simple;
-	bh=RMhr9dAlrxg1Ls2e5M+uJ6DwVawTUDE5zcWBo0c6kqE=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:Content-Type:
-	 Content-Disposition:In-Reply-To:MIME-Version; b=eG6rNMZhZTi0TlZw9NWVD3/Rt96RDEgYc33dvxLhiSGIb+CU+f6/OfYamm3YqNmqsLhhdq8cYkWH+H1eM4KvlLsK0MHWcOX0tjJpL0Oh8atBjvNa292ILsqIwPpLBDUcW0UfrCqvl8afb0YNE5nCgjXOeRyZYzvVfK9jF+9J5Hk=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com; spf=pass smtp.mailfrom=nxp.com; dkim=pass (1024-bit key) header.d=nxp.com header.i=@nxp.com header.b=W/tzlu1M; arc=fail smtp.client-ip=40.107.8.91
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nxp.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=FGI7e+xNlwj1qsvxwdrP/KWDFsOH5iFDXrkMPnjmPEzwZnYyZtP7WJ3k1Kuw9woHkZ4cWbXygli0qF3ocCPbEcQ5xFGUzWPDfzTI6NAaCpbZN6ndYokMgZI3CMhlIHABay/0k6D4IZaK0VhNt7WivMAnH26APxgqOq2nsjhg5/7WPUb88pHW5H1u3QyKvwFhR8GIXPTNueYnOgxHXW9WW2OjtiFmKEC1YFgbl3Gpj1QXFBMjfwzCCEcRdIWFXNeo/OezXAYqspY3sK+PIhrE6qxehTvKXnL6sfkI7IFvi9t36oKo67g/qCwiDArRaswXMyYKQll44jsowCisdLqhuA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=D0X/tKKJMhY12GVY+5NF5MO/RLy2Lljf3RBiEJH3vPo=;
- b=RP/AXOovvPrEh8KewZT58M7n8sX4X0XDdxrmhmzqlbhpgwOux5CLnsrPnOPd9b/JTcFaALqu9ZNQzLKnSn84Rh/IbHjDP0XT+FfhqnPWcsV5bOwKQ178oAMuhcYD8FEKQSwlO3Gq4rmNiNGd7U2rku63QxEBWod4t4QZ3eqb+Ewzz0a7aqIy2LcLg+X175QTLkIAFW2YT0JBQyvLR6m3b3ca2nlMMfMICX+TTngnUbMMtq8kqjXWfXKtrPWh9rMLuxkBU3XVR7LO73tERjDUV/7ShAeUpTwXLOv2dIKEAAD0ee9EhChxNiLNKw8GF9X766gQcMgAXX1hJdEQpKQYnw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=D0X/tKKJMhY12GVY+5NF5MO/RLy2Lljf3RBiEJH3vPo=;
- b=W/tzlu1MCR4e024NPm1lpAYSYN5l/SrBocrgmQI02NwdQjtgGSTbQMGEvKAWURW+6v1QYvLeG8NXFlKVBKM/wcETWGi/mHf3DtbHJnA5LFX/ODjjWzQkaxoUMfJHfODBtpFLtT4FJi8+ny36KI1rz75X+E44oP2QyjzeBF+lzbg=
-Received: from PAXPR04MB9642.eurprd04.prod.outlook.com (2603:10a6:102:240::14)
- by PAXPR04MB8910.eurprd04.prod.outlook.com (2603:10a6:102:20d::17) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7409.46; Tue, 2 Apr
- 2024 14:23:54 +0000
-Received: from PAXPR04MB9642.eurprd04.prod.outlook.com
- ([fe80::3168:91:27c6:edf6]) by PAXPR04MB9642.eurprd04.prod.outlook.com
- ([fe80::3168:91:27c6:edf6%3]) with mapi id 15.20.7409.042; Tue, 2 Apr 2024
- 14:23:53 +0000
-Date: Tue, 2 Apr 2024 10:23:45 -0400
-From: Frank Li <Frank.li@nxp.com>
-To: Richard Zhu <hongxing.zhu@nxp.com>
-Cc: vkoul@kernel.org, kishon@kernel.org, robh+dt@kernel.org,
-	krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-	linux-phy@lists.infradead.org, devicetree@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-	kernel@pengutronix.de, imx@lists.linux.dev
-Subject: Re: [PATCH v2 2/3] dt-bindings: phy: Add i.MX8Q HSIO SerDes PHY
- binding
-Message-ID: <ZgwU8edE3VFYngWR@lizhi-Precision-Tower-5810>
-References: <1712036704-21064-1-git-send-email-hongxing.zhu@nxp.com>
- <1712036704-21064-3-git-send-email-hongxing.zhu@nxp.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1712036704-21064-3-git-send-email-hongxing.zhu@nxp.com>
-X-ClientProxiedBy: SJ0PR03CA0058.namprd03.prod.outlook.com
- (2603:10b6:a03:33e::33) To PAXPR04MB9642.eurprd04.prod.outlook.com
- (2603:10a6:102:240::14)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 99B778615E
+	for <linux-kernel@vger.kernel.org>; Tue,  2 Apr 2024 14:25:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.51
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1712067906; cv=none; b=k0/JojgLYVjZNcgaSi2FdEwBb30ydW+fIiDNiIYSvsNbt45sM3IaFWkYmM2Y1s2AFRLmrk/fVPWgHYHKVF/JytOR0oai9B+WbMupK7fGNwy9uYAhOOrfQzWgwfwsETgIzzKB0QmP1yNEaqwveHL3Tyla4qO6ALR2EKPYrBoHkos=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1712067906; c=relaxed/simple;
+	bh=5wsKlMW6zuiZvmqCr9BLGY7yhgdT6UjqJaE2/GK7Dqw=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=eL36/Rde8YMNjE2Z3hSvHE+ngFR/w0gPlP4SQzkTTXlMNAoSuShyiAcATiRgbzYWiV6PCJ5wgJ3sH+GQ7QDopyxAQHh5+guJVlcnp/uEHIV4Px/93erYDzN6j27VnaPt/LvvM144dsGu1SugAqg2Ub63DPBDd10+EhjFB0J2G1U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=vQOYY85c; arc=none smtp.client-ip=209.85.218.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-ej1-f51.google.com with SMTP id a640c23a62f3a-a46de423039so303114466b.0
+        for <linux-kernel@vger.kernel.org>; Tue, 02 Apr 2024 07:25:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1712067902; x=1712672702; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
+        bh=4hWsU1/H1ichuozopazuwmACCLdHZgCpChahByKTRKc=;
+        b=vQOYY85c7GcsJT5xtHv6+xdsQgN0rDTZLGxAqvoK7T3MSzi8jvEbztR7Ior3IRz1me
+         OgiGjXathKQZP7Bt4yrBYtHC/W52bYsqloya5W6Wuxy9D6MchipMMFOwaWRvqbcrbOtk
+         3SgSON4lLauchGcCEbKQzOhYjzM6vywRBE0TxRTjm1aFiQXmVTWtQzH4blTJMRIjc114
+         s8zCdvF2d2vBdAc18ogTWyc1cgyrdAWJFCRmOw9YWluFD8ipSc0EtDZoukeiVXImv8fU
+         AF3qMe40/8vYJwk5XS8ZPoGf1HxlhBGr9Rg0ZU04v+Nc4IXo+2y17fKqTD1ItRq+Sieg
+         XycQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712067902; x=1712672702;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=4hWsU1/H1ichuozopazuwmACCLdHZgCpChahByKTRKc=;
+        b=jX2Ubsq6P8046g8QqDgVqvK/5Bw08UD9ORFSwJZgwniLjQwpnfUrGeKzbZWN7QRGwY
+         aPXMqRzlGaopoQQjtrdokfdFneyjbQ44HKeRqE8wxN/piVn3az5VKDtAHfxPkjg6VRb4
+         YyjRdZXrFIObKWbrB61ldytP4Yy3vUA7/naQmI9CAVE62tUnJXB3bymf+rL9c0G2z3wR
+         JcvjWj8ayqmLmFGrjffaKNclLT1tpFYJ905emnu7476ixPAvB5zfH7KCrriTmST4PPGo
+         W2+UVbXPkeuMZ8lJsqTmnkNPAyLpT1pB8Q/6yhwsR2iNwe+nxngBpBsdXHmo9FQlBwXW
+         NVnQ==
+X-Forwarded-Encrypted: i=1; AJvYcCU9sVKHfnW3B09j/rfD7YeDeJVsGZpkdMxBntsPV6/MEBYtX9deum4DQ/zRb/IKU2kqo9SMig5tAKtTvuMZgI3rIMvJ+2XKtiVYQoPI
+X-Gm-Message-State: AOJu0Yy+T5C9n74JgHMshqNeH43Em0QnC/KTXYvylOn1VXBA3qtHB+rl
+	6i7Uu6vrgjbK4we+JADdW7bdktJsT+HwcnWlQtot+17aQMD1wKsTaJ3zx7owWQQ/HusM/ki6Mir
+	Y
+X-Google-Smtp-Source: AGHT+IE5yfHNcLZvYypEgIbF5cB/0sM4sPMsaHd89klD+N6G/0DtQYDrwwsOfaryz+F6DY+dpQM1Jg==
+X-Received: by 2002:a50:9fa7:0:b0:56c:995:5b with SMTP id c36-20020a509fa7000000b0056c0995005bmr1678629edf.11.1712067901982;
+        Tue, 02 Apr 2024 07:25:01 -0700 (PDT)
+Received: from [192.168.92.47] (078088045141.garwolin.vectranet.pl. [78.88.45.141])
+        by smtp.gmail.com with ESMTPSA id y11-20020aa7c24b000000b0056bdec673c3sm6997639edo.38.2024.04.02.07.24.59
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 02 Apr 2024 07:25:01 -0700 (PDT)
+Message-ID: <51c84af2-73f7-4af4-8676-2276b6c7786d@linaro.org>
+Date: Tue, 2 Apr 2024 16:24:58 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: PAXPR04MB9642:EE_|PAXPR04MB8910:EE_
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	Lq95aTG75BgaOiEg9opI29D6GpU/4bmLtURHWw0LKX7anOB24rLEmlKFId63MqLuRdNQqL8jSzaLJ+HhTzXVy2jGBx6O35uquI97pfwqti6JzkqFQzCWWnUaY+UKTRy0bqAO4VH+INa7ytPelgBJx44ye+6haLuxgYO8Dycd4YMj+i/A4c8/iChhk2Cet1k4cNClVutgathK562bTBXbncbq/7R1l7f4CeUu0XIiaMAa4cz4uOBhRXJHYnOojSVMYoI8UweZSiLiNs5HM6oV2fL8L+cX63zkNve8WDMrOfhY/Zxd9z6y3+XKAU4p/12tLd2POiXYQvyGJAPYzjQE8o3Bbj5qZhg9tjD2hAokSWEn4013r+5bHiKrSsjCBj0dMMPwoP+Tz6ut7MdkoqI3wCMHQMQiaja/o38l5SaJofM1pL7S6n3HIdMQCGW5Z/8fFjq+dfkujenpBI1cHHrc+whJv6qDLnHOlkMDtDGCe1K4e3/nIGA73FNBwhBf4LKWMgamQeU9mZCseiS+jJVja2hYMB8U298hbgfHSkUfFAOXl6YvKFNCveTCxB6DtXveyW4gBdn4W4k545sNY1VjPVg9N4mph+mhTDSBG57sHVSlyEq0UqHwDZW6yU4kvkq7CmPJU9HjnV88Mxq0BI+L0r9bY5JKnOBRSXw4U351rPw=
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PAXPR04MB9642.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(1800799015)(52116005)(7416005)(376005)(366007)(38350700005);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?hJxfEO4N9WU+aiwhKXp/NLRyolFzLILbCZM0JZASfcpqsr6dS1CYpLVUOhn/?=
- =?us-ascii?Q?Nk8ckfdIvkWHS0sw6Qc4ckUBPQ3F4XEYwJhf9ipOhSQhjpBeaYCGFSQHwnWs?=
- =?us-ascii?Q?dzyKccDYpm4Kqqo+atUo6Z/cQ/A9C2eqQv4pySzyZL0rQTHDlRsbDh259QFU?=
- =?us-ascii?Q?HPUN7RwLtcX1pT7JWZ8E4Srx78SJW0r+JEa+eAP4KVpMB4tkPTJSi93wcAAM?=
- =?us-ascii?Q?sC/xDSFDKL5bvxAeBeNF4/RkM+4+IhmJzLkFGhM9e2MYK0+WMacj3ibeumcf?=
- =?us-ascii?Q?5nbRI3I6phSdZF1hUUprES4S1wOsmNChYIldpi/CsMb5tgiXgd3hmuM3JFai?=
- =?us-ascii?Q?Gy8Fna1ioWplAywo5n2ixd6JHkfQPE/u9n7RbVQZnU8PQo8jzpUblF8WOBpR?=
- =?us-ascii?Q?wNS9cy1pSyIVgF109JIdcuDjZBY6XFouaR7VzxBThm2BvV4KJrE3s0dBaQNC?=
- =?us-ascii?Q?Pqd7V4qLzC2C2dtKMOTSoTv6suar+2AWLov0j3az0Pi8hOR0HvqMukMmnBgu?=
- =?us-ascii?Q?o77W4PPYOsnPTYZT7xRnUFYpW1EWStPD6hKuEqgAbBWoOT89AZd+hPu9SDas?=
- =?us-ascii?Q?iaaws+F0cUoNif68n6IJLAidaYU4WSFsP8e8aP6J747a1yOrc3jqac+rRaF3?=
- =?us-ascii?Q?iP1p1ie/kCdrXkdBMVPVlmegQ/K8cvWWm+08A/2/2PxF0st8+iTQun28KfC0?=
- =?us-ascii?Q?WBDvwEvlFXXhgr0YKVxxbRF9lpZtd6CIPM/JaCEXp8bHHDZhvYxQztAbc985?=
- =?us-ascii?Q?rUfTW45NXq4IipGTtv/pbwTWTLbybZnEoTnxR/syYl+0icWN9Vso0UJ8zScj?=
- =?us-ascii?Q?4vQRYATvVOpWu4nWNXoam09xp50t+Mp1mHdTzHiE+oI1ie+EKrxKqH1Ks2Mm?=
- =?us-ascii?Q?fGbovFLp5gLl8pCVmQUgW2WpJBHBVmGSTYLJcqh4Akqgl4kC9vRx9eloR2s3?=
- =?us-ascii?Q?SgZlKLgBhXxic0ImIWp8STvp805UpL66PM/jO4e8RqTyLRLKL03M2zFxUDkp?=
- =?us-ascii?Q?b9uHmAM0WLmn2V8ZOLWtVaWu2ZurEPUJAqGah002XMZF/pCMFo0JM45XeqHi?=
- =?us-ascii?Q?ASc7wh5P1BZt/5QsXoXHeTlj8Sm6PU15qLgBl9PUQxz/zSb0Oc8ooIeKssTp?=
- =?us-ascii?Q?7uhRNfzlVGkujfHFhKFBsWrHt+hHrSPieWw80OQKwsSkaA2/1+zEppaeQv18?=
- =?us-ascii?Q?u2PLGNtaKsMO/SJ9Via2A9tA4svL+0v4+p/R5wVBs9ROro3SLANcbrOcLGdY?=
- =?us-ascii?Q?1vvEiworlNGKEENXm0T/6Smq7+uXkNPOFRErArQ2YFMomkgriP5JvqlLtn7A?=
- =?us-ascii?Q?OUTstlrIw+2jEEs5a1wFQczV0cc1AQIPhFVoGXPRhYhMoUl49x+aKbgMoyWl?=
- =?us-ascii?Q?24h9JW6GdqO+ZTsm+eFINBLtduQWBnAaSmbkdth66An82aA3RsZVA9pd+0tL?=
- =?us-ascii?Q?CVtvjXVlqzFxvvLGUPyFnoTvcZL19GeEFcnUKXwX6J8pgyPvxv8Gi3fHSHPp?=
- =?us-ascii?Q?uMUKNfLEosbSKt19/jLIN/AHi9RoQsa0E4Gp9E/GyPwr8gKOhHhDLSY9mwOC?=
- =?us-ascii?Q?RIh8BpaPx8D4nLStZyA=3D?=
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: be349250-44b6-40e0-cab9-08dc53208637
-X-MS-Exchange-CrossTenant-AuthSource: PAXPR04MB9642.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 02 Apr 2024 14:23:53.7699
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: hws+jl9jV1ofjAy4OpzjvenKfbaOxTuHnnepdFVGbOwGfA9lruKKpmVksve8FUAQv7wMIDU4q4HE4ejDTseieQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PAXPR04MB8910
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2] i2c: i2c-qcom-geni: Add support to share an I2C SE
+ from two subsystem
+To: Mukesh Kumar Savaliya <quic_msavaliy@quicinc.com>, andersson@kernel.org,
+ andi.shyti@kernel.org, linux-arm-msm@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-i2c@vger.kernel.org,
+ dmaengine@vger.kernel.org
+Cc: quic_vdadhani@quicinc.com, Vinod Koul <vkoul@kernel.org>
+References: <20240402062131.9836-1-quic_msavaliy@quicinc.com>
+Content-Language: en-US
+From: Konrad Dybcio <konrad.dybcio@linaro.org>
+Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
+ 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
+ izWDgYvmBE8=
+In-Reply-To: <20240402062131.9836-1-quic_msavaliy@quicinc.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Tue, Apr 02, 2024 at 01:45:03PM +0800, Richard Zhu wrote:
-> Add i.MX8QM and i.MX8QXP HSIO SerDes PHY binding.
-> - Use the controller ID to specify which controller is binded to the
-> PHY.
-> - Introduce one HSIO configuration, mandatory required to set
-> "PCIE_AB_SELECT" and "PHY_X1_EPCS_SEL" during the initialization.
+On 2.04.2024 8:21 AM, Mukesh Kumar Savaliya wrote:
+> Add feature to share an I2C serial engine between two subsystems(SS) so
+> that individual clients from different subsystems can access the same bus.
+> For example single i2c slave device can be accessed by Client driver from
+> APPS OR modem subsystem image. Same way we can have slave being accessed
+> between APPS and TZ subsystems.
 > 
-> Signed-off-by: Richard Zhu <hongxing.zhu@nxp.com>
-
-You missed all conor's comments. 
-Please double check v1's comments.
-
-Frank
-
+> This is possible in GSI mode where driver queues the TREs with required
+> descriptors and ensures to execute TREs in an mutually exclusive way.
+> Issue a "Lock TRE" command at the start of the transfer and an "Unlock TRE"
+> command at the end of the transfer. This prevents other subsystems from
+> concurrently performing DMA transfers and avoids disturbance to data path.
+> Change MAX_TRE macro to 5 from 3 because of these two additional TREs.
+> 
+> Since the GPIOs are also shared for the i2c bus, do not touch GPIO
+> configuration while going to runtime suspend and only turn off the
+> clocks. This will allow other SS to continue to transfer the data.
+> 
+> This feature needs to be controlled by DTSI flag to make it flexible
+> based on the usecase, hence during probe check the same from i2c driver.
+> 
+> Export function geni_se_clks_off() to call explicitly instead of
+> geni_se_resources_off() to not modify TLMM configuration as other SS might
+> perform the transfer while APPS SS can go to sleep.
+> 
+> Signed-off-by: Mukesh Kumar Savaliya <quic_msavaliy@quicinc.com>
 > ---
->  .../bindings/phy/fsl,imx8q-hsio.yaml          | 143 ++++++++++++++++++
->  1 file changed, 143 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/phy/fsl,imx8q-hsio.yaml
-> 
-> diff --git a/Documentation/devicetree/bindings/phy/fsl,imx8q-hsio.yaml b/Documentation/devicetree/bindings/phy/fsl,imx8q-hsio.yaml
-> new file mode 100644
-> index 000000000000..506551d4d94a
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/phy/fsl,imx8q-hsio.yaml
-> @@ -0,0 +1,143 @@
-> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/phy/fsl,imx8q-hsio.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: Freescale i.MX8Q SoC series HSIO SERDES PHY
-> +
-> +maintainers:
-> +  - Richard Zhu <hongxing.zhu@nxp.com>
-> +
-> +properties:
-> +  compatible:
-> +    enum:
-> +      - fsl,imx8qxp-serdes
-> +      - fsl,imx8qm-serdes
-> +  reg:
-> +    minItems: 4
-> +    maxItems: 4
-> +
-> +  "#phy-cells":
-> +    const: 3
-> +    description: |
-> +      The first number defines the ID of the PHY contained in the HSIO macro.
-> +      The second defines controller ID binded to the PHY. The third defines the
-> +      HSIO configuratons refer to the different use cases. They are defined in
-> +      dt-bindings/phy/phy-imx8-pcie.h
-> +
-> +  reg-names:
-> +    items:
-> +      - const: reg
-> +      - const: phy
-> +      - const: ctrl
-> +      - const: misc
-> +
-> +  clocks:
-> +    minItems: 5
-> +    maxItems: 14
-> +
-> +  clock-names:
-> +    minItems: 5
-> +    maxItems: 14
-> +
-> +  fsl,refclk-pad-mode:
-> +    description: |
-> +      Specifies the mode of the refclk pad used. It can be UNUSED(PHY
-> +      refclock is derived from SoC internal source), INPUT(PHY refclock
-> +      is provided externally via the refclk pad) or OUTPUT(PHY refclock
-> +      is derived from SoC internal source and provided on the refclk pad).
-> +      Refer include/dt-bindings/phy/phy-imx8-pcie.h for the constants
-> +      to be used.
-> +    $ref: /schemas/types.yaml#/definitions/uint32
-> +    enum: [ 0, 1, 2 ]
+> v1 -> v2:
+> - Addressed review comments.
 
-I remember needn't enum because there are header file.
+The biggest one ("too many changes across the board") is still not
+addressed and the patch will not be further reviewed until that is done.
 
-> +
-> +  power-domains:
-> +    description: |
-> +      i.MX8Q HSIO SerDes power domains. i.MX8QXP has one SerDes power domains.
-> +      And i.MX8QM has two.
-> +    minItems: 1
-> +    maxItems: 2
-> +
-> +required:
-> +  - compatible
-> +  - reg
-> +  - "#phy-cells"
-> +  - clocks
-> +  - clock-names
-> +  - fsl,refclk-pad-mode
-> +
-> +allOf:
-> +  - if:
-> +      properties:
-> +        compatible:
-> +          contains:
-> +            enum:
-> +              - fsl,imx8qxp-serdes
-> +    then:
-> +      properties:
-> +        clock-names:
-> +          items:
-> +            - const: apb_pclk0
-> +            - const: pclk0
-> +            - const: phy0_crr
-> +            - const: ctl0_crr
-> +            - const: misc_crr
-> +        power-domains:
-> +          minItems: 1
-> +
-> +  - if:
-> +      properties:
-> +        compatible:
-> +          contains:
-> +            enum:
-> +              - fsl,imx8qm-serdes
-> +    then:
-> +      properties:
-> +        clock-names:
-> +          items:
-> +            - const: pclk0
-> +            - const: pclk1
-> +            - const: apb_pclk0
-> +            - const: apb_pclk1
-> +            - const: pclk2
-> +            - const: epcs_tx
-> +            - const: epcs_rx
-> +            - const: apb_pclk2
-> +            - const: phy0_crr
-> +            - const: phy1_crr
-> +            - const: ctl0_crr
-> +            - const: ctl1_crr
-> +            - const: ctl2_crr
-> +            - const: misc_crr
-> +        power-domains:
-> +          minItems: 2
-> +
-> +additionalProperties: false
-> +
-> +examples:
-> +  - |
-> +    #include <dt-bindings/clock/imx8-clock.h>
-> +    #include <dt-bindings/clock/imx8-lpcg.h>
-> +    #include <dt-bindings/firmware/imx/rsrc.h>
-> +    #include <dt-bindings/phy/phy-imx8-pcie.h>
-> +
-> +    serdes: phy@5f1a0000 {
+Each subsystem has different owners and each change requires an explanation
+(maintainers always "expect your patch to be wrong" and you need to
+convince them otherwise through commit messages)
 
-No "serdes".
-
-> +            compatible = "fsl,imx8qxp-serdes";
-> +            reg = <0x5f1a0000 0x10000>,
-> +                  <0x5f120000 0x10000>,
-> +                  <0x5f140000 0x10000>,
-> +                  <0x5f160000 0x10000>;
-> +            reg-names = "reg", "phy", "ctrl", "misc";
-> +            clocks = <&phyx1_lpcg IMX_LPCG_CLK_0>,
-> +                     <&phyx1_lpcg IMX_LPCG_CLK_4>,
-> +                     <&phyx1_crr1_lpcg IMX_LPCG_CLK_4>,
-> +                     <&pcieb_crr3_lpcg IMX_LPCG_CLK_4>,
-> +                     <&misc_crr5_lpcg IMX_LPCG_CLK_4>;
-> +            clock-names = "apb_pclk0", "pclk0", "phy0_crr", "ctl0_crr",
-> +                          "misc_crr";
-> +            power-domains = <&pd IMX_SC_R_SERDES_1>;
-> +            #phy-cells = <3>;
-> +            status = "disabled";
-
-needn't status = "disabled".
-
-> +    };
-> +...
-> -- 
-> 2.37.1
-> 
+Konrad
 
