@@ -1,67 +1,67 @@
-Return-Path: <linux-kernel+bounces-128045-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-128046-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id E01E8895559
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 15:27:55 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0998189555B
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 15:28:15 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 963DE1F216D8
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 13:27:55 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 269131C214F9
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 13:28:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 100EC8593E;
-	Tue,  2 Apr 2024 13:27:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C6D5283CD8;
+	Tue,  2 Apr 2024 13:27:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="WTwXfqBa"
-Received: from mail-ed1-f48.google.com (mail-ed1-f48.google.com [209.85.208.48])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="WCUsq5we"
+Received: from mail-ej1-f41.google.com (mail-ej1-f41.google.com [209.85.218.41])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9FE4885260
-	for <linux-kernel@vger.kernel.org>; Tue,  2 Apr 2024 13:27:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 271C585287
+	for <linux-kernel@vger.kernel.org>; Tue,  2 Apr 2024 13:27:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712064442; cv=none; b=n56cDAYLBKKnnrMrQh391lpncFV+wZXRTNjrlweOpkYJWvnBbdwPdr+RZ5pNydPBYVWMjZqFWdy56MTxY93WwmOr6S0iKBx3IpuYai9ppNz9DCUqKogtPWKc/hxiQjk87P2AMCskSucQny6+AVgCeDcLbpGWI9URDGS/5L5rWVg=
+	t=1712064443; cv=none; b=Har6gf8ALHKuBhehdJofqwfQeoj6CmolmSA42iHtbZmxMJzoT2IzQw8rg8R+9xpFUhoVijbZea4Aa/26p2QfV/ExVVOrkGFXkTwRuinlXVHetJjL2nCu6EQkO88+0AyQ335Kws67/2KYZd0M9YCsznnKnW6ChM9fgYKvtJ2duQI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712064442; c=relaxed/simple;
-	bh=Cfslaf8i7E8aCEMveG0FfqBpUIgV5rW5DmCwP919Sqk=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References; b=EZ4b1XNh6o5cE3A2EIc8fzI0Sr94ccEM3VXUHP9hkCWCwgC6W+qMhKP7XH36EALGArfQfh/X2UdOyyauWIA7V1wz1C/gkNYoCoDlBepNxcnoNtgnqMvKZuaTydtDGbgM8siT8bmSrhpaYGFDzGw88oJOfBLwj6CVoAB9plGXjIw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=WTwXfqBa; arc=none smtp.client-ip=209.85.208.48
+	s=arc-20240116; t=1712064443; c=relaxed/simple;
+	bh=6dR3J0upXNj+1tYs1ts63PbosqZuz2MTKGiOBpIl+K4=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References; b=PG8ljtn+Kopzb8S74eOC3NacmDgSKrc2sMPCo4Ff/wWv7UiQmgitd6NbYPavspYy8tTltYJLY4upSMm6+KclYFcQbVF5tprJtDnYHV97Hg0ZMWa4khhAfysrA5I/GBZ1qB2gXitwEK4AzHUQL8wHym990Ws9fHpYKbrPYETNRJ0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=WCUsq5we; arc=none smtp.client-ip=209.85.218.41
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f48.google.com with SMTP id 4fb4d7f45d1cf-56df41365c8so580080a12.2
-        for <linux-kernel@vger.kernel.org>; Tue, 02 Apr 2024 06:27:20 -0700 (PDT)
+Received: by mail-ej1-f41.google.com with SMTP id a640c23a62f3a-a4702457ccbso643648866b.3
+        for <linux-kernel@vger.kernel.org>; Tue, 02 Apr 2024 06:27:21 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1712064439; x=1712669239; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1712064440; x=1712669240; darn=vger.kernel.org;
         h=references:in-reply-to:message-id:date:subject:cc:to:from:from:to
          :cc:subject:date:message-id:reply-to;
-        bh=/zlJk86kk+e6v/0Hhm5prLyYwej1Vl0sY7sp0RzGlSU=;
-        b=WTwXfqBaCLZmTnVxnpm1CuF7/JhLBgZFi+gZtEbsIJlIOQh8fMnV/OLr4S0rgUEHxS
-         VbkLv61O6/KqaZsIsFDE0YRmgyxAkjMhB2FTerMR2MNTly4Cpdd2iSmWsF5F0X4Pn7gC
-         yTMRce+ckut6L2APuhkVwxFy+RIhCFZd9pDSQlDYeyUwmN86yAPMjtGl52OodOjE8mqj
-         o/NpKOhubkS++HpLl5mxk09RR3G529gn9pvemx3sNaT1ghoQqjvnowT4TIj5SY7G1Ie0
-         6liJ3dSWuQXimuuZOZxG7iARv9WLlqzq6B5EIhrrwNGhUxsvhT3inOXQHWR1qzad87ss
-         RIww==
+        bh=6plq+jc/VvBXS+aNpltaWsMql6tEJfjJ+CETBOykAR0=;
+        b=WCUsq5we3oU1fuxwA7iPLrwHQYjEqLzCa5TskvzfQ/oENr8+Es1TCi8l0Gtxf/Jt4Q
+         ICg7rNH9jbuE9jlMDQT4wHsweE//m0lacd9xj+ucBxSLC8Vz0wEElcdmncDJzSWHklNt
+         9ofc4VnlVsL4r1C2by6dg2qy9NP5UNkWUc4wmbe1PHT9NxzjhaTTLXwQcbOZoM33D6LF
+         aR5xNfJ+boh4qhmKwKNk6/NIkoB07RHt/OaAgvvXwQJ5xESMQdtaUkn92TwgSkdl/bWU
+         Ui2iJY9o/yGvv+w0cerOztoNZ5lvcpOgu5Lfz7FYv3xaFZfBTvsQHlyhri9Et6nCYtF9
+         wEsw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712064439; x=1712669239;
+        d=1e100.net; s=20230601; t=1712064440; x=1712669240;
         h=references:in-reply-to:message-id:date:subject:cc:to:from
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=/zlJk86kk+e6v/0Hhm5prLyYwej1Vl0sY7sp0RzGlSU=;
-        b=gFI6nTjO1uX9Xnn0YAD9qb5YjaKZGuAxXWyI0cHBiFEKMxpwv0Z0SdRiJyneLCmowZ
-         N9RKnObL4p7Hw/BpcxpiZVum3IX1m1BogZ/qj5x0qzJmF0WlOpeKndADFE6jU5mOFQN5
-         f8oWrkkOcBLsPV9uMEShV85tlVCkirVuGoY5WFLt0cEX6DVPBj+mvZaVJ7O1KHxh9xUG
-         bOm9zqTQe03KENviptaTbcMkpzACEGKXKVB5WHbCGi5xuFNWGUa1eKN4Qcf34luGJjZK
-         C4RNrdQyjAEfJqX8nA33sZJBVGKXMJzbmEMrI1qcYMxu3WpCd6H4sl38YpFF02z6+AoZ
-         gTWA==
-X-Gm-Message-State: AOJu0YxI62UBQm4rfF84txhdWq82B0PkOebAWdmRxh4MQFfvseFwDCpI
-	CFwqT2CPrz5XeTsMh+yt6R3C2A7KG3SztfSpxZKQRx2P/VdzBKvu
-X-Google-Smtp-Source: AGHT+IGVGxd08nxJspeKCBa/sUfV4wRq6nZEH6TtddNfET39FJsuKrlK0+PJ5UXPJTlZxDo0ZOFcYA==
-X-Received: by 2002:a05:6402:348a:b0:568:9d96:b2d1 with SMTP id v10-20020a056402348a00b005689d96b2d1mr9264446edc.32.1712064438815;
-        Tue, 02 Apr 2024 06:27:18 -0700 (PDT)
+        bh=6plq+jc/VvBXS+aNpltaWsMql6tEJfjJ+CETBOykAR0=;
+        b=XNZXNbYOtsjleFPUxKAu8WOzKHx06GQczScQsadQi2xJ/H/EtNImkpDCUaG1qLUNe6
+         3uHbcqaRNFZKbVGkOAK9GguaHPXlm34kKykEljkobYwUINyuoJULqSSDXbdfnBCxeVh1
+         yYuIMzBR4S+6YLnZa40oOaExY1jRLdhPccnvXLF0vnyyEPUMUDtT4lHdzV6+hVbWXxAT
+         Q0mVBlzomN950x5RCfBo74qwV5+hT95qndfsXYUYfJArpMXJMAATCRXqHvm7EIbpPPRH
+         kdHBW0OaxOS1CMkWi4Pp/1UFBrHo1GOVGsl23b/qKH30gsFnhWM5FZFF7341fAKEqRM6
+         pS2A==
+X-Gm-Message-State: AOJu0YxcphQPsaoXPgEjaRyyAWC0kBXoG1fA2zh1CvSvDVIXYGUB4vmr
+	MV57MkSbu4GZYI0kHk6yU3vKyIsuFjLfEtk4E+UhKs89pe70Xna2
+X-Google-Smtp-Source: AGHT+IFh6Iw2TrL0kjEkoE4UmamEPUEI6XGozO1yFO9A91flOMzrYblCqI4/31CIdw8aKkhQg2lR8g==
+X-Received: by 2002:a17:906:b1c5:b0:a46:cee9:e412 with SMTP id bv5-20020a170906b1c500b00a46cee9e412mr7005460ejb.15.1712064440404;
+        Tue, 02 Apr 2024 06:27:20 -0700 (PDT)
 Received: from localhost ([185.92.221.13])
-        by smtp.gmail.com with ESMTPSA id y11-20020aa7c24b000000b0056bdec673c3sm6942782edo.38.2024.04.02.06.27.17
+        by smtp.gmail.com with ESMTPSA id q27-20020a17090622db00b00a46a9425fe5sm6499992eja.212.2024.04.02.06.27.19
         (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Tue, 02 Apr 2024 06:27:17 -0700 (PDT)
+        Tue, 02 Apr 2024 06:27:19 -0700 (PDT)
 From: Wei Yang <richard.weiyang@gmail.com>
 To: akpm@linux-foundation.org,
 	rppt@kernel.org,
@@ -69,10 +69,10 @@ To: akpm@linux-foundation.org,
 Cc: linux-kernel@vger.kernel.org,
 	linux-mm@kvack.org,
 	Wei Yang <richard.weiyang@gmail.com>,
-	Yajun Deng <yajun.deng@linux.dev>
-Subject: [PATCH 1/3] memblock tests: fix undefined reference to `early_pfn_to_nid'
-Date: Tue,  2 Apr 2024 13:26:59 +0000
-Message-Id: <20240402132701.29744-2-richard.weiyang@gmail.com>
+	Song Shuai <songshuaishuai@tinylab.org>
+Subject: [PATCH 2/3] memblock tests: fix undefined reference to `panic'
+Date: Tue,  2 Apr 2024 13:27:00 +0000
+Message-Id: <20240402132701.29744-3-richard.weiyang@gmail.com>
 X-Mailer: git-send-email 2.11.0
 In-Reply-To: <20240402132701.29744-1-richard.weiyang@gmail.com>
 References: <20240402132701.29744-1-richard.weiyang@gmail.com>
@@ -82,34 +82,58 @@ List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 
-commit 6a9531c3a880 ("memblock: fix crash when reserved memory is not
-added to memory") introduce the usage of early_pfn_to_nid, which is not
-defined in memblock tests.
+commit e96c6b8f212a ("memblock: report failures when memblock_can_resize
+is not set") introduced the usage of panic, which is not defined in
+memblock test.
 
-The original definition of early_pfn_to_nid is defined in mm.h, so let
-add this in the corresponding mm.h.
+Let's define it directly in panic.h to fix it.
 
 Signed-off-by: Wei Yang <richard.weiyang@gmail.com>
-CC: Yajun Deng <yajun.deng@linux.dev>
+CC: Song Shuai <songshuaishuai@tinylab.org>
 CC: Mike Rapoport <rppt@kernel.org>
 ---
- tools/include/linux/mm.h | 5 +++++
- 1 file changed, 5 insertions(+)
+ tools/include/linux/kernel.h |  1 +
+ tools/include/linux/panic.h  | 19 +++++++++++++++++++
+ 2 files changed, 20 insertions(+)
+ create mode 100644 tools/include/linux/panic.h
 
-diff --git a/tools/include/linux/mm.h b/tools/include/linux/mm.h
-index f3c82ab5b14c..7d73da098047 100644
---- a/tools/include/linux/mm.h
-+++ b/tools/include/linux/mm.h
-@@ -37,4 +37,9 @@ static inline void totalram_pages_add(long count)
- {
- }
+diff --git a/tools/include/linux/kernel.h b/tools/include/linux/kernel.h
+index 4b0673bf52c2..07cfad817d53 100644
+--- a/tools/include/linux/kernel.h
++++ b/tools/include/linux/kernel.h
+@@ -8,6 +8,7 @@
+ #include <linux/build_bug.h>
+ #include <linux/compiler.h>
+ #include <linux/math.h>
++#include <linux/panic.h>
+ #include <endian.h>
+ #include <byteswap.h>
  
-+static inline int early_pfn_to_nid(unsigned long pfn)
+diff --git a/tools/include/linux/panic.h b/tools/include/linux/panic.h
+new file mode 100644
+index 000000000000..9c8f17a41ce8
+--- /dev/null
++++ b/tools/include/linux/panic.h
+@@ -0,0 +1,19 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++#ifndef _TOOLS_LINUX_PANIC_H
++#define _TOOLS_LINUX_PANIC_H
++
++#include <stdarg.h>
++#include <stdio.h>
++#include <stdlib.h>
++
++static inline void panic(const char *fmt, ...)
 +{
-+	return 0;
++	va_list argp;
++
++	va_start(argp, fmt);
++	vfprintf(stderr, fmt, argp);
++	va_end(argp);
++	exit(-1);
 +}
 +
- #endif
++#endif
 -- 
 2.34.1
 
