@@ -1,134 +1,146 @@
-Return-Path: <linux-kernel+bounces-127247-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-127249-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 01F578948C2
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 03:27:32 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 51DD28948C5
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 03:35:14 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4C1031F22390
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 01:27:31 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 08E8F282CE4
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 01:35:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A90DA14A99;
-	Tue,  2 Apr 2024 01:26:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B1AEFC2FD;
+	Tue,  2 Apr 2024 01:35:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=paul-moore.com header.i=@paul-moore.com header.b="G4lN+Yma"
-Received: from mail-qt1-f175.google.com (mail-qt1-f175.google.com [209.85.160.175])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=ljones.dev header.i=@ljones.dev header.b="HxqbgGZG";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="lY7ys7EC"
+Received: from wfout3-smtp.messagingengine.com (wfout3-smtp.messagingengine.com [64.147.123.146])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D5FD6E552
-	for <linux-kernel@vger.kernel.org>; Tue,  2 Apr 2024 01:26:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 261378F55;
+	Tue,  2 Apr 2024 01:35:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=64.147.123.146
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712021209; cv=none; b=GvxokFXS3rzaJu4HAtQdx64vut3JG1qv6x26BFueOgEjpYZIJd4nrIii1Gwwg/rB+v8gIlT5DVLrNk6K+HcJ1KarbjfPW6kqmGsGs7xg5kj8xxdrE1w6AK6LaBijdRNCW12dH2HPxIm47CP1F0wuq7Ts7FNqLzkzUvcIGIyjDIM=
+	t=1712021707; cv=none; b=X0oGIHejEWTZQPXnNDh4PvlUdpR5pFvt5F5H3WWBPtyLYuJSrNVtvA7O4TKRt/SmNVklwUYaTDBQz9dWsExmHtvcHscn9B2g4oRiKf2+mHE4YZVvvVg2mvVuZF2B9ZSvsuEJZPP1YxLWetiwws18tDnS4czT7gJDcqfHLKsXhrU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712021209; c=relaxed/simple;
-	bh=WqrYHc1OrW927dxpv9fTrIBfKRqR2NBvDdcY6XIS0bs=;
-	h=Date:Message-ID:MIME-Version:Content-Type:Content-Disposition:
-	 From:To:Cc:Subject:References:In-Reply-To; b=pfMEl4C36fBntYq3OpdqEcLs93rwMY0i6szipSZ9vJAdUxbs17aFJyMnC6wlfN0YBK1rzKYBw/78JGudnVHaE5W8irinMEwYfssTZO/U5PBLoBY6qAQR1ZngHDg0x0xOTR3XuaHynEIRoihsf1IzQh2lU/JnuCXIljdad9ubaJE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=paul-moore.com; spf=pass smtp.mailfrom=paul-moore.com; dkim=pass (2048-bit key) header.d=paul-moore.com header.i=@paul-moore.com header.b=G4lN+Yma; arc=none smtp.client-ip=209.85.160.175
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=paul-moore.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=paul-moore.com
-Received: by mail-qt1-f175.google.com with SMTP id d75a77b69052e-432c947e92eso22865351cf.0
-        for <linux-kernel@vger.kernel.org>; Mon, 01 Apr 2024 18:26:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=paul-moore.com; s=google; t=1712021206; x=1712626006; darn=vger.kernel.org;
-        h=in-reply-to:references:subject:cc:to:from:content-transfer-encoding
-         :content-disposition:mime-version:message-id:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=hRws9YXLN8yb7zuQUc8CIutzWgp4avkTPI09HZCU6cI=;
-        b=G4lN+Yma1v3mXG/SF+E4Q4Vmtq9IXlAYYEGNzQXsfUcjzmflAs+JTdgx6LMlAIFL9g
-         HDlwt0Akkidq+vZKEYCuIM8jG6PdXrvmlZSZvYvCuuoFw+UXnJWjIQVzVoTaPmseSUjB
-         drYQtYihg223VfBX5smeEnjs9qy+vAJ0lPjCvzSMy/HoNWd/TZEAO8q6QRngJdOnp4EN
-         9xaNBt90oS9blyJa/pJykeOXUxR6rsO8BLXsKDz6q/rxfL+/lA7UkmJHT3RL6kelYr/t
-         eRDPrIDjF8MoOn/FpM4kB5PBwj/pbnZQyNAOl+U0vdT69ZGIZF0SqDAiL/yIpoyYbrEx
-         8StA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712021206; x=1712626006;
-        h=in-reply-to:references:subject:cc:to:from:content-transfer-encoding
-         :content-disposition:mime-version:message-id:date:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=hRws9YXLN8yb7zuQUc8CIutzWgp4avkTPI09HZCU6cI=;
-        b=Y1gShiheqaIKqthe1sK9w46YCIo1YNeH6G81SXIniLsl9mN7+8/RF7ATaXrG2mWqQV
-         6s6vz/NhtLmpSc5cF1SZDqwb04OB/S+quh1PtsNYE2QzMPduBf5HZXu2FqZbteroKfMG
-         zqwq7NOBEoZa/sON/kC8+GDyJdpD4pouruT3M4dhKQHgzRJGHtOY+wo6Wisd1Cyxnwjb
-         IWe72YB00s/QETZvZe4F1cw3CADLBkVIK11mI8uF1GzM1hl30Go0myqwR2BmCvwC+E/C
-         DduafkG6dsb1vkM85+MBSfkiK6DasdwK1A0vLUlg0RwOH6k2LdE/IoDwlnMilrJFPNB/
-         kyQA==
-X-Forwarded-Encrypted: i=1; AJvYcCVTGgddjBKw8UeU7vUKu0DXh5InTIaji2QNWOehdME3raKvsq1Bdn0VfjterFd4GbOVI9sVce+nqCYNK2NcIs6zab6SYsCzsLkRxAHe
-X-Gm-Message-State: AOJu0Yz7BwZKt29OzpY0g8Hft856U+HzvrTQx2QUXUhl/iogr6rdjFcf
-	JC5THtmtJ+9Oi4B0WYTBKchJ+1kd1pCQYvZ++x/fzOLSUlrzZhJqfaOqmoox0g==
-X-Google-Smtp-Source: AGHT+IFZ7SasfMMYh5vB3j/xGXqf/TCs4Bcif8z6dD6zV7+EZAG39P9HJEPaE4K4Urz2UW0TPzSDug==
-X-Received: by 2002:a05:622a:4b11:b0:432:de8a:3a8 with SMTP id et17-20020a05622a4b1100b00432de8a03a8mr9661426qtb.18.1712021206548;
-        Mon, 01 Apr 2024 18:26:46 -0700 (PDT)
-Received: from localhost ([70.22.175.108])
-        by smtp.gmail.com with ESMTPSA id fw4-20020a05622a4a8400b00432bcd630c8sm4405470qtb.93.2024.04.01.18.26.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 01 Apr 2024 18:26:46 -0700 (PDT)
-Date: Mon, 01 Apr 2024 21:26:45 -0400
-Message-ID: <7bc35832c837a23773424bdc2255808b@paul-moore.com>
+	s=arc-20240116; t=1712021707; c=relaxed/simple;
+	bh=9BQEaRwtlziCRrSzQ8XnilTqjrDIVbHdGrwuUf5F6v8=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=gzJjX9p4GZE6EOwfwE4th2/n4WsWrGQDMI78nZ4JYJvEPs4vh+KrCKgLkqYVVT2eno5Ibfvg+T99Ck1jL2Vbl7LLJc9ehs5n8WLrF/iBQX1flv7SYBz+4loXhBGuGCtdmMgqYSpwRC9YhfibBfZQg5nBrDzUENL6rdA9/9h5jGQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ljones.dev; spf=none smtp.mailfrom=ljones.dev; dkim=pass (2048-bit key) header.d=ljones.dev header.i=@ljones.dev header.b=HxqbgGZG; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=lY7ys7EC; arc=none smtp.client-ip=64.147.123.146
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ljones.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=ljones.dev
+Received: from compute7.internal (compute7.nyi.internal [10.202.2.48])
+	by mailfout.west.internal (Postfix) with ESMTP id AF3171C000D9;
+	Mon,  1 Apr 2024 21:35:03 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute7.internal (MEProxy); Mon, 01 Apr 2024 21:35:04 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ljones.dev; h=cc
+	:cc:content-transfer-encoding:content-type:date:date:from:from
+	:in-reply-to:message-id:mime-version:reply-to:subject:subject:to
+	:to; s=fm3; t=1712021703; x=1712108103; bh=bmMyF7ct42nzKhAjWMlmI
+	0spC9T18BPY/N16z5kWpus=; b=HxqbgGZG3GSnrvNy1r42XR/GDDKICCimjj6c/
+	8jP8FsH5zifM2uhRapgxdInxgnmTrk+MALnGPfeweeNOjExZMhFfF/V+iGxSOiGR
+	NNo3Kn8MPJcaCucuEF57Y5o/BZOz/IynOrjhQwnnP8khp/RJ/8rxR3z7M/LtfEZm
+	7KKgvN7rLfoWbCrcgdPfHpR2PGvwwXDjpLJnOiwEfgufNzYtudH3zYqxh3j2Zikj
+	W2hJVqM44KywSBx42GCtlAfUKjUFvr7lYH0FJ3PtdAntlUypHHdP+6tSly4Wk/w+
+	RH04farswoPLsj1Jl0BxGuWEu+6nsqcILMFD2jR2Oqm5fkutw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-transfer-encoding
+	:content-type:date:date:feedback-id:feedback-id:from:from
+	:in-reply-to:message-id:mime-version:reply-to:subject:subject:to
+	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+	fm2; t=1712021703; x=1712108103; bh=bmMyF7ct42nzKhAjWMlmI0spC9T1
+	8BPY/N16z5kWpus=; b=lY7ys7ECMuMwwAMbj35szwiRdhlMn5ZHb1ylbH6wgpCB
+	74cNG/Dz4WTt046tCOqLGyeCJ/YYcNMzpZTepD3+28+IZ5kuo+VETcomZNwskM9J
+	bMJQxCjQDmhu/H0roKxm/Na4JoTQqZmASDtcFGpofZI9FfzgKlPtk3iPit9xBEfB
+	I08f4owdzBlRnvY7+yJHS9r1hlZIP5kPbZFycfKfTbrMJWM0ZrFpQMv/ZUkPHA4I
+	FZd9jQUJitJt5LxW69U8hJPrikNy5SqiElFFW0dCyKy1xrbIKq/mtF+3q9wsYrPk
+	CUpDqTgvlg6f5/bQJOpxGKMfOOT3Al3+2KZH2mKq/A==
+X-ME-Sender: <xms:xmALZjqHtbDndt89jBl0AT14MlbgiOKEotXWuAu2fK3vAEdr0_5Sag>
+    <xme:xmALZtrLNpJ3b73BtJzPdAaHKnMR2XxPQRESeDXpwJR7X7XP9Jw4fXuwXh0Vn9QGQ
+    Dxpm3ducxTPAM7xOw0>
+X-ME-Received: <xmr:xmALZgMA02zMk7_1HJsz5ABOksrkwL1YjmTQBeB-yGL0kFDwAoK275GdN_m_>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrudefuddggeekucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucenucfjughrpefhvfevufffkffoggfgsedtkeertd
+    ertddtnecuhfhrohhmpedfnfhukhgvucffrdculfhonhgvshdfuceolhhukhgvsehljhho
+    nhgvshdruggvvheqnecuggftrfgrthhtvghrnheptdehkeeigeeggfelkeeufeefjeduvd
+    ejveduvdehtdegveeftdeugeetvdeltdejnecuffhomhgrihhnpehkvghrnhgvlhdrohhr
+    ghenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehluh
+    hkvgeslhhjohhnvghsrdguvghv
+X-ME-Proxy: <xmx:xmALZm4fgckvfydhtbCrrrCyxti6bzA5ldGYU6ywCEJEorr0PlBxGg>
+    <xmx:xmALZi764mfINuY392KdM7lcayrFEp94yLUakATp3ykJKbZdzsLemg>
+    <xmx:xmALZuh1uC9XeqlqdjhB-PvIg4ViQBoYqb1c6_HUDt6wbGhZv-AKxw>
+    <xmx:xmALZk419l_2Wtwc34bqbIVyVhPu2fum1Hn0auOxx4WIYFVDtft5jA>
+    <xmx:x2ALZvsu2_peoECK2AVo2PO7HLkZqYiZlJGCSwX4S9NADdxSV6haWnqD-IY>
+Feedback-ID: i5ec1447f:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Mon,
+ 1 Apr 2024 21:34:59 -0400 (EDT)
+From: "Luke D. Jones" <luke@ljones.dev>
+To: hdegoede@redhat.com
+Cc: corentin.chary@gmail.com,
+	ilpo.jarvinen@linux.intel.com,
+	platform-driver-x86@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	"Luke D. Jones" <luke@ljones.dev>
+Subject: [PATCH v1 0/9] asus-wmi: add new features, clean up, fixes
+Date: Tue,  2 Apr 2024 14:34:44 +1300
+Message-ID: <20240402013453.18205-1-luke@ljones.dev>
+X-Mailer: git-send-email 2.44.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0 
-Content-Type: text/plain; charset=utf-8 
-Content-Disposition: inline 
+MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-From: Paul Moore <paul@paul-moore.com>
-To: Fan Wu <wufan@linux.microsoft.com>, corbet@lwn.net, zohar@linux.ibm.com, jmorris@namei.org, serge@hallyn.com, tytso@mit.edu, ebiggers@kernel.org, axboe@kernel.dk, agk@redhat.com, snitzer@kernel.org, eparis@redhat.com
-Cc: linux-doc@vger.kernel.org, linux-integrity@vger.kernel.org, linux-security-module@vger.kernel.org, fsverity@lists.linux.dev, linux-block@vger.kernel.org, dm-devel@lists.linux.dev, audit@vger.kernel.org, linux-kernel@vger.kernel.org, Fan Wu <wufan@linux.microsoft.com>
-Subject: Re: [PATCH v16 15/20] security: add security_inode_setintegrity() hook
-References: <1711657047-10526-16-git-send-email-wufan@linux.microsoft.com>
-In-Reply-To: <1711657047-10526-16-git-send-email-wufan@linux.microsoft.com>
 
-On Mar 28, 2024 Fan Wu <wufan@linux.microsoft.com> wrote:
-> 
-> This patch introduces a new hook to save inode's integrity
-> data. For example, for fsverity enabled files, LSMs can use this hook to
-> save the verified fsverity builtin signature into the inode's security
-> blob, and LSMs can make access decisions based on the data inside
-> the signature, like the signer certificate.
-> 
-> Signed-off-by: Fan Wu <wufan@linux.microsoft.com>
-> 
-> --
-> v1-v14:
->   + Not present
-> 
-> v15:
->   + Introduced
-> 
-> v16:
->   + Switch to call_int_hook()
-> 
-> ---
->  include/linux/lsm_hook_defs.h |  2 ++
->  include/linux/security.h      | 10 ++++++++++
->  security/security.c           | 20 ++++++++++++++++++++
->  3 files changed, 32 insertions(+)
-> 
-> diff --git a/include/linux/lsm_hook_defs.h b/include/linux/lsm_hook_defs.h
-> index b391a7f13053..6f746dfdb28b 100644
-> --- a/include/linux/lsm_hook_defs.h
-> +++ b/include/linux/lsm_hook_defs.h
-> @@ -1020,6 +1023,13 @@ static inline int security_inode_copy_up(struct dentry *src, struct cred **new)
->  	return 0;
->  }
->  
-> +static inline int security_inode_setintegrity(struct inode *inode,
-> +					      enum lsm_integrity_type, type,
+This patch series touches quite a few things along with adding support for some
+new features.
 
-Another bonus comma ...
+- Add support for mini-LED on 2024 ROG lpatops
+- Add support for the gpu MUX WMI call on Vivobook laptops
+- Add support for the POST boot sound on ROG laptops
+- Add support for MCU power-save (ROG Ally only, saves more power on suspend)
+- Store written values for ppt_* features
+- Small formatting cleanup
+- Small fixes to cleanup struct holes found with pahole
 
-> +					      const void *value, size_t size)
-> +{
-> +	return 0;
-> +}
-> +
+Obsoletes:
+- https://lore.kernel.org/all/20240320011442.11608-1-luke@ljones.dev/
+- https://lore.kernel.org/all/20240310065408.63703-1-luke@ljones.dev/
+- https://lore.kernel.org/all/20240310061715.16531-1-luke@ljones.dev/
+- https://lore.kernel.org/all/20240310055312.11293-1-luke@ljones.dev/
+- https://lore.kernel.org/all/20240310233722.30884-1-luke@ljones.dev/
 
---
-paul-moore.com
+Changelog:
+- V1
+  - Mini-LED: use asus_wmi_get_devstate() and not asus_wmi_get_devstate_simple()
+  - Fix dates in Documentation/ABI/testing/sysfs-platform-asus-wmi
+  - Remove <name>_available bools and rely on devid for:
+    - gpu_mux
+    - mini_led
+    - kbd_rgb (TUF RGB LED)
+
+Luke D. Jones (9):
+  platform/x86: asus-wmi: add support for 2024 ROG Mini-LED
+  platform/x86: asus-wmi: add support for Vivobook GPU MUX
+  platform/x86: asus-wmi: add support variant of TUF RGB
+  platform/x86: asus-wmi: support toggling POST sound
+  platform/x86: asus-wmi: store a min default for ppt options
+  platform/x86: asus-wmi: adjust formatting of ppt-<name>() functions
+  platform/x86: asus-wmi: ROG Ally increase wait time, allow MCU
+    powersave
+  platform/x86: asus-wmi: Add support for MCU powersave
+  platform/x86: asus-wmi: cleanup main struct to avoid some holes
+
+ .../ABI/testing/sysfs-platform-asus-wmi       |  26 ++
+ drivers/platform/x86/asus-wmi.c               | 396 ++++++++++++++----
+ include/linux/platform_data/x86/asus-wmi.h    |   6 +
+ 3 files changed, 341 insertions(+), 87 deletions(-)
+
+-- 
+2.44.0
+
 
