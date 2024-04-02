@@ -1,173 +1,120 @@
-Return-Path: <linux-kernel+bounces-127937-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-127938-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 95DE38952FC
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 14:30:50 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8FCB0895300
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 14:31:56 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4AB231F2580F
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 12:30:50 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2F64B1F2612B
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 12:31:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1118D78285;
-	Tue,  2 Apr 2024 12:30:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 493837764E;
+	Tue,  2 Apr 2024 12:31:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="L6uGxGOM"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="AcFkuFOJ"
+Received: from mail-yb1-f169.google.com (mail-yb1-f169.google.com [209.85.219.169])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2CB8C3611A;
-	Tue,  2 Apr 2024 12:30:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F0F201EB37
+	for <linux-kernel@vger.kernel.org>; Tue,  2 Apr 2024 12:31:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.169
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712061033; cv=none; b=K9QUMjUsr9tf+b1QV1ExclP4vGpX67c/jBfl5Pz8HaThWUaYeEWGBdq7EkoUPbYtrf5YYzUTi/GXFeZIl02sfIymsiocHeQ4uAQinSjvhPkAOM+KBeS2AqR/ebnjO/ROXv4C23Vnmw0OIjRinUrDdy67ZopBkPwCrC2SbIRmxMg=
+	t=1712061109; cv=none; b=YPT3Aq4mQSsxe+2/nivuuWAahxvTigX5cIn7rNcLnwC+vFue+RbaGEh1AFOdh88G+QO6XuYbPC0l5PpKSldUUA+UTJkd74ICwNl5++YqWSgbssUiTUow/M2WafJQubssfR3aHr7LhSgFptqJs+qyQsedayT55YVLkJYxWEBIa0Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712061033; c=relaxed/simple;
-	bh=ddqA/sogrh0pyj1HLmomLRqQ5T9jyI8YMNiLkUaOzcI=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=QTcNnmPqsqLp7xWqWs4vqv2qjSUKMbLwjmzxX1sMh2PY6Y9Rk4Ejvab1gaNIDfEsVadFIDAuleorRPwbBo4Bp0D04u/GVIB5YWjLvKcOTda6cCflk64X0zJ5dWTSJdOf0RlYusaUrUO/8TE334XXy/LLAfqsW1ZL8JjQN/6oUkk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=L6uGxGOM; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9495FC433C7;
-	Tue,  2 Apr 2024 12:30:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712061032;
-	bh=ddqA/sogrh0pyj1HLmomLRqQ5T9jyI8YMNiLkUaOzcI=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=L6uGxGOMQk52/JmF2EUy63XOCU5OVmz0jruepa9iYN8BIaRPWC4cQPUJVABnsPHCo
-	 0V/dQn+qiBGttarE3gSJtHt+n65PcRWWOZ/ncPZ+9YMPf/vTlMGZjxDwuoOJnLnOw5
-	 b01Hd3CE1m0ahH6nwzwV/ixQtfAb0jotPOEePH+lfXrt44kYyk/zrb99PFE7g22q3Q
-	 g17+6aUxxgGtnb7nupU9HSfQovlZECjlgDVNTIEnlCvoauqcfkM7b3Ja2ms74di4Wc
-	 LqwmIUeykZLTCNBdger75mNrnFgDlIx3otNqVb9uChA49IHevjsuS7GBJv7s7nsCg4
-	 akGBBITEnJpJg==
-Received: from johan by xi.lan with local (Exim 4.97.1)
-	(envelope-from <johan@kernel.org>)
-	id 1rrdHc-0000000050M-1X6I;
-	Tue, 02 Apr 2024 14:30:32 +0200
-Date: Tue, 2 Apr 2024 14:30:32 +0200
-From: Johan Hovold <johan@kernel.org>
-To: Maximilian Luz <luzmaximilian@gmail.com>
-Cc: Bjorn Andersson <andersson@kernel.org>,
-	Konrad Dybcio <konrad.dybcio@linaro.org>,
-	Bartosz Golaszewski <brgl@bgdev.pl>,
-	Johan Hovold <johan+linaro@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-	Guru Das Srinagesh <quic_gurus@quicinc.com>,
-	Ard Biesheuvel <ardb@kernel.org>, linux-arm-msm@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] firmware: qcom: uefisecapp: Fix memory related IO errors
- and crashes
-Message-ID: <Zgv6aJ4byNiujmo-@hovoldconsulting.com>
-References: <20240329201827.3108093-1-luzmaximilian@gmail.com>
+	s=arc-20240116; t=1712061109; c=relaxed/simple;
+	bh=p0a8acw+7ULihTf8lE/ghLH059TUPnJn47JiEnYgccM=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=YgQS+pGB2zEiNtYHM0BrSo7Gbj3TA+NHn9jHiJnDW/AuVJTSZ/Vlp7D9+QxdMEF9Tt9STQcbvio+jm1SfqbxKVWOlqGLtppDpbu+GlALtm4NVM32mdR9J/ZsyIy56aejG2ZZrXgRc/NODcMvsAme2khes4zHIks7iECbKVHZ9GY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=AcFkuFOJ; arc=none smtp.client-ip=209.85.219.169
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-yb1-f169.google.com with SMTP id 3f1490d57ef6-dcd7c526cc0so4719318276.1
+        for <linux-kernel@vger.kernel.org>; Tue, 02 Apr 2024 05:31:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1712061107; x=1712665907; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=p0a8acw+7ULihTf8lE/ghLH059TUPnJn47JiEnYgccM=;
+        b=AcFkuFOJwh6/OSIC2P6CN+t5N8yM49Tio8HVEsm9NC1HNJCNNVgKc2/Dkb3jTefFL6
+         SeBWPt1GUPkHUPEA9RAVg6Y+DQem3a2hYwXwjdeecWrWv1EQEpH1aiq0vqDRzLrTDWLD
+         1qUj9oYWttSSh3vHU7vuM4JujJOGMQU2euPPH0oeogAB0iOKUCfie3ASXqXjXmrOxYfH
+         zU+INEwdROhwLAR4DP9QoG7ndxdwbChFbCZ1efkgoIr88olR6HnpsCdY87zdd2smTu7N
+         95DuzmryhyQFqmoxoACsUTZSFgUpsaITa1qGf6PmP71lC3NJQ3G4i7kG2ZqihM8JjY2+
+         MWPA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712061107; x=1712665907;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=p0a8acw+7ULihTf8lE/ghLH059TUPnJn47JiEnYgccM=;
+        b=W4rvelbWW9hJLpOFEaU8qaZl0Ux6JeWB3QoRtushXTRYOgfiFR3Kh4aCyrk4wArJ9N
+         +4Y7sV0zq1JYltUzuz6xwAShW0sN67iN3/9Ld4c0U00I6+PQBthtlQNKFdZvNJxrZR6N
+         SVnpAjQk8BvcLNhe4ecwsE5Ulwwbav+SYAdBn/0+gNZNB7j8xCOvcusV/th7s3oonzpm
+         MHyNV2gj7drETeLm62ziiighPKZRSPnhvFsGfvM0h7XeD72QjO/AfpM0vqmz2QA/8GUc
+         /Fma8bXfJYORDqLfMn7C06V3c3HpakBs6Ve1SGK80YLRbRSO/tM0bgJtjsmYk0ByjuLu
+         1dVg==
+X-Forwarded-Encrypted: i=1; AJvYcCUUJ6ck2YUq0zs2XROT/ZdGzHM9wFRVK+z8NI8UN3d9EcKYgRh0CfmngQBTUMHutwJH85B644b8mCObHoAhvzmHy6sRDC6FB/WIEc2v
+X-Gm-Message-State: AOJu0YwWl5DI+oYXRk53wi4JrCxxNEOAg2URnWNCwzFamUzX41zgh/UU
+	EAdwAySXriSGVxDgrzgceL13QEIo3+Nyp9J2Tgtz3FpN2tqNxaFVZNyEObbzGIaCQfJePeU5A/4
+	Xske9K8My1M+VLat0ymf2Lj7r53YN3hMh4IMLSw==
+X-Google-Smtp-Source: AGHT+IE0J84TqRbakQrC6l14h9si7x2di9LmRSJuCIgA2LQ8vJmxYu7A/iE7PWTtStw1Hw8SCsS1GQo4L/akposnPKg=
+X-Received: by 2002:a25:a14a:0:b0:dcb:b3dd:4f95 with SMTP id
+ z68-20020a25a14a000000b00dcbb3dd4f95mr10698210ybh.43.1712061107020; Tue, 02
+ Apr 2024 05:31:47 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240329201827.3108093-1-luzmaximilian@gmail.com>
+References: <tencent_F76EB8D731C521C18D5D7C4F8229DAA58E08@qq.com> <tencent_6D10A9C63E3E0F412EED33477B5CDB98C207@qq.com>
+In-Reply-To: <tencent_6D10A9C63E3E0F412EED33477B5CDB98C207@qq.com>
+From: Linus Walleij <linus.walleij@linaro.org>
+Date: Tue, 2 Apr 2024 14:31:36 +0200
+Message-ID: <CACRpkdY1wpGM7M5QV5rN0M6JMN_yugQJ7CEtnQjzsheD5AT23A@mail.gmail.com>
+Subject: Re: [PATCH v6 08/11] pinctrl: k210: Deprecate SOC_CANAAN and use SOC_CANAAN_K210
+To: Yangyu Chen <cyy@cyyself.name>
+Cc: linux-riscv@lists.infradead.org, Conor Dooley <conor@kernel.org>, 
+	Damien Le Moal <dlemoal@kernel.org>, Rob Herring <robh+dt@kernel.org>, 
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
+	Paul Walmsley <paul.walmsley@sifive.com>, Palmer Dabbelt <palmer@dabbelt.com>, 
+	Albert Ou <aou@eecs.berkeley.edu>, Guo Ren <guoren@kernel.org>, 
+	Michael Turquette <mturquette@baylibre.com>, Stephen Boyd <sboyd@kernel.org>, 
+	Philipp Zabel <p.zabel@pengutronix.de>, linux-gpio@vger.kernel.org, 
+	linux-clk@vger.kernel.org, devicetree@vger.kernel.org, 
+	linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Fri, Mar 29, 2024 at 09:18:25PM +0100, Maximilian Luz wrote:
-> It turns out that while the QSEECOM APP_SEND command has specific fields
-> for request and response buffers, uefisecapp expects them both to be in
-> a single memory region. Failure to adhere to this has (so far) resulted
-> in either no response being written to the response buffer (causing an
-> EIO to be emitted down the line), the SCM call to fail with EINVAL
-> (i.e., directly from TZ/firmware), or the device to be hard-reset.
-> 
-> While this issue can be triggered deterministically, in the current form
-> it seems to happen rather sporadically (which is why it has gone
-> unnoticed during earlier testing). This is likely due to the two
-> kzalloc() calls (for request and response) being directly after each
-> other. Which means that those likely return consecutive regions most of
-> the time, especially when not much else is going on in the system.
-> 
-> Fix this by allocating a single memory region for both request and
-> response buffers, properly aligning both structs inside it. This
-> unfortunately also means that the qcom_scm_qseecom_app_send() interface
-> needs to be restructured, as it should no longer map the DMA regions
-> separately. Therefore, move the responsibility of DMA allocation (or
-> mapping) to the caller.
-> 
-> Fixes: 759e7a2b62eb ("firmware: Add support for Qualcomm UEFI Secure Application")
-> Signed-off-by: Maximilian Luz <luzmaximilian@gmail.com>
+On Sat, Mar 23, 2024 at 1:13=E2=80=AFPM Yangyu Chen <cyy@cyyself.name> wrot=
+e:
 
-Thanks for tracking this down. I can confirm that this fixes the
-hypervisor reset I can trigger by repeatedly reading an EFI variable on
-the X13s. Before it triggered within minutes, now I ran it for 3 hours
-without any issues:
+> Since SOC_FOO should be deprecated from patch [1], and cleanup for other
+> SoCs is already on the mailing list [2,3,4], we remove the use of
+> SOC_CANAAN and introduced SOC_CANAAN_K210 for K210-specific drivers,
+>
+> Thus, we replace its drivers depends on SOC_CANAAN_K210 and default selec=
+t
+> when it has the symbol SOC_CANAAN_K210.
+>
+> [1] https://lore.kernel.org/linux-riscv/20221121221414.109965-1-conor@ker=
+nel.org/
+> [2] https://lore.kernel.org/linux-riscv/20240305-praying-clad-c4fbcaa7ed0=
+a@spud/
+> [3] https://lore.kernel.org/linux-riscv/20240305-fled-undrilled-41dc0c46b=
+b29@spud/
+> [4] https://lore.kernel.org/linux-riscv/20240305-stress-earflap-d7ddb8655=
+a4d@spud/
+>
+> Signed-off-by: Yangyu Chen <cyy@cyyself.name>
 
-Tested-by: Johan Hovold <johan+linaro@kernel.org>
+Acked-by: Linus Walleij <linus.walleij@linaro.org>
 
-Even if the patch is a bit large it's straight-forward and fixes a
-critical bug so I think this needs to go to stable as well:
+Is this patch something I can just apply to the pinctrl tree?
 
-Cc: stable@vger.kernel.org	# 6.7
-
-A couple of comments below.
-
-> @@ -277,10 +296,15 @@ static efi_status_t qsee_uefi_get_variable(struct qcuefi_client *qcuefi, const e
->  	unsigned long buffer_size = *data_size;
->  	efi_status_t efi_status = EFI_SUCCESS;
->  	unsigned long name_length;
-> +	dma_addr_t cmd_buf_phys;
-
-Throughout the patch, could you please refer to DMA addresses as DMA
-addresses rather than physical addresses, for example, by using a "_dma"
-rather than "_phys" suffix here?
-
-> +	size_t cmd_buf_size;
-> +	void *cmd_buf_virt;
-
-I'd also prefer if you dropped the "_virt" suffix from the buffer
-pointers.
-
-> diff --git a/drivers/firmware/qcom/qcom_scm.c b/drivers/firmware/qcom/qcom_scm.c
-> index 49ddbcab06800..fc59688227f43 100644
-> --- a/drivers/firmware/qcom/qcom_scm.c
-> +++ b/drivers/firmware/qcom/qcom_scm.c
-> @@ -1579,46 +1579,26 @@ EXPORT_SYMBOL_GPL(qcom_scm_qseecom_app_get_id);
->  /**
->   * qcom_scm_qseecom_app_send() - Send to and receive data from a given QSEE app.
->   * @app_id:   The ID of the target app.
-> - * @req:      Request buffer sent to the app (must be DMA-mappable).
-> + * @req:      Physical address of the request buffer sent to the app.
-
-DMA address
-
->   * @req_size: Size of the request buffer.
-> - * @rsp:      Response buffer, written to by the app (must be DMA-mappable).
-> + * @rsp:      Physical address of the response buffer, written to by the app.
-
-DMA address
-
->   * @rsp_size: Size of the response buffer.
->   *
->   * Sends a request to the QSEE app associated with the given ID and read back
-> - * its response. The caller must provide two DMA memory regions, one for the
-> - * request and one for the response, and fill out the @req region with the
-> + * its response. The caller must provide two physical memory regions, one for
-
-DMA memory
-
-> + * the request and one for the response, and fill out the @req region with the
->   * respective (app-specific) request data. The QSEE app reads this and returns
->   * its response in the @rsp region.
->   *
->   * Return: Zero on success, nonzero on failure.
->   */
-> -int qcom_scm_qseecom_app_send(u32 app_id, void *req, size_t req_size, void *rsp,
-> -			      size_t rsp_size)
-> +int qcom_scm_qseecom_app_send(u32 app_id, dma_addr_t req, size_t req_size,
-> +			      dma_addr_t rsp, size_t rsp_size)
-
-And similar throughout.
-
-With that fixed, feel free to add:
-
-Reviewed-by: Johan Hovold <johan+linaro@kernel.org>
-
-Johan
+Yours,
+Linus Walleij
 
