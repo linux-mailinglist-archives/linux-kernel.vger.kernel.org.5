@@ -1,119 +1,169 @@
-Return-Path: <linux-kernel+bounces-128426-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-128427-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0A07E895AB0
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 19:31:31 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id EC4BE895AB5
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 19:32:24 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B8503289DEF
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 17:31:29 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 39BF5B26FC8
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 17:31:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1DBA315A4A5;
-	Tue,  2 Apr 2024 17:31:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3177715A4A8;
+	Tue,  2 Apr 2024 17:31:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="CJ9HYqDy"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="RpaWjP7B"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.17])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 54050133283;
-	Tue,  2 Apr 2024 17:31:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3C5A2156F33;
+	Tue,  2 Apr 2024 17:31:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.17
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712079083; cv=none; b=gFCwe3DhVe6tqKGOpHftquEU44FxUT87I0OKyj2juTWimEww8WIw1F2wIqlqes1r9foZX7euoMp2JeKaZ1Lpy79/qf5tWNCkYqskAZgFeEF9kD38ZDvPUmKiCSeg0C9uvcg+Kbx951iAS+AgLbzPI+tBRyKJbrOcPGlJ/jN4U4Y=
+	t=1712079103; cv=none; b=ls5CeWkt5HBSlZhFKLbdXeMqSQ71RzXzC9h13Zm7rfZmpZEidfNYocyfxamL1h9wIBzVl31VpMNeU1gVKZcVyjc5u9env/URyjdaV+PH9nqynIKYgvAC4BSeXMGrSEw6zriZt/5NILu0aAiqCmd+HsDhWOpRz6ENrFhEglQGVps=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712079083; c=relaxed/simple;
-	bh=lrf2H0YQAGtvMv18gh40GOdVnYqcnYKmW5VFDLEhDT4=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition:In-Reply-To; b=GrYwr/q1ddzDPlTx/qWljcUOLizwYkX/FK7m0rVy0/dg/iQfRe7NLeFdy+urPzyNI9DPJ467NGUmodnbngUMlVJprA1OX9Xzx3O7LUEQOwLJn/2saYT9EpSin16cAji0H1UJ8mRCDGs6OR1JDzJidGD0j4h1SmH4cbvw9eeU96Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=CJ9HYqDy; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A49F9C433F1;
-	Tue,  2 Apr 2024 17:31:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712079082;
-	bh=lrf2H0YQAGtvMv18gh40GOdVnYqcnYKmW5VFDLEhDT4=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:From;
-	b=CJ9HYqDy4b4jUl4HOUQpoeh9rNv2qhvhMunZ0p3zd70XBx2e4NIrrLi7avEG55rQP
-	 qbTizpQGpmibLUJh9G8IjuNwM/oO2B9E5J/7b2Zx3rHcTWpr1+TiwT3yF6Nrifmdvq
-	 WVQA2RreXD4jYpaPBU/9XUT9tqKIAGPRRkyEdgHytU/v5PLy1V4RbY67bbchvmJSvK
-	 krohOg8WwmIs7tIj1r3S5yApyfTRB7EhpAiDh2j13eAWctrSCMOUbKXjT+Mb+qxzSX
-	 XPhNLm1qJJnajdBuNM9UYfVtOuSuFsP93FcARb9OqW2ydUR1K/QWNEpCZd4EHEBdz8
-	 DK5b3G0QkC4gA==
-Date: Tue, 2 Apr 2024 12:31:21 -0500
-From: Bjorn Helgaas <helgaas@kernel.org>
-To: Aleksandr Mishin <amishin@t-argos.ru>
-Cc: Rob Herring <robh@kernel.org>,
-	Lorenzo Pieralisi <lpieralisi@kernel.org>,
-	Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
-	Bjorn Helgaas <bhelgaas@google.com>,
-	Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
-	Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>,
-	Serge Semin <fancer.lancer@gmail.com>,
-	Niklas Cassel <cassel@kernel.org>,
-	Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
-	Damien Le Moal <dlemoal@kernel.org>,
-	Siddharth Vadapalli <s-vadapalli@ti.com>, linux-pci@vger.kernel.org,
-	linux-kernel@vger.kernel.org, lvc-project@linuxtesting.org
-Subject: Re: [PATCH] PCI: dwc: keystone: Fix potential NULL dereference
-Message-ID: <20240402173121.GA1819268@bhelgaas>
+	s=arc-20240116; t=1712079103; c=relaxed/simple;
+	bh=R83jK+pei7GoedhpFDOHXlUw+k4/j/waYzwaI/yXZ9E=;
+	h=Content-Type:To:Cc:Subject:References:Date:MIME-Version:From:
+	 Message-ID:In-Reply-To; b=agkhksPXm37/p1zpFHaaL3USadRb7bAvbX0Xgf7VHbR0rJJqywB5L/2HHbMcslycuFOMNEqOIICgmGA12ooFi5/jz9ZU/yMy6+PRG6PVAHLm4NqdDZqi2Mxqoo54ztT79pOGT+gTj0o7kUbYBVkJsg/D4xeiMBKJZESmmg3JXjU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=RpaWjP7B; arc=none smtp.client-ip=192.198.163.17
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1712079101; x=1743615101;
+  h=to:cc:subject:references:date:mime-version:
+   content-transfer-encoding:from:message-id:in-reply-to;
+  bh=R83jK+pei7GoedhpFDOHXlUw+k4/j/waYzwaI/yXZ9E=;
+  b=RpaWjP7BJXfldfIvmMzKaNHnXxppENUoVnxarPX2JBdNt/kjvWtq8HVX
+   e5Np3OG3otNxq8oxdP7cWGvyUBQybWjON4rMSKh9H22sfutEftmRizcih
+   ZvL/v0yqFCm6DZDF/9tBE5Bes9ycU2c4YQpBNHcYnbl6x0lXLuG9PK1qm
+   CPtuRYOequS0vkbTi8bOz7+2xcZaKnQERlDjJryla4dh8BWDbJ6bzyciP
+   ItMd4C5rk28WFOLN9MRvNAd+3DMCRPJzYfynyA5wb14mnUxyAby5x2sxJ
+   IlT0Oy3tABuzD3mtjxKsvSbzIiWkj4fBUTkTfnVfJSDYCaRL9OMSusxX2
+   Q==;
+X-CSE-ConnectionGUID: YulYhiNUQIaeTR9Lfm4WoQ==
+X-CSE-MsgGUID: WuqoNnMESJ++g6ykzZImig==
+X-IronPort-AV: E=McAfee;i="6600,9927,11032"; a="7135691"
+X-IronPort-AV: E=Sophos;i="6.07,175,1708416000"; 
+   d="scan'208";a="7135691"
+Received: from fmviesa008.fm.intel.com ([10.60.135.148])
+  by fmvoesa111.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Apr 2024 10:31:39 -0700
+X-CSE-ConnectionGUID: jBxWQHvCSzKolXJhjJjjyg==
+X-CSE-MsgGUID: ZXiH4Q3XRaGXu0t67r0oBQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,175,1708416000"; 
+   d="scan'208";a="18255509"
+Received: from hhuan26-mobl.amr.corp.intel.com ([10.92.17.168])
+  by fmviesa008-auth.fm.intel.com with ESMTP/TLS/AES256-SHA; 02 Apr 2024 10:31:37 -0700
+Content-Type: text/plain; charset=iso-8859-15; format=flowed; delsp=yes
+To: "Jarkko Sakkinen" <jarkko@kernel.org>
+Cc: anakrish@microsoft.com, bp@alien8.de, cgroups@vger.kernel.org,
+ chrisyan@microsoft.com, dave.hansen@linux.intel.com, hpa@zytor.com,
+ kai.huang@intel.com, kristen@linux.intel.com, linux-kernel@vger.kernel.org,
+ linux-sgx@vger.kernel.org, mikko.ylinen@linux.intel.com, mingo@redhat.com,
+ mkoutny@suse.com, seanjc@google.com, sohil.mehta@intel.com,
+ tglx@linutronix.de, tim.c.chen@linux.intel.com, tj@kernel.org, x86@kernel.org,
+ yangjie@microsoft.com, zhanb@microsoft.com, zhiquan1.li@intel.com
+Subject: Re: [PATCH v2] selftests/sgx: Improve cgroup test scripts
+References: <D08UQJ2XQY6L.1XEOEJ6HIUJ8Y@kernel.org>
+ <20240402014254.27717-1-haitao.huang@linux.intel.com>
+ <D09GVMLN1O4Z.2RXQUH4ZY5IVF@kernel.org>
+Date: Tue, 02 Apr 2024 12:31:36 -0500
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240329051947.28900-1-amishin@t-argos.ru>
+Content-Transfer-Encoding: 7bit
+From: "Haitao Huang" <haitao.huang@linux.intel.com>
+Organization: Intel
+Message-ID: <op.2ll2yyfgwjvjmi@hhuan26-mobl.amr.corp.intel.com>
+In-Reply-To: <D09GVMLN1O4Z.2RXQUH4ZY5IVF@kernel.org>
+User-Agent: Opera Mail/1.0 (Win32)
 
-On Fri, Mar 29, 2024 at 08:19:47AM +0300, Aleksandr Mishin wrote:
-> In ks_pcie_setup_rc_app_regs() resource_list_first_type() may return
-> NULL which is later dereferenced. Fix this bug by adding NULL check.
-> 
-> Found by Linux Verification Center (linuxtesting.org) with SVACE.
-> 
-> Fixes: 0f71c60ffd26 ("PCI: dwc: Remove storing of PCI resources")
-> Signed-off-by: Aleksandr Mishin <amishin@t-argos.ru>
-> ---
->  drivers/pci/controller/dwc/pci-keystone.c | 6 +++++-
->  1 file changed, 5 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/pci/controller/dwc/pci-keystone.c b/drivers/pci/controller/dwc/pci-keystone.c
-> index 844de4418724..00d616654171 100644
-> --- a/drivers/pci/controller/dwc/pci-keystone.c
-> +++ b/drivers/pci/controller/dwc/pci-keystone.c
-> @@ -392,7 +392,11 @@ static void ks_pcie_setup_rc_app_regs(struct keystone_pcie *ks_pcie)
->  	struct resource *mem;
->  	int i;
->  
-> -	mem = resource_list_first_type(&pp->bridge->windows, IORESOURCE_MEM)->res;
-> +	struct resource_entry *ft = resource_list_first_type(&pp->bridge->windows, IORESOURCE_MEM);
-> +	if (!ft)
-> +		return;
+On Tue, 02 Apr 2024 02:43:25 -0500, Jarkko Sakkinen <jarkko@kernel.org>  
+wrote:
 
-Like the other one
-(https://lore.kernel.org/all/20240328180126.23574-1-amishin@t-argos.ru/),
-I think this potentially avoids a NULL pointer dereference (though I
-didn't do the analysis in this case to see whether that's actually
-possible), but fails to consider the implication of simply skipping
-the rest of ks_pcie_setup_rc_app_regs().
+> On Tue Apr 2, 2024 at 4:42 AM EEST, Haitao Huang wrote:
+>> Make cgroup test scripts ash compatible.
+>> Remove cg-tools dependency.
+>> Add documentation for functions.
+>>
+>> Tested with busybox on Ubuntu.
+>>
+>> Signed-off-by: Haitao Huang <haitao.huang@linux.intel.com>
+>> ---
+>> v2:
+>> - Fixes for v2 cgroup
+>> - Turn off swapping before memcontrol tests and back on after
+>> - Add comments and reformat
+>> ---
+>>  tools/testing/selftests/sgx/ash_cgexec.sh     |  57 ++++++
+>>  .../selftests/sgx/run_epc_cg_selftests.sh     | 187 +++++++++++-------
+>>  .../selftests/sgx/watch_misc_for_tests.sh     |  13 +-
+>>  3 files changed, 179 insertions(+), 78 deletions(-)
+>>  create mode 100755 tools/testing/selftests/sgx/ash_cgexec.sh
+>>
+>> diff --git a/tools/testing/selftests/sgx/ash_cgexec.sh  
+>> b/tools/testing/selftests/sgx/ash_cgexec.sh
+>> new file mode 100755
+>> index 000000000000..9607784378df
+>> --- /dev/null
+>> +++ b/tools/testing/selftests/sgx/ash_cgexec.sh
+>> @@ -0,0 +1,57 @@
+>> +#!/usr/bin/env sh
+>> +# SPDX-License-Identifier: GPL-2.0
+>> +# Copyright(c) 2024 Intel Corporation.
+>> +
+>> +# Move the current shell process to the specified cgroup
+>> +# Arguments:
+>> +# 	$1 - The cgroup controller name, e.g., misc, memory.
+>> +#	$2 - The path of the cgroup,
+>> +#		relative to /sys/fs/cgroup for cgroup v2,
+>> +#		relative to /sys/fs/cgroup/$1 for v1.
+>> +move_to_cgroup() {
+>> +    controllers="$1"
+>> +    path="$2"
+>> +
+>> +    # Check if cgroup v2 is in use
+>> +    if [ ! -d "/sys/fs/cgroup/misc" ]; then
+>> +        # Cgroup v2 logic
+>> +        cgroup_full_path="/sys/fs/cgroup/${path}"
+>> +        echo $$ > "${cgroup_full_path}/cgroup.procs"
+>> +    else
+>> +        # Cgroup v1 logic
+>> +        OLD_IFS="$IFS"
+>> +        IFS=','
+>> +        for controller in $controllers; do
+>> +            cgroup_full_path="/sys/fs/cgroup/${controller}/${path}"
+>> +            echo $$ > "${cgroup_full_path}/tasks"
+>> +        done
+>> +        IFS="$OLD_IFS"
+>> +    fi
+>
+> I think that if you could point me to git v10 and all this I could
+> then quite easily create test image and see what I get from that.
+>
+> I will code review the whole thing but this is definitely good
+> enough to start testing this series properly! Thanks for the
+> effort with this. The payback from this comes after the feature
+> is mainline. We have now sort of reference of the usage patterns
+> and less layers when we need to debug any possible (likely) bugs
+> in the future.
+>
+> This is definitely to the right direction. I'm just wondering do
+> we want to support v1 cgroups or would it make sense support only
+> v2?
+> BR, Jarkko
+>
+I can drop v1. I think most distro now support v2.
+Created this branch to host these changes so far:  
+https://github.com/haitaohuang/linux/tree/sgx_cg_upstream_v10_plus
 
-"start" and "end" are used only for the loop about "Using Direct 1:1
-mapping of RC <-> PCI memory space".  If there's no IORESOURCE_MEM
-resource, obviously that loop makes no sense.  The function would
-probably be improved by moving the resource_list_first_type() so it's
-next to the loop that uses the result.
 
-But the rest of the function doesn't depend on that IORESOURCE_MEM
-resource, and it's not at all clear that the rest of the function
-should be skipped.
-
-> +	mem = ft->res;
->  	start = mem->start;
->  	end = mem->end;
->  
-> -- 
-> 2.30.2
-> 
+Thanks
+Haitao
 
