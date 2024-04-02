@@ -1,292 +1,242 @@
-Return-Path: <linux-kernel+bounces-128463-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-128464-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 048ED895B29
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 19:52:23 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 872B1895B2E
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 19:54:42 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 27C761C218C0
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 17:52:22 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3C44E286092
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Apr 2024 17:54:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2883315B127;
-	Tue,  2 Apr 2024 17:51:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="gDPpL1iS"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0AA3815AAAF;
+	Tue,  2 Apr 2024 17:54:28 +0000 (UTC)
+Received: from mail-il1-f198.google.com (mail-il1-f198.google.com [209.85.166.198])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2EB2815AD8C;
-	Tue,  2 Apr 2024 17:51:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9C4A715AAA9
+	for <linux-kernel@vger.kernel.org>; Tue,  2 Apr 2024 17:54:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.198
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712080287; cv=none; b=MQHZRiFgDC2ZmVPfyuD9Y2Y+urUIbzMueeSXtjgWVb83Cdx7YwGFgAVw3/OMh3nVA6ICAN5ttYk/UoFrI+rKsz42CZ13raYMbrnqwxRFWgRDVIrS7rvh8qD6gnW4Ykp1yyfapFDq9dymsbw63l5r3Frj/lhT4wvG2II//DTwkTU=
+	t=1712080467; cv=none; b=Kh2Jlu7ky6EuIoN9pe58jlw9zKZieSuVvnD0FeTUdytqsTZ/5QhPphz1yOpQf+kTcr3XjGlknIa43+j+BXImiszxQ1Ncotwm1NUR9ARICnX9zKJfMqDIfPsiwHhr00DuUC0oL0oljQnX0cpdeXdEhigw1ZeBUeln/VJuLMVOhUI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712080287; c=relaxed/simple;
-	bh=CcyeG5LEOSpGWOeOm3cbVKAtUzZmD4pho93LO4Lftsc=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=gJnA5jb7yfAzIf8I+Z8z+aHKlyzo9MmVSTpmRqCi5mw986ju2buLhmOuiqZ7QtdZzek75Ymt6O8X83ZG0DsRwQBZ52MTYlBiTpmKc3L6K2gUkv8qJhvXXlHkyHuUgQWtKTlUASz8uAqMsCPPniOoIqNroRuHEl5w8/WM+L4IsjM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=gDPpL1iS; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E2213C43141;
-	Tue,  2 Apr 2024 17:51:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712080286;
-	bh=CcyeG5LEOSpGWOeOm3cbVKAtUzZmD4pho93LO4Lftsc=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=gDPpL1iSidYDTm2cfaFRKWDA6FRECYoVffaodoZH0Kd2Ojp8D965LqLkRBPeV21LO
-	 c+uqtYWir+a12YHGnAK7hUoldX5/EJ2oeeSJabTOjujSOY9bj/gTgoKNMsCzHzqvsi
-	 WvqK31EfOtcxep9lELkvVMMjBCvA6VM1F4ct8g6HIjsOECCmA4Du9NN63zpYLB/e4k
-	 nkOIY++Q/hKLaUUTLiaZcnDuxrmLq7gxr8Ou7Bgq8NHGfFCEMHKyhvwi4+ST6YU9kx
-	 UhkMnrvG3kXC/JFi8x8pW70wT/WRXGQ9Fxf4+Qrd53IA0NNKcjuDYmt+CaHxdEMzwx
-	 EWzoHhIBCBGRg==
-From: Alexey Gladkov <legion@kernel.org>
-To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Jiri Slaby <jirislaby@kernel.org>
-Cc: LKML <linux-kernel@vger.kernel.org>,
-	kbd@lists.linux.dev,
-	linux-api@vger.kernel.org,
-	linux-fbdev@vger.kernel.org,
-	linux-serial@vger.kernel.org,
-	Helge Deller <deller@gmx.de>
-Subject: [PATCH v4 3/3] VT: Allow to get max font width and height
-Date: Tue,  2 Apr 2024 19:50:46 +0200
-Message-ID: <adf46c743e7badf601feebcc31ec2def417cd56b.1712080158.git.legion@kernel.org>
-X-Mailer: git-send-email 2.44.0
-In-Reply-To: <cover.1712080158.git.legion@kernel.org>
-References: <74ca50e0-61b1-4d4c-85dd-a5d920548c04@kernel.org> <cover.1712080158.git.legion@kernel.org>
+	s=arc-20240116; t=1712080467; c=relaxed/simple;
+	bh=BvcGdeJteBOLOX1oOponlp3funCNbMEDcBeIfS00kdM=;
+	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=Kq2EoIMjlW2ElnWVa4E3KvVUnxBKLfn7EjQyHD1BaVC/1dysZBGNXfrED10yyeLD2WiMcsySwEVs4fgl7rpSJZS0HiDu+4egSYLv1nalLCr7LD+jXSiJm7PWE1OaGEsObA3sQ4Z2MY/CzixtWdujUU3QRnf9vkFUzrmFQRwNvzY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.198
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-il1-f198.google.com with SMTP id e9e14a558f8ab-369e344227bso4615535ab.3
+        for <linux-kernel@vger.kernel.org>; Tue, 02 Apr 2024 10:54:25 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712080465; x=1712685265;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=bqwX2k12K/PELVfeSN5iaYFxTi2XuvDYeBtzhME6iis=;
+        b=v2d3UypuFPE8v+oXHdSQ0DGMBbfpxYFyzQt6ddH3bdrQEU/LdLR/a6c93Df/6t17Ll
+         1jtW4nnyV1MmhSU/RsYxe2d4QYRD5vzqbimOcqHex+xSUURVh5UJt3dS0d2FwkExjd7E
+         Wo0Yc+fcU9TgyqFLb3dOfJQijCeF6lboqnQMgSrO3phOrrRpVL6MBiyFbIL+iU2FH+sX
+         egmJ6riZAdYn3BiCZBiHiZZrl0r6Rth4yHiOr3uWCyG3R+aJMtelMfbVWqRTSAh9jSm4
+         FOc6YsoJnoc+jLO6GLZYmHXafpbuzGtxHmV4wmtVFdSlAXQsUQBWyx2iGxiM49of9zR0
+         SB8g==
+X-Forwarded-Encrypted: i=1; AJvYcCUzHrLszU1iDP53an095YdEOJwS0UVSdbVchRX7+jtjcpHG+p0J/dN0h5gICl02z9uq917pi3Kx11OKB+SzB82Mbjwnzy3xt620EZPJ
+X-Gm-Message-State: AOJu0Yx5Zi/rCHU6ELuHRiLzRe10bO00rpJ2Q/U7wfvBzQGf6wljwX14
+	xWO1WpC4nYPjkZUhyuIv9aAGcI5UKY3Q1jv7hkAHnm26tmkjmf0okuXOzMI0Ra78SWEQ/RI9llT
+	qPyCAtwkAIwG34uj3zq+Qbc5PCmRclSG4WDX3kYKRUrkYYX7fB/sZzQI=
+X-Google-Smtp-Source: AGHT+IHM31JjmcOZVS1gaDLlBTeVG31c+t5aITaT+lE7n4CNFd+XVQacxDMTDNF8jII5FyZcXfOidezTGLMliCHQ5BLFF+DKruZ/
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-Received: by 2002:a05:6e02:221a:b0:368:79b4:dd11 with SMTP id
+ j26-20020a056e02221a00b0036879b4dd11mr1006424ilf.6.1712080464930; Tue, 02 Apr
+ 2024 10:54:24 -0700 (PDT)
+Date: Tue, 02 Apr 2024 10:54:24 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000f075b9061520cbbe@google.com>
+Subject: [syzbot] [nfs?] KASAN: slab-out-of-bounds Write in do_handle_open
+From: syzbot <syzbot+4139435cb1b34cf759c2@syzkaller.appspotmail.com>
+To: amir73il@gmail.com, brauner@kernel.org, chuck.lever@oracle.com, 
+	jack@suse.cz, jlayton@kernel.org, linux-fsdevel@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, linux-nfs@vger.kernel.org, 
+	syzkaller-bugs@googlegroups.com, viro@zeniv.linux.org.uk
+Content-Type: text/plain; charset="UTF-8"
 
-The Console drivers has more restrictive font size limits than vt_ioctl.
-This leads to errors that are difficult to handle. If a font whose size
-is not supported is used, an EINVAL error will be returned, which is
-also returned in case of errors in the font itself. At the moment there
-is no way to understand what font sizes the current console driver
-supports.
+Hello,
 
-To solve this problem, we need to transfer information about the
-supported font to userspace from the console driver.
+syzbot found the following issue on:
 
-Acked-by: Helge Deller <deller@gmx.de>
-Signed-off-by: Alexey Gladkov <legion@kernel.org>
+HEAD commit:    c0b832517f62 Add linux-next specific files for 20240402
+git tree:       linux-next
+console+strace: https://syzkaller.appspot.com/x/log.txt?x=148b0003180000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=afcaf46d374cec8c
+dashboard link: https://syzkaller.appspot.com/bug?extid=4139435cb1b34cf759c2
+compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1547f529180000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=11e22f0d180000
+
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/0d36ec76edc7/disk-c0b83251.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/6f9bb4e37dd0/vmlinux-c0b83251.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/2349287b14b7/bzImage-c0b83251.xz
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+4139435cb1b34cf759c2@syzkaller.appspotmail.com
+
+==================================================================
+BUG: KASAN: slab-out-of-bounds in instrument_copy_from_user_before include/linux/instrumented.h:129 [inline]
+BUG: KASAN: slab-out-of-bounds in _copy_from_user+0x7b/0xe0 lib/usercopy.c:22
+Write of size 36 at addr ffff8880203f2e88 by task syz-executor205/5086
+
+CPU: 1 PID: 5086 Comm: syz-executor205 Not tainted 6.9.0-rc2-next-20240402-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 03/27/2024
+Call Trace:
+ <TASK>
+ __dump_stack lib/dump_stack.c:88 [inline]
+ dump_stack_lvl+0x241/0x360 lib/dump_stack.c:114
+ print_address_description mm/kasan/report.c:377 [inline]
+ print_report+0x169/0x550 mm/kasan/report.c:488
+ kasan_report+0x143/0x180 mm/kasan/report.c:601
+ kasan_check_range+0x282/0x290 mm/kasan/generic.c:189
+ instrument_copy_from_user_before include/linux/instrumented.h:129 [inline]
+ _copy_from_user+0x7b/0xe0 lib/usercopy.c:22
+ copy_from_user include/linux/uaccess.h:183 [inline]
+ handle_to_path fs/fhandle.c:203 [inline]
+ do_handle_open+0x204/0x660 fs/fhandle.c:226
+ do_syscall_64+0xfb/0x240
+ entry_SYSCALL_64_after_hwframe+0x72/0x7a
+RIP: 0033:0x7f81f2e5f269
+Code: 48 83 c4 28 c3 e8 37 17 00 00 0f 1f 80 00 00 00 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007ffcde6f13c8 EFLAGS: 00000246 ORIG_RAX: 0000000000000130
+RAX: ffffffffffffffda RBX: 00007ffcde6f15a8 RCX: 00007f81f2e5f269
+RDX: 0000000000000000 RSI: 00000000200091c0 RDI: 00000000ffffffff
+RBP: 00007f81f2ed2610 R08: 0000000000000000 R09: 0000000000000000
+R10: 00000000ffffffff R11: 0000000000000246 R12: 0000000000000001
+R13: 00007ffcde6f1598 R14: 0000000000000001 R15: 0000000000000001
+ </TASK>
+
+Allocated by task 5086:
+ kasan_save_stack mm/kasan/common.c:47 [inline]
+ kasan_save_track+0x3f/0x80 mm/kasan/common.c:68
+ poison_kmalloc_redzone mm/kasan/common.c:370 [inline]
+ __kasan_kmalloc+0x98/0xb0 mm/kasan/common.c:387
+ kasan_kmalloc include/linux/kasan.h:211 [inline]
+ __do_kmalloc_node mm/slub.c:4048 [inline]
+ __kmalloc_noprof+0x200/0x410 mm/slub.c:4061
+ kmalloc_noprof include/linux/slab.h:664 [inline]
+ handle_to_path fs/fhandle.c:195 [inline]
+ do_handle_open+0x162/0x660 fs/fhandle.c:226
+ do_syscall_64+0xfb/0x240
+ entry_SYSCALL_64_after_hwframe+0x72/0x7a
+
+The buggy address belongs to the object at ffff8880203f2e80
+ which belongs to the cache kmalloc-64 of size 64
+The buggy address is located 8 bytes inside of
+ allocated 36-byte region [ffff8880203f2e80, ffff8880203f2ea4)
+
+The buggy address belongs to the physical page:
+page: refcount:1 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x203f2
+ksm flags: 0xfff80000000000(node=0|zone=1|lastcpupid=0xfff)
+page_type: 0xffffefff(slab)
+raw: 00fff80000000000 ffff888015041640 ffffea0000869bc0 dead000000000003
+raw: 0000000000000000 0000000080200020 00000001ffffefff 0000000000000000
+page dumped because: kasan: bad access detected
+page_owner tracks the page as allocated
+page last allocated via order 0, migratetype Unmovable, gfp_mask 0x12c40(GFP_NOFS|__GFP_NOWARN|__GFP_NORETRY), pid 4542, tgid -909298647 (udevd), ts 4542, free_ts 33444169271
+ set_page_owner include/linux/page_owner.h:32 [inline]
+ post_alloc_hook+0x1f3/0x230 mm/page_alloc.c:1490
+ prep_new_page mm/page_alloc.c:1498 [inline]
+ get_page_from_freelist+0x2e7e/0x2f40 mm/page_alloc.c:3454
+ __alloc_pages_noprof+0x256/0x6c0 mm/page_alloc.c:4712
+ __alloc_pages_node_noprof include/linux/gfp.h:244 [inline]
+ alloc_pages_node_noprof include/linux/gfp.h:271 [inline]
+ alloc_slab_page+0x5f/0x120 mm/slub.c:2249
+ allocate_slab+0x5a/0x2e0 mm/slub.c:2412
+ new_slab mm/slub.c:2465 [inline]
+ ___slab_alloc+0xea8/0x1430 mm/slub.c:3599
+ __slab_alloc+0x58/0xa0 mm/slub.c:3684
+ __slab_alloc_node mm/slub.c:3737 [inline]
+ slab_alloc_node mm/slub.c:3915 [inline]
+ __do_kmalloc_node mm/slub.c:4047 [inline]
+ __kmalloc_noprof+0x25e/0x410 mm/slub.c:4061
+ kmalloc_noprof include/linux/slab.h:664 [inline]
+ kzalloc_noprof include/linux/slab.h:775 [inline]
+ tomoyo_encode2 security/tomoyo/realpath.c:45 [inline]
+ tomoyo_encode+0x26f/0x540 security/tomoyo/realpath.c:80
+ tomoyo_realpath_from_path+0x59e/0x5e0 security/tomoyo/realpath.c:283
+ tomoyo_get_realpath security/tomoyo/file.c:151 [inline]
+ tomoyo_path_perm+0x2b7/0x740 security/tomoyo/file.c:822
+ security_inode_getattr+0xd8/0x130 security/security.c:2269
+ vfs_getattr+0x45/0x430 fs/stat.c:173
+ vfs_fstat fs/stat.c:198 [inline]
+ vfs_fstatat+0xd6/0x190 fs/stat.c:300
+ __do_sys_newfstatat fs/stat.c:468 [inline]
+ __se_sys_newfstatat fs/stat.c:462 [inline]
+ __x64_sys_newfstatat+0x125/0x1b0 fs/stat.c:462
+ do_syscall_64+0xfb/0x240
+page last free pid 4548 tgid 4548 stack trace:
+ reset_page_owner include/linux/page_owner.h:25 [inline]
+ free_pages_prepare mm/page_alloc.c:1110 [inline]
+ free_unref_page+0xd3c/0xec0 mm/page_alloc.c:2617
+ __slab_free+0x31b/0x3d0 mm/slub.c:4274
+ qlink_free mm/kasan/quarantine.c:163 [inline]
+ qlist_free_all+0x9e/0x140 mm/kasan/quarantine.c:179
+ kasan_quarantine_reduce+0x14f/0x170 mm/kasan/quarantine.c:286
+ __kasan_slab_alloc+0x23/0x80 mm/kasan/common.c:322
+ kasan_slab_alloc include/linux/kasan.h:201 [inline]
+ slab_post_alloc_hook mm/slub.c:3867 [inline]
+ slab_alloc_node mm/slub.c:3927 [inline]
+ __do_kmalloc_node mm/slub.c:4047 [inline]
+ __kmalloc_noprof+0x1a9/0x410 mm/slub.c:4061
+ kmalloc_noprof include/linux/slab.h:664 [inline]
+ tomoyo_realpath_from_path+0xcf/0x5e0 security/tomoyo/realpath.c:251
+ tomoyo_get_realpath security/tomoyo/file.c:151 [inline]
+ tomoyo_path2_perm+0x3eb/0xbb0 security/tomoyo/file.c:923
+ tomoyo_path_rename+0x198/0x1e0 security/tomoyo/tomoyo.c:300
+ security_path_rename+0x179/0x220 security/security.c:1918
+ do_renameat2+0x94a/0x13f0 fs/namei.c:5027
+ __do_sys_rename fs/namei.c:5087 [inline]
+ __se_sys_rename fs/namei.c:5085 [inline]
+ __x64_sys_rename+0x86/0xa0 fs/namei.c:5085
+ do_syscall_64+0xfb/0x240
+ entry_SYSCALL_64_after_hwframe+0x72/0x7a
+
+Memory state around the buggy address:
+ ffff8880203f2d80: fa fb fb fb fb fb fb fb fc fc fc fc fc fc fc fc
+ ffff8880203f2e00: fa fb fb fb fb fb fb fb fc fc fc fc fc fc fc fc
+>ffff8880203f2e80: 00 00 00 00 04 fc fc fc fc fc fc fc fc fc fc fc
+                               ^
+ ffff8880203f2f00: 00 00 00 00 00 00 fc fc fc fc fc fc fc fc fc fc
+ ffff8880203f2f80: fa fb fb fb fb fb fb fb fc fc fc fc fc fc fc fc
+==================================================================
+
+
 ---
- drivers/video/console/newport_con.c | 21 +++++++++++++++++----
- drivers/video/console/sticon.c      | 25 +++++++++++++++++++++++--
- drivers/video/console/vgacon.c      | 21 ++++++++++++++++++++-
- drivers/video/fbdev/core/fbcon.c    | 16 ++++++++++++++++
- 4 files changed, 76 insertions(+), 7 deletions(-)
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-diff --git a/drivers/video/console/newport_con.c b/drivers/video/console/newport_con.c
-index a51cfc1d560e..6167f45326ac 100644
---- a/drivers/video/console/newport_con.c
-+++ b/drivers/video/console/newport_con.c
-@@ -33,6 +33,9 @@
- 
- #define NEWPORT_LEN	0x10000
- 
-+#define NEWPORT_MAX_FONT_WIDTH 8
-+#define NEWPORT_MAX_FONT_HEIGHT 16
-+
- #define FONT_DATA ((unsigned char *)font_vga_8x16.data)
- 
- static unsigned char *font_data[MAX_NR_CONSOLES];
-@@ -328,8 +331,8 @@ static void newport_init(struct vc_data *vc, bool init)
- {
- 	int cols, rows;
- 
--	cols = newport_xsize / 8;
--	rows = newport_ysize / 16;
-+	cols = newport_xsize / NEWPORT_MAX_FONT_WIDTH;
-+	rows = newport_ysize / NEWPORT_MAX_FONT_HEIGHT;
- 	vc->vc_can_do_color = 1;
- 	if (init) {
- 		vc->vc_cols = cols;
-@@ -507,8 +510,8 @@ static int newport_set_font(int unit, const struct console_font *op,
- 
- 	/* ladis: when I grow up, there will be a day... and more sizes will
- 	 * be supported ;-) */
--	if ((w != 8) || (h != 16) || (vpitch != 32)
--	    || (op->charcount != 256 && op->charcount != 512))
-+	if ((w != NEWPORT_MAX_FONT_WIDTH) || (h != NEWPORT_MAX_FONT_HEIGHT) ||
-+	    (vpitch != 32) || (op->charcount != 256 && op->charcount != 512))
- 		return -EINVAL;
- 
- 	if (!(new_data = kmalloc(FONT_EXTRA_WORDS * sizeof(int) + size,
-@@ -570,6 +573,15 @@ static int newport_font_default(struct vc_data *vc, struct console_font *op,
- 	return newport_set_def_font(vc->vc_num, op);
- }
- 
-+static int newport_font_info(struct vc_data *vc, struct console_font_info *info)
-+{
-+	info->min_width = info->max_width = NEWPORT_MAX_FONT_WIDTH;
-+	info->min_height = info->max_height = NEWPORT_MAX_FONT_HEIGHT;
-+	info->flags = KD_FONT_INFO_FLAG_LOW_SIZE | KD_FONT_INFO_FLAG_HIGH_SIZE;
-+
-+	return 0;
-+}
-+
- static int newport_font_set(struct vc_data *vc, const struct console_font *font,
- 			    unsigned int vpitch, unsigned int flags)
- {
-@@ -689,6 +701,7 @@ const struct consw newport_con = {
- 	.con_scroll	  = newport_scroll,
- 	.con_switch	  = newport_switch,
- 	.con_blank	  = newport_blank,
-+	.con_font_info	  = newport_font_info,
- 	.con_font_set	  = newport_font_set,
- 	.con_font_default = newport_font_default,
- 	.con_save_screen  = newport_save_screen
-diff --git a/drivers/video/console/sticon.c b/drivers/video/console/sticon.c
-index 4c7b4959a1aa..490e6b266a31 100644
---- a/drivers/video/console/sticon.c
-+++ b/drivers/video/console/sticon.c
-@@ -56,6 +56,11 @@
- #define BLANK 0
- static int vga_is_gfx;
- 
-+#define STICON_MIN_FONT_WIDTH 6
-+#define STICON_MIN_FONT_HEIGHT 6
-+#define STICON_MAX_FONT_WIDTH 32
-+#define STICON_MAX_FONT_HEIGHT 32
-+
- #define STI_DEF_FONT	sticon_sti->font
- 
- /* borrowed from fbcon.c */
-@@ -166,8 +171,10 @@ static int sticon_set_font(struct vc_data *vc, const struct console_font *op,
- 	struct sti_cooked_font *cooked_font;
- 	unsigned char *data = op->data, *p;
- 
--	if ((w < 6) || (h < 6) || (w > 32) || (h > 32) || (vpitch != 32)
--	    || (op->charcount != 256 && op->charcount != 512))
-+	if (!in_range(w, STICON_MIN_FONT_WIDTH, STICON_MAX_FONT_WIDTH) ||
-+	    !in_range(h, STICON_MIN_FONT_HEIGHT, STICON_MAX_FONT_HEIGHT) ||
-+	    (vpitch != 32) ||
-+	    (op->charcount != 256 && op->charcount != 512))
- 		return -EINVAL;
- 	pitch = ALIGN(w, 8) / 8;
- 	bpc = pitch * h;
-@@ -260,6 +267,19 @@ static int sticon_font_set(struct vc_data *vc, const struct console_font *font,
- 	return sticon_set_font(vc, font, vpitch);
- }
- 
-+static int sticon_font_info(struct vc_data *vc, struct console_font_info *info)
-+{
-+	info->min_width = STICON_MIN_FONT_WIDTH;
-+	info->min_height = STICON_MIN_FONT_HEIGHT;
-+
-+	info->max_width = STICON_MAX_FONT_WIDTH;
-+	info->max_height = STICON_MAX_FONT_HEIGHT;
-+
-+	info->flags = KD_FONT_INFO_FLAG_LOW_SIZE | KD_FONT_INFO_FLAG_HIGH_SIZE;
-+
-+	return 0;
-+}
-+
- static void sticon_init(struct vc_data *c, bool init)
- {
-     struct sti_struct *sti = sticon_sti;
-@@ -356,6 +376,7 @@ static const struct consw sti_con = {
- 	.con_scroll		= sticon_scroll,
- 	.con_switch		= sticon_switch,
- 	.con_blank		= sticon_blank,
-+	.con_font_info		= sticon_font_info,
- 	.con_font_set		= sticon_font_set,
- 	.con_font_default	= sticon_font_default,
- 	.con_build_attr		= sticon_build_attr,
-diff --git a/drivers/video/console/vgacon.c b/drivers/video/console/vgacon.c
-index 7597f04b0dc7..b5465e555fdc 100644
---- a/drivers/video/console/vgacon.c
-+++ b/drivers/video/console/vgacon.c
-@@ -61,6 +61,10 @@ static struct vgastate vgastate;
- #define BLANK 0x0020
- 
- #define VGA_FONTWIDTH       8   /* VGA does not support fontwidths != 8 */
-+
-+#define VGACON_MAX_FONT_WIDTH VGA_FONTWIDTH
-+#define VGACON_MAX_FONT_HEIGHT 32
-+
- /*
-  *  Interface used by the world
-  */
-@@ -1039,6 +1043,19 @@ static int vgacon_adjust_height(struct vc_data *vc, unsigned fontheight)
- 	return 0;
- }
- 
-+static int vgacon_font_info(struct vc_data *vc, struct console_font_info *info)
-+{
-+	info->min_width = VGACON_MAX_FONT_WIDTH;
-+	info->min_height = 0;
-+
-+	info->max_width = VGACON_MAX_FONT_WIDTH;
-+	info->max_height = VGACON_MAX_FONT_HEIGHT;
-+
-+	info->flags = KD_FONT_INFO_FLAG_LOW_SIZE | KD_FONT_INFO_FLAG_HIGH_SIZE;
-+
-+	return 0;
-+}
-+
- static int vgacon_font_set(struct vc_data *c, const struct console_font *font,
- 			   unsigned int vpitch, unsigned int flags)
- {
-@@ -1048,7 +1065,8 @@ static int vgacon_font_set(struct vc_data *c, const struct console_font *font,
- 	if (vga_video_type < VIDEO_TYPE_EGAM)
- 		return -EINVAL;
- 
--	if (font->width != VGA_FONTWIDTH || font->height > 32 || vpitch != 32 ||
-+	if (font->width != VGACON_MAX_FONT_WIDTH ||
-+	    font->height > VGACON_MAX_FONT_HEIGHT || vpitch != 32 ||
- 	    (charcount != 256 && charcount != 512))
- 		return -EINVAL;
- 
-@@ -1201,6 +1219,7 @@ const struct consw vga_con = {
- 	.con_scroll = vgacon_scroll,
- 	.con_switch = vgacon_switch,
- 	.con_blank = vgacon_blank,
-+	.con_font_info = vgacon_font_info,
- 	.con_font_set = vgacon_font_set,
- 	.con_font_get = vgacon_font_get,
- 	.con_resize = vgacon_resize,
-diff --git a/drivers/video/fbdev/core/fbcon.c b/drivers/video/fbdev/core/fbcon.c
-index fcabc668e9fb..b54031da49fd 100644
---- a/drivers/video/fbdev/core/fbcon.c
-+++ b/drivers/video/fbdev/core/fbcon.c
-@@ -2452,6 +2452,21 @@ static int fbcon_do_set_font(struct vc_data *vc, int w, int h, int charcount,
- 	return ret;
- }
- 
-+
-+static int fbcon_font_info(struct vc_data *vc, struct console_font_info *info)
-+{
-+	info->min_width = 0;
-+	info->min_height = 0;
-+
-+	info->max_width = FB_MAX_BLIT_WIDTH;
-+	info->max_height = FB_MAX_BLIT_HEIGHT;
-+
-+	info->flags = KD_FONT_INFO_FLAG_LOW_SIZE | KD_FONT_INFO_FLAG_HIGH_SIZE;
-+
-+	return 0;
-+}
-+
-+
- /*
-  *  User asked to set font; we are guaranteed that charcount does not exceed 512
-  *  but lets not assume that, since charcount of 512 is small for unicode support.
-@@ -3127,6 +3142,7 @@ static const struct consw fb_con = {
- 	.con_scroll 		= fbcon_scroll,
- 	.con_switch 		= fbcon_switch,
- 	.con_blank 		= fbcon_blank,
-+	.con_font_info		= fbcon_font_info,
- 	.con_font_set 		= fbcon_set_font,
- 	.con_font_get 		= fbcon_get_font,
- 	.con_font_default	= fbcon_set_def_font,
--- 
-2.44.0
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
 
+If the report is already addressed, let syzbot know by replying with:
+#syz fix: exact-commit-title
+
+If you want syzbot to run the reproducer, reply with:
+#syz test: git://repo/address.git branch-or-commit-hash
+If you attach or paste a git patch, syzbot will apply it before testing.
+
+If you want to overwrite report's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
+
+If the report is a duplicate of another one, reply with:
+#syz dup: exact-subject-of-another-report
+
+If you want to undo deduplication, reply with:
+#syz undup
 
