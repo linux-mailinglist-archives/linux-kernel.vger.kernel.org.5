@@ -1,73 +1,75 @@
-Return-Path: <linux-kernel+bounces-130379-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-130380-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 33992897754
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 19:51:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id CCD22897756
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 19:51:23 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 56CD31C20DD9
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 17:51:09 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F01131C203AA
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 17:51:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1EAFE157498;
-	Wed,  3 Apr 2024 17:33:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9E3DC152E07;
+	Wed,  3 Apr 2024 17:33:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b="3aPeaN9O"
-Received: from mail-pl1-f177.google.com (mail-pl1-f177.google.com [209.85.214.177])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="nmjFOq63"
+Received: from mail-ed1-f53.google.com (mail-ed1-f53.google.com [209.85.208.53])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 55B22152521
-	for <linux-kernel@vger.kernel.org>; Wed,  3 Apr 2024 17:33:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0A2D7152187
+	for <linux-kernel@vger.kernel.org>; Wed,  3 Apr 2024 17:33:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712165596; cv=none; b=V8IE8OaIxZcincg66v0s6q/NGkHglTJ/jtk2MUqeydoCOF1b23y2YE5N2WpgOO+gVvCkrl/JTbkjGyaUZRj9qNK+ZEo57Qmy411gKG9Ipzlft/osc40d0ojVcwtF+jDnymltc6j9wOkPD3UqD+zzGQId/pcWzgI3mu86UIoKyIQ=
+	t=1712165598; cv=none; b=cI6f3OUqKf/c404cUoxkalm5KFZKsL0/devEvg93kSFax9d8hQxHxLzvpveObLQ1ejRXqInu+EsfdTxtwpHGdIoLuw+Z3D1SfZFPvjx5+sO245i4JqMZcZJkFlK7AOlP7HLtbA2wzvMgbfP/NLsTcM5dZSTyJxQ1SFH5GTLtFBg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712165596; c=relaxed/simple;
-	bh=bNitdDZEZ45Wu2BGg5a1lM8zD7IM1Pkagn/eVdTtlLU=;
+	s=arc-20240116; t=1712165598; c=relaxed/simple;
+	bh=+DelBr6m3rNY6z6t5SFfDpdd1llZYLl56cohJPx5B5Y=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=KEhQjhGD8BHT4PZRMd5so+oBm8m7GpHkc5qnPXWJLciLQYReszYtDXVR8nwpTgPN+tkE99iiIhHbWVurRZWnQ49UY78tDinvBwAi9D39FwHdNEz9x64ZSVn9r2HBGzhfa0rVeJWHA7MbbWoVPl2UAfWgm+nT3ezK1ItOC4wj0Y8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com; spf=pass smtp.mailfrom=rivosinc.com; dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b=3aPeaN9O; arc=none smtp.client-ip=209.85.214.177
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rivosinc.com
-Received: by mail-pl1-f177.google.com with SMTP id d9443c01a7336-1e223025ccbso104115ad.3
-        for <linux-kernel@vger.kernel.org>; Wed, 03 Apr 2024 10:33:14 -0700 (PDT)
+	 In-Reply-To:Content-Type; b=UEYw0x5cwblharOs+Aqio5zQLulYkt/ufiFNvVtrQqzIkNSe/Q9bCwmQF3ZnAgxoH04VTKhVdjgfqbq4uC71ASrTpyI+ZghQs/gazZKrR3zPvS1KEuYH0BhH1TZJrwUyWN13P9TtlJeEmEqnJKGYwsbgK/T7pfdSSLNmSHbBQ1c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=nmjFOq63; arc=none smtp.client-ip=209.85.208.53
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-ed1-f53.google.com with SMTP id 4fb4d7f45d1cf-5684db9147dso75956a12.2
+        for <linux-kernel@vger.kernel.org>; Wed, 03 Apr 2024 10:33:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1712165593; x=1712770393; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=fdtmFuCQtKqL7XQB5yBZBXcGu9/7lkplVdP/I75yquc=;
-        b=3aPeaN9OmKsmSJh0e4LCI/S5B/ommlnc04giwq0H8FDYAXrTmfuoatLuFSzt5ij4A3
-         WtSQPF6DolV/7iVKYMGS1dRUcJSpFQObopoUDGVUdj3acs+/f9PFbaOW31FOdmhKxKFu
-         KDp+6LWKlZWD2KgIthfjx+yV89Abfb73lvCjoAC6BBCv/cuD+cnMvzoiDuReVNii7mey
-         OVhLNcnbEKDcsEkkBlHDUPdHw/jyY25GuYvXTj8Oz15oKeuEhFTrWZeyWiN0T/empJ9T
-         ehE6Lvu7admIzoqoSaOXd43WMv0a8GpeO5wZQbHKUJ9wta/klskzdjtvYr/Kyfn2qPvR
-         53Ag==
+        d=linaro.org; s=google; t=1712165594; x=1712770394; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
+        bh=T33QVeD/UYcwqSgNmsGfgpvXToGKDIKVuMAYVc4EFqI=;
+        b=nmjFOq63Utf4UuRd4OMGhUlH6WvKi8ps79ZCvB8dKwIcCKv3JZ8DZDkcI8kZDkn9wD
+         Cdibmn+/13GzPJbFhh7G8gc9/GrfYk5M71IOiLYvLpeAXtS5Xh28hQJm8hK/5AYQNJ55
+         3aFvZIlGibWhbUmpNvvtHcwvdwNvE8V75n76hq2VTo/lDQxO0dBCDuO30IF1qXB06Sxw
+         sr0FQEPV80bM4WhghapvIMC/VljcueZ/hSjeBk9Nvq+wyJNtWjyE0OHYl2T3qY2cM6m3
+         H4Kc/3AoKzk4cnqN57BelhqElluNPupwxKoe37pUcazUwOSYpzilPWRNBMOP43oA9XKS
+         WHog==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712165593; x=1712770393;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=fdtmFuCQtKqL7XQB5yBZBXcGu9/7lkplVdP/I75yquc=;
-        b=pYlhMvmRH5+tebmmpwcVhWgwpKDCqc2XEziiyixcwjYAGewCg/B0/i0R/TuP6SwpL3
-         97mH+Yl4bS68Bhi+hs8s4CjFmcCzc809kMN2977WBSurruhYakeBCDjgmh/ieCd5fAr/
-         gYWJLMOX/EC/DjmNJPBBrtmq1QMeWsqStIt71b2McYnmMVn2jJKahFxiNa0pDeVgS1Ff
-         I92WkXqI/QLXjnYg8YDJ1WTSaeaGHp7B6Zw3haIpH61qczw3pWXv0SMoK/uiovgeLUgp
-         +JcvH2X+dl8q7ox0lWo2aNC07LaJnGaJ+WXH9o0KY27x2gIhYKRpZqeDE6NtAkMPBnoN
-         WN+A==
-X-Forwarded-Encrypted: i=1; AJvYcCU13X3Xgw3vQPatPZl/z4JEyxtsYoEzEAurDsg5qrhXutoBcLSiLldkYrOhKf5V9Or9xAgkf/GSqgZq+Kxwr2HalO9FGaecB1JKUExa
-X-Gm-Message-State: AOJu0YyoFs/nxLqia1kvpUjbySn9VFrpCDhhFkLmrvMFM9+5nH8HfzQT
-	i2o+iHlPB2VbQ3MfTZ9BVPBbSPVxIqR8jYDY7vfzku4HwWGxEtI2+iEM1aUAxDM=
-X-Google-Smtp-Source: AGHT+IFBs/XuJJMQmrVQUKGAA9J8OyyBRTsBqretCIWUOoly3HJp/hb+dobtV3ICE1IfQjtI5xaAtQ==
-X-Received: by 2002:a17:90a:886:b0:2a2:c354:64dd with SMTP id v6-20020a17090a088600b002a2c35464ddmr202756pjc.38.1712165593547;
-        Wed, 03 Apr 2024 10:33:13 -0700 (PDT)
-Received: from [10.0.16.165] ([50.145.13.30])
-        by smtp.gmail.com with ESMTPSA id ga4-20020a17090b038400b002a04f430937sm3863480pjb.43.2024.04.03.10.33.12
+        d=1e100.net; s=20230601; t=1712165594; x=1712770394;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=T33QVeD/UYcwqSgNmsGfgpvXToGKDIKVuMAYVc4EFqI=;
+        b=TqHOxpURWNSpm+W8rU4ouZukxQ3SHEo1hbeyuYlbFyjM7KO/wzjWkfvkXhYoXlxGel
+         90lA+spFQVmrdqXfnjUT2tWdjIOrUXgaXOQxEXxximRedlfb1krNJeWPdMad8Nta6Zz3
+         8jXjn8ZlCzUNxO5yZhrO6NUTZ0dtfPN+mFoWa6v8LbzGG7O6SqU7vx9ZYA/xQ0OpOJt+
+         EBciSItJZvs+S3Buo9fCy5eRK44uh/DlcD+QANlB3pmHCo3/MMhokpfRd2TT4Q92HrPU
+         HVmpCzlbXpCfm/3BEVQtne5j8rrxYLTz3OAyhyxGhvqRNY8JYzu2EvQie8tBM2TzSZUN
+         +9DQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUn11N8NcKqjS569OKLPBY18B7o7/1nYBK8bP9viJUMDm3c9R46gab8Vns0PP/J3lYgHbB0qdURDlvFR3TyYXo6ZthxwheQVpV4xoX+
+X-Gm-Message-State: AOJu0YyZgbK2BJ1oJg6zI9Qsw5zXIG+sfSB++LDqMmNtdEjFi7eCMiHd
+	3LL6sYi2mf3KeJbewEcUon5rJB/ybJYtL/dLBCArs5tKSCLQzDuGmdzWalCUaJ2Oq/HqQqWBD88
+	c
+X-Google-Smtp-Source: AGHT+IEwZo2+JsK5wwSD2DKtwccImfnSRm/+qcrGJ0GmVQH7neZdv0m4zCdwfN/aYbnWlHqeGhL6wQ==
+X-Received: by 2002:a50:ab52:0:b0:56b:a565:f8dd with SMTP id t18-20020a50ab52000000b0056ba565f8ddmr60895edc.24.1712165594413;
+        Wed, 03 Apr 2024 10:33:14 -0700 (PDT)
+Received: from [192.168.1.20] ([178.197.223.16])
+        by smtp.gmail.com with ESMTPSA id fe8-20020a056402390800b0056c522d014esm8075468edb.57.2024.04.03.10.33.13
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
         Wed, 03 Apr 2024 10:33:13 -0700 (PDT)
-Message-ID: <314e0216-a667-4bba-bdc7-3ae8af351800@rivosinc.com>
-Date: Wed, 3 Apr 2024 10:33:10 -0700
+Message-ID: <85aacb1d-40bd-46fd-8c49-5a682a7adf61@linaro.org>
+Date: Wed, 3 Apr 2024 19:33:12 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -75,103 +77,179 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] riscv: Fix vector state restore in rt_sigreturn()
-To: =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>,
- Paul Walmsley <paul.walmsley@sifive.com>, Palmer Dabbelt
- <palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>,
- Andy Chiu <andy.chiu@sifive.com>, linux-riscv@lists.infradead.org
-Cc: =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@rivosinc.com>,
- Conor Dooley <conor.dooley@microchip.com>, Heiko Stuebner <heiko@sntech.de>,
- Vincent Chen <vincent.chen@sifive.com>, Ben Dooks
- <ben.dooks@codethink.co.uk>, Greentime Hu <greentime.hu@sifive.com>,
- Haorong Lu <ancientmodern4@gmail.com>, Jerry Shih <jerry.shih@sifive.com>,
- Nick Knight <nick.knight@sifive.com>, linux-kernel@vger.kernel.org,
- Charlie Jenkins <charlie@rivosinc.com>, Vineet Gupta <vgupta@kernel.org>
-References: <20240403072638.567446-1-bjorn@kernel.org>
+Subject: Re: [PATCH] dt-bindings: omap-mcpdm: Convert to DT schema
+To: Mighty <bavishimithil@gmail.com>
+Cc: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
+ Rob Herring <robh+dt@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>, alsa-devel@alsa-project.org,
+ devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20240403165950.75-1-bavishimithil@gmail.com>
 Content-Language: en-US
-From: Vineet Gupta <vineetg@rivosinc.com>
-In-Reply-To: <20240403072638.567446-1-bjorn@kernel.org>
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ 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
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <20240403165950.75-1-bavishimithil@gmail.com>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 
-On 4/3/24 00:26, Björn Töpel wrote:
-> From: Björn Töpel <bjorn@rivosinc.com>
->
-> The RISC-V Vector specification states in "Appendix D: Calling
-> Convention for Vector State" [1] that "Executing a system call causes
-> all caller-saved vector registers (v0-v31, vl, vtype) and vstart to
-> become unspecified.". In the RISC-V kernel this is called "discarding
-> the vstate".
->
-> Returning from a signal handler via the rt_sigreturn() syscall, vector
-> discard is also performed. However, this is not an issue since the
-> vector state should be restored from the sigcontext, and therefore not
-> care about the vector discard.
->
-> The "live state" is the actual vector register in the running context,
-> and the "vstate" is the vector state of the task. A dirty live state,
-> means that the vstate and live state are not in synch.
->
-> When vectorized user_from_copy() was introduced, an bug sneaked in at
-> the restoration code, related to the discard of the live state.
->
-> An example when this go wrong:
->
->   1. A userland application is executing vector code
->   2. The application receives a signal, and the signal handler is
->      entered.
->   3. The application returns from the signal handler, using the
->      rt_sigreturn() syscall.
->   4. The live vector state is discarded upon entering the
->      rt_sigreturn(), and the live state is marked as "dirty", indicating
->      that the live state need to be synchronized with the current
->      vstate.
->   5. rt_sigreturn() restores the vstate, except the Vector registers,
->      from the sigcontext
->   6. rt_sigreturn() restores the Vector registers, from the sigcontext,
->      and now the vectorized user_from_copy() is used. The dirty live
->      state from the discard is saved to the vstate, making the vstate
->      corrupt.
->   7. rt_sigreturn() returns to the application, which crashes due to
->      corrupted vstate.
->
-> Note that the vectorized user_from_copy() is invoked depending on the
-> value of CONFIG_RISCV_ISA_V_UCOPY_THRESHOLD. Default is 768, which
-> means that vlen has to be larger than 128b for this bug to trigger.
->
-> The fix is simply to mark the live state as non-dirty/clean prior
-> performing the vstate restore.
->
-> Link: https://github.com/riscv/riscv-isa-manual/releases/download/riscv-isa-release-8abdb41-2024-03-26/unpriv-isa-asciidoc.pdf # [1]
-> Reported-by: Charlie Jenkins <charlie@rivosinc.com>
-> Reported-by: Vineet Gupta <vgupta@kernel.org>
-> Fixes: c2a658d41924 ("riscv: lib: vectorize copy_to_user/copy_from_user")
-> Signed-off-by: Björn Töpel <bjorn@rivosinc.com>
+On 03/04/2024 18:59, Mighty wrote:
+> Convert the OMAP4+ McPDM bindings to DT schema.
+> 
 
-Tested-by: Vineet Gupta <vineetg@rivosinc.com>
+Please use subject prefixes matching the subsystem. You can get them for
+example with `git log --oneline -- DIRECTORY_OR_FILE` on the directory
+your patch is touching.
 
-For completeness (and fun)
+> Signed-off-by: Mighty <bavishimithil@gmail.com>
 
-1. The issue was triggered on dual core spike run with a seemingly
-benign workload (the key is repeated fork/execve/exit with a little I/O)
+Is it your full name?
 
-    some-shell-script.sh
 
-    #!/bin/bash
+> ---
+>  .../devicetree/bindings/sound/omap-mcpdm.txt  | 30 ----------
+>  .../devicetree/bindings/sound/omap-mcpdm.yaml | 58 +++++++++++++++++++
+>  2 files changed, 58 insertions(+), 30 deletions(-)
+>  delete mode 100644 Documentation/devicetree/bindings/sound/omap-mcpdm.txt
+>  create mode 100644 Documentation/devicetree/bindings/sound/omap-mcpdm.yaml
+> 
+> diff --git a/Documentation/devicetree/bindings/sound/omap-mcpdm.txt b/Documentation/devicetree/bindings/sound/omap-mcpdm.txt
+> deleted file mode 100644
+> index ff98a0cb5..000000000
+> --- a/Documentation/devicetree/bindings/sound/omap-mcpdm.txt
+> +++ /dev/null
+> @@ -1,30 +0,0 @@
+> -* Texas Instruments OMAP4+ McPDM
+> -
 
-    (while true; do ls; done) &
+..
 
-    for i in $seq (1 20); do
-       <long running job>
-    done
+> diff --git a/Documentation/devicetree/bindings/sound/omap-mcpdm.yaml b/Documentation/devicetree/bindings/sound/omap-mcpdm.yaml
+> new file mode 100644
+> index 000000000..8c9ff9d90
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/sound/omap-mcpdm.yaml
 
-2. The issue initially appears as follows: Vector store instruction,
-before starting to run invalidates it's own context (page fault ->
-preemption -> handle-signal -> sigreturn -> VILL / V-clobber), so when
-it eventually runs, it takes an illegal instruction exception, taking
-down the entire program.
+Filename like compatible.
 
-Thx,
--Vineet
-   
+> @@ -0,0 +1,58 @@
+> +# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/sound/omap-mcpdm.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: OMAP McPDM
+> +
+> +maintainers:
+> +  - Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+> +
+> +description:
+> +  OMAP ALSA SoC DAI driver using McPDM port used by TWL6040
+> +
+> +properties:
+> +  compatible:
+> +    const: ti,omap4-mcpdm
+> +
+> +  reg:
+> +    description: 'Register location and size as an array:
+> +       <MPU access base address, size>,
+> +       <L3 interconnect address, size>;'
+
+Please open existing bindings and look how it is done there.
+
+> +
+> +  interrupts:
+> +    description: Interrupt number for McPDM
+
+Same problem. Drop useless description but provide maxItems.
+
+> +
+> +  ti,hwmods:
+> +    description: Name of the hwmod associated to the McPDM
+
+It does not look like you tested the bindings, at least after quick
+look. Please run `make dt_binding_check` (see
+Documentation/devicetree/bindings/writing-schema.rst for instructions).
+Maybe you need to update your dtschema and yamllint.
+
+Sorry, this was neither tested nor done in a way matching anything
+already in the tree. Please do not invent your own style, but open
+existing binding and look how is it done.
+
+Because of above, I did not perform full review.
+
+> +
+> +  clocks:
+> +    description: phandle for the pdmclk provider, likely <&twl6040>
+> +
+> +  clock-names:
+> +    description: Must be "pdmclk"
+> +
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +  - interrupts
+> +  - ti,hwmods
+> +  - clocks
+> +  - clock-names
+> +
+> +additionalProperties: false
+> +
+> +examples:
+> +  - |
+> +    mcpdm: mcpdm@40132000 {
+
+Node names should be generic. See also an explanation and list of
+examples (not exhaustive) in DT specification:
+https://devicetree-specification.readthedocs.io/en/latest/chapter2-devicetree-basics.html#generic-names-recommendation
+
+
+
+Best regards,
+Krzysztof
+
 
