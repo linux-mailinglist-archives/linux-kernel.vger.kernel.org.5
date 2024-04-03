@@ -1,105 +1,209 @@
-Return-Path: <linux-kernel+bounces-129779-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-129777-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 122F2896FD3
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 15:05:03 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7780D896FCF
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 15:04:36 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 442421C26B3A
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 13:05:02 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2B3271F22C18
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 13:04:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 58462147C79;
-	Wed,  3 Apr 2024 13:04:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D59B7147C96;
+	Wed,  3 Apr 2024 13:04:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b="1YzI3v//"
-Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.153.233])
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="GzfkGazH"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C7FE91487EA;
-	Wed,  3 Apr 2024 13:04:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=68.232.153.233
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 16B6F146D41
+	for <linux-kernel@vger.kernel.org>; Wed,  3 Apr 2024 13:04:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712149473; cv=none; b=DjFWMq/Kbi9m41o7CE6WasaEeZra5lKpVp92HU7Bh9U1+p1ui1T+ughYiKPOwt8Y60euIkTLQ4YcezmTvbXlVc9mLgbHF0PSeZJG7UTwU3b05DpbiRKpCdWIZg2GM9cnVZhBG1sN2qG93v0pWok6U6badRdvUCgg0xl8hFcIjG8=
+	t=1712149467; cv=none; b=YmPpl5H4ChAm9t9z/pWexvTA4ylcrFvD1yIhYLtCHmEKbB4+6XnjYGu08+BdgIYHmU1TWvR8NXAaIYkQ29ehUtBabt62XTKBA08BoWcIU69KUNTCaJZB5Cy+HIPm7qCHorsgckDEQaWssRahhfFhI2P4ZkHaihVFrViGwa1EgPM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712149473; c=relaxed/simple;
-	bh=eDdKg+EPcfPUcnk0ccMKWaBuF1uiH7d4loF9OmNXI34=;
-	h=Message-ID:Subject:From:To:CC:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=IxCDCEd9mfcf5O+whCz4ZM0/Rn7ATqoOxLvoBNH+hV2g8/bkjuOnUBxP8PlHw141yP5u9Jfng+V4Q7iQeNiu5A4cQcWK2pI1A7/HRn5q31qf0pdNJ2mdr2Ki1ZLbhILT9LxuDDE5IIyMlfKhRwZYwfpATxyYHOSFeutqUtzuvuE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=microchip.com; spf=pass smtp.mailfrom=microchip.com; dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b=1YzI3v//; arc=none smtp.client-ip=68.232.153.233
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=microchip.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=microchip.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1712149472; x=1743685472;
-  h=message-id:subject:from:to:cc:date:in-reply-to:
-   references:content-transfer-encoding:mime-version;
-  bh=eDdKg+EPcfPUcnk0ccMKWaBuF1uiH7d4loF9OmNXI34=;
-  b=1YzI3v///t5f5U/69ZTjrvGyafRgpR24Ytpv3o2oZ5XBnt9v3Drt83hl
-   hytTBuk3xDEyu5LnktO0pfr3hu7X0fXfBAi8+grhmYTtHB2MlHMsXPEXe
-   7rX/xEuwSwZmKEO7b3WflCsBSRefDKBmW76Pbkdmbo/7m0R87v/+fzHHi
-   zBr1yEFP1aSXXFkIxNhcz0YzJKeNs6OKNACmeAyclfoI7iC9GwsQfHvA7
-   fXFO6jiGIfcBEfLiGWcH691MlE0Ik7dZhwsOAVgOb+EDjen/SdkGiS8oF
-   XOrLKJrj9oc5G++7RMWVOfKPRkPZXLyWPM9jLLrkxCKjM3DdlJbTT5WgL
-   w==;
-X-CSE-ConnectionGUID: WiDwnpziQWCeuc4PBVIHSg==
-X-CSE-MsgGUID: xXWRCYEhSYqjDgzsmQv5sA==
-X-IronPort-AV: E=Sophos;i="6.07,177,1708412400"; 
-   d="scan'208";a="19307536"
-X-Amp-Result: SKIPPED(no attachment in message)
-Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
-  by esa3.microchip.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 03 Apr 2024 06:04:25 -0700
-Received: from chn-vm-ex01.mchp-main.com (10.10.85.143) by
- chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Wed, 3 Apr 2024 06:04:01 -0700
-Received: from DEN-DL-M31857.microsemi.net (10.10.85.11) by
- chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server id
- 15.1.2507.35 via Frontend Transport; Wed, 3 Apr 2024 06:03:59 -0700
-Message-ID: <bab4fb2c961a45a52fbc198c1c9b9d2b07d3ea73.camel@microchip.com>
-Subject: Re: [PATCH RFT 01/10] arm64: dts: microchip: sparx5: fix mdio reg
-From: Steen Hegelund <steen.hegelund@microchip.com>
-To: Conor Dooley <conor@kernel.org>
-CC: Krzysztof Kozlowski <krzk@kernel.org>, Nicolas Ferre
-	<nicolas.ferre@microchip.com>, Claudiu Beznea <claudiu.beznea@tuxon.dev>,
-	"Rob Herring" <robh@kernel.org>, Krzysztof Kozlowski
-	<krzysztof.kozlowski+dt@linaro.org>, Lars Povlsen
-	<lars.povlsen@microchip.com>, Daniel Machon <daniel.machon@microchip.com>,
-	<UNGLinuxDriver@microchip.com>, "David S. Miller" <davem@davemloft.net>,
-	Bjarni Jonasson <bjarni.jonasson@microchip.com>,
-	<linux-arm-kernel@lists.infradead.org>, <devicetree@vger.kernel.org>,
-	<linux-kernel@vger.kernel.org>
-Date: Wed, 3 Apr 2024 15:03:58 +0200
-In-Reply-To: <20240402-drizzly-risotto-eac556bbe95b@spud>
-References: <20240401153740.123978-1-krzk@kernel.org>
-	 <b3d818df8819d2fb3e96fa61b277d49941d9b01b.camel@microchip.com>
-	 <20240402-drizzly-risotto-eac556bbe95b@spud>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.44.4-0ubuntu2 
+	s=arc-20240116; t=1712149467; c=relaxed/simple;
+	bh=3vRLtZdpkmYqJ8NLGKs+nEQLx32bjtZDqMWLPuAUFvA=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=ZDeSDwJwRYg/02ao9Tvp7shuToW4dftESFdWohUHHjoXmu6Al/TkD56t5TORCTzg1Yrg02Eru5BojCFN4u4ErnQPkdtR8lvCZD6ADOl/AgBqAxiwcKdFGqH05p93xjzRZHP38b1DssdwUlZr35pmGVZmlg0TE9pvqIgYfmdrOXo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=GzfkGazH; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1712149463;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=/UUFdKOIgSUdlJyeU9vl+F/Hh52S5plvfkKfHoxr/LQ=;
+	b=GzfkGazHSWl1EbLfgPwszMkLOV7rjVgeomlu+R9806Ntr80t43N3vMLX/OoaGHhR8hWlOA
+	yAhJ77lz9CW9ms9GxGj3QEwnFhhxJpLl7qpDGng4BuPjJB15D0aV9yZ2dJ8zvrJgMCKkxE
+	pvYLUwLREcZKX1tO507awpH0nYwRLyM=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-111--MGrU6-mOUaf3TCtRaKeuQ-1; Wed, 03 Apr 2024 09:04:19 -0400
+X-MC-Unique: -MGrU6-mOUaf3TCtRaKeuQ-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.rdu2.redhat.com [10.11.54.8])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 6251788CC44;
+	Wed,  3 Apr 2024 13:04:19 +0000 (UTC)
+Received: from virtlab701.virt.lab.eng.bos.redhat.com (virtlab701.virt.lab.eng.bos.redhat.com [10.19.152.228])
+	by smtp.corp.redhat.com (Postfix) with ESMTP id 43E49C017A0;
+	Wed,  3 Apr 2024 13:04:19 +0000 (UTC)
+From: Paolo Bonzini <pbonzini@redhat.com>
+To: torvalds@linux-foundation.org
+Cc: linux-kernel@vger.kernel.org,
+	kvm@vger.kernel.org
+Subject: [GIT PULL] KVM fixes for Linux 6.9-rc3
+Date: Wed,  3 Apr 2024 09:04:18 -0400
+Message-ID: <20240403130418.3068910-1-pbonzini@redhat.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.8
 
-Hi Connor,
+Linus,
 
-On Tue, 2024-04-02 at 18:46 +0100, Conor Dooley wrote:
-> [Some people who received this message don't often get email from
-> conor@kernel.org. Learn why this is important at
-> https://aka.ms/LearnAboutSenderIdentification=C2=A0]
->=20
-> EXTERNAL EMAIL: Do not click links or open attachments unless you
-> know the content is safe
+The following changes since commit 4cece764965020c22cff7665b18a012006359095:
 
+  Linux 6.9-rc1 (2024-03-24 14:10:05 -0700)
 
-I will also be looking at the other RFT marked patches, I just have not
-had the time to do it yet...
+are available in the Git repository at:
 
-BR
-Steen
+  https://git.kernel.org/pub/scm/virt/kvm/kvm.git tags/for-linus
+
+for you to fetch changes up to 9bc60f733839ab6fcdde0d0b15cbb486123e6402:
+
+  Merge tag 'kvm-riscv-fixes-6.9-1' of https://github.com/kvm-riscv/linux into HEAD (2024-04-02 12:29:51 -0400)
+
+----------------------------------------------------------------
+ARM:
+
+- Ensure perf events programmed to count during guest execution
+  are actually enabled before entering the guest in the nVHE
+  configuration.
+
+- Restore out-of-range handler for stage-2 translation faults.
+
+- Several fixes to stage-2 TLB invalidations to avoid stale
+  translations, possibly including partial walk caches.
+
+- Fix early handling of architectural VHE-only systems to ensure E2H is
+  appropriately set.
+
+- Correct a format specifier warning in the arch_timer selftest.
+
+- Make the KVM banner message correctly handle all of the possible
+  configurations.
+
+RISC-V:
+
+- Remove redundant semicolon in num_isa_ext_regs().
+
+- Fix APLIC setipnum_le/be write emulation.
+
+- Fix APLIC in_clrip[x] read emulation.
+
+x86:
+
+- Fix a bug in KVM_SET_CPUID{2,} where KVM looks at the wrong CPUID entries (old
+  vs. new) and ultimately neglects to clear PV_UNHALT from vCPUs with HLT-exiting
+  disabled.
+
+- Documentation fixes for SEV.
+
+- Fix compat ABI for KVM_MEMORY_ENCRYPT_OP.
+
+- Fix a 14-year-old goof in a declaration shared by host and guest; the enabled
+  field used by Linux when running as a guest pushes the size of "struct
+  kvm_vcpu_pv_apf_data" from 64 to 68 bytes.  This is really unconsequential
+  because KVM never consumes anything beyond the first 64 bytes, but the
+  resulting struct does not match the documentation.
+
+Selftests:
+
+- Fix spelling mistake in arch_timer selftest.
+
+----------------------------------------------------------------
+Anup Patel (2):
+      RISC-V: KVM: Fix APLIC setipnum_le/be write emulation
+      RISC-V: KVM: Fix APLIC in_clrip[x] read emulation
+
+Ashish Kalra (1):
+      KVM: SVM: Add support for allowing zero SEV ASIDs
+
+Colin Ian King (2):
+      KVM: selftests: Fix spelling mistake "trigged" -> "triggered"
+      RISC-V: KVM: Remove second semicolon
+
+Marc Zyngier (2):
+      arm64: Fix early handling of FEAT_E2H0 not being implemented
+      KVM: arm64: Rationalise KVM banner output
+
+Oliver Upton (1):
+      KVM: arm64: Fix host-programmed guest events in nVHE
+
+Paolo Bonzini (8):
+      Merge tag 'kvm-x86-svm-6.9' of https://github.com/kvm-x86/linux into HEAD
+      Merge tag 'kvm-x86-asyncpf_abi-6.9' of https://github.com/kvm-x86/linux into HEAD
+      KVM: SEV: fix compat ABI for KVM_MEMORY_ENCRYPT_OP
+      Documentation: kvm/sev: separate description of firmware
+      Documentation: kvm/sev: clarify usage of KVM_MEMORY_ENCRYPT_OP
+      Merge tag 'kvm-x86-pvunhalt-6.9' of https://github.com/kvm-x86/linux into HEAD
+      Merge tag 'kvmarm-fixes-6.9-1' of git://git.kernel.org/pub/scm/linux/kernel/git/kvmarm/kvmarm into HEAD
+      Merge tag 'kvm-riscv-fixes-6.9-1' of https://github.com/kvm-riscv/linux into HEAD
+
+Sean Christopherson (4):
+      KVM: SVM: Set sev->asid in sev_asid_new() instead of overloading the return
+      KVM: SVM: Use unsigned integers when dealing with ASIDs
+      KVM: SVM: Return -EINVAL instead of -EBUSY on attempt to re-init SEV/SEV-ES
+      KVM: selftests: Fix __GUEST_ASSERT() format warnings in ARM's arch timer test
+
+Vitaly Kuznetsov (3):
+      KVM: x86: Introduce __kvm_get_hypervisor_cpuid() helper
+      KVM: x86: Use actual kvm_cpuid.base for clearing KVM_FEATURE_PV_UNHALT
+      KVM: selftests: Check that PV_UNHALT is cleared when HLT exiting is disabled
+
+Will Deacon (4):
+      KVM: arm64: Don't defer TLB invalidation when zapping table entries
+      KVM: arm64: Don't pass a TLBI level hint when zapping table entries
+      KVM: arm64: Use TLBI_TTL_UNKNOWN in __kvm_tlb_flush_vmid_range()
+      KVM: arm64: Ensure target address is granule-aligned for range TLBI
+
+Wujie Duan (1):
+      KVM: arm64: Fix out-of-IPA space translation fault handling
+
+Xiaoyao Li (2):
+      x86/kvm: Use separate percpu variable to track the enabling of asyncpf
+      KVM: x86: Improve documentation of MSR_KVM_ASYNC_PF_EN
+
+ .../virt/kvm/x86/amd-memory-encryption.rst         | 42 +++++++++-------
+ Documentation/virt/kvm/x86/msr.rst                 | 19 ++++---
+ arch/arm64/kernel/head.S                           | 29 ++++++-----
+ arch/arm64/kvm/arm.c                               | 13 ++---
+ arch/arm64/kvm/hyp/nvhe/tlb.c                      |  3 +-
+ arch/arm64/kvm/hyp/pgtable.c                       | 23 ++++++---
+ arch/arm64/kvm/hyp/vhe/tlb.c                       |  3 +-
+ arch/arm64/kvm/mmu.c                               |  2 +-
+ arch/riscv/kvm/aia_aplic.c                         | 37 +++++++++++---
+ arch/riscv/kvm/vcpu_onereg.c                       |  2 +-
+ arch/x86/include/uapi/asm/kvm.h                    | 23 +++++++++
+ arch/x86/include/uapi/asm/kvm_para.h               |  1 -
+ arch/x86/kernel/kvm.c                              | 11 ++--
+ arch/x86/kvm/cpuid.c                               | 44 +++++++++-------
+ arch/x86/kvm/svm/sev.c                             | 58 +++++++++++++---------
+ arch/x86/kvm/trace.h                               | 10 ++--
+ include/kvm/arm_pmu.h                              |  2 +-
+ tools/testing/selftests/kvm/aarch64/arch_timer.c   |  4 +-
+ .../selftests/kvm/include/x86_64/processor.h       | 11 ++++
+ tools/testing/selftests/kvm/riscv/arch_timer.c     |  2 +-
+ tools/testing/selftests/kvm/x86_64/kvm_pv_test.c   | 39 +++++++++++++++
+ 21 files changed, 255 insertions(+), 123 deletions(-)
 
 
