@@ -1,146 +1,212 @@
-Return-Path: <linux-kernel+bounces-129075-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-129076-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id E32E1896462
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 08:09:44 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3B613896466
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 08:12:50 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 206701C216D8
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 06:09:44 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7DDB0B220C5
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 06:12:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D4AF9535DB;
-	Wed,  3 Apr 2024 06:09:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="jdFvEb5N"
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EB34B4E1CB;
+	Wed,  3 Apr 2024 06:12:39 +0000 (UTC)
+Received: from h3cspam02-ex.h3c.com (smtp.h3c.com [60.191.123.50])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 94E6B52F97;
-	Wed,  3 Apr 2024 06:09:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C7044645;
+	Wed,  3 Apr 2024 06:12:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=60.191.123.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712124568; cv=none; b=n5N9O4mim/S1pjQUPOxYJ7I+tX1c6jVXU5VD8LcrWk3DKJofwx8vuP/ohlEdnvCpnUVx+frFxZeac6adrcw9qRAFc79R16sUO6npa1A+bnu8GDrKRGDl6KCfAYYKOeCK6jPcvYp+V28izDTnpl4qOTAYk9iKNcnqjGLjmImLtPg=
+	t=1712124759; cv=none; b=ubd3YycaAXAkPI6TDr6AYFBVPUXjsEnyBDIPNC+SYLUT9Y05HVnouv49xSxSEZ/VFLim3APuMPkKnGlmoiFDh5OqzW/NB6KThxp0o6UFhl9iGDOD1e80YwJD42JBcTLb0XSYz0kw4iFgxWXfDs+iyYb8SwHk+JE5gEZQoTz1sWY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712124568; c=relaxed/simple;
-	bh=izMLc91bowDxW9Tjsy0vZYr3WyGkeX7InHMj70ZkfW4=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=swBzfpJV8QxKd0tRF+sw4AbOqRkWyzhxE+2bU5fpxx+cOh+l9Gg4Q/ogWGmV3d2VX7LiyPRxUk/GsAOa/XR5toWGuLpYb25i9L/dKRP11yQ9UJP7yfKkfQ8fvTTy/+t06S6iV/4DWp62wyzs7itv03NjUM+Eohf+UvZUQGzZBc8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=jdFvEb5N; arc=none smtp.client-ip=205.220.180.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279871.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 4332V7Y1032487;
-	Wed, 3 Apr 2024 06:09:23 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	message-id:date:mime-version:subject:to:cc:references:from
-	:in-reply-to:content-type:content-transfer-encoding; s=
-	qcppdkim1; bh=tw2EuVW7kGe2p0WIoxVHTmkZOIUejipnGI/ECyFl0rM=; b=jd
-	FvEb5NExUHt1bPCKJan4UAJ3FAvrVuLrC6lpT/HKCu5p1ZCdYg0hoUwyndmDxVSl
-	007hT+MIpsWQFdXbgTIwtNuSJHKN+mWKa6V+lu7pNFYJtXrvEPAcIf7Ey6mbG5fW
-	36sBQhbTk9r0YFHhXW3vOjqTTlkahTZ6gdwOJzElRWCuIbvN/pQL6v10kFFGX0+J
-	XAq23QQMl8vvhziZRmlWBwSSevsjlfhlyeS+B1mXAbs1TbI4Wj3ghYpwouJmfJ/t
-	+n6/RU7B2TOXV6LuL5Pdd8TWMnC8EORbyBTiw9tS+ZPpevep+qMnHpIUTcA+PNE7
-	e4muSDti6n+UqMxN1Gyg==
-Received: from nasanppmta05.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3x8gn5jd92-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 03 Apr 2024 06:09:22 +0000 (GMT)
-Received: from nasanex01c.na.qualcomm.com (nasanex01c.na.qualcomm.com [10.45.79.139])
-	by NASANPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 43369Ld0004442
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 3 Apr 2024 06:09:21 GMT
-Received: from [10.218.22.190] (10.80.80.8) by nasanex01c.na.qualcomm.com
- (10.45.79.139) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.4; Tue, 2 Apr 2024
- 23:09:17 -0700
-Message-ID: <71ab7b0e-52bf-404b-9e0a-de73dbd36ad4@quicinc.com>
-Date: Wed, 3 Apr 2024 11:39:13 +0530
+	s=arc-20240116; t=1712124759; c=relaxed/simple;
+	bh=cDJ+56UgBDjll1l3QqIhy5OF77+XfU4Ieoj5qmZhn5o=;
+	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=OVGL+x8h/8vQG2fpasN5St/G0TXODGeJ7Pw/69ozQOMVdYigmFtUFn4ezJ6EiNaQ52LWgEFONorUHfB9pcYzgHI0lRjG6X/a6OBIwWq2Q1yci6FIgHT9T3RPJ1n1sHMczhHARL+EtIi9APbOdB8oCDTeqxrkHdrNfrFD0xgtQi8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=h3c.com; spf=pass smtp.mailfrom=h3c.com; arc=none smtp.client-ip=60.191.123.50
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=h3c.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=h3c.com
+Received: from mail.maildlp.com ([172.25.15.154])
+	by h3cspam02-ex.h3c.com with ESMTP id 4336BGO9024811;
+	Wed, 3 Apr 2024 14:11:16 +0800 (GMT-8)
+	(envelope-from liu.yeC@h3c.com)
+Received: from DAG6EX02-IMDC.srv.huawei-3com.com (unknown [10.62.14.11])
+	by mail.maildlp.com (Postfix) with ESMTP id 987942004BA1;
+	Wed,  3 Apr 2024 14:13:16 +0800 (CST)
+Received: from localhost.localdomain (10.114.186.34) by
+ DAG6EX02-IMDC.srv.huawei-3com.com (10.62.14.11) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.2.1258.27; Wed, 3 Apr 2024 14:11:17 +0800
+From: <liu.yec@h3c.com>
+To: <daniel.thompson@linaro.org>
+CC: <dianders@chromium.org>, <gregkh@linuxfoundation.org>,
+        <jason.wessel@windriver.com>, <jirislaby@kernel.org>,
+        <kgdb-bugreport@lists.sourceforge.net>, <linux-kernel@vger.kernel.org>,
+        <linux-serial@vger.kernel.org>, <liu.yec@h3c.com>,
+        LiuYe <liu.yeC@h3c.com>
+Subject: [PATCH V8] kdb: Fix the deadlock issue in KDB debugging.
+Date: Wed, 3 Apr 2024 14:11:09 +0800
+Message-ID: <20240403061109.3142580-1-liu.yec@h3c.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20240402125802.GC25200@aspen.lan>
+References: <20240402125802.GC25200@aspen.lan>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v4] i2c: i2c-qcom-geni: Parse Error correctly in i2c GSI
- mode
-Content-Language: en-US
-To: Andi Shyti <andi.shyti@kernel.org>, Vinod Koul <vkoul@kernel.org>
-CC: <konrad.dybcio@linaro.org>, <andersson@kernel.org>, <wsa@kernel.org>,
-        <linux-arm-msm@vger.kernel.org>, <dmaengine@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <linux-i2c@vger.kernel.org>,
-        <quic_vdadhani@quicinc.com>,
-        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-References: <20240313052639.1747078-1-quic_msavaliy@quicinc.com>
- <171161140136.2698925.4294566764047886777.b4-ty@kernel.org>
- <ZgbwJAb7Ffktf554@matsya>
- <a76mmz5xrfipqpmq2ltsyobwc54dyw2d55gb4vta5d746dwb3i@5mm2ew5uudi3>
-From: Mukesh Kumar Savaliya <quic_msavaliy@quicinc.com>
-In-Reply-To: <a76mmz5xrfipqpmq2ltsyobwc54dyw2d55gb4vta5d746dwb3i@5mm2ew5uudi3>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nasanex01c.na.qualcomm.com (10.45.79.139)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: y_Kc-J9ABGCLSP7LgPMkYDYgrFKQnBrJ
-X-Proofpoint-ORIG-GUID: y_Kc-J9ABGCLSP7LgPMkYDYgrFKQnBrJ
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-04-03_05,2024-04-01_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 suspectscore=0
- lowpriorityscore=0 malwarescore=0 adultscore=0 mlxlogscore=999
- impostorscore=0 mlxscore=0 bulkscore=0 phishscore=0 priorityscore=1501
- spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2403210001 definitions=main-2404030039
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: BJSMTP01-EX.srv.huawei-3com.com (10.63.20.132) To
+ DAG6EX02-IMDC.srv.huawei-3com.com (10.62.14.11)
+X-DNSRBL: 
+X-SPAM-SOURCE-CHECK: pass
+X-MAIL:h3cspam02-ex.h3c.com 4336BGO9024811
 
-Thanks Vinod and Andi !
+From: LiuYe <liu.yeC@h3c.com>
 
-It had time and also there was a comment to get sign off from DMA 
-maintainers, we have had review and discussion on DMA part too.
+Currently, if CONFIG_KDB_KEYBOARD is enabled, then kgdboc will
+attempt to use schedule_work() to provoke a keyboard reset when
+transitioning out of the debugger and back to normal operation.
+This can cause deadlock because schedule_work() is not NMI-safe.
 
-Hi Vinod, Since this is already merged, do you have preference to revert 
-OR making a new change if any BUG OR design issue ? I can also fix the 
-changes you suggest and raise a new patch in case of any real bug OR 
-design expectations.
+The stack trace below shows an example of the problem. In this
+case the master cpu is not running from NMI but it has parked
+the slave CPUs using an NMI and the parked CPUs is holding
+spinlocks needed by schedule_work().
 
+example:
+ BUG: spinlock lockup suspected on CPU#0, namex/10450
+ lock: 0xffff881ffe823980, .magic: dead4ead, .owner: namexx/21888, .owner_cpu: 1
+ ffff881741d00000 ffff881741c01000 0000000000000000 0000000000000000
+ ffff881740f58e78 ffff881741cffdd0 ffffffff8147a7fc ffff881740f58f20
+Call Trace:
+ [<ffffffff81479e6d>] ? __schedule+0x16d/0xac0
+ [<ffffffff8147a7fc>] ? schedule+0x3c/0x90
+ [<ffffffff8147e71a>] ? schedule_hrtimeout_range_clock+0x10a/0x120
+ [<ffffffff8147d22e>] ? mutex_unlock+0xe/0x10
+ [<ffffffff811c839b>] ? ep_scan_ready_list+0x1db/0x1e0
+ [<ffffffff8147e743>] ? schedule_hrtimeout_range+0x13/0x20
+ [<ffffffff811c864a>] ? ep_poll+0x27a/0x3b0
+ [<ffffffff8108c540>] ? wake_up_q+0x70/0x70
+ [<ffffffff811c99a8>] ? SyS_epoll_wait+0xb8/0xd0
+ [<ffffffff8147f296>] ? entry_SYSCALL_64_fastpath+0x12/0x75
+ CPU: 0 PID: 10450 Comm: namex Tainted: G           O    4.4.65 #1
+ Hardware name: Insyde Purley/Type2 - Board Product Name1, BIOS 05.21.51.0036 07/19/2019
+  0000000000000000 ffff881ffe813c10 ffffffff8124e883 ffff881741c01000
+  ffff881ffe823980 ffff881ffe813c38 ffffffff810a7f7f ffff881ffe823980
+  000000007d2b7cd0 0000000000000001 ffff881ffe813c68 ffffffff810a80e0
+  Call Trace:
+  <#DB>  [<ffffffff8124e883>] dump_stack+0x85/0xc2
+  [<ffffffff810a7f7f>] spin_dump+0x7f/0x100
+  [<ffffffff810a80e0>] do_raw_spin_lock+0xa0/0x150
+  [<ffffffff8147eb55>] _raw_spin_lock+0x15/0x20
+  [<ffffffff8108c256>] try_to_wake_up+0x176/0x3d0
+  [<ffffffff8108c4c5>] wake_up_process+0x15/0x20
+  [<ffffffff8107b371>] insert_work+0x81/0xc0
+  [<ffffffff8107b4e5>] __queue_work+0x135/0x390
+  [<ffffffff8107b786>] queue_work_on+0x46/0x90
+  [<ffffffff81313d28>] kgdboc_post_exp_handler+0x48/0x70
+  [<ffffffff810ed488>] kgdb_cpu_enter+0x598/0x610
+  [<ffffffff810ed6e2>] kgdb_handle_exception+0xf2/0x1f0
+  [<ffffffff81054e21>] __kgdb_notify+0x71/0xd0
+  [<ffffffff81054eb5>] kgdb_notify+0x35/0x70
+  [<ffffffff81082e6a>] notifier_call_chain+0x4a/0x70
+  [<ffffffff8108304d>] notify_die+0x3d/0x50
+  [<ffffffff81017219>] do_int3+0x89/0x120
+  [<ffffffff81480fb4>] int3+0x44/0x80
 
-On 4/2/2024 10:14 PM, Andi Shyti wrote:
-> Hi Vinod,
-> 
-> On Fri, Mar 29, 2024 at 10:15:24PM +0530, Vinod Koul wrote:
->> On 28-03-24, 08:36, Andi Shyti wrote:
->>> Hi
->>>
->>> On Wed, 13 Mar 2024 10:56:39 +0530, Mukesh Kumar Savaliya wrote:
->>>> I2C driver currently reports "DMA txn failed" error even though it's
->>>> NACK OR BUS_PROTO OR ARB_LOST. Detect NACK error when no device ACKs
->>>> on the bus instead of generic transfer failure which doesn't give any
->>>> specific clue.
->>>>
->>>> Make Changes inside i2c driver callback handler function
->>>> i2c_gpi_cb_result() to parse these errors and make sure GSI driver
->>>> stores the error status during error interrupt.
->>>>
->>>> [...]
->>>
->>> Applied to i2c/i2c-host-next on
->>>
->>> git://git.kernel.org/pub/scm/linux/kernel/git/local tree
->>
->> You applied changes to dmaengine driver without my ack! I dont agree to
->> the approach here, we could do better
-> 
-> this must be an error from b4 ty. The changes have been added to
-> 
-> pub/scm/linux/kernel/git/andi.shyti/linux.git
-> 
-> branch i2c/i2c-host, As it has been agreed from very long.
-> 
-> Anyway, the changes are in -next. What do we do now? Do I revert
-> it? Mukesh, can you please agree with Vinod?
-> 
-> Andi
+We fix the problem by using irq_work to call schedule_work()
+instead of calling it directly. This is because we cannot
+resynchronize the keyboard state from the hardirq context
+provided by irq_work. This must be done from the task context
+in order to call the input subsystem.
+
+Therefore, we have to defer the work twice. First, safely
+switch from the debug trap context (similar to NMI) to the
+hardirq, and then switch from the hardirq to the system work queue.
+
+Signed-off-by: LiuYe <liu.yeC@h3c.com>
+Co-authored-by: Daniel Thompson <daniel.thompson@linaro.org>
+Signed-off-by: Daniel Thompson <daniel.thompson@linaro.org>
+
+---
+V7 -> V8: Update the description information and comments in the code.
+	: Submit this patch based on version linux-6.9-rc2.
+V6 -> V7: Add comments in the code.
+V5 -> V6: Replace with a more professional and accurate answer.
+V4 -> V5: Answer why schedule another work in the irq_work and not do the job directly.
+V3 -> V4: Add changelogs
+V2 -> V3: Add description information
+V1 -> V2: using irq_work to solve this properly.
+---
+---
+ drivers/tty/serial/kgdboc.c | 24 +++++++++++++++++++++++-
+ 1 file changed, 23 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/tty/serial/kgdboc.c b/drivers/tty/serial/kgdboc.c
+index 7ce7bb164..d6ce945f0 100644
+--- a/drivers/tty/serial/kgdboc.c
++++ b/drivers/tty/serial/kgdboc.c
+@@ -22,6 +22,7 @@
+ #include <linux/module.h>
+ #include <linux/platform_device.h>
+ #include <linux/serial_core.h>
++#include <linux/irq_work.h>
+ 
+ #define MAX_CONFIG_LEN		40
+ 
+@@ -82,6 +83,19 @@ static struct input_handler kgdboc_reset_handler = {
+ 
+ static DEFINE_MUTEX(kgdboc_reset_mutex);
+ 
++/*
++ * This code ensures that the keyboard state, which is changed during kdb
++ * execution, is resynchronized when we leave the debug trap. The resync
++ * logic calls into the input subsystem to force a reset. The calls into
++ * the input subsystem must be executed from normal task context.
++ *
++ * We need to trigger the resync from the debug trap, which executes in an
++ * NMI (or similar) context. To make it safe to call into the input
++ * subsystem we end up having use two deferred execution techniques.
++ * Firstly, we use irq_work, which is NMI-safe, to provoke a callback from
++ * hardirq context. Then, from the hardirq callback we use the system
++ * workqueue to provoke the callback that actually performs the resync.
++ */
+ static void kgdboc_restore_input_helper(struct work_struct *dummy)
+ {
+ 	/*
+@@ -99,10 +113,17 @@ static void kgdboc_restore_input_helper(struct work_struct *dummy)
+ 
+ static DECLARE_WORK(kgdboc_restore_input_work, kgdboc_restore_input_helper);
+ 
++static void kgdboc_queue_restore_input_helper(struct irq_work *unused)
++{
++	schedule_work(&kgdboc_restore_input_work);
++}
++
++static DEFINE_IRQ_WORK(kgdboc_restore_input_irq_work, kgdboc_queue_restore_input_helper);
++
+ static void kgdboc_restore_input(void)
+ {
+ 	if (likely(system_state == SYSTEM_RUNNING))
+-		schedule_work(&kgdboc_restore_input_work);
++		irq_work_queue(&kgdboc_restore_input_irq_work);
+ }
+ 
+ static int kgdboc_register_kbd(char **cptr)
+@@ -133,6 +154,7 @@ static void kgdboc_unregister_kbd(void)
+ 			i--;
+ 		}
+ 	}
++	irq_work_sync(&kgdboc_restore_input_irq_work);
+ 	flush_work(&kgdboc_restore_input_work);
+ }
+ #else /* ! CONFIG_KDB_KEYBOARD */
+-- 
+2.25.1
+
 
