@@ -1,192 +1,171 @@
-Return-Path: <linux-kernel+bounces-129358-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-129359-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E841B8969A7
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 10:55:38 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id EEA1689696B
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 10:47:12 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8C95DB2A849
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 08:47:04 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 63DE21F2C6F6
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 08:47:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8654F71737;
-	Wed,  3 Apr 2024 08:46:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3D77774430;
+	Wed,  3 Apr 2024 08:46:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b="Y3TEof7R";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="RN+/7xAa"
-Received: from fout7-smtp.messagingengine.com (fout7-smtp.messagingengine.com [103.168.172.150])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="gtvMuu1q"
+Received: from mail-lf1-f44.google.com (mail-lf1-f44.google.com [209.85.167.44])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 79D266CDBD
-	for <linux-kernel@vger.kernel.org>; Wed,  3 Apr 2024 08:46:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.150
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6A33A70CDF
+	for <linux-kernel@vger.kernel.org>; Wed,  3 Apr 2024 08:46:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712133969; cv=none; b=lt84pdbZZXJNO67HZGDHFoL8bXJ39HJRk0iYdwAltetYd42Ok1RGNKFGF1muL46SPKpX7B1CAEgw1qDMPLQU5/A46B8JTa8EFOHYS6BFlZOw6UdYwx5GnMBAO88PCP68k0kTEF3tzfoHzx/EiNiDU7DHaFk+59pa1ARWlEK13bY=
+	t=1712133971; cv=none; b=hbNA2pWgs1bBliIcYo6ZvTUf7USgCvvnKTpQFYe8GFIVYocU6cIneYrkx5LVQWKkd8YgPknca7oIfxzcQVrIDc+Kc+iHRFKBGKh87KGEnqWWhfOdXOmvbWzoYc9DaXykT2fUsrNTg9RlojPhF+Fi3br3ZL29ORjQgChuqEEbt/o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712133969; c=relaxed/simple;
-	bh=+S2O1GFt8qjMUrM23cyYAgm/pmRLL3owMuc0LTyf644=;
-	h=MIME-Version:Message-Id:In-Reply-To:References:Date:From:To:Cc:
-	 Subject:Content-Type; b=bixG3PX7cnEKsmSG2oC/pKa/nBjhlSXNTE6CCBRiXOnIzndNZls9vMG3Jkw/NMSo3hWeUfTfh3cYHqmOFxNH8QWpEVcZRRcpQGn8tZNFqdo5/zmdQyMU6at0/LyKGhwbQNsbIAZlUdzlKHP6ZVwcBxwFO062U5+p4n8zgdyF7xQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de; spf=pass smtp.mailfrom=arndb.de; dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b=Y3TEof7R; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=RN+/7xAa; arc=none smtp.client-ip=103.168.172.150
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arndb.de
-Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
-	by mailfout.nyi.internal (Postfix) with ESMTP id 8465C13800C9;
-	Wed,  3 Apr 2024 04:46:03 -0400 (EDT)
-Received: from imap51 ([10.202.2.101])
-  by compute5.internal (MEProxy); Wed, 03 Apr 2024 04:46:03 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
-	:cc:content-transfer-encoding:content-type:content-type:date
-	:date:from:from:in-reply-to:in-reply-to:message-id:mime-version
-	:references:reply-to:subject:subject:to:to; s=fm1; t=1712133963;
-	 x=1712220363; bh=1RZn0oM8m1GPiYmL1YCObPZ+6sAGKW8OKj+b4oKvzPI=; b=
-	Y3TEof7RVUdF+jqdcs+14jebAXyfqAfC4LJ/bLpL/ItC7h9c+O+rGV7fy0hKDLZz
-	1wr3ucOJNDE7i0O9QSu+wj/pqrW2hvhUUURgki4vJIlsktFALiSq43oiDXKzs1H3
-	Fpg92F1QI8xlrsIZi/IbviFig4Zk+CxLVn8zCQGsUpCYUcgdSshAX0DpXq2QwSo8
-	aPWi1qDiJstbTU3Hm1bHH8iIxv4dgOASGO8JcidgfOOv4Efg3aSYHeOF8w2tTYhJ
-	p+sqm0vC37EoT6ntcWA2ShnCYxn1+R67L34GQzXjajVXMOPQa1RTPYVpOw5Nv2R8
-	E7tlWWMhlepyYZOHyIChoA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-transfer-encoding
-	:content-type:content-type:date:date:feedback-id:feedback-id
-	:from:from:in-reply-to:in-reply-to:message-id:mime-version
-	:references:reply-to:subject:subject:to:to:x-me-proxy:x-me-proxy
-	:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; t=1712133963; x=
-	1712220363; bh=1RZn0oM8m1GPiYmL1YCObPZ+6sAGKW8OKj+b4oKvzPI=; b=R
-	N+/7xAaXMCa/EUYS5g/twnoo48wxABoaj3vDVbJRH+8/HFdihcSb6UofMNwegFfV
-	yD41JjKPd11OVNMb+FwrShitYKMMXQmOiNmfpIHdPC42C8jOYlsfUmcc/nmISBA9
-	vgxL83qcQwaW7EEAO4QtMTG8ByE1rLlpR9E2FmWx3jGQ3aW4ZJ6JAikJEAqSx0vi
-	GxTbUYAG6aqDeLRkBDy2TDeoIyxCspp/bHQXM5l+H0lfDbRJaseQ4qQQRE8fvEXx
-	+stxLQ6KmoNCdAC7YSrCBVq+ykVaa15NtKAXI5lOV+CwUc2GqZx9pUlE57uUc1CU
-	162q+eOIoztml2J1JSAFg==
-X-ME-Sender: <xms:ShcNZnAZyLm9XHd-kHPDBTAa05x8FVQjByZqNNVNsnv0CQvb_K8UuA>
-    <xme:ShcNZtiQQ7wL9b2prKFgzwBthuVm9Z0lu8tf87mfOGWqOqmt5e7wp3Hvnn5TQmov3
-    0phvys8atXgITbuoyY>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrudefgedgtdekucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepofgfggfkjghffffhvfevufgtgfesthhqredtreerjeenucfhrhhomhepfdet
-    rhhnugcuuegvrhhgmhgrnhhnfdcuoegrrhhnugesrghrnhgusgdruggvqeenucggtffrrg
-    htthgvrhhnpeegfeejhedvledvffeijeeijeeivddvhfeliedvleevheejleetgedukedt
-    gfejveenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpe
-    grrhhnugesrghrnhgusgdruggv
-X-ME-Proxy: <xmx:ShcNZikUZ6uVcU5hyjM93JxHlsFt20g5gL_9ZHffgFMKg34sDzaHFg>
-    <xmx:ShcNZpzXr_8MtgDzJ1r_t7vFS-qxmxPrsCF4SScOqmhEKTZMcIFRUA>
-    <xmx:ShcNZsS5qCHQPvBJlt6Xx18zYp0Csp-GcJELWR0AfKQbJdXVgf69KQ>
-    <xmx:ShcNZsbMU6X-uK0waRSjIad6i9a1HHhRrhBWjD8sgzZF6jGNs6yIEg>
-    <xmx:SxcNZorngdJunJJo9PgIKLOSr0B-OaaCHu3Kgx_JRta-azWTBkIBsb4h>
-Feedback-ID: i56a14606:Fastmail
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-	id CB4B1B6008F; Wed,  3 Apr 2024 04:46:02 -0400 (EDT)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.11.0-alpha0-333-gbfea15422e-fm-20240327.001-gbfea1542
+	s=arc-20240116; t=1712133971; c=relaxed/simple;
+	bh=uALJs2fW5aCmUwKExr5plMae4PhdqTYTzXwAOBEagq8=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=hW9gDSj+/52GDDrY8wbmLnn/NZvvwTkmtHNxlpzr3qPcOqKIyyjdJGwucF3e4Asw1bduLtY8OxXp2BEIsMKOa55fneFBM57wdmZLI4vDOi7fiKGZjffp8eCeltVhOiPcmFIo2s91bAO7pce/5gojQZTpr7J0wDe30rs1Kx/kBfk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=gtvMuu1q; arc=none smtp.client-ip=209.85.167.44
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-lf1-f44.google.com with SMTP id 2adb3069b0e04-51381021af1so8466936e87.0
+        for <linux-kernel@vger.kernel.org>; Wed, 03 Apr 2024 01:46:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1712133967; x=1712738767; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
+        bh=WzpyWD37GIueedXS91b6H3un1NtFZn6PufsmH3W5E98=;
+        b=gtvMuu1qJsyAqG5PeAxHzQSJL8tBnsWLaFXIeyonX+4omD+SkPzt69z3ePezZiVSUj
+         tTMSSDNaghscKNL6e8q6FR6PDTAaRFBx0lj5ZrhVbEeAiAW3Kv5x264UWEbSXhh6DqCL
+         m39wgXFHThoKPclxt5LE/7+Q6tEGC4b/LopOYHw2SAiRMAFVlK0hBLL4OFmAmb0ASZW3
+         RRO5LDXEg0icMZgCFxLHsKUiCvKpEXF9D89o4bFl88tZTlNgUVL5IwtBPAoARwpcAWYz
+         +Vd/v1kLWQmWDI/etjBF6nuQazg/4HYt2cCSiHOxPfvPAF7occTnL0+ESr/bgivPuyqZ
+         +4pw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712133967; x=1712738767;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=WzpyWD37GIueedXS91b6H3un1NtFZn6PufsmH3W5E98=;
+        b=gv0HVhCQoBf7Y8v+n/rzD7vR3LQjvAPHtgTLurGyg+s4YXQqj2cCCWyEsWUz3dogXt
+         KGIFpaCS7Fmr9dt6OmJYzNSscLeRU7X80AD2OPqm+w9NQV4zf3iWHoE0YAFHGa6yWOye
+         DAvo4J2GOEUElhA+NpnC/6h5xC4qk1X2PQixl0lYbFdBlDhkaWg6iZ7NWE7M0fDxb0i4
+         JN1NPGlTdTXFLRnRxpmDDAa9ripiBV1+WTiTX11c94VYMbtFdn0hU5glnAq1e0BzwAAO
+         32jDYwYzHFsodGTSDh4UQfCt7SzHcukSbfWdk1s5fPRPKXufD6WC57VmnbKPW6RrDrk0
+         RP4w==
+X-Forwarded-Encrypted: i=1; AJvYcCUf5DWe4lJMliOucCUmGT95kNO3Qm6hFu+kR1GuwhaoMvdD+MYRvEwVotOpjokkdyFS1eMu1+kD7B7dBobYNU5kONAEyLJDJA3yTKq+
+X-Gm-Message-State: AOJu0YxttSypc8v5qRxz6WIvtPWMQye0M+N+1VG1ewLgHU8pLOJ0jOwJ
+	Qo7NnzbrkRl4n9S1thAJBx0nzDAI+nA5KfpNtWLSvorUDNhfNmIkUz/tajNLBkg=
+X-Google-Smtp-Source: AGHT+IHHRrHC9q6+MILcKCm6lmtVLyW7n0+jKwCHWkoIFn72x5mKqh6egGchEYhlqDfms40Zpm881w==
+X-Received: by 2002:ac2:4e11:0:b0:516:9792:773c with SMTP id e17-20020ac24e11000000b005169792773cmr4060635lfr.48.1712133967488;
+        Wed, 03 Apr 2024 01:46:07 -0700 (PDT)
+Received: from [192.168.1.20] ([178.197.223.16])
+        by smtp.gmail.com with ESMTPSA id b22-20020a170906d11600b00a46f95f5849sm7484833ejz.106.2024.04.03.01.46.06
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 03 Apr 2024 01:46:07 -0700 (PDT)
+Message-ID: <17a700a7-44f0-4e46-9a0c-4c2da44c9e27@linaro.org>
+Date: Wed, 3 Apr 2024 10:46:04 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Message-Id: <347bb21e-98db-4bd5-9ca1-550eac5be9f8@app.fastmail.com>
-In-Reply-To: 
- <CAPyNcWeu+bzyQg9S3wDb43jbfk95Su5XcSRFPzUbS2ofZ=+5Fg@mail.gmail.com>
-References: 
- <CA+G9fYtsoP51f-oP_Sp5MOq-Ffv8La2RztNpwvE6+R1VtFiLrw@mail.gmail.com>
- <CAPyNcWeu+bzyQg9S3wDb43jbfk95Su5XcSRFPzUbS2ofZ=+5Fg@mail.gmail.com>
-Date: Wed, 03 Apr 2024 10:45:36 +0200
-From: "Arnd Bergmann" <arnd@arndb.de>
-To: "Anton Protopopov" <aspsk@isovalent.com>,
- "Naresh Kamboju" <naresh.kamboju@linaro.org>
-Cc: "open list" <linux-kernel@vger.kernel.org>, lkft-triage@lists.linaro.org,
- "Linux Regressions" <regressions@lists.linux.dev>,
- "Anders Roxell" <anders.roxell@linaro.org>,
- "Dan Carpenter" <dan.carpenter@linaro.org>,
- "Daniel Borkmann" <daniel@iogearbox.net>, "David Ahern" <dsahern@kernel.org>,
- "Alexei Starovoitov" <ast@kernel.org>,
- "Alexander Lobakin" <aleksander.lobakin@intel.com>,
- "Russell King" <rmk+kernel@armlinux.org.uk>,
- "Ard Biesheuvel" <ardb@kernel.org>,
- "Linus Walleij" <linus.walleij@linaro.org>
-Subject: Re: include/linux/build_bug.h:78:41: error: static assertion failed: "struct
- bpf_fib_lookup size check"
-Content-Type: text/plain;charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 1/3] dt-bindings: leds: add LED_FUNCTION_FNLOCK
+To: Hans de Goede <hdegoede@redhat.com>, Gergo Koteles <soyer@irl.hu>,
+ Ike Panhc <ike.pan@canonical.com>,
+ =?UTF-8?Q?Ilpo_J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>,
+ Pavel Machek <pavel@ucw.cz>, Lee Jones <lee@kernel.org>,
+ Rob Herring <robh@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>
+Cc: platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-leds@vger.kernel.org, devicetree@vger.kernel.org
+References: <cover.1712063200.git.soyer@irl.hu>
+ <8ac95e85a53dc0b8cce1e27fc1cab6d19221543b.1712063200.git.soyer@irl.hu>
+ <6b47886e-09ac-4cb9-ab53-ca64f5320005@linaro.org>
+ <39acb3b9-a69f-4654-9749-a9af42fea39e@redhat.com>
+ <368e9817-0000-4f69-9f09-568827466121@linaro.org>
+ <4956933c-49c4-49ab-a91a-7e0efcc211d5@redhat.com>
+Content-Language: en-US
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ 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
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <4956933c-49c4-49ab-a91a-7e0efcc211d5@redhat.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Wed, Apr 3, 2024, at 10:10, Anton Protopopov wrote:
-> On Wed, Apr 3, 2024 at 10:03=E2=80=AFAM Naresh Kamboju
-> <naresh.kamboju@linaro.org> wrote:
+On 03/04/2024 10:39, Hans de Goede wrote:
+>>>
+>>> must have a dts user before being approved too ? Since
+>>> that file is included from include/dt-bindings/input/input.h ?
 >>
->> The arm footbridge_defconfig failed with gcc-13 and gcc-8 on Linux ne=
-xt
->> starting from next-20240328..next-20240402.
+>> Wait, that's UAPI :) and we just share the constants. That's kind of
+>> special case, but I get what you mean.
 >>
->> arm:
->>   build:
->>     * gcc-8-footbridge_defconfig - Failed
->>     * gcc-13-footbridge_defconfig - Failed
+>>>
+>>> TL;DR: not only is this patch fine, this is actually
+>>> the correct place to add such a define according to
+>>> the docs in Documentation/leds/leds-class.rst :
+>>>
+>>> Reviewed-by: Hans de Goede <hdegoede@redhat.com>
 >>
->> Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
->>
->> In file included from include/linux/bitfield.h:10,
->>                  from arch/arm/include/asm/ptrace.h:13,
->>                  from arch/arm/include/asm/processor.h:14,
->>                  from include/linux/prefetch.h:15,
->>                  from arch/arm/include/asm/atomic.h:12,
->>                  from include/linux/atomic.h:7,
->>                  from net/core/filter.c:20:
->> include/linux/build_bug.h:78:41: error: static assertion failed:
->> "struct bpf_fib_lookup size check"
->>    78 | #define __static_assert(expr, msg, ...) _Static_assert(expr, =
-msg)
->>       |                                         ^~~~~~~~~~~~~~
->
-> Thanks, I will take a look today
+>> Acked-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+> 
+> Thanks. Is it ok for me to merge this through the pdx86
+> tree (once I've reviewed the other 2 patches) ?
 
-The problem is CONFIG_AEABI=3Dn, which changes the alignment
-of sub-word struct members. I had assumed that AEABI is enabled
-by default for everything already, but it looks like footbridge
-and a couple of other defconfigs still have it turned off:
+You need to sync (ack) with LED folks, because by default this should go
+via LED subsystem.
 
-$ git grep -l  CONFIG_ARCH_MULTI_V7.is.not arch/arm/configs/* | xargs gi=
-t grep -L AEABI
-arch/arm/configs/assabet_defconfig
-arch/arm/configs/collie_defconfig
-arch/arm/configs/footbridge_defconfig
-arch/arm/configs/h3600_defconfig
-arch/arm/configs/jornada720_defconfig
-arch/arm/configs/neponset_defconfig
-arch/arm/configs/netwinder_defconfig
-arch/arm/configs/rpc_defconfig
-arch/arm/configs/spear3xx_defconfig
-arch/arm/configs/spear6xx_defconfig
-arch/arm/configs/spitz_defconfig
+Best regards,
+Krzysztof
 
-Russell still has machines with an OABI toolchain, but I'm not
-aware of anyone else relying on it. It does cause other
-problems as well, so I already turned it off a long time ago
-for my randconfig testing.
-
-We should probably make it the default for everything, except
-whichever defconfig Russell uses:
-
---- a/arch/arm/Kconfig
-+++ b/arch/arm/Kconfig
-@@ -1159,7 +1159,7 @@ config ARM_PATCH_IDIV
- config AEABI
-        bool "Use the ARM EABI to compile the kernel" if !CPU_V7 && \
-                !CPU_V7M && !CPU_V6 && !CPU_V6K && !CC_IS_CLANG && !COMP=
-ILE_TEST
--       default CPU_V7 || CPU_V7M || CPU_V6 || CPU_V6K || CC_IS_CLANG ||=
- COMPILE_TEST
-+       default y
-        help
-          This option allows for the kernel to be compiled using the lat=
-est
-          ARM ABI (aka EABI).  This is only useful if you are using a us=
-er
-
-Or we could go one step further and make it 'depends on
-EXPERT', short of removing it entirely.
-
-     Arnd
 
