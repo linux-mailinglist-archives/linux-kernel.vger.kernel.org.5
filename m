@@ -1,184 +1,127 @@
-Return-Path: <linux-kernel+bounces-130411-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-130412-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 33DF58977B5
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 20:02:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id CD09B8977BB
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 20:03:36 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 64C7F1C25E05
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 18:02:33 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 095E91C2122A
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 18:03:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7629A15350E;
-	Wed,  3 Apr 2024 18:02:24 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 32389152513;
-	Wed,  3 Apr 2024 18:02:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C11B71534F2;
+	Wed,  3 Apr 2024 18:03:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="cCduND7N"
+Received: from mail-lf1-f44.google.com (mail-lf1-f44.google.com [209.85.167.44])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 82A6B433CB;
+	Wed,  3 Apr 2024 18:03:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712167344; cv=none; b=SEXtTkACKWkYJ3C+yr9it6HEZpiwaYraqcRxNty5W19YbDHQhLEKvsmjf942KO9qbtPi86mi1n6+1dRp6DkeKgWLCSBOTrdXFFVNyZycyV3EwxIwxm+efw86jGJ5GKRC0pn83sd6nCT1+5dCZaJAAsFWSnNfVJDIkwI0qYHs07Q=
+	t=1712167408; cv=none; b=ozhraiIgl/tI/t6+p6x2iSYp1r/T68Iqopuv9qmKh4I6s/C4gOnUtY+nyWGe6mr/fJ3M1hfI/rPoqzGksTr5X5KvWliFd3yCMjPmz78aaj/e4g6ZUuaD9jz2pSNyhir/Z52yO27ZzKjUzkSfszBBT6DeJevTob+irE028KgD3tA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712167344; c=relaxed/simple;
-	bh=wohhLCNkof1vY1W1Dwlmkq643wtKNO9tiiqXimh9pKk=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=F+cmCEygnzc2hUXXfPCmrf8/IBOt13fk2iQqAbCdI0lMYpErgqo5cl4R0uHJb9SQ/DAn8LUbLycecRicElw0oJluQ0icrEJXmTpxUD0pjfAaGFoqSX/1p4SWk7PQF3JgVyg5UUQSE06jWRJo18bEmrOePB5uq58WsY/tWjf+jKU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 20D441007;
-	Wed,  3 Apr 2024 11:02:52 -0700 (PDT)
-Received: from [10.57.18.20] (unknown [10.57.18.20])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 5F9333F766;
-	Wed,  3 Apr 2024 11:02:17 -0700 (PDT)
-Message-ID: <2143378c-0d5b-4e68-9da4-cabc149cb84f@arm.com>
-Date: Wed, 3 Apr 2024 19:02:15 +0100
+	s=arc-20240116; t=1712167408; c=relaxed/simple;
+	bh=ylgZVFHrWdJiZJ1iW6APhUGogXswDFL7SuFFgkc0/po=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=S6oII9Ht/6FMcTQFv81c9TOfD9oLp/N6hEQg7CRJ9tTXP+BcSvREv4DJUFICV5wwq/Ot0R5TZ21CyU2xUxFGCDp37aBmwB8ljsKfPOwM4AL1dfM1HeBxNgVuTk/kBhu7WJ6Ivw4kB76gNl6QtHyD8yhA65rt7ajgvOKzCJY7ufE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=cCduND7N; arc=none smtp.client-ip=209.85.167.44
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lf1-f44.google.com with SMTP id 2adb3069b0e04-516bfcc76efso125269e87.3;
+        Wed, 03 Apr 2024 11:03:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1712167405; x=1712772205; darn=vger.kernel.org;
+        h=mime-version:message-id:date:references:in-reply-to:subject:cc:to
+         :from:from:to:cc:subject:date:message-id:reply-to;
+        bh=A/GPjX1bC89s3pKDiOr4iTqFW1vCdSA+wrVsNDwDxNc=;
+        b=cCduND7NgACZ0ze8ImTboEr7cuZryMcm+322JUUsheQtTFFZejrB46risqOE5THJIr
+         Db+1EryOK1jDIgD67bml+433itbZTUh1OTUlC8E2guzrY6tEPHsvWV0NLP6fQECplehw
+         NZcVMoPKXHrWnjKhXDIt+azNS0mcfftrbPSde6+TWaTiQwp2gviKPDwpL9M5QPZQPGAu
+         A4jesV50b+lB/o602n0ffxfanQP+lxwB72pjewq+dJrCOxYokioAPEwPimpgoS9L02Fp
+         f1vnt1dsPSR9EMABGdpwPm83w7QtCp8OD3COe751PiS+R5coOGyC7IwtNTvejfBgmBhq
+         6HIQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712167405; x=1712772205;
+        h=mime-version:message-id:date:references:in-reply-to:subject:cc:to
+         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=A/GPjX1bC89s3pKDiOr4iTqFW1vCdSA+wrVsNDwDxNc=;
+        b=e1LFMymJmMROEDYL+o8c7H34Hf2IXEwlITcoelNwgNB3n6E6pA7MupwG41tQSBzwDl
+         JjS6FHhnP55F2c2ktdDkwn1lFno+mLV5j2gctS2p+ZGb+ogFL/zN5MrcF3clY6SXvG94
+         6k+uwfADqRpQlJa9dEwODYdRRLwzvMKcfLBIh+YLsM98JS2GlH3ROw2OfUY1LMwpmFR8
+         6p0+p739u2UZ2b28+owtD5Mn9IdfGbCTpKjFMx+IR3PSMEVUfsMNZuyNaxAJgEWjmdbP
+         K29BqvPbFDIrFaab6WlHDQbEbJa+1ZU1CSqk9GdMJS1jJFX5eBM4gfOdRJ0klhwarZxK
+         Fnwg==
+X-Forwarded-Encrypted: i=1; AJvYcCUptbj1O9H+PRsjFzdvP92OaTmMzyg5dE18DuXY5/0Kb/+gb/zzhfBHsQdBFq+ujrxWCmzCDHkmU9mz+g1P+UE9Yt/VZ2BfRU8sbmI1VNcXMDdLhW28Lzrf1QY+LPJ3an7mFy9f
+X-Gm-Message-State: AOJu0YwWvXZC0a2JHOFEgbj4qGhWqgr7ZPZR/BNi4U0IASkSx9TMBcHo
+	NmKibtfbXgAqBpwbiRAE9ELI6t8WMbRIXgcUZdE5CqPmWR1/rRwh
+X-Google-Smtp-Source: AGHT+IEyRUvecg0QN9/sEZf6ib0h8zoehWz/cWHULxKPtojfgajVSxFN5JsBkLEueNTDZDaVhyCn2w==
+X-Received: by 2002:a05:6512:20a:b0:515:bf94:cd38 with SMTP id a10-20020a056512020a00b00515bf94cd38mr153383lfo.36.1712167404358;
+        Wed, 03 Apr 2024 11:03:24 -0700 (PDT)
+Received: from localhost (c90-143-176-166.bredband.tele2.se. [90.143.176.166])
+        by smtp.gmail.com with ESMTPSA id bi15-20020a0565120e8f00b005159412ab81sm2092597lfb.216.2024.04.03.11.03.23
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 03 Apr 2024 11:03:23 -0700 (PDT)
+From: Casper Andersson <casper.casan@gmail.com>
+To: Lukasz Majewski <lukma@denx.de>, netdev@vger.kernel.org
+Cc: Andrew Lunn <andrew@lunn.ch>, Eric Dumazet <edumazet@google.com>,
+ Vladimir Oltean <olteanv@gmail.com>, "David S. Miller"
+ <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>, Oleksij Rempel
+ <o.rempel@pengutronix.de>, Tristram.Ha@microchip.com, Sebastian Andrzej
+ Siewior <bigeasy@linutronix.de>, Paolo Abeni <pabeni@redhat.com>, Ravi
+ Gunasekaran <r-gunasekaran@ti.com>, Simon Horman <horms@kernel.org>,
+ Nikita Zhandarovich <n.zhandarovich@fintech.ru>, Murali Karicheri
+ <m-karicheri2@ti.com>, Jiri Pirko <jiri@resnulli.us>, Dan Carpenter
+ <dan.carpenter@linaro.org>, Ziyang Xuan <william.xuanziyang@huawei.com>,
+ Shigeru Yoshida <syoshida@redhat.com>, linux-kernel@vger.kernel.org,
+ Lukasz Majewski <lukma@denx.de>
+Subject: Re: [PATCH v4] net: hsr: Provide RedBox support (HSR-SAN)
+In-Reply-To: <20240402085850.229058-1-lukma@denx.de>
+References: <20240402085850.229058-1-lukma@denx.de>
+Date: Wed, 03 Apr 2024 20:03:22 +0200
+Message-ID: <86v84yfhn9.fsf@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 1/2] mm, slab: move memcg charging to post-alloc hook
-Content-Language: en-US
-To: Vlastimil Babka <vbabka@suse.cz>,
- Andrew Morton <akpm@linux-foundation.org>
-Cc: linux-mm@kvack.org, linux-kernel@vger.kernel.org,
- cgroups@vger.kernel.org, linux-fsdevel@vger.kernel.org,
- Chengming Zhou <chengming.zhou@linux.dev>,
- Linus Torvalds <torvalds@linux-foundation.org>,
- Josh Poimboeuf <jpoimboe@kernel.org>, Jeff Layton <jlayton@kernel.org>,
- Chuck Lever <chuck.lever@oracle.com>, Kees Cook <kees@kernel.org>,
- Christoph Lameter <cl@linux.com>, Pekka Enberg <penberg@kernel.org>,
- David Rientjes <rientjes@google.com>, Joonsoo Kim <iamjoonsoo.kim@lge.com>,
- Roman Gushchin <roman.gushchin@linux.dev>,
- Hyeonggon Yoo <42.hyeyoo@gmail.com>, Johannes Weiner <hannes@cmpxchg.org>,
- Michal Hocko <mhocko@kernel.org>, Muchun Song <muchun.song@linux.dev>,
- Alexander Viro <viro@zeniv.linux.org.uk>,
- Christian Brauner <brauner@kernel.org>, Jan Kara <jack@suse.cz>,
- Shakeel Butt <shakeel.butt@linux.dev>, Mark Brown <broonie@kernel.org>
-References: <20240325-slab-memcg-v2-0-900a458233a6@suse.cz>
- <20240325-slab-memcg-v2-1-900a458233a6@suse.cz>
- <30df7730-1b37-420d-b661-e5316679246f@arm.com>
- <4af50be2-4109-45e5-8a36-2136252a635e@suse.cz>
-From: Aishwarya TCV <aishwarya.tcv@arm.com>
-In-Reply-To: <4af50be2-4109-45e5-8a36-2136252a635e@suse.cz>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
 
 
+Hi,
 
-On 03/04/2024 16:48, Vlastimil Babka wrote:
-> On 4/3/24 1:39 PM, Aishwarya TCV wrote:
->>
->>
->> On 25/03/2024 08:20, Vlastimil Babka wrote:
->>> The MEMCG_KMEM integration with slab currently relies on two hooks
->>> during allocation. memcg_slab_pre_alloc_hook() determines the objcg and
->>> charges it, and memcg_slab_post_alloc_hook() assigns the objcg pointer
->>> to the allocated object(s).
->>>
->>> As Linus pointed out, this is unnecessarily complex. Failing to charge
->>> due to memcg limits should be rare, so we can optimistically allocate
->>> the object(s) and do the charging together with assigning the objcg
->>> pointer in a single post_alloc hook. In the rare case the charging
->>> fails, we can free the object(s) back.
->>>
->>> This simplifies the code (no need to pass around the objcg pointer) and
->>> potentially allows to separate charging from allocation in cases where
->>> it's common that the allocation would be immediately freed, and the
->>> memcg handling overhead could be saved.
->>>
->>> Suggested-by: Linus Torvalds <torvalds@linux-foundation.org>
->>> Link: https://lore.kernel.org/all/CAHk-=whYOOdM7jWy5jdrAm8LxcgCMFyk2bt8fYYvZzM4U-zAQA@mail.gmail.com/
->>> Reviewed-by: Roman Gushchin <roman.gushchin@linux.dev>
->>> Reviewed-by: Chengming Zhou <chengming.zhou@linux.dev>
->>> Signed-off-by: Vlastimil Babka <vbabka@suse.cz>
->>> ---
->>>  mm/slub.c | 180 +++++++++++++++++++++++++++-----------------------------------
->>>  1 file changed, 77 insertions(+), 103 deletions(-)
->>
->> Hi Vlastimil,
->>
->> When running the LTP test "memcg_limit_in_bytes" against next-master
->> (next-20240402) kernel with Arm64 on JUNO, oops is observed in our CI. I
->> can send the full logs if required. It is observed to work fine on
->> softiron-overdrive-3000.
->>
->> A bisect identified 11bb2d9d91627935c63ea3e6a031fd238c846e1 as the first
->> bad commit. Bisected it on the tag "next-20240402" at repo
->> "https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git".
->>
->> This works fine on  Linux version v6.9-rc2
-> 
-> Oops, sorry, can you verify that this fixes it?
-> Thanks.
-> 
-> ----8<----
-> From b0597c220624fef4f10e26079a3ff1c86f02a12b Mon Sep 17 00:00:00 2001
-> From: Vlastimil Babka <vbabka@suse.cz>
-> Date: Wed, 3 Apr 2024 17:45:15 +0200
-> Subject: [PATCH] fixup! mm, slab: move memcg charging to post-alloc hook
-> 
-> The call to memcg_alloc_abort_single() is wrong, it expects a pointer to
-> single object, not an array.
-> 
-> Reported-by: Aishwarya TCV <aishwarya.tcv@arm.com>
-> Signed-off-by: Vlastimil Babka <vbabka@suse.cz>
-> ---
->  mm/slub.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/mm/slub.c b/mm/slub.c
-> index f5b151a58b7d..b32e79629ae7 100644
-> --- a/mm/slub.c
-> +++ b/mm/slub.c
-> @@ -2100,7 +2100,7 @@ bool memcg_slab_post_alloc_hook(struct kmem_cache *s, struct list_lru *lru,
->  		return true;
->  
->  	if (likely(size == 1)) {
-> -		memcg_alloc_abort_single(s, p);
-> +		memcg_alloc_abort_single(s, *p);
->  		*p = NULL;
->  	} else {
->  	
-	kmem_cache_free_bulk(s, size, p);
+Out of curiosity, are you planning to implement the remaining RedBox
+modes too (PRP-SAN, HSR-HSR, HSR-PRP)?
 
-Tested the attached patch on next-20240302. Confirming that the test is
-running fine. Test run log is attached below.
+On 2024-04-02 10:58 +0200, Lukasz Majewski wrote:
+> Changes for v3:
+>
+> - Modify frame passed Port C (Interlink) to have RedBox's source address (SA)
+>   This fixes issue with connecting L2 switch to Interlink Port as switches
+>   drop frames with SA other than one registered in their (internal) routing
+>   tables.
 
-Test run log:
---------------
-memcg_limit_in_bytes 8 TPASS: process 614 is killed
-memcg_limit_in_bytes 9 TINFO: Test limit_in_bytes will be aligned to
-PAGESIZE
-memcg_limit_in_bytes 9 TPASS: echo 4095 > memory.limit_in_bytes passed
-as expected
-memcg_limit_in_bytes 9 TPASS: input=4095, limit_in_bytes=0
-memcg_limit_in_bytes 10 TPASS: echo 4097 > memory.limit_in_bytes passed
-as expected
-memcg_limit_in_bytes 10 TPASS: input=4097, limit_in_bytes=4096
-memcg_limit_in_bytes 11 TPASS: echo 1 > memory.limit_in_bytes passed as
-expected
-memcg_limit_in_bytes 11 TPASS: input=1, limit_in_bytes=0
-memcg_limit_in_bytes 12 TINFO: Test invalid memory.limit_in_bytes
-memcg_limit_in_bytes 12 TPASS: echo -1 > memory.limit_in_bytes passed as
-expected
-memcg_limit_in_bytes 13 TPASS: echo 1.0 > memory.limit_in_bytes failed
-as expected
-memcg_limit_in_bytes 14 TPASS: echo 1xx > memory.limit_in_bytes failed
-as expected
-memcg_limit_in_bytes 15 TPASS: echo xx > memory.limit_in_bytes failed as
-expected
-Summary:
-passed   18
-failed   0
-broken   0
-skipped  0
-warnings 0
+> +	/* When HSR node is used as RedBox - the frame received from HSR ring
+> +	 * requires source MAC address (SA) replacement to one which can be
+> +	 * recognized by SAN devices (otherwise, frames are dropped by switch)
+> +	 */
+> +	if (port->type == HSR_PT_INTERLINK)
+> +		ether_addr_copy(eth_hdr(skb)->h_source,
+> +				port->hsr->macaddress_redbox);
 
-Thanks,
-Aishwarya
+I'm not really understanding the reason for this change. Can you explain
+it in more detail? The standard does not say to modify the SA. However,
+it also does not say to *not* modify it in HSR-SAN mode like it does in
+other places. In HSR-HSR and HSR-PRP mode modifying SA breaks the
+duplicate discard. So keeping the same behavior for all modes would be
+ideal.
+
+I imagine any HW offloaded solutions will not modify the SA, so if
+possible the SW should also behave as such.
+
+BR,
+Casper
 
