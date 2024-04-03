@@ -1,145 +1,92 @@
-Return-Path: <linux-kernel+bounces-130714-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-130715-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id EB944897BEE
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 01:15:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 2AC53897BF3
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 01:18:05 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AAE0128291F
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 23:15:43 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D0FDA282D23
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 23:18:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 00AE7156C40;
-	Wed,  3 Apr 2024 23:15:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B91AB156985;
+	Wed,  3 Apr 2024 23:17:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="F3wfA4fc"
-Received: from mail-pf1-f202.google.com (mail-pf1-f202.google.com [209.85.210.202])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="MOaFSMW4"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C3CBF15696C
-	for <linux-kernel@vger.kernel.org>; Wed,  3 Apr 2024 23:15:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.202
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 02F6D29CA;
+	Wed,  3 Apr 2024 23:17:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712186137; cv=none; b=lW3LMmq/Z13rmdZg7smoj9x1h9TJ9dHvxpqHGVRXuIW4A4PqaWv4dQNulpFb0cijreyrwVw6noETmHc6M+JUny3+eQjE6CLi4oNTFs7lf2ViQ72v2lezifZslfqzPvcqg0yBohhw28nz16u4iAa5shdPGTv84kYdO+i8oCDVCzg=
+	t=1712186278; cv=none; b=LJFT1ye4Ygr+ccK6Jj1h9jJtOU9eMQxPs2mMIYAYBYpbVk6ro+JccS/ymo3WtK5RXRhTq7UUVXW5QKmGJhiPfWovR3B4DqtwgtTXj3hiGMcTgxTP5Qy3GRyD+UbhKgyDes24dgoBUTGkKym9cXOkpjW0RslHMlPiYrFtvcSVyxk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712186137; c=relaxed/simple;
-	bh=qNXU/bUrc0L/NLVUkTSuOdRJ6SCODkDxrzDMtdi4DyU=;
-	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=obxtzL8YbTogziYaOus/gMGdJSl5GFkrOKO9l72LwheT9F4qP4jdQjJZAws7Bp5/uP3zmLuNeRQSqkYEW1v5275KgEDLOAVCM5h2RUlYwlhFyPobbSdD59Jr2ZdCndhgOVXZPuKl/hyFBpq8SqZx5/kFTzJek97jJysxtinG1bI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=F3wfA4fc; arc=none smtp.client-ip=209.85.210.202
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
-Received: by mail-pf1-f202.google.com with SMTP id d2e1a72fcca58-6ea80a33cf6so286151b3a.1
-        for <linux-kernel@vger.kernel.org>; Wed, 03 Apr 2024 16:15:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1712186135; x=1712790935; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=IB8YIURPP9Hr/QwsBdTaRFjE5dnhh/l5+FEwiaO3zio=;
-        b=F3wfA4fcW6LlM2GZ0QNMjYGd334clyCfrnaotPL9u2ZjLof3IAresrrIy6Jv6XMOF3
-         aW5eWsdY4OLCzwT4ws+TuJYtMQTr5LcbUlTah41IlbyHAZgdEon9GvtjQ6agQuLwRJLs
-         Wvif4H0aI4zA9o6kz8bla1ayvQKk4JmvqDWisboVsGx0up6B7wLqDlXXCDMADxG6CPU5
-         SuMBHMYsoz7UY86IHFSpXDQs7NYdJ43tt5oK3hwgck7vCEnbTnkWHD9fToiuUR7Y6Uk5
-         Q0+v85xkmGJBttyunJGWMInLwmDttvfhClucW8NBe1jKof+ZTsCZLo4LNBeyjLOXw2iq
-         s1hw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712186135; x=1712790935;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=IB8YIURPP9Hr/QwsBdTaRFjE5dnhh/l5+FEwiaO3zio=;
-        b=d3qc6eyLGlF3BTOhkONTM85gt+vWC6c7Np6CPAOlHkL0W0spHSjIby60HoQkBuCE0v
-         KIUA+JEpQk0pZ9gDqjrO1YshvT/UY4pFXybLC4PawuJYSLGoRdN2jG+O0OiegCxZcAJr
-         dCuZ0PcO4wwwHUa4h0d9pZViZh8wUeHE8vzZI7kxQjPd6chd9vnREe2tr0zv4yaO7zyz
-         Yl/FU0oafy5cbC47HE1mdBuXiOY4MH0gZ2q3mIOeCdvT/5wriuw28lIjhcajEAIcsRXC
-         eVr59SXFohIMb2IA1Fps4AsJmGHPpjCikYfVPZblXvg51MODx1mviC4PfmXESVVBf0Ff
-         nfOw==
-X-Forwarded-Encrypted: i=1; AJvYcCV81PlrJ2+EvfQMdPmpFdiXbp7I0e7F7k6nsHW1KI6BDXPjTUX7bOpLEK9eaiQBwU6poR4gM0c2E443J4AhQubJ2gIaeneyXbRifPVu
-X-Gm-Message-State: AOJu0YwaHdHzJ2uk5qdRebpE2xLZI/RjyPrl2r+llp/1oWdyHjG4bn2H
-	j1tnsllxdA86tEE8K3D0StgEUf/O6KgCITeGlBgCCTqXp1ife+NHFG0GMW9/8JWIis/Uhua5IkX
-	Llg==
-X-Google-Smtp-Source: AGHT+IHM2Gi4Oz11LLDFw68UYLc1qaCz0J93vLN5P6N52qnWfR4AFa7CZZ5/Z9OAygbOKXpXYQsncRkeo0Q=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a05:6a00:983:b0:6ea:f815:a428 with SMTP id
- u3-20020a056a00098300b006eaf815a428mr66918pfg.1.1712186135077; Wed, 03 Apr
- 2024 16:15:35 -0700 (PDT)
-Date: Wed, 3 Apr 2024 16:15:33 -0700
-In-Reply-To: <20240319162602.GF1645738@ls.amr.corp.intel.com>
+	s=arc-20240116; t=1712186278; c=relaxed/simple;
+	bh=O/t6VziD60M+YLNqkORIMx20w87PA3QTMrpbzm/5uA4=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=k2VI6old4c9JRo4JceXBEuQCS/NS2DbJP4D41XWKoOwn/mbhvv7GFjLA6dnvOZjTIRufME6EvemVhAWn0M/oxHwn4QKgWJWd34fpQMzbFji9/7WBhZB1KgkL4qgdWwOirMEndHxtKUCiH2kdMnqv5CPOy0QfTpCdfPg3Vvn/k3c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=MOaFSMW4; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id F2E72C433C7;
+	Wed,  3 Apr 2024 23:17:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1712186277;
+	bh=O/t6VziD60M+YLNqkORIMx20w87PA3QTMrpbzm/5uA4=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=MOaFSMW4IxgfrNjtUKvVaTeSA5HOLEZD0JKbVqREYE9+fxlWFb7m4xYTXaHPk4mq+
+	 pKhagfJJc+u6rEOPqQF5umcVoEAcdy9b+qKPw8NagdnDpkARzN+fHiKoWsxx0k/cwN
+	 wkV1b6k1HXfGlBrdMVkDNoG6lVgKIbi0G6l/ZBMo3N6l3orlxV+s7dvwmKyO2rJuTE
+	 04sotEWSuwug7yluiy3inTnIj4SCCrOk+7riqvWrCsak0VL18h+w+Ynp9civJliMdQ
+	 UH8mNlvkvYXxYkMOlv1VdbZxahbs8ONiJhruaysKy2VLr3nuTQ/iowiMRCJ2HHusgi
+	 /V71e4tgahheg==
+Date: Thu, 4 Apr 2024 01:17:51 +0200
+From: Andi Shyti <andi.shyti@kernel.org>
+To: Arnd Bergmann <arnd@kernel.org>
+Cc: linux-kernel@vger.kernel.org, 
+	Russell King <rmk+kernel@arm.linux.org.uk>, Holger Schurig <h.schurig@mn-solutions.de>, 
+	Arnd Bergmann <arnd@arndb.de>, Wolfram Sang <wsa@kernel.org>, 
+	Linus Walleij <linus.walleij@linaro.org>, Geert Uytterhoeven <geert+renesas@glider.be>, 
+	Heiko Stuebner <heiko@sntech.de>, Yangtao Li <frank.li@vivo.com>, 
+	Robert Marko <robert.marko@sartura.hr>, 
+	Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>, Liao Chang <liaochang1@huawei.com>, 
+	Paul Cercueil <paul@crapouillou.net>, Rob Herring <robh@kernel.org>, linux-i2c@vger.kernel.org
+Subject: Re: [PATCH 04/34] i2c: pxa: hide unused icr_bits[] variable
+Message-ID: <6pb32ihr6czs7xxh3wdpzwiplbnr7lomlnlytx4gjfxq4wlb7x@qzb65tcdx4lq>
+References: <20240403080702.3509288-1-arnd@kernel.org>
+ <20240403080702.3509288-5-arnd@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-References: <cover.1709288671.git.isaku.yamahata@intel.com>
- <66a957f4ec4a8591d2ff2550686e361ec648b308.1709288671.git.isaku.yamahata@intel.com>
- <ZekKwlLdf6vm5e5u@google.com> <CALzav=dHNYP02q_CJncwk-JdL9OSB=613v4+siBm1Cp2rmxLLw@mail.gmail.com>
- <20240307015151.GF368614@ls.amr.corp.intel.com> <20240319162602.GF1645738@ls.amr.corp.intel.com>
-Message-ID: <Zg3jFRZp8F514r8b@google.com>
-Subject: Re: [RFC PATCH 6/8] KVM: x86: Implement kvm_arch_{, pre_}vcpu_map_memory()
-From: Sean Christopherson <seanjc@google.com>
-To: Isaku Yamahata <isaku.yamahata@intel.com>
-Cc: David Matlack <dmatlack@google.com>, kvm@vger.kernel.org, isaku.yamahata@gmail.com, 
-	linux-kernel@vger.kernel.org, Paolo Bonzini <pbonzini@redhat.com>, 
-	Michael Roth <michael.roth@amd.com>, Federico Parola <federico.parola@polito.it>
-Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240403080702.3509288-5-arnd@kernel.org>
 
-On Tue, Mar 19, 2024, Isaku Yamahata wrote:
-> On Wed, Mar 06, 2024 at 05:51:51PM -0800,
-> > Yes. We'd like to map exact gpa range for SNP or TDX case. We don't want to map
-> > zero at around range.  For SNP or TDX, we map page to GPA, it's one time
-> > operation.  It updates measurement.
-> > 
-> > Say, we'd like to populate GPA1 and GPA2 with initial guest memory image.  And
-> > they are within same 2M range.  Map GPA1 first. If GPA2 is also mapped with zero
-> > with 2M page, the following mapping of GPA2 fails.  Even if mapping of GPA2
-> > succeeds, measurement may be updated when mapping GPA1. 
-> > 
-> > It's user space VMM responsibility to map GPA range only once at most for SNP or
-> > TDX.  Is this too strict requirement for default VM use case to mitigate KVM
-> > page fault at guest boot up?  If so, what about a flag like EXACT_MAPPING or
-> > something?
-> 
-> I'm thinking as follows. What do you think?
-> 
-> - Allow mapping larger than requested with gmem_max_level hook:
+Hi Arnd,
 
-I don't see any reason to allow userspace to request a mapping level.  If the
-prefetch is defined to have read fault semantics, KVM has all the wiggle room it
-needs to do the optimal/sane thing, without having to worry reconcile userspace's
-desired mapping level.
+On Wed, Apr 03, 2024 at 10:06:22AM +0200, Arnd Bergmann wrote:
+> From: Arnd Bergmann <arnd@arndb.de>
+> 
+> The function using this is hidden in an #ifdef, so the variable
+> needs the same one for a clean W=1 build:
+> 
+> drivers/i2c/busses/i2c-pxa.c:327:26: error: 'icr_bits' defined but not used [-Werror=unused-const-variable=]
+> 
+> Fixes: d6a7b5f84b5c ("[ARM] 4827/1: fix two warnings in drivers/i2c/busses/i2c-pxa.c")
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 
->   Depend on the following patch. [1]
->   The gmem_max_level hook allows vendor-backend to determine max level.
->   By default (for default VM or sw-protected), it allows KVM_MAX_HUGEPAGE_LEVEL
->   mapping.  TDX allows only 4KB mapping.
-> 
->   [1] https://lore.kernel.org/kvm/20231230172351.574091-31-michael.roth@amd.com/
->   [PATCH v11 30/35] KVM: x86: Add gmem hook for determining max NPT mapping level
-> 
-> - Pure mapping without coco operation:
->   As Sean suggested at [2], make KVM_MAP_MEMORY pure mapping without coco
->   operation.  In the case of TDX, the API doesn't issue TDX specific operation
->   like TDH.PAGE.ADD() and TDH.EXTEND.MR().  We need TDX specific API.
-> 
->   [2] https://lore.kernel.org/kvm/Ze-XW-EbT9vXaagC@google.com/
-> 
-> - KVM_MAP_MEMORY on already mapped area potentially with large page:
->   It succeeds. Not error.  It doesn't care whether the GPA is backed by large
->   page or not.  Because the use case is pre-population before guest running, it
->   doesn't matter if the given GPA was mapped or not, and what large page level
->   it backs.
-> 
->   Do you want error like -EEXIST?
+Applied to i2c/i2c-host-fixes on
 
-No error.  As above, I think the ioctl() should behave like a read fault, i.e.
-be an expensive nop if there's nothing to be done.
+git://git.kernel.org/pub/scm/linux/kernel/git/andi.shyti/linux.git
 
-For VMA-based memory, userspace can operate on the userspace address.  E.g. if
-userspace wants to break CoW, it can do that by writing from userspace.  And if
-userspace wants to "request" a certain mapping level, it can do that by MADV_*.
+Thank you,
+Andi
 
-For guest_memfd, there are no protections (everything is RWX, for now), and when
-hugepage support comes along, userspace can simply manipulate the guest_memfd
-instance as needed.
+Patches applied
+===============
+[04/34] i2c: pxa: hide unused icr_bits[] variable
+        commit: 95197779091166b9ed4b1c630c13600abf94ada7
 
