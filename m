@@ -1,108 +1,142 @@
-Return-Path: <linux-kernel+bounces-129626-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-129627-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 914CF896D85
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 12:59:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 121A3896D8E
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 13:01:40 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C25391C23DEC
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 10:59:27 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 44A7D1C209F9
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 11:01:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E2D4014388E;
-	Wed,  3 Apr 2024 10:58:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 727A3139CEF;
+	Wed,  3 Apr 2024 11:01:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="KcpbtgOc"
-Received: from mail-yb1-f181.google.com (mail-yb1-f181.google.com [209.85.219.181])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=intel.com header.i=@intel.com header.b="PNXH/k6C"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.14])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B279E14386C
-	for <linux-kernel@vger.kernel.org>; Wed,  3 Apr 2024 10:58:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E677070CA7;
+	Wed,  3 Apr 2024 11:01:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.14
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712141929; cv=none; b=F+F7HxKFc9ulF8GJFW1wtM+Bt4kZJjR45PcEB8Uxgu6cKDKEiw1Ne0zNlJzlIx6oYdSKBlwnmvQQNWhYApnzFt5cTFRFTuVMzCzVPWR/SW2BaElhgUa723D/IXD+kGo+XTDrwt0HJocdP92art95SVVsmEjYDm+MViL8hg3uUoM=
+	t=1712142093; cv=none; b=Fa7vfLsEuAQ9Pd1ZjiMZ4Q5ikXPcp20AbVzocZv+6O0XAAIrT5sRItHXr5PkoCM4ggsbHH5si2uiZh1GNUb6H75PQb4Jnv8kXrG3p3iKX0Zz5rZjC1WgH2oUSdDbWneBAqZaPAlyOrkNw668jcvQE97IYo9ywBeJKvoxbh3ZwCY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712141929; c=relaxed/simple;
-	bh=oG53gv1bYnsR+3oYThoPLEkc/yA62gyWOpQkeX36Bao=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=l0ATQkQgpQfDVJLaSJPCkCBjEXBtnlxv0HZ6GKTAC1E9hEi1Vabyh1RaQcwk2bSq5q/o1TTNtI1cF41nDtOPmMhJRb7o6dF0l1C5C8wnBEWPV/ygYfkvFAWkf2i3DNoxxE5H2epSKJgK9OtGyeZhvP0q9CF9/76LT4PnKNkLQm8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=KcpbtgOc; arc=none smtp.client-ip=209.85.219.181
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-yb1-f181.google.com with SMTP id 3f1490d57ef6-dcd7c526cc0so5790805276.1
-        for <linux-kernel@vger.kernel.org>; Wed, 03 Apr 2024 03:58:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1712141927; x=1712746727; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=Ijhuxt38E/t9v5OAptUPvE420yRI30lm4kqS14TcTKI=;
-        b=KcpbtgOcin1YJUw2voqTuz4GzSNJTv7tRLRH3/dh0FUGMokjo73Ej6mf9rhP1x+kNJ
-         ImSPtUx3HT/V94Qm1zpX4t7q0wavH1WYo7JLVWMccMujELeP4Kn0kHYr0YP7/FndVq5d
-         MmY9AfOZIewYUzVQy9hXqkj3X1ltzkBgifW5FvsxBB3wx6ulfQ85CQS1CY6Yve9OFVQA
-         Vei9CxBLhRkAw0DntSgfJn6CLqC/9JF0+sSMTDdTK/FvwcfeW3n9jMTshcn/l5/u84J5
-         H4IuS2Gc1mD0Pp/XGONcqJHylAn5rY1IBHJ9O6umMrREXzw+zbc1YPMxWy61QwfIEaFJ
-         Z1AQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712141927; x=1712746727;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=Ijhuxt38E/t9v5OAptUPvE420yRI30lm4kqS14TcTKI=;
-        b=KOF5wzSZYKSq37ON+5/BrSc50Emb+FmQHZaeXALdQ8wqND3q6gM10aZcTIsFxgxhUz
-         z0Zu0xvxP4y6WaB7FoVnbpDQTxtMAkfXeadKJK4fd8WorIBP56EIE45ZCX1kswk+f2zZ
-         yVSQN2EYqoMVVDE8EoYwZ/vYEXI7VXsNNGfCTfq4hzy/nl3k7TNeyjrrfSXX2CYtPK7V
-         tvmJVPWOpEYKRiqdzTjQv2uMHQBO1lMejcV671LqlsO/8bOiQZ+egba1NDFCCR/w40wh
-         EcEWSurNS5eiNouKA75fvDpkKnZceWPOJ0HsVvp7HJngG/wvt2r6bzHmrwjwums0ZqYn
-         GLPA==
-X-Forwarded-Encrypted: i=1; AJvYcCUxujA3fKGTzxnaEgNBVJnbzPYj3oHx2g3YoB4yj4JR/YHnyAuOliszzCD4DIkTFgx5yMWKYahwzU5/zMZTMd4LT+/xNl/o1Njj4aAK
-X-Gm-Message-State: AOJu0YwWI990B6szu4sRq/GOTuI9v52I3M13bbz5+dwICynzIUdNwNmo
-	OtJxOpeVYVfMleamDfZN9SwOE6JgNC88FidAS/N2q9/WNB3A9L6UbEF68cSR6v+J+l73KhrgUsR
-	anlf4Ydn9tIsxO2MXR6NVkqEWkrST5HcFKXhqHA==
-X-Google-Smtp-Source: AGHT+IFEu76HLwecIeLSCiVfG/XZFd2SSZMu7g2xdSAy4gC49xNdZap/m1Re9s5c7HES1skUINx8X+hL0OWOQbdBjrY=
-X-Received: by 2002:a25:3a04:0:b0:dcb:aa26:50fe with SMTP id
- h4-20020a253a04000000b00dcbaa2650femr12927089yba.15.1712141926715; Wed, 03
- Apr 2024 03:58:46 -0700 (PDT)
+	s=arc-20240116; t=1712142093; c=relaxed/simple;
+	bh=ifQDVbnTLgyXKRXlxGD4lJ6U9r4VNF+MbWPvdiAC1TQ=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=jxd3xsy9vlxXXiPvpowlBsWyCAPVFyCw5s58cFLrQ5COz9f4MblnBxXod3IdYfVZvE5BImhbPsqksOpP/Hv1WFDEKST6/q3IgNRemufyxrXOXZMW1RoKqUQ0N4Ealu6Ukc8jiU+7DQ/BwS2kH0FExpq11POuMdLkXBhC694hpZs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=PNXH/k6C; arc=none smtp.client-ip=192.198.163.14
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1712142092; x=1743678092;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=ifQDVbnTLgyXKRXlxGD4lJ6U9r4VNF+MbWPvdiAC1TQ=;
+  b=PNXH/k6CEL88fItv68vexLE3VsYrWfbWlNssngTz1V9qQ11UhQYAvdVJ
+   Hv1deiUk+A89biB2D4MDie6SGZIuFWAFvtgIU/rvZOC5fqh0eyoa2z2Hk
+   vtCc5lDZGFeimKbKR1h70GuYjmmHAMYRO0VXOg/i98fdB4o/9qEjKZe/k
+   kEYPue7CccsoEOQyB8qXlG83LtLmFaKdFJ5Cczk6LsaJ4Kwry5h5eE4gt
+   Dk2faHCQn7XUP4AQR86g5VrLliBXR5TPHdER7+naypzeASIL7wVnJg8Wf
+   1I6sSzsVE92FO/u6PFsExjfVJDVKpfJigCJHLJcIhK/Jxm21XQB68j3z3
+   g==;
+X-CSE-ConnectionGUID: J11Se7WBSlOA77cK9tRh7Q==
+X-CSE-MsgGUID: 9N8iWgpJQv6rWWVLivAxgQ==
+X-IronPort-AV: E=McAfee;i="6600,9927,11032"; a="7592119"
+X-IronPort-AV: E=Sophos;i="6.07,177,1708416000"; 
+   d="scan'208";a="7592119"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by fmvoesa108.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Apr 2024 04:01:29 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,11032"; a="915179146"
+X-IronPort-AV: E=Sophos;i="6.07,177,1708416000"; 
+   d="scan'208";a="915179146"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.72.54])
+  by fmsmga002.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Apr 2024 04:01:26 -0700
+Received: from andy by smile with local (Exim 4.97)
+	(envelope-from <andriy.shevchenko@linux.intel.com>)
+	id 1rryMv-000000016D0-1c2o;
+	Wed, 03 Apr 2024 14:01:25 +0300
+Date: Wed, 3 Apr 2024 14:01:25 +0300
+From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To: Tom Rix <trix@redhat.com>
+Cc: Moritz Fischer <mdf@kernel.org>,
+	Matthew Gerlach <matthew.gerlach@linux.intel.com>,
+	linux-fpga@vger.kernel.org,
+	Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+	Wu Hao <hao.wu@intel.com>, Xu Yilun <yilun.xu@intel.com>
+Subject: Re: [PATCH v1 1/1] fpga: dfl: pci: Use pci_find_vsec_capability()
+ when looking for DFL
+Message-ID: <Zg03BTubHLslIi_P@smile.fi.intel.com>
+References: <20211109154127.18455-1-andriy.shevchenko@linux.intel.com>
+ <8ccc133a-fb47-4548-fee3-d57775a5166d@redhat.com>
+ <YYq4fSRoyzFE4Vei@smile.fi.intel.com>
+ <39ac1f40-66ab-6c7e-0042-8fcdc062ed00@redhat.com>
+ <YYuBz0tdduAk1c/6@smile.fi.intel.com>
+ <3106bd57-9144-6a4d-8ad9-3ebf804018ab@redhat.com>
+ <CAHp75Vf16mH4KQ232rip9MPLoSE1TmJ_jeiwVUzqxOH5b0RFJQ@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240403094422.15140-1-krzysztof.kozlowski@linaro.org>
-In-Reply-To: <20240403094422.15140-1-krzysztof.kozlowski@linaro.org>
-From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Date: Wed, 3 Apr 2024 13:58:35 +0300
-Message-ID: <CAA8EJpoeh0sP9iHWU8Q6z9F3_aSGV9qw-WAWtrCTM0nHEdzAVg@mail.gmail.com>
-Subject: Re: [PATCH RESEND] arm64: defconfig: qcom: enable X1E80100 sound card
-To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Cc: Bjorn Andersson <andersson@kernel.org>, Konrad Dybcio <konrad.dybcio@linaro.org>, 
-	linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAHp75Vf16mH4KQ232rip9MPLoSE1TmJ_jeiwVUzqxOH5b0RFJQ@mail.gmail.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 
-On Wed, 3 Apr 2024 at 12:45, Krzysztof Kozlowski
-<krzysztof.kozlowski@linaro.org> wrote:
->
-> Enable the sound machine driver for Qualcomm X1E80100 sound card, used
-> on several boards with X1E80100 (e.g. X1E80100 CRD).
->
-> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
->
-> ---
->
-> The driver and bindings were posted here:
-> https://lore.kernel.org/alsa-devel/20231204100116.211898-1-krzysztof.kozlowski@linaro.org/T/#t
->
-> Resending because I did not Cc Bjorn/Konrad/MSM.
-> ---
->  arch/arm64/configs/defconfig | 1 +
->  1 file changed, 1 insertion(+)
->
+On Wed, Nov 10, 2021 at 06:59:25PM +0200, Andy Shevchenko wrote:
+> On Wed, Nov 10, 2021 at 2:28 PM Tom Rix <trix@redhat.com> wrote:
+> > On 11/10/21 12:24 AM, Andy Shevchenko wrote:
+> > > On Tue, Nov 09, 2021 at 10:27:58AM -0800, Tom Rix wrote:
+> > >> On 11/9/21 10:05 AM, Andy Shevchenko wrote:
+> > >>> On Tue, Nov 09, 2021 at 07:55:43AM -0800, Tom Rix wrote:
+> > >>>> On 11/9/21 7:41 AM, Andy Shevchenko wrote:
 
-Reviewed-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+..
 
+> > >>>>> + voff = pci_find_vsec_capability(dev, PCI_VENDOR_ID_INTEL, PCI_VSEC_ID_INTEL_DFLS);
+> > >>>> This may be a weakness in the origin code, but intel isn't the exclusive
+> > >>>> user of DFL.
+> > >>> This does not change the original code. If you think so, this can be extended
+> > >>> later on.
+> > >> I would rather see this fixed now or explained why this isn't a problem.
+> > > This is out of scope of this change in a few ways:
+> > >   - we don't do 2+ things in one patch
+> > >   - the change doesn't change behaviour
+> > >   - the change is a simple cleanup
+> > >   - another vendor may well have quite different VSEC ID for DFL
+> > >
+> > > If you think that it should be needed, one can come up with it later on.
+> >
+> > Fixing a problem is more useful than a cleanup. The fix should come first.
+> 
+> What do you mean by that? The original code never worked with what you
+> are suggesting. There is nothing to fix in terms of "fix". What you
+> are proposing is a feature. And as we know the features are going into
+> the kernel in a natural order, means fixes - priority 1, cleanups /
+> refactoring as prerequisites to the feature enabling - priority 2,
+> feature - priority 3, other cleanups and code improvements - priority
+> 4.
+> 
+> That said, the proposed change definitely falls into category 2. It
+> makes the proposed feature to be easily realized.
+> 
+> Also, do not forget that vendor specific stuff is _by definition_
+> vendor specific, and the proposed feature is doubtful until you prove
+> there is another vendor-id pair.
+
+Interestingly that you included
+8607d9c1bd57 ("fpga: dfl-pci: Use pci_find_vsec_capability() to simplify the code")
+without even letting me know...
 
 -- 
-With best wishes
-Dmitry
+With Best Regards,
+Andy Shevchenko
+
+
 
