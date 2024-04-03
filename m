@@ -1,133 +1,92 @@
-Return-Path: <linux-kernel+bounces-130529-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-130530-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 78197897977
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 22:00:01 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 28443897979
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 22:00:16 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A95901C26AE4
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 20:00:00 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id BA1981F272F1
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 20:00:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id ED182155734;
-	Wed,  3 Apr 2024 19:59:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="Ira3qAVc"
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 27311155A29;
+	Wed,  3 Apr 2024 19:59:16 +0000 (UTC)
+Received: from mailscanner01.zoner.fi (mailscanner01.zoner.fi [84.34.166.10])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BE1D3154BF0;
-	Wed,  3 Apr 2024 19:59:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ADE961553A1
+	for <linux-kernel@vger.kernel.org>; Wed,  3 Apr 2024 19:59:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=84.34.166.10
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712174353; cv=none; b=YJFXBqOn5vKIuLiYUcH1Yfcgy+d0cyGok3M+f6XYRztsLkMr2nLBVszPm40FYaNOPlrUOGePQgzOKFzc95zU0+Flfu0F2uFk8eEgOs4ucDbS8snivtHE1pUSaG/XoK+eMliJs/dqZVmjC6AteLLJmwAQhd4MGBBrqK3wTJQFXFs=
+	t=1712174355; cv=none; b=WFJR/eS024rUnR0ZTJjSJj3Q1QqCmitOOsOY7hhrQ+uMtwDKMgMaDOEeHM6N+MYh+DOFEJttQDP3PgZke8EPum7SvED4PnrnfA+vzoBR8Ka3M1XQ7wC1N1IYACsFlPGaqUeWS9ReytyysTmnHWvMMZGM160PsR5VOMWAnWbBwwU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712174353; c=relaxed/simple;
-	bh=RnV0b8ur5HtWa8bGgKkpFPMXquPIsmn9nG9BapgHhyw=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=Fr8ILzEOd7GQnwQWQHa9Kl81pU+U6/GcoVstJzy6D6KwYsb00744uY3eMnTTKWvAi8xQYe3TAICLdSmKM+/KoxS1U/tJnAIKgI+/9Y1QRgnAU8KOPsu4P+L05YTF0IpQnzllh19cK9eMT/skPcVWrTpXGgMoF7GUorwi8WWY+t4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=Ira3qAVc; arc=none smtp.client-ip=205.220.180.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279873.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 433Jful9017706;
-	Wed, 3 Apr 2024 19:58:53 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	message-id:date:mime-version:subject:to:cc:references:from
-	:in-reply-to:content-type:content-transfer-encoding; s=
-	qcppdkim1; bh=RAjJygrtnz3IafcFIvbNaEGp82M8DXE306CM7uWs/q4=; b=Ir
-	a3qAVcmK5WVcgb7TPsSQwFoYLuTbKmPZ1mugKalpGvJ5IGopV5gagHDPQKTPfC3N
-	gBkDJwhwYeFhKrB/5aGk23EHMms8wM9dAP/St61RwuF+In4RilJGGEtl5MhEMLSp
-	MJsVjCpXBsu97oj+5tr2Y1OLwZ3UHXqM7dGKBpLKVwi3neCym9XPW9OrIcaOY/Qd
-	OfyJxuSEFMRl1mpo68g4OFJtOIysGnSkAIUBc8US0mO1iEjsK8CpbtH0LBUAES+F
-	rsBBlUCQ5LwzH8xCjPlY7fSWY1O7tf4v4nGo40m3T+LbMmoCK4HeY910sAwNd5of
-	5r+BpMgGMlts1IkdMUqg==
-Received: from nalasppmta03.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3x9077j41w-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 03 Apr 2024 19:58:53 +0000 (GMT)
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-	by NALASPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 433JwqkP016847
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 3 Apr 2024 19:58:52 GMT
-Received: from [10.110.9.99] (10.80.80.8) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.4; Wed, 3 Apr 2024
- 12:58:50 -0700
-Message-ID: <2f509949-7e7e-cbf6-c1d0-f25971c2d890@quicinc.com>
-Date: Wed, 3 Apr 2024 12:58:50 -0700
+	s=arc-20240116; t=1712174355; c=relaxed/simple;
+	bh=KR9CdPgMOf6FrLUtHF73U+GXxBqurEfaGjwrIK7zXhc=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=DQ4bqg9o4fS4ZhPFuRhUEBAiLuw2tCgXoYcJ0teZRQeLjKndmqvB72GJrMAD6bZKVLannYUqH/Z0dHH3EGlKdmKqv4aRS6w1vPwUtKLNdBu5VSTVP2ysBzYzOR47BW/6/exea/U7SkCXLe+9/XoBY/Yy5W4XZT9FyyMcYMA6KMI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=tukaani.org; spf=pass smtp.mailfrom=tukaani.org; arc=none smtp.client-ip=84.34.166.10
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=tukaani.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=tukaani.org
+Received: from www25.zoner.fi (www25.zoner.fi [84.34.147.45])
+	by mailscanner01.zoner.fi (Postfix) with ESMTPS id A88F342E21;
+	Wed,  3 Apr 2024 22:59:04 +0300 (EEST)
+Received: from mail.zoner.fi ([84.34.147.244])
+	by www25.zoner.fi with esmtp (Exim 4.96.1-7-g79877b70e)
+	(envelope-from <lasse.collin@tukaani.org>)
+	id 1rs6lE-0006L7-1i;
+	Wed, 03 Apr 2024 22:59:04 +0300
+Date: Wed, 3 Apr 2024 22:59:03 +0300
+From: Lasse Collin <lasse.collin@tukaani.org>
+To: <angel.lkml@16bits.net>
+Cc: Andrew Morton <akpm@linux-foundation.org>, Jubin Zhong
+ <zhongjubin@huawei.com>, linux-kernel@vger.kernel.org,
+ vegard.nossum@oracle.com
+Subject: Re: [PATCH 11/11] xz: Adjust arch-specific options for better
+ kernel compression
+Message-ID: <20240403225903.0773746d@kaneli>
+In-Reply-To: <27db456edeb6f72e7e229c2333c5d8449718c26e.camel@16bits.net>
+References: <20240320183846.19475-1-lasse.collin@tukaani.org>
+	<20240320183846.19475-12-lasse.collin@tukaani.org>
+	<27db456edeb6f72e7e229c2333c5d8449718c26e.camel@16bits.net>
+X-Mailer: Claws Mail 4.2.0 (GTK 3.24.41; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.11.0
-Subject: Re: [PATCH v3] phy/qcom-qmp-combo: propagate correct return value at
- phy_power_on()
-Content-Language: en-US
-To: Stephen Boyd <swboyd@chromium.org>,
-        Kuogee Hsieh
-	<quic_khsieh@quicinc.com>, <abel.vesa@linaro.org>,
-        <agross@kernel.org>, <airlied@gmail.com>, <andersson@kernel.org>,
-        <daniel@ffwll.ch>, <dianders@chromium.org>,
-        <dmitry.baryshkov@linaro.org>, <dri-devel@lists.freedesktop.org>,
-        <robdclark@gmail.com>, <sean@poorly.run>, <vkoul@kernel.org>
-CC: <quic_jesszhan@quicinc.com>, <quic_sbillaka@quicinc.com>,
-        <marijn.suijten@somainline.org>, <freedreno@lists.freedesktop.org>,
-        <linux-arm-msm@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-References: <1711741835-10044-1-git-send-email-quic_khsieh@quicinc.com>
- <CAE-0n50Z2pDGH+ncjQq-huDsn9jdN=1SfaaU+qw229nZpUVCDw@mail.gmail.com>
-From: Abhinav Kumar <quic_abhinavk@quicinc.com>
-In-Reply-To: <CAE-0n50Z2pDGH+ncjQq-huDsn9jdN=1SfaaU+qw229nZpUVCDw@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: HzB9bFC3XVmDy2SfH_Qjw6dY9raEAm1I
-X-Proofpoint-ORIG-GUID: HzB9bFC3XVmDy2SfH_Qjw6dY9raEAm1I
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-04-03_20,2024-04-03_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=999
- malwarescore=0 adultscore=0 suspectscore=0 clxscore=1015
- priorityscore=1501 lowpriorityscore=0 spamscore=0 phishscore=0 bulkscore=0
- impostorscore=0 mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2403210001 definitions=main-2404030133
 
-
-
-On 4/3/2024 12:51 PM, Stephen Boyd wrote:
-> Quoting Kuogee Hsieh (2024-03-29 12:50:35)
->> Currently qmp_combo_dp_power_on() always return 0 in regardless of
->> return value of cfg->configure_dp_phy(). This patch propagate
->> return value of cfg->configure_dp_phy() all the way back to caller.
+On 2024-03-31 angel.lkml@16bits.net wrote:
+> Under the light of the recent xz backdoor, I should note that this
+> patch (patch 11) does:
 > 
-> Is this found via code inspection or because the phy is failing to power
-> on sometimes? I ask because I'm looking at a DP bug on Trogdor with
-> chromeos' v6.6 based kernel and wondering if this is related.
-> 
+> > +# Set XZ_VERSION (and LIBLZMA_VERSION). This is needed to disable
+> > features +# that aren't available in old XZ Utils versions.
+> > +eval "$($XZ --robot --version)" || exit
 
-No, we actually hit an issue. This issue was originally reported as a 
-link training issue while bringing up DP on x1e80100.
+The eval method has been on the xz man page for a very long time but I
+agree that due to the recent events the above method is not ideal.
 
-While debugging that we noticed that we should not have even proceeded 
-to link training because the PLL was not getting locked and it was 
-failing silently since there are no other error prints (and hence the 
-second part of the patch to improve the error logs), and we do not 
-return any error code from this driver, we could not catch the PLL 
-unlocked issue.
+It can break also if XZ_OPT or XZ_DEFAULTS contains something that they
+usually shouldn't. For example, XZ_OPT=--help would make the above eval
+method run the output of $XZ --help.
 
-> Also, is the call to phy_power_on() going to be checked in
-> the DP driver?
-> 
->   $ git grep -n phy_power_on -- drivers/gpu/drm/msm/dp/
->   drivers/gpu/drm/msm/dp/dp_ctrl.c:1453:  phy_power_on(phy);
+> So, in the spirit of keeping a fair amount of paranoia, and since it
+> doesn't do any harm, any such code should be failproofed to ensure it
+> can only import the expected shell variables with the right format[3]:
+>
+>  eval "$($XZ --robot --version | grep '^\(XZ\|LIBLZMA\)_VERSION=[0-9]*$')" || exit
 
-Yes, this is a good point. We should also post the patch to add the 
-error checking in DP driver to fail if phy_power_on fails.
+I would rather get rid of eval. I committed the following to the
+upstream repository:
+
+XZ_VERSION=$($XZ --robot --version | sed -n 's/^XZ_VERSION=//p') || exit
+
+Thanks!
+
+-- 
+Lasse Collin
 
