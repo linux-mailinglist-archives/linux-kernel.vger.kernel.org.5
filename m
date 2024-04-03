@@ -1,106 +1,126 @@
-Return-Path: <linux-kernel+bounces-129326-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-129327-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6F51E8968ED
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 10:40:00 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 47E5F89689C
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 10:29:47 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 89B1BB220CD
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 08:29:27 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 02DB828200C
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 08:29:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 363AA129E75;
-	Wed,  3 Apr 2024 08:23:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E157412BE9F;
+	Wed,  3 Apr 2024 08:24:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Ll5hSGia"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.12])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="RaD3L1HW"
+Received: from mail-lf1-f41.google.com (mail-lf1-f41.google.com [209.85.167.41])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0EAFF6F524;
-	Wed,  3 Apr 2024 08:23:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.12
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9160E6FE04;
+	Wed,  3 Apr 2024 08:23:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712132602; cv=none; b=t3vZ8E4RiOfH5A/OYveTFObZF8qFMSgWMO8+pPSZh6bX1Pv5GHYsnhZzB9LGt3ZGpAS+qI0Sma3yTNfmxW0cQ0pjgXX176TDZN1hGHCfRUwTwA4qKStCkFak9710EU2BQnNC5bf/XuLQF7aISlOJMD/a+c6JHn/0S81qGpt6Ce8=
+	t=1712132640; cv=none; b=E022XuXj4cIBa8HQsuil2I/JOPfpLDBbtebiTzFEgDe+SPbqRSaE4zqvsLuAHsOxD/VhHKFzpvcSsSXfpVi7/8vG2ocIy9bFQGX38uwrnj1HA9rKjhLDAvsKWmWDuM9Nz257bZ9ujN652r2nEJi19fdnQLMvnmrpqaA6BHisxwQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712132602; c=relaxed/simple;
-	bh=3UEaKcNQCsquDKRqA9/0D7BIcxSP6v8eFK/FMp1INVc=;
-	h=From:Date:To:cc:Subject:In-Reply-To:Message-ID:References:
-	 MIME-Version:Content-Type; b=nN+Mpk4ygjAHlBfDhA8IOMq76CNH+oHu0Oa1JomXrMIMRmd5bWgGiqeJTPCmm15U/U0jx1GvEVS0yMWhk9nCOKnzsBsXltUlIFrpthou/8kKIY7C0IYEyZXCMayPvGIs095v7FCdYBBVVqXmW5SYYUWYYkm2Dp6PT0vEbYFmowU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Ll5hSGia; arc=none smtp.client-ip=198.175.65.12
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1712132601; x=1743668601;
-  h=from:date:to:cc:subject:in-reply-to:message-id:
-   references:mime-version;
-  bh=3UEaKcNQCsquDKRqA9/0D7BIcxSP6v8eFK/FMp1INVc=;
-  b=Ll5hSGiaCKtHgmhOWru4tgNX0tRCcQqUmaosqH6MMhopDPlCVAqW7SOo
-   BV/pHon2GpQILaY9JEK/2OdPVl8z39aanLGOAPz2pQhlN87pSjvmp1wep
-   jNAAYnvnEggLHBA71aoIvRmUZTUvtryXvbt63Xo6JNu0iBwJtH48l9YNt
-   1Ti9F3tlpDXG3X4cBZK4sdubVQmPXdj+K13uPuSlLq1kvd9eY5sytAtpT
-   MAffuwpXS4FL6aF+bVagWsJRMgFMMpWh3pA2FYI5ApHnz4Sj3Sa68joVQ
-   MUKtwWjK53m1gvLc9oOazVMIT7VpbFg37ZN/O6c6hIYNVy96UWXMzEeov
-   Q==;
-X-CSE-ConnectionGUID: iqaKRxWYSvi6gE/3dhz1KQ==
-X-CSE-MsgGUID: AJXqprGVQcKNR+f1cLpHBg==
-X-IronPort-AV: E=McAfee;i="6600,9927,11032"; a="18791915"
-X-IronPort-AV: E=Sophos;i="6.07,176,1708416000"; 
-   d="scan'208";a="18791915"
-Received: from fmviesa002.fm.intel.com ([10.60.135.142])
-  by orvoesa104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Apr 2024 01:23:21 -0700
-X-CSE-ConnectionGUID: HYAhQ03pSvOjkl+4zUDbvA==
-X-CSE-MsgGUID: GYBqKbDeTWyCFtZFS+SXSQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,176,1708416000"; 
-   d="scan'208";a="41492900"
-Received: from ijarvine-desk1.ger.corp.intel.com (HELO localhost) ([10.245.247.24])
-  by fmviesa002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Apr 2024 01:23:18 -0700
-From: =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
-Date: Wed, 3 Apr 2024 11:23:14 +0300 (EEST)
-To: "Luke D. Jones" <luke@ljones.dev>
-cc: Hans de Goede <hdegoede@redhat.com>, corentin.chary@gmail.com, 
-    platform-driver-x86@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v3 5/9] platform/x86: asus-wmi: store a min default for
- ppt options
-In-Reply-To: <20240403002917.2870959-6-luke@ljones.dev>
-Message-ID: <e48c5226-9a25-ff24-45d8-5cc73d7d914e@linux.intel.com>
-References: <20240403002917.2870959-1-luke@ljones.dev> <20240403002917.2870959-6-luke@ljones.dev>
+	s=arc-20240116; t=1712132640; c=relaxed/simple;
+	bh=+M42Bao+ClNNeoWyVzyTejnWVkvKqhDo99qvjTGhSSQ=;
+	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=rRa3DKiHUx+5oZZUCTDhUfULiMHvG0q4MmScGuKR28oHa8maaA0puJOU1LMQ9XdLayq0EFFHV83T+WGxBKWHsdlVrNvmFRj/wUv47IKJMD6vidxcNtLhwwW55xkA1yp3TyqmjUrkvvxcV7ztPJC5I8yYoOrM/YnBbZ+LPfjgdBE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=RaD3L1HW; arc=none smtp.client-ip=209.85.167.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lf1-f41.google.com with SMTP id 2adb3069b0e04-51588f70d2dso7997938e87.3;
+        Wed, 03 Apr 2024 01:23:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1712132637; x=1712737437; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=eJ4Sw0ukh/12TacOdDd7Bi3/+M5GpiW9CnKijj1wT7c=;
+        b=RaD3L1HWDc+0w6d7yfbmhDSZI/XBRRBxaUuyCn1lEqUTRXz2wEAf76MIZQlEg+Gkhz
+         p+VJBnZPZAkEeZlvaFP0JyEpfavaHlGtI4ZenGOIeZGJfeEWYzCiZFiD8Mag+5jRoyh2
+         iw/1UBtRWe5LQUpRO2YJU646WB4h6hz600aReMnOcGy84t12NbqX+VW5jTUr45KQ9d6q
+         bsq0br7/lqhd8mDSdbXNuHZXvWTyZxwHMDFr5BfBx2aJ5BIWLPUBKZh0pniZY/6uV/5R
+         owpyCW+engZLdOqwH2xek35LKSeeYnHDg41WChg+4m4ms2rJNz2GohA5vlO0T9XndguQ
+         r8RQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712132637; x=1712737437;
+        h=content-transfer-encoding:in-reply-to:from:references:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=eJ4Sw0ukh/12TacOdDd7Bi3/+M5GpiW9CnKijj1wT7c=;
+        b=dLOrCAe91Y/jMU/DfLGa31xZ2DNlYqo4SjT8+1FXN+iI9NyY7ePM3YUtCs3sGW+VaA
+         bxQQcbSSgdEr8h1L51DB/jsdqo/XKEFDcP9/vRm9Awm3dQknCF91+VHUIUtBjsErMtKl
+         WlE8beiao9fBjWIx+B4E06p+WzeLDZzZYYcxtu7vKR9f90z774fEqayZcX3JNKku8Cll
+         EIIRmfzbaiO31q5FRWdb+IwULQjpR++d+G3Angb8V5LFKrkOH8S0gAEthIAsm8VL6DML
+         pJPzy6eziMcAcr+H/eq+Rw1H+lNCGHlIsRYumgLHc7FCefG2dxkuj+xE5arh1pX6rli+
+         Ib9g==
+X-Forwarded-Encrypted: i=1; AJvYcCVdK+2dGidrpzy2bjGDcgD6YL4srcefA0620Pc9Hbu9PWrQ6xv1jJwTyaAnEEk6VToqH0hTfJ+9Tf1I0ehC7TtYKs/R48Tih2Zt9Efg3QJBxPWtLX9E+HdFwanZTluCZ8YaeTTH/d4QLw==
+X-Gm-Message-State: AOJu0Yyf9GmnM5lRyzezIGpbVAzXYn/WzwnTmFh22L30gSDQ8bVLoxP1
+	Q836ZT8CiiXqFMega0fdpDlMF9MA3Z2SblY2FOTVSj9/g0PyiV7q9KTQ7ACX
+X-Google-Smtp-Source: AGHT+IELzTtNIEw+C4X9+qkLnlcWx3mAWu3YHSZjHWNQnqwNrTFWo5wmP+OjKO1XHFk6cHVHQXuoSg==
+X-Received: by 2002:a19:5519:0:b0:513:2c86:3498 with SMTP id n25-20020a195519000000b005132c863498mr1309585lfe.48.1712132636692;
+        Wed, 03 Apr 2024 01:23:56 -0700 (PDT)
+Received: from [172.16.183.82] ([213.255.186.46])
+        by smtp.gmail.com with ESMTPSA id g19-20020a056512119300b00513ddd1760fsm1964610lfr.122.2024.04.03.01.23.56
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 03 Apr 2024 01:23:56 -0700 (PDT)
+Message-ID: <f875655f-3e80-41e4-8994-e5d30aea7003@gmail.com>
+Date: Wed, 3 Apr 2024 11:23:55 +0300
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="8323328-1375749286-1712132594=:1449"
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 1/2] dt-bindings: mfd: Add ROHM BD71879
+Content-Language: en-US, en-GB
+To: Andreas Kemnade <andreas@kemnade.info>, lee@kernel.org,
+ robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+ devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20240402193515.513713-1-andreas@kemnade.info>
+ <20240402193515.513713-2-andreas@kemnade.info>
+From: Matti Vaittinen <mazziesaccount@gmail.com>
+In-Reply-To: <20240402193515.513713-2-andreas@kemnade.info>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-  This message is in MIME format.  The first part should be readable text,
-  while the remaining parts are likely unreadable without MIME-aware tools.
+On 4/2/24 22:35, Andreas Kemnade wrote:
+> As this chip was seen in several devices in the wild, add it.
+> 
+> Signed-off-by: Andreas Kemnade <andreas@kemnade.info>
+> Suggested-by: Matti Vaittinen <mazziesaccount@gmail.com>
 
---8323328-1375749286-1712132594=:1449
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
 
-On Wed, 3 Apr 2024, Luke D. Jones wrote:
+Acked-by: Matti Vaittinen <mazziesaccount@gmail.com>
 
-> Laptops with any of the ppt or nv tunables default to the minimum setting
-> on boot so we can safely assume a stored value is correct.
->=20
-> This patch adds storing of those values in the local struct, and enables
-> reading of those values back. To prevent creating a series of byte holes
-> in the struct the "<name>_available" bool is removed and
-> `asus_sysfs_is_visible()` uses the `ASUS_WMI_DEVID_<name>` directly.
->=20
-> Reviewed-by: Ilpo J=C3=A4rvinen <ilpo.jarvinen@linux.intel.com>
-> Signed-off-by: Luke D. Jones <luke@ljones.dev>
+> ---
+>   Documentation/devicetree/bindings/mfd/rohm,bd71828-pmic.yaml | 4 +++-
+>   1 file changed, 3 insertions(+), 1 deletion(-)
+> 
+> diff --git a/Documentation/devicetree/bindings/mfd/rohm,bd71828-pmic.yaml b/Documentation/devicetree/bindings/mfd/rohm,bd71828-pmic.yaml
+> index 0b62f854bf6b..e4df09e8961c 100644
+> --- a/Documentation/devicetree/bindings/mfd/rohm,bd71828-pmic.yaml
+> +++ b/Documentation/devicetree/bindings/mfd/rohm,bd71828-pmic.yaml
+> @@ -17,7 +17,9 @@ description: |
+>   
+>   properties:
+>     compatible:
+> -    const: rohm,bd71828
+> +    enum:
+> +      - rohm,bd71828
+> +      - rohm,bd71879
+>   
+>     reg:
+>       description:
 
-Reviewed-by: Ilpo J=C3=A4rvinen <ilpo.jarvinen@linux.intel.com>
+-- 
+Matti Vaittinen
+Linux kernel developer at ROHM Semiconductors
+Oulu Finland
 
-(I know it is already among the tags but I had not given it until now.)
+~~ When things go utterly wrong vim users can always type :help! ~~
 
---=20
- i.
-
---8323328-1375749286-1712132594=:1449--
 
