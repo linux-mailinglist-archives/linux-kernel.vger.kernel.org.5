@@ -1,181 +1,120 @@
-Return-Path: <linux-kernel+bounces-130546-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-130549-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id CAF538979C5
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 22:27:00 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id E5C0A8979CB
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 22:28:05 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id ED10E1C21811
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 20:26:59 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 85E611F27D65
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 20:28:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 70D6E155A56;
-	Wed,  3 Apr 2024 20:26:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 95DC9155A5B;
+	Wed,  3 Apr 2024 20:27:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="E3+AZuqj"
-Received: from mail-pl1-f178.google.com (mail-pl1-f178.google.com [209.85.214.178])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="Fbni1UMr"
+Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 42A2B1552E2
-	for <linux-kernel@vger.kernel.org>; Wed,  3 Apr 2024 20:26:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9AAE943AB6;
+	Wed,  3 Apr 2024 20:27:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712176012; cv=none; b=MPlhoVTyjE6Zvdy6UE9qb7fNGn9dTndtXkucsy/fe6cgY+i3ioBD462H44yE0F9eAK8z5pP5KZ35V2aDPQm/PR7gqyhye6niA6Z/MkZI71fZlW5K8Vrs2YlVuw+fEh8sYxaO4IvPY/0nU4xPbqD44h1MA90a8Tlw0lqhCUidcaQ=
+	t=1712176078; cv=none; b=ryQ+vSx5aKmBPYU28d0P7jx0c9LQTCdVvaZu+APQRfktosQ6EOi9ctsS8qZ1zAYn0d1rUE0oieGQrgTbyJ5QCTic67s6OXPfkZ0kLs7PV8f7Nc30P0I/W4H6hJmLv/cTBykXR90hsVYO3Lxsi0G6Hk7D3L8vinMGT0c66foGrcc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712176012; c=relaxed/simple;
-	bh=FBpLE1iiZfLzq2PgZFZDfGl4fcVL4tEXMWlXr8qXDs0=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=Ji8zi5hjjJFlP1WrrtOXIceXAr62sYFeEJEsPATDs8tf02CJ+Q/4tyOMWKUldlIuri5SuitXgyQr537zexujcvyC89cAhXqVNhlPwCG+8wrPR8fOkkvCvV7d0yoryIe8J62341yoQvSfvm7xDRbvLEcUiHmJVNu/tiXSoXkT6U8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=E3+AZuqj; arc=none smtp.client-ip=209.85.214.178
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-pl1-f178.google.com with SMTP id d9443c01a7336-1e277154d4cso11265ad.1
-        for <linux-kernel@vger.kernel.org>; Wed, 03 Apr 2024 13:26:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1712176010; x=1712780810; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=NFhYmzmWZcVM7eK0cRz8FdXnZiXwCUMIE3os1iAStEY=;
-        b=E3+AZuqjXjd+FxKgjzE7dLxLq19QVZJzlwKjQmR8RSrEjA51KQJH9KCkpZmHwK6Arj
-         fQKOS9CCTTfHRTlhkNeYcnYpbsP1LQIoIBdC8rkp+YLVbRKiCskkGrhDT99F0m0s0zn2
-         eMJQtbmrnyKE4O1EnhlCjHbycJuSCty+XHGIcMd782/DWQzMGOHPKiBJjPzCf6+hEuzm
-         B/P1TTf9m9d83ht4HDLVepUjIvwFCQfRjg0wJG11jUFBYtH/k+izLbyJpX57JlJF3ftp
-         A7HWnL5V481+Rbcp+rBwIO1K8pIZWyoV2CVqlM/EQdJxbeL1mtEjeted+k39G7fV+OFb
-         /s6A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712176010; x=1712780810;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=NFhYmzmWZcVM7eK0cRz8FdXnZiXwCUMIE3os1iAStEY=;
-        b=Q+BqoV6gmBCZT5pMjEOq5wNjNsGcbusyU0qXjWt5XXebxti8XPPbHYeQtmZvvhjfyQ
-         dlJ7riGzKzn7hMKXU08McasRSCGNCSpGst3btEQyDjurTbiuIaFLJ5yQKGVbIJofhbuz
-         FGxgZJCpXxMbL6lYCqWdx7FhyQzIA9ZcoEMY4LG0ARqOoVBndar94148vKw9e2sZX7G9
-         CHFIcn4J8ESnh00kJjJlz6uTsuIosFGrDiJnYOvrphJlDSSHVZzcwK6N0BlG09waa+0G
-         BJgScZk5v8jv29Wv3QUhJ0YFs2nzC5VJc6rke+59UNuppN8Eyr19dbuNppD6BO/NimOv
-         CgIg==
-X-Forwarded-Encrypted: i=1; AJvYcCUoYxGg1MGvUpWDKFTRR2WY5jBhx2Txwur5i4+WaBHk/EdoHYvITNnVDsqcEBR3bjNdUBfAmHLejw3TkWSEJqaxG8A7fHmCdiPqMa51
-X-Gm-Message-State: AOJu0YwxaJ0KWqBuXPlyswK8Ogjl2JolQjdL6DRpZIdlbcwygUTHBsxK
-	+tBtNE1w+HTXiHd5VIkliU1Dn0diilzO1c16rV55AVnvcKp/E4Z1rnZ9H2kDulzfXC0reKErqNC
-	WJI3jM+fddNi6XtIDHn/DknZjsxxUy+CPqm1O
-X-Google-Smtp-Source: AGHT+IGlZVVWRSaRx9yR2KM9XZ42+4Oxvf7icoyilN7Z97fSwtU7BQZQKwk9L6EJWgf9mQnTLuf4q02X3qebqJ4culY=
-X-Received: by 2002:a17:902:c405:b0:1e2:1955:1b1c with SMTP id
- k5-20020a170902c40500b001e219551b1cmr303929plk.27.1712176010154; Wed, 03 Apr
- 2024 13:26:50 -0700 (PDT)
+	s=arc-20240116; t=1712176078; c=relaxed/simple;
+	bh=XHvAvMoXgu7sPpDI3qeu0ABKCV3BEWhlCfPnZ6zc33o=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=IkT5hQdpsBptP3lZcqJXBrqyC6ejiF+/1rOWh5RoQCuj5jW0VfqOX+QEiBKYfn2TT+Km6WWg8KrYcbOJZZiwudzPDMfH46QHOmSD5PdHwd2mO2dzl/znX2O+P5pmtxtKxc5cBLX7LMSjToROdSyEhOeQoNN4cuFXhOD3AbIz0NU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=Fbni1UMr; arc=none smtp.client-ip=198.137.202.133
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
+	Message-ID:Sender:Reply-To:Content-ID:Content-Description;
+	bh=J8OXQtjrrbGAGM1hq+9WwIxNq7gS8NJhOgS52sp/+eo=; b=Fbni1UMrSD0nW1RKHJStNsL6PV
+	I4KXwNid8jwhPQE/gQyvpL8IpHu3Lj143/BqJDNzhGUekgs+Y2xuW6SIb+vD5jn+98pPR024hq71p
+	O6vf0vdEAKT4lzPwhz5kl4iNQBi3WGIgaoolwRmt+9Mw4et1fUo4kUfVi9y5HpdRil8iIQe10Nx1H
+	Vfl6I4Gb6FwOKqcTZDbdDAt1uLgu0sL7VrSVbSfcm+07jUCDaCY64mplxz3OcogXms9gMMM5v7hAl
+	VEgF7jVTOMPOdZiE73ZZ/exSJP4hMC93pBaRwnoAZQKJ2DsOBb1wmP4HHjMJNFU4ZFDeUZKryMJ3Q
+	hIwyi3fQ==;
+Received: from [50.53.2.121] (helo=[192.168.254.15])
+	by bombadil.infradead.org with esmtpsa (Exim 4.97.1 #2 (Red Hat Linux))
+	id 1rs7D7-0000000064h-1Oy3;
+	Wed, 03 Apr 2024 20:27:53 +0000
+Message-ID: <9a079670-bbed-4f5d-9ef6-876bb1d82d39@infradead.org>
+Date: Wed, 3 Apr 2024 13:27:50 -0700
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240403164636.3429091-1-irogers@google.com> <dcb0121f-611d-4104-80b9-941d535c5fd2@linux.intel.com>
- <CAP-5=fUgiafmLEKEUJ5r5_tK+jqv30P0TGFCMvR8DkW7J4qYsQ@mail.gmail.com> <b9868e97-e353-45e0-83b7-aa28bc35dd67@linux.intel.com>
-In-Reply-To: <b9868e97-e353-45e0-83b7-aa28bc35dd67@linux.intel.com>
-From: Ian Rogers <irogers@google.com>
-Date: Wed, 3 Apr 2024 13:26:35 -0700
-Message-ID: <CAP-5=fX+YuEgD4pF-2YRcqgD2cwLw_7Z4ak+wszctvagPS+Xbw@mail.gmail.com>
-Subject: Re: [PATCH v1] perf metrics: Remove the "No_group" metric group
-To: "Liang, Kan" <kan.liang@linux.intel.com>
-Cc: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, 
-	Arnaldo Carvalho de Melo <acme@kernel.org>, Namhyung Kim <namhyung@kernel.org>, 
-	Mark Rutland <mark.rutland@arm.com>, 
-	Alexander Shishkin <alexander.shishkin@linux.intel.com>, Jiri Olsa <jolsa@kernel.org>, 
-	Adrian Hunter <adrian.hunter@intel.com>, linux-perf-users@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, Andi Kleen <ak@linux.intel.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] Documentation/core-api: Update events_freezable_power
+ references.
+To: Audra Mitchell <audra@redhat.com>, corbet@lwn.net
+Cc: tj@kernel.org, jiangshanlai@gmail.com, linux-doc@vger.kernel.org,
+ linux-kernel@vger.kernel.org, raquini@redhat.com, aros@gmx.com
+References: <20240403180022.16248-1-audra@redhat.com>
+Content-Language: en-US
+From: Randy Dunlap <rdunlap@infradead.org>
+In-Reply-To: <20240403180022.16248-1-audra@redhat.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Wed, Apr 3, 2024 at 11:57=E2=80=AFAM Liang, Kan <kan.liang@linux.intel.c=
-om> wrote:
->
->
->
-> On 2024-04-03 2:31 p.m., Ian Rogers wrote:
-> > On Wed, Apr 3, 2024 at 10:59=E2=80=AFAM Liang, Kan <kan.liang@linux.int=
-el.com> wrote:
-> >>
-> >>
-> >>
-> >> On 2024-04-03 12:46 p.m., Ian Rogers wrote:
-> >>> Rather than place metrics without a metric group in "No_group" place
-> >>> them in a a metric group that is their name. Still allow such metrics
-> >>> to be selected if "No_group" is passed, this change just impacts perf
-> >>> list.
-> >>
-> >> So it looks like the "No_group" is not completely removed.
-> >> They are just not seen in the perf list, but users can still use it vi=
-a
-> >> perf stat -M No_group, right?
-> >>
-> >> If so, why we want to remove it from perf list? Where can the end user
-> >> know which metrics are included in the No_group?
-> >>
-> >> If the No_group is useless, why not completely remove it?
-> >
-> > Agreed. For command line argument deprecation we usually keep the
-> > option but hide it from help with PARSE_OPT_HIDDEN, so I was trying to
-> > follow that pattern albeit that a metric group isn't a command line
-> > option it's an option to an option.
-> >
->
-> Perf list has a deprecated option to show the deprecated events.
-> The "No_group" should be a deprecated metrics group.
->
-> If so, to follow the same pattern, I think perf list should still
-> display the "No_group" with the --deprecated option at least.
 
-Such metrics would be shown twice, once under No_group and once under
-a metric group of their name. With deprecated events this isn't the
-case, you can only see them with --deprecated. Given we can see the
-metric without the No_group grouping, what is being added by having a
-No_group grouping? It feels entirely redundant and something we don't
-need to advertise.
 
-Thanks,
-Ian
+On 4/3/24 11:00 AM, Audra Mitchell wrote:
+> Due to commit 8318d6a6362f ("workqueue: Shorten
+> events_freezable_power_efficient name") we now have some stale
+> references in the workqeueue documentation, so updating those
+> references accordingly.
+> 
+> Signed-off-by: Audra Mitchell <audra@redhat.com>
 
-> Thanks,
-> Kan
->
-> > Thanks,
-> > Ian
-> >
-> >> Thanks,
-> >> Kan
-> >>
-> >>>
-> >>> Signed-off-by: Ian Rogers <irogers@google.com>
-> >>> ---
-> >>>  tools/perf/util/metricgroup.c | 4 ++--
-> >>>  1 file changed, 2 insertions(+), 2 deletions(-)
-> >>>
-> >>> diff --git a/tools/perf/util/metricgroup.c b/tools/perf/util/metricgr=
-oup.c
-> >>> index 79ef6095ab28..6ec083af14a1 100644
-> >>> --- a/tools/perf/util/metricgroup.c
-> >>> +++ b/tools/perf/util/metricgroup.c
-> >>> @@ -455,7 +455,7 @@ static int metricgroup__add_to_mep_groups(const s=
-truct pmu_metric *pm,
-> >>>       const char *g;
-> >>>       char *omg, *mg;
-> >>>
-> >>> -     mg =3D strdup(pm->metric_group ?: "No_group");
-> >>> +     mg =3D strdup(pm->metric_group ?: pm->metric_name);
-> >>>       if (!mg)
-> >>>               return -ENOMEM;
-> >>>       omg =3D mg;
-> >>> @@ -466,7 +466,7 @@ static int metricgroup__add_to_mep_groups(const s=
-truct pmu_metric *pm,
-> >>>               if (strlen(g))
-> >>>                       me =3D mep_lookup(groups, g, pm->metric_name);
-> >>>               else
-> >>> -                     me =3D mep_lookup(groups, "No_group", pm->metri=
-c_name);
-> >>> +                     me =3D mep_lookup(groups, pm->metric_name, pm->=
-metric_name);
-> >>>
-> >>>               if (me) {
-> >>>                       me->metric_desc =3D pm->desc;
+Acked-by: Randy Dunlap <rdunlap@infradead.org>
+
+Thanks.
+
+> ---
+>  Documentation/core-api/workqueue.rst | 6 +++---
+>  1 file changed, 3 insertions(+), 3 deletions(-)
+> 
+> diff --git a/Documentation/core-api/workqueue.rst b/Documentation/core-api/workqueue.rst
+> index ed73c612174d..bcc370c876be 100644
+> --- a/Documentation/core-api/workqueue.rst
+> +++ b/Documentation/core-api/workqueue.rst
+> @@ -671,7 +671,7 @@ configuration, worker pools and how workqueues map to the pools: ::
+>    events_unbound           unbound  9  9 10 10  8
+>    events_freezable         percpu   0  2  4  6
+>    events_power_efficient   percpu   0  2  4  6
+> -  events_freezable_power_  percpu   0  2  4  6
+> +  events_freezable_pwr_ef  percpu   0  2  4  6
+>    rcu_gp                   percpu   0  2  4  6
+>    rcu_par_gp               percpu   0  2  4  6
+>    slub_flushwq             percpu   0  2  4  6
+> @@ -694,7 +694,7 @@ Use tools/workqueue/wq_monitor.py to monitor workqueue operations: ::
+>    events_unbound              38306     0      0.1       -       7       -       -
+>    events_freezable                0     0      0.0       0       0       -       -
+>    events_power_efficient      29598     0      0.2       0       0       -       -
+> -  events_freezable_power_        10     0      0.0       0       0       -       -
+> +  events_freezable_pwr_ef        10     0      0.0       0       0       -       -
+>    sock_diag_events                0     0      0.0       0       0       -       -
+>  
+>                                total  infl  CPUtime  CPUhog CMW/RPR  mayday rescued
+> @@ -704,7 +704,7 @@ Use tools/workqueue/wq_monitor.py to monitor workqueue operations: ::
+>    events_unbound              38322     0      0.1       -       7       -       -
+>    events_freezable                0     0      0.0       0       0       -       -
+>    events_power_efficient      29603     0      0.2       0       0       -       -
+> -  events_freezable_power_        10     0      0.0       0       0       -       -
+> +  events_freezable_pwr_ef        10     0      0.0       0       0       -       -
+>    sock_diag_events                0     0      0.0       0       0       -       -
+>  
+>    ...
+
+-- 
+#Randy
 
