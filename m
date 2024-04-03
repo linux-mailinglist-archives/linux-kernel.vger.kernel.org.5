@@ -1,161 +1,192 @@
-Return-Path: <linux-kernel+bounces-129357-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-129358-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 86524896968
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 10:46:52 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E841B8969A7
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 10:55:38 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 40C8828622B
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 08:46:51 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8C95DB2A849
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 08:47:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A96A470CAD;
-	Wed,  3 Apr 2024 08:45:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8654F71737;
+	Wed,  3 Apr 2024 08:46:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="Hd8sqYaF"
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+	dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b="Y3TEof7R";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="RN+/7xAa"
+Received: from fout7-smtp.messagingengine.com (fout7-smtp.messagingengine.com [103.168.172.150])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1B21A6CDBD;
-	Wed,  3 Apr 2024 08:45:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 79D266CDBD
+	for <linux-kernel@vger.kernel.org>; Wed,  3 Apr 2024 08:46:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.150
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712133935; cv=none; b=nhioSGH2cn98gs8FgmF0xa1iF+gsAWtZqNsvEOGOz3FZM7PtZ7XXNCTNRDgQ3mhJwiZ5xxfy8KtEnmmIUhw9Ck8g6KxMSfeGharwMnevqWkv3uMQQLVfroNUN/UJ5yyMZTLUSi0hPXRKrma5f7lR/OX9ww1GCwu1RaCohsiMGEI=
+	t=1712133969; cv=none; b=lt84pdbZZXJNO67HZGDHFoL8bXJ39HJRk0iYdwAltetYd42Ok1RGNKFGF1muL46SPKpX7B1CAEgw1qDMPLQU5/A46B8JTa8EFOHYS6BFlZOw6UdYwx5GnMBAO88PCP68k0kTEF3tzfoHzx/EiNiDU7DHaFk+59pa1ARWlEK13bY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712133935; c=relaxed/simple;
-	bh=HgxNMS/FN0Nk6FUWFDTk9f7rXSrv/Mx0j1/PjJ7OXSo=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=PFbWr+/OhqVEE5FQrO28oFXmzybgvmRdf5WIJGq19xf+RI8gxMTLdZ+YWOK4TkfJNwMnZzH3iR5KonhOT28VmD0KTV/LsIxAl3po9wyAkDsUHq3aGHqV9jTAgdocYueXeoorPP22ZVex7FyS0Tr1DO4QHLpMvA6T5hmGNdwWtK4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=Hd8sqYaF; arc=none smtp.client-ip=205.220.168.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279865.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 43385mMS013800;
-	Wed, 3 Apr 2024 08:45:30 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	message-id:date:mime-version:subject:to:cc:references:from
-	:in-reply-to:content-type:content-transfer-encoding; s=
-	qcppdkim1; bh=U2835gZws67kNh8mPFrnxxRKQzJT+emLe1Ex3spc8EM=; b=Hd
-	8sqYaFSJ89RDAavwHo35b/6Wzz3aBUViApZG2E0bAa/CUSPqN7lq8ExRM1IONGIP
-	A0vq2KFOsv0rvCeMaFSRlsRQcH1f3f/eY5ihvYjnQxJ5s2nvm6gM7X2WLzgqF8G6
-	ZdNzw6CTdTtMBMPgA6zfUqAgeMBFchhgYZ7iF2Z/cL8p310AqmUQXKd1CplYwQgK
-	zWx7VeaLHnm5mezlzdCRhq6UrK/0YiMRbE/715SLq0cUaXaat8L2LH3zEB3XR9sT
-	BLEUA2fXfq+5wLPkb3keG581StOIiKjXjMvH1dC28hwQq28eAIv0dko8NnTcTB2N
-	IxqsVhiRIr0CGdbnvhAQ==
-Received: from nalasppmta03.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3x93a5g34g-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 03 Apr 2024 08:45:29 +0000 (GMT)
-Received: from nalasex01c.na.qualcomm.com (nalasex01c.na.qualcomm.com [10.47.97.35])
-	by NALASPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 4338jTjA028371
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 3 Apr 2024 08:45:29 GMT
-Received: from [10.50.19.131] (10.80.80.8) by nalasex01c.na.qualcomm.com
- (10.47.97.35) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.4; Wed, 3 Apr 2024
- 01:45:23 -0700
-Message-ID: <91f59477-1799-4db6-bcc2-3f0c5225d1c8@quicinc.com>
-Date: Wed, 3 Apr 2024 14:15:20 +0530
+	s=arc-20240116; t=1712133969; c=relaxed/simple;
+	bh=+S2O1GFt8qjMUrM23cyYAgm/pmRLL3owMuc0LTyf644=;
+	h=MIME-Version:Message-Id:In-Reply-To:References:Date:From:To:Cc:
+	 Subject:Content-Type; b=bixG3PX7cnEKsmSG2oC/pKa/nBjhlSXNTE6CCBRiXOnIzndNZls9vMG3Jkw/NMSo3hWeUfTfh3cYHqmOFxNH8QWpEVcZRRcpQGn8tZNFqdo5/zmdQyMU6at0/LyKGhwbQNsbIAZlUdzlKHP6ZVwcBxwFO062U5+p4n8zgdyF7xQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de; spf=pass smtp.mailfrom=arndb.de; dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b=Y3TEof7R; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=RN+/7xAa; arc=none smtp.client-ip=103.168.172.150
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arndb.de
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+	by mailfout.nyi.internal (Postfix) with ESMTP id 8465C13800C9;
+	Wed,  3 Apr 2024 04:46:03 -0400 (EDT)
+Received: from imap51 ([10.202.2.101])
+  by compute5.internal (MEProxy); Wed, 03 Apr 2024 04:46:03 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
+	:cc:content-transfer-encoding:content-type:content-type:date
+	:date:from:from:in-reply-to:in-reply-to:message-id:mime-version
+	:references:reply-to:subject:subject:to:to; s=fm1; t=1712133963;
+	 x=1712220363; bh=1RZn0oM8m1GPiYmL1YCObPZ+6sAGKW8OKj+b4oKvzPI=; b=
+	Y3TEof7RVUdF+jqdcs+14jebAXyfqAfC4LJ/bLpL/ItC7h9c+O+rGV7fy0hKDLZz
+	1wr3ucOJNDE7i0O9QSu+wj/pqrW2hvhUUURgki4vJIlsktFALiSq43oiDXKzs1H3
+	Fpg92F1QI8xlrsIZi/IbviFig4Zk+CxLVn8zCQGsUpCYUcgdSshAX0DpXq2QwSo8
+	aPWi1qDiJstbTU3Hm1bHH8iIxv4dgOASGO8JcidgfOOv4Efg3aSYHeOF8w2tTYhJ
+	p+sqm0vC37EoT6ntcWA2ShnCYxn1+R67L34GQzXjajVXMOPQa1RTPYVpOw5Nv2R8
+	E7tlWWMhlepyYZOHyIChoA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-transfer-encoding
+	:content-type:content-type:date:date:feedback-id:feedback-id
+	:from:from:in-reply-to:in-reply-to:message-id:mime-version
+	:references:reply-to:subject:subject:to:to:x-me-proxy:x-me-proxy
+	:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; t=1712133963; x=
+	1712220363; bh=1RZn0oM8m1GPiYmL1YCObPZ+6sAGKW8OKj+b4oKvzPI=; b=R
+	N+/7xAaXMCa/EUYS5g/twnoo48wxABoaj3vDVbJRH+8/HFdihcSb6UofMNwegFfV
+	yD41JjKPd11OVNMb+FwrShitYKMMXQmOiNmfpIHdPC42C8jOYlsfUmcc/nmISBA9
+	vgxL83qcQwaW7EEAO4QtMTG8ByE1rLlpR9E2FmWx3jGQ3aW4ZJ6JAikJEAqSx0vi
+	GxTbUYAG6aqDeLRkBDy2TDeoIyxCspp/bHQXM5l+H0lfDbRJaseQ4qQQRE8fvEXx
+	+stxLQ6KmoNCdAC7YSrCBVq+ykVaa15NtKAXI5lOV+CwUc2GqZx9pUlE57uUc1CU
+	162q+eOIoztml2J1JSAFg==
+X-ME-Sender: <xms:ShcNZnAZyLm9XHd-kHPDBTAa05x8FVQjByZqNNVNsnv0CQvb_K8UuA>
+    <xme:ShcNZtiQQ7wL9b2prKFgzwBthuVm9Z0lu8tf87mfOGWqOqmt5e7wp3Hvnn5TQmov3
+    0phvys8atXgITbuoyY>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrudefgedgtdekucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepofgfggfkjghffffhvfevufgtgfesthhqredtreerjeenucfhrhhomhepfdet
+    rhhnugcuuegvrhhgmhgrnhhnfdcuoegrrhhnugesrghrnhgusgdruggvqeenucggtffrrg
+    htthgvrhhnpeegfeejhedvledvffeijeeijeeivddvhfeliedvleevheejleetgedukedt
+    gfejveenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpe
+    grrhhnugesrghrnhgusgdruggv
+X-ME-Proxy: <xmx:ShcNZikUZ6uVcU5hyjM93JxHlsFt20g5gL_9ZHffgFMKg34sDzaHFg>
+    <xmx:ShcNZpzXr_8MtgDzJ1r_t7vFS-qxmxPrsCF4SScOqmhEKTZMcIFRUA>
+    <xmx:ShcNZsS5qCHQPvBJlt6Xx18zYp0Csp-GcJELWR0AfKQbJdXVgf69KQ>
+    <xmx:ShcNZsbMU6X-uK0waRSjIad6i9a1HHhRrhBWjD8sgzZF6jGNs6yIEg>
+    <xmx:SxcNZorngdJunJJo9PgIKLOSr0B-OaaCHu3Kgx_JRta-azWTBkIBsb4h>
+Feedback-ID: i56a14606:Fastmail
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+	id CB4B1B6008F; Wed,  3 Apr 2024 04:46:02 -0400 (EDT)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.11.0-alpha0-333-gbfea15422e-fm-20240327.001-gbfea1542
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v4 1/4] interconnect: qcom: icc-rpmh: Add QoS
- configuration support
-To: Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Bjorn Andersson
-	<andersson@kernel.org>,
-        Georgi Djakov <djakov@kernel.org>, Rob Herring
-	<robh@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>
-CC: Kees Cook <keescook@chromium.org>, <cros-qcom-dts-watchers@chromium.org>,
-        "Gustavo A . R . Silva" <gustavoars@kernel.org>,
-        <linux-arm-msm@vger.kernel.org>, <linux-pm@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-hardening@vger.kernel.org>, <quic_rlaggysh@quicinc.com>,
-        <quic_mdtipton@quicinc.com>
-References: <20240325181628.9407-1-quic_okukatla@quicinc.com>
- <20240325181628.9407-2-quic_okukatla@quicinc.com>
- <d59896bb-a559-4013-a615-37bb43278b2e@linaro.org>
-Content-Language: en-US
-From: Odelu Kukatla <quic_okukatla@quicinc.com>
-In-Reply-To: <d59896bb-a559-4013-a615-37bb43278b2e@linaro.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nalasex01c.na.qualcomm.com (10.47.97.35)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: Fm8W6r0cBbMxBDjwmb2VUgfbVnbKZ-N2
-X-Proofpoint-ORIG-GUID: Fm8W6r0cBbMxBDjwmb2VUgfbVnbKZ-N2
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-04-03_08,2024-04-01_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 malwarescore=0
- bulkscore=0 priorityscore=1501 lowpriorityscore=0 mlxscore=0
- impostorscore=0 phishscore=0 clxscore=1015 suspectscore=0 mlxlogscore=900
- spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2403210001 definitions=main-2404030060
+Message-Id: <347bb21e-98db-4bd5-9ca1-550eac5be9f8@app.fastmail.com>
+In-Reply-To: 
+ <CAPyNcWeu+bzyQg9S3wDb43jbfk95Su5XcSRFPzUbS2ofZ=+5Fg@mail.gmail.com>
+References: 
+ <CA+G9fYtsoP51f-oP_Sp5MOq-Ffv8La2RztNpwvE6+R1VtFiLrw@mail.gmail.com>
+ <CAPyNcWeu+bzyQg9S3wDb43jbfk95Su5XcSRFPzUbS2ofZ=+5Fg@mail.gmail.com>
+Date: Wed, 03 Apr 2024 10:45:36 +0200
+From: "Arnd Bergmann" <arnd@arndb.de>
+To: "Anton Protopopov" <aspsk@isovalent.com>,
+ "Naresh Kamboju" <naresh.kamboju@linaro.org>
+Cc: "open list" <linux-kernel@vger.kernel.org>, lkft-triage@lists.linaro.org,
+ "Linux Regressions" <regressions@lists.linux.dev>,
+ "Anders Roxell" <anders.roxell@linaro.org>,
+ "Dan Carpenter" <dan.carpenter@linaro.org>,
+ "Daniel Borkmann" <daniel@iogearbox.net>, "David Ahern" <dsahern@kernel.org>,
+ "Alexei Starovoitov" <ast@kernel.org>,
+ "Alexander Lobakin" <aleksander.lobakin@intel.com>,
+ "Russell King" <rmk+kernel@armlinux.org.uk>,
+ "Ard Biesheuvel" <ardb@kernel.org>,
+ "Linus Walleij" <linus.walleij@linaro.org>
+Subject: Re: include/linux/build_bug.h:78:41: error: static assertion failed: "struct
+ bpf_fib_lookup size check"
+Content-Type: text/plain;charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-
-
-On 3/27/2024 2:26 AM, Konrad Dybcio wrote:
-> On 25.03.2024 7:16 PM, Odelu Kukatla wrote:
->> It adds QoS support for QNOC device and includes support for
->> configuring priority, priority forward disable, urgency forwarding.
->> This helps in priortizing the traffic originating from different
->> interconnect masters at NoC(Network On Chip).
+On Wed, Apr 3, 2024, at 10:10, Anton Protopopov wrote:
+> On Wed, Apr 3, 2024 at 10:03=E2=80=AFAM Naresh Kamboju
+> <naresh.kamboju@linaro.org> wrote:
 >>
->> Signed-off-by: Odelu Kukatla <quic_okukatla@quicinc.com>
->> ---
-> 
-> [...]
-> 
->>  
->> +	if (desc->config) {
->> +		struct resource *res;
->> +		void __iomem *base;
->> +
->> +		res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
->> +		if (!res)
->> +			goto skip_qos_config;
->> +
->> +		base = devm_ioremap_resource(dev, res);
-> 
-> You were asked to substitute this call like 3 times already..
-> 
-> devm_platform_get_and_ioremap_resource
-> 
-> or even better, devm_platform_ioremap_resource
-> 
-> [...]
-> 
->> @@ -70,6 +102,7 @@ struct qcom_icc_node {
->>  	u64 max_peak[QCOM_ICC_NUM_BUCKETS];
->>  	struct qcom_icc_bcm *bcms[MAX_BCM_PER_NODE];
->>  	size_t num_bcms;
->> +	const struct qcom_icc_qosbox *qosbox;
-> 
-> I believe I came up with a better approach for storing this.. see [1]
-> 
-> Konrad
-> 
-> [1] https://lore.kernel.org/linux-arm-msm/20240326-topic-rpm_icc_qos_cleanup-v1-4-357e736792be@linaro.org/
-> 
+>> The arm footbridge_defconfig failed with gcc-13 and gcc-8 on Linux ne=
+xt
+>> starting from next-20240328..next-20240402.
+>>
+>> arm:
+>>   build:
+>>     * gcc-8-footbridge_defconfig - Failed
+>>     * gcc-13-footbridge_defconfig - Failed
+>>
+>> Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
+>>
+>> In file included from include/linux/bitfield.h:10,
+>>                  from arch/arm/include/asm/ptrace.h:13,
+>>                  from arch/arm/include/asm/processor.h:14,
+>>                  from include/linux/prefetch.h:15,
+>>                  from arch/arm/include/asm/atomic.h:12,
+>>                  from include/linux/atomic.h:7,
+>>                  from net/core/filter.c:20:
+>> include/linux/build_bug.h:78:41: error: static assertion failed:
+>> "struct bpf_fib_lookup size check"
+>>    78 | #define __static_assert(expr, msg, ...) _Static_assert(expr, =
+msg)
+>>       |                                         ^~~~~~~~~~~~~~
+>
+> Thanks, I will take a look today
 
-I see in this series, QoS parameters are moved into struct qcom_icc_desc. 
-Even though we program QoS at Provider/Bus level, it is property of the node/master connected to a Bus/NoC.
-It will be easier later to know which master's QoS we are programming if we add in node data.
-Readability point of view,  it might be good to keep QoS parameters in node data.  
+The problem is CONFIG_AEABI=3Dn, which changes the alignment
+of sub-word struct members. I had assumed that AEABI is enabled
+by default for everything already, but it looks like footbridge
+and a couple of other defconfigs still have it turned off:
 
-Thanks,
-Odelu
+$ git grep -l  CONFIG_ARCH_MULTI_V7.is.not arch/arm/configs/* | xargs gi=
+t grep -L AEABI
+arch/arm/configs/assabet_defconfig
+arch/arm/configs/collie_defconfig
+arch/arm/configs/footbridge_defconfig
+arch/arm/configs/h3600_defconfig
+arch/arm/configs/jornada720_defconfig
+arch/arm/configs/neponset_defconfig
+arch/arm/configs/netwinder_defconfig
+arch/arm/configs/rpc_defconfig
+arch/arm/configs/spear3xx_defconfig
+arch/arm/configs/spear6xx_defconfig
+arch/arm/configs/spitz_defconfig
 
+Russell still has machines with an OABI toolchain, but I'm not
+aware of anyone else relying on it. It does cause other
+problems as well, so I already turned it off a long time ago
+for my randconfig testing.
 
+We should probably make it the default for everything, except
+whichever defconfig Russell uses:
 
+--- a/arch/arm/Kconfig
++++ b/arch/arm/Kconfig
+@@ -1159,7 +1159,7 @@ config ARM_PATCH_IDIV
+ config AEABI
+        bool "Use the ARM EABI to compile the kernel" if !CPU_V7 && \
+                !CPU_V7M && !CPU_V6 && !CPU_V6K && !CC_IS_CLANG && !COMP=
+ILE_TEST
+-       default CPU_V7 || CPU_V7M || CPU_V6 || CPU_V6K || CC_IS_CLANG ||=
+ COMPILE_TEST
++       default y
+        help
+          This option allows for the kernel to be compiled using the lat=
+est
+          ARM ABI (aka EABI).  This is only useful if you are using a us=
+er
+
+Or we could go one step further and make it 'depends on
+EXPERT', short of removing it entirely.
+
+     Arnd
 
