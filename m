@@ -1,138 +1,115 @@
-Return-Path: <linux-kernel+bounces-130541-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-130542-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7BD438979AD
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 22:16:46 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9CCAF8979BF
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 22:23:36 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 240251F26D43
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 20:16:46 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 25217B25322
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 20:23:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9456515574F;
-	Wed,  3 Apr 2024 20:16:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b="djlzjePn";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="NoWHZjgh"
-Received: from wfout5-smtp.messagingengine.com (wfout5-smtp.messagingengine.com [64.147.123.148])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 14CB0155A46;
+	Wed,  3 Apr 2024 20:23:28 +0000 (UTC)
+Received: from irl.hu (irl.hu [95.85.9.111])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 62DB0450EE;
-	Wed,  3 Apr 2024 20:16:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=64.147.123.148
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A8A0EA31;
+	Wed,  3 Apr 2024 20:23:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.85.9.111
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712175398; cv=none; b=F/XjSyiymvbNx4u5sEaWBqQxiRZcAgJP9GLra+SB2Y2HAK/+KffsGcWouEcdUY96/1Zc8w2jdNtpBhVABOGl4qULo7Uf5Hfmb20t0Ma/gUCzReOZdgBIvU1vUHnx/beuINQvzn0R3UOEqErgPGhphuGnJjzFj6iv10uRLKE4mvA=
+	t=1712175807; cv=none; b=gUG3ioRILlil4ESUR7KYCMwO4jW0v/fhiXITuU7vbZWMuvZqBBF2ff/q+6DtKYuR3Y6XkVn1XwrkBCm+2C+WHoDnrV83zxWFze0qb04qKxJ7GuZ8ZMb5qehL8QJAEmH75H0wn94dWcJoa8+NI8CHXzaoDA0lJhN4rh6e/GRNOcw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712175398; c=relaxed/simple;
-	bh=iSGR+vY60ekIujW9+ua+A64fCX5CAffc8VlSrDgr/tQ=;
-	h=MIME-Version:Message-Id:In-Reply-To:References:Date:From:To:Cc:
-	 Subject:Content-Type; b=gjvmhVJ9XQTEb0HJvwUxf6aAbOZVWTjqxQ9F5dSRzXxNBUYC255tjP/UfUjSrYIPW8JNl10uoUWMaBQJrX2dmt3Xf7RS4B65IU/Psdl6qy/eJLpKwAQ/vtMwstw9aKkMVoakOZm3VNVFIIn3Cc6uD1DbBXef70VUkfEzZTxjxmw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de; spf=pass smtp.mailfrom=arndb.de; dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b=djlzjePn; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=NoWHZjgh; arc=none smtp.client-ip=64.147.123.148
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arndb.de
-Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
-	by mailfout.west.internal (Postfix) with ESMTP id 8F0E51C0007C;
-	Wed,  3 Apr 2024 16:16:35 -0400 (EDT)
-Received: from imap51 ([10.202.2.101])
-  by compute5.internal (MEProxy); Wed, 03 Apr 2024 16:16:36 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
-	:cc:content-type:content-type:date:date:from:from:in-reply-to
-	:in-reply-to:message-id:mime-version:references:reply-to:subject
-	:subject:to:to; s=fm1; t=1712175395; x=1712261795; bh=v2UHe3x4Gl
-	nvqdOcFzDiIIFY++CTWaFbu5Hp9X3plSk=; b=djlzjePngsEcNOk6ucUNEQeMvr
-	V6du3iz9G9cGVjNG+tbPoDoe9xBqkDLEap1boe1K371M6yk9lbEkgPaipmQXSK6i
-	LeKbFjTzuGS0192qPhECANAhAn2j86iWos52KXwySNuBNwfblkdnh5WfytXCDzJN
-	2K3mcEdNRyfIKTQCeUdiebUL1ZgAUlrRx3QFXVPe6zEU0kNbDr2EBuFux4U0zNzY
-	zW3B3Sqs/+yxv7aUqymJNyFHm0XruHP9AAaxCGn07LWubWQzJy/h/kLlkl1tsjo/
-	pUunL10LlNwxkLXzJ0bx/DYDRIFYzKu07lNawHo4jPtu36HDSxzlbz/t/JoA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-type:content-type:date:date
-	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-	:message-id:mime-version:references:reply-to:subject:subject:to
-	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-	fm2; t=1712175395; x=1712261795; bh=v2UHe3x4GlnvqdOcFzDiIIFY++CT
-	WaFbu5Hp9X3plSk=; b=NoWHZjghgcyl+q3HDQhYLVauEeNzOjp7ie3S333CzC+R
-	G+llbXZGA3rcOyns7SHjD+rhAb19B0FSseZ8z2zI/Ywm00JqFReCsVimxJMWQwWN
-	y2/PD2Xo95hfoPewNCJGM4LCPmJjs/ern/rRN4ofrfO5lMgsZnzy5y+IdzQ3z1QJ
-	gbZLtIJOFKId7dNQS/IYCbXVY+fRbrgxfm4e9KfICIkYUkn3ePxDc1BmSsC8/vrl
-	b/hJddkmkORRd+AVZGxAD5c87NqMrU/7cg22f+DHwYaGjc+iGX490Nq2/xVQDgCE
-	j2MX+Bq/4TPIuBtbeWnMCghwdm4TEjwyehejGOtTSQ==
-X-ME-Sender: <xms:IrkNZj4EDFQ08jqLjhmARO2k_UdYhZrDQbiClZDpUMZSk9ZZmPwe1g>
-    <xme:IrkNZo6eC4qUfnQuKKTzYVeetA7ZIFdc_Ni3pLzmfP9AcgzZsL0cPLg-aQaTvM_ej
-    sPuQeHIi69qjoMNvM8>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrudefiedguddtgecutefuodetggdotefrod
-    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
-    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
-    enucfjughrpefofgggkfgjfhffhffvvefutgesthdtredtreertdenucfhrhhomhepfdet
-    rhhnugcuuegvrhhgmhgrnhhnfdcuoegrrhhnugesrghrnhgusgdruggvqeenucggtffrrg
-    htthgvrhhnpeffheeugeetiefhgeethfejgfdtuefggeejleehjeeutefhfeeggefhkedt
-    keetffenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpe
-    grrhhnugesrghrnhgusgdruggv
-X-ME-Proxy: <xmx:IrkNZqdurn1pAZmn1BsutWEZOlldn1f_7vqC_Qyet16gX73QcCGf-g>
-    <xmx:IrkNZkKThlNQFXFY9wDR6m0yfkH7BTbGAPijssbdrLBzfecnXGi3Zw>
-    <xmx:IrkNZnLDtbFtpyeoOKTq3NgArNsQXvm-ekqe70K-zU_nr2RJhxa_Ow>
-    <xmx:IrkNZtw_-4FGKFfJoWDPxvFQSajSe3nPMbh-XIDqb7mdYtllqro7Ug>
-    <xmx:I7kNZhBbynIJvPnLVfWiq1EaiNvZFJ5LpT2OKH66ISKV2AzejpxzzAw6>
-Feedback-ID: i56a14606:Fastmail
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-	id A45ECB6008D; Wed,  3 Apr 2024 16:16:34 -0400 (EDT)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.11.0-alpha0-333-gbfea15422e-fm-20240327.001-gbfea1542
+	s=arc-20240116; t=1712175807; c=relaxed/simple;
+	bh=MPsU28H2POUdiVS1YuPmiLhg1Rt8kKEk7jcvZln4UP8=;
+	h=From:To:Cc:Subject:Date:Message-ID:Mime-Version:Content-Type; b=hQYNo0ZdH/05eDYhzv13kkbO31ICAjd0od6mDZjF3erpg7Z0B5CqgNTnS2/2zJc+lkBgRShoj0NIemc7lHIGRqvzK4ZTmdK8NqqfRLHjDwzwIcB/6ZaV1o8R4jATf68Ye2HtMJvAgwJYE1S+Kgo85sAwHQB6zUfIRSxUuvXrwK8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=irl.hu; spf=pass smtp.mailfrom=irl.hu; arc=none smtp.client-ip=95.85.9.111
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=irl.hu
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=irl.hu
+Received: from fedori.lan (51b69867.dsl.pool.telekom.hu [::ffff:81.182.152.103])
+  (AUTH: CRAM-MD5 soyer@irl.hu, )
+  by irl.hu with ESMTPSA
+  id 000000000006DFF9.00000000660DBABA.00256B88; Wed, 03 Apr 2024 22:23:22 +0200
+From: Gergo Koteles <soyer@irl.hu>
+To: Ike Panhc <ike.pan@canonical.com>,
+  Hans de Goede <hdegoede@redhat.com>,
+  =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
+Cc: platform-driver-x86@vger.kernel.org,
+  linux-kernel@vger.kernel.org, Gergo Koteles <soyer@irl.hu>
+Subject: [PATCH v2] platform/x86: ideapad-laptop: switch platform profiles using thermal management key
+Date: Wed,  3 Apr 2024 22:23:15 +0200
+Message-ID: <797884d8cab030d3a2b656dba67f3c423cc58be7.1712174794.git.soyer@irl.hu>
+X-Mailer: git-send-email 2.44.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Message-Id: <74ed482b-7b2c-43bd-892f-824acec65f61@app.fastmail.com>
-In-Reply-To: <20240403154534.GE1363414@ziepe.ca>
-References: <20240328143051.1069575-1-arnd@kernel.org>
- <20240328143051.1069575-8-arnd@kernel.org>
- <20240403154534.GE1363414@ziepe.ca>
-Date: Wed, 03 Apr 2024 22:16:14 +0200
-From: "Arnd Bergmann" <arnd@arndb.de>
-To: "Jason Gunthorpe" <jgg@ziepe.ca>, "Arnd Bergmann" <arnd@kernel.org>
-Cc: linux-kernel@vger.kernel.org, "Leon Romanovsky" <leon@kernel.org>,
- "Nathan Chancellor" <nathan@kernel.org>,
- "Nick Desaulniers" <ndesaulniers@google.com>,
- "Bill Wendling" <morbo@google.com>, "Justin Stitt" <justinstitt@google.com>,
- "Kees Cook" <keescook@chromium.org>,
- "Gustavo A. R. Silva" <gustavoars@kernel.org>, linux-rdma@vger.kernel.org,
- llvm@lists.linux.dev
-Subject: Re: [PATCH 7/9] infiniband: uverbs: avoid out-of-range warnings
-Content-Type: text/plain
+Mime-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+X-Mime-Autoconverted: from 8bit to 7bit by courier 1.0
 
-On Wed, Apr 3, 2024, at 17:45, Jason Gunthorpe wrote:
-> On Thu, Mar 28, 2024 at 03:30:45PM +0100, Arnd Bergmann wrote:
->> From: Arnd Bergmann <arnd@arndb.de>
->> 
->> clang warns for comparisons that are always true, which is the case
->> for these two page size checks on architectures with 64KB pages:
->> 
->> drivers/infiniband/core/uverbs_ioctl.c:90:39: error: result of comparison of constant 65536 with expression of type 'u16' (aka 'unsigned short') is always false [-Werror,-Wtautological-constant-out-of-range-compare]
->>         WARN_ON_ONCE(method_elm->bundle_size > PAGE_SIZE);
->>         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~
->> include/asm-generic/bug.h:104:25: note: expanded from macro 'WARN_ON_ONCE'
->>         int __ret_warn_on = !!(condition);                      \
->>                                ^~~~~~~~~
->> drivers/infiniband/core/uverbs_ioctl.c:621:17: error: result of comparison of constant 65536 with expression of type '__u16' (aka 'unsigned short') is always false [-Werror,-Wtautological-constant-out-of-range-compare]
->>         if (hdr.length > PAGE_SIZE ||
->>             ~~~~~~~~~~ ^ ~~~~~~~~~
->> 
->> Add a cast to u32 in both cases, so it never warns about this.
->
-> But doesn't that hurt the codegen?
+Ideapad laptops have thermal management or performance mode switch key
+(Fn + Q). Now it sends KEY_PROG4.
 
-I just double-checked in the compiler explorer to confirm that
-this works as I expected: both gcc and clang are still able
-to optimize out the comparison for 64K pages, but clang no
-longer complains after my change that this is an obvious
-case.
+If supported, switch platform profiles instead.
 
-I also see that gcc still produces a -Wtype-limits warning, but that
-likely has to stay disabled because it produces too much output
-elsewhere and I don't see an easy way to shut it up.
+Tested on Yoga7 14ARB7.
 
-     Arnd
+Signed-off-by: Gergo Koteles <soyer@irl.hu>
+---
+Changes in v2:
+ - only switch platform profiles if supported, otherwise keep the 
+   behavior.
+
+[1]: https://lore.kernel.org/all/85254ce8e87570c05e7f04d6507701bef954ed75.1712149429.git.soyer@irl.hu/
+---
+ drivers/platform/x86/ideapad-laptop.c | 27 +++++++++++++++++++++++++--
+ 1 file changed, 25 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/platform/x86/ideapad-laptop.c b/drivers/platform/x86/ideapad-laptop.c
+index 901849810ce2..dba43c2d244b 100644
+--- a/drivers/platform/x86/ideapad-laptop.c
++++ b/drivers/platform/x86/ideapad-laptop.c
+@@ -1181,8 +1181,31 @@ static void ideapad_check_special_buttons(struct ideapad_private *priv)
+ 		switch (bit) {
+ 		case 6:	/* Z570 */
+ 		case 0:	/* Z580 */
+-			/* Thermal Management button */
+-			ideapad_input_report(priv, 65);
++			/* Thermal Management / Performance Mode button */
++			if (!priv->dytc) {
++				ideapad_input_report(priv, 65);
++				break;
++			}
++			switch (priv->dytc->current_profile) {
++			case PLATFORM_PROFILE_LOW_POWER:
++				dytc_profile_set(&priv->dytc->pprof,
++						 PLATFORM_PROFILE_BALANCED);
++				break;
++			case PLATFORM_PROFILE_BALANCED:
++				dytc_profile_set(&priv->dytc->pprof,
++						 PLATFORM_PROFILE_PERFORMANCE);
++				break;
++			case PLATFORM_PROFILE_PERFORMANCE:
++				dytc_profile_set(&priv->dytc->pprof,
++						 PLATFORM_PROFILE_LOW_POWER);
++				break;
++			default:
++				dev_warn(&priv->platform_device->dev,
++					 "Unexpected platform profile %d",
++					 priv->dytc->current_profile);
++			}
++			/* Notify user space the profile changed */
++			platform_profile_notify();
+ 			break;
+ 		case 1:
+ 			/* OneKey Theater button */
+
+base-commit: 39cd87c4eb2b893354f3b850f916353f2658ae6f
+-- 
+2.44.0
+
 
