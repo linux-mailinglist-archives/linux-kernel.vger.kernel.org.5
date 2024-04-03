@@ -1,148 +1,147 @@
-Return-Path: <linux-kernel+bounces-129068-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-129069-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id CE682896444
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 07:54:32 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8C6FD896447
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 07:57:06 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3E080B21ED2
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 05:54:30 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BDA281C23212
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 05:57:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E9CEC4D133;
-	Wed,  3 Apr 2024 05:54:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 627F34E1CB;
+	Wed,  3 Apr 2024 05:56:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="fbCKW/3w"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.15])
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="GoXtO7Vv"
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BA9224CB2B
-	for <linux-kernel@vger.kernel.org>; Wed,  3 Apr 2024 05:54:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.15
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2933A1870;
+	Wed,  3 Apr 2024 05:56:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712123663; cv=none; b=sGMToyYLueIoq6+z6dxkmXLZw3PEZbtXXaPkxBFn+6vp/iq//KkDGB8TDP3BM5H8WNrDz4DAi4yiLEfbXgsHjNJffnAREbnjbPHXN2gfERGhQep93moIoX1G9gMV+uqzWUJ3kVrYNS09/Z0Fzd2nzdrWOJ7nkbdeLPQI9RCE64c=
+	t=1712123816; cv=none; b=Qe8tr+OFdhc+hFKhZvV3VfqpknvxvEqAsKZZKhyy0MKOrBSSxIkYanVO6DM2Cqh4CB9tIAtXOkWwzSbOTR9XfH2s0RJdts8PVGSzTnNUkjBqS/VKwltWSSuEh/KmXQvJop19glr3x4g+COQ/dCT7jijDKRKpHycgBwjQsQgLEfM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712123663; c=relaxed/simple;
-	bh=2AbxKAfDZUN1hrqHIFLRsS3F44dpdKbXX0E1kqQankY=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition; b=KEfFf/7zZBNj6kWAgHcEYUrOvikeN7IwUAbCw29wlFGYPXP2QoC0FOmmtUwKFJdrmQbao+XoOkNcwfnV60p2t5hnUzA0mgV6PmUQzUVbI/URXkPz/Lg1g2tMJvgVTrK+aMRek/kebA/hew5uG+uZhkVFJ8h306YFjtvUt9CYm3c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=fbCKW/3w; arc=none smtp.client-ip=198.175.65.15
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1712123662; x=1743659662;
-  h=date:from:to:cc:subject:message-id:mime-version;
-  bh=2AbxKAfDZUN1hrqHIFLRsS3F44dpdKbXX0E1kqQankY=;
-  b=fbCKW/3w+kurh+LhzGuf81u1EEu0iAI7yCphvJ6nwvtsqbJmxHSSqDRM
-   Epfqd4j5fjR1hghL9ImMBEFc6oWChnOa83K1cjMw1OZn9ZZkwgOEriAx7
-   c8EXKakpVmA6gm5FByl2B9UmkJtgQ9aS2IoS5ixn3idmuWiA+z1/mLkPs
-   lpY+qWBIdzAm4LGhNOfKycDD3zbWyd0y63JUzxlxu0zwMMYLL9GGh0sd+
-   HN14V3c7c8g33kaQ+sJysI652plH0yZKlfIMsc4w8nvAoz6R7x/uW6Yo+
-   ILNUc5Rkfgrd+z987hKMtvUJM7qb+yOX+QeL1oTTy208wdjCdTi8I1ANq
-   w==;
-X-CSE-ConnectionGUID: DYBp18h3Sr2TXrgZFV+aSA==
-X-CSE-MsgGUID: FU5QPQnsQ5S9lYvNQrunxA==
-X-IronPort-AV: E=McAfee;i="6600,9927,11032"; a="11154091"
-X-IronPort-AV: E=Sophos;i="6.07,176,1708416000"; 
-   d="scan'208";a="11154091"
-Received: from orviesa006.jf.intel.com ([10.64.159.146])
-  by orvoesa107.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Apr 2024 22:54:22 -0700
-X-CSE-ConnectionGUID: YbCp/abMSxq0/KlztLLKBw==
-X-CSE-MsgGUID: dB/1mYqlRvSpj5mMrk7x8g==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,176,1708416000"; 
-   d="scan'208";a="18776156"
-Received: from wangmei-mobl.amr.corp.intel.com (HELO desk) ([10.209.86.58])
-  by orviesa006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Apr 2024 22:54:22 -0700
-Date: Tue, 2 Apr 2024 22:54:19 -0700
-From: Pawan Gupta <pawan.kumar.gupta@linux.intel.com>
-To: Thomas Gleixner <tglx@linutronix.de>, Borislav Petkov <bp@alien8.de>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Josh Poimboeuf <jpoimboe@kernel.org>,
-	Ingo Molnar <mingo@redhat.com>,
-	Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-	"H. Peter Anvin" <hpa@zytor.com>
-Cc: Daniel Sneddon <daniel.sneddon@linux.intel.com>,
-	antonio.gomez.iglesias@linux.intel.com,
-	alyssa.milburn@linux.intel.com, andrew.cooper3@citrix.com,
-	linux-kernel@vger.kernel.org,
-	Alyssa Milburn <alyssa.milburn@intel.com>, stable@kernel.org
-Subject: [PATCH v3] x86/bugs: Default retbleed to =stuff when retpoline is
- enabled
-Message-ID: <20240402-retbleed-auto-stuff-v3-1-e65f275a8ec8@linux.intel.com>
-X-B4-Tracking: v=1; b=H4sIAJ/uDGYC/33NQQ7CIBCF4asY1tIwQBvqynsYF9gOlqSCAUpqm
- t5d2pWJxuX/kvlmIRGDxUhOh4UEzDZa70qI44F0g3Z3pLYvTTjjknGmaMB0GxF7qqfkaUyTMbQ
- WyIxuQbAaSbl8BjR23tXLtfRgY/LhtT/JsK3/vQwUaGOAYw1CNcqcR+umubIu4Vh1/kE2NfMPC
- fhviRdJtZJBI1shQX9L67q+Ae7piSsGAQAA
-X-Mailer: b4 0.12.3
+	s=arc-20240116; t=1712123816; c=relaxed/simple;
+	bh=1SHiij+ZVkWmkcRsHtsHy6EHB+og9wA1svshcDPXjog=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=fNHPDiC0qcc1Usi5Mu5J/Y+T/31WgIK1pqXVkZ8OeJH9PuG0jbS+I1uTPg8K1TmZWJk9TfBcJvbywGavCEJg0gXJQWAWM+uy4lQbZt82Fuw/PRnTOYlEk80mYZyUedCDjRlx358S/VWnI+45tzsfk/CtqHDPkC23rrr99cDln0o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=GoXtO7Vv; arc=none smtp.client-ip=205.220.180.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279872.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 4335nfd9020372;
+	Wed, 3 Apr 2024 05:56:51 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	message-id:date:mime-version:subject:to:cc:references:from
+	:in-reply-to:content-type:content-transfer-encoding; s=
+	qcppdkim1; bh=bBWpql9YNcSzSsaBXGPIGlFx897DY1V9TTw2Z7sR13U=; b=Go
+	XtO7Vv4N4X7km6mVAmHHWUgsmL/93Kn8H3S92Xaa9btoNRoGy8r71Xeof3DFxnH1
+	t37a9NiwtcEKS6EG/t+idiXnu5ern6qrVbhL8XgdJ/lUVvb4VQQJOgF+vBFOEAqx
+	m/zlblNSg14KD1Sih22VfQddKj4b8AdDrLibWxJX//MAF7z41hRro4yH++J4cTJv
+	UL7HFHMfgacoVg8u5VBlsj7AW2+AlD9Si9caQjsjeDFaTxkyYnXl+JQCBXYrxUfo
+	WJ7qcwdE7Zi4U3MoAWE9ab+rtrE2J4jQFkmeZd0Wm9aB4gX6DvcvdVTGKVL+Zoth
+	slf2/Exl/6dtiTdI+NjA==
+Received: from nasanppmta01.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3x8v3f8j8t-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 03 Apr 2024 05:56:51 +0000 (GMT)
+Received: from nasanex01c.na.qualcomm.com (nasanex01c.na.qualcomm.com [10.45.79.139])
+	by NASANPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 4335uo6P022876
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 3 Apr 2024 05:56:50 GMT
+Received: from [10.218.22.190] (10.80.80.8) by nasanex01c.na.qualcomm.com
+ (10.45.79.139) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.4; Tue, 2 Apr 2024
+ 22:56:46 -0700
+Message-ID: <669b516a-74c7-445a-b151-5463fe39b21b@quicinc.com>
+Date: Wed, 3 Apr 2024 11:26:42 +0530
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2] i2c: i2c-qcom-geni: Add support to share an I2C SE
+ from two subsystem
+Content-Language: en-US
+To: Konrad Dybcio <konrad.dybcio@linaro.org>, <andersson@kernel.org>,
+        <andi.shyti@kernel.org>, <linux-arm-msm@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <linux-i2c@vger.kernel.org>,
+        <dmaengine@vger.kernel.org>
+CC: <quic_vdadhani@quicinc.com>, Vinod Koul <vkoul@kernel.org>
+References: <20240402062131.9836-1-quic_msavaliy@quicinc.com>
+ <51c84af2-73f7-4af4-8676-2276b6c7786d@linaro.org>
+From: Mukesh Kumar Savaliya <quic_msavaliy@quicinc.com>
+In-Reply-To: <51c84af2-73f7-4af4-8676-2276b6c7786d@linaro.org>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nasanex01c.na.qualcomm.com (10.45.79.139)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: c9hYjDh4pB5He_4GPI0EtGI50ze-svD3
+X-Proofpoint-GUID: c9hYjDh4pB5He_4GPI0EtGI50ze-svD3
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-04-03_04,2024-04-01_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
+ phishscore=0 priorityscore=1501 suspectscore=0 mlxscore=0 bulkscore=0
+ malwarescore=0 mlxlogscore=999 clxscore=1015 spamscore=0 impostorscore=0
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2403210001 definitions=main-2404030038
 
-On Intel systems when retpoline mitigation is enabled for spectre-v2,
-retbleed=auto does not enable RSB stuffing. This may make the system
-vulnerable to retbleed. Retpoline is not the default mitigation when
-IBRS is present, but in virtualized cases a VMM can hide IBRS from
-guests, resulting in guest deploying retpoline by default. Even if IBRS
-is enumerated, a user can still select spectre_v2=retpoline.
+Thanks Konrad. I understood.
 
-As with other mitigations, mitigate retbleed by default. On Intel
-systems when retpoline is enabled, and retbleed mitigation is set to
-auto, enable Call Depth Tracking and RSB stuffing i.e. retbleed=stuff
-mitigation. For AMD/Hygon auto mode already selects the appropriate
-mitigation.
+On 4/2/2024 7:54 PM, Konrad Dybcio wrote:
+> On 2.04.2024 8:21 AM, Mukesh Kumar Savaliya wrote:
+>> Add feature to share an I2C serial engine between two subsystems(SS) so
+>> that individual clients from different subsystems can access the same bus.
+>> For example single i2c slave device can be accessed by Client driver from
+>> APPS OR modem subsystem image. Same way we can have slave being accessed
+>> between APPS and TZ subsystems.
+>>
+>> This is possible in GSI mode where driver queues the TREs with required
+>> descriptors and ensures to execute TREs in an mutually exclusive way.
+>> Issue a "Lock TRE" command at the start of the transfer and an "Unlock TRE"
+>> command at the end of the transfer. This prevents other subsystems from
+>> concurrently performing DMA transfers and avoids disturbance to data path.
+>> Change MAX_TRE macro to 5 from 3 because of these two additional TREs.
+>>
+>> Since the GPIOs are also shared for the i2c bus, do not touch GPIO
+>> configuration while going to runtime suspend and only turn off the
+>> clocks. This will allow other SS to continue to transfer the data.
+>>
+>> This feature needs to be controlled by DTSI flag to make it flexible
+>> based on the usecase, hence during probe check the same from i2c driver.
+>>
+>> Export function geni_se_clks_off() to call explicitly instead of
+>> geni_se_resources_off() to not modify TLMM configuration as other SS might
+>> perform the transfer while APPS SS can go to sleep.
+>>
+>> Signed-off-by: Mukesh Kumar Savaliya <quic_msavaliy@quicinc.com>
+>> ---
+>> v1 -> v2:
+>> - Addressed review comments.
+> 
+> The biggest one ("too many changes across the board") is still not
+> addressed and the patch will not be further reviewed until that is done.
+> 
+> Each subsystem has different owners and each change requires an explanation
+> (maintainers always "expect your patch to be wrong" and you need to
+> convince them otherwise through commit messages)
+> 
+Sure, I got it. Will send patch dividing logically between i2c, dma.
+I have already responded in just previous Mail to seek clarity as below.
+It was :
+"Please correct me if this is wrong. The overall change is for i2c in 
+GSI DMA mode. This also requires changes in resource control like TLMM 
+changes. But it's more like integrated feature.
+Are you suggesting to make 3 sub-patches under same change ? "
 
-Reported-by: Alyssa Milburn <alyssa.milburn@intel.com>
-Cc: stable@kernel.org
-Signed-off-by: Pawan Gupta <pawan.kumar.gupta@linux.intel.com>
----
-v3:
-- Rebased to v6.9-rc2
 
-v2: https://lore.kernel.org/r/20240212-retbleed-auto-stuff-v2-1-89401649341a@linux.intel.com
-- Mitigate retbleed by default for spectre_v2=retpoline. (Josh)
-- Add the missing ',' in the comment. (Josh)
-- Rebased to v6.8-rc4
 
-v1: https://lore.kernel.org/r/20240208-retbleed-auto-stuff-v1-1-6f12e513868f@linux.intel.com
----
- arch/x86/kernel/cpu/bugs.c | 10 ++++++++--
- 1 file changed, 8 insertions(+), 2 deletions(-)
-
-diff --git a/arch/x86/kernel/cpu/bugs.c b/arch/x86/kernel/cpu/bugs.c
-index e7ba936d798b..69d8ce58f244 100644
---- a/arch/x86/kernel/cpu/bugs.c
-+++ b/arch/x86/kernel/cpu/bugs.c
-@@ -1092,11 +1092,17 @@ static void __init retbleed_select_mitigation(void)
- 			else if (IS_ENABLED(CONFIG_MITIGATION_IBPB_ENTRY) &&
- 				 boot_cpu_has(X86_FEATURE_IBPB))
- 				retbleed_mitigation = RETBLEED_MITIGATION_IBPB;
-+		} else if (boot_cpu_data.x86_vendor == X86_VENDOR_INTEL &&
-+			   spectre_v2_enabled == SPECTRE_V2_RETPOLINE) {
-+			if (IS_ENABLED(CONFIG_CALL_DEPTH_TRACKING))
-+				retbleed_mitigation = RETBLEED_MITIGATION_STUFF;
-+			else
-+				pr_err("WARNING: Retpoline enabled, but kernel not compiled with CALL_DEPTH_TRACKING.\n");
- 		}
- 
- 		/*
--		 * The Intel mitigation (IBRS or eIBRS) was already selected in
--		 * spectre_v2_select_mitigation().  'retbleed_mitigation' will
-+		 * If Intel mitigation (IBRS or eIBRS) was already selected in
-+		 * spectre_v2_select_mitigation(),  'retbleed_mitigation' will
- 		 * be set accordingly below.
- 		 */
- 
-
----
-base-commit: 39cd87c4eb2b893354f3b850f916353f2658ae6f
-change-id: 20240208-retbleed-auto-stuff-53e0fa91305e
-
+> Konrad
 
