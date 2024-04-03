@@ -1,166 +1,142 @@
-Return-Path: <linux-kernel+bounces-130096-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-130097-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5D03689740F
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 17:33:35 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id E4EE0897412
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 17:33:42 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 78F821C26B45
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 15:33:34 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9A2D11F223FE
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 15:33:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A967D14A4C6;
-	Wed,  3 Apr 2024 15:33:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7F5B614A4F0;
+	Wed,  3 Apr 2024 15:33:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="QKSKP8k9"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="bl9dPTS9"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E4633139D17;
-	Wed,  3 Apr 2024 15:33:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B8CEA14A4C8;
+	Wed,  3 Apr 2024 15:33:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712158407; cv=none; b=pqQfDb88T6QGp87PRGVRWr6KvXUfGh732vtKix05rcvvUEGl3bQ5TGpYtlQmjxjUcp1cJahGZAi2P5B+MV1OU4OOtonaUlw89wq9hv6TsJQr3gyxgNrxCveBp0jOHOLqUfi1g+goa5LaKbf80jrJu72eYJE08/t48T9pOfvnQ6Y=
+	t=1712158407; cv=none; b=amTdQkjvVmrNS/hDxyNT6sd+Irfwfs6iaWoULZIKps/yA2Bs4NBKoUC7GwNrXS6zVD6tLt3XXdTR97MPI9TBtUWxVtyHgG1M4OJargTnTMaeS/3oamNt8A5/PWoueTqdelK7yVXq0xp4hrZNjyzviJicYiuRKBBB/w1lAeB47OE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1712158407; c=relaxed/simple;
-	bh=HyRVKVZLib2Qi5jNnjsMMZBqiCB0TsCEtOsioaftDFM=;
-	h=Mime-Version:Content-Type:Date:Message-Id:Cc:Subject:From:To:
-	 References:In-Reply-To; b=jBg4H25Q6UuKs7hxbvV65aqGDtKKp90LOUEB9V8aA3we0wzBcrfQ2VLFzG96mIaaz0pFFd5KHZflZ/FP3UXEE6u9ulbdCoDrWSYLDska9QAznWhYC6hMJpJMq3wGmGsBxb6+3jBs8nf5IyqRluS+dlGs4n+UymI9R2XSqOKMAF4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=QKSKP8k9; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1356CC433C7;
-	Wed,  3 Apr 2024 15:33:21 +0000 (UTC)
+	bh=9KfcCS7D7DjPFMDq2QQ5xmLYUD9hfXeg8QO/vO8OgGo=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=gX7I5ReWSiIPTorXNYor878SKXIiPd8shbVxkgpPhOp70tTV74qZu6ufOIhDJT6aGhtxvMIiZ/PV/to8gXQ/8plasiz5vEHN1ByHbnFJDCExlxwJujxIpxOptnnpEMCgH6RGWGR+Nue2rcq1GVXfI1jZpvUxzkDFPtI9ARts5M8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=bl9dPTS9; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DC34DC433F1;
+	Wed,  3 Apr 2024 15:33:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712158406;
-	bh=HyRVKVZLib2Qi5jNnjsMMZBqiCB0TsCEtOsioaftDFM=;
-	h=Date:Cc:Subject:From:To:References:In-Reply-To:From;
-	b=QKSKP8k9E0RIb0YQFAOClleU8yl67e7l5fuoahSVZklTWnFKmag6DeIELlvJS3XF2
-	 1SPFgMK7KkrFGiKOYqtM0WuAHzgJOUJJfJYwe+dCFMizkP0+Hm827qe3ORTst70SEF
-	 jf2/6sRiK691LLVhH7qIKlGPvSqWxSfQymBddtCSbxlkw0hu2ma9JFYru2Do+5efqt
-	 +U0Cbs+P7n44HUL+9JU1j3hqkiciTgRerfYT7ZpYd3ieMHMcrURaf6sWjnomY2WCNH
-	 0lqwX2bgfZVW3ks8w2q0FrHhbtm/ll2FLLE93UuPF93P+xRZ9w8wrvInsMo46Wtrj6
-	 6ewpXop4JyptA==
+	s=k20201202; t=1712158407;
+	bh=9KfcCS7D7DjPFMDq2QQ5xmLYUD9hfXeg8QO/vO8OgGo=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=bl9dPTS9Ifzv+/IEXdTzsyizBHuvYXnJuM15/DFAEnKts7/Wqya6/+xQimW0Fcbzu
+	 tHPy9M6iBjlfYaybYv5jWs39ZystLjywI5Axknv7K/TQSNUvmT3WxzZoKoP7pp3NkN
+	 GcH6teFpQpQKstYnRzsFVQiQ7RprXGCpyb5sEg2zTMKLMuUQwLydXRDCiKqZ3Qw7/C
+	 uEKzDRmUCtbDyn1nRpWNjRiapS+LSfmzOuCki9hQi7N4/vGfqPyVy9gQvwZu9ML3B/
+	 7nUGvc9plYSmw3pO1lPVyAlLKmZ6EWqbB1dbmNwy1PZknN35R7s3452/C79RIDPPkI
+	 VzGLV6ji/inGg==
+Date: Wed, 3 Apr 2024 12:33:24 -0300
+From: Arnaldo Carvalho de Melo <acme@kernel.org>
+To: Ian Rogers <irogers@google.com>
+Cc: Yang Jihong <yangjihong@bytedance.com>, peterz@infradead.org,
+	mingo@redhat.com, namhyung@kernel.org, mark.rutland@arm.com,
+	alexander.shishkin@linux.intel.com, jolsa@kernel.org,
+	adrian.hunter@intel.com, kan.liang@linux.intel.com,
+	james.clark@arm.com, linux-perf-users@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] perf beauty: Fix AT_EACCESS undeclared build error for
+ system with kernel versions lower than v5.8
+Message-ID: <Zg12xH_x_D3yq5ug@x1>
+References: <20240403122558.1438841-1-yangjihong@bytedance.com>
+ <Zg1l3RUMrzJaBYcP@x1>
+ <CAP-5=fW36AauhRemyNah_a4bnLWisV2kxmVZadtSb2xHA8RfrA@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset=UTF-8
-Date: Wed, 03 Apr 2024 18:33:20 +0300
-Message-Id: <D0ALHYK53O0Z.31OREWUI3J9N2@kernel.org>
-Cc: <dave.hansen@linux.intel.com>, <tj@kernel.org>,
- <linux-kernel@vger.kernel.org>, <linux-sgx@vger.kernel.org>,
- <x86@kernel.org>, <cgroups@vger.kernel.org>, <tglx@linutronix.de>,
- <mingo@redhat.com>, <bp@alien8.de>, <hpa@zytor.com>,
- <sohil.mehta@intel.com>, <tim.c.chen@linux.intel.com>,
- <zhiquan1.li@intel.com>, <kristen@linux.intel.com>, <seanjc@google.com>,
- <zhanb@microsoft.com>, <anakrish@microsoft.com>,
- <mikko.ylinen@linux.intel.com>, <yangjie@microsoft.com>,
- <chrisyan@microsoft.com>
-Subject: Re: [PATCH v9 15/15] selftests/sgx: Add scripts for EPC cgroup
- testing
-From: "Jarkko Sakkinen" <jarkko@kernel.org>
-To: "Haitao Huang" <haitao.huang@linux.intel.com>,
- =?utf-8?q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>
-X-Mailer: aerc 0.17.0
-References: <20240205210638.157741-1-haitao.huang@linux.intel.com>
- <20240205210638.157741-16-haitao.huang@linux.intel.com>
- <4be7b291010973c203ed8c7bcd25b626c1290231.camel@kernel.org>
- <D04OVW6I8MUA.1OAIHFQ8943SM@kernel.org>
- <op.2lbjl0oawjvjmi@hhuan26-mobl.amr.corp.intel.com>
- <D071OAFZ80O6.XEDXJ8AF4PK9@kernel.org>
- <D071QIHLW7MP.UM9R3VYETIOK@kernel.org>
- <htiz5jgsby5v262saphhomcsxtixb2u7ot6jcghpfhvgz65ht6@qlz3gpdwapaa>
- <D09MB26IPFFW.3UBD7M0S17SG6@kernel.org>
- <op.2llzn7wgwjvjmi@hhuan26-mobl.amr.corp.intel.com>
-In-Reply-To: <op.2llzn7wgwjvjmi@hhuan26-mobl.amr.corp.intel.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAP-5=fW36AauhRemyNah_a4bnLWisV2kxmVZadtSb2xHA8RfrA@mail.gmail.com>
 
-On Tue Apr 2, 2024 at 7:20 PM EEST, Haitao Huang wrote:
-> On Tue, 02 Apr 2024 06:58:40 -0500, Jarkko Sakkinen <jarkko@kernel.org> =
-=20
-> wrote:
->
-> > On Tue Apr 2, 2024 at 2:23 PM EEST, Michal Koutn=C3=BD wrote:
-> >> Hello.
-> >>
-> >> On Sat, Mar 30, 2024 at 01:26:08PM +0200, Jarkko Sakkinen =20
-> >> <jarkko@kernel.org> wrote:
-> >> > > > It'd be more complicated and less readable to do all the stuff =
-=20
-> >> without the
-> >> > > > cgroup-tools, esp cgexec. I checked dependency, cgroup-tools onl=
-y =20
-> >> depends
-> >> > > > on libc so I hope this would not cause too much inconvenience.
-> >> > >
-> >> > > As per cgroup-tools, please prove this. It makes the job for more
-> >> > > complicated *for you* and you are making the job more  complicated
-> >> > > to every possible person in the planet running any kernel QA.
-> >> > >
-> >> > > I weight the latter more than the former. And it is exactly the
-> >> > > reason why we did custom user space kselftest in the first place.
-> >> > > Let's keep the tradition. All I can say is that kselftest is
-> >> > > unfinished in its current form.
-> >> > >
-> >> > > What is "esp cgexec"?
-> >> >
-> >> > Also in kselftest we don't drive ultimate simplicity, we drive
-> >> > efficient CI/QA. By open coding something like subset of
-> >> > cgroup-tools needed to run the test you also help us later
-> >> > on to backtrack the kernel changes. With cgroups-tools you
-> >> > would have to use strace to get the same info.
-> >>
-> >> FWIW, see also functions in
-> >> tools/testing/selftests/cgroup/cgroup_util.{h,c}.
-> >> They likely cover what you need already -- if the tests are in C.
-> >>
-> >> (I admit that stuff in tools/testing/selftests/cgroup/ is best
-> >> understood with strace.)
+On Wed, Apr 03, 2024 at 08:05:32AM -0700, Ian Rogers wrote:
+> On Wed, Apr 3, 2024 at 7:21 AM Arnaldo Carvalho de Melo <acme@kernel.org> wrote:
 > >
-> > Thanks!
+> > On Wed, Apr 03, 2024 at 08:25:58PM +0800, Yang Jihong wrote:
+> > > In the environment of ubuntu20.04 (the version of kernel headers is 5.4),
+> > > there is an error in building perf:
+> > >
+> > >     CC      trace/beauty/fs_at_flags.o
+> > >   trace/beauty/fs_at_flags.c: In function ‘faccessat2__scnprintf_flags’:
+> > >   trace/beauty/fs_at_flags.c:35:14: error: ‘AT_EACCESS’ undeclared (first use in this function); did you mean ‘DN_ACCESS’?
+> > >      35 |  if (flags & AT_EACCESS) {
+> > >         |              ^~~~~~~~~~
+> > >         |              DN_ACCESS
+> > >   trace/beauty/fs_at_flags.c:35:14: note: each undeclared identifier is reported only once for each function it appears in
+> > >
+> > > commit 8a1ad4413519 ("tools headers: Remove now unused copies of
+> > > uapi/{fcntl,openat2}.h and asm/fcntl.h") removes fcntl.h from tools
+> > > headers directory, and fs_at_flags.c uses the 'AT_EACCESS' macro.
+> > > This macro was introduced in the kernel version v5.8.
+> > > For system with a kernel version older than this version,
+> > > it will cause compilation to fail.
 > >
-> > My conclusions are that:
+> > Thanks, I test on it, but since I didn't found libtraceevent-devel
+> > available there, then I have to build with NO_LIBTRACEEVENT=1 and thus
+> > this doesn't get built :-\
 > >
-> > 1. We probably cannot move the test part of cgroup test itself
-> >    given the enclave payload dependency.
-> > 2. I think it makes sense to still follow the same pattern as
-> >    other cgroups test and re-use cgroup_util.[ch] functionaltiy.
-> >
-> > So yeah I guess we need two test programs instead of one.
-> >
-> > Something along the lines:
-> >
-> > 1. main.[ch] -> test_sgx.[ch]
-> > 2. introduce test_sgx_cgroup.c
-> >
-> > And test_sgx_cgroup.c would be implement similar test as the shell
-> > script and would follow the structure of existing cgroups tests.
-> >
-> >>
-> >> HTH,
-> >> Michal
-> >
-> > BR, Jarkko
-> >
-> Do we really want to have it implemented in c? There are much fewer lines=
- =20
-> of code in shell scripts. Note we are not really testing basic cgroup =20
-> stuff. All we needed were creating/deleting cgroups and set limits which =
-I =20
-> think have been demonstrated feasible in the ash scripts now.
->
-> Given Dave's comments, and test scripts being working and cover the cases=
- =20
-> needed IMHO, I don't see much need to move to c code. I can add more case=
-s =20
-> if needed and fall back a c implementation later  if any case can't be =
-=20
-> implemented in scripts. How about that?
+> > Thanks, applying.
+> 
+> Yang also wrote:
+> https://lore.kernel.org/lkml/20240314063000.2139877-1-yangjihong@bytedance.com/
+> that may have helped you with this.
 
-We can settle to: ash + no dependencies. I guess you have for that
-all the work done already.
+Yeah, if I change my build container on distros that don't provide
+libtraceevent-devel to build it from sources, and then point the perf
+build to that directory, I'll try to do that.
 
-BR, Jarkko
+And I just merged that patch, thanks for pointing it out.
+
+- Arnaldo
+ 
+> Thanks,
+> Ian
+> 
+> > - Arnaldo
+> >
+> > > Fixes: 8a1ad4413519 ("tools headers: Remove now unused copies of uapi/{fcntl,openat2}.h and asm/fcntl.h")
+> > > Signed-off-by: Yang Jihong <yangjihong@bytedance.com>
+> > > ---
+> > >  tools/perf/trace/beauty/fs_at_flags.c | 8 ++++++++
+> > >  1 file changed, 8 insertions(+)
+> > >
+> > > diff --git a/tools/perf/trace/beauty/fs_at_flags.c b/tools/perf/trace/beauty/fs_at_flags.c
+> > > index c1365e8f0b96..c200669cb944 100644
+> > > --- a/tools/perf/trace/beauty/fs_at_flags.c
+> > > +++ b/tools/perf/trace/beauty/fs_at_flags.c
+> > > @@ -10,6 +10,14 @@
+> > >  #include <linux/fcntl.h>
+> > >  #include <linux/log2.h>
+> > >
+> > > +/*
+> > > + * uapi/linux/fcntl.h does not keep a copy in tools headers directory,
+> > > + * for system with kernel versions before v5.8, need to sync AT_EACCESS macro.
+> > > + */
+> > > +#ifndef AT_EACCESS
+> > > +#define AT_EACCESS 0x200
+> > > +#endif
+> > > +
+> > >  #include "trace/beauty/generated/fs_at_flags_array.c"
+> > >  static DEFINE_STRARRAY(fs_at_flags, "AT_");
+> > >
+> > > --
+> > > 2.25.1
+> > >
 
