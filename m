@@ -1,46 +1,46 @@
-Return-Path: <linux-kernel+bounces-129928-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-129929-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0248E897223
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 16:16:07 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 74A7F897226
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 16:16:22 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8433A1F2AFB9
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 14:16:06 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id DFB2B1F2AF8A
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 14:16:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0B6E41494CD;
-	Wed,  3 Apr 2024 14:15:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C63C1149C67;
+	Wed,  3 Apr 2024 14:15:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="qVMeXyim"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="dFoE512m"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 019551494A4;
-	Wed,  3 Apr 2024 14:15:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EECC51494DF;
+	Wed,  3 Apr 2024 14:15:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712153751; cv=none; b=I4kHHHfziLAvObBw50tS0+rq6zAJ0CzirFk5/AgZqDwLaC3q4/U76xuluXADyiVhuLpyWAMVhJaDYSCYDiz7dFoIOfgJMJVBYHbhJBiMybqXNAc9u48vj62ie5fQJsizbWNUAvwyoNv+7Hnfq00OHe/vtVARj5ZKbQUx+4SLddI=
+	t=1712153753; cv=none; b=EHUtmiQ3mgfhhwQHitbu7FMavk7innk3eBEypBn4173SziggITUfJnOKzdP3JNOJ0n0c+LjTt0aTmfBCdyRsiwVx4wzioahwn8SIUmbJpZ5zOEszBhx/AzBDO0a4iu3hrp0gi0QZNHkUyWiFkmnbkGc/XIQrb2IVtr1S0DrgMjo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712153751; c=relaxed/simple;
-	bh=fhWJwSS6WUV/rQ1vsqKn3NpS8O4ZJ7RWPCIyi0ILAjg=;
+	s=arc-20240116; t=1712153753; c=relaxed/simple;
+	bh=AGm142b/yVCmNmu6A99sSruEUQ1gyoAnLozRBsZbhnw=;
 	h=Date:Content-Type:MIME-Version:From:To:Cc:In-Reply-To:References:
-	 Message-Id:Subject; b=s7R1aBASuwesollcxBaLp5qXgl68t/YXfpx7zdm4ElVw+dt9KNNe33s0+EDl4kSXJNXmyO0DKuWaB/ZMLZBva2We9+zZzp6aZceATZ7dOuXb7JgN0C1sPTYgw7gL/f0vzIsr9TrdTDzaCrj8aBJCh7t6g9Pqd6HogNzzo98SOHw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=qVMeXyim; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2DB8EC433A6;
-	Wed,  3 Apr 2024 14:15:50 +0000 (UTC)
+	 Message-Id:Subject; b=UZjKrhNavZVJpEeJs77du2jI2lXU+u0QMROVP/7NYObFy8KwbKLhGow1tJtEVNGMrmN2SB1TX3TgaLfHb0B/H2MZJpuapqYPozEbeVT4AmbYpQEV2OL269Qd5eSnZY6BqzXkSGzjVbv0ODK2MAHpy9PJ/S9oNKAihxKOcp1GNpI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=dFoE512m; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A4419C433C7;
+	Wed,  3 Apr 2024 14:15:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712153750;
-	bh=fhWJwSS6WUV/rQ1vsqKn3NpS8O4ZJ7RWPCIyi0ILAjg=;
+	s=k20201202; t=1712153752;
+	bh=AGm142b/yVCmNmu6A99sSruEUQ1gyoAnLozRBsZbhnw=;
 	h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
-	b=qVMeXyimG4WyeARwYMaux29uT2VipP+ejvreMeuSgGiscGgrKQEvS5oHXOig66ADg
-	 jhlHyt69Ezu3ZeCqEBieUe+3deKg6DBvCcoPThTcpMqm+c2GHHEFyCr0Ur40UaBn88
-	 l/zzbjq1jO16rDFUJ7O2vhbaVhwa1//BJZ55CV0Ih9ywWGWaU9oKNDlaMxBsPhKEBP
-	 pMxQV75XCMu1Z+4Z5+VAqeximZ9da+yMgzXuoFU9drDuMqlAIBPgVV+wowpJF7oAJv
-	 bEErCovXIf6jU++9VxTrUoTKVbhFmPtD9n7P+PcwXA5s2c3/rLd1680Sses3eywqQx
-	 S4t5Ge6o9HPcQ==
-Date: Wed, 03 Apr 2024 09:15:49 -0500
+	b=dFoE512mf4xSyfoyl8WsEY8iL2nSNb9RnbGkAVd/SYvwSGSQ25QRISABTzRig6yeG
+	 WHYmd77C2jCKU2sHmTkmANozc/xmzFPjFIpaxyRiGljVrX23UWfDV/gE31BqzQ+tac
+	 zhjBJv/KLPP2FUR1rsje5yFVi6FQfWbChL8D1wbw9hQIk3pRx1ZeBcXSniJ0KaKN4A
+	 EN71CQ05sai+593SdIAZqbsUaeUvE+DvwtOQWf2cmK3NBa9ju21J8U7RvVdiyAvqMk
+	 f/OJGON/m1mP0SBG/No5EAV8NxX8n/p3gXQDjmdjFiizs82DDTeL1fVhdM7Bt2zRX3
+	 ZNpHDs6qV84HA==
+Date: Wed, 03 Apr 2024 09:15:51 -0500
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
@@ -50,180 +50,88 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 From: Rob Herring <robh@kernel.org>
-To: =?utf-8?q?Duje_Mihanovi=C4=87?= <duje.mihanovic@skole.hr>
-Cc: phone-devel@vger.kernel.org, linux-gpio@vger.kernel.org, 
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
- "Guilherme G. Piccoli" <gpiccoli@igalia.com>, linux-kernel@vger.kernel.org, 
- Catalin Marinas <catalin.marinas@arm.com>, 
- ~postmarketos/upstreaming@lists.sr.ht, 
- Andy Shevchenko <andriy.shevchenko@linux.intel.com>, 
- linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org, 
- Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>, 
- Linus Walleij <linus.walleij@linaro.org>, Kees Cook <keescook@chromium.org>, 
- Rob Herring <robh+dt@kernel.org>, Stephen Boyd <sboyd@kernel.org>, 
- Lubomir Rintel <lkundrak@v3.sk>, Will Deacon <will@kernel.org>, 
- Karel Balej <balejk@matfyz.cz>, linux-clk@vger.kernel.org, 
- Conor Dooley <conor.dooley@microchip.com>, Tony Lindgren <tony@atomide.com>, 
- David Wronek <david@mainlining.org>, 
- Haojian Zhuang <haojian.zhuang@linaro.org>, Tony Luck <tony.luck@intel.com>, 
- Conor Dooley <conor+dt@kernel.org>, 
- Michael Turquette <mturquette@baylibre.com>
-In-Reply-To: <20240402-pxa1908-lkml-v9-0-25a003e83c6f@skole.hr>
-References: <20240402-pxa1908-lkml-v9-0-25a003e83c6f@skole.hr>
-Message-Id: <171215356225.3499035.10345778780745596314.robh@kernel.org>
-Subject: Re: [PATCH v9 0/9] Initial Marvell PXA1908 support
+To: Sumit Garg <sumit.garg@linaro.org>
+Cc: devicetree@vger.kernel.org, neil.armstrong@linaro.org, 
+ caleb.connolly@linaro.org, conor+dt@kernel.org, pascal.eberhard@se.com, 
+ krzysztof.kozlowski+dt@linaro.org, stephan@gerhold.net, 
+ linux-kernel@vger.kernel.org, benjamin.missey@non.se.com, 
+ daniel.thompson@linaro.org, linux-arm-msm@vger.kernel.org, 
+ andersson@kernel.org, dmitry.baryshkov@linaro.org, jimmy.lalande@se.com, 
+ konrad.dybcio@linaro.org, robh+dt@kernel.org, laetitia.mariottini@se.com, 
+ abdou.saker@se.com
+In-Reply-To: <20240403043416.3800259-1-sumit.garg@linaro.org>
+References: <20240403043416.3800259-1-sumit.garg@linaro.org>
+Message-Id: <171215356255.3499051.5100972545068729440.robh@kernel.org>
+Subject: Re: [PATCH v5 0/3] arm64: dts: qcom: apq8016: Add Schneider HMIBSC
+ board DTS
 
 
-On Tue, 02 Apr 2024 22:55:36 +0200, Duje Mihanović wrote:
-> Hello,
+On Wed, 03 Apr 2024 10:04:13 +0530, Sumit Garg wrote:
+> Add Schneider Electric HMIBSC board DTS. The HMIBSC board is an IIoT Edge
+> Box Core board based on the Qualcomm APQ8016E SoC. For more information
+> refer to the product page [1].
 > 
-> This series adds initial support for the Marvell PXA1908 SoC and
-> "samsung,coreprimevelte", a smartphone using the SoC.
+> One of the major difference from db410c is serial port where HMIBSC board
+> uses UART1 as the debug console with a default RS232 mode (UART1 mode mux
+> configured via gpio99 and gpio100).
 > 
-> USB works and the phone can boot a rootfs from an SD card, but there are
-> some warnings in the dmesg:
+> Support for Schneider Electric HMIBSC. Features:
+> - Qualcomm Snapdragon 410C SoC - APQ8016 (4xCortex A53, Adreno 306)
+> - 1GiB RAM
+> - 8GiB eMMC, SD slot
+> - WiFi and Bluetooth
+> - 2x Host, 1x Device USB port
+> - HDMI
+> - Discrete TPM2 chip over SPI
+> - USB ethernet adaptors (soldered)
 > 
-> During SMP initialization:
-> [    0.006519] CPU features: SANITY CHECK: Unexpected variation in SYS_CNTFRQ_EL0. Boot CPU: 0x000000018cba80, CPU1: 0x00000000000000
-> [    0.006542] CPU features: Unsupported CPU feature variation detected.
-> [    0.006589] CPU1: Booted secondary processor 0x0000000001 [0x410fd032]
-> [    0.010710] Detected VIPT I-cache on CPU2
-> [    0.010716] CPU features: SANITY CHECK: Unexpected variation in SYS_CNTFRQ_EL0. Boot CPU: 0x000000018cba80, CPU2: 0x00000000000000
-> [    0.010758] CPU2: Booted secondary processor 0x0000000002 [0x410fd032]
-> [    0.014849] Detected VIPT I-cache on CPU3
-> [    0.014855] CPU features: SANITY CHECK: Unexpected variation in SYS_CNTFRQ_EL0. Boot CPU: 0x000000018cba80, CPU3: 0x00000000000000
-> [    0.014895] CPU3: Booted secondary processor 0x0000000003 [0x410fd032]
-> 
-> SMMU probing fails:
-> [    0.101798] arm-smmu c0010000.iommu: probing hardware configuration...
-> [    0.101809] arm-smmu c0010000.iommu: SMMUv1 with:
-> [    0.101816] arm-smmu c0010000.iommu:         no translation support!
-> 
-> A 3.14 based Marvell tree is available on GitHub
-> acorn-marvell/brillo_pxa_kernel, and a Samsung one on GitHub
-> CoderCharmander/g361f-kernel.
-> 
-> Andreas Färber attempted to upstream support for this SoC in 2017:
-> https://lore.kernel.org/lkml/20170222022929.10540-1-afaerber@suse.de/
-> 
-> Signed-off-by: Duje Mihanović <duje.mihanovic@skole.hr>
-> 
-> Changes in v9:
-> - Update trailers and rebase on v6.9-rc2, no changes
-> - Link to v8: https://lore.kernel.org/20240110-pxa1908-lkml-v8-0-fea768a59474@skole.hr
-> 
-> Changes in v8:
-> - Drop SSPA patch
-> - Drop broken-cd from eMMC node
-> - Specify S-Boot hardcoded initramfs location in device tree
-> - Add ARM PMU node
-> - Correct inverted modem memory base and size
-> - Update trailers
-> - Rebase on next-20240110
-> - Link to v7: https://lore.kernel.org/20231102-pxa1908-lkml-v7-0-cabb1a0cb52b@skole.hr
->   and https://lore.kernel.org/20231102152033.5511-1-duje.mihanovic@skole.hr
-> 
-> Changes in v7:
-> - Suppress SND_MMP_SOC_SSPA on ARM64
-> - Update trailers
-> - Rebase on v6.6-rc7
-> - Link to v6: https://lore.kernel.org/r/20231010-pxa1908-lkml-v6-0-b2fe09240cf8@skole.hr
-> 
-> Changes in v6:
-> - Address maintainer comments:
->   - Add "marvell,pxa1908-padconf" binding to pinctrl-single driver
-> - Drop GPIO patch as it's been pulled
-> - Update trailers
-> - Rebase on v6.6-rc5
-> - Link to v5: https://lore.kernel.org/r/20230812-pxa1908-lkml-v5-0-a5d51937ee34@skole.hr
+> This series is a v2 since v1 of this DTS file has been reviewed on the
+> U-Boot mailing list [2].
 > 
 > Changes in v5:
-> - Address maintainer comments:
->   - Move *_NR_CLKS to clock driver from dt binding file
-> - Allocate correct number of clocks for each block instead of blindly
->   allocating 50 for each
-> - Link to v4: https://lore.kernel.org/r/20230807-pxa1908-lkml-v4-0-cb387d73b452@skole.hr
+> - Addressed another nitpick from Stephen.
+> - Collected Stephen's review tag.
+> - Warnings reported by Rob's DT check bot aren't related to HMIBSC
+>   board DTS but rather they are due to msm8916.dtsi or extcon-usb-gpio.txt
+>   still not converted to YAML format.
 > 
 > Changes in v4:
-> - Address maintainer comments:
->   - Relicense clock binding file to BSD-2
-> - Add pinctrl-names to SD card node
-> - Add vgic registers to GIC node
-> - Rebase on v6.5-rc5
-> - Link to v3: https://lore.kernel.org/r/20230804-pxa1908-lkml-v3-0-8e48fca37099@skole.hr
+> - Dropped IRQ_TYPE_EDGE_FALLING for pm8916_resin given the expectations
+>   of Linux kernel driver. Instead depend on systemd workaround suggested
+>   by Caleb to get expected HMIBSC reset behaviour.
+> - Incorporated further DT coding style comments from Stephen.
+> - Warnings reported by Rob's DT check bot aren't related to HMIBSC
+>   board DTS but rather they are due to msm8916.dtsi or extcon-usb-gpio.txt
+>   still not converted to YAML format.
 > 
 > Changes in v3:
-> - Address maintainer comments:
->   - Drop GPIO dynamic allocation patch
->   - Move clock register offsets into driver (instead of bindings file)
->   - Add missing Tested-by trailer to u32_fract patch
->   - Move SoC binding to arm/mrvl/mrvl.yaml
-> - Add serial0 alias and stdout-path to board dts to enable UART
->   debugging
-> - Rebase on v6.5-rc4
-> - Link to v2: https://lore.kernel.org/r/20230727162909.6031-1-duje.mihanovic@skole.hr
+> - Picked up tags.
+> - Fixed further DT schema warnings.
+> - Configure resin/power button interrupt as falling edge.
+> - Incorporate DTS coding style comments from Krzysztof and Konrad.
 > 
 > Changes in v2:
-> - Remove earlycon patch as it's been merged into tty-next
-> - Address maintainer comments:
->   - Clarify GPIO regressions on older PXA platforms
->   - Add Fixes tag to commit disabling GPIO pinctrl calls for this SoC
->   - Add missing includes to clock driver
->   - Clock driver uses HZ_PER_MHZ, u32_fract and GENMASK
->   - Dual license clock bindings
->   - Change clock IDs to decimal
->   - Fix underscores in dt node names
->   - Move chosen node to top of board dts
->   - Clean up documentation
->   - Reorder commits
->   - Drop pxa,rev-id
-> - Rename muic-i2c to i2c-muic
-> - Reword some commits
-> - Move framebuffer node to chosen
-> - Add aliases for mmc nodes
-> - Rebase on v6.5-rc3
-> - Link to v1: https://lore.kernel.org/r/20230721210042.21535-1-duje.mihanovic@skole.hr
+> - Fix DT schema warnings.
+> - Incorporate suggestions from Stephan.
+> - Document UART1 mode GPIOs based mux.
 > 
-> ---
-> Andy Shevchenko (1):
->       clk: mmp: Switch to use struct u32_fract instead of custom one
+> [1] https://www.se.com/us/en/product/HMIBSCEA53D1L0T/iiot-edge-box-core-harmony-ipc-emmc-dc-linux-tpm/
+> [2] https://patchwork.ozlabs.org/project/uboot/patch/20240311111027.44577-6-sumit.garg@linaro.org/
 > 
-> Duje Mihanović (8):
->       dt-bindings: pinctrl: pinctrl-single: add marvell,pxa1908-padconf compatible
->       pinctrl: single: add marvell,pxa1908-padconf compatible
->       dt-bindings: clock: Add Marvell PXA1908 clock bindings
->       clk: mmp: Add Marvell PXA1908 clock driver
->       dt-bindings: marvell: Document PXA1908 SoC
->       arm64: Kconfig.platforms: Add config for Marvell PXA1908 platform
->       arm64: dts: Add DTS for Marvell PXA1908 and samsung,coreprimevelte
->       MAINTAINERS: add myself as Marvell PXA1908 maintainer
+> Sumit Garg (3):
+>   dt-bindings: vendor-prefixes: Add Schneider Electric
+>   dt-bindings: arm: qcom: Add Schneider Electric HMIBSC board
+>   arm64: dts: qcom: apq8016: Add Schneider HMIBSC board DTS
 > 
->  .../devicetree/bindings/arm/mrvl/mrvl.yaml         |   5 +
->  .../devicetree/bindings/clock/marvell,pxa1908.yaml |  48 +++
->  .../bindings/pinctrl/pinctrl-single.yaml           |   4 +
->  MAINTAINERS                                        |   9 +
->  arch/arm64/Kconfig.platforms                       |   8 +
->  arch/arm64/boot/dts/marvell/Makefile               |   3 +
->  .../dts/marvell/pxa1908-samsung-coreprimevelte.dts | 336 +++++++++++++++++++++
->  arch/arm64/boot/dts/marvell/pxa1908.dtsi           | 304 +++++++++++++++++++
->  drivers/clk/mmp/Makefile                           |   2 +-
->  drivers/clk/mmp/clk-frac.c                         |  57 ++--
->  drivers/clk/mmp/clk-of-mmp2.c                      |  26 +-
->  drivers/clk/mmp/clk-of-pxa168.c                    |   4 +-
->  drivers/clk/mmp/clk-of-pxa1908.c                   | 328 ++++++++++++++++++++
->  drivers/clk/mmp/clk-of-pxa1928.c                   |   6 +-
->  drivers/clk/mmp/clk-of-pxa910.c                    |   4 +-
->  drivers/clk/mmp/clk.h                              |  10 +-
->  drivers/pinctrl/pinctrl-single.c                   |   1 +
->  include/dt-bindings/clock/marvell,pxa1908.h        |  88 ++++++
->  18 files changed, 1186 insertions(+), 57 deletions(-)
-> ---
-> base-commit: 39cd87c4eb2b893354f3b850f916353f2658ae6f
-> change-id: 20230803-pxa1908-lkml-6830e8da45c7
+>  .../devicetree/bindings/arm/qcom.yaml         |   1 +
+>  .../devicetree/bindings/vendor-prefixes.yaml  |   2 +
+>  arch/arm64/boot/dts/qcom/Makefile             |   1 +
+>  .../dts/qcom/apq8016-schneider-hmibsc.dts     | 491 ++++++++++++++++++
+>  4 files changed, 495 insertions(+)
+>  create mode 100644 arch/arm64/boot/dts/qcom/apq8016-schneider-hmibsc.dts
 > 
-> Best regards,
 > --
-> Duje Mihanović <duje.mihanovic@skole.hr>
+> 2.34.1
 > 
 > 
 > 
@@ -243,20 +151,18 @@ make sure dt-schema is up to date:
   pip3 install dtschema --upgrade
 
 
-New warnings running 'make CHECK_DTBS=y marvell/pxa1908-samsung-coreprimevelte.dtb' for 20240402-pxa1908-lkml-v9-0-25a003e83c6f@skole.hr:
+New warnings running 'make CHECK_DTBS=y qcom/apq8016-schneider-hmibsc.dtb' for 20240403043416.3800259-1-sumit.garg@linaro.org:
 
-arch/arm64/boot/dts/marvell/pxa1908-samsung-coreprimevelte.dtb: /: memory: False schema does not allow {'device_type': ['memory'], 'reg': [[0, 0, 0, 0]]}
-	from schema $id: http://devicetree.org/schemas/root-node.yaml#
-arch/arm64/boot/dts/marvell/pxa1908-samsung-coreprimevelte.dtb: pinmux@1e000: #size-cells: 0 was expected
-	from schema $id: http://devicetree.org/schemas/pinctrl/pinctrl-single.yaml#
-arch/arm64/boot/dts/marvell/pxa1908-samsung-coreprimevelte.dtb: pinmux@1e000: pinctrl-single,gpio-range: [[8, 55, 55, 0], [8, 110, 32, 0], [8, 52, 1, 0]] is too long
-	from schema $id: http://devicetree.org/schemas/pinctrl/pinctrl-single.yaml#
-arch/arm64/boot/dts/marvell/pxa1908-samsung-coreprimevelte.dtb: pinmux@1e000: 'pinmux-board-1', 'pinmux-board-2', 'pinmux-board-3', 'pinmux-gpio-keys', 'pinmux-i2c-muic', 'pinmux-sdh0-1', 'pinmux-sdh0-2', 'pinmux-sdh0-3', 'pinmux-uart0', 'ranges' do not match any of the regexes: '-pins(-[0-9]+)?$|-pin$', 'pinctrl-[0-9]+'
-	from schema $id: http://devicetree.org/schemas/pinctrl/pinctrl-single.yaml#
-arch/arm64/boot/dts/marvell/pxa1908-samsung-coreprimevelte.dtb: mmc@80000: pinctrl-names: ['default'] is too short
-	from schema $id: http://devicetree.org/schemas/mmc/sdhci-pxa.yaml#
-arch/arm64/boot/dts/marvell/pxa1908-samsung-coreprimevelte.dtb: mmc@80000: Unevaluated properties are not allowed ('pinctrl-names' was unexpected)
-	from schema $id: http://devicetree.org/schemas/mmc/sdhci-pxa.yaml#
+arch/arm64/boot/dts/qcom/apq8016-schneider-hmibsc.dtb: pmic@0: gpio@c000:gpio-line-names: ['USB_HUB_RESET_N_PM', 'USB_SW_SEL_PM', 'NC', 'NC'] is too short
+	from schema $id: http://devicetree.org/schemas/mfd/qcom,spmi-pmic.yaml#
+arch/arm64/boot/dts/qcom/apq8016-schneider-hmibsc.dtb: gpio@c000: gpio-line-names: ['USB_HUB_RESET_N_PM', 'USB_SW_SEL_PM', 'NC', 'NC'] is too short
+	from schema $id: http://devicetree.org/schemas/pinctrl/qcom,pmic-gpio.yaml#
+arch/arm64/boot/dts/qcom/apq8016-schneider-hmibsc.dtb: /soc@0/audio-codec@771c000: failed to match any schema with compatible: ['qcom,msm8916-wcd-digital-codec']
+arch/arm64/boot/dts/qcom/apq8016-schneider-hmibsc.dtb: /soc@0/power-manager@b088000: failed to match any schema with compatible: ['qcom,msm8916-acc']
+arch/arm64/boot/dts/qcom/apq8016-schneider-hmibsc.dtb: /soc@0/power-manager@b098000: failed to match any schema with compatible: ['qcom,msm8916-acc']
+arch/arm64/boot/dts/qcom/apq8016-schneider-hmibsc.dtb: /soc@0/power-manager@b0a8000: failed to match any schema with compatible: ['qcom,msm8916-acc']
+arch/arm64/boot/dts/qcom/apq8016-schneider-hmibsc.dtb: /soc@0/power-manager@b0b8000: failed to match any schema with compatible: ['qcom,msm8916-acc']
+arch/arm64/boot/dts/qcom/apq8016-schneider-hmibsc.dtb: /usb-id: failed to match any schema with compatible: ['linux,extcon-usb-gpio']
 
 
 
