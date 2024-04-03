@@ -1,164 +1,588 @@
-Return-Path: <linux-kernel+bounces-130454-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-130457-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8F255897865
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 20:42:54 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8BA64897872
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 20:44:16 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 440A31F27F71
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 18:42:54 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id ADCBF1C25C38
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 18:44:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0044615530D;
-	Wed,  3 Apr 2024 18:42:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F131D15443A;
+	Wed,  3 Apr 2024 18:44:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Vh/U0a5Y"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.15])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="JH409wzB";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="y2A6FpDN"
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5492115443D;
-	Wed,  3 Apr 2024 18:42:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.15
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 435113FB14;
+	Wed,  3 Apr 2024 18:44:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712169741; cv=none; b=c4A8R5mPv3JitAnzFi4Dys5GGuYSBi04e3nG6SJhDwWaPEjJFh3sxdEUwNYiUkl+vbVDB7W0zxTSVS2S3jnG3HwdD+FVuHRzKGMHtWxtauTNOOBl/6UnjSF7DxV3AIsljj6bJet7vtAOcWzHk3Cd2wU+iLOWoQPBIEWl1qHUc3Q=
+	t=1712169844; cv=none; b=SepR2Jc2g65vYRpfKvWlKXFhIp/cPokF30IZ7V3nHfKAAQ/HqqTUK7H4yOm+eF4z9ZSQNa4Nh/Qq2JnS2HQAY6QgeHrfL2cTRCzmkjrBazCHSGtiDzROgSjyH0mOG7r1GcdYNVY7e5YpLdinwyHoeWj4GdpuA7jBf/FgbKLaX6A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712169741; c=relaxed/simple;
-	bh=4JVyEyoYbipbxSWd/wP8gsZCAW+Sod7HLMF2MXV2s08=;
+	s=arc-20240116; t=1712169844; c=relaxed/simple;
+	bh=fAa1IfaVvOBUH6OY5hvcTNTUFB4e4lHih47ib1dVbSs=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=j9Ee9VryYAdx70Yd7PpK4grBeAePdyvZQ9YzOGTupvcl8QTtVD6+zQu3j+ux9We9KJcxSlOqNAyxUDepfHEDG4Kp4s6yHwHyoTItIccZEv++uaC54nEpoQi/NEcvJ3QbRwcmkkBVr9A147MN2CNklxCx1rKpocD6g63++LNkNg4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Vh/U0a5Y; arc=none smtp.client-ip=192.198.163.15
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1712169739; x=1743705739;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=4JVyEyoYbipbxSWd/wP8gsZCAW+Sod7HLMF2MXV2s08=;
-  b=Vh/U0a5Y7z1TdUveeS0ErOhih+IxpONd31HNqWBluuK8CogBHUIPghau
-   ElVW2yoTK2pA3L/WD8DeIn63D7UJKNPK5jey28RV/g+AcI78hhgY+nJZg
-   n0E0ffcpnFk7W8ugRQtohvDzXFLUoLtZJJ8pAXQQNXRzpKBDjrRCXmn7L
-   tW0FIslPAIGd/rY9fbM4ONbxpBUXmSImaAtIHQP7ui/ys06MHwQOUaOWh
-   grYCUQjzI9FwpIVAWHHwFHHyur57iZq61xqymmB6z1m79sMLNLXIZP7MT
-   yL1jDwT7D8ipjBKeOP5JJ8DtLHtlFOfhlMWmawfSYsqHVWeuW+0MwAc30
-   g==;
-X-CSE-ConnectionGUID: b6ktroVYQL20TO2HH2WXlA==
-X-CSE-MsgGUID: d2UC0cZOQnW3vlGK/ywosg==
-X-IronPort-AV: E=McAfee;i="6600,9927,11033"; a="7611409"
-X-IronPort-AV: E=Sophos;i="6.07,177,1708416000"; 
-   d="scan'208";a="7611409"
-Received: from orviesa010.jf.intel.com ([10.64.159.150])
-  by fmvoesa109.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Apr 2024 11:42:18 -0700
-X-CSE-ConnectionGUID: 5Ic5RadQQLWb1NA4KICpQA==
-X-CSE-MsgGUID: xXvb5k7RSHmzu85oVxvBgQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,177,1708416000"; 
-   d="scan'208";a="18375601"
-Received: from ls.sc.intel.com (HELO localhost) ([172.25.112.31])
-  by orviesa010-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Apr 2024 11:42:18 -0700
-Date: Wed, 3 Apr 2024 11:42:16 -0700
-From: Isaku Yamahata <isaku.yamahata@intel.com>
-To: Chao Gao <chao.gao@intel.com>
-Cc: isaku.yamahata@intel.com, kvm@vger.kernel.org,
-	linux-kernel@vger.kernel.org, isaku.yamahata@gmail.com,
-	Paolo Bonzini <pbonzini@redhat.com>, erdemaktas@google.com,
-	Sean Christopherson <seanjc@google.com>,
-	Sagi Shahar <sagis@google.com>, Kai Huang <kai.huang@intel.com>,
-	chen.bo@intel.com, hang.yuan@intel.com, tina.zhang@intel.com,
-	isaku.yamahata@linux.intel.com
-Subject: Re: [PATCH v19 101/130] KVM: TDX: handle ept violation/misconfig exit
-Message-ID: <20240403184216.GJ2444378@ls.amr.corp.intel.com>
-References: <cover.1708933498.git.isaku.yamahata@intel.com>
- <f05b978021522d70a259472337e0b53658d47636.1708933498.git.isaku.yamahata@intel.com>
- <Zgoz0sizgEZhnQ98@chao-email>
+	 Content-Type:Content-Disposition:In-Reply-To; b=OfAT2x/Gm8pJIZxMmZnu3829klF2ytJhAfjwn+xolxXKVqEBzSobkB7LN1WLvicRnz8+XtLMr1w4pKiwJ6U6KAzZUB5AV1a2hrbMKBAhploNRNgm6RQoNi4BxraKHAJgBuNttJBJ/1oxAzYDMtnWQ5GWYr00N931CNL+qzJvZ/A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=JH409wzB; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=y2A6FpDN; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:98])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 51E2B5D020;
+	Wed,  3 Apr 2024 18:44:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1712169840;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=JfPpMb/YshBeYL3g/DsV8plhBen10ssrnkWSdmViQnk=;
+	b=JH409wzB4Ad9htZ0DoMCeqlklpXfjNYE2Ug1VODKYHfzqtWgSmpx7f7FGjfm1JdkTuxbeQ
+	/aet5VYvj/JdNWVOMgsVkM+dtykqvpP+HX5qkLsEUljlAZZJk/xWJrWzoU//B8Tku7btln
+	IEeUxT2CpjvLmdVhzQAzJ2J9vxnwHZk=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1712169840;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=JfPpMb/YshBeYL3g/DsV8plhBen10ssrnkWSdmViQnk=;
+	b=y2A6FpDNrbr+bE90Vyhef4TaSLaSbSYliWyqzuZU7sgDlNa+Ulwlb8zfurRiE3/K+/gc6K
+	2cAGBJcWl3yON8Dw==
+Authentication-Results: smtp-out2.suse.de;
+	dkim=none
+Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id 4F60613357;
+	Wed,  3 Apr 2024 18:43:59 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap2.dmz-prg2.suse.org with ESMTPSA
+	id 2vyGDG+jDWZaMAAAn2gu4w
+	(envelope-from <pvorel@suse.cz>); Wed, 03 Apr 2024 18:43:59 +0000
+Date: Wed, 3 Apr 2024 20:43:53 +0200
+From: Petr Vorel <pvorel@suse.cz>
+To: Alexander Reimelt <alexander.reimelt@posteo.de>
+Cc: andersson@kernel.org, konrad.dybcio@linaro.org, robh+dt@kernel.org,
+	krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+	linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Subject: Re: [PATCH 2/2] arm64: dts: qcom: Add basic support for LG G4 (H815)
+Message-ID: <20240403184353.GC462665@pevik>
+Reply-To: Petr Vorel <pvorel@suse.cz>
+References: <20240403104415.30636-1-alexander.reimelt@posteo.de>
+ <20240403104415.30636-3-alexander.reimelt@posteo.de>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <Zgoz0sizgEZhnQ98@chao-email>
+In-Reply-To: <20240403104415.30636-3-alexander.reimelt@posteo.de>
+X-Rspamd-Queue-Id: 51E2B5D020
+X-Spamd-Result: default: False [-2.51 / 50.00];
+	BAYES_HAM(-3.00)[100.00%];
+	MID_RHS_NOT_FQDN(0.50)[];
+	HAS_REPLYTO(0.30)[pvorel@suse.cz];
+	NEURAL_HAM_SHORT(-0.20)[-0.995];
+	MIME_GOOD(-0.10)[text/plain];
+	MX_GOOD(-0.01)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	ARC_NA(0.00)[];
+	RCVD_TLS_ALL(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	MISSING_XM_UA(0.00)[];
+	SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:98:from];
+	TO_DN_SOME(0.00)[];
+	TAGGED_RCPT(0.00)[dt];
+	R_DKIM_NA(0.00)[];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	FROM_EQ_ENVFROM(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	RCPT_COUNT_SEVEN(0.00)[10];
+	RCVD_COUNT_TWO(0.00)[2];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[imap2.dmz-prg2.suse.org:rdns,imap2.dmz-prg2.suse.org:helo];
+	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	REPLYTO_EQ_FROM(0.00)[]
+X-Rspamd-Action: no action
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Spam-Score: -2.51
+X-Spam-Level: 
+X-Spam-Flag: NO
 
-On Mon, Apr 01, 2024 at 12:10:58PM +0800,
-Chao Gao <chao.gao@intel.com> wrote:
+Hi,
 
-> >+static int tdx_handle_ept_violation(struct kvm_vcpu *vcpu)
-> >+{
-> >+	unsigned long exit_qual;
-> >+
-> >+	if (kvm_is_private_gpa(vcpu->kvm, tdexit_gpa(vcpu))) {
-> >+		/*
-> >+		 * Always treat SEPT violations as write faults.  Ignore the
-> >+		 * EXIT_QUALIFICATION reported by TDX-SEAM for SEPT violations.
-> >+		 * TD private pages are always RWX in the SEPT tables,
-> >+		 * i.e. they're always mapped writable.  Just as importantly,
-> >+		 * treating SEPT violations as write faults is necessary to
-> >+		 * avoid COW allocations, which will cause TDAUGPAGE failures
-> >+		 * due to aliasing a single HPA to multiple GPAs.
-> >+		 */
-> >+#define TDX_SEPT_VIOLATION_EXIT_QUAL	EPT_VIOLATION_ACC_WRITE
-> >+		exit_qual = TDX_SEPT_VIOLATION_EXIT_QUAL;
-> >+	} else {
-> >+		exit_qual = tdexit_exit_qual(vcpu);
-> >+		if (exit_qual & EPT_VIOLATION_ACC_INSTR) {
-> 
-> Unless the CPU has a bug, instruction fetch in TD from shared memory causes a
-> #PF. I think you can add a comment for this.
+> To make it easier for downstream projects and avoid duplication of work.
+> Makes the device bootable and enables all buttons, most regulators, hall sensor, eMMC and SD-Card.
 
-Yes.
+> Signed-off-by: Alexander Reimelt <alexander.reimelt@posteo.de>
+> ---
+>  arch/arm64/boot/dts/qcom/Makefile            |   1 +
+>  arch/arm64/boot/dts/qcom/msm8992-lg-h815.dts | 422 +++++++++++++++++++
+>  2 files changed, 423 insertions(+)
+>  create mode 100644 arch/arm64/boot/dts/qcom/msm8992-lg-h815.dts
 
+> diff --git a/arch/arm64/boot/dts/qcom/Makefile b/arch/arm64/boot/dts/qcom/Makefile
+> index 7d40ec5e7d21..5b7f8741006f 100644
+> --- a/arch/arm64/boot/dts/qcom/Makefile
+> +++ b/arch/arm64/boot/dts/qcom/Makefile
+> @@ -62,6 +62,7 @@ dtb-$(CONFIG_ARCH_QCOM)	+= msm8956-sony-xperia-loire-kugo.dtb
+>  dtb-$(CONFIG_ARCH_QCOM)	+= msm8956-sony-xperia-loire-suzu.dtb
+>  dtb-$(CONFIG_ARCH_QCOM)	+= msm8992-lg-bullhead-rev-10.dtb
+>  dtb-$(CONFIG_ARCH_QCOM)	+= msm8992-lg-bullhead-rev-101.dtb
+> +dtb-$(CONFIG_ARCH_QCOM)	+= msm8992-lg-h815.dtb
+>  dtb-$(CONFIG_ARCH_QCOM)	+= msm8992-msft-lumia-octagon-talkman.dtb
+>  dtb-$(CONFIG_ARCH_QCOM)	+= msm8992-xiaomi-libra.dtb
+>  dtb-$(CONFIG_ARCH_QCOM)	+= msm8994-huawei-angler-rev-101.dtb
+> diff --git a/arch/arm64/boot/dts/qcom/msm8992-lg-h815.dts b/arch/arm64/boot/dts/qcom/msm8992-lg-h815.dts
+> new file mode 100644
+> index 000000000000..b7fa48337e25
+> --- /dev/null
+> +++ b/arch/arm64/boot/dts/qcom/msm8992-lg-h815.dts
+> @@ -0,0 +1,422 @@
+> +// SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +/*
+> + * MSM8992 LG G4 (h815) device tree.
+> + *
+> + * Copyright (c) 2024, Alexander Reimelt <alexander.reimelt@posteo.de>
+> + */
+> +
+> +/dts-v1/;
+> +
+> +#include "msm8992.dtsi"
+> +#include "pm8994.dtsi"
+> +#include "pmi8994.dtsi"
+> +#include <dt-bindings/leds/common.h>
+> +
+> +/* different mapping */
+> +/delete-node/ &cont_splash_mem;
+> +
+> +/* disabled downstream */
+> +/delete-node/ &dfps_data_mem;
+> +
+> +&CPU0 {
+> +	enable-method = "spin-table";
+> +};
+> +
+> +&CPU1 {
+> +	enable-method = "spin-table";
+> +};
+> +
+> +&CPU2 {
+> +	enable-method = "spin-table";
+> +};
+> +
+> +&CPU3 {
+> +	enable-method = "spin-table";
+> +};
+> +
+> +&CPU4 {
+> +	enable-method = "spin-table";
+> +};
+> +
+> +&CPU5 {
+> +	enable-method = "spin-table";
+> +};
+> +
+> +/ {
+> +	model = "LG G4 (International)";
+I'm not sure if " (International)" shouldn't be dropped.
+I guess maintainers will know.
 
-> Maybe KVM_BUG_ON() is more appropriate as it signifies a potential bug.
+> +	compatible = "lg,h815", "qcom,msm8992";
+> +	chassis-type = "handset";
+> +
+> +	qcom,msm-id = <251 0>;
+> +	qcom,pmic-id = <0x10009 0x1000a 0x00 0x00>;
+> +	qcom,board-id = <0xb64 0>;
+> +
+> +	/* psci is broken */
+> +	/delete-node/ psci;
+> +
+> +	chosen {
+> +		bootargs = "earlycon=tty0 console=tty0";
+> +	};
+> +
+> +	reserved-memory {
+> +		#address-cells = <2>;
+> +		#size-cells = <2>;
+> +		ranges;
+> +
+> +		spin-table@6000000 {
+> +			reg = <0 0x6000000 0 0x1000>;
+> +			no-map;
+> +		};
+> +
+> +		ramoops@ff00000 {
+> +			compatible = "ramoops";
+> +			reg = <0x0 0xff00000 0x0 0x100000>;
+> +			console-size = <0x20000>;
+> +			pmsg-size = <0x20000>;
+> +			record-size = <0x10000>;
+> +			ecc-size = <0x10>;
+> +		};
+> +
+> +		cont_splash_mem: fb@3400000 {
+> +			compatible = "framebuffer";
+> +			reg = <0 0x3400000 0 0xc00000>;
+> +			no-map;
+> +		};
+> +
+> +		crash_fb_mem: crash_fb@4000000 {
+> +			reg = <0 0x4000000 0 0xc00000>;
+> +			no-map;
+> +		};
+> +	};
+> +
+> +	gpio-hall-sensor {
+> +		compatible = "gpio-keys";
+> +
+> +		pinctrl-0 = <&hall_sensor_default>;
+> +		pinctrl-names = "default";
+> +
+> +		label = "Hall Effect Sensor";
+> +
+> +		event-hall-sensor {
+> +			gpios = <&tlmm 75 GPIO_ACTIVE_LOW>;
+> +			label = "hall effect sensor";
+> +			linux,input-type = <EV_SW>;
+> +			linux,code = <SW_LID>;
+> +			linux,can-disable;
+> +			wakeup-source;
+> +		};
+> +	};
+> +
+> +	gpio-keys {
+> +		compatible = "gpio-keys";
+> +
+> +		key-vol-up {
+> +			label = "volume up";
+> +			gpios = <&pm8994_gpios 3 GPIO_ACTIVE_LOW>;
+> +			linux,code = <KEY_VOLUMEUP>;
+> +			wakeup-source;
+> +			debounce-interval = <15>;
+> +		};
+> +	};
+> +};
+> +
+> +&pm8994_spmi_regulators {
+> +	vdd_s8-supply = <&vph_pwr>;
+> +	vdd_s11-supply = <&vph_pwr>;
+> +
+> +	pm8994_s8: s8 {
+> +		regulator-min-microvolt = <700000>;
+> +		regulator-max-microvolt = <1180000>;
+> +		regulator-always-on;
+> +		regulator-boot-on;
+> +	};
+> +
+> +	pm8994_s11: s11 {
+> +		regulator-min-microvolt = <700000>;
+> +		regulator-max-microvolt = <1225000>;
+> +		regulator-always-on;
+> +		regulator-boot-on;
+> +	};
+> +};
+> +
+> +&rpm_requests {
+> +	regulators-0 {
+> +		compatible = "qcom,rpm-pm8994-regulators";
+> +
+> +		vdd_s3-supply = <&vph_pwr>;
+> +		vdd_s4-supply = <&vph_pwr>;
+> +		vdd_s5-supply = <&vph_pwr>;
+> +		vdd_s7-supply = <&vph_pwr>;
+> +		vdd_l1-supply = <&pmi8994_s1>;
+> +		vdd_l2_26_28-supply = <&pm8994_s3>;
+> +		vdd_l3_11-supply = <&pm8994_s3>;
+> +		vdd_l4_27_31-supply = <&pm8994_s3>;
+> +		vdd_l5_7-supply = <&pm8994_s5>;
+> +		vdd_l6_12_32-supply = <&pm8994_s5>;
+> +		vdd_l8_16_30-supply = <&vph_pwr>;
+> +		vdd_l9_10_18_22-supply = <&pmi8994_bby>;
+> +		vdd_l13_19_23_24-supply = <&pmi8994_bby>;
+> +		vdd_l14_15-supply = <&pm8994_s5>;
+> +		vdd_l17_29-supply = <&pmi8994_bby>;
+> +		vdd_l20_21-supply = <&pmi8994_bby>;
+> +		vdd_l25-supply = <&pm8994_s5>;
+> +		vdd_lvs1_2-supply = <&pm8994_s4>;
+> +
+> +		pm8994_s3: s3 {
+> +			regulator-min-microvolt = <1300000>;
+> +			regulator-max-microvolt = <1300000>;
+> +		};
+> +
+> +		/* sdhc1 vqmmc and bcm */
+> +		pm8994_s4: s4 {
+> +			regulator-min-microvolt = <1800000>;
+> +			regulator-max-microvolt = <1800000>;
+> +			regulator-system-load = <325000>;
+> +			regulator-allow-set-load;
+> +		};
+> +
+> +		pm8994_s5: s5 {
+> +			regulator-min-microvolt = <2150000>;
+> +			regulator-max-microvolt = <2150000>;
+> +		};
+> +
+> +		pm8994_s7: s7 {
+There are several unused regulators.
 
-Bug of what component? CPU. If so, I think KVM_EXIT_INTERNAL_ERROR +
-KVM_INTERNAL_ERROR_UNEXPECTED_EXIT_REASON is more appropriate.
+I remember Bjorn back at the time suggested [1] me to add only regulators which
+are actually needed.
 
+Kind regards,
+Petr
 
-> >+			pr_warn("kvm: TDX instr fetch to shared GPA = 0x%lx @ RIP = 0x%lx\n",
-> >+				tdexit_gpa(vcpu), kvm_rip_read(vcpu));
-> >+			vcpu->run->exit_reason = KVM_EXIT_EXCEPTION;
-> >+			vcpu->run->ex.exception = PF_VECTOR;
-> >+			vcpu->run->ex.error_code = exit_qual;
-> >+			return 0;
-> >+		}
-> >+	}
-> >+
-> >+	trace_kvm_page_fault(vcpu, tdexit_gpa(vcpu), exit_qual);
-> >+	return __vmx_handle_ept_violation(vcpu, tdexit_gpa(vcpu), exit_qual);
-> >+}
-> >+
-> >+static int tdx_handle_ept_misconfig(struct kvm_vcpu *vcpu)
-> >+{
-> >+	WARN_ON_ONCE(1);
-> >+
-> >+	vcpu->run->exit_reason = KVM_EXIT_INTERNAL_ERROR;
-> >+	vcpu->run->internal.suberror = KVM_INTERNAL_ERROR_UNEXPECTED_EXIT_REASON;
-> >+	vcpu->run->internal.ndata = 2;
-> >+	vcpu->run->internal.data[0] = EXIT_REASON_EPT_MISCONFIG;
-> >+	vcpu->run->internal.data[1] = vcpu->arch.last_vmentry_cpu;
-> >+
-> >+	return 0;
-> >+}
-> >+
-> > int tdx_handle_exit(struct kvm_vcpu *vcpu, fastpath_t fastpath)
-> > {
-> > 	union tdx_exit_reason exit_reason = to_tdx(vcpu)->exit_reason;
-> >@@ -1345,6 +1390,10 @@ int tdx_handle_exit(struct kvm_vcpu *vcpu, fastpath_t fastpath)
-> > 	WARN_ON_ONCE(fastpath != EXIT_FASTPATH_NONE);
-> > 
-> > 	switch (exit_reason.basic) {
-> >+	case EXIT_REASON_EPT_VIOLATION:
-> >+		return tdx_handle_ept_violation(vcpu);
-> >+	case EXIT_REASON_EPT_MISCONFIG:
-> >+		return tdx_handle_ept_misconfig(vcpu);
-> 
-> Handling EPT misconfiguration can be dropped because the "default" case handles
-> all unexpected exits in the same way
+[1] https://lore.kernel.org/linux-arm-msm/20230407165730.jfupmfiul6qb7yl3@ripper/
 
-Ah, right. Will update it.
--- 
-Isaku Yamahata <isaku.yamahata@intel.com>
+> +			regulator-min-microvolt = <1000000>;
+> +			regulator-max-microvolt = <1000000>;
+> +		};
+> +
+> +		pm8994_l1: l1 {
+> +			regulator-min-microvolt = <1000000>;
+> +			regulator-max-microvolt = <1000000>;
+> +		};
+> +
+> +		pm8994_l2: l2 {
+> +			regulator-min-microvolt = <1250000>;
+> +			regulator-max-microvolt = <1250000>;
+> +			regulator-system-load = <10000>;
+> +			regulator-allow-set-load;
+> +		};
+> +
+> +		/* camera */
+> +		pm8994_l3: l3 {
+> +			regulator-min-microvolt = <1050000>;
+> +			regulator-max-microvolt = <1050000>;
+> +		};
+> +
+> +		pm8994_l4: l4 {
+> +			regulator-min-microvolt = <1225000>;
+> +			regulator-max-microvolt = <1225000>;
+> +		};
+> +
+> +		/* L5 is inaccessible from RPM */
+> +
+> +		pm8994_l6: l6 {
+> +			regulator-min-microvolt = <1800000>;
+> +			regulator-max-microvolt = <1800000>;
+> +		};
+> +
+> +		/* L7 is inaccessible from RPM */
+> +
+> +		pm8994_l8: l8 {
+> +			regulator-min-microvolt = <1800000>;
+> +			regulator-max-microvolt = <1800000>;
+> +		};
+> +
+> +		pm8994_l9: l9 {
+> +			regulator-min-microvolt = <1800000>;
+> +			regulator-max-microvolt = <1800000>;
+> +		};
+> +
+> +		/* touch  */
+> +		pm8994_l10: l10 {
+> +			regulator-min-microvolt = <1800000>;
+> +			regulator-max-microvolt = <1800000>;
+> +		};
+> +
+> +		pm8994_l11: l11 {
+> +			regulator-min-microvolt = <1200000>;
+> +			regulator-max-microvolt = <1200000>;
+> +		};
+> +
+> +		pm8994_l12: l12 {
+> +			regulator-min-microvolt = <1800000>;
+> +			regulator-max-microvolt = <1800000>;
+> +			regulator-system-load = <10000>;
+> +			regulator-allow-set-load;
+> +		};
+> +
+> +		/* sdhc2 vqmmc */
+> +		pm8994_l13: l13 {
+> +			regulator-min-microvolt = <1800000>;
+> +			regulator-max-microvolt = <2950000>;
+> +			regulator-system-load = <22000>;
+> +			regulator-allow-set-load;
+> +		};
+> +
+> +		/* camera */
+> +		pm8994_l14: l14 {
+> +			regulator-min-microvolt = <1200000>;
+> +			regulator-max-microvolt = <1200000>;
+> +			regulator-system-load = <10000>;
+> +			regulator-allow-set-load;
+> +		};
+> +
+> +		pm8994_l15: l15 {
+> +			regulator-min-microvolt = <1800000>;
+> +			regulator-max-microvolt = <1800000>;
+> +		};
+> +
+> +		pm8994_l16: l16 {
+> +			regulator-min-microvolt = <2700000>;
+> +			regulator-max-microvolt = <2700000>;
+> +		};
+> +
+> +		/* camera */
+> +		pm8994_l17: l17 {
+> +			regulator-min-microvolt = <2800000>;
+> +			regulator-max-microvolt = <2800000>;
+> +		};
+> +
+> +		pm8994_l18: l18 {
+> +			regulator-min-microvolt = <2850000>;
+> +			regulator-max-microvolt = <2850000>;
+> +		};
+> +
+> +		/* LCD */
+> +		pm8994_l19: l19 {
+> +			regulator-min-microvolt = <3000000>;
+> +			regulator-max-microvolt = <3000000>;
+> +		};
+> +
+> +		/* sdhc1 vmmc */
+> +		pm8994_l20: l20 {
+> +			regulator-min-microvolt = <2950000>;
+> +			regulator-max-microvolt = <2950000>;
+> +			regulator-system-load = <570000>;
+> +			regulator-allow-set-load;
+> +		};
+> +
+> +		/* sdhc2 vmmc */
+> +		pm8994_l21: l21 {
+> +			regulator-min-microvolt = <2950000>;
+> +			regulator-max-microvolt = <2950000>;
+> +			regulator-system-load = <800000>;
+> +			regulator-allow-set-load;
+> +		};
+> +
+> +		/* touch */
+> +		pm8994_l22: l22 {
+> +			regulator-min-microvolt = <3000000>;
+> +			regulator-max-microvolt = <3000000>;
+> +		};
+> +
+> +		/* camera */
+> +		pm8994_l23: l23 {
+> +			regulator-min-microvolt = <2800000>;
+> +			regulator-max-microvolt = <2800000>;
+> +		};
+> +
+> +		pm8994_l24: l24 {
+> +			regulator-min-microvolt = <3075000>;
+> +			regulator-max-microvolt = <3150000>;
+> +		};
+> +
+> +		/* IRRC */
+> +		pm8994_l25: l25 {
+> +			regulator-min-microvolt = <1000000>;
+> +			regulator-max-microvolt = <1000000>;
+> +		};
+> +
+> +		pm8994_l26: l26 {
+> +			regulator-min-microvolt = <987500>;
+> +			regulator-max-microvolt = <987500>;
+> +		};
+> +
+> +		/* hdmi */
+> +		pm8994_l27: l27 {
+> +			regulator-min-microvolt = <1000000>;
+> +			regulator-max-microvolt = <1000000>;
+> +		};
+> +
+> +		pm8994_l28: l28 {
+> +			regulator-min-microvolt = <1000000>;
+> +			regulator-max-microvolt = <1000000>;
+> +			regulator-system-load = <10000>;
+> +			regulator-allow-set-load;
+> +		};
+> +
+> +		/* camera */
+> +		pm8994_l29: l29 {
+> +			regulator-min-microvolt = <2800000>;
+> +			regulator-max-microvolt = <2800000>;
+> +		};
+> +
+> +		/* camera */
+> +		pm8994_l30: l30 {
+> +			regulator-min-microvolt = <1800000>;
+> +			regulator-max-microvolt = <1800000>;
+> +		};
+> +
+> +		pm8994_l31: l31 {
+> +			regulator-min-microvolt = <1262500>;
+> +			regulator-max-microvolt = <1262500>;
+> +		};
+> +
+> +		pm8994_l32: l32 {
+> +			regulator-min-microvolt = <1800000>;
+> +			regulator-max-microvolt = <1800000>;
+> +		};
+> +
+> +		pm8994_lvs1: lvs1 {};
+> +
+> +		pm8994_lvs2: lvs2 {};
+> +	};
+> +
+> +	regulators-1 {
+> +		compatible = "qcom,rpm-pmi8994-regulators";
+> +
+> +		vdd_s1-supply = <&vph_pwr>;
+> +		vdd_bst_byp-supply = <&vph_pwr>;
+> +
+> +		pmi8994_s1: s1 {
+> +			regulator-min-microvolt = <1025000>;
+> +			regulator-max-microvolt = <1025000>;
+> +		};
+> +
+> +		/* S2 & S3 - VDD_GFX */
+> +
+> +		pmi8994_bby: boost-bypass {
+> +			regulator-min-microvolt = <3150000>;
+> +			regulator-max-microvolt = <3600000>;
+> +		};
+> +	};
+> +};
+> +
+> +&pm8994_resin {
+> +	status = "okay";
+> +	linux,code = <KEY_VOLUMEDOWN>;
+> +};
+> +
+> +&sdhc1 {
+> +	status = "okay";
+> +	mmc-hs400-1_8v;
+> +	vmmc-supply = <&pm8994_l20>;
+> +	vqmmc-supply = <&pm8994_s4>;
+> +	non-removable;
+> +};
+> +
+> +&sdhc2 {
+> +	status = "okay";
+> +	vmmc-supply = <&pm8994_l21>;
+> +	vqmmc-supply = <&pm8994_l13>;
+> +	cd-gpios = <&pm8994_gpios 8 GPIO_ACTIVE_LOW>;
+> +};
+> +
+> +&tlmm {
+> +	hall_sensor_default: hall-sensor-default-state {
+> +		pins = "gpio75";
+> +		function = "gpio";
+> +		drive-strength = <2>;
+> +		bias-pull-up;
+> +	};
+> +};
 
