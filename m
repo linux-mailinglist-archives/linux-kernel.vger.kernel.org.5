@@ -1,147 +1,101 @@
-Return-Path: <linux-kernel+bounces-129032-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-129039-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4162D89637E
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 06:26:37 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 045318963A0
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 06:44:20 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 72BD01C22C5F
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 04:26:36 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 975651F23B59
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 04:44:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 21884446D2;
-	Wed,  3 Apr 2024 04:26:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=leemhuis.info header.i=@leemhuis.info header.b="gZE5dRG/"
-Received: from wp530.webpack.hosteurope.de (wp530.webpack.hosteurope.de [80.237.130.52])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EAC1C45038;
+	Wed,  3 Apr 2024 04:44:12 +0000 (UTC)
+Received: from cstnet.cn (smtp21.cstnet.cn [159.226.251.21])
+	(using TLSv1.2 with cipher DHE-RSA-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 066A34120B;
-	Wed,  3 Apr 2024 04:26:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=80.237.130.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E7B3C44C87;
+	Wed,  3 Apr 2024 04:44:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=159.226.251.21
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712118389; cv=none; b=RsFaRwgxNRlMTxVM9myWwcvoREgbL9vbM23uZsq+pWUOWXRv92Oeu1goWhEV9QOARCzCv3jOGVMatP7GeRV6nHuzHniOID7HCFM9tE0Ik1BieJVrDtVVv0y0gxZsC7+C0moYBsLIbcWhNzpT7RK+4wnyUOdY7+04dsr8Ge7urg4=
+	t=1712119452; cv=none; b=l6IWM6fjy01hvh4J3F4SU15tELZy47x3jP8gwc9OWwfZxxcq39WNTZ0NfH27aTJUxy7qPQG0aNE5LO5fPm/aYqlVUwoM82+a871Zu6PNnq7+vMR2PXWvxw6Sl+pfDeCFup9/7YSUQcHa6fu29f/OVEZE650eBRy4D7AktEzGN7Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712118389; c=relaxed/simple;
-	bh=GFopZvyivykktQ72jqds+qx9RyJ0KszyGSYlJEDTeuc=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=IX3XaEX9ZD78szhQ0HOL6e/IGoT64bXi+6/JMFTcqKKfEgWSer3Jbmm23DbqkRglW6CI1sMfdaVE/Z6JHXp2jpEEh1SWSjQ1b1qOrODREo65kMZyEGkqj8rYED6nU7lnMHT9Ljf4KbwKiMh6ZzUEWvM4bUKRoVSsZiOjggHJzwY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=leemhuis.info; spf=pass smtp.mailfrom=leemhuis.info; dkim=pass (2048-bit key) header.d=leemhuis.info header.i=@leemhuis.info header.b=gZE5dRG/; arc=none smtp.client-ip=80.237.130.52
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=leemhuis.info
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=leemhuis.info
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=leemhuis.info; s=he214686; h=Content-Transfer-Encoding:Content-Type:
-	In-Reply-To:Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
-	Message-ID:From:Sender:Reply-To:Subject:Date:Message-ID:To:Cc:MIME-Version:
-	Content-Type:Content-Transfer-Encoding:Content-ID:Content-Description:
-	In-Reply-To:References; bh=QyVQuuWUk2XuaF7soW3Q/khOH9t0orQsT6WSZbVXx2k=;
-	t=1712118387; x=1712550387; b=gZE5dRG/tMD/U4WVfh0XI/UVHhBN+SCx+1Kox4o5wsdWe61
-	arEgelcyS5/AKBKvk6wsR0cToZczV7dujVd+mslqcekX8KCElai6BsknqjPcWbaeYrcwAzq5wyleS
-	9DinbuEgmN5JPqSJqxxI3J8V5NXqT1xEa6agub+5wMynUNqMUC+YywIWoLz+j0wVJ2iytacgnRbQK
-	n/aKUMs3B9Ha/bbBpJ/6cssGI3uYML/N4xmYgrOcEWq1l+m5BUdCtuRaUAV0EGQdce3PQf1at9YFu
-	IXW1AtWH+mCU9uP4c4IZUHyDWcdl13DpPcstu9wUTj0lqZMQGky+6AyW2UJ8xgnA==;
-Received: from [2a02:8108:8980:2478:8cde:aa2c:f324:937e]; authenticated
-	by wp530.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
-	id 1rrsCe-000542-LX; Wed, 03 Apr 2024 06:26:24 +0200
-Message-ID: <b6cdb17f-206c-4dff-bb45-a60317e0a55e@leemhuis.info>
-Date: Wed, 3 Apr 2024 06:26:24 +0200
+	s=arc-20240116; t=1712119452; c=relaxed/simple;
+	bh=aqF52sujDWfRwrckSXNe99REklOfjIvASLLtnHl7Keg=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=fXe89cGN9JGWEXfUUnBEv6NN0rIp3cf0Qx1CR2baxdx6X1z8YORbZ/Jgzg9R9uYFcICSbw7nbkRIG/moP8lrW+OY5ymwxwnluEdV/anqSXQ/27GSH1J0degc0ruRr2DVaqQSUHpVsNvLb0Kj1kstvyXAASU+rKu8Sgo0o1CbPnA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=iscas.ac.cn; spf=pass smtp.mailfrom=iscas.ac.cn; arc=none smtp.client-ip=159.226.251.21
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=iscas.ac.cn
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=iscas.ac.cn
+Received: from localhost (unknown [124.16.138.129])
+	by APP-01 (Coremail) with SMTP id qwCowAD3O8y23Axm18AqAQ--.8452S2;
+	Wed, 03 Apr 2024 12:36:06 +0800 (CST)
+From: Chen Ni <nichen@iscas.ac.cn>
+To: linus.walleij@linaro.org,
+	dlemoal@kernel.org,
+	cassel@kernel.org
+Cc: linux-ide@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Chen Ni <nichen@iscas.ac.cn>
+Subject: [PATCH v2] ata: sata_gemini: Add check for clk_enable
+Date: Wed,  3 Apr 2024 04:33:49 +0000
+Message-Id: <20240403043349.3623961-1-nichen@iscas.ac.cn>
+X-Mailer: git-send-email 2.25.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: Hibernate stuck after recent kernel/workqueue.c changes in Stable
- 6.6.23
-To: Tejun Heo <tj@kernel.org>,
- Linux regressions mailing list <regressions@lists.linux.dev>
-Cc: Greg KH <gregkh@linuxfoundation.org>, Sasha Levin <sashal@kernel.org>,
- "stable@vger.kernel.org" <stable@vger.kernel.org>,
- LKML <linux-kernel@vger.kernel.org>
-References: <ce4c2f67-c298-48a0-87a3-f933d646c73b@leemhuis.info>
- <ZgylCe48FuOKNWtM@slm.duckdns.org>
-From: "Linux regression tracking (Thorsten Leemhuis)"
- <regressions@leemhuis.info>
-Content-Language: en-US, de-DE
-Reply-To: Linux regressions mailing list <regressions@lists.linux.dev>
-In-Reply-To: <ZgylCe48FuOKNWtM@slm.duckdns.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-bounce-key: webpack.hosteurope.de;regressions@leemhuis.info;1712118387;eb609220;
-X-HE-SMSGID: 1rrsCe-000542-LX
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID:qwCowAD3O8y23Axm18AqAQ--.8452S2
+X-Coremail-Antispam: 1UD129KBjvdXoW7GF4DJF4ruF1kZFykGw18AFb_yoW3CFb_C3
+	W7Xrna9ryYgr4UG3W7Xr13ZFy0kw4vvrn3uas2grZxt345Zr4kJrWjv3s8Ar1DWr18WF9I
+	ya15J3s0kryfCjkaLaAFLSUrUUUUjb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+	9fnUUIcSsGvfJTRUUUbcxFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26cxKx2IYs7xG
+	6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8w
+	A2z4x0Y4vE2Ix0cI8IcVAFwI0_Jr0_JF4l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Gr0_
+	Cr1l84ACjcxK6I8E87Iv67AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVCY1x0267AKxVWxJr
+	0_GcWle2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E
+	2Ix0cI8IcVAFwI0_JrI_JrylYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJV
+	W8JwACjcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lc2xSY4AK67AK6r45
+	MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr
+	0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUAVWUtwCIc40Y0x0E
+	wIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVWUJV
+	W8JwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAI
+	cVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7VUjX4S5UUUUU==
+X-CM-SenderInfo: xqlfxv3q6l2u1dvotugofq/
 
-On 03.04.24 02:38, Tejun Heo wrote:
-> On Tue, Apr 02, 2024 at 10:08:11AM +0200, Linux regression tracking (Thorsten Leemhuis) wrote:
->> Hi stable team, there is a report that the recent backport of
->> 5797b1c18919cd ("workqueue: Implement system-wide nr_active enforcement
->> for unbound workqueues") [from Tejun] to 6.6.y (as 5a70baec2294) broke
->> hibernate for a user. 6.6.24-rc1 did not fix this problem; reverting the
->> culprit does.
->>
->>> With kernel 6.6.23 hibernating usually hangs here: the display stays
->>> on but the mouse pointer does not move and the keyboard does not work.
->>> But SysRq REISUB does reboot. Sometimes it seems to hibernate: the
->>> computer powers down and can be waked up and the previous display comes
->>> visible, but it is stuck there.
->>
->> See https://bugzilla.kernel.org/show_bug.cgi?id=218658 for details.
->> Note, you have to use bugzilla to reach the reporter, as I sadly[1] can
->> not CCed them in mails like this.
->>
->> Side note: there is a mainline report about problems due to
->> 5797b1c18919cd ("workqueue: Implement system-wide nr_active enforcement
->> for unbound workqueues") as well, but it's about "nohz_full=0 prevents
->> kernel from booting":
->> https://bugzilla.kernel.org/show_bug.cgi?id=218665; will forward that
->> separately to Tejun.
-> 
-> Sorry about late reply
+The call to clk_enable() in gemini_sata_start_bridge() can fail.
+Add a check to detect such failure.
 
-No problem at all, really, thx for your reply!
+Signed-off-by: Chen Ni <nichen@iscas.ac.cn>
+---
+Changelog:
 
-> but that commit is not for -stable. It does fix an
-> undesirable behavior from an earlier commit, so it has the Fixes tag but it
-> has a series of dependencies that need to be backported together
+v1 -> v2:
+1. Simplify commit message
+---
+ drivers/ata/sata_gemini.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
-Not sure if you know, but the stable team apparently recently backported a
-bunch of other workqueue commits as well; I see 10 from a quick look here:
-https://lore.kernel.org/all/20240326223803.2647796-1-sashal@kernel.org/
+diff --git a/drivers/ata/sata_gemini.c b/drivers/ata/sata_gemini.c
+index 400b22ee99c3..4c270999ba3c 100644
+--- a/drivers/ata/sata_gemini.c
++++ b/drivers/ata/sata_gemini.c
+@@ -200,7 +200,10 @@ int gemini_sata_start_bridge(struct sata_gemini *sg, unsigned int bridge)
+ 		pclk = sg->sata0_pclk;
+ 	else
+ 		pclk = sg->sata1_pclk;
+-	clk_enable(pclk);
++	ret = clk_enable(pclk);
++	if (ret)
++		return ret;
++
+ 	msleep(10);
+ 
+ 	/* Do not keep clocking a bridge that is not online */
+-- 
+2.25.1
 
-$ git log --grep='workqueue:' --oneline v6.6.22..stable/linux-6.6.y -- include/linux/workqueue.h kernel/workqueue*
-7df62b8cca38aa workqueue: Don't call cpumask_test_cpu() with -1 CPU in wq_update_node_max_active()
-5a70baec2294e8 workqueue: Implement system-wide nr_active enforcement for unbound workqueues
-b522229a56941a workqueue: Introduce struct wq_node_nr_active
-bd31fb926dfa02 workqueue: RCU protect wq->dfl_pwq and implement accessors for it
-5f99fee6f2dea1 workqueue: Make wq_adjust_max_active() round-robin pwqs while activating
-4023a2d9507691 workqueue: Move nr_active handling into helpers
-6c592f0bb96815 workqueue: Replace pwq_activate_inactive_work() with [__]pwq_activate_work()
-bad184d26a4f68 workqueue: Factor out pwq_is_empty()
-82e098f5bed1ff workqueue: Move pwq->max_active to wq->max_active
-43a181f8f41aca workqueue.c: Increase workqueue name length
-
-And there is also "workqueue: Shorten events_freezable_power_efficient name"
-in the queue for the next 6.6.y release:
-https://git.kernel.org/pub/scm/linux/kernel/git/stable/stable-queue.git/tree/queue-6.6
-
-That leads to the question: what is the better patch forward here: pick
-up what's is missing or back out?
-
-Side note: I have no idea why the stable team backported those patches
-and no option on whether that was wise, just trying to help finding the best
-solution forward from the current state of things.
-
-> which would
-> be far too invasive for -stable, thus no Cc: stable.
->
-> I didn't know a Fixes
-> tag automatically triggers backport to -stable. I will keep that in mind for
-> future.
-
-/me fears that more and more developers due to situations like this will
-avoid Fixes: tags and wonders what consequences that might have for the
-kernel as a whole
-
-Ciao, Thorsten
 
