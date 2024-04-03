@@ -1,147 +1,164 @@
-Return-Path: <linux-kernel+bounces-130252-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-130253-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id AC7D28975F2
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 19:08:32 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id A18718975F4
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 19:09:18 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DE0751C21489
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 17:08:31 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 18C521F22B37
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 17:09:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 02676152533;
-	Wed,  3 Apr 2024 17:08:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7D50F15252E;
+	Wed,  3 Apr 2024 17:09:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="jUEdu32y"
-Received: from mail-ed1-f45.google.com (mail-ed1-f45.google.com [209.85.208.45])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=inria.fr header.i=@inria.fr header.b="U84infRz"
+Received: from mail3-relais-sop.national.inria.fr (mail3-relais-sop.national.inria.fr [192.134.164.104])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A514F152519;
-	Wed,  3 Apr 2024 17:08:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 003EF152188
+	for <linux-kernel@vger.kernel.org>; Wed,  3 Apr 2024 17:09:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.134.164.104
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712164105; cv=none; b=l5JaDMXq7uKuqzd/Q5Wpuebpr592z5yTS0LcR0++YKFCsnT5zGk8Vv2WO7THmvGySrSrFOsWn5sp7n9dSzpkL9E5DOAg5ZbICEFyTVf2zWorsbZZuslhYKnO9AGIDRgnYtoJTwq6gB08zDQ639R9OIg8cqHHdjDygvVZVFZErU0=
+	t=1712164147; cv=none; b=VfKBIBUe+om38wKTzwmAne4FobAMx+r5p57jWZoAjVWQ0MUGuGMO/BI2TVJNZ12nQF/xdZBelw+m2cBnfjTJxhHDvvgz7TYM+lNImweXydd6mtxp2qdVnzJ5MJ8Sa4E4M0nJPictFXB7SaEyb5LTBfcYlK1P1TfmJZnR0i2bkKM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712164105; c=relaxed/simple;
-	bh=OcC8tHba1b0xwNBnYF1Rz0FUebzDY8vUEmFY4cdpfrQ=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=eBhZUxwz2jFGy4UZKgWmg9iySN12KlBfJTMqJ1WEkknNd2G8rn72sJ7KVtXzE3/OcU6ZnZZEVywax5PPPGgKxnChxpE02RvKKyINOn54WmrOG3jRI1eQmbKG5qukpr1GiG8CJPMyBlNwM1NsbABlNzllwylEcfeFcEdyHf+usQE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=jUEdu32y; arc=none smtp.client-ip=209.85.208.45
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f45.google.com with SMTP id 4fb4d7f45d1cf-56c583f5381so47022a12.1;
-        Wed, 03 Apr 2024 10:08:23 -0700 (PDT)
+	s=arc-20240116; t=1712164147; c=relaxed/simple;
+	bh=lyLiABoT0znW9q0c9QeiPcjbxOtFrx1vbT+Bsk6RE60=;
+	h=Date:From:To:cc:Subject:In-Reply-To:Message-ID:References:
+	 MIME-Version:Content-Type; b=G9zJcTw1H+/z/B4lRqUKVdOmRGpdDUysJuU9epDhKlQHyozdPXgWmqQmuBL1FWEiqYSEbqPxD6bGO6XBcgjgAlsVttRp6Eezvd2tgC5POJD7TlYN9vWtzs73Ch0wy/+MjYe8Bq9B89jTUkDNyYDxZcfcepVKUbrEJ5cSz8Tir64=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=inria.fr; spf=pass smtp.mailfrom=inria.fr; dkim=pass (1024-bit key) header.d=inria.fr header.i=@inria.fr header.b=U84infRz; arc=none smtp.client-ip=192.134.164.104
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=inria.fr
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=inria.fr
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1712164102; x=1712768902; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=tXkTMWhGJHnawvFfr99rf7hUQgPICISPDhu2Uum6b2c=;
-        b=jUEdu32y8DiqqhR+jWnJAjGHE87mz16FZx6bULMkit0Hsh8JZpiYmZNgrgFlJQNHUR
-         Y7EwKw5XlENVMskOL9U2KKvXJRNsZckBLPjzv6T5U8G0BLokV3tZ9AfxE/XxruT8gjFe
-         8fSSabwycepfVmUW8S2EbgozxvJ0H8OJtNDnzgNeJ9ibHIkp8s4KIgeTyL1zZ3hlyFC5
-         wzJfUuBfFCW9heJM62zriLuy0Qoj3io6lYmnvdgNoJmZd+h7utyv1ya9ot0pFetcF6vz
-         exufm+SRNDssWtcVVnOoXCLoYkfQ0n02/L/0gfYDVbpBzV4e9T/4raoOgr8/6vgXOGo9
-         H9OA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712164102; x=1712768902;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=tXkTMWhGJHnawvFfr99rf7hUQgPICISPDhu2Uum6b2c=;
-        b=i8ArAPXj8ON3DzlkuSByWoUewM+2Oi3fRVlyd6dK2/Mc252pzqW53pBnu/YaU6Cjld
-         DjgSo9ZmzBr6PzfF7s6vYiiLGd59yKWuqGzAkQk3x0xO1c8eTwIYyp3agE4bhKXYeVPh
-         +nSe2lekP8f9eVeLjvxLfElVKZbtTlGFjaVeE1U3gXQpZ9lk2XmWfOiXShp2/GLTQsCp
-         Ybzei9dlMz6pTOJLZ6UmN5jd4fgWrDe9KBWPx7ZJvKsZ3W9OmawvdJbEGuESyVKNG+9i
-         mDA9EJNWMhI0ukUce3d27rjQVYFRZuoRVdqHmJb4mIIkzTAieGWbXmr8tG3grGMlPXRI
-         9Sdw==
-X-Forwarded-Encrypted: i=1; AJvYcCU2u1YJWG/zS00lYsc7XkBXi8Up3Rw7CHdXGDtNi31+sm9jG5abjiBWUXYl4owrqKyCFF8CqK3gf6jRkFQna866oIFf8xuK/0MD7xv2
-X-Gm-Message-State: AOJu0Yw0+D57CHe5TWLCs64mimE8LbvCcutjOB9JjWyskkpDlRe1Z5cn
-	FjT2JHlDpG9l2coOOTZV1kZLAg9hvIiG/W+IJFl6CXoSueR+nhOmp/ZzXqfT6l/k36EbGY1S9l7
-	1wiFWXD7uE/c92H0rKUVX2VMmswwed2Tu3q88Gg==
-X-Google-Smtp-Source: AGHT+IGNWuQf8Fdm6+GA67xbdAmuqg7ABWqeUX7DGm4IU3MXvh6Eh2E/ASCDWCDKiVHUSe9y/Ni1ugihT+RAdF2WBng=
-X-Received: by 2002:a50:c31b:0:b0:56c:16c6:2098 with SMTP id
- a27-20020a50c31b000000b0056c16c62098mr2999250edb.11.1712164101549; Wed, 03
- Apr 2024 10:08:21 -0700 (PDT)
+  d=inria.fr; s=dc;
+  h=date:from:to:cc:subject:in-reply-to:message-id:
+   references:mime-version;
+  bh=mEIX8zwty7dKxH47y6oy+4uKOjzsm9yaNYG6n9h1ZLg=;
+  b=U84infRzHS1DjDGzDRS2ObN1S2w4N9gFilR5D+2jt9+fr3YzVRMxe8nk
+   I4eiyL8K6H6A5PfAvZBSVs8YO1YZ8T2K5ATn7arthKRjI5egcvUZXFPPz
+   MCdrTLxlXzuLUNf5YvZ1jJAZ7pmeCAJlo0XFkrQjrFH4kaokwj1uq7TQR
+   I=;
+Authentication-Results: mail3-relais-sop.national.inria.fr; dkim=none (message not signed) header.i=none; spf=SoftFail smtp.mailfrom=julia.lawall@inria.fr; dmarc=fail (p=none dis=none) d=inria.fr
+X-IronPort-AV: E=Sophos;i="6.07,177,1708383600"; 
+   d="scan'208";a="83810300"
+Received: from 71-51-181-183.chvl.centurylink.net (HELO hadrien) ([71.51.181.183])
+  by mail3-relais-sop.national.inria.fr with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Apr 2024 19:09:03 +0200
+Date: Wed, 3 Apr 2024 13:09:00 -0400 (EDT)
+From: Julia Lawall <julia.lawall@inria.fr>
+To: Mike Snitzer <snitzer@kernel.org>
+cc: Matthew Sakai <msakai@redhat.com>, linux-kernel@vger.kernel.org, 
+    oe-kbuild-all@lists.linux.dev, dm-devel@list.linux.dev
+Subject: Re: drivers/md/dm-vdo/data-vio.c:969:2-8: preceding lock on line
+ 966 (fwd)
+In-Reply-To: <Zg2MiSlrQ9zTna6q@redhat.com>
+Message-ID: <677fa1fd-6f16-438e-2b95-8e81cabf4bf0@inria.fr>
+References: <801d737e-f7c0-b853-d7e-63eb68c7fd7b@inria.fr> <Zg2MiSlrQ9zTna6q@redhat.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240402180026.2469459-1-snovitoll@gmail.com> <CAKFNMonDO_diEo+_JXKgHMTmOPv5T30TALb-ZvsOprcwSJCtFQ@mail.gmail.com>
-In-Reply-To: <CAKFNMonDO_diEo+_JXKgHMTmOPv5T30TALb-ZvsOprcwSJCtFQ@mail.gmail.com>
-From: Sabyrzhan Tasbolatov <snovitoll@gmail.com>
-Date: Wed, 3 Apr 2024 22:08:09 +0500
-Message-ID: <CACzwLxhgq0rsrEi3Ye7ExrF6KMZEXeX6VeMehmZD5d3HR+eonQ@mail.gmail.com>
-Subject: Re: [PATCH] fs/nilfs2: prevent int overflow in btree binary search
-To: Ryusuke Konishi <konishi.ryusuke@gmail.com>
-Cc: linux-nilfs@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=US-ASCII
 
-Hi Ryusuke,
 
-> nilfs_btree_node_get_nchildren() returns a value read from a 16-bit
-> wide field, so it will never exceed U16_MAX.
 
-You're right, "high" indeed never exceeds INT_MAX as it's limited to 16-bit
-in 32-bit integer. Sorry for the confusion, It landed via my grepping tool.
+On Wed, 3 Apr 2024, Mike Snitzer wrote:
 
-         Sabyrzhan Tasbolatov
-
-On Wed, Apr 3, 2024 at 1:55=E2=80=AFAM Ryusuke Konishi
-<konishi.ryusuke@gmail.com> wrote:
+> On Wed, Apr 03 2024 at 12:47P -0400,
+> Julia Lawall <julia.lawall@inria.fr> wrote:
 >
-> On Wed, Apr 3, 2024 at 3:00=E2=80=AFAM Sabyrzhan Tasbolatov wrote:
+> > Hello,
 > >
-> > Should prevent int overflow if low + high > INT_MAX in big btree with
-> > nchildren in nilfs_btree_node_lookup() binary search.
+> > Please check whether the lock should be released before the returns.
 > >
-> > Signed-off-by: Sabyrzhan Tasbolatov <snovitoll@gmail.com>
-> > ---
-> >  fs/nilfs2/btree.c | 2 +-
-> >  1 file changed, 1 insertion(+), 1 deletion(-)
+> > julia
 > >
-> > diff --git a/fs/nilfs2/btree.c b/fs/nilfs2/btree.c
-> > index 65659fa03..39ee4fe11 100644
-> > --- a/fs/nilfs2/btree.c
-> > +++ b/fs/nilfs2/btree.c
-> > @@ -300,7 +300,7 @@ static int nilfs_btree_node_lookup(const struct nil=
-fs_btree_node *node,
-> >         index =3D 0;
-> >         s =3D 0;
-> >         while (low <=3D high) {
-> > -               index =3D (low + high) / 2;
-> > +               index =3D low + (high - low) / 2;
-> >                 nkey =3D nilfs_btree_node_get_key(node, index);
-> >                 if (nkey =3D=3D key) {
-> >                         s =3D 0;
+> > ---------- Forwarded message ----------
+> > Date: Wed, 3 Apr 2024 22:16:44 +0800
+> > From: kernel test robot <lkp@intel.com>
+> > To: oe-kbuild@lists.linux.dev
+> > Cc: lkp@intel.com, Julia Lawall <julia.lawall@inria.fr>
+> > Subject: drivers/md/dm-vdo/data-vio.c:969:2-8: preceding lock on line 966
+> >
+> > BCC: lkp@intel.com
+> > CC: oe-kbuild-all@lists.linux.dev
+> > CC: linux-kernel@vger.kernel.org
+> > TO: Mike Snitzer <snitzer@kernel.org>
+> > CC: Matthew Sakai <msakai@redhat.com>
+> >
+> > tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+> > head:   3e92c1e6cd876754b64d1998ec0a01800ed954a6
+> > commit: f36b1d3ba533d21b5b793623f05761b0297d114e dm vdo: use a proper Makefile for dm-vdo
+> > date:   6 weeks ago
+> > :::::: branch date: 11 hours ago
+> > :::::: commit date: 6 weeks ago
+> > config: s390-randconfig-r052-20240403 (https://download.01.org/0day-ci/archive/20240403/202404032212.NV7EJ2Zj-lkp@intel.com/config)
+> > compiler: s390-linux-gcc (GCC) 13.2.0
+> >
+> > If you fix the issue in a separate patch/commit (i.e. not just a new version of
+> > the same patch/commit), kindly add following tags
+> > | Reported-by: kernel test robot <lkp@intel.com>
+> > | Reported-by: Julia Lawall <julia.lawall@inria.fr>
+> > | Closes: https://lore.kernel.org/r/202404032212.NV7EJ2Zj-lkp@intel.com/
+> >
+> > cocci warnings: (new ones prefixed by >>)
+> > >> drivers/md/dm-vdo/data-vio.c:969:2-8: preceding lock on line 966
+> >    drivers/md/dm-vdo/data-vio.c:972:2-8: preceding lock on line 966
+> >
+> > vim +969 drivers/md/dm-vdo/data-vio.c
+> >
+> > 79535a7881c0cb Matthew Sakai 2023-11-16  952
+> > 79535a7881c0cb Matthew Sakai 2023-11-16  953  /**
+> > 79535a7881c0cb Matthew Sakai 2023-11-16  954   * vdo_launch_bio() - Acquire a data_vio from the pool, assign the bio to it, and launch it.
+> > 79535a7881c0cb Matthew Sakai 2023-11-16  955   *
+> > 79535a7881c0cb Matthew Sakai 2023-11-16  956   * This will block if data_vios or discard permits are not available.
+> > 79535a7881c0cb Matthew Sakai 2023-11-16  957   */
+> > 79535a7881c0cb Matthew Sakai 2023-11-16  958  void vdo_launch_bio(struct data_vio_pool *pool, struct bio *bio)
+> > 79535a7881c0cb Matthew Sakai 2023-11-16  959  {
+> > 79535a7881c0cb Matthew Sakai 2023-11-16  960  	struct data_vio *data_vio;
+> > 79535a7881c0cb Matthew Sakai 2023-11-16  961
+> > 79535a7881c0cb Matthew Sakai 2023-11-16  962  	ASSERT_LOG_ONLY(!vdo_is_state_quiescent(&pool->state),
+> > 79535a7881c0cb Matthew Sakai 2023-11-16  963  			"data_vio_pool not quiescent on acquire");
+> > 79535a7881c0cb Matthew Sakai 2023-11-16  964
+> > 79535a7881c0cb Matthew Sakai 2023-11-16  965  	bio->bi_private = (void *) jiffies;
+> > 79535a7881c0cb Matthew Sakai 2023-11-16 @966  	spin_lock(&pool->lock);
+> > 79535a7881c0cb Matthew Sakai 2023-11-16  967  	if ((bio_op(bio) == REQ_OP_DISCARD) &&
+> > 79535a7881c0cb Matthew Sakai 2023-11-16  968  	    !acquire_permit(&pool->discard_limiter, bio))
+> > 79535a7881c0cb Matthew Sakai 2023-11-16 @969  		return;
+> > 79535a7881c0cb Matthew Sakai 2023-11-16  970
+> > 79535a7881c0cb Matthew Sakai 2023-11-16  971  	if (!acquire_permit(&pool->limiter, bio))
+> > 79535a7881c0cb Matthew Sakai 2023-11-16  972  		return;
+> > 79535a7881c0cb Matthew Sakai 2023-11-16  973
+> > 79535a7881c0cb Matthew Sakai 2023-11-16  974  	data_vio = get_available_data_vio(pool);
+> > 79535a7881c0cb Matthew Sakai 2023-11-16  975  	spin_unlock(&pool->lock);
+> > 79535a7881c0cb Matthew Sakai 2023-11-16  976  	launch_bio(pool->completion.vdo, data_vio, bio);
+> > 79535a7881c0cb Matthew Sakai 2023-11-16  977  }
+> > 79535a7881c0cb Matthew Sakai 2023-11-16  978
+> >
+> > :::::: The code at line 969 was first introduced by commit
+> > :::::: 79535a7881c0cbe95063a2670d840cc950ae9282 dm vdo: add data_vio, the request object which services incoming bios
+> >
+> > :::::: TO: Matthew Sakai <msakai@redhat.com>
+> > :::::: CC: Mike Snitzer <snitzer@kernel.org>
+> >
 > > --
-> > 2.34.1
+> > 0-DAY CI Kernel Test Service
+> > https://github.com/intel/lkp-tests/wiki
 > >
 >
-> Hi Sabyrzhan,
+> Thanks for the report but this is reacting to older code. Changes were
+> made to address sparse's concerns about this same code, please see:
+> commit 872564c501b7 ("dm vdo data-vio: silence sparse warnings about
+> locking context imbalance").
 >
-> Thank you for your interesting patch.
->
-> In this function, the value of the variable "high" is initialized with
-> "nilfs_btree_node_get_nchildren() - 1", and "low" is initialized with
-> 0.
->
-> nilfs_btree_node_get_nchildren() returns a value read from a 16-bit
-> wide field, so it will never exceed U16_MAX.
->
-> These index calculations narrow the range between "low" and "high", so
-> as long as INT_MAX is 32-bit or more, it seems that the calculation of
-> this intermediate value will not overflow.
->
-> So while it's a good overflow avoidance technique, it doesn't seem to
-> happen in practice.
->
-> Am I missing something?
->
-> Regards,
-> Ryusuke Konishi
+> If wait_permit()'s sparse __releases annotation is somehow
+> insufficient for silencing cocci please let me know.
+
+I don't think the Coccinelle rule checks the annotation.  But the warning
+should not be negerated again.
+
+thanks,
+julia
 
