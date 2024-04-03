@@ -1,173 +1,242 @@
-Return-Path: <linux-kernel+bounces-128981-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-128979-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9218C8962A6
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 04:42:54 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 20CBF8962A1
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 04:39:42 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AEA291C22F60
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 02:42:53 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 436DC1C2275A
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 02:39:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 180E61B946;
-	Wed,  3 Apr 2024 02:42:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 94DE91B96B;
+	Wed,  3 Apr 2024 02:39:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=samsung.com header.i=@samsung.com header.b="jmR6SjFu"
-Received: from mailout2.samsung.com (mailout2.samsung.com [203.254.224.25])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="SbJD14F3"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.20])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CEA6A4C8F
-	for <linux-kernel@vger.kernel.org>; Wed,  3 Apr 2024 02:42:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=203.254.224.25
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 253D314F70;
+	Wed,  3 Apr 2024 02:39:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.20
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712112167; cv=none; b=VFdTM46teC0k+XJI/8Mk5rV4sAlyOv7Edla3NljhXVEMFdlyhiKs/LBp0HU7/G3XoynsMzNRUEvABSh9/5VVUSeFGMpqguSMWCPgmlh6RxD2oA71XqQXpFBidUmSd3f5EV4HChmQKMNffFiObKEPKanHTtaisFfGHTwfAM2cuVA=
+	t=1712111971; cv=none; b=Y3F3W/oGZRrghV9qlZzn3pr5/cosjOmlIhsMGK1KeNjWTxUuxnf1aj7MZsP8F67T/iUWrJ2frbkqJQfqKD4B+8pUK9oTHxT5lnaMayhtJvaVpiE2E6T2MdY3Sxk+uspoBkVyqXjI6zuxXKbFQbIgQrNLrLPS1fVkFt1mYJW039k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712112167; c=relaxed/simple;
-	bh=srGhf/WBH1QSMtmgb72EWuku1J74qEaPJtdpCmsUJ6Q=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type:
-	 References; b=R2JwXZbqPzsJSN7drV49C1ptScLkcCYUKwgRCCnoIgWoNJbhGxlatTa3IzOuzv4cZRIxq9OtwQsHsCTGrXU/BDRJk9I0J6q2Z6alng2DT2esASPfJrkXRjef/Cnqt3WDv9InVAtDqXmVMXmLigCIXfdV8QsKmgxJdGfIO9MT4c0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=samsung.com; spf=pass smtp.mailfrom=samsung.com; dkim=pass (1024-bit key) header.d=samsung.com header.i=@samsung.com header.b=jmR6SjFu; arc=none smtp.client-ip=203.254.224.25
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=samsung.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=samsung.com
-Received: from epcas1p1.samsung.com (unknown [182.195.41.45])
-	by mailout2.samsung.com (KnoxPortal) with ESMTP id 20240403024241epoutp023bd8a9d51a051a2d515b844856c940f4~CpPCahuP82151421514epoutp02I
-	for <linux-kernel@vger.kernel.org>; Wed,  3 Apr 2024 02:42:41 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.samsung.com 20240403024241epoutp023bd8a9d51a051a2d515b844856c940f4~CpPCahuP82151421514epoutp02I
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-	s=mail20170921; t=1712112161;
-	bh=crooDftSP4UKnhd+TS08G4idDNDIrt+QwV7TnYgr68w=;
-	h=From:To:Cc:Subject:Date:References:From;
-	b=jmR6SjFupMSeyqGCrKPlIqMyFTsPU9nvfhYXxEtkxzGMBG4EqFV1IIb717JzQj7Vx
-	 JCok0o6A52ZXf/OTT2H+qxDfkL45OjWNIK44J35I1PN0uFm1Yu7SKUly2sx8NxMObx
-	 A4fhkLzOHhf1Q7T3TNhR2rR86hLq9wV5lntX+Ii0=
-Received: from epsnrtp3.localdomain (unknown [182.195.42.164]) by
-	epcas1p4.samsung.com (KnoxPortal) with ESMTP id
-	20240403024241epcas1p4db3b2a12212f5e6c7a54ec4d111eafba~CpPB2AiJI2527325273epcas1p4U;
-	Wed,  3 Apr 2024 02:42:41 +0000 (GMT)
-Received: from epsmgec1p1.samsung.com (unknown [182.195.38.247]) by
-	epsnrtp3.localdomain (Postfix) with ESMTP id 4V8TYr6cKfz4x9Px; Wed,  3 Apr
-	2024 02:42:40 +0000 (GMT)
-Received: from epcas1p4.samsung.com ( [182.195.41.48]) by
-	epsmgec1p1.samsung.com (Symantec Messaging Gateway) with SMTP id
-	7E.76.08627.022CC066; Wed,  3 Apr 2024 11:42:40 +0900 (KST)
-Received: from epsmtrp1.samsung.com (unknown [182.195.40.13]) by
-	epcas1p1.samsung.com (KnoxPortal) with ESMTPA id
-	20240403024240epcas1p155cd55ca8c1dae6114b970cf3f57084e~CpPBZ20CN1047010470epcas1p1Y;
-	Wed,  3 Apr 2024 02:42:40 +0000 (GMT)
-Received: from epsmgmcp1.samsung.com (unknown [182.195.42.82]) by
-	epsmtrp1.samsung.com (KnoxPortal) with ESMTP id
-	20240403024240epsmtrp142863ad5c0cce3251334d3725b83a605~CpPBZG_3D0976809768epsmtrp1d;
-	Wed,  3 Apr 2024 02:42:40 +0000 (GMT)
-X-AuditID: b6c32a33-af9ff700000021b3-9a-660cc220f985
-Received: from epsmtip1.samsung.com ( [182.195.34.30]) by
-	epsmgmcp1.samsung.com (Symantec Messaging Gateway) with SMTP id
-	FB.0C.19234.022CC066; Wed,  3 Apr 2024 11:42:40 +0900 (KST)
-Received: from parkseongsu-desktop.. (unknown [10.252.69.73]) by
-	epsmtip1.samsung.com (KnoxPortal) with ESMTPA id
-	20240403024240epsmtip19cb057068cd3e71f4860396bd34d82d1~CpPBO8iGd2042120421epsmtip1d;
-	Wed,  3 Apr 2024 02:42:40 +0000 (GMT)
-From: Seongsu Park <sgsu.park@samsung.com>
-To: will@kernel.org, catalin.marinas@arm.com, ardb@kernel.org,
-	mark.rutland@arm.com
-Cc: linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-	sgsu.park@samsung.com, Leem ChaeHoon <infinite.run@gmail.com>, Gyeonggeon
-	Choi <gychoi@student.42seoul.kr>, Soomin Cho <to.soomin@gmail.com>, DaeRo
-	Lee <skseofh@gmail.com>, kmasta <kmasta.study@gmail.com>
-Subject: [PATCH v2] arm64: Fix double TCR_T0SZ_OFFSET shift
-Date: Wed,  3 Apr 2024 11:42:36 +0900
-Message-Id: <20240403024236.193428-1-sgsu.park@samsung.com>
-X-Mailer: git-send-email 2.34.1
+	s=arc-20240116; t=1712111971; c=relaxed/simple;
+	bh=tue9ayPeZn96trJ0JwvUsXX5dq+DjhDb0/XxC51zF/Y=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=RlM2snhygH0edYL4BGDfHCMymU73HN6b47NHeonqyOLhd+o5uJj19dyCyHPXXkpT/bllQ2X25Zu5HE+ca9S8wWidnfuM2+Eqqh4d5qFKhIgjskNuQZWZc1BdN2w29+q+ue849VLCfjW1jD635FGpuuW7L5XQyAyYjg021Avdh6E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=SbJD14F3; arc=none smtp.client-ip=198.175.65.20
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1712111970; x=1743647970;
+  h=date:from:to:cc:subject:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=tue9ayPeZn96trJ0JwvUsXX5dq+DjhDb0/XxC51zF/Y=;
+  b=SbJD14F3bvh1L65trKLYZ5wroeeUR24r3qAAjRvsImKv+jhVcnUdBCj8
+   OYw6z7gcbpYlFZJ5dc4l8C2pX0oPE462FhK+2tIBst8ZoquOEpR57dWis
+   uhiVUU0J0BGsxaxAk3LnjltsWSBrrDfFNGXq3ItMBHj94V9N/H51RpPZh
+   U+tkOg3f36UL6Os3h/ZZr2nCpqDhjQbngWDH6n4sPDEfTj8AGyS5M5PWe
+   Po3UJsvRcueTXmWQrPf95RTPzx9q807w/X5On7nqrPMDJz8WPPcdZQBM2
+   cDUXCI1aKjj3jNdmuVP4eYTsJgWZCMUmm3kJ1u5IUgnTZBpWy/18hV+0i
+   Q==;
+X-CSE-ConnectionGUID: 8/OR1ilwSX6QfhNMoWW/lQ==
+X-CSE-MsgGUID: McQ1TGIKQIubryWynfnfkQ==
+X-IronPort-AV: E=McAfee;i="6600,9927,11032"; a="7220949"
+X-IronPort-AV: E=Sophos;i="6.07,176,1708416000"; 
+   d="scan'208";a="7220949"
+Received: from orviesa007.jf.intel.com ([10.64.159.147])
+  by orvoesa112.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Apr 2024 19:39:29 -0700
+X-CSE-ConnectionGUID: CHXo6pawQSewMGVX0695hQ==
+X-CSE-MsgGUID: Mp3wZMv4SGKNDxiqFqnOgQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,176,1708416000"; 
+   d="scan'208";a="18702761"
+Received: from jacob-builder.jf.intel.com (HELO jacob-builder) ([10.54.39.125])
+  by orviesa007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Apr 2024 19:39:29 -0700
+Date: Tue, 2 Apr 2024 19:43:55 -0700
+From: Jacob Pan <jacob.jun.pan@linux.intel.com>
+To: Zeng Guang <guang.zeng@intel.com>
+Cc: LKML <linux-kernel@vger.kernel.org>, X86 Kernel <x86@kernel.org>, Peter
+ Zijlstra <peterz@infradead.org>, "iommu@lists.linux.dev"
+ <iommu@lists.linux.dev>, Thomas Gleixner <tglx@linutronix.de>, Lu Baolu
+ <baolu.lu@linux.intel.com>, "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+ "Hansen, Dave" <dave.hansen@intel.com>, Joerg Roedel <joro@8bytes.org>, "H.
+ Peter Anvin" <hpa@zytor.com>, Borislav Petkov <bp@alien8.de>, Ingo Molnar
+ <mingo@redhat.com>, "Luse, Paul E" <paul.e.luse@intel.com>, "Williams, Dan
+ J" <dan.j.williams@intel.com>, Jens Axboe <axboe@kernel.dk>, "Raj, Ashok"
+ <ashok.raj@intel.com>, "Tian, Kevin" <kevin.tian@intel.com>,
+ "maz@kernel.org" <maz@kernel.org>, "seanjc@google.com" <seanjc@google.com>,
+ Robin Murphy <robin.murphy@arm.com>, jacob.jun.pan@linux.intel.com
+Subject: Re: [PATCH 09/15] x86/irq: Install posted MSI notification handler
+Message-ID: <20240402194355.72b2ade8@jacob-builder>
+In-Reply-To: <a4f169fa-663d-4a94-878b-d783f67d48c9@intel.com>
+References: <20240126234237.547278-1-jacob.jun.pan@linux.intel.com>
+	<20240126234237.547278-10-jacob.jun.pan@linux.intel.com>
+	<a4f169fa-663d-4a94-878b-d783f67d48c9@intel.com>
+Organization: OTC
+X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFprIJsWRmVeSWpSXmKPExsWy7bCmga7CIZ40g1nPDCx+fnnPaPF+WQ+j
-	xaa2+4wWfzbuZrL48ncps8Wmx9dYLS7vmsNmsfT6RSaL9w1drBaTfmxhtGj//ILVouWOqQOP
-	x5p5axg9ds66y+6xaVUnm8fmJfUefVtWMXocOruA1ePzJrkA9qhsm4zUxJTUIoXUvOT8lMy8
-	dFsl7+B453hTMwNDXUNLC3MlhbzE3FRbJRefAF23zBygO5UUyhJzSoFCAYnFxUr6djZF+aUl
-	qQoZ+cUltkqpBSk5BWYFesWJucWleel6eaklVoYGBkamQIUJ2Rmbnm5lL9jGXbHh8132BsYH
-	nF2MHBwSAiYS/5eYdTFycQgJ7GCUuPX5FguE84lR4tGsZkY45/7UZUAZTrCOeXePMoPYQgI7
-	GSUOv/KGK1rcdwusiE1AS2L1v152EFtEIFTi2c77YGOZBWYxSSw4uhesSFjAWqL93Dwwm0VA
-	VeLo9jVMIDfxAsWfnDOGWCYvsf/gWbBlvAKCEidnPgErZwaKN2+dzQwyU0LgL7tE375LUNe5
-	SKx8sJ8ZwhaWeHV8CzuELSXxsr8Nyi6W2PdlDVRNjcSDeXugbHuJjmdtLCA3MAtoSqzfpQ+x
-	i0/i3dceVkhw8Up0tAlBmMoS57Y6QpiSEn8W6EHM8JBYcWsLIyR0YiU+n/nGMoFRbhaS+2ch
-	uX8WwqoFjMyrGMVSC4pz01OTDQsM4bGYnJ+7iRGcNrWMdzBenv9P7xAjEwfjIUYJDmYlEd6f
-	3pxpQrwpiZVVqUX58UWlOanFhxhNgQE6kVlKNDkfmLjzSuINTSwNTMyMTCyMLY3NlMR5z1wp
-	SxUSSE8sSc1OTS1ILYLpY+LglGpg4mXh2JtcoRhbMlWK/8mlK7ckd+9eLsyXpeHzmmG9+/WS
-	E+EbK0WW1cb1rn8pV2gy+7DW95QKMc3K1ex3r214wy7PYDD77DlHH9u2vp3TFV+Hf+03Y05s
-	7z9tlfrejvmz4ZwljYcel5nl6e3Vq17wia3FKETD+fyLPyl9s8qqtAXPmevvmXd9yqOlPxv3
-	7pE54SzcWBH2W9Tyb3raqj6XpI2vi8XusduEShu93Nf/kWtK6MLmkP5m0aUTTux3+yBb2RH2
-	pkP+/IJ3gSXfgvaV3/60o9HEp+CklM/U46c/alx3iDPYt8w9wrPAmmfF72iZxZbFa/ZNDD26
-	fwOPX3ip41nP3zMOzYqW2uYRN+GtEktxRqKhFnNRcSIA0ddQSCQEAAA=
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFjrFLMWRmVeSWpSXmKPExsWy7bCSnK7CIZ40g89bZC1+fnnPaPF+WQ+j
-	xaa2+4wWfzbuZrL48ncps8Wmx9dYLS7vmsNmsfT6RSaL9w1drBaTfmxhtGj//ILVouWOqQOP
-	x5p5axg9ds66y+6xaVUnm8fmJfUefVtWMXocOruA1ePzJrkA9igum5TUnMyy1CJ9uwSujE1P
-	t7IXbOOu2PD5LnsD4wPOLkZODgkBE4l5d48ydzFycQgJbGeUePPyCzNEQlKi/d1lli5GDiBb
-	WOLw4WKQsJDAB0aJ37sSQGw2AS2J1f962UFsEYFIibeXb7GCzGEWWMQk8WVtI9gcYQFrifZz
-	81hAbBYBVYmj29cwgczkBYo/OWcMsUpeYv/Bs2DlvAKCEidnPgErZwaKN2+dzTyBkW8WktQs
-	JKkFjEyrGEVTC4pz03OTCwz1ihNzi0vz0vWS83M3MYKDWytoB+Oy9X/1DjEycTAeYpTgYFYS
-	4f3pzZkmxJuSWFmVWpQfX1Sak1p8iFGag0VJnFc5pzNFSCA9sSQ1OzW1ILUIJsvEwSnVwBSg
-	Pvddp5OOy/fJH9yKavwrum7UZXALqhc8kNMre1If90c874X4X5GpBiyd1RPuTtbsqDq7ejNP
-	4MWOJda/GM7mxiy9fSp/KpN1Sq91+4d0/ofP0kI8T25+GNCcrO51WNSp1W3n5d8pMY22ok8i
-	jLp3K70K6V/Oc2BfwvW7yxzPrnj04ufSwozrc76tVT5zZOvcPEVOU9nKIsO4E/8Lrd80L/JI
-	/abJvCl083rnwvSsPzGq3/8UxFlvNwu7I7nN/siZ35Wds+0WLmGr8pztIC5rrBSp5L72J2Pj
-	jZAL/2U/lNRu0s4+ullgl7nIfaeElBM/furPWaGaLSpwk+nlGceLOpKz/58o6j/2qGbvVyWW
-	4oxEQy3mouJEAFs8awrdAgAA
-X-CMS-MailID: 20240403024240epcas1p155cd55ca8c1dae6114b970cf3f57084e
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-CMS-TYPE: 101P
-DLP-Filter: Pass
-X-CFilter-Loop: Reflected
-X-CMS-RootMailID: 20240403024240epcas1p155cd55ca8c1dae6114b970cf3f57084e
-References: <CGME20240403024240epcas1p155cd55ca8c1dae6114b970cf3f57084e@epcas1p1.samsung.com>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-We have already shifted the value of t0sz in TCR_T0SZ by TCR_T0SZ_OFFSET.
-So, the TCR_T0SZ_OFFSET shift here should be removed.
+Hi Zeng,
 
-Co-developed-by: Leem ChaeHoon <infinite.run@gmail.com>
-Signed-off-by: Leem ChaeHoon <infinite.run@gmail.com>
-Co-developed-by: Gyeonggeon Choi <gychoi@student.42seoul.kr>
-Signed-off-by: Gyeonggeon Choi <gychoi@student.42seoul.kr>
-Co-developed-by: Soomin Cho <to.soomin@gmail.com>
-Signed-off-by: Soomin Cho <to.soomin@gmail.com>
-Co-developed-by: DaeRo Lee <skseofh@gmail.com>
-Signed-off-by: DaeRo Lee <skseofh@gmail.com>
-Co-developed-by: kmasta <kmasta.study@gmail.com>
-Signed-off-by: kmasta <kmasta.study@gmail.com>
-Signed-off-by: Seongsu Park <sgsu.park@samsung.com>
----
+On Fri, 29 Mar 2024 15:32:00 +0800, Zeng Guang <guang.zeng@intel.com> wrote:
 
-Changes in v2:
-- Condition is updated
+> On 1/27/2024 7:42 AM, Jacob Pan wrote:
+> > @@ -353,6 +360,111 @@ void intel_posted_msi_init(void)
+> >   	pid->nv = POSTED_MSI_NOTIFICATION_VECTOR;
+> >   	pid->ndst = this_cpu_read(x86_cpu_to_apicid);
+> >   }
+> > +
+> > +/*
+> > + * De-multiplexing posted interrupts is on the performance path, the
+> > code
+> > + * below is written to optimize the cache performance based on the
+> > following
+> > + * considerations:
+> > + * 1.Posted interrupt descriptor (PID) fits in a cache line that is
+> > frequently
+> > + *   accessed by both CPU and IOMMU.
+> > + * 2.During posted MSI processing, the CPU needs to do 64-bit read and
+> > xchg
+> > + *   for checking and clearing posted interrupt request (PIR), a 256
+> > bit field
+> > + *   within the PID.
+> > + * 3.On the other side, the IOMMU does atomic swaps of the entire PID
+> > cache
+> > + *   line when posting interrupts and setting control bits.
+> > + * 4.The CPU can access the cache line a magnitude faster than the
+> > IOMMU.
+> > + * 5.Each time the IOMMU does interrupt posting to the PIR will evict
+> > the PID
+> > + *   cache line. The cache line states after each operation are as
+> > follows:
+> > + *   CPU		IOMMU			PID Cache line
+> > state
+> > + *   ---------------------------------------------------------------
+> > + *...read64					exclusive
+> > + *...lock xchg64				modified
+> > + *...			post/atomic swap	invalid
+> > + *...-------------------------------------------------------------
+> > + *
+> > + * To reduce L1 data cache miss, it is important to avoid contention
+> > with
+> > + * IOMMU's interrupt posting/atomic swap. Therefore, a copy of PIR is
+> > used
+> > + * to dispatch interrupt handlers.
+> > + *
+> > + * In addition, the code is trying to keep the cache line state
+> > consistent
+> > + * as much as possible. e.g. when making a copy and clearing the PIR
+> > + * (assuming non-zero PIR bits are present in the entire PIR), it does:
+> > + *		read, read, read, read, xchg, xchg, xchg, xchg
+> > + * instead of:
+> > + *		read, xchg, read, xchg, read, xchg, read, xchg
+> > + */
+> > +static __always_inline inline bool handle_pending_pir(u64 *pir, struct
+> > pt_regs *regs) +{
+> > +	int i, vec = FIRST_EXTERNAL_VECTOR;
+> > +	unsigned long pir_copy[4];
+> > +	bool handled = false;
+> > +
+> > +	for (i = 0; i < 4; i++)
+> > +		pir_copy[i] = pir[i];
+> > +
+> > +	for (i = 0; i < 4; i++) {
+> > +		if (!pir_copy[i])
+> > +			continue;
+> > +
+> > +		pir_copy[i] = arch_xchg(pir, 0);  
+> 
+> Here is a problem that pir_copy[i] will always be written as pir[0]. 
+> This leads to handle spurious posted MSIs later.
+Yes, you are right. It should be
+pir_copy[i] = arch_xchg(&pir[i], 0);
 
----
- arch/arm64/include/asm/mmu_context.h | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+Will fix in v2, really appreciated.
 
-diff --git a/arch/arm64/include/asm/mmu_context.h b/arch/arm64/include/asm/mmu_context.h
-index c768d16b81a4..bd19f4c758b7 100644
---- a/arch/arm64/include/asm/mmu_context.h
-+++ b/arch/arm64/include/asm/mmu_context.h
-@@ -72,11 +72,11 @@ static inline void __cpu_set_tcr_t0sz(unsigned long t0sz)
- {
- 	unsigned long tcr = read_sysreg(tcr_el1);
- 
--	if ((tcr & TCR_T0SZ_MASK) >> TCR_T0SZ_OFFSET == t0sz)
-+	if ((tcr & TCR_T0SZ_MASK) == t0sz)
- 		return;
- 
- 	tcr &= ~TCR_T0SZ_MASK;
--	tcr |= t0sz << TCR_T0SZ_OFFSET;
-+	tcr |= t0sz;
- 	write_sysreg(tcr, tcr_el1);
- 	isb();
- }
--- 
-2.34.1
+> > +		handled = true;
+> > +	}
+> > +
+> > +	if (handled) {
+> > +		for_each_set_bit_from(vec, pir_copy,
+> > FIRST_SYSTEM_VECTOR)
+> > +			call_irq_handler(vec, regs);
+> > +	}
+> > +
+> > +	return handled;
+> > +}
+> > +
+> > +/*
+> > + * Performance data shows that 3 is good enough to harvest 90+% of the
+> > benefit
+> > + * on high IRQ rate workload.
+> > + */
+> > +#define MAX_POSTED_MSI_COALESCING_LOOP 3
+> > +
+> > +/*
+> > + * For MSIs that are delivered as posted interrupts, the CPU
+> > notifications
+> > + * can be coalesced if the MSIs arrive in high frequency bursts.
+> > + */
+> > +DEFINE_IDTENTRY_SYSVEC(sysvec_posted_msi_notification)
+> > +{
+> > +	struct pt_regs *old_regs = set_irq_regs(regs);
+> > +	struct pi_desc *pid;
+> > +	int i = 0;
+> > +
+> > +	pid = this_cpu_ptr(&posted_interrupt_desc);
+> > +
+> > +	inc_irq_stat(posted_msi_notification_count);
+> > +	irq_enter();
+> > +
+> > +	/*
+> > +	 * Max coalescing count includes the extra round of
+> > handle_pending_pir
+> > +	 * after clearing the outstanding notification bit. Hence, at
+> > most
+> > +	 * MAX_POSTED_MSI_COALESCING_LOOP - 1 loops are executed here.
+> > +	 */
+> > +	while (++i < MAX_POSTED_MSI_COALESCING_LOOP) {
+> > +		if (!handle_pending_pir(pid->pir64, regs))
+> > +			break;
+> > +	}
+> > +
+> > +	/*
+> > +	 * Clear outstanding notification bit to allow new IRQ
+> > notifications,
+> > +	 * do this last to maximize the window of interrupt coalescing.
+> > +	 */
+> > +	pi_clear_on(pid);
+> > +
+> > +	/*
+> > +	 * There could be a race of PI notification and the clearing
+> > of ON bit,
+> > +	 * process PIR bits one last time such that handling the new
+> > interrupts
+> > +	 * are not delayed until the next IRQ.
+> > +	 */
+> > +	handle_pending_pir(pid->pir64, regs);
+> > +
+> > +	apic_eoi();
+> > +	irq_exit();
+> > +	set_irq_regs(old_regs);
+> >   }
+> >   #endif /* X86_POSTED_MSI */
+> >     
 
+
+Thanks,
+
+Jacob
 
