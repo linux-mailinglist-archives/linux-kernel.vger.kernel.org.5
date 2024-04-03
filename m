@@ -1,30 +1,30 @@
-Return-Path: <linux-kernel+bounces-129740-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-129742-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4B8AA896F4C
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 14:51:14 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id ED05F896F62
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 14:52:39 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id DEC401F2870A
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 12:51:13 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A646D28D45B
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 12:52:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BDBB8146D71;
-	Wed,  3 Apr 2024 12:50:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DD88C1494DE;
+	Wed,  3 Apr 2024 12:50:55 +0000 (UTC)
 Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 69624146D4A
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 53891146A92
 	for <linux-kernel@vger.kernel.org>; Wed,  3 Apr 2024 12:50:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712148653; cv=none; b=gCZ/r45IC9OtahvUjmZPOeQpmaRQnQuNGaGgOcXyZKE1DWGSXjcIiW772aaJcM3jBqetFSA5cVjJQO8lcl9G12i2DwH4rfgOo+ILj9IvGBSRIH7Dre8P/fSX5fIdNP348/Ap6j9zgsMC4bWIzJamai9dMejeBr/98JST64iOeT0=
+	t=1712148653; cv=none; b=X6zJW8sadPkoyCOU8YSWUKZgoCiXn3CEtbDayFqAyK1m9e1kPQAExnf2hpPNpyQHOjXkLGSRI6+Vwf/HRI9BholQ3tE/bBXGRPW0ncECGOfkUSeg496F0iF0w6AaNR5d/6APevzCeHhtaRzdifLOdWMm3IeVXRjyvn/doLWiHRQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1712148653; c=relaxed/simple;
-	bh=f1wmLifa3arJQ/tA8IkHxFJBOXYe1/TIZAQD6djffYg=;
+	bh=o5G4LuYk6sEvisbWMiODRuymYHEM3nRIHoBwcx+FraY=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=eq9cvfWtDwrTvYUlNz+v54uKD785tPAHVQiplVspKH0tqLnjpFTIvoeNEcpVeeI1rYYNZAd50TlJpwKRprFgyAqa7QXIIUYWGtHo5XgYDsYL3omQDErQeS6K7BCtBeURGm85CU0MzhcVg5cGIUMQ+JfGAESa9kcUCtYiCUSYEbU=
+	 MIME-Version; b=HpZCaUpesmPmmGpZhZdN0Zt1L/4nKJic+bYxkfXqFY1tHzAT4URGyQne8BIp/73SvWed7sQQezxAh5eywUBrgtb2h/1oZ7XG6KBnwawSEvaPVp62L23nPZ4rfSPSadEX0W0C4l0cXQNOi7vkLZUSQpb3fAm1ExjJqS85/LKcmQo=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
@@ -32,15 +32,15 @@ Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
 	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
 	(Exim 4.92)
 	(envelope-from <ore@pengutronix.de>)
-	id 1rs04h-0005w0-0Z; Wed, 03 Apr 2024 14:50:43 +0200
+	id 1rs04h-0005wj-0Z; Wed, 03 Apr 2024 14:50:43 +0200
 Received: from [2a0a:edc0:0:1101:1d::ac] (helo=dude04.red.stw.pengutronix.de)
 	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
 	(Exim 4.94.2)
 	(envelope-from <ore@pengutronix.de>)
-	id 1rs04f-00ABEZ-1R; Wed, 03 Apr 2024 14:50:41 +0200
+	id 1rs04f-00ABEa-3T; Wed, 03 Apr 2024 14:50:41 +0200
 Received: from ore by dude04.red.stw.pengutronix.de with local (Exim 4.96)
 	(envelope-from <ore@pengutronix.de>)
-	id 1rs04e-00EKXN-2l;
+	id 1rs04e-00EKY2-36;
 	Wed, 03 Apr 2024 14:50:40 +0200
 From: Oleksij Rempel <o.rempel@pengutronix.de>
 To: "David S. Miller" <davem@davemloft.net>,
@@ -58,9 +58,9 @@ Cc: Oleksij Rempel <o.rempel@pengutronix.de>,
 	netdev@vger.kernel.org,
 	UNGLinuxDriver@microchip.com,
 	=?UTF-8?q?S=C3=B8ren=20Andersen?= <san@skov.dk>
-Subject: [PATCH net-next v2 3/8] net: dsa: microchip: ksz8: Refactor ksz8_fdb_dump()
-Date: Wed,  3 Apr 2024 14:50:34 +0200
-Message-Id: <20240403125039.3414824-4-o.rempel@pengutronix.de>
+Subject: [PATCH net-next v2 4/8] net: dsa: microchip: ksz8: Refactor ksz8_r_dyn_mac_table() for readability
+Date: Wed,  3 Apr 2024 14:50:35 +0200
+Message-Id: <20240403125039.3414824-5-o.rempel@pengutronix.de>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20240403125039.3414824-1-o.rempel@pengutronix.de>
 References: <20240403125039.3414824-1-o.rempel@pengutronix.de>
@@ -76,82 +76,98 @@ X-SA-Exim-Mail-From: ore@pengutronix.de
 X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
 X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 
-Refactor ksz8_fdb_dump() to address potential issues:
-- Limit the number of iterations to avoid endless loops.
-- Handle error codes returned by ksz8_r_dyn_mac_table(), with
-  an exception for -ENXIO when no more dynamic entries are detected.
+Move the code out of a long if statement scope in ksz8_r_dyn_mac_table()
+to improve code readability.
 
 Reviewed-by: Vladimir Oltean <olteanv@gmail.com>
+Acked-by: Arun Ramadoss <arun.ramadoss@microchip.com>
 Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
 ---
-changes v2:
-- move variable declaration out of "for" scope
-- rework "if (port != src_port); continue" to to "if (port == src_port);
-  code"
----
- drivers/net/dsa/microchip/ksz8795.c     | 29 ++++++++++++++-----------
- drivers/net/dsa/microchip/ksz8795_reg.h |  1 +
- 2 files changed, 17 insertions(+), 13 deletions(-)
+ drivers/net/dsa/microchip/ksz8795.c | 60 +++++++++++++++--------------
+ 1 file changed, 31 insertions(+), 29 deletions(-)
 
 diff --git a/drivers/net/dsa/microchip/ksz8795.c b/drivers/net/dsa/microchip/ksz8795.c
-index e407111db6637..c93eb351ab3d5 100644
+index c93eb351ab3d5..d258fb607b4af 100644
 --- a/drivers/net/dsa/microchip/ksz8795.c
 +++ b/drivers/net/dsa/microchip/ksz8795.c
-@@ -1191,27 +1191,30 @@ void ksz8_flush_dyn_mac_table(struct ksz_device *dev, int port)
- int ksz8_fdb_dump(struct ksz_device *dev, int port,
- 		  dsa_fdb_dump_cb_t *cb, void *data)
- {
--	int ret = 0;
--	u16 i = 0;
--	u16 entries = 0;
--	u8 fid;
--	u8 src_port;
- 	u8 mac[ETH_ALEN];
-+	u8 src_port, fid;
-+	u16 entries = 0;
-+	int ret, i;
+@@ -416,7 +416,9 @@ static int ksz8_r_dyn_mac_table(struct ksz_device *dev, u16 addr, u8 *mac_addr,
+ 	const u32 *masks;
+ 	const u16 *regs;
+ 	u16 ctrl_addr;
++	u64 buf = 0;
+ 	u8 data;
++	int cnt;
+ 	int rc;
  
--	do {
-+	for (i = 0; i < KSZ8_DYN_MAC_ENTRIES; i++) {
- 		ret = ksz8_r_dyn_mac_table(dev, i, mac, &fid, &src_port,
- 					   &entries);
--		if (!ret && port == src_port) {
-+		if (ret == -ENXIO)
-+			return 0;
-+		if (ret)
-+			return ret;
+ 	shifts = dev->info->shifts;
+@@ -432,38 +434,38 @@ static int ksz8_r_dyn_mac_table(struct ksz_device *dev, u16 addr, u8 *mac_addr,
+ 	if (rc == -EAGAIN) {
+ 		if (addr == 0)
+ 			*entries = 0;
++		goto unlock_alu;
+ 	} else if (rc == -ENXIO) {
+ 		*entries = 0;
+-	/* At least one valid entry in the table. */
+-	} else {
+-		u64 buf = 0;
+-		int cnt;
+-
+-		ksz_read64(dev, regs[REG_IND_DATA_HI], &buf);
+-		data_hi = (u32)(buf >> 32);
+-		data_lo = (u32)buf;
+-
+-		/* Check out how many valid entry in the table. */
+-		cnt = data & masks[DYNAMIC_MAC_TABLE_ENTRIES_H];
+-		cnt <<= shifts[DYNAMIC_MAC_ENTRIES_H];
+-		cnt |= (data_hi & masks[DYNAMIC_MAC_TABLE_ENTRIES]) >>
+-			shifts[DYNAMIC_MAC_ENTRIES];
+-		*entries = cnt + 1;
+-
+-		*fid = (data_hi & masks[DYNAMIC_MAC_TABLE_FID]) >>
+-			shifts[DYNAMIC_MAC_FID];
+-		*src_port = (data_hi & masks[DYNAMIC_MAC_TABLE_SRC_PORT]) >>
+-			shifts[DYNAMIC_MAC_SRC_PORT];
+-
+-		mac_addr[5] = (u8)data_lo;
+-		mac_addr[4] = (u8)(data_lo >> 8);
+-		mac_addr[3] = (u8)(data_lo >> 16);
+-		mac_addr[2] = (u8)(data_lo >> 24);
+-
+-		mac_addr[1] = (u8)data_hi;
+-		mac_addr[0] = (u8)(data_hi >> 8);
+-		rc = 0;
++		goto unlock_alu;
+ 	}
 +
-+		if (i >= entries)
-+			return 0;
++	ksz_read64(dev, regs[REG_IND_DATA_HI], &buf);
++	data_hi = (u32)(buf >> 32);
++	data_lo = (u32)buf;
 +
-+		if (port == src_port) {
- 			ret = cb(mac, fid, false, data);
- 			if (ret)
--				break;
-+				return ret;
- 		}
--		i++;
--	} while (i < entries);
--	if (i >= entries)
--		ret = 0;
-+	}
++	/* Check out how many valid entry in the table. */
++	cnt = data & masks[DYNAMIC_MAC_TABLE_ENTRIES_H];
++	cnt <<= shifts[DYNAMIC_MAC_ENTRIES_H];
++	cnt |= (data_hi & masks[DYNAMIC_MAC_TABLE_ENTRIES]) >>
++		shifts[DYNAMIC_MAC_ENTRIES];
++	*entries = cnt + 1;
++
++	*fid = (data_hi & masks[DYNAMIC_MAC_TABLE_FID]) >>
++		shifts[DYNAMIC_MAC_FID];
++	*src_port = (data_hi & masks[DYNAMIC_MAC_TABLE_SRC_PORT]) >>
++		shifts[DYNAMIC_MAC_SRC_PORT];
++
++	mac_addr[5] = (u8)data_lo;
++	mac_addr[4] = (u8)(data_lo >> 8);
++	mac_addr[3] = (u8)(data_lo >> 16);
++	mac_addr[2] = (u8)(data_lo >> 24);
++
++	mac_addr[1] = (u8)data_hi;
++	mac_addr[0] = (u8)(data_hi >> 8);
++	rc = 0;
++
++unlock_alu:
+ 	mutex_unlock(&dev->alu_mutex);
  
--	return ret;
-+	return 0;
- }
- 
- static int ksz8_add_sta_mac(struct ksz_device *dev, int port,
-diff --git a/drivers/net/dsa/microchip/ksz8795_reg.h b/drivers/net/dsa/microchip/ksz8795_reg.h
-index 7c9341ef73b03..0d13a6e29b0e6 100644
---- a/drivers/net/dsa/microchip/ksz8795_reg.h
-+++ b/drivers/net/dsa/microchip/ksz8795_reg.h
-@@ -794,5 +794,6 @@
- #define TAIL_TAG_LOOKUP			BIT(7)
- 
- #define FID_ENTRIES			128
-+#define KSZ8_DYN_MAC_ENTRIES		1024
- 
- #endif
+ 	return rc;
 -- 
 2.39.2
 
