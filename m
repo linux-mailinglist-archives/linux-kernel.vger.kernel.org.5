@@ -1,144 +1,147 @@
-Return-Path: <linux-kernel+bounces-130085-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-130086-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C88298973F1
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 17:27:08 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id C7D2E8973EA
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 17:24:04 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C8E07B331E3
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 15:23:37 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0509E1C20E03
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 15:24:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8D22E14A0B5;
-	Wed,  3 Apr 2024 15:23:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2CA8514A092;
+	Wed,  3 Apr 2024 15:23:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="MkbUqREC"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.12])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="P9Dkczu4"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.9])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 98A8D149C68;
-	Wed,  3 Apr 2024 15:23:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.12
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1DD02149DFD
+	for <linux-kernel@vger.kernel.org>; Wed,  3 Apr 2024 15:23:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.9
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712157804; cv=none; b=bugUgHKyPOYKgTP1naIgZtE5SB4Q5YTYCuUr02Jiy4PwmBZkNqMZPcl2pBxV5H/qI2EcqKmIzRV9fVy9j0hL4CucSW0kVSqloiI9TY1jCbVSsL8QGE9eYyvvTIMF3SuzvjT+bxnbiwy6rUSlxUySSfIM19Ruv5MmEr8sV2mx8Ts=
+	t=1712157836; cv=none; b=W8qeF1MAzZoVKK1ZFojw86H2/SxdftIIAvHJBCE8BZVAbGmvshP80qOSLQGnwvHYCVgYyvWmQUS5QQ18eo2Pze7Z2mZQN0Wc1tfbh1ze15zsbCHSbqMIgUWpXjo4gbx6kUGOFpgzGBC6PlS4xBHdC6laieKIIQ8aL1HsuHUsNYc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712157804; c=relaxed/simple;
-	bh=S+1UnRrVrgjaiRYOjs79CGuuwGNW3bJjK9mfZBIQj7o=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=IXIX8jePSX0k1PMLchg3sZDaMoGXp6FyN7YzccD9Ihwl/f6W79NZ7P5iizqKcmmnikjFgQ6nQgf/tjKkdyJcN4+LFUokE4qz/mYhIcvS4iuL//yKuWi9gTsoJhxckbH7tavoGbnxei9czAx8Sdis3BAd7TawPzUwiFoIKV11WoA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=MkbUqREC; arc=none smtp.client-ip=198.175.65.12
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+	s=arc-20240116; t=1712157836; c=relaxed/simple;
+	bh=c+HYWu5qoda4Xr/d7iNbf5Be/CK/oiDAbZU/Qi/e4y4=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=T0Kw5j5W2QU1G0zZE5Gti0cgaP9Grj/nnu8AGsSj3yTfaUDq8NZIRLpwBaatomFs6Hz97Ti91dzIthkQI0T4m3tjvxgrBTSGqBnCeT0KW4wWOPwSGvZ6kuMYv2F0lFVRDw7VlhgPkTvivBiRX9Ye31vW/fbzaT8jNlc0CzQ5wgw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.helo=mgamail.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=P9Dkczu4; arc=none smtp.client-ip=198.175.65.9
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.helo=mgamail.intel.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1712157803; x=1743693803;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=S+1UnRrVrgjaiRYOjs79CGuuwGNW3bJjK9mfZBIQj7o=;
-  b=MkbUqRECuneTEbPC8IUQtqM2umkRFkhPTQ4ks0FbI6NrwGn2DmCxi/CP
-   wA+4aCiM0QA0a8WYJjYr1/ttVh7VqlnZcbrZKIrkYSJYPbgb+bMEg6G8q
-   SlJUoeV08D9JDDytUpn7jRtvgq4MWdWSa/kfiSqTKb9oRptwkS6gcNqWH
-   5DhEpgnxqhrHpblotgENVeRe57g5fdXLMaFfEo+2Rzf/oDa7zhZrc0zi3
-   7hNGT2axc/7DcDQYYIoQt9QedsoXV+mT/ey/NMfq1pxP0Au0XNhhzwTK5
-   jdi21hZcoh9n/wWivGZnlwkJoo6EYH3wHLfTIuppTPuMrKGUtK2/mcrfN
-   g==;
-X-CSE-ConnectionGUID: 15ogyAEuSS+L+YRbN3nQXQ==
-X-CSE-MsgGUID: 4SVIzPAzR7+G4+8E0f9Mgw==
-X-IronPort-AV: E=McAfee;i="6600,9927,11033"; a="18847187"
+  t=1712157836; x=1743693836;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=c+HYWu5qoda4Xr/d7iNbf5Be/CK/oiDAbZU/Qi/e4y4=;
+  b=P9Dkczu41FplzeQPvPgcaYLSAvPh8ntcn3sJHNA0x+YGiWW253sj6FOm
+   dcsqKbW8bjzmNsR22C0nGztZw59mvR4hNX6tMxSafldT+dIvhBRhWyDTQ
+   d8JZufTi6+MCFlbsXD9oazLsGHVAiz63dO6f6ut5ImlF1nn1/GcX3krjp
+   WBN2Uuz9c22as2BtkSvKfKhklENoKfsmzmnzjmkq2b9/XAXdwE1AKfZCW
+   z+set9s6jVN8vYpWxMcIIjd3U968cjnaiigLgNwxHmgYuTOfTuPmsTMsB
+   Fj70OUYnYGShThujt6vn6fuR5B+FLmI8YQDjxXCuB5jyaaStXXGvkM1PL
+   w==;
+X-CSE-ConnectionGUID: Vk4JoShgTeeAAPQC5DD8Fw==
+X-CSE-MsgGUID: /4T5hDCSQX2Qsm7wqkcXYg==
+X-IronPort-AV: E=McAfee;i="6600,9927,11033"; a="29877897"
 X-IronPort-AV: E=Sophos;i="6.07,177,1708416000"; 
-   d="scan'208";a="18847187"
-Received: from orviesa002.jf.intel.com ([10.64.159.142])
-  by orvoesa104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Apr 2024 08:23:22 -0700
-X-CSE-ConnectionGUID: R/MTNPAnRY+18zpVaiNo8Q==
-X-CSE-MsgGUID: A/9/9iVOQ2yZlb5TitRCTQ==
+   d="scan'208";a="29877897"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Apr 2024 08:23:55 -0700
 X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,11033"; a="937085208"
 X-IronPort-AV: E=Sophos;i="6.07,177,1708416000"; 
-   d="scan'208";a="49437019"
-Received: from vly-mobl.amr.corp.intel.com (HELO [10.213.162.81]) ([10.213.162.81])
-  by orviesa002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Apr 2024 08:23:21 -0700
-Message-ID: <9a07a658-dbd4-47e5-bc36-598a456fceca@intel.com>
-Date: Wed, 3 Apr 2024 08:23:20 -0700
+   d="scan'208";a="937085208"
+Received: from black.fi.intel.com ([10.237.72.28])
+  by fmsmga001.fm.intel.com with ESMTP; 03 Apr 2024 08:23:49 -0700
+Received: by black.fi.intel.com (Postfix, from userid 1000)
+	id A9B1D3E5; Wed,  3 Apr 2024 18:23:48 +0300 (EEST)
+From: "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
+To: kirill.shutemov@linux.intel.com
+Cc: adrian.hunter@intel.com,
+	ashish.kalra@amd.com,
+	bhe@redhat.com,
+	bp@alien8.de,
+	dave.hansen@linux.intel.com,
+	elena.reshetova@intel.com,
+	jun.nakajima@intel.com,
+	kai.huang@intel.com,
+	kexec@lists.infradead.org,
+	linux-coco@lists.linux.dev,
+	linux-kernel@vger.kernel.org,
+	mingo@redhat.com,
+	peterz@infradead.org,
+	rafael@kernel.org,
+	rick.p.edgecombe@intel.com,
+	sathyanarayanan.kuppuswamy@linux.intel.com,
+	seanjc@google.com,
+	tglx@linutronix.de,
+	thomas.lendacky@amd.com
+Subject: [PATCHv9.1 05/17] x86/kexec: Keep CR4.MCE set during kexec for TDX guest
+Date: Wed,  3 Apr 2024 18:23:42 +0300
+Message-ID: <20240403152342.918612-1-kirill.shutemov@linux.intel.com>
+X-Mailer: git-send-email 2.43.0
+In-Reply-To: <20240325103911.2651793-6-kirill.shutemov@linux.intel.com>
+References: <20240325103911.2651793-6-kirill.shutemov@linux.intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] dmaengine: idxd: Check for driver name match before sva
- user feature
-Content-Language: en-US
-To: Jerry Snitselaar <jsnitsel@redhat.com>, Fenghua Yu <fenghua.yu@intel.com>
-Cc: Vinod Koul <vkoul@kernel.org>, dmaengine@vger.kernel.org,
- linux-kernel@vger.kernel.org
-References: <20240403050710.2874197-1-jsnitsel@redhat.com>
-From: Dave Jiang <dave.jiang@intel.com>
-In-Reply-To: <20240403050710.2874197-1-jsnitsel@redhat.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 
+Depending on setup, TDX guests might be allowed to clear CR4.MCE.
+Attempt to clear it leads to #VE.
 
+Use alternatives to keep the flag during kexec for TDX guests.
 
-On 4/2/24 10:07 PM, Jerry Snitselaar wrote:
-> Currenty if the user driver is probed on a workqueue configured for
-> another driver with SVA not enabled on the system, it will print
-> out a number of probe failing messages like the following:
-> 
->     [   264.831140] user: probe of wq13.0 failed with error -95
-> 
-> On some systems, such as GNR, the number of messages can
-> reach over 100.
-> 
-> Move the SVA feature check to be after the driver name match
-> check.
-> 
-> Cc: Vinod Koul <vkoul@kernel.org>
-> Cc: dmaengine@vger.kernel.org
-> Cc: linux-kernel@vger.kernel.org
-> Signed-off-by: Jerry Snitselaar <jsnitsel@redhat.com>
+The change doesn't affect non-TDX-guest environments.
 
-Seems reasonable. Thanks!
+Signed-off-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
+---
 
-Reviewed-by: Dave Jiang <dave.jiang@intel.com>
+v9.1:
+  - Preserve CR4.MCE instead of setting it unconditionally.
 
-> ---
->  drivers/dma/idxd/cdev.c | 17 +++++++++--------
->  1 file changed, 9 insertions(+), 8 deletions(-)
-> 
-> diff --git a/drivers/dma/idxd/cdev.c b/drivers/dma/idxd/cdev.c
-> index 8078ab9acfbc..a4b771781afc 100644
-> --- a/drivers/dma/idxd/cdev.c
-> +++ b/drivers/dma/idxd/cdev.c
-> @@ -517,6 +517,14 @@ static int idxd_user_drv_probe(struct idxd_dev *idxd_dev)
->  	if (idxd->state != IDXD_DEV_ENABLED)
->  		return -ENXIO;
->  
-> +	mutex_lock(&wq->wq_lock);
-> +
-> +	if (!idxd_wq_driver_name_match(wq, dev)) {
-> +		idxd->cmd_status = IDXD_SCMD_WQ_NO_DRV_NAME;
-> +		rc = -ENODEV;
-> +		goto wq_err;
-> +	}
-> +
->  	/*
->  	 * User type WQ is enabled only when SVA is enabled for two reasons:
->  	 *   - If no IOMMU or IOMMU Passthrough without SVA, userspace
-> @@ -532,14 +540,7 @@ static int idxd_user_drv_probe(struct idxd_dev *idxd_dev)
->  		dev_dbg(&idxd->pdev->dev,
->  			"User type WQ cannot be enabled without SVA.\n");
->  
-> -		return -EOPNOTSUPP;
-> -	}
-> -
-> -	mutex_lock(&wq->wq_lock);
-> -
-> -	if (!idxd_wq_driver_name_match(wq, dev)) {
-> -		idxd->cmd_status = IDXD_SCMD_WQ_NO_DRV_NAME;
-> -		rc = -ENODEV;
-> +		rc = -EOPNOTSUPP;
->  		goto wq_err;
->  	}
->  
+---
+ arch/x86/kernel/relocate_kernel_64.S | 8 ++++++++
+ 1 file changed, 8 insertions(+)
+
+diff --git a/arch/x86/kernel/relocate_kernel_64.S b/arch/x86/kernel/relocate_kernel_64.S
+index 56cab1bb25f5..8e2037d78a1f 100644
+--- a/arch/x86/kernel/relocate_kernel_64.S
++++ b/arch/x86/kernel/relocate_kernel_64.S
+@@ -5,6 +5,8 @@
+  */
+ 
+ #include <linux/linkage.h>
++#include <linux/stringify.h>
++#include <asm/alternative.h>
+ #include <asm/page_types.h>
+ #include <asm/kexec.h>
+ #include <asm/processor-flags.h>
+@@ -145,11 +147,17 @@ SYM_CODE_START_LOCAL_NOALIGN(identity_mapped)
+ 	 * Set cr4 to a known state:
+ 	 *  - physical address extension enabled
+ 	 *  - 5-level paging, if it was enabled before
++	 *  - Machine check exception on TDX guest, if it was enabled before.
++	 *    Clearing MCE might not allowed in TDX guests, depending on setup.
+ 	 */
+ 	movl	$X86_CR4_PAE, %eax
+ 	testq	$X86_CR4_LA57, %r13
+ 	jz	1f
+ 	orl	$X86_CR4_LA57, %eax
++1:
++	testq	$X86_CR4_MCE, %r13
++	jz	1f
++	ALTERNATIVE "", __stringify(orl $X86_CR4_MCE, %eax), X86_FEATURE_TDX_GUEST
+ 1:
+ 	movq	%rax, %cr4
+ 
+-- 
+2.43.0
+
 
