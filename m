@@ -1,107 +1,202 @@
-Return-Path: <linux-kernel+bounces-130514-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-130515-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3267C897928
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 21:43:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 9CDC189792B
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 21:43:54 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 636D01C267BF
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 19:43:07 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BFE051C21DB0
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 19:43:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3E28A15539B;
-	Wed,  3 Apr 2024 19:42:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8ADF515538C;
+	Wed,  3 Apr 2024 19:43:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="OZJT+mgl"
-Received: from mail-pj1-f51.google.com (mail-pj1-f51.google.com [209.85.216.51])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=proton.me header.i=@proton.me header.b="CWdGqKKH"
+Received: from mail-4322.protonmail.ch (mail-4322.protonmail.ch [185.70.43.22])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 256B52F24;
-	Wed,  3 Apr 2024 19:42:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F012D2F24
+	for <linux-kernel@vger.kernel.org>; Wed,  3 Apr 2024 19:43:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.70.43.22
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712173378; cv=none; b=JSxb9bfzDSFz+e1TWcYuNoHFXzttCw9KtmlWt5XHr87uN+Cb0DLeVC1g7gFu6smk4rYrQSkG08LANBuG2KP7VsrDdfIoRysxvN4VihFtHXJl6ywotz5A8STz1d/QU6rlgl2Qm5ZBRLby1XXf5iv3heWKSItaNpMwWyvehpIkM54=
+	t=1712173426; cv=none; b=ZqHp8fIZA0VgqYZ4dTTzl3WnaE+boTiepQyDk8oMopd8G1RzmthZANeASuDWH1qP0Q2Ah+1Q6mkTqXACeSXblWE2XK4rqvnxKMwTmAceUqIBDeGgpE8V0aPNTGvU8nBtGN7yPGvE1qTqEdpvlK5emO3x0OWQ24nVTp/vvSSRLTU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712173378; c=relaxed/simple;
-	bh=3WUH9SubfwYcKxvgcz+D1M4r1DIyiUItWr+37jMl3Vw=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=exzdnVnn1PlQh3YExmyxlRg8WKqMUmmovjhSR8YAnULyv7QyjH52XZTUivkGmWYB0Pzg75iRgnaZw2TeOmfBNK7wzLwwxMwueB0jrSxZzcbONxeuLqanVYQoDmuEOc3lfYzYzAwuVUEpoqkbFbIoCDXJ2BMoQbF8w/+rDtGmhB4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=OZJT+mgl; arc=none smtp.client-ip=209.85.216.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f51.google.com with SMTP id 98e67ed59e1d1-2a28b11db68so110749a91.2;
-        Wed, 03 Apr 2024 12:42:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1712173376; x=1712778176; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=MUae7FX57GCbhwQ8NWUH2pJwsLTvGchJ6LyegeiE4d0=;
-        b=OZJT+mglv8j4K+Q6smrVixru9z92cltp74WDeoxWjcbgJ3dqUZv1rA3XSO4xBe0vlA
-         JDwRcHniqTXgh6JcTvUfTqhrm0v+5tYURVq++tp+za6Wn+Bb1puKuUiTVNUn3vgCfInb
-         ftFBhiQJYiujhiYJ+TeEEBplguAw4hUxZnzxZw/qJY5Qg9peeViri3CT/mN87Ma8N0Ie
-         ac6FLeVEu+fmpxRu05RxMkKI7H0VLsCkVqmw5V27adNMOmR74NM4oeXwcpIjG00/XwRQ
-         61EhcHsxveDHlv1bqZKeDPL5y6NaOSDWbnEOvroMp3AOrnTOMmK1N+aJGj7AfnKIJxYR
-         51AA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712173376; x=1712778176;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=MUae7FX57GCbhwQ8NWUH2pJwsLTvGchJ6LyegeiE4d0=;
-        b=WjkX1YyyEotKyhkd1hyxqPczeiuopidwA0YQInwgSawyAf/L6adJ4WJJ8CywmFX0xN
-         wqzYm+YMT+EOY3tdOfsqijCmX/MuFHSes2mg1SlDxy8j/XpgStvHbcgOYW5BfP8wOhGC
-         3KKTpygFDSWxVcUJvfKorczaoM1Xol2nTeWtI+VPWAJA+VIXYeeuyo1YmR7ysivIYI+s
-         s3xrx/jAvjP2qu7W7n++8wtYbmtKYnRtgcuHn6iPLzX58tRuqLHAJH6RRJs8vMlIn8Ct
-         xp79eBEqRQzVIg/XvNVudW3tkpRVG7OURzRu1/hu5XMFcpYs1XqKV42oHTxBEtSPlLff
-         ICig==
-X-Forwarded-Encrypted: i=1; AJvYcCULJHWELfRobEGZYa8xhlRuslmKt/FmGucqlwFvSVtJ/3unKWs8DA6CN+s850/7WZFqWVTHSs9RHfcEpGh94Vqki0MVLLYk9+wGZGM//H+zNBpT5MpbQqBhuphWbrKsZzbu2Jv/OHLE3g==
-X-Gm-Message-State: AOJu0Yxv5SqHKVeofOLzEbJYuNHyz5WzRnSwkAx/qtZ33LMSzCCMOgm2
-	Cy4jkfCYpCudGaqbXJ0k70ZXmoazp1bOg54Vw0aS5v6WSXRXFsVj
-X-Google-Smtp-Source: AGHT+IEVXZX4Q2IoMb+hEcs5wG+rtM60qFsELk5WmIi68s8cL1mTcSnvyfYFxW/wOCpaOy2eQGQZBg==
-X-Received: by 2002:a17:90a:43c5:b0:29b:2268:3349 with SMTP id r63-20020a17090a43c500b0029b22683349mr508502pjg.18.1712173376438;
-        Wed, 03 Apr 2024 12:42:56 -0700 (PDT)
-Received: from localhost ([2620:10d:c090:400::5:25ab])
-        by smtp.gmail.com with ESMTPSA id nh12-20020a17090b364c00b0029c61521eb5sm64786pjb.43.2024.04.03.12.42.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 03 Apr 2024 12:42:56 -0700 (PDT)
-Sender: Tejun Heo <htejun@gmail.com>
-Date: Wed, 3 Apr 2024 09:42:54 -1000
-From: Tejun Heo <tj@kernel.org>
-To: Tianchen Ding <dtcccc@linux.alibaba.com>
-Cc: linux-kernel@vger.kernel.org, Zefan Li <lizefan.x@bytedance.com>,
-	Johannes Weiner <hannes@cmpxchg.org>, Shuah Khan <shuah@kernel.org>,
-	cgroups@vger.kernel.org, linux-kselftest@vger.kernel.org
-Subject: Re: [PATCH] selftests: cgroup: skip test_cgcore_lesser_ns_open when
- cgroup2 mounted without nsdelegate
-Message-ID: <Zg2xPtwFvT-lsSJX@slm.duckdns.org>
-References: <20240327024437.3196-1-dtcccc@linux.alibaba.com>
+	s=arc-20240116; t=1712173426; c=relaxed/simple;
+	bh=lzf+ES6yHZZVg6XniA+JFvQLjo8zG+VMBXl7BaaBibs=;
+	h=Date:To:From:Cc:Subject:Message-ID:MIME-Version:Content-Type; b=DBLWRCAbd1qTx9RMgRMlwT0mw8kpAz3yTy8EkILL7qosTczKzilEKcQercbEsxh9dZyEsslSZAaKnzObp2/E2JBwQzqDRvoytd2MhAV7H/NTDaLlR4DamFEKyypiFEIT+6EkgM3Ggfo3BWxcUBWrh0f34hqszw7eYJQ2BmfUxwk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=proton.me; spf=pass smtp.mailfrom=proton.me; dkim=pass (2048-bit key) header.d=proton.me header.i=@proton.me header.b=CWdGqKKH; arc=none smtp.client-ip=185.70.43.22
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=proton.me
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=proton.me
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=proton.me;
+	s=protonmail; t=1712173422; x=1712432622;
+	bh=Z/cYaiGjtg8Hl/T+kAOXPPgB1Msfoi/aGGBHya0iD3M=;
+	h=Date:To:From:Cc:Subject:Message-ID:Feedback-ID:From:To:Cc:Date:
+	 Subject:Reply-To:Feedback-ID:Message-ID:BIMI-Selector;
+	b=CWdGqKKHsAsyjwmhI5qIPRNj3R979LLdUL13yfBfn2xREbHxs/5Nqcjh2uILvfI5O
+	 JZPJy+Otrd+NutyHe9h+ONVRsSIcKOyBuiuVFYGba+GsQZOau3ZW71NpEozrU/2Z+x
+	 hRaj2IQzTATd50O0EiLt6V546HEYTYe68Od/d9CRFpVqGj93a2ImfgGU9tw0TGQHyL
+	 vC+QA1/BmpAGTnSRjtsFB/UUFtIByWdp6Mm5f1FlbL/Qvnr9rWXpnCOdWkFcmyF65q
+	 7F/PnsO8oMpJD4it0zHRM5+iv2zdkOloAKCXUACNaGtzddHCLsi5ZEbREfo8KUXJUB
+	 npe1RSrkHXkMQ==
+Date: Wed, 03 Apr 2024 19:43:37 +0000
+To: Miguel Ojeda <ojeda@kernel.org>, Alex Gaynor <alex.gaynor@gmail.com>, Wedson Almeida Filho <wedsonaf@gmail.com>, Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>, =?utf-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>, Benno Lossin <benno.lossin@proton.me>, Andreas Hindborg <a.hindborg@samsung.com>, Alice Ryhl <aliceryhl@google.com>, Martin Rodriguez Reboredo <yakoyoku@gmail.com>
+From: Benno Lossin <benno.lossin@proton.me>
+Cc: rust-for-linux@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] rust: init: change the generated name of guard variables
+Message-ID: <20240403194321.88716-1-benno.lossin@proton.me>
+Feedback-ID: 71780778:user:proton
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240327024437.3196-1-dtcccc@linux.alibaba.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-On Wed, Mar 27, 2024 at 10:44:37AM +0800, Tianchen Ding wrote:
-> The test case test_cgcore_lesser_ns_open only tasks effect when cgroup2
-> is mounted with "nsdelegate" mount option. If it misses this option, or
-> is remounted without "nsdelegate", the test case will fail. For example,
-> running bpf/test_cgroup_storage first, and then run cgroup/test_core will
-> fail on test_cgcore_lesser_ns_open. Skip it if "nsdelegate" is not
-> detected in cgroup2 mount options.
-> 
-> Fixes: bf35a7879f1d ("selftests: cgroup: Test open-time cgroup namespace usage for migration checks")
-> Signed-off-by: Tianchen Ding <dtcccc@linux.alibaba.com>
+The initializers created by the `[try_][pin_]init!` macros utilize the
+guard pattern to drop already initialized fields, when initialization
+fails mid-way. These guards are generated to have the same name as the
+field that they handle. To prevent namespacing issues when the field
+name is the same as e.g. a constant name, add `__` as a prefix and
+`_guard` as the suffix.
 
-Applied to cgroup/for-6.10.
+Signed-off-by: Benno Lossin <benno.lossin@proton.me>
+---
+ rust/kernel/init/macros.rs | 28 ++++++++++++++--------------
+ 1 file changed, 14 insertions(+), 14 deletions(-)
 
-Thanks.
+diff --git a/rust/kernel/init/macros.rs b/rust/kernel/init/macros.rs
+index cb6e61b6c50b..93bf4c3080f9 100644
+--- a/rust/kernel/init/macros.rs
++++ b/rust/kernel/init/macros.rs
+@@ -250,7 +250,7 @@
+ //!                     // error type is `Infallible`) we will need to dro=
+p this field if there
+ //!                     // is an error later. This `DropGuard` will drop t=
+he field when it gets
+ //!                     // dropped and has not yet been forgotten.
+-//!                     let t =3D unsafe {
++//!                     let __t_guard =3D unsafe {
+ //!                         ::pinned_init::__internal::DropGuard::new(::co=
+re::addr_of_mut!((*slot).t))
+ //!                     };
+ //!                     // Expansion of `x: 0,`:
+@@ -261,14 +261,14 @@
+ //!                         unsafe { ::core::ptr::write(::core::addr_of_mu=
+t!((*slot).x), x) };
+ //!                     }
+ //!                     // We again create a `DropGuard`.
+-//!                     let x =3D unsafe {
++//!                     let __x_guard =3D unsafe {
+ //!                         ::kernel::init::__internal::DropGuard::new(::c=
+ore::addr_of_mut!((*slot).x))
+ //!                     };
+ //!                     // Since initialization has successfully completed=
+, we can now forget
+ //!                     // the guards. This is not `mem::forget`, since we=
+ only have
+ //!                     // `&DropGuard`.
+-//!                     ::core::mem::forget(x);
+-//!                     ::core::mem::forget(t);
++//!                     ::core::mem::forget(__x_guard);
++//!                     ::core::mem::forget(__t_guard);
+ //!                     // Here we use the type checker to ensure that eve=
+ry field has been
+ //!                     // initialized exactly once, since this is `if fal=
+se` it will never get
+ //!                     // executed, but still type-checked.
+@@ -461,16 +461,16 @@
+ //!             {
+ //!                 unsafe { ::core::ptr::write(::core::addr_of_mut!((*slo=
+t).a), a) };
+ //!             }
+-//!             let a =3D unsafe {
++//!             let __a_guard =3D unsafe {
+ //!                 ::kernel::init::__internal::DropGuard::new(::core::add=
+r_of_mut!((*slot).a))
+ //!             };
+ //!             let init =3D Bar::new(36);
+ //!             unsafe { data.b(::core::addr_of_mut!((*slot).b), b)? };
+-//!             let b =3D unsafe {
++//!             let __b_guard =3D unsafe {
+ //!                 ::kernel::init::__internal::DropGuard::new(::core::add=
+r_of_mut!((*slot).b))
+ //!             };
+-//!             ::core::mem::forget(b);
+-//!             ::core::mem::forget(a);
++//!             ::core::mem::forget(__b_guard);
++//!             ::core::mem::forget(__a_guard);
+ //!             #[allow(unreachable_code, clippy::diverging_sub_expression=
+)]
+ //!             let _ =3D || {
+ //!                 unsafe {
+@@ -1192,14 +1192,14 @@ fn assert_zeroable<T: $crate::init::Zeroable>(_: *m=
+ut T) {}
+         // We use `paste!` to create new hygiene for `$field`.
+         ::kernel::macros::paste! {
+             // SAFETY: We forget the guard later when initialization has s=
+ucceeded.
+-            let [<$field>] =3D unsafe {
++            let [< __ $field _guard >] =3D unsafe {
+                 $crate::init::__internal::DropGuard::new(::core::ptr::addr=
+_of_mut!((*$slot).$field))
+             };
+=20
+             $crate::__init_internal!(init_slot($use_data):
+                 @data($data),
+                 @slot($slot),
+-                @guards([<$field>], $($guards,)*),
++                @guards([< __ $field _guard >], $($guards,)*),
+                 @munch_fields($($rest)*),
+             );
+         }
+@@ -1223,14 +1223,14 @@ fn assert_zeroable<T: $crate::init::Zeroable>(_: *m=
+ut T) {}
+         // We use `paste!` to create new hygiene for `$field`.
+         ::kernel::macros::paste! {
+             // SAFETY: We forget the guard later when initialization has s=
+ucceeded.
+-            let [<$field>] =3D unsafe {
++            let [< __ $field _guard >] =3D unsafe {
+                 $crate::init::__internal::DropGuard::new(::core::ptr::addr=
+_of_mut!((*$slot).$field))
+             };
+=20
+             $crate::__init_internal!(init_slot():
+                 @data($data),
+                 @slot($slot),
+-                @guards([<$field>], $($guards,)*),
++                @guards([< __ $field _guard >], $($guards,)*),
+                 @munch_fields($($rest)*),
+             );
+         }
+@@ -1255,14 +1255,14 @@ fn assert_zeroable<T: $crate::init::Zeroable>(_: *m=
+ut T) {}
+         // We use `paste!` to create new hygiene for `$field`.
+         ::kernel::macros::paste! {
+             // SAFETY: We forget the guard later when initialization has s=
+ucceeded.
+-            let [<$field>] =3D unsafe {
++            let [< __ $field _guard >] =3D unsafe {
+                 $crate::init::__internal::DropGuard::new(::core::ptr::addr=
+_of_mut!((*$slot).$field))
+             };
+=20
+             $crate::__init_internal!(init_slot($($use_data)?):
+                 @data($data),
+                 @slot($slot),
+-                @guards([<$field>], $($guards,)*),
++                @guards([< __ $field _guard >], $($guards,)*),
+                 @munch_fields($($rest)*),
+             );
+         }
 
--- 
-tejun
+base-commit: 9ffe2a730313f27cebd0859ea856247ac59c576c
+--=20
+2.44.0
+
+
 
