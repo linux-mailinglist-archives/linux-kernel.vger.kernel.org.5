@@ -1,75 +1,73 @@
-Return-Path: <linux-kernel+bounces-129836-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-129839-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 22678897113
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 15:31:20 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E5BD389711B
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 15:31:57 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B5F7B1F29298
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 13:31:19 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A02C72900D5
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 13:31:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 18032149018;
-	Wed,  3 Apr 2024 13:29:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7C28F14B079;
+	Wed,  3 Apr 2024 13:29:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=bursov.com header.i=vitaly@bursov.com header.b="pVzb4WxW"
-Received: from sender-of-o51.zoho.eu (sender-of-o51.zoho.eu [136.143.169.51])
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="CypjQZpT"
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1CAB9147C6C
-	for <linux-kernel@vger.kernel.org>; Wed,  3 Apr 2024 13:28:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=136.143.169.51
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712150939; cv=pass; b=EUcrrlJSuIs/jUYnf7D7D1ieMFVZLOmtJoti2L2ACssqoV8y4AwZLnRTI8i5e5trbiTfR0Yemqo9KtxGxbw2F3Fd6NR6GB/rCfwu10/woo6XdrkikP6k2R7OYZeM82rZEa7QYaY5XhSR4G7CowRzF/HOScbwuT+Kugu2nytawVs=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712150939; c=relaxed/simple;
-	bh=ep/aM4UQ3Rc0khxGhp+4Y6RB4Pmta9qCzL1Sw7BBg58=;
-	h=From:To:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=oQgiKs18xQdzcvRQrMIJHSMG8HN7+U/M0bvwy0i1EJ5fkZzMZPoE4X6fFNNG8NKxZ06ooTVLpVTVz14X1ZM6+BUSW6aUGimT5ZN4+JYicLvAd/L6XH7hl1APuor9MMOxCmBXQ9+9emB6khJd5zekOMlsVdMUpcVnlmfnBm0LtSE=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bursov.com; spf=pass smtp.mailfrom=bursov.com; dkim=pass (1024-bit key) header.d=bursov.com header.i=vitaly@bursov.com header.b=pVzb4WxW; arc=pass smtp.client-ip=136.143.169.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bursov.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bursov.com
-Delivered-To: vitaly@bursov.com
-ARC-Seal: i=1; a=rsa-sha256; t=1712150904; cv=none; 
-	d=zohomail.eu; s=zohoarc; 
-	b=YCKW4ozBe+xoPJkaMBl33Oj47iCQ+t/fIVOyJwgc0uM8krcOSGvl1Ecq/rjopIivL+CAmkEt4NYFavrRJ2MIbzX2Y5WTez58srTlsv8g+MtgfYHyAtIzQ7P+HgKgqNuwCPRH3Quclj6hhyCf2kJNkgnEfbTlgjh1pEKlCK2m4zw=
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=zohomail.eu; s=zohoarc; 
-	t=1712150904; h=Content-Transfer-Encoding:Date:Date:From:From:In-Reply-To:MIME-Version:Message-ID:References:Subject:Subject:To:To:Message-Id:Reply-To:Cc; 
-	bh=9bXuIj+PDKqj9scGTWjOC6w1rao7BU1VlWs7XoTLDO4=; 
-	b=SCw5CPb1LGYOBadJ+eXpoftbvwjHOZO+5ZyfrlloX3sgc7f+54vAlFDHtiMMVCE3NYLcJiGTTJfrHj96hR+FPCSiD43iM9kZWFz3ZyK1SMRzWyUSTgujmhcksM9pSAYVH3bOlgezCsInbBpvnw7H7G3UxIIynoJFG9egkW3/wZE=
-ARC-Authentication-Results: i=1; mx.zohomail.eu;
-	dkim=pass  header.i=bursov.com;
-	spf=pass  smtp.mailfrom=vitaly@bursov.com;
-	dmarc=pass header.from=<vitaly@bursov.com>
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; t=1712150904;
-	s=zoho; d=bursov.com; i=vitaly@bursov.com;
-	h=From:From:To:To:Subject:Subject:Date:Date:Message-Id:Message-Id:In-Reply-To:References:MIME-Version:Content-Transfer-Encoding:Reply-To:Cc;
-	bh=9bXuIj+PDKqj9scGTWjOC6w1rao7BU1VlWs7XoTLDO4=;
-	b=pVzb4WxWijJ9GMxajmDOadze1n5ulI/o2i4dJEj8yskoVWS0+vES3rDa//L6Qk+3
-	wWqpmF8VJ/X3/8//zI5rnSn1nllD/WSLQSMWB3J5zDGNMCtwrkXyWmM8vDhlKpCmbvj
-	BsguMiQAr3cfhcSVTCqqjFHamEwLTO4chxSSE6/0=
-Received: from localhost.localdomain (217.20.170.230 [217.20.170.230]) by mx.zoho.eu
-	with SMTPS id 1712150903173220.99083567666742; Wed, 3 Apr 2024 15:28:23 +0200 (CEST)
-From: Vitalii Bursov <vitaly@bursov.com>
-To: Ingo Molnar <mingo@redhat.com>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Juri Lelli <juri.lelli@redhat.com>,
-	Vincent Guittot <vincent.guittot@linaro.org>,
-	Dietmar Eggemann <dietmar.eggemann@arm.com>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Ben Segall <bsegall@google.com>,
-	Mel Gorman <mgorman@suse.de>,
-	Daniel Bristot de Oliveira <bristot@redhat.com>,
-	Valentin Schneider <vschneid@redhat.com>,
-	linux-kernel@vger.kernel.org,
-	Vitalii Bursov <vitaly@bursov.com>
-Subject: [PATCH v3 3/3] docs: cgroup-v1: clarify that domain levels are system-specific
-Date: Wed,  3 Apr 2024 16:28:06 +0300
-Message-Id: <03b7979666088f8d55db301c6649e0c75c727d6e.1712147341.git.vitaly@bursov.com>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <cover.1712147341.git.vitaly@bursov.com>
-References: <cover.1712147341.git.vitaly@bursov.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 158FC1494D4;
+	Wed,  3 Apr 2024 13:29:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1712150943; cv=none; b=hnWANY/YJlMkUussxLja9XZbY8DnUGJRR7mQ3vUV5bDGohCH0c9YrDldJOWj+Al63cD+0gzWIDZauT8UPS/SmYmcC0TpTJRPMUpBQ/JWTcbP/O+YBV3wLjmAwHlLBspg9njRZCwZzZ7W0wKuAXq6R9fs5D6QjwePtrYo3xCdl24=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1712150943; c=relaxed/simple;
+	bh=6BqKuQkKI7qqdSWP3RT3IfyKn2XXs/cwX6b6EcQFUXE=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=SQhnEJNGQYuHDvPfsb6z/kR2VrywRRsVQ/54BE26wzGjpw8OQrdKhHoBA3zIRCxw7nx2jGF3X7YIr8/APFAWmsK/ZcfadOr5jUu4imodWosLjwyJW1f5AgZ8b1eYLarxmf0J6rUjucpEwK1R5Ge4KZhpKLjOo+r71LJN91fuPu8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=CypjQZpT; arc=none smtp.client-ip=205.220.180.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279871.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 433BcMDs021669;
+	Wed, 3 Apr 2024 13:28:57 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	from:to:cc:subject:date:message-id:mime-version
+	:content-transfer-encoding:content-type; s=qcppdkim1; bh=yZkO476
+	vWnBXahdSSyoINxOnrUmV547YEJLIGTKnHJQ=; b=CypjQZpTQzAo7kZGR0rI1lF
+	ud4WVTpFqXtqGU/+Jy/rv/2VFZuD/WQbiZgdE+23vQy1Ra5Kp7dx3+qNpn/KBtjV
+	zHYolLDB9J3R0FhlBqjHmOfGuia2DDa/FN67Ut4aI7urELtW25V3cAWaSML0QDIl
+	d1ZDWp+6DCxIqpBogLxTRY31A8fCvnHa0tDgeejW6daXwCoyPsIDvlOD1H4sXnhP
+	r6E64DsiU06yj7fTkn+eZeoqVRuSomL8vUWZVtIPTI8ZUERG938oo3IdSFRaGkf0
+	hBNY+tAfD3yVxwzXeN4xqFX0GFkPnv0CJRZUC98AhfqiZucS4kW2OoFlT/14crQ=
+	=
+Received: from nalasppmta03.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3x93u58qq4-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 03 Apr 2024 13:28:57 +0000 (GMT)
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+	by NALASPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 433DSubZ031548
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 3 Apr 2024 13:28:56 GMT
+Received: from hu-uchheda-hyd.qualcomm.com (10.80.80.8) by
+ nalasex01a.na.qualcomm.com (10.47.209.196) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1544.4; Wed, 3 Apr 2024 06:28:53 -0700
+From: Umang Chheda <quic_uchheda@quicinc.com>
+To: Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio
+	<konrad.dybcio@linaro.org>,
+        Rob Herring <robh@kernel.org>,
+        "Krzysztof
+ Kozlowski" <krzk+dt@kernel.org>,
+        Conor Dooley <conor+dt@kernel.org>
+CC: <linux-arm-msm@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <quic_uchheda@quicinc.com>
+Subject: [PATCH RESEND] arm64: dts: qcom: qcs6490-rb3gen2: enable PMIC Volume and Power buttons
+Date: Wed, 3 Apr 2024 18:58:39 +0530
+Message-ID: <20240403132839.2117675-1-quic_uchheda@quicinc.com>
+X-Mailer: git-send-email 2.25.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -77,42 +75,96 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-ZohoMailClient: External
+Content-Type: text/plain
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: ClMBjIPmeguc9NnWh9BA8vznp7UQGBTp
+X-Proofpoint-ORIG-GUID: ClMBjIPmeguc9NnWh9BA8vznp7UQGBTp
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-04-03_12,2024-04-03_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1011
+ priorityscore=1501 bulkscore=0 suspectscore=0 adultscore=0 mlxlogscore=999
+ mlxscore=0 lowpriorityscore=0 impostorscore=0 spamscore=0 phishscore=0
+ malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2403210001 definitions=main-2404030092
 
-Add a clarification that domain levels are system-specific
-and where to check for system details.
+The Volume Down & Power buttons are controlled by the PMIC via
+the PON hardware, and the Volume Up is connected to a PMIC gpio.
 
-Signed-off-by: Vitalii Bursov <vitaly@bursov.com>
+Enable the necessary hardware and setup the GPIO state for the
+Volume Up gpio key.
+
+Signed-off-by: Umang Chheda <quic_uchheda@quicinc.com>
 ---
- Documentation/admin-guide/cgroup-v1/cpusets.rst | 7 ++++++-
- 1 file changed, 6 insertions(+), 1 deletion(-)
+ arch/arm64/boot/dts/qcom/qcs6490-rb3gen2.dts | 37 ++++++++++++++++++++
+ 1 file changed, 37 insertions(+)
 
-diff --git a/Documentation/admin-guide/cgroup-v1/cpusets.rst b/Documentation/admin-guide/cgroup-v1/cpusets.rst
-index 7d3415eea05d..f401af5e2f09 100644
---- a/Documentation/admin-guide/cgroup-v1/cpusets.rst
-+++ b/Documentation/admin-guide/cgroup-v1/cpusets.rst
-@@ -568,7 +568,7 @@ on the next tick.  For some applications in special situation, waiting
+diff --git a/arch/arm64/boot/dts/qcom/qcs6490-rb3gen2.dts b/arch/arm64/boot/dts/qcom/qcs6490-rb3gen2.dts
+index 63ebe0774f1d..73f6d18d2331 100644
+--- a/arch/arm64/boot/dts/qcom/qcs6490-rb3gen2.dts
++++ b/arch/arm64/boot/dts/qcom/qcs6490-rb3gen2.dts
+@@ -9,6 +9,8 @@
+ #define PM7250B_SID 8
+ #define PM7250B_SID1 9
  
- The 'cpuset.sched_relax_domain_level' file allows you to request changing
- this searching range as you like.  This file takes int value which
--indicates size of searching range in levels ideally as follows,
-+indicates size of searching range in levels approximately as follows,
- otherwise initial value -1 that indicates the cpuset has no request.
++#include <dt-bindings/input/linux-event-codes.h>
++#include <dt-bindings/pinctrl/qcom,pmic-gpio.h>
+ #include <dt-bindings/regulator/qcom,rpmh-regulator.h>
+ #include "sc7280.dtsi"
+ #include "pm7250b.dtsi"
+@@ -39,6 +41,22 @@ chosen {
+ 		stdout-path = "serial0:115200n8";
+ 	};
  
- ====== ===========================================================
-@@ -581,6 +581,11 @@ otherwise initial value -1 that indicates the cpuset has no request.
-    5   search system wide [on NUMA system]
- ====== ===========================================================
- 
-+Not all levels can be present and values can change depending on the
-+system architecture and kernel configuration. Check
-+/sys/kernel/debug/sched/domains/cpu*/domain*/ for system-specific
-+details.
++	gpio-keys {
++		compatible = "gpio-keys";
 +
- The system default is architecture dependent.  The system default
- can be changed using the relax_domain_level= boot parameter.
++		pinctrl-0 = <&key_vol_up_default>;
++		pinctrl-names = "default";
++
++		key-volume-up {
++			label = "Volume_up";
++			gpios = <&pm7325_gpios 6 GPIO_ACTIVE_LOW>;
++			linux,code = <KEY_VOLUMEUP>;
++			wakeup-source;
++			debounce-interval = <15>;
++			linux,can-disable;
++		};
++	};
++
+ 	reserved-memory {
+ 		xbl_mem: xbl@80700000 {
+ 			reg = <0x0 0x80700000 0x0 0x100000>;
+@@ -471,6 +489,25 @@ &gcc {
+ 			   <GCC_WPSS_RSCP_CLK>;
+ };
  
++&pm7325_gpios {
++	key_vol_up_default: key-vol-up-state {
++		pins = "gpio6";
++		function = "normal";
++		input-enable;
++		bias-pull-up;
++		qcom,drive-strength = <PMIC_GPIO_STRENGTH_LOW>;
++	};
++};
++
++&pon_pwrkey {
++	status = "okay";
++};
++
++&pon_resin {
++	linux,code = <KEY_VOLUMEDOWN>;
++	status = "okay";
++};
++
+ &qupv3_id_0 {
+ 	status = "okay";
+ };
 -- 
-2.20.1
+2.25.1
 
 
