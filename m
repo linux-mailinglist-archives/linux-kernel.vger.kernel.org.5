@@ -1,216 +1,147 @@
-Return-Path: <linux-kernel+bounces-129025-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-129026-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0C00A896359
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 06:04:45 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id CA47F89635C
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 06:11:12 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AC9C0286225
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 04:04:43 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id CF368B23E4E
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 04:11:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2B2F944C64;
-	Wed,  3 Apr 2024 04:04:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7B3FC43AB4;
+	Wed,  3 Apr 2024 04:11:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=mediatek.com header.i=@mediatek.com header.b="lpY8OyTg"
-Received: from mailgw02.mediatek.com (unknown [210.61.82.184])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="A5cOOgqz"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D8F36405F8
-	for <linux-kernel@vger.kernel.org>; Wed,  3 Apr 2024 04:04:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=210.61.82.184
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B3C8D5235;
+	Wed,  3 Apr 2024 04:11:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712117075; cv=none; b=T5RmoaszkOJ/opcCsQ85Zcrve5JpIZojqPKEvirNEy0kIJo2AD1qkOJANafnC7mdhy8pl9Fn7+OCVAPzHmAIoYuiM3S+v2Ogrwf3v/Bw0QMi7ILenYduxiQak4/5iKwIYq45Z1FV1I3C9DsjxQGQW7lyezJVNJGr7MX5H3Jjcl4=
+	t=1712117461; cv=none; b=cjmCKAAwAq5ytihICiHlSslOFYLKnAOVz4KiXiR58ey0kG8KVN7tMiUvBwDU/vy80/NzwJY9nBFIBJBPY7cYWzujQs3mf6dHIQ6r39faMJGO7/m8m2Qp+W2/QgIVD5ln/8ppYL3n3TbkM37tre5OIxLnwbORntSQE3JtjWzHYMg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712117075; c=relaxed/simple;
-	bh=IeOItI6ydh5yzbOIyOAIuln5P0zdnIUCmiD16t7LLnk=;
-	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=bAhpwHjzH65YhAkGzBe91HjCpWpKhmcP8uEps38icnu0EhgozNCVN6cAIHoTEyyR3G2VmOnF5Rl5bxVUBw5Yltm0Ab07T9nSF/W/Iym/8LnfUnzeboaBHMLjf/QXhTiiWyS82h3Rrk3tdfP7KKMb4JYrnikO2UGScZ13q6TTGOg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=mediatek.com; spf=pass smtp.mailfrom=mediatek.com; dkim=pass (1024-bit key) header.d=mediatek.com header.i=@mediatek.com header.b=lpY8OyTg; arc=none smtp.client-ip=210.61.82.184
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=mediatek.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mediatek.com
-X-UUID: 43b7000ef16f11ee935d6952f98a51a9-20240403
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-	h=Content-Type:Content-Transfer-Encoding:MIME-Version:Message-ID:Date:Subject:CC:To:From; bh=yYxp0aFWjJkoN+/b1M2v5KOdqMIidnWV+rOPGvVUSa4=;
-	b=lpY8OyTgKwCO+kg0P8iyURu/yQg4/QHOuKh9g00tGCf5S18AZcnR+5xAkKo6jN/LbFIie+FwSr3i+TLDDBTL5CmfEMTWtdSquSKo1TtNsyAs6vMmWerK7QUFZcnRcnmTunagnS4dexCYJBVw4++iqprAPhVkOJZYk2FaCUjjdjo=;
-X-CID-P-RULE: Release_Ham
-X-CID-O-INFO: VERSION:1.1.37,REQID:03f50a22-cdcd-47c5-8ea3-ce024bae1ce8,IP:0,U
-	RL:0,TC:0,Content:-5,EDM:0,RT:0,SF:0,FILE:0,BULK:0,RULE:Release_Ham,ACTION
-	:release,TS:-5
-X-CID-META: VersionHash:6f543d0,CLOUDID:510fa600-c26b-4159-a099-3b9d0558e447,B
-	ulkID:nil,BulkQuantity:0,Recheck:0,SF:102,TC:nil,Content:0,EDM:-3,IP:nil,U
-	RL:0,File:nil,RT:nil,Bulk:nil,QS:nil,BEC:nil,COL:0,OSI:0,OSA:0,AV:0,LES:1,
-	SPR:NO,DKR:0,DKP:0,BRR:0,BRE:0
-X-CID-BVR: 0,NGT
-X-CID-BAS: 0,NGT,0,_
-X-CID-FACTOR: TF_CID_SPAM_SNR
-X-UUID: 43b7000ef16f11ee935d6952f98a51a9-20240403
-Received: from mtkmbs13n1.mediatek.inc [(172.21.101.193)] by mailgw02.mediatek.com
-	(envelope-from <liankun.yang@mediatek.com>)
-	(Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
-	with ESMTP id 399939316; Wed, 03 Apr 2024 12:04:27 +0800
-Received: from mtkmbs13n2.mediatek.inc (172.21.101.108) by
- mtkmbs11n2.mediatek.inc (172.21.101.187) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.26; Wed, 3 Apr 2024 12:04:26 +0800
-Received: from mszsdhlt06.gcn.mediatek.inc (10.16.6.206) by
- mtkmbs13n2.mediatek.inc (172.21.101.73) with Microsoft SMTP Server id
- 15.2.1118.26 via Frontend Transport; Wed, 3 Apr 2024 12:04:25 +0800
-From: Liankun Yang <liankun.yang@mediatek.com>
-To: <chunkuang.hu@kernel.org>, <p.zabel@pengutronix.de>,
-	<chunfeng.yun@mediatek.com>, <vkoul@kernel.org>, <kishon@kernel.org>,
-	<matthias.bgg@gmail.com>, <angelogioacchino.delregno@collabora.com>,
-	<jitao.shi@mediatek.com>, <mac.shen@mediatek.com>,
-	<liankun.yang@mediatek.com>
-CC: <dri-devel@lists.freedesktop.org>, <linux-mediatek@lists.infradead.org>,
-	<linux-arm-kernel@lists.infradead.org>, <linux-phy@lists.infradead.org>,
-	<linux-kernel@vger.kernel.org>
-Subject: [PATCH v1 1/1] drm/mediatek/dp: The register is written with the parsed DTS SSC value.
-Date: Wed, 3 Apr 2024 12:05:09 +0800
-Message-ID: <20240403040517.3279-1-liankun.yang@mediatek.com>
-X-Mailer: git-send-email 2.43.0
+	s=arc-20240116; t=1712117461; c=relaxed/simple;
+	bh=H45nGWOPuI7LoZ/AO3xadw9naJQhXiS9zxu8lyEyAGo=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=MK6AfZZByPIaEWYhnvS+50h4p6GFClencI2OnWHFYlcmHey0kT1FBZ9JMo6PEWLpDRc3pwC60Co+p05vb0NO5AgfBBNjq4OvE+tlRO5AiCd51dccgyb/xRZLIojAUQR+l5cJRlS+cM2KnhFHNfWM8HffaGf3tuOV1E70PiZC8nc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=A5cOOgqz; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4FE4EC433C7;
+	Wed,  3 Apr 2024 04:11:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1712117461;
+	bh=H45nGWOPuI7LoZ/AO3xadw9naJQhXiS9zxu8lyEyAGo=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=A5cOOgqzeZTVhgi+J8oKU2tClKmR5x98VGD13CodzcshhKAaajlI32qkosA+Zvo+0
+	 hjYwnbZHxBKvvnzlpyLYZulzfkFXUAObJET/dzoBoYlgkJdA9UXtHuszyaIRqH73F3
+	 lbp51pNxqD9mzo9KzhGDbZkQMtJZOXrNu3E0ytM7tpsfpnv2vT2O6SecPElxfsjvto
+	 IcYIOOr3o6MTH3Z4kJsAb0oZG4Rlup22z9dIiUE2U0UcN56FTaOAp1cYhXaTjtTKoq
+	 JeWjmfkmZ0/HKejqEt+tE8N9lFz81xpMmjMygCnh1wI9SHYbvJx0od8wHqX7VA00g3
+	 PENqr2YBcIh7A==
+Date: Tue, 2 Apr 2024 21:11:00 -0700
+From: "Darrick J. Wong" <djwong@kernel.org>
+To: Justin Stitt <justinstitt@google.com>
+Cc: Chandan Babu R <chandan.babu@oracle.com>, linux-xfs@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
+Subject: Re: [PATCH] xfs: cleanup deprecated uses of strncpy
+Message-ID: <20240403041100.GQ6390@frogsfrogsfrogs>
+References: <20240401-strncpy-fs-xfs-xfs_ioctl-c-v1-1-02b9feb1989b@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-MTK: N
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240401-strncpy-fs-xfs-xfs_ioctl-c-v1-1-02b9feb1989b@google.com>
 
-[Description]
-Severe screen flickering has been observed on the external display
-when the DP projection function is used with the market expansion dock.
+On Mon, Apr 01, 2024 at 11:01:38PM +0000, Justin Stitt wrote:
+> strncpy() is deprecated for use on NUL-terminated destination strings
+> [1] and as such we should prefer more robust and less ambiguous string
+> interfaces.
+> 
+> In xfs_ioctl.c:
+> The current code has taken care NUL-termination by memset()'ing @label.
+> This is followed by a strncpy() to perform the string copy.
+> 
+> Use strscpy_pad() to get both 1) NUL-termination and 2) NUL-padding
+> which may be needed as this is copied out to userspace.
+> 
+> Note that this patch uses the new 2-argument version of strscpy_pad
+> introduced in Commit e6584c3964f2f ("string: Allow 2-argument
+> strscpy()").
+> 
+> In xfs_xattr.c:
+> There's a lot of manual memory management to get a prefix and name into
+> a string. Let's use an easier to understand and more robust interface in
+> scnprintf() to accomplish the same task.
+> 
+> Link: https://www.kernel.org/doc/html/latest/process/deprecated.html#strncpy-on-nul-terminated-strings [1]
+> Link: https://manpages.debian.org/testing/linux-manual-4.8/strscpy.9.en.html [2]
+> Link: https://github.com/KSPP/linux/issues/90
+> Cc: linux-hardening@vger.kernel.org
+> Signed-off-by: Justin Stitt <justinstitt@google.com>
+> ---
+> Note: build-tested only.
 
-[Root cause]
-It has been discovered through analysis that severe screen flickering
-will occur when using the current default settings of
-SC (Spread Spectrum Clocking) after it is opened.
+fstested would be better. ;)
 
-[Solution]
-Reducing SSC capability on the test platform can
-resolve the screen flickering issue.
+Anyway I guess that looks ok so let's find out:
+Reviewed-by: Darrick J. Wong <djwong@kernel.org>
 
-By configuring SSC parameters in DTS, locating the DP SSC node
-in phy-mtk-dp, parsing the current value of SSC, and writing this value
-into PHY to configure SSC can solve the screen flickering problem.
+--D
 
-[Test]
-The SSC configuration values are read from DTS, parsed in the driver,
-and then written to the hardware. The test results indicate that
-there is no screen flickering.
-
-Signed-off-by: Liankun Yang <liankun.yang@mediatek.com>
----
- drivers/phy/mediatek/phy-mtk-dp.c | 61 +++++++++++++++++++++++++++++++
- 1 file changed, 61 insertions(+)
-
-diff --git a/drivers/phy/mediatek/phy-mtk-dp.c b/drivers/phy/mediatek/phy-mtk-dp.c
-index d7024a144335..13e5d3c33784 100644
---- a/drivers/phy/mediatek/phy-mtk-dp.c
-+++ b/drivers/phy/mediatek/phy-mtk-dp.c
-@@ -25,6 +25,10 @@
- #define BIT_RATE_HBR2			2
- #define BIT_RATE_HBR3			3
- 
-+#define MTK_DP_PHY_DIG_GLB_DA_REG_14	(PHY_OFFSET + 0xD8)
-+#define XTP_GLB_TXPLL_SSC_DELTA_RBR_DEFAULT	GENMASK(15, 0)
-+#define XTP_GLB_TXPLL_SSC_DELTA_HBR_DEFAULT	GENMASK(31, 16)
-+
- #define MTK_DP_PHY_DIG_SW_RST		(PHY_OFFSET + 0x38)
- #define DP_GLB_SW_RST_PHYD		BIT(0)
- 
-@@ -78,10 +82,57 @@
- #define DRIVING_PARAM_8_DEFAULT	(XTP_LN_TX_LCTXCP1_SW2_PRE1_DEFAULT | \
- 				 XTP_LN_TX_LCTXCP1_SW3_PRE0_DEFAULT)
- 
-+#define SSC_SETTING	"dp-ssc-setting"
-+#define RG_XTP_GLB_TXPLL_SSC_DELTA_RBR	"ssc-delta-rbr"
-+#define RG_XTP_GLB_TXPLL_SSC_DELTA_HBR	"ssc-delta-hbr"
-+
- struct mtk_dp_phy {
- 	struct regmap *regs;
-+	struct device *dev;
- };
- 
-+static int mtk_dp_set_ssc_config(struct phy *phy, struct mtk_dp_phy *dp_phy,
-+		struct device_node *ssc_node, const char *mode_name, u32 ssc_reg_offset)
-+{
-+	int ret;
-+	u32 read_value = 0;
-+
-+	ret = of_property_read_u32(ssc_node, mode_name, &read_value);
-+	if (ret) {
-+		dev_err(&phy->dev, "Read fail,DPTX is not %s\n", mode_name);
-+		return -EINVAL;
-+	}
-+
-+	if (!read_value) {
-+		dev_err(&phy->dev, "Read value is NULL\n");
-+		return -ENOMEM;
-+	}
-+
-+	if (!strcmp(mode_name, RG_XTP_GLB_TXPLL_SSC_DELTA_RBR)) {
-+		regmap_update_bits(dp_phy->regs, ssc_reg_offset,
-+			   XTP_GLB_TXPLL_SSC_DELTA_RBR_DEFAULT, read_value);
-+	} else if (!strcmp(mode_name, RG_XTP_GLB_TXPLL_SSC_DELTA_HBR)) {
-+		read_value = read_value << 16 | 0x0000;
-+		regmap_update_bits(dp_phy->regs, ssc_reg_offset,
-+			   XTP_GLB_TXPLL_SSC_DELTA_HBR_DEFAULT, read_value);
-+	}
-+
-+	return 0;
-+}
-+
-+static struct device_node *mtk_dp_get_ssc_node(struct phy *phy, struct mtk_dp_phy *dp_phy)
-+{
-+	struct device_node *mode_node = NULL;
-+
-+	mode_node = of_find_node_by_name(dp_phy->dev->of_node, SSC_SETTING);
-+	if (!mode_node) {
-+		dev_err(&phy->dev, "SSC node is NULL\n");
-+		return NULL;
-+	}
-+
-+	return mode_node;
-+}
-+
- static int mtk_dp_phy_init(struct phy *phy)
- {
- 	struct mtk_dp_phy *dp_phy = phy_get_drvdata(phy);
-@@ -109,6 +160,7 @@ static int mtk_dp_phy_init(struct phy *phy)
- static int mtk_dp_phy_configure(struct phy *phy, union phy_configure_opts *opts)
- {
- 	struct mtk_dp_phy *dp_phy = phy_get_drvdata(phy);
-+	struct device_node *ssc_node = NULL;
- 	u32 val;
- 
- 	if (opts->dp.set_rate) {
-@@ -137,6 +189,14 @@ static int mtk_dp_phy_configure(struct phy *phy, union phy_configure_opts *opts)
- 	regmap_update_bits(dp_phy->regs, MTK_DP_PHY_DIG_PLL_CTL_1,
- 			   TPLL_SSC_EN, opts->dp.ssc ? TPLL_SSC_EN : 0);
- 
-+	ssc_node = mtk_dp_get_ssc_node(phy, dp_phy);
-+	if (ssc_node) {
-+		mtk_dp_set_ssc_config(phy, dp_phy, ssc_node, RG_XTP_GLB_TXPLL_SSC_DELTA_RBR,
-+			MTK_DP_PHY_DIG_GLB_DA_REG_14);
-+		mtk_dp_set_ssc_config(phy, dp_phy, ssc_node, RG_XTP_GLB_TXPLL_SSC_DELTA_HBR,
-+			MTK_DP_PHY_DIG_GLB_DA_REG_14);
-+	}
-+
- 	return 0;
- }
- 
-@@ -186,6 +246,7 @@ static int mtk_dp_phy_probe(struct platform_device *pdev)
- 	if (!dev->of_node)
- 		phy_create_lookup(phy, "dp", dev_name(dev));
- 
-+	dp_phy->dev = dev;
- 	return 0;
- }
- 
--- 
-2.43.0
-
+> 
+> Found with: $ rg "strncpy\("
+> ---
+>  fs/xfs/xfs_ioctl.c | 4 +---
+>  fs/xfs/xfs_xattr.c | 6 +-----
+>  2 files changed, 2 insertions(+), 8 deletions(-)
+> 
+> diff --git a/fs/xfs/xfs_ioctl.c b/fs/xfs/xfs_ioctl.c
+> index d0e2cec6210d..abef9707a433 100644
+> --- a/fs/xfs/xfs_ioctl.c
+> +++ b/fs/xfs/xfs_ioctl.c
+> @@ -1755,10 +1755,8 @@ xfs_ioc_getlabel(
+>  	/* Paranoia */
+>  	BUILD_BUG_ON(sizeof(sbp->sb_fname) > FSLABEL_MAX);
+>  
+> -	/* 1 larger than sb_fname, so this ensures a trailing NUL char */
+> -	memset(label, 0, sizeof(label));
+>  	spin_lock(&mp->m_sb_lock);
+> -	strncpy(label, sbp->sb_fname, XFSLABEL_MAX);
+> +	strscpy_pad(label, sbp->sb_fname);
+>  	spin_unlock(&mp->m_sb_lock);
+>  
+>  	if (copy_to_user(user_label, label, sizeof(label)))
+> diff --git a/fs/xfs/xfs_xattr.c b/fs/xfs/xfs_xattr.c
+> index 364104e1b38a..b9256988830f 100644
+> --- a/fs/xfs/xfs_xattr.c
+> +++ b/fs/xfs/xfs_xattr.c
+> @@ -220,11 +220,7 @@ __xfs_xattr_put_listent(
+>  		return;
+>  	}
+>  	offset = context->buffer + context->count;
+> -	memcpy(offset, prefix, prefix_len);
+> -	offset += prefix_len;
+> -	strncpy(offset, (char *)name, namelen);			/* real name */
+> -	offset += namelen;
+> -	*offset = '\0';
+> +	scnprintf(offset, prefix_len + namelen + 1, "%s%s", prefix, name);
+>  
+>  compute_size:
+>  	context->count += prefix_len + namelen + 1;
+> 
+> ---
+> base-commit: 928a87efa42302a23bb9554be081a28058495f22
+> change-id: 20240401-strncpy-fs-xfs-xfs_ioctl-c-8af7a895bff0
+> 
+> Best regards,
+> --
+> Justin Stitt <justinstitt@google.com>
+> 
+> 
 
