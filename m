@@ -1,71 +1,71 @@
-Return-Path: <linux-kernel+bounces-129160-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-129161-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id F0ACB896634
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 09:23:00 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4680D89663D
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 09:23:19 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A592E1F2428C
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 07:23:00 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id DA3C81F24FAD
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 07:23:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C4E776D1A8;
-	Wed,  3 Apr 2024 07:21:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 64DCE6EB46;
+	Wed,  3 Apr 2024 07:21:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=sigma-star.at header.i=@sigma-star.at header.b="JdueFn8D"
-Received: from mail-wm1-f50.google.com (mail-wm1-f50.google.com [209.85.128.50])
+	dkim=pass (2048-bit key) header.d=sigma-star.at header.i=@sigma-star.at header.b="GVqAzUrB"
+Received: from mail-wm1-f42.google.com (mail-wm1-f42.google.com [209.85.128.42])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B8A6E5A0F3
-	for <linux-kernel@vger.kernel.org>; Wed,  3 Apr 2024 07:21:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7F0166BFDD
+	for <linux-kernel@vger.kernel.org>; Wed,  3 Apr 2024 07:21:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712128911; cv=none; b=NTJS5LxbJJxfGwWkszGB9r/GWq4PvcoPM/qM8AtvHKBlQMItsi6P50s0xHHyTHPWeg4gsKBh4oa2gURwmApiGQk464bLd/mpAfX8+OttXxDTvmTAROcXjRlD0UPVttaP/IYKvHw0S/sHVle2I2PpPERfEgsGYVj7/YHsq/8IFoI=
+	t=1712128913; cv=none; b=mkcK8zjab7Vpq7ecXh/helW62cw418LkVIdVoGtctYdBsQtWK/pTjB8jX42pQPqWiaxm6wE/lH53/HX/YSmwKw8KK0Pd+wY4D8o5NqqolMicp12BJgDPDsX8etPpI/Ty3w9KMxpiEXJkEQ6wYx6oRRSmYzJL8T827rU6VwIussc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712128911; c=relaxed/simple;
-	bh=Khyeg1/xj46k+x5xR7s8vWgC8Y2GcoM7MOqDayZ6owQ=;
+	s=arc-20240116; t=1712128913; c=relaxed/simple;
+	bh=lNpjeX0JcmXc23xhLQ2BRd2UsmvECEYW4zkRlizImfU=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=Aj+Xqmf8pU0FX8BEv6cbL51iE80u4YTw17xhVTykOR1adi/tZrsdP009488geh8OqR/k7+MjwFXWs6Jn50aImdmECG6aXpTw2E46pn1FBIP/k/MvhR8g4vUgLxGTgZAUAOGz+thdXxB+mdOE41LMT2zgV/ho7q5XJLWXwIN2z4g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=sigma-star.at; spf=pass smtp.mailfrom=sigma-star.at; dkim=pass (2048-bit key) header.d=sigma-star.at header.i=@sigma-star.at header.b=JdueFn8D; arc=none smtp.client-ip=209.85.128.50
+	 MIME-Version; b=ciTbsBKOsw6YVetrvha7a2NFlV9Fa11Xi022BW4pbch0T4P37/KrXBx6YIyiu8r427yoe6GQrq7pLWeh+cyaKmUl8a1rQhBpnZde+SwJBYBVZughTdFZSgcnTdLBYGGjhs3WnxwyphgqTkitjCSDSes3DU8vrrq31a8bnCuhcVI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=sigma-star.at; spf=pass smtp.mailfrom=sigma-star.at; dkim=pass (2048-bit key) header.d=sigma-star.at header.i=@sigma-star.at header.b=GVqAzUrB; arc=none smtp.client-ip=209.85.128.42
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=sigma-star.at
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sigma-star.at
-Received: by mail-wm1-f50.google.com with SMTP id 5b1f17b1804b1-41550858cabso29545565e9.2
-        for <linux-kernel@vger.kernel.org>; Wed, 03 Apr 2024 00:21:49 -0700 (PDT)
+Received: by mail-wm1-f42.google.com with SMTP id 5b1f17b1804b1-41624d2fe53so467015e9.1
+        for <linux-kernel@vger.kernel.org>; Wed, 03 Apr 2024 00:21:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=sigma-star.at; s=google; t=1712128908; x=1712733708; darn=vger.kernel.org;
+        d=sigma-star.at; s=google; t=1712128910; x=1712733710; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=D9xm7Qk02wEciH96RlDxlZxQKfuGKusC1XnJuVX2I7s=;
-        b=JdueFn8DOrllCF00jh7MZOpnWQ1lhXI07HeDguULMBqeUVFmYd0LdOLUnTcaFzDa9A
-         fazroUBnovKNuscyPO4FCLe0JeX3UGKiiFODXPRNspid68bsgjq4/Lbbb6AFzYk6ywQ4
-         SBm4k2Gn32Ge60qG9f0JhMyyag9WvGrF5f08YivMgWXoXtMD+vohf+2i6bOhkJyf4bG0
-         hL3R6ZJp5c8R3WAkDuasakh8HZJPWC5n6iRvPheE6W2A/pkwAyJj2+wb3Dg22p+fIr9k
-         ++8mkLDiq/kTE4jgEWSkkLk3rMbYUuwcbg9BSsKvZGZP6/sy7RT7K+It3kfoOurfgTJ/
-         ZWYg==
+        bh=qXAm+jrLSudJosqOThMSAUphAoCkUssK7J5hWO/tUg8=;
+        b=GVqAzUrBo+gk4Ad4qMSVl6TGBW1i9XLuuwDTT9QNVaplsDCRyiF5+jxqcyzq2HP33n
+         q3oTnk3T0MdH07wr4kx4JSFDJ81x78Pl64bERb3Z2Pf2gbaYAMCsTh/nam4Dnm/X1D12
+         xwYdw5wGNnLi/YopRc5JJw72baCywAu4iuAlY5wZOFEaO600i62hRm8R0Z/6wkUJdO3b
+         3Fc/xvsLrAVPH2clNlBuJaPS76NAwuGA05EXC7E5Kz7yGKgrDmmW6FaZQJUvbmje2hiD
+         j1e6HeU4aWSE0XQgnmI3q+uIwaVWgSMOP+FeRRRUjf8AHo+ScXJJwk7o5py3xcAOc9qc
+         kEXg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712128908; x=1712733708;
+        d=1e100.net; s=20230601; t=1712128910; x=1712733710;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=D9xm7Qk02wEciH96RlDxlZxQKfuGKusC1XnJuVX2I7s=;
-        b=bV5sxnJg3cxSNPXv0NgOtQiO/7lb3dwAKJlXAOQkQ3QYYQ5j5mqJsZAg2vviBwAihn
-         jrMMYwoLCxXGRM449RLBSsYb4ncYI+7/nWrXZ4XxaIf/SuPzMYTMCOAgQV4EdTu2VSvU
-         cA+PmrEsxwkAQsZAdY2zdWRjrvu8TAUuyvPNoEHcgtsUuQnvr5Z1AxGBW0Y3v84rAvNk
-         5uITka2ph72xvM+tE7cSV3VoAhrB8mOqEYkvWYmVZSDMNl4F1EwPl3SrHcB2OcHDq2xI
-         Ii4gw4rMHK7IuhKisAdFT+K5sapNH0LNqSL5eokW/B001OTpD2eYhUcTrXjzFKEJtm2O
-         AiZg==
-X-Forwarded-Encrypted: i=1; AJvYcCWm0egmaiLwUtphl1UYtdRqPd7hXQnyFQJSNug21QBQeQ/p27qdPuuApWLG8B8isL91Xjcv6GWFG9OsBwW8e8ngakwHhS08oFWQPpuS
-X-Gm-Message-State: AOJu0YxLOJ4HshyP1gDOgfMPjaY5J+25qrFpOdwSufjLS8sMgCo4ldxb
-	QVpr3MOK7+YFVd+jEo+a5ECZ4vBO07vR4JiJMZJCk+yj7IsSfkz/pbyRWl6mM6w=
-X-Google-Smtp-Source: AGHT+IFwfWGPzmjOkZpQ5g13bjj6w//ru+uAqGOIDa7Sctmy6coY4cw7BXdzp+Ags4F/9A/eZ2BqQQ==
-X-Received: by 2002:a05:600c:3c92:b0:416:2181:bcaf with SMTP id bg18-20020a05600c3c9200b004162181bcafmr930669wmb.1.1712128908083;
-        Wed, 03 Apr 2024 00:21:48 -0700 (PDT)
+        bh=qXAm+jrLSudJosqOThMSAUphAoCkUssK7J5hWO/tUg8=;
+        b=L+HsRm4ybMokPlgMzgn+g0xsk/2yiihQ/RIL/vtzpTI0g9ZQNbqRc4SWKBeCPQXGyw
+         qtUh1qGXuwbE2c/BhhSkcgSUFxFnMDnN9vaL1Im9RjaXGwuPQ8ljqCQGTFpiQ6Gb0CzV
+         nGacvLdS0OHjlmYwczJU6FYX3YrMXdX1ntJ0MiI5PX8gK7V4KTvyygwIWVEChJDAXwvQ
+         e8+MVdfchp/FVZoPoq6RbX2zmRM3xm8wVNwW0yBRtmegAwx1OtD2Ae5ti98DEOnx20qM
+         P2mWrXF+02/8w2THPZzhf/gkae7flI75NzcFnEJ8oGp6SVRGWddPw+ISvjPQzoUtPITp
+         k4ew==
+X-Forwarded-Encrypted: i=1; AJvYcCUWF9dcHl41C0u0jIX7Tqh9J5uiXtq/gWfAl17gl3lZW696wTMJXBnaRnxEBAx41aFVcw+ot46eM6hsVQ3utzLcZ/MZ6TZ2ibb47EtU
+X-Gm-Message-State: AOJu0YytsgtWq6QIpbtcg82Pkyh2sO3MBUpbf76oHXgYpQHAo0Z3GDDq
+	woR6hijUKIiELbSARbYG+PUfqdNGcgWjPjhpQ6HQQgLHUKXkCDlAt2IZyZAIXU0=
+X-Google-Smtp-Source: AGHT+IHMXJyB4E69/ab6cpDC6ve2WzDG37buI/9MLXEGacy21VN01NO4piAk3DTCP7MyWInRIdzfrA==
+X-Received: by 2002:a05:600c:1c14:b0:416:24a1:4313 with SMTP id j20-20020a05600c1c1400b0041624a14313mr358429wms.19.1712128910048;
+        Wed, 03 Apr 2024 00:21:50 -0700 (PDT)
 Received: from localhost ([82.150.214.1])
-        by smtp.gmail.com with UTF8SMTPSA id n30-20020a05600c501e00b0041621b3cfa8sm1724904wmr.6.2024.04.03.00.21.46
+        by smtp.gmail.com with UTF8SMTPSA id m6-20020a05600c4f4600b004147db8a91asm23762409wmq.40.2024.04.03.00.21.48
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 03 Apr 2024 00:21:47 -0700 (PDT)
+        Wed, 03 Apr 2024 00:21:49 -0700 (PDT)
 From: David Gstir <david@sigma-star.at>
 To: Mimi Zohar <zohar@linux.ibm.com>,
 	James Bottomley <jejb@linux.ibm.com>,
@@ -99,10 +99,12 @@ Cc: David Gstir <david@sigma-star.at>,
 	linux-crypto@vger.kernel.org,
 	linux-arm-kernel@lists.infradead.org,
 	linuxppc-dev@lists.ozlabs.org,
-	linux-security-module@vger.kernel.org
-Subject: [PATCH v8 4/6] MAINTAINERS: add entry for DCP-based trusted keys
-Date: Wed,  3 Apr 2024 09:21:20 +0200
-Message-ID: <20240403072131.54935-5-david@sigma-star.at>
+	linux-security-module@vger.kernel.org,
+	Richard Weinberger <richard@nod.at>,
+	David Oberhollenzer <david.oberhollenzer@sigma-star.at>
+Subject: [PATCH v8 5/6] docs: document DCP-backed trusted keys kernel params
+Date: Wed,  3 Apr 2024 09:21:21 +0200
+Message-ID: <20240403072131.54935-6-david@sigma-star.at>
 X-Mailer: git-send-email 2.44.0
 In-Reply-To: <20240403072131.54935-1-david@sigma-star.at>
 References: <20240403072131.54935-1-david@sigma-star.at>
@@ -114,35 +116,50 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-This covers trusted keys backed by NXP's DCP (Data Co-Processor) chip
-found in smaller i.MX SoCs.
+Document the kernel parameters trusted.dcp_use_otp_key
+and trusted.dcp_skip_zk_test for DCP-backed trusted keys.
 
+Co-developed-by: Richard Weinberger <richard@nod.at>
+Signed-off-by: Richard Weinberger <richard@nod.at>
+Co-developed-by: David Oberhollenzer <david.oberhollenzer@sigma-star.at>
+Signed-off-by: David Oberhollenzer <david.oberhollenzer@sigma-star.at>
 Signed-off-by: David Gstir <david@sigma-star.at>
-Acked-by: Jarkko Sakkinen <jarkko@kernel.org>
+Reviewed-by: Jarkko Sakkinen <jarkko@kernel.org>
 ---
- MAINTAINERS | 9 +++++++++
- 1 file changed, 9 insertions(+)
+ Documentation/admin-guide/kernel-parameters.txt | 13 +++++++++++++
+ 1 file changed, 13 insertions(+)
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 976a5cea1577..ca7f42ca9338 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -12019,6 +12019,15 @@ S:	Maintained
- F:	include/keys/trusted_caam.h
- F:	security/keys/trusted-keys/trusted_caam.c
+diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
+index 24c02c704049..3a59abf06039 100644
+--- a/Documentation/admin-guide/kernel-parameters.txt
++++ b/Documentation/admin-guide/kernel-parameters.txt
+@@ -6698,6 +6698,7 @@
+ 			- "tpm"
+ 			- "tee"
+ 			- "caam"
++			- "dcp"
+ 			If not specified then it defaults to iterating through
+ 			the trust source list starting with TPM and assigns the
+ 			first trust source as a backend which is initialized
+@@ -6713,6 +6714,18 @@
+ 			If not specified, "default" is used. In this case,
+ 			the RNG's choice is left to each individual trust source.
  
-+KEYS-TRUSTED-DCP
-+M:	David Gstir <david@sigma-star.at>
-+R:	sigma star Kernel Team <upstream+dcp@sigma-star.at>
-+L:	linux-integrity@vger.kernel.org
-+L:	keyrings@vger.kernel.org
-+S:	Supported
-+F:	include/keys/trusted_dcp.h
-+F:	security/keys/trusted-keys/trusted_dcp.c
++	trusted.dcp_use_otp_key
++			This is intended to be used in combination with
++			trusted.source=dcp and will select the DCP OTP key
++			instead of the DCP UNIQUE key blob encryption.
 +
- KEYS-TRUSTED-TEE
- M:	Sumit Garg <sumit.garg@linaro.org>
- L:	linux-integrity@vger.kernel.org
++	trusted.dcp_skip_zk_test
++			This is intended to be used in combination with
++			trusted.source=dcp and will disable the check if the
++			blob key is all zeros. This is helpful for situations where
++			having this key zero'ed is acceptable. E.g. in testing
++			scenarios.
++
+ 	tsc=		Disable clocksource stability checks for TSC.
+ 			Format: <string>
+ 			[x86] reliable: mark tsc clocksource as reliable, this
 -- 
 2.35.3
 
