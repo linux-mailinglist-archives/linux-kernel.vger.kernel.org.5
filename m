@@ -1,91 +1,145 @@
-Return-Path: <linux-kernel+bounces-130695-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-130696-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0B3D5897BBA
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 00:42:07 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id C974B897BBC
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 00:43:02 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B96B828AF8F
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 22:42:05 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3F5CC1F26A86
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 22:43:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C9BD615531D;
-	Wed,  3 Apr 2024 22:41:59 +0000 (UTC)
-Received: from fgw21-7.mail.saunalahti.fi (fgw21-7.mail.saunalahti.fi [62.142.5.82])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 42F88156881;
+	Wed,  3 Apr 2024 22:42:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="1yFVmDks"
+Received: from mail-yw1-f201.google.com (mail-yw1-f201.google.com [209.85.128.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C5C131419B3
-	for <linux-kernel@vger.kernel.org>; Wed,  3 Apr 2024 22:41:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=62.142.5.82
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 019E1153BEF
+	for <linux-kernel@vger.kernel.org>; Wed,  3 Apr 2024 22:42:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712184119; cv=none; b=JhfpgrH1cburpjkujX8MOAgXBRqxXcBes6+EdKKcUIehtaZ59hIhGGqbf2nWY514vRXAxmO4Hvp0YElhsBbOf7e8fx77fihlE9UATdpgTH8zinteVPRMQZr7SUb0oRzGSdcp8268XZ2Ucs5UIWwrhJJIjd5TJ9Nr9K7+eUMoSQ8=
+	t=1712184171; cv=none; b=mzbub5fXX+Yi0XpQxzXvGvVxHtmrScWI3ktFlyZCAJUqaGCT4K5WqdzaxA441UO5fRzBKr2QSgPfvj4ySuHLZWParN9C18MIwbaYRSFZYKtamgjqNqdfN8mKiZl2cLvyQ1hjw6V3cIc3ELPebrtr8ocz/nzQ2COQy01hhyQe/YM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712184119; c=relaxed/simple;
-	bh=PuR8Jo9jk2o0K65cEHhrQfsjp+rx/bDqR1i6qoh0MzI=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=B02//6tcsJ3ZN3emP0CddEN4KfBsstwL6kIZEAfEY25Wq0KodkEwFLr6pgWLym3lZx8PZu1yjDzgxC7AkRdO7Dw2AFla3u1WgH9sVW11YVUxB/z+5cWKuNcYgrAE7lTzl59HQ1WXyubGQh+vXpBjNySE+/M1PJKdUE69iNNo8tY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com; spf=fail smtp.mailfrom=gmail.com; arc=none smtp.client-ip=62.142.5.82
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=gmail.com
-Received: from localhost (88-113-26-217.elisa-laajakaista.fi [88.113.26.217])
-	by fgw21.mail.saunalahti.fi (Halon) with ESMTP
-	id 5f4aa124-f20b-11ee-abf4-005056bdd08f;
-	Thu, 04 Apr 2024 01:41:55 +0300 (EEST)
-From: Andy Shevchenko <andy.shevchenko@gmail.com>
-To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Crescent CY Hsieh <crescentcy.hsieh@moxa.com>,
-	linux-kernel@vger.kernel.org,
-	linux-serial@vger.kernel.org
-Cc: Jiri Slaby <jirislaby@kernel.org>,
-	Andy Shevchenko <andy.shevchenko@gmail.com>,
-	Jimmy A <jimand04@hotmail.com>
-Subject: [PATCH v1 1/1] serial: 8250_pci: Remove redundant PCI IDs
-Date: Thu,  4 Apr 2024 01:41:52 +0300
-Message-ID: <20240403224152.945099-1-andy.shevchenko@gmail.com>
-X-Mailer: git-send-email 2.44.0
+	s=arc-20240116; t=1712184171; c=relaxed/simple;
+	bh=rz+PvBK3Tkf1uBvQQhw3KfI5Oam7TgqAW+rcHV7DZBA=;
+	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
+	 To:Cc:Content-Type; b=JezbFN4XTvG0ZHheCUi8kUJ5TNHOiwdr4jK0NBnFCWpW9w8TQ7JqH+yEV2V5Wz3eV/SguYaPbhKqiWN9Ox/UtPx3Cm4EbkNl64FHCOOxoQ+Gtyt7T5PJW6fKEcwhdmIYQHzfC84vm1w6o2KuijYjFTTg0uNaqdRaiPwTLIU5x50=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=1yFVmDks; arc=none smtp.client-ip=209.85.128.201
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
+Received: by mail-yw1-f201.google.com with SMTP id 00721157ae682-60cc00203faso7005627b3.2
+        for <linux-kernel@vger.kernel.org>; Wed, 03 Apr 2024 15:42:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1712184169; x=1712788969; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=UlLZ7hA4oy1JpChmEiN14ttbq81N4arBdlGQRutmBxA=;
+        b=1yFVmDkswO93LtyCO4XfV+WN1Koj4ead1qgHwLI8TLYzXRULHUVFQzve7e2de2q9VQ
+         FsP/XnmHnLBayCLs3DbHevSLatcvq8Jw6PYtk5GOmihFXNSPuTeYSkbeTsPVE0GrELrF
+         UOwVhG5Gz/T8+nlW/RQuokl1DWMKufawUGDH7We9YmA4fBmJ8bwbTUo8Ox38PkLbEICs
+         mO2OZ2ZyyONx01tppOktqX08UN/MZcHkWpMK26Yx2g9Q/UYI7qiCw4vAafBC2+GgAb6U
+         nYnG0GvYf1q6ZZfVYBdf2YWMV71q73KaRJPDEnNenwpn3GhV4JFLVzYOJLBb1ACBH2PV
+         5D+w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712184169; x=1712788969;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=UlLZ7hA4oy1JpChmEiN14ttbq81N4arBdlGQRutmBxA=;
+        b=RsVvLPoraXSq6KbIHa1eaxV0KLRb4U39dYffvUvMX3AArJU1XG9wO4Ip10vX2th3bF
+         dW7+9ePRHztHE8jkHFULm4QoOU3ipk+zqmAvCbF1A+KDJ94SFA3xAl8qLedYGl7e4o3u
+         ZpYNbwpdunaLPTtyR0y+NndudQ4q3ZOiZpx7YbMoq0AyBP79AjaF/FxY+Qytc4eG/oiP
+         uaEpDgP5cuxT68yqB7hC8z4Q+3g9QRSdwyCN3ODFHG5YPrdS5VctEwoqT/kThxlFxHjm
+         X/u403NbrtMQcwg6WTpVVJA3JP1qh3c3F68QSjOgAKkoOuYSGrm3/uHppjMVLvxCV5E6
+         2pMg==
+X-Forwarded-Encrypted: i=1; AJvYcCV+z4qw1Kb+RnbGmYb0Aq0V5DoMWhq9L1bXrKCz4XhI3PrQLD4OFWGavtL922+ARa9mfnxpxyCeNmisqm6P7YDQ8aTFdhvu/wHf1mSj
+X-Gm-Message-State: AOJu0YyJal0vQxtSmLNajfXnRnwHDqa+v0YJQrTAbJx1NezBZqocReDA
+	x1ifMtBAaU+R7TqGX9HRcuasI5kyDDREBx2gH5hsZo1WBByTEZqWzjPz15HAiakcWZaB0e8QZwE
+	idw==
+X-Google-Smtp-Source: AGHT+IGEhST2p92PFmovBbCMnCdeSkkVmZWkaaVSFg5gshHzyJej3edC2UH7m/8KBivZvDzkOdXH2hRT9zc=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a81:a195:0:b0:614:fa:c912 with SMTP id
+ y143-20020a81a195000000b0061400fac912mr201614ywg.1.1712184168995; Wed, 03 Apr
+ 2024 15:42:48 -0700 (PDT)
+Date: Wed, 3 Apr 2024 15:42:47 -0700
+In-Reply-To: <20240403220023.GL2444378@ls.amr.corp.intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Mime-Version: 1.0
+References: <cover.1709288671.git.isaku.yamahata@intel.com>
+ <ZekQFdPlU7RDVt-B@google.com> <20240307020954.GG368614@ls.amr.corp.intel.com>
+ <20240319163309.GG1645738@ls.amr.corp.intel.com> <Zg2gPaXWjYxr8woR@google.com>
+ <20240403220023.GL2444378@ls.amr.corp.intel.com>
+Message-ID: <Zg3bZ3MQaBvC5LML@google.com>
+Subject: Re: [RFC PATCH 0/8] KVM: Prepopulate guest memory API
+From: Sean Christopherson <seanjc@google.com>
+To: Isaku Yamahata <isaku.yamahata@intel.com>
+Cc: David Matlack <dmatlack@google.com>, kvm@vger.kernel.org, isaku.yamahata@gmail.com, 
+	linux-kernel@vger.kernel.org, Paolo Bonzini <pbonzini@redhat.com>, 
+	Michael Roth <michael.roth@amd.com>, Federico Parola <federico.parola@polito.it>, 
+	isaku.yamahata@linux.intel.com
+Content-Type: text/plain; charset="us-ascii"
 
-Driver complains that PCI IDs are not needed for some of the LAVA cards:
+On Wed, Apr 03, 2024, Isaku Yamahata wrote:
+> On Wed, Apr 03, 2024 at 11:30:21AM -0700,
+> Sean Christopherson <seanjc@google.com> wrote:
+> 
+> > On Tue, Mar 19, 2024, Isaku Yamahata wrote:
+> > > On Wed, Mar 06, 2024 at 06:09:54PM -0800,
+> > > Isaku Yamahata <isaku.yamahata@linux.intel.com> wrote:
+> > > 
+> > > > On Wed, Mar 06, 2024 at 04:53:41PM -0800,
+> > > > David Matlack <dmatlack@google.com> wrote:
+> > > > 
+> > > > > On 2024-03-01 09:28 AM, isaku.yamahata@intel.com wrote:
+> > > > > > From: Isaku Yamahata <isaku.yamahata@intel.com>
+> > > > > > 
+> > > > > > Implementation:
+> > > > > > - x86 KVM MMU
+> > > > > >   In x86 KVM MMU, I chose to use kvm_mmu_do_page_fault().  It's not confined to
+> > > > > >   KVM TDP MMU.  We can restrict it to KVM TDP MMU and introduce an optimized
+> > > > > >   version.
+> > > > > 
+> > > > > Restricting to TDP MMU seems like a good idea. But I'm not quite sure
+> > > > > how to reliably do that from a vCPU context. Checking for TDP being
+> > > > > enabled is easy, but what if the vCPU is in guest-mode?
+> > > > 
+> > > > As you pointed out in other mail, legacy KVM MMU support or guest-mode will be
+> > > > troublesome.
+> > 
+> > Why is shadow paging troublesome?  I don't see any obvious issues with effectively
+> > prefetching into a shadow MMU with read fault semantics.  It might be pointless
+> > and wasteful, as the guest PTEs need to be in place, but that's userspace's problem.
+> 
+> The populating address for shadow paging is GVA, not GPA.  I'm not sure if
+> that's what the user space wants.  If it's user-space problem, I'm fine.
 
-[    0.297252] serial 0000:04:00.0: Redundant entry in serial pci_table.
-[    0.297252] Please send the output of lspci -vv, this
-[    0.297252] message (0x1407,0x0120,0x0000,0x0000), the
-[    0.297252] manufacturer and name of serial board or
-[    0.297252] modem board to <linux-serial@vger.kernel.org>.
+/facepalm
 
-Do as suggested.
+> > Pre-populating is the primary use case, but that could happen if L2 is active,
+> > e.g. after live migration.
+> > 
+> > I'm not necessarily opposed to initially adding support only for the TDP MMU, but
+> > if the delta to also support the shadow MMU is relatively small, my preference
+> > would be to add the support right away.  E.g. to give us confidence that the uAPI
+> > can work for multiple MMUs, and so that we don't have to write documentation for
+> > x86 to explain exactly when it's legal to use the ioctl().
+> 
+> If we call kvm_mmu.page_fault() without caring of what address will be
+> populated, I don't see the big difference.  
 
-Reported-by: Jimmy A <jimand04@hotmail.com>
-Closes: https://lore.kernel.org/r/VI1P194MB052751BE157EFE9CEAB75725CE362@VI1P194MB0527.EURP194.PROD.OUTLOOK.COM
-Signed-off-by: Andy Shevchenko <andy.shevchenko@gmail.com>
----
- drivers/tty/serial/8250/8250_pci.c | 6 ------
- 1 file changed, 6 deletions(-)
+Ignore me, I completely spaced that shadow MMUs don't operate on an L1 GPA.  I
+100% agree that restricting this to TDP, at least for the initial merge, is the
+way to go.  A uAPI where the type of address varies based on the vCPU mode and
+MMU type would be super ugly, and probably hard to use.
 
-diff --git a/drivers/tty/serial/8250/8250_pci.c b/drivers/tty/serial/8250/8250_pci.c
-index 400b16c0336cf..40af74b55933c 100644
---- a/drivers/tty/serial/8250/8250_pci.c
-+++ b/drivers/tty/serial/8250/8250_pci.c
-@@ -5010,12 +5010,6 @@ static const struct pci_device_id serial_pci_tbl[] = {
- 	{	PCI_VENDOR_ID_LAVA, PCI_DEVICE_ID_LAVA_QUATRO_B,
- 		PCI_ANY_ID, PCI_ANY_ID, 0, 0,
- 		pbn_b0_bt_2_115200 },
--	{	PCI_VENDOR_ID_LAVA, PCI_DEVICE_ID_LAVA_QUATTRO_A,
--		PCI_ANY_ID, PCI_ANY_ID, 0, 0,
--		pbn_b0_bt_2_115200 },
--	{	PCI_VENDOR_ID_LAVA, PCI_DEVICE_ID_LAVA_QUATTRO_B,
--		PCI_ANY_ID, PCI_ANY_ID, 0, 0,
--		pbn_b0_bt_2_115200 },
- 	{	PCI_VENDOR_ID_LAVA, PCI_DEVICE_ID_LAVA_OCTO_A,
- 		PCI_ANY_ID, PCI_ANY_ID, 0, 0,
- 		pbn_b0_bt_4_460800 },
--- 
-2.44.0
-
+At that point, I don't have a strong preference as to whether or not direct
+legacy/shadow MMUs are supported.  That said, I think it can (probably should?)
+be done in a way where it more or less Just Works, e.g. by having a function hook
+in "struct kvm_mmu".
 
