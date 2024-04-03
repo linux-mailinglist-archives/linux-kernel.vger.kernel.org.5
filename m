@@ -1,116 +1,101 @@
-Return-Path: <linux-kernel+bounces-130348-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-130349-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 63FFF897709
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 19:40:17 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 98DA189770A
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 19:40:35 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 184661F2C1FA
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 17:40:17 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 35E611F2AD69
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 17:40:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B8FC216D303;
-	Wed,  3 Apr 2024 17:20:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2EC7E16D320;
+	Wed,  3 Apr 2024 17:20:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="G85DY4fx"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b="KXqNSoa9"
+Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 05E9716C857;
-	Wed,  3 Apr 2024 17:20:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BB89F16D305
+	for <linux-kernel@vger.kernel.org>; Wed,  3 Apr 2024 17:20:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=65.109.113.108
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712164800; cv=none; b=POVX+ctzr63glvEp8opddjk5GReqYloJf818+KEKuCL2Q5zFt+tgTYVnnx6XWZTk1c+EMxuiyPgaUwj3CIosIAww6UOzQzKlrQDZ9MysOZOdBGpKCWur84Lmgz2wfivAOu4UOiJ0Hz5jAVdFG2m9tlFvV5hXRFbxcrdL8A3TlMQ=
+	t=1712164802; cv=none; b=nONVla2+78LPDg8S+ekwL75M3jgg1N4COVO7XxkkrdYbpJnskavCHMTQG0KaZ1Ja40BYWKZsCeJATOMj2XKZQbwlIvRqC+h9q0qAFM7jC4q0MGxGs4FP/G6dZaMHV7qV5Eb145MCui4JnwCXO4wMKsuMxJ5Wwoi9QA1fyn/+fjI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712164800; c=relaxed/simple;
-	bh=3R/oYCngnfBm8uj5KvKZdVhP62XlJbJ3bOKSaBb7XQ0=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=lR26KLDKrzau7JDJd40dvU1NR/C2SZtVFuvibrXPa05etztmFcWn38nXYEeGAcfX/akUvWwPXYglJHCW6GdYH+8caetQj4NTiKgXVmHMlK8cO9Ee/qZRdHA/y3cyPTC60scSP9T+ROdIkbIha5aT7lstbEppLjEkonq7XkRssIg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=G85DY4fx; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D51D6C43390;
+	s=arc-20240116; t=1712164802; c=relaxed/simple;
+	bh=QtPevCIjXX7QFZ7K/qtZMwdmegWLWhnyNKJMKwQ2Ygs=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=aZ/7VRclOHmu1CCHLUP1WRehd59kYHgsQ/idFR6BkOm2T8jFbKy9uaBkUzrCSDTfVhJCz7kmUdGuHsANqBYen8vbG14MjPsLmc/swaNGmdB/3r+M191x7iouW7pnFCW1YGThu9G8dvlRuGgleX5JaywZeuBrv7ELRF7w8fOJUls=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de; spf=pass smtp.mailfrom=alien8.de; dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b=KXqNSoa9; arc=none smtp.client-ip=65.109.113.108
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alien8.de
+Received: from localhost (localhost.localdomain [127.0.0.1])
+	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id 70B5C40E0192;
 	Wed,  3 Apr 2024 17:19:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712164799;
-	bh=3R/oYCngnfBm8uj5KvKZdVhP62XlJbJ3bOKSaBb7XQ0=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=G85DY4fxTerc+Lcygm+DlD3x1/JQqpbcQkn8H217N1M8zbvirgHxittpRrDdFdyvQ
-	 DJ/iDNcHqVQmm5hT15POIlfMQOgWfko5IAJ+e36m5tkYOmX8q8JHnyfQmms68pOmHL
-	 Z/fLHM9C186FDscG2jyHCRsm3lvHkLJ8q43pucWtOT9ZRv9uic+0kOh7pQUH9ffhl5
-	 kmSlrmb8/k1hSlpYnzdbZzy/De+iURKMJAKCgMAjyvYZ/g3o2mTcEDv6I84lNE+0cH
-	 9YNDWX+qGqqf6BhJ7IESjiVNUU0odrXgly8uXiCkTg8XEBAGk1KLfz+gC6WlhAfgVi
-	 +cGL6jigWo9DA==
-From: Sasha Levin <sashal@kernel.org>
-To: linux-kernel@vger.kernel.org,
-	stable@vger.kernel.org
-Cc: Roman Smirnov <r.smirnov@omp.ru>,
-	Sergey Shtylyov <s.shtylyov@omp.ru>,
-	Helge Deller <deller@gmx.de>,
-	Sasha Levin <sashal@kernel.org>,
-	daniel@ffwll.ch,
-	linux-fbdev@vger.kernel.org,
-	dri-devel@lists.freedesktop.org
-Subject: [PATCH AUTOSEL 5.15 8/8] fbmon: prevent division by zero in fb_videomode_from_videomode()
-Date: Wed,  3 Apr 2024 13:19:41 -0400
-Message-ID: <20240403171945.350716-8-sashal@kernel.org>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240403171945.350716-1-sashal@kernel.org>
-References: <20240403171945.350716-1-sashal@kernel.org>
+X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
+Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
+	header.d=alien8.de
+Received: from mail.alien8.de ([127.0.0.1])
+	by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
+	with ESMTP id CiA-8tlRc43u; Wed,  3 Apr 2024 17:19:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
+	t=1712164793; bh=L9P14lLCj/u1byUIgCVreo3oA9YudOj2hiQ5myfUpjI=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=KXqNSoa9dKJtj7zYDfUL3TVDefqBbSNUq9G3PRC7meXfg5MM5LaR/JMBG4W4jY6Y7
+	 E5QiGbggMafPWfFDFK9wpZUyXnvouNx89aemcHH0zojC2Dm/dCVIbkFgTHvlb53tF+
+	 KDdOdyZx4cBRt/2pjionvKgNRQZ2Uv7fo+SaiNHFlwzeR/l2XASFbBhYbYxGxQ30kr
+	 TYVvy6oOIX5+V1PzsFr9qls0m8P2djUCiGDyLfPw4ngj5ko2ExJkcornRpWlPOHr00
+	 ActQFmexmM9iJB7KkAgdHPSRiKvjhxByEK8+edY1P3ydMQJpE5wF/zTuecjL/249yu
+	 b9++1Y3xCobxQ+hR/9PxUihTS6jl2NrPB3NrrnXRo4RPrw1IcvuY1cRwYkIMnvEuFD
+	 RWxqNJJUeery/TTYdDgQNR1iOG96Te7iDSMD5uEkbM4lVVsPDpL/b6aASfcRXBC4be
+	 +pqVze2g5QytDsCGug9dVYg1UdGcbswHLEwSQbIgZQVpC+86p2UrA1iz4JQrFiTVTs
+	 5H6qvhomt0OEbenBkhmG2mzb6ZQueKqrF3OATRwc2/LA8a1siEzu8/n517GaYihM/z
+	 QkeTgwi/PVJF8hmPGokz9jPGtSg9xp12rz8YKiDARvQPSjH3cvstoV6d1QdQz4FBfI
+	 dsErIwdq62kR0JCWBWmhllpw=
+Received: from zn.tnic (p5de8ecf7.dip0.t-ipconnect.de [93.232.236.247])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
+	(No client certificate requested)
+	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 1002740E00F4;
+	Wed,  3 Apr 2024 17:19:47 +0000 (UTC)
+Date: Wed, 3 Apr 2024 19:19:41 +0200
+From: Borislav Petkov <bp@alien8.de>
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: kernel test robot <oliver.sang@intel.com>, oe-lkp@lists.linux.dev,
+	lkp@intel.com, linux-kernel@vger.kernel.org,
+	Ingo Molnar <mingo@kernel.org>
+Subject: Re: [PATCH] x86/retpoline: Fix a missing return thunk warning (was:
+ Re: [linus:master] [x86/bugs] 4535e1a417:
+ WARNING:at_arch/x86/kernel/alternative.c:#apply_returns)
+Message-ID: <20240403171941.GIZg2PrcsShYQS4eDn@fat_crate.local>
+References: <202404020901.da75a60f-oliver.sang@intel.com>
+ <20240403122350.GEZg1KVvsyc-Z3bwro@fat_crate.local>
+ <CAHk-=wj+Q_LXV0Y5+kBvv-5sTxT3Y7E=8wJ2sX4vzWksd3LWzA@mail.gmail.com>
+ <20240403170534.GHZg2MXmwFRv-x8usY@fat_crate.local>
+ <CAHk-=wjernNvgonRC-W=_OF116facZf--vaYZ+QUnOkXm99M9Q@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
-X-stable-base: Linux 5.15.153
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <CAHk-=wjernNvgonRC-W=_OF116facZf--vaYZ+QUnOkXm99M9Q@mail.gmail.com>
 
-From: Roman Smirnov <r.smirnov@omp.ru>
+On Wed, Apr 03, 2024 at 10:13:14AM -0700, Linus Torvalds wrote:
+> On Wed, 3 Apr 2024 at 10:05, Borislav Petkov <bp@alien8.de> wrote:
+> >
+> > Can you pls replace it with the below one?
+> 
+> Ok, done.
 
-[ Upstream commit c2d953276b8b27459baed1277a4fdd5dd9bd4126 ]
+Thanks!
 
-The expression htotal * vtotal can have a zero value on
-overflow. It is necessary to prevent division by zero like in
-fb_var_to_videomode().
-
-Found by Linux Verification Center (linuxtesting.org) with Svace.
-
-Signed-off-by: Roman Smirnov <r.smirnov@omp.ru>
-Reviewed-by: Sergey Shtylyov <s.shtylyov@omp.ru>
-Signed-off-by: Helge Deller <deller@gmx.de>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- drivers/video/fbdev/core/fbmon.c | 7 ++++---
- 1 file changed, 4 insertions(+), 3 deletions(-)
-
-diff --git a/drivers/video/fbdev/core/fbmon.c b/drivers/video/fbdev/core/fbmon.c
-index b0e690f41025a..9ca99da3a56a0 100644
---- a/drivers/video/fbdev/core/fbmon.c
-+++ b/drivers/video/fbdev/core/fbmon.c
-@@ -1311,7 +1311,7 @@ int fb_get_mode(int flags, u32 val, struct fb_var_screeninfo *var, struct fb_inf
- int fb_videomode_from_videomode(const struct videomode *vm,
- 				struct fb_videomode *fbmode)
- {
--	unsigned int htotal, vtotal;
-+	unsigned int htotal, vtotal, total;
- 
- 	fbmode->xres = vm->hactive;
- 	fbmode->left_margin = vm->hback_porch;
-@@ -1344,8 +1344,9 @@ int fb_videomode_from_videomode(const struct videomode *vm,
- 	vtotal = vm->vactive + vm->vfront_porch + vm->vback_porch +
- 		 vm->vsync_len;
- 	/* prevent division by zero */
--	if (htotal && vtotal) {
--		fbmode->refresh = vm->pixelclock / (htotal * vtotal);
-+	total = htotal * vtotal;
-+	if (total) {
-+		fbmode->refresh = vm->pixelclock / total;
- 	/* a mode must have htotal and vtotal != 0 or it is invalid */
- 	} else {
- 		fbmode->refresh = 0;
 -- 
-2.43.0
+Regards/Gruss,
+    Boris.
 
+https://people.kernel.org/tglx/notes-about-netiquette
 
