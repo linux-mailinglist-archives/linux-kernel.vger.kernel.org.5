@@ -1,84 +1,84 @@
-Return-Path: <linux-kernel+bounces-128880-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-128881-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5BD3289616D
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 02:31:35 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 912D789616F
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 02:31:49 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 11D61289118
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 00:31:34 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B364F1C2308A
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 00:31:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 94B4A1CAAA;
-	Wed,  3 Apr 2024 00:29:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 211FC225A2;
+	Wed,  3 Apr 2024 00:29:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ljones.dev header.i=@ljones.dev header.b="RygKvskk";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="GdyOrsZf"
-Received: from fhigh5-smtp.messagingengine.com (fhigh5-smtp.messagingengine.com [103.168.172.156])
+	dkim=pass (2048-bit key) header.d=ljones.dev header.i=@ljones.dev header.b="lQu5IM7Z";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="kBaFskUN"
+Received: from fout2-smtp.messagingengine.com (fout2-smtp.messagingengine.com [103.168.172.145])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 16D131BC3C;
-	Wed,  3 Apr 2024 00:29:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.156
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 989651CD04;
+	Wed,  3 Apr 2024 00:29:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.145
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712104189; cv=none; b=AsxcKbb0Tj8MFTU+3AtzjAhIhPjVu6gcDoNLfpaLPwhqkHPC/xxUCSKWTPFgGFnXBSOV5DpPfRn8vcFSr/E5ArabB+lqcy9O3hFz0k6ZxyyFWcblHrTJP2S1tx+wV7B8lXnRgcOVTjMuaaSHWq5p0IvIJldChC6X6e/JgFR5y6E=
+	t=1712104192; cv=none; b=A+mvySOlqvOKk5d9LmNn9ysgoNLqYMSOuSclWRb2nuh0ke0mfGN81oRLbPOJ+ntBqNjEmNRlAviI7lN2VBKvv9p21/JYpyEoDM6Nqs29W4Z1rBJ36cM83AIRx5NMUwAh2CQKgS+LOfMDdx6T30DnVunEqMyM+sjWr8jzLyOqeUM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712104189; c=relaxed/simple;
-	bh=hqQcBz8tjJvePBEV24EgLsCD/lpRWZ3kNVG5ktQlrmk=;
+	s=arc-20240116; t=1712104192; c=relaxed/simple;
+	bh=xDrAjDc6P7boqNQal2P1FLi1EF26TEnE/T12TeB/Hdk=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=Uyb4vU7jHxQQiDkRA1pIZHo13kQklneUkJbtD8/rHm5JAG8ydq6PYWl07I2G6RxrXQRM4M0Zrwsy+XKIIxIXCb6GoUcTVUhuZbKWUe5ABJrYuM+Ln1nh0hVuzUZDbPHCss67A/nJtBSxcCmE9MjkaUxMndmBMPXVV6c2oeC0amc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ljones.dev; spf=none smtp.mailfrom=ljones.dev; dkim=pass (2048-bit key) header.d=ljones.dev header.i=@ljones.dev header.b=RygKvskk; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=GdyOrsZf; arc=none smtp.client-ip=103.168.172.156
+	 MIME-Version; b=Q7ajKaV8iD6mwKVpHF6BeVmA6NHcP2dfLm7xRGvfYA7SKNsepYEp7/P/ic7m0iy2mwoFBwFHxzv+BWrcp/UQCBHzmYBdyZi+OsY8X5gbkMHeNzhBKI750LFQb59MdOtfH5q32HHJ/fyjXz7xF5UoPmOYSGlol2Da4Yy9pNIACcQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ljones.dev; spf=none smtp.mailfrom=ljones.dev; dkim=pass (2048-bit key) header.d=ljones.dev header.i=@ljones.dev header.b=lQu5IM7Z; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=kBaFskUN; arc=none smtp.client-ip=103.168.172.145
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ljones.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=ljones.dev
 Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
-	by mailfhigh.nyi.internal (Postfix) with ESMTP id 1A8C7114010D;
-	Tue,  2 Apr 2024 20:29:47 -0400 (EDT)
+	by mailfout.nyi.internal (Postfix) with ESMTP id C8E0913800CF;
+	Tue,  2 Apr 2024 20:29:49 -0400 (EDT)
 Received: from mailfrontend1 ([10.202.2.162])
-  by compute1.internal (MEProxy); Tue, 02 Apr 2024 20:29:47 -0400
+  by compute1.internal (MEProxy); Tue, 02 Apr 2024 20:29:49 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ljones.dev; h=cc
-	:cc:content-transfer-encoding:content-type:content-type:date
-	:date:from:from:in-reply-to:in-reply-to:message-id:mime-version
-	:references:reply-to:subject:subject:to:to; s=fm3; t=1712104187;
-	 x=1712190587; bh=WFzsaT48GQrgSEFr3BSkVJlT7btMWqBLkTOeqH2ftUo=; b=
-	RygKvskkKo3VnfRVe3PKHP418GAYUpY6JHezr5vnL8tn29kaktywdQLZ6DO3Ozyn
-	Fkvvw7xsF4VJucUfD0I0hrjQs5oH9bpjWWKrqegqhX2aNhXYmvMR2yPlU3/IamhI
-	yaIOJv8/gTPvaEa889imZXBJxN0ipisMQXWm2iarJYLP3IHtjXl47tJ+3kxCT7Fx
-	kbkIYB9uWEsKCU7s/49plY5Iwa7gRliP8rOci99EtP8OoiC8YfumdS/aEt6YhQYA
-	8dYawZgIa9FdHrvocFVxQ/2af88I+isxXHQw1K+bnfQtjlpX3liA9nodg2DNfkNE
-	sR+AwNmT/tuvWTPscEzwDA==
+	:cc:content-transfer-encoding:content-type:date:date:from:from
+	:in-reply-to:in-reply-to:message-id:mime-version:references
+	:reply-to:subject:subject:to:to; s=fm3; t=1712104189; x=
+	1712190589; bh=RJIIf+Rf3H/UO0CsECc6FASEH4kBHZiMeFi6O+VvvUg=; b=l
+	Qu5IM7ZE/y0+pBsCUuRE2YwIqjMJKfgyVX7pEBKHaod+E147rzk3VvinLMUKUgEV
+	N4SOul3GO2xefZcTko+N4HNALBaOgpZFn9TEHGIuvxVSOXW8VrxxqyXNviWjSz3J
+	RDJrrmzpAyZiNyKrJSSWUgoEwq3VhV9ynVFn7eORNR1hRQgZVSYplcMUyXtynx9x
+	ZbwjGvhMI50GrM6dWcs7RcQZqDUTNoleALn+Xm/mwTiJnOyPRsz2btOpGiUhngrW
+	cLCXhi4zEeIf8bTsRntvYCww9W/LSaA7vxTDzzhpuaoJAaj7QrrQDTCnacoNd8/K
+	ri7F73Bkr5lTelNiAGKAQ==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
 	messagingengine.com; h=cc:cc:content-transfer-encoding
-	:content-type:content-type:date:date:feedback-id:feedback-id
-	:from:from:in-reply-to:in-reply-to:message-id:mime-version
-	:references:reply-to:subject:subject:to:to:x-me-proxy:x-me-proxy
-	:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; t=1712104187; x=
-	1712190587; bh=WFzsaT48GQrgSEFr3BSkVJlT7btMWqBLkTOeqH2ftUo=; b=G
-	dyOrsZf/6xTZC1yeEHaBpTvMYv/5d8jQJCBb3vNK0GHL24HSW0D5PgF+n3BaojvZ
-	z5+06wG/BXYz7qhMCXwNWM9WKTFw40782EHehJUW4AwPA3D22zUoikF20unKT/BF
-	bHEOh2MMv5ZwPWUhHQNk21wT10h/WFU+PjbNa8t2A5JT30KNbeWnUkxMSaRw46lq
-	Zk+Q5MAmBdc0c/eqZ/JBAxwdqbqkw9WDEEmGUjTJG6V65QKqqsxSpSaLuzuIeFbY
-	ICpUBA3aY8VjxUFdUTlRX4J02jrxkLKh6bWRlzNm1Kvk7R1nbhj3otxBRfffEAG4
-	78o7t6VVXrrrpdat/0Ecw==
-X-ME-Sender: <xms:-qIMZjiuUY6OXgsqc-ejrpmU7Sa374UezVr-UCYKI_lwev5E0MsJfQ>
-    <xme:-qIMZgCa4273xcO4jJbFsxCnor3m2Grl2OBi0ZKIRSAyuCZ_qG4M5OXcCOcUan7nt
-    BiOFyZKSXLLEpyB2nE>
-X-ME-Received: <xmr:-qIMZjHqpKJIaTJYeMaa3clkfYTAjDM7ideih08_BklF0kbp7ccz_bbkVj23>
+	:content-type:date:date:feedback-id:feedback-id:from:from
+	:in-reply-to:in-reply-to:message-id:mime-version:references
+	:reply-to:subject:subject:to:to:x-me-proxy:x-me-proxy
+	:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; t=1712104189; x=
+	1712190589; bh=RJIIf+Rf3H/UO0CsECc6FASEH4kBHZiMeFi6O+VvvUg=; b=k
+	BaFskUN6IYIeqckO303fCx4F6efki98GsEJTSW/jbkDThehW9yf9DKwxEin4BEws
+	te7Fwx/xY222Y2al+FXtECxsnad8CE2H3llY9K5QzSVU2kwLlmQ0EYB3mhwi8sJz
+	6NW+jkBppb0nxnIMSzjpF72dj04q106jcLLl5C5x2GQstcI2l876QC53Ojl8jkQv
+	TNK4SiQ5xJy59dE4Hkyiwb3vt4AX5XkXvZT4OoS6t7t9T+kcV4sAoWaW2kCYBMpx
+	j+v21Kk/TqJcCkpNjlt2YY3iJt09ppXWEk2q/zyw2CghVPjhInteD9P3rkimskvR
+	Fz82yOnjdBwCF9gmzL9oQ==
+X-ME-Sender: <xms:_aIMZuvkHG5RUdCS7Oa0Iql6Q1151tpFSwik7XF7shLPXUU9lH06GA>
+    <xme:_aIMZje2kvJ34HJ5tObB4D7N1lRFL1PiOplDgg-4nKJtI_E3nUSPBwNpW7pZHR1YZ
+    jU6Jmn8JSUZ88kT22w>
+X-ME-Received: <xmr:_aIMZpxXQbwgf4EI1BozZ7_-OOtlalf7I4RI0LkUfJUgFj2VEl85hS6Ua0DT>
 X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrudeffedgfeegucetufdoteggodetrfdotf
     fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucenucfjughrpefhvfevufffkffojghfgggtgfesth
-    ekredtredtjeenucfhrhhomhepfdfnuhhkvgcuffdrucflohhnvghsfdcuoehluhhkvges
-    lhhjohhnvghsrdguvghvqeenucggtffrrghtthgvrhhnpeduudetudehiedvvdevveelhf
-    egkeefffdvfeetuefgveefgffgffeiffeitdelieenucevlhhushhtvghrufhiiigvpeef
-    necurfgrrhgrmhepmhgrihhlfhhrohhmpehluhhkvgeslhhjohhnvghsrdguvghv
-X-ME-Proxy: <xmx:-qIMZgQprxLGSa5xF5pdADSpw7mjxAC4KtV7tAwJseTLjlnG8bEtAQ>
-    <xmx:-qIMZgzTYdeDT5H-epb9F4tj9zeDOfGOHMN6W6rzFKE9_DfHOVyv8A>
-    <xmx:-qIMZm5AOhCGOPcp7KDNqv-j6y2OuJvyU3FqVhuSvxaqkl_dz_hfiw>
-    <xmx:-qIMZlzUtXqavsEFSPjWX6E5B7c5q6A2zH6QT3rKQ86tVaQo8E2K7Q>
-    <xmx:-6IMZnkR52IoHV6UNlldh7e2zeDAGgo-CI36X4MAy7mNY1LLFy3UYZ6Y>
+    uceurghilhhouhhtmecufedttdenucenucfjughrpefhvfevufffkffojghfggfgsedtke
+    ertdertddtnecuhfhrohhmpedfnfhukhgvucffrdculfhonhgvshdfuceolhhukhgvsehl
+    jhhonhgvshdruggvvheqnecuggftrfgrthhtvghrnhepgfetfedugfetudeuheetjefhue
+    fggfelleetvdevtefhueeujeefvdegleevhefgnecuvehluhhsthgvrhfuihiivgeptden
+    ucfrrghrrghmpehmrghilhhfrhhomheplhhukhgvsehljhhonhgvshdruggvvh
+X-ME-Proxy: <xmx:_aIMZpPhOy3bAj_DetZNtuL64eh3zbVnAS7tuOWFmSMBA20-P5Znrg>
+    <xmx:_aIMZu_h8LhMmNGtdAv4Yk6W50aRKqMHWTGWKe2GBoyV4qOJvYWTwg>
+    <xmx:_aIMZhWJxzSTCj9y_9TAYYeNrZFXHYnAE0iSN6TJtfZAH-D_K7rPow>
+    <xmx:_aIMZnfNF8YdulwB1vSxn3_rhjryXkzHFQ_LvacOSQA5XLp37ipldw>
+    <xmx:_aIMZuxaCbUdpwJMmK_Ftd5xkU_jJa9_eJYm68oI5aYE9frpB1VBQlKq>
 Feedback-ID: i5ec1447f:Fastmail
 Received: by mail.messagingengine.com (Postfix) with ESMTPA; Tue,
- 2 Apr 2024 20:29:44 -0400 (EDT)
+ 2 Apr 2024 20:29:47 -0400 (EDT)
 From: "Luke D. Jones" <luke@ljones.dev>
 To: hdegoede@redhat.com
 Cc: corentin.chary@gmail.com,
@@ -86,9 +86,9 @@ Cc: corentin.chary@gmail.com,
 	platform-driver-x86@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
 	"Luke D. Jones" <luke@ljones.dev>
-Subject: [PATCH v3 7/9] platform/x86: asus-wmi: ROG Ally increase wait time, allow MCU powersave
-Date: Wed,  3 Apr 2024 13:29:15 +1300
-Message-ID: <20240403002917.2870959-8-luke@ljones.dev>
+Subject: [PATCH v3 8/9] platform/x86: asus-wmi: Add support for MCU powersave
+Date: Wed,  3 Apr 2024 13:29:16 +1300
+Message-ID: <20240403002917.2870959-9-luke@ljones.dev>
 X-Mailer: git-send-email 2.44.0
 In-Reply-To: <20240403002917.2870959-1-luke@ljones.dev>
 References: <20240403002917.2870959-1-luke@ljones.dev>
@@ -98,70 +98,110 @@ List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 
-The previous work to allow the MCU to be resumed correctly after sleep
-and resume tried to take the shortest possible time. However as work
-continues in various other parts of the s2idle subsystems it has shown
-that it wasn't entirely reliable.
+Add support for an MCU powersave WMI call. This is intended to set the
+MCU in to a low-power mode when sleeping. This mode can cut sleep power
+use by around half.
 
-If the MCU disable/enable call is done correctly the MCU fully removes
-its USB endpoints, and this shows as a full USB device reconnection on
-resume. When we tried to short this as much as possible sometimes the
-MCU doesn't get to complete what it needs to do before going to low-power
-and this affected the reconnection.
-
-Through trial it is found that the minimum time required is approx 1200ms
-to allow a proper disconnect and disable, and the same amount of time on
-resume is required to prevent a rapid disconnect/reconnect happening on
-seemingly random occasions. To be safe the time is now 1500ms for msleep.
-
-Reviewed-by: Ilpo Järvinen <ilpo.jarvinen@linux.intel.com>
 Signed-off-by: Luke D. Jones <luke@ljones.dev>
 ---
- drivers/platform/x86/asus-wmi.c | 12 ++----------
- 1 file changed, 2 insertions(+), 10 deletions(-)
+ .../ABI/testing/sysfs-platform-asus-wmi       |  9 ++++
+ drivers/platform/x86/asus-wmi.c               | 50 +++++++++++++++++++
+ 2 files changed, 59 insertions(+)
 
+diff --git a/Documentation/ABI/testing/sysfs-platform-asus-wmi b/Documentation/ABI/testing/sysfs-platform-asus-wmi
+index 72933527d2e4..28144371a0f1 100644
+--- a/Documentation/ABI/testing/sysfs-platform-asus-wmi
++++ b/Documentation/ABI/testing/sysfs-platform-asus-wmi
+@@ -203,3 +203,12 @@ Description:
+ 		Set if the BIOS POST sound is played on boot.
+ 			* 0 - False,
+ 			* 1 - True
++
++What:		/sys/devices/platform/<platform>/mcu_powersave
++Date:		Apr 2024
++KernelVersion:	6.10
++Contact:	"Luke Jones" <luke@ljones.dev>
++Description:
++		Set if the MCU can go in to low-power mode on system sleep
++			* 0 - False,
++			* 1 - True
 diff --git a/drivers/platform/x86/asus-wmi.c b/drivers/platform/x86/asus-wmi.c
-index aad4f94cfdba..7867178a9121 100644
+index 7867178a9121..bf36ac11ad02 100644
 --- a/drivers/platform/x86/asus-wmi.c
 +++ b/drivers/platform/x86/asus-wmi.c
-@@ -140,7 +140,7 @@ module_param(fnlock_default, bool, 0444);
- /* Controls the power state of the USB0 hub on ROG Ally which input is on */
- #define ASUS_USB0_PWR_EC0_CSEE "\\_SB.PCI0.SBRG.EC0.CSEE"
- /* 300ms so far seems to produce a reliable result on AC and battery */
--#define ASUS_USB0_PWR_EC0_CSEE_WAIT 300
-+#define ASUS_USB0_PWR_EC0_CSEE_WAIT 1500
+@@ -1303,6 +1303,53 @@ static ssize_t nv_temp_target_show(struct device *dev,
+ }
+ static DEVICE_ATTR_RW(nv_temp_target);
  
- static const char * const ashs_ids[] = { "ATK4001", "ATK4002", NULL };
++/* Ally MCU Powersave ********************************************************/
++static ssize_t mcu_powersave_show(struct device *dev,
++				   struct device_attribute *attr, char *buf)
++{
++	struct asus_wmi *asus = dev_get_drvdata(dev);
++	int result;
++
++	result = asus_wmi_get_devstate_simple(asus, ASUS_WMI_DEVID_MCU_POWERSAVE);
++	if (result < 0)
++		return result;
++
++	return sysfs_emit(buf, "%d\n", result);
++}
++
++static ssize_t mcu_powersave_store(struct device *dev,
++				    struct device_attribute *attr,
++				    const char *buf, size_t count)
++{
++	int result, err;
++	u32 enable;
++
++	struct asus_wmi *asus = dev_get_drvdata(dev);
++
++	result = kstrtou32(buf, 10, &enable);
++	if (result)
++		return result;
++
++	if (enable > 1)
++		return -EINVAL;
++
++	err = asus_wmi_set_devstate(ASUS_WMI_DEVID_MCU_POWERSAVE, enable, &result);
++	if (err) {
++		pr_warn("Failed to set MCU powersave: %d\n", err);
++		return err;
++	}
++
++	if (result > 1) {
++		pr_warn("Failed to set MCU powersave (result): 0x%x\n", result);
++		return -EIO;
++	}
++
++	sysfs_notify(&asus->platform_device->dev.kobj, NULL, "mcu_powersave");
++
++	return count;
++}
++static DEVICE_ATTR_RW(mcu_powersave);
++
+ /* Battery ********************************************************************/
  
-@@ -4827,6 +4827,7 @@ static int asus_hotk_resume_early(struct device *device)
- 	struct asus_wmi *asus = dev_get_drvdata(device);
- 
- 	if (asus->ally_mcu_usb_switch) {
-+		/* sleep required to prevent USB0 being yanked then reappearing rapidly */
- 		if (ACPI_FAILURE(acpi_execute_simple_method(NULL, ASUS_USB0_PWR_EC0_CSEE, 0xB8)))
- 			dev_err(device, "ROG Ally MCU failed to connect USB dev\n");
- 		else
-@@ -4838,17 +4839,8 @@ static int asus_hotk_resume_early(struct device *device)
- static int asus_hotk_prepare(struct device *device)
- {
- 	struct asus_wmi *asus = dev_get_drvdata(device);
--	int result, err;
- 
- 	if (asus->ally_mcu_usb_switch) {
--		/* When powersave is enabled it causes many issues with resume of USB hub */
--		result = asus_wmi_get_devstate_simple(asus, ASUS_WMI_DEVID_MCU_POWERSAVE);
--		if (result == 1) {
--			dev_warn(device, "MCU powersave enabled, disabling to prevent resume issues");
--			err = asus_wmi_set_devstate(ASUS_WMI_DEVID_MCU_POWERSAVE, 0, &result);
--			if (err || result != 1)
--				dev_err(device, "Failed to set MCU powersave mode: %d\n", err);
--		}
- 		/* sleep required to ensure USB0 is disabled before sleep continues */
- 		if (ACPI_FAILURE(acpi_execute_simple_method(NULL, ASUS_USB0_PWR_EC0_CSEE, 0xB7)))
- 			dev_err(device, "ROG Ally MCU failed to disconnect USB dev\n");
+ /* The battery maximum charging percentage */
+@@ -4315,6 +4362,7 @@ static struct attribute *platform_attributes[] = {
+ 	&dev_attr_ppt_platform_sppt.attr,
+ 	&dev_attr_nv_dynamic_boost.attr,
+ 	&dev_attr_nv_temp_target.attr,
++	&dev_attr_mcu_powersave.attr,
+ 	&dev_attr_boot_sound.attr,
+ 	&dev_attr_panel_od.attr,
+ 	&dev_attr_mini_led_mode.attr,
+@@ -4368,6 +4416,8 @@ static umode_t asus_sysfs_is_visible(struct kobject *kobj,
+ 		devid = ASUS_WMI_DEVID_NV_DYN_BOOST;
+ 	else if (attr == &dev_attr_nv_temp_target.attr)
+ 		devid = ASUS_WMI_DEVID_NV_THERM_TARGET;
++	else if (attr == &dev_attr_mcu_powersave.attr)
++		devid = ASUS_WMI_DEVID_MCU_POWERSAVE;
+ 	else if (attr == &dev_attr_boot_sound.attr)
+ 		devid = ASUS_WMI_DEVID_BOOT_SOUND;
+ 	else if (attr == &dev_attr_panel_od.attr)
 -- 
 2.44.0
 
