@@ -1,146 +1,104 @@
-Return-Path: <linux-kernel+bounces-130427-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-130423-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3C0EC8977E5
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 20:12:34 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id C6A708977DD
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 20:11:28 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EAB06281E17
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 18:12:32 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7B4BF1F2193C
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 18:11:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6484615382F;
-	Wed,  3 Apr 2024 18:12:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 425CC153511;
+	Wed,  3 Apr 2024 18:11:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=rjwysocki.net header.i=@rjwysocki.net header.b="cArjfyC4"
-Received: from cloudserver094114.home.pl (cloudserver094114.home.pl [79.96.170.134])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="uuW9hdd6"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 947AB1534E6;
-	Wed,  3 Apr 2024 18:12:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=79.96.170.134
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8357D17C98;
+	Wed,  3 Apr 2024 18:11:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712167933; cv=none; b=KQ+6qTjVgkiZcCZN2Cdm0zfuGCIhGHWZ70rRN6gvULefsKD0K2//b+ueDMWhP6mpwnOU6G4HWSH4DUxIhMArb+k06p8l+QzVCnW6q36VCUkiHfF5C8dAKmpT9zaij7Wz/GdbeoN8LmB+yfy2Hu4m/t2bfsBARyOvA9XwlZY4RxU=
+	t=1712167879; cv=none; b=YHJRtbiSvu5BYdBuJkavFl2cZB5Cp27gNbWFMTQ+73E+JY8TlcR1lN5QOd9tL9WAsBytPAxvszo11dGyuoChhNi0wjw+4WLOEiv4UOVuh6WF4o4WiDL+ssaOyDNOWK9lWErxcu4a8WK5PWdmVUkkcIgJsr1gwj8IiXiq1R71Afg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712167933; c=relaxed/simple;
-	bh=qGMeKA42r0NipAvaOzYcoKIIUuiGOzHMBG4lHVRRTO4=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=OY6RxDVVoqaUt/XXQ/MYYQRYF8BmFhNdWTL5bGytin9deuKIaG65GW4/ZX8q6tFaRFb/7MeXtZXmWU2aQnnk6PlwPlFCFCYRXGTVj7qOyF3zyEplxWqFOKGMoQn8aMcmwA1luChX8RrMOY5+TDX/tpPLMpValscvZDgWBhsoTg8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rjwysocki.net; spf=pass smtp.mailfrom=rjwysocki.net; dkim=pass (2048-bit key) header.d=rjwysocki.net header.i=@rjwysocki.net header.b=cArjfyC4; arc=none smtp.client-ip=79.96.170.134
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rjwysocki.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rjwysocki.net
-Received: from localhost (127.0.0.1) (HELO v370.home.net.pl)
- by /usr/run/smtp (/usr/run/postfix/private/idea_relay_lmtp) via UNIX with SMTP (IdeaSmtpServer 6.0.0)
- id 170218018de553b5; Wed, 3 Apr 2024 20:12:08 +0200
-Received: from kreacher.localnet (unknown [195.136.19.94])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by cloudserver094114.home.pl (Postfix) with ESMTPSA id 1116E662F36;
-	Wed,  3 Apr 2024 20:12:08 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=rjwysocki.net;
-	s=dkim; t=1712167928;
-	bh=qGMeKA42r0NipAvaOzYcoKIIUuiGOzHMBG4lHVRRTO4=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References;
-	b=cArjfyC4p1Hp7lYMOPDDhzdiJ9aRbpvRjafjZzB5FL40/2m6Uj0vYS4TAam6cd8Ls
-	 Af2+o60s6d6xd8qUDjeTAX+cmE84OtyC9fOAj5ko3c7O7leBo1aQnpjEgpl3YuFv56
-	 5vsPyuK+Tl3a3lFfVcYGmgjBEs6V+ecEeqiS35hym+uaq8m7Wb7ao0KwtuXL25mIsY
-	 pxII73qxJjTWPihE32WeF5xtAdgU7qhWO8+aqbudh3dK1HJRpz6oPsK3z0Qf8ehy+h
-	 cSWxXsuw2yp51G1Y2Ph/MH/F7D64dUn1J8PRrom45y0IhGXJT7BV69uQvKOcuW5mVB
-	 QNXDOJVAltLbQ==
-From: "Rafael J. Wysocki" <rjw@rjwysocki.net>
-To: Linux PM <linux-pm@vger.kernel.org>
-Cc: LKML <linux-kernel@vger.kernel.org>, Lukasz Luba <lukasz.luba@arm.com>,
- Daniel Lezcano <daniel.lezcano@linaro.org>
-Subject: [PATCH v1 1/2] thermal: gov_step_wise: Simplify get_target_state()
-Date: Wed, 03 Apr 2024 20:11:10 +0200
-Message-ID: <4907519.31r3eYUQgx@kreacher>
-In-Reply-To: <5766468.DvuYhMxLoT@kreacher>
-References: <5766468.DvuYhMxLoT@kreacher>
+	s=arc-20240116; t=1712167879; c=relaxed/simple;
+	bh=cW+1HWqnie4/n+kUXN9FoZATD7nr4nMkde58cSOxrkI=;
+	h=Date:From:To:cc:Subject:In-Reply-To:Message-ID:References:
+	 MIME-Version:Content-Type; b=KcniAXPOMVC4Fh+AJqNlWeCmJTdEM5epKqieE2S8ssd/jbxdxSYyI+TwcHAUw+RbuY+CGv6thl8cy+d8fV5d8K5k5ZPXg6h8CJ24AigQ6EEHBwls8GtEdzvYdfBASDAhoOJtdv2+yOTVSjRXEfVCRTEAW0h2VrXX1LzLEoyk6R4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=uuW9hdd6; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B3577C433F1;
+	Wed,  3 Apr 2024 18:11:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1712167879;
+	bh=cW+1HWqnie4/n+kUXN9FoZATD7nr4nMkde58cSOxrkI=;
+	h=Date:From:To:cc:Subject:In-Reply-To:References:From;
+	b=uuW9hdd6u7gpsFeThusi2JMFwN4+vxAt8XFb16nGKo1Nyp69VaGyDfoRackM4inlO
+	 DBbu+JCgKCrTS04jzUXkHojCJaPNT4745zjnw/9eufqgpzb3rSQCAXLtixJqqoZy9O
+	 Uw8cOCBMggl59tJfeIDd3UIJcvvUBu4biuFsJ/pLV7LOS25ChF16cTFs9RI0L0gRxx
+	 xBM0mMMTO5zwJBw5ZfaQMwPyS6xporcdMR6tgKxDPj+D60KIHf33qOuV+WVYQKP0Vh
+	 K848vaDgwX6lECAjkc8Yn7RHF0xyF9SkQUoZRCLGHPcQUqorhqZ5/kjvTeZBvnV5gA
+	 NuImwKmbCpmCg==
+Date: Wed, 3 Apr 2024 20:11:16 +0200 (CEST)
+From: Jiri Kosina <jikos@kernel.org>
+To: Max Staudt <max@enpas.org>
+cc: Roderick Colenbrander <roderick.colenbrander@sony.com>, 
+    Benjamin Tissoires <benjamin.tissoires@redhat.com>, 
+    linux-input@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 0/5] HID: playstation: DS4: LED bugfix, third-party
+ gamepad support
+In-Reply-To: <nycvar.YFH.7.76.2402271740260.21798@cbobk.fhfr.pm>
+Message-ID: <nycvar.YFH.7.76.2404032010320.5680@cbobk.fhfr.pm>
+References: <20240207163647.15792-1-max@enpas.org> <nycvar.YFH.7.76.2402271740260.21798@cbobk.fhfr.pm>
+User-Agent: Alpine 2.21 (LSU 202 2017-01-01)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="UTF-8"
-X-CLIENT-IP: 195.136.19.94
-X-CLIENT-HOSTNAME: 195.136.19.94
-X-VADE-SPAMSTATE: clean
-X-VADE-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedvledrudefiedgjeekucetufdoteggodetrfdotffvucfrrhhofhhilhgvmecujffqoffgrffnpdggtffipffknecuuegrihhlohhuthemucduhedtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjughrpefhvfevufffkfgjfhgggfgtsehtufertddttdejnecuhfhrohhmpedftfgrfhgrvghlucflrdcuhgihshhotghkihdfuceorhhjfiesrhhjfiihshhotghkihdrnhgvtheqnecuggftrfgrthhtvghrnhepvdffueeitdfgvddtudegueejtdffteetgeefkeffvdeftddttdeuhfegfedvjefhnecukfhppeduleehrddufeeirdduledrleegnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehinhgvthepudelhedrudefiedrudelrdelgedphhgvlhhopehkrhgvrggthhgvrhdrlhhotggrlhhnvghtpdhmrghilhhfrhhomhepfdftrghfrggvlhculfdrucghhihsohgtkhhifdcuoehrjhifsehrjhifhihsohgtkhhirdhnvghtqedpnhgspghrtghpthhtohepgedprhgtphhtthhopehlihhnuhigqdhpmhesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehlihhnuhigqdhkvghrnhgvlhesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehluhhkrghsiidrlhhusggrsegrrhhmrdgtohhmpdhrtghpthhtohepuggrnhhivghlrdhlvgiitggrnhhosehlihhnrghrohdrohhrgh
-X-DCC--Metrics: v370.home.net.pl 1024; Body=4 Fuz1=4 Fuz2=4
+Content-Type: text/plain; charset=US-ASCII
 
-From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+On Tue, 27 Feb 2024, Jiri Kosina wrote:
 
-The step-wise governor's get_target_state() function contains redundant
-braces, redundant parens and a redundant next_target local variable, so
-get rid of all that stuff.
+> > Dear hid-playstation maintainers,
+> > 
+> > Here is v2 of my patch series, with the discussed changes.
+> > 
+> > 
+> > Differences since v1:
+> >  - Dropped patch for 7545:0104 (SZ-MYPOWER controllers)
+> >  - Dropped patch for DS4 clones without a MAC address on USB
+> >  - Changed hid_err() to hid_warn() where things are no longer fatal
+> >  - Simplified goto as return in minimal report parsing
+> > 
+> > 
+> > I've included the patch to simplify the PID/VID mapping to controller
+> > types, since the previous discussion made it sound useful for future
+> > support of second-party controllers. Please feel free to drop it if you
+> > don't think it's relevant now.
+> > 
+> > 
+> > Thanks for your feedback!
+> > 
+> > Max
+> > 
+> > 
+> > Patches in this series:
+> >   [PATCH v2 1/5] HID: playstation: DS4: Fix LED blinking
+> >   [PATCH v2 2/5] HID: playstation: DS4: Don't fail on FW/HW version
+> >   [PATCH v2 3/5] HID: playstation: DS4: Don't fail on calibration data
+> >   [PATCH v2 4/5] HID: playstation: DS4: Parse minimal report 0x01
+> >   [PATCH v2 5/5] HID: playstation: Simplify device type ID
+> 
+> Roderick, any word on this series please?
 
-No intentional functional impact.
+Roderick, please speak up now, or I'll queue this as-is for 6.10 in the 
+coming few days. Thanks,
 
-Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
----
- drivers/thermal/gov_step_wise.c |   27 ++++++++++-----------------
- 1 file changed, 10 insertions(+), 17 deletions(-)
-
-Index: linux-pm/drivers/thermal/gov_step_wise.c
-===================================================================
---- linux-pm.orig/drivers/thermal/gov_step_wise.c
-+++ linux-pm/drivers/thermal/gov_step_wise.c
-@@ -32,7 +32,6 @@ static unsigned long get_target_state(st
- {
- 	struct thermal_cooling_device *cdev = instance->cdev;
- 	unsigned long cur_state;
--	unsigned long next_target;
- 
- 	/*
- 	 * We keep this instance the way it is by default.
-@@ -40,32 +39,26 @@ static unsigned long get_target_state(st
- 	 * cdev in use to determine the next_target.
- 	 */
- 	cdev->ops->get_cur_state(cdev, &cur_state);
--	next_target = instance->target;
- 	dev_dbg(&cdev->device, "cur_state=%ld\n", cur_state);
- 
- 	if (!instance->initialized) {
--		if (throttle) {
--			next_target = clamp((cur_state + 1), instance->lower, instance->upper);
--		} else {
--			next_target = THERMAL_NO_TARGET;
--		}
-+		if (throttle)
-+			return clamp(cur_state + 1, instance->lower, instance->upper);
- 
--		return next_target;
-+		return THERMAL_NO_TARGET;
- 	}
- 
- 	if (throttle) {
- 		if (trend == THERMAL_TREND_RAISING)
--			next_target = clamp((cur_state + 1), instance->lower, instance->upper);
--	} else {
--		if (trend == THERMAL_TREND_DROPPING) {
--			if (cur_state <= instance->lower)
--				next_target = THERMAL_NO_TARGET;
--			else
--				next_target = clamp((cur_state - 1), instance->lower, instance->upper);
--		}
-+			return clamp(cur_state + 1, instance->lower, instance->upper);
-+	} else if (trend == THERMAL_TREND_DROPPING) {
-+		if (cur_state <= instance->lower)
-+			return THERMAL_NO_TARGET;
-+
-+		return clamp(cur_state - 1, instance->lower, instance->upper);
- 	}
- 
--	return next_target;
-+	return instance->target;
- }
- 
- static void thermal_zone_trip_update(struct thermal_zone_device *tz,
-
-
+-- 
+Jiri Kosina
+SUSE Labs
 
 
