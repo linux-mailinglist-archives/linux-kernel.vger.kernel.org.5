@@ -1,64 +1,87 @@
-Return-Path: <linux-kernel+bounces-130040-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-130036-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 13D9B897371
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 17:08:29 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2C78389736B
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 17:07:30 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 341E7B2D344
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 15:08:23 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D008A28F5D6
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 15:07:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D9E6714A4E9;
-	Wed,  3 Apr 2024 15:07:10 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F1C4B149E0A
-	for <linux-kernel@vger.kernel.org>; Wed,  3 Apr 2024 15:07:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9267014A0A3;
+	Wed,  3 Apr 2024 15:06:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="WY+HT+6C"
+Received: from mail-ej1-f42.google.com (mail-ej1-f42.google.com [209.85.218.42])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 44C47149DE3;
+	Wed,  3 Apr 2024 15:06:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712156830; cv=none; b=CXR+3PhdlcY904SSaygKOrhTCAoBj3Rli4KBNvuGfowZYoKvhqrche0S/aNJWE3Uzx72FEvmJtIHtmSI0FGQJGLM//GDi6ixkKTDNBMYZ8Y3hlRAOGbimsHkgmTClpgXufYoF6S46NngErqL0DdUNAOdEbZLeJfYOT+u4RS2s5I=
+	t=1712156804; cv=none; b=BOZbiWzrfoZx5De7FfUGEtxO64UL+d6HABp17bwGBR12tnHaRaHBNG5Tsvp4gknIGBOvdzjYN4Jf1QKW5F+IW+WObbQcLAX9lgt4fdyJaMwxXRfkwcrLEzCkQhWsaOkgBT+Lx5sLGNLTU4t2kpO/Qgo0X1iEXDFbmEqfFqxSHI8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712156830; c=relaxed/simple;
-	bh=W3JT2si9ImtOXLQWk2Xzg1pUyMSMDml9LjW4wwC97aw=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=nTuC6jyOIJGZpP8M5Wz/FMYBMkdP6qOYBp4Dm3YCfXdQ5BpPazQk/WvuEpL9fb0WETRSJsIfQ+0EF3JS5OI5oP/DTPmReVXJQUFeJGiMI9sFeFC2F8O2X4K3qi6ubv2Q4zFH/GQxcnHX1kygtJMPJHszU//Uply/DpvryLfwPUc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id AF09F1691;
-	Wed,  3 Apr 2024 08:07:39 -0700 (PDT)
-Received: from e126645.arm.com (unknown [10.57.74.15])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 4DFCF3F7B4;
-	Wed,  3 Apr 2024 08:07:04 -0700 (PDT)
-From: Pierre Gondois <pierre.gondois@arm.com>
-To: linux-kernel@vger.kernel.org
-Cc: Aaron Lu <aaron.lu@intel.com>,
-	Rui Zhang <rui.zhang@intel.com>,
-	Pierre Gondois <pierre.gondois@arm.com>,
-	Anna-Maria Behnsen <anna-maria@linutronix.de>,
-	Frederic Weisbecker <frederic@kernel.org>,
-	Ingo Molnar <mingo@kernel.org>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Juri Lelli <juri.lelli@redhat.com>,
-	Vincent Guittot <vincent.guittot@linaro.org>,
-	Dietmar Eggemann <dietmar.eggemann@arm.com>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Ben Segall <bsegall@google.com>,
-	Mel Gorman <mgorman@suse.de>,
-	Daniel Bristot de Oliveira <bristot@redhat.com>,
-	Valentin Schneider <vschneid@redhat.com>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Waiman Long <longman@redhat.com>,
-	Tejun Heo <tj@kernel.org>
-Subject: [PATCH 7/7] sched/fair: Clear idle_cpus_mask for CPUs with NULL sd
-Date: Wed,  3 Apr 2024 17:05:39 +0200
-Message-Id: <20240403150543.2793354-8-pierre.gondois@arm.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20240403150543.2793354-1-pierre.gondois@arm.com>
-References: <20240403150543.2793354-1-pierre.gondois@arm.com>
+	s=arc-20240116; t=1712156804; c=relaxed/simple;
+	bh=vKEnA46LNIYBD/r4zg6POqJ9fE49+HQ7ou3GmwNLpXk=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=n+krWyJ4MLN70L1kPhh2GWu7t6Kmj70MnZeeNqq7ZztnT5M/E39H851nbrMHPv45PU6t//EXv+vMnFN2c4CfnwFIeZNolQzE966eEmZKiBesUOuwsJtdlcWJ0ONUEsgvN2V54IQLGALRQfYjzF8CwnmSFXGWBq+GkZPK9+EMzmw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=WY+HT+6C; arc=none smtp.client-ip=209.85.218.42
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ej1-f42.google.com with SMTP id a640c23a62f3a-a4a393b699fso183918166b.0;
+        Wed, 03 Apr 2024 08:06:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1712156802; x=1712761602; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=nxHB0J6rX43HE9ciPEpBOcvr3yTZZIhFw+viwUxDb3A=;
+        b=WY+HT+6CqL3On0pQN+9jvcK1JVCUU23L2U0l+YNC7tyH0gNxUxannWRHIMX3S6ES+6
+         aaYZlhiDtvy+BSX7wRd9PlppwhBZHHBJAvgRonuhboiltaCel9Je6Ou/FRDFQSsEDFxe
+         QP7E7ZIuXxDN5MOm3dKZuTEFNNR8nmK3lkZofhXOOtBsDL75j2K5qMcjcyY9MD6TKAAL
+         bawy1HvG/CCizziKLT6ccekRE9mDJvBQJurEGQyyhJ4l9KU7kLjcGQLCB2c7WwJw8B0/
+         Kb7UGu3UP7FhJZEFzFXZOfLCvzDZuRY/6Rn9a2ViUZJx96GYmhxuJNf4Ql0UhKmubhyZ
+         aHHg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712156802; x=1712761602;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=nxHB0J6rX43HE9ciPEpBOcvr3yTZZIhFw+viwUxDb3A=;
+        b=BWa6Lbxm4TyUU1q1HL01GQJv9NFmtQBzs04d/chJQFtKoe6i2n3E4Xrt2UwvmjGpqc
+         wSLTQDOWAj/izZySJXbPd/a1MzAeUjcF3nQz9D1U8mZZoVIdZ8LW0qW/VnFpIn9CVS6P
+         Nz+k38dlf9rxsOkdd2dZWUeDOaVKOoptMzy+hy89GfsaM5Rltf7jSPy0R1zUQBkbjuv5
+         XYdCqmzMfNAnRvDo0Zw6KAcJzr012pkH5sh0l4K3H6xyax3C7qz/fofh5qEuRgmPE6Fu
+         BtB6wclDHcdgViFiPbKFRSeKjiMTBAc2bw0ofxULgQG/M7Dpu5P6njMJbJIjl4mwPZ1r
+         /AGw==
+X-Forwarded-Encrypted: i=1; AJvYcCVgcV0DiIYvzVq6qfxRvoNFNMIkd2wfa/rn+fb0kX2OE8tXmY73JjvmEjULIteda/TF3PtCBp6To3jjFb2XIaFe9wxTIXkdNdyjzjTb+s6nZaLkV85zxSiFkhYYgRQcJNrLtpk7umHwd20=
+X-Gm-Message-State: AOJu0YzSJ3EdtkLj24Y+bwXUo+i360JKSSICmDCVW/1qKDZbSVjK4+Ey
+	KtAKqw2MZByojSZj018DHUI3SbgH+7OJvYhwFLWcBgbBfLfbjSaN
+X-Google-Smtp-Source: AGHT+IG9kkRVouRP74AFp5q4dKHNdH85++1zsaBEZPIU2xrFn0qWTXZYX0aSlfvqFfWjTGc8nJd1rA==
+X-Received: by 2002:a17:906:d0c3:b0:a4e:539d:217f with SMTP id bq3-20020a170906d0c300b00a4e539d217fmr2510913ejb.33.1712156801375;
+        Wed, 03 Apr 2024 08:06:41 -0700 (PDT)
+Received: from localhost.localdomain ([84.32.202.14])
+        by smtp.gmail.com with ESMTPSA id h8-20020a1709060f4800b00a46d049ff63sm7744886ejj.21.2024.04.03.08.06.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 03 Apr 2024 08:06:40 -0700 (PDT)
+From: Yaroslav Furman <yaro330@gmail.com>
+X-Google-Original-From: Yaroslav Furman <Yaroslav.Furman@softeq.com>
+To: Jiri Kosina <jikos@kernel.org>,
+	Benjamin Tissoires <benjamin.tissoires@redhat.com>
+Cc: Lucas Zampieri <lzampier@redhat.com>,
+	Hans de Goede <hdegoede@redhat.com>,
+	Yaraslau Furman <yaro330@gmail.com>,
+	=?UTF-8?q?Filipe=20La=C3=ADns?= <lains@riseup.net>,
+	linux-input@vger.kernel.org (open list:HID LOGITECH DRIVERS),
+	linux-kernel@vger.kernel.org (open list)
+Subject: [PATCH v2] HID: logitech-dj: allow mice to report multimedia keycodes
+Date: Wed,  3 Apr 2024 18:06:37 +0300
+Message-ID: <20240403150638.18749-1-Yaroslav.Furman@softeq.com>
+X-Mailer: git-send-email 2.44.0
+In-Reply-To: <7e34dc43-b70b-4a50-86fd-f021f2de4845@redhat.com>
+References: <7e34dc43-b70b-4a50-86fd-f021f2de4845@redhat.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -67,78 +90,34 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-As reported in [1], an isolated CPU keeps the values of:
-- rq->nohz_tick_stopped
-- nohz.idle_cpus_mask
-- nohz.nr_cpus
-when a NULL sd is attached to the CPU. Clear the values.
+From: Yaraslau Furman <yaro330@gmail.com>
 
-[1] https://lore.kernel.org/all/20230804090858.7605-1-rui.zhang@intel.com/
+So, I think this should work fine for now, but IMO we should see if it's
+possible to allow the driver to receive all events that a keyboard can send,
+since Windows application can assign pretty much any keycode to any mouse
+button (perhaps not the main ones though), and then we might see the same situation again.
 
-Signed-off-by: Pierre Gondois <pierre.gondois@arm.com>
+I tried doing that on my system but the driver stopped working completely.
 ---
- include/linux/sched/nohz.h |  2 ++
- kernel/sched/fair.c        | 11 +++++++++++
- kernel/sched/topology.c    |  6 ++++--
- 3 files changed, 17 insertions(+), 2 deletions(-)
+ drivers/hid/hid-logitech-dj.c | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
 
-diff --git a/include/linux/sched/nohz.h b/include/linux/sched/nohz.h
-index 6d67e9a5af6b..18e620715c9d 100644
---- a/include/linux/sched/nohz.h
-+++ b/include/linux/sched/nohz.h
-@@ -9,8 +9,10 @@
- #if defined(CONFIG_SMP) && defined(CONFIG_NO_HZ_COMMON)
- extern void nohz_balance_enter_idle(int cpu);
- extern int get_nohz_timer_target(void);
-+extern void nohz_clear_state(int cpu);
- #else
- static inline void nohz_balance_enter_idle(int cpu) { }
-+static void nohz_clear_state(int cpu) { }
- #endif
- 
- #ifdef CONFIG_NO_HZ_COMMON
-diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-index 9657c8f2176b..6786d4d78e41 100644
---- a/kernel/sched/fair.c
-+++ b/kernel/sched/fair.c
-@@ -12014,6 +12014,17 @@ static void nohz_balancer_kick(struct rq *rq)
- 		kick_ilb(flags);
+diff --git a/drivers/hid/hid-logitech-dj.c b/drivers/hid/hid-logitech-dj.c
+index e6a8b6d8eab7..3c3c497b6b91 100644
+--- a/drivers/hid/hid-logitech-dj.c
++++ b/drivers/hid/hid-logitech-dj.c
+@@ -965,9 +965,7 @@ static void logi_hidpp_dev_conn_notif_equad(struct hid_device *hdev,
+ 		}
+ 		break;
+ 	case REPORT_TYPE_MOUSE:
+-		workitem->reports_supported |= STD_MOUSE | HIDPP;
+-		if (djrcv_dev->type == recvr_type_mouse_only)
+-			workitem->reports_supported |= MULTIMEDIA;
++		workitem->reports_supported |= STD_MOUSE | HIDPP | MULTIMEDIA;
+ 		break;
+ 	}
  }
- 
-+void nohz_clear_state(int cpu)
-+{
-+	struct rq *rq = cpu_rq(cpu);
-+
-+	if (rq->nohz_tick_stopped) {
-+		rq->nohz_tick_stopped = 0;
-+		cpumask_clear_cpu(cpu, nohz.idle_cpus_mask);
-+		atomic_dec(&nohz.nr_cpus);
-+	}
-+}
-+
- static void set_cpu_sd_state_busy(int cpu)
- {
- 	struct sched_domain *sd;
-diff --git a/kernel/sched/topology.c b/kernel/sched/topology.c
-index b4fc212ccfb0..e8e40b7d964b 100644
---- a/kernel/sched/topology.c
-+++ b/kernel/sched/topology.c
-@@ -775,10 +775,12 @@ cpu_attach_domain(struct sched_domain *sd, struct root_domain *rd, int cpu)
- 
- 	sched_domain_debug(sd, cpu);
- 
--	if (sd)
-+	if (sd) {
- 		housekeeping_runtime_set_cpu(cpu, HKR_TYPE_SCHED);
--	else
-+	} else {
- 		housekeeping_runtime_clear_cpu(cpu, HKR_TYPE_SCHED);
-+		nohz_clear_state(cpu);
-+	}
- 
- 	rq_attach_root(rq, rd);
- 	tmp = rq->sd;
 -- 
-2.25.1
+2.44.0
 
 
