@@ -1,47 +1,47 @@
-Return-Path: <linux-kernel+bounces-128910-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-128911-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id E5AD28961CA
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 03:10:50 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7BB268961CC
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 03:10:55 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A0DE8287130
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 01:10:49 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AD5861C22682
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 01:10:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7193A17729;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9C23F17C73;
 	Wed,  3 Apr 2024 01:10:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="e5lvH2Ou"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="BcFDyErx"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9AEDC33E1;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D2746101EE;
 	Wed,  3 Apr 2024 01:10:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712106627; cv=none; b=U/d/+T9qYdWVYO+GhVMEfikIExdw3WN3uqKalaYUBai6490ZCGdAOBlCDXXwgkLJAM8DEuIqJWoTb1np6S684wmzS0f84aLk2YgLm+dHvL+hw1xRFyCW7ns3FlEXGQNszKGHZiOUWpr1vd4BBV/Az7dug0ynn5psNe5o4BwaDOU=
+	t=1712106627; cv=none; b=PFGBsOrfH319zFj34qRUFDmmOpJ5ItWM6aum9Fju0VcRpeLUNXHAaiLAs0x92ch6qTqNqLqmBbQXZOQUlm+nXT1jn7phiFpmYPSzYgF4Jgb0WKCpEnoqXxalmWsN9sFy7HXOjGrp+BC7UgxUUgUcbBvi+zMc84jH2zrm/FQCnlQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1712106627; c=relaxed/simple;
-	bh=dkk2ExlSTHUphfpzLrcP16omhm4msZO9WjRy+h4BTyw=;
+	bh=6R+jUnyz2+y+hPbGs7voORqnWJIakb6nMaNT0Qn4hfw=;
 	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
-	 In-Reply-To:To:Cc; b=g2JaO/JDoTuK2XEQMnssuTHI5242JEGJrKgALj+Ojm94MWagA7sgBYa2uYnRAmbyYaKDEY/jSHNcWBulRmjiwlFDjgvhbcBlcgc/+nlw9Hc+1eL0zdDg0qAfcGNdu+aKxOurOWiEw86+RBn4b+n3qLpEcvpCsi4p1YMco/w+pkI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=e5lvH2Ou; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 39F99C433F1;
+	 In-Reply-To:To:Cc; b=IG7FIr+LTNP+R7JHKaxvPWcRGLNffFsX3Y1ahdJALEszWPXbYmQ53Sl9v02x2fNSlWUEb69LprussqkTX62rBu6u+nOboy68lRTWpTnlHzAcQgExz7W/Vekjw8ldNRlZdDh8Lyqpx/kD0tg2hUOuqrmIK7k8QHip8++fI0Y0WKs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=BcFDyErx; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPS id A7A07C43601;
 	Wed,  3 Apr 2024 01:10:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
 	s=k20201202; t=1712106627;
-	bh=dkk2ExlSTHUphfpzLrcP16omhm4msZO9WjRy+h4BTyw=;
+	bh=6R+jUnyz2+y+hPbGs7voORqnWJIakb6nMaNT0Qn4hfw=;
 	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=e5lvH2Ouf4B45kQyE7fOi3c5jI48EjzS3Glsj6Bi9XgphvZxOdHK/9hO+L7ScqKm2
-	 mxTJXvRUby9tXo753/bDHG1d3Ex1jmnhhzirPj4lWKZ/LnPpACIvxHcRr6wW+A1wdP
-	 MMSe+kNlOc115gnEOMcw5KkRIdnZAi/ORDzR5xlLKkUsOeFL9DgV2pirgvDOgoIc3S
-	 WRecQ040a5A9pvE1dJAgzFMKe4uIfqFtTf6V1D0/d2XD/Gx/8MF5ndZVlVVFYmMy0A
-	 HSD5ikH7OeBbh98SbxNlr9a8eBrO/MZLumYjkMCyrVzjBK/+K1dLr2ga7Ib9hjZs8J
-	 wg8ujMsrjKiPw==
+	b=BcFDyErxgfhqfZMb4Gh4EQxLmxqMwhivRwPgTGflGShrawooxzJOre/dCy+FRExal
+	 3+K33JLJwkcykIP12oGHs4X7108txvRu9UXlBOewZlNa3jWGQL5ebO983wRKAKVVEg
+	 x2QOjXOnkPXODD5+PFRqeG8j3AX+CdC74pJzjfyivuO2f2D5ZEyK/Y4/mzbUzPMBn/
+	 gyIiZMGXp7SvlpcNpDyqv8+UKoLsSdVSHn2W20KrX5z4d52LYQj6qnQppt3CQ1IW6X
+	 Fa0XfO9VvzEgRSSli9dQ9ewjJlos6KEwgFiPHG+si0ispzGVDHGxW3CRn97cdj9UeE
+	 VOX7xbnl/AVfg==
 Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 22BAAC4314C;
+	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 9E290D9A155;
 	Wed,  3 Apr 2024 01:10:27 +0000 (UTC)
 Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
@@ -51,44 +51,37 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH net v2] vsock/virtio: fix packet delivery to tap device
+Subject: Re: [PATCH][next] nfp: Avoid -Wflex-array-member-not-at-end warnings
 From: patchwork-bot+netdevbpf@kernel.org
 Message-Id: 
- <171210662713.30217.16461640125861494356.git-patchwork-notify@kernel.org>
+ <171210662764.30217.3683603150178258009.git-patchwork-notify@kernel.org>
 Date: Wed, 03 Apr 2024 01:10:27 +0000
-References: <20240329161259.411751-1-marco.pinn95@gmail.com>
-In-Reply-To: <20240329161259.411751-1-marco.pinn95@gmail.com>
-To: Marco Pinna <marco.pinn95@gmail.com>
-Cc: stefanha@redhat.com, sgarzare@redhat.com, davem@davemloft.net,
- edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
- ggarcia@deic.uab.cat, jhansen@vmware.com, kvm@vger.kernel.org,
- virtualization@lists.linux.dev, netdev@vger.kernel.org,
- linux-kernel@vger.kernel.org, stable@vge.kernel.org
+References: <ZgYWlkxdrrieDYIu@neat>
+In-Reply-To: <ZgYWlkxdrrieDYIu@neat>
+To: Gustavo A. R. Silva <gustavoars@kernel.org>
+Cc: louis.peens@corigine.com, kuba@kernel.org, davem@davemloft.net,
+ edumazet@google.com, pabeni@redhat.com, oss-drivers@corigine.com,
+ netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-hardening@vger.kernel.org
 
 Hello:
 
-This patch was applied to netdev/net.git (main)
+This patch was applied to netdev/net-next.git (main)
 by Jakub Kicinski <kuba@kernel.org>:
 
-On Fri, 29 Mar 2024 17:12:59 +0100 you wrote:
-> Commit 82dfb540aeb2 ("VSOCK: Add virtio vsock vsockmon hooks") added
-> virtio_transport_deliver_tap_pkt() for handing packets to the
-> vsockmon device. However, in virtio_transport_send_pkt_work(),
-> the function is called before actually sending the packet (i.e.
-> before placing it in the virtqueue with virtqueue_add_sgs() and checking
-> whether it returned successfully).
-> Queuing the packet in the virtqueue can fail even multiple times.
-> However, in virtio_transport_deliver_tap_pkt() we deliver the packet
-> to the monitoring tap interface only the first time we call it.
-> This certainly avoids seeing the same packet replicated multiple times
-> in the monitoring interface, but it can show the packet sent with the
-> wrong timestamp or even before we succeed to queue it in the virtqueue.
+On Thu, 28 Mar 2024 19:17:10 -0600 you wrote:
+> -Wflex-array-member-not-at-end is coming in GCC-14, and we are getting
+> ready to enable it globally.
+> 
+> There is currently an object (`tl`), at the beginning of multiple
+> structures, that contains a flexible structure (`struct nfp_dump_tl`),
+> for example:
 > 
 > [...]
 
 Here is the summary with links:
-  - [net,v2] vsock/virtio: fix packet delivery to tap device
-    https://git.kernel.org/netdev/net/c/b32a09ea7c38
+  - [next] nfp: Avoid -Wflex-array-member-not-at-end warnings
+    https://git.kernel.org/netdev/net-next/c/d88cabfd9abc
 
 You are awesome, thank you!
 -- 
