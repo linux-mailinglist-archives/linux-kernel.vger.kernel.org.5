@@ -1,149 +1,219 @@
-Return-Path: <linux-kernel+bounces-130114-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-130115-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0769B89743B
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 17:43:15 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id DDE87897440
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 17:43:39 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 387AC1C2403A
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 15:43:14 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 529201F220E8
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 15:43:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 99B4A14A4C0;
-	Wed,  3 Apr 2024 15:43:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="4qTC3Ku6";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="oAQntXhr"
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4662814A4EF;
+	Wed,  3 Apr 2024 15:43:28 +0000 (UTC)
+Received: from mail-ej1-f49.google.com (mail-ej1-f49.google.com [209.85.218.49])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 791451E871;
-	Wed,  3 Apr 2024 15:43:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 18EA214A0A8;
+	Wed,  3 Apr 2024 15:43:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712158989; cv=none; b=V3+WCkz9zyzyau20+Gc1FYFY1tYPtUczCjMDVgH0acpAduAIFT7uIsOlsr/J9m9A6z0x1eoxTJeDdwmbjQVq1NFp87KghxmA3MLLgcnXAou5OZBRLSXQFVwsJAapf+H2TyiDfIhYzGVh0ZNez4YXS86FD9VU0xjLHKAtuMGszcQ=
+	t=1712159007; cv=none; b=ttx9kH3FgkAm5EG6sw/9pk2I+GOgaY9u/FnEDGTpil0A+U+IugAgGGsJKWjLofujEOkGi8+tEtJwSmVNzsTE8xoM27u7YlAgvQRMNR/Cknu4WmDxa+H+OyBc9oT64M6zOnR6dXdk5MndoOpy+380zewz41fO9xn/ieKEsdmdCEA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712158989; c=relaxed/simple;
-	bh=E9L0AoozWcOpFf5FTLLdItjWDLarNOox26qfWtRNpNE=;
-	h=Date:From:To:Subject:Cc:MIME-Version:Message-ID:Content-Type; b=XzzLsjjMmiN/sWkaeYjGTkra0TDQo9FlVyGlcfq/D0z1Oh+oc2wKFM0JmwLqg4e7ANVNLIym26z0WnUf6VBWu9MEMRQAUiRK5uUW8j0ueZcI/oBRjpKmnNfqrYZugLswwlQU1qzhdKpsM1sXzQcIUoC09fFQSQLvoHJPqKHxcT0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=4qTC3Ku6; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=oAQntXhr; arc=none smtp.client-ip=193.142.43.55
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
-Date: Wed, 03 Apr 2024 15:43:04 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1712158985;
-	h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-	 content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
-	bh=s1qXV5ip/IVtxlVDhMWAguiXYThThoOZa2tt7bqgZpw=;
-	b=4qTC3Ku6qVMlPjOlgTsO7gciWCLArdsf+gZt+zNZlkuHvijn9qYaAobGMytRIt/jzIC321
-	0eKKLaFCmQixcXAYr8vRjdSsrdQCZEDRKsq+nuDvXI2xwG0LvlvMmHmJZKQk05PVRl2P+P
-	Svgc6A6kfb6qzklPdGfkz2n/O+YBiBuzGh4UhDcJOFugi7ZBjh2dx/4DliETo0httgilk7
-	CkIiOFWofa9XVQhlpKdSxeoYUU9licMbmaWYOxEui3Xz/ZWI+6gncyi3aTA5mLIoI/eNJ3
-	yB5XMHpX8rmpRAi3T7eIwC0eAJa2yKUFZfWIW6zpHW4LcciQAnk3RPlcQbgsKQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1712158985;
-	h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-	 content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
-	bh=s1qXV5ip/IVtxlVDhMWAguiXYThThoOZa2tt7bqgZpw=;
-	b=oAQntXhr3w8EvVZg31nU8H6IPBlSQiXuGQW3l2PIvlKnQtU2A26rP2/oU65X+KcryMSc+7
-	n1FDCzRoBdeyMdBQ==
-From: "tip-bot2 for Thorsten Blum" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To: linux-tip-commits@vger.kernel.org
-Subject:
- [tip: x86/apic] x86/apic: Improve data types to fix Coccinelle warnings
-Cc: Thorsten Blum <thorsten.blum@toblux.com>,
- Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
- linux-kernel@vger.kernel.org
+	s=arc-20240116; t=1712159007; c=relaxed/simple;
+	bh=X3a4pIGTWIkMI9v/XpREqOBl8ZhpS8U+c8nUeSNcENM=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=udBWlt9LTjPBz/mMGq6rhWyrdAqiB4uZFbiKIQoVKTNwl9vsgk9PwTLlZHFezSN37IL8MNc1tO8yp/nQcPvqly/CIVO3Ja/j9JreZm1A66/PLdgM1uaKRO85XO//a+UkonXnVqhiPYWI8UxHOIqq7/FtYNnV78gBHqN0qUR4rik=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.218.49
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ej1-f49.google.com with SMTP id a640c23a62f3a-a44665605f3so111266b.2;
+        Wed, 03 Apr 2024 08:43:24 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712159003; x=1712763803;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=WYy0xsk/6e7/EP3ZA06B/kwt1hnSoccxl0+aSYTRzhw=;
+        b=Xi2a/O6o9nscxp/Q282pPlMx9MQjN5J8d2x6XYoDidEJT0rg6isayhqTnsv1PQDEDo
+         yfVPzmKca8zqwfOMbEHEh+2YVlcinqVQYYhP13iC5ONQ0op618Zp3lg4Kl0CwcapNwaV
+         jelLpQtbAxJECu8Q3GnxrCQWVpcBoESz3IvBYrJPzBtlg4N2EeSusYezkdMoXP1wHIZd
+         Swk8El6gyKzdeKkMXrpxotQ6BuD187l6vaNvqgiTWh/NBwTK28AwJysxs6Bbm+qWjC7x
+         6wkQWQxYCu21NgV+FVg2dKRmbh1oBR8miy1r/u4TXYYkQNTmWzH1Ka2wLYeisIypcYX9
+         NTBQ==
+X-Forwarded-Encrypted: i=1; AJvYcCW4OjfHJn1dWdEL+fDt3n3y18Q+TjBfukM7GQ2RFvDLP6JtKW1EpytLT2ds9rYZy1NwNRHKM4qOPgeiSZfif7a5EhYzUNcJHDuhNaB28Tr+VWCvwq50/4kWBAtsECl1QhvVYZTbPjHyrWA7bXxBDQo5X3pezDB2FnR4vIoV
+X-Gm-Message-State: AOJu0Yx1OZwz3Ko389lUY1H5wUSTnPNcm5RjPDcGaF5YfaYEl5zx5rLR
+	1nfWtq2C2wrlegTd+lTKUaUJVu8x7REeme0ku1Ehzi1tNzyRn6f+
+X-Google-Smtp-Source: AGHT+IGjMXBqyqOYrFRXxpu0T86R9H2NUxfGQRZ7Sm1nQSfyM8IFBGndg+xpb3YMbBIoQ8iZBhCSaA==
+X-Received: by 2002:a17:907:868d:b0:a51:7d1a:e10d with SMTP id qa13-20020a170907868d00b00a517d1ae10dmr503935ejc.32.1712159002989;
+        Wed, 03 Apr 2024 08:43:22 -0700 (PDT)
+Received: from localhost (fwdproxy-lla-008.fbsv.net. [2a03:2880:30ff:8::face:b00c])
+        by smtp.gmail.com with ESMTPSA id wn2-20020a170907068200b00a4e781bd30dsm3029235ejb.24.2024.04.03.08.43.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 03 Apr 2024 08:43:22 -0700 (PDT)
+From: Breno Leitao <leitao@debian.org>
+To: hengqi@linux.alibaba.com,
+	xuanzhuo@linux.alibaba.com,
+	"Michael S. Tsirkin" <mst@redhat.com>,
+	Jason Wang <jasowang@redhat.com>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>,
+	Paolo Abeni <pabeni@redhat.com>,
+	Andrew Melnychenko <andrew@daynix.com>
+Cc: rbc@meta.com,
+	riel@surriel.com,
+	stable@vger.kernel.org,
+	qemu-devel@nongnu.org,
+	virtualization@lists.linux.dev (open list:VIRTIO CORE AND NET DRIVERS),
+	netdev@vger.kernel.org (open list:NETWORKING DRIVERS),
+	linux-kernel@vger.kernel.org (open list)
+Subject: [PATCH net v4] virtio_net: Do not send RSS key if it is not supported
+Date: Wed,  3 Apr 2024 08:43:12 -0700
+Message-ID: <20240403154313.1331319-1-leitao@debian.org>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Message-ID: <171215898459.10875.11580343663413103011.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe:
- Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Precedence: bulk
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 
-The following commit has been merged into the x86/apic branch of tip:
+There is a bug when setting the RSS options in virtio_net that can break
+the whole machine, getting the kernel into an infinite loop.
 
-Commit-ID:     0049f04c7dfe977a0f8f6935071db3416e641837
-Gitweb:        https://git.kernel.org/tip/0049f04c7dfe977a0f8f6935071db3416e641837
-Author:        Thorsten Blum <thorsten.blum@toblux.com>
-AuthorDate:    Mon, 18 Mar 2024 11:47:23 +01:00
-Committer:     Dave Hansen <dave.hansen@linux.intel.com>
-CommitterDate: Wed, 03 Apr 2024 08:32:04 -07:00
+Running the following command in any QEMU virtual machine with virtionet
+will reproduce this problem:
 
-x86/apic: Improve data types to fix Coccinelle warnings
+    # ethtool -X eth0  hfunc toeplitz
 
-Given that acpi_pm_read_early() returns a u32 (masked to 24 bits), several
-variables that store its return value are improved by adjusting their data
-types from unsigned long to u32. Specifically, change deltapm's type from
-long to u32 because its value fits into 32 bits and it cannot be negative.
+This is how the problem happens:
 
-These data type improvements resolve the following two Coccinelle/
-coccicheck warnings reported by do_div.cocci:
+1) ethtool_set_rxfh() calls virtnet_set_rxfh()
 
-arch/x86/kernel/apic/apic.c:734:1-7: WARNING: do_div() does a 64-by-32
-division, please consider using div64_long instead.
+2) virtnet_set_rxfh() calls virtnet_commit_rss_command()
 
-arch/x86/kernel/apic/apic.c:742:2-8: WARNING: do_div() does a 64-by-32
-division, please consider using div64_long instead.
+3) virtnet_commit_rss_command() populates 4 entries for the rss
+scatter-gather
 
-Signed-off-by: Thorsten Blum <thorsten.blum@toblux.com>
-Signed-off-by: Dave Hansen <dave.hansen@linux.intel.com>
-Reviewed-by: Dave Hansen <dave.hansen@linux.intel.com>
-Link: https://lore.kernel.org/all/20240318104721.117741-3-thorsten.blum%40toblux.com
+4) Since the command above does not have a key, then the last
+scatter-gatter entry will be zeroed, since rss_key_size == 0.
+sg_buf_size = vi->rss_key_size;
+
+5) This buffer is passed to qemu, but qemu is not happy with a buffer
+with zero length, and do the following in virtqueue_map_desc() (QEMU
+function):
+
+  if (!sz) {
+      virtio_error(vdev, "virtio: zero sized buffers are not allowed");
+
+6) virtio_error() (also QEMU function) set the device as broken
+
+    vdev->broken = true;
+
+7) Qemu bails out, and do not repond this crazy kernel.
+
+8) The kernel is waiting for the response to come back (function
+virtnet_send_command())
+
+9) The kernel is waiting doing the following :
+
+      while (!virtqueue_get_buf(vi->cvq, &tmp) &&
+	     !virtqueue_is_broken(vi->cvq))
+	      cpu_relax();
+
+10) None of the following functions above is true, thus, the kernel
+loops here forever. Keeping in mind that virtqueue_is_broken() does
+not look at the qemu `vdev->broken`, so, it never realizes that the
+vitio is broken at QEMU side.
+
+Fix it by not sending RSS commands if the feature is not available in
+the device.
+
+Fixes: c7114b1249fa ("drivers/net/virtio_net: Added basic RSS support.")
+Cc: stable@vger.kernel.org
+Cc: qemu-devel@nongnu.org
+Signed-off-by: Breno Leitao <leitao@debian.org>
+Reviewed-by: Heng Qi <hengqi@linux.alibaba.com>
 ---
- arch/x86/kernel/apic/apic.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+Changelog:
 
-diff --git a/arch/x86/kernel/apic/apic.c b/arch/x86/kernel/apic/apic.c
-index a42d8a6..e5c9cad 100644
---- a/arch/x86/kernel/apic/apic.c
-+++ b/arch/x86/kernel/apic/apic.c
-@@ -631,7 +631,7 @@ void lapic_update_tsc_freq(void)
- static __initdata int lapic_cal_loops = -1;
- static __initdata long lapic_cal_t1, lapic_cal_t2;
- static __initdata unsigned long long lapic_cal_tsc1, lapic_cal_tsc2;
--static __initdata unsigned long lapic_cal_pm1, lapic_cal_pm2;
-+static __initdata u32 lapic_cal_pm1, lapic_cal_pm2;
- static __initdata unsigned long lapic_cal_j1, lapic_cal_j2;
- 
- /*
-@@ -641,7 +641,7 @@ static void __init lapic_cal_handler(struct clock_event_device *dev)
+V2:
+  * Moved from creating a valid packet, by rejecting the request
+    completely.
+V3:
+  * Got some good feedback from and Xuan Zhuo and Heng Qi, and reworked
+    the rejection path.
+V4:
+  * Added a comment in an "if" clause, as suggested by Michael S. Tsirkin.
+
+---
+ drivers/net/virtio_net.c | 26 ++++++++++++++++++++++----
+ 1 file changed, 22 insertions(+), 4 deletions(-)
+
+diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
+index c22d1118a133..115c3c5414f2 100644
+--- a/drivers/net/virtio_net.c
++++ b/drivers/net/virtio_net.c
+@@ -3807,6 +3807,7 @@ static int virtnet_set_rxfh(struct net_device *dev,
+ 			    struct netlink_ext_ack *extack)
  {
- 	unsigned long long tsc = 0;
- 	long tapic = apic_read(APIC_TMCCT);
--	unsigned long pm = acpi_pm_read_early();
-+	u32 pm = acpi_pm_read_early();
+ 	struct virtnet_info *vi = netdev_priv(dev);
++	bool update = false;
+ 	int i;
  
- 	if (boot_cpu_has(X86_FEATURE_TSC))
- 		tsc = rdtsc();
-@@ -666,7 +666,7 @@ static void __init lapic_cal_handler(struct clock_event_device *dev)
+ 	if (rxfh->hfunc != ETH_RSS_HASH_NO_CHANGE &&
+@@ -3814,13 +3815,28 @@ static int virtnet_set_rxfh(struct net_device *dev,
+ 		return -EOPNOTSUPP;
+ 
+ 	if (rxfh->indir) {
++		if (!vi->has_rss)
++			return -EOPNOTSUPP;
++
+ 		for (i = 0; i < vi->rss_indir_table_size; ++i)
+ 			vi->ctrl->rss.indirection_table[i] = rxfh->indir[i];
++		update = true;
+ 	}
+-	if (rxfh->key)
++
++	if (rxfh->key) {
++		/* If either _F_HASH_REPORT or _F_RSS are negotiated, the
++		 * device provides hash calculation capabilities, that is,
++		 * hash_key is configured.
++		 */
++		if (!vi->has_rss && !vi->has_rss_hash_report)
++			return -EOPNOTSUPP;
++
+ 		memcpy(vi->ctrl->rss.key, rxfh->key, vi->rss_key_size);
++		update = true;
++	}
+ 
+-	virtnet_commit_rss_command(vi);
++	if (update)
++		virtnet_commit_rss_command(vi);
+ 
+ 	return 0;
  }
+@@ -4729,13 +4745,15 @@ static int virtnet_probe(struct virtio_device *vdev)
+ 	if (virtio_has_feature(vdev, VIRTIO_NET_F_HASH_REPORT))
+ 		vi->has_rss_hash_report = true;
  
- static int __init
--calibrate_by_pmtimer(long deltapm, long *delta, long *deltatsc)
-+calibrate_by_pmtimer(u32 deltapm, long *delta, long *deltatsc)
- {
- 	const long pm_100ms = PMTMR_TICKS_PER_SEC / 10;
- 	const long pm_thresh = pm_100ms / 100;
-@@ -677,7 +677,7 @@ calibrate_by_pmtimer(long deltapm, long *delta, long *deltatsc)
- 	return -1;
- #endif
+-	if (virtio_has_feature(vdev, VIRTIO_NET_F_RSS))
++	if (virtio_has_feature(vdev, VIRTIO_NET_F_RSS)) {
+ 		vi->has_rss = true;
  
--	apic_printk(APIC_VERBOSE, "... PM-Timer delta = %ld\n", deltapm);
-+	apic_printk(APIC_VERBOSE, "... PM-Timer delta = %u\n", deltapm);
+-	if (vi->has_rss || vi->has_rss_hash_report) {
+ 		vi->rss_indir_table_size =
+ 			virtio_cread16(vdev, offsetof(struct virtio_net_config,
+ 				rss_max_indirection_table_length));
++	}
++
++	if (vi->has_rss || vi->has_rss_hash_report) {
+ 		vi->rss_key_size =
+ 			virtio_cread8(vdev, offsetof(struct virtio_net_config, rss_max_key_size));
  
- 	/* Check, if the PM timer is available */
- 	if (!deltapm)
+-- 
+2.43.0
+
 
