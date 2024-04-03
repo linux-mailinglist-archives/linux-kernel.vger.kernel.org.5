@@ -1,208 +1,128 @@
-Return-Path: <linux-kernel+bounces-130126-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-130134-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9F8E6897465
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 17:49:35 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id AF34289747C
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 17:51:29 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3A8B028C01E
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 15:49:34 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 653751F23E76
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 15:51:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1625B14A4FC;
-	Wed,  3 Apr 2024 15:49:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 63D3814B063;
+	Wed,  3 Apr 2024 15:50:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="hrBcFKXl"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="F8i07t1U"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 50A9C14A4C4;
-	Wed,  3 Apr 2024 15:49:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A474914A613;
+	Wed,  3 Apr 2024 15:50:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712159366; cv=none; b=qFdGVQdI9kSmLF2Kjh++Jdz/Rb6Cuku0jUKvqmrA6/vn59JRCbINt3ls+FolCQ+1kcAt754r/ItSzhuxhyb0ETgPRuZqBAq7VO0kfkc4MROd+Zx+dzBSdCYBjACnc2kHtBMbQ848CoQddaizbCx8VQtB3TP6sKyNFptlvwDZXis=
+	t=1712159405; cv=none; b=EJpdjY/tIOpBlCdx+I+YiaMtgPBwOdgMs/CzZ9V+y+B/tFMXp7UChrmDI/e/kPiTZ1iVBqzU1TZ+oEAPlOKJEt+GmwE5QZ1564FyLlsExbZuxwxWoGQARHnMtvySoeTLo78pZMdQ4eH6c3VCNULFJsjFXSWD2349qnFKPb225io=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712159366; c=relaxed/simple;
-	bh=k6dyOhfFQIf9vQIFCpUxUQulSUGcvn1uNJXKGOMIMvU=;
+	s=arc-20240116; t=1712159405; c=relaxed/simple;
+	bh=BWxRrDahcyakEgkrjYxx+bwOVBn1U5//7v9wcd/ridE=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=JHHKtQuljTjbhvI2HP7ur6xxR7/k4iYzq6uJZK8bhbD6OLLfDPVHtKaYyF1FppGZynkaj5rmIdqIbsZ6nK27UdBTa4VyE0sCH6FDE/MRpeFE0qtoseUaKbT1ARyxen4BuTLWOAKXfwHZoRiKiVlFVO6KDFoxUJdxwUJfUWcCn5M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=hrBcFKXl; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 77DC8C43390;
-	Wed,  3 Apr 2024 15:49:23 +0000 (UTC)
+	 Content-Type:Content-Disposition:In-Reply-To; b=ZEXOLibRGIV50IFC1Wjdr908kJvff4X+ziCzWLYJ7kt23/kfEVPoB88M1OrAS0PUa1DDJssXgS8TPNa6T1eJ6nlLAFCpqoPjOigQaKCxsBV/S/IvY3SygDSmX82HB7NW1umi+d+iHTzdPFFcKo6GqFYFPDj9fOQoJ3jVVs94JX0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=F8i07t1U; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A3A27C433C7;
+	Wed,  3 Apr 2024 15:50:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712159366;
-	bh=k6dyOhfFQIf9vQIFCpUxUQulSUGcvn1uNJXKGOMIMvU=;
+	s=k20201202; t=1712159405;
+	bh=BWxRrDahcyakEgkrjYxx+bwOVBn1U5//7v9wcd/ridE=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=hrBcFKXlV84WvwdXTJ1EywXpIa7TCT7pO8gOx7ssARAppf6BJDhk9Z8sOK7hS9kZr
-	 0ZuW/ZJBRc2RSTi6YMprbytvzjZr2bfZj2k6RpMbi1RgY0CvqLuhiBUlvP3kXoAitd
-	 CHOu1mU9LXMxEvBJoeAzXpWK1zYYnUfDYeMFvgXnDHWFhHUT4hcjCDwThkmlG89/g5
-	 oxJBYofJBMdMkil2p3ADRNxhWBahluV1wuhQnqt0pQAIv3F3Jzp3evB3oyhWOMPVX7
-	 oRLgYSr0FJyH7V7o5mr4nvMyAFdotIUfUpQUXMEtrzMJ47A2EJWRnU+g9QQWyXkjXK
-	 HgjnL2E/3Fsmg==
-Date: Wed, 3 Apr 2024 16:49:21 +0100
-From: Simon Horman <horms@kernel.org>
-To: Joseph Huang <Joseph.Huang@garmin.com>
-Cc: netdev@vger.kernel.org, Andrew Lunn <andrew@lunn.ch>,
-	Florian Fainelli <f.fainelli@gmail.com>,
-	Vladimir Oltean <olteanv@gmail.com>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Roopa Prabhu <roopa@nvidia.com>,
-	Nikolay Aleksandrov <razor@blackwall.org>,
-	Linus =?utf-8?Q?L=C3=BCssing?= <linus.luessing@c0d3.blue>,
-	linux-kernel@vger.kernel.org, bridge@lists.linux.dev
-Subject: Re: [PATCH RFC net-next 09/10] net: dsa: mv88e6xxx: Enable mc flood
- for mrouter port
-Message-ID: <20240403154921.GN26556@kernel.org>
-References: <20240402001137.2980589-1-Joseph.Huang@garmin.com>
- <20240402001137.2980589-10-Joseph.Huang@garmin.com>
+	b=F8i07t1UHZui+a3olIR/mqrmGLOhSlRpBtUA0cMe5NvJLOWACdgP3hXtT7JHDG07E
+	 4qCpc72mDSOLXJoLPPW3Q9/4gFQHfWokCA7o9PVGH4Y/2t8f8oBGkaPKLCiGAif/C+
+	 yloVJ6TOBBA1yqRVYQXLgRhf239NusTMJdnTDlfA6bPk2MRcMopyTllUDjLDFNRCuW
+	 tJkOy6xKb4evwBWSyCoeZP53oosFyplLVs5TEsjXpdqjITVOBNxSU7LZ3VZtRHgXx4
+	 eM/3npWeopey58J0lhVOaSW5Gykz0n3uMGPHDHrbG//0e/T03B6NYEOoUKrIKMuNjh
+	 /z2kysBinh2DA==
+Date: Wed, 3 Apr 2024 16:50:00 +0100
+From: Mark Brown <broonie@kernel.org>
+To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc: linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org,
+	Daniel Mack <daniel@zonque.org>,
+	Haojian Zhuang <haojian.zhuang@gmail.com>,
+	Robert Jarzmik <robert.jarzmik@free.fr>,
+	Russell King <linux@armlinux.org.uk>, Arnd Bergmann <arnd@arndb.de>
+Subject: Re: (subset) [PATCH v2 0/9] spi: pxa2xx: Drop linux/spi/pxa2xx_spi.h
+Message-ID: <48793ea5-92ca-4529-bad0-35d8c4e3f0c8@sirena.org.uk>
+References: <20240327193138.2385910-1-andriy.shevchenko@linux.intel.com>
+ <171167575036.187521.17547262230962160149.b4-ty@kernel.org>
+ <Zg04cWhT_Dl6AUik@smile.fi.intel.com>
+ <b7ac20d0-ca45-4e65-92ff-ddf84da6645a@sirena.org.uk>
+ <Zg1cAHEkhIf2vpwJ@smile.fi.intel.com>
+ <Zg1clCuOwkCNzSgy@smile.fi.intel.com>
+ <0af775e1-f5f7-4ad4-b336-78834a9e0342@sirena.org.uk>
+ <Zg1qmlX78lQGLC3B@smile.fi.intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="cPjXK7O9KNOc9UcN"
+Content-Disposition: inline
+In-Reply-To: <Zg1qmlX78lQGLC3B@smile.fi.intel.com>
+X-Cookie: Knowledge is power.
+
+
+--cPjXK7O9KNOc9UcN
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240402001137.2980589-10-Joseph.Huang@garmin.com>
 
-On Mon, Apr 01, 2024 at 08:11:08PM -0400, Joseph Huang wrote:
-> When a port turns into an mrouter port, enable multicast flooding
-> on that port even if multicast flooding is disabled by user config. This
-> is necessary so that in a distributed system, the multicast packets
-> can be forwarded to the Querier when the multicast source is attached
-> to a Non-Querier bridge.
-> 
-> Consider the following scenario:
-> 
->                  +--------------------+
->                  |                    |
->                  |      Snooping      |    +------------+
->                  |      Bridge 1      |----| Listener 1 |
->                  |     (Querier)      |    +------------+
->                  |                    |
->                  +--------------------+
->                            |
->                            |
->                  +--------------------+
->                  |    | mrouter |     |
-> +-----------+    |    +---------+     |
-> | MC Source |----|      Snooping      |
-> +-----------|    |      Bridge 2      |
->                  |    (Non-Querier)   |
->                  +--------------------+
-> 
-> In this scenario, Listener 1 will never receive multicast traffic
-> from MC Source if multicast flooding is disabled on the mrouter port on
-> Snooping Bridge 2.
-> 
-> Signed-off-by: Joseph Huang <Joseph.Huang@garmin.com>
+On Wed, Apr 03, 2024 at 05:41:30PM +0300, Andy Shevchenko wrote:
 
-..
+> Linus was long time ago against board files. Yet, we have a few old
+> (kinda supported) boards left in the tree. The conversion makes the
+> driver be prepared for the DT conversion when it happens. From maintenance
+> perspective my patch reduced the code under the maintenance, which reduces
+> time spent by both contributors and maintainers on this.
 
-> @@ -6849,11 +6864,28 @@ static int mv88e6xxx_port_bridge_flags(struct dsa_switch *ds, int port,
->  
->  	if (flags.mask & BR_MCAST_FLOOD) {
->  		bool multicast = !!(flags.val & BR_MCAST_FLOOD);
-> +		struct mv88e6xxx_bridge *mv_bridge;
-> +		struct mv88e6xxx_port *p;
-> +		bool mrouter;
->  
-> -		err = chip->info->ops->port_set_mcast_flood(chip, port,
-> -							    multicast);
-> -		if (err)
-> -			goto out;
-> +		mv_bridge = mv88e6xxx_bridge_by_port(chip, port);
-> +		if (!mv_bridge)
-> +			return -EINVAL;
+> AFAIU all what you are moaning about is type checking. Okay, I got
 
-I think that mv88e6xxx_reg_unlock(chip) is needed here.
-So perhaps (completely untested!):
+The type checking is part of it, but it's more a general taste thing
+with using swnodes like this.  You've not actually removed the board
+file and it's hard to get enthusiastic about the change to the board
+file that results, or to see this as a substantial step towards DT
+conversion for the platform given the trivialness of the single
+property here.  As a general thing I don't want to encourage people to
+start randomly converting things to swnode rather than to DT.
 
-		if (!mv_bridge) {
-			err = -EINVAL;
-			goto out;
-		}
+> it, but we have a lot of other places with similar approach done,
+> e.g. GPIO_LOOKUP*() tables that basically gives something unconnected to the
+> driver without any platform data being involved and you seems to be fine with
+> that:
 
-Flagged by Smatch
+> $ git log --oneline --no-merges --grep 'Mark Brown' -- arch/ | grep 'GPIO desc'
 
-> +
-> +		p = &chip->ports[port];
-> +		mrouter = !!(mv_bridge->mrouter_ports & BIT(port));
-> +
-> +		if (!mrouter) {
-> +			err = chip->info->ops->port_set_mcast_flood(chip, port,
-> +								    multicast);
-> +			if (err)
-> +				goto out;
-> +		}
-> +
-> +		if (multicast)
-> +			p->flags |= MV88E6XXX_PORT_FLAG_MC_FLOOD;
-> +		else
-> +			p->flags &= ~MV88E6XXX_PORT_FLAG_MC_FLOOD;
->  	}
->  
->  	if (flags.mask & BR_BCAST_FLOOD) {
-> @@ -6883,6 +6915,51 @@ static int mv88e6xxx_port_bridge_flags(struct dsa_switch *ds, int port,
->  	return err;
->  }
->  
-> +static int mv88e6xxx_port_mrouter(struct dsa_switch *ds, int port,
-> +				  bool mrouter,
-> +				  struct netlink_ext_ack *extack)
-> +{
-> +	struct mv88e6xxx_chip *chip = ds->priv;
-> +	struct mv88e6xxx_bridge *mv_bridge;
-> +	struct mv88e6xxx_port *p;
-> +	bool old_mrouter;
-> +	bool mc_flood;
-> +	int err;
-> +
-> +	if (!chip->info->ops->port_set_mcast_flood)
-> +		return -EOPNOTSUPP;
-> +
-> +	mv_bridge = mv88e6xxx_bridge_by_port(chip, port);
-> +	if (!mv_bridge)
-> +		return -EINVAL;
-> +
-> +	old_mrouter = !!(mv_bridge->mrouter_ports & BIT(port));
-> +	if (mrouter == old_mrouter)
-> +		return 0;
-> +
-> +	p = &chip->ports[port];
-> +	mc_flood = !!(p->flags & MV88E6XXX_PORT_FLAG_MC_FLOOD);
-> +
-> +	mv88e6xxx_reg_lock(chip);
-> +
-> +	if (!mc_flood) {
-> +		err = chip->info->ops->port_set_mcast_flood(chip, port,
-> +							    mrouter);
-> +		if (err)
-> +			goto out;
-> +	}
-> +
-> +	if (mrouter)
-> +		mv_bridge->mrouter_ports |= BIT(port);
-> +	else
-> +		mv_bridge->mrouter_ports &= ~BIT(port);
-> +
-> +out:
-> +	mv88e6xxx_reg_unlock(chip);
+> I randomly took this 366f36e2a ("ASoC: wm1250-ev1: Convert to GPIO descriptors").
 
-If mc_flood is true then err is uninitialised here.
+> Can you tell how it is different to my proposal?
 
-Flagged by clang-17 W=1 build, and Smatch.
+The main difference with the GPIO lookup tables is that they are
+structured data specifically for GPIOs rather than the general purpose
+free for all we have with swnode.
 
-> +
-> +	return err;
-> +}
-> +
->  static bool mv88e6xxx_lag_can_offload(struct dsa_switch *ds,
->  				      struct dsa_lag lag,
->  				      struct netdev_lag_upper_info *info,
+--cPjXK7O9KNOc9UcN
+Content-Type: application/pgp-signature; name="signature.asc"
 
-..
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmYNeqgACgkQJNaLcl1U
+h9DNbgf+MWwNssTaQ2FgNgITAk94TuannBgmO/VZFj7P4CgXxWu8/jM4Zns26MZ6
+H+Z8pBbw/kQYWX7sPqZP1Ao1bFJx1KQdUMIv3wjkNWfF2jVNIoFUx1KjfxVlyYa8
+KhY+d1Ru4cK0f5yYiuNDDycMS16nizbB2/5OMwwIgthKjs3mf7N3gU/j0juy6hLA
++dcXGxxbJ6HyqROJuXEh2ogeYrybR6tAPmrQe9QFhG67Xdr6JpNxaqb5L8VJCivh
+CTPo1B8HZCeUBDytbUsfbafs2Ry6JEMAfTg7iCM8VeJkOCEjYuZ3JfJlwulO1Gh2
+vfV7nxaal/5Z4bxL2czV7o0s8FZ10g==
+=h/S+
+-----END PGP SIGNATURE-----
+
+--cPjXK7O9KNOc9UcN--
 
