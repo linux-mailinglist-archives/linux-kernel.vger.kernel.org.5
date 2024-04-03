@@ -1,59 +1,57 @@
-Return-Path: <linux-kernel+bounces-129307-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-129308-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id C979C89685F
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 10:23:35 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id F402E896903
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 10:42:25 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 02DE01C25C9B
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 08:23:35 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7F639B2C47B
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 08:23:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8BAAC131E43;
-	Wed,  3 Apr 2024 08:11:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 129BD1332B3;
+	Wed,  3 Apr 2024 08:11:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="kLElWixn"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="aWrRnUv4"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CF5F26FB80;
-	Wed,  3 Apr 2024 08:11:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5508B13329B;
+	Wed,  3 Apr 2024 08:11:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712131910; cv=none; b=jPUUd16TyBqAPwi8LQPGqna8DBVYatdKW2q9/WmS8c4aNO7FjnBuKHf3KhMVJ5enmzwgghkKvJEInitUxFi9sLeqpsxi/VlvOqRRrWu8MVz1fv5yjOq9AVWmhvjHhCTfjEvUBgaweqrDSNEXlMccXlZYUEJ1v8WYfYsrmD47gfk=
+	t=1712131918; cv=none; b=TjgzEulotaOgTrXX5jeQ+nN321nImyoN7ffmUSTcraBCfE6sn07m4KoRGA2udEwTFxhThHpu49upJhkrGNpKtbMBbu+gEom9oCGGrt7RtX+1C3DFrsU28hwvw78WDYNdGi2WUoBdj2863ax1aEFbrLQgCYD35UiJ7fMtXiOY1aY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712131910; c=relaxed/simple;
-	bh=yJ2PAYn/BqgcesEAALoWnwKCP+9vQcY4vqPA3T6h0Fw=;
+	s=arc-20240116; t=1712131918; c=relaxed/simple;
+	bh=eTAXLTfSMqPzmGg1LsuyAG1Zp31dv3Dky44SOxHYxuE=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=VQzzWP7DqWM8ErEg4h9xB9ZFX/p1mNq+xsH2dOBUiAu+bnP6HUeF4v9aPHQN2WwNipk0RoBye8eUAgGnWRWJfgE7FF4sWfEvITCMBGBSXbF8mvDECl/IsJQYiSq+DXtLlPePsVzDDhyx1gw+c/eVRCBJRJGQBqlrNZ9j5FLf0nw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=kLElWixn; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7FBC2C433C7;
-	Wed,  3 Apr 2024 08:11:48 +0000 (UTC)
+	 MIME-Version; b=cvz0JBAf2Uo0koZcHoKM74VyVdZFIb408kxpe9ooDm/G4d+umxuMJxdgYohIxSVimq6AYqov/0hGecGOsvQwFeQpW8jxqjy8KEGaSF37WeXH7ELre6JdT5+O+QGF8SA9aga6vq8G+UybWHEz+nN18G5/wVPAo39YDciWkZaWkO8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=aWrRnUv4; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5F0ADC433C7;
+	Wed,  3 Apr 2024 08:11:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712131910;
-	bh=yJ2PAYn/BqgcesEAALoWnwKCP+9vQcY4vqPA3T6h0Fw=;
+	s=k20201202; t=1712131918;
+	bh=eTAXLTfSMqPzmGg1LsuyAG1Zp31dv3Dky44SOxHYxuE=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=kLElWixnuR6/r1TXlNW/C+kLhE4L3gwqjZqwBNB1iRvPKzM2ER7g+4niBeEOANZPJ
-	 lmmB7HNzp9Le5vlirfPPW7CRaTNmoWBc1263uW1C00fKh1e6g5UIFWWJIRVcPsnC2o
-	 kI7IXPUJ4BjGKD9hgARGtjLuW7Lzqf6UWsHz17AoMXRJUwaee993g73UWXtQ7fyWKM
-	 hQs4LlHUuM1bhfbn9Y7YibuU+N8vvA+aLy7bx/pjP1pO/IUIGiMtdkXWCnC7/LKOTk
-	 qiDxN3Gd2qWratpGIxHsSKjgZilvv8E3adxlwRmqq5yyZgcmiNeszjJCpV9oGqb65j
-	 N4yILxOWBTbBA==
+	b=aWrRnUv4lYXxKle69MNfRfBQK7ESJOlsoX3+1O6jaAa58kXkx/76YpEzDKxB4A0Kp
+	 HYpcT/Kz5LFT66zC94llHyVuTtej8K5hH8XeTdVyHAhvHCAydmsJRkTVMZpmKNQAGp
+	 ayrMPDNVedGE1y5Bs39aIdNRSYstABuoExbqWsoiVBOxvFLHgKuFAdOwbpRWgeHtt5
+	 mLfyGf3RfYEvyUmLaYJM0ly9RhDoMwCSyJW3C60zerG9frwgZ6tHYBM3JbDcue/FsO
+	 wgC4Flt/z8UE7l/iJBMLwf+swLeJIPB8K90gVjaJ8Ex9yFl265ysKntswFJjsdEzK7
+	 XhXWqQlQ65q6g==
 From: Arnd Bergmann <arnd@kernel.org>
 To: linux-kernel@vger.kernel.org,
-	Shyam Sundar S K <Shyam-sundar.S-k@amd.com>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>,
-	Paolo Abeni <pabeni@redhat.com>
+	Markuss Broks <markuss.broks@gmail.com>,
+	Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+	Karel Balej <balejk@matfyz.cz>
 Cc: Arnd Bergmann <arnd@arndb.de>,
+	=?UTF-8?q?Duje=20Mihanovi=C4=87?= <duje.mihanovic@skole.hr>,
 	=?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>,
-	Rob Herring <robh@kernel.org>,
-	netdev@vger.kernel.org
-Subject: [PATCH 28/34] net: xgbe: remove extraneous #ifdef checks
-Date: Wed,  3 Apr 2024 10:06:46 +0200
-Message-Id: <20240403080702.3509288-29-arnd@kernel.org>
+	linux-input@vger.kernel.org
+Subject: [PATCH 29/34] Input: imagis - remove incorrect ifdef checks
+Date: Wed,  3 Apr 2024 10:06:47 +0200
+Message-Id: <20240403080702.3509288-30-arnd@kernel.org>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20240403080702.3509288-1-arnd@kernel.org>
 References: <20240403080702.3509288-1-arnd@kernel.org>
@@ -67,63 +65,49 @@ Content-Transfer-Encoding: 8bit
 
 From: Arnd Bergmann <arnd@arndb.de>
 
-When both ACPI and OF are disabled, xgbe_v1 is unused and
-causes a W=1 warning:
+When CONFIG_OF is disabled, three variables become unused:
 
-drivers/net/ethernet/amd/xgbe/xgbe-platform.c:533:39: error: unused variable 'xgbe_v1' [-Werror,-Wunused-const-variable]
-static const struct xgbe_version_data xgbe_v1 = {
+drivers/input/touchscreen/imagis.c:391:39: error: unused variable 'imagis_3032c_data' [-Werror,-Wunused-const-variable]
+drivers/input/touchscreen/imagis.c:399:39: error: unused variable 'imagis_3038b_data' [-Werror,-Wunused-const-variable]
+drivers/input/touchscreen/imagis.c:407:39: error: unused variable 'imagis_3038c_data' [-Werror,-Wunused-const-variable]
 
-There is no real point in trying to save a few bytes for the match
-tables, so just make them always visible.
+There is no real point in building this driver without CONFIG_OF,
+so just remove the #ifdef checks and just always build this to avoids
+the warnings.
 
+Fixes: 10ad7d7a428f ("input/touchscreen: imagis: Add support for Imagis IST3038B")
 Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 ---
- drivers/net/ethernet/amd/xgbe/xgbe-platform.c | 8 --------
- 1 file changed, 8 deletions(-)
+ drivers/input/touchscreen/imagis.c | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
 
-diff --git a/drivers/net/ethernet/amd/xgbe/xgbe-platform.c b/drivers/net/ethernet/amd/xgbe/xgbe-platform.c
-index 9131020d06af..7912b3b45148 100644
---- a/drivers/net/ethernet/amd/xgbe/xgbe-platform.c
-+++ b/drivers/net/ethernet/amd/xgbe/xgbe-platform.c
-@@ -538,7 +538,6 @@ static const struct xgbe_version_data xgbe_v1 = {
- 	.tx_tstamp_workaround		= 1,
+diff --git a/drivers/input/touchscreen/imagis.c b/drivers/input/touchscreen/imagis.c
+index 074dd6c342ec..d09b10f77a19 100644
+--- a/drivers/input/touchscreen/imagis.c
++++ b/drivers/input/touchscreen/imagis.c
+@@ -411,7 +411,6 @@ static const struct imagis_properties imagis_3038c_data = {
+ 	.whoami_val = IST3038C_WHOAMI,
  };
- 
--#ifdef CONFIG_ACPI
- static const struct acpi_device_id xgbe_acpi_match[] = {
- 	{ .id = "AMDI8001",
- 	  .driver_data = (kernel_ulong_t)&xgbe_v1 },
-@@ -546,9 +545,7 @@ static const struct acpi_device_id xgbe_acpi_match[] = {
- };
- 
- MODULE_DEVICE_TABLE(acpi, xgbe_acpi_match);
--#endif
  
 -#ifdef CONFIG_OF
- static const struct of_device_id xgbe_of_match[] = {
- 	{ .compatible = "amd,xgbe-seattle-v1a",
- 	  .data = &xgbe_v1 },
-@@ -556,7 +553,6 @@ static const struct of_device_id xgbe_of_match[] = {
+ static const struct of_device_id imagis_of_match[] = {
+ 	{ .compatible = "imagis,ist3032c", .data = &imagis_3032c_data },
+ 	{ .compatible = "imagis,ist3038b", .data = &imagis_3038b_data },
+@@ -419,13 +418,12 @@ static const struct of_device_id imagis_of_match[] = {
+ 	{ },
  };
- 
- MODULE_DEVICE_TABLE(of, xgbe_of_match);
+ MODULE_DEVICE_TABLE(of, imagis_of_match);
 -#endif
  
- static SIMPLE_DEV_PM_OPS(xgbe_platform_pm_ops,
- 			 xgbe_platform_suspend, xgbe_platform_resume);
-@@ -564,12 +560,8 @@ static SIMPLE_DEV_PM_OPS(xgbe_platform_pm_ops,
- static struct platform_driver xgbe_driver = {
+ static struct i2c_driver imagis_ts_driver = {
  	.driver = {
- 		.name = XGBE_DRV_NAME,
--#ifdef CONFIG_ACPI
- 		.acpi_match_table = xgbe_acpi_match,
--#endif
--#ifdef CONFIG_OF
- 		.of_match_table = xgbe_of_match,
--#endif
- 		.pm = &xgbe_platform_pm_ops,
+ 		.name = "imagis-touchscreen",
+ 		.pm = pm_sleep_ptr(&imagis_pm_ops),
+-		.of_match_table = of_match_ptr(imagis_of_match),
++		.of_match_table = imagis_of_match,
  	},
- 	.probe = xgbe_platform_probe,
+ 	.probe = imagis_probe,
+ };
 -- 
 2.39.2
 
