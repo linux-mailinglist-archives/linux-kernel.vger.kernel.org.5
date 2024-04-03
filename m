@@ -1,83 +1,83 @@
-Return-Path: <linux-kernel+bounces-130436-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-130435-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id CCDB789781E
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 20:22:35 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id BED7B897891
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 20:49:12 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5A78B1F232C6
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 18:22:35 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 110ABB2E9FF
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 18:22:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0713C154446;
-	Wed,  3 Apr 2024 18:22:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CAD821534F2;
+	Wed,  3 Apr 2024 18:22:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=dabbelt-com.20230601.gappssmtp.com header.i=@dabbelt-com.20230601.gappssmtp.com header.b="WS1lcdtt"
-Received: from mail-pl1-f170.google.com (mail-pl1-f170.google.com [209.85.214.170])
+	dkim=pass (2048-bit key) header.d=dabbelt-com.20230601.gappssmtp.com header.i=@dabbelt-com.20230601.gappssmtp.com header.b="ZwCD8duL"
+Received: from mail-pf1-f181.google.com (mail-pf1-f181.google.com [209.85.210.181])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CC9D415351B
-	for <linux-kernel@vger.kernel.org>; Wed,  3 Apr 2024 18:22:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 230B0153593
+	for <linux-kernel@vger.kernel.org>; Wed,  3 Apr 2024 18:22:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712168530; cv=none; b=XxAF8A2hAU00X7ZPKzDXkE1IG4+sUlKrXNE5c2HNvoRV8i+yHTr/xveWj62iJwZmHvTs+/T1+lkWLeejSPaFWwuRbblrFRVqNt59cepgzkqXis1642AT6ir30Jau8Bsg9dEDkAa04ltVfYQivykoZtOGqGldW9/qQnziNMX0gX8=
+	t=1712168530; cv=none; b=mNekSalGbmugKaW9nwVxUHm0jm40TheEOdJpI2ZzqZBiPKrxbd3kqWBLf/ZLEugj44X+BU2tw52AocanwIXHh2ByMG9Q4/Bl4PzHbKUS6ZgE8iaYd5D09ag9TreCo5Hm3j4NgRK2JLf4Qw5ZbraZGOU+gsMkhhYjFOHDJPsbv4w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1712168530; c=relaxed/simple;
-	bh=mPQ6aDx/DzkRZiI7UzFAti6c8odqszdQXKvBp/uj47A=;
+	bh=YLQ5ks3ozTKHgLjWeRoai9T7IQizj8Dx9UVCzQpSmEY=;
 	h=Date:Subject:In-Reply-To:CC:From:To:Message-ID:Mime-Version:
-	 Content-Type; b=iKMKKQLp3s/vxlOn2hNK8wwHY9+hgHUSRv7Gvxerdc68K4kd22/0tjZKiuswAQYiS1QMKrn2CtXirFo4WLNSKWb+JfOx032oXfO+R3UCzoE+zd5s3Qyz8S+0ijFRM13jgqYARnTrOLq1Ph7dxrZ/Spe0nbEl3/wx+HD1Eom7sjs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dabbelt.com; spf=pass smtp.mailfrom=dabbelt.com; dkim=pass (2048-bit key) header.d=dabbelt-com.20230601.gappssmtp.com header.i=@dabbelt-com.20230601.gappssmtp.com header.b=WS1lcdtt; arc=none smtp.client-ip=209.85.214.170
+	 Content-Type; b=tgJBfi4bw2mJQQp1M2584cQE1WaurHypsd3myV5PIkzz4PL5iTHyG26RAbA+PyjCx5KbyFlnpRHcsZ+EV+ILMre+Y0UAKUe/zRREHZttQe1Y9egeuPuXTbIivBknrmSDHRdVrjuhI2IA6kj6+V8srj65W6/WtHzSV40ymrH0fYc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dabbelt.com; spf=pass smtp.mailfrom=dabbelt.com; dkim=pass (2048-bit key) header.d=dabbelt-com.20230601.gappssmtp.com header.i=@dabbelt-com.20230601.gappssmtp.com header.b=ZwCD8duL; arc=none smtp.client-ip=209.85.210.181
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dabbelt.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=dabbelt.com
-Received: by mail-pl1-f170.google.com with SMTP id d9443c01a7336-1e29328289eso949635ad.0
-        for <linux-kernel@vger.kernel.org>; Wed, 03 Apr 2024 11:22:06 -0700 (PDT)
+Received: by mail-pf1-f181.google.com with SMTP id d2e1a72fcca58-6e6f4ad4c57so75467b3a.2
+        for <linux-kernel@vger.kernel.org>; Wed, 03 Apr 2024 11:22:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=dabbelt-com.20230601.gappssmtp.com; s=20230601; t=1712168526; x=1712773326; darn=vger.kernel.org;
+        d=dabbelt-com.20230601.gappssmtp.com; s=20230601; t=1712168527; x=1712773327; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:message-id:to:from:cc
          :in-reply-to:subject:date:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=b+6ScChiC8zS3o9tbiOgcc1DiBxz6xvmMgS5MbEqCVk=;
-        b=WS1lcdttwByvBL81FDxCR9c9ohzcIBrEwgU8WykpdmMwgb72x4x1Vq5CwVOtTW6qEL
-         /U4s/ibFdFNF+gwkTlu+OXDesuZwLTPsVYF+24swBnSk5MMBbTtWAZ+q+cf3tdExrjbZ
-         Xh/oaV/2YgirVkzL/ngg1aBit6RKOFJ4KoOSZX4puydzTZtUKZ9CTiB/6PF+tgqsmgiF
-         pMvSysELXIGSPttBEbRvph76C3mGHB8D57OZ43vUyPiy21tE/Ae+30tvmSNjFtN4cJbY
-         siv6Cnf+vLkrBVeQOECUd0FJLZUqla/oU10n1LpCE1z814xlNsddY0i/c6Cdn909/jAi
-         fBZQ==
+        bh=LoPxyy6ZZevKYMVQQwthSJ0EL7SyRC2E5s9/TcAwzlA=;
+        b=ZwCD8duLiCKuvl/u7C9SdR5KA7kiEXzgg9lxw5OSzEdw1T/wGKr5yIscD1y5u8+1Jb
+         rEiSIY56Ll0uhQLmfdAoYDC2Lnttb2XuguTUokKOEAkOSgyPOVOeTbfdqd+d1/f0AuVo
+         h8r9YkjwWATqXl4T36os3jswsTUuZ5CfYf4W4jAwrW70gP0R98mB3cW2EL1Lv7GwSJ+u
+         IGStBP4q+9l/L56Zy1gtiAKzSTq4eu/zZP/Mgi9eROxXuNemHFjFOFK6sdKFwtKQP6NY
+         JiCveokbXC5BI6xt1xgStRdF5YPEeiOsqUFpFv+xZ9FBnstn8e8UP3lxmzylyZu/pqXh
+         +gSw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712168526; x=1712773326;
+        d=1e100.net; s=20230601; t=1712168527; x=1712773327;
         h=content-transfer-encoding:mime-version:message-id:to:from:cc
          :in-reply-to:subject:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=b+6ScChiC8zS3o9tbiOgcc1DiBxz6xvmMgS5MbEqCVk=;
-        b=YPhtcFo2EEMJt5D0ffBYln/MLJB7liWzAKKQnsVsGK79hYvn3jXyElRgAJmZukaCsA
-         aNhXdxBckuR9Q53V819KYaAlLBj1Ixgn/wMftSjkLCnnlGBM9uN/RMGzCaF1TdpNWkxo
-         m2WS9sYOluHTk3azt0AhKSzmvQTbchQEjGnW7Yds6gVlnpi4CdAJHZMFbHrpeZsxConp
-         dHfsltIaMKBckdt5nc7QCJ2kfBvaDkTrlynnygIa42wV5oeXZROs1LRyZ+fBSt964dZT
-         pY7e21cfUCoka3U/yZfwFM0w7CPZQZqA2znLWgSjmlrCkFiOh/tLo6nwdgZKs832ouNS
-         21vQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUJoO22kMwrjarf5ZYU0K9ByZxAI29JiT0XAQSrYF9lOueR60bAh+pc8kz+5zNTNu7UQy5eaBHxj/rbwuW6VyUpdZj6/S/BgKdchYTG
-X-Gm-Message-State: AOJu0YxytQMXciZPg46Sk8tILWF3DLXhHpM6LMMd47x/V6+M+Mb1hyar
-	om2iGTlfuJptx4jf7oaFF9LA3ZJJ47ttoUoGY3deLSFP5g9wOf8TIadDxNclFNo=
-X-Google-Smtp-Source: AGHT+IFlUXGV4chig6oJvZqV4vGOgLfE+s5gAYd5D5SfvJ7gnZEYS1RqOGC2YxcHgRm7Hvepr5Q2zg==
-X-Received: by 2002:a17:902:c14b:b0:1e0:a7c5:b5a5 with SMTP id 11-20020a170902c14b00b001e0a7c5b5a5mr67760plj.37.1712168525743;
-        Wed, 03 Apr 2024 11:22:05 -0700 (PDT)
+        bh=LoPxyy6ZZevKYMVQQwthSJ0EL7SyRC2E5s9/TcAwzlA=;
+        b=nL+oVsbTW7WcGGY0HdObzfXzuJk50tUHcqfEnr89lOOXFcCEgSUOFsT7endfVKC/Cu
+         933kQhhdfzbsiT9LR9p4XkP3QuqXvhVUp9LVWoVPEifjJ196L7ouUTqbi8wW/MjjpTDh
+         DkAnIGOXt8XjVc3ymtvH5Byzf6fpudLumljm9YwlVbiG+46ZpOeGLYKcWEyGv1bhY2As
+         0/rlyajnFPO5I3uMkg6eVKdryRgvN6JkrNYmOFrYBzWuHqvRvVSHqKplmiC2W7DqiiSd
+         +87TduRHyRaJsrVeYVZC2BpK3fRDy1G7C6W+5vMpw6YnPWjDLrhYqsYhZsfcMataahJA
+         91Ng==
+X-Forwarded-Encrypted: i=1; AJvYcCVCug5nhyookxfK0+s8QLxPEbuQqgwu0xvGzvDg1MJz8Bhvex9R6rUFH67cLPPW1gubhmiKUbwov97ct3STJRpgigSlsJsIJi6LeX2/
+X-Gm-Message-State: AOJu0YwfrsC8L1FfdXEj7bIK0HuHXMSnGftoS2vgejZR90q9iUJwFaq/
+	fyXo8lNJnbSPkyAqaKAwIABbnb7bIEnIx5fORu8SaKKqvpoWIIZR409x784wOm8=
+X-Google-Smtp-Source: AGHT+IE8xKPk+Cg4ycXY4vSQCypFZ4Jw5ScQiKmu4H6BcqJa4Y6mRodZymA7cXolnlaayPoU0XPjww==
+X-Received: by 2002:a05:6a20:734b:b0:1a3:48da:1090 with SMTP id v11-20020a056a20734b00b001a348da1090mr568998pzc.14.1712168527301;
+        Wed, 03 Apr 2024 11:22:07 -0700 (PDT)
 Received: from localhost ([192.184.165.199])
-        by smtp.gmail.com with ESMTPSA id c2-20020a170902d48200b001dd652ef8d6sm13572476plg.152.2024.04.03.11.22.04
+        by smtp.gmail.com with ESMTPSA id d9-20020a17090ad3c900b0029b77fbeb7fsm14038311pjw.16.2024.04.03.11.22.06
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 03 Apr 2024 11:22:04 -0700 (PDT)
-Date: Wed, 03 Apr 2024 11:22:04 -0700 (PDT)
-X-Google-Original-Date: Wed, 03 Apr 2024 11:21:38 PDT (-0700)
-Subject:     Re: [PATCH v1 2/2] RISC-V: drop SOC_VIRT for ARCH_VIRT
-In-Reply-To: <20240305-stress-earflap-d7ddb8655a4d@spud>
+        Wed, 03 Apr 2024 11:22:06 -0700 (PDT)
+Date: Wed, 03 Apr 2024 11:22:06 -0700 (PDT)
+X-Google-Original-Date: Wed, 03 Apr 2024 11:21:50 PDT (-0700)
+Subject:     Re: [PATCH v6 00/11] riscv: add initial support for Canaan Kendryte K230
+In-Reply-To: <tencent_F76EB8D731C521C18D5D7C4F8229DAA58E08@qq.com>
 CC: linux-riscv@lists.infradead.org, Conor Dooley <conor@kernel.org>,
-  Conor Dooley <conor.dooley@microchip.com>, Paul Walmsley <paul.walmsley@sifive.com>, aou@eecs.berkeley.edu,
-  linux-kernel@vger.kernel.org, brendan.higgins@linux.dev, davidgow@google.com, rmoar@google.com,
-  Jason@zx2c4.com, shuah@kernel.org, linux-kselftest@vger.kernel.org, kunit-dev@googlegroups.com,
-  wireguard@lists.zx2c4.com, netdev@vger.kernel.org
+  dlemoal@kernel.org, robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+  Paul Walmsley <paul.walmsley@sifive.com>, aou@eecs.berkeley.edu, guoren@kernel.org, mturquette@baylibre.com,
+  sboyd@kernel.org, linus.walleij@linaro.org, p.zabel@pengutronix.de, linux-gpio@vger.kernel.org,
+  linux-clk@vger.kernel.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, cyy@cyyself.name
 From: Palmer Dabbelt <palmer@dabbelt.com>
-To: Conor Dooley <conor@kernel.org>
-Message-ID: <mhng-170f61cd-c3b7-413b-8279-9d50d55dbebe@palmer-ri-x1c9>
+To: cyy@cyyself.name
+Message-ID: <mhng-08e43080-8679-43f8-80c5-b73304e4e680@palmer-ri-x1c9>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -87,121 +87,92 @@ Mime-Version: 1.0 (MHng)
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 8bit
 
-On Tue, 05 Mar 2024 10:37:06 PST (-0800), Conor Dooley wrote:
-> From: Conor Dooley <conor.dooley@microchip.com>
+On Sat, 23 Mar 2024 05:09:42 PDT (-0700), cyy@cyyself.name wrote:
+> K230 is an ideal chip for RISC-V Vector 1.0 evaluation now. Add initial
+> support for it to allow more people to participate in building drivers
+> to mainline for it.
 >
-> The ARCH_ and SOC_ versions of this symbol have persisted for quite a
-> while now in parallel. Generated .config files from previous LTS kernels
-> should have both. Finally remove SOC_VIRT and update all config files
-> using it.
+> This kernel has been tested upon factory SDK [1] with
+> k230_evb_only_linux_defconfig and patched mainline opensbi [2] to skip
+> locked pmp and successfully booted to busybox on initrd with this log [3].
 >
-> Signed-off-by: Conor Dooley <conor.dooley@microchip.com>
-> ---
-> I had a 1.5 year old ack from Jason that I dropped due to the passage of
-> time.
+> [1] https://github.com/kendryte/k230_sdk
+> [2] https://github.com/cyyself/opensbi/tree/k230
+> [3] https://gist.github.com/cyyself/b9445f38cc3ba1094924bd41c9086176
 >
-> CC: Paul Walmsley <paul.walmsley@sifive.com>
-> CC: Palmer Dabbelt <palmer@dabbelt.com>
-> CC: Albert Ou <aou@eecs.berkeley.edu>
-> CC: Brendan Higgins <brendan.higgins@linux.dev>
-> CC: David Gow <davidgow@google.com>
-> CC: Rae Moar <rmoar@google.com>
-> CC: "Jason A. Donenfeld" <Jason@zx2c4.com>
-> CC: Shuah Khan <shuah@kernel.org>
-> CC: linux-riscv@lists.infradead.org
-> CC: linux-kernel@vger.kernel.org
-> CC: linux-kselftest@vger.kernel.org
-> CC: kunit-dev@googlegroups.com
-> CC: wireguard@lists.zx2c4.com
-> CC: netdev@vger.kernel.org
-> ---
->  arch/riscv/Kconfig.socs                                    | 3 ---
->  arch/riscv/configs/defconfig                               | 2 +-
->  arch/riscv/configs/nommu_virt_defconfig                    | 2 +-
->  tools/testing/kunit/qemu_configs/riscv.py                  | 2 +-
->  tools/testing/selftests/wireguard/qemu/arch/riscv32.config | 2 +-
->  tools/testing/selftests/wireguard/qemu/arch/riscv64.config | 2 +-
->  6 files changed, 5 insertions(+), 8 deletions(-)
+> Changes since v5:
+> - Deprecate SOC_CANAAN and use SOC_CANAAN_K210 for K210 SoCs
+> - Modify existing K210 drivers depends on SOC_CANAAN_K210 symbol
+> - Reword dts commit message
+> - Modify dts to use Full 512MB memory
+> - Rebase to linux mainline master
 >
-> diff --git a/arch/riscv/Kconfig.socs b/arch/riscv/Kconfig.socs
-> index e85ffb63c48d..dcbfb659839c 100644
-> --- a/arch/riscv/Kconfig.socs
-> +++ b/arch/riscv/Kconfig.socs
-> @@ -52,9 +52,6 @@ config ARCH_THEAD
->  	  This enables support for the RISC-V based T-HEAD SoCs.
+> Changes since v4:
+> - Reword commit message on dts that the B-ext version of c908 is 1.0 rather
+>   than 1.0-rc1
 >
->  config ARCH_VIRT
-> -	def_bool SOC_VIRT
-> -
-> -config SOC_VIRT
->  	bool "QEMU Virt Machine"
->  	select CLINT_TIMER if RISCV_M_MODE
->  	select POWER_RESET
-> diff --git a/arch/riscv/configs/defconfig b/arch/riscv/configs/defconfig
-> index ab3bab313d56..8d46a9137b1e 100644
-> --- a/arch/riscv/configs/defconfig
-> +++ b/arch/riscv/configs/defconfig
-> @@ -32,7 +32,7 @@ CONFIG_ARCH_SOPHGO=y
->  CONFIG_SOC_STARFIVE=y
->  CONFIG_ARCH_SUNXI=y
->  CONFIG_ARCH_THEAD=y
-> -CONFIG_SOC_VIRT=y
-> +CONFIG_ARCH_VIRT=y
->  CONFIG_SMP=y
->  CONFIG_HOTPLUG_CPU=y
->  CONFIG_PM=y
-> diff --git a/arch/riscv/configs/nommu_virt_defconfig b/arch/riscv/configs/nommu_virt_defconfig
-> index b794e2f8144e..de8143d1f738 100644
-> --- a/arch/riscv/configs/nommu_virt_defconfig
-> +++ b/arch/riscv/configs/nommu_virt_defconfig
-> @@ -24,7 +24,7 @@ CONFIG_EXPERT=y
->  CONFIG_SLUB=y
->  CONFIG_SLUB_TINY=y
->  # CONFIG_MMU is not set
-> -CONFIG_SOC_VIRT=y
-> +CONFIG_ARCH_VIRT=y
->  CONFIG_NONPORTABLE=y
->  CONFIG_SMP=y
->  CONFIG_CMDLINE="root=/dev/vda rw earlycon=uart8250,mmio,0x10000000,115200n8 console=ttyS0"
-> diff --git a/tools/testing/kunit/qemu_configs/riscv.py b/tools/testing/kunit/qemu_configs/riscv.py
-> index 12a1d525978a..c87758030ff7 100644
-> --- a/tools/testing/kunit/qemu_configs/riscv.py
-> +++ b/tools/testing/kunit/qemu_configs/riscv.py
-> @@ -13,7 +13,7 @@ if not os.path.isfile(OPENSBI_PATH):
+> v4: https://lore.kernel.org/linux-riscv/tencent_587730262984A011834F42D0563BC6B10405@qq.com/
 >
->  QEMU_ARCH = QemuArchParams(linux_arch='riscv',
->  			   kconfig='''
-> -CONFIG_SOC_VIRT=y
-> +CONFIG_ARCH_VIRT=y
->  CONFIG_SERIAL_8250=y
->  CONFIG_SERIAL_8250_CONSOLE=y
->  CONFIG_SERIAL_OF_PLATFORM=y
-> diff --git a/tools/testing/selftests/wireguard/qemu/arch/riscv32.config b/tools/testing/selftests/wireguard/qemu/arch/riscv32.config
-> index 2fc36efb166d..2500eaa9b469 100644
-> --- a/tools/testing/selftests/wireguard/qemu/arch/riscv32.config
-> +++ b/tools/testing/selftests/wireguard/qemu/arch/riscv32.config
-> @@ -2,7 +2,7 @@ CONFIG_NONPORTABLE=y
->  CONFIG_ARCH_RV32I=y
->  CONFIG_MMU=y
->  CONFIG_FPU=y
-> -CONFIG_SOC_VIRT=y
-> +CONFIG_ARCH_VIRT=y
->  CONFIG_SERIAL_8250=y
->  CONFIG_SERIAL_8250_CONSOLE=y
->  CONFIG_SERIAL_OF_PLATFORM=y
-> diff --git a/tools/testing/selftests/wireguard/qemu/arch/riscv64.config b/tools/testing/selftests/wireguard/qemu/arch/riscv64.config
-> index dc266f3b1915..29a67ac67766 100644
-> --- a/tools/testing/selftests/wireguard/qemu/arch/riscv64.config
-> +++ b/tools/testing/selftests/wireguard/qemu/arch/riscv64.config
-> @@ -1,7 +1,7 @@
->  CONFIG_ARCH_RV64I=y
->  CONFIG_MMU=y
->  CONFIG_FPU=y
-> -CONFIG_SOC_VIRT=y
-> +CONFIG_ARCH_VIRT=y
->  CONFIG_SERIAL_8250=y
->  CONFIG_SERIAL_8250_CONSOLE=y
->  CONFIG_SERIAL_OF_PLATFORM=y
+> Changes since v3:
+> - Refactor Kconfig.soc which uses ARCH_CANAAN for regular Canaan SoCs and
+>   rename SOC_CANAAN to SOC_CANAAN_K210 for K210 in patch [5/7]
+> - Sort dt-binding stings on Cannan SoCs in alphanumerical order
+>
+> v3: https://lore.kernel.org/linux-riscv/tencent_BB2364BBF1812F4E304F7BDDD11E57356605@qq.com/
+>
+> Changes since v2:
+> - Add MIT License to dts file
+> - Sort dt-binding stings in alphanumerical order
+> - Sort filename in dts Makefile in alphanumerical order
+> - Rename canmv-k230.dts to k230-canmv.dts
+>
+> v2: https://lore.kernel.org/linux-riscv/tencent_64A9B4B31C2D70D5633042461AC9F80C0509@qq.com/
+>
+> Changes since v1:
+> - Patch dt-bindings in clint and plic
+> - Use enum in K230 compatible dt bindings
+> - Fix dts to pass `make dtbs_check`
+> - Add more details in commit message
+>
+> v1: https://lore.kernel.org/linux-riscv/tencent_E15F8FE0B6769E6338AE690C7F4844A31706@qq.com/
+>
+> Yangyu Chen (11):
+>   dt-bindings: riscv: Add T-HEAD C908 compatible
+>   dt-bindings: add Canaan K230 boards compatible strings
+>   dt-bindings: timer: Add Canaan K230 CLINT
+>   dt-bindings: interrupt-controller: Add Canaan K230 PLIC
+>   riscv: Kconfig.socs: Split ARCH_CANAAN and SOC_CANAAN_K210
+>   soc: canaan: Deprecate SOC_CANAAN and use SOC_CANAAN_K210 for K210
+>   clk: k210: Deprecate SOC_CANAAN and use SOC_CANAAN_K210
+>   pinctrl: k210: Deprecate SOC_CANAAN and use SOC_CANAAN_K210
+>   reset: k210: Deprecate SOC_CANAAN and use SOC_CANAAN_K210
+>   riscv: dts: add initial canmv-k230 and k230-evb dts
+>   riscv: config: enable ARCH_CANAAN in defconfig
+>
+>  .../sifive,plic-1.0.0.yaml                    |   1 +
+>  .../devicetree/bindings/riscv/canaan.yaml     |   8 +-
+>  .../devicetree/bindings/riscv/cpus.yaml       |   1 +
+>  .../bindings/timer/sifive,clint.yaml          |   1 +
+>  arch/riscv/Kconfig.socs                       |   8 +-
+>  arch/riscv/Makefile                           |   2 +-
+>  arch/riscv/boot/dts/canaan/Makefile           |   2 +
+>  arch/riscv/boot/dts/canaan/k230-canmv.dts     |  24 +++
+>  arch/riscv/boot/dts/canaan/k230-evb.dts       |  24 +++
+>  arch/riscv/boot/dts/canaan/k230.dtsi          | 140 ++++++++++++++++++
+>  arch/riscv/configs/defconfig                  |   1 +
+>  arch/riscv/configs/nommu_k210_defconfig       |   3 +-
+>  .../riscv/configs/nommu_k210_sdcard_defconfig |   3 +-
+>  drivers/clk/Kconfig                           |   4 +-
+>  drivers/pinctrl/Kconfig                       |   4 +-
+>  drivers/reset/Kconfig                         |   4 +-
+>  drivers/soc/Makefile                          |   2 +-
+>  drivers/soc/canaan/Kconfig                    |   4 +-
+>  18 files changed, 220 insertions(+), 16 deletions(-)
+>  create mode 100644 arch/riscv/boot/dts/canaan/k230-canmv.dts
+>  create mode 100644 arch/riscv/boot/dts/canaan/k230-evb.dts
+>  create mode 100644 arch/riscv/boot/dts/canaan/k230.dtsi
+>
+> base-commit: 8e938e39866920ddc266898e6ae1fffc5c8f51aa
 
 Acked-by: Palmer Dabbelt <palmer@rivosinc.com>
 
