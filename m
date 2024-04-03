@@ -1,145 +1,137 @@
-Return-Path: <linux-kernel+bounces-130649-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-130650-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 90C61897AF0
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 23:42:23 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 05A6F897AF5
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 23:42:45 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 152E1B21184
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 21:42:21 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1822B1C26F18
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 21:42:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2B3BE18AF9;
-	Wed,  3 Apr 2024 21:42:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 32B1F15688B;
+	Wed,  3 Apr 2024 21:42:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="lGMlDuct"
-Received: from out-178.mta1.migadu.com (out-178.mta1.migadu.com [95.215.58.178])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="S+UUXE09"
+Received: from mail-yw1-f202.google.com (mail-yw1-f202.google.com [209.85.128.202])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5E3A2156868
-	for <linux-kernel@vger.kernel.org>; Wed,  3 Apr 2024 21:42:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EF87A156870
+	for <linux-kernel@vger.kernel.org>; Wed,  3 Apr 2024 21:42:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.202
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712180532; cv=none; b=s7xTjTB4RdunHAcg+1KBfgctHWL7PDXrr3bvgEOOScr8m6Ro40oRzcFsAFg1CeMTBoc0/zxdPrPcJngoYEoUurkA7MCOjEV1yg6O818e5NLKuNf2fMb+HbxoogwNszu8i00iXetTGYZ+exF001izugI88KoJArufU3TXcSuc708=
+	t=1712180556; cv=none; b=EUetJiB9da18MdRC93vKCWTYYd+vgUvT2HPLOFRnze7GMELCANrLou1KYOugCf81EDvGuPMwP54n7KBnt/qV9DWmO/rITw0Jt0ocq7txeuh/yjgbJgbcNsdmj7xGDTp14GGkVk1nsrGaUwqeSXh462OsReH/n9m1eO/jVKCQvKk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712180532; c=relaxed/simple;
-	bh=x+FV5GoB+NEz6+1MxtrN8DBzkMq3eDfL9fgL9YEpHyw=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=JIrBvvs/b9Oy3zxuhuVQooPyOmWgADusGWIYRsGs7zcgDAlNuMvfMtGzHQBQ56oFn5jjxyUViefu7xGX6Z+qCdUJdGVibp1dtvDQBdmePSZkHo5Jzbj6EqoGZUdqn4ApbZvXDe0b1PDwjpfJkPZLKYvAgDmcPS5ycyxBrbKKxnc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=lGMlDuct; arc=none smtp.client-ip=95.215.58.178
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Date: Wed, 3 Apr 2024 17:41:57 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1712180527;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=I8oAok5It38shVDkwL940Pa8qX3ifwx6XR6MQgkhnY4=;
-	b=lGMlDuctByVDszORVgYlbk2emZzNfH18lVbOM3PP8QqASVaLVaaVhE4vLYrvnQGixqKQn+
-	JoBwih61WSwFWMdg5hVCAoj/8hdJcJ9cfeJ6GbrYKLCxCnMqAOBy1GlT1ZzritCAT4+N6a
-	jWAURONL2YqX3Zp+MfY4wq5MmwF4PmI=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Kent Overstreet <kent.overstreet@linux.dev>
-To: Nathan Chancellor <nathan@kernel.org>
-Cc: Suren Baghdasaryan <surenb@google.com>, akpm@linux-foundation.org, 
-	mhocko@suse.com, vbabka@suse.cz, hannes@cmpxchg.org, roman.gushchin@linux.dev, 
-	mgorman@suse.de, dave@stgolabs.net, willy@infradead.org, liam.howlett@oracle.com, 
-	penguin-kernel@i-love.sakura.ne.jp, corbet@lwn.net, void@manifault.com, peterz@infradead.org, 
-	juri.lelli@redhat.com, catalin.marinas@arm.com, will@kernel.org, arnd@arndb.de, 
-	tglx@linutronix.de, mingo@redhat.com, dave.hansen@linux.intel.com, x86@kernel.org, 
-	peterx@redhat.com, david@redhat.com, axboe@kernel.dk, mcgrof@kernel.org, 
-	masahiroy@kernel.org, dennis@kernel.org, jhubbard@nvidia.com, tj@kernel.org, 
-	muchun.song@linux.dev, rppt@kernel.org, paulmck@kernel.org, pasha.tatashin@soleen.com, 
-	yosryahmed@google.com, yuzhao@google.com, dhowells@redhat.com, hughd@google.com, 
-	andreyknvl@gmail.com, keescook@chromium.org, ndesaulniers@google.com, 
-	vvvvvv@google.com, gregkh@linuxfoundation.org, ebiggers@google.com, 
-	ytcoode@gmail.com, vincent.guittot@linaro.org, dietmar.eggemann@arm.com, 
-	rostedt@goodmis.org, bsegall@google.com, bristot@redhat.com, vschneid@redhat.com, 
-	cl@linux.com, penberg@kernel.org, iamjoonsoo.kim@lge.com, 42.hyeyoo@gmail.com, 
-	glider@google.com, elver@google.com, dvyukov@google.com, songmuchun@bytedance.com, 
-	jbaron@akamai.com, aliceryhl@google.com, rientjes@google.com, minchan@google.com, 
-	kaleshsingh@google.com, kernel-team@android.com, linux-doc@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, iommu@lists.linux.dev, linux-arch@vger.kernel.org, 
-	linux-fsdevel@vger.kernel.org, linux-mm@kvack.org, linux-modules@vger.kernel.org, 
-	kasan-dev@googlegroups.com, cgroups@vger.kernel.org
-Subject: Re: [PATCH v6 01/37] fix missing vmalloc.h includes
-Message-ID: <4qk7f3ra5lrqhtvmipmacgzo5qwnugrfxn5dd3j4wubzwqvmv4@vzdhpalbmob3>
-References: <20240321163705.3067592-1-surenb@google.com>
- <20240321163705.3067592-2-surenb@google.com>
- <20240403211240.GA307137@dev-arch.thelio-3990X>
+	s=arc-20240116; t=1712180556; c=relaxed/simple;
+	bh=MfA2fO46lhLsDa7FeVjwGuSV2tB/w58dfCGAPaFO8U8=;
+	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
+	 To:Cc:Content-Type; b=WbqoameCCREnJxeuyBMnhQA0VF2bHt333z65vWH0YSAJBlNRit2kTKN19skpZ3WcUdeB6QSTcvOqowSzmwGqxLNQWkBpBJz2ST/a5MLudl6uh6WdxxYJDxNhQ0s+WZ8TC4ccdCAVmTTpmz4hzhafcGhjZdqby7q4rvrYOTO2rFg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=S+UUXE09; arc=none smtp.client-ip=209.85.128.202
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
+Received: by mail-yw1-f202.google.com with SMTP id 00721157ae682-6150e36ca0dso5912487b3.1
+        for <linux-kernel@vger.kernel.org>; Wed, 03 Apr 2024 14:42:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1712180554; x=1712785354; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=lUlMHgGwPaVmm9YD6Wuiedxqqf2KvncEVELWkk3e+OQ=;
+        b=S+UUXE09cJdUa81gZWcSfstzh9O9ww3wYPOyTSvYdQJRb5mvzwfQQ7MKnHFk0KA5Iq
+         u4/eHGfDy83TdOg7oJYv2VFfAHuAlnDyCsYFZ9XVd3w53YErRGQzAPjtNVJtdErmEhlX
+         yVsbHn1RnmxOxp5xclX5g681ohk7kam0vjJ+eWLSocD2o1uxA6K9axN79Pa0iEFYV8jI
+         OAs9jxtgYHmXQaTCjjpAo0f2lPX5nWjYa9hx6ELgnJsIt6egRGdx4IpQUNC9dDvWjw4+
+         2bdk9ET5dLLSqo5iMpSoABng8OkfEuO1bi3z867udnIgdYpOClJP8BHTdY4ancw0QAfa
+         H8ww==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712180554; x=1712785354;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=lUlMHgGwPaVmm9YD6Wuiedxqqf2KvncEVELWkk3e+OQ=;
+        b=BsgqaxgwxXiO9E/oD/0vVaM3YYZROy8uZX2xAgfd9XhBvaBjkxmnEQCLFY3uok6Rqy
+         Wngrk6Sqz54GEQHC7kfeOCTqAs/Wjsrv3/LYbKXreOFYhe6gHsbhpnepDR1VvolhYbSs
+         nNEdcDmN4XOfJUZL06vA8TLcSNk1L1qnSvjCg4RiPHmyY/Sf+VmAlpZFSMozj/N/QbCp
+         bZ9xFINU3g4xGe52BbqHgu8PZVMiYgsHOovICFY/1GARoV3WUfHxbnw2837ws1BMOKE8
+         K6LRvvcBi8CKT53Fb9NjJgldq9ke5ZCOAigjlUsnd9dl9ZHGTCL0mrBjcTOKQYx2CCWM
+         2NFA==
+X-Forwarded-Encrypted: i=1; AJvYcCVnmNYTytKG3wgc3v47ik2CJ0xc7mnFJNuYO77qGztBh8CsxE5YCv8RaWt5zJBAERGW1cFGkzPt1I2z0yw/aQLnbCoR1fAuPDTCF/d5
+X-Gm-Message-State: AOJu0YzgY/9t1z8tzMbOxBNGqBxcK/7juraLxPsViyc7m5Mja5go35Yx
+	DmEkMmQUOcgY0UXKEVi6wmDezvm5AOE6rpF+lQzSV/kQYkpIGeISIOPz9TXncW3XsG0YYiyP4KI
+	DRw==
+X-Google-Smtp-Source: AGHT+IHJ0aJM/2/LrQ2a81R9ZzCCLWbQnc2e93zBV1KvHULAXpNMMmDoIEmSZqsw6e8KfWoOaLDoSEDUKRM=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a05:6902:723:b0:dc6:c94e:fb85 with SMTP id
+ l3-20020a056902072300b00dc6c94efb85mr55084ybt.2.1712180553949; Wed, 03 Apr
+ 2024 14:42:33 -0700 (PDT)
+Date: Wed, 3 Apr 2024 21:42:32 +0000
+In-Reply-To: <ee54cd65-6fb7-4b59-a4bf-d7f661110a07@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240403211240.GA307137@dev-arch.thelio-3990X>
-X-Migadu-Flow: FLOW_OUT
+Mime-Version: 1.0
+References: <20240309012725.1409949-1-seanjc@google.com> <20240309012725.1409949-2-seanjc@google.com>
+ <2a369e6e229788f66fb2bbf8bc89552d86ba38b9.camel@intel.com>
+ <Zg2msDI9q_7GcwHk@google.com> <ee54cd65-6fb7-4b59-a4bf-d7f661110a07@intel.com>
+Message-ID: <Zg3NSI1Max1iHrAI@google.com>
+Subject: Re: [PATCH v6 1/9] x86/cpu: KVM: Add common defines for architectural
+ memory types (PAT, MTRRs, etc.)
+From: Sean Christopherson <seanjc@google.com>
+To: Kai Huang <kai.huang@intel.com>
+Cc: "luto@kernel.org" <luto@kernel.org>, "x86@kernel.org" <x86@kernel.org>, 
+	"dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>, "peterz@infradead.org" <peterz@infradead.org>, 
+	"bp@alien8.de" <bp@alien8.de>, "mingo@redhat.com" <mingo@redhat.com>, 
+	"tglx@linutronix.de" <tglx@linutronix.de>, "pbonzini@redhat.com" <pbonzini@redhat.com>, Xin3 Li <xin3.li@intel.com>, 
+	"kvm@vger.kernel.org" <kvm@vger.kernel.org>, Shan Kang <shan.kang@intel.com>, 
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
 
-On Wed, Apr 03, 2024 at 02:12:40PM -0700, Nathan Chancellor wrote:
-> On Thu, Mar 21, 2024 at 09:36:23AM -0700, Suren Baghdasaryan wrote:
-> > From: Kent Overstreet <kent.overstreet@linux.dev>
+On Thu, Apr 04, 2024, Kai Huang wrote:
+> On 4/04/2024 7:57 am, Sean Christopherson wrote:
+> > On Wed, Mar 27, 2024, Kai Huang wrote:
+> > > IIUC, the purpose of this patch is for the kernel to use X86_MEMTYPE_xx, which
+> > > are architectural values, where applicable?
 > > 
-> > The next patch drops vmalloc.h from a system header in order to fix
-> > a circular dependency; this adds it to all the files that were pulling
-> > it in implicitly.
+> > Maybe?  Probably?
 > > 
-> > Signed-off-by: Kent Overstreet <kent.overstreet@linux.dev>
-> > Signed-off-by: Suren Baghdasaryan <surenb@google.com>
-> > Reviewed-by: Pasha Tatashin <pasha.tatashin@soleen.com>
+> > > Yeah we need to keep MTRR_TYPE_xx in the uapi header, but in the kernel, should
+> > > we change all places that use MTRR_TYPE_xx to X86_MEMTYPE_xx?  The
+> > > static_assert()s above have guaranteed the two are the same, so there's nothing
+> > > wrong for the kernel to use X86_MEMTYPE_xx instead.
+> > > 
+> > > Both PAT_xx and VMX_BASIC_MEM_TYPE_xx to X86_MEMTYPE_xx, it seems a little bit
+> > > odd if we don't switch for MTRR_TYPE_xx.
+> > > 
+> > > However by simple search MEM_TYPE_xx are intensively used in many files, so...
+> > 
+> > Yeah, I definitely don't want to do it in this series due to the amount of churn
+> > that would be required.
+> > 
+> >    $ git grep MTRR_TYPE_ | wc -l
+> >    100
+> > 
+> > I'm not even entirely convinced that it would be a net positive.  Much of the KVM
+> > usage that's being cleaned up is flat out wrong, e.g. using "MTRR" enums in places
+> > that having nothing to do with MTRRs.  But the majority of the remaining usage is
+> > in MTRR code, i.e. isn't wrong, and is arguably better off using the MTRR specific
+> > #defines.
 > 
-> I bisected an error that I see when building ARCH=loongarch allmodconfig
-> to commit 302519d9e80a ("asm-generic/io.h: kill vmalloc.h dependency")
-> in -next, which tells me that this patch likely needs to contain
-> something along the following lines, as LoongArch was getting
-> include/linux/sizes.h transitively through the vmalloc.h include in
-> include/asm-generic/io.h.
+> Yeah understood.
+> 
+> But the patch title says we also "add common defines for ... MTRRs", so to
+> me looks we should get rid of MTRR_TPYE_xx and use the common ones instead.
+> And it also looks a little bit inconsistent if we remove the PAT_xx but keep
+> the MTRR_TYPE_xx.
+> 
+> Perhaps we can keep PAT_xx but add macros?
+> 
+>   #define PAT_UC	X86_MEMTYPE_UC
+>   ...
+> 
+> But looks not nice either because the only purpose is to keep the PAT_xx..
 
-gcc doesn't appear to be packaged for loongarch for debian (most other
-cross compilers are), so that's going to make it hard for me to test
-anything...
-
-> 
-> Cheers,
-> Nathan
-> 
->   In file included from arch/loongarch/include/asm/io.h:11,
->                    from include/linux/io.h:13,
->                    from arch/loongarch/mm/mmap.c:6:
->   include/asm-generic/io.h: In function 'ioport_map':
->   arch/loongarch/include/asm/addrspace.h:124:25: error: 'SZ_32M' undeclared (first use in this function); did you mean 'PS_32M'?
->     124 | #define PCI_IOSIZE      SZ_32M
->         |                         ^~~~~~
->   arch/loongarch/include/asm/addrspace.h:126:26: note: in expansion of macro 'PCI_IOSIZE'
->     126 | #define IO_SPACE_LIMIT  (PCI_IOSIZE - 1)
->         |                          ^~~~~~~~~~
->   include/asm-generic/io.h:1113:17: note: in expansion of macro 'IO_SPACE_LIMIT'
->    1113 |         port &= IO_SPACE_LIMIT;
->         |                 ^~~~~~~~~~~~~~
->   arch/loongarch/include/asm/addrspace.h:124:25: note: each undeclared identifier is reported only once for each function it appears in
->     124 | #define PCI_IOSIZE      SZ_32M
->         |                         ^~~~~~
->   arch/loongarch/include/asm/addrspace.h:126:26: note: in expansion of macro 'PCI_IOSIZE'
->     126 | #define IO_SPACE_LIMIT  (PCI_IOSIZE - 1)
->         |                          ^~~~~~~~~~
->   include/asm-generic/io.h:1113:17: note: in expansion of macro 'IO_SPACE_LIMIT'
->    1113 |         port &= IO_SPACE_LIMIT;
->         |                 ^~~~~~~~~~~~~~
-> 
-> diff --git a/arch/loongarch/include/asm/addrspace.h b/arch/loongarch/include/asm/addrspace.h
-> index b24437e28c6e..7bd47d65bf7a 100644
-> --- a/arch/loongarch/include/asm/addrspace.h
-> +++ b/arch/loongarch/include/asm/addrspace.h
-> @@ -11,6 +11,7 @@
->  #define _ASM_ADDRSPACE_H
->  
->  #include <linux/const.h>
-> +#include <linux/sizes.h>
->  
->  #include <asm/loongarch.h>
->  
+Ya, keeping PAT_* is the only option I strongly object to.  I have no problem
+replacing MTRR_TPYE_* usage, I would simply prefer not to do it in this series.
+And I obviously have no problem leaving the MTRR stuff as-is.
 
