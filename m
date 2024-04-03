@@ -1,151 +1,145 @@
-Return-Path: <linux-kernel+bounces-130550-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-130551-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1F1E28979CF
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 22:34:21 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id E978D8979DA
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 22:36:44 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5028A1C229C9
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 20:34:20 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A27B52839FC
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 20:36:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C8198155A47;
-	Wed,  3 Apr 2024 20:34:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B72FC15624B;
+	Wed,  3 Apr 2024 20:36:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Ts51uBLl"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.12])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ky6gCgaG"
+Received: from mail-wr1-f44.google.com (mail-wr1-f44.google.com [209.85.221.44])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9B5023D962
-	for <linux-kernel@vger.kernel.org>; Wed,  3 Apr 2024 20:34:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.12
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4EBCE155A59;
+	Wed,  3 Apr 2024 20:36:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712176455; cv=none; b=CfYC3W40f/ZglvUcBcHiRDASE5Aq2mX3RWNif5ALfwQ2h7J8nNjvakNnWnU2urh0IRpGjQAsl8IgcQ95zWdbcURXcYNt+8U18V37sFouD3H0tUQmY6su0eiDSV5CdTfVsPIH64JsfRoHfTpsZoZm7FicV2snNPE5bP8w2dvc68I=
+	t=1712176597; cv=none; b=nivbBkz1Ah6M/S4aFfMdf61J7WW82xCX+3OnT56gVP34d9KQ/Z4gnfuXUaQTHjwoj0CuNrTmaAroOM/z+cfEy7FkuJcMvXoMf9vKPC5rfdrRKw74MB7pJkXk6cd1QxG2ghVFUzyd3x/23uM6ER5haX+OGRL2MDv83cvoHL5fScM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712176455; c=relaxed/simple;
-	bh=iNJJnjzgzQWBTnvnE6WJBX2a6ctIu15cGqI86ZcU0zA=;
-	h=Date:From:To:Cc:Subject:Message-ID; b=l5F33S59TvDJO88q+d45EffB1ofUIginj/RGTjin5cvgu/dBbCuAdngWertfFAUZTxUjwpVsv+7oQP+0mbSnPf1jJGp6ra5hWhp4eixdGK0UNPdzbyYj0Nm4+SNOvLohhE4GDW+M3xdFdidzavmfLthjqKkaIrxspKFHY/dysFg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Ts51uBLl; arc=none smtp.client-ip=192.198.163.12
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1712176454; x=1743712454;
-  h=date:from:to:cc:subject:message-id;
-  bh=iNJJnjzgzQWBTnvnE6WJBX2a6ctIu15cGqI86ZcU0zA=;
-  b=Ts51uBLlbeEZJgipjS6e7tOgnH/A7FE3cV/oMjsMde4UcQd3JNCT43Nn
-   uSJ21saLa2UdJKZCfRaf80HFUoiA09UmZzbVYO8z3duFewxz7UvQtrwoI
-   eQyjTfnYo2XCKB6C1i2Ovwvwy6koMw+quvEOLe4uCSegCZ9hNKbMrGMdm
-   UgZdlY9Ao3WL5/kkhrKyclKHWmCOL+0iN8BrZQfxTxNW8iZxX209qSQRE
-   2GXts6wNaGY9IvJEDDvziPDm2rmOOVgpkiWW6TlOrV1dfH47M73b4asDr
-   pb51MSsZcfd9vUbbS99Hm/F5EnxqEaZT4jStDHxlVggHKkNd+P3rud12N
-   w==;
-X-CSE-ConnectionGUID: Rx84l5GLRJKgPyPRQuHLLw==
-X-CSE-MsgGUID: mVaeQveHSHiKMhangEAz/Q==
-X-IronPort-AV: E=McAfee;i="6600,9927,11033"; a="11212016"
-X-IronPort-AV: E=Sophos;i="6.07,177,1708416000"; 
-   d="scan'208";a="11212016"
-Received: from fmviesa004.fm.intel.com ([10.60.135.144])
-  by fmvoesa106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Apr 2024 13:34:13 -0700
-X-CSE-ConnectionGUID: /USgTaOOSo+8owL2ClnGEQ==
-X-CSE-MsgGUID: vOtZKSu+Tj+TvvWCtMxivQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,177,1708416000"; 
-   d="scan'208";a="23204644"
-Received: from lkp-server01.sh.intel.com (HELO e61807b1d151) ([10.239.97.150])
-  by fmviesa004.fm.intel.com with ESMTP; 03 Apr 2024 13:34:12 -0700
-Received: from kbuild by e61807b1d151 with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1rs7JB-0000D6-2n;
-	Wed, 03 Apr 2024 20:34:09 +0000
-Date: Thu, 04 Apr 2024 04:33:27 +0800
-From: kernel test robot <lkp@intel.com>
-To: "x86-ml" <x86@kernel.org>
-Cc: linux-kernel@vger.kernel.org
-Subject: [tip:perf/urgent] BUILD SUCCESS
- 312be9fc2234c8acfb8148a9f4c358b70d358dee
-Message-ID: <202404040425.t4jGSafU-lkp@intel.com>
-User-Agent: s-nail v14.9.24
+	s=arc-20240116; t=1712176597; c=relaxed/simple;
+	bh=XnZTwgLYOWz4MqCqFim9E7vD1JkNu9uS897oIjyxUHo=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=R+sQv8nSL9u451STTMc+A7ciRRkMpaIxs4RPB4smRJ+aPh6p+VJ6yg758CDew6VRhJjseAk6+6YDFmcSHlAdPwRUM79HUh+J3McMo+8Y6mttFVK6yKgSg0K9fcKfQ0zoPE3TINNaWfbD2ShMt5kBWSobANUK7LJKJNRmLc/xJeM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ky6gCgaG; arc=none smtp.client-ip=209.85.221.44
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wr1-f44.google.com with SMTP id ffacd0b85a97d-3437efea11eso139276f8f.1;
+        Wed, 03 Apr 2024 13:36:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1712176593; x=1712781393; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=xLEjGKF78CUq2PdbZJuwrHAC1zTdpWI7ya8sqwxy9m8=;
+        b=ky6gCgaG+46y1vNfY/ud+l7XK1OZ3nHK0eKlTgIcj4FP2pNeL+1k/C0t2iDRtVEAVU
+         06T2vs9uMNEjZBtguliJA+lHLbqUKI43IvFi5saOa57Lx3EsaWh6oStmmAcqu3J2hULY
+         W++3dnZqLnlO1W2RC/WAxdtzlNdQzhN2K/JFgrWGtQ5SxWFRUfz9kmlKHJs5f9eDVCVO
+         vh3891wTKOoBSl/lGb8k4HjbJ9ISabMSxTa8BLVTXBlRBqcssHyneSiHuyVkfxWDMLGu
+         aCqBu+vSb5jTSOiSsBPlcdSElOV20p46e7+CzziIzR00Vp2YD6138AKLMGJmxmPKR9Aw
+         11cg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712176593; x=1712781393;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=xLEjGKF78CUq2PdbZJuwrHAC1zTdpWI7ya8sqwxy9m8=;
+        b=b3Kd90WMDNscO8vAbVN6LZJBWphR6TdpCqMGnXYykWW15a8H1Bl4pe3FfQX2aV3Rp0
+         Fa6WEEQY59mf60+jtBVBoqHQnTTOfx9UoFWMT1W0vJm2t9dvH7v1zKh1PmbdNw6HN3cu
+         DtSUmsDHvo9HfDCEuMp7dmRjEVWUEHBjvZ8UJYhQZDgOPrMPrqH1qQfrrOZraRoufvaE
+         CWNA9ZePv/Qha4kRbum2fyYmZS1sTB1Sb/q4G1oIxdmMhe289jhaWQ0Ly1vZfysspYFK
+         /lbzKVW6NI1U2VIcakYUG2deICog/NujIHjy6cwCenpEAw+b1z19qk4T06FSrqkS5lfs
+         R1Ng==
+X-Forwarded-Encrypted: i=1; AJvYcCX/tdz6iQzqgTl5ktsuXfq+A54/7ZIw/08PxKDoCF9t49Gcse1Hezp32VhI7PGdqrn13QxjiSQrKYk0tOwW/dkA5ayq16tKqmLOhrCA/w3ckl76VHRqODWc/nnS4U6EmflhA5Kn+/ydMr4HIZS6
+X-Gm-Message-State: AOJu0Yyv3dAPqHVEtTAkqz2KkW4mE/zAetBBHMOeXB9LHZmGquhDdNaQ
+	vOxHeEE5ohM8p+pmCzovgQiyipQ+jdmIXI4wqaRqz+cpMOd4LZhH
+X-Google-Smtp-Source: AGHT+IGFrBKPW8fc9OizmttpoV1U88eOngqII6WaSNdlGNm5E5Z1fGV98RHkN3M5pqZK8yCujgoIsA==
+X-Received: by 2002:adf:a1da:0:b0:343:9d3a:cc2e with SMTP id v26-20020adfa1da000000b003439d3acc2emr433983wrv.0.1712176593283;
+        Wed, 03 Apr 2024 13:36:33 -0700 (PDT)
+Received: from prasmi.home ([2a00:23c8:2500:a01:5eb:3d93:f2b6:25e8])
+        by smtp.gmail.com with ESMTPSA id p4-20020a05600c468400b00415f496b9b7sm244910wmo.39.2024.04.03.13.36.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 03 Apr 2024 13:36:32 -0700 (PDT)
+From: Prabhakar <prabhakar.csengg@gmail.com>
+X-Google-Original-From: Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+To: Geert Uytterhoeven <geert+renesas@glider.be>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Rob Herring <robh@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Magnus Damm <magnus.damm@gmail.com>,
+	Paul Walmsley <paul.walmsley@sifive.com>,
+	Palmer Dabbelt <palmer@dabbelt.com>,
+	Albert Ou <aou@eecs.berkeley.edu>
+Cc: linux-kernel@vger.kernel.org,
+	devicetree@vger.kernel.org,
+	linux-renesas-soc@vger.kernel.org,
+	linux-riscv@lists.infradead.org,
+	Prabhakar <prabhakar.csengg@gmail.com>,
+	Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+Subject: [PATCH v2 0/5] Add IAX45 support for RZ/Five SoC
+Date: Wed,  3 Apr 2024 21:34:58 +0100
+Message-Id: <20240403203503.634465-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git perf/urgent
-branch HEAD: 312be9fc2234c8acfb8148a9f4c358b70d358dee  perf/x86/intel/ds: Don't clear ->pebs_data_cfg for the last PEBS event
+From: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
 
-elapsed time: 731m
+Hi All,
 
-configs tested: 59
-configs skipped: 134
+The IAX45 block on RZ/Five SoC is almost identical to the IRQC bock found
+on the RZ/G2L family of SoCs.
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+IAX45 performs various interrupt controls including synchronization for the
+external interrupts of NMI, IRQ, and GPIOINT and the interrupts of the
+built-in peripheral interrupts output by each module. And it notifies the
+interrupt to the PLIC.
+- Select 32 TINT from 82 GPIOINT.
+- Integration of bus error interrupts from system bus.
+- Integration of ECC error interrupts from On-chip RAM.
+- Indicate interrupt status. (NMI, IRQ, TINT, integrated bus error interrupt
+  and integrated ECC error interrupt)
+- Setting of interrupt detection method. (NMI, IRQ and TINT)
+- All interrupts are masked by INTMASK.
+- Mask function for NMI, IRQ and TINT
 
-tested configs:
-alpha                            allyesconfig   gcc  
-i386                             allmodconfig   gcc  
-i386                              allnoconfig   gcc  
-i386                             allyesconfig   gcc  
-i386         buildonly-randconfig-001-20240403   gcc  
-i386         buildonly-randconfig-002-20240403   clang
-i386         buildonly-randconfig-003-20240403   clang
-i386         buildonly-randconfig-004-20240403   clang
-i386         buildonly-randconfig-005-20240403   gcc  
-i386         buildonly-randconfig-006-20240403   clang
-i386                                defconfig   clang
-i386                  randconfig-001-20240403   gcc  
-i386                  randconfig-002-20240403   clang
-i386                  randconfig-003-20240403   gcc  
-i386                  randconfig-004-20240403   gcc  
-i386                  randconfig-005-20240403   clang
-i386                  randconfig-006-20240403   gcc  
-i386                  randconfig-011-20240403   gcc  
-i386                  randconfig-012-20240403   clang
-i386                  randconfig-013-20240403   gcc  
-i386                  randconfig-014-20240403   clang
-i386                  randconfig-015-20240403   gcc  
-i386                  randconfig-016-20240403   clang
-riscv                               defconfig   clang
-s390                              allnoconfig   clang
-s390                                defconfig   clang
-um                                allnoconfig   clang
-um                               allyesconfig   gcc  
-um                                  defconfig   clang
-um                           x86_64_defconfig   clang
-x86_64                            allnoconfig   clang
-x86_64                           allyesconfig   clang
-x86_64       buildonly-randconfig-001-20240403   gcc  
-x86_64       buildonly-randconfig-002-20240403   gcc  
-x86_64       buildonly-randconfig-003-20240403   clang
-x86_64       buildonly-randconfig-004-20240403   gcc  
-x86_64       buildonly-randconfig-005-20240403   clang
-x86_64       buildonly-randconfig-006-20240403   gcc  
-x86_64                              defconfig   gcc  
-x86_64                randconfig-001-20240403   gcc  
-x86_64                randconfig-002-20240403   clang
-x86_64                randconfig-003-20240403   gcc  
-x86_64                randconfig-004-20240403   gcc  
-x86_64                randconfig-005-20240403   gcc  
-x86_64                randconfig-006-20240403   clang
-x86_64                randconfig-011-20240403   gcc  
-x86_64                randconfig-012-20240403   gcc  
-x86_64                randconfig-013-20240403   gcc  
-x86_64                randconfig-014-20240403   gcc  
-x86_64                randconfig-015-20240403   gcc  
-x86_64                randconfig-016-20240403   gcc  
-x86_64                randconfig-071-20240403   clang
-x86_64                randconfig-072-20240403   gcc  
-x86_64                randconfig-073-20240403   clang
-x86_64                randconfig-074-20240403   gcc  
-x86_64                randconfig-075-20240403   gcc  
-x86_64                randconfig-076-20240403   gcc  
-x86_64                          rhel-8.3-rust   clang
-x86_64                               rhel-8.3   gcc  
+This patch series adds support for IAX45 in the IRQC driver and enables this
+on RZ/Five SoC.
+
+v1: https://patchwork.kernel.org/project/linux-renesas-soc/cover/20240129151618.90922-1-prabhakar.mahadev-lad.rj@bp.renesas.com/
+
+Cheers,
+Prabhakar
+
+Lad Prabhakar (5):
+  dt-bindings: interrupt-controller: renesas,rzg2l-irqc: Document
+    RZ/Five SoC
+  irqchip/renesas-rzg2l: Add support for RZ/Five SoC
+  riscv: dts: renesas: r9a07g043f: Add IRQC node to RZ/Five SoC DTSI
+  arm64: dts: renesas: r9a07g043: Move interrupt-parent property to
+    common DTSI
+  riscv: dts: renesas: rzfive-smarc-som: Drop deleting interrupt
+    properties from ETH0/1 nodes
+
+ .../renesas,rzg2l-irqc.yaml                   |  17 ++-
+ arch/arm64/boot/dts/renesas/r9a07g043.dtsi    |   1 +
+ arch/arm64/boot/dts/renesas/r9a07g043u.dtsi   |   4 -
+ arch/riscv/boot/dts/renesas/r9a07g043f.dtsi   |  75 ++++++++++
+ .../boot/dts/renesas/rzfive-smarc-som.dtsi    |  16 --
+ drivers/irqchip/irq-renesas-rzg2l.c           | 137 +++++++++++++++++-
+ 6 files changed, 218 insertions(+), 32 deletions(-)
 
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+2.34.1
+
 
