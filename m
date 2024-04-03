@@ -1,132 +1,103 @@
-Return-Path: <linux-kernel+bounces-129390-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-129412-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2E7C48969FF
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 11:06:43 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 719F3896A6A
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 11:24:29 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5F9F01C25D9F
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 09:06:42 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2B97B288DB4
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 09:24:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BDA807350C;
-	Wed,  3 Apr 2024 09:04:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 550557316D;
+	Wed,  3 Apr 2024 09:24:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="EL4Yk29I"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.16])
+	dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b="OXXcioEY"
+Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 726BB6F076;
-	Wed,  3 Apr 2024 09:04:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.16
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 814E45D731;
+	Wed,  3 Apr 2024 09:24:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.133.104.62
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712135096; cv=none; b=Ei9XbzqW4Q8sCrtULoMf3W2ZBDb/5uAbmrM/o6FMKbFcfZBrqKyck0TZNitNFIhszN9hKKyxE5mHJSelzOYDwszB5yI0NMc4w34htgelRaxpsXpoE54BTd1poFesguKAdtdujz5H/DrUlFc9XjIP9vDMSgAXP62HnmfACUnb59E=
+	t=1712136258; cv=none; b=tJ5Hb2YWZzLi7r8Z9kd+VglcLFI3rk6ORiqNRFa04zPJlil1QWTT0GlIBI15YY8J26MrW5PHqjeIvdeGI6fp0vslAzdzkEK+ZBfMnKXKT1fSJjAMcYmQ8/SsORPEe94m7vNm37fBF4OHHHWnzmXFHHlsvySEHV7wT0ik/REMt2A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712135096; c=relaxed/simple;
-	bh=3vfTelqA3yYRG96fAMrL2EeVlynnaMGtmej49RqpETA=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=XgPhKCfsIGEw2u2xTQvnnSeKK95OoZbm+jBebSurPJlXN+zT8V8Fq8dmpBl0KeEor6Z2QQ7CfxTDLF1hePL6Hy7n/f54345Bo3hzHK6LYhGTujU/BnoYVjZ/x5GS4pYkjdH6YUaXIzVCKLXIoZs/25oO3qPwoS9+t1HWlHsUEK8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=EL4Yk29I; arc=none smtp.client-ip=198.175.65.16
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1712135094; x=1743671094;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=3vfTelqA3yYRG96fAMrL2EeVlynnaMGtmej49RqpETA=;
-  b=EL4Yk29IeK6PyLDyUy+BkNN0z/cectJFnJumoVyxEvuwcFl4y0M5gtiQ
-   EXKDHFkGL0Qqwr/hvYGunK0cfdhsWGOAYysjzwIp+TLJWPVRZlwkYw6+E
-   MmgZ8umZVIl/7qSFyxAeHpCHmHSV5CR9NfOOtG8N6RKd6Vpp1/+ork43s
-   /qEaYbukpPsxQjjkbIQQu480wFnY5wfnf9vQIEjvY5xh/dAfg3vuebPd9
-   KuemOnObChOWB2yPtz7nH/EJ0ZiQEMQrGa3K8bTsLw0qWjPKNKW0RDJeM
-   XJfUa97GRiVPa3vqct+phlPVkqPRZbHkSCVECm1xzTDeGIhHOKQRLIMHX
-   A==;
-X-CSE-ConnectionGUID: k9lZ3D+JRKy4k2LkrYi8FQ==
-X-CSE-MsgGUID: Xr+aJUvvSh6z4bXs9Z32pg==
-X-IronPort-AV: E=McAfee;i="6600,9927,11032"; a="7480119"
-X-IronPort-AV: E=Sophos;i="6.07,177,1708416000"; 
-   d="scan'208";a="7480119"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by orvoesa108.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Apr 2024 02:04:53 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,11032"; a="915175028"
-X-IronPort-AV: E=Sophos;i="6.07,177,1708416000"; 
-   d="scan'208";a="915175028"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.72.54])
-  by fmsmga002.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Apr 2024 02:04:47 -0700
-Received: from andy by smile with local (Exim 4.97)
-	(envelope-from <andriy.shevchenko@linux.intel.com>)
-	id 1rrwY1-000000014L0-0vqT;
-	Wed, 03 Apr 2024 12:04:45 +0300
-Date: Wed, 3 Apr 2024 12:04:44 +0300
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To: Arnd Bergmann <arnd@kernel.org>
-Cc: linux-kernel@vger.kernel.org, Mark Brown <broonie@kernel.org>,
-	Neil Armstrong <neil.armstrong@linaro.org>,
-	Kevin Hilman <khilman@baylibre.com>,
-	Heiko Stuebner <heiko@sntech.de>,
-	Andi Shyti <andi.shyti@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-	Arnd Bergmann <arnd@arndb.de>, Jerome Brunet <jbrunet@baylibre.com>,
-	Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
-	Alim Akhtar <alim.akhtar@samsung.com>,
-	Li Zetao <lizetao1@huawei.com>,
-	Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-	Rob Herring <robh@kernel.org>,
-	Yang Yingliang <yangyingliang@huawei.com>,
-	Luis de Arquer <luis.dearquer@inertim.com>,
-	Tudor Ambarus <tudor.ambarus@linaro.org>,
-	Sam Protsenko <semen.protsenko@linaro.org>,
-	Peter Griffin <peter.griffin@linaro.org>,
-	Jaewon Kim <jaewon02.kim@samsung.com>, linux-spi@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org,
-	linux-amlogic@lists.infradead.org,
-	linux-rockchip@lists.infradead.org,
-	linux-samsung-soc@vger.kernel.org
-Subject: Re: [PATCH 31/34] spi: remove incorrect of_match_ptr annotations
-Message-ID: <Zg0brIClNuW_Ur1B@smile.fi.intel.com>
-References: <20240403080702.3509288-1-arnd@kernel.org>
- <20240403080702.3509288-32-arnd@kernel.org>
+	s=arc-20240116; t=1712136258; c=relaxed/simple;
+	bh=3al6tDwI5lYdDTOMG5dHRvUWH7Kdpwnyp2UDmKmWL6w=;
+	h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
+	 In-Reply-To:Content-Type; b=GQ5LhfI6vgQMONGgVNE+MPfzvQl712OuPW3PHnQwBdummFbrENGT3eFLqWh12WkWpXou2TOuBc878j7cAhrTRnzPseqDIiqJjdbCamRn6jgFetgbeplo928bJ8fH4ZiL2H0WNSy3qgK50nH9NwFzQ0ib/lDkSodQYc4SLbxrtwQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net; spf=pass smtp.mailfrom=iogearbox.net; dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b=OXXcioEY; arc=none smtp.client-ip=213.133.104.62
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=iogearbox.net
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=iogearbox.net; s=default2302; h=Content-Transfer-Encoding:Content-Type:
+	In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
+	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID;
+	bh=fFNSyki+Dgz7V/b1k4oyzhBUT89XBpD9mCte8VdggJ4=; b=OXXcioEYxBmZIcDa+w1dKhpXxa
+	FtRL+g2c5eaj86MogF9DeEPpfGlAcGjCm2Vsi/NqeoBE9w73r301LM1Gg1ikoyjXeKkLBqJeEq1fv
+	OIIiR9kYfaTdzGaUAbeGnkM1RmdMIGeVOFelkI0VRQ9sY9QaxrBLXKDAOamckFfK8cBHrOcb60bAF
+	28FD5HfJBkM80lc0J7e4u4IlNL6QBmWvkBptT1b6JFkgw2Rc8n8R85/gGjb7bhBqwB7IHVlp1JgDm
+	MdRdUeXNHOsrRWx8JAhRebrfqSI72bc2Q1Qh2+q5+dF7QtJFg68Wb/NEK1P0AsLSOq9fqhq2d8iGV
+	IYNfxEtg==;
+Received: from sslproxy03.your-server.de ([88.198.220.132])
+	by www62.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
+	(Exim 4.94.2)
+	(envelope-from <daniel@iogearbox.net>)
+	id 1rrwY7-0009g5-O2; Wed, 03 Apr 2024 11:04:51 +0200
+Received: from [178.197.248.12] (helo=linux.home)
+	by sslproxy03.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
+	(Exim 4.96)
+	(envelope-from <daniel@iogearbox.net>)
+	id 1rrwY7-000CJ1-0b;
+	Wed, 03 Apr 2024 11:04:51 +0200
+Subject: Re: [PATCH RESEND bpf v2 0/2] x86/bpf: Fixes for the BPF JIT with
+ retbleed=stuff
+To: Ingo Molnar <mingo@kernel.org>, Uros Bizjak <ubizjak@gmail.com>
+Cc: patchwork-bot+netdevbpf@kernel.org, ast@kernel.org, x86@kernel.org,
+ bpf@vger.kernel.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20240401185821.224068-1-ubizjak@gmail.com>
+ <171203102833.24910.7566029980709800852.git-patchwork-notify@kernel.org>
+ <Zg0EtEkIIA45cuPT@gmail.com>
+ <CAFULd4Z0RmiWu4Kf0YFBMqA7YFMd65f3J760Do8-h83zWCx9oA@mail.gmail.com>
+ <Zg0Mvb6kkHceEENb@gmail.com>
+From: Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <504a2e70-3bd5-a9f0-60ec-49c4b17566ae@iogearbox.net>
+Date: Wed, 3 Apr 2024 11:04:50 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240403080702.3509288-32-arnd@kernel.org>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+In-Reply-To: <Zg0Mvb6kkHceEENb@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.103.10/27234/Wed Apr  3 10:25:27 2024)
 
-On Wed, Apr 03, 2024 at 10:06:49AM +0200, Arnd Bergmann wrote:
-> From: Arnd Bergmann <arnd@arndb.de>
+On 4/3/24 10:01 AM, Ingo Molnar wrote:
+> * Uros Bizjak <ubizjak@gmail.com> wrote:
 > 
-> When building with CONFIG_OF  disabled but W=1 extra warnings enabled,
-> a couple of driver cause a warning about an unused ID table:
+>>>> Here is the summary with links:
+>>>>    - [RESEND,bpf,v2,1/2] x86/bpf: Fix IP after emitting call depth accounting
+>>>>      https://git.kernel.org/bpf/bpf/c/9d98aa088386
+>>>>    - [RESEND,bpf,v2,2/2] x86/bpf: Fix IP for relocating call depth accounting
+>>>>      https://git.kernel.org/bpf/bpf/c/6a537453000a
+>>>
+>>> Just wondering, which kernel version is this targeted for?
+>>
+>> The whole series is intended for the current mainline (v6.9), this is
+>> why it is developed against the bpf (*not* bpf-next) branch.
 > 
-> drivers/spi/spi-armada-3700.c:806:34: error: unused variable 'a3700_spi_dt_ids' [-Werror,-Wunused-const-variable]
-> drivers/spi/spi-orion.c:614:34: error: unused variable 'orion_spi_of_match_table' [-Werror,-Wunused-const-variable]
-> drivers/spi/spi-pic32-sqi.c:673:34: error: unused variable 'pic32_sqi_of_ids' [-Werror,-Wunused-const-variable]
-> drivers/spi/spi-pic32.c:850:34: error: unused variable 'pic32_spi_of_match' [-Werror,-Wunused-const-variable]
-> drivers/spi/spi-rockchip.c:1020:34: error: unused variable 'rockchip_spi_dt_match' [-Werror,-Wunused-const-variable]
-> drivers/spi/spi-s3c64xx.c:1642:34: error: unused variable 's3c64xx_spi_dt_match' [-Werror,-Wunused-const-variable]
-> drivers/spi/spi-st-ssc4.c:439:34: error: unused variable 'stm_spi_match' [-Werror,-Wunused-const-variable]
+> I see - so bpf.git:master are current-mainline BPF fixes - that's perfect.
 
-I would drop these 'drivers/spi/' parts as we know they are all in the same folder.
+Yes, correct, that is for mainline (v6.9).
 
-> These appear to all be copied from the same original driver, so fix them at the
-> same time by removing the unnecessary of_match_ptr() annotation. As far as I
-> can tell, all these drivers are only actually used on configurations that
-> have CONFIG_OF enabled.
-
-LGTM,
-Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-
--- 
-With Best Regards,
-Andy Shevchenko
-
-
+Thanks,
+Daniel
 
