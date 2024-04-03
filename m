@@ -1,57 +1,55 @@
-Return-Path: <linux-kernel+bounces-130295-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-130296-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 218A9897681
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 19:25:48 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D107E897683
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 19:26:04 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B39F21F21C2C
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 17:25:47 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8C02D28FCB5
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 17:26:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AC56A1581EA;
-	Wed,  3 Apr 2024 17:17:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3057A1581E2;
+	Wed,  3 Apr 2024 17:17:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Btoww99A"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="M1nTITZi"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E5287157E98;
-	Wed,  3 Apr 2024 17:17:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6F0601581F4;
+	Wed,  3 Apr 2024 17:17:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712164662; cv=none; b=ajlFmX8F5FvDR5e7Fbdd/L3oQSE1giMkMsCuVKMC08WFD0bSebN7vfFnGmXx9P+TraOSYiHxgZyA/hG2pJzmpmNFdKwJQWxDKJdXyxMMulOIrHfI4ph5bIpqjJF6xuUDyd+kpW0m9ZmNhBX+7UpiqnjwnuR1hW4vujVhXDOmwsg=
+	t=1712164663; cv=none; b=k4Qi6u2JbMzcOTfYWbj7UPH11+9sGQbBYvpvKUp/tqpp3+CPIzvK2QaAlUaLypcmz/bfG0D9TJMUKifEa6h5C1mvSIs0w1r14mx/k6dMYKfTu0WVq/xF4VDL8B64pmQCNWmzMj/lzcVSsjtRbHcGYJm6hP7ktDeTwtgfPs0IJLM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712164662; c=relaxed/simple;
-	bh=KGum2UiFM/XeeIttcKMIY9uAmatsd+1YLL7DOdMp7+8=;
+	s=arc-20240116; t=1712164663; c=relaxed/simple;
+	bh=jUMQM1qumpMph/aJKqbsMFR8Ws+mcLBqgJ36G8BzKyY=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=mQMXQ7HXpEfeRQ2mv/MvGglubAT5Kyfrs9l+ePXCeUp05jyrYOdvII5XPnU/o4jFy+LOmcbxN2/vF4xCvL0g3k6SkH9PsNqm8TXtrAd6DOrvGKofGdZQB5e8qVRoAAjz0MuCNFqJMKzx/hLbYnADjyOYmAfdV7lETdP3VlwRyUQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Btoww99A; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E34BDC433C7;
-	Wed,  3 Apr 2024 17:17:40 +0000 (UTC)
+	 MIME-Version; b=SfkXLTQMHoR0X/ToSr1Cs6PgW9Qns9WI2WhqzDEcck5+ah4HHIXriabtd9Lz1DB9fsxCuLy4e000S/u+J3eDBK08x07mAVok27E9ou3jcqR1OrFkmFPwzBJIDkXnDMcGee8yU2NP1KzdjrDHn1+7dOY5WkPPK1icy05iDU5UuLU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=M1nTITZi; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 38039C433F1;
+	Wed,  3 Apr 2024 17:17:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712164661;
-	bh=KGum2UiFM/XeeIttcKMIY9uAmatsd+1YLL7DOdMp7+8=;
+	s=k20201202; t=1712164662;
+	bh=jUMQM1qumpMph/aJKqbsMFR8Ws+mcLBqgJ36G8BzKyY=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=Btoww99AWM2bjTJCml6pfB/UFaa6gDGrradiZKVSUdd/DRrfJV+XLt8zuyFfK8056
-	 TRXz66vQ3G13mDUnKyqU0DmBtccFZNiOInyRBP2Vab5Df58glGie9c7RjNCdEEO5Bv
-	 PeEWQjOLA1LV0E/c6fYOB5If04g5VW3jd3hQ8gxNoVn2VqiMPV7/L7kOpOP/jGVrYS
-	 g8w9Yt2iwXrsbMpz/2oJ0q/Mn+X483OdWf6H8ETwZBBDrlN9K/X+BpefZI5B6Yr2N8
-	 Z3+8tBtNus0naJsuY5CNRuaC4fYny1qzg192wddjOhOaa1QRjlvbqMcNIvpb9D396L
-	 J3yNnBjFORlyQ==
+	b=M1nTITZiVWNxawWGeDyLXPKK+bCr8zvxzLYdELM9OgqK5I66bGSeZuuLkWbmyqyU+
+	 tck3iNwTDgox5qZsJkETh8IfgtFdaTd75pj0WhVfTizXMOmc2S+erQ1ktqdUbutdm9
+	 NF9hESOAAVjAxlxEkrqS75Epmo0N+LGE82ghA0Ie3d0uCfHuiP89PW3sLJOgmVAh5K
+	 +/NgwLna6+NOiyYcqBKs44W03lmS+nJ+Tgju2s2BHeuwu1SCyfqk6r48Z4n0i58FBv
+	 jn454VaEV19xPsoUKCaxUaYDISRbcidTfG1JjZSmwwgmVPZvOmM94ZmZ+RoqQSgr77
+	 zB+Kvb8Nfi3Dg==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Aleksandr Burakov <a.burakov@rosalinux.ru>,
-	Helge Deller <deller@gmx.de>,
+Cc: Jens Axboe <axboe@kernel.dk>,
+	syzbot+f8e9a371388aa62ecab4@syzkaller.appspotmail.com,
 	Sasha Levin <sashal@kernel.org>,
-	FlorianSchandinat@gmx.de,
-	linux-fbdev@vger.kernel.org,
-	dri-devel@lists.freedesktop.org
-Subject: [PATCH AUTOSEL 6.8 21/28] fbdev: viafb: fix typo in hw_bitblt_1 and hw_bitblt_2
-Date: Wed,  3 Apr 2024 13:16:23 -0400
-Message-ID: <20240403171656.335224-21-sashal@kernel.org>
+	io-uring@vger.kernel.org
+Subject: [PATCH AUTOSEL 6.8 22/28] io_uring: clear opcode specific data for an early failure
+Date: Wed,  3 Apr 2024 13:16:24 -0400
+Message-ID: <20240403171656.335224-22-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240403171656.335224-1-sashal@kernel.org>
 References: <20240403171656.335224-1-sashal@kernel.org>
@@ -66,45 +64,103 @@ X-Patchwork-Hint: Ignore
 X-stable-base: Linux 6.8.3
 Content-Transfer-Encoding: 8bit
 
-From: Aleksandr Burakov <a.burakov@rosalinux.ru>
+From: Jens Axboe <axboe@kernel.dk>
 
-[ Upstream commit bc87bb342f106a0402186bcb588fcbe945dced4b ]
+[ Upstream commit e21e1c45e1fe2e31732f40256b49c04e76a17cee ]
 
-There are some actions with value 'tmp' but 'dst_addr' is checked instead.
-It is obvious that a copy-paste error was made here and the value
-of variable 'tmp' should be checked here.
+If failure happens before the opcode prep handler is called, ensure that
+we clear the opcode specific area of the request, which holds data
+specific to that request type. This prevents errors where opcode
+handlers either don't get to clear per-request private data since prep
+isn't even called.
 
-Found by Linux Verification Center (linuxtesting.org) with SVACE.
-
-Signed-off-by: Aleksandr Burakov <a.burakov@rosalinux.ru>
-Signed-off-by: Helge Deller <deller@gmx.de>
+Reported-and-tested-by: syzbot+f8e9a371388aa62ecab4@syzkaller.appspotmail.com
+Signed-off-by: Jens Axboe <axboe@kernel.dk>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/video/fbdev/via/accel.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ io_uring/io_uring.c | 25 ++++++++++++++++---------
+ 1 file changed, 16 insertions(+), 9 deletions(-)
 
-diff --git a/drivers/video/fbdev/via/accel.c b/drivers/video/fbdev/via/accel.c
-index 0a1bc7a4d7853..1e04026f08091 100644
---- a/drivers/video/fbdev/via/accel.c
-+++ b/drivers/video/fbdev/via/accel.c
-@@ -115,7 +115,7 @@ static int hw_bitblt_1(void __iomem *engine, u8 op, u32 width, u32 height,
+diff --git a/io_uring/io_uring.c b/io_uring/io_uring.c
+index cd9a137ad6cef..42e27ad5fd828 100644
+--- a/io_uring/io_uring.c
++++ b/io_uring/io_uring.c
+@@ -2159,6 +2159,13 @@ static void io_init_req_drain(struct io_kiocb *req)
+ 	}
+ }
  
- 	if (op != VIA_BITBLT_FILL) {
- 		tmp = src_mem ? 0 : src_addr;
--		if (dst_addr & 0xE0000007) {
-+		if (tmp & 0xE0000007) {
- 			printk(KERN_WARNING "hw_bitblt_1: Unsupported source "
- 				"address %X\n", tmp);
- 			return -EINVAL;
-@@ -260,7 +260,7 @@ static int hw_bitblt_2(void __iomem *engine, u8 op, u32 width, u32 height,
- 		writel(tmp, engine + 0x18);
++static __cold int io_init_fail_req(struct io_kiocb *req, int err)
++{
++	/* ensure per-opcode data is cleared if we fail before prep */
++	memset(&req->cmd.data, 0, sizeof(req->cmd.data));
++	return err;
++}
++
+ static int io_init_req(struct io_ring_ctx *ctx, struct io_kiocb *req,
+ 		       const struct io_uring_sqe *sqe)
+ 	__must_hold(&ctx->uring_lock)
+@@ -2179,29 +2186,29 @@ static int io_init_req(struct io_ring_ctx *ctx, struct io_kiocb *req,
  
- 		tmp = src_mem ? 0 : src_addr;
--		if (dst_addr & 0xE0000007) {
-+		if (tmp & 0xE0000007) {
- 			printk(KERN_WARNING "hw_bitblt_2: Unsupported source "
- 				"address %X\n", tmp);
- 			return -EINVAL;
+ 	if (unlikely(opcode >= IORING_OP_LAST)) {
+ 		req->opcode = 0;
+-		return -EINVAL;
++		return io_init_fail_req(req, -EINVAL);
+ 	}
+ 	def = &io_issue_defs[opcode];
+ 	if (unlikely(sqe_flags & ~SQE_COMMON_FLAGS)) {
+ 		/* enforce forwards compatibility on users */
+ 		if (sqe_flags & ~SQE_VALID_FLAGS)
+-			return -EINVAL;
++			return io_init_fail_req(req, -EINVAL);
+ 		if (sqe_flags & IOSQE_BUFFER_SELECT) {
+ 			if (!def->buffer_select)
+-				return -EOPNOTSUPP;
++				return io_init_fail_req(req, -EOPNOTSUPP);
+ 			req->buf_index = READ_ONCE(sqe->buf_group);
+ 		}
+ 		if (sqe_flags & IOSQE_CQE_SKIP_SUCCESS)
+ 			ctx->drain_disabled = true;
+ 		if (sqe_flags & IOSQE_IO_DRAIN) {
+ 			if (ctx->drain_disabled)
+-				return -EOPNOTSUPP;
++				return io_init_fail_req(req, -EOPNOTSUPP);
+ 			io_init_req_drain(req);
+ 		}
+ 	}
+ 	if (unlikely(ctx->restricted || ctx->drain_active || ctx->drain_next)) {
+ 		if (ctx->restricted && !io_check_restriction(ctx, req, sqe_flags))
+-			return -EACCES;
++			return io_init_fail_req(req, -EACCES);
+ 		/* knock it to the slow queue path, will be drained there */
+ 		if (ctx->drain_active)
+ 			req->flags |= REQ_F_FORCE_ASYNC;
+@@ -2214,9 +2221,9 @@ static int io_init_req(struct io_ring_ctx *ctx, struct io_kiocb *req,
+ 	}
+ 
+ 	if (!def->ioprio && sqe->ioprio)
+-		return -EINVAL;
++		return io_init_fail_req(req, -EINVAL);
+ 	if (!def->iopoll && (ctx->flags & IORING_SETUP_IOPOLL))
+-		return -EINVAL;
++		return io_init_fail_req(req, -EINVAL);
+ 
+ 	if (def->needs_file) {
+ 		struct io_submit_state *state = &ctx->submit_state;
+@@ -2240,12 +2247,12 @@ static int io_init_req(struct io_ring_ctx *ctx, struct io_kiocb *req,
+ 
+ 		req->creds = xa_load(&ctx->personalities, personality);
+ 		if (!req->creds)
+-			return -EINVAL;
++			return io_init_fail_req(req, -EINVAL);
+ 		get_cred(req->creds);
+ 		ret = security_uring_override_creds(req->creds);
+ 		if (ret) {
+ 			put_cred(req->creds);
+-			return ret;
++			return io_init_fail_req(req, ret);
+ 		}
+ 		req->flags |= REQ_F_CREDS;
+ 	}
 -- 
 2.43.0
 
