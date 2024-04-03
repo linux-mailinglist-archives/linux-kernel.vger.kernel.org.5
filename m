@@ -1,204 +1,140 @@
-Return-Path: <linux-kernel+bounces-130657-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-130658-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 44DD8897B09
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 23:48:39 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id ABA88897B13
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 23:54:20 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 689651C2139C
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 21:48:38 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 62B8F289E8E
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 21:54:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BAFA6156972;
-	Wed,  3 Apr 2024 21:48:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B6459156966;
+	Wed,  3 Apr 2024 21:54:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="SiyvBdNC"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="PQW+IFZ0"
+Received: from mail-pf1-f177.google.com (mail-pf1-f177.google.com [209.85.210.177])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4231C156898
-	for <linux-kernel@vger.kernel.org>; Wed,  3 Apr 2024 21:48:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 18331156868
+	for <linux-kernel@vger.kernel.org>; Wed,  3 Apr 2024 21:54:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712180901; cv=none; b=LivWNvsaIjLXHZOIxUz37rKCVapsPYjlt0ZYgZcGdp28Gca6n0ZXdN6emTPTnNOYh3ybeovRR036d/NcOkaqOmuWuxJkb5umimpluxgvIi0eIvXGAEbel7Jx5rfHSBWgzSQq61hUA2vxYxj8qCoOwfaiCTS6GW2SykHR4dLiV7g=
+	t=1712181248; cv=none; b=l1jwP8um37NxR0VIW2EFHStDoV/q+uJlGQrKH0RGtz6MAlKKri8KsxgO6vQOmITmvDfEqTDlJQ7NEDcVQN4/uUMDw0KfOfb/nzx8MOzDPC/hhnWGhO/PVZlgq9cXnHZuXMQXoobwwed+gTPYJD8u6uPBhb2HmtDzCFCjpBzJGo0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712180901; c=relaxed/simple;
-	bh=BqZpofoUBdW4e3DpxG0Cp4X48XFGsT+PuZo9ERGPPnY=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=T9Wl0rqn022iAQDYilIklbHmsr5D9ZYtf8gd0jrE9IuV9vyDTYHmFAUdFMQvIAmNZOsKKAuM7a525TBn0mUZ93KChvTTjNvwZgQOpJJuPVqDDxISl7ob3q1VdqGjqPFsYe5BXjw9BWQpgVrVMiyFw6ONhoxG7PRuFI9DRG4L/8M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=SiyvBdNC; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1712180899;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=LM3COUWIzPT7dnAZypNco51j1yiA/TG+7IxlzkxR5z4=;
-	b=SiyvBdNCpKNnFrVxfrdm/pIUqZiOkizX6MfdWslMVEdk2m2OEXL1N35SGN7Sl5VZfI1aDk
-	kFs0fQmSmmCzeBBX4/1I9PWh7q1alMzAHFfezKkMEkoMZCF/SLwkNCGVi+CMJGhi0uEwQO
-	olV2638SlS1DbRtZCzTb4efgTcJwfJM=
-Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
- [209.85.221.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-59-sHf13CKoNQq6uwnSHePIow-1; Wed, 03 Apr 2024 17:48:17 -0400
-X-MC-Unique: sHf13CKoNQq6uwnSHePIow-1
-Received: by mail-wr1-f72.google.com with SMTP id ffacd0b85a97d-3435b7d65efso162437f8f.1
-        for <linux-kernel@vger.kernel.org>; Wed, 03 Apr 2024 14:48:17 -0700 (PDT)
+	s=arc-20240116; t=1712181248; c=relaxed/simple;
+	bh=iQVFWLJ69AonJ7RrN7NlN9bDUbprCHUU+71zAbs8w88=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=VMoQT9iFLjNS+XDo94ZNYH++MUfw0tFyWpL0Af0JI/bt3EzGnIC9qr8H/Z27EMrvMBfQzfJIzyM76QoYxP3rjR4l9oYLI8/6P7SPVxIHs8ua0wliS++gxVfSdoM45nUO6abkP3NPNhyjqG1pWmI050y/bnSlHIA9mAtJ/Q3ppHg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=PQW+IFZ0; arc=none smtp.client-ip=209.85.210.177
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
+Received: by mail-pf1-f177.google.com with SMTP id d2e1a72fcca58-6e73e8bdea2so263153b3a.0
+        for <linux-kernel@vger.kernel.org>; Wed, 03 Apr 2024 14:54:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1712181245; x=1712786045; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=wyoDF56le3EvhIDIgPf2lEDUDtLNrgDGJWIz/J9qO5g=;
+        b=PQW+IFZ09fblZdzdxMXsNTwJ1d9sQKB6IQY0K7DEgdcgNwcnESw/cZeSPp9urjz/3L
+         hT6dN1tQJ580PILYblLxRS19UGTTev0J2IAIWqYECfq6zSskempfBRBVTKnDZmRj+SMz
+         ZwZPywybjChY9kdPpqJktYVgEApilSG2cq6wg=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712180897; x=1712785697;
-        h=content-transfer-encoding:in-reply-to:organization:autocrypt
-         :content-language:from:references:cc:to:subject:user-agent
-         :mime-version:date:message-id:x-gm-message-state:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=LM3COUWIzPT7dnAZypNco51j1yiA/TG+7IxlzkxR5z4=;
-        b=ux77USBA7DI6M8Tv/qjSaWAvixCySm7nIe7tdIGGCHe/XtgJvs1NAcTZHgx51DlL5L
-         +SYH2dYGl5+Uuq0Uz1KuMw5pOmGamgTd579krmIiYE8NButhNHDmh0TylA/dLYIpxMlJ
-         +PpDwUm9UkDYayUuZJsH+VLZ3lwIDvik8bKCN7QvNfmegK+5V12qgc1V7tdbgG3lomUk
-         vhZtNsui7m7p4+BEZj9Yd/3Ff9YiTjQYwgnDS4n0WeucoYpuSYhxYyJyrS0/RvmSSIF/
-         DTVqZ5KIhnwHqhUPb9VI0tE0y6aJ9oaPhCsI1C1NX3GS5qjFMQ/l/cV/PTqWrsLJFkeZ
-         ZMlg==
-X-Forwarded-Encrypted: i=1; AJvYcCXEqn1RTpLnJzZ4oGw1TBgtIYYAUdH/ae7bNtRlIRt+Pz7iHhnYIYv75CuYJimE3l/tD2MOUiaeIaZ1n7jPaYMQMmLKejD+yXxTkY+z
-X-Gm-Message-State: AOJu0Yzl2DNJGLaH/evu3naF6prNo8e4I4z+2JTM2aE/bXX0Kd1tcvLx
-	jI/G3OXFHMGBuWjuUGbARTBCN0fiqZzYszhPMZgSxvNzx2ljpiQKP2rRCqQFoRhP6nVh50UUyUF
-	n2H3uxFwBOc7Z97Hr21U04lZ5iVl7oFRM97k8cwPOeUb9lOO0fnvD4sxkX6m3/A==
-X-Received: by 2002:adf:f58e:0:b0:343:6ffe:7a64 with SMTP id f14-20020adff58e000000b003436ffe7a64mr563207wro.59.1712180896603;
-        Wed, 03 Apr 2024 14:48:16 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IFcHLAy/Z6o0Hkvw9Wda226gD8YrfteXQTpOHNQRcERsL2HGuS0fhig80i4ous83U5tg72ANQ==
-X-Received: by 2002:adf:f58e:0:b0:343:6ffe:7a64 with SMTP id f14-20020adff58e000000b003436ffe7a64mr563157wro.59.1712180896166;
-        Wed, 03 Apr 2024 14:48:16 -0700 (PDT)
-Received: from ?IPV6:2003:cb:c73b:3100:2d28:e0b7:1254:b2f6? (p200300cbc73b31002d28e0b71254b2f6.dip0.t-ipconnect.de. [2003:cb:c73b:3100:2d28:e0b7:1254:b2f6])
-        by smtp.gmail.com with ESMTPSA id bx6-20020a5d5b06000000b00341e67a7a90sm18519899wrb.19.2024.04.03.14.48.13
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 03 Apr 2024 14:48:15 -0700 (PDT)
-Message-ID: <9e2d09f8-2234-42f3-8481-87bbd9ad4def@redhat.com>
-Date: Wed, 3 Apr 2024 23:48:12 +0200
+        d=1e100.net; s=20230601; t=1712181245; x=1712786045;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=wyoDF56le3EvhIDIgPf2lEDUDtLNrgDGJWIz/J9qO5g=;
+        b=vXEXphGDZXGkFeWc+hkjCyt8ZXAeQj6u2d4Hzd5A3a70M0ZHXj5GBPkSJPwh0q6AUH
+         XenPPFIRT1RdO0ieb9lPU2ARNyORJQTThE8IiZQ5vXry4dmCPv+pyON2uprOQrBAZntT
+         zlfSvzQrKZwBG5WjsdZku0serFrAs+awsRYhd8im21gRoJuIbArDIgIeEmS9D2SpG9+u
+         x9MbHa8P0DzXeo271Q7PblemuU/tg50ypseAgGx3U61JX3T48EXGcBoNeMEbK14AoURh
+         0y7T2Y0sp6FR40omY41lY95UYeLzf9E3gc6FjaSVBARVR8h961TlGvHb8MMyJ1XBxt8/
+         lREg==
+X-Forwarded-Encrypted: i=1; AJvYcCWzFATZxMVcYlGwr801UlXnOjRwt0NrmEm/NEK6AKI9qfJlMfou0ZX6eF6OUvkmqdtXVOEXa6Psd073SEYniNS5ISg31NLQF64FPLr8
+X-Gm-Message-State: AOJu0Yx1N48EehvfrTqa9CK9rQaJHRJxEeJnvN3dTickiIIkCVFBlv5O
+	AvTSFqcgIt+TGh1mIsOT21s3iA902VNjj9DDDDl/FSa8MA6XLYJ1xxQGNZ+XKg==
+X-Google-Smtp-Source: AGHT+IEiUV78v4OyDNYTQJ/rL2/MwBFA9iNAMaCfTqIv6x+qoAInhK8ZaE73eDO/HyzNjqQHoqDN3g==
+X-Received: by 2002:a05:6a00:13a3:b0:6ea:b69a:7c70 with SMTP id t35-20020a056a0013a300b006eab69a7c70mr825437pfg.34.1712181245390;
+        Wed, 03 Apr 2024 14:54:05 -0700 (PDT)
+Received: from www.outflux.net ([198.0.35.241])
+        by smtp.gmail.com with ESMTPSA id kt1-20020a056a004ba100b006eae6c8d2c3sm10516881pfb.106.2024.04.03.14.54.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 03 Apr 2024 14:54:04 -0700 (PDT)
+From: Kees Cook <keescook@chromium.org>
+To: Christian Brauner <brauner@kernel.org>
+Cc: Kees Cook <keescook@chromium.org>,
+	"Gustavo A. R. Silva" <gustavoars@kernel.org>,
+	Alexander Viro <viro@zeniv.linux.org.uk>,
+	Jan Kara <jack@suse.cz>,
+	Chuck Lever <chuck.lever@oracle.com>,
+	Jeff Layton <jlayton@kernel.org>,
+	Amir Goldstein <amir73il@gmail.com>,
+	linux-fsdevel@vger.kernel.org,
+	linux-nfs@vger.kernel.org,
+	linux-hardening@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH] fs: Set file_handle::handle_bytes before referencing file_handle::f_handle
+Date: Wed,  3 Apr 2024 14:54:03 -0700
+Message-Id: <20240403215358.work.365-kees@kernel.org>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v6 01/37] fix missing vmalloc.h includes
-To: Kent Overstreet <kent.overstreet@linux.dev>,
- Nathan Chancellor <nathan@kernel.org>
-Cc: Suren Baghdasaryan <surenb@google.com>, akpm@linux-foundation.org,
- mhocko@suse.com, vbabka@suse.cz, hannes@cmpxchg.org,
- roman.gushchin@linux.dev, mgorman@suse.de, dave@stgolabs.net,
- willy@infradead.org, liam.howlett@oracle.com,
- penguin-kernel@i-love.sakura.ne.jp, corbet@lwn.net, void@manifault.com,
- peterz@infradead.org, juri.lelli@redhat.com, catalin.marinas@arm.com,
- will@kernel.org, arnd@arndb.de, tglx@linutronix.de, mingo@redhat.com,
- dave.hansen@linux.intel.com, x86@kernel.org, peterx@redhat.com,
- axboe@kernel.dk, mcgrof@kernel.org, masahiroy@kernel.org, dennis@kernel.org,
- jhubbard@nvidia.com, tj@kernel.org, muchun.song@linux.dev, rppt@kernel.org,
- paulmck@kernel.org, pasha.tatashin@soleen.com, yosryahmed@google.com,
- yuzhao@google.com, dhowells@redhat.com, hughd@google.com,
- andreyknvl@gmail.com, keescook@chromium.org, ndesaulniers@google.com,
- vvvvvv@google.com, gregkh@linuxfoundation.org, ebiggers@google.com,
- ytcoode@gmail.com, vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
- rostedt@goodmis.org, bsegall@google.com, bristot@redhat.com,
- vschneid@redhat.com, cl@linux.com, penberg@kernel.org,
- iamjoonsoo.kim@lge.com, 42.hyeyoo@gmail.com, glider@google.com,
- elver@google.com, dvyukov@google.com, songmuchun@bytedance.com,
- jbaron@akamai.com, aliceryhl@google.com, rientjes@google.com,
- minchan@google.com, kaleshsingh@google.com, kernel-team@android.com,
- linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
- iommu@lists.linux.dev, linux-arch@vger.kernel.org,
- linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
- linux-modules@vger.kernel.org, kasan-dev@googlegroups.com,
- cgroups@vger.kernel.org
-References: <20240321163705.3067592-1-surenb@google.com>
- <20240321163705.3067592-2-surenb@google.com>
- <20240403211240.GA307137@dev-arch.thelio-3990X>
- <4qk7f3ra5lrqhtvmipmacgzo5qwnugrfxn5dd3j4wubzwqvmv4@vzdhpalbmob3>
-From: David Hildenbrand <david@redhat.com>
-Content-Language: en-US
-Autocrypt: addr=david@redhat.com; keydata=
- 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
- WNyWQQ==
-Organization: Red Hat
-In-Reply-To: <4qk7f3ra5lrqhtvmipmacgzo5qwnugrfxn5dd3j4wubzwqvmv4@vzdhpalbmob3>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1216; i=keescook@chromium.org;
+ h=from:subject:message-id; bh=iQVFWLJ69AonJ7RrN7NlN9bDUbprCHUU+71zAbs8w88=;
+ b=owEBbQKS/ZANAwAKAYly9N/cbcAmAcsmYgBmDc/6H7alh0B6TVjRvaoj9tj+S8i/H4cugB5L5
+ Chzk/m/q0CJAjMEAAEKAB0WIQSlw/aPIp3WD3I+bhOJcvTf3G3AJgUCZg3P+gAKCRCJcvTf3G3A
+ Jiz9D/9xoda+JjArsGSrjkvnflCSblOHq+w37ybPQ/5cInqaZEYDwUkQEXMMi4PNHKSj2oYglPF
+ Cu07odSugJ1sk46ckYSrF9iNGhnJzTjacivFOPR7SfqJYNZDJ2Urc946DjHpIZ0OH5D7m8Ca+Zi
+ QOJG2QMHSN+orW1DScb2PFXS8PAUH1yp5mMZ9etVJrrKUYbhxtrCXKMoeiduk6fhriSLRjDX3f4
+ 1lrIGKTwC53kOmmPN49YJ7EEqjkLn0wbLGBPOQkuPa5i0ycRw4KNgOB+1nINEedae5XBplhdiuX
+ V+eyC8i4bIGp2sEDcEzLe/MtNG2eMhk+lODN4PGJu1wCTNi1cOS9yKeBJHqwZcOko8QSkzWqhO0
+ 6QmyD4gIf+xoRU37EOCnE9m57v3z2IdCmv3L5bLEpfYB+XdO3SIX+1PKCSGjVMFpIC1GlvV3ZU6
+ eR3/HyWGGiFw2GaHHkPaXdn67lDDxGi+HX45xwMoeM92qwxcSb/hw5OKKrSU0qn5Ti++4NV5wCv
+ laXgURTzxSlCnwVp/HipmrGwRM944KL9voOfvsnl7Yv2cfYHoyWT3cZW9XG08AtyLca1pEGP6K3
+ dFMBPcJ3UtGKk+uhI4+1im/J+9p+7p36QoEHM7tJmNnaXo+ZktH1heNAkvjTyGhrVBmsBRizzse
+ vETTyAt bh3OZAlg==
+X-Developer-Key: i=keescook@chromium.org; a=openpgp; fpr=A5C3F68F229DD60F723E6E138972F4DFDC6DC026
+Content-Transfer-Encoding: 8bit
 
-On 03.04.24 23:41, Kent Overstreet wrote:
-> On Wed, Apr 03, 2024 at 02:12:40PM -0700, Nathan Chancellor wrote:
->> On Thu, Mar 21, 2024 at 09:36:23AM -0700, Suren Baghdasaryan wrote:
->>> From: Kent Overstreet <kent.overstreet@linux.dev>
->>>
->>> The next patch drops vmalloc.h from a system header in order to fix
->>> a circular dependency; this adds it to all the files that were pulling
->>> it in implicitly.
->>>
->>> Signed-off-by: Kent Overstreet <kent.overstreet@linux.dev>
->>> Signed-off-by: Suren Baghdasaryan <surenb@google.com>
->>> Reviewed-by: Pasha Tatashin <pasha.tatashin@soleen.com>
->>
->> I bisected an error that I see when building ARCH=loongarch allmodconfig
->> to commit 302519d9e80a ("asm-generic/io.h: kill vmalloc.h dependency")
->> in -next, which tells me that this patch likely needs to contain
->> something along the following lines, as LoongArch was getting
->> include/linux/sizes.h transitively through the vmalloc.h include in
->> include/asm-generic/io.h.
-> 
-> gcc doesn't appear to be packaged for loongarch for debian (most other
-> cross compilers are), so that's going to make it hard for me to test
-> anything...
+With adding __counted_by(handle_bytes) to struct file_handle, we need
+to explicitly set it in the one place it wasn't yet happening prior to
+accessing the flex array "f_handle".
 
-The latest cross-compilers from Arnd [1] include a 13.2.0 one for 
-loongarch64 that works for me. Just in case you haven't heard of Arnds 
-work before and want to give it a shot.
+Fixes: 1b43c4629756 ("fs: Annotate struct file_handle with __counted_by() and use struct_size()")
+Signed-off-by: Kees Cook <keescook@chromium.org>
+---
+Cc: Christian Brauner <brauner@kernel.org>
+Cc: "Gustavo A. R. Silva" <gustavoars@kernel.org>
+Cc: Alexander Viro <viro@zeniv.linux.org.uk>
+Cc: Jan Kara <jack@suse.cz>
+Cc: Chuck Lever <chuck.lever@oracle.com>
+Cc: Jeff Layton <jlayton@kernel.org>
+Cc: Amir Goldstein <amir73il@gmail.com>
+Cc: linux-fsdevel@vger.kernel.org
+Cc: linux-nfs@vger.kernel.org
+Cc: linux-hardening@vger.kernel.org
+---
+ fs/fhandle.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-[1] https://mirrors.edge.kernel.org/pub/tools/crosstool/
-
+diff --git a/fs/fhandle.c b/fs/fhandle.c
+index 53ed54711cd2..08ec2340dd22 100644
+--- a/fs/fhandle.c
++++ b/fs/fhandle.c
+@@ -40,6 +40,7 @@ static long do_sys_name_to_handle(const struct path *path,
+ 			 GFP_KERNEL);
+ 	if (!handle)
+ 		return -ENOMEM;
++	handle->handle_bytes = f_handle.handle_bytes;
+ 
+ 	/* convert handle size to multiple of sizeof(u32) */
+ 	handle_dwords = f_handle.handle_bytes >> 2;
 -- 
-Cheers,
-
-David / dhildenb
+2.34.1
 
 
