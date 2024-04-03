@@ -1,215 +1,141 @@
-Return-Path: <linux-kernel+bounces-129714-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-129715-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 74132896ED3
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 14:25:08 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A8B50896ED4
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 14:26:20 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 96EBA1C26073
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 12:25:07 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 2EF16B22267
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 12:26:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9CBEC146589;
-	Wed,  3 Apr 2024 12:24:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 70FB6146000;
+	Wed,  3 Apr 2024 12:26:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="SnvjN/BM"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b="kv3Y+KhC"
+Received: from mail-pl1-f177.google.com (mail-pl1-f177.google.com [209.85.214.177])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C836D141991;
-	Wed,  3 Apr 2024 12:24:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 90460141991
+	for <linux-kernel@vger.kernel.org>; Wed,  3 Apr 2024 12:26:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712147097; cv=none; b=GJb4kOlT3h5xeP4y8OIJlcIxPzZeDQX88LUFOiYzvnmQVAXpBaJpp5/y2HooYcvXnr2Agq3IyIqRtgYtstDclESWE82D1BjAaVtqRO/Hq4o/poB2LbXAKXj6Zy4gjmUjCDNHs0GycSc2U0aavDebEfnkaIU5zQeXPOr4AW/PPtU=
+	t=1712147171; cv=none; b=KeM2kUiykgdlBiLVJ7VqpmXLcwhhT00PsDkNyi3d9fDTNjn8sgx5MgwYZuZ94g2VxEyzyhRZxkqXm3c0Gx+AdJJJ8la6sA9HqxNL/8YEhtmCHHBkXWBjNG6RXPkpiLAz9sS74I02L1jJij+dTp7rghM24wG0zgD0JJkVR7wcVM8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712147097; c=relaxed/simple;
-	bh=KcgYpc+9CjDQi/NJxVHV2bo7S5xb6FjkQ15XYp0RmCE=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=B+QK8eNE5TEMUqFwqq6rhxpXg0RTYbRlc8jWG3Tv3jj3HYfUEJboGqaT8r7lVc32JWaoLUwJwfsdeCMhqGoyy5nDmzqRWwY6g9w7xr0XzE0wE9HxYRVhbWDVxCN6f+pKdAwrZMik9JESX8/74cK7e1I1lzyMnCHKT1DfUpJ8mTY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=SnvjN/BM; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5A46EC433C7;
-	Wed,  3 Apr 2024 12:24:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712147097;
-	bh=KcgYpc+9CjDQi/NJxVHV2bo7S5xb6FjkQ15XYp0RmCE=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=SnvjN/BMqtmaBYJ95X2POqxVnvib0Hcs46hn31TOd76XhAhYvKfJiKcNldggmuqqm
-	 517zdgNjgB7eLZt6b5C+o97voT2HYvaBV7oTaE3JdNkYkFkwljRGjPjQSH104EVB7y
-	 o2qOc7Xnaec9ss4pc4II/GVmqAtXQ+1/APosntGH0B4XnrTtD1au+44FHYx8wcNfmT
-	 w5waF8he/KUouIQKffezkpj/joMyaGMtHoSnMkmAdRFLtIWwa4ffRveU2LIGIR5e3T
-	 TC+f5EYpwGcl05mNsKAsLytFareyzB9UKE4TaOcsHhQs1/gKOHtBI0iyIG6azTYfut
-	 72lKie0cjUzqQ==
-Received: from johan by xi.lan with local (Exim 4.97.1)
-	(envelope-from <johan@kernel.org>)
-	id 1rrzfl-000000004bT-3UUs;
-	Wed, 03 Apr 2024 14:24:58 +0200
-Date: Wed, 3 Apr 2024 14:24:57 +0200
-From: Johan Hovold <johan@kernel.org>
-To: Janaki Ramaiah Thota <quic_janathot@quicinc.com>
-Cc: Johan Hovold <johan+linaro@kernel.org>, luiz.dentz@gmail.com,
-	marcel@holtmann.org, linux-bluetooth@vger.kernel.org,
-	linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-	quic_mohamull@quicinc.com, quic_hbandi@quicinc.com
-Subject: Re: [PATCH] Revert "Bluetooth: hci_qca: Set BDA quirk bit if fwnode
- exists in DT"
-Message-ID: <Zg1KmcFQ3bAJa8qJ@hovoldconsulting.com>
-References: <20240314084412.1127-1-johan+linaro@kernel.org>
- <171146704035.9961.13096206001570615153.git-patchwork-notify@kernel.org>
- <124a7d54-5a18-4be7-9a76-a12017f6cce5@quicinc.com>
- <ZgWLeo5KSLurLDhK@hovoldconsulting.com>
- <c03abbbd-faa5-4fdc-b7c3-5554a90c3419@quicinc.com>
+	s=arc-20240116; t=1712147171; c=relaxed/simple;
+	bh=C+TwzIv0q7ONt2hgD/9G+JyqyDZ6Vk0qZXSCafE4C6I=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type; b=sarEDV8L6CWKoT217MiroHs1DG77GROzQz+Li16pUI6Epz29Po72i3LGD0PeKVGIO4m6xu4f9JJhDTnB+3u5NTodZziKLXBP2sg2hqIcxziA1cFKAB/Co0OHKxwo4eeUOgJwBYIsy6bKUcpLjbH7nxECI6QR5JRBxe0YFeZGa9Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com; spf=pass smtp.mailfrom=bytedance.com; dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b=kv3Y+KhC; arc=none smtp.client-ip=209.85.214.177
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bytedance.com
+Received: by mail-pl1-f177.google.com with SMTP id d9443c01a7336-1e27c303573so13087475ad.3
+        for <linux-kernel@vger.kernel.org>; Wed, 03 Apr 2024 05:26:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance.com; s=google; t=1712147169; x=1712751969; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=680IOIiYvO7U69q8/3NO/TM8zSL1qJ6oi50wwHypzL0=;
+        b=kv3Y+KhCCdxJ/tXae9hD6NuHH8nXalMcD9CXmQiTAd8wM2d1Sq16vqJFUWfR7rRNDK
+         5dXeA2Ox/OHF7F+Wog4bpp5q8UZkL+Wj1NrWrcg8Yvp+9hP/Q6ldBNNnGY5AUgeL6u+p
+         3gN+cYXKTIVV1IZyrWq6dksu2hKNkMNCY7cQFTjLp4hsWRINlY9nXyy4BqB7Cei3IhwS
+         fJ683WM1YOZnzGCTwNGdN16esx3gm7NYNZdzV/m9it9DEU/JZw1CGydptcTmJb7tT8dp
+         KGN0F01kRthlKmvGLpwrMjL0I91ScSq/RbGyadYeM4K7OEDBlLRJVEtTALst2R4W+vqI
+         Nizg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712147169; x=1712751969;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=680IOIiYvO7U69q8/3NO/TM8zSL1qJ6oi50wwHypzL0=;
+        b=k4iIqeF/Ip97qGTfoHwCHVsexsKRGna9Mi8xljG45ojyUYDRVMEpkY2sEnVai2/IzP
+         cB5TuUoiHymQaRl0W/PPuHwTOsJPH+j500VQHRgvWPxbG7bdLZc7+rDy1QtgNkVOL05F
+         ZRvszbPuVY9mLdEvJd1xB7zHGrsgV3vDaaXSPv6pu61o6zpo+vxSmQoD6NAS19d1hERV
+         oePDXrXD91XyotItKlZm4vF17bqIxiU1/tv+qVAaT6x575Y/nMzm5DbkxJVPixoAUPKN
+         ONp8zUs416n5UqHNqXBDfQ4D+AoiN8veY9aXMDVxFfWV09re/mAmw1dsaQpc9Eb7Bntp
+         FjPQ==
+X-Forwarded-Encrypted: i=1; AJvYcCU4VksLmYcuJaLkLxnE49U8pd2e2cviZuscnEUos0ZU2PMwd7Lcc2AZxBIE8u0+wMlJbnDDppbE4RkgQE6Q66Nyx/W2BQcx6fQsT1nx
+X-Gm-Message-State: AOJu0YwjCO9NWIIIzTNAsA/ZQVpqJQoLvB8+9JREBLQM0GjXbYqJ+u3j
+	0TAWqNuFe2y6zQWcv+VrCTcHelocNmmstT7YnKMDImoVAUjj4xs9kURO8soJFsY=
+X-Google-Smtp-Source: AGHT+IE1BA6R9WM9FnWdKVLkzpxYrahMEwc8w8zzEYzMNbHHltFWvb9umn9zs6POLTFfyBTl89xnvA==
+X-Received: by 2002:a17:902:d897:b0:1dd:b728:b8d8 with SMTP id b23-20020a170902d89700b001ddb728b8d8mr16254189plz.45.1712147168884;
+        Wed, 03 Apr 2024 05:26:08 -0700 (PDT)
+Received: from ubuntu20.04 ([203.208.189.8])
+        by smtp.gmail.com with ESMTPSA id lg13-20020a170902fb8d00b001dddbb58d5esm13168939plb.109.2024.04.03.05.26.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 03 Apr 2024 05:26:08 -0700 (PDT)
+From: Yang Jihong <yangjihong@bytedance.com>
+To: peterz@infradead.org,
+	mingo@redhat.com,
+	acme@kernel.org,
+	namhyung@kernel.org,
+	mark.rutland@arm.com,
+	alexander.shishkin@linux.intel.com,
+	jolsa@kernel.org,
+	irogers@google.com,
+	adrian.hunter@intel.com,
+	kan.liang@linux.intel.com,
+	james.clark@arm.com,
+	linux-perf-users@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Cc: yangjihong@bytedance.com
+Subject: [PATCH] perf beauty: Fix AT_EACCESS undeclared build error for system with kernel versions lower than v5.8
+Date: Wed,  3 Apr 2024 20:25:58 +0800
+Message-Id: <20240403122558.1438841-1-yangjihong@bytedance.com>
+X-Mailer: git-send-email 2.25.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <c03abbbd-faa5-4fdc-b7c3-5554a90c3419@quicinc.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-On Fri, Mar 29, 2024 at 12:55:40PM +0530, Janaki Ramaiah Thota wrote:
-> On 3/28/2024 8:53 PM, Johan Hovold wrote:
-> > On Thu, Mar 28, 2024 at 08:25:16PM +0530, Janaki Ramaiah Thota wrote:
+In the environment of ubuntu20.04 (the version of kernel headers is 5.4),
+there is an error in building perf:
 
-> >> We made this change to configure the device which supports persistent
-> >> memory for the BD-Address
-> > 
-> > Can you say something more about which devices support persistent
-> > storage for the address? Is that all or just some of the chip variants?
+    CC      trace/beauty/fs_at_flags.o
+  trace/beauty/fs_at_flags.c: In function ‘faccessat2__scnprintf_flags’:
+  trace/beauty/fs_at_flags.c:35:14: error: ‘AT_EACCESS’ undeclared (first use in this function); did you mean ‘DN_ACCESS’?
+     35 |  if (flags & AT_EACCESS) {
+        |              ^~~~~~~~~~
+        |              DN_ACCESS
+  trace/beauty/fs_at_flags.c:35:14: note: each undeclared identifier is reported only once for each function it appears in
 
-> Most of the devices support persistent storage, and bd-address storage
-> is chosen based on the OEM and Target.
+commit 8a1ad4413519 ("tools headers: Remove now unused copies of
+uapi/{fcntl,openat2}.h and asm/fcntl.h") removes fcntl.h from tools
+headers directory, and fs_at_flags.c uses the 'AT_EACCESS' macro.
+This macro was introduced in the kernel version v5.8.
+For system with a kernel version older than this version,
+it will cause compilation to fail.
 
-Can you be more specific about which devices support it (or say which do
-not)?
-
-Is the address stored in some external eeprom or similar which the OEM
-can choose to populate?
-
-> >> So to make device functional in both scenarios we are adding a new
-> >> property in dts file to distinguish persistent and non-persistent
-> >> support of BD Address and set HCI_QUIRK_USE_BDADDR_PROPERTY bit
-> >> accordingly
-> > 
-> > Depending on the answer to my questions above, you may be able to infer
-> > this from the compatible string and/or you can read out the address from
-> > the device and only set the quirk if it's set to the default address.
-> > 
-> > You should not need to add a new property for this.
-
-> As per my understanding, altering the compatible string may cause duplicate
-> configuration, right ?
-
-If it's the same device and just a different configuration then we can't
-use the compatible string for this.
-
-It seems we need a patch like the below to address this. But please
-provide some more details (e.g. answers to the questions above) so I can
-determine what the end result should look like.
-
-Johan
-
-
-From 9719effe80fcc17518131816fdfeb1824cfa08b6 Mon Sep 17 00:00:00 2001
-From: Johan Hovold <johan+linaro@kernel.org>
-Date: Thu, 20 Apr 2023 14:10:55 +0200
-Subject: [PATCH] Bluetooth: btqca: add invalid device address check
-
-Some Qualcomm Bluetooth controllers lack persistent storage for the
-device address and therefore end up using the default address
-00:00:00:00:5a:ad.
-
-Apparently this depends on how the controller has been integrated so we
-can not use the device type alone to determine when the address is
-valid.
-
-Instead read back the address during setup() and only set the
-HCI_QUIRK_USE_BDADDR_PROPERTY flag when needed.
-
-Fixes: de79a9df1692 ("Bluetooth: btqcomsmd: use HCI_QUIRK_USE_BDADDR_PROPERTY")
-Fixes: e668eb1e1578 ("Bluetooth: hci_core: Don't stop BT if the BD address missing in dts")
-Fixes: 6945795bc81a ("Bluetooth: fix use-bdaddr-property quirk")
-Cc: stable@vger.kernel.org	# 6.5
-Signed-off-by: Johan Hovold <johan+linaro@kernel.org>
+Fixes: 8a1ad4413519 ("tools headers: Remove now unused copies of uapi/{fcntl,openat2}.h and asm/fcntl.h")
+Signed-off-by: Yang Jihong <yangjihong@bytedance.com>
 ---
- drivers/bluetooth/btqca.c   | 33 +++++++++++++++++++++++++++++++++
- drivers/bluetooth/hci_qca.c |  2 --
- 2 files changed, 33 insertions(+), 2 deletions(-)
+ tools/perf/trace/beauty/fs_at_flags.c | 8 ++++++++
+ 1 file changed, 8 insertions(+)
 
-diff --git a/drivers/bluetooth/btqca.c b/drivers/bluetooth/btqca.c
-index 19cfc342fc7b..15124157372c 100644
---- a/drivers/bluetooth/btqca.c
-+++ b/drivers/bluetooth/btqca.c
-@@ -15,6 +15,8 @@
+diff --git a/tools/perf/trace/beauty/fs_at_flags.c b/tools/perf/trace/beauty/fs_at_flags.c
+index c1365e8f0b96..c200669cb944 100644
+--- a/tools/perf/trace/beauty/fs_at_flags.c
++++ b/tools/perf/trace/beauty/fs_at_flags.c
+@@ -10,6 +10,14 @@
+ #include <linux/fcntl.h>
+ #include <linux/log2.h>
  
- #define VERSION "0.1"
++/*
++ * uapi/linux/fcntl.h does not keep a copy in tools headers directory,
++ * for system with kernel versions before v5.8, need to sync AT_EACCESS macro.
++ */
++#ifndef AT_EACCESS
++#define AT_EACCESS 0x200
++#endif
++
+ #include "trace/beauty/generated/fs_at_flags_array.c"
+ static DEFINE_STRARRAY(fs_at_flags, "AT_");
  
-+#define QCA_BDADDR_DEFAULT (&(bdaddr_t) {{ 0xad, 0x5a, 0x00, 0x00, 0x00, 0x00 }})
-+
- int qca_read_soc_version(struct hci_dev *hdev, struct qca_btsoc_version *ver,
- 			 enum qca_btsoc_type soc_type)
- {
-@@ -612,6 +614,35 @@ int qca_set_bdaddr_rome(struct hci_dev *hdev, const bdaddr_t *bdaddr)
- }
- EXPORT_SYMBOL_GPL(qca_set_bdaddr_rome);
- 
-+static void qca_check_bdaddr(struct hci_dev *hdev)
-+{
-+	struct hci_rp_read_bd_addr *bda;
-+	struct sk_buff *skb;
-+	int err;
-+
-+	if (bacmp(&hdev->public_addr, BDADDR_ANY))
-+		return;
-+
-+	skb = __hci_cmd_sync(hdev, HCI_OP_READ_BD_ADDR, 0, NULL,
-+			     HCI_INIT_TIMEOUT);
-+	if (IS_ERR(skb)) {
-+		err = PTR_ERR(skb);
-+		bt_dev_err(hdev, "Failed to read device address (%d)", err);
-+		return;
-+	}
-+
-+	if (skb->len != sizeof(*bda)) {
-+		bt_dev_err(hdev, "Device address length mismatch");
-+		goto free_skb;
-+	}
-+
-+	bda = (struct hci_rp_read_bd_addr *)skb->data;
-+	if (!bacmp(&bda->bdaddr, QCA_BDADDR_DEFAULT))
-+		set_bit(HCI_QUIRK_USE_BDADDR_PROPERTY, &hdev->quirks);
-+free_skb:
-+	kfree_skb(skb);
-+}
-+
- static void qca_generate_hsp_nvm_name(char *fwname, size_t max_size,
- 		struct qca_btsoc_version ver, u8 rom_ver, u16 bid)
- {
-@@ -818,6 +849,8 @@ int qca_uart_setup(struct hci_dev *hdev, uint8_t baudrate,
- 		break;
- 	}
- 
-+	qca_check_bdaddr(hdev);
-+
- 	bt_dev_info(hdev, "QCA setup on UART is completed");
- 
- 	return 0;
-diff --git a/drivers/bluetooth/hci_qca.c b/drivers/bluetooth/hci_qca.c
-index b266db18c8cc..b621a0a40ea4 100644
---- a/drivers/bluetooth/hci_qca.c
-+++ b/drivers/bluetooth/hci_qca.c
-@@ -1908,8 +1908,6 @@ static int qca_setup(struct hci_uart *hu)
- 	case QCA_WCN6750:
- 	case QCA_WCN6855:
- 	case QCA_WCN7850:
--		set_bit(HCI_QUIRK_USE_BDADDR_PROPERTY, &hdev->quirks);
--
- 		qcadev = serdev_device_get_drvdata(hu->serdev);
- 		if (qcadev->bdaddr_property_broken)
- 			set_bit(HCI_QUIRK_BDADDR_PROPERTY_BROKEN, &hdev->quirks);
 -- 
-2.43.2
+2.25.1
 
 
