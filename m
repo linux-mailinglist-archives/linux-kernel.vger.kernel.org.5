@@ -1,178 +1,235 @@
-Return-Path: <linux-kernel+bounces-130435-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-130437-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id BED7B897891
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 20:49:12 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 12DB6897821
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 20:23:39 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 110ABB2E9FF
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 18:22:34 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BD18828291E
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 18:23:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CAD821534F2;
-	Wed,  3 Apr 2024 18:22:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=dabbelt-com.20230601.gappssmtp.com header.i=@dabbelt-com.20230601.gappssmtp.com header.b="ZwCD8duL"
-Received: from mail-pf1-f181.google.com (mail-pf1-f181.google.com [209.85.210.181])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9E2F015359C;
+	Wed,  3 Apr 2024 18:23:29 +0000 (UTC)
+Received: from mail-io1-f71.google.com (mail-io1-f71.google.com [209.85.166.71])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 230B0153593
-	for <linux-kernel@vger.kernel.org>; Wed,  3 Apr 2024 18:22:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6A1E81534F2
+	for <linux-kernel@vger.kernel.org>; Wed,  3 Apr 2024 18:23:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.71
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712168530; cv=none; b=mNekSalGbmugKaW9nwVxUHm0jm40TheEOdJpI2ZzqZBiPKrxbd3kqWBLf/ZLEugj44X+BU2tw52AocanwIXHh2ByMG9Q4/Bl4PzHbKUS6ZgE8iaYd5D09ag9TreCo5Hm3j4NgRK2JLf4Qw5ZbraZGOU+gsMkhhYjFOHDJPsbv4w=
+	t=1712168609; cv=none; b=LHT0bvp00DoyxbLUq0s5LNjUd8uOn6f/qXQvA85dvp407/EqsfdhZ0/bwv8RtJKZIkt1duC62MF/eWuYMSqTl8Ehz3wqQiwNhIUVfaMMHudTrkmDUYJfBj0eY+WCbVfwpOR6VLdld3WcPbDsTquPoHrFZFcCmfbSID4UgXkXg60=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712168530; c=relaxed/simple;
-	bh=YLQ5ks3ozTKHgLjWeRoai9T7IQizj8Dx9UVCzQpSmEY=;
-	h=Date:Subject:In-Reply-To:CC:From:To:Message-ID:Mime-Version:
-	 Content-Type; b=tgJBfi4bw2mJQQp1M2584cQE1WaurHypsd3myV5PIkzz4PL5iTHyG26RAbA+PyjCx5KbyFlnpRHcsZ+EV+ILMre+Y0UAKUe/zRREHZttQe1Y9egeuPuXTbIivBknrmSDHRdVrjuhI2IA6kj6+V8srj65W6/WtHzSV40ymrH0fYc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dabbelt.com; spf=pass smtp.mailfrom=dabbelt.com; dkim=pass (2048-bit key) header.d=dabbelt-com.20230601.gappssmtp.com header.i=@dabbelt-com.20230601.gappssmtp.com header.b=ZwCD8duL; arc=none smtp.client-ip=209.85.210.181
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dabbelt.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=dabbelt.com
-Received: by mail-pf1-f181.google.com with SMTP id d2e1a72fcca58-6e6f4ad4c57so75467b3a.2
-        for <linux-kernel@vger.kernel.org>; Wed, 03 Apr 2024 11:22:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=dabbelt-com.20230601.gappssmtp.com; s=20230601; t=1712168527; x=1712773327; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:to:from:cc
-         :in-reply-to:subject:date:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=LoPxyy6ZZevKYMVQQwthSJ0EL7SyRC2E5s9/TcAwzlA=;
-        b=ZwCD8duLiCKuvl/u7C9SdR5KA7kiEXzgg9lxw5OSzEdw1T/wGKr5yIscD1y5u8+1Jb
-         rEiSIY56Ll0uhQLmfdAoYDC2Lnttb2XuguTUokKOEAkOSgyPOVOeTbfdqd+d1/f0AuVo
-         h8r9YkjwWATqXl4T36os3jswsTUuZ5CfYf4W4jAwrW70gP0R98mB3cW2EL1Lv7GwSJ+u
-         IGStBP4q+9l/L56Zy1gtiAKzSTq4eu/zZP/Mgi9eROxXuNemHFjFOFK6sdKFwtKQP6NY
-         JiCveokbXC5BI6xt1xgStRdF5YPEeiOsqUFpFv+xZ9FBnstn8e8UP3lxmzylyZu/pqXh
-         +gSw==
+	s=arc-20240116; t=1712168609; c=relaxed/simple;
+	bh=9ZAfUM4Ih8PAKVbOYgGDM6fvh/L2tQk0e82atFHToLc=;
+	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=djTxXfzyDD6K36kqwvjRszO/anNjA5fxy5BhPAL5pEdSYPt9tKknLrhUZtUOV+8OQCo58zswg8eAllVRthBfQ9/H2hWbTgs56l/6e891ISOtMADx4M1ikiLp0T/WtTYyr5N97+fRuLtS3cnshZFnKJXuNPgWMCaBJm0VhPH43T8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.71
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-io1-f71.google.com with SMTP id ca18e2360f4ac-7cf265b30e2so16872939f.1
+        for <linux-kernel@vger.kernel.org>; Wed, 03 Apr 2024 11:23:27 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712168527; x=1712773327;
-        h=content-transfer-encoding:mime-version:message-id:to:from:cc
-         :in-reply-to:subject:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=LoPxyy6ZZevKYMVQQwthSJ0EL7SyRC2E5s9/TcAwzlA=;
-        b=nL+oVsbTW7WcGGY0HdObzfXzuJk50tUHcqfEnr89lOOXFcCEgSUOFsT7endfVKC/Cu
-         933kQhhdfzbsiT9LR9p4XkP3QuqXvhVUp9LVWoVPEifjJ196L7ouUTqbi8wW/MjjpTDh
-         DkAnIGOXt8XjVc3ymtvH5Byzf6fpudLumljm9YwlVbiG+46ZpOeGLYKcWEyGv1bhY2As
-         0/rlyajnFPO5I3uMkg6eVKdryRgvN6JkrNYmOFrYBzWuHqvRvVSHqKplmiC2W7DqiiSd
-         +87TduRHyRaJsrVeYVZC2BpK3fRDy1G7C6W+5vMpw6YnPWjDLrhYqsYhZsfcMataahJA
-         91Ng==
-X-Forwarded-Encrypted: i=1; AJvYcCVCug5nhyookxfK0+s8QLxPEbuQqgwu0xvGzvDg1MJz8Bhvex9R6rUFH67cLPPW1gubhmiKUbwov97ct3STJRpgigSlsJsIJi6LeX2/
-X-Gm-Message-State: AOJu0YwfrsC8L1FfdXEj7bIK0HuHXMSnGftoS2vgejZR90q9iUJwFaq/
-	fyXo8lNJnbSPkyAqaKAwIABbnb7bIEnIx5fORu8SaKKqvpoWIIZR409x784wOm8=
-X-Google-Smtp-Source: AGHT+IE8xKPk+Cg4ycXY4vSQCypFZ4Jw5ScQiKmu4H6BcqJa4Y6mRodZymA7cXolnlaayPoU0XPjww==
-X-Received: by 2002:a05:6a20:734b:b0:1a3:48da:1090 with SMTP id v11-20020a056a20734b00b001a348da1090mr568998pzc.14.1712168527301;
-        Wed, 03 Apr 2024 11:22:07 -0700 (PDT)
-Received: from localhost ([192.184.165.199])
-        by smtp.gmail.com with ESMTPSA id d9-20020a17090ad3c900b0029b77fbeb7fsm14038311pjw.16.2024.04.03.11.22.06
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 03 Apr 2024 11:22:06 -0700 (PDT)
-Date: Wed, 03 Apr 2024 11:22:06 -0700 (PDT)
-X-Google-Original-Date: Wed, 03 Apr 2024 11:21:50 PDT (-0700)
-Subject:     Re: [PATCH v6 00/11] riscv: add initial support for Canaan Kendryte K230
-In-Reply-To: <tencent_F76EB8D731C521C18D5D7C4F8229DAA58E08@qq.com>
-CC: linux-riscv@lists.infradead.org, Conor Dooley <conor@kernel.org>,
-  dlemoal@kernel.org, robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
-  Paul Walmsley <paul.walmsley@sifive.com>, aou@eecs.berkeley.edu, guoren@kernel.org, mturquette@baylibre.com,
-  sboyd@kernel.org, linus.walleij@linaro.org, p.zabel@pengutronix.de, linux-gpio@vger.kernel.org,
-  linux-clk@vger.kernel.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, cyy@cyyself.name
-From: Palmer Dabbelt <palmer@dabbelt.com>
-To: cyy@cyyself.name
-Message-ID: <mhng-08e43080-8679-43f8-80c5-b73304e4e680@palmer-ri-x1c9>
+        d=1e100.net; s=20230601; t=1712168606; x=1712773406;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=LSqRu5v298RfSB0Z/j1bnkPaJO9LM9Ank65vu8EKmZQ=;
+        b=VbrDCotZChULldSQW5HuhfudlvKVShQmAlqHL+4cqs4z4NesQKJZ4O4+MZn7lRi1oN
+         kun8/nfD4NpwzWNu/PxjIp3WLahE/QD4ZmrLBhwhmB72KxA9zlCSW9eodcbfK2VlOb5c
+         NNLU7mPWzRiVMywoVGhp1AxDwW5J7VNo26RyKITUMf3hrStj/IaBNHVhoVEtM9p+RSdS
+         DcDDYPbmInCU1kEDiOBWie9j2GTPwrVHYLfhijWHA3ojDISrWbyvqFzBC/fv3Iw4pdkL
+         GPXe/GlzL49mTyJ9gs+7t4dXecgGSiI/egpyWov/MbStXEC6Xkwrmhl84nuATyIUGAA8
+         ApNg==
+X-Forwarded-Encrypted: i=1; AJvYcCUpWj2Rqw1V7PFqiowKUdwOXwmF3o9oA7rQ+PGJAiVxyPiCOHObpossEStTtnTczUNIVC5PbFUcfNui0h/aM1auk8gcLJZwMfR6CQKl
+X-Gm-Message-State: AOJu0YyNOOSdtZ4JY2Gs2kWYj/WkoGq18gk+f0cirgJajCHlcQjAY4ej
+	UnMV68u3RBB0QjOs2OzeG0bIpNifcjMYG4WZjOHhHRsp7soIou1G8A8zwqiKiHJI1L/lh3vOV0v
+	K7GEVnILp3YLhJGqdLP+Xs2zbdcnKvMNW+fMt8dzae3LWLAwSggro15g=
+X-Google-Smtp-Source: AGHT+IHW4ryJ74XFijYLrPEqALfrybmEmLpHsHpTQzHFv0O460XS7kSdwlUlOiOh6GAVuDL2HmpuW5RYLOLjwi98HEMXLWCygWQd
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0 (MHng)
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
+MIME-Version: 1.0
+X-Received: by 2002:a05:6602:1347:b0:7cc:66b1:fa95 with SMTP id
+ i7-20020a056602134700b007cc66b1fa95mr11827iov.3.1712168606688; Wed, 03 Apr
+ 2024 11:23:26 -0700 (PDT)
+Date: Wed, 03 Apr 2024 11:23:26 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <00000000000098f75506153551a1@google.com>
+Subject: [syzbot] [kernfs?] possible deadlock in kernfs_fop_llseek
+From: syzbot <syzbot+9a5b0ced8b1bfb238b56@syzkaller.appspotmail.com>
+To: gregkh@linuxfoundation.org, linux-fsdevel@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com, tj@kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
-On Sat, 23 Mar 2024 05:09:42 PDT (-0700), cyy@cyyself.name wrote:
-> K230 is an ideal chip for RISC-V Vector 1.0 evaluation now. Add initial
-> support for it to allow more people to participate in building drivers
-> to mainline for it.
->
-> This kernel has been tested upon factory SDK [1] with
-> k230_evb_only_linux_defconfig and patched mainline opensbi [2] to skip
-> locked pmp and successfully booted to busybox on initrd with this log [3].
->
-> [1] https://github.com/kendryte/k230_sdk
-> [2] https://github.com/cyyself/opensbi/tree/k230
-> [3] https://gist.github.com/cyyself/b9445f38cc3ba1094924bd41c9086176
->
-> Changes since v5:
-> - Deprecate SOC_CANAAN and use SOC_CANAAN_K210 for K210 SoCs
-> - Modify existing K210 drivers depends on SOC_CANAAN_K210 symbol
-> - Reword dts commit message
-> - Modify dts to use Full 512MB memory
-> - Rebase to linux mainline master
->
-> Changes since v4:
-> - Reword commit message on dts that the B-ext version of c908 is 1.0 rather
->   than 1.0-rc1
->
-> v4: https://lore.kernel.org/linux-riscv/tencent_587730262984A011834F42D0563BC6B10405@qq.com/
->
-> Changes since v3:
-> - Refactor Kconfig.soc which uses ARCH_CANAAN for regular Canaan SoCs and
->   rename SOC_CANAAN to SOC_CANAAN_K210 for K210 in patch [5/7]
-> - Sort dt-binding stings on Cannan SoCs in alphanumerical order
->
-> v3: https://lore.kernel.org/linux-riscv/tencent_BB2364BBF1812F4E304F7BDDD11E57356605@qq.com/
->
-> Changes since v2:
-> - Add MIT License to dts file
-> - Sort dt-binding stings in alphanumerical order
-> - Sort filename in dts Makefile in alphanumerical order
-> - Rename canmv-k230.dts to k230-canmv.dts
->
-> v2: https://lore.kernel.org/linux-riscv/tencent_64A9B4B31C2D70D5633042461AC9F80C0509@qq.com/
->
-> Changes since v1:
-> - Patch dt-bindings in clint and plic
-> - Use enum in K230 compatible dt bindings
-> - Fix dts to pass `make dtbs_check`
-> - Add more details in commit message
->
-> v1: https://lore.kernel.org/linux-riscv/tencent_E15F8FE0B6769E6338AE690C7F4844A31706@qq.com/
->
-> Yangyu Chen (11):
->   dt-bindings: riscv: Add T-HEAD C908 compatible
->   dt-bindings: add Canaan K230 boards compatible strings
->   dt-bindings: timer: Add Canaan K230 CLINT
->   dt-bindings: interrupt-controller: Add Canaan K230 PLIC
->   riscv: Kconfig.socs: Split ARCH_CANAAN and SOC_CANAAN_K210
->   soc: canaan: Deprecate SOC_CANAAN and use SOC_CANAAN_K210 for K210
->   clk: k210: Deprecate SOC_CANAAN and use SOC_CANAAN_K210
->   pinctrl: k210: Deprecate SOC_CANAAN and use SOC_CANAAN_K210
->   reset: k210: Deprecate SOC_CANAAN and use SOC_CANAAN_K210
->   riscv: dts: add initial canmv-k230 and k230-evb dts
->   riscv: config: enable ARCH_CANAAN in defconfig
->
->  .../sifive,plic-1.0.0.yaml                    |   1 +
->  .../devicetree/bindings/riscv/canaan.yaml     |   8 +-
->  .../devicetree/bindings/riscv/cpus.yaml       |   1 +
->  .../bindings/timer/sifive,clint.yaml          |   1 +
->  arch/riscv/Kconfig.socs                       |   8 +-
->  arch/riscv/Makefile                           |   2 +-
->  arch/riscv/boot/dts/canaan/Makefile           |   2 +
->  arch/riscv/boot/dts/canaan/k230-canmv.dts     |  24 +++
->  arch/riscv/boot/dts/canaan/k230-evb.dts       |  24 +++
->  arch/riscv/boot/dts/canaan/k230.dtsi          | 140 ++++++++++++++++++
->  arch/riscv/configs/defconfig                  |   1 +
->  arch/riscv/configs/nommu_k210_defconfig       |   3 +-
->  .../riscv/configs/nommu_k210_sdcard_defconfig |   3 +-
->  drivers/clk/Kconfig                           |   4 +-
->  drivers/pinctrl/Kconfig                       |   4 +-
->  drivers/reset/Kconfig                         |   4 +-
->  drivers/soc/Makefile                          |   2 +-
->  drivers/soc/canaan/Kconfig                    |   4 +-
->  18 files changed, 220 insertions(+), 16 deletions(-)
->  create mode 100644 arch/riscv/boot/dts/canaan/k230-canmv.dts
->  create mode 100644 arch/riscv/boot/dts/canaan/k230-evb.dts
->  create mode 100644 arch/riscv/boot/dts/canaan/k230.dtsi
->
-> base-commit: 8e938e39866920ddc266898e6ae1fffc5c8f51aa
+Hello,
 
-Acked-by: Palmer Dabbelt <palmer@rivosinc.com>
+syzbot found the following issue on:
+
+HEAD commit:    fe46a7dd189e Merge tag 'sound-6.9-rc1' of git://git.kernel..
+git tree:       upstream
+console+strace: https://syzkaller.appspot.com/x/log.txt?x=136eb2f6180000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=4d90a36f0cab495a
+dashboard link: https://syzkaller.appspot.com/bug?extid=9a5b0ced8b1bfb238b56
+compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=17f1d93d180000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=15c38139180000
+
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/72ab73815344/disk-fe46a7dd.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/2d6d6b0d7071/vmlinux-fe46a7dd.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/48e275e5478b/bzImage-fe46a7dd.xz
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+9a5b0ced8b1bfb238b56@syzkaller.appspotmail.com
+
+======================================================
+WARNING: possible circular locking dependency detected
+6.8.0-syzkaller-08951-gfe46a7dd189e #0 Not tainted
+------------------------------------------------------
+syz-executor250/5062 is trying to acquire lock:
+ffff888022c36888 (&of->mutex){+.+.}-{3:3}, at: kernfs_fop_llseek+0x7e/0x2a0 fs/kernfs/file.c:867
+
+but task is already holding lock:
+ffff88807edeadd8 (&ovl_i_lock_key[depth]){+.+.}-{3:3}, at: ovl_inode_lock fs/overlayfs/overlayfs.h:649 [inline]
+ffff88807edeadd8 (&ovl_i_lock_key[depth]){+.+.}-{3:3}, at: ovl_llseek+0x26b/0x470 fs/overlayfs/file.c:214
+
+which lock already depends on the new lock.
+
+
+the existing dependency chain (in reverse order) is:
+
+-> #2 (&ovl_i_lock_key[depth]){+.+.}-{3:3}:
+       lock_acquire+0x1e4/0x530 kernel/locking/lockdep.c:5754
+       __mutex_lock_common kernel/locking/mutex.c:608 [inline]
+       __mutex_lock+0x136/0xd70 kernel/locking/mutex.c:752
+       ovl_inode_lock_interruptible fs/overlayfs/overlayfs.h:654 [inline]
+       ovl_nlink_start+0xdc/0x390 fs/overlayfs/util.c:1162
+       ovl_do_remove+0x1fa/0xd90 fs/overlayfs/dir.c:893
+       vfs_rmdir+0x367/0x4c0 fs/namei.c:4209
+       do_rmdir+0x3b5/0x580 fs/namei.c:4268
+       __do_sys_rmdir fs/namei.c:4287 [inline]
+       __se_sys_rmdir fs/namei.c:4285 [inline]
+       __x64_sys_rmdir+0x49/0x60 fs/namei.c:4285
+       do_syscall_64+0xfb/0x240
+       entry_SYSCALL_64_after_hwframe+0x6d/0x75
+
+-> #1 (&ovl_i_mutex_dir_key[depth]){++++}-{3:3}:
+       lock_acquire+0x1e4/0x530 kernel/locking/lockdep.c:5754
+       down_read+0xb1/0xa40 kernel/locking/rwsem.c:1526
+       inode_lock_shared include/linux/fs.h:803 [inline]
+       lookup_slow+0x45/0x70 fs/namei.c:1708
+       walk_component+0x2e1/0x410 fs/namei.c:2004
+       lookup_last fs/namei.c:2461 [inline]
+       path_lookupat+0x16f/0x450 fs/namei.c:2485
+       filename_lookup+0x256/0x610 fs/namei.c:2514
+       kern_path+0x35/0x50 fs/namei.c:2622
+       lookup_bdev+0xc5/0x290 block/bdev.c:1072
+       resume_store+0x1a0/0x710 kernel/power/hibernate.c:1235
+       kernfs_fop_write_iter+0x3a4/0x500 fs/kernfs/file.c:334
+       call_write_iter include/linux/fs.h:2108 [inline]
+       new_sync_write fs/read_write.c:497 [inline]
+       vfs_write+0xa84/0xcb0 fs/read_write.c:590
+       ksys_write+0x1a0/0x2c0 fs/read_write.c:643
+       do_syscall_64+0xfb/0x240
+       entry_SYSCALL_64_after_hwframe+0x6d/0x75
+
+-> #0 (&of->mutex){+.+.}-{3:3}:
+       check_prev_add kernel/locking/lockdep.c:3134 [inline]
+       check_prevs_add kernel/locking/lockdep.c:3253 [inline]
+       validate_chain+0x18cb/0x58e0 kernel/locking/lockdep.c:3869
+       __lock_acquire+0x1346/0x1fd0 kernel/locking/lockdep.c:5137
+       lock_acquire+0x1e4/0x530 kernel/locking/lockdep.c:5754
+       __mutex_lock_common kernel/locking/mutex.c:608 [inline]
+       __mutex_lock+0x136/0xd70 kernel/locking/mutex.c:752
+       kernfs_fop_llseek+0x7e/0x2a0 fs/kernfs/file.c:867
+       ovl_llseek+0x314/0x470 fs/overlayfs/file.c:218
+       vfs_llseek fs/read_write.c:289 [inline]
+       ksys_lseek fs/read_write.c:302 [inline]
+       __do_sys_lseek fs/read_write.c:313 [inline]
+       __se_sys_lseek fs/read_write.c:311 [inline]
+       __x64_sys_lseek+0x153/0x1e0 fs/read_write.c:311
+       do_syscall_64+0xfb/0x240
+       entry_SYSCALL_64_after_hwframe+0x6d/0x75
+
+other info that might help us debug this:
+
+Chain exists of:
+  &of->mutex --> &ovl_i_mutex_dir_key[depth] --> &ovl_i_lock_key[depth]
+
+ Possible unsafe locking scenario:
+
+       CPU0                    CPU1
+       ----                    ----
+  lock(&ovl_i_lock_key[depth]);
+                               lock(&ovl_i_mutex_dir_key[depth]);
+                               lock(&ovl_i_lock_key[depth]);
+  lock(&of->mutex);
+
+ *** DEADLOCK ***
+
+1 lock held by syz-executor250/5062:
+ #0: ffff88807edeadd8 (&ovl_i_lock_key[depth]){+.+.}-{3:3}, at: ovl_inode_lock fs/overlayfs/overlayfs.h:649 [inline]
+ #0: ffff88807edeadd8 (&ovl_i_lock_key[depth]){+.+.}-{3:3}, at: ovl_llseek+0x26b/0x470 fs/overlayfs/file.c:214
+
+stack backtrace:
+CPU: 1 PID: 5062 Comm: syz-executor250 Not tainted 6.8.0-syzkaller-08951-gfe46a7dd189e #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 03/27/2024
+Call Trace:
+ <TASK>
+ __dump_stack lib/dump_stack.c:88 [inline]
+ dump_stack_lvl+0x241/0x360 lib/dump_stack.c:114
+ check_noncircular+0x36a/0x4a0 kernel/locking/lockdep.c:2187
+ check_prev_add kernel/locking/lockdep.c:3134 [inline]
+ check_prevs_add kernel/locking/lockdep.c:3253 [inline]
+ validate_chain+0x18cb/0x58e0 kernel/locking/lockdep.c:3869
+ __lock_acquire+0x1346/0x1fd0 kernel/locking/lockdep.c:5137
+ lock_acquire+0x1e4/0x530 kernel/locking/lockdep.c:5754
+ __mutex_lock_common kernel/locking/mutex.c:608 [inline]
+ __mutex_lock+0x136/0xd70 kernel/locking/mutex.c:752
+ kernfs_fop_llseek+0x7e/0x2a0 fs/kernfs/file.c:867
+ ovl_llseek+0x314/0x470 fs/overlayfs/file.c:218
+ vfs_llseek fs/read_write.c:289 [inline]
+ ksys_lseek fs/read_write.c:302 [inline]
+ __do_sys_lseek fs/read_write.c:313 [inline]
+ __se_sys_lseek fs/read_write.c:311 [inline]
+ __x64_sys_lseek+0x153/0x1e0 fs/read_write.c:311
+ do_syscall_64+0xfb/0x240
+ entry_SYSCALL_64_after_hwframe+0x6d/0x75
+RIP: 0033:0x7f0e2bdfd219
+Code: 48 83 c4 28 c3 e8 67 17 00 00 0f 1f 80 00 00 00 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007ffd2f80f3f8 EFLAGS: 00000246 ORIG_RAX: 0000000000000008
+RAX: ffffffffffffffda RBX: 00007ffd2f80f400 RCX: 00007f0e2bdfd219
+RDX: 0000000000000003 RSI: 0000000000000000 RDI: 0000000000000005
+RBP: 00007ffd2f80f408 R08: 00007f0e2bdca000 R09: 00007f0e2bdca000
+R10: 00007f0e2bdca000 R11: 0000000000000246 R12: 0000000000000000
+R13: 00007ffd2f80f668 R14: 0000000000000001 R15: 0000000000000001
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+
+If the report is already addressed, let syzbot know by replying with:
+#syz fix: exact-commit-title
+
+If you want syzbot to run the reproducer, reply with:
+#syz test: git://repo/address.git branch-or-commit-hash
+If you attach or paste a git patch, syzbot will apply it before testing.
+
+If you want to overwrite report's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
+
+If the report is a duplicate of another one, reply with:
+#syz dup: exact-subject-of-another-report
+
+If you want to undo deduplication, reply with:
+#syz undup
 
