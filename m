@@ -1,133 +1,290 @@
-Return-Path: <linux-kernel+bounces-130409-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-130410-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C34158977B1
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 20:01:32 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C65468977B2
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 20:02:04 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 005291C2088B
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 18:01:32 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7AA9628A7F5
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 18:02:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EF69F152DF5;
-	Wed,  3 Apr 2024 18:01:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8F0071534E6;
+	Wed,  3 Apr 2024 18:01:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="gjKQ/kq3"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="LOHQ4EFB"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D40E31C33
-	for <linux-kernel@vger.kernel.org>; Wed,  3 Apr 2024 18:01:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1DAA41C33;
+	Wed,  3 Apr 2024 18:01:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.19
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712167286; cv=none; b=nA7K0Ujz455Gv6Z4Y3g3+ea4thpsesHE+rgSz/uMNdcgKbwzWtTI9xsVolsbZCK/qLTpb0w6Y0XpAhyR5a+w+F666dS+nG3/pcFMV8+TYcoosn0+h2FMQnbX96arfyguqDZ7gnGfACwHyOt9p/jNpBYC5Oii2+nsGciSbJi/jRE=
+	t=1712167313; cv=none; b=N6C3ZFZ9ZDi723q4IWrkQsIRrQ3R8nsGBtbBCqJh7vy3K31+kWB/F/toF5C4zTbENO1v+kz1tRVxERJZvVHFx27E/XQWec20W6o/ZuuR7DwkIKW4cB21mGXWC1Q0PlX1m+GaaTPRvNHf1v0EZOw1DR6NvRU1IffNmxYvUBut/zk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712167286; c=relaxed/simple;
-	bh=SANhDgqHDAmAg+STmMcMR5V3bx656M+lNtf++ydYf8k=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=kx94t9mTJUfYsotJFWqC41HVD8E1R3R2W2qz7XYGaPx8QvFqM3lh0huXywIPBYKMmv4cZisP0soyAQeo1nOT3bMmjaGFFmks0YMt+pAzR7D1ap3MR3cNzBkPElvvGYhY8Jr16C/OwL2yvPiHy+d9ZXIJQvByQUgFojXkc7Uu8Qg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=gjKQ/kq3; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1712167283;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=SANhDgqHDAmAg+STmMcMR5V3bx656M+lNtf++ydYf8k=;
-	b=gjKQ/kq3rAeNM24cB3+2cEcHfcgSx7mfDHt3UXYEDmdeMmnyzMqmscY7pwPLy+3MivB6Ys
-	/nzvDA/L1VVjSO+xQLLsnn0TAPZtQc+CJ8+2zEMkae4jN2GXFK5VU5OWmjAU89ozCbhXFd
-	PcwCnKSSQePlu2C8NFSfA65IXpZltKc=
-Received: from mail-lf1-f69.google.com (mail-lf1-f69.google.com
- [209.85.167.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-270-GCC8z89QPbyL-YLPG3hwdA-1; Wed, 03 Apr 2024 14:01:21 -0400
-X-MC-Unique: GCC8z89QPbyL-YLPG3hwdA-1
-Received: by mail-lf1-f69.google.com with SMTP id 2adb3069b0e04-515bb20923dso107265e87.0
-        for <linux-kernel@vger.kernel.org>; Wed, 03 Apr 2024 11:01:21 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712167280; x=1712772080;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=SANhDgqHDAmAg+STmMcMR5V3bx656M+lNtf++ydYf8k=;
-        b=eJKejAUeimMVRyp3qULMrMY8VMVi8GNyvQW3Ry3q5htH5QaALtJ9ov8dIeit83t/Fy
-         5IouSF9aFc/xryHjzFJhI5RhSuyodUeMQG+MpTk70W75M8aHZIjZ550xFGLlAVInigVx
-         R3AnZGgIBHU6q8SIplEz1t7OtFq8qG9TyEg2ePi3mKWrDDvxDqArZrYQJ1fgqd7+ief9
-         dBAuwMFiDvRPxflGjpWnuE+qylCnWiu8aA1bdwbiEFG6DXkQBj8K0ZzMAZl7xx6rf6yu
-         975LODo36Wq+7ZMGVv4eMbjdDIUSuLOREQFU6DO8Etu1KTg00YY6L0SEiuB6roe4mITh
-         dnyA==
-X-Forwarded-Encrypted: i=1; AJvYcCVhNVqI/CS7iETTJrUXC3y0f03lGKINat0mXVxb0zD1N/+SiIMGCtm6TP8ETOyes+DBPl9zxZiJ6uS1VzA2/wi7ikUyYT/JcU5IOPht
-X-Gm-Message-State: AOJu0YwE8E2fQxymAeq817XHDT18Ox+V0NOWYYYTEd6JNhnYaKxuPwEB
-	ZkMcPorRnvjwqT8Op8f/cdSeE0DtxPyExzRgloEyRot1Neezt394xlK/Tm1vvpvK+cLC8HYjdVS
-	ZPrhj2BV0Gz5LWcXm0UNfIaCuhEm8ZeIlKu5/AqhDLBakXFKNIO8Uy81WVthyBgcbATbSnO3uNu
-	B0alhqR54KJoGh6fVIFTRfzz6Z3Fl23iQRcslH
-X-Received: by 2002:a19:750c:0:b0:516:b408:29d8 with SMTP id y12-20020a19750c000000b00516b40829d8mr185365lfe.25.1712167280371;
-        Wed, 03 Apr 2024 11:01:20 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IEsHCLnGkM1BpiHZbXiNMydwILg0Dx9b9ONcEics16kkAN2UkOcuc+DuKnfvjgQIyARBLC+FCCMIb/KLJ061/k=
-X-Received: by 2002:a19:750c:0:b0:516:b408:29d8 with SMTP id
- y12-20020a19750c000000b00516b40829d8mr185354lfe.25.1712167280055; Wed, 03 Apr
- 2024 11:01:20 -0700 (PDT)
+	s=arc-20240116; t=1712167313; c=relaxed/simple;
+	bh=Oc8GUmQjJrBN3DiOeh6zjN29dpmqnQFaYQWjAS8Slys=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Xn5bpP85ukEvZAADV7U7Bbx/vNv85+HywyWH4QzBX8YLeNyrHJUYQDxEDLowggkH/qV88QvAKehGIJoqe0bLQ3/udoualg2ARKMoxIOz7MWF55N4HkqvOEWyKzKwXhtLq4FmG16t5juHzAq1UiujxKuv8/Kg6cpyM/HihVhUcxI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=LOHQ4EFB; arc=none smtp.client-ip=192.198.163.19
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1712167311; x=1743703311;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=Oc8GUmQjJrBN3DiOeh6zjN29dpmqnQFaYQWjAS8Slys=;
+  b=LOHQ4EFBQ0IOm+SwK9Z6KOixGxGF+jDLDRyLWCXzMTe++Y0R//hnnF/R
+   vPSc5nlivv9ql57kyAJ/OaaTo/sLKxPzhH0PND2ves3Rf+qpVDvR5+l2F
+   fzK05df2DCk6Eu6L5Z3gOLB735tVhkCy2vowk2Z2SPVWdaH71d4lLzrnY
+   qTMvpIo2+7fb0ry65npJwskrVjhigNwKKyWAbylCdAlyC20U4hFY/0Nja
+   pIJVttxDoi8QEtG+5TAgZ6mM5SC20UtYtzViidXbNocBSNx9xMqMNbSDA
+   sV19hBELXMZqFS4IDaTBUV2BP4ZOHOMsV/V67z4AFOzPyBFlua49mNSHe
+   Q==;
+X-CSE-ConnectionGUID: wKfWkHWNQqW46tlnLVYfKg==
+X-CSE-MsgGUID: W3crFeKeSDSQA7mXqJXWAg==
+X-IronPort-AV: E=McAfee;i="6600,9927,11033"; a="7286304"
+X-IronPort-AV: E=Sophos;i="6.07,177,1708416000"; 
+   d="scan'208";a="7286304"
+Received: from fmviesa003.fm.intel.com ([10.60.135.143])
+  by fmvoesa113.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Apr 2024 11:01:51 -0700
+X-CSE-ConnectionGUID: /IzuR5vXQnW4MqoN+Vg50Q==
+X-CSE-MsgGUID: PIZbA5RFSjuNddIh96E9zg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,177,1708416000"; 
+   d="scan'208";a="23002870"
+Received: from ls.sc.intel.com (HELO localhost) ([172.25.112.31])
+  by fmviesa003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Apr 2024 11:01:50 -0700
+Date: Wed, 3 Apr 2024 11:01:49 -0700
+From: Isaku Yamahata <isaku.yamahata@intel.com>
+To: Binbin Wu <binbin.wu@linux.intel.com>
+Cc: isaku.yamahata@intel.com, kvm@vger.kernel.org,
+	linux-kernel@vger.kernel.org, isaku.yamahata@gmail.com,
+	Paolo Bonzini <pbonzini@redhat.com>, erdemaktas@google.com,
+	Sean Christopherson <seanjc@google.com>,
+	Sagi Shahar <sagis@google.com>, Kai Huang <kai.huang@intel.com>,
+	chen.bo@intel.com, hang.yuan@intel.com, tina.zhang@intel.com,
+	isaku.yamahata@linux.intel.com
+Subject: Re: [PATCH v19 070/130] KVM: TDX: TDP MMU TDX support
+Message-ID: <20240403180149.GH2444378@ls.amr.corp.intel.com>
+References: <cover.1708933498.git.isaku.yamahata@intel.com>
+ <56cdb0da8bbf17dc293a2a6b4ff74f6e3e034bbd.1708933498.git.isaku.yamahata@intel.com>
+ <e10d121e-c813-47b0-849d-0dde92c4d49a@linux.intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <cb894653-6e20-4759-8dd1-7b03ae8614cf@gmx.com> <9d84481e-6a21-41fa-ae7c-1a9c52fc48ad@infradead.org>
- <5dbb3ccc-ea7c-4f60-800e-33df10dae8a9@gmx.com>
-In-Reply-To: <5dbb3ccc-ea7c-4f60-800e-33df10dae8a9@gmx.com>
-From: Audra Mitchell <audra@redhat.com>
-Date: Wed, 3 Apr 2024 14:01:08 -0400
-Message-ID: <CA+bDH-uTBoPjb+=XQKvb+euo=1swaiZUXOWJbL=zP4i0k8JtPQ@mail.gmail.com>
-Subject: Re: workqueue: name exceeds WQ_NAME_LEN. Truncating to: events_freezable_power_efficien
-To: "Artem S. Tashkinov" <aros@gmx.com>
-Cc: Randy Dunlap <rdunlap@infradead.org>, linux-kernel@vger.kernel.org, 
-	Tejun Heo <tj@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <e10d121e-c813-47b0-849d-0dde92c4d49a@linux.intel.com>
 
-I just pushed a doc patch to fix the references to the old name.
-Please let me know if you see something I missed. Thanks in advance!
+On Tue, Apr 02, 2024 at 05:13:23PM +0800,
+Binbin Wu <binbin.wu@linux.intel.com> wrote:
 
-On Sat, Mar 30, 2024 at 7:31=E2=80=AFAM Artem S. Tashkinov <aros@gmx.com> w=
-rote:
->
-> Commit 8318d6a6362f5903edb4c904a8dd447e59be4ad1 is not yet in 6.8.x stabl=
-e.
->
-> Please push.
->
-> On 3/29/24 18:53, Randy Dunlap wrote:
-> > Hi,
-> >
-> > On 3/27/24 03:37, Artem S. Tashkinov wrote:
-> >> Hello,
-> >>
-> >> There's a new warning message in kernel 6.8 which I guess shouldn't be
-> >> there. Linux 6.7 did not have it.
-> >>
-> >> No idea where it comes from:
-> >>
-> >> workqueue: name exceeds WQ_NAME_LEN. Truncating to:
-> >> events_freezable_power_efficien
-> >>
-> >> A relevant bug report: https://bugzilla.kernel.org/show_bug.cgi?id=3D2=
-18649
-> >>
-> >> Please fix.
-> >
-> >
-> > Tejun, should 8318d6a6362f5 be backported to 6.8? or maybe it has been =
-already?
-> >
-> > Also, it look like Documentation/core-api/workqueue.rst needs to be upd=
-ated
-> > with the new workqueue name. Audra?
-> >
-> > thanks.
->
+> 
+> 
+> On 2/26/2024 4:26 PM, isaku.yamahata@intel.com wrote:
+> > From: Isaku Yamahata <isaku.yamahata@intel.com>
+> > 
+> > Implement hooks of TDP MMU for TDX backend.  TLB flush, TLB shootdown,
+> > propagating the change private EPT entry to Secure EPT and freeing Secure
+> > EPT page. TLB flush handles both shared EPT and private EPT.  It flushes
+> > shared EPT same as VMX.  It also waits for the TDX TLB shootdown.  For the
+> > hook to free Secure EPT page, unlinks the Secure EPT page from the Secure
+> > EPT so that the page can be freed to OS.
+> > 
+> > Propagate the entry change to Secure EPT.  The possible entry changes are
+> > present -> non-present(zapping) and non-present -> present(population).  On
+> > population just link the Secure EPT page or the private guest page to the
+> > Secure EPT by TDX SEAMCALL. Because TDP MMU allows concurrent
+> > zapping/population, zapping requires synchronous TLB shoot down with the
+> > frozen EPT entry.  It zaps the secure entry, increments TLB counter, sends
+> > IPI to remote vcpus to trigger TLB flush, and then unlinks the private
+> > guest page from the Secure EPT. For simplicity, batched zapping with
+> > exclude lock is handled as concurrent zapping.  Although it's inefficient,
+> > it can be optimized in the future.
+> > 
+> > For MMIO SPTE, the spte value changes as follows.
+> > initial value (suppress VE bit is set)
+> > -> Guest issues MMIO and triggers EPT violation
+> > -> KVM updates SPTE value to MMIO value (suppress VE bit is cleared)
+> > -> Guest MMIO resumes.  It triggers VE exception in guest TD
+> > -> Guest VE handler issues TDG.VP.VMCALL<MMIO>
+> > -> KVM handles MMIO
+> > -> Guest VE handler resumes its execution after MMIO instruction
+> > 
+> > Signed-off-by: Isaku Yamahata <isaku.yamahata@intel.com>
+> > 
+> > ---
+> > v19:
+> > - Compile fix when CONFIG_HYPERV != y.
+> >    It's due to the following patch.  Catch it up.
+> >    https://lore.kernel.org/all/20231018192325.1893896-1-seanjc@google.com/
+> > - Add comments on tlb shootdown to explan the sequence.
+> > - Use gmem_max_level callback, delete tdp_max_page_level.
+> > 
+> > v18:
+> > - rename tdx_sept_page_aug() -> tdx_mem_page_aug()
+> > - checkpatch: space => tab
+> > 
+> > v15 -> v16:
+> > - Add the handling of TD_ATTR_SEPT_VE_DISABLE case.
+> > 
+> > v14 -> v15:
+> > - Implemented tdx_flush_tlb_current()
+> > - Removed unnecessary invept in tdx_flush_tlb().  It was carry over
+> >    from the very old code base.
+> > 
+> > Signed-off-by: Isaku Yamahata <isaku.yamahata@intel.com>
+> > ---
+> >   arch/x86/kvm/mmu/spte.c    |   3 +-
+> >   arch/x86/kvm/vmx/main.c    |  91 ++++++++-
+> >   arch/x86/kvm/vmx/tdx.c     | 372 +++++++++++++++++++++++++++++++++++++
+> >   arch/x86/kvm/vmx/tdx.h     |   2 +-
+> >   arch/x86/kvm/vmx/tdx_ops.h |   6 +
+> >   arch/x86/kvm/vmx/x86_ops.h |  13 ++
+> >   6 files changed, 481 insertions(+), 6 deletions(-)
+> > 
+> [...]
+> 
+> > +static int tdx_sept_zap_private_spte(struct kvm *kvm, gfn_t gfn,
+> > +				      enum pg_level level)
+> > +{
+> > +	int tdx_level = pg_level_to_tdx_sept_level(level);
+> > +	struct kvm_tdx *kvm_tdx = to_kvm_tdx(kvm);
+> > +	gpa_t gpa = gfn_to_gpa(gfn) & KVM_HPAGE_MASK(level);
+> > +	struct tdx_module_args out;
+> > +	u64 err;
+> > +
+> > +	/* This can be called when destructing guest TD after freeing HKID. */
+> > +	if (unlikely(!is_hkid_assigned(kvm_tdx)))
+> > +		return 0;
+> > +
+> > +	/* For now large page isn't supported yet. */
+> > +	WARN_ON_ONCE(level != PG_LEVEL_4K);
+> > +	err = tdh_mem_range_block(kvm_tdx->tdr_pa, gpa, tdx_level, &out);
+> > +	if (unlikely(err == TDX_ERROR_SEPT_BUSY))
+> > +		return -EAGAIN;
+> > +	if (KVM_BUG_ON(err, kvm)) {
+> > +		pr_tdx_error(TDH_MEM_RANGE_BLOCK, err, &out);
+> > +		return -EIO;
+> > +	}
+> > +	return 0;
+> > +}
+> > +
+> > +/*
+> > + * TLB shoot down procedure:
+> > + * There is a global epoch counter and each vcpu has local epoch counter.
+> > + * - TDH.MEM.RANGE.BLOCK(TDR. level, range) on one vcpu
+> > + *   This blocks the subsequenct creation of TLB translation on that range.
+> > + *   This corresponds to clear the present bit(all RXW) in EPT entry
+> > + * - TDH.MEM.TRACK(TDR): advances the epoch counter which is global.
+> > + * - IPI to remote vcpus
+> > + * - TDExit and re-entry with TDH.VP.ENTER on remote vcpus
+> > + * - On re-entry, TDX module compares the local epoch counter with the global
+> > + *   epoch counter.  If the local epoch counter is older than the global epoch
+> > + *   counter, update the local epoch counter and flushes TLB.
+> > + */
+> > +static void tdx_track(struct kvm *kvm)
+> > +{
+> > +	struct kvm_tdx *kvm_tdx = to_kvm_tdx(kvm);
+> > +	u64 err;
+> > +
+> > +	KVM_BUG_ON(!is_hkid_assigned(kvm_tdx), kvm);
+> > +	/* If TD isn't finalized, it's before any vcpu running. */
+> > +	if (unlikely(!is_td_finalized(kvm_tdx)))
+> > +		return;
+> > +
+> > +	/*
+> > +	 * tdx_flush_tlb() waits for this function to issue TDH.MEM.TRACK() by
+> > +	 * the counter.  The counter is used instead of bool because multiple
+> > +	 * TDH_MEM_TRACK() can be issued concurrently by multiple vcpus.
+> 
+> Which case will have concurrent issues of TDH_MEM_TRACK() by multiple vcpus?
+> For now, zapping is holding write lock.
+> Promotion/demotion may have concurrent issues of TDH_MEM_TRACK(), but it's
+> not supported yet.
 
+You're right. Large page support will use it.  With the assumption of only
+single vcpu issuing tlb flush, The alternative is boolean + memory barrier.
+I prefer to keep atomic_t and drop this comment than boolean + memory barrier
+because we will eventually switch to atomic_t.
+
+
+> > +	 *
+> > +	 * optimization: The TLB shoot down procedure described in The TDX
+> > +	 * specification is, TDH.MEM.TRACK(), send IPI to remote vcpus, confirm
+> > +	 * all remote vcpus exit to VMM, and execute vcpu, both local and
+> > +	 * remote.  Twist the sequence to reduce IPI overhead as follows.
+> > +	 *
+> > +	 * local			remote
+> > +	 * -----			------
+> > +	 * increment tdh_mem_track
+> > +	 *
+> > +	 * request KVM_REQ_TLB_FLUSH
+> > +	 * send IPI
+> > +	 *
+> > +	 *				TDEXIT to KVM due to IPI
+> > +	 *
+> > +	 *				IPI handler calls tdx_flush_tlb()
+> > +	 *                              to process KVM_REQ_TLB_FLUSH.
+> > +	 *				spin wait for tdh_mem_track == 0
+> > +	 *
+> > +	 * TDH.MEM.TRACK()
+> > +	 *
+> > +	 * decrement tdh_mem_track
+> > +	 *
+> > +	 *				complete KVM_REQ_TLB_FLUSH
+> > +	 *
+> > +	 * TDH.VP.ENTER to flush tlbs	TDH.VP.ENTER to flush tlbs
+> > +	 */
+> > +	atomic_inc(&kvm_tdx->tdh_mem_track);
+> > +	/*
+> > +	 * KVM_REQ_TLB_FLUSH waits for the empty IPI handler, ack_flush(), with
+> > +	 * KVM_REQUEST_WAIT.
+> > +	 */
+> > +	kvm_make_all_cpus_request(kvm, KVM_REQ_TLB_FLUSH);
+> > +
+> > +	do {
+> > +		err = tdh_mem_track(kvm_tdx->tdr_pa);
+> > +	} while (unlikely((err & TDX_SEAMCALL_STATUS_MASK) == TDX_OPERAND_BUSY));
+> > +
+> > +	/* Release remote vcpu waiting for TDH.MEM.TRACK in tdx_flush_tlb(). */
+> > +	atomic_dec(&kvm_tdx->tdh_mem_track);
+> > +
+> > +	if (KVM_BUG_ON(err, kvm))
+> > +		pr_tdx_error(TDH_MEM_TRACK, err, NULL);
+> > +
+> > +}
+> > +
+> > +static int tdx_sept_free_private_spt(struct kvm *kvm, gfn_t gfn,
+> > +				     enum pg_level level, void *private_spt)
+> > +{
+> > +	struct kvm_tdx *kvm_tdx = to_kvm_tdx(kvm);
+> > +
+> > +	/*
+> > +	 * The HKID assigned to this TD was already freed and cache was
+> > +	 * already flushed. We don't have to flush again.
+> > +	 */
+> > +	if (!is_hkid_assigned(kvm_tdx))
+> > +		return tdx_reclaim_page(__pa(private_spt));
+> > +
+> > +	/*
+> > +	 * free_private_spt() is (obviously) called when a shadow page is being
+> > +	 * zapped.  KVM doesn't (yet) zap private SPs while the TD is active.
+> > +	 * Note: This function is for private shadow page.  Not for private
+> > +	 * guest page.   private guest page can be zapped during TD is active.
+> > +	 * shared <-> private conversion and slot move/deletion.
+> > +	 */
+> > +	KVM_BUG_ON(is_hkid_assigned(kvm_tdx), kvm);
+> 
+> At this point, is_hkid_assigned(kvm_tdx) is always true.
+
+Yes, will drop this KVM_BUG_ON().
+-- 
+Isaku Yamahata <isaku.yamahata@intel.com>
 
