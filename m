@@ -1,62 +1,58 @@
-Return-Path: <linux-kernel+bounces-130289-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-130290-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id D0AE4897671
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 19:24:07 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B94F7897675
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 19:24:22 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0D8B01C291C8
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 17:24:07 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EAB041C29309
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 17:24:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CB0C8157476;
-	Wed,  3 Apr 2024 17:17:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 318F0157493;
+	Wed,  3 Apr 2024 17:17:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="iJxXL5Km"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="dRiBhLBC"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 18525157468;
-	Wed,  3 Apr 2024 17:17:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 73E9415747E;
+	Wed,  3 Apr 2024 17:17:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712164651; cv=none; b=de5kbJSwdjpEzXrsG84OAxIU93kqgpnNcjv4Yq4kZ967RynjpMXtnhXvyoIxnlb6ml+Uo4j5GLJp9QFpEKAACtuRae013F0PwMFozSvmhS7fb3JbsZMXM2DgpTvOnbDzpDt52wM5t+cNPoSdWgABKjoMrmFT5DsPF8sa8PQv9Ds=
+	t=1712164652; cv=none; b=hi/IdSl/KfpZeyWlNxKwPa4o1TazlAyJiiOsHWYThJcFFiAuBt0YtLoyTYJgFmB3negf4/tlOi+1k2YrSmbsr6nLKHS6yf5z0aMU41UVid+PymckwLQnDbo6hM2APZcNzqiNZhTbUHNcny6i/4W+OqY+21merHLZtjHrx1P+T20=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712164651; c=relaxed/simple;
-	bh=pSKtIhrEgfmgjAXnCxGmxTJj02e3TpZuMW53XL31DLY=;
+	s=arc-20240116; t=1712164652; c=relaxed/simple;
+	bh=LRtxW9+b/yvQ8uXaMpgy8K8yy1lCpLxqsVwoUZLH2dw=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=gtY9bWCgTPdwC+fXHfoqsK4bf856SvtivhUd0QoVdat49ifVhgNF9IjLKUqZxdTy1NBkPKS+aG6S9XXEUBBr/f5wHDSZJI3l7j9FRbX/dhab3Fl3hSYWsNVb/5nEvl0OG7AIoDaVevXDbKmKsD2ZsF+8DzExQvcf3aKlQVkmT5A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=iJxXL5Km; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 95282C433C7;
-	Wed,  3 Apr 2024 17:17:29 +0000 (UTC)
+	 MIME-Version; b=BAUdrz6mPK5Nd9LxKYCN2PM/topEDucECPKPIwcynB3KxJ59KapQXAN2JQCvLUOhEdWO6VuVnsAtKaMTL+HTJeq6dflLYOgli3moNRg1s4VKKpOEC6l6iWM78xOD81Pr6Rqns859STacjRd0ux5a4cJJUpUloQ2camFEBGiSkms=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=dRiBhLBC; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 59C66C433A6;
+	Wed,  3 Apr 2024 17:17:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712164651;
-	bh=pSKtIhrEgfmgjAXnCxGmxTJj02e3TpZuMW53XL31DLY=;
+	s=k20201202; t=1712164652;
+	bh=LRtxW9+b/yvQ8uXaMpgy8K8yy1lCpLxqsVwoUZLH2dw=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=iJxXL5Km6EnuSv+yT9KU+hC1T50iaQrNTrYIDPlJqTvxtJc8KyhS5MzFF8YOHSV4T
-	 FMlkS0WKf1mKMFqyKFiF/7TDUh8sCi7EQ8TTEkjd5ZZ9eCeZegBKPa6CduwiaMDEXt
-	 SAgZC+vdiq27lt+IPVTF4VTJZoDgQ1Onl1ckz5PVcH0wRUIq4lujhHitL4F/9BpB8C
-	 8farMxddIt3mkeAV0kAjXQEtQanB/Nlq1vHGsS5nbnNOeeLR3LWemo15blB/OP/LVr
-	 kxFnbPoV/xBQxAp9l8ibm88Rgl95NHKyHDGqWuTTW1DrI4sDnyuUYuW8rC7xxNML15
-	 g+3HYi0GbvLLA==
+	b=dRiBhLBCSnRPD9myjYPKEbM9Q65j9wlmjNGZg4pn3RaKqBV38rKI4IYCDfJYk6aaX
+	 iYJAC//eQwykPGzH9E2BaANIDlsplA+5N7PVfnHNueaY4UVuTneX5ihZ55UcrQQJSU
+	 2c/7xOOC56n7bJcsYhSFOmSUbhS17gnP/oPfN10ugR1u4gC1emKxdJzP/pEEaHXyMo
+	 HUdz6dUL9obf09byrJCijiroWErtXFhfI7psdehex0QJ9kRoP1Jo9uBAB6njpfcLZj
+	 JV0YJBs326hYSo6lBBia7tP2zjlfIYS134wp3NpGnQvDFpTXm8fbhWwxCq9pVwigQF
+	 Qv5R0Tavk0hNg==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: M Cooley <m.cooley.198@gmail.com>,
-	Mark Brown <broonie@kernel.org>,
+Cc: Konrad Dybcio <konrad.dybcio@linaro.org>,
+	Bjorn Andersson <andersson@kernel.org>,
+	Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+	Daniel Lezcano <daniel.lezcano@linaro.org>,
 	Sasha Levin <sashal@kernel.org>,
-	lgirdwood@gmail.com,
-	perex@perex.cz,
-	tiwai@suse.com,
-	mario.limonciello@amd.com,
-	me@jwang.link,
-	jeremy@system76.com,
-	git@augustwikerfors.se,
-	linux-sound@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.8 15/28] ASoC: amd: yc: Fix non-functional mic on ASUS M7600RE
-Date: Wed,  3 Apr 2024 13:16:17 -0400
-Message-ID: <20240403171656.335224-15-sashal@kernel.org>
+	rafael@kernel.org,
+	linux-pm@vger.kernel.org
+Subject: [PATCH AUTOSEL 6.8 16/28] thermal/of: Assume polling-delay(-passive) 0 when absent
+Date: Wed,  3 Apr 2024 13:16:18 -0400
+Message-ID: <20240403171656.335224-16-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240403171656.335224-1-sashal@kernel.org>
 References: <20240403171656.335224-1-sashal@kernel.org>
@@ -71,40 +67,54 @@ X-Patchwork-Hint: Ignore
 X-stable-base: Linux 6.8.3
 Content-Transfer-Encoding: 8bit
 
-From: M Cooley <m.cooley.198@gmail.com>
+From: Konrad Dybcio <konrad.dybcio@linaro.org>
 
-[ Upstream commit db185362fca554b201e2c62beb15a02bb39a064b ]
+[ Upstream commit 488164006a281986d95abbc4b26e340c19c4c85b ]
 
-The ASUS M7600RE (Vivobook Pro 16X OLED) needs a quirks-table entry for the
-internal microphone to function properly.
+Currently, thermal zones associated with providers that have interrupts
+for signaling hot/critical trips are required to set a polling-delay
+of 0 to indicate no polling. This feels a bit backwards.
 
-Signed-off-by: Mitch Cooley <m.cooley.198@gmail.com>
+Change the code such that "no polling delay" also means "no polling".
 
-Link: https://msgid.link/r/CALijGznExWW4fujNWwMzmn_K=wo96sGzV_2VkT7NjvEUdkg7Gw@mail.gmail.com
-Signed-off-by: Mark Brown <broonie@kernel.org>
+Suggested-by: Bjorn Andersson <andersson@kernel.org>
+Signed-off-by: Konrad Dybcio <konrad.dybcio@linaro.org>
+Reviewed-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Reviewed-by: Bjorn Andersson <andersson@kernel.org>
+Signed-off-by: Daniel Lezcano <daniel.lezcano@linaro.org>
+Link: https://lore.kernel.org/r/20240125-topic-thermal-v1-2-3c9d4dced138@linaro.org
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/soc/amd/yc/acp6x-mach.c | 7 +++++++
- 1 file changed, 7 insertions(+)
+ drivers/thermal/thermal_of.c | 12 ++++++++----
+ 1 file changed, 8 insertions(+), 4 deletions(-)
 
-diff --git a/sound/soc/amd/yc/acp6x-mach.c b/sound/soc/amd/yc/acp6x-mach.c
-index 90360f8b3e81b..1ab69a53174e6 100644
---- a/sound/soc/amd/yc/acp6x-mach.c
-+++ b/sound/soc/amd/yc/acp6x-mach.c
-@@ -318,6 +318,13 @@ static const struct dmi_system_id yc_acp_quirk_table[] = {
- 			DMI_MATCH(DMI_PRODUCT_NAME, "E1504FA"),
- 		}
- 	},
-+	{
-+		.driver_data = &acp6x_card,
-+		.matches = {
-+			DMI_MATCH(DMI_BOARD_VENDOR, "ASUSTeK COMPUTER INC."),
-+			DMI_MATCH(DMI_PRODUCT_NAME, "M7600RE"),
-+		}
-+	},
- 	{
- 		.driver_data = &acp6x_card,
- 		.matches = {
+diff --git a/drivers/thermal/thermal_of.c b/drivers/thermal/thermal_of.c
+index 4d6c22e0ed85b..61bbd42aa2cb4 100644
+--- a/drivers/thermal/thermal_of.c
++++ b/drivers/thermal/thermal_of.c
+@@ -225,14 +225,18 @@ static int thermal_of_monitor_init(struct device_node *np, int *delay, int *pdel
+ 	int ret;
+ 
+ 	ret = of_property_read_u32(np, "polling-delay-passive", pdelay);
+-	if (ret < 0) {
+-		pr_err("%pOFn: missing polling-delay-passive property\n", np);
++	if (ret == -EINVAL) {
++		*pdelay = 0;
++	} else if (ret < 0) {
++		pr_err("%pOFn: Couldn't get polling-delay-passive: %d\n", np, ret);
+ 		return ret;
+ 	}
+ 
+ 	ret = of_property_read_u32(np, "polling-delay", delay);
+-	if (ret < 0) {
+-		pr_err("%pOFn: missing polling-delay property\n", np);
++	if (ret == -EINVAL) {
++		*delay = 0;
++	} else if (ret < 0) {
++		pr_err("%pOFn: Couldn't get polling-delay: %d\n", np, ret);
+ 		return ret;
+ 	}
+ 
 -- 
 2.43.0
 
