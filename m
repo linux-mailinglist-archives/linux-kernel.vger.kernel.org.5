@@ -1,535 +1,207 @@
-Return-Path: <linux-kernel+bounces-129215-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-129216-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id BBB3B896718
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 09:48:45 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E8B4389671C
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 09:49:10 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3368D1F28875
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 07:48:45 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 51DD8B28D65
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 07:49:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8687F7317B;
-	Wed,  3 Apr 2024 07:46:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E560A60BB7;
+	Wed,  3 Apr 2024 07:47:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="UaLK4EEe"
-Received: from mail-lf1-f52.google.com (mail-lf1-f52.google.com [209.85.167.52])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=bgdev-pl.20230601.gappssmtp.com header.i=@bgdev-pl.20230601.gappssmtp.com header.b="VFy4ZSEC"
+Received: from mail-lf1-f47.google.com (mail-lf1-f47.google.com [209.85.167.47])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4FDEF6EB74
-	for <linux-kernel@vger.kernel.org>; Wed,  3 Apr 2024 07:46:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 60D6C5EE80
+	for <linux-kernel@vger.kernel.org>; Wed,  3 Apr 2024 07:47:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712130414; cv=none; b=aGBk9bKCzpvi2rXVryJZ9jEdz0oCLJnordMWuQOahGT7dM5FV02GEncBa8SwQuYjf93BqFQWoqkBkbbI/WcrqcoQipxLwap+EKB2weZ7btl00iPzqS5Et3iI4cJtgBau93YdiGalFH2qRaQlxtYjj2Fv+RUc7gBoTY5Mb9g8hDU=
+	t=1712130449; cv=none; b=QU9zD68CghUrhaX51yIBBVQMsZbyYu4ghGmjazkF8pYP/AulYxzKspOlHr2EaCIHV/nIBMfOpJAZcFPRTzNpxPxeeGmtEbknL5gRlxxm/+BGxFTd/Jfc0icHbHwwxgYYcuVC66Vfvo4xI1Wa2P7JmkddiGFD+Xp4wukXWtuq92k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712130414; c=relaxed/simple;
-	bh=IHIbIA10M5UtZQdbmvwkCTUqisoLyeBAPmnzRRwv71g=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=t9xW+dpJwVyqoHPr2Rjeacf9pWQiqOnzYXYikPDTRHUnrDQpen5+rVEGknh6s8tgp/DR4SOxg54aUoTkDIxWtGcUc8u52qh9ClifUBqgVv+erK3uzbK6HfXEIzJGdSArEiJcGisqEfnH/n7CWFSLv0VU3Dp8n3yG/mmZl3H4Kb4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=UaLK4EEe; arc=none smtp.client-ip=209.85.167.52
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-lf1-f52.google.com with SMTP id 2adb3069b0e04-515c50dc2afso6729739e87.1
-        for <linux-kernel@vger.kernel.org>; Wed, 03 Apr 2024 00:46:51 -0700 (PDT)
+	s=arc-20240116; t=1712130449; c=relaxed/simple;
+	bh=RKlf/aXBQSz4C5u/DS1c43o9FTCo579xxiqOL6jSNKM=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=RNx2xoNI8gsfqMWVOVm4qt53sD9ABXnqJtxnPAnED2mrFHpX6IojLkVHDZd5zeUrYr3zHn9ANltTegkcQl15hTnsnMnaCUP0uojohR0mzqT1Ckgj5EZjPvdRNpUkmjQKyU87NSfSk7gg/Y7YmeT3JUwiB4ojCX9Ow8hmsE6IFs8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bgdev.pl; spf=none smtp.mailfrom=bgdev.pl; dkim=pass (2048-bit key) header.d=bgdev-pl.20230601.gappssmtp.com header.i=@bgdev-pl.20230601.gappssmtp.com header.b=VFy4ZSEC; arc=none smtp.client-ip=209.85.167.47
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bgdev.pl
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=bgdev.pl
+Received: by mail-lf1-f47.google.com with SMTP id 2adb3069b0e04-513e134f73aso7960194e87.2
+        for <linux-kernel@vger.kernel.org>; Wed, 03 Apr 2024 00:47:27 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1712130409; x=1712735209; darn=vger.kernel.org;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=+mFLED14D2NKo6b8OEzFwR3wD9ynqsWvZ3YguyuePs8=;
-        b=UaLK4EEeZteZS7D4mDfu2TkPPrrvAS2s2t+Pmsi7IO0OtR6zHFiuQj4cqKDBLOmYKp
-         am/Lk87dFnt2G7m69FVgNgoV8T8t65c8Yuup1HWP5B/KQZ51/wjWDGmR9S3QNxk01j7c
-         F2fK9pA89pp+UbjGBA56gYkXnCSJboWqV/l6+P5UQCwr8dnMXth9t9ctAiPgJfn/hkYz
-         s9L8D5aFdImdQrEVOLwhZFco+nIVJGvW7K8IW4stmtBhcf9eDgXfOc7wozwLc9xvUpyo
-         hxGhKeEP/XTkCuxPlZ/wIubIkibslVURe/0eiyU4QSn8bO0z1YJA6atiqBhPIZZwnpLp
-         pZbg==
+        d=bgdev-pl.20230601.gappssmtp.com; s=20230601; t=1712130445; x=1712735245; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=cheZvOcC88OGFbj70O09gAsWEwU7K3V+qd/tt+SD81A=;
+        b=VFy4ZSECXxyd97ehUwk/nS0/q6C9mlFPZB3f7pI0N0xo8Jmw4E1YbB7m0aW1djqloe
+         g09ytQVqjaZZmmm32EqUMCi8ZoEiJnRn/14jz+HmUgQMxKr9sB82iPt2XvjVDvlLAT7v
+         /BFM18+Qo8WV930k71uZStsrjewGxFSyW45mOCQxxjIuaJtjcQs8dK7Ho70q9kBDm16Q
+         4CcvCS5KwclPCFrjgvyO4OkhreVz1j/k0QXpSvmqTsn3Tpvp3VBpg6k13fbE13UrRKY9
+         CVK9Dl/lMn8uhOkCP705N85nUZFduKhnUBS/6eFf/kQxYcZuGyGcJ0FxD/ZJs8mYEcv3
+         Iq2A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712130409; x=1712735209;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20230601; t=1712130445; x=1712735245;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=+mFLED14D2NKo6b8OEzFwR3wD9ynqsWvZ3YguyuePs8=;
-        b=EC85WjjcDoOcIZ3/dygxlYqklT3QdN7vINeV+CVT9+gIWYB/i6IC0fE3XN33fg2gER
-         6SGYMkIxd9jk+s2p+Mtoh927eSoa+gezm9rh0W0pDi4aAHroj9byrXnGg+m5v/BeDG9v
-         KjRuxiQmyXixQsaDKMGNv6QypHk8c4ukxWCMezj2M+m6AUXCm0s8iJO5VpcY39QzcNxS
-         KjX7S69U5J8zbYP4xfPDDh6Ay+nC5gEDQj/MDF0SlxN6xBae9wqh/0ktnWBJGsd9fIs0
-         z8hV0OUKWoeIqnCjjv2xFxBjAc1YpdrjYYZFXD8OYe//GyQXN2YdNdQ/bnw8mfII5fl9
-         OAKA==
-X-Forwarded-Encrypted: i=1; AJvYcCXFA7GgVpyBjqf7e5G1mzZ+YKEmM+nV3Oih4cvobCumtsrfZf+v4Wroy/9yMC71jG2+bHH34wSuUPs8uBIaQyQKttlA3pD4+AMkLxsi
-X-Gm-Message-State: AOJu0YxSucfUlxRTLjF62tjhRXCnzHHAC9NcED5bqaRVbd7C/Oc8sx67
-	srbKFD0LXp97NvWQ6ADu2Adm/5biJKDh3UOhZpix6eXJoU9buqT4wt3ejHVlioE=
-X-Google-Smtp-Source: AGHT+IGPQSrlppp+zB+e9FXz3o940iv1U0xRDznJU/iA63ZFNo8qPncbZ7AkPO/aMABT6DEZIq7EHA==
-X-Received: by 2002:a05:6512:3688:b0:515:d4c7:d23 with SMTP id d8-20020a056512368800b00515d4c70d23mr7746559lfs.67.1712130409431;
-        Wed, 03 Apr 2024 00:46:49 -0700 (PDT)
-Received: from arrakeen.starnux.net ([2a01:e0a:982:cbb0:52eb:f6ff:feb3:451a])
-        by smtp.gmail.com with ESMTPSA id cc13-20020a5d5c0d000000b00341b8edbe8csm14021282wrb.87.2024.04.03.00.46.48
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 03 Apr 2024 00:46:49 -0700 (PDT)
-From: Neil Armstrong <neil.armstrong@linaro.org>
-Date: Wed, 03 Apr 2024 09:46:38 +0200
-Subject: [PATCH v12 7/7] arm64: dts: amlogic: meson-g12b-bananapi-cm4: add
- support for MNT Reform2 with CM4 adaper
+        bh=cheZvOcC88OGFbj70O09gAsWEwU7K3V+qd/tt+SD81A=;
+        b=Y/0j3le7lHJCwenNMUR7G5GiOORhY33FSieJGOlUSEWOu/qLdQFFxyOmyNwRBPRD2M
+         9WI7mvSeQusAOCRGYeHJdHN+UF4ptiE/E8PNPk3v+VutJY1wrpaJtFXtAZOr8EvjPb8t
+         4M8/xnBk5C+/UYU0SzPLoedGX/4CykXvjGYu8Kjk48FWXjGr3P/f3hfXkIC++jaCLtR9
+         evts0QCCOiUEVlILyAQjLinFYldAeBTAk6B0fiAG/zSxs51VyIcZq4nSMFC7hEZvX+g6
+         NzJLD8mz4n9/1uLi8qOX+7Kmar634kzGIUr7YSIKW3L7Hz0IvLuLpic+JcGcPk0cBGic
+         WZIw==
+X-Forwarded-Encrypted: i=1; AJvYcCWBWlIWji4jt3Aq0qdxIvBr/qPKbF2TYz5vhkjtammttOv9L/7lJ0WAFvDWeoTkNFcT8xfvpswROcX3UgKQ9ZMCPewlVvwUCynN3Qi9
+X-Gm-Message-State: AOJu0YzBKUQXncoAmbfHr5TQ3lv7VoEQzYOZz92vxsX7+RlDCizkiSuK
+	o7TGYmHDc0S93v6YJu10k7HrSlFZwQkj9MH1oE+iXqiiN4Z+zkwsIqNJXrC3H6ETyj2HZ/xCD/x
+	y4WVZiHNLUJUfNUYu98CNGeMfg8Sw5e1TL6N4hg==
+X-Google-Smtp-Source: AGHT+IG5LvgOQGpY0trGQtWaTz+lv+ktFre9zbGKvzioVYu4AqCouNJCtNokmpW3qynaS7emWAxWzVE85+WNKemU6dY=
+X-Received: by 2002:ac2:5d44:0:b0:515:d445:6c13 with SMTP id
+ w4-20020ac25d44000000b00515d4456c13mr8905032lfd.32.1712130445446; Wed, 03 Apr
+ 2024 00:47:25 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20240403-amlogic-v6-4-upstream-dsi-ccf-vim3-v12-7-99ecdfdc87fc@linaro.org>
-References: <20240403-amlogic-v6-4-upstream-dsi-ccf-vim3-v12-0-99ecdfdc87fc@linaro.org>
-In-Reply-To: <20240403-amlogic-v6-4-upstream-dsi-ccf-vim3-v12-0-99ecdfdc87fc@linaro.org>
-To: Rob Herring <robh@kernel.org>, 
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
- Conor Dooley <conor+dt@kernel.org>, 
- Martin Blumenstingl <martin.blumenstingl@googlemail.com>, 
- Jerome Brunet <jbrunet@baylibre.com>, Kevin Hilman <khilman@baylibre.com>, 
- Michael Turquette <mturquette@baylibre.com>, 
- Stephen Boyd <sboyd@kernel.org>, 
- Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, 
- Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>, 
- David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>, 
- Jagan Teki <jagan@amarulasolutions.com>, 
- Nicolas Belin <nbelin@baylibre.com>
-Cc: devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, 
- linux-amlogic@lists.infradead.org, linux-clk@vger.kernel.org, 
- linux-arm-kernel@lists.infradead.org, dri-devel@lists.freedesktop.org, 
- Neil Armstrong <neil.armstrong@linaro.org>, 
- "Lukas F. Hartmann" <lukas@mntre.com>
-X-Mailer: b4 0.12.4
-X-Developer-Signature: v=1; a=openpgp-sha256; l=9593;
- i=neil.armstrong@linaro.org; h=from:subject:message-id;
- bh=IHIbIA10M5UtZQdbmvwkCTUqisoLyeBAPmnzRRwv71g=;
- b=owEBbQKS/ZANAwAKAXfc29rIyEnRAcsmYgBmDQlfjKcZ6w/TgNlhuPFsJ9WXynXRmPP8aHXZ/SQ7
- QrEKyJ6JAjMEAAEKAB0WIQQ9U8YmyFYF/h30LIt33NvayMhJ0QUCZg0JXwAKCRB33NvayMhJ0UC7D/
- sGnZkQgfVe+li3Yv/HNLsMyeYRrBX9QeK8rjQ8gG3ouuqXzfohWfV+DgxOvV93GooMHxw8LLgGrfCJ
- bmOWORW/vmWNeAnkJD3D3pJ9vMvXBg0scOcHAxg8ohjR9oBQW8ID0lyObCDPqwovmFcmZ5dSQRk2CG
- yWzEsBoQJCIZQq4LhSZOoczEW0trDIUb4Jc7kaNokslQzak1cdTonQJuF3IvQ9GeQGXFWSzg7LdYdU
- QHWklV4MF0v5gRxGbEFLslWqsG0RrrmKMc5zqFzXY8SUSy7Z4q/wEnbw7Q5pgB8jfjQ6LyB71NrOOr
- 4pJdJYiKqhegeqgfCq98XhmMHh6wSBhL8ajdBYVfowbADW/9k9swSsDkg7htkkuZ6rS41Mjk94HRmX
- cDd57Iy8ONAIEwuUQHvMkY4YFF0K9hYgl/5ZONOcbZbdBlsgpg0xCT7GfUoizuMLrPIv/QcCm5Dix2
- UfGVoe3y2yZKg0UwFuYj8yzGWx8nAM9Ga5Y4ssKK2JMrpS7pVA83AMAgrDdwFcmKHFc0FkJImsGhIp
- bVK3P9KokxXlyXZghQufxejK47iOUEpNV7fOdxyued2GbVZPVEdtrYUra8SupIo+M+MJKb5bdEJJm2
- aTWqYducG2Xq/2mHOuSVHip945WVyXsy6we3RPStsrWXblg1dirkmheQsAEA==
-X-Developer-Key: i=neil.armstrong@linaro.org; a=openpgp;
- fpr=89EC3D058446217450F22848169AB7B1A4CFF8AE
+References: <20240325100359.17001-1-brgl@bgdev.pl> <56e1c63a-4c09-4d92-9ef2-aad5390879cc@gmail.com>
+ <CAMRc=Mf_pvrh2VMfTVE-ZTypyO010p=to-cd8Q745DzSDXLGFw@mail.gmail.com>
+ <CAMRc=MfsVWcoMC-dB-fdxy332h-ucUPTfEUMAnCt5L-q3zJxWg@mail.gmail.com>
+ <82f94b54-82d1-49b9-badf-63d948b347fc@gmail.com> <97e1f121-9e84-4e63-9c9c-57e2de0b29d7@gmail.com>
+ <CAMRc=McLJFGcy-A6PZNmjgDXnvx8z0J4k-Dbak-txvWnycHG2A@mail.gmail.com>
+ <2b1dc031-d645-494c-9103-a2bb422ea60b@gmail.com> <CAMRc=MdoSPuedbGhy4toDEkw0vSzESDz2bXGpyt_=R4hqXW+Uw@mail.gmail.com>
+ <9b1e5ea0-bb32-4c42-b2e9-204bde31b905@gmail.com> <CACMJSesvM6_PhhR_2sP4JX6bR4ytVVg=MwWBEVrCHf5FNp2JXw@mail.gmail.com>
+ <9db0fc7b-f24a-4d76-b8bd-ec577ecba0c6@gmail.com> <CAMRc=Me9x1OXKXXxyhzZ6mxffmaoq=4QhMXCL6L71_xso2epWA@mail.gmail.com>
+ <CAMRc=Me0MamtJoPtQnucKyZx9pfkEPDAAZqWFWRU0CBcj+P50A@mail.gmail.com>
+In-Reply-To: <CAMRc=Me0MamtJoPtQnucKyZx9pfkEPDAAZqWFWRU0CBcj+P50A@mail.gmail.com>
+From: Bartosz Golaszewski <brgl@bgdev.pl>
+Date: Wed, 3 Apr 2024 09:47:14 +0200
+Message-ID: <CAMRc=McZ9dpD7Ws0vq-eYCN3smA6dHOLu_i1BL=x+CAaYr9S2w@mail.gmail.com>
+Subject: Re: [PATCH v9 00/13] firmware: qcom: qseecom: convert to using the TZ allocator
+To: Maximilian Luz <luzmaximilian@gmail.com>
+Cc: Andy Gross <agross@kernel.org>, Bjorn Andersson <andersson@kernel.org>, 
+	Konrad Dybcio <konrad.dybcio@linaro.org>, Elliot Berman <quic_eberman@quicinc.com>, 
+	Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>, 
+	Guru Das Srinagesh <quic_gurus@quicinc.com>, Andrew Halaney <ahalaney@redhat.com>, 
+	Alex Elder <elder@linaro.org>, Srini Kandagatla <srinivas.kandagatla@linaro.org>, 
+	Arnd Bergmann <arnd@arndb.de>, linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	linux-arm-kernel@lists.infradead.org, kernel@quicinc.com, 
+	Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-This adds a basic devicetree for the MNT Reform2 DIY laptop when using a
-CM4 adapter and a BPI-CM4 module.
+On Tue, Apr 2, 2024 at 10:44=E2=80=AFAM Bartosz Golaszewski <brgl@bgdev.pl>=
+ wrote:
+>
+> On Sat, Mar 30, 2024 at 8:16=E2=80=AFPM Bartosz Golaszewski <brgl@bgdev.p=
+l> wrote:
+> >
+> > On Fri, 29 Mar 2024 20:57:52 +0100, Maximilian Luz <luzmaximilian@gmail=
+com> said:
+> > > On 3/29/24 8:46 PM, Bartosz Golaszewski wrote:
+> > >> On Fri, 29 Mar 2024 at 20:39, Maximilian Luz <luzmaximilian@gmail.co=
+m> wrote:
+> > >>>
+> > >>> On 3/29/24 8:26 PM, Bartosz Golaszewski wrote:
+> > >>>> On Fri, 29 Mar 2024 at 20:22, Maximilian Luz <luzmaximilian@gmail.=
+com> wrote:
+> > >>>>>
+> > >>>>> On 3/29/24 8:07 PM, Bartosz Golaszewski wrote:
+> > >>>>>>
+> > >>>>>> Both with and without SHM bridge?
+> > >>>>>
+> > >>>>> With CONFIG_QCOM_TZMEM_MODE_GENERIC=3Dy (and the upcoming fix) ev=
+erything
+> > >>>>> works. With CONFIG_QCOM_TZMEM_MODE_SHMBRIDGE=3Dy things unfortuna=
+tely
+> > >>>>> still get stuck at boot (regardless of the fix). I think that's
+> > >>>>> happening even before anything efivar related should come up.
+> > >>>>>
+> > >>>>
+> > >>>> This is on X13s? I will get one in 3 weeks. Can you get the bootlo=
+g
+> > >>>> somehow? Does the laptop have any serial console?
+> > >>>
+> > >>> Surface Pro X (sc8180x), but it should be similar enough to the X13=
+s in
+> > >>> that regard. At least from what people with access to the X13s told=
+ me,
+> > >>> the qseecom stuff seems to behave the same.
+> > >>>
+> > >>> Unfortunately I don't have a direct serial console. Best I have is
+> > >>> USB-serial, but it's not even getting there. I'll have to try and s=
+ee if
+> > >>> I can get some more info on the screen.
+> > >>>
+> > >>
+> > >> I have access to a sc8180x-primus board, does it make sense to test
+> > >> with this one? If so, could you give me instructions on how to do it=
+?
+> > >
+> > > I guess it's worth a shot.
+> > >
+> > >  From what I can tell, there shouldn't be any patches in my tree that
+> > > would conflict with it. So I guess it should just be building it with
+> > > CONFIG_QCOM_TZMEM_MODE_SHMBRIDGE=3Dy and booting.
+> > >
+> > > I am currently testing it on top of a patched v6.8 tree though (but t=
+hat
+> > > should just contain patches to get the Pro X running). You can find t=
+he
+> > > full tree at
+> > >
+> > >      https://github.com/linux-surface/kernel/tree/spx/v6.8
+> > >
+> > > The last commit is the fix I mentioned, so you might want to revert
+> > > that, since the shmem issue triggers regardless of that and it preven=
+ts
+> > > your series from applying cleanly.
+> > >
+> > > Best regards,
+> > > Max
+> > >
+> >
+> > sc8180x-primus' support upstream is quite flaky. The board boots 50% of=
+ time.
+> > However it's true that with SHM bridge it gets to:
+> >
+> > mount: mounting efivarfs on /sys/firmware/efi/efivars failed: Operation=
+ not supported
+> >
+> > and stops 100% of the time. Without SHM bridge I cannot boot it either =
+because
+> > I suppose I need the patch you sent yesterday. I haven't had the time t=
+o
+> > rebase it yet, it's quite intrusive to my series.
+> >
+> > I can confirm that with that patch the board still boots but still 50% =
+of the
+> > time.
+> >
+> > Bart
+>
+> Hi!
+>
+> I was under the impression that until v8, the series worked on sc8180x
+> but I'm seeing that even v7 has the same issue with SHM Bridge on
+> sc8180x-primus. Could you confirm? Because I'm not sure if I should
+> track the differences or the whole thing was broken for this platform
+> from the beginning.
+>
+> Bart
 
-Co-developed-by: Lukas F. Hartmann <lukas@mntre.com>
-Signed-off-by: Neil Armstrong <neil.armstrong@linaro.org>
----
- arch/arm64/boot/dts/amlogic/Makefile               |   1 +
- .../meson-g12b-bananapi-cm4-mnt-reform2.dts        | 384 +++++++++++++++++++++
- 2 files changed, 385 insertions(+)
+Interestingly, it doesn't seem like a problem with qseecom - even if I
+disable the driver, the board still freezes after the first SCM call
+using SHM bridge. I suspect - and am trying to clarify that with qcom
+- that this architecture doesn't support SHM bridge but doesn't report
+it either unlike other older platforms. Or maybe there's some quirk
+somewhere. Anyway, I'm on it.
 
-diff --git a/arch/arm64/boot/dts/amlogic/Makefile b/arch/arm64/boot/dts/amlogic/Makefile
-index 0b7961de3db7..d525e5123fbc 100644
---- a/arch/arm64/boot/dts/amlogic/Makefile
-+++ b/arch/arm64/boot/dts/amlogic/Makefile
-@@ -18,6 +18,7 @@ dtb-$(CONFIG_ARCH_MESON) += meson-g12b-a311d-bananapi-m2s.dtb
- dtb-$(CONFIG_ARCH_MESON) += meson-g12b-a311d-khadas-vim3.dtb
- dtb-$(CONFIG_ARCH_MESON) += meson-g12b-a311d-khadas-vim3-ts050.dtb
- dtb-$(CONFIG_ARCH_MESON) += meson-g12b-bananapi-cm4-cm4io.dtb
-+dtb-$(CONFIG_ARCH_MESON) += meson-g12b-bananapi-cm4-mnt-reform2.dtb
- dtb-$(CONFIG_ARCH_MESON) += meson-g12b-gsking-x.dtb
- dtb-$(CONFIG_ARCH_MESON) += meson-g12b-gtking-pro.dtb
- dtb-$(CONFIG_ARCH_MESON) += meson-g12b-gtking.dtb
-diff --git a/arch/arm64/boot/dts/amlogic/meson-g12b-bananapi-cm4-mnt-reform2.dts b/arch/arm64/boot/dts/amlogic/meson-g12b-bananapi-cm4-mnt-reform2.dts
-new file mode 100644
-index 000000000000..003efed529ba
---- /dev/null
-+++ b/arch/arm64/boot/dts/amlogic/meson-g12b-bananapi-cm4-mnt-reform2.dts
-@@ -0,0 +1,384 @@
-+// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
-+/*
-+ * Copyright (c) 2023 Neil Armstrong <neil.armstrong@linaro.org>
-+ * Copyright 2023 MNT Research GmbH
-+ */
-+
-+/dts-v1/;
-+
-+#include "meson-g12b-bananapi-cm4.dtsi"
-+#include <dt-bindings/input/input.h>
-+#include <dt-bindings/leds/common.h>
-+#include <dt-bindings/sound/meson-g12a-tohdmitx.h>
-+
-+/ {
-+	model = "MNT Reform 2 with BPI-CM4 Module";
-+	compatible = "mntre,reform2-cm4", "bananapi,bpi-cm4", "amlogic,a311d", "amlogic,g12b";
-+	chassis-type = "laptop";
-+
-+	aliases {
-+		ethernet0 = &ethmac;
-+		i2c0 = &i2c1;
-+		i2c1 = &i2c3;
-+	};
-+
-+	hdmi_connector: hdmi-connector {
-+		compatible = "hdmi-connector";
-+		type = "a";
-+
-+		port {
-+			hdmi_connector_in: endpoint {
-+				remote-endpoint = <&hdmi_tx_tmds_out>;
-+			};
-+		};
-+	};
-+
-+	leds {
-+		compatible = "gpio-leds";
-+
-+		led-blue {
-+			color = <LED_COLOR_ID_BLUE>;
-+			function = LED_FUNCTION_STATUS;
-+			gpios = <&gpio_ao GPIOAO_7 GPIO_ACTIVE_HIGH>;
-+			linux,default-trigger = "heartbeat";
-+		};
-+
-+		led-green {
-+			color = <LED_COLOR_ID_GREEN>;
-+			function = LED_FUNCTION_STATUS;
-+			gpios = <&gpio_ao GPIOAO_2 GPIO_ACTIVE_HIGH>;
-+		};
-+	};
-+
-+	sound {
-+		compatible = "amlogic,axg-sound-card";
-+		model = "MNT-REFORM2-BPI-CM4";
-+		audio-widgets = "Headphone", "Headphone Jack",
-+				"Speaker", "External Speaker",
-+				"Microphone", "Mic Jack";
-+		audio-aux-devs = <&tdmout_a>, <&tdmout_b>, <&tdmin_b>;
-+		audio-routing =	"TDMOUT_A IN 0", "FRDDR_A OUT 0",
-+				"TDMOUT_A IN 1", "FRDDR_B OUT 0",
-+				"TDMOUT_A IN 2", "FRDDR_C OUT 0",
-+				"TDM_A Playback", "TDMOUT_A OUT",
-+				"TDMOUT_B IN 0", "FRDDR_A OUT 1",
-+				"TDMOUT_B IN 1", "FRDDR_B OUT 1",
-+				"TDMOUT_B IN 2", "FRDDR_C OUT 1",
-+				"TDM_B Playback", "TDMOUT_B OUT",
-+				"TDMIN_B IN 1", "TDM_B Capture",
-+				"TDMIN_B IN 4", "TDM_B Loopback",
-+				"TODDR_A IN 1", "TDMIN_B OUT",
-+				"TODDR_B IN 1", "TDMIN_B OUT",
-+				"TODDR_C IN 1", "TDMIN_B OUT",
-+				"Headphone Jack", "HP_L",
-+				"Headphone Jack", "HP_R",
-+				"External Speaker", "SPK_LP",
-+				"External Speaker", "SPK_LN",
-+				"External Speaker", "SPK_RP",
-+				"External Speaker", "SPK_RN",
-+				"LINPUT1", "Mic Jack",
-+				"Mic Jack", "MICB";
-+
-+		assigned-clocks = <&clkc CLKID_MPLL2>,
-+					<&clkc CLKID_MPLL0>,
-+					<&clkc CLKID_MPLL1>;
-+		assigned-clock-parents = <0>, <0>, <0>;
-+		assigned-clock-rates = <294912000>,
-+				       <270950400>,
-+				       <393216000>;
-+
-+		dai-link-0 {
-+			sound-dai = <&frddr_a>;
-+		};
-+
-+		dai-link-1 {
-+			sound-dai = <&frddr_b>;
-+		};
-+
-+		dai-link-2 {
-+			sound-dai = <&frddr_c>;
-+		};
-+
-+		dai-link-3 {
-+			sound-dai = <&toddr_a>;
-+		};
-+
-+		dai-link-4 {
-+			sound-dai = <&toddr_b>;
-+		};
-+
-+		dai-link-5 {
-+			sound-dai = <&toddr_c>;
-+		};
-+
-+		/* 8ch hdmi interface */
-+		dai-link-6 {
-+			sound-dai = <&tdmif_a>;
-+			dai-format = "i2s";
-+			dai-tdm-slot-tx-mask-0 = <1 1>;
-+			dai-tdm-slot-tx-mask-1 = <1 1>;
-+			dai-tdm-slot-tx-mask-2 = <1 1>;
-+			dai-tdm-slot-tx-mask-3 = <1 1>;
-+			mclk-fs = <256>;
-+
-+			codec {
-+				sound-dai = <&tohdmitx TOHDMITX_I2S_IN_A>;
-+			};
-+		};
-+
-+		/* Analog Audio */
-+		dai-link-7 {
-+			sound-dai = <&tdmif_b>;
-+			dai-format = "i2s";
-+			dai-tdm-slot-tx-mask-0 = <1 1>;
-+			mclk-fs = <256>;
-+
-+			codec {
-+				sound-dai = <&wm8960>;
-+			};
-+		};
-+
-+		/* hdmi glue */
-+		dai-link-8 {
-+			sound-dai = <&tohdmitx TOHDMITX_I2S_OUT>;
-+
-+			codec {
-+				sound-dai = <&hdmi_tx>;
-+			};
-+		};
-+	};
-+
-+	reg_main_1v8: regulator-main-1v8 {
-+		compatible = "regulator-fixed";
-+		regulator-name = "1V8";
-+		regulator-min-microvolt = <1800000>;
-+		regulator-max-microvolt = <1800000>;
-+		vin-supply = <&reg_main_3v3>;
-+	};
-+
-+	reg_main_1v2: regulator-main-1v2 {
-+		compatible = "regulator-fixed";
-+		regulator-name = "1V2";
-+		regulator-min-microvolt = <1200000>;
-+		regulator-max-microvolt = <1200000>;
-+		vin-supply = <&reg_main_5v>;
-+	};
-+
-+	reg_main_3v3: regulator-main-3v3 {
-+		compatible = "regulator-fixed";
-+		regulator-name = "3V3";
-+		regulator-min-microvolt = <3300000>;
-+		regulator-max-microvolt = <3300000>;
-+	};
-+
-+	reg_main_5v: regulator-main-5v {
-+		compatible = "regulator-fixed";
-+		regulator-name = "5V";
-+		regulator-min-microvolt = <5000000>;
-+		regulator-max-microvolt = <5000000>;
-+	};
-+
-+	reg_main_usb: regulator-main-usb {
-+		compatible = "regulator-fixed";
-+		regulator-name = "USB_PWR";
-+		regulator-min-microvolt = <5000000>;
-+		regulator-max-microvolt = <5000000>;
-+		vin-supply = <&reg_main_5v>;
-+	};
-+
-+	backlight: backlight {
-+		compatible = "pwm-backlight";
-+		pwms = <&pwm_AO_ab 0 10000 0>;
-+		power-supply = <&reg_main_usb>;
-+		enable-gpios = <&gpio 58 GPIO_ACTIVE_HIGH>;
-+		brightness-levels = <0 32 64 128 160 200 255>;
-+		default-brightness-level = <6>;
-+	};
-+
-+	panel {
-+		compatible = "innolux,n125hce-gn1";
-+		power-supply = <&reg_main_3v3>;
-+		backlight = <&backlight>;
-+		no-hpd;
-+
-+		port {
-+			panel_in: endpoint {
-+				remote-endpoint = <&edp_bridge_out>;
-+			};
-+		};
-+	};
-+
-+	clock_12288: clock_12288 {
-+		compatible = "fixed-clock";
-+		#clock-cells = <0>;
-+		clock-frequency = <12288000>;
-+	};
-+};
-+
-+&mipi_analog_dphy {
-+	status = "okay";
-+};
-+
-+&mipi_dphy {
-+	status = "okay";
-+};
-+
-+&mipi_dsi {
-+	status = "okay";
-+
-+	assigned-clocks = <&clkc CLKID_GP0_PLL>,
-+			  <&clkc CLKID_MIPI_DSI_PXCLK_SEL>,
-+			  <&clkc CLKID_MIPI_DSI_PXCLK>,
-+			  <&clkc CLKID_CTS_ENCL_SEL>,
-+			  <&clkc CLKID_VCLK2_SEL>;
-+	assigned-clock-parents = <0>,
-+				 <&clkc CLKID_GP0_PLL>,
-+				 <0>,
-+				 <&clkc CLKID_VCLK2_DIV1>,
-+				 <&clkc CLKID_GP0_PLL>;
-+	assigned-clock-rates = <936000000>,
-+			       <0>,
-+			       <936000000>,
-+			       <0>,
-+			       <0>;
-+};
-+
-+&mipi_dsi_panel_port {
-+	mipi_dsi_out: endpoint {
-+		remote-endpoint = <&edp_bridge_in>;
-+	};
-+};
-+
-+&cecb_AO {
-+	status = "okay";
-+};
-+
-+&ethmac {
-+	status = "okay";
-+};
-+
-+&hdmi_tx {
-+	status = "okay";
-+};
-+
-+&hdmi_tx_tmds_port {
-+	hdmi_tx_tmds_out: endpoint {
-+		remote-endpoint = <&hdmi_connector_in>;
-+	};
-+};
-+
-+&pwm_AO_ab {
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&pwm_ao_a_pins>;
-+	status = "okay";
-+};
-+
-+&i2c0 {
-+	status = "okay";
-+};
-+
-+&i2c3 {
-+	status = "okay";
-+
-+	edp_bridge: bridge@2c {
-+		compatible = "ti,sn65dsi86";
-+		reg = <0x2c>;
-+		enable-gpios = <&gpio GPIOX_10 GPIO_ACTIVE_HIGH>; // PIN_24 / GPIO8
-+		vccio-supply = <&reg_main_1v8>;
-+		vpll-supply = <&reg_main_1v8>;
-+		vcca-supply = <&reg_main_1v2>;
-+		vcc-supply = <&reg_main_1v2>;
-+
-+		ports {
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+
-+			port@0 {
-+				reg = <0>;
-+
-+				edp_bridge_in: endpoint {
-+					remote-endpoint = <&mipi_dsi_out>;
-+				};
-+			};
-+
-+			port@1 {
-+				reg = <1>;
-+
-+				edp_bridge_out: endpoint {
-+					remote-endpoint = <&panel_in>;
-+				};
-+			};
-+		};
-+	};
-+};
-+
-+&i2c2 {
-+	status = "okay";
-+
-+	wm8960: codec@1a {
-+		compatible = "wlf,wm8960";
-+		reg = <0x1a>;
-+		clocks = <&clock_12288>;
-+		clock-names = "mclk";
-+		#sound-dai-cells = <0>;
-+		wlf,shared-lrclk;
-+	};
-+
-+	rtc@68 {
-+		compatible = "nxp,pcf8523";
-+		reg = <0x68>;
-+	};
-+};
-+
-+&pcie {
-+	status = "okay";
-+};
-+
-+&sd_emmc_b {
-+	status = "okay";
-+};
-+
-+&tdmif_a {
-+	status = "okay";
-+};
-+
-+&tdmout_a {
-+	status = "okay";
-+};
-+
-+&tdmif_b {
-+	pinctrl-0 = <&tdm_b_dout0_pins>, <&tdm_b_fs_pins>, <&tdm_b_sclk_pins>, <&tdm_b_din1_pins>;
-+	pinctrl-names = "default";
-+
-+	assigned-clocks = <&clkc_audio AUD_CLKID_TDM_SCLK_PAD1>,
-+			  <&clkc_audio AUD_CLKID_TDM_LRCLK_PAD1>;
-+	assigned-clock-parents = <&clkc_audio AUD_CLKID_MST_B_SCLK>,
-+				 <&clkc_audio AUD_CLKID_MST_B_LRCLK>;
-+	assigned-clock-rates = <0>, <0>;
-+};
-+
-+&tdmin_b {
-+	status = "okay";
-+};
-+
-+&toddr_a {
-+	status = "okay";
-+};
-+
-+&toddr_b {
-+	status = "okay";
-+};
-+
-+&toddr_c {
-+	status = "okay";
-+};
-+
-+&tohdmitx {
-+	status = "okay";
-+};
-+
-+&usb {
-+	dr_mode = "host";
-+
-+	status = "okay";
-+};
-
--- 
-2.34.1
-
+Bart
 
