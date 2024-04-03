@@ -1,143 +1,117 @@
-Return-Path: <linux-kernel+bounces-130475-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-130476-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id D013A8978C3
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 21:04:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 41A7E8978C5
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 21:04:42 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9032EB2D601
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 18:51:19 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 0B8EEB25ECC
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 18:53:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8D02E154458;
-	Wed,  3 Apr 2024 18:51:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B7D81154448;
+	Wed,  3 Apr 2024 18:53:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Kg/Pc4Yq"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.17])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Dx+7Z9Vg"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C1C3F839E1;
-	Wed,  3 Apr 2024 18:51:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.17
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 024171A5AC;
+	Wed,  3 Apr 2024 18:53:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712170266; cv=none; b=jlrD9jd3pSGw7rzFa5EGnnRL1uQYXv5p5Q8Cs3F+3ZwcNIRh4g7HtGY5mZ+l/F2dv1OO85DkJzF/PLH2mWfmEoIBI+rnywTWTP5cMLjkD+iqqAQeKFSHwrFKOl4HuB+RCCjodfdesnxKPWxK61bRKEGxOuL4JJ2mV1JrdlM1JVk=
+	t=1712170395; cv=none; b=OGV89bETpIr+cPsEoZXxgs5o/07oqNl7y9SVzvVFbtrEXwwuxQqwmb4z12758yZSHwpluNaY46APNV+EqYyqOm/5mxU/fEsm6Y6QCzJ2R69DY6LDl87C1HXKc8QSFohLjAN3060MbdRWTvCzgrry+gprKSlkOAlIU0ZRofwQWMg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712170266; c=relaxed/simple;
-	bh=lSO5a/LR2abT5IbXVMvLNuvxnTKyJrqDXsHF2+SQ84c=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=DOPnOApc+tSSq5vwFpn383JYsfLlnUtqaiAoUsf2KMDzfddZ+daaXUgrxa2m9O8hfv3LD28GzOx6kp8A3GpIYyVnWIgT6mb58ZO92AW+/wiegCN4TBlwlB8Hf1Dp1atMHLBOkAwJcbtUrMMzWvVkveHqM05w/ELuGpd6yBfbxec=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Kg/Pc4Yq; arc=none smtp.client-ip=198.175.65.17
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1712170265; x=1743706265;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=lSO5a/LR2abT5IbXVMvLNuvxnTKyJrqDXsHF2+SQ84c=;
-  b=Kg/Pc4YqmTqkPvPpBJ9HmgPGeTjOSRvshMnFRLBo7+L1AohuBpo5673f
-   PXoC+dA4I2+8+1tOYg74oAMEW2SPuDBZg91dttMLH785wTAAy8/qkxmOx
-   ln11dX8QWoLtKbGhuUr+XvO9WELc9kS7q2XjAOMtLAbZCIo7TU2Ytbb4B
-   bD9h1iUoWV5GEUm72wmozgxetYsdOHul5laGv49e6HX4zGChNkKWnQk+3
-   dJ+26TvENI2U/KWSLFiYv4eAqWFkKohWVT6boH946eOlONPV1BjPSBlMH
-   D0eS5CAqK83Qv4sqDl7frg1vtDtCtL39+okzBc35a57FfOskk6x/a47ox
-   g==;
-X-CSE-ConnectionGUID: UZAiFbdXTfqZqQtOtLm9Ug==
-X-CSE-MsgGUID: ncrA96eMREOKF+CJZod54w==
-X-IronPort-AV: E=McAfee;i="6600,9927,11033"; a="7538817"
-X-IronPort-AV: E=Sophos;i="6.07,177,1708416000"; 
-   d="scan'208";a="7538817"
-Received: from orviesa004.jf.intel.com ([10.64.159.144])
-  by orvoesa109.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Apr 2024 11:51:04 -0700
-X-CSE-ConnectionGUID: anH6KJ8vRluvEQv7Pt4gmA==
-X-CSE-MsgGUID: 1UMUQKVqQGGMzXn/qWPyXg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,177,1708416000"; 
-   d="scan'208";a="23290440"
-Received: from ls.sc.intel.com (HELO localhost) ([172.25.112.31])
-  by orviesa004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Apr 2024 11:51:04 -0700
-Date: Wed, 3 Apr 2024 11:51:03 -0700
-From: Isaku Yamahata <isaku.yamahata@intel.com>
-To: Chao Gao <chao.gao@intel.com>
-Cc: isaku.yamahata@intel.com, kvm@vger.kernel.org,
-	linux-kernel@vger.kernel.org, isaku.yamahata@gmail.com,
-	Paolo Bonzini <pbonzini@redhat.com>, erdemaktas@google.com,
-	Sean Christopherson <seanjc@google.com>,
-	Sagi Shahar <sagis@google.com>, Kai Huang <kai.huang@intel.com>,
-	chen.bo@intel.com, hang.yuan@intel.com, tina.zhang@intel.com,
-	isaku.yamahata@linux.intel.com
-Subject: Re: [PATCH v19 102/130] KVM: TDX: handle EXCEPTION_NMI and
- EXTERNAL_INTERRUPT
-Message-ID: <20240403185103.GK2444378@ls.amr.corp.intel.com>
-References: <cover.1708933498.git.isaku.yamahata@intel.com>
- <3ac413f1d4adbac7db88a2cade97ded3b076c540.1708933498.git.isaku.yamahata@intel.com>
- <ZgpuqJW365ZfuJao@chao-email>
+	s=arc-20240116; t=1712170395; c=relaxed/simple;
+	bh=LZLoBx1FU+I9eSqFIXpb6gxTsx2CaE+4KzYX9KyagFE=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition; b=EslFKyOQzjlhwBfINcwdgM6JtkZ7Yg/A6s+ak0TM2B2GiQuQa9PJI6bb1X1rRItHkfFxf5UCH+CgeuXxJWwx9vuvAaegL0pq/nNBgpoWHrpeSO8+b0Ql9Y9KdWwqweGGW8fSbOTOQ8NQkhLV55XbTJsOIGJyMy6BC8h3BQjUzDo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Dx+7Z9Vg; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7454BC433C7;
+	Wed,  3 Apr 2024 18:53:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1712170394;
+	bh=LZLoBx1FU+I9eSqFIXpb6gxTsx2CaE+4KzYX9KyagFE=;
+	h=Date:From:To:Cc:Subject:Reply-To:From;
+	b=Dx+7Z9Vg5hvLU+jMN0LJqQuSQhaH8NQZG+/PwBme8f25Wx4aeqe03JHWr6DbYPYwM
+	 ljpdxfhMwXJzEiV4wZYhk84PpzWRWexIqtaE+/CzQ0lqcjPGbDUznwiPDHjUhS1vNU
+	 FBjsKG/nip+ZqQgNqVDeEFLL0Lht+iXHWl3Fm5OcLeg8yqDKL3LeLCjI6Y8thKy33v
+	 /uyo1hIk8oklUSpTKYbFlTL6wMvuFZx3y48+0yPvlkEFGxc6CTBiituoK51jIYo3zT
+	 Ut0Iu5TtvZUfvWSMVBAT3iUYKcGTW5TGdId0nYcpDLtd8YAIgyKATXB7gmhgSHSQMr
+	 4ihJ/72Zzl6OQ==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+	id 13991CE0D85; Wed,  3 Apr 2024 11:53:14 -0700 (PDT)
+Date: Wed, 3 Apr 2024 11:53:14 -0700
+From: "Paul E. McKenney" <paulmck@kernel.org>
+To: linux-trace-kernel@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc: Steven Rostedt <rostedt@goodmis.org>,
+	Masami Hiramatsu <mhiramat@kernel.org>,
+	Mark Rutland <mark.rutland@arm.com>,
+	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+	Jakub Kicinski <kuba@kernel.org>,
+	Alexei Starovoitov <ast@kernel.org>, Chris Mason <clm@fb.com>
+Subject: [PATCH RFC ftrace] Asynchronous grace period for
+ register_ftrace_direct()
+Message-ID: <7ed089be-c0c6-43b5-849a-05599cb32cfd@paulmck-laptop>
+Reply-To: paulmck@kernel.org
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <ZgpuqJW365ZfuJao@chao-email>
 
-On Mon, Apr 01, 2024 at 04:22:00PM +0800,
-Chao Gao <chao.gao@intel.com> wrote:
+Note that the immediate pressure for this patch should be relieved by the
+NAPI patch series [1], but this sort of problem could easily arise again.
+So would this change make sense?
 
-> On Mon, Feb 26, 2024 at 12:26:44AM -0800, isaku.yamahata@intel.com wrote:
-> >From: Isaku Yamahata <isaku.yamahata@intel.com>
-> >
-> >Because guest TD state is protected, exceptions in guest TDs can't be
-> >intercepted.  TDX VMM doesn't need to handle exceptions.
-> >tdx_handle_exit_irqoff() handles NMI and machine check.  Ignore NMI and
-> 
-> tdx_handle_exit_irqoff() doesn't handle NMIs.
+When running heavy test workloads with KASAN enabled, RCU Tasks grace
+periods can extend for many tens of seconds, significantly slowing
+trace registration.  Therefore, make the registration-side RCU Tasks
+grace period be asynchronous via call_rcu_tasks().
 
-Will it to tdx_handle_exception().
+Reported-by: Jakub Kicinski <kuba@kernel.org>
+Reported-by: Alexei Starovoitov <ast@kernel.org>
+Reported-by: Chris Mason <clm@fb.com>
+Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+Cc: Steven Rostedt <rostedt@goodmis.org>
+Cc: Masami Hiramatsu <mhiramat@kernel.org>
+Cc: Mark Rutland <mark.rutland@arm.com>
+Cc: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+Cc: <linux-trace-kernel@vger.kernel.org>
 
-
-> >machine check and continue guest TD execution.
-> >
-> >For external interrupt, increment stats same to the VMX case.
-> >
-> >Signed-off-by: Isaku Yamahata <isaku.yamahata@intel.com>
-> >Reviewed-by: Paolo Bonzini <pbonzini@redhat.com>
-> >---
-> > arch/x86/kvm/vmx/tdx.c | 23 +++++++++++++++++++++++
-> > 1 file changed, 23 insertions(+)
-> >
-> >diff --git a/arch/x86/kvm/vmx/tdx.c b/arch/x86/kvm/vmx/tdx.c
-> >index 0db80fa020d2..bdd74682b474 100644
-> >--- a/arch/x86/kvm/vmx/tdx.c
-> >+++ b/arch/x86/kvm/vmx/tdx.c
-> >@@ -918,6 +918,25 @@ void tdx_handle_exit_irqoff(struct kvm_vcpu *vcpu)
-> > 		vmx_handle_exception_irqoff(vcpu, tdexit_intr_info(vcpu));
-> > }
-> > 
-> >+static int tdx_handle_exception(struct kvm_vcpu *vcpu)
-> >+{
-> >+	u32 intr_info = tdexit_intr_info(vcpu);
-> >+
-> >+	if (is_nmi(intr_info) || is_machine_check(intr_info))
-> >+		return 1;
-> 
-> Add a comment in code as well.
-
-Sure.
-
-
-> >+
-> >+	kvm_pr_unimpl("unexpected exception 0x%x(exit_reason 0x%llx qual 0x%lx)\n",
-> >+		intr_info,
-> >+		to_tdx(vcpu)->exit_reason.full, tdexit_exit_qual(vcpu));
-> >+	return -EFAULT;
-> 
-> -EFAULT looks incorrect.
-
-As this is unexpected exception, we should exit to to the user-space with
-KVM_EXIT_EXCEPTION. Then QEMU will abort with message.
--- 
-Isaku Yamahata <isaku.yamahata@intel.com>
+diff --git a/kernel/trace/ftrace.c b/kernel/trace/ftrace.c
+index da1710499698b..6d21e4e97ed48 100644
+--- a/kernel/trace/ftrace.c
++++ b/kernel/trace/ftrace.c
+@@ -5366,6 +5366,13 @@ static void remove_direct_functions_hash(struct ftrace_hash *hash, unsigned long
+ 	}
+ }
+ 
++static void register_ftrace_direct_cb(struct rcu_head *rhp)
++{
++	struct ftrace_hash *fhp = container_of(rhp, struct ftrace_hash, rcu);
++
++	free_ftrace_hash(fhp);
++}
++
+ /**
+  * register_ftrace_direct - Call a custom trampoline directly
+  * for multiple functions registered in @ops
+@@ -5464,10 +5471,8 @@ int register_ftrace_direct(struct ftrace_ops *ops, unsigned long addr)
+  out_unlock:
+ 	mutex_unlock(&direct_mutex);
+ 
+-	if (free_hash && free_hash != EMPTY_HASH) {
+-		synchronize_rcu_tasks();
+-		free_ftrace_hash(free_hash);
+-	}
++	if (free_hash && free_hash != EMPTY_HASH)
++		call_rcu_tasks(&free_hash->rcu, register_ftrace_direct_cb);
+ 
+ 	if (new_hash)
+ 		free_ftrace_hash(new_hash);
 
