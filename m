@@ -1,61 +1,63 @@
-Return-Path: <linux-kernel+bounces-130675-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-130677-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id E7E17897B86
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 00:21:08 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id F1D3A897B8D
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 00:22:35 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A2241288560
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 22:21:07 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 929DD1F2702B
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 22:22:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D18C215697C;
-	Wed,  3 Apr 2024 22:21:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id ACCA2156C54;
+	Wed,  3 Apr 2024 22:22:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linux.org.uk header.i=@linux.org.uk header.b="kSChGikx"
+	dkim=pass (2048-bit key) header.d=linux.org.uk header.i=@linux.org.uk header.b="TKiN3enC"
 Received: from zeniv.linux.org.uk (zeniv.linux.org.uk [62.89.141.173])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EE968156966
-	for <linux-kernel@vger.kernel.org>; Wed,  3 Apr 2024 22:20:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8E6D5156966;
+	Wed,  3 Apr 2024 22:22:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=62.89.141.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712182862; cv=none; b=PkXzkoHLSoXyzBhCcSAjbJRc7mrKLPZxTAl11r52nshjqeIXHsfqf+O5nHuBFMgY+drowWWWTqMrkOr1+NV/tTdUP+ilAiXe4F439HTdAhmFdBTkmU80aozmxeHv5iygTDiR3xUBqrJLEj+4mENjrLAgMA9lW076D4wAn6ecTj4=
+	t=1712182935; cv=none; b=HFDU8GkEKIcncV1G1y7LmwazkAegep7DaxbwZCIua19hBvhe88v9sxb2jsgGQczDbYUm8ewWLBwTRahpaenhOfT/PGfnAXRalUeI7J5btt46m3bwxuHguDb0AkrKVZtNQPUfz5hEzRDdJ7M1vdhuQJXkhMoh6b2wltmGIXzTMGI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712182862; c=relaxed/simple;
-	bh=Z5FBHN101mZpUyh29wRD9MBxgloAJzxok9M9TawjyKw=;
+	s=arc-20240116; t=1712182935; c=relaxed/simple;
+	bh=lRXKv8S1N/Sb8QDRVkZH5o2ueko8OCT7uZmrGJAAG6U=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=pvFvjhzLkz2S9n3E/UU+mZBaaEqwy86ojRtVoW3fESZB2OD1WKKrtvpc8VLxaTBAxUqSR6pJRo5dMZXV7sSeUep2nAcqD1TDhJuHbL1mvXdDv7O9Udn5Bekr18ujvq3k/wJhGfxRfbYo3/Tf8PeqZS/ER0gocEta0SVmyGF9tuY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zeniv.linux.org.uk; spf=none smtp.mailfrom=ftp.linux.org.uk; dkim=pass (2048-bit key) header.d=linux.org.uk header.i=@linux.org.uk header.b=kSChGikx; arc=none smtp.client-ip=62.89.141.173
+	 Content-Type:Content-Disposition:In-Reply-To; b=TL8ketNiAA7eP2oOaYICYbnF/Pgv0nu2/tVDyLxgwRSZWwkWlEYfYWBG0I1PVmHFM2QkWoJ7dKTKNhSCZ0IM0AsKkgpnQOKbvA/DDj9K/MajB0DpS+o7GgiSdMAWKWq5W1RoaqVtbloXJCJ34IAoYzXDcG9L4TQ/m/O3Giojn4U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zeniv.linux.org.uk; spf=none smtp.mailfrom=ftp.linux.org.uk; dkim=pass (2048-bit key) header.d=linux.org.uk header.i=@linux.org.uk header.b=TKiN3enC; arc=none smtp.client-ip=62.89.141.173
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zeniv.linux.org.uk
 Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=ftp.linux.org.uk
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=linux.org.uk; s=zeniv-20220401; h=Sender:In-Reply-To:Content-Type:
 	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
 	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=uRZPrdzzc8LLfV7AgfZFvQAae8d6ee9G2qb7w/6eEAo=; b=kSChGikxfiSQhRkSmgUxM2Ugkt
-	ljYwQ3yvkax7xjcvdKtMyyd6K+kT833EwpfDvzyx/Z+nVxghYtRZ9lCHWOLh1KKRkRQHNK1vOMe9Z
-	cHqHTZlnXym1xh0loGAYcAhFtwIDABNMLZxQLIMSq9qOu7udlOoeGneWzAFA98Cg/LlEzgJ2pPDEr
-	zNeyZJy5kfcZsBsi5pllg5AFayEeHqQ1yYtHUUkh5TrVu6FmY7FAVHmVAapO6yhbbagXPXcCNHh/V
-	ly6dAWYgLztPVciJSTIsRenMcYGW/SBXyeekHnnTIwLM5PuuXtWxBzJpMWQVOA/G9inFRDcHZ71ts
-	VebarYSg==;
+	bh=lKTHvXKGTsV+tX6aUCiyv6Vo691FyZts8/uGP/UQFRw=; b=TKiN3enC1YTFFL4KXPEO/xna/h
+	imGC6S7z1wcjYi8uk29qLdEvzzmZXfcUSOzP+sPiDsrSj07t899F/JRh2xbgy25bjLA1uoLfbDzZL
+	jhXSNbHYfG19fyau62kCf2qCWqvrbJlpdFSTzTTwPv4m+ipZbRP/YAuMf6H8wquNYoUcWyV9rLo5n
+	SckCIHxavTqy94/mN1aRdCDXtqgxCne9Jb0ahuNeDjAIJkuvxmKpqCbG0d+h5VqM6+Ydfhf2JXVFl
+	xjjcbQNL79Kuhlc6ORc4zcz3p61JeoJaJHaI1OuQP4o4+a8HPdaSXnJeIhJT89qZyJAWRNUMZzqY0
+	GnGyILsA==;
 Received: from viro by zeniv.linux.org.uk with local (Exim 4.96 #2 (Red Hat Linux))
-	id 1rs8yT-005AvB-39;
-	Wed, 03 Apr 2024 22:20:54 +0000
-Date: Wed, 3 Apr 2024 23:20:53 +0100
+	id 1rs8zO-005Awt-2F;
+	Wed, 03 Apr 2024 22:21:50 +0000
+Date: Wed, 3 Apr 2024 23:21:50 +0100
 From: Al Viro <viro@zeniv.linux.org.uk>
-To: "Paul E. McKenney" <paulmck@kernel.org>
-Cc: linux-kernel@vger.kernel.org, kernel-team@meta.com,
-	"David S. Miller" <davem@davemloft.net>,
-	Andreas Larsson <andreas@gaisler.com>,
-	Palmer Dabbelt <palmer@rivosinc.com>, Arnd Bergmann <arnd@arndb.de>,
-	Marco Elver <elver@google.com>
-Subject: Re: [PATCH 1/8] sparc32: make __cmpxchg_u32() return u32
-Message-ID: <20240403222053.GK538574@ZenIV>
-References: <20240402041138.GF538574@ZenIV>
- <20240402042835.11815-1-viro@zeniv.linux.org.uk>
- <85837f16-903c-44cd-8277-377e0228eb61@paulmck-laptop>
+To: Roberto Sassu <roberto.sassu@huaweicloud.com>
+Cc: brauner@kernel.org, jack@suse.cz, paul@paul-moore.com,
+	jmorris@namei.org, serge@hallyn.com, zohar@linux.ibm.com,
+	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-security-module@vger.kernel.org, linux-cifs@vger.kernel.org,
+	linux-integrity@vger.kernel.org, pc@manguebit.com,
+	torvalds@linux-foundation.org,
+	Roberto Sassu <roberto.sassu@huawei.com>,
+	Steve French <smfrench@gmail.com>
+Subject: Re: [RESEND][PATCH v3] security: Place security_path_post_mknod()
+ where the original IMA call was
+Message-ID: <20240403222150.GL538574@ZenIV>
+References: <20240403090749.2929667-1-roberto.sassu@huaweicloud.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -64,52 +66,37 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <85837f16-903c-44cd-8277-377e0228eb61@paulmck-laptop>
+In-Reply-To: <20240403090749.2929667-1-roberto.sassu@huaweicloud.com>
 Sender: Al Viro <viro@ftp.linux.org.uk>
 
-On Tue, Apr 02, 2024 at 01:03:13PM -0700, Paul E. McKenney wrote:
-> On Tue, Apr 02, 2024 at 12:28:28AM -0400, Al Viro wrote:
-> > Conversion between u32 and unsigned long is tautological there,
-> > and the only use of return value is to return it from
-> > __cmpxchg() (which return unsigned long).
-> > 
-> > Signed-off-by: Al Viro <viro@zeniv.linux.org.uk>
+On Wed, Apr 03, 2024 at 11:07:49AM +0200, Roberto Sassu wrote:
+> From: Roberto Sassu <roberto.sassu@huawei.com>
 > 
-> I have pulled these in as replacements for my patches in the meantime.
+> Commit 08abce60d63f ("security: Introduce path_post_mknod hook")
+> introduced security_path_post_mknod(), to replace the IMA-specific call to
+> ima_post_path_mknod().
 > 
-> Thank you!
+> For symmetry with security_path_mknod(), security_path_post_mknod() was
+> called after a successful mknod operation, for any file type, rather than
+> only for regular files at the time there was the IMA call.
+> 
+> However, as reported by VFS maintainers, successful mknod operation does
+> not mean that the dentry always has an inode attached to it (for example,
+> not for FIFOs on a SAMBA mount).
+> 
+> If that condition happens, the kernel crashes when
+> security_path_post_mknod() attempts to verify if the inode associated to
+> the dentry is private.
+> 
+> Move security_path_post_mknod() where the ima_post_path_mknod() call was,
+> which is obviously correct from IMA/EVM perspective. IMA/EVM are the only
+> in-kernel users, and only need to inspect regular files.
+> 
+> Reported-by: Steve French <smfrench@gmail.com>
+> Closes: https://lore.kernel.org/linux-kernel/CAH2r5msAVzxCUHHG8VKrMPUKQHmBpE6K9_vjhgDa1uAvwx4ppw@mail.gmail.com/
+> Suggested-by: Al Viro <viro@zeniv.linux.org.uk>
+> Fixes: 08abce60d63f ("security: Introduce path_post_mknod hook")
+> Signed-off-by: Roberto Sassu <roberto.sassu@huawei.com>
 
-FWIW, updated branch force-pushed; the difference is that __cmpxchg()
-on sparc32 went
--       switch (size) {
--       case 1:
--               return __cmpxchg_u8((u8 *)ptr, (u8)old, (u8)new_);
--       case 2:
--               return __cmpxchg_u16((u16 *)ptr, (u16)old, (u16)new_);
--       case 4:
--               return __cmpxchg_u32((u32 *)ptr, (u32)old, (u32)new_);
--       default:
--               __cmpxchg_called_with_bad_pointer();
--               break;
--       }
--       return old;
-+       return
-+               size == 1 ? __cmpxchg_u8(ptr, old, new_) :
-+               size == 2 ? __cmpxchg_u16(ptr, old, new_) :
-+               size == 4 ? __cmpxchg_u32(ptr, old, new_) :
-+                       (__cmpxchg_called_with_bad_pointer(), old);
-
-(and similar for parisc).  Rationale: sparse does generate constant
-truncation warnings in unreachable statements, but not in never-evaluated
-subexpressions.  Alternative would be what parisc used to do in mainline:
-	case 1: return __cmpxchg_u8((u8 *)ptr, old & 0xff, new_ & 0xff);
-and we'd need the same in 16bit case (both on parisc and sparc32).
-Explicit (and rather mysterious) & 0xff for passing unsigned long to
-a function that takes u8 was there to tell sparse that e.g.
-cmpxchg(&int_var, 0, 0x12345678) was *not* trying to feed
-0x12345678 to a __cmpxchg_u8(), which would quietly truncate it had
-it ever been reached.  Use of conditional expression avoids that
-without having to play with explicit (and utterly pointless from
-C point of view) masking.  IMO it's better that way, not to mention
-being more concise than use of switch.
+LGTM...
 
