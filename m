@@ -1,73 +1,73 @@
-Return-Path: <linux-kernel+bounces-129205-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-129206-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C22E48966EE
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 09:45:25 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9F98F8966EF
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 09:45:38 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5DBE2B276B2
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 07:45:23 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 171751F299F4
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 07:45:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0840B58AAC;
-	Wed,  3 Apr 2024 07:45:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D7AD55C8E6;
+	Wed,  3 Apr 2024 07:45:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="MYM3mDUv"
-Received: from mail-yw1-f182.google.com (mail-yw1-f182.google.com [209.85.128.182])
+	dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b="gW0xVN4o"
+Received: from mail-pl1-f174.google.com (mail-pl1-f174.google.com [209.85.214.174])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E1B155BAD7;
-	Wed,  3 Apr 2024 07:45:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BC01C5D903
+	for <linux-kernel@vger.kernel.org>; Wed,  3 Apr 2024 07:45:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712130314; cv=none; b=Q1VwAY+Zq3vATCW+310sZnkGmvhLM+2sa2fmG9fuZkPKkoKvHDtCIPpFi+/v1Y+vxrspRFxu7GfiErcLnWUkg5uvHFJ2V3WNvCOxzuJtPyTgdyKMSFyF99PujfDGkc8F5JPgaMTnhTeHSOUIjsOIkYFYxBbZ0arBPQfhizET1pg=
+	t=1712130321; cv=none; b=ZIZyd1HM0jv4MERbQ7YwsLcSu7zhwl32E/UZlnJyqTuHalkhRdV6lmtHxf5k7JYWqJ5J/h/58YRejkdVYB7yJxkUaJ0xYoA1xYN4DMyI08Gsu4t1rP8oXt/Rr3uxToEDliZgO73aFnN5IaIxenCPYjnSWYdjTePuXdZc5ibLHMk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712130314; c=relaxed/simple;
-	bh=yQ9j5697fujP7br6avVnORJNRKx7dOB/FgXzi8BqGxE=;
+	s=arc-20240116; t=1712130321; c=relaxed/simple;
+	bh=P+ymv59+XPwhmmC1tXPNUwhkKRHh9CCFQRAHfsCi/Hs=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=sXqVVMzOVONxm4H0aXtEaqjBkaUgQVt1sLY+W2vQ+GDucBrCI8CI3cuUtHyD0a3eMMijR++dzzqpgIHJ14HurxtpB9yIRcderHIk9YZgdXFad+bgd6NsdasHPZpmiCppBw3MUIDi2Nj1houYMB04owp2bT+y8EEJLSzxvAjRy1c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=MYM3mDUv; arc=none smtp.client-ip=209.85.128.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yw1-f182.google.com with SMTP id 00721157ae682-615038fc5baso23994117b3.3;
-        Wed, 03 Apr 2024 00:45:12 -0700 (PDT)
+	 In-Reply-To:Content-Type; b=tzV+wfHe7NKY/tppAppQBcjX2xRFS2lPdsBK7SlS6bUYqKz4NbJIZKpKHiY7DC6r3DOi3ZDwDPWyXpk8JIS9kSXQSBA5wNQc9WgyB9bU3FXAvbJGUvQIbTmP8aMf7OiYNQR/Qnk07/RwQIOmtXRLZVPYG3ovytPizuuOXTCo4o4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com; spf=pass smtp.mailfrom=bytedance.com; dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b=gW0xVN4o; arc=none smtp.client-ip=209.85.214.174
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bytedance.com
+Received: by mail-pl1-f174.google.com with SMTP id d9443c01a7336-1e296c7aa7cso1675735ad.1
+        for <linux-kernel@vger.kernel.org>; Wed, 03 Apr 2024 00:45:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1712130312; x=1712735112; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
+        d=bytedance.com; s=google; t=1712130319; x=1712735119; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=FRechHCR05RNB+9I0mJA+sFff4tTP4QzQvaYkV3R8fI=;
-        b=MYM3mDUvWSdp52+BSPHQYgtzqaBSv8q3gvTSutXsGECJKNOyLdcHSucanokKukVwFq
-         a6L1G/NJ+73/5a4Y1ojMNFaTpa8rfFF2BtC6QgkoUuz28VjiR1jZNu4jkxl8C9niVZ9h
-         CeND4VhVMgCin+qwPp56JFtPiJW+e6syC3pJOQfo4QdvkUtMb56/WrG3ttY14TcJomqL
-         X+NrKYGs6Pin44Kj3BPAa3qHR+4SBlzaoj047WyM/wCFNjFedp45f8dcQ2+5OiychqYs
-         TZv82SxUgUY5HPyD94GUzqWqcSNTuCNTOWdsmqB5I9lf6u4SaWjTxALaF9G0oon+MV6x
-         wJuw==
+        bh=G6UlaZMTnbxA96vbvATXylhXvaYbKi6kAc2YotmnHXo=;
+        b=gW0xVN4oITPrrODZ2Zop3ePLoUl9SdOchKpYcF3tFHMpnM0KwkBxr0qwQKCITBoSDb
+         /hBGK7Oz61hUX1OtyC1QlaMK3MM1CMxIFpaZlTMD6yqE5cBeHOCcA/JDkgR1u9WhwKjU
+         c8jhWlRgK+F8BAI0L57vvwWo2XT0aPeDEOwMY45mXcy1MH86oLUe+ASDPAQ0P7MxAup1
+         61zsPHpxIsy+npq8jrokJm4Y02KqIn8vG1s7ipH8MKqPxvzvVv6h+2b5mvYakzelYiPZ
+         5pFLGDAStUnDYsCGnNYwCOPmlVabMk4ax2l2BGYQ38tQVmInu4bs/ONYZl+Q7+0w/2va
+         0/RQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712130312; x=1712735112;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
+        d=1e100.net; s=20230601; t=1712130319; x=1712735119;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=FRechHCR05RNB+9I0mJA+sFff4tTP4QzQvaYkV3R8fI=;
-        b=QE6t9HkWS0HaExcG8nATEqtV9wsf9CWZIJQ4Zac9IeY2WLENiYtx25tom+WXTGK3IX
-         y6X9nR54r7Jz33q8QOwh/qVjMfAEO2lAQ4+NUgi4c/g5wbHxDhvFGj9uEEFSOS2eRAc+
-         VhrAT2jpgHL9ocgXm3T8tNZ7JbBu241GpBXmt7wDmxOLpIxQ4+e19SoO9YPxP2oprMyi
-         08mnbsd79L4ypQSEh8sAmHccc5TfDi3mHFnvMZbndlqqq2UgBqH9Ar8mDDPIwNJ5rqoX
-         VtruOhKnCt2UnuzB1qmcPsLmwTzRxuz0HpBcp1wLj/Xr4ObDzWEfcrJR/HAKzKYOXQzc
-         x+gA==
-X-Forwarded-Encrypted: i=1; AJvYcCWQ+9X3cURcuqBioPA+XPVs3eQ85kwetBXEAH64aRb9CQFOxTfohxRtCWsaA1XMiqOJoqk1t4RSHyaaqakMKBd6Vl81zJJEJ9Q14dddKQ4pafQUCVkfbuF0xa6rqX9IJ74puD9eMEDHXwuzl0/RmYB+IC+lKGrM9tp5jvDrqPY2iHX5RA==
-X-Gm-Message-State: AOJu0YxAAVwOVsyfY5OtOGQUTkMmfWAePY/u1bAsx1LZiVJuXxUV/ipx
-	BKQbuRQjsbjQr5r+SApqQGgDCNdZEx5NROyp0Um0b/neGj6kvm++
-X-Google-Smtp-Source: AGHT+IE/QkhgF2Px1HEyjKDBosB+4pzg1hyTDH5nbAg4XuIFgRT1cmMNoupSRWgzTb+xdgud/XXlLQ==
-X-Received: by 2002:a25:3307:0:b0:dd1:64e6:2c80 with SMTP id z7-20020a253307000000b00dd164e62c80mr12216913ybz.46.1712130311909;
-        Wed, 03 Apr 2024 00:45:11 -0700 (PDT)
-Received: from [10.76.84.174] ([5.2.194.157])
-        by smtp.gmail.com with ESMTPSA id gc12-20020a05622a59cc00b0043437f34491sm1263349qtb.36.2024.04.03.00.45.10
+        bh=G6UlaZMTnbxA96vbvATXylhXvaYbKi6kAc2YotmnHXo=;
+        b=ZKsdTD0oEBCT+6VZlyB/vzN2/VUe3mf3j/nCnfoOX3lnk3ul+TC68jqKApne1uQNRG
+         7+7nqFJ18pa98VuiwMVIUGtsvDHSr3VckT2HqmcF12nam/apPXwQYQQKZQ+yz8I9z5n+
+         eK5PBLorXH53QS3uTk4iX6r4l1AK/iSeXi4XvPi8Jq458WPZQE/ilAxsS6kXmpibyjLp
+         VuGGJtkzm3AUnmj5Qa+HiG+xQAiqx1UcVouEMbg/gL3xhoLaGdhbO8Xk2urVjrKMUJu/
+         NwaTjT+ecNF29ZsSqoNc9RA7oaNcS/Y4GYnCGPQ216cN58VH/3PIEM20m6661le+kC9d
+         6fWw==
+X-Forwarded-Encrypted: i=1; AJvYcCVrHar/AnUlmY4+4BpTiRWT1d5kRguCzoOMTdWvXgXDD7Uvo7B02CoKn8aaDYRyRUPRJv1m48+TCSPGKr+M/FIImHRF/ztMN3ohxj27
+X-Gm-Message-State: AOJu0YzxZekyrBjOjF5ZE57pXQ+XQNoRm1IUbPkZj/Ue77eUjRQx2OIh
+	le0qkMNyYzXMxaKbAPFAoyLTELa2uWq9ehVMc8OdSCBjLk9ry6bBif4cbua9Z/I=
+X-Google-Smtp-Source: AGHT+IFdgfnRPQf+r6TuP+UrXweCza3KRzieFrS+SjQEAI04ntMVVmPgZmWTWVgVFgR9QSxGudL7xw==
+X-Received: by 2002:a17:903:191:b0:1e0:59f4:a776 with SMTP id z17-20020a170903019100b001e059f4a776mr17844629plg.13.1712130319192;
+        Wed, 03 Apr 2024 00:45:19 -0700 (PDT)
+Received: from [10.70.146.105] ([203.208.189.8])
+        by smtp.gmail.com with ESMTPSA id b15-20020a170902d50f00b001e0eae230f2sm12532969plg.151.2024.04.03.00.45.14
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 03 Apr 2024 00:45:11 -0700 (PDT)
-Message-ID: <0db40597-0d66-4d5b-8165-d9a4c068a42e@gmail.com>
-Date: Wed, 3 Apr 2024 10:45:08 +0300
+        Wed, 03 Apr 2024 00:45:18 -0700 (PDT)
+Message-ID: <20fd87a5-7c9b-458f-9f77-3235185db7f4@bytedance.com>
+Date: Wed, 3 Apr 2024 15:45:12 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -75,59 +75,55 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/6] dt-bindings: adc: ad7173: add support for ad411x
-To: David Lechner <dlechner@baylibre.com>, dumitru.ceclan@analog.com
-Cc: Lars-Peter Clausen <lars@metafoo.de>,
- Michael Hennerich <Michael.Hennerich@analog.com>,
- Jonathan Cameron <jic23@kernel.org>, Rob Herring <robh@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>, linux-iio@vger.kernel.org,
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20240401-ad4111-v1-0-34618a9cc502@analog.com>
- <20240401-ad4111-v1-1-34618a9cc502@analog.com>
- <CAMknhBHeKAQ45=5-dL1T1tv-mZcPN+bNo3vxWJYgWpEPE+8p3Q@mail.gmail.com>
- <CAMknhBGJt1TG0-UXMqqCT6nxJKAX7ZbsPF19eeWqwKsXbKOQoQ@mail.gmail.com>
+Subject: Re: [External] Re: [PATCH v2 2/2] perf evsel: Use evsel__name_is()
+ helper
 Content-Language: en-US
-From: "Ceclan, Dumitru" <mitrutzceclan@gmail.com>
-In-Reply-To: <CAMknhBGJt1TG0-UXMqqCT6nxJKAX7ZbsPF19eeWqwKsXbKOQoQ@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
+To: Arnaldo Carvalho de Melo <acme@kernel.org>
+Cc: peterz@infradead.org, mingo@redhat.com, namhyung@kernel.org,
+ mark.rutland@arm.com, alexander.shishkin@linux.intel.com, jolsa@kernel.org,
+ irogers@google.com, adrian.hunter@intel.com, kan.liang@linux.intel.com,
+ james.clark@arm.com, linux-perf-users@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+References: <20240401062724.1006010-1-yangjihong@bytedance.com>
+ <20240401062724.1006010-3-yangjihong@bytedance.com> <ZgxzmkCGNXLipMVg@x1>
+From: Yang Jihong <yangjihong@bytedance.com>
+In-Reply-To: <ZgxzmkCGNXLipMVg@x1>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
 
-On 01/04/2024 23:22, David Lechner wrote:
-> On Mon, Apr 1, 2024 at 2:37 PM David Lechner <dlechner@baylibre.com> wrote:
+Hello,
+
+On 4/3/24 05:07, Arnaldo Carvalho de Melo wrote:
+> On Mon, Apr 01, 2024 at 02:27:24PM +0800, Yang Jihong wrote:
+>> Code cleanup, replace strcmp(evsel__name(evsel, {NAME})) with
+>> evsel__name_is() helper.
 >>
->> On Mon, Apr 1, 2024 at 10:10 AM Dumitru Ceclan via B4 Relay
->> <devnull+dumitru.ceclan.analog.com@kernel.org> wrote:
-
-..
-
+>> No functional change.
 > 
-> Also, I just noticed that AD411x have only one AVDD input instead of
-> AVDD1 and AVDD2. So we need an if statement that says if properties:
-> compatible: enum: - adi,ad411x, then properties: avdd2-supply: false.
+> Well, its not building:
+> 
+> builtin-trace.c: In function ‘cmd_trace’:
+> builtin-trace.c:4919:90: error: macro "assert" passed 2 arguments, but takes just 1
+>   4919 |         assert(evsel__name_is(trace.syscalls.events.bpf_output), "__augmented_syscalls__");
+>        |                                                                                          ^
+> In file included from /home/acme/git/perf-tools-next/tools/include/linux/kernel.h:7,
+>                   from /home/acme/git/perf-tools-next/tools/include/linux/refcount.h:42,
+>                   from util/cgroup.h:6,
+>                   from builtin-trace.c:29:
+> /usr/include/assert.h:50: note: macro "assert" defined here
+> 
+> I'll fix it, but please test build things next time.
 
-Already addressed by this:
-"
-  # Only ad7172-4, ad7173-8 and ad7175-8 support vref2
-  - if:
-      properties:
-        compatible:
-          not:
-            contains:
-              enum:
-                - adi,ad7172-4
-                - adi,ad7173-8
-                - adi,ad7175-8
-    then:
-      properties:
-        vref2-supply: false
-      patternProperties:
-        "^channel@[0-9a-f]$":
-          properties:
-            adi,reference-select:
-              enum:
-                - vref
-                - refout-avss
-                - avdd
-"
+Sorry. I compiled it in a new environment before. This environment does 
+not support bpf skel, and the modified part of the code is included in 
+HAVE_BPF_SKEL, so I did not find this problem when I compiled it in my 
+environment.
+
+
+Thanks for the correction. will confirm whether the modified code is 
+actually compiled next time.
+
+
+Thanks,
+Yang
 
