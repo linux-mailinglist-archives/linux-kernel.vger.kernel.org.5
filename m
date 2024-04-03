@@ -1,155 +1,204 @@
-Return-Path: <linux-kernel+bounces-130386-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-130387-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id ACC1B897764
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 19:53:29 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id ECFA5897766
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 19:53:48 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CF81D1C23F6D
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 17:53:28 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1BDF61C26785
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 17:53:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1FFBB1586E0;
-	Wed,  3 Apr 2024 17:38:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2301E1586F4;
+	Wed,  3 Apr 2024 17:40:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="Vnhtyz1u"
-Received: from mail-ed1-f54.google.com (mail-ed1-f54.google.com [209.85.208.54])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="4jcHm1Wk"
+Received: from NAM10-DM6-obe.outbound.protection.outlook.com (mail-dm6nam10on2084.outbound.protection.outlook.com [40.107.93.84])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2384315574C
-	for <linux-kernel@vger.kernel.org>; Wed,  3 Apr 2024 17:38:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.54
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712165937; cv=none; b=itgpU3Yun4uwwX8JQMsjh7rGsdvdqrgUTdyhov38+12ksKRt87JW8W/JZwOUZW5mRaks4JaM+1BOeGEyayuIQs0EQj2Ypftl7E0TZL6wBl8quU/Rot9Nb5HJyUk206d9nONdrCzVFfFKaTo+mH4PzVhsQ6kfu50unPWSPbA6AcU=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712165937; c=relaxed/simple;
-	bh=l9OHJibJhF3bDqK+37elpO+FJ/BEq7B7LhRTZbPS3f0=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=cJ+6mQmH+FRc+D9Z+JaCmGVShHaC7kE0OFyFrmH5UW7lq412g//uf5sNx2lO2T8h/Rm8wlBpsPYZsRX8/uO+Y3eEQ2AQLBroHJWIDlQygsGifr/IZJD0TJbcGZ5wBVJbzpupOVuA07/T0Ui0G/a1C77Cn8XfNI+FoijxNP9sGkU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=Vnhtyz1u; arc=none smtp.client-ip=209.85.208.54
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ed1-f54.google.com with SMTP id 4fb4d7f45d1cf-56bf6591865so135802a12.0
-        for <linux-kernel@vger.kernel.org>; Wed, 03 Apr 2024 10:38:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1712165933; x=1712770733; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=smCMiV726QBOj801CvyUB4QpR4iY1i2Heb0clLKfLCU=;
-        b=Vnhtyz1usDCZR/MB3wrHpJfinhSqBTgZy2XtyAl3Dxl6RYtrdkKdZ5zVWpi6upZx1S
-         Avh/KfCj+8VHUL2Km/oz5S2kbyYNlWm8/et6siy28h6mihxJ6oZ31lpaJChWLzDWumzY
-         i3ESjvFvcPHM1xA/1KdLFdKsxuny+gshVfb+y0uYRSVszVKKc9kQ+XX0gLuPHHTx7/1y
-         1EvYpn1Ay1wfewstqwgvI04V+EHoUHImTHQa0LDjrnzYhsimGM3rZU0fmwHStXC/kkZj
-         TH4y8Fe9xtWVDrsyuOYiWUhTeE65UGx894xIc5AFcE6+O/+xupi8kiuQLG3C4JBb2R3r
-         CwJg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712165933; x=1712770733;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=smCMiV726QBOj801CvyUB4QpR4iY1i2Heb0clLKfLCU=;
-        b=LDOb81N6C/BX3Mw1J3/sugjNZvBhzF3mhD5GPjZ4fYD+2WU42gSHbpye1MbFjYKSAj
-         pKY/uUPoccR1yqG5ce4jwCOn5El9vpMLH90k78KNpJdvkKbNsWwSuIdu11kU3765dUh+
-         c8jBZSkSaPVLBmuphPtd84yIX0xcfTbwUk/aVzwVNdToy6pliyjW5jSFBJwx9hkcKuRd
-         5WbDik8rpQqqmW8ZOsQxL7VgtHYHhDN3CMHhLdbGc7gq/mbo7G0yDeSbpl5RUBR6pv9a
-         Kt1w225DrvFCqfgvQrbHmtWjPRnfFQa/IkOQSESAns9PBP7G3+01JHcNdXeiqjY8CdET
-         jbEQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWhx1HrtS2ZpHqTiIEkAKI7gpZeBPfNEnjZCQM8ton4yexp4n8bqOgWI17NETRyKWAR5LHYy2QuDrJonLZ5QsofTOmIhapnQ8sI4lCN
-X-Gm-Message-State: AOJu0Yyeu7Ua6ULm8K9bvYehg1NeQJWcUfQEwAzQVGWHyrra8YcbtAvR
-	JNjJBVDPGk2e4815i+EMoyOtBmPn+9+FejFiGNdcNDiFp2pdCfCwqnasbhV5Nvw=
-X-Google-Smtp-Source: AGHT+IFYMHtCjQ4/pwXUdf3NVsI2/w4quh6q7XCCXFphmBGfy6ZYwD3rbNLIWDHICtxEdWaRYAAfAg==
-X-Received: by 2002:a17:906:f2d9:b0:a4e:1ba4:f73d with SMTP id gz25-20020a170906f2d900b00a4e1ba4f73dmr10402ejb.22.1712165933484;
-        Wed, 03 Apr 2024 10:38:53 -0700 (PDT)
-Received: from [192.168.1.20] ([178.197.223.16])
-        by smtp.gmail.com with ESMTPSA id y17-20020a170906071100b00a4e6626ae21sm4225478ejb.0.2024.04.03.10.38.51
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 03 Apr 2024 10:38:53 -0700 (PDT)
-Message-ID: <9c330a82-7b52-4d45-a2db-66350c6a37a7@linaro.org>
-Date: Wed, 3 Apr 2024 19:38:50 +0200
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4AE46152188;
+	Wed,  3 Apr 2024 17:40:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.93.84
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1712166026; cv=fail; b=owFRXa0i7hvIguwn3qKXDMtvFEfDbo83L7lM+FcWgmnkFdy2GcdMBnBin8yTpjwL2WhCtTYtuHBj0n4wSMiT7vSedJEBr3uhefj+rmSjZE1VE25O+y6mvZ55CJ0ea1stTK5H4RDG2YvLvegyv9vfs944akRPaoxYWT5wYekHjnQ=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1712166026; c=relaxed/simple;
+	bh=/TYwUjVm0Uy206LdCg+39hMPYZ4p8N78LwK04UxatYE=;
+	h=Date:From:To:CC:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=fXiuc+HixPoE0UP7SLQAjirkrzO62JF2DiPmyivdOUdV/V+DWfWHa2J9kQKvDUeiC+H20Kke08jcztIAeeLHcwrJNfuhedXGYgF/tPU70nGx/7OX0KTko1+31g4+LWffC19IOQGmAd7Av2AIKtDSfu9CJcRkIxvWFCfdrA4amqg=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=4jcHm1Wk; arc=fail smtp.client-ip=40.107.93.84
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=WIw1hxUvkv6AK66+q0fyCcWxlmvOrI0bmpRkVwiIyghZgKIIOz5UJOp5Qlr5fOTz5BZDl3ucdqdhOTOWV4OgpJPXcMDWb+3JbazvmAkgF0YtemOErn8nkw90HH+6vw4hhSMQ3WHuGWn+//au9gvIjMHjYabfbHmj71ciFU1JaL9TClB1mk46PTz252WaeQfa9m17hWs2kOJpAA1bHwVmvAM+JFH89e76Kj4S+lnfqpmmiVfjeRBC7aNC+I3jQ3oVf0B9ysFJiGMe3frPmHgMcZilyMhmH8Iy+aVipvhxI+Kj/TUyXO70MV4jH9Cg9snvqBzTOV2lo7Aa4Af96ET6uA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=+oOR3ua1OkafKJbj+8tdMSqJxQ+lFTLsSvptohKYCB0=;
+ b=MplWqDfRUvKFzX4VETLJaA689AaQX//V5h2a1Nl1U0h79ZweHeUwjn1klwVYgNQ8qOTVeGv+mkV/MAmgsHTpFyotAbs3c6B9rty9hPNniTB0Uk33CX3XR5DhF9IB97SXoOAjj91zqS669bHKz94QloQ4dJZPfYSPazDE7a6hIZT0OQlGWSB1p5WW1ccZvjiH5N4C7vYa7QJbV8lMgz1aQuhgH4lSmMHhrA20t2v0yJjWOtrKC7DEpxjIuHoKgfb9kJAt87QLs3x6mrHFIgGobMI2ldn6X0freuUYG5p/JAl7NBdYgqOBWdkYEwpVdvszMxE4uNN1SbCag2D/bjG18w==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 165.204.84.17) smtp.rcpttodomain=google.com smtp.mailfrom=amd.com; dmarc=pass
+ (p=quarantine sp=quarantine pct=100) action=none header.from=amd.com;
+ dkim=none (message not signed); arc=none (0)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=+oOR3ua1OkafKJbj+8tdMSqJxQ+lFTLsSvptohKYCB0=;
+ b=4jcHm1Wk6AK7Undb48jn7Y35XitoC92qW66EAfbUcBqeHQVTU8/D2oVFnhc15N0q/K0MstlZ7eIeDrrzW7pdW1Zh/wwIdeKrqEZzu4zdWu0h5jlVkh8WaQoqND6TJOAixA29+bEfp4aOLd6tFrlVdlupmXh8a/p492Qh9PRdDLc=
+Received: from SJ0PR03CA0155.namprd03.prod.outlook.com (2603:10b6:a03:338::10)
+ by MW4PR12MB7438.namprd12.prod.outlook.com (2603:10b6:303:219::18) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7409.33; Wed, 3 Apr
+ 2024 17:40:21 +0000
+Received: from SJ5PEPF000001D6.namprd05.prod.outlook.com
+ (2603:10b6:a03:338:cafe::9d) by SJ0PR03CA0155.outlook.office365.com
+ (2603:10b6:a03:338::10) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7409.46 via Frontend
+ Transport; Wed, 3 Apr 2024 17:40:20 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
+ smtp.mailfrom=amd.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=amd.com;
+Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
+ 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
+ client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
+Received: from SATLEXMB04.amd.com (165.204.84.17) by
+ SJ5PEPF000001D6.mail.protection.outlook.com (10.167.242.58) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.20.7452.22 via Frontend Transport; Wed, 3 Apr 2024 17:40:20 +0000
+Received: from localhost (10.180.168.240) by SATLEXMB04.amd.com
+ (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35; Wed, 3 Apr
+ 2024 12:40:18 -0500
+Date: Wed, 3 Apr 2024 12:40:03 -0500
+From: Michael Roth <michael.roth@amd.com>
+To: Sean Christopherson <seanjc@google.com>
+CC: <kvm@vger.kernel.org>, <linux-kernel@vger.kernel.org>, David Hildenbrand
+	<david@redhat.com>, David Stevens <stevensd@chromium.org>, Paolo Bonzini
+	<pbonzini@redhat.com>, Marc Zyngier <maz@kernel.org>, Oliver Upton
+	<oliver.upton@linux.dev>, James Morse <james.morse@arm.com>, Suzuki K Poulose
+	<suzuki.poulose@arm.com>, Zenghui Yu <yuzenghui@huawei.com>, Huacai Chen
+	<chenhuacai@kernel.org>, Tianrui Zhao <zhaotianrui@loongson.cn>, Bibo Mao
+	<maobibo@loongson.cn>, Michael Ellerman <mpe@ellerman.id.au>, Nicholas Piggin
+	<npiggin@gmail.com>, Anup Patel <anup@brainfault.org>, Christian Borntraeger
+	<borntraeger@linux.ibm.com>, Janosch Frank <frankja@linux.ibm.com>, Claudio
+ Imbrenda <imbrenda@linux.ibm.com>, Xiaoyao Li <xiaoyao.li@intel.com>, Xu
+ Yilun <yilun.xu@intel.com>, Chao Peng <chao.p.peng@linux.intel.com>, Fuad
+ Tabba <tabba@google.com>, Jim Mattson <jmattson@google.com>, Jarkko Sakkinen
+	<jarkko@kernel.org>, Maxim Levitsky <mlevitsk@redhat.com>, Anish Moorthy
+	<amoorthy@google.com>, David Matlack <dmatlack@google.com>, Yu Zhang
+	<yu.c.zhang@linux.intel.com>, Isaku Yamahata <isaku.yamahata@intel.com>,
+	<Edgecombe@google.com>, Rick P <rick.p.edgecombe@intel.com>,
+	=?utf-8?Q?Micka=C3=ABl_Sala=C3=BCn?= <mic@digikod.net>, Vlastimil Babka
+	<vbabka@suse.cz>, Vishal Annapurve <vannapurve@google.com>, Ackerley Tng
+	<ackerleytng@google.com>, Maciej Szmigiero <mail@maciej.szmigiero.name>,
+	Quentin Perret <qperret@google.com>, Wei Wang <wei.w.wang@intel.com>, Liam
+ Merwick <liam.merwick@oracle.com>, Isaku Yamahata <isaku.yamahata@gmail.com>,
+	Kirill Shutemov <kirill.shutemov@linux.intel.com>, Lai Jiangshan
+	<jiangshan.ljs@antgroup.com>, Hou Wenlong <houwenlong.hwl@antgroup.com>,
+	Xiong Zhang <xiong.y.zhang@linux.intel.com>, Jinrong Liang
+	<ljr.kernel@gmail.com>, Like Xu <like.xu.linux@gmail.com>, Mingwei Zhang
+	<mizhang@google.com>, Dapeng Mi <dapeng1.mi@intel.com>
+Subject: Re: [ANNOUNCE] KVM Microconference at LPC 2024
+Message-ID: <20240403174003.damh4vq7xh53e6vw@amd.com>
+References: <20240402190652.310373-1-seanjc@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 22/25] dt-bindings: media: imx258: Add binding for
- powerdown-gpio
-To: git@luigi311.com, linux-media@vger.kernel.org
-Cc: dave.stevenson@raspberrypi.com, jacopo.mondi@ideasonboard.com,
- mchehab@kernel.org, robh@kernel.org, krzysztof.kozlowski+dt@linaro.org,
- conor+dt@kernel.org, shawnguo@kernel.org, s.hauer@pengutronix.de,
- kernel@pengutronix.de, festevam@gmail.com, sakari.ailus@linux.intel.com,
- devicetree@vger.kernel.org, imx@lists.linux.dev,
- linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
- pavel@ucw.cz, phone-devel@vger.kernel.org, Ondrej Jirman <megi@xff.cz>
-References: <20240403150355.189229-1-git@luigi311.com>
- <20240403150355.189229-23-git@luigi311.com>
-Content-Language: en-US
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- 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
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20240403150355.189229-23-git@luigi311.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20240402190652.310373-1-seanjc@google.com>
+X-ClientProxiedBy: SATLEXMB04.amd.com (10.181.40.145) To SATLEXMB04.amd.com
+ (10.181.40.145)
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: SJ5PEPF000001D6:EE_|MW4PR12MB7438:EE_
+X-MS-Office365-Filtering-Correlation-Id: 443cf007-eff0-4aab-215c-08dc5405225c
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	b9IhaiAbxyZJor7wRBpJRKx88StThpyzWFXiiLmVEsJoJDSSf5pHZnufmlXcnHqRPa4MlctrQABsdD63lkQIQ6LGOviEvKHCbo13qmu67mJHrZhWG56DwEVsRgizAn066uO67hAYKKhuPKP08dbfch5vVYiGPERH43Mp8Sl2z4w0EL81yeirbxkB8Av+UOq+z94+hjtRVcT2WgkNg6I1pdZIQOh0JE2w5Hrmxewi5AoOEXO4EPSlUa0zLIczRi5CSKFCzO+nXhWX8X/qEIftK9gSlbNPZYVE5WDI89nUdNxQYTJyVhr7ESvxaQeLq5pgNUiPAV3rrj0DBvUUcC1hZDfV1rx0jk0JR28MTZ6MqzN9Iibr56mXxYgUo/qxnAKZAprZkaQ3DFk6KnDNvPtjuwrWbXzpL3zbriKP+ueT5CZeQdOCQDlQPEm5wwZ/8csMQaqHkML6qGqYlRQfSbBfdYx+a8E0wpIgt5ZYq2aD68hL3jsT8jXm4k7ExPXntoYP+gX8LQSCqCJX3ANdvv0EuMpfOb7cuECuzyg/2JBFxokXlhvD9Hni7noU5u6UgqBAVLSRhbGfyO2dSp18NubMtyHOXXs7y3nnxoNozC9UFgtgY4TbQ4lJ1fbpJkKstouJuJVvBjtNmhe67YS7lWD9rGkMRAQzSwR7mYyLscCOH5/i5ugAhsd3CeqJ7lRxxfsZTFP5SKOrCvAiUzspljK3VA==
+X-Forefront-Antispam-Report:
+	CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(376005)(7416005)(1800799015)(82310400014)(36860700004);DIR:OUT;SFP:1101;
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 03 Apr 2024 17:40:20.6238
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 443cf007-eff0-4aab-215c-08dc5405225c
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
+X-MS-Exchange-CrossTenant-AuthSource:
+	SJ5PEPF000001D6.namprd05.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW4PR12MB7438
 
-On 03/04/2024 17:03, git@luigi311.com wrote:
-> From: Luis Garcia <git@luigi311.com>
+On Tue, Apr 02, 2024 at 12:06:52PM -0700, Sean Christopherson wrote:
+> We are planning on submitting a CFP to host a second annual KVM Microconference
+> at Linux Plumbers Conference 2024 (https://lpc.events/event/18).  To help make
+> our submission as strong as possible, please respond if you will likely attend,
+> and/or have a potential topic that you would like to include in the proposal.
+> The tentative submission is below.
 > 
-> Add powerdown-gpio binding as it is required for some boards
+> Note!  This is extremely time sensitive, as the deadline for submitting is
+> April 4th (yeah, we completely missed the initial announcement).
 > 
-> Signed-off-by: Ondrej Jirman <megi@xff.cz>
-> Signed-off-by: Luis Garcia <git@luigi311.com>
-> ---
+> Sorry for the super short notice. :-(
+> 
+> P.S. The Cc list is very ad hoc, please forward at will.
+> 
+> ===================
+> KVM Microconference
+> ===================
+> 
+> KVM (Kernel-based Virtual Machine) enables the use of hardware features to
+> improve the efficiency, performance, and security of virtual machines (VMs)
+> created and managed by userspace.  KVM was originally developed to accelerate
+> VMs running a traditional kernel and operating system, in a world where the
+> host kernel and userspace are part of the VM's trusted computing base (TCB).
+> 
+> KVM has long since expanded to cover a wide (and growing) array of use cases,
+> e.g. sandboxing untrusted workloads, deprivileging third party code, reducing
+> the TCB of security sensitive workloads, etc.  The expectations placed on KVM
+> have also matured accordingly, e.g. functionality that once was "good enough"
+> no longer meets the needs and demands of KVM users.
+> 
+> The KVM Microconference will focus on how to evolve KVM and adjacent subsystems
+> in order to satisfy new and upcoming requirements.  Of particular interest is
+> extending and enhancing guest_memfd, a guest-first memory API that was heavily
+> discussed at the 2023 KVM Microconference, and merged in v6.8.
+> 
+> Potential Topics:
+>    - Removing guest memory from the host kernel's direct map[1]
+>    - Mapping guest_memfd into host userspace[2]
+>    - Hugepage support for guest_memfd[3]
+>    - Eliminating "struct page" for guest_memfd
 
-Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Another gmem proposal we were considering was:
 
-Best regards,
-Krzysztof
+  - Scalability/Performance Analysis of guest_memfd
 
+Mainly looking at things like points of contention during lazy acceptance for
+large guests, page-conversion latency increases, impact of discard/realloc
+(prealloc?) of gmem pages from userspace, etc.
+
+Thanks,
+
+Mike
+
+>    - Passthrough/mediated PMU virtualization[4]
+>    - Pagetable-based Virtual Machine (PVM)[5]
+>    - Optimizing/hardening KVM usage of GUP[6][7]
+>    - Defining KVM requirements for hardware vendors
+>    - Utilizing "fault" injection to increase test coverage of edge cases
+> 
+> [1] https://lore.kernel.org/all/cc1bb8e9bc3e1ab637700a4d3defeec95b55060a.camel@amazon.com
+> [2] https://lore.kernel.org/all/20240222161047.402609-1-tabba@google.com
+> [3] https://lore.kernel.org/all/CABgObfa=DH7FySBviF63OS9sVog_wt-AqYgtUAGKqnY5Bizivw@mail.gmail.com
+> [4] https://lore.kernel.org/all/20240126085444.324918-1-xiong.y.zhang@linux.intel.com
+> [5] https://lore.kernel.org/all/20240226143630.33643-1-jiangshanlai@gmail.com
+> [6] https://lore.kernel.org/all/CABgObfZCay5-zaZd9mCYGMeS106L055CxsdOWWvRTUk2TPYycg@mail.gmail.com
+> [7] https://lore.kernel.org/all/20240320005024.3216282-1-seanjc@google.com
 
