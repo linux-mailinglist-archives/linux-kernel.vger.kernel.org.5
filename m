@@ -1,56 +1,63 @@
-Return-Path: <linux-kernel+bounces-129282-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-129283-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7E9CE896834
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 10:17:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id B9D1E896836
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 10:17:26 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 320BC28AFC3
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 08:17:11 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7463328B2E5
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 08:17:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 018EF83A19;
-	Wed,  3 Apr 2024 08:08:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1A2F184D05;
+	Wed,  3 Apr 2024 08:08:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="PT3MiuUU"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="MND/xHM6"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3F7198060D;
-	Wed,  3 Apr 2024 08:08:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 47ACD823DF;
+	Wed,  3 Apr 2024 08:08:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712131701; cv=none; b=uB4kCn74HUO7fl3YOzzyoSvhb9g4xuwDQ8CWeC1QtEhbjCLPWZgFxdv4rk2A2VF5CF5Nin4P3NlOVGed2B49nSptYKUseE86vbZ8bwPqwgT2Y+MP45TPj5UQxyUYNFLftTDGRAEAtpyYJyvwPTIVyLPG9I5R31UuFlQi+ubHpjs=
+	t=1712131712; cv=none; b=S48V1bhV10+i7NqaZpvu9nx4CTPU8/FzLEP0XRiIwIS0b+q8ZfU7D49T7/qLpjbFdSUikZIRRLCa/yE6KsLCW8jQfcVJliO3mUx84DyhcnAwPaGcoVGx6I9evQO1Hinifc7BD/67I1Fs3aU1tajk1R0QPdZ1V5tQPpoCcM84DKg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712131701; c=relaxed/simple;
-	bh=lKYFOQA74WUrBNKESAlJ+e055R+fsTrHN/bgM387ZAQ=;
+	s=arc-20240116; t=1712131712; c=relaxed/simple;
+	bh=l8thGNKJJbETb0CvQ4KQ0CUGk7po5gBhYYwAGbPFY2A=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=AJzvmH98dwSVvUePjqEKaj61G2RLSAflTspvoUU22F8AJx9xF9po4E5eOj2eKbpevzgSr98xNJ68By/s0bsML748M8xpUBpBKN0pOG4CG6hgwbh6+ZGI4nkffPoA+QgaLxYJXCBVfS09Hzk4P8Dne8v0wR/qpARsaS4LcC8VdCc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=PT3MiuUU; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 35AB5C433F1;
-	Wed,  3 Apr 2024 08:08:19 +0000 (UTC)
+	 MIME-Version; b=H9FctXtTzcjzNiKIHsMqVuTU+DRBedbizp3VzJJSdAS2PJNgTIfqJvmeS9og7B9YmGN3FFemBZfQIHBUKEOX3Zq8VWOt0xq0pyotP0EJnxhBokmsA+sZkK5GfMHGK/51CXAFPgD7X1XwtoyoHfL4n/McXQJ0U+L9ugCqx90biNQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=MND/xHM6; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4245AC433C7;
+	Wed,  3 Apr 2024 08:08:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712131700;
-	bh=lKYFOQA74WUrBNKESAlJ+e055R+fsTrHN/bgM387ZAQ=;
+	s=k20201202; t=1712131712;
+	bh=l8thGNKJJbETb0CvQ4KQ0CUGk7po5gBhYYwAGbPFY2A=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=PT3MiuUUoRKbKfg8e79CuzUU5j8DeVThGzzSbXP7Tufl9ihYjw23nkR2j6Gd+bsfK
-	 PmiK96NULKtD+T4PKVP4quu4w6VnbNK3ZmBfRcH+I5gCpO9m3IWlsbsUt2oaf+oqV7
-	 m0rMmCJvslOmatp2uk4KVRu9lK9+y9jAU1UbL+SuNFtnW0wdQpSAhg0vZiuTo+PPHc
-	 1ytWDH+QHejAcipmgYlY8tOIVRARva9FTd1Q9quxbwpC68c3HQ+5UfXWkdcakGg41B
-	 evlQBxwb3xDk4fXhi8GcHRTntCZVcARhXa0mCemSvoT2kEXem8H5EGDhiGhBvSNjT0
-	 p31fbxHliBgXg==
+	b=MND/xHM6qa2MiY9G7TJkiu2MvxTqZkG72ygQajBZtSk5mFy4ofP3WGbUTtdwp8qK1
+	 UGLOouFC0JA6sgN3lgR6X1zdD3e+EjwLhuqnzPAn1lLtkxREZqOBYdz12TTokECuLE
+	 D0DZwJj0vWebcFS679BeDWzLOr8p4VEI1DNWcat81AK7BdJMSgYJWvHZz2nPdKCf2f
+	 2ErVqjTKG647fLlxfy7JOGODAQWrLsByzOc2FlmGnzGm6lYNJ0fW16Sf+DZBxEsjl+
+	 IXFdaCXcVAVMSR7l1/kjYCSAjOmDvnLCN5BzOKCvRFDx7x2lzvsz6eKHHWieOUMsUA
+	 lFZD2M2Ec4kqQ==
 From: Arnd Bergmann <arnd@kernel.org>
 To: linux-kernel@vger.kernel.org,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>,
-	Paolo Abeni <pabeni@redhat.com>
+	Steven Rostedt <rostedt@goodmis.org>,
+	Masami Hiramatsu <mhiramat@kernel.org>,
+	Oleg Nesterov <oleg@redhat.com>
 Cc: Arnd Bergmann <arnd@arndb.de>,
-	netdev@vger.kernel.org
-Subject: [PATCH 05/34] 3c515: remove unused 'mtu' variable
-Date: Wed,  3 Apr 2024 10:06:23 +0200
-Message-Id: <20240403080702.3509288-6-arnd@kernel.org>
+	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+	Zheng Yejian <zhengyejian1@huawei.com>,
+	Kees Cook <keescook@chromium.org>,
+	Ajay Kaher <akaher@vmware.com>,
+	Jinjie Ruan <ruanjinjie@huawei.com>,
+	=?UTF-8?q?Cl=C3=A9ment=20L=C3=A9ger?= <cleger@rivosinc.com>,
+	Dan Carpenter <dan.carpenter@linaro.org>,
+	"Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>,
+	linux-trace-kernel@vger.kernel.org
+Subject: [PATCH 06/34] tracing: hide unused ftrace_event_id_fops
+Date: Wed,  3 Apr 2024 10:06:24 +0200
+Message-Id: <20240403080702.3509288-7-arnd@kernel.org>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20240403080702.3509288-1-arnd@kernel.org>
 References: <20240403080702.3509288-1-arnd@kernel.org>
@@ -64,33 +71,53 @@ Content-Transfer-Encoding: 8bit
 
 From: Arnd Bergmann <arnd@arndb.de>
 
-This has never been used since the start of the git history. When building
-with W=1, the unused variable produces a gcc warning:
+When CONFIG_PERF_EVENTS, a 'make W=1' build produces a warning about the
+unused ftrace_event_id_fops variable:
 
-drivers/net/ethernet/3com/3c515.c:35:18: error: 'mtu' defined but not used [-Werror=unused-const-variable=]
+kernel/trace/trace_events.c:2155:37: error: 'ftrace_event_id_fops' defined but not used [-Werror=unused-const-variable=]
+ 2155 | static const struct file_operations ftrace_event_id_fops = {
 
-Just remove it.
+Hide this in the same #ifdef as the reference to it.
 
-Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
+Fixes: 620a30e97feb ("tracing: Don't pass file_operations array to event_create_dir()")
 Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 ---
- drivers/net/ethernet/3com/3c515.c | 3 ---
- 1 file changed, 3 deletions(-)
+ kernel/trace/trace_events.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-diff --git a/drivers/net/ethernet/3com/3c515.c b/drivers/net/ethernet/3com/3c515.c
-index ba3e7aa1a28f..4725a8cfd695 100644
---- a/drivers/net/ethernet/3com/3c515.c
-+++ b/drivers/net/ethernet/3com/3c515.c
-@@ -31,9 +31,6 @@
-    Setting to > 1512 effectively disables this feature. */
- static int rx_copybreak = 200;
+diff --git a/kernel/trace/trace_events.c b/kernel/trace/trace_events.c
+index 7c364b87352e..52f75c36bbca 100644
+--- a/kernel/trace/trace_events.c
++++ b/kernel/trace/trace_events.c
+@@ -1670,6 +1670,7 @@ static int trace_format_open(struct inode *inode, struct file *file)
+ 	return 0;
+ }
  
--/* Allow setting MTU to a larger size, bypassing the normal ethernet setup. */
--static const int mtu = 1500;
--
- /* Maximum events (Rx packets, etc.) to handle at each interrupt. */
- static int max_interrupt_work = 20;
++#ifdef CONFIG_PERF_EVENTS
+ static ssize_t
+ event_id_read(struct file *filp, char __user *ubuf, size_t cnt, loff_t *ppos)
+ {
+@@ -1684,6 +1685,7 @@ event_id_read(struct file *filp, char __user *ubuf, size_t cnt, loff_t *ppos)
  
+ 	return simple_read_from_buffer(ubuf, cnt, ppos, buf, len);
+ }
++#endif
+ 
+ static ssize_t
+ event_filter_read(struct file *filp, char __user *ubuf, size_t cnt,
+@@ -2152,10 +2154,12 @@ static const struct file_operations ftrace_event_format_fops = {
+ 	.release = seq_release,
+ };
+ 
++#ifdef CONFIG_PERF_EVENTS
+ static const struct file_operations ftrace_event_id_fops = {
+ 	.read = event_id_read,
+ 	.llseek = default_llseek,
+ };
++#endif
+ 
+ static const struct file_operations ftrace_event_filter_fops = {
+ 	.open = tracing_open_file_tr,
 -- 
 2.39.2
 
