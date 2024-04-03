@@ -1,146 +1,125 @@
-Return-Path: <linux-kernel+bounces-130619-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-130620-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 48946897A9D
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 23:24:49 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 02976897A9E
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 23:25:05 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0387528583B
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 21:24:48 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2E2E01C21680
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 21:25:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CD82A156679;
-	Wed,  3 Apr 2024 21:24:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="YctJEJAR"
-Received: from fllv0016.ext.ti.com (fllv0016.ext.ti.com [198.47.19.142])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3637C156673;
+	Wed,  3 Apr 2024 21:24:59 +0000 (UTC)
+Received: from fgw21-7.mail.saunalahti.fi (fgw21-7.mail.saunalahti.fi [62.142.5.82])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4DF082C683;
-	Wed,  3 Apr 2024 21:24:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.19.142
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 22008156672
+	for <linux-kernel@vger.kernel.org>; Wed,  3 Apr 2024 21:24:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=62.142.5.82
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712179483; cv=none; b=UPq6S231GHVd27CQLLdEiibB6kI9J6QGtHXBvIxAhCyY4I9o2FZotKRJ3J2nzd+Hk/J3ugrr7dYKI5lcLXZo++1L71Bwc3b4Tyz2sXmZabIBqNgYaw5hOZpi9qM1mvPImldDKlj8d6CPe5Z6k3IJnXPhIjoaaI+K2Mixk7mM370=
+	t=1712179498; cv=none; b=B/9nVPE/ClS4prywDuFO4PBzVlk2pAlGW5vtYR5uOhwZMUhy45uAWQ/c2ccByWydfG69ZxEMcB2kv0PZDXvt9l2lvY53xmgQTESPW+S4hRvuo7VHaUTSAMOytF6xtL86NRYA1rwDKSjTvqLV/lWVLVZOATPjyu2g6iv7Krscp1E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712179483; c=relaxed/simple;
-	bh=1TlP7tfuRkJTb4XoahhY0tQ8NEmaAo2KqRI7vJSzLcw=;
-	h=From:To:Subject:Date:Message-ID:MIME-Version:Content-Type; b=VQReAAl5cCGLQo1Ogbv2LxfRTIMxXR5EVI2BNtAwHc4g8qVsF+5lcU9UXxnveplFHGuJurD4JZUzxAsr9v1hT7VjXXhqaJod28QNZcBVevlGp2MsA4ujjsptuDE5lkLCUR3lCVXmGFo+EYHVXpegEi26fh2DVj84BLW/cQY34Fc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=YctJEJAR; arc=none smtp.client-ip=198.47.19.142
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
-Received: from fllv0034.itg.ti.com ([10.64.40.246])
-	by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 433LOQ5E048322;
-	Wed, 3 Apr 2024 16:24:26 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-	s=ti-com-17Q1; t=1712179466;
-	bh=whB614MwmgUgmaq9BLDly5u4OTIz4n2TQUmWWW3dLy8=;
-	h=From:To:Subject:Date;
-	b=YctJEJAR6t2e7vYpRUWtEiDwRWp1thDBQta0cExuuxNEysrldae9jn1wRSmO88dwT
-	 QUhD9CyBQB6ZR+nRzeegyDeknSiLMxTkU3ocS12f3wpeLKn9t81GC/S8xxlIM08A+4
-	 z+Wu1knFJh0EYqCYL1YSPuR3cc4FNBrWKClD4jBA=
-Received: from DLEE113.ent.ti.com (dlee113.ent.ti.com [157.170.170.24])
-	by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 433LOQwY005837
-	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-	Wed, 3 Apr 2024 16:24:26 -0500
-Received: from DLEE114.ent.ti.com (157.170.170.25) by DLEE113.ent.ti.com
- (157.170.170.24) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Wed, 3
- Apr 2024 16:24:26 -0500
-Received: from lelvsmtp5.itg.ti.com (10.180.75.250) by DLEE114.ent.ti.com
- (157.170.170.25) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Wed, 3 Apr 2024 16:24:26 -0500
-Received: from judy-hp.dhcp.ti.com (judy-hp.dhcp.ti.com [128.247.81.105])
-	by lelvsmtp5.itg.ti.com (8.15.2/8.15.2) with ESMTP id 433LOQO3031686;
-	Wed, 3 Apr 2024 16:24:26 -0500
-From: Judith Mendez <jm@ti.com>
-To: Wim Van Sebroeck <wim@linux-watchdog.org>,
-        Guenter Roeck
-	<linux@roeck-us.net>, <linux-watchdog@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: [PATCH] watchdog: rti_wdt: Set min_hw_heartbeat_ms to accommodate 5% safety margin
-Date: Wed, 3 Apr 2024 16:24:26 -0500
-Message-ID: <20240403212426.582727-1-jm@ti.com>
-X-Mailer: git-send-email 2.43.2
+	s=arc-20240116; t=1712179498; c=relaxed/simple;
+	bh=q8ZLeioSh1fVWNbn/pZ4xPwtR1LdQr2B/PlfUqk7Uww=;
+	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=JuE0C7PAocaBBurGJHQrC0NIb1uGqIlQyYYckyFwgIn0R2jnWwi/hlXoXLznUIbj4sbRGJlNWIGtcnrEpAAXYvxyb7EmAWD7jOazKdwTTGVFC815ER1qI55f1wTHn0KrFKarsCS1/iAq/+xKEcpLkXkAHpjYX8NXQ1AqWCIDiBs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com; spf=fail smtp.mailfrom=gmail.com; arc=none smtp.client-ip=62.142.5.82
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=gmail.com
+Received: from localhost (88-113-26-217.elisa-laajakaista.fi [88.113.26.217])
+	by fgw21.mail.saunalahti.fi (Halon) with ESMTP
+	id 9d2bc742-f200-11ee-abf4-005056bdd08f;
+	Thu, 04 Apr 2024 00:24:54 +0300 (EEST)
+From: Andy Shevchenko <andy.shevchenko@gmail.com>
+Date: Thu, 4 Apr 2024 00:24:54 +0300
+To: Colin Foster <colin.foster@in-advantage.com>
+Cc: Mark Brown <broonie@kernel.org>,
+	Amit Kumar Mahapatra <amit.kumar-mahapatra@amd.com>,
+	linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: 6.8 SPI Chip Select Regression
+Message-ID: <Zg3JJtzdB5Q3aGsl@surfacebook.localdomain>
+References: <Zgx5glZznSCheksj@euler>
+ <467644bf-85d0-429a-bd11-7155b1cb5fbc@sirena.org.uk>
+ <Zgy7llSklu7iU2Om@euler>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <Zgy7llSklu7iU2Om@euler>
 
-On AM62x, the watchdog is pet before the valid window
-is open. Fix min_hw_heartbeat and accommodate a 5% safety
-margin with the exception of open window size < 10%,
-which shall use <5% due to the smaller open window size.
+Tue, Apr 02, 2024 at 09:14:46PM -0500, Colin Foster kirjoitti:
+> Hi Mark,
+> 
+> Thanks for the quick response.
+> 
+> On Wed, Apr 03, 2024 at 12:52:44AM +0100, Mark Brown wrote:
+> > On Tue, Apr 02, 2024 at 04:32:50PM -0500, Colin Foster wrote:
+> > > Hi Amit,
+> > 
+> > Amit, please respond to these issues - you never replied to the mails
+> > about the other regressions this introduced either...
+> > 
+> > > [    3.459990] omap2_mcspi 48030000.spi: chipselect 0 already in use
+> > > [    3.466135] spi_master spi0: spi_device register error /ocp/interconnect@48000000/segment@0/target-module@30000/spi@0/soc@0
+> > > [    3.477495] spi_master spi0: Failed to create SPI device for /ocp/interconnect@48000000/segment@0/target-module@30000/spi@0/soc@0
+> > 
+> > > Is this a known issue? Is there anything I either might need to do to a
+> > > device tree, or something you might suggest to help troubleshoot this?
+> > 
+> > This is not known, and given that you say there's only one chip select
+> > in use on the system seems clearly bogus.  There were some regressions
+> > with trying to use more than the hard coded maximum number of chip
+> > selects but they have a different error pattern.  It's late so I'll not
+> > look properly right now but...
+> > 
+> > Do you know what chip select 0 is - if you add a WARN_ON() to
+> > spi_set_chipselect() it should show a prior call to the function,
+> 
+> Log is below. There aren't any other SPI devices, so I'm not really sure
+> what is the issue just yet. It is also using the built-in chip select,
+> not a GPIO.
+> 
+> > or is
+> > it some logic bug that somehow is not manifesting on other systems that
+> > use chip select 0?  Though looking quickly there has been some factoring
+> > out since that commit was merged...  just to confirm, did you bisect to
+> > find the problematic commit? 
+> 
+> I bisected, and just confirmed again that the previous commit,
+> f05e2f61fe88: ("ALSA: hda/cs35l56: Use set/get APIs to access spi->chip_select")
+> does boot as expected.
+> 
+> I noticed the issue on 6.9-rc2, then jumped back to 6.8, then 6.7.
+> Bisected between 6.7 and 6.8.
+> 
+> > If you could show the DT for your setup
+> > that'd help, especially if this is a GPIO chip select.
+> 
+> It should be attached. It is really nothing more than the beaglebone
+> black with this SPI addition. The only things out-of-tree are some VLAN
+> and MTU tweaks I had to make for my DSA networking setup to work.
 
-Signed-off-by: Judith Mendez <jm@ti.com>
----
- drivers/watchdog/rti_wdt.c | 24 +++++++++++++-----------
- 1 file changed, 13 insertions(+), 11 deletions(-)
+You have
+addr cell = 1
+sz cell = 0
 
-diff --git a/drivers/watchdog/rti_wdt.c b/drivers/watchdog/rti_wdt.c
-index 8e1be7ba0103..0b16ada659cc 100644
---- a/drivers/watchdog/rti_wdt.c
-+++ b/drivers/watchdog/rti_wdt.c
-@@ -92,7 +92,7 @@ static int rti_wdt_start(struct watchdog_device *wdd)
- 	 * to be 50% or less than that; we obviouly want to configure the open
- 	 * window as large as possible so we select the 50% option.
- 	 */
--	wdd->min_hw_heartbeat_ms = 500 * wdd->timeout;
-+	wdd->min_hw_heartbeat_ms = 550 * wdd->timeout;
- 
- 	/* Generate NMI when wdt expires */
- 	writel_relaxed(RTIWWDRX_NMI, wdt->base + RTIWWDRXCTRL);
-@@ -126,31 +126,33 @@ static int rti_wdt_setup_hw_hb(struct watchdog_device *wdd, u32 wsize)
- 	 * be petted during the open window; not too early or not too late.
- 	 * The HW configuration options only allow for the open window size
- 	 * to be 50% or less than that.
-+	 * To avoid any glitches, we accommodate 5% safety margin, with the
-+	 * exception of open window size < 10%.
- 	 */
- 	switch (wsize) {
- 	case RTIWWDSIZE_50P:
--		/* 50% open window => 50% min heartbeat */
--		wdd->min_hw_heartbeat_ms = 500 * heartbeat;
-+		/* 50% open window => 55% min heartbeat */
-+		wdd->min_hw_heartbeat_ms = 550 * heartbeat;
- 		break;
- 
- 	case RTIWWDSIZE_25P:
--		/* 25% open window => 75% min heartbeat */
--		wdd->min_hw_heartbeat_ms = 750 * heartbeat;
-+		/* 25% open window => 80% min heartbeat */
-+		wdd->min_hw_heartbeat_ms = 800 * heartbeat;
- 		break;
- 
- 	case RTIWWDSIZE_12P5:
--		/* 12.5% open window => 87.5% min heartbeat */
--		wdd->min_hw_heartbeat_ms = 875 * heartbeat;
-+		/* 12.5% open window => 92.5% min heartbeat */
-+		wdd->min_hw_heartbeat_ms = 925 * heartbeat;
- 		break;
- 
- 	case RTIWWDSIZE_6P25:
--		/* 6.5% open window => 93.5% min heartbeat */
--		wdd->min_hw_heartbeat_ms = 935 * heartbeat;
-+		/* 6.5% open window => 96.5% min heartbeat */
-+		wdd->min_hw_heartbeat_ms = 965 * heartbeat;
- 		break;
- 
- 	case RTIWWDSIZE_3P125:
--		/* 3.125% open window => 96.9% min heartbeat */
--		wdd->min_hw_heartbeat_ms = 969 * heartbeat;
-+		/* 3.125% open window => 97.9% min heartbeat */
-+		wdd->min_hw_heartbeat_ms = 979 * heartbeat;
- 		break;
- 
- 	default:
+At the same time you have 
+reg <0 0>
+
+AFAICT the SPI core behaves correctly. Am I wrong?
+
+I.o.w. you either want to have reg = <0>, or <0 1> or something which has
+different values.
+
 -- 
-2.43.2
+With Best Regards,
+Andy Shevchenko
+
 
 
