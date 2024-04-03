@@ -1,118 +1,267 @@
-Return-Path: <linux-kernel+bounces-129191-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-129192-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 486CB8966C0
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 09:40:23 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2F2908966C1
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 09:40:34 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D56B4B260E7
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 07:40:20 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C2CB61F28A4F
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 07:40:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A210F5C90F;
-	Wed,  3 Apr 2024 07:38:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9AC075D477;
+	Wed,  3 Apr 2024 07:38:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="y3gvi4/R"
-Received: from mail-vs1-f52.google.com (mail-vs1-f52.google.com [209.85.217.52])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="jElEjLkW"
+Received: from mail-lf1-f47.google.com (mail-lf1-f47.google.com [209.85.167.47])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 33B1B5C61C
-	for <linux-kernel@vger.kernel.org>; Wed,  3 Apr 2024 07:38:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.217.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D845F5B20F
+	for <linux-kernel@vger.kernel.org>; Wed,  3 Apr 2024 07:38:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712129904; cv=none; b=dGQzp8LyEh8XfaQlNjZeTDQYB53ufnyWeqEBVubEDvDN++KkScBG1XrXFqb55O+NHqpQr8yrn1jwLQhEcIi09X1pH0JLZbp+7vrKp3G/OM2o7WB6DkTw81BwmNs5bWfGXSmRU6AosM20va5tQERTcfNJfFqvqFzVq6ZtdATEBVg=
+	t=1712129921; cv=none; b=HE7iYxfTgEjwzRVF5oW2HFfsov+jLxbaiVhyAcBFhyzMmQCUBJO5m8Tk0atyCYfW2mM054WrBoM75OeyYCtQ4PtLTf3yOl7rhO4ZdDm2Rj8vEDoP9QEHjnOhXNWBN1jyko1wj2+DlZqZzQs54MfhmT52vt3DFDL6fMCYWAxE5mU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712129904; c=relaxed/simple;
-	bh=9WbOVVSwUWwd5K793ppWlQLxaj4rX8ZTjnhFhq5Y5v8=;
-	h=MIME-Version:From:Date:Message-ID:Subject:To:Cc:Content-Type; b=QTiuiYR+Tqlk5aIpAKaG/JeI02qlrGtBll8ncxRa3/XoH5KsMAJIXJKwBk6DshdC4ZSqb0uDfkcR8ogNmrHlvshdk8P+SoawouloIqVXEyMP/YStDWoTyQ1bX9Vp7BnH/v+41BKKfs/nXSsU+m+32/FwyS/MpFEiu3txoHPpJqQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=y3gvi4/R; arc=none smtp.client-ip=209.85.217.52
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-vs1-f52.google.com with SMTP id ada2fe7eead31-478434f4124so1928616137.3
-        for <linux-kernel@vger.kernel.org>; Wed, 03 Apr 2024 00:38:21 -0700 (PDT)
+	s=arc-20240116; t=1712129921; c=relaxed/simple;
+	bh=t+afcddS67LgVDqa57/Lx+qG4wnPMeLDKqP7d8TGrYQ=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=MWRRxZbUJAtn84jBxXhfvZ5t5rLpjCZDmALSkQTcDFiXYyVGy+1xC3ZqDB+fsggE9r7wjk9ncogYThZ05KW9mgs+In6rJodbswHRca/9WjVIY5GyHpiPCjxZc4P5NKPxQr+2sGqIMtwiwcnTg8S2/WZS260aQW4KMTIDTDYfSN0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=jElEjLkW; arc=none smtp.client-ip=209.85.167.47
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lf1-f47.google.com with SMTP id 2adb3069b0e04-515a81928faso7437364e87.1
+        for <linux-kernel@vger.kernel.org>; Wed, 03 Apr 2024 00:38:39 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1712129900; x=1712734700; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:mime-version:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=QKsiTWwQltevYA1r+W4p6ubtTr4MlTT13dNzhqyl5yk=;
-        b=y3gvi4/RAJmfKEgnpoLxwnQE8433aLxyArRDAGslmuB9KxTQuEh+J/WLv9kgcqoQ8M
-         /yfUKwEq7n5kHEcOyYiEAi/O1Egb50y4A7gfQlweqg2pIm1E4DwdH5MY+oUXywgYrNho
-         kFlg17qsPV1yr2tLxnpHYKmNPiHdOQn6NZV4xJYzXOUQgeZCtha9MN/4VEXcx3vB7XPP
-         JuJr/aO3gAqrFN04tLz8ClQW3/Xt74e3QsOkV65d6QkS24y4GYaoiCKXgZMgFmN+PGZ8
-         GKzRFKrHY/gkDf8oNMQPHAeulUmd0zchG2aFBXTjaFvF1MJVie/FxLD9LNWAlAaVJClW
-         3j+Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712129900; x=1712734700;
-        h=cc:to:subject:message-id:date:from:mime-version:x-gm-message-state
+        d=gmail.com; s=20230601; t=1712129918; x=1712734718; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=QKsiTWwQltevYA1r+W4p6ubtTr4MlTT13dNzhqyl5yk=;
-        b=AiBWB/FCIxFCedM6KyuFFgOV+2wJUDrHl9wRGPh4QH9GzV6rJZBDf3dxA9dk0cbIxi
-         mvYyn2L8mXqTfJUo7Qb8TPS5NJsYixF+a90TUnmsG0DHda/zlUkQ7GQLuS9dVhHktDtE
-         622EwzAXgATVrYw2rF6kGMKlrRt0O+8y4FUN+N/4r7vpvNIZvXIV7Pc88vRyaDtaLtRZ
-         uuzdIByrixorh8SUNOL2nks5Qdl9IhkyvFBC6sxjt0mZ96GVrIgHEBYVbO4xOBD+Qrud
-         cE388LZeD+3eLftZo+65FCuXdyVo9/3bqV8/8qek+kglmUN3Bq9eSwQ+DAcldAyyaVUD
-         en8w==
-X-Gm-Message-State: AOJu0YykBZoQZmkTZqH62h21R+6bZv0bwe+hNnBpQb9XOeDSXCFvprYm
-	bfGxhJy6NqF+kHRANkgzkBuSauLP7plcaGTDtUrLfNk8j2qx6eIjHcFtGfMx0M2V2fwRQwXXttb
-	m4Ym/fnAibGtshiWAOGPn2M9ko6WBQ42L3ssbz8RBEvSDIg0WoTI=
-X-Google-Smtp-Source: AGHT+IEDsnkIj6HCOWhXVjqLOlYJRYneScfnCc6Qn1cRIG8coLw2kTdZBaOy3HnsF7h3qlnpsiRbKmaYqRzZ9wPLo58=
-X-Received: by 2002:a67:e359:0:b0:478:32e2:1833 with SMTP id
- s25-20020a67e359000000b0047832e21833mr11298728vsm.22.1712129900501; Wed, 03
- Apr 2024 00:38:20 -0700 (PDT)
+        bh=6UV7x4SdrFhgJGHP0b6yiQFBbxHGCZCUrIpXiA3P3DU=;
+        b=jElEjLkW9OHvWXt4zAOajf0PApZ7DihvY+7GEvsfIBfq5LGUkth62rJyzTt9O81Ogi
+         Czt0ag29Mp+ETsyA1TNeR4njkCaG+gX6bhqzMoL7TjEApnS+uvK4z3l+3hGuVscXgKcz
+         qJvesXqhfzgLFFWy1k8e7tmZXRpY7wo97hc2UuM7gQn9RnNlyQ8u8r9A07rIxBfcckYD
+         QxSXsF+vevwLAfz1k9/lv0BzkRlcBDiYiBaDZOsUYW+2r/UOEXZ3tL+93K09UqVq15FK
+         WyEf0sR4gQP/6JoIEi7kenG1XcpNFwGVfTPTvw21iJAa89E1HlEb46HEC9i/XiE3dj3p
+         wjKw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712129918; x=1712734718;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=6UV7x4SdrFhgJGHP0b6yiQFBbxHGCZCUrIpXiA3P3DU=;
+        b=s96qzDTkicHjt3xAkEU0Vo8urOpJo+e6aZqxg/vt7dCMCf6cjpVPkfcnw5+cotfZR6
+         xTNXFyQfQWWnStiPolVL8k+chTcaPHz9MjZsW0vva0Av1XF//gjdpjR0BJGBabOhedMD
+         La2Zof6wSoDexoqC7QjoiedZTuquM0plGEV0hdQqt4zmqKQ4IA9jYPIUHkmWpAsvUC+v
+         wesNkODPNS0PvcNK/hKqaPYH5US+DE8Iamqo1DsZAgD41RQ6qBJVIo4RiLplSs9ewKAh
+         sP6koRFyQo8hwA/GB2rVwm0S6Gj949MD6tVLD/RgBtYuup9m6e0y1GZ/Q2L1zgeLZ7Hg
+         XGfA==
+X-Forwarded-Encrypted: i=1; AJvYcCVHrXzA2QdO8zKbUECmxJ/e6zltAMgUs3U8t/c/YpQmxVs7gSfDW0KruM5DGCVrqldffM70qhh/ZDmuzW+1QJPd00CVHLkB4pv0e+nb
+X-Gm-Message-State: AOJu0YzFXWm7ndyAj5uG7eaySNCWvJOgxhWYqA84JEaca6yaUPfeAWDQ
+	Np1WF1XDnjWjY2A3YAdy7yxrzJ2vA9HIB6sKCcxL5DQ2I3z2amar
+X-Google-Smtp-Source: AGHT+IGwg3KxlWo+vqMlSAalmRTd1OOuVtKAAk4v+coLUVtGzRbJrbbHAC0b9gwxJJ9zhRNutyuwAA==
+X-Received: by 2002:a05:6512:39c3:b0:515:c190:140f with SMTP id k3-20020a05651239c300b00515c190140fmr1621468lfu.14.1712129917545;
+        Wed, 03 Apr 2024 00:38:37 -0700 (PDT)
+Received: from [172.16.183.82] ([213.255.186.46])
+        by smtp.gmail.com with ESMTPSA id x27-20020ac2489b000000b00513c334b2fcsm1937257lfc.141.2024.04.03.00.38.37
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 03 Apr 2024 00:38:37 -0700 (PDT)
+Message-ID: <e0d760d7-5408-47b8-b204-7900bcd9c608@gmail.com>
+Date: Wed, 3 Apr 2024 10:38:36 +0300
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-From: Naresh Kamboju <naresh.kamboju@linaro.org>
-Date: Wed, 3 Apr 2024 13:08:08 +0530
-Message-ID: <CA+G9fYtj3aBdRreBmKZDQApEe2x8mugycPgN+_J5ebJzXDEq4g@mail.gmail.com>
-Subject: kernel/sched/core.c:961:15: error: incompatible pointer to integer
- conversion passing 'typeof
-To: open list <linux-kernel@vger.kernel.org>, 
-	Linux Regressions <regressions@lists.linux.dev>, lkft-triage@lists.linaro.org, 
-	clang-built-linux <llvm@lists.linux.dev>, Linux PM <linux-pm@vger.kernel.org>
-Cc: Ingo Molnar <mingo@redhat.com>, Peter Zijlstra <peterz@infradead.org>, 
-	Juri Lelli <juri.lelli@redhat.com>, Vincent Guittot <vincent.guittot@linaro.org>, 
-	Nathan Chancellor <nathan@kernel.org>, Nick Desaulniers <ndesaulniers@google.com>
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RFC PATCH 4/6] regulator: bd96801: ROHM BD96801 PMIC regulators
+Content-Language: en-US, en-GB
+To: Krzysztof Kozlowski <krzk@kernel.org>,
+ Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
+Cc: Lee Jones <lee@kernel.org>, Conor Dooley <conor+dt@kernel.org>,
+ Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
+ linux-kernel@vger.kernel.org
+References: <cover.1712058690.git.mazziesaccount@gmail.com>
+ <3a6839e2663bd064100af41f6df0cace746cf2e4.1712058690.git.mazziesaccount@gmail.com>
+ <9d302a8a-a8bf-4a26-b1fb-44db6a5f5eac@kernel.org>
+From: Matti Vaittinen <mazziesaccount@gmail.com>
+In-Reply-To: <9d302a8a-a8bf-4a26-b1fb-44db6a5f5eac@kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-The riscv clang-17 defconfig build failed due to following warnings / errors
-on the Linux next-20240402.
+Hi dee Ho Krzysztof,
 
-Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
+Heading to the Seattle? If so - Enjoy! It's a bummer I'm not able to 
+share a beer with you in ELC this time.
 
-riscv:
-  build:
-    * clang-17-lkftconfig - Failed
-    * rv32-clang-17-defconfig - Failed
-    * clang-17-tinyconfig - Failed
-    * rv32-clang-17-tinyconfig - Failed
-    * clang-17-defconfig - Failed
-    * clang-17-allnoconfig - Failed
-    * rv32-clang-17-allnoconfig - Failed
+On 4/2/24 19:14, Krzysztof Kozlowski wrote:
+> On 02/04/2024 15:10, Matti Vaittinen wrote:
+>> The ROHM BD96801 "Scalable PMIC" is an automotive grade PMIC which can
+>> scale to different applications by allowing chaining of PMICs. The PMIC
+>> also supports various protection features which can be configured either
+>> to fire IRQs - or to shut down power outputs when failure is detected.
+>>
+> 
+> ...
+> 
+>> +
+>> +static int initialize_pmic_data(struct device *dev,
+>> +				struct bd96801_pmic_data *pdata)
+>> +{
+>> +	int r, i;
+>> +
+>> +	*pdata = bd96801_data;
+>> +
+>> +	/*
+>> +	 * Allocate and initialize IRQ data for all of the regulators. We
+>> +	 * wish to modify IRQ information independently for each driver
+>> +	 * instance.
+>> +	 */
+>> +	for (r = 0; r < BD96801_NUM_REGULATORS; r++) {
+>> +		const struct bd96801_irqinfo *template;
+>> +		struct bd96801_irqinfo *new;
+>> +		int num_infos;
+>> +
+>> +		template = pdata->regulator_data[r].irq_desc.irqinfo;
+>> +		num_infos = pdata->regulator_data[r].irq_desc.num_irqs;
+>> +
+>> +		new = devm_kzalloc(dev, num_infos * sizeof(*new), GFP_KERNEL);
+> 
+> Aren't you open coding devm_kcalloc?
 
-Build log:
--------
-kernel/sched/core.c:961:15: error: incompatible pointer to integer
-conversion passing 'typeof (*((__ai_ptr)))' (aka 'struct wake_q_node
-*') to parameter of type 'uintptr_t' (aka 'unsigned long')
-[-Wint-conversion]
-  961 |         if (unlikely(cmpxchg_relaxed(&node->next, NULL, WAKE_Q_TAIL)))
-      |                      ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+I think yes. Thanks.
 
-Steps to reproduce:
----------
-# tuxmake --runtime podman --target-arch riscv --toolchain clang-17
---kconfig defconfig LLVM=1 LLVM_IAS=1
+>> +		if (!new)
+>> +			return -ENOMEM;
+>> +
+>> +		pdata->regulator_data[r].irq_desc.irqinfo = new;
+>> +
+>> +		for (i = 0; i < num_infos; i++)
+>> +			new[i] = template[i];
+>> +	}
+>> +
+>> +	return 0;
+>> +}
+>> +
+> 
+> 
+> ...
+> 
+>> +static int bd96801_probe(struct platform_device *pdev)
+>> +{
+>> +	struct device *parent;
+>> +	int i, ret, irq;
+>> +	void *retp;
+>> +	struct regulator_config config = {};
+>> +	struct bd96801_regulator_data *rdesc;
+>> +	struct bd96801_pmic_data *pdata;
+>> +	struct regulator_dev *ldo_errs_rdev_arr[BD96801_NUM_LDOS];
+>> +	int ldo_errs_arr[BD96801_NUM_LDOS];
+>> +	int temp_notif_ldos = 0;
+>> +	struct regulator_dev *all_rdevs[BD96801_NUM_REGULATORS];
+>> +	bool use_errb;
+>> +
+>> +	parent = pdev->dev.parent;
+>> +
+>> +	pdata = devm_kzalloc(&pdev->dev, sizeof(bd96801_data), GFP_KERNEL);
+> 
+> This and assignment in initialize_pmic_data() could be probably
+> devm_kmemdup() which would be a bit more obvious for the reader.
 
-Links:
- - https://qa-reports.linaro.org/lkft/linux-next-master/build/next-20240402/testrun/23264917/suite/build/test/clang-17-defconfig/details/
- - https://qa-reports.linaro.org/lkft/linux-next-master/build/next-20240402/testrun/23264917/suite/build/test/clang-17-defconfig/log
+I think you're right.
 
---
-Linaro LKFT
-https://lkft.linaro.org
+>> +	if (!pdata)
+>> +		return -ENOMEM;
+>> +
+>> +	if (initialize_pmic_data(&pdev->dev, pdata))
+>> +		return -ENOMEM;
+>> +
+>> +	pdata->regmap = dev_get_regmap(parent, NULL);
+>> +	if (!pdata->regmap) {
+>> +		dev_err(&pdev->dev, "No register map found\n");
+>> +		return -ENODEV;
+>> +	}
+>> +
+>> +	rdesc = &pdata->regulator_data[0];
+>> +
+>> +	config.driver_data = pdata;
+>> +	config.regmap = pdata->regmap;
+>> +	config.dev = parent;
+>> +
+>> +	ret = of_property_match_string(pdev->dev.parent->of_node,
+>> +				       "interrupt-names", "errb");
+> This does not guarantee that interrupts are properly set up.
+
+Hmm. Yes, you're right. I'm not sure if I did think of this.
+
+> Don't you
+> have some state shared between parent and this device where you could
+> mark that interrupts are OK?
+
+There is currently no need to share/allocate any private data from the 
+MFD. We get the regmap using dev_get_regmap, and interrupts using the 
+platform_get_irq_byname(). Nothing else is shared between the MFD and 
+sub-devices.
+
+Considering the use of platform_get_irq_byname() - and how failures to 
+get 'errb' IRQs are silently ignored in bd96801_global_errb_irqs() and
+in bd96801_rdev_errb_irqs() - this check is just a slight optimization 
+to not even try registering the errb IRQs if they're not found from the 
+device tree. So, I think things do not really go south even if we go to 
+"errb route" when the "errb" IRQs aren't successfully registered.
+
+Whether this warrants a comment, or if this check is just unnecessarily 
+complex can be pondered. Personally I think the purpose is pretty clear 
+and thus the complexity is not added that much - but yes, a comment 
+above call(s) to the platform_get_irq_byname() saying errb IRQs are not 
+guaranteed to be populated might be justified.
+
+> 
+>> +	if (ret < 0)
+>> +		use_errb = false;
+>> +	else
+>> +		use_errb = true;
+>> +
+> 
+> ...
+> 
+>> +
+>> +	if (use_errb)
+>> +		return bd96801_global_errb_irqs(pdev, all_rdevs,
+>> +						ARRAY_SIZE(all_rdevs));
+>> +
+>> +	return 0;
+>> +}
+>> +
+>> +static struct platform_driver bd96801_regulator = {
+>> +	.driver = {
+>> +		.name = "bd96801-pmic"
+>> +	},
+>> +	.probe = bd96801_probe,
+>> +};
+>> +
+>> +module_platform_driver(bd96801_regulator);
+>> +
+>> +MODULE_AUTHOR("Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>");
+>> +MODULE_DESCRIPTION("BD96801 voltage regulator driver");
+>> +MODULE_LICENSE("GPL");
+>> +MODULE_ALIAS("platform:bd96801-pmic");
+> 
+> Just add platform device ID table with MODULE_DEVICE_TABLE(). You should
+> not need MODULE_ALIAS() in normal cases. MODULE_ALIAS() is not a
+> substitute for incomplete ID table.
+
+I guess I have something to learn here. Thanks. :)
+
+Take care
+	-- Matti
+
+-- 
+Matti Vaittinen
+Linux kernel developer at ROHM Semiconductors
+Oulu Finland
+
+~~ When things go utterly wrong vim users can always type :help! ~~
+
 
