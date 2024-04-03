@@ -1,273 +1,149 @@
-Return-Path: <linux-kernel+bounces-130107-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-130108-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 940B8897424
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 17:38:20 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 77995897427
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 17:38:52 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B7F9B1C22459
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 15:38:19 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2DB401F271B2
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 15:38:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C2DDB14A4CD;
-	Wed,  3 Apr 2024 15:38:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CDC2414A0B8;
+	Wed,  3 Apr 2024 15:38:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="LmL6YUBz";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="i8hrMjnw"
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="Xt+zSeA6"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 177F5149DF5;
-	Wed,  3 Apr 2024 15:38:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 87BBF149E14
+	for <linux-kernel@vger.kernel.org>; Wed,  3 Apr 2024 15:38:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712158690; cv=none; b=l4ojS7lGR5tOdwkTO+Z2Y1IWU48PMGmgIAyniubJ9Ny/VmFA7mXqtBexPfMrrdtFLcFi6xS+vn/4a4NmLGJ6gtqpRDYWbILH9BuUz3UKG0wq7U3YuTou8btcE+/OJMNcublGiFNvEjaTEDA7KpH8dygkJKShf69bR+9dCk9Vdh8=
+	t=1712158726; cv=none; b=DJPvVpeXPB9Rd9Cd8NixL7DYpg8ixYTHachL+rF0V38gT/1v22NR5HZ5IhcsGbRdqQzWnPT1vgvEEofK64+kvP2swFxVHqdGwj3BppJcbsuzyYE3SDPGo/a6YU19zG/7/eCWCR+ZFTNfi1Nh+0MWhS04oG4QL1jHW5DaCIj3DZ4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712158690; c=relaxed/simple;
-	bh=7ozh/crUcFOFSFxYpDbzQG+1k9UMq89IgLckyB+RD0E=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition; b=m4X7a/yp6mJll7hdGeZM9DDfovyioirNBqkPjrPMdMbJFleZFkjBg7BDkdJdu/WCxyYWkmMIHzbUIR35o5EARq0XWUSko+BvG8fwOQIzYrBWIEsOm3jl73pxqH+rwHPADIhE4SqK0mf5XYH2v1bFLfMeBziYOg2fTD8/1fdUJAY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=LmL6YUBz; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=i8hrMjnw; arc=none smtp.client-ip=193.142.43.55
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
-Date: Wed, 3 Apr 2024 17:38:06 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1712158687;
+	s=arc-20240116; t=1712158726; c=relaxed/simple;
+	bh=gvXAN8FqAYyv/zTvnFyrftLXCVC6JR3X40KuZJIRr0w=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=qInObke7tk2sugajHT26PtVPBxqA0VN2IWYUDeiT1rGBHWFb4ldAhbhKUGkUtlhd63woiJeHZ210l15htsCMIgBHmLbJjfiaxGfcOCoEYHObHXhvUPSVUgJHxdJfY8yM78zLkUOO39QHfDfUt+3P4Ouhy5o/0qVrvdvHrIzQCao=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=Xt+zSeA6; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1712158723;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type;
-	bh=vhmQs1D7TtZLS8seK0nHN0vIuPyBIrdPbVti7p503Sk=;
-	b=LmL6YUBzOz1LAlOQTn1JUHosjCoANzUsgFt8p6Lmcndztvd1DGia2PUJZYJuU1JTNw+7Qe
-	eXCC2NyFHsJjsjDzw3NgRGh+C9JKfKWTyyKt57QXV6oDQIygg0URPHHXqu9PmTPyJ9gJJV
-	EtcqAL5yuRSASA/DmnsArrxVESsYijICzuUICF7SYZJyXKYmvHtxfOmiX8IINUxJSsH200
-	enS8ZG5ycyOSB8f3Fuw4MiOWAiOYOHGu5UAO9l69PVHZgPg/htVOpVRgbDHVOKKVZRtLjS
-	f9J4XsGoerBChgqu5oBEqvazOUimSXmKSg+u3xih6Zo3cFCu8n9XvPfvEwQ8sw==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1712158687;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type;
-	bh=vhmQs1D7TtZLS8seK0nHN0vIuPyBIrdPbVti7p503Sk=;
-	b=i8hrMjnwLzjNIDsudR8epcKw0c+m2q6E4iLJbzAl1YzGfLGujsk46ph1fGaztzpSjF/55M
-	bJvOT6Jw8/qpAyBg==
-From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-To: Thomas Gleixner <tglx@linutronix.de>
-Cc: LKML <linux-kernel@vger.kernel.org>, linux-rt-users@vger.kernel.org,
-	Steven Rostedt <rostedt@goodmis.org>
-Subject: [ANNOUNCE] v6.8.2-rt11
-Message-ID: <20240403153806.0WFY9XS2@linutronix.de>
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=7ulisZosQVDxfmEDrSXMzfQcC4WL56xkDy6UZQgPC9w=;
+	b=Xt+zSeA6JK9ZxYsl3OchfJobtmQsGIaB8CrZXpU8WrofRT6lzUgx3YQ+VNvrpnFybNDrl6
+	GS8eFZicItS27VgIix1XBaAKoSDLpDmt7vMoTNaodKO19cD3+C1RgGfuPqK86a2SVmMj54
+	g/9Sdg+rFPFXWkcp624KsX9bEdSuQgg=
+Received: from mail-lf1-f72.google.com (mail-lf1-f72.google.com
+ [209.85.167.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-652-nl15fDDKMz6L_3DKUJY1OA-1; Wed, 03 Apr 2024 11:38:40 -0400
+X-MC-Unique: nl15fDDKMz6L_3DKUJY1OA-1
+Received: by mail-lf1-f72.google.com with SMTP id 2adb3069b0e04-516ae539accso3467742e87.3
+        for <linux-kernel@vger.kernel.org>; Wed, 03 Apr 2024 08:38:40 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712158719; x=1712763519;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=7ulisZosQVDxfmEDrSXMzfQcC4WL56xkDy6UZQgPC9w=;
+        b=lJ/3HPFTap2aMkJ6Wz595jGe2G4Pflc1+O/+5yLh3ndkW8hfQNSqmc9cPlFHKQ1HCv
+         IJrRHFP+Bfit/Jmcm+EUCGq2ujuRaTETTjsBJ9OEGREAu7rtNYNxDbMH60SJlfKsmJWe
+         Wi7q2UFYzP6C2ax7eDL1P1weffJrqYtRDCmc/6NVs5E7CtFBfnjbIL5JmOCJaDjmtMrQ
+         WeR7CxN0wAQuLRy+XRLKyJIDMwkhc9FuiKRIvGdg9yVqqPisOReqvnNYUCb07qYiLVF6
+         SDvYhLEFBLiB0vBE3I3dBRwts8nrQ4dhvgR2RkQrD7H4fyXZ6hU96sgsmdBCsaSdX2LB
+         zlSQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUVVfm8NaC/PzS0Z+gZZrOarTklqMVLhmJVw+knzhnmyuQYz1tv858HU2gd6295i+BZcWefCXcCEEIFy6Ig5rH6+w5dNr2E1lEr4kUS
+X-Gm-Message-State: AOJu0YwSuELXlKO2BYMioPt/GJgIPbcSc8ZATx3ULWwvxciXETk/lvWg
+	bH+lv9zrCUKwGVED4DFn+B9PE5L0RjuNzgmmLoSfGD3HL20Gf7w7ey1E2X0tIEvhTBnDvgEG1hU
+	8KiPB3J7cFdH4HWUTnDTeLaZIGgNiAHEwPmNSkqWqXhxWZlq+hLUiyQVgbdoOPQ==
+X-Received: by 2002:a19:c509:0:b0:515:af1f:5bad with SMTP id w9-20020a19c509000000b00515af1f5badmr3726476lfe.28.1712158719404;
+        Wed, 03 Apr 2024 08:38:39 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IGWDpvKh5HePjjuSqDW7G2f74KFaLPXqg8tpOijWh7Nbj6ROZij9vpsI449A6cEWrPjqHuEJA==
+X-Received: by 2002:a19:c509:0:b0:515:af1f:5bad with SMTP id w9-20020a19c509000000b00515af1f5badmr3726444lfe.28.1712158718687;
+        Wed, 03 Apr 2024 08:38:38 -0700 (PDT)
+Received: from ?IPV6:2001:1c00:c32:7800:5bfa:a036:83f0:f9ec? (2001-1c00-0c32-7800-5bfa-a036-83f0-f9ec.cable.dynamic.v6.ziggo.nl. [2001:1c00:c32:7800:5bfa:a036:83f0:f9ec])
+        by smtp.gmail.com with ESMTPSA id o1-20020a1709064f8100b00a46baba1a0asm7870261eju.100.2024.04.03.08.38.37
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 03 Apr 2024 08:38:38 -0700 (PDT)
+Message-ID: <6713652f-9a44-422e-b6a7-45501093cb08@redhat.com>
+Date: Wed, 3 Apr 2024 17:38:37 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2] HID: logitech-dj: allow mice to report multimedia
+ keycodes
+To: Yaroslav Furman <yaro330@gmail.com>, Jiri Kosina <jikos@kernel.org>,
+ Benjamin Tissoires <benjamin.tissoires@redhat.com>
+Cc: Lucas Zampieri <lzampier@redhat.com>, =?UTF-8?Q?Filipe_La=C3=ADns?=
+ <lains@riseup.net>,
+ "open list:HID LOGITECH DRIVERS" <linux-input@vger.kernel.org>,
+ open list <linux-kernel@vger.kernel.org>
+References: <7e34dc43-b70b-4a50-86fd-f021f2de4845@redhat.com>
+ <20240403150638.18749-1-Yaroslav.Furman@softeq.com>
+Content-Language: en-US, nl
+From: Hans de Goede <hdegoede@redhat.com>
+In-Reply-To: <20240403150638.18749-1-Yaroslav.Furman@softeq.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-Dear RT folks!
+Hi Yaroslav,
 
-I'm pleased to announce the v6.8.2-rt11 patch set. 
+On 4/3/24 5:06 PM, Yaroslav Furman wrote:
+> From: Yaraslau Furman <yaro330@gmail.com>
+> 
+> So, I think this should work fine for now, but IMO we should see if it's
+> possible to allow the driver to receive all events that a keyboard can send,
+> since Windows application can assign pretty much any keycode to any mouse
+> button (perhaps not the main ones though), and then we might see the same situation again.
+> 
+> I tried doing that on my system but the driver stopped working completely.
 
-Changes since v6.8.2-rt10:
+The actual code change itself looks fine, but the above should have gone
+into a cover-letter or something like that.
 
-  - Update of the printk series by John Ogness:
+This is not a proper commit message and this is also lacking
+your Signed-off-by (which you did correctly include in your
+original version:
 
-    - fix usage of port lock before initialization.
-    
-    - adjust pr_flush() compiler barrier to ensure proper local variable
-      usage.
+https://lore.kernel.org/linux-input/20240128214906.60606-1-yaro330@gmail.com/
 
-Known issues
-    None.
+Please send a v3 with a proper commit-msg + Signed-off-by.
 
-The delta patch against v6.8.2-rt10 is appended below and can be found here:
- 
-     https://cdn.kernel.org/pub/linux/kernel/projects/rt/6.8/incr/patch-6.8.2-rt10-rt11.patch.xz
+Regards,
 
-You can get this release via the git tree at:
+Hans
 
-    https://git.kernel.org/pub/scm/linux/kernel/git/rt/linux-rt-devel.git v6.8.2-rt11
 
-The RT patch against v6.8.2 can be found here:
 
-    https://cdn.kernel.org/pub/linux/kernel/projects/rt/6.8/older/patch-6.8.2-rt11.patch.xz
+> ---
+>  drivers/hid/hid-logitech-dj.c | 4 +---
+>  1 file changed, 1 insertion(+), 3 deletions(-)
+> 
+> diff --git a/drivers/hid/hid-logitech-dj.c b/drivers/hid/hid-logitech-dj.c
+> index e6a8b6d8eab7..3c3c497b6b91 100644
+> --- a/drivers/hid/hid-logitech-dj.c
+> +++ b/drivers/hid/hid-logitech-dj.c
+> @@ -965,9 +965,7 @@ static void logi_hidpp_dev_conn_notif_equad(struct hid_device *hdev,
+>  		}
+>  		break;
+>  	case REPORT_TYPE_MOUSE:
+> -		workitem->reports_supported |= STD_MOUSE | HIDPP;
+> -		if (djrcv_dev->type == recvr_type_mouse_only)
+> -			workitem->reports_supported |= MULTIMEDIA;
+> +		workitem->reports_supported |= STD_MOUSE | HIDPP | MULTIMEDIA;
+>  		break;
+>  	}
+>  }
 
-The split quilt queue is available at:
-
-    https://cdn.kernel.org/pub/linux/kernel/projects/rt/6.8/older/patches-6.8.2-rt11.tar.xz
-
-Sebastian
-
-diff --git a/drivers/tty/serial/serial_core.c b/drivers/tty/serial/serial_core.c
-index 2652b4d5c944d..0c13ea6a3afaa 100644
---- a/drivers/tty/serial/serial_core.c
-+++ b/drivers/tty/serial/serial_core.c
-@@ -3145,6 +3145,13 @@ static int serial_core_add_one_port(struct uart_driver *drv, struct uart_port *u
- 	state->uart_port = uport;
- 	uport->state = state;
- 
-+	/*
-+	 * If this port is in use as a console then the spinlock is already
-+	 * initialised.
-+	 */
-+	if (!uart_console_registered(uport))
-+		uart_port_spin_lock_init(uport);
-+
- 	state->pm_state = UART_PM_STATE_UNDEFINED;
- 	uart_port_set_cons(uport, drv->cons);
- 	uport->minor = drv->tty_driver->minor_start + uport->line;
-@@ -3155,13 +3162,6 @@ static int serial_core_add_one_port(struct uart_driver *drv, struct uart_port *u
- 		goto out;
- 	}
- 
--	/*
--	 * If this port is in use as a console then the spinlock is already
--	 * initialised.
--	 */
--	if (!uart_console_registered(uport))
--		uart_port_spin_lock_init(uport);
--
- 	if (uport->cons && uport->dev)
- 		of_console_check(uport->dev->of_node, uport->cons->name, uport->line);
- 
-diff --git a/include/linux/console.h b/include/linux/console.h
-index 0b6c122918174..1eb2d1e58b1c7 100644
---- a/include/linux/console.h
-+++ b/include/linux/console.h
-@@ -424,9 +424,8 @@ struct console {
- 	 * migrate_disable().
- 	 *
- 	 * The flags argument is provided as a convenience to the driver. It
--	 * will be passed again to device_unlock() when printing is completed
--	 * (for example, if spin_lock_irqsave() was used). It can be ignored
--	 * if the driver does not need it.
-+	 * will be passed again to device_unlock(). It can be ignored if the
-+	 * driver does not need it.
- 	 */
- 	void (*device_lock)(struct console *con, unsigned long *flags);
- 
-diff --git a/kernel/printk/nbcon.c b/kernel/printk/nbcon.c
-index 92d59c85d43a3..932b888aa4c30 100644
---- a/kernel/printk/nbcon.c
-+++ b/kernel/printk/nbcon.c
-@@ -1392,7 +1392,7 @@ static void __nbcon_atomic_flush_pending(u64 stop_seq, bool allow_unsafe_takeove
- 			 * lock for uart consoles). Therefore IRQs must be
- 			 * disabled to avoid being interrupted and then
- 			 * calling into a driver that will deadlock trying
--			 * acquire console ownership.
-+			 * to acquire console ownership.
- 			 */
- 			local_irq_save(irq_flags);
- 
-diff --git a/kernel/printk/printk.c b/kernel/printk/printk.c
-index 2be1157e8169c..8ee6c60b47c4b 100644
---- a/kernel/printk/printk.c
-+++ b/kernel/printk/printk.c
-@@ -476,7 +476,7 @@ static DEFINE_MUTEX(syslog_lock);
- 
- /*
-  * Specifies if a legacy console is registered. If legacy consoles are
-- * present, it is necessary to perform the console_lock/console_unlock dance
-+ * present, it is necessary to perform the console lock/unlock dance
-  * whenever console flushing should occur.
-  */
- bool have_legacy_console;
-@@ -2354,8 +2354,10 @@ void printk_legacy_allow_panic_sync(void)
- {
- 	legacy_allow_panic_sync = true;
- 
--	if (printing_via_unlock && !in_nmi() && console_trylock())
--		console_unlock();
-+	if (printing_via_unlock && !in_nmi()) {
-+		if (console_trylock())
-+			console_unlock();
-+	}
- }
- 
- asmlinkage int vprintk_emit(int facility, int level,
-@@ -2413,10 +2415,9 @@ asmlinkage int vprintk_emit(int facility, int level,
- 		 * - During shutdown, since the printing threads may not get
- 		 *   a chance to print the final messages.
- 		 *
--		 * Note that if boot consoles are registered, the
--		 * console_lock/console_unlock dance must be relied upon
--		 * instead because nbcon consoles cannot print simultaneously
--		 * with boot consoles.
-+		 * Note that if boot consoles are registered, the console
-+		 * lock/unlock dance must be relied upon instead because nbcon
-+		 * consoles cannot print simultaneously with boot consoles.
- 		 */
- 		if (is_panic_context ||
- 		    !printk_threads_enabled ||
-@@ -4174,7 +4175,6 @@ static bool __pr_flush(struct console *con, int timeout_ms, bool reset_on_progre
- 	u64 last_diff = 0;
- 	u64 printk_seq;
- 	short flags;
--	bool locked;
- 	int cookie;
- 	u64 diff;
- 	u64 seq;
-@@ -4196,11 +4196,18 @@ static bool __pr_flush(struct console *con, int timeout_ms, bool reset_on_progre
- 	for (;;) {
- 		unsigned long begin_jiffies;
- 		unsigned long slept_jiffies;
-+		bool use_console_lock = printing_via_unlock;
-+
-+		/*
-+		 * Ensure the compiler does not optimize @use_console_lock to
-+		 * be @printing_via_unlock since the latter can change at any
-+		 * time.
-+		 */
-+		barrier();
- 
--		locked = false;
- 		diff = 0;
- 
--		if (printing_via_unlock) {
-+		if (use_console_lock) {
- 			/*
- 			 * Hold the console_lock to guarantee safe access to
- 			 * console->seq. Releasing console_lock flushes more
-@@ -4208,16 +4215,8 @@ static bool __pr_flush(struct console *con, int timeout_ms, bool reset_on_progre
- 			 * usable consoles.
- 			 */
- 			console_lock();
--			locked = true;
- 		}
- 
--		/*
--		 * Ensure the compiler does not optimize @locked to be
--		 * @printing_via_unlock since the latter can change at any
--		 * time.
--		 */
--		barrier();
--
- 		cookie = console_srcu_read_lock();
- 		for_each_console_srcu(c) {
- 			if (con && con != c)
-@@ -4238,7 +4237,7 @@ static bool __pr_flush(struct console *con, int timeout_ms, bool reset_on_progre
- 			if (flags & CON_NBCON) {
- 				printk_seq = nbcon_seq_read(c);
- 			} else {
--				WARN_ON_ONCE(!locked);
-+				WARN_ON_ONCE(!use_console_lock);
- 				printk_seq = c->seq;
- 			}
- 
-@@ -4250,7 +4249,7 @@ static bool __pr_flush(struct console *con, int timeout_ms, bool reset_on_progre
- 		if (diff != last_diff && reset_on_progress)
- 			remaining_jiffies = timeout_jiffies;
- 
--		if (locked)
-+		if (use_console_lock)
- 			console_unlock();
- 
- 		/* Note: @diff is 0 if there are no usable consoles. */
-diff --git a/localversion-rt b/localversion-rt
-index d79dde624aaac..05c35cb580779 100644
---- a/localversion-rt
-+++ b/localversion-rt
-@@ -1 +1 @@
---rt10
-+-rt11
 
