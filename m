@@ -1,147 +1,187 @@
-Return-Path: <linux-kernel+bounces-129914-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-129910-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id A4C818971F9
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 16:09:29 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 40E748971EC
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 16:05:11 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3D6021F28A74
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 14:09:29 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EF44428F8DD
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 14:05:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 11847149009;
-	Wed,  3 Apr 2024 14:09:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D2E361494AE;
+	Wed,  3 Apr 2024 14:04:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="ej5TuduV"
-Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b="Su8LpXo+"
+Received: from mail-il1-f177.google.com (mail-il1-f177.google.com [209.85.166.177])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C4383148831;
-	Wed,  3 Apr 2024 14:09:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A45D3148FE0
+	for <linux-kernel@vger.kernel.org>; Wed,  3 Apr 2024 14:04:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712153361; cv=none; b=YB+2F0tDP1mwS3W4RkTQ8axqmognJkOFMrOYw45oSBAfo3iXqdZhChQ6hi8QkAajSAuKty2+AqMMEr0zDFLFVyPVdVecHbgh18MW1jtOSrhEuMYCsvBd99eUZZQ82AZdkEH68m3ukSkac0TUyCztz/YZNluTCfthYBpAzpIcMiU=
+	t=1712153094; cv=none; b=Uf+z+UR/EfsITUeRvP9fZIkV4lQB6/3TA5ive69jX6VIrtBJPEEOxdVK+8xD/mDxF6YYuLT9Q61B5bLpprTCWLsHdbisJ6lxTjC8Dg3fwFsUxN4o0hTAIH7XSxqnIyOH+x42OSwlnSFqLb9VUe2mLFsFIJyah8H3vokMQ61HUZA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712153361; c=relaxed/simple;
-	bh=agTHV4kamLLPYcNHOfaIhrtk8c/lda8kF/YWjh1kBJo=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Puvw8YLfBR2R+vytGC0dMLTmM8FSXNesMLWJaQd5pI6rnI0zEib8F7jB4sQSsUpXgwCIMjHpabBV6+B6+nJodh05t6DX8G2wUieyR8090qOpLrdvb+HgVADZhBpkNEqPnzDEfSTxRF53lRM1aWXYwyqaipM2+JdDQ/Tl5o5gXtQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=ej5TuduV; arc=none smtp.client-ip=46.235.227.194
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-	s=mail; t=1712153358;
-	bh=agTHV4kamLLPYcNHOfaIhrtk8c/lda8kF/YWjh1kBJo=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=ej5TuduVQzkPKOqmLXBWFS4juFDp4MmlKPVPcTaeoSqlAy48WAn1nq0ecYlAIQow6
-	 J6TlBihY4qc7QNKs9/1bOWSpoNpAndiX5VWK+c5LnV7z1vcADEOzZUEdLIQ0EwxrS0
-	 Ru8uWgGZZOmthtVp/8LCe/1/PDhwVA33EnZUzGvCqClWTmlJXIdZODfRAzRdcsw6QO
-	 LEUPf4ZMmk8WIvt/EKwilFZ3oOXrIV2eSy66+zHF9cH9tPVoajTUo/RLplO5XmtOp0
-	 tBZ65nThRBz5Fp2SVGYPf4AuGbV4z0R+xST8gP6it6QkMgNgk3yg6qlDrc96fmLaRr
-	 9ul7GpGOBrqGQ==
-Received: from mercury (cola.collaboradmins.com [195.201.22.229])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	(Authenticated sender: sre)
-	by madrid.collaboradmins.com (Postfix) with ESMTPSA id E10B037814A4;
-	Wed,  3 Apr 2024 14:09:17 +0000 (UTC)
-Received: by mercury (Postfix, from userid 1000)
-	id D07B01060E07; Wed,  3 Apr 2024 15:52:11 +0200 (CEST)
-Date: Wed, 3 Apr 2024 15:52:11 +0200
-From: Sebastian Reichel <sebastian.reichel@collabora.com>
-To: Pratham Patel <prathampatel@thefossguy.com>
-Cc: Saravana Kannan <saravanak@google.com>, 
-	Dragan Simic <dsimic@manjaro.org>, devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
-	linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org, regressions@lists.linux.dev, 
-	stable@vger.kernel.org
-Subject: Re: Fixing the devicetree of Rock 5 Model B (and possibly others)
-Message-ID: <4zlnwwycmjt4p2efqvvxirgcxqyyptf4ndqmbm5uxjjbk2toyz@uyxh2lmwb2fz>
-References: <tQ0L3-34g4t-mzfQIP6KDe5OYelGnEo6Udzq6Kb_nEcljppSQUXOktpE__nL-CdLOu9gW-4tIIbjtSbqrdCrjEkdhZLPiiHTqRcCB6WORuM=@thefossguy.com>
- <ac4246bf3786230eb9ca85b329e7d0df@manjaro.org>
- <CAGETcx89V5CJrAq6XwuGiusQnkR804pTgYAtS94v7Q+v=Cv+qA@mail.gmail.com>
- <D0A122WK7CB9.33B2TP6UCMJBJ@thefossguy.com>
- <CAGETcx_ToHsp_c+Yt0qqST4Zd-GC7dPn_j=PpB1n1xpZtOnMfg@mail.gmail.com>
- <D0A2ZL6S8UG6.2BQKIBQWYB36D@thefossguy.com>
+	s=arc-20240116; t=1712153094; c=relaxed/simple;
+	bh=nKnUH95th5iYE+E4iFcTgJ/16TGJIT26Qlwp258+K5s=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=uOyytkQqxx4GWxFzDmQW+NQKHcDmGSsX828yM/iNzmPQhDnwco9ufiPiZJG/OSq5JtzuV1PGHOzJcbPvzABHVpHYfwPi3W0oezgaGQtLeZqn3ZiJ2gNZ4K6uMReSTKT4heKWxn/Iad6/Lg0xkpM6KyQc6z7hQP95VdjeEJMzvHY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk; spf=pass smtp.mailfrom=kernel.dk; dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b=Su8LpXo+; arc=none smtp.client-ip=209.85.166.177
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.dk
+Received: by mail-il1-f177.google.com with SMTP id e9e14a558f8ab-3688f1b7848so3864815ab.0
+        for <linux-kernel@vger.kernel.org>; Wed, 03 Apr 2024 07:04:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kernel-dk.20230601.gappssmtp.com; s=20230601; t=1712153092; x=1712757892; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=0FZepTNIuSDeEcz8U+UNewgZo+OZhoLKPwuweNfu0j4=;
+        b=Su8LpXo+iaQgc5KHnGAZQxWAVgnI4jhgA6qwGfcN86I2hFcui6Vlxo7YrKANwPqwzs
+         jtNs6+aOAyx0bDE0xyYrgjIIeciXPCTyCemNH5ubb8PkKfHeI8SV0h8hHGJ4pEZwHYph
+         ljhuV7CXvhZmoXxc8cHxaZOwfw5GPdedQjUgPXP1kgqwKDQe2bpArO4wKFmkTMxs4J5g
+         K2bMXk0mBYCOjOMATX+2NDEvchOfkiqXIIyrvrnAl0j0/8QnlgEAs83t4XPXrz9P7jMf
+         +XOCVv9nagwHM28LStvtmjnnqLPFDjbrwGxqxgY+GpVaMmCW3CRf/Dpwy4gvfTrzUxuC
+         K45g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712153092; x=1712757892;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=0FZepTNIuSDeEcz8U+UNewgZo+OZhoLKPwuweNfu0j4=;
+        b=derOrqIwYPncpvjT+ChkYGqKD6/fOO5CtBciLoDKLrVeoXTclYghsbZHVf8KA9TTBK
+         uBtbeHv7vcPIxu/jprlYf+jBLC59D/VIC/2abTTZ+vBHLtkCyM6aFoNqsZD+/GeXtCdA
+         qx6RLCrFJQ6Z1vbciQwS8ojvpO3GUHexNqP6OM66HSUa9eRf5XqLRvRlDwxPbEbv9A5i
+         DtNosV62M/IRSTSlcDZ6+5sTli/aD1RZ469PEClcv73a+XynMpld9TUTFs8PysDb0kTf
+         rdIM7OfuIbcXPUichIE7EwgdKbcUK+dvP9m3fKMsmNs/GlnAssU684gbeQTA1KIJ5PdL
+         wFrA==
+X-Forwarded-Encrypted: i=1; AJvYcCUzw5Rmfm9eeDxkFisVr5WN0RBw4c7E+cOjyZgcG/6kxBNTsoeJ8LoWLDubcETAzTwo5pkZRjruhdF75yPhQNf6CD7kMjoEwe0y1tjt
+X-Gm-Message-State: AOJu0YzXu61gaOr9U9Q2RX22pasYKF7qXf+a7movW5CLZo28VKOoVXhJ
+	PXiALl896pf6QXhHSHDHxD9+NcgHipMfzf3SHoqKoUeRRECqHa3NJz+fP+koMxiaP4iJhxMBd2x
+	K
+X-Google-Smtp-Source: AGHT+IH3lPKHfU1vOwHJ/4ZtYjlERZYHr6v/CLWGbUSbvDeAFa+fQqeqsFzVoIPeJCMXReEoqMi23Q==
+X-Received: by 2002:a05:6e02:2218:b0:365:2bd4:2f74 with SMTP id j24-20020a056e02221800b003652bd42f74mr17975319ilf.0.1712153091747;
+        Wed, 03 Apr 2024 07:04:51 -0700 (PDT)
+Received: from localhost.localdomain ([96.43.243.2])
+        by smtp.gmail.com with ESMTPSA id a3-20020a056638164300b0047ef3ea2bdfsm2027098jat.78.2024.04.03.07.04.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 03 Apr 2024 07:04:50 -0700 (PDT)
+From: Jens Axboe <axboe@kernel.dk>
+To: linux-fsdevel@vger.kernel.org
+Cc: brauner@kernel.org,
+	linux-kernel@vger.kernel.org,
+	Jens Axboe <axboe@kernel.dk>
+Subject: [PATCH 1/3] timerfd: convert to ->read_iter()
+Date: Wed,  3 Apr 2024 08:02:52 -0600
+Message-ID: <20240403140446.1623931-2-axboe@kernel.dk>
+X-Mailer: git-send-email 2.43.0
+In-Reply-To: <20240403140446.1623931-1-axboe@kernel.dk>
+References: <20240403140446.1623931-1-axboe@kernel.dk>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="4danktmrrrxcg4g2"
-Content-Disposition: inline
-In-Reply-To: <D0A2ZL6S8UG6.2BQKIBQWYB36D@thefossguy.com>
+Content-Transfer-Encoding: 8bit
 
+Switch timerfd to using fops->read_iter(), so it can support not just
+O_NONBLOCK but IOCB_NOWAIT as well. With the latter, users like io_uring
+interact with timerfds a lot better, as they can be driven purely
+by the poll trigger.
 
---4danktmrrrxcg4g2
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Manually get and install the required fd, so that FMODE_NOWAIT can be
+set before the file is installed into the file table.
 
-Hi,
+No functional changes intended in this patch, it's purely a straight
+conversion to using the read iterator method.
 
-On Wed, Apr 03, 2024 at 01:03:07AM +0000, Pratham Patel wrote:
-> > > > Also, can you give the output of <debugfs>/devices_deferred for the
-> > > > good vs bad case?
-> > >
-> > > I can't provide you with requested output from the bad case, since the
-> > > kernel never moves past this to an initramfs rescue shell, but follow=
-ing
-> > > is the output from v6.8.1 (**with aforementioned patch reverted**).
-> > >
-> > > # cat /sys/kernel/debug/devices_deferred
-> > > fc400000.usb    platform: wait for supplier /phy@fed90000/usb3-port
-> > > 1-0022  typec_fusb302: cannot register tcpm port
-> > > fc000000.usb    platform: wait for supplier /phy@fed80000/usb3-port
-> > >
-> > > It seems that v6.8.2 works _without needing to revert the patch_. I w=
-ill
-> > > have to look into this sometime this week but it seems like
-> > > a8037ceb8964 (arm64: dts: rockchip: drop rockchip,trcm-sync-tx-only f=
-rom rk3588 i2s)
-> > > seems to be the one that fixed the root issue. I will have to test it
-> > > sometime later this week.
-> >
-> > Ok, once you find the patch that fixes things, let me know too.
->=20
-> Will do!
+Signed-off-by: Jens Axboe <axboe@kernel.dk>
+---
+ fs/timerfd.c | 31 ++++++++++++++++++++++---------
+ 1 file changed, 22 insertions(+), 9 deletions(-)
 
-FWIW the v6.8.1 kernel referenced above is definitely patched, since
-upstream's Rock 5B DT does neither describe fusb302, nor the USB
-port it is connected to.
+diff --git a/fs/timerfd.c b/fs/timerfd.c
+index e9c96a0c79f1..b96690b46c1f 100644
+--- a/fs/timerfd.c
++++ b/fs/timerfd.c
+@@ -262,17 +262,18 @@ static __poll_t timerfd_poll(struct file *file, poll_table *wait)
+ 	return events;
+ }
+ 
+-static ssize_t timerfd_read(struct file *file, char __user *buf, size_t count,
+-			    loff_t *ppos)
++static ssize_t timerfd_read_iter(struct kiocb *iocb, struct iov_iter *to)
+ {
++	struct file *file = iocb->ki_filp;
+ 	struct timerfd_ctx *ctx = file->private_data;
+ 	ssize_t res;
+ 	u64 ticks = 0;
+ 
+-	if (count < sizeof(ticks))
++	if (iov_iter_count(to) < sizeof(ticks))
+ 		return -EINVAL;
++
+ 	spin_lock_irq(&ctx->wqh.lock);
+-	if (file->f_flags & O_NONBLOCK)
++	if (file->f_flags & O_NONBLOCK || iocb->ki_flags & IOCB_NOWAIT)
+ 		res = -EAGAIN;
+ 	else
+ 		res = wait_event_interruptible_locked_irq(ctx->wqh, ctx->ticks);
+@@ -313,7 +314,7 @@ static ssize_t timerfd_read(struct file *file, char __user *buf, size_t count,
+ 	}
+ 	spin_unlock_irq(&ctx->wqh.lock);
+ 	if (ticks)
+-		res = put_user(ticks, (u64 __user *) buf) ? -EFAULT: sizeof(ticks);
++		res = copy_to_iter(&ticks, sizeof(ticks), to);
+ 	return res;
+ }
+ 
+@@ -384,7 +385,7 @@ static long timerfd_ioctl(struct file *file, unsigned int cmd, unsigned long arg
+ static const struct file_operations timerfd_fops = {
+ 	.release	= timerfd_release,
+ 	.poll		= timerfd_poll,
+-	.read		= timerfd_read,
++	.read_iter	= timerfd_read_iter,
+ 	.llseek		= noop_llseek,
+ 	.show_fdinfo	= timerfd_show,
+ 	.unlocked_ioctl	= timerfd_ioctl,
+@@ -407,6 +408,7 @@ SYSCALL_DEFINE2(timerfd_create, int, clockid, int, flags)
+ {
+ 	int ufd;
+ 	struct timerfd_ctx *ctx;
++	struct file *file;
+ 
+ 	/* Check the TFD_* constants for consistency.  */
+ 	BUILD_BUG_ON(TFD_CLOEXEC != O_CLOEXEC);
+@@ -443,11 +445,22 @@ SYSCALL_DEFINE2(timerfd_create, int, clockid, int, flags)
+ 
+ 	ctx->moffs = ktime_mono_to_real(0);
+ 
+-	ufd = anon_inode_getfd("[timerfd]", &timerfd_fops, ctx,
+-			       O_RDWR | (flags & TFD_SHARED_FCNTL_FLAGS));
+-	if (ufd < 0)
++	ufd = get_unused_fd_flags(O_RDWR | (flags & TFD_SHARED_FCNTL_FLAGS));
++	if (ufd < 0) {
+ 		kfree(ctx);
++		return ufd;
++	}
++
++	file = anon_inode_getfile("[timerfd]", &timerfd_fops, ctx,
++				    O_RDWR | (flags & TFD_SHARED_FCNTL_FLAGS));
++	if (IS_ERR(file)) {
++		put_unused_fd(ufd);
++		kfree(ctx);
++		return PTR_ERR(file);
++	}
+ 
++	file->f_mode |= FMODE_NOWAIT;
++	fd_install(ufd, file);
+ 	return ufd;
+ }
+ 
+-- 
+2.43.0
 
-We have a few Rock 5B in Kernel CI and upstream boots perfectly
-fine:
-
-https://lava.collabora.dev/scheduler/device_type/rk3588-rock-5b
-
-So it could be one of your downstream patches, which is introducing
-this problem.
-
--- Sebastian
-
---4danktmrrrxcg4g2
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEE72YNB0Y/i3JqeVQT2O7X88g7+poFAmYNXwcACgkQ2O7X88g7
-+ppSBQ//WsXoLg+w00Vt6lS7Fu+Ry1/gMQ7+0b0R66GBVrconK+w8cdxwNCmJe+z
-0/5ehaf6Wd4Btp2YcDywLFVFv+nHEg6H3t+PSyVzST2EnEGpJBzL9FBGq/J8XIVv
-TSyMJPEb911F63xSgZXoqlLa/Jti4ccqYIJUy6LYLJ97/3Wm1rtzPvPyrs2ySJ8I
-5l3zLA4POdS6I7vdbPNVjzY4LVEG9CwQIJIwGoScCwoxESlMpiB1+hLYil/2GsVq
-1OKAwEZuRycmROdMobiYYsO/a1GQU2FcIcZ4ocmX5e1U94qmP578endIVW+lFz8+
-S5FXoSOmxCZY6x4mczQ2nrGNI0vHfUuiNZHOxpoUZa2Y6Lw1D1v2a9Ek1IKH0LUt
-t8vp4w2k9nvMAXpRXaCK17zR/x92osn5SNNKz7RCd2Q9yGeB4a0iSDoA82xCYpGd
-lTtrxBkBSLKJlraVeeCuuwRxINRRg5DFwhleXfSEvIFXOHPVV+Fc/UPoq1bNzgF/
-jDVLTdRtfiWgl0c833WyLvCU7A3AjuFmO3AmxV+Z6gvv97o7JknuX5fsW5cjfAHx
-UIp/OBj+aEG/fZc5cG74LxfVZbxpK9McusBysf8BsFNAmHIzMoCsnGstfmSNHGr+
-fRntqsaKh8rDFgN5rKRB7svYg2dmFVKjtH7uPmQl9DPhfx5zSG8=
-=feq8
------END PGP SIGNATURE-----
-
---4danktmrrrxcg4g2--
 
