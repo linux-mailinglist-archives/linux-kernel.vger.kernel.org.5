@@ -1,81 +1,77 @@
-Return-Path: <linux-kernel+bounces-130702-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-130703-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 52C0B897BCD
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 00:57:33 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 41D87897BD4
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 00:57:58 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 892EAB21FEC
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 22:57:30 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id EB2C61F280E5
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 22:57:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id ACB19156969;
-	Wed,  3 Apr 2024 22:57:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A3BC6156C47;
+	Wed,  3 Apr 2024 22:57:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="NtClwrMG"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.10])
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="altBgIa+"
+Received: from out-176.mta1.migadu.com (out-176.mta1.migadu.com [95.215.58.176])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 29649156253;
-	Wed,  3 Apr 2024 22:57:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.10
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5722B156871;
+	Wed,  3 Apr 2024 22:57:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712185041; cv=none; b=Yx7XjCJZmC4VNrDMJdCpGErSan41x7ps0SMg7IdbxKMQ+D+J1yjww0cfeD85gV5BhxZoPf6eg7qIO67w+kFZ7N0FBE48AiQsA9kXnSwC2Fs63pPBurDigpCyeO9N8hoWfK/xOJII8ft7iRtpj95ZMBC7o4mtbCpMs2a38lkvJDw=
+	t=1712185064; cv=none; b=Yzq2e5tCgx/vWKTL0MyknGv5/R75CwDfKUyTt1YWobgAYnPmXZ4hanJi+ZTsiTFtcpZrIUCjRZ/HXoqcK86nAJ2AGBsl/hgpQFWMygGDEpRsOvTAsezg1hNPmEu+8L8skb//W4GxYcdQ1F0tu/xSVC4r3E46cbke5FVFJNJP0Mg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712185041; c=relaxed/simple;
-	bh=O/P2O6YziHmPPFlfI6G/WG3f8fkCLygIYypjUyaWwPA=;
+	s=arc-20240116; t=1712185064; c=relaxed/simple;
+	bh=rSC5AEVZmjhxZcqf+HrPUcVtv4hsU7DupAfE4SmRWDc=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=h5xtp6vqn4cqi6EC5ArA55dulFai/InxFUBUKhZPMJvRQh/F/RCavbhEAnGyqwNJu6cciLqa4eASsRuHSpzEQUvgoBA/5ed+E53+8MIrHubZ9gGkxic2oVnPY/0JbLDtedCHDg40kwwx/AIrY3Cp6edzmZ82V5+C/m0Xki78sc8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=NtClwrMG; arc=none smtp.client-ip=198.175.65.10
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1712185040; x=1743721040;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=O/P2O6YziHmPPFlfI6G/WG3f8fkCLygIYypjUyaWwPA=;
-  b=NtClwrMGHwFaAD6YftAaXdxZ4vNZnvsjfpFJPkhU0cx+FGpu8pHjh5OE
-   BCfJiV0iKAGyvJEBg7fhHnCR9ULhZbejHjh6c4Rf/wrJMwHQ4HpE2TvR3
-   DbjZFi5LYZ+hUTvXS0vqYp3ZIGcEDNgqPSbSbAQ5/TCegogvUXFTCQhtf
-   gF7dv7SqKcivUFLVWbVUZXmEyTMEieTqp2DoKp1Dmpn71czx+wplmYTmB
-   pU+K1r+5E7JuMItDgyOtzN0i/9qHh045YF50MDrvlbelzHvYkqNmZd3Z0
-   SfOW/qszyu91LDgsI+87LXa8ES7W2vLvtaJuNVEKMhMifCkWaVr5UdLr9
-   Q==;
-X-CSE-ConnectionGUID: Q6R6LgkFReyZYGCVlvrXdQ==
-X-CSE-MsgGUID: YlgqDtgFT+2NIfKnTBjdSw==
-X-IronPort-AV: E=McAfee;i="6600,9927,11033"; a="24905434"
-X-IronPort-AV: E=Sophos;i="6.07,178,1708416000"; 
-   d="scan'208";a="24905434"
-Received: from orviesa002.jf.intel.com ([10.64.159.142])
-  by orvoesa102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Apr 2024 15:57:20 -0700
-X-CSE-ConnectionGUID: HyCgqXkGQTGeoP+8seRqnA==
-X-CSE-MsgGUID: JYfbs+3jQ2iIWqB7Q2vKIA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,178,1708416000"; 
-   d="scan'208";a="49537008"
-Received: from lkp-server01.sh.intel.com (HELO e61807b1d151) ([10.239.97.150])
-  by orviesa002.jf.intel.com with ESMTP; 03 Apr 2024 15:57:16 -0700
-Received: from kbuild by e61807b1d151 with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1rs9Xd-0000Kq-23;
-	Wed, 03 Apr 2024 22:57:13 +0000
-Date: Thu, 4 Apr 2024 06:57:12 +0800
-From: kernel test robot <lkp@intel.com>
-To: Chenghai Huang <huangchenghai2@huawei.com>, herbert@gondor.apana.org.au,
-	davem@davemloft.net
-Cc: oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
-	linux-crypto@vger.kernel.org, fanghao11@huawei.com,
-	liulongfang@huawei.com, shenyang39@huawei.com,
-	songzhiqi1@huawei.com, qianweili@huawei.com,
-	liushangbin@hisilicon.com, linwenkai6@hisilicon.com,
-	taoqi10@huawei.com, wangzhou1@hisilicon.com,
-	huangchenghai2@huawei.com
-Subject: Re: [PATCH 8/9] crypto: hisilicon/debugfs - Resolve the problem of
- applying for redundant space in sq dump
-Message-ID: <202404040616.cF0Pvb9M-lkp@intel.com>
-References: <20240403100102.2735306-9-huangchenghai2@huawei.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=VbYuBILgXEA6oBy5yE7MiYTnoXHWt53ygcdXdSTcwaziLPAe+NjZuQ4XU6gQJkWoRId/hCMRNkzMHjeH1Xln9zmIU1q01jPdTaTZJ7IRYjhIwJk77Agq/6O7h6Npeo9BFA6sv3DPmh4aYnzt93UXTlj1fx2Za5Us3RvObPVD9ao=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=altBgIa+; arc=none smtp.client-ip=95.215.58.176
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Date: Wed, 3 Apr 2024 18:57:28 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1712185059;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=AWtiyFTqYKwdJDHyaCD82L5617uAdz2F4Sz0PAghbhE=;
+	b=altBgIa+MeRE72rlksdac4u+jogeiW19C04WbQpYqlQTv7yFrJi+DeOIswL1ev0MHQMoJz
+	3P/blHm1a9ObCUExPNH7tB1oeAvKxRHvqrARJ69T91VOSSObtkLUGmQ7Nd8eHpwXRM9vPE
+	nRIje5E5zoSDcqJDGAKpSrukrB99Ej0=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Kent Overstreet <kent.overstreet@linux.dev>
+To: David Hildenbrand <david@redhat.com>
+Cc: Nathan Chancellor <nathan@kernel.org>, 
+	Suren Baghdasaryan <surenb@google.com>, akpm@linux-foundation.org, mhocko@suse.com, vbabka@suse.cz, 
+	hannes@cmpxchg.org, roman.gushchin@linux.dev, mgorman@suse.de, dave@stgolabs.net, 
+	willy@infradead.org, liam.howlett@oracle.com, penguin-kernel@i-love.sakura.ne.jp, 
+	corbet@lwn.net, void@manifault.com, peterz@infradead.org, juri.lelli@redhat.com, 
+	catalin.marinas@arm.com, will@kernel.org, arnd@arndb.de, tglx@linutronix.de, 
+	mingo@redhat.com, dave.hansen@linux.intel.com, x86@kernel.org, peterx@redhat.com, 
+	axboe@kernel.dk, mcgrof@kernel.org, masahiroy@kernel.org, dennis@kernel.org, 
+	jhubbard@nvidia.com, tj@kernel.org, muchun.song@linux.dev, rppt@kernel.org, 
+	paulmck@kernel.org, pasha.tatashin@soleen.com, yosryahmed@google.com, 
+	yuzhao@google.com, dhowells@redhat.com, hughd@google.com, andreyknvl@gmail.com, 
+	keescook@chromium.org, ndesaulniers@google.com, vvvvvv@google.com, 
+	gregkh@linuxfoundation.org, ebiggers@google.com, ytcoode@gmail.com, 
+	vincent.guittot@linaro.org, dietmar.eggemann@arm.com, rostedt@goodmis.org, 
+	bsegall@google.com, bristot@redhat.com, vschneid@redhat.com, cl@linux.com, 
+	penberg@kernel.org, iamjoonsoo.kim@lge.com, 42.hyeyoo@gmail.com, glider@google.com, 
+	elver@google.com, dvyukov@google.com, songmuchun@bytedance.com, jbaron@akamai.com, 
+	aliceryhl@google.com, rientjes@google.com, minchan@google.com, kaleshsingh@google.com, 
+	kernel-team@android.com, linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	iommu@lists.linux.dev, linux-arch@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
+	linux-mm@kvack.org, linux-modules@vger.kernel.org, kasan-dev@googlegroups.com, 
+	cgroups@vger.kernel.org
+Subject: Re: [PATCH v6 01/37] fix missing vmalloc.h includes
+Message-ID: <qyyo6mjctqm734utdjen4ozhoo3t4ikswzjfjnemp7olwdgyt4@qifwishdzul4>
+References: <20240321163705.3067592-1-surenb@google.com>
+ <20240321163705.3067592-2-surenb@google.com>
+ <20240403211240.GA307137@dev-arch.thelio-3990X>
+ <4qk7f3ra5lrqhtvmipmacgzo5qwnugrfxn5dd3j4wubzwqvmv4@vzdhpalbmob3>
+ <9e2d09f8-2234-42f3-8481-87bbd9ad4def@redhat.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -84,72 +80,41 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240403100102.2735306-9-huangchenghai2@huawei.com>
+In-Reply-To: <9e2d09f8-2234-42f3-8481-87bbd9ad4def@redhat.com>
+X-Migadu-Flow: FLOW_OUT
 
-Hi Chenghai,
+On Wed, Apr 03, 2024 at 11:48:12PM +0200, David Hildenbrand wrote:
+> On 03.04.24 23:41, Kent Overstreet wrote:
+> > On Wed, Apr 03, 2024 at 02:12:40PM -0700, Nathan Chancellor wrote:
+> > > On Thu, Mar 21, 2024 at 09:36:23AM -0700, Suren Baghdasaryan wrote:
+> > > > From: Kent Overstreet <kent.overstreet@linux.dev>
+> > > > 
+> > > > The next patch drops vmalloc.h from a system header in order to fix
+> > > > a circular dependency; this adds it to all the files that were pulling
+> > > > it in implicitly.
+> > > > 
+> > > > Signed-off-by: Kent Overstreet <kent.overstreet@linux.dev>
+> > > > Signed-off-by: Suren Baghdasaryan <surenb@google.com>
+> > > > Reviewed-by: Pasha Tatashin <pasha.tatashin@soleen.com>
+> > > 
+> > > I bisected an error that I see when building ARCH=loongarch allmodconfig
+> > > to commit 302519d9e80a ("asm-generic/io.h: kill vmalloc.h dependency")
+> > > in -next, which tells me that this patch likely needs to contain
+> > > something along the following lines, as LoongArch was getting
+> > > include/linux/sizes.h transitively through the vmalloc.h include in
+> > > include/asm-generic/io.h.
+> > 
+> > gcc doesn't appear to be packaged for loongarch for debian (most other
+> > cross compilers are), so that's going to make it hard for me to test
+> > anything...
+> 
+> The latest cross-compilers from Arnd [1] include a 13.2.0 one for
+> loongarch64 that works for me. Just in case you haven't heard of Arnds work
+> before and want to give it a shot.
+> 
+> [1] https://mirrors.edge.kernel.org/pub/tools/crosstool/
 
-kernel test robot noticed the following build warnings:
-
-[auto build test WARNING on herbert-cryptodev-2.6/master]
-[also build test WARNING on herbert-crypto-2.6/master linus/master v6.9-rc2 next-20240403]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
-
-url:    https://github.com/intel-lab-lkp/linux/commits/Chenghai-Huang/crypto-hisilicon-sec-Add-the-condition-for-configuring-the-sriov-function/20240403-180924
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/herbert/cryptodev-2.6.git master
-patch link:    https://lore.kernel.org/r/20240403100102.2735306-9-huangchenghai2%40huawei.com
-patch subject: [PATCH 8/9] crypto: hisilicon/debugfs - Resolve the problem of applying for redundant space in sq dump
-config: arm64-defconfig (https://download.01.org/0day-ci/archive/20240404/202404040616.cF0Pvb9M-lkp@intel.com/config)
-compiler: aarch64-linux-gcc (GCC) 13.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240404/202404040616.cF0Pvb9M-lkp@intel.com/reproduce)
-
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202404040616.cF0Pvb9M-lkp@intel.com/
-
-All warnings (new ones prefixed by >>):
-
-   drivers/crypto/hisilicon/debugfs.c: In function 'qm_sq_dump':
->> drivers/crypto/hisilicon/debugfs.c:314:21: warning: unused variable 'sqe_curr' [-Wunused-variable]
-     314 |         void *sqe, *sqe_curr;
-         |                     ^~~~~~~~
-
-
-vim +/sqe_curr +314 drivers/crypto/hisilicon/debugfs.c
-
-94476b2b6d60bc Kai Ye         2022-11-12  310  
-9c75609842f091 Kai Ye         2022-11-12  311  static int qm_sq_dump(struct hisi_qm *qm, char *s, char *name)
-94476b2b6d60bc Kai Ye         2022-11-12  312  {
-94476b2b6d60bc Kai Ye         2022-11-12  313  	u16 sq_depth = qm->qp_array->cq_depth;
-94476b2b6d60bc Kai Ye         2022-11-12 @314  	void *sqe, *sqe_curr;
-94476b2b6d60bc Kai Ye         2022-11-12  315  	struct hisi_qp *qp;
-94476b2b6d60bc Kai Ye         2022-11-12  316  	u32 qp_id, sqe_id;
-94476b2b6d60bc Kai Ye         2022-11-12  317  	int ret;
-94476b2b6d60bc Kai Ye         2022-11-12  318  
-94476b2b6d60bc Kai Ye         2022-11-12  319  	ret = q_dump_param_parse(qm, s, &sqe_id, &qp_id, sq_depth);
-94476b2b6d60bc Kai Ye         2022-11-12  320  	if (ret)
-94476b2b6d60bc Kai Ye         2022-11-12  321  		return ret;
-94476b2b6d60bc Kai Ye         2022-11-12  322  
-e0bbea3a20f7a0 Chenghai Huang 2024-04-03  323  	sqe = kzalloc(qm->sqe_size, GFP_KERNEL);
-94476b2b6d60bc Kai Ye         2022-11-12  324  	if (!sqe)
-94476b2b6d60bc Kai Ye         2022-11-12  325  		return -ENOMEM;
-94476b2b6d60bc Kai Ye         2022-11-12  326  
-94476b2b6d60bc Kai Ye         2022-11-12  327  	qp = &qm->qp_array[qp_id];
-e0bbea3a20f7a0 Chenghai Huang 2024-04-03  328  	memcpy(sqe, qp->sqe + sqe_id * qm->sqe_size, qm->sqe_size);
-e0bbea3a20f7a0 Chenghai Huang 2024-04-03  329  	memset(sqe + qm->debug.sqe_mask_offset, QM_SQE_ADDR_MASK,
-94476b2b6d60bc Kai Ye         2022-11-12  330  	       qm->debug.sqe_mask_len);
-94476b2b6d60bc Kai Ye         2022-11-12  331  
-e0bbea3a20f7a0 Chenghai Huang 2024-04-03  332  	dump_show(qm, sqe, qm->sqe_size, name);
-94476b2b6d60bc Kai Ye         2022-11-12  333  
-94476b2b6d60bc Kai Ye         2022-11-12  334  	kfree(sqe);
-94476b2b6d60bc Kai Ye         2022-11-12  335  
-94476b2b6d60bc Kai Ye         2022-11-12  336  	return 0;
-94476b2b6d60bc Kai Ye         2022-11-12  337  }
-94476b2b6d60bc Kai Ye         2022-11-12  338  
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+Thanks for the pointer - but something seems to be busted with the
+loongarch build, if I'm not mistaken; one of the included headers
+references loongarch-def.h, but that's not included.
 
