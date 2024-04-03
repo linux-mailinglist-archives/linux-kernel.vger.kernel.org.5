@@ -1,53 +1,86 @@
-Return-Path: <linux-kernel+bounces-129646-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-129647-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 67738896DBE
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 13:11:17 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 860ED896DC2
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 13:11:43 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2381628B291
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 11:11:16 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 272C21F230DC
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 11:11:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2FC4E1411FD;
-	Wed,  3 Apr 2024 11:11:10 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1AF0C135A5F;
-	Wed,  3 Apr 2024 11:11:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 093591420A5;
+	Wed,  3 Apr 2024 11:11:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="SleascXF"
+Received: from mail-ed1-f51.google.com (mail-ed1-f51.google.com [209.85.208.51])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B9EF1139581;
+	Wed,  3 Apr 2024 11:11:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712142669; cv=none; b=jjpxzGTGllgvs5ohmNJV7uvZ/u47ABW1LlN4DoHUBH3ASZz1NJaZ6mLJx/y8E3B0N1wd8R5eX9HF1NKRsAmXzzHvjQGHbFsRssEv8AtwCdjgefzgwFJecU+3nxsWS9/d2bNLQux8nt+dVNBnXbIUFR6XCfdUDWG9ibB+pxiRn6U=
+	t=1712142692; cv=none; b=vCn5QdiObECxnKydJiyqMu1EHlR3fYb7ECf/LWOtnpWbapKfqBdWp1BCjHK+9CSuSyTNt7E4N2x+HcpsG49FukyLVx9cw/oCJCRGt9gX1oYkMTa0KEzWDoOf/9B7UxbJucnIH48Sw5miMboM6CWzPp1Upj4Rfb6p/0+luDawCMs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712142669; c=relaxed/simple;
-	bh=4opd2k4sbfLMWscrK+GbvLjqo3mlUG1uBclog3IJ87M=;
+	s=arc-20240116; t=1712142692; c=relaxed/simple;
+	bh=HYrEwCsTKUUPSTMstPgXVXggHLkZU1WHZaifX4qzm8w=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=FzoJt6xVj6Mn5jrzCzsKImNvVUmyzwuBVdEFBYdFKI3fCOJBgituvMMZL5QynwZ9OBGAQe7X3+0kWntJjhhgYeGzBNyfT3+JEgrYO2QTBvFq1RKdUhZgh+vYgfwXwOwVxd+0sZKIj31TFqK0zSbFRf8K8MlYFaht/n+rF5+18hc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 95C4A1595;
-	Wed,  3 Apr 2024 04:11:38 -0700 (PDT)
-Received: from FVFF77S0Q05N (unknown [10.57.16.212])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 874A53F64C;
-	Wed,  3 Apr 2024 04:11:05 -0700 (PDT)
-Date: Wed, 3 Apr 2024 12:10:57 +0100
-From: Mark Rutland <mark.rutland@arm.com>
-To: Dawei Li <dawei.li@shingroup.cn>
-Cc: will@kernel.org, xueshuai@linux.alibaba.com, renyu.zj@linux.alibaba.com,
-	yangyicong@hisilicon.com, jonathan.cameron@huawei.com,
-	andersson@kernel.org, konrad.dybcio@linaro.org,
-	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-	linux-arm-msm@vger.kernel.org
-Subject: Re: [PATCH 0/9] perf: Avoid explicit cpumask var allocation from
- stack
-Message-ID: <Zg05QZKkI9nsN0pO@FVFF77S0Q05N>
-References: <20240402105610.1695644-1-dawei.li@shingroup.cn>
- <ZgvoMunpbaE-x3jV@FVFF77S0Q05N>
- <190FE91C35AB9AE8+ZgwKuORh3VzTkfeJ@centos8>
- <ZgwZL679Tc1S3AxH@FVFF77S0Q05N>
- <6D6795E4D37BB843+Zg0yU8SCf+sMNYqp@centos8>
+	 Content-Type:Content-Disposition:In-Reply-To; b=KhiNvoIFq4ne36qTPMom3tbqLNyLaZagRnOaSZhZWWgHGODXvy5KFfu/rZPk8Qr4cH0Z6oAcxQhmpoFh8dyf5MVUqWGETPWRH8JW1aOLkpd7d64EiTXi2goMY0W/2kvjR7qpo1ua6Ms4ubHc5kOx/aQpqVBQRMm/G9Tsfd4QpTk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=SleascXF; arc=none smtp.client-ip=209.85.208.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ed1-f51.google.com with SMTP id 4fb4d7f45d1cf-56e0c29ad5dso381578a12.1;
+        Wed, 03 Apr 2024 04:11:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1712142689; x=1712747489; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=PPWyL/8K/BY0S344zl7ViimO1GnRHFRzJH9oqU0Xwvk=;
+        b=SleascXFCtUAGBz7yQf2atGKREWWsySjBxhdqpwDKc1YLyoedJf/RKz6AKBQ2px8PA
+         wpYRFa729pyVxx45CFw3Hi8vhRb42ctjUslBOT/4y2qsAYWBgepjJTYWz7xBINRPmKk9
+         EmD/AEw/AIHYPmanyaAS7UqmpkjxCRRo2Ypy8K4+fRC2qQYO0YmwUNncZWYfRtYBwp1q
+         HmFuTxSu0gfvSvoUl831B+JbqIWfo/FWbw22z3CSXTN9Dn/4vFZTHuf3bIWSLrI3Nfw7
+         1g+75rXbvR1XkRro+h1xAVr3wNdOIIsuTr3fhw0sHqS9u+/HP4F83DoCms3JuE3LR8rG
+         FnIw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712142689; x=1712747489;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=PPWyL/8K/BY0S344zl7ViimO1GnRHFRzJH9oqU0Xwvk=;
+        b=pUA3Flh4QA/K+9PFcRCDnms9Toq/SkglvfB8lvHHGxlwNxapkjOG0dwJNttNP0ys3M
+         9qpmVXJ30o7l6aPM3NOEBtjgTyL2e+OZilUsLmpFlQWMgehv2tXwgG8vtyJJgMYDDxW/
+         r8fakGWeveJSZUbqDnAJXgLQpg1rLeDLiptvjWy5btIC9b4bOD62wKh7CYzCevIYetSk
+         JCr+Hi3SgwuD/DFV/33sjQzJNdoiawIDPINN/nspYvREC3YzcYQqyoqAQpJNtDn4tsu8
+         WE1DQOVNV60rBjMEjKqJRdo0wqVWBsIg5TYuYAYPVLbmBKmZwpBqk5E80W81CMZR57gB
+         5oNg==
+X-Forwarded-Encrypted: i=1; AJvYcCVqYN6fsY6k9Z4ByMI536cgcq7eeaabUnh1UBcfO3L/MNNIysN79hVY2gDWG48BARFglh5bCIHfKonGFIstQL7pzoN8rMrJX9OF5sfbfJMDheeyABe/+A5OEejSqwoOrSJb9G6wTsr4aGLQgONu04lxocjZ9IL+sJhCS8QF31wZMiepv1pV
+X-Gm-Message-State: AOJu0YwC8CWLS3MrCZJN1zxCKeJ14ubhN8DhVP5+IVY3x/o3Ih4KC6o4
+	EDwXmXrlKyAT+6Ou1BaVAIRWKT4a/lPZbq7T22jdCVqctpaFJfJH
+X-Google-Smtp-Source: AGHT+IFIdt/DeMggzvMvrxB3pr3IO4m0+qNSS0nfMS174yFpcTL7KqTIPP/ygiguKGBWPIAP+FAGzg==
+X-Received: by 2002:a17:906:ce30:b0:a4e:8044:231e with SMTP id sd16-20020a170906ce3000b00a4e8044231emr1640424ejb.42.1712142688679;
+        Wed, 03 Apr 2024 04:11:28 -0700 (PDT)
+Received: from skbuf ([2a02:2f04:d700:2000::b2c])
+        by smtp.gmail.com with ESMTPSA id s23-20020a170906285700b00a4e7d03e995sm2519191ejc.45.2024.04.03.04.11.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 03 Apr 2024 04:11:27 -0700 (PDT)
+Date: Wed, 3 Apr 2024 14:11:25 +0300
+From: Vladimir Oltean <olteanv@gmail.com>
+To: Michael Walle <mwalle@kernel.org>
+Cc: Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+	Andrew Lunn <andrew@lunn.ch>,
+	Florian Fainelli <f.fainelli@gmail.com>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
+	netdev@vger.kernel.org
+Subject: Re: [PATCH net] net: dsa: sja1105: Fix parameters order in
+ sja1110_pcs_mdio_write_c45()
+Message-ID: <20240403111125.ef2jxiq2am4bbtmf@skbuf>
+References: <ff2a5af67361988b3581831f7bd1eddebfb4c48f.1712082763.git.christophe.jaillet@wanadoo.fr>
+ <D0AC0465UQUJ.26171T9KETMCW@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -56,72 +89,24 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <6D6795E4D37BB843+Zg0yU8SCf+sMNYqp@centos8>
+In-Reply-To: <D0AC0465UQUJ.26171T9KETMCW@kernel.org>
 
-On Wed, Apr 03, 2024 at 06:41:23PM +0800, Dawei Li wrote:
-> On Tue, Apr 02, 2024 at 03:41:51PM +0100, Mark Rutland wrote:
-> > Looking at this case, the only reason we need the mask is because it made the
-> > logic a little easier to write. All we really want is to choose some CPU in the
-> > intersection of two masks ignoring a specific CPU, and there was no helper
-> > function to do that.
-> > 
-> > We can add a new helper to do that for us, which would avoid redundant work to
-> > manipulate the entire mask, and it would make the existing code simpler.  I had
-> > a series a few years back to add cpumask_any_and_but():
-> > 
-> >   https://lore.kernel.org/lkml/1486381132-5610-1-git-send-email-mark.rutland@arm.com/
+On Wed, Apr 03, 2024 at 10:06:51AM +0200, Michael Walle wrote:
+> Vladimir, do you happen to know if some of your boards will use this
+> function? Just wondering because it was never noticed.
 > 
-> Sounds a perfect idea!
-> 
-> Actually I am re-implementing new series on top of your seven-years-late-yet-still-helpful
-> patch, with minor update on it:
-> 
-> diff --git a/include/linux/cpumask.h b/include/linux/cpumask.h
-> index 1c29947db848..121f3ac757ff 100644
-> --- a/include/linux/cpumask.h
-> +++ b/include/linux/cpumask.h
-> @@ -388,6 +388,29 @@ unsigned int cpumask_any_but(const struct cpumask *mask, unsigned int cpu)
->         return i;
->  }
-> 
-> +/**
-> + * cpumask_any_and_but - pick a "random" cpu from *mask1 & *mask2, but not this one.
-> + * @mask1: the first input cpumask
-> + * @mask2: the second input cpumask
-> + * @cpu: the cpu to ignore
-> + *
-> + * Returns >= nr_cpu_ids if no cpus set.
-> + */
-> +static inline
-> +unsigned int cpumask_any_and_but(const struct cpumask *mask1,
-> +                                const struct cpumask *mask2,
-> +                                unsigned int cpu)
-> +{
-> +       unsigned int i;
-> +
-> +       cpumask_check(cpu);
-> +       i = cpumask_first_and(mask1, mask2);
-> +       if (i != cpu)
-> +               return i;
-> +
-> +       return cpumask_next_and(cpu, mask1, mask2);
-> +}
-> +
->  /**
->   * cpumask_nth - get the Nth cpu in a cpumask
->   * @srcp: the cpumask pointer
-> 
-> Change from your original version:
-> 1 Moved to cpumask.h, just like other helpers.
-> 2 Return value converted to unsigned int.
-> 3 Remove EXPORT_SYMBOL, for obvious reason.
+> -michael
 
-That's exactly how I rebased it locally, so that looks good to me!
+The SJA1110 uses the XPCS only for SGMII and 2500Base-X links. On the
+Bluebox3 I have (which is currently in a cardboard box for the time
+being, so I will have to rely on static analysis just like everybody
+else), these links are the cascade ports between switches. However,
+those cascade ports are only used for autonomous traffic bridging (the
+board has a weird "H" topology). Traffic terminated on the CPU doesn't
+go through the SGMII links, so this is why I haven't noticed it during
+casual testing.
 
-> I will respin V2 as a whole as soon as possible.
-
-Great!
-
-Thanks,
-Mark.
+However, there are other NXP systems using downstream device trees which
+are likely impacted, but they are on older kernels and probably haven't
+seen the regression just yet. So the fix is welcome.
 
