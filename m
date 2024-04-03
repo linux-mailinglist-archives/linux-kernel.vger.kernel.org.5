@@ -1,369 +1,122 @@
-Return-Path: <linux-kernel+bounces-130024-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-130029-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 44E0D897355
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 17:03:56 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id B12AE897364
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 17:06:00 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E2994281B35
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 15:03:54 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6C46E28C69A
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 15:05:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E8CC714A4CE;
-	Wed,  3 Apr 2024 15:03:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 81485149C68;
+	Wed,  3 Apr 2024 15:05:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="PtVD7uWM"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="IxuxGcA6"
+Received: from mail-ej1-f46.google.com (mail-ej1-f46.google.com [209.85.218.46])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 18D4314A4C0
-	for <linux-kernel@vger.kernel.org>; Wed,  3 Apr 2024 15:03:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4369114A093;
+	Wed,  3 Apr 2024 15:05:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712156595; cv=none; b=rhGL1aavO9dIw2DUKNZGuiy/TiTqCMaEdMRyWMG6uR0J6sR22O27bq/fn6K5Ir6dlQJTnmkST0xSN/wXvY1K3ok1r6UPBKBAnPABZGayanAeaq5dM+L3GdsQuIjDx+2/l7dTRztPmqU33mrqfCbstKoRAZvAflNz/H+vihg3OhU=
+	t=1712156744; cv=none; b=ZyWoqkOY5SroJ1jEZdHawBjkKRDo/64TPbu/s6LrXiAdzQQ/n0WZbnYQhgtjL7VJg0K6X6vIu9fuwl96KEiNVENJQBvQXNET4m+i3GPkzNMzml3Rq9F+Y+Zxx38i35O415Ql9freRKcq6L19uYcKdTFlj2ell68owebaW2Pvxd4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712156595; c=relaxed/simple;
-	bh=xdm/sS39KuLJea9bB+omDTBqRO1nfiovy2OcPy7/pt0=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=FW9L1jOdDBaWdcE40hmGIOx9zAH14puD4X+NARNizqiBmigq4UqAkFaDInYS3XrjjU5YnUh3jmLkpbtJIseneL7QQJEbdQ0NLBklyyW9PW218MkjWYYf6Mx5LZO6laBdGSelNyKibnGAphJe3BKjpLO9RY0xbvLNTm92YkjW1Gs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=PtVD7uWM; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1712156593;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=1t9rNljNB7WZCGoFa1Ob1ROcqUyp21vTL5nU3nsygOo=;
-	b=PtVD7uWMfI2J8HKthVU9OoChUR29uTScdtR9hSTw4NcJOnZjLtzGnA+p4LTrQIrnz0hYd0
-	p6N4q5taWbPbwwRwrz61dRQjYVqEYbKAeLvC+HjfvLehs3sMIASl0LamYY/4ugu4v0PzQy
-	GobC3nY7MUkWkbBTw23yc85WsPh9VbM=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-625-Rwfc9kBWMhWP0sXigXb-eA-1; Wed, 03 Apr 2024 11:03:02 -0400
-X-MC-Unique: Rwfc9kBWMhWP0sXigXb-eA-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.rdu2.redhat.com [10.11.54.5])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 976748D1385;
-	Wed,  3 Apr 2024 15:03:01 +0000 (UTC)
-Received: from bfoster (unknown [10.22.16.57])
-	by smtp.corp.redhat.com (Postfix) with ESMTPS id 0FA7C10E47;
-	Wed,  3 Apr 2024 15:03:00 +0000 (UTC)
-Date: Wed, 3 Apr 2024 11:04:58 -0400
-From: Brian Foster <bfoster@redhat.com>
-To: Kemeng Shi <shikemeng@huaweicloud.com>
-Cc: akpm@linux-foundation.org, willy@infradead.org, jack@suse.cz,
-	tj@kernel.org, dsterba@suse.com, mjguzik@gmail.com,
-	dhowells@redhat.com, linux-kernel@vger.kernel.org,
-	linux-mm@kvack.org, linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH v2 3/6] writeback: support retrieving per group debug
- writeback stats of bdi
-Message-ID: <Zg1wGvTeQxjqjYUG@bfoster>
-References: <20240327155751.3536-1-shikemeng@huaweicloud.com>
- <20240327155751.3536-4-shikemeng@huaweicloud.com>
- <Zga937dR5UgtSVaz@bfoster>
- <e3816f9c-0f29-a0e4-8ad8-a6acf82a06ad@huaweicloud.com>
+	s=arc-20240116; t=1712156744; c=relaxed/simple;
+	bh=vKEnA46LNIYBD/r4zg6POqJ9fE49+HQ7ou3GmwNLpXk=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=eZczvBqgoI6/UT+wSGkZdEbgVI3xIpXBGSksYakzjPTDSGpyLCEtT8CmfoDHR5FS5K0hjYF8Pi+0zCufSXwWxC2lkFiNik/JnpKzo6W+oGurPYgjl3jCt8PimH+xcm2Hplx5iGkttduVU1U44ds54AHHmw+A8hAt+iGRH/xuoBo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=IxuxGcA6; arc=none smtp.client-ip=209.85.218.46
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ej1-f46.google.com with SMTP id a640c23a62f3a-a466e53f8c0so854401566b.1;
+        Wed, 03 Apr 2024 08:05:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1712156741; x=1712761541; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=nxHB0J6rX43HE9ciPEpBOcvr3yTZZIhFw+viwUxDb3A=;
+        b=IxuxGcA6CaqMjulWV2+hdE06+hvFAjv/sXCj0+Z4UUSd+sbZo5xbj/QUQ3C0UBo7eO
+         T0nIVli4XD6lcXk7jhyCSp/6B+sI4+FnVaf0a2eD29RStzdKgXdq766tiUWkGWJEnGji
+         VWJVgwYZCxwyGXASKfOd0+mDSEH8Ge3d4d7zFyAdrIdIQrNviUNBDSuJ7cIGeAr5Aotu
+         U3RsK0ci8vMewyBmHEFIIbG5nlMPvu0Lb7/aUGcsWWjVv0mZ78lnS9YD6YxA2BVC1jWv
+         vZZ/jYuhxPUL73c+CD9Ya+xqwVjmx59hUEV7Ro86xs82F4Mu8cZ7GFE8DoU7n3/IGgJY
+         mu1w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712156741; x=1712761541;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=nxHB0J6rX43HE9ciPEpBOcvr3yTZZIhFw+viwUxDb3A=;
+        b=lBKdMgVP2TEPbM7MzRSEzHqlrxouFC8uiT+6H7xLrqZhBhwncxpPLwm9fpWISBCWGv
+         CSrn1j7s2ro2accplFkGRUx/ABlqXnant8U16nAFciwMo5nalvJ0R+iOyYCXYZRk+k+N
+         kTtkVgoCreev/op272qGODtRMsRUOZSTgUWwgRQgB2d87mJ1G7wWGjUxEuI0gsMUASCn
+         pHROL8j0OLC7qZD3lLn0yjt59Lj0UKe6hwdhOyrUy2aR8WlY97GCEw3NF/Z2YMu3QBZy
+         R64DafTad2ZltwaJzsxZ3AxcsSsnj8o8wI/dBLazbcbyVAm8uIXHuU74jYDJwHooC2/s
+         oygQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWsJrVwuFZez+CpifIYVfhSm04hjBYpXMFEqtCPxhVPW/oATrGMQh1NORLbSVrPHgiujO9WGYqwtvULCUSNabd2izCJxep9qVFPSNOaxzngcqPCOR0fGnU3jHAbX/VCvghVL1bAud9u2us=
+X-Gm-Message-State: AOJu0Yzbx+wgXpc+ZEyavgeKYZ5sIIQoqx2I0DfHZ5rNoOVq5Js5UOeu
+	G5UD9mRuwtADVbNz/EXub+kpoHCQMTw8s2LQFRnnIMOTCG7N+RIc
+X-Google-Smtp-Source: AGHT+IEncL4sraW/La3SvP9mabjQkzry8cXX1FpqbfCr6j+zWLCdOGzW7WkLTPeOPIEB55ulkuJhZQ==
+X-Received: by 2002:a17:906:52d1:b0:a44:51c1:733c with SMTP id w17-20020a17090652d100b00a4451c1733cmr12217795ejn.39.1712156741170;
+        Wed, 03 Apr 2024 08:05:41 -0700 (PDT)
+Received: from localhost.localdomain ([84.32.202.14])
+        by smtp.gmail.com with ESMTPSA id bw17-20020a170906c1d100b00a46b4544da2sm7777241ejb.125.2024.04.03.08.05.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 03 Apr 2024 08:05:40 -0700 (PDT)
+From: Yaroslav Furman <yaro330@gmail.com>
+X-Google-Original-From: Yaroslav Furman <Yaroslav.Furman@softeq.com>
+To: Jiri Kosina <jikos@kernel.org>,
+	Benjamin Tissoires <benjamin.tissoires@redhat.com>
+Cc: Lucas Zampieri <lzampier@redhat.com>,
+	Yaraslau Furman <yaro330@gmail.com>,
+	=?UTF-8?q?Filipe=20La=C3=ADns?= <lains@riseup.net>,
+	linux-input@vger.kernel.org (open list:HID LOGITECH DRIVERS),
+	linux-kernel@vger.kernel.org (open list)
+Subject: [PATCH v2] HID: logitech-dj: allow mice to report multimedia keycodes
+Date: Wed,  3 Apr 2024 18:05:14 +0300
+Message-ID: <20240403150514.18058-1-Yaroslav.Furman@softeq.com>
+X-Mailer: git-send-email 2.44.0
+In-Reply-To: <7e34dc43-b70b-4a50-86fd-f021f2de4845@redhat.com>
+References: <7e34dc43-b70b-4a50-86fd-f021f2de4845@redhat.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <e3816f9c-0f29-a0e4-8ad8-a6acf82a06ad@huaweicloud.com>
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.5
+Content-Transfer-Encoding: 8bit
 
-On Wed, Apr 03, 2024 at 04:49:42PM +0800, Kemeng Shi wrote:
-> 
-> 
-> on 3/29/2024 9:10 PM, Brian Foster wrote:
-> > On Wed, Mar 27, 2024 at 11:57:48PM +0800, Kemeng Shi wrote:
-> >> Add /sys/kernel/debug/bdi/xxx/wb_stats to show per group writeback stats
-> >> of bdi.
-> >>
-> > 
-> > Hi Kemeng,
-> Hello Brian,
-> > 
-> > Just a few random thoughts/comments..
-> > 
-> >> Following domain hierarchy is tested:
-> >>                 global domain (320G)
-> >>                 /                 \
-> >>         cgroup domain1(10G)     cgroup domain2(10G)
-> >>                 |                 |
-> >> bdi            wb1               wb2
-> >>
-> >> /* per wb writeback info of bdi is collected */
-> >> cat /sys/kernel/debug/bdi/252:16/wb_stats
-> >> WbCgIno:                    1
-> >> WbWriteback:                0 kB
-> >> WbReclaimable:              0 kB
-> >> WbDirtyThresh:              0 kB
-> >> WbDirtied:                  0 kB
-> >> WbWritten:                  0 kB
-> >> WbWriteBandwidth:      102400 kBps
-> >> b_dirty:                    0
-> >> b_io:                       0
-> >> b_more_io:                  0
-> >> b_dirty_time:               0
-> >> state:                      1
-> > 
-> > Maybe some whitespace or something between entries would improve
-> > readability?
-> Sure, I will add a whitespace in next version.
-> > 
-> >> WbCgIno:                 4094
-> >> WbWriteback:            54432 kB
-> >> WbReclaimable:         766080 kB
-> >> WbDirtyThresh:        3094760 kB
-> >> WbDirtied:            1656480 kB
-> >> WbWritten:             837088 kB
-> >> WbWriteBandwidth:      132772 kBps
-> >> b_dirty:                    1
-> >> b_io:                       1
-> >> b_more_io:                  0
-> >> b_dirty_time:               0
-> >> state:                      7
-> >> WbCgIno:                 4135
-> >> WbWriteback:            15232 kB
-> >> WbReclaimable:         786688 kB
-> >> WbDirtyThresh:        2909984 kB
-> >> WbDirtied:            1482656 kB
-> >> WbWritten:             681408 kB
-> >> WbWriteBandwidth:      124848 kBps
-> >> b_dirty:                    0
-> >> b_io:                       1
-> >> b_more_io:                  0
-> >> b_dirty_time:               0
-> >> state:                      7
-> >>
-> >> Signed-off-by: Kemeng Shi <shikemeng@huaweicloud.com>
-> >> ---
-> >>  include/linux/writeback.h |  1 +
-> >>  mm/backing-dev.c          | 88 +++++++++++++++++++++++++++++++++++++++
-> >>  mm/page-writeback.c       | 19 +++++++++
-> >>  3 files changed, 108 insertions(+)
-> >>
-> > ...
-> >> diff --git a/mm/backing-dev.c b/mm/backing-dev.c
-> >> index 8daf950e6855..e3953db7d88d 100644
-> >> --- a/mm/backing-dev.c
-> >> +++ b/mm/backing-dev.c
-> >> @@ -103,6 +103,91 @@ static void collect_wb_stats(struct wb_stats *stats,
-> >>  }
-> >>  
-> >>  #ifdef CONFIG_CGROUP_WRITEBACK
-> > ...
-> >> +static int cgwb_debug_stats_show(struct seq_file *m, void *v)
-> >> +{
-> >> +	struct backing_dev_info *bdi;
-> >> +	unsigned long background_thresh;
-> >> +	unsigned long dirty_thresh;
-> >> +	struct bdi_writeback *wb;
-> >> +	struct wb_stats stats;
-> >> +
-> >> +	rcu_read_lock();
-> >> +	bdi = lookup_bdi(m);
-> >> +	if (!bdi) {
-> >> +		rcu_read_unlock();
-> >> +		return -EEXIST;
-> >> +	}
-> >> +
-> >> +	global_dirty_limits(&background_thresh, &dirty_thresh);
-> >> +
-> >> +	list_for_each_entry_rcu(wb, &bdi->wb_list, bdi_node) {
-> >> +		memset(&stats, 0, sizeof(stats));
-> >> +		stats.dirty_thresh = dirty_thresh;
-> > 
-> > If you did something like the following here, wouldn't that also zero
-> > the rest of the structure?
-> > 
-> > 		struct wb_stats stats = { .dirty_thresh = dirty_thresh };
-> > 
-> Suer, will do it in next version.
-> >> +		collect_wb_stats(&stats, wb);
-> >> +
-> > 
-> > Also, similar question as before on whether you'd want to check
-> > WB_registered or something here..
-> Still prefer to keep full debug info and user could filter out on
-> demand.
+From: Yaraslau Furman <yaro330@gmail.com>
 
-Ok. I was more wondering if that was needed for correctness. If not,
-then that seems fair enough to me.
+So, I think this should work fine for now, but IMO we should see if it's
+possible to allow the driver to receive all events that a keyboard can send,
+since Windows application can assign pretty much any keycode to any mouse
+button (perhaps not the main ones though), and then we might see the same situation again.
 
-> > 
-> >> +		if (mem_cgroup_wb_domain(wb) == NULL) {
-> >> +			wb_stats_show(m, wb, &stats);
-> >> +			continue;
-> >> +		}
-> > 
-> > Can you explain what this logic is about? Is the cgwb_calc_thresh()
-> > thing not needed in this case? A comment might help for those less
-> > familiar with the implementation details.
-> If mem_cgroup_wb_domain(wb) is NULL, then it's bdi->wb, otherwise,
-> it's wb in cgroup. For bdi->wb, there is no need to do wb_tryget
-> and cgwb_calc_thresh. Will add some comment in next version.
-> > 
-> > BTW, I'm also wondering if something like the following is correct
-> > and/or roughly equivalent:
-> > 	
-> > 	list_for_each_*(wb, ...) {
-> > 		struct wb_stats stats = ...;
-> > 
-> > 		if (!wb_tryget(wb))
-> > 			continue;
-> > 
-> > 		collect_wb_stats(&stats, wb);
-> > 
-> > 		/*
-> > 		 * Extra wb_thresh magic. Drop rcu lock because ... . We
-> > 		 * can do so here because we have a ref.
-> > 		 */
-> > 		if (mem_cgroup_wb_domain(wb)) {
-> > 			rcu_read_unlock();
-> > 			stats.wb_thresh = min(stats.wb_thresh, cgwb_calc_thresh(wb));
-> > 			rcu_read_lock();
-> > 		}
-> > 
-> > 		wb_stats_show(m, wb, &stats)
-> > 		wb_put(wb);
-> > 	}
-> It's correct as wb_tryget to bdi->wb has no harm. I have considered
-> to do it in this way, I change my mind to do it in new way for
-> two reason:
-> 1. Put code handling wb in cgroup more tight which could be easier
-> to maintain.
-> 2. Rmove extra wb_tryget/wb_put for wb in bdi.
-> Would this make sense to you?
+I tried doing that on my system but the driver stopped working completely.
+---
+ drivers/hid/hid-logitech-dj.c | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
 
-Ok, well assuming it is correct the above logic is a bit more simple and
-readable to me. I think you'd just need to fill in the comment around
-the wb_thresh thing rather than i.e. having to explain we don't need to
-ref bdi->wb even though it doesn't seem to matter.
-
-I kind of feel the same on the wb_stats file thing below just because it
-seems more consistent and available if wb_stats eventually grows more
-wb-specific data.
-
-That said, this is subjective and not hugely important so I don't insist
-on either point. Maybe wait a bit and see if Jan or Tejun or somebody
-has any thoughts..? If nobody else expresses explicit preference then
-I'm good with it either way.
-
-Brian
-
-> > 
-> >> +
-> >> +		/*
-> >> +		 * cgwb_release will destroy wb->memcg_completions which
-> >> +		 * will be ued in cgwb_calc_thresh. Use wb_tryget to prevent
-> >> +		 * memcg_completions destruction from cgwb_release.
-> >> +		 */
-> >> +		if (!wb_tryget(wb))
-> >> +			continue;
-> >> +
-> >> +		rcu_read_unlock();
-> >> +		/* cgwb_calc_thresh may sleep in cgroup_rstat_flush */
-> >> +		stats.wb_thresh = min(stats.wb_thresh, cgwb_calc_thresh(wb));
-> >> +		wb_stats_show(m, wb, &stats);
-> >> +		rcu_read_lock();
-> >> +		wb_put(wb);
-> >> +	}
-> >> +	rcu_read_unlock();
-> >> +
-> >> +	return 0;
-> >> +}
-> >> +DEFINE_SHOW_ATTRIBUTE(cgwb_debug_stats);
-> >> +
-> >> +static void cgwb_debug_register(struct backing_dev_info *bdi)
-> >> +{
-> >> +	debugfs_create_file("wb_stats", 0444, bdi->debug_dir, bdi,
-> >> +			    &cgwb_debug_stats_fops);
-> >> +}
-> >> +
-> >>  static void bdi_collect_stats(struct backing_dev_info *bdi,
-> >>  			      struct wb_stats *stats)
-> >>  {
-> >> @@ -117,6 +202,8 @@ static void bdi_collect_stats(struct backing_dev_info *bdi,
-> >>  {
-> >>  	collect_wb_stats(stats, &bdi->wb);
-> >>  }
-> >> +
-> >> +static inline void cgwb_debug_register(struct backing_dev_info *bdi) { }
-> > 
-> > Could we just create the wb_stats file regardless of whether cgwb is
-> > enabled? Obviously theres only one wb in the !CGWB case and it's
-> > somewhat duplicative with the bdi stats file, but that seems harmless if
-> > the same code can be reused..? Maybe there's also a small argument for
-> > dropping the state info from the bdi stats file and moving it to
-> > wb_stats.In backing-dev.c, there are a lot "#ifdef CGWB .. #else .. #endif" to
-> avoid unneed extra cost when CGWB is not enabled.
-> I think it's better to avoid extra cost from wb_stats when CGWB is not
-> enabled. For now, we only save cpu cost to create and destroy wb_stats
-> and save memory cost to record debugfs file, we could save more in
-> future when wb_stats records more debug info.
-> Move state info from bdi stats to wb_stats make senses to me. The only
-> concern would be compatibility problem. I will add a new patch to this
-> to make this more noticeable and easier to revert.
-> Thanks a lot for review!
-> 
-> Kemeng
-> > 
-> > Brian
-> > 
-> >>  #endif
-> >>  
-> >>  static int bdi_debug_stats_show(struct seq_file *m, void *v)
-> >> @@ -182,6 +269,7 @@ static void bdi_debug_register(struct backing_dev_info *bdi, const char *name)
-> >>  
-> >>  	debugfs_create_file("stats", 0444, bdi->debug_dir, bdi,
-> >>  			    &bdi_debug_stats_fops);
-> >> +	cgwb_debug_register(bdi);
-> >>  }
-> >>  
-> >>  static void bdi_debug_unregister(struct backing_dev_info *bdi)
-> >> diff --git a/mm/page-writeback.c b/mm/page-writeback.c
-> >> index 0e20467367fe..3724c7525316 100644
-> >> --- a/mm/page-writeback.c
-> >> +++ b/mm/page-writeback.c
-> >> @@ -893,6 +893,25 @@ unsigned long wb_calc_thresh(struct bdi_writeback *wb, unsigned long thresh)
-> >>  	return __wb_calc_thresh(&gdtc, thresh);
-> >>  }
-> >>  
-> >> +unsigned long cgwb_calc_thresh(struct bdi_writeback *wb)
-> >> +{
-> >> +	struct dirty_throttle_control gdtc = { GDTC_INIT_NO_WB };
-> >> +	struct dirty_throttle_control mdtc = { MDTC_INIT(wb, &gdtc) };
-> >> +	unsigned long filepages, headroom, writeback;
-> >> +
-> >> +	gdtc.avail = global_dirtyable_memory();
-> >> +	gdtc.dirty = global_node_page_state(NR_FILE_DIRTY) +
-> >> +		     global_node_page_state(NR_WRITEBACK);
-> >> +
-> >> +	mem_cgroup_wb_stats(wb, &filepages, &headroom,
-> >> +			    &mdtc.dirty, &writeback);
-> >> +	mdtc.dirty += writeback;
-> >> +	mdtc_calc_avail(&mdtc, filepages, headroom);
-> >> +	domain_dirty_limits(&mdtc);
-> >> +
-> >> +	return __wb_calc_thresh(&mdtc, mdtc.thresh);
-> >> +}
-> >> +
-> >>  /*
-> >>   *                           setpoint - dirty 3
-> >>   *        f(dirty) := 1.0 + (----------------)
-> >> -- 
-> >> 2.30.0
-> >>
-> > 
-> > 
-> 
+diff --git a/drivers/hid/hid-logitech-dj.c b/drivers/hid/hid-logitech-dj.c
+index e6a8b6d8eab7..3c3c497b6b91 100644
+--- a/drivers/hid/hid-logitech-dj.c
++++ b/drivers/hid/hid-logitech-dj.c
+@@ -965,9 +965,7 @@ static void logi_hidpp_dev_conn_notif_equad(struct hid_device *hdev,
+ 		}
+ 		break;
+ 	case REPORT_TYPE_MOUSE:
+-		workitem->reports_supported |= STD_MOUSE | HIDPP;
+-		if (djrcv_dev->type == recvr_type_mouse_only)
+-			workitem->reports_supported |= MULTIMEDIA;
++		workitem->reports_supported |= STD_MOUSE | HIDPP | MULTIMEDIA;
+ 		break;
+ 	}
+ }
+-- 
+2.44.0
 
 
