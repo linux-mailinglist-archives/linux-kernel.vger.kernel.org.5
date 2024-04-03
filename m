@@ -1,115 +1,144 @@
-Return-Path: <linux-kernel+bounces-130601-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-130604-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D9734897A58
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 23:04:01 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2F6CE897A60
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 23:06:42 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 16CAD1C217EE
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 21:04:01 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 60EFD1C25A0A
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 21:06:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 50EE615664A;
-	Wed,  3 Apr 2024 21:03:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="dTFRA8wC"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8D6BA156657;
+	Wed,  3 Apr 2024 21:06:35 +0000 (UTC)
+Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 99A0614C5B3
-	for <linux-kernel@vger.kernel.org>; Wed,  3 Apr 2024 21:03:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 378E214C5B3
+	for <linux-kernel@vger.kernel.org>; Wed,  3 Apr 2024 21:06:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712178236; cv=none; b=sMIkrJnr5nzwilvoeU5BTljOcuDhl4rFftheSD7RTaM0q2NJdIraEp49cjDuVUY4QTK020sNkfVeXGHwjoVgi6Sfk6hnYYwDT8g8vLgUYBwg8KP9YWuiq+KXw0pWYmvVdUPLeqnEiSTKxdgYsRPaDzy2O5U3xKKme1+tUcO6des=
+	t=1712178395; cv=none; b=V+BxTTq4Ri1pEYtpo2g7c4rH/JrQymqxFYvWs5qDiKwxWUoRQa4NuOUQ/d//9z9mvfEqzUlRs8nnZBo3X8Wu5dWdmJg/o/j08wwAaf09YuBbDyuMVZeorPnQfmkS4s2WXa38UPfHyduIZl7PkrH89AedwdtISwpqiIi4Dq8XlF4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712178236; c=relaxed/simple;
-	bh=2nXvlcysOJppAiAzRe5dRfX+OiQFH1nMTizntZ0g8qI=;
+	s=arc-20240116; t=1712178395; c=relaxed/simple;
+	bh=bvE6+Ioe65Pvy3tTo3/DekL3m3PgUp+qr/wE3M2vlMU=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=XYmiPrvITkMdtLQkKk8Fmf49Z3gm5NiZTmOQEhWIELephdUIQ/SVsQQ2B7tfogovlGJr4h7Q08DesSG+IxAWUdnF/tMGBGfycdZe+vVmyYuI36bIkaSliW/12IglqDfmIkv0O2iCroklK3pecWtocAi0s/jW2/tcITpbZz5/yRQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=dTFRA8wC; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 804F1C43390;
-	Wed,  3 Apr 2024 21:03:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712178236;
-	bh=2nXvlcysOJppAiAzRe5dRfX+OiQFH1nMTizntZ0g8qI=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=dTFRA8wCT+yBFtsOhYovAhWVriVq2017qU3+2eJmvWk6YL1oi/9AWW8P89MUISr8H
-	 A1kdnXKnYYKHyTBAjgr7iSVqWRdI6/DJEJW3rapiJ4+lbHvCJTCc3/cRHla3dXQwOu
-	 DWNjih7q/G1rZiXNxpGIIlK3+iBmiHWtgsMLy1ZfVtPyfVlInPRcjjXWzaDrztrZw2
-	 V2FpkBzaAMXJPCTCaV7hx+5Ufj0YYI2DGX500uQ4xo4ujoxXtqkkWD0VZq6nQUAWoV
-	 xV4RISDoMkyDTqLFESk3zOqoGRLPXAwEIx0RffQYKGQ90IgFztfDoM2lOeBdbuDTko
-	 v6fFmaZmRRh7A==
-Date: Wed, 3 Apr 2024 18:03:52 -0300
-From: Arnaldo Carvalho de Melo <acme@kernel.org>
-To: Ian Rogers <irogers@google.com>
-Cc: Namhyung Kim <namhyung@kernel.org>,
-	Adrian Hunter <adrian.hunter@intel.com>,
-	Jiri Olsa <jolsa@kernel.org>,
-	Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 1/1] perf annotate: Initialize 'arch' variable not to
- trip some -Werror=maybe-uninitialized
-Message-ID: <Zg3EOP7ovDge_F-I@x1>
-References: <Zg1ywF7uRsfXYfYS@x1>
- <CAP-5=fUqtjxAsmdGrnkjhUTLHs-JvV10TtxyocpYDJK_+LYTiQ@mail.gmail.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=YZGBl58cStmwFw2KpeDRlMceVle334rnxphLiAwlVQjbK0bt6smoOzyhwlCBLpJ4sXb5FO+drOtVz3jmHxnTW6IN4MEYK+xGGoQ1soanX6XFztFJ3C+qD2DMzi+PoA5AG1bCMN4SpDZdgzboEVPSduP49rJYqz2rYHNf3XtELeU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+	(Exim 4.92)
+	(envelope-from <ukl@pengutronix.de>)
+	id 1rs7nv-0001NX-2i; Wed, 03 Apr 2024 23:05:55 +0200
+Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
+	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.94.2)
+	(envelope-from <ukl@pengutronix.de>)
+	id 1rs7nr-00AFDj-LI; Wed, 03 Apr 2024 23:05:51 +0200
+Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.96)
+	(envelope-from <ukl@pengutronix.de>)
+	id 1rs7nr-00EqVT-1m;
+	Wed, 03 Apr 2024 23:05:51 +0200
+Date: Wed, 3 Apr 2024 23:05:51 +0200
+From: Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+To: Mark Brown <broonie@kernel.org>
+Cc: Arnd Bergmann <arnd@kernel.org>, linux-kernel@vger.kernel.org, 
+	Neil Armstrong <neil.armstrong@linaro.org>, Kevin Hilman <khilman@baylibre.com>, 
+	Heiko Stuebner <heiko@sntech.de>, Andi Shyti <andi.shyti@kernel.org>, 
+	Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>, Arnd Bergmann <arnd@arndb.de>, 
+	Jerome Brunet <jbrunet@baylibre.com>, Martin Blumenstingl <martin.blumenstingl@googlemail.com>, 
+	Alim Akhtar <alim.akhtar@samsung.com>, Li Zetao <lizetao1@huawei.com>, 
+	Jonathan Cameron <Jonathan.Cameron@huawei.com>, Rob Herring <robh@kernel.org>, 
+	Yang Yingliang <yangyingliang@huawei.com>, Andy Shevchenko <andriy.shevchenko@linux.intel.com>, 
+	Luis de Arquer <luis.dearquer@inertim.com>, Tudor Ambarus <tudor.ambarus@linaro.org>, 
+	Sam Protsenko <semen.protsenko@linaro.org>, Peter Griffin <peter.griffin@linaro.org>, 
+	Jaewon Kim <jaewon02.kim@samsung.com>, linux-spi@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
+	linux-amlogic@lists.infradead.org, linux-rockchip@lists.infradead.org, 
+	linux-samsung-soc@vger.kernel.org
+Subject: Re: [PATCH 31/34] spi: remove incorrect of_match_ptr annotations
+Message-ID: <5f3qvhasho4mfnf6f7i6djak3ankje375mt4fzvv3gqrlj242o@zdk2ajvha6hx>
+References: <20240403080702.3509288-1-arnd@kernel.org>
+ <20240403080702.3509288-32-arnd@kernel.org>
+ <b4418ac1-10ba-4932-be6e-93282707024f@sirena.org.uk>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="j3dyffzs5mph63yw"
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAP-5=fUqtjxAsmdGrnkjhUTLHs-JvV10TtxyocpYDJK_+LYTiQ@mail.gmail.com>
+In-Reply-To: <b4418ac1-10ba-4932-be6e-93282707024f@sirena.org.uk>
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: ukl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 
-On Wed, Apr 03, 2024 at 09:01:56AM -0700, Ian Rogers wrote:
-> On Wed, Apr 3, 2024 at 8:16 AM Arnaldo Carvalho de Melo <acme@kernel.org> wrote:
-> >
-> > In some older distros the build is failing due to
-> > -Werror=maybe-uninitialized, in this case we know that this isn't the
-> > case because 'arch' gets initialized by evsel__get_arch(), so just init
-> > it to NULL to silence those cases.
-> >
-> > E.g.:
-> >
-> >     32    17.12 opensuse:15.5                 : FAIL gcc version 7.5.0 (SUSE Linux)
-> >         util/annotate.c: In function 'hist_entry__get_data_type':
-> >     util/annotate.c:2269:15: error: 'arch' may be used uninitialized in this function [-Werror=maybe-uninitialized]
-> >       struct arch *arch;
-> >                    ^~~~
-> >     cc1: all warnings being treated as errors
-> >
-> >       43     7.30 ubuntu:18.04-x-powerpc64el    : FAIL gcc version 7.5.0 (Ubuntu 7.5.0-3ubuntu1~18.04)
-> >     util/annotate.c: In function 'hist_entry__get_data_type':
-> >     util/annotate.c:2351:36: error: 'arch' may be used uninitialized in this function [-Werror=maybe-uninitialized]
-> >        if (map__dso(ms->map)->kernel && arch__is(arch, "x86") &&
-> >                                         ^~~~~~~~~~~~~~~~~~~~~
-> >     cc1: all warnings being treated as errors
-> >
-> > Cc: Adrian Hunter <adrian.hunter@intel.com>
-> > Cc: Ian Rogers <irogers@google.com>
-> > Cc: Jiri Olsa <jolsa@kernel.org>
-> > Cc: Namhyung Kim <namhyung@kernel.org>
-> > Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
-> 
-> This looks fine but I couldn't line up the errors with code in the
-> tree. I was curious why the "maybe-uninitialized" was failing. Perhaps
-> evsel__get_arch should set the out argument to NULL when an error
-> occurs. This fix is also good but may potentially need repeating for
-> other evsel__get_arch cases, so a fix in evsel__get_arch may be
-> preferable.
-> 
-> Reviewed-by: Ian Rogers <irogers@google.com>
 
-Yeah, your suggestion is better and I just tested, satisfies the
-compilers that were emitting this warning.
+--j3dyffzs5mph63yw
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-I stamped a:
+On Wed, Apr 03, 2024 at 10:56:58AM +0100, Mark Brown wrote:
+> On Wed, Apr 03, 2024 at 10:06:49AM +0200, Arnd Bergmann wrote:
+>=20
+> > These appear to all be copied from the same original driver, so fix the=
+m at the
+> > same time by removing the unnecessary of_match_ptr() annotation. As far=
+ as I
+> > can tell, all these drivers are only actually used on configurations th=
+at
+> > have CONFIG_OF enabled.
+>=20
+> Why are we not fixing of_match_ptr() here, or at least adding the ifdefs
+> in case someone does end up wanting to run without OF?
 
-Suggested-by: Ian Rogers <irogers@google.com>
+Fixing of_match_ptr =3D
 
-and kept your Reviewed-by, ok?
+diff --git a/include/linux/of.h b/include/linux/of.h
+index a0bedd038a05..d980bccffda0 100644
+--- a/include/linux/of.h
++++ b/include/linux/of.h
+@@ -890,7 +890,7 @@ static inline const void *of_device_get_match_data(cons=
+t struct device *dev)
+ 	return NULL;
+ }
+=20
+-#define of_match_ptr(_ptr)	NULL
++#define of_match_ptr(_ptr)	(0 ? (_ptr) : NULL)
+ #define of_match_node(_matches, _node)	NULL
+ #endif /* CONFIG_OF */
+=20
+?
 
-- Arnaldo
+Assuming this helps, I agree this would be the better fix.
+
+Best regards
+Uwe
+
+--=20
+Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
+Industrial Linux Solutions                 | https://www.pengutronix.de/ |
+
+--j3dyffzs5mph63yw
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEP4GsaTp6HlmJrf7Tj4D7WH0S/k4FAmYNxK4ACgkQj4D7WH0S
+/k4RIQf+N9Iy5vdLQiMUAN6AC+cOYMVtNTWEXHv3Iu8OMI4BbFULD/p4hJYx4A/Y
++4trHVq0G7vFcqwJIyZ8XD7U0NnRLweSBCiBdm6lh/R7j8pyI32zbpvrJb8ge/Wm
+LTfO5dGPLQMf1kIpjRlpYniRKxzxOTWIsnKpr801JczfdZDvZ236nLgQNNFTtYNP
+4X9v+IjyFHuXxEjYvIZ52EsIgHnfGsNT7RNmncSBQSxLRwliB6gAO/Bzo1ulw1xS
+iSIatTBxMMTV5D3fDRS1Ve4g7VIjI0LAO+I784HK+wg9jWI4tEwQz2eO5GZXxDXp
+WbiT8oxPt4xi8tsgDAu681Ac2zeUOg==
+=qPPD
+-----END PGP SIGNATURE-----
+
+--j3dyffzs5mph63yw--
 
