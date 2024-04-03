@@ -1,57 +1,63 @@
-Return-Path: <linux-kernel+bounces-130283-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-130284-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 00529897660
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 19:22:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 4A6B3897662
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 19:22:30 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 95B541F2B303
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 17:22:01 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C94EE1F231FA
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 17:22:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2859215689E;
-	Wed,  3 Apr 2024 17:17:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8B33E15698A;
+	Wed,  3 Apr 2024 17:17:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="FJLQwpmp"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="eutkAidc"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6578F15687D;
-	Wed,  3 Apr 2024 17:17:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C984E153566;
+	Wed,  3 Apr 2024 17:17:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712164633; cv=none; b=ncllqyiG+99+6gB06N7FhsY8vwCyj9N71V5/n+R1XVYGE76j7HP2vumAgsYsoCVDuOHM/o8JLizvwG872WdH/Gsuko2dwT5ftO3ass3OfMQQNIMuS6S7xu9T+jZ+CIUikWX6pc4qvUX/DQeG+3icA++FZBzrTave/CzZrk722t0=
+	t=1712164637; cv=none; b=EuRmb8cRfcLE1yi6pUnR0NRJ+uu7GJPpTA48h85C3C2AtpFeB8MULlLdQ1FNe1rVs69gjMIRNbIOF6Hov0svFw8ixd1xL+4SOJ5ox0gEOyiD6NoadYpROCi5QLR3BQafX8UVH24iBXQdYja1Nc2cO/BYmDKOxSIeIU8WLNEuKrc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712164633; c=relaxed/simple;
-	bh=H7GnAJyR/w/vFwtUJetaJZsFTHxXNWQ303r7nG7XEq4=;
+	s=arc-20240116; t=1712164637; c=relaxed/simple;
+	bh=329GKwQ6agUxA4G9yPDwfa5fBNYGfiAyM5KcCEJ2qdk=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=UShuEP2/crxOh1zpmaeJ4VmG5ks2Q66FthFfQxjkjP4RwKivMBwFB/666C6B+tkNvv9/3yN6ImeD9wPg6MNl3TKu1AhtZTSYTtrV04iaqhw+KLkKQ/r8LQhN+UKQQ3P6KGYkNwlkPhglDHggQoWkac1eNcv9Rk4+9nF18ssDGVc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=FJLQwpmp; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 26651C433C7;
-	Wed,  3 Apr 2024 17:17:12 +0000 (UTC)
+	 MIME-Version; b=DdJ30YbvfGhlRksJtWJ6SRFpXIG1OSLVQaIMC0G1QSFK44766EnsKGCkAyN0ytTwjBO4Sqf22OAQHiRJHfqOnMtiVIs3J8oPGc7+YNz8VNI796fgh/NKIESguKM+kdjetJR8+4Z1MMEGWeGubXnLBvSblMUsGHOzpPvBR1PnI3E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=eutkAidc; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E1BACC433C7;
+	Wed,  3 Apr 2024 17:17:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712164633;
-	bh=H7GnAJyR/w/vFwtUJetaJZsFTHxXNWQ303r7nG7XEq4=;
+	s=k20201202; t=1712164637;
+	bh=329GKwQ6agUxA4G9yPDwfa5fBNYGfiAyM5KcCEJ2qdk=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=FJLQwpmpouhPDQthTD5RbJ0GL87498E26Z82M7P9OBGNXmtjOzz9UlnLDCCoUAnA6
-	 SnXE4sem4/wJyhM/9xJG3SOUW/9oDWxgj2mvGn3neFihUybZA5BfrFj5yNIgUilNwg
-	 hygzuW4Zts8Xgy49kCsjO90lZH2ZtaHNn41Wq0RCu3PnrA8yGwas76/M6mw2Y4Afo2
-	 D5baLYFrrTc0LICK7hT5816qF4g3PfH+56sr1EXOb/9avON+7hG2O8DfPKcdTEp6qQ
-	 mhRs6wwTGQ0WSCd0LF2NPeAcPjjmUd0+ixY7vjLhIsbjH0AIMaqZ/uc2ykIhaR8Fyy
-	 V6LBHsNqlIyRw==
+	b=eutkAidcp2UCGvpk++23fNk30WbH9VbOQ8zdjaTjY4WzrdHj1qFdCNZY6CUY5V82Z
+	 3Mzm2r23KPTMtusQcpbvNQVjdqPtlsyAT86eHu7VRvUEADMpPqinllMDgka9TdnBXl
+	 MxrfgjuTPSACxs46LGXgV75+7ppFdZ+/VcOvo6i6DUVx4nuzPZvlcYCBIO2zctP3XB
+	 5uXNCA2MB/wbFEpiXhcrZefp868XBcrkmAVyvR9YfkbxHwIRBdz0f58kwHmqb8CPwB
+	 ebKTIiVh1YSg9yxfyNdijggaw4EWVG1kQiIt2+K0A8w5bfc32HEj1oKbUmcIUUYKSA
+	 CMtwhDSR535nA==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Michael Grzeschik <m.grzeschik@pengutronix.de>,
+Cc: Abhishek Pandit-Subedi <abhishekpandit@chromium.org>,
+	Neil Armstrong <neil.armstrong@linaro.org>,
+	Prashant Malani <pmalani@chromium.org>,
+	Heikki Krogerus <heikki.krogerus@linux.intel.com>,
 	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
 	Sasha Levin <sashal@kernel.org>,
-	laurent.pinchart@ideasonboard.com,
-	dan.scally@ideasonboard.com,
+	lk@c--e.de,
+	bleung@chromium.org,
+	jthies@google.com,
+	saranya.gopal@intel.com,
+	dmitry.baryshkov@linaro.org,
 	linux-usb@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.8 09/28] usb: gadget: uvc: mark incomplete frames with UVC_STREAM_ERR
-Date: Wed,  3 Apr 2024 13:16:11 -0400
-Message-ID: <20240403171656.335224-9-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 6.8 10/28] usb: typec: ucsi: Limit read size on v1.2
+Date: Wed,  3 Apr 2024 13:16:12 -0400
+Message-ID: <20240403171656.335224-10-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240403171656.335224-1-sashal@kernel.org>
 References: <20240403171656.335224-1-sashal@kernel.org>
@@ -66,37 +72,107 @@ X-Patchwork-Hint: Ignore
 X-stable-base: Linux 6.8.3
 Content-Transfer-Encoding: 8bit
 
-From: Michael Grzeschik <m.grzeschik@pengutronix.de>
+From: Abhishek Pandit-Subedi <abhishekpandit@chromium.org>
 
-[ Upstream commit 2a3b7af120477d0571b815ccb8600cafd5ebf02f ]
+[ Upstream commit b3db266fb031fba88c423d4bb8983a73a3db6527 ]
 
-If an frame was transmitted incomplete to the host, we set the
-UVC_STREAM_ERR bit in the header for the last request that is going
-to be queued. This way the host will know that it should drop the
-frame instead of trying to display the corrupted content.
+Between UCSI 1.2 and UCSI 2.0, the size of the MESSAGE_IN region was
+increased from 16 to 256. In order to avoid overflowing reads for older
+systems, add a mechanism to use the read UCSI version to truncate read
+sizes on UCSI v1.2.
 
-Signed-off-by: Michael Grzeschik <m.grzeschik@pengutronix.de>
-Link: https://lore.kernel.org/r/20240214-uvc-error-tag-v1-2-37659a3877fe@pengutronix.de
+Tested-by: Neil Armstrong <neil.armstrong@linaro.org>
+Reviewed-by: Prashant Malani <pmalani@chromium.org>
+Reviewed-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
+Signed-off-by: Abhishek Pandit-Subedi <abhishekpandit@chromium.org>
+Link: https://lore.kernel.org/r/20240209143723.v5.1.Iacf5570a66b82b73ef03daa6557e2fc0db10266a@changeid
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/usb/gadget/function/uvc_video.c | 3 +++
- 1 file changed, 3 insertions(+)
+ drivers/usb/typec/ucsi/ucsi.c | 26 ++++++++++++++++++++++++--
+ drivers/usb/typec/ucsi/ucsi.h | 11 +++++++++++
+ 2 files changed, 35 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/usb/gadget/function/uvc_video.c b/drivers/usb/gadget/function/uvc_video.c
-index dbdd9033c1268..53e4cd81ea446 100644
---- a/drivers/usb/gadget/function/uvc_video.c
-+++ b/drivers/usb/gadget/function/uvc_video.c
-@@ -35,6 +35,9 @@ uvc_video_encode_header(struct uvc_video *video, struct uvc_buffer *buf,
+diff --git a/drivers/usb/typec/ucsi/ucsi.c b/drivers/usb/typec/ucsi/ucsi.c
+index 14f5a7bfae2e9..7c5cecdd93d66 100644
+--- a/drivers/usb/typec/ucsi/ucsi.c
++++ b/drivers/usb/typec/ucsi/ucsi.c
+@@ -36,6 +36,19 @@
+  */
+ #define UCSI_SWAP_TIMEOUT_MS	5000
  
- 	data[1] = UVC_STREAM_EOH | video->fid;
- 
-+	if (video->queue.flags & UVC_QUEUE_DROP_INCOMPLETE)
-+		data[1] |= UVC_STREAM_ERR;
++static int ucsi_read_message_in(struct ucsi *ucsi, void *buf,
++					  size_t buf_size)
++{
++	/*
++	 * Below UCSI 2.0, MESSAGE_IN was limited to 16 bytes. Truncate the
++	 * reads here.
++	 */
++	if (ucsi->version <= UCSI_VERSION_1_2)
++		buf_size = clamp(buf_size, 0, 16);
 +
- 	if (video->queue.buf_used == 0 && ts.tv_sec) {
- 		/* dwClockFrequency is 48 MHz */
- 		u32 pts = ((u64)ts.tv_sec * USEC_PER_SEC + ts.tv_nsec / NSEC_PER_USEC) * 48;
++	return ucsi->ops->read(ucsi, UCSI_MESSAGE_IN, buf, buf_size);
++}
++
+ static int ucsi_acknowledge_command(struct ucsi *ucsi)
+ {
+ 	u64 ctrl;
+@@ -72,7 +85,7 @@ static int ucsi_read_error(struct ucsi *ucsi)
+ 	if (ret < 0)
+ 		return ret;
+ 
+-	ret = ucsi->ops->read(ucsi, UCSI_MESSAGE_IN, &error, sizeof(error));
++	ret = ucsi_read_message_in(ucsi, &error, sizeof(error));
+ 	if (ret)
+ 		return ret;
+ 
+@@ -170,7 +183,7 @@ int ucsi_send_command(struct ucsi *ucsi, u64 command,
+ 	length = ret;
+ 
+ 	if (data) {
+-		ret = ucsi->ops->read(ucsi, UCSI_MESSAGE_IN, data, size);
++		ret = ucsi_read_message_in(ucsi, data, size);
+ 		if (ret)
+ 			goto out;
+ 	}
+@@ -1558,6 +1571,15 @@ int ucsi_register(struct ucsi *ucsi)
+ 	if (!ucsi->version)
+ 		return -ENODEV;
+ 
++	/*
++	 * Version format is JJ.M.N (JJ = Major version, M = Minor version,
++	 * N = sub-minor version).
++	 */
++	dev_dbg(ucsi->dev, "Registered UCSI interface with version %x.%x.%x",
++		UCSI_BCD_GET_MAJOR(ucsi->version),
++		UCSI_BCD_GET_MINOR(ucsi->version),
++		UCSI_BCD_GET_SUBMINOR(ucsi->version));
++
+ 	queue_delayed_work(system_long_wq, &ucsi->work, 0);
+ 
+ 	ucsi_debugfs_register(ucsi);
+diff --git a/drivers/usb/typec/ucsi/ucsi.h b/drivers/usb/typec/ucsi/ucsi.h
+index 6478016d5cb8b..bec920fa6b8ae 100644
+--- a/drivers/usb/typec/ucsi/ucsi.h
++++ b/drivers/usb/typec/ucsi/ucsi.h
+@@ -23,6 +23,17 @@ struct dentry;
+ #define UCSI_CONTROL			8
+ #define UCSI_MESSAGE_IN			16
+ #define UCSI_MESSAGE_OUT		32
++#define UCSIv2_MESSAGE_OUT		272
++
++/* UCSI versions */
++#define UCSI_VERSION_1_2	0x0120
++#define UCSI_VERSION_2_0	0x0200
++#define UCSI_VERSION_2_1	0x0210
++#define UCSI_VERSION_3_0	0x0300
++
++#define UCSI_BCD_GET_MAJOR(_v_)		(((_v_) >> 8) & 0xFF)
++#define UCSI_BCD_GET_MINOR(_v_)		(((_v_) >> 4) & 0x0F)
++#define UCSI_BCD_GET_SUBMINOR(_v_)	((_v_) & 0x0F)
+ 
+ /* Command Status and Connector Change Indication (CCI) bits */
+ #define UCSI_CCI_CONNECTOR(_c_)		(((_c_) & GENMASK(7, 1)) >> 1)
 -- 
 2.43.0
 
