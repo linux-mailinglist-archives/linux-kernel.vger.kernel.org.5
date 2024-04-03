@@ -1,128 +1,127 @@
-Return-Path: <linux-kernel+bounces-130134-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-130135-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id AF34289747C
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 17:51:29 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6211089747F
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 17:51:47 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 653751F23E76
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 15:51:29 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 115D5293056
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 15:51:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 63D3814B063;
-	Wed,  3 Apr 2024 15:50:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2FE6314BF97;
+	Wed,  3 Apr 2024 15:50:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="F8i07t1U"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b="dz2if+mR";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="IGRVSDj8"
+Received: from fout3-smtp.messagingengine.com (fout3-smtp.messagingengine.com [103.168.172.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A474914A613;
-	Wed,  3 Apr 2024 15:50:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F033B146A96;
+	Wed,  3 Apr 2024 15:50:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.146
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712159405; cv=none; b=EJpdjY/tIOpBlCdx+I+YiaMtgPBwOdgMs/CzZ9V+y+B/tFMXp7UChrmDI/e/kPiTZ1iVBqzU1TZ+oEAPlOKJEt+GmwE5QZ1564FyLlsExbZuxwxWoGQARHnMtvySoeTLo78pZMdQ4eH6c3VCNULFJsjFXSWD2349qnFKPb225io=
+	t=1712159448; cv=none; b=pFstUCat2rVlWskVtLDDnMnlXywcubx58LmvKOFfJIU7KUs1VLJijGI14DddojQrwp+urZWrRqPhvW6gaH09NzU2JSF327aqygYG8cSJiJ4/9PanhUMddXTgoz2hMSRHNmrBs8RAT3OosviIPoK/yPRaEyEZTcJHXVLhrIGgjSA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712159405; c=relaxed/simple;
-	bh=BWxRrDahcyakEgkrjYxx+bwOVBn1U5//7v9wcd/ridE=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ZEXOLibRGIV50IFC1Wjdr908kJvff4X+ziCzWLYJ7kt23/kfEVPoB88M1OrAS0PUa1DDJssXgS8TPNa6T1eJ6nlLAFCpqoPjOigQaKCxsBV/S/IvY3SygDSmX82HB7NW1umi+d+iHTzdPFFcKo6GqFYFPDj9fOQoJ3jVVs94JX0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=F8i07t1U; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A3A27C433C7;
-	Wed,  3 Apr 2024 15:50:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712159405;
-	bh=BWxRrDahcyakEgkrjYxx+bwOVBn1U5//7v9wcd/ridE=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=F8i07t1UHZui+a3olIR/mqrmGLOhSlRpBtUA0cMe5NvJLOWACdgP3hXtT7JHDG07E
-	 4qCpc72mDSOLXJoLPPW3Q9/4gFQHfWokCA7o9PVGH4Y/2t8f8oBGkaPKLCiGAif/C+
-	 yloVJ6TOBBA1yqRVYQXLgRhf239NusTMJdnTDlfA6bPk2MRcMopyTllUDjLDFNRCuW
-	 tJkOy6xKb4evwBWSyCoeZP53oosFyplLVs5TEsjXpdqjITVOBNxSU7LZ3VZtRHgXx4
-	 eM/3npWeopey58J0lhVOaSW5Gykz0n3uMGPHDHrbG//0e/T03B6NYEOoUKrIKMuNjh
-	 /z2kysBinh2DA==
-Date: Wed, 3 Apr 2024 16:50:00 +0100
-From: Mark Brown <broonie@kernel.org>
-To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc: linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org,
-	Daniel Mack <daniel@zonque.org>,
-	Haojian Zhuang <haojian.zhuang@gmail.com>,
-	Robert Jarzmik <robert.jarzmik@free.fr>,
-	Russell King <linux@armlinux.org.uk>, Arnd Bergmann <arnd@arndb.de>
-Subject: Re: (subset) [PATCH v2 0/9] spi: pxa2xx: Drop linux/spi/pxa2xx_spi.h
-Message-ID: <48793ea5-92ca-4529-bad0-35d8c4e3f0c8@sirena.org.uk>
-References: <20240327193138.2385910-1-andriy.shevchenko@linux.intel.com>
- <171167575036.187521.17547262230962160149.b4-ty@kernel.org>
- <Zg04cWhT_Dl6AUik@smile.fi.intel.com>
- <b7ac20d0-ca45-4e65-92ff-ddf84da6645a@sirena.org.uk>
- <Zg1cAHEkhIf2vpwJ@smile.fi.intel.com>
- <Zg1clCuOwkCNzSgy@smile.fi.intel.com>
- <0af775e1-f5f7-4ad4-b336-78834a9e0342@sirena.org.uk>
- <Zg1qmlX78lQGLC3B@smile.fi.intel.com>
+	s=arc-20240116; t=1712159448; c=relaxed/simple;
+	bh=uFr/skVLhS1k3c7q8qe9cHlRpUnBT4639sAJYyygcq4=;
+	h=MIME-Version:Message-Id:In-Reply-To:References:Date:From:To:Cc:
+	 Subject:Content-Type; b=Pz2ncl+n+iGsOacVJQlhkxovTp23PKTyUW0SnFkNEGCFYd7Y6+mq0seEtqM+PNi80huqj8tFXaqp6v2Vv6NWPICsno9ZhPHbnMXRy36VAKBrxUloVqmpuUV6B/QhyFmtLH4y3ZsJ7yuOdrScAfTGOQ7GfpEXVme4Rmw9fUqUMh0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de; spf=pass smtp.mailfrom=arndb.de; dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b=dz2if+mR; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=IGRVSDj8; arc=none smtp.client-ip=103.168.172.146
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arndb.de
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+	by mailfout.nyi.internal (Postfix) with ESMTP id D84F11380124;
+	Wed,  3 Apr 2024 11:50:44 -0400 (EDT)
+Received: from imap51 ([10.202.2.101])
+  by compute5.internal (MEProxy); Wed, 03 Apr 2024 11:50:44 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
+	:cc:content-type:content-type:date:date:from:from:in-reply-to
+	:in-reply-to:message-id:mime-version:references:reply-to:subject
+	:subject:to:to; s=fm1; t=1712159444; x=1712245844; bh=TryBBe0l7o
+	sJOQgOLFDSpuO7ArwSuBY7uBCGJfdpPe8=; b=dz2if+mR6qDpvZmiU5S+DNAa2E
+	9p5epSWBU7zbZfknkQPs08hcESu4Gv9MqRd00qOtdVjirHz4s9xJ8Yr3zXCZQ+go
+	LPMCEJd5doBc+/5ayEGCmmhHcy7R9dYrZmEx6fBDzlxRBbJDaJspQaF/jrjpt8Je
+	yWDmUwonarp/cQjcZvAdQ/jVl0R5ibzyX/AD7+tz8OGziINnyJbMEWOU7P7dZmTa
+	2rniPxCX1KS5FkzJMVOVPQW2SFoBpkldeqAiWWJpQOdgB8plSzDJO0TsZa+YdCND
+	i8YRHB4NRcSFkfqF2xSvW8L4AkGPwTzn7AYsmgOlCwSdJjQOQfNlTcWVd8NA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-type:content-type:date:date
+	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+	:message-id:mime-version:references:reply-to:subject:subject:to
+	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+	fm2; t=1712159444; x=1712245844; bh=TryBBe0l7osJOQgOLFDSpuO7ArwS
+	uBY7uBCGJfdpPe8=; b=IGRVSDj8ZsWakqdS+p6lpJDs4SrZKYVQq2C2dEVyLKYi
+	GQBWWZQ3XgoPkl9hNCbR+yFHRbTHHaE3oWCL5ap1LmsOnBIcg3H/evxM7Q+bzzhw
+	dy6DAIc8l4VAcwKkVtt1RcLkCQ3uittAA6yuozKxoMdF8wHs+egpDr6u7RA9TPfR
+	AJ0axSfgr7g2uF3iuVJpuGJWAMMlLNu47WSQSZiATpCgbjMdc6ilshBONl5tbO3O
+	Xp2cTjkx8NBRTcYBqGpoWspYVsP624pqeMh8yku7qjj2ayJFVSLtn63b2/ka645g
+	hXwh1HGeRPSxOMs5HSYpUVJL3i7QfxwnhGM6YhVI/g==
+X-ME-Sender: <xms:03oNZucDDYsbhlfq3f5AZwMd6HAECWSU-uZlLsZwr-KSXxlAonsdHQ>
+    <xme:03oNZoNP9hjENGBYUVLgVvEyIepQ3_i_-PbYG-0ZIUdao65Rg412UjBaGsj6CuIap
+    F9Gn_rP9ShOfECJIAk>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrudefiedghedtucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepofgfggfkjghffffhvfevufgtsehttdertderredtnecuhfhrohhmpedftehr
+    nhguuceuvghrghhmrghnnhdfuceorghrnhgusegrrhhnuggsrdguvgeqnecuggftrfgrth
+    htvghrnhepffehueegteeihfegtefhjefgtdeugfegjeelheejueethfefgeeghfektdek
+    teffnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomheprg
+    hrnhgusegrrhhnuggsrdguvg
+X-ME-Proxy: <xmx:03oNZvjkc8pffHKULAjFk0l6-vE6BzsImrBCx5DmkH_Ld-SfwCzT3Q>
+    <xmx:03oNZr-5krwo-MBzZBQXjjNtuurVpw8ooTXzQLr7Ty9wvWnDjrya8g>
+    <xmx:03oNZqt0sjd-QsTE-N3kPK7QYE3OAIvDZuU6nysr0zhAe8ckiXlNVQ>
+    <xmx:03oNZiHrV2TRQe1GQYZbfJHI4GFoRQjmIrnLhUEaVAtathLRF4nLGg>
+    <xmx:1HoNZoD7RUebSGBCaH1THA-nrf9r1iPhS8VM8LzX1bxRhwz4jnZMxITt>
+Feedback-ID: i56a14606:Fastmail
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+	id 4CB7AB6008D; Wed,  3 Apr 2024 11:50:43 -0400 (EDT)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.11.0-alpha0-333-gbfea15422e-fm-20240327.001-gbfea1542
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="cPjXK7O9KNOc9UcN"
-Content-Disposition: inline
-In-Reply-To: <Zg1qmlX78lQGLC3B@smile.fi.intel.com>
-X-Cookie: Knowledge is power.
+Message-Id: <ac96323b-80f7-43c0-b99e-b7772eb26802@app.fastmail.com>
+In-Reply-To: <dd7977b9-bdd2-f36f-36bd-a383a2588f6e@amd.com>
+References: <20240403080702.3509288-1-arnd@kernel.org>
+ <20240403080702.3509288-25-arnd@kernel.org>
+ <dd7977b9-bdd2-f36f-36bd-a383a2588f6e@amd.com>
+Date: Wed, 03 Apr 2024 17:50:23 +0200
+From: "Arnd Bergmann" <arnd@arndb.de>
+To: "Tom Lendacky" <thomas.lendacky@amd.com>,
+ "Arnd Bergmann" <arnd@kernel.org>, linux-kernel@vger.kernel.org,
+ "John Allen" <john.allen@amd.com>,
+ "Herbert Xu" <herbert@gondor.apana.org.au>,
+ "David S . Miller" <davem@davemloft.net>
+Cc: =?UTF-8?Q?Uwe_Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>,
+ linux-crypto@vger.kernel.org
+Subject: Re: [PATCH 24/34] crypto: ccp - drop platform ifdef checks
+Content-Type: text/plain
 
+On Wed, Apr 3, 2024, at 17:17, Tom Lendacky wrote:
+> On 4/3/24 03:06, Arnd Bergmann wrote:
+>> From: Arnd Bergmann <arnd@arndb.de>
+>> 
+>> When both ACPI and OF are disabled, the dev_vdata variable is unused:
+>> 
+>> drivers/crypto/ccp/sp-platform.c:33:34: error: unused variable 'dev_vdata' [-Werror,-Wunused-const-variable]
+>> 
+>> This is not a useful configuration, and there is not much point in saving
+>> a few bytes when only one of the two is enabled, so just remove all
+>> these ifdef checks and rely on of_match_node() and acpi_match_device()
+>> returning NULL when these subsystems are disabled.
+>> 
+>> Fixes: 6c5063434098 ("crypto: ccp - Add ACPI support")
+>> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+>
+> Would using __maybe_unused on dev_vdata be the safer, easier choice?
 
---cPjXK7O9KNOc9UcN
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+It's a simpler change, but leaves the extra complexity that
+is not needed here.
 
-On Wed, Apr 03, 2024 at 05:41:30PM +0300, Andy Shevchenko wrote:
-
-> Linus was long time ago against board files. Yet, we have a few old
-> (kinda supported) boards left in the tree. The conversion makes the
-> driver be prepared for the DT conversion when it happens. From maintenance
-> perspective my patch reduced the code under the maintenance, which reduces
-> time spent by both contributors and maintainers on this.
-
-> AFAIU all what you are moaning about is type checking. Okay, I got
-
-The type checking is part of it, but it's more a general taste thing
-with using swnodes like this.  You've not actually removed the board
-file and it's hard to get enthusiastic about the change to the board
-file that results, or to see this as a substantial step towards DT
-conversion for the platform given the trivialness of the single
-property here.  As a general thing I don't want to encourage people to
-start randomly converting things to swnode rather than to DT.
-
-> it, but we have a lot of other places with similar approach done,
-> e.g. GPIO_LOOKUP*() tables that basically gives something unconnected to the
-> driver without any platform data being involved and you seems to be fine with
-> that:
-
-> $ git log --oneline --no-merges --grep 'Mark Brown' -- arch/ | grep 'GPIO desc'
-
-> I randomly took this 366f36e2a ("ASoC: wm1250-ev1: Convert to GPIO descriptors").
-
-> Can you tell how it is different to my proposal?
-
-The main difference with the GPIO lookup tables is that they are
-structured data specifically for GPIOs rather than the general purpose
-free for all we have with swnode.
-
---cPjXK7O9KNOc9UcN
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmYNeqgACgkQJNaLcl1U
-h9DNbgf+MWwNssTaQ2FgNgITAk94TuannBgmO/VZFj7P4CgXxWu8/jM4Zns26MZ6
-H+Z8pBbw/kQYWX7sPqZP1Ao1bFJx1KQdUMIv3wjkNWfF2jVNIoFUx1KjfxVlyYa8
-KhY+d1Ru4cK0f5yYiuNDDycMS16nizbB2/5OMwwIgthKjs3mf7N3gU/j0juy6hLA
-+dcXGxxbJ6HyqROJuXEh2ogeYrybR6tAPmrQe9QFhG67Xdr6JpNxaqb5L8VJCivh
-CTPo1B8HZCeUBDytbUsfbafs2Ry6JEMAfTg7iCM8VeJkOCEjYuZ3JfJlwulO1Gh2
-vfV7nxaal/5Z4bxL2czV7o0s8FZ10g==
-=h/S+
------END PGP SIGNATURE-----
-
---cPjXK7O9KNOc9UcN--
+      Arnd
 
