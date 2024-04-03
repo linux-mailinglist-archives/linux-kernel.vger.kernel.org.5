@@ -1,62 +1,62 @@
-Return-Path: <linux-kernel+bounces-128916-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-128917-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 40CD08961D8
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 03:17:07 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5AE9D8961DA
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 03:17:17 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9C83BB23B81
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 01:17:04 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 10F5528A124
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 01:17:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D614011190;
-	Wed,  3 Apr 2024 01:16:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DCAE91B27D;
+	Wed,  3 Apr 2024 01:16:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="TJPEE5Q8"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="TwxUUJnk"
 Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.16])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D83CC175AB
-	for <linux-kernel@vger.kernel.org>; Wed,  3 Apr 2024 01:16:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2C86F182A0
+	for <linux-kernel@vger.kernel.org>; Wed,  3 Apr 2024 01:16:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.16
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712106993; cv=none; b=iFPXsak+sWRp1sdKWMB0qUI6xlEMvfkdOP/a+qIRmBT9sv2x/W2K/l18Qli5vD2+15i2iUQdc66VLqbkfTD//Hi2TL+xPpvWghhEKMRLob//dPZM9rwqJ97VxUyVBUFpfWPUvd3H+zanTf9VqSlZUUkwONlE3T3nQ9MqK2LrBcA=
+	t=1712106997; cv=none; b=iRaf2v3wv9HaQuHM7xyMr2LFx2csZg6F18UWFYiqQe0NoHcWwaAEsSxGrMj9yxAzFkx5FO866z8AdzaKRVBDLVT0nDDDmKqAzn1wyfXfoDWBTNgdTtxnihyCrvb50e90Dd7v9IfivF74LI/6b9rkABXtpCxt3vqzFXMaO2b07g4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712106993; c=relaxed/simple;
-	bh=bXMfbUrglKi+dnCSypeOisTs+5d9InL97S+y6S9p+Hc=;
+	s=arc-20240116; t=1712106997; c=relaxed/simple;
+	bh=dK0fNyZd1WIr3VTmct6pbCe1k++B9SVI6sp+uonMwzY=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=Sx/8FrDDn3trfhvO7MJwTH3CiOCEN3ACvQCDs+gHOYyGPPshzP85RyAgTFOqvdM46UO22PLXdcDpEwx6PuRfrtQJCr6vCnm/YzfeRfPD9ymMuiobhRpHo2ga1ieoUHCXoBCWLm69VsNXX4b+y3HGl5vaVnc354A/9xdGUebgDBU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=TJPEE5Q8; arc=none smtp.client-ip=198.175.65.16
+	 MIME-Version; b=t4aA0syCudWANnTcaFziYy4LlclCV+VrECjWoFc0rAxIH3qnTJc90kzsXTltGMOIzi2iRFONOXJB8/7ghpneosjixqzyxcx1u5uOjYKU0ii4C/A/xp7jDzoCeuM5tKCdF5Id0cJ3Of0jh12gZ00J2WznmLJBTuaIPsOURYuhBBY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=TwxUUJnk; arc=none smtp.client-ip=198.175.65.16
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1712106991; x=1743642991;
+  t=1712106994; x=1743642994;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=bXMfbUrglKi+dnCSypeOisTs+5d9InL97S+y6S9p+Hc=;
-  b=TJPEE5Q8oRIwI3+T/nUnWsix/f8AqQOKrDdC94h6dwHHXAPvqdx/i829
-   +ShSmIkg6Om3bFkIAD2nV7smb9OUc/vOwtfUp/hAX8kJeuOcbzzOJCErN
-   pC7Kz8uxqBtdgquPphTCJi1GSaF5Lnm38qdlZ4Z9UYV1y00vzh7kU3bCD
-   0MbbFEBVblYihoXoV6/K9Id1IH2lVdRIk4c2at1y28ggBXV2ugy73P5+6
-   iYx1Bs2x0UMa2TrAs0Nv5m9Y4NS6KaZeCdGYgsj9vbUels37h6tjvZ7wy
-   M8DwvHgz+uNjtX3G+NkBkCjTj8d8YVwj5m1yJuCz/v/zmw3aA/361g/rE
+  bh=dK0fNyZd1WIr3VTmct6pbCe1k++B9SVI6sp+uonMwzY=;
+  b=TwxUUJnkVBAonbmIRafeMusi6oByZiNxbcOlLAyzHTVIA+Gw8yt1++Sw
+   YFWMUFxqN+ZKNTN2oNtKyD2LnjAUbVJAQhHmJ+xg8XOO1mj2FMjqpsFcK
+   BtgWBvPVwTkMQbIa1jAF0sUAoLBGEzjntikGGR4SQsdpYAMWyeRrTBZYs
+   LDbeXtX+9EzjYMWW9F/uHNk1g8AEXz7QW9ZXjz3X9/4/C/1bNtNlWTCD+
+   1H6BPEClBBFLMFI7enBa+/HlE5r37LZntmcs2M3DCTcQPgOhGh1bSJenb
+   MJhcD6qF48b61YQkAylV3bFs+lDNhzCPz5gU0yuXiyAiSmF6F+m51krcC
    A==;
-X-CSE-ConnectionGUID: tpn3B8eFQ6O2IJwG5wpBMw==
-X-CSE-MsgGUID: 5EQo8h1LTauL72Tep205TA==
-X-IronPort-AV: E=McAfee;i="6600,9927,11032"; a="7439734"
+X-CSE-ConnectionGUID: 6NfqEuqRTXuIvEUnS5jJ/g==
+X-CSE-MsgGUID: wL/hhxpcQlKPi8WU2yeFug==
+X-IronPort-AV: E=McAfee;i="6600,9927,11032"; a="7439751"
 X-IronPort-AV: E=Sophos;i="6.07,176,1708416000"; 
-   d="scan'208";a="7439734"
+   d="scan'208";a="7439751"
 Received: from orviesa003.jf.intel.com ([10.64.159.143])
-  by orvoesa108.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Apr 2024 18:16:30 -0700
-X-CSE-ConnectionGUID: EhQuWFS4TdyzqbZrvpW4UA==
-X-CSE-MsgGUID: qnqdTbTSS6ePQ9Te2RD6zA==
+  by orvoesa108.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Apr 2024 18:16:34 -0700
+X-CSE-ConnectionGUID: Qc3wfx4vTlWbGrVnIAvhkQ==
+X-CSE-MsgGUID: zrd241+ZT0W1Z3qqySB2jg==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.07,176,1708416000"; 
-   d="scan'208";a="22953273"
+   d="scan'208";a="22953278"
 Received: from allen-box.sh.intel.com ([10.239.159.127])
-  by orviesa003.jf.intel.com with ESMTP; 02 Apr 2024 18:16:28 -0700
+  by orviesa003.jf.intel.com with ESMTP; 02 Apr 2024 18:16:31 -0700
 From: Lu Baolu <baolu.lu@linux.intel.com>
 To: Jason Gunthorpe <jgg@ziepe.ca>,
 	Kevin Tian <kevin.tian@intel.com>,
@@ -72,9 +72,9 @@ Cc: iommu@lists.linux.dev,
 	virtualization@lists.linux-foundation.org,
 	linux-kernel@vger.kernel.org,
 	Lu Baolu <baolu.lu@linux.intel.com>
-Subject: [PATCH v4 2/9] iommu: Replace sva_iommu with iommu_attach_handle
-Date: Wed,  3 Apr 2024 09:15:12 +0800
-Message-Id: <20240403011519.78512-3-baolu.lu@linux.intel.com>
+Subject: [PATCH v4 3/9] iommu: Add attachment handle to struct iopf_group
+Date: Wed,  3 Apr 2024 09:15:13 +0800
+Message-Id: <20240403011519.78512-4-baolu.lu@linux.intel.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20240403011519.78512-1-baolu.lu@linux.intel.com>
 References: <20240403011519.78512-1-baolu.lu@linux.intel.com>
@@ -86,275 +86,127 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-The struct sva_iommu represents a bond of an SVA domain and a device.
-It is functionally equivalent to the iommu_attach_handle. To avoid
-code duplication, replace sva_iommu with the iommu_attach_handle and
-remove the code that manages sva_iommu.
+Previously, the domain that a page fault targets is stored in an
+iopf_group, which represents a minimal set of page faults. With the
+introduction of attachment handle, replace the domain with the handle
+so that the fault handler can obtain more information as needed
+when handling the faults.
+
+iommu_report_device_fault() is currently used for SVA page faults,
+which handles the page fault in an internal cycle. The domain is retrieved
+with iommu_get_domain_for_dev_pasid() if the pasid in the fault message
+is valid. This doesn't work in IOMMUFD case, where if the pasid table of
+a device is wholly managed by user space, there is no domain attached to
+the PASID of the device. Improve this code to try fetching the attachment
+handle on a PASID if possible, otherwise try it on the RID.
 
 Signed-off-by: Lu Baolu <baolu.lu@linux.intel.com>
 ---
- include/linux/iommu.h      | 28 +++++------------
- include/linux/uacce.h      |  2 +-
- drivers/dma/idxd/idxd.h    |  2 +-
- drivers/dma/idxd/cdev.c    |  4 +--
- drivers/iommu/iommu-sva.c  | 61 ++++++++++++++++----------------------
- drivers/misc/uacce/uacce.c |  2 +-
- 6 files changed, 38 insertions(+), 61 deletions(-)
+ include/linux/iommu.h      |  2 +-
+ drivers/iommu/io-pgfault.c | 37 +++++++++++++++++--------------------
+ drivers/iommu/iommu-sva.c  |  3 ++-
+ 3 files changed, 20 insertions(+), 22 deletions(-)
 
 diff --git a/include/linux/iommu.h b/include/linux/iommu.h
-index 2e925b5eba53..be9c9a10169d 100644
+index be9c9a10169d..652a0bdd5074 100644
 --- a/include/linux/iommu.h
 +++ b/include/linux/iommu.h
-@@ -39,7 +39,6 @@ struct iommu_domain;
- struct iommu_domain_ops;
- struct iommu_dirty_ops;
- struct notifier_block;
--struct iommu_sva;
- struct iommu_dma_cookie;
- struct iommu_fault_param;
- 
-@@ -986,20 +985,9 @@ struct iommu_fwspec {
- /* ATS is supported */
- #define IOMMU_FWSPEC_PCI_RC_ATS			(1 << 0)
- 
--/**
-- * struct iommu_sva - handle to a device-mm bond
-- */
--struct iommu_sva {
--	struct device			*dev;
--	struct iommu_domain		*domain;
--	struct list_head		handle_item;
--	refcount_t			users;
--};
--
- struct iommu_mm_data {
- 	u32			pasid;
- 	struct list_head	sva_domains;
--	struct list_head	sva_handles;
+@@ -127,7 +127,7 @@ struct iopf_group {
+ 	/* list node for iommu_fault_param::faults */
+ 	struct list_head pending_node;
+ 	struct work_struct work;
+-	struct iommu_domain *domain;
++	struct iommu_attach_handle *attach_handle;
+ 	/* The device's fault data parameter. */
+ 	struct iommu_fault_param *fault_param;
  };
+diff --git a/drivers/iommu/io-pgfault.c b/drivers/iommu/io-pgfault.c
+index 06d78fcc79fd..32004976a6b7 100644
+--- a/drivers/iommu/io-pgfault.c
++++ b/drivers/iommu/io-pgfault.c
+@@ -50,6 +50,9 @@ static void __iopf_free_group(struct iopf_group *group)
  
- int iommu_fwspec_init(struct device *dev, struct fwnode_handle *iommu_fwnode,
-@@ -1527,24 +1515,24 @@ static inline u32 mm_get_enqcmd_pasid(struct mm_struct *mm)
+ 	/* Pair with iommu_report_device_fault(). */
+ 	iopf_put_dev_fault_param(group->fault_param);
++
++	/* Pair with get_attach_handle_for_iopf(). */
++	iommu_attach_handle_put(group->attach_handle);
  }
  
- void mm_pasid_drop(struct mm_struct *mm);
--struct iommu_sva *iommu_sva_bind_device(struct device *dev,
--					struct mm_struct *mm);
--void iommu_sva_unbind_device(struct iommu_sva *handle);
--u32 iommu_sva_get_pasid(struct iommu_sva *handle);
-+struct iommu_attach_handle *iommu_sva_bind_device(struct device *dev,
-+						  struct mm_struct *mm);
-+void iommu_sva_unbind_device(struct iommu_attach_handle *handle);
-+u32 iommu_sva_get_pasid(struct iommu_attach_handle *handle);
- struct iommu_domain *iommu_sva_domain_alloc(struct device *dev,
- 					    struct mm_struct *mm);
- #else
--static inline struct iommu_sva *
-+static inline struct iommu_attach_handle *
- iommu_sva_bind_device(struct device *dev, struct mm_struct *mm)
- {
--	return NULL;
-+	return ERR_PTR(-ENODEV);
+ void iopf_free_group(struct iopf_group *group)
+@@ -59,28 +62,22 @@ void iopf_free_group(struct iopf_group *group)
  }
+ EXPORT_SYMBOL_GPL(iopf_free_group);
  
--static inline void iommu_sva_unbind_device(struct iommu_sva *handle)
-+static inline void iommu_sva_unbind_device(struct iommu_attach_handle *handle)
+-static struct iommu_domain *get_domain_for_iopf(struct device *dev,
+-						struct iommu_fault *fault)
++static struct iommu_attach_handle *
++get_attach_handle_for_iopf(struct device *dev, struct iommu_fault *fault)
  {
- }
- 
--static inline u32 iommu_sva_get_pasid(struct iommu_sva *handle)
-+static inline u32 iommu_sva_get_pasid(struct iommu_attach_handle *handle)
- {
- 	return IOMMU_PASID_INVALID;
- }
-diff --git a/include/linux/uacce.h b/include/linux/uacce.h
-index e290c0269944..1548119c89ae 100644
---- a/include/linux/uacce.h
-+++ b/include/linux/uacce.h
-@@ -97,7 +97,7 @@ struct uacce_queue {
- 	struct mutex mutex;
- 	enum uacce_q_state state;
- 	u32 pasid;
--	struct iommu_sva *handle;
-+	struct iommu_attach_handle *handle;
- 	struct address_space *mapping;
- };
- 
-diff --git a/drivers/dma/idxd/idxd.h b/drivers/dma/idxd/idxd.h
-index a4099a1e2340..3ee89e9cb049 100644
---- a/drivers/dma/idxd/idxd.h
-+++ b/drivers/dma/idxd/idxd.h
-@@ -335,7 +335,7 @@ struct idxd_device {
- 	struct idxd_wq **wqs;
- 	struct idxd_engine **engines;
- 
--	struct iommu_sva *sva;
-+	struct iommu_attach_handle *sva;
- 	unsigned int pasid;
- 
- 	int num_groups;
-diff --git a/drivers/dma/idxd/cdev.c b/drivers/dma/idxd/cdev.c
-index 8078ab9acfbc..a029bda92615 100644
---- a/drivers/dma/idxd/cdev.c
-+++ b/drivers/dma/idxd/cdev.c
-@@ -45,7 +45,7 @@ struct idxd_user_context {
- 	unsigned int pasid;
- 	struct mm_struct *mm;
- 	unsigned int flags;
--	struct iommu_sva *sva;
-+	struct iommu_attach_handle *sva;
- 	struct idxd_dev idxd_dev;
- 	u64 counters[COUNTER_MAX];
- 	int id;
-@@ -225,7 +225,7 @@ static int idxd_cdev_open(struct inode *inode, struct file *filp)
- 	struct idxd_wq *wq;
- 	struct device *dev, *fdev;
- 	int rc = 0;
--	struct iommu_sva *sva;
-+	struct iommu_attach_handle *sva;
- 	unsigned int pasid;
- 	struct idxd_cdev *idxd_cdev;
- 
-diff --git a/drivers/iommu/iommu-sva.c b/drivers/iommu/iommu-sva.c
-index 640acc804e8c..35ac2e4836e9 100644
---- a/drivers/iommu/iommu-sva.c
-+++ b/drivers/iommu/iommu-sva.c
-@@ -41,7 +41,6 @@ static struct iommu_mm_data *iommu_alloc_mm_data(struct mm_struct *mm, struct de
- 	}
- 	iommu_mm->pasid = pasid;
- 	INIT_LIST_HEAD(&iommu_mm->sva_domains);
--	INIT_LIST_HEAD(&iommu_mm->sva_handles);
- 	/*
- 	 * Make sure the write to mm->iommu_mm is not reordered in front of
- 	 * initialization to iommu_mm fields. If it does, readers may see a
-@@ -67,13 +66,17 @@ static struct iommu_mm_data *iommu_alloc_mm_data(struct mm_struct *mm, struct de
-  *
-  * On error, returns an ERR_PTR value.
-  */
--struct iommu_sva *iommu_sva_bind_device(struct device *dev, struct mm_struct *mm)
-+struct iommu_attach_handle *iommu_sva_bind_device(struct device *dev, struct mm_struct *mm)
- {
+-	struct iommu_domain *domain;
 +	struct iommu_group *group = dev->iommu_group;
 +	struct iommu_attach_handle *handle;
- 	struct iommu_mm_data *iommu_mm;
- 	struct iommu_domain *domain;
--	struct iommu_sva *handle;
- 	int ret;
- 
++
 +	if (!group)
 +		return ERR_PTR(-ENODEV);
-+
- 	mutex_lock(&iommu_sva_lock);
  
- 	/* Allocate mm->pasid if necessary. */
-@@ -83,18 +86,11 @@ struct iommu_sva *iommu_sva_bind_device(struct device *dev, struct mm_struct *mm
- 		goto out_unlock;
+ 	if (fault->prm.flags & IOMMU_FAULT_PAGE_REQUEST_PASID_VALID) {
+-		domain = iommu_get_domain_for_dev_pasid(dev, fault->prm.pasid, 0);
+-		if (IS_ERR(domain))
+-			domain = NULL;
+-	} else {
+-		domain = iommu_get_domain_for_dev(dev);
++		handle = iommu_attach_handle_get(group, fault->prm.pasid);
++		if (handle)
++			return handle;
  	}
  
--	list_for_each_entry(handle, &mm->iommu_mm->sva_handles, handle_item) {
--		if (handle->dev == dev) {
--			refcount_inc(&handle->users);
--			mutex_unlock(&iommu_sva_lock);
--			return handle;
--		}
+-	if (!domain || !domain->iopf_handler) {
+-		dev_warn_ratelimited(dev,
+-			"iopf (pasid %d) without domain attached or handler installed\n",
+-			 fault->prm.pasid);
+-
+-		return NULL;
 -	}
 -
--	handle = kzalloc(sizeof(*handle), GFP_KERNEL);
--	if (!handle) {
--		ret = -ENOMEM;
--		goto out_unlock;
-+	/* A bond already exists, just take a reference`. */
-+	handle = iommu_attach_handle_get(group, iommu_mm->pasid);
-+	if (handle) {
-+		mutex_unlock(&iommu_sva_lock);
-+		return handle;
- 	}
- 
- 	/* Search for an existing domain. */
-@@ -110,7 +106,7 @@ struct iommu_sva *iommu_sva_bind_device(struct device *dev, struct mm_struct *mm
- 	domain = iommu_sva_domain_alloc(dev, mm);
- 	if (!domain) {
- 		ret = -ENOMEM;
--		goto out_free_handle;
-+		goto out_unlock;
- 	}
- 
- 	ret = iommu_attach_device_pasid(domain, dev, iommu_mm->pasid);
-@@ -120,17 +116,14 @@ struct iommu_sva *iommu_sva_bind_device(struct device *dev, struct mm_struct *mm
- 	list_add(&domain->next, &mm->iommu_mm->sva_domains);
- 
- out:
--	refcount_set(&handle->users, 1);
--	list_add(&handle->handle_item, &mm->iommu_mm->sva_handles);
-+	handle = iommu_attach_handle_get(group, iommu_mm->pasid);
- 	mutex_unlock(&iommu_sva_lock);
--	handle->dev = dev;
--	handle->domain = domain;
-+	handle->priv = dev;
-+
- 	return handle;
- 
- out_free_domain:
- 	iommu_domain_free(domain);
--out_free_handle:
--	kfree(handle);
- out_unlock:
- 	mutex_unlock(&iommu_sva_lock);
- 	return ERR_PTR(ret);
-@@ -145,30 +138,26 @@ EXPORT_SYMBOL_GPL(iommu_sva_bind_device);
-  * not be issuing any more transaction for this PASID. All outstanding page
-  * requests for this PASID must have been flushed to the IOMMU.
-  */
--void iommu_sva_unbind_device(struct iommu_sva *handle)
-+void iommu_sva_unbind_device(struct iommu_attach_handle *handle)
- {
- 	struct iommu_domain *domain = handle->domain;
- 	struct iommu_mm_data *iommu_mm = domain->mm->iommu_mm;
--	struct device *dev = handle->dev;
-+	struct device *dev = handle->priv;
- 
- 	mutex_lock(&iommu_sva_lock);
--	if (!refcount_dec_and_test(&handle->users)) {
--		mutex_unlock(&iommu_sva_lock);
--		return;
--	}
--	list_del(&handle->handle_item);
--
--	iommu_detach_device_pasid(domain, dev, iommu_mm->pasid);
--	if (--domain->users == 0) {
--		list_del(&domain->next);
--		iommu_domain_free(domain);
-+	iommu_attach_handle_put(handle);
-+	if (refcount_read(&handle->users) == 1) {
-+		iommu_detach_device_pasid(domain, dev, iommu_mm->pasid);
-+		if (--domain->users == 0) {
-+			list_del(&domain->next);
-+			iommu_domain_free(domain);
-+		}
- 	}
- 	mutex_unlock(&iommu_sva_lock);
--	kfree(handle);
+-	return domain;
++	return iommu_attach_handle_get(group, IOMMU_NO_PASID);
  }
- EXPORT_SYMBOL_GPL(iommu_sva_unbind_device);
  
--u32 iommu_sva_get_pasid(struct iommu_sva *handle)
-+u32 iommu_sva_get_pasid(struct iommu_attach_handle *handle)
- {
- 	struct iommu_domain *domain = handle->domain;
+ /* Non-last request of a group. Postpone until the last one. */
+@@ -206,15 +203,15 @@ void iommu_report_device_fault(struct device *dev, struct iopf_fault *evt)
+ 	if (group == &abort_group)
+ 		goto err_abort;
  
-diff --git a/drivers/misc/uacce/uacce.c b/drivers/misc/uacce/uacce.c
-index bdc2e6fda782..b325097421c1 100644
---- a/drivers/misc/uacce/uacce.c
-+++ b/drivers/misc/uacce/uacce.c
-@@ -106,7 +106,7 @@ static long uacce_fops_compat_ioctl(struct file *filep,
- static int uacce_bind_queue(struct uacce_device *uacce, struct uacce_queue *q)
- {
- 	u32 pasid;
--	struct iommu_sva *handle;
-+	struct iommu_attach_handle *handle;
+-	group->domain = get_domain_for_iopf(dev, fault);
+-	if (!group->domain)
++	group->attach_handle = get_attach_handle_for_iopf(dev, fault);
++	if (!group->attach_handle || !group->attach_handle->domain->iopf_handler)
+ 		goto err_abort;
  
- 	if (!(uacce->flags & UACCE_DEV_SVA))
- 		return 0;
+ 	/*
+ 	 * On success iopf_handler must call iopf_group_response() and
+ 	 * iopf_free_group()
+ 	 */
+-	if (group->domain->iopf_handler(group))
++	if (group->attach_handle->domain->iopf_handler(group))
+ 		goto err_abort;
+ 
+ 	return;
+diff --git a/drivers/iommu/iommu-sva.c b/drivers/iommu/iommu-sva.c
+index 35ac2e4836e9..c66cf26137bf 100644
+--- a/drivers/iommu/iommu-sva.c
++++ b/drivers/iommu/iommu-sva.c
+@@ -248,7 +248,8 @@ static void iommu_sva_handle_iopf(struct work_struct *work)
+ 		if (status != IOMMU_PAGE_RESP_SUCCESS)
+ 			break;
+ 
+-		status = iommu_sva_handle_mm(&iopf->fault, group->domain->mm);
++		status = iommu_sva_handle_mm(&iopf->fault,
++					     group->attach_handle->domain->mm);
+ 	}
+ 
+ 	iopf_group_response(group, status);
 -- 
 2.34.1
 
