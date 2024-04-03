@@ -1,45 +1,45 @@
-Return-Path: <linux-kernel+bounces-130282-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-130283-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 286A489765D
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 19:21:41 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 00529897660
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 19:22:01 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D7403291B14
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 17:21:39 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 95B541F2B303
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 17:22:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E673F156870;
-	Wed,  3 Apr 2024 17:17:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2859215689E;
+	Wed,  3 Apr 2024 17:17:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Z0RlTuRu"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="FJLQwpmp"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2FA8A156673;
-	Wed,  3 Apr 2024 17:17:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6578F15687D;
+	Wed,  3 Apr 2024 17:17:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712164632; cv=none; b=ASUfYq77c5ddmKE3s9yVCiVEnfVQLAGrX6ynpvRSYd59pCpD9n2YsJ4zqdlXWdR7IJc+ev/ir8/RNloCBdvph3ucIUqA48jP63d5BGJZ+kjxOJhWpy7X56T8xl5y84OUyFlo323DTfQwae49G9PdAmoN8YkyEGgCeXSZqTUPOaY=
+	t=1712164633; cv=none; b=ncllqyiG+99+6gB06N7FhsY8vwCyj9N71V5/n+R1XVYGE76j7HP2vumAgsYsoCVDuOHM/o8JLizvwG872WdH/Gsuko2dwT5ftO3ass3OfMQQNIMuS6S7xu9T+jZ+CIUikWX6pc4qvUX/DQeG+3icA++FZBzrTave/CzZrk722t0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712164632; c=relaxed/simple;
-	bh=ru5lDLRfiKzcSYBhnMYqdwXhhP79xcHM9THPZsvn8cQ=;
+	s=arc-20240116; t=1712164633; c=relaxed/simple;
+	bh=H7GnAJyR/w/vFwtUJetaJZsFTHxXNWQ303r7nG7XEq4=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=lQna8CueY42ZFxqbgPQLZBAPBykrIaos+qkLr5O6OdnuhQbx8E5CerKFW/EOoqo+b77edwJlI5xOrjguUBhLpfDmj6OhqwKujhUUf6R0tOgqpBIgUT86nM2PNR1br+ImU5PdiY6KoATUbYgcfpTivzfl+k7CEMwY6xj3WlRdeLk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Z0RlTuRu; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D5A30C433F1;
-	Wed,  3 Apr 2024 17:17:10 +0000 (UTC)
+	 MIME-Version; b=UShuEP2/crxOh1zpmaeJ4VmG5ks2Q66FthFfQxjkjP4RwKivMBwFB/666C6B+tkNvv9/3yN6ImeD9wPg6MNl3TKu1AhtZTSYTtrV04iaqhw+KLkKQ/r8LQhN+UKQQ3P6KGYkNwlkPhglDHggQoWkac1eNcv9Rk4+9nF18ssDGVc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=FJLQwpmp; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 26651C433C7;
+	Wed,  3 Apr 2024 17:17:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712164631;
-	bh=ru5lDLRfiKzcSYBhnMYqdwXhhP79xcHM9THPZsvn8cQ=;
+	s=k20201202; t=1712164633;
+	bh=H7GnAJyR/w/vFwtUJetaJZsFTHxXNWQ303r7nG7XEq4=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=Z0RlTuRuyEjkr9XkvEAjFMw1aM8587aO4znHh7fcf0xIN1DoTMnv5eboDBeaKQShU
-	 cDx1cEihtFDOw1+cK0YbcmmIi3nZ2jJvEgAxFZEt9+ZxOzhQIsijZcWrv/xcYstGxl
-	 P6tpg6Yul/CojSHRCYOS7QeRUOWJPY7Nv9tlc1v+4Gwu/LZU/9uSu/FZPB8SdX2tJ1
-	 fiipKTJvo3UTrpuhYZfHsjE5r2vbvWAo3gQlGrbnDIEIb88gzIFCM1sOLpixlxV03I
-	 6HBk08CN30uJCbEpTeW0eJsVGLwLnoNErzLaM8V1O7HMCaKILu7QBPXjdZXXiCXaaj
-	 qt1fh4M99ukBQ==
+	b=FJLQwpmpouhPDQthTD5RbJ0GL87498E26Z82M7P9OBGNXmtjOzz9UlnLDCCoUAnA6
+	 SnXE4sem4/wJyhM/9xJG3SOUW/9oDWxgj2mvGn3neFihUybZA5BfrFj5yNIgUilNwg
+	 hygzuW4Zts8Xgy49kCsjO90lZH2ZtaHNn41Wq0RCu3PnrA8yGwas76/M6mw2Y4Afo2
+	 D5baLYFrrTc0LICK7hT5816qF4g3PfH+56sr1EXOb/9avON+7hG2O8DfPKcdTEp6qQ
+	 mhRs6wwTGQ0WSCd0LF2NPeAcPjjmUd0+ixY7vjLhIsbjH0AIMaqZ/uc2ykIhaR8Fyy
+	 V6LBHsNqlIyRw==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
@@ -49,9 +49,9 @@ Cc: Michael Grzeschik <m.grzeschik@pengutronix.de>,
 	laurent.pinchart@ideasonboard.com,
 	dan.scally@ideasonboard.com,
 	linux-usb@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.8 08/28] usb: gadget: uvc: refactor the check for a valid buffer in the pump worker
-Date: Wed,  3 Apr 2024 13:16:10 -0400
-Message-ID: <20240403171656.335224-8-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 6.8 09/28] usb: gadget: uvc: mark incomplete frames with UVC_STREAM_ERR
+Date: Wed,  3 Apr 2024 13:16:11 -0400
+Message-ID: <20240403171656.335224-9-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240403171656.335224-1-sashal@kernel.org>
 References: <20240403171656.335224-1-sashal@kernel.org>
@@ -68,44 +68,35 @@ Content-Transfer-Encoding: 8bit
 
 From: Michael Grzeschik <m.grzeschik@pengutronix.de>
 
-[ Upstream commit 5e7ea65daf13a95a6cc63d1377e4c500e4e1340f ]
+[ Upstream commit 2a3b7af120477d0571b815ccb8600cafd5ebf02f ]
 
-By toggling the condition check for a valid buffer, the else path
-can be completely avoided.
+If an frame was transmitted incomplete to the host, we set the
+UVC_STREAM_ERR bit in the header for the last request that is going
+to be queued. This way the host will know that it should drop the
+frame instead of trying to display the corrupted content.
 
 Signed-off-by: Michael Grzeschik <m.grzeschik@pengutronix.de>
-Link: https://lore.kernel.org/r/20240214-uvc-gadget-cleanup-v1-2-de6d78780459@pengutronix.de
+Link: https://lore.kernel.org/r/20240214-uvc-error-tag-v1-2-37659a3877fe@pengutronix.de
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/usb/gadget/function/uvc_video.c | 7 +++----
- 1 file changed, 3 insertions(+), 4 deletions(-)
+ drivers/usb/gadget/function/uvc_video.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
 diff --git a/drivers/usb/gadget/function/uvc_video.c b/drivers/usb/gadget/function/uvc_video.c
-index dd3241fc6939d..dbdd9033c1268 100644
+index dbdd9033c1268..53e4cd81ea446 100644
 --- a/drivers/usb/gadget/function/uvc_video.c
 +++ b/drivers/usb/gadget/function/uvc_video.c
-@@ -594,10 +594,7 @@ static void uvcg_video_pump(struct work_struct *work)
- 		 */
- 		spin_lock_irqsave(&queue->irqlock, flags);
- 		buf = uvcg_queue_head(queue);
--
--		if (buf != NULL) {
--			video->encode(req, video, buf);
--		} else {
-+		if (!buf) {
- 			/*
- 			 * Either the queue has been disconnected or no video buffer
- 			 * available for bulk transfer. Either way, stop processing
-@@ -607,6 +604,8 @@ static void uvcg_video_pump(struct work_struct *work)
- 			break;
- 		}
+@@ -35,6 +35,9 @@ uvc_video_encode_header(struct uvc_video *video, struct uvc_buffer *buf,
  
-+		video->encode(req, video, buf);
+ 	data[1] = UVC_STREAM_EOH | video->fid;
+ 
++	if (video->queue.flags & UVC_QUEUE_DROP_INCOMPLETE)
++		data[1] |= UVC_STREAM_ERR;
 +
- 		spin_unlock_irqrestore(&queue->irqlock, flags);
- 
- 		spin_lock_irqsave(&video->req_lock, flags);
+ 	if (video->queue.buf_used == 0 && ts.tv_sec) {
+ 		/* dwClockFrequency is 48 MHz */
+ 		u32 pts = ((u64)ts.tv_sec * USEC_PER_SEC + ts.tv_nsec / NSEC_PER_USEC) * 48;
 -- 
 2.43.0
 
