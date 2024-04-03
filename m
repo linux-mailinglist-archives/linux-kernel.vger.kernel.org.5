@@ -1,147 +1,164 @@
-Return-Path: <linux-kernel+bounces-129069-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-129070-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8C6FD896447
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 07:57:06 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id EB60589644D
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 08:00:43 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BDA281C23212
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 05:57:05 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2739A1C20DCE
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 06:00:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 627F34E1CB;
-	Wed,  3 Apr 2024 05:56:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1AFFF4D595;
+	Wed,  3 Apr 2024 06:00:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="GoXtO7Vv"
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="LFJJK1ml"
+Received: from mail-wr1-f44.google.com (mail-wr1-f44.google.com [209.85.221.44])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2933A1870;
-	Wed,  3 Apr 2024 05:56:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B8D764CB41
+	for <linux-kernel@vger.kernel.org>; Wed,  3 Apr 2024 06:00:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712123816; cv=none; b=Qe8tr+OFdhc+hFKhZvV3VfqpknvxvEqAsKZZKhyy0MKOrBSSxIkYanVO6DM2Cqh4CB9tIAtXOkWwzSbOTR9XfH2s0RJdts8PVGSzTnNUkjBqS/VKwltWSSuEh/KmXQvJop19glr3x4g+COQ/dCT7jijDKRKpHycgBwjQsQgLEfM=
+	t=1712124037; cv=none; b=UiIfgpUxTT2rEYHwyQ3XDb8JK0YBLf36tg2vsxBU7A7Uma35HrCm3Gm9pVHZzZ1kHaopatvuli0tsS06GJmJPjqD6RMsuOL6gRFbqwjt6aJAgJcB+dR7WIW7G70tO4ZGkoCU66DSMehDyPicTn91CqKdUefwI7t+j3j1kSiEKWI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712123816; c=relaxed/simple;
-	bh=1SHiij+ZVkWmkcRsHtsHy6EHB+og9wA1svshcDPXjog=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=fNHPDiC0qcc1Usi5Mu5J/Y+T/31WgIK1pqXVkZ8OeJH9PuG0jbS+I1uTPg8K1TmZWJk9TfBcJvbywGavCEJg0gXJQWAWM+uy4lQbZt82Fuw/PRnTOYlEk80mYZyUedCDjRlx358S/VWnI+45tzsfk/CtqHDPkC23rrr99cDln0o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=GoXtO7Vv; arc=none smtp.client-ip=205.220.180.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279872.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 4335nfd9020372;
-	Wed, 3 Apr 2024 05:56:51 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	message-id:date:mime-version:subject:to:cc:references:from
-	:in-reply-to:content-type:content-transfer-encoding; s=
-	qcppdkim1; bh=bBWpql9YNcSzSsaBXGPIGlFx897DY1V9TTw2Z7sR13U=; b=Go
-	XtO7Vv4N4X7km6mVAmHHWUgsmL/93Kn8H3S92Xaa9btoNRoGy8r71Xeof3DFxnH1
-	t37a9NiwtcEKS6EG/t+idiXnu5ern6qrVbhL8XgdJ/lUVvb4VQQJOgF+vBFOEAqx
-	m/zlblNSg14KD1Sih22VfQddKj4b8AdDrLibWxJX//MAF7z41hRro4yH++J4cTJv
-	UL7HFHMfgacoVg8u5VBlsj7AW2+AlD9Si9caQjsjeDFaTxkyYnXl+JQCBXYrxUfo
-	WJ7qcwdE7Zi4U3MoAWE9ab+rtrE2J4jQFkmeZd0Wm9aB4gX6DvcvdVTGKVL+Zoth
-	slf2/Exl/6dtiTdI+NjA==
-Received: from nasanppmta01.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3x8v3f8j8t-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 03 Apr 2024 05:56:51 +0000 (GMT)
-Received: from nasanex01c.na.qualcomm.com (nasanex01c.na.qualcomm.com [10.45.79.139])
-	by NASANPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 4335uo6P022876
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 3 Apr 2024 05:56:50 GMT
-Received: from [10.218.22.190] (10.80.80.8) by nasanex01c.na.qualcomm.com
- (10.45.79.139) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.4; Tue, 2 Apr 2024
- 22:56:46 -0700
-Message-ID: <669b516a-74c7-445a-b151-5463fe39b21b@quicinc.com>
-Date: Wed, 3 Apr 2024 11:26:42 +0530
+	s=arc-20240116; t=1712124037; c=relaxed/simple;
+	bh=RvRmCihrPR6nqu0uOGLjEw2g7U2DBNWoL9Lnv/JHcvA=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=frnN8DO0I5rlt8SozswkkBs4dKRQp+Ys6D5iDJb63bS5rYIsKH8yyRYstF9q56Rc/lDcyBhOUClY2tm9JQU+jIyQlCBK5Ww2AMcDn5QBmJKopwPMh2S+h+8iWSyLQGeX6dqhLSBHHn6C6CDsMm4usTLt4WV6KAHp8fl8ya3tRTg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=LFJJK1ml; arc=none smtp.client-ip=209.85.221.44
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wr1-f44.google.com with SMTP id ffacd0b85a97d-3436ffe05c9so958441f8f.1
+        for <linux-kernel@vger.kernel.org>; Tue, 02 Apr 2024 23:00:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1712124034; x=1712728834; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=jeN7BH7FX/UdYJqsptGEzUMzeVN4Ecw1to7ZT4gs+X4=;
+        b=LFJJK1ml25esA5RtsGvoQrb6hJEnpww1f673N733qdfjrNWsKj10ozcwVHZrTHekjI
+         SGm9tq/HcVknbEel6ca/9jXJNEHQj5AkzjpvlUQhBUL8N9o5IcegWywTqsGYmGWbu+f+
+         +oj3L9EYEs5slu17ylruwJWll3ZppIZ8zd/tzHKfXdASvUNmCZay3TS5YeTsN0LqiPm5
+         YDuBhTLoXDE302gSRVdc1GhAfURSaUFqWnYFHL57EEiJD3WwQKq6hIfpCf0AX0775O4l
+         iwFLCrx+/7dEZWP14AK4iGYhu2hXDykdzZ4PH4i0T6CZUn/pczJMX3gxWLFgK6WiEWt2
+         cUAA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712124034; x=1712728834;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=jeN7BH7FX/UdYJqsptGEzUMzeVN4Ecw1to7ZT4gs+X4=;
+        b=vQAQDFHs9qozwUR02n5ujWn0GQ9+S52yGJxDOOoKhy3ctelH6HCml6pId+ozWoax+E
+         aIPLU6ZpsI6Ey2gUmWMWUn76M2MaRUiMkyzqzgkcP/xwElzkeYSAsxRSqegjoi1Kc6ah
+         Ctv77+djeXF1a6tsWS4Hf6SNMreu8zkP5Z3SoJ3Wi7/gCWo1ImFm+9LPpiV/IqU2D007
+         NgynnGFkzGXV6UJeXxKrF+1A/zxs8OOqEC3tSYkRY5oqerGjtUmKYIxe6iMZWDw3iBwg
+         rM4QWFjceLdyECl268UAi7YB3VTHreZUJOCU1uUMdZOFpNQMuiyNNvhOYVr9pRNuy1aI
+         Xskw==
+X-Forwarded-Encrypted: i=1; AJvYcCVNzvh3vIo+BMzRIdL/ONa+76ahdA+ZmziXECtL8hguMK89ZBVR8BaGume0/TLW71sL0LNpyiiqic9XTfwSpgxjMTEWIP+OqtZIG9AM
+X-Gm-Message-State: AOJu0Yw8u7S8cZls5FciQ86Q/xjIvpLatK/JXSRQNQQz+9A+OvZKkekJ
+	sonE4Atv6p+uaQcIAsN0/JaTHj8y6gDBNMyGZnlF08WRs4b83IXX9opYQIHPAfvYPmre8pwphBF
+	BxV4I/uJwvtj7k2sFJhtNJvTlcLfVPZqrHis=
+X-Google-Smtp-Source: AGHT+IH3nsAv2UK8Wyq1ILIiH45zeQeBmtb0KjGWrkJbhttIj7144Jw4++Zu9fS38fYLtKpZCM5FPhBVeFQNBKARQ+Q=
+X-Received: by 2002:a5d:5590:0:b0:341:b26f:8929 with SMTP id
+ i16-20020a5d5590000000b00341b26f8929mr1083115wrv.37.1712124033796; Tue, 02
+ Apr 2024 23:00:33 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2] i2c: i2c-qcom-geni: Add support to share an I2C SE
- from two subsystem
-Content-Language: en-US
-To: Konrad Dybcio <konrad.dybcio@linaro.org>, <andersson@kernel.org>,
-        <andi.shyti@kernel.org>, <linux-arm-msm@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <linux-i2c@vger.kernel.org>,
-        <dmaengine@vger.kernel.org>
-CC: <quic_vdadhani@quicinc.com>, Vinod Koul <vkoul@kernel.org>
-References: <20240402062131.9836-1-quic_msavaliy@quicinc.com>
- <51c84af2-73f7-4af4-8676-2276b6c7786d@linaro.org>
-From: Mukesh Kumar Savaliya <quic_msavaliy@quicinc.com>
-In-Reply-To: <51c84af2-73f7-4af4-8676-2276b6c7786d@linaro.org>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nasanex01c.na.qualcomm.com (10.45.79.139)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: c9hYjDh4pB5He_4GPI0EtGI50ze-svD3
-X-Proofpoint-GUID: c9hYjDh4pB5He_4GPI0EtGI50ze-svD3
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-04-03_04,2024-04-01_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
- phishscore=0 priorityscore=1501 suspectscore=0 mlxscore=0 bulkscore=0
- malwarescore=0 mlxlogscore=999 clxscore=1015 spamscore=0 impostorscore=0
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2403210001 definitions=main-2404030038
+References: <1707219895-31977-1-git-send-email-zhiguo.niu@unisoc.com> <ZgwnDnrLJUPyYKYW@google.com>
+In-Reply-To: <ZgwnDnrLJUPyYKYW@google.com>
+From: Zhiguo Niu <niuzhiguo84@gmail.com>
+Date: Wed, 3 Apr 2024 14:00:22 +0800
+Message-ID: <CAHJ8P3L4oH25YMBkzpoZ0n2HwFBbFzt+seoZJkcy4_ZL5Ki5Xw@mail.gmail.com>
+Subject: Re: [PATCH V4] lockdep: fix deadlock issue between lockdep and rcu
+To: Carlos Llamas <cmllamas@google.com>
+Cc: Zhiguo Niu <zhiguo.niu@unisoc.com>, peterz@infradead.org, mingo@redhat.com, 
+	will@kernel.org, longman@redhat.com, boqun.feng@gmail.com, bvanassche@acm.org, 
+	linux-kernel@vger.kernel.org, ke.wang@unisoc.com, xuewen.yan@unisoc.com, 
+	hongyu.jin@unisoc.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Thanks Konrad. I understood.
+On Tue, Apr 2, 2024 at 11:41=E2=80=AFPM Carlos Llamas <cmllamas@google.com>=
+ wrote:
+>
+> On Tue, Feb 06, 2024 at 07:44:55PM +0800, Zhiguo Niu wrote:
+> > There is a deadlock scenario between lockdep and rcu when
+> > rcu nocb feature is enabled, just as following call stack:
+> >
+> >      rcuop/x
+> > -000|queued_spin_lock_slowpath(lock =3D 0xFFFFFF817F2A8A80, val =3D ?)
+> > -001|queued_spin_lock(inline) // try to hold nocb_gp_lock
+> > -001|do_raw_spin_lock(lock =3D 0xFFFFFF817F2A8A80)
+> > -002|__raw_spin_lock_irqsave(inline)
+> > -002|_raw_spin_lock_irqsave(lock =3D 0xFFFFFF817F2A8A80)
+> > -003|wake_nocb_gp_defer(inline)
+> > -003|__call_rcu_nocb_wake(rdp =3D 0xFFFFFF817F30B680)
+> > -004|__call_rcu_common(inline)
+> > -004|call_rcu(head =3D 0xFFFFFFC082EECC28, func =3D ?)
+> > -005|call_rcu_zapped(inline)
+> > -005|free_zapped_rcu(ch =3D ?)// hold graph lock
+> > -006|rcu_do_batch(rdp =3D 0xFFFFFF817F245680)
+> > -007|nocb_cb_wait(inline)
+> > -007|rcu_nocb_cb_kthread(arg =3D 0xFFFFFF817F245680)
+> > -008|kthread(_create =3D 0xFFFFFF80803122C0)
+> > -009|ret_from_fork(asm)
+> >
+> >      rcuop/y
+> > -000|queued_spin_lock_slowpath(lock =3D 0xFFFFFFC08291BBC8, val =3D 0)
+> > -001|queued_spin_lock()
+> > -001|lockdep_lock()
+> > -001|graph_lock() // try to hold graph lock
+> > -002|lookup_chain_cache_add()
+> > -002|validate_chain()
+> > -003|lock_acquire
+> > -004|_raw_spin_lock_irqsave(lock =3D 0xFFFFFF817F211D80)
+> > -005|lock_timer_base(inline)
+> > -006|mod_timer(inline)
+> > -006|wake_nocb_gp_defer(inline)// hold nocb_gp_lock
+> > -006|__call_rcu_nocb_wake(rdp =3D 0xFFFFFF817F2A8680)
+> > -007|__call_rcu_common(inline)
+> > -007|call_rcu(head =3D 0xFFFFFFC0822E0B58, func =3D ?)
+> > -008|call_rcu_hurry(inline)
+> > -008|rcu_sync_call(inline)
+> > -008|rcu_sync_func(rhp =3D 0xFFFFFFC0822E0B58)
+> > -009|rcu_do_batch(rdp =3D 0xFFFFFF817F266680)
+> > -010|nocb_cb_wait(inline)
+> > -010|rcu_nocb_cb_kthread(arg =3D 0xFFFFFF817F266680)
+> > -011|kthread(_create =3D 0xFFFFFF8080363740)
+> > -012|ret_from_fork(asm)
+> >
+> > rcuop/x and rcuop/y are rcu nocb threads with the same nocb gp thread.
+> > This patch release the graph lock before lockdep call_rcu.
+> >
+> > Fixes: a0b0fd53e1e6 ("locking/lockdep: Free lock classes that are no lo=
+nger in use")
+> > Cc: <stable@vger.kernel.org>
+> > Cc: Boqun Feng <boqun.feng@gmail.com>
+> > Cc: Waiman Long <longman@redhat.com>
+> > Cc: Carlos Llamas <cmllamas@google.com>
+> > Cc: Bart Van Assche <bvanassche@acm.org>
+> > Signed-off-by: Zhiguo Niu <zhiguo.niu@unisoc.com>
+> > Signed-off-by: Xuewen Yan <xuewen.yan@unisoc.com>
+> > Reviewed-by: Boqun Feng <boqun.feng@gmail.com>
+> > Reviewed-by: Waiman Long <longman@redhat.com>
+> > Reviewed-by: Carlos Llamas <cmllamas@google.com>
+> > Reviewed-by: Bart Van Assche <bvanassche@acm.org>
+> > ---
+>
+> This patch should be good to go. Maybe it just slipped through the
+> cracks. Ingo, will you be taking this?
 
-On 4/2/2024 7:54 PM, Konrad Dybcio wrote:
-> On 2.04.2024 8:21 AM, Mukesh Kumar Savaliya wrote:
->> Add feature to share an I2C serial engine between two subsystems(SS) so
->> that individual clients from different subsystems can access the same bus.
->> For example single i2c slave device can be accessed by Client driver from
->> APPS OR modem subsystem image. Same way we can have slave being accessed
->> between APPS and TZ subsystems.
->>
->> This is possible in GSI mode where driver queues the TREs with required
->> descriptors and ensures to execute TREs in an mutually exclusive way.
->> Issue a "Lock TRE" command at the start of the transfer and an "Unlock TRE"
->> command at the end of the transfer. This prevents other subsystems from
->> concurrently performing DMA transfers and avoids disturbance to data path.
->> Change MAX_TRE macro to 5 from 3 because of these two additional TREs.
->>
->> Since the GPIOs are also shared for the i2c bus, do not touch GPIO
->> configuration while going to runtime suspend and only turn off the
->> clocks. This will allow other SS to continue to transfer the data.
->>
->> This feature needs to be controlled by DTSI flag to make it flexible
->> based on the usecase, hence during probe check the same from i2c driver.
->>
->> Export function geni_se_clks_off() to call explicitly instead of
->> geni_se_resources_off() to not modify TLMM configuration as other SS might
->> perform the transfer while APPS SS can go to sleep.
->>
->> Signed-off-by: Mukesh Kumar Savaliya <quic_msavaliy@quicinc.com>
->> ---
->> v1 -> v2:
->> - Addressed review comments.
-> 
-> The biggest one ("too many changes across the board") is still not
-> addressed and the patch will not be further reviewed until that is done.
-> 
-> Each subsystem has different owners and each change requires an explanation
-> (maintainers always "expect your patch to be wrong" and you need to
-> convince them otherwise through commit messages)
-> 
-Sure, I got it. Will send patch dividing logically between i2c, dma.
-I have already responded in just previous Mail to seek clarity as below.
-It was :
-"Please correct me if this is wrong. The overall change is for i2c in 
-GSI DMA mode. This also requires changes in resource control like TLMM 
-changes. But it's more like integrated feature.
-Are you suggesting to make 3 sub-patches under same change ? "
-
-
-
-> Konrad
+Hi Carlos,
+Thanks for restoring this mail and now this patch can only be
+temporarily included in my code locally when I do related jobs.
+and hope someone can help merge it if there are no review suggestions.
+>
+> --
+> Carlos Llamas
 
