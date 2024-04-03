@@ -1,125 +1,109 @@
-Return-Path: <linux-kernel+bounces-130459-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-130461-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id AD976897875
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 20:44:41 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id EBA28897879
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 20:45:10 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DD73E1C24E81
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 18:44:40 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8B7A11F27030
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 18:45:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AA6113FB14;
-	Wed,  3 Apr 2024 18:44:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 32069154BEA;
+	Wed,  3 Apr 2024 18:44:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="T1jeE9a/"
-Received: from mail-pl1-f179.google.com (mail-pl1-f179.google.com [209.85.214.179])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=ucw.cz header.i=@ucw.cz header.b="UXk5clxU"
+Received: from jabberwock.ucw.cz (jabberwock.ucw.cz [46.255.230.98])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 85920154C1E;
-	Wed,  3 Apr 2024 18:44:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5FC381D54B;
+	Wed,  3 Apr 2024 18:44:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.255.230.98
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712169850; cv=none; b=RbsjXgiyY78fGEdH8HqZA9VNlCwCYW/vhI13b8iaIvzFJPwshZxCSsdjK7F6p04hfpUfLwhipykMCqQ0dU7l2jvigNtXjvoGXCVT3EIQXNUAYW4xLUvbiAQkIYFaNolU5y7k7KjreJoNm7L9Y8OfX9a975mbKNgJn9Zxg9hCcpE=
+	t=1712169870; cv=none; b=e+u1L2012zVgBJd9nAdPe2k5kVsYZ8VKJHpmjIsNz7nQnvyuIbPvUboAc87g2Srh7nztN0vMXgArbR+dKwBWzNQYeWRmA9t9XR/20Zflsb0nyoBG2jIkF3xtfoJeBdIUs66dH4Agz09u4n4VUxp/jdBjgyuivDgHu0CS1+dQAVI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712169850; c=relaxed/simple;
-	bh=8PLFsRmgUMVaPV9XeFtGvgecnZWY/q4zu+j9hx9D8F4=;
+	s=arc-20240116; t=1712169870; c=relaxed/simple;
+	bh=1EkD6J6ZXdEoxa2rk1uEMRnFWIrrNOpvsjrJATOctzw=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=i2cOYmwaqGUGrU8Us/RRShEqewUo4IDPq+ClR9IGcttaBfA/txC5Ho3do6E+ijcmNFyq/RtRGiu2E73+xZ1I3LrchuuccOP9LBCsBJPjpFgvVGu5Ru3gwZ5b6cKh2OsWCDGUAyr6nUQUP7UxCmM+NRFKCYkj+b3iSLMdv3S2Jxw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=T1jeE9a/; arc=none smtp.client-ip=209.85.214.179
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f179.google.com with SMTP id d9443c01a7336-1dff837d674so1024475ad.3;
-        Wed, 03 Apr 2024 11:44:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1712169848; x=1712774648; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=Jf9eXfLXAt+IGKQuRl9EXFMRCVVu/1d108EjkeA+hs4=;
-        b=T1jeE9a/FyTgzqevXwMpfn+CxtI8Lu1yPRkIbeCEgMp8qDmwNXjK35OOGJfPnZcWwM
-         Tp++HSRfGg9a5zRiOpCiqbAyGv6Z69WVNV9fnZmKF9hskiY/H8aRTymCq438p3nxD6yH
-         ryVGVuNemrk4NVv9sVebWqEuZE69a42kVJS89XAVzALxH//YPuZy+80afYeO4bTDw17U
-         ZFgyuvcJnM98TUH4iOQuM27WmsOrVV19qzxw8q9fEb0zEkQEa1eXpZRdOcK4P8Wsx5dP
-         QR9ZewBjkw0CVWoDQrjUcEtbXxMVGsashWYjzQ2euKdwmmN2JMzuSmnGJgfifcqZ4K0r
-         +Q9Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712169848; x=1712774648;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Jf9eXfLXAt+IGKQuRl9EXFMRCVVu/1d108EjkeA+hs4=;
-        b=sNzYqhmS4B8yfNTvmnp2b0x8PD/fjrldQ/ztrq+O2zs7OFrunJPMTL5stowf8l0KJ5
-         GMQaYyS60ZABeq2t9cp6iAJLdB+Q/eDMlM07ZFr6adfNzZ/nEPmv445gGxyKcyKwJTiu
-         r0DlYzwbV3w9KaPiH1FgpznRft2/hy7zOJCuvpVZfqRxFbzbMuNKo1W0kYeJUYjiiGSE
-         WDw3CuUSUfuDmSgRQbCWpgQ3UWcjDaTBKxd1Ec5eaVhNuu133rVagGO3huYp+m4L21zG
-         BeGqhZ8RkiHkq3AqzaP3UWfF+sIzgnr1ZjWGa6LPi/T/D9Qm0qiqLakv770xam6Q9zjB
-         nB3Q==
-X-Forwarded-Encrypted: i=1; AJvYcCWVeXyxLrQ8b9STCEj41Vu2uJjVkLNFhldwYFS3BMC4cWFEjKUdPd7k+3MeyFM+f20YkbU09HFctBas/lHIVpNX6wxXRMf0wmaHPA3KXZVLdtAixq0Q2/3XE/+iGR6QF+8RIokbYWVJ/86Nbw==
-X-Gm-Message-State: AOJu0YyTMRXF+3jnDdQ3us+FN79rvXGxYOlgYjFNkWuDTZE2mPdnZSSt
-	9uQZwSGCsIRsXx4UTczvmGvyaEjRLhrtrOpBR74XFxUruYOFQwd4
-X-Google-Smtp-Source: AGHT+IET2MjFnRKdYi6HBgH+aaU7huSyJHP87dr3oOrql+boFbieFudaHUxELwM26iLkibAbuGU5xQ==
-X-Received: by 2002:a17:903:41cc:b0:1e2:8832:1d2c with SMTP id u12-20020a17090341cc00b001e288321d2cmr137835ple.27.1712169847742;
-        Wed, 03 Apr 2024 11:44:07 -0700 (PDT)
-Received: from localhost ([2620:10d:c090:400::5:25ab])
-        by smtp.gmail.com with ESMTPSA id d14-20020a170902654e00b001e261916778sm2392068pln.188.2024.04.03.11.44.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 03 Apr 2024 11:44:07 -0700 (PDT)
-Sender: Tejun Heo <htejun@gmail.com>
-Date: Wed, 3 Apr 2024 08:44:05 -1000
-From: Tejun Heo <tj@kernel.org>
-To: Jan Kara <jack@suse.cz>
-Cc: Kent Overstreet <kent.overstreet@linux.dev>,
-	Kemeng Shi <shikemeng@huaweicloud.com>, akpm@linux-foundation.org,
-	willy@infradead.org, bfoster@redhat.com, dsterba@suse.com,
-	mjguzik@gmail.com, dhowells@redhat.com,
-	linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-	linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH v2 0/6] Improve visibility of writeback
-Message-ID: <Zg2jdcochRXNdDZX@slm.duckdns.org>
-References: <20240327155751.3536-1-shikemeng@huaweicloud.com>
- <qyzaompqkxwdquqtofmqghvpi4m3twkrawn26rxs56aw4n2j3o@kt32f47dkjtu>
- <ZgXFrabAqunDctVp@slm.duckdns.org>
- <n2znv2ioy62rrrzz4nl2x7x5uighuxf2fgozhpfdkj6ialdiqe@a3mnfez7mitl>
- <ZgXJH9XQNqda7fpz@slm.duckdns.org>
- <wgec7wbhdn7ilvwddcalkbgxzjutp6h7dgfrijzffb64pwpksz@e6tqcybzfu2f>
- <ZgXPZ1uJSUCF79Ef@slm.duckdns.org>
- <qv3vv6355aw5fkzw5yvuwlnyceypcsfl5kkcrvlipxwfl3nuyg@7cqwaqpxn64t>
- <ZgXXKaZlmOWC-3mn@slm.duckdns.org>
- <20240403162716.icjbicvtbleiymjy@quack3>
+	 Content-Type:Content-Disposition:In-Reply-To; b=hpPGhJRs3cnsGwehAZSV9uPd4lAnlykH7T+ihOvzokXgZjwjy36t3PKwE8Zrghsa3PjPkd4KWApP9aW5oJw6hXl/9Gzp9EKWZ+zH8PTXRsYrohswFwZU3EQA9GS4wgfEyXWN0UxKNuvdVJy9MfVd28MtVAOc+m3P5/Sei+VOHWs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ucw.cz; spf=pass smtp.mailfrom=ucw.cz; dkim=pass (1024-bit key) header.d=ucw.cz header.i=@ucw.cz header.b=UXk5clxU; arc=none smtp.client-ip=46.255.230.98
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ucw.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ucw.cz
+Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
+	id 508411C007F; Wed,  3 Apr 2024 20:44:19 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ucw.cz; s=gen1;
+	t=1712169859;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=aHQCuvhMEh7H83JBQJudhosI61BGysrG7OtmjAOZ5xo=;
+	b=UXk5clxUqDzVZJJMscF+lK21IIOKV+kpj5+ZBGVSWLmfVowENY57Q7QW0g0diN2QjJ67AB
+	d9kj242B1vQNV+Xw1YG6SYuAlapyD6xT3LuwrDol+te5KdPVpsJnrYAxwi0yT3FG4j+c6g
+	euehjMJ7If2ojxZbxRNoS4XlGMjNIyo=
+Date: Wed, 3 Apr 2024 20:44:18 +0200
+From: Pavel Machek <pavel@ucw.cz>
+To: git@luigi311.com
+Cc: linux-media@vger.kernel.org, dave.stevenson@raspberrypi.com,
+	jacopo.mondi@ideasonboard.com, mchehab@kernel.org, robh@kernel.org,
+	krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+	shawnguo@kernel.org, s.hauer@pengutronix.de, kernel@pengutronix.de,
+	festevam@gmail.com, sakari.ailus@linux.intel.com,
+	devicetree@vger.kernel.org, imx@lists.linux.dev,
+	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+	phone-devel@vger.kernel.org
+Subject: Re: [PATCH v3 05/25] media: i2c: imx258: Add regulator control
+Message-ID: <Zg2jgmmqw0nXDYcF@duo.ucw.cz>
+References: <20240403150355.189229-1-git@luigi311.com>
+ <20240403150355.189229-6-git@luigi311.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="O21qkBwoedtlBEgw"
+Content-Disposition: inline
+In-Reply-To: <20240403150355.189229-6-git@luigi311.com>
+
+
+--O21qkBwoedtlBEgw
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240403162716.icjbicvtbleiymjy@quack3>
+Content-Transfer-Encoding: quoted-printable
 
-Hello,
+Hi!
 
-On Wed, Apr 03, 2024 at 06:27:16PM +0200, Jan Kara wrote:
-> Yeah, BPF is great and I use it but to fill in some cases from practice,
-> there are sysadmins refusing to install bcc or run your BPF scripts on
-> their systems due to company regulations, their personal fear, or whatever.
-> So debugging with what you can achieve from a shell is still the thing
-> quite often.
+> The device tree bindings define the relevant regulators for the
+> sensor, so update the driver to request the regulators and control
+> them at the appropriate times.
 
-Yeah, I mean, this happens with anything new. Tracing itself took quite a
-while to be adopted widely. BPF, bcc, bpftrace are all still pretty new and
-it's likely that the adoption line will keep shifting for quite a while.
-Besides, even with all the new gizmos there definitely are cases where good
-ol' cat interface makes sense.
+> @@ -995,9 +1007,19 @@ static int imx258_power_on(struct device *dev)
+>  	struct imx258 *imx258 =3D to_imx258(sd);
+>  	int ret;
+> =20
+> +	ret =3D regulator_bulk_enable(IMX258_NUM_SUPPLIES,
+> +				    imx258->supplies);
+> +	if (ret) {
 
-So, if the static interface makes sense, we add it but we should keep in
-mind that the trade-offs for adding such static infrastructure, especially
-for the ones which aren't *widely* useful, are rather quickly shfiting in
-the less favorable direction.
+Will this make it fail for all current users?
 
-Thanks.
+Best regards,
+								Pavel
+							=09
+--=20
+People of Russia, stop Putin before his war on Ukraine escalates.
 
--- 
-tejun
+--O21qkBwoedtlBEgw
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCZg2jggAKCRAw5/Bqldv6
+8hP5AKCepr5aI0IdUd8z6pbcafo2ln1O4QCeKiMkegDwZZl1QHdwdT3bX0OqjyQ=
+=Juic
+-----END PGP SIGNATURE-----
+
+--O21qkBwoedtlBEgw--
 
