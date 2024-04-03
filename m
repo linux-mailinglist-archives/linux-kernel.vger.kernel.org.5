@@ -1,131 +1,150 @@
-Return-Path: <linux-kernel+bounces-129823-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-129826-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 11A378970C4
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 15:26:26 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 310A88970DC
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 15:27:38 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 81F10B25FDD
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 13:26:23 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E0DAF290455
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 13:27:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D75871487DD;
-	Wed,  3 Apr 2024 13:22:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 514B614A0A6;
+	Wed,  3 Apr 2024 13:24:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="QH20x8O+"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=intel.com header.i=@intel.com header.b="BIll3WjV"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.17])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8FA54147C78
-	for <linux-kernel@vger.kernel.org>; Wed,  3 Apr 2024 13:22:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0C87514882E;
+	Wed,  3 Apr 2024 13:24:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.17
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712150553; cv=none; b=pMEItVZ5AxnbQPwykqIBPrcWP5fnWA5chgodECKOC8QenjB/sRKQlUquRmJDEfjF6Meq7CL7HCbk0QeyBB5ElWsGUzRNzb+4clfM/LMQydZ7fIRki+Xb9a3+V0AexVhALip44hlUEeICFS7OUQDGd2JSGrXpcAwkACzcrrrwxI4=
+	t=1712150664; cv=none; b=chwYPU+hXlMJ4TLUjLn3P1get4Bzvpfcti407jyJnBz4UUE8Q3EISk59TBVv5E1+xV7RRJ7F/G8DSIEmjQO5nGnB+uI8D81oZQbyJm9+FASzIC5PoG98qA7x58hwW+NWSpgXWMdLu/wyEcfXNQj6ZZapYlRuoxBndbjlDo07m7g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712150553; c=relaxed/simple;
-	bh=Ndo6P4HXNk96m/JcjQ34cszq64ka8Y455qTX/uidaYQ=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=WGo/jIKik4u6wPL88GLg76mOAybQSE7jrX4LEVAn399K/yhY88FQbPA1cCDeNtFKvpOnP/007bx4JHW74SQvolnWfsZvMhcRHmdXiOKsUgBzOHJHzWviS8XgmdMsJ/LLsjdOBLVMXLQypzP+Oacp8JlCSbGcQMeX6yWu25PniYQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=QH20x8O+; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1712150550;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=dJ3UUYfcQXqpkSvDCxCPnIRZI5MZIhj3p32tJhiB3ew=;
-	b=QH20x8O+gjMtfGT023PQmi5NvmIuQQQ0Q7qI1aY6VyjLW+bkhHOYMuE0qRtBPNLcyca2BM
-	Sba677sj3wyN7v3cdYzFyy7zUBCxPjVJCLsYV8ig/lVWpFox2rFT+UtcqPB3H7V8LZz//K
-	6TQ+V5rgokIgd323kEKQnATRszDKAxE=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-592-FUKu-y2CPpeDhkvIOXQXbw-1; Wed, 03 Apr 2024 09:22:27 -0400
-X-MC-Unique: FUKu-y2CPpeDhkvIOXQXbw-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.rdu2.redhat.com [10.11.54.2])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 0742988CC47;
-	Wed,  3 Apr 2024 13:22:27 +0000 (UTC)
-Received: from fedora.redhat.com (unknown [10.39.193.197])
-	by smtp.corp.redhat.com (Postfix) with ESMTP id 2AB904073599;
-	Wed,  3 Apr 2024 13:22:23 +0000 (UTC)
-From: Jose Ignacio Tornos Martinez <jtornosm@redhat.com>
-To: kuba@kernel.org
-Cc: dave.stevenson@raspberrypi.com,
-	davem@davemloft.net,
-	edumazet@google.com,
-	horms@kernel.org,
-	jtornosm@redhat.com,
-	linux-kernel@vger.kernel.org,
-	linux-usb@vger.kernel.org,
-	netdev@vger.kernel.org,
-	pabeni@redhat.com,
-	stable@vger.kernel.org
-Subject: [PATCH net v4] net: usb: ax88179_178a: avoid the interface always configured as random address
-Date: Wed,  3 Apr 2024 15:21:58 +0200
-Message-ID: <20240403132158.344838-1-jtornosm@redhat.com>
-In-Reply-To: <20240402183012.119f1511@kernel.org>
-References: <20240402183012.119f1511@kernel.org>
+	s=arc-20240116; t=1712150664; c=relaxed/simple;
+	bh=I5RGyzMLJIXNupLdtHjUd2yPu3cEeEw2E/J4C1xPUx4=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=NkMBfmCGwMHrdR6zQu7Z0m4jpuBtcZMfXhvGbJyvE+Xde1y0LGudgrG093xF9qVwS1aRa1FsX8hncMyOXaIM5ssGO53qzcdulWUVSSfzgJJL45MOVhWNb5ouFpo+71Eu8sDj3oyzeVdwMucXfWxreoWAutcAb8goc7tviayO41w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=BIll3WjV; arc=none smtp.client-ip=192.198.163.17
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1712150663; x=1743686663;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=I5RGyzMLJIXNupLdtHjUd2yPu3cEeEw2E/J4C1xPUx4=;
+  b=BIll3WjVgpfFcHVp7T9Pi6xrWhp5lxBR8uSu6h9l1Zf+/EKXP1GhBi7y
+   /ITTAEuYW5XNM+sj8o6F7ESKvSRpz6wzwrDRcexfi54slNjU31xEiNKfv
+   qAwmi/Ifd2yYoY1xEeQcGP4sgbbKml1fkkJP3rWMviVglP9Jp7oUftMB0
+   sivPUciTWnPh6ICRjv0kcTPm7RKnrL6w9LeDfOGZwxNXYiyxoyw6oe6Ps
+   JdwEoJvpTNGi7qKEtbxi8CUhjhvcU4o/7pFN6b5f5+NOt/YNWD5mxmuLt
+   kxvFO9/pSbLSO3xpbWYdDHBft4HuIdCIaiYLaJTTqy2UGLk2YyDXuZXMY
+   Q==;
+X-CSE-ConnectionGUID: fkEU17qARrOH0xT/nf4HTA==
+X-CSE-MsgGUID: l9ixA4vZT+azb+QJ8XDI2A==
+X-IronPort-AV: E=McAfee;i="6600,9927,11033"; a="7243739"
+X-IronPort-AV: E=Sophos;i="6.07,177,1708416000"; 
+   d="scan'208";a="7243739"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by fmvoesa111.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Apr 2024 06:24:05 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,11033"; a="915183381"
+X-IronPort-AV: E=Sophos;i="6.07,177,1708416000"; 
+   d="scan'208";a="915183381"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.72.54])
+  by fmsmga002.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Apr 2024 06:23:53 -0700
+Received: from andy by smile with local (Exim 4.97)
+	(envelope-from <andriy.shevchenko@linux.intel.com>)
+	id 1rs0aj-0000000180g-2o4w;
+	Wed, 03 Apr 2024 16:23:49 +0300
+Date: Wed, 3 Apr 2024 16:23:49 +0300
+From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To: Corey Minyard <minyard@acm.org>
+Cc: Arnd Bergmann <arnd@kernel.org>, linux-kernel@vger.kernel.org,
+	Peter Huewe <peterhuewe@gmx.de>,
+	Jarkko Sakkinen <jarkko@kernel.org>, Vinod Koul <vkoul@kernel.org>,
+	Moritz Fischer <mdf@kernel.org>, Wu Hao <hao.wu@intel.com>,
+	Xu Yilun <yilun.xu@intel.com>, Jiri Kosina <jikos@kernel.org>,
+	Benjamin Tissoires <benjamin.tissoires@redhat.com>,
+	Michael Hennerich <michael.hennerich@analog.com>,
+	Peter Rosin <peda@axentia.se>,
+	Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+	Iyappan Subramanian <iyappan@os.amperecomputing.com>,
+	Keyur Chudgar <keyur@os.amperecomputing.com>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	Yisen Zhuang <yisen.zhuang@huawei.com>,
+	Salil Mehta <salil.mehta@huawei.com>,
+	Tony Lindgren <tony@atomide.com>,
+	Liam Girdwood <lgirdwood@gmail.com>,
+	Mark Brown <broonie@kernel.org>,
+	Alexandre Belloni <alexandre.belloni@bootlin.com>,
+	Xiang Chen <chenxiang66@hisilicon.com>,
+	"James E.J. Bottomley" <jejb@linux.ibm.com>,
+	"Martin K. Petersen" <martin.petersen@oracle.com>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	Russell King <linux@armlinux.org.uk>,
+	Jiri Slaby <jirislaby@kernel.org>,
+	Jacky Huang <ychuang3@nuvoton.com>,
+	Shan-Chun Hung <schung@nuvoton.com>, Arnd Bergmann <arnd@arndb.de>,
+	Jason Gunthorpe <jgg@ziepe.ca>, Tom Rix <trix@redhat.com>,
+	Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= <u.kleine-koenig@pengutronix.de>,
+	Randy Dunlap <rdunlap@infradead.org>, Rob Herring <robh@kernel.org>,
+	Linus Walleij <linus.walleij@linaro.org>,
+	openipmi-developer@lists.sourceforge.net,
+	linux-integrity@vger.kernel.org, dmaengine@vger.kernel.org,
+	linux-fpga@vger.kernel.org, linux-input@vger.kernel.org,
+	linux-i2c@vger.kernel.org, netdev@vger.kernel.org,
+	linux-omap@vger.kernel.org, linux-rtc@vger.kernel.org,
+	linux-scsi@vger.kernel.org, linux-staging@lists.linux.dev,
+	linux-serial@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH 33/34] drivers: remove incorrect of_match_ptr/ACPI_PTR
+ annotations
+Message-ID: <Zg1YZVtM3CZWDYq1@smile.fi.intel.com>
+References: <20240403080702.3509288-1-arnd@kernel.org>
+ <20240403080702.3509288-34-arnd@kernel.org>
+ <Zg0hxMZGlwfXV2RA@smile.fi.intel.com>
+ <Zg1P9fpdwPot3Dxj@mail.minyard.net>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.2
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <Zg1P9fpdwPot3Dxj@mail.minyard.net>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 
-After the commit d2689b6a86b9 ("net: usb: ax88179_178a: avoid two
-consecutive device resets"), reset is not executed from bind operation and
-mac address is not read from the device registers or the devicetree at that
-moment. Since the check to configure if the assigned mac address is random
-or not for the interface, happens after the bind operation from
-usbnet_probe, the interface keeps configured as random address, although the
-address is correctly read and set during open operation (the only reset
-now).
+On Wed, Apr 03, 2024 at 07:47:49AM -0500, Corey Minyard wrote:
+> On Wed, Apr 03, 2024 at 12:30:44PM +0300, Andy Shevchenko wrote:
+> > On Wed, Apr 03, 2024 at 10:06:51AM +0200, Arnd Bergmann wrote:
+> > > From: Arnd Bergmann <arnd@arndb.de>
 
-In order to keep only one reset for the device and to avoid the interface
-always configured as random address, after reset, configure correctly the
-suitable field from the driver, if the mac address is read successfully from
-the device registers or the devicetree. Take into account if a locally
-administered address (random) was previously stored.
+..
 
-cc: stable@vger.kernel.org # 6.6+
-Fixes: d2689b6a86b9 ("net: usb: ax88179_178a: avoid two consecutive device resets")
-Reported-by: Dave Stevenson  <dave.stevenson@raspberrypi.com>
-Signed-off-by: Jose Ignacio Tornos Martinez <jtornosm@redhat.com>
----
-v4:
-  - Add locally administerd address check as Jakub Kicinski suggests
-v3:
-  - Send the patch separately to net.
-v2:
-  - Split the fix and the improvement in two patches as Simon Horman
-suggests.
-v1: https://lore.kernel.org/netdev/20240325173155.671807-1-jtornosm@redhat.com/
+> > > I considered splitting up the large patch into per subsystem patches, but since
+> > > it's really just the same thing everywhere it feels better to do it all at once.
+> > 
+> > Can we split to three groups:
+> > - Dropping ACPI_PTR()
+> > - Dropping of_match_ptr() (which I won't review in depth, for example)
+> > - Dropping both
+> > ?
+> 
+> Why?
 
- drivers/net/usb/ax88179_178a.c | 2 ++
- 1 file changed, 2 insertions(+)
+Easy to review ACPI parts independently on the rest. I think I explained that
+in above. Besides that some patches might require additional work (don't remember
+if it is the case for _this_ patch).
 
-diff --git a/drivers/net/usb/ax88179_178a.c b/drivers/net/usb/ax88179_178a.c
-index 88e084534853..a9c418890a1c 100644
---- a/drivers/net/usb/ax88179_178a.c
-+++ b/drivers/net/usb/ax88179_178a.c
-@@ -1273,6 +1273,8 @@ static void ax88179_get_mac_addr(struct usbnet *dev)
- 
- 	if (is_valid_ether_addr(mac)) {
- 		eth_hw_addr_set(dev->net, mac);
-+		if (!is_local_ether_addr(mac))
-+			dev->net->addr_assign_type = NET_ADDR_PERM;
- 	} else {
- 		netdev_info(dev->net, "invalid MAC address, using random\n");
- 		eth_hw_addr_random(dev->net);
 -- 
-2.44.0
+With Best Regards,
+Andy Shevchenko
+
 
 
