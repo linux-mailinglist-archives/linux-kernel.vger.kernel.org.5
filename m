@@ -1,290 +1,184 @@
-Return-Path: <linux-kernel+bounces-130410-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-130411-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C65468977B2
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 20:02:04 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 33DF58977B5
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 20:02:34 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7AA9628A7F5
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 18:02:03 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 64C7F1C25E05
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 18:02:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8F0071534E6;
-	Wed,  3 Apr 2024 18:01:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="LOHQ4EFB"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.19])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1DAA41C33;
-	Wed,  3 Apr 2024 18:01:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.19
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7629A15350E;
+	Wed,  3 Apr 2024 18:02:24 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 32389152513;
+	Wed,  3 Apr 2024 18:02:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712167313; cv=none; b=N6C3ZFZ9ZDi723q4IWrkQsIRrQ3R8nsGBtbBCqJh7vy3K31+kWB/F/toF5C4zTbENO1v+kz1tRVxERJZvVHFx27E/XQWec20W6o/ZuuR7DwkIKW4cB21mGXWC1Q0PlX1m+GaaTPRvNHf1v0EZOw1DR6NvRU1IffNmxYvUBut/zk=
+	t=1712167344; cv=none; b=SEXtTkACKWkYJ3C+yr9it6HEZpiwaYraqcRxNty5W19YbDHQhLEKvsmjf942KO9qbtPi86mi1n6+1dRp6DkeKgWLCSBOTrdXFFVNyZycyV3EwxIwxm+efw86jGJ5GKRC0pn83sd6nCT1+5dCZaJAAsFWSnNfVJDIkwI0qYHs07Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712167313; c=relaxed/simple;
-	bh=Oc8GUmQjJrBN3DiOeh6zjN29dpmqnQFaYQWjAS8Slys=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Xn5bpP85ukEvZAADV7U7Bbx/vNv85+HywyWH4QzBX8YLeNyrHJUYQDxEDLowggkH/qV88QvAKehGIJoqe0bLQ3/udoualg2ARKMoxIOz7MWF55N4HkqvOEWyKzKwXhtLq4FmG16t5juHzAq1UiujxKuv8/Kg6cpyM/HihVhUcxI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=LOHQ4EFB; arc=none smtp.client-ip=192.198.163.19
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1712167311; x=1743703311;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=Oc8GUmQjJrBN3DiOeh6zjN29dpmqnQFaYQWjAS8Slys=;
-  b=LOHQ4EFBQ0IOm+SwK9Z6KOixGxGF+jDLDRyLWCXzMTe++Y0R//hnnF/R
-   vPSc5nlivv9ql57kyAJ/OaaTo/sLKxPzhH0PND2ves3Rf+qpVDvR5+l2F
-   fzK05df2DCk6Eu6L5Z3gOLB735tVhkCy2vowk2Z2SPVWdaH71d4lLzrnY
-   qTMvpIo2+7fb0ry65npJwskrVjhigNwKKyWAbylCdAlyC20U4hFY/0Nja
-   pIJVttxDoi8QEtG+5TAgZ6mM5SC20UtYtzViidXbNocBSNx9xMqMNbSDA
-   sV19hBELXMZqFS4IDaTBUV2BP4ZOHOMsV/V67z4AFOzPyBFlua49mNSHe
-   Q==;
-X-CSE-ConnectionGUID: wKfWkHWNQqW46tlnLVYfKg==
-X-CSE-MsgGUID: W3crFeKeSDSQA7mXqJXWAg==
-X-IronPort-AV: E=McAfee;i="6600,9927,11033"; a="7286304"
-X-IronPort-AV: E=Sophos;i="6.07,177,1708416000"; 
-   d="scan'208";a="7286304"
-Received: from fmviesa003.fm.intel.com ([10.60.135.143])
-  by fmvoesa113.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Apr 2024 11:01:51 -0700
-X-CSE-ConnectionGUID: /IzuR5vXQnW4MqoN+Vg50Q==
-X-CSE-MsgGUID: PIZbA5RFSjuNddIh96E9zg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,177,1708416000"; 
-   d="scan'208";a="23002870"
-Received: from ls.sc.intel.com (HELO localhost) ([172.25.112.31])
-  by fmviesa003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Apr 2024 11:01:50 -0700
-Date: Wed, 3 Apr 2024 11:01:49 -0700
-From: Isaku Yamahata <isaku.yamahata@intel.com>
-To: Binbin Wu <binbin.wu@linux.intel.com>
-Cc: isaku.yamahata@intel.com, kvm@vger.kernel.org,
-	linux-kernel@vger.kernel.org, isaku.yamahata@gmail.com,
-	Paolo Bonzini <pbonzini@redhat.com>, erdemaktas@google.com,
-	Sean Christopherson <seanjc@google.com>,
-	Sagi Shahar <sagis@google.com>, Kai Huang <kai.huang@intel.com>,
-	chen.bo@intel.com, hang.yuan@intel.com, tina.zhang@intel.com,
-	isaku.yamahata@linux.intel.com
-Subject: Re: [PATCH v19 070/130] KVM: TDX: TDP MMU TDX support
-Message-ID: <20240403180149.GH2444378@ls.amr.corp.intel.com>
-References: <cover.1708933498.git.isaku.yamahata@intel.com>
- <56cdb0da8bbf17dc293a2a6b4ff74f6e3e034bbd.1708933498.git.isaku.yamahata@intel.com>
- <e10d121e-c813-47b0-849d-0dde92c4d49a@linux.intel.com>
+	s=arc-20240116; t=1712167344; c=relaxed/simple;
+	bh=wohhLCNkof1vY1W1Dwlmkq643wtKNO9tiiqXimh9pKk=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=F+cmCEygnzc2hUXXfPCmrf8/IBOt13fk2iQqAbCdI0lMYpErgqo5cl4R0uHJb9SQ/DAn8LUbLycecRicElw0oJluQ0icrEJXmTpxUD0pjfAaGFoqSX/1p4SWk7PQF3JgVyg5UUQSE06jWRJo18bEmrOePB5uq58WsY/tWjf+jKU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 20D441007;
+	Wed,  3 Apr 2024 11:02:52 -0700 (PDT)
+Received: from [10.57.18.20] (unknown [10.57.18.20])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 5F9333F766;
+	Wed,  3 Apr 2024 11:02:17 -0700 (PDT)
+Message-ID: <2143378c-0d5b-4e68-9da4-cabc149cb84f@arm.com>
+Date: Wed, 3 Apr 2024 19:02:15 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <e10d121e-c813-47b0-849d-0dde92c4d49a@linux.intel.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 1/2] mm, slab: move memcg charging to post-alloc hook
+Content-Language: en-US
+To: Vlastimil Babka <vbabka@suse.cz>,
+ Andrew Morton <akpm@linux-foundation.org>
+Cc: linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+ cgroups@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+ Chengming Zhou <chengming.zhou@linux.dev>,
+ Linus Torvalds <torvalds@linux-foundation.org>,
+ Josh Poimboeuf <jpoimboe@kernel.org>, Jeff Layton <jlayton@kernel.org>,
+ Chuck Lever <chuck.lever@oracle.com>, Kees Cook <kees@kernel.org>,
+ Christoph Lameter <cl@linux.com>, Pekka Enberg <penberg@kernel.org>,
+ David Rientjes <rientjes@google.com>, Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+ Roman Gushchin <roman.gushchin@linux.dev>,
+ Hyeonggon Yoo <42.hyeyoo@gmail.com>, Johannes Weiner <hannes@cmpxchg.org>,
+ Michal Hocko <mhocko@kernel.org>, Muchun Song <muchun.song@linux.dev>,
+ Alexander Viro <viro@zeniv.linux.org.uk>,
+ Christian Brauner <brauner@kernel.org>, Jan Kara <jack@suse.cz>,
+ Shakeel Butt <shakeel.butt@linux.dev>, Mark Brown <broonie@kernel.org>
+References: <20240325-slab-memcg-v2-0-900a458233a6@suse.cz>
+ <20240325-slab-memcg-v2-1-900a458233a6@suse.cz>
+ <30df7730-1b37-420d-b661-e5316679246f@arm.com>
+ <4af50be2-4109-45e5-8a36-2136252a635e@suse.cz>
+From: Aishwarya TCV <aishwarya.tcv@arm.com>
+In-Reply-To: <4af50be2-4109-45e5-8a36-2136252a635e@suse.cz>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Tue, Apr 02, 2024 at 05:13:23PM +0800,
-Binbin Wu <binbin.wu@linux.intel.com> wrote:
 
+
+On 03/04/2024 16:48, Vlastimil Babka wrote:
+> On 4/3/24 1:39 PM, Aishwarya TCV wrote:
+>>
+>>
+>> On 25/03/2024 08:20, Vlastimil Babka wrote:
+>>> The MEMCG_KMEM integration with slab currently relies on two hooks
+>>> during allocation. memcg_slab_pre_alloc_hook() determines the objcg and
+>>> charges it, and memcg_slab_post_alloc_hook() assigns the objcg pointer
+>>> to the allocated object(s).
+>>>
+>>> As Linus pointed out, this is unnecessarily complex. Failing to charge
+>>> due to memcg limits should be rare, so we can optimistically allocate
+>>> the object(s) and do the charging together with assigning the objcg
+>>> pointer in a single post_alloc hook. In the rare case the charging
+>>> fails, we can free the object(s) back.
+>>>
+>>> This simplifies the code (no need to pass around the objcg pointer) and
+>>> potentially allows to separate charging from allocation in cases where
+>>> it's common that the allocation would be immediately freed, and the
+>>> memcg handling overhead could be saved.
+>>>
+>>> Suggested-by: Linus Torvalds <torvalds@linux-foundation.org>
+>>> Link: https://lore.kernel.org/all/CAHk-=whYOOdM7jWy5jdrAm8LxcgCMFyk2bt8fYYvZzM4U-zAQA@mail.gmail.com/
+>>> Reviewed-by: Roman Gushchin <roman.gushchin@linux.dev>
+>>> Reviewed-by: Chengming Zhou <chengming.zhou@linux.dev>
+>>> Signed-off-by: Vlastimil Babka <vbabka@suse.cz>
+>>> ---
+>>>  mm/slub.c | 180 +++++++++++++++++++++++++++-----------------------------------
+>>>  1 file changed, 77 insertions(+), 103 deletions(-)
+>>
+>> Hi Vlastimil,
+>>
+>> When running the LTP test "memcg_limit_in_bytes" against next-master
+>> (next-20240402) kernel with Arm64 on JUNO, oops is observed in our CI. I
+>> can send the full logs if required. It is observed to work fine on
+>> softiron-overdrive-3000.
+>>
+>> A bisect identified 11bb2d9d91627935c63ea3e6a031fd238c846e1 as the first
+>> bad commit. Bisected it on the tag "next-20240402" at repo
+>> "https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git".
+>>
+>> This works fine on  Linux version v6.9-rc2
 > 
+> Oops, sorry, can you verify that this fixes it?
+> Thanks.
 > 
-> On 2/26/2024 4:26 PM, isaku.yamahata@intel.com wrote:
-> > From: Isaku Yamahata <isaku.yamahata@intel.com>
-> > 
-> > Implement hooks of TDP MMU for TDX backend.  TLB flush, TLB shootdown,
-> > propagating the change private EPT entry to Secure EPT and freeing Secure
-> > EPT page. TLB flush handles both shared EPT and private EPT.  It flushes
-> > shared EPT same as VMX.  It also waits for the TDX TLB shootdown.  For the
-> > hook to free Secure EPT page, unlinks the Secure EPT page from the Secure
-> > EPT so that the page can be freed to OS.
-> > 
-> > Propagate the entry change to Secure EPT.  The possible entry changes are
-> > present -> non-present(zapping) and non-present -> present(population).  On
-> > population just link the Secure EPT page or the private guest page to the
-> > Secure EPT by TDX SEAMCALL. Because TDP MMU allows concurrent
-> > zapping/population, zapping requires synchronous TLB shoot down with the
-> > frozen EPT entry.  It zaps the secure entry, increments TLB counter, sends
-> > IPI to remote vcpus to trigger TLB flush, and then unlinks the private
-> > guest page from the Secure EPT. For simplicity, batched zapping with
-> > exclude lock is handled as concurrent zapping.  Although it's inefficient,
-> > it can be optimized in the future.
-> > 
-> > For MMIO SPTE, the spte value changes as follows.
-> > initial value (suppress VE bit is set)
-> > -> Guest issues MMIO and triggers EPT violation
-> > -> KVM updates SPTE value to MMIO value (suppress VE bit is cleared)
-> > -> Guest MMIO resumes.  It triggers VE exception in guest TD
-> > -> Guest VE handler issues TDG.VP.VMCALL<MMIO>
-> > -> KVM handles MMIO
-> > -> Guest VE handler resumes its execution after MMIO instruction
-> > 
-> > Signed-off-by: Isaku Yamahata <isaku.yamahata@intel.com>
-> > 
-> > ---
-> > v19:
-> > - Compile fix when CONFIG_HYPERV != y.
-> >    It's due to the following patch.  Catch it up.
-> >    https://lore.kernel.org/all/20231018192325.1893896-1-seanjc@google.com/
-> > - Add comments on tlb shootdown to explan the sequence.
-> > - Use gmem_max_level callback, delete tdp_max_page_level.
-> > 
-> > v18:
-> > - rename tdx_sept_page_aug() -> tdx_mem_page_aug()
-> > - checkpatch: space => tab
-> > 
-> > v15 -> v16:
-> > - Add the handling of TD_ATTR_SEPT_VE_DISABLE case.
-> > 
-> > v14 -> v15:
-> > - Implemented tdx_flush_tlb_current()
-> > - Removed unnecessary invept in tdx_flush_tlb().  It was carry over
-> >    from the very old code base.
-> > 
-> > Signed-off-by: Isaku Yamahata <isaku.yamahata@intel.com>
-> > ---
-> >   arch/x86/kvm/mmu/spte.c    |   3 +-
-> >   arch/x86/kvm/vmx/main.c    |  91 ++++++++-
-> >   arch/x86/kvm/vmx/tdx.c     | 372 +++++++++++++++++++++++++++++++++++++
-> >   arch/x86/kvm/vmx/tdx.h     |   2 +-
-> >   arch/x86/kvm/vmx/tdx_ops.h |   6 +
-> >   arch/x86/kvm/vmx/x86_ops.h |  13 ++
-> >   6 files changed, 481 insertions(+), 6 deletions(-)
-> > 
-> [...]
+> ----8<----
+> From b0597c220624fef4f10e26079a3ff1c86f02a12b Mon Sep 17 00:00:00 2001
+> From: Vlastimil Babka <vbabka@suse.cz>
+> Date: Wed, 3 Apr 2024 17:45:15 +0200
+> Subject: [PATCH] fixup! mm, slab: move memcg charging to post-alloc hook
 > 
-> > +static int tdx_sept_zap_private_spte(struct kvm *kvm, gfn_t gfn,
-> > +				      enum pg_level level)
-> > +{
-> > +	int tdx_level = pg_level_to_tdx_sept_level(level);
-> > +	struct kvm_tdx *kvm_tdx = to_kvm_tdx(kvm);
-> > +	gpa_t gpa = gfn_to_gpa(gfn) & KVM_HPAGE_MASK(level);
-> > +	struct tdx_module_args out;
-> > +	u64 err;
-> > +
-> > +	/* This can be called when destructing guest TD after freeing HKID. */
-> > +	if (unlikely(!is_hkid_assigned(kvm_tdx)))
-> > +		return 0;
-> > +
-> > +	/* For now large page isn't supported yet. */
-> > +	WARN_ON_ONCE(level != PG_LEVEL_4K);
-> > +	err = tdh_mem_range_block(kvm_tdx->tdr_pa, gpa, tdx_level, &out);
-> > +	if (unlikely(err == TDX_ERROR_SEPT_BUSY))
-> > +		return -EAGAIN;
-> > +	if (KVM_BUG_ON(err, kvm)) {
-> > +		pr_tdx_error(TDH_MEM_RANGE_BLOCK, err, &out);
-> > +		return -EIO;
-> > +	}
-> > +	return 0;
-> > +}
-> > +
-> > +/*
-> > + * TLB shoot down procedure:
-> > + * There is a global epoch counter and each vcpu has local epoch counter.
-> > + * - TDH.MEM.RANGE.BLOCK(TDR. level, range) on one vcpu
-> > + *   This blocks the subsequenct creation of TLB translation on that range.
-> > + *   This corresponds to clear the present bit(all RXW) in EPT entry
-> > + * - TDH.MEM.TRACK(TDR): advances the epoch counter which is global.
-> > + * - IPI to remote vcpus
-> > + * - TDExit and re-entry with TDH.VP.ENTER on remote vcpus
-> > + * - On re-entry, TDX module compares the local epoch counter with the global
-> > + *   epoch counter.  If the local epoch counter is older than the global epoch
-> > + *   counter, update the local epoch counter and flushes TLB.
-> > + */
-> > +static void tdx_track(struct kvm *kvm)
-> > +{
-> > +	struct kvm_tdx *kvm_tdx = to_kvm_tdx(kvm);
-> > +	u64 err;
-> > +
-> > +	KVM_BUG_ON(!is_hkid_assigned(kvm_tdx), kvm);
-> > +	/* If TD isn't finalized, it's before any vcpu running. */
-> > +	if (unlikely(!is_td_finalized(kvm_tdx)))
-> > +		return;
-> > +
-> > +	/*
-> > +	 * tdx_flush_tlb() waits for this function to issue TDH.MEM.TRACK() by
-> > +	 * the counter.  The counter is used instead of bool because multiple
-> > +	 * TDH_MEM_TRACK() can be issued concurrently by multiple vcpus.
+> The call to memcg_alloc_abort_single() is wrong, it expects a pointer to
+> single object, not an array.
 > 
-> Which case will have concurrent issues of TDH_MEM_TRACK() by multiple vcpus?
-> For now, zapping is holding write lock.
-> Promotion/demotion may have concurrent issues of TDH_MEM_TRACK(), but it's
-> not supported yet.
-
-You're right. Large page support will use it.  With the assumption of only
-single vcpu issuing tlb flush, The alternative is boolean + memory barrier.
-I prefer to keep atomic_t and drop this comment than boolean + memory barrier
-because we will eventually switch to atomic_t.
-
-
-> > +	 *
-> > +	 * optimization: The TLB shoot down procedure described in The TDX
-> > +	 * specification is, TDH.MEM.TRACK(), send IPI to remote vcpus, confirm
-> > +	 * all remote vcpus exit to VMM, and execute vcpu, both local and
-> > +	 * remote.  Twist the sequence to reduce IPI overhead as follows.
-> > +	 *
-> > +	 * local			remote
-> > +	 * -----			------
-> > +	 * increment tdh_mem_track
-> > +	 *
-> > +	 * request KVM_REQ_TLB_FLUSH
-> > +	 * send IPI
-> > +	 *
-> > +	 *				TDEXIT to KVM due to IPI
-> > +	 *
-> > +	 *				IPI handler calls tdx_flush_tlb()
-> > +	 *                              to process KVM_REQ_TLB_FLUSH.
-> > +	 *				spin wait for tdh_mem_track == 0
-> > +	 *
-> > +	 * TDH.MEM.TRACK()
-> > +	 *
-> > +	 * decrement tdh_mem_track
-> > +	 *
-> > +	 *				complete KVM_REQ_TLB_FLUSH
-> > +	 *
-> > +	 * TDH.VP.ENTER to flush tlbs	TDH.VP.ENTER to flush tlbs
-> > +	 */
-> > +	atomic_inc(&kvm_tdx->tdh_mem_track);
-> > +	/*
-> > +	 * KVM_REQ_TLB_FLUSH waits for the empty IPI handler, ack_flush(), with
-> > +	 * KVM_REQUEST_WAIT.
-> > +	 */
-> > +	kvm_make_all_cpus_request(kvm, KVM_REQ_TLB_FLUSH);
-> > +
-> > +	do {
-> > +		err = tdh_mem_track(kvm_tdx->tdr_pa);
-> > +	} while (unlikely((err & TDX_SEAMCALL_STATUS_MASK) == TDX_OPERAND_BUSY));
-> > +
-> > +	/* Release remote vcpu waiting for TDH.MEM.TRACK in tdx_flush_tlb(). */
-> > +	atomic_dec(&kvm_tdx->tdh_mem_track);
-> > +
-> > +	if (KVM_BUG_ON(err, kvm))
-> > +		pr_tdx_error(TDH_MEM_TRACK, err, NULL);
-> > +
-> > +}
-> > +
-> > +static int tdx_sept_free_private_spt(struct kvm *kvm, gfn_t gfn,
-> > +				     enum pg_level level, void *private_spt)
-> > +{
-> > +	struct kvm_tdx *kvm_tdx = to_kvm_tdx(kvm);
-> > +
-> > +	/*
-> > +	 * The HKID assigned to this TD was already freed and cache was
-> > +	 * already flushed. We don't have to flush again.
-> > +	 */
-> > +	if (!is_hkid_assigned(kvm_tdx))
-> > +		return tdx_reclaim_page(__pa(private_spt));
-> > +
-> > +	/*
-> > +	 * free_private_spt() is (obviously) called when a shadow page is being
-> > +	 * zapped.  KVM doesn't (yet) zap private SPs while the TD is active.
-> > +	 * Note: This function is for private shadow page.  Not for private
-> > +	 * guest page.   private guest page can be zapped during TD is active.
-> > +	 * shared <-> private conversion and slot move/deletion.
-> > +	 */
-> > +	KVM_BUG_ON(is_hkid_assigned(kvm_tdx), kvm);
+> Reported-by: Aishwarya TCV <aishwarya.tcv@arm.com>
+> Signed-off-by: Vlastimil Babka <vbabka@suse.cz>
+> ---
+>  mm/slub.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> At this point, is_hkid_assigned(kvm_tdx) is always true.
+> diff --git a/mm/slub.c b/mm/slub.c
+> index f5b151a58b7d..b32e79629ae7 100644
+> --- a/mm/slub.c
+> +++ b/mm/slub.c
+> @@ -2100,7 +2100,7 @@ bool memcg_slab_post_alloc_hook(struct kmem_cache *s, struct list_lru *lru,
+>  		return true;
+>  
+>  	if (likely(size == 1)) {
+> -		memcg_alloc_abort_single(s, p);
+> +		memcg_alloc_abort_single(s, *p);
+>  		*p = NULL;
+>  	} else {
+>  	
+	kmem_cache_free_bulk(s, size, p);
 
-Yes, will drop this KVM_BUG_ON().
--- 
-Isaku Yamahata <isaku.yamahata@intel.com>
+Tested the attached patch on next-20240302. Confirming that the test is
+running fine. Test run log is attached below.
+
+Test run log:
+--------------
+memcg_limit_in_bytes 8 TPASS: process 614 is killed
+memcg_limit_in_bytes 9 TINFO: Test limit_in_bytes will be aligned to
+PAGESIZE
+memcg_limit_in_bytes 9 TPASS: echo 4095 > memory.limit_in_bytes passed
+as expected
+memcg_limit_in_bytes 9 TPASS: input=4095, limit_in_bytes=0
+memcg_limit_in_bytes 10 TPASS: echo 4097 > memory.limit_in_bytes passed
+as expected
+memcg_limit_in_bytes 10 TPASS: input=4097, limit_in_bytes=4096
+memcg_limit_in_bytes 11 TPASS: echo 1 > memory.limit_in_bytes passed as
+expected
+memcg_limit_in_bytes 11 TPASS: input=1, limit_in_bytes=0
+memcg_limit_in_bytes 12 TINFO: Test invalid memory.limit_in_bytes
+memcg_limit_in_bytes 12 TPASS: echo -1 > memory.limit_in_bytes passed as
+expected
+memcg_limit_in_bytes 13 TPASS: echo 1.0 > memory.limit_in_bytes failed
+as expected
+memcg_limit_in_bytes 14 TPASS: echo 1xx > memory.limit_in_bytes failed
+as expected
+memcg_limit_in_bytes 15 TPASS: echo xx > memory.limit_in_bytes failed as
+expected
+Summary:
+passed   18
+failed   0
+broken   0
+skipped  0
+warnings 0
+
+Thanks,
+Aishwarya
 
