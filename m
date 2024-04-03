@@ -1,119 +1,131 @@
-Return-Path: <linux-kernel+bounces-130028-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-130049-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 48D8E897362
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 17:05:47 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1CE6389738A
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 17:10:46 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 02C6228BB5C
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 15:05:46 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 958571F22DA5
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 15:10:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CBF2D149DF6;
-	Wed,  3 Apr 2024 15:05:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 43D8814D292;
+	Wed,  3 Apr 2024 15:08:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="YDvrYiSK"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=luigi311.com header.i=@luigi311.com header.b="nSDBw2o8"
+Received: from mail-108-mta163.mxroute.com (mail-108-mta163.mxroute.com [136.175.108.163])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C2EC213A272
-	for <linux-kernel@vger.kernel.org>; Wed,  3 Apr 2024 15:05:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 090AB149DE5
+	for <linux-kernel@vger.kernel.org>; Wed,  3 Apr 2024 15:08:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=136.175.108.163
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712156740; cv=none; b=UoUsfkve9KIcKbud+n1L04JzyG/rYAY/TfxXkcfLFDlYj47gZg3P4qIjbmc5oKjU6WXOZYiEZRfjEkdBSfVvGm92SlWSwUO5PZ/r0Yct0P/FJS5PUQ4irP1r1B8Wwly+nnfMsR3xV8aBmP9A09aJnSdP7JKGZ+bBZgAqy2e8w1c=
+	t=1712156926; cv=none; b=TrNX/Ji28/51q1ODTN4xwK7itzms5O7dRB5l9iW+JbGpqUJRTAjFtEEcYO98Y5CR2czZ+0zkq9TUcTfyC0+ABiar7AJtYZAF/VT81wr1cHqvsab+BDiD2kxeZ+AoCU1sRBGHk5SxZwMO99v1JGoAn9bhY2nkLA+Xfm0MG+Bq8VM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712156740; c=relaxed/simple;
-	bh=deMENPl+c6MSxW2hu/QZ8GYeKyym0U74jnDvIEZWRPE=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=eqzDp03Sgy0mnf0O8CmrPJJw8ODuyWhOdwcz5vC4uHNC23O8PmqCiGObqb+G2ke9SR2BBWg0Y4dM1Y8qn36RvVmYmYFslphSA+gvBSYXH2Itoq0EYYD9fVKzUjpJhuSFV6IxAgq00caAaA98pJ5xWzP5+8+p4wiuFE1F/MK5ktU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=YDvrYiSK; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1712156738;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=UdTf2pSCOIaYn7Otxzx3C9HDo/HSUaFRAsJWaqzhTKw=;
-	b=YDvrYiSKp7Br8a3FVMdmAGwDHx842NlZ0CN0qm8azdv2YzzN8Z4JI9InYQr35JPLWj+avm
-	N0KHfWuqcGT5tSH1J9SbIxPmvUL4R0wjY7GA9bOW+opUNh8tnGCviMoLFG+Pxt1VuuLwhS
-	YevJZBSTZOWqCfXVGHQbA5Wmjo6JzEo=
-Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
- by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-568-vxjWNBbPPnOwkeIjxQ0Jyw-1; Wed,
- 03 Apr 2024 11:05:32 -0400
-X-MC-Unique: vxjWNBbPPnOwkeIjxQ0Jyw-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.rdu2.redhat.com [10.11.54.2])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id B3B773822552;
-	Wed,  3 Apr 2024 15:05:31 +0000 (UTC)
-Received: from dhcp-27-174.brq.redhat.com (unknown [10.45.224.49])
-	by smtp.corp.redhat.com (Postfix) with SMTP id B6D1C4073487;
-	Wed,  3 Apr 2024 15:05:28 +0000 (UTC)
-Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
-	oleg@redhat.com; Wed,  3 Apr 2024 17:04:07 +0200 (CEST)
-Date: Wed, 3 Apr 2024 17:03:43 +0200
-From: Oleg Nesterov <oleg@redhat.com>
-To: Thomas Gleixner <tglx@linutronix.de>
-Cc: John Stultz <jstultz@google.com>, Marco Elver <elver@google.com>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Ingo Molnar <mingo@kernel.org>,
-	"Eric W. Biederman" <ebiederm@xmission.com>,
-	linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-	Dmitry Vyukov <dvyukov@google.com>, kasan-dev@googlegroups.com,
-	Edward Liaw <edliaw@google.com>,
-	Carlos Llamas <cmllamas@google.com>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Subject: Re: [PATCH v6 1/2] posix-timers: Prefer delivery of signals to the
- current thread
-Message-ID: <20240403150343.GC31764@redhat.com>
-References: <20230316123028.2890338-1-elver@google.com>
- <CANDhNCqBGnAr_MSBhQxWo+-8YnPPggxoVL32zVrDB+NcoKXVPQ@mail.gmail.com>
- <87frw3dd7d.ffs@tglx>
- <CANDhNCqbJHTNcnBj=twHQqtLjXiGNeGJ8tsbPrhGFq4Qz53c5w@mail.gmail.com>
- <874jcid3f6.ffs@tglx>
+	s=arc-20240116; t=1712156926; c=relaxed/simple;
+	bh=YP2YU+q50j+CbuHVFQ7Q2sHtBliifq6fjUJyisehTWE=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=ri4M4JLY2MBMaEadoeuBLkK4/FgUnYZJkLNuixsOTLHeHKixj5+atVrUXiD4ZLX0Id+PhWH0FcNesCTv+GwZR8jC5v3VmP4bf4XPuSRKX8R4IcF+hUkP/6TxckPtSLP1yRqV+aTruqeBOaIJRRTnvcWkCZ7QPLdWvpFjzvMXZDA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=luigi311.com; spf=pass smtp.mailfrom=luigi311.com; dkim=pass (2048-bit key) header.d=luigi311.com header.i=@luigi311.com header.b=nSDBw2o8; arc=none smtp.client-ip=136.175.108.163
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=luigi311.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=luigi311.com
+Received: from filter006.mxroute.com ([136.175.111.2] filter006.mxroute.com)
+ (Authenticated sender: mN4UYu2MZsgR)
+ by mail-108-mta163.mxroute.com (ZoneMTA) with ESMTPSA id 18ea48075bf0003bea.010
+ for <linux-kernel@vger.kernel.org>
+ (version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384);
+ Wed, 03 Apr 2024 15:07:45 +0000
+X-Zone-Loop: 68a81bf7ff5abff1dca1f85586cfca69b8b1dbdfd80a
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=luigi311.com; s=x; h=Content-Transfer-Encoding:MIME-Version:References:
+	In-Reply-To:Message-ID:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:
+	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+	Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
+	List-Subscribe:List-Post:List-Owner:List-Archive;
+	bh=vV24gh/XiUknGj+/6PBHcigmW60OQcUrTVgV2ZFCgAA=; b=nSDBw2o8qZiHtzGttu4lhL+mzm
+	xUg7GS6gF74J/O4inDzLvqSZVcHM+gS6RUDioKpvYL9KIpzjVOUrPr/ovLyfhAeFNNgmR/0JcBtK0
+	WAny9B81Z4k38CuAbcmgyIzNKyu3qskRQIGLCkjYWq39VydY6qUrSczzo8JWAYX0VcB1soPBgLgY5
+	cVXc7Kqe01oRfNH1RuBKt3wJDWhpz1tQh1CJPhijbnf9ou6KPZE7R3tMjIsb76sf6fvgNqrNhnUgk
+	uOMN7iFhB+/2UaZ3dXglEGLlwiXIz0ATaljweq/FU247lCLZqFWKlN3eHTnCvUHb2llEJ5q2HNqGl
+	ebP4VDYA==;
+From: git@luigi311.com
+To: linux-media@vger.kernel.org
+Cc: dave.stevenson@raspberrypi.com,
+	jacopo.mondi@ideasonboard.com,
+	mchehab@kernel.org,
+	robh@kernel.org,
+	krzysztof.kozlowski+dt@linaro.org,
+	conor+dt@kernel.org,
+	shawnguo@kernel.org,
+	s.hauer@pengutronix.de,
+	kernel@pengutronix.de,
+	festevam@gmail.com,
+	sakari.ailus@linux.intel.com,
+	devicetree@vger.kernel.org,
+	imx@lists.linux.dev,
+	linux-arm-kernel@lists.infradead.org,
+	linux-kernel@vger.kernel.org,
+	pavel@ucw.cz,
+	phone-devel@vger.kernel.org,
+	Luis Garcia <git@luigi311.com>
+Subject: [PATCH v3 14/25] media: i2c: imx258: Issue reset before starting streaming
+Date: Wed,  3 Apr 2024 09:03:43 -0600
+Message-ID: <20240403150355.189229-15-git@luigi311.com>
+In-Reply-To: <20240403150355.189229-1-git@luigi311.com>
+References: <20240403150355.189229-1-git@luigi311.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <874jcid3f6.ffs@tglx>
-User-Agent: Mutt/1.5.24 (2015-08-30)
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.2
+Content-Transfer-Encoding: 8bit
+X-Authenticated-Id: personal@luigi311.com
 
-On 04/03, Thomas Gleixner wrote:
->
-> The test if fragile as hell as there is absolutely no guarantee that the
-> signal target distribution is as expected. The expectation is based on a
-> statistical assumption which does not really hold.
+From: Dave Stevenson <dave.stevenson@raspberrypi.com>
 
-Agreed. I too never liked this test-case.
+Whilst not documented, register 0x0103 bit 0 is the soft
+reset for the sensor, so send it before trying to configure
+the sensor.
 
-I forgot everything about this patch and test-case, I can't really read
-your patch right now (sorry), so I am sure I missed something, but
+Signed-off-by: Dave Stevenson <dave.stevenson@raspberrypi.com>
+Signed-off-by: Luis Garcia <git@luigi311.com>
+---
+ drivers/media/i2c/imx258.c | 12 ++++++++++++
+ 1 file changed, 12 insertions(+)
 
->  static void *distribution_thread(void *arg)
->  {
-> -	while (__atomic_load_n(&remain, __ATOMIC_RELAXED));
-> -	return NULL;
-> +	while (__atomic_load_n(&remain, __ATOMIC_RELAXED) && !done) {
-> +		if (got_signal)
-> +			usleep(10);
-> +	}
-> +
-> +	return (void *)got_signal;
->  }
-
-Why distribution_thread() can't simply exit if got_signal != 0 ?
-
-See https://lore.kernel.org/all/20230128195641.GA14906@redhat.com/
-
-Oleg.
+diff --git a/drivers/media/i2c/imx258.c b/drivers/media/i2c/imx258.c
+index 5a5bf2b25bdf..c242e318be11 100644
+--- a/drivers/media/i2c/imx258.c
++++ b/drivers/media/i2c/imx258.c
+@@ -20,6 +20,8 @@
+ #define IMX258_MODE_STANDBY		0x00
+ #define IMX258_MODE_STREAMING		0x01
+ 
++#define IMX258_REG_RESET		0x0103
++
+ /* Chip ID */
+ #define IMX258_REG_CHIP_ID		0x0016
+ #define IMX258_CHIP_ID			0x0258
+@@ -1052,6 +1054,16 @@ static int imx258_start_streaming(struct imx258 *imx258)
+ 	const struct imx258_link_freq_config *link_freq_cfg;
+ 	int ret, link_freq_index;
+ 
++	ret = imx258_write_reg(imx258, IMX258_REG_RESET, IMX258_REG_VALUE_08BIT,
++			       0x01);
++	if (ret) {
++		dev_err(&client->dev, "%s failed to reset sensor\n", __func__);
++		return ret;
++	}
++
++	/* 12ms is required from poweron to standby */
++	fsleep(12000);
++
+ 	/* Setup PLL */
+ 	link_freq_index = imx258->cur_mode->link_freq_index;
+ 	link_freq_cfg = &imx258->link_freq_configs[link_freq_index];
+-- 
+2.42.0
 
 
