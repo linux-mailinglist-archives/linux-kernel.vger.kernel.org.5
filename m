@@ -1,59 +1,56 @@
-Return-Path: <linux-kernel+bounces-129279-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-129280-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3459F896829
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 10:16:34 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9906789682A
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 10:16:45 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E296E28A6DE
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 08:16:32 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C346E1C25B75
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 08:16:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 96C9F8286B;
-	Wed,  3 Apr 2024 08:07:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DB09581207;
+	Wed,  3 Apr 2024 08:08:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="iIwfgNho"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="UAlVLpOE"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D314F81207;
-	Wed,  3 Apr 2024 08:07:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 289CD82C76
+	for <linux-kernel@vger.kernel.org>; Wed,  3 Apr 2024 08:07:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712131675; cv=none; b=ZglCYLtslRlE+2Zg203LJuq7kPaXF7cxxmUdtb3nbsxZWLk8PrwkalJNqlxYktQUKID3fKmKahDZdSLFHMajysd6QyEfFFE07ZDKC1+iLIdwMajJQ3x0VyfIpSvEtRJmfyO23oDMS40CA0T2+WCPn8br6qE5K4xsMrsO0C4/3TA=
+	t=1712131680; cv=none; b=uE49ILQ87C+d8Dd+Xoh2xyTBUf2vmAlBJJ0rf6jM6KbXTgk8/oGCHUk6AACWgqVwX4NGP+UVW5XCVmEMn6HvQg96lwGWh8saJbbW3XfzbsEpULHa3dvbmvFUCvGQSt5AQyhe1qJytrivcAYpbQoS0Lbx76Q3Cir+MiRNxB2Pmnc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712131675; c=relaxed/simple;
-	bh=i2kwREvJagmflXYpUvDxkKnpylOun/MjosG4Ff0VeyU=;
+	s=arc-20240116; t=1712131680; c=relaxed/simple;
+	bh=+RZZEkb1FuJEVe5kPWRemc+Kjc4SmXvUOzkLd/XEDLw=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=dsKjkbm8W2L8ag+vIIFvIMZAOpjJxruTd6LLy0ZWn8tjXFTQ0JHv1oQp51XLNWWobrzQPKA5V9sjeKOTyJvWr/PaPwT29GMCvU5j4nKf69gWIEO4kPJpYWE0PbR0g4MzL/XEGbrmJvYSEzZKrLhC9PhgijrBukFizJ0QC539H7M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=iIwfgNho; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2C107C43330;
-	Wed,  3 Apr 2024 08:07:50 +0000 (UTC)
+	 MIME-Version; b=T3G0VKEgiHegotLctAld8LQB1Scuf1wXIonwUvJeHjrBcPvwn/3mPROTwKLb/OnWYxiHwFUkG1bnuvBGY91Nssm0LDCfYaZyp8yxgO2AP3DSpQDWHsPWW15StqdDjW22Ov/BJXAFgkzeiPzxJ1Z0e1bERjhuOSaieHqy0wHWoM4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=UAlVLpOE; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 16C2CC433C7;
+	Wed,  3 Apr 2024 08:07:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712131673;
-	bh=i2kwREvJagmflXYpUvDxkKnpylOun/MjosG4Ff0VeyU=;
+	s=k20201202; t=1712131679;
+	bh=+RZZEkb1FuJEVe5kPWRemc+Kjc4SmXvUOzkLd/XEDLw=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=iIwfgNhoK4uO99gGZSx/4AtuVr5J0+ILk77OBxquuSiIuRfxua0kwS5ZHLif5eNFK
-	 Xiwlt9yeTpBRhXGlXbXwwHy3FGxNmF/kbPC6bpAQPsWi5aLQEkG8jAiciY3TSvcEds
-	 2x7mp557Sf6hrfOqNsybrYTk55PdyuFDHv74h9gxE7BH5qNt83P2kSCn6r+/pfGQwu
-	 Qz/sLLA3y28X6bUTadkVRMd7GFVGelJrLkmJWcf3N8rAqOfz0Vb+cTIotRUwSh69Rk
-	 G+bpOo4zdRzXll2Q7I3jBh8x0oqTjEqUM9/PS9zuRJn01ez5Rg0yvl6X2szE/sSueT
-	 jJPzh+CAjCubw==
+	b=UAlVLpOES8BpHSPX9xir8ZtWnkI77GoKSccDd8F6+Lk5tHErVvCS9G6JNPltXMnym
+	 rw6JRTNWTdPa5bZKdSJ0J85vD98lmiNtbSSQlOIX2sLHXEq5Sn2VUDYE3dYun2NXTX
+	 69JmjTv/12GuEiqIxNPjAsBBfE3znOnNROub0nUFLF5j0n2ti8dQ1JmVenQn+YcJcn
+	 yACPEXgXsCS5/igxN4eicNYihVjW3GKeuNcp2rAc/hTetqC0CMP63kOVJKFP3f/iJv
+	 /TANOdMIz3qmKZX+lUUUhuDWVHO+koGyTXMsGF2dubT63flnfqpvQk4yUr36PZSPla
+	 cmPMc8C010LUw==
 From: Arnd Bergmann <arnd@kernel.org>
 To: linux-kernel@vger.kernel.org,
-	Kees Cook <keescook@chromium.org>,
-	Andrew Morton <akpm@linux-foundation.org>
+	Alan Cox <alan@linux.intel.com>,
+	Jason Hu <jia-cheng.hu@intel.com>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	Jin Qian <jinqian@android.com>
 Cc: Arnd Bergmann <arnd@arndb.de>,
-	Marco Elver <elver@google.com>,
-	Andrey Konovalov <andreyknvl@gmail.com>,
-	Andrey Ryabinin <ryabinin.a.a@gmail.com>,
-	Justin Stitt <justinstitt@google.com>,
-	kasan-dev@googlegroups.com,
-	linux-hardening@vger.kernel.org
-Subject: [PATCH 02/34] ubsan: fix unused variable warning in test module
-Date: Wed,  3 Apr 2024 10:06:20 +0200
-Message-Id: <20240403080702.3509288-3-arnd@kernel.org>
+	=?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+Subject: [PATCH 03/34] platform: goldfish: remove ACPI_PTR() annotations
+Date: Wed,  3 Apr 2024 10:06:21 +0200
+Message-Id: <20240403080702.3509288-4-arnd@kernel.org>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20240403080702.3509288-1-arnd@kernel.org>
 References: <20240403080702.3509288-1-arnd@kernel.org>
@@ -67,29 +64,34 @@ Content-Transfer-Encoding: 8bit
 
 From: Arnd Bergmann <arnd@arndb.de>
 
-This is one of the drivers with an unused variable that is marked 'const'.
-Adding a __used annotation here avoids the warning and lets us enable
-the option by default:
+On platforms without ACPI support, this causes a W=1 warning from gcc when
+the driver is built-in:
 
-lib/test_ubsan.c:137:28: error: unused variable 'skip_ubsan_array' [-Werror,-Wunused-const-variable]
+drivers/platform/goldfish/goldfish_pipe.c:925:36: warning: 'goldfish_pipe_acpi_match' defined but not used [-Wunused-const-variable=]
+  925 | static const struct acpi_device_id goldfish_pipe_acpi_match[] = {
+      |                                    ^~~~~~~~~~~~~~~~~~~~~~~~
 
-Fixes: 4a26f49b7b3d ("ubsan: expand tests and reporting")
+There is no real harm in just keeping the small table around, so rather
+than adding more #ifdef checks, just reference it unconditionally to avoid
+the warning.
+
+Fixes: d62f324b0ac8 ("goldfish: Enable ACPI-based enumeration for android pipe")
 Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 ---
- lib/test_ubsan.c | 2 +-
+ drivers/platform/goldfish/goldfish_pipe.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/lib/test_ubsan.c b/lib/test_ubsan.c
-index 276c12140ee2..c288df9372ed 100644
---- a/lib/test_ubsan.c
-+++ b/lib/test_ubsan.c
-@@ -134,7 +134,7 @@ static const test_ubsan_fp test_ubsan_array[] = {
- };
- 
- /* Excluded because they Oops the module. */
--static const test_ubsan_fp skip_ubsan_array[] = {
-+static __used const test_ubsan_fp skip_ubsan_array[] = {
- 	test_ubsan_divrem_overflow,
+diff --git a/drivers/platform/goldfish/goldfish_pipe.c b/drivers/platform/goldfish/goldfish_pipe.c
+index 061aa9647c19..6a0a42887857 100644
+--- a/drivers/platform/goldfish/goldfish_pipe.c
++++ b/drivers/platform/goldfish/goldfish_pipe.c
+@@ -940,7 +940,7 @@ static struct platform_driver goldfish_pipe_driver = {
+ 	.driver = {
+ 		.name = "goldfish_pipe",
+ 		.of_match_table = goldfish_pipe_of_match,
+-		.acpi_match_table = ACPI_PTR(goldfish_pipe_acpi_match),
++		.acpi_match_table = goldfish_pipe_acpi_match,
+ 	}
  };
  
 -- 
