@@ -1,164 +1,96 @@
-Return-Path: <linux-kernel+bounces-130191-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-130192-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id D5543897530
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 18:26:06 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 101D3897533
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 18:27:11 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1DCA728A148
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 16:26:05 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B57D51F2AE79
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 16:27:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D23ED15099B;
-	Wed,  3 Apr 2024 16:25:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 07569150990;
+	Wed,  3 Apr 2024 16:27:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="GPY9OJwc"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.12])
+	dkim=pass (2048-bit key) header.d=acm.org header.i=@acm.org header.b="k+KaayxM"
+Received: from 008.lax.mailroute.net (008.lax.mailroute.net [199.89.1.11])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A161914AD15;
-	Wed,  3 Apr 2024 16:25:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.12
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ACB7C14F9E1;
+	Wed,  3 Apr 2024 16:27:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=199.89.1.11
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712161557; cv=none; b=WYLossb/327z4wcdT4l4Ha0au6rkum0OeshwLLQhj31NmkUFSihK9Ih6M8ZjXA+o0Rw5UtcjT+/hUDRG68fwzTceWIxs8zpbr6Xpkr8cD9QteaWb1zTuyxlRsRf8FjLjeFbbag188tzDCvz7VvkgtTY20fVtQ5fL6RY85ADUuZI=
+	t=1712161622; cv=none; b=CcBE1+L5MK6vG8pkC6VelUHfwL3tlqfm43vKY0pg14ehrECtFh15yrlEotvjtcygo4/uZdqLrMO7nqNeolKvncYpOpMM/zNWc8hOKj7XlApycfSbP26i5UKRBywaZ8hVUkM/20FC3nGuLtCu3uilpMnsGid94/YfIjBdI4rLzXY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712161557; c=relaxed/simple;
-	bh=JMCBB+N9+FM9hPmjmm5AAROCcok9dIVw6il7pADCYVc=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=K/fgh1Ovks8i3ujWdRWdaCHYO1lYyMIlCdY0DNzK3pACc/57Y2e2scCYRFyk8B4o37v5WrVQQsjRWjq1/ukXfq+GVRKi9sRxO5Xd94m3sRfh3l30HXzzaSTEvYGu6mIi7gkzvrcR6m3KemgFsxcSGS9OaDyUjMgWFJZLWTzo6rI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=GPY9OJwc; arc=none smtp.client-ip=192.198.163.12
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1712161556; x=1743697556;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=JMCBB+N9+FM9hPmjmm5AAROCcok9dIVw6il7pADCYVc=;
-  b=GPY9OJwcuDboXThs+GDaIJn5aHA/vw0CWvnSidAgfAU6FMxzNfSWCmsy
-   ZgwpqSBnatVs6ppa4FLV1nYchXgiMnIurDOVKJwApQp47uGDXnm9XIR+7
-   tmNXvT5C8z5cSlos1QFUcnRuyj1Bp8Z/Chf26+wekBcaaPFBphoVHyl03
-   9txJLe89YwrTfJTjl3m8HEhMscw+cgTbyzsyNPI2rhLq1U36jC1IeKDHQ
-   VhlRzD+6KiwnrT0WD2XPDbnw4gdY3vKe+cqknC52qz9i3/KE8VJXVp2kQ
-   bJ4aCypsJZnl6BT/U5PbMIWoGCE4YJ3v97rgRRrXMfG0TMEZWsZV40Pjv
-   A==;
-X-CSE-ConnectionGUID: f42/TAckT9qoJnD8oxyNIA==
-X-CSE-MsgGUID: GD7X2nxXQXGBgfjm0un5fg==
-X-IronPort-AV: E=McAfee;i="6600,9927,11033"; a="11184819"
-X-IronPort-AV: E=Sophos;i="6.07,177,1708416000"; 
-   d="scan'208";a="11184819"
-Received: from orviesa009.jf.intel.com ([10.64.159.149])
-  by fmvoesa106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Apr 2024 09:25:49 -0700
-X-CSE-ConnectionGUID: 86lZB59dQ9SiXD5HsxZ5yw==
-X-CSE-MsgGUID: 8XLS/jgPQ++ZeivpXNauUw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,177,1708416000"; 
-   d="scan'208";a="18468376"
-Received: from turnipsi.fi.intel.com (HELO kekkonen.fi.intel.com) ([10.237.72.44])
-  by orviesa009-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Apr 2024 09:25:45 -0700
-Received: from kekkonen.localdomain (localhost [127.0.0.1])
-	by kekkonen.fi.intel.com (Postfix) with SMTP id 96D8611F811;
-	Wed,  3 Apr 2024 19:25:41 +0300 (EEST)
-Date: Wed, 3 Apr 2024 16:25:41 +0000
-From: Sakari Ailus <sakari.ailus@linux.intel.com>
-To: git@luigi311.com
-Cc: linux-media@vger.kernel.org, dave.stevenson@raspberrypi.com,
-	jacopo.mondi@ideasonboard.com, mchehab@kernel.org, robh@kernel.org,
-	krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-	shawnguo@kernel.org, s.hauer@pengutronix.de, kernel@pengutronix.de,
-	festevam@gmail.com, devicetree@vger.kernel.org, imx@lists.linux.dev,
-	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-	pavel@ucw.cz, phone-devel@vger.kernel.org,
-	Ondrej Jirman <megi@xff.cz>
-Subject: Re: [PATCH v3 23/25] drivers: media: i2c: imx258: Add support for
- powerdown gpio
-Message-ID: <Zg2DBasC501hMQSS@kekkonen.localdomain>
-References: <20240403150355.189229-1-git@luigi311.com>
- <20240403150355.189229-24-git@luigi311.com>
+	s=arc-20240116; t=1712161622; c=relaxed/simple;
+	bh=GQ/Rb2a92J5Ir4blww52T7ahTeQB0Ow+ZtEZv9AjOxk=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=cbzeBOxkb2mniRYaMBD1ZXYnbKmsUtvL7il2r78qmLQAx8BYDVgnGW/aNDLzn9OXDsb9XXUSioEreYIkwSQxA3ZRfBumvKQhXWcWVhgJ4Bp/pX30ubLL88aT9jnJlDNqurYqlt0Yp49D8xYVFR9EIYAQ10m+zwV0iY5Y+HKXn7I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=acm.org; spf=pass smtp.mailfrom=acm.org; dkim=pass (2048-bit key) header.d=acm.org header.i=@acm.org header.b=k+KaayxM; arc=none smtp.client-ip=199.89.1.11
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=acm.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=acm.org
+Received: from localhost (localhost [127.0.0.1])
+	by 008.lax.mailroute.net (Postfix) with ESMTP id 4V8qs008kHz6Cnk8s;
+	Wed,  3 Apr 2024 16:27:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=acm.org; h=
+	content-transfer-encoding:content-type:content-type:in-reply-to
+	:from:from:references:content-language:subject:subject
+	:user-agent:mime-version:date:date:message-id:received:received;
+	 s=mr01; t=1712161617; x=1714753618; bh=rJr6c2TsvOVSrSHj9bLAu908
+	h6x2a2x3rAYmyWwx6bo=; b=k+KaayxMp/CMHphAZmsbICFQjXsFzckonBXBQeAt
+	uCYoQJPhL1Fjz+21DpG5HXoJMTh3RsMfpJ1ebaJ6vEFZCka8qHWGCmmmV7s250bg
+	UcSUqkqLboAai7LcwYTf3IW17NnRWZrDkuhxFZ3/bG6QRj624kNhTi4cHDtNU7gP
+	r4MREbTQt5kbVzIyXskKiGh3xqrlaKNIYzOqKeNJGb5N+7C5ADL1lsEJ73vvn3qT
+	qCk5UM0aJvP+ZqoJ9gew+U7YFeAtzpPzcl/C1g2jmtwZmu1WN84q8XXOth2LbwNU
+	vD6ZFarWxUQlpO+T8iJ/QfBeriG+KwXxJt3x+oGw/YKOLg==
+X-Virus-Scanned: by MailRoute
+Received: from 008.lax.mailroute.net ([127.0.0.1])
+ by localhost (008.lax [127.0.0.1]) (mroute_mailscanner, port 10029) with LMTP
+ id gZSzaLgRLrrU; Wed,  3 Apr 2024 16:26:57 +0000 (UTC)
+Received: from [100.96.154.173] (unknown [104.132.1.77])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	(Authenticated sender: bvanassche@acm.org)
+	by 008.lax.mailroute.net (Postfix) with ESMTPSA id 4V8qrw10xhz6Cnk8m;
+	Wed,  3 Apr 2024 16:26:55 +0000 (UTC)
+Message-ID: <66431679-26f0-48eb-8303-35e151481292@acm.org>
+Date: Wed, 3 Apr 2024 09:26:55 -0700
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240403150355.189229-24-git@luigi311.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 1/1] scsi: ufs: Remove support for old UFSHCI versions
+Content-Language: en-US
+To: Avri Altman <avri.altman@wdc.com>,
+ "James E . J . Bottomley" <jejb@linux.ibm.com>,
+ "Martin K . Petersen" <martin.petersen@oracle.com>
+Cc: Christoph Hellwig <hch@infradead.org>, Bean Huo <beanhuo@micron.com>,
+ linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20240327071714.757-1-avri.altman@wdc.com>
+ <20240327071714.757-2-avri.altman@wdc.com>
+From: Bart Van Assche <bvanassche@acm.org>
+In-Reply-To: <20240327071714.757-2-avri.altman@wdc.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-Hi Luis, Ondrej,
+On 3/27/24 00:17, Avri Altman wrote:
+> UFS spec version 2.1 was published more than 10 years ago. It is
+> vanishingly unlikely that even there are out there platforms that uses
+> earlier host controllers, let alone that those ancient platforms will
+> ever run a V6.10 kernel.  Thus, remove support of host controllers prior
+> to UFS2.1.
 
-On Wed, Apr 03, 2024 at 09:03:52AM -0600, git@luigi311.com wrote:
-> From: Luis Garcia <git@luigi311.com>
-> 
-> On some boards powerdown signal needs to be deasserted for this
-> sensor to be enabled.
-> 
-> Signed-off-by: Ondrej Jirman <megi@xff.cz>
-> Signed-off-by: Luis Garcia <git@luigi311.com>
-> ---
->  drivers/media/i2c/imx258.c | 13 +++++++++++++
->  1 file changed, 13 insertions(+)
-> 
-> diff --git a/drivers/media/i2c/imx258.c b/drivers/media/i2c/imx258.c
-> index 30352c33f63c..163f04f6f954 100644
-> --- a/drivers/media/i2c/imx258.c
-> +++ b/drivers/media/i2c/imx258.c
-> @@ -679,6 +679,8 @@ struct imx258 {
->  	unsigned int lane_mode_idx;
->  	unsigned int csi2_flags;
->  
-> +	struct gpio_desc *powerdown_gpio;
-> +
->  	/*
->  	 * Mutex for serialized access:
->  	 * Protect sensor module set pad format and start/stop streaming safely.
-> @@ -1213,6 +1215,8 @@ static int imx258_power_on(struct device *dev)
->  	struct imx258 *imx258 = to_imx258(sd);
->  	int ret;
->  
-> +	gpiod_set_value_cansleep(imx258->powerdown_gpio, 0);
+According to this website, Pixel 1 devices have a UFSHCI 2.0 controller:
+https://www.gsmarena.com/google_pixel-8346.php. There may be other
+smartphones that have a UFSHCI 2.0 controller. Hence, I'm not sure we
+can drop support for UFSHCI 2.0 controllers from the kernel.
 
-What does the spec say? Should this really happen before switching on the
-supplies below?
+Thanks,
 
-> +
->  	ret = regulator_bulk_enable(IMX258_NUM_SUPPLIES,
->  				    imx258->supplies);
->  	if (ret) {
-> @@ -1224,6 +1228,7 @@ static int imx258_power_on(struct device *dev)
->  	ret = clk_prepare_enable(imx258->clk);
->  	if (ret) {
->  		dev_err(dev, "failed to enable clock\n");
-> +		gpiod_set_value_cansleep(imx258->powerdown_gpio, 1);
->  		regulator_bulk_disable(IMX258_NUM_SUPPLIES, imx258->supplies);
->  	}
->  
-> @@ -1238,6 +1243,8 @@ static int imx258_power_off(struct device *dev)
->  	clk_disable_unprepare(imx258->clk);
->  	regulator_bulk_disable(IMX258_NUM_SUPPLIES, imx258->supplies);
->  
-> +	gpiod_set_value_cansleep(imx258->powerdown_gpio, 1);
-> +
->  	return 0;
->  }
->  
-> @@ -1541,6 +1548,12 @@ static int imx258_probe(struct i2c_client *client)
->  	if (!imx258->variant_cfg)
->  		imx258->variant_cfg = &imx258_cfg;
->  
-> +	/* request optional power down pin */
-> +	imx258->powerdown_gpio = devm_gpiod_get_optional(&client->dev, "powerdown",
-> +						    GPIOD_OUT_HIGH);
-> +	if (IS_ERR(imx258->powerdown_gpio))
-> +		return PTR_ERR(imx258->powerdown_gpio);
-> +
->  	/* Initialize subdev */
->  	v4l2_i2c_subdev_init(&imx258->sd, client, &imx258_subdev_ops);
->  
-
--- 
-Regards,
-
-Sakari Ailus
+Bart.
 
