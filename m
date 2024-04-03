@@ -1,122 +1,143 @@
-Return-Path: <linux-kernel+bounces-129464-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-129465-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 60B05896B2E
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 11:57:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id A847F896B30
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 11:57:26 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 19E7B285FA5
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 09:57:14 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 356172813C2
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 09:57:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0FB1B1350EA;
-	Wed,  3 Apr 2024 09:57:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 77E6E1350D7;
+	Wed,  3 Apr 2024 09:57:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="H52yBD/o"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=isovalent.com header.i=@isovalent.com header.b="WFwtZqb0"
+Received: from mail-lj1-f172.google.com (mail-lj1-f172.google.com [209.85.208.172])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4AE30134CEF;
-	Wed,  3 Apr 2024 09:57:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 21689134CEF
+	for <linux-kernel@vger.kernel.org>; Wed,  3 Apr 2024 09:57:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712138228; cv=none; b=jiC5RXRfF1jCP4PYk9Pw98s/0s54oVuyB4mXYn9LX2Dbaj8KRffZGkhOUFAA3/Cgm5kOwuJOZdyJ9bv8pgzX3XprqVd/68Aiek309mEaB1q60AcOHYc5iUrtjXyedys7OJjaude8C9Us8k/lXFvsrmCp/pNB4GddIgdBRcXoEpw=
+	t=1712138241; cv=none; b=BDjq5QPFB5KSfxvVlHaRjouP3JGZBe/EdiP0de2GvAmSbDsZ6QgZcoHOR3WrYd/kJLh3orJ5eseRHl4215aCA7Wyy7c4xAgDc8AWguh3ra/4aXi94sus7X5plNsJegVCxXNvunY9OL+SWRSBSTvmSw+e2F36EQPj9ekBOH26SXA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712138228; c=relaxed/simple;
-	bh=yZYytTinisqpzLNXxsyWEElac0TTqo3wIB7P02Fmsjs=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=IJe/Fy1gyveQ15hE4BU/InJjm+NwBdaQaYh7gcnB/cqWoBWxmYUUxlfDsbMbdESkFaQ0ezdCg5tTzvUdRjJkc7IT5gQhwxn+RKgTxr+Ak4OWIj67DJ9g+gdZ6PXmLu8ilgvFutbPtCzZZyFIj7p9laR2YxueWiqt1yLkZoV5sRY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=H52yBD/o; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id AAE2BC433C7;
-	Wed,  3 Apr 2024 09:57:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712138227;
-	bh=yZYytTinisqpzLNXxsyWEElac0TTqo3wIB7P02Fmsjs=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=H52yBD/o59I6Zxhl+3rrnoywYTWel7t/9YLYSciyj2ErL7IVQC1V5Is0Bbxo/OX+r
-	 RUcLBn1uWiu0tNOVCpkvrFtSUwGoNZvBEkILPOC66VaXBj/pM8VA/LQEAVwmGuEqQk
-	 TncUvP+kMrwGV1Ef2vM8FTC6QE9yKSVntpaWoMXDW6YDd+Im1mSe+Xy549sCuJOxRJ
-	 uSLeyEAS72Z4LesyS+H9p+m59Xi7ui7Jzeup2LyItvxjIRh250MVBEWvRe5mhLrUqn
-	 jh10tgLHEx8GNaJCZCY9WURAJ7HV1AmdTD/TDrtCYydX5LRteC+D82AQ+u+oeU428S
-	 GXO9o5SFrVfnw==
-Date: Wed, 3 Apr 2024 10:56:58 +0100
-From: Mark Brown <broonie@kernel.org>
-To: Arnd Bergmann <arnd@kernel.org>
-Cc: linux-kernel@vger.kernel.org,
-	Neil Armstrong <neil.armstrong@linaro.org>,
-	Kevin Hilman <khilman@baylibre.com>,
-	Heiko Stuebner <heiko@sntech.de>,
-	Andi Shyti <andi.shyti@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-	Arnd Bergmann <arnd@arndb.de>, Jerome Brunet <jbrunet@baylibre.com>,
-	Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
-	Alim Akhtar <alim.akhtar@samsung.com>,
-	Li Zetao <lizetao1@huawei.com>,
-	Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-	Rob Herring <robh@kernel.org>,
-	Yang Yingliang <yangyingliang@huawei.com>,
-	Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-	Luis de Arquer <luis.dearquer@inertim.com>,
-	Tudor Ambarus <tudor.ambarus@linaro.org>,
-	Sam Protsenko <semen.protsenko@linaro.org>,
-	Peter Griffin <peter.griffin@linaro.org>,
-	Jaewon Kim <jaewon02.kim@samsung.com>, linux-spi@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org,
-	linux-amlogic@lists.infradead.org,
-	linux-rockchip@lists.infradead.org,
-	linux-samsung-soc@vger.kernel.org
-Subject: Re: [PATCH 31/34] spi: remove incorrect of_match_ptr annotations
-Message-ID: <b4418ac1-10ba-4932-be6e-93282707024f@sirena.org.uk>
-References: <20240403080702.3509288-1-arnd@kernel.org>
- <20240403080702.3509288-32-arnd@kernel.org>
+	s=arc-20240116; t=1712138241; c=relaxed/simple;
+	bh=hsY8vdvALd9mllqZJPG0q6gvzkR5NuFBfzXk8bK0SSs=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=hCNAi5sT6HKjo8lQG3MX+4ljYfbeCRHDIyDnN8A8ZGKu8zJQwJU+VEwT01jysb6r3E0cGSjOXL7fyG+88Gb6Ec1yV0aT/WiF1geWyQObcHK03PP+5HXf8Vnc4G52MPUbDHEia5GC+P7l4S1tg/ApsbrhXIQwl4CEdh3VWAPemdg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=isovalent.com; spf=pass smtp.mailfrom=isovalent.com; dkim=pass (2048-bit key) header.d=isovalent.com header.i=@isovalent.com header.b=WFwtZqb0; arc=none smtp.client-ip=209.85.208.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=isovalent.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=isovalent.com
+Received: by mail-lj1-f172.google.com with SMTP id 38308e7fff4ca-2d48f03a8bbso6895711fa.0
+        for <linux-kernel@vger.kernel.org>; Wed, 03 Apr 2024 02:57:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=isovalent.com; s=google; t=1712138238; x=1712743038; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=2/Iap6Ckpc7gnYDeHu4z6nTWkkkUTqEUIw+VC+egTdI=;
+        b=WFwtZqb0IOikx8EUZ6anrClSWUTprcMuexkOmIKwkwH6T4HFaTcuC1hdbzI2//j6VD
+         Yb9J6aAi4i0CVYRsDmWnG16saR00SvXL5d5UsFoeL/WSTREiIF0WdCgvjUaaJyUrScPr
+         NQWfyMMflmWLrLtt+OGgoKTsXbZ2wYwM8GMJse1TeFHvkSCa3nalVFbvmfoKfnP0OSWZ
+         /ZtJCT838ISWDT6aK9BUvuUNQzywdq5pcz+p871E+Ehnc8O4y1xA0H5VVVyOps72GzM7
+         vNK76vBg/104oC+VlwY/iYOXp0hAV0TiOndLBIClM8uQ/c3yPPewCbXp/qdGXEHDO9kK
+         gq7w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712138238; x=1712743038;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=2/Iap6Ckpc7gnYDeHu4z6nTWkkkUTqEUIw+VC+egTdI=;
+        b=MFQOfqNZaS7Pvy5rDxxiPu6eVfEAzgWG1n7FZoXqaxxGsJ1XaqLyiRdJw+4zxedVft
+         /ONorOdkSme60fG4JvEtYTqUySxMqTJj+Paqzmsb0QFP8c1vZzEl04XJT/eKLBvvSVFK
+         tBZm6xuB9zDJkUPpElFMzsl/O5pCRYp7CI1QkDQ1QI75Vtzhex29cfOaV/x/7KrP3sCj
+         FCz0qqCCKhVTsKfFtZ1pyGafOM4FS4MRMeH1byB7BqYk86VQnB4pPkp3xKLMzdzB8DUq
+         M1JMmGJaTcHhyhzLfFuJpXMAAlOARODmhutE+oaChUwqUbBFlgVuPUkb+eYXBOM48XZ9
+         jYiA==
+X-Forwarded-Encrypted: i=1; AJvYcCX7em95NQnY7UitPPdLT9dW7+fTNqGJOGiB0GJhSCKkuMyv+K2R1pihrdrtRi+QB843pPddc274mb5qDgEEPB2+OzmLgD1MuzL2F9k7
+X-Gm-Message-State: AOJu0YwFpWn52+7wSYXEKMEbpxHoYrnMFhBRAExsla4tIZAuwiW7aMh0
+	KyrFjRsggdY4GK4NkLJ3oXHqe67KuwucU+p2ecCfLCXK4vwdda2aJuyOLSslV2xKcMVLzdhO9Vh
+	jrabKLB/onfoHvGgXOTaOlm/F0elCd1drruvhEA==
+X-Google-Smtp-Source: AGHT+IGN419LcaWsNIQm0EXU4px3i4LNqOSzT+9stPHxFmHNZq8t1sxU4/AHC2Q7Tdn0p2VU0n1Z13oPGMJ1EP4VEEM=
+X-Received: by 2002:a05:651c:1a2b:b0:2d6:e110:700f with SMTP id
+ by43-20020a05651c1a2b00b002d6e110700fmr932725ljb.11.1712138238422; Wed, 03
+ Apr 2024 02:57:18 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="+6uAnWE1dyHfAv+S"
-Content-Disposition: inline
-In-Reply-To: <20240403080702.3509288-32-arnd@kernel.org>
-X-Cookie: Knowledge is power.
+References: <CA+G9fYtsoP51f-oP_Sp5MOq-Ffv8La2RztNpwvE6+R1VtFiLrw@mail.gmail.com>
+ <CAPyNcWeu+bzyQg9S3wDb43jbfk95Su5XcSRFPzUbS2ofZ=+5Fg@mail.gmail.com>
+ <347bb21e-98db-4bd5-9ca1-550eac5be9f8@app.fastmail.com> <277decf7-d9cb-451c-a105-6ecc998f9f46@intel.com>
+In-Reply-To: <277decf7-d9cb-451c-a105-6ecc998f9f46@intel.com>
+From: Anton Protopopov <aspsk@isovalent.com>
+Date: Wed, 3 Apr 2024 11:57:07 +0200
+Message-ID: <CAPyNcWeXpidnVsXgt4XpwXiA0CRFdZYFN9O2ys5oq9FQKXNxsw@mail.gmail.com>
+Subject: Re: include/linux/build_bug.h:78:41: error: static assertion failed:
+ "struct bpf_fib_lookup size check"
+To: Alexander Lobakin <aleksander.lobakin@intel.com>
+Cc: Arnd Bergmann <arnd@arndb.de>, Naresh Kamboju <naresh.kamboju@linaro.org>, 
+	open list <linux-kernel@vger.kernel.org>, lkft-triage@lists.linaro.org, 
+	Linux Regressions <regressions@lists.linux.dev>, Anders Roxell <anders.roxell@linaro.org>, 
+	Dan Carpenter <dan.carpenter@linaro.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	David Ahern <dsahern@kernel.org>, Alexei Starovoitov <ast@kernel.org>, 
+	Russell King <rmk+kernel@armlinux.org.uk>, Ard Biesheuvel <ardb@kernel.org>, 
+	Linus Walleij <linus.walleij@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
+On Wed, Apr 3, 2024 at 11:39=E2=80=AFAM Alexander Lobakin
+<aleksander.lobakin@intel.com> wrote:
+>
+> From: Arnd Bergmann <arnd@arndb.de>
+> Date: Wed, 03 Apr 2024 10:45:36 +0200
+>
+> > On Wed, Apr 3, 2024, at 10:10, Anton Protopopov wrote:
+> >> On Wed, Apr 3, 2024 at 10:03=E2=80=AFAM Naresh Kamboju
+> >> <naresh.kamboju@linaro.org> wrote:
+> >>>
+> >>> The arm footbridge_defconfig failed with gcc-13 and gcc-8 on Linux ne=
+xt
+> >>> starting from next-20240328..next-20240402.
+> >>>
+> >>> arm:
+> >>>   build:
+> >>>     * gcc-8-footbridge_defconfig - Failed
+> >>>     * gcc-13-footbridge_defconfig - Failed
+> >>>
+> >>> Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
+> >>>
+> >>> In file included from include/linux/bitfield.h:10,
+> >>>                  from arch/arm/include/asm/ptrace.h:13,
+> >>>                  from arch/arm/include/asm/processor.h:14,
+> >>>                  from include/linux/prefetch.h:15,
+> >>>                  from arch/arm/include/asm/atomic.h:12,
+> >>>                  from include/linux/atomic.h:7,
+> >>>                  from net/core/filter.c:20:
+> >>> include/linux/build_bug.h:78:41: error: static assertion failed:
+> >>> "struct bpf_fib_lookup size check"
+> >>>    78 | #define __static_assert(expr, msg, ...) _Static_assert(expr, =
+msg)
+> >>>       |                                         ^~~~~~~~~~~~~~
+> >>
+> >> Thanks, I will take a look today
+>
+> Naresh,
+>
+> Could you please remove that static_assert() and dump bpf_bif_lookup
+> layout from pahole?
+>
+> Anton unionized { smac, dmac } with __u32 mark. On x86_64, the offset of
+> smac was 52 (aligned to 4) already, so I don't really get what AEABI
+> does here. IIRC it aligns every structure to 8 bytes?
+>
+> Maybe we could just add __attribute__((__packed__))
+> __attribute__((__aligned__(4))) to that anonymous union at the end.
 
---+6uAnWE1dyHfAv+S
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Wed, Apr 03, 2024 at 10:06:49AM +0200, Arnd Bergmann wrote:
-
-> These appear to all be copied from the same original driver, so fix them at the
-> same time by removing the unnecessary of_match_ptr() annotation. As far as I
-> can tell, all these drivers are only actually used on configurations that
-> have CONFIG_OF enabled.
-
-Why are we not fixing of_match_ptr() here, or at least adding the ifdefs
-in case someone does end up wanting to run without OF?
-
-Just as a general thing for something like this where the patches aren't
-expected to get merged together it makes life much easier to not send as
-a series - pulling individual patches out of a series causes issues with
-things like b4, especially if you have to apply them to multiple places,
-and there's limited benefit.
-
---+6uAnWE1dyHfAv+S
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmYNJ+kACgkQJNaLcl1U
-h9BrIgf+KtKoHOuMwPZ/0TAaTDSHlNChGQoUvbI8FkIcWUSbFcdmddBluNJsBwf9
-vG9Z055MnGBd2N5UEcbqyUYg7FV/Gw5zAnpUf7Uw3hRVNoeKYIBo3YbxjiVdNSPB
-QLev8bG5eM480xbTSKBU+/sD0GDux5FXgUVuSlScuOpm3lsfaP4yKmpM728DTVXq
-8HW0wQRYPH8UY2HHR9FFNkWBW2kqr765cMEKV71YPNrbCNm3OZSBtRPOZR3TrB2W
-AQYdrobav7Rzvkgi/ipXtP7qi0SqyO+EmYrpZ+gYnZeLWM88diZubUXpK706D/jZ
-zZRjPxohDdn5nVmaw8mYraHIFXciuQ==
-=qYyn
------END PGP SIGNATURE-----
-
---+6uAnWE1dyHfAv+S--
+Yeah, I am sending a patch for this right now. Better not to depend on
+compiler options
 
