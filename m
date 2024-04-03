@@ -1,73 +1,60 @@
-Return-Path: <linux-kernel+bounces-129529-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-129530-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id A95F8896C32
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 12:25:00 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id D7193896C35
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 12:25:15 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5F9C11F27496
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 10:25:00 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 77EB11F289B3
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 10:25:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B26BB13776F;
-	Wed,  3 Apr 2024 10:24:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D004B137777;
+	Wed,  3 Apr 2024 10:25:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="kVrtIds9"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.21])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="gLUONVuK"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 70143259C;
-	Wed,  3 Apr 2024 10:24:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.21
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1E51A259C;
+	Wed,  3 Apr 2024 10:25:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712139892; cv=none; b=EzYaMPDfsvpYY8kykEzqmD1DE1lBYUlMhGT2YHHmlmiNZJBFcuV9863cy+WM3BuUmAnjDZGP9AHC7tWLfhSGH8IabUyWl4W14whKnCNB0uS+EmB1dp8GFCBucbFXZtriW/vWhISUpqkst7TZWvKqHRMl7kb/Il9ma2ZY0Ldh2TQ=
+	t=1712139901; cv=none; b=QQJDBaVj9vPyExEoOQSWkgb8kTfAo/QBWsap7rQlEJwuWMaOaiZaf8m4zCIohs03dRmTk3tL9G6JEr3FK6WoPyiEUiNFdlsY9rBlOlg9aeaySptgqpi18q+RLU8bKXD5RM1netmNEbqBDwhNmWU3bXjUiwhIZ5FFSwFtQIff0+s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712139892; c=relaxed/simple;
-	bh=ESt8CZC/Qd2eEHRQmlwIpFHD3SOwTUjqLs41t4VZMsQ=;
+	s=arc-20240116; t=1712139901; c=relaxed/simple;
+	bh=i7EVMi2k6asX/CslsBvhJo87LJVDLcOCeMymckLgdy4=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=R9UMFrNGITbGpLWJzjAgOSu99x7Hfcv7U2G2JFFx0FCVedFmkQszpNtNBJA+T9xrs6h8rXIGum1oOpoTqAhrKS/1gGohfuZR5c1oKmeb55mOA77Z5jMKjzz0e1Epg6Kfi/wlU5NmAdpmkrT3RhHDbEo4sJboCySSdJ6+WxqpjNc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=kVrtIds9; arc=none smtp.client-ip=198.175.65.21
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1712139890; x=1743675890;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=ESt8CZC/Qd2eEHRQmlwIpFHD3SOwTUjqLs41t4VZMsQ=;
-  b=kVrtIds9BKpFmlLpTWnKbdKsN7/055CsbdT9NLMUy82QflRZB4xPcU6i
-   g35itYOp9g+f8ealeMdUvBKSRi5/KkFZqwcM1w1Lcby4mukp8pOqPfaN9
-   Hq+Slpf7uo50WshknxDSLH+PfpFYWrVxMt7DavY8FSwLoovriqLuMMrtO
-   3ySHlBH5Et/quztDBoTwmXzOh8OeL6Erl/yAkb1xqdP4DtiYJA6BCXNbZ
-   PfcrryBgWkWcX3whNNTAYOyHjTZrRPc52Q81ceWrAhTVW4H65fvy7VHIN
-   EhRZNETk1Qy1JxWmqphxuJ1ZoObt+GUIYKQ4Lhs0bag3rzSrt+TiSkp2M
-   A==;
-X-CSE-ConnectionGUID: yqti+/tdQS+o3Dbb8qrvWA==
-X-CSE-MsgGUID: wzI0/46kTniFkeBQgW6c9w==
-X-IronPort-AV: E=McAfee;i="6600,9927,11032"; a="7282964"
-X-IronPort-AV: E=Sophos;i="6.07,177,1708416000"; 
-   d="scan'208";a="7282964"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by orvoesa113.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Apr 2024 03:24:49 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,11032"; a="937084818"
-X-IronPort-AV: E=Sophos;i="6.07,177,1708416000"; 
-   d="scan'208";a="937084818"
-Received: from kuha.fi.intel.com ([10.237.72.185])
-  by fmsmga001.fm.intel.com with SMTP; 03 Apr 2024 03:24:46 -0700
-Received: by kuha.fi.intel.com (sSMTP sendmail emulation); Wed, 03 Apr 2024 13:24:45 +0300
-Date: Wed, 3 Apr 2024 13:24:45 +0300
-From: Heikki Krogerus <heikki.krogerus@linux.intel.com>
-To: Krzysztof Kozlowski <krzk@kernel.org>
-Cc: Ran Wang <ran.wang_1@nxp.com>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	linux-usb@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 2/3] usb: typec: nvidia: drop driver owner assignment
-Message-ID: <Zg0ubZ9P9sCVLOrX@kuha.fi.intel.com>
-References: <20240331091737.19836-1-krzk@kernel.org>
- <20240331091737.19836-2-krzk@kernel.org>
+	 Content-Type:Content-Disposition:In-Reply-To; b=VvgA4PdR0mo++IzDafJsAUwUVYPvvsCEFHjuXcNpF2ptZLk1vnSTZf8mzJ3L28baCwXAk2APB4g7MLBUUOULRnz7NoRMYvfDyQ3TMpq5nrX8a6boX47fz3f+Rr0mazeYdFFQag9abb4bOSF9rVuAWE8N+KhIBNEffcRZI7mqpMA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=gLUONVuK; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5B1B8C433F1;
+	Wed,  3 Apr 2024 10:24:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1712139900;
+	bh=i7EVMi2k6asX/CslsBvhJo87LJVDLcOCeMymckLgdy4=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=gLUONVuKkysU9vnwUm2raqV+9g2rbvK/nPiMr1UiwLRFR1UcsXrZNzjKpVWrMNaQ7
+	 4xLCu7UAqk5O6VEd6gw3eSTrdQLoqD0XWhqL4TGCDJv7KRqVPSyfTe9ARiEXIJh7nd
+	 XZGbhcZXT5lJ5jNU8XYtoWwg+UytGA83pOxlMpuAurnaYg+3ojP0N2535E4j0OMls9
+	 53eoGC47pSFWS3+M4cdIxAx2GvuXb+FyrQV84XwbKLqjVYDf7wuj4lHP8pg8yEVVrj
+	 AcP60S7UN1V7xxZT6wLX5Szi+WlaoKkMHupHGUZhXOb8fRp1LGcAjjDv7DVlHIZP6O
+	 d8HnLNo6nFJfA==
+Date: Wed, 3 Apr 2024 11:24:55 +0100
+From: Simon Horman <horms@kernel.org>
+To: Nikita Kiryushin <kiryushin@ancud.ru>
+Cc: Michael Chan <mchan@broadcom.com>,
+	Pavan Chebbi <pavan.chebbi@broadcom.com>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	"Rafael J. Wysocki" <rjw@rjwysocki.net>, netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org, lvc-project@linuxtesting.org,
+	Michael Chan <michael.chan@broadcom.com>
+Subject: Re: [PATCH net-next v3] tg3: Remove residual error handling in
+ tg3_suspend
+Message-ID: <20240403102455.GU26556@kernel.org>
+References: <20240401191418.361747-1-kiryushin@ancud.ru>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -76,39 +63,21 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240331091737.19836-2-krzk@kernel.org>
+In-Reply-To: <20240401191418.361747-1-kiryushin@ancud.ru>
 
-On Sun, Mar 31, 2024 at 11:17:36AM +0200, Krzysztof Kozlowski wrote:
-> Core in typec_altmode_register_driver() already sets the .owner, so
-> driver does not need to.
+On Mon, Apr 01, 2024 at 10:14:18PM +0300, Nikita Kiryushin wrote:
+> As of now, tg3_power_down_prepare always ends with success, but
+> the error handling code from former tg3_set_power_state call is still here.
 > 
-> Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
-
-Reviewed-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
-
-> ---
+> This code became unreachable in commit c866b7eac073 ("tg3: Do not use
+> legacy PCI power management").
 > 
-> Changes in v2:
-> 1. None
-> ---
->  drivers/usb/typec/altmodes/nvidia.c | 1 -
->  1 file changed, 1 deletion(-)
+> Remove (now unreachable) error handling code for simplification and change
+> tg3_power_down_prepare to a void function as its result is no more checked.
 > 
-> diff --git a/drivers/usb/typec/altmodes/nvidia.c b/drivers/usb/typec/altmodes/nvidia.c
-> index c36769736405..fe70b36f078f 100644
-> --- a/drivers/usb/typec/altmodes/nvidia.c
-> +++ b/drivers/usb/typec/altmodes/nvidia.c
-> @@ -35,7 +35,6 @@ static struct typec_altmode_driver nvidia_altmode_driver = {
->  	.remove = nvidia_altmode_remove,
->  	.driver = {
->  		.name = "typec_nvidia",
-> -		.owner = THIS_MODULE,
->  	},
->  };
->  module_typec_altmode_driver(nvidia_altmode_driver);
-> -- 
-> 2.34.1
+> Signed-off-by: Nikita Kiryushin <kiryushin@ancud.ru>
+> Reviewed-by: Michael Chan <michael.chan@broadcom.com>
 
--- 
-heikki
+Reviewed-by: Simon Horman <horms@kernel.org>
+
 
