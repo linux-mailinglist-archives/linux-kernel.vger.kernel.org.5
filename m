@@ -1,62 +1,62 @@
-Return-Path: <linux-kernel+bounces-128918-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-128919-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id D308C8961DB
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 03:17:30 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 544B68961DD
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 03:17:50 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8973028A350
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 01:17:29 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A445FB25457
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 01:17:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0F13B1BC4B;
-	Wed,  3 Apr 2024 01:16:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2D7841CD2C;
+	Wed,  3 Apr 2024 01:16:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="ZzYhH1sL"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="OCmQVOak"
 Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.16])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8A6AA18EBF
-	for <linux-kernel@vger.kernel.org>; Wed,  3 Apr 2024 01:16:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DC28D1C280
+	for <linux-kernel@vger.kernel.org>; Wed,  3 Apr 2024 01:16:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.16
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712106999; cv=none; b=RA/Fto3rcVD9rsOuC6NeMAuRCyC9LSOBjJ6rQqaJ2l73KXjZXX5JpR4okHgVXFF47aDBm1g5r6IQ4ZKqaKmjCmq41J+/n5/CMpLduzoxUWTYO+Z2g+HRAsTtB0Exm3SF15CCaFY6wmFINesVPe6F5b3SJJoilGUTiHu88i4s0mE=
+	t=1712107002; cv=none; b=hkrgKVFbhvbfJAt9vGLTKtsgjSOBzxSsFBnT2SRd8WGztes9PmmqaQsMHWgT3ehL3ac6mcui/LajsbjiRpHlU3v36uR2zJE/WddL1fnKgjX+DUlXGH73WGk6LSj45yNSB+FY6oVPiISC7POrFqaLJrkrFsd463z2UQOi0LulFQw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712106999; c=relaxed/simple;
-	bh=yWMxywR9ri3JYm86TQhPsyU8lSI+jekctAR5j1zGsf4=;
+	s=arc-20240116; t=1712107002; c=relaxed/simple;
+	bh=tvoic8JEg5iwsCj9YBFoEAx3/4HZliI5/5DJbrdIfjQ=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=b4OLQeofUHgx1zMra/5qYQLWxhq0aPK6QC/DwHHf/Vt0/N8royI47xK7nYviQpV9JMyrtGzlXbr8VdWidzBqOT8YUmi7xLrkTVxDaQE5S3w/VEHpW5xuFSKdDPWB3t1WZNqe8f4m2wBOkcW74IMCdXDbxh9LCcrUJyN5linzXVs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=ZzYhH1sL; arc=none smtp.client-ip=198.175.65.16
+	 MIME-Version; b=CHgTRbXTemobFCnrzeHUHQJVkofgBwLm7PK6lpVfoSfd/NCuYw46fhzpXkgZT0aJO1amgWMmj1qCAElQBTNyL2BSAd3/ZV7BfWoqQGY47RQFxtvRmCCi1xMcNMgkojzHaZIkeWCmq5yBu4vNd3oFuN551YBPg+na1aD8OmvIXgg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=OCmQVOak; arc=none smtp.client-ip=198.175.65.16
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1712106997; x=1743642997;
+  t=1712107001; x=1743643001;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=yWMxywR9ri3JYm86TQhPsyU8lSI+jekctAR5j1zGsf4=;
-  b=ZzYhH1sLu16xp/DfHlXx+apPlBK82X+Za1XfeIIrNtXjk3uUGK9KsXF3
-   /QsqCbHMRabt+PgY3b8pTg9K9QJ43K2ZnQPdiLIrTgEcEWf8L+lAwfrIi
-   Y2a/aSTy+Fo062kysfxk72HYTVBNtkl0g8inOb6EFHtspPnmY4aVNtfDd
-   xTAJZaByIhDlRTLjybYy/kCD4kTkaABVLOuFV3t5ezlt5kcwwNrA/gfI2
-   Yw1v3HBr1xbYgDIpGDWJm7UdNELLrOzwpzxfVAdMfFtwl6KWZXnTgVqGv
-   KPIBbSZVtYB01dP3H/CjL36nZ/VzNSL/l/fAXjzfbCNysdQ3M3jx8V3g8
-   A==;
-X-CSE-ConnectionGUID: titLBtr6SbemxMk33nu7Iw==
-X-CSE-MsgGUID: pNTw9abYS9e32Eo3gaKsyA==
-X-IronPort-AV: E=McAfee;i="6600,9927,11032"; a="7439766"
+  bh=tvoic8JEg5iwsCj9YBFoEAx3/4HZliI5/5DJbrdIfjQ=;
+  b=OCmQVOak0+fK4aq+GzrW3iaTvaJZtvA63ppRgC9sZe73vY0QMUR20chj
+   AeZQH7G/JO77LmHVnJSa1KQz1AOmPaUkNIt53hCpBrwKxDQZPkEgpDKVb
+   T8I3I9WuDRni5K/kB6pe+LWn1aKr2eucbermUszKSyuBsBR44/A1nNHgx
+   1tlAjzh3RbmjyGbM/tVkynfuaaeEtB7PAL6iQSCcpgSEQoe7R/f7l1CQK
+   z60WCzTbF1NPSCUTaM4ZLEfor8K1HTXzBKAraeWSuJsgZzCpsy8htPgqu
+   9ngzYekcYMe5bXDYhzKo8tRJnMGDRzkiqSFYAzJmDpwZK+mdyT5g/woAY
+   g==;
+X-CSE-ConnectionGUID: Y/K7lHe7Sg2IzfVV+7zcMg==
+X-CSE-MsgGUID: +wQIxxKLTQWuFTcd2IY0zg==
+X-IronPort-AV: E=McAfee;i="6600,9927,11032"; a="7439778"
 X-IronPort-AV: E=Sophos;i="6.07,176,1708416000"; 
-   d="scan'208";a="7439766"
+   d="scan'208";a="7439778"
 Received: from orviesa003.jf.intel.com ([10.64.159.143])
-  by orvoesa108.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Apr 2024 18:16:37 -0700
-X-CSE-ConnectionGUID: iNnkRohGRmq90DcdzMoRRQ==
-X-CSE-MsgGUID: H0qwHFVcT2ycUkg4jew6fg==
+  by orvoesa108.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Apr 2024 18:16:41 -0700
+X-CSE-ConnectionGUID: ejLrWSjdRfuR2nGliBxExQ==
+X-CSE-MsgGUID: SJHBJIhNSEarsqoBdvGlPw==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.07,176,1708416000"; 
-   d="scan'208";a="22953285"
+   d="scan'208";a="22953289"
 Received: from allen-box.sh.intel.com ([10.239.159.127])
-  by orviesa003.jf.intel.com with ESMTP; 02 Apr 2024 18:16:35 -0700
+  by orviesa003.jf.intel.com with ESMTP; 02 Apr 2024 18:16:38 -0700
 From: Lu Baolu <baolu.lu@linux.intel.com>
 To: Jason Gunthorpe <jgg@ziepe.ca>,
 	Kevin Tian <kevin.tian@intel.com>,
@@ -72,9 +72,9 @@ Cc: iommu@lists.linux.dev,
 	virtualization@lists.linux-foundation.org,
 	linux-kernel@vger.kernel.org,
 	Lu Baolu <baolu.lu@linux.intel.com>
-Subject: [PATCH v4 4/9] iommufd: Fault-capable hw page table attach/detach/replace
-Date: Wed,  3 Apr 2024 09:15:14 +0800
-Message-Id: <20240403011519.78512-5-baolu.lu@linux.intel.com>
+Subject: [PATCH v4 5/9] iommufd: Add fault and response message definitions
+Date: Wed,  3 Apr 2024 09:15:15 +0800
+Message-Id: <20240403011519.78512-6-baolu.lu@linux.intel.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20240403011519.78512-1-baolu.lu@linux.intel.com>
 References: <20240403011519.78512-1-baolu.lu@linux.intel.com>
@@ -86,235 +86,128 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Add iopf-capable hw page table attach/detach/replace helpers. The pointer
-to iommufd_device is stored in the domain attachment handle, so that it
-can be echo'ed back in the iopf_group.
+iommu_hwpt_pgfaults represent fault messages that the userspace can
+retrieve. Multiple iommu_hwpt_pgfaults might be put in an iopf group,
+with the IOMMU_PGFAULT_FLAGS_LAST_PAGE flag set only for the last
+iommu_hwpt_pgfault.
 
-The iopf-capable hw page tables can only be attached to devices that
-support the IOMMU_DEV_FEAT_IOPF feature. On the first attachment of an
-iopf-capable hw_pagetable to the device, the IOPF feature is enabled on
-the device. Similarly, after the last iopf-capable hwpt is detached from
-the device, the IOPF feature is disabled on the device.
-
-The current implementation allows a replacement between iopf-capable and
-non-iopf-capable hw page tables. This matches the nested translation use
-case, where a parent domain is attached by default and can then be
-replaced with a nested user domain with iopf support.
+An iommu_hwpt_page_response is a response message that the userspace
+should send to the kernel after finishing handling a group of fault
+messages. The @dev_id, @pasid, and @grpid fields in the message
+identify an outstanding iopf group for a device. The @cookie field,
+which matches the cookie field of the last fault in the group, will
+be used by the kernel to look up the pending message.
 
 Signed-off-by: Lu Baolu <baolu.lu@linux.intel.com>
 ---
- drivers/iommu/iommufd/iommufd_private.h |   9 ++
- drivers/iommu/iommufd/device.c          |  15 +++-
- drivers/iommu/iommufd/fault.c           | 113 ++++++++++++++++++++++++
- drivers/iommu/iommufd/Makefile          |   1 +
- 4 files changed, 135 insertions(+), 3 deletions(-)
- create mode 100644 drivers/iommu/iommufd/fault.c
+ include/uapi/linux/iommufd.h | 96 ++++++++++++++++++++++++++++++++++++
+ 1 file changed, 96 insertions(+)
 
-diff --git a/drivers/iommu/iommufd/iommufd_private.h b/drivers/iommu/iommufd/iommufd_private.h
-index 991f864d1f9b..047cfb47112a 100644
---- a/drivers/iommu/iommufd/iommufd_private.h
-+++ b/drivers/iommu/iommufd/iommufd_private.h
-@@ -292,6 +292,7 @@ int iommufd_check_iova_range(struct io_pagetable *iopt,
- struct iommufd_hw_pagetable {
- 	struct iommufd_object obj;
- 	struct iommu_domain *domain;
-+	bool fault_capable;
+diff --git a/include/uapi/linux/iommufd.h b/include/uapi/linux/iommufd.h
+index 1dfeaa2e649e..83b45dce94a4 100644
+--- a/include/uapi/linux/iommufd.h
++++ b/include/uapi/linux/iommufd.h
+@@ -692,4 +692,100 @@ struct iommu_hwpt_invalidate {
+ 	__u32 __reserved;
  };
- 
- struct iommufd_hwpt_paging {
-@@ -395,6 +396,7 @@ struct iommufd_device {
- 	/* always the physical device */
- 	struct device *dev;
- 	bool enforce_cache_coherency;
-+	bool iopf_enabled;
- };
- 
- static inline struct iommufd_device *
-@@ -426,6 +428,13 @@ void iopt_remove_access(struct io_pagetable *iopt,
- 			u32 iopt_access_list_id);
- void iommufd_access_destroy_object(struct iommufd_object *obj);
- 
-+int iommufd_fault_domain_attach_dev(struct iommufd_hw_pagetable *hwpt,
-+				    struct iommufd_device *idev);
-+void iommufd_fault_domain_detach_dev(struct iommufd_hw_pagetable *hwpt,
-+				     struct iommufd_device *idev);
-+int iommufd_fault_domain_replace_dev(struct iommufd_hw_pagetable *hwpt,
-+				     struct iommufd_device *idev);
+ #define IOMMU_HWPT_INVALIDATE _IO(IOMMUFD_TYPE, IOMMUFD_CMD_HWPT_INVALIDATE)
 +
- #ifdef CONFIG_IOMMUFD_TEST
- int iommufd_test(struct iommufd_ucmd *ucmd);
- void iommufd_selftest_destroy(struct iommufd_object *obj);
-diff --git a/drivers/iommu/iommufd/device.c b/drivers/iommu/iommufd/device.c
-index 873630c111c1..4fc183a83925 100644
---- a/drivers/iommu/iommufd/device.c
-+++ b/drivers/iommu/iommufd/device.c
-@@ -376,7 +376,10 @@ int iommufd_hw_pagetable_attach(struct iommufd_hw_pagetable *hwpt,
- 	 * attachment.
- 	 */
- 	if (list_empty(&idev->igroup->device_list)) {
--		rc = iommu_attach_group(hwpt->domain, idev->igroup->group);
-+		if (hwpt->fault_capable)
-+			rc = iommufd_fault_domain_attach_dev(hwpt, idev);
-+		else
-+			rc = iommu_attach_group(hwpt->domain, idev->igroup->group);
- 		if (rc)
- 			goto err_unresv;
- 		idev->igroup->hwpt = hwpt;
-@@ -402,7 +405,10 @@ iommufd_hw_pagetable_detach(struct iommufd_device *idev)
- 	mutex_lock(&idev->igroup->lock);
- 	list_del(&idev->group_item);
- 	if (list_empty(&idev->igroup->device_list)) {
--		iommu_detach_group(hwpt->domain, idev->igroup->group);
-+		if (hwpt->fault_capable)
-+			iommufd_fault_domain_detach_dev(hwpt, idev);
-+		else
-+			iommu_detach_group(hwpt->domain, idev->igroup->group);
- 		idev->igroup->hwpt = NULL;
- 	}
- 	if (hwpt_is_paging(hwpt))
-@@ -497,7 +503,10 @@ iommufd_device_do_replace(struct iommufd_device *idev,
- 			goto err_unlock;
- 	}
- 
--	rc = iommu_group_replace_domain(igroup->group, hwpt->domain);
-+	if (old_hwpt->fault_capable || hwpt->fault_capable)
-+		rc = iommufd_fault_domain_replace_dev(hwpt, idev);
-+	else
-+		rc = iommu_group_replace_domain(igroup->group, hwpt->domain);
- 	if (rc)
- 		goto err_unresv;
- 
-diff --git a/drivers/iommu/iommufd/fault.c b/drivers/iommu/iommufd/fault.c
-new file mode 100644
-index 000000000000..47d7c106d839
---- /dev/null
-+++ b/drivers/iommu/iommufd/fault.c
-@@ -0,0 +1,113 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+/* Copyright (C) 2024 Intel Corporation
++/**
++ * enum iommu_hwpt_pgfault_flags - flags for struct iommu_hwpt_pgfault
++ * @IOMMU_PGFAULT_FLAGS_PASID_VALID: The pasid field of the fault data is
++ *                                   valid.
++ * @IOMMU_PGFAULT_FLAGS_LAST_PAGE: It's the last fault of a fault group.
 + */
-+#define pr_fmt(fmt) "iommufd: " fmt
++enum iommu_hwpt_pgfault_flags {
++	IOMMU_PGFAULT_FLAGS_PASID_VALID		= (1 << 0),
++	IOMMU_PGFAULT_FLAGS_LAST_PAGE		= (1 << 1),
++};
 +
-+#include <linux/file.h>
-+#include <linux/fs.h>
-+#include <linux/module.h>
-+#include <linux/mutex.h>
-+#include <linux/iommufd.h>
-+#include <linux/poll.h>
-+#include <linux/anon_inodes.h>
-+#include <uapi/linux/iommufd.h>
++/**
++ * enum iommu_hwpt_pgfault_perm - perm bits for struct iommu_hwpt_pgfault
++ * @IOMMU_PGFAULT_PERM_READ: request for read permission
++ * @IOMMU_PGFAULT_PERM_WRITE: request for write permission
++ * @IOMMU_PGFAULT_PERM_EXEC: (PCIE 10.4.1) request with a PASID that has the
++ *                           Execute Requested bit set in PASID TLP Prefix.
++ * @IOMMU_PGFAULT_PERM_PRIV: (PCIE 10.4.1) request with a PASID that has the
++ *                           Privileged Mode Requested bit set in PASID TLP
++ *                           Prefix.
++ */
++enum iommu_hwpt_pgfault_perm {
++	IOMMU_PGFAULT_PERM_READ			= (1 << 0),
++	IOMMU_PGFAULT_PERM_WRITE		= (1 << 1),
++	IOMMU_PGFAULT_PERM_EXEC			= (1 << 2),
++	IOMMU_PGFAULT_PERM_PRIV			= (1 << 3),
++};
 +
-+#include "../iommu-priv.h"
-+#include "iommufd_private.h"
++/**
++ * struct iommu_hwpt_pgfault - iommu page fault data
++ * @size: sizeof(struct iommu_hwpt_pgfault)
++ * @flags: Combination of enum iommu_hwpt_pgfault_flags
++ * @dev_id: id of the originated device
++ * @pasid: Process Address Space ID
++ * @grpid: Page Request Group Index
++ * @perm: Combination of enum iommu_hwpt_pgfault_perm
++ * @addr: Page address
++ * @length: a hint of how much data the requestor is expecting to fetch. For
++ *          example, if the PRI initiator knows it is going to do a 10MB
++ *          transfer, it could fill in 10MB and the OS could pre-fault in
++ *          10MB of IOVA. It's default to 0 if there's no such hint.
++ * @cookie: kernel-managed cookie identifying a group of fault messages. The
++ *          cookie number encoded in the last page fault of the group should
++ *          be echoed back in the response message.
++ */
++struct iommu_hwpt_pgfault {
++	__u32 size;
++	__u32 flags;
++	__u32 dev_id;
++	__u32 pasid;
++	__u32 grpid;
++	__u32 perm;
++	__u64 addr;
++	__u32 length;
++	__u32 cookie;
++};
 +
-+static int iommufd_fault_iopf_enable(struct iommufd_device *idev)
-+{
-+	int ret;
++/**
++ * enum iommufd_page_response_code - Return status of fault handlers
++ * @IOMMUFD_PAGE_RESP_SUCCESS: Fault has been handled and the page tables
++ *                             populated, retry the access. This is the
++ *                             "Success" defined in PCI 10.4.2.1.
++ * @IOMMUFD_PAGE_RESP_INVALID: General error. Drop all subsequent faults
++ *                             from this device if possible. This is the
++ *                             "Response Failure" in PCI 10.4.2.1.
++ * @IOMMUFD_PAGE_RESP_FAILURE: Could not handle this fault, don't retry the
++ *                             access. This is the "Invalid Request" in PCI
++ *                             10.4.2.1.
++ */
++enum iommufd_page_response_code {
++	IOMMUFD_PAGE_RESP_SUCCESS = 0,
++	IOMMUFD_PAGE_RESP_INVALID,
++	IOMMUFD_PAGE_RESP_FAILURE,
++};
 +
-+	if (idev->iopf_enabled)
-+		return 0;
-+
-+	ret = iommu_dev_enable_feature(idev->dev, IOMMU_DEV_FEAT_IOPF);
-+	if (ret)
-+		return ret;
-+
-+	idev->iopf_enabled = true;
-+
-+	return 0;
-+}
-+
-+static void iommufd_fault_iopf_disable(struct iommufd_device *idev)
-+{
-+	if (!idev->iopf_enabled)
-+		return;
-+
-+	iommu_dev_disable_feature(idev->dev, IOMMU_DEV_FEAT_IOPF);
-+	idev->iopf_enabled = false;
-+}
-+
-+int iommufd_fault_domain_attach_dev(struct iommufd_hw_pagetable *hwpt,
-+				    struct iommufd_device *idev)
-+{
-+	struct iommu_attach_handle *handle;
-+	int ret;
-+
-+	if (!hwpt->fault_capable)
-+		return -EINVAL;
-+
-+	if (!idev->iopf_enabled) {
-+		ret = iommufd_fault_iopf_enable(idev);
-+		if (ret)
-+			return ret;
-+	}
-+
-+	ret = iommu_attach_group(hwpt->domain, idev->igroup->group);
-+	if (ret) {
-+		iommufd_fault_iopf_disable(idev);
-+		return ret;
-+	}
-+
-+	handle = iommu_attach_handle_get(idev->igroup->group, IOMMU_NO_PASID);
-+	handle->priv = idev;
-+	iommu_attach_handle_put(handle);
-+
-+	return 0;
-+}
-+
-+void iommufd_fault_domain_detach_dev(struct iommufd_hw_pagetable *hwpt,
-+				     struct iommufd_device *idev)
-+{
-+	if (WARN_ON(!hwpt->fault_capable))
-+		return;
-+
-+	iommu_detach_group(hwpt->domain, idev->igroup->group);
-+	iommufd_fault_iopf_disable(idev);
-+}
-+
-+int iommufd_fault_domain_replace_dev(struct iommufd_hw_pagetable *hwpt,
-+				     struct iommufd_device *idev)
-+{
-+	bool iopf_enabled_originally = idev->iopf_enabled;
-+	struct iommu_attach_handle *handle;
-+	int ret;
-+
-+	if (hwpt->fault_capable) {
-+		ret = iommufd_fault_iopf_enable(idev);
-+		if (ret)
-+			return ret;
-+	}
-+
-+	ret = iommu_group_replace_domain(idev->igroup->group, hwpt->domain);
-+	if (ret)
-+		goto out_cleanup;
-+
-+	if (!hwpt->fault_capable)
-+		iommufd_fault_iopf_disable(idev);
-+
-+	handle = iommu_attach_handle_get(idev->igroup->group, IOMMU_NO_PASID);
-+	handle->priv = idev;
-+	iommu_attach_handle_put(handle);
-+
-+	return 0;
-+out_cleanup:
-+	if (iopf_enabled_originally)
-+		iommufd_fault_iopf_enable(idev);
-+	else
-+		iommufd_fault_iopf_disable(idev);
-+
-+	return ret;
-+}
-diff --git a/drivers/iommu/iommufd/Makefile b/drivers/iommu/iommufd/Makefile
-index 34b446146961..b94a74366eed 100644
---- a/drivers/iommu/iommufd/Makefile
-+++ b/drivers/iommu/iommufd/Makefile
-@@ -6,6 +6,7 @@ iommufd-y := \
- 	ioas.o \
- 	main.o \
- 	pages.o \
-+	fault.o \
- 	vfio_compat.o
- 
- iommufd-$(CONFIG_IOMMUFD_TEST) += selftest.o
++/**
++ * struct iommu_hwpt_page_response - IOMMU page fault response
++ * @size: sizeof(struct iommu_hwpt_page_response)
++ * @flags: Must be set to 0
++ * @dev_id: device ID of target device for the response
++ * @pasid: Process Address Space ID
++ * @grpid: Page Request Group Index
++ * @code: One of response code in enum iommufd_page_response_code.
++ * @cookie: The kernel-managed cookie reported in the fault message.
++ */
++struct iommu_hwpt_page_response {
++	__u32 size;
++	__u32 flags;
++	__u32 dev_id;
++	__u32 pasid;
++	__u32 grpid;
++	__u32 code;
++	__u32 cookie;
++	__u32 reserved;
++};
+ #endif
 -- 
 2.34.1
 
