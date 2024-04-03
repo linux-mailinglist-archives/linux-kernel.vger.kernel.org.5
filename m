@@ -1,59 +1,57 @@
-Return-Path: <linux-kernel+bounces-130354-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-130355-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8094F897714
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 19:42:28 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 28535897717
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 19:42:47 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B22C91C2664D
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 17:42:27 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id BB9DE1F2F155
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 17:42:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0C9FE16DEA6;
-	Wed,  3 Apr 2024 17:20:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5618D16DEC7;
+	Wed,  3 Apr 2024 17:20:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="J6bM5Hwv"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="XsA9JWnI"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 52187153BCF;
-	Wed,  3 Apr 2024 17:20:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 930A016DEB2;
+	Wed,  3 Apr 2024 17:20:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712164815; cv=none; b=L6U/9YQ9k1R5c9teEKTXOteGwbt4L2Eg2PiEQpVajLmKxXwvFOOZUTEdfrjulKr7nU75cX6uMWZfB/mtn6XLD9roN4FEgdvMV2e3q1jZRY54b8okFWqamOQAOPNvMJbXGYie0S/oi52Ux6iogqn+dZInzqDvzlm419AUL3q4XW8=
+	t=1712164816; cv=none; b=oKhGPiNkkP5UU7w2HDV9uVFQLPntAnutKcjNDS6nXcupd6unnW8ks8d3nTvZoDUve55WVRBAb4t6Aqo1T2YU4Ma1OW81i8RDpOZWbwiVdqF1sjKfDSLEmJ8/Q5OELdK5etC/Bll/Gui8/r8sHCro+uNJJl8QqMRAeq9GgjddP7Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712164815; c=relaxed/simple;
-	bh=xgHiBXZov3Eiu6+bIYgBl0Hw0XQXQEEy/k6tIo/uDt0=;
+	s=arc-20240116; t=1712164816; c=relaxed/simple;
+	bh=KGum2UiFM/XeeIttcKMIY9uAmatsd+1YLL7DOdMp7+8=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=B1NK5WQuUv1t+oiJa7kDKB8lycMYNblHQUURS5MYQy77Fmqvqp1JGppS0dSoC3o5IE9DMfJmnBWAfm63XXxEleNyfmWpkplD9V4fWA3YIzDrUgtVsCH2oKHWrlO2QiLirM58Ji8RvSOyzWUvwlvD1gcQVSbItIrIjrWqYpQDO04=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=J6bM5Hwv; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C7528C433C7;
-	Wed,  3 Apr 2024 17:20:13 +0000 (UTC)
+	 MIME-Version; b=A90uk+jofOQNYL//ruELm+/683j+66hGJfXQeZxekkQUtjCka3LC5L/ZK6yx6zoYfOlfewxT1KUnBn0WQ/sAeW3+66Exb62l1lw8wqIGnw/hXNGLLT8pyH98SvnRPoh3Qz4oldk0vKitRC0KktYS1PoHUUQuuk16tFGhF91TIhY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=XsA9JWnI; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 44B7AC43394;
+	Wed,  3 Apr 2024 17:20:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712164814;
-	bh=xgHiBXZov3Eiu6+bIYgBl0Hw0XQXQEEy/k6tIo/uDt0=;
+	s=k20201202; t=1712164816;
+	bh=KGum2UiFM/XeeIttcKMIY9uAmatsd+1YLL7DOdMp7+8=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=J6bM5HwviYZWVO23Fqq6nOlOGlpgSxhIuag12kXU+Q+MKTvC97Ny5P4F1dZrWr4w2
-	 SSqk6/TTeDcYu1Un6zHTqs6mgqRqj/RivNugTV5VEmhDP1ScRASAwtLMTcXUHYG1Dp
-	 GLQKdfdpEhC1jthbPKfa4CcqxV1arnrZ4qU5Gc8CxtWhbBko+yMNPzBBZpIhEYXwcZ
-	 daNq4XpDPQadpJViFX0iWAuGE9In0GHlczEAXjnaV0dCtmbCHt/XDUrfeL80iRsach
-	 Ir9nxTkQdWzxpU5DkMInMbzHNEJ0HFGP8GhOuvS9r+rExH5A/7i+HXcR5endCP8zTz
-	 y1fu0SoAzIYRw==
+	b=XsA9JWnIt38BQ1V1Z82DSwbssq4w3UDVfbA+tdwV4U7mcyN1hsjBXjnK0we3LNbgp
+	 IhhBPYrGqNpAI30jeFhTziRj+Ww+Dc/2OI3SdQjKlT1AMDyhgsFYHyanVEXvUDjFeI
+	 KnUvB+szNdMOQXGhaXIG+uuc2WAx7RFOsNFptH5Yy0xFoLUxgZJjWaXNGC2jmJ1Lfb
+	 E7boOvJ/CUiL69Qxqe28Xvd+4XWdHATj0XAW2uBTt9BcMyviqIvf6QPF203bQYnEC1
+	 oBO4oxCCOjBxNh3HE90En9XCD0/DBooGYA4qGbKjZO8MKsQzkV3Chdjd0hPcxIzuS9
+	 zDYuDgSz/UOJQ==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Chancel Liu <chancel.liu@nxp.com>,
-	Zhipeng Wang <zhipeng.wang_1@nxp.com>,
-	Mark Brown <broonie@kernel.org>,
+Cc: Aleksandr Burakov <a.burakov@rosalinux.ru>,
+	Helge Deller <deller@gmx.de>,
 	Sasha Levin <sashal@kernel.org>,
-	lgirdwood@gmail.com,
-	perex@perex.cz,
-	tiwai@suse.com,
-	linux-sound@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.10 5/8] ASoC: soc-core.c: Skip dummy codec when adding platforms
-Date: Wed,  3 Apr 2024 13:19:59 -0400
-Message-ID: <20240403172006.353022-5-sashal@kernel.org>
+	FlorianSchandinat@gmx.de,
+	linux-fbdev@vger.kernel.org,
+	dri-devel@lists.freedesktop.org
+Subject: [PATCH AUTOSEL 5.10 6/8] fbdev: viafb: fix typo in hw_bitblt_1 and hw_bitblt_2
+Date: Wed,  3 Apr 2024 13:20:00 -0400
+Message-ID: <20240403172006.353022-6-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240403172006.353022-1-sashal@kernel.org>
 References: <20240403172006.353022-1-sashal@kernel.org>
@@ -68,40 +66,45 @@ X-Patchwork-Hint: Ignore
 X-stable-base: Linux 5.10.214
 Content-Transfer-Encoding: 8bit
 
-From: Chancel Liu <chancel.liu@nxp.com>
+From: Aleksandr Burakov <a.burakov@rosalinux.ru>
 
-[ Upstream commit 23fb6bc2696119391ec3a92ccaffe50e567c515e ]
+[ Upstream commit bc87bb342f106a0402186bcb588fcbe945dced4b ]
 
-When pcm_runtime is adding platform components it will scan all
-registered components. In case of DPCM FE/BE some DAI links will
-configure dummy platform. However both dummy codec and dummy platform
-are using "snd-soc-dummy" as component->name. Dummy codec should be
-skipped when adding platforms otherwise there'll be overflow and UBSAN
-complains.
+There are some actions with value 'tmp' but 'dst_addr' is checked instead.
+It is obvious that a copy-paste error was made here and the value
+of variable 'tmp' should be checked here.
 
-Reported-by: Zhipeng Wang <zhipeng.wang_1@nxp.com>
-Signed-off-by: Chancel Liu <chancel.liu@nxp.com>
-Link: https://msgid.link/r/20240305065606.3778642-1-chancel.liu@nxp.com
-Signed-off-by: Mark Brown <broonie@kernel.org>
+Found by Linux Verification Center (linuxtesting.org) with SVACE.
+
+Signed-off-by: Aleksandr Burakov <a.burakov@rosalinux.ru>
+Signed-off-by: Helge Deller <deller@gmx.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/soc/soc-core.c | 3 +++
- 1 file changed, 3 insertions(+)
+ drivers/video/fbdev/via/accel.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-index e9da95ebccc83..af4e678ba17b9 100644
---- a/sound/soc/soc-core.c
-+++ b/sound/soc/soc-core.c
-@@ -1041,6 +1041,9 @@ int snd_soc_add_pcm_runtime(struct snd_soc_card *card,
- 			if (!snd_soc_is_matching_component(platform, component))
- 				continue;
+diff --git a/drivers/video/fbdev/via/accel.c b/drivers/video/fbdev/via/accel.c
+index 0a1bc7a4d7853..1e04026f08091 100644
+--- a/drivers/video/fbdev/via/accel.c
++++ b/drivers/video/fbdev/via/accel.c
+@@ -115,7 +115,7 @@ static int hw_bitblt_1(void __iomem *engine, u8 op, u32 width, u32 height,
  
-+			if (snd_soc_component_is_dummy(component) && component->num_dai)
-+				continue;
-+
- 			snd_soc_rtd_add_component(rtd, component);
- 		}
- 	}
+ 	if (op != VIA_BITBLT_FILL) {
+ 		tmp = src_mem ? 0 : src_addr;
+-		if (dst_addr & 0xE0000007) {
++		if (tmp & 0xE0000007) {
+ 			printk(KERN_WARNING "hw_bitblt_1: Unsupported source "
+ 				"address %X\n", tmp);
+ 			return -EINVAL;
+@@ -260,7 +260,7 @@ static int hw_bitblt_2(void __iomem *engine, u8 op, u32 width, u32 height,
+ 		writel(tmp, engine + 0x18);
+ 
+ 		tmp = src_mem ? 0 : src_addr;
+-		if (dst_addr & 0xE0000007) {
++		if (tmp & 0xE0000007) {
+ 			printk(KERN_WARNING "hw_bitblt_2: Unsupported source "
+ 				"address %X\n", tmp);
+ 			return -EINVAL;
 -- 
 2.43.0
 
