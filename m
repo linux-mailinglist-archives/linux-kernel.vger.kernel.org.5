@@ -1,112 +1,145 @@
-Return-Path: <linux-kernel+bounces-129751-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-129761-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5AAE6896F81
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 14:54:59 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 60143896F9D
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 14:57:15 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1732B28EE9D
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 12:54:58 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E8CF81F29781
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 12:57:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E2A09149C4A;
-	Wed,  3 Apr 2024 12:53:26 +0000 (UTC)
-Received: from mail-ej1-f45.google.com (mail-ej1-f45.google.com [209.85.218.45])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B3748148308;
+	Wed,  3 Apr 2024 12:56:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="fSZBEQOv"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C2A361494CE;
-	Wed,  3 Apr 2024 12:53:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 14CF9146A9D
+	for <linux-kernel@vger.kernel.org>; Wed,  3 Apr 2024 12:56:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712148806; cv=none; b=lCjyI3vkFG/oC2Ah1xgaEN5MI9d2r4UW+7Olg9Iu0UcmVi3R/bhbhbH30NX+VhEqEZIYMidYUHoJAy2uhbV8dPORho2Icllg7dXZ2RChvlYO5cRgwTC7z5rGJlJNym1yE2xBDPgu9y1MyqLS4Ea7IBcbNwfzGvorNBbOVW+5czw=
+	t=1712149001; cv=none; b=PfOKu6NlpOVr8aNIdwWd0Ezi1Ehh5TZoHm/Hf+FMbO4Zm4wyfWaZdoQCRHrRGTmzGrRWRL3zBMpWRIvYS7NanxDxwa1La0ixXGFxpjzHhg+63J9743dd+DMuaoQwlrNyY7dlGQzYTEiUeS572S4kS6H9fB0Svxrk5zMmjFZWaZU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712148806; c=relaxed/simple;
-	bh=UntQTPh+2hrQn/xIlOWJaJgrauzrTj7yswbk+DwsRJs=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=A95FNpqmcXNG1e+AhRokIkx0T79pmZtmoXRwAN/absOaGpZE9zGhmQ/mnVUR0bZIe63IdOZAT+fAy9Zdd8kVwyYSHV9Ct+WPaXCS5ak9kPN6t0oFCH78qEug/wNoq0EFJxGlqW8Pu3OyyM9Ppq0KFr8LDhXnuVzZ16Q6pf+GDpE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.218.45
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f45.google.com with SMTP id a640c23a62f3a-a46a7208eedso824936566b.0;
-        Wed, 03 Apr 2024 05:53:24 -0700 (PDT)
+	s=arc-20240116; t=1712149001; c=relaxed/simple;
+	bh=k75X6e+xXR/2CHetkCcWpWKqu9lH9n9uyWfcUV8by6c=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=L2CHaerYTKmKWZNX63IWb9Vay+ZezMwFieeG1/ghquQFq7FnPSTXN+SJuugwS0Mr7H6WcvkNoqwAP3blsirsuJwBPIQ2w9MaizN09zK4vDmEEFsazJ7vzhdgn2EyoGk2g2FLNYkdi7Uq21zQyrGkgOU0ic6cLYx3Bk20z4PM1xg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=fSZBEQOv; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1712148999;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=8yewPQMR0S+4mdQyXSXgCBzYxRYzMDeDenPXpOjBMmY=;
+	b=fSZBEQOvTc0wfYf0KXWHfNGI8sImRmBBDuHVj2nAs4CJ1LAudBlDctCdQx45y61a1zzeNd
+	v9euQ2ATcxDfxfKciRK5TdKspHEcJsTEr+blmT4vEe5rooEwHsJQIpzMRKKlOuStz6+60B
+	YfND0lCs7lROtGgzMjx5rgKx/E1YvPo=
+Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
+ [209.85.221.70]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-621-psCWXIyzOb2h_kKiSYNUhw-1; Wed, 03 Apr 2024 08:56:38 -0400
+X-MC-Unique: psCWXIyzOb2h_kKiSYNUhw-1
+Received: by mail-wr1-f70.google.com with SMTP id ffacd0b85a97d-33d8d208be9so4109359f8f.2
+        for <linux-kernel@vger.kernel.org>; Wed, 03 Apr 2024 05:56:37 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712148803; x=1712753603;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=q4cj6vg+PLMD3bnAnC/7BKVkE+A86qwqaG5PcVTOt18=;
-        b=a9G1Uj1tXvk8mKna/klFrPZDWk3MTIXiHofAmeS/kXnCAHX1DJNsox94yzFekHD3hN
-         HKwBhkQj30AfKNMFcidPs2Mk/+bHx9UyJ2IZ9PVbJWjNjJJmrFmYxrIxK2P67UR0zKEy
-         PO7pW4SAELMqJu0HGjzfUOiBYya+EiGMZ5nMumXYvQyhdAEhd+ipbRB3P48Ygz6nBSCh
-         qSMbh6qFzcFP/g1fSR+8/PU1VnmmeBsvoidXPdCeKT64WXxvbnph2ln6QketlF77D+WA
-         oHqKhLRDxCcIBKZyy4YsqFAdjDue7Q59u2X6Q1Ekb2ZgRuJg3P4nEQ1bRynYG9dv6LzI
-         Sgiw==
-X-Forwarded-Encrypted: i=1; AJvYcCXGLDhsG0YQlcAQXlahybcvDTcB+DqPmdbWXAzIzhT1Av8liaLceCjzug3cTSCDTsIN/J6bHtN6CrpzE0C5q/dkIxpSOunq/mWWOixJ6vNqwAicPXgIms8PYYHKX1L8H/YXeMXP+1+9wUaSAXPUqGKilJHOahCf7F9/S3RM
-X-Gm-Message-State: AOJu0YymaYaD9FcIJ+eGwabKMzk7lvQQzueGAe/tw3IwbyqO9kgxNmKS
-	m1KC+qNxPISMx16mz+eO5DYAeI+jOpK/6eguVJBnLn3FJAnaS/n3
-X-Google-Smtp-Source: AGHT+IG/LZvkvkvKke8uVXcXbrYjZ9FSvr+Pm5+/tdlPUCoe15E1D9VDt24wooC2fGJfQa9Hdwxe2A==
-X-Received: by 2002:a17:906:2284:b0:a4e:39f1:6374 with SMTP id p4-20020a170906228400b00a4e39f16374mr1812470eja.24.1712148803105;
-        Wed, 03 Apr 2024 05:53:23 -0700 (PDT)
-Received: from gmail.com (fwdproxy-lla-007.fbsv.net. [2a03:2880:30ff:7::face:b00c])
-        by smtp.gmail.com with ESMTPSA id an3-20020a17090656c300b00a4e7c2b2070sm2694127ejc.8.2024.04.03.05.53.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 03 Apr 2024 05:53:16 -0700 (PDT)
-Date: Wed, 3 Apr 2024 05:53:12 -0700
-From: Breno Leitao <leitao@debian.org>
-To: "Michael S. Tsirkin" <mst@redhat.com>
-Cc: hengqi@linux.alibaba.com, xuanzhuo@linux.alibaba.com,
-	Jason Wang <jasowang@redhat.com>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Andrew Melnychenko <andrew@daynix.com>, rbc@meta.com,
-	riel@surriel.com, stable@vger.kernel.org, qemu-devel@nongnu.org,
-	"open list:VIRTIO CORE AND NET DRIVERS" <virtualization@lists.linux.dev>,
-	"open list:NETWORKING DRIVERS" <netdev@vger.kernel.org>,
-	open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH net v3] virtio_net: Do not send RSS key if it is not
- supported
-Message-ID: <Zg1ROBmnY0jaKvsf@gmail.com>
-References: <20240329171641.366520-1-leitao@debian.org>
- <20240331160618-mutt-send-email-mst@kernel.org>
+        d=1e100.net; s=20230601; t=1712148997; x=1712753797;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=8yewPQMR0S+4mdQyXSXgCBzYxRYzMDeDenPXpOjBMmY=;
+        b=s9dtrFbBTKnIfhnPGIor2jonfsmvSL6fzUyMnSoCiSLJTVEmjVIu6GxlIEn7kkyyBD
+         v4H8smdXKhc9J948i3qckLoHSdBvtq0h6AncVQJwTzhZyuSlYLHir3d/79hA1Oi4CjKM
+         HRIdKd+EsvkZ+/wdIDHpYxMF5Nr2U1zYeNs3khkfFLtW8kZy0DUjpDkVRsE84Quh+Dsw
+         Yh6prDfps7U1+njwgYV37ZoY6qWcgn4eVY/mxbaVoFnL0DW6/QEF6G0k2GCohCbdc0gM
+         ysGtrVlBQh3d57wLDyn/XVzNMvlx0qfhm411RUHZJE0SnXm85+00V/nEs1iL89fCIGeD
+         XUsw==
+X-Forwarded-Encrypted: i=1; AJvYcCUj5Rg6MoL+sz8oFGzsqef/BnD+d8aE6jdcNhMsr5CjkZqKOqLZz9+gkQmjZz5CXuhiUb6Hg6oMgonMF8esef8dTuB8WAJ5gn02Q5kC
+X-Gm-Message-State: AOJu0YwjSN5o5oCCjGFUdk9ftLnNVGSee4CxuymQ/tKCPOVbRr5kkucQ
+	C0TOERYCUzy74RcgnwbucmL60MhsjplKMy0FfOebEHYfDjNZEAFvrjbkm5Yd7H8579WXupfchgC
+	TX9OjcPzSV2aKA1jiDMgM5h+i1q8bBZjV5VVpxhxWoIwkB7KNJmtAeOdv7E68pA8ctg5OlQzSwl
+	Txz76qutiK4xFZ3qoYLoJYot5AASdRnJRcvVHS
+X-Received: by 2002:a5d:6585:0:b0:343:8551:8d90 with SMTP id q5-20020a5d6585000000b0034385518d90mr2514213wru.34.1712148996811;
+        Wed, 03 Apr 2024 05:56:36 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IFE6EvC96kkgT6mLgn0vUrYteEazg+ord6iBHG8W1WaPauUUkwzs1ek0iVVbDOhQrMvTDS6MXHEqaCEHyYWr0U=
+X-Received: by 2002:a5d:6585:0:b0:343:8551:8d90 with SMTP id
+ q5-20020a5d6585000000b0034385518d90mr2514173wru.34.1712148996414; Wed, 03 Apr
+ 2024 05:56:36 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240331160618-mutt-send-email-mst@kernel.org>
+References: <20240329225835.400662-1-michael.roth@amd.com> <20240329225835.400662-13-michael.roth@amd.com>
+ <40382494-7253-442b-91a8-e80c38fb4f2c@redhat.com> <20240401231731.kjvse7m7oqni7uyg@amd.com>
+In-Reply-To: <20240401231731.kjvse7m7oqni7uyg@amd.com>
+From: Paolo Bonzini <pbonzini@redhat.com>
+Date: Wed, 3 Apr 2024 14:56:25 +0200
+Message-ID: <CABgObfYPT8yLvCDdc0B+4t4xCbk8deZg_G0_QVY_DcR_7--xSw@mail.gmail.com>
+Subject: Re: [PATCH v12 12/29] KVM: SEV: Add KVM_SEV_SNP_LAUNCH_FINISH command
+To: Michael Roth <michael.roth@amd.com>
+Cc: kvm@vger.kernel.org, linux-coco@lists.linux.dev, linux-mm@kvack.org, 
+	linux-crypto@vger.kernel.org, x86@kernel.org, linux-kernel@vger.kernel.org, 
+	tglx@linutronix.de, mingo@redhat.com, jroedel@suse.de, 
+	thomas.lendacky@amd.com, hpa@zytor.com, ardb@kernel.org, seanjc@google.com, 
+	vkuznets@redhat.com, jmattson@google.com, luto@kernel.org, 
+	dave.hansen@linux.intel.com, slp@redhat.com, pgonda@google.com, 
+	peterz@infradead.org, srinivas.pandruvada@linux.intel.com, 
+	rientjes@google.com, dovmurik@linux.ibm.com, tobin@ibm.com, bp@alien8.de, 
+	vbabka@suse.cz, kirill@shutemov.name, ak@linux.intel.com, tony.luck@intel.com, 
+	sathyanarayanan.kuppuswamy@linux.intel.com, alpergun@google.com, 
+	jarkko@kernel.org, ashish.kalra@amd.com, nikunj.dadhania@amd.com, 
+	pankaj.gupta@amd.com, liam.merwick@oracle.com, 
+	Brijesh Singh <brijesh.singh@amd.com>, Harald Hoyer <harald@profian.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Sun, Mar 31, 2024 at 04:20:30PM -0400, Michael S. Tsirkin wrote:
-> On Fri, Mar 29, 2024 at 10:16:41AM -0700, Breno Leitao wrote:
-> > @@ -3814,13 +3815,24 @@ static int virtnet_set_rxfh(struct net_device *dev,
-> >  		return -EOPNOTSUPP;
-> >  
-> >  	if (rxfh->indir) {
-> > +		if (!vi->has_rss)
-> > +			return -EOPNOTSUPP;
-> > +
-> >  		for (i = 0; i < vi->rss_indir_table_size; ++i)
-> >  			vi->ctrl->rss.indirection_table[i] = rxfh->indir[i];
-> > +		update = true;
-> >  	}
-> > -	if (rxfh->key)
-> > +
-> > +	if (rxfh->key) {
-> > +		if (!vi->has_rss && !vi->has_rss_hash_report)
-> > +			return -EOPNOTSUPP;
-> 
-> 
-> What's the logic here? Is it || or &&? A comment can't hurt.
+On Tue, Apr 2, 2024 at 1:18=E2=80=AFAM Michael Roth <michael.roth@amd.com> =
+wrote:
+>
+> On Sat, Mar 30, 2024 at 09:41:30PM +0100, Paolo Bonzini wrote:
+> > On 3/29/24 23:58, Michael Roth wrote:
+> > >
+> > > +           /* Handle boot vCPU first to ensure consistent measuremen=
+t of initial state. */
+> > > +           if (!boot_vcpu_handled && vcpu->vcpu_id !=3D 0)
+> > > +                   continue;
+> > > +
+> > > +           if (boot_vcpu_handled && vcpu->vcpu_id =3D=3D 0)
+> > > +                   continue;
+> >
+> > Why was this not necessary for KVM_SEV_LAUNCH_UPDATE_VMSA?  Do we need =
+it
+> > now?
+>
+> I tried to find the original discussion for more context, but can't seem =
+to
+> locate it. But AIUI, there are cases where a VMM may create AP vCPUs earl=
+ier
+> than it does the BSP, in which case kvm_for_each_vcpu() might return an A=
+P
+> as it's first entry and cause that VMSA to get measured before, leading
+> to a different measurement depending on the creation ordering.
 
-If txfh carries a key, then the device needs to has either has_rss or
-has_rss_hash_report "features".
+I think that would be considered a bug in either the VMM or the
+"thing" that computes the measurement.
 
-These are basically virtio features VIRTIO_NET_F_HASH_REPORT and
-VIRTIO_NET_F_RSS that are set at virtio_probe.
+If that hasn't been a problem for SEV-ES, I'd rather keep the code simple.
 
-I will add the comment and respin the series.
+> We could however limit the change to KVM_X86_SEV_ES_VM and
+> document that as part of KVM_SEV_INIT2, since there is similarly chance
+> for measurement changes their WRT to the new FPU/XSAVE sync'ing that was
+> added.
+
+Hmm, I need to double check that the FPU/XSAVE syncing doesn't break
+existing measurements, too.
+
+Paolo
+
 
