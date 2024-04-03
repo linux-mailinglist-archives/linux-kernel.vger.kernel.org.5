@@ -1,124 +1,139 @@
-Return-Path: <linux-kernel+bounces-129879-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-129829-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 93A2489718B
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 15:49:32 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id D32598970E8
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 15:28:27 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 22CF0B272DC
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 13:49:30 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8E73F290DEE
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 13:28:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BA9C4149017;
-	Wed,  3 Apr 2024 13:48:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2783614900E;
+	Wed,  3 Apr 2024 13:26:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="Vb6APOBp"
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="WSNDfrU1"
+Received: from mail-pg1-f174.google.com (mail-pg1-f174.google.com [209.85.215.174])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 64B6A14882B
-	for <linux-kernel@vger.kernel.org>; Wed,  3 Apr 2024 13:48:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.158.5
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D6B671482FA
+	for <linux-kernel@vger.kernel.org>; Wed,  3 Apr 2024 13:26:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712152138; cv=none; b=u75ZYPJmDEZW/Hs0MwhwRhzlmKxQdk08dJdlPgkHJHMRUdb29jqY6bhAw475rN1eQefq9P/Ji9PWkoKRwpRvzSnanuhadqk0gnRaS95o6IkO1CiR19reC/hV0vaA46vSJYE9AkmjdaWUnl0D+LGbjfDB+ppV0L4B/Ii6Yleoisc=
+	t=1712150778; cv=none; b=J7SUIXfY6aUOgi7RTx84AOebM7va6O/hzF4l2swpmyyP1GoI440kpFKk1JAY7HS92MmjdSrA/bGRvPEsYKvua1FsGxiFIISfxfqW7jSAxitwBM6eiKTAT8gj9aaedSpEhJxEah8L5ObqxzXuXL9IaFvuo2FivrBkLrBQO4NkyHE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712152138; c=relaxed/simple;
-	bh=9YX2yhCzfAJegJoFXC12+a3iew99VIhPK/Z/r6A4cGg=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=aMRqj1roUwFHdPiP0KzuvsvHyJYt4vkZaaYwvEYS4ySB3Ggl1TdYlX4D5hEywx1ahoMCVZhOEfIsxLt24Mq6dr7VVDkjM+NoAlLTNP/9lBVSPU4FzTBCYVpPYTT48OJZKzwJEMawJM81m9L5ozjZSyezoq2FW29FnB9vhFtb2xc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=Vb6APOBp; arc=none smtp.client-ip=148.163.158.5
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0356516.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 433DUXwT018108;
-	Wed, 3 Apr 2024 13:48:53 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding; s=pp1;
- bh=4W4KUIzxuSN+Xr+nkXb5WLxVOa7Pee4oM+/d+NsVcJ4=;
- b=Vb6APOBpT9c+aFLHPi8pwNWkZ1F0iTG0n4BCrK2PwS57Z343Z1C4jVsDeoAYJUl9s5Jq
- QFoGOYjIhUDZPgYAInwKjWvtoeGjBF8BhqMh+Hz2NPaufx3BO8tmfZjF0ImY0SxvJzM7
- 8/RXYR3dcso4eH3Jsu0n2/+wis/T4W0SRScfso33ff8GE88YQ9sg0pWHgUEH/IYYX6jo
- eHtf7qxHgMU5FdRkFxUXKAR5qfczqLIQ6V5RjfcglWeIcatmFpM8oVWacc4fav9iBEW9
- e9IPFYoQqhDk31amQpPfd51y5UTMO5f6maocAFvAwxurHFM1OKvU39EoAfEJWPKhU0nZ Xw== 
-Received: from ppma23.wdc07v.mail.ibm.com (5d.69.3da9.ip4.static.sl-reverse.com [169.61.105.93])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3x9828r1ev-3
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 03 Apr 2024 13:48:51 +0000
-Received: from pps.filterd (ppma23.wdc07v.mail.ibm.com [127.0.0.1])
-	by ppma23.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 433CuU7L002249;
-	Wed, 3 Apr 2024 13:25:54 GMT
-Received: from smtprelay02.fra02v.mail.ibm.com ([9.218.2.226])
-	by ppma23.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3x6xjmnasd-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 03 Apr 2024 13:25:53 +0000
-Received: from smtpav06.fra02v.mail.ibm.com (smtpav06.fra02v.mail.ibm.com [10.20.54.105])
-	by smtprelay02.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 433DPmjQ33095966
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Wed, 3 Apr 2024 13:25:50 GMT
-Received: from smtpav06.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 57E9F20040;
-	Wed,  3 Apr 2024 13:25:48 +0000 (GMT)
-Received: from smtpav06.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 2532C2004B;
-	Wed,  3 Apr 2024 13:25:48 +0000 (GMT)
-Received: from tuxmaker.boeblingen.de.ibm.com (unknown [9.152.85.9])
-	by smtpav06.fra02v.mail.ibm.com (Postfix) with ESMTP;
-	Wed,  3 Apr 2024 13:25:48 +0000 (GMT)
-From: Niklas Schnelle <schnelle@linux.ibm.com>
-To: Andrew Morton <akpm@linux-foundation.org>
-Cc: Arnd Bergmann <arnd@kernel.org>, Heiko Carstens <hca@linux.ibm.com>,
-        linux-kernel@vger.kernel.org, Niklas Schnelle <schnelle@linux.ibm.com>
-Subject: [PATCH 1/1] kgdb: add HAS_IOPORT dependency
-Date: Wed,  3 Apr 2024 15:25:47 +0200
-Message-Id: <20240403132547.762429-2-schnelle@linux.ibm.com>
-X-Mailer: git-send-email 2.40.1
-In-Reply-To: <20240403132547.762429-1-schnelle@linux.ibm.com>
-References: <20240403132547.762429-1-schnelle@linux.ibm.com>
+	s=arc-20240116; t=1712150778; c=relaxed/simple;
+	bh=/ZFx3ebO9y9cafs7GJSvKhCZCl2L53c7NYdEippbANY=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=nC2J2NTSuDA7bn9AqUmEYKmEVbJIv7wyU2mwTe00qPDk/DBRCMn5VYlY1gWrDn5uLY+KFlp/ebJYunfpCcSP/VKi00E63/PmrJxmJLx8nKK7G/aVjcTpZJfJMi2N6FbcUKenk4taAKyaPfENZEkIdSDzrwz3jFRoYNpE8gybVts=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=WSNDfrU1; arc=none smtp.client-ip=209.85.215.174
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-pg1-f174.google.com with SMTP id 41be03b00d2f7-5d8b70b39efso4582430a12.0
+        for <linux-kernel@vger.kernel.org>; Wed, 03 Apr 2024 06:26:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1712150776; x=1712755576; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=kr5yQL8fx0u0tyLMbu3sLuMSllEG5G+mAeHccxYfdVY=;
+        b=WSNDfrU1A5IuXWhh9HEqfMP+zlmpZ+t64/OBY35FevtWwhqB8nNVHgahOdCX79SOp3
+         1yn4HDv63eYR79bakZ9SkDgU02BXUgYL9Wipu16c1zbX53EgqjoEXfn9Ts3KixMoQj8e
+         ZT3d9gYmEjpubF0RDlGKNv3zHXYOgSHzz81a68rJm6oZ/xNJVXvfsteVWByLQ1UANfeU
+         ybeLHoHUWN8KZwzf7IWlteXQvzSC4yGMukXof5DunOP5/NkU/nTmJDZOa1BB123Uw7RB
+         ceEVVEephv1GR+LLJftUFK8eNa+o1E/zwIime3eFHQpxgsQziB+wm/Tm99kxK+BMUdib
+         CLrw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712150776; x=1712755576;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=kr5yQL8fx0u0tyLMbu3sLuMSllEG5G+mAeHccxYfdVY=;
+        b=mUh9yjJk4YYWg67wb9Bq7xFawGVALn0EqNUKuRieXufVvaH2bu81Nz9AI8gS5gidjj
+         jYAb9jcHFjQvCk5qQUNF5D2wz8aCeVtKsGkt9mKB++h9kJiVT/VtRw4SQyPB+1NesMzM
+         MMVvEm/d2Xn08DZwbLtuZNji8YKoqbj1ynHyYfdzaSOQ6cV8+cBRJsuo8nSNIJGaQrVs
+         ZeM153JsslEl7wuYh5ZPhWX73I2bfpcZb4MtHprSwZT0j/ceNnUzCIe48IQ1VizxnMn1
+         6myw9nwXJPKSzhGuAA3KtlWdVcE9LE3oCuQ2nYhYysuQxZWaEmuWJMuCQrN7k2tqATy6
+         FGig==
+X-Gm-Message-State: AOJu0Yx0qOK+y4J/+ncurJyyYvnzjfNj8zoUxZMtwzTLnVOM0DBElHFh
+	3OGUaTrd0HQxYc1VA6g6zgPzZSMIpm0J0sdWyePbnTlt/cgobOSEpMz0qQtYJkhr4pooCmWns3C
+	k2MlJ6kfL4+mfwviWR6g+V8zBp7egNBu12lJCMA==
+X-Google-Smtp-Source: AGHT+IEak/WLSgffbuVSjwab06JTulWpxWfMzkQ8I6F5L8nOzPRvaiqB048L3gfCz5mrvMfqk7JY/JqIUVyg8IDxNG0=
+X-Received: by 2002:a17:90b:19c3:b0:2a2:a7be:3b5c with SMTP id
+ nm3-20020a17090b19c300b002a2a7be3b5cmr1005626pjb.6.1712150776261; Wed, 03 Apr
+ 2024 06:26:16 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: f9976-4sLIEDDPovhnRoM57L60Vf9wcQ
-X-Proofpoint-ORIG-GUID: f9976-4sLIEDDPovhnRoM57L60Vf9wcQ
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-04-03_13,2024-04-03_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0 mlxscore=0
- bulkscore=0 malwarescore=0 clxscore=1015 impostorscore=0 adultscore=0
- phishscore=0 mlxlogscore=792 priorityscore=1501 spamscore=0 suspectscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2403210000
- definitions=main-2404030095
+References: <CA+G9fYtj3aBdRreBmKZDQApEe2x8mugycPgN+_J5ebJzXDEq4g@mail.gmail.com>
+In-Reply-To: <CA+G9fYtj3aBdRreBmKZDQApEe2x8mugycPgN+_J5ebJzXDEq4g@mail.gmail.com>
+From: Vincent Guittot <vincent.guittot@linaro.org>
+Date: Wed, 3 Apr 2024 15:26:05 +0200
+Message-ID: <CAKfTPtC9YgbZgGNK82MhhzzsD3P6j64+w6oieJMDKQNOmrC4FQ@mail.gmail.com>
+Subject: Re: kernel/sched/core.c:961:15: error: incompatible pointer to
+ integer conversion passing 'typeof
+To: Naresh Kamboju <naresh.kamboju@linaro.org>
+Cc: open list <linux-kernel@vger.kernel.org>, 
+	Linux Regressions <regressions@lists.linux.dev>, lkft-triage@lists.linaro.org, 
+	clang-built-linux <llvm@lists.linux.dev>, Linux PM <linux-pm@vger.kernel.org>, 
+	Ingo Molnar <mingo@redhat.com>, Peter Zijlstra <peterz@infradead.org>, 
+	Juri Lelli <juri.lelli@redhat.com>, Nathan Chancellor <nathan@kernel.org>, 
+	Nick Desaulniers <ndesaulniers@google.com>, linux-riscv@lists.infradead.org, 
+	Paul Walmsley <paul.walmsley@sifive.com>, Palmer Dabbelt <palmer@dabbelt.com>, 
+	Albert Ou <aou@eecs.berkeley.edu>
+Content-Type: text/plain; charset="UTF-8"
 
-In a future patch HAS_IOPORT=n will disable inb()/outb() and friends at
-compile time. We thus need to add HAS_IOPORT as dependency for those
-drivers using them.
+Hi Naresh,
 
-Co-developed-by: Arnd Bergmann <arnd@kernel.org>
-Signed-off-by: Arnd Bergmann <arnd@kernel.org>
-Signed-off-by: Niklas Schnelle <schnelle@linux.ibm.com>
----
- lib/Kconfig.kgdb | 1 +
- 1 file changed, 1 insertion(+)
+Adding riscv people
 
-diff --git a/lib/Kconfig.kgdb b/lib/Kconfig.kgdb
-index b5c0e6576749..537e1b3f5734 100644
---- a/lib/Kconfig.kgdb
-+++ b/lib/Kconfig.kgdb
-@@ -122,6 +122,7 @@ config KDB_DEFAULT_ENABLE
- config KDB_KEYBOARD
- 	bool "KGDB_KDB: keyboard as input device"
- 	depends on VT && KGDB_KDB && !PARISC
-+	depends on HAS_IOPORT
- 	default n
- 	help
- 	  KDB can use a PS/2 type keyboard for an input device
--- 
-2.40.1
+On Wed, 3 Apr 2024 at 09:38, Naresh Kamboju <naresh.kamboju@linaro.org> wrote:
+>
+> The riscv clang-17 defconfig build failed due to following warnings / errors
+> on the Linux next-20240402.
 
+Could you confirm that there is no problem with other arch and/or
+other toolchain ?
+
+>
+> Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
+>
+> riscv:
+>   build:
+>     * clang-17-lkftconfig - Failed
+>     * rv32-clang-17-defconfig - Failed
+>     * clang-17-tinyconfig - Failed
+>     * rv32-clang-17-tinyconfig - Failed
+>     * clang-17-defconfig - Failed
+>     * clang-17-allnoconfig - Failed
+>     * rv32-clang-17-allnoconfig - Failed
+>
+> Build log:
+> -------
+> kernel/sched/core.c:961:15: error: incompatible pointer to integer
+> conversion passing 'typeof (*((__ai_ptr)))' (aka 'struct wake_q_node
+> *') to parameter of type 'uintptr_t' (aka 'unsigned long')
+> [-Wint-conversion]
+>   961 |         if (unlikely(cmpxchg_relaxed(&node->next, NULL, WAKE_Q_TAIL)))
+>       |                      ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+There is no recent change on this code. Could it be a change in
+cmpxchg_relaxed ?
+
+>
+> Steps to reproduce:
+> ---------
+> # tuxmake --runtime podman --target-arch riscv --toolchain clang-17
+> --kconfig defconfig LLVM=1 LLVM_IAS=1
+>
+> Links:
+>  - https://qa-reports.linaro.org/lkft/linux-next-master/build/next-20240402/testrun/23264917/suite/build/test/clang-17-defconfig/details/
+>  - https://qa-reports.linaro.org/lkft/linux-next-master/build/next-20240402/testrun/23264917/suite/build/test/clang-17-defconfig/log
+>
+> --
+> Linaro LKFT
+> https://lkft.linaro.org
 
