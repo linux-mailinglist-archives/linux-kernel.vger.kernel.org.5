@@ -1,60 +1,62 @@
-Return-Path: <linux-kernel+bounces-129056-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-129057-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 593E38963FF
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 07:28:11 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 06708896404
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 07:30:42 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C4F471F21730
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 05:28:10 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 053801C2287B
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 05:30:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9724F487A9;
-	Wed,  3 Apr 2024 05:28:00 +0000 (UTC)
-Received: from mail-lf1-f54.google.com (mail-lf1-f54.google.com [209.85.167.54])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CD14F4AECB;
+	Wed,  3 Apr 2024 05:30:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="J1cjdzMh"
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 81F4246425;
-	Wed,  3 Apr 2024 05:27:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 73F1846425;
+	Wed,  3 Apr 2024 05:30:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712122080; cv=none; b=OZhPv4KidiiCCb5Zuny9iV71Yp8Zq/BlroTGU32ed2FNdRplZqqLruz/M73YL6R1rsfqzf6N9+PXxBC+tHNv2+Q4zAXxb/KnTRqWBF6vVTnS7Io885vTD/fC6FE72YNDziI3xb/bvxJeHvpejxxGUUohMXHjduJpcrelMD5x3oQ=
+	t=1712122232; cv=none; b=ncJbhSyfk7I2CwqRExU3sFGHVRI+ajipKiUxg68rTh8LrQq7cy4hKPMAVDkArfZPGY0kqnYZyEYAj1y1lCp569rJ1ijD+CYKtzZ4K9xqDfz6VHIPDxoiDVblcIai2Yp0xInu/QNkbeH68BxxbXB5gQ2t4rSh8mTY9ALbUX5Z0dY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712122080; c=relaxed/simple;
-	bh=nQ1AADJtSUrelDGKIEVmDJob3+HQS5CIkO5KdKa2Y6w=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=T7JdEtXcLZJBYXjInPFiLnyBiFZCYZd/rpDc7edkhZhe9SalEI0uAHEkWEEyybMng78kuOgk18Uk177P8pDcgPZkjwkB/nuJ9FxDOjr8mSf/k4izLrp9mPGZYnNYCjeB4O0D3dy9ceWF/yirxcsBUpneJNUwBjzuVSf8DdsKSQU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.167.54
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lf1-f54.google.com with SMTP id 2adb3069b0e04-515a68d45faso6729814e87.3;
-        Tue, 02 Apr 2024 22:27:58 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712122077; x=1712726877;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=3e61jTEyzLr/0dQ2X4DGlvWfgoJOocw130xaEPJzMOg=;
-        b=Uy955x2OKmlCSGIXTqwnI7VDJW3pH7Wru9fgmoKl1Fb/2U4YiH4rzXRXB+Kh00xkBe
-         SiUOMAD5uflVJBuYSJ8IOQCs98G5HK9hKWM8aXGKSYu5T7Mnvo2WWUUJvdnNe//32JPN
-         8bbvXNXOwAU2v307RjEtyD0pOzJ6ejtwqzSDCQl0DTt52sx1VK2Ojw0SpDDHhrxbK/jo
-         GoMGQh5aTHr8ZcywnsZo0biYZVuL/O2ZO8LehpLPV6eW3JBadw2xHrkK9ZJ7XD5CrwpW
-         kCW2z87bsR2j6Bxz/dVZbfO3i0xXQvBxw/F59jn0ffTP80fdykGufy2ugBpuHPGruu9O
-         pZag==
-X-Forwarded-Encrypted: i=1; AJvYcCXnU5DBPDrwQtmgA9VuxjOTUrMGmr3I6aiX6JKZT+BBPIC/btZfKdd7Bldi5cK9BSjiibRnXHF5z5+JUA8dHFk7XSkTSAYmGhTEnNSEJxQDg5RbpLWNfOZTCoJ9Dt0i4daTApog3HE3T9ziam3K5N7kOixX132BTg7OFqDdG57khOkxMwnMB9ejjmHvtFiIaYXOBilNf1V/u6QIdA+U9vxQBjs=
-X-Gm-Message-State: AOJu0YytvDIO+aOc6Ub/mv+mInK0Zlu0wzkZgZ1qv7qp2gc2HirYeckn
-	1KIcF5PvnzMYZngmAJ+7qjsqBFDasVvTN1QOj5UPECbQTOf25qSg
-X-Google-Smtp-Source: AGHT+IErwZY+85fAkT8g4r68ExVUmiUc+8PVg7MkDKyZQ5FBQE/f1myNVL3Vw902yQKzsTH9GdsjCA==
-X-Received: by 2002:a05:6512:acc:b0:515:9ae1:9a6e with SMTP id n12-20020a0565120acc00b005159ae19a6emr10439127lfu.67.1712122076369;
-        Tue, 02 Apr 2024 22:27:56 -0700 (PDT)
-Received: from ?IPV6:2a0b:e7c0:0:107::aaaa:69? ([2a0b:e7c0:0:107::aaaa:69])
-        by smtp.gmail.com with ESMTPSA id l6-20020a05600c4f0600b0041469869d11sm23278276wmq.47.2024.04.02.22.27.55
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 02 Apr 2024 22:27:56 -0700 (PDT)
-Message-ID: <6bb4f4fb-573c-4f63-967c-2cb08514fc91@kernel.org>
-Date: Wed, 3 Apr 2024 07:27:55 +0200
+	s=arc-20240116; t=1712122232; c=relaxed/simple;
+	bh=F+P7/1n/I/THPHzbh70jtYG7fUDUVpF824Km3d90icw=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=s9NNrjIKrr9aLNuF5JibW/G1TNkgVRpmLINQYlZILYCOagKtTVvyI3zf4gQB5WPXNd2KjVsOAZpEqrVy0o30KLbczv491b6GaNAypfql0jvP2u+nEw+JMUtzIUmYSS2osMQBRx5kHez+gdCxnmvIy+EKWc/pnBBoF1T/TfR1SuE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=J1cjdzMh; arc=none smtp.client-ip=205.220.180.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279872.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 4333K4nT021640;
+	Wed, 3 Apr 2024 05:30:20 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	message-id:date:mime-version:subject:to:cc:references:from
+	:in-reply-to:content-type:content-transfer-encoding; s=
+	qcppdkim1; bh=ihqQBkI3scZyIcVdz4T1VFyYhYJ1SN6StLpyEalmDhw=; b=J1
+	cjdzMhd+OIhN29tKQrCV/wSawxlatvvsBWO1JMIh8dl9uhov0yNVH1JqRZLkG278
+	3Ah7L6W/9wswxZswJnWbZFoGHJ+Ia5PT2zYB3olIBRzPkQNH3xQB/kQzIlTnrGHX
+	ehHiYBisIR3/2u+QT5NSDw3p7yeVvjpLTOAsIwIuSBYDV5PTYMX7rGgDKfGV8Kic
+	6zHLnDQ4DyaeLnGdlk9mUnzydiyZwtTX0pN7LITbq+hU3Dt3jyW5V8ua7z6vWTVR
+	wU0F+XFF1ChhsDBSceKYJcIZ5QF2ZmY7aU0xOk7IFbMj+LHWVw2Tazy5WKiofF21
+	rGPCLEtOkhIpVDilMXSg==
+Received: from nalasppmta05.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3x8v3f8gus-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 03 Apr 2024 05:30:20 +0000 (GMT)
+Received: from nalasex01c.na.qualcomm.com (nalasex01c.na.qualcomm.com [10.47.97.35])
+	by NALASPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 4335UJZQ031508
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 3 Apr 2024 05:30:19 GMT
+Received: from [10.239.154.73] (10.80.80.8) by nalasex01c.na.qualcomm.com
+ (10.47.97.35) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.4; Tue, 2 Apr 2024
+ 22:30:13 -0700
+Message-ID: <db301b10-6312-4d47-ba4a-9c462e5cbea0@quicinc.com>
+Date: Wed, 3 Apr 2024 13:29:46 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -62,96 +64,76 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [RESEND PATCH v3 1/2] VT: Add KDFONTINFO ioctl
-To: Alexey Gladkov <legion@kernel.org>
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- LKML <linux-kernel@vger.kernel.org>, kbd@lists.linux.dev,
- linux-api@vger.kernel.org, linux-fbdev@vger.kernel.org,
- linux-serial@vger.kernel.org, Helge Deller <deller@gmx.de>
-References: <cover.1710252966.git.legion@kernel.org>
- <cover.1712053848.git.legion@kernel.org>
- <ed056326540f04b72c97a276fbcc316e1b2f6371.1712053848.git.legion@kernel.org>
- <74ca50e0-61b1-4d4c-85dd-a5d920548c04@kernel.org>
- <ZgwF72yHH_0-A4FW@example.org>
+Subject: Re: [PATCH v8 1/3] input: pm8xxx-vibrator: refactor to support new
+ SPMI vibrator
 Content-Language: en-US
-From: Jiri Slaby <jirislaby@kernel.org>
-Autocrypt: addr=jirislaby@kernel.org; keydata=
- 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
-In-Reply-To: <ZgwF72yHH_0-A4FW@example.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+To: Konrad Dybcio <konrad.dybcio@linaro.org>, <kernel@quicinc.com>,
+        Andy Gross
+	<agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Dmitry Torokhov
+	<dmitry.torokhov@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        "Krzysztof
+ Kozlowski" <krzysztof.kozlowski+dt@linaro.org>,
+        Dmitry Baryshkov
+	<dmitry.baryshkov@linaro.org>
+CC: <linux-arm-msm@vger.kernel.org>, <linux-input@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>
+References: <20240401-pm8xxx-vibrator-new-design-v8-0-6f2b8b03b4c7@quicinc.com>
+ <20240401-pm8xxx-vibrator-new-design-v8-1-6f2b8b03b4c7@quicinc.com>
+ <21641459-d7c0-412d-8244-6f2f2c458551@linaro.org>
+From: Fenglin Wu <quic_fenglinw@quicinc.com>
+In-Reply-To: <21641459-d7c0-412d-8244-6f2f2c458551@linaro.org>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nalasex01c.na.qualcomm.com (10.47.97.35)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: ptSWHyJ8d6MRM52jQtVZhkIlouK4omGN
+X-Proofpoint-GUID: ptSWHyJ8d6MRM52jQtVZhkIlouK4omGN
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-04-03_04,2024-04-01_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
+ phishscore=0 priorityscore=1501 suspectscore=0 mlxscore=0 bulkscore=0
+ malwarescore=0 mlxlogscore=607 clxscore=1011 spamscore=0 impostorscore=0
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2403210001 definitions=main-2404030035
 
-On 02. 04. 24, 15:19, Alexey Gladkov wrote:
->>> --- a/include/uapi/linux/kd.h
->>> +++ b/include/uapi/linux/kd.h
-..
->>> +struct console_font_info {
->>> +	unsigned int min_width, min_height;	/* minimal font size */
->>> +	unsigned int max_width, max_height;	/* maximum font size */
->>> +	unsigned int flags;			/* KD_FONT_INFO_FLAG_* */
+
+
+On 4/2/2024 11:21 PM, Konrad Dybcio wrote:
+> On 1.04.2024 10:38 AM, Fenglin Wu via B4 Relay wrote:
+>> From: Fenglin Wu <quic_fenglinw@quicinc.com>
 >>
->> This does not look like a well-defined™ and extendable uapi structure.
->> While it won't change anything here, still use fixed-length __u32.
+>> Currently, vibrator control register addresses are hard coded,
+>> including the base address and offsets, it's not flexible to
+>> support new SPMI vibrator module which is usually included in
+>> different PMICs with different base address. Refactor it by using
+>> the base address defined in devicetree.
 >>
->> And you should perhaps add some reserved fields. Do not repeat the same
->> mistakes as your predecessors with the current kd uapi.
+>> Signed-off-by: Fenglin Wu <quic_fenglinw@quicinc.com>
+>> ---
 > 
-> I thought about it, but I thought it would be overengineering.
+> [...]
+> 
+>>   	if (regs->enable_mask)
+>> -		rc = regmap_update_bits(vib->regmap, regs->enable_addr,
+>> +		rc = regmap_update_bits(vib->regmap, vib->enable_addr,
+>>   					regs->enable_mask, on ? ~0 : 0);
+> 
+> The idiomatic way across the kernel seems to be writing the mask value
+> instead of ~0 (which also saves like 2 cpu instructions)
+> 
+> 
+> Not sure about how ssbi addressing works, but except for that lgtm
+> 
+Agree.
+SSBI driver doesn't provide reg_update_bits function call so similar 
+mathematics is done on the value before writing to the register,  I can 
+update it to use enable_mask directly in next version.
 
-It would not. UAPI structs are set in stone once released.
-
-And in this case, it's likely you would want to know more info about 
-fonts in the future.
-
-> Can you suggest how best to do this?
-
-Given you have flags in there already (to state that the structure 
-contains more), just add an array of u32 reserved[] space. 3 or 5, I 
-would say (to align the struct to 64bit).
-
-thanks,
--- 
-js
-suse labs
-
+> Konrad
 
