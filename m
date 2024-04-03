@@ -1,131 +1,111 @@
-Return-Path: <linux-kernel+bounces-129049-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-129050-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9AA828963D1
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 07:08:42 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5CCD98963D7
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 07:10:45 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1F9D1B23F43
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 05:08:40 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 187FD286F12
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 05:10:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B662346435;
-	Wed,  3 Apr 2024 05:08:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E2F29487B6;
+	Wed,  3 Apr 2024 05:10:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="HWNU/nvt"
-Received: from mail-pl1-f172.google.com (mail-pl1-f172.google.com [209.85.214.172])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="soGyJg5H"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9146E645;
-	Wed,  3 Apr 2024 05:08:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 10621645;
+	Wed,  3 Apr 2024 05:10:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712120914; cv=none; b=DLVi7V32JhXebf4e5fDBAY4xpUNKA1PrnA+oW6V+3iYWOqjp5uXCj9YJ7dThN1TNGO5fib+M8nFQfNUOhMTumRVLshGI+zkKk2HSiAkhvhf0/f+/v8fzWXLuERzlgelpwK33joHCFMM8uNO7E5KJz3wReDd0Lywu3BZyedQn7II=
+	t=1712121034; cv=none; b=bUhjD2qiR7A0/SHq8RqHayu9F5rIFF4n1T0rVvbyp8jnCeplTPTUy8E0WJb7FM1GmcAZZh3qrTvwTE/WvEqQIodzrYbuqGxizFGcoT01H9UgqTIxSjdSzIfzfoZwdWRSGBm+s1hmIW6qH5WvTi3yRX47FtcVVZrBplAcFKimQxw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712120914; c=relaxed/simple;
-	bh=iTP2lx0+5/hKPX7Lgaiajz+wXzMvaqjQegPjM1Ons3g=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=oRcFOvHqj/c5ZztUShVjog1sbqQao1oj25JRurfcLDJ8iUsrAazkuVwPE1sXpihGGociSQWgz/4Y/mMXTkdZHVeRoT82+MvUQLe5i5lQmYdw/EokHSmW9HYnZLD3q9MWnnT12og+wnfG9toA0gpnaEzIMuWFwYFTPJmyH520c8s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=HWNU/nvt; arc=none smtp.client-ip=209.85.214.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f172.google.com with SMTP id d9443c01a7336-1def3340682so51552935ad.1;
-        Tue, 02 Apr 2024 22:08:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1712120911; x=1712725711; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=X+IAlcsaX9nh/sd//p39jgfKrXWxYVdvV9uT5WXHXs0=;
-        b=HWNU/nvtIl7Akmiawa5+BcYtkPS6yur2Rrzd78I+6OI0M30e/tSDodI3X2fX6ijWno
-         lQgxmcF7eldUnaP1eSrUwfv2T1y3SEfWvLMQsm+sipjHThGcj5Kk7NVDbE1rZkORCECj
-         EH0twR76bSgVWZRTWLS0IJa9ZYuIt/2nRMW8rMH/LzxSE+AJJUBzPHrwhMdoxkRrQn2H
-         WDQ6EOrwK390BDkPvEWoYOs1aCpUEPql8sKzrO1/qQfXP5AWGQhzmjF0OFmKA64yRCak
-         TMFDxrf4BuQ05g8PaDi0MjFtjHKShdzyx6IrGV2utDaytYYO8UKCUm+0Y8h6GPNYkS9s
-         AnCw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712120911; x=1712725711;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=X+IAlcsaX9nh/sd//p39jgfKrXWxYVdvV9uT5WXHXs0=;
-        b=Vk76cg6S2fDD3RANUxYKx2Dk6PFpCaIdxxwLBEyi8FQTyVxp4bVrcFbM0nwJ7UiEUn
-         lyjfWI83cxNbpEVaixdtw1gDlm1hzZRGo37vx09ydtOgo2vuWH/9M9FNYVMNGpXa90z9
-         eyPrhg8rWa4uEC0qnFCDGK8m+uERzwZoFiWWTCE2hv+CsbJUkP9uYHt0Pwwgd2iXXGFq
-         4ZeEOPQRlDGnZOGu8rsnph92Q58r+PVc0TGqIC/firt1ck4pOqS7125ufi523D2fPcC6
-         LSGQsM79CqP/Y3vGP97YcXAOfi+mo4S//hFUawIcFh/09RfaZqbYrGzyY2Fny8akjiT6
-         n1Cg==
-X-Forwarded-Encrypted: i=1; AJvYcCXz0ZjjR6aZwjnTIJ4+zXXqFWzzg2QdpJmZLKDsGkDLskC6Lyp2A4VKyBG810Ko97VsJJ0gWz4H4AiEofj1QWsYpkcskAtFDzA3mxzFUcjdDOvSGIug2UHtRuIFHJRUm3sOb3ERvwCH
-X-Gm-Message-State: AOJu0YwgibhXu30N+a37snoLT7+fzGsM+gXEX+v2maSGP40eyox+IvRq
-	j4bHynkUsXI85sFnLfkYRzhEIb0BNO0377mq1bN48zMTdi+TV8qT
-X-Google-Smtp-Source: AGHT+IHNtMsKzrW1xkjckiZnmLdT2waJr420bJqVcEia4dHJD/3JJU6nrRQW0Z8B17Fg8zZT8c+7YQ==
-X-Received: by 2002:a17:903:2447:b0:1e2:6191:b97f with SMTP id l7-20020a170903244700b001e26191b97fmr6425041pls.6.1712120910958;
-        Tue, 02 Apr 2024 22:08:30 -0700 (PDT)
-Received: from kaiwan-dell-7550.wlan ([205.254.163.212])
-        by smtp.gmail.com with ESMTPSA id h13-20020a170902680d00b001e27462b97fsm2304712plk.293.2024.04.02.22.08.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 02 Apr 2024 22:08:30 -0700 (PDT)
-From: Kaiwan N Billimoria <kaiwan.billimoria@gmail.com>
-To: Carlos Bilbao <carlos.bilbao@amd.com>
-Cc: corbet@lwn.net,
-	linux-doc@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Kaiwan N Billimoria <kaiwan.billimoria@gmail.com>
-Subject: [PATCH] docs: Add relevant kernel publications to list of books; LKP 2E
-Date: Wed,  3 Apr 2024 10:38:24 +0530
-Message-Id: <20240403050824.166787-1-kaiwan.billimoria@gmail.com>
-X-Mailer: git-send-email 2.40.1
+	s=arc-20240116; t=1712121034; c=relaxed/simple;
+	bh=nfMida/fwtgf6d9g/VzEFa7bAK2MwKc03M85xVMKpXk=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=pKymvtannxk9XJlgHLrOs8gdl87w/uFZUq2gsOAj5uujrkzrZYRF4W8VcOq2CBRL91HsfimzSDze5dLWxfsRlHGBVXZ5Qh9w7FldsO++ceKorPH1Onj4CNmfdok9CR53g7UznoIOVOP0ld2E1atQsnB1KeD6T/1X6jOOOB6LuGc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=soGyJg5H; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id EAB17C433C7;
+	Wed,  3 Apr 2024 05:10:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1712121033;
+	bh=nfMida/fwtgf6d9g/VzEFa7bAK2MwKc03M85xVMKpXk=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=soGyJg5HUoztDgHwRzno02g7VWNaNwjWE8EJzeGEFWvEqlVnOv95t66xg0dFWdDsm
+	 XAyyRG+qzesHn2tUz00OrC8EBuSOOGB8YyksVmIn7+nywRPuIf+tkY3I0hVwccgAxB
+	 LV88ts4IKuLJSsyu0WKfjKSGMvjPvCMN492RMBmIu4Q/8cJmNTiJJGiIVXkenEVkZ+
+	 sCeBB21FhOWGjrmkCpF9fIG1wagU4e6GcznzodJOxTWZGajmhmZALzUfbeaXMCoGRK
+	 gmK4lsXCF7oQ3Jggov2yJLLgeFfSirdE24WLJvYSx2shbC8HMygRJyjY0PKghRN881
+	 OMWLkAXEj4jUA==
+Date: Tue, 2 Apr 2024 22:10:31 -0700
+From: Eric Biggers <ebiggers@kernel.org>
+To: Fan Wu <wufan@linux.microsoft.com>
+Cc: corbet@lwn.net, zohar@linux.ibm.com, jmorris@namei.org,
+	serge@hallyn.com, tytso@mit.edu, axboe@kernel.dk, agk@redhat.com,
+	snitzer@kernel.org, eparis@redhat.com, paul@paul-moore.com,
+	linux-doc@vger.kernel.org, linux-integrity@vger.kernel.org,
+	linux-security-module@vger.kernel.org, fsverity@lists.linux.dev,
+	linux-block@vger.kernel.org, dm-devel@lists.linux.dev,
+	audit@vger.kernel.org, linux-kernel@vger.kernel.org,
+	Deven Bowers <deven.desai@linux.microsoft.com>
+Subject: Re: [PATCH v16 17/20] ipe: enable support for fs-verity as a trust
+ provider
+Message-ID: <20240403051031.GK2576@sol.localdomain>
+References: <1711657047-10526-1-git-send-email-wufan@linux.microsoft.com>
+ <1711657047-10526-18-git-send-email-wufan@linux.microsoft.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1711657047-10526-18-git-send-email-wufan@linux.microsoft.com>
 
-Hi Carlos, Jon,
-As the 2nd edition of my 'Linux Kernel Programming' book is recently
-published (29 Feb 2024), this patch is to request it's addition to the
-book list.
-I've currently kept the 1st edition as well (in reverse chronological
-order); if this isn't required, pl let me know..
+On Thu, Mar 28, 2024 at 01:17:24PM -0700, Fan Wu wrote:
+> Enable IPE policy authors to indicate trust for a singular fsverity
+> file, identified by the digest information, through "fsverity_digest"
+> and all files using fsverity's builtin signatures via
+> "fsverity_signature".
 
-Regards,
-Kaiwan
+Again, I'm pretty sure you actually care about all files with *valid* builtin
+signatures, not simply all files with builtin signatures...
 
-Signed-off-by: Kaiwan N Billimoria <kaiwan.billimoria@gmail.com>
----
- Documentation/process/kernel-docs.rst | 10 ++++++++++
- 1 file changed, 10 insertions(+)
+> +/**
+> + * ipe_inode_setintegrity - save integrity data from a inode to IPE's LSM blob.
+> + * @inode: The inode to source the security blob from.
+> + * @type: Supplies the integrity type.
+> + * @value: The value to be stored.
+> + * @size: The size of @value.
+> + *
+> + * Saves fsverity signature into inode security blob
+> + *
+> + * Return:
+> + * * 0	- OK
+> + * * !0	- Error
+> + */
+> +int ipe_inode_setintegrity(struct inode *inode, enum lsm_integrity_type type,
+> +			   const void *value, size_t size)
+> +{
+> +	struct ipe_inode *inode_sec = ipe_inode(inode);
+> +
+> +	if (type == LSM_INT_FSVERITY_BUILTINSIG) {
+> +		inode_sec->fs_verity_signed = size > 0 && value;
+> +		return 0;
+> +	}
+> +
+> +	return 0;
 
-diff --git a/Documentation/process/kernel-docs.rst b/Documentation/process/kernel-docs.rst
-index 8660493b91d0..f73671b65a71 100644
---- a/Documentation/process/kernel-docs.rst
-+++ b/Documentation/process/kernel-docs.rst
-@@ -75,6 +75,15 @@ On-line docs
- Published books
- ---------------
- 
-+    * Title: **Linux Kernel Programming: A Comprehensive and practical guide to Kernel Internals, Writing Modules, and Kernel Synchronization**
-+
-+      :Author: Kaiwan N Billimoria
-+      :Publisher: Packt Publishing Ltd
-+      :Date: February, 2024
-+      :Pages: 826
-+      :ISBN: 978-1803232225
-+      :Notes: 2nd Edition
-+
-     * Title: **Linux Kernel Debugging: Leverage proven tools and advanced techniques to effectively debug Linux kernels and kernel modules**
- 
-       :Author: Kaiwan N Billimoria
-@@ -91,6 +100,7 @@ Published books
-       :Date: March, 2021
-       :Pages: 754
-       :ISBN: 978-1789953435
-+      :Notes: 1st Edition
- 
-     * Title: **Linux Kernel Programming Part 2 - Char Device Drivers and Kernel Synchronization: Create user-kernel interfaces, work with peripheral I/O, and handle hardware interrupts**
- 
--- 
-2.40.1
+This is the actual code, and it's *still* documented incorrectly.  No, it
+doesn't "Save fsverity signature into inode security blob".  All it actually
+does is save a flag saying that there was a valid signature.
 
+The flag also should be called something like fsverity_sig_valid, indicating
+that there is a builtin signature *and* it's valid.
+
+- Eric
 
