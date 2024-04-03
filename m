@@ -1,58 +1,59 @@
-Return-Path: <linux-kernel+bounces-130344-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-130345-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D99E18976FF
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 19:38:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id AAAAE897700
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 19:39:16 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 16D931C28D96
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 17:38:59 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D98A61C2696C
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 17:39:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1128C16C688;
-	Wed,  3 Apr 2024 17:19:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CB1C8155752;
+	Wed,  3 Apr 2024 17:19:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="MPX2/GBu"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="BPH4JaEx"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4940516C459;
-	Wed,  3 Apr 2024 17:19:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 16D06155751;
+	Wed,  3 Apr 2024 17:19:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712164793; cv=none; b=IB3n9z/sS6nAJGCCzpRcwq8vsJppRKQgxmliY6BsxpYeynZEBc8NSs1fkcQ7XU4ArMw+v2pBdKjIhshxJn2xr5TILfzvozFtKzO9hg6gw/vGiEFFXo/wCkSYBEb+Ftg+JqnVqN6SsRvbugF+8PHQ3n7L96i7aYqvXsVR2EUS/2A=
+	t=1712164795; cv=none; b=RNyyj9FLRbIwStn8Wj+/Ja21U7DQhV1lN3MNpki1E0oq7WLJz+iKfLv/nefiid0jhSK6lFg8BjQvm3zWMSd8XAvOI7n/NSc4HxR/gCK9xJYExmB5D1mBOhlc9mJcO0Xd2xJv+rS5fhMXiyYjIhwokIDhgy8yoF6M3JC0AKzytbI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712164793; c=relaxed/simple;
-	bh=cxFHtwCOC32ukJTfuk0w2xaUECzsrt/GTn2WtXZd2DY=;
+	s=arc-20240116; t=1712164795; c=relaxed/simple;
+	bh=yEQHGfdTQfgueNzJukGN+SUJw0maNjlPoXSPO9Gk4Fw=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=pCayemufMmVw9m6AiZ/SK7k4I+6bvPgCpsaXJxWR1aUyH4JUdPHUIioHN2f6e29kFikzGaqMyvMzAoXFVRm6VrjowZnDMxs+gWd6qi0/TgAVcjGm7Eoe7SeILvjhnRNUpqZsIpQkeewGWP1VD8wURGxRBNKzL5a665ts5f6kzzg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=MPX2/GBu; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 28DF8C433F1;
-	Wed,  3 Apr 2024 17:19:52 +0000 (UTC)
+	 MIME-Version; b=ViQGa3pFzpp4f0BVzS279/mldcpx6Y4RVpSQBCJE4hMvJKHidg17TY0o6/drDKabkRD+5nHEP9wK0VBZF5WfFM19CuVjPKptjlrXHqLBAYSKuRA36be/5ac2sYOgx+ebnemf007BvUARlYLUnGYSb4AtBbo2H7VAqRQnQvAMn/8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=BPH4JaEx; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 94B56C433B1;
+	Wed,  3 Apr 2024 17:19:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712164793;
-	bh=cxFHtwCOC32ukJTfuk0w2xaUECzsrt/GTn2WtXZd2DY=;
+	s=k20201202; t=1712164794;
+	bh=yEQHGfdTQfgueNzJukGN+SUJw0maNjlPoXSPO9Gk4Fw=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=MPX2/GBuNBZR30M8VFIk6e+fBb2865NA5uPLXgsLcOgKJSD2ALyQs2kg2uf4nDrCF
-	 /WU4we1IIK/djUcAtZx87dYjhxWGsxBpfjgZNHx+DPeEtizvdKXqOXtMyImWfIGI9x
-	 FCrYO9huEhmoabT2pXGo2J2fvlUNJXsjU4laqXF9uWufZRUPTN96OScO7XMlxdqmMf
-	 yFLqPMN5MV4E3cKcCMH+GdBz8b2Pt1VfQsGoPvYCoLb2dkpRcP3aIXl0tFVIaI8xJb
-	 aUt4A1tMDOKRp2Hf08bnhXARSWPoJeLW4ix6mTkx7DTynmY7tZ8FDuKNxKxLsq5u01
-	 ZE2r+145aRFQg==
+	b=BPH4JaExf5qRZT9G15NAfQHG6dR7kF78XSfVU7dr3zQEE7775KGfYlZb33WBCXCDh
+	 07sf4Koo9oyttl476zmU1oksbF5DVdY7nf51kHpQw8SZjeDdZwnIG6ILIHrsOdDdUw
+	 sgZNqQwBh4VfsPLJ1J/n/51R6EcTYqgQ1E75rHceMI6FBDtEbJXltQ0vLdnpyMQb0b
+	 yJOyQs2mJ3Is53sH5KOk2C0b1EGJkBmfmTY48mOBFsobGVjufDI3X8LOerBsilUdup
+	 eJcgTxL4IEaNTwuKfAZi5+jaHkBorvlVEO6lK9xJhP8LiyMvFpHHEem3tnD3QLANW6
+	 lW7nJACp2pRKw==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Colin Ian King <colin.i.king@gmail.com>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+Cc: Chancel Liu <chancel.liu@nxp.com>,
+	Zhipeng Wang <zhipeng.wang_1@nxp.com>,
+	Mark Brown <broonie@kernel.org>,
 	Sasha Levin <sashal@kernel.org>,
-	nathan@kernel.org,
-	u.kleine-koenig@pengutronix.de,
-	linux-usb@vger.kernel.org,
-	llvm@lists.linux.dev
-Subject: [PATCH AUTOSEL 5.15 4/8] usb: sl811-hcd: only defined function checkdone if QUIRK2 is defined
-Date: Wed,  3 Apr 2024 13:19:37 -0400
-Message-ID: <20240403171945.350716-4-sashal@kernel.org>
+	lgirdwood@gmail.com,
+	perex@perex.cz,
+	tiwai@suse.com,
+	linux-sound@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.15 5/8] ASoC: soc-core.c: Skip dummy codec when adding platforms
+Date: Wed,  3 Apr 2024 13:19:38 -0400
+Message-ID: <20240403171945.350716-5-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240403171945.350716-1-sashal@kernel.org>
 References: <20240403171945.350716-1-sashal@kernel.org>
@@ -67,45 +68,40 @@ X-Patchwork-Hint: Ignore
 X-stable-base: Linux 5.15.153
 Content-Transfer-Encoding: 8bit
 
-From: Colin Ian King <colin.i.king@gmail.com>
+From: Chancel Liu <chancel.liu@nxp.com>
 
-[ Upstream commit 12f371e2b6cb4b79c788f1f073992e115f4ca918 ]
+[ Upstream commit 23fb6bc2696119391ec3a92ccaffe50e567c515e ]
 
-Function checkdone is only required if QUIRK2 is defined, so add
-appropriate #if / #endif around the function.
+When pcm_runtime is adding platform components it will scan all
+registered components. In case of DPCM FE/BE some DAI links will
+configure dummy platform. However both dummy codec and dummy platform
+are using "snd-soc-dummy" as component->name. Dummy codec should be
+skipped when adding platforms otherwise there'll be overflow and UBSAN
+complains.
 
-Cleans up clang scan build warning:
-drivers/usb/host/sl811-hcd.c:588:18: warning: unused function
-'checkdone' [-Wunused-function]
-
-Signed-off-by: Colin Ian King <colin.i.king@gmail.com>
-Link: https://lore.kernel.org/r/20240307111351.1982382-1-colin.i.king@gmail.com
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Reported-by: Zhipeng Wang <zhipeng.wang_1@nxp.com>
+Signed-off-by: Chancel Liu <chancel.liu@nxp.com>
+Link: https://msgid.link/r/20240305065606.3778642-1-chancel.liu@nxp.com
+Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/usb/host/sl811-hcd.c | 2 ++
- 1 file changed, 2 insertions(+)
+ sound/soc/soc-core.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/drivers/usb/host/sl811-hcd.c b/drivers/usb/host/sl811-hcd.c
-index 825ff67273102..d3de9f47552d0 100644
---- a/drivers/usb/host/sl811-hcd.c
-+++ b/drivers/usb/host/sl811-hcd.c
-@@ -585,6 +585,7 @@ done(struct sl811 *sl811, struct sl811h_ep *ep, u8 bank)
- 		finish_request(sl811, ep, urb, urbstat);
- }
+diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
+index a5b3ee69fb886..1c4d8b96f77b1 100644
+--- a/sound/soc/soc-core.c
++++ b/sound/soc/soc-core.c
+@@ -1042,6 +1042,9 @@ int snd_soc_add_pcm_runtime(struct snd_soc_card *card,
+ 			if (!snd_soc_is_matching_component(platform, component))
+ 				continue;
  
-+#ifdef QUIRK2
- static inline u8 checkdone(struct sl811 *sl811)
- {
- 	u8	ctl;
-@@ -616,6 +617,7 @@ static inline u8 checkdone(struct sl811 *sl811)
- #endif
- 	return irqstat;
- }
-+#endif
- 
- static irqreturn_t sl811h_irq(struct usb_hcd *hcd)
- {
++			if (snd_soc_component_is_dummy(component) && component->num_dai)
++				continue;
++
+ 			snd_soc_rtd_add_component(rtd, component);
+ 		}
+ 	}
 -- 
 2.43.0
 
