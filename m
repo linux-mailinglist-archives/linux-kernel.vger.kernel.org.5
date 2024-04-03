@@ -1,96 +1,86 @@
-Return-Path: <linux-kernel+bounces-129011-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-129010-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3653A896320
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 05:43:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id B695789631B
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 05:43:42 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 67E831C221E1
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 03:43:56 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E79C11C21A73
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 03:43:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 97A503F9FC;
-	Wed,  3 Apr 2024 03:43:48 +0000 (UTC)
-Received: from cstnet.cn (smtp84.cstnet.cn [159.226.251.84])
-	(using TLSv1.2 with cipher DHE-RSA-AES256-SHA (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6F39B405C7;
+	Wed,  3 Apr 2024 03:43:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="jD8RoC2u"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E01D544C87;
-	Wed,  3 Apr 2024 03:43:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=159.226.251.84
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A811E3D76;
+	Wed,  3 Apr 2024 03:43:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712115828; cv=none; b=p3Fo07ZnyBkabxYeuVohnZD8SI0REMz+5omgB/3mKNZ1TJib2iHNc/3W3QJKOvLCA5lruwDPuxnrGQkpkLg/tAoV2ehjuLyvZ+0L6PHhrmgw5DZoT82PFL/5eTYh/bYmMVAHr8q3vyWO7BKUOFU/ruASkboHtcqB6v8GtMQbiYU=
+	t=1712115811; cv=none; b=XsQNAfHeCInc/u3BIb13vFz2Nt85AUpqPHNdD+Uh8kWNHgHtFbEKtxdYSTGzaEYOETU9eEXLrYFhrJrBahEe637nLQlLOop8St9efyivQtoIhWxannpK+becknDEpWDph76Ssy7e28uFh6BVm791yHxvRkm50o0mOAJiuS8spto=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712115828; c=relaxed/simple;
-	bh=cCZHvqKkhlOhXtkzMr3sHyNUhpsIPdpG23hP2ekDxno=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=F40tHsOy6o43/UpYhPKLM8O6PjQY87sCysoJLaPdnaXqVy8O+eO0fSRORLAPduHtHAjOVFT3pPiOWw/o0ju/nbrgT3ch2vWRwBzXc415QRCbFQARGvgyiK6JTGeaee5DQgX6S0R3n9fHGqQ8gApFy0VCux5uvnIGYausvBInzq4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=iscas.ac.cn; spf=pass smtp.mailfrom=iscas.ac.cn; arc=none smtp.client-ip=159.226.251.84
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=iscas.ac.cn
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=iscas.ac.cn
-Received: from localhost (unknown [124.16.138.129])
-	by APP-05 (Coremail) with SMTP id zQCowAC3RBJr0Axm87geAQ--.6190S2;
-	Wed, 03 Apr 2024 11:43:40 +0800 (CST)
-From: Chen Ni <nichen@iscas.ac.cn>
-To: linus.walleij@linaro.org,
-	dlemoal@kernel.org,
-	cassel@kernel.org
-Cc: linux-ide@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Chen Ni <nichen@iscas.ac.cn>
-Subject: [PATCH] ata: sata_gemini: Add check for clk_enable
-Date: Wed,  3 Apr 2024 03:43:14 +0000
-Message-Id: <20240403034314.3623830-1-nichen@iscas.ac.cn>
-X-Mailer: git-send-email 2.25.1
+	s=arc-20240116; t=1712115811; c=relaxed/simple;
+	bh=s7/TSFoZCTujo5clr5oMUi2k1rXwU6wxmLVEFWWgRkU=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=EC0h8Pks3C9v0ESh/DebaedOJVTLYf90CsMQsAm5tHnV0+n2DJwXuesY6riFS0x7K7+KM70r6ZghxHfmtUl/5Ycx0kKHwvCriiAzdgnG4DyEKfrEe25pSpGOMcG8NxZsUhCfDg2QRSoZc5V+qqY0c738pBUtkX2KE/HV+4hjTHU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=jD8RoC2u; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 18160C433C7;
+	Wed,  3 Apr 2024 03:43:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1712115810;
+	bh=s7/TSFoZCTujo5clr5oMUi2k1rXwU6wxmLVEFWWgRkU=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=jD8RoC2uZ8BxQS36zgcM+wnGfDSCz+IKoBlYePPxOpmJryZaes5zDeCrR8XuwJo/B
+	 25sX34qXV3vezh48cN8ekUsylZNy64OPcySwmhAkpgHO5UKfBygdNACIisiWY1OS5+
+	 +9Bx/+pbzINpirerZ0r+gT9v43p1QKpvyTNuvZb1dV5xS0ycAGbqhjSZ01XsvmuUuN
+	 WvmDmekhQwtePz21O+1I6WGLUAJM55WxvdNOFjAXDf9hSNnmUpt0ZiZlqxFE0XFtcZ
+	 Y8UH1+q2ZHxaSXArEUOPgZF16XUqJc/PQnH50BcDWcj7v8DxQl9JvWAz58mrIACq1j
+	 tXJ9UEz9f+VaA==
+Date: Tue, 2 Apr 2024 20:43:28 -0700
+From: Eric Biggers <ebiggers@kernel.org>
+To: Eugen Hristev <eugen.hristev@collabora.com>
+Cc: tytso@mit.edu, adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
+	jaegeuk@kernel.org, chao@kernel.org,
+	linux-f2fs-devel@lists.sourceforge.net,
+	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+	kernel@collabora.com, viro@zeniv.linux.org.uk, brauner@kernel.org,
+	jack@suse.cz, krisman@suse.de,
+	Gabriel Krisman Bertazi <krisman@collabora.com>
+Subject: Re: [PATCH v15 4/9] ext4: Reuse generic_ci_match for ci comparisons
+Message-ID: <20240403034328.GF2576@sol.localdomain>
+References: <20240402154842.508032-1-eugen.hristev@collabora.com>
+ <20240402154842.508032-5-eugen.hristev@collabora.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:zQCowAC3RBJr0Axm87geAQ--.6190S2
-X-Coremail-Antispam: 1UD129KBjvdXoW7Xr47tF1xGF13Gw4UArWrXwb_yoW3Grc_Ca
-	y7XwnavryYgr4UK3W7Wry5ZFy0kw4vvrn7ua4IgFZxt3yUJr4kXrWjvwn8Aw1qgr18Wr9I
-	yF4DJ3sYkryfujkaLaAFLSUrUUUUjb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-	9fnUUIcSsGvfJTRUUUbz8FF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26cxKx2IYs7xG
-	6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8w
-	A2z4x0Y4vE2Ix0cI8IcVAFwI0_Xr0_Ar1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Gr0_
-	Cr1l84ACjcxK6I8E87Iv67AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVCY1x0267AKxVWxJr
-	0_GcWle2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E
-	2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJV
-	W8JwACjcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1l42xK82IYc2Ij64vI
-	r41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8Gjc
-	xK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r126r1DMIIYrxkI7VAKI48JMIIF0xvE2Ix0
-	cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r4UMIIF0xvE42xK8V
-	AvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E
-	14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjfU5WlkUUUUU
-X-CM-SenderInfo: xqlfxv3q6l2u1dvotugofq/
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240402154842.508032-5-eugen.hristev@collabora.com>
 
-As the potential failure of the clk_enable(), it should be better to
-check it and return error if fails.
+On Tue, Apr 02, 2024 at 06:48:37PM +0300, Eugen Hristev wrote:
+> +		ret = generic_ci_match(parent, fname->usr_fname,
+> +				       &fname->cf_name, de->name,
+> +				       de->name_len);
+> +		if (ret < 0) {
+> +			/*
+> +			 * Treat comparison errors as not a match.  The
+> +			 * only case where it happens is on a disk
+> +			 * corruption or ENOMEM.
+> +			 */
+> +			return false;
+>  		}
+> -		return !ext4_ci_compare(parent, fname->usr_fname, de->name,
+> -						de->name_len, false);
+> +		return ret;
 
-Signed-off-by: Chen Ni <nichen@iscas.ac.cn>
----
- drivers/ata/sata_gemini.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+Maybe write this as simply 'return ret > 0;'?
 
-diff --git a/drivers/ata/sata_gemini.c b/drivers/ata/sata_gemini.c
-index 400b22ee99c3..4c270999ba3c 100644
---- a/drivers/ata/sata_gemini.c
-+++ b/drivers/ata/sata_gemini.c
-@@ -200,7 +200,10 @@ int gemini_sata_start_bridge(struct sata_gemini *sg, unsigned int bridge)
- 		pclk = sg->sata0_pclk;
- 	else
- 		pclk = sg->sata1_pclk;
--	clk_enable(pclk);
-+	ret = clk_enable(pclk);
-+	if (ret)
-+		return ret;
-+
- 	msleep(10);
- 
- 	/* Do not keep clocking a bridge that is not online */
--- 
-2.25.1
-
+- Eric
 
