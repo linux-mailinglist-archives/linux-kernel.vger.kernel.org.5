@@ -1,128 +1,247 @@
-Return-Path: <linux-kernel+bounces-128900-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-128901-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D122D89619E
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 02:47:40 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id E3A9289619F
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 02:48:02 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8CA79283F28
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 00:47:39 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 998BE284884
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 00:48:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DBBD1DDDA;
-	Wed,  3 Apr 2024 00:47:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B44C3DDC9;
+	Wed,  3 Apr 2024 00:47:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.de header.i=w_armin@gmx.de header.b="R5pE7E3O"
-Received: from mout.gmx.net (mout.gmx.net [212.227.15.19])
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="e3/RzaVz"
+Received: from out-174.mta1.migadu.com (out-174.mta1.migadu.com [95.215.58.174])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 72DACD527;
-	Wed,  3 Apr 2024 00:47:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.15.19
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3EEBA125CC
+	for <linux-kernel@vger.kernel.org>; Wed,  3 Apr 2024 00:47:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712105255; cv=none; b=GeLoezhHSqYafvNThrg19Kf4uciGBPObaYlAiMetmgn1zyGEeXPeCwneW6QlTN/vwI6yJEZZDNJt/8M5LRxVTGKlOWWqMhNpsBMu71+NqRefpSmSh7RIs28uGpCqhOL5wrBZZAvh2jWFTASBLMCy+WKjCrcnX5WPDpxt9BqR6xg=
+	t=1712105274; cv=none; b=OB2OtZwqCsA/m+RmQ4RnMaHmeY6gyaqKyQy20YLytExmbFAWi4hOTku5o+40PGjRF5PHU9OlzOTCQlNy+9qB+mirk1/6SkUtXS8fa8n1dJLBpISZktvfBKO20SSPxIBfyOdBADIA6jXu0hwGxh/oKL/7Kv+ialS3WA4vIzQ0waE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712105255; c=relaxed/simple;
-	bh=PycG9uF6X1iUrfJJtuBIh+LSC4+I0nUUV++uRc/SI80=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=N2etIhdot7157U6YWeiSYQ+tY8+uRUGeW7wBCUJjV85peADPlxH0953f8VBT4AGA/sWZKnF+XsLxqlZuZRZJMUON9Jnvj/Yd8A4s+cu9UMMwfH+MvLMLSzea6ya6gL6xj2W6h/RGVEbxcvcmx55Yj4x8vcCnWbPh1pikHHpqDAQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.de; spf=pass smtp.mailfrom=gmx.de; dkim=pass (2048-bit key) header.d=gmx.de header.i=w_armin@gmx.de header.b=R5pE7E3O; arc=none smtp.client-ip=212.227.15.19
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.de;
-	s=s31663417; t=1712105241; x=1712710041; i=w_armin@gmx.de;
-	bh=qWA45U+Q/mPj2MlS1QXch4htPzcG9qzFx8+xi4l7E7Q=;
-	h=X-UI-Sender-Class:From:To:Cc:Subject:Date;
-	b=R5pE7E3OWnWfXlJhppMpmo0uoUcIdrDEPgvkAQ80oVURheeJAmktS3zPwWHDU/0Y
-	 Eb/dhFHL5aJ1Kbqb0OtggQEDUD1DYo3w6XCVfQvTzmDqcujg3mTE5V6cifr1Qvhjh
-	 czmdlQULJKg9bCs9pi4vAd3JuzdK+tZqxyc4Yx/IiWF3DSEj7Omvr4JuYI7FQIQ77
-	 clm/N3vMJi7Z2YuMfBigerMJKILOCMpV6ABe60Pz3PuxfnJ+7TlgoqgCaAcXWCw1B
-	 0yVopwfhmbAXnU1FrkTSNBvJUngMgXj9hHYphawzWK/AMazuXfhpka2c16CGI5g+6
-	 Kb9gmQiDDLTUnNm6Yg==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from mx-amd-b650.users.agdsn.de ([141.30.226.129]) by mail.gmx.net
- (mrgmx005 [212.227.17.190]) with ESMTPSA (Nemesis) id
- 1MrhUE-1scxNV1nzo-00ngOb; Wed, 03 Apr 2024 02:47:21 +0200
-From: Armin Wolf <W_Armin@gmx.de>
-To: robert.moore@intel.com,
-	rafael.j.wysocki@intel.com,
-	lenb@kernel.org
-Cc: dmantipov@yandex.ru,
-	linux-acpi@vger.kernel.org,
-	acpica-devel@lists.linux.dev,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH] ACPICA: Fix memory leak then namespace lookup fails
-Date: Wed,  3 Apr 2024 02:47:18 +0200
-Message-Id: <20240403004718.11902-1-W_Armin@gmx.de>
-X-Mailer: git-send-email 2.39.2
+	s=arc-20240116; t=1712105274; c=relaxed/simple;
+	bh=hP8G3UaWFuuXyJ9AEmMHvMKJeN/3+AdHrGS4nfykHt4=;
+	h=MIME-Version:Date:Content-Type:From:Message-ID:Subject:To:Cc:
+	 In-Reply-To:References; b=cFZQe7vPXgW+gOQ9y/ePwTw6TELlKJBHn9spUg9kuT9bddC7Io2H8dgSYAnvO2fkGC/jnLU7l9PtChkj9F23Gc4GYA/ReLzpWZOQ23494TYgPTjFV028wsXLYCF483eJtsO+4kbZ+S4A4HRoKBYGMZrnTHpibE0bSDRLloBc+P0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=e3/RzaVz; arc=none smtp.client-ip=95.215.58.174
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1712105270;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=VpwvRSrPLH+MnRF++w0ONvrc5w145lT6umS6mZQL/vg=;
+	b=e3/RzaVzNG6TFVqMp1I3dKvaLbhhTDjRNWOAfPTyrIaIemAdswPC7WeuMiE2xRCEstXlCW
+	2hS8g55t2J6DNsOQJt9y2RmAcVMm3TuBfp05cuIGYHXa1PXrqwW9g3CFybT3YwQPKH9hsi
+	8H9G7PDNkfndf5JN/IgEOPX388fdZDE=
+Date: Wed, 03 Apr 2024 00:47:47 +0000
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:1+/LohT4HMfkZjpcu/5lHP4fjT6BlNjAsRMOUBzgk5gIkQQT05O
- 2h+PiMk0MnMm1bzN5x2a3KDSEfy4kOtNbpnKex2ZLBwowvAuKERhcRF8DQGelTWjuTglJyo
- 6ra/y6IVZ9D24/EA0NIC032gmCznF+lgoKnlRC3t/Dpv7E9aE++tnxy2dj8yBARMwGdEe/6
- KIKqoyzxUbib2HQAs6cvw==
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:icUtJdfJZeM=;kfGPWYFf7109ebjlp50NjFzPt+1
- sZWGNPsf/k5ubapg6s1UkJKbobX0InlykQgHs7STQywpZqXent1KsshMDMBgUhjQPBMcfSSF2
- 6GWilxktOsotEG3x/JlwrOvcFJIk2/feS1J6DCH9kIXcnwubCN2bPjOiFL1TaxO6qxOoUvDvY
- SH5bknShaqBK4+06uuh80mVwzA+xcM5B6LLuTMt6AtawAwdmsty2dHBZI/0OHCX3+gtLSUX7K
- KAYtCY0GaCq52OdGYG5tcu5mTd5O0EZ8C3JdhWsFzK2+lPvT26844ooqPG00Ha4vwBao95h8K
- zP+RC/yYqYA0Yvrcezjs52VA2jA5hx7viCabDq6PUFiTwZRqWbv/hx5wAlJmV02vAxRa+dOMJ
- U40bjiuZdyzasARKQEPXaoJsCKOn9KqEOHZQQ8Vk28DnIRa6e5cv+buDKGMh84BaAL7BTfwE0
- 4dJMExhjLrmrCgpUCyml8Mkid1j0StCUobbl98rileu0cKytdgY5FnFh6xJroAoAVW1LUn/2X
- 3XvbJ9gDZ/1QhgqXeygV0kktS00GHHxNeakbMRHBctalhmQebOvkMV1mvPu2gJTxJ/l3i3QZ7
- NXveWrmcKJ3e8enpxplblq6QdKzVPVMGsSHwght1AhLlqxGLrm/eLq9Eirn/IWJizx8B+NV6R
- VQqCdmbzkwTIYSNfKVObuJQ7e+GJGyZiIJEy0bMK5ZKr3iNEltc/wjYcZwF3Qc/+WKsPE3WvY
- e2r5QJNHGChJr3Ez5iGnqYNwAM+fWTXfl6R7COFEA2MZsunjTLzDN5VJ0DYzA6lN0+5XqaOuu
- rwija1eWrs8dMMC5J8GS8Hc2J10D03RGLi+EaAaGNYdpM=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: "Lance Yang" <lance.yang@linux.dev>
+Message-ID: <ae13e7bf958d38ce56bd7e2e2c4ff3375a0ab0ff@linux.dev>
+TLS-Required: No
+Subject: Re: [PATCH v5 2/6] mm: swap: free_swap_and_cache_nr() as batched
+ free_swap_and_cache()
+To: "Zi Yan" <ziy@nvidia.com>, "Ryan Roberts" <ryan.roberts@arm.com>
+Cc: "Andrew Morton" <akpm@linux-foundation.org>, "David Hildenbrand"
+ <david@redhat.com>, "Matthew Wilcox" <willy@infradead.org>, "Huang Ying"
+ <ying.huang@intel.com>, "Gao Xiang" <xiang@kernel.org>, "Yu Zhao"
+ <yuzhao@google.com>, "Yang Shi" <shy828301@gmail.com>, "Michal Hocko"
+ <mhocko@suse.com>, "Kefeng Wang" <wangkefeng.wang@huawei.com>, "Barry
+ Song" <21cnbao@gmail.com>, "Chris Li" <chrisl@kernel.org>, "Lance Yang"
+ <ioworker0@gmail.com>, linux-mm@kvack.org, linux-kernel@vger.kernel.org
+In-Reply-To: <B0E526FD-64CF-4653-B624-1AFA5B7AA245@nvidia.com>
+References: <20240327144537.4165578-1-ryan.roberts@arm.com>
+ <20240327144537.4165578-3-ryan.roberts@arm.com>
+ <B0E526FD-64CF-4653-B624-1AFA5B7AA245@nvidia.com>
+X-Migadu-Flow: FLOW_OUT
 
-When acpi_ps_get_next_namepath() fails due to a namespace lookup
-failure, the acpi_parse_object is not freed before returning the
-error code, causing a memory leak.
+April 3, 2024 at 8:30 AM, "Zi Yan" <ziy@nvidia.com> wrote:
 
-Fix this by freeing the acpi_parse_object when encountering an
-error.
 
-Tested-by: Dmitry Antipov <dmantipov@yandex.ru>
-Signed-off-by: Armin Wolf <W_Armin@gmx.de>
-=2D--
- drivers/acpi/acpica/psargs.c | 8 ++++++++
- 1 file changed, 8 insertions(+)
 
-diff --git a/drivers/acpi/acpica/psargs.c b/drivers/acpi/acpica/psargs.c
-index 422c074ed289..7debfd5ce0d8 100644
-=2D-- a/drivers/acpi/acpica/psargs.c
-+++ b/drivers/acpi/acpica/psargs.c
-@@ -820,6 +820,10 @@ acpi_ps_get_next_arg(struct acpi_walk_state *walk_sta=
-te,
- 			    acpi_ps_get_next_namepath(walk_state, parser_state,
- 						      arg,
- 						      ACPI_NOT_METHOD_CALL);
-+			if (ACPI_FAILURE(status)) {
-+				acpi_ps_free_op(arg);
-+				return_ACPI_STATUS(status);
-+			}
- 		} else {
- 			/* Single complex argument, nothing returned */
+>=20
+>=20On 27 Mar 2024, at 10:45, Ryan Roberts wrote:
+>=20
+>=20>=20
+>=20> Now that we no longer have a convenient flag in the cluster to dete=
+rmine
+> >=20
+>=20>  if a folio is large, free_swap_and_cache() will take a reference a=
+nd
+> >=20
+>=20>  lock a large folio much more often, which could lead to contention=
+ and
+> >=20
+>=20>  (e.g.) failure to split large folios, etc.
+> >=20
+>=20>  Let's solve that problem by batch freeing swap and cache with a ne=
+w
+> >=20
+>=20>  function, free_swap_and_cache_nr(), to free a contiguous range of =
+swap
+> >=20
+>=20>  entries together. This allows us to first drop a reference to each=
+ swap
+> >=20
+>=20>  slot before we try to release the cache folio. This means we only =
+try to
+> >=20
+>=20>  release the folio once, only taking the reference and lock once - =
+much
+> >=20
+>=20>  better than the previous 512 times for the 2M THP case.
+> >=20
+>=20>  Contiguous swap entries are gathered in zap_pte_range() and
+> >=20
+>=20>  madvise_free_pte_range() in a similar way to how present ptes are
+> >=20
+>=20>  already gathered in zap_pte_range().
+> >=20
+>=20>  While we are at it, let's simplify by converting the return type o=
+f both
+> >=20
+>=20>  functions to void. The return value was used only by zap_pte_range=
+() to
+> >=20
+>=20>  print a bad pte, and was ignored by everyone else, so the extra
+> >=20
+>=20>  reporting wasn't exactly guaranteed. We will still get the warning=
+ with
+> >=20
+>=20>  most of the information from get_swap_device(). With the batch ver=
+sion,
+> >=20
+>=20>  we wouldn't know which pte was bad anyway so could print the wrong=
+ one.
+> >=20
+>=20>  Signed-off-by: Ryan Roberts <ryan.roberts@arm.com>
+> >=20
+>=20>  ---
+> >=20
+>=20>  include/linux/pgtable.h | 28 +++++++++++++++
+> >=20
+>=20>  include/linux/swap.h | 12 +++++--
+> >=20
+>=20>  mm/internal.h | 48 +++++++++++++++++++++++++
+> >=20
+>=20>  mm/madvise.c | 12 ++++---
+> >=20
+>=20>  mm/memory.c | 13 +++----
+> >=20
+>=20>  mm/swapfile.c | 78 ++++++++++++++++++++++++++++++-----------
+> >=20
+>=20>  6 files changed, 157 insertions(+), 34 deletions(-)
+> >=20
+>=20>  diff --git a/include/linux/pgtable.h b/include/linux/pgtable.h
+> >=20
+>=20>  index 09c85c7bf9c2..8185939df1e8 100644
+> >=20
+>=20>  --- a/include/linux/pgtable.h
+> >=20
+>=20>  +++ b/include/linux/pgtable.h
+> >=20
+>=20>  @@ -708,6 +708,34 @@ static inline void pte_clear_not_present_full=
+(struct mm_struct *mm,
+> >=20
+>=20>  }
+> >=20
+>=20>  #endif
+> >=20
+>=20>  +#ifndef clear_not_present_full_ptes
+> >=20
+>=20>  +/**
+> >=20
+>=20>  + * clear_not_present_full_ptes - Clear consecutive not present PT=
+Es.
+> >=20
+>=20>  + * @mm: Address space the ptes represent.
+> >=20
+>=20>  + * @addr: Address of the first pte.
+> >=20
+>=20>  + * @ptep: Page table pointer for the first entry.
+> >=20
+>=20>  + * @nr: Number of entries to clear.
+> >=20
+>=20>  + * @full: Whether we are clearing a full mm.
+> >=20
+>=20>  + *
+> >=20
+>=20>  + * May be overridden by the architecture; otherwise, implemented =
+as a simple
+> >=20
+>=20>  + * loop over pte_clear_not_present_full().
+> >=20
+>=20>  + *
+> >=20
+>=20>  + * Context: The caller holds the page table lock. The PTEs are al=
+l not present.
+> >=20
+>=20>  + * The PTEs are all in the same PMD.
+> >=20
+>=20>  + */
+> >=20
+>=20>  +static inline void clear_not_present_full_ptes(struct mm_struct *=
+mm,
+> >=20
+>=20>  + unsigned long addr, pte_t *ptep, unsigned int nr, int full)
+> >=20
+>=20>  +{
+> >=20
+>=20>  + for (;;) {
+> >=20
+>=20>  + pte_clear_not_present_full(mm, addr, ptep, full);
+> >=20
+>=20>  + if (--nr =3D=3D 0)
+> >=20
+>=20>  + break;
+> >=20
+>=20>  + ptep++;
+> >=20
+>=20>  + addr +=3D PAGE_SIZE;
+> >=20
+>=20>  + }
+> >=20
+>=20>  +}
+> >=20
+>=20>  +#endif
+> >=20
+>=20>  +
+> >=20
+>=20
+> Would the code below be better?
+>=20
+>=20for (i =3D 0; i < nr; i++, ptep++, addr +=3D PAGE_SIZE)
+>=20
 
-@@ -854,6 +858,10 @@ acpi_ps_get_next_arg(struct acpi_walk_state *walk_sta=
-te,
- 			    acpi_ps_get_next_namepath(walk_state, parser_state,
- 						      arg,
- 						      ACPI_POSSIBLE_METHOD_CALL);
-+			if (ACPI_FAILURE(status)) {
-+				acpi_ps_free_op(arg);
-+				return_ACPI_STATUS(status);
-+			}
+FWIW
 
- 			if (arg->common.aml_opcode =3D=3D AML_INT_METHODCALL_OP) {
+for=20(; nr-- > 0; ptep++, addr +=3D PAGE_SIZE)
+  pte_clear_not_present_full(mm, addr, ptep, full);
 
-=2D-
-2.39.2
+Thanks,
+Lance
 
+
+>  pte_clear_not_present_full(mm, addr, ptep, full);
+>=20
+>=20--
+>=20
+>=20Best Regards,
+>=20
+>=20Yan, Zi
+>
 
