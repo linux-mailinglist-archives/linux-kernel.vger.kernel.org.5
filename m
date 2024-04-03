@@ -1,108 +1,117 @@
-Return-Path: <linux-kernel+bounces-130450-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-130451-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id F0BF6897859
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 20:40:10 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 24B2189785C
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 20:40:18 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1C35BB2E1ED
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 18:35:28 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 56B7E1C24212
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 18:40:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AB8C2153818;
-	Wed,  3 Apr 2024 18:35:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 395F3153BF3;
+	Wed,  3 Apr 2024 18:40:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="VCQVo/GT"
+	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="aHZAKSuQ"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EC14ADDBE
-	for <linux-kernel@vger.kernel.org>; Wed,  3 Apr 2024 18:35:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5DBB63D60;
+	Wed,  3 Apr 2024 18:40:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712169321; cv=none; b=cv+YE4EQSyApQHWfMpyNXZHAQEIJxxqnjtPA3T7Qk23QENBNTKPXwYQ8ZAxP5XpYIZZKjM36PUW1MWnlk1g2++jowZ2o2Sg4h+tIMaKoXRWSIRHqWhPlSCCSk2i0VHpRucYIpQMusC/tdrI+G/zzD/f6VlmD8yjTP08Htv1a7Tc=
+	t=1712169609; cv=none; b=X+5s3LUgijZ3+giboivTlkoJzVB4Axzv/wtAQHcRerD3lrUt7IPCDv/+4CaIvwBb2aV9wctigDpeNykQHlXkNEE+6DwtK7diYDwgFyD5SqRBvRL49CTnGI7IzPE7XVGK4yPKC9ExzpwEu3hC4i7sVcLjl1rtd9fQT2Z/KujfbXw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712169321; c=relaxed/simple;
-	bh=mCrNASzWtaHR7F1oNBb9fLP4WPDgWqP4aJQpAtG6Td8=;
-	h=MIME-Version:Message-Id:In-Reply-To:References:Date:From:To:Cc:
-	 Subject:Content-Type; b=Ge0M2R+pyeGy4RKKIP7NSZ8hExIQjwViiBAEE0nUqinvtuNVKVcnqxDYscPxlzyoh8LOuCMt0FypHNEo8SVKJxaE9TI7V6yZEgMxh4U1oqIIYDgQhpe/9PKxnZlGVDQ2CoqKcTZTKDOqXQJK7TZs2zPhaVN6mKaRI4RT3bbuRFo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=VCQVo/GT; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5F834C43394
-	for <linux-kernel@vger.kernel.org>; Wed,  3 Apr 2024 18:35:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712169320;
-	bh=mCrNASzWtaHR7F1oNBb9fLP4WPDgWqP4aJQpAtG6Td8=;
-	h=In-Reply-To:References:Date:From:To:Cc:Subject:From;
-	b=VCQVo/GTRfbf3668bALS+0IO+fhQqEP1FLS3F8EW1JVCLf7B8IHHgF4vCXFD2acdb
-	 pN3X1kJ4vkhyT4/Ek6nKlHp0NZ8wBBF8NxvOOPDDNUrKSbw5IhY/e9Mu/rzkJ4iXJa
-	 0ttg1Gu2+kLN0ZJtmFekKuWFErYIMLob8ua5zRkoFxcL+0WSPxtMyCxfvSZcrXU7Lc
-	 EwyvWFjFxf9BPhsLMJzEl6Hepfd+gjjd4GHvKZiJFixqRZREonq4kSrXdORgY/JpXO
-	 ysUezT/ahhAHsHcaCTMTsNpd/GIoczIRsqhwuWhz7kMhZIqQuAd7mECJAx/CDStmB/
-	 YdIKhmvCHIxMg==
-Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
-	by mailfauth.nyi.internal (Postfix) with ESMTP id 6018B1200032;
-	Wed,  3 Apr 2024 14:35:19 -0400 (EDT)
-Received: from imap51 ([10.202.2.101])
-  by compute5.internal (MEProxy); Wed, 03 Apr 2024 14:35:19 -0400
-X-ME-Sender: <xms:ZqENZjrzPiiP98A3nX6hgIGzm-M8vgsLaqxkJmvdYQoxrPWEKaSYzw>
-    <xme:ZqENZtrHwX6_waNIfmGAyai_prtHhR2y4rNZMXBJp_IO51V_iH_my1rUJdN8HrnUH
-    -57DO3Z3EoIJ70zXFw>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrudefiedgkeegucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepofgfggfkjghffffhvfevufgtsehttdertderredtnecuhfhrohhmpedftehr
-    nhguuceuvghrghhmrghnnhdfuceorghrnhgusehkvghrnhgvlhdrohhrgheqnecuggftrf
-    grthhtvghrnhepvdeviefgtedugeevieelvdfgveeuvdfgteegfeeiieejjeffgeeghedu
-    gedtveehnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomh
-    eprghrnhguodhmvghsmhhtphgruhhthhhpvghrshhonhgrlhhithihqdduvdekhedujedt
-    vdegqddvkeejtddtvdeigedqrghrnhgupeepkhgvrhhnvghlrdhorhhgsegrrhhnuggsrd
-    guvg
-X-ME-Proxy: <xmx:ZqENZgNMaFIrS2AZ8HCkxTHqnrkeACMue6mwS9i6lRAkVxzbnMBmrw>
-    <xmx:ZqENZm57Wrw_QR0mHokBqj3u4d79Y3yASwLYWuZqd8DY1-Ah4IuvKw>
-    <xmx:ZqENZi4mF-dp5wPI_nuQvZvRYmFG_QXOaeYdzO9x_OQwqzFZhclVcw>
-    <xmx:ZqENZugxd8gimbzaNskMDNd95mEeo19s1Q6NwWVRmARFLJHBILW0xQ>
-    <xmx:Z6ENZonsjBMduWT1UsWtPrqh0_eBfz_NUoo1UjT6GarXqcNApf2bjdmN>
-Feedback-ID: i36794607:Fastmail
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-	id D0837B6008D; Wed,  3 Apr 2024 14:35:18 -0400 (EDT)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.11.0-alpha0-333-gbfea15422e-fm-20240327.001-gbfea1542
+	s=arc-20240116; t=1712169609; c=relaxed/simple;
+	bh=mKkzeEBBqz/gTib0prGhwYPBjEjT54fc9L8qJ/6eNa4=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=HnI9BfYzaeYnXjGeLMqgOwVtYKkyRymfFZUPA7Hl0pQ3goHEnRyIUdVGppK7UtHWFfBluCsC0aVWJjjrrcvH3SpDm2UbPtt1nNcdjg0YrtVrSCVIReMsU/34WjgQyVSN9+jqsuRpmqdKvhK2rvZVfuOvi5sbFDkNytST5z65K0g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=aHZAKSuQ; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3D9DBC43390;
+	Wed,  3 Apr 2024 18:40:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+	s=korg; t=1712169608;
+	bh=mKkzeEBBqz/gTib0prGhwYPBjEjT54fc9L8qJ/6eNa4=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=aHZAKSuQLrIMeawocgg7tTb81IdEGpoLVz2877APmYB6mWEaK/+7np/LYaTVDWZ0P
+	 5lJVwlG/isNM3Xpc2E/EngdydGC/JakmnkqCQZMptz/L9LctvaWGyFycnQdd2IwDh+
+	 MoDjVrNlb95usgW8HiCH/Uc8erJaxCiFzrcsyoGM=
+Date: Wed, 3 Apr 2024 20:40:00 +0200
+From: Greg KH <gregkh@linuxfoundation.org>
+To: Joseph Salisbury <joseph.salisbury@canonical.com>
+Cc: hch@lst.de, linux-kernel@vger.kernel.org, linux-block@vger.kernel.org,
+	axboe@kernel.dk, sashal@kernel.org, stable@vger.kernel.org,
+	Francis Ginther <francis.ginther@canonical.com>
+Subject: Re: [v5.15 Regression] block: rename GENHD_FL_NO_PART_SCAN to
+ GENHD_FL_NO_PART
+Message-ID: <2024040306-putdown-grain-daf7@gregkh>
+References: <924449dc-9b1f-4943-afe3-a68c03aedbb5@canonical.com>
+ <2024040329-unstopped-spelling-64c8@gregkh>
+ <a0819f54-7469-4c94-b567-71f634c84ac1@canonical.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Message-Id: <bf276f98-2712-4fcf-a119-f984a1aedbf2@app.fastmail.com>
-In-Reply-To: <dd55afa6-8cb6-4e25-b720-d2df62dbb5e6@gmail.com>
-References: <20240403122851.38808-1-schnelle@linux.ibm.com>
- <dd55afa6-8cb6-4e25-b720-d2df62dbb5e6@gmail.com>
-Date: Wed, 03 Apr 2024 20:34:57 +0200
-From: "Arnd Bergmann" <arnd@kernel.org>
-To: "Michael Schmitz" <schmitzmic@gmail.com>,
- "Niklas Schnelle" <schnelle@linux.ibm.com>,
- "Geert Uytterhoeven" <geert@linux-m68k.org>
-Cc: linux-m68k@lists.linux-m68k.org, "Heiko Carstens" <hca@linux.ibm.com>,
- linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 0/1] m68k: Handle HAS_IOPORT dependencies
-Content-Type: text/plain
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <a0819f54-7469-4c94-b567-71f634c84ac1@canonical.com>
 
-On Wed, Apr 3, 2024, at 20:11, Michael Schmitz wrote:
-> Niklas,
->
-> how do you propose we handle legacy drivers that do depend on 
-> inb()/outb() functions (_not_ actual ISA I/O) on architectures that map 
-> inb()/outb() to MMIO functions?
->
-> (In my case, that's at least ne.c - Geert ought to have a better 
-> overview what else does use inb()/outb() on m68k)
+On Wed, Apr 03, 2024 at 02:06:28PM -0400, Joseph Salisbury wrote:
+> 
+> 
+> On 4/3/24 13:54, Greg KH wrote:
+> > On Wed, Apr 03, 2024 at 01:50:09PM -0400, Joseph Salisbury wrote:
+> > > Hi Christoph,
+> > > 
+> > > A kernel bug report was opened against Ubuntu [0].  This bug is a regression
+> > > introduced in mainline version v5.17-rc1 and made it's way into v5.15 stable
+> > > updates.
+> > > 
+> > > The following commit was identified as the cause of the regression in 5.15:
+> > > 
+> > > c6ce1c5dd327 ("block: rename GENHD_FL_NO_PART_SCAN to GENHD_FL_NO_PART")
+> > How is renaming a define a "regression"?
+> The "regression" is experienced after upgrading to the kernel to the version
+> that introduced this commit.
+> The v5.15.131 kernel works as expected, upgrading the kernel to v5.15.132
+> breaks behavior that worked in a prior kernel version.
+> Reverting commit c6ce1c5dd327 in v5.15.132 allows the experience to be as
+> before in v5.15.131.
 
-If a machine provides an inb()/outb() set of operations that
-is actually used, it should set HAS_IOPORT.
+What "experience" are you talking about here?  Please be specific.  What
+exactly "broke", what is the build error that happens?
 
-For the Q40, it may be better in the long run to change the
-drivers to just use MMIO directly though.
+> > > I was hoping to get your feedback, since you are the patch author. Is the
+> > > best approach to revert this commit, since many third parties rely on the
+> > > name being GENHD_FL_NO_PART_SCAN in kernel headers?
+> > External kernel modules are never an issue.  Is this a userspace thing?
+> > 
+> > >   Is there a specific need that you know of that requires this commit
+> > > in the 5.15 and earlier stable kernels?
+> > Yes.  And Christoph did not do the backport, so I doubt he cares :)
+> > 
+> > Again, what in-kernel issue is caused by this?
+> 
+> Third party code that relies on the kernel-headers will no longer compile
+> due to the name change.  Should we not care if we break things, even in
+> userspace?
 
-    Arnd
+Is this userspace, or is it kernel drivers?
+
+If kernel drivers, you know that there  s no stable kernel api, we
+rename and change things all the time, even in stable kernel trees, for
+good reasons (see the set of patches that were applied that contained
+this change.)  Do you want to have unfixed security issues, or do you
+want a secure kernel that happens to rename variables at times?
+
+If userspace, please point me at this and why hasn't it broken in newer
+kernel releases where this change came from?
+
+thanks,
+
+greg k-h
 
