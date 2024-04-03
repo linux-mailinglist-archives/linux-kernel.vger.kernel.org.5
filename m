@@ -1,137 +1,151 @@
-Return-Path: <linux-kernel+bounces-129507-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-129508-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5ED28896BE1
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 12:17:06 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id BA27F896BBA
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 12:11:00 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 12E0DB27ED5
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 10:10:44 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DD7941C20AB3
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 10:10:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 67F9C13698A;
-	Wed,  3 Apr 2024 10:10:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 884C3136E3E;
+	Wed,  3 Apr 2024 10:10:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="avnjnlHH"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="BCFu8d3W"
+Received: from mail-yb1-f179.google.com (mail-yb1-f179.google.com [209.85.219.179])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A74F5135405
-	for <linux-kernel@vger.kernel.org>; Wed,  3 Apr 2024 10:09:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2507F13667E
+	for <linux-kernel@vger.kernel.org>; Wed,  3 Apr 2024 10:10:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712138999; cv=none; b=AjQ9ny5Xyv+DxDHLGgA7aNOw/LQB2lrhdJRLqffKXMCbjBvMGuuDwcR1EEu2Pu4GODKitTOY0LOIPiLlyeKcGdLCQuDxAgMVUsotIWeiJVSW8jXgLFvIsBC3HnybRqbaSaPnrpdS9TXoT3ku3tSd05wIijgKNdxsb7hQHOENR50=
+	t=1712139017; cv=none; b=oA01IlbzEQQIYezPCQwkH0ujH/2Eca4oBkd80pllubik/9l1dwI0sAHv6Aw70BUrUu5gjtERlR6uH0dRdsSYxkU2sYSbuncE4WvTSK1lIWlqdVJ4+F9s2Ti+VayiNbxxTb9XWpz+k7vj+Pq75rXvgHW5IuCYP6lSbsz2UWi7afM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712138999; c=relaxed/simple;
-	bh=hxisYTtqHS0PgSLllLBFMBX8OHBg9yUGMbWMb7P2n4Q=;
-	h=Date:Message-ID:From:To:Cc:Subject:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=Le3dY5n0dDyVl+k4y2FJ68lD4O1nmlfMnMg8fbEneslXBI/CvBGA/m4ln5eTx2QAJ/fK1sOpEBlpzxw+jx/u94+o2PbL/hwLnOr5dbNwNd+P/HtxP8uGdUvmgtlGT0uTUdzb8NdVAaW/NJoqilv7GqAneUmqPAianGK1hlxRXRA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=avnjnlHH; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4A70FC433F1;
-	Wed,  3 Apr 2024 10:09:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712138999;
-	bh=hxisYTtqHS0PgSLllLBFMBX8OHBg9yUGMbWMb7P2n4Q=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=avnjnlHHCpktGusaWZ+BxlVSqNE4lgl1pOwyrB5ahxSzLBgF7EfbY/sZFXjRdZWAx
-	 mvy3FVtCcVie+vKHkQ+zx3bddWhICRdSJc+MiTEVu3wa05/pbaMcE0+4kWk8CN0t9z
-	 c9a5SRlNEgEsyrNn22q53BGfqAKN0ohKjxyVyanU1O5+auca1Jjn1/g+u1mKKW7Cpw
-	 QTTAgtKI407kDOi1Y6+hd06oYnNRwBOkta3viy6DobXsBvcnKcCjC6e6JVycSMjMwg
-	 7hU5WQPijaobrcDEBjxLVpdB2+q7e7m4jd4uMBOZYPmDCTLZXI3C4Tja371id/oeAH
-	 2R+tB9CMpJzcg==
-Received: from sofa.misterjones.org ([185.219.108.64] helo=goblin-girl.misterjones.org)
-	by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.95)
-	(envelope-from <maz@kernel.org>)
-	id 1rrxZ7-0012Sl-96;
-	Wed, 03 Apr 2024 11:09:57 +0100
-Date: Wed, 03 Apr 2024 11:09:56 +0100
-Message-ID: <86cyr6u58r.wl-maz@kernel.org>
-From: Marc Zyngier <maz@kernel.org>
-To: t00849498 <tangnianyao@huawei.com>
-Cc: <tglx@linutronix.de>,
-	<linux-arm-kernel@lists.infradead.org>,
-	<linux-kernel@vger.kernel.org>,
-	<guoyang2@huawei.com>,
-	<wangwudi@hisilicon.com>
-Subject: Re: [RESPIN PATCH] irqchip/gic-v3-its:Fix GICv4.1 needless VSYNC after unmap VPE
-In-Reply-To: <20240403083556.3862236-1-tangnianyao@huawei.com>
-References: <20240403083556.3862236-1-tangnianyao@huawei.com>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
- FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/29.2
- (aarch64-unknown-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+	s=arc-20240116; t=1712139017; c=relaxed/simple;
+	bh=xE6QTbHFKdSfTxh3//5Pv1bJxOb959BsmtpGeNd3Olo=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=QSIDpwkeu2J4loS+/zzjmU6VTcwOHB0u/LUHxogTbiodkiFEhslPGZFkg7Fqoc2BUa38sW02mJVMeOuVcRSWfDwZ2ghwAmNCLHkVPECZ61UBKNq+7CcZTLAqdArxXw3yyVuthKSyWHcRiSZX8jpbkqlSAPhROqJi8wvWzAt8Txc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=BCFu8d3W; arc=none smtp.client-ip=209.85.219.179
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-yb1-f179.google.com with SMTP id 3f1490d57ef6-dcbf82cdf05so5205863276.2
+        for <linux-kernel@vger.kernel.org>; Wed, 03 Apr 2024 03:10:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1712139015; x=1712743815; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=rx+/ODJmMo86rpamIh1rOudX2tVZC9qd0xdyuh7u+G8=;
+        b=BCFu8d3Wq0lTtUxJIp9yHcY1pClcdDtEI8J1B+waNcPk/dciwXxqn1s/V3Yncoa25a
+         jLDhsDns+pCUSkP+dtSq6qb8oR4k6P52p+whclFfwINl0T27DpsiPeEaq/OISmJGX5rr
+         EnAhC0M6SUedf9zqi1wctLhd8ME3ZNe0navo4aouzAO33F21GZzBb0mwGtQ1XgwlJvhG
+         aYYzIS2h+zT1deqp2fzNKBLpIo0X3QZRc/zCGmzxb+9BW12irGjg56bAyXGMjLVAZeYf
+         5F+1wKMuZMGzH+huC5KkPFesSki1Z/n+ZG/vkkF1IAUDKRSpH5kecaxvbLzB0VqCd50+
+         AlWA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712139015; x=1712743815;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=rx+/ODJmMo86rpamIh1rOudX2tVZC9qd0xdyuh7u+G8=;
+        b=wmkll8U8CZ8bOPW9lqtTk2TmOb3gHUC27dTaGiMEWXfvFd/cFfE/9M9EEfevRmCTa9
+         N3CC/jATCoOJUxGkWpzPt9tmtBwsymkiG+xzIji1K8Jw1k8+1lYnOLGTTks89QJEX8hh
+         7mJ/34UAxvYFkUNtkz8ZsTGmXh7RDzc/3bqP+zM6JUjPubgQE2Vaz1YmO8mORCd155a3
+         0+L5ZTw2d6Qqzd2s5u5kE9jFPSO8MIKInpap6Nhk7n4n2DsbNVdVpMzQUbz1oSHS3DYq
+         qnR/1jMNdnDfa64IEBomx4cAqRlB2XGy8KhtkJpwfYFhHnowpRewwOMhkJKLeZdVTMND
+         jepA==
+X-Forwarded-Encrypted: i=1; AJvYcCUKSyIxxZaLTPWJhj5REgIlZWtNojFf2EGghTR+nRSm97uVWmutZ4PMGBtGD+M6vTQOKZwkO34l72hEUdv8Ta1/w566+fR99T0yt3El
+X-Gm-Message-State: AOJu0YwpW1eNh2L8uaIHJD0W01VUN3kZaktPxCe1rdavacWOFwbZSvKL
+	T65XgInkOb6wwAJ85LSKJdOPTTApkTmG7J4Kp24XMWGVVQnpBtjjuRRJ/vVECN0bpnru1pSFNn3
+	3vLa9KrG8wYLq9sIjoGQfAWe48Q92T0KoRPdl3A==
+X-Google-Smtp-Source: AGHT+IGjh7gnnBb9kNyO5PIPLl2Il5vz8QX1R3iBfDYBjyvguAc/FohIsajpw5mGOtCvkRWDwc/PlH4RwAJFT54eBCo=
+X-Received: by 2002:a25:ba42:0:b0:dcb:be59:25e1 with SMTP id
+ z2-20020a25ba42000000b00dcbbe5925e1mr12992717ybj.30.1712139015113; Wed, 03
+ Apr 2024 03:10:15 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Content-Type: text/plain; charset=US-ASCII
-X-SA-Exim-Connect-IP: 185.219.108.64
-X-SA-Exim-Rcpt-To: tangnianyao@huawei.com, tglx@linutronix.de, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, guoyang2@huawei.com, wangwudi@hisilicon.com
-X-SA-Exim-Mail-From: maz@kernel.org
-X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+MIME-Version: 1.0
+References: <20240403-msm-drm-dsc-dsi-video-upstream-v1-0-db5036443545@linaro.org>
+ <20240403-msm-drm-dsc-dsi-video-upstream-v1-2-db5036443545@linaro.org>
+In-Reply-To: <20240403-msm-drm-dsc-dsi-video-upstream-v1-2-db5036443545@linaro.org>
+From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Date: Wed, 3 Apr 2024 13:10:03 +0300
+Message-ID: <CAA8EJpo-tZSOD+B+4znyBmFPVOjc6yocsVwYMXPN5d3WQfbr=Q@mail.gmail.com>
+Subject: Re: [PATCH v3 2/6] drm/msm/dsi: set video mode widebus enable bit
+ when widebus is enabled
+To: Jun Nie <jun.nie@linaro.org>
+Cc: Rob Clark <robdclark@gmail.com>, Abhinav Kumar <quic_abhinavk@quicinc.com>, 
+	Sean Paul <sean@poorly.run>, Marijn Suijten <marijn.suijten@somainline.org>, 
+	David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>, 
+	Jessica Zhang <quic_jesszhan@quicinc.com>, Vinod Koul <vkoul@kernel.org>, 
+	linux-arm-msm@vger.kernel.org, dri-devel@lists.freedesktop.org, 
+	freedreno@lists.freedesktop.org, linux-kernel@vger.kernel.org, 
+	Jonathan Marek <jonathan@marek.ca>
+Content-Type: text/plain; charset="UTF-8"
 
-Thanks for respinning this.
+On Wed, 3 Apr 2024 at 12:11, Jun Nie <jun.nie@linaro.org> wrote:
+>
+> From: Jonathan Marek <jonathan@marek.ca>
+>
+> The value returned by msm_dsi_wide_bus_enabled() doesn't match what the
+> driver is doing in video mode. Fix that by actually enabling widebus for
+> video mode.
+>
+> Fixes: efcbd6f9cdeb ("drm/msm/dsi: Enable widebus for DSI")
+> Signed-off-by: Jonathan Marek <jonathan@marek.ca>
+> Signed-off-by: Jun Nie <jun.nie@linaro.org>
 
-A few remarks:
+You have ignored all the review comments that were provided for v1.
+None of the tags were picked up either.
 
-The subject line could be improved. Something like:
+Have you posted this for internal review like I have explicitly asked you?
 
-"irqchip/gic-v4: Don't issue a VSYNC after VMAPP with V=0"
+> ---
+>  drivers/gpu/drm/msm/dsi/dsi.xml.h  | 1 +
+>  drivers/gpu/drm/msm/dsi/dsi_host.c | 2 ++
+>  2 files changed, 3 insertions(+)
+>
+> diff --git a/drivers/gpu/drm/msm/dsi/dsi.xml.h b/drivers/gpu/drm/msm/dsi/dsi.xml.h
+> index 2a7d980e12c3..f0b3cdc020a1 100644
+> --- a/drivers/gpu/drm/msm/dsi/dsi.xml.h
+> +++ b/drivers/gpu/drm/msm/dsi/dsi.xml.h
+> @@ -231,6 +231,7 @@ static inline uint32_t DSI_VID_CFG0_TRAFFIC_MODE(enum dsi_traffic_mode val)
+>  #define DSI_VID_CFG0_HSA_POWER_STOP                            0x00010000
+>  #define DSI_VID_CFG0_HBP_POWER_STOP                            0x00100000
+>  #define DSI_VID_CFG0_HFP_POWER_STOP                            0x01000000
+> +#define DSI_VID_CFG0_DATABUS_WIDEN                             0x02000000
+>  #define DSI_VID_CFG0_PULSE_MODE_HSA_HE                         0x10000000
 
-On Wed, 03 Apr 2024 09:35:56 +0100,
-t00849498 <tangnianyao@huawei.com> wrote:
-> 
-> From: Nianyao Tang <tangnianyao@huawei.com>
-> 
-> Quote from GIC spec 5.3.19, a VMAPP with {V, Alloc}=={0, x}
-> is self-synchronizing, This means the ITS command queue does not
-> show the command as consumed until all of its effects are completed.
+From the top of the file:
 
-Since this is a direct quote, make it clear that it is so.
+/* Autogenerated file, DO NOT EDIT manually!
 
 >
-> We don't need VSYNC to guarantee unmap finish. And VSYNC after unmap VPE
-> will reach an invalid vpe table entry, which may trigger exception
-> like SError or RAS. Let's fix it.
+>  #define REG_DSI_VID_CFG1                                       0x0000001c
+> diff --git a/drivers/gpu/drm/msm/dsi/dsi_host.c b/drivers/gpu/drm/msm/dsi/dsi_host.c
+> index 9d86a6aca6f2..2a0422cad6de 100644
+> --- a/drivers/gpu/drm/msm/dsi/dsi_host.c
+> +++ b/drivers/gpu/drm/msm/dsi/dsi_host.c
+> @@ -754,6 +754,8 @@ static void dsi_ctrl_enable(struct msm_dsi_host *msm_host,
+>                 data |= DSI_VID_CFG0_TRAFFIC_MODE(dsi_get_traffic_mode(flags));
+>                 data |= DSI_VID_CFG0_DST_FORMAT(dsi_get_vid_fmt(mipi_fmt));
+>                 data |= DSI_VID_CFG0_VIRT_CHANNEL(msm_host->channel);
+> +               if (msm_dsi_host_is_wide_bus_enabled(&msm_host->base))
+> +                       data |= DSI_VID_CFG0_DATABUS_WIDEN;
+>                 dsi_write(msm_host, REG_DSI_VID_CFG0, data);
+>
+>                 /* Do not swap RGB colors */
+>
+> --
+> 2.34.1
+>
 
-This should be much stronger. It's not that we don't need VSYNC. It is
-that VSYNC is actively wrong. I suggest that you rewrite the commit
-message along these lines:
-
-<msg>
-As per the GICv4.1 spec (Arm IHI 0069H, 5.3.19):
-
-"A VMAPP with {V, Alloc}=={0, x} is self-synchronizing. This means the
- ITS command queue does not show the command as consumed until all of
- its effects are completed."
-
-Furthermore, VSYNC is allowed to deliver an SError when referencing a
-non existent VPE.
-
-By these definitions, a VMAPP followed by a VSYNC is a bug, as the
-later references a VPE that has been unmapped by the former.
-
-Fix it by eliding the VSYNC in this scenario.
-</msg>
-
-> 
-> Signed-off-by: Nianyao Tang <tangnianyao@huawei.com>
-
-Please also add:
-
-Fixes: 64edfaa9a234 ("irqchip/gic-v4.1: Implement the v4.1 flavour of VMAPP")
-
-With the above fixed:
-
-Reviewed-by: Marc Zyngier <maz@kernel.org>
-
-Thanks,
-
-	M.
 
 -- 
-Without deviation from the norm, progress is not possible.
+With best wishes
+Dmitry
 
