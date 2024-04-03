@@ -1,178 +1,136 @@
-Return-Path: <linux-kernel+bounces-128902-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-128903-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 672E18961A1
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 02:49:57 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 351C48961A5
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 02:51:27 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 930621C226AC
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 00:49:56 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6457C1C22682
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 00:51:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EB209F9D4;
-	Wed,  3 Apr 2024 00:49:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 04AD2E554;
+	Wed,  3 Apr 2024 00:51:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=embeddedor.com header.i=@embeddedor.com header.b="DcBqJ7oG"
-Received: from omta036.useast.a.cloudfilter.net (omta036.useast.a.cloudfilter.net [44.202.169.35])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="BjBHlNMs"
+Received: from mail-lf1-f49.google.com (mail-lf1-f49.google.com [209.85.167.49])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3972363C8
-	for <linux-kernel@vger.kernel.org>; Wed,  3 Apr 2024 00:49:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=44.202.169.35
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 489E928FC
+	for <linux-kernel@vger.kernel.org>; Wed,  3 Apr 2024 00:51:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712105387; cv=none; b=d1dFAAI5haGU6cSdxSlg9XseXhweH/3off7ruho+UC7MnqDaxqhjh7idh+MPCf3zHyV3HlltApnJ/7Djthhkroz6Snrg8fzAQUm9+tWqdGUQXzsE6PunDK1fWoTpHrhw42wj4bLdwvNe3+GZiJkMPLMDUnPLKJ9Wv6zBhUPQDY4=
+	t=1712105478; cv=none; b=OvAWo/VaScUgqjW31QbGjOcDXCZBWv6CuqpF4TJSymU1IAM/Q+z8WTYD9B1lXM660F1W02ASka8kVznNvFnUaz2Uavx9vohkNhpUuksBd6NGP9heSDswsEFF0Q8gVLWHzxeNIe3Esi6szgabSBqSU0FmV4AgAuYlK9Z4jeLaoCQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712105387; c=relaxed/simple;
-	bh=4dK7C/kJTg/Koy+Ep9OVvmuPGFqFUCucC4exXTmjsvg=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=TEXTQpEkKLWwy2L6EEsK9V/MGo4hDTpyFXYwFX5wvU69idlz66hc/UQH27rVt14QzhnICm6ZrjnrLtveTjaSf+x2o28dW6ago9lWFksciL6nzwlpU0iSyvQhSMSpTE6IAQsuY3Igezc62oApPO5Ivo9YDr3Lw/VaoS6425vlmyE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=embeddedor.com; spf=pass smtp.mailfrom=embeddedor.com; dkim=pass (2048-bit key) header.d=embeddedor.com header.i=@embeddedor.com header.b=DcBqJ7oG; arc=none smtp.client-ip=44.202.169.35
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=embeddedor.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=embeddedor.com
-Received: from eig-obgw-6001a.ext.cloudfilter.net ([10.0.30.140])
-	by cmsmtp with ESMTPS
-	id rgpQrjED5uh6srooxrw67t; Wed, 03 Apr 2024 00:49:44 +0000
-Received: from gator4166.hostgator.com ([108.167.133.22])
-	by cmsmtp with ESMTPS
-	id roowrvxxQ9zHMroowrTcV1; Wed, 03 Apr 2024 00:49:43 +0000
-X-Authority-Analysis: v=2.4 cv=fo4XZ04f c=1 sm=1 tr=0 ts=660ca7a7
- a=1YbLdUo/zbTtOZ3uB5T3HA==:117 a=g72bLlCj1y9NqcwAG1Fglw==:17
- a=IkcTkHD0fZMA:10 a=raytVjVEu-sA:10 a=wYkD_t78qR0A:10
- a=WFhDUUEJ9-S_0BG-ZiwA:9 a=QEXdDO2ut3YA:10
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=embeddedor.com; s=default; h=Content-Transfer-Encoding:Content-Type:
-	In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:Message-ID:Sender
-	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
-	List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-	bh=VqSzRgQgO9eTxbwoLbmir62oY7qQGk+N1QEYVP7K5rY=; b=DcBqJ7oGhUHVJmv1gPsIUQNAl7
-	TGhTZ2d1xTlXKI8l3Mm2gs3S/F5o+kIMdeV6abMB7a7Yx/uKDpG9HAPmPA3K9oN0m43/BxV7GidmZ
-	Mw+F8REthGPeIG4NMLZfwyY7T9bJTCdh2uLGEB6aFqWtk3v7JwaKAhvMWu5g7X5tr8ND1zZ24N0bI
-	qqxAN3Spy41t6YxDI8VpccTFlvYmBbao3C5+GRqB5d1hRdC+VKm6vjvWOQFna/i4qN62mXPSSlCbs
-	Xp0tjswCddJsaWsbR1n2L733wO1wh/AuSHxuV5S1gmZgr6g0txUzbUj+E8lDLz/vjtbfOPowrOJeB
-	FINiheUw==;
-Received: from [201.162.240.213] (port=29677 helo=[192.168.166.44])
-	by gator4166.hostgator.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-	(Exim 4.96.2)
-	(envelope-from <gustavo@embeddedor.com>)
-	id 1rroov-00178Y-2X;
-	Tue, 02 Apr 2024 19:49:42 -0500
-Message-ID: <d572be26-0217-4522-8cc4-b9c6a62e6f7c@embeddedor.com>
-Date: Tue, 2 Apr 2024 18:49:34 -0600
+	s=arc-20240116; t=1712105478; c=relaxed/simple;
+	bh=qTyq5Gw+MhcMN5mTb2IXkM6rqV32gk6sroaiKtJGkXE=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Q4dibpjEFPADFgmG/yfD0FhIJoGyuYrZWX2G4pbrhn7Ufw1mjJUz42uSHXpK4No1q0g66/9qpsyGHMvQzEUUmWEVV8PuV/fJs+L4eytGtPYivRBStcfjKeHqqqd0OHbzoL78hlIhUD2I7nH+wbNtwAfgJesg0IyEf0ufsVl4TaU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=BjBHlNMs; arc=none smtp.client-ip=209.85.167.49
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-lf1-f49.google.com with SMTP id 2adb3069b0e04-513da1c1f26so6989008e87.3
+        for <linux-kernel@vger.kernel.org>; Tue, 02 Apr 2024 17:51:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1712105473; x=1712710273; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=GWHRA9QpgbMHjxrXRwpYcGFaFTNivreKL1s0uQUDObo=;
+        b=BjBHlNMsuKMrPTpm0v3kZcg9ARBBmXcwaAhXvRZdJ/RlZpd1kLWSDy1Pgtup6Hqm42
+         GTNAYY9plzVREjRPNW+vX7UYjzryMjOQQdo3Pj/+phPhVdN5ivwKhdE4zftnX8nkonJD
+         nMLML37UqMl5UXZgjB/UmCltjZaLA3UP10g/TyyZTJauxAve6AdGhcpN8pS9m3L7NqZy
+         /beLeWRXSKeR3gbQqw6Qw895/tkOlm0Uk70T3td5xuJFnPINBoJ6Bn3gKSCB3ZsNlNnZ
+         TxEDgUqFo2VTwGWZCuTWIWQz51dJDQbvSFj5bwYzLOSpPiZCiBnrptq62e9+n7VrhsyM
+         AZBg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712105473; x=1712710273;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=GWHRA9QpgbMHjxrXRwpYcGFaFTNivreKL1s0uQUDObo=;
+        b=gcss/dojN2+KgntvquZuOnWYWJvnTYksGakdVZtThUJcLNtpqeQ9yrZiWWEJWdBAPH
+         TUtepHSencdZ1if6LM2b+fURkgeFa7y5ku/6ybKBD7SLPlyzTEIW6P/UQmn7JcjzWkHU
+         amknnYLUSzaVb9tzEEX09FSfdfbVet0UjQXIUTQLfbJL6Xgv7buUICc6dGI+Tt6vQ6Wc
+         gNG/XUz6yT5gKaWr28KWZwcwXYRNDHPVXrQPbqma5kGdmbvrDGm9QXNAUVUoJ5oFA8CC
+         79adqZXW7QsmGB5EB2C36HStSDCJrYvPhjmcNwi1cZE9NQ5R/VkuKngDcf9jkVALkBYj
+         bRNQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVBohjwMF4x03QzIGLbny7R5LQzLhMyNRpoQ9K9tfsiBujCdIM5yELOG+QfxryYX60eBDtV9pU8ZjIrVRUHfY3+Ra4jsqBO2YWjhtOs
+X-Gm-Message-State: AOJu0YwMpOH93CJfHzva2/Lzdkspsw/68bdL+bkZZar+NOd3s1NqZit5
+	v+n8zvnGSokPxjrapHT8XOlvq6xeq8BczQNEvhNfQxnD+bFDzr+llRld6OVqXFg=
+X-Google-Smtp-Source: AGHT+IFdYWW/kAAnQoA5IRo9Tv52gkqmNbWMJpe/JRsfmA/mRxHEpRhzCrfHlRnsuqaCYtAolee3xg==
+X-Received: by 2002:ac2:5631:0:b0:513:39a0:1fec with SMTP id b17-20020ac25631000000b0051339a01fecmr618732lff.66.1712105473384;
+        Tue, 02 Apr 2024 17:51:13 -0700 (PDT)
+Received: from eriador.lumag.spb.ru (dzyjmhyyyyyyyyyyyykxt-3.rev.dnainternet.fi. [2001:14ba:a00e:a300::227])
+        by smtp.gmail.com with ESMTPSA id f8-20020a193808000000b00515bbc2feedsm1907527lfa.102.2024.04.02.17.51.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 02 Apr 2024 17:51:13 -0700 (PDT)
+Date: Wed, 3 Apr 2024 03:51:11 +0300
+From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+To: Marijn Suijten <marijn.suijten@somainline.org>
+Cc: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>, 
+	Sumit Semwal <sumit.semwal@linaro.org>, Caleb Connolly <caleb.connolly@linaro.org>, 
+	Neil Armstrong <neil.armstrong@linaro.org>, Jessica Zhang <quic_jesszhan@quicinc.com>, 
+	Sam Ravnborg <sam@ravnborg.org>, David Airlie <airlied@gmail.com>, 
+	Daniel Vetter <daniel@ffwll.ch>, Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, 
+	Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>, 
+	Rob Herring <robh@kernel.org>, Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
+	Conor Dooley <conor+dt@kernel.org>, dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org, Vinod Koul <vkoul@kernel.org>, 
+	Caleb Connolly <caleb@connolly.tech>
+Subject: Re: [PATCH v3 1/4] dt-bindings: panel: Add LG SW43408 MIPI-DSI panel
+Message-ID: <odtd5tfurh4kkhclsi3zmumrucmiz3jpqsukflbsvhmgvtyehl@bobsiymwtsys>
+References: <20240402-lg-sw43408-panel-v3-0-144f17a11a56@linaro.org>
+ <20240402-lg-sw43408-panel-v3-1-144f17a11a56@linaro.org>
+ <9fbb9058-ccfe-436d-b413-b3ba27e4e5f9@linaro.org>
+ <CAA8EJprwWd=ZtwnpTm3cVP8RBEqxCcSGyBu-bHj=iV=+X2=FyQ@mail.gmail.com>
+ <t3cx5qxiteer27vsvysizbrxkbamxgrcbn2oafisodjopwas5z@nxlasb4rlnml>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH][next] nfp: Avoid -Wflex-array-member-not-at-end warnings
-To: Jakub Kicinski <kuba@kernel.org>,
- "Gustavo A. R. Silva" <gustavoars@kernel.org>
-Cc: Louis Peens <louis.peens@corigine.com>,
- "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
- Paolo Abeni <pabeni@redhat.com>, oss-drivers@corigine.com,
- netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-hardening@vger.kernel.org
-References: <ZgYWlkxdrrieDYIu@neat> <20240401212424.34a9a9cd@kernel.org>
-Content-Language: en-US
-From: "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-In-Reply-To: <20240401212424.34a9a9cd@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - gator4166.hostgator.com
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - embeddedor.com
-X-BWhitelist: no
-X-Source-IP: 201.162.240.213
-X-Source-L: No
-X-Exim-ID: 1rroov-00178Y-2X
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
-X-Source-Sender: ([192.168.166.44]) [201.162.240.213]:29677
-X-Source-Auth: gustavo@embeddedor.com
-X-Email-Count: 2
-X-Org: HG=hgshared;ORG=hostgator;
-X-Source-Cap: Z3V6aWRpbmU7Z3V6aWRpbmU7Z2F0b3I0MTY2Lmhvc3RnYXRvci5jb20=
-X-Local-Domain: yes
-X-CMAE-Envelope: MS4xfMlf823UTiawc/cfvKo42EWsudLMldnkN7wB03RIqGfbKgPcN/aY3K9sD5KFazdEx0wVJuAIMx1uhmO61YZMah5qZsqIq8DdSVrR9Vlj5Y0kTdOwfs14
- PtsHPxSnQMrn/tOmZPln3m7HNryBFgPplS1/LBzeCm6qxgCP5OXaIz+Jeobj0+itSGnhJtv5PBmODsplqYlhJbyfrJzHJOJQczHf9Wsm6UykbDnMchlSCjwX
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <t3cx5qxiteer27vsvysizbrxkbamxgrcbn2oafisodjopwas5z@nxlasb4rlnml>
 
-
-
-On 01/04/24 22:24, Jakub Kicinski wrote:
-> On Thu, 28 Mar 2024 19:17:10 -0600 Gustavo A. R. Silva wrote:
->> --- a/drivers/net/ethernet/netronome/nfp/nfp_net_debugdump.c
->> +++ b/drivers/net/ethernet/netronome/nfp/nfp_net_debugdump.c
->> @@ -34,8 +34,11 @@ enum nfp_dumpspec_type {
->>   
->>   /* generic type plus length */
->>   struct nfp_dump_tl {
->> -	__be32 type;
->> -	__be32 length;	/* chunk length to follow, aligned to 8 bytes */
->> +	/* New members must be added within the struct_group() macro below. */
->> +	struct_group_tagged(nfp_dump_tl_hdr, hdr,
->> +		__be32 type;
->> +		__be32 length;	/* chunk length to follow, aligned to 8 bytes */
->> +	);
->>   	char data[];
->>   };
+On Tue, Apr 02, 2024 at 10:59:11PM +0200, Marijn Suijten wrote:
+> On 2024-04-02 10:23:22, Dmitry Baryshkov wrote:
+> > On Tue, 2 Apr 2024 at 09:31, Krzysztof Kozlowski
+> > <krzysztof.kozlowski@linaro.org> wrote:
+> > >
+> > > On 02/04/2024 01:51, Dmitry Baryshkov wrote:
+> > > > From: Sumit Semwal <sumit.semwal@linaro.org>
+> > > >
+> > > > LG SW43408 is 1080x2160, 4-lane MIPI-DSI panel present on Google Pixel 3
+> > > > phones.
+> > > >
+> > > > Signed-off-by: Vinod Koul <vkoul@kernel.org>
+> > > > Signed-off-by: Sumit Semwal <sumit.semwal@linaro.org>
+> > > > [caleb: convert to yaml]
+> > > > Signed-off-by: Caleb Connolly <caleb@connolly.tech>
+> > > > Signed-off-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+> > > > ---
+> > >
+> > > Tags missing.
+> > >
+> > > `b4 trailers -u`
+> > 
+> > Excuse me, I keep on forgetting it.
 > 
-> I counted 9 references to nfp_dump_tl->data.
-> Better to add:
+> Does a similar thing exist for adding Cc: tags for all reviewers/replyers to an
+> earlier version, even if said reviewer didn't yet provide R-b/A-b or other tags?
 > 
-> static void *nfp_dump_tl_data(struct nfp_dump_tl *spec)
-> {
-> 	return &spec[1];
-> }
+> I'd like to have the next revisions in my inbox as well after leaving
+> comments :)
 
-Unfortunately, that's out-of-bounds for the compiler, and well, basically
-the reason why flex-array members were created in the first place.
+Unfortunately I don't know such option.
 
-I was looking into implementing two separate structs:
+> 
+> Thanks! - Marijn
 
-struct nfp_dump_tl_hdr {
-         __be32 type;
-         __be32 length;  /* chunk length to follow, aligned to 8 bytes */
-};
-
-struct nfp_dump_tl {
-         __be32 type;
-         __be32 length;  /* chunk length to follow, aligned to 8 bytes */
-	char data[];
-};
-
-and at least for structs nfp_dumpspec_csr, nfp_dumpspec_rtsym, nfp_dump_csr, and
-nfp_dump_rtsym it'd be a clean change (no need for container_of()), but not for
-structs nfp_dumpspec_csr and nfp_dumpspec_rtsym because of some casts from
-the flex struct:
-
-nfp_add_tlv_size():
-         case NFP_DUMPSPEC_TYPE_ME_CSR:
-                 spec_csr = (struct nfp_dumpspec_csr *)tl;
-                 if (!nfp_csr_spec_valid(spec_csr))
-		...
-
-         case NFP_DUMPSPEC_TYPE_INDIRECT_ME_CSR:
-                 spec_csr = (struct nfp_dumpspec_csr *)tl;
-                 if (!nfp_csr_spec_valid(spec_csr))
-		...
-
-	case NFP_DUMPSPEC_TYPE_RTSYM:
-                 spec_rtsym = (struct nfp_dumpspec_rtsym *)tl;
-                 err = nfp_dump_single_rtsym(pf, spec_rtsym, dump);
-
-nfp_calc_rtsym_dump_sz():
-         spec_rtsym = (struct nfp_dumpspec_rtsym *)spec;
-
-
-At least for those two structs, it's probably more straightforward to use
-struct_group_tagged() and container_of().
-
---
-Gustavo
+-- 
+With best wishes
+Dmitry
 
