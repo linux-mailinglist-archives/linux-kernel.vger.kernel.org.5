@@ -1,156 +1,155 @@
-Return-Path: <linux-kernel+bounces-130716-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-130702-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id DD8D6897C11
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 01:35:23 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 52C0B897BCD
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 00:57:33 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1AAAD1C25FDF
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 23:35:23 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 892EAB21FEC
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 22:57:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0E51E156C44;
-	Wed,  3 Apr 2024 23:35:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id ACB19156969;
+	Wed,  3 Apr 2024 22:57:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=decentral.ch header.i=@decentral.ch header.b="um67KjuK"
-Received: from rush.cubic.ch (rush.cubic.ch [176.9.78.115])
-	(using TLSv1 with cipher AES256-SHA (256/256 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="NtClwrMG"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.10])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D519C2231A
-	for <linux-kernel@vger.kernel.org>; Wed,  3 Apr 2024 23:35:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=176.9.78.115
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 29649156253;
+	Wed,  3 Apr 2024 22:57:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.10
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712187316; cv=none; b=SxY8ZZokCagz1hyufjjWC695PkNR29k/pN2N/ZerT1WYOxVVyqvZn53bjJuLRhO5z9zgIsi3v2GcD0AVt2V/iN6cgWUGD1IElg9FKOsVSGQqFUVKQZb7EcQzvcGG2HSGvbME/cEOTAFz7xQo3YjjeXQV/RxXIPvXcamFNgwU7oI=
+	t=1712185041; cv=none; b=Yx7XjCJZmC4VNrDMJdCpGErSan41x7ps0SMg7IdbxKMQ+D+J1yjww0cfeD85gV5BhxZoPf6eg7qIO67w+kFZ7N0FBE48AiQsA9kXnSwC2Fs63pPBurDigpCyeO9N8hoWfK/xOJII8ft7iRtpj95ZMBC7o4mtbCpMs2a38lkvJDw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712187316; c=relaxed/simple;
-	bh=gofMnhN0RZrgEF7WGTk00KLMfunpXl+0UpVYjKeRguc=;
-	h=Message-ID:Date:MIME-Version:To:From:Subject:Content-Type; b=R7ozJfqbHl3UJktJrmQWBdzjN5dFabPNGF72kvlC+WesqLRgJWu4nxGx3TGXrBB3ROUn31xNFpMIz6QiF1ygfAkWVoNHJsnIy1GxIBSFy64Y4y/KihFNY5D7AgJeLRdxvdQ9EyQjxkjSrbJAjSANZUnL5FNvohaI8AA5EH0CmCM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=decentral.ch; spf=pass smtp.mailfrom=decentral.ch; dkim=pass (2048-bit key) header.d=decentral.ch header.i=@decentral.ch header.b=um67KjuK; arc=none smtp.client-ip=176.9.78.115
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=decentral.ch
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=decentral.ch
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=decentral.ch; s=rsa2;
-	h=Content-Transfer-Encoding:Content-Type:Subject:From:To:MIME-Version:Date:Message-ID; bh=Pc4vqPGE/iNii3sBLL3VvLlB/0S2ovGkDyN9exiWvko=;
-	b=um67KjuKFIodiAXidNuQmKmDWU3XTVfl85HExQvaE5VJZ8xlho6m81Es/6fnudAkS40AopBmCm5G7E9+p6VpYmaXP9TyonXkKNfmZO9Xg4KdghdWHhlYK0fBYXAohvUBe7D9GZ1iICD+D8QbQAFVZgkU3JhOLtGcVm5bS2fUWJ0CUMrV3WiSU/qnlMAl0I5Gf5SbiBHfIBogFSTAIq3KvT17Q/ZhdzEKLpkEYOjroyBAHer7lDOLCaNw3qzcr5M+Ixy1HPn3dmRGmCQr7bGFSm2NIzGALJetF6vMqvjU4zWNbQ5P+O2QMaHGL7cdJoD3xIcPzbgCzjnCsWP27gepiQ==;
-Received: from james.decentral.ch ([85.195.242.225] helo=[192.168.219.104])
-	by rush.cubic.ch with esmtpa (Exim 4.76)
-	(envelope-from <stuff@decentral.ch>)
-	id 1rs9QL-0001l5-79
-	for linux-kernel@vger.kernel.org; Thu, 04 Apr 2024 00:49:41 +0200
-Message-ID: <b8dbce0c-31b4-4762-9779-6e973806433a@decentral.ch>
-Date: Thu, 4 Apr 2024 00:49:40 +0200
+	s=arc-20240116; t=1712185041; c=relaxed/simple;
+	bh=O/P2O6YziHmPPFlfI6G/WG3f8fkCLygIYypjUyaWwPA=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=h5xtp6vqn4cqi6EC5ArA55dulFai/InxFUBUKhZPMJvRQh/F/RCavbhEAnGyqwNJu6cciLqa4eASsRuHSpzEQUvgoBA/5ed+E53+8MIrHubZ9gGkxic2oVnPY/0JbLDtedCHDg40kwwx/AIrY3Cp6edzmZ82V5+C/m0Xki78sc8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=NtClwrMG; arc=none smtp.client-ip=198.175.65.10
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1712185040; x=1743721040;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=O/P2O6YziHmPPFlfI6G/WG3f8fkCLygIYypjUyaWwPA=;
+  b=NtClwrMGHwFaAD6YftAaXdxZ4vNZnvsjfpFJPkhU0cx+FGpu8pHjh5OE
+   BCfJiV0iKAGyvJEBg7fhHnCR9ULhZbejHjh6c4Rf/wrJMwHQ4HpE2TvR3
+   DbjZFi5LYZ+hUTvXS0vqYp3ZIGcEDNgqPSbSbAQ5/TCegogvUXFTCQhtf
+   gF7dv7SqKcivUFLVWbVUZXmEyTMEieTqp2DoKp1Dmpn71czx+wplmYTmB
+   pU+K1r+5E7JuMItDgyOtzN0i/9qHh045YF50MDrvlbelzHvYkqNmZd3Z0
+   SfOW/qszyu91LDgsI+87LXa8ES7W2vLvtaJuNVEKMhMifCkWaVr5UdLr9
+   Q==;
+X-CSE-ConnectionGUID: Q6R6LgkFReyZYGCVlvrXdQ==
+X-CSE-MsgGUID: YlgqDtgFT+2NIfKnTBjdSw==
+X-IronPort-AV: E=McAfee;i="6600,9927,11033"; a="24905434"
+X-IronPort-AV: E=Sophos;i="6.07,178,1708416000"; 
+   d="scan'208";a="24905434"
+Received: from orviesa002.jf.intel.com ([10.64.159.142])
+  by orvoesa102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Apr 2024 15:57:20 -0700
+X-CSE-ConnectionGUID: HyCgqXkGQTGeoP+8seRqnA==
+X-CSE-MsgGUID: JYfbs+3jQ2iIWqB7Q2vKIA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,178,1708416000"; 
+   d="scan'208";a="49537008"
+Received: from lkp-server01.sh.intel.com (HELO e61807b1d151) ([10.239.97.150])
+  by orviesa002.jf.intel.com with ESMTP; 03 Apr 2024 15:57:16 -0700
+Received: from kbuild by e61807b1d151 with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1rs9Xd-0000Kq-23;
+	Wed, 03 Apr 2024 22:57:13 +0000
+Date: Thu, 4 Apr 2024 06:57:12 +0800
+From: kernel test robot <lkp@intel.com>
+To: Chenghai Huang <huangchenghai2@huawei.com>, herbert@gondor.apana.org.au,
+	davem@davemloft.net
+Cc: oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
+	linux-crypto@vger.kernel.org, fanghao11@huawei.com,
+	liulongfang@huawei.com, shenyang39@huawei.com,
+	songzhiqi1@huawei.com, qianweili@huawei.com,
+	liushangbin@hisilicon.com, linwenkai6@hisilicon.com,
+	taoqi10@huawei.com, wangzhou1@hisilicon.com,
+	huangchenghai2@huawei.com
+Subject: Re: [PATCH 8/9] crypto: hisilicon/debugfs - Resolve the problem of
+ applying for redundant space in sq dump
+Message-ID: <202404040616.cF0Pvb9M-lkp@intel.com>
+References: <20240403100102.2735306-9-huangchenghai2@huawei.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-To: LKML <linux-kernel@vger.kernel.org>
-Content-Language: en-US
-From: Tim Tassonis <stuff@decentral.ch>
-Subject: Kernel Trace in recent 6.1.8n kernels
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240403100102.2735306-9-huangchenghai2@huawei.com>
 
-Hi all
+Hi Chenghai,
 
-Maybe this is the wrong list, as it probably only affects the 6.1.8n LTS 
-kernel releases.
+kernel test robot noticed the following build warnings:
 
+[auto build test WARNING on herbert-cryptodev-2.6/master]
+[also build test WARNING on herbert-crypto-2.6/master linus/master v6.9-rc2 next-20240403]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
-I noticed that since 6.1.80 or so, all my boxes print a trace when 
-rebooting or halting, right at the end. It starts with 
-drivers/scsi/scsi_lib.c
+url:    https://github.com/intel-lab-lkp/linux/commits/Chenghai-Huang/crypto-hisilicon-sec-Add-the-condition-for-configuring-the-sriov-function/20240403-180924
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/herbert/cryptodev-2.6.git master
+patch link:    https://lore.kernel.org/r/20240403100102.2735306-9-huangchenghai2%40huawei.com
+patch subject: [PATCH 8/9] crypto: hisilicon/debugfs - Resolve the problem of applying for redundant space in sq dump
+config: arm64-defconfig (https://download.01.org/0day-ci/archive/20240404/202404040616.cF0Pvb9M-lkp@intel.com/config)
+compiler: aarch64-linux-gcc (GCC) 13.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240404/202404040616.cF0Pvb9M-lkp@intel.com/reproduce)
 
-As everything seems already done by then, there is no "real" problem 
-occuring, but maybe someone knows why this suddenly started to happen.
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202404040616.cF0Pvb9M-lkp@intel.com/
 
+All warnings (new ones prefixed by >>):
 
-With qemu and the serial options, I managed to get the actual trace in text:
-
-      Unmounting all other currently mounted file systems...[ 
-58.632670] EXT4-fs (sda1): re-mounted. Quota mode: none.
-   * 
-[  OK  ]
-[   58.684029] EXT4-fs (sda1): re-mounted. Quota mode: none.
-   *   Bringing down the loopback interface... 
-[  OK  ]
-[   58.809326] ------------[ cut here ]------------
-[   58.813524] WARNING: CPU: 0 PID: 2755 at drivers/scsi/scsi_lib.c:214 
-scsi_execute_cmd+0x3b/0x2b0
-[   58.828052] Modules linked in: cfg80211 8021q garp mrp stp ipv6 
-crc_ccitt joydev hid_generic usbhid snd_seq_midi snd_seq_midi_event 
-psmouse ppdev serio_raw atkbd libps2 vivaldi_fmap uhci_hcd ehci_pci 
-ehci_hcd snd_ens1370 bochs drm_vram_helper snd_rawmidi usbcore 
-drm_ttm_helper sr_mod usb_common snd_pcm cdrom e1000 i2c_piix4 ttm 
-pcspkr gameport pata_acpi parport_pc parport i8042 qemu_fw_cfg serio 
-rtc_cmos floppy snd_seq snd_seq_device snd_timer snd soundcore fuse
-[   58.873677] CPU: 0 PID: 2755 Comm: halt Not tainted 6.1.84 #1
-[   58.876424] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), 
-BIOS rel-1.16.3-0-ga6ed6b701f0a-prebuilt.qemu.org 04/01/2014
-[   58.884106] RIP: 0010:scsi_execute_cmd+0x3b/0x2b0
-[   58.885558] Code: 89 cc 55 44 89 c5 53 48 83 ec 10 4c 8b 74 24 50 48 
-89 0c 24 4d 85 f6 0f 84 44 02 00 00 49 83 3e 00 74 21 41 83 7e 08 60 74 
-1a <0f> 0b b8 ea ff ff ff 48 83 c4 10 5b 5d 41 5c 41 5d 41 5e 41 5f c3
-[   58.891998] RSP: 0018:ffffc90000153d98 EFLAGS: 00010287
-[   58.893500] RAX: ffffc90000153df8 RBX: ffff888003d22000 RCX: 
-0000000000000000
-[   58.895480] RDX: 0000000000000022 RSI: 0000000000000022 RDI: 
-ffff888003d22000
-[   58.897583] RBP: 0000000000000000 R08: 0000000000000000 R09: 
-0000000000002710
-[   58.900276] R10: 0000000000000000 R11: 0000000000000000 R12: 
-0000000000002710
-[   58.902209] R13: ffff888003d22000 R14: ffffc90000153df8 R15: 
-ffffc90000153e28
-[   58.904084] FS:  00007f097a95b680(0000) GS:ffff88807dc00000(0000) 
-knlGS:0000000000000000
-[   58.906285] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-[   58.907451] CR2: 00007f097a8f5431 CR3: 000000000406e000 CR4: 
-00000000000006f0
-[   58.908928] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 
-0000000000000000
-[   58.910326] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 
-0000000000000400
-[   58.911770] Call Trace:
-[   58.912438]  <TASK>
-[   58.912977]  ? __warn+0x78/0xd0
-[   58.913751]  ? scsi_execute_cmd+0x3b/0x2b0
-[   58.914757]  ? report_bug+0xe6/0x170
-[   58.916267]  ? handle_bug+0x3c/0x70
-[   58.917020]  ? exc_invalid_op+0x13/0x60
-[   58.917807]  ? asm_exc_invalid_op+0x16/0x20
-[   58.918675]  ? scsi_execute_cmd+0x3b/0x2b0
-[   58.919524]  ata_cmd_ioctl+0x112/0x2b0
-[   58.920435]  blkdev_ioctl+0x12e/0x260
-[   58.921322]  __x64_sys_ioctl+0x8b/0xc0
-[   58.922115]  do_syscall_64+0x42/0x90
-[   58.922953]  entry_SYSCALL_64_after_hwframe+0x64/0xce
-[   58.924002] RIP: 0033:0x7f097a87616b
-[   58.924748] Code: 00 48 89 44 24 18 31 c0 48 8d 44 24 60 c7 04 24 10 
-00 00 00 48 89 44 24 08 48 8d 44 24 20 48 89 44 24 10 b8 10 00 00 00 0f 
-05 <89> c2 3d 00 f0 ff ff 77 1c 48 8b 44 24 18 64 48 2b 04 25 28 00 00
-[   58.928687] RSP: 002b:00007fff1e70b5b0 EFLAGS: 00000246 ORIG_RAX: 
-0000000000000010
-[   58.930465] RAX: ffffffffffffffda RBX: 0000000000000004 RCX: 
-00007f097a87616b
-[   58.932545] RDX: 00007fff1e70b614 RSI: 000000000000031f RDI: 
-0000000000000004
-[   58.933964] RBP: 0000000000000000 R08: 0000000000000073 R09: 
-0000558c7857a343
-[   58.935349] R10: 0000000000000000 R11: 0000000000000246 R12: 
-0000000000000020
-[   58.936727] R13: 0000558c77faf088 R14: 0000000000000001 R15: 
-0000000000000000
-[   58.938165]  </TASK>
-[   58.938617] ---[ end trace 0000000000000000 ]---
-[   58.940450] sd 0:0:0:0: [sda] Synchronizing SCSI cache
-[   58.941662] sd 0:0:0:0: [sda] Stopping disk
-[   58.971754] ACPI: PM: Preparing to enter system sleep state S5
-[   58.973005] reboot: Power down
+   drivers/crypto/hisilicon/debugfs.c: In function 'qm_sq_dump':
+>> drivers/crypto/hisilicon/debugfs.c:314:21: warning: unused variable 'sqe_curr' [-Wunused-variable]
+     314 |         void *sqe, *sqe_curr;
+         |                     ^~~~~~~~
 
 
-Bye
-Tim
+vim +/sqe_curr +314 drivers/crypto/hisilicon/debugfs.c
+
+94476b2b6d60bc Kai Ye         2022-11-12  310  
+9c75609842f091 Kai Ye         2022-11-12  311  static int qm_sq_dump(struct hisi_qm *qm, char *s, char *name)
+94476b2b6d60bc Kai Ye         2022-11-12  312  {
+94476b2b6d60bc Kai Ye         2022-11-12  313  	u16 sq_depth = qm->qp_array->cq_depth;
+94476b2b6d60bc Kai Ye         2022-11-12 @314  	void *sqe, *sqe_curr;
+94476b2b6d60bc Kai Ye         2022-11-12  315  	struct hisi_qp *qp;
+94476b2b6d60bc Kai Ye         2022-11-12  316  	u32 qp_id, sqe_id;
+94476b2b6d60bc Kai Ye         2022-11-12  317  	int ret;
+94476b2b6d60bc Kai Ye         2022-11-12  318  
+94476b2b6d60bc Kai Ye         2022-11-12  319  	ret = q_dump_param_parse(qm, s, &sqe_id, &qp_id, sq_depth);
+94476b2b6d60bc Kai Ye         2022-11-12  320  	if (ret)
+94476b2b6d60bc Kai Ye         2022-11-12  321  		return ret;
+94476b2b6d60bc Kai Ye         2022-11-12  322  
+e0bbea3a20f7a0 Chenghai Huang 2024-04-03  323  	sqe = kzalloc(qm->sqe_size, GFP_KERNEL);
+94476b2b6d60bc Kai Ye         2022-11-12  324  	if (!sqe)
+94476b2b6d60bc Kai Ye         2022-11-12  325  		return -ENOMEM;
+94476b2b6d60bc Kai Ye         2022-11-12  326  
+94476b2b6d60bc Kai Ye         2022-11-12  327  	qp = &qm->qp_array[qp_id];
+e0bbea3a20f7a0 Chenghai Huang 2024-04-03  328  	memcpy(sqe, qp->sqe + sqe_id * qm->sqe_size, qm->sqe_size);
+e0bbea3a20f7a0 Chenghai Huang 2024-04-03  329  	memset(sqe + qm->debug.sqe_mask_offset, QM_SQE_ADDR_MASK,
+94476b2b6d60bc Kai Ye         2022-11-12  330  	       qm->debug.sqe_mask_len);
+94476b2b6d60bc Kai Ye         2022-11-12  331  
+e0bbea3a20f7a0 Chenghai Huang 2024-04-03  332  	dump_show(qm, sqe, qm->sqe_size, name);
+94476b2b6d60bc Kai Ye         2022-11-12  333  
+94476b2b6d60bc Kai Ye         2022-11-12  334  	kfree(sqe);
+94476b2b6d60bc Kai Ye         2022-11-12  335  
+94476b2b6d60bc Kai Ye         2022-11-12  336  	return 0;
+94476b2b6d60bc Kai Ye         2022-11-12  337  }
+94476b2b6d60bc Kai Ye         2022-11-12  338  
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
