@@ -1,147 +1,121 @@
-Return-Path: <linux-kernel+bounces-130431-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-130432-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id BA045897805
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 20:17:53 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id BC14A897809
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 20:19:36 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 707731F24C39
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 18:17:53 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7633328776A
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 18:19:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 88315153BC7;
-	Wed,  3 Apr 2024 18:17:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9FE6B15356D;
+	Wed,  3 Apr 2024 18:19:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="LSLrjg6F"
-Received: from out-181.mta0.migadu.com (out-181.mta0.migadu.com [91.218.175.181])
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="NUn2RWIH"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CBBB115383A;
-	Wed,  3 Apr 2024 18:17:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 67BDA152DF0
+	for <linux-kernel@vger.kernel.org>; Wed,  3 Apr 2024 18:19:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712168254; cv=none; b=DLgwBWPuAyjK3M0BX81OztB/ASc9PMxnBVte1ZAsNlZzSGoiCNzBAE0a4XDD+XOmCUr1c+GloBAWrBWU2iNynzY6EyvWFye46g+aLifAoR8+L0oUvJh+qq1arIigR5EwLCrFBJH5KiqsA19ZG+3gua7Fn6RhY645u5L48G84U5E=
+	t=1712168369; cv=none; b=bF6gBxWhaWa1pMPPAlkry0v0ptZS6A297KKfpZmDcJwpv5pmEEIna0lJVeConNORqscAPR7m8shI+BxTnU4Fy4KGqMh4ch4SVEIEszDs0LV8yWWneTehJdc9CX6G84ASpNRizQnOzRDTS8AvywbCC9QkSmhs7CvQiK3mywi9jO0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712168254; c=relaxed/simple;
-	bh=hJWw3B+mhvk+J/b6HFC0YpI4aiSW9INrwrydReU7mY0=;
+	s=arc-20240116; t=1712168369; c=relaxed/simple;
+	bh=rbR2FKkHDQVwqEiEdZlkVNBjzTI0TMlrIpI+c+AB13A=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=spAAuB3gbLC4TOLo2htpnWK+myN+RVS48FdgPaBU3pdEMUanORFk/91OPRKs8lYAGDDgAuLuZi596wlYZIuWxJhWZKX3OYpYp9cCQuSFbTT1x8oQDZVKWp/5OB6pyvGkm4egQ4AzIgXhrCe/9NxPA3iShrQG15EYr3T+2uipZ0g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=LSLrjg6F; arc=none smtp.client-ip=91.218.175.181
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Date: Wed, 3 Apr 2024 14:17:26 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1712168250;
+	 Content-Type:Content-Disposition:In-Reply-To; b=PaflO7kNdqHazef1TPA9KmTokZJRYFaCeONheGS2Dwsw57eAPF89OzrDH0wWmzWZ4BZ4OuRCzQ1wZyGOWeX7Jzx/IBdJBf6xU2JnbNZuOx+0eJ0TOY/F0SGQOqe5eeaF3CVQHPLLK7ZfhyJ5bnlksvSRFdADuuQMyrKbbONnRZw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=NUn2RWIH; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1712168366;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=Zxp27ZGGEkSjJwr51ZwgsY5W3CkCmszrW+4Pomr214w=;
-	b=LSLrjg6F62U8rN5fLqsO7nbZDAU3JIcXeYeB4CrF8JqMW9VRrf4nyVis3m0zywfS0giGC6
-	enXhqfzZrX4UgUK7Z0Lhi26cYVInkVcP6YKMw2CUFNDWFkV6OJDXwN4InhSowAkbC/dbdA
-	LYsEXK5LLyfXOwoAEk/SvmMiqpaOo8Y=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Kent Overstreet <kent.overstreet@linux.dev>
-To: Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
-Cc: Jonathan Corbet <corbet@lwn.net>, Brian Foster <bfoster@redhat.com>, 
-	Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>, 
-	David Sterba <dsterba@suse.com>, Jaegeuk Kim <jaegeuk@kernel.org>, Chao Yu <chao@kernel.org>, 
-	Alexander Viro <viro@zeniv.linux.org.uk>, Christian Brauner <brauner@kernel.org>, Jan Kara <jack@suse.cz>, 
-	=?utf-8?Q?Micka=C3=ABl_Sala=C3=BCn?= <mic@digikod.net>, linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-bcachefs@vger.kernel.org, linux-btrfs@vger.kernel.org, 
-	linux-f2fs-devel@lists.sourceforge.net, linux-fsdevel@vger.kernel.org, kernel-team@meta.com, 
-	djwong@kernel.org
-Subject: Re: [PATCH v3 00/13] fiemap extension for more physical information
-Message-ID: <vf4k3yagvb6vf3vfu7st7uj7asv4zbf5c3b2tef2g2xic5fkvj@olqxfakmkoew>
-References: <cover.1712126039.git.sweettea-kernel@dorminy.me>
+	bh=xdeUv3Ofjr2iqkst/jH7iP0eOxc0lfoJcFP/WPP4Da8=;
+	b=NUn2RWIHCk2nZogVkzbCR8HWXGAriwl8iVsOU8ZoEyi9M8o0YcYAfSzTHvnnUj9TAoPGZ/
+	6Xlzm1UZHrIS5qE91QE9FeD2pFZNC8olfLK8d6mSEOen0CRf2nvfah2omgyd4+Md5jqzcD
+	GFFwaTfqlh+WpUSMx2lv9NBNjdovo8c=
+Received: from mail-oo1-f72.google.com (mail-oo1-f72.google.com
+ [209.85.161.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-538-Lh1zHIUQMj2bCvaXZsb-Mw-1; Wed, 03 Apr 2024 14:19:24 -0400
+X-MC-Unique: Lh1zHIUQMj2bCvaXZsb-Mw-1
+Received: by mail-oo1-f72.google.com with SMTP id 006d021491bc7-5a4d25f4795so35143eaf.0
+        for <linux-kernel@vger.kernel.org>; Wed, 03 Apr 2024 11:19:24 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712168364; x=1712773164;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=xdeUv3Ofjr2iqkst/jH7iP0eOxc0lfoJcFP/WPP4Da8=;
+        b=c3Hx3bMFOHWbcMTQmQ3tHwAz+ccpzmJCbMzyOwrieKwcFT65xbvneHrZALTr0ocjYy
+         RxC0L3W4y7lEvhSzIIQmCBi+N6kgvmR9K0gmk0Lcpd13d1YWYeyIrFLq/HN1DA9lHBxm
+         vZPcRFvdHiJN2P1gnd8K8sHQw/+cU/l5bgdj3ldz3shiuq+7seysnmojoXHrYWlwOOuG
+         xpadtlG9DudZlYzDpcD1ZU7o8lx+BFoRMftKpYzH4sk11h+JUHr8Ya2CdcXU1uxCGaHn
+         ZJCaP3M2wUYq9NeB57HL5IoobzusV9N6MXppGGImgvV7+q6PZmJdWqpbtHRcrj3W5Pkh
+         O3cw==
+X-Forwarded-Encrypted: i=1; AJvYcCVIv6Pl3t5GHi0hEbC8YaCBsrkPisCPkZXmG45Gw1B7ytJYUE1mEcwRGWgMsihpqG8Xdoz8WXCzxIMcU0NIw1voTSXSMN/ygdDn8kl9
+X-Gm-Message-State: AOJu0Yz1efqwns9OVNxpdO6hbW45w0mCwNfSySNyrgAeoeIHs/seVRvc
+	VtGEgQG6/2ijdMgY3gKihikX5/1lLfVtBZvKsjRBC2msjupPFKgqgGRTIMttABZx/Il2ZG7rXE0
+	n+UEGv56fv8nvuEh+PnliwFcmUDKPmGDganaHhgtz89Qme2UwPMDKGOcrsmCTYA==
+X-Received: by 2002:a05:6820:ec6:b0:5a6:2c6b:d3b with SMTP id en6-20020a0568200ec600b005a62c6b0d3bmr207971oob.0.1712168363824;
+        Wed, 03 Apr 2024 11:19:23 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IEHn1qy1mV6MIo0wP3BfV0wKGaxVdX31dolc6mtjUrNwwrXrfZXmbb7Bwh6zIgN4DaKiHm6bA==
+X-Received: by 2002:a05:6820:ec6:b0:5a6:2c6b:d3b with SMTP id en6-20020a0568200ec600b005a62c6b0d3bmr207951oob.0.1712168363366;
+        Wed, 03 Apr 2024 11:19:23 -0700 (PDT)
+Received: from x1n ([99.254.121.117])
+        by smtp.gmail.com with ESMTPSA id fa13-20020a05622a4ccd00b00430bc1186aesm6767744qtb.28.2024.04.03.11.19.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 03 Apr 2024 11:19:23 -0700 (PDT)
+Date: Wed, 3 Apr 2024 14:19:19 -0400
+From: Peter Xu <peterx@redhat.com>
+To: Ryan Roberts <ryan.roberts@arm.com>
+Cc: linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Muhammad Usama Anjum <usama.anjum@collabora.com>,
+	David Hildenbrand <david@redhat.com>,
+	Nico Pache <npache@redhat.com>, Muchun Song <muchun.song@linux.dev>
+Subject: Re: [PATCH] selftests/mm: run_vmtests.sh: Fix hugetlb mem size
+ calculation
+Message-ID: <Zg2dpzSlEantr0Y8@x1n>
+References: <20240321215047.678172-1-peterx@redhat.com>
+ <1c20b717-c5b5-4bdf-8fcd-d46db135b7fa@arm.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <cover.1712126039.git.sweettea-kernel@dorminy.me>
-X-Migadu-Flow: FLOW_OUT
+In-Reply-To: <1c20b717-c5b5-4bdf-8fcd-d46db135b7fa@arm.com>
 
-On Wed, Apr 03, 2024 at 03:22:41AM -0400, Sweet Tea Dorminy wrote:
-> For many years, various btrfs users have written programs to discover
-> the actual disk space used by files, using root-only interfaces.
-> However, this information is a great fit for fiemap: it is inherently
-> tied to extent information, all filesystems can use it, and the
-> capabilities required for FIEMAP make sense for this additional
-> information also.
+On Wed, Apr 03, 2024 at 12:04:00PM +0100, Ryan Roberts wrote:
+> > diff --git a/tools/testing/selftests/mm/run_vmtests.sh b/tools/testing/selftests/mm/run_vmtests.sh
+> > index c2c542fe7b17..b1b78e45d613 100755
+> > --- a/tools/testing/selftests/mm/run_vmtests.sh
+> > +++ b/tools/testing/selftests/mm/run_vmtests.sh
+> > @@ -152,9 +152,13 @@ done < /proc/meminfo
+> >  # both of these requirements into account and attempt to increase
+> >  # number of huge pages available.
+> >  nr_cpus=$(nproc)
+> > -hpgsize_MB=$((hpgsize_KB / 1024))
+> > -half_ufd_size_MB=$((((nr_cpus * hpgsize_MB + 127) / 128) * 128))
 > 
-> Hence, this patchset adds various additional information to fiemap,
-> and extends filesystems (but not iomap) to return it.  This uses some of
-> the reserved padding in the fiemap extent structure, so programs unaware
-> of the changes will be unaffected.
-> 
-> This is based on next-20240403. I've tested the btrfs part of this with
-> the standard btrfs testing matrix locally and manually, and done minimal
-> testing of the non-btrfs parts.
-> 
-> I'm unsure whether btrfs should be returning the entire physical extent
-> referenced by a particular logical range, or just the part of the
-> physical extent referenced by that range. The v2 thread has a discussion
-> of this.
+> Removing this has broken the uffd-stress "hugetlb" and "hugetlb-private" tests
+> (further down the file), which rely on $half_ufd_size_MB. Now that this is not
+> defined, they are called with too few params:
 
-I believe there was some talk of using the padding for a device ID, so
-that fiemap could properly support multi device filesystems. Are we sure
-this is the best use of those bytes?
+Those FAILs can be burried in some other libc mismatch issues for me so I
+overlooked.. My apologies.
 
-> 
-> Changelog:
-> 
-> v3: 
->  - Adapted all the direct users of fiemap, except iomap, to emit
->    the new fiemap information, as far as I understand the other
->    filesystems.
-> 
-> v2:
->  - Adopted PHYS_LEN flag and COMPRESSED flag from the previous version,
->    as per Andreas Dilger' comment.
->    https://patchwork.ozlabs.org/project/linux-ext4/patch/4f8d5dc5b51a43efaf16c39398c23a6276e40a30.1386778303.git.dsterba@suse.cz/
->  - https://lore.kernel.org/linux-fsdevel/cover.1711588701.git.sweettea-kernel@dorminy.me/T/#t
-> 
-> v1: https://lore.kernel.org/linux-fsdevel/20240315030334.GQ6184@frogsfrogsfrogs/T/#t
-> 
-> Sweet Tea Dorminy (13):
->   fs: fiemap: add physical_length field to extents
->   fs: fiemap: update fiemap_fill_next_extent() signature
->   fs: fiemap: add new COMPRESSED extent state
->   btrfs: fiemap: emit new COMPRESSED state.
->   btrfs: fiemap: return extent physical size
->   nilfs2: fiemap: return correct extent physical length
->   ext4: fiemap: return correct extent physical length
->   f2fs: fiemap: add physical length to trace_f2fs_fiemap
->   f2fs: fiemap: return correct extent physical length
->   ocfs2: fiemap: return correct extent physical length
->   bcachefs: fiemap: return correct extent physical length
->   f2fs: fiemap: emit new COMPRESSED state
->   bcachefs: fiemap: emit new COMPRESSED state
-> 
->  Documentation/filesystems/fiemap.rst | 35 ++++++++++----
->  fs/bcachefs/fs.c                     | 17 +++++--
->  fs/btrfs/extent_io.c                 | 72 ++++++++++++++++++----------
->  fs/ext4/extents.c                    |  3 +-
->  fs/f2fs/data.c                       | 36 +++++++++-----
->  fs/f2fs/inline.c                     |  7 +--
->  fs/ioctl.c                           | 11 +++--
->  fs/iomap/fiemap.c                    |  2 +-
->  fs/nilfs2/inode.c                    | 18 ++++---
->  fs/ntfs3/frecord.c                   |  7 +--
->  fs/ocfs2/extent_map.c                | 10 ++--
->  fs/smb/client/smb2ops.c              |  1 +
->  include/linux/fiemap.h               |  2 +-
->  include/trace/events/f2fs.h          | 10 ++--
->  include/uapi/linux/fiemap.h          | 34 ++++++++++---
->  15 files changed, 178 insertions(+), 87 deletions(-)
-> 
-> 
-> base-commit: 75e31f66adc4c8d049e8aac1f079c1639294cd65
-> -- 
-> 2.43.0
-> 
+I'll send a fixup soon, thank you Ryan!
+
+-- 
+Peter Xu
+
 
