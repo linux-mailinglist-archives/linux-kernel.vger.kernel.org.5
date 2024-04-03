@@ -1,233 +1,216 @@
-Return-Path: <linux-kernel+bounces-129024-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-129025-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 22749896355
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 06:02:14 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0C00A896359
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 06:04:45 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9A1F2284AA9
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 04:02:12 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AC9C0286225
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 04:04:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E4E8240BE3;
-	Wed,  3 Apr 2024 04:02:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2B2F944C64;
+	Wed,  3 Apr 2024 04:04:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="GAg1G0/x"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (1024-bit key) header.d=mediatek.com header.i=@mediatek.com header.b="lpY8OyTg"
+Received: from mailgw02.mediatek.com (unknown [210.61.82.184])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1E0661C280;
-	Wed,  3 Apr 2024 04:02:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D8F36405F8
+	for <linux-kernel@vger.kernel.org>; Wed,  3 Apr 2024 04:04:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=210.61.82.184
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712116926; cv=none; b=sXZrSQg06xa65EabRMxy6vKX0htsfSNwjDg04dW/8aJfcVNKa13FI9YvbxR88Bd8F/1ZZ9AwVl/Wc/mumGusIVxAqJbr69Kd6BqVp/Y39HLzFvnxTro1mhgtwP8Hz0PZwClh++EjPt+qE+pW0ifjYxawpmhfrTPjzsTzZj4ihG4=
+	t=1712117075; cv=none; b=T5RmoaszkOJ/opcCsQ85Zcrve5JpIZojqPKEvirNEy0kIJo2AD1qkOJANafnC7mdhy8pl9Fn7+OCVAPzHmAIoYuiM3S+v2Ogrwf3v/Bw0QMi7ILenYduxiQak4/5iKwIYq45Z1FV1I3C9DsjxQGQW7lyezJVNJGr7MX5H3Jjcl4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712116926; c=relaxed/simple;
-	bh=cOa4fNgEyvNjT9Vjx3Vq26F8M+OGOGyiXKEqLnmUWkA=;
-	h=Date:From:To:Cc:Subject:Message-Id:In-Reply-To:References:
-	 Mime-Version:Content-Type; b=Hh0DC/dOwlXsGSf784wIIbQGdewqn212RfSTa0U1CfS4DiLnCg8VBGYkWagKKsP9GRL6Fk2lcXlQMYVUe7amQRQ8DsvV2/JG6YRDtVLifLPdUrEPx2L8trMTW+YLFIeOGpRamuCEJhslXJvPZLR+bSmFOt3z9cOc2wvVy6BBsLU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=GAg1G0/x; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9F374C433F1;
-	Wed,  3 Apr 2024 04:02:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712116925;
-	bh=cOa4fNgEyvNjT9Vjx3Vq26F8M+OGOGyiXKEqLnmUWkA=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=GAg1G0/xIX2J1J2IzlgQUaI7CAKrBrsNO0nZvJUPlmPNNTu3eCx7XiWUEUlw1Fien
-	 49QTU1ItigL5WfET0Aqm7pwwMS1yzcJpmHDBCb2t+TSbvGyZ06eh5uDJklBIXMsnQF
-	 863JiHn3OCZN4Ro41fhKIUCifx4crkJsp5t8pdRLowpzP2F0kXvYrxpqC6Ap2d1VLW
-	 4C7aznm4dp4E+KlxLkUk8D+O33R72FfCQVR9Js6f7BaiL4yDvgd6zgCYZ4OUXviqQp
-	 CqprBfm1MqQCP0dQLEvwmJaH3QPEqV8iW+1xcmOXGKUxHXbM5tw7rNnSXRnCc9IRZn
-	 z0uNl48TR7s5w==
-Date: Wed, 3 Apr 2024 13:02:01 +0900
-From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
-To: =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>
-Cc: Puranjay Mohan <puranjay12@gmail.com>, Alexandre Ghiti
- <alexghiti@rivosinc.com>, Andy Chiu <andy.chiu@sifive.com>, Paul Walmsley
- <paul.walmsley@sifive.com>, Palmer Dabbelt <palmer@dabbelt.com>, Albert Ou
- <aou@eecs.berkeley.edu>, Steven Rostedt <rostedt@goodmis.org>, Mark Rutland
- <mark.rutland@arm.com>, Sami Tolvanen <samitolvanen@google.com>, Guo Ren
- <guoren@kernel.org>, Ley Foon Tan <leyfoon.tan@starfivetech.com>, Deepak
- Gupta <debug@rivosinc.com>, Sia Jee Heng <jeeheng.sia@starfivetech.com>,
- Song Shuai <suagrfillet@gmail.com>, =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?=
- <bjorn@rivosinc.com>, =?UTF-8?B?Q2zDqW1lbnQgTMOpZ2Vy?=
- <cleger@rivosinc.com>, Al Viro <viro@zeniv.linux.org.uk>,
- linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
- linux-trace-kernel@vger.kernel.org
-Subject: Re: [RFC PATCH] ftrace: riscv: move from REGS to ARGS
-Message-Id: <20240403130201.3340e5fe1d01a4f86dd2d772@kernel.org>
-In-Reply-To: <87bk6rsyry.fsf@all.your.base.are.belong.to.us>
-References: <20240328141845.128645-1-puranjay12@gmail.com>
-	<87bk6rsyry.fsf@all.your.base.are.belong.to.us>
-X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1712117075; c=relaxed/simple;
+	bh=IeOItI6ydh5yzbOIyOAIuln5P0zdnIUCmiD16t7LLnk=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=bAhpwHjzH65YhAkGzBe91HjCpWpKhmcP8uEps38icnu0EhgozNCVN6cAIHoTEyyR3G2VmOnF5Rl5bxVUBw5Yltm0Ab07T9nSF/W/Iym/8LnfUnzeboaBHMLjf/QXhTiiWyS82h3Rrk3tdfP7KKMb4JYrnikO2UGScZ13q6TTGOg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=mediatek.com; spf=pass smtp.mailfrom=mediatek.com; dkim=pass (1024-bit key) header.d=mediatek.com header.i=@mediatek.com header.b=lpY8OyTg; arc=none smtp.client-ip=210.61.82.184
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=mediatek.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mediatek.com
+X-UUID: 43b7000ef16f11ee935d6952f98a51a9-20240403
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+	h=Content-Type:Content-Transfer-Encoding:MIME-Version:Message-ID:Date:Subject:CC:To:From; bh=yYxp0aFWjJkoN+/b1M2v5KOdqMIidnWV+rOPGvVUSa4=;
+	b=lpY8OyTgKwCO+kg0P8iyURu/yQg4/QHOuKh9g00tGCf5S18AZcnR+5xAkKo6jN/LbFIie+FwSr3i+TLDDBTL5CmfEMTWtdSquSKo1TtNsyAs6vMmWerK7QUFZcnRcnmTunagnS4dexCYJBVw4++iqprAPhVkOJZYk2FaCUjjdjo=;
+X-CID-P-RULE: Release_Ham
+X-CID-O-INFO: VERSION:1.1.37,REQID:03f50a22-cdcd-47c5-8ea3-ce024bae1ce8,IP:0,U
+	RL:0,TC:0,Content:-5,EDM:0,RT:0,SF:0,FILE:0,BULK:0,RULE:Release_Ham,ACTION
+	:release,TS:-5
+X-CID-META: VersionHash:6f543d0,CLOUDID:510fa600-c26b-4159-a099-3b9d0558e447,B
+	ulkID:nil,BulkQuantity:0,Recheck:0,SF:102,TC:nil,Content:0,EDM:-3,IP:nil,U
+	RL:0,File:nil,RT:nil,Bulk:nil,QS:nil,BEC:nil,COL:0,OSI:0,OSA:0,AV:0,LES:1,
+	SPR:NO,DKR:0,DKP:0,BRR:0,BRE:0
+X-CID-BVR: 0,NGT
+X-CID-BAS: 0,NGT,0,_
+X-CID-FACTOR: TF_CID_SPAM_SNR
+X-UUID: 43b7000ef16f11ee935d6952f98a51a9-20240403
+Received: from mtkmbs13n1.mediatek.inc [(172.21.101.193)] by mailgw02.mediatek.com
+	(envelope-from <liankun.yang@mediatek.com>)
+	(Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
+	with ESMTP id 399939316; Wed, 03 Apr 2024 12:04:27 +0800
+Received: from mtkmbs13n2.mediatek.inc (172.21.101.108) by
+ mtkmbs11n2.mediatek.inc (172.21.101.187) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.26; Wed, 3 Apr 2024 12:04:26 +0800
+Received: from mszsdhlt06.gcn.mediatek.inc (10.16.6.206) by
+ mtkmbs13n2.mediatek.inc (172.21.101.73) with Microsoft SMTP Server id
+ 15.2.1118.26 via Frontend Transport; Wed, 3 Apr 2024 12:04:25 +0800
+From: Liankun Yang <liankun.yang@mediatek.com>
+To: <chunkuang.hu@kernel.org>, <p.zabel@pengutronix.de>,
+	<chunfeng.yun@mediatek.com>, <vkoul@kernel.org>, <kishon@kernel.org>,
+	<matthias.bgg@gmail.com>, <angelogioacchino.delregno@collabora.com>,
+	<jitao.shi@mediatek.com>, <mac.shen@mediatek.com>,
+	<liankun.yang@mediatek.com>
+CC: <dri-devel@lists.freedesktop.org>, <linux-mediatek@lists.infradead.org>,
+	<linux-arm-kernel@lists.infradead.org>, <linux-phy@lists.infradead.org>,
+	<linux-kernel@vger.kernel.org>
+Subject: [PATCH v1 1/1] drm/mediatek/dp: The register is written with the parsed DTS SSC value.
+Date: Wed, 3 Apr 2024 12:05:09 +0800
+Message-ID: <20240403040517.3279-1-liankun.yang@mediatek.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-MTK: N
 
-On Tue, 02 Apr 2024 15:02:41 +0200
-Björn Töpel <bjorn@kernel.org> wrote:
+[Description]
+Severe screen flickering has been observed on the external display
+when the DP projection function is used with the market expansion dock.
 
-> Puranjay Mohan <puranjay12@gmail.com> writes:
-> 
-> > This commit replaces riscv's support for FTRACE_WITH_REGS with support
-> > for FTRACE_WITH_ARGS. This is required for the ongoing effort to stop
-> > relying on stop_machine() for RISCV's implementation of ftrace.
-> >
-> > The main relevant benefit that this change will bring for the above
-> > use-case is that now we don't have separate ftrace_caller and
-> > ftrace_regs_caller trampolines.  This will allow the callsite to call
-> > ftrace_caller by modifying a single instruction. Now the callsite can
-> > do something similar to:
-> >
-> > When not tracing:            |             When tracing:
-> >
-> > func:                                      func:
-> >   auipc t0, ftrace_caller_top                auipc t0, ftrace_caller_top
-> >   nop  <=========<Enable/Disable>=========>  jalr  t0, ftrace_caller_bottom
-> >   [...]                                      [...]
-> >
-> > The above assumes that we are dropping the support of calling a direct
-> > trampoline from the callsite. We need to drop this as the callsite can't
-> > change the target address to call, it can only enable/disable a call to
-> > a preset target (ftrace_caller in the above diagram).
-> >
-> > Currently, ftrace_regs_caller saves all CPU registers in the format of
-> > struct pt_regs and allows the tracer to modify them. We don't need to
-> > save all of the CPU registers because at function entry only a subset of
-> > pt_regs is live:
-> >
-> > |----------+----------+---------------------------------------------|
-> > | Register | ABI Name | Description                                 |
-> > |----------+----------+---------------------------------------------|
-> > | x1       | ra       | Return address for traced function          |
-> > | x2       | sp       | Stack pointer                               |
-> > | x5       | t0       | Return address for ftrace_caller trampoline |
-> > | x8       | s0/fp    | Frame pointer                               |
-> > | x10-11   | a0-1     | Function arguments/return values            |
-> > | x12-17   | a2-7     | Function arguments                          |
-> > |----------+----------+---------------------------------------------|
-> >
-> > See RISCV calling convention[1] for the above table.
-> >
-> > Saving just the live registers decreases the amount of stack space
-> > required from 288 Bytes to 112 Bytes.
-> >
-> > Basic testing was done with this on the VisionFive 2 development board.
-> >
-> > Note:
-> >   - Moving from REGS to ARGS will mean that RISCV will stop supporting
-> >     KPROBES_ON_FTRACE as it requires full pt_regs to be saved.
-> 
-> ...and FPROBES, but Masami is (still?) working on a series to address
-> that [1].
+[Root cause]
+It has been discovered through analysis that severe screen flickering
+will occur when using the current default settings of
+SC (Spread Spectrum Clocking) after it is opened.
 
-Yes, even with this patch, FPROBE can be worked with my series.
-So I'm OK for this change.
+[Solution]
+Reducing SSC capability on the test platform can
+resolve the screen flickering issue.
 
-Thank you,
+By configuring SSC parameters in DTS, locating the DP SSC node
+in phy-mtk-dp, parsing the current value of SSC, and writing this value
+into PHY to configure SSC can solve the screen flickering problem.
 
-> 
-> My perspective; This is following the work Mark et al has done for
-> arm64, and it does make sense for RISC-V as well. I'm in favor having
-> this change as part of the bigger call_ops/text patch change for RISC-V.
-> 
-> [...]
-> 
-> > diff --git a/arch/riscv/include/asm/ftrace.h b/arch/riscv/include/asm/ftrace.h
-> > index 1276d7d9ca8b..1e95bf4ded6c 100644
-> > --- a/arch/riscv/include/asm/ftrace.h
-> > +++ b/arch/riscv/include/asm/ftrace.h
-> > @@ -124,20 +124,87 @@ struct dyn_ftrace;
-> >  int ftrace_init_nop(struct module *mod, struct dyn_ftrace *rec);
-> >  #define ftrace_init_nop ftrace_init_nop
-> >  
-> > -#ifdef CONFIG_DYNAMIC_FTRACE_WITH_REGS
-> > +#ifdef CONFIG_DYNAMIC_FTRACE_WITH_ARGS
-> > +#define arch_ftrace_get_regs(regs) NULL
-> >  struct ftrace_ops;
-> > -struct ftrace_regs;
-> > +struct ftrace_regs {
-> > +	unsigned long epc;
-> > +	unsigned long ra;
-> > +	unsigned long sp;
-> > +	unsigned long s0;
-> > +	unsigned long t1;
-> > +	union {
-> > +		unsigned long args[8];
-> > +		struct {
-> > +			unsigned long a0;
-> > +			unsigned long a1;
-> > +			unsigned long a2;
-> > +			unsigned long a3;
-> > +			unsigned long a4;
-> > +			unsigned long a5;
-> > +			unsigned long a6;
-> > +			unsigned long a7;
-> > +		};
-> > +	};
-> > +};
-> > +
-> > +static __always_inline unsigned long
-> > +ftrace_regs_get_instruction_pointer(const struct ftrace_regs *fregs)
-> > +{
-> > +	return fregs->epc;
-> > +}
-> > +
-> > +static __always_inline void
-> > +ftrace_regs_set_instruction_pointer(struct ftrace_regs *fregs,
-> > +				    unsigned long pc)
-> > +{
-> > +	fregs->epc = pc;
-> > +}
-> > +
-> > +static __always_inline unsigned long
-> > +ftrace_regs_get_stack_pointer(const struct ftrace_regs *fregs)
-> > +{
-> > +	return fregs->sp;
-> > +}
-> > +
-> > +static __always_inline unsigned long
-> > +ftrace_regs_get_argument(struct ftrace_regs *fregs, unsigned int n)
-> > +{
-> > +	if (n < 8)
-> > +		return fregs->args[n];
-> > +	return 0;
-> > +}
-> > +
-> > +static __always_inline unsigned long
-> > +ftrace_regs_get_return_value(const struct ftrace_regs *fregs)
-> > +{
-> > +	return fregs->a0;
-> > +}
-> > +
-> > +static __always_inline void
-> > +ftrace_regs_set_return_value(struct ftrace_regs *fregs,
-> > +			     unsigned long ret)
-> > +{
-> > +	fregs->a0 = ret;
-> > +}
-> > +
-> > +static __always_inline void
-> > +ftrace_override_function_with_return(struct ftrace_regs *fregs)
-> > +{
-> > +	fregs->epc = fregs->ra;
-> > +}
-> 
-> Style/nit: All above; Try to use the full 100 chars, and keep the
-> function name return value on the same line for grepability.
-> 
-> 
-> Björn
-> 
-> [1] https://lore.kernel.org/all/170887410337.564249.6360118840946697039.stgit@devnote2/
+[Test]
+The SSC configuration values are read from DTS, parsed in the driver,
+and then written to the hardware. The test results indicate that
+there is no screen flickering.
 
+Signed-off-by: Liankun Yang <liankun.yang@mediatek.com>
+---
+ drivers/phy/mediatek/phy-mtk-dp.c | 61 +++++++++++++++++++++++++++++++
+ 1 file changed, 61 insertions(+)
 
+diff --git a/drivers/phy/mediatek/phy-mtk-dp.c b/drivers/phy/mediatek/phy-mtk-dp.c
+index d7024a144335..13e5d3c33784 100644
+--- a/drivers/phy/mediatek/phy-mtk-dp.c
++++ b/drivers/phy/mediatek/phy-mtk-dp.c
+@@ -25,6 +25,10 @@
+ #define BIT_RATE_HBR2			2
+ #define BIT_RATE_HBR3			3
+ 
++#define MTK_DP_PHY_DIG_GLB_DA_REG_14	(PHY_OFFSET + 0xD8)
++#define XTP_GLB_TXPLL_SSC_DELTA_RBR_DEFAULT	GENMASK(15, 0)
++#define XTP_GLB_TXPLL_SSC_DELTA_HBR_DEFAULT	GENMASK(31, 16)
++
+ #define MTK_DP_PHY_DIG_SW_RST		(PHY_OFFSET + 0x38)
+ #define DP_GLB_SW_RST_PHYD		BIT(0)
+ 
+@@ -78,10 +82,57 @@
+ #define DRIVING_PARAM_8_DEFAULT	(XTP_LN_TX_LCTXCP1_SW2_PRE1_DEFAULT | \
+ 				 XTP_LN_TX_LCTXCP1_SW3_PRE0_DEFAULT)
+ 
++#define SSC_SETTING	"dp-ssc-setting"
++#define RG_XTP_GLB_TXPLL_SSC_DELTA_RBR	"ssc-delta-rbr"
++#define RG_XTP_GLB_TXPLL_SSC_DELTA_HBR	"ssc-delta-hbr"
++
+ struct mtk_dp_phy {
+ 	struct regmap *regs;
++	struct device *dev;
+ };
+ 
++static int mtk_dp_set_ssc_config(struct phy *phy, struct mtk_dp_phy *dp_phy,
++		struct device_node *ssc_node, const char *mode_name, u32 ssc_reg_offset)
++{
++	int ret;
++	u32 read_value = 0;
++
++	ret = of_property_read_u32(ssc_node, mode_name, &read_value);
++	if (ret) {
++		dev_err(&phy->dev, "Read fail,DPTX is not %s\n", mode_name);
++		return -EINVAL;
++	}
++
++	if (!read_value) {
++		dev_err(&phy->dev, "Read value is NULL\n");
++		return -ENOMEM;
++	}
++
++	if (!strcmp(mode_name, RG_XTP_GLB_TXPLL_SSC_DELTA_RBR)) {
++		regmap_update_bits(dp_phy->regs, ssc_reg_offset,
++			   XTP_GLB_TXPLL_SSC_DELTA_RBR_DEFAULT, read_value);
++	} else if (!strcmp(mode_name, RG_XTP_GLB_TXPLL_SSC_DELTA_HBR)) {
++		read_value = read_value << 16 | 0x0000;
++		regmap_update_bits(dp_phy->regs, ssc_reg_offset,
++			   XTP_GLB_TXPLL_SSC_DELTA_HBR_DEFAULT, read_value);
++	}
++
++	return 0;
++}
++
++static struct device_node *mtk_dp_get_ssc_node(struct phy *phy, struct mtk_dp_phy *dp_phy)
++{
++	struct device_node *mode_node = NULL;
++
++	mode_node = of_find_node_by_name(dp_phy->dev->of_node, SSC_SETTING);
++	if (!mode_node) {
++		dev_err(&phy->dev, "SSC node is NULL\n");
++		return NULL;
++	}
++
++	return mode_node;
++}
++
+ static int mtk_dp_phy_init(struct phy *phy)
+ {
+ 	struct mtk_dp_phy *dp_phy = phy_get_drvdata(phy);
+@@ -109,6 +160,7 @@ static int mtk_dp_phy_init(struct phy *phy)
+ static int mtk_dp_phy_configure(struct phy *phy, union phy_configure_opts *opts)
+ {
+ 	struct mtk_dp_phy *dp_phy = phy_get_drvdata(phy);
++	struct device_node *ssc_node = NULL;
+ 	u32 val;
+ 
+ 	if (opts->dp.set_rate) {
+@@ -137,6 +189,14 @@ static int mtk_dp_phy_configure(struct phy *phy, union phy_configure_opts *opts)
+ 	regmap_update_bits(dp_phy->regs, MTK_DP_PHY_DIG_PLL_CTL_1,
+ 			   TPLL_SSC_EN, opts->dp.ssc ? TPLL_SSC_EN : 0);
+ 
++	ssc_node = mtk_dp_get_ssc_node(phy, dp_phy);
++	if (ssc_node) {
++		mtk_dp_set_ssc_config(phy, dp_phy, ssc_node, RG_XTP_GLB_TXPLL_SSC_DELTA_RBR,
++			MTK_DP_PHY_DIG_GLB_DA_REG_14);
++		mtk_dp_set_ssc_config(phy, dp_phy, ssc_node, RG_XTP_GLB_TXPLL_SSC_DELTA_HBR,
++			MTK_DP_PHY_DIG_GLB_DA_REG_14);
++	}
++
+ 	return 0;
+ }
+ 
+@@ -186,6 +246,7 @@ static int mtk_dp_phy_probe(struct platform_device *pdev)
+ 	if (!dev->of_node)
+ 		phy_create_lookup(phy, "dp", dev_name(dev));
+ 
++	dp_phy->dev = dev;
+ 	return 0;
+ }
+ 
 -- 
-Masami Hiramatsu (Google) <mhiramat@kernel.org>
+2.43.0
+
 
