@@ -1,53 +1,81 @@
-Return-Path: <linux-kernel+bounces-130634-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-130635-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 739F5897ACA
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 23:32:40 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 16220897ACC
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 23:32:53 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2E65C28A4F6
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 21:32:39 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id BBF291F24D85
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 21:32:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E7BE4156640;
-	Wed,  3 Apr 2024 21:30:39 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6775D15667F;
-	Wed,  3 Apr 2024 21:30:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B4F1615689F;
+	Wed,  3 Apr 2024 21:31:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="KRYEbEtZ"
+Received: from mail-pf1-f180.google.com (mail-pf1-f180.google.com [209.85.210.180])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5FB6215667F;
+	Wed,  3 Apr 2024 21:31:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712179839; cv=none; b=Q05BgAlhfmbh8wwZtMuJWe7VJqzEEtFZH5Fju7KWYjm/julLH66VCkYU+E9LayKrYn+KfzbwwGKiKKiFMDX3MFtVpo4NLrKq1oXHhWlVNqFUcFTsKjiu6bFEPkBy6jMf3mDUAlGUwPBe5NNw50eepzmLbcv2p9ixppREAZuaWYE=
+	t=1712179866; cv=none; b=G0OHbdUrQ/o2ZUN7FYEl3ByWZ1P6GP8poVVGjFmbDmoZZY8v1mjFhXbmqRZ0gd6tpCkALk/geuyJeN5WfRtMcRm4zcwuxHvRUw/WBPbRcYU26qvtXoyspv7eAs+Eb0sZYWHOhduaAqppVaqfuM/81/BWq9veCJCY5oNY7GRcKRU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712179839; c=relaxed/simple;
-	bh=JFTzffzxYgfa4xgo4DxPkjtxEM7+SaShc37kUgIUqRI=;
+	s=arc-20240116; t=1712179866; c=relaxed/simple;
+	bh=tKAe81m93DUX+Pe0O6nN/FdGfxyWXJ93yUEYPn0VMx0=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=joU8SMG/c5tBvWp1GzzrwuQx+AAM9HpSEr9YNfbBuCBmbWxtda5i3uHWy28TwxA4ywVP05upQppprbUi5NvyzjxXPyHLu5QwvrP1Zu0VIMXilo3Mw+HY49fKHMIGORy83Gr3ZbHpvPI3zx7iOfRz1tNOJOQtvNL3qUrz68ue+cQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 72ABE1007;
-	Wed,  3 Apr 2024 14:31:07 -0700 (PDT)
-Received: from arm.com (usa-sjc-imap-foss1.foss.arm.com [10.121.207.14])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 9ED5D3F7B4;
-	Wed,  3 Apr 2024 14:30:33 -0700 (PDT)
-Date: Wed, 3 Apr 2024 23:30:33 +0200
-From: Beata Michalska <beata.michalska@arm.com>
-To: Sumit Gupta <sumitg@nvidia.com>
-Cc: Ionela Voinescu <ionela.voinescu@arm.com>, linux-kernel@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org,
-	vanshikonda@os.amperecomputing.com, sudeep.holla@arm.com,
-	will@kernel.org, catalin.marinas@arm.com,
-	vincent.guittot@linaro.org, yang@os.amperecomputing.com,
-	lihuisong@huawei.com, linux-tegra <linux-tegra@vger.kernel.org>
-Subject: Re: [PATCH v3 0/3] Add support for AArch64 AMUv1-based
- arch_freq_get_on_cpu
-Message-ID: <Zg3KeYoIozB01fJp@arm.com>
-References: <20240312083431.3239989-1-beata.michalska@arm.com>
- <ZfGbyfBl35cyACAc@arm.com>
- <ZfI7pQtXgXAG7RBH@arm.com>
- <21a78951-2d4a-1d6e-0cd8-6a4a75ccb142@nvidia.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=XjVeEuOx0nYY5QVcMJsUPe5QyHlAo/zeBnHtLcQPtfM7Dw4/rkTLS13y0zLxSiuOWGARGRz+QAvMoW2ecMa4ORNUtJFJrJWiKrGR37/jYsWfV0Dn4SrKVxCbLLQ07OyTE4zwVjqI/brph8Exsp7qXN9yknzf2e2EkSGPSkCcU10=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=KRYEbEtZ; arc=none smtp.client-ip=209.85.210.180
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pf1-f180.google.com with SMTP id d2e1a72fcca58-6ea8a0d1a05so997374b3a.1;
+        Wed, 03 Apr 2024 14:31:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1712179864; x=1712784664; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=v+OVOftGyrkMfiseFAhySCoXpi6lnMzQVtXHkefv4+0=;
+        b=KRYEbEtZPh2lCTvtGDRUxPewQV6dQk8vfbIEObjcUvy10kTE5ld9m3UIhgQexJ6wGq
+         CN4lXDjAtOtooFwMS3xFIDZIBnY1ewBjoJJL6dGhPoRqSz3bW9bmCzlCdyDlqO3sbu7B
+         3cHU+0MMO/ndeWJ1w1dhWtQt4vgr2kwamVuovh56rgrOTToAeuv01Lzg4COTVAGrQlkv
+         21G9izoLlTDOZFb3Ea0ELoFqGYZJmRWY9C939AxQnbTE0howO5Aj6XUx8Vl9Vmj3vof3
+         1W7iY1NUdYJf7xmQy2lOU84iMNdQfbC36gGfnGudIILrHxfY82AUTyRDdswyrZUM9V/T
+         +zfA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712179864; x=1712784664;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=v+OVOftGyrkMfiseFAhySCoXpi6lnMzQVtXHkefv4+0=;
+        b=SNFNzBG6cTZLKaDdy8mlTj0KSf9s365gqdJ1kOoGAwHLhofaDbWPqL2NDQc5+GscDe
+         YT4lGa1/amIwy80wF6ll9PPgokOyZjP6t20AqL38o9OOUPIbwzu+Nz9L6c9A5nEmRQ+k
+         45T7Fp6DdRufA0GCd6XoMHutUHVgX4rgvLFSUne5Tufa0ThECgNKciC5wMdIHedhBxaC
+         20N9kRObJQT/7OfVoDuKNzJowpm8BiE2B4UI77NAOyjNrwqsbTA8Uk66S/0Uo9UxpLR9
+         vAbIp3Jn+/RtzqM+bwLOuXeE6S4e7pxQ+5IE0yFEMqhd1cT+RlzxD8fVxt+J6XKqPIkr
+         fp+A==
+X-Forwarded-Encrypted: i=1; AJvYcCWS2PsYaRckDltVGfxvSXir+bfJNHZecaLOCv4LZDdnCIsaUkk+ZsYTKZ+G0gOwESnGtavI+FUPvpqhsOwbaV5HCGMchBKgiX6W7YNzE5TWBWQc7QkHdFFRYr+bq6KAabWl0WroVjAuTSw=
+X-Gm-Message-State: AOJu0Yz49H927ed303tTmdbecaJwP23n7is9XCRhe90V+x8BKWhIYb27
+	rXrieofpYVha8aJ9maNNMzIoAxlSkIw8r1gYV73dRk+e7L/yjKcW
+X-Google-Smtp-Source: AGHT+IH0CzecyhPovODsRO/XHWaimeNmFZriFnFeM28R0lcBCphA88X3csvxzy+T6N0oMiXHeYR/2w==
+X-Received: by 2002:a05:6a20:394a:b0:1a3:4bfb:2cb4 with SMTP id r10-20020a056a20394a00b001a34bfb2cb4mr1116536pzg.23.1712179862324;
+        Wed, 03 Apr 2024 14:31:02 -0700 (PDT)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id i21-20020aa787d5000000b006eaada3860dsm12203857pfo.200.2024.04.03.14.31.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 03 Apr 2024 14:31:01 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Date: Wed, 3 Apr 2024 14:30:59 -0700
+From: Guenter Roeck <linux@roeck-us.net>
+To: Andrew Davis <afd@ti.com>
+Cc: Jean Delvare <jdelvare@suse.com>, Juerg Haefliger <juergh@proton.me>,
+	Riku Voipio <riku.voipio@iki.fi>, linux-hwmon@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 00/31] Remove use of i2c_match_id in HWMON
+Message-ID: <0e43aa83-2e02-49e2-96b8-24cac0362a7b@roeck-us.net>
+References: <20240403203633.914389-1-afd@ti.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -56,80 +84,30 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <21a78951-2d4a-1d6e-0cd8-6a4a75ccb142@nvidia.com>
+In-Reply-To: <20240403203633.914389-1-afd@ti.com>
 
-On Wed, Mar 20, 2024 at 10:22:22PM +0530, Sumit Gupta wrote:
-> Hi Beata,
+On Wed, Apr 03, 2024 at 03:36:02PM -0500, Andrew Davis wrote:
+> Hello all,
 > 
-> > > On Tuesday 12 Mar 2024 at 08:34:28 (+0000), Beata Michalska wrote:
-> > > > Introducing arm64 specific version of arch_freq_get_on_cpu, cashing on
-> > > > existing implementation for FIE and AMUv1 support: the frequency scale
-> > > > factor, updated on each sched tick, serves as a base for retrieving
-> > > > the frequency for a given CPU, representing an average frequency
-> > > > reported between the ticks - thus its accuracy is limited.
-> > > > 
-> > > > The changes have been rather lightly (due to some limitations) tested on
-> > > > an FVP model.
-> > > > 
-> > > > Relevant discussions:
-> > > > [1] https://lore.kernel.org/all/20240229162520.970986-1-vanshikonda@os.amperecomputing.com/
-> > > > [2] https://lore.kernel.org/all/7eozim2xnepacnnkzxlbx34hib4otycnbn4dqymfziqou5lw5u@5xzpv3t7sxo3/
-> > > > [3] https://lore.kernel.org/all/20231212072617.14756-1-lihuisong@huawei.com/
-> > > > [4] https://lore.kernel.org/lkml/ZIHpd6unkOtYVEqP@e120325.cambridge.arm.com/T/#m4e74cb5a0aaa353c60fedc6cfb95ab7a6e381e3c
-> > > > 
-> > > > v3:
-> > > > - dropping changes to cpufreq_verify_current_freq
-> > > > - pulling in changes from Ionela initializing capacity_freq_ref to 0
-> > > >    (thanks for that!)  and applying suggestions made by her during last review:
-> > > >      - switching to arch_scale_freq_capacity and arch_scale_freq_ref when
-> > > >        reversing freq scale factor computation
-> > > >      - swapping shift with multiplication
-> > > > - adding time limit for considering last scale update as valid
-> > > > - updating frequency scale factor upon entering idle
-> > > > 
-> > > > v2:
-> > > > - Splitting the patches
-> > > > - Adding comment for full dyntick mode
-> > > > - Plugging arch_freq_get_on_cpu into cpufreq_verify_current_freq instead
-> > > >    of in show_cpuinfo_cur_freq to allow the framework to stay more in sync
-> > > >    with potential freq changes
-> > > > 
-> > > > Beata Michalska (2):
-> > > >    arm64: Provide an AMU-based version of arch_freq_get_on_cpu
-> > > >    arm64: Update AMU-based frequency scale factor on entering idle
-> > > > 
-> > > > Ionela Voinescu (1):
-> > > >    arch_topology: init capacity_freq_ref to 0
-> > > > 
-> > > 
-> > > Should there have been a patch that adds a call to
-> > > arch_freq_get_on_cpu() from show_cpuinfo_cur_freq() as well?
-> > > 
-> > > My understanding from this [1] thread and others referenced there is
-> > > that was something we wanted.
-> > > 
-> > Right, so I must have missunderstood that, as the way I did read it was that
-> > it is acceptable to keep things as they are wrt cpufreq sysfs entries.
-> > 
-> > ---
-> > BR
-> > Beata
-> > > [1] https://lore.kernel.org/lkml/2cfbc633-1e94-d741-2337-e1b0cf48b81b@nvidia.com/
-> > > 
-> > > Thanks,
-> > > Ionela.
-> > > 
+> Goal here is to remove the i2c_match_id() function from all drivers.
+> Using i2c_get_match_data() can simplify code and has some other
+> benefits described in the patches.
 > 
-> Yes, the change to show_cpuinfo_cur_freq from [1] is needed.
->
-Noted. Will send an update including fixes and this requested change.
 
----
-BR
-Beata
-> [1]
-> https://lore.kernel.org/lkml/20230606155754.245998-1-beata.michalska@arm.com/
-> 
-> Thank you,
-> Sumit Gupta
+The return value from i2c_match_id() is typically an integer (chip ID)
+starting with 0. Previously it has been claimed that this would be
+unacceptable for i2c_get_match_data(), and chip IDs were changed to start
+with 1. Commit ac0c26bae662 ("hwmon: (lm25066) Use i2c_get_match_data()")
+is an example. Either this series is wrong, or the previous claim that
+chip IDs (i.e., the content of .driver_data or .data) must not be 0 was
+wrong. Which one is it ? I find it very confusing that the chip type for
+some drivers now starts with 1 and for others with 0. Given that, I am not
+inclined to accept this series unless it is explained in detail why the
+chip type enum in, for example, drivers/hwmon/pmbus/lm25066.c has to start
+with one but is ok to start with 0 for all drivers affected by this
+series. Quite frankly, even if there is some kind of explanation, I am not
+sure if I am going to accept it because future driver developers won't
+know if they have to start chip types with 0 or 1.
+
+Guenter
 
