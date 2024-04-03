@@ -1,127 +1,131 @@
-Return-Path: <linux-kernel+bounces-129719-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-129720-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 61ACE896EDD
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 14:29:14 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7FBD5896EEA
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 14:36:42 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0191C1F22CBE
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 12:29:14 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1D67C286987
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 12:36:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E10861465B1;
-	Wed,  3 Apr 2024 12:29:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="fdyadUTy"
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5FDFE146013;
-	Wed,  3 Apr 2024 12:29:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.158.5
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1501C481AB;
+	Wed,  3 Apr 2024 12:36:34 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 92F6B23BE;
+	Wed,  3 Apr 2024 12:36:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712147346; cv=none; b=n6ZvurfNCyaFvOU1KohDsrj4a6YnBwUTRCXMaQN8vvcKt8f749cxYjZY5EboNeegEkGTRTnVEU3i/nbwWdbnjUV2zodQnz/gHyinFgkCOoduW/lLXcAMReyESRAScqlu3Z9BfzpLTVi1vnd1M96LGdkHPdw6yUiltkjJVUKaPp0=
+	t=1712147793; cv=none; b=hx0JKUyXzMUdlbeyOnR+Rq59Vnt8mgq55v1aYB0uCg+T2lk/ABOtxx5K5oCi2yiESXdxlarc4tN7hENzs2KLeLu+Ij+0Zu1R0oxVepOVtuuzWHlwft0m4C0YOejJlW2TF2dDrzy7iVuCepB1qTpeWIbBtX0rcBw1C4nFaHlkY+E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712147346; c=relaxed/simple;
-	bh=VYP5AfDYQp0NK8K5iNdKQhalyg3zSz4h0eFw0F5dHwk=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=t7DF8oMbITU7JH+ne5i/jX8+bv3KDB/ZRrOhpVNVHSCtVg/0Fzs+d7gkM4mMgBoiTHocXVbij04fzBJNpAGaYB9LByr5HpkbcLprvF8tB2RdB8dGQNpQwpnzSTDJLP11rgZxEMZYFoonXWPXINzpOBiATErpL2Jd0jqOx/j7fHU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=fdyadUTy; arc=none smtp.client-ip=148.163.158.5
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0353723.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 433CPCSU001136;
-	Wed, 3 Apr 2024 12:28:58 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding; s=pp1;
- bh=TPpX4kKUFWucYvXeHgkqlM2X+uAoSB9I5PnQiABOut0=;
- b=fdyadUTyMCPrwq+uN/jRXFNq1VpZueJkwhyqEMZrUxpzVkoMzx9vKEKsvzgRvAVVgXf+
- rx4kyYIe17fLsNUj1RP/r7mriCkutDJhnpmE5YENmNsTFiqDVP8lqfKqsJB/3+QWdFwj
- 5FQRtJ19fma0oaR0rIcqSVR066mCmKe9lwtt/SpOY2IFE1plzVeGmdm2jT7oSImE6JlY
- DXv1W2om+w/4QnKJBvRPOq7MmkrmP0Rl7QK53OyB8jBXI/BxUjU5Thk9rp+ODAKpK/D/
- vVtOltqRD5j07h8MkYcfZy9CYqgXsxLGZj7qRmn/Ce6u109GK++n2A8St2NNNkFxT2N9 hg== 
-Received: from ppma12.dal12v.mail.ibm.com (dc.9e.1632.ip4.static.sl-reverse.com [50.22.158.220])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3x973d8090-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 03 Apr 2024 12:28:57 +0000
-Received: from pps.filterd (ppma12.dal12v.mail.ibm.com [127.0.0.1])
-	by ppma12.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 433AiltO008425;
-	Wed, 3 Apr 2024 12:28:57 GMT
-Received: from smtprelay03.fra02v.mail.ibm.com ([9.218.2.224])
-	by ppma12.dal12v.mail.ibm.com (PPS) with ESMTPS id 3x6w2u5ga6-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 03 Apr 2024 12:28:57 +0000
-Received: from smtpav03.fra02v.mail.ibm.com (smtpav03.fra02v.mail.ibm.com [10.20.54.102])
-	by smtprelay03.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 433CSphQ30212548
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Wed, 3 Apr 2024 12:28:53 GMT
-Received: from smtpav03.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id BA34C20043;
-	Wed,  3 Apr 2024 12:28:51 +0000 (GMT)
-Received: from smtpav03.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 832F32004D;
-	Wed,  3 Apr 2024 12:28:51 +0000 (GMT)
-Received: from tuxmaker.boeblingen.de.ibm.com (unknown [9.152.85.9])
-	by smtpav03.fra02v.mail.ibm.com (Postfix) with ESMTP;
-	Wed,  3 Apr 2024 12:28:51 +0000 (GMT)
-From: Niklas Schnelle <schnelle@linux.ibm.com>
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: linux-m68k@lists.linux-m68k.org, Arnd Bergmann <arnd@kernel.org>,
-        Heiko Carstens <hca@linux.ibm.com>, linux-kernel@vger.kernel.org,
-        Niklas Schnelle <schnelle@linux.ibm.com>
-Subject: [PATCH 1/1] m68k: Let GENERIC_IOMAP depend on HAS_IOPORT
-Date: Wed,  3 Apr 2024 14:28:51 +0200
-Message-Id: <20240403122851.38808-2-schnelle@linux.ibm.com>
-X-Mailer: git-send-email 2.40.1
-In-Reply-To: <20240403122851.38808-1-schnelle@linux.ibm.com>
-References: <20240403122851.38808-1-schnelle@linux.ibm.com>
+	s=arc-20240116; t=1712147793; c=relaxed/simple;
+	bh=1DIsaoDpER4p++k4Z7iVSmQ6SUDjiw+1VTM2vtYz1FE=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=Q+UNHgPxVSTATaSbgucW/WX1ewTwb+k6DIH/CvTeVjURZc060RaqGIVdoMhnEvS9cM4qQMMBaWpo8TKx7Zo3HG8ZzEvULC5N5gLH9PXsi310pvqWjx+hfuPeRPYmLbtbZF12RXM1gxWmNVgFk/E4dHps1cbIWWmXaGQl1qg4sAk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 3E0A81007;
+	Wed,  3 Apr 2024 05:37:01 -0700 (PDT)
+Received: from [10.57.72.191] (unknown [10.57.72.191])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id E6D6F3F64C;
+	Wed,  3 Apr 2024 05:36:27 -0700 (PDT)
+Message-ID: <8519bb4c-e8b4-436c-bd3b-4a08e328a6ec@arm.com>
+Date: Wed, 3 Apr 2024 13:36:29 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: HxqR5Wr5sTTxCpiEUZ1vFr6rDICM7dJi
-X-Proofpoint-ORIG-GUID: HxqR5Wr5sTTxCpiEUZ1vFr6rDICM7dJi
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-04-03_10,2024-04-03_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0
- mlxlogscore=581 mlxscore=0 adultscore=0 clxscore=1011 suspectscore=0
- spamscore=0 bulkscore=0 priorityscore=1501 phishscore=0 malwarescore=0
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2403210000 definitions=main-2404030086
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v4 0/4] Update Energy Model after chip binning adjusted
+ voltages
+Content-Language: en-US
+To: Dietmar Eggemann <dietmar.eggemann@arm.com>
+Cc: linux-arm-kernel@lists.infradead.org, sboyd@kernel.org,
+ rafael@kernel.org, linux-pm@vger.kernel.org, nm@ti.com,
+ linux-samsung-soc@vger.kernel.org, daniel.lezcano@linaro.org,
+ viresh.kumar@linaro.org, krzysztof.kozlowski@linaro.org,
+ alim.akhtar@samsung.com, m.szyprowski@samsung.com, mhiramat@kernel.org,
+ linux-kernel@vger.kernel.org
+References: <20240402155822.505491-1-lukasz.luba@arm.com>
+ <045fa6db-4f76-46aa-85ba-c9e698c7e390@arm.com>
+From: Lukasz Luba <lukasz.luba@arm.com>
+In-Reply-To: <045fa6db-4f76-46aa-85ba-c9e698c7e390@arm.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-In a future patch HAS_IOPORT=n will disable inb()/outb() and friends at
-compile time. With that choosing dynamically between I/O port and MMIO
-access via GNERIC_IOMAP will not work. So only select GENERIC_IOMAP when
-HAS_IOPORT is selected.
+Hi Dietmar,
 
-Co-developed-by: Arnd Bergmann <arnd@kernel.org>
-Signed-off-by: Arnd Bergmann <arnd@kernel.org>
-Signed-off-by: Niklas Schnelle <schnelle@linux.ibm.com>
----
- arch/m68k/Kconfig | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+On 4/3/24 13:07, Dietmar Eggemann wrote:
+> On 02/04/2024 17:58, Lukasz Luba wrote:
+>> Hi all,
+>>
+>> This is a follow-up patch aiming to add EM modification due to chip binning.
+>> The first RFC and the discussion can be found here [1].
+>>
+>> It uses Exynos chip driver code as a 1st user. The EM framework has been
+>> extended to handle this use case easily, when the voltage has been changed
+>> after setup. On my Odroid-xu4 in some OPPs I can observe ~20% power difference.
+>> According to that data in driver tables it could be up to ~29%.
+>>
+>> This chip binning is applicable to a lot of SoCs, so the EM framework should
+>> make it easy to update. It uses the existing OPP and DT information to
+>> re-calculate the new power values.
+>>
+>> It has dependency on Exynos SoC driver tree.
+>>
+>> Changes:
+>> v4:
+>> - added asterisk in the comment section (test robot)
+>> - change the patch 2/4 header name and use 'Refactor'
+>> v3:
+>> - updated header description patch 2/4 (Dietmar)
+>> - removed 2 sentences from comment and adjusted in patch 3/4 (Dietmar)
+>> - patch 4/4 re-phrased code comment (Dietmar)
+>> - collected tags (Krzysztof, Viresh)
+>> v2:
+>> - removed 'ret' from error message which wasn't initialized (Christian)
+>> v1:
+>> - exported the OPP calculation function from the OPP/OF so it can be
+>>    used from EM fwk (Viresh)
+>> - refactored EM updating function to re-use common code
+>> - added new EM function which can be used by chip device drivers which
+>>    modify the voltage in OPPs
+>> RFC is at [1]
+>>
+>> Regards,
+>> Lukasz Luba
+>>
+>> [1] https://lore.kernel.org/lkml/20231220110339.1065505-1-lukasz.luba@arm.com/
+>>
+>> Lukasz Luba (4):
+>>    OPP: OF: Export dev_opp_pm_calc_power() for usage from EM
+>>    PM: EM: Refactor em_adjust_new_capacity()
+>>    PM: EM: Add em_dev_update_chip_binning()
+>>    soc: samsung: exynos-asv: Update Energy Model after adjusting voltage
+>>
+>>   drivers/opp/of.c                 |  17 +++--
+>>   drivers/soc/samsung/exynos-asv.c |  11 +++-
+>>   include/linux/energy_model.h     |   5 ++
+>>   include/linux/pm_opp.h           |   8 +++
+>>   kernel/power/energy_model.c      | 106 +++++++++++++++++++++++++------
+>>   5 files changed, 122 insertions(+), 25 deletions(-)
+> 
+> LGTM.
+> 
+> Just two very minor things which I mentioned in the individual patches.
+> 
+> Reviewed-by: Dietmar Eggemann <dietmar.eggemann@arm.com>
+> 
+> 
+> 
 
-diff --git a/arch/m68k/Kconfig b/arch/m68k/Kconfig
-index 6ffa29585194..6ef282f329ee 100644
---- a/arch/m68k/Kconfig
-+++ b/arch/m68k/Kconfig
-@@ -18,7 +18,7 @@ config M68K
- 	select DMA_DIRECT_REMAP if M68K_NONCOHERENT_DMA && !COLDFIRE
- 	select GENERIC_ATOMIC64
- 	select GENERIC_CPU_DEVICES
--	select GENERIC_IOMAP
-+	select GENERIC_IOMAP if HAS_IOPORT
- 	select GENERIC_IRQ_SHOW
- 	select GENERIC_LIB_ASHLDI3
- 	select GENERIC_LIB_ASHRDI3
--- 
-2.40.1
+Thank you for the review. I will send the v5 with those.
 
+Regards,
+Lukasz
 
