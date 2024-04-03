@@ -1,161 +1,240 @@
-Return-Path: <linux-kernel+bounces-130221-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-130222-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id A240D89759E
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 18:51:58 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 88F8D8975A0
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 18:52:14 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 48C7028D470
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 16:51:57 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id EF9E51F2977A
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 16:52:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 32B131514DB;
-	Wed,  3 Apr 2024 16:51:53 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1A60E135A75
-	for <linux-kernel@vger.kernel.org>; Wed,  3 Apr 2024 16:51:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D30A0152168;
+	Wed,  3 Apr 2024 16:52:09 +0000 (UTC)
+Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 844B71514F4;
+	Wed,  3 Apr 2024 16:52:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.176.79.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712163112; cv=none; b=GfYX3BoBTGU0RBFZL/SI9nGG850P52wL8tOmoEDqOHmoMExWWiZpaCve91h7IkDHuhv929+PRHQWip4W6aSZSb67lpuNqOm6NDtaTkJ8dopq123tiC45CPaaWCuBTqmtpFP6dkLVU15C7WeGIlRfLxkzo4k56xhh3nYRb1yhNKY=
+	t=1712163129; cv=none; b=J5zi/5NYvR1mQ1KG+Hw7JpLXO4sme9dLW+NSzoDuoG4csMgC3rxHeeyPQSfMhXikFnxwhK+2iRu4W1IQm89u3fD0P04LpeOQw8tNBPskFmK+Wt0BWteiSOEDih2AfbOeaUo5r9/koVB38DsgpLZO9MYXPCdvyXAenE1L9hB1fx8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712163112; c=relaxed/simple;
-	bh=TGTpo9irm2EBdH+a4jyLepfc/WLlfopDjIp/3xE4rbA=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=G2Nskxqn2csRs5LHZF5qUMCOUWgeSBXlYJyqcazOad5Xq7qWEPY4OKkLKxSRAjGpTkTZfWywlYS8aF1hVBjNvOzZRC8ddzirJSlK1excgF3rYNujtvylIU3aMDZWIkVU565nS2M7S8YLaoWG8VyXashWDJp1DKP+bjC4vFRY7m0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 3F23F1007;
-	Wed,  3 Apr 2024 09:52:21 -0700 (PDT)
-Received: from FVFF77S0Q05N (unknown [10.57.16.212])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 263C83F64C;
-	Wed,  3 Apr 2024 09:51:48 -0700 (PDT)
-Date: Wed, 3 Apr 2024 17:51:44 +0100
-From: Mark Rutland <mark.rutland@arm.com>
-To: Jarkko Sakkinen <jarkko@kernel.org>
-Cc: linux-kernel@vger.kernel.org, Catalin Marinas <catalin.marinas@arm.com>,
-	Will Deacon <will@kernel.org>, anil.s.keshavamurthy@intel.com,
-	aou@eecs.berkeley.edu, davem@davemloft.net,
-	linux-arm-kernel@lists.infradead.org, mhiramat@kernel.org,
-	naveen.n.rao@linux.ibm.com, palmer@dabbelt.com,
-	paul.walmsley@sifive.com
-Subject: Re: [PATCH v2 1/4] arm64: patching: always use fixmap
-Message-ID: <Zg2JIFNy8IgwIyUV@FVFF77S0Q05N>
-References: <20240403150154.667649-1-mark.rutland@arm.com>
- <20240403150154.667649-2-mark.rutland@arm.com>
- <D0AMI3962WW0.3JKFCSUXVSSVL@kernel.org>
+	s=arc-20240116; t=1712163129; c=relaxed/simple;
+	bh=fuwOPTXrOfm1gZklUqEdI1kNxV/jM6pfbA8+sSz01gM=;
+	h=Date:From:To:CC:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=nhiN+D5/fMAIhckWInd0iSxhjls7xMmzl+zJvKmfYskr9M/TBWbiK6GYeC6pOzt1bPSmCZj5BnaKiK/1Y/Cry2tZ7Rn4piJKY9NDFMYzTHB8dm+M+cJwVWcC2GQ0rSQlkO/sIsdboXAHyp2yBE+8k1w562kg+Lc4FOVCf1IwJ9k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=185.176.79.56
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.18.186.216])
+	by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4V8rNM5jKhz6D8Yx;
+	Thu,  4 Apr 2024 00:50:43 +0800 (CST)
+Received: from lhrpeml500005.china.huawei.com (unknown [7.191.163.240])
+	by mail.maildlp.com (Postfix) with ESMTPS id 8C7A0140B67;
+	Thu,  4 Apr 2024 00:52:03 +0800 (CST)
+Received: from localhost (10.202.227.76) by lhrpeml500005.china.huawei.com
+ (7.191.163.240) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.1.2507.35; Wed, 3 Apr
+ 2024 17:52:02 +0100
+Date: Wed, 3 Apr 2024 17:52:01 +0100
+From: Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+To: "Ho-Ren (Jack) Chuang" <horenchuang@bytedance.com>
+CC: "Huang, Ying" <ying.huang@intel.com>, Gregory Price
+	<gourry.memverge@gmail.com>, <aneesh.kumar@linux.ibm.com>, <mhocko@suse.com>,
+	<tj@kernel.org>, <john@jagalactic.com>, Eishan Mirakhur
+	<emirakhur@micron.com>, Vinicius Tavares Petrucci <vtavarespetr@micron.com>,
+	Ravis OpenSrc <Ravis.OpenSrc@micron.com>, Alistair Popple
+	<apopple@nvidia.com>, Srinivasulu Thanneeru <sthanneeru@micron.com>, SeongJae
+ Park <sj@kernel.org>, Dan Williams <dan.j.williams@intel.com>, Vishal Verma
+	<vishal.l.verma@intel.com>, "Dave Jiang" <dave.jiang@intel.com>, Andrew
+ Morton <akpm@linux-foundation.org>, <nvdimm@lists.linux.dev>,
+	<linux-cxl@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+	<linux-mm@kvack.org>, "Ho-Ren (Jack) Chuang" <horenc@vt.edu>, "Ho-Ren (Jack)
+ Chuang" <horenchuang@gmail.com>, <qemu-devel@nongnu.org>
+Subject: Re: [PATCH v10 1/2] memory tier: dax/kmem: introduce an abstract
+ layer for finding, allocating, and putting memory types
+Message-ID: <20240403175201.00000c2c@Huawei.com>
+In-Reply-To: <20240402001739.2521623-2-horenchuang@bytedance.com>
+References: <20240402001739.2521623-1-horenchuang@bytedance.com>
+	<20240402001739.2521623-2-horenchuang@bytedance.com>
+Organization: Huawei Technologies Research and Development (UK) Ltd.
+X-Mailer: Claws Mail 4.1.0 (GTK 3.24.33; x86_64-w64-mingw32)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <D0AMI3962WW0.3JKFCSUXVSSVL@kernel.org>
+Content-Type: text/plain; charset="US-ASCII"
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: lhrpeml500004.china.huawei.com (7.191.163.9) To
+ lhrpeml500005.china.huawei.com (7.191.163.240)
 
-On Wed, Apr 03, 2024 at 07:20:31PM +0300, Jarkko Sakkinen wrote:
-> On Wed Apr 3, 2024 at 6:01 PM EEST, Mark Rutland wrote:
-> > For historical reasons, patch_map() won't bother to fixmap non-image
-> > addresses when CONFIG_STRICT_MODULE_RWX=n, matching the behaviour prior
-> > to the introduction of CONFIG_STRICT_MODULE_RWX. However, as arm64
-> > doesn't select CONFIG_ARCH_OPTIONAL_KERNEL_RWX, CONFIG_MODULES implies
-> > CONFIG_STRICT_MODULE_RWX, so any kernel built with module support will
-> > use the fixmap for any non-image address.
+On Tue,  2 Apr 2024 00:17:37 +0000
+"Ho-Ren (Jack) Chuang" <horenchuang@bytedance.com> wrote:
+
+> Since different memory devices require finding, allocating, and putting
+> memory types, these common steps are abstracted in this patch,
+> enhancing the scalability and conciseness of the code.
 > 
-> Not familiar with the config flag but I'd guess it is essentially
-> w^x enforcement right for the sections?
+> Signed-off-by: Ho-Ren (Jack) Chuang <horenchuang@bytedance.com>
+> Reviewed-by: "Huang, Ying" <ying.huang@intel.com>
 
-Essentially, yes.
+Hi,
 
-> > Historically we only used patch_map() for the kernel image and modules,
-> > but these days its also used by BPF and KPROBES to write to read-only
-> > pages of executable text. Currently these both depend on CONFIG_MODULES,
-> > but we'd like to change that in subsequent patches, which will require
-> > using the fixmap regardless of CONFIG_STRICT_MODULE_RWX.
-> >
-> > This patch changes patch_map() to always use the fixmap, and simplifies
-> > the logic:
-> >
-> > * Use is_image_text() directly in the if-else, rather than using a
-> >   temporary boolean variable.
-> >
-> > * Use offset_in_page() to get the offset within the mapping.
-> >
-> > * Remove uintaddr and cast the address directly when using
-> >   is_image_text().
-> >
-> > For kernels built with CONFIG_MODULES=y, there should be no functional
-> > change as a result of this patch.
-> >
-> > For kernels built with CONFIG_MODULES=n, patch_map() will use the fixmap
-> > for non-image addresses, but there are no extant users with non-image
-> > addresses when CONFIG_MODULES=n, and hence there should be no functional
-> > change as a result of this patch alone.
-> >
-> > Signed-off-by: Mark Rutland <mark.rutland@arm.com>
-> > Cc: Catalin Marinas <catalin.marinas@arm.com>
-> > Cc: Will Deacon <will@kernel.org>
-> > ---
-> >  arch/arm64/kernel/patching.c | 10 +++-------
-> >  1 file changed, 3 insertions(+), 7 deletions(-)
-> >
-> > Catalin, Will, this is a prerequisite for the final two patches in the
-> > series. Are you happy for this go via the tracing tree?
-> >
-> > Mark.
-> >
-> > diff --git a/arch/arm64/kernel/patching.c b/arch/arm64/kernel/patching.c
-> > index 2555349303684..f0f3a2a82ca5a 100644
-> > --- a/arch/arm64/kernel/patching.c
-> > +++ b/arch/arm64/kernel/patching.c
-> > @@ -30,20 +30,16 @@ static bool is_image_text(unsigned long addr)
-> >  
-> >  static void __kprobes *patch_map(void *addr, int fixmap)
-> >  {
-> > -	unsigned long uintaddr = (uintptr_t) addr;
-> > -	bool image = is_image_text(uintaddr);
-> >  	struct page *page;
-> >  
-> > -	if (image)
-> > +	if (is_image_text((unsigned long)addr))
-> >  		page = phys_to_page(__pa_symbol(addr));
-> > -	else if (IS_ENABLED(CONFIG_STRICT_MODULE_RWX))
-> > -		page = vmalloc_to_page(addr);
-> >  	else
-> > -		return addr;
-> > +		page = vmalloc_to_page(addr);
-> >  
-> >  	BUG_ON(!page);
-> >  	return (void *)set_fixmap_offset(fixmap, page_to_phys(page) +
-> > -			(uintaddr & ~PAGE_MASK));
-> > +					 offset_in_page(addr));
+I know this is a late entry to the discussion but a few comments inline.
+(sorry I didn't look earlier!)
+
+All opportunities to improve code complexity and readability as a result
+of your factoring out.
+
+Jonathan
+
+
+> ---
+>  drivers/dax/kmem.c           | 20 ++------------------
+>  include/linux/memory-tiers.h | 13 +++++++++++++
+>  mm/memory-tiers.c            | 32 ++++++++++++++++++++++++++++++++
+>  3 files changed, 47 insertions(+), 18 deletions(-)
 > 
-> nit: could be a single line but i guess it is up to the taste (and
-> subsystem maintainer). I.e. checkpatch will allow it at least.
-> 
-> I don't mind it too much just mentioning for completeness.
+> diff --git a/drivers/dax/kmem.c b/drivers/dax/kmem.c
+> index 42ee360cf4e3..01399e5b53b2 100644
+> --- a/drivers/dax/kmem.c
+> +++ b/drivers/dax/kmem.c
+> @@ -55,21 +55,10 @@ static LIST_HEAD(kmem_memory_types);
+>  
+>  static struct memory_dev_type *kmem_find_alloc_memory_type(int adist)
+>  {
+> -	bool found = false;
+>  	struct memory_dev_type *mtype;
+>  
+>  	mutex_lock(&kmem_memory_type_lock);
+could use
 
-At that point it goes to 93 chars long, and I stuck with the existing line
-wrapping at 80 chars. I'd rather have a temporary 'phys_addr_t phys' variable
-and do:
+	guard(mutex)(&kmem_memory_type_lock);
+	return mt_find_alloc_memory_type(adist, &kmem_memory_types);
 
-	phys = page_to_phys(page) + offset_in_page(addr);
-	return (void *)set_fixmap(fixmap, phys);
+I'm fine if you ignore this comment though as may be other functions in
+here that could take advantage of the cleanup.h stuff in a future patch.
 
-.. but I'll leave this as-is for now.
+> -	list_for_each_entry(mtype, &kmem_memory_types, list) {
+> -		if (mtype->adistance == adist) {
+> -			found = true;
+> -			break;
+> -		}
+> -	}
+> -	if (!found) {
+> -		mtype = alloc_memory_type(adist);
+> -		if (!IS_ERR(mtype))
+> -			list_add(&mtype->list, &kmem_memory_types);
+> -	}
+> +	mtype = mt_find_alloc_memory_type(adist, &kmem_memory_types);
+>  	mutex_unlock(&kmem_memory_type_lock);
+>  
+>  	return mtype;
+ 
+> diff --git a/include/linux/memory-tiers.h b/include/linux/memory-tiers.h
+> index 69e781900082..a44c03c2ba3a 100644
+> --- a/include/linux/memory-tiers.h
+> +++ b/include/linux/memory-tiers.h
+> @@ -48,6 +48,9 @@ int mt_calc_adistance(int node, int *adist);
+>  int mt_set_default_dram_perf(int nid, struct access_coordinate *perf,
+>  			     const char *source);
+>  int mt_perf_to_adistance(struct access_coordinate *perf, int *adist);
+> +struct memory_dev_type *mt_find_alloc_memory_type(int adist,
+> +							struct list_head *memory_types);
 
-> >  }
-> >  
-> >  static void __kprobes patch_unmap(int fixmap)
-> 
-> If my assumption about the config flag holds this makes sense:
-> 
-> Reviewed-by: Jarkko Sakkinen <jarkko@kernel.rg>
+That indent looks unusual.  Align the start of struct with start of int.
 
-Thanks! I assume that should be "kernel.org", with an 'o' ;)
+> +void mt_put_memory_types(struct list_head *memory_types);
+>  #ifdef CONFIG_MIGRATION
+>  int next_demotion_node(int node);
+>  void node_get_allowed_targets(pg_data_t *pgdat, nodemask_t *targets);
+> @@ -136,5 +139,15 @@ static inline int mt_perf_to_adistance(struct access_coordinate *perf, int *adis
+>  {
+>  	return -EIO;
+>  }
+> +
+> +struct memory_dev_type *mt_find_alloc_memory_type(int adist, struct list_head *memory_types)
+> +{
+> +	return NULL;
+> +}
+> +
+> +void mt_put_memory_types(struct list_head *memory_types)
+> +{
+> +
+No blank line needed here. 
+> +}
+>  #endif	/* CONFIG_NUMA */
+>  #endif  /* _LINUX_MEMORY_TIERS_H */
+> diff --git a/mm/memory-tiers.c b/mm/memory-tiers.c
+> index 0537664620e5..974af10cfdd8 100644
+> --- a/mm/memory-tiers.c
+> +++ b/mm/memory-tiers.c
+> @@ -623,6 +623,38 @@ void clear_node_memory_type(int node, struct memory_dev_type *memtype)
+>  }
+>  EXPORT_SYMBOL_GPL(clear_node_memory_type);
+>  
+> +struct memory_dev_type *mt_find_alloc_memory_type(int adist, struct list_head *memory_types)
 
-Mark.
+Breaking this out as a separate function provides opportunity to improve it.
+Maybe a follow up patch makes sense given it would no longer be a straight
+forward code move.  However in my view it would be simple enough to be obvious
+even within this patch.
+
+> +{
+> +	bool found = false;
+> +	struct memory_dev_type *mtype;
+> +
+> +	list_for_each_entry(mtype, memory_types, list) {
+> +		if (mtype->adistance == adist) {
+> +			found = true;
+
+Why not return here?
+			return mtype;
+
+> +			break;
+> +		}
+> +	}
+> +	if (!found) {
+
+If returning above, no need for found variable - just do this unconditionally.
++ I suggest you flip logic for simpler to follow code flow.
+It's more code but I think a bit easier to read as error handling is
+out of the main simple flow.
+
+	mtype = alloc_memory_type(adist);
+	if (IS_ERR(mtype))
+		return mtype;
+
+	list_add(&mtype->list, memory_types);
+
+	return mtype;
+
+> +		mtype = alloc_memory_type(adist);
+> +		if (!IS_ERR(mtype))
+> +			list_add(&mtype->list, memory_types);
+> +	}
+> +
+> +	return mtype;
+> +}
+> +EXPORT_SYMBOL_GPL(mt_find_alloc_memory_type);
+> +
+> +void mt_put_memory_types(struct list_head *memory_types)
+> +{
+> +	struct memory_dev_type *mtype, *mtn;
+> +
+> +	list_for_each_entry_safe(mtype, mtn, memory_types, list) {
+> +		list_del(&mtype->list);
+> +		put_memory_type(mtype);
+> +	}
+> +}
+> +EXPORT_SYMBOL_GPL(mt_put_memory_types);
+> +
+>  static void dump_hmem_attrs(struct access_coordinate *coord, const char *prefix)
+>  {
+>  	pr_info(
+
 
