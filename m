@@ -1,279 +1,241 @@
-Return-Path: <linux-kernel+bounces-129164-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-129163-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5F91A89664E
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 09:24:26 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6009A89664C
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 09:24:09 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E4DD1287C3E
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 07:24:24 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id CBA4B1F23E45
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 07:24:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 150B15D49A;
-	Wed,  3 Apr 2024 07:23:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F030E5B209;
+	Wed,  3 Apr 2024 07:23:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="MpFH+hpy";
-	dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b="DhD3/7bl"
-Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="JnLFN5iG"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CB3F758208;
-	Wed,  3 Apr 2024 07:23:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=205.220.177.32
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712129028; cv=fail; b=eESMRvLKWXW/TWdL607yFZ4Ja0RLHMOOLapE+lmz9tNDvlhcqlv4AEyZ/fGzDF4GEnEFkQExUkX4hl6KxZ9kTkpjkWlorjXuYeYk3EC1ypbJhjcN01pOdFWBiomSRHNo/XGi8MVODHaE0+VzDK5a6lAcIYWI1lZeUydaozWlqkk=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712129028; c=relaxed/simple;
-	bh=qCTaO23j8HoKY/8kBzi07OeFquDRsmIjgpJ6EetP8lY=;
-	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
-	 Content-Type:MIME-Version; b=ZKXAii3tojL1uNiy2RCMN5ca6PAwXkgt66Y7oTwLMhfv5aCIk28Gq+qFb6It/o4cv6f+Mf5wAOfnIgTUHw3I3woGfCT/x8LH3cNFWyldf3vA79gmqg68qnWA0TzHu/uYK2UdJUkeqQfttU5GDBEgtsp+K2P5MDaxGcVeO0ymAJw=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=MpFH+hpy; dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b=DhD3/7bl; arc=fail smtp.client-ip=205.220.177.32
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=oracle.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oracle.com
-Received: from pps.filterd (m0246630.ppops.net [127.0.0.1])
-	by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 4334nFMu000351;
-	Wed, 3 Apr 2024 07:23:29 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=message-id : date :
- subject : to : cc : references : from : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=corp-2023-11-20;
- bh=Ol8XnsDbHmcQ/cplPZXLR1xhVMR+NnJJ6UFzn5MgC50=;
- b=MpFH+hpyI4ONRb75blRO2zRxG4tK3bW8Dm+mLqWzMkvJTDnXyfeDKbe7cmBp4G4yGmVa
- IXdk5TyJ9Nm1Tr5gX4e92uHHbeppb4+VxvpWFLcTxfZgPBylrYHTVGrmt42gXW3P+3To
- IOw4ooNs4NT8bg5dn3p+SoRABvnxh7rrjwNTOnqNm3n3a+KDUurMQ3+CxojiSdD8z/p3
- JFY/Oqq38fX+cKEDjkN9nLCZnPjW/qdN25dX8Dhvr1SHH+mOoPhSBNS9BQTLHHPtHrqY
- lxeIWr/7X+Em77igz4/nQ3CQeMcn7E/moqdSYbgCgzxszotDKbR82XezUf4WS84O+Eqh xQ== 
-Received: from phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta02.appoci.oracle.com [147.154.114.232])
-	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3x695epdg4-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Wed, 03 Apr 2024 07:23:28 +0000
-Received: from pps.filterd (phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
-	by phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 4336wXQi015457;
-	Wed, 3 Apr 2024 07:23:27 GMT
-Received: from nam02-sn1-obe.outbound.protection.outlook.com (mail-sn1nam02lp2041.outbound.protection.outlook.com [104.47.57.41])
-	by phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTPS id 3x6967wfsx-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Wed, 03 Apr 2024 07:23:27 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=kl+W4e7nDmOYlm+GCenW6hjW5j4Eg8djd24C0skYoNHzakNQZ8lXLNiRJ61IEC7dHPo6u9r7LzWLqzFhIRlrnMLHT1yciw+LZ5wl8lggAOi13Ftn1kofIjmCNqfMAOVMrnHOM4g3HoftJ4Bj3TmYnmJni/aoWf38dLxeO8obk8ZY+2xrj+CfQ1KV7dAWrnWSVEzOI8ID+ISoVhghY/wAuq/6zKsKrL+xgLALpXy6peZj+oqQywsKN2UOn1po1LgwjT034YJT4MGlzSJWBFgNg81VuQBb5RGKjQqe3Bi1Y2SEiG+U9U02iAwvJcu5kAr5J13yqXX6hN16HLSL3X0ShQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=Ol8XnsDbHmcQ/cplPZXLR1xhVMR+NnJJ6UFzn5MgC50=;
- b=gY5jien3Fqw2tFuzQbNsneR0aHVfdVQ2mDuvbi0IBjbNvfOKBhQFug3Tq9GGJ4293ojl1h7MWpUdiKmRD7+s0mfflL5EbrpMMdg6qp4s0HN38iBmWxF5EjVfxU0L5hT6JVcp2rx7xPwwjdkmkjLBEy9ZzS9rFEgSJGVioQTDD1SU7nwWbzKBfaJo3rDaK0+b6AjooU4QssuXX+w5GNAdEI3Q79DewGeb5X/nA6razWmv0oPCbaQyth8yps5tgHYx56O7h1eV81vRHsnVPw/tddqYIV6PzT269gDSS1AO/i8S95RUb5OoSlvfENZOAygq7cTY7DK20lOUI0JX+ZE7yA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Ol8XnsDbHmcQ/cplPZXLR1xhVMR+NnJJ6UFzn5MgC50=;
- b=DhD3/7bl5N8Z9wOFDt6TTRuNOwsrafYsxZQkOnWTlpxzZabkZRhi1zycMOng75g5LEF0hdZaDkG17KUwS/nbNl0wnny92rs1V3YZXfGpOdmrqyP1USQ6YQZdlvZAx79R4J4f9wzgyXjHvVYK71yp5zS2/SRauOoARcVMiP6EkGQ=
-Received: from PH8PR10MB6290.namprd10.prod.outlook.com (2603:10b6:510:1c1::7)
- by CH3PR10MB7502.namprd10.prod.outlook.com (2603:10b6:610:163::17) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7409.46; Wed, 3 Apr
- 2024 07:23:25 +0000
-Received: from PH8PR10MB6290.namprd10.prod.outlook.com
- ([fe80::f5ee:d47b:69b8:2e89]) by PH8PR10MB6290.namprd10.prod.outlook.com
- ([fe80::f5ee:d47b:69b8:2e89%3]) with mapi id 15.20.7409.042; Wed, 3 Apr 2024
- 07:23:25 +0000
-Message-ID: <a35a0ae3-f976-4a74-aba0-2b16ecf2a61b@oracle.com>
-Date: Wed, 3 Apr 2024 12:53:15 +0530
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3] drm/panthor: Fix couple of NULL vs IS_ERR() bugs
-To: Boris Brezillon <boris.brezillon@collabora.com>
-Cc: Steven Price <steven.price@arm.com>, Liviu Dudau <liviu.dudau@arm.com>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
-        Heiko Stuebner <heiko@sntech.de>,
-        Grant Likely <grant.likely@linaro.org>,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        dan.carpenter@linaro.org, kernel-janitors@vger.kernel.org,
-        error27@gmail.com
-References: <20240402141412.1707949-1-harshit.m.mogalapalli@oracle.com>
- <20240403091729.3100a6a1@collabora.com>
-Content-Language: en-US
-From: Harshit Mogalapalli <harshit.m.mogalapalli@oracle.com>
-In-Reply-To: <20240403091729.3100a6a1@collabora.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: SI2PR01CA0039.apcprd01.prod.exchangelabs.com
- (2603:1096:4:193::16) To PH8PR10MB6290.namprd10.prod.outlook.com
- (2603:10b6:510:1c1::7)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0D86158208;
+	Wed,  3 Apr 2024 07:23:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1712129022; cv=none; b=G6LJIIAg5whlZEhkTSYCi7zHWe9TgNBR6U9BhH7riPs/vz0uQI6/Q01tTbaAduRueghhAGCeLUION0GoH0WUYlNIhP6P1zP7ApgzFL8eu4iMWdZc561GhftLqEiUv/zQqAhiyXnuzB+WTSZKzoYnXT9lTC6Mu57dSdiIw5Cc/xQ=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1712129022; c=relaxed/simple;
+	bh=6HqhTpg6hJ6e3zeFzvf8NRUha1X4YypuenPq4riKi2w=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=VqLaeczaygqGsxJ6ZEbp+wg8vF3LX3IV03ctzDBQ8rMwgWYZfFIuGlnIJMIOfCECIWyzwY4AzdD56KK8biuVDd/0HoVuxBeBlBJF3un4Qp35OiQPPGrW/EGWpZPmjCBAHdugT1Sr9OPwcVLuPKQ8xtM5dKUPjH605aSPVupDTLA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=JnLFN5iG; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9DA15C433F1;
+	Wed,  3 Apr 2024 07:23:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1712129021;
+	bh=6HqhTpg6hJ6e3zeFzvf8NRUha1X4YypuenPq4riKi2w=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=JnLFN5iG6jR127kBF3VJGNw7pcD+kle+rRfAj4a/YIRawTPNtzjs71teD2VI/d3q8
+	 rbnvy7DLs3lIGJ/rpPUY11FMQ39c0o1WZBFKvl2o6iKe0060p/pxuzKY85jqk3juYr
+	 qs1AEBS0RaMWoU46OYeGUCXQlZNouBf/W6nz0NeNu6DH247T82aIPsAmT3XhzUN7oH
+	 4TKZN7qQLu7ON/kvrdJXyUsCL/aiWPjS6kil+9P6XhJvzEjI6eN81wuOuIRg5pJgKc
+	 gGwRtVbXKFbzlQ9qUhegj5T1P2+vZPfZ5diQUzMqkoDSx1ODiiEAgXFXVJIJ7U7aQB
+	 He5v/QQv4N7sg==
+Message-ID: <bcf12c0b-d569-4d64-adfb-bad053c182a8@kernel.org>
+Date: Wed, 3 Apr 2024 09:23:33 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: PH8PR10MB6290:EE_|CH3PR10MB7502:EE_
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 
-	sjte8IzB3gsxpbc2uCHQEUVorcQfnR1fEwVWNCG71bN+iBUSuIHbv0mM1rVfqR3XNFyTSC6cUh1+thVoBpEfX2gQduAvMthMqPY6yjmGjhP9zPqdZgYMCjdcPrQuq5U7Hch93Wn84I/BUfubGV8KtMuibV55BUq6UmkYSiQdUuqGzL+lO1IQNKtKk4vAyx9aD+YP/OWe6MpHORIy//qk84gntRMJIjjantlJY5sRB6Drz/QvBqPOZWUGg6GjRCyty1TTpi7sbFS31RhLj7J2Vy5Rf2SlnQxTgcq4mR/Ck64ZqfobXCDNkpnJeBC+V9/q+iFGauaKHSkqy+dZhPmE8TARyIhlNqWYBVk5D/SNTMr2OaO9He8AA0o1mlmlQQjyR5KsQN+2j2/fWBl5h/G2ItLAKYzo1Q+CF/w5ZJNbSMJJchpJ2TZDEOItXU2jU4g8L5jiERMCt/EcbjraJoDf5NFL2ItY/B/tjKratEkNjoOBVxpS33zB7oaHacCw9sckFarT/lNnXyxZ7FKs4i1FIQTOX11LhWpbRCfZa6CDFpneZiygO5MdNPniIDhPRpfq8SmOFyC4JGjqZveas1xXV8Mc+H6CX5ACbo4cYWvT5ZC2WvRkdme2qgveXmZ2Rg8uZZizuZ9wUmcg6ONHjAkh9HFJ/AXMzY3/9irrd+J/WQ8=
-X-Forefront-Antispam-Report: 
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH8PR10MB6290.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(7416005)(366007)(376005)(1800799015);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: 
-	=?utf-8?B?em9rUU15MHBZSlhhSzhWZ2hNUjdEell2Sy9GMW0xdk5TQ2FlQnkyNEdPUDhl?=
- =?utf-8?B?VjVZbjFRQ0I1U0J2dElIUW9VTzg2RGhacjVkdnovVlNhOUVIUDdGNUJsb3ZD?=
- =?utf-8?B?RTA0VU05WC9nN003QmFZcnBEQ2VxdHdTTmhIMEhOTDM4NDJnSUwwZk1vSUpy?=
- =?utf-8?B?OXg3bjVBOGFkdG0rTk4xdzZ4Z2FWS3k0a3o4bmVHYW9BdjZqbUUzTER5Yy9n?=
- =?utf-8?B?cHVzMDRjdEo4TTAzNWo2c0svNTV5MmxKZHpwNW5MaURQZ3ZVZXNwS1hiZmRm?=
- =?utf-8?B?YldxTVdtQzBybVVRZHRDSFZRdEc3c0ZRZXZrRmlHUlVsSzkwS1ZFNDhHcFd6?=
- =?utf-8?B?cVlnTHhqUGNkcEE0cFovREgzN2FWMEVJZEVmUnl0R1NoL0czSGF2TU56Vk50?=
- =?utf-8?B?VjBaMmJOMS9SYnVuQ2laSEJXUFM3dTV4ZzFoYUpDSFd5QVh0ejFlT3FwQ1Yr?=
- =?utf-8?B?ZXlsWGtwWmlDTEhWSUNxU1dUaWcra0dkWHVzWllPVlc0T3FmUTdoMmhwOHRp?=
- =?utf-8?B?S1gzd3dRUXQ1VXQxRHFBNzhkQmZiWmUvNWpqcEV1MHMzN0FxdUtlVExPRTQ3?=
- =?utf-8?B?MlcyUUl3ZVZlVlRUVUdMUGZuQzNyWHVlc0R6VkZjTy9LeGY4ZEtaTnZsVlhs?=
- =?utf-8?B?SSs1QyttQkMzNlZtemFLVlNIMCtLTzgwQ05jZE5JbHVVZEhIdFBvL3NVdXhi?=
- =?utf-8?B?RFZxdEY1R0FHWElFbWY4N2VYK0FCQTkyaXlXQWZPWHdHSnJvUEh2TGFiU0Zv?=
- =?utf-8?B?SjZvNjhwZ3pkb253RTd6TFY0eUE3R3M0amtsZ2N2L1VRS1U0b2MwaDkxZDhu?=
- =?utf-8?B?b29ONWFhV2ttU091RmxjMzIwUjdGaldReHRIc3FEQ25YbWdZTnIvWEZDdUFW?=
- =?utf-8?B?Y25LMzl0b3ppZzVLU3dES3A2M3E0RUZFTnNCTU9oOFUydURCcCtybjJuSWRE?=
- =?utf-8?B?MFYzYUlLcmZVcXI4NW5kMjNUQUFUaFQyVDcyam5mM0dUWmM2RGNLOWtONlhP?=
- =?utf-8?B?M0cxdzN2d2t4MytWWjVCL1BiQzZPakpaMUxlbFV3WWtMaFdzTW9iWW9IdEdC?=
- =?utf-8?B?Nk9ESTd1TE14dytOOWs0OHRjZG1UUDlTemtFWVZKZjdIaDhLdnpqOUNpOXZE?=
- =?utf-8?B?azR2WTNtTnhIS255ZUNnMWVDeC82V1I2Z0NCVS9XWU5jUGF3YnZzWTBObU1L?=
- =?utf-8?B?L2JzcGhEazlwVm5jTEtXaTVBQzluelQ5N3U0WG9NY2ZMbEdaem9MSkIzRHVO?=
- =?utf-8?B?RTN4bUlNa3JjQWxxS1ZJMkFyTHJjQ1IrQzNudXNvOXE4TlR0K2ZiQTYyeStz?=
- =?utf-8?B?QmdZY3pEVlNGa2JyejVQQnFIWWJhV0RoVlMzWFI2c0JCZ2xsRFF1bVBuNVBy?=
- =?utf-8?B?TUNtRmlyTFgxUzJsYUtBYnJOeFYzK2NQQ2I5WVdBeWxOakJibSs3aG94dm5H?=
- =?utf-8?B?dkRTOVo4NHlVMk9KMUJZTDBVdEpTbXFwQnRJTDB5TjE5aHVxNlBZSm0vWldv?=
- =?utf-8?B?Z2xFYUJoVkZSck8vbGlsUlRPWng5NkRqMWpBK044d205QnlBak0xTUZ1UG90?=
- =?utf-8?B?U2NxUm1vbm1wK2RVekdiRW1iclp1L1M1aVZKWDJSdzZyVHpSRVlPWEFjQzJq?=
- =?utf-8?B?aWdrdTgrMEVaczludFY0UUhBWnpXVjdwU3dHcERsTU83Y1p2dmdpcFZVUmNM?=
- =?utf-8?B?V0RYWUVSUHd3aXdWZjhndHFHU1hyQzIvZ2xjWWdZbEl0MW1LakRrdFdFanVv?=
- =?utf-8?B?SlJqVHByMS81elhNWjZsVUluUVJFQW1iTHZPTHdob2hhQWV6VHNtWGtVOGRJ?=
- =?utf-8?B?NWJQTFlkUUI4TDF2WXdNSTlsMys2RG80b044dUtsVTZRUHlRVGMvVWtDNjM1?=
- =?utf-8?B?RTlhUldvejR4bTl4YWk4YlE2SExER1FYUnl3dXpOOHkwZ0NueTB5VkFjMG14?=
- =?utf-8?B?K2pKdXJQVnN3cVp3MnVaYi9Rc0YrVEpaOGVyTzNKTUNuS3hHVkN4aTBybkFR?=
- =?utf-8?B?bndaMFl6aitxNWpIZEo5MzhpcjEzZ2p6UDR0KzMxQkxNOUpSUHhjRjVKeTh6?=
- =?utf-8?B?N2RRRjBEcGEvOFQvRmlPM3hUQ0wrY2E4OFhQcFRmZVY1RHpMaXVKTVo0Njlk?=
- =?utf-8?B?dW1aV0ZyMEhhVGc3d0ltRVNJOFJhZ0pSdXl0azc0NE8zVU55WXVuaGl5TTZi?=
- =?utf-8?Q?4N9Q0vpUw1itjj54YB596ls=3D?=
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: 
-	VSrVPCcY6n+Eo0SPjDr0NesSkyzqcJEnEC7ELiOL4FbG9I9Yr5hCTOJVLmtjS6TiqpoPQ+o5L7N96yvNlavzqiJ0sDDjsXbYXDw/1rnabHfhR9cdU1G1aZ/NpoCOQO8eHUUNwlfrD9WPXQt2xe+SOFooM6+OWxR1b+xkP62UZod1CSg2Xgwygis1IhsXV31ViCQcMaHfDE1aWRNGrTFmP4n7R3cAng2xOF515uyxsMyAn6RwbyVvu091f8iBh+IcmngkzDOcMcc0Yb5PMejvXWgAsV/Qpp0AvDOPjsets2IJlzB3hI11oO8W3a5ORgVSs+UB+FpoMRj4FABvH7p3jlKA2jeFPEXEamh3or3U/11fXfShb+30YL0JLovX/PX0rpMKazogBdAq0gPTnRNALx3/pKaLv2FsHaAPAo6l2CnbiwGKbsPsJEO6TJlPUUqjK/a/aZ+srZxK4aPIyaRbLQsqGF0c1nf7XaSAkyKjVeKrCfwyVPZEi7+e8y/HWv28KFkoi9pVxBAj4bxy/S78xb+75WlMA1bRFcxk1dIkxtcDb7foXML9SbruTsumVu9xu/Yp2ULLe3o5TWDtRRHBQNSUGz77jsrIDSGJX3TyNo4=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: f43b369f-c50c-4b9d-32d9-08dc53aef35d
-X-MS-Exchange-CrossTenant-AuthSource: PH8PR10MB6290.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 03 Apr 2024 07:23:25.4874
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: APz0ONrzmom0UBUFIchJJxXS6ZlfHTcg6hX1GoC1Ha8spaJWSed9BJBer2JxxJYSe+LALyuU22NMMqknRrdSMTPE2sGtvoMiB0noMF/SCIipRHpkiqV47JZB7u6lfFYe
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH3PR10MB7502
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-04-03_06,2024-04-01_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 mlxlogscore=999
- bulkscore=0 spamscore=0 suspectscore=0 phishscore=0 adultscore=0
- mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2403210000 definitions=main-2404030049
-X-Proofpoint-GUID: o-U73DXwrpXlldMtXgxXNich36fbgrMs
-X-Proofpoint-ORIG-GUID: o-U73DXwrpXlldMtXgxXNich36fbgrMs
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3] clk: starfive: pll: Fix lower rate of CPUfreq by
+ setting PLL0 rate to 1.5GHz
+To: Xingyu Wu <xingyu.wu@starfivetech.com>,
+ Michael Turquette <mturquette@baylibre.com>, Stephen Boyd
+ <sboyd@kernel.org>, Conor Dooley <conor@kernel.org>,
+ Emil Renner Berthing <emil.renner.berthing@canonical.com>,
+ Rob Herring <robh@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>
+Cc: Paul Walmsley <paul.walmsley@sifive.com>,
+ Palmer Dabbelt <palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>,
+ Hal Feng <hal.feng@starfivetech.com>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "linux-clk@vger.kernel.org" <linux-clk@vger.kernel.org>,
+ "linux-riscv@lists.infradead.org" <linux-riscv@lists.infradead.org>,
+ "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>
+References: <20240402090920.11627-1-xingyu.wu@starfivetech.com>
+ <8d21b1bc-9402-41d4-bd81-c521c8a33d2d@kernel.org>
+ <NTZPR01MB095662C4A6FCAEB7B35C48FF9F3DA@NTZPR01MB0956.CHNPR01.prod.partner.outlook.cn>
+Content-Language: en-US
+From: Krzysztof Kozlowski <krzk@kernel.org>
+Autocrypt: addr=krzk@kernel.org; keydata=
+ xsFNBFVDQq4BEAC6KeLOfFsAvFMBsrCrJ2bCalhPv5+KQF2PS2+iwZI8BpRZoV+Bd5kWvN79
+ cFgcqTTuNHjAvxtUG8pQgGTHAObYs6xeYJtjUH0ZX6ndJ33FJYf5V3yXqqjcZ30FgHzJCFUu
+ JMp7PSyMPzpUXfU12yfcRYVEMQrmplNZssmYhiTeVicuOOypWugZKVLGNm0IweVCaZ/DJDIH
+ gNbpvVwjcKYrx85m9cBVEBUGaQP6AT7qlVCkrf50v8bofSIyVa2xmubbAwwFA1oxoOusjPIE
+ J3iadrwpFvsZjF5uHAKS+7wHLoW9hVzOnLbX6ajk5Hf8Pb1m+VH/E8bPBNNYKkfTtypTDUCj
+ NYcd27tjnXfG+SDs/EXNUAIRefCyvaRG7oRYF3Ec+2RgQDRnmmjCjoQNbFrJvJkFHlPeHaeS
+ BosGY+XWKydnmsfY7SSnjAzLUGAFhLd/XDVpb1Een2XucPpKvt9ORF+48gy12FA5GduRLhQU
+ vK4tU7ojoem/G23PcowM1CwPurC8sAVsQb9KmwTGh7rVz3ks3w/zfGBy3+WmLg++C2Wct6nM
+ Pd8/6CBVjEWqD06/RjI2AnjIq5fSEH/BIfXXfC68nMp9BZoy3So4ZsbOlBmtAPvMYX6U8VwD
+ TNeBxJu5Ex0Izf1NV9CzC3nNaFUYOY8KfN01X5SExAoVTr09ewARAQABzSVLcnp5c3p0b2Yg
+ S296bG93c2tpIDxrcnprQGtlcm5lbC5vcmc+wsGVBBMBCgA/AhsDBgsJCAcDAgYVCAIJCgsE
+ FgIDAQIeAQIXgBYhBJvQfg4MUfjVlne3VBuTQ307QWKbBQJgPO8PBQkUX63hAAoJEBuTQ307
+ QWKbBn8P+QFxwl7pDsAKR1InemMAmuykCHl+XgC0LDqrsWhAH5TYeTVXGSyDsuZjHvj+FRP+
+ gZaEIYSw2Yf0e91U9HXo3RYhEwSmxUQ4Fjhc9qAwGKVPQf6YuQ5yy6pzI8brcKmHHOGrB3tP
+ /MODPt81M1zpograAC2WTDzkICfHKj8LpXp45PylD99J9q0Y+gb04CG5/wXs+1hJy/dz0tYy
+ iua4nCuSRbxnSHKBS5vvjosWWjWQXsRKd+zzXp6kfRHHpzJkhRwF6ArXi4XnQ+REnoTfM5Fk
+ VmVmSQ3yFKKePEzoIriT1b2sXO0g5QXOAvFqB65LZjXG9jGJoVG6ZJrUV1MVK8vamKoVbUEe
+ 0NlLl/tX96HLowHHoKhxEsbFzGzKiFLh7hyboTpy2whdonkDxpnv/H8wE9M3VW/fPgnL2nPe
+ xaBLqyHxy9hA9JrZvxg3IQ61x7rtBWBUQPmEaK0azW+l3ysiNpBhISkZrsW3ZUdknWu87nh6
+ eTB7mR7xBcVxnomxWwJI4B0wuMwCPdgbV6YDUKCuSgRMUEiVry10xd9KLypR9Vfyn1AhROrq
+ AubRPVeJBf9zR5UW1trJNfwVt3XmbHX50HCcHdEdCKiT9O+FiEcahIaWh9lihvO0ci0TtVGZ
+ MCEtaCE80Q3Ma9RdHYB3uVF930jwquplFLNF+IBCn5JRzsFNBFVDXDQBEADNkrQYSREUL4D3
+ Gws46JEoZ9HEQOKtkrwjrzlw/tCmqVzERRPvz2Xg8n7+HRCrgqnodIYoUh5WsU84N03KlLue
+ MNsWLJBvBaubYN4JuJIdRr4dS4oyF1/fQAQPHh8Thpiz0SAZFx6iWKB7Qrz3OrGCjTPcW6ei
+ OMheesVS5hxietSmlin+SilmIAPZHx7n242u6kdHOh+/SyLImKn/dh9RzatVpUKbv34eP1wA
+ GldWsRxbf3WP9pFNObSzI/Bo3kA89Xx2rO2roC+Gq4LeHvo7ptzcLcrqaHUAcZ3CgFG88CnA
+ 6z6lBZn0WyewEcPOPdcUB2Q7D/NiUY+HDiV99rAYPJztjeTrBSTnHeSBPb+qn5ZZGQwIdUW9
+ YegxWKvXXHTwB5eMzo/RB6vffwqcnHDoe0q7VgzRRZJwpi6aMIXLfeWZ5Wrwaw2zldFuO4Dt
+ 91pFzBSOIpeMtfgb/Pfe/a1WJ/GgaIRIBE+NUqckM+3zJHGmVPqJP/h2Iwv6nw8U+7Yyl6gU
+ BLHFTg2hYnLFJI4Xjg+AX1hHFVKmvl3VBHIsBv0oDcsQWXqY+NaFahT0lRPjYtrTa1v3tem/
+ JoFzZ4B0p27K+qQCF2R96hVvuEyjzBmdq2esyE6zIqftdo4MOJho8uctOiWbwNNq2U9pPWmu
+ 4vXVFBYIGmpyNPYzRm0QPwARAQABwsF8BBgBCgAmAhsMFiEEm9B+DgxR+NWWd7dUG5NDfTtB
+ YpsFAmA872oFCRRflLYACgkQG5NDfTtBYpvScw/9GrqBrVLuJoJ52qBBKUBDo4E+5fU1bjt0
+ Gv0nh/hNJuecuRY6aemU6HOPNc2t8QHMSvwbSF+Vp9ZkOvrM36yUOufctoqON+wXrliEY0J4
+ ksR89ZILRRAold9Mh0YDqEJc1HmuxYLJ7lnbLYH1oui8bLbMBM8S2Uo9RKqV2GROLi44enVt
+ vdrDvo+CxKj2K+d4cleCNiz5qbTxPUW/cgkwG0lJc4I4sso7l4XMDKn95c7JtNsuzqKvhEVS
+ oic5by3fbUnuI0cemeizF4QdtX2uQxrP7RwHFBd+YUia7zCcz0//rv6FZmAxWZGy5arNl6Vm
+ lQqNo7/Poh8WWfRS+xegBxc6hBXahpyUKphAKYkah+m+I0QToCfnGKnPqyYIMDEHCS/RfqA5
+ t8F+O56+oyLBAeWX7XcmyM6TGeVfb+OZVMJnZzK0s2VYAuI0Rl87FBFYgULdgqKV7R7WHzwD
+ uZwJCLykjad45hsWcOGk3OcaAGQS6NDlfhM6O9aYNwGL6tGt/6BkRikNOs7VDEa4/HlbaSJo
+ 7FgndGw1kWmkeL6oQh7wBvYll2buKod4qYntmNKEicoHGU+x91Gcan8mCoqhJkbqrL7+nXG2
+ 5Q/GS5M9RFWS+nYyJh+c3OcfKqVcZQNANItt7+ULzdNJuhvTRRdC3g9hmCEuNSr+CLMdnRBY fv0=
+In-Reply-To: <NTZPR01MB095662C4A6FCAEB7B35C48FF9F3DA@NTZPR01MB0956.CHNPR01.prod.partner.outlook.cn>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-Hi Boris,
-
-On 03/04/24 12:47, Boris Brezillon wrote:
-> On Tue,  2 Apr 2024 07:14:11 -0700
-> Harshit Mogalapalli <harshit.m.mogalapalli@oracle.com> wrote:
-> 
->> Currently panthor_vm_get_heap_pool() returns both ERR_PTR() and
->> NULL(when create is false and if there is no poool attached to the
->> VM)
->> 	- Change the function to return error pointers, when pool is
->> 	  NULL return -ENOENT
->> 	- Also handle the callers to check for IS_ERR() on failure.
+On 03/04/2024 09:19, Xingyu Wu wrote:
+> On 03/04/2024 0:18, Krzysztof Kozlowski wrote:
 >>
->> Fixes: 4bdca1150792 ("drm/panthor: Add the driver frontend block")
->> Signed-off-by: Harshit Mogalapalli <harshit.m.mogalapalli@oracle.com>
-> 
-> Queued to drm-misc-next with the following commit message:
-> 
-> "
-> drm/panthor: Don't return NULL from panthor_vm_get_heap_pool()
->      
-> The kernel doc says this function returns either a valid pointer
-> or an ERR_PTR(), but in practice this function can return NULL if
-> create=false. Fix the function to match the doc (return
-> ERR_PTR(-ENOENT) instead of NULL) and adjust all call-sites
-> accordingly.
-> "
-> 
-
-Thanks a lot for making the change!
-
-Regards,
-Harshit
-
-> Thanks,
-> 
-> Boris
-> 
->> ---
->> This is spotted by smatch and the patch is only compile tested
+>> On 02/04/2024 11:09, Xingyu Wu wrote:
+>>> CPUfreq supports 4 cpu frequency loads on 375/500/750/1500MHz.
+>>> But now PLL0 rate is 1GHz and the cpu frequency loads become
+>>> 333/500/500/1000MHz in fact.
+>>>
+>>> So PLL0 rate should be default set to 1.5GHz. But setting the
+>>> PLL0 rate need certain steps:
+>>>
+>>> 1. Change the parent of cpu_root clock to OSC clock.
+>>> 2. Change the divider of cpu_core if PLL0 rate is higher than
+>>>    1.25GHz before CPUfreq boot.
+>>> 3. Change the parent of cpu_root clock back to PLL0 clock.
+>>>
+>>> Reviewed-by: Hal Feng <hal.feng@starfivetech.com>
+>>> Fixes: e2c510d6d630 ("riscv: dts: starfive: Add cpu scaling for JH7110
+>>> SoC")
+>>> Signed-off-by: Xingyu Wu <xingyu.wu@starfivetech.com>
+>>> ---
+>>>
+>>> Hi Stephen and Emil,
+>>>
+>>> This patch fixes the issue about lower rate of CPUfreq[1] by setting
+>>> PLL0 rate to 1.5GHz.
+>>>
+>>> In order not to affect the cpu operation, setting the PLL0 rate need
+>>> certain steps. The cpu_root's parent clock should be changed first.
+>>> And the divider of the cpu_core clock should be set to 2 so they won't
+>>> crash when setting 1.5GHz without voltage regulation. Due to PLL
+>>> driver boot earlier than SYSCRG driver, cpu_core and cpu_root clocks
+>>> are using by ioremap().
+>>>
+>>> [1]: https://github.com/starfive-tech/VisionFive2/issues/55
+>>>
+>>> Previous patch link:
+>>> v2:
+>>> https://lore.kernel.org/all/20230821152915.208366-1-xingyu.wu@starfive
+>>> tech.com/
+>>> v1:
+>>> https://lore.kernel.org/all/20230811033631.160912-1-xingyu.wu@starfive
+>>> tech.com/
+>>>
+>>> Thanks,
+>>> Xingyu Wu
+>>> ---
+>>>  .../jh7110-starfive-visionfive-2.dtsi         |   5 +
+>>>  .../clk/starfive/clk-starfive-jh7110-pll.c    | 102 ++++++++++++++++++
 >>
->> v1->v2: Fix the function panthor_vm_get_heap_pool() to only return error
->> pointers and handle the caller sites [Suggested by Boris Brezillon]
->>          - Also merge these IS_ERR() vs NULL bugs into same patch
->>
->> v2->v3: pull out error checking for devm_drm_dev_alloc() failure.
->> ---
->>   drivers/gpu/drm/panthor/panthor_drv.c   | 4 ++--
->>   drivers/gpu/drm/panthor/panthor_mmu.c   | 2 ++
->>   drivers/gpu/drm/panthor/panthor_sched.c | 2 +-
->>   3 files changed, 5 insertions(+), 3 deletions(-)
->>
->> diff --git a/drivers/gpu/drm/panthor/panthor_drv.c b/drivers/gpu/drm/panthor/panthor_drv.c
->> index 11b3ccd58f85..050b905b0453 100644
->> --- a/drivers/gpu/drm/panthor/panthor_drv.c
->> +++ b/drivers/gpu/drm/panthor/panthor_drv.c
->> @@ -1090,8 +1090,8 @@ static int panthor_ioctl_tiler_heap_destroy(struct drm_device *ddev, void *data,
->>   		return -EINVAL;
->>   
->>   	pool = panthor_vm_get_heap_pool(vm, false);
->> -	if (!pool) {
->> -		ret = -EINVAL;
->> +	if (IS_ERR(pool)) {
->> +		ret = PTR_ERR(pool);
->>   		goto out_put_vm;
->>   	}
->>   
->> diff --git a/drivers/gpu/drm/panthor/panthor_mmu.c b/drivers/gpu/drm/panthor/panthor_mmu.c
->> index fdd35249169f..e1285cdb09ff 100644
->> --- a/drivers/gpu/drm/panthor/panthor_mmu.c
->> +++ b/drivers/gpu/drm/panthor/panthor_mmu.c
->> @@ -1893,6 +1893,8 @@ struct panthor_heap_pool *panthor_vm_get_heap_pool(struct panthor_vm *vm, bool c
->>   			vm->heaps.pool = panthor_heap_pool_get(pool);
->>   	} else {
->>   		pool = panthor_heap_pool_get(vm->heaps.pool);
->> +		if (!pool)
->> +			pool = ERR_PTR(-ENOENT);
->>   	}
->>   	mutex_unlock(&vm->heaps.lock);
->>   
->> diff --git a/drivers/gpu/drm/panthor/panthor_sched.c b/drivers/gpu/drm/panthor/panthor_sched.c
->> index 5f7803b6fc48..617df2b980d0 100644
->> --- a/drivers/gpu/drm/panthor/panthor_sched.c
->> +++ b/drivers/gpu/drm/panthor/panthor_sched.c
->> @@ -1343,7 +1343,7 @@ static int group_process_tiler_oom(struct panthor_group *group, u32 cs_id)
->>   	if (unlikely(csg_id < 0))
->>   		return 0;
->>   
->> -	if (!heaps || frag_end > vt_end || vt_end >= vt_start) {
->> +	if (IS_ERR(heaps) || frag_end > vt_end || vt_end >= vt_start) {
->>   		ret = -EINVAL;
->>   	} else {
->>   		/* We do the allocation without holding the scheduler lock to avoid
+>> Please do not mix DTS and driver code. That's not really portable. DTS is being
+>> exported and used in other projects.
 > 
+> OK, I will submit that in two patches.
+> 
+>>
+>> ...
+>>
+>>>
+>>> @@ -458,6 +535,8 @@ static int jh7110_pll_probe(struct platform_device
+>> *pdev)
+>>>  	struct jh7110_pll_priv *priv;
+>>>  	unsigned int idx;
+>>>  	int ret;
+>>> +	struct device_node *np;
+>>> +	struct resource res;
+>>>
+>>>  	priv = devm_kzalloc(&pdev->dev, sizeof(*priv), GFP_KERNEL);
+>>>  	if (!priv)
+>>> @@ -489,6 +568,29 @@ static int jh7110_pll_probe(struct platform_device
+>> *pdev)
+>>>  			return ret;
+>>>  	}
+>>>
+>>> +	priv->is_first_set = true;
+>>> +	np = of_find_compatible_node(NULL, NULL, "starfive,jh7110-syscrg");
+>>
+>> Your drivers should not do it. It's fragile, hides true link/dependency.
+>> Please use phandles.
+>>
+>>
+>>> +	if (!np) {
+>>> +		ret = PTR_ERR(np);
+>>> +		dev_err(priv->dev, "failed to get syscrg node\n");
+>>> +		goto np_put;
+>>> +	}
+>>> +
+>>> +	ret = of_address_to_resource(np, 0, &res);
+>>> +	if (ret) {
+>>> +		dev_err(priv->dev, "failed to get syscrg resource\n");
+>>> +		goto np_put;
+>>> +	}
+>>> +
+>>> +	priv->syscrg_base = ioremap(res.start, resource_size(&res));
+>>> +	if (!priv->syscrg_base)
+>>> +		ret = -ENOMEM;
+>>
+>> Why are you mapping other device's IO? How are you going to ensure synced
+>> access to registers?
+> 
+> Because setting PLL0 rate need specific steps and use the clocks of SYSCRG.
+
+That's not a reason to map other device's IO. That could be a reason for
+having syscon or some other sort of relationship, like clock or reset.
+
+> But SYSCRG driver also need PLL clock to be clock source when adding clock
+> providers. I tried to add SYSCRG clocks in 'clocks' property in DT and use
+> clk_get() to get the clocks. But it could not run and crash. So I use ioremap()
+> instead.
+
+So instead of properly model the relationship, you entangle the drivers
+even more.
+
+Please come with a proper design for this. I have no clue about your
+hardware, but that looks like you are asynchronously configuring the
+same hardware in two different places.
+
+Sorry, that's poor code.
+
+Best regards,
+Krzysztof
 
 
