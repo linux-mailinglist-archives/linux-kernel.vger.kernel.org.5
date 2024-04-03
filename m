@@ -1,54 +1,61 @@
-Return-Path: <linux-kernel+bounces-129044-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-129045-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B82418963B8
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 06:55:20 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2B1C98963BF
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 07:03:06 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E913E1C22C03
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 04:55:19 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DA6A6285671
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 05:03:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C9BEA45C14;
-	Wed,  3 Apr 2024 04:55:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AEF164779D;
+	Wed,  3 Apr 2024 05:02:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="aqEy1tPI"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="FzeEsPLR"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C7B4F17997;
-	Wed,  3 Apr 2024 04:55:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CBA9B17997;
+	Wed,  3 Apr 2024 05:02:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712120112; cv=none; b=SvByVV+PfoYk9NuLjA9iym3DjcLFYwSvh6f8gLOjsPqdNbDR4DnQhMT88ju44BFJ9sSpIW3nxVlZBb+gjd3b3FCQsoRu9TZWTFTl7KxI/AGND1R+rVS8FmPTTFSt6o0z54otlOkolxW08g2ZPQklHqM+N0X9jqq1hGWPJuxaX3E=
+	t=1712120574; cv=none; b=WoJmkHE6a9BFZr55Z1yDKdPX8BMy6d1G8nXwpyNAizZOiYxrU+QWJ/1NEI2wJ8+44qkWBEDD7YxwFkBmqfydTHR8SIThNE7TZ+0/nH7+U1MJJbyaAagh4jRyTQpwbGL6SMtcSw7j1T4Q+QhJwWvAIpzf79TzF+I7/lLBf+szvwo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712120112; c=relaxed/simple;
-	bh=vazJuyjxoofb9Ekbi6HE7j4yNVxw4yDdMhz8fsrfbD8=;
+	s=arc-20240116; t=1712120574; c=relaxed/simple;
+	bh=2/EZE/fqM7rihgoveOtBWFcjc/baKHO1PSwzHE8G7pI=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Y/1sGcelgOy/ThiTJT7CUTbyd9a4e3nviZPDGPkdDa1mGatqR1QfzU5pU8sVopUFbJJMO0JxhBwgEZY5Fgu1HN9Ibn0vz/0xWRb4H88Jyj8sA/I1asC/lxxqAK9fqVe5GlZa/DcIUuWHQGJJ1ufb5U0a/VbTpEME3tL8qF6NQ30=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=aqEy1tPI; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DC5EBC433F1;
-	Wed,  3 Apr 2024 04:55:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-	s=korg; t=1712120111;
-	bh=vazJuyjxoofb9Ekbi6HE7j4yNVxw4yDdMhz8fsrfbD8=;
+	 Content-Type:Content-Disposition:In-Reply-To; b=A1v7KDckGHDUG/nmQQuKQ9IuMdgMS5zHuLcPjx4IpIBPC3gLeaRFmKIuvWAJ4idmMJOzPshSk1g/UVkElqyN4Xuq0lA/zTH5GhMOYSkWgTiswEmMpr3AKGdCWBk6BVd5zdv1jH3eYdyWJ3mPwYpx5858M0Q3y0ixG/i9Spbu+fY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=FzeEsPLR; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id ADE58C433C7;
+	Wed,  3 Apr 2024 05:02:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1712120573;
+	bh=2/EZE/fqM7rihgoveOtBWFcjc/baKHO1PSwzHE8G7pI=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=aqEy1tPISGkUi+taHmCJF0UGi7x/IGRDep1+clsJP8SKVYwED8SnpttONe7u6OEZ9
-	 x4QXAg5cGX/ldD1Tdlt+RhfaZOR1ocC16gaBuJYwpKjTSTNdeZVXisv5E1gpXFvT+g
-	 odZY3JDuQSAVhLkhB3wJgYsfn4dpgZdBUP3SHtdE=
-Date: Wed, 3 Apr 2024 06:55:08 +0200
-From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To: Alexey Gladkov <legion@kernel.org>
-Cc: Jiri Slaby <jirislaby@kernel.org>, LKML <linux-kernel@vger.kernel.org>,
-	kbd@lists.linux.dev, linux-api@vger.kernel.org,
-	linux-fbdev@vger.kernel.org, linux-serial@vger.kernel.org,
-	Helge Deller <deller@gmx.de>
-Subject: Re: [PATCH v4 2/3] VT: Add KDFONTINFO ioctl
-Message-ID: <2024040306-unleash-scrubbed-1c2b@gregkh>
-References: <74ca50e0-61b1-4d4c-85dd-a5d920548c04@kernel.org>
- <cover.1712080158.git.legion@kernel.org>
- <7cd32f988a147d7617742c9e074c753de0c6bc1f.1712080158.git.legion@kernel.org>
+	b=FzeEsPLRQAOk6nAJZOzfUVRUqL5geuLfeb18kcrV9MjUceB6XAQZjcIdUuPSBxrOY
+	 yPberXlvyeONEkyn3Jjnum/VwFEpiVybx92xdNIJsd2ogM04BAKkPingFDrTgmw9H3
+	 uZuNcCNiZkK47ku6nVB8jtuvI+H5ZWZi9R9tbXdEEGCbxwswJ0YIA7SNKTOG2qURBJ
+	 zH/d3sF98I1TGg+r6IN88Z/nGGYGWG21Nm0kw5lboTl+wPb+L8DWRNmC07ebNcBIGg
+	 dUhYRG0DCJliiZuRQses+zCCoV5H7Yt8cDK4/zYjzmy3ei5U4AbFLVFMUdsA+sHreN
+	 TcCOECUiistiA==
+Date: Tue, 2 Apr 2024 22:02:51 -0700
+From: Eric Biggers <ebiggers@kernel.org>
+To: Fan Wu <wufan@linux.microsoft.com>
+Cc: corbet@lwn.net, zohar@linux.ibm.com, jmorris@namei.org,
+	serge@hallyn.com, tytso@mit.edu, axboe@kernel.dk, agk@redhat.com,
+	snitzer@kernel.org, eparis@redhat.com, paul@paul-moore.com,
+	linux-doc@vger.kernel.org, linux-integrity@vger.kernel.org,
+	linux-security-module@vger.kernel.org, fsverity@lists.linux.dev,
+	linux-block@vger.kernel.org, dm-devel@lists.linux.dev,
+	audit@vger.kernel.org, linux-kernel@vger.kernel.org,
+	Deven Bowers <deven.desai@linux.microsoft.com>
+Subject: Re: [PATCH v16 16/20] fsverity: consume fsverity built-in signatures
+ via LSM hook
+Message-ID: <20240403050251.GJ2576@sol.localdomain>
+References: <1711657047-10526-1-git-send-email-wufan@linux.microsoft.com>
+ <1711657047-10526-17-git-send-email-wufan@linux.microsoft.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -57,21 +64,72 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <7cd32f988a147d7617742c9e074c753de0c6bc1f.1712080158.git.legion@kernel.org>
+In-Reply-To: <1711657047-10526-17-git-send-email-wufan@linux.microsoft.com>
 
-On Tue, Apr 02, 2024 at 07:50:45PM +0200, Alexey Gladkov wrote:
-> +struct console_font_info {
-> +	unsigned int min_width, min_height;	/* minimal font size */
-> +	unsigned int max_width, max_height;	/* maximum font size */
-> +	unsigned int flags;			/* KD_FONT_INFO_FLAG_* */
-> +};
+On Thu, Mar 28, 2024 at 01:17:23PM -0700, Fan Wu wrote:
+> fsverity: consume fsverity built-in signatures via LSM hook
 
-As Jiri said, this will not work for an ioctl structure at all, sorry.
-Please read the kernel documentation about how to write a new ioctl for
-how to do this correctly (hint, you can not use 'unsigned int' in a
-structure that crosses the kernel/user boundry for new ioctls.)
+Nothing is being "consumed" in this patch.  I think you might mean something
+like "expose verified fsverity built-in signatures to LSMs".
 
-thanks,
+> It enables a policy enforcement layer within LSMs for fsverity, offering
+> granular control over the usage of authenticity claims. For instance, a policy
+> could be established to permit the execution of all files with built-in
+> fsverity signatures while restricting kernel module loading to specified
+> hashes.
 
-greg k-h
+No, this patch does not enable "restricting kernel module loading to specified
+hashes."  That can be done without this patch.
+
+> The introduction of a security_inode_setintegrity() hook call within
+> fsverity's workflow ensures that the verified built-in signature of a file
+> is stored in the inode's LSM blobs.
+
+No, it doesn't.  As I said on v15, this is not what IPE actually uses it for.
+
+Also, even if IPE did cache the built-in signature in i_security, the mere fact
+that it's cached would say nothing about what it's actually used for.
+
+> diff --git a/Documentation/filesystems/fsverity.rst b/Documentation/filesystems/fsverity.rst
+> index 13e4b18e5dbb..e13cf10211c8 100644
+> --- a/Documentation/filesystems/fsverity.rst
+> +++ b/Documentation/filesystems/fsverity.rst
+> @@ -86,6 +86,19 @@ authenticating fs-verity file hashes include:
+>    signature in their "security.ima" extended attribute, as controlled
+>    by the IMA policy.  For more information, see the IMA documentation.
+>  
+> +- Integrity Policy Enforcement (IPE).  IPE supports enforcing access
+> +  control decisions based on immutable security properties of files,
+> +  including those protected by fs-verity's built-in signatures.
+> +  "IPE policy" specifically allows for the authorization of fs-verity
+> +  files using properties such as ``fsverity_digest`` for identifying
+> +  files by their verity digest, and ``fsverity_signature`` to validate
+> +  files signed with fs-verity's built-in signature mechanism.
+
+Maybe leave out the "such as" above, since fsverity_digest and
+fsverity_signature are all the IPE properties related to fs-verity.
+
+> +  This integration enhances security by ensuring the integrity and
+> +  authenticity of files on a per-file basis, leveraging fs-verity's
+> +  robust protection capabilities in conjunction with IPE's policy-driven
+> +  access control.
+
+This reads a bit like a marketing blurb and feels a bit out of place, especially
+when it comes right after the paragraph about IMA which didn't include a similar
+sentence even though the exact same sentence would apply to IMA too.  Maybe just
+leave this sentence out.
+
+> @@ -457,7 +470,10 @@ Enabling this option adds the following:
+>     On success, the ioctl persists the signature alongside the Merkle
+>     tree.  Then, any time the file is opened, the kernel verifies the
+>     file's actual digest against this signature, using the certificates
+> -   in the ".fs-verity" keyring.
+> +   in the ".fs-verity" keyring. This verification happens as long as the
+> +   file's signature exists, regardless of the state of the sysctl variable
+> +   "fs.verity.require_signatures" described in the next item. The IPE LSM
+> +   relies on this behavior to save verified signatures into LSM blobs.
+
+No, IPE doesn't do that.
+
+- Eric
 
