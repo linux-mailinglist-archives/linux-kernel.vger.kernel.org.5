@@ -1,55 +1,57 @@
-Return-Path: <linux-kernel+bounces-130320-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-130321-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 63D3D8976BC
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 19:32:19 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 71A468976BE
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 19:32:37 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E84601F27983
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 17:32:18 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 285841F2F034
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 17:32:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 86A9E15E818;
-	Wed,  3 Apr 2024 17:18:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0193B15572A;
+	Wed,  3 Apr 2024 17:18:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="VHpks6eK"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="t8Tbkdf5"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B8A8315E5D0;
-	Wed,  3 Apr 2024 17:18:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 40FFE15ECC9;
+	Wed,  3 Apr 2024 17:18:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712164725; cv=none; b=ZaNx43+V1AO5pQ7Ggajx7lEPdHD3fMeeR6yYBr24CQSVTJz2wPsbJQkGQaLNfal/fVXwTiU/iZl14Caefb2fDIptGTFTMjvNIzwyGRooszub31qlMn0ZmvLg7dL6JgjPnUtyQRlreVAuQV/RcsKzzIyZwG+Oqu2WbS5JWi2zp1E=
+	t=1712164727; cv=none; b=m+5J+jwfjzIeGcsBYq1z3ACg4GBcsoK46fmnEgLZZRfTSxqxtWrE/qJq/tnCwbjC4j2th7SacQDecLbfP6k/sVT8Ggu6Qpgk2ed2sa9d2Mu0ftLx64UWhCQh9O0ZW+MCznK7LRKWajPFAjF7ygAbhRy/FGdYfmyYoLM47AMQgqc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712164725; c=relaxed/simple;
-	bh=ozj931v2CdUQnm+THPCb6wv5Qp89NCuTy+u1LNA37Rs=;
+	s=arc-20240116; t=1712164727; c=relaxed/simple;
+	bh=1/r2T1+lH3xh1cw8Hf+XNHbZmRnlMRWWJGmhtTvCMNI=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=H01gLA5Rbpy/qI/BRuZPD92NaMxf1fW3xi3l2EpUzMqcjRF98D7mvGmTVbmuHF0+iiv7zexRlxLhWqpM7zF78RyYrK79uQCeEMuuvH/fJKW5qS/PI0bK0icsOXrDT9Fm4nt04otgZsUzb860dyg3vS0LU0dpTspwuzu5/rFgoeE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=VHpks6eK; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D8EBEC433F1;
-	Wed,  3 Apr 2024 17:18:44 +0000 (UTC)
+	 MIME-Version; b=LrHDtnQv/Q5oLQKm7gOI2JqVbVgGH/WFUu1+Co327udOAPS8DjYoc7TUMSstAQ02/ef197KuIMtlWJsxT1NKSAFlgeFEdDVVWhfu6kr+i+psO+AcX26okrsOkTGli8UA8X1tpMOY3PIx5IzI+JTfDNK3R6ak1O40e4gIzyoXAHY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=t8Tbkdf5; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 022A2C43143;
+	Wed,  3 Apr 2024 17:18:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712164725;
-	bh=ozj931v2CdUQnm+THPCb6wv5Qp89NCuTy+u1LNA37Rs=;
+	s=k20201202; t=1712164726;
+	bh=1/r2T1+lH3xh1cw8Hf+XNHbZmRnlMRWWJGmhtTvCMNI=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=VHpks6eKsQ4abP45EzRRrlXJcfxvU9rjLdhIAVpbgsAncm3sqc03umfv4+PX3/iTO
-	 iCZg4UbDu+0eecE6YNxtX+K1hMNbujS3dCRjpzt4BD2Th14AIZ2LGfXEl1NiEyOAE8
-	 a818ZEwF5YpMn3VRuGgNvu3wBtQ99m6puiw9rYlWE3lraxYSlvlx3E8vSuFf9Cutpb
-	 YruktMuIqEdcPtkQq7haI9H3YXOGQDSRoZk5lu1DbXLP2gGM3PI05QDAl/OKN1oRyZ
-	 TSjAl4ypeKbD35z7eP8UQjbWOVwYnBxwDfnxubAy+1n1jR+NCWUYzlZVv+0FiqO4L9
-	 YfTSOAhunhNCg==
+	b=t8Tbkdf5GIfbY7PIKFZFKMMgGTQrHC5Kx4IDb54gfUvpi88YqmmtZ5Pz38Rm6CbxS
+	 PfgFNUpKDu/Yi+sus6zYf8nBOUiNgxZZDlpLEzbtHjNHV2US/BoHrPaVPxoOLF6hK4
+	 dx3nSN8DtlS5lgYzczjxvLgFiANmzihAH02HE5kUCjOX3iOqckVnTef57HimY8AjS7
+	 4X/MWuWQUFN9sCyO/7w4+sAvUXi5ENvudbe2RIMhmS1DEgs6tSRs4wp5Pq8LS1WlVA
+	 k+VdlAE5VLr+fiM7zquY/GhZ30vCfasBNbXycKaQOCQgKweVwgr3jkWn6LbTmeJ996
+	 Qqc4zdKcOxKXw==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Max Kellermann <max.kellermann@ionos.com>,
-	Masahiro Yamada <masahiroy@kernel.org>,
+Cc: "Jiawei Fu (iBug)" <i@ibugone.com>,
+	Christoph Hellwig <hch@lst.de>,
+	Sagi Grimberg <sagi@grimberg.me>,
+	Keith Busch <kbusch@kernel.org>,
 	Sasha Levin <sashal@kernel.org>,
-	linux-kbuild@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.6 16/20] modpost: fix null pointer dereference
-Date: Wed,  3 Apr 2024 13:17:57 -0400
-Message-ID: <20240403171815.342668-16-sashal@kernel.org>
+	linux-nvme@lists.infradead.org
+Subject: [PATCH AUTOSEL 6.6 17/20] drivers/nvme: Add quirks for device 126f:2262
+Date: Wed,  3 Apr 2024 13:17:58 -0400
+Message-ID: <20240403171815.342668-17-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240403171815.342668-1-sashal@kernel.org>
 References: <20240403171815.342668-1-sashal@kernel.org>
@@ -64,44 +66,50 @@ X-Patchwork-Hint: Ignore
 X-stable-base: Linux 6.6.24
 Content-Transfer-Encoding: 8bit
 
-From: Max Kellermann <max.kellermann@ionos.com>
+From: "Jiawei Fu (iBug)" <i@ibugone.com>
 
-[ Upstream commit 23dfd914d2bfc4c9938b0084dffd7105de231d98 ]
+[ Upstream commit e89086c43f0500bc7c4ce225495b73b8ce234c1f ]
 
-If the find_fromsym() call fails and returns NULL, the warn() call
-will dereference this NULL pointer and cause the program to crash.
+This commit adds NVME_QUIRK_NO_DEEPEST_PS and NVME_QUIRK_BOGUS_NID for
+device [126f:2262], which appears to be a generic VID:PID pair used for
+many SSDs based on the Silicon Motion SM2262/SM2262EN controller.
 
-This happened when I tried to build with "test_user_copy" module.
-With this fix, it prints lots of warnings like this:
+Two of my SSDs with this VID:PID pair exhibit the same behavior:
 
- WARNING: modpost: lib/test_user_copy: section mismatch in reference: (unknown)+0x4 (section: .text.fixup) -> (unknown) (section: .init.text)
+  * They frequently have trouble exiting the deepest power state (5),
+    resulting in the entire disk unresponsive.
+    Verified by setting nvme_core.default_ps_max_latency_us=10000 and
+    observing them behaving normally.
+  * They produce all-zero nguid and eui64 with `nvme id-ns` command.
 
-masahiroy@kernel.org:
- The issue is reproduced with ARCH=arm allnoconfig + CONFIG_MODULES=y +
- CONFIG_RUNTIME_TESTING_MENU=y + CONFIG_TEST_USER_COPY=m
+The offending products are:
 
-Signed-off-by: Max Kellermann <max.kellermann@ionos.com>
-Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+  * HP SSD EX950 1TB
+  * HIKVISION C2000Pro 2TB
+
+Signed-off-by: Jiawei Fu <i@ibugone.com>
+Reviewed-by: Christoph Hellwig <hch@lst.de>
+Reviewed-by: Sagi Grimberg <sagi@grimberg.me>
+Signed-off-by: Keith Busch <kbusch@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- scripts/mod/modpost.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ drivers/nvme/host/pci.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/scripts/mod/modpost.c b/scripts/mod/modpost.c
-index 5191fdbd3fa23..076f3c9e43fa5 100644
---- a/scripts/mod/modpost.c
-+++ b/scripts/mod/modpost.c
-@@ -1153,7 +1153,9 @@ static void default_mismatch_handler(const char *modname, struct elf_info *elf,
- 	sec_mismatch_count++;
- 
- 	warn("%s: section mismatch in reference: %s+0x%x (section: %s) -> %s (section: %s)\n",
--	     modname, fromsym, (unsigned int)(faddr - from->st_value), fromsec, tosym, tosec);
-+	     modname, fromsym,
-+	     (unsigned int)(faddr - (from ? from->st_value : 0)),
-+	     fromsec, tosym, tosec);
- 
- 	if (mismatch->mismatch == EXTABLE_TO_NON_TEXT) {
- 		if (match(tosec, mismatch->bad_tosec))
+diff --git a/drivers/nvme/host/pci.c b/drivers/nvme/host/pci.c
+index f8e92404a6591..b985142fb84b9 100644
+--- a/drivers/nvme/host/pci.c
++++ b/drivers/nvme/host/pci.c
+@@ -3361,6 +3361,9 @@ static const struct pci_device_id nvme_id_table[] = {
+ 				NVME_QUIRK_BOGUS_NID, },
+ 	{ PCI_VDEVICE(REDHAT, 0x0010),	/* Qemu emulated controller */
+ 		.driver_data = NVME_QUIRK_BOGUS_NID, },
++	{ PCI_DEVICE(0x126f, 0x2262),	/* Silicon Motion generic */
++		.driver_data = NVME_QUIRK_NO_DEEPEST_PS |
++				NVME_QUIRK_BOGUS_NID, },
+ 	{ PCI_DEVICE(0x126f, 0x2263),	/* Silicon Motion unidentified */
+ 		.driver_data = NVME_QUIRK_NO_NS_DESC_LIST |
+ 				NVME_QUIRK_BOGUS_NID, },
 -- 
 2.43.0
 
