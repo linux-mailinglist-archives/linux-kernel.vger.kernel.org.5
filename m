@@ -1,37 +1,38 @@
-Return-Path: <linux-kernel+bounces-129494-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-129496-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B61CB896BA1
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 12:08:23 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id E904E896B97
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 12:07:38 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9FFFAB26E36
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 10:07:05 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 264451C26EDC
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 10:07:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9ABAA13C699;
-	Wed,  3 Apr 2024 10:05:34 +0000 (UTC)
-Received: from szxga04-in.huawei.com (szxga04-in.huawei.com [45.249.212.190])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 47D4C136E3F;
+	Wed,  3 Apr 2024 10:05:44 +0000 (UTC)
+Received: from szxga03-in.huawei.com (szxga03-in.huawei.com [45.249.212.189])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3B53813667E;
-	Wed,  3 Apr 2024 10:05:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.190
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D31A413D603;
+	Wed,  3 Apr 2024 10:05:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.189
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712138734; cv=none; b=mIOvgpJ7TliKHPI5CNS2uNiFy2hIHU+0/P6L8cs1aQdmxnSw2mqAdB4NQoZ3JbWfjyt+DK29cFr3cUeXZh89HX6x253zK5Q7Kqf+wxV/T3iA/q5IcCXqu8XJ7MJu5VpX6hCPy9vmqAI4/yYpIv1w+eJCnxiVMu+/R9mum7wQZIk=
+	t=1712138743; cv=none; b=E1jvHxNW1QoVWpsKpqb1DH7j6d+v1N2tTDXENz7Rhh9dZQhBgBU3ASo2+9V1KDuLcntAvwOZtaFDq+AfBBZk8/919qvxePsWNkm6LJPh1kEFFIOi9MbEjqCTNFoRWQwWmGCasdSioCkF1PkT7hrWgRLS0w4RG5H42i5UtoTVxNY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712138734; c=relaxed/simple;
-	bh=HZo0thGmj6mJMS1JWhLGkXZQKJN+evPNoOi+wj58PKg=;
-	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=SiKYP7zbItwQZlcrsdF64pJ/LrAA9UjEzp2RvdXerlaaxjk9cNDD7r8XSL+Zg40NAWNNvgDCltuC9uzZMGCi7iANmECu4c/BlPWpzwYWM9v7ChpeTFvFE3rFgO6tEITq3ffuW84AH1L/lqC0NZFXHfk1Fjwi90cohHeP88rzFmk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.190
+	s=arc-20240116; t=1712138743; c=relaxed/simple;
+	bh=INGEGqdsSMSW8P5U9FPTJWpgdgTcifxfTvht2tN20+A=;
+	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=gj6UxY7JjUCU2foQB5iNMB4roOqf/LWYksV/AEEW+hQc+i5Fl1rFahlHe7Bc+dvRUIlL0YXDMzypbqlYGMZcCtzewEt9kH1stjtXwUHjnyOdNt/ihYVHwVI/cR9QV7BADK0rYJrlE0QnWkPujWPbDk9B3wSUSVDAyXgsdKAW394=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.189
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.162.112])
-	by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4V8gKY4mxTz29lcD;
-	Wed,  3 Apr 2024 18:02:41 +0800 (CST)
+Received: from mail.maildlp.com (unknown [172.19.162.254])
+	by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4V8gLH1lnfz1JB5G;
+	Wed,  3 Apr 2024 18:03:19 +0800 (CST)
 Received: from dggpemd200003.china.huawei.com (unknown [7.185.36.122])
-	by mail.maildlp.com (Postfix) with ESMTPS id 6175D140158;
+	by mail.maildlp.com (Postfix) with ESMTPS id B332518007E;
 	Wed,  3 Apr 2024 18:05:27 +0800 (CST)
 Received: from localhost.localdomain (10.67.165.2) by
  dggpemd200003.china.huawei.com (7.185.36.122) with Microsoft SMTP Server
@@ -44,10 +45,12 @@ CC: <linux-kernel@vger.kernel.org>, <linux-crypto@vger.kernel.org>,
 	<songzhiqi1@huawei.com>, <qianweili@huawei.com>, <liushangbin@hisilicon.com>,
 	<linwenkai6@hisilicon.com>, <taoqi10@huawei.com>, <wangzhou1@hisilicon.com>,
 	<huangchenghai2@huawei.com>
-Subject: [PATCH 0/9] crypto: hisilicon - Optimize and fix some driver processes
-Date: Wed, 3 Apr 2024 18:00:53 +0800
-Message-ID: <20240403100102.2735306-1-huangchenghai2@huawei.com>
+Subject: [PATCH 1/9] crypto: hisilicon/sec - Add the condition for configuring the sriov function
+Date: Wed, 3 Apr 2024 18:00:54 +0800
+Message-ID: <20240403100102.2735306-2-huangchenghai2@huawei.com>
 X-Mailer: git-send-email 2.30.0
+In-Reply-To: <20240403100102.2735306-1-huangchenghai2@huawei.com>
+References: <20240403100102.2735306-1-huangchenghai2@huawei.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -59,33 +62,32 @@ Content-Type: text/plain
 X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
  dggpemd200003.china.huawei.com (7.185.36.122)
 
-This patch series is mainly used to fix and optimize some
-problems of hisilicon.
+When CONFIG_PCI_IOV is disabled, the SRIOV configuration
+function is not required. An error occurs if this function is
+incorrectly called.
 
-Chenghai Huang (9):
-  crypto: hisilicon/sec - Add the condition for configuring the sriov
-    function
-  crypto: hisilicon/debugfs - Fix debugfs uninit process issue
-  crypto: hisilicon/sgl - Delete redundant parameter verification
-  crypto: hisilicon/debugfs - Fix the processing logic issue in the
-    debugfs creation
-  crypto: hisilicon/qm - Add the default processing branch
-  crypto: hisilicon - Adjust debugfs creation and release order
-  crypto: hisilicon/sec - Fix memory leak for sec resource release
-  crypto: hisilicon/debugfs - Resolve the problem of applying for
-    redundant space in sq dump
-  crypto: hisilicon/debugfs - Add the err memory release process to qm
-    uninit
+Consistent with other modules, add the condition for
+configuring the sriov function of sec_pci_driver.
 
- drivers/crypto/hisilicon/debugfs.c         | 36 +++++++++++++++-------
- drivers/crypto/hisilicon/hpre/hpre_main.c  | 21 ++++++-------
- drivers/crypto/hisilicon/qm.c              |  8 ++---
- drivers/crypto/hisilicon/sec2/sec_crypto.c |  4 ++-
- drivers/crypto/hisilicon/sec2/sec_main.c   | 26 ++++++++--------
- drivers/crypto/hisilicon/sgl.c             |  5 +--
- drivers/crypto/hisilicon/zip/zip_main.c    | 24 +++++++--------
- 7 files changed, 67 insertions(+), 57 deletions(-)
+Signed-off-by: Chenghai Huang <huangchenghai2@huawei.com>
+---
+ drivers/crypto/hisilicon/sec2/sec_main.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
+diff --git a/drivers/crypto/hisilicon/sec2/sec_main.c b/drivers/crypto/hisilicon/sec2/sec_main.c
+index c290d8937b19..f4e10741610f 100644
+--- a/drivers/crypto/hisilicon/sec2/sec_main.c
++++ b/drivers/crypto/hisilicon/sec2/sec_main.c
+@@ -1324,7 +1324,8 @@ static struct pci_driver sec_pci_driver = {
+ 	.probe = sec_probe,
+ 	.remove = sec_remove,
+ 	.err_handler = &sec_err_handler,
+-	.sriov_configure = hisi_qm_sriov_configure,
++	.sriov_configure = IS_ENABLED(CONFIG_PCI_IOV) ?
++				hisi_qm_sriov_configure : NULL,
+ 	.shutdown = hisi_qm_dev_shutdown,
+ 	.driver.pm = &sec_pm_ops,
+ };
 -- 
 2.30.0
 
