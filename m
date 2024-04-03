@@ -1,74 +1,67 @@
-Return-Path: <linux-kernel+bounces-130241-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-130247-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C3E568975D8
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 19:03:08 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5C37D8975E6
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 19:04:32 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 01C981C2758F
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 17:03:08 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1649428BA35
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 17:04:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0AE45152513;
-	Wed,  3 Apr 2024 17:03:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 57063152DFE;
+	Wed,  3 Apr 2024 17:03:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="hZoh+pO+"
-Received: from out-179.mta1.migadu.com (out-179.mta1.migadu.com [95.215.58.179])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=megous.com header.i=@megous.com header.b="MO0npq4t"
+Received: from vps.xff.cz (vps.xff.cz [195.181.215.36])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 537BD1514DB
-	for <linux-kernel@vger.kernel.org>; Wed,  3 Apr 2024 17:02:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D326E152505;
+	Wed,  3 Apr 2024 17:03:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.181.215.36
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712163781; cv=none; b=gTWFnCgDlco5b/3UHRW5LIPltTtmOkVtkG5DUsW4aU9tk1f3riss5BT0SGzJ5iKJiIHYam8Nyx8pG2sC+sts/6HZDy6LmW4bJTEpuMpPFVVIvqeUpxtbO8mNH2+xqn7ZnDxMYEbBONoTbgQBxOeIFhBnXNUrlUmrQ1dVU1wXuvs=
+	t=1712163821; cv=none; b=eLcThpO9FWblRYa/HqfFwe33T/IwtCb7etjlKjxD9xUBlcjbC4NRR5mixLaOh9NGl4czDdOQ2EcKPHpAPHR46lQy4yWXWU8MkcB6soo6yyNnUXCOyFfShy6mAqGxP/RHO3ED5hishINqg14lWLPlKH8J5NiYlGi6lXt+0B0bT8A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712163781; c=relaxed/simple;
-	bh=uy0uR4KNWQjTyhStmbFe7CExzINwuvct04FOVMIe8G0=;
+	s=arc-20240116; t=1712163821; c=relaxed/simple;
+	bh=5oQ9PAIUbskmpNMMQyZgPbJVk82PwBM3Z1uyb7nioaQ=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=FY3BTaiaZtMytRGWDDzOuZoS2peiClREhjgOV67zFXVBkW2U0uryPHezxKuKgaVwpyPHOO3HlxnRtfBJqUMVkvypxL9Bmw9ScADJohM0lnLOqeS6wtBKJixe+rd04sGcXfw7bsU5wQXiY3s2sfykDMnt9KRsBFsqcxU+maGDNh4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=hZoh+pO+; arc=none smtp.client-ip=95.215.58.179
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Date: Wed, 3 Apr 2024 10:02:40 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1712163777;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=l2xgd3X9t4EgBaNAFDJVjvxOH1jxFC0KojtDFbkugeQ=;
-	b=hZoh+pO+l0APIgPQISDmnLTHEmqpxabM1zSle/bXSt0Rv0Hu5Vb48tN7QWGsBv2nWTDfZB
-	PfmejjrzTBt5G7M7FpBZ7m1h684jEvO4ylLhoT46tLRwJrbcun1U5Bi2j0KgR41qRLra/o
-	k172DDMShT0o2CtvIZmeFyo3MVW6cyk=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Roman Gushchin <roman.gushchin@linux.dev>
-To: Vlastimil Babka <vbabka@suse.cz>
-Cc: Aishwarya TCV <aishwarya.tcv@arm.com>,
-	Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
-	linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
-	linux-fsdevel@vger.kernel.org,
-	Chengming Zhou <chengming.zhou@linux.dev>,
-	Linus Torvalds <torvalds@linux-foundation.org>,
-	Josh Poimboeuf <jpoimboe@kernel.org>,
-	Jeff Layton <jlayton@kernel.org>,
-	Chuck Lever <chuck.lever@oracle.com>, Kees Cook <kees@kernel.org>,
-	Christoph Lameter <cl@linux.com>, Pekka Enberg <penberg@kernel.org>,
-	David Rientjes <rientjes@google.com>,
-	Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-	Hyeonggon Yoo <42.hyeyoo@gmail.com>,
-	Johannes Weiner <hannes@cmpxchg.org>,
-	Michal Hocko <mhocko@kernel.org>,
-	Muchun Song <muchun.song@linux.dev>,
-	Alexander Viro <viro@zeniv.linux.org.uk>,
-	Christian Brauner <brauner@kernel.org>, Jan Kara <jack@suse.cz>,
-	Shakeel Butt <shakeel.butt@linux.dev>,
-	Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v2 1/2] mm, slab: move memcg charging to post-alloc hook
-Message-ID: <Zg2LsNm6twOmG69l@P9FQF9L96D.corp.robot.car>
-References: <20240325-slab-memcg-v2-0-900a458233a6@suse.cz>
- <20240325-slab-memcg-v2-1-900a458233a6@suse.cz>
- <30df7730-1b37-420d-b661-e5316679246f@arm.com>
- <4af50be2-4109-45e5-8a36-2136252a635e@suse.cz>
+	 Content-Type:Content-Disposition:In-Reply-To; b=JaKGG3zG8DNohxOksv5TmXW4vR7kAgUqWYTM6PmESelSX8j7p3Dr/FCT42R/lcBtBXWWLd+WrzYueXSvFcJTvDykLjZ3GsIEoWhr1D092S74mH7TelITQRbTNMy5oYcpYqvFjt1TCZ77D+7bUglDj+JH0nmhLjwli30s4bmE9ZY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=megous.com; spf=pass smtp.mailfrom=megous.com; dkim=pass (1024-bit key) header.d=megous.com header.i=@megous.com header.b=MO0npq4t; arc=none smtp.client-ip=195.181.215.36
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=megous.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=megous.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=megous.com; s=mail;
+	t=1712163817; bh=5oQ9PAIUbskmpNMMQyZgPbJVk82PwBM3Z1uyb7nioaQ=;
+	h=Date:From:To:Cc:Subject:X-My-GPG-KeyId:References:From;
+	b=MO0npq4tWyuGwTaav38LDUD379CLRTbjTWXhqWWD37o4lA9WmySm+7G11xnzxBRPb
+	 Z45Lio0muMx4UnX1rh3TZ/e8jt0gHKbwnkkVk17k7CySVgjnOhhlvkOYBzN79HZ4PM
+	 vP3xXserb4s+Fr3wQRSguRa794bvKuUKqqolPs2k=
+Date: Wed, 3 Apr 2024 19:03:37 +0200
+From: =?utf-8?Q?Ond=C5=99ej?= Jirman <megous@megous.com>
+To: Sakari Ailus <sakari.ailus@linux.intel.com>
+Cc: git@luigi311.com, linux-media@vger.kernel.org, 
+	dave.stevenson@raspberrypi.com, jacopo.mondi@ideasonboard.com, mchehab@kernel.org, 
+	robh@kernel.org, krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org, 
+	shawnguo@kernel.org, s.hauer@pengutronix.de, kernel@pengutronix.de, 
+	festevam@gmail.com, devicetree@vger.kernel.org, imx@lists.linux.dev, 
+	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, pavel@ucw.cz, 
+	phone-devel@vger.kernel.org
+Subject: Re: [PATCH v3 24/25] drivers: media: i2c: imx258: Add support for
+ reset gpio
+Message-ID: <vesqdx7w2sobjnx7tmk6s6i5zplbhsphamoalysx625r4aqffq@hos5otov5ids>
+Mail-Followup-To: =?utf-8?Q?Ond=C5=99ej?= Jirman <megous@megous.com>, 
+	Sakari Ailus <sakari.ailus@linux.intel.com>, git@luigi311.com, linux-media@vger.kernel.org, 
+	dave.stevenson@raspberrypi.com, jacopo.mondi@ideasonboard.com, mchehab@kernel.org, 
+	robh@kernel.org, krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org, 
+	shawnguo@kernel.org, s.hauer@pengutronix.de, kernel@pengutronix.de, 
+	festevam@gmail.com, devicetree@vger.kernel.org, imx@lists.linux.dev, 
+	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, pavel@ucw.cz, 
+	phone-devel@vger.kernel.org
+X-My-GPG-KeyId: EBFBDDE11FB918D44D1F56C1F9F0A873BE9777ED
+ <https://xff.cz/key.txt>
+References: <20240403150355.189229-1-git@luigi311.com>
+ <20240403150355.189229-25-git@luigi311.com>
+ <Zg2Dy2QBguXQoR3P@kekkonen.localdomain>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -77,87 +70,92 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <4af50be2-4109-45e5-8a36-2136252a635e@suse.cz>
-X-Migadu-Flow: FLOW_OUT
+In-Reply-To: <Zg2Dy2QBguXQoR3P@kekkonen.localdomain>
 
-On Wed, Apr 03, 2024 at 05:48:24PM +0200, Vlastimil Babka wrote:
-> On 4/3/24 1:39 PM, Aishwarya TCV wrote:
-> > 
-> > 
-> > On 25/03/2024 08:20, Vlastimil Babka wrote:
-> >> The MEMCG_KMEM integration with slab currently relies on two hooks
-> >> during allocation. memcg_slab_pre_alloc_hook() determines the objcg and
-> >> charges it, and memcg_slab_post_alloc_hook() assigns the objcg pointer
-> >> to the allocated object(s).
-> >> 
-> >> As Linus pointed out, this is unnecessarily complex. Failing to charge
-> >> due to memcg limits should be rare, so we can optimistically allocate
-> >> the object(s) and do the charging together with assigning the objcg
-> >> pointer in a single post_alloc hook. In the rare case the charging
-> >> fails, we can free the object(s) back.
-> >> 
-> >> This simplifies the code (no need to pass around the objcg pointer) and
-> >> potentially allows to separate charging from allocation in cases where
-> >> it's common that the allocation would be immediately freed, and the
-> >> memcg handling overhead could be saved.
-> >> 
-> >> Suggested-by: Linus Torvalds <torvalds@linux-foundation.org>
-> >> Link: https://lore.kernel.org/all/CAHk-=whYOOdM7jWy5jdrAm8LxcgCMFyk2bt8fYYvZzM4U-zAQA@mail.gmail.com/
-> >> Reviewed-by: Roman Gushchin <roman.gushchin@linux.dev>
-> >> Reviewed-by: Chengming Zhou <chengming.zhou@linux.dev>
-> >> Signed-off-by: Vlastimil Babka <vbabka@suse.cz>
-> >> ---
-> >>  mm/slub.c | 180 +++++++++++++++++++++++++++-----------------------------------
-> >>  1 file changed, 77 insertions(+), 103 deletions(-)
-> > 
-> > Hi Vlastimil,
-> > 
-> > When running the LTP test "memcg_limit_in_bytes" against next-master
-> > (next-20240402) kernel with Arm64 on JUNO, oops is observed in our CI. I
-> > can send the full logs if required. It is observed to work fine on
-> > softiron-overdrive-3000.
-> > 
-> > A bisect identified 11bb2d9d91627935c63ea3e6a031fd238c846e1 as the first
-> > bad commit. Bisected it on the tag "next-20240402" at repo
-> > "https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git".
-> > 
-> > This works fine on  Linux version v6.9-rc2
+Hi,
+
+On Wed, Apr 03, 2024 at 04:28:59PM GMT, Sakari Ailus wrote:
+> Hi Luis,
 > 
-> Oops, sorry, can you verify that this fixes it?
-> Thanks.
+> Could you unify the subject prefix for the driver patches, please? E.g.
+> "media: imx258: " would be fine.
 > 
-> ----8<----
-> From b0597c220624fef4f10e26079a3ff1c86f02a12b Mon Sep 17 00:00:00 2001
-> From: Vlastimil Babka <vbabka@suse.cz>
-> Date: Wed, 3 Apr 2024 17:45:15 +0200
-> Subject: [PATCH] fixup! mm, slab: move memcg charging to post-alloc hook
+> On Wed, Apr 03, 2024 at 09:03:53AM -0600, git@luigi311.com wrote:
+> > From: Luis Garcia <git@luigi311.com>
+> > 
+> > It was documented in DT, but not implemented.
+> > 
+> > Signed-off-by: Ondrej Jirman <megous@megous.com>
+> > Signed-off-by: Luis Garcia <git@luigi311.com>
+> > ---
+> >  drivers/media/i2c/imx258.c | 14 +++++++++++++-
+> >  1 file changed, 13 insertions(+), 1 deletion(-)
+> > 
+> > diff --git a/drivers/media/i2c/imx258.c b/drivers/media/i2c/imx258.c
+> > index 163f04f6f954..4c117c4829f1 100644
+> > --- a/drivers/media/i2c/imx258.c
+> > +++ b/drivers/media/i2c/imx258.c
+> > @@ -680,6 +680,7 @@ struct imx258 {
+> >  	unsigned int csi2_flags;
+> >  
+> >  	struct gpio_desc *powerdown_gpio;
+> > +	struct gpio_desc *reset_gpio;
+> >  
+> >  	/*
+> >  	 * Mutex for serialized access:
+> > @@ -1232,7 +1233,11 @@ static int imx258_power_on(struct device *dev)
+> >  		regulator_bulk_disable(IMX258_NUM_SUPPLIES, imx258->supplies);
+> >  	}
+> >  
+> > -	return ret;
+> > +	gpiod_set_value_cansleep(imx258->reset_gpio, 0);
+> > +
+> > +	usleep_range(400, 500);
 > 
-> The call to memcg_alloc_abort_single() is wrong, it expects a pointer to
-> single object, not an array.
+> You could mention this at least in the commit message.
+
+This is T6 in the datasheet: https://megous.com/dl/tmp/92c9223ce877216e.png
+
+
+> > +
+> > +	return 0;
+> >  }
+> >  
+> >  static int imx258_power_off(struct device *dev)
+> > @@ -1243,6 +1248,7 @@ static int imx258_power_off(struct device *dev)
+> >  	clk_disable_unprepare(imx258->clk);
+> >  	regulator_bulk_disable(IMX258_NUM_SUPPLIES, imx258->supplies);
+> >  
+> > +	gpiod_set_value_cansleep(imx258->reset_gpio, 1);
 > 
-> Reported-by: Aishwarya TCV <aishwarya.tcv@arm.com>
-> Signed-off-by: Vlastimil Babka <vbabka@suse.cz>
+> Same question than on the other GPIO: does this belong here?
 
-Oh, indeed.
-Reviewed-by: Roman Gushchin <roman.gushchin@linux.dev>
+No, this should be before the regulator_bulk_disable.
 
-Vlastimil, here is another small comments fixup for the same original patch:
+See: https://megous.com/dl/tmp/c96180b23d7ce63a.png
 
-diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-index 0745a28782de..9bd0ffd4c547 100644
---- a/mm/memcontrol.c
-+++ b/mm/memcontrol.c
-@@ -353,7 +353,7 @@ static void memcg_reparent_objcgs(struct mem_cgroup *memcg,
+kind regards,
+	o.
 
- /*
-  * A lot of the calls to the cache allocation functions are expected to be
-- * inlined by the compiler. Since the calls to memcg_slab_pre_alloc_hook() are
-+ * inlined by the compiler. Since the calls to memcg_slab_post_alloc_hook() are
-  * conditional to this static branch, we'll have to allow modules that does
-  * kmem_cache_alloc and the such to see this symbol as well
-  */
-
-
-
-Thanks!
+> >  	gpiod_set_value_cansleep(imx258->powerdown_gpio, 1);
+> >  
+> >  	return 0;
+> > @@ -1554,6 +1560,12 @@ static int imx258_probe(struct i2c_client *client)
+> >  	if (IS_ERR(imx258->powerdown_gpio))
+> >  		return PTR_ERR(imx258->powerdown_gpio);
+> >  
+> > +	/* request optional reset pin */
+> > +	imx258->reset_gpio = devm_gpiod_get_optional(&client->dev, "reset",
+> > +						    GPIOD_OUT_HIGH);
+> > +	if (IS_ERR(imx258->reset_gpio))
+> > +		return PTR_ERR(imx258->reset_gpio);
+> > +
+> >  	/* Initialize subdev */
+> >  	v4l2_i2c_subdev_init(&imx258->sd, client, &imx258_subdev_ops);
+> >  
+> 
+> -- 
+> Regards,
+> 
+> Sakari Ailus
 
