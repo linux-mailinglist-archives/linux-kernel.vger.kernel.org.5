@@ -1,194 +1,309 @@
-Return-Path: <linux-kernel+bounces-129354-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-129356-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id A25578968FF
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 10:42:02 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A335D896965
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 10:46:35 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 137591F2603B
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 08:42:02 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 59911285DC5
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 08:46:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B5CDC6CDBD;
-	Wed,  3 Apr 2024 08:41:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 300575FEE5;
+	Wed,  3 Apr 2024 08:45:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=csgroup.eu header.i=@csgroup.eu header.b="fcIe7SAJ"
-Received: from PA5P264CU001.outbound.protection.outlook.com (mail-francecentralazon11020002.outbound.protection.outlook.com [52.101.167.2])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="KTZgiFVj"
+Received: from mail-lf1-f49.google.com (mail-lf1-f49.google.com [209.85.167.49])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B97B55FEE5
-	for <linux-kernel@vger.kernel.org>; Wed,  3 Apr 2024 08:41:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=52.101.167.2
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712133714; cv=fail; b=MC7Uqcwy/j7zFM6zv0ibWLXmNtEppEvsD9yqX99Yd7GRXh4yX4XQXh+jRGyeuGMC/hNs8zFLdsh/EQ4ThIWA4sHX12XmL2gUFOJPtw6X4NdfYk4/c54oyfVAusghGjaQzy6YBBnn7qayoeI+FskPo7toNb90/ss58Y8zNiijSeQ=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712133714; c=relaxed/simple;
-	bh=R//uGGGg2zrUti1DhKTD1QcagUy4s5A5xmxzLK8A9GA=;
-	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=NROXK4YVDDP1RxRcnZ7oxoxaOMC16K+zb/M8d4EgvWKSksnUaHjxjaRdyN0vzmGdnV2jz/jH/hmNoT4VG8RPJINZb86IAuaxiUrktvRLOmq2Gff91y3ClcQ//HZp+0aCzf7HWUMsnFtrkzEaSHjafktD7mgjxrjBUt4x0/zCpyA=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=csgroup.eu; spf=pass smtp.mailfrom=csgroup.eu; dkim=pass (2048-bit key) header.d=csgroup.eu header.i=@csgroup.eu header.b=fcIe7SAJ; arc=fail smtp.client-ip=52.101.167.2
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=csgroup.eu
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=csgroup.eu
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=H0dGz4I/HY0hUiRo30EYaU1oXRI+DQQPL2UDQEW32LjuUimO9RZ/EFn0a6bKcpCgFpQCqMjOGZxaPxarZ97ePHym0erPFEsbGw4KMlPISWtJPja1pH3iOAiiMe7OVoGH5JDuUDRgw3vD0XEsh2WhrZpyCMyHm3cnhTyFTwPieKVv2TPX86rqufcoIQo7tKg2SenMETpKHpCGJk/NhPgq+MMA3Lb8oIJ4s3tyFxcXQJXEROPwoTouJPTYn0rIiQa+WyukuR8jbKEHLCJCni4Bfhnx1fyOupvrqRmmAvRs6HSvTbSsS0a0pnT1BLOBKpBul9sWBhO1qyWTSDfVRPrKbA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=R//uGGGg2zrUti1DhKTD1QcagUy4s5A5xmxzLK8A9GA=;
- b=dtkWhxrYDu/82uWAODc5e5lVEyqFuoB5JU7pf4xALTeMTTtUD2C/2mMb1mLM4u4Lp5pFs2zKdCyY/Rjtu2fVTG8nnPAMCpocLEg9VJlss+PNOI9Vg+9glF9ysB9256kj5e+iR2AQULY5bj0zxDvnb01DHvcfzmRRoXuURdJWns185exdeRy7uQz8kkLBkT8rjBaSzPeVEZrpgDxxP+NJ4mu06DFyCbrtsuXpKSlK80Q2XXi8+ttW48xwnaTVNLXHpJ56u6qoIcXQYwRpFWoURiWMuOTmZvkaLu0JQ3ebHjGthGu0XUHsuska1E/9MRsH/k5MaGFtUf9OlWK1QZb/cg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=csgroup.eu; dmarc=pass action=none header.from=csgroup.eu;
- dkim=pass header.d=csgroup.eu; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=csgroup.eu;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=R//uGGGg2zrUti1DhKTD1QcagUy4s5A5xmxzLK8A9GA=;
- b=fcIe7SAJyGVcYIYhq+GC1VrRuiq+5Zi4Cs8ZAtv3qayrsV5ljQvqKmOzht/R9gSU3Ga0cFj7+8DXQ7fZWttQIZZOn4Kidp+mhFxt43OCZwoGWjE1ykAU4/uWE9L7HyEx+ECjDB3DefK8EMtipCiCDpM7igd/aFKs7sUQ9HDGiw2/+9s/yxLcHjjkMsqpAtsqUA7VxIBJwmmhMA7YigaH9qHP8E/NUQzZC/7XlxyoZyoq3KXuDZL03UvoNYB/LvQEi9/dFN+2tlm0osJsZeQLAvA9noHOQokDbjXkzroLKsgon1xZ/b+9h8/X0OnAkynjZqUH3UyTLWlWWcQsvr7oMg==
-Received: from MRZP264MB2988.FRAP264.PROD.OUTLOOK.COM (2603:10a6:501:31::15)
- by PR0P264MB1818.FRAP264.PROD.OUTLOOK.COM (2603:10a6:102:16d::7) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7409.46; Wed, 3 Apr
- 2024 08:41:49 +0000
-Received: from MRZP264MB2988.FRAP264.PROD.OUTLOOK.COM
- ([fe80::c192:d40f:1c33:1f4e]) by MRZP264MB2988.FRAP264.PROD.OUTLOOK.COM
- ([fe80::c192:d40f:1c33:1f4e%6]) with mapi id 15.20.7409.042; Wed, 3 Apr 2024
- 08:41:49 +0000
-From: Christophe Leroy <christophe.leroy@csgroup.eu>
-To: Arnd Bergmann <arnd@kernel.org>, "linux-kernel@vger.kernel.org"
-	<linux-kernel@vger.kernel.org>, Andrew Morton <akpm@linux-foundation.org>,
-	Palmer Dabbelt <palmer@rivosinc.com>
-CC: Arnd Bergmann <arnd@arndb.de>, Dave Hansen <dave.hansen@linux.intel.com>,
-	Noah Goldstein <goldstein.w.n@gmail.com>, Charlie Jenkins
-	<charlie@rivosinc.com>
-Subject: Re: [PATCH 18/34] lib: checksum: hide unused
- expected_csum_ipv6_magic[]
-Thread-Topic: [PATCH 18/34] lib: checksum: hide unused
- expected_csum_ipv6_magic[]
-Thread-Index: AQHahZ5g28C+LJsTYku4NOBSr1WvGrFWOkqA
-Date: Wed, 3 Apr 2024 08:41:49 +0000
-Message-ID: <66a1d5f1-d9b2-402c-826d-955370288037@csgroup.eu>
-References: <20240403080702.3509288-1-arnd@kernel.org>
- <20240403080702.3509288-19-arnd@kernel.org>
-In-Reply-To: <20240403080702.3509288-19-arnd@kernel.org>
-Accept-Language: fr-FR, en-US
-Content-Language: fr-FR
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-user-agent: Mozilla Thunderbird
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: MRZP264MB2988:EE_|PR0P264MB1818:EE_
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info:
- 802VhHvRxK+NZiuckAMPR3q1KMMzcaO9yPbm/0kNvsg3Cnalk77Llpng555+C8Nm8ZacXZFuafK6+2QCcj20t0c/xLGxxJKs+fOhcmoN6ppdQF9RnWiWzzqoz2Nv282/ngl6jbtipqH8r3M3leRdwALudrZXKTg3+CYp2zY7mNLFhwSbvcY6KPEXLhFhaTfypBjIyqrRMaGEC8oAGfPJsTvm2dm0WjEcng0bl19hYVTT7cv7Q05QAkK/nVbzmpMHNGxb1zDdO13mAkwHU/gF3UNeY6yxfA5hKHZgS7ijmlLdE1KRapJPBLaZWXTTk4IUD36B7VwoJzpg7PFoHUmTSoLUmvh+oZfZpj70c0qm4jys/6mpw6bTQASTEEo9sE3V21D3AQu/bW4Ao7r/EmPeRHxi5lcslATtJ90nXHWIfw8yhiP540gqKjFHchCXmdFTuj320lUZ8CgaOB5kQucXM6A2D+B3ljgPXFLj3c3DjKyYy1rX3l8ZvFVAsrPjIfnzZsthXPs2rZG3n4sr7yl7DhdZdMTYXXeNa/gJUztartL6zp0Neo2pV6rCgwS7Uw3CTUgkiRZDXC3XKYi46kgN7g128KsS5kvWRVEQIOdUVA4=
-x-forefront-antispam-report:
- CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MRZP264MB2988.FRAP264.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(13230031)(376005)(1800799015)(366007);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0:
- =?utf-8?B?bkJwNmNjbjk3Y1VmZTZtUHFzM0h4eHNtVTVlUktGK0UvUTBiOTB4eGUwaVRq?=
- =?utf-8?B?SWRpMEUyenAyN0lzSnhVUDE1VHo3NFJoRU5SeU5MbUhUWUNtbHRXbC84VTVr?=
- =?utf-8?B?T3JrTWFheFlJYTNjTUNTczh2N2M5d1YyTTM5T0VDSm0yUTA4ckFRQkM3ZitS?=
- =?utf-8?B?bUwvR1FiVDBadzlhUWxKWGtLTVRRWWhXdUxKUVlKMWY1TzlDNFNmdG1BbmlT?=
- =?utf-8?B?TXlQNkpZbmJNSWhNb1F0blp5cFJCQnVPakx4VXNHWHBablhSZnpsN29jUnFC?=
- =?utf-8?B?cUg4V0c4RWhFY2wwTnJzSElLYW51NWxqSWpwdmExQ3Fod2NGTDlMc0szUG9M?=
- =?utf-8?B?M1U1YjRkT2xybkt3RlBXZXVhUmhiMjh4Y1Nuclc4TnhVbllUK29RWmNORUll?=
- =?utf-8?B?Z3IzZjRtc2MzZEFJRVd3UlQxekJuV2JMSlkrQm5Tblk3Zmc4M0FvUmY5eFhv?=
- =?utf-8?B?WWdWTHVNN09jY1pxd1FyZU1JZER6L1RWVytiemwrVVI5bllBWE1pQWNPYUVv?=
- =?utf-8?B?aFc5QXBvMnVwY0FTc1daVnBYQWcramhYbjVDRGYrVVFlazQxd2FRMGQ3QU5v?=
- =?utf-8?B?cjVwMmlOOGNqUUtueTZtSWxWYkRiWDNxM2RLV3FSR29PWGE1TUFjMUczQUdt?=
- =?utf-8?B?bUtoaE5nSjdtcHBBRVZJWWc4K3NadnhiZzBMZDBKbDRYZjVLNG1KNVlrZlBT?=
- =?utf-8?B?RmFxMjRzRzVSRW9yUGRwajNxZm41QVRVL0JoWktkTUtmNHBFWlpydzV6cldv?=
- =?utf-8?B?b09DNzhyREVZNE5wMDN6bXR5U2M5enZBOE5rUHl0S2ZNMkw2THRYUXN0QWJE?=
- =?utf-8?B?cjVQdXdOYk45S3NCTXNMWHM0dVFsK1hvV2greGthbnkxRHZzaVRnRHJRbjZi?=
- =?utf-8?B?ZTdtcnU2N2k0VWxTWE9qdHVleWs1c3loRFFFUmVYWi84UXFDcGQzbndicEdN?=
- =?utf-8?B?WUhwSTEySXlBMytVN1RaUVo1RitZam0xdGhWSmNVMG84d0UzUHhSY0s0NE92?=
- =?utf-8?B?cVovSm9vSHBsMGNtcXM2L3pTQkhsS25NVURxNjh1M2ExMmdzOVlvZnp2MkNM?=
- =?utf-8?B?cm1GVGY1SzZKUnZQaW15dXFrOU9Sd2QxN2EvOUljYWZnQjdsUWRXamc5YXE0?=
- =?utf-8?B?Y0liQ1VoNC9lRGlZOHJlU0JCbkFkWmRyMXUzUTFPeUJYUEJHTGdBZXhpdUZ2?=
- =?utf-8?B?ZjdPcVFvTEo3S0VCd2dzdUNFRTJqSVNnTjVxU0ZHUGNQU2NNenRXWmdHRDgw?=
- =?utf-8?B?RTJrMmhUWXRVRWpvZHlFdTVNbmw3MFpNaGY3bzVBY3ZqM2RjVjQvTHp0L2xm?=
- =?utf-8?B?OFZuamt0TUROajFGZk1oZ0RJNU9LTFFQYnpRVS82eGJlYnE0RGoxcTVOK09L?=
- =?utf-8?B?bDRVY01rMk4xeUQ0WkFiaW5uYW4wSkx4MHprcnAwL0FPemtFaVl3MWQzc3A5?=
- =?utf-8?B?WXBzK1dkQTl6Z1NlWHkwVGZxYmZuYXdHM09maFhCOGQreFJJcHBEeEVpd0Rm?=
- =?utf-8?B?RW9ONTRxNTN5WDlGSFpyYUtMNEpBUGJITEtzUjRBWk5VWmNNd290NjUvN3B3?=
- =?utf-8?B?b2Z5RlM1VDVTSWs4alNHcGs1MnJlM3lLQVBOa1k2ZE1wVG9ESTRycytVTktX?=
- =?utf-8?B?bmFid2RnZWR1WklqMGRXS3pjbWQrWEluUldVcnViaExIclhReFp0Q3lSTFRP?=
- =?utf-8?B?Vm50c2VQT2JWV2JZUXkzVUdMdzhxZzFwT2k2QkYxZEp4TmxYRVdHNDNuTEdL?=
- =?utf-8?B?eENnNnVXK2RzdlpiL3ZFOGVjU3RoVHNjc2t0UUxGRnNsSHlRcmpMUDBnTjlv?=
- =?utf-8?B?aXJnVVovaVdlQWhBWjVLcjdjZVl2Zk9aWHk1bmhCRXlhbnhWVlFEUzg2VENq?=
- =?utf-8?B?SVBYQkVSb0hHdDlNYkxTdVJlaXZrNmFTeU5BNHl1L1Vrc3NqY2R6aW1PS1RY?=
- =?utf-8?B?ZksvTk9HaWk0Z09BUmJSbk9qaHZKYUJUMVVBVmh4R0VuQks3eDlIa0ppUVk5?=
- =?utf-8?B?U2FrWU5uTmZVcFg3bnpRYk84VFdZRWN5cnJHWnpLSnRQdmlEeThPZW5WZlBJ?=
- =?utf-8?B?U005YVpadkg5U0NTcXU1cFg5TTdoV3pKS296QTg4WWtXMnE0bnNTaVVVL3pM?=
- =?utf-8?Q?xKr+7JQXA0qbSA1b+LdTOh9zM?=
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <8F4E887CA353C94BABE597941C7A8E08@FRAP264.PROD.OUTLOOK.COM>
-Content-Transfer-Encoding: base64
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2A01152F97;
+	Wed,  3 Apr 2024 08:45:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.49
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1712133906; cv=none; b=qWd1FFmaj8M+KRWXbBZPswznBdANFnOBa5wvdfxiNaveNSS6nlp38cYFO0s798w8X0Y10l5ag9wlthMFBLGpr55CAJOOeB5XXR5skXoPfx/YxXWjKYuANzgLezi2lAu6Usd8Xt+3mOjbMheK5s8+T/7xcgyHdN+dInXduiqcvyU=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1712133906; c=relaxed/simple;
+	bh=LiuEPSBbBZhjq99c5gnSda0jGuZJeU5oKE7nApE5nEw=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=V7dUr26NCzAmO7bzPUpJ/Y7Mpfj3GSBU8tXfs2VmbzXuhL0hf++4gMS4RwnfD/EbpxbnCKdPCy2JSnFo5ypM+N1pb2Ws3sxYK+rltj8wNUpI5nwqs9viSCxZFsF68pHt8JMuiu3mBaL5SpzX9PGnADic5+L0RVPWrFOlto2KbsI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=KTZgiFVj; arc=none smtp.client-ip=209.85.167.49
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lf1-f49.google.com with SMTP id 2adb3069b0e04-513e6777af4so10052304e87.2;
+        Wed, 03 Apr 2024 01:45:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1712133902; x=1712738702; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=MWLSu4uzQTB9M/BAwKHtnLRv6ngDwtAIdk7qUH2kq2s=;
+        b=KTZgiFVjVBCF+eGULCqT6XK0c5AqWnclgqmfEV7VjtgBmacpR5cOkvobdhp3QVzHS4
+         qiqjKHOtyHwydROEjhBRMaQr1cow35H1y1T+EqRwgkIKdhY5tZ8P3Lhj8I7OCxx6h4+J
+         nSSLx3xLN9Dztd91xb5pbbgaGnYozL/INukgzGyMp4A3LzlMo/WU19heDn4i0Zuxfmai
+         iYTHA3OW8b11kTt0C/QIyWPgCoQ5tVPHeY0WWc1yPPpTaeZQ/vFZ2Pgdo82+Dk3o/EVZ
+         WLIjxGrptcUew81UZTpZaQ2roJj412FwPr3qtrqRXsV8psq7vD+qYhQE91ZNRlxtvsWV
+         8SDg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712133902; x=1712738702;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=MWLSu4uzQTB9M/BAwKHtnLRv6ngDwtAIdk7qUH2kq2s=;
+        b=Uox4n1wx300wLsnyYB7hPQcLcKPvuLuBF0eUTlDl+s42BLOWZTbiNq6+BEx7cfWaPv
+         2utOS2kcxqaJQ57yxqorOibqchjrBgL/uZQUYnmrgLD020aGMQ8HpYgawQ3D4uz3b7yA
+         GVo7YSbPKEsxC1imQ4vGQvhVzoS1HKIU7rKS3iemxhAMDVXutiLtxSw3ANWxzdDQcZKP
+         0ZGgFMece3WJBUML/yjxgwqE3e1kI1+u1B+kwhcLbHYWPfp3C32zTRQPNRgwZUM3plhO
+         Ppo06vPETWdBTVH/DnE5RpmL8sV/aPM3N5LQ4+Xw9LV4GcJyCL/cfvwGG3OkYW7O/0yV
+         pfuw==
+X-Forwarded-Encrypted: i=1; AJvYcCXUQ76iLaFdiUTgRHAhdJM1GmBsJGSvYwjBWqQDA3jpCjPRn15EWI8U36LxqW8WL7z7kWb/Rd3r1o7qGThkJMoUhMKl4wMeEl8lQa/EgTyMqLKwDBm5YbVec8iRDqIWs3IX7Gsp2JbYP1BrgFhlU04tq4V6gsHZubgViCsYUinoNsiYdgo=
+X-Gm-Message-State: AOJu0YySkK5Y0LfX1M31d0rnXb0z8giq5dS3A71WB9kttSwZE1BuwV3x
+	qITPhJw3w6vYzpTulC409ar/DL7ovYdBuOiqMUqiRNneyv9oCpJkv1TvfuSVyIfXSxmggsEUfte
+	A8cnKk2NugL/xgmgjRPZzQqjtIpY=
+X-Google-Smtp-Source: AGHT+IFNFO+nOI8dNHsuG86TF8WKE282yu42b7vwXfmpSN4OtD3CKeAs1VM/dGBrbeOlOWtKoWF2x/h7W3HUWkzTwvk=
+X-Received: by 2002:a05:6512:2813:b0:515:9c73:e29a with SMTP id
+ cf19-20020a056512281300b005159c73e29amr4278680lfb.66.1712133902030; Wed, 03
+ Apr 2024 01:45:02 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-OriginatorOrg: csgroup.eu
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: MRZP264MB2988.FRAP264.PROD.OUTLOOK.COM
-X-MS-Exchange-CrossTenant-Network-Message-Id: 6b2afe80-9efa-4836-442c-08dc53b9e73b
-X-MS-Exchange-CrossTenant-originalarrivaltime: 03 Apr 2024 08:41:49.3004
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 9914def7-b676-4fda-8815-5d49fb3b45c8
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: JropDYaAnDUgsKCmxLA2MvOVA3sLcGpksXTyE6mygUk/zsr1icsYgR3NHSnETiOLRfYz1ADlxmRe6v4NEpNgbvgXBJx0xXzNm0gJmxmvCAI=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PR0P264MB1818
+References: <20240323-pinctrl-scmi-v6-0-a895243257c0@nxp.com>
+ <20240323-pinctrl-scmi-v6-3-a895243257c0@nxp.com> <ZgcP4IkTQGks9ehH@surfacebook.localdomain>
+ <DU0PR04MB9417E797F4E0F7BB6154B3BE88382@DU0PR04MB9417.eurprd04.prod.outlook.com>
+ <Zgu4Tok43W5t8KM0@pluto> <CAHp75VdAaTeQ_Ag3gd0s9UfT=kAT2hwibeJ9-YFXJx4z=R3e+g@mail.gmail.com>
+ <ZgwrKnx3hb59OG77@pluto> <CAHp75VeOB2_ivX5y8YfPEb64YUZBi+3U_1xUdjDVWzLiD=f+nw@mail.gmail.com>
+ <Zg0N8S05D329BVjN@pluto>
+In-Reply-To: <Zg0N8S05D329BVjN@pluto>
+From: Andy Shevchenko <andy.shevchenko@gmail.com>
+Date: Wed, 3 Apr 2024 11:44:25 +0300
+Message-ID: <CAHp75Vf+eVgTbemaE4az8s50GgrTyZ40Z=4BX46gseRTSyjzqg@mail.gmail.com>
+Subject: Re: [PATCH v6 3/4] firmware: arm_scmi: Add SCMI v3.2 pincontrol
+ protocol basic support
+To: Cristian Marussi <cristian.marussi@arm.com>
+Cc: Peng Fan <peng.fan@nxp.com>, "Peng Fan (OSS)" <peng.fan@oss.nxp.com>, 
+	Sudeep Holla <sudeep.holla@arm.com>, Rob Herring <robh@kernel.org>, 
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
+	Linus Walleij <linus.walleij@linaro.org>, Dan Carpenter <dan.carpenter@linaro.org>, 
+	"linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, 
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, 
+	"devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, 
+	"linux-gpio@vger.kernel.org" <linux-gpio@vger.kernel.org>, Oleksii Moisieiev <oleksii_moisieiev@epam.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-DQoNCkxlIDAzLzA0LzIwMjQgw6AgMTA6MDYsIEFybmQgQmVyZ21hbm4gYSDDqWNyaXTCoDoNCj4g
-RnJvbTogQXJuZCBCZXJnbWFubiA8YXJuZEBhcm5kYi5kZT4NCj4gDQo+IFdoZW4gQ09ORklHX05F
-VCBpcyBkaXNhYmxlZCwgYW4gZXh0cmEgd2FybmluZyBzaG93cyB1cCBmb3IgdGhpcw0KPiB1bnVz
-ZWQgdmFyaWFibGU6DQo+IA0KPiBsaWIvY2hlY2tzdW1fa3VuaXQuYzoyMTg6MTg6IGVycm9yOiAn
-ZXhwZWN0ZWRfY3N1bV9pcHY2X21hZ2ljJyBkZWZpbmVkIGJ1dCBub3QgdXNlZCBbLVdlcnJvcj11
-bnVzZWQtY29uc3QtdmFyaWFibGU9XQ0KPiANCj4gSGlkZSBpdCB1bmRlciB0aGUgc2FtZSAjaWZk
-ZWYgYXMgdGhlIHJlZmVyZW5jZSB0byBpdC4NCj4gDQo+IEZpeGVzOiBmMjRhNzAxMDZkYzEgKCJs
-aWI6IGNoZWNrc3VtOiBGaXggYnVpbGQgd2l0aCBDT05GSUdfTkVUPW4iKQ0KDQpJIHRoaW5rIHRo
-YXQgY29tbWl0IGludHJvZHVjZWQgdW5qdXN0aWZpZWQgI2lmZGVmIGluIGEgQyBmaWxlLg0KDQpS
-ZWZlciANCmh0dHBzOi8vZG9jcy5rZXJuZWwub3JnL3Byb2Nlc3MvY29kaW5nLXN0eWxlLmh0bWwj
-Y29uZGl0aW9uYWwtY29tcGlsYXRpb24NCg0KVGhlIGZpeCBzaG91bGQgYmU6DQoNCmRpZmYgLS1n
-aXQgYS9saWIvY2hlY2tzdW1fa3VuaXQuYyBiL2xpYi9jaGVja3N1bV9rdW5pdC5jDQppbmRleCBi
-ZjcwODUwMDM1YzcuLjEzNTQ5NTNjODk0MiAxMDA2NDQNCi0tLSBhL2xpYi9jaGVja3N1bV9rdW5p
-dC5jDQorKysgYi9saWIvY2hlY2tzdW1fa3VuaXQuYw0KQEAgLTU5NCw3ICs1OTQsNiBAQCBzdGF0
-aWMgdm9pZCB0ZXN0X2lwX2Zhc3RfY3N1bShzdHJ1Y3Qga3VuaXQgKnRlc3QpDQoNCiAgc3RhdGlj
-IHZvaWQgdGVzdF9jc3VtX2lwdjZfbWFnaWMoc3RydWN0IGt1bml0ICp0ZXN0KQ0KICB7DQotI2lm
-IGRlZmluZWQoQ09ORklHX05FVCkNCiAgCWNvbnN0IHN0cnVjdCBpbjZfYWRkciAqc2FkZHI7DQog
-IAljb25zdCBzdHJ1Y3QgaW42X2FkZHIgKmRhZGRyOw0KICAJdW5zaWduZWQgaW50IGxlbjsNCkBA
-IC02MDgsNiArNjA3LDkgQEAgc3RhdGljIHZvaWQgdGVzdF9jc3VtX2lwdjZfbWFnaWMoc3RydWN0
-IGt1bml0ICp0ZXN0KQ0KICAJY29uc3QgaW50IGNzdW1fb2Zmc2V0ID0gc2l6ZW9mKHN0cnVjdCBp
-bjZfYWRkcikgKyBzaXplb2Yoc3RydWN0IA0KaW42X2FkZHIpICsNCiAgCQkJICAgIHNpemVvZihp
-bnQpICsgc2l6ZW9mKGNoYXIpOw0KDQorCWlmICghSVNfRU5BQkxFRChDT05GSUdfTkVUKSkNCisJ
-CXJldHVybjsNCisNCiAgCWZvciAoaW50IGkgPSAwOyBpIDwgTlVNX0lQdjZfVEVTVFM7IGkrKykg
-ew0KICAJCXNhZGRyID0gKGNvbnN0IHN0cnVjdCBpbjZfYWRkciAqKShyYW5kb21fYnVmICsgaSk7
-DQogIAkJZGFkZHIgPSAoY29uc3Qgc3RydWN0IGluNl9hZGRyICopKHJhbmRvbV9idWYgKyBpICsN
-CkBAIC02MTgsNyArNjIwLDYgQEAgc3RhdGljIHZvaWQgdGVzdF9jc3VtX2lwdjZfbWFnaWMoc3Ry
-dWN0IGt1bml0ICp0ZXN0KQ0KICAJCUNIRUNLX0VRKHRvX3N1bTE2KGV4cGVjdGVkX2NzdW1faXB2
-Nl9tYWdpY1tpXSksDQogIAkJCSBjc3VtX2lwdjZfbWFnaWMoc2FkZHIsIGRhZGRyLCBsZW4sIHBy
-b3RvLCBjc3VtKSk7DQogIAl9DQotI2VuZGlmIC8qICFDT05GSUdfTkVUICovDQogIH0NCg0KICBz
-dGF0aWMgc3RydWN0IGt1bml0X2Nhc2UgX19yZWZkYXRhIGNoZWNrc3VtX3Rlc3RfY2FzZXNbXSA9
-IHsNCg0KDQo+IFNpZ25lZC1vZmYtYnk6IEFybmQgQmVyZ21hbm4gPGFybmRAYXJuZGIuZGU+DQo+
-IC0tLQ0KPiAgIGxpYi9jaGVja3N1bV9rdW5pdC5jIHwgMiArKw0KPiAgIDEgZmlsZSBjaGFuZ2Vk
-LCAyIGluc2VydGlvbnMoKykNCj4gDQo+IGRpZmYgLS1naXQgYS9saWIvY2hlY2tzdW1fa3VuaXQu
-YyBiL2xpYi9jaGVja3N1bV9rdW5pdC5jDQo+IGluZGV4IGJmNzA4NTAwMzVjNy4uODBkZDFlMWI3
-MWJhIDEwMDY0NA0KPiAtLS0gYS9saWIvY2hlY2tzdW1fa3VuaXQuYw0KPiArKysgYi9saWIvY2hl
-Y2tzdW1fa3VuaXQuYw0KPiBAQCAtMjE1LDYgKzIxNSw3IEBAIHN0YXRpYyBjb25zdCB1MzIgaW5p
-dF9zdW1zX25vX292ZXJmbG93W10gPSB7DQo+ICAgCTB4ZmZmZjAwMDAsIDB4ZmZmZmZmZmIsDQo+
-ICAgfTsNCj4gICANCj4gKyNpZmRlZiBDT05GSUdfTkVUDQo+ICAgc3RhdGljIGNvbnN0IHUxNiBl
-eHBlY3RlZF9jc3VtX2lwdjZfbWFnaWNbXSA9IHsNCj4gICAJMHgxOGQ0LCAweDMwODUsIDB4MmU0
-YiwgMHhkOWY0LCAweGJkYzgsIDB4NzhmLAkweDEwMzQsIDB4ODQyMiwgMHg2ZmMwLA0KPiAgIAkw
-eGQyZjYsIDB4YmViNSwgMHg5ZDMsCTB4N2UyYSwgMHgzMTJlLCAweDc3OGUsIDB4YzFiYiwgMHg3
-Y2YyLCAweDlkMWUsDQo+IEBAIC0yNDAsNiArMjQxLDcgQEAgc3RhdGljIGNvbnN0IHUxNiBleHBl
-Y3RlZF9jc3VtX2lwdjZfbWFnaWNbXSA9IHsNCj4gICAJMHg5OWFhLCAweGIwNmIsIDB4ZWUxOSwg
-MHhjYzJjLCAweGYzNGMsIDB4N2M0OSwgMHhkYWMzLCAweGE3MWUsIDB4Yzk4OCwNCj4gICAJMHgz
-ODQ1LCAweDEwMTQNCj4gICB9Ow0KPiArI2VuZGlmDQo+ICAgDQo+ICAgc3RhdGljIGNvbnN0IHUx
-NiBleHBlY3RlZF9mYXN0X2NzdW1bXSA9IHsNCj4gICAJMHhkYTgzLCAweDQ1ZGEsIDB4NGY0Niwg
-MHg0ZTRmLCAweDM0ZSwJMHhlOTAyLCAweGE1ZTksIDB4ODdhNSwgMHg3MTg3LA0K
+On Wed, Apr 3, 2024 at 11:06=E2=80=AFAM Cristian Marussi
+<cristian.marussi@arm.com> wrote:
+> On Tue, Apr 02, 2024 at 07:39:44PM +0300, Andy Shevchenko wrote:
+> > On Tue, Apr 2, 2024 at 6:58=E2=80=AFPM Cristian Marussi
+> > <cristian.marussi@arm.com> wrote:
+> > > On Tue, Apr 02, 2024 at 04:06:06PM +0300, Andy Shevchenko wrote:
+> > > > On Tue, Apr 2, 2024 at 10:48=E2=80=AFAM Cristian Marussi
+> > > > <cristian.marussi@arm.com> wrote:
+> > > > > On Sun, Mar 31, 2024 at 01:44:28PM +0000, Peng Fan wrote:
+> > > > > > > Sat, Mar 23, 2024 at 08:15:16PM +0800, Peng Fan (OSS) kirjoit=
+ti:
+
+..
+
+> > > > > > > > +#include <linux/module.h>
+> > > > > > > > +#include <linux/scmi_protocol.h>
+> > > > > > > > +#include <linux/slab.h>
+> > > > > > >
+> > > > > > > This is semi-random list of headers. Please, follow IWYU prin=
+ciple (include
+> > > > > > > what you use). There are a lot of inclusions I see missing (j=
+ust in the context of
+> > > > > > > this page I see bits.h, types.h, and  asm/byteorder.h).
+> > > > > >
+> > > > > > Is there any documentation about this requirement?
+> > > > > > Some headers are already included by others.
+> > > >
+> > > > The documentation here is called "a common sense".
+> > > > The C language is built like this and we expect that nobody will
+> > > > invest into the dependency hell that we have already, that's why IW=
+YU
+> > > > principle, please follow it.
+> > >
+> > > Yes, but given that we have a growing number of SCMI protocols there =
+is a
+> > > common local protocols.h header to group all includes needed by any
+> > > protocols: the idea behind this (and the devm_ saga down below) was t=
+o ease
+> > > development of protocols, since there are lots of them and growing, g=
+iven
+> > > the SCMI spec is extensible.
+> >
+> > Yes, and what you are effectively suggesting is: "Technical debt? Oh,
+> > fine, we do not care!" This is not good. I'm in a long term of
+> > cleaning up the dependency hell in the kernel (my main focus is
+> > kernel.h for now) and I am talking from my experience. I do not like
+> > what people are doing in 95% of the code, that's why I really want to
+> > stop the bad practices as soon as possible.
+>
+> Not at all, the aim was exactly the opposite, avoiding that some protocol
+> could have been written without all the needed includes: since a basic se=
+t
+> of headers is definitely common to any protocol you may think to write,
+> grouping all there was meant to avoid this...I thought that by moving the
+> problem away in one single internal common header was easier to monitor.
+
+Which may or may not be okay. It plays too smart, so the end developer
+won't care about real headers they need as they are the only ones who
+know the source code in the best possible way.
+
+> I certainly maybe wrong, but I dont see how you can deduce I dont care...
+
+See above, the protocols.h it's a reincarnation (much less twisted and
+ugly, though) of something like kernel.h. Do you know why we have a
+split to headers instead of having everything in one? It speeds up a
+build, it separates namespace (to the extent of what we call
+"namespace" in C language), it makes the modularization (of the source
+code) better (easier to avoid considering what's not needed), and so
+on. I don't think making a "common" header is a good idea.
+
+> ...and maybe, only maybe, what that 95% of people is trying to do in thei=
+r
+> horrible code is to deliver the best reasonably possible thing within the=
+ir
+> timeline while you are barking at them in chase of never to be released u=
+tter
+> perfection.
+
+Yeah. That's why it's good to teach people about many aspects of the C
+language (which is not popular, in particular due to these nuances,
+nowadays and we are starving for good developers).
+
+> > Last to add, but not least is that your code may be used as an example
+> > for others, hence we really have to do our best in order to avoid bad
+> > design, practices, and cargo cults. If this requires more refactoring
+> > of the existing code, then do it sooner than later.
+
+..
+
+> > > > > Andy made (mostly) the same remarks on this same patch ~1-year ag=
+o on
+> > > > > this same patch while it was posted by Oleksii.
+> > > > >
+> > > > > And I told that time that most of the remarks around devm_ usage =
+were
+> > > > > wrong due to how the SCMI core handles protocol initialization (u=
+sing a
+> > > > > devres group transparently).
+> > > > >
+> > > > > This is what I answered that time.
+> > > > >
+> > > > > https://lore.kernel.org/linux-arm-kernel/ZJ78hBcjAhiU+ZBO@e120937=
+-lin/#t
+> > > > >
+> > > > > I wont repeat myself, but, in a nutshell the memory allocation li=
+ke it
+> > > > > is now is fine: a bit happens via devm_ at protocol initializatio=
+n, the
+> > > > > other is doe via explicit kmalloc at runtime and freed via kfree =
+at
+> > > > > remove time (if needed...i.e. checking the present flag of some s=
+tructs)
+> > > >
+> > > > This sounds like a mess. devm_ is expected to be used only for the
+> > > > ->probe() stage, otherwise you may consider cleanup.h (__free() mac=
+ro)
+> > > > to have automatic free at the paths where memory is not needed.
+> > >
+> > > Indeed, this protocol_init code is called by the SCMI core once for a=
+ll when
+> > > an SCMI driver tries at first to use this specific protocol by 'getti=
+ng' its
+> > > protocol_ops, so it is indeed called inside the probe chain of the dr=
+iver:
+> > > at this point you *can* decide to use devres to allocate memory and b=
+e assured
+> > > that if the init fails, or when the driver cease to use this protocol=
+ (calling
+> > > its remove()) and no other driver is using it, all the stuff that hav=
+e been
+> > > allocated related to this protocol will be released by the core for y=
+ou.
+> > > (using an internal devres group)
+> > >
+> > > Without this you should handle manually all the deallocation manually=
+ on
+> > > the init error-paths AND also provide all the cleanup explicitly when
+> > > the protocol is no more used by any driver (multiple users of the sam=
+e
+> > > protocol instance are possible)...for all protocols.
+> >
+> > Yes. Is it a problem?
+>
+> Well, no, but is it not a repetitive and error-prone process ?
+
+Yes. That's why we now have cleanup.h. Please, consider using it instead.
+
+> Is it not the exact reason why devres management exist in first place, to=
+ avoid
+> repetitive manual alloc/free of resources and related pitfalls ? (even th=
+ough
+> certainly it is normally used in a more conventional and straightforward =
+way)
+
+No. Its scope is to clean the probe-remove parts, one should not
+spread it otherwise and one definitely should know its limitations and
+corner cases (I even gave some examples back in ca. 2017 in one of my
+presentation WRT typical mistakes the developers make
+
+> The idea was to give some sort of aid in the SCMI stack for writing proto=
+cols,
+> so regarding mem_mgmt, I just built on top of devres facilities, not inve=
+nted
+> anything, to try to avoid repetitions and let the core handle mem allocs/=
+free
+> during the probe phases as much as possible: in pinctrl case would be
+> particularly trivial to instead manually allocate stuff at init (due to m=
+any
+> lazy delayed allocations) but other protocols need a lot more to be done =
+at init,
+> frequently in a loop to allocate multiple resources descriptors, and manu=
+ally
+> undoing all of that on each error-path and on cleanup is definitely error=
+-prone
+> and a pain.
+
+I understand the motivation, but again, devm is a beast in the corner
+cases. I believe Laurent Pinchart gave a presentation about how bad
+devm can hit you if you don't know what you are doing (OTOH it's hard
+to know with devm).
+
+> Last but not least, this whole thing was designed to address the needs of=
+ the
+> protocols that existed at that time....it is only now with pinctrl lazy-a=
+llocations
+> at runtime that the ugly cohexistence of devm_ and non-devm allocations b=
+ecame a
+> thing....so clearly the thing needs to be improved/rethinked...even dropp=
+ed if no
+> more fitting...
+>
+> ... or alternatively since devres allocations are anyway optional, you co=
+uld just
+> use regular kmalloc/kfree for this protocol and avoid this dual handling.=
+.
+
+Probably, just have a look at cleanup.h.
+
+> ...this was just to put things in context...and I'll happily let Sudeep d=
+ecide
+> what he prefers in the immediate for pinctrl or more in general about all=
+ the
+> scmi devres, that I've got enough of these pleasant interactions for now.=
+.
+
+As I said, it's your call, I'm not preventing you from applying
+whatever is going on in the SCMI subsystem. Just tried to point out
+the problem(s).
+
+--=20
+With Best Regards,
+Andy Shevchenko
 
