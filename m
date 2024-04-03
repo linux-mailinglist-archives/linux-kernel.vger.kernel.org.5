@@ -1,123 +1,83 @@
-Return-Path: <linux-kernel+bounces-130532-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-130531-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B8AD589797B
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 22:03:22 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6F7F089797A
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 22:02:52 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E964A1C2658B
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 20:03:21 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 886FA1C25C88
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 20:02:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9089015573C;
-	Wed,  3 Apr 2024 20:03:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 419701553BE;
+	Wed,  3 Apr 2024 20:02:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="KcgaR7Nz"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.17])
+	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="UEbf2sIU"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C306A1553BE
-	for <linux-kernel@vger.kernel.org>; Wed,  3 Apr 2024 20:03:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.17
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6CA13154BF0
+	for <linux-kernel@vger.kernel.org>; Wed,  3 Apr 2024 20:02:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712174594; cv=none; b=IX46UoZUXJieU9c58fw2Xf1b9HwiYqN1xabMJ3WEp+0n5NhbzaFA+jmvtxy4MOiOxEagDGFcDiIwwP1k6XwqR1cN8Qr2xdmd+hEfmoEMDqb+XUNaifvjrMLeG18i6pxYMdN01oIS4PRHfUy3ne20dd6WvdTEyl431a6dUR0Vai4=
+	t=1712174565; cv=none; b=iKbnNFRbg8P5ayoNZ1K2teB5iApXaY0bnjLT3fkgeGhhEOm0fI0+8xEbWW3H3WjXCuLDLv7P4hy5GUbpzIFe0TDADNASHA9w/+mvL16Cuj8Z2N2Pn2zKabui81CQmORdATlsVFToSAqjnURHpQBGFCFnOonyG8X7dw5yceGTSRU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712174594; c=relaxed/simple;
-	bh=eN0BMPJt/yzNeLJkwA6M2eqVeuPw0vmnY2kBYFQl+YE=;
-	h=Date:From:To:Cc:Subject:Message-ID; b=hzZrE9dLrJ9165+0lNXa4mbe8QX0RcTNGYY9UmNOHzfp8rZy84DrcoDfKvI8LWUToZQvKvbT52QNM+CoYfg587El4uSytoS9Yom7gZ0PSpswzqLQV8YbnWo+OoMPWwNpdPQ1ZaK9KqaRNSUU1kIXD0SdgFiuwMyHYKJhq21UyWg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=KcgaR7Nz; arc=none smtp.client-ip=198.175.65.17
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1712174593; x=1743710593;
-  h=date:from:to:cc:subject:message-id;
-  bh=eN0BMPJt/yzNeLJkwA6M2eqVeuPw0vmnY2kBYFQl+YE=;
-  b=KcgaR7NzDCgMyqnDlKOQ6lJ/HLXCvU9D71XTBHrdTFtnPNi+3/rUyyHL
-   lHDblGiNtQCBbyH9fZ4HtOKtrBYs5iPx2Ddzcmvf1evhbRAukW2+wlQ/c
-   7ZklAhEO8aHj1H7nJh2lJQbzKuGfnpKk3nkinte0N/GuYAlQNS7+QueHa
-   eRcdLJrQGWDhPZ6PnF2UcZFckpoxfvqJp1GZnNLX0DNUR98ImNfZLhLsf
-   nFAXiP71MKONqQD3+z78su8N8tgQMKzvGRBMh5Yo//pnIZS7XDRYVc9/E
-   RmC1gRDqZVpDmye6oaGXGPliJTaj0uDIHcW8x7E58VG48qs2klq9flN+Z
-   w==;
-X-CSE-ConnectionGUID: 2g1QrUJnSwORsA2xTBzESw==
-X-CSE-MsgGUID: 1Wo//m9aRBWDqdaccukRsQ==
-X-IronPort-AV: E=McAfee;i="6600,9927,11033"; a="7544435"
-X-IronPort-AV: E=Sophos;i="6.07,177,1708416000"; 
-   d="scan'208";a="7544435"
-Received: from orviesa010.jf.intel.com ([10.64.159.150])
-  by orvoesa109.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Apr 2024 13:03:13 -0700
-X-CSE-ConnectionGUID: Rr0clMBCSAya6FYE9/ccDg==
-X-CSE-MsgGUID: zgkS5qy9Rq2Uy0LQQhXfzg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,177,1708416000"; 
-   d="scan'208";a="18395852"
-Received: from lkp-server01.sh.intel.com (HELO e61807b1d151) ([10.239.97.150])
-  by orviesa010.jf.intel.com with ESMTP; 03 Apr 2024 13:03:12 -0700
-Received: from kbuild by e61807b1d151 with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1rs6pB-0000BP-0e;
-	Wed, 03 Apr 2024 20:03:09 +0000
-Date: Thu, 04 Apr 2024 04:02:35 +0800
-From: kernel test robot <lkp@intel.com>
-To: "x86-ml" <x86@kernel.org>
-Cc: linux-kernel@vger.kernel.org
-Subject: [tip:x86/urgent] BUILD SUCCESS
- c3eeb1ffc6a88af9b002e22be0f70851759be03a
-Message-ID: <202404040433.FCLrieoq-lkp@intel.com>
-User-Agent: s-nail v14.9.24
+	s=arc-20240116; t=1712174565; c=relaxed/simple;
+	bh=0N2x3C6WDeI9KM8YcO0XILyMudYclyFsPiGhmS+45js=;
+	h=Date:From:To:Cc:Subject:Message-Id:In-Reply-To:References:
+	 Mime-Version:Content-Type; b=NPgfMoOz0rJUVYRFKM0OiWAsjDMDYsoUCUgnLE+SkRlkBBXbR1yzUG3s70cuOKGOCNYhqS0m9jGSOL8K1iE9qfjny6vI3ZSllDldBoEbkHXtBbRjdVhikS5Zbk9DO5Y/1TJl9H2GGlI1XvdO8zKabUvGL82KAi0JeHhCqB7Oz9w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=UEbf2sIU; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9B787C433C7;
+	Wed,  3 Apr 2024 20:02:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
+	s=korg; t=1712174564;
+	bh=0N2x3C6WDeI9KM8YcO0XILyMudYclyFsPiGhmS+45js=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=UEbf2sIUxGoMiRP8asBi48y08rGiOihlyMCQPVzK29GBOy3V1lRWW+kXxyfRcA0hU
+	 5bFDtYJ0tYD8YNcM72HNZ1p3MqS/yZN3Tz6R+LvZhpxQYzuDfWswTSnoqyj766hHhk
+	 nsUgbLhDSwvsp8UaaVZIQUynoCnw/dnoHZW6CjHE=
+Date: Wed, 3 Apr 2024 13:02:43 -0700
+From: Andrew Morton <akpm@linux-foundation.org>
+To: Niklas Schnelle <schnelle@linux.ibm.com>
+Cc: Arnd Bergmann <arnd@kernel.org>, Heiko Carstens <hca@linux.ibm.com>,
+ linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 0/1] kgdb: Handle HAS_IOPORT dependencies
+Message-Id: <20240403130243.41a65a767f03fd7c4d8dabf8@linux-foundation.org>
+In-Reply-To: <20240403132547.762429-1-schnelle@linux.ibm.com>
+References: <20240403132547.762429-1-schnelle@linux.ibm.com>
+X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git x86/urgent
-branch HEAD: c3eeb1ffc6a88af9b002e22be0f70851759be03a  x86/resctrl: Fix uninitialized memory read when last CPU of domain goes offline
+On Wed,  3 Apr 2024 15:25:46 +0200 Niklas Schnelle <schnelle@linux.ibm.com> wrote:
 
-elapsed time: 730m
+> Hi Andrew,
+> 
+> This is a follow up in my ongoing effort of making inb()/outb() and
+> similar I/O port accessors compile-time optional. Previously I sent this
+> as a treewide series titled "treewide: Remove I/O port accessors for
+> HAS_IOPORT=n" with the latest being its 5th version[0]. With a significant
+> subset of patches merged I've changed over to per-subsystem series. These
+> series are stand alone and should be merged via the relevant tree such
+> that with all subsystems complete we can follow this up with the final
+> patch that will make the I/O port accessors compile-time optional.
+> 
+> The current state of the full series with changes to the remaining
+> subsystems and the aforementioned final patch can be found for your
+> convenience on my git.kernel.org tree in the has_ioport_v6 branch[1] with
+> signed tags. As for compile-time vs runtime see Linus' reply to my first
+> attempt[2].
 
-configs tested: 31
-configs skipped: 134
+Thanks.
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
-
-tested configs:
-i386                             allmodconfig   gcc  
-i386                              allnoconfig   gcc  
-i386                             allyesconfig   gcc  
-i386         buildonly-randconfig-001-20240403   gcc  
-i386         buildonly-randconfig-002-20240403   clang
-i386         buildonly-randconfig-003-20240403   clang
-i386         buildonly-randconfig-004-20240403   clang
-i386         buildonly-randconfig-005-20240403   gcc  
-i386         buildonly-randconfig-006-20240403   clang
-i386                                defconfig   clang
-i386                  randconfig-001-20240403   gcc  
-i386                  randconfig-002-20240403   clang
-i386                  randconfig-003-20240403   gcc  
-i386                  randconfig-004-20240403   gcc  
-i386                  randconfig-005-20240403   clang
-i386                  randconfig-006-20240403   gcc  
-i386                  randconfig-011-20240403   gcc  
-i386                  randconfig-012-20240403   clang
-i386                  randconfig-013-20240403   gcc  
-i386                  randconfig-014-20240403   clang
-i386                  randconfig-015-20240403   gcc  
-i386                  randconfig-016-20240403   clang
-x86_64                            allnoconfig   clang
-x86_64                           allyesconfig   clang
-x86_64       buildonly-randconfig-001-20240404   gcc  
-x86_64       buildonly-randconfig-002-20240404   gcc  
-x86_64       buildonly-randconfig-003-20240404   gcc  
-x86_64       buildonly-randconfig-004-20240404   clang
-x86_64                              defconfig   gcc  
-x86_64                          rhel-8.3-rust   clang
-x86_64                               rhel-8.3   gcc  
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+I'm not fully understanding the timing.  Am I correct in believing that the 44
+other patches are not dependent upon this one?  And that this patch is not
+dependent upon those 44?
 
