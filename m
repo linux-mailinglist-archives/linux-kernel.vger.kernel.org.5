@@ -1,100 +1,126 @@
-Return-Path: <linux-kernel+bounces-130257-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-130256-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8DE51897607
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 19:13:43 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9E5EF897605
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 19:13:31 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2C5431F23883
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 17:13:43 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5A852283273
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 17:13:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3879915253C;
-	Wed,  3 Apr 2024 17:13:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DBAAC152DE6;
+	Wed,  3 Apr 2024 17:13:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="Qu28Gqe/"
-Received: from mail-lf1-f54.google.com (mail-lf1-f54.google.com [209.85.167.54])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="tb5w0YDG"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A943D152521
-	for <linux-kernel@vger.kernel.org>; Wed,  3 Apr 2024 17:13:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 267C36E60F;
+	Wed,  3 Apr 2024 17:13:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712164415; cv=none; b=DkVSV8OKU3YYDqMX9YrePdRXBFwOnbX7l/9TMYEf1TqjzCHJiSe208IcqmYixWjTAfDzcDmoTL4sDQRUWsOn3DceWEZXbZ565obYPWxGDAR2x3Gzz8OsODl78wWNFtVrYVJW/0GlmEXhPY3xuVvd6ZT9kjUuS93x2iW8fHYlUXk=
+	t=1712164404; cv=none; b=QsDk5qJmF5Zpj8hoe91qLy0ScRiXJCQQDTjbO1LOE9JyA34QVgo7zu3hJQpEnhY8EI22bxZ8dP3ter/27U2JhwfXMHntlsQuhXqNd7wMlfA2t0Srk3ABw9MQ4yr8rz1zhB8KyW8RCVjdjaLhiIdHAh211iWwRCwEnw/2BchMWsc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712164415; c=relaxed/simple;
-	bh=ATkEd5SFVajpuoZ2rqVnvccmk3MpJlIfcLl6fpKsCsU=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=iF7goRcWU9Lca28Mfotojc1vdwsLOd2Ki+o3TWyHOLoquwsUk7k+ae1LcWt/6+FIngcTmY0H7HApnGmEY4HAXY1ToF15P9oVRy33tXPj8rp/sDppO5yO+wuIb60SLtzdeIYuFz282T6iewsQhd95GhjLs/TIetbwMfAxStfCWCw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org; spf=pass smtp.mailfrom=linuxfoundation.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=Qu28Gqe/; arc=none smtp.client-ip=209.85.167.54
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
-Received: by mail-lf1-f54.google.com with SMTP id 2adb3069b0e04-516c403cc46so152211e87.3
-        for <linux-kernel@vger.kernel.org>; Wed, 03 Apr 2024 10:13:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google; t=1712164411; x=1712769211; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=1h8tWfpp+qoRNsUGmPIOTJfrPR4EipvLdehDBLGG8i4=;
-        b=Qu28Gqe/qV2lMqxfGt7VyaDiMDck2eIswRVZwU3jf2zlOubuClbSMa6XxR/3t/Rtcn
-         wMGBsFsyrCvy8AAF/FF/gI4/PTQJbkbp9BqbXthbrgMsMJc7EyhdBb48GRju8r4zaa7D
-         40XauIHXHOrwRMYyg8ny9Dz/IqDVAcXStv5wI=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712164411; x=1712769211;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=1h8tWfpp+qoRNsUGmPIOTJfrPR4EipvLdehDBLGG8i4=;
-        b=HhHChCERekf37xYhQ0vRNz9yUHaIiSghiVjubsxDrviN4DFBElFPmJktwSLhT0+lcg
-         ASUrcF3v0WTCbQBexECB7wo9RyYIwTZFKrlWw6AheOZZTffrq4ka5gl1axgwiciBMIYq
-         859cNf3Th5vXEMktJ6xNCziQKd3XHJnetJMbi8XCPAbZzrhpYW7E7+Z5uj4acOHGzhD/
-         x3LvbE7DnsMwCgUsdxDxRvbXqk2/3pdLoaZcJJzKN4fMge33WijVLeAusE7kjRplxjud
-         3v2BYPUKRRQC1V72IJvwF1GYV+BzbQJP1Z3paHF/0AIINjbZjbYHcUqZzjaaryzluan8
-         OyIw==
-X-Forwarded-Encrypted: i=1; AJvYcCV7s9doRWtIrxY/14AKO6HyyAuve7vBkjWYv69DkkBVplH/ATSA8k7mCv4SmCO9JDro4xX3da+ja1t9ZP2NQIG6Y3wTze/IPMlM7RRy
-X-Gm-Message-State: AOJu0YyLjkAkjHqtGFV9W/+L4dWrM6bxOMiIos1dVgd7kGQhPsplIRJs
-	NsjO3d+3JLwPioHpF29jt6dFttXkHS+krJg9qEwQSgY4qzGp0t9NRTEXLevDsz69bvPq41UGk1g
-	c8gqznQ==
-X-Google-Smtp-Source: AGHT+IH5ULaQgikbBB3iS4+hTaY53SODh0KALXeaa8kK+GbVRLjP9pBQLDsGkY4ranFpRs1defpPbg==
-X-Received: by 2002:a19:8c5d:0:b0:516:a4f1:d01a with SMTP id i29-20020a198c5d000000b00516a4f1d01amr93482lfj.53.1712164411561;
-        Wed, 03 Apr 2024 10:13:31 -0700 (PDT)
-Received: from mail-lf1-f50.google.com (mail-lf1-f50.google.com. [209.85.167.50])
-        by smtp.gmail.com with ESMTPSA id q27-20020a19431b000000b005139c3c584bsm2094955lfa.241.2024.04.03.10.13.31
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 03 Apr 2024 10:13:31 -0700 (PDT)
-Received: by mail-lf1-f50.google.com with SMTP id 2adb3069b0e04-516c403cc46so152136e87.3
-        for <linux-kernel@vger.kernel.org>; Wed, 03 Apr 2024 10:13:31 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCVqFkj5lqfTlr99VUpt23f0LFBgq+R/11zBJjztfEWlrYi+TwdsQWwe+0QRld46YxqEQeDB7EIyMu3eWdUQmKOyLqzVYChm8RrGQ/z8
-X-Received: by 2002:ac2:551c:0:b0:515:acda:77f0 with SMTP id
- j28-20020ac2551c000000b00515acda77f0mr110424lfk.29.1712164410669; Wed, 03 Apr
- 2024 10:13:30 -0700 (PDT)
+	s=arc-20240116; t=1712164404; c=relaxed/simple;
+	bh=iDTAlDyhhR24NhTX+LufgKRCpVJp7F5FVJPBKNDeZXg=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Lk8jxUPjgrlH7bSa019FKZ2MfqD/X66j2GutwFHo+pNNbYmLOACei0cWO8dxGpnkp+OYSxE+EVFDnmD3yL1l6c0YK7z53q6radMTqroaW+eXtFbS+CbX5jLTzpk4M/Sftr+wZmtBasd1SqaZWn04NmtJbjNMLbLULIzBSqRThEw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=tb5w0YDG; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 639AFC433F1;
+	Wed,  3 Apr 2024 17:13:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1712164403;
+	bh=iDTAlDyhhR24NhTX+LufgKRCpVJp7F5FVJPBKNDeZXg=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=tb5w0YDGe4x+imn77oCq7en/5vXnu1PuX2SN6Yqg+ZNVugpAHzKHObawruVxu5sVX
+	 IBzzZhKicpNFzkAWWF0aed24aA3Ed99diLIAIjUDDY/ToweyWoiCNH/EJ3ImFBnOYo
+	 oYjQq8oSJb4st8TstbqOakzA2cntQfiMmDogL9bEtNnnIsCOoVdfRif8RtEvjghM1Q
+	 lzO4XQP/rlgL7DE+klootx5667C7jOoof9fcdk881uoRfpCIAB3vZX1JspBLBu3Sf5
+	 kUoYcuXIlLpN+CA72QAVnK6v/RfUwOzSjuE+H3PxOwtc9NFiyZsePxcZlTx7ronxCS
+	 4W05MzHEeYVdg==
+Date: Wed, 3 Apr 2024 12:13:21 -0500
+From: Rob Herring <robh@kernel.org>
+To: Andrew Jeffery <andrew@codeconstruct.com.au>
+Cc: wim@linux-watchdog.org, linux@roeck-us.net,
+	krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+	joel@jms.id.au, zev@bewilderbeest.net,
+	linux-watchdog@vger.kernel.org, devicetree@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org, linux-aspeed@lists.ozlabs.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] dt-bindings: watchdog: aspeed,ast2400-wdt: Convert to
+ DT schema
+Message-ID: <20240403171321.GA3996007-robh@kernel.org>
+References: <20240403020439.418788-1-andrew@codeconstruct.com.au>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <202404020901.da75a60f-oliver.sang@intel.com> <20240403122350.GEZg1KVvsyc-Z3bwro@fat_crate.local>
- <CAHk-=wj+Q_LXV0Y5+kBvv-5sTxT3Y7E=8wJ2sX4vzWksd3LWzA@mail.gmail.com> <20240403170534.GHZg2MXmwFRv-x8usY@fat_crate.local>
-In-Reply-To: <20240403170534.GHZg2MXmwFRv-x8usY@fat_crate.local>
-From: Linus Torvalds <torvalds@linux-foundation.org>
-Date: Wed, 3 Apr 2024 10:13:14 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wjernNvgonRC-W=_OF116facZf--vaYZ+QUnOkXm99M9Q@mail.gmail.com>
-Message-ID: <CAHk-=wjernNvgonRC-W=_OF116facZf--vaYZ+QUnOkXm99M9Q@mail.gmail.com>
-Subject: Re: [PATCH] x86/retpoline: Fix a missing return thunk warning (was:
- Re: [linus:master] [x86/bugs] 4535e1a417: WARNING:at_arch/x86/kernel/alternative.c:#apply_returns)
-To: Borislav Petkov <bp@alien8.de>
-Cc: kernel test robot <oliver.sang@intel.com>, oe-lkp@lists.linux.dev, lkp@intel.com, 
-	linux-kernel@vger.kernel.org, Ingo Molnar <mingo@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240403020439.418788-1-andrew@codeconstruct.com.au>
 
-On Wed, 3 Apr 2024 at 10:05, Borislav Petkov <bp@alien8.de> wrote:
->
-> Can you pls replace it with the below one?
+On Wed, Apr 03, 2024 at 12:34:39PM +1030, Andrew Jeffery wrote:
+> Squash warnings such as:
+> 
+> ```
+> arch/arm/boot/dts/aspeed/aspeed-bmc-facebook-galaxy100.dtb: /ahb/apb@1e600000/watchdog@1e785000: failed to match any schema with compatible: ['aspeed,ast2400-wdt']
+> ```
+> 
+> The schema binding additionally defines the clocks property over the
+> prose binding to align with use of the node in the DTS files.
+> 
+> Signed-off-by: Andrew Jeffery <andrew@codeconstruct.com.au>
+> ---
+> v2: Address feedback from Rob and Zev
+> 
+>     - Rob: https://lore.kernel.org/linux-watchdog/20240402180718.GA358505-robh@kernel.org/
+>     - Zev: https://lore.kernel.org/linux-watchdog/65722a59-2e94-4616-81e1-835615b0e600@hatter.bewilderbeest.net/
+> 
+> v1: https://lore.kernel.org/linux-watchdog/20240402120118.282035-1-andrew@codeconstruct.com.au/
+> 
+>  .../bindings/watchdog/aspeed,ast2400-wdt.yaml | 142 ++++++++++++++++++
+>  .../bindings/watchdog/aspeed-wdt.txt          |  73 ---------
+>  2 files changed, 142 insertions(+), 73 deletions(-)
+>  create mode 100644 Documentation/devicetree/bindings/watchdog/aspeed,ast2400-wdt.yaml
+>  delete mode 100644 Documentation/devicetree/bindings/watchdog/aspeed-wdt.txt
+> 
+> diff --git a/Documentation/devicetree/bindings/watchdog/aspeed,ast2400-wdt.yaml b/Documentation/devicetree/bindings/watchdog/aspeed,ast2400-wdt.yaml
+> new file mode 100644
+> index 000000000000..be78a9865584
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/watchdog/aspeed,ast2400-wdt.yaml
+> @@ -0,0 +1,142 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/watchdog/aspeed,ast2400-wdt.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Aspeed watchdog timer controllers
+> +
+> +maintainers:
+> +  - Andrew Jeffery <andrew@codeconstruct.com.au>
+> +
+> +properties:
+> +  compatible:
+> +    enum:
+> +      - aspeed,ast2400-wdt
+> +      - aspeed,ast2500-wdt
+> +      - aspeed,ast2600-wdt
+> +
+> +  reg:
+> +    maxItems: 1
+> +
+> +  clocks:
+> +    maxItems: 1
+> +    description: >
 
-Ok, done.
+You don't need '>' either. I guess it is equivalent here as there are no 
+double newlines. Drop these if you respin, otherwise:
 
-              Linus
+Reviewed-by: Rob Herring <robh@kernel.org>
 
