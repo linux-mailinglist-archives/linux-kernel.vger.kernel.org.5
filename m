@@ -1,136 +1,340 @@
-Return-Path: <linux-kernel+bounces-129586-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-129591-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id E9B01896CD6
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 12:42:50 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id CCE59896CE2
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 12:43:58 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 88DCE1F2EC36
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 10:42:50 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F00AA1C27F00
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 10:43:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 70A1D1386D9;
-	Wed,  3 Apr 2024 10:41:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b="ZZmDoIIM"
-Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 16467146A63;
+	Wed,  3 Apr 2024 10:42:46 +0000 (UTC)
+Received: from smtpbg153.qq.com (smtpbg153.qq.com [13.245.218.24])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 26D587317F;
-	Wed,  3 Apr 2024 10:41:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=65.109.113.108
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0D3A4137C47;
+	Wed,  3 Apr 2024 10:42:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=13.245.218.24
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712140909; cv=none; b=GBN7FkYx8ujFY9YNJwUoQ6a0uuE/1yxpchAqDvyhs2w0YPTT+JLI25V95D4ZywAl0PJyeBDu45v5wZhqUvMP877tVqqFWyCcJ7QhVLml6tXJCLnTQf2mvIN6iBpSQKXqhSqJawvXvXxOy/Fls61BsUWTPNq67C4Am09u5OWcSaM=
+	t=1712140965; cv=none; b=T3QCpnlXzINdbPOyTEFe8dyoeRAl/IZxD8rbEeaRg+xZlWeCzOPaSDajD6cZPOpJrrFM42dy4d8IgBoc277fU+vde/GOGjZzX7w43poZ4fIObheAVOIGNOTmM24TCt40oK13KSwGcQwEFpKNE/aTx9+JIFv/wSvJAYt8z/9C46g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712140909; c=relaxed/simple;
-	bh=cHoh/mCyG8gbipvFz56gKADMWpWhqnpXGRpDRvSto80=;
+	s=arc-20240116; t=1712140965; c=relaxed/simple;
+	bh=LrWOs7QN3cbW0iHWCcnoaHMQcbUknlLUyq908zLCTGc=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=EwJ/i7kNAo3TOdNxonnJO8L3rMAaajQD1NgVjXJUGfivrQHvHGArhg87Kv0YlXfQPcmaPjLuSJMtdYgfwnJIqnUbH2q6wf3+H6xuG4Yv75rG+m1KfeJtnPASbUARIlkBITN85N9D0c4tmQJzXolxeySyhvHrvxo/X27jT066ZUA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de; spf=pass smtp.mailfrom=alien8.de; dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b=ZZmDoIIM; arc=none smtp.client-ip=65.109.113.108
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alien8.de
-Received: from localhost (localhost.localdomain [127.0.0.1])
-	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id 765E140E019C;
-	Wed,  3 Apr 2024 10:41:43 +0000 (UTC)
-X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
-Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
-	header.d=alien8.de
-Received: from mail.alien8.de ([127.0.0.1])
-	by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
-	with ESMTP id YQ_zvYeI4oPH; Wed,  3 Apr 2024 10:41:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
-	t=1712140899; bh=UzSO7Jsp105welFJNWCbRP4AatEptaub1c50MMxUNFY=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=ZZmDoIIMGNqv7EUCTpd7QdLG6HLKRWT3K3iNOjkn/oZo1Fyr2uQ2L/wM9IvjkRqCc
-	 5ykgW2lz7lQwAwsKNYc9wZOQtFN3BuleIXiN7qWsE6ggLsWPtU6bEi1VU4GDdyuN62
-	 pPK4d/CkMbM3GRSPtgUF8JBV/NXJrz2lVplv1VmcIoKyBV7n2BT3wjKexlGo97Qfy5
-	 8EWV+W1z+jYmq5C1L79SyyeCZWZzGnZwfqIvv+rpQJYpn8sFg6KBcMDcoyFaH6SU8C
-	 hjZPdnztDvR1/2q8PGHMaZTlIg5Ou3USmIS0bGPBZO+fQkYEKJnEUURQxMjmFdusoQ
-	 bL4vZm1QF8ypb+2VHAx3oft5O1YHSH8iMspV59AbfovmcAh94yk+9hvhHe4AG9LM06
-	 5LU/6BY/QTTwTLR5abHs3nv5N73pznAv9DleR1MdZhodBtcd+Ue2wPcJGtYxmDdBRF
-	 AOJ4xWKrLbZsIyNdVCacgcZEX98jz9pNpI0nW3XtOTwXWOwsjPz0yuaJ/pggaHAM9d
-	 SE4bfMeWLuQQshO3xZKOxWjtXMq9UKGBF7FUGnkg0a0t5aafj/tZxHX2imYs/tKizS
-	 d2QO3FR1DA5j94nQxhlYqIMRRnM+QavBWs9wOcSvjtJnuHHgzkqcbpZESn2sZK6Xr8
-	 rjIM/oahcos7rGLy3uLF63Kg=
-Received: from zn.tnic (p5de8ecf7.dip0.t-ipconnect.de [93.232.236.247])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
-	(No client certificate requested)
-	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 703FB40E019B;
-	Wed,  3 Apr 2024 10:41:25 +0000 (UTC)
-Date: Wed, 3 Apr 2024 12:41:19 +0200
-From: Borislav Petkov <bp@alien8.de>
-To: Zeng Heng <zengheng4@huawei.com>
-Cc: linux-tip-commits@vger.kernel.org,
-	Jun'ichi Nomura <junichi.nomura@nec.com>,
-	Derek Barbosa <debarbos@redhat.com>, Ingo Molnar <mingo@kernel.org>,
-	Kees Cook <keescook@chromium.org>,
-	Linus Torvalds <torvalds@linux-foundation.org>,
-	"Paul E. McKenney" <paulmck@kernel.org>,
-	Andy Lutomirski <luto@kernel.org>, "H. Peter Anvin" <hpa@zytor.com>,
-	Peter Zijlstra <peterz@infradead.org>, x86@kernel.org,
-	linux-kernel@vger.kernel.org, "liwei (GF)" <liwei391@huawei.com>
-Subject: Re: [tip: x86/boot] x86/boot: Ignore NMIs during very early boot
-Message-ID: <20240403104119.GAZg0yTyTAGe65FoxF@fat_crate.local>
-References: <170133478498.398.5261666675868615202.tip-bot2@tip-bot2>
- <20231130103339.GCZWhlA196uRklTMNF@fat_crate.local>
- <95f416eb-a0ea-acba-6427-2a38d431ba8d@huawei.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=l3wDSb0Xe/fNTa8oZCKYrsRvkgMxgM+bSY2UP4+8L2CKReCycDN+0+LOgkL0HeQi7BBt3SkDNq70Mr9e+jzvvWxp8OUP4aTAXZm1L70s+z3tnY5xU5Bd5dgQAl2xO7Fz9Hyoi88FKDBRTb9kt6vTk7OtHF7efN3WDJuq+s7vMsU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=shingroup.cn; spf=pass smtp.mailfrom=shingroup.cn; arc=none smtp.client-ip=13.245.218.24
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=shingroup.cn
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=shingroup.cn
+X-QQ-mid: bizesmtpsz1t1712140885thb88ns
+X-QQ-Originating-IP: ztiKNQixsH4c7sYIGRQEBNcMOojXAnCirqDNEC45NgA=
+Received: from localhost ( [112.0.147.175])
+	by bizesmtp.qq.com (ESMTP) with 
+	id ; Wed, 03 Apr 2024 18:41:23 +0800 (CST)
+X-QQ-SSF: 01400000000000704000000A0000000
+X-QQ-FEAT: Q4gfBD3K7t8wHeDYavXxhf5YOLHjIdkwNKWKT7GcFWMI+vLM9qg+N9pqfvZ4o
+	QZSjPGp82hbFPrM2d/QmyymkHJgx290UYaUmx1lhJNFUl3BRUkRHWtPm11sjHUVZEhVqDck
+	4q6sl68SwYptDZNm1g+yvQU01fpiExn8Pq9vptvO5sf65otW0ivUwHmnuaFJNcrTcESBNh7
+	EBV1kRO1xW5WRgNq52DF4KsphWVHub/2fJBHWVLL9qw/At48xc/YSikE39LJKEebPfrVBEm
+	4N3V6K8h4EfH4K2b8A8yb8ePC+/7YBUdLuAWhonD60LBuOpIY3dNtZkd6h9Yb7BBVmaiOOR
+	u0OHAo/z6saW7P8DrdM3LKmFZ8vVrRvfjg+Y8vvUk+/NhCe7u5yjSO6FgwZ5g==
+X-QQ-GoodBg: 2
+X-BIZMAIL-ID: 4992647798818292244
+Date: Wed, 3 Apr 2024 18:41:23 +0800
+From: Dawei Li <dawei.li@shingroup.cn>
+To: Mark Rutland <mark.rutland@arm.com>
+Cc: will@kernel.org, xueshuai@linux.alibaba.com, renyu.zj@linux.alibaba.com,
+	yangyicong@hisilicon.com, jonathan.cameron@huawei.com,
+	andersson@kernel.org, konrad.dybcio@linaro.org,
+	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+	linux-arm-msm@vger.kernel.org
+Subject: Re: [PATCH 0/9] perf: Avoid explicit cpumask var allocation from
+ stack
+Message-ID: <6D6795E4D37BB843+Zg0yU8SCf+sMNYqp@centos8>
+References: <20240402105610.1695644-1-dawei.li@shingroup.cn>
+ <ZgvoMunpbaE-x3jV@FVFF77S0Q05N>
+ <190FE91C35AB9AE8+ZgwKuORh3VzTkfeJ@centos8>
+ <ZgwZL679Tc1S3AxH@FVFF77S0Q05N>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <95f416eb-a0ea-acba-6427-2a38d431ba8d@huawei.com>
+In-Reply-To: <ZgwZL679Tc1S3AxH@FVFF77S0Q05N>
+X-QQ-SENDSIZE: 520
+Feedback-ID: bizesmtpsz:shingroup.cn:qybglogicsvrgz:qybglogicsvrgz5a-1
 
-Hi Zeng Heng,
+On Tue, Apr 02, 2024 at 03:41:51PM +0100, Mark Rutland wrote:
+> On Tue, Apr 02, 2024 at 09:40:08PM +0800, Dawei Li wrote:
+> > Hi Mark,
+> > 
+> > Thanks for the quick review.
+> > 
+> > On Tue, Apr 02, 2024 at 12:12:50PM +0100, Mark Rutland wrote:
+> > > On Tue, Apr 02, 2024 at 06:56:01PM +0800, Dawei Li wrote:
+> > > > Hi,
+> > > > 
+> > > > This series try to eliminate direct cpumask var allocation from stack
+> > > > for perf subsystem.
+> > > > 
+> > > > Direct/explicit allocation of cpumask on stack could be dangerous since
+> > > > it can lead to stack overflow for systems with big NR_CPUS or
+> > > > CONFIG_CPUMASK_OFFSTACK=y.
+> > > > 
+> > > > For arm64, it's more urgent since commit 3fbd56f0e7c1 ("ARM64: Dynamically
+> > > > allocate cpumasks and increase supported CPUs to 512").
+> > > > 
+> > > > It's sort of a pattern that almost every cpumask var in perf subystem
+> > > > occurs in teardown callback of cpuhp. In which case, if dynamic
+> > > > allocation failed(which is unlikely), we choose return 0 rather than
+> > > > -ENOMEM to caller cuz:
+> > > > @teardown is not supposed to fail and if it does, system crashes:
+> > > 
+> > > .. but we've left the system in an incorrect state, so that makes no sense.
+> > > 
+> > > As I commented on the first patch, NAK to dynamically allocating cpumasks in
+> > > the CPUHP callbacks. Please allocate the necessry cpumasks up-front when we
+> > > probe the PMU. At that time we can handle an allocation failure by cleaning up
+> > > and failing to probe the PMU, and then the CPUHP callbacks don't need to
+> > > allocate memory to offline a CPU...
+> > 
+> > Agreed that dynamically allocation in callbacks lead to inconsistency
+> > to system.
+> > 
+> > My (original)alternative plan is simple but ugly, just make cpumask var
+> > _static_ and add extra static lock to protect it.
+> > 
+> > The only difference between solution above and your proposal is static/
+> > dynamic alloction. CPUHP's teardown cb is supposed to run in targetted
+> > cpuhp thread for most cases, and it's racy. Even the cpumask var is
+> > wrapped in dynamically allocated struct xxx_pmu, it's still shareable
+> > between different threads/contexts and needs proper protection.
+> 
+> I was under the impression that the cpuhp callbacks were *strictly* serialised.
+> If that's not the case, the existing offlining callbacks are horrendously
+> broken.
+> 
+> Are you *certain* these can race?
+> 
+> Regardless, adding additional locking here is not ok.
+> 
+> > Simple as this(_untested_):
+> > 
+> > diff --git a/drivers/perf/arm-cmn.c b/drivers/perf/arm-cmn.c
+> > index 7ef9c7e4836b..fa89c3db4d7d 100644
+> > --- a/drivers/perf/arm-cmn.c
+> > +++ b/drivers/perf/arm-cmn.c
+> > @@ -1950,18 +1950,24 @@ static int arm_cmn_pmu_offline_cpu(unsigned int cpu, struct hlist_node *cpuhp_no
+> >         struct arm_cmn *cmn;
+> >         unsigned int target;
+> >         int node;
+> > -       cpumask_t mask;
+> > +       static cpumask_t mask;
+> > +       static DEFINE_SPINLOCK(cpumask_lock);
+> > 
+> >         cmn = hlist_entry_safe(cpuhp_node, struct arm_cmn, cpuhp_node);
+> >         if (cpu != cmn->cpu)
+> >                 return 0;
+> > 
+> > +       spin_lock(&cpumask_lock);
+> > +
+> >         node = dev_to_node(cmn->dev);
+> >         if (cpumask_and(&mask, cpumask_of_node(node), cpu_online_mask) &&
+> >             cpumask_andnot(&mask, &mask, cpumask_of(cpu)))
+> >                 target = cpumask_any(&mask);
+> >         else
+> >                 target = cpumask_any_but(cpu_online_mask, cpu);
+> > +
+> > +       spin_unlock(&cpumask_lock);
+> > +
+> >         if (target < nr_cpu_ids)
+> >                 arm_cmn_migrate(cmn, target);
+> >         return 0;
+> 
+> Looking at this case, the only reason we need the mask is because it made the
+> logic a little easier to write. All we really want is to choose some CPU in the
+> intersection of two masks ignoring a specific CPU, and there was no helper
+> function to do that.
+> 
+> We can add a new helper to do that for us, which would avoid redundant work to
+> manipulate the entire mask, and it would make the existing code simpler.  I had
+> a series a few years back to add cpumask_any_and_but():
+> 
+>   https://lore.kernel.org/lkml/1486381132-5610-1-git-send-email-mark.rutland@arm.com/
 
-On Wed, Apr 03, 2024 at 02:32:45PM +0800, Zeng Heng wrote:
-> Until just now, I saw your completely different responses to the same patch.
+Sounds a perfect idea!
 
-Lemme explain how I see the situation.
+Actually I am re-implementing new series on top of your seven-years-late-yet-still-helpful
+patch, with minor update on it:
 
-You sent a patch:
+diff --git a/include/linux/cpumask.h b/include/linux/cpumask.h
+index 1c29947db848..121f3ac757ff 100644
+--- a/include/linux/cpumask.h
++++ b/include/linux/cpumask.h
+@@ -388,6 +388,29 @@ unsigned int cpumask_any_but(const struct cpumask *mask, unsigned int cpu)
+        return i;
+ }
 
-https://lore.kernel.org/all/20230110102745.2514694-1-zengheng4@huawei.com/
++/**
++ * cpumask_any_and_but - pick a "random" cpu from *mask1 & *mask2, but not this one.
++ * @mask1: the first input cpumask
++ * @mask2: the second input cpumask
++ * @cpu: the cpu to ignore
++ *
++ * Returns >= nr_cpu_ids if no cpus set.
++ */
++static inline
++unsigned int cpumask_any_and_but(const struct cpumask *mask1,
++                                const struct cpumask *mask2,
++                                unsigned int cpu)
++{
++       unsigned int i;
++
++       cpumask_check(cpu);
++       i = cpumask_first_and(mask1, mask2);
++       if (i != cpu)
++               return i;
++
++       return cpumask_next_and(cpu, mask1, mask2);
++}
++
+ /**
+  * cpumask_nth - get the Nth cpu in a cpumask
+  * @srcp: the cpumask pointer
 
-which had a commit message which tried to explain what happens. And
-I tried to parse your commit message and understand what you're trying
-to do but there never was a clear explanation.
+Change from your original version:
+1 Moved to cpumask.h, just like other helpers.
+2 Return value converted to unsigned int.
+3 Remove EXPORT_SYMBOL, for obvious reason.
 
-When I read "If kdump is enabled, when using mce_inject to inject
-errors..." then I think, oh great, more experiments. ;-\
+I will respin V2 as a whole as soon as possible.
 
-And no, I don't want to add code to early boot just to make some weird
-experiments happy.
+Thanks,
 
-Yeah yeah, an MCE can happen very early but until a real reproducer, I'm
-not convinced.
+    Dawei
 
-Now that other patch's commit message has at least a bit more clear
-explanation how you can *actually* cause this. And I still would've
-asked how *exactly* this happens but it is kinda clear: you can run perf
-and generate an NMI storm and then have two back-to-back NMIs.
-
-And I'm still not crazy about having an empty early NMI handler either
-thus I suggested to make it at least say something so that we're aware
-that early NMIs have happened.
-
-So if it is not clear *why* a patch is being done, then it goes nowhere.
-Because you'll go your merry way and "develop driver software based on
-arm64 features" or whatever else you get to do but the maintainers will
-be left to be dealing with your code indefinitely.
-
-I hope this makes it more clear.
-
-Thx.
-
--- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+> 
+> .. and that's easy to use here, e.g.
+> 
+> | diff --git a/drivers/perf/arm-cmn.c b/drivers/perf/arm-cmn.c
+> | index 7ef9c7e4836b7..c6bbd387ccf8b 100644
+> | --- a/drivers/perf/arm-cmn.c
+> | +++ b/drivers/perf/arm-cmn.c
+> | @@ -1950,17 +1950,15 @@ static int arm_cmn_pmu_offline_cpu(unsigned int cpu, struct hlist_node *cpuhp_no
+> |         struct arm_cmn *cmn;
+> |         unsigned int target;
+> |         int node;
+> | -       cpumask_t mask;
+> |  
+> |         cmn = hlist_entry_safe(cpuhp_node, struct arm_cmn, cpuhp_node);
+> |         if (cpu != cmn->cpu)
+> |                 return 0;
+> |  
+> |         node = dev_to_node(cmn->dev);
+> | -       if (cpumask_and(&mask, cpumask_of_node(node), cpu_online_mask) &&
+> | -           cpumask_andnot(&mask, &mask, cpumask_of(cpu)))
+> | -               target = cpumask_any(&mask);
+> | -       else
+> | +       target = cpumask_any_and_but(cpu_online_mask, cpumask_of_node(node),
+> | +                                    cpu);
+> | +       if (target >= nr_cpu_ids)
+> |                 target = cpumask_any_but(cpu_online_mask, cpu);
+> |         if (target < nr_cpu_ids)
+> |                 arm_cmn_migrate(cmn, target);
+> 
+> It doesn't trivially rebase since the cpumask code has changed a fair amount,
+> but I've managed to do that locally, and I can send that out as a
+> seven-years-late v2 if it's useful.
+> 
+> From a quick scan, it looks like that'd handle all cases in this series. Are
+> there any patterns in this series for which that would not be sufficient?
+> 
+> Mark.
+> 
+> > 
+> > And yes, static allocation is evil :) 
+> > 
+> > 
+> > Thanks,
+> > 
+> >     Dawei
+> > 
+> > > 
+> > > Also, for the titles it'd be better to say something like "avoid placing
+> > > cpumasks on the stack", because "explicit cpumask var allocation" sounds like
+> > > the use of alloc_cpumask_var().
+> > 
+> > Sound great! I will update it.
+> > 
+> > > 
+> > > Mark.
+> > > 
+> > > > 
+> > > > static int cpuhp_issue_call(int cpu, enum cpuhp_state state, bool bringup,
+> > > >                             struct hlist_node *node)
+> > > > {
+> > > >         struct cpuhp_step *sp = cpuhp_get_step(state);
+> > > >         int ret;
+> > > > 
+> > > >         /*
+> > > >          * If there's nothing to do, we done.
+> > > >          * Relies on the union for multi_instance.
+> > > >          */
+> > > >         if (cpuhp_step_empty(bringup, sp))
+> > > >                 return 0;
+> > > >         /*
+> > > >          * The non AP bound callbacks can fail on bringup. On teardown
+> > > >          * e.g. module removal we crash for now.
+> > > >          */
+> > > > 	#ifdef CONFIG_SMP
+> > > >         if (cpuhp_is_ap_state(state))
+> > > >                 ret = cpuhp_invoke_ap_callback(cpu, state, bringup, node);
+> > > >         else
+> > > >                 ret = cpuhp_invoke_callback(cpu, state, bringup, node,
+> > > > 		NULL);
+> > > > 	#else
+> > > >         ret = cpuhp_invoke_callback(cpu, state, bringup, node, NULL);
+> > > > 	#endif
+> > > >         BUG_ON(ret && !bringup);
+> > > >         return ret;
+> > > > }
+> > > > 
+> > > > Dawei Li (9):
+> > > >   perf/alibaba_uncore_drw: Avoid explicit cpumask var allocation from
+> > > >     stack
+> > > >   perf/arm-cmn: Avoid explicit cpumask var allocation from stack
+> > > >   perf/arm_cspmu: Avoid explicit cpumask var allocation from stack
+> > > >   perf/arm_dsu: Avoid explicit cpumask var allocation from stack
+> > > >   perf/dwc_pcie: Avoid explicit cpumask var allocation from stack
+> > > >   perf/hisi_pcie: Avoid explicit cpumask var allocation from stack
+> > > >   perf/hisi_uncore: Avoid explicit cpumask var allocation from stack
+> > > >   perf/qcom_l2: Avoid explicit cpumask var allocation from stack
+> > > >   perf/thunder_x2: Avoid explicit cpumask var allocation from stack
+> > > > 
+> > > >  drivers/perf/alibaba_uncore_drw_pmu.c    | 13 +++++++++----
+> > > >  drivers/perf/arm-cmn.c                   | 13 +++++++++----
+> > > >  drivers/perf/arm_cspmu/arm_cspmu.c       | 13 +++++++++----
+> > > >  drivers/perf/arm_dsu_pmu.c               | 18 +++++++++++++-----
+> > > >  drivers/perf/dwc_pcie_pmu.c              | 17 +++++++++++------
+> > > >  drivers/perf/hisilicon/hisi_pcie_pmu.c   | 15 ++++++++++-----
+> > > >  drivers/perf/hisilicon/hisi_uncore_pmu.c | 13 +++++++++----
+> > > >  drivers/perf/qcom_l2_pmu.c               | 15 ++++++++++-----
+> > > >  drivers/perf/thunderx2_pmu.c             | 20 ++++++++++++--------
+> > > >  9 files changed, 92 insertions(+), 45 deletions(-)
+> > > > 
+> > > > 
+> > > > Thanks,
+> > > > 
+> > > >     Dawei
+> > > > 
+> > > > -- 
+> > > > 2.27.0
+> > > > 
+> > > 
+> 
 
