@@ -1,78 +1,113 @@
-Return-Path: <linux-kernel+bounces-128995-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-128996-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 860938962DB
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 05:16:11 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9777F8962E2
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 05:19:51 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4058B286910
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 03:16:10 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 51F0E2883FC
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 03:19:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 53A3A2230F;
-	Wed,  3 Apr 2024 03:16:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="K+7kBdTo"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9A23C1BF5C;
+	Wed,  3 Apr 2024 03:19:44 +0000 (UTC)
+Received: from szxga08-in.huawei.com (szxga08-in.huawei.com [45.249.212.255])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 92CBB1BF2F;
-	Wed,  3 Apr 2024 03:16:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0213C1C6A6
+	for <linux-kernel@vger.kernel.org>; Wed,  3 Apr 2024 03:19:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.255
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712114163; cv=none; b=kruTPF3MZaJo0DxsHTCaW6VZqaEsLeBiW1IzInhOKjkR4WRURMbv/t8/Hh5ibV6dCFLxEokuYbAOEos+5MIpERVZYjuIH1ntAmkaYhAYGoK+G6D8wx2+NPAq5QSM/DzLs5/BSeF7/h2YVdwsCbLkMjdT7zhqqW2IQwuqb3gFQ8Q=
+	t=1712114384; cv=none; b=UouOwdB0GcVn9+Jxf19xlMdS3ZSkeLQcnYRo2SDuVB/upY2jb5vGRdBUaoFtuv1oLEzg30DcxEcUgzXRV16Myb+cmhpDZP9Bbrp9h2PYF1M7fAnA85N8DGsB25OcPyDY9V0B1KtLxVVKa5eiO5RYpMuBMlVZ5ZufRr3zMZRgudM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712114163; c=relaxed/simple;
-	bh=bMzr4KHa+nmRRnhUTLpVtPbUCZRPUPjWOldS+v4Ff88=;
-	h=Subject:From:In-Reply-To:References:Message-Id:Date:To:Cc; b=B2vVFbS2peK3IKq2i5eDfx07ROBVviOjpkdFLku3i5xOsWzFms3SeRgnYT5W4Csp5MxxNNArvLdOLOPxZr4J7dYDPXCKCmcdU6oNQnok8G2GhdM36/2fbI3C/m7U0Vn5CXw9LRZwD8hj7/mAnB/B3LTCs4WxvjsbcC6E1TQYf5w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=K+7kBdTo; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 1E99EC433C7;
-	Wed,  3 Apr 2024 03:16:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712114163;
-	bh=bMzr4KHa+nmRRnhUTLpVtPbUCZRPUPjWOldS+v4Ff88=;
-	h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-	b=K+7kBdToKbtsIsEALZzsy6IMFoApXrs4+RvmteShRsDoidyHwX+WQ74oPsmlHRNYk
-	 tyVLPbcClVXNuItTAg4Klq25qH3OhQYGscl0b4aW64ZLlKc+pfmgtJoX4U1TE0ID92
-	 jFIdwYw81kVh5HjMjaFGE/qoY1e0a32DdgUnUrT59Md4um1y4meHSVuPgCrMsBols+
-	 P9/7Nk1JBhBXIk/EtkyJ0ucR9FKOHgpM8EKSZKGI1FNTE00x7dri55MgxiPhZF0sQz
-	 2+tDdlMRIVBMJ3r4RDLSnzHPdCnL9otE9pYXmBJmE6E+jW6NeztWTc/Jko44bYsM2v
-	 9D+kq4tUzwN1w==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 13823D9A153;
-	Wed,  3 Apr 2024 03:16:03 +0000 (UTC)
-Subject: Re: [GIT PULL] selinux/selinux-pr-20240402
-From: pr-tracker-bot@kernel.org
-In-Reply-To: <cf11f516883d7fbf75a34f7981174e73@paul-moore.com>
-References: <cf11f516883d7fbf75a34f7981174e73@paul-moore.com>
-X-PR-Tracked-List-Id: <linux-security-module.vger.kernel.org>
-X-PR-Tracked-Message-Id: <cf11f516883d7fbf75a34f7981174e73@paul-moore.com>
-X-PR-Tracked-Remote: https://git.kernel.org/pub/scm/linux/kernel/git/pcmoore/selinux.git tags/selinux-pr-20240402
-X-PR-Tracked-Commit-Id: 37801a36b4d68892ce807264f784d818f8d0d39b
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 3e92c1e6cd876754b64d1998ec0a01800ed954a6
-Message-Id: <171211416306.5415.8875759484655659073.pr-tracker-bot@kernel.org>
-Date: Wed, 03 Apr 2024 03:16:03 +0000
-To: Paul Moore <paul@paul-moore.com>
-Cc: Linus Torvalds <torvalds@linux-foundation.org>, selinux@vger.kernel.org, linux-security-module@vger.kernel.org, linux-kernel@vger.kernel.org
+	s=arc-20240116; t=1712114384; c=relaxed/simple;
+	bh=/5seI4hwLNtes2S2aPoGh4M8vMX4nwNFwUgv4bF3cmI=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=lk6dVPeqrvzFexfZCYREmTPCZcF8HXV8EYPwyk6lmkKuLCS5ncaIsGXd5JlhcPeO71w0vdk7LJGbDR1UtSzD10M9HCc2XXIjoqfIzd24ixmLw+awX8fWRatgPzHlTRceEswGoVmkBLoDMZRYmQS+rBH0ojfPrz9g24B2g4V7Oqg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.255
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.163.48])
+	by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4V8VKR5nz5z1QBqd;
+	Wed,  3 Apr 2024 11:16:59 +0800 (CST)
+Received: from dggpemm100001.china.huawei.com (unknown [7.185.36.93])
+	by mail.maildlp.com (Postfix) with ESMTPS id 93A5F18005D;
+	Wed,  3 Apr 2024 11:19:33 +0800 (CST)
+Received: from [10.174.177.243] (10.174.177.243) by
+ dggpemm100001.china.huawei.com (7.185.36.93) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.35; Wed, 3 Apr 2024 11:19:33 +0800
+Message-ID: <59860bb4-0dff-4575-b4cb-b88e6e1ccb77@huawei.com>
+Date: Wed, 3 Apr 2024 11:19:32 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3 0/3] page_owner: Fix refcount imbalance
+Content-Language: en-US
+To: Oscar Salvador <osalvador@suse.de>
+CC: Andrew Morton <akpm@linux-foundation.org>, <linux-kernel@vger.kernel.org>,
+	<linux-mm@kvack.org>, Michal Hocko <mhocko@suse.com>, Vlastimil Babka
+	<vbabka@suse.cz>, Marco Elver <elver@google.com>, Andrey Konovalov
+	<andreyknvl@gmail.com>, Alexander Potapenko <glider@google.com>
+References: <20240326063036.6242-1-osalvador@suse.de>
+ <74b147b0-718d-4d50-be75-d6afc801cd24@huawei.com>
+ <ZgwUP17giMgGksXc@localhost.localdomain>
+From: Kefeng Wang <wangkefeng.wang@huawei.com>
+In-Reply-To: <ZgwUP17giMgGksXc@localhost.localdomain>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
+ dggpemm100001.china.huawei.com (7.185.36.93)
 
-The pull request you sent on Tue, 02 Apr 2024 23:11:46 -0400:
 
-> https://git.kernel.org/pub/scm/linux/kernel/git/pcmoore/selinux.git tags/selinux-pr-20240402
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/3e92c1e6cd876754b64d1998ec0a01800ed954a6
+On 2024/4/2 22:20, Oscar Salvador wrote:
+> On Fri, Mar 29, 2024 at 12:54:30PM +0800, Kefeng Wang wrote:
+>> I still see the following memory leak, could you check it?
+>>
+>> /mnt/arm64 # cat /sys//kernel/debug/kmemleak
+>> unreferenced object 0xffff000200d91000 (size 16):
+>>    comm "kworker/4:0", pid 42, jiffies 4294892753
+>>    hex dump (first 16 bytes):
+>>      60 37 57 c1 00 00 ff ff 00 00 00 00 00 00 00 00  `7W.............
+>>    backtrace (crc 4458f477):
+>>      [<(____ptrval____)>] kmemleak_alloc+0x3c/0x50
+>>      [<(____ptrval____)>] kmalloc_trace+0x20c/0x2e0
+>>      [<(____ptrval____)>] __set_page_owner+0x1d0/0x2a0
+>>      [<(____ptrval____)>] prep_new_page+0x108/0x138
+>>      [<(____ptrval____)>] get_page_from_freelist+0x79c/0x16b8
+>>      [<(____ptrval____)>] __alloc_pages+0x1bc/0x440
+>>      [<(____ptrval____)>] new_slab+0x104/0x3c8
+>>      [<(____ptrval____)>] ___slab_alloc+0x368/0xb20
+>>      [<(____ptrval____)>] __slab_alloc.isra.0+0x3c/0x88
+>>      [<(____ptrval____)>] kmalloc_trace+0x280/0x2e0
+>>      [<(____ptrval____)>] __set_page_owner+0x1d0/0x2a0
+>>      [<(____ptrval____)>] prep_new_page+0x108/0x138
+>>      [<(____ptrval____)>] get_page_from_freelist+0x79c/0x16b8
+>>      [<(____ptrval____)>] __alloc_pages+0x1bc/0x440
+>>      [<(____ptrval____)>] new_slab+0x104/0x3c8
+>>      [<(____ptrval____)>] ___slab_alloc+0x368/0xb20
+> 
+> Hi Kefeng Wang
+> 
+> You seem to be missing [1]
+> 
+> Could you try with that patch applied?
+> 
+> [1] https://lore.kernel.org/linux-mm/20240315222610.6870-1-osalvador@suse.de/
 
-Thank you!
+Hi, re-run with clean v6.9-rc2 (already include 7844c0147211
+mm,page_owner: fix recursion), after booting and wait some time,
+the kmemleak is still occurred.
 
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+
+
+> 
+> Thanks
+> 
 
