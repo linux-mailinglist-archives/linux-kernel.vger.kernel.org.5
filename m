@@ -1,75 +1,74 @@
-Return-Path: <linux-kernel+bounces-129312-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-129313-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5588E89686B
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 10:24:56 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id EC16E89686D
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 10:25:09 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 05AD01F217C0
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 08:24:56 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 237201C21B0C
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 08:25:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BCD0E71B3C;
-	Wed,  3 Apr 2024 08:13:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id ADC717319F;
+	Wed,  3 Apr 2024 08:13:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="rOePu4Gv"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="mL4FfJyz"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D8E685D8EB;
-	Wed,  3 Apr 2024 08:13:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E7ECA5C61C;
+	Wed,  3 Apr 2024 08:13:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712131982; cv=none; b=Jop4eVgEw8TwDolDOPlr179vUVKk7+KrcNJ/wM4Lbmuy9aOAEEVyy6M5mYi9j/NJBMOnRhOlPXoDQ9n+qNwj2DX8b6qGxhxBwRvFVYPFD0c6f7jMIcachO9uivBxxU2CCUfXGbwxDWUEGFCiekoQd1ygw1Ek7tITOFhe6iTwy2A=
+	t=1712132001; cv=none; b=I/S5wx1DU0QNv0acmmBaht+efjhutOaBBvC/MqWiiGx3TfFW1zcpK8eVrcwTmcRu15WC/Kt2PpgyAo//bmG60DsjsWXVB/ClNSK8qa/q6M/tkez2vCf0LkSmnMos+0yQjabfZj/OTA1pxashDo87n8g/drg5t34TqgpOaqhPntM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712131982; c=relaxed/simple;
-	bh=s7PKCgenwuMtIpkuH0lS5FpL9JoQE1cUgYCVfEquDcE=;
+	s=arc-20240116; t=1712132001; c=relaxed/simple;
+	bh=cHRmsqunH9hP/qtXbd35N4JkMuQoGtu0x3hJ4tAgdrY=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=H9oN3D0/ArWPixfTUvLksd4Ld8a2mG3/PKW04CfYx5i3oKEUnKk5nXhueURAEhyKCnpyxbS3uqaaIi4LDAlkE8MAhuFnctRB+6qi/wcD1/oViN2c43VqFHbC+F9qSykIgYZKS0pGAC4VlecWGDhgcWL/ISm6tTgDIrb5MmF3HYI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=rOePu4Gv; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9A7A0C433F1;
-	Wed,  3 Apr 2024 08:12:56 +0000 (UTC)
+	 MIME-Version; b=mDOtYeAq4SKBvWonitmtqvd7rnFfKFv4jHqVO+hi24byVjhsAAxeyvZkvg9w/0F4tIThyxZlTQbDBO2CX5D2w6Fpvmr1gLTzaKQtTiBjPhZmG8WXPYTMM9yim15xRxF7gJaEOmIAh0PRDKf+Zx0XyDPCDrOVnBMWa9tZ0HSdet0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=mL4FfJyz; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 95395C433C7;
+	Wed,  3 Apr 2024 08:13:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712131981;
-	bh=s7PKCgenwuMtIpkuH0lS5FpL9JoQE1cUgYCVfEquDcE=;
+	s=k20201202; t=1712132000;
+	bh=cHRmsqunH9hP/qtXbd35N4JkMuQoGtu0x3hJ4tAgdrY=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=rOePu4Gvd7V3cltnm48rPPfQ5ofmjX+GDSCSetysHutysgHNuJEoCnupPctS10Bsx
-	 hqL8FluMuszm1Ww6kb2h9ndFt365zDSvm6q8QOk8LfTZwHcp0TTPbaVrlYNfKzSw44
-	 1HmQwSAT6JhsiowgaDGcCaCcN9Lqe74+k6UwvwN2vvCBl2r4ITMuQq5eC9xknbHo18
-	 Hyl3qSWl0EnJ36XlcsH7dgjLTWiKdg3Onx0lbmBzqIb4hEtGcFA/lYHz0hbWMK4PJq
-	 bzXtcLMqXrxY3tCTLsDSVBCkO0fbJbEv3ftmza4uIhbkbREWWxom0wMjjHtPFDcx4I
-	 DTrsllQrFjW/A==
+	b=mL4FfJyzLl9gsq+QwjOIrerxmGhTo6GDqw+UdiO+FN1TNPbQ1HU4hUHSq50YrgXyO
+	 hXHcEM4a1AfR/UMk2OlDEdOtkZ7hLM16HAr75p42zC3E/fZmTMFFvDziVxgFQIRCfO
+	 0qPx53oM278y1D0ZnnomrHkf/8qt46zlW41rrmspumuSLR/CwOXBD8PAekA0tR4SV5
+	 n6RyEQgcFzrrp4y18VqL/jxAFRC0t2QR05D1FAIqEsfiAca752UIyw7Aktq+IPx3TC
+	 n1oRUic3ZgN8V1orOq8yfxAiWatGMFmTrfPdsjirFu3CT0SmC51Inan5tHzb3m4Wdy
+	 OZORH7MZL3gMw==
 From: Arnd Bergmann <arnd@kernel.org>
 To: linux-kernel@vger.kernel.org,
+	Liam Girdwood <lgirdwood@gmail.com>,
 	Mark Brown <broonie@kernel.org>,
-	Neil Armstrong <neil.armstrong@linaro.org>,
-	Kevin Hilman <khilman@baylibre.com>,
-	Heiko Stuebner <heiko@sntech.de>,
-	Andi Shyti <andi.shyti@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+	Jaroslav Kysela <perex@perex.cz>,
+	Takashi Iwai <tiwai@suse.com>,
+	Claudiu Beznea <claudiu.beznea@tuxon.dev>,
+	Nicolas Ferre <nicolas.ferre@microchip.com>,
+	Alexandre Belloni <alexandre.belloni@bootlin.com>,
+	Oder Chiou <oder_chiou@realtek.com>,
+	Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+	Banajit Goswami <bgoswami@quicinc.com>,
+	Sylwester Nawrocki <s.nawrocki@samsung.com>
 Cc: Arnd Bergmann <arnd@arndb.de>,
-	Jerome Brunet <jbrunet@baylibre.com>,
-	Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
-	Alim Akhtar <alim.akhtar@samsung.com>,
-	Li Zetao <lizetao1@huawei.com>,
-	Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+	Alper Nebi Yasak <alpernebiyasak@gmail.com>,
+	Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
+	Akihiko Odaki <akihiko.odaki@daynix.com>,
+	Linus Walleij <linus.walleij@linaro.org>,
+	Yinchuan Guo <guoych37@mail2.sysu.edu.cn>,
+	=?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>,
 	Rob Herring <robh@kernel.org>,
-	Yang Yingliang <yangyingliang@huawei.com>,
-	Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-	Luis de Arquer <luis.dearquer@inertim.com>,
-	Tudor Ambarus <tudor.ambarus@linaro.org>,
-	Sam Protsenko <semen.protsenko@linaro.org>,
-	Peter Griffin <peter.griffin@linaro.org>,
-	Jaewon Kim <jaewon02.kim@samsung.com>,
-	linux-spi@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org,
-	linux-amlogic@lists.infradead.org,
-	linux-rockchip@lists.infradead.org,
-	linux-samsung-soc@vger.kernel.org
-Subject: [PATCH 31/34] spi: remove incorrect of_match_ptr annotations
-Date: Wed,  3 Apr 2024 10:06:49 +0200
-Message-Id: <20240403080702.3509288-32-arnd@kernel.org>
+	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
+	Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+	linux-sound@vger.kernel.org,
+	alsa-devel@alsa-project.org,
+	linux-arm-kernel@lists.infradead.org
+Subject: [PATCH 32/34] ASoC: remove incorrect of_match_ptr/ACPI_PTR annotations
+Date: Wed,  3 Apr 2024 10:06:50 +0200
+Message-Id: <20240403080702.3509288-33-arnd@kernel.org>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20240403080702.3509288-1-arnd@kernel.org>
 References: <20240403080702.3509288-1-arnd@kernel.org>
@@ -83,166 +82,92 @@ Content-Transfer-Encoding: 8bit
 
 From: Arnd Bergmann <arnd@arndb.de>
 
-When building with CONFIG_OF  disabled but W=1 extra warnings enabled,
-a couple of driver cause a warning about an unused ID table:
+When building with CONFIG_OF and/or CONFIG_ACPI disabled but W=1 extra
+warnings enabled, a lot of driver cause a warning about an unused
+ID table:
 
-drivers/spi/spi-armada-3700.c:806:34: error: unused variable 'a3700_spi_dt_ids' [-Werror,-Wunused-const-variable]
-drivers/spi/spi-orion.c:614:34: error: unused variable 'orion_spi_of_match_table' [-Werror,-Wunused-const-variable]
-drivers/spi/spi-pic32-sqi.c:673:34: error: unused variable 'pic32_sqi_of_ids' [-Werror,-Wunused-const-variable]
-drivers/spi/spi-pic32.c:850:34: error: unused variable 'pic32_spi_of_match' [-Werror,-Wunused-const-variable]
-drivers/spi/spi-rockchip.c:1020:34: error: unused variable 'rockchip_spi_dt_match' [-Werror,-Wunused-const-variable]
-drivers/spi/spi-s3c64xx.c:1642:34: error: unused variable 's3c64xx_spi_dt_match' [-Werror,-Wunused-const-variable]
-drivers/spi/spi-st-ssc4.c:439:34: error: unused variable 'stm_spi_match' [-Werror,-Wunused-const-variable]
+sound/soc/atmel/sam9x5_wm8731.c:187:34: error: unused variable 'sam9x5_wm8731_of_match' [-Werror,-Wunused-const-variable]
+sound/soc/codecs/rt5514-spi.c:496:34: error: unused variable 'rt5514_of_match' [-Werror,-Wunused-const-variable]
+sound/soc/samsung/aries_wm8994.c:524:34: error: unused variable 'samsung_wm8994_of_match' [-Werror,-Wunused-const-variable]
 
-These appear to all be copied from the same original driver, so fix them at the
-same time by removing the unnecessary of_match_ptr() annotation. As far as I
-can tell, all these drivers are only actually used on configurations that
-have CONFIG_OF enabled.
+The fix is always to just remove the of_match_ptr() and ACPI_PTR() wrappers
+that remove the reference, rather than adding another #ifdef just for build
+testing for a configuration that doesn't matter in practice.
 
 Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 ---
- drivers/spi/spi-armada-3700.c | 2 +-
- drivers/spi/spi-img-spfi.c    | 2 +-
- drivers/spi/spi-meson-spicc.c | 2 +-
- drivers/spi/spi-meson-spifc.c | 2 +-
- drivers/spi/spi-orion.c       | 2 +-
- drivers/spi/spi-pic32-sqi.c   | 2 +-
- drivers/spi/spi-pic32.c       | 2 +-
- drivers/spi/spi-rockchip.c    | 2 +-
- drivers/spi/spi-s3c64xx.c     | 2 +-
- drivers/spi/spi-st-ssc4.c     | 2 +-
- 10 files changed, 10 insertions(+), 10 deletions(-)
+ sound/soc/amd/acp3x-rt5682-max9836.c | 2 +-
+ sound/soc/atmel/sam9x5_wm8731.c      | 2 +-
+ sound/soc/codecs/rt5514-spi.c        | 2 +-
+ sound/soc/qcom/lpass-sc7280.c        | 2 +-
+ sound/soc/samsung/aries_wm8994.c     | 2 +-
+ 5 files changed, 5 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/spi/spi-armada-3700.c b/drivers/spi/spi-armada-3700.c
-index 3c9ed412932f..2fc2e7c0daf2 100644
---- a/drivers/spi/spi-armada-3700.c
-+++ b/drivers/spi/spi-armada-3700.c
-@@ -902,7 +902,7 @@ static int a3700_spi_probe(struct platform_device *pdev)
- static struct platform_driver a3700_spi_driver = {
+diff --git a/sound/soc/amd/acp3x-rt5682-max9836.c b/sound/soc/amd/acp3x-rt5682-max9836.c
+index d6cdb6d9fdd6..ffc105759994 100644
+--- a/sound/soc/amd/acp3x-rt5682-max9836.c
++++ b/sound/soc/amd/acp3x-rt5682-max9836.c
+@@ -543,7 +543,7 @@ MODULE_DEVICE_TABLE(acpi, acp3x_audio_acpi_match);
+ static struct platform_driver acp3x_audio = {
  	.driver = {
- 		.name	= DRIVER_NAME,
--		.of_match_table = of_match_ptr(a3700_spi_dt_ids),
-+		.of_match_table = a3700_spi_dt_ids,
+ 		.name = "acp3x-alc5682-max98357",
+-		.acpi_match_table = ACPI_PTR(acp3x_audio_acpi_match),
++		.acpi_match_table = acp3x_audio_acpi_match,
+ 		.pm = &snd_soc_pm_ops,
  	},
- 	.probe		= a3700_spi_probe,
+ 	.probe = acp3x_probe,
+diff --git a/sound/soc/atmel/sam9x5_wm8731.c b/sound/soc/atmel/sam9x5_wm8731.c
+index d1c1f370a9cd..95c8c37478a3 100644
+--- a/sound/soc/atmel/sam9x5_wm8731.c
++++ b/sound/soc/atmel/sam9x5_wm8731.c
+@@ -193,7 +193,7 @@ MODULE_DEVICE_TABLE(of, sam9x5_wm8731_of_match);
+ static struct platform_driver sam9x5_wm8731_driver = {
+ 	.driver = {
+ 		.name = DRV_NAME,
+-		.of_match_table = of_match_ptr(sam9x5_wm8731_of_match),
++		.of_match_table = sam9x5_wm8731_of_match,
+ 	},
+ 	.probe = sam9x5_wm8731_driver_probe,
+ 	.remove_new = sam9x5_wm8731_driver_remove,
+diff --git a/sound/soc/codecs/rt5514-spi.c b/sound/soc/codecs/rt5514-spi.c
+index f475c8cfadae..da397db8d7d5 100644
+--- a/sound/soc/codecs/rt5514-spi.c
++++ b/sound/soc/codecs/rt5514-spi.c
+@@ -503,7 +503,7 @@ static struct spi_driver rt5514_spi_driver = {
+ 	.driver = {
+ 		.name = "rt5514",
+ 		.pm = &rt5514_pm_ops,
+-		.of_match_table = of_match_ptr(rt5514_of_match),
++		.of_match_table = rt5514_of_match,
+ 	},
+ 	.probe = rt5514_spi_probe,
  };
-diff --git a/drivers/spi/spi-img-spfi.c b/drivers/spi/spi-img-spfi.c
-index d8360f94d3b7..0d7f89301f8d 100644
---- a/drivers/spi/spi-img-spfi.c
-+++ b/drivers/spi/spi-img-spfi.c
-@@ -753,7 +753,7 @@ static struct platform_driver img_spfi_driver = {
+diff --git a/sound/soc/qcom/lpass-sc7280.c b/sound/soc/qcom/lpass-sc7280.c
+index 47c622327a8d..c91620128fd4 100644
+--- a/sound/soc/qcom/lpass-sc7280.c
++++ b/sound/soc/qcom/lpass-sc7280.c
+@@ -441,7 +441,7 @@ MODULE_DEVICE_TABLE(of, sc7280_lpass_cpu_device_id);
+ static struct platform_driver sc7280_lpass_cpu_platform_driver = {
  	.driver = {
- 		.name = "img-spfi",
- 		.pm = &img_spfi_pm_ops,
--		.of_match_table = of_match_ptr(img_spfi_of_match),
-+		.of_match_table = img_spfi_of_match,
+ 		.name = "sc7280-lpass-cpu",
+-		.of_match_table = of_match_ptr(sc7280_lpass_cpu_device_id),
++		.of_match_table = sc7280_lpass_cpu_device_id,
+ 		.pm = &sc7280_lpass_pm_ops,
  	},
- 	.probe = img_spfi_probe,
- 	.remove_new = img_spfi_remove,
-diff --git a/drivers/spi/spi-meson-spicc.c b/drivers/spi/spi-meson-spicc.c
-index fc75492e50ff..4189d4434e37 100644
---- a/drivers/spi/spi-meson-spicc.c
-+++ b/drivers/spi/spi-meson-spicc.c
-@@ -946,7 +946,7 @@ static struct platform_driver meson_spicc_driver = {
- 	.remove_new = meson_spicc_remove,
- 	.driver  = {
- 		.name = "meson-spicc",
--		.of_match_table = of_match_ptr(meson_spicc_of_match),
-+		.of_match_table = meson_spicc_of_match,
+ 	.probe = asoc_qcom_lpass_cpu_platform_probe,
+diff --git a/sound/soc/samsung/aries_wm8994.c b/sound/soc/samsung/aries_wm8994.c
+index a548ac33dd94..9f7318c4ee33 100644
+--- a/sound/soc/samsung/aries_wm8994.c
++++ b/sound/soc/samsung/aries_wm8994.c
+@@ -689,7 +689,7 @@ static int aries_audio_probe(struct platform_device *pdev)
+ static struct platform_driver aries_audio_driver = {
+ 	.driver		= {
+ 		.name	= "aries-audio-wm8994",
+-		.of_match_table = of_match_ptr(samsung_wm8994_of_match),
++		.of_match_table = samsung_wm8994_of_match,
+ 		.pm	= &snd_soc_pm_ops,
  	},
- };
- 
-diff --git a/drivers/spi/spi-meson-spifc.c b/drivers/spi/spi-meson-spifc.c
-index fd8b26dd4a79..0c39d59d0af8 100644
---- a/drivers/spi/spi-meson-spifc.c
-+++ b/drivers/spi/spi-meson-spifc.c
-@@ -432,7 +432,7 @@ static struct platform_driver meson_spifc_driver = {
- 	.remove_new = meson_spifc_remove,
- 	.driver	= {
- 		.name		= "meson-spifc",
--		.of_match_table	= of_match_ptr(meson_spifc_dt_match),
-+		.of_match_table	= meson_spifc_dt_match,
- 		.pm		= &meson_spifc_pm_ops,
- 	},
- };
-diff --git a/drivers/spi/spi-orion.c b/drivers/spi/spi-orion.c
-index eee9ff4bfa5b..a0029e8dc0be 100644
---- a/drivers/spi/spi-orion.c
-+++ b/drivers/spi/spi-orion.c
-@@ -843,7 +843,7 @@ static struct platform_driver orion_spi_driver = {
- 	.driver = {
- 		.name	= DRIVER_NAME,
- 		.pm	= &orion_spi_pm_ops,
--		.of_match_table = of_match_ptr(orion_spi_of_match_table),
-+		.of_match_table = orion_spi_of_match_table,
- 	},
- 	.probe		= orion_spi_probe,
- 	.remove_new	= orion_spi_remove,
-diff --git a/drivers/spi/spi-pic32-sqi.c b/drivers/spi/spi-pic32-sqi.c
-index 3f1e5b27776b..458c1a8d5719 100644
---- a/drivers/spi/spi-pic32-sqi.c
-+++ b/drivers/spi/spi-pic32-sqi.c
-@@ -679,7 +679,7 @@ MODULE_DEVICE_TABLE(of, pic32_sqi_of_ids);
- static struct platform_driver pic32_sqi_driver = {
- 	.driver = {
- 		.name = "sqi-pic32",
--		.of_match_table = of_match_ptr(pic32_sqi_of_ids),
-+		.of_match_table = pic32_sqi_of_ids,
- 	},
- 	.probe = pic32_sqi_probe,
- 	.remove_new = pic32_sqi_remove,
-diff --git a/drivers/spi/spi-pic32.c b/drivers/spi/spi-pic32.c
-index 709edb70ad7d..e8bd32c1fc7c 100644
---- a/drivers/spi/spi-pic32.c
-+++ b/drivers/spi/spi-pic32.c
-@@ -856,7 +856,7 @@ MODULE_DEVICE_TABLE(of, pic32_spi_of_match);
- static struct platform_driver pic32_spi_driver = {
- 	.driver = {
- 		.name = "spi-pic32",
--		.of_match_table = of_match_ptr(pic32_spi_of_match),
-+		.of_match_table = pic32_spi_of_match,
- 	},
- 	.probe = pic32_spi_probe,
- 	.remove_new = pic32_spi_remove,
-diff --git a/drivers/spi/spi-rockchip.c b/drivers/spi/spi-rockchip.c
-index e1ecd96c7858..4dbb5127a9e5 100644
---- a/drivers/spi/spi-rockchip.c
-+++ b/drivers/spi/spi-rockchip.c
-@@ -1042,7 +1042,7 @@ static struct platform_driver rockchip_spi_driver = {
- 	.driver = {
- 		.name	= DRIVER_NAME,
- 		.pm = &rockchip_spi_pm,
--		.of_match_table = of_match_ptr(rockchip_spi_dt_match),
-+		.of_match_table = rockchip_spi_dt_match,
- 	},
- 	.probe = rockchip_spi_probe,
- 	.remove_new = rockchip_spi_remove,
-diff --git a/drivers/spi/spi-s3c64xx.c b/drivers/spi/spi-s3c64xx.c
-index f726d8670428..dbb89f6cb3dd 100644
---- a/drivers/spi/spi-s3c64xx.c
-+++ b/drivers/spi/spi-s3c64xx.c
-@@ -1677,7 +1677,7 @@ static struct platform_driver s3c64xx_spi_driver = {
- 	.driver = {
- 		.name	= "s3c64xx-spi",
- 		.pm = &s3c64xx_spi_pm,
--		.of_match_table = of_match_ptr(s3c64xx_spi_dt_match),
-+		.of_match_table = s3c64xx_spi_dt_match,
- 	},
- 	.probe = s3c64xx_spi_probe,
- 	.remove_new = s3c64xx_spi_remove,
-diff --git a/drivers/spi/spi-st-ssc4.c b/drivers/spi/spi-st-ssc4.c
-index e064025e2fd6..6d288497c500 100644
---- a/drivers/spi/spi-st-ssc4.c
-+++ b/drivers/spi/spi-st-ssc4.c
-@@ -446,7 +446,7 @@ static struct platform_driver spi_st_driver = {
- 	.driver = {
- 		.name = "spi-st",
- 		.pm = &spi_st_pm,
--		.of_match_table = of_match_ptr(stm_spi_match),
-+		.of_match_table = stm_spi_match,
- 	},
- 	.probe = spi_st_probe,
- 	.remove_new = spi_st_remove,
+ 	.probe		= aries_audio_probe,
 -- 
 2.39.2
 
