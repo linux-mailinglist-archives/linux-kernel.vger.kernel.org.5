@@ -1,59 +1,59 @@
-Return-Path: <linux-kernel+bounces-130566-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-130563-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 87F2D8979FD
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 22:39:23 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id BE9FF8979F9
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 22:39:10 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 43CEF28C534
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 20:39:22 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5E7F61F20FBE
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 20:39:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E87A8157A56;
-	Wed,  3 Apr 2024 20:37:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EBF35157496;
+	Wed,  3 Apr 2024 20:37:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="HmMY0tAM"
+	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="PhKum9/H"
 Received: from lelv0142.ext.ti.com (lelv0142.ext.ti.com [198.47.23.249])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5FFB1156F52;
-	Wed,  3 Apr 2024 20:37:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D815B156F32;
+	Wed,  3 Apr 2024 20:37:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.23.249
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712176626; cv=none; b=Pmwl8Kxdk4qUN1hAesBJEj75nbTUkjhWEVoJBZlQN3tWNgR16k3MjjzHnrV/+vdpu7wUXHN2+NVootOiRu0jyFyFBr2y0mF5gLcMKYEqtxofoxXdbrHy9LBqTihLKGGKOXP6XAtfgas/+hBQYkHRMZMD3yQIYCBoKBhuLgLUcWA=
+	t=1712176625; cv=none; b=MrazafK7KYd9N/JVmzbtbvD6PBkK8jvInqWpKvRkRfcsCMbIglV1fmsrRdEH7xmS1QTMjRpaHl25hRvjtJeFeA3pLMvVlS/uHol1lkVVuahp4IQ+9lKjboIXWA8GdxqCipsvUmgv9QRKdgcb/6MBb4HIWfw9a1Coi3A2MrnTk9Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712176626; c=relaxed/simple;
-	bh=Fcsy7U0/zN4YmwfH+1lI8fpDJuJo06ipaQB7zIKzDkw=;
+	s=arc-20240116; t=1712176625; c=relaxed/simple;
+	bh=vsxZuXPnc9LZp7BCFMmM+QmqhXEf9M6BtZ3xaM8AQYU=;
 	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=mk5lI+cOyGz0Y+gJTRbHumh9T6I46OYIJHQREfoNb+4tpcJ0Jvp5lYuyF+3GSmwTRAu10lX1TNHDMfM155GNqOlqcnsfgkkpsK0NFqiuwHPIQu/vHEnm/YgrGbcHFhKsHxGfHrKUbKjez4xZng4fswspXq8GS16YQ4OyWfya0FA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=HmMY0tAM; arc=none smtp.client-ip=198.47.23.249
+	 MIME-Version:Content-Type; b=eEhDExGvpQj2Y+09Lu115UuzVWVVLrYiMHL70RdvN3Tr1hlVK3g14BMIunWtZiN8L5TypVe+J0SaG5+RMVPFox272avZ5zeoVt247FPgHBbbxnRq6Fm2M8xRYkwXhmiEEhi93XyDLw8c3CNpIkKSOLzS7xNCfr+Z71KvPImTLgs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=PhKum9/H; arc=none smtp.client-ip=198.47.23.249
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
-Received: from fllv0034.itg.ti.com ([10.64.40.246])
-	by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 433KabcX076301;
-	Wed, 3 Apr 2024 15:36:37 -0500
+Received: from lelv0266.itg.ti.com ([10.180.67.225])
+	by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 433Kacoo076306;
+	Wed, 3 Apr 2024 15:36:38 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-	s=ti-com-17Q1; t=1712176597;
-	bh=blgQGHWD87ZJY8vnu2bep0EjvDVDGNrPkRIBtJghVk8=;
+	s=ti-com-17Q1; t=1712176598;
+	bh=kfaADE72p/7wiRjfacJ24ecKgyHpfOb03uEZTqrrEyI=;
 	h=From:To:CC:Subject:Date:In-Reply-To:References;
-	b=HmMY0tAMhdfdouDPjzAN2+sw9c//xoMa7P7RbhZgXAPRZcfUV62vm/deSm+2x4c3U
-	 DmPMsKVeRb9NYa4gBcR9mMHAVephocVYigUgaP5MepbGfnCQdoViIzi7ZfBjthVwkB
-	 Tu7yY7xfM2ALmGRML4yFOGHZQXqUtmWLXUcenV2U=
-Received: from DFLE109.ent.ti.com (dfle109.ent.ti.com [10.64.6.30])
-	by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 433KabEa092365
+	b=PhKum9/HaX/Q+ZnVbMhWvJ50nDthzlGe8BHfu2nfrTZWke0xUIMAyTAZ+arUckQZU
+	 JZ0Bc7ykPDgTBHSjFj5sU0MnG68UNwwFr46/4QerZ4/KoSUCnBnw1yW3qFxzgeYf29
+	 hBmHJNWRyQy3bAc8yGSpAN3af2ucU2/aFKf3FNtU=
+Received: from DFLE111.ent.ti.com (dfle111.ent.ti.com [10.64.6.32])
+	by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 433Kackn115245
 	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-	Wed, 3 Apr 2024 15:36:37 -0500
-Received: from DFLE104.ent.ti.com (10.64.6.25) by DFLE109.ent.ti.com
- (10.64.6.30) with Microsoft SMTP Server (version=TLS1_2,
+	Wed, 3 Apr 2024 15:36:38 -0500
+Received: from DFLE112.ent.ti.com (10.64.6.33) by DFLE111.ent.ti.com
+ (10.64.6.32) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Wed, 3
  Apr 2024 15:36:37 -0500
-Received: from lelvsmtp5.itg.ti.com (10.180.75.250) by DFLE104.ent.ti.com
- (10.64.6.25) with Microsoft SMTP Server (version=TLS1_2,
+Received: from lelvsmtp5.itg.ti.com (10.180.75.250) by DFLE112.ent.ti.com
+ (10.64.6.33) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
  Frontend Transport; Wed, 3 Apr 2024 15:36:37 -0500
 Received: from fllvsmtp8.itg.ti.com ([10.249.42.149])
-	by lelvsmtp5.itg.ti.com (8.15.2/8.15.2) with ESMTP id 433KaYFn080324;
+	by lelvsmtp5.itg.ti.com (8.15.2/8.15.2) with ESMTP id 433KaYFo080324;
 	Wed, 3 Apr 2024 15:36:37 -0500
 From: Andrew Davis <afd@ti.com>
 To: Jean Delvare <jdelvare@suse.com>, Guenter Roeck <linux@roeck-us.net>,
@@ -61,9 +61,9 @@ To: Jean Delvare <jdelvare@suse.com>, Guenter Roeck <linux@roeck-us.net>,
 CC: <linux-hwmon@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
         Andrew
  Davis <afd@ti.com>
-Subject: [PATCH 08/31] hwmon: (ds1621) Remove use of i2c_match_id()
-Date: Wed, 3 Apr 2024 15:36:10 -0500
-Message-ID: <20240403203633.914389-9-afd@ti.com>
+Subject: [PATCH 09/31] hwmon: (f75375s) Remove use of i2c_match_id()
+Date: Wed, 3 Apr 2024 15:36:11 -0500
+Message-ID: <20240403203633.914389-10-afd@ti.com>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20240403203633.914389-1-afd@ti.com>
 References: <20240403203633.914389-1-afd@ti.com>
@@ -93,31 +93,80 @@ This helper has a couple other benefits:
 
 Signed-off-by: Andrew Davis <afd@ti.com>
 ---
- drivers/hwmon/ds1621.c | 4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
+ drivers/hwmon/f75375s.c | 46 ++++++++++++++++++-----------------------
+ 1 file changed, 20 insertions(+), 26 deletions(-)
 
-diff --git a/drivers/hwmon/ds1621.c b/drivers/hwmon/ds1621.c
-index bffbc80401718..42ec34cb8a5f8 100644
---- a/drivers/hwmon/ds1621.c
-+++ b/drivers/hwmon/ds1621.c
-@@ -342,8 +342,6 @@ static const struct attribute_group ds1621_group = {
+diff --git a/drivers/hwmon/f75375s.c b/drivers/hwmon/f75375s.c
+index 8c572bb64f5dc..7e867f1324201 100644
+--- a/drivers/hwmon/f75375s.c
++++ b/drivers/hwmon/f75375s.c
+@@ -111,31 +111,6 @@ struct f75375_data {
+ 	s8 temp_max_hyst[2];
  };
- __ATTRIBUTE_GROUPS(ds1621);
  
--static const struct i2c_device_id ds1621_id[];
+-static int f75375_detect(struct i2c_client *client,
+-			 struct i2c_board_info *info);
+-static int f75375_probe(struct i2c_client *client);
+-static void f75375_remove(struct i2c_client *client);
 -
- static int ds1621_probe(struct i2c_client *client)
+-static const struct i2c_device_id f75375_id[] = {
+-	{ "f75373", f75373 },
+-	{ "f75375", f75375 },
+-	{ "f75387", f75387 },
+-	{ }
+-};
+-MODULE_DEVICE_TABLE(i2c, f75375_id);
+-
+-static struct i2c_driver f75375_driver = {
+-	.class = I2C_CLASS_HWMON,
+-	.driver = {
+-		.name = "f75375",
+-	},
+-	.probe = f75375_probe,
+-	.remove = f75375_remove,
+-	.id_table = f75375_id,
+-	.detect = f75375_detect,
+-	.address_list = normal_i2c,
+-};
+-
+ static inline int f75375_read8(struct i2c_client *client, u8 reg)
  {
- 	struct ds1621_data *data;
-@@ -356,7 +354,7 @@ static int ds1621_probe(struct i2c_client *client)
+ 	return i2c_smbus_read_byte_data(client, reg);
+@@ -830,7 +805,7 @@ static int f75375_probe(struct i2c_client *client)
  
+ 	i2c_set_clientdata(client, data);
  	mutex_init(&data->update_lock);
- 
--	data->kind = i2c_match_id(ds1621_id, client)->driver_data;
+-	data->kind = i2c_match_id(f75375_id, client)->driver_data;
 +	data->kind = (uintptr_t)i2c_get_match_data(client);
- 	data->client = client;
  
- 	/* Initialize the DS1621 chip */
+ 	err = sysfs_create_group(&client->dev.kobj, &f75375_group);
+ 	if (err)
+@@ -901,6 +876,25 @@ static int f75375_detect(struct i2c_client *client,
+ 	return 0;
+ }
+ 
++static const struct i2c_device_id f75375_id[] = {
++	{ "f75373", f75373 },
++	{ "f75375", f75375 },
++	{ "f75387", f75387 },
++	{ }
++};
++MODULE_DEVICE_TABLE(i2c, f75375_id);
++
++static struct i2c_driver f75375_driver = {
++	.class = I2C_CLASS_HWMON,
++	.driver = {
++		.name = "f75375",
++	},
++	.probe = f75375_probe,
++	.remove = f75375_remove,
++	.id_table = f75375_id,
++	.detect = f75375_detect,
++	.address_list = normal_i2c,
++};
+ module_i2c_driver(f75375_driver);
+ 
+ MODULE_AUTHOR("Riku Voipio");
 -- 
 2.39.2
 
