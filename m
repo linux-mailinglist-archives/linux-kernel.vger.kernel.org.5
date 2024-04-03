@@ -1,133 +1,362 @@
-Return-Path: <linux-kernel+bounces-130391-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-130392-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id E3A5F897776
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 19:55:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id CF572897779
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 19:56:02 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9E896288622
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 17:55:38 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8B0562835D2
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 17:56:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 521B1155311;
-	Wed,  3 Apr 2024 17:50:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AB1021553B5;
+	Wed,  3 Apr 2024 17:51:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=canonical.com header.i=@canonical.com header.b="byqrfGdz"
-Received: from smtp-relay-canonical-0.canonical.com (smtp-relay-canonical-0.canonical.com [185.125.188.120])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="BvAfPZqX"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.8])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7ED1815381D;
-	Wed,  3 Apr 2024 17:50:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.125.188.120
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 51BFB1514D9;
+	Wed,  3 Apr 2024 17:50:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.8
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712166621; cv=none; b=TMvRFNeUOJlfemDwh69Fz678dye5rsVCE2XRXHqO9ZfpnLMP0CRFmkHYF0fKCac2DpGhhQMdKueiUffWdyEKyPByC/rG+10NnqG0AC9VQLTlViwc2oPzP6Iuf65rtiY85KonlNDNoBqJqlg1fWbDnc9ZDhHJJKIDFbaqLgnFfbA=
+	t=1712166660; cv=none; b=pirYSLkxldOGQAGAZn42kdKGwhCIuLU19I87HhD04TW9f+nv+9AiobllxlzU+678FsYtMEWgbIMI/TajanygDdGeIuUNgR9jDBrScdOKNPaXgiiV6u3Vz2IUYrcFC1NoUAEfE1JKUWF5Rw0y5sFKLFy+ZINimecsERsT1o1mQFs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712166621; c=relaxed/simple;
-	bh=xThGk9GOmc0kEc37JvvM5e3AjKZI5HcghdoTOYWVKuE=;
-	h=Message-ID:Date:MIME-Version:To:From:Subject:Cc:Content-Type; b=uW0yGQP+42ImfWG9BcquETBjlW/2OWhlQD9u2g+YBfYlFtHoRLQGVfSWX5JpKM4nKidEAso5WBWbIi1y1jtCTlL+o5qyqNz9dEH1P5P+Gv3G/56pqTTQ6ZsEXGC9eGp7HRrJZ0LgoaYMFfndWiK2W2mXLmPeJKaiVBTEQAnhoE4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canonical.com; spf=pass smtp.mailfrom=canonical.com; dkim=pass (2048-bit key) header.d=canonical.com header.i=@canonical.com header.b=byqrfGdz; arc=none smtp.client-ip=185.125.188.120
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canonical.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canonical.com
-Received: from [10.172.66.188] (1.general.jsalisbury.us.vpn [10.172.66.188])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-relay-canonical-0.canonical.com (Postfix) with ESMTPSA id 515673F4BE;
-	Wed,  3 Apr 2024 17:50:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-	s=20210705; t=1712166611;
-	bh=wq4bNQuFQG7/CBFmbK5g+avAGt7oXuzR3zJRSf//+Sc=;
-	h=Message-ID:Date:MIME-Version:To:From:Subject:Cc:Content-Type;
-	b=byqrfGdz7SrAezctMlZ0ByVWKjKaQmIYsNJBPx0qYGyUUiG5dzH6xrPb1HcPH3zxH
-	 DHI/PSen+qT9HFWo7rZPOfu5zg1rx04ZhgvkN/uKUlOV8ctlGSFpN3cQQfSQwZLiZO
-	 tFvmn1jo5FAiyroOiZmmpE//9JWBFP9SrfvPUgSPGmsetxnZDDE0+Zcxc000loDYj9
-	 6xQiTV9o6O85uXQ/UhRjEI7uFu34S3qs2Z7uEc31IAIDCD5on3xHZVcoyL5eI7N3xg
-	 t8NCacW+Luk8PiJeQcQ2lgdHXCG4uRnYIwvhIRuc91tMhxl9XcVEQNuHq5wvkYpSxp
-	 akFE3SEDDRD9w==
-Message-ID: <924449dc-9b1f-4943-afe3-a68c03aedbb5@canonical.com>
-Date: Wed, 3 Apr 2024 13:50:09 -0400
+	s=arc-20240116; t=1712166660; c=relaxed/simple;
+	bh=mxhZL7X/jHWtQd81rXRUfhGiKJ+dCgHSGzxl9IE1Cuk=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=bv5h3ukAGNLyGSxOCnJ+IeWh8Q4s01QUkV3V+exxnEv+O9lWHZWedt7h3LCijuGeN0j/2JBTGxznKAKABekKpiJXd7MZHkzdfOPDugRHgmLOcOhTSgNKgqjHnwpI6ky69nbYXfYrhR9vrdGpghP2FUWgWM0EueDrRIBF8tw6CGA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=BvAfPZqX; arc=none smtp.client-ip=192.198.163.8
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1712166658; x=1743702658;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=mxhZL7X/jHWtQd81rXRUfhGiKJ+dCgHSGzxl9IE1Cuk=;
+  b=BvAfPZqXLL4W5fp669KaWtLKEzLSb8X82l3/YPHuxmZVLTYRjlMl+l0Z
+   CpWfqfzWZqPdcRO3bnmxTba74JSSYKvlRcjxHWDt3gFT/+ZiqJSdIK3DF
+   iePJcQsD41K+pRQHS6k6k+rcD+WvR36GKrjOMYjGeP8eKYXdqEXKUh4ht
+   SlCXY9PbBVIdvzP4pTqm+AfGLi8FXWOcaveMb6B6S4qv/9BQDcaAyV/GZ
+   SOgRdLThF+5o2ImVlF7euKiAeqFe3UQsqv+tpCNYdEOCi7jZ9QXU2hoRX
+   09wjFn7zBnKEtV3sNbsBSBcVsIXX6A81/lnLYVe8Dns0pNM3gypqscLAN
+   A==;
+X-CSE-ConnectionGUID: uNCBjuNdRqWVJNxqfCl5jw==
+X-CSE-MsgGUID: AyOQ/vB4QWK9AYy7cTAZQw==
+X-IronPort-AV: E=McAfee;i="6600,9927,11033"; a="24922949"
+X-IronPort-AV: E=Sophos;i="6.07,177,1708416000"; 
+   d="scan'208";a="24922949"
+Received: from orviesa004.jf.intel.com ([10.64.159.144])
+  by fmvoesa102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Apr 2024 10:50:57 -0700
+X-CSE-ConnectionGUID: tPvF+u0ySR63vszG97Ol4g==
+X-CSE-MsgGUID: dMl/i12MTI6OINYpWrmbDQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,177,1708416000"; 
+   d="scan'208";a="23274334"
+Received: from ls.sc.intel.com (HELO localhost) ([172.25.112.31])
+  by orviesa004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Apr 2024 10:50:57 -0700
+Date: Wed, 3 Apr 2024 10:50:56 -0700
+From: Isaku Yamahata <isaku.yamahata@intel.com>
+To: Binbin Wu <binbin.wu@linux.intel.com>
+Cc: isaku.yamahata@intel.com, kvm@vger.kernel.org,
+	linux-kernel@vger.kernel.org, isaku.yamahata@gmail.com,
+	Paolo Bonzini <pbonzini@redhat.com>, erdemaktas@google.com,
+	Sean Christopherson <seanjc@google.com>,
+	Sagi Shahar <sagis@google.com>, Kai Huang <kai.huang@intel.com>,
+	chen.bo@intel.com, hang.yuan@intel.com, tina.zhang@intel.com,
+	isaku.yamahata@linux.intel.com
+Subject: Re: [PATCH v19 070/130] KVM: TDX: TDP MMU TDX support
+Message-ID: <20240403175056.GG2444378@ls.amr.corp.intel.com>
+References: <cover.1708933498.git.isaku.yamahata@intel.com>
+ <56cdb0da8bbf17dc293a2a6b4ff74f6e3e034bbd.1708933498.git.isaku.yamahata@intel.com>
+ <bd862ee4-7513-4880-b6e5-466dcfb08f1a@linux.intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Content-Language: en-US
-To: hch@lst.de
-From: Joseph Salisbury <joseph.salisbury@canonical.com>
-Subject: [v5.15 Regression] block: rename GENHD_FL_NO_PART_SCAN to
- GENHD_FL_NO_PART
-Autocrypt: addr=joseph.salisbury@canonical.com; keydata=
- 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
- p24lPxLL08SuCEzuBw==
-Cc: linux-kernel@vger.kernel.org, linux-block@vger.kernel.org,
- axboe@kernel.dk, gregkh@linuxfoundation.org, sashal@kernel.org,
- stable@vger.kernel.org, Francis Ginther <francis.ginther@canonical.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <bd862ee4-7513-4880-b6e5-466dcfb08f1a@linux.intel.com>
 
-Hi Christoph,
+On Tue, Apr 02, 2024 at 02:21:41PM +0800,
+Binbin Wu <binbin.wu@linux.intel.com> wrote:
 
-A kernel bug report was opened against Ubuntu [0].  This bug is a 
-regression introduced in mainline version v5.17-rc1 and made it's way 
-into v5.15 stable updates.
+> 
+> 
+> On 2/26/2024 4:26 PM, isaku.yamahata@intel.com wrote:
+> > From: Isaku Yamahata <isaku.yamahata@intel.com>
+> > 
+> > Implement hooks of TDP MMU for TDX backend.  TLB flush, TLB shootdown,
+> > propagating the change private EPT entry to Secure EPT and freeing Secure
+> > EPT page. TLB flush handles both shared EPT and private EPT.  It flushes
+> > shared EPT same as VMX.  It also waits for the TDX TLB shootdown.  For the
+> > hook to free Secure EPT page, unlinks the Secure EPT page from the Secure
+> > EPT so that the page can be freed to OS.
+> > 
+> > Propagate the entry change to Secure EPT.  The possible entry changes are
+> > present -> non-present(zapping) and non-present -> present(population).  On
+> > population just link the Secure EPT page or the private guest page to the
+> > Secure EPT by TDX SEAMCALL. Because TDP MMU allows concurrent
+> > zapping/population, zapping requires synchronous TLB shoot down with the
+> > frozen EPT entry.
+> 
+> But for private memory, zapping holds write lock, right?
 
-The following commit was identified as the cause of the regression in 5.15:
-
-c6ce1c5dd327 ("block: rename GENHD_FL_NO_PART_SCAN to GENHD_FL_NO_PART")
-
-I was hoping to get your feedback, since you are the patch author. Is 
-the best approach to revert this commit, since many third parties rely 
-on the name being GENHD_FL_NO_PART_SCAN in kernel headers?  Is there a 
-specific need that you know of that requires this commit in the 5.15 and 
-earlier stable kernels?
-
-Thanks,
-
-Joe
+Right.
 
 
-[0] http://pad.lv/2053101
+> >    It zaps the secure entry, increments TLB counter, sends
+> > IPI to remote vcpus to trigger TLB flush, and then unlinks the private
+> > guest page from the Secure EPT. For simplicity, batched zapping with
+> > exclude lock is handled as concurrent zapping.
+> 
+> exclude lock -> exclusive lock
+> 
+> How to understand this sentence?
+> Since it's holding exclusive lock, how it can be handled as concurrent
+> zapping?
+> Or you want to describe the current implementation prevents concurrent
+> zapping?
+
+The sentences is mixture of the currenct TDP MMU and how the new enhancement
+with this patch provides.  Because this patch is TDX backend, let me drop the
+description about the TDP MMU part.
+
+Propagate the entry change to Secure EPT.  The possible entry changes
+are non-present -> present(population) and present ->
+non-present(zapping).  On population just link the Secure EPT page or
+the private guest page to the Secure EPT by TDX SEAMCALL. On zapping,
+It blocks the Secure-EPT entry (clear present bit) , increments TLB
+counter, sends IPI to remote vcpus to trigger TLB flush, and then
+unlinks the private guest page from the Secure EPT.
+
+
+> > Although it's inefficient,
+> > it can be optimized in the future.
+> > 
+> > For MMIO SPTE, the spte value changes as follows.
+> > initial value (suppress VE bit is set)
+> > -> Guest issues MMIO and triggers EPT violation
+> > -> KVM updates SPTE value to MMIO value (suppress VE bit is cleared)
+> > -> Guest MMIO resumes.  It triggers VE exception in guest TD
+> > -> Guest VE handler issues TDG.VP.VMCALL<MMIO>
+> > -> KVM handles MMIO
+> > -> Guest VE handler resumes its execution after MMIO instruction
+> > 
+> > Signed-off-by: Isaku Yamahata <isaku.yamahata@intel.com>
+> > 
+> > ---
+> > v19:
+> > - Compile fix when CONFIG_HYPERV != y.
+> >    It's due to the following patch.  Catch it up.
+> >    https://lore.kernel.org/all/20231018192325.1893896-1-seanjc@google.com/
+> > - Add comments on tlb shootdown to explan the sequence.
+> > - Use gmem_max_level callback, delete tdp_max_page_level.
+> > 
+> > v18:
+> > - rename tdx_sept_page_aug() -> tdx_mem_page_aug()
+> > - checkpatch: space => tab
+> > 
+> > v15 -> v16:
+> > - Add the handling of TD_ATTR_SEPT_VE_DISABLE case.
+> > 
+> > v14 -> v15:
+> > - Implemented tdx_flush_tlb_current()
+> > - Removed unnecessary invept in tdx_flush_tlb().  It was carry over
+> >    from the very old code base.
+> > 
+> > Signed-off-by: Isaku Yamahata <isaku.yamahata@intel.com>
+> > ---
+> >   arch/x86/kvm/mmu/spte.c    |   3 +-
+> >   arch/x86/kvm/vmx/main.c    |  91 ++++++++-
+> >   arch/x86/kvm/vmx/tdx.c     | 372 +++++++++++++++++++++++++++++++++++++
+> >   arch/x86/kvm/vmx/tdx.h     |   2 +-
+> >   arch/x86/kvm/vmx/tdx_ops.h |   6 +
+> >   arch/x86/kvm/vmx/x86_ops.h |  13 ++
+> >   6 files changed, 481 insertions(+), 6 deletions(-)
+> > 
+> [...]
+> > +
+> > +static int tdx_mem_page_aug(struct kvm *kvm, gfn_t gfn,
+> > +			    enum pg_level level, kvm_pfn_t pfn)
+> > +{
+> > +	int tdx_level = pg_level_to_tdx_sept_level(level);
+> > +	struct kvm_tdx *kvm_tdx = to_kvm_tdx(kvm);
+> > +	union tdx_sept_level_state level_state;
+> > +	hpa_t hpa = pfn_to_hpa(pfn);
+> > +	gpa_t gpa = gfn_to_gpa(gfn);
+> > +	struct tdx_module_args out;
+> > +	union tdx_sept_entry entry;
+> > +	u64 err;
+> > +
+> > +	err = tdh_mem_page_aug(kvm_tdx->tdr_pa, gpa, hpa, &out);
+> > +	if (unlikely(err == TDX_ERROR_SEPT_BUSY)) {
+> > +		tdx_unpin(kvm, pfn);
+> > +		return -EAGAIN;
+> > +	}
+> > +	if (unlikely(err == (TDX_EPT_ENTRY_STATE_INCORRECT | TDX_OPERAND_ID_RCX))) {
+> > +		entry.raw = out.rcx;
+> > +		level_state.raw = out.rdx;
+> > +		if (level_state.level == tdx_level &&
+> > +		    level_state.state == TDX_SEPT_PENDING &&
+> > +		    entry.leaf && entry.pfn == pfn && entry.sve) {
+> > +			tdx_unpin(kvm, pfn);
+> > +			WARN_ON_ONCE(!(to_kvm_tdx(kvm)->attributes &
+> > +				       TDX_TD_ATTR_SEPT_VE_DISABLE));
+> 
+> to_kvm_tdx(kvm) -> kvm_tdx
+> 
+> Since the implementation requires attributes.TDX_TD_ATTR_SEPT_VE_DISABLE is set,
+
+TDX KVM allows either configuration. set or cleared.
+
+
+> should it check the value passed from userspace?
+
+It's user-space configurable value.
+
+
+> And the reason should be described somewhere in changelog or/and comment.
+
+This WARN_ON_ONCE() is a guard for buggy TDX module. It shouldn't return
+(TDX_EPT_ENTRY_STATE_INCORRECT | TDX_OPERAND_ID_RCX)) when SEPT_VE_DISABLED
+cleared.  Maybe we should remove this WARN_ON_ONCE() because the TDX module
+is mature.
+
+
+> > +			return -EAGAIN;
+> > +		}
+> > +	}
+> > +	if (KVM_BUG_ON(err, kvm)) {
+> > +		pr_tdx_error(TDH_MEM_PAGE_AUG, err, &out);
+> > +		tdx_unpin(kvm, pfn);
+> > +		return -EIO;
+> > +	}
+> > +
+> > +	return 0;
+> > +}
+> > +
+> > +static int tdx_sept_set_private_spte(struct kvm *kvm, gfn_t gfn,
+> > +				     enum pg_level level, kvm_pfn_t pfn)
+> > +{
+> > +	struct kvm_tdx *kvm_tdx = to_kvm_tdx(kvm);
+> > +
+> > +	/* TODO: handle large pages. */
+> > +	if (KVM_BUG_ON(level != PG_LEVEL_4K, kvm))
+> > +		return -EINVAL;
+> > +
+> > +	/*
+> > +	 * Because restricted mem
+> 
+> The term "restricted mem" is not used anymore, right? Should update the
+> comment.
+
+Sure, will update it to guest_memfd.
+> 
+> > doesn't support page migration with
+> > +	 * a_ops->migrate_page (yet), no callback isn't triggered for KVM on
+> 
+> no callback isn't -> no callback is
+> 
+> > +	 * page migration.  Until restricted mem supports page migration,
+> 
+> "restricted mem" -> guest_mem
+> 
+> 
+> > +	 * prevent page migration.
+> > +	 * TODO: Once restricted mem introduces callback on page migration,
+> 
+> ditto
+> 
+> > +	 * implement it and remove get_page/put_page().
+> > +	 */
+> > +	get_page(pfn_to_page(pfn));
+> > +
+> > +	if (likely(is_td_finalized(kvm_tdx)))
+> > +		return tdx_mem_page_aug(kvm, gfn, level, pfn);
+> > +
+> > +	/* TODO: tdh_mem_page_add() comes here for the initial memory. */
+> > +
+> > +	return 0;
+> > +}
+> > +
+> > +static int tdx_sept_drop_private_spte(struct kvm *kvm, gfn_t gfn,
+> > +				       enum pg_level level, kvm_pfn_t pfn)
+> > +{
+> > +	int tdx_level = pg_level_to_tdx_sept_level(level);
+> > +	struct kvm_tdx *kvm_tdx = to_kvm_tdx(kvm);
+> > +	struct tdx_module_args out;
+> > +	gpa_t gpa = gfn_to_gpa(gfn);
+> > +	hpa_t hpa = pfn_to_hpa(pfn);
+> > +	hpa_t hpa_with_hkid;
+> > +	u64 err;
+> > +
+> > +	/* TODO: handle large pages. */
+> > +	if (KVM_BUG_ON(level != PG_LEVEL_4K, kvm))
+> > +		return -EINVAL;
+> > +
+> > +	if (unlikely(!is_hkid_assigned(kvm_tdx))) {
+> > +		/*
+> > +		 * The HKID assigned to this TD was already freed and cache
+> > +		 * was already flushed. We don't have to flush again.
+> > +		 */
+> > +		err = tdx_reclaim_page(hpa);
+> > +		if (KVM_BUG_ON(err, kvm))
+> > +			return -EIO;
+> > +		tdx_unpin(kvm, pfn);
+> > +		return 0;
+> > +	}
+> > +
+> > +	do {
+> > +		/*
+> > +		 * When zapping private page, write lock is held. So no race
+> > +		 * condition with other vcpu sept operation.  Race only with
+> > +		 * TDH.VP.ENTER.
+> > +		 */
+> > +		err = tdh_mem_page_remove(kvm_tdx->tdr_pa, gpa, tdx_level, &out);
+> > +	} while (unlikely(err == TDX_ERROR_SEPT_BUSY));
+> > +	if (KVM_BUG_ON(err, kvm)) {
+> > +		pr_tdx_error(TDH_MEM_PAGE_REMOVE, err, &out);
+> > +		return -EIO;
+> > +	}
+> > +
+> > +	hpa_with_hkid = set_hkid_to_hpa(hpa, (u16)kvm_tdx->hkid);
+> > +	do {
+> > +		/*
+> > +		 * TDX_OPERAND_BUSY can happen on locking PAMT entry.  Because
+> > +		 * this page was removed above, other thread shouldn't be
+> > +		 * repeatedly operating on this page.  Just retry loop.
+> > +		 */
+> > +		err = tdh_phymem_page_wbinvd(hpa_with_hkid);
+> > +	} while (unlikely(err == (TDX_OPERAND_BUSY | TDX_OPERAND_ID_RCX)));
+> > +	if (KVM_BUG_ON(err, kvm)) {
+> > +		pr_tdx_error(TDH_PHYMEM_PAGE_WBINVD, err, NULL);
+> > +		return -EIO;
+> > +	}
+> > +	tdx_clear_page(hpa);
+> > +	tdx_unpin(kvm, pfn);
+> > +	return 0;
+> > +}
+> > +
+> > +static int tdx_sept_link_private_spt(struct kvm *kvm, gfn_t gfn,
+> > +				     enum pg_level level, void *private_spt)
+> > +{
+> > +	int tdx_level = pg_level_to_tdx_sept_level(level);
+> > +	struct kvm_tdx *kvm_tdx = to_kvm_tdx(kvm);
+> > +	gpa_t gpa = gfn_to_gpa(gfn);
+> > +	hpa_t hpa = __pa(private_spt);
+> > +	struct tdx_module_args out;
+> > +	u64 err;
+> > +
+> > +	err = tdh_mem_sept_add(kvm_tdx->tdr_pa, gpa, tdx_level, hpa, &out);
+> 
+> kvm_tdx is only used here, can drop the local var.
+
+Will drop it.
+-- 
+Isaku Yamahata <isaku.yamahata@intel.com>
 
