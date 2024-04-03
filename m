@@ -1,194 +1,311 @@
-Return-Path: <linux-kernel+bounces-129959-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-129961-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C440A8972BD
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 16:36:32 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id A452789728E
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 16:27:22 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 138C5B29C1F
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 14:26:43 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 55D7E281FC6
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 14:27:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3A30243AB4;
-	Wed,  3 Apr 2024 14:26:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0718D1494DF;
+	Wed,  3 Apr 2024 14:26:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="SiG5xiHB"
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="SAInuEps"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0E4F77317F;
-	Wed,  3 Apr 2024 14:26:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4421014900E
+	for <linux-kernel@vger.kernel.org>; Wed,  3 Apr 2024 14:26:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712154381; cv=none; b=HJpHn14+8FLDTIPuttj4CQRpGix7G3cgssQHeSMmefGW21bqt9G1QLE0H0j/W9liPLJ9wPYH6u9MKx2hDrBgThGy6LMLD+yKlfvPY0mvxF3adlPmeR8RXmEpqpr/n1y5OfYe7nsgb8wI2Wek/ogUSi0a09w6JwMpRTBb4OyZX14=
+	t=1712154409; cv=none; b=n/zBi8QcrSM/pepR4xqyD6AQF/qwM2u29YEgLlU9RkHuWxvfQLdBMOu84Fbs7Uill9aErmX/n1LXSlQYKH4c8hc9KaQ1y8f40V72vqIL58/IipD5QvhsPqMKfOg3oElKY83feX12/i5Q8Ef84TCluRTLjAqdPZkdwBmtiSRhoDY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712154381; c=relaxed/simple;
-	bh=fkTHuuIlizFLfJEW/hGdq6DrsghcH2/JNKr3v+ckPxc=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=ddHXuouoZeWMVeTGnZasYbCGgkvqnMQ6KkDQ5OjZF/dov90KjAfmtZxpGgg6VD6xpUFAZsY0KHLdEnfOS6hmOCIQVGrYl91ZiDvPECzhXaM6OzISV58EagP0X45o8Z8myjTFI8+iU4LQYx1NbH8Qv0ZuQYmiRVSEg97tAQOguYs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=SiG5xiHB; arc=none smtp.client-ip=205.220.180.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279872.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 4339T68j003830;
-	Wed, 3 Apr 2024 14:26:13 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	message-id:date:mime-version:subject:to:cc:references:from
-	:in-reply-to:content-type:content-transfer-encoding; s=
-	qcppdkim1; bh=dlV/Xaqd+s+Wl3Cs/arDiJ6Ugx4On9Q/h5cNnVIYRng=; b=Si
-	G5xiHBmRYpkJwEWAFWV0kc1Aor5KQgtL+Wwx03amkBaXCyfTFJxy9LU0YN/ZJCTK
-	QnZu+1KpDpTFbWmFiXHUpYo/RLxaZYgAi3bfinDmEPwU1OBCx3/JIzpAkKDU7Sjg
-	YyAuqFOHgygNPFf1IZBBYSIkBhfGJo8TvZ0QVpe0MosleR1Q08PIukjyA8RYoHsZ
-	AZudKggWqpm9z4TGWYkxSXI/hhJXxGESDSKP9gVlBIbuAe08k9sU4OdJj3kQCVXK
-	MFmyDDEeHOF1Hm4EHDYLazXDUbQqdHum9XnXHGPFZ53wbNz2mQpGsRm8H6/X/sym
-	s0H3XIZaC66o8hE7nB1A==
-Received: from nalasppmta01.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3x93n3gwfq-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 03 Apr 2024 14:26:12 +0000 (GMT)
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-	by NALASPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 433EQBYu005071
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 3 Apr 2024 14:26:11 GMT
-Received: from [10.227.110.203] (10.80.80.8) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.4; Wed, 3 Apr 2024
- 07:26:11 -0700
-Message-ID: <0987ae32-911e-4770-bdd0-ba099fb3bd72@quicinc.com>
-Date: Wed, 3 Apr 2024 07:26:10 -0700
+	s=arc-20240116; t=1712154409; c=relaxed/simple;
+	bh=RBFLm5+uDEmgofj9uWxnzSGcRd9//fecuzhvrER/xPs=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=AaYyC+uItMEopvuvcvZA68sybPnCmK1NDMC5MvwjHqyMDlUGdsVhTqi6FRdAqdv8HLsy6tk86JAHtVeU7sOH8fhGP7yyO1VztsXN0mJyhHCpaEoh5yZFtRCS56AoR40CeYvSwivfoc09DtzgpPJBFL/YfDgVw8rvNk4ghXE5qC0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=SAInuEps; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1712154406;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=57LjQ/Xo+U2gCuYANCe1R7m3CEd4Dr8ZrP/P0e/5PCw=;
+	b=SAInuEpsN1iUV4UMwu3+mE7o70v3N42XZUQVt0PLiSOsTW76P1a1/MWT+TDZdFefAoW4/z
+	6yDvjiE7oxvMoSSWlzxOm+Rd8xESXJ9NiopdyW6kFiFByne09EWzvky5+qfAa3hIkuc/Hp
+	vGtR2HxQGLJOuFZtdQhc2qFSfwq/I1o=
+Received: from mail-ot1-f69.google.com (mail-ot1-f69.google.com
+ [209.85.210.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-661-WW7LftD3Pq2jFg2ZXyJUhw-1; Wed, 03 Apr 2024 10:26:44 -0400
+X-MC-Unique: WW7LftD3Pq2jFg2ZXyJUhw-1
+Received: by mail-ot1-f69.google.com with SMTP id 46e09a7af769-6e682fd5c39so7772767a34.3
+        for <linux-kernel@vger.kernel.org>; Wed, 03 Apr 2024 07:26:44 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712154403; x=1712759203;
+        h=content-transfer-encoding:mime-version:message-id:date:references
+         :in-reply-to:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=57LjQ/Xo+U2gCuYANCe1R7m3CEd4Dr8ZrP/P0e/5PCw=;
+        b=b8iMiEPhZotm0gRtTImY038uKXqpE5muRuMJrSdxx9y/tYK1/pvb8TGRI+W42bCl7c
+         e5qcTiA7I0K7RzUKAO/AHbPrF9W/9Sd0r+CRS0Gda+QGNDZbzOUsDcCdnqCrB6zSlBPl
+         vZ71VsLEgEIgPw4XAAw4QRf0vVPf9kbwX/FctDKh2KWTdtXoQzM99I+EKIPf21kAZ7He
+         uNv4GCGBoo3gCzWCjBMCYmrNGjD1ngKM2Xb09PBC/Q6EQ4Kclp3YY03ecXx/K/e8gp3Q
+         3WrnudTlryS7WhPAvQqXxMpAklBRT596Ykj75lBZIPc2flv1c8U+pPZYeOCGMQE1QHAL
+         9Spg==
+X-Forwarded-Encrypted: i=1; AJvYcCXULdTMxLS890QNAJb0Ts6f5/11u9ScNsIDw3h7CIoMMWxKslezIZdwkDh/JfBxBdlGd/bGq/nv2iqyWFFUCEqlIPdW8c6YYfjupzWl
+X-Gm-Message-State: AOJu0Ywf1zZTleMKUH/VLCTnQQIBSXcAE7vTZzjB+mUcJCPm25dpADV8
+	cgSY43BWWlsMatD45+6xH7layqBSIjeHezSuHDaZ2urZwPXXE71F058cNha/jz4a0wl0fXb7htH
+	EkJ3JfFhBIK3TkvgQMDt23fEeQhTz1lLzHtrYEKLEZdlro4jwEu7Wd0Ru36lNVA==
+X-Received: by 2002:a9d:5e89:0:b0:6e6:c77e:3933 with SMTP id f9-20020a9d5e89000000b006e6c77e3933mr3900670otl.17.1712154403623;
+        Wed, 03 Apr 2024 07:26:43 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IG0oaGSIyUo+FTnIsjVJ3ux/o0Qa7R44NDTFF1Hk8OXdUAwOVdR3LsBgCR9cxlorz/yDCeJXA==
+X-Received: by 2002:a9d:5e89:0:b0:6e6:c77e:3933 with SMTP id f9-20020a9d5e89000000b006e6c77e3933mr3900642otl.17.1712154403283;
+        Wed, 03 Apr 2024 07:26:43 -0700 (PDT)
+Received: from vschneid-thinkpadt14sgen2i.remote.csb (213-44-141-166.abo.bbox.fr. [213.44.141.166])
+        by smtp.gmail.com with ESMTPSA id ke11-20020a056214300b00b006915ae114efsm6515532qvb.52.2024.04.03.07.26.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 03 Apr 2024 07:26:42 -0700 (PDT)
+From: Valentin Schneider <vschneid@redhat.com>
+To: Waiman Long <longman@redhat.com>, Michal =?utf-8?Q?Koutn=C3=BD?=
+ <mkoutny@suse.com>
+Cc: Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>, Johannes
+ Weiner <hannes@cmpxchg.org>, Thomas Gleixner <tglx@linutronix.de>, Peter
+ Zijlstra <peterz@infradead.org>, "Rafael J. Wysocki" <rafael@kernel.org>,
+ Len Brown <len.brown@intel.com>, Pavel Machek <pavel@ucw.cz>, Shuah Khan
+ <shuah@kernel.org>, linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
+ linux-pm@vger.kernel.org, linux-kselftest@vger.kernel.org, Frederic
+ Weisbecker <frederic@kernel.org>, "Paul E. McKenney" <paulmck@kernel.org>,
+ Ingo Molnar <mingo@kernel.org>, Anna-Maria Behnsen
+ <anna-maria@linutronix.de>, Alex Shi <alexs@kernel.org>, Vincent Guittot
+ <vincent.guittot@linaro.org>, Barry Song <song.bao.hua@hisilicon.com>
+Subject: Re: [PATCH 1/2] cgroup/cpuset: Make cpuset hotplug processing
+ synchronous
+In-Reply-To: <7e62b37d-6c9c-4e55-a01a-175695475cb5@redhat.com>
+References: <20240401145858.2656598-1-longman@redhat.com>
+ <20240401145858.2656598-2-longman@redhat.com>
+ <kce74bx6aafxfuw5yovaschym4ze4kommfk74eq5totojytest@mdxnfvl2kdol>
+ <548efd52-e45f-41fa-a477-bc5112d7b00c@redhat.com>
+ <u3naomgv34t5rnc7pmyy4zjppgf36skeo45orss2xnqcvtrcez@m74tsl2ws76f>
+ <7e62b37d-6c9c-4e55-a01a-175695475cb5@redhat.com>
+Date: Wed, 03 Apr 2024 16:26:38 +0200
+Message-ID: <xhsmhedbmbjz5.mognet@vschneid-thinkpadt14sgen2i.remote.csb>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 21/34] iwlegacy: don't warn for unused variables with
- DEBUG_FS=n
-Content-Language: en-US
-To: Arnd Bergmann <arnd@kernel.org>, <linux-kernel@vger.kernel.org>,
-        Stanislaw
- Gruszka <stf_xl@wp.pl>, Kalle Valo <kvalo@kernel.org>
-CC: Arnd Bergmann <arnd@arndb.de>, <linux-wireless@vger.kernel.org>
-References: <20240403080702.3509288-1-arnd@kernel.org>
- <20240403080702.3509288-22-arnd@kernel.org>
-From: Jeff Johnson <quic_jjohnson@quicinc.com>
-In-Reply-To: <20240403080702.3509288-22-arnd@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: iJsxOlE_fcP_5P3VIbKm5-gy_qpTZfcR
-X-Proofpoint-ORIG-GUID: iJsxOlE_fcP_5P3VIbKm5-gy_qpTZfcR
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-04-03_13,2024-04-03_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 phishscore=0
- bulkscore=0 lowpriorityscore=0 adultscore=0 spamscore=0 priorityscore=1501
- malwarescore=0 impostorscore=0 mlxlogscore=821 suspectscore=0
- clxscore=1011 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2403210001 definitions=main-2404030098
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-On 4/3/2024 1:06 AM, Arnd Bergmann wrote:
-> From: Arnd Bergmann <arnd@arndb.de>
-> 
-> The reference to il_rate_mcs is inside of an #ifdef, causing a W=1 warning:
-> 
-> drivers/net/wireless/intel/iwlegacy/4965-rs.c:189:38: error: unused variable 'il_rate_mcs' [-Werror,-Wunused-const-variable]
-> static const struct il_rate_mcs_info il_rate_mcs[RATE_COUNT] = {
-> 
-> Replace the #ifdef with a PTR_IF() for better compile time analysis.
-> The dead code will still get eliminated, but the warning goes away.
-> 
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-> ---
->  drivers/net/wireless/intel/iwlegacy/4965-rs.c | 15 ++-------------
->  drivers/net/wireless/intel/iwlegacy/common.h  |  2 --
->  2 files changed, 2 insertions(+), 15 deletions(-)
-> 
-> diff --git a/drivers/net/wireless/intel/iwlegacy/4965-rs.c b/drivers/net/wireless/intel/iwlegacy/4965-rs.c
-> index 718efb1aa1b0..1aa2cee5d131 100644
-> --- a/drivers/net/wireless/intel/iwlegacy/4965-rs.c
-> +++ b/drivers/net/wireless/intel/iwlegacy/4965-rs.c
-> @@ -132,15 +132,8 @@ static void il4965_rs_fill_link_cmd(struct il_priv *il,
->  static void il4965_rs_stay_in_table(struct il_lq_sta *lq_sta,
->  				    bool force_search);
->  
-> -#ifdef CONFIG_MAC80211_DEBUGFS
->  static void il4965_rs_dbgfs_set_mcs(struct il_lq_sta *lq_sta,
->  				    u32 *rate_n_flags, int idx);
-> -#else
-> -static void
-> -il4965_rs_dbgfs_set_mcs(struct il_lq_sta *lq_sta, u32 * rate_n_flags, int idx)
-> -{
-> -}
-> -#endif
->  
->  /*
->   * The following tables contain the expected throughput metrics for all rates
-> @@ -2495,8 +2488,6 @@ il4965_rs_free_sta(void *il_r, struct ieee80211_sta *sta, void *il_sta)
->  	D_RATE("leave\n");
->  }
->  
-> -#ifdef CONFIG_MAC80211_DEBUGFS
-> -
+On 03/04/24 09:38, Waiman Long wrote:
+> On 4/3/24 08:02, Michal Koutn=C3=BD wrote:
+>> On Tue, Apr 02, 2024 at 11:30:11AM -0400, Waiman Long <longman@redhat.co=
+m> wrote:
+>>> Yes, there is a potential that a cpus_read_lock() may be called leading=
+ to
+>>> deadlock. So unless we reverse the current cgroup_mutex --> cpu_hotplug=
+_lock
+>>> ordering, it is not safe to call cgroup_transfer_tasks() directly.
+>> I see that cgroup_transfer_tasks() has the only user -- cpuset. What
+>> about bending it for the specific use like:
+>>
+>> diff --git a/include/linux/cgroup.h b/include/linux/cgroup.h
+>> index 34aaf0e87def..64deb7212c5c 100644
+>> --- a/include/linux/cgroup.h
+>> +++ b/include/linux/cgroup.h
+>> @@ -109,7 +109,7 @@ struct cgroup *cgroup_get_from_fd(int fd);
+>>   struct cgroup *cgroup_v1v2_get_from_fd(int fd);
+>>
+>>   int cgroup_attach_task_all(struct task_struct *from, struct task_struc=
+t *);
+>> -int cgroup_transfer_tasks(struct cgroup *to, struct cgroup *from);
+>> +int cgroup_transfer_tasks_locked(struct cgroup *to, struct cgroup *from=
+);
+>>
+>>   int cgroup_add_dfl_cftypes(struct cgroup_subsys *ss, struct cftype *cf=
+ts);
+>>   int cgroup_add_legacy_cftypes(struct cgroup_subsys *ss, struct cftype =
+*cfts);
+>> diff --git a/kernel/cgroup/cgroup-v1.c b/kernel/cgroup/cgroup-v1.c
+>> index 520a11cb12f4..f97025858c7a 100644
+>> --- a/kernel/cgroup/cgroup-v1.c
+>> +++ b/kernel/cgroup/cgroup-v1.c
+>> @@ -91,7 +91,8 @@ EXPORT_SYMBOL_GPL(cgroup_attach_task_all);
+>>    *
+>>    * Return: %0 on success or a negative errno code on failure
+>>    */
+>> -int cgroup_transfer_tasks(struct cgroup *to, struct cgroup *from)
+>> +int cgroup_transfer_tasks_locked(struct cgroup *to, struct cgroup *from)
+>>   {
+>>      DEFINE_CGROUP_MGCTX(mgctx);
+>>      struct cgrp_cset_link *link;
+>> @@ -106,9 +106,11 @@ int cgroup_transfer_tasks(struct cgroup *to, struct=
+ cgroup *from)
+>>      if (ret)
+>>              return ret;
+>>
+>> -	cgroup_lock();
+>> -
+>> -	cgroup_attach_lock(true);
+>> +	/* The locking rules serve specific purpose of v1 cpuset hotplug
+>> +	 * migration, see hotplug_update_tasks_legacy() and
+>> +	 * cgroup_attach_lock() */
+>> +	lockdep_assert_held(&cgroup_mutex);
+>> +	lockdep_assert_cpus_held();
+>> +	percpu_down_write(&cgroup_threadgroup_rwsem);
+>>
+>>      /* all tasks in @from are being moved, all csets are source */
+>>      spin_lock_irq(&css_set_lock);
+>> @@ -144,8 +146,7 @@ int cgroup_transfer_tasks(struct cgroup *to, struct =
+cgroup *from)
+>>      } while (task && !ret);
+>>   out_err:
+>>      cgroup_migrate_finish(&mgctx);
+>> -	cgroup_attach_unlock(true);
+>> -	cgroup_unlock();
+>> +	percpu_up_write(&cgroup_threadgroup_rwsem);
+>>      return ret;
+>>   }
+>>
+>> diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
+>> index 13d27b17c889..94fb8b26f038 100644
+>> --- a/kernel/cgroup/cpuset.c
+>> +++ b/kernel/cgroup/cpuset.c
+>> @@ -4331,7 +4331,7 @@ static void remove_tasks_in_empty_cpuset(struct cp=
+uset *cs)
+>>                      nodes_empty(parent->mems_allowed))
+>>              parent =3D parent_cs(parent);
+>>
+>> -	if (cgroup_transfer_tasks(parent->css.cgroup, cs->css.cgroup)) {
+>> +	if (cgroup_transfer_tasks_locked(parent->css.cgroup, cs->css.cgroup)) {
+>>              pr_err("cpuset: failed to transfer tasks out of empty cpuse=
+t ");
+>>              pr_cont_cgroup_name(cs->css.cgroup);
+>>              pr_cont("\n");
+>> @@ -4376,21 +4376,9 @@ hotplug_update_tasks_legacy(struct cpuset *cs,
+>>
+>>      /*
+>>       * Move tasks to the nearest ancestor with execution resources,
+>> -	 * This is full cgroup operation which will also call back into
+>> -	 * cpuset. Execute it asynchronously using workqueue.
+>>       */
+>> -	if (is_empty && css_tryget_online(&cs->css)) {
+>> -		struct cpuset_remove_tasks_struct *s;
+>> -
+>> -		s =3D kzalloc(sizeof(*s), GFP_KERNEL);
+>> -		if (WARN_ON_ONCE(!s)) {
+>> -			css_put(&cs->css);
+>> -			return;
+>> -		}
+>> -
+>> -		s->cs =3D cs;
+>> -		INIT_WORK(&s->work, cpuset_migrate_tasks_workfn);
+>> -		schedule_work(&s->work);
+>> +	if (is_empty)
+>> +		remove_tasks_in_empty_cpuset(cs);
+>>      }
+>>   }
+>>
+>
+> It still won't work because of the possibility of mutiple tasks
+> involving in a circular locking dependency. The hotplug thread always
+> acquire the cpu_hotplug_lock first before acquiring cpuset_mutex or
+> cgroup_mtuex in this case (cpu_hotplug_lock --> cgroup_mutex). Other
+> tasks calling into cgroup code will acquire the pair in the order
+> cgroup_mutex --> cpu_hotplug_lock. This may lead to a deadlock if these
+> 2 locking sequences happen at the same time. Lockdep will certainly
+> spill out a splat because of this.
 
-if the const table is only used by this function, why not do the trivial thing
-and relocate it to be inside this #ifdef, or even to be within the function
-itself?
+> So unless we change all the relevant
+> cgroup code to the new cpu_hotplug_lock --> cgroup_mutex locking order,
+> the hotplug code can't call cgroup_transfer_tasks() directly.
+>
 
->  static void
->  il4965_rs_dbgfs_set_mcs(struct il_lq_sta *lq_sta, u32 * rate_n_flags, int idx)
->  {
-> @@ -2758,7 +2749,6 @@ il4965_rs_add_debugfs(void *il, void *il_sta, struct dentry *dir)
->  	debugfs_create_u8("tx_agg_tid_enable", 0600, dir,
->  			  &lq_sta->tx_agg_tid_en);
->  }
-> -#endif
->  
->  /*
->   * Initialization of rate scaling information is done by driver after
-> @@ -2781,9 +2771,8 @@ static const struct rate_control_ops rs_4965_ops = {
->  	.free = il4965_rs_free,
->  	.alloc_sta = il4965_rs_alloc_sta,
->  	.free_sta = il4965_rs_free_sta,
-> -#ifdef CONFIG_MAC80211_DEBUGFS
-> -	.add_sta_debugfs = il4965_rs_add_debugfs,
-> -#endif
-> +	.add_sta_debugfs = PTR_IF(IS_ENABLED(CONFIG_DEBUG_FS),
+IIUC that was Thomas' suggestion [1], but I can't tell yet how bad it would
+be to change cgroup_lock() to also do a cpus_read_lock().
 
-CONFIG_DEBUG_FS != CONFIG_MAC80211_DEBUGFS, is that intentional?
+Also, I gave Michal's patch a try and it looks like it's introducing a
+  cgroup_threadgroup_rwsem -> cpuset_mutex
+ordering from
+  cgroup_transfer_tasks_locked()
+  `\
+    percpu_down_write(&cgroup_threadgroup_rwsem);
+    cgroup_migrate()
+    `\
+      cgroup_migrate_execute()
+      `\
+        ss->can_attach() // cpuset_can_attach()
+        `\
+          mutex_lock(&cpuset_mutex);
 
-> +				  il4965_rs_add_debugfs),
+which is invalid, see below.
 
-so using this you don't get a warning about all those static functions and
-tables being unused when the feature is disabled? that's pretty cool.
-is that because the compiler sees them instead of the preprocessor stripping
-them out?
+[1]: https://lore.kernel.org/lkml/87cyrfe7a3.ffs@tglx/
 
->  };
->  
->  int
-> diff --git a/drivers/net/wireless/intel/iwlegacy/common.h b/drivers/net/wireless/intel/iwlegacy/common.h
-> index 69687fcf963f..b9f1daf0901b 100644
-> --- a/drivers/net/wireless/intel/iwlegacy/common.h
-> +++ b/drivers/net/wireless/intel/iwlegacy/common.h
-> @@ -2804,9 +2804,7 @@ struct il_lq_sta {
->  	struct il_scale_tbl_info lq_info[LQ_SIZE];	/* "active", "search" */
->  	struct il_traffic_load load[TID_MAX_LOAD_COUNT];
->  	u8 tx_agg_tid_en;
-> -#ifdef CONFIG_MAC80211_DEBUGFS
->  	u32 dbg_fixed_rate;
-> -#endif
-
-and yes it is trivial, but we now waste this memory when the feature is not
-enabled
-
->  	struct il_priv *drv;
->  
->  	/* used to be in sta_info */
+[   77.627915] WARNING: possible circular locking dependency detected
+[   77.628419] 6.9.0-rc1-00042-g844178b616c7-dirty #23 Tainted: G        W
+[   77.629035] ------------------------------------------------------
+[   77.629548] cpuhp/2/24 is trying to acquire lock:
+[   77.629946] ffffffff82d680b0 (cgroup_threadgroup_rwsem){++++}-{0:0}, at:=
+ cgroup_transfer_tasks_locked+0x123/0x450
+[   77.630851]
+[   77.630851] but task is already holding lock:
+[   77.631397] ffffffff82d6c088 (cpuset_mutex){+.+.}-{3:3}, at: cpuset_upda=
+te_active_cpus+0x352/0xca0
+[   77.632169]
+[   77.632169] which lock already depends on the new lock.
+[   77.632169]
+[   77.632891]
+[   77.632891] the existing dependency chain (in reverse order) is:
+[   77.633521]
+[   77.633521] -> #1 (cpuset_mutex){+.+.}-{3:3}:
+[   77.634028]        lock_acquire+0xc0/0x2d0
+[   77.634393]        __mutex_lock+0xaa/0x710
+[   77.634751]        cpuset_can_attach+0x6d/0x2c0
+[   77.635146]        cgroup_migrate_execute+0x6f/0x520
+[   77.635565]        cgroup_attach_task+0x2e2/0x450
+[   77.635989]        __cgroup1_procs_write.isra.0+0xfd/0x150
+[   77.636440]        kernfs_fop_write_iter+0x127/0x1c0
+[   77.636917]        vfs_write+0x2b0/0x540
+[   77.637330]        ksys_write+0x70/0xf0
+[   77.637707]        int80_emulation+0xf8/0x1b0
+[   77.638183]        asm_int80_emulation+0x1a/0x20
+[   77.638636]
+[   77.638636] -> #0 (cgroup_threadgroup_rwsem){++++}-{0:0}:
+[   77.639321]        check_prev_add+0xeb/0xb20
+[   77.639751]        __lock_acquire+0x12ac/0x16d0
+[   77.640345]        lock_acquire+0xc0/0x2d0
+[   77.640903]        percpu_down_write+0x33/0x260
+[   77.641347]        cgroup_transfer_tasks_locked+0x123/0x450
+[   77.641826]        cpuset_update_active_cpus+0x782/0xca0
+[   77.642268]        sched_cpu_deactivate+0x1ad/0x1d0
+[   77.642677]        cpuhp_invoke_callback+0x16b/0x6b0
+[   77.643098]        cpuhp_thread_fun+0x1ba/0x240
+[   77.643488]        smpboot_thread_fn+0xd8/0x1d0
+[   77.643873]        kthread+0xce/0x100
+[   77.644209]        ret_from_fork+0x2f/0x50
+[   77.644626]        ret_from_fork_asm+0x1a/0x30
+[   77.645084]
+[   77.645084] other info that might help us debug this:
+[   77.645084]
+[   77.645829]  Possible unsafe locking scenario:
+[   77.645829]
+[   77.646356]        CPU0                    CPU1
+[   77.646748]        ----                    ----
+[   77.647143]   lock(cpuset_mutex);
+[   77.647529]                                lock(cgroup_threadgroup_rwsem=
+);
+[   77.648193]                                lock(cpuset_mutex);
+[   77.648767]   lock(cgroup_threadgroup_rwsem);
+[   77.649216]
+[   77.649216]  *** DEADLOCK ***
 
 
