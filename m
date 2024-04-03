@@ -1,145 +1,90 @@
-Return-Path: <linux-kernel+bounces-130012-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-130013-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D37B489732F
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 16:57:23 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2B60B897338
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 16:59:03 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 020061C27616
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 14:57:18 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D4FA21F217EF
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 14:59:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E5850149C47;
-	Wed,  3 Apr 2024 14:57:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CA47214A0AF;
+	Wed,  3 Apr 2024 14:58:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="UWe6UtNz"
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="j4gKhmc9"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7806C13A41F;
-	Wed,  3 Apr 2024 14:57:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 19A21149DE5;
+	Wed,  3 Apr 2024 14:58:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712156225; cv=none; b=bYkBh0CXQ2ZcP/MdknIljMf6Tjkp5toTJnV1/Z82/4PTiVl7qjw7GAX/qZPH4pO6UrT2nip0n/lAXEetgcWlRJTDlAuO+PEMdap46cNH+26eHLNcDmGPWgIqM5O3QxL0oQAtaCytOVcP1icmV4JiAQ5njwidvSENdcldPSqV3sU=
+	t=1712156327; cv=none; b=gaYxdXwV/Gy2jgIDH5ixLtQL6f9uLRl4uU39dvM7G36WFGoYHsa+XpekHlAcwTICrQ3n1g63JEmElJR6O1uX/iuo9HoywA2PGEeNROrU63+zIAKPHGPCQJEmEUu9swLPZlxwVH+ViJQx1lJQ0FPA8cu+xYh5RJ5kkXi37ATtB8c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712156225; c=relaxed/simple;
-	bh=eZVmBB1d4Df5D2F0Ce5Nd9fY/AAZw/o+Je5pGJeTmvQ=;
+	s=arc-20240116; t=1712156327; c=relaxed/simple;
+	bh=GQ7pDnvmg+PvtqACCV2lrfhSSMsK6+Y0rU6DNq6vKu8=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=QA3Z+4V0D/IwaOhZjLOoDta7SpdsxuWqmD8t6jeBHi09v3Yeb2DbhSJYn9Q5rVfS4+QghOO1yAhQk2egXu7KR1D0LB+RCCmTb6fujU9fuAMk15gdo9ON7J6DZGyJLSVOKbJLjcPwz3SQVpDZGhfZGtLeTYCAHt3kQKgR2v0hgzY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=UWe6UtNz; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [10.150.64.98])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id A43135CDC4;
-	Wed,  3 Apr 2024 14:57:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1712156221; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=eZVmBB1d4Df5D2F0Ce5Nd9fY/AAZw/o+Je5pGJeTmvQ=;
-	b=UWe6UtNzKToX2b2B2yqhkfbY/y8wLxleX9wXq9Bn2GIkXCuDN9OriucLIt8uIXIB2kG4Oo
-	m68swMT8b3cv1YODbkDNHlPWFdotkpgir9Sgu/CYlDd0suCoyYWfT9co9mCdfBU1ErfFZ7
-	E2vZ+UOYkYSN6fp0X9WWzPZqZ1iv5kk=
-Authentication-Results: smtp-out2.suse.de;
-	none
-Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id 8E11F13357;
-	Wed,  3 Apr 2024 14:57:01 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap2.dmz-prg2.suse.org with ESMTPSA
-	id j0KEIj1uDWZPagAAn2gu4w
-	(envelope-from <mkoutny@suse.com>); Wed, 03 Apr 2024 14:57:01 +0000
-Date: Wed, 3 Apr 2024 16:56:52 +0200
-From: Michal =?utf-8?Q?Koutn=C3=BD?= <mkoutny@suse.com>
-To: Waiman Long <longman@redhat.com>
-Cc: Valentin Schneider <vschneid@redhat.com>, Tejun Heo <tj@kernel.org>, 
-	Zefan Li <lizefan.x@bytedance.com>, Johannes Weiner <hannes@cmpxchg.org>, 
-	Thomas Gleixner <tglx@linutronix.de>, Peter Zijlstra <peterz@infradead.org>, 
-	"Rafael J. Wysocki" <rafael@kernel.org>, Len Brown <len.brown@intel.com>, Pavel Machek <pavel@ucw.cz>, 
-	Shuah Khan <shuah@kernel.org>, linux-kernel@vger.kernel.org, cgroups@vger.kernel.org, 
-	linux-pm@vger.kernel.org, linux-kselftest@vger.kernel.org, 
-	Frederic Weisbecker <frederic@kernel.org>, "Paul E. McKenney" <paulmck@kernel.org>, 
-	Ingo Molnar <mingo@kernel.org>, Anna-Maria Behnsen <anna-maria@linutronix.de>, 
-	Alex Shi <alexs@kernel.org>, Vincent Guittot <vincent.guittot@linaro.org>, 
-	Barry Song <song.bao.hua@hisilicon.com>
-Subject: Re: Re: [PATCH 1/2] cgroup/cpuset: Make cpuset hotplug processing
- synchronous
-Message-ID: <tm5kvzgn2g5yv63zoyqvd2bdrgl7l3ytffu4cq4ybxyq5irp76@hpmq3zfbtmlp>
-References: <20240401145858.2656598-1-longman@redhat.com>
- <20240401145858.2656598-2-longman@redhat.com>
- <kce74bx6aafxfuw5yovaschym4ze4kommfk74eq5totojytest@mdxnfvl2kdol>
- <548efd52-e45f-41fa-a477-bc5112d7b00c@redhat.com>
- <u3naomgv34t5rnc7pmyy4zjppgf36skeo45orss2xnqcvtrcez@m74tsl2ws76f>
- <7e62b37d-6c9c-4e55-a01a-175695475cb5@redhat.com>
- <xhsmhedbmbjz5.mognet@vschneid-thinkpadt14sgen2i.remote.csb>
- <620d1b70-cfbc-4b76-ad04-b3be559afd56@redhat.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=JkJHSvWnLXltjRc6FMWDpOOWgXnl5ROQan+v+7sAZwMRJe9yg+kz0WKRWO85lBwKm3V4FJ9SIzTen0WVrDDqi5RIueG7WLeeZIUwydEwoCMrs0jXysjc4TjDq2Ft1/+nLIAjT7Xt7q7v1ovNQmQbycV0uHggo6RIDcy8VsNfOVw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=j4gKhmc9; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8ADE7C433C7;
+	Wed,  3 Apr 2024 14:58:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+	s=korg; t=1712156327;
+	bh=GQ7pDnvmg+PvtqACCV2lrfhSSMsK6+Y0rU6DNq6vKu8=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=j4gKhmc9DltNw940mtp073tuxdiE4epv20nU2ixS9o+M+jcILElJ/XSRdVq3QfW6x
+	 k3qlLQhLNAa3ebzEc9ZOaz+RL7RaSReonLkM58/ltHq74B1ODcX1pEMdBwo/4ZZ3Ii
+	 nYWylkJT61kuGizapQvAlOlDU+luXzPsjRIMN2vk=
+Date: Wed, 3 Apr 2024 16:57:39 +0200
+From: Greg KH <gregkh@linuxfoundation.org>
+To: Allen Pais <apais@linux.microsoft.com>
+Cc: linux-kernel@vger.kernel.org, tj@kernel.org, keescook@chromium.org,
+	duncan.sands@free.fr, stern@rowland.harvard.edu,
+	mathias.nyman@intel.com, oneukum@suse.com,
+	linux-usb@vger.kernel.org
+Subject: Re: [PATCH v2] USB: Convert from tasklet to BH workqueue
+Message-ID: <2024040314-unbuckled-botanist-1afc@gregkh>
+References: <20240403143852.13175-1-apais@linux.microsoft.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="s5g4gqxizdmthray"
-Content-Disposition: inline
-In-Reply-To: <620d1b70-cfbc-4b76-ad04-b3be559afd56@redhat.com>
-X-Spamd-Result: default: False [-4.89 / 50.00];
-	BAYES_HAM(-2.99)[99.97%];
-	SIGNED_PGP(-2.00)[];
-	MID_RHS_NOT_FQDN(0.50)[];
-	MIME_GOOD(-0.20)[multipart/signed,text/plain];
-	NEURAL_HAM_SHORT(-0.20)[-0.985];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	DKIM_SIGNED(0.00)[suse.com:s=susede1];
-	ARC_NA(0.00)[];
-	RCPT_COUNT_TWELVE(0.00)[22];
-	MIME_TRACE(0.00)[0:+,1:+,2:~];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	RCVD_TLS_ALL(0.00)[];
-	FROM_EQ_ENVFROM(0.00)[];
-	TO_DN_SOME(0.00)[];
-	RCVD_COUNT_TWO(0.00)[2];
-	MISSING_XM_UA(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[imap2.dmz-prg2.suse.org:rdns,imap2.dmz-prg2.suse.org:helo]
-X-Spam-Score: -4.89
-X-Spam-Level: 
-X-Spam-Flag: NO
-
-
---s5g4gqxizdmthray
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+In-Reply-To: <20240403143852.13175-1-apais@linux.microsoft.com>
 
-On Wed, Apr 03, 2024 at 10:47:33AM -0400, Waiman Long <longman@redhat.com> wrote:
-> should be rare these days as it will only apply in the case of cgroup
-> v1 under certain condtion,
+On Wed, Apr 03, 2024 at 02:38:52PM +0000, Allen Pais wrote:
+> The only generic interface to execute asynchronously in the BH context is
+> tasklet; however, it's marked deprecated and has some design flaws. To
+> replace tasklets, BH workqueue support was recently added. A BH workqueue
+> behaves similarly to regular workqueues except that the queued work items
+> are executed in the BH context.
+> 
+> This patch converts drivers/usb/* from tasklet to BH workqueue.
+> 
+> Based on the work done by Tejun Heo <tj@kernel.org>
+> Branch: https://git.kernel.org/pub/scm/linux/kernel/git/tj/wq.git for-6.10
+> 
+> Changes in v2:
+>  - Update code comments and commit message.
+> 	Suggested by Greg K h
+>  - Retain local variable name(hcd.c).
+> 	Suggested by Alan Stern
+> 
+> Link to v1:https://lore.kernel.org/all/20240327160314.9982-1
+> -apais@linux.microsoft.com/T/#m2ec7868fbf102f1551ebe4c92d200848b94af3b1
 
-Could the migration be simply omitted it those special cases?
+Why the line-wrap?
 
-(Tasks remain in cpusets with empty cpusets -- that already happens in
-with the current patch before workqueue is dispatched.)
+And v2 info should all go below the --- line, right?
 
-Michal
+v3 perhaps?
 
---s5g4gqxizdmthray
-Content-Type: application/pgp-signature; name="signature.asc"
+thanks,
 
------BEGIN PGP SIGNATURE-----
-
-iHUEABYKAB0WIQQpEWyjXuwGT2dDBqAGvrMr/1gcjgUCZg1uMgAKCRAGvrMr/1gc
-juxsAP9LdPIENmgJ+lo1a52HXy+sDng3vYcaC8VapHG5CyOA7AEAlOwpne+LzkiO
-IIyeIE+x8ZyV9QlL/DM6cnabIMR+IgI=
-=d6JV
------END PGP SIGNATURE-----
-
---s5g4gqxizdmthray--
+greg k-h
 
