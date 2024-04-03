@@ -1,97 +1,170 @@
-Return-Path: <linux-kernel+bounces-129631-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-129634-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D85F0896D97
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 13:03:47 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0EA9B896DA2
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 13:05:58 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 163FB1C2117A
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 11:03:47 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id CB289B2746C
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 11:04:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A6BF714198A;
-	Wed,  3 Apr 2024 11:03:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="PH9oOCug"
-Received: from relay5-d.mail.gandi.net (relay5-d.mail.gandi.net [217.70.183.197])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 16E7B136E3E;
-	Wed,  3 Apr 2024 11:03:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.197
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AA3EE1411F1;
+	Wed,  3 Apr 2024 11:04:09 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1D6CB135A5F
+	for <linux-kernel@vger.kernel.org>; Wed,  3 Apr 2024 11:04:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712142221; cv=none; b=H67dKGFeWcbs/77axGCPWBWssCN22sgtnHWOSfTzPDaGeuwdcwKILHAgxp/6jFP2TMJHjJxJOCNOVySF9X1VnIpcvVar+LkNb5w2FJMiw0GXDbgJ/ATpbV9r9NZcjWgSVUFoboylRngoc2SrS8muoH37tD0NUOfKbf6YXqvsY1M=
+	t=1712142249; cv=none; b=cbFMQnRd4AC7lIZ4H6y8jjkhBArcNKzm6BIz3IJUvWhN00Ebk6y9BgB3yvONLd6QRll7hBaBSRe/N45OR0Q35W0Uwj9nmMxxn6RbTYevQ4J/TXTZsQG1j2A5ZnWHI5uctAvoWa8vIkPsMVUdwlbWnmXQjGEn4J1PnkRGMZZm6+U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712142221; c=relaxed/simple;
-	bh=C1mMyUpYX6wiqaj1KKueawdDp6xbLRZvPGadLfNBjCY=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=E3SMdbboScF8rwYr2ODRX7s91tMfC4WvxJoYNSD/hDsVX3Zjeypt0yzDK5Zm5OtUrAQmXzWevYNZXmIeueodFDT/IOfq1cKIRqF/AZWqxMXd/xcT0B8qlEcXV2k08LDbYLpl3xupsxlYuFsZgbrGA1eNHkIH0ISJN/7HzOOWHz4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=PH9oOCug; arc=none smtp.client-ip=217.70.183.197
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 8C8701C0006;
-	Wed,  3 Apr 2024 11:03:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1712142213;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=NxM7m7iXQdCV00+C0efugqMkr8tvqMWbpq9aXMsNUhI=;
-	b=PH9oOCugG1kEhsFe8oyieg1ZsBCVvR8TNUXCgT+67IQ3nV16N3USEHlkA+OyZwdOSCdZyj
-	Tp8Q02g0a3ia/vCfxTmuDBka1lt0V87lwG6hxjHLQbr4whcwZ/FEENnhYNnYPvIVziDIYy
-	wFfxYElRQItP7ZLE1eLgRb1YsEO0X84lQL2sVuJIs/uOA13osy1eghw4FxPLlkUp8DQOw7
-	pqyc2RYibNYiT79DCoRDwg8EHD1HGG9MLqj9Lzs5fYrecxYCRgoYsWNyOYvyZrB5LeQ84Y
-	vyGhEmmg8BJY8WMBmbyP6zdoKCph8obl58PlDqk4wV2ThAO3aS8yxKcxJ+XMzg==
-From: Luca Ceresoli <luca.ceresoli@bootlin.com>
-Date: Wed, 03 Apr 2024 13:03:19 +0200
-Subject: [PATCH v2 2/2] ASoC: codecs: rk3308: depend on ARM64 ||
- COMPILE_TEST
+	s=arc-20240116; t=1712142249; c=relaxed/simple;
+	bh=BbwddR6/RNAakXtOlCpMOZ9Mx5a16dbieqopNhfP2qQ=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=TlbfEBH327lNZC90EVNqiwF2wWHRFy5+Yudd5ereKdW/DZgKQP4VP7osBdZO2m6zdpxI96fPGYSyHKAFuteOBgelD+S1ggI4uPBglXvPdjVYn+Xw/JjDtRZpX5+6cNbZ1TeqnwJPg8FulTtGRhic4t/ZrJ96Bm+bsBfX+vuMt30=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 03A461007;
+	Wed,  3 Apr 2024 04:04:34 -0700 (PDT)
+Received: from [10.57.72.245] (unknown [10.57.72.245])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id AB7543F64C;
+	Wed,  3 Apr 2024 04:04:01 -0700 (PDT)
+Message-ID: <1c20b717-c5b5-4bdf-8fcd-d46db135b7fa@arm.com>
+Date: Wed, 3 Apr 2024 12:04:00 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] selftests/mm: run_vmtests.sh: Fix hugetlb mem size
+ calculation
+Content-Language: en-GB
+To: peterx@redhat.com, linux-mm@kvack.org, linux-kernel@vger.kernel.org
+Cc: Andrew Morton <akpm@linux-foundation.org>,
+ Muhammad Usama Anjum <usama.anjum@collabora.com>,
+ David Hildenbrand <david@redhat.com>, Nico Pache <npache@redhat.com>,
+ Muchun Song <muchun.song@linux.dev>
+References: <20240321215047.678172-1-peterx@redhat.com>
+From: Ryan Roberts <ryan.roberts@arm.com>
+In-Reply-To: <20240321215047.678172-1-peterx@redhat.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-Message-Id: <20240403-rk3308-audio-codec-fix-warning-v2-2-816bae4c1dc5@bootlin.com>
-References: <20240403-rk3308-audio-codec-fix-warning-v2-0-816bae4c1dc5@bootlin.com>
-In-Reply-To: <20240403-rk3308-audio-codec-fix-warning-v2-0-816bae4c1dc5@bootlin.com>
-To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, 
- Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, 
- Heiko Stuebner <heiko@sntech.de>
-Cc: Thomas Petazzoni <thomas.petazzoni@bootlin.com>, 
- linux-sound@vger.kernel.org, linux-kernel@vger.kernel.org, 
- Luca Ceresoli <luca.ceresoli@bootlin.com>
-X-Mailer: b4 0.13.0
-X-GND-Sasl: luca.ceresoli@bootlin.com
 
-This codec is only known to exist in the RK3308 ARM64 SoC, so depend on it
-except for compile test cases. Note that the driver won't probe without
-CONFIG_OF, but ARM64 selects OF already so it is not needed.
+Hi Peter,
 
-Suggested-by: Mark Brown <broonie@kernel.org>
-Signed-off-by: Luca Ceresoli <luca.ceresoli@bootlin.com>
----
- sound/soc/codecs/Kconfig | 1 +
- 1 file changed, 1 insertion(+)
+On 21/03/2024 21:50, peterx@redhat.com wrote:
+> From: Peter Xu <peterx@redhat.com>
+> 
+> The script calculates a mininum required size of hugetlb memories, but
+> it'll stop working with <1MB huge page sizes, reporting all zeros even if
+> huge pages are available.
+> 
+> In reality, the calculation doesn't really need to be as comlicated either.
+> Make it simpler and work for KB-level hugepages too.
+> 
+> Cc: Muhammad Usama Anjum <usama.anjum@collabora.com>
+> Cc: David Hildenbrand <david@redhat.com>
+> Cc: Nico Pache <npache@redhat.com>
+> Cc: Muchun Song <muchun.song@linux.dev>
+> Signed-off-by: Peter Xu <peterx@redhat.com>
+> ---
+>  tools/testing/selftests/mm/run_vmtests.sh | 10 +++++++---
+>  1 file changed, 7 insertions(+), 3 deletions(-)
+> 
+> diff --git a/tools/testing/selftests/mm/run_vmtests.sh b/tools/testing/selftests/mm/run_vmtests.sh
+> index c2c542fe7b17..b1b78e45d613 100755
+> --- a/tools/testing/selftests/mm/run_vmtests.sh
+> +++ b/tools/testing/selftests/mm/run_vmtests.sh
+> @@ -152,9 +152,13 @@ done < /proc/meminfo
+>  # both of these requirements into account and attempt to increase
+>  # number of huge pages available.
+>  nr_cpus=$(nproc)
+> -hpgsize_MB=$((hpgsize_KB / 1024))
+> -half_ufd_size_MB=$((((nr_cpus * hpgsize_MB + 127) / 128) * 128))
 
-diff --git a/sound/soc/codecs/Kconfig b/sound/soc/codecs/Kconfig
-index 1752814fffdd..4e47bb6850aa 100644
---- a/sound/soc/codecs/Kconfig
-+++ b/sound/soc/codecs/Kconfig
-@@ -1436,6 +1436,7 @@ config SND_SOC_PEB2466
- 
- config SND_SOC_RK3308
- 	tristate "Rockchip RK3308 audio CODEC"
-+	depends on ARM64 || COMPILE_TEST
- 	select REGMAP_MMIO
- 	help
- 	  This is a device driver for the audio codec embedded in the
+Removing this has broken the uffd-stress "hugetlb" and "hugetlb-private" tests
+(further down the file), which rely on $half_ufd_size_MB. Now that this is not
+defined, they are called with too few params:
 
--- 
-2.34.1
+
+# # ---------------------------------
+# # running ./uffd-stress hugetlb  32
+# # ---------------------------------
+# # ERROR: invalid MiB (errno=0, @uffd-stress.c:454)
+# #
+# # Usage: ./uffd-stress <test type> <MiB> <bounces>
+# #
+# # Supported <test type>: anon, hugetlb, hugetlb-private, shmem, shmem-private
+# #
+# # Examples:
+# #
+# # # Run anonymous memory test on 100MiB region with 99999 bounces:
+# # ./uffd-stress anon 100 99999
+# #
+# # # Run share memory test on 1GiB region with 99 bounces:
+# # ./uffd-stress shmem 1000 99
+# #
+# # # Run hugetlb memory test on 256MiB region with 50 bounces:
+# # ./uffd-stress hugetlb 256 50
+# #
+# # # Run the same hugetlb test but using private file:
+# # ./uffd-stress hugetlb-private 256 50
+# #
+# # # 10MiB-~6GiB 999 bounces anonymous test, continue forever unless an error
+triggers
+# # while ./uffd-stress anon $[RANDOM % 6000 + 10] 999; do true; done
+# #
+# # [FAIL]
+# not ok 16 uffd-stress hugetlb 32 # exit=1
+# # -----------------------------------------
+# # running ./uffd-stress hugetlb-private  32
+# # -----------------------------------------
+# # ERROR: invalid MiB (errno=0, @uffd-stress.c:454)
+# #
+# # Usage: ./uffd-stress <test type> <MiB> <bounces>
+# #
+# # Supported <test type>: anon, hugetlb, hugetlb-private, shmem, shmem-private
+# #
+# # Examples:
+# #
+# # # Run anonymous memory test on 100MiB region with 99999 bounces:
+# # ./uffd-stress anon 100 99999
+# #
+# # # Run share memory test on 1GiB region with 99 bounces:
+# # ./uffd-stress shmem 1000 99
+# #
+# # # Run hugetlb memory test on 256MiB region with 50 bounces:
+# # ./uffd-stress hugetlb 256 50
+# #
+# # # Run the same hugetlb test but using private file:
+# # ./uffd-stress hugetlb-private 256 50
+# #
+# # # 10MiB-~6GiB 999 bounces anonymous test, continue forever unless an error
+triggers
+# # while ./uffd-stress anon $[RANDOM % 6000 + 10] 999; do true; done
+# #
+# # [FAIL]
+# not ok 17 uffd-stress hugetlb-private 32 # exit=1
+
+
+Thanks,
+Ryan
+
+> -needmem_KB=$((half_ufd_size_MB * 2 * 1024))
+> +uffd_min_KB=$((hpgsize_KB * nr_cpus * 2))
+> +hugetlb_min_KB=$((256 * 1024))
+> +if [[ $uffd_min_KB -gt $hugetlb_min_KB ]]; then
+> +	needmem_KB=$uffd_min_KB
+> +else
+> +	needmem_KB=$hugetlb_min_KB
+> +fi
+>  
+>  # set proper nr_hugepages
+>  if [ -n "$freepgs" ] && [ -n "$hpgsize_KB" ]; then
 
 
