@@ -1,165 +1,256 @@
-Return-Path: <linux-kernel+bounces-129073-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-129074-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1A94D89645C
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 08:08:48 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 316E089645E
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 08:09:30 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 866C31F21F1E
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 06:08:47 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D9D071F224BE
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 06:09:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1B1B6524B4;
-	Wed,  3 Apr 2024 06:08:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="Carb0pZQ"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 52A7F4DA08;
+	Wed,  3 Apr 2024 06:09:24 +0000 (UTC)
+Received: from CHN02-SH0-obe.outbound.protection.partner.outlook.cn (mail-sh0chn02on2109.outbound.protection.partner.outlook.cn [139.219.146.109])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 71E174D117
-	for <linux-kernel@vger.kernel.org>; Wed,  3 Apr 2024 06:08:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712124514; cv=none; b=jpk5CXP48M5TW0Yp/F5ATg5ad8dTYptEDhieiADX0LDwwggFv+UD/fPXLF3LAGUtpS3IRXg5xfTccUJOj28KviJ4toqP3Ka0DwrJhC2Erro2fQQ8jiIr6AgxEOfZg2IDJijHM1ZiKiLS6ofakuN43YxVu9CH3zlfTISPGbHTmY8=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712124514; c=relaxed/simple;
-	bh=n+K/WKHKa56zG0gtzaNGqEcUES/pcfC2imzCQDemtFA=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=gXinvMSOEQ0/5EMMwbBCKRM05iMrxxOdnrC4efi0kgeyvtzfhtvqBUQv0v+a8UUfsmJXLj7C52zzn2yVzTx8fPcYMO7EAC5TB7QOJ28q3qgz5IHNos2rCti28J8OBmVGrEVkF47D405/N9uTRu2W04Kd6x8W9xUAK/qMP1N1HSg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=Carb0pZQ; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1712124511;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=dKiObTP8y8JIszvzACHMM1F2zBJdbISLN+XkZvP60BM=;
-	b=Carb0pZQmaAU8cEFbY1jKHRcL51vs3qvVNVDS3RIMAnXHNeiroiHHF99HCaE65JkCWL6o3
-	orC481Dwhk/jBTTGwbeSFJpPiej1zdMRGkI3iGS45b9Aspju1830DNJNRtInuHRp3YetQM
-	Gio+3AbsS6X3yHoMU1e9UMWtrsyYhY0=
-Received: from mail-yw1-f197.google.com (mail-yw1-f197.google.com
- [209.85.128.197]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-523-H0Kp-KPcO3GMiRbPtap_ag-1; Wed, 03 Apr 2024 02:08:30 -0400
-X-MC-Unique: H0Kp-KPcO3GMiRbPtap_ag-1
-Received: by mail-yw1-f197.google.com with SMTP id 00721157ae682-61506d6d667so35920197b3.1
-        for <linux-kernel@vger.kernel.org>; Tue, 02 Apr 2024 23:08:30 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712124509; x=1712729309;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=dKiObTP8y8JIszvzACHMM1F2zBJdbISLN+XkZvP60BM=;
-        b=vbXbdan2CONjgS+e+U+oUpGxalfYbqzcSTjD1UrJrLr9363fDXuPboTSWi3cnfqoOO
-         3wpSgKRlrR1Iw14JCfkbQBwuL1IVc2sDUrnsZTNEp4vQkQJn2LnqUhjOKAjqsSTI0sQk
-         jNuJelc3yJUaHhtaLmpvH+AYiwrmA3sU695BSo/LjqZJI8c/vG9ZEFRi+ELiVSN7cNMy
-         71sAS7auyR9Qf05MZ9tZjLbjg5Q8QK5cdi4LJDwmA3ZBquBxzFXTbxY9qlO6BRJJ+eh/
-         I5RC4rP4nSjpIV5XZStS0twCwMK3hA0HjbTct3lkiXeaVI5ZIuaFqz6KTrb72djpUL1A
-         o4zA==
-X-Gm-Message-State: AOJu0YxENK8w8uZt9Z1iild8YOXRWAccxjeRjKj/BhQkp3RQuzrg+47G
-	2w/YEvfx/VnAvHOB4vjTzP52wf/rS9KOVKDxTHjw+U2Ix/QnLQyefP/7HREjLvsxM11iFW4jh3z
-	00UJJHrXsdfrF7BJxd7i5W/Yh/5PjyX1CXOSCFbhPUCn3DrvNMt1Xz6LnwDo88XczAP5lbcc02h
-	4x0ZtCuUqv2S70Z/w5jUBAeVJBbbew1gZaaeGV
-X-Received: by 2002:a25:8d81:0:b0:dc7:4ad4:c977 with SMTP id o1-20020a258d81000000b00dc74ad4c977mr11567586ybl.25.1712124509549;
-        Tue, 02 Apr 2024 23:08:29 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IGLucByfZxTlPvL5mn2OuVfkSkFpPoYO9hN2EI2zakPuPYMkYPkNEVffrYwZ3CRZp1u0dhS7qJEshPNUUMJLuQ=
-X-Received: by 2002:a25:8d81:0:b0:dc7:4ad4:c977 with SMTP id
- o1-20020a258d81000000b00dc74ad4c977mr11567576ybl.25.1712124509222; Tue, 02
- Apr 2024 23:08:29 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8B791645
+	for <linux-kernel@vger.kernel.org>; Wed,  3 Apr 2024 06:09:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=139.219.146.109
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1712124563; cv=fail; b=qUQ0pvt95+np6A5UT/4Dm3NQI9PDHacQ3WGrsWC3JIYKPGSgq6Z/LnavNGIVKlFtROaFyoGX+cgNlKiAcv+ESL5WBwTbf64HbV2NzrzGki0izs76Pbn/b6dKQYAA710Y070fBVhGxaQ6H2EuUE6RCPq8hVbgHodAbsWiGbFBVuA=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1712124563; c=relaxed/simple;
+	bh=peSw4RjIJR/OHIoV4LSSnK2/05IdBwudV/Atgl8nLAg=;
+	h=From:To:Cc:Subject:Date:Message-ID:Content-Type:MIME-Version; b=Gi96DcEIT6JCMUrfpR34PKhpD6d+c4ZIFhqm2zT6y3SJ/6H5obP4rBfFuotLnt0Twhba5EMKWYZ5wWHEMSrkjK/mj50JnqdBxIIgkIHdBQkRNYNpXazyBF/o4Du6B6m3ewzFsVjfMXAMClv/+5TGbvICAnvh6XXcUF1YmDrj+as=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=starfivetech.com; spf=pass smtp.mailfrom=starfivetech.com; arc=fail smtp.client-ip=139.219.146.109
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=starfivetech.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=starfivetech.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Eoc2uClCSZJ4Hw+N+K6GCPT9zEVL/mloNrdweBHWPkKfYVO0/Dguataci86EKP4M/iLoqffO72gN9nEvNG6mYsBxKK8yQ9Yj97V9U2X5d+0gygqDOKjn1eSFH6uzersHxdZlgZt8ofGVxsQUCQSRoTUGQ3LyEAEzzoUn3HTvhjYBR54l6x18DVsSVZauqdXxABRlVZHVOtLDq40bi9mOsgSOqqdU18xhSfKnb9qdzKpE4URKL+7SPFxi4Urxs62DcRq/n6lYMmSylae7+MAd63wYceyGCHNFMdgPPbtTZFuEC3H0aKh77BLYJPusuYKAptyarirSKT3Caw9Lak+OSQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=DHqs2aDPKB8CxhQEXEssSlHh85Yd4/L9qAM0p3KBIY0=;
+ b=IPI/Lfy7k2g09whtQRSSDcxD/ZZmp1KLEPSBO+qKDliPNt8IB0LF9R1JFAr7tsktqhVCo2rglxXTPRJCo0JqOQEkn4DXQRicM+SCOmMJUM7uJ0kghdLA1U1fXhmeGkJpSL9Tg0PfTLp9hL11EIkhgxSgEZZcyj9/QaGV9TO4Xrbz/VITqnvLF+0x6C9YM9LqybFuHJl2Ul2SNwIyqZGS5zVf4uBhy9Gd505TlrbQvh6qizkzQ9Vbs8Oow/81ZaDcUFQihFQ0V9srGCo8LSu51QoMI97uouEUYVcobRKSjLNPyqoY20DRzd//7fnVmgIlgvho5ZeJMWjKiMVMM9MUNA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=starfivetech.com; dmarc=pass action=none
+ header.from=starfivetech.com; dkim=pass header.d=starfivetech.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=starfivetech.com;
+Received: from ZQ2PR01MB1307.CHNPR01.prod.partner.outlook.cn
+ (2406:e500:c550:7::14) by ZQ2PR01MB1291.CHNPR01.prod.partner.outlook.cn
+ (2406:e500:c550:7::5) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7409.46; Wed, 3 Apr
+ 2024 06:09:10 +0000
+Received: from ZQ2PR01MB1307.CHNPR01.prod.partner.outlook.cn
+ ([fe80::5de:15b9:3114:4f45]) by ZQ2PR01MB1307.CHNPR01.prod.partner.outlook.cn
+ ([fe80::5de:15b9:3114:4f45%5]) with mapi id 15.20.7409.042; Wed, 3 Apr 2024
+ 06:09:10 +0000
+From: Hal Feng <hal.feng@starfivetech.com>
+To: Conor Dooley <conor.dooley@microchip.com>,
+	Palmer Dabbelt <palmer@dabbelt.com>,
+	Paul Walmsley <paul.walmsley@sifive.com>,
+	Albert Ou <aou@eecs.berkeley.edu>
+Cc: Hal Feng <hal.feng@starfivetech.com>,
+	Emil Renner Berthing <emil.renner.berthing@canonical.com>,
+	linux-riscv@lists.infradead.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH v1] riscv: defconfig: Enable StarFive JH7110 drivers
+Date: Wed,  3 Apr 2024 14:09:02 +0800
+Message-ID: <20240403060902.42834-1-hal.feng@starfivetech.com>
+X-Mailer: git-send-email 2.43.2
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: ZQ0PR01CA0009.CHNPR01.prod.partner.outlook.cn
+ (2406:e500:c550:5::23) To ZQ2PR01MB1307.CHNPR01.prod.partner.outlook.cn
+ (2406:e500:c550:7::14)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <41c1c5489688abe5bfef9f7cf15584e3fb872ac5.1712092759.git.mst@redhat.com>
-In-Reply-To: <41c1c5489688abe5bfef9f7cf15584e3fb872ac5.1712092759.git.mst@redhat.com>
-From: Eugenio Perez Martin <eperezma@redhat.com>
-Date: Wed, 3 Apr 2024 08:07:53 +0200
-Message-ID: <CAJaqyWd+MsOc=ac_Ns=L0xtQ9iTX-0_sbREokRQnnjr_aHF6fQ@mail.gmail.com>
-Subject: Re: [PATCH] vhost-vdpa: change ioctl # for VDPA_GET_VRING_SIZE
-To: "Michael S. Tsirkin" <mst@redhat.com>
-Cc: linux-kernel@vger.kernel.org, Arnaldo Carvalho de Melo <acme@kernel.org>, 
-	Namhyung Kim <namhyung@kernel.org>, Zhu Lingshan <lingshan.zhu@intel.com>, 
-	Jason Wang <jasowang@redhat.com>, kvm@vger.kernel.org, virtualization@lists.linux.dev, 
-	netdev@vger.kernel.org, Adrian Hunter <adrian.hunter@intel.com>, 
-	Ian Rogers <irogers@google.com>, Jiri Olsa <jolsa@kernel.org>, 
-	Kan Liang <kan.liang@linux.intel.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: ZQ2PR01MB1307:EE_|ZQ2PR01MB1291:EE_
+X-MS-Office365-Filtering-Correlation-Id: aa9aa0de-a165-46ef-a427-08dc53a493f4
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	jheu5TVkTqphsHjBcPTk4evnJxmY1d5Dl+1DTRKj2LBVkLsZTZqhV8JCk2RoE+VHhbRNhP/mbWcq2qwVFQWDVSfdLQzUiDP0iun+Gp/+muV47p7PGLI+NP/W4NEIit/Aq72+cQCV5KJ7CHq4PSf6JxBbEDJGlM1p6ONAXNXLuw6LaI8SSm/QvdJkwEKg1CesP6tU8astvLvMCspk8T80VeyR6Y44YS/BiNk8ZNNz9iDQNvlV3MyCupzrXLeWo1OCpQVsyzlFsMnXtVAK0sC7k/8MYbbSI+KehHeaJMTE3Xut6HYsgKnjaPAzMfPIT/VUS1npbjFiBm9V/6CvDSv9XeS5CQZc/n7IzsE7ztmbyMe3W1ELQCMwoNBUvGISvDyXEpjl9X5bN+2R03JQbNm1anowtP2/Mnxy377pRV6uFiYvKiTbnXdLRTkKmF7M6V5pQm0lmTfAhEU6d8hUp6xO3qgoc2rM70qjf785iLJ1H2NccJj7DEmPkLqI1pUBMOKFHoelUjwiqA+imqz6h1AY2a4MrgdkXqU/4M2Vl9Wa24FTJ2phSHQ9T4Sr5u5Z350QWrvPxaBhPJ01EaNSiH8sMbbiiklZClTrUolVEFFLxCsrsP6V3le0zmFJy0+Mq9kl
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:ZQ2PR01MB1307.CHNPR01.prod.partner.outlook.cn;PTR:;CAT:NONE;SFS:(13230031)(366007)(1800799015)(52116005)(41320700004)(38350700005);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?us-ascii?Q?Dg1ZgUYS+Aeo7i5XN5CUjZAJl+dNPaExlFaQR9P94CBkClH0Bl1E8DFgf0v7?=
+ =?us-ascii?Q?BDixNwBXvPIOSYxkKBm6Dy2yDwbEbKfDZUnGrQgyqGGl19pW3GiVNzs9vkxt?=
+ =?us-ascii?Q?3ji1j1tuaFKfP09RobwfqYli/z7bFZN78gokyvM8PWtectO1gNtTJ6OLbDMA?=
+ =?us-ascii?Q?9DMqHNWNWGrJ4/31nxXji2+T+np95Azz5llrHP5Z92LwxWcBIvEBlBJaQVuk?=
+ =?us-ascii?Q?6oErcQy0XmuykCXRMHz9UcHCGxeJrPZ1cCZpxGnatKsTW6cpaMiOs8+lE9Ks?=
+ =?us-ascii?Q?vp0Pvm0LFm97jlW09cYw6qu7T1LuaOuk6dAvAeH+it0Be/vd9vICSXhi9Vh8?=
+ =?us-ascii?Q?K6fKqmv2ODXLVoeDd3sZGVG61ESmDUgqGBfXhSgWvvS7WdCDlWpLdIU+D3UN?=
+ =?us-ascii?Q?fIUYmF9mqJuoPmtc4ERKogYJH7Z9+8/3YH5xPwZkXNEuh1hHhiBVA0dDnQjm?=
+ =?us-ascii?Q?wju2xPiXfg3+lJZduGlOW6jMEvuiDzs2duKhauFrVvCXdSikK+2a5W6FiJqy?=
+ =?us-ascii?Q?VzatTKQarrFtRxp9PeZ/xaLL9JDO0mI92cjfHxq+I2RiUpmfVYp4UVSQp2Rp?=
+ =?us-ascii?Q?uCroph+Eb1iMANPXYfd9t3daVzwbWsQ9gy+bSt1SSgz3Z1/rCf6u6V/uoncZ?=
+ =?us-ascii?Q?CCLJOceyURrm0Tod4usRjYtlPyoF7GbpzsOaNJo9eQfv5IWDQupoEiJirl+M?=
+ =?us-ascii?Q?0Oy5SmdXXVCEt9tQlhQou3SJCfrPMtT+u8z1TuGQbZCZhMxk02Em+un7nFeq?=
+ =?us-ascii?Q?+y8+afQ6KPfSR5pn1KxQ8m92sdj4Gu1NnQGQZfbg3+UZ9Pxobb2EKcwg3UGN?=
+ =?us-ascii?Q?JTYNW/YIq256HqFAGEKgQH2mjLvBHnG30aG34hUiXbJktT7+mllX+ikXUAN7?=
+ =?us-ascii?Q?xCKdS+hmne9AhUy5u9piNB0ZXhM/GQv+0kb7sLootmpKM1OBIBx/Ky5QuNK2?=
+ =?us-ascii?Q?oonhMB1thgbffpmhLrrX1RoxnbJYw4HyZ/Bjn3L1iqk0Y+SenXiH4WNty5Kh?=
+ =?us-ascii?Q?KUEdn6q2JTDQONYlatlHfvkX2qVi9Hc7afsszE1BS2ZQ55OfMY2k7QiJ6VYe?=
+ =?us-ascii?Q?3ftg9gVLrJXukh+tJeQ6de/pd/VXK7F07xZFQXbdkvc4n5q4YKg20E2eh7Au?=
+ =?us-ascii?Q?ICtkwMX7oRy0EDt1yGgPDDnvu10OCFUKexoQ1hWqVbGLBHjUqykvcN12J/9x?=
+ =?us-ascii?Q?4a4VmfPXluTJwKR5H3MiG37IKerJ6cobPUfOdZdWEL60JDNqsN32h2mXZ4F2?=
+ =?us-ascii?Q?bl2zQ6dvvL5+bscIs2oa2emf/mMRYWtgiRQq7tUwrhob9y8GSkCBNpJwcbhF?=
+ =?us-ascii?Q?6Fko3zuHbMXVcSwEYIUfqPwFobO9mudmp5586l54lU+zlnd154IdNItDrVjO?=
+ =?us-ascii?Q?y6trf4jbmdc9bJZbFDTSWAVGAwTLwmQn9Q/Vs7UhgLwOaDBm9tbSnVtI81T2?=
+ =?us-ascii?Q?rOcp7oQIClRgvI4BBZsWUD2Wy+/DfJkoc7pI2AQNMdGCSBsXRvtD4zEioEc3?=
+ =?us-ascii?Q?14zNXLPhJTIpI1vip6/v54Zxsp9dJgJP86epjHukmmFa2DyGq2iDgkfnjLR/?=
+ =?us-ascii?Q?/ufhegGlDg+YfPHIToUwvFY4CILLj15r8Ju4r1/AGRVyYvjCLwnLxnAWBH+M?=
+ =?us-ascii?Q?Uw=3D=3D?=
+X-OriginatorOrg: starfivetech.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: aa9aa0de-a165-46ef-a427-08dc53a493f4
+X-MS-Exchange-CrossTenant-AuthSource: ZQ2PR01MB1307.CHNPR01.prod.partner.outlook.cn
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 03 Apr 2024 06:09:10.2889
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 06fe3fa3-1221-43d3-861b-5a4ee687a85c
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: iiR+CVjYeCS6VOll0zWtUUrhay5PUjlYpHdE2hm/7W2bkELqNETb0gL57S/Brxd+qDnZsHVHTtCH8B2RRUQyMLKsCsvWLvInuW+AfZx5Sgs=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: ZQ2PR01MB1291
 
-On Tue, Apr 2, 2024 at 11:21=E2=80=AFPM Michael S. Tsirkin <mst@redhat.com>=
- wrote:
->
-> VDPA_GET_VRING_SIZE by mistake uses the already occupied
-> ioctl # 0x80 and we never noticed - it happens to work
-> because the direction and size are different, but confuses
-> tools such as perf which like to look at just the number,
-> and breaks the extra robustness of the ioctl numbering macros.
->
-> To fix, sort the entries and renumber the ioctl - not too late
-> since it wasn't in any released kernels yet.
->
-> Cc: Arnaldo Carvalho de Melo <acme@kernel.org>
-> Reported-by: Namhyung Kim <namhyung@kernel.org>
-> Fixes: 1496c47065f9 ("vhost-vdpa: uapi to support reporting per vq size")
-> Cc: "Zhu Lingshan" <lingshan.zhu@intel.com>
-> Signed-off-by: Michael S. Tsirkin <mst@redhat.com>
+Add support for StarFive JH7110 SoC and VisionFive 2 board.
+- Clock & reset
+- Cache
+- Temperature sensor
+- PMIC (AXP15060)
+- Restart GPIO
+- RNG
+- I2C
+- SPI
+- Quad SPI
+- USB & USB 2.0 PHY & PCIe 2.0/USB 3.0 PHY
+- Audio (I2S / TDM / PWM-DAC)
+- Camera Subsystem & MIPI-CSI2 RX & D-PHY RX
 
-Reviewed-by: Eugenio P=C3=A9rez <eperezma@redhat.com>
+Signed-off-by: Hal Feng <hal.feng@starfivetech.com>
+---
 
-> ---
->
-> Build tested only - userspace patches using this will have to adjust.
-> I will merge this in a week or so unless I hear otherwise,
-> and afterwards perf can update there header.
->
->  include/uapi/linux/vhost.h | 15 ++++++++-------
->  1 file changed, 8 insertions(+), 7 deletions(-)
->
-> diff --git a/include/uapi/linux/vhost.h b/include/uapi/linux/vhost.h
-> index bea697390613..b95dd84eef2d 100644
-> --- a/include/uapi/linux/vhost.h
-> +++ b/include/uapi/linux/vhost.h
-> @@ -179,12 +179,6 @@
->  /* Get the config size */
->  #define VHOST_VDPA_GET_CONFIG_SIZE     _IOR(VHOST_VIRTIO, 0x79, __u32)
->
-> -/* Get the count of all virtqueues */
-> -#define VHOST_VDPA_GET_VQS_COUNT       _IOR(VHOST_VIRTIO, 0x80, __u32)
-> -
-> -/* Get the number of virtqueue groups. */
-> -#define VHOST_VDPA_GET_GROUP_NUM       _IOR(VHOST_VIRTIO, 0x81, __u32)
-> -
->  /* Get the number of address spaces. */
->  #define VHOST_VDPA_GET_AS_NUM          _IOR(VHOST_VIRTIO, 0x7A, unsigned=
- int)
->
-> @@ -228,10 +222,17 @@
->  #define VHOST_VDPA_GET_VRING_DESC_GROUP        _IOWR(VHOST_VIRTIO, 0x7F,=
-       \
->                                               struct vhost_vring_state)
->
-> +
-> +/* Get the count of all virtqueues */
-> +#define VHOST_VDPA_GET_VQS_COUNT       _IOR(VHOST_VIRTIO, 0x80, __u32)
-> +
-> +/* Get the number of virtqueue groups. */
-> +#define VHOST_VDPA_GET_GROUP_NUM       _IOR(VHOST_VIRTIO, 0x81, __u32)
-> +
->  /* Get the queue size of a specific virtqueue.
->   * userspace set the vring index in vhost_vring_state.index
->   * kernel set the queue size in vhost_vring_state.num
->   */
-> -#define VHOST_VDPA_GET_VRING_SIZE      _IOWR(VHOST_VIRTIO, 0x80,       \
-> +#define VHOST_VDPA_GET_VRING_SIZE      _IOWR(VHOST_VIRTIO, 0x82,       \
->                                               struct vhost_vring_state)
->  #endif
-> --
-> MST
->
+Hi,
+
+As more drivers of StarFive JH7110 VisionFive 2 board are upstream,
+add support for them in riscv defconfig.
+
+Best regards,
+Hal
+
+---
+ arch/riscv/configs/defconfig | 32 ++++++++++++++++++++++++++++++++
+ 1 file changed, 32 insertions(+)
+
+diff --git a/arch/riscv/configs/defconfig b/arch/riscv/configs/defconfig
+index fc0ec2ee13bc..a4eb66b30d95 100644
+--- a/arch/riscv/configs/defconfig
++++ b/arch/riscv/configs/defconfig
+@@ -111,6 +111,7 @@ CONFIG_PCIE_XILINX=y
+ CONFIG_PCIE_FU740=y
+ CONFIG_DEVTMPFS=y
+ CONFIG_DEVTMPFS_MOUNT=y
++CONFIG_SIFIVE_CCACHE=y
+ CONFIG_MTD=y
+ CONFIG_MTD_BLOCK=y
+ CONFIG_MTD_CFI=y
+@@ -154,24 +155,36 @@ CONFIG_SERIAL_EARLYCON_RISCV_SBI=y
+ CONFIG_VIRTIO_CONSOLE=y
+ CONFIG_HW_RANDOM=y
+ CONFIG_HW_RANDOM_VIRTIO=y
++CONFIG_HW_RANDOM_JH7110=m
++CONFIG_I2C=y
+ CONFIG_I2C_CHARDEV=m
++CONFIG_I2C_DESIGNWARE_PLATFORM=y
+ CONFIG_I2C_MV64XXX=m
+ CONFIG_I2C_RIIC=y
+ CONFIG_SPI=y
++CONFIG_SPI_CADENCE_QUADSPI=m
++CONFIG_SPI_PL022=m
+ CONFIG_SPI_RSPI=m
+ CONFIG_SPI_SIFIVE=y
+ CONFIG_SPI_SUN6I=y
+ # CONFIG_PTP_1588_CLOCK is not set
+ CONFIG_GPIO_SIFIVE=y
++CONFIG_POWER_RESET_GPIO_RESTART=y
++CONFIG_SENSORS_SFCTEMP=y
+ CONFIG_CPU_THERMAL=y
+ CONFIG_DEVFREQ_THERMAL=y
+ CONFIG_RZG2L_THERMAL=y
+ CONFIG_WATCHDOG=y
+ CONFIG_SUNXI_WATCHDOG=y
+ CONFIG_RENESAS_RZG2LWDT=y
++CONFIG_MFD_AXP20X_I2C=y
+ CONFIG_REGULATOR=y
+ CONFIG_REGULATOR_FIXED_VOLTAGE=y
++CONFIG_REGULATOR_AXP20X=y
+ CONFIG_REGULATOR_GPIO=y
++CONFIG_MEDIA_SUPPORT=m
++CONFIG_V4L_PLATFORM_DRIVERS=y
++CONFIG_VIDEO_CADENCE_CSI2RX=m
+ CONFIG_DRM=m
+ CONFIG_DRM_RADEON=m
+ CONFIG_DRM_NOUVEAU=m
+@@ -183,6 +196,10 @@ CONFIG_SOUND=y
+ CONFIG_SND=y
+ CONFIG_SND_SOC=y
+ CONFIG_SND_SOC_RZ=m
++CONFIG_SND_DESIGNWARE_I2S=m
++CONFIG_SND_SOC_STARFIVE=m
++CONFIG_SND_SOC_JH7110_PWMDAC=m
++CONFIG_SND_SOC_JH7110_TDM=m
+ CONFIG_SND_SOC_WM8978=m
+ CONFIG_SND_SIMPLE_CARD=m
+ CONFIG_USB=y
+@@ -196,6 +213,11 @@ CONFIG_USB_OHCI_HCD_PLATFORM=y
+ CONFIG_USB_RENESAS_USBHS=m
+ CONFIG_USB_STORAGE=y
+ CONFIG_USB_UAS=y
++CONFIG_USB_CDNS_SUPPORT=m
++CONFIG_USB_CDNS3=m
++CONFIG_USB_CDNS3_GADGET=y
++CONFIG_USB_CDNS3_HOST=y
++CONFIG_USB_CDNS3_STARFIVE=m
+ CONFIG_USB_MUSB_HDRC=m
+ CONFIG_USB_MUSB_SUNXI=m
+ CONFIG_NOP_USB_XCEIV=m
+@@ -233,6 +255,13 @@ CONFIG_VIRTIO_BALLOON=y
+ CONFIG_VIRTIO_INPUT=y
+ CONFIG_VIRTIO_MMIO=y
+ CONFIG_RENESAS_OSTM=y
++CONFIG_STAGING=y
++CONFIG_STAGING_MEDIA=y
++CONFIG_VIDEO_STARFIVE_CAMSS=m
++CONFIG_CLK_STARFIVE_JH7110_AON=y
++CONFIG_CLK_STARFIVE_JH7110_STG=y
++CONFIG_CLK_STARFIVE_JH7110_ISP=y
++CONFIG_CLK_STARFIVE_JH7110_VOUT=y
+ CONFIG_SUN8I_DE2_CCU=m
+ CONFIG_SUN50I_IOMMU=y
+ CONFIG_RPMSG_CHAR=y
+@@ -244,6 +273,9 @@ CONFIG_RZG2L_ADC=m
+ CONFIG_RESET_RZG2L_USBPHY_CTRL=y
+ CONFIG_PHY_SUN4I_USB=m
+ CONFIG_PHY_RCAR_GEN3_USB2=y
++CONFIG_PHY_STARFIVE_JH7110_DPHY_RX=m
++CONFIG_PHY_STARFIVE_JH7110_PCIE=m
++CONFIG_PHY_STARFIVE_JH7110_USB=m
+ CONFIG_LIBNVDIMM=y
+ CONFIG_NVMEM_SUNXI_SID=y
+ CONFIG_EXT4_FS=y
+
+base-commit: 39cd87c4eb2b893354f3b850f916353f2658ae6f
+-- 
+2.43.2
 
 
