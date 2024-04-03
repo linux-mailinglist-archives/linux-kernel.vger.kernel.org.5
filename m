@@ -1,71 +1,109 @@
-Return-Path: <linux-kernel+bounces-130659-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-130660-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id EF8F3897B14
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 23:57:28 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4F288897B20
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 00:00:08 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 81E4F1F22477
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 21:57:28 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 72A5F2861E8
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 22:00:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 28A61156890;
-	Wed,  3 Apr 2024 21:57:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 96818156890;
+	Wed,  3 Apr 2024 21:59:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="l9h/o02G"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="1IVSAQ5V"
+Received: from mail-ed1-f43.google.com (mail-ed1-f43.google.com [209.85.208.43])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6A76615099C
-	for <linux-kernel@vger.kernel.org>; Wed,  3 Apr 2024 21:57:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 550C0156881
+	for <linux-kernel@vger.kernel.org>; Wed,  3 Apr 2024 21:59:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712181441; cv=none; b=ofZgrn6r5v/LUG8Z9Di2IB+29myd3q96b12RvG+yTwLcoYkNNyJW7bUMI25LAb/x+rNoigHLajMoyT4HIx8StPs3Y6eZLvScfaaOOUsQ3LopmKmyVnHeQZnwnDr2PccfCMXPesKjfCCcP9Yyp8/PXqbx4ne0QoTiEw7X7PNpII0=
+	t=1712181598; cv=none; b=KNpAYAR4qnKd6kDFrVnkQH2+1t1ANxHp5H5Y8n5sw4++BwQ+dr/0cvAmlxxUfCaLuCG3qG/OZafq/vZTRl74pLst2Uk1ryQH2CLQ/5HwNgjM/VOrDBYey26mbQ3R3acX1OI7y7uJfTty12T04faU7Zquzqe3JBLEPpa0yTv/1ro=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712181441; c=relaxed/simple;
-	bh=swXtrHA3rER2QJ+fD07Evx50D4gtMpu+HnO1sa4c/EA=;
-	h=Date:From:To:Cc:Subject:Message-Id:In-Reply-To:References:
-	 Mime-Version:Content-Type; b=TVZ09V7SplSNWVtch+UjrfM10u18LDQvwVMKDX0eSWlnPxOT4JyM37fZ05VBD/dZIMb7rQiqjyPEKY5As9uxqJYjth0RABOVs2HzKlAcw7gkFG9//w7aXnVkb7mXU9+gT2FZSHnXGQ4dlSgB9B/YTiBEYi1ymmPwQPHYDOLefL8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=l9h/o02G; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B2CFAC433C7;
-	Wed,  3 Apr 2024 21:57:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
-	s=korg; t=1712181441;
-	bh=swXtrHA3rER2QJ+fD07Evx50D4gtMpu+HnO1sa4c/EA=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=l9h/o02Ga244YGSNLzrpYM0UcrQRElwNL5U/5YHYYALTPPLZn9YgtrmeyMFLTeySb
-	 3xxFIMHilLdG3rmPXE+wbgra/DXAXAqdSoHz4QM9t3LDsmWbSJ6Rk7zsPzVeaqQz15
-	 9Z7DiM4D/Y0S1s0nkAwfZoQqJ65CSaIAx5SrRD/s=
-Date: Wed, 3 Apr 2024 14:57:19 -0700
-From: Andrew Morton <akpm@linux-foundation.org>
-To: Suren Baghdasaryan <surenb@google.com>
-Cc: sfr@canb.auug.org.au, kent.overstreet@linux.dev, linux-mm@kvack.org,
- linux-kernel@vger.kernel.org, kernel test robot <lkp@intel.com>
-Subject: Re: [PATCH 1/1] lib: do limited memory accounting for modules with
- ARCH_NEEDS_WEAK_PER_CPU
-Message-Id: <20240403145719.547d1083fede2cb4ca2c41ef@linux-foundation.org>
-In-Reply-To: <20240402180933.1663992-2-surenb@google.com>
-References: <20240402180933.1663992-1-surenb@google.com>
-	<20240402180933.1663992-2-surenb@google.com>
-X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1712181598; c=relaxed/simple;
+	bh=J5cX4GqktbP0gID6yrJUxK/jCIdoAH/C/9xsI+yoDaE=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=rOhXXT2T9PUaUtUGQ2BizS1gqDmkcxdWpo7nhHb7o/dSyyegDpO42LIXk5+cTiySsVaIC3UBx3Oz99kINT2qy11GzpnjK67mNJYFCPAJodDVkN6zLVrKO/xbEsgh7Fqi25i3UtKOJ3Tlf2HNGW8FAUudywuG0y8lhcIkBwtjn9w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=1IVSAQ5V; arc=none smtp.client-ip=209.85.208.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-ed1-f43.google.com with SMTP id 4fb4d7f45d1cf-56beb6e68aeso1656a12.1
+        for <linux-kernel@vger.kernel.org>; Wed, 03 Apr 2024 14:59:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1712181596; x=1712786396; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=qTy7UZvOGfVzOyBfYCslewqivjbuSdMwhgF1qVbAn0c=;
+        b=1IVSAQ5VFCMovnIRk+cGRDEWfEwK8iC+gQ7wq77X+DWJ0/O2F+rIzuAntdOROFV6/0
+         HJpsjnAi48P5hBCYkokapjSLIfKYCWjnOXInpr9XMOdvfywFsmFTfGFD76Dn+UVJu/Mp
+         N50VbviqV4I5DbiL85StfH0HJZSigFzPSTmOuEiGPo+9Hihzs+mV+p4FxoTrFwwAa5fM
+         QKTseOEsSNws8Uyu7rYlHWAliAkPdRuYQHpxN3bRdsbzh7Sas3yu724Hf21HYGcDKg50
+         vnABWme91nBIqMKfrb2vv+MEOu1YZpUmXU4v1CeFeJguRg/UyredijICSKOvoMJIXmI3
+         pz2Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712181596; x=1712786396;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=qTy7UZvOGfVzOyBfYCslewqivjbuSdMwhgF1qVbAn0c=;
+        b=pe1GfKEwcfxSdu0Jg/yBvgJ7eQMIAFpchAmXysGO1/+nNG5ESTc2zkh6ZXJYA7nQBO
+         AS7AaEMTwGd5LP+ErTDYacdo7O5bPZX4hvFQTBGNoNAb62bW9NArEJsxPXv7H2mnCukE
+         CQhdLrI2TzvsvjMewgJeakFfHislPytdPhC6vlvM03fSBfD3L02I/whyV/hEm08S3n4I
+         gQ+mw8U5nJ30k6aXJ6xXJ1uwtQEzZFpIo1Tn14qbyyHE06QQZAVVi5hRYhkj6t8fCunD
+         YKdoAJ0dGqtR1fO+CHZeZQq3ou/8kptdXQrfJnYXYT5Ms9HXZNjxmyWsN6gMMnJz6WzP
+         f6CQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUm2PcI3C16Bm12nkwLXMRp0rF3qkf93+scsbr3AZFBY/7Utpv6nFhO01ylbbNKUONjspdqSL/gNGL1krZk1ksQiJOUrfhcFJlZHTjz
+X-Gm-Message-State: AOJu0YwTswj67/RQ26jkmT/AvJoM+kOCo2C5l/QeOkCXInIxFL3Cafje
+	3oBZXsMdmV9bLgG9XI4MvfvcNyaeM3MfLCxeW9Bx0a5altuH1UqJzuyzAdgo4AP+AfZUUAxjWU4
+	mRrbzKydbhvDUxtmBH2FGQ11yDoC5mqdQ5jLa
+X-Google-Smtp-Source: AGHT+IHTInqBsj+mNZa49X8OvTOGw8WohoVAZbNq1Rfczn2ElBMyortTXet/IJD1sZ4waCx5tYiTp/gANpZfOjPunrg=
+X-Received: by 2002:aa7:cfd7:0:b0:56c:522f:6799 with SMTP id
+ r23-20020aa7cfd7000000b0056c522f6799mr278607edy.5.1712181595529; Wed, 03 Apr
+ 2024 14:59:55 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+MIME-Version: 1.0
+References: <20240402125109.1251232-1-jackmanb@google.com>
+In-Reply-To: <20240402125109.1251232-1-jackmanb@google.com>
+From: Daniel Latypov <dlatypov@google.com>
+Date: Wed, 3 Apr 2024 14:59:43 -0700
+Message-ID: <CAGS_qxpBmmafnQnDXYf5RftPzxghd+i8Ly4CK=EkcpidpCPP6g@mail.gmail.com>
+Subject: Re: [PATCH v2] Documentation: kunit: Clarify test filter format
+To: Brendan Jackman <jackmanb@google.com>
+Cc: linux-kselftest@vger.kernel.org, kunit-dev@googlegroups.com, 
+	linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	Brendan Higgins <brendan.higgins@linux.dev>, davidgow@google.com, rmoar@google.com, 
+	corbet@lwn.net
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Tue,  2 Apr 2024 11:09:33 -0700 Suren Baghdasaryan <surenb@google.com> wrote:
+On Tue, Apr 2, 2024 at 5:51=E2=80=AFAM Brendan Jackman <jackmanb@google.com=
+> wrote:
+>
+> It seems obvious once you know, but at first I didn't realise that the
+> suite name is part of this format. Document it and add some examples.
+>
+> Signed-off-by: Brendan Jackman <jackmanb@google.com>
 
-> ARCH_NEEDS_WEAK_PER_CPU does not allow percpu variable definitions inside
-> a function, therefore memory allocation profiling can't use it. This
-> definition is used only for modules, so we still can account core kernel
-> allocations and for modules we can do limited allocation accounting by
-> charging all of them to a single counter. This is not ideal but better
+Reviewed-by: Daniel Latypov <dlatypov@google.com>
 
-I'll queue this as a to-be-squashed fix against "lib: add allocation
-tagging support for memory allocation profiling", OK?
+Thanks!
+
+I agree with your comment on v1, I think the extra verbosity is fine.
+It's still easy to read and this should hopefully eliminate the
+ambiguity for most readers.
+
+> ---
+> v1->v2: Expanded to clarify that suite_glob and test_glob are two separat=
+e
+>         patterns. Also made some other trivial changes to formatting etc.
+
+<snip>
 
