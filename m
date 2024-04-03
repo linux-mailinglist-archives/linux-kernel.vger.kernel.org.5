@@ -1,118 +1,137 @@
-Return-Path: <linux-kernel+bounces-130172-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-130173-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 690858974EC
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 18:11:56 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id EA0908974EB
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 18:11:11 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 177D6B2A7DD
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 16:10:53 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9F22E1F222B2
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 16:11:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 74DCA14EC57;
-	Wed,  3 Apr 2024 16:10:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 453E514E2F2;
+	Wed,  3 Apr 2024 16:11:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="Kjfnl1kp"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="gjPhTdrk"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 92F1C14AD1A;
-	Wed,  3 Apr 2024 16:10:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8A73714B073
+	for <linux-kernel@vger.kernel.org>; Wed,  3 Apr 2024 16:11:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712160643; cv=none; b=OLA2ZLsMXmQXUXFdF1F+57V169/gZulnTvpVLLCtxZoxc3WHuYwMKMp6nbYQ94iHwQqZA8rgAPf8d3/ooA5BhgYgnr76uYKBpR8VjXfMCNhNlbcY7uUd9dUvfn2gUYQxuTWG16lwDB+qpGKwd0F8XmW1WoWLQ/lfjUKOsAHUr8A=
+	t=1712160664; cv=none; b=PrDGrv5Spk8tEALL8q6A5LxLNegdsSnapjlDxSEOQZX55SYOibkK0q/H4mibOr23rToVYLWvqCktFY/y9WLkHjJGBeGY13//4jTVwwCZBZ2EwSfSO9bPVAMHme+vJZlgctxCovlrGZkNSyL8MXPutIjotkYb4nIoaQmBip6fkOs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712160643; c=relaxed/simple;
-	bh=RjjA3injla+yLIn6vNl/4MPYrvsFXCQlqf9JhAg/KQM=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Rq00+axNFdAXeFn97lK6+QWOIxoDE+7ge0+8AnwJKbOdSlegx390FCHBupzQwozmCoDTQSdBtIzPbM8BdooGOHkSW5NKY1io8n6SPpjuWc1O2nB8ivn1wkfOuW6LtQoxxMqAqwSoKw76mePWAPkq0JtQMY2mTpSRfpS0q2snKZE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=Kjfnl1kp; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6D596C43390;
-	Wed,  3 Apr 2024 16:10:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-	s=korg; t=1712160643;
-	bh=RjjA3injla+yLIn6vNl/4MPYrvsFXCQlqf9JhAg/KQM=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=Kjfnl1kpSAKDDMhblTZ/p/hPxaV/nIts/skjhfLCRSpXCJLhtZxUGkF4/eIr40Z8L
-	 fTmth+n6+l4CI2GVjdTYomvaqCYKDIpyMrEMEKAxvWBwXk9+zV0oXy6SU2nSqQ9xKp
-	 qge43Xu7r8oDhdOapRhhg5mUq0MkiQ+Bzm3kAL5Q=
-Date: Wed, 3 Apr 2024 18:10:39 +0200
-From: Greg KH <gregkh@linuxfoundation.org>
-To: Tejun Heo <tj@kernel.org>
-Cc: Linux regressions mailing list <regressions@lists.linux.dev>,
-	Sasha Levin <sashal@kernel.org>,
-	"stable@vger.kernel.org" <stable@vger.kernel.org>,
-	LKML <linux-kernel@vger.kernel.org>
-Subject: Re: Hibernate stuck after recent kernel/workqueue.c changes in
- Stable 6.6.23
-Message-ID: <2024040319-doorbell-ecosystem-7d31@gregkh>
-References: <ce4c2f67-c298-48a0-87a3-f933d646c73b@leemhuis.info>
- <ZgylCe48FuOKNWtM@slm.duckdns.org>
- <b6cdb17f-206c-4dff-bb45-a60317e0a55e@leemhuis.info>
- <2024040328-surfacing-breezy-34c6@gregkh>
- <Zg10Keik4KORjXMh@slm.duckdns.org>
+	s=arc-20240116; t=1712160664; c=relaxed/simple;
+	bh=nyU0F3ej83LHBArYWvHTmUMX9HPrzUZJ7A/Qsu6qybw=;
+	h=Mime-Version:Content-Type:Date:Message-Id:Cc:Subject:From:To:
+	 References:In-Reply-To; b=sR3gUkVP1gE7vDeIl6Plv8BXlXHlJFYASBcHf1HAffhGVTjeOoHyggRA2dYQRjQXAKveAvhYyaqqSgzzUVbwKu8ZQdve3wHZBkESItpsjwBDOp9BhOtQXfkUw7lmN7Fjy2hj8vch/XQl19pgLXPan3JVLV66RYh4surQjQNlBmM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=gjPhTdrk; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 167ACC433C7;
+	Wed,  3 Apr 2024 16:10:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1712160664;
+	bh=nyU0F3ej83LHBArYWvHTmUMX9HPrzUZJ7A/Qsu6qybw=;
+	h=Date:Cc:Subject:From:To:References:In-Reply-To:From;
+	b=gjPhTdrkX6vjBSuS+zaKuaiyoGR/UHwImYh5jczdwkYJGVKzTI8yf2hpvYuYivheF
+	 9cAasLK2QGmMR19zPptwl9h0ZbUmVIMRICLp23Kjwu2VcYz0+/6ZeLdy4bzT59PDc2
+	 l63iyGVEr2qZXLKQT6+2lXJITHV3yENnPasAhVdiRKDDtUBVDx+h/fqVo0cbFGV7t1
+	 u7dlbbHFhMewEnqBVLHRm7gTFbvCN1GWPuV+Llr16q96XepFSjlvVBfIIp39cnhcMb
+	 LqkfZqDv4tft76m0tI2QRTWTUo2DDnMJBAR90COOO/G7XwDSHBgrqRskp2gieKHvJt
+	 RLvt1DTrQcT8g==
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <Zg10Keik4KORjXMh@slm.duckdns.org>
+Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
+Date: Wed, 03 Apr 2024 19:10:58 +0300
+Message-Id: <D0AMARUFBCNN.21GJ0PXUDK0F6@kernel.org>
+Cc: <agordeev@linux.ibm.com>, <anil.s.keshavamurthy@intel.com>,
+ <aou@eecs.berkeley.edu>, <bp@alien8.de>, <catalin.marinas@arm.com>,
+ <dave.hansen@linux.intel.com>, <davem@davemloft.net>, <gor@linux.ibm.com>,
+ <hca@linux.ibm.com>, <jcalvinowens@gmail.com>,
+ <linux-arm-kernel@lists.infradead.org>, <mhiramat@kernel.org>,
+ <mingo@redhat.com>, <mpe@ellerman.id.au>, <naveen.n.rao@linux.ibm.com>,
+ <palmer@dabbelt.com>, <paul.walmsley@sifive.com>, <tglx@linutronix.de>,
+ <will@kernel.org>
+Subject: Re: [PATCH 4/4] kprobes: Remove core dependency on modules
+From: "Jarkko Sakkinen" <jarkko@kernel.org>
+To: "Mark Rutland" <mark.rutland@arm.com>, <linux-kernel@vger.kernel.org>
+X-Mailer: aerc 0.17.0
+References: <20240326163624.3253157-1-mark.rutland@arm.com>
+ <20240326163624.3253157-5-mark.rutland@arm.com>
+ <Zg07hrb_RMUu2tq7@FVFF77S0Q05N>
+In-Reply-To: <Zg07hrb_RMUu2tq7@FVFF77S0Q05N>
 
-On Wed, Apr 03, 2024 at 05:22:17AM -1000, Tejun Heo wrote:
-> Hello,
-> 
-> On Wed, Apr 03, 2024 at 07:11:04AM +0200, Greg KH wrote:
-> > > Side note: I have no idea why the stable team backported those patches
-> > > and no option on whether that was wise, just trying to help finding the best
-> > > solution forward from the current state of things.
-> > 
-> > The Fixes: tag triggered it, that's why they were backported.
-> > 
-> > > > which would
-> > > > be far too invasive for -stable, thus no Cc: stable.
-> > > >
-> > > > I didn't know a Fixes
-> > > > tag automatically triggers backport to -stable. I will keep that in mind for
-> > > > future.
-> > > 
-> > > /me fears that more and more developers due to situations like this will
-> > > avoid Fixes: tags and wonders what consequences that might have for the
-> > > kernel as a whole
-> > 
-> > The problem is that we have subsystems that only use Fixes: and not cc:
-> > stable which is why we need to pick these up as well.  Fixes: is great,
-> > but if everyone were to do this "properly" then we wouldn't need to pick
-> > these other ones up, but instead, it's about 1/3 of our volume :(
-> > 
-> > I'll gladly revert the above series if they shouldn't have been
-> > backported to stable, but from reading them, it seemed like they were
-> > fixing an issue that was serious and should have been added to stable,
-> > which is why they were.
-> 
-> Oh, yeah, they're fixing an issue. It's just that the issue is relatively
-> confined peformance degradation and the fix is really invasive, so not a
-> great -stable candidate. At the very least, they'd need a log longer cooking
-> time in mainline before being considered for -stable backport.
+On Wed Apr 3, 2024 at 2:20 PM EEST, Mark Rutland wrote:
+> On Tue, Mar 26, 2024 at 04:36:24PM +0000, Mark Rutland wrote:
+> > From: Jarkko Sakkinen <jarkko@kernel.org>
+> >=20
+> > Tracing with kprobes while running a monolithic kernel is currently
+> > impossible because KPROBES depends on MODULES. While this dependency is
+> > necessary when KPROBES_USE_MODULE_ALLOC=3Dy, all the other module-speci=
+fic
+> > code only exist to handle the case when MODULES=3Dy, and can be hidden
+> > behind ifdeffery.
+> >=20
+> > Add the necessary ifdeffery, and remove the dependency on MODULES=3DN w=
+hen
+> > KPROBES_USE_MODULE_ALLOC=3Dn.
+> >=20
+> > Currently this allows kprobes to be used when CONFIG_MODULES=3Dn on arm=
+64
+> > and riscv, and other architectures can enable support by implementing
+> > their own kprobes_alloc_insn_page() and kprobes_free_insn_page() which
+> > do not depend on MODULES.
+> >=20
+> > Signed-off-by: Jarkko Sakkinen <jarkko@kernel.org>
+> > Link: https://lore.kernel.org/all/20240326012102.27438-1-jarkko@kernel.=
+org/
+> > [Mark: Remove execmem changes, depend on !KPROBES_USE_MODULE_ALLOC]
+> > Signed-off-by: Mark Rutland <mark.rutland@arm.com>
+> > Cc: Anil S Keshavamurthy <anil.s.keshavamurthy@intel.com>
+> > Cc: David S. Miller <davem@davemloft.net>
+> > Cc: Jarkko Sakkinen <jarkko@kernel.org>
+> > Cc: Masami Hiramatsu <mhiramat@kernel.org>
+> > Cc: Naveen N. Rao <naveen.n.rao@linux.ibm.com>
+> > ---
+> >  arch/Kconfig                |  2 +-
+> >  kernel/kprobes.c            | 12 +++++++++++-
+> >  kernel/trace/trace_kprobe.c | 15 +++++++++++++--
+> >  3 files changed, 25 insertions(+), 4 deletions(-)
+> >=20
+> > diff --git a/arch/Kconfig b/arch/Kconfig
+> > index 85bb59f7b8c07..cf43de9ffb5b9 100644
+> > --- a/arch/Kconfig
+> > +++ b/arch/Kconfig
+> > @@ -52,7 +52,7 @@ config GENERIC_ENTRY
+> > =20
+> >  config KPROBES
+> >  	bool "Kprobes"
+> > -	depends on MODULES
+> > +	depends on MODULES || !KPROBES_USE_MODULE_ALLOC
+>
+> Whoops; that should be:
+>
+> 	depends on MODULES || HAVE_KPROBES_ALLOC
+>
+> ... with similar fixups in the commit message to describe HAVE_KPROBES_AL=
+LOC
+> rather than KPROBES_USE_MODULE_ALLOC (which does not exist in any version=
+ of
+> the series that got sent to the list).
+>
+> I'll send a v2 with that fixed (and the other changes from Jarkko's v7 ba=
+se
+> patch) once I've locally tested that for architectures with and without
+> HAVE_KPROBES_ALLOC.
 
-Ok, I'll go revert them all now.  I did some test builds here with them
-reverted and they seem sane.  I'll push out some -rcs with just the
-reverts to at least fix the regressions found in the 6.8.y tree now.
+OK, please put to me to the CC list as I'm not ATM subscribed
+to the tracing list.
 
-> My intention w/ Fixes: wasn't triggering -stable backport at all, so it's a
-> miscommunication. From now on, I'll keep in mind that Fixes: does trigger
-> backports. I'm not too worried about not using it as the fixee commit can be
-> mentioned in the commit message.
-
-No worries, if you want, we can add any files/paths to our "ignore
-Fixes: tags, only take cc: stable ones" that we have for many parts of
-the kernel already, where maintainers are good and properly tag stuff.
-Just let me know.
-
-thanks,
-
-greg k-h
+BR, Jarkko
 
