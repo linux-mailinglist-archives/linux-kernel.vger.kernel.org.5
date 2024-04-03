@@ -1,62 +1,54 @@
-Return-Path: <linux-kernel+bounces-129291-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-129292-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id B1ED7896846
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 10:19:23 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4A08A896848
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 10:19:36 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 518051F2175A
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 08:19:23 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7BD011C203D8
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 08:19:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 85DE81292C2;
-	Wed,  3 Apr 2024 08:09:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 19081129A7D;
+	Wed,  3 Apr 2024 08:09:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="QrlzbiVz"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="vEQ6K0nu"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C70E98665A;
-	Wed,  3 Apr 2024 08:09:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5EAB284FD3;
+	Wed,  3 Apr 2024 08:09:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712131782; cv=none; b=X5zNDYJCZEYQ0B6J4UoO71pfdzQLfDMYoQM35Gc33nxdvi+J7+Ks1RC2icT15tCWdRCgEQ+iDwjiIMv/FYkup2JFvXuAK7lnF4kDt59c5Q6LM0LdGZhSnPzKETsD7xAVjIEjeLnL+90LcH0/W+JDKgbBskQU82JYcuIMUJpabAw=
+	t=1712131790; cv=none; b=NVYh7StEqjNwYsKP0TNXJM30g0OGXyKrRD0QeAMVlxl5CCk6Aw87IODcJK9r6HYx5MyeLqV/T71Ns9FugOTLDQGQfPzliwXCYg7Dy7a3bf9Ordtmma1WcuYh8BrhwLcEeh968vNWnFh3m3pz2DmgYepjRNciSnScWIH1itwnV6c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712131782; c=relaxed/simple;
-	bh=7qsqH0LOymzYXB4GWBeD5Wb7ADrWcz+eYFLQOtLMhn0=;
+	s=arc-20240116; t=1712131790; c=relaxed/simple;
+	bh=N9B1/h+N2wjlrIeRE4YeleUmB2UVWiJzUOQ8atEllXM=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=fohUacLglUdTTtHLaxI4JVEx+zPZzQzCmUWkpipUl7FtBGqY5eAo9MmrAQLJHBD6tfnL46pm3ywhSKQnPbL3HxQH4FmPqC1+8JoIwaOIkV/6UuwAnAIf9+6MuV5W/7ksZ7OBNW0YjmZ/4owjAjvZqaICrl3LHYHOFr1TgQyUWSs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=QrlzbiVz; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B3C06C433F1;
-	Wed,  3 Apr 2024 08:09:39 +0000 (UTC)
+	 MIME-Version; b=plnsXOlJru8BH6kNsRuiZvPTeAbQiTxM8f63kuWgA7wfBg7qpoi6bASBsiJdg+nuZhW6pNBx5/lEy22l25bwUNN8Qy9y1G4eT/YGhj7z7QxoW7lvoNUZDTwr2We1hVe+E1EJsLO3UYaC5RVyuto651YuSl7ujj6ftbZoyZ0hpJ8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=vEQ6K0nu; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A1CCEC433F1;
+	Wed,  3 Apr 2024 08:09:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712131782;
-	bh=7qsqH0LOymzYXB4GWBeD5Wb7ADrWcz+eYFLQOtLMhn0=;
+	s=k20201202; t=1712131789;
+	bh=N9B1/h+N2wjlrIeRE4YeleUmB2UVWiJzUOQ8atEllXM=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=QrlzbiVz8QbmfIib4J3OYU4BOIrOjhCsy7HJjYd3nq1yYbaY+QP/p9/1g8S0EMgrW
-	 9XdWtqndlfwLVhoRp2IULI0sKLRt1fHzqVhrBXG6/TW/3yvBf8ZIqMPEN5jteWUE7r
-	 f7Du+JzXpzdXLydduMpaARcakzrnsWpVk9HbLsEXOCSc1ORaEPo/dcrQ4+5MAUnbhm
-	 Cf7Fiiwa6icGeeYse5sLPeCUrnsevCa2UNW5BKkk0wFywIW6ib9G3d2A8k6KwxrLts
-	 Hv0FxdSYJaDXVcPRysoRQfkKQ7zDki7ab8oWVo0s7J7aONZamdGy2612a6usR1rHPD
-	 NIfIOouT+oi+g==
+	b=vEQ6K0nuV/TLSHTv+lYRcs9uzwwB7Vyiys8pqRAkURJ9CAAZUj11k4ze3eDZWJtrD
+	 jBC7aB5dxl8mNgNiB8Pl/lYX86x7PL4LDi1fJznmbt0yv055Nno54zfIctKCbiJPkR
+	 3r8tWetmuYV1lEl3GGi3dVlPIAh0lCt7h+wY+gMwdI+k9/PHa5OhHWiVj/7X0GdvfE
+	 1VB0IIuSE8DIhV/npVSr4uTJCuGfbnlyf+0RWEPyR7o93bducZo0/5Vk0UJ9ZxgcsQ
+	 uE9E79RpRN6J5G1jHrKUNpfTuq8FPC6cE9fwh4BJXbPsu5lPjiAWk3Ceq3g8SEET0T
+	 NADHAJOAl8EbQ==
 From: Arnd Bergmann <arnd@kernel.org>
 To: linux-kernel@vger.kernel.org,
-	Christoph Hellwig <hch@lst.de>,
-	Marek Szyprowski <m.szyprowski@samsung.com>,
-	Arnd Bergmann <arnd@arndb.de>,
-	Kyungmin Park <kyungmin.park@samsung.com>,
-	Michal Nazarewicz <mina86@mina86.com>
-Cc: Robin Murphy <robin.murphy@arm.com>,
-	Yajun Deng <yajun.deng@linux.dev>,
-	Binglei Wang <l3b2w1@gmail.com>,
-	Anshuman Khandual <anshuman.khandual@arm.com>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Zhenhua Huang <quic_zhenhuah@quicinc.com>,
-	iommu@lists.linux.dev
-Subject: [PATCH 14/34] dma/congiguous: avoid warning about unused size_bytes
-Date: Wed,  3 Apr 2024 10:06:32 +0200
-Message-Id: <20240403080702.3509288-15-arnd@kernel.org>
+	Pavel Machek <pavel@ucw.cz>,
+	Lee Jones <lee@kernel.org>
+Cc: Arnd Bergmann <arnd@arndb.de>,
+	linux-leds@vger.kernel.org
+Subject: [PATCH 15/34] leds: apu: remove duplicate DMI lookup data
+Date: Wed,  3 Apr 2024 10:06:33 +0200
+Message-Id: <20240403080702.3509288-16-arnd@kernel.org>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20240403080702.3509288-1-arnd@kernel.org>
 References: <20240403080702.3509288-1-arnd@kernel.org>
@@ -70,33 +62,34 @@ Content-Transfer-Encoding: 8bit
 
 From: Arnd Bergmann <arnd@arndb.de>
 
-When building with W=1, this variable is unused for configs with
-CONFIG_CMA_SIZE_SEL_PERCENTAGE=y:
+Building with W=1 shows a warning about an unused dmi_system_id table:
 
-kernel/dma/contiguous.c:67:26: error: 'size_bytes' defined but not used [-Werror=unused-const-variable=]
+drivers/leds/leds-apu.c:85:35: error: 'apu_led_dmi_table' defined but not used [-Werror=unused-const-variable=]
+   85 | static const struct dmi_system_id apu_led_dmi_table[] __initconst = {
 
-Mark it as __maybe_unused to avoid the warning without adding more
-ifdef checks to this file.
+Since the current version doesn't even do anything about the different
+implementations but only checks the type of system, just drop the
+custom lookup logic and call dmi_check_system() using the table itself.
 
-Fixes: c64be2bb1c6e ("drivers: add Contiguous Memory Allocator")
 Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 ---
- kernel/dma/contiguous.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/leds/leds-apu.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/kernel/dma/contiguous.c b/kernel/dma/contiguous.c
-index 055da410ac71..c53f4f633f7f 100644
---- a/kernel/dma/contiguous.c
-+++ b/kernel/dma/contiguous.c
-@@ -64,7 +64,7 @@ struct cma *dma_contiguous_default_area;
-  * Users, who want to set the size of global CMA area for their system
-  * should use cma= kernel parameter.
-  */
--static const phys_addr_t size_bytes __initconst =
-+static const phys_addr_t size_bytes __initconst __maybe_unused =
- 	(phys_addr_t)CMA_SIZE_MBYTES * SZ_1M;
- static phys_addr_t  size_cmdline __initdata = -1;
- static phys_addr_t base_cmdline __initdata;
+diff --git a/drivers/leds/leds-apu.c b/drivers/leds/leds-apu.c
+index c409b80c236d..1c116aaa9b6e 100644
+--- a/drivers/leds/leds-apu.c
++++ b/drivers/leds/leds-apu.c
+@@ -181,8 +181,7 @@ static int __init apu_led_init(void)
+ 	struct platform_device *pdev;
+ 	int err;
+ 
+-	if (!(dmi_match(DMI_SYS_VENDOR, "PC Engines") &&
+-	      (dmi_match(DMI_PRODUCT_NAME, "APU") || dmi_match(DMI_PRODUCT_NAME, "apu1")))) {
++	if (!dmi_check_system(apu_led_dmi_table)) {
+ 		pr_err("No PC Engines APUv1 board detected. For APUv2,3 support, enable CONFIG_PCENGINES_APU2\n");
+ 		return -ENODEV;
+ 	}
 -- 
 2.39.2
 
