@@ -1,56 +1,90 @@
-Return-Path: <linux-kernel+bounces-130136-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-130137-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 44A7D897483
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 17:52:14 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id DE1DC897494
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 17:55:09 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C64671F2875E
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 15:52:13 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 50514B2E6A0
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 15:52:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9B47514A631;
-	Wed,  3 Apr 2024 15:51:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BA33414A63F;
+	Wed,  3 Apr 2024 15:51:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=proton.me header.i=@proton.me header.b="a4SGYtwi"
-Received: from mail-40134.protonmail.ch (mail-40134.protonmail.ch [185.70.40.134])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="DRMHnn/1"
+Received: from mail-pf1-f179.google.com (mail-pf1-f179.google.com [209.85.210.179])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9222D146A96;
-	Wed,  3 Apr 2024 15:51:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.70.40.134
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9825614A4EB
+	for <linux-kernel@vger.kernel.org>; Wed,  3 Apr 2024 15:51:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712159514; cv=none; b=Sk+apQFCpyUn4esQVTpwW6glmiTTdM7w0cIZeNYP7Epljnj4jlVeyV8ZUaHpotBL55ogAVlQHin2kmGCfKuniwM32jWvZ5JBny6Lyv8vPe06bT1ppwV5OVP4mQHP7GVxe9ShZ1NTKpyWIpfZPTlOcPZZbmsDFrvnFaKIgT9Ypxc=
+	t=1712159516; cv=none; b=oUx9+hMF8G8J8iE7chhSX66T5QDHNwa0yHwKtlQlpwl/GvkrBteWGT0hpaG/z8VF+sIQ+HwdCaa31Z5Bd5iLg6rCBXqpAl5SVXPz7qw71plZrrybjqaGVsOETvSYDU4Dud3LNJHdtc79veLoZczNkL4Au3UXPoGX9qpg5mbnG3k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712159514; c=relaxed/simple;
-	bh=wOtVDkDP5TIIgmnuGlntttCWA3GnSxnAWVJEuBaypkw=;
-	h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=OtiHsKHTSsX8k1Jseap+FrpOZXuKg64+TjfjPMeMggafC0o/Q27ZBUmLKa49GtMP++RTJUQVGDOBYY66Wmz3UwFsr2hskkHE+UJOYYE9gU98sB5LuGxQrjew70dBIzlZ4HU6LGfBMXau/U9jKk8hOdCTlL2XV+vJ2bUvHJj++24=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=proton.me; spf=pass smtp.mailfrom=proton.me; dkim=pass (2048-bit key) header.d=proton.me header.i=@proton.me header.b=a4SGYtwi; arc=none smtp.client-ip=185.70.40.134
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=proton.me
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=proton.me
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=proton.me;
-	s=protonmail; t=1712159508; x=1712418708;
-	bh=UW23mqUm97ijKHcnsCqAhKuKRDp8kBhzeRwm31J4K/E=;
-	h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
-	 Feedback-ID:From:To:Cc:Date:Subject:Reply-To:Feedback-ID:
-	 Message-ID:BIMI-Selector;
-	b=a4SGYtwiY6BXaeQNZkqHurT+AkVChaN1RMlIRu+oPuTJ9UvfV22vAs953oSyDuVgo
-	 sSsk9CS4xQlq2z3RrXf/aXnP9djkNLaWtS4+z5h7nVkfQTgRwcfBGe4loJiMs7z74S
-	 DE8/LPB5jTFt9BR/xhCAnR3D1l4GNSWbjG74PLFw7ZIpPXNj/9i5uIkok+rFwJO0XU
-	 ODnThcf8N/S3rVxPO3qTRg5A9DTpb0ZwpOfzWXrqMdbet1Ztwf8h8JGcs3OD7orzWy
-	 CksfvKS64XwVcBpwheqG6CRfqBshxTK1eA+vkcsYNTImlnaJRzoxI6GxbtDLzOX+t8
-	 clMNPE9Zom7iQ==
-Date: Wed, 03 Apr 2024 15:51:42 +0000
-To: Alice Ryhl <aliceryhl@google.com>, Miguel Ojeda <ojeda@kernel.org>, Andrew Morton <akpm@linux-foundation.org>
-From: Benno Lossin <benno.lossin@proton.me>
-Cc: Alex Gaynor <alex.gaynor@gmail.com>, Wedson Almeida Filho <wedsonaf@gmail.com>, Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>, =?utf-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>, Andreas Hindborg <a.hindborg@samsung.com>, Marco Elver <elver@google.com>, Kees Cook <keescook@chromium.org>, Coly Li <colyli@suse.de>, Paolo Abeni <pabeni@redhat.com>, Pierre Gondois <pierre.gondois@arm.com>, Ingo Molnar <mingo@kernel.org>, Jakub Kicinski <kuba@kernel.org>, Wei Yang <richard.weiyang@gmail.com>, Matthew Wilcox <willy@infradead.org>, linux-kernel@vger.kernel.org, rust-for-linux@vger.kernel.org
-Subject: Re: [PATCH 1/9] rust: list: add ListArc
-Message-ID: <2f25f21e-fad8-48bb-aa2b-d61bf8909a41@proton.me>
-In-Reply-To: <20240402-linked-list-v1-1-b1c59ba7ae3b@google.com>
-References: <20240402-linked-list-v1-0-b1c59ba7ae3b@google.com> <20240402-linked-list-v1-1-b1c59ba7ae3b@google.com>
-Feedback-ID: 71780778:user:proton
+	s=arc-20240116; t=1712159516; c=relaxed/simple;
+	bh=qgIhgArIyknrMhYKo0pXG7L2hPF5611r14caIQJvQ9Y=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=OZH6/P23rkFPUG+0rcJw7Ep0qdxW9Ftr9u7bgw34L7ei67CD/BW+oeESsLCFJwwrbelvg1dunbfq4WZsW02+n2wmY861gZnaDDS/MxHk0TEqnSYfeSD4uXZvL3hTuGp5JK43eIcSxL4FU7V7Yzr+wBWvjSQX2PVV6mqeBnz7EJo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=DRMHnn/1; arc=none smtp.client-ip=209.85.210.179
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-pf1-f179.google.com with SMTP id d2e1a72fcca58-6eae2b57ff2so5367563b3a.2
+        for <linux-kernel@vger.kernel.org>; Wed, 03 Apr 2024 08:51:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1712159513; x=1712764313; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=RxAX3IORBZmyZAmqt7k7cbWr6HJgfjLBGIug35aDNFY=;
+        b=DRMHnn/12hCEZ+EzEWkSqaeg3Kh/NKXno8djLNTpANfiRYgJ70crpONfAk9RPZiirF
+         ym4+eIlbnGzB4QlFFQNVkfJkmPCPhG1OxGDBvdBny6Se9dLEfXso7WpduMDWmNDSdQPX
+         R7lUMIBExyPDI8RJIxLrlb60MXKhb4MDhPkO9ZkWhDgKfEQkc7Be5ZM7Tkm0UdTjwMrf
+         AG3JtGao5TTxfFlTMEN5A6x8IvNL5RBJzDvylXEznCEajyb3jpvx5U1V+hMcPpcz91RA
+         wydNWp4nDOGPSqVypb3HxkuUEK4/kTwgYFtwuIVgb70X8qwZ8SjDaaoGs0JVa4YWWet0
+         RBeA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712159513; x=1712764313;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=RxAX3IORBZmyZAmqt7k7cbWr6HJgfjLBGIug35aDNFY=;
+        b=xGeiJjkSy6T3G/WgjhIsuoqfdWklygMLi2ocOSvpMZaZ4vzmuvP0W2/jmsrbyUphqq
+         BKhPDIb7iBhz3Qggc4w/3c+GZH5DNQj7JQ7Ni7DOVoZ2HbYVfOcpuw8QDE2neHs3WCPx
+         ZGJ/MbsILMW/oYUcOHnoWMWOvmY24pcer6PUB5jOwkqX+FpZHXQWCfdte0IL4LZiU2IJ
+         Z9U62q51K4KMmjcHOThqsdiMvabxXWh6oZtypKbvmgttDn8DftnOob/XEvYI8V+qrqrd
+         zDwgtpWRVksm7cuHWgiZLUqV7Iu2WaSBPMc7IreuSnlb85lMbdFKtK4cykTNdLrsACFo
+         clQg==
+X-Forwarded-Encrypted: i=1; AJvYcCX/HVNwZH/wkU5ZkL9a6B1GCIUnjkXunNkOaq7IG5kq19yxIG8P/xr6EK2VGJNo/3C9iF31CBzEImVlILUduLJG/WfdNdZCp7HXqeEg
+X-Gm-Message-State: AOJu0Ywgfk8bQIQ7iXy0NUZ3ES6ZkVpNFXXG+dSuLaM8cOEYKKJMPV9S
+	cxW1hRS8aKkZQgnn9eFWYWrP6LHBIouzrn9rtNWNOm2YWVPx+JqNkzHfsl8aIQ==
+X-Google-Smtp-Source: AGHT+IFZ8An9frbeOoCjHLGX+h10+JkFjjcUHp5RZHkQCtQER4IRh2CUT8rqcKsB9n/M1uUV2ezDxQ==
+X-Received: by 2002:a05:6a20:6114:b0:1a3:e23d:6003 with SMTP id m20-20020a056a20611400b001a3e23d6003mr21825pzb.62.1712159512806;
+        Wed, 03 Apr 2024 08:51:52 -0700 (PDT)
+Received: from thinkpad ([103.28.246.48])
+        by smtp.gmail.com with ESMTPSA id a17-20020aa78e91000000b006e535bf8da4sm11747015pfr.57.2024.04.03.08.51.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 03 Apr 2024 08:51:52 -0700 (PDT)
+Date: Wed, 3 Apr 2024 21:21:47 +0530
+From: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+To: Niklas Cassel <cassel@kernel.org>
+Cc: Lorenzo Pieralisi <lpieralisi@kernel.org>,
+	Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
+	Rob Herring <robh@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>,
+	Kishon Vijay Abraham I <kishon@kernel.org>,
+	Thierry Reding <thierry.reding@gmail.com>,
+	Jonathan Hunter <jonathanh@nvidia.com>,
+	Jingoo Han <jingoohan1@gmail.com>, linux-pci@vger.kernel.org,
+	linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+	mhi@lists.linux.dev, linux-tegra@vger.kernel.org
+Subject: Re: [PATCH v2 03/10] PCI: endpoint: Rename core_init() callback in
+ 'struct pci_epc_event_ops' to init()
+Message-ID: <20240403155147.GA85162@thinkpad>
+References: <20240401-pci-epf-rework-v2-0-970dbe90b99d@linaro.org>
+ <20240401-pci-epf-rework-v2-3-970dbe90b99d@linaro.org>
+ <ZgvjWtC0f1CY6DJs@ryzen>
+ <20240403134600.GL25309@thinkpad>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -58,148 +92,80 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20240403134600.GL25309@thinkpad>
 
-On 02.04.24 14:16, Alice Ryhl wrote:
-> +impl<T: ListArcSafe<ID>, const ID: u64> ListArc<T, ID> {
-> +    /// Constructs a new reference counted instance of `T`.
-> +    pub fn try_new(contents: T) -> Result<Self, AllocError> {
-> +        Ok(Self::from_unique(UniqueArc::try_new(contents)?))
-> +    }
-> +
-> +    /// Use the given initializer to in-place initialize a `T`.
-> +    ///
-> +    /// If `T: !Unpin` it will not be able to move afterwards.
-> +    pub fn pin_init<E>(init: impl PinInit<T, E>) -> error::Result<Self>
-> +    where
-> +        Error: From<E>,
-> +    {
-> +        Ok(Self::from_pin_unique(UniqueArc::pin_init(init)?))
-> +    }
+On Wed, Apr 03, 2024 at 07:16:05PM +0530, Manivannan Sadhasivam wrote:
+> On Tue, Apr 02, 2024 at 12:52:10PM +0200, Niklas Cassel wrote:
+> > On Mon, Apr 01, 2024 at 09:20:29PM +0530, Manivannan Sadhasivam wrote:
+> > > core_init() callback is used to notify the EPC initialization event to the
+> > > EPF drivers. The 'core' prefix was used indicate that the controller IP
+> > > core has completed initialization. But it serves no purpose as the EPF
+> > > driver will only care about the EPC initialization as a whole and there is
+> > > no real benefit to distinguish the IP core part.
+> > > 
+> > > So let's rename the core_init() callback in 'struct pci_epc_event_ops' to
+> > > just init() to make it more clear.
+> > > 
+> > > Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+> > > ---
+> > >  drivers/pci/endpoint/functions/pci-epf-mhi.c  |  4 ++--
+> > >  drivers/pci/endpoint/functions/pci-epf-test.c |  4 ++--
+> > >  drivers/pci/endpoint/pci-epc-core.c           | 16 ++++++++--------
+> > >  include/linux/pci-epf.h                       |  4 ++--
+> > >  4 files changed, 14 insertions(+), 14 deletions(-)
+> > > 
+> > > diff --git a/drivers/pci/endpoint/functions/pci-epf-mhi.c b/drivers/pci/endpoint/functions/pci-epf-mhi.c
+> > > index 280863c0eeb9..b3c26ffd29a5 100644
+> > > --- a/drivers/pci/endpoint/functions/pci-epf-mhi.c
+> > > +++ b/drivers/pci/endpoint/functions/pci-epf-mhi.c
+> > > @@ -716,7 +716,7 @@ static void pci_epf_mhi_dma_deinit(struct pci_epf_mhi *epf_mhi)
+> > >  	epf_mhi->dma_chan_rx = NULL;
+> > >  }
+> > >  
+> > > -static int pci_epf_mhi_core_init(struct pci_epf *epf)
+> > > +static int pci_epf_mhi_epc_init(struct pci_epf *epf)
+> > >  {
+> > >  	struct pci_epf_mhi *epf_mhi = epf_get_drvdata(epf);
+> > >  	const struct pci_epf_mhi_ep_info *info = epf_mhi->info;
+> > > @@ -897,7 +897,7 @@ static void pci_epf_mhi_unbind(struct pci_epf *epf)
+> > >  }
+> > >  
+> > >  static const struct pci_epc_event_ops pci_epf_mhi_epc_event_ops = {
+> > > -	.core_init = pci_epf_mhi_core_init,
+> > > +	.init = pci_epf_mhi_epc_init,
+> > >  };
+> > >  
+> > >  static const struct pci_epc_bus_event_ops pci_epf_mhi_bus_event_ops = {
+> > > diff --git a/drivers/pci/endpoint/functions/pci-epf-test.c b/drivers/pci/endpoint/functions/pci-epf-test.c
+> > > index 973db0b1bde2..abcb6ca61c4e 100644
+> > > --- a/drivers/pci/endpoint/functions/pci-epf-test.c
+> > > +++ b/drivers/pci/endpoint/functions/pci-epf-test.c
+> > > @@ -731,7 +731,7 @@ static int pci_epf_test_set_bar(struct pci_epf *epf)
+> > >  	return 0;
+> > >  }
+> > >  
+> > > -static int pci_epf_test_core_init(struct pci_epf *epf)
+> > > +static int pci_epf_test_epc_init(struct pci_epf *epf)
+> > 
+> > On V1 you agreed that it is better to remove 'epc' from the naming.
+> > (For both pci-epf-test and pci-epf-mhi).
+> > You seem to have forgotten to address this for V2.
+> > 
+> 
+> Oh yeah, sorry about that. I tried to address comments for both series and
+> apparently this one got missed.
+> 
 
-pin-init has a general trait for this: InPlaceInit. I don't know if the
-other functions that it provides would help you.
+Ok, now I remember that I kept the prefix intentionally. The module init
+functions are already named as pci_epf_{test/mhi}_init(), so cannot use the same
+name for the callback also. And using some other name didn't fit, so I kept
+'epc' as the prefix since the callback acts on the EPC initialization event
+anyway.
 
-> +}
-> +
-> +impl<T, const ID: u64> ListArc<T, ID>
-> +where
-> +    T: ListArcSafe<ID> + ?Sized,
-> +{
-> +    /// Convert a [`UniqueArc`] into a [`ListArc`].
-> +    pub fn from_unique(mut unique: UniqueArc<T>) -> Self {
-> +        // SAFETY: We have a `UniqueArc`, so there is no `ListArc`.
-> +        unsafe { T::on_create_list_arc_from_unique(&mut unique) };
-> +        let arc =3D Arc::from(unique);
-> +        // SAFETY: We just called `on_create_list_arc_from_unique` on an=
- arc without a `ListArc`,
-> +        // so we can create a `ListArc`.
-> +        unsafe { Self::transmute_from_arc(arc) }
-> +    }
-> +
-> +    /// Convert a pinned [`UniqueArc`] into a [`ListArc`].
-> +    pub fn from_pin_unique(unique: Pin<UniqueArc<T>>) -> Self {
-> +        // SAFETY: We continue to treat this pointer as pinned after thi=
-s call, since `ListArc`
-> +        // implicitly pins its value.
+- Mani
 
-This is not sufficient, since you also rely on `Self::from_unique` to
-handle the parameter as if it were pinned, which it does not. Since it
-calls `T::on_create_list_arc_from_unique` which just gets a `&mut self`
-as a parameter and it could move stuff out.
-
-> +        Self::from_unique(unsafe { Pin::into_inner_unchecked(unique) })
-> +    }
-> +
-> +    /// Like [`from_unique`], but creates two `ListArcs`.
-> +    ///
-> +    /// The two ids must be different.
-> +    ///
-> +    /// [`from_unique`]: ListArc::from_unique
-> +    pub fn pair_from_unique<const ID2: u64>(mut unique: UniqueArc<T>) ->=
- (Self, ListArc<T, ID2>)
-> +    where
-> +        T: ListArcSafe<ID2>,
-> +    {
-> +        assert_ne!(ID, ID2);
-
-Can this be a `build_assert!`?
-
-> +
-> +        // SAFETY: We have a `UniqueArc`, so we can call this method.
-
-I liked the comment from above better:
-
-     // SAFETY: We have a `UniqueArc`, so there is no `ListArc`.
-
-Maybe use the variation "so there are no `ListArc`s for any ID.".
-
-> +        unsafe { <T as ListArcSafe<ID>>::on_create_list_arc_from_unique(=
-&mut unique) };
-> +        // SAFETY: We have a `UniqueArc`, so we can call this method. Th=
-e two ids are not equal.
-> +        unsafe { <T as ListArcSafe<ID2>>::on_create_list_arc_from_unique=
-(&mut unique) };
-> +
-> +        let arc1 =3D Arc::from(unique);
-> +        let arc2 =3D Arc::clone(&arc1);
-> +
-> +        // SAFETY: We just called `on_create_list_arc_from_unique` on an=
- arc without a `ListArc`,
-> +        // so we can create a `ListArc`.
-
-I would mention the two different IDs again.
-
-> +        unsafe {
-> +            (
-> +                Self::transmute_from_arc(arc1),
-> +                ListArc::transmute_from_arc(arc2),
-> +            )
-> +        }
-> +    }
-> +
-> +    /// Like [`pair_from_unique`], but uses a pinned arc.
-> +    ///
-> +    /// The two ids must be different.
-> +    ///
-> +    /// [`pair_from_unique`]: ListArc::pair_from_unique
-> +    pub fn pair_from_pin_unique<const ID2: u64>(
-> +        unique: Pin<UniqueArc<T>>,
-> +    ) -> (Self, ListArc<T, ID2>)
-> +    where
-> +        T: ListArcSafe<ID2>,
-> +    {
-> +        // SAFETY: We continue to treat this pointer as pinned after thi=
-s call, since `ListArc`
-> +        // implicitly pins its value.
-> +        Self::pair_from_unique(unsafe { Pin::into_inner_unchecked(unique=
-) })
-> +    }
-> +
-> +    /// Transmutes an [`Arc`] into a `ListArc` without updating the trac=
-king inside `T`.
-> +    ///
-> +    /// # Safety
-> +    ///
-> +    /// * The value must not already have a `ListArc` reference.
-> +    /// * The tracking inside `T` must think that there is a `ListArc` r=
-eference.
-> +    #[inline]
-> +    unsafe fn transmute_from_arc(me: Arc<T>) -> Self {
-> +        // INVARIANT: By the safety requirements, the invariants on `Lis=
-tArc` are satisfied.
-> +        // SAFETY: ListArc is repr(transparent).
-> +        unsafe { core::mem::transmute(me) }
-
-Why do you need a transmute here? Can't you just construct the struct?
-
-     Self { arc: me }
-
---=20
-Cheers,
-Benno
-
-> +    }
-> +
-
+-- 
+மணிவண்ணன் சதாசிவம்
 
