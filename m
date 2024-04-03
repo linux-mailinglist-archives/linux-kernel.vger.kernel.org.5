@@ -1,131 +1,150 @@
-Return-Path: <linux-kernel+bounces-129964-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-129965-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2323D897297
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 16:28:30 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E52FA897299
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 16:28:47 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D2F20281238
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 14:28:28 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 229681C25E5A
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 14:28:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 460801494B7;
-	Wed,  3 Apr 2024 14:27:36 +0000 (UTC)
-Received: from mail-ej1-f48.google.com (mail-ej1-f48.google.com [209.85.218.48])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0BF02149C7B;
+	Wed,  3 Apr 2024 14:27:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="uuyS5YZe"
+Received: from mail-lj1-f177.google.com (mail-lj1-f177.google.com [209.85.208.177])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 23024148844;
-	Wed,  3 Apr 2024 14:27:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 73FED149C6D
+	for <linux-kernel@vger.kernel.org>; Wed,  3 Apr 2024 14:27:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712154455; cv=none; b=SdKNxoKq1SAH3lJEb6qbJjT9zaqMtn5YHQZUUNHg6puJjAWFN1j/jjRVDjoCIFbKqvWKQ7pYjnIsJs6FPVRxJ6EVp2qzIvIm2JEsfKK3bESTOh4uD1z2OWN1ZmxG0h6prEZhZx8nReI8IwexdRoLJaiRMtz8NEbXp74VwvonxT0=
+	t=1712154471; cv=none; b=Og3UZ+GE7QSR4ANTw+ZT5gl1L96gzwQ99bJcbHNr+n9rN+6mhuUllBPExVAaSUdJJiLfaDj6a3Y4S0cbr6PTI214KdfBB48Pk2mNsO1zgR8RfFZFTqHoSEmpWedeq93csR1StBN3dy/zsM1a8eWXpuPEGV8/cq7Uuj57q9MNmZQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712154455; c=relaxed/simple;
-	bh=PrVKZP0ECRi5hkZdvwFBUwq8+6VR73QDYDWDIAK/pz0=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=KSlMagzFJQfbsdYDKfehIFE3CCO7qDSev2Z4SiNKaYOCih7lK7vGkoq5TxkNwqbP3E3N3ZNsQBRkwaVokVkeKJ42/d6OXYqCNMvrL4tYI18xXLoWVvBl6wj3qPHLb2+WRt7E4O7zPXpRMkuJ+QvubSkB3xEraTYJJ+u+L5JxpN8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.218.48
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f48.google.com with SMTP id a640c23a62f3a-a517a492055so38935366b.1;
-        Wed, 03 Apr 2024 07:27:33 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712154452; x=1712759252;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+	s=arc-20240116; t=1712154471; c=relaxed/simple;
+	bh=Eutrql+GlPZcdJFbU2brNFZQB6i9u54izTUbQcxkXp8=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=R3WxsFFH3DXvnhVKkezT7+N4YH4g2ITWvzYMrT1Xc+PHAXcDNESUSwqYRXWJOS5twdMpQz2JG2NCvs6A/ey6VVg+9qqhO7zu7oMXqyJt8/eHwEieQ3pBl3zIGy8OD02dFodewFK3Yo/jRymVWYP0QODHsmmkwQ8gSqcLZ2TfZpQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=uuyS5YZe; arc=none smtp.client-ip=209.85.208.177
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-lj1-f177.google.com with SMTP id 38308e7fff4ca-2d109e82bd0so85698931fa.3
+        for <linux-kernel@vger.kernel.org>; Wed, 03 Apr 2024 07:27:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1712154467; x=1712759267; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=rXtIAxbSC9GoA27XTlgfDuz/R5J5HXUwOuHua6cg6cA=;
-        b=jFcKIeKl3FREGWbue4fJ5CC5PQqmqj9MhhWybyT8cgF/gzRsidp95YMX+HvkWMy5fH
-         xbGqmaYW/FGiXrUaT+xCOU+FowkaeuH1Lwpq0gNUrlh4Dj213Fvo4RLI1SIRnIEAGKgb
-         +uyuVnIZfcPzK53yaVJWYes7Tdt39Rpz+MnKn71qHNog+OCM53AfE2sq+uo6/MyhOjTz
-         qA2W9YpZdSbgAgHoRfidCd7poqEiekE6WrmH8/bCjfNJFNtSVkx6NLlDrehE2oxqGrvz
-         XM2yuq1tM0qXrPB5GJqUBW0s4Y95lHdYP9zu9U9v4PHQtYppovodXg/X2wlLTYJFgea3
-         8n0w==
-X-Forwarded-Encrypted: i=1; AJvYcCUafphpMztLkT4nh9Hzq2j1t7sOP6uDGl43vw2wrWrLtmK2jtbqW93wIfRjJXp+6WoN7PaB29UPO8Ba54KtEnGkViA0OzenKkCn8jx/QYdZKVnHa2dnQSP/WCJgc0wY5KBTbCxx
-X-Gm-Message-State: AOJu0Yw1kLzjTUETiLe8Czvbx+alMVZUXL71PUxMoyJuBk526sjroAjS
-	GdWjXi7d6+6uFs3djzDWxMi7N/KrJSI3JcNIkx4W1SZGNZ/V8Mtd
-X-Google-Smtp-Source: AGHT+IHJ3M9QjM6bMH4k6EdFbKCIuH9qXwf1eJY9cEkfC7/72aQMP4QkcScmZNQ7bWfPIKwNhz1bJg==
-X-Received: by 2002:a17:906:a059:b0:a4e:7b62:9480 with SMTP id bg25-20020a170906a05900b00a4e7b629480mr1854323ejb.17.1712154452296;
-        Wed, 03 Apr 2024 07:27:32 -0700 (PDT)
-Received: from gmail.com (fwdproxy-lla-117.fbsv.net. [2a03:2880:30ff:75::face:b00c])
-        by smtp.gmail.com with ESMTPSA id bv3-20020a170907934300b00a517995c070sm297675ejc.33.2024.04.03.07.27.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 03 Apr 2024 07:27:31 -0700 (PDT)
-Date: Wed, 3 Apr 2024 07:27:29 -0700
-From: Breno Leitao <leitao@debian.org>
-To: Simon Horman <horms@kernel.org>
-Cc: aleksander.lobakin@intel.com, kuba@kernel.org, davem@davemloft.net,
-	pabeni@redhat.com, edumazet@google.com,
-	Taras Chornyi <taras.chornyi@plvision.eu>,
-	quic_jjohnson@quicinc.com, kvalo@kernel.org, leon@kernel.org,
-	dennis.dalessandro@cornelisnetworks.com,
-	linux-kernel@vger.kernel.org, netdev@vger.kernel.org
-Subject: Re: [PATCH net-next v2 2/5] net: marvell: prestera: allocate dummy
- net_device dynamically
-Message-ID: <Zg1nUR0Xb8LgKE9f@gmail.com>
-References: <20240328235214.4079063-1-leitao@debian.org>
- <20240328235214.4079063-3-leitao@debian.org>
- <20240331085438.GA26556@kernel.org>
+        bh=2m6TCoiwkZCsl/n4EpXjK7y7a9dk5gfjSvv4CStXcsg=;
+        b=uuyS5YZe1g9JtQEz0cq6f4+oNtlcNdOYtq9UuCHvnkh/2IR/ZYKzntrHGJ63bc12dz
+         0iC5lpBbWhWIsHTtz4q4nEqdduadHF8Tz100PgVcZfZ0E7ug2AgTS8PuphQxKesV2/er
+         A5zRS8fhqEQPF/mKSKgPSXJrXOsXPFEpmja1O3wt4vOPGM1VTJ7gtqaPOUIir6FS5D1G
+         mZ5Ia5nKnINaRITK6CZ2oyVfWkHbe5SX4aHHj1LH5T4sSlwdXjlIl1BovI8rWeeV6FzR
+         s0iBaHKCCCSUuTOYuUfDJm2nleiyU3cEPBVeJFeFVnezQk50DxrA6pTXcS+9nATBQ2E/
+         PkRA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712154467; x=1712759267;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=2m6TCoiwkZCsl/n4EpXjK7y7a9dk5gfjSvv4CStXcsg=;
+        b=Pw+QeMQhsQc4Ek+ZZbKK5aM1Ad+nAVzaOWgaKGQO+dUxod5Mx2iRkla9PyTU0t+cw6
+         tfJcJjdoeEdbYUsSg349s5KOecJp1heJNymK49NiXXAmkMNs3wbDMKvdQsBPCZetkugc
+         G55Z0WU47qAX7W1TpQ2sc8JRJS+rJ/rTf7rJrqLJ9CRMsUlnP4uNE6WInX1tQUqkLlsi
+         RPwGI47pTVoCxbsxpDsZRzvHLpcy6nIf+idyh4L6Aa7x9XsM7yVBKXJq63OUkp+Cri4z
+         Apy8TxrVjUhHFtv9CWa+TnyF5mU/6WA44kvbqluyHbe4/4T4JjduRDsAlbSQnh11khIf
+         95kQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWa6OiUQIVH74uOApiYsueadbqDU3n0kvpBF1dUS7CzUXxXT4JNl2Gj91RVlekQiHdsdxBgROSfR5L6bg9dTezxPGHDFWqqt/IgAS+x
+X-Gm-Message-State: AOJu0YyP2ehJO5skY6G6UWsczep3nGIfif1Ojt1jxc/SLTOBFXF6t5Ny
+	5CO3yXHPJvjeRNMCZQ5lebHy2sI7Eg3ZMoWRits54jtZgNBTu/IlxWKBF3x0At/XqFLjr2z6SKv
+	D/uI5AdGq/gdDfyk8aJEXf+CfcdWahcoaDnvotw==
+X-Google-Smtp-Source: AGHT+IEPAVO44UCTaAtdIqZQgD+gNk8dgJ4zsNMB6zzisxd38jmSZ/cwbjAX1C0jxryJk/DzTLmE9V9LXVSnHkltjtU=
+X-Received: by 2002:a2e:a58c:0:b0:2d7:7bb2:7afc with SMTP id
+ m12-20020a2ea58c000000b002d77bb27afcmr11035945ljp.3.1712154467493; Wed, 03
+ Apr 2024 07:27:47 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240331085438.GA26556@kernel.org>
+References: <20240403-msm-drm-dsc-dsi-video-upstream-v1-0-db5036443545@linaro.org>
+ <CAA8EJprd78g0jM4u2uY-vZnqQibbWevjxqzXFaPohkvmyWHkHw@mail.gmail.com>
+In-Reply-To: <CAA8EJprd78g0jM4u2uY-vZnqQibbWevjxqzXFaPohkvmyWHkHw@mail.gmail.com>
+From: Jun Nie <jun.nie@linaro.org>
+Date: Wed, 3 Apr 2024 22:27:36 +0800
+Message-ID: <CABymUCO0cpixiC9Maz5cd-L91qzE3_4QF=4qvNodpzaOR4Vi-w@mail.gmail.com>
+Subject: Re: [PATCH v3 0/6] Add DSC support to DSI video panel
+To: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Cc: Rob Clark <robdclark@gmail.com>, Abhinav Kumar <quic_abhinavk@quicinc.com>, 
+	Sean Paul <sean@poorly.run>, Marijn Suijten <marijn.suijten@somainline.org>, 
+	David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>, 
+	Jessica Zhang <quic_jesszhan@quicinc.com>, Vinod Koul <vkoul@kernel.org>, 
+	linux-arm-msm@vger.kernel.org, dri-devel@lists.freedesktop.org, 
+	freedreno@lists.freedesktop.org, linux-kernel@vger.kernel.org, 
+	Jonathan Marek <jonathan@marek.ca>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Sun, Mar 31, 2024 at 09:54:38AM +0100, Simon Horman wrote:
-> On Thu, Mar 28, 2024 at 04:52:02PM -0700, Breno Leitao wrote:
-> > Embedding net_device into structures prohibits the usage of flexible
-> > arrays in the net_device structure. For more details, see the discussion
-> > at [1].
-> > 
-> > Un-embed the net_device from the private struct by converting it
-> > into a pointer. Then use the leverage the new alloc_netdev_dummy()
-> > helper to allocate and initialize dummy devices.
-> > 
-> > [1] https://lore.kernel.org/all/20240229225910.79e224cf@kernel.org/
-> > 
-> > Signed-off-by: Breno Leitao <leitao@debian.org>
+Dmitry Baryshkov <dmitry.baryshkov@linaro.org> =E4=BA=8E2024=E5=B9=B44=E6=
+=9C=883=E6=97=A5=E5=91=A8=E4=B8=89 17:49=E5=86=99=E9=81=93=EF=BC=9A
+>
+> On Wed, 3 Apr 2024 at 12:11, Jun Nie <jun.nie@linaro.org> wrote:
+> >
+> > This is follow up update to Jonathan's patch set.
+> >
+> > Changes vs V2:
+> > - Rebase to latest mainline.
+> > - Drop the INTF_CFG2_DATA_HCTL_EN change as it is handled in
+> >     latest mainline code.
+> > - Drop the bonded DSI patch as I do not have device to test it.
+> > - Address comments from version 2.
+>
+> Which comments? "Adress comments" is the worst case of changelog.
+Adopted. Will add more details in next version.
+>
+> Also, what do you consider as version 2? Jonathan Marek has only sent v1.
+
+It's wired. I see v2 in patch title of below link. Just notice that
+there is v1 in the link address.
+https://patchwork.freedesktop.org/patch/567518/?series=3D126430&rev=3D1
+
+>
+> >
+> > Signed-off-by: Jun Nie <jun.nie@linaro.org>
 > > ---
-> >  .../net/ethernet/marvell/prestera/prestera_rxtx.c | 15 ++++++++++++---
-> >  1 file changed, 12 insertions(+), 3 deletions(-)
-> > 
-> > diff --git a/drivers/net/ethernet/marvell/prestera/prestera_rxtx.c b/drivers/net/ethernet/marvell/prestera/prestera_rxtx.c
-> 
-> ...
-> 
-> > @@ -654,13 +654,21 @@ static int prestera_sdma_switch_init(struct prestera_switch *sw)
-> >  	if (err)
-> >  		goto err_evt_register;
-> >  
-> > -	init_dummy_netdev(&sdma->napi_dev);
-> > +	sdma->napi_dev = alloc_netdev_dummy(0);
-> > +	if (!sdma->napi_dev) {
-> > +		dev_err(dev, "not able to initialize dummy device\n");
-> > +		goto err_alloc_dummy;
-> 
-> Hi Breno,
-> 
-> This goto will result in the function returning err.
-> But err is 0 here. Perhaps it should be set to a negative error value
-> instead?
-
-Definitely, that was a good catch.
-
-> Flagged by Smatch.
-
-I am curious how you are running Smatch. I tried to run it here
-according to[1] , and I found different and valid errors also, that I
-will fix soon. For instance:
-
-   drivers/net/ethernet/marvell/prestera/prestera_main.c:433 prestera_port_sfp_bind() error: uninitialized symbol 'err'.
-   drivers/net/ethernet/marvell/prestera/prestera_main.c:861 prestera_switch_set_base_mac_addr() error: uninitialized symbol 'ret'.
-
-[1] https://rajanvaja.wordpress.com/2021/02/06/how-to-run-smatch-on-linux-kernel/
-
-Thanks
+> > Jonathan Marek (5):
+> >       drm/msm/dpu: fix video mode DSC for DSI
+> >       drm/msm/dsi: set video mode widebus enable bit when widebus is en=
+abled
+> >       drm/msm/dsi: set VIDEO_COMPRESSION_MODE_CTRL_WC (fix video mode D=
+SC)
+> >       drm/msm/dsi: add a comment to explain pkt_per_line encoding
+> >       drm/msm/dsi: support DSC configurations with slice_per_pkt > 1
+> >
+> > Jun Nie (1):
+> >       drm/display: Add slice_per_pkt for dsc
+> >
+> >  .../gpu/drm/msm/disp/dpu1/dpu_encoder_phys_vid.c   |  9 +++++
+> >  drivers/gpu/drm/msm/disp/dpu1/dpu_hw_intf.c        |  8 +++++
+> >  drivers/gpu/drm/msm/dsi/dsi.xml.h                  |  1 +
+> >  drivers/gpu/drm/msm/dsi/dsi_host.c                 | 42 +++++++++++---=
+--------
+> >  include/drm/display/drm_dsc.h                      |  4 +++
+> >  5 files changed, 44 insertions(+), 20 deletions(-)
+> > ---
+> > base-commit: b1e6ec0a0fd0252af046e542f91234cd6c30b2cb
+> > change-id: 20240403-msm-drm-dsc-dsi-video-upstream-1156d110a53d
+> >
+> > Best regards,
+> > --
+> > Jun Nie <jun.nie@linaro.org>
+> >
+>
+>
+> --
+> With best wishes
+> Dmitry
 
