@@ -1,132 +1,187 @@
-Return-Path: <linux-kernel+bounces-128988-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-128990-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id E039A8962C5
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 05:08:59 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 66D3D8962CC
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 05:10:33 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9D381285993
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 03:08:58 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E9FA11F21F10
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 03:10:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5E4A31C2B3;
-	Wed,  3 Apr 2024 03:08:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 75D641BC59;
+	Wed,  3 Apr 2024 03:10:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="y0Lo2DMB"
-Received: from mail-yb1-f180.google.com (mail-yb1-f180.google.com [209.85.219.180])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=nxp.com header.i=@nxp.com header.b="gymTmjxF"
+Received: from EUR01-HE1-obe.outbound.protection.outlook.com (mail-he1eur01on2092.outbound.protection.outlook.com [40.107.13.92])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 133F61B950
-	for <linux-kernel@vger.kernel.org>; Wed,  3 Apr 2024 03:08:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.180
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712113732; cv=none; b=qEXJTjRyfOt1+6af3sDQCwJROALPezEJkJ7ytd5CnPNzplo448oNkLpaZeSsAoJr9nKcfDjnp1B0fSx2wgL6MW2HgDwejT5F262Cjdd6cAzcE4AZ2lA6jLP1+Tm6WZ5/fQz03tBWWl5JCUXdSx1M8GWzYuszenF7p8v1s/9OAW8=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712113732; c=relaxed/simple;
-	bh=JNaloNg7IAffGuYznhJyHxVMJLnQeiWsK6eJCMSM1lw=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=ASKiIHliOdeLjuQWHnXjtCVXzw36hU0MGj3rbkFISYxu1Z1puL8Lzk8FCNYV5aKffoDkdgkRagrM6ZiDp9+1WKE0OuYquJ41EloCaKKbnQvgKRiUlZ1FVg+wHoGJfUQgpsHBduQ0vPAK7K7tg2kw2/KzZcxtIHvSuIL107nqT2Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=y0Lo2DMB; arc=none smtp.client-ip=209.85.219.180
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-yb1-f180.google.com with SMTP id 3f1490d57ef6-dc6dcd9124bso5538562276.1
-        for <linux-kernel@vger.kernel.org>; Tue, 02 Apr 2024 20:08:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1712113730; x=1712718530; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=SLZyQwWsOZDMsjJgKKASz9enfm362tPeU6p67BPPPcA=;
-        b=y0Lo2DMB+RHXQVqn5l7qJxzM67eEoMfTLlb8T1sKG+VsZRT49biWUCwWcKYdTK/v1+
-         KswUEa+ylsVuyX8/kIVx2YVmOnqKfuBl1IOBWMZ9FIUriAQA+7IL5bFtSKqUZqxdl1Cp
-         yBFV5I6z9Qm6AA6jY4pCQVc/KkNRxhypaB9y4M5WzaZo+Vx+adB3KhqviG8f1Wh6r+Kc
-         b0Q4IMrLTkU+qM9pifGelxuv/+UZtugrL33sRTxUPHWkqFurxBF6YK3fOKLK2i4eGUNn
-         FBjrI30NzO+bSXsNXFg+OZLbTAjOOSN1cwKFtFrvo0py+KnDANtLpQRtUiOtnHa2RQpb
-         baqQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712113730; x=1712718530;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=SLZyQwWsOZDMsjJgKKASz9enfm362tPeU6p67BPPPcA=;
-        b=SGR9VLE+PhbfZsaZNiczXO2OlQVxZ+2NxyCVaRvyDNwHz+R6bhrVK/GdNFXrhGvXgZ
-         BdjogmajEesUtR4ZPVc51jbr8A78l49lUANGwDT2XSOhXp3RjSjnNLNFgCA7E1JimUnR
-         Qk3aMW3nkr33WevFVAKrDqDtHOTTDwki/lLSiN+xH3DYaMdptKACeJGbMdR/CccnEwll
-         p2pFkQQvNV72ciZMRLVGSmincAnOwl8RkoPfGswx0BHocv6/+1ewXcRvbnpS25aAqG8e
-         Nb7KOlK9UUaDcQrjQKy6cE6XStC/Rp3KyS5/bc/f4xZtS14e8e9iNm3Y/A12cv7AAE6i
-         obZw==
-X-Forwarded-Encrypted: i=1; AJvYcCXxoptrzG74fQA0tJXNYb6axrJTaKKjLuO5hQ+t4NbcnEMkq/+xF6OJB5jImSuaPr80bHsVDX2MJmvc1NSbdaNtS2NWCxtNRpvrBBYR
-X-Gm-Message-State: AOJu0Ywu+YQsaBekJiU1qdWe0ggtmbDRaclPWiFOL5Tqjkz7N19lTTcD
-	EAiLji79SK+HdWVlPDXcACHCzz96gsronAJPn+EP/WcqYruK6S3YTEDNPoPy2vT1V47eMZWNXOD
-	qut6Na8uCl7OLJVCxnzwwet5DUDNo9rtVHGui/Q==
-X-Google-Smtp-Source: AGHT+IE9EKkUidiGL+XeA4Jbotmjrpuh9J5aIMY1ZE+6LKcfeu03OjvrZFEzBWZxBUNuUXBXoDTkhOq3x4vkxpn0sWI=
-X-Received: by 2002:a05:6902:82:b0:dcc:140a:a71f with SMTP id
- h2-20020a056902008200b00dcc140aa71fmr11987883ybs.60.1712113730070; Tue, 02
- Apr 2024 20:08:50 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6C9081BC3C;
+	Wed,  3 Apr 2024 03:10:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.13.92
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1712113823; cv=fail; b=W4BuZKD5NFb8l8NyIGrp13il/CmM8ia7JMjJZwR2WE9n9RGVL4YH2nBmucu9M1uckKMFB1l+3qC2ilIA3ymecv/W6loshMJka07hXgHbXlacvHbxZd3mlTpwZFLXgtBQjvVtiVdrANu9rJN1uNzK8JZ9BlQWWuqcuRVVlf9ts30=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1712113823; c=relaxed/simple;
+	bh=FoxuVWU4lAmf64DUfEmugTPF8a4thxFv/ceiisHrRcU=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:Content-Type:
+	 Content-Disposition:In-Reply-To:MIME-Version; b=aXpDYd3mzCdQYWIY+sl/7IlDsXghlHsilnM7LJf9tcX4Ni9dGOM62Jfws+ZMDWJjVGuPJqGyjkL+QEIE9MfcIu+Q+ehnVcdtU1iJ/f3x52U3X4uTJUH0kaj/guQL6GDi71YDCnmNSmnwpSRAfaxwL2PEgrdidXYyekVBW58TLJA=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com; spf=pass smtp.mailfrom=nxp.com; dkim=pass (1024-bit key) header.d=nxp.com header.i=@nxp.com header.b=gymTmjxF; arc=fail smtp.client-ip=40.107.13.92
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nxp.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=L0USEYACEpGccKphnoLmqavdvAvls92Uvw0jiNOLpgAekRT60zoeMSoTkTU7Q5qMz6mh6B376u/DbHgO9jgh/YtuM2IGDQwdcNLNLirKVo8Hg7+k62A+P7/gV/mP1NIJ0H9oeDtq6UN8skppppwBMZyGx4WVHF/8MXsYkTh2OCHt9Cpr0cJkaEdrM3FxdlDLxEVEpRCH+ucyCy+y8PCRiQRXv/ccTRKCKi1sOf0XVK/B52FAKXkw5G/Gmfdvx0+jd1sPBRu5K43SAYqj4x9hEe4xCZv2IJAnwVnBLRJdKbxhDDSOPjEb3iRfN1W8BmwSlWCMGoo2qQUdiJ/nb90szA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=oc9nUukTLQY/HfJRneUxUWYCwStETjar/AS8FZXsL0I=;
+ b=HA9O6GvD9OZW/v+1QLxM9paAmN/o94URf4HHBhTxoM/JdVtUH4FyfOwyY+J0UAbdhKNe01kyA3kLQtoST4L36S3jHv0Uw5ftXUDg7UV+HkNtCjNj/vWpK0EpZuO+T7e67RwJy+owJ8/YKR6qs8ynqVpSF49R9EQy73aMosWAwrMKWDwDHKoKDJoaxVmQxlpDNCiSiPUQNXqeDYSa0PHaXzt+yb4QGQJRPJJkuKa+cSACOYOyx/aJySu2rWKYPcD4cyq7JXsQijKOdu+fIjXUo8MGjRMgoNqdKiIyJATHr1c8P3AXm5stja1B4OFUDT5mScrTH0J1bOdunnKyktQ7lQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=oc9nUukTLQY/HfJRneUxUWYCwStETjar/AS8FZXsL0I=;
+ b=gymTmjxFHSV3s9coH+3EuYk2GStiEB3kCkjGQbFpTkA1ht2hdZbyMg/LI86rUMXlFkpRwvBUByxwik0cRJThq+8xPSfSadfd2SXXvKlFnE3E6S4HouKaAxyA24p+7McjhaKJFRy0ykjbKC8qG/O3GkXHr5EGF3p4nRfSUILjl0M=
+Received: from PAXPR04MB9642.eurprd04.prod.outlook.com (2603:10a6:102:240::14)
+ by DU0PR04MB9227.eurprd04.prod.outlook.com (2603:10a6:10:352::19) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7409.46; Wed, 3 Apr
+ 2024 03:10:18 +0000
+Received: from PAXPR04MB9642.eurprd04.prod.outlook.com
+ ([fe80::3168:91:27c6:edf6]) by PAXPR04MB9642.eurprd04.prod.outlook.com
+ ([fe80::3168:91:27c6:edf6%3]) with mapi id 15.20.7409.042; Wed, 3 Apr 2024
+ 03:10:17 +0000
+Date: Tue, 2 Apr 2024 23:10:07 -0400
+From: Frank Li <Frank.li@nxp.com>
+To: Shawn Guo <shawnguo2@yeah.net>
+Cc: Fabio Estevam <festevam@gmail.com>, Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>, Shawn Guo <shawnguo@kernel.org>,
+	Sascha Hauer <s.hauer@pengutronix.de>,
+	Pengutronix Kernel Team <kernel@pengutronix.de>,
+	NXP Linux Team <linux-imx@nxp.com>,
+	Marcel Ziswiler <marcel.ziswiler@toradex.com>,
+	Philippe Schenker <philippe.schenker@toradex.com>,
+	Max Krummenacher <max.krummenacher@toradex.com>,
+	Alexander Stein <alexander.stein@ew.tq-group.com>,
+	Joakim Zhang <qiangqing.zhang@nxp.com>, devicetree@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+	stable@vger.kernel.org
+Subject: Re: [PATCH 1/7] arm64: dts: imx8-ss-lsio: fix pwm lpcg indices
+Message-ID: <ZgzIjziArPh8wnHA@lizhi-Precision-Tower-5810>
+References: <20240401-dts_fix-v1-0-8c51ce52d411@nxp.com>
+ <20240401-dts_fix-v1-1-8c51ce52d411@nxp.com>
+ <CAOMZO5AJrQ5jyV4A-tvX93-R0_nEWpEO9YY3f5DpeXaAFO4cSA@mail.gmail.com>
+ <ZgwfnZJDRYmYy7Qt@lizhi-Precision-Tower-5810>
+ <ZgyzxmuMIK87C2nW@dragon>
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <ZgyzxmuMIK87C2nW@dragon>
+X-ClientProxiedBy: SJ2PR07CA0003.namprd07.prod.outlook.com
+ (2603:10b6:a03:505::26) To PAXPR04MB9642.eurprd04.prod.outlook.com
+ (2603:10a6:102:240::14)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240402-pmic-glink-fix-clients-v1-0-885440b81c65@linaro.org>
- <20240402-pmic-glink-fix-clients-v1-1-885440b81c65@linaro.org> <bnxrstkmjmmbhzrqncfwwnxa5vpx3ioysykqr3sbiirlatneu4@vlewrjturppo>
-In-Reply-To: <bnxrstkmjmmbhzrqncfwwnxa5vpx3ioysykqr3sbiirlatneu4@vlewrjturppo>
-From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Date: Wed, 3 Apr 2024 06:08:38 +0300
-Message-ID: <CAA8EJpqkU2bBwkdW5aQ=ZKvPBoRWaxFVQAxmg76zhLQqV4C-UQ@mail.gmail.com>
-Subject: Re: [PATCH 1/2] soc: qcom: pmic_glink: don't traverse clients list
- without a lock
-To: Andrew Halaney <ahalaney@redhat.com>
-Cc: Bjorn Andersson <andersson@kernel.org>, Konrad Dybcio <konrad.dybcio@linaro.org>, 
-	Neil Armstrong <neil.armstrong@linaro.org>, linux-arm-msm@vger.kernel.org, 
-	linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: PAXPR04MB9642:EE_|DU0PR04MB9227:EE_
+X-LD-Processed: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635,ExtAddr
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+ hnZwt4Jw12sMuj4Wq9B9LINpnMQaUrGTnxF2Bxb0YBCT4NpD099U2ZPEmxTQ7S6HWIV3jukBCSnP9lWql6Pf7rukZ2/txWoXfhwWbqlRP8NAyAznXO/IG1UPeiBmimG3g2zHY0eTdqpbA9BITtT57f5ra0qM03sshQdSh8w7RHjw+Q6NmMjwaF+y7IXz+kRbvyOeXPcBAMBEygT2NEZuVxYUcdgeX0EMQFr7YqPer5txChQ/AfKeIubQsDPvTFijXYU7spa8bA2hNWb9rMfMYZ+hJgfk5rnM0fp7ZsPnxVj0xPFESr5U3VvCE+PEWss/kWcXmt1gS9VS22WOzE2J2ZRxtMDEfPY1yAvVf3ODHMK6VcVClm/GFcjZO6Eu/AgJki6mvFGX2MuBD6SJcOEP1Hren36+dp6btnoJ+J/njROk8dZF0SwU/0rVKSBcRLKLTJkJOyl+8BRZdUpjJbNcBZb8fs3veVShMC2iMSTguU31QY+WJ2N6cAUtjyUfNvGLWqWNzvnwTM6EaSjeEAnQCRzDWqXndlFZR6tKi/MCP/LDffY/lmLzRtARY7NO8fBwvD3eMMiHpZjfnHstwRYeE4n2d8wYkKJjlrvk/+oCLDYXsGa/iqRQSfXePEs5u/rfexBeSICjCOhFJpN2/TOo3qvFUWcLtWBKZGwOLYT+JI7GiFrwG+KerQe1VmwEYr/cHvvxSYp7bQWKgfPaGj92aHud2D5X6GjjdR+xfM2kF1g=
+X-Forefront-Antispam-Report:
+ CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PAXPR04MB9642.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366007)(376005)(52116005)(1800799015)(7416005)(38350700005);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+ =?utf-8?B?dDQ1dWtteHhZWVppUUR4QnVnR0VGTS83Z1I4T3hGUmRucXBldlFHeHg2UVZt?=
+ =?utf-8?B?c0NOQTdxZHhYTklkRXhxQUFzS3B3RUlaWTcxVmNTKzBaMlJSRWpPTGRjZE1E?=
+ =?utf-8?B?S1ZWTTFDNjBHM1pEQi8wQnRoMEZjLy9lQnpsY0p2MGlEalhTNzJSbU96L0FV?=
+ =?utf-8?B?eEY4dWhDSzcvUzNSVy9IbndnNkhXQlJ3YVc1REJ4T3FkendsYXVFWklDWWVt?=
+ =?utf-8?B?K1NzOUwrUjVESCtxMndXa1lvRFV6cmNsQlo3blJ0RGxYekhGR3gwL3o0YU94?=
+ =?utf-8?B?VFRWZm0yS090TVVvR2dPL3NSUXNGbGt5RUVRYVdqdlJRMG5YN09HcS9mV0dy?=
+ =?utf-8?B?cjNZU3drb1R0aW5lK3pXakNnRHhrK2hzL2c3eW5zZEphREMrdDNoYldzejF6?=
+ =?utf-8?B?Z1dtbzRIdHNTbTVQcHR3K1JzQ1FhTkVjMXRsczhkOHdhOHBYbEZBUnl5cGQ3?=
+ =?utf-8?B?cVJrNk5oTGVxckgvcHNhUzQ4cTQ4T0Q0MXVIakdOa0xzb0k2OHZXMTV4VjhK?=
+ =?utf-8?B?TlIxOE1lc1NyTi9DeWVuN2xpTkpLR2JzYnZha0lzOVdyc0xvbTFpZkV0WWlX?=
+ =?utf-8?B?cWUzSyt2NlVRZ3NXd1JHSzFwSzNSaExmd2NlWWVrT1RFT1k1cFBTcDV3Tmhr?=
+ =?utf-8?B?WWZ2YWFCb1lxVlM4UXByMEY3R05hSW8zMVRvVFBvUXNxcXh4bnJWMklXRHVp?=
+ =?utf-8?B?bE01WGNUOUtCMGh4QW9ZdlduaDQyWTB1OVdCZjk3azdVVi82SDgxcmtmV1BE?=
+ =?utf-8?B?WjVrd25kQmN6VnpSZzdmZHVwSGs1WloxRUNZSlhFcDNyelRRTEJCK09ZK1hs?=
+ =?utf-8?B?czJEV0pUWkFFVmJmbUlzOUtaWUx2MHRyNEgvbUNIcitzUFRWNHdHdlNOMk9o?=
+ =?utf-8?B?NzA5NTBxSlRhYlczUkppQTRDdG5yQzRjRXQ2VlRVVmhqMGdTVm1WaFRlaFIz?=
+ =?utf-8?B?S3BweHdRR1dTNjJVR2NTclNuT1JmQzYwNWZOSzFjcFpKbUNrU2tsRWZBU0tM?=
+ =?utf-8?B?V1hRaS91N2ZVTVN6MUZIbW4vdVVpUFhxYklzK1k3M3lCU3VJK3MvTFRRQXpX?=
+ =?utf-8?B?UFZmbjkrZnIvZkg5UW1yemw2SU1WT2dPbTI0SENDdk52RzRTR2dGZWpDUDBs?=
+ =?utf-8?B?VncwdExUL3RxQ0FOQ2RDd0RUd3oyQWlBZklvQnRqemdGd3ZySUxyMm14ck5V?=
+ =?utf-8?B?TE1hU0JrM2lUcEtiZVBOVWJDcGIxdGZ3WXVGRDNjclJxditMN0MrdDdzV3RL?=
+ =?utf-8?B?VmlFMDcvSnVicU9wZm8xYVBvVjZZSHBUMDgxYkZ3MndKT1ZoamFVcFArV1hl?=
+ =?utf-8?B?QklocVFtVUZjSmR1OFIxd0JaKzdEdTJGM2JFdzRkV0tkTFFmUjg1R1lKQUox?=
+ =?utf-8?B?THJmSUVCRWtqVXdNdUNCZ25KMUZFUHE1dE5TcmJ4eTVqMzVvYU1KaG1BSWJG?=
+ =?utf-8?B?UER6cXY2cHczUVV1aHVQdWtGK252dnZtVkJnS1BPQjFHaitHMnEyK0ZxckhR?=
+ =?utf-8?B?NDljVjFETldQYSs3UGl1bWlTbUg2WEtYNklZbnlwb1FnTHdYN2lGWlBURHlr?=
+ =?utf-8?B?MkFIZmdWa3F6ODRiZmtYS1dUa1ozaUdTVGprVDBDblpzQ0N6bFgrR21BTDNC?=
+ =?utf-8?B?QVMwb2FxZE1BSm9oQncrdDZrQnlsZ0RDZ0pRTHhNQjlvTWdSa1EzTXY2ZmE3?=
+ =?utf-8?B?a21kMG1pcU1UQnN6bnNxaHdmTXRJQjdNUHZLWVJ6Qm1MMVgvK1BNQUxYUTVn?=
+ =?utf-8?B?TDVONnpVSjF2VG1wOFBYRTRQYUdqR2p5S1RyUldtblZZZmo2M3Y2MEhTdVpF?=
+ =?utf-8?B?QmdTeHVsSzd0UGM3UXdSZ1c1WEdLcFRTbmdzVWZTU1Y1Zk5LdWhLN1RZZ3g0?=
+ =?utf-8?B?TFUyQUZ4eDJ2K2lLU1lKZ3IxUnJVK05UNmFGaDYzUmdmZ3RGbTJ6d25ndFg0?=
+ =?utf-8?B?UTZxb3l0NmNNL0lKT2J2dmE0Vm4yS1JwREhIalBMWUs0RkZOL0x1V0xhR3ZO?=
+ =?utf-8?B?ZlpjMkNyTXkrTiswSEVEOUNMejQydVhMd0lRRjQyemJkUXhrYklHYlMyd1Vt?=
+ =?utf-8?B?R1J6bHBpdkxpYjFKaEtLSXRPL1VtUS9CY1VHOURRVUcxNFRIWW9qamRvMWln?=
+ =?utf-8?Q?M40ma4AJ6cAtwH/hcu6syxn4p?=
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: c3db6170-68ed-4e57-0220-08dc538b96e7
+X-MS-Exchange-CrossTenant-AuthSource: PAXPR04MB9642.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 03 Apr 2024 03:10:17.8788
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: INZHysp6mSFcdNSTRVKmsQvRcAWOn2Fi/VgZzkVf1FY9PdVEHgkd+IzBm15qXUXrv1cTr52yc976RxQlsV5kQg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DU0PR04MB9227
 
-On Tue, 2 Apr 2024 at 20:56, Andrew Halaney <ahalaney@redhat.com> wrote:
->
-> On Tue, Apr 02, 2024 at 08:07:06PM +0300, Dmitry Baryshkov wrote:
-> > Take the client_lock before traversing the clients list at the
-> > pmic_glink_state_notify_clients() function. This is required to keep the
-> > list traversal safe from concurrent modification.
-> >
-> > Fixes: 58ef4ece1e41 ("soc: qcom: pmic_glink: Introduce base PMIC GLINK driver")
-> > Signed-off-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-> > ---
-> >  drivers/soc/qcom/pmic_glink.c | 2 ++
-> >  1 file changed, 2 insertions(+)
-> >
-> > diff --git a/drivers/soc/qcom/pmic_glink.c b/drivers/soc/qcom/pmic_glink.c
-> > index f913e9bd57ed..c999358771b3 100644
-> > --- a/drivers/soc/qcom/pmic_glink.c
-> > +++ b/drivers/soc/qcom/pmic_glink.c
-> > @@ -168,8 +168,10 @@ static void pmic_glink_state_notify_clients(struct pmic_glink *pg)
-> >       }
->
-> Does pmic_glink_rpmsg_callback() deserve similar locking when traversing
-> the clients list?
+On Wed, Apr 03, 2024 at 09:41:26AM +0800, Shawn Guo wrote:
+> On Tue, Apr 02, 2024 at 11:09:17AM -0400, Frank Li wrote:
+> > On Mon, Apr 01, 2024 at 08:04:56PM -0300, Fabio Estevam wrote:
+> > > On Mon, Apr 1, 2024 at 7:25 PM Frank Li <Frank.Li@nxp.com> wrote:
+> > > >
+> > > > lpcg's arg0 should use clock indices instead of index.
+> > > >
+> > > > pwm0_lpcg: clock-controller@5d400000 {
+> > > >         ...                                                // Col1  Col2
+> > > >         clocks = <&clk IMX_SC_R_PWM_0 IMX_SC_PM_CLK_PER>,  // 0     0
+> > > >                  <&clk IMX_SC_R_PWM_0 IMX_SC_PM_CLK_PER>,  // 1     1
+> > > >                  <&clk IMX_SC_R_PWM_0 IMX_SC_PM_CLK_PER>,  // 2     4
+> > > >                  <&lsio_bus_clk>,                          // 3     5
+> > > >                  <&clk IMX_SC_R_PWM_0 IMX_SC_PM_CLK_PER>;  // 4     6
+> > > >         clock-indices = <IMX_LPCG_CLK_0>, <IMX_LPCG_CLK_1>,
+> > > >                         <IMX_LPCG_CLK_4>, <IMX_LPCG_CLK_5>,
+> > > >                         <IMX_LPCG_CLK_6>;
+> > > > };
+> > > >
+> > > > Col1: index, which exited dts try to get.
+> > > 
+> > > I cannot understand this sentence, sorry.
+> > 
+> > This base on downstream dts code.  Downstream code use index in 'Col1' to
+> > get clock.
+> 
+> So s/exited/existing you meant?
 
-True. Will fix in v2.
+Yes, sorry for typo. 
 
->
-> >
-> >       if (new_state != pg->client_state) {
-> > +             mutex_lock(&pg->client_lock);
-> >               list_for_each_entry(client, &pg->clients, node)
-> >                       client->pdr_notify(client->priv, new_state);
-> > +             mutex_unlock(&pg->client_lock);
-> >               pg->client_state = new_state;
-> >       }
-> >  }
-> >
-> > --
-> > 2.39.2
-> >
-> >
->
+Frank
 
-
--- 
-With best wishes
-Dmitry
+> 
+> Shawn
+> 
 
