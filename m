@@ -1,104 +1,119 @@
-Return-Path: <linux-kernel+bounces-130165-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-130166-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1B2EE8974D0
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 18:05:15 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 24B228974D4
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 18:05:33 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4CE791C25AA8
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 16:05:14 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B78E21F2117C
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 16:05:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9D5B414B096;
-	Wed,  3 Apr 2024 16:03:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4674C15216F;
+	Wed,  3 Apr 2024 16:03:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="qKAjOElX"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b="lysfZgIV"
+Received: from mail-lj1-f169.google.com (mail-lj1-f169.google.com [209.85.208.169])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E289514A0A0;
-	Wed,  3 Apr 2024 16:02:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C6EF614C5B7
+	for <linux-kernel@vger.kernel.org>; Wed,  3 Apr 2024 16:03:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.169
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712160180; cv=none; b=F+/Yml+WyzQj6NoHi9CfPEG7mdEtwdehKIZv2myVP4imvde/A9/anHAsbWjrutEErIExU9z6EVHvYmuaOHXesZ5qr3cfW21JO4Vby9wHqTYAs0Llp6QDZ9Gkf8tq+2rs6xAg32jnTBi89qmq6fzZgaQ776b+r9ZRCJR9sRrAXEE=
+	t=1712160189; cv=none; b=lHQpMPMQkFIq67iLnPVE4XFhMUrvdz+K4opiGjpfJupUyrnf3lyg2hbE7IZXkxbLBlr8uXrLHqfZN4GlKNnm0sz6B3S2ijZ2xYT8rQzs1u+OXJcfEdeMKqikNqsvJvIS+fHYnJmn6lBlNWq8e75P+tCFQdqInFxbgZUAzjp2lVY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712160180; c=relaxed/simple;
-	bh=ZLGaUAlxN/MigLlqe2ufbLD2YOZsHZFp4bFiSC6MH6w=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=hhkM8JTCSPO9NdZcvPu0H3x/jc5ybdcNjvuy90PhXX3ot/zZhmUMrFHlCxEOhzABXUT7wbtomq6lL5Ih6pCojaWHtqdhcYjXb24Uyf6Z1Fjvpgkq9q5oiqawj/0usdKs1NhXIk3AYncywzBNmshPeWndl9/XVngNe1BSrW0KL9g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=qKAjOElX; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2043CC433C7;
-	Wed,  3 Apr 2024 16:02:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712160179;
-	bh=ZLGaUAlxN/MigLlqe2ufbLD2YOZsHZFp4bFiSC6MH6w=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=qKAjOElXcZoBLG39OjeFDtAe2thsVwavvdRrcX1AjPU+cqi9PmtBpCEYzLrwih/oR
-	 eSU0wk+bz2v+2LK3+f6q9dxRqhSHvOfgKBGaRYuQfUqLWxCNgH1g9fvIZhfMbd8PA/
-	 +iu8advVlG1DA5wyhnTkclFCV8CFeiayaSUVYV+VRsU2O6tUfOrFv62opxuBTlod56
-	 ZM/3RekTzbklkBfKriSNPUDOeSNvscNothpVnVLxuvUVtJM2+Of5n6O8tHHb3O3i8A
-	 5lGWkKZ77j3MG2BX+BwMoDP09Km1X821j4Zp2crONXSYIkxsJaLZH2Jwswv3VUE/Ou
-	 1wQaQo8ITmUuQ==
-Date: Wed, 3 Apr 2024 17:02:53 +0100
-From: Conor Dooley <conor@kernel.org>
-To: Alexandru Ardelean <alex@shruggie.ro>
-Cc: linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
-	devicetree@vger.kernel.org, adrien.grassein@gmail.com,
-	andrzej.hajda@intel.com, neil.armstrong@linaro.org,
-	rfoss@kernel.org, Laurent.pinchart@ideasonboard.com,
-	jonas@kwiboo.se, jernej.skrabec@gmail.com, airlied@gmail.com,
-	daniel@ffwll.ch, maarten.lankhorst@linux.intel.com,
-	mripard@kernel.org, tzimmermann@suse.de, robh@kernel.org,
-	krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-	stefan.eichenberger@toradex.com, francesco.dolcini@toradex.com,
-	marius.muresan@mxt.ro, irina.muresan@mxt.ro
-Subject: Re: [PATCH 2/2] dt-bindings: display: bridge: lt8912b: document
- 'lontium,pn-swap' property
-Message-ID: <20240403-cadmium-pasta-eadfdf62f387@spud>
-References: <20240402105925.905144-1-alex@shruggie.ro>
- <20240402105925.905144-2-alex@shruggie.ro>
- <20240402-sheet-retread-025759b22faf@spud>
- <CAH3L5QooAXDYAxOdMkPrW1mx04ZgTv_kMU5VSAby9J3Hb_RFOg@mail.gmail.com>
+	s=arc-20240116; t=1712160189; c=relaxed/simple;
+	bh=bTvBBqvM+g5SfRgI5quUH3wnImmHOZ6hz4keoRzRwYA=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=LQOQ6IjsopQGIIkPFYeIlMh7SGyhBVR0ULWYQQPzHXA3oNfZPDyvM4GYX9Bn4S99dncKUuq1AE9BNMjr3XMAl109ePc+/T0hDMpfcDk+ruJ49g3QyWkl+vjRXnAuNC6UD07uo05h7c6zRUvWkVPa/74dS+av1CfkA1U+eEX+SvA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com; spf=pass smtp.mailfrom=baylibre.com; dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b=lysfZgIV; arc=none smtp.client-ip=209.85.208.169
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=baylibre.com
+Received: by mail-lj1-f169.google.com with SMTP id 38308e7fff4ca-2d83dddcd65so10502691fa.1
+        for <linux-kernel@vger.kernel.org>; Wed, 03 Apr 2024 09:03:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20230601.gappssmtp.com; s=20230601; t=1712160186; x=1712764986; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=bTvBBqvM+g5SfRgI5quUH3wnImmHOZ6hz4keoRzRwYA=;
+        b=lysfZgIVx3yGO4yCEHgHksvCJyLZJOSKNM1o51kCRsFcKt0ffydgvcacs+e2CJhalE
+         amAe2kB1J0l62vqS481GGm6zr5P6H6fPT+I23+9CLsuu4DIzd2D37pU6C9y/8PirFQsu
+         lPVlCpg0pegWs+hsQlR2ox+noaCGJ7xCpyCuBtYb6PSBnkmfkMBwel9LJrlJoDpibqQD
+         haJURm+RDc8MLLnWFmKejOIKGH53qLC1WOggov0G9wLXqQ6rjgFUw5ymVDlkz5uTotE5
+         jOgHXEJsvOkP5H89oJD4KQrxdbIam1zNMspBuXUy+vtL2p7Qz1XeTHHtz9VSAKxdIiaQ
+         OmeA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712160186; x=1712764986;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=bTvBBqvM+g5SfRgI5quUH3wnImmHOZ6hz4keoRzRwYA=;
+        b=hIwCxsHGsCJZXaCnTQOnBHaNcy3kzYylnTM7s+blELgtQh0swoF5NlbbntgFb2I91o
+         HmfZdRGGVzMAoZyp+X7cRJrF8qjoG28BVaBsjw8NhkBBb46qIlVECMXOVLvvhJxQq+T+
+         c0N7HQeWqVeMxYc0BAmyfuMd7ALsnV8JFPh9pnwm/auEGJl0nctHTjJRgvt7p0KCtJQw
+         XgtYLFhWh7I23jC1tEbg1JR0sLEr5wQoum/sgWTHJLCjPpgkDH+c+IZODGJnu593w8FA
+         sJjvcYMTU4DkMA/WKhtYtnmkYQnHl7Xxmmio5NI8fTU4NmcUccDW0mriTx2KxG/Z4Pmv
+         xsmQ==
+X-Forwarded-Encrypted: i=1; AJvYcCV3YrGbovR1VsjkkjOPQahQv++cAC9pcQ7H2mSCGwNFpSODQsXQgCKxqmH09iVoK63F3/Uzudqp2MpQTTyfPc/Ru1GFs01HfcDPMm1A
+X-Gm-Message-State: AOJu0YwkAywODcpo4LyHcY1zGDgfXCyiGgZOiz9syFLwc2LVzGdSIo9y
+	pK303N58V6DAaIEABwyQyisswVhJ7FzUswFq1usG1/KxYOX3sbgdMVdDB75COu/bPE+JFofnVhj
+	kQZHr9fwkaz21Uwd4+uSZQEoIxngIGQdML4FT+A==
+X-Google-Smtp-Source: AGHT+IEfI5ofSa8HbRO6qzAuEu/QevNBSZtDcMguGLWWWkpuGtfcQ39NMJwhn9Ea552v6Z/oXcGuYOl4UC7bwCiesso=
+X-Received: by 2002:a2e:a68a:0:b0:2d6:fc0b:f122 with SMTP id
+ q10-20020a2ea68a000000b002d6fc0bf122mr9938lje.18.1712160186030; Wed, 03 Apr
+ 2024 09:03:06 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="OIKG09sfb1D7G0KQ"
-Content-Disposition: inline
-In-Reply-To: <CAH3L5QooAXDYAxOdMkPrW1mx04ZgTv_kMU5VSAby9J3Hb_RFOg@mail.gmail.com>
-
-
---OIKG09sfb1D7G0KQ
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+References: <20240401-ad4111-v1-0-34618a9cc502@analog.com> <20240401-ad4111-v1-4-34618a9cc502@analog.com>
+ <CAMknhBH8UEPSyYiyMPo4en4vcjnJ7_W5q+iJtMOhdp5eNmP=8w@mail.gmail.com> <78cab1a4-e085-4df5-bb8c-277fd5ec3d70@gmail.com>
+In-Reply-To: <78cab1a4-e085-4df5-bb8c-277fd5ec3d70@gmail.com>
+From: David Lechner <dlechner@baylibre.com>
+Date: Wed, 3 Apr 2024 11:02:54 -0500
+Message-ID: <CAMknhBGZ7jUjCk65v54ayGSUA2-qcaCEmKm69TcJA+Ups_r=ZQ@mail.gmail.com>
+Subject: Re: [PATCH 4/6] iio: adc: ad7173: refactor ain and vref selection
+To: "Ceclan, Dumitru" <mitrutzceclan@gmail.com>
+Cc: dumitru.ceclan@analog.com, Lars-Peter Clausen <lars@metafoo.de>, 
+	Michael Hennerich <Michael.Hennerich@analog.com>, Jonathan Cameron <jic23@kernel.org>, 
+	Rob Herring <robh@kernel.org>, Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
+	Conor Dooley <conor+dt@kernel.org>, linux-iio@vger.kernel.org, devicetree@vger.kernel.org, 
+	linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Wed, Apr 03, 2024 at 09:16:31AM +0300, Alexandru Ardelean wrote:
-
+On Wed, Apr 3, 2024 at 5:03=E2=80=AFAM Ceclan, Dumitru <mitrutzceclan@gmail=
+com> wrote:
+>
+> On 01/04/2024 22:40, David Lechner wrote:
+> > On Mon, Apr 1, 2024 at 10:10=E2=80=AFAM Dumitru Ceclan via B4 Relay
+> > <devnull+dumitru.ceclan.analog.com@kernel.org> wrote:
+> >>
+> >> From: Dumitru Ceclan <dumitru.ceclan@analog.com>
+> >>
+> >> Move validation of analog inputs and reference voltage selection to
+> >> separate functions.
+> >>
+> >> Signed-off-by: Dumitru Ceclan <dumitru.ceclan@analog.com>
+> >> ---
 > >
-> > > +    type: boolean
-> >
-> > The type here should be flag.
->=20
-> ack; i'll change the type
+> > Same as my comment on PATCH 3/6. We would like to know why this change
+> > is being made.
+>
+> Move validation of analog inputs and reference voltage selection to
+> separate functions to reduce the size of the channel config parsing funct=
+ion.
+>
+> Good?
 
-I prob shoulda said, its "$ref: /schemas/types.yaml#/definitions/flag"
-instead of "type: boolean".
+Better. But it still only says what is being done and doesn't answer
+the question "why?".
 
---OIKG09sfb1D7G0KQ
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZg19rAAKCRB4tDGHoIJi
-0oqRAP4hwY3sOX9ShDng3WIfjEJxfjKASqN3casNhSiE07qADAD/aGzpCVx8FUez
-kIQGC+Nx5ySg7iMHlwiZt2/u7rE24AI=
-=xnpK
------END PGP SIGNATURE-----
-
---OIKG09sfb1D7G0KQ--
+"to reduce the size of the function to make it easier to read"
+explains why reducing the size of the function makes it an
+improvement.
 
