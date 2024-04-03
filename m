@@ -1,144 +1,150 @@
-Return-Path: <linux-kernel+bounces-130604-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-130605-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2F6CE897A60
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 23:06:42 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 24ACD897A63
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 23:07:24 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 60EFD1C25A0A
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 21:06:41 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A3F41283153
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 21:07:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8D6BA156657;
-	Wed,  3 Apr 2024 21:06:35 +0000 (UTC)
-Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EDC4815665D;
+	Wed,  3 Apr 2024 21:07:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=me.com header.i=@me.com header.b="xErRji5z"
+Received: from mr85p00im-ztdg06021701.me.com (mr85p00im-ztdg06021701.me.com [17.58.23.196])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 378E214C5B3
-	for <linux-kernel@vger.kernel.org>; Wed,  3 Apr 2024 21:06:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E2BFC154C03
+	for <linux-kernel@vger.kernel.org>; Wed,  3 Apr 2024 21:07:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=17.58.23.196
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712178395; cv=none; b=V+BxTTq4Ri1pEYtpo2g7c4rH/JrQymqxFYvWs5qDiKwxWUoRQa4NuOUQ/d//9z9mvfEqzUlRs8nnZBo3X8Wu5dWdmJg/o/j08wwAaf09YuBbDyuMVZeorPnQfmkS4s2WXa38UPfHyduIZl7PkrH89AedwdtISwpqiIi4Dq8XlF4=
+	t=1712178435; cv=none; b=tmlCPAJXWZuUMcrs9PQ8v7dVauSuSr78t4MPYedMxJeD+dAjkVtLYyl+s61L4CO/H+6lfLyqvsW5k1TagbMHtJO7fhUm+YoJBIOeGOx4Z6/ulglau0XLSByNSZJSO/99N061QUaSLtaeUI0VS2YeTratwuLiNlIhpqCuYEraqlc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712178395; c=relaxed/simple;
-	bh=bvE6+Ioe65Pvy3tTo3/DekL3m3PgUp+qr/wE3M2vlMU=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=YZGBl58cStmwFw2KpeDRlMceVle334rnxphLiAwlVQjbK0bt6smoOzyhwlCBLpJ4sXb5FO+drOtVz3jmHxnTW6IN4MEYK+xGGoQ1soanX6XFztFJ3C+qD2DMzi+PoA5AG1bCMN4SpDZdgzboEVPSduP49rJYqz2rYHNf3XtELeU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
-Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
-	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-	(Exim 4.92)
-	(envelope-from <ukl@pengutronix.de>)
-	id 1rs7nv-0001NX-2i; Wed, 03 Apr 2024 23:05:55 +0200
-Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
-	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.94.2)
-	(envelope-from <ukl@pengutronix.de>)
-	id 1rs7nr-00AFDj-LI; Wed, 03 Apr 2024 23:05:51 +0200
-Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.96)
-	(envelope-from <ukl@pengutronix.de>)
-	id 1rs7nr-00EqVT-1m;
-	Wed, 03 Apr 2024 23:05:51 +0200
-Date: Wed, 3 Apr 2024 23:05:51 +0200
-From: Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-To: Mark Brown <broonie@kernel.org>
-Cc: Arnd Bergmann <arnd@kernel.org>, linux-kernel@vger.kernel.org, 
-	Neil Armstrong <neil.armstrong@linaro.org>, Kevin Hilman <khilman@baylibre.com>, 
-	Heiko Stuebner <heiko@sntech.de>, Andi Shyti <andi.shyti@kernel.org>, 
-	Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>, Arnd Bergmann <arnd@arndb.de>, 
-	Jerome Brunet <jbrunet@baylibre.com>, Martin Blumenstingl <martin.blumenstingl@googlemail.com>, 
-	Alim Akhtar <alim.akhtar@samsung.com>, Li Zetao <lizetao1@huawei.com>, 
-	Jonathan Cameron <Jonathan.Cameron@huawei.com>, Rob Herring <robh@kernel.org>, 
-	Yang Yingliang <yangyingliang@huawei.com>, Andy Shevchenko <andriy.shevchenko@linux.intel.com>, 
-	Luis de Arquer <luis.dearquer@inertim.com>, Tudor Ambarus <tudor.ambarus@linaro.org>, 
-	Sam Protsenko <semen.protsenko@linaro.org>, Peter Griffin <peter.griffin@linaro.org>, 
-	Jaewon Kim <jaewon02.kim@samsung.com>, linux-spi@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
-	linux-amlogic@lists.infradead.org, linux-rockchip@lists.infradead.org, 
-	linux-samsung-soc@vger.kernel.org
-Subject: Re: [PATCH 31/34] spi: remove incorrect of_match_ptr annotations
-Message-ID: <5f3qvhasho4mfnf6f7i6djak3ankje375mt4fzvv3gqrlj242o@zdk2ajvha6hx>
-References: <20240403080702.3509288-1-arnd@kernel.org>
- <20240403080702.3509288-32-arnd@kernel.org>
- <b4418ac1-10ba-4932-be6e-93282707024f@sirena.org.uk>
+	s=arc-20240116; t=1712178435; c=relaxed/simple;
+	bh=0AiZM6PiLalckeV63JNhtHUusQZnUdQA6buUd7aeJDk=;
+	h=From:Content-Type:Mime-Version:Subject:Message-Id:Date:Cc:To; b=d+7T1RJJWys3dgILWGzBLtRq/F4HJIWbd6omWrsNG1l93/CmEuZNuGwd6ftsKfcdX7VaYrDUzeyLpldwgLGvJV6UKJ0dG7VAoGFUN00sFLiZzm0b1+LmMuP/qf/S6hgHfcZPBlutu0QwL6OKMfkqhGa/km/6JJKCUec2q2GtNmI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=me.com; spf=pass smtp.mailfrom=me.com; dkim=pass (2048-bit key) header.d=me.com header.i=@me.com header.b=xErRji5z; arc=none smtp.client-ip=17.58.23.196
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=me.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=me.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=me.com; s=1a1hai;
+	t=1712178433; bh=AY0YVT2/pYp771gvWdGaXCfqZ7KgXeM1P5FSEBqw7YA=;
+	h=From:Content-Type:Mime-Version:Subject:Message-Id:Date:To;
+	b=xErRji5zX/NvKMQXFwcPYZhTN9qkg6tJPFvY6PX5I/0F+sgx8NG0zyQFlJznXCvkQ
+	 WpCgF3C/PJOga/QRYZ4GJgLmZ94IcGMQOtVsJwVOUwGo1UFeYrVxr/cAhmQXfIMH6U
+	 bN3Qzbv+Do8UPEd6BiG3wAC4ccO/nADUAWNh+oxT7wF0b5Pz13dUvilASFejaCZv0E
+	 niketQZbu3RTE/WSO4xbpV3Q+CqO930sZrm/tsa/uLTVIpPkvW7Ef/X5nrZSlf5eJ/
+	 5sVZb0DBHac+AHoeU04c4xWtxOYhF2fKkIGogV0kAPiXRaO88d03NmTIHs7Q3W4DQR
+	 hKNW4lQhzgZRQ==
+Received: from smtpclient.apple (mr38p00im-dlb-asmtp-mailmevip.me.com [17.57.152.18])
+	by mr85p00im-ztdg06021701.me.com (Postfix) with ESMTPSA id 6E37E26335A3;
+	Wed,  3 Apr 2024 21:07:11 +0000 (UTC)
+From: Laine Taffin Altman <alexanderaltman@me.com>
+Content-Type: text/plain;
+	charset=us-ascii
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="j3dyffzs5mph63yw"
-Content-Disposition: inline
-In-Reply-To: <b4418ac1-10ba-4932-be6e-93282707024f@sirena.org.uk>
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
-X-SA-Exim-Mail-From: ukl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+Mime-Version: 1.0 (Mac OS X Mail 16.0 \(3774.500.171.1.1\))
+Subject: [PATCH v4] rust: init: remove impl Zeroable for Infallible
+Message-Id: <CA160A4E-561E-4918-837E-3DCEBA74F808@me.com>
+Date: Wed, 3 Apr 2024 14:06:59 -0700
+Cc: stable@vger.kernel.org
+To: Miguel Ojeda <ojeda@kernel.org>,
+ Alex Gaynor <alex.gaynor@gmail.com>,
+ Benno Lossin <benno.lossin@proton.me>,
+ rust-for-linux@vger.kernel.org,
+ Wedson Almeida Filho <wedsonaf@gmail.com>,
+ Boqun Feng <boqun.feng@gmail.com>,
+ Gary Guo <gary@garyguo.net>,
+ =?utf-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>,
+ Andreas Hindborg <a.hindborg@samsung.com>,
+ Alice Ryhl <aliceryhl@google.com>,
+ Martin Rodriguez Reboredo <yakoyoku@gmail.com>,
+ lkml <linux-kernel@vger.kernel.org>
+X-Mailer: Apple Mail (2.3774.500.171.1.1)
+X-Proofpoint-ORIG-GUID: 8aN3UzxcWvmPcgHFin2Utvi_e7K1jNVI
+X-Proofpoint-GUID: 8aN3UzxcWvmPcgHFin2Utvi_e7K1jNVI
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-04-03_22,2024-04-03_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 adultscore=0 spamscore=0
+ mlxscore=0 mlxlogscore=999 malwarescore=0 suspectscore=0 bulkscore=0
+ clxscore=1015 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2308100000 definitions=main-2404030144
 
+In Rust, producing an invalid value of any type is immediate undefined
+behavior (UB); this includes via zeroing memory.  Therefore, since an
+uninhabited type has no valid values, producing any values at all for it =
+is
+UB.
 
---j3dyffzs5mph63yw
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+The Rust standard library type `core::convert::Infallible` is =
+uninhabited,
+by virtue of having been declared as an enum with no cases, which always
+produces uninhabited types in Rust.
 
-On Wed, Apr 03, 2024 at 10:56:58AM +0100, Mark Brown wrote:
-> On Wed, Apr 03, 2024 at 10:06:49AM +0200, Arnd Bergmann wrote:
->=20
-> > These appear to all be copied from the same original driver, so fix the=
-m at the
-> > same time by removing the unnecessary of_match_ptr() annotation. As far=
- as I
-> > can tell, all these drivers are only actually used on configurations th=
-at
-> > have CONFIG_OF enabled.
->=20
-> Why are we not fixing of_match_ptr() here, or at least adding the ifdefs
-> in case someone does end up wanting to run without OF?
+The current kernel code allows this UB to be triggered, for example by =
+code
+like `Box::<core::convert::Infallible>::init(kernel::init::zeroed())`.
 
-Fixing of_match_ptr =3D
+Thus, remove the implementation of `Zeroable` for `Infallible`, thereby
+avoiding the unsoundness (potential for future UB).
 
-diff --git a/include/linux/of.h b/include/linux/of.h
-index a0bedd038a05..d980bccffda0 100644
---- a/include/linux/of.h
-+++ b/include/linux/of.h
-@@ -890,7 +890,7 @@ static inline const void *of_device_get_match_data(cons=
-t struct device *dev)
- 	return NULL;
- }
+Cc: stable@vger.kernel.org
+Fixes: 38cde0bd7b67 ("rust: init: add `Zeroable` trait and =
+`init::zeroed` function")
+Closes: https://github.com/Rust-for-Linux/pinned-init/pull/13
+Signed-off-by: Laine Taffin Altman <alexanderaltman@me.com>
+Reviewed-by: Alice Ryhl <aliceryhl@google.com>
+Reviewed-by: Boqun Feng <boqun.feng@gmail.com>
+---
+V3 -> V4: Address review nits; run checkpatch properly.
+V2 -> V3: Email formatting correction.
+V1 -> V2: Added more documentation to the comment, with links; also =
+added more details to the commit message.
+
+ rust/kernel/init.rs | 11 +++++++++--
+ 1 file changed, 9 insertions(+), 2 deletions(-)
+
+diff --git a/rust/kernel/init.rs b/rust/kernel/init.rs
+index 424257284d16..3859c7ff81b7 100644
+--- a/rust/kernel/init.rs
++++ b/rust/kernel/init.rs
+@@ -1292,8 +1292,15 @@ macro_rules! impl_zeroable {
+     i8, i16, i32, i64, i128, isize,
+     f32, f64,
 =20
--#define of_match_ptr(_ptr)	NULL
-+#define of_match_ptr(_ptr)	(0 ? (_ptr) : NULL)
- #define of_match_node(_matches, _node)	NULL
- #endif /* CONFIG_OF */
+-    // SAFETY: These are ZSTs, there is nothing to zero.
+-    {<T: ?Sized>} PhantomData<T>, core::marker::PhantomPinned, =
+Infallible, (),
++    // Note: do not add uninhabited types (such as `!` or =
+`core::convert::Infallible`) to this list;
++    // creating an instance of an uninhabited type is immediate =
+undefined behavior.  For more on
++    // uninhabited/empty types, consult The Rustonomicon:
++    // =
+https://doc.rust-lang.org/stable/nomicon/exotic-sizes.html#empty-types =
+The Rust Reference
++    // also has information on undefined behavior:
++    // =
+https://doc.rust-lang.org/stable/reference/behavior-considered-undefined.h=
+tml
++    //
++    // SAFETY: These are inhabited ZSTs; there is nothing to zero and a =
+valid value exists.
++    {<T: ?Sized>} PhantomData<T>, core::marker::PhantomPinned, (),
 =20
-?
+     // SAFETY: Type is allowed to take any value, including all zeros.
+     {<T>} MaybeUninit<T>,
 
-Assuming this helps, I agree this would be the better fix.
-
-Best regards
-Uwe
-
+base-commit: c85af715cac0a951eea97393378e84bb49384734
 --=20
-Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
-Industrial Linux Solutions                 | https://www.pengutronix.de/ |
+2.44.0
 
---j3dyffzs5mph63yw
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEP4GsaTp6HlmJrf7Tj4D7WH0S/k4FAmYNxK4ACgkQj4D7WH0S
-/k4RIQf+N9Iy5vdLQiMUAN6AC+cOYMVtNTWEXHv3Iu8OMI4BbFULD/p4hJYx4A/Y
-+4trHVq0G7vFcqwJIyZ8XD7U0NnRLweSBCiBdm6lh/R7j8pyI32zbpvrJb8ge/Wm
-LTfO5dGPLQMf1kIpjRlpYniRKxzxOTWIsnKpr801JczfdZDvZ236nLgQNNFTtYNP
-4X9v+IjyFHuXxEjYvIZ52EsIgHnfGsNT7RNmncSBQSxLRwliB6gAO/Bzo1ulw1xS
-iSIatTBxMMTV5D3fDRS1Ve4g7VIjI0LAO+I784HK+wg9jWI4tEwQz2eO5GZXxDXp
-WbiT8oxPt4xi8tsgDAu681Ac2zeUOg==
-=qPPD
------END PGP SIGNATURE-----
-
---j3dyffzs5mph63yw--
 
