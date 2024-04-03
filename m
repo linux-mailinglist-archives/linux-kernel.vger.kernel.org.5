@@ -1,136 +1,117 @@
-Return-Path: <linux-kernel+bounces-129790-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-129791-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 62346896FF4
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 15:15:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id A56CE896FF6
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 15:15:43 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 16FCD28F955
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 13:15:15 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 51AE428FFA3
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 13:15:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D542D147C94;
-	Wed,  3 Apr 2024 13:15:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E1668147C96;
+	Wed,  3 Apr 2024 13:15:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=omnibond-com.20230601.gappssmtp.com header.i=@omnibond-com.20230601.gappssmtp.com header.b="cqYY4M1g"
-Received: from mail-oo1-f51.google.com (mail-oo1-f51.google.com [209.85.161.51])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="SvCPfL53"
+Received: from mail-pl1-f174.google.com (mail-pl1-f174.google.com [209.85.214.174])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 815666DD0D
-	for <linux-kernel@vger.kernel.org>; Wed,  3 Apr 2024 13:15:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E9AF7147C6C;
+	Wed,  3 Apr 2024 13:15:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712150110; cv=none; b=BOUvVrbd8LAQhcyWBmGzG1OmGT3fpb54oizJQlEQe7XoO7gYc0zst8F4xmGyGsBVyP8OjwicPcMlluWkgWxRMtdmIt85P3WMtc5lVrdhaaShnqPzM+oFhTyyy23/cUXxTZH8inRxrWiBfb45JNGzwFCDwvUACgz0o11Z8fqmCsg=
+	t=1712150137; cv=none; b=eLAMmBw06ERAEVNKiKVEtJiSyx02yPV4UK/sYdsDLjcO2g3N++gzcxKeAqAu/GZYqEfGSFvgcZ9g7mbwiPrvuZIyAHwWSDxyA85hyS6pEpGL26KRD0WcmQ3YJtq3BfpYZo4uheL0Uv3eCywV9+iymHQBevOayg1NT1/tCXSmZkc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712150110; c=relaxed/simple;
-	bh=m8vRG88FNKwizdEjO/c/t64mIYd2qCldOAH8zF37jpU=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=NeLswsoQkJkoym8tBzz85uOU0OwAGFUuRfnSpk3ujHdH0cb20FEvsvvyov+qVGH1cgIS1nMN9txVYrwmgxDy3yGYzwBvVIUJ5Yh1G6+pcatKNn/XHaP3gGhXKcWFF+Ev0moRExQO7n9HgZnkOzgrS3H3/LxnWTFoPmeXx/MZOWM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=omnibond.com; spf=pass smtp.mailfrom=omnibond.com; dkim=pass (2048-bit key) header.d=omnibond-com.20230601.gappssmtp.com header.i=@omnibond-com.20230601.gappssmtp.com header.b=cqYY4M1g; arc=none smtp.client-ip=209.85.161.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=omnibond.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=omnibond.com
-Received: by mail-oo1-f51.google.com with SMTP id 006d021491bc7-5a51c063f99so3469303eaf.0
-        for <linux-kernel@vger.kernel.org>; Wed, 03 Apr 2024 06:15:08 -0700 (PDT)
+	s=arc-20240116; t=1712150137; c=relaxed/simple;
+	bh=99Sd3x5Xh1f02Tnql1T2bE/GVVfEXYhK1ySRwme2Zjk=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=CIx2xL8IurZzNFBHkZH7nCU0XgEcMLUauFWEQdk2+9aWHidlb9IuveAbZSyG6PlQVpMiCdU10iLDI0PxaXnO85+TkXiJ1mdA+fLwlxjVBAMmkggoVzbGeQTtpyM9h8cToNOteHim2bPaIDo6fTGS4r6JBijePlXTpBQ/F0PYZ18=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=SvCPfL53; arc=none smtp.client-ip=209.85.214.174
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f174.google.com with SMTP id d9443c01a7336-1e0878b76f3so7857475ad.0;
+        Wed, 03 Apr 2024 06:15:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=omnibond-com.20230601.gappssmtp.com; s=20230601; t=1712150107; x=1712754907; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=sPbrOyf+WH3LEFByBVjd+RN6Vyy+2vOeO98hIRaqQ9s=;
-        b=cqYY4M1g+b8WUZFExEXo/50OWYWU9KBmNSevCfHbEyA+vcxVnl8+oVxvBM1sCtBsbu
-         zKevR2dA69np57NkONLQcmPkt/D2Qk2Iis8pVs1xhuciVjiB1EQO29GnoTisTOYXi9ct
-         E4RoBSDG+kRRDugaDdCN18pNrFqFYVCqimMWM6dk6JkuPFn8N0IbrnTwDeWtaq/wAWxg
-         ftovQTLgAcZN4372gT2t/EV1eELtitRXYVz1SsEB66DH0ZiFxm2T2thd8Afl4jYWKx2I
-         3VTG7AGbhVACwqH1Y3A8x8r6+4nkGRcg9ipiHTwtqkiKo4AXJhv4A9hIdApLwRJcTXhy
-         cJJw==
+        d=gmail.com; s=20230601; t=1712150135; x=1712754935; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=vryS7oL+jDPlvXHR7J1pUsOMtwPuprIobWABdrxaKrA=;
+        b=SvCPfL53OeFmmMQw3kueZMNRaZ153pVDUthDgeqQ6RlOFJuoEGCErie4d7aq5be77F
+         FcFgUHE/z82o/JO+ocmmFt6Z4zAi80XHl4V2QQiQJvWP+lt+ufOqHb/iNPYkxiQPseVa
+         QGGunckiL/ksOo7j/6XdK1cBRksir7Hn+zpUFDcjS4t+GQCPEfi8ganiHAfi2nyF/3LT
+         zKR24ZOKvs02Yi4w8R6cc2xOpnh/3HPjeN9hHKeF9PEPNtdHH0mrZ7vSl4Ip8285es98
+         minxJBLQKpLinUeGjF5D8DnTONPhfvR4JJb/ZN/pcI7z/yAi/ypAaGWwHBZdmZy2XuIp
+         ZFuw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712150107; x=1712754907;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=sPbrOyf+WH3LEFByBVjd+RN6Vyy+2vOeO98hIRaqQ9s=;
-        b=MzzU6IdLnJkNMLvB/QYE0hJQO9PuZTcA8G2MZGXwYkwMbFiv1RJeAAHXUPxVYq8+M/
-         p/kF1vvnQ56nGshqHauxrDdBUSG5ZZO107uwDTUSfS2KjpjAdM+D0uxgEnrPbku9tOUr
-         yK7yPxVcvVcI6R7sinJ2gRp1kHceDw9Wm+51pgX2WzruyFdqrHfHirjeBbhLZ5jl/c+O
-         jDFAx6JLFKxh/LC8d3E46lVlG/KYcSuEyue2d8ff4GNW7RT8WDVmkNcUaG3nYyuW6DDw
-         iPtGUBOaf/F+dLlz3UXNW5S+Q3HC+MI/ZqR3oAlpMOOmgy77WrVl/O2ZDLLE2sboL/tp
-         UQBg==
-X-Forwarded-Encrypted: i=1; AJvYcCVQwovOiAColtPylBn/RT4HUPNrUvmAYi+AGCpw1PCs31V1l1ineGmDkRcBvn5WeiDfkAid8XD5PXO8HpbXPqKOmVlzrjT3JU/qRdOg
-X-Gm-Message-State: AOJu0YyaioWOXVCjVYyorMDT8NtHxd62GtjV0em5wbwfw0Y0SZozljt5
-	uT004e/47Adu+XeAnHG79wkP64X14XDBPxTdt/JOpH32+xISbT49F3/yHFmH/jW1X40FAGZlvSR
-	948VOa/zBBpNu0CLX3+dmFCe9as3L5d1SCxu+
-X-Google-Smtp-Source: AGHT+IHynG/6vnesdgrFbSespFgf+tjzJxeuEecAnZ9LoEzbZsyl/DJ98pbGh+3WDjfxscRbv5KPEGx2DICPSrmMYeg=
-X-Received: by 2002:a4a:dc98:0:b0:5a4:ae86:118f with SMTP id
- g24-20020a4adc98000000b005a4ae86118fmr11506801oou.8.1712150107554; Wed, 03
- Apr 2024 06:15:07 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1712150135; x=1712754935;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=vryS7oL+jDPlvXHR7J1pUsOMtwPuprIobWABdrxaKrA=;
+        b=addCamtdt+PB26oeNKqjhr/6ipU6OhfG76jRbMWb/83FcjOtNXlWbW2i9gkHIVJVY6
+         /HGnyhIqirmotofyNHgt3F1bqA4UlIGHesKiXaVjlTzjtIYMfcP86opeURjlcQOkRAWc
+         r1qxHBvcoXHsVxYGmOwZnmI08SYKYI9BQnqwLwEyhErMmdFPIqZpthcWBMDdK0Oo07E7
+         MWZ3O44VgkZEWC7g7ZqqBTZmHflvyspXrFRRqm0NKmRk1VgBp+PreVovq6qw6zz/y1qw
+         mphvR+RTXCWU1PI+XDm212zWBJMzCdjj8bzjTImoFV+jegz1l9EJbY3Sad8hj+grZwvW
+         QEHA==
+X-Forwarded-Encrypted: i=1; AJvYcCWpXTQkbqlW8kpEjuXnMW9pSdhYF7EM8du/uyBWrZZw0nAOQbfktjH/fOfuZWWTQvyGYU1/Qjwr6agvun8iPdZ2UJ16qM/bfUO3Qw==
+X-Gm-Message-State: AOJu0YyNz80Ye08GiXEJg6azlgHov6NLPbhqcJ4DAlbmzgZJbrco4c/n
+	DhMS5NJUMJfbJe1zQjVbDIPOZt54YxJbJc9WHJSB+8S5gXasDQP2t2n3PPO6
+X-Google-Smtp-Source: AGHT+IH/o/OdeDTGk0CkkreQTj2PkHzoSqNF4sSYyOvqPozKaQCJbacYUHOEK+/1WMkqnsr3tvWSdQ==
+X-Received: by 2002:a17:902:dacd:b0:1e2:6482:db0f with SMTP id q13-20020a170902dacd00b001e26482db0fmr3247603plx.29.1712150134970;
+        Wed, 03 Apr 2024 06:15:34 -0700 (PDT)
+Received: from rigel.home.arpa (194-223-186-215.tpgi.com.au. [194.223.186.215])
+        by smtp.gmail.com with ESMTPSA id e14-20020a170902784e00b001e010c1628fsm13417604pln.124.2024.04.03.06.15.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 03 Apr 2024 06:15:34 -0700 (PDT)
+From: Kent Gibson <warthog618@gmail.com>
+To: linux-kernel@vger.kernel.org,
+	linux-gpio@vger.kernel.org,
+	brgl@bgdev.pl,
+	linus.walleij@linaro.org
+Cc: Kent Gibson <warthog618@gmail.com>
+Subject: [PATCH 0/2] gpio: cdev: label sanitization fixes
+Date: Wed,  3 Apr 2024 21:15:16 +0800
+Message-Id: <20240403131518.61392-1-warthog618@gmail.com>
+X-Mailer: git-send-email 2.39.2
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240322-strncpy-fs-orangefs-dcache-c-v1-1-15d12debbf38@google.com>
- <20240401-redewendung-retten-132ff0ea272d@brauner>
-In-Reply-To: <20240401-redewendung-retten-132ff0ea272d@brauner>
-From: Mike Marshall <hubcap@omnibond.com>
-Date: Wed, 3 Apr 2024 09:14:56 -0400
-Message-ID: <CAOg9mSRa0PnFHSJAjOO=kjJKEG1_usREYO5QM+_Wt0VYsbVf8w@mail.gmail.com>
-Subject: Re: [PATCH] orangefs: cleanup uses of strncpy
-To: Christian Brauner <brauner@kernel.org>
-Cc: Martin Brandenburg <martin@omnibond.com>, Justin Stitt <justinstitt@google.com>, 
-	devel@lists.orangefs.org, linux-kernel@vger.kernel.org, 
-	linux-hardening@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>, 
-	Mike Marshall <hubcap@omnibond.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
-Hi...
+This series fixes a couple of bugs in the sanitization of labels
+being passed to irq.
 
-I b4'd this patch (I love b4) and applied it to 6.9.0-rc2
-and ran it through xfstests with no regressions, so please
-add a tested-by for hubcap@omnibond.com.
+Patch 1 fixes a missed path in the sanitization changes that can result
+in memory corruption.
 
-Thanks...
+Patch 2 fixes the case where userspace provides empty labels.
 
--Mike Marshall
+I've placed my Patch 1 before Bart's Patch 2 as it has to relocate
+make_irq_label() and free_irq_label(), while Bart's patch modifies
+them. This order keeps the patch sizes minimal and the attribution
+where it belongs.  Patch 2 has been very lightly modified to rebase it
+onto Patch 1, including extending it to cover the modified error
+return for the debounce_setup() case.
 
-On Mon, Apr 1, 2024 at 4:53=E2=80=AFAM Christian Brauner <brauner@kernel.or=
-g> wrote:
->
-> On Fri, 22 Mar 2024 21:41:18 +0000, Justin Stitt wrote:
-> > strncpy() is deprecated for use on NUL-terminated destination strings
-> > [1] and as such we should prefer more robust and less ambiguous string
-> > interfaces.
-> >
-> > There is some care taken to ensure these destination buffers are
-> > NUL-terminated by bounding the strncpy()'s by ORANGEFS_NAME_MAX - 1 or
-> > ORANGEFS_MAX_SERVER_ADDR_LEN - 1. Instead, we can use the new 2-argumen=
-t
-> > version of strscpy() to guarantee NUL-termination on the destination
-> > buffers while simplifying the code.
-> >
-> > [...]
->
-> If this needs to go separately from the vfs trees let me know.
->
-> ---
->
-> Applied to the vfs.misc branch of the vfs/vfs.git tree.
-> Patches in the vfs.misc branch should appear in linux-next soon.
->
-> Please report any outstanding bugs that were missed during review in a
-> new review to the original patch series allowing us to drop it.
->
-> It's encouraged to provide Acked-bys and Reviewed-bys even though the
-> patch has now been applied. If possible patch trailers will be updated.
->
-> Note that commit hashes shown below are subject to change due to rebase,
-> trailer updates or similar. If in doubt, please check the listed branch.
->
-> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/vfs/vfs.git
-> branch: vfs.misc
->
-> [1/1] orangefs: cleanup uses of strncpy
->       https://git.kernel.org/vfs/vfs/c/fc10fed37526
+Cheers,
+Kent.
+
+Bartosz Golaszewski (1):
+  gpio: cdev: check for NULL labels when sanitizing them for irqs
+
+Kent Gibson (1):
+  gpio: cdev: fix missed label sanitizing in debounce_setup()
+
+ drivers/gpio/gpiolib-cdev.c | 48 ++++++++++++++++++++++++-------------
+ 1 file changed, 32 insertions(+), 16 deletions(-)
+
+
+base-commit: 782f4e47ffc19622bf80b3c0cf9cadd2b0b9a644
+-- 
+2.39.2
+
 
