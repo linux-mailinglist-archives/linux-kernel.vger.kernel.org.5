@@ -1,55 +1,58 @@
-Return-Path: <linux-kernel+bounces-130338-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-130340-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2B8E28976F2
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 19:36:45 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8FE00897718
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 19:43:04 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5CA6B1C2157D
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 17:36:44 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3D5AFB31E72
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 17:37:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2F0C816193C;
-	Wed,  3 Apr 2024 17:19:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3FB3B154451;
+	Wed,  3 Apr 2024 17:19:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Rp/Ot69v"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="BlQixzev"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 65FC6161925;
-	Wed,  3 Apr 2024 17:19:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7E02316ABC3;
+	Wed,  3 Apr 2024 17:19:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712164775; cv=none; b=Fqej9b6j+OVfjph9185kqRG7npJopRVfk6b0yJBGW4RFU4z+OAaG6pPqUihe6Yc1wrhGmlyH8Hnf+u2vHWNMawaBIi5mXqZhDh4XPw+2DU/MuSzq0QsxNFQ00sfkuqqZ7UONEoZ9GTaX+wOMFYubB9od014e0TeBnM6H3C/uwOA=
+	t=1712164779; cv=none; b=DKkkkGdLUqakfqrfyRVbv6lVUMdXU1GypoWfXL6gtjy67Fvhql3xT15oPvZpGcRwKVGpEfoStrCK3FGUmaRD/B7InNbxUb8PfWddDAJZxLyAG2RJ4CjznWhy5FvK32akyb5MTwhYAJqcpjcp1r/pHAFUFxlsEXg15LwfFTAR4Ro=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712164775; c=relaxed/simple;
-	bh=n+x5StEYqh8YD8dXWMUWdPHZZcntEZPt79LHRQAtZi0=;
+	s=arc-20240116; t=1712164779; c=relaxed/simple;
+	bh=3R/oYCngnfBm8uj5KvKZdVhP62XlJbJ3bOKSaBb7XQ0=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=fpzhhEeiA34R1OsW+FMQVI1fHziGiGSLovQMxr4pd5csnYZWGmtjOjJauibxu9XjoP4mzDmW5F7spDyHYcS/gJ+tiE8kAycVVDW52jIEbizMLTJJtO5rsyAEtke/RntjAT+Q2N6tf6fvDn2VIfCi37xiyNHI5lg5FsgS0CMlXxc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Rp/Ot69v; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8F02DC433C7;
-	Wed,  3 Apr 2024 17:19:34 +0000 (UTC)
+	 MIME-Version; b=Kqx6f8EdLd0FOoSusxJSL2wfuEkEmZ4xT3TUYRN34hFX5Hfw+BxSTgE6L2kp8tlVeKWxhMo9b5YR9F0OHUCzCST4xIsbzH4ohrROAF2yI+kM/TrM0d9weJmM8Au1CH/NdkHwGb0UFPrYbcwCvkGV3eDHf63VRB5HyGzzNIZ75TU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=BlQixzev; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 01C79C433F1;
+	Wed,  3 Apr 2024 17:19:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712164775;
-	bh=n+x5StEYqh8YD8dXWMUWdPHZZcntEZPt79LHRQAtZi0=;
+	s=k20201202; t=1712164779;
+	bh=3R/oYCngnfBm8uj5KvKZdVhP62XlJbJ3bOKSaBb7XQ0=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=Rp/Ot69vv2/90JJPfvjfTxPw2bnCit8dnViSKwUzL0eXcNbD8cUMhR33/n1ZsDp0e
-	 zWtxuwM1wHvlSM0tD6xHeyPdzNVLn/R2rkE7sZAPEMGXZI/Ycp+fq82QrXG0pO+7E8
-	 p90BFf7Z9mRVXicjv2eDgXBvbuV3sTQwljcn37AQNDpHY6a/JebJuST1QNp3aN6Jjk
-	 803s23a/EO+kl1/e9467cLafcz8OhP20DrmyVbukLRk5YAEER1F/0PQzpU6a2JF20c
-	 KqR5gpAzAvHYSykoF3eQLdhrNj/dq3Lcdu4XSgHvZeN6jWZdFai96mCYUsbWPPRcgj
-	 +F/KKIJmb59+A==
+	b=BlQixzevE7Ty6J8NjQKx1cMg5eZsKe7PJCJ8ULBosh/52mWwmZD2nfhMP/Nn2GQi3
+	 7WNxCi+guJwElUOcGXJx6UtXTfliUB1f1CKfLFiLKsJe05bU7+h/wXbd4Wm58MO86r
+	 L+TN3AuAJMSMHm5VMgV9fbRoy2fZq0bCGtntJD9Jnuv7GXbKKIS/XWW3av7Po0Wv/2
+	 vND7aktX3m++FeSdyIhLy9mawI4/mc0dQE4uMSslu8wZkrDhkhNbd8qIEcijGDoVLH
+	 mtnb6VUzA4pMh7iTCzDzRr7xHmrw/pZD2Dn+mRl8wLa3f1FahBY5FH9/GsER36lRfg
+	 f9H30JdybstQw==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Jens Axboe <axboe@kernel.dk>,
-	syzbot+f8e9a371388aa62ecab4@syzkaller.appspotmail.com,
+Cc: Roman Smirnov <r.smirnov@omp.ru>,
+	Sergey Shtylyov <s.shtylyov@omp.ru>,
+	Helge Deller <deller@gmx.de>,
 	Sasha Levin <sashal@kernel.org>,
-	io-uring@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.1 13/15] io_uring: clear opcode specific data for an early failure
-Date: Wed,  3 Apr 2024 13:18:57 -0400
-Message-ID: <20240403171909.345570-13-sashal@kernel.org>
+	daniel@ffwll.ch,
+	linux-fbdev@vger.kernel.org,
+	dri-devel@lists.freedesktop.org
+Subject: [PATCH AUTOSEL 6.1 15/15] fbmon: prevent division by zero in fb_videomode_from_videomode()
+Date: Wed,  3 Apr 2024 13:18:59 -0400
+Message-ID: <20240403171909.345570-15-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240403171909.345570-1-sashal@kernel.org>
 References: <20240403171909.345570-1-sashal@kernel.org>
@@ -64,103 +67,49 @@ X-Patchwork-Hint: Ignore
 X-stable-base: Linux 6.1.84
 Content-Transfer-Encoding: 8bit
 
-From: Jens Axboe <axboe@kernel.dk>
+From: Roman Smirnov <r.smirnov@omp.ru>
 
-[ Upstream commit e21e1c45e1fe2e31732f40256b49c04e76a17cee ]
+[ Upstream commit c2d953276b8b27459baed1277a4fdd5dd9bd4126 ]
 
-If failure happens before the opcode prep handler is called, ensure that
-we clear the opcode specific area of the request, which holds data
-specific to that request type. This prevents errors where opcode
-handlers either don't get to clear per-request private data since prep
-isn't even called.
+The expression htotal * vtotal can have a zero value on
+overflow. It is necessary to prevent division by zero like in
+fb_var_to_videomode().
 
-Reported-and-tested-by: syzbot+f8e9a371388aa62ecab4@syzkaller.appspotmail.com
-Signed-off-by: Jens Axboe <axboe@kernel.dk>
+Found by Linux Verification Center (linuxtesting.org) with Svace.
+
+Signed-off-by: Roman Smirnov <r.smirnov@omp.ru>
+Reviewed-by: Sergey Shtylyov <s.shtylyov@omp.ru>
+Signed-off-by: Helge Deller <deller@gmx.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- io_uring/io_uring.c | 25 ++++++++++++++++---------
- 1 file changed, 16 insertions(+), 9 deletions(-)
+ drivers/video/fbdev/core/fbmon.c | 7 ++++---
+ 1 file changed, 4 insertions(+), 3 deletions(-)
 
-diff --git a/io_uring/io_uring.c b/io_uring/io_uring.c
-index 35894955b4549..493b5708c662b 100644
---- a/io_uring/io_uring.c
-+++ b/io_uring/io_uring.c
-@@ -1992,6 +1992,13 @@ static void io_init_req_drain(struct io_kiocb *req)
- 	}
- }
+diff --git a/drivers/video/fbdev/core/fbmon.c b/drivers/video/fbdev/core/fbmon.c
+index b0e690f41025a..9ca99da3a56a0 100644
+--- a/drivers/video/fbdev/core/fbmon.c
++++ b/drivers/video/fbdev/core/fbmon.c
+@@ -1311,7 +1311,7 @@ int fb_get_mode(int flags, u32 val, struct fb_var_screeninfo *var, struct fb_inf
+ int fb_videomode_from_videomode(const struct videomode *vm,
+ 				struct fb_videomode *fbmode)
+ {
+-	unsigned int htotal, vtotal;
++	unsigned int htotal, vtotal, total;
  
-+static __cold int io_init_fail_req(struct io_kiocb *req, int err)
-+{
-+	/* ensure per-opcode data is cleared if we fail before prep */
-+	memset(&req->cmd.data, 0, sizeof(req->cmd.data));
-+	return err;
-+}
-+
- static int io_init_req(struct io_ring_ctx *ctx, struct io_kiocb *req,
- 		       const struct io_uring_sqe *sqe)
- 	__must_hold(&ctx->uring_lock)
-@@ -2012,29 +2019,29 @@ static int io_init_req(struct io_ring_ctx *ctx, struct io_kiocb *req,
- 
- 	if (unlikely(opcode >= IORING_OP_LAST)) {
- 		req->opcode = 0;
--		return -EINVAL;
-+		return io_init_fail_req(req, -EINVAL);
- 	}
- 	def = &io_op_defs[opcode];
- 	if (unlikely(sqe_flags & ~SQE_COMMON_FLAGS)) {
- 		/* enforce forwards compatibility on users */
- 		if (sqe_flags & ~SQE_VALID_FLAGS)
--			return -EINVAL;
-+			return io_init_fail_req(req, -EINVAL);
- 		if (sqe_flags & IOSQE_BUFFER_SELECT) {
- 			if (!def->buffer_select)
--				return -EOPNOTSUPP;
-+				return io_init_fail_req(req, -EOPNOTSUPP);
- 			req->buf_index = READ_ONCE(sqe->buf_group);
- 		}
- 		if (sqe_flags & IOSQE_CQE_SKIP_SUCCESS)
- 			ctx->drain_disabled = true;
- 		if (sqe_flags & IOSQE_IO_DRAIN) {
- 			if (ctx->drain_disabled)
--				return -EOPNOTSUPP;
-+				return io_init_fail_req(req, -EOPNOTSUPP);
- 			io_init_req_drain(req);
- 		}
- 	}
- 	if (unlikely(ctx->restricted || ctx->drain_active || ctx->drain_next)) {
- 		if (ctx->restricted && !io_check_restriction(ctx, req, sqe_flags))
--			return -EACCES;
-+			return io_init_fail_req(req, -EACCES);
- 		/* knock it to the slow queue path, will be drained there */
- 		if (ctx->drain_active)
- 			req->flags |= REQ_F_FORCE_ASYNC;
-@@ -2047,9 +2054,9 @@ static int io_init_req(struct io_ring_ctx *ctx, struct io_kiocb *req,
- 	}
- 
- 	if (!def->ioprio && sqe->ioprio)
--		return -EINVAL;
-+		return io_init_fail_req(req, -EINVAL);
- 	if (!def->iopoll && (ctx->flags & IORING_SETUP_IOPOLL))
--		return -EINVAL;
-+		return io_init_fail_req(req, -EINVAL);
- 
- 	if (def->needs_file) {
- 		struct io_submit_state *state = &ctx->submit_state;
-@@ -2073,12 +2080,12 @@ static int io_init_req(struct io_ring_ctx *ctx, struct io_kiocb *req,
- 
- 		req->creds = xa_load(&ctx->personalities, personality);
- 		if (!req->creds)
--			return -EINVAL;
-+			return io_init_fail_req(req, -EINVAL);
- 		get_cred(req->creds);
- 		ret = security_uring_override_creds(req->creds);
- 		if (ret) {
- 			put_cred(req->creds);
--			return ret;
-+			return io_init_fail_req(req, ret);
- 		}
- 		req->flags |= REQ_F_CREDS;
- 	}
+ 	fbmode->xres = vm->hactive;
+ 	fbmode->left_margin = vm->hback_porch;
+@@ -1344,8 +1344,9 @@ int fb_videomode_from_videomode(const struct videomode *vm,
+ 	vtotal = vm->vactive + vm->vfront_porch + vm->vback_porch +
+ 		 vm->vsync_len;
+ 	/* prevent division by zero */
+-	if (htotal && vtotal) {
+-		fbmode->refresh = vm->pixelclock / (htotal * vtotal);
++	total = htotal * vtotal;
++	if (total) {
++		fbmode->refresh = vm->pixelclock / total;
+ 	/* a mode must have htotal and vtotal != 0 or it is invalid */
+ 	} else {
+ 		fbmode->refresh = 0;
 -- 
 2.43.0
 
