@@ -1,59 +1,60 @@
-Return-Path: <linux-kernel+bounces-129590-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-129592-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 237BB896CE0
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 12:43:43 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8405A896CE7
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 12:44:15 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D0C8028B5C5
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 10:43:41 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id F29E81F2F3A1
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 10:44:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 43A43143889;
-	Wed,  3 Apr 2024 10:42:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 489CF146D54;
+	Wed,  3 Apr 2024 10:42:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="pMqWthw/"
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="mvLN6ALA"
 Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E622B143874;
-	Wed,  3 Apr 2024 10:42:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3428A146A66;
+	Wed,  3 Apr 2024 10:42:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712140962; cv=none; b=aF0UaTPT6V7qDHAx6a3P5C8l+LXHzxp2d9LdQH7mOcRZIl7zjVQcp8AppiBRW+pXDnhqfu95D7JnFCyrGBPbVGfD/e0r6lyo+4Ij1CBxnqmZKwZ7JFJL/++Knm9nNbG883syqIf5kkQEWTAgP+uEuTeqf7eyqWk52gqAYao0rRU=
+	t=1712140968; cv=none; b=MLWTDslNEuBnXviHr2iYq5G2+FM8gINMmRC5oa6rufDP86fTkpe0nRsbgvPykLIVAns/d9Ef4a/N+i1Sej+JvvP5q9r7BVI9KMViPqTAoYqU1f0s2VsJaCIVnFox3YPKWHHDszlTkiZ7fGOoRb6nFF9/kHhaAymQfLfAT4w4p3k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712140962; c=relaxed/simple;
-	bh=e4j6cfrHaaHCrFec1tqnvuZ8iYnYtRh9G16FJOoCfS0=;
-	h=From:To:Subject:Date:Message-ID:MIME-Version:Content-Type; b=J+1dZzh5guf2oDaUAcsTXVMSGePUbmFaFN002uw0Zu9vQ/DVznZ4SRzELqKo/uaBAFhOKSOOqWy2fhvI42PiyiwUD14JJB8Zh/Fky5GZjTUE10w25YQ5WxBT00KTPcolGzm6HjwycOL8pKH7G0tNWWoa3HrqAaxcYO8xOUAeBP8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=pMqWthw/; arc=none smtp.client-ip=205.220.168.131
+	s=arc-20240116; t=1712140968; c=relaxed/simple;
+	bh=9vXJ4fMeH0AJi/6pIEb+FRuf/sH04bxlgCiMuQgM2bg=;
+	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=ceIE9/XcqBGXRZI1/ZWFK49oPGrqFvh8I0T8g/P1YxCH3I0XqtHdvI2P5otLLMVGFv9PNIKmvuZ37gkj3CT2MnF79hEREShcOBV4uj3XkxKGfRIjEYtjzV1a9RO9ndrktkMB6YNKlKR02dRDNaFwcguA74EKslWMovS9M5yY6Ek=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=mvLN6ALA; arc=none smtp.client-ip=205.220.168.131
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279865.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 43386MEr015094;
-	Wed, 3 Apr 2024 10:42:37 GMT
+Received: from pps.filterd (m0279864.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 4338ZHfd024056;
+	Wed, 3 Apr 2024 10:42:41 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	from:to:subject:date:message-id:mime-version
-	:content-transfer-encoding:content-type; s=qcppdkim1; bh=JpieIyE
-	kDxsw3072e1J13lEaIa/3khLxcjiUmz1Ptjg=; b=pMqWthw/72gLoncYjf2zHhj
-	2V5S/GdLrWv8EKCL/Z5IgH04JVKmdeSVVkhhqXFAbDIYaeX3FxbfWQGuxnAlHux4
-	gV69dFWOMT/6TdDTuKw7fX4qmLPYc6ftjFTsRNFrABwYPcWOU9nkIoZs2IwJemos
-	aYtw8zg7I7Tt0Cb0Qm7ffKVdaTBGWslPfZP7NEJZqWwj3/uXqAAghGtg/NMcrEAf
-	V+qWz5C3xhd847dpLoFiXrv1euPc4elhSFhPUpjqcRB5Eo7Ut1p5f2fGS1Svm8R/
-	EBLui2i1pVn3tI355qYpl5OnUNmdYwyQNLDEwtkkZClgQ2pBQ7agU58S0F0QJlg=
-	=
-Received: from nasanppmta01.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3x93a5gbhg-1
+	from:to:subject:date:message-id:in-reply-to:references
+	:mime-version:content-transfer-encoding:content-type; s=
+	qcppdkim1; bh=jbvF0MCF2C2Mmz2NYz7f1XlDBB86x7DW2vnn7XlwIfk=; b=mv
+	LN6ALAVMh1lw7kRXMlXELF9vA6862eV13uiOSpgbPioejgv7zGoyISGpPp7RndLb
+	Bzhz4MTyJLxl4+6+lE7XIbRHUwLkHTz2xbM5ajbyuX+0YKbzs3cYqyKMeLCT17o9
+	qKwLKQNdgtm4UgYe324w0y4bspl/AAzgIjCo1yeoK3V08kb6BIVYI9EVMlGzOIHC
+	MGtCa+JX0xq8w5Qrseyj0NfnSMV+guqvgxA2LXxHu1SHkngjlOExgtEHrKuRgIAp
+	oKAvsWnPe9ACEOHUxrbM7oGqqzX/RA3pBUdrmEOZxMHqbox4H5SIMcW0hwrZ3Ayb
+	H02kn9J9IIVgWbusYohQ==
+Received: from nasanppmta04.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3x9377rb9r-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 03 Apr 2024 10:42:36 +0000 (GMT)
+	Wed, 03 Apr 2024 10:42:41 +0000 (GMT)
 Received: from nasanex01b.na.qualcomm.com (nasanex01b.na.qualcomm.com [10.46.141.250])
-	by NASANPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 433Agapm026194
+	by NASANPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 433AgeYo027472
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 3 Apr 2024 10:42:36 GMT
+	Wed, 3 Apr 2024 10:42:40 GMT
 Received: from hu-varada-blr.qualcomm.com (10.80.80.8) by
  nasanex01b.na.qualcomm.com (10.46.141.250) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1544.4; Wed, 3 Apr 2024 03:42:31 -0700
+ 15.2.1544.4; Wed, 3 Apr 2024 03:42:36 -0700
 From: Varadarajan Narayanan <quic_varada@quicinc.com>
 To: <andersson@kernel.org>, <konrad.dybcio@linaro.org>,
         <mturquette@baylibre.com>, <sboyd@kernel.org>, <robh@kernel.org>,
@@ -62,10 +63,12 @@ To: <andersson@kernel.org>, <konrad.dybcio@linaro.org>,
         <quic_anusha@quicinc.com>, <linux-arm-msm@vger.kernel.org>,
         <linux-clk@vger.kernel.org>, <devicetree@vger.kernel.org>,
         <linux-kernel@vger.kernel.org>, <linux-pm@vger.kernel.org>
-Subject: [PATCH v7 0/5] Add interconnect driver for IPQ9574 SoC
-Date: Wed, 3 Apr 2024 16:12:15 +0530
-Message-ID: <20240403104220.1092431-1-quic_varada@quicinc.com>
+Subject: [PATCH v7 1/5] dt-bindings: interconnect: Add Qualcomm IPQ9574 support
+Date: Wed, 3 Apr 2024 16:12:16 +0530
+Message-ID: <20240403104220.1092431-2-quic_varada@quicinc.com>
 X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20240403104220.1092431-1-quic_varada@quicinc.com>
+References: <20240403104220.1092431-1-quic_varada@quicinc.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -78,90 +81,152 @@ X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
  nasanex01b.na.qualcomm.com (10.46.141.250)
 X-QCInternal: smtphost
 X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: wQW29ViqT1UpRccDJglcqQ5GhGrHEc1u
-X-Proofpoint-ORIG-GUID: wQW29ViqT1UpRccDJglcqQ5GhGrHEc1u
+X-Proofpoint-GUID: g3AfaEDS0rL7jAjVcPdQ0zLAKpPoxMts
+X-Proofpoint-ORIG-GUID: g3AfaEDS0rL7jAjVcPdQ0zLAKpPoxMts
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
  definitions=2024-04-03_09,2024-04-01_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 malwarescore=0
- bulkscore=0 priorityscore=1501 lowpriorityscore=0 mlxscore=0
- impostorscore=0 phishscore=0 clxscore=1011 suspectscore=0 mlxlogscore=980
- spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0 bulkscore=0
+ clxscore=1015 suspectscore=0 mlxlogscore=999 adultscore=0
+ priorityscore=1501 spamscore=0 mlxscore=0 lowpriorityscore=0 phishscore=0
+ malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
  engine=8.19.0-2403210001 definitions=main-2404030074
 
-MSM platforms manage NoC related clocks and scaling from RPM.
-However, in IPQ SoCs, RPM is not involved in managing NoC
-related clocks and there is no NoC scaling.
+Add interconnect-cells to clock provider so that it can be
+used as icc provider.
 
-However, there is a requirement to enable some NoC interface
-clocks for the accessing the peripherals present in the
-system. Hence add a minimalistic interconnect driver that
-establishes a path from the processor/memory to those peripherals
-and vice versa.
+Add master/slave ids for Qualcomm IPQ9574 Network-On-Chip
+interfaces. This will be used by the gcc-ipq9574 driver
+that will for providing interconnect services using the
+icc-clk framework.
 
+Signed-off-by: Varadarajan Narayanan <quic_varada@quicinc.com>
 ---
-v7:	Fix macro names in dt-bindings header
-	Do clock get in icc driver
-
-v6:	Removed 'Reviewed-by: Krzysztof' from dt-bindings patch
-	Remove clock get from ICC driver as suggested by Stephen Boyd
-	so that the actual peripheral can do the clock get
-	first_id -> icc_first_node_id
-	Remove tristate from INTERCONNECT_CLK
-v5:
-	Split gcc-ipq9574.c and common.c changes into separate patches
-	Introduce devm_icc_clk_register
-	Fix error handling
-v4:
-gcc-ipq9574.c
-	Use clk_hw instead of indices
-common.c
-	Do icc register in qcom_cc_probe() call stream
-common.h
-	Add icc clock info to qcom_cc_desc structure
+v7:
+Fix macro names to be consistent with other bindings
+v6:
+Removed Reviewed-by: Krzysztof Kozlowski
+Redefine the bindings such that driver and DT can share them
 
 v3:
+Squash Documentation/ and include/ changes into same patch
+
 qcom,ipq9574.h
-	Move 'first id' define to clock driver
-gcc-ipq9574.c:
-	Use indexed identifiers here to avoid confusion
-	Fix error messages and move code to common.c as it can be
-	shared with future SoCs
+	Move 'first id' to clock driver
 
-v2:
-qcom,ipq9574.h
-	Fix license identifier
-	Rename macros
-qcom,ipq9574-gcc.yaml
-	Include interconnect-cells
-gcc-ipq9574.c
-	Update commit log
-	Remove IS_ENABLED(CONFIG_INTERCONNECT) and auto select it from Kconfig
-ipq9574.dtsi
-	Moved to separate patch
-	Include interconnect-cells to clock controller node
-drivers/clk/qcom/Kconfig:
-	Auto select CONFIG_INTERCONNECT & CONFIG_INTERCONNECT_CLK
-
-Varadarajan Narayanan (5):
-  dt-bindings: interconnect: Add Qualcomm IPQ9574 support
-  interconnect: icc-clk: Add devm_icc_clk_register
-  clk: qcom: common: Add interconnect clocks support
-  clk: qcom: ipq9574: Use icc-clk for enabling NoC related clocks
-  arm64: dts: qcom: ipq9574: Add icc provider ability to gcc
-
+---
  .../bindings/clock/qcom,ipq9574-gcc.yaml      |  3 +
- arch/arm64/boot/dts/qcom/ipq9574.dtsi         |  2 +
- drivers/clk/qcom/Kconfig                      |  2 +
- drivers/clk/qcom/common.c                     | 31 ++++++-
- drivers/clk/qcom/common.h                     |  3 +
- drivers/clk/qcom/gcc-ipq9574.c                | 30 +++++++
- drivers/interconnect/icc-clk.c                | 18 ++++
  .../dt-bindings/interconnect/qcom,ipq9574.h   | 87 +++++++++++++++++++
- include/linux/interconnect-clk.h              |  2 +
- 9 files changed, 177 insertions(+), 1 deletion(-)
+ 2 files changed, 90 insertions(+)
  create mode 100644 include/dt-bindings/interconnect/qcom,ipq9574.h
 
+diff --git a/Documentation/devicetree/bindings/clock/qcom,ipq9574-gcc.yaml b/Documentation/devicetree/bindings/clock/qcom,ipq9574-gcc.yaml
+index 944a0ea79cd6..824781cbdf34 100644
+--- a/Documentation/devicetree/bindings/clock/qcom,ipq9574-gcc.yaml
++++ b/Documentation/devicetree/bindings/clock/qcom,ipq9574-gcc.yaml
+@@ -33,6 +33,9 @@ properties:
+       - description: PCIE30 PHY3 pipe clock source
+       - description: USB3 PHY pipe clock source
+ 
++  '#interconnect-cells':
++    const: 1
++
+ required:
+   - compatible
+   - clocks
+diff --git a/include/dt-bindings/interconnect/qcom,ipq9574.h b/include/dt-bindings/interconnect/qcom,ipq9574.h
+new file mode 100644
+index 000000000000..0b076b0cf880
+--- /dev/null
++++ b/include/dt-bindings/interconnect/qcom,ipq9574.h
+@@ -0,0 +1,87 @@
++/* SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause) */
++#ifndef INTERCONNECT_QCOM_IPQ9574_H
++#define INTERCONNECT_QCOM_IPQ9574_H
++
++#define ICC_ANOC_PCIE0		0
++#define ICC_SNOC_PCIE0		1
++#define ICC_ANOC_PCIE1		2
++#define ICC_SNOC_PCIE1		3
++#define ICC_ANOC_PCIE2		4
++#define ICC_SNOC_PCIE2		5
++#define ICC_ANOC_PCIE3		6
++#define ICC_SNOC_PCIE3		7
++#define ICC_SNOC_USB		8
++#define ICC_ANOC_USB_AXI	9
++#define ICC_NSSNOC_NSSCC	10
++#define ICC_NSSNOC_SNOC_0	11
++#define ICC_NSSNOC_SNOC_1	12
++#define ICC_NSSNOC_PCNOC_1	13
++#define ICC_NSSNOC_QOSGEN_REF	14
++#define ICC_NSSNOC_TIMEOUT_REF	15
++#define ICC_NSSNOC_XO_DCD	16
++#define ICC_NSSNOC_ATB		17
++#define ICC_MEM_NOC_NSSNOC	18
++#define ICC_NSSNOC_MEMNOC	19
++#define ICC_NSSNOC_MEM_NOC_1	20
++
++#define ICC_NSSNOC_PPE		0
++#define ICC_NSSNOC_PPE_CFG	1
++#define ICC_NSSNOC_NSS_CSR	2
++#define ICC_NSSNOC_IMEM_QSB	3
++#define ICC_NSSNOC_IMEM_AHB	4
++
++#define MASTER_ANOC_PCIE0		(ICC_ANOC_PCIE0 * 2)
++#define SLAVE_ANOC_PCIE0		((ICC_ANOC_PCIE0 * 2) + 1)
++#define MASTER_SNOC_PCIE0		(ICC_SNOC_PCIE0 * 2)
++#define SLAVE_SNOC_PCIE0		((ICC_SNOC_PCIE0 * 2) + 1)
++#define MASTER_ANOC_PCIE1		(ICC_ANOC_PCIE1 * 2)
++#define SLAVE_ANOC_PCIE1		((ICC_ANOC_PCIE1 * 2) + 1)
++#define MASTER_SNOC_PCIE1		(ICC_SNOC_PCIE1 * 2)
++#define SLAVE_SNOC_PCIE1		((ICC_SNOC_PCIE1 * 2) + 1)
++#define MASTER_ANOC_PCIE2		(ICC_ANOC_PCIE2 * 2)
++#define SLAVE_ANOC_PCIE2		((ICC_ANOC_PCIE2 * 2) + 1)
++#define MASTER_SNOC_PCIE2		(ICC_SNOC_PCIE2 * 2)
++#define SLAVE_SNOC_PCIE2		((ICC_SNOC_PCIE2 * 2) + 1)
++#define MASTER_ANOC_PCIE3		(ICC_ANOC_PCIE3 * 2)
++#define SLAVE_ANOC_PCIE3		((ICC_ANOC_PCIE3 * 2) + 1)
++#define MASTER_SNOC_PCIE3		(ICC_SNOC_PCIE3 * 2)
++#define SLAVE_SNOC_PCIE3		((ICC_SNOC_PCIE3 * 2) + 1)
++#define MASTER_USB			(ICC_USB * 2)
++#define SLAVE_USB			((ICC_USB * 2) + 1)
++#define MASTER_USB_AXI			(ICC_USB_AXI * 2)
++#define SLAVE_USB_AXI			((ICC_USB_AXI * 2) + 1)
++#define MASTER_NSSNOC_NSSCC		(ICC_NSSNOC_NSSCC * 2)
++#define SLAVE_NSSNOC_NSSCC		((ICC_NSSNOC_NSSCC * 2) + 1)
++#define MASTER_NSSNOC_SNOC_0		(ICC_NSSNOC_SNOC_0 * 2)
++#define SLAVE_NSSNOC_SNOC_0		((ICC_NSSNOC_SNOC_0 * 2) + 1)
++#define MASTER_NSSNOC_SNOC_1		(ICC_NSSNOC_SNOC_1 * 2)
++#define SLAVE_NSSNOC_SNOC_1		((ICC_NSSNOC_SNOC_1 * 2) + 1)
++#define MASTER_NSSNOC_PCNOC_1		(ICC_NSSNOC_PCNOC_1 * 2)
++#define SLAVE_NSSNOC_PCNOC_1		((ICC_NSSNOC_PCNOC_1 * 2) + 1)
++#define MASTER_NSSNOC_QOSGEN_REF	(ICC_NSSNOC_QOSGEN_REF * 2)
++#define SLAVE_NSSNOC_QOSGEN_REF		((ICC_NSSNOC_QOSGEN_REF * 2) + 1)
++#define MASTER_NSSNOC_TIMEOUT_REF	(ICC_NSSNOC_TIMEOUT_REF * 2)
++#define SLAVE_NSSNOC_TIMEOUT_REF	((ICC_NSSNOC_TIMEOUT_REF * 2) + 1)
++#define MASTER_NSSNOC_XO_DCD		(ICC_NSSNOC_XO_DCD * 2)
++#define SLAVE_NSSNOC_XO_DCD		((ICC_NSSNOC_XO_DCD * 2) + 1)
++#define MASTER_NSSNOC_ATB		(ICC_NSSNOC_ATB * 2)
++#define SLAVE_NSSNOC_ATB		((ICC_NSSNOC_ATB * 2) + 1)
++#define MASTER_MEM_NOC_NSSNOC		(ICC_MEM_NOC_NSSNOC * 2)
++#define SLAVE_MEM_NOC_NSSNOC		((ICC_MEM_NOC_NSSNOC * 2) + 1)
++#define MASTER_NSSNOC_MEMNOC		(ICC_NSSNOC_MEMNOC * 2)
++#define SLAVE_NSSNOC_MEMNOC		((ICC_NSSNOC_MEMNOC * 2) + 1)
++#define MASTER_NSSNOC_MEM_NOC_1		(ICC_NSSNOC_MEM_NOC_1 * 2)
++#define SLAVE_NSSNOC_MEM_NOC_1		((ICC_NSSNOC_MEM_NOC_1 * 2) + 1)
++
++#define MASTER_NSSNOC_PPE		(ICC_NSSNOC_PPE * 2)
++#define SLAVE_NSSNOC_PPE		((ICC_NSSNOC_PPE * 2) + 1)
++#define MASTER_NSSNOC_PPE_CFG		(ICC_NSSNOC_PPE_CFG * 2)
++#define SLAVE_NSSNOC_PPE_CFG		((ICC_NSSNOC_PPE_CFG * 2) + 1)
++#define MASTER_NSSNOC_NSS_CSR		(ICC_NSSNOC_NSS_CSR * 2)
++#define SLAVE_NSSNOC_NSS_CSR		((ICC_NSSNOC_NSS_CSR * 2) + 1)
++#define MASTER_NSSNOC_IMEM_QSB		(ICC_NSSNOC_IMEM_QSB * 2)
++#define SLAVE_NSSNOC_IMEM_QSB		((ICC_NSSNOC_IMEM_QSB * 2) + 1)
++#define MASTER_NSSNOC_IMEM_AHB		(ICC_NSSNOC_IMEM_AHB * 2)
++#define SLAVE_NSSNOC_IMEM_AHB		((ICC_NSSNOC_IMEM_AHB * 2) + 1)
++
++#endif /* INTERCONNECT_QCOM_IPQ9574_H */
 -- 
 2.34.1
 
