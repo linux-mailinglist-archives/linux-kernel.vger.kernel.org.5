@@ -1,60 +1,61 @@
-Return-Path: <linux-kernel+bounces-129300-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-129301-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0704F896891
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 10:28:11 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id BE14F896856
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 10:21:55 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9C7C8B2B8C9
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 08:21:39 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 78226288E31
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 08:21:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E31B013E8B8;
-	Wed,  3 Apr 2024 08:10:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 75EA113F42E;
+	Wed,  3 Apr 2024 08:11:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="NJRQk4h6"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="dieCWAWH"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 288FE13E8AB
-	for <linux-kernel@vger.kernel.org>; Wed,  3 Apr 2024 08:10:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BB05413F425;
+	Wed,  3 Apr 2024 08:11:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712131858; cv=none; b=Eui4NkO8kh5T7qS4iOgnSyeFZnf3+/i04uKzglexSWmVMqMTNe3q/sSJzJU49C17M3yfbaLxhqGx1+C8T9botyBsgSpuCDLiZjwuTATtn57m2ZaE6uu7ZYrWwi06E6pdGwL9P9HXugdOVQFWe8mDDsudJyHdgcxw2t2I5Pu9TBQ=
+	t=1712131865; cv=none; b=Lknr5SAy5IBDZYaz7k3mhYeGWqBdz4uP9wTv1RKQBHYYoU1tPbN3KYY7hK9f7+RTJM6ImZp7cwOIldz2WXDmnAn2ZOkx6geyE5k8qU2AtH55HeKtrg3wPMtWDnaT6rpzVoljj8qAjWx1aluyUQKWKcYNSLCd7dYRKU3/INHwgd4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712131858; c=relaxed/simple;
-	bh=SG0i7m/Qv+Wgr/oIlICWhiX3c3WYeQZoUHuUuYHJ3Mg=;
+	s=arc-20240116; t=1712131865; c=relaxed/simple;
+	bh=OaBdwzPyJFIVi5jKFEkNH3EGbx1qZe7R5hLgRTGjY10=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=PA3R2gdS+CkRohezoq91eSXg0SwWr1Didbx89U9Px43Xt06o+eVMls/+KSeYMXF8pHFDiNVE+L3AeFINiPOCmAs53G0CSljfhegyF+9YVdhqcEROvwswdIMj+R6w7Be4QKR1rdhyCVwtb/ylMkoMBeE9XZtmmoomezZ77CFe2tE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=NJRQk4h6; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A31ECC433F1;
-	Wed,  3 Apr 2024 08:10:55 +0000 (UTC)
+	 MIME-Version; b=FwPPEnQU9zn8JWchAgJiK7yd7v995zwC5an1nO86GxoJfFCz8KpfyIfRc3A2paY5I8dYATlNvvMYynmy5bvp7TkoTqs/yNfYkPRJXZjNIrrwh+LedqtrEBRw/URa2cmsJMVgVP1cf/kVTtll42sEqC4TPQ5NIqVyO5EtPo6TCLo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=dieCWAWH; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 15AACC433C7;
+	Wed,  3 Apr 2024 08:11:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712131858;
-	bh=SG0i7m/Qv+Wgr/oIlICWhiX3c3WYeQZoUHuUuYHJ3Mg=;
+	s=k20201202; t=1712131865;
+	bh=OaBdwzPyJFIVi5jKFEkNH3EGbx1qZe7R5hLgRTGjY10=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=NJRQk4h6DbL0PRCv2v9sEcKs42xqNz/dxm75KgThlyRajdVuR078RQ02O7Izdo+ZZ
-	 LnK2cN6v+mPmgcHePdMATB3uWETGSzCoSJz5BBh+gbBFtlrzLAOtVzoTK9cKPTD3VX
-	 xoglKUzgdJlNV7lO9y0aBfZDI24awPTqxjbDGUnUTcOZxsNcWxCNIyZ+UqDVyYvmJO
-	 RYoSNwxAs2MVFI6FRMnpM6OyUArbDkXu+BieEVf366sDxQluFmBuH+PruUunNsQ9nZ
-	 NRi1r/PQPL/Svp9zyGT2Mai3oHNv3/DVU/reCWO2S9NvNWzVWNBW42fOs6BC3OmsjV
-	 h5Uy2eh2EdNIA==
+	b=dieCWAWH/t+S3gm1titmmfw34OmJo5p9YVMk9/1Uormtij8W8tceyOmrivytapWsX
+	 EWDdidDv0ySuc5gEaYhSAPgVLRs2ay5OrkdfzCCqlCb+/ozQCPOBUcyo5Gj8SmAiE+
+	 v69JV3/J0lM/b/yPxxg1aL/52EHjl/ZvZjJKBR03fOfubxUAs/w38qjIVYjbCxSl7D
+	 LWM6F9ubJa83zsL/POmMM5MzLOSqHbsmkub6gk323IGZdTBd0uQ+rBmBgVKUuiGidF
+	 H5FfNUMRix2ROhta0ylKMDpDda+GsOGdVHaZpiJNo80zxMoscMhJlYyNSIvfAIAM6a
+	 /w68aScpztvDQ==
 From: Arnd Bergmann <arnd@kernel.org>
 To: linux-kernel@vger.kernel.org,
-	Liviu Dudau <liviu.dudau@arm.com>,
-	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-	Maxime Ripard <mripard@kernel.org>,
-	Thomas Zimmermann <tzimmermann@suse.de>,
-	David Airlie <airlied@gmail.com>,
-	Daniel Vetter <daniel@ffwll.ch>,
-	"James Qian Wang (Arm Technology China)" <james.qian.wang@arm.com>
+	Bjorn Andersson <andersson@kernel.org>,
+	Konrad Dybcio <konrad.dybcio@linaro.org>,
+	Maximilian Luz <luzmaximilian@gmail.com>,
+	Johan Hovold <johan+linaro@kernel.org>
 Cc: Arnd Bergmann <arnd@arndb.de>,
-	Rob Herring <robh@kernel.org>,
-	dri-devel@lists.freedesktop.org
-Subject: [PATCH 22/34] drm/komeda: don't warn for unused debugfs files
-Date: Wed,  3 Apr 2024 10:06:40 +0200
-Message-Id: <20240403080702.3509288-23-arnd@kernel.org>
+	Bartosz Golaszewski <bartosz.golaszewski@linaro.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+	Kathiravan Thirumoorthy <quic_kathirav@quicinc.com>,
+	Guru Das Srinagesh <quic_gurus@quicinc.com>,
+	Robert Marko <robimarko@gmail.com>,
+	linux-arm-msm@vger.kernel.org
+Subject: [PATCH 23/34] firmware: qcom_scm: mark qcom_scm_qseecom_allowlist as __maybe_unused
+Date: Wed,  3 Apr 2024 10:06:41 +0200
+Message-Id: <20240403080702.3509288-24-arnd@kernel.org>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20240403080702.3509288-1-arnd@kernel.org>
 References: <20240403080702.3509288-1-arnd@kernel.org>
@@ -68,73 +69,32 @@ Content-Transfer-Encoding: 8bit
 
 From: Arnd Bergmann <arnd@arndb.de>
 
-With debugfs disabled, the komeda_register debugfs file is unused:
+When CONFIG_OF is disabled, there is no reference to this variable:
 
-drivers/gpu/drm/arm/display/komeda/komeda_dev.c:44:1: error: unused variable 'komeda_register_fops' [-Werror,-Wunused-const-variable]
-DEFINE_SHOW_ATTRIBUTE(komeda_register);
+drivers/firmware/qcom/qcom_scm.c:1655:34: error: unused variable 'qcom_scm_qseecom_allowlist' [-Werror,-Wunused-const-variable]
+static const struct of_device_id qcom_scm_qseecom_allowlist[] = {
 
-The komeda_debugfs_init() function already has a call to debugfs_initialized()
-that ends up eliminating the file as dead code, so just drop the #ifdef
-to get rid of the warning.
+Mark it as __maybe_unused to hide this warning.
 
-Fixes: 576832681891 ("arm/komeda: Compile komeda_debugfs_init() only if CONFIG_DEBUG_FS is enabled")
-Fixes: 7d3cfb70a604 ("drm/komeda: Add debugfs node "register" for register dump")
+Fixes: 00b1248606ba ("firmware: qcom_scm: Add support for Qualcomm Secure Execution Environment SCM interface")
 Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 ---
- drivers/gpu/drm/arm/display/komeda/komeda_dev.c | 8 --------
- 1 file changed, 8 deletions(-)
+ drivers/firmware/qcom/qcom_scm.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/gpu/drm/arm/display/komeda/komeda_dev.c b/drivers/gpu/drm/arm/display/komeda/komeda_dev.c
-index 14ee79becacb..5ba62e637a61 100644
---- a/drivers/gpu/drm/arm/display/komeda/komeda_dev.c
-+++ b/drivers/gpu/drm/arm/display/komeda/komeda_dev.c
-@@ -12,10 +12,8 @@
- #include <linux/platform_device.h>
- #include <linux/pm_runtime.h>
- #include <linux/dma-mapping.h>
--#ifdef CONFIG_DEBUG_FS
- #include <linux/debugfs.h>
- #include <linux/seq_file.h>
--#endif
- 
- #include <drm/drm_print.h>
- 
-@@ -43,7 +41,6 @@ static int komeda_register_show(struct seq_file *sf, void *x)
- 
- DEFINE_SHOW_ATTRIBUTE(komeda_register);
- 
--#ifdef CONFIG_DEBUG_FS
- static void komeda_debugfs_init(struct komeda_dev *mdev)
- {
- 	if (!debugfs_initialized())
-@@ -55,7 +52,6 @@ static void komeda_debugfs_init(struct komeda_dev *mdev)
- 	debugfs_create_x16("err_verbosity", 0664, mdev->debugfs_root,
- 			   &mdev->err_verbosity);
- }
--#endif
- 
- static ssize_t
- core_id_show(struct device *dev, struct device_attribute *attr, char *buf)
-@@ -265,9 +261,7 @@ struct komeda_dev *komeda_dev_create(struct device *dev)
- 
- 	mdev->err_verbosity = KOMEDA_DEV_PRINT_ERR_EVENTS;
- 
--#ifdef CONFIG_DEBUG_FS
- 	komeda_debugfs_init(mdev);
--#endif
- 
- 	return mdev;
- 
-@@ -286,9 +280,7 @@ void komeda_dev_destroy(struct komeda_dev *mdev)
- 
- 	sysfs_remove_group(&dev->kobj, &komeda_sysfs_attr_group);
- 
--#ifdef CONFIG_DEBUG_FS
- 	debugfs_remove_recursive(mdev->debugfs_root);
--#endif
- 
- 	if (mdev->aclk)
- 		clk_prepare_enable(mdev->aclk);
+diff --git a/drivers/firmware/qcom/qcom_scm.c b/drivers/firmware/qcom/qcom_scm.c
+index 49ddbcab0680..81c15aeff934 100644
+--- a/drivers/firmware/qcom/qcom_scm.c
++++ b/drivers/firmware/qcom/qcom_scm.c
+@@ -1652,7 +1652,7 @@ EXPORT_SYMBOL_GPL(qcom_scm_qseecom_app_send);
+  * We do not yet support re-entrant calls via the qseecom interface. To prevent
+  + any potential issues with this, only allow validated machines for now.
+  */
+-static const struct of_device_id qcom_scm_qseecom_allowlist[] = {
++static const struct of_device_id qcom_scm_qseecom_allowlist[] __maybe_unused = {
+ 	{ .compatible = "lenovo,thinkpad-x13s", },
+ 	{ }
+ };
 -- 
 2.39.2
 
