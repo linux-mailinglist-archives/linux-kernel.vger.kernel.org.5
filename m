@@ -1,69 +1,66 @@
-Return-Path: <linux-kernel+bounces-129744-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-129750-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A6AE0896F64
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 14:52:43 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id C7F6E896F77
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 14:54:36 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D84741C26761
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 12:52:42 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 062141C267F1
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 12:54:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E9B3C149C47;
-	Wed,  3 Apr 2024 12:50:55 +0000 (UTC)
-Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B8B8A14900A;
+	Wed,  3 Apr 2024 12:53:09 +0000 (UTC)
+Received: from smtpbgbr1.qq.com (smtpbgbr1.qq.com [54.207.19.206])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EA55D146A78
-	for <linux-kernel@vger.kernel.org>; Wed,  3 Apr 2024 12:50:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 568CC1482E1;
+	Wed,  3 Apr 2024 12:53:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=54.207.19.206
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712148655; cv=none; b=WQq48lVwE1n0RLjis8b++HlUlhQzIWjJ7l84wMRGCU/F/moRWqnCO2zNLdrjjwl80BWW+Da5vwPEPhoNT99ONZnLW8mRdvSsbRWvZEQnJ9dFYje06inzU/1RL0c8BIIUyt/EP2NeEuls/Qm/IsBImO6gVkZPK1jTAujaI2bK+z4=
+	t=1712148789; cv=none; b=QcQPBQ9YjIY/FZcbFigAnQlfWXYaze9FEKwxNw6uWaR6x7Ghixyp8yxnfH3LO7UeXUF5pj1nPsbBv9S57y/jJ3mq024+w9pZFjBRPlErqqAVYOJ+JIDABBtA2ZoieMr4/cVXeQ+gHD4QJhu4C8HT3UaKSPcJXp2W5ix9U87g4oI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712148655; c=relaxed/simple;
-	bh=Bcc7wC539i7cfCgpBSkB4ImTrUNgqBAy5MoTxbGa6hg=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=o5e6RqrOtjf/X+x6X3fryrXuG1ttUFI9CKZ9NR86NsJ4kl1AEjmHFyO5mXJcaDnvlC2OASYJjVKBI0pbIGJbWIJErKrDuv9SjqVaIhcl92OKee9os7UjvKwQ8hN/GWCfqanHyAedqBxo/LigAV2BvyaYYwuUToEPPMirhH2P5E4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
-Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
-	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-	(Exim 4.92)
-	(envelope-from <ore@pengutronix.de>)
-	id 1rs04h-0005yV-0Z; Wed, 03 Apr 2024 14:50:43 +0200
-Received: from [2a0a:edc0:0:1101:1d::ac] (helo=dude04.red.stw.pengutronix.de)
-	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.94.2)
-	(envelope-from <ore@pengutronix.de>)
-	id 1rs04f-00ABEm-Fz; Wed, 03 Apr 2024 14:50:41 +0200
-Received: from ore by dude04.red.stw.pengutronix.de with local (Exim 4.96)
-	(envelope-from <ore@pengutronix.de>)
-	id 1rs04f-00EKbB-1F;
-	Wed, 03 Apr 2024 14:50:41 +0200
-From: Oleksij Rempel <o.rempel@pengutronix.de>
-To: "David S. Miller" <davem@davemloft.net>,
-	Andrew Lunn <andrew@lunn.ch>,
-	Eric Dumazet <edumazet@google.com>,
-	Florian Fainelli <f.fainelli@gmail.com>,
-	Jakub Kicinski <kuba@kernel.org>,
-	Paolo Abeni <pabeni@redhat.com>,
-	Vladimir Oltean <olteanv@gmail.com>,
-	Woojung Huh <woojung.huh@microchip.com>,
-	Arun Ramadoss <arun.ramadoss@microchip.com>
-Cc: Oleksij Rempel <o.rempel@pengutronix.de>,
-	kernel@pengutronix.de,
+	s=arc-20240116; t=1712148789; c=relaxed/simple;
+	bh=oEllcByHTb5ruy6A9Usqz1VtCeCPw7v0KZkyVRzJ3FY=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=PR+PNDeaLC3aAZfhqCnT3fM3tvTsVZRyC5PM4t60lr86s7pRsVzHRhtL9nTUYxLSBXCmfGsD3pZDQPANWsPH5uyweRSBVpqEtn4gQyYS9W3jECprx28cke0NGKlf256c1AwmjvCmkW4hvqqe22vfsWYUznDoZlYRVvtTnr2SFwc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=shingroup.cn; spf=pass smtp.mailfrom=shingroup.cn; arc=none smtp.client-ip=54.207.19.206
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=shingroup.cn
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=shingroup.cn
+X-QQ-mid: bizesmtpsz11t1712148686tdr3l7
+X-QQ-Originating-IP: SM5s8FAZLkIg0k+zF/ph3vSArsy2doitvdgwni5O9z0=
+Received: from localhost ( [112.0.147.175])
+	by bizesmtp.qq.com (ESMTP) with 
+	id ; Wed, 03 Apr 2024 20:51:24 +0800 (CST)
+X-QQ-SSF: 01400000000000704000000A0000000
+X-QQ-FEAT: 3M0okmaRx3j5lef41+AwE9Y+CgaUKkKYmVC9Hf7Y5u3aB2n+VoMXvS/oH3NmX
+	CN9ZCNixChYwql3f3fM5oDTW1nlfJ7ur6GPa+OMpaISt8QpYZ3KML+ejjTkle5SChoMBkgB
+	WfWGVyewEtJl6VYASlgkfrQIxq4VAaduXp54kOyVX4zNbMJghsvQkYBQYfi8cBHe5za7UEL
+	rpIWIjPHyvAvgLrR26/oD3TEzfFgc9ReQ/8Uqkt3zOeI8x2Cu35qyHya2Z+AqCdmQCcfrYo
+	HWGcPRgZh4ba2tQlpgXjn6fh2yfZl6dOsND1xR0VcpYdup7f5mWK8CO9qO3ty89A9yfewrJ
+	fsCIZOvws9FjUKVUirxoDWz54Noyvtuf7ij3guUpEAwvlXSkbr+N1toNtijbzkM9eu74dlN
+	OQKCh/y/vMYHRSkIBZDRvA==
+X-QQ-GoodBg: 2
+X-BIZMAIL-ID: 6104082383576056037
+From: Dawei Li <dawei.li@shingroup.cn>
+To: will@kernel.org,
+	mark.rutland@arm.com,
+	yury.norov@gmail.com,
+	linux@rasmusvillemoes.dk
+Cc: xueshuai@linux.alibaba.com,
+	renyu.zj@linux.alibaba.com,
+	yangyicong@hisilicon.com,
+	jonathan.cameron@huawei.com,
+	andersson@kernel.org,
+	konrad.dybcio@linaro.org,
+	linux-arm-kernel@lists.infradead.org,
 	linux-kernel@vger.kernel.org,
-	netdev@vger.kernel.org,
-	UNGLinuxDriver@microchip.com,
-	=?UTF-8?q?S=C3=B8ren=20Andersen?= <san@skov.dk>
-Subject: [PATCH net-next v2 8/8] net: dsa: microchip: ksz8_r_dyn_mac_table(): use entries variable to signal 0 entries
-Date: Wed,  3 Apr 2024 14:50:39 +0200
-Message-Id: <20240403125039.3414824-9-o.rempel@pengutronix.de>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20240403125039.3414824-1-o.rempel@pengutronix.de>
-References: <20240403125039.3414824-1-o.rempel@pengutronix.de>
+	linux-arm-msm@vger.kernel.org,
+	Dawei Li <dawei.li@shingroup.cn>
+Subject: [PATCH v2 00/10] perf: Avoid placing cpumask var on stack
+Date: Wed,  3 Apr 2024 20:50:59 +0800
+Message-Id: <20240403125109.2054881-1-dawei.li@shingroup.cn>
+X-Mailer: git-send-email 2.27.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -71,76 +68,62 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
-X-SA-Exim-Mail-From: ore@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+X-QQ-SENDSIZE: 520
+Feedback-ID: bizesmtpsz:shingroup.cn:qybglogicsvrgz:qybglogicsvrgz5a-1
 
-We already have a variable to provide number of entries. So use it,
-instead of using error number.
+Hi all,
 
-Reviewed-by: Vladimir Oltean <olteanv@gmail.com>
-Acked-by: Arun Ramadoss <arun.ramadoss@microchip.com>
-Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
----
- drivers/net/dsa/microchip/ksz8795.c | 24 +++++++-----------------
- 1 file changed, 7 insertions(+), 17 deletions(-)
+This is v2 of [1] and [2] which basically eliminate cpumask var allocation
+on stack for perf subsystem.
 
-diff --git a/drivers/net/dsa/microchip/ksz8795.c b/drivers/net/dsa/microchip/ksz8795.c
-index de3d8357da855..ecef6f6f830b3 100644
---- a/drivers/net/dsa/microchip/ksz8795.c
-+++ b/drivers/net/dsa/microchip/ksz8795.c
-@@ -399,19 +399,11 @@ static int ksz8_valid_dyn_entry(struct ksz_device *dev, u8 *data)
- 	} while ((*data & masks[DYNAMIC_MAC_TABLE_NOT_READY]) && timeout);
- 
- 	/* Entry is not ready for accessing. */
--	if (*data & masks[DYNAMIC_MAC_TABLE_NOT_READY]) {
-+	if (*data & masks[DYNAMIC_MAC_TABLE_NOT_READY])
- 		return -ETIMEDOUT;
--	/* Entry is ready for accessing. */
--	} else {
--		ret = ksz_read8(dev, regs[REG_IND_DATA_8], data);
--		if (ret)
--			return ret;
- 
--		/* There is no valid entry in the table. */
--		if (*data & masks[DYNAMIC_MAC_TABLE_MAC_EMPTY])
--			return -ENXIO;
--	}
--	return 0;
-+	/* Entry is ready for accessing. */
-+	return ksz_read8(dev, regs[REG_IND_DATA_8], data);
- }
- 
- static int ksz8_r_dyn_mac_table(struct ksz_device *dev, u16 addr, u8 *mac_addr,
-@@ -439,13 +431,13 @@ static int ksz8_r_dyn_mac_table(struct ksz_device *dev, u16 addr, u8 *mac_addr,
- 		goto unlock_alu;
- 
- 	ret = ksz8_valid_dyn_entry(dev, &data);
--	if (ret == -ENXIO) {
--		*entries = 0;
-+	if (ret)
- 		goto unlock_alu;
--	}
- 
--	if (ret)
-+	if (data & masks[DYNAMIC_MAC_TABLE_MAC_EMPTY]) {
-+		*entries = 0;
- 		goto unlock_alu;
-+	}
- 
- 	ret = ksz_read64(dev, regs[REG_IND_DATA_HI], &buf);
- 	if (ret)
-@@ -1210,8 +1202,6 @@ int ksz8_fdb_dump(struct ksz_device *dev, int port,
- 	for (i = 0; i < KSZ8_DYN_MAC_ENTRIES; i++) {
- 		ret = ksz8_r_dyn_mac_table(dev, i, mac, &fid, &src_port,
- 					   &entries);
--		if (ret == -ENXIO)
--			return 0;
- 		if (ret)
- 			return ret;
- 
+Change since v1:
+- Change from dynamic allocation to a temporary var free helper:
+  cpumask_any_and_but().	[Mark]
+
+- Some minor coding style improvements, reverse chrismas tree e.g.
+
+- For cpumask_any_and_but() itself:
+  - Moved to cpumask.h, just like other helpers.
+  - Return value converted to unsigned int.
+  - Remove EXPORT_SYMBOL, for obvious reason.
+
+[1]:
+https://lore.kernel.org/lkml/20240402105610.1695644-1-dawei.li@shingroup.cn/
+
+[2]:
+https://lore.kernel.org/lkml/1486381132-5610-1-git-send-email-mark.rutland@arm.com/
+
+Dawei Li (9):
+  perf/alibaba_uncore_drw: Avoid placing cpumask var on stack
+  perf/arm-cmn: Avoid placing cpumask var on stack
+  perf/arm_cspmu: Avoid placing cpumask var on stack
+  perf/arm_dsu: Avoid placing cpumask var on stack
+  perf/dwc_pcie: Avoid placing cpumask var on stack
+  perf/hisi_pcie: Avoid placing cpumask var on stack
+  perf/hisi_uncore: Avoid placing cpumask var on stack
+  perf/qcom_l2: Avoid placing cpumask var on stack
+  perf/thunderx2: Avoid placing cpumask var on stack
+
+Mark Rutland (1):
+  cpumask: add cpumask_any_and_but()
+
+ drivers/perf/alibaba_uncore_drw_pmu.c    | 10 +++-------
+ drivers/perf/arm-cmn.c                   | 10 +++++-----
+ drivers/perf/arm_cspmu/arm_cspmu.c       |  8 +++-----
+ drivers/perf/arm_dsu_pmu.c               | 19 ++++++-------------
+ drivers/perf/dwc_pcie_pmu.c              | 10 ++++------
+ drivers/perf/hisilicon/hisi_pcie_pmu.c   |  9 ++++-----
+ drivers/perf/hisilicon/hisi_uncore_pmu.c |  6 ++----
+ drivers/perf/qcom_l2_pmu.c               |  8 +++-----
+ drivers/perf/thunderx2_pmu.c             | 10 +++-------
+ include/linux/cpumask.h                  | 23 +++++++++++++++++++++++
+ 10 files changed, 56 insertions(+), 57 deletions(-)
+
+Thanks,
+
+    Dawei
+
 -- 
-2.39.2
+2.27.0
 
 
