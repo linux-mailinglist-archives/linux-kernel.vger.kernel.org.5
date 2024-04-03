@@ -1,30 +1,30 @@
-Return-Path: <linux-kernel+bounces-129421-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-129420-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0CDD0896A8D
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 11:30:00 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0FD44896A8A
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 11:29:37 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 365571C2568E
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 09:29:59 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 76CF01F28B79
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 09:29:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0520D135A54;
-	Wed,  3 Apr 2024 09:29:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3CE331350EC;
+	Wed,  3 Apr 2024 09:29:18 +0000 (UTC)
 Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F257B1327F9
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E46F7131E2D
 	for <linux-kernel@vger.kernel.org>; Wed,  3 Apr 2024 09:29:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712136557; cv=none; b=TkxhOyYGigvB0y58eHxSTFi4rzh9UXzhQ7BhY7nzKP4eKvXSdXnb9AZOUBvBfMBDhuI/5ADqkleVZEPkPAW3ixcDhyrJpwvbjHgr8dQFR4ZM/OkZrydOTvUGBuAJR1TYvAL7Of64IpHk5jlnK5tK++q1phucnGTW2nnmiOqb2WY=
+	t=1712136557; cv=none; b=Bwz+KEFB2FBGciZTWF9KqMlLtzS06zZtXPqP3pdkglv59jLHXGBz7vo0oHx9E5jAOQW1zfstu67INGBN3LRbON2IiumFU6yAG62YdYcsQ7M0jEBtyasydyCyxGGMoDK9sj9pzxqszlkW0XfqPySS+YxmmsxDaDBJkwyVtRdCr98=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1712136557; c=relaxed/simple;
-	bh=N1vfQtVqdEZLvE8Bx0YbG7jmexrDntzSCnSI0MJdxLw=;
+	bh=h3mUp113EuS+pYH6g9qCQyZzMqErhSLV2EvjsvWtczs=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=TnJuoMEYLGQJ9mDx3nhSjSTFdVBEtguRShuQgGbVljDJv9C28OcJMHsyGlJk9SdXpUpCEvMg0YI+s8C4+6PeptlEeOO2ieO6IETeCuwrSQvD6L8X3THMnxhIjT7TJ2JxBT8AB4NVTqrXICkL3kRHjNFexDl00lB6YqzgvCFALrE=
+	 MIME-Version; b=nVVfG6mZtW8YnonztIpASY68E8nI9f2XL/KC3EhC1MH3E+eDTZFdQWf1l8iztUcK/gWILSC0dj+gNV/hHTE6Xq45CwSH8ZYHT4hOGNbes+3gXLITP4JCLWQ3+GRWzb1ro3UYzlgdunbrb5GwZWQmomC5lIeOhFca5Qk9+CfU30o=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
@@ -32,15 +32,15 @@ Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
 	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
 	(Exim 4.92)
 	(envelope-from <ore@pengutronix.de>)
-	id 1rrwvc-0005CJ-Nl; Wed, 03 Apr 2024 11:29:08 +0200
+	id 1rrwvc-0005CK-Nm; Wed, 03 Apr 2024 11:29:08 +0200
 Received: from [2a0a:edc0:0:1101:1d::ac] (helo=dude04.red.stw.pengutronix.de)
 	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
 	(Exim 4.94.2)
 	(envelope-from <ore@pengutronix.de>)
-	id 1rrwva-00A9Hm-9f; Wed, 03 Apr 2024 11:29:06 +0200
+	id 1rrwva-00A9Ho-BG; Wed, 03 Apr 2024 11:29:06 +0200
 Received: from ore by dude04.red.stw.pengutronix.de with local (Exim 4.96)
 	(envelope-from <ore@pengutronix.de>)
-	id 1rrwva-008qHN-0g;
+	id 1rrwva-008qHX-0k;
 	Wed, 03 Apr 2024 11:29:06 +0200
 From: Oleksij Rempel <o.rempel@pengutronix.de>
 To: "David S. Miller" <davem@davemloft.net>,
@@ -61,9 +61,9 @@ Cc: Oleksij Rempel <o.rempel@pengutronix.de>,
 	Simon Horman <horms@kernel.org>,
 	Willem de Bruijn <willemb@google.com>,
 	=?UTF-8?q?S=C3=B8ren=20Andersen?= <san@skov.dk>
-Subject: [PATCH net-next v2 3/9] net: add IEEE 802.1q specific helpers
-Date: Wed,  3 Apr 2024 11:28:59 +0200
-Message-Id: <20240403092905.2107522-4-o.rempel@pengutronix.de>
+Subject: [PATCH net-next v2 4/9] net: dsa: microchip: add multi queue support for KSZ88X3 variants
+Date: Wed,  3 Apr 2024 11:29:00 +0200
+Message-Id: <20240403092905.2107522-5-o.rempel@pengutronix.de>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20240403092905.2107522-1-o.rempel@pengutronix.de>
 References: <20240403092905.2107522-1-o.rempel@pengutronix.de>
@@ -79,369 +79,168 @@ X-SA-Exim-Mail-From: ore@pengutronix.de
 X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
 X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 
-IEEE 802.1q specification provides recommendation and examples which can
-be used as good default values for different drivers.
+KSZ88X3 switches support up to 4 queues. Rework ksz8795_set_prio_queue()
+to support KSZ8795 and KSZ88X3 families of switches.
 
-This patch implements mapping examples documented in IEEE 802.1Q-2022 in
-Annex I "I.3 Traffic type to traffic class mapping" and IETF DSCP naming
-and mapping DSCP to Traffic Type inspired by RFC8325.
-
-This helpers will be used in followup patches for dsa/microchip DCB
-implementation.
+Per default, configure KSZ88X3 to use one queue, since it need special
+handling due to priority related errata. Errata handling is implemented
+in a separate patch.
 
 Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
 ---
-changes v2:
-- properly export symbols with EXPORT_SYMBOL_GPL()
-- return error if NET_IEEE8021Q_HELPERS is not enabled
----
- include/net/dscp.h           |  76 ++++++++++++++++
- include/net/ieee8021q.h      |  49 ++++++++++
- net/Kconfig                  |   4 +
- net/core/Makefile            |   1 +
- net/core/ieee8021q_helpers.c | 167 +++++++++++++++++++++++++++++++++++
- 5 files changed, 297 insertions(+)
- create mode 100644 include/net/dscp.h
- create mode 100644 include/net/ieee8021q.h
- create mode 100644 net/core/ieee8021q_helpers.c
+ drivers/net/dsa/microchip/ksz8795.c     | 87 ++++++++++++++++---------
+ drivers/net/dsa/microchip/ksz8795_reg.h |  9 ++-
+ 2 files changed, 61 insertions(+), 35 deletions(-)
 
-diff --git a/include/net/dscp.h b/include/net/dscp.h
-new file mode 100644
-index 0000000000000..ba40540868c9c
---- /dev/null
-+++ b/include/net/dscp.h
-@@ -0,0 +1,76 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+/* Copyright (c) 2024 Pengutronix, Oleksij Rempel <kernel@pengutronix.de> */
-+
-+#ifndef __DSCP_H__
-+#define __DSCP_H__
-+
-+/*
-+ * DSCP Pools and Codepoint Space Division:
-+ *
-+ * The Differentiated Services (Diffserv) architecture defines a method for
-+ * classifying and managing network traffic using the DS field in IPv4 and IPv6
-+ * packet headers. This field can carry one of 64 distinct DSCP (Differentiated
-+ * Services Code Point) values, which are divided into three pools based on
-+ * their Least Significant Bits (LSB) patterns and intended usage. Each pool has
-+ * a specific registration procedure for assigning DSCP values:
-+ *
-+ * Pool 1 (Standards Action Pool):
-+ * - Codepoint Space: xxxxx0
-+ *   This pool includes DSCP values ending in '0' (binary), allocated via
-+ *   Standards Action. It is intended for globally recognized traffic classes,
-+ *   ensuring interoperability across the internet. This pool encompasses
-+ *   well-known DSCP values such as CS0-CS7, AFxx, EF, and VOICE-ADMIT.
-+ *
-+ * Pool 2 (Experimental/Local Use Pool):
-+ * - Codepoint Space: xxxx11
-+ *   Reserved for DSCP values ending in '11' (binary), this pool is designated
-+ *   for Experimental or Local Use. It allows for private or temporary traffic
-+ *   marking schemes not intended for standardized global use, facilitating
-+ *   testing and network-specific configurations without impacting
-+ *   interoperability.
-+ *
-+ * Pool 3 (Preferential Standardization Pool):
-+ * - Codepoint Space: xxxx01
-+ *   Initially reserved for experimental or local use, this pool now serves as
-+ *   a secondary standardization resource should Pool 1 become exhausted. DSCP
-+ *   values ending in '01' (binary) are assigned via Standards Action, with a
-+ *   focus on adopting new, standardized traffic classes as the need arises.
-+ *
-+ * For pool updates see:
-+ * https://www.iana.org/assignments/dscp-registry/dscp-registry.xhtml
-+ */
-+
-+/* Pool 1: Standardized DSCP values as per [RFC8126] */
-+#define DSCP_CS0 0		/* 000000, [RFC2474] */
-+/* CS0 is some times called default (DF) */
-+#define DSCP_DF 0		/* 000000, [RFC2474] */
-+#define DSCP_CS1 8		/* 001000, [RFC2474] */
-+#define DSCP_CS2 16		/* 010000, [RFC2474] */
-+#define DSCP_CS3 24		/* 011000, [RFC2474] */
-+#define DSCP_CS4 32		/* 100000, [RFC2474] */
-+#define DSCP_CS5 40		/* 101000, [RFC2474] */
-+#define DSCP_CS6 48		/* 110000, [RFC2474] */
-+#define DSCP_CS7 56		/* 111000, [RFC2474] */
-+#define DSCP_AF11 10		/* 001010, [RFC2597] */
-+#define DSCP_AF12 12		/* 001100, [RFC2597] */
-+#define DSCP_AF13 14		/* 001110, [RFC2597] */
-+#define DSCP_AF21 18		/* 010010, [RFC2597] */
-+#define DSCP_AF22 20		/* 010100, [RFC2597] */
-+#define DSCP_AF23 22		/* 010110, [RFC2597] */
-+#define DSCP_AF31 26		/* 011010, [RFC2597] */
-+#define DSCP_AF32 28		/* 011100, [RFC2597] */
-+#define DSCP_AF33 30		/* 011110, [RFC2597] */
-+#define DSCP_AF41 34		/* 100010, [RFC2597] */
-+#define DSCP_AF42 36		/* 100100, [RFC2597] */
-+#define DSCP_AF43 38		/* 100110, [RFC2597] */
-+#define DSCP_EF 46		/* 101110, [RFC3246] */
-+#define DSCP_VOICE_ADMIT 44	/* 101100, [RFC5865] */
-+
-+/* Pool 3: Standardized assignments, previously available for experimental/local
-+ * use
-+ */
-+#define DSCP_LE 1		/* 000001, [RFC8622] */
-+
-+#define DSCP_MAX 64
-+
-+#endif /* __DSCP_H__ */
-diff --git a/include/net/ieee8021q.h b/include/net/ieee8021q.h
-new file mode 100644
-index 0000000000000..da1e4db7e3db6
---- /dev/null
-+++ b/include/net/ieee8021q.h
-@@ -0,0 +1,49 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+/* Copyright (c) 2024 Pengutronix, Oleksij Rempel <kernel@pengutronix.de> */
-+
-+#ifndef _NET_IEEE8021Q_H
-+#define _NET_IEEE8021Q_H
-+
-+/**
-+ * enum ieee8021q_traffic_type - 802.1Q traffic type priority values (802.1Q-2022)
-+ *
-+ * @IEEE8021Q_TT_BK: Background
-+ * @IEEE8021Q_TT_BE: Best Effort (default). According to 802.1Q-2022, BE is 0
-+ * but has higher priority than BK which is 1.
-+ * @IEEE8021Q_TT_EE: Excellent Effort
-+ * @IEEE8021Q_TT_CA: Critical Applications
-+ * @IEEE8021Q_TT_VI: Video, < 100 ms latency and jitter
-+ * @IEEE8021Q_TT_VO: Voice, < 10 ms latency and jitter
-+ * @IEEE8021Q_TT_IC: Internetwork Control
-+ * @IEEE8021Q_TT_NC: Network Control
-+ */
-+enum ieee8021q_traffic_type {
-+	IEEE8021Q_TT_BK = 0,
-+	IEEE8021Q_TT_BE = 1,
-+	IEEE8021Q_TT_EE = 2,
-+	IEEE8021Q_TT_CA = 3,
-+	IEEE8021Q_TT_VI = 4,
-+	IEEE8021Q_TT_VO = 5,
-+	IEEE8021Q_TT_IC = 6,
-+	IEEE8021Q_TT_NC = 7,
-+};
-+
-+#if IS_ENABLED(CONFIG_NET_IEEE8021Q_HELPERS)
-+
-+int ietf_dscp_to_ieee8021q_tt(int dscp);
-+int ieee8021q_tt_to_tc(int tt, int num_queues);
-+
-+#else
-+
-+static inline int ietf_dscp_to_ieee8021q_tt(int dscp)
-+{
-+	return -ENOTSUPP;
-+}
-+
-+static inline int ieee8021q_tt_to_tc(int tt, int num_queues)
-+{
-+	return -ENOTSUPP;
-+}
-+
-+#endif
-+#endif /* _NET_IEEE8021Q_H */
-diff --git a/net/Kconfig b/net/Kconfig
-index 3e57ccf0da279..2da4e6639527a 100644
---- a/net/Kconfig
-+++ b/net/Kconfig
-@@ -449,6 +449,10 @@ config GRO_CELLS
- config SOCK_VALIDATE_XMIT
- 	bool
+diff --git a/drivers/net/dsa/microchip/ksz8795.c b/drivers/net/dsa/microchip/ksz8795.c
+index 14923535ca7e8..0ead198bacb2c 100644
+--- a/drivers/net/dsa/microchip/ksz8795.c
++++ b/drivers/net/dsa/microchip/ksz8795.c
+@@ -127,37 +127,56 @@ int ksz8_change_mtu(struct ksz_device *dev, int port, int mtu)
+ 	return -EOPNOTSUPP;
+ }
  
-+config NET_IEEE8021Q_HELPERS
-+	bool
-+	default n
+-static void ksz8795_set_prio_queue(struct ksz_device *dev, int port, int queue)
++static int ksz8_port_queue_split(struct ksz_device *dev, int port, int queues)
+ {
+-	u8 hi, lo;
++	u8 mask_4q, mask_2q;
++	u8 reg_4q, reg_2q;
++	u8 data_4q = 0;
++	u8 data_2q = 0;
++	int ret;
+ 
+-	/* Number of queues can only be 1, 2, or 4. */
+-	switch (queue) {
+-	case 4:
+-	case 3:
+-		queue = PORT_QUEUE_SPLIT_4;
+-		break;
+-	case 2:
+-		queue = PORT_QUEUE_SPLIT_2;
+-		break;
+-	default:
+-		queue = PORT_QUEUE_SPLIT_1;
++	if (ksz_is_ksz88x3(dev)) {
++		mask_4q = KSZ8873_PORT_4QUEUE_SPLIT_EN;
++		mask_2q = KSZ8873_PORT_2QUEUE_SPLIT_EN;
++		reg_4q = REG_PORT_CTRL_0;
++		reg_2q = REG_PORT_CTRL_2;
 +
- config NET_SELFTESTS
- 	def_tristate PHYLIB
- 	depends on PHYLIB && INET
-diff --git a/net/core/Makefile b/net/core/Makefile
-index 21d6fbc7e884c..62be9aef25285 100644
---- a/net/core/Makefile
-+++ b/net/core/Makefile
-@@ -26,6 +26,7 @@ obj-$(CONFIG_NETPOLL) += netpoll.o
- obj-$(CONFIG_FIB_RULES) += fib_rules.o
- obj-$(CONFIG_TRACEPOINTS) += net-traces.o
- obj-$(CONFIG_NET_DROP_MONITOR) += drop_monitor.o
-+obj-$(CONFIG_NET_IEEE8021Q_HELPERS) += ieee8021q_helpers.o
- obj-$(CONFIG_NET_SELFTESTS) += selftests.o
- obj-$(CONFIG_NETWORK_PHY_TIMESTAMPING) += timestamping.o
- obj-$(CONFIG_NET_PTP_CLASSIFY) += ptp_classifier.o
-diff --git a/net/core/ieee8021q_helpers.c b/net/core/ieee8021q_helpers.c
-new file mode 100644
-index 0000000000000..61db84419f7a8
---- /dev/null
-+++ b/net/core/ieee8021q_helpers.c
-@@ -0,0 +1,167 @@
-+// SPDX-License-Identifier: GPL-2.0
-+// Copyright (c) 2024 Pengutronix, Oleksij Rempel <kernel@pengutronix.de>
++		/* KSZ8795 family switches have Weighted Fair Queueing (WFQ)
++		 * enabled by default. Enable it for KSZ8873 family switches
++		 * too. Default value for KSZ8873 family is strict priority,
++		 * which should be enabled by using TC_SETUP_QDISC_ETS, not
++		 * by default.
++		 */
++		ret = ksz_rmw8(dev, REG_SW_CTRL_3, WEIGHTED_FAIR_QUEUE_ENABLE,
++			       WEIGHTED_FAIR_QUEUE_ENABLE);
++		if (ret)
++			return ret;
++	} else {
++		mask_4q = KSZ8795_PORT_4QUEUE_SPLIT_EN;
++		mask_2q = KSZ8795_PORT_2QUEUE_SPLIT_EN;
++		reg_4q = REG_PORT_CTRL_13;
++		reg_2q = REG_PORT_CTRL_0;
 +
-+#include <linux/printk.h>
-+#include <linux/types.h>
-+#include <net/dscp.h>
-+#include <net/ieee8021q.h>
++		/* TODO: this is legacy from initial KSZ8795 driver, should be
++		 * moved to appropriate place in the future.
++		 */
++		ret = ksz_rmw8(dev, REG_SW_CTRL_19,
++			       SW_OUT_RATE_LIMIT_QUEUE_BASED,
++			       SW_OUT_RATE_LIMIT_QUEUE_BASED);
++		if (ret)
++			return ret;
+ 	}
+-	ksz_pread8(dev, port, REG_PORT_CTRL_0, &lo);
+-	ksz_pread8(dev, port, P_DROP_TAG_CTRL, &hi);
+-	lo &= ~PORT_QUEUE_SPLIT_L;
+-	if (queue & PORT_QUEUE_SPLIT_2)
+-		lo |= PORT_QUEUE_SPLIT_L;
+-	hi &= ~PORT_QUEUE_SPLIT_H;
+-	if (queue & PORT_QUEUE_SPLIT_4)
+-		hi |= PORT_QUEUE_SPLIT_H;
+-	ksz_pwrite8(dev, port, REG_PORT_CTRL_0, lo);
+-	ksz_pwrite8(dev, port, P_DROP_TAG_CTRL, hi);
+-
+-	/* Default is port based for egress rate limit. */
+-	if (queue != PORT_QUEUE_SPLIT_1)
+-		ksz_cfg(dev, REG_SW_CTRL_19, SW_OUT_RATE_LIMIT_QUEUE_BASED,
+-			true);
 +
-+/* Following arrays map Traffic Types (TT) to traffic classes (TC) for different
-+ * number of queues as shown in the example provided by  IEEE 802.1Q-2022 in
-+ * Annex I "I.3 Traffic type to traffic class mapping" and Table I-1 "Traffic
-+ * type to traffic class mapping".
-+ */
-+static const u8 ieee8021q_8queue_tt_tc_map[] = {
-+	[IEEE8021Q_TT_BK] = 0,
-+	[IEEE8021Q_TT_BE] = 1,
-+	[IEEE8021Q_TT_EE] = 2,
-+	[IEEE8021Q_TT_CA] = 3,
-+	[IEEE8021Q_TT_VI] = 4,
-+	[IEEE8021Q_TT_VO] = 5,
-+	[IEEE8021Q_TT_IC] = 6,
-+	[IEEE8021Q_TT_NC] = 7,
-+};
++	if (queues == 4)
++		data_4q = mask_4q;
++	if (queues == 2)
++		data_2q = mask_2q;
 +
-+static const u8 ieee8021q_7queue_tt_tc_map[] = {
-+	[IEEE8021Q_TT_BK] = 0,
-+	[IEEE8021Q_TT_BE] = 1,
-+	[IEEE8021Q_TT_EE] = 2,
-+	[IEEE8021Q_TT_CA] = 3,
-+	[IEEE8021Q_TT_VI] = 4,	[IEEE8021Q_TT_VO] = 4,
-+	[IEEE8021Q_TT_IC] = 5,
-+	[IEEE8021Q_TT_NC] = 6,
-+};
++	ret = ksz_prmw8(dev, port, reg_4q, mask_4q, data_4q);
++	if (ret)
++		return ret;
 +
-+static const u8 ieee8021q_6queue_tt_tc_map[] = {
-+	[IEEE8021Q_TT_BK] = 0,
-+	[IEEE8021Q_TT_BE] = 1,
-+	[IEEE8021Q_TT_EE] = 2,	[IEEE8021Q_TT_CA] = 2,
-+	[IEEE8021Q_TT_VI] = 3,	[IEEE8021Q_TT_VO] = 3,
-+	[IEEE8021Q_TT_IC] = 4,
-+	[IEEE8021Q_TT_NC] = 5,
-+};
++	return ksz_prmw8(dev, port, reg_2q, mask_2q, data_2q);
+ }
+ 
+ void ksz8_r_mib_cnt(struct ksz_device *dev, int port, u16 addr, u64 *cnt)
+@@ -1512,6 +1531,7 @@ void ksz8_port_setup(struct ksz_device *dev, int port, bool cpu_port)
+ {
+ 	struct dsa_switch *ds = dev->ds;
+ 	const u32 *masks;
++	int queues;
+ 	u8 member;
+ 
+ 	masks = dev->info->masks;
+@@ -1519,8 +1539,15 @@ void ksz8_port_setup(struct ksz_device *dev, int port, bool cpu_port)
+ 	/* enable broadcast storm limit */
+ 	ksz_port_cfg(dev, port, P_BCAST_STORM_CTRL, PORT_BROADCAST_STORM, true);
+ 
+-	if (!ksz_is_ksz88x3(dev))
+-		ksz8795_set_prio_queue(dev, port, 4);
++	/* For KSZ88x3 enable only one queue by default, otherwise we won't
++	 * be able to get rid of PCP prios on Port 2.
++	 */
++	if (ksz_is_ksz88x3(dev))
++		queues = 1;
++	else
++		queues = dev->info->num_tx_queues;
 +
-+static const u8 ieee8021q_5queue_tt_tc_map[] = {
-+	[IEEE8021Q_TT_BK] = 0, [IEEE8021Q_TT_BE] = 0,
-+	[IEEE8021Q_TT_EE] = 1, [IEEE8021Q_TT_CA] = 1,
-+	[IEEE8021Q_TT_VI] = 2, [IEEE8021Q_TT_VO] = 2,
-+	[IEEE8021Q_TT_IC] = 3,
-+	[IEEE8021Q_TT_NC] = 4,
-+};
-+
-+static const u8 ieee8021q_4queue_tt_tc_map[] = {
-+	[IEEE8021Q_TT_BK] = 0, [IEEE8021Q_TT_BE] = 0,
-+	[IEEE8021Q_TT_EE] = 1, [IEEE8021Q_TT_CA] = 1,
-+	[IEEE8021Q_TT_VI] = 2, [IEEE8021Q_TT_VO] = 2,
-+	[IEEE8021Q_TT_IC] = 3, [IEEE8021Q_TT_NC] = 3,
-+};
-+
-+static const u8 ieee8021q_3queue_tt_tc_map[] = {
-+	[IEEE8021Q_TT_BK] = 0, [IEEE8021Q_TT_BE] = 0,
-+	[IEEE8021Q_TT_EE] = 0, [IEEE8021Q_TT_CA] = 0,
-+	[IEEE8021Q_TT_VI] = 1, [IEEE8021Q_TT_VO] = 1,
-+	[IEEE8021Q_TT_IC] = 2, [IEEE8021Q_TT_NC] = 2,
-+};
-+
-+static const u8 ieee8021q_2queue_tt_tc_map[] = {
-+	[IEEE8021Q_TT_BK] = 0, [IEEE8021Q_TT_BE] = 0,
-+	[IEEE8021Q_TT_EE] = 0, [IEEE8021Q_TT_CA] = 0,
-+	[IEEE8021Q_TT_VI] = 1, [IEEE8021Q_TT_VO] = 1,
-+	[IEEE8021Q_TT_IC] = 1, [IEEE8021Q_TT_NC] = 1,
-+};
-+
-+static const u8 ieee8021q_1queue_tt_tc_map[] = {
-+	[IEEE8021Q_TT_BK] = 0, [IEEE8021Q_TT_BE] = 0,
-+	[IEEE8021Q_TT_EE] = 0, [IEEE8021Q_TT_CA] = 0,
-+	[IEEE8021Q_TT_VI] = 0, [IEEE8021Q_TT_VO] = 0,
-+	[IEEE8021Q_TT_IC] = 0, [IEEE8021Q_TT_NC] = 0,
-+};
-+
-+/**
-+ * ieee8021q_tt_to_tc - Map IEEE 802.1Q Traffic Type to Traffic Class
-+ * @tt: IEEE 802.1Q Traffic Type
-+ * @num_queues: Number of queues
-+ *
-+ * This function maps an IEEE 802.1Q Traffic Type to a Traffic Class (TC) based
-+ * on the number of queues configured on the switch. The mapping is based on the
-+ * example provided by IEEE 802.1Q-2022 in Annex I "I.3 Traffic type to traffic
-+ * class mapping" and Table I-1 "Traffic type to traffic class mapping".
-+ *
-+ * Return: Traffic Class corresponding to the given Traffic Type.
-+ */
-+int ieee8021q_tt_to_tc(int tt, int num_queues)
-+{
-+	switch (num_queues) {
-+	case 8:
-+		return ieee8021q_8queue_tt_tc_map[tt];
-+	case 7:
-+		return ieee8021q_7queue_tt_tc_map[tt];
-+	case 6:
-+		return ieee8021q_6queue_tt_tc_map[tt];
-+	case 5:
-+		return ieee8021q_5queue_tt_tc_map[tt];
-+	case 4:
-+		return ieee8021q_4queue_tt_tc_map[tt];
-+	case 3:
-+		return ieee8021q_3queue_tt_tc_map[tt];
-+	case 2:
-+		return ieee8021q_2queue_tt_tc_map[tt];
-+	case 1:
-+		return ieee8021q_1queue_tt_tc_map[tt];
-+	}
-+
-+	pr_warn("Invalid number of queues %d\n", num_queues);
-+	return 0;
-+}
-+EXPORT_SYMBOL_GPL(ieee8021q_tt_to_tc);
-+
-+/**
-+ * ietf_dscp_to_ieee8021q_tt - Map IETF DSCP to IEEE 802.1Q Traffic Type
-+ * @dscp: IETF DSCP value
-+ *
-+ * This function maps an IETF DSCP value to an IEEE 802.1Q Traffic Type (TT).
-+ * Since there is no corresponding mapping between DSCP and IEEE 802.1Q Traffic
-+ * Type, this function is inspired by the RFC8325 documentation which describe
-+ * the mapping between DSCP and 802.11 User Priority (UP) values.
-+ *
-+ * Return: IEEE 802.1Q Traffic Type corresponding to the given DSCP value
-+ */
-+
-+int ietf_dscp_to_ieee8021q_tt(int dscp)
-+{
-+	switch (dscp) {
-+	case DSCP_CS0:
-+	case DSCP_AF11:
-+	case DSCP_AF12:
-+	case DSCP_AF13:
-+		return IEEE8021Q_TT_BE;
-+	case DSCP_CS1:
-+		return IEEE8021Q_TT_BK;
-+	case DSCP_CS2:
-+	case DSCP_AF21:
-+	case DSCP_AF22:
-+	case DSCP_AF23:
-+		return IEEE8021Q_TT_EE;
-+	case DSCP_CS3:
-+	case DSCP_AF31:
-+	case DSCP_AF32:
-+	case DSCP_AF33:
-+		return IEEE8021Q_TT_CA;
-+	case DSCP_CS4:
-+	case DSCP_AF41:
-+	case DSCP_AF42:
-+	case DSCP_AF43:
-+		return IEEE8021Q_TT_VI;
-+	case DSCP_CS5:
-+	case DSCP_EF:
-+	case DSCP_VOICE_ADMIT:
-+		return IEEE8021Q_TT_VO;
-+	case DSCP_CS6:
-+		return IEEE8021Q_TT_IC;
-+	case DSCP_CS7:
-+		return IEEE8021Q_TT_NC;
-+	}
-+
-+	return (dscp >> 3) & 0x7;
-+}
-+EXPORT_SYMBOL_GPL(ietf_dscp_to_ieee8021q_tt);
++	ksz8_port_queue_split(dev, port, queues);
+ 
+ 	/* disable DiffServ priority */
+ 	ksz_port_cfg(dev, port, P_PRIO_CTRL, PORT_DIFFSERV_ENABLE, false);
+diff --git a/drivers/net/dsa/microchip/ksz8795_reg.h b/drivers/net/dsa/microchip/ksz8795_reg.h
+index 7c9341ef73b03..2a2a00202f643 100644
+--- a/drivers/net/dsa/microchip/ksz8795_reg.h
++++ b/drivers/net/dsa/microchip/ksz8795_reg.h
+@@ -124,7 +124,8 @@
+ #define PORT_BASED_PRIO_3		3
+ #define PORT_INSERT_TAG			BIT(2)
+ #define PORT_REMOVE_TAG			BIT(1)
+-#define PORT_QUEUE_SPLIT_L		BIT(0)
++#define KSZ8795_PORT_2QUEUE_SPLIT_EN	BIT(0)
++#define KSZ8873_PORT_4QUEUE_SPLIT_EN	BIT(0)
+ 
+ #define REG_PORT_1_CTRL_1		0x11
+ #define REG_PORT_2_CTRL_1		0x21
+@@ -143,6 +144,7 @@
+ #define REG_PORT_4_CTRL_2		0x42
+ #define REG_PORT_5_CTRL_2		0x52
+ 
++#define KSZ8873_PORT_2QUEUE_SPLIT_EN	BIT(7)
+ #define PORT_INGRESS_FILTER		BIT(6)
+ #define PORT_DISCARD_NON_VID		BIT(5)
+ #define PORT_FORCE_FLOW_CTRL		BIT(4)
+@@ -463,10 +465,7 @@
+ #define REG_PORT_4_CTRL_13		0xE1
+ #define REG_PORT_5_CTRL_13		0xF1
+ 
+-#define PORT_QUEUE_SPLIT_H		BIT(1)
+-#define PORT_QUEUE_SPLIT_1		0
+-#define PORT_QUEUE_SPLIT_2		1
+-#define PORT_QUEUE_SPLIT_4		2
++#define KSZ8795_PORT_4QUEUE_SPLIT_EN	BIT(1)
+ #define PORT_DROP_TAG			BIT(0)
+ 
+ #define REG_PORT_1_CTRL_14		0xB2
 -- 
 2.39.2
 
