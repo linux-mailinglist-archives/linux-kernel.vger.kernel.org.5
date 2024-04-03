@@ -1,163 +1,148 @@
-Return-Path: <linux-kernel+bounces-129376-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-129372-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4D6408969B1
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 10:58:22 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id D05B38969A0
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 10:54:23 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E09801F295F8
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 08:58:21 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8596C1F27235
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 08:54:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E64636FE38;
-	Wed,  3 Apr 2024 08:58:06 +0000 (UTC)
-Received: from szxga06-in.huawei.com (szxga06-in.huawei.com [45.249.212.32])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 795CD6E2BE;
+	Wed,  3 Apr 2024 08:54:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="QK1yOyhq"
+Received: from mail-oo1-f44.google.com (mail-oo1-f44.google.com [209.85.161.44])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9C6E454675;
-	Wed,  3 Apr 2024 08:58:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.32
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 26C3654F8C
+	for <linux-kernel@vger.kernel.org>; Wed,  3 Apr 2024 08:54:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712134686; cv=none; b=kbfHn0sH9hKWp58tGeXf14CvuiiyQS6C4Fp2Vj5w/lHAhXnRfOlDAjEdj0btifoIcVDSY7f4BYF+K7YvALsKwG91degOSm3ehxRh3O535VzB+xNet0bnrFQeVqyXGUTbgUNIdFu5a6fOLp6iRKByKPr7WIPjPA1cCP1rUs51Bvs=
+	t=1712134456; cv=none; b=SloUTSOMM2/MEMTbJvBEXxslmNOn4kSvbmD6C6a+kejLoVH+d6z6u/kUycppX1W/wjjm/tpJySsm44S7hFDnNRxJkyY1WURnJ/Zrf6QvyzY8jyPIC/QEPB5g9ZXVVQiTogjGy6ZHV8yzU2KKysRqNbd8tsUPSvPUjUD0HHYDs58=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712134686; c=relaxed/simple;
-	bh=WzH0xSfIPWd+YCnXQz2pzuGn0FYWidLKKiCFdrtgfFs=;
-	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=qHmCmwwNKg5A3zEKyumzCnjiZSQxhKPvh1ILCS9az07eVKDmEQNOLdCNS2JhZt2I0HUVDPP4ZoPvFbBgelWKsuxlXFLx8RDN/f4uCxNTSIJGrx53V3ZZvfR/wiHktSSm2jRZuvyYot6SRzE4G2OGqZFbX3GU/AWpNUQG3k8mlOw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.32
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.88.214])
-	by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4V8dsw5gp7z17MyP;
-	Wed,  3 Apr 2024 16:57:08 +0800 (CST)
-Received: from kwepemd100013.china.huawei.com (unknown [7.221.188.163])
-	by mail.maildlp.com (Postfix) with ESMTPS id 24C9F1A016F;
-	Wed,  3 Apr 2024 16:58:01 +0800 (CST)
-Received: from huawei.com (10.67.174.121) by kwepemd100013.china.huawei.com
- (7.221.188.163) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1258.28; Wed, 3 Apr
- 2024 16:58:00 +0800
-From: Chen Ridong <chenridong@huawei.com>
-To: <longman@redhat.com>, <lizefan.x@bytedance.com>, <tj@kernel.org>,
-	<hannes@cmpxchg.org>, <daniel.m.jordan@oracle.com>
-CC: <peterz@infradead.org>, <cgroups@vger.kernel.org>,
-	<linux-kernel@vger.kernel.org>, <wangweiyang2@huawei.com>,
-	<lujialin4@huawei.com>, <xiujianfeng@huawei.com>, <caixinchen1@huawei.com>,
-	<chenridong@huawei.com>
-Subject: [PATCH] cpuset: fix race between rebuild scheduler domains and hotplug work
-Date: Wed, 3 Apr 2024 08:52:45 +0000
-Message-ID: <20240403085245.335072-1-chenridong@huawei.com>
-X-Mailer: git-send-email 2.34.1
+	s=arc-20240116; t=1712134456; c=relaxed/simple;
+	bh=tphQMlxXfj94sQmU9WvMO9Ly9qqZqs3IYO1KFpzl2dA=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=P+o6TnNP+OZK5PybSrb1Q9qf/Xrlymk/cyXm1ZZqco8shxNCX41AGR8pMhFAUefnEQNQFqj0136bhApoMhaS7z0fM4Hd0pggQBrRNqhh1l0YydhCX7SCt30siZqs2KEfV+FdkSe1hlNblGqgkRjo/h2AEQd63IuenXX1QN9J3y4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=QK1yOyhq; arc=none smtp.client-ip=209.85.161.44
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-oo1-f44.google.com with SMTP id 006d021491bc7-5a9c71969f1so145601eaf.0
+        for <linux-kernel@vger.kernel.org>; Wed, 03 Apr 2024 01:54:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1712134454; x=1712739254; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=vAQoe+KPiy+sOp8T5fmyx200mSrFzvOF6EO15y9FXl8=;
+        b=QK1yOyhqXIcazhXN7djuLQA5Yj8vYNo+eOnoNkoJ+EEt0nqdsYTtxwmCYeOHsch8F6
+         k2zfoME+exX8r4bWq5wa7RMtsU3Ez9PFYkbo6twf6PPbqZtZyCtLj3CO/AEHG8PvmC71
+         6H+0onQMIaW1JMTkNY6ITjXY8ImeSN1UhemPS3UnP865cdLarPdqRTteT4q2OaXAj49v
+         8XEy6diKa+I1bwm+34IYNxZ8RbmI+IDvjoj0fNNTjrqEU9ZzEHehaRmfb0qzCh6J8Iq9
+         P/er7ZHf4uhnTH7Hr+SyhT2m4vmfNcIrUDZe/Bx+DzoU8hcMp1hUwYx82udX6OnHLU0q
+         RyXg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712134454; x=1712739254;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=vAQoe+KPiy+sOp8T5fmyx200mSrFzvOF6EO15y9FXl8=;
+        b=otqD4Sz8/q/dbREyF+AtzY/mzy2A78rpBk5beCF9L5P5deFOr7lGtFJaeUAl/TZAt5
+         HilR6pw57kjAdWZ7xbfmNsqu28uKo7SSaoXcGyZGAjGlfrinO6vOpbsXninvOMk9gFVG
+         pMabE3akFDF1vYN0qFaLkSH3RjeuxPdS3DjFR50J+rsvNw5IUap3DluMiJe1NZH1FSFJ
+         0dpOFXKamezdpSeN5C1/0GXtLix1aPFBq0Nu4ulvlX9N59qhLckrnYWEqS0J5kwQ7Ukg
+         kFUyL/AU9mNxizmNcZdXHTayws8eqz4UzG2Y3vhhgm+e8C1lXPBEz4IEvXgJzqeiaIbe
+         YUcg==
+X-Gm-Message-State: AOJu0YyWzo4EiQt3Dv7bmuxy00b9jMa3FwsTgHZabsewZwWzDBsLj+EH
+	TvfqSrSwTHolKZfSROT5iOUFJYnLrtqeqpr7nw3r0+Fv2bdIy4r+R2NJZNHZiPZlPtk50Lub1au
+	/MymAGLPYY72FT7LNwZZq4j/QeDJ6dbku8eitbg==
+X-Google-Smtp-Source: AGHT+IHkZepq7aTafh0HxBLIxweJZ2fHAPK+jdFkf8SwufI6M0a6JAvbgwUN7+X8k22zqLDhJWsYmWAQpZkuZbn/Dyg=
+X-Received: by 2002:a05:6820:217:b0:5a4:77f2:1c9f with SMTP id
+ bw23-20020a056820021700b005a477f21c9fmr15203421oob.6.1712134454221; Wed, 03
+ Apr 2024 01:54:14 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
- kwepemd100013.china.huawei.com (7.221.188.163)
+References: <20240227153132.2611499-1-jens.wiklander@linaro.org>
+ <20240227153132.2611499-2-jens.wiklander@linaro.org> <CACRpkdZBWBio8kvKuVzj2CknCb4eS=VB2EqUsAK-vf4e328icg@mail.gmail.com>
+In-Reply-To: <CACRpkdZBWBio8kvKuVzj2CknCb4eS=VB2EqUsAK-vf4e328icg@mail.gmail.com>
+From: Jens Wiklander <jens.wiklander@linaro.org>
+Date: Wed, 3 Apr 2024 10:54:03 +0200
+Message-ID: <CAHUa44FWRizv39wRJ8ku2v02pDB8_J6BmSk27NrA_UHv4cqNkw@mail.gmail.com>
+Subject: Re: [PATCH v3 1/3] rpmb: add Replay Protected Memory Block (RPMB) subsystem
+To: Linus Walleij <linus.walleij@linaro.org>
+Cc: linux-kernel@vger.kernel.org, linux-mmc@vger.kernel.org, 
+	op-tee@lists.trustedfirmware.org, 
+	Shyam Saini <shyamsaini@linux.microsoft.com>, Ulf Hansson <ulf.hansson@linaro.org>, 
+	Jerome Forissier <jerome.forissier@linaro.org>, Sumit Garg <sumit.garg@linaro.org>, 
+	Ilias Apalodimas <ilias.apalodimas@linaro.org>, Bart Van Assche <bvanassche@acm.org>, 
+	Randy Dunlap <rdunlap@infradead.org>, Ard Biesheuvel <ardb@kernel.org>, Arnd Bergmann <arnd@arndb.de>, 
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Tomas Winkler <tomas.winkler@intel.com>, 
+	=?UTF-8?B?QWxleCBCZW5uw6ll?= <alex.bennee@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-When offlining cpus, it holds cpu_hotplug_lock and call
-cpuset_hotplug_workfn asynchronously, which holds and releases
-cpuset_mutex repeatly to update cpusets, and it will release
-cpu_hotplug_lock before cpuset_hotplug_workfn finish. It means that some
-interfaces like cpuset_write_resmask holding two locks may rebuild
-scheduler domains when some cpusets are not refreshed, which may lead to
-generate domains with offlining cpus and will panic.
+On Tue, Mar 5, 2024 at 1:24=E2=80=AFPM Linus Walleij <linus.walleij@linaro.=
+org> wrote:
+>
+> Hi Jens,
+>
+> thanks for your patch!
+>
+> On Tue, Feb 27, 2024 at 4:31=E2=80=AFPM Jens Wiklander
+> <jens.wiklander@linaro.org> wrote:
+>
+> > A number of storage technologies support a specialised hardware
+> > partition designed to be resistant to replay attacks. The underlying
+> > HW protocols differ but the operations are common. The RPMB partition
+> > cannot be accessed via standard block layer, but by a set of specific
+> > RPMB commands: WRITE, READ, GET_WRITE_COUNTER, and PROGRAM_KEY. Such a
+> > partition provides authenticated and replay protected access, hence
+> > suitable as a secure storage.
+> >
+> > The initial aim of this patch is to provide a simple RPMB driver
+> > interface which can be accessed by the optee driver to facilitate early
+> > RPMB access to OP-TEE OS (secure OS) during the boot time.
+> >
+> > A TEE device driver can claim the RPMB interface, for example, via
+> > rpmb_interface_register() or rpmb_dev_find_device(). The RPMB driver
+> > provides a callback to route RPMB frames to the RPMB device accessible
+> > via rpmb_route_frames().
+> >
+> > The detailed operation of implementing the access is left to the TEE
+> > device driver itself.
+> >
+> > Signed-off-by: Tomas Winkler <tomas.winkler@intel.com>
+> > Signed-off-by: Alex Benn=C3=A9e <alex.bennee@linaro.org>
+> > Signed-off-by: Shyam Saini <shyamsaini@linux.microsoft.com>
+> > Signed-off-by: Jens Wiklander <jens.wiklander@linaro.org>
+>
+> I would mention in the commit that the subsystem is currently
+> only used with eMMC but is designed to be used also by UFS
+> and NVME. Nevertheless, no big deal so:
+> Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
+>
+> > +config RPMB
+> > +       tristate "RPMB partition interface"
+> > +       depends on MMC
+>
+> depends on MMC || SCSI_UFSHCD || NVME_CORE
+> ?
+>
+> Or do we want to hold it off until we implement the backends?
 
-As commit 406100f3da08 ("cpuset: fix race between hotplug work and later
- CPU offline")  mentioned. This problem happen in cgroup v2:
+Correct, I think we should hold it off until then.
 
-This problem can also happen in cgroup v1 pressure test, which onlines
-and offlines cpus, and sets cpuset.cpus to rebuild domains with
-sched_load_balance off.
+Thanks,
+Jens
 
-smpboot: CPU 1 is now offline
-BUG: unable to handle page fault for address: 0000342bad598668
-PGD 0 P4D 0
-Oops: 0000 [#1] PREEMPT SMP NOPTI
-CPU: 54 PID: 9966 Comm: sh Kdump: loaded Tainted: G S         OE      6.8.0-rc7+ #5
-Hardware name: Powerleader PR2715P3/T1DM-E2, BIOS OEM57.22 11/23/2021
-RIP: 0010:sd_init+0x204/0x390
-Code: 00 02 00 00 a8 80 0f 84 ad 00 00 00 41 c7 44 24 2c 6e 00 00 00 85 d2 74 2f 48 63 54 24 18 49 8b 45 20 48 8b 14 d5 60 0b 79 ab <48> 8b 04 02 49 89 84 24 10 01 00 00 f0 ff 00 49 8b 84 24 10 01 00
-RSP: 0018:ffff9f90669afc18 EFLAGS: 00010206
-RAX: 0000342c00e62668 RBX: 0000000000000000 RCX: 00000000ffffffa0
-RDX: ffffffffac736000 RSI: 0000000000000060 RDI: ffff8b24b8143930
-RBP: ffff8b24b8143920 R08: 0000000000000060 R09: ffff8b2635783670
-R10: 0000000000000001 R11: 0000000000000001 R12: ffff8b24b8143800
-R13: ffff8ae687511600 R14: ffffffffabc6b9b0 R15: ffff8b25c0040ea0
-FS:  00007fd93c734740(0000) GS:ffff8b24bca00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 0000342bad598668 CR3: 00000001e0934005 CR4: 00000000007706f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-PKRU: 55555554
-Call Trace:
- <TASK>
- ? __die+0x24/0x70
- ? page_fault_oops+0x82/0x150
- ? local_clock_noinstr+0xf/0xb0
- ? exc_page_fault+0x69/0x1b0
- ? asm_exc_page_fault+0x26/0x30
- ? sd_init+0x204/0x390
- ? sd_init+0x11c/0x390
- build_sched_domains+0x171/0x640
- partition_sched_domains_locked+0x2a1/0x3c0
- rebuild_sched_domains_locked+0x14f/0x200
- update_cpumask+0x27c/0x5f0
- cpuset_write_resmask+0x423/0x530
- kernfs_fop_write_iter+0x160/0x220
- vfs_write+0x355/0x480
- ksys_write+0x69/0xf0
- do_syscall_64+0x66/0x180
- entry_SYSCALL_64_after_hwframe+0x6e/0x76
-RIP: 0033:0x7fd93c4fc907
-Code: 0f 00 f7 d8 64 89 02 48 c7 c0 ff ff ff ff eb b7 0f 1f 00 f3 0f 1e fa 64 8b 04 25 18 00 00 00 85 c0 75 10 b8 01 00 00 00 0f 05 <48> 3d 00 f0 ff ff 77 51 c3 48 83 ec 28 48 89 54 24 18 48 89 74 24
-RSP: 002b:00007fff153c7f08 EFLAGS: 00000246 ORIG_RAX: 0000000000000001
-RAX: ffffffffffffffda RBX: 0000000000000002 RCX: 00007fd93c4fc907
-RDX: 0000000000000002 RSI: 000055d055679900 RDI: 0000000000000001
-RBP: 000055d055679900 R08: 00007fd93c5b01e0 R09: 00007fd93c5b0260
-R10: 00007fd93c5b0160 R11: 0000000000000246 R12: 0000000000000002
-R13: 00007fd93c5f25a0 R14: 0000000000000002 R15: 00007fd93c5f27a0
-
-It must guarantee that cpus in domains passing to
-partition_and_rebuild_sched_domains must be active. So the domains should
-be checked after generate_sched_domains.
-
-Fixes: 0ccea8feb980 ("cpuset: Make generate_sched_domains() work with partition")
-Signed-off-by: Chen Ridong <chenridong@huawei.com>
----
- kernel/cgroup/cpuset.c | 7 +++++++
- 1 file changed, 7 insertions(+)
-
-diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
-index 927bef3a598a..0e0d469c2591 100644
---- a/kernel/cgroup/cpuset.c
-+++ b/kernel/cgroup/cpuset.c
-@@ -1210,6 +1210,7 @@ static void rebuild_sched_domains_locked(void)
- 	cpumask_var_t *doms;
- 	struct cpuset *cs;
- 	int ndoms;
-+	int i;
- 
- 	lockdep_assert_cpus_held();
- 	lockdep_assert_held(&cpuset_mutex);
-@@ -1251,6 +1252,12 @@ static void rebuild_sched_domains_locked(void)
- 	/* Generate domain masks and attrs */
- 	ndoms = generate_sched_domains(&doms, &attr);
- 
-+	/* guarantee no CPU offlining in doms */
-+	for (i = 0; i < ndoms; ++i) {
-+		if (!cpumask_subset(doms[i], cpu_active_mask))
-+			return;
-+	}
-+
- 	/* Have scheduler rebuild the domains */
- 	partition_and_rebuild_sched_domains(ndoms, doms, attr);
- }
--- 
-2.34.1
-
+>
+> Yours,
+> Linus Walleij
 
