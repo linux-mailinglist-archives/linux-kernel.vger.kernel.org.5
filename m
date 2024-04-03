@@ -1,186 +1,131 @@
-Return-Path: <linux-kernel+bounces-129726-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-129727-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id D6C8E896F14
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 14:42:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id CCD9A896F19
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 14:43:37 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 05A5F1C261ED
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 12:42:13 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0A6361C21A30
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 12:43:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4B5941482E0;
-	Wed,  3 Apr 2024 12:41:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8AE5C141991;
+	Wed,  3 Apr 2024 12:43:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="CqqIT3v9"
-Received: from mail-pl1-f174.google.com (mail-pl1-f174.google.com [209.85.214.174])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="CjGy258Y"
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C155C5B05E;
-	Wed,  3 Apr 2024 12:41:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8CABBB66E
+	for <linux-kernel@vger.kernel.org>; Wed,  3 Apr 2024 12:43:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.1
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712148106; cv=none; b=qWkQS8Gb9O8NgkCUUUCDN/imh00R169Gmrh5rKTIJQWTgGvqu6tgLgT9LtVAHyc5lRsCMJ4OabPk8HD0UvQPhCSnNkGrn+lSWG0dX2Skwzdev4k7qQNYDLPvf9LN0tay+xRDBovUfo1qjnyXj510BCEW/C0vDFsg3C9gJaZ7vz0=
+	t=1712148210; cv=none; b=EzMh8MZDkmo9uQ5QAti7JAF7R+ycn5JB2l4RFjPmYrYmI3P1T9viqZeONyn8tZvfT9rizzoImk8RfgjOmjw18m+hT5cjSuq3AMs+aY4c7TEZKAPoDVlT341YenzxVXCiGcv5m91OL+7ZYP7hv1yfGlmAf1rF7RfX/OE6YqCcRZE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712148106; c=relaxed/simple;
-	bh=4LdezfRohLDwiQJGR9wslgydZEdUGpcVaPaT2+7yROg=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=WvoJVANyvFLAyCaL+lVKG2kHo2VTD38MLs43BWybGbt1kwEhmrv7ddKTsFgqybveSUBacnzKfnt67bkP3V3mmsWBNHrR1w2TxFJyeE4kLeSMPi7WKCHtzP7pndX5c+BLjBZlGX1be+ppwGtE8Rp/1LcoovEgvtr9eruNFfypyW8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=CqqIT3v9; arc=none smtp.client-ip=209.85.214.174
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f174.google.com with SMTP id d9443c01a7336-1dff837d674so49888035ad.3;
-        Wed, 03 Apr 2024 05:41:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1712148104; x=1712752904; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=LegyacEHrLw0exuWMYz7mVagVL/ivvgsfQicrbS4J3E=;
-        b=CqqIT3v9TYuIAYt5H+YL9lqo+hhGBvGpQQLKLfTRdhbhH5YtBdaJjnqOpGCCholptg
-         MVJyde4ZQo5lHOAO6iFycQsj5zs0G1rdUcEpVpqEYJtSLCP94JTGyH/3HaMaKcOnb8zw
-         MSoJrBpgQc7Q7rb4w7a6SJ+/1Mn4RShY3U4ct88/JDBxxYFkGuoP3aWRuLoHEsw7zTEW
-         ug5wwZRWOmZlywzk3t7XH/fdQnh1PIfu8JvO4lTKn7ARhKSP41MTipENdOQoiuC0NXSP
-         WyzFwJn+pF4oAZpFAlYI7kPnNiapXKpUGQIOU8jCE7ydvydAuMXbYwAbfdXI/T6ewm1R
-         CXOg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712148104; x=1712752904;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=LegyacEHrLw0exuWMYz7mVagVL/ivvgsfQicrbS4J3E=;
-        b=vw5wj78OMdzxDWqlu6ktdwxDlU6rD5S1gRgrcqBADJtIOEUOimWOWGtHsfj4PRpJx4
-         wlskJ4NJVuSs+3emd6a0igvrf0uEnx29Iq6RGmTKVkFSU1wqmOoa7LR/5NkEzLoDW9TV
-         ldEVuO2JM8pnTY1cGMk6flPWFvmMOL8CSSJoorOT0HqC6yXfsPO/jqCV4CeLFOF1PrnC
-         /gElv8KUDcxtes93CCZQBUybgbBbbZQkhzAH39+iBOzGYJFXGc4DRMPsXE6kjQHoQLXN
-         F0gemkDhZhftYiqx4dm3rpex7yOw//Dolj3FsFrPNADMPR4hMKBZEqb7TeVc595ZMDd/
-         VQdA==
-X-Forwarded-Encrypted: i=1; AJvYcCWLSFKq2QOLEqXZMltKIvShiqeys0rRLyVQQp9ZXs0eJ925NuEov8YEM10OfS45eA9A+urXwys+nLQeyo7mllUkd6YpS09+hvLEe8c2G5zFUk0fRYi6qnJXqaj3W6ZFNMf+A0/sUiMGJLQS7icaup/QENEaEggS+GwTkBNOpBnv4tdNZlqGQb76
-X-Gm-Message-State: AOJu0Yz7K8b6Jyyt+c4aYOZDDWA26rJSPdJb1Zn6DxDe2znUxIUyNeRV
-	25dTQWlDz+ThR4bFyihIgV1P+Whh1CDEEbyFLLlrkItmlpYL7Dk6
-X-Google-Smtp-Source: AGHT+IGuj7F88Ztl6J+2YZCPyQ+J8i6U/HfwKVd62W0ZFgBlt7d/Xsa+I2YwXm5q43DCvaCxKaPRQQ==
-X-Received: by 2002:a17:902:e94f:b0:1e2:88c9:6c08 with SMTP id b15-20020a170902e94f00b001e288c96c08mr3839019pll.49.1712148103885;
-        Wed, 03 Apr 2024 05:41:43 -0700 (PDT)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id c12-20020a170902c1cc00b001e27dcfdf15sm3243944plc.145.2024.04.03.05.41.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 03 Apr 2024 05:41:42 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Date: Wed, 3 Apr 2024 05:41:41 -0700
-From: Guenter Roeck <linux@roeck-us.net>
-To: Matti Vaittinen <mazziesaccount@gmail.com>
-Cc: Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>,
-	Lee Jones <lee@kernel.org>,
-	Wim Van Sebroeck <wim@linux-watchdog.org>,
-	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-watchdog@vger.kernel.org
-Subject: Re: [RFC PATCH 5/6] watchdog: ROHM BD96801 PMIC WDG driver
-Message-ID: <d2ab33e6-4d3e-472a-b4d7-b703955989ba@roeck-us.net>
-References: <cover.1712058690.git.mazziesaccount@gmail.com>
- <f8e743a6c49607de0dd7a27778383477e051b130.1712058690.git.mazziesaccount@gmail.com>
- <4fa3a64b-60fb-4e5e-8785-0f14da37eea2@roeck-us.net>
- <279336b3-f28d-48ee-a10f-47abba7b0b89@gmail.com>
+	s=arc-20240116; t=1712148210; c=relaxed/simple;
+	bh=CxzGTpdXkg4fUNn85DmT3FCxHdc+WS66M2plLyG7HE0=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=sOz5aXP1tJxCVPptYPVascufRU3hcVWInkFXfQ/Eq+sKf6G8VBEulWGCLT8pPXc6qCmyXNqwrLMaj6cco7worzc03HPYh3Gkj6YacBR79gUJe7Kaq7p6exfGFB9XOyuZN6EFPFF4VqVx5O9g60E7AMQxJJdcQ6H05I87UoCA1VY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=CjGy258Y; arc=none smtp.client-ip=148.163.156.1
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
+Received: from pps.filterd (m0356517.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 433C5VLQ019082;
+	Wed, 3 Apr 2024 12:43:09 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : date : message-id : content-transfer-encoding : mime-version; s=pp1;
+ bh=Uv5M8O+T/sry/XP01aR8MaHBdHM+AWWW/MZvvktXdTU=;
+ b=CjGy258YD2s9cDjFEc8zi7vU8/L33kQ3W74hkE8J4pfdIdbhVZu5jzIkrOzN0kuwbfno
+ Epn8lc71e0Sn9rMkJp3wsXODtIT2naK3LtG7Vj+aljjTFBpCR9VKWR453aXoU3Jc77fr
+ CtQzc2qc448FEZIo4vixwM5sMaOigHajrRNDYE282OvqKC/5sKcRq9irtXub7qKCcpgi
+ MsqT1rn7Rewhc/RXp6alfBD3DN2aM8espOAC+2R+jVr5tTs4263WSNXYvRL4HZrlDDYE
+ yErsUqnvgPASaqa94uFiABVwSknSoLgQ9LtUHtkuQ4ckcS80F71ADrg5cF6UNIFtGuXy sw== 
+Received: from ppma12.dal12v.mail.ibm.com (dc.9e.1632.ip4.static.sl-reverse.com [50.22.158.220])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3x96j2g48e-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 03 Apr 2024 12:43:08 +0000
+Received: from pps.filterd (ppma12.dal12v.mail.ibm.com [127.0.0.1])
+	by ppma12.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 433AilxJ008425;
+	Wed, 3 Apr 2024 12:43:07 GMT
+Received: from smtprelay06.fra02v.mail.ibm.com ([9.218.2.230])
+	by ppma12.dal12v.mail.ibm.com (PPS) with ESMTPS id 3x6w2u5j9c-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 03 Apr 2024 12:43:07 +0000
+Received: from smtpav05.fra02v.mail.ibm.com (smtpav05.fra02v.mail.ibm.com [10.20.54.104])
+	by smtprelay06.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 433Ch2Dh18547062
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Wed, 3 Apr 2024 12:43:04 GMT
+Received: from smtpav05.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 3AC102004E;
+	Wed,  3 Apr 2024 12:43:02 +0000 (GMT)
+Received: from smtpav05.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 097682004D;
+	Wed,  3 Apr 2024 12:43:02 +0000 (GMT)
+Received: from tuxmaker.boeblingen.de.ibm.com (unknown [9.152.85.9])
+	by smtpav05.fra02v.mail.ibm.com (Postfix) with ESMTP;
+	Wed,  3 Apr 2024 12:43:00 +0000 (GMT)
+From: Niklas Schnelle <schnelle@linux.ibm.com>
+To: Richard Weinberger <richard@nod.at>,
+        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
+        Johannes Berg <johannes@sipsolutions.net>
+Cc: linux-um@lists.infradead.org, Arnd Bergmann <arnd@kernel.org>,
+        Heiko Carstens <hca@linux.ibm.com>, linux-kernel@vger.kernel.org,
+        Niklas Schnelle <schnelle@linux.ibm.com>
+Subject: [PATCH 0/1] um: Handle HAS_IOPORT dependencies
+Date: Wed,  3 Apr 2024 14:42:59 +0200
+Message-Id: <20240403124300.65379-1-schnelle@linux.ibm.com>
+X-Mailer: git-send-email 2.40.1
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: kJvPQlbNZnmKq_rOTTNDBZ_HRwvTk6z3
+X-Proofpoint-ORIG-GUID: kJvPQlbNZnmKq_rOTTNDBZ_HRwvTk6z3
+Content-Transfer-Encoding: 8bit
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <279336b3-f28d-48ee-a10f-47abba7b0b89@gmail.com>
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-04-03_10,2024-04-03_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 adultscore=0
+ mlxscore=0 lowpriorityscore=0 malwarescore=0 suspectscore=0
+ impostorscore=0 spamscore=0 phishscore=0 priorityscore=1501 clxscore=1011
+ mlxlogscore=999 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2403210000 definitions=main-2404030087
 
-On Wed, Apr 03, 2024 at 09:34:35AM +0300, Matti Vaittinen wrote:
-> Hi Guenter,
-> 
-> First of all, thanks for the review. It was quick! Especially when we speak
-> of a RFC series. Very much appreciated.
-> 
-> On 4/2/24 20:11, Guenter Roeck wrote:
-> > On Tue, Apr 02, 2024 at 04:11:41PM +0300, Matti Vaittinen wrote >> +static int init_wdg_hw(struct wdtbd96801 *w)
-> > > +{
-> > > +	u32 hw_margin[2];
-> > > +	int count, ret;
-> > > +	u32 hw_margin_max = BD96801_WDT_DEFAULT_MARGIN, hw_margin_min = 0;
-> > > +
-> > > +	count = device_property_count_u32(w->dev->parent, "rohm,hw-timeout-ms");
-> > > +	if (count < 0 && count != -EINVAL)
-> > > +		return count;
-> > > +
-> > > +	if (count > 0) {
-> > > +		if (count > ARRAY_SIZE(hw_margin))
-> > > +			return -EINVAL;
-> > > +
-> > > +		ret = device_property_read_u32_array(w->dev->parent,
-> > > +						     "rohm,hw-timeout-ms",
-> > > +						     &hw_margin[0], count);
-> > > +		if (ret < 0)
-> > > +			return ret;
-> > > +
-> > > +		if (count == 1)
-> > > +			hw_margin_max = hw_margin[0];
-> > > +
-> > > +		if (count == 2) {
-> > > +			hw_margin_max = hw_margin[1];
-> > > +			hw_margin_min = hw_margin[0];
-> > > +		}
-> > > +	}
-> > > +
-> > > +	ret = bd96801_set_wdt_mode(w, hw_margin_max, hw_margin_min);
-> > > +	if (ret)
-> > > +		return ret;
-> > > +
-> > > +	ret = device_property_match_string(w->dev->parent, "rohm,wdg-action",
-> > > +					   "prstb");
-> > > +	if (ret >= 0) {
-> > > +		ret = regmap_update_bits(w->regmap, BD96801_REG_WD_CONF,
-> > > +				 BD96801_WD_ASSERT_MASK,
-> > > +				 BD96801_WD_ASSERT_RST);
-> > > +		return ret;
-> > > +	}
-> > > +
-> > > +	ret = device_property_match_string(w->dev->parent, "rohm,wdg-action",
-> > > +					   "intb-only");
-> > > +	if (ret >= 0) {
-> > > +		ret = regmap_update_bits(w->regmap, BD96801_REG_WD_CONF,
-> > > +				 BD96801_WD_ASSERT_MASK,
-> > > +				 BD96801_WD_ASSERT_IRQ);
-> > > +		return ret;
-> > > +	}
-> > 
-> > I don't see the devicetree bindings documented in the series.
-> 
-> Seems like I have missed this WDG binding. But after reading your comment
-> below, I am wondering if I should just drop the binding and default to
-> "prstb" (shutdown should the feeding be skipped) - and leave the "intb-only"
-> case for one who actually needs such.
-> 
-> > I am also a bit surprised that the interrupt isn't handled in the driver.
-> > Please explain.
-> 
-> Basically, I just had no idea what the IRQ should do in the generic case. If
-> we get an interrupt, it means the WDG feeding has failed. My thinking is
-> that, what should happen is forced reset. I don't see how that can be done
-> in reliably manner from an IRQ handler.
-> 
-> When the "prstb WDG action" is set (please, see the above DT binding
-> handling), the PMIC shall shut down power outputs. This should get the
-> watchdog's job done.
-> 
-> With the "intb-only"-option, PMIC will not turn off the power. I'd expect
-> there to be some external HW connection which handles the reset by HW.
-> 
-> After all this being said, I wonder if I should just unconditionally
-> configure the PMIC to always turn off the power (prstb option) should the
-> feeding fail? Or do someone have some suggestion what the IRQ handler should
-> do (except maybe print an error msg)?
-> 
+Hi Richard, Anton, Johannes,
 
-Other watchdog drivers call emergency_restart() if the watchdog times out
-and triggers an interrupt. Are you saying this won't work for this system ?
-If so, please explain.
+This is a follow up in my ongoing effort of making inb()/outb() and
+similar I/O port accessors compile-time optional. Previously I sent this
+as a treewide series titled "treewide: Remove I/O port accessors for
+HAS_IOPORT=n" with the latest being its 5th version[0]. With a significant
+subset of patches merged I've changed over to per-subsystem series. These
+series are stand alone and should be merged via the relevant tree such
+that with all subsystems complete we can follow this up with the final
+patch that will make the I/O port accessors compile-time optional.
+
+The current state of the full series with changes to the remaining
+subsystems and the aforementioned final patch can be found for your
+convenience on my git.kernel.org tree in the has_ioport_v6 branch[1] with
+signed tags. As for compile-time vs runtime see Linus' reply to my first
+attempt[2].
 
 Thanks,
-Guenter
+Niklas
+
+[0] https://lore.kernel.org/all/20230522105049.1467313-1-schnelle@linux.ibm.com/
+[1] https://git.kernel.org/pub/scm/linux/kernel/git/niks/linux.git/log/?h=has_ioport_v6
+[2] https://lore.kernel.org/lkml/CAHk-=wg80je=K7madF4e7WrRNp37e3qh6y10Svhdc7O8SZ_-8g@mail.gmail.com/
+
+Niklas Schnelle (1):
+  um: Select HAS_IOREMAP for UML_IOMEM_EMULATION
+
+ arch/um/Kconfig | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+-- 
+2.40.1
+
 
