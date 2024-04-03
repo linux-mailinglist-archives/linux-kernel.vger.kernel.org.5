@@ -1,115 +1,107 @@
-Return-Path: <linux-kernel+bounces-130077-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-130078-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id D76688973D7
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 17:20:38 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8B4928973EB
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 17:24:07 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 91844284BCD
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 15:20:37 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 2E9A4B31E72
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 15:20:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B5C5214D425;
-	Wed,  3 Apr 2024 15:16:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0641E14D45F;
+	Wed,  3 Apr 2024 15:16:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Nm0Ybv9G"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="EV7hJIgP"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ED59426292;
-	Wed,  3 Apr 2024 15:16:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 48D7826292
+	for <linux-kernel@vger.kernel.org>; Wed,  3 Apr 2024 15:16:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712157376; cv=none; b=LFdBtmH2Aasco3G8YtTRb1bNNKJ7ewBS8MuE9kVQDpGbJhwJUp0S78sRtxh/QaHVsfcbXN1SePd2Hoss4V5ur2hogNxqw4435MwJlh63Jbs5KfrwMnrjW8faY266B51vX62oYnDlqtiXk0szczfLnucQgryzQLU7hw1sIF+0Zt8=
+	t=1712157380; cv=none; b=EexPlykUWrzUxde6zncQJxNdWbzk9OJY0PuZJp+wbM8ayjXVNZIi6rN3nG+nhVz0a12i/3ma2XR62hy0BCz3PZOZuTKBrEJQgCpupAnvau8iZsJDNZBSkOGVfOnrORGI5gb8fJkr7N9TpqkzFX9GIymeJ3mA8RT67cNOT20UvPY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712157376; c=relaxed/simple;
-	bh=z3lQD5lgMachfwYyNrVW8WJbO2hEjtLyQulbSy5ojU0=;
-	h=Mime-Version:Content-Type:Date:Message-Id:To:Cc:Subject:From:
-	 References:In-Reply-To; b=DYlKycI1y45RrXS7BT6oeGRRJoVB6yMRWA9YObiPIPSZZgwcFXB4AdBLM/6DnN+2QsMvm3GHBtcpfk7wjp5wPyeDAKNzP7nDN9PT3wZ2Yg/UQgEIDnv435OHGfnOVT9LYJNknLM0HHecTwhLapArQX+YzQFcSnoXHX91BaQk+r4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Nm0Ybv9G; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EBF34C433C7;
-	Wed,  3 Apr 2024 15:16:10 +0000 (UTC)
+	s=arc-20240116; t=1712157380; c=relaxed/simple;
+	bh=riKi8wnczMz8UTMFc9nPxQ0MsS2H5IgGazls9fbwT4c=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition; b=bwrYjyXCBZP3yfpQ9rznWBSwRNtvuCWIYn6wkfY8eKZhygJGo8do5hMYyO4KGuWxcCV/g/CHwOlLJWnb/swd1B3zSsVgHBHDv34/pWOguhn7pantwuJyG3VfDBjB6yGkyTgco2jJ3z7FEh0LXe0TJ/mYcCIULgaOJ/mqRBF87UM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=EV7hJIgP; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B534EC433C7;
+	Wed,  3 Apr 2024 15:16:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712157375;
-	bh=z3lQD5lgMachfwYyNrVW8WJbO2hEjtLyQulbSy5ojU0=;
-	h=Date:To:Cc:Subject:From:References:In-Reply-To:From;
-	b=Nm0Ybv9GSWZkkgEyiuULaleJd2ST6xA9OgSewczf9SKZakwdUVS3HboknHyllu8MF
-	 kFWTjqejWXJP5RVnNMHDah5KRw5glDItlYj6dxIHJhrAPxzGUfV5hFZ2wROKzcXdco
-	 /6V6VTQqeYAtpQsjsbW8/rZd8ucVXgjwUEleGnhAVreBRcNBT9XjaB8W+JCwh1lC57
-	 ndzmd97Xo/T2tZ3OwqWvn24On1MYKNGFXjQTzcu3PLTEk3fq2W7ZuZFSwGUuevTZQs
-	 RZLLShcGwPfNq+Cm1oXQSmPikS9CYW6NsME3Kl7vUXUlIMa2oB+D6Jq+hpAWgSt6T1
-	 CYBrKO5DCVIjA==
+	s=k20201202; t=1712157380;
+	bh=riKi8wnczMz8UTMFc9nPxQ0MsS2H5IgGazls9fbwT4c=;
+	h=Date:From:To:Cc:Subject:From;
+	b=EV7hJIgPnUPfC1PqLnYiJNImMHGwrLVqxEmvCO4iL+TKaQc1EpHlvXdEBpNY6EAgD
+	 JrI89htlDHWXATzVVXSd3PWcnt7Z6V9uFQoUU+BOnPnipbYZAlgUJ4iTIkenfxYXxp
+	 jNOQb0aQsz4OB+7EtY33o2S2bom2VKEzyxJhnWK6Fx/ZEAHMOHo28aixPTuYbs+itR
+	 YRRy9W1sa7bWB3fDIyMoEKPYcJSabc67NAgh0n39pQUJNXHTNbf7LmWBlw5zIetod5
+	 RtsPAwHCixvoWgmceTl/98nvwxLA/8h9SwEB1nAATC40QSKlCSiFlVEPrTgKLGVPHB
+	 lopy4vxdM69YA==
+Date: Wed, 3 Apr 2024 12:16:16 -0300
+From: Arnaldo Carvalho de Melo <acme@kernel.org>
+To: Namhyung Kim <namhyung@kernel.org>
+Cc: Adrian Hunter <adrian.hunter@intel.com>,
+	Ian Rogers <irogers@google.com>, Jiri Olsa <jolsa@kernel.org>,
+	Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: [PATCH 1/1] perf annotate: Initialize 'arch' variable not to trip
+ some -Werror=maybe-uninitialized
+Message-ID: <Zg1ywF7uRsfXYfYS@x1>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset=UTF-8
-Date: Wed, 03 Apr 2024 18:16:09 +0300
-Message-Id: <D0AL4STCYS9S.2F0HJSH4E3M3B@kernel.org>
-To: "Dave Hansen" <dave.hansen@intel.com>, "Haitao Huang"
- <haitao.huang@linux.intel.com>, <dave.hansen@linux.intel.com>,
- <tj@kernel.org>, <mkoutny@suse.com>, <linux-kernel@vger.kernel.org>,
- <linux-sgx@vger.kernel.org>, <x86@kernel.org>, <cgroups@vger.kernel.org>,
- <tglx@linutronix.de>, <mingo@redhat.com>, <bp@alien8.de>, <hpa@zytor.com>,
- <sohil.mehta@intel.com>, <tim.c.chen@linux.intel.com>
-Cc: <zhiquan1.li@intel.com>, <kristen@linux.intel.com>, <seanjc@google.com>,
- <zhanb@microsoft.com>, <anakrish@microsoft.com>,
- <mikko.ylinen@linux.intel.com>, <yangjie@microsoft.com>,
- <chrisyan@microsoft.com>
-Subject: Re: [PATCH v9 15/15] selftests/sgx: Add scripts for EPC cgroup
- testing
-From: "Jarkko Sakkinen" <jarkko@kernel.org>
-X-Mailer: aerc 0.17.0
-References: <20240205210638.157741-1-haitao.huang@linux.intel.com>
- <20240205210638.157741-16-haitao.huang@linux.intel.com>
- <4be7b291010973c203ed8c7bcd25b626c1290231.camel@kernel.org>
- <D04OVW6I8MUA.1OAIHFQ8943SM@kernel.org>
- <op.2lbjl0oawjvjmi@hhuan26-mobl.amr.corp.intel.com>
- <D071OAFZ80O6.XEDXJ8AF4PK9@kernel.org>
- <18e84d04-0b75-4188-a94d-6b033f4edbf0@intel.com>
-In-Reply-To: <18e84d04-0b75-4188-a94d-6b033f4edbf0@intel.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-On Tue Apr 2, 2024 at 6:42 PM EEST, Dave Hansen wrote:
-> On 3/30/24 04:23, Jarkko Sakkinen wrote:
-> >>> I also wonder is cgroup-tools dependency absolutely required or could
-> >>> you just have a function that would interact with sysfs?
-> >> I should have checked email before hit the send button for v10 =F0=9F=
-=99=82.
-> >>
-> >> It'd be more complicated and less readable to do all the stuff without=
- the =20
-> >> cgroup-tools, esp cgexec. I checked dependency, cgroup-tools only depe=
-nds =20
-> >> on libc so I hope this would not cause too much inconvenience.
-> > As per cgroup-tools, please prove this. It makes the job for more
-> > complicated *for you* and you are making the job more  complicated
-> > to every possible person in the planet running any kernel QA.
->
-> I don't see any other use of cgroup-tools in testing/selftests.
->
-> I *DO* see a ton of /bin/bash use though.  I wouldn't go to much trouble
-> to make the thing ash-compatible.
->
-> That said, the most important thing is to get some selftests in place.
-> If using cgroup-tools means we get actual, runnable tests in place,
-> that's a heck of a lot more important than making them perfect.
-> Remember, almost nobody uses SGX.  It's available on *VERY* few systems
-> from one CPU vendor and only in very specific hardware configurations.
+In some older distros the build is failing due to
+-Werror=maybe-uninitialized, in this case we know that this isn't the
+case because 'arch' gets initialized by evsel__get_arch(), so just init
+it to NULL to silence those cases.
 
-Ash-compatible is good enough for me, so let's draw the line there.
+E.g.:
 
-Ash-compatibility does not cause any major hurdle as can we seen from
-Haitao's patch. Earlier version was not even POSIX-compatible, given
-that it used hard-coded path.
+    32    17.12 opensuse:15.5                 : FAIL gcc version 7.5.0 (SUSE Linux)
+        util/annotate.c: In function 'hist_entry__get_data_type':
+    util/annotate.c:2269:15: error: 'arch' may be used uninitialized in this function [-Werror=maybe-uninitialized]
+      struct arch *arch;
+                   ^~~~
+    cc1: all warnings being treated as errors
 
-Most of the added stuff come open coding the tools but in the test
-code that is not the big deal, and helps with debugging in the future.
-Even right now it helps reviewing kernel patches because it documents
-exactly how the feature is seen from user space.
+      43     7.30 ubuntu:18.04-x-powerpc64el    : FAIL gcc version 7.5.0 (Ubuntu 7.5.0-3ubuntu1~18.04)
+    util/annotate.c: In function 'hist_entry__get_data_type':
+    util/annotate.c:2351:36: error: 'arch' may be used uninitialized in this function [-Werror=maybe-uninitialized]
+       if (map__dso(ms->map)->kernel && arch__is(arch, "x86") &&
+                                        ^~~~~~~~~~~~~~~~~~~~~
+    cc1: all warnings being treated as errors
 
-BR, Jarkko
+Cc: Adrian Hunter <adrian.hunter@intel.com>
+Cc: Ian Rogers <irogers@google.com>
+Cc: Jiri Olsa <jolsa@kernel.org>
+Cc: Namhyung Kim <namhyung@kernel.org>
+Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
+---
+ tools/perf/util/annotate.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/tools/perf/util/annotate.c b/tools/perf/util/annotate.c
+index b795f27f26024f35..f316e0b65897957a 100644
+--- a/tools/perf/util/annotate.c
++++ b/tools/perf/util/annotate.c
+@@ -2266,7 +2266,7 @@ struct annotated_data_type *hist_entry__get_data_type(struct hist_entry *he)
+ {
+ 	struct map_symbol *ms = &he->ms;
+ 	struct evsel *evsel = hists_to_evsel(he->hists);
+-	struct arch *arch;
++	struct arch *arch = NULL;
+ 	struct disasm_line *dl;
+ 	struct annotated_insn_loc loc;
+ 	struct annotated_op_loc *op_loc;
+-- 
+2.44.0
+
 
