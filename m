@@ -1,37 +1,37 @@
-Return-Path: <linux-kernel+bounces-130032-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-130033-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 138C989736C
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 17:07:31 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 10F0B897368
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 17:06:52 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E15E1B2BAFB
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 15:06:38 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A545C1F244CC
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 15:06:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E7C78149E0E;
-	Wed,  3 Apr 2024 15:06:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 204AF14A082;
+	Wed,  3 Apr 2024 15:06:25 +0000 (UTC)
 Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C2CAA149DE9
-	for <linux-kernel@vger.kernel.org>; Wed,  3 Apr 2024 15:06:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3EA8213A272
+	for <linux-kernel@vger.kernel.org>; Wed,  3 Apr 2024 15:06:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712156772; cv=none; b=NQjePjfPLQhOVhEvyO9lJG6G36/Phaw9buBc4AhctJz1BQon/U2wWy3cH3wDGD4Qid6AwGZi7hTwSXOk3Fz7/MTtc9QWhAUgvc80lJ8AGT3l91DTM3aS+naeLeEIbG4s7okQme6ZIDdftOvUG/jRm6IdqXcvl6YrdP4tDo163yc=
+	t=1712156784; cv=none; b=I9+xA6PyAqY5lXHlP2B66DaNX7435p9h+Z9d43VixDrYgBOAooggrReShZJHvEMO63PivRL03FTJv57MaE8D2p+dQm4zkt8EOFB8ugdH8xO8dEVhzI5UyM93NN/Q1S57zrurm2mgXsC25DAG47j0wVyyrpdF5CehOHDIN/Zhy6I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712156772; c=relaxed/simple;
-	bh=KeJBZfvQpzst1Q8dnNMU32tcHHCcw1VBPsqiOrQaTrg=;
+	s=arc-20240116; t=1712156784; c=relaxed/simple;
+	bh=YrK76JRYQ9vB2jJg41sUj5FbQqSSvT+rqTxOnYT1bKE=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=JTkG59YKOHNAHHxn24Oz90dxzgrsF/h11FnfwHQjU0EbBwjLSo8catuvhW8XI476Is/Ch38gc6rvIqltxc+7P2dIK6GsUq5Mjy8vLbhi/2tAxXRgfIYW4QwaiXYtq8Vzhkcf0xD+MPOFY/7ULFU/wfie2ggFjCuEAT8Rs+P1VpM=
+	 MIME-Version; b=dmTcSe3kj+nvCPETPlLkj2TN9j0nKAGGGLtoLcypLZXPZnbPAQfn8i+pV63MYo2Ar65UEr7iYhwG5Tq+kACSBK9Z04VCbm0mHP0+pL0PB+yqhAPLZ8xfgHoQEJgmN882YS2zFBlKxuSMbYMtfMUNcymguUY1F5BYepuLjDdLFfg=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 492B01650;
-	Wed,  3 Apr 2024 08:06:41 -0700 (PDT)
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id AE0B91655;
+	Wed,  3 Apr 2024 08:06:52 -0700 (PDT)
 Received: from e126645.arm.com (unknown [10.57.74.15])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 64B0E3F7B4;
-	Wed,  3 Apr 2024 08:06:06 -0700 (PDT)
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 486973F7B4;
+	Wed,  3 Apr 2024 08:06:17 -0700 (PDT)
 From: Pierre Gondois <pierre.gondois@arm.com>
 To: linux-kernel@vger.kernel.org
 Cc: Aaron Lu <aaron.lu@intel.com>,
@@ -50,13 +50,13 @@ Cc: Aaron Lu <aaron.lu@intel.com>,
 	Mel Gorman <mgorman@suse.de>,
 	Daniel Bristot de Oliveira <bristot@redhat.com>,
 	Valentin Schneider <vschneid@redhat.com>,
-	Tejun Heo <tj@kernel.org>,
 	Michal Hocko <mhocko@suse.com>,
 	Waiman Long <longman@redhat.com>,
+	Tejun Heo <tj@kernel.org>,
 	Andrew Morton <akpm@linux-foundation.org>
-Subject: [PATCH 1/7] sched/isolation: Introduce housekeeping_runtime isolation
-Date: Wed,  3 Apr 2024 17:05:33 +0200
-Message-Id: <20240403150543.2793354-2-pierre.gondois@arm.com>
+Subject: [PATCH 2/7] sched/isolation: Move HK_TYPE_SCHED to housekeeping runtime
+Date: Wed,  3 Apr 2024 17:05:34 +0200
+Message-Id: <20240403150543.2793354-3-pierre.gondois@arm.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20240403150543.2793354-1-pierre.gondois@arm.com>
 References: <20240403150543.2793354-1-pierre.gondois@arm.com>
@@ -68,142 +68,86 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-CONFIG_CPU_ISOLATION allows to setup various cpu masks to
-exclude CPUs from some activities. Masks that are not modified
-default to cpu_online_mask.
-Masks are set at boot time. If no mask is modified, the static key
-'housekeeping_overridden' is left to false, allowing to minimize the
-cost of calls to housekeeping_*() functions.
+The HK_TYPE_SCHED isolation mask is never modified. It is however
+referenced in the scheduler code to ignore CPUs not taking part in
+load balancing for instance.
 
-Create a new housekeeping runtime type, whose isolation masks
-can be modified at runtime. Also add a set of functions
-around this new type. This type is independent from the
-'housekeeping_overridden' static key.
+Move the HK_TYPE_SCHED to the newly created housekeeping runtime
+type. Places where HK_TYPE_SCHED is used are not impacted as:
+- the HKR_FLAG_SCHED flag isn't used by the isolcpus/nohz_full
+  kernel parameters
+- masks not set though kernel parameters default to the
+  cpu_online_mask
 
 Signed-off-by: Pierre Gondois <pierre.gondois@arm.com>
 ---
- include/linux/sched/isolation.h | 28 +++++++++++++++++++++
- kernel/sched/isolation.c        | 43 +++++++++++++++++++++++++++++++++
- 2 files changed, 71 insertions(+)
+ include/linux/sched/isolation.h | 2 +-
+ kernel/sched/fair.c             | 4 ++--
+ kernel/sched/isolation.c        | 5 ++++-
+ 3 files changed, 7 insertions(+), 4 deletions(-)
 
 diff --git a/include/linux/sched/isolation.h b/include/linux/sched/isolation.h
-index 2b461129d1fa..5d2f40c6f04c 100644
+index 5d2f40c6f04c..80b4e26a1b73 100644
 --- a/include/linux/sched/isolation.h
 +++ b/include/linux/sched/isolation.h
-@@ -6,6 +6,10 @@
- #include <linux/init.h>
+@@ -7,6 +7,7 @@
  #include <linux/tick.h>
  
-+enum hkr_type {
-+	HKR_TYPE_MAX
-+};
-+
- enum hk_type {
+ enum hkr_type {
++	HKR_TYPE_SCHED,
+ 	HKR_TYPE_MAX
+ };
+ 
+@@ -14,7 +15,6 @@ enum hk_type {
  	HK_TYPE_TIMER,
  	HK_TYPE_RCU,
-@@ -26,6 +30,12 @@ extern const struct cpumask *housekeeping_cpumask(enum hk_type type);
- extern bool housekeeping_enabled(enum hk_type type);
- extern void housekeeping_affine(struct task_struct *t, enum hk_type type);
- extern bool housekeeping_test_cpu(int cpu, enum hk_type type);
-+
-+extern const struct cpumask *housekeeping_runtime_cpumask(enum hkr_type type);
-+extern bool housekeeping_runtime_test_cpu(int cpu, enum hkr_type type);
-+extern void housekeeping_runtime_set_cpu(int cpu, enum hkr_type type);
-+extern void housekeeping_runtime_clear_cpu(int cpu, enum hkr_type type);
-+
- extern void __init housekeeping_init(void);
- 
- #else
-@@ -53,6 +63,24 @@ static inline bool housekeeping_test_cpu(int cpu, enum hk_type type)
- 	return true;
- }
- 
-+static inline const struct cpumask *housekeeping_runtime_cpumask(enum hkr_type type)
-+{
-+	return cpu_possible_mask;
-+}
-+
-+static inline bool housekeeping_runtime_test_cpu(int cpu, enum hkr_type type)
-+{
-+	return true;
-+}
-+
-+static inline void housekeeping_runtime_set_cpu(int cpu, enum hkr_type type)
-+{
-+}
-+
-+static inline void housekeeping_runtime_clear_cpu(int cpu, enum hkr_type type)
-+{
-+}
-+
- static inline void housekeeping_init(void) { }
- #endif /* CONFIG_CPU_ISOLATION */
- 
-diff --git a/kernel/sched/isolation.c b/kernel/sched/isolation.c
-index 373d42c707bc..5acbed870c28 100644
---- a/kernel/sched/isolation.c
-+++ b/kernel/sched/isolation.c
-@@ -23,6 +23,13 @@ enum hk_flags {
- DEFINE_STATIC_KEY_FALSE(housekeeping_overridden);
- EXPORT_SYMBOL_GPL(housekeeping_overridden);
- 
-+struct housekeeping_runtime {
-+	cpumask_var_t cpumasks[HKR_TYPE_MAX];
-+	unsigned long flags;
-+};
-+
-+static struct housekeeping_runtime housekeeping_runtime;
-+
- struct housekeeping {
- 	cpumask_var_t cpumasks[HK_TYPE_MAX];
- 	unsigned long flags;
-@@ -79,10 +86,46 @@ bool housekeeping_test_cpu(int cpu, enum hk_type type)
- }
- EXPORT_SYMBOL_GPL(housekeeping_test_cpu);
- 
-+const struct cpumask *housekeeping_runtime_cpumask(enum hkr_type type)
-+{
-+	if (housekeeping_runtime.cpumasks[type])
-+		return housekeeping_runtime.cpumasks[type];
-+	return cpu_possible_mask;
-+}
-+
-+bool housekeeping_runtime_test_cpu(int cpu, enum hkr_type type)
-+{
-+	if (housekeeping_runtime.cpumasks[type])
-+		return cpumask_test_cpu(cpu, housekeeping_runtime.cpumasks[type]);
-+	return true;
-+}
-+
-+void housekeeping_runtime_set_cpu(int cpu, enum hkr_type type)
-+{
-+	if (housekeeping_runtime.cpumasks[type])
-+		cpumask_set_cpu(cpu, housekeeping_runtime.cpumasks[type]);
-+}
-+
-+void housekeeping_runtime_clear_cpu(int cpu, enum hkr_type type)
-+{
-+	if (housekeeping_runtime.cpumasks[type])
-+		cpumask_clear_cpu(cpu, housekeeping_runtime.cpumasks[type]);
-+}
-+
-+static void __init housekeeping_runtime_init(void)
-+{
-+	enum hkr_type type;
-+
-+	for (type = 0; type < HKR_TYPE_MAX; type++)
-+		alloc_cpumask_var(&housekeeping_runtime.cpumasks[type], GFP_KERNEL);
-+}
-+
- void __init housekeeping_init(void)
- {
- 	enum hk_type type;
- 
-+	housekeeping_runtime_init();
-+
- 	if (!housekeeping.flags)
+ 	HK_TYPE_MISC,
+-	HK_TYPE_SCHED,
+ 	HK_TYPE_TICK,
+ 	HK_TYPE_DOMAIN,
+ 	HK_TYPE_WQ,
+diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+index 1dd37168da50..e3d707243ca7 100644
+--- a/kernel/sched/fair.c
++++ b/kernel/sched/fair.c
+@@ -12083,7 +12083,7 @@ void nohz_balance_enter_idle(int cpu)
  		return;
  
+ 	/* Spare idle load balancing on CPUs that don't want to be disturbed: */
+-	if (!housekeeping_cpu(cpu, HK_TYPE_SCHED))
++	if (!housekeeping_runtime_test_cpu(cpu, HKR_TYPE_SCHED))
+ 		return;
+ 
+ 	/*
+@@ -12309,7 +12309,7 @@ static void nohz_newidle_balance(struct rq *this_rq)
+ 	 * This CPU doesn't want to be disturbed by scheduler
+ 	 * housekeeping
+ 	 */
+-	if (!housekeeping_cpu(this_cpu, HK_TYPE_SCHED))
++	if (!housekeeping_runtime_test_cpu(this_cpu, HKR_TYPE_SCHED))
+ 		return;
+ 
+ 	/* Will wake up very soon. No time for doing anything else*/
+diff --git a/kernel/sched/isolation.c b/kernel/sched/isolation.c
+index 5acbed870c28..735925578815 100644
+--- a/kernel/sched/isolation.c
++++ b/kernel/sched/isolation.c
+@@ -8,11 +8,14 @@
+  *
+  */
+ 
++enum hk_runtime_flags {
++	HKR_FLAG_SCHED		= BIT(HKR_TYPE_SCHED),
++};
++
+ enum hk_flags {
+ 	HK_FLAG_TIMER		= BIT(HK_TYPE_TIMER),
+ 	HK_FLAG_RCU		= BIT(HK_TYPE_RCU),
+ 	HK_FLAG_MISC		= BIT(HK_TYPE_MISC),
+-	HK_FLAG_SCHED		= BIT(HK_TYPE_SCHED),
+ 	HK_FLAG_TICK		= BIT(HK_TYPE_TICK),
+ 	HK_FLAG_DOMAIN		= BIT(HK_TYPE_DOMAIN),
+ 	HK_FLAG_WQ		= BIT(HK_TYPE_WQ),
 -- 
 2.25.1
 
