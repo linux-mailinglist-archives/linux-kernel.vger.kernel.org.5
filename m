@@ -1,153 +1,129 @@
-Return-Path: <linux-kernel+bounces-130448-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-130495-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B13C6897848
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 20:32:03 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 19DAA8978EB
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 21:19:08 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6C6EC28276D
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 18:32:02 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id AC8CE1F28546
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 19:19:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8D915153BCE;
-	Wed,  3 Apr 2024 18:31:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="wUg0FBYi"
-Received: from mail-il1-f176.google.com (mail-il1-f176.google.com [209.85.166.176])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5DCA91552FC;
+	Wed,  3 Apr 2024 19:19:01 +0000 (UTC)
+Received: from sxb1plsmtpa01-15.prod.sxb1.secureserver.net (sxb1plsmtpa01-15.prod.sxb1.secureserver.net [92.204.81.245])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 68F4C1D54B
-	for <linux-kernel@vger.kernel.org>; Wed,  3 Apr 2024 18:31:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DDE3A1D54B
+	for <linux-kernel@vger.kernel.org>; Wed,  3 Apr 2024 19:18:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=92.204.81.245
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712169113; cv=none; b=teqPrzGVD3QymasnM4LVut9/TKGpWg60D0o/OU7HjRbUNfKUiJ0GURrbqUzIaVMdDG2rRpvotlnVRMIfhXTvXjhCBpsWGyLBbn35bn5QplhBrTfYp1hIc0LPdyHHEKcyW+GNR8yZ5IQURj6a4EHb9K3MzhnFlNnTj3KG/0n5dRQ=
+	t=1712171941; cv=none; b=kMwwnbwShKYRVg0mBFpdMus5C+QZKHKUdW8kQtzoKlLHRbHBjneOCqpPZzX4DgMxoTFg9xIM/WO+d1+vUZBLm9ARy1Z2xMSESR2oCqRETpikN474zH+eGqqvTJyaEh3O92qkK7Vw1SDse4ZIeJmOYJmhxhgq0Sf4ox/lK4yQ+J0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712169113; c=relaxed/simple;
-	bh=VZ5Lpg28bRGxX9u8+FU6dh/DzQK2KQ4a90DWVcKqgV0=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=Laxti18cqoXAJ6hTVCCVRwNOh9DBTajOpzUzWINs1JlZimc14UOEdpKsxgxxJFJBpRYT375B0cod9E2D7gZNWf1zpftXQYDU/w0whJ5Ztz7lAvLXgNTB4EYsCG8gT5hZf21V7jmaEIY4l0zp7GNpxGi7Lvl1I3FyXxf/cDNutGk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=wUg0FBYi; arc=none smtp.client-ip=209.85.166.176
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-il1-f176.google.com with SMTP id e9e14a558f8ab-369de5d5833so12525ab.1
-        for <linux-kernel@vger.kernel.org>; Wed, 03 Apr 2024 11:31:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1712169111; x=1712773911; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=DavZa0Vn131W4AwpDx3XJiiYAXVAyTt4Vn1WSk/2RBw=;
-        b=wUg0FBYiIaCHTzI16fW1hrLsqj+qYUAp/KuopK7qaz04sdU/r7a833Bk7HkX9m90vm
-         nyft8M/U1OrqYDtIZi+fJGIZoZ8IHiZpy63FRj61EZmlsFS/LMZ8ZZST2QVlU6AnsFrq
-         uNft4DbcDqlm0ouOBZn9hhmGJzVYM8y8Is2tXQR8CVzuB2sOLlEfpaSnZrSa8yWoiZws
-         UgiiEhk4CB3+w+kNIJgzwt7Wdr6uCXe3JVI4x7lWLskcAEr4eQD6ywziyiqrpGQFuntC
-         LHfKnVWMkst1bB23wugI3i/OuIITrogC6rQR3ami6p1/PmBV+a59z6pt6NIZJNiJqBPQ
-         hZ8g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712169111; x=1712773911;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=DavZa0Vn131W4AwpDx3XJiiYAXVAyTt4Vn1WSk/2RBw=;
-        b=CTaZjl4N4DYe55vipgAdea/6LMJv6ZpeojLK3j9ZIbGPEimEcFxDOd0dr0ztqW9g54
-         AsNGKgQM8igoK9RsqrHWljU1O3b73dxb53cpdLhkdJjvJqnKSwf1aJ5exOGXFiu9r185
-         StoBV+fl5Fn+vEJRc18s2PxiUKl/Uk2j5udwD7/jQUw+EbdbHs41Gd+jImfKUXf9DCLl
-         kaTOJC86A67TpmU6jytzubJ1S76DDPYlo/2Q1zWB1zbfK2C+0Cube4vTiPuRTXQuj92R
-         C8MtsdTJAbcUhnQl6g9puXuuMZi3fU60bei+PyJ//gTO6VW10y4Kg6vN1BheBHKesGW7
-         veCA==
-X-Forwarded-Encrypted: i=1; AJvYcCVRpaP1N7CNlyDGmTHWv5Oss6Cyq85gP5PmdSrY5b8d3OiK8aubKeu2SJXzr559ycxbBWHlLVGCCkDPY5mTT410zNxOmQkJw66/DsuH
-X-Gm-Message-State: AOJu0YyxtRXJCEbGHaFQIUhXbEu9iGP6jbI2iFMda4E8LHjW6fE9abm1
-	+783LuqJ4N68a5VMvJrChw6a9eMiwRCbUExXdWguDdwKStV5byQ7+8QJCRdne3Al9cROhJGdqFK
-	NHmMeZf85hLdHKxvHP8rEKdGRbFnbD5DN0YgH
-X-Google-Smtp-Source: AGHT+IFSczYbfUmSrLqLilwtVGK/wXjsQZ0QwQoQ1RfLw9H4GIEwV1Ih4fz/tCxv28G5UcAZGFQ4gsbnTfiSnyHKs4Y=
-X-Received: by 2002:a92:c750:0:b0:369:a2ae:2634 with SMTP id
- y16-20020a92c750000000b00369a2ae2634mr271505ilp.12.1712169111299; Wed, 03 Apr
- 2024 11:31:51 -0700 (PDT)
+	s=arc-20240116; t=1712171941; c=relaxed/simple;
+	bh=NrcmZ271a8xN2jxJj5BFmWWaKucfI/V6Nb0sIwEp+oM=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=XVHWw38N7CQFwtmuzEV97ttuP32kmKf4C3F1PX6EsRa84tvwirHWVJlGkpWkzXDpWPJXjYw+G+qkH+AgdkCCKd1HoM6c+nfcgSsAvZGaotZ8eLidLmY6icHopbOzGTLOpLAWIdD29Dx/1oqrEUX3bNswrsdUSSh2bhiv0nDre3g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=squashfs.org.uk; spf=pass smtp.mailfrom=squashfs.org.uk; arc=none smtp.client-ip=92.204.81.245
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=squashfs.org.uk
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=squashfs.org.uk
+Received: from phoenix.fritz.box ([82.69.79.175])
+	by :SMTPAUTH: with ESMTPA
+	id s5QureLOS8TQvs5R7rECRT; Wed, 03 Apr 2024 11:34:14 -0700
+X-CMAE-Analysis: v=2.4 cv=WqXgMsfv c=1 sm=1 tr=0 ts=660da126
+ a=84ok6UeoqCVsigPHarzEiQ==:117 a=84ok6UeoqCVsigPHarzEiQ==:17 a=FXvPX3liAAAA:8
+ a=hfclLu6IeWhw0SyEGDUA:9 a=UObqyxdv-6Yh2QiB9mM_:22
+X-SECURESERVER-ACCT: phillip@squashfs.org.uk
+From: Phillip Lougher <phillip@squashfs.org.uk>
+To: akpm@linux-foundation.org,
+	linux-kernel@vger.kernel.org
+Cc: justinstitt@google.com,
+	Phillip Lougher <phillip@squashfs.org.uk>
+Subject: [PATCH] Squashfs: remove deprecated strncpy by not copying the string
+Date: Wed,  3 Apr 2024 19:33:52 +0100
+Message-Id: <20240403183352.391308-1-phillip@squashfs.org.uk>
+X-Mailer: git-send-email 2.39.2
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240403164636.3429091-1-irogers@google.com> <dcb0121f-611d-4104-80b9-941d535c5fd2@linux.intel.com>
-In-Reply-To: <dcb0121f-611d-4104-80b9-941d535c5fd2@linux.intel.com>
-From: Ian Rogers <irogers@google.com>
-Date: Wed, 3 Apr 2024 11:31:37 -0700
-Message-ID: <CAP-5=fUgiafmLEKEUJ5r5_tK+jqv30P0TGFCMvR8DkW7J4qYsQ@mail.gmail.com>
-Subject: Re: [PATCH v1] perf metrics: Remove the "No_group" metric group
-To: "Liang, Kan" <kan.liang@linux.intel.com>
-Cc: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, 
-	Arnaldo Carvalho de Melo <acme@kernel.org>, Namhyung Kim <namhyung@kernel.org>, 
-	Mark Rutland <mark.rutland@arm.com>, 
-	Alexander Shishkin <alexander.shishkin@linux.intel.com>, Jiri Olsa <jolsa@kernel.org>, 
-	Adrian Hunter <adrian.hunter@intel.com>, linux-perf-users@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, Andi Kleen <ak@linux.intel.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
+X-CMAE-Envelope: MS4xfEWXQMK4iiFZ5Wdc9WmQreTGJMY+VbKNnL2L72ogZI/HQO038k8RfaYooA/XFBzNhqKPt2itSp58GH55M1zH9cHzaHDXAHb30o6YSj+LThoY44mw8qMF
+ p8X6pdKENg81Koub31NmQgNmao4GSxSVv2/F4IcF+KS+dRI/AvxYHORbTbiiN4wmsDN6Gxlj+0xxdeA/CPYWl4HD95XjVUyoYeQYY/p8TUOi2dWtohq66p8B
+ UDGhk/+uc70xxsQUEgl7MihyjExW/qSrF5F9A7cF5JJIm8GOuHPrFM2gPorts5BA4k4FZzA9b1tFg59g59cRbQ==
 
-On Wed, Apr 3, 2024 at 10:59=E2=80=AFAM Liang, Kan <kan.liang@linux.intel.c=
-om> wrote:
->
->
->
-> On 2024-04-03 12:46 p.m., Ian Rogers wrote:
-> > Rather than place metrics without a metric group in "No_group" place
-> > them in a a metric group that is their name. Still allow such metrics
-> > to be selected if "No_group" is passed, this change just impacts perf
-> > list.
->
-> So it looks like the "No_group" is not completely removed.
-> They are just not seen in the perf list, but users can still use it via
-> perf stat -M No_group, right?
->
-> If so, why we want to remove it from perf list? Where can the end user
-> know which metrics are included in the No_group?
->
-> If the No_group is useless, why not completely remove it?
+Squashfs copied the passed string (name) into a temporary buffer
+to ensure it was NUL-terminated.  This however is completely
+unnecessary as the string is already NUL-terminated.  So remove
+the deprecated strncpy() by completely removing the string copy.
 
-Agreed. For command line argument deprecation we usually keep the
-option but hide it from help with PARSE_OPT_HIDDEN, so I was trying to
-follow that pattern albeit that a metric group isn't a command line
-option it's an option to an option.
+The background behind this unnecessary string copy is that it
+dates back to the days when Squashfs was an out of kernel patch.
+The code deliberately did not assume the string was NUL-terminated
+in case in future this changed (due to kernel changes).  This
+would mean the out of tree patches would be broken but still
+compile OK.
 
-Thanks,
-Ian
+Signed-off-by: Phillip Lougher <phillip@squashfs.org.uk>
+---
+ fs/squashfs/namei.c | 14 ++++----------
+ 1 file changed, 4 insertions(+), 10 deletions(-)
 
-> Thanks,
-> Kan
->
-> >
-> > Signed-off-by: Ian Rogers <irogers@google.com>
-> > ---
-> >  tools/perf/util/metricgroup.c | 4 ++--
-> >  1 file changed, 2 insertions(+), 2 deletions(-)
-> >
-> > diff --git a/tools/perf/util/metricgroup.c b/tools/perf/util/metricgrou=
-p.c
-> > index 79ef6095ab28..6ec083af14a1 100644
-> > --- a/tools/perf/util/metricgroup.c
-> > +++ b/tools/perf/util/metricgroup.c
-> > @@ -455,7 +455,7 @@ static int metricgroup__add_to_mep_groups(const str=
-uct pmu_metric *pm,
-> >       const char *g;
-> >       char *omg, *mg;
-> >
-> > -     mg =3D strdup(pm->metric_group ?: "No_group");
-> > +     mg =3D strdup(pm->metric_group ?: pm->metric_name);
-> >       if (!mg)
-> >               return -ENOMEM;
-> >       omg =3D mg;
-> > @@ -466,7 +466,7 @@ static int metricgroup__add_to_mep_groups(const str=
-uct pmu_metric *pm,
-> >               if (strlen(g))
-> >                       me =3D mep_lookup(groups, g, pm->metric_name);
-> >               else
-> > -                     me =3D mep_lookup(groups, "No_group", pm->metric_=
-name);
-> > +                     me =3D mep_lookup(groups, pm->metric_name, pm->me=
-tric_name);
-> >
-> >               if (me) {
-> >                       me->metric_desc =3D pm->desc;
+diff --git a/fs/squashfs/namei.c b/fs/squashfs/namei.c
+index 11e4539b9eae..65aae7e2a859 100644
+--- a/fs/squashfs/namei.c
++++ b/fs/squashfs/namei.c
+@@ -62,27 +62,21 @@
+  */
+ static int get_dir_index_using_name(struct super_block *sb,
+ 			u64 *next_block, int *next_offset, u64 index_start,
+-			int index_offset, int i_count, const char *name,
+-			int len)
++			int index_offset, int i_count, const char *name)
+ {
+ 	struct squashfs_sb_info *msblk = sb->s_fs_info;
+ 	int i, length = 0, err;
+ 	unsigned int size;
+ 	struct squashfs_dir_index *index;
+-	char *str;
+ 
+ 	TRACE("Entered get_dir_index_using_name, i_count %d\n", i_count);
+ 
+-	index = kmalloc(sizeof(*index) + SQUASHFS_NAME_LEN * 2 + 2, GFP_KERNEL);
++	index = kmalloc(sizeof(*index) + SQUASHFS_NAME_LEN + 1, GFP_KERNEL);
+ 	if (index == NULL) {
+ 		ERROR("Failed to allocate squashfs_dir_index\n");
+ 		goto out;
+ 	}
+ 
+-	str = &index->name[SQUASHFS_NAME_LEN + 1];
+-	strncpy(str, name, len);
+-	str[len] = '\0';
+-
+ 	for (i = 0; i < i_count; i++) {
+ 		err = squashfs_read_metadata(sb, index, &index_start,
+ 					&index_offset, sizeof(*index));
+@@ -101,7 +95,7 @@ static int get_dir_index_using_name(struct super_block *sb,
+ 
+ 		index->name[size] = '\0';
+ 
+-		if (strcmp(index->name, str) > 0)
++		if (strcmp(index->name, name) > 0)
+ 			break;
+ 
+ 		length = le32_to_cpu(index->index);
+@@ -153,7 +147,7 @@ static struct dentry *squashfs_lookup(struct inode *dir, struct dentry *dentry,
+ 	length = get_dir_index_using_name(dir->i_sb, &block, &offset,
+ 				squashfs_i(dir)->dir_idx_start,
+ 				squashfs_i(dir)->dir_idx_offset,
+-				squashfs_i(dir)->dir_idx_cnt, name, len);
++				squashfs_i(dir)->dir_idx_cnt, name);
+ 
+ 	while (length < i_size_read(dir)) {
+ 		/*
+-- 
+2.39.2
+
 
