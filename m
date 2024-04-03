@@ -1,79 +1,74 @@
-Return-Path: <linux-kernel+bounces-130666-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-130667-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9B9DE897B70
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 00:10:09 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 09211897B71
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 00:10:10 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2444F28B52B
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 22:10:08 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9157D1F24062
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 22:10:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 481BC15689D;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5FB73156980;
 	Wed,  3 Apr 2024 22:10:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=proton.me header.i=@proton.me header.b="g5bYXxoG"
-Received: from mail-4322.protonmail.ch (mail-4322.protonmail.ch [185.70.43.22])
+	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="2iN3KZI1"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C242A138494;
-	Wed,  3 Apr 2024 22:09:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.70.43.22
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A56A7156973
+	for <linux-kernel@vger.kernel.org>; Wed,  3 Apr 2024 22:10:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712182199; cv=none; b=RGp/G2TZsV+XYopKKjH+nfdZf1V2Y86OGPkvDHsuFpih1uxtZy578cG3lzt4JzEQhS2bUMZvMaWIUrqIKPpGdCjktuRjPvC/UYwMeBedrjQxNLTIU/DHrVVeBu3TyeSQnGTiGw9T/WKxD1oEIwvswUVaeNB/FZC/RvO0+lZTxWo=
+	t=1712182200; cv=none; b=Gn1cGELqAsvjVcbvpyO5KqxM9Mp6R1Bod0/tP5KtktFnKTqfrc29dqJR9JZKeuVErjGr8OUCkGtVg/MEpfz9a0ebUb7xuoNbWPDc+NZQrKPIl07OWpFpOU3ATOHEgEg5hnG5hfhfQRDX/vFHYJ64fmcr4kX1tpcI+XGZw6R1rOg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712182199; c=relaxed/simple;
-	bh=uwNMpeVW0XerVfkSfw/u0neKwfY6b63R2YNbmJr2Yis=;
-	h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=hUNoS4pF/1cdJ1LvyfZJU5lcTHHSjlnW+Zz1/8rkRs2nqRF9wLLeFFaHMZB9A8CTNq4iyzkJHGby6cRiDjZ9KmHMacy3I3h7FvRVbIE46fLyDHEzEyy7rfvAj0X+FinAzd5TUN1FctVNTRTEPX2UhPQ7vXtzTTNKby+4VBmpew4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=proton.me; spf=pass smtp.mailfrom=proton.me; dkim=pass (2048-bit key) header.d=proton.me header.i=@proton.me header.b=g5bYXxoG; arc=none smtp.client-ip=185.70.43.22
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=proton.me
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=proton.me
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=proton.me;
-	s=protonmail; t=1712182194; x=1712441394;
-	bh=uwNMpeVW0XerVfkSfw/u0neKwfY6b63R2YNbmJr2Yis=;
-	h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
-	 Feedback-ID:From:To:Cc:Date:Subject:Reply-To:Feedback-ID:
-	 Message-ID:BIMI-Selector;
-	b=g5bYXxoGqxndHYNWtHzNmrse6m3z5qOIF+gu68LKmOKnr+k4nvWNFRZFmuzSCL27m
-	 MEtSUXKDZvUfSeTxpEOSlJpmmThUZJzQ6WzqxVovKrEkcysS97yv4+8BFV+aDZjLaZ
-	 MFeElpdfeFKDS5otZd6M348XeEjWZgehSR8Lyl2NEcEbZ5f8ir2AhzN5IntLWazftB
-	 6hxFE16N5sOG0dSm9nAnK8o7iWeXqd2DpCBjMUFMvbps39F9y6KPva2/P8lq3yGP7F
-	 Z7kJvVtgIEJNLy4s7laA1lq2v7sOS10fHlXrivXbvnjsnBs/L7IcqUAz1E2D2odndk
-	 gGihGxgtcgB+Q==
-Date: Wed, 03 Apr 2024 22:09:49 +0000
-To: Boqun Feng <boqun.feng@gmail.com>
-From: Benno Lossin <benno.lossin@proton.me>
-Cc: Miguel Ojeda <ojeda@kernel.org>, Alex Gaynor <alex.gaynor@gmail.com>, Wedson Almeida Filho <wedsonaf@gmail.com>, Gary Guo <gary@garyguo.net>, =?utf-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>, Andreas Hindborg <a.hindborg@samsung.com>, Alice Ryhl <aliceryhl@google.com>, Martin Rodriguez Reboredo <yakoyoku@gmail.com>, rust-for-linux@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] rust: init: change the generated name of guard variables
-Message-ID: <ef1400ae-ba9e-4656-98db-a882ac720c1e@proton.me>
-In-Reply-To: <Zg3IHZfYVEOh7nc4@boqun-archlinux>
-References: <20240403194321.88716-1-benno.lossin@proton.me> <Zg3IHZfYVEOh7nc4@boqun-archlinux>
-Feedback-ID: 71780778:user:proton
+	s=arc-20240116; t=1712182200; c=relaxed/simple;
+	bh=n349FnivoNht5scNSIA8rs9+fyGB9wKkkmj417/isp8=;
+	h=Date:From:To:Cc:Subject:Message-Id:In-Reply-To:References:
+	 Mime-Version:Content-Type; b=rq/cbTYT5BGfrrRYH7NKNwMhuJypl2v03IIHT3F0iMcGG+KD5fuh4VgX3IK0dHaiVrvVvcDf7o9nJLQkH1TKVRvyd/P3ky4Q55P0yll6I+Z1WD7uoGIB+z45oNa1X1MPJOcUHL81xNsXYUiCvI5QsKPygyPKvjtoG1AMlk1QVmI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=2iN3KZI1; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9E987C433C7;
+	Wed,  3 Apr 2024 22:09:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
+	s=korg; t=1712182200;
+	bh=n349FnivoNht5scNSIA8rs9+fyGB9wKkkmj417/isp8=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=2iN3KZI1/aMHLlr07gsZUVlgcw//QaexZXRk6HCjTdXfr+YsvcSlsut+xhlq0G7Wt
+	 fTtNOFc2xY+LcvZBMvsyFZ/dv5TK0oTZYwzy1CBg3W+IrBkrg4N3eSfulNXkU4fm0X
+	 NrEthCxNte/NR7Yh8Qi7oidV8j+bOTmmQUv3+QC0=
+Date: Wed, 3 Apr 2024 15:09:58 -0700
+From: Andrew Morton <akpm@linux-foundation.org>
+To: David Hildenbrand <david@redhat.com>
+Cc: linux-kernel@vger.kernel.org, linux-mm@kvack.org, x86@kernel.org, Peter
+ Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, Thomas
+ Gleixner <tglx@linutronix.de>, Christoph Hellwig <hch@lst.de>, Borislav
+ Petkov <bp@alien8.de>, "H. Peter Anvin" <hpa@zytor.com>, Andy Lutomirski
+ <luto@kernel.org>, Dave Hansen <dave.hansen@linux.intel.com>, Fei Li
+ <fei1.li@intel.com>, Nathan Chancellor <nathan@kernel.org>
+Subject: Re: [PATCH v2 0/3] x86/mm/pat: fix VM_PAT handling in COW mappings
+Message-Id: <20240403150958.713734a1dfbf6cd99d8e7b02@linux-foundation.org>
+In-Reply-To: <20240403212131.929421-1-david@redhat.com>
+References: <20240403212131.929421-1-david@redhat.com>
+X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-On 03.04.24 23:20, Boqun Feng wrote:
-> On Wed, Apr 03, 2024 at 07:43:37PM +0000, Benno Lossin wrote:
->> The initializers created by the `[try_][pin_]init!` macros utilize the
->> guard pattern to drop already initialized fields, when initialization
->> fails mid-way. These guards are generated to have the same name as the
->> field that they handle. To prevent namespacing issues when the field
->=20
-> Do you have an example of this kind of issues?
+On Wed,  3 Apr 2024 23:21:28 +0200 David Hildenbrand <david@redhat.com> wrote:
 
-https://lore.kernel.org/rust-for-linux/1e8a2a1f-abbf-44ba-8344-705a9cbb1627=
-@proton.me/
+> Rebased on latest mm-unstable. As we have a conflict now with a cleanup
+> from Chrostoph, temporarily revert that one, so we can apply the fix,
+> and reapply the adjusted cleanup on top. I squashed the fixups
+> sitting in Andrew's tree for that patch.
+> 
+> The fix should likely go in first via the hotfix route, that's why I'm
+> moving it to the front.
 
---=20
-Cheers,
-Benno
-
+Well that was easy, thanks ;)  Perhaps hch can double-check [3/3] here.
 
