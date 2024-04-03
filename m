@@ -1,219 +1,159 @@
-Return-Path: <linux-kernel+bounces-130631-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-130627-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 98BBA897AC2
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 23:31:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id CC743897AB4
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 23:30:08 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 534F7288BCE
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 21:31:37 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 81FB0281508
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 21:30:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7FCE92BB02;
-	Wed,  3 Apr 2024 21:29:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7228015696B;
+	Wed,  3 Apr 2024 21:29:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="S+BpDJ1w"
-Received: from NAM10-MW2-obe.outbound.protection.outlook.com (mail-mw2nam10on2133.outbound.protection.outlook.com [40.107.94.133])
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="fapoMB1R"
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3EC26156F28;
-	Wed,  3 Apr 2024 21:29:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.94.133
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712179794; cv=fail; b=hjt8U83e2MxuHkRBtTXE8aMp1XBczHwZFE6nHuzr5JzIJWdJ/r4oXDsCJI5w8UB9Dlzb6MqxXol8j1eqbirBWhJJbJFvmUUcMqPuWHniMqA6UAAkbRyk8R8VRQOtzzCh8iiNW43XaTQBub0BJ2rPeS/kBIOV+z8bFkmD1T3E8iM=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712179794; c=relaxed/simple;
-	bh=WcARV9EEmygFik7TxeEZLEIAzAFkt5zRbts9fcuh/9c=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=MKDz9lLeFKintKyFYEsnD0URVs0AWQnaCVmOqu19wVvSIldaxuMMWiN3cpmryXotTYvJu0iMI3FH4Fldw8nzCYNnZFoXOSnS232Sgtl/OkFF8DdTfddugfPIh33EiUMPNloDaPbnbHE5jMsyVK87eAC1s6VHrcbPi0aJzppKwIU=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=S+BpDJ1w; arc=fail smtp.client-ip=40.107.94.133
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=kn54yxOLrZg+918IEeqGM6nKhFImeeBnoG7kvDUZLYt6qguIdN2rMPEUT4lS5ZA158GsSbjBFiqfve+PYDhrbJQeANTLzk4dH3KgWYWJpfPBGUQrSCrckcWlfQVTAPWdRgMve44lSIzhlQ35pbQN6qC7aKdKB2m3KeCmHdY+DooARlcAiwTxy3G3D/y89Mse68++3CCIufsyfhdJuBq1J/3pN+rMdjRt23wM3IMhj5GcNPxX1kZTnqO1H477QT5U5oSMYlwo5t+r7YJYBHHCuDpzMhhmoHKRMH6KvChbmWcWl4XyWTxssI/C8HP6UaJzZKWluq01u4Lci5iDnRsUBA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=yzu2h7owJYfaBza9LYpvZJNzfQg78YM7Kwm33ootnEo=;
- b=T8JgjBCBOCIRpuGgjCmZHyGac7BPHfWw2L7ozNxUc/dLeqoQ5wmShmUipH2PSgjuYTDZHt4vUfOtWSul/gsbayFJ8St+XSCmEdGTrPIlnY6LGJd2tf2SwVH7jVQc4HsQQ571nFhIpLIx2vToMApPenOIzG5MQXoDChhc5e08DTFCEclYhvyQTYbDE1ukWeKIz2abfeIxuqEvgCGZhxDJUl2Y+R10GDgsyJshjLsMGZHCDpV2KSjM69P3QNrOx+G6HrytoxDii2GEwPWog515TNL2qkGsfwoAG+dRhF3iMsEsFhGSH1sfonkIRXtlFHlxXe0tslKWPuJupuuERSBAtg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=yzu2h7owJYfaBza9LYpvZJNzfQg78YM7Kwm33ootnEo=;
- b=S+BpDJ1wPBJbbgfW2bjc0+pAS+fcB5tkxQ/wxZCNnioicFKVuytGieTBBKi4fF1LDn0Z4KLDrHeG6yDNxzgVGJ6c5xx0nO++TAeMYcLBQyJrGl1YyfdDZvlAANKO7FKRApjnyIz/IESpUBZPoSP5JOoNspRnlTQL0cX6xjW/8wFJEiQYuRrr3rXDZp9Xm166qq0Wby7Uzs/pO7AqHAEC8++/zE0CyYYZ14H4FOJHcFR7txQcdFROhVfMegBeTTpb6UxN21mk2FOp6b/CR71ZJGrrs0lRsLCVIG/9dcMmIYHYDIC4kzv+D4QxlaKD4U74BjnWfLTxZbgDmFtA9FmAPA==
-Received: from BYAPR12MB2743.namprd12.prod.outlook.com (2603:10b6:a03:61::28)
- by DS0PR12MB8317.namprd12.prod.outlook.com (2603:10b6:8:f4::10) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7409.46; Wed, 3 Apr
- 2024 21:29:48 +0000
-Received: from BYAPR12MB2743.namprd12.prod.outlook.com
- ([fe80::459b:b6fe:a74c:5fbf]) by BYAPR12MB2743.namprd12.prod.outlook.com
- ([fe80::459b:b6fe:a74c:5fbf%6]) with mapi id 15.20.7409.042; Wed, 3 Apr 2024
- 21:29:48 +0000
-From: Rahul Rameshbabu <rrameshbabu@nvidia.com>
-To: netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	linux-doc@vger.kernel.org
-Cc: ahmed.zaki@intel.com,
-	aleksander.lobakin@intel.com,
-	alexandre.torgue@foss.st.com,
-	andrew@lunn.ch,
-	cjubran@nvidia.com,
-	corbet@lwn.net,
-	davem@davemloft.net,
-	dtatulea@nvidia.com,
-	edumazet@google.com,
-	gal@nvidia.com,
-	hkallweit1@gmail.com,
-	jacob.e.keller@intel.com,
-	jiri@resnulli.us,
-	joabreu@synopsys.com,
-	justinstitt@google.com,
-	kory.maincent@bootlin.com,
-	kuba@kernel.org,
-	leon@kernel.org,
-	liuhangbin@gmail.com,
-	maxime.chevallier@bootlin.com,
-	pabeni@redhat.com,
-	paul.greenwalt@intel.com,
-	przemyslaw.kitszel@intel.com,
-	rdunlap@infradead.org,
-	richardcochran@gmail.com,
-	saeed@kernel.org,
-	tariqt@nvidia.com,
-	vadim.fedorenko@linux.dev,
-	vladimir.oltean@nxp.com,
-	wojciech.drewek@intel.com,
-	Rahul Rameshbabu <rrameshbabu@nvidia.com>
-Subject: [PATCH net-next v2 6/6] tools: ynl: ethtool.py: Output timestamping statistics from tsinfo-get operation
-Date: Wed,  3 Apr 2024 14:28:45 -0700
-Message-ID: <20240403212931.128541-8-rrameshbabu@nvidia.com>
-X-Mailer: git-send-email 2.42.0
-In-Reply-To: <20240403212931.128541-1-rrameshbabu@nvidia.com>
-References: <20240403212931.128541-1-rrameshbabu@nvidia.com>
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: BYAPR11CA0072.namprd11.prod.outlook.com
- (2603:10b6:a03:80::49) To BYAPR12MB2743.namprd12.prod.outlook.com
- (2603:10b6:a03:61::28)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2676A156872;
+	Wed,  3 Apr 2024 21:29:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1712179783; cv=none; b=L1CkY+M7fCmUa3MYSIHkWOZQQv15cm8RGW1gHIKZrkKUv5+S3Uo+ZfETbw7ip4gvvefbDigrMEKTFrLr16tAIBvqhv/PxoaVz28aeCRHSm8a2bVFQP5mKvi2ReJCBixoXwc4iTlHciKIxgG2sP48+HawtpX1OzzkGTq3Bp6RJ2w=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1712179783; c=relaxed/simple;
+	bh=I+7q6bOtq6mZ2VvjlcmInFjB6ZWon6PhV2gZ7iRKwhw=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=goMA0BQNBRZ8ZPWGpVRqVLTbjJOjDhmqESr1ogHlEDNZjd85Yro9Y0BhvghadPgY8kknDR3eY86NLaUNSlW5bAcRrZ0el/a9kiugkTHobgrnLR88VJi6P4nJczIuwnYFutNO2/IGGXlip4u6pQqoc27KyrVLdfdZKhDJ47MuqYw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=fapoMB1R; arc=none smtp.client-ip=205.220.168.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279866.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 433L1kqx019834;
+	Wed, 3 Apr 2024 21:29:19 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	message-id:date:mime-version:subject:to:cc:references:from
+	:in-reply-to:content-type:content-transfer-encoding; s=
+	qcppdkim1; bh=8YfwFoz0sGdQELg09UoYnuG30bJT4f0o798002yH/Kw=; b=fa
+	poMB1Rd5bX92n0ACWmUTLDa6papSTvg9pN9kWXnb3T9QJhZy/g7MIRx5/I6/ho1W
+	2serEXvhHhzCc8UtU9iMGS3wA5kasiEEbqS4gg0MZnvhmc1z8Z+KIb+q1ulnKjnF
+	WoxS46jm7Xh2IuqD7pajDOcKnFfD3TFR56QEq3URpAedJ+SbFXwFkp+SbTIE/KAP
+	nNiYRwzfEAGdQObriGBuMAzMT7GJorXvpL4o83yQmGDAxH3xJK0JDUGRO8d9jP2P
+	MFRfpjBJs9aU/XXz1XwwR1BQu7YCpdJwCMYkblGWrvLlQuH3sIYkTZdOpoTqkzFo
+	P77gsHSL4vUYtD9aSgEg==
+Received: from nalasppmta04.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3x9en001g1-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 03 Apr 2024 21:29:19 +0000 (GMT)
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+	by NALASPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 433LSsBo005071
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 3 Apr 2024 21:28:54 GMT
+Received: from [10.110.9.99] (10.80.80.8) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.4; Wed, 3 Apr 2024
+ 14:28:53 -0700
+Message-ID: <01ce1142-04ac-5978-9d5a-88f94b920055@quicinc.com>
+Date: Wed, 3 Apr 2024 14:28:52 -0700
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: BYAPR12MB2743:EE_|DS0PR12MB8317:EE_
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	ZUMytboxh5Fwq1TJtTh1BVuMIzbrPGtxpRHwwHmnJ/1aFxQ3L12mhpv3Uo8UIMgbj6IFu/BtcOs3yUiokPIc/Fwuk82twNJqmbCG3HjRUQT4lLZEHVY7kfhujTCtovkjH7xQ9tToOSpOHlofvm560/bTHglvB4p5TTfDqj3h24G/YbHvyODkDpxAe4EGqQnD2k1K9K/Nw8u12BpfN41QZcpc+ok04vCFzvsPrCS+MmzPY46ncrpu1DJFJs4OhM35JlwHUI7nEWFXl9HeyVGrfwfOOnDQYIVLfuF+MKDtfUMdXIaAFCVsjzCSweGAPpF6VCnhHD0b12B1wnt5pfRLYXp6lN6alsLpIkR9+vTK+zhk2KTuETCJLeCW9RA9H9BePvX26c9XXS5EzTNzPFk/+EzWOb0EjqhzUQfE6rtcECBW24i6q/7sztkHfbspXb2zACAxiWCzkAJKVmAk0AJSG8wWt+dqrwZlSTjyrRgez/3UUKrQpWBnKengy5G/b9dp8vKxQgJrwHhIYoQ5LzDxmRerhqgkdp5Hnak7Nn7abrppgAb0NgqutxNJXOauZPqbSa0yfNIyKDhKT0/wd4YQiyr1dhrD4r2mw2Cz+oMpPXpjgEtIl4ZVQaDCI+VW3oAeB0syKM8F/0WkVhi5mWTilc/qMIVz7Dqpl6UKfSS7RT8=
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR12MB2743.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(7416005)(366007)(376005)(1800799015);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?U/KSOzFYycLncG0Adi2zrSZPJINXEQaLp3lRqMcIVGaOxlOiQ/OZqGkNsx5I?=
- =?us-ascii?Q?D22kjIYkuvvCXJl6kccNNG7PnTs6sAqPAy/4xa67ab+DS/8VR6jb+SN454Sd?=
- =?us-ascii?Q?v7AyDt4XoLZCOb8gdMlQwF+MgKftmbjSWCNRyRYXrmGWDkmHPZ14oCW19ZeA?=
- =?us-ascii?Q?lUOp/ZSToXjksfI2JLouNwQK5hiOH3AvmvtRE8XrOFDmOitFU6KZNzI+oWGZ?=
- =?us-ascii?Q?9ktOizRTqGsmDArImiAqOYSismr29sI+qW9QtYdH53+vp/nGNz3EzANZTCor?=
- =?us-ascii?Q?nvgll98XueyrRwNfxc22Vujfj1A4/Bo06FTJ1r3K3vQig90umr45eCeZbIfk?=
- =?us-ascii?Q?RKG544CT8phE6+xxh+yktxATBzi/dHLYB/rpBznxMCKBuYGPs+j5GXLN3T7L?=
- =?us-ascii?Q?l1u0xH6iPuAf/OaPr6Qe+DfK3arfXel0rcEfUHYZ+fxthFXr68+j/2z6KUNG?=
- =?us-ascii?Q?VwmQRjHdLuljVQumToTcf0J2O7dnQPMti918mrs8lfYuIuZA0XANNmG7u1ay?=
- =?us-ascii?Q?yFHTDMsV0hBWSfgfqXmkniE8D/9KkRt+34eZn7uSFqlBit9itWQZSG29eTg3?=
- =?us-ascii?Q?fdJ3eC7SdMS+LpdpqcK2Hj0POvOn/EBT7J6aBfpr65XM2y7JPMpmdxB7uGv1?=
- =?us-ascii?Q?N/tO+u/X9GKxf+AZ221KWIRdQjJX1mH2OrR9HX/yEzVQ4jqYGzrov832/Kgt?=
- =?us-ascii?Q?6wwnsQ7Vdjdq6YRp8V0LzDXyWxHno5fO7K9GOixZYdbSWrZiUSokgu5ow8CE?=
- =?us-ascii?Q?vSUOv+lO1NTiUUfv+WWptOIS82jMwYRoPNWNJhV6v+TgXJy4zpf+ln/LJ0Sg?=
- =?us-ascii?Q?14mqbzyscq2woxoqewAPNlWoifba8IeG1oe39zwfmc7CodVPxiR27emGWEDL?=
- =?us-ascii?Q?EJZND3mdUfwq1JGsZeliG8hgLKlM7pSvSN8LPgZjFivdsM4gu0cCXzRv28+4?=
- =?us-ascii?Q?oH2UyrH8Ec5v8/BOB+2AP3xu/rYvpU1n2A+H1NIdgYhEagYwPP2pOYFd2IOs?=
- =?us-ascii?Q?wDZ9RAeEVDwEEjfghfhmoc5Ho7GTei0QgCsH5CsQY9X4PGL6jTF13uaQSEjL?=
- =?us-ascii?Q?v+39SzO7DSXxL+VjR8/OrXhkRHeU+t1haUwT/elq6pubO+cc1NDIilYQAZ4Y?=
- =?us-ascii?Q?s4Ov0xmH6F072QqbMh4LohYHzCLd0grIdr2TOFQ9ZivACaKBhnBx9+qJUUzH?=
- =?us-ascii?Q?gPMr5qgWEeJxiQZ69D0feH6px18R8i0xJUtO9DQzvQXWgAu/LarS4NywXNG6?=
- =?us-ascii?Q?/EXnW66I9OCVgiBpY49CXrYhvko/MOJzA6yxfWKG/Xh5qzH0tnXM36qZPngy?=
- =?us-ascii?Q?f9MpHi1wVsCJF6gFLVpbgwSlpFAvdYCvP6b1QhmfDYDTcJUH9hJc4wYECuLV?=
- =?us-ascii?Q?qNrhbjKwqNQXdHJ102Oo4umxbkqF4zDdBK+jVpOVkJLD4/ujsPuQJhoNkEem?=
- =?us-ascii?Q?Cu82YWQOxoMQ70t8VA3l6AhRTgMJifcbm7ipoyYJD0eduqOQ4SmT9oAU0HXP?=
- =?us-ascii?Q?BEZF+gnMOg6nwNVqAN7BAEwBYZMvb9S2MZZqb+RAIAZ2u27/A6GIw6aTAv6N?=
- =?us-ascii?Q?8lQ8xl//9dfC6mc8X9TVbRfmp75JNoB79XlZf6X3SLUHaZ8ZfYyIaoxp1lFF?=
- =?us-ascii?Q?7w=3D=3D?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: f2d2db69-b335-43ad-24f2-08dc54252cb2
-X-MS-Exchange-CrossTenant-AuthSource: BYAPR12MB2743.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 03 Apr 2024 21:29:42.1222
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: E7O9mPw6b469gSPb702W4fmrpDNbnbIM1UR7SxlWow0R5REyufwYc+aSYrMLpoyTDyc5cOJdJL+ivFXTJeiMOQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS0PR12MB8317
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.11.0
+Subject: Re: [PATCH v3] phy/qcom-qmp-combo: propagate correct return value at
+ phy_power_on()
+Content-Language: en-US
+To: Stephen Boyd <swboyd@chromium.org>,
+        Kuogee Hsieh
+	<quic_khsieh@quicinc.com>, <abel.vesa@linaro.org>,
+        <agross@kernel.org>, <airlied@gmail.com>, <andersson@kernel.org>,
+        <daniel@ffwll.ch>, <dianders@chromium.org>,
+        <dmitry.baryshkov@linaro.org>, <dri-devel@lists.freedesktop.org>,
+        <robdclark@gmail.com>, <sean@poorly.run>, <vkoul@kernel.org>
+CC: <quic_jesszhan@quicinc.com>, <quic_sbillaka@quicinc.com>,
+        <marijn.suijten@somainline.org>, <freedreno@lists.freedesktop.org>,
+        <linux-arm-msm@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+References: <1711741835-10044-1-git-send-email-quic_khsieh@quicinc.com>
+ <CAE-0n50Z2pDGH+ncjQq-huDsn9jdN=1SfaaU+qw229nZpUVCDw@mail.gmail.com>
+ <2f509949-7e7e-cbf6-c1d0-f25971c2d890@quicinc.com>
+ <CAE-0n50qT2mHOGiU89NAmHdADQAAgs3aMP1RFOTTV8oCUbZKgw@mail.gmail.com>
+From: Abhinav Kumar <quic_abhinavk@quicinc.com>
+In-Reply-To: <CAE-0n50qT2mHOGiU89NAmHdADQAAgs3aMP1RFOTTV8oCUbZKgw@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: hYB4IBbHmXEffncdCxv4QEuapA4X3qr3
+X-Proofpoint-ORIG-GUID: hYB4IBbHmXEffncdCxv4QEuapA4X3qr3
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-04-03_22,2024-04-03_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 impostorscore=0
+ suspectscore=0 mlxlogscore=999 bulkscore=0 adultscore=0 phishscore=0
+ priorityscore=1501 mlxscore=0 malwarescore=0 spamscore=0
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2404010003 definitions=main-2404030147
 
-Print the nested stats attribute containing timestamping statistics when
-the --show-time-stamping flag is used.
 
-  [root@binary-eater-vm-01 linux-ethtool-ts]# ./tools/net/ynl/ethtool.py --show-time-stamping mlx5_1
-  Time stamping parameters for mlx5_1:
-  Capabilities:
-    hardware-transmit
-    hardware-receive
-    hardware-raw-clock
-  PTP Hardware Clock: 0
-  Hardware Transmit Timestamp Modes:
-    off
-    on
-  Hardware Receive Filter Modes:
-    none
-    all
-  Statistics:
-    tx-pkts: 8
-    tx-lost: 0
-    tx-err: 0
 
-Signed-off-by: Rahul Rameshbabu <rrameshbabu@nvidia.com>
-Reviewed-by: Dragos Tatulea <dtatulea@nvidia.com>
----
- tools/net/ynl/ethtool.py | 11 ++++++++++-
- 1 file changed, 10 insertions(+), 1 deletion(-)
+On 4/3/2024 1:04 PM, Stephen Boyd wrote:
+> Quoting Abhinav Kumar (2024-04-03 12:58:50)
+>>
+>>
+>> On 4/3/2024 12:51 PM, Stephen Boyd wrote:
+>>> Quoting Kuogee Hsieh (2024-03-29 12:50:35)
+>>>> Currently qmp_combo_dp_power_on() always return 0 in regardless of
+>>>> return value of cfg->configure_dp_phy(). This patch propagate
+>>>> return value of cfg->configure_dp_phy() all the way back to caller.
+>>>
+>>> Is this found via code inspection or because the phy is failing to power
+>>> on sometimes? I ask because I'm looking at a DP bug on Trogdor with
+>>> chromeos' v6.6 based kernel and wondering if this is related.
+>>>
+>>
+>> No, we actually hit an issue. This issue was originally reported as a
+>> link training issue while bringing up DP on x1e80100.
+>>
+>> While debugging that we noticed that we should not have even proceeded
+>> to link training because the PLL was not getting locked and it was
+>> failing silently since there are no other error prints (and hence the
+>> second part of the patch to improve the error logs), and we do not
+>> return any error code from this driver, we could not catch the PLL
+>> unlocked issue.
+> 
+> Did link training succeed in that case and the screen was black? Also,
+> did you figure out why the PLL failed to lock? I sometimes see reports
+> now with an "Unexpected interrupt:" message from the DP driver and the
+> interrupt is the PLL unlocked one (DP_INTR_PLL_UNLOCKED).
+> 
 
-diff --git a/tools/net/ynl/ethtool.py b/tools/net/ynl/ethtool.py
-index 6c9f7e31250c..47264ae20036 100755
---- a/tools/net/ynl/ethtool.py
-+++ b/tools/net/ynl/ethtool.py
-@@ -320,7 +320,13 @@ def main():
-         return
- 
-     if args.show_time_stamping:
--        tsinfo = dumpit(ynl, args, 'tsinfo-get')
-+        req = {
-+          'header': {
-+            'flags': 'stats',
-+          },
-+        }
-+
-+        tsinfo = dumpit(ynl, args, 'tsinfo-get', req)
- 
-         print(f'Time stamping parameters for {args.device}:')
- 
-@@ -334,6 +340,9 @@ def main():
- 
-         print('Hardware Receive Filter Modes:')
-         [print(f'\t{v}') for v in bits_to_dict(tsinfo['rx-filters'])]
-+
-+        print('Statistics:')
-+        [print(f'\t{k}: {v}') for k, v in tsinfo['stats'].items()]
-         return
- 
-     print(f'Settings for {args.device}:')
--- 
-2.42.0
+No the link training had failed.
 
+Yes, root-cause was that the PLL registers were misconfigured in the 
+x1e80100 DP PHY for HBR2. Once we programmed the correct values it 
+worked. This was specific to x1e80100.
+
+Yes, Doug mentioned this to me on IRC that this issue is still there. 
+Surprising because I thought we had pushed 
+https://patchwork.freedesktop.org/patch/551847/ long ago and it was 
+fixed. It certainly did that time when I had tested this.
+
+>>
+>>> Also, is the call to phy_power_on() going to be checked in
+>>> the DP driver?
+>>>
+>>>    $ git grep -n phy_power_on -- drivers/gpu/drm/msm/dp/
+>>>    drivers/gpu/drm/msm/dp/dp_ctrl.c:1453:  phy_power_on(phy);
+>>
+>> Yes, this is a good point. We should also post the patch to add the
+>> error checking in DP driver to fail if phy_power_on fails.
+> 
+> Sounds great, thanks.
 
