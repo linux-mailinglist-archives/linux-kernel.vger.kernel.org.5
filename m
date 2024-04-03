@@ -1,115 +1,190 @@
-Return-Path: <linux-kernel+bounces-130593-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-130594-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id E504F897A35
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 22:45:25 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9DC8B897A39
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 22:46:06 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A002A28D86E
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 20:45:24 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C16761C258F3
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 20:46:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7564114C5B3;
-	Wed,  3 Apr 2024 20:41:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 16B5F155A58;
+	Wed,  3 Apr 2024 20:46:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b="BySGX9+L"
-Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="BLKOzWGV"
+Received: from mail-lj1-f177.google.com (mail-lj1-f177.google.com [209.85.208.177])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3D1A7156678;
-	Wed,  3 Apr 2024 20:41:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=65.109.113.108
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 783D05DF0E
+	for <linux-kernel@vger.kernel.org>; Wed,  3 Apr 2024 20:45:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712176896; cv=none; b=sZRoiz8rvKQ/5nzpsFM+xngGzddXhRjJufvbrS7ALKZZ8Uigx682PaKN9y/74jaCdEZTf9efMus7xp4WWGb7cv7mTcxrwEGZWsKP9482SW6tH8yPXSlvaSN2P0NmTS5hES6xzpGPYpyA6HabrfQmSpXUTqcWWrJVVSMNQxzZBiQ=
+	t=1712177160; cv=none; b=dDRMDJTV1gMi/nvsWThgvyGpsgnrpr+UOkldLBBYT/ihK4cInED/e7AlCT3yYtGeF3JtgpdH8xdo8pcFDOj6AOsqZuEeCYaksys0UQbu9PPRplas8TfrQQFiFSOdLDNSNlPOqKf06ynQnLHKPdoaDeGWFcLCY37xMjDNEcaBT8w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712176896; c=relaxed/simple;
-	bh=WBi+jMy/cPJPoUYrHvBCMEz4c/n+8y/p4u1tYF4xRno=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=RqqxbuK7r7HeedaDSWDa5OjMRGOyV5/Q8Gv56WWalndJf6dPKb/kc5w3CcJvDWiw4gBPBgUM33kTEKuAsaVDYfWIuQXMLOmowbykh+vVFv4UuiI8T14/QO5A9G0oc5fmiJf1fMi/R9dLEQUzsOGpqrsnRcz5v5auatjy28nuRPs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de; spf=pass smtp.mailfrom=alien8.de; dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b=BySGX9+L; arc=none smtp.client-ip=65.109.113.108
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alien8.de
-Received: from localhost (localhost.localdomain [127.0.0.1])
-	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id BE54340E019C;
-	Wed,  3 Apr 2024 20:41:31 +0000 (UTC)
-X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
-Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
-	header.d=alien8.de
-Received: from mail.alien8.de ([127.0.0.1])
-	by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
-	with ESMTP id zNPoDRuXVeZZ; Wed,  3 Apr 2024 20:41:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
-	t=1712176887; bh=SudQJGK2u0OMPdgM7lq3lvNT9ANcyHz0cK1GxOTp9BE=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=BySGX9+LYW3pLRDpGHmCEpj8LlqR+z//OiqByTtalHc4xBd75tW8b5V0Jr34TA/3W
-	 yjx9cCKdcBvMFuXU3C+ZU3d0CrJQnoG5nVrD8Pns+U9MMXhmfZeETmT51nvXb4DTB9
-	 j0qZKmvJnrw4uIE57DNd8oQldFYPBtIedgZDFUSCnQsRrwdrvtjn2eOHv/E1nbMSRh
-	 NdhKh630+Ly9kS2clCBCQZzJbGvhFdKIOm3d8hl0GEzZXcp1lIOILFyl7GYJ9aRsPt
-	 +j+PXD9NCDmj/8ERs111FN4tm4IPGRHXOEb1WZoljJdiljRfy6yn0sibBrlCk2gtYg
-	 qo1G76qZ9SZNgFocPNU+3unM2u2ryoMyrAIbn2K0ucnWtFjZPQmJ4gtvt57lhcwyC9
-	 9rlSzswBDovoHu+9YC5MdOjBsbA9UGVnfAtnKhii6hUIUqkUBbWRpNGU7gXqtaQ+aT
-	 JtkDXdYYpE51eecfTba+NJMpfcLdm6e4rRKeVz8t0KuW2GY/8Vrm1YZiRcSA1FAVh5
-	 MII2IBShIxaFWToN0C9aUb4IjiJOcZI4yv1gvOC0S5CZiCDV/Uuvs0uLOW9kbGxmho
-	 W6VsPS8/2tsBFKH8jP1tGZKJ146cfvI6OfRhUa6nlQzuQo3/rfJgkqi+/WLOZO0PEr
-	 DUHg+CcFLgIzLVRHRfsBCYYk=
-Received: from zn.tnic (p5de8ecf7.dip0.t-ipconnect.de [93.232.236.247])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
-	(No client certificate requested)
-	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 6D26440E00F4;
-	Wed,  3 Apr 2024 20:41:18 +0000 (UTC)
-Date: Wed, 3 Apr 2024 22:41:13 +0200
-From: Borislav Petkov <bp@alien8.de>
-To: Klara Modin <klarasmodin@gmail.com>
-Cc: Josh Poimboeuf <jpoimboe@kernel.org>,
-	"Kaplan, David" <David.Kaplan@amd.com>,
-	Ingo Molnar <mingo@kernel.org>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	"linux-tip-commits@vger.kernel.org" <linux-tip-commits@vger.kernel.org>,
-	"Peter Zijlstra (Intel)" <peterz@infradead.org>,
-	"x86@kernel.org" <x86@kernel.org>,
-	David Howells <dhowells@redhat.com>
-Subject: Re: [PATCH -v2] x86/retpoline: Ensure default return thunk isn't
- used at runtime
-Message-ID: <20240403204113.GLZg2-6f0nH0Ne9CQt@fat_crate.local>
-References: <20240104131210.GDZZauqoeKoZGpYwDd@fat_crate.local>
- <20240104132446.GEZZaxnrIgIyat0pqf@fat_crate.local>
- <20240104132623.GFZZax/wyf5Y3rMX5G@fat_crate.local>
- <20240207175010.nrr34b2pp3ewe3ga@treble>
- <20240207185328.GEZcPRqPsNInRXyNMj@fat_crate.local>
- <20240207194919.qw4jk2ykadjn5d4e@treble>
- <20240212104348.GCZcn2ZPr445KUyQ7k@fat_crate.local>
- <78e0d19c-b77a-4169-a80f-2eef91f4a1d6@gmail.com>
- <20240403173059.GJZg2SUwS8MXw7CdwF@fat_crate.local>
- <f37a111b-f5c5-4337-8eaf-46a2c28f01da@gmail.com>
+	s=arc-20240116; t=1712177160; c=relaxed/simple;
+	bh=5qSG2aA7zP86uqE7QONcq5Fa+fMoEGvSuBVv5RvKfgI=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=CUYRCJdnmBOckfjMm49UWkojoJMDVZfhYY3F5HXzF9TrEEGLA7UpAdlYBwb/QGTNjDAxkwpCLPrueEptby7LG0/s6c4MNrOqeCpHnD9GOVyK8SqSdiddvHpTH0TL4f5NC95fXOM4Vn1C8A90FtTAjnm/O3IELJ9UJ5rUax+nP28=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=BLKOzWGV; arc=none smtp.client-ip=209.85.208.177
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
+Received: by mail-lj1-f177.google.com with SMTP id 38308e7fff4ca-2d83dddcd65so3629651fa.1
+        for <linux-kernel@vger.kernel.org>; Wed, 03 Apr 2024 13:45:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1712177156; x=1712781956; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=itlV3Ei52sbNGGLJPwsBC3H98Sks2mSob1+Tdb5KXBg=;
+        b=BLKOzWGVGY2d5v2ZrsI/3tJMx6PfueJWJwdVuHfKPiF9jBtzfiZ+BNf4CWelDPB9zP
+         AxkUpWiBw6edIR9VuaUFKNohUXYErQDWTP+sTGc0ms/t19dZpWA6KnQGg2kCOwpcjPqa
+         gcLFaqp95q5dfOSu9tzVjTBNDIoB4fnBsRyPY=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712177156; x=1712781956;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=itlV3Ei52sbNGGLJPwsBC3H98Sks2mSob1+Tdb5KXBg=;
+        b=jLCxh89zM5lwAb6hBLeKG+mKBOcYBHngDLHS9tkD6e6pzj4bsnB2kXWLVCSQxU7bV6
+         u7UeXCv2y+edbUpF4ZDpklq9vkWd63C5lCu21+yUcGxi58bRXDptuOXrYbjP4g/77ZXV
+         6oz1MY/SYd9p20b8jrX3cQqrKQBJrmfA4xfa4WM2V1QPFOUhyK/VXVTS9nd5NE3dQXq6
+         K/Mehp1iF3z6/NU7OyRduJTrb3t0e9wkewy7CMbDLBFWs/iIx5AoOEi7MVtM+jSzTCb6
+         t3Ja/mK5CGn3soP9ddFZH9xeSqvJV8cRLY6GAIb5WB2/+lLZnivEvRj1ROdHdSKDuTC8
+         TYMA==
+X-Forwarded-Encrypted: i=1; AJvYcCV1fIdNqnpSKVH5eIWppmB2ZTJUUndCYMuKK4dbNkEkvSDHWd8VqiuBhMT12fukWFWqwpyG1pnpLLzAiWl7NUv+Sx4Ni+/9fRO20oCK
+X-Gm-Message-State: AOJu0YyIwiARn4Ia4IDnYythxLs10foI1Yg+ocxs08KvsA8Sd00/hbGR
+	YnjXOFHz5WYxYCUPRkCwJrkz/VbPloK0yl+s1AWeHpxYm9fwwUPj+O7sqEokTeM8MryrGFfMfbo
+	oUQ==
+X-Google-Smtp-Source: AGHT+IGCj0lA5dN/B2yp+OD+528HQG5PFAGNdGHEAiSO4auzLNSkEbR22dWErgTN7TtZRWb8VzDCxQ==
+X-Received: by 2002:a2e:8796:0:b0:2d4:5f50:1fa with SMTP id n22-20020a2e8796000000b002d45f5001famr380509lji.41.1712177156308;
+        Wed, 03 Apr 2024 13:45:56 -0700 (PDT)
+Received: from mail-wr1-f48.google.com (mail-wr1-f48.google.com. [209.85.221.48])
+        by smtp.gmail.com with ESMTPSA id r17-20020a056402019100b0056c4a0ccaacsm8361023edv.83.2024.04.03.13.45.55
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 03 Apr 2024 13:45:55 -0700 (PDT)
+Received: by mail-wr1-f48.google.com with SMTP id ffacd0b85a97d-33eee0258abso110949f8f.3
+        for <linux-kernel@vger.kernel.org>; Wed, 03 Apr 2024 13:45:55 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCUDfXh2LGHxKFx8xsFV34qIGYi8CBpDAc/OJ9HxSjwy3GhXYsWeMRsUxhsxT1DFiLYillg8655ZM83ITe1oC4VgyMIrMbSiEzipJ3e1
+X-Received: by 2002:a05:6000:190:b0:33e:cf4d:c581 with SMTP id
+ p16-20020a056000019000b0033ecf4dc581mr421503wrx.41.1712177155304; Wed, 03 Apr
+ 2024 13:45:55 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <f37a111b-f5c5-4337-8eaf-46a2c28f01da@gmail.com>
+References: <20240403-uvc-fix-relative-ptz-speed-v1-0-624c9267f745@securitylive.com>
+ <20240403-uvc-fix-relative-ptz-speed-v1-2-624c9267f745@securitylive.com>
+In-Reply-To: <20240403-uvc-fix-relative-ptz-speed-v1-2-624c9267f745@securitylive.com>
+From: Ricardo Ribalda <ribalda@chromium.org>
+Date: Wed, 3 Apr 2024 22:45:42 +0200
+X-Gmail-Original-Message-ID: <CANiDSCvfFuQSa5j7Zs-skXmPGTHRtGVH3moA8w=AG1BF1m=dLw@mail.gmail.com>
+Message-ID: <CANiDSCvfFuQSa5j7Zs-skXmPGTHRtGVH3moA8w=AG1BF1m=dLw@mail.gmail.com>
+Subject: Re: [PATCH 2/3] media: uvcvideo: UVC minimum relative pan/tilt/zoom
+ speed fix
+To: johnebgood@securitylive.com
+Cc: Laurent Pinchart <laurent.pinchart@ideasonboard.com>, 
+	Mauro Carvalho Chehab <mchehab@kernel.org>, linux-media@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, linh.tp.vu@gmail.com, soyer@irl.hu
+Content-Type: text/plain; charset="UTF-8"
 
-On Wed, Apr 03, 2024 at 10:26:19PM +0200, Klara Modin wrote:
-> Probably, I don't have much knowledge about this stuff. The machine can at
-> least be useful for testing still :)
+Hi John
 
-I wouldn't use it if I were you as it wouldn't even justify the
-electricity wasted. No one cares about 32-bit x86 kernels anymore and we
-barely keep them alive.
+Can you squash all the patches in one and resend as v3?
 
-It'll be a lot more helpful if you'd test 64-bit kernels on 64-bit hw.
+When you send a new version of your patch, you want to send it as PATCHvX
 
-:-)
+b4 should do this automatically for you:
 
-Thx.
+- just go to the original branch
+git checkout b4/uvc-relative-ptz-speed-fix
 
--- 
-Regards/Gruss,
-    Boris.
+- then edit the change with something like
+git rebase -i
 
-https://people.kernel.org/tglx/notes-about-netiquette
+- then edit the cover to describe the changelog with
+b4 prep --edit-cover
+
+-then submit
+b4 submit
+
+I will comment on your 2/2... but it should be squashed into your 1/2
+
+Thanks!
+
+
+On Wed, 3 Apr 2024 at 21:58, John Bauer via B4 Relay
+<devnull+johnebgood.securitylive.com@kernel.org> wrote:
+>
+> From: John Bauer <johnebgood@securitylive.com>
+>
+> Made recommended changes from Ricardo. I explored the case where
+> the minimum could be > 0 but less than the maximum. If this were
+> to occur the range of -maximum to maximum would still apply correctly
+> however there would be a range from -min to min that would possibly
+> not apply. It would be possible to capture the probed minimum and
+> check against that when setting the controls.
+>
+> Signed-off-by: John Bauer <johnebgood@securitylive.com>
+> ---
+>  drivers/media/usb/uvc/uvc_ctrl.c | 13 ++++++-------
+>  1 file changed, 6 insertions(+), 7 deletions(-)
+>
+> diff --git a/drivers/media/usb/uvc/uvc_ctrl.c b/drivers/media/usb/uvc/uvc_ctrl.c
+> index b389ab3ee05d..04300a782c81 100644
+> --- a/drivers/media/usb/uvc/uvc_ctrl.c
+> +++ b/drivers/media/usb/uvc/uvc_ctrl.c
+> @@ -1322,6 +1322,10 @@ static int __uvc_query_v4l2_ctrl(struct uvc_video_chain *chain,
+>                 break;
+>         }
+>
+> +       if (ctrl->info.flags & UVC_CTRL_FLAG_GET_MAX)
+> +               v4l2_ctrl->maximum = mapping->get(mapping, UVC_GET_MAX,
+> +                                    uvc_ctrl_data(ctrl, UVC_CTRL_DATA_MAX));
+> +
+>         if (ctrl->info.flags & UVC_CTRL_FLAG_GET_MIN) {
+>                 switch (v4l2_ctrl->id) {
+>                 case V4L2_CID_ZOOM_CONTINUOUS:
+> @@ -1332,8 +1336,7 @@ static int __uvc_query_v4l2_ctrl(struct uvc_video_chain *chain,
+>                          * value cannot be probed so it becomes the additive
+>                          * inverse of maximum.
+>                          */
+> -                       v4l2_ctrl->minimum = -1 * mapping->get(mapping, UVC_GET_MAX,
+> -                                               uvc_ctrl_data(ctrl, UVC_CTRL_DATA_MAX));
+> +                       v4l2_ctrl->minimum = -v4l2_ctrl->maximum;
+>                         break;
+>                 default:
+>                         v4l2_ctrl->minimum = mapping->get(mapping, UVC_GET_MIN,
+> @@ -1342,10 +1345,6 @@ static int __uvc_query_v4l2_ctrl(struct uvc_video_chain *chain,
+>                 }
+>         }
+>
+> -       if (ctrl->info.flags & UVC_CTRL_FLAG_GET_MAX)
+> -               v4l2_ctrl->maximum = mapping->get(mapping, UVC_GET_MAX,
+> -                                    uvc_ctrl_data(ctrl, UVC_CTRL_DATA_MAX));
+> -
+>         if (ctrl->info.flags & UVC_CTRL_FLAG_GET_RES)
+>                 v4l2_ctrl->step = mapping->get(mapping, UVC_GET_RES,
+>                                   uvc_ctrl_data(ctrl, UVC_CTRL_DATA_RES));
+> @@ -1940,7 +1939,7 @@ int uvc_ctrl_set(struct uvc_fh *handle,
+>                 case V4L2_CID_ZOOM_CONTINUOUS:
+>                 case V4L2_CID_PAN_SPEED:
+>                 case V4L2_CID_TILT_SPEED:
+> -                       min = max * -1;
+> +                       min = -max;
+>                 default:
+>                         break;
+>                 }
+>
+> --
+> 2.34.1
+>
+>
+
+
+--
+Ricardo Ribalda
 
