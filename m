@@ -1,96 +1,117 @@
-Return-Path: <linux-kernel+bounces-130704-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-130705-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 62012897BD6
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 00:58:13 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id EBB40897BD8
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 01:00:18 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1C73E28B02B
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 22:58:12 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AED1428B2C3
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 23:00:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1D9A1156966;
-	Wed,  3 Apr 2024 22:57:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 568D715696D;
+	Wed,  3 Apr 2024 23:00:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linux.org.uk header.i=@linux.org.uk header.b="o2SyvooU"
-Received: from zeniv.linux.org.uk (zeniv.linux.org.uk [62.89.141.173])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="SejcQfFb"
+Received: from mail-io1-f42.google.com (mail-io1-f42.google.com [209.85.166.42])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 40A28156871;
-	Wed,  3 Apr 2024 22:57:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=62.89.141.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0AE06156881
+	for <linux-kernel@vger.kernel.org>; Wed,  3 Apr 2024 23:00:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712185071; cv=none; b=D1oZ5F7EBsmV92BZd0BhnyjTByv9vybYysQLyWjZnbaodKoDuvieeWCptqFHYxCdlno7jBPaoMJhEbeCTQ6LwDFhorU51QQ/U/ROffdq/XRFrSryhser5NpojtDXeLNMKqhctWvnSQq4vK8FeATSqtxEnKtcSrjZLDhEuXPPmbM=
+	t=1712185211; cv=none; b=etBCz+sfXQil2QbbfYoG3jlgiCHUbR/S5wTuMH7dVyxSoiydSUMxu0H0vUWycbQNpo99hq6JKz/sWP65cIwCxRUcOKuJt1zONzgiThry7l9HB/cQHJe8pYU3b5RDtPTJ+H6AGJadRnlp6Qb0kIxFs0akKSRH+M1C+NvXnnMOADA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712185071; c=relaxed/simple;
-	bh=GdJ01PLvlUXO2n1nMDCRGXdWiRPjGHJisvsRdsLX798=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ulcx3BhCfKhNOf5yieYQ8sek/DToN2X7tCZVNd1NxGYuAv4TCFmnxUN1bAvAeR7IRvQhceH1SyOv0NxUm6kIB026IavRdu4WfaDOi2Vj7CkFLAxKXGxwQWpYVCVsdjD+bykl1c1QMFd6YiVFA8Xps7bm9/Xmcj+acsWkxiA82w0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zeniv.linux.org.uk; spf=none smtp.mailfrom=ftp.linux.org.uk; dkim=pass (2048-bit key) header.d=linux.org.uk header.i=@linux.org.uk header.b=o2SyvooU; arc=none smtp.client-ip=62.89.141.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zeniv.linux.org.uk
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=ftp.linux.org.uk
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=linux.org.uk; s=zeniv-20220401; h=Sender:In-Reply-To:Content-Type:
-	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=CbWk5huEObmhcA5g7RS6q+JrWme5Jfa+v58vnxeLScA=; b=o2SyvooUZ3RyKcf/A0OloFojZu
-	jTEW+zYs/9y+bXLfkWyE0ezuyrexew06OqIWb0wvmInMbTEsN84Lu8Gk6hQzJ95XaCcOgoJVvhEUX
-	wluc/kCDcy8r6RRX3iKsi+1EfyvOi6VikZZlkfrgOu9Uky+bAZ8TjVB8cLWpmbp2D3OPMaxhesglM
-	jxVSkV/9m1GR/D6UZJmp2CbdirwKrPdg16n2SyzmGlchvsilJ6ZYBeyeN4HaUuUIIcgUitqsl5y0r
-	NHbv2dWHdv+o5IvdxGYay9wPBcIyeqt/7jSbdXKuIPWTgXxYNyRcMi8rN74+Oey+8fs9cFU/gPg/U
-	mi79J3XQ==;
-Received: from viro by zeniv.linux.org.uk with local (Exim 4.96 #2 (Red Hat Linux))
-	id 1rs9YB-005ByQ-0W;
-	Wed, 03 Apr 2024 22:57:47 +0000
-Date: Wed, 3 Apr 2024 23:57:47 +0100
-From: Al Viro <viro@zeniv.linux.org.uk>
-To: Jens Axboe <axboe@kernel.dk>
-Cc: linux-fsdevel@vger.kernel.org, brauner@kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 3/3] signalfd: convert to ->read_iter()
-Message-ID: <20240403225747.GO538574@ZenIV>
-References: <20240403140446.1623931-1-axboe@kernel.dk>
- <20240403140446.1623931-4-axboe@kernel.dk>
+	s=arc-20240116; t=1712185211; c=relaxed/simple;
+	bh=jmIV0GOw5opWjSRaLZcl7S1Iprv49UC3ViIj5KVGbdU=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=bEzwL6Zo9aS2lOWEIK9pNcLO0d9teAUi+D2HKPE2OuvA0jOIzZE6chSCZ3DNYmqGFTyPn/fZpVTT6VKLMiAjp/N0PEaWJ/LWTT2vzyEI2UHXke27iRsD44fwZNLXQRfwLCDqs8uV4+xak/kPWjVwtO1fV5tflEdoH+BWrBUXJ7Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linuxfoundation.org; spf=pass smtp.mailfrom=linuxfoundation.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=SejcQfFb; arc=none smtp.client-ip=209.85.166.42
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linuxfoundation.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
+Received: by mail-io1-f42.google.com with SMTP id ca18e2360f4ac-7c86e6f649aso4636039f.0
+        for <linux-kernel@vger.kernel.org>; Wed, 03 Apr 2024 16:00:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linuxfoundation.org; s=google; t=1712185209; x=1712790009; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=dDl1NAxggtWfWoUqJc0/YE9Vva3ljQrZuJwUEtA4epk=;
+        b=SejcQfFb7FOuTKgTUU3n0ylMs/sEjsb40cr+bLvbttwvhe51sflq4vt/QsHqKuEqTl
+         fiQpIlPu62O4WUG3U1zqcpR0p3Qb6cNgWLdUuKJeCl+jCJ+vzH4HqqQvOBKFzkglgVz2
+         HXs++/9tUY6TgeGn23UaI2jVyP8gwC+eeUuVk=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712185209; x=1712790009;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=dDl1NAxggtWfWoUqJc0/YE9Vva3ljQrZuJwUEtA4epk=;
+        b=SXTDrQPTMKBtryExiW8mBKVB1xkbtEJj8Uv7VpW4jskUXOpAlTqIMiK+H7nofIZ7yR
+         FLUCQ4VS6CBCpAmmGbeAJu7MpKBIE+VLHq/1Fw7xfPWWy970Sy6hgRMjh5VXDinqrYX8
+         476Q0K49g4IBlJNFxMwT4KYLj8CMUh9pix9Z5sE13SRVgiiDnIIpLh89QcTDe5Sa69WW
+         a1aDjvz97W5rGtu6fzVfUJ0zF7x4XSN7y5NDhJqqwu+QjXP295+inqbtONrfkpKEASjy
+         KPVsS9nQhAP3kN53Oj7MeIKfo/f1iFVmQqvNKk17FMcESEHzRI7FfM9dq+PZapSw/TPe
+         KuJw==
+X-Forwarded-Encrypted: i=1; AJvYcCXz3lEnclx2Zbf7pOvv9XlNu9TSRppDhJwRitqxAgBXvBUqzJqpPVjM/gIfFrPqlFGpvnAucoUyzt0sR3JlgGBPQPMG9EBLvyNVOOvg
+X-Gm-Message-State: AOJu0YxuSK+ydnU6WOSggVm9CgWkjQMZ+Aaj+YIebW680z2UiVdGFoCK
+	Fhi3UA78f5UeQu2ga+JoVsVE8XBNVk1us/O5hvdYD40VKN8b8jKRxQ4HZZSbr7g=
+X-Google-Smtp-Source: AGHT+IFl5XEZ2ibJnPA43ZuAvjF2L0kiBzzsvfNYmw9cYR0Av/jzR05d3ho2D1+yTpz0sqmI2dVeRg==
+X-Received: by 2002:a05:6602:3418:b0:7d0:bd2b:43ba with SMTP id n24-20020a056602341800b007d0bd2b43bamr1609782ioz.0.1712185207862;
+        Wed, 03 Apr 2024 16:00:07 -0700 (PDT)
+Received: from [192.168.1.128] ([38.175.170.29])
+        by smtp.gmail.com with ESMTPSA id t31-20020a056638349f00b0047be37bfbbdsm4057220jal.153.2024.04.03.16.00.07
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 03 Apr 2024 16:00:07 -0700 (PDT)
+Message-ID: <a515127e-7609-4947-aec1-4a7cbdf72c40@linuxfoundation.org>
+Date: Wed, 3 Apr 2024 17:00:06 -0600
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240403140446.1623931-4-axboe@kernel.dk>
-Sender: Al Viro <viro@ftp.linux.org.uk>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 6.8 00/11] 6.8.4-rc1 review
+To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, stable@vger.kernel.org
+Cc: patches@lists.linux.dev, linux-kernel@vger.kernel.org,
+ torvalds@linux-foundation.org, akpm@linux-foundation.org,
+ linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+ lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+ f.fainelli@gmail.com, sudipm.mukherjee@gmail.com, srw@sladewatkins.net,
+ rwarsow@gmx.de, conor@kernel.org, allen.lkml@gmail.com, broonie@kernel.org,
+ Shuah Khan <skhan@linuxfoundation.org>
+References: <20240403175125.754099419@linuxfoundation.org>
+Content-Language: en-US
+From: Shuah Khan <skhan@linuxfoundation.org>
+In-Reply-To: <20240403175125.754099419@linuxfoundation.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Wed, Apr 03, 2024 at 08:02:54AM -0600, Jens Axboe wrote:
-> Rather than use the older style ->read() hook, use ->read_iter() so that
-> signalfd can support both O_NONBLOCK and IOCB_NOWAIT for non-blocking
-> read attempts.
+On 4/3/24 11:55, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 6.8.4 release.
+> There are 11 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
 > 
-> Split the fd setup into two parts, so that signalfd can mark the file
-> mode with FMODE_NOWAIT before installing it into the process table.
+> Responses should be made by Fri, 05 Apr 2024 17:51:13 +0000.
+> Anything received after that time might be too late.
+> 
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patch-6.8.4-rc1.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-6.8.y
+> and the diffstat can be found below.
+> 
+> thanks,
+> 
+> greg k-h
+> 
 
-Same issue with copy_to_iter() calling conventions; what's more, userland
-really does not expect partial copies here, so it might be worth adding
+Compiled and booted on my test system. No dmesg regressions.
 
-static inline
-bool copy_to_iter_full(void *addr, size_t bytes, struct iov_iter *i)
-{
-        size_t copied = copy_to_iter(addr, bytes, i);
-	if (likely(copied == bytes))
-		return true;
-	iov_iter_revert(i, copied);
-	return false;
-}
+Tested-by: Shuah Khan <skhan@linuxfoundation.org>
 
-to include/linux/uio.h for the sake of those suckers.  Then
-they could go for
-        return copy_to_iter_full(&new, sizeof(new), to) ? sizeof(new) : -EFAULT;
-and similar in other two.
-
-NOTE: the userland ABI is somewhat sucky here - if the buffer goes
-unmapped (or r/o) at the offset that is *not* a multiple of
-sizeof(struct signalfd_siginfo), you get an event quietly lost.
-Not sure what can be done with that - it is a user-visible ABI.
+thanks,
+-- Shuah
 
