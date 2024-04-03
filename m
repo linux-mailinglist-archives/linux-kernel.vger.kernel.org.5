@@ -1,161 +1,325 @@
-Return-Path: <linux-kernel+bounces-128959-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-128960-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8DF95896248
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 04:01:25 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D031789624D
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 04:05:02 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BAB231C237E8
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 02:01:24 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 13CF9288897
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 02:05:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7DACB179A7;
-	Wed,  3 Apr 2024 02:01:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 67B1A17997;
+	Wed,  3 Apr 2024 02:04:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="HZf5hcBS"
-Received: from mail-pg1-f173.google.com (mail-pg1-f173.google.com [209.85.215.173])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=codeconstruct.com.au header.i=@codeconstruct.com.au header.b="h2JCCK1U"
+Received: from codeconstruct.com.au (pi.codeconstruct.com.au [203.29.241.158])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6658214F70;
-	Wed,  3 Apr 2024 02:01:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4DE5B168A8;
+	Wed,  3 Apr 2024 02:04:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=203.29.241.158
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712109675; cv=none; b=DB4af0ZZ4AjYgiz8pKmY/G+o3PHysU1Xsvy+l3PvLdD1vOw8DLTqB6ozqzGzK/e71iDkX9BSOfeaR52QLrLzHVJljaHHQRU9jQGlsB34/c222hrV7Wn/fIxWeG3M0M8BSCNUFY7Y0i6WEVSy723RK6iufzAkOtcsb4waffkYEh0=
+	t=1712109893; cv=none; b=enDdzVUPBFiGzZqoFx2ijNfg9HpjoRpFowgMxfWuvOvvm++e7a901F3GPvjkvlQjmDXbBN0FfZ5DnfGuz6mrMQkOBqjmbzWEyhUjL8+QDUS/Stub70+kVluionB/XIG20kc9p56CPXXACrSlHmbkexM8PlGa/8Aq7Wqi+ia6Q2U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712109675; c=relaxed/simple;
-	bh=BpDt+tf92JC4R6bQIR0AZ9LRysFGYDVx7rMcvoGhgwA=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=HRam0De5ZkHeGeEwksI6r/FHzX5Os+tlFl33iXwt9GKTFm5h/wSO0pZCYhZSumu7ud81iVhwsnyhZTIFzNQa1occ0zzWcJqy1KS9fgCsKxE1eFGtKNtCS5W3uPu2rURSMxlNycy9okofZ6bgxL2BxXruPs+4H5+z7q1j+6i9ekc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=HZf5hcBS; arc=none smtp.client-ip=209.85.215.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f173.google.com with SMTP id 41be03b00d2f7-5d8b70b39efso4177156a12.0;
-        Tue, 02 Apr 2024 19:01:14 -0700 (PDT)
+	s=arc-20240116; t=1712109893; c=relaxed/simple;
+	bh=rX8gIwLzj9i+NrbHgx/4MPN8g2hbR2CC7BqbS9FNum8=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=QRqlddajuwfi/byKiu49VfxV2D2bcGRQcPgmNymLYCZJHBMb0uuupr5XM/VQ/8VQAF52SzN2dbnzPDLcG4ck25+UVT427bmsFPnkOc49gmY87BTXt/j3HcBgw/aG6DpyEbJPf0BcyWYNNtryfDaALguAJJqczhGtJbr5kZOy8qE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=codeconstruct.com.au; spf=pass smtp.mailfrom=codeconstruct.com.au; dkim=pass (2048-bit key) header.d=codeconstruct.com.au header.i=@codeconstruct.com.au header.b=h2JCCK1U; arc=none smtp.client-ip=203.29.241.158
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=codeconstruct.com.au
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=codeconstruct.com.au
+Received: from localhost.localdomain (ppp118-210-182-70.adl-adc-lon-bras34.tpg.internode.on.net [118.210.182.70])
+	by mail.codeconstruct.com.au (Postfix) with ESMTPSA id 78DE920075;
+	Wed,  3 Apr 2024 10:04:47 +0800 (AWST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1712109674; x=1712714474; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=ZEDMsVuuuoQ1174prvc6pVoSXIXrvtv4pXkECgOo8mQ=;
-        b=HZf5hcBSBuZTN1ZwECcybURc5NfH+uPT0BYhrjYvwY1tAzrq6RiuYN6TZlZxIZ38cY
-         b+n2HtqkeL5mooApn7RC3NWFdlTnE+PP/o91I9YhuRy+dsPac1ezv7UTxuUpDXRLoMl0
-         Lrr2JWYtzT5nJ80wTckknC9Ru5yYwwDCqsz5sCuiznPnXHHjvGGb2cQGgGGEj0Z5pVM4
-         DES/kE4f3dfadyF33wkLmwJokMh0ZV+E/C4YLIrd71j9LP8xkTX7NmGpsHMIldQ5D7Aq
-         rkyk9Qt+hjr74De4Z2zZw2mPZBYcfu2GE8JNOmdaEYNhcIu9+MkHkjl4CxfmunBA6CsR
-         2FFw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712109674; x=1712714474;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=ZEDMsVuuuoQ1174prvc6pVoSXIXrvtv4pXkECgOo8mQ=;
-        b=G5f2nkfOGtqPRTL0Dd4tBwXxQEwlduf5wdjRWRON3wThwCUFsI2MKRB/HBTNFQJhBZ
-         zNm4i0ubPM8S2n9nH5daSpPZX8BhFqJ19+PmagYMpW5VLFLv8TkAMxyxWBp7pRhTo+yK
-         a2i4Pu1+iI7tniSjWKrvppZ3ZN4snEojiavryPgAFQ5k5luQrhNMlywm2AN+YrowdBFh
-         CnQpBm73fbX6deYBHML2ftMcqAQri4D6Q/WJOfJsK2rC7baRDqLviujM7ic74guwM3pn
-         t0bElbGEQdK6R0CnpCTbNZ5HGp+7YjHyaA+hMELEN66gqjQlFJNZ6uqQBGTpnbvVyg98
-         59sQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUxMsSF88RZuusqln1yHqo7Y+p2I/8ZWBkM6DaxtfMNPUg5DUMbBjrr5cCRpOts2a9VTlEB748Z5SVjUdXlg2kYF41Z1hWtX2/8KsD5me/BtQuwulJfsAFtSOCyTluOOIsYkzCI
-X-Gm-Message-State: AOJu0Yzku680e1/sn7vB54xqY5QyAyBd/jC02LbmBibDErlJQE4/f8UA
-	D141tCNRKkCefhMHppC13nvJORwD+FeM7JPQqc2uji/a4Q8tTwRa8/lpa6hHR4H8FD8gMfMoEnB
-	5GY2DRwz368Op6YT9S1gH9jO3vxQ=
-X-Google-Smtp-Source: AGHT+IEkuAu1KEHf0qNFo3/DEdx3/SbuyX9NHysxtbJHzqInyoOkwHICDgHTkvCxXHRJIXikQW4riTdj8T+ZtnHQn1c=
-X-Received: by 2002:a17:90a:5909:b0:29d:e70f:7240 with SMTP id
- k9-20020a17090a590900b0029de70f7240mr12467666pji.11.1712109673683; Tue, 02
- Apr 2024 19:01:13 -0700 (PDT)
+	d=codeconstruct.com.au; s=2022a; t=1712109889;
+	bh=CHtl7bWOPaZNTF6/vPau0ikdHIEDo+eVR2BRd+QNipc=;
+	h=From:To:Cc:Subject:Date;
+	b=h2JCCK1UiiDcyJg4DhhddJ1AEGre8Z0Wt4UJPXPxaOlOw0RcsmJ9xxIy+trwNDGJ0
+	 dOp0JE76UyotLGcZ7FYl5hY0SKZ0IhO+sRA/GGCR3KW1J11dCfMtEQ6CemtmCIGWZa
+	 cAioct+O/kcLkXHJDzLe4c9ECiPo2e6+4tgkHXKd2+snYlEgXBcorkTJ9qWIALYim7
+	 weGb5qpMQgMY71Ys61A1rHRpLLUmkRHIa9rU8eXNJ7uOH9g4Vdk5vYbE2vjtjT0WlL
+	 AligKszqy0ktKNNNtuBloGsyC7nMfYDV+VYKi+caDcq1mrOr7XTLQMHeSaKSb9fgEx
+	 bpUPEwDEdNsFQ==
+From: Andrew Jeffery <andrew@codeconstruct.com.au>
+To: wim@linux-watchdog.org,
+	linux@roeck-us.net
+Cc: Andrew Jeffery <andrew@codeconstruct.com.au>,
+	robh@kernel.org,
+	krzysztof.kozlowski+dt@linaro.org,
+	conor+dt@kernel.org,
+	joel@jms.id.au,
+	zev@bewilderbeest.net,
+	linux-watchdog@vger.kernel.org,
+	devicetree@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org,
+	linux-aspeed@lists.ozlabs.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH v2] dt-bindings: watchdog: aspeed,ast2400-wdt: Convert to DT schema
+Date: Wed,  3 Apr 2024 12:34:39 +1030
+Message-Id: <20240403020439.418788-1-andrew@codeconstruct.com.au>
+X-Mailer: git-send-email 2.39.2
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240327110142.159851-1-cathy.cai@unisoc.com> <d1da7fdb-10f6-7f69-4820-520469c0193c@bootlin.com>
-In-Reply-To: <d1da7fdb-10f6-7f69-4820-520469c0193c@bootlin.com>
-From: cathy cai <cathycai0714@gmail.com>
-Date: Wed, 3 Apr 2024 10:01:02 +0800
-Message-ID: <CAG8gwPWFdckcoP5apUxP1E9haiet=XkRXH4LBygMN2awiVMabA@mail.gmail.com>
-Subject: Re: [RFC PATCH] net: stmmac: Fix the problem about interrupt storm
-To: Romain Gantois <romain.gantois@bootlin.com>
-Cc: Cathy Cai <cathy.cai@unisoc.com>, davem@davemloft.net, edumazet@google.com, 
-	kuba@kernel.org, pabeni@redhat.com, mcoquelin.stm32@gmail.com, 
-	netdev@vger.kernel.org, linux-kernel@vger.kernel.org, xuewen.yan94@gmail.com, 
-	cixi.geng1@unisoc.com, wade.shu@unisoc.com, zhiguo.niu@unisoc.com, 
-	alexandre.torgue@foss.st.com, joabreu@synopsys.com, 
-	linux-stm32@st-md-mailman.stormreply.com, 
-	linux-arm-kernel@lists.infradead.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
-Hi Romain,
+Squash warnings such as:
 
-On Sun, Mar 31, 2024 at 4:35=E2=80=AFPM Romain Gantois
-<romain.gantois@bootlin.com> wrote:
->
-> Hello Cathy,
->
-> On Wed, 27 Mar 2024, Cathy Cai wrote:
->
-> > Tx queue time out then reset adapter. When reset the adapter, stmmac dr=
-iver
-> > sets the state to STMMAC_DOWN and calls dev_close() function. If an int=
-errupt
-> > is triggered at this instant after setting state to STMMAC_DOWN, before=
- the
-> > dev_close() call.
-> >
-> ...
-> > -     set_bit(STMMAC_DOWN, &priv->state);
-> >       dev_close(priv->dev);
-> > +     set_bit(STMMAC_DOWN, &priv->state);
-> >       dev_open(priv->dev, NULL);
-> >       clear_bit(STMMAC_DOWN, &priv->state);
-> >       clear_bit(STMMAC_RESETING, &priv->state);
->
-> If this IRQ issue can happen whenever STMMAC_DOWN is set while the net de=
-vice is
-> open, then it could also happen between the dev_open() and
-> clear_bit(STMMAC_DOWN) calls right? So you'd have to clear STMMAC_DOWN be=
-fore
-> calling dev_open() but then I don't see the usefulness of setting STMMAC_=
-DOWN
-> and clearing it immediately. Maybe closing and opening the net device sho=
-uld be
-> enough?
->
- Yes. It could also happen between the dev_open() and
-clear_bit(STMMAC_DOWN) calls.
-Although we did not reproduce this scenario, it should have happened
-if we had increased
-the number of test samples. In addition, I found that other people had
-similar problems before.
-The link is:
-https://lore.kernel.org/all/20210208140820.10410-11-Sergey.Semin@baikalelec=
-tronics.ru/
+```
+arch/arm/boot/dts/aspeed/aspeed-bmc-facebook-galaxy100.dtb: /ahb/apb@1e600000/watchdog@1e785000: failed to match any schema with compatible: ['aspeed,ast2400-wdt']
+```
 
->
-> Moreover, it seems strange to me that stmmac_interrupt() unconditionnally
-> ignores interrupts when the driver is in STMMAC_DOWN state. This seems li=
-ke
-> dangerous behaviour, since it could cause IRQ storm issues whenever somet=
-hing
-> in the driver sets this state. I'm not too familiar with the interrupt ha=
-ndling
-> in this driver, but maybe stmmac_interrupt() could clear interrupts
-> unconditionnally in the STMMAC_DOWN state?
->
-Clear interrupts unconditionally in the STMMAC_DOWN state directly
-certainly won't cause this problem.
-This may be too rough, maybe this design has other considerations.
+The schema binding additionally defines the clocks property over the
+prose binding to align with use of the node in the DTS files.
 
->
-> Best Regards,
->
-> --
-> Romain Gantois, Bootlin
-> Embedded Linux and Kernel engineering
-> https://bootlin.com
+Signed-off-by: Andrew Jeffery <andrew@codeconstruct.com.au>
+---
+v2: Address feedback from Rob and Zev
 
- Best Regards,
-Cathy
+    - Rob: https://lore.kernel.org/linux-watchdog/20240402180718.GA358505-robh@kernel.org/
+    - Zev: https://lore.kernel.org/linux-watchdog/65722a59-2e94-4616-81e1-835615b0e600@hatter.bewilderbeest.net/
+
+v1: https://lore.kernel.org/linux-watchdog/20240402120118.282035-1-andrew@codeconstruct.com.au/
+
+ .../bindings/watchdog/aspeed,ast2400-wdt.yaml | 142 ++++++++++++++++++
+ .../bindings/watchdog/aspeed-wdt.txt          |  73 ---------
+ 2 files changed, 142 insertions(+), 73 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/watchdog/aspeed,ast2400-wdt.yaml
+ delete mode 100644 Documentation/devicetree/bindings/watchdog/aspeed-wdt.txt
+
+diff --git a/Documentation/devicetree/bindings/watchdog/aspeed,ast2400-wdt.yaml b/Documentation/devicetree/bindings/watchdog/aspeed,ast2400-wdt.yaml
+new file mode 100644
+index 000000000000..be78a9865584
+--- /dev/null
++++ b/Documentation/devicetree/bindings/watchdog/aspeed,ast2400-wdt.yaml
+@@ -0,0 +1,142 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/watchdog/aspeed,ast2400-wdt.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: Aspeed watchdog timer controllers
++
++maintainers:
++  - Andrew Jeffery <andrew@codeconstruct.com.au>
++
++properties:
++  compatible:
++    enum:
++      - aspeed,ast2400-wdt
++      - aspeed,ast2500-wdt
++      - aspeed,ast2600-wdt
++
++  reg:
++    maxItems: 1
++
++  clocks:
++    maxItems: 1
++    description: >
++      The clock used to drive the watchdog counter. From the AST2500 no source
++      other than the 1MHz clock can be selected, so the clocks property is
++      optional.
++
++  aspeed,reset-type:
++    $ref: /schemas/types.yaml#/definitions/string
++    enum:
++      - cpu
++      - soc
++      - system
++      - none
++    default: system
++    description: >
++      The watchdog can be programmed to generate one of three different types of
++      reset when a timeout occcurs.
++
++      Specifying 'cpu' will only reset the processor on a timeout event.
++
++      Specifying 'soc' will reset a configurable subset of the SoC's controllers
++      on a timeout event. Controllers critical to the SoC's operation may remain
++      untouched. The set of SoC controllers to reset may be specified via the
++      aspeed,reset-mask property if the node has the aspeed,ast2500-wdt or
++      aspeed,ast2600-wdt compatible.
++
++      Specifying 'system' will reset all controllers on a timeout event, as if
++      EXTRST had been asserted.
++
++      Specifying 'none' will cause the timeout event to have no reset effect.
++      Another watchdog engine on the chip must be used for chip reset operations.
++
++  aspeed,alt-boot:
++    $ref: /schemas/types.yaml#/definitions/flag
++    description: >
++      Direct the watchdog to configure the SoC to boot from the alternative boot
++      region if a timeout occurs.
++
++  aspeed,external-signal:
++    $ref: /schemas/types.yaml#/definitions/flag
++    description: >
++      Assert the timeout event on an external signal pin associated with the
++      watchdog controller instance. The pin must be muxed appropriately.
++
++  aspeed,ext-pulse-duration:
++    $ref: /schemas/types.yaml#/definitions/uint32
++    description: >
++      The duration, in microseconds, of the pulse emitted on the external signal
++      pin.
++
++  aspeed,ext-push-pull:
++    $ref: /schemas/types.yaml#/definitions/flag
++    description: >
++      If aspeed,external-signal is specified in the node, set the external
++      signal pin's drive type to push-pull. If aspeed,ext-push-pull is not
++      specified then the pin is configured as open-drain.
++
++  aspeed,ext-active-high:
++    $ref: /schemas/types.yaml#/definitions/flag
++    description: >
++      If both aspeed,external-signal and aspeed,ext-push-pull are specified in
++      the node, set the pulse polarity to active-high. If aspeed,ext-active-high
++      is not specified then the pin is configured as active-low.
++
++  aspeed,reset-mask:
++    $ref: /schemas/types.yaml#/definitions/uint32-array
++    minItems: 1
++    maxItems: 2
++    description: >
++      A bitmask indicating which peripherals will be reset if the watchdog
++      timer expires. On AST2500 SoCs this should be a single word defined using
++      the AST2500_WDT_RESET_* macros; on AST2600 SoCs this should be a two-word
++      array with the first word defined using the AST2600_WDT_RESET1_* macros,
++      and the second word defined using the AST2600_WDT_RESET2_* macros.
++
++required:
++  - compatible
++  - reg
++
++allOf:
++  - if:
++      anyOf:
++        - required:
++            - aspeed,ext-push-pull
++        - required:
++            - aspeed,ext-active-high
++        - required:
++            - aspeed,reset-mask
++    then:
++      properties:
++        compatible:
++          enum:
++            - aspeed,ast2500-wdt
++            - aspeed,ast2600-wdt
++  - if:
++      required:
++        - aspeed,ext-active-high
++    then:
++      required:
++        - aspeed,ext-push-pull
++
++additionalProperties: false
++
++examples:
++  - |
++    watchdog@1e785000 {
++        compatible = "aspeed,ast2400-wdt";
++        reg = <0x1e785000 0x1c>;
++        aspeed,reset-type = "system";
++        aspeed,external-signal;
++    };
++  - |
++    #include <dt-bindings/watchdog/aspeed-wdt.h>
++    watchdog@1e785040 {
++        compatible = "aspeed,ast2600-wdt";
++        reg = <0x1e785040 0x40>;
++        aspeed,reset-type = "soc";
++        aspeed,reset-mask = <AST2600_WDT_RESET1_DEFAULT
++                            (AST2600_WDT_RESET2_DEFAULT & ~AST2600_WDT_RESET2_LPC)>;
++    };
+diff --git a/Documentation/devicetree/bindings/watchdog/aspeed-wdt.txt b/Documentation/devicetree/bindings/watchdog/aspeed-wdt.txt
+deleted file mode 100644
+index 3208adb3e52e..000000000000
+--- a/Documentation/devicetree/bindings/watchdog/aspeed-wdt.txt
++++ /dev/null
+@@ -1,73 +0,0 @@
+-Aspeed Watchdog Timer
+-
+-Required properties:
+- - compatible: must be one of:
+-	- "aspeed,ast2400-wdt"
+-	- "aspeed,ast2500-wdt"
+-	- "aspeed,ast2600-wdt"
+-
+- - reg: physical base address of the controller and length of memory mapped
+-   region
+-
+-Optional properties:
+-
+- - aspeed,reset-type = "cpu|soc|system|none"
+-
+-   Reset behavior - Whenever a timeout occurs the watchdog can be programmed
+-   to generate one of three different, mutually exclusive, types of resets.
+-
+-   Type "none" can be specified to indicate that no resets are to be done.
+-   This is useful in situations where another watchdog engine on chip is
+-   to perform the reset.
+-
+-   If 'aspeed,reset-type=' is not specified the default is to enable system
+-   reset.
+-
+-   Reset types:
+-
+-        - cpu: Reset CPU on watchdog timeout
+-
+-        - soc: Reset 'System on Chip' on watchdog timeout
+-
+-        - system: Reset system on watchdog timeout
+-
+-        - none: No reset is performed on timeout. Assumes another watchdog
+-                engine is responsible for this.
+-
+- - aspeed,alt-boot:    If property is present then boot from alternate block.
+- - aspeed,external-signal: If property is present then signal is sent to
+-			external reset counter (only WDT1 and WDT2). If not
+-			specified no external signal is sent.
+- - aspeed,ext-pulse-duration: External signal pulse duration in microseconds
+-
+-Optional properties for AST2500-compatible watchdogs:
+- - aspeed,ext-push-pull: If aspeed,external-signal is present, set the pin's
+-			 drive type to push-pull. The default is open-drain.
+- - aspeed,ext-active-high: If aspeed,external-signal is present and and the pin
+-			   is configured as push-pull, then set the pulse
+-			   polarity to active-high. The default is active-low.
+-
+-Optional properties for AST2500- and AST2600-compatible watchdogs:
+- - aspeed,reset-mask: A bitmask indicating which peripherals will be reset if
+-		      the watchdog timer expires.  On AST2500 this should be a
+-		      single word defined using the AST2500_WDT_RESET_* macros;
+-		      on AST2600 this should be a two-word array with the first
+-		      word defined using the AST2600_WDT_RESET1_* macros and the
+-		      second word defined using the AST2600_WDT_RESET2_* macros.
+-
+-Examples:
+-
+-	wdt1: watchdog@1e785000 {
+-		compatible = "aspeed,ast2400-wdt";
+-		reg = <0x1e785000 0x1c>;
+-		aspeed,reset-type = "system";
+-		aspeed,external-signal;
+-	};
+-
+-	#include <dt-bindings/watchdog/aspeed-wdt.h>
+-	wdt2: watchdog@1e785040 {
+-		compatible = "aspeed,ast2600-wdt";
+-		reg = <0x1e785040 0x40>;
+-		aspeed,reset-mask = <AST2600_WDT_RESET1_DEFAULT
+-				     (AST2600_WDT_RESET2_DEFAULT & ~AST2600_WDT_RESET2_LPC)>;
+-	};
+-- 
+2.39.2
+
 
