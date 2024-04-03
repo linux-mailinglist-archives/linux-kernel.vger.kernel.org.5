@@ -1,94 +1,69 @@
-Return-Path: <linux-kernel+bounces-130556-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-130559-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id DB2908979E9
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 22:37:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 6A2FF8979EE
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 22:38:07 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 95B0428432D
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 20:37:41 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 204232843B4
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 20:38:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3EF7415697E;
-	Wed,  3 Apr 2024 20:36:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 011A715665D;
+	Wed,  3 Apr 2024 20:36:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="OKKWNDJw"
-Received: from mail-wm1-f46.google.com (mail-wm1-f46.google.com [209.85.128.46])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="C1/QtN1X"
+Received: from lelv0142.ext.ti.com (lelv0142.ext.ti.com [198.47.23.249])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D135115687B;
-	Wed,  3 Apr 2024 20:36:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5E541156641;
+	Wed,  3 Apr 2024 20:36:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.23.249
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712176603; cv=none; b=GIDitObpJF/6QF8TxDP9v0OtN7M2DgYHYGusSQgTW1kNNu0zX7kdVce7UqBdxnmY2v9IWooMKuxevhEVQ1sbo8YA9GvmyUJezR2DeV+kYSB2UsBHkyue9KwddA8O4xoXiVEKGGM7NY0devMtA40fQLVuPN/0vC2ZbShf1RZavjk=
+	t=1712176618; cv=none; b=POognCzb/osskSx2mwc0usCaraG+hnDBWSZ4jyU4Et1oiOaKOrzTIGV6wwtzdEyr/mthK1G/WPtmfiwDVgsHAM6NZlvezq4DZdwzCT8+S+QWXMcU5vgFkZForljF0d/fLuI7ENqkdPDY4w4vChXLKIiYatAOYgeYM9EbdYPDZdg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712176603; c=relaxed/simple;
-	bh=ym1B+YotZWSerPjFBcgO+xOuTrBddbeFCi8NmEi2Rhk=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=W2UHCTBZ10jUiDkSEE2wvmtwG87wZ05DUIVPbDN480+zFdb2oE3GLyGdRWHX76z3G5wVUNNnKDAlC3bdIVKnbSHC69YUGpir4DO3QLxLPxQepDIAQAuIxDsT7Dh0IYZ5iRvxtE82Ins7EK/c0MgCCH4d/5+Su0slGrifWEyHOAs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=OKKWNDJw; arc=none smtp.client-ip=209.85.128.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f46.google.com with SMTP id 5b1f17b1804b1-4148c6132b4so8434615e9.1;
-        Wed, 03 Apr 2024 13:36:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1712176599; x=1712781399; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=jSGypoDfqpqf30JRW1cSjKb3kn4Y8om8katFtm1k9j8=;
-        b=OKKWNDJwRYiEQExvMkuDSUAPwJOCPMxVjFNv9oTL0Lm7GX3hZzmvTMCPx56ofZk15G
-         Bln8I9UhabF5MSb3s8koii/uw4msU5UHz/HjiYmn986trP1LDWjKd6YmJSa9GMkYgsNJ
-         pwxuNio1QRZrI37v7uCI3piEafaOnVlskw3zcSXoCLriYGZA53X2IAlWnnK0jLcUBiyw
-         ERJmrUCvzxqzR/x/3Iwci9eqOp35pI720YKVojzIlhk/VZit8Ts8JKnAtRpaXavMjNho
-         vvGpBVAdz6immsQ+u/oe+YHqhS7fG29B3W365Nfnpg57GnE6hzBcPgmAfA7FAklytVJY
-         aAEg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712176599; x=1712781399;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=jSGypoDfqpqf30JRW1cSjKb3kn4Y8om8katFtm1k9j8=;
-        b=M4hhZJyUI7O/91rHrBHHoIeuRcWMSpFa9OpmVX//VUDB0RLBclbcg3ECxuo9Jvz7b3
-         nxO6DpdGCKTAGhX4labPMOz/xg21TaUnpLeYsH2O4linHF256yV3QN9FL8ECSJBNRJ9b
-         MtdJDCnV1xuQ5Ex4T+g9pTrrQzFy92B9OsbMIRpeSOcp4TDfciWKM3itcGtzsfwsVkzi
-         GmPEPu6JZO2kv4YW/pXIUDYGh6XN8Wn0d37M4MQmZFClB7mfCsgRx9OLUXxqwNYR2MjV
-         ccC1vBKHrGk+TWbg4szjiv6QdY9nX0nSaaYS9lhfU2eR3KYg6ddKYlDCSO/FXbKHijhT
-         zRWg==
-X-Forwarded-Encrypted: i=1; AJvYcCXVaCm9b8Jih1NDqjLXl+Ws5msYX1PvSx+B3ocbg1x+vqS12n7Zf9YbEiOT3rjsRcRGMKzU6yTdlSZkm6y5o1PYlgUrRcJz80zxvoxBNGcrszbTMZdGzDLlUQf281cu2vfjDR4ejudLlrihxEdv
-X-Gm-Message-State: AOJu0Yw4TBX7N9t02W06NBvdDwhtaudIj7046+AypZUUvVDYw2430xbo
-	M4hxiezsY1SxmqDpu90zrzWQh9GOJ56sVAmZ1fZ5phGgFasg9OSFSAZZEwxc
-X-Google-Smtp-Source: AGHT+IFyZ/P7OD6dXKo56fesVxWbcmlAoQodU4rrW7wCYbFjzNMLINpZAc8FOrmJHkASHxkvyr9Gjg==
-X-Received: by 2002:a5d:5447:0:b0:343:7f4b:6da5 with SMTP id w7-20020a5d5447000000b003437f4b6da5mr2931617wrv.17.1712176599471;
-        Wed, 03 Apr 2024 13:36:39 -0700 (PDT)
-Received: from prasmi.home ([2a00:23c8:2500:a01:5eb:3d93:f2b6:25e8])
-        by smtp.gmail.com with ESMTPSA id p4-20020a05600c468400b00415f496b9b7sm244910wmo.39.2024.04.03.13.36.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 03 Apr 2024 13:36:38 -0700 (PDT)
-From: Prabhakar <prabhakar.csengg@gmail.com>
-X-Google-Original-From: Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-To: Geert Uytterhoeven <geert+renesas@glider.be>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Rob Herring <robh@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Magnus Damm <magnus.damm@gmail.com>,
-	Paul Walmsley <paul.walmsley@sifive.com>,
-	Palmer Dabbelt <palmer@dabbelt.com>,
-	Albert Ou <aou@eecs.berkeley.edu>
-Cc: linux-kernel@vger.kernel.org,
-	devicetree@vger.kernel.org,
-	linux-renesas-soc@vger.kernel.org,
-	linux-riscv@lists.infradead.org,
-	Prabhakar <prabhakar.csengg@gmail.com>,
-	Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-Subject: [PATCH v2 5/5] riscv: dts: renesas: rzfive-smarc-som: Drop deleting interrupt properties from ETH0/1 nodes
-Date: Wed,  3 Apr 2024 21:35:03 +0100
-Message-Id: <20240403203503.634465-6-prabhakar.mahadev-lad.rj@bp.renesas.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20240403203503.634465-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
-References: <20240403203503.634465-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
+	s=arc-20240116; t=1712176618; c=relaxed/simple;
+	bh=xeEjJBRwdbnoHELe+JmZTnon7hCJd2P9sODhxzR8Fnk=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=C+lLMj18pLOrB/ehoEUhZLwUUtwAQRiQT4U5bWP4G5CASqIjrc29HQJ+9bc8BIn3biy/umy2eAEOD/taJ0K6VEls1IrRNL2WD4vWSWL81fWNijSS9LYB/HkpIjfyUt1g+Bj5tw8ZRpBquOLyz0QUI4TC3viyRQFAT7tbi2U2S/o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=C1/QtN1X; arc=none smtp.client-ip=198.47.23.249
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+	by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 433KaZD5076287;
+	Wed, 3 Apr 2024 15:36:35 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+	s=ti-com-17Q1; t=1712176595;
+	bh=/7zAIRf6EU6IdqEwtDVY3sRloUvgBjYsBrYpheRGSSI=;
+	h=From:To:CC:Subject:Date;
+	b=C1/QtN1Xk3jOpxuH6ZXfuGnWr4L/vAUsOBlUl7NKqr2Yc/4ZbMD86bDB4y2MgGgjn
+	 0CY7+XLUCj7wmlgwT/KCFMul5Bu1sqzV0GOSRTpzsE9W5lc+xdOl7dbi7Z7xd7JTkK
+	 v1+RuGoocn/nN+aYTTaL0Nasfz2SRBVh1AhX1ZlU=
+Received: from DFLE112.ent.ti.com (dfle112.ent.ti.com [10.64.6.33])
+	by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 433KaZWC000483
+	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+	Wed, 3 Apr 2024 15:36:35 -0500
+Received: from DFLE101.ent.ti.com (10.64.6.22) by DFLE112.ent.ti.com
+ (10.64.6.33) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Wed, 3
+ Apr 2024 15:36:34 -0500
+Received: from lelvsmtp5.itg.ti.com (10.180.75.250) by DFLE101.ent.ti.com
+ (10.64.6.22) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Wed, 3 Apr 2024 15:36:34 -0500
+Received: from fllvsmtp8.itg.ti.com ([10.249.42.149])
+	by lelvsmtp5.itg.ti.com (8.15.2/8.15.2) with ESMTP id 433KaYFf080324;
+	Wed, 3 Apr 2024 15:36:34 -0500
+From: Andrew Davis <afd@ti.com>
+To: Jean Delvare <jdelvare@suse.com>, Guenter Roeck <linux@roeck-us.net>,
+        Juerg Haefliger <juergh@proton.me>, Riku Voipio <riku.voipio@iki.fi>
+CC: <linux-hwmon@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        Andrew
+ Davis <afd@ti.com>
+Subject: [PATCH 00/31] Remove use of i2c_match_id in HWMON
+Date: Wed, 3 Apr 2024 15:36:02 -0500
+Message-ID: <20240403203633.914389-1-afd@ti.com>
+X-Mailer: git-send-email 2.39.2
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -96,49 +71,90 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 
-From: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+Hello all,
 
-Now that we have enabled IRQC support for RZ/Five SoC switch to interrupt
-mode for ethernet0/1 PHYs instead of polling mode.
+Goal here is to remove the i2c_match_id() function from all drivers.
+Using i2c_get_match_data() can simplify code and has some other
+benefits described in the patches.
 
-Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
----
-v1->v2
-- Included RB tag from Geert
----
- .../riscv/boot/dts/renesas/rzfive-smarc-som.dtsi | 16 ----------------
- 1 file changed, 16 deletions(-)
+There are not many users left in kernel, most remaining users
+are here in HWMON, so let's clear those out here.
 
-diff --git a/arch/riscv/boot/dts/renesas/rzfive-smarc-som.dtsi b/arch/riscv/boot/dts/renesas/rzfive-smarc-som.dtsi
-index 72d9b6fba526..86b2f15375ec 100644
---- a/arch/riscv/boot/dts/renesas/rzfive-smarc-som.dtsi
-+++ b/arch/riscv/boot/dts/renesas/rzfive-smarc-som.dtsi
-@@ -7,22 +7,6 @@
- 
- #include <arm64/renesas/rzg2ul-smarc-som.dtsi>
- 
--#if (!SW_ET0_EN_N)
--&eth0 {
--	phy0: ethernet-phy@7 {
--		/delete-property/ interrupt-parent;
--		/delete-property/ interrupts;
--	};
--};
--#endif
--
--&eth1 {
--	phy1: ethernet-phy@7 {
--		/delete-property/ interrupt-parent;
--		/delete-property/ interrupts;
--	};
--};
--
- &sbc {
- 	status = "disabled";
- };
+I don't have most of this hardware, so testing is very welcome :)
+
+Thanks,
+Andrew
+
+Andrew Davis (31):
+  hwmon: (ad7418) Remove use of i2c_match_id()
+  hwmon: (adm1021) Remove use of i2c_match_id()
+  hwmon: (adm1031) Remove use of i2c_match_id()
+  hwmon: (ads7828) Remove use of i2c_match_id()
+  hwmon: (adt7475) Remove use of i2c_match_id()
+  hwmon: (aht10) Remove use of i2c_match_id()
+  hwmon: (dme1737) Remove use of i2c_match_id()
+  hwmon: (ds1621) Remove use of i2c_match_id()
+  hwmon: (f75375s) Remove use of i2c_match_id()
+  hwmon: (fschmd) Remove use of i2c_match_id()
+  hwmon: (ina2xx) Remove use of i2c_match_id()
+  hwmon: (lm63) Remove use of i2c_match_id()
+  hwmon: (lm75) Remove use of i2c_match_id()
+  hwmon: (lm78) Remove use of i2c_match_id()
+  hwmon: (lm83) Remove use of i2c_match_id()
+  hwmon: (lm85) Remove use of i2c_match_id()
+  hwmon: (lm90) Remove use of i2c_match_id()
+  hwmon: (lm95234) Remove use of i2c_match_id()
+  hwmon: (max16065) Remove use of i2c_match_id()
+  hwmon: (max1668) Remove use of i2c_match_id()
+  hwmon: (max6697) Remove use of i2c_match_id()
+  hwmon: (mcp3021) Remove use of i2c_match_id()
+  hwmon: (powr1220) Remove use of i2c_match_id()
+  hwmon: (sht3x) Remove use of i2c_match_id()
+  hwmon: (shtc1) Remove use of i2c_match_id()
+  hwmon: (thmc50) Remove use of i2c_match_id()
+  hwmon: (tmp401) Remove use of i2c_match_id()
+  hwmon: (tmp421) Remove use of i2c_match_id()
+  hwmon: (tmp464) Remove use of i2c_match_id()
+  hwmon: (w83781d) Remove use of i2c_match_id()
+  hwmon: (w83795): Remove use of i2c_match_id()
+
+ drivers/hwmon/ad7418.c   |  7 +-----
+ drivers/hwmon/adm1021.c  |  4 +---
+ drivers/hwmon/adm1031.c  |  4 +---
+ drivers/hwmon/ads7828.c  |  7 +-----
+ drivers/hwmon/adt7475.c  | 16 ++++++--------
+ drivers/hwmon/aht10.c    |  3 +--
+ drivers/hwmon/dme1737.c  |  4 +---
+ drivers/hwmon/ds1621.c   |  4 +---
+ drivers/hwmon/f75375s.c  | 46 +++++++++++++++++-----------------------
+ drivers/hwmon/fschmd.c   |  2 +-
+ drivers/hwmon/ina2xx.c   |  7 +-----
+ drivers/hwmon/lm63.c     |  5 +----
+ drivers/hwmon/lm75.c     | 10 +--------
+ drivers/hwmon/lm78.c     |  4 +---
+ drivers/hwmon/lm83.c     | 16 +++++++-------
+ drivers/hwmon/lm85.c     |  7 +-----
+ drivers/hwmon/lm90.c     |  5 +----
+ drivers/hwmon/lm95234.c  |  5 ++---
+ drivers/hwmon/max16065.c | 10 ++++-----
+ drivers/hwmon/max1668.c  |  4 +---
+ drivers/hwmon/max6697.c  |  7 +-----
+ drivers/hwmon/mcp3021.c  |  6 +++---
+ drivers/hwmon/powr1220.c |  6 +++---
+ drivers/hwmon/sht3x.c    | 20 ++++++++---------
+ drivers/hwmon/shtc1.c    |  4 +---
+ drivers/hwmon/thmc50.c   |  4 +---
+ drivers/hwmon/tmp401.c   |  2 +-
+ drivers/hwmon/tmp421.c   |  6 +-----
+ drivers/hwmon/tmp464.c   |  5 +----
+ drivers/hwmon/w83781d.c  |  4 +---
+ drivers/hwmon/w83795.c   |  4 +---
+ 31 files changed, 79 insertions(+), 159 deletions(-)
+
 -- 
-2.34.1
+2.39.2
 
 
