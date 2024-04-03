@@ -1,57 +1,57 @@
-Return-Path: <linux-kernel+bounces-130355-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-130356-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 28535897717
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 19:42:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 441D1897719
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 19:43:05 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id BB9DE1F2F155
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 17:42:46 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D67711F2F990
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 17:43:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5618D16DEC7;
-	Wed,  3 Apr 2024 17:20:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A897B16E864;
+	Wed,  3 Apr 2024 17:20:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="XsA9JWnI"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="aBcJ9jh9"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 930A016DEB2;
-	Wed,  3 Apr 2024 17:20:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EBF2F16DED1;
+	Wed,  3 Apr 2024 17:20:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712164816; cv=none; b=oKhGPiNkkP5UU7w2HDV9uVFQLPntAnutKcjNDS6nXcupd6unnW8ks8d3nTvZoDUve55WVRBAb4t6Aqo1T2YU4Ma1OW81i8RDpOZWbwiVdqF1sjKfDSLEmJ8/Q5OELdK5etC/Bll/Gui8/r8sHCro+uNJJl8QqMRAeq9GgjddP7Q=
+	t=1712164818; cv=none; b=Vz9Vc1gJT/2Xg9oRvqqCK2liE8kukcR2Lf6MNK65NDbt+PHO5JFyj4wptEoz/LNPYZwK1t1R8JjMriXWPZ3MqxAnvtl3QdlHPv+7gIem6fKOteRhM9CCN2kqzxXnRT/TLnaHTOnzwg1sPuELTrL7lXldgGgVKBkZfOWGTGlfzc4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712164816; c=relaxed/simple;
-	bh=KGum2UiFM/XeeIttcKMIY9uAmatsd+1YLL7DOdMp7+8=;
+	s=arc-20240116; t=1712164818; c=relaxed/simple;
+	bh=Rrm8tWYaGkWcXihbvaPJj6PlMYoXcogn9JU65JdeccM=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=A90uk+jofOQNYL//ruELm+/683j+66hGJfXQeZxekkQUtjCka3LC5L/ZK6yx6zoYfOlfewxT1KUnBn0WQ/sAeW3+66Exb62l1lw8wqIGnw/hXNGLLT8pyH98SvnRPoh3Qz4oldk0vKitRC0KktYS1PoHUUQuuk16tFGhF91TIhY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=XsA9JWnI; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 44B7AC43394;
-	Wed,  3 Apr 2024 17:20:15 +0000 (UTC)
+	 MIME-Version; b=YXR4CtBp4hFmysqf0eCMmNxGEMBxeVlVtjk9GfizP9uNelLINVNsrJlTTjqVv+jXyTydCNgjU/TlzLoLCh92V++qBT9vY0ftsAbeIXpTfP3JbYPkgi308TFXb98+wRGHteGRpYlcS9mwRfjRCLWGCQyioPFwoW/lKuGeH+QRhKc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=aBcJ9jh9; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 880FAC43390;
+	Wed,  3 Apr 2024 17:20:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712164816;
-	bh=KGum2UiFM/XeeIttcKMIY9uAmatsd+1YLL7DOdMp7+8=;
+	s=k20201202; t=1712164817;
+	bh=Rrm8tWYaGkWcXihbvaPJj6PlMYoXcogn9JU65JdeccM=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=XsA9JWnIt38BQ1V1Z82DSwbssq4w3UDVfbA+tdwV4U7mcyN1hsjBXjnK0we3LNbgp
-	 IhhBPYrGqNpAI30jeFhTziRj+Ww+Dc/2OI3SdQjKlT1AMDyhgsFYHyanVEXvUDjFeI
-	 KnUvB+szNdMOQXGhaXIG+uuc2WAx7RFOsNFptH5Yy0xFoLUxgZJjWaXNGC2jmJ1Lfb
-	 E7boOvJ/CUiL69Qxqe28Xvd+4XWdHATj0XAW2uBTt9BcMyviqIvf6QPF203bQYnEC1
-	 oBO4oxCCOjBxNh3HE90En9XCD0/DBooGYA4qGbKjZO8MKsQzkV3Chdjd0hPcxIzuS9
-	 zDYuDgSz/UOJQ==
+	b=aBcJ9jh9COQNHt1G06ZaNvxrhVHiP558x27q8Gpq1cQtVa/BSWnQJUrzP1wCEFtqF
+	 hfr/iXeu/rdKHXUvF7p+dix/hKCNvTZLAGtdmAueqHFGqJoYdLYbhMVOcfqI9ioXEv
+	 YU4LAwRzKm5hOGqRwfMxHt1FmMLcU3MGXFSlzc0FI+knpVaUwV3L6+1O8WvllvZhju
+	 bdQehZ4U/KebvWqM/4IujR16IpYeb+y3jwpxIRU30V2lBsz+BhTTpVa7coK/uW9PvX
+	 22fVtZaabkI9+/sBB2U6DsOzXBYOqoYrkq8Cg6nh2JwjCY/Gwnt+S1f/osRALh4nYY
+	 55tV5a/divTRg==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Aleksandr Burakov <a.burakov@rosalinux.ru>,
-	Helge Deller <deller@gmx.de>,
+Cc: "Jiawei Fu (iBug)" <i@ibugone.com>,
+	Christoph Hellwig <hch@lst.de>,
+	Sagi Grimberg <sagi@grimberg.me>,
+	Keith Busch <kbusch@kernel.org>,
 	Sasha Levin <sashal@kernel.org>,
-	FlorianSchandinat@gmx.de,
-	linux-fbdev@vger.kernel.org,
-	dri-devel@lists.freedesktop.org
-Subject: [PATCH AUTOSEL 5.10 6/8] fbdev: viafb: fix typo in hw_bitblt_1 and hw_bitblt_2
-Date: Wed,  3 Apr 2024 13:20:00 -0400
-Message-ID: <20240403172006.353022-6-sashal@kernel.org>
+	linux-nvme@lists.infradead.org
+Subject: [PATCH AUTOSEL 5.10 7/8] drivers/nvme: Add quirks for device 126f:2262
+Date: Wed,  3 Apr 2024 13:20:01 -0400
+Message-ID: <20240403172006.353022-7-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240403172006.353022-1-sashal@kernel.org>
 References: <20240403172006.353022-1-sashal@kernel.org>
@@ -66,45 +66,50 @@ X-Patchwork-Hint: Ignore
 X-stable-base: Linux 5.10.214
 Content-Transfer-Encoding: 8bit
 
-From: Aleksandr Burakov <a.burakov@rosalinux.ru>
+From: "Jiawei Fu (iBug)" <i@ibugone.com>
 
-[ Upstream commit bc87bb342f106a0402186bcb588fcbe945dced4b ]
+[ Upstream commit e89086c43f0500bc7c4ce225495b73b8ce234c1f ]
 
-There are some actions with value 'tmp' but 'dst_addr' is checked instead.
-It is obvious that a copy-paste error was made here and the value
-of variable 'tmp' should be checked here.
+This commit adds NVME_QUIRK_NO_DEEPEST_PS and NVME_QUIRK_BOGUS_NID for
+device [126f:2262], which appears to be a generic VID:PID pair used for
+many SSDs based on the Silicon Motion SM2262/SM2262EN controller.
 
-Found by Linux Verification Center (linuxtesting.org) with SVACE.
+Two of my SSDs with this VID:PID pair exhibit the same behavior:
 
-Signed-off-by: Aleksandr Burakov <a.burakov@rosalinux.ru>
-Signed-off-by: Helge Deller <deller@gmx.de>
+  * They frequently have trouble exiting the deepest power state (5),
+    resulting in the entire disk unresponsive.
+    Verified by setting nvme_core.default_ps_max_latency_us=10000 and
+    observing them behaving normally.
+  * They produce all-zero nguid and eui64 with `nvme id-ns` command.
+
+The offending products are:
+
+  * HP SSD EX950 1TB
+  * HIKVISION C2000Pro 2TB
+
+Signed-off-by: Jiawei Fu <i@ibugone.com>
+Reviewed-by: Christoph Hellwig <hch@lst.de>
+Reviewed-by: Sagi Grimberg <sagi@grimberg.me>
+Signed-off-by: Keith Busch <kbusch@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/video/fbdev/via/accel.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/nvme/host/pci.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/drivers/video/fbdev/via/accel.c b/drivers/video/fbdev/via/accel.c
-index 0a1bc7a4d7853..1e04026f08091 100644
---- a/drivers/video/fbdev/via/accel.c
-+++ b/drivers/video/fbdev/via/accel.c
-@@ -115,7 +115,7 @@ static int hw_bitblt_1(void __iomem *engine, u8 op, u32 width, u32 height,
- 
- 	if (op != VIA_BITBLT_FILL) {
- 		tmp = src_mem ? 0 : src_addr;
--		if (dst_addr & 0xE0000007) {
-+		if (tmp & 0xE0000007) {
- 			printk(KERN_WARNING "hw_bitblt_1: Unsupported source "
- 				"address %X\n", tmp);
- 			return -EINVAL;
-@@ -260,7 +260,7 @@ static int hw_bitblt_2(void __iomem *engine, u8 op, u32 width, u32 height,
- 		writel(tmp, engine + 0x18);
- 
- 		tmp = src_mem ? 0 : src_addr;
--		if (dst_addr & 0xE0000007) {
-+		if (tmp & 0xE0000007) {
- 			printk(KERN_WARNING "hw_bitblt_2: Unsupported source "
- 				"address %X\n", tmp);
- 			return -EINVAL;
+diff --git a/drivers/nvme/host/pci.c b/drivers/nvme/host/pci.c
+index 970a1b374a669..5242feda5471a 100644
+--- a/drivers/nvme/host/pci.c
++++ b/drivers/nvme/host/pci.c
+@@ -3199,6 +3199,9 @@ static const struct pci_device_id nvme_id_table[] = {
+ 				NVME_QUIRK_BOGUS_NID, },
+ 	{ PCI_VDEVICE(REDHAT, 0x0010),	/* Qemu emulated controller */
+ 		.driver_data = NVME_QUIRK_BOGUS_NID, },
++	{ PCI_DEVICE(0x126f, 0x2262),	/* Silicon Motion generic */
++		.driver_data = NVME_QUIRK_NO_DEEPEST_PS |
++				NVME_QUIRK_BOGUS_NID, },
+ 	{ PCI_DEVICE(0x126f, 0x2263),	/* Silicon Motion unidentified */
+ 		.driver_data = NVME_QUIRK_NO_NS_DESC_LIST, },
+ 	{ PCI_DEVICE(0x1bb1, 0x0100),   /* Seagate Nytro Flash Storage */
 -- 
 2.43.0
 
