@@ -1,119 +1,640 @@
-Return-Path: <linux-kernel+bounces-130166-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-130169-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 24B228974D4
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 18:05:33 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 321208974DD
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 18:07:15 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B78E21F2117C
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 16:05:32 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D71AE290D3E
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 16:07:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4674C15216F;
-	Wed,  3 Apr 2024 16:03:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7866F139CF5;
+	Wed,  3 Apr 2024 16:07:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b="lysfZgIV"
-Received: from mail-lj1-f169.google.com (mail-lj1-f169.google.com [209.85.208.169])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C6EF614C5B7
-	for <linux-kernel@vger.kernel.org>; Wed,  3 Apr 2024 16:03:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.169
+	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="beVCbh0B"
+Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 240FD14BFA6;
+	Wed,  3 Apr 2024 16:07:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=13.77.154.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712160189; cv=none; b=lHQpMPMQkFIq67iLnPVE4XFhMUrvdz+K4opiGjpfJupUyrnf3lyg2hbE7IZXkxbLBlr8uXrLHqfZN4GlKNnm0sz6B3S2ijZ2xYT8rQzs1u+OXJcfEdeMKqikNqsvJvIS+fHYnJmn6lBlNWq8e75P+tCFQdqInFxbgZUAzjp2lVY=
+	t=1712160425; cv=none; b=NRGhdEMrvGi8synBQjAsyU/SpX4T428cdNmnSg/gxRkMRATmbyKiWw3Im/m5wsgaw8j4UAIwlAz9SeEO4s0IrZjeqZtVOqwBNeAEkyyr1KCVKWPD1ObNm136Y08gzXYbmeeAhWoN9hH8yQGbIFF7MwJKtbW9cs34BVDDNa5f2pg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712160189; c=relaxed/simple;
-	bh=bTvBBqvM+g5SfRgI5quUH3wnImmHOZ6hz4keoRzRwYA=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=LQOQ6IjsopQGIIkPFYeIlMh7SGyhBVR0ULWYQQPzHXA3oNfZPDyvM4GYX9Bn4S99dncKUuq1AE9BNMjr3XMAl109ePc+/T0hDMpfcDk+ruJ49g3QyWkl+vjRXnAuNC6UD07uo05h7c6zRUvWkVPa/74dS+av1CfkA1U+eEX+SvA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com; spf=pass smtp.mailfrom=baylibre.com; dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b=lysfZgIV; arc=none smtp.client-ip=209.85.208.169
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=baylibre.com
-Received: by mail-lj1-f169.google.com with SMTP id 38308e7fff4ca-2d83dddcd65so10502691fa.1
-        for <linux-kernel@vger.kernel.org>; Wed, 03 Apr 2024 09:03:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20230601.gappssmtp.com; s=20230601; t=1712160186; x=1712764986; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=bTvBBqvM+g5SfRgI5quUH3wnImmHOZ6hz4keoRzRwYA=;
-        b=lysfZgIVx3yGO4yCEHgHksvCJyLZJOSKNM1o51kCRsFcKt0ffydgvcacs+e2CJhalE
-         amAe2kB1J0l62vqS481GGm6zr5P6H6fPT+I23+9CLsuu4DIzd2D37pU6C9y/8PirFQsu
-         lPVlCpg0pegWs+hsQlR2ox+noaCGJ7xCpyCuBtYb6PSBnkmfkMBwel9LJrlJoDpibqQD
-         haJURm+RDc8MLLnWFmKejOIKGH53qLC1WOggov0G9wLXqQ6rjgFUw5ymVDlkz5uTotE5
-         jOgHXEJsvOkP5H89oJD4KQrxdbIam1zNMspBuXUy+vtL2p7Qz1XeTHHtz9VSAKxdIiaQ
-         OmeA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712160186; x=1712764986;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=bTvBBqvM+g5SfRgI5quUH3wnImmHOZ6hz4keoRzRwYA=;
-        b=hIwCxsHGsCJZXaCnTQOnBHaNcy3kzYylnTM7s+blELgtQh0swoF5NlbbntgFb2I91o
-         HmfZdRGGVzMAoZyp+X7cRJrF8qjoG28BVaBsjw8NhkBBb46qIlVECMXOVLvvhJxQq+T+
-         c0N7HQeWqVeMxYc0BAmyfuMd7ALsnV8JFPh9pnwm/auEGJl0nctHTjJRgvt7p0KCtJQw
-         XgtYLFhWh7I23jC1tEbg1JR0sLEr5wQoum/sgWTHJLCjPpgkDH+c+IZODGJnu593w8FA
-         sJjvcYMTU4DkMA/WKhtYtnmkYQnHl7Xxmmio5NI8fTU4NmcUccDW0mriTx2KxG/Z4Pmv
-         xsmQ==
-X-Forwarded-Encrypted: i=1; AJvYcCV3YrGbovR1VsjkkjOPQahQv++cAC9pcQ7H2mSCGwNFpSODQsXQgCKxqmH09iVoK63F3/Uzudqp2MpQTTyfPc/Ru1GFs01HfcDPMm1A
-X-Gm-Message-State: AOJu0YwkAywODcpo4LyHcY1zGDgfXCyiGgZOiz9syFLwc2LVzGdSIo9y
-	pK303N58V6DAaIEABwyQyisswVhJ7FzUswFq1usG1/KxYOX3sbgdMVdDB75COu/bPE+JFofnVhj
-	kQZHr9fwkaz21Uwd4+uSZQEoIxngIGQdML4FT+A==
-X-Google-Smtp-Source: AGHT+IEfI5ofSa8HbRO6qzAuEu/QevNBSZtDcMguGLWWWkpuGtfcQ39NMJwhn9Ea552v6Z/oXcGuYOl4UC7bwCiesso=
-X-Received: by 2002:a2e:a68a:0:b0:2d6:fc0b:f122 with SMTP id
- q10-20020a2ea68a000000b002d6fc0bf122mr9938lje.18.1712160186030; Wed, 03 Apr
- 2024 09:03:06 -0700 (PDT)
+	s=arc-20240116; t=1712160425; c=relaxed/simple;
+	bh=3qmFigKdBLkQBCz00/BLcA47NRMGfqYUX5ke6nhH/Ys=;
+	h=From:To:Cc:Subject:Date:Message-Id; b=JkNkVUUUGRbFeLoyQTicMrTVVLHKgRN1AluO75Q17vQBsVhnxswxjlht67U1dsEe8ElucFAk8kDH6Co65gfcTLr/RceiPJDNkNhWrcPjMzoAZUlrWi3ec3foQiL1tyWFWGs828ZNL8lONKubymyPrEaCgJnA/fT3s4dDK28NAIw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com; spf=pass smtp.mailfrom=linux.microsoft.com; dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b=beVCbh0B; arc=none smtp.client-ip=13.77.154.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.microsoft.com
+Received: from apais-vm1.0synte4vioeebbvidf5q0vz2ua.xx.internal.cloudapp.net (unknown [52.183.86.224])
+	by linux.microsoft.com (Postfix) with ESMTPSA id 929AA20E8CB5;
+	Wed,  3 Apr 2024 09:07:02 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 929AA20E8CB5
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+	s=default; t=1712160422;
+	bh=ZmStRBVhqKpjvJrWIaFWnY+x5MPId+44UChs7lS4BHM=;
+	h=From:To:Cc:Subject:Date:From;
+	b=beVCbh0BIECuQHvVHLtfgbzFfkDtd7KkSy1AhoQwHihfsTTJA5EqP++b65Ft3DshL
+	 seGJaAfeVlCiryNTe0yhwTTyFi4BRNH8/ebsAQz6OyCPm9+kBJnng7/nY1umX4DtZI
+	 m0mOY6zpl7OSqve8W4NGmqylpbjs+q2+wnK1fdXA=
+From: Allen Pais <apais@linux.microsoft.com>
+To: linux-kernel@vger.kernel.org
+Cc: tj@kernel.org,
+	keescook@chromium.org,
+	duncan.sands@free.fr,
+	gregkh@linuxfoundation.org,
+	stern@rowland.harvard.edu,
+	mathias.nyman@intel.com,
+	oneukum@suse.com,
+	linux-usb@vger.kernel.org
+Subject: [PATCH v3] USB: Convert from tasklet to BH workqueue
+Date: Wed,  3 Apr 2024 16:06:58 +0000
+Message-Id: <20240403160658.19688-1-apais@linux.microsoft.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-References: <20240401-ad4111-v1-0-34618a9cc502@analog.com> <20240401-ad4111-v1-4-34618a9cc502@analog.com>
- <CAMknhBH8UEPSyYiyMPo4en4vcjnJ7_W5q+iJtMOhdp5eNmP=8w@mail.gmail.com> <78cab1a4-e085-4df5-bb8c-277fd5ec3d70@gmail.com>
-In-Reply-To: <78cab1a4-e085-4df5-bb8c-277fd5ec3d70@gmail.com>
-From: David Lechner <dlechner@baylibre.com>
-Date: Wed, 3 Apr 2024 11:02:54 -0500
-Message-ID: <CAMknhBGZ7jUjCk65v54ayGSUA2-qcaCEmKm69TcJA+Ups_r=ZQ@mail.gmail.com>
-Subject: Re: [PATCH 4/6] iio: adc: ad7173: refactor ain and vref selection
-To: "Ceclan, Dumitru" <mitrutzceclan@gmail.com>
-Cc: dumitru.ceclan@analog.com, Lars-Peter Clausen <lars@metafoo.de>, 
-	Michael Hennerich <Michael.Hennerich@analog.com>, Jonathan Cameron <jic23@kernel.org>, 
-	Rob Herring <robh@kernel.org>, Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
-	Conor Dooley <conor+dt@kernel.org>, linux-iio@vger.kernel.org, devicetree@vger.kernel.org, 
-	linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 
-On Wed, Apr 3, 2024 at 5:03=E2=80=AFAM Ceclan, Dumitru <mitrutzceclan@gmail=
-com> wrote:
->
-> On 01/04/2024 22:40, David Lechner wrote:
-> > On Mon, Apr 1, 2024 at 10:10=E2=80=AFAM Dumitru Ceclan via B4 Relay
-> > <devnull+dumitru.ceclan.analog.com@kernel.org> wrote:
-> >>
-> >> From: Dumitru Ceclan <dumitru.ceclan@analog.com>
-> >>
-> >> Move validation of analog inputs and reference voltage selection to
-> >> separate functions.
-> >>
-> >> Signed-off-by: Dumitru Ceclan <dumitru.ceclan@analog.com>
-> >> ---
-> >
-> > Same as my comment on PATCH 3/6. We would like to know why this change
-> > is being made.
->
-> Move validation of analog inputs and reference voltage selection to
-> separate functions to reduce the size of the channel config parsing funct=
-ion.
->
-> Good?
+The only generic interface to execute asynchronously in the BH context is
+tasklet; however, it's marked deprecated and has some design flaws. To
+replace tasklets, BH workqueue support was recently added. A BH workqueue
+behaves similarly to regular workqueues except that the queued work items
+are executed in the BH context.
 
-Better. But it still only says what is being done and doesn't answer
-the question "why?".
+This patch converts drivers/usb/* from tasklet to BH workqueue.
 
-"to reduce the size of the function to make it easier to read"
-explains why reducing the size of the function makes it an
-improvement.
+Based on the work done by Tejun Heo <tj@kernel.org>
+Branch: https://git.kernel.org/pub/scm/linux/kernel/git/tj/wq.git for-6.10
+
+Reviewed-by: Duncan Sands <duncan.sands@free.fr>
+Signed-off-by: Allen Pais <allen.lkml@gmail.com>
+
+---
+Changes in v3:
+ - Fixed broken link
+
+Changes in v2:
+ - Update code comments and commit message.
+        Suggested by Greg K h
+ - Retain local variable name(hcd.c).
+        Suggested by Alan Stern
+
+- Link to v1:https://lore.kernel.org/all/20240327160314.9982-1-apais@linux.microsoft.com/T/#m2ec7868fbf102f1551ebe4c92d200848b94af3b1
+---
+ drivers/usb/atm/usbatm.c            | 51 +++++++++++++++--------------
+ drivers/usb/atm/usbatm.h            |  3 +-
+ drivers/usb/core/hcd.c              |  4 +--
+ drivers/usb/gadget/udc/fsl_qe_udc.c | 21 ++++++------
+ drivers/usb/gadget/udc/fsl_qe_udc.h |  4 +--
+ drivers/usb/host/ehci-sched.c       |  2 +-
+ drivers/usb/host/fhci-hcd.c         |  3 +-
+ drivers/usb/host/fhci-sched.c       | 10 +++---
+ drivers/usb/host/fhci.h             |  5 +--
+ drivers/usb/host/xhci-dbgcap.h      |  3 +-
+ drivers/usb/host/xhci-dbgtty.c      | 15 +++++----
+ include/linux/usb/cdc_ncm.h         |  2 +-
+ include/linux/usb/usbnet.h          |  2 +-
+ 13 files changed, 65 insertions(+), 60 deletions(-)
+
+diff --git a/drivers/usb/atm/usbatm.c b/drivers/usb/atm/usbatm.c
+index 2da6615fbb6f..1467d09a98c0 100644
+--- a/drivers/usb/atm/usbatm.c
++++ b/drivers/usb/atm/usbatm.c
+@@ -68,6 +68,7 @@
+ #include <linux/wait.h>
+ #include <linux/kthread.h>
+ #include <linux/ratelimit.h>
++#include <linux/workqueue.h>
+ 
+ #ifdef VERBOSE_DEBUG
+ static int usbatm_print_packet(struct usbatm_data *instance, const unsigned char *data, int len);
+@@ -269,7 +270,7 @@ static void usbatm_complete(struct urb *urb)
+ 		/* throttle processing in case of an error */
+ 		mod_timer(&channel->delay, jiffies + msecs_to_jiffies(THROTTLE_MSECS));
+ 	} else
+-		tasklet_schedule(&channel->tasklet);
++		queue_work(system_bh_wq, &channel->work);
+ }
+ 
+ 
+@@ -511,10 +512,10 @@ static unsigned int usbatm_write_cells(struct usbatm_data *instance,
+ **  receive  **
+ **************/
+ 
+-static void usbatm_rx_process(struct tasklet_struct *t)
++static void usbatm_rx_process(struct work_struct *t)
+ {
+-	struct usbatm_data *instance = from_tasklet(instance, t,
+-						    rx_channel.tasklet);
++	struct usbatm_data *instance = from_work(instance, t,
++						    rx_channel.work);
+ 	struct urb *urb;
+ 
+ 	while ((urb = usbatm_pop_urb(&instance->rx_channel))) {
+@@ -565,10 +566,10 @@ static void usbatm_rx_process(struct tasklet_struct *t)
+ **  send  **
+ ***********/
+ 
+-static void usbatm_tx_process(struct tasklet_struct *t)
++static void usbatm_tx_process(struct work_struct *t)
+ {
+-	struct usbatm_data *instance = from_tasklet(instance, t,
+-						    tx_channel.tasklet);
++	struct usbatm_data *instance = from_work(instance, t,
++						    tx_channel.work);
+ 	struct sk_buff *skb = instance->current_skb;
+ 	struct urb *urb = NULL;
+ 	const unsigned int buf_size = instance->tx_channel.buf_size;
+@@ -632,13 +633,13 @@ static void usbatm_cancel_send(struct usbatm_data *instance,
+ 	}
+ 	spin_unlock_irq(&instance->sndqueue.lock);
+ 
+-	tasklet_disable(&instance->tx_channel.tasklet);
++	disable_work_sync(&instance->tx_channel.work);
+ 	if ((skb = instance->current_skb) && (UDSL_SKB(skb)->atm.vcc == vcc)) {
+ 		atm_dbg(instance, "%s: popping current skb (0x%p)\n", __func__, skb);
+ 		instance->current_skb = NULL;
+ 		usbatm_pop(vcc, skb);
+ 	}
+-	tasklet_enable(&instance->tx_channel.tasklet);
++	enable_and_queue_work(system_bh_wq, &instance->tx_channel.work);
+ }
+ 
+ static int usbatm_atm_send(struct atm_vcc *vcc, struct sk_buff *skb)
+@@ -677,7 +678,7 @@ static int usbatm_atm_send(struct atm_vcc *vcc, struct sk_buff *skb)
+ 	ctrl->crc = crc32_be(~0, skb->data, skb->len);
+ 
+ 	skb_queue_tail(&instance->sndqueue, skb);
+-	tasklet_schedule(&instance->tx_channel.tasklet);
++	queue_work(system_bh_wq, &instance->tx_channel.work);
+ 
+ 	return 0;
+ 
+@@ -695,8 +696,8 @@ static void usbatm_destroy_instance(struct kref *kref)
+ {
+ 	struct usbatm_data *instance = container_of(kref, struct usbatm_data, refcount);
+ 
+-	tasklet_kill(&instance->rx_channel.tasklet);
+-	tasklet_kill(&instance->tx_channel.tasklet);
++	cancel_work_sync(&instance->rx_channel.work);
++	cancel_work_sync(&instance->tx_channel.work);
+ 	usb_put_dev(instance->usb_dev);
+ 	kfree(instance);
+ }
+@@ -823,12 +824,12 @@ static int usbatm_atm_open(struct atm_vcc *vcc)
+ 
+ 	vcc->dev_data = new;
+ 
+-	tasklet_disable(&instance->rx_channel.tasklet);
++	disable_work_sync(&instance->rx_channel.work);
+ 	instance->cached_vcc = new;
+ 	instance->cached_vpi = vpi;
+ 	instance->cached_vci = vci;
+ 	list_add(&new->list, &instance->vcc_list);
+-	tasklet_enable(&instance->rx_channel.tasklet);
++	enable_and_queue_work(system_bh_wq, &instance->rx_channel.work);
+ 
+ 	set_bit(ATM_VF_ADDR, &vcc->flags);
+ 	set_bit(ATM_VF_PARTIAL, &vcc->flags);
+@@ -858,14 +859,14 @@ static void usbatm_atm_close(struct atm_vcc *vcc)
+ 
+ 	mutex_lock(&instance->serialize);	/* vs self, usbatm_atm_open, usbatm_usb_disconnect */
+ 
+-	tasklet_disable(&instance->rx_channel.tasklet);
++	disable_work_sync(&instance->rx_channel.work);
+ 	if (instance->cached_vcc == vcc_data) {
+ 		instance->cached_vcc = NULL;
+ 		instance->cached_vpi = ATM_VPI_UNSPEC;
+ 		instance->cached_vci = ATM_VCI_UNSPEC;
+ 	}
+ 	list_del(&vcc_data->list);
+-	tasklet_enable(&instance->rx_channel.tasklet);
++	enable_and_queue_work(system_bh_wq, &instance->rx_channel.work);
+ 
+ 	kfree_skb(vcc_data->sarb);
+ 	vcc_data->sarb = NULL;
+@@ -991,18 +992,18 @@ static int usbatm_heavy_init(struct usbatm_data *instance)
+ 	return 0;
+ }
+ 
+-static void usbatm_tasklet_schedule(struct timer_list *t)
++static void usbatm_queue_work(system_bh_wq, struct timer_list *t)
+ {
+ 	struct usbatm_channel *channel = from_timer(channel, t, delay);
+ 
+-	tasklet_schedule(&channel->tasklet);
++	queue_work(system_bh_wq, &channel->work);
+ }
+ 
+ static void usbatm_init_channel(struct usbatm_channel *channel)
+ {
+ 	spin_lock_init(&channel->lock);
+ 	INIT_LIST_HEAD(&channel->list);
+-	timer_setup(&channel->delay, usbatm_tasklet_schedule, 0);
++	timer_setup(&channel->delay, usbatm_queue_work, 0);
+ }
+ 
+ int usbatm_usb_probe(struct usb_interface *intf, const struct usb_device_id *id,
+@@ -1074,8 +1075,8 @@ int usbatm_usb_probe(struct usb_interface *intf, const struct usb_device_id *id,
+ 
+ 	usbatm_init_channel(&instance->rx_channel);
+ 	usbatm_init_channel(&instance->tx_channel);
+-	tasklet_setup(&instance->rx_channel.tasklet, usbatm_rx_process);
+-	tasklet_setup(&instance->tx_channel.tasklet, usbatm_tx_process);
++	INIT_WORK(&instance->rx_channel.work, usbatm_rx_process);
++	INIT_WORK(&instance->tx_channel.work, usbatm_tx_process);
+ 	instance->rx_channel.stride = ATM_CELL_SIZE + driver->rx_padding;
+ 	instance->tx_channel.stride = ATM_CELL_SIZE + driver->tx_padding;
+ 	instance->rx_channel.usbatm = instance->tx_channel.usbatm = instance;
+@@ -1231,8 +1232,8 @@ void usbatm_usb_disconnect(struct usb_interface *intf)
+ 		vcc_release_async(vcc_data->vcc, -EPIPE);
+ 	mutex_unlock(&instance->serialize);
+ 
+-	tasklet_disable(&instance->rx_channel.tasklet);
+-	tasklet_disable(&instance->tx_channel.tasklet);
++	disable_work_sync(&instance->rx_channel.work);
++	disable_work_sync(&instance->tx_channel.work);
+ 
+ 	for (i = 0; i < num_rcv_urbs + num_snd_urbs; i++)
+ 		usb_kill_urb(instance->urbs[i]);
+@@ -1245,8 +1246,8 @@ void usbatm_usb_disconnect(struct usb_interface *intf)
+ 	INIT_LIST_HEAD(&instance->rx_channel.list);
+ 	INIT_LIST_HEAD(&instance->tx_channel.list);
+ 
+-	tasklet_enable(&instance->rx_channel.tasklet);
+-	tasklet_enable(&instance->tx_channel.tasklet);
++	enable_and_queue_work(system_bh_wq, &instance->rx_channel.work);
++	enable_and_queue_work(system_bh_wq, &instance->tx_channel.work);
+ 
+ 	if (instance->atm_dev && instance->driver->atm_stop)
+ 		instance->driver->atm_stop(instance, instance->atm_dev);
+diff --git a/drivers/usb/atm/usbatm.h b/drivers/usb/atm/usbatm.h
+index d96658e2e209..3452f8c2e1e5 100644
+--- a/drivers/usb/atm/usbatm.h
++++ b/drivers/usb/atm/usbatm.h
+@@ -21,6 +21,7 @@
+ #include <linux/usb.h>
+ #include <linux/mutex.h>
+ #include <linux/ratelimit.h>
++#include <linux/workqueue.h>
+ 
+ /*
+ #define VERBOSE_DEBUG
+@@ -109,7 +110,7 @@ struct usbatm_channel {
+ 	unsigned int packet_size;	/* endpoint maxpacket */
+ 	spinlock_t lock;
+ 	struct list_head list;
+-	struct tasklet_struct tasklet;
++	struct work_struct work;
+ 	struct timer_list delay;
+ 	struct usbatm_data *usbatm;
+ };
+diff --git a/drivers/usb/core/hcd.c b/drivers/usb/core/hcd.c
+index c0e005670d67..b31d84b02055 100644
+--- a/drivers/usb/core/hcd.c
++++ b/drivers/usb/core/hcd.c
+@@ -37,6 +37,7 @@
+ #include <linux/usb.h>
+ #include <linux/usb/hcd.h>
+ #include <linux/usb/otg.h>
++#include <linux/workqueue.h>
+ 
+ #include "usb.h"
+ #include "phy.h"
+@@ -1664,8 +1665,7 @@ static void __usb_hcd_giveback_urb(struct urb *urb)
+ 
+ static void usb_giveback_urb_bh(struct work_struct *work)
+ {
+-	struct giveback_urb_bh *bh =
+-		container_of(work, struct giveback_urb_bh, bh);
++	struct giveback_urb_bh *bh = from_work(bh, work, bh);
+ 	struct list_head local_list;
+ 
+ 	spin_lock_irq(&bh->lock);
+diff --git a/drivers/usb/gadget/udc/fsl_qe_udc.c b/drivers/usb/gadget/udc/fsl_qe_udc.c
+index 4e88681a79b6..ae29d946a972 100644
+--- a/drivers/usb/gadget/udc/fsl_qe_udc.c
++++ b/drivers/usb/gadget/udc/fsl_qe_udc.c
+@@ -35,6 +35,7 @@
+ #include <linux/usb/ch9.h>
+ #include <linux/usb/gadget.h>
+ #include <linux/usb/otg.h>
++#include <linux/workqueue.h>
+ #include <soc/fsl/qe/qe.h>
+ #include <asm/cpm.h>
+ #include <asm/dma.h>
+@@ -930,9 +931,9 @@ static int qe_ep_rxframe_handle(struct qe_ep *ep)
+ 	return 0;
+ }
+ 
+-static void ep_rx_tasklet(struct tasklet_struct *t)
++static void ep_rx_work(struct work_struct *t)
+ {
+-	struct qe_udc *udc = from_tasklet(udc, t, rx_tasklet);
++	struct qe_udc *udc = from_work(udc, t, rx_work);
+ 	struct qe_ep *ep;
+ 	struct qe_frame *pframe;
+ 	struct qe_bd __iomem *bd;
+@@ -945,9 +946,9 @@ static void ep_rx_tasklet(struct tasklet_struct *t)
+ 	for (i = 1; i < USB_MAX_ENDPOINTS; i++) {
+ 		ep = &udc->eps[i];
+ 
+-		if (ep->dir == USB_DIR_IN || ep->enable_tasklet == 0) {
++		if (ep->dir == USB_DIR_IN || ep->enable_work == 0) {
+ 			dev_dbg(udc->dev,
+-				"This is a transmit ep or disable tasklet!\n");
++				"This is a transmit ep or disable work!\n");
+ 			continue;
+ 		}
+ 
+@@ -1012,7 +1013,7 @@ static void ep_rx_tasklet(struct tasklet_struct *t)
+ 		if (ep->localnack)
+ 			ep_recycle_rxbds(ep);
+ 
+-		ep->enable_tasklet = 0;
++		ep->enable_work = 0;
+ 	} /* for i=1 */
+ 
+ 	spin_unlock_irqrestore(&udc->lock, flags);
+@@ -1057,8 +1058,8 @@ static int qe_ep_rx(struct qe_ep *ep)
+ 		return 0;
+ 	}
+ 
+-	tasklet_schedule(&udc->rx_tasklet);
+-	ep->enable_tasklet = 1;
++	queue_work(system_bh_wq, &udc->rx_work);
++	ep->enable_work = 1;
+ 
+ 	return 0;
+ }
+@@ -2559,7 +2560,7 @@ static int qe_udc_probe(struct platform_device *ofdev)
+ 					DMA_TO_DEVICE);
+ 	}
+ 
+-	tasklet_setup(&udc->rx_tasklet, ep_rx_tasklet);
++	INIT_WORK(&udc->rx_work, ep_rx_work);
+ 	/* request irq and disable DR  */
+ 	udc->usb_irq = irq_of_parse_and_map(np, 0);
+ 	if (!udc->usb_irq) {
+@@ -2636,7 +2637,7 @@ static void qe_udc_remove(struct platform_device *ofdev)
+ 	usb_del_gadget_udc(&udc->gadget);
+ 
+ 	udc->done = &done;
+-	tasklet_disable(&udc->rx_tasklet);
++	disable_work_sync(&udc->rx_work);
+ 
+ 	if (udc->nullmap) {
+ 		dma_unmap_single(udc->gadget.dev.parent,
+@@ -2671,7 +2672,7 @@ static void qe_udc_remove(struct platform_device *ofdev)
+ 	free_irq(udc->usb_irq, udc);
+ 	irq_dispose_mapping(udc->usb_irq);
+ 
+-	tasklet_kill(&udc->rx_tasklet);
++	cancel_work_sync(&udc->rx_work);
+ 
+ 	iounmap(udc->usb_regs);
+ 
+diff --git a/drivers/usb/gadget/udc/fsl_qe_udc.h b/drivers/usb/gadget/udc/fsl_qe_udc.h
+index 53ca0ff7c2cb..1de87c318460 100644
+--- a/drivers/usb/gadget/udc/fsl_qe_udc.h
++++ b/drivers/usb/gadget/udc/fsl_qe_udc.h
+@@ -293,7 +293,7 @@ struct qe_ep {
+ 	u8 init;
+ 
+ 	u8 already_seen;
+-	u8 enable_tasklet;
++	u8 enable_work;
+ 	u8 setup_stage;
+ 	u32 last_io;            /* timestamp */
+ 
+@@ -353,7 +353,7 @@ struct qe_udc {
+ 	unsigned int usb_irq;
+ 	struct usb_ctlr __iomem *usb_regs;
+ 
+-	struct tasklet_struct rx_tasklet;
++	struct work_struct rx_work;
+ 
+ 	struct completion *done;	/* to make sure release() is done */
+ };
+diff --git a/drivers/usb/host/ehci-sched.c b/drivers/usb/host/ehci-sched.c
+index 7e834587e7de..54f3bd6298e6 100644
+--- a/drivers/usb/host/ehci-sched.c
++++ b/drivers/usb/host/ehci-sched.c
+@@ -682,7 +682,7 @@ static void start_unlink_intr(struct ehci_hcd *ehci, struct ehci_qh *qh)
+ 
+ /*
+  * It is common only one intr URB is scheduled on one qh, and
+- * given complete() is run in tasklet context, introduce a bit
++ * given complete() is run in task context, introduce a bit
+  * delay to avoid unlink qh too early.
+  */
+ static void start_unlink_intr_wait(struct ehci_hcd *ehci,
+diff --git a/drivers/usb/host/fhci-hcd.c b/drivers/usb/host/fhci-hcd.c
+index 9a1b5224f239..5358bb688acb 100644
+--- a/drivers/usb/host/fhci-hcd.c
++++ b/drivers/usb/host/fhci-hcd.c
+@@ -211,8 +211,7 @@ static int fhci_mem_init(struct fhci_hcd *fhci)
+ 	INIT_LIST_HEAD(&fhci->empty_tds);
+ 
+ 	/* initialize work queue to handle done list */
+-	fhci_tasklet.data = (unsigned long)fhci;
+-	fhci->process_done_task = &fhci_tasklet;
++	INIT_WORK(&fhci->process_done_task, process_done_list);
+ 
+ 	for (i = 0; i < MAX_TDS; i++) {
+ 		struct td *td;
+diff --git a/drivers/usb/host/fhci-sched.c b/drivers/usb/host/fhci-sched.c
+index a45ede80edfc..9033cce28014 100644
+--- a/drivers/usb/host/fhci-sched.c
++++ b/drivers/usb/host/fhci-sched.c
+@@ -628,13 +628,13 @@ irqreturn_t fhci_irq(struct usb_hcd *hcd)
+  * is process_del_list(),which unlinks URBs by scanning EDs,instead of scanning
+  * the (re-reversed) done list as this does.
+  */
+-static void process_done_list(unsigned long data)
++static void process_done_list(struct work_struct *t)
+ {
+ 	struct urb *urb;
+ 	struct ed *ed;
+ 	struct td *td;
+ 	struct urb_priv *urb_priv;
+-	struct fhci_hcd *fhci = (struct fhci_hcd *)data;
++	struct fhci_hcd *fhci = from_work(fhci, t, process_done_task);
+ 
+ 	disable_irq(fhci->timer->irq);
+ 	disable_irq(fhci_to_hcd(fhci)->irq);
+@@ -677,13 +677,13 @@ static void process_done_list(unsigned long data)
+ 	enable_irq(fhci_to_hcd(fhci)->irq);
+ }
+ 
+-DECLARE_TASKLET_OLD(fhci_tasklet, process_done_list);
++DECLARE_WORK(fhci_work, process_done_list);
+ 
+ /* transfer complted callback */
+ u32 fhci_transfer_confirm_callback(struct fhci_hcd *fhci)
+ {
+-	if (!fhci->process_done_task->state)
+-		tasklet_schedule(fhci->process_done_task);
++	if (!fhci->process_done_task)
++		queue_work(system_bh_wq, fhci->process_done_task);
+ 	return 0;
+ }
+ 
+diff --git a/drivers/usb/host/fhci.h b/drivers/usb/host/fhci.h
+index 1f57b0989485..7cd613762249 100644
+--- a/drivers/usb/host/fhci.h
++++ b/drivers/usb/host/fhci.h
+@@ -24,6 +24,7 @@
+ #include <linux/usb.h>
+ #include <linux/usb/hcd.h>
+ #include <linux/gpio/consumer.h>
++#include <linux/workqueue.h>
+ #include <soc/fsl/qe/qe.h>
+ #include <soc/fsl/qe/immap_qe.h>
+ 
+@@ -254,7 +255,7 @@ struct fhci_hcd {
+ 	struct virtual_root_hub *vroot_hub; /* the virtual root hub */
+ 	int active_urbs;
+ 	struct fhci_controller_list *hc_list;
+-	struct tasklet_struct *process_done_task; /* tasklet for done list */
++	struct work_struct *process_done_task; /* work for done list */
+ 
+ 	struct list_head empty_eds;
+ 	struct list_head empty_tds;
+@@ -549,7 +550,7 @@ void fhci_init_ep_registers(struct fhci_usb *usb,
+ void fhci_ep0_free(struct fhci_usb *usb);
+ 
+ /* fhci-sched.c */
+-extern struct tasklet_struct fhci_tasklet;
++extern struct work_struct fhci_work;
+ void fhci_transaction_confirm(struct fhci_usb *usb, struct packet *pkt);
+ void fhci_flush_all_transmissions(struct fhci_usb *usb);
+ void fhci_schedule_transactions(struct fhci_usb *usb);
+diff --git a/drivers/usb/host/xhci-dbgcap.h b/drivers/usb/host/xhci-dbgcap.h
+index 92661b555c2a..0cd57c479fd7 100644
+--- a/drivers/usb/host/xhci-dbgcap.h
++++ b/drivers/usb/host/xhci-dbgcap.h
+@@ -11,6 +11,7 @@
+ 
+ #include <linux/tty.h>
+ #include <linux/kfifo.h>
++#include <linux/workqueue.h>
+ 
+ struct dbc_regs {
+ 	__le32	capability;
+@@ -107,7 +108,7 @@ struct dbc_port {
+ 	struct list_head		read_pool;
+ 	struct list_head		read_queue;
+ 	unsigned int			n_read;
+-	struct tasklet_struct		push;
++	struct work_struct		push;
+ 
+ 	struct list_head		write_pool;
+ 	struct kfifo			write_fifo;
+diff --git a/drivers/usb/host/xhci-dbgtty.c b/drivers/usb/host/xhci-dbgtty.c
+index b74e98e94393..dec2280b4ae9 100644
+--- a/drivers/usb/host/xhci-dbgtty.c
++++ b/drivers/usb/host/xhci-dbgtty.c
+@@ -11,6 +11,7 @@
+ #include <linux/tty.h>
+ #include <linux/tty_flip.h>
+ #include <linux/idr.h>
++#include <linux/workqueue.h>
+ 
+ #include "xhci.h"
+ #include "xhci-dbgcap.h"
+@@ -108,7 +109,7 @@ dbc_read_complete(struct xhci_dbc *dbc, struct dbc_request *req)
+ 
+ 	spin_lock_irqsave(&port->port_lock, flags);
+ 	list_add_tail(&req->list_pool, &port->read_queue);
+-	tasklet_schedule(&port->push);
++	queue_work(system_bh_wq, &port->push);
+ 	spin_unlock_irqrestore(&port->port_lock, flags);
+ }
+ 
+@@ -278,7 +279,7 @@ static void dbc_tty_unthrottle(struct tty_struct *tty)
+ 	unsigned long		flags;
+ 
+ 	spin_lock_irqsave(&port->port_lock, flags);
+-	tasklet_schedule(&port->push);
++	queue_work(system_bh_wq, &port->push);
+ 	spin_unlock_irqrestore(&port->port_lock, flags);
+ }
+ 
+@@ -294,14 +295,14 @@ static const struct tty_operations dbc_tty_ops = {
+ 	.unthrottle		= dbc_tty_unthrottle,
+ };
+ 
+-static void dbc_rx_push(struct tasklet_struct *t)
++static void dbc_rx_push(struct work_struct *t)
+ {
+ 	struct dbc_request	*req;
+ 	struct tty_struct	*tty;
+ 	unsigned long		flags;
+ 	bool			do_push = false;
+ 	bool			disconnect = false;
+-	struct dbc_port		*port = from_tasklet(port, t, push);
++	struct dbc_port		*port = from_work(port, t, push);
+ 	struct list_head	*queue = &port->read_queue;
+ 
+ 	spin_lock_irqsave(&port->port_lock, flags);
+@@ -355,7 +356,7 @@ static void dbc_rx_push(struct tasklet_struct *t)
+ 	if (!list_empty(queue) && tty) {
+ 		if (!tty_throttled(tty)) {
+ 			if (do_push)
+-				tasklet_schedule(&port->push);
++				queue_work(system_bh_wq, &port->push);
+ 			else
+ 				pr_warn("ttyDBC0: RX not scheduled?\n");
+ 		}
+@@ -388,7 +389,7 @@ xhci_dbc_tty_init_port(struct xhci_dbc *dbc, struct dbc_port *port)
+ {
+ 	tty_port_init(&port->port);
+ 	spin_lock_init(&port->port_lock);
+-	tasklet_setup(&port->push, dbc_rx_push);
++	INIT_WORK(&port->push, dbc_rx_push);
+ 	INIT_LIST_HEAD(&port->read_pool);
+ 	INIT_LIST_HEAD(&port->read_queue);
+ 	INIT_LIST_HEAD(&port->write_pool);
+@@ -400,7 +401,7 @@ xhci_dbc_tty_init_port(struct xhci_dbc *dbc, struct dbc_port *port)
+ static void
+ xhci_dbc_tty_exit_port(struct dbc_port *port)
+ {
+-	tasklet_kill(&port->push);
++	cancel_work_sync(&port->push);
+ 	tty_port_destroy(&port->port);
+ }
+ 
+diff --git a/include/linux/usb/cdc_ncm.h b/include/linux/usb/cdc_ncm.h
+index 2d207cb4837d..8775580852f9 100644
+--- a/include/linux/usb/cdc_ncm.h
++++ b/include/linux/usb/cdc_ncm.h
+@@ -96,7 +96,7 @@
+ struct cdc_ncm_ctx {
+ 	struct usb_cdc_ncm_ntb_parameters ncm_parm;
+ 	struct hrtimer tx_timer;
+-	struct tasklet_struct bh;
++	struct work_struct bh;
+ 
+ 	struct usbnet *dev;
+ 
+diff --git a/include/linux/usb/usbnet.h b/include/linux/usb/usbnet.h
+index 9f08a584d707..522c533a966b 100644
+--- a/include/linux/usb/usbnet.h
++++ b/include/linux/usb/usbnet.h
+@@ -58,7 +58,7 @@ struct usbnet {
+ 	unsigned		interrupt_count;
+ 	struct mutex		interrupt_mutex;
+ 	struct usb_anchor	deferred;
+-	struct tasklet_struct	bh;
++	struct work_struct	bh;
+ 
+ 	struct work_struct	kevent;
+ 	unsigned long		flags;
+-- 
+2.17.1
+
 
