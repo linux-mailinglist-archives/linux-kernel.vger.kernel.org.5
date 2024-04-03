@@ -1,149 +1,101 @@
-Return-Path: <linux-kernel+bounces-129353-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-129349-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 132018968F7
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 10:40:26 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0C1AF8968E7
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 10:39:32 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 44D1C1C23EB5
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 08:40:25 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B4F441F24DD5
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 08:39:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DD0C86EB4B;
-	Wed,  3 Apr 2024 08:40:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0EDBB67A15;
+	Wed,  3 Apr 2024 08:39:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b="lwRDd6nv"
-Received: from out162-62-57-252.mail.qq.com (out162-62-57-252.mail.qq.com [162.62.57.252])
+	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="dwX1D1Aw"
+Received: from out30-98.freemail.mail.aliyun.com (out30-98.freemail.mail.aliyun.com [115.124.30.98])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 63CA56EB44;
-	Wed,  3 Apr 2024 08:39:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=162.62.57.252
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9C97A44C8C
+	for <linux-kernel@vger.kernel.org>; Wed,  3 Apr 2024 08:39:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.98
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712133601; cv=none; b=lzNTKvEY4ybAJKpgkXkxxhZuD6E16UWob1ctj/OKdAcXpP3hi+jq8BiL2qVWycw2/CquBUvgbUm4EOzfQJE3kNd3hAmrhXDsOa4QySGWDhP/8pjNBc0Uh6cmWrevyXludtfEqRJYNexCKz9vAhDMuO6lQpdUp1o5npkt4HYTagI=
+	t=1712133565; cv=none; b=KnJvf2GEMi7U6gH0n5jg0YDM+GgA97bT5yr6gQK4JoHudMpTwOdtpMbBH/yoWYylRgEUPftJaE3byKLF+DLD2hzI5IS/UES9LoXi0YRP+w2Jth2b+jCdfIn1icvVk7K4dHW4No0nUPBIBu2WLRrr7znqwpHpdew1j+6jULwV1FE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712133601; c=relaxed/simple;
-	bh=h38IpzYE40rRL6YUDxEuxo1A9c6P3+Tqcuhs5gHFXsQ=;
-	h=Message-ID:Content-Type:Mime-Version:Subject:From:In-Reply-To:
-	 Date:Cc:References:To; b=rEkqq6wa5hPJXjTBtNNl9e9xgyvi0qJru3Lpo1b66Q5vEaVVf2htrximA2Ffq1ffuKN2HtRHEgzaMNgeGrRIT6kyOtPBtk77q6ObhijVGgjam4gJtt2jRrbLMITZF8+ngwzyHCsGlPacpjtuJPvpBrJjx+Za6byfnkxSnK9CUxg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=cyyself.name; spf=none smtp.mailfrom=cyyself.name; dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b=lwRDd6nv; arc=none smtp.client-ip=162.62.57.252
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=cyyself.name
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=cyyself.name
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qq.com; s=s201512;
-	t=1712133587; bh=h38IpzYE40rRL6YUDxEuxo1A9c6P3+Tqcuhs5gHFXsQ=;
-	h=Subject:From:In-Reply-To:Date:Cc:References:To;
-	b=lwRDd6nv3nWd7/b76WzvLV+U28YiU+3jUNFbuBQSTXrqW36mM8AgDQTmlc9Aumcai
-	 +8ZZqlzY5dzbDznEjQlnkZK1O/4mU5hy/aAcc07Q4C/W+U82BGOoh+x4wuCOEDPHQP
-	 PI7lcC8UkhTb7f23/lw/EA+SPTH8xMAlaBs6Ol3o=
-Received: from smtpclient.apple ([219.141.235.82])
-	by newxmesmtplogicsvrszc5-2.qq.com (NewEsmtp) with SMTP
-	id 99DAF6F4; Wed, 03 Apr 2024 16:38:29 +0800
-X-QQ-mid: xmsmtpt1712133509t4g857ofk
-Message-ID: <tencent_191962F243021BFBF9A40403B4451C757009@qq.com>
-X-QQ-XMAILINFO: NkHKfw09D6j8PluXiaw8tD0iRMGI5K2+7PtPdjlOWGX/KbqOaAMV25IrC6sOlm
-	 SV9Un7yK/HDB8D/RzxR0RosEH4/kkIxOAEiP7tDuHcbztzshwgUhzFqF0WBPDN7c0oFHKGmXI+J+
-	 h4IaLvmROghSyfOxwznQgkukISQq3Kb3gzmwa5dV1abClg0jhFLzwTsjv55pHt76D75Tsng3VYZ9
-	 ur6OLYcC5wSQaciZa8iUbFadAp226G4wxTLcbKplG77h/oTZ386j5YtBtxrS83rcqSIJPj1Tfal9
-	 wNB0BR2/BTEGjv6+2IXIzzvydyR6O486AwhCUhm0qJQ+1myPtvGUU6dYug/n5HYM2S6I2zDpMQVl
-	 Z75NGq4WybdhcLwWZEpb35U5fZnFxmT8VKq803tDWQVyi2y0nbeREixT4d1X80KmUCCb3a+J1AJC
-	 xbg0dxsivz6fiuayYEMXZ2D5r0LfMmjnJzEUfMj2XJGOYRwfv+NhECK7BZmIGTpuXCaxu8so1I3g
-	 JwS/lGIilCSPOY3RfKVl5AsXvxQOy6YIGqMelt+mvlDv6gNvx5QG42nueQP+yJp8Cok+PQkUFFXW
-	 1XHiZpIjXMEkcCgXZ2/FbGFcDyL2k4MZ1rzoQIPXfSjHMS/gZ1U4lvnhuTJIOXlFo5lznVgiS6DE
-	 R/Jbn2VVSjsvvz6IIMzV2n5TDT2f5tiqfFlg27sCjFT5/VFCTI9noZKsjngzYJ18dCnfgj28Xhhm
-	 yB0LPTO4YiNOg39vsmtRxA9cFOuh/5jB1y9nwezuX+ZXpnsEeKyAKATlL/ZCPkF7NshbFVi6FwwI
-	 c9w3rQbzAXsUtDbxXo5idSHc1i0h+2d+frHV1pbj4azceJgL+WFNlu+gsIMECu85gGm0rILKadzT
-	 XCQlzYIpp4wexHkZQq4DuqBAvI4Ul3HPcdRdR/Lsk7K9nN4RZ4d9M7zaiPSjafd8mXHQqHSjApEW
-	 tiU43TGpDIuOcCqJvn4FF4gQrWLeLQomUM/XJiaSJPS+EfgQ4nyA==
-X-QQ-XMRINFO: NS+P29fieYNw95Bth2bWPxk=
-Content-Type: text/plain;
-	charset=utf-8
+	s=arc-20240116; t=1712133565; c=relaxed/simple;
+	bh=s4zowk5FDHZhrtl6SwdsvDgYGksJJs1ua8krFDh1+cc=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=MS1VKYHviFg3zad0Nnk8vi8Dd47YVA8TAl08qj3DYnegQaEoiccyoBfg4BqqRlInCtBeDA4qjm7IMP0qFtsOQm/CraXwUo13aJ8OU4g3JKUJ8x4HXgMwHi0krShSfJN3d47AXULStz9kbep74X577Mx7KaLILI83ZP4Sa/dW5AE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=dwX1D1Aw; arc=none smtp.client-ip=115.124.30.98
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
+DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
+	d=linux.alibaba.com; s=default;
+	t=1712133560; h=From:To:Subject:Date:Message-Id:MIME-Version;
+	bh=vye0y79PlRt04GkvkiqfdvGYaxiubkuCi3SqjHc32s4=;
+	b=dwX1D1AwxoYeWXRjD2HJrGzkep2ow8eTo/8sF49sAKSxRkvOUPz9Whv4tbnVVmZwOe7vVRTzAmZd6Gp3YEG5/tIfb72ei2SiJbuLss2Vy2fdz+B+kVnsGYbMnjrRNQcZPnmQH6pF6GT7rh4L5F9gQe3MVqjDVwGnZkgLVBTryNw=
+X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R191e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018045168;MF=baolin.wang@linux.alibaba.com;NM=1;PH=DS;RN=11;SR=0;TI=SMTPD_---0W3rA0.M_1712133558;
+Received: from localhost(mailfrom:baolin.wang@linux.alibaba.com fp:SMTPD_---0W3rA0.M_1712133558)
+          by smtp.aliyun-inc.com;
+          Wed, 03 Apr 2024 16:39:19 +0800
+From: Baolin Wang <baolin.wang@linux.alibaba.com>
+To: akpm@linux-foundation.org
+Cc: david@redhat.com,
+	mgorman@techsingularity.net,
+	wangkefeng.wang@huawei.com,
+	jhubbard@nvidia.com,
+	ying.huang@intel.com,
+	21cnbao@gmail.com,
+	ryan.roberts@arm.com,
+	baolin.wang@linux.alibaba.com,
+	linux-mm@kvack.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH v3 0/2] support multi-size THP numa balancing
+Date: Wed,  3 Apr 2024 16:39:08 +0800
+Message-Id: <cover.1712132950.git.baolin.wang@linux.alibaba.com>
+X-Mailer: git-send-email 2.39.3
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0 (Mac OS X Mail 16.0 \(3774.500.171.1.1\))
-Subject: Re: [PATCH v6 08/11] pinctrl: k210: Deprecate SOC_CANAAN and use
- SOC_CANAAN_K210
-From: Yangyu Chen <cyy@cyyself.name>
-In-Reply-To: <CACRpkdY1wpGM7M5QV5rN0M6JMN_yugQJ7CEtnQjzsheD5AT23A@mail.gmail.com>
-Date: Wed, 3 Apr 2024 16:38:19 +0800
-Cc: linux-riscv@lists.infradead.org,
- Conor Dooley <conor@kernel.org>,
- Damien Le Moal <dlemoal@kernel.org>,
- Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Paul Walmsley <paul.walmsley@sifive.com>,
- Palmer Dabbelt <palmer@dabbelt.com>,
- Albert Ou <aou@eecs.berkeley.edu>,
- Guo Ren <guoren@kernel.org>,
- Michael Turquette <mturquette@baylibre.com>,
- Stephen Boyd <sboyd@kernel.org>,
- Philipp Zabel <p.zabel@pengutronix.de>,
- linux-gpio@vger.kernel.org,
- linux-clk@vger.kernel.org,
- devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org
-Content-Transfer-Encoding: quoted-printable
-X-OQ-MSGID: <1807DEE3-E572-44E3-997D-C7D2EADF4BB1@cyyself.name>
-References: <tencent_F76EB8D731C521C18D5D7C4F8229DAA58E08@qq.com>
- <tencent_6D10A9C63E3E0F412EED33477B5CDB98C207@qq.com>
- <CACRpkdY1wpGM7M5QV5rN0M6JMN_yugQJ7CEtnQjzsheD5AT23A@mail.gmail.com>
-To: Linus Walleij <linus.walleij@linaro.org>
-X-Mailer: Apple Mail (2.3774.500.171.1.1)
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 
+This patchset tries to support mTHP numa balancing, as a simple solution
+to start, the NUMA balancing algorithm for mTHP will follow the THP strategy
+as the basic support. Please find details in each patch.
 
+Changes from v2:
+ - Add reviewed tag from Huang, Ying.
+ - Reuse numa_rebuild_single_mapping() to remove duplicate code per Kefeng Wang.
+ - Remove an unnecessary vma_wants_manual_pte_write_upgrad() per Huang, Ying.
 
-> On Apr 2, 2024, at 20:31, Linus Walleij <linus.walleij@linaro.org> =
-wrote:
->=20
-> On Sat, Mar 23, 2024 at 1:13=E2=80=AFPM Yangyu Chen <cyy@cyyself.name> =
-wrote:
->=20
->> Since SOC_FOO should be deprecated from patch [1], and cleanup for =
-other
->> SoCs is already on the mailing list [2,3,4], we remove the use of
->> SOC_CANAAN and introduced SOC_CANAAN_K210 for K210-specific drivers,
->>=20
->> Thus, we replace its drivers depends on SOC_CANAAN_K210 and default =
-select
->> when it has the symbol SOC_CANAAN_K210.
->>=20
->> [1] =
-https://lore.kernel.org/linux-riscv/20221121221414.109965-1-conor@kernel.o=
-rg/
->> [2] =
-https://lore.kernel.org/linux-riscv/20240305-praying-clad-c4fbcaa7ed0a@spu=
-d/
->> [3] =
-https://lore.kernel.org/linux-riscv/20240305-fled-undrilled-41dc0c46bb29@s=
-pud/
->> [4] =
-https://lore.kernel.org/linux-riscv/20240305-stress-earflap-d7ddb8655a4d@s=
-pud/
->>=20
->> Signed-off-by: Yangyu Chen <cyy@cyyself.name>
->=20
-> Acked-by: Linus Walleij <linus.walleij@linaro.org>
->=20
+Changes from v1:
+ - Fix the issue where the end address might exceed the range of the
+folio size, suggested by Huang, Ying.
+ - Simplify the folio validation.
+ - Add pte_modify() before checking pte writable.
+ - Update the performance data.
 
-Please add Acked-by to this email [1]. I will separate them in the next
-revision.
+Changes from RFC v2:
+ - Follow the THP algorithm per Huang, Ying.
 
-[1]
-=
-https://lore.kernel.org/linux-riscv/tencent_DB11214C8D0D7C48829ADA128E7BB8=
-F13108@qq.com/
+Changes from RFC v1:
+ - Add some preformance data per Huang, Ying.
+ - Allow mTHP scanning per David Hildenbrand.
+ - Avoid sharing mapping for numa balancing to avoid false sharing.
+ - Add more commit message.
 
-Thanks.
+Baolin Wang (2):
+  mm: factor out the numa mapping rebuilding into a new helper
+  mm: support multi-size THP numa balancing
 
-> Is this patch something I can just apply to the pinctrl tree?
->=20
+ mm/memory.c   | 76 +++++++++++++++++++++++++++++++++++++++++----------
+ mm/mprotect.c |  3 +-
+ 2 files changed, 63 insertions(+), 16 deletions(-)
 
-I think not. As Conor said.
-
-> Yours,
-> Linus Walleij
+-- 
+2.39.3
 
 
