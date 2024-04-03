@@ -1,101 +1,107 @@
-Return-Path: <linux-kernel+bounces-129512-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-129513-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8FC56896BDB
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 12:15:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id A9304896BD2
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 12:15:01 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A8356B2DF32
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 10:12:11 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1DAB2B2B018
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 10:13:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9D9C713C3DE;
-	Wed,  3 Apr 2024 10:10:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A851D136679;
+	Wed,  3 Apr 2024 10:11:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="HYpQMVyl"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="OLh44G5F"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C1D7613B587;
-	Wed,  3 Apr 2024 10:10:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 75A39135405
+	for <linux-kernel@vger.kernel.org>; Wed,  3 Apr 2024 10:11:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712139029; cv=none; b=Kn2JEzvpnj7G9UlaEqxXXcFsja79KMUprPrz6C56V0T3OBs5sxdnIka/nLkY9oAaDbBxgzDBWnInKjXo2E7BKkvSJBtg47PyepZ2GY0qnkilXpr037cprPFp+EgsLr9cZDUOoG2CxpCKZv4cUD6uyd7aotm5YPVG25SdPu020Wc=
+	t=1712139080; cv=none; b=S2bJ5+S4Th+bKRhCRn3XtZAOeF8u1szbIedv/7APRFK4L2m167YwPgZp0XSTF3DU2OrwAsgGj8Z5nLGWL5O+SPZrM88I9ZIsJLSX2lM1udlPag7DEnGTjBchbQvpOEJg20r4vOnoItxrsfN19jdHUoaAyS5Hhs60r7mgpfei26U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712139029; c=relaxed/simple;
-	bh=8X0qRYwm8y4DjExx4iOfuaA9BKNaLtM2/LhmpI9xN7o=;
-	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
-	 In-Reply-To:To:Cc; b=gsv+LOWFesD+pLn1jNWrdAK0Ec2sMrpOx5hSFy3hS1i71yUAFQqpa9HHCbhmyGVR328TqrS0sXmS5v8NtsQZSHynoswAghBnGtp8FDmVA6Nyfv+EfvvKAs5awLXheUntxaTzn/HP/tWxqLcm+UYRvjUKrxAa8+8jG5HqZ7jOOqQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=HYpQMVyl; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 6B9AAC433F1;
-	Wed,  3 Apr 2024 10:10:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712139029;
-	bh=8X0qRYwm8y4DjExx4iOfuaA9BKNaLtM2/LhmpI9xN7o=;
-	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=HYpQMVylRafHU5iGeUi5QjZwoOMcXupbL2hmzXVo/i5bfy4NMUPpLsrBTHog+RQfX
-	 Rv1JdP9DcW+UaY6TQXI2pvmnpTsqErCGWrpkhsf1jeOkIMW01ZCUegQC+0qGPzjadI
-	 QlZX7nqikA4vsvSqXn32av6VivssSThdnxcp7YKLgtqdoY5mjjyZWmeDb44hdzUIEN
-	 2e6s8HZWqqghRSNl0OZgSityOZF4jVwdnfoLHqoR7zlLCe8ID8VvVEeVgXPNoeMqyd
-	 Kbucl7RmYUApwqvuwr6yDcZQDy7wx8AYR/05m8w8zeExZsFjfwbmzlSiLC/xGO2qs5
-	 3fF5zJCYoVKkQ==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 60275D9A158;
-	Wed,  3 Apr 2024 10:10:29 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+	s=arc-20240116; t=1712139080; c=relaxed/simple;
+	bh=q5PvWHwoWD/1a3RxU9EydL5cEmke/jqCAXYn/kIe5KA=;
+	h=From:In-Reply-To:References:To:Cc:Subject:MIME-Version:
+	 Content-Type:Date:Message-ID; b=j2cbhptfnTxjwYNdctd1POpqwkXMG+BGqz1hZMgTmAhlyrkVPGl8hXGIU1hUX2ZRK1B2kNk0sDAtt0DIl8wJoTNAJpSFAEsDkWQROELw7kjiaXiyTusyUE4JFYxtZIWDyVn5s/dwdrjxuME1lwlz1rttG2gmI4OW+Z3xipwXMkg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=OLh44G5F; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1712139077;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=q10XbPWbwPAYz3tVe+780L2sWGchjiaH8ntssWQEh20=;
+	b=OLh44G5FerWj7Uqjqc+NH28vrsv3uheQ10/xIzc+48r+2YxeKSwAvrdY3J0SiKLLTGkoj6
+	6e2xfHg2pb+K/vWBDWkb2iprz/5HhXMk25FB5j+3C8WT3MwEPRHiyAbver8CM0Og76iaIi
+	5JNT8W0eb4dBWrmqNAvUulHBfpvfGms=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-377-n6tZ6td_NZGxPdmOiGxErA-1; Wed, 03 Apr 2024 06:11:13 -0400
+X-MC-Unique: n6tZ6td_NZGxPdmOiGxErA-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.rdu2.redhat.com [10.11.54.2])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id AD06C185A784;
+	Wed,  3 Apr 2024 10:11:11 +0000 (UTC)
+Received: from warthog.procyon.org.uk (unknown [10.42.28.146])
+	by smtp.corp.redhat.com (Postfix) with ESMTP id 51AC140C6CB3;
+	Wed,  3 Apr 2024 10:11:08 +0000 (UTC)
+Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
+	Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
+	Kingdom.
+	Registered in England and Wales under Company Registration No. 3798903
+From: David Howells <dhowells@redhat.com>
+In-Reply-To: <20240403085918.GA1178@lst.de>
+References: <20240403085918.GA1178@lst.de> <20240328163424.2781320-1-dhowells@redhat.com> <20240328163424.2781320-16-dhowells@redhat.com>
+To: Christoph Hellwig <hch@lst.de>
+Cc: dhowells@redhat.com, Christian Brauner <christian@brauner.io>,
+    Jeff Layton <jlayton@kernel.org>,
+    Gao Xiang <hsiangkao@linux.alibaba.com>,
+    Dominique Martinet <asmadeus@codewreck.org>,
+    Matthew Wilcox <willy@infradead.org>,
+    Steve French <smfrench@gmail.com>,
+    Marc Dionne <marc.dionne@auristor.com>,
+    Paulo Alcantara <pc@manguebit.com>,
+    Shyam Prasad N <sprasad@microsoft.com>, Tom Talpey <tom@talpey.com>,
+    Eric Van Hensbergen <ericvh@kernel.org>,
+    Ilya Dryomov <idryomov@gmail.com>, netfs@lists.linux.dev,
+    linux-cachefs@redhat.com, linux-afs@lists.infradead.org,
+    linux-cifs@vger.kernel.org, linux-nfs@vger.kernel.org,
+    ceph-devel@vger.kernel.org, v9fs@lists.linux.dev,
+    linux-erofs@lists.ozlabs.org, linux-fsdevel@vger.kernel.org,
+    linux-mm@kvack.org, netdev@vger.kernel.org,
+    linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 15/26] mm: Export writeback_iter()
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH v4][next] net/smc: Avoid -Wflex-array-member-not-at-end
- warnings
-From: patchwork-bot+netdevbpf@kernel.org
-Message-Id: 
- <171213902938.4996.5946401642859225175.git-patchwork-notify@kernel.org>
-Date: Wed, 03 Apr 2024 10:10:29 +0000
-References: <ZgXmscAd6Y2iQQ6O@neat>
-In-Reply-To: <ZgXmscAd6Y2iQQ6O@neat>
-To: Gustavo A. R. Silva <gustavoars@kernel.org>
-Cc: wenjia@linux.ibm.com, jaka@linux.ibm.com, alibuda@linux.alibaba.com,
- tonylu@linux.alibaba.com, guwen@linux.alibaba.com, davem@davemloft.net,
- edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
- linux-s390@vger.kernel.org, netdev@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <3235933.1712139047.1@warthog.procyon.org.uk>
+Date: Wed, 03 Apr 2024 11:10:47 +0100
+Message-ID: <3235934.1712139047@warthog.procyon.org.uk>
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.2
 
-Hello:
+Christoph Hellwig <hch@lst.de> wrote:
 
-This patch was applied to netdev/net-next.git (main)
-by David S. Miller <davem@davemloft.net>:
-
-On Thu, 28 Mar 2024 15:52:49 -0600 you wrote:
-> -Wflex-array-member-not-at-end is coming in GCC-14, and we are getting
-> ready to enable it globally.
+> On Thu, Mar 28, 2024 at 04:34:07PM +0000, David Howells wrote:
+> > Export writeback_iter() so that it can be used by netfslib as a module.
 > 
-> There are currently a couple of objects in `struct smc_clc_msg_proposal_area`
-> that contain a couple of flexible structures:
-> 
-> struct smc_clc_msg_proposal_area {
-> 	...
-> 	struct smc_clc_v2_extension             pclc_v2_ext;
-> 	...
-> 	struct smc_clc_smcd_v2_extension        pclc_smcd_v2_ext;
-> 	...
-> };
-> 
-> [...]
+> EXPORT_SYMBOL_GPL, please.
 
-Here is the summary with links:
-  - [v4,next] net/smc: Avoid -Wflex-array-member-not-at-end warnings
-    https://git.kernel.org/netdev/net-next/c/9748dbc9f265
+That depends.  You put a comment on write_cache_pages() saying that people
+should use writeback_iter() instead.  w_c_p() is not marked GPL.  Is it your
+intention to get rid of it?
 
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
+David
 
 
