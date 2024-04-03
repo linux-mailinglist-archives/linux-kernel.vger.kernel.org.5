@@ -1,60 +1,62 @@
-Return-Path: <linux-kernel+bounces-130339-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-130343-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3F5198977D1
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 20:08:20 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id AE1F5897820
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 20:23:30 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 71C17B32AF0
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 17:37:05 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 093D0B3383F
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 17:38:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 63F9A1649A5;
-	Wed,  3 Apr 2024 17:19:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3637B16ABEB;
+	Wed,  3 Apr 2024 17:19:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="LqJPqQfB"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="KrcoheaU"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A7A0D161B52;
-	Wed,  3 Apr 2024 17:19:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7700916C435;
+	Wed,  3 Apr 2024 17:19:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712164776; cv=none; b=lbXwMRRbPr6BoUBK0Zi/5aBk47+rgZMlBjp0DP5Mp//wz1tnkvhB1+qe6huOXHPkfraeigFKcsPsLS85oEZ/vRzKNQ4oyqEc0AOiOWVzTgLtFrMlp5pR2jmik0YEE7NWI0Tn7awhzshsuHmmfP9Yp4WmEKbApbDrTEUEl6lHRvw=
+	t=1712164790; cv=none; b=kKkC+AKwcBeeyCK9zU6P0XGzyvQATTxF9IG9Tg9m8bNiY+yhbFxb0Qh7PGkvs6gULBIOA3ahMCAx5JmmTuoQj/Y8MhYxl1WgDlyWXVLwRUxvN7Bk9MQkjvtsV0+cZq2L4WOeuuLXlV9YaCI7xV4JEmeloKZ+6URxSqAcMtSsRHg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712164776; c=relaxed/simple;
-	bh=mz4McjuT2qlYoiEkicjh9v8R7sroxYM+U54rgIlhYMQ=;
+	s=arc-20240116; t=1712164790; c=relaxed/simple;
+	bh=m5CY6uzPdkdGZdndPJAd5V3PSA3YWVy2YMzLcV42FCE=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=tR3n6Ki6l1ahAujE3IwC18ZSAYTo7imwtU/cAVJntCz6Qy1Hr8yK8OfvRwtv8fudqeS9v9erWLqapx13ggnFeTm8bM0WMlQumzyULMu84sMWUDu7sAODJDT+n2ljXoa71trcr84wCzlREKvjuBB5IVVcrzcyzvNLicr/qD29G0A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=LqJPqQfB; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A504BC433F1;
-	Wed,  3 Apr 2024 17:19:35 +0000 (UTC)
+	 MIME-Version; b=REIZS6diu+exOnXw9Kc4iDsE65yPfooYSqTfLnZs9DdxCpSaNzfOUtOKEh9BJbqwiutMh/RFN9mYvgpo9F+0lM3ietv2msQ4mUfpogfNwD/uk7JVpBGCAEOWu9W9p0bMATMcmOEiWb3xuQl4lYaES9teF5yfT5IlXlTQf3J4EpE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=KrcoheaU; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 44AB7C433C7;
+	Wed,  3 Apr 2024 17:19:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712164776;
-	bh=mz4McjuT2qlYoiEkicjh9v8R7sroxYM+U54rgIlhYMQ=;
+	s=k20201202; t=1712164790;
+	bh=m5CY6uzPdkdGZdndPJAd5V3PSA3YWVy2YMzLcV42FCE=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=LqJPqQfBS+X0lpIunFesSxKqiiuBt0JjrxyZNc9oU+QVNdY1ae1H0pixH69ANKJak
-	 cQj4g4Yvun4ikTGMpdsomuwan2LCm9k1CCHfDVNAY5J6NgsrsRZ1YMk4HhI6Uu3Yq2
-	 WM5bv5HJv/Y7jvJcflAIt2/i7THW08LpAEpf4rZ7c7qIdzgLPSN0rVQO5OVyYIZEPw
-	 /i58Zt+HIg5op4FRcJoetwpM5bNuJOiKG9xi0LroMHhiK4SGa44nzEaA1p7AYz75Fn
-	 z6rc+Facrbv3PihIQRT4PRGOA0az1qHqxzQG/fm9AkgvAM30rEQgGfbxR3Trb9dUGD
-	 9hXvNkuSgeDlg==
+	b=KrcoheaUeO04BQeNc/WlEeGCnaIlKCmd+7rD8oREVpM7xx+WIFx+sdNumFk7238dj
+	 9CeJig1glhgrG7mNJvlIbHblV/qMYn1qT597KLU+/IDLuGEJOI2WQBeBaAXnS35hoU
+	 Ofl2owiNfB2OCGj/O6aUprKstmvFxJVcAlyl2ntJKijvutujw9F/plu1EmGKNMWKts
+	 5svlB4y0axtsBmEbaHYMAelJfuwwkSWo7ihbApar1W3/pYMJRo+5bySmbDeXtVG1xK
+	 bO90T9Xg2w3GFpJ+PWY+xwoqfw8LGqmD9ZW2GyK0f/bC6bfZLzKi0IPQtJB9uCjwCN
+	 kshCBTfHuibDg==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: "Jiawei Fu (iBug)" <i@ibugone.com>,
-	Christoph Hellwig <hch@lst.de>,
-	Sagi Grimberg <sagi@grimberg.me>,
-	Keith Busch <kbusch@kernel.org>,
+Cc: Marco Felsch <m.felsch@pengutronix.de>,
+	Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
 	Sasha Levin <sashal@kernel.org>,
-	linux-nvme@lists.infradead.org
-Subject: [PATCH AUTOSEL 6.1 14/15] drivers/nvme: Add quirks for device 126f:2262
-Date: Wed,  3 Apr 2024 13:18:58 -0400
-Message-ID: <20240403171909.345570-14-sashal@kernel.org>
+	rdbabiera@google.com,
+	festevam@denx.de,
+	u.kleine-koenig@pengutronix.de,
+	linux-usb@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.15 3/8] usb: typec: tcpci: add generic tcpci fallback compatible
+Date: Wed,  3 Apr 2024 13:19:36 -0400
+Message-ID: <20240403171945.350716-3-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240403171909.345570-1-sashal@kernel.org>
-References: <20240403171909.345570-1-sashal@kernel.org>
+In-Reply-To: <20240403171945.350716-1-sashal@kernel.org>
+References: <20240403171945.350716-1-sashal@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -63,53 +65,37 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
-X-stable-base: Linux 6.1.84
+X-stable-base: Linux 5.15.153
 Content-Transfer-Encoding: 8bit
 
-From: "Jiawei Fu (iBug)" <i@ibugone.com>
+From: Marco Felsch <m.felsch@pengutronix.de>
 
-[ Upstream commit e89086c43f0500bc7c4ce225495b73b8ce234c1f ]
+[ Upstream commit 8774ea7a553e2aec323170d49365b59af0a2b7e0 ]
 
-This commit adds NVME_QUIRK_NO_DEEPEST_PS and NVME_QUIRK_BOGUS_NID for
-device [126f:2262], which appears to be a generic VID:PID pair used for
-many SSDs based on the Silicon Motion SM2262/SM2262EN controller.
+The driver already support the tcpci binding for the i2c_device_id so
+add the support for the of_device_id too.
 
-Two of my SSDs with this VID:PID pair exhibit the same behavior:
-
-  * They frequently have trouble exiting the deepest power state (5),
-    resulting in the entire disk unresponsive.
-    Verified by setting nvme_core.default_ps_max_latency_us=10000 and
-    observing them behaving normally.
-  * They produce all-zero nguid and eui64 with `nvme id-ns` command.
-
-The offending products are:
-
-  * HP SSD EX950 1TB
-  * HIKVISION C2000Pro 2TB
-
-Signed-off-by: Jiawei Fu <i@ibugone.com>
-Reviewed-by: Christoph Hellwig <hch@lst.de>
-Reviewed-by: Sagi Grimberg <sagi@grimberg.me>
-Signed-off-by: Keith Busch <kbusch@kernel.org>
+Signed-off-by: Marco Felsch <m.felsch@pengutronix.de>
+Reviewed-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
+Link: https://lore.kernel.org/r/20240222210903.208901-3-m.felsch@pengutronix.de
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/nvme/host/pci.c | 3 +++
- 1 file changed, 3 insertions(+)
+ drivers/usb/typec/tcpm/tcpci.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/nvme/host/pci.c b/drivers/nvme/host/pci.c
-index 3d01290994d89..5ff09f2cacab7 100644
---- a/drivers/nvme/host/pci.c
-+++ b/drivers/nvme/host/pci.c
-@@ -3471,6 +3471,9 @@ static const struct pci_device_id nvme_id_table[] = {
- 				NVME_QUIRK_BOGUS_NID, },
- 	{ PCI_VDEVICE(REDHAT, 0x0010),	/* Qemu emulated controller */
- 		.driver_data = NVME_QUIRK_BOGUS_NID, },
-+	{ PCI_DEVICE(0x126f, 0x2262),	/* Silicon Motion generic */
-+		.driver_data = NVME_QUIRK_NO_DEEPEST_PS |
-+				NVME_QUIRK_BOGUS_NID, },
- 	{ PCI_DEVICE(0x126f, 0x2263),	/* Silicon Motion unidentified */
- 		.driver_data = NVME_QUIRK_NO_NS_DESC_LIST |
- 				NVME_QUIRK_BOGUS_NID, },
+diff --git a/drivers/usb/typec/tcpm/tcpci.c b/drivers/usb/typec/tcpm/tcpci.c
+index a7b0134d382b8..e047a15e67347 100644
+--- a/drivers/usb/typec/tcpm/tcpci.c
++++ b/drivers/usb/typec/tcpm/tcpci.c
+@@ -899,6 +899,7 @@ MODULE_DEVICE_TABLE(i2c, tcpci_id);
+ #ifdef CONFIG_OF
+ static const struct of_device_id tcpci_of_match[] = {
+ 	{ .compatible = "nxp,ptn5110", },
++	{ .compatible = "tcpci", },
+ 	{},
+ };
+ MODULE_DEVICE_TABLE(of, tcpci_of_match);
 -- 
 2.43.0
 
