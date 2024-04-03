@@ -1,33 +1,33 @@
-Return-Path: <linux-kernel+bounces-130245-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-130246-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 299B98975E1
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 19:03:56 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 130738975E3
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 19:04:11 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D36BB1F29B01
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 17:03:55 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 420741C27FE2
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 17:04:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0BB60152521;
-	Wed,  3 Apr 2024 17:03:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1DC34153831;
+	Wed,  3 Apr 2024 17:03:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="GKUZ9a85"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="lIClcxmU"
 Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.12])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C00E4152E11;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 02722152E1A;
 	Wed,  3 Apr 2024 17:03:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.12
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712163793; cv=none; b=rt6PcsqRPl0rWJrdmmVBP2gv80Vc+vzkaqWmsO/HTPEox5LomGVtS2rgChBUpvILOlTzk8jGVAdj2nHC2UaVCkRWOSNEeK0dUw4HE0buqT3qw5AbGbPNaN6BsVfuIzxLNDq5MuSNj3ncwXdsNbfcvws/WY0CSAqVrpagvLK7CDI=
+	t=1712163794; cv=none; b=TuGe2S7+y4NRxH/Xlp3JMiLyCX/7uyqFixgfJVGi3tb/ArlWSNbs0WGpJVZTPDBYHfNDtg0b+yi7v8+UY6prvtXdEAcwqR2IFe+RZOI10K3p2ycHvVlOW0oJEI4QnYkx5WuevJBpUTyKIMq6ROryu6x1VgD5FeRpoL7eiCN2XPk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712163793; c=relaxed/simple;
-	bh=VEomS2m+Bw/DPtcNvn269fWrjlZB0hREQwVjQOn0ITk=;
+	s=arc-20240116; t=1712163794; c=relaxed/simple;
+	bh=JG8SKbMJF+yqnv0lRb2lHU2ZQzLtD4bWRdMO6yuf/7o=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=PimLyEHL67szEqNtiJC7i6FNZpphHLOgtNtzwEsEb3xLhAq/Q2L4meDYrACbcg4y7/of9cZAwyJoVgm54A6nzALH8eKR0Xg/LRbkG62ZjbSkfyqa7xB+bu8c6nyn6dAP21bBIkGKlY9zm+S5P0hNO0yXFxaRd+PfxCqVgd9pePQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=GKUZ9a85; arc=none smtp.client-ip=198.175.65.12
+	 MIME-Version; b=KdgDlyt0o0uC27qcFYn/46DIoOdtDgFODtel+5ebh/OQNQMdd2VW0gT/+NwwbZbi056AeAIaWF7olByRAcFeU3rLdynigRFVM3aWHObsIvwPBhxASeCXZ2TrhbwydDzujJwfdp/kXil3f5sCVX4CvIUqVvFv4XBNID0SMfobfTU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=lIClcxmU; arc=none smtp.client-ip=198.175.65.12
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
@@ -35,29 +35,29 @@ DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   t=1712163792; x=1743699792;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=VEomS2m+Bw/DPtcNvn269fWrjlZB0hREQwVjQOn0ITk=;
-  b=GKUZ9a85OfZBONoz2lezCfAgwIkuH8f7vG5NRFBB7XWCr1mTdBs0XppH
-   wGBkUfg7Dq9kdD49u54k3dH/YFD3+V8cyX3wuUgQ7U0InfAz4CenCdnXB
-   ZaUyhCLkVrFbYQjrgt3a94pDm9ZMN/Rb2vjAG0yFizFWGyh5n0cV0nntJ
-   4vBFROO54VJvwULxJCDeuaTXW1RqHzsG3NFxTkSb3uLCODRKZ/QZdYY4B
-   bxgx46DgN9iButh7fFrA3/xJ7Sus9VG1DS58QHjasEJiQrA2g+cXIClGt
-   EjHUcH4IPgft6Vo5V5hLrqyoQJdamow/YqTnsiTZKeMeQ/6D839foyXdx
-   w==;
-X-CSE-ConnectionGUID: N8KqgzMpTASsA+x2AJULPQ==
-X-CSE-MsgGUID: szju7E1MQwOf3a17C7mIaA==
-X-IronPort-AV: E=McAfee;i="6600,9927,11033"; a="18861492"
+  bh=JG8SKbMJF+yqnv0lRb2lHU2ZQzLtD4bWRdMO6yuf/7o=;
+  b=lIClcxmUWyvLRyPFv4fDn29Q2AoJWkehORw4jpIoAqdD4Y5tFRT3gcoJ
+   ep7YBeLqHcoG62vzCtRpMeKlb3/ZEaW/q9euDTDHl6R9mkI0qkwz3SKj9
+   DXbkSckwUHpq6ul3mAnW9NL4S2ozgxSNSCXN0dU92dp/k/IcEngA+rf/B
+   R3DY48hx3qBKrbBnAvPXKMHX3Q0v3wm0y2WsO9VjysdkptpY78jtLRzvi
+   Vc2QtMtYeqStt/22eCZQkyNq8iUQs7z/2kVvg8Ui5lF5Uwg3BxPnmMIsD
+   awf3+GhCpYWKBOiu76KmNW2PeR+h4uR7+meoh7awVVF0QXOmWJZtFz3WO
+   Q==;
+X-CSE-ConnectionGUID: 01Hl3xy1SIyKFGs0GVKpPA==
+X-CSE-MsgGUID: AtLICwNNT7WeXxnUZBmbgA==
+X-IronPort-AV: E=McAfee;i="6600,9927,11033"; a="18861495"
 X-IronPort-AV: E=Sophos;i="6.07,177,1708416000"; 
-   d="scan'208";a="18861492"
+   d="scan'208";a="18861495"
 Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by orvoesa104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Apr 2024 10:03:08 -0700
+  by orvoesa104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Apr 2024 10:03:09 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,11033"; a="937085336"
+X-IronPort-AV: E=McAfee;i="6600,9927,11033"; a="937085332"
 X-IronPort-AV: E=Sophos;i="6.07,177,1708416000"; 
-   d="scan'208";a="937085336"
+   d="scan'208";a="937085332"
 Received: from black.fi.intel.com ([10.237.72.28])
   by fmsmga001.fm.intel.com with ESMTP; 03 Apr 2024 10:03:06 -0700
 Received: by black.fi.intel.com (Postfix, from userid 1003)
-	id 15B61670; Wed,  3 Apr 2024 20:03:05 +0300 (EEST)
+	id 214946F5; Wed,  3 Apr 2024 20:03:05 +0300 (EEST)
 From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 To: Zhang Rui <rui.zhang@intel.com>,
 	Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
@@ -65,9 +65,9 @@ To: Zhang Rui <rui.zhang@intel.com>,
 	linux-acpi@vger.kernel.org
 Cc: "Rafael J. Wysocki" <rafael@kernel.org>,
 	Len Brown <lenb@kernel.org>
-Subject: [PATCH v1 3/4] ACPI: x86: Move blacklist to x86 folder
-Date: Wed,  3 Apr 2024 19:54:37 +0300
-Message-ID: <20240403170302.1073841-4-andriy.shevchenko@linux.intel.com>
+Subject: [PATCH v1 4/4] ACPI: x86: Move LPSS to x86 folder
+Date: Wed,  3 Apr 2024 19:54:38 +0300
+Message-ID: <20240403170302.1073841-5-andriy.shevchenko@linux.intel.com>
 X-Mailer: git-send-email 2.43.0.rc1.1.gbec44491f096
 In-Reply-To: <20240403170302.1073841-1-andriy.shevchenko@linux.intel.com>
 References: <20240403170302.1073841-1-andriy.shevchenko@linux.intel.com>
@@ -79,54 +79,56 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-blacklist is built solely for x86, move it to the respective folder.
+LPSS is built solely for x86, move it to the respective folder.
 
 Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 ---
- drivers/acpi/Makefile              | 1 -
- drivers/acpi/x86/Makefile          | 2 ++
- drivers/acpi/{ => x86}/blacklist.c | 2 +-
- 3 files changed, 3 insertions(+), 2 deletions(-)
- rename drivers/acpi/{ => x86}/blacklist.c (99%)
+ drivers/acpi/Makefile                    | 1 -
+ drivers/acpi/x86/Makefile                | 1 +
+ drivers/acpi/{acpi_lpss.c => x86/lpss.c} | 2 +-
+ 3 files changed, 2 insertions(+), 2 deletions(-)
+ rename drivers/acpi/{acpi_lpss.c => x86/lpss.c} (99%)
 
 diff --git a/drivers/acpi/Makefile b/drivers/acpi/Makefile
-index 413c18e2bf61..6f4187a34f41 100644
+index 6f4187a34f41..39ea5cfa8326 100644
 --- a/drivers/acpi/Makefile
 +++ b/drivers/acpi/Makefile
-@@ -14,7 +14,6 @@ tables.o: $(src)/../../include/$(CONFIG_ACPI_CUSTOM_DSDT_FILE) ;
- endif
- 
- obj-$(CONFIG_ACPI)		+= tables.o
--obj-$(CONFIG_X86)		+= blacklist.o
- 
- #
- # ACPI Core Subsystem (Interpreter)
+@@ -45,7 +45,6 @@ acpi-y				+= ec.o
+ acpi-$(CONFIG_ACPI_DOCK)	+= dock.o
+ acpi-$(CONFIG_PCI)		+= pci_root.o pci_link.o pci_irq.o
+ obj-$(CONFIG_ACPI_MCFG)		+= pci_mcfg.o
+-acpi-$(CONFIG_PCI)		+= acpi_lpss.o
+ acpi-y				+= acpi_apd.o
+ acpi-y				+= acpi_platform.o
+ acpi-y				+= acpi_pnp.o
 diff --git a/drivers/acpi/x86/Makefile b/drivers/acpi/x86/Makefile
-index b97b1bcf8404..1f3c5fa84f9e 100644
+index 1f3c5fa84f9e..63c99509ed9d 100644
 --- a/drivers/acpi/x86/Makefile
 +++ b/drivers/acpi/x86/Makefile
-@@ -3,3 +3,5 @@ acpi-x86-y		+= apple.o
+@@ -1,6 +1,7 @@
+ obj-$(CONFIG_ACPI)	+= acpi-x86.o
+ acpi-x86-y		+= apple.o
  acpi-x86-y		+= cmos_rtc.o
++acpi-x86-$(CONFIG_PCI)	+= lpss.o
  acpi-x86-y		+= s2idle.o
  acpi-x86-y		+= utils.o
-+
-+obj-$(CONFIG_X86)	+= blacklist.o
-diff --git a/drivers/acpi/blacklist.c b/drivers/acpi/x86/blacklist.c
+ 
+diff --git a/drivers/acpi/acpi_lpss.c b/drivers/acpi/x86/lpss.c
 similarity index 99%
-rename from drivers/acpi/blacklist.c
-rename to drivers/acpi/x86/blacklist.c
-index a558d24fb788..55214d0a12b1 100644
---- a/drivers/acpi/blacklist.c
-+++ b/drivers/acpi/x86/blacklist.c
-@@ -17,7 +17,7 @@
- #include <linux/acpi.h>
- #include <linux/dmi.h>
+rename from drivers/acpi/acpi_lpss.c
+rename to drivers/acpi/x86/lpss.c
+index a3d2d94be5c0..148e29c2c526 100644
+--- a/drivers/acpi/acpi_lpss.c
++++ b/drivers/acpi/x86/lpss.c
+@@ -25,7 +25,7 @@
+ #include <linux/suspend.h>
+ #include <linux/delay.h>
  
 -#include "internal.h"
 +#include "../internal.h"
  
- #ifdef CONFIG_DMI
- static const struct dmi_system_id acpi_rev_dmi_table[] __initconst;
+ #ifdef CONFIG_X86_INTEL_LPSS
+ 
 -- 
 2.43.0.rc1.1.gbec44491f096
 
