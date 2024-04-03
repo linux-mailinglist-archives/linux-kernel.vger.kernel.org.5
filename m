@@ -1,74 +1,50 @@
-Return-Path: <linux-kernel+bounces-129967-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-129968-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id BE2578972C0
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 16:36:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 63DFA8972B1
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 16:34:42 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 116A9B24516
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 14:31:58 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D1F16B276B5
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 14:32:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6974E56B70;
-	Wed,  3 Apr 2024 14:31:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="DPbur/z4"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 91B38D272;
-	Wed,  3 Apr 2024 14:31:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2747C43AB6;
+	Wed,  3 Apr 2024 14:32:10 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4052FD272;
+	Wed,  3 Apr 2024 14:32:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712154705; cv=none; b=WcgeDu01JuQW87Zf06uZGwPxmaf23oyoAVaBLWuyqPeHpQ8NfsxEYXamr+K8wIewyKCaR7UAdXU7e8Zxv1abOmDZ53WlTdF78Ckkh21v91PrFwUvKKYATnLM5zGIImMZ0n9IA3HhuoGu6ycAwTOg5SNiul3y+rOkdgSrVI/DNjI=
+	t=1712154729; cv=none; b=C+pX+icBgkaK37RYuW7+uwmNO+W3XJPEet0eeCjd8PExRvitTLlqDBjd2zUaVJSPsusG6vFCxPxOmfgQXWX3cCJy8nHODQR3U3EHhV/DbB3aCa10Ya2QaemDqHJRbD6WInWbLSJrRj18gBH28oW41kTWpJu3GkWhP7znRSK1hJE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712154705; c=relaxed/simple;
-	bh=awzNNZdI5HcMDUhEsGuSnb6/bioiSNUyQOEbMy3wFkM=;
+	s=arc-20240116; t=1712154729; c=relaxed/simple;
+	bh=IfavOBHuNBC7BA6z+t/e9bZRoESBeEMspQVXwHiTgtQ=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=b8ycIvMxLMziBy9rrifKZIGfa1+n4g7uSVa9ttNWbgsSpsrJo4QcFEFRR0pfdI2h5cO6oWYBbqC1/L9UxDxItmxgT1mlCrCULmzlWaNOXdFqlTfXEXRNYoWSVjHcxdRcJv5or5x/pRwzBsecGo1NWjOqf8nkKS2zcCJMEV43Yjk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=DPbur/z4; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DE051C433F1;
-	Wed,  3 Apr 2024 14:31:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712154705;
-	bh=awzNNZdI5HcMDUhEsGuSnb6/bioiSNUyQOEbMy3wFkM=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=DPbur/z4a1tQGEOZanah0R5lQ40TUPfDY6onBOSULbDggoXDaa6XJlzOl5449fH1H
-	 orrjhONQ+tBaJewJdR1NbiPAxAKoKqCihxzjaxJ/c/JSYol0i4gVmPL1G+CETej73T
-	 L4CevX5bm3JoMhgDu4BDtPLqBDZgPwgXebq1/f1BUtnv6DLd0qxi6klKbPjjrwcCwD
-	 QrqCYWqQOrHfSy+R/gku28usZNMd3AKh87sIhB6tHjjfyVBugCmkGK9/VPrKbpFl6w
-	 7YhMetzwM7LnqvGLx479DRvuqF5HrX/B/LQJpVyQTguBkc9YFzpBbWe2QH8OIk+Yyx
-	 NNS7WMYUjX6Iw==
-Date: Wed, 3 Apr 2024 09:31:42 -0500
-From: Rob Herring <robh@kernel.org>
-To: Kory Maincent <kory.maincent@bootlin.com>
-Cc: "David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Jonathan Corbet <corbet@lwn.net>,
-	Luis Chamberlain <mcgrof@kernel.org>,
-	Russ Weight <russ.weight@linux.dev>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	"Rafael J. Wysocki" <rafael@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Oleksij Rempel <o.rempel@pengutronix.de>,
-	Mark Brown <broonie@kernel.org>,
-	Frank Rowand <frowand.list@gmail.com>, Andrew Lunn <andrew@lunn.ch>,
-	Heiner Kallweit <hkallweit1@gmail.com>,
-	Russell King <linux@armlinux.org.uk>,
-	Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-	netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-doc@vger.kernel.org, devicetree@vger.kernel.org,
-	Dent Project <dentproject@linuxfoundation.org>
-Subject: Re: [PATCH net-next v6 11/17] dt-bindings: net: pse-pd: Add another
- way of describing several PSE PIs
-Message-ID: <20240403143142.GA3508225-robh@kernel.org>
-References: <20240326-feature_poe-v6-0-c1011b6ea1cb@bootlin.com>
- <20240326-feature_poe-v6-11-c1011b6ea1cb@bootlin.com>
- <20240402132637.GA3744978-robh@kernel.org>
- <20240403111548.30e780b5@kmaincent-XPS-13-7390>
+	 Content-Type:Content-Disposition:In-Reply-To; b=bgyj43GdJcYpqvFuaQeKsC7TXazfjB2J2rusqURVCvQ8eTU8SugUIBYDCXcPo16yQ0PgyaYOpzeVY9YM5fjEvKyZ8b7DxgsAIC3Lwuq30Ex9NEpxNx9DpNos3A105PAbtOPE5PYEHXoYE4IDu068HEa1Sivu5HCSNb6ExFVZORE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id B81511007;
+	Wed,  3 Apr 2024 07:32:38 -0700 (PDT)
+Received: from FVFF77S0Q05N (unknown [10.57.16.212])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 6C8843F7B4;
+	Wed,  3 Apr 2024 07:32:05 -0700 (PDT)
+Date: Wed, 3 Apr 2024 15:32:02 +0100
+From: Mark Rutland <mark.rutland@arm.com>
+To: Dawei Li <dawei.li@shingroup.cn>
+Cc: will@kernel.org, yury.norov@gmail.com, linux@rasmusvillemoes.dk,
+	xueshuai@linux.alibaba.com, renyu.zj@linux.alibaba.com,
+	yangyicong@hisilicon.com, jonathan.cameron@huawei.com,
+	andersson@kernel.org, konrad.dybcio@linaro.org,
+	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+	linux-arm-msm@vger.kernel.org
+Subject: Re: [PATCH v2 05/10] perf/arm_dsu: Avoid placing cpumask var on stack
+Message-ID: <Zg1oYr3DyEL3gTV7@FVFF77S0Q05N>
+References: <20240403125109.2054881-1-dawei.li@shingroup.cn>
+ <20240403125109.2054881-6-dawei.li@shingroup.cn>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -77,113 +53,86 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240403111548.30e780b5@kmaincent-XPS-13-7390>
+In-Reply-To: <20240403125109.2054881-6-dawei.li@shingroup.cn>
 
-On Wed, Apr 03, 2024 at 11:15:48AM +0200, Kory Maincent wrote:
-> On Tue, 2 Apr 2024 08:26:37 -0500
-> Rob Herring <robh@kernel.org> wrote:
+On Wed, Apr 03, 2024 at 08:51:04PM +0800, Dawei Li wrote:
+> For CONFIG_CPUMASK_OFFSTACK=y kernel, explicit allocation of cpumask
+> variable on stack is not recommended since it can cause potential stack
+> overflow.
 > 
-> > > +          pairset-names:
-> > > +            $ref: /schemas/types.yaml#/definitions/string-array
-> > > +            description:
-> > > +              Names of the pairsets as per IEEE 802.3-2022, Section
-> > > 145.2.4.
-> > > +              Valid values are "alternative-a" and "alternative-b". Each
-> > > name  
-> > 
-> > Don't state constraints in prose which are defined as schema 
-> > constraints.
+> Instead, kernel code should always use *cpumask_var API(s) to allocate
+> cpumask var in config-neutral way, leaving allocation strategy to
+> CONFIG_CPUMASK_OFFSTACK.
 > 
-> Ok, I will remove the line.
+> But dynamic allocation in cpuhp's teardown callback is somewhat problematic
+> for if allocation fails(which is unlikely but still possible):
+> - If -ENOMEM is returned to caller, kernel crashes for non-bringup
+>   teardown;
+> - If callback pretends nothing happened and returns 0 to caller, it may
+>   trap system into an in-consisitent/compromised state;
 > 
-> > > +          pairsets:
-> > > +            $ref: /schemas/types.yaml#/definitions/phandle-array
-> > > +            description:
-> > > +              List of phandles, each pointing to the power supply for the
-> > > +              corresponding pairset named in 'pairset-names'. This property
-> > > +              aligns with IEEE 802.3-2022, Section 33.2.3 and 145.2.4.
-> > > +              PSE Pinout Alternatives (as per IEEE 802.3-2022 Table
-> > > 145\u20133)
-> > > +
-> > > |-----------|---------------|---------------|---------------|---------------|
-> > > +              | Conductor | Alternative A | Alternative A | Alternative B
-> > > | Alternative B |
-> > > +              |           |    (MDI-X)    |     (MDI)     |      (X)
-> > > |      (S)      |
-> > > +
-> > > |-----------|---------------|---------------|---------------|---------------|
-> > > +              | 1         | Negative VPSE | Positive VPSE | \u2014
-> > >     | \u2014             |
-> > > +              | 2         | Negative VPSE | Positive VPSE | \u2014
-> > >     | \u2014             |
-> > > +              | 3         | Positive VPSE | Negative VPSE | \u2014
-> > >     | \u2014             |
-> > > +              | 4         | \u2014             | \u2014             |
-> > > Negative VPSE | Positive VPSE |
-> > > +              | 5         | \u2014             | \u2014             |
-> > > Negative VPSE | Positive VPSE |
-> > > +              | 6         | Positive VPSE | Negative VPSE | \u2014
-> > >     | \u2014             |
-> > > +              | 7         | \u2014             | \u2014             |
-> > > Positive VPSE | Negative VPSE |
-> > > +              | 8         | \u2014             | \u2014             |
-> > > Positive VPSE | Negative VPSE |
-> > > +            minItems: 1
-> > > +            maxItems: 2  
-> > 
-> > "pairsets" does not follow the normal design pattern of foos, foo-names, 
-> > and #foo-cells. You could add #foo-cells I suppose, but what would cells 
-> > convey? I don't think it's a good fit for what you need.
-> > 
-> > The other oddity is the number of entries and the names are fixed. That 
-> > is usually defined per consumer. 
+> Use newly-introduced cpumask_any_and_but() to address all issues above.
+> It eliminates usage of temporary cpumask var in generic way, no matter how
+> the cpumask var is allocated.
 > 
-> Theoretically if the RJ45 port binding was supported it would make more sense,
-> but in reality it's not feasible as the PSE controller need this information
-> in its init process.
-> The PSE controller reset all its port to apply a configuration so we can't do
-> it when the consumer (RJ45) probe. It would reset the other ports if one
-> consumer is probed later in the process.
+> Suggested-by: Mark Rutland <mark.rutland@arm.com>
+> Signed-off-by: Dawei Li <dawei.li@shingroup.cn>
 
-There is no reason other than convenience that all information some 
-driver needs has to be in one node or one hierarchy of nodes. You can 
-fetch anything from anywhere in the DT. It does feel like some of this 
-belongs in a connector node. We often haven't described connectors in DT 
-and stick connector properties in the controller node associated with 
-the connector. Then as things get more complicated, it becomes a mess. 
+The logic looks good to me, but I'd like the commit message updated the same as
+per my comment on patch 2.
 
+With that commit message:
 
-> > As each entry is just a power rail, why can't the regulator binding be 
-> > used here?
+Reviewed-by: Mark Rutland <mark.rutland@arm.com>
+
+Mark.
+
+> ---
+>  drivers/perf/arm_dsu_pmu.c | 19 ++++++-------------
+>  1 file changed, 6 insertions(+), 13 deletions(-)
 > 
-> Olekisj already answered about it.
-> PSE PI is like a regulator but with few different features and more information
-> like the pinout and the polarity, so we could not really fully rely on the
-> regulator binding style.
+> diff --git a/drivers/perf/arm_dsu_pmu.c b/drivers/perf/arm_dsu_pmu.c
+> index bae3ca37f846..adc0bbb5fafe 100644
+> --- a/drivers/perf/arm_dsu_pmu.c
+> +++ b/drivers/perf/arm_dsu_pmu.c
+> @@ -230,15 +230,6 @@ static const struct attribute_group *dsu_pmu_attr_groups[] = {
+>  	NULL,
+>  };
+>  
+> -static int dsu_pmu_get_online_cpu_any_but(struct dsu_pmu *dsu_pmu, int cpu)
+> -{
+> -	struct cpumask online_supported;
+> -
+> -	cpumask_and(&online_supported,
+> -			 &dsu_pmu->associated_cpus, cpu_online_mask);
+> -	return cpumask_any_but(&online_supported, cpu);
+> -}
+> -
+>  static inline bool dsu_pmu_counter_valid(struct dsu_pmu *dsu_pmu, u32 idx)
+>  {
+>  	return (idx < dsu_pmu->num_counters) ||
+> @@ -827,14 +818,16 @@ static int dsu_pmu_cpu_online(unsigned int cpu, struct hlist_node *node)
+>  
+>  static int dsu_pmu_cpu_teardown(unsigned int cpu, struct hlist_node *node)
+>  {
+> -	int dst;
+> -	struct dsu_pmu *dsu_pmu = hlist_entry_safe(node, struct dsu_pmu,
+> -						   cpuhp_node);
+> +	struct dsu_pmu *dsu_pmu;
+> +	unsigned int dst;
+> +
+> +	dsu_pmu = hlist_entry_safe(node, struct dsu_pmu, cpuhp_node);
+>  
+>  	if (!cpumask_test_and_clear_cpu(cpu, &dsu_pmu->active_cpu))
+>  		return 0;
+>  
+> -	dst = dsu_pmu_get_online_cpu_any_but(dsu_pmu, cpu);
+> +	dst = cpumask_any_and_but(&dsu_pmu->associated_cpus,
+> +				  cpu_online_mask, cpu);
+>  	/* If there are no active CPUs in the DSU, leave IRQ disabled */
+>  	if (dst >= nr_cpu_ids)
+>  		return 0;
+> -- 
+> 2.27.0
 > 
-> > > +
-> > > +          polarity-supported:
-> > > +            $ref: /schemas/types.yaml#/definitions/string-array
-> > > +            description:
-> > > +              Polarity configuration supported by the PSE PI pairsets.
-> > > +            minItems: 1
-> > > +            maxItems: 4
-> > > +            items:
-> > > +              enum:
-> > > +                - MDI-X
-> > > +                - MDI
-> > > +                - X
-> > > +                - S
-> > > +
-> > > +          vpwr-supply:
-> > > +            description: Regulator power supply for the PSE PI.  
-> > 
-> > I don't see this being used anywhere.
-> 
-> Right, I forgot to add it to the PD692x0 and TPS23881 binding example!
-
-But is this really common/generic? I would think input power rails would 
-be chip specific.
-
-Rob
 
