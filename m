@@ -1,57 +1,55 @@
-Return-Path: <linux-kernel+bounces-129302-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-129303-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id DA76E896858
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 10:22:11 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2107D896897
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 10:28:59 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 17C601C2302E
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 08:22:11 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id CA3C9B2BF55
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 08:22:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AC1C213F44D;
-	Wed,  3 Apr 2024 08:11:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DCF106F08A;
+	Wed,  3 Apr 2024 08:11:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="FWv8o1wp"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="KA2BvgOZ"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EC61C13F425;
-	Wed,  3 Apr 2024 08:11:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2B00F13FD7E;
+	Wed,  3 Apr 2024 08:11:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712131874; cv=none; b=U5bLDp4cAZWyckf5VobunivZfpKWoMrpN+XbecG3hyJFcnkbBJ64L1rHnIZijIhMzV+qb3X9WkeIuObGOICw80iYeQk/RwMgIhF9w9iL9jXXpgmGsO8XPUwqJKWxqWHu/GrK8nOoVWD1ZEs6dMqJTfBaanGMTppEz+hoqyYBBJE=
+	t=1712131881; cv=none; b=tzMb6HW6q+vRMHyyypMM7q7AtxV0/igkzveFSR+oX+ZgtNdzQ2bzOR+UGSfKbUH9qhxQgz27N8JSwKhpzD2c/OAcOzQqZ/UuqjG66RU359x1C+u9oEasLGq3hIiP3t4KKldZxbCSA+rFHS0rjtldY4qONBuxOu3TF5MMG67Fip0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712131874; c=relaxed/simple;
-	bh=76Xr54el70ulr/k/75H8vH6vpKWaADYSBbvRqxqkFes=;
+	s=arc-20240116; t=1712131881; c=relaxed/simple;
+	bh=0liwis3knuJplIlsLI48oLG63cRfb9QsB+onh6JK9F0=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=HXR5mecq3xCzPcjLec/ui1oAOTdPI+po8ZpnBXF9Bkgj2pSpwKJx/xoJuSXPg5fmJLBd6GunRzeqOe03kvKYQxIuxOP6hwwNbZKxMxSWO+aMRh9P6+R7nSrOftMhKyosem5VHfp6AiQcbvX6wSsgswxXIBrq4n/USeGZCuhyoZE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=FWv8o1wp; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A0B06C433C7;
-	Wed,  3 Apr 2024 08:11:11 +0000 (UTC)
+	 MIME-Version; b=qd+fXwYgisTj935RvDXOzJQifb+k24in4rC1nl6zvRQo10Dlt4UvCI92zL1C0jg0nWw5ztUflz7XbOgVLTlN6Q0YNn1ejlvau4RNGUsW4RQQGjTMhoYg2fPemLv8J41FChR4m4ANBIAEP8weOD3q6Aayysp74SoEkFL+UFsOqiQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=KA2BvgOZ; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4CCDDC433C7;
+	Wed,  3 Apr 2024 08:11:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712131873;
-	bh=76Xr54el70ulr/k/75H8vH6vpKWaADYSBbvRqxqkFes=;
+	s=k20201202; t=1712131880;
+	bh=0liwis3knuJplIlsLI48oLG63cRfb9QsB+onh6JK9F0=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=FWv8o1wpk5CWOhTbZ+We/eBhRTQU2fOMPfrRiTyWHTfl/uKhv1Pgg6IEfoFtigE2G
-	 sVwmX8e+2XuUC0TULUzTfrjpk9oAm2+Mer2itkYt+5u5B8Ci2PqAuLJoIQ/D938/yi
-	 BtYtN2+p5vaUpLMAlgLQx3aaYs75HPsAs3V0WlcSWPwY1ulxe4iQg0yZv+t5+CtD8Q
-	 72F9j2M45Tcoh1eSjGgdUIii9R5KwCHdWOhYKh2pY2yaAsEpsVPJnLldyA7p13BqAU
-	 vaCgiYHsZVoWe/nWy5MFTAmx/FpVfMcVlGIuMUi2dzhGn/rm9Kyo2M79jiO5PHn28S
-	 N1CPxhmkwHxRQ==
+	b=KA2BvgOZ0aKADiJYSLZEt38u+ZxvwcPS5kbp9hKULRkrMO30PMZkChHNsikGdAPSZ
+	 a4fT2buKxH39mNkm+K3hGG6YhApMU1tf+Pk3MYGngKqYCXkbjwETYFG3pPDdEI7Bym
+	 lqTXztk2Y495V4EqJQ7TXXN37sIsRumgW3wyA/ao2JjdJrIBQZGY6qQSiZIKewOWyN
+	 pvaPlJVASLhLMBJ3MyWl8GmjN7Yip72P137ky2jfTjB7xkl1KNNIT/HACG9tRlkrSy
+	 gMlm/mD5ZJZ3bR7bhh/pL+K9zNAbDXUHqGwzAiZMqu8MuPRlw5AB/jnm3O50fdvmPZ
+	 DvRo3K+1oIfdw==
 From: Arnd Bergmann <arnd@kernel.org>
 To: linux-kernel@vger.kernel.org,
-	Tom Lendacky <thomas.lendacky@amd.com>,
-	John Allen <john.allen@amd.com>,
-	Herbert Xu <herbert@gondor.apana.org.au>,
-	"David S. Miller" <davem@davemloft.net>
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Cc: Arnd Bergmann <arnd@arndb.de>,
 	=?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>,
-	linux-crypto@vger.kernel.org
-Subject: [PATCH 24/34] crypto: ccp - drop platform ifdef checks
-Date: Wed,  3 Apr 2024 10:06:42 +0200
-Message-Id: <20240403080702.3509288-25-arnd@kernel.org>
+	Aaro Koskinen <aaro.koskinen@iki.fi>,
+	linux-usb@vger.kernel.org
+Subject: [PATCH 25/34] usb: gadget: omap_udc: remove unused variable
+Date: Wed,  3 Apr 2024 10:06:43 +0200
+Message-Id: <20240403080702.3509288-26-arnd@kernel.org>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20240403080702.3509288-1-arnd@kernel.org>
 References: <20240403080702.3509288-1-arnd@kernel.org>
@@ -65,85 +63,63 @@ Content-Transfer-Encoding: 8bit
 
 From: Arnd Bergmann <arnd@arndb.de>
 
-When both ACPI and OF are disabled, the dev_vdata variable is unused:
+The driver_desc variable is only used in some configurations:
 
-drivers/crypto/ccp/sp-platform.c:33:34: error: unused variable 'dev_vdata' [-Werror,-Wunused-const-variable]
+drivers/usb/gadget/udc/omap_udc.c:113:19: error: unused variable 'driver_desc' [-Werror,-Wunused-const-variable]
 
-This is not a useful configuration, and there is not much point in saving
-a few bytes when only one of the two is enabled, so just remove all
-these ifdef checks and rely on of_match_node() and acpi_match_device()
-returning NULL when these subsystems are disabled.
+Since there is only ever one user of it, just open-code the string in place
+and remove the global variable and the macro behind it. This also helps
+grep for the MODULE_DESCRIPTION string.
 
-Fixes: 6c5063434098 ("crypto: ccp - Add ACPI support")
 Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 ---
- drivers/crypto/ccp/sp-platform.c | 14 ++------------
- 1 file changed, 2 insertions(+), 12 deletions(-)
+ drivers/usb/gadget/udc/omap_udc.c | 10 +++-------
+ 1 file changed, 3 insertions(+), 7 deletions(-)
 
-diff --git a/drivers/crypto/ccp/sp-platform.c b/drivers/crypto/ccp/sp-platform.c
-index 473301237760..ff6ceb4feee0 100644
---- a/drivers/crypto/ccp/sp-platform.c
-+++ b/drivers/crypto/ccp/sp-platform.c
-@@ -39,44 +39,38 @@ static const struct sp_dev_vdata dev_vdata[] = {
- 	},
- };
+diff --git a/drivers/usb/gadget/udc/omap_udc.c b/drivers/usb/gadget/udc/omap_udc.c
+index f90eeecf27de..e13b8ec8ef8a 100644
+--- a/drivers/usb/gadget/udc/omap_udc.c
++++ b/drivers/usb/gadget/udc/omap_udc.c
+@@ -56,7 +56,6 @@
+ /* ISO too */
+ #define	USE_ISO
  
--#ifdef CONFIG_ACPI
- static const struct acpi_device_id sp_acpi_match[] = {
- 	{ "AMDI0C00", (kernel_ulong_t)&dev_vdata[0] },
- 	{ },
- };
- MODULE_DEVICE_TABLE(acpi, sp_acpi_match);
--#endif
+-#define	DRIVER_DESC	"OMAP UDC driver"
+ #define	DRIVER_VERSION	"4 October 2004"
  
--#ifdef CONFIG_OF
- static const struct of_device_id sp_of_match[] = {
- 	{ .compatible = "amd,ccp-seattle-v1a",
- 	  .data = (const void *)&dev_vdata[0] },
- 	{ },
- };
- MODULE_DEVICE_TABLE(of, sp_of_match);
--#endif
+ #define OMAP_DMA_USB_W2FC_TX0		29
+@@ -110,7 +109,6 @@ MODULE_PARM_DESC(use_dma, "enable/disable DMA");
  
- static struct sp_dev_vdata *sp_get_of_version(struct platform_device *pdev)
- {
--#ifdef CONFIG_OF
- 	const struct of_device_id *match;
  
- 	match = of_match_node(sp_of_match, pdev->dev.of_node);
- 	if (match && match->data)
- 		return (struct sp_dev_vdata *)match->data;
--#endif
-+
- 	return NULL;
- }
+ static const char driver_name[] = "omap_udc";
+-static const char driver_desc[] = DRIVER_DESC;
  
- static struct sp_dev_vdata *sp_get_acpi_version(struct platform_device *pdev)
- {
--#ifdef CONFIG_ACPI
- 	const struct acpi_device_id *match;
+ /*-------------------------------------------------------------------------*/
  
- 	match = acpi_match_device(sp_acpi_match, &pdev->dev);
- 	if (match && match->driver_data)
- 		return (struct sp_dev_vdata *)match->driver_data;
--#endif
-+
- 	return NULL;
- }
+@@ -2299,13 +2297,11 @@ static int proc_udc_show(struct seq_file *s, void *_)
  
-@@ -212,12 +206,8 @@ static int sp_platform_resume(struct platform_device *pdev)
- static struct platform_driver sp_platform_driver = {
- 	.driver = {
- 		.name = "ccp",
--#ifdef CONFIG_ACPI
- 		.acpi_match_table = sp_acpi_match,
--#endif
--#ifdef CONFIG_OF
- 		.of_match_table = sp_of_match,
--#endif
- 	},
- 	.probe = sp_platform_probe,
- 	.remove_new = sp_platform_remove,
+ 	spin_lock_irqsave(&udc->lock, flags);
+ 
+-	seq_printf(s, "%s, version: " DRIVER_VERSION
++	seq_printf(s, "OMAP UDC driver, version: " DRIVER_VERSION
+ #ifdef	USE_ISO
+ 		" (iso)"
+ #endif
+-		"%s\n",
+-		driver_desc,
+-		use_dma ?  " (dma)" : "");
++		"%s\n", use_dma ?  " (dma)" : "");
+ 
+ 	tmp = omap_readw(UDC_REV) & 0xff;
+ 	seq_printf(s,
+@@ -2994,6 +2990,6 @@ static struct platform_driver udc_driver = {
+ 
+ module_platform_driver(udc_driver);
+ 
+-MODULE_DESCRIPTION(DRIVER_DESC);
++MODULE_DESCRIPTION("OMAP UDC driver");
+ MODULE_LICENSE("GPL");
+ MODULE_ALIAS("platform:omap_udc");
 -- 
 2.39.2
 
