@@ -1,57 +1,66 @@
-Return-Path: <linux-kernel+bounces-129295-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-129296-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 64F0F89684D
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 10:20:17 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 68C83896851
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 10:21:03 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1EC69283C7B
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 08:20:16 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5208CB2ADC0
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 08:20:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 32C42126F1D;
-	Wed,  3 Apr 2024 08:10:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F033E13E048;
+	Wed,  3 Apr 2024 08:10:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="aduusoJp"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Tz7ILvZD"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7AC353E48E
-	for <linux-kernel@vger.kernel.org>; Wed,  3 Apr 2024 08:10:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 21B326EB69;
+	Wed,  3 Apr 2024 08:10:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712131818; cv=none; b=CaFlmEljzYHqDMKp8SanOArXHMRTMXx5Re2YNRjEPFmwr6Bg6vxY1+5d+eVGnpgOuoG9Rcypdc3vQho4XrSNOUI3j/Y7KDIppZ+uBkUIZHcrMeJTEgIFq4MJCj7oGNxBOsviSH3Rk0kC1MGnJaBfTIksLED7nebOLLayRsbqCNI=
+	t=1712131826; cv=none; b=uAI5pkgGucJoTX5nNzfuQOcxWKILrj4k4kpAQsLTLfh3Qn6yy5RKrLOLNTQ4zASL+fYUSl/LZRsYhKOtQZsa6yNoXCQycWwHfVP2wS+k5lEkVhGWZj+FghdKBDa9oxZY71vwePq4UERrXJCeyCVexaWWhrHqY+y1v2mVyI0Hfe0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712131818; c=relaxed/simple;
-	bh=uzjOp0xr2MZStRulQupRQ+qP+V7YCJngXfY+4GCdPKU=;
+	s=arc-20240116; t=1712131826; c=relaxed/simple;
+	bh=WiucSDfey+Rb6VSKODVbCb1E0/6xwr83CCZttDwFyxE=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=hpzZXvCjHbke76Jq4QfHDsG40n9x8+wmU+vYXwunmJ9znILJjXruTWW/x0qGZv6YVX6IUyRrgq15mvlDZmsMBLM/UJCLxkZpYyGrzQw/rWweeo/g2tXNAdRFp5dOuM0F6GPhDA302mqouD0huBro0IQPk+csj3d3a9FteTFsb2g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=aduusoJp; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 82E9FC433F1;
-	Wed,  3 Apr 2024 08:10:16 +0000 (UTC)
+	 MIME-Version; b=UcmutEs423l2Vin/I7nPIeQEab+Yzrxn+cAB6hAJPpDA3KxKrpI55t21tTZr+wGQEm0PmN1jAaLwdo/VjcO1X7BYwn9pYccUJ+u5p/gCcobtTvXQZHjijZqTT+QXhiQBH8CURQTuGMC7SXMH5mWOezvAHoyWn8UXFr/SRIol4uo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Tz7ILvZD; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 85028C433C7;
+	Wed,  3 Apr 2024 08:10:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712131818;
-	bh=uzjOp0xr2MZStRulQupRQ+qP+V7YCJngXfY+4GCdPKU=;
+	s=k20201202; t=1712131826;
+	bh=WiucSDfey+Rb6VSKODVbCb1E0/6xwr83CCZttDwFyxE=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=aduusoJpFvmeo2xsPOKjpWaqWGcBrHBvvddO8Le6Ar23DmTL7t5YQDWDgzTZseKxm
-	 swaPV5HbHXgZtMbAVjuKdbGsmjnDLXubGoUAewJeZU7WKpCdDELcOW5bfs8VW0Sdhs
-	 eFs15OsS/B7w7v3M5oe7vDJfnmzqZ5VipT1QYdREN9dWfKY4CF42sAueDZFp/eLbRM
-	 3AQ3BAqGiDs/1m1wJydFD6qSa/5xnF5UH/GLfKmg2DLh2WOyk+/ahRFxK33pugDrSU
-	 aUvumLZKGMWy0PI/g9gR3cEC73dvtMDbnI2O6fOEE3rtcA9azcrlWf0QXdX+Fj7Ike
-	 zglWpD+swPxRw==
+	b=Tz7ILvZDBSKlkXfydHLWZoo0LaYg/BPPpzBh4G9ExyldItTq+LggHRx356xDCgMgs
+	 iqDoFL52fC3ArfKjtL+Vn1yGtnlmb5hHMYUmXMo2xyMgRBqx6dMPka4uxyOyQMVMDs
+	 SzjXYwqzpShMZxzH6dbOaqLv7vU8odUsBvkPNXvalCCxRYeuH/uFF0A9kxdWhCgXlk
+	 g6wY/Pxa4Gh0HKTYvtJUC/hpHcO11BQUc9QnP1b6Ie+P6LGcX6IiRjpqdwS2UCWH+H
+	 F76jLFqc3FaCDhY55Pd6zfq88o0iXYgQuXpt2qgQYQXPznmM/FwvG52D4AmIm1sAWk
+	 LXB2BVTileS+A==
 From: Arnd Bergmann <arnd@kernel.org>
 To: linux-kernel@vger.kernel.org,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Palmer Dabbelt <palmer@rivosinc.com>
+	Trond Myklebust <trond.myklebust@hammerspace.com>,
+	Anna Schumaker <anna@kernel.org>,
+	Chuck Lever <chuck.lever@oracle.com>,
+	Jeff Layton <jlayton@kernel.org>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>,
+	Paolo Abeni <pabeni@redhat.com>,
+	NeilBrown <neilb@suse.de>,
+	"J. Bruce Fields" <bfields@fieldses.org>
 Cc: Arnd Bergmann <arnd@arndb.de>,
-	Christophe Leroy <christophe.leroy@csgroup.eu>,
-	Dave Hansen <dave.hansen@linux.intel.com>,
-	Noah Goldstein <goldstein.w.n@gmail.com>,
-	Charlie Jenkins <charlie@rivosinc.com>
-Subject: [PATCH 18/34] lib: checksum: hide unused expected_csum_ipv6_magic[]
-Date: Wed,  3 Apr 2024 10:06:36 +0200
-Message-Id: <20240403080702.3509288-19-arnd@kernel.org>
+	Olga Kornievskaia <kolga@netapp.com>,
+	Dai Ngo <Dai.Ngo@oracle.com>,
+	Tom Talpey <tom@talpey.com>,
+	linux-nfs@vger.kernel.org,
+	netdev@vger.kernel.org
+Subject: [PATCH 19/34] sunrpc: suppress warnings for unused procfs functions
+Date: Wed,  3 Apr 2024 10:06:37 +0200
+Message-Id: <20240403080702.3509288-20-arnd@kernel.org>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20240403080702.3509288-1-arnd@kernel.org>
 References: <20240403080702.3509288-1-arnd@kernel.org>
@@ -65,39 +74,61 @@ Content-Transfer-Encoding: 8bit
 
 From: Arnd Bergmann <arnd@arndb.de>
 
-When CONFIG_NET is disabled, an extra warning shows up for this
-unused variable:
+There is a warning about unused variables when building with W=1 and no procfs:
 
-lib/checksum_kunit.c:218:18: error: 'expected_csum_ipv6_magic' defined but not used [-Werror=unused-const-variable=]
+net/sunrpc/cache.c:1660:30: error: 'cache_flush_proc_ops' defined but not used [-Werror=unused-const-variable=]
+ 1660 | static const struct proc_ops cache_flush_proc_ops = {
+      |                              ^~~~~~~~~~~~~~~~~~~~
+net/sunrpc/cache.c:1622:30: error: 'content_proc_ops' defined but not used [-Werror=unused-const-variable=]
+ 1622 | static const struct proc_ops content_proc_ops = {
+      |                              ^~~~~~~~~~~~~~~~
+net/sunrpc/cache.c:1598:30: error: 'cache_channel_proc_ops' defined but not used [-Werror=unused-const-variable=]
+ 1598 | static const struct proc_ops cache_channel_proc_ops = {
+      |                              ^~~~~~~~~~~~~~~~~~~~~~
 
-Hide it under the same #ifdef as the reference to it.
+These are used inside of an #ifdef, so replacing that with an
+IS_ENABLED() check lets the compiler see how they are used while
+still dropping them during dead code elimination.
 
-Fixes: f24a70106dc1 ("lib: checksum: Fix build with CONFIG_NET=n")
+Fixes: dbf847ecb631 ("knfsd: allow cache_register to return error on failure")
 Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 ---
- lib/checksum_kunit.c | 2 ++
- 1 file changed, 2 insertions(+)
+ net/sunrpc/cache.c | 10 +++-------
+ 1 file changed, 3 insertions(+), 7 deletions(-)
 
-diff --git a/lib/checksum_kunit.c b/lib/checksum_kunit.c
-index bf70850035c7..80dd1e1b71ba 100644
---- a/lib/checksum_kunit.c
-+++ b/lib/checksum_kunit.c
-@@ -215,6 +215,7 @@ static const u32 init_sums_no_overflow[] = {
- 	0xffff0000, 0xfffffffb,
- };
+diff --git a/net/sunrpc/cache.c b/net/sunrpc/cache.c
+index 95ff74706104..ab3a57965dc0 100644
+--- a/net/sunrpc/cache.c
++++ b/net/sunrpc/cache.c
+@@ -1673,12 +1673,14 @@ static void remove_cache_proc_entries(struct cache_detail *cd)
+ 	}
+ }
  
-+#ifdef CONFIG_NET
- static const u16 expected_csum_ipv6_magic[] = {
- 	0x18d4, 0x3085, 0x2e4b, 0xd9f4, 0xbdc8, 0x78f,	0x1034, 0x8422, 0x6fc0,
- 	0xd2f6, 0xbeb5, 0x9d3,	0x7e2a, 0x312e, 0x778e, 0xc1bb, 0x7cf2, 0x9d1e,
-@@ -240,6 +241,7 @@ static const u16 expected_csum_ipv6_magic[] = {
- 	0x99aa, 0xb06b, 0xee19, 0xcc2c, 0xf34c, 0x7c49, 0xdac3, 0xa71e, 0xc988,
- 	0x3845, 0x1014
- };
-+#endif
+-#ifdef CONFIG_PROC_FS
+ static int create_cache_proc_entries(struct cache_detail *cd, struct net *net)
+ {
+ 	struct proc_dir_entry *p;
+ 	struct sunrpc_net *sn;
  
- static const u16 expected_fast_csum[] = {
- 	0xda83, 0x45da, 0x4f46, 0x4e4f, 0x34e,	0xe902, 0xa5e9, 0x87a5, 0x7187,
++	if (!IS_ENABLED(CONFIG_PROC_FS))
++		return 0;
++
+ 	sn = net_generic(net, sunrpc_net_id);
+ 	cd->procfs = proc_mkdir(cd->name, sn->proc_net_rpc);
+ 	if (cd->procfs == NULL)
+@@ -1706,12 +1708,6 @@ static int create_cache_proc_entries(struct cache_detail *cd, struct net *net)
+ 	remove_cache_proc_entries(cd);
+ 	return -ENOMEM;
+ }
+-#else /* CONFIG_PROC_FS */
+-static int create_cache_proc_entries(struct cache_detail *cd, struct net *net)
+-{
+-	return 0;
+-}
+-#endif
+ 
+ void __init cache_initialize(void)
+ {
 -- 
 2.39.2
 
