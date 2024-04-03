@@ -1,111 +1,115 @@
-Return-Path: <linux-kernel+bounces-129342-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-129344-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6FE8A8968C6
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 10:33:47 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8FABE8968CE
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 10:34:48 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9E68B1C225F5
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 08:33:46 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4B42E286D43
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 08:34:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C2E7F47A53;
-	Wed,  3 Apr 2024 08:33:43 +0000 (UTC)
-Received: from szxga08-in.huawei.com (szxga08-in.huawei.com [45.249.212.255])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7562B6BB33;
+	Wed,  3 Apr 2024 08:34:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b="C9VY1w14"
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [78.32.30.218])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C76D826ACF
-	for <linux-kernel@vger.kernel.org>; Wed,  3 Apr 2024 08:33:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.255
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7EC701E515;
+	Wed,  3 Apr 2024 08:34:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=78.32.30.218
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712133223; cv=none; b=DAfrCEnzN9QDGGs9PC8vxBJXgDVRLJjQ+zBxAfKU6Jt8waJHEeSHAGlpUIDNspHo7+EHNQe74njzv7h41iu5dLX0LChj6azutihajMSi+Fakw5477v4RsnfkP9vsNmzfXLavVHFRB1uUR+xFOC7xvpCJpcWLzVzACOFLInl5vT4=
+	t=1712133277; cv=none; b=uyBpkdxErzGGn0h/iBWTxv3YvoPLRoKwqoARI+kytSVNtjn4D0+WCqvbii0XSzIMUXejMP1fIIzGhzxZMYinnpbr2QC2i6Rh89XzSsCB6tpixEiOSNa5uGTNyaBcoIIAB/x99yFENtZ5DsT0OcyAwMMqbNjAHA9ReJ6/AE0f5jQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712133223; c=relaxed/simple;
-	bh=zIJ1FHl187TCKbcPjn4w3Q5JOVKKtPb83S5JygPikuw=;
-	h=Subject:To:CC:References:From:Message-ID:Date:MIME-Version:
-	 In-Reply-To:Content-Type; b=IXH1QDjQ/SEsvQioNzilpHo49XSXgFtGduti8eSi5wqB7Qz39iWxNCaU6lch5fKwrX3fTklkA3m8vrSSz5hjIMDGQA4jdsLO6dn1hgaCk2Ek2iw0JESxPUWOa2mZLJ/kLAzcS+z5G3YYWBbVhHchzZlXwv0FPU6yapYC38Ixugg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.255
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.88.105])
-	by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4V8dHq5BDtz1QCCh;
-	Wed,  3 Apr 2024 16:31:03 +0800 (CST)
-Received: from kwepemd500014.china.huawei.com (unknown [7.221.188.63])
-	by mail.maildlp.com (Postfix) with ESMTPS id 3FB93140487;
-	Wed,  3 Apr 2024 16:33:36 +0800 (CST)
-Received: from [10.67.146.137] (10.67.146.137) by
- kwepemd500014.china.huawei.com (7.221.188.63) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1258.28; Wed, 3 Apr 2024 16:33:35 +0800
-Subject: Re: [PATCH] irqchip/gic-v3-its: Don't need VSYNC if VMAPP with {V,
- Alloc}=={0, x}
-To: Marc Zyngier <maz@kernel.org>
-CC: <tglx@linutronix.de>, <linux-arm-kernel@lists.infradead.org>,
-	<linux-kernel@vger.kernel.org>, <guoyang2@huawei.com>,
-	<wangwudi@hisilicon.com>
-References: <20240402114147.3788881-1-tangnianyao@huawei.com>
- <86jzlgt014.wl-maz@kernel.org>
- <8532b19b-361e-2234-92db-83f4d56bae19@huawei.com>
- <86il0zubh1.wl-maz@kernel.org>
- <cc7a6d40-7fdc-196e-56bc-fe8a15ea29bb@huawei.com>
- <86frw3t27r.wl-maz@kernel.org>
-From: Tangnianyao <tangnianyao@huawei.com>
-Message-ID: <25208048-822d-0c9e-5183-06035596bbca@huawei.com>
-Date: Wed, 3 Apr 2024 16:33:35 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
- Thunderbird/52.2.1
+	s=arc-20240116; t=1712133277; c=relaxed/simple;
+	bh=goTwDlhdbXVyAEvpyvcdhWut4bT0c0eATWtJg/XKHWQ=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=iw/3+IVk+ddixeNjNB5tlKu2j1nm6hYn9eoDr6RL319eCKRBmQoNfK6dosSFD8ti55fqeYoI3O3AKCFUrI8euMT1QD1M8hof58iM8z1lJPGOUGddz4b5J++gML46y2Du1IIjROnkUow8Efzcmi5S7LgPhAcpmwNnPr0Gz0zS2qI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=armlinux.org.uk; spf=none smtp.mailfrom=armlinux.org.uk; dkim=pass (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b=C9VY1w14; arc=none smtp.client-ip=78.32.30.218
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=armlinux.org.uk
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=armlinux.org.uk
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
+	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+	List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+	bh=5byGfi+YltTK32ZINcsDDBL0Ip9/fC/96w7JVL8ZAeY=; b=C9VY1w14a8zzVC+dEq1nF2CU1A
+	rIwwPRYl/p95f094Bi7cXEOMsEItYe6cHITEKaIfyE3HpJjVQr7fNMyCE5dcdg90j15gmp4iyQJTD
+	ifXJRoHXKdXNr/265/clVoMZSmy4Yk2Yk1F4BaUaRB54Guahe9E4C3QqvlHmX2I2URTNX3A8qcvgy
+	DsPxq2cdla8S2+sm1jXnQtCiOJeQOtm5deMjU5ZoOFUPqeOETAZhEu31dOFNpF4MqBX2obdS6J/wa
+	WT2vG+NoiJDg5J0Wpc6AesDG5+2Cbq+8WPqpBar5CAHqxEXmUvJ+EIjX6ehYoOliFfBCrusVDPWmA
+	M2ef8e3Q==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:51368)
+	by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.96)
+	(envelope-from <linux@armlinux.org.uk>)
+	id 1rrw4Z-0007z7-0k;
+	Wed, 03 Apr 2024 09:34:19 +0100
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
+	(envelope-from <linux@shell.armlinux.org.uk>)
+	id 1rrw4W-0007mg-3j; Wed, 03 Apr 2024 09:34:16 +0100
+Date: Wed, 3 Apr 2024 09:34:16 +0100
+From: "Russell King (Oracle)" <linux@armlinux.org.uk>
+To: Romain Gantois <romain.gantois@bootlin.com>
+Cc: "David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	Rob Herring <robh@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Geert Uytterhoeven <geert+renesas@glider.be>,
+	Magnus Damm <magnus.damm@gmail.com>,
+	Alexandre Torgue <alexandre.torgue@foss.st.com>,
+	Jose Abreu <joabreu@synopsys.com>,
+	Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+	=?iso-8859-1?Q?Cl=E9ment_L=E9ger?= <clement.leger@bootlin.com>,
+	Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+	netdev@vger.kernel.org, devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
+	linux-stm32@st-md-mailman.stormreply.com,
+	linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH net-next 2/2] net: stmmac: dwmac-socfpga: use
+ pcs_init/pcs_exit
+Message-ID: <Zg0Uh9TvArz7tLzH@shell.armlinux.org.uk>
+References: <ZgwoygldsA1V8fs9@shell.armlinux.org.uk>
+ <E1rrgQO-005ZOA-KT@rmk-PC.armlinux.org.uk>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <86frw3t27r.wl-maz@kernel.org>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
- kwepemd500014.china.huawei.com (7.221.188.63)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <E1rrgQO-005ZOA-KT@rmk-PC.armlinux.org.uk>
+Sender: Russell King (Oracle) <linux@armlinux.org.uk>
 
+On Tue, Apr 02, 2024 at 04:51:48PM +0100, Russell King (Oracle) wrote:
+> Use the newly introduced pcs_init() and pcs_exit() operations to
+> create and destroy the PCS instance at a more appropriate moment during
+> the driver lifecycle, thereby avoiding publishing a network device to
+> userspace that has not yet finished its PCS initialisation.
+> 
+> There are other similar issues with this driver which remain
+> unaddressed, but these are out of scope for this patch.
 
+Just for the record...
 
-On 4/3/2024 14:00, Marc Zyngier wrote:
-> On Wed, 03 Apr 2024 03:18:51 +0100,
-> Tangnianyao <tangnianyao@huawei.com> wrote:
->>
->>
->> On 4/2/2024 21:43, Marc Zyngier wrote:
->>> On Tue, 02 Apr 2024 14:32:40 +0100,
->>> Tangnianyao <tangnianyao@huawei.com> wrote:
->>>>
->>>> Thank you for quick fix, it would be great to remove this VSYNC. ITS handling VSYNC unmap
->>>> vpeid may waste some time, trigger exception and needed to be
->>>> handled.
->>> Do you actually see an exception being delivered from this?
->>>
->>> In any case, feel free to respin the patch after having tested this
->>> diff, with the commit message fixed and a Fixes: tag attached to it.
->> In our developing implemenation, ITS would report RAS when doing vsync
->> and reaching an invalid vpe table entry. It is reasonable to report RAS, right?
-> If a RAS error is the only reporting method you have, then I suspect
-> you don't have much of a choice (the pseudocode indicates an IMPDEF
-> SError for VSYNC). Shame this wasn't caught earlier.
->
->> It just reports, and kernel can still run normally regardless of
->> this RAS message.
-> That really depends on the policy behind RAS errors.
->
-> Looking forward to your respinning of this patch.
+Digging into the history of this driver, the init-after-publish issue
+was introduced by commit 3c201b5a84ed ("net: stmmac: socfpga: Remove
+re-registration of reset controller") which gives information on why
+calling the PHY configuration before stmmac_dvr_probe() didn't work.
 
-I have tested your patch and it's ok to fix the above problem.
-Respin patch will be sent later.
+This was further modified by 56868deece92 ("stmmac: dwmac-socfpga: add
+PM ops and resume function").
 
+I haven't decided what can be done about that yet - and I'm tempted to
+leave it as-is for the time being until more of stmmac gets cleaned up.
 
->
-> Thanks,
->
-> 	M.
->
-
+-- 
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
 
