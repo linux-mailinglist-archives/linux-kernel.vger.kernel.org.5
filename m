@@ -1,136 +1,132 @@
-Return-Path: <linux-kernel+bounces-128903-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-128904-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 351C48961A5
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 02:51:27 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id B35458961AB
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 02:52:47 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6457C1C22682
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 00:51:26 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2686D1F231B6
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 00:52:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 04AD2E554;
-	Wed,  3 Apr 2024 00:51:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 49B6BDDDF;
+	Wed,  3 Apr 2024 00:52:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="BjBHlNMs"
-Received: from mail-lf1-f49.google.com (mail-lf1-f49.google.com [209.85.167.49])
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="V1NdzGZW"
+Received: from mail-yb1-f201.google.com (mail-yb1-f201.google.com [209.85.219.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 489E928FC
-	for <linux-kernel@vger.kernel.org>; Wed,  3 Apr 2024 00:51:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 247E628FC
+	for <linux-kernel@vger.kernel.org>; Wed,  3 Apr 2024 00:52:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712105478; cv=none; b=OvAWo/VaScUgqjW31QbGjOcDXCZBWv6CuqpF4TJSymU1IAM/Q+z8WTYD9B1lXM660F1W02ASka8kVznNvFnUaz2Uavx9vohkNhpUuksBd6NGP9heSDswsEFF0Q8gVLWHzxeNIe3Esi6szgabSBqSU0FmV4AgAuYlK9Z4jeLaoCQ=
+	t=1712105559; cv=none; b=qxzrAJHqbAXkeb4zFmMeNtnQKBioiaq5g2LidE3Qjsed0rvnJrJ8M5JVgJgJrrwSSUbV5CnWEuCgACz05yLcgafHS9t5EVEHQzx40Xp1nwC4BGobb0d/lXcMQj4XrcsEiMmr7DGk2QG1LwWGu3yJOniqXJN7FEChJQdFUD1anHI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712105478; c=relaxed/simple;
-	bh=qTyq5Gw+MhcMN5mTb2IXkM6rqV32gk6sroaiKtJGkXE=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Q4dibpjEFPADFgmG/yfD0FhIJoGyuYrZWX2G4pbrhn7Ufw1mjJUz42uSHXpK4No1q0g66/9qpsyGHMvQzEUUmWEVV8PuV/fJs+L4eytGtPYivRBStcfjKeHqqqd0OHbzoL78hlIhUD2I7nH+wbNtwAfgJesg0IyEf0ufsVl4TaU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=BjBHlNMs; arc=none smtp.client-ip=209.85.167.49
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-lf1-f49.google.com with SMTP id 2adb3069b0e04-513da1c1f26so6989008e87.3
-        for <linux-kernel@vger.kernel.org>; Tue, 02 Apr 2024 17:51:15 -0700 (PDT)
+	s=arc-20240116; t=1712105559; c=relaxed/simple;
+	bh=AMBZZucRDLbkCBnpUsFkHT1Acvq2JW3K7G/CZEuEqfE=;
+	h=Date:Mime-Version:Message-ID:Subject:From:To:Cc:Content-Type; b=q/3e6D3ElwHFPbxkY9XcY47PhldbUwCIs1dx1Ixvja1LLP6Dys9cP1sHfjcCYq8GgcbMPX9GscpADM8EcUMRrdDQ9+zeEbl3+Eoi0Pu/N3aApUIdPyfp1r8yWSuAk/kWJ/21NmmPH3KNMDwvfUSd4Ds79QFzloNGp7G7K6DcvmY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--justinstitt.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=V1NdzGZW; arc=none smtp.client-ip=209.85.219.201
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--justinstitt.bounces.google.com
+Received: by mail-yb1-f201.google.com with SMTP id 3f1490d57ef6-dd8e82dd47eso7819366276.2
+        for <linux-kernel@vger.kernel.org>; Tue, 02 Apr 2024 17:52:37 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1712105473; x=1712710273; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=GWHRA9QpgbMHjxrXRwpYcGFaFTNivreKL1s0uQUDObo=;
-        b=BjBHlNMsuKMrPTpm0v3kZcg9ARBBmXcwaAhXvRZdJ/RlZpd1kLWSDy1Pgtup6Hqm42
-         GTNAYY9plzVREjRPNW+vX7UYjzryMjOQQdo3Pj/+phPhVdN5ivwKhdE4zftnX8nkonJD
-         nMLML37UqMl5UXZgjB/UmCltjZaLA3UP10g/TyyZTJauxAve6AdGhcpN8pS9m3L7NqZy
-         /beLeWRXSKeR3gbQqw6Qw895/tkOlm0Uk70T3td5xuJFnPINBoJ6Bn3gKSCB3ZsNlNnZ
-         TxEDgUqFo2VTwGWZCuTWIWQz51dJDQbvSFj5bwYzLOSpPiZCiBnrptq62e9+n7VrhsyM
-         AZBg==
+        d=google.com; s=20230601; t=1712105557; x=1712710357; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=2LtWRlkSNk32zYyNyz1b834Pph06BPJDWHucHrmrXSY=;
+        b=V1NdzGZWloPXuLxDqb/B8tmJQPVGQnQmw+bKqLVmL7rOtFACzymWsvAwnP7tIVfkLD
+         s4IwLwXfAK8T4p3EeJCPxDJ8lNkAYVvcAFSmbpOh1vfeui2rZSMtQF0yIUPCBeJkmN7x
+         SmxzA4mE6X/kCFH7OClcwbzIuAfY2agibcTt6Wzm2cDm+f63LoOxvrvKdVwK/5Ab7SmV
+         PZPEvKWT68Vk0t+ruOoFQOO7nHvAIoh9W8gR3R3Pffy+aA4dii2G/YQCIFDfYU5MKRLN
+         Y0SfQ0Sta0PmbjnNqcOF736arowuF99YZE5eF/+BWbVUWomluW9EcbPoBkNp56EfjclF
+         kY7g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712105473; x=1712710273;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=GWHRA9QpgbMHjxrXRwpYcGFaFTNivreKL1s0uQUDObo=;
-        b=gcss/dojN2+KgntvquZuOnWYWJvnTYksGakdVZtThUJcLNtpqeQ9yrZiWWEJWdBAPH
-         TUtepHSencdZ1if6LM2b+fURkgeFa7y5ku/6ybKBD7SLPlyzTEIW6P/UQmn7JcjzWkHU
-         amknnYLUSzaVb9tzEEX09FSfdfbVet0UjQXIUTQLfbJL6Xgv7buUICc6dGI+Tt6vQ6Wc
-         gNG/XUz6yT5gKaWr28KWZwcwXYRNDHPVXrQPbqma5kGdmbvrDGm9QXNAUVUoJ5oFA8CC
-         79adqZXW7QsmGB5EB2C36HStSDCJrYvPhjmcNwi1cZE9NQ5R/VkuKngDcf9jkVALkBYj
-         bRNQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVBohjwMF4x03QzIGLbny7R5LQzLhMyNRpoQ9K9tfsiBujCdIM5yELOG+QfxryYX60eBDtV9pU8ZjIrVRUHfY3+Ra4jsqBO2YWjhtOs
-X-Gm-Message-State: AOJu0YwMpOH93CJfHzva2/Lzdkspsw/68bdL+bkZZar+NOd3s1NqZit5
-	v+n8zvnGSokPxjrapHT8XOlvq6xeq8BczQNEvhNfQxnD+bFDzr+llRld6OVqXFg=
-X-Google-Smtp-Source: AGHT+IFdYWW/kAAnQoA5IRo9Tv52gkqmNbWMJpe/JRsfmA/mRxHEpRhzCrfHlRnsuqaCYtAolee3xg==
-X-Received: by 2002:ac2:5631:0:b0:513:39a0:1fec with SMTP id b17-20020ac25631000000b0051339a01fecmr618732lff.66.1712105473384;
-        Tue, 02 Apr 2024 17:51:13 -0700 (PDT)
-Received: from eriador.lumag.spb.ru (dzyjmhyyyyyyyyyyyykxt-3.rev.dnainternet.fi. [2001:14ba:a00e:a300::227])
-        by smtp.gmail.com with ESMTPSA id f8-20020a193808000000b00515bbc2feedsm1907527lfa.102.2024.04.02.17.51.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 02 Apr 2024 17:51:13 -0700 (PDT)
-Date: Wed, 3 Apr 2024 03:51:11 +0300
-From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-To: Marijn Suijten <marijn.suijten@somainline.org>
-Cc: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>, 
-	Sumit Semwal <sumit.semwal@linaro.org>, Caleb Connolly <caleb.connolly@linaro.org>, 
-	Neil Armstrong <neil.armstrong@linaro.org>, Jessica Zhang <quic_jesszhan@quicinc.com>, 
-	Sam Ravnborg <sam@ravnborg.org>, David Airlie <airlied@gmail.com>, 
-	Daniel Vetter <daniel@ffwll.ch>, Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, 
-	Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>, 
-	Rob Herring <robh@kernel.org>, Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
-	Conor Dooley <conor+dt@kernel.org>, dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org, Vinod Koul <vkoul@kernel.org>, 
-	Caleb Connolly <caleb@connolly.tech>
-Subject: Re: [PATCH v3 1/4] dt-bindings: panel: Add LG SW43408 MIPI-DSI panel
-Message-ID: <odtd5tfurh4kkhclsi3zmumrucmiz3jpqsukflbsvhmgvtyehl@bobsiymwtsys>
-References: <20240402-lg-sw43408-panel-v3-0-144f17a11a56@linaro.org>
- <20240402-lg-sw43408-panel-v3-1-144f17a11a56@linaro.org>
- <9fbb9058-ccfe-436d-b413-b3ba27e4e5f9@linaro.org>
- <CAA8EJprwWd=ZtwnpTm3cVP8RBEqxCcSGyBu-bHj=iV=+X2=FyQ@mail.gmail.com>
- <t3cx5qxiteer27vsvysizbrxkbamxgrcbn2oafisodjopwas5z@nxlasb4rlnml>
+        d=1e100.net; s=20230601; t=1712105557; x=1712710357;
+        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=2LtWRlkSNk32zYyNyz1b834Pph06BPJDWHucHrmrXSY=;
+        b=JYH1aN77ttyK+S3UECfQxD7jeiIJBw2GQ6Gl3l1Ucr+hvs0cz13U6iakf+GKzxNIju
+         TzrKboe7+rk59K2s+mjdfmfxihI+v+qA531TtMovgW1z7KluDmRMMgUjNwjmuSSnyFlZ
+         Dc+sD0bZnvph8LwekaX5Oy9LqROKn4zIRLw3YwJMqZfrt13sYL2oR9dZVYWS+zVorVph
+         5dodhqc4EnRrioik6Aj4k0ePtSh2jYqSyX3kabpZ6J3bAniQdFwL5U6qeu/eiB0yOl2y
+         6pUASmhkXjEzHAz0E9jl+J5hbVOB+tp0lMDjQgNSjkt9mV+3wKDpm3CS9uxI4nNkJasg
+         1j/g==
+X-Forwarded-Encrypted: i=1; AJvYcCVPKAsl3QjTayxnTe8nfpvla5YnlHWQJX89Ypy1wRFzAuswZClpETDIXS2R6gjazju67nxLqlWbN0BNzRMFWHhvqoBmuVIdLTZQG2zb
+X-Gm-Message-State: AOJu0Yy9BnbqQEpV2RwNh7AK7gog8uZ619S+onf7QBB0ouqhbcfeP8Vm
+	4f193KedBsRVmra9kKh065b9EFNHn/2kqVq8h1Pl2HUdng13nfpZ5SpNQ8oulGvQepa0RaLFAyg
+	jTtWFDDeOKRP/HYEckJVoPQ==
+X-Google-Smtp-Source: AGHT+IENHtMGTKiMA0s2/kOwugq4yr4dOndu0KnzLEY/2IVlh0JUmWjmdLHBkuswQWDSDEhDP1VdBsuAqxFROrPxgA==
+X-Received: from jstitt-linux1.c.googlers.com ([fda3:e722:ac3:cc00:2b:ff92:c0a8:23b5])
+ (user=justinstitt job=sendgmr) by 2002:a05:6902:1b09:b0:dc6:c94e:fb85 with
+ SMTP id eh9-20020a0569021b0900b00dc6c94efb85mr980999ybb.2.1712105557231; Tue,
+ 02 Apr 2024 17:52:37 -0700 (PDT)
+Date: Wed, 03 Apr 2024 00:52:36 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <t3cx5qxiteer27vsvysizbrxkbamxgrcbn2oafisodjopwas5z@nxlasb4rlnml>
+Mime-Version: 1.0
+X-B4-Tracking: v=1; b=H4sIAFOoDGYC/x2NwQ6CMBAFf4Xs2U1qAQ/+CjEGuk/cQArZKoEQ/
+ p3qYQ5zmdkpwRSJ7sVOhkWTTjHL9VJQeLexB6tkJ+985SrnOX0shnnjARYxsqD79jxI9+OpEwe uS9QQf5O2FMqd2fDS9f9oHsdxAlV4hjpzAAAA
+X-Developer-Key: i=justinstitt@google.com; a=ed25519; pk=tC3hNkJQTpNX/gLKxTNQKDmiQl6QjBNCGKJINqAdJsE=
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1712105556; l=1581;
+ i=justinstitt@google.com; s=20230717; h=from:subject:message-id;
+ bh=AMBZZucRDLbkCBnpUsFkHT1Acvq2JW3K7G/CZEuEqfE=; b=5vCiLZjVHanyhM6gz89NkA5pyYDVG+O71KYpStpAjblh7KSvarGbuKYfVC5QMLNwXCs/IhIuP
+ Rq24m4eV/t/B4SeYnsudISx/x6NQCQ+38VqG8fIE7d7TQ8vT8eU4wBo
+X-Mailer: b4 0.12.3
+Message-ID: <20240403-strncpy-kernel-debug-kdb-kdb_io-c-v1-1-7f78a08e9ff4@google.com>
+Subject: [PATCH] kdb: replace deprecated strncpy
+From: Justin Stitt <justinstitt@google.com>
+To: Jason Wessel <jason.wessel@windriver.com>, 
+	Daniel Thompson <daniel.thompson@linaro.org>, Douglas Anderson <dianders@chromium.org>
+Cc: kgdb-bugreport@lists.sourceforge.net, linux-kernel@vger.kernel.org, 
+	linux-hardening@vger.kernel.org, Justin Stitt <justinstitt@google.com>
+Content-Type: text/plain; charset="utf-8"
 
-On Tue, Apr 02, 2024 at 10:59:11PM +0200, Marijn Suijten wrote:
-> On 2024-04-02 10:23:22, Dmitry Baryshkov wrote:
-> > On Tue, 2 Apr 2024 at 09:31, Krzysztof Kozlowski
-> > <krzysztof.kozlowski@linaro.org> wrote:
-> > >
-> > > On 02/04/2024 01:51, Dmitry Baryshkov wrote:
-> > > > From: Sumit Semwal <sumit.semwal@linaro.org>
-> > > >
-> > > > LG SW43408 is 1080x2160, 4-lane MIPI-DSI panel present on Google Pixel 3
-> > > > phones.
-> > > >
-> > > > Signed-off-by: Vinod Koul <vkoul@kernel.org>
-> > > > Signed-off-by: Sumit Semwal <sumit.semwal@linaro.org>
-> > > > [caleb: convert to yaml]
-> > > > Signed-off-by: Caleb Connolly <caleb@connolly.tech>
-> > > > Signed-off-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-> > > > ---
-> > >
-> > > Tags missing.
-> > >
-> > > `b4 trailers -u`
-> > 
-> > Excuse me, I keep on forgetting it.
-> 
-> Does a similar thing exist for adding Cc: tags for all reviewers/replyers to an
-> earlier version, even if said reviewer didn't yet provide R-b/A-b or other tags?
-> 
-> I'd like to have the next revisions in my inbox as well after leaving
-> comments :)
+All the other cases in this big switch statement use memcpy or other
+methods for copying string data. Since the lengths are handled manually
+and carefully, using strncpy() is may be misleading. It doesn't
+guarantee any sort of NUL-termination on its destination buffer. At any
+rate, it's deprecated [1] and we want to remove all its uses [2].
 
-Unfortunately I don't know such option.
+Link: https://www.kernel.org/doc/html/latest/process/deprecated.html#strncpy-on-nul-terminated-strings [1]
+Link: https://github.com/KSPP/linux/issues/90 [2]
+Cc: linux-hardening@vger.kernel.org
+Signed-off-by: Justin Stitt <justinstitt@google.com>
+---
+Note: build-tested only.
 
-> 
-> Thanks! - Marijn
+Found with: $ rg "strncpy\("
+---
+ kernel/debug/kdb/kdb_io.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
--- 
-With best wishes
-Dmitry
+diff --git a/kernel/debug/kdb/kdb_io.c b/kernel/debug/kdb/kdb_io.c
+index 9443bc63c5a2..8bba77b4a39c 100644
+--- a/kernel/debug/kdb/kdb_io.c
++++ b/kernel/debug/kdb/kdb_io.c
+@@ -368,9 +368,9 @@ static char *kdb_read(char *buffer, size_t bufsize)
+ 			kdb_printf("%s", buffer);
+ 		} else if (tab != 2 && count > 0) {
+ 			len_tmp = strlen(p_tmp);
+-			strncpy(p_tmp+len_tmp, cp, lastchar-cp+1);
++			memcpy(p_tmp+len_tmp, cp, lastchar-cp+1);
+ 			len_tmp = strlen(p_tmp);
+-			strncpy(cp, p_tmp+len, len_tmp-len + 1);
++			memcpy(cp, p_tmp+len, len_tmp-len + 1);
+ 			len = len_tmp - len;
+ 			kdb_printf("%s", cp);
+ 			cp += len;
+
+---
+base-commit: 026e680b0a08a62b1d948e5a8ca78700bfac0e6e
+change-id: 20240402-strncpy-kernel-debug-kdb-kdb_io-c-53e5ed26da3d
+
+Best regards,
+--
+Justin Stitt <justinstitt@google.com>
+
 
