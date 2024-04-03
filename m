@@ -1,47 +1,47 @@
-Return-Path: <linux-kernel+bounces-129090-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-129091-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 24DE78964A4
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 08:40:35 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0157B8964A6
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 08:41:42 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9D3801F22D8E
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 06:40:34 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id DA2E2B22293
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 06:41:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AAE5A286A6;
-	Wed,  3 Apr 2024 06:40:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3FDEA17BDD;
+	Wed,  3 Apr 2024 06:41:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="IqUAQ/gC"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="kyT37Up9"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CD45733F9;
-	Wed,  3 Apr 2024 06:40:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8346B33F9
+	for <linux-kernel@vger.kernel.org>; Wed,  3 Apr 2024 06:41:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712126425; cv=none; b=TgLK+xSHt7R2bIOROxo2DoDPndjk2OwKV4fQ65gGzqRzUMbOqz0XTfYgnCl+Um3hUFkt3L6iFxA8LNIzR/reKPmLrAcsfu7JQmzC1rjhJdWO5Qbu8naG1d/UfOARPGEzeMUSHyi+XKbEmwUi3uMGD+GpMglsPctWT/1Zmq9qba4=
+	t=1712126492; cv=none; b=QJXjRaEK5hxNJPqUjzIAJcYUpD6oS0MHjKjyASqt1+ipfqPSttKF5AaFJqZ7Oe2Nr6PxOMJLU1YQwIzrqWqiDz3ctNOh5G1TNscdJ0WD8RyitwsCTiLB2D2cCjMeFEHvublCXRvlh9h91BG6o9VBH2J7+TVkppArjbyd+RPgImk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712126425; c=relaxed/simple;
-	bh=1W65hmedM/cTWDS6TB/8KfE7+mFA66kSmp3Dq/GjtSQ=;
+	s=arc-20240116; t=1712126492; c=relaxed/simple;
+	bh=UQwvzFq9nmoVptXxO5VyP6RADeLeS7Kk0i+kC5qILec=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=rj9FDblbMWoquOoJaaTq1xD7IKheN9xGUEzFQahS5rZc8ehsPf/I8Ac2lvELtb644vLEtLb+CqQvSbNcwmb+BFbNvEiQUsxk5l5A1oPl9Y9tLCbwlvKT/m6VUTU2LDs13oaiFIqX0b61WHHhUHIfhluyBJDHjfJnBYl/6PcvZxM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=IqUAQ/gC; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 471CDC433F1;
-	Wed,  3 Apr 2024 06:40:22 +0000 (UTC)
+	 In-Reply-To:Content-Type; b=jFQwYmAPUhVYBzFJnEaqVI5auhi3vb5fGu8zY6/gTadrIU2epWVIbXCTTOXcKRs/ezEQVK6lVC9Ez0rafcLBf2qXmMyjV7/OtBcdlzNazlavxx9RsBFHC+oTisnw83Z50hh3NOzALBShdjCdh5CBDNe7K2JuENPV8aZAA1R31Jo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=kyT37Up9; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 82AA9C433C7;
+	Wed,  3 Apr 2024 06:41:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712126425;
-	bh=1W65hmedM/cTWDS6TB/8KfE7+mFA66kSmp3Dq/GjtSQ=;
+	s=k20201202; t=1712126491;
+	bh=UQwvzFq9nmoVptXxO5VyP6RADeLeS7Kk0i+kC5qILec=;
 	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=IqUAQ/gC9cYncOCkqyLgCkYtsm57mStkmVNE7ze/4h//76FoFUHDHaOTmN7lwVehv
-	 gu3UTBAMQgyPfoYJLKo0G2SNBbOc57NQqPM4woEQTvkFwEfakH1X5C724x6yFNKjJ+
-	 3fpvbgXFhESsZgDzFovvbR8VKGjlemGYI5CMwdLNbc2ienQBW3VM67z+9mx3RbGgFU
-	 AJM2rauLQrOS9vuuoqCtctSUmRBwy6sueVlpWWBPL6OqH2k2m15uaxGdq1FqQdMfrJ
-	 5bh+2MisL1AfWwghgIHgL4+AjJg4cqcx7j6au/2TYNuJbNpPcrB0njGgRvYNcBU30F
-	 BSsP5MPHGUCgA==
-Message-ID: <083e50de-1c99-4a58-8b55-4dec26d97c1b@kernel.org>
-Date: Wed, 3 Apr 2024 08:40:19 +0200
+	b=kyT37Up9iGW/Mut7gS9PEYGFfJ5Q1qi+Ky7WyiM256tfjzIePO7tjksC1m0koEKAk
+	 r0pMH/h5DTK12wVUfZhghM4yofIQX3jtma5MCb8fJ0VmeK6b4uW8L/WFByFb+d894T
+	 fqa9959g6yDoorZNUTXv8NbnqphUGT80V/r4aVDCAE80Rk6q+ePgMjaUU72UTjo6Vp
+	 yrwA7VUXnhE5lhYKr2yw1xb7M+nZ9RgwsJavPRssJtCqYX6uaE3gqyF5jJw1+wyU+O
+	 P7vzvlMvlZY3QFEpjHzbfMQBiCfoX1Wn6C9D8I+Vrr9OMeFsC+04zH+a5oIT7mRk8k
+	 o3NsaTg1Jne/A==
+Message-ID: <c0986506-ba8b-4c52-88f8-119c23b8778c@kernel.org>
+Date: Wed, 3 Apr 2024 08:41:23 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -49,19 +49,17 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] dt-bindings: mfd: syscon: Add ti,am62p-cpsw-mac-efuse
- compatible
-To: Siddharth Vadapalli <s-vadapalli@ti.com>
-Cc: lee@kernel.org, robh@kernel.org, krzk+dt@kernel.org, conor+dt@kernel.org,
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org, srk@ti.com
-References: <20240402105708.4114146-1-s-vadapalli@ti.com>
- <2e9b6a91-43d3-4b23-830d-40e607505d8c@kernel.org>
- <30065bdc-ccef-4610-b1c1-7661f801b8e9@ti.com>
- <4b1380a8-0136-4395-ba42-9bcff2e1bdb0@kernel.org>
- <aabea385-16e0-4116-a12b-3ce1e06574e3@ti.com>
- <eb7a0d5c-c197-44b9-baea-e9b54792b447@kernel.org>
- <af61424e-7006-49f5-b614-3caa3674685a@ti.com>
+Subject: Re: [PATCH v1 1/1] drm/mediatek/dp: The register is written with the
+ parsed DTS SSC value.
+To: Liankun Yang <liankun.yang@mediatek.com>, chunkuang.hu@kernel.org,
+ p.zabel@pengutronix.de, chunfeng.yun@mediatek.com, vkoul@kernel.org,
+ kishon@kernel.org, matthias.bgg@gmail.com,
+ angelogioacchino.delregno@collabora.com, jitao.shi@mediatek.com,
+ mac.shen@mediatek.com
+Cc: dri-devel@lists.freedesktop.org, linux-mediatek@lists.infradead.org,
+ linux-arm-kernel@lists.infradead.org, linux-phy@lists.infradead.org,
+ linux-kernel@vger.kernel.org
+References: <20240403040517.3279-1-liankun.yang@mediatek.com>
 Content-Language: en-US
 From: Krzysztof Kozlowski <krzk@kernel.org>
 Autocrypt: addr=krzk@kernel.org; keydata=
@@ -107,81 +105,38 @@ Autocrypt: addr=krzk@kernel.org; keydata=
  uZwJCLykjad45hsWcOGk3OcaAGQS6NDlfhM6O9aYNwGL6tGt/6BkRikNOs7VDEa4/HlbaSJo
  7FgndGw1kWmkeL6oQh7wBvYll2buKod4qYntmNKEicoHGU+x91Gcan8mCoqhJkbqrL7+nXG2
  5Q/GS5M9RFWS+nYyJh+c3OcfKqVcZQNANItt7+ULzdNJuhvTRRdC3g9hmCEuNSr+CLMdnRBY fv0=
-In-Reply-To: <af61424e-7006-49f5-b614-3caa3674685a@ti.com>
+In-Reply-To: <20240403040517.3279-1-liankun.yang@mediatek.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 
-On 03/04/2024 08:32, Siddharth Vadapalli wrote:
-> On Wed, Apr 03, 2024 at 08:27:06AM +0200, Krzysztof Kozlowski wrote:
->> On 03/04/2024 07:35, Siddharth Vadapalli wrote:
->>> On Tue, Apr 02, 2024 at 08:06:27PM +0200, Krzysztof Kozlowski wrote:
->>>> On 02/04/2024 14:30, Siddharth Vadapalli wrote:
->>>>> On Tue, Apr 02, 2024 at 02:08:32PM +0200, Krzysztof Kozlowski wrote:
->>>>>> On 02/04/2024 12:57, Siddharth Vadapalli wrote:
->>>>>>> The CTRLMMR_MAC_IDx registers within the CTRL_MMR space of TI's AM62p SoC
->>>>>>> contain the MAC Address programmed in the eFuse. Add compatible for
->>>>>>> allowing the CPSW driver to obtain a regmap for the CTRLMMR_MAC_IDx
->>>>>>> registers within the System Controller device-tree node. The default MAC
->>>>>>> Address for the interface corresponding to the first MAC port will be set
->>>>>>> to the value programmed in the eFuse.
->>>>>>>
->>>>>>> Signed-off-by: Siddharth Vadapalli <s-vadapalli@ti.com>
->>>>>>> ---
->>>>>>>
->>>>>>> This patch is based on linux-next tagged next-20240402.
->>>>>>
->>>>>> Where is the DTS using it?
->>>>>
->>>>> The current implementation in the device-tree for older TI K3 SoCs is as
->>>>> follows:
->>>>>
->>>>> 	cpsw_port1: port@1 {
->>>>> 		reg = <1>;
->>>>> 		ti,mac-only;
->>>>> 		label = "port1";
->>>>> 		phys = <&phy_gmii_sel 1>;
->>>>> 		mac-address = [00 00 00 00 00 00];
->>>>> 		ti,syscon-efuse = <&wkup_conf 0x200>;
->>>>> 	};
->>>>>
->>>>> The "ti,syscon-efuse" property passes the reference to the System
->>>>> Controller node as well as the offset to the CTRLMMR_MAC_IDx registers
->>>>> within the CTRL_MMR space.
->>>>
->>>> Please reference upstream DTS or lore link to patch under review.
->>>
->>> An example of the existing implementation in the device-tree for AM64x
->>> is:
->>> https://github.com/torvalds/linux/blob/d4e8c8ad5d14ad51ed8813442d81c43019fd669d/arch/arm64/boot/dts/ti/k3-am64-main.dtsi#L697
->>> It uses:
->>> 	ti,syscon-efuse = <&main_conf 0x200>;
->>>
->>> and "main_conf" node is defined at:
->>> https://github.com/torvalds/linux/blob/d4e8c8ad5d14ad51ed8813442d81c43019fd669d/arch/arm64/boot/dts/ti/k3-am64-main.dtsi#L40
->>
->> It is quite different than your bindings, so your bindings are incorrect.
-> 
-> Sorry I didn't understand what you mean. The references I have provided
-> are for existing DTS where "main_conf"/"wkup_conf" (System Controller
-> nodes) have the compatible "syscon", unlike in AM62p at:
-> https://github.com/torvalds/linux/blob/20f8173afaac90dd9dca11be4aa602a47776077f/arch/arm64/boot/dts/ti/k3-am62p-wakeup.dtsi#L8
-> which has the "simple-bus" compatible for the "wkup_conf" node.
-> 
-> Also, shouldn't the device-tree bindings patches be posted first and get
-> merged before I post the device-tree patches that utilize the
-> compatible/properties that have been added in the bindings? That is the
-> reason why I had shared the "DIFF" for the DTS changes that I will be
-> posting once this patch for the new compatible is accepted.
+On 03/04/2024 06:05, Liankun Yang wrote:
+> [Description]
+> Severe screen flickering has been observed on the external display
+> when the DP projection function is used with the market expansion dock.
 > 
 
-That's not the process. I will be NAKing bindings which do not have any
-users, because I do not trust you test them.
+> +	if (!strcmp(mode_name, RG_XTP_GLB_TXPLL_SSC_DELTA_RBR)) {
+> +		regmap_update_bits(dp_phy->regs, ssc_reg_offset,
+> +			   XTP_GLB_TXPLL_SSC_DELTA_RBR_DEFAULT, read_value);
+> +	} else if (!strcmp(mode_name, RG_XTP_GLB_TXPLL_SSC_DELTA_HBR)) {
+> +		read_value = read_value << 16 | 0x0000;
+> +		regmap_update_bits(dp_phy->regs, ssc_reg_offset,
+> +			   XTP_GLB_TXPLL_SSC_DELTA_HBR_DEFAULT, read_value);
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+> +static struct device_node *mtk_dp_get_ssc_node(struct phy *phy, struct mtk_dp_phy *dp_phy)
+> +{
+> +	struct device_node *mode_node = NULL;
+> +
+> +	mode_node = of_find_node_by_name(dp_phy->dev->of_node, SSC_SETTING);
 
-The process is almost always:
-1. Send bindings,
-2. Send driver changes (if applicable) in the same patchset.
-3. Send DTS, usually in separate patches and provide lore link to the
-bindings in the changelog or cover letter.
+?!?!
+You have the node, why do you try to find it?
+
+
 
 Best regards,
 Krzysztof
