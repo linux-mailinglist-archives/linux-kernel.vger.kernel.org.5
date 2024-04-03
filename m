@@ -1,148 +1,115 @@
-Return-Path: <linux-kernel+bounces-130071-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-130077-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1929B8973CB
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 17:18:44 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id D76688973D7
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 17:20:38 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3CB391C20A1E
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 15:18:43 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 91844284BCD
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 15:20:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9E37414B09D;
-	Wed,  3 Apr 2024 15:14:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B5C5214D425;
+	Wed,  3 Apr 2024 15:16:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b="AWMVjxtY"
-Received: from mail-lj1-f178.google.com (mail-lj1-f178.google.com [209.85.208.178])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Nm0Ybv9G"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DD30A14A60A
-	for <linux-kernel@vger.kernel.org>; Wed,  3 Apr 2024 15:14:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ED59426292;
+	Wed,  3 Apr 2024 15:16:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712157290; cv=none; b=g8FbCT8KswZ5DUQOQuiXWHRENOYkNoCKvm52VM4CozWOlR/M3B8fXW1EmnB/SufN6INM2zaFUn3ptq32op+MfTjs31xq8g7gMspeJEq9UoBvP8odCAHKLzyChvF8J98wDWUb8vxaRXUhuuJvUjGDhb2BULA9tIdyXe8zBh4rE7k=
+	t=1712157376; cv=none; b=LFdBtmH2Aasco3G8YtTRb1bNNKJ7ewBS8MuE9kVQDpGbJhwJUp0S78sRtxh/QaHVsfcbXN1SePd2Hoss4V5ur2hogNxqw4435MwJlh63Jbs5KfrwMnrjW8faY266B51vX62oYnDlqtiXk0szczfLnucQgryzQLU7hw1sIF+0Zt8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712157290; c=relaxed/simple;
-	bh=okMqtAJdJt2mKknsEiqIBDifkB1qCYqpQVnmksBqJLg=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=Okjvaezy2yYnyqJ2YNImTqhwcT2geXmbReXGiQaIP1fwRFG1RuKU6i2nSysepuWMf7tm3gIqf4rhl9wrfTWZBtVIcPlw+Ss/N5ETqPaLD5SvRyGNLY8ckdm2IpbsKgy2cc3itZr1gUnYRBCVVKRkNS4MSKpjcRaf+dWJzJtKwpE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com; spf=pass smtp.mailfrom=baylibre.com; dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b=AWMVjxtY; arc=none smtp.client-ip=209.85.208.178
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=baylibre.com
-Received: by mail-lj1-f178.google.com with SMTP id 38308e7fff4ca-2d6ff0422a2so88536331fa.2
-        for <linux-kernel@vger.kernel.org>; Wed, 03 Apr 2024 08:14:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20230601.gappssmtp.com; s=20230601; t=1712157287; x=1712762087; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=8On6x+LYibbtDP6IBIgF4A+aMOZN1d3uu3/VQOdT6Nc=;
-        b=AWMVjxtYCIvAHhRmFKuPHli/mfkYqal/o/qp+19PaRvbbFmF8FkYkGA2fPLgMpKvWA
-         8kqExIolNOPOa+SktvatzD5t7ZhxvMR2Lw2DtrmMeBNmF1VKa/2GBht468wdeLW0xrjL
-         jWaXrU0VYou2I0vPcWdxKewpfprsRKl1dtr383nVSR3pIHh0Q2xdbjT5KKttA5pI9hSO
-         P6kMmAg9jADUF1c+rUoRV1Ook2K1pq7H8dSsM5YnWcQOcwTw7AGMajWrAw1aAPzZ9S+D
-         y0Ng0frrV1UHwbNFAYLNLp2GeuWB1QYhWT1iNXeoch1J3KLjeCjnqoukPEQAYBREjnBq
-         f0Rg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712157287; x=1712762087;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=8On6x+LYibbtDP6IBIgF4A+aMOZN1d3uu3/VQOdT6Nc=;
-        b=jq26TGQOVgCTMMg4psy/5okdmbpV1VFiFMRN5/6CU8AnaYIEOIqS2+5VjH88gApaH7
-         ZxrTv9Fco3UtuzvUAZR3PnO1eYOrJgyusvzCN4z/sYlK2bNq11l95RE+zRyh6iJYN365
-         HRHDNW0R2dRVavmY3zBFvSF6Vor7NQeiIzEYAsTRmIoROuZ71qgJuf+MmaTsYvQ8kEKO
-         M45RW1yTcfWUbMo690nzqI3ePWaHuJ6yZEh4V+M57wHTGSuicv+i3V8uv4IilheSaPz9
-         TmkY+s1MUoQEyW+HiiPWtI+Nohr4pSTsVsqVc9Ea6izULEU1PKm2iHYy4UBG6R8Mr8Ao
-         bVtg==
-X-Forwarded-Encrypted: i=1; AJvYcCUL4zuo0C+lBL44PKc1Fa22fkIkk+nStEH0+Ld7xewk84Oyvwj49C+sJIJnZ907gl72CjtUf3kVdvYTnl98aazlXLk0LE+Sa2W/hoQm
-X-Gm-Message-State: AOJu0Yz2cc28QEPzVrGeOTvagsXN029bdmqfWBA2+d+OpqMG+ZWzc5Vy
-	0KVWxjDCAuxsuN6CFvWSui2IgzDN0QkFs5Gts4JPuKs6bakxODihX5HbPCzXHsK5BNgCWsAMANu
-	3EQmbXvXy8zEG3fKaA2hYj7Xwf1rdtdL2oBsGzQ==
-X-Google-Smtp-Source: AGHT+IH7piIbVZFBEOcJtVy6rEGRW0U40dXyS1jzVfSYyjpbI87gg+pbV2IGLZoqKJDqmJFZJ6ZDhT4+Zh0znZwRjiM=
-X-Received: by 2002:a2e:9ace:0:b0:2d4:1fa4:9eb8 with SMTP id
- p14-20020a2e9ace000000b002d41fa49eb8mr9893359ljj.40.1712157286650; Wed, 03
- Apr 2024 08:14:46 -0700 (PDT)
+	s=arc-20240116; t=1712157376; c=relaxed/simple;
+	bh=z3lQD5lgMachfwYyNrVW8WJbO2hEjtLyQulbSy5ojU0=;
+	h=Mime-Version:Content-Type:Date:Message-Id:To:Cc:Subject:From:
+	 References:In-Reply-To; b=DYlKycI1y45RrXS7BT6oeGRRJoVB6yMRWA9YObiPIPSZZgwcFXB4AdBLM/6DnN+2QsMvm3GHBtcpfk7wjp5wPyeDAKNzP7nDN9PT3wZ2Yg/UQgEIDnv435OHGfnOVT9LYJNknLM0HHecTwhLapArQX+YzQFcSnoXHX91BaQk+r4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Nm0Ybv9G; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id EBF34C433C7;
+	Wed,  3 Apr 2024 15:16:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1712157375;
+	bh=z3lQD5lgMachfwYyNrVW8WJbO2hEjtLyQulbSy5ojU0=;
+	h=Date:To:Cc:Subject:From:References:In-Reply-To:From;
+	b=Nm0Ybv9GSWZkkgEyiuULaleJd2ST6xA9OgSewczf9SKZakwdUVS3HboknHyllu8MF
+	 kFWTjqejWXJP5RVnNMHDah5KRw5glDItlYj6dxIHJhrAPxzGUfV5hFZ2wROKzcXdco
+	 /6V6VTQqeYAtpQsjsbW8/rZd8ucVXgjwUEleGnhAVreBRcNBT9XjaB8W+JCwh1lC57
+	 ndzmd97Xo/T2tZ3OwqWvn24On1MYKNGFXjQTzcu3PLTEk3fq2W7ZuZFSwGUuevTZQs
+	 RZLLShcGwPfNq+Cm1oXQSmPikS9CYW6NsME3Kl7vUXUlIMa2oB+D6Jq+hpAWgSt6T1
+	 CYBrKO5DCVIjA==
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-References: <20240401-ad4111-v1-0-34618a9cc502@analog.com> <20240401-ad4111-v1-1-34618a9cc502@analog.com>
- <CAMknhBHeKAQ45=5-dL1T1tv-mZcPN+bNo3vxWJYgWpEPE+8p3Q@mail.gmail.com>
- <CAMknhBGJt1TG0-UXMqqCT6nxJKAX7ZbsPF19eeWqwKsXbKOQoQ@mail.gmail.com>
- <0db40597-0d66-4d5b-8165-d9a4c068a42e@gmail.com> <dce3ae6c-6e65-4134-8927-549e9b4afd4c@gmail.com>
-In-Reply-To: <dce3ae6c-6e65-4134-8927-549e9b4afd4c@gmail.com>
-From: David Lechner <dlechner@baylibre.com>
-Date: Wed, 3 Apr 2024 10:14:35 -0500
-Message-ID: <CAMknhBHLEjtiQVOVODdvfH=pOP656=1RNb=9-rt37H7iowVDBw@mail.gmail.com>
-Subject: Re: [PATCH 1/6] dt-bindings: adc: ad7173: add support for ad411x
-To: "Ceclan, Dumitru" <mitrutzceclan@gmail.com>
-Cc: dumitru.ceclan@analog.com, Lars-Peter Clausen <lars@metafoo.de>, 
-	Michael Hennerich <Michael.Hennerich@analog.com>, Jonathan Cameron <jic23@kernel.org>, 
-	Rob Herring <robh@kernel.org>, Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
-	Conor Dooley <conor+dt@kernel.org>, linux-iio@vger.kernel.org, devicetree@vger.kernel.org, 
-	linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
+Date: Wed, 03 Apr 2024 18:16:09 +0300
+Message-Id: <D0AL4STCYS9S.2F0HJSH4E3M3B@kernel.org>
+To: "Dave Hansen" <dave.hansen@intel.com>, "Haitao Huang"
+ <haitao.huang@linux.intel.com>, <dave.hansen@linux.intel.com>,
+ <tj@kernel.org>, <mkoutny@suse.com>, <linux-kernel@vger.kernel.org>,
+ <linux-sgx@vger.kernel.org>, <x86@kernel.org>, <cgroups@vger.kernel.org>,
+ <tglx@linutronix.de>, <mingo@redhat.com>, <bp@alien8.de>, <hpa@zytor.com>,
+ <sohil.mehta@intel.com>, <tim.c.chen@linux.intel.com>
+Cc: <zhiquan1.li@intel.com>, <kristen@linux.intel.com>, <seanjc@google.com>,
+ <zhanb@microsoft.com>, <anakrish@microsoft.com>,
+ <mikko.ylinen@linux.intel.com>, <yangjie@microsoft.com>,
+ <chrisyan@microsoft.com>
+Subject: Re: [PATCH v9 15/15] selftests/sgx: Add scripts for EPC cgroup
+ testing
+From: "Jarkko Sakkinen" <jarkko@kernel.org>
+X-Mailer: aerc 0.17.0
+References: <20240205210638.157741-1-haitao.huang@linux.intel.com>
+ <20240205210638.157741-16-haitao.huang@linux.intel.com>
+ <4be7b291010973c203ed8c7bcd25b626c1290231.camel@kernel.org>
+ <D04OVW6I8MUA.1OAIHFQ8943SM@kernel.org>
+ <op.2lbjl0oawjvjmi@hhuan26-mobl.amr.corp.intel.com>
+ <D071OAFZ80O6.XEDXJ8AF4PK9@kernel.org>
+ <18e84d04-0b75-4188-a94d-6b033f4edbf0@intel.com>
+In-Reply-To: <18e84d04-0b75-4188-a94d-6b033f4edbf0@intel.com>
 
-On Wed, Apr 3, 2024 at 5:08=E2=80=AFAM Ceclan, Dumitru <mitrutzceclan@gmail=
-com> wrote:
->
-> On 03/04/2024 10:45, Ceclan, Dumitru wrote:
-> > On 01/04/2024 23:22, David Lechner wrote:
-> >> On Mon, Apr 1, 2024 at 2:37=E2=80=AFPM David Lechner <dlechner@baylibr=
-e.com> wrote:
-> >>>
-> >>> On Mon, Apr 1, 2024 at 10:10=E2=80=AFAM Dumitru Ceclan via B4 Relay
-> >>> <devnull+dumitru.ceclan.analog.com@kernel.org> wrote:
-> >
-> > ...
-> >
+On Tue Apr 2, 2024 at 6:42 PM EEST, Dave Hansen wrote:
+> On 3/30/24 04:23, Jarkko Sakkinen wrote:
+> >>> I also wonder is cgroup-tools dependency absolutely required or could
+> >>> you just have a function that would interact with sysfs?
+> >> I should have checked email before hit the send button for v10 =F0=9F=
+=99=82.
 > >>
-> >> Also, I just noticed that AD411x have only one AVDD input instead of
-> >> AVDD1 and AVDD2. So we need an if statement that says if properties:
-> >> compatible: enum: - adi,ad411x, then properties: avdd2-supply: false.
-> >
-> > Already addressed by this:
-> > "
-> >   # Only ad7172-4, ad7173-8 and ad7175-8 support vref2
-> >   - if:
-> >       properties:
-> >         compatible:
-> >           not:
-> >             contains:
-> >               enum:
-> >                 - adi,ad7172-4
-> >                 - adi,ad7173-8
-> >                 - adi,ad7175-8
-> >     then:
-> >       properties:
-> >         vref2-supply: false
-> >       patternProperties:
-> >         "^channel@[0-9a-f]$":
-> >           properties:
-> >             adi,reference-select:
-> >               enum:
-> >                 - vref
-> >                 - refout-avss
-> >                 - avdd
-> > "
+> >> It'd be more complicated and less readable to do all the stuff without=
+ the =20
+> >> cgroup-tools, esp cgexec. I checked dependency, cgroup-tools only depe=
+nds =20
+> >> on libc so I hope this would not cause too much inconvenience.
+> > As per cgroup-tools, please prove this. It makes the job for more
+> > complicated *for you* and you are making the job more  complicated
+> > to every possible person in the planet running any kernel QA.
 >
-> Mistaken vref2-supply to avdd2-supply.
+> I don't see any other use of cgroup-tools in testing/selftests.
 >
-> But still, the presence of avdd2-supply does not influence anything at al=
-l.
-> Driver does not use it, you cannot select it for channel conversions.
-> Would a restriction like this really be required?
+> I *DO* see a ton of /bin/bash use though.  I wouldn't go to much trouble
+> to make the thing ash-compatible.
+>
+> That said, the most important thing is to get some selftests in place.
+> If using cgroup-tools means we get actual, runnable tests in place,
+> that's a heck of a lot more important than making them perfect.
+> Remember, almost nobody uses SGX.  It's available on *VERY* few systems
+> from one CPU vendor and only in very specific hardware configurations.
 
-It is true that it is not likely to cause any problems we don't fix
-this but why would we want the bindings to intentionally be incorrect
-when there is an easy fix? Driver implementations should not influence
-leaving something out of the bindings [1].
+Ash-compatible is good enough for me, so let's draw the line there.
 
-[1]: https://www.kernel.org/doc/html//v5.10/devicetree/bindings/writing-bin=
-dings.html#overall-design
+Ash-compatibility does not cause any major hurdle as can we seen from
+Haitao's patch. Earlier version was not even POSIX-compatible, given
+that it used hard-coded path.
+
+Most of the added stuff come open coding the tools but in the test
+code that is not the big deal, and helps with debugging in the future.
+Even right now it helps reviewing kernel patches because it documents
+exactly how the feature is seen from user space.
+
+BR, Jarkko
 
