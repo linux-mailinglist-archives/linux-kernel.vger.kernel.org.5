@@ -1,144 +1,174 @@
-Return-Path: <linux-kernel+bounces-129883-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-129884-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id DAC8689719B
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 15:51:47 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4A89A89719F
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 15:52:06 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 15C651C22D6A
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 13:51:47 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F268428820F
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 13:52:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CD23B148839;
-	Wed,  3 Apr 2024 13:51:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3973D148820;
+	Wed,  3 Apr 2024 13:51:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=manjaro.org header.i=@manjaro.org header.b="GiS2zBBT"
-Received: from mail.manjaro.org (mail.manjaro.org [116.203.91.91])
-	(using TLSv1.2 with cipher DHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="PND15TIU"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 67B981487CB;
-	Wed,  3 Apr 2024 13:51:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=116.203.91.91
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CD3061487FF
+	for <linux-kernel@vger.kernel.org>; Wed,  3 Apr 2024 13:51:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712152301; cv=none; b=eO6Cntb25P7Mk7OyRRTqamJi3DpItzEl4cysMF7T21evIsaG1ZKmtk+wXOBZIR9W1r+Yjn/eUOz58Qg360Eai4fGd0rkHzW4idFzJIdtmRlbt2KulOY+CRMMujtaivq0xUh+26q8xDGofCYqVYL2HRFOM6U8l+ctMsCY9wZ4jrc=
+	t=1712152315; cv=none; b=NvbG18h8w4sVSZSPovAn602jZjq09/zMZFag6GqhW6ZEoNFE+9qUsVfDknVpoR/U1xD07H2gnjCqjn1GpjgS4P/JHpcrv9Z3hrglKK62WYnu+sdQNiWxG7H84OmGV3y3UQuhiaHzNH/cLQedoCLg+ktI3Bk15an8xqWt/wLf8hY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712152301; c=relaxed/simple;
-	bh=Bsd6ob511k3QYVp8+Jssqa3MiM5VrfAAPII3Y9YU9H8=;
-	h=MIME-Version:Date:From:To:Cc:Subject:In-Reply-To:References:
-	 Message-ID:Content-Type; b=FwUuMS2HKzPSla7NwoBvETp4eBv0JQuLRnI7Nrm/nweApFK9fXUDm9DTSJAGdN698r7HWygTJutokrRDIrvwV1tP4kBLt6eFm9wB4o84KPIHzsnoqMUt67w+EfacvzV/G9Do18E2xzsjGRyO01eZWI3W5avd9LEoaGiyIwSxLKA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=manjaro.org; spf=pass smtp.mailfrom=manjaro.org; dkim=pass (2048-bit key) header.d=manjaro.org header.i=@manjaro.org header.b=GiS2zBBT; arc=none smtp.client-ip=116.203.91.91
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=manjaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=manjaro.org
+	s=arc-20240116; t=1712152315; c=relaxed/simple;
+	bh=pHG2tsAWxZn37gkN2Ny9kczSaLWLC3JNDuMK3nNmWfk=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=D39PEpDrsCl+byWcGawCNf+zSE05f3J7qZOfvZzTxeHQuyxT/RIu9hvVxHPTfkqN+zysQm8HsE0r98jMyfXBmnMZOrkt4uIQdzTjMT+7JGfRNuB0b6SqbKTqvlvrlnhPvYGGESz5bAZyuVaoVsbmfF+eagcvXx/WZkU25HwiJkY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=PND15TIU; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1712152312;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=PllW2rrzDmRw3e0KEKEhY+erPYkfL+5VU6NwuszEdv4=;
+	b=PND15TIUNZamv5rJnsaaywSgReJ3PURFIWzcGhp73BUexl82vlFNyBES0qWlyN4ff2jhfV
+	GvDNSYPgAkdoBbasLlO/DceiH29/ZntLPh84DI6dTCDO5eid/JzJQkFX9m7l8sPdrkkKAO
+	iMog5ww4Qyxog4dQONN4nzfqW7yz4Mw=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-271-VpdpYk3KMV-H449pwJ6bOw-1; Wed, 03 Apr 2024 09:51:49 -0400
+X-MC-Unique: VpdpYk3KMV-H449pwJ6bOw-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.rdu2.redhat.com [10.11.54.8])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id CB85B8828C2;
+	Wed,  3 Apr 2024 13:51:48 +0000 (UTC)
+Received: from localhost (unknown [10.39.194.118])
+	by smtp.corp.redhat.com (Postfix) with ESMTP id F351BC04122;
+	Wed,  3 Apr 2024 13:51:47 +0000 (UTC)
+Date: Wed, 3 Apr 2024 09:51:42 -0400
+From: Stefan Hajnoczi <stefanha@redhat.com>
+To: Eric Blake <eblake@redhat.com>
+Cc: linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+	Alasdair Kergon <agk@redhat.com>,
+	Mikulas Patocka <mpatocka@redhat.com>, dm-devel@lists.linux.dev,
+	David Teigland <teigland@redhat.com>,
+	Mike Snitzer <snitzer@kernel.org>, Jens Axboe <axboe@kernel.dk>,
+	Christoph Hellwig <hch@lst.de>, Joe Thornber <ejt@redhat.com>
+Subject: Re: [RFC 3/9] selftests: block_seek_hole: add loop block driver tests
+Message-ID: <20240403135142.GC2524049@fedora>
+References: <20240328203910.2370087-1-stefanha@redhat.com>
+ <20240328203910.2370087-4-stefanha@redhat.com>
+ <6mssvnoq4bpaf53kkla45np5lijptyh4c2orayqx4mqacj572u@6s4y6bhdtcpm>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=manjaro.org; s=2021;
-	t=1712152288;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=nG+giMXCItEPgMBqHyNixdKSn5F1WOll+iAb1XwFvHo=;
-	b=GiS2zBBTYOl+k7jg3WvYCBgfq3wdoGR6VfB6hX8A5ejjfLhB0KkKtX0YgNLGLyaJcngEV5
-	4GnPQ5SDj3QlLbF3AzrYfJavWLNADOc3g7ZB9JVlCpHOAcC3X35/Ex/vy7tIy4OoSyPRSl
-	fLXc3sHfJl1cuoWv8fvAqWK4mg+8LcGVpwBVbmv1/ps0c7tNJHfj/Ual2sVy81QAle6J4i
-	gH8DqM41H8hP+FbpDvTgWVpgHOsPp8h7EudBv5Ii2q9uYnmVwb0jWLaojgkjNMKdEYJeQk
-	yEH5ELQNdi6ZhMv7Q6y6MUDZYLtvxH/k4PKaQFZ0YQ4eQwHJ7QGBMTkO9b8xeQ==
-Date: Wed, 03 Apr 2024 15:51:28 +0200
-From: Dragan Simic <dsimic@manjaro.org>
-To: Pratham Patel <prathampatel@thefossguy.com>
-Cc: Saravana Kannan <saravanak@google.com>, sebastian.reichel@collabora.com,
- devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org,
- regressions@lists.linux.dev, stable@vger.kernel.org
-Subject: Re: Fixing the devicetree of Rock 5 Model B (and possibly others)
-In-Reply-To: <D0A122WK7CB9.33B2TP6UCMJBJ@thefossguy.com>
-References: <tQ0L3-34g4t-mzfQIP6KDe5OYelGnEo6Udzq6Kb_nEcljppSQUXOktpE__nL-CdLOu9gW-4tIIbjtSbqrdCrjEkdhZLPiiHTqRcCB6WORuM=@thefossguy.com>
- <ac4246bf3786230eb9ca85b329e7d0df@manjaro.org>
- <CAGETcx89V5CJrAq6XwuGiusQnkR804pTgYAtS94v7Q+v=Cv+qA@mail.gmail.com>
- <D0A122WK7CB9.33B2TP6UCMJBJ@thefossguy.com>
-Message-ID: <0926eeecfec56fa9225a8aa2a319678a@manjaro.org>
-X-Sender: dsimic@manjaro.org
-Content-Type: text/plain; charset=UTF-8;
- format=flowed
-Content-Transfer-Encoding: 8bit
-Authentication-Results: ORIGINATING;
-	auth=pass smtp.auth=dsimic@manjaro.org smtp.mailfrom=dsimic@manjaro.org
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="x2om3oEq6ukG/tIJ"
+Content-Disposition: inline
+In-Reply-To: <6mssvnoq4bpaf53kkla45np5lijptyh4c2orayqx4mqacj572u@6s4y6bhdtcpm>
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.8
 
-Hello Pratham,
 
-On 2024-04-03 01:32, Pratham Patel wrote:
-> On Tue Apr 2, 2024 at 4:54 AM IST, Saravana Kannan wrote:
->> On Sat, Mar 23, 2024 at 10:10 AM Dragan Simic <dsimic@manjaro.org> 
->> wrote:
->> > On 2024-03-23 18:02, Pratham Patel wrote:
->> > > I looked at the patch and tried several things, neither resulted in
->> > > anything that would point me to the core issue. Then I tried this:
->> >
->> > Could you, please, clarify a bit what's the actual issue you're
->> > experiencing on your Rock 5B?
->> 
->> Pratham, can you reply to this please? I don't really understand what
->> your issue is for me to be able to help.
-> 
-> I apologize for not replying. Somehow, I did not notice the reply from
-> Dragan. :(
+--x2om3oEq6ukG/tIJ
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-No worries, I saw the serial console log file in one of your messages,
-which actually provided the answer to my question. :)
+On Fri, Mar 29, 2024 at 07:38:17AM -0500, Eric Blake wrote:
+> On Thu, Mar 28, 2024 at 04:39:04PM -0400, Stefan Hajnoczi wrote:
+> > Run the tests with:
+> >=20
+> >   $ make TARGETS=3Dblock_seek_hole -C tools/selftests run_tests
+> >=20
+> > Signed-off-by: Stefan Hajnoczi <stefanha@redhat.com>
+> > ---
+> >  tools/testing/selftests/Makefile              |   1 +
+> >  .../selftests/block_seek_hole/Makefile        |  17 +++
+> >  .../testing/selftests/block_seek_hole/config  |   1 +
+> >  .../selftests/block_seek_hole/map_holes.py    |  37 +++++++
+> >  .../testing/selftests/block_seek_hole/test.py | 103 ++++++++++++++++++
+> >  5 files changed, 159 insertions(+)
+> >  create mode 100644 tools/testing/selftests/block_seek_hole/Makefile
+> >  create mode 100644 tools/testing/selftests/block_seek_hole/config
+> >  create mode 100755 tools/testing/selftests/block_seek_hole/map_holes.py
+> >  create mode 100755 tools/testing/selftests/block_seek_hole/test.py
+> >=20
+>=20
+> > +
+> > +def map_holes(fd):
+> > +    end =3D os.lseek(fd, 0, os.SEEK_END)
+> > +    offset =3D 0
+> > +
+> > +    print('TYPE START END SIZE')
+> > +
+> > +    while offset < end:
+> > +        contents =3D 'DATA'
+> > +        new_offset =3D os.lseek(fd, offset, os.SEEK_HOLE)
+> > +        if new_offset =3D=3D offset:
+> > +            contents =3D 'HOLE'
+> > +            try:
+> > +              new_offset =3D os.lseek(fd, offset, os.SEEK_DATA)
+> > +            except OSError as err:
+> > +                if err.errno =3D=3D errno.ENXIO:
+> > +                    new_offset =3D end
+> > +                else:
+> > +                    raise err
+> > +            assert new_offset !=3D offset
+> > +        print(f'{contents} {offset} {new_offset} {new_offset - offset}=
+')
+> > +        offset =3D new_offset
+>=20
+> Over the years, I've seen various SEEK_HOLE implementation bugs where
+> things work great on the initial boundary, but fail when requested on
+> an offset not aligned to the start of the extent boundary.  It would
+> probably be worth enhancing the test to prove that:
+>=20
+> if lseek(fd, offset, SEEK_HOLE) =3D=3D offset:
+>   new_offset =3D lseek(fd, offset, SEEK_DATA)
+>   assert new_offset > offset
+>   assert lseek(fd, new_offset - 1, SEEK_HOLE) =3D=3D new_offset - 1
+> else:
+>   assert lseek(fd, offset, SEEK_DATA) =3D=3D offset
+>   new_offset =3D lseek(fd, offset, SEEK_HOLE)
+>   assert new_offset > offset
+>   assert lseek(fd, new_offset - 1, SEEK_DATA) =3D=3D new_offset - 1
+>=20
+> Among other things, this would prove that even though block devices
+> generally operate on a minimum granularity of a sector, lseek() still
+> gives byte-accurate results for a random offset that falls in the
+> middle of a sector, and doesn't accidentally round down reporting an
+> offset less than the value passed in to the request.
 
-> Since this patch was applied, an issue in the Rock 5B's DT has been
-> unearthed which now results in the kernel being unable to boot 
-> properly.
-> 
-> Following is the relevant call trace from the UART capture:
-> 
-> [   21.595068] Call trace:
-> [   21.595288]  smp_call_function_many_cond+0x174/0x5f8
-> [   21.595728]  on_each_cpu_cond_mask+0x2c/0x40
-> [   21.596109]  cpuidle_register_driver+0x294/0x318
-> [   21.596524]  cpuidle_register+0x24/0x100
-> [   21.596875]  psci_cpuidle_probe+0x2e4/0x490
-> [   21.597247]  platform_probe+0x70/0xd0
-> [   21.597575]  really_probe+0x18c/0x3d8
-> [   21.597905]  __driver_probe_device+0x84/0x180
-> [   21.598294]  driver_probe_device+0x44/0x120
-> [   21.598669]  __device_attach_driver+0xc4/0x168
-> [   21.599063]  bus_for_each_drv+0x8c/0xf0
-> [   21.599408]  __device_attach+0xa4/0x1c0
-> [   21.599748]  device_initial_probe+0x1c/0x30
-> [   21.600118]  bus_probe_device+0xb4/0xc0
-> [   21.600462]  device_add+0x68c/0x888
-> [   21.600775]  platform_device_add+0x19c/0x270
-> [   21.601154]  platform_device_register_full+0xdc/0x178
-> [   21.601602]  psci_idle_init+0xa0/0xc8
-> [   21.601934]  do_one_initcall+0x60/0x290
-> [   21.602275]  kernel_init_freeable+0x20c/0x3e0
-> [   21.602664]  kernel_init+0x2c/0x1f8
-> [   21.602979]  ret_from_fork+0x10/0x20
-> 
->> Also, can you give the output of <debugfs>/devices_deferred for the
->> good vs bad case?
-> 
-> I can't provide you with requested output from the bad case, since the
-> kernel never moves past this to an initramfs rescue shell, but 
-> following
-> is the output from v6.8.1 (**with aforementioned patch reverted**).
-> 
-> # cat /sys/kernel/debug/devices_deferred
-> fc400000.usb    platform: wait for supplier /phy@fed90000/usb3-port
-> 1-0022  typec_fusb302: cannot register tcpm port
-> fc000000.usb    platform: wait for supplier /phy@fed80000/usb3-port
-> 
-> It seems that v6.8.2 works _without needing to revert the patch_. I 
-> will
-> have to look into this sometime this week but it seems like
-> a8037ceb8964 (arm64: dts: rockchip: drop rockchip,trcm-sync-tx-only
-> from rk3588 i2s)
-> seems to be the one that fixed the root issue. I will have to test it
-> sometime later this week.
+Sure. I'll add a test for that.
+
+Stefan
+
+--x2om3oEq6ukG/tIJ
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEEhpWov9P5fNqsNXdanKSrs4Grc8gFAmYNXu4ACgkQnKSrs4Gr
+c8jiRAgAlRZwKBwtx8HTSPWTyPF1aDumwwjfPHI+L3n47d0TYnJk8hmb5wCBUAnr
+FLm8+SC46srUixEQEdwLL9DdVEu3QHMKHJtQVWU3ShF+izCE3rlGT9BhNl+ZyBDY
+xWrnBy8kgmdxqvjwyca49jOTLmnS/LaM6uBybK3hk9zQZgcI36phl+OZCwyct7dj
+3L3UuOAYCwnqxDdNvm9mVhCeAAnf5F8WECCR8ZUfw7ejPASc9Gzw90tyDn7RrQKU
+Gubm9DS0I0vTe5XWwnDY0PtUxE/Y+waT1YIkwE9FrE//uswssKJ01cZT0FW8HZhD
+1Z4wdIuFUendZtJhVZpMcXp+cUM9lg==
+=chJ4
+-----END PGP SIGNATURE-----
+
+--x2om3oEq6ukG/tIJ--
+
 
