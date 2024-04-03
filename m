@@ -1,196 +1,333 @@
-Return-Path: <linux-kernel+bounces-128987-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-128989-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 007AF8962C2
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 05:07:39 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8CE738962C6
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 05:09:41 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 514841F23B90
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 03:07:39 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 018D61F2313A
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 03:09:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2F6681C6B6;
-	Wed,  3 Apr 2024 03:07:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0F5D71C29F;
+	Wed,  3 Apr 2024 03:09:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=marvell.com header.i=@marvell.com header.b="Y8m7nmA3"
-Received: from mx0b-0016f401.pphosted.com (mx0b-0016f401.pphosted.com [67.231.156.173])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="JGEk34ql"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.11])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D09E01B950;
-	Wed,  3 Apr 2024 03:07:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=67.231.156.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C66601B950
+	for <linux-kernel@vger.kernel.org>; Wed,  3 Apr 2024 03:09:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.11
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712113649; cv=none; b=b+e5vIlpE/a5dl4FjhxbV2nPf1tqQuRW2h+yqeCqmgb7XzN7fwpd3UxOSdIK3z16Xm6m9G273ylnHJ9umsR9zMNjMLkEDhlHk3daLfrFNE1uucIxtcSMOI30b7nWOV6oCslqr2fPwPBrnd0jTSvre0+bXZpt1xqdl3MQMW3FRO4=
+	t=1712113774; cv=none; b=r8VSLixt+mZmpelhlu2loA4nTj1ffsyGykbvV2rn7tIoixbUCsHbGoWq9QWIYcoKA/LO+M402GUXOd2E4EfUlema+pMI6rzUO7hKGAgDU732TofDFUfsvRAt0gHAS42cly43EbEQOz0Fp1wTrXpY7auDIZ9i9SpExE1avAtJdGg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712113649; c=relaxed/simple;
-	bh=ROtb/TdhEhS14cmCDYhPnEoNJ0jX0mNNsCCUwMkC5ks=;
-	h=Date:From:To:CC:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=XcteU3FEEj2phViZHqXmQCJfBK9DsewYTggSaLHB+WwyOJevjxVS85F9Y32dZOvI/8q1JtYNl/8MVT1VRI7P9izTXriUyOAElqZbKC2gVx0jkfLdEeu8U8ZiiCASt21jxAfhI7ZZZnu3+jhASjsUrWl/fppiZ876i//A5qXkrMk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=marvell.com; spf=pass smtp.mailfrom=marvell.com; dkim=pass (2048-bit key) header.d=marvell.com header.i=@marvell.com header.b=Y8m7nmA3; arc=none smtp.client-ip=67.231.156.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=marvell.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=marvell.com
-Received: from pps.filterd (m0045851.ppops.net [127.0.0.1])
-	by mx0b-0016f401.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 432K39iQ029137;
-	Tue, 2 Apr 2024 20:06:51 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=
-	date:from:to:cc:subject:message-id:references:mime-version
-	:content-type:in-reply-to; s=pfpt0220; bh=cIxSFpufY5nRKyMlIffzzC
-	ralxEiy0TVlswlh++OQgg=; b=Y8m7nmA30w8NYNhiX4YIbCGNGlGZX7dT/8zPJv
-	HlIxSC+6YMvHY21sG5K/WUMfk4V0GdHxba7suvb+SEIHVp3WY+s5BXMLo9KG/s8u
-	mHmnkUyrhTxGHoPLOFUYCaVJJ6nZ4F7q6CLGmCERuXheUKkO202W8HOrFh4owbAV
-	AbV9Db6FzRW0MiP6yruMsD5gxz2bBygAZzpkJaJaQOS6aVlCiOSRY1aYjzjlF3E4
-	Rs9KjqOA0OX2ulNkcVLM6pC+QKUap67aLihgPW69+jx4m5d1kSCR00rZtXs8wptT
-	guwL1M6SCfKq10J/1rFt91BJ+Ez1g+1obP+hbdbT35k4BTLw==
-Received: from dc5-exch05.marvell.com ([199.233.59.128])
-	by mx0b-0016f401.pphosted.com (PPS) with ESMTPS id 3x809fx510-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 02 Apr 2024 20:06:51 -0700 (PDT)
-Received: from DC5-EXCH05.marvell.com (10.69.176.209) by
- DC5-EXCH05.marvell.com (10.69.176.209) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1544.4; Tue, 2 Apr 2024 20:06:49 -0700
-Received: from maili.marvell.com (10.69.176.80) by DC5-EXCH05.marvell.com
- (10.69.176.209) with Microsoft SMTP Server id 15.2.1544.4 via Frontend
- Transport; Tue, 2 Apr 2024 20:06:49 -0700
-Received: from maili.marvell.com (unknown [10.28.36.165])
-	by maili.marvell.com (Postfix) with SMTP id 134265B694C;
-	Tue,  2 Apr 2024 20:06:43 -0700 (PDT)
-Date: Wed, 3 Apr 2024 08:36:42 +0530
-From: Ratheesh Kannoth <rkannoth@marvell.com>
-To: Justin Stitt <justinstitt@google.com>
-CC: Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann
-	<daniel@iogearbox.net>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Andrii
- Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Eduard
- Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>,
-        Yonghong Song
-	<yonghong.song@linux.dev>,
-        KP Singh <kpsingh@kernel.org>, Stanislav Fomichev
-	<sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers
-	<ndesaulniers@google.com>,
-        Bill Wendling <morbo@google.com>, <bpf@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <llvm@lists.linux.dev>,
-        <linux-hardening@vger.kernel.org>
-Subject: Re: [PATCH] bpf: replace deprecated strncpy with strscpy
-Message-ID: <20240403030642.GA1652044@maili.marvell.com>
-References: <20240402-strncpy-kernel-bpf-core-c-v1-1-7cb07a426e78@google.com>
+	s=arc-20240116; t=1712113774; c=relaxed/simple;
+	bh=KLxWiajNJqsVtcQxbeUrQEGhnijgxFfycvDn+on9l3E=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=a5pGtTS9uHwPOmAsJHBWTA4fcUGiwpVmBIJck05DPVWqWl1g1JUSG1TL9NiNzWsji18qXNV0V/Y6PDRUs1PBZzTIJrxL/q5uQsjgJLgEW49iOBTPLoNM2jp+4xfZSe0FPaW+lC8MWMidVYcTnmiNb9eevQclwo4e+MoEmdJQH5A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=JGEk34ql; arc=none smtp.client-ip=198.175.65.11
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1712113771; x=1743649771;
+  h=from:to:cc:subject:in-reply-to:references:date:
+   message-id:mime-version;
+  bh=KLxWiajNJqsVtcQxbeUrQEGhnijgxFfycvDn+on9l3E=;
+  b=JGEk34qlLJLndNug5ACzXhfvI3Mgwaps2uEt0EoHyb0pMQcvAubClBZf
+   iet1qQ30A1i4+exvXkYHfoRsIhN0DUDNrEF3XFHG3rv3sQAOJWTwDtBnj
+   QkmK5K7J1V6ShP/6HVs4I/WoVZIsuUSXD/8T1T1KhljPFT1HKPT1DM5+P
+   YG9BS4th6kscgeITWKaaH4gx9pGHFCNhbfnoYy01yJOdhCb934T1F8Ovf
+   0iAcua/Dfl33EoVbjRHLVZLdYkGibbo32gsfvfWmEWzbzsBze161fn9pT
+   0ZKuREgeuoR3FMaj/ccUSI8aPomMdresegljMRrQB2T3rA32a8cXZJaIk
+   g==;
+X-CSE-ConnectionGUID: +fcWsla+Tu6C2SrZfJDABQ==
+X-CSE-MsgGUID: nSEu5g/pTSmgsjApDk8Wvw==
+X-IronPort-AV: E=McAfee;i="6600,9927,11032"; a="17894847"
+X-IronPort-AV: E=Sophos;i="6.07,176,1708416000"; 
+   d="scan'208";a="17894847"
+Received: from orviesa002.jf.intel.com ([10.64.159.142])
+  by orvoesa103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Apr 2024 20:09:31 -0700
+X-CSE-ConnectionGUID: 8q55C4BiT5eCCaWQ6ui1lg==
+X-CSE-MsgGUID: dgIC37qBQSSCiIelVtvSfA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,176,1708416000"; 
+   d="scan'208";a="49272587"
+Received: from yhuang6-desk2.sh.intel.com (HELO yhuang6-desk2.ccr.corp.intel.com) ([10.238.208.55])
+  by orviesa002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Apr 2024 20:09:28 -0700
+From: "Huang, Ying" <ying.huang@intel.com>
+To: Ryan Roberts <ryan.roberts@arm.com>
+Cc: Andrew Morton <akpm@linux-foundation.org>,  David Hildenbrand
+ <david@redhat.com>,  Matthew Wilcox <willy@infradead.org>,  Gao Xiang
+ <xiang@kernel.org>,  Yu Zhao <yuzhao@google.com>,  Yang Shi
+ <shy828301@gmail.com>,  Michal Hocko <mhocko@suse.com>,  Kefeng Wang
+ <wangkefeng.wang@huawei.com>,  Barry Song <21cnbao@gmail.com>,  Chris Li
+ <chrisl@kernel.org>,  Lance Yang <ioworker0@gmail.com>,
+  <linux-mm@kvack.org>,  <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v5 4/6] mm: swap: Allow storage of all mTHP orders
+In-Reply-To: <017632d3-7de8-407a-aaa4-caaa5ebab057@arm.com> (Ryan Roberts's
+	message of "Tue, 2 Apr 2024 12:18:41 +0100")
+References: <20240327144537.4165578-1-ryan.roberts@arm.com>
+	<20240327144537.4165578-5-ryan.roberts@arm.com>
+	<87o7atkc3i.fsf@yhuang6-desk2.ccr.corp.intel.com>
+	<017632d3-7de8-407a-aaa4-caaa5ebab057@arm.com>
+Date: Wed, 03 Apr 2024 11:07:34 +0800
+Message-ID: <8734s3f8jt.fsf@yhuang6-desk2.ccr.corp.intel.com>
+User-Agent: Gnus/5.13 (Gnus v5.13)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20240402-strncpy-kernel-bpf-core-c-v1-1-7cb07a426e78@google.com>
-X-Proofpoint-GUID: QmRE6pvh5nsQpJLoK1ntZVKZA9QB3BtZ
-X-Proofpoint-ORIG-GUID: QmRE6pvh5nsQpJLoK1ntZVKZA9QB3BtZ
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-04-03_02,2024-04-01_01,2023-05-22_02
+Content-Type: text/plain; charset=ascii
 
-On 2024-04-03 at 05:22:50, Justin Stitt (justinstitt@google.com) wrote:
-> strncpy() is deprecated for use on NUL-terminated destination strings
-> [1] and as such we should prefer more robust and less ambiguous string
-> interfaces.
->
-> bpf sym names get looked up and compared/cleaned with various string
-> apis. This suggests they need to be NUL-terminated (strncpy() suggests
-> this but does not guarantee it).
->
-> |	static int compare_symbol_name(const char *name, char *namebuf)
-> |	{
-> |		cleanup_symbol_name(namebuf);
-> |		return strcmp(name, namebuf);
-> |	}
->
-> |	static void cleanup_symbol_name(char *s)
-> |	{
-> |		...
-> |		res = strstr(s, ".llvm.");
-> |		...
-> |	}
->
-> Use strscpy() as this method guarantees NUL-termination on the
-> destination buffer.
->
-> This patch also replaces two uses of strncpy() used in log.c. These are
-> simple replacements as postfix has been zero-initialized on the stack
-> and has source arguments with a size less than the destination's size.
->
-> Note that this patch uses the new 2-argument version of strscpy
-> introduced in Commit e6584c3964f2f ("string: Allow 2-argument
-> strscpy()").
->
-> Link: https://www.kernel.org/doc/html/latest/process/deprecated.html#strncpy-on-nul-terminated-strings [1]
-> Link: https://manpages.debian.org/testing/linux-manual-4.8/strscpy.9.en.html [2]
-> Link: https://github.com/KSPP/linux/issues/90
-> Cc: linux-hardening@vger.kernel.org
-> Signed-off-by: Justin Stitt <justinstitt@google.com>
-> ---
-> Note: build-tested only.
->
-> Found with: $ rg "strncpy\("
-> ---
->  kernel/bpf/core.c | 4 ++--
->  kernel/bpf/log.c  | 4 ++--
->  2 files changed, 4 insertions(+), 4 deletions(-)
->
-> diff --git a/kernel/bpf/core.c b/kernel/bpf/core.c
-> index 696bc55de8e8..8c9078f4549c 100644
-> --- a/kernel/bpf/core.c
-> +++ b/kernel/bpf/core.c
-> @@ -747,7 +747,7 @@ const char *__bpf_address_lookup(unsigned long addr, unsigned long *size,
->  		unsigned long symbol_start = ksym->start;
->  		unsigned long symbol_end = ksym->end;
->
-> -		strncpy(sym, ksym->name, KSYM_NAME_LEN);
-> +		strscpy(sym, ksym->name, KSYM_NAME_LEN);
-You dont have to check return value of strscpy for errors ?
+Ryan Roberts <ryan.roberts@arm.com> writes:
 
+> On 01/04/2024 04:15, Huang, Ying wrote:
+>> Ryan Roberts <ryan.roberts@arm.com> writes:
+>> 
+>>> Multi-size THP enables performance improvements by allocating large,
+>>> pte-mapped folios for anonymous memory. However I've observed that on an
+>>> arm64 system running a parallel workload (e.g. kernel compilation)
+>>> across many cores, under high memory pressure, the speed regresses. This
+>>> is due to bottlenecking on the increased number of TLBIs added due to
+>>> all the extra folio splitting when the large folios are swapped out.
+>>>
+>>> Therefore, solve this regression by adding support for swapping out mTHP
+>>> without needing to split the folio, just like is already done for
+>>> PMD-sized THP. This change only applies when CONFIG_THP_SWAP is enabled,
+>>> and when the swap backing store is a non-rotating block device. These
+>>> are the same constraints as for the existing PMD-sized THP swap-out
+>>> support.
+>>>
+>>> Note that no attempt is made to swap-in (m)THP here - this is still done
+>>> page-by-page, like for PMD-sized THP. But swapping-out mTHP is a
+>>> prerequisite for swapping-in mTHP.
+>>>
+>>> The main change here is to improve the swap entry allocator so that it
+>>> can allocate any power-of-2 number of contiguous entries between [1, (1
+>>> << PMD_ORDER)]. This is done by allocating a cluster for each distinct
+>>> order and allocating sequentially from it until the cluster is full.
+>>> This ensures that we don't need to search the map and we get no
+>>> fragmentation due to alignment padding for different orders in the
+>>> cluster. If there is no current cluster for a given order, we attempt to
+>>> allocate a free cluster from the list. If there are no free clusters, we
+>>> fail the allocation and the caller can fall back to splitting the folio
+>>> and allocates individual entries (as per existing PMD-sized THP
+>>> fallback).
+>>>
+>>> The per-order current clusters are maintained per-cpu using the existing
+>>> infrastructure. This is done to avoid interleving pages from different
+>>> tasks, which would prevent IO being batched. This is already done for
+>>> the order-0 allocations so we follow the same pattern.
+>>>
+>>> As is done for order-0 per-cpu clusters, the scanner now can steal
+>>> order-0 entries from any per-cpu-per-order reserved cluster. This
+>>> ensures that when the swap file is getting full, space doesn't get tied
+>>> up in the per-cpu reserves.
+>>>
+>>> This change only modifies swap to be able to accept any order mTHP. It
+>>> doesn't change the callers to elide doing the actual split. That will be
+>>> done in separate changes.
+>>>
+>>> Signed-off-by: Ryan Roberts <ryan.roberts@arm.com>
+>>> ---
+>>>  include/linux/swap.h |  10 ++-
+>>>  mm/swap_slots.c      |   6 +-
+>>>  mm/swapfile.c        | 175 ++++++++++++++++++++++++-------------------
+>>>  3 files changed, 109 insertions(+), 82 deletions(-)
+>>>
+>>> diff --git a/include/linux/swap.h b/include/linux/swap.h
+>>> index 5e1e4f5bf0cb..11c53692f65f 100644
+>>> --- a/include/linux/swap.h
+>>> +++ b/include/linux/swap.h
+>>> @@ -268,13 +268,19 @@ struct swap_cluster_info {
+>>>   */
+>>>  #define SWAP_NEXT_INVALID	0
+>>>  
+>>> +#ifdef CONFIG_THP_SWAP
+>>> +#define SWAP_NR_ORDERS		(PMD_ORDER + 1)
+>>> +#else
+>>> +#define SWAP_NR_ORDERS		1
+>>> +#endif
+>>> +
+>>>  /*
+>>>   * We assign a cluster to each CPU, so each CPU can allocate swap entry from
+>>>   * its own cluster and swapout sequentially. The purpose is to optimize swapout
+>>>   * throughput.
+>>>   */
+>>>  struct percpu_cluster {
+>>> -	unsigned int next; /* Likely next allocation offset */
+>>> +	unsigned int next[SWAP_NR_ORDERS]; /* Likely next allocation offset */
+>>>  };
+>>>  
+>>>  struct swap_cluster_list {
+>>> @@ -471,7 +477,7 @@ swp_entry_t folio_alloc_swap(struct folio *folio);
+>>>  bool folio_free_swap(struct folio *folio);
+>>>  void put_swap_folio(struct folio *folio, swp_entry_t entry);
+>>>  extern swp_entry_t get_swap_page_of_type(int);
+>>> -extern int get_swap_pages(int n, swp_entry_t swp_entries[], int entry_size);
+>>> +extern int get_swap_pages(int n, swp_entry_t swp_entries[], int order);
+>>>  extern int add_swap_count_continuation(swp_entry_t, gfp_t);
+>>>  extern void swap_shmem_alloc(swp_entry_t);
+>>>  extern int swap_duplicate(swp_entry_t);
+>>> diff --git a/mm/swap_slots.c b/mm/swap_slots.c
+>>> index 53abeaf1371d..13ab3b771409 100644
+>>> --- a/mm/swap_slots.c
+>>> +++ b/mm/swap_slots.c
+>>> @@ -264,7 +264,7 @@ static int refill_swap_slots_cache(struct swap_slots_cache *cache)
+>>>  	cache->cur = 0;
+>>>  	if (swap_slot_cache_active)
+>>>  		cache->nr = get_swap_pages(SWAP_SLOTS_CACHE_SIZE,
+>>> -					   cache->slots, 1);
+>>> +					   cache->slots, 0);
+>>>  
+>>>  	return cache->nr;
+>>>  }
+>>> @@ -311,7 +311,7 @@ swp_entry_t folio_alloc_swap(struct folio *folio)
+>>>  
+>>>  	if (folio_test_large(folio)) {
+>>>  		if (IS_ENABLED(CONFIG_THP_SWAP))
+>>> -			get_swap_pages(1, &entry, folio_nr_pages(folio));
+>>> +			get_swap_pages(1, &entry, folio_order(folio));
+>>>  		goto out;
+>>>  	}
+>>>  
+>>> @@ -343,7 +343,7 @@ swp_entry_t folio_alloc_swap(struct folio *folio)
+>>>  			goto out;
+>>>  	}
+>>>  
+>>> -	get_swap_pages(1, &entry, 1);
+>>> +	get_swap_pages(1, &entry, 0);
+>>>  out:
+>>>  	if (mem_cgroup_try_charge_swap(folio, entry)) {
+>>>  		put_swap_folio(folio, entry);
+>>> diff --git a/mm/swapfile.c b/mm/swapfile.c
+>>> index 1393966b77af..d56cdc547a06 100644
+>>> --- a/mm/swapfile.c
+>>> +++ b/mm/swapfile.c
+>>> @@ -278,15 +278,15 @@ static void discard_swap_cluster(struct swap_info_struct *si,
+>>>  #ifdef CONFIG_THP_SWAP
+>>>  #define SWAPFILE_CLUSTER	HPAGE_PMD_NR
+>>>  
+>>> -#define swap_entry_size(size)	(size)
+>>> +#define swap_entry_order(order)	(order)
+>>>  #else
+>>>  #define SWAPFILE_CLUSTER	256
+>>>  
+>>>  /*
+>>> - * Define swap_entry_size() as constant to let compiler to optimize
+>>> + * Define swap_entry_order() as constant to let compiler to optimize
+>>>   * out some code if !CONFIG_THP_SWAP
+>>>   */
+>>> -#define swap_entry_size(size)	1
+>>> +#define swap_entry_order(order)	0
+>>>  #endif
+>>>  #define LATENCY_LIMIT		256
+>>>  
+>>> @@ -551,10 +551,12 @@ static void free_cluster(struct swap_info_struct *si, unsigned long idx)
+>>>  
+>>>  /*
+>>>   * The cluster corresponding to page_nr will be used. The cluster will be
+>>> - * removed from free cluster list and its usage counter will be increased.
+>>> + * removed from free cluster list and its usage counter will be increased by
+>>> + * count.
+>>>   */
+>>> -static void inc_cluster_info_page(struct swap_info_struct *p,
+>>> -	struct swap_cluster_info *cluster_info, unsigned long page_nr)
+>>> +static void add_cluster_info_page(struct swap_info_struct *p,
+>>> +	struct swap_cluster_info *cluster_info, unsigned long page_nr,
+>>> +	unsigned long count)
+>>>  {
+>>>  	unsigned long idx = page_nr / SWAPFILE_CLUSTER;
+>>>  
+>>> @@ -563,9 +565,19 @@ static void inc_cluster_info_page(struct swap_info_struct *p,
+>>>  	if (cluster_is_free(&cluster_info[idx]))
+>>>  		alloc_cluster(p, idx);
+>>>  
+>>> -	VM_BUG_ON(cluster_count(&cluster_info[idx]) >= SWAPFILE_CLUSTER);
+>>> +	VM_BUG_ON(cluster_count(&cluster_info[idx]) + count > SWAPFILE_CLUSTER);
+>>>  	cluster_set_count(&cluster_info[idx],
+>>> -		cluster_count(&cluster_info[idx]) + 1);
+>>> +		cluster_count(&cluster_info[idx]) + count);
+>>> +}
+>>> +
+>>> +/*
+>>> + * The cluster corresponding to page_nr will be used. The cluster will be
+>>> + * removed from free cluster list and its usage counter will be increased by 1.
+>>> + */
+>>> +static void inc_cluster_info_page(struct swap_info_struct *p,
+>>> +	struct swap_cluster_info *cluster_info, unsigned long page_nr)
+>>> +{
+>>> +	add_cluster_info_page(p, cluster_info, page_nr, 1);
+>>>  }
+>>>  
+>>>  /*
+>>> @@ -595,7 +607,7 @@ static void dec_cluster_info_page(struct swap_info_struct *p,
+>>>   */
+>>>  static bool
+>>>  scan_swap_map_ssd_cluster_conflict(struct swap_info_struct *si,
+>>> -	unsigned long offset)
+>>> +	unsigned long offset, int order)
+>>>  {
+>>>  	struct percpu_cluster *percpu_cluster;
+>>>  	bool conflict;
+>>> @@ -609,24 +621,39 @@ scan_swap_map_ssd_cluster_conflict(struct swap_info_struct *si,
+>>>  		return false;
+>>>  
+>>>  	percpu_cluster = this_cpu_ptr(si->percpu_cluster);
+>>> -	percpu_cluster->next = SWAP_NEXT_INVALID;
+>>> +	percpu_cluster->next[order] = SWAP_NEXT_INVALID;
+>>> +	return true;
+>>> +}
+>>> +
+>>> +static inline bool swap_range_empty(char *swap_map, unsigned int start,
+>>> +				    unsigned int nr_pages)
+>>> +{
+>>> +	unsigned int i;
+>>> +
+>>> +	for (i = 0; i < nr_pages; i++) {
+>>> +		if (swap_map[start + i])
+>>> +			return false;
+>>> +	}
+>>> +
+>>>  	return true;
+>>>  }
+>>>  
+>>>  /*
+>>> - * Try to get a swap entry from current cpu's swap entry pool (a cluster). This
+>>> - * might involve allocating a new cluster for current CPU too.
+>>> + * Try to get swap entries with specified order from current cpu's swap entry
+>>> + * pool (a cluster). This might involve allocating a new cluster for current CPU
+>>> + * too.
+>>>   */
+>>>  static bool scan_swap_map_try_ssd_cluster(struct swap_info_struct *si,
+>>> -	unsigned long *offset, unsigned long *scan_base)
+>>> +	unsigned long *offset, unsigned long *scan_base, int order)
+>>>  {
+>>> +	unsigned int nr_pages = 1 << order;
+>> 
+>> Use swap_entry_order()?
 >
->  		ret = sym;
->  		if (size)
-> @@ -813,7 +813,7 @@ int bpf_get_kallsym(unsigned int symnum, unsigned long *value, char *type,
->  		if (it++ != symnum)
->  			continue;
+> I had previously convinced myself that the compiler should be smart enough to
+> propagate the constant from
 >
-> -		strncpy(sym, ksym->name, KSYM_NAME_LEN);
-> +		strscpy(sym, ksym->name, KSYM_NAME_LEN);
->
->  		*value = ksym->start;
->  		*type  = BPF_SYM_ELF_TYPE;
-> diff --git a/kernel/bpf/log.c b/kernel/bpf/log.c
-> index 2a243cf37c60..4bd8f17a9f24 100644
-> --- a/kernel/bpf/log.c
-> +++ b/kernel/bpf/log.c
-> @@ -467,9 +467,9 @@ const char *reg_type_str(struct bpf_verifier_env *env, enum bpf_reg_type type)
->
->  	if (type & PTR_MAYBE_NULL) {
->  		if (base_type(type) == PTR_TO_BTF_ID)
-> -			strncpy(postfix, "or_null_", 16);
-> +			strscpy(postfix, "or_null_");
->  		else
-> -			strncpy(postfix, "_or_null", 16);
-> +			strscpy(postfix, "_or_null");
->  	}
->
->  	snprintf(prefix, sizeof(prefix), "%s%s%s%s%s%s%s",
->
-> ---
-> base-commit: 026e680b0a08a62b1d948e5a8ca78700bfac0e6e
-> change-id: 20240402-strncpy-kernel-bpf-core-c-4d8297f95e18
->
-> Best regards,
-> --
-> Justin Stitt <justinstitt@google.com>
->
+> get_swap_pages -> scan_swap_map_slots -> scan_swap_map_try_ssd_cluster
+
+Do some experiments via calling function with constants and check the
+compiled code.  It seems that "interprocedural constant propagation" in
+compiler can optimize the code at least if the callee is "static".
+
+> But I'll add the explicit macro for the next version, as you suggest.
+
+So, I will leave it to you to decide whether to do that.
+
+--
+Best Regards,
+Huang, Ying
+
+[snip]
 
