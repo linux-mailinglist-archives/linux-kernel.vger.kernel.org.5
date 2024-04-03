@@ -1,220 +1,223 @@
-Return-Path: <linux-kernel+bounces-129610-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-129611-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 13749896D2D
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 12:51:38 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A33B3896D47
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 12:52:42 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 80C96B26C4A
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 10:51:27 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 59D0028FAFA
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 10:52:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E94E413E40D;
-	Wed,  3 Apr 2024 10:51:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1F8C813A417;
+	Wed,  3 Apr 2024 10:52:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="q4SWlo4K"
-Received: from mail-yb1-f175.google.com (mail-yb1-f175.google.com [209.85.219.175])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="xABjMrox"
+Received: from NAM11-BN8-obe.outbound.protection.outlook.com (mail-bn8nam11on2041.outbound.protection.outlook.com [40.107.236.41])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5D7D854F9D
-	for <linux-kernel@vger.kernel.org>; Wed,  3 Apr 2024 10:51:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.175
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712141478; cv=none; b=Thz0XpastBfQ1/SgcRNMILGk2LpwFnQKeZDeTAy2sqMDPCx+9dyCcQo7fYEmY9PAiajMFB/Q7/XcGajHcKPppkVZinWnZAe4oXacYR0xPBhbxhNnR+WaVd6LM3KH2pAjMJLeF/W6FZyBW9oMEGaoKU8t/0FaiXs7Ue9A4QJDF4Q=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712141478; c=relaxed/simple;
-	bh=JEF5Tfyng5ds06IeAh7i1GVKXOkoGcvDpFoJ+GtSRZM=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=tIgzHkpev7TyC8febhleZCMYBTMCfBxFolE8v/kNJjpyXxvt1gfxRtqfFa+g4EJh0X6Ur4hi3IjREu0K0Lx5pr3Lnl9YarrV3M3QswYfPwjp6QllQPqgjyx98PJwIwvYZtDtRByGe3YeHNQc3gUYS8bw2GXqYjTgJkdyWT4G+go=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=q4SWlo4K; arc=none smtp.client-ip=209.85.219.175
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-yb1-f175.google.com with SMTP id 3f1490d57ef6-dc6d8bd612dso6268947276.1
-        for <linux-kernel@vger.kernel.org>; Wed, 03 Apr 2024 03:51:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1712141475; x=1712746275; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=9wQYgll8+YgZcGCKnnvI2FxMVky7cnKkeUfk2C0HI4g=;
-        b=q4SWlo4KNE6hxjRJ44pWS/kdEmQX3ArnVjkmpzRl3DxJFlPf0aT4MNwRnKDnWxhTp6
-         c9RV+rWBLt0yASPV9vgQEYUjOdKuTwzQgIbWmPiGvs4BMJM9+FXCVT3YmkEswlPT5hfn
-         B2Y3yO1Csx8oC3f7l2x7hvW+lOEe2clcKmYClfbojfkoFdiUwMCka3HL7k+2DOPk4FzV
-         6N+cnN8xP8kDMd1poWeLPbj+hox61axX+mJclHnIz+rZZWKHictGXP+NhmYuBHD8e9GD
-         pSZT8odQislEMb4g5ASfO9WUNBL0S8/st6ckU2JmvEm0+nyD9jmzp9TyvTLCewdB5Sw0
-         JXJA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712141475; x=1712746275;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=9wQYgll8+YgZcGCKnnvI2FxMVky7cnKkeUfk2C0HI4g=;
-        b=Qvs7ozMGwK1f8PAxIYrid9mTcSNJAuaSj1662Aw/hTWmvIryoUJBAKv/y3sJXwTblz
-         yY74AeTyfGW+/ACIesZElBx+H7JSyPCzv5aHS8/LDm8ADQLSUEuQ9b5raRS9O5pxjyx4
-         93UAYcoTtr5Rsh+A0nUEIgLWFW9kbbwdafZbTCtYQIECgPxWhswHCi5/DeQt/a9tumLu
-         T8i5vHeCP5Z1KxjpW5ncq6jZKyHwKWn7RfyMAfRKkfmZcQ4xKyMp97ARysxbme+KlgPx
-         Bb1PfGji3Wda3YYhBNJ92jx0wq6HWHMwXcTbYBICaCXn3y8N8/nEOAszWNQMA3x48Oc/
-         ZKIQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWKHWGIUmYlYdgp9I+so+iADapBmDEqBW/p4VRq/KtmPzSJmpP+QJGbGFT/h53z5/SktLd3ohLSx0HgHqvI02SOjULuUnybqvZvanj0
-X-Gm-Message-State: AOJu0YzXKshQ0Ix6eBcrWqfdI9odjNqyXqn29MXZUDfXullzT7V77i8t
-	t8fsrtvjeAk/47pCegThWGAy/CJFf35XTcOHyQK1bjMUPuG5wetZ4wCtnnazFwPrasns4zawmh0
-	OO+CHB/op85eUsVUq6mjJxkPXpEgWQOHEejJxOg==
-X-Google-Smtp-Source: AGHT+IFViT90qoDfNv/+HMMVSkIOCuMMMRX1j2q+fmbWxlh4TJnkk6Ect2I8Rn3bLy8gy7ZkC9SPpdBwFMOLjbGbeMI=
-X-Received: by 2002:a25:c141:0:b0:dc7:5c37:5420 with SMTP id
- r62-20020a25c141000000b00dc75c375420mr13394794ybf.60.1712141475267; Wed, 03
- Apr 2024 03:51:15 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 690541DFCE;
+	Wed,  3 Apr 2024 10:52:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.236.41
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1712141555; cv=fail; b=CNmtECjz8N1YoKZGTQ2hsfvsN26+3ZZmiOvHbLXRV5so8jRPXwNEkX4KrKZZ8ZUqqgoq+jltVgpti0AuC8qBM2T+2gJHYdOYwkqhkYF7CiGeQvGcOaV9JErDerKpG6UHGENLVHGn/ZRC4+e3pAZhj+tpISO7eFxhV51D3Ay/O80=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1712141555; c=relaxed/simple;
+	bh=t9MDU+qklGaS7PT/MJ+lnbuE1x93CJ2k1EffQySySUk=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=O4GEXCyv+5q6IVVv9WRoQNVTQuo1xjfg9DazkYVU3XM/qQ1STITLxIyQ9/y/HOmPbEQjOz1HeKuE3L45KqkyTsb1eBFlU15u5l/bbZQobeSGt37IQ56zYOAsWVcn9+D7WgHDJ/OvOyaE41eYTUmEcnyceDXqzblHEy8auuNxDsk=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=xABjMrox; arc=fail smtp.client-ip=40.107.236.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=K8V2x5JDHh6dUygHDHNSgLNmQgwJ7TWqzsr5ZQYrgS4Bov34cKJg+GpI5TW9q5zU+9LzyRUd2qSGSLPUjAUMeGUnwrDINp5JnDqXOKJiRHVPzccY2E1Spf+iLpWyq53Tc5DNY0iHUy9JBnls49r2ueAp2VvBLmiEWj4sExH1TivxwcnaUV/KpviTsyyHLMexkNy4ZLyW4D/62vWeRmIx2/q3g/inLSWEld7kIbjCmF1zn4p5XrQxD+M7nS9LIN26udbsOE9fE0WfJ6WGZfPfRxOTtMpfFaT44CGHR6wibvVUmYHSx/G4Mejc1Oky6QRCTPzw7AI2VhzSe03bKTLOqQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=65sTwRPcmWsCQeE9IBiQBWqG80QjtNY6KXKiDw5L6v8=;
+ b=ScH/HeiNmKGcD81tmioIV2DMcRsXGi5S/yEmRS4BbZN0CLOnVTt0YKA0oawHEJAy4UY7C/8au1U2G/SUFkbAJfsORtqijSoQmjdS4X+5dnz9AJbfOtU586iniDfsoZ1RYmtb4Jok9kagHb1SIwFsV8YVjSrsd1sokZYld14nrJ8H8HQX21MdiFqO+7yVDEuxnBI+82CWYs5TGS+pv6pAQG+4nZrLDaL0B+uKw/PRq4CwRW0C5LB8nJAf6NApHo5JvWE4amMCjiujvAWkTCXW2obzyRVygz2WECrJbcxls7ibx0zeP5kny6jjq512ZtevRgA6nBdLBoccK//6Uc8qhw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 165.204.84.17) smtp.rcpttodomain=kernel.org smtp.mailfrom=amd.com; dmarc=pass
+ (p=quarantine sp=quarantine pct=100) action=none header.from=amd.com;
+ dkim=none (message not signed); arc=none (0)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=65sTwRPcmWsCQeE9IBiQBWqG80QjtNY6KXKiDw5L6v8=;
+ b=xABjMroxNWLKXjOhk9cmcxQAxfx5crkNo6Fq7yDRjlxCknyNb0/Mp3SnVAkof6s+bANthW22ZbGH1XIP/kD2hA6ALKl7S6p6fBxcen8sta4yAiDSAC1X5hGijNpuQPYErwQMASjqdx+e6JTS8h2k27Fhw7syv5PBDkV+vC6P3q8=
+Received: from CH0PR03CA0380.namprd03.prod.outlook.com (2603:10b6:610:119::8)
+ by DM3PR12MB9288.namprd12.prod.outlook.com (2603:10b6:0:4a::18) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7409.46; Wed, 3 Apr
+ 2024 10:52:30 +0000
+Received: from CH1PEPF0000AD75.namprd04.prod.outlook.com
+ (2603:10b6:610:119:cafe::e0) by CH0PR03CA0380.outlook.office365.com
+ (2603:10b6:610:119::8) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7452.26 via Frontend
+ Transport; Wed, 3 Apr 2024 10:52:30 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
+ smtp.mailfrom=amd.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=amd.com;
+Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
+ 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
+ client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
+Received: from SATLEXMB04.amd.com (165.204.84.17) by
+ CH1PEPF0000AD75.mail.protection.outlook.com (10.167.244.54) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.20.7452.22 via Frontend Transport; Wed, 3 Apr 2024 10:52:30 +0000
+Received: from BLR-L-NUPADHYA.amd.com (10.180.168.240) by SATLEXMB04.amd.com
+ (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35; Wed, 3 Apr
+ 2024 05:52:26 -0500
+From: Neeraj Upadhyay <Neeraj.Upadhyay@amd.com>
+To: <paulmck@kernel.org>, <frederic@kernel.org>, <joel@joelfernandes.org>,
+	<urezki@gmail.com>, <josh@joshtriplett.org>, <boqun.feng@gmail.com>,
+	<rostedt@goodmis.org>, <mathieu.desnoyers@efficios.com>,
+	<jiangshanlai@gmail.com>, <qiang.zhang1211@gmail.com>
+CC: <rcu@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+	<neeraj.upadhyay@kernel.org>, Neeraj Upadhyay <Neeraj.Upadhyay@amd.com>
+Subject: [PATCH v2] rcu: Reduce synchronize_rcu() delays when all wait heads are in use
+Date: Wed, 3 Apr 2024 16:22:12 +0530
+Message-ID: <20240403105212.237354-1-Neeraj.Upadhyay@amd.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240403-msm-drm-dsc-dsi-video-upstream-v1-0-db5036443545@linaro.org>
- <20240403-msm-drm-dsc-dsi-video-upstream-v1-6-db5036443545@linaro.org>
-In-Reply-To: <20240403-msm-drm-dsc-dsi-video-upstream-v1-6-db5036443545@linaro.org>
-From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Date: Wed, 3 Apr 2024 13:51:04 +0300
-Message-ID: <CAA8EJprvAiOYnzJNduhr9MZe6asfE5ygtupTNbp4dcXD-U8jsA@mail.gmail.com>
-Subject: Re: [PATCH v3 6/6] drm/msm/dsi: support DSC configurations with
- slice_per_pkt > 1
-To: Jun Nie <jun.nie@linaro.org>
-Cc: Rob Clark <robdclark@gmail.com>, Abhinav Kumar <quic_abhinavk@quicinc.com>, 
-	Sean Paul <sean@poorly.run>, Marijn Suijten <marijn.suijten@somainline.org>, 
-	David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>, 
-	Jessica Zhang <quic_jesszhan@quicinc.com>, Vinod Koul <vkoul@kernel.org>, 
-	linux-arm-msm@vger.kernel.org, dri-devel@lists.freedesktop.org, 
-	freedreno@lists.freedesktop.org, linux-kernel@vger.kernel.org, 
-	Jonathan Marek <jonathan@marek.ca>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: SATLEXMB03.amd.com (10.181.40.144) To SATLEXMB04.amd.com
+ (10.181.40.145)
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: CH1PEPF0000AD75:EE_|DM3PR12MB9288:EE_
+X-MS-Office365-Filtering-Correlation-Id: b9b996f8-8449-4ae0-93ca-08dc53cc290d
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	HjUzCN6z5BAzUXF9//v23b1DXdmBkbtpI+hnQ1gJue8n9X4zqEGiFOI7wbhcT2qzep6yOCZwfCbuH8KC5hq0ZNDkmcqm7ZCE2PXVVlm4w7kip1jPDV4Z1UQgP9b/qdMjz6hoG3j+1kUe6Bz6KiUfiYmqpxE0cwlye9cNB+zJD8r2jgi1sYR7+XXdy04ZP7vx+BmqWm/030UbcHoAKx3SqhwpTPt/mqvVKYBcwbNE9SPLQn3nhICUevZC6hSsE6KRoHTp1ew32BzQRI3x21KMD5hMbmv0I2TZuiUnXsCQvNpSDUtOkj7ozZmi93DQMTg7z0yV4zsyJBGgm56qLz98gk7y4/RK3HqJ847LKldcScUA7zCkq+YO0rJcTFbpZ1QsuUh8Ifvgzfvf84Zpa4rtu2Q5d4J0J6xuEze9LsG7NOEQ5R4lYSZpz2bB3/X3nKASln95tfLrqWTOoS87YOmK8tea98k/HHdEBNOrhdniC7tmQcHqa42rcyMuW6HYFnC4y6JY0tm068e2fR78XVtXxzitHsaUtr5o/lcMcEM+SIgJdQQ/WZ7pRlDyPOZ5cdxLOadq0cxlR3jljJY+tieKk245yTF+320escELCYNmWz7C3vB4m/jVtjj0U9EDTr7M8fXYBtmV2vgD9H4I1EdLtEeV5lbYw7yXjogjrJC1mz37ceYz9HstgT7hpZrKyAQZHQrNupKjeao26SjVyS2ZVC0pXpOKt4uFLCkgCtGEm5qImUMO4feYKPRAZ6jS1+4qar1CMvVVSP+XPctKCBAQYQ==
+X-Forefront-Antispam-Report:
+	CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(7416005)(36860700004)(376005)(82310400014)(1800799015)(921011);DIR:OUT;SFP:1101;
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 03 Apr 2024 10:52:30.5394
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: b9b996f8-8449-4ae0-93ca-08dc53cc290d
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
+X-MS-Exchange-CrossTenant-AuthSource:
+	CH1PEPF0000AD75.namprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM3PR12MB9288
 
-On Wed, 3 Apr 2024 at 12:11, Jun Nie <jun.nie@linaro.org> wrote:
->
-> From: Jonathan Marek <jonathan@marek.ca>
->
-> Support slice_per_pkt in msm driver.
->
-> Note that the removed "pkt_per_line = slice_per_intf * slice_per_pkt"
-> comment is incorrect.
->
-> Also trim the code to simplify the dsc reference.
->
-> Signed-off-by: Jonathan Marek <jonathan@marek.ca>
-> Signed-off-by: Jun Nie <jun.nie@linaro.org>
-> ---
->  drivers/gpu/drm/msm/dsi/dsi_host.c | 35 ++++++++++++++---------------------
->  1 file changed, 14 insertions(+), 21 deletions(-)
->
-> diff --git a/drivers/gpu/drm/msm/dsi/dsi_host.c b/drivers/gpu/drm/msm/dsi/dsi_host.c
-> index b0507a42ee6a..0c6f40dbd25c 100644
-> --- a/drivers/gpu/drm/msm/dsi/dsi_host.c
-> +++ b/drivers/gpu/drm/msm/dsi/dsi_host.c
-> @@ -866,17 +866,10 @@ static void dsi_update_dsc_timing(struct msm_dsi_host *msm_host, bool is_cmd_mod
->         slice_per_intf = msm_dsc_get_slices_per_intf(dsc, hdisplay);
->
->         total_bytes_per_intf = dsc->slice_chunk_size * slice_per_intf;
-> -       bytes_per_pkt = dsc->slice_chunk_size; /* * slice_per_pkt; */
-> -
-> +       bytes_per_pkt = dsc->slice_chunk_size * dsc->slice_per_pkt;
+When all wait heads are in use, which can happen when
+rcu_sr_normal_gp_cleanup_work()'s callback processing
+is slow, any new synchronize_rcu() user's rcu_synchronize
+node's processing is deferred to future GP periods. This
+can result in long list of synchronize_rcu() invocations
+waiting for full grace period processing, which can delay
+freeing of memory. Mitigate this problem by using first
+node in the list as wait tail when all wait heads are in use.
+While methods to speed up callback processing would be needed
+to recover from this situation, allowing new nodes to complete
+their grace period can help prevent delays due to a fixed
+number of wait head nodes.
 
-Please don't mix cleanup and functional changes.
+Signed-off-by: Neeraj Upadhyay <Neeraj.Upadhyay@amd.com>
+---
+Changes since v1:
+* Fix use-after-free issue in rcu_sr_normal_gp_cleanup() (Frederic)
+* Remove WARN_ON_ONCE(!rcu_sr_is_wait_head()) for wait and done tail
+  (Frederic)
+* Rebase on top of commit 1c56d246027f ("rcu/tree: Reduce wake up
+  for synchronize_rcu() common case") (Joel)
+---
+ kernel/rcu/tree.c | 40 +++++++++++++++++++++++-----------------
+ 1 file changed, 23 insertions(+), 17 deletions(-)
 
->         eol_byte_num = total_bytes_per_intf % 3;
->
-> -       /*
-> -        * Typically, pkt_per_line = slice_per_intf * slice_per_pkt.
-> -        *
-> -        * Since the current driver only supports slice_per_pkt = 1,
-> -        * pkt_per_line will be equal to slice per intf for now.
-> -        */
-> -       pkt_per_line = slice_per_intf;
-> +       pkt_per_line = slice_per_intf / dsc->slice_per_pkt;
->
->         if (is_cmd_mode) /* packet data type */
->                 reg = DSI_COMMAND_COMPRESSION_MODE_CTRL_STREAM0_DATATYPE(MIPI_DSI_DCS_LONG_WRITE);
-> @@ -916,6 +909,7 @@ static void dsi_update_dsc_timing(struct msm_dsi_host *msm_host, bool is_cmd_mod
->  static void dsi_timing_setup(struct msm_dsi_host *msm_host, bool is_bonded_dsi)
->  {
->         struct drm_display_mode *mode = msm_host->mode;
-> +       struct drm_dsc_config *dsc = msm_host->dsc;
-
-And here too. Please pull msm_host->dsc change to a separate patch.
-
->         u32 hs_start = 0, vs_start = 0; /* take sync start as 0 */
->         u32 h_total = mode->htotal;
->         u32 v_total = mode->vtotal;
-> @@ -947,8 +941,7 @@ static void dsi_timing_setup(struct msm_dsi_host *msm_host, bool is_bonded_dsi)
->                 hdisplay /= 2;
->         }
->
-> -       if (msm_host->dsc) {
-> -               struct drm_dsc_config *dsc = msm_host->dsc;
-> +       if (dsc) {
->                 u32 bytes_per_pclk;
->
->                 /* update dsc params with timing params */
-> @@ -988,14 +981,14 @@ static void dsi_timing_setup(struct msm_dsi_host *msm_host, bool is_bonded_dsi)
->                 else
->                         bytes_per_pclk = 3;
->
-> -               hdisplay = DIV_ROUND_UP(msm_dsc_get_bytes_per_line(msm_host->dsc), bytes_per_pclk);
-> +               hdisplay = DIV_ROUND_UP(msm_dsc_get_bytes_per_line(dsc), bytes_per_pclk);
->
->                 h_total += hdisplay;
->                 ha_end = ha_start + hdisplay;
->         }
->
->         if (msm_host->mode_flags & MIPI_DSI_MODE_VIDEO) {
-> -               if (msm_host->dsc)
-> +               if (dsc)
->                         dsi_update_dsc_timing(msm_host, false, mode->hdisplay);
->
->                 dsi_write(msm_host, REG_DSI_ACTIVE_H,
-> @@ -1016,21 +1009,17 @@ static void dsi_timing_setup(struct msm_dsi_host *msm_host, bool is_bonded_dsi)
->                         DSI_ACTIVE_VSYNC_VPOS_START(vs_start) |
->                         DSI_ACTIVE_VSYNC_VPOS_END(vs_end));
->         } else {                /* command mode */
-> -               if (msm_host->dsc)
-> +               if (dsc)
->                         dsi_update_dsc_timing(msm_host, true, mode->hdisplay);
->
->                 /* image data and 1 byte write_memory_start cmd */
-> -               if (!msm_host->dsc)
-> +               if (!dsc)
->                         wc = hdisplay * mipi_dsi_pixel_format_to_bpp(msm_host->format) / 8 + 1;
->                 else
->                         /*
->                          * When DSC is enabled, WC = slice_chunk_size * slice_per_pkt + 1.
-> -                        * Currently, the driver only supports default value of slice_per_pkt = 1
-> -                        *
-> -                        * TODO: Expand mipi_dsi_device struct to hold slice_per_pkt info
-> -                        *       and adjust DSC math to account for slice_per_pkt.
->                          */
-> -                       wc = msm_host->dsc->slice_chunk_size + 1;
-> +                       wc = dsc->slice_chunk_size * dsc->slice_per_pkt + 1;
->
->                 dsi_write(msm_host, REG_DSI_CMD_MDP_STREAM0_CTRL,
->                         DSI_CMD_MDP_STREAM0_CTRL_WORD_COUNT(wc) |
-> @@ -1657,8 +1646,12 @@ static int dsi_host_attach(struct mipi_dsi_host *host,
->         msm_host->lanes = dsi->lanes;
->         msm_host->format = dsi->format;
->         msm_host->mode_flags = dsi->mode_flags;
-> -       if (dsi->dsc)
-> +       if (dsi->dsc) {
->                 msm_host->dsc = dsi->dsc;
-> +               /* for backwards compatibility, assume 1 if not set */
-> +               if (!dsi->dsc->slice_per_pkt)
-> +                       dsi->dsc->slice_per_pkt = 1;
-> +       }
->
->         /* Some gpios defined in panel DT need to be controlled by host */
->         ret = dsi_host_init_panel_gpios(msm_host, &dsi->dev);
->
-> --
-> 2.34.1
->
-
-
+diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+index a7c7a2b2b527..fe4a59d7cf61 100644
+--- a/kernel/rcu/tree.c
++++ b/kernel/rcu/tree.c
+@@ -1464,14 +1464,11 @@ static void rcu_poll_gp_seq_end_unlocked(unsigned long *snap)
+  * for this new grace period. Given that there are a fixed
+  * number of wait nodes, if all wait nodes are in use
+  * (which can happen when kworker callback processing
+- * is delayed) and additional grace period is requested.
+- * This means, a system is slow in processing callbacks.
+- *
+- * TODO: If a slow processing is detected, a first node
+- * in the llist should be used as a wait-tail for this
+- * grace period, therefore users which should wait due
+- * to a slow process are handled by _this_ grace period
+- * and not next.
++ * is delayed), first node in the llist is used as wait
++ * tail for this grace period. This means, the first node
++ * has to go through additional grace periods before it is
++ * part of the wait callbacks. This should be ok, as
++ * the system is slow in processing callbacks anyway.
+  *
+  * Below is an illustration of how the done and wait
+  * tail pointers move from one set of rcu_synchronize nodes
+@@ -1642,7 +1639,6 @@ static void rcu_sr_normal_gp_cleanup_work(struct work_struct *work)
+ 		return;
+ 	}
+ 
+-	WARN_ON_ONCE(!rcu_sr_is_wait_head(done));
+ 	head = done->next;
+ 	done->next = NULL;
+ 
+@@ -1682,13 +1678,21 @@ static void rcu_sr_normal_gp_cleanup(void)
+ 
+ 	rcu_state.srs_wait_tail = NULL;
+ 	ASSERT_EXCLUSIVE_WRITER(rcu_state.srs_wait_tail);
+-	WARN_ON_ONCE(!rcu_sr_is_wait_head(wait_tail));
+ 
+ 	/*
+ 	 * Process (a) and (d) cases. See an illustration.
+ 	 */
+ 	llist_for_each_safe(rcu, next, wait_tail->next) {
+-		if (rcu_sr_is_wait_head(rcu))
++		/*
++		 * The done tail may reference a rcu_synchronize node.
++		 * Stop at done tail, as using rcu_sr_normal_complete()
++		 * from this path can result in use-after-free. This
++		 * may occur if, following the wake-up of the synchronize_rcu()
++		 * wait contexts and freeing up of node memory,
++		 * rcu_sr_normal_gp_cleanup_work() accesses the done tail and
++		 * its subsequent nodes.
++		 */
++		if (wait_tail->next == rcu_state.srs_done_tail)
+ 			break;
+ 
+ 		rcu_sr_normal_complete(rcu);
+@@ -1743,15 +1747,17 @@ static bool rcu_sr_normal_gp_init(void)
+ 		return start_new_poll;
+ 
+ 	wait_head = rcu_sr_get_wait_head();
+-	if (!wait_head) {
+-		// Kick another GP to retry.
++	if (wait_head) {
++		/* Inject a wait-dummy-node. */
++		llist_add(wait_head, &rcu_state.srs_next);
++	} else {
++		// Kick another GP for first node.
+ 		start_new_poll = true;
+-		return start_new_poll;
++		if (first == rcu_state.srs_done_tail)
++			return start_new_poll;
++		wait_head = first;
+ 	}
+ 
+-	/* Inject a wait-dummy-node. */
+-	llist_add(wait_head, &rcu_state.srs_next);
+-
+ 	/*
+ 	 * A waiting list of rcu_synchronize nodes should be empty on
+ 	 * this step, since a GP-kthread, rcu_gp_init() -> gp_cleanup(),
 -- 
-With best wishes
-Dmitry
+2.34.1
+
 
