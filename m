@@ -1,202 +1,175 @@
-Return-Path: <linux-kernel+bounces-130515-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-130520-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9CDC189792B
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 21:43:54 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A505989795F
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 21:54:09 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BFE051C21DB0
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 19:43:53 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 61887289597
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 19:54:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8ADF515538C;
-	Wed,  3 Apr 2024 19:43:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1E1CF155394;
+	Wed,  3 Apr 2024 19:54:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=proton.me header.i=@proton.me header.b="CWdGqKKH"
-Received: from mail-4322.protonmail.ch (mail-4322.protonmail.ch [185.70.43.22])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=luigi311.com header.i=@luigi311.com header.b="wfCLRkKP"
+Received: from mail-108-mta94.mxroute.com (mail-108-mta94.mxroute.com [136.175.108.94])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F012D2F24
-	for <linux-kernel@vger.kernel.org>; Wed,  3 Apr 2024 19:43:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.70.43.22
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DB58E155388
+	for <linux-kernel@vger.kernel.org>; Wed,  3 Apr 2024 19:53:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=136.175.108.94
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712173426; cv=none; b=ZqHp8fIZA0VgqYZ4dTTzl3WnaE+boTiepQyDk8oMopd8G1RzmthZANeASuDWH1qP0Q2Ah+1Q6mkTqXACeSXblWE2XK4rqvnxKMwTmAceUqIBDeGgpE8V0aPNTGvU8nBtGN7yPGvE1qTqEdpvlK5emO3x0OWQ24nVTp/vvSSRLTU=
+	t=1712174041; cv=none; b=lvFyjtePE7MksEHhDWfpZzfdDN/AFxM+iK+L9JsVtc99fM42680O/XOndCwATE0NmGgD+YFarwyAKXAOW9qvxzvx/X0BRvzV3IzS6GEa++3a61PrdE1G4zWEsJTUNphLYmYFhVNeGaNKFL39Ia/QsuDKINKE+OinRY77lKYrYfk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712173426; c=relaxed/simple;
-	bh=lzf+ES6yHZZVg6XniA+JFvQLjo8zG+VMBXl7BaaBibs=;
-	h=Date:To:From:Cc:Subject:Message-ID:MIME-Version:Content-Type; b=DBLWRCAbd1qTx9RMgRMlwT0mw8kpAz3yTy8EkILL7qosTczKzilEKcQercbEsxh9dZyEsslSZAaKnzObp2/E2JBwQzqDRvoytd2MhAV7H/NTDaLlR4DamFEKyypiFEIT+6EkgM3Ggfo3BWxcUBWrh0f34hqszw7eYJQ2BmfUxwk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=proton.me; spf=pass smtp.mailfrom=proton.me; dkim=pass (2048-bit key) header.d=proton.me header.i=@proton.me header.b=CWdGqKKH; arc=none smtp.client-ip=185.70.43.22
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=proton.me
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=proton.me
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=proton.me;
-	s=protonmail; t=1712173422; x=1712432622;
-	bh=Z/cYaiGjtg8Hl/T+kAOXPPgB1Msfoi/aGGBHya0iD3M=;
-	h=Date:To:From:Cc:Subject:Message-ID:Feedback-ID:From:To:Cc:Date:
-	 Subject:Reply-To:Feedback-ID:Message-ID:BIMI-Selector;
-	b=CWdGqKKHsAsyjwmhI5qIPRNj3R979LLdUL13yfBfn2xREbHxs/5Nqcjh2uILvfI5O
-	 JZPJy+Otrd+NutyHe9h+ONVRsSIcKOyBuiuVFYGba+GsQZOau3ZW71NpEozrU/2Z+x
-	 hRaj2IQzTATd50O0EiLt6V546HEYTYe68Od/d9CRFpVqGj93a2ImfgGU9tw0TGQHyL
-	 vC+QA1/BmpAGTnSRjtsFB/UUFtIByWdp6Mm5f1FlbL/Qvnr9rWXpnCOdWkFcmyF65q
-	 7F/PnsO8oMpJD4it0zHRM5+iv2zdkOloAKCXUACNaGtzddHCLsi5ZEbREfo8KUXJUB
-	 npe1RSrkHXkMQ==
-Date: Wed, 03 Apr 2024 19:43:37 +0000
-To: Miguel Ojeda <ojeda@kernel.org>, Alex Gaynor <alex.gaynor@gmail.com>, Wedson Almeida Filho <wedsonaf@gmail.com>, Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>, =?utf-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>, Benno Lossin <benno.lossin@proton.me>, Andreas Hindborg <a.hindborg@samsung.com>, Alice Ryhl <aliceryhl@google.com>, Martin Rodriguez Reboredo <yakoyoku@gmail.com>
-From: Benno Lossin <benno.lossin@proton.me>
-Cc: rust-for-linux@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] rust: init: change the generated name of guard variables
-Message-ID: <20240403194321.88716-1-benno.lossin@proton.me>
-Feedback-ID: 71780778:user:proton
+	s=arc-20240116; t=1712174041; c=relaxed/simple;
+	bh=Kjy6x/NXd4JfxF0RWGjqpeR43/pbqZZRFhcY/LUk/Mk=;
+	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=ewta3eJxa23mPDgM+Sr+p9ykzZx3GG3tDcDtqxRKvn1KfbEIVN9YLxvbsvkKqdptQvIMj2T5Bxrte6GXiXNjktFlhtpax7XbT3BkTQ9HyXKzAjoMpmIvNC0GCqZEk6OL8Ms2Wf3hXdRzbLOA6p5iR9xS1S+kJ0QRUxhZk4k4UxY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=luigi311.com; spf=pass smtp.mailfrom=luigi311.com; dkim=pass (2048-bit key) header.d=luigi311.com header.i=@luigi311.com header.b=wfCLRkKP; arc=none smtp.client-ip=136.175.108.94
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=luigi311.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=luigi311.com
+Received: from filter006.mxroute.com ([136.175.111.2] filter006.mxroute.com)
+ (Authenticated sender: mN4UYu2MZsgR)
+ by mail-108-mta94.mxroute.com (ZoneMTA) with ESMTPSA id 18ea581c24b0003bea.011
+ for <linux-kernel@vger.kernel.org>
+ (version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384);
+ Wed, 03 Apr 2024 19:48:48 +0000
+X-Zone-Loop: 505b19853a64fc195a41a5aa47bcd2f9a369aeb3b301
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=luigi311.com; s=x; h=Content-Transfer-Encoding:Content-Type:In-Reply-To:
+	From:References:To:Subject:MIME-Version:Date:Message-ID:Sender:Reply-To:Cc:
+	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+	Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
+	List-Subscribe:List-Post:List-Owner:List-Archive;
+	bh=WUWgE1DnjMBPuy5PLgN2/f0W38XSumLNGP2rZjB3XuA=; b=wfCLRkKPVOOds6T51nt/KWinGa
+	4P2uvdx2JXMT+k9h6TDeiMKDal9WlFQwPToTSlyuh4s0Rc3s8sF+XjDhED3cgzvAb//vVPOoKfPs6
+	Cszp2qBdHJ4Pl7MT3JFlzZ6vZ7sbK19WCmdWLpMEc+CV5fty/jD2fzdPRW3DTuynVkLG4JvADrTNS
+	GfLGYBa+Lhq+C0x5TFuiFLSJij8w+XfG3rn5kgwRkFWTgeDaDHULwyDavW/72vB3wvAj1/xdu5atj
+	9JP3BzEBqEJKnNYgMxj7cr8Ko6gC+GmH5AtRDwP/hf2yyL3srs4Wi3tChGvR4PbAGARtZBhmCWmco
+	ItAsMfaA==;
+Message-ID: <1080d78d-73f4-41d3-ab72-f2cc1001e184@luigi311.com>
+Date: Wed, 3 Apr 2024 13:48:43 -0600
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3 24/25] drivers: media: i2c: imx258: Add support for
+ reset gpio
+To: =?UTF-8?Q?Ond=C5=99ej_Jirman?= <megous@megous.com>,
+ Sakari Ailus <sakari.ailus@linux.intel.com>, linux-media@vger.kernel.org,
+ dave.stevenson@raspberrypi.com, jacopo.mondi@ideasonboard.com,
+ mchehab@kernel.org, robh@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+ conor+dt@kernel.org, shawnguo@kernel.org, s.hauer@pengutronix.de,
+ kernel@pengutronix.de, festevam@gmail.com, devicetree@vger.kernel.org,
+ imx@lists.linux.dev, linux-arm-kernel@lists.infradead.org,
+ linux-kernel@vger.kernel.org, pavel@ucw.cz, phone-devel@vger.kernel.org
+References: <20240403150355.189229-1-git@luigi311.com>
+ <20240403150355.189229-25-git@luigi311.com>
+ <Zg2Dy2QBguXQoR3P@kekkonen.localdomain>
+ <vesqdx7w2sobjnx7tmk6s6i5zplbhsphamoalysx625r4aqffq@hos5otov5ids>
+Content-Language: en-US
+From: Luigi311 <git@luigi311.com>
+In-Reply-To: <vesqdx7w2sobjnx7tmk6s6i5zplbhsphamoalysx625r4aqffq@hos5otov5ids>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Authenticated-Id: git@luigi311.com
 
-The initializers created by the `[try_][pin_]init!` macros utilize the
-guard pattern to drop already initialized fields, when initialization
-fails mid-way. These guards are generated to have the same name as the
-field that they handle. To prevent namespacing issues when the field
-name is the same as e.g. a constant name, add `__` as a prefix and
-`_guard` as the suffix.
+On 4/3/24 11:03, Ondřej Jirman wrote:
+> Hi,
+> 
+> On Wed, Apr 03, 2024 at 04:28:59PM GMT, Sakari Ailus wrote:
+>> Hi Luis,
+>>
+>> Could you unify the subject prefix for the driver patches, please? E.g.
+>> "media: imx258: " would be fine.
+>>
+>> On Wed, Apr 03, 2024 at 09:03:53AM -0600, git@luigi311.com wrote:
+>>> From: Luis Garcia <git@luigi311.com>
+>>>
+>>> It was documented in DT, but not implemented.
+>>>
+>>> Signed-off-by: Ondrej Jirman <megous@megous.com>
+>>> Signed-off-by: Luis Garcia <git@luigi311.com>
+>>> ---
+>>>  drivers/media/i2c/imx258.c | 14 +++++++++++++-
+>>>  1 file changed, 13 insertions(+), 1 deletion(-)
+>>>
+>>> diff --git a/drivers/media/i2c/imx258.c b/drivers/media/i2c/imx258.c
+>>> index 163f04f6f954..4c117c4829f1 100644
+>>> --- a/drivers/media/i2c/imx258.c
+>>> +++ b/drivers/media/i2c/imx258.c
+>>> @@ -680,6 +680,7 @@ struct imx258 {
+>>>  	unsigned int csi2_flags;
+>>>  
+>>>  	struct gpio_desc *powerdown_gpio;
+>>> +	struct gpio_desc *reset_gpio;
+>>>  
+>>>  	/*
+>>>  	 * Mutex for serialized access:
+>>> @@ -1232,7 +1233,11 @@ static int imx258_power_on(struct device *dev)
+>>>  		regulator_bulk_disable(IMX258_NUM_SUPPLIES, imx258->supplies);
+>>>  	}
+>>>  
+>>> -	return ret;
+>>> +	gpiod_set_value_cansleep(imx258->reset_gpio, 0);
+>>> +
+>>> +	usleep_range(400, 500);
+>>
+>> You could mention this at least in the commit message.
+> 
+> This is T6 in the datasheet: https://megous.com/dl/tmp/92c9223ce877216e.png
+> 
+> 
+>>> +
+>>> +	return 0;
+>>>  }
+>>>  
+>>>  static int imx258_power_off(struct device *dev)
+>>> @@ -1243,6 +1248,7 @@ static int imx258_power_off(struct device *dev)
+>>>  	clk_disable_unprepare(imx258->clk);
+>>>  	regulator_bulk_disable(IMX258_NUM_SUPPLIES, imx258->supplies);
+>>>  
+>>> +	gpiod_set_value_cansleep(imx258->reset_gpio, 1);
+>>
+>> Same question than on the other GPIO: does this belong here?
+> 
+> No, this should be before the regulator_bulk_disable.
+> 
+> See: https://megous.com/dl/tmp/c96180b23d7ce63a.png
+> 
+> kind regards,
+> 	o.
+> 
 
-Signed-off-by: Benno Lossin <benno.lossin@proton.me>
----
- rust/kernel/init/macros.rs | 28 ++++++++++++++--------------
- 1 file changed, 14 insertions(+), 14 deletions(-)
+Since I'm supposed to move the reset up should I also
+move the power up with it to match your downstream
+driver?
 
-diff --git a/rust/kernel/init/macros.rs b/rust/kernel/init/macros.rs
-index cb6e61b6c50b..93bf4c3080f9 100644
---- a/rust/kernel/init/macros.rs
-+++ b/rust/kernel/init/macros.rs
-@@ -250,7 +250,7 @@
- //!                     // error type is `Infallible`) we will need to dro=
-p this field if there
- //!                     // is an error later. This `DropGuard` will drop t=
-he field when it gets
- //!                     // dropped and has not yet been forgotten.
--//!                     let t =3D unsafe {
-+//!                     let __t_guard =3D unsafe {
- //!                         ::pinned_init::__internal::DropGuard::new(::co=
-re::addr_of_mut!((*slot).t))
- //!                     };
- //!                     // Expansion of `x: 0,`:
-@@ -261,14 +261,14 @@
- //!                         unsafe { ::core::ptr::write(::core::addr_of_mu=
-t!((*slot).x), x) };
- //!                     }
- //!                     // We again create a `DropGuard`.
--//!                     let x =3D unsafe {
-+//!                     let __x_guard =3D unsafe {
- //!                         ::kernel::init::__internal::DropGuard::new(::c=
-ore::addr_of_mut!((*slot).x))
- //!                     };
- //!                     // Since initialization has successfully completed=
-, we can now forget
- //!                     // the guards. This is not `mem::forget`, since we=
- only have
- //!                     // `&DropGuard`.
--//!                     ::core::mem::forget(x);
--//!                     ::core::mem::forget(t);
-+//!                     ::core::mem::forget(__x_guard);
-+//!                     ::core::mem::forget(__t_guard);
- //!                     // Here we use the type checker to ensure that eve=
-ry field has been
- //!                     // initialized exactly once, since this is `if fal=
-se` it will never get
- //!                     // executed, but still type-checked.
-@@ -461,16 +461,16 @@
- //!             {
- //!                 unsafe { ::core::ptr::write(::core::addr_of_mut!((*slo=
-t).a), a) };
- //!             }
--//!             let a =3D unsafe {
-+//!             let __a_guard =3D unsafe {
- //!                 ::kernel::init::__internal::DropGuard::new(::core::add=
-r_of_mut!((*slot).a))
- //!             };
- //!             let init =3D Bar::new(36);
- //!             unsafe { data.b(::core::addr_of_mut!((*slot).b), b)? };
--//!             let b =3D unsafe {
-+//!             let __b_guard =3D unsafe {
- //!                 ::kernel::init::__internal::DropGuard::new(::core::add=
-r_of_mut!((*slot).b))
- //!             };
--//!             ::core::mem::forget(b);
--//!             ::core::mem::forget(a);
-+//!             ::core::mem::forget(__b_guard);
-+//!             ::core::mem::forget(__a_guard);
- //!             #[allow(unreachable_code, clippy::diverging_sub_expression=
-)]
- //!             let _ =3D || {
- //!                 unsafe {
-@@ -1192,14 +1192,14 @@ fn assert_zeroable<T: $crate::init::Zeroable>(_: *m=
-ut T) {}
-         // We use `paste!` to create new hygiene for `$field`.
-         ::kernel::macros::paste! {
-             // SAFETY: We forget the guard later when initialization has s=
-ucceeded.
--            let [<$field>] =3D unsafe {
-+            let [< __ $field _guard >] =3D unsafe {
-                 $crate::init::__internal::DropGuard::new(::core::ptr::addr=
-_of_mut!((*$slot).$field))
-             };
-=20
-             $crate::__init_internal!(init_slot($use_data):
-                 @data($data),
-                 @slot($slot),
--                @guards([<$field>], $($guards,)*),
-+                @guards([< __ $field _guard >], $($guards,)*),
-                 @munch_fields($($rest)*),
-             );
-         }
-@@ -1223,14 +1223,14 @@ fn assert_zeroable<T: $crate::init::Zeroable>(_: *m=
-ut T) {}
-         // We use `paste!` to create new hygiene for `$field`.
-         ::kernel::macros::paste! {
-             // SAFETY: We forget the guard later when initialization has s=
-ucceeded.
--            let [<$field>] =3D unsafe {
-+            let [< __ $field _guard >] =3D unsafe {
-                 $crate::init::__internal::DropGuard::new(::core::ptr::addr=
-_of_mut!((*$slot).$field))
-             };
-=20
-             $crate::__init_internal!(init_slot():
-                 @data($data),
-                 @slot($slot),
--                @guards([<$field>], $($guards,)*),
-+                @guards([< __ $field _guard >], $($guards,)*),
-                 @munch_fields($($rest)*),
-             );
-         }
-@@ -1255,14 +1255,14 @@ fn assert_zeroable<T: $crate::init::Zeroable>(_: *m=
-ut T) {}
-         // We use `paste!` to create new hygiene for `$field`.
-         ::kernel::macros::paste! {
-             // SAFETY: We forget the guard later when initialization has s=
-ucceeded.
--            let [<$field>] =3D unsafe {
-+            let [< __ $field _guard >] =3D unsafe {
-                 $crate::init::__internal::DropGuard::new(::core::ptr::addr=
-_of_mut!((*$slot).$field))
-             };
-=20
-             $crate::__init_internal!(init_slot($($use_data)?):
-                 @data($data),
-                 @slot($slot),
--                @guards([<$field>], $($guards,)*),
-+                @guards([< __ $field _guard >], $($guards,)*),
-                 @munch_fields($($rest)*),
-             );
-         }
-
-base-commit: 9ffe2a730313f27cebd0859ea856247ac59c576c
---=20
-2.44.0
-
+>>>  	gpiod_set_value_cansleep(imx258->powerdown_gpio, 1);
+>>>  
+>>>  	return 0;
+>>> @@ -1554,6 +1560,12 @@ static int imx258_probe(struct i2c_client *client)
+>>>  	if (IS_ERR(imx258->powerdown_gpio))
+>>>  		return PTR_ERR(imx258->powerdown_gpio);
+>>>  
+>>> +	/* request optional reset pin */
+>>> +	imx258->reset_gpio = devm_gpiod_get_optional(&client->dev, "reset",
+>>> +						    GPIOD_OUT_HIGH);
+>>> +	if (IS_ERR(imx258->reset_gpio))
+>>> +		return PTR_ERR(imx258->reset_gpio);
+>>> +
+>>>  	/* Initialize subdev */
+>>>  	v4l2_i2c_subdev_init(&imx258->sd, client, &imx258_subdev_ops);
+>>>  
+>>
+>> -- 
+>> Regards,
+>>
+>> Sakari Ailus
 
 
