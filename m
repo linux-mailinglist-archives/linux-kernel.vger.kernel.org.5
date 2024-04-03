@@ -1,127 +1,156 @@
-Return-Path: <linux-kernel+bounces-129710-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-129711-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id CAE12896EC9
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 14:18:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 1DC19896ECC
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 14:20:00 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 832AA28AB11
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 12:18:18 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CBFFD28D7E6
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 12:19:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D9D4E146583;
-	Wed,  3 Apr 2024 12:18:11 +0000 (UTC)
-Received: from mail-ej1-f52.google.com (mail-ej1-f52.google.com [209.85.218.52])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CCF81146583;
+	Wed,  3 Apr 2024 12:19:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=proton.me header.i=@proton.me header.b="Xv9GRf4L"
+Received: from mail-40134.protonmail.ch (mail-40134.protonmail.ch [185.70.40.134])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9DEFE145FE9;
-	Wed,  3 Apr 2024 12:18:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 699DC3DB9B
+	for <linux-kernel@vger.kernel.org>; Wed,  3 Apr 2024 12:19:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.70.40.134
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712146691; cv=none; b=ZZ/wp6sESSgIqdoHrfq0kb+DJeyTyQSP1wsWOPEB0PIjkXKr7Kg2bi7t/kcJNLXYdhF3tvHNZpEwMxUOtUip9DCwrm+H6R0mPXUMA6LFSEL9jJV4bskkI+s9b2Km0SbExgmaZ2axMu1IfFRWCUyUT8vyJOUIBPkQ9MCdZjarZQc=
+	t=1712146791; cv=none; b=E20fbWYeM7lRbrJ0KxRt/SJOlLmXfLoqEdDS4YFqFHSDVLgQJP54zMAHTzfK+2K0WcuFJ2rEN2XQoG7E+cyJvoJBo7nVA7R1ND/KBXZVEE+BPv5fJ/t1IdO9FJJj/8EVUmTAVNxsCvmtQwIOQiDAVbRKYFGPEHV+FEZJF0id8NA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712146691; c=relaxed/simple;
-	bh=7aQEolH/bYahKfD2MbBpmzlriV0zGZkS0AmAA/p9AoU=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ImB4PxT1T1rt3dPIuUVaqyUGZCxV5/OiTwTZayiDcuxCp8zvcaVwsdK780YUM/aQ78Ok3JRjc1W7Tz50v6dxVm2fEW2Z5T4jrsm4PMZfK8GdqgfF06tkrGbPWI77AsC3w1ONKs5y6Y9IXZDDF8DQlhmcpzpHhEPf+M/fJR31P2U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.218.52
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f52.google.com with SMTP id a640c23a62f3a-a51320fc5d6so57123366b.1;
-        Wed, 03 Apr 2024 05:18:09 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712146688; x=1712751488;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Au+qGYcIXnyg9fBfqDiuIqwrBJxSF6u8tnJvbmFQaMM=;
-        b=cCjy1j1V3ezly8HNKaCVjDstw+X2sFctkTzpt6ZNHsSaBIL8HxjNaj/flDe1JApqrf
-         fqoZYw/wz+xyKyMASCcolqH4KKVIkN5p7TqSQyGaKKwP4wAg8xKZs9hoVmBVonphITHU
-         rFaMSazWLrJT/NplP8J9Md0k6nqs2froLVrj5XOebhqiwHy0Ui7VR8921vwLrIscRBs4
-         xGQimvTbED3SUZdQqMcNvrKuAjlRgUg0NizhEmswbOGQdd8+erFkqcctzxhy4igH/s6+
-         5yYFKC+HI7ie2rTV0U3IfNrqkCzjtqricgJocVyliuBRrmQnFmJI/qesj10WYFGGP54D
-         6DiQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUii1mz7YB0ZcfX3nExzTmlIS1xzX9KWuMgQzjjez8SUpnMpTvJrgfzW2z8NS58QZFAGsP7X+dJ0g+dFpeKGGqk+VazmecMhYbMEDUnGjspbyvK/BmQjOm/PvHxeqAEjh7f8wz668CQGg==
-X-Gm-Message-State: AOJu0YwVt2xJX7nOxPfr1m2+ztaWHwKK+lmWUeW0qXxYVqlhaxQCcmMi
-	o4uXPHiwpe2Md6E8i2pUT1L4FawGTzgewliO7WIYIedSampyFAcP
-X-Google-Smtp-Source: AGHT+IEOJdetlicCrsCF+SFLYXMhXKQWpZlQDUHPB92I2W6WXeYLGh0AwZ8wL2eGROp9RZzePxnQxQ==
-X-Received: by 2002:a17:906:f6c6:b0:a46:cc87:12f3 with SMTP id jo6-20020a170906f6c600b00a46cc8712f3mr9250582ejb.75.1712146687766;
-        Wed, 03 Apr 2024 05:18:07 -0700 (PDT)
-Received: from gmail.com (fwdproxy-lla-005.fbsv.net. [2a03:2880:30ff:5::face:b00c])
-        by smtp.gmail.com with ESMTPSA id la6-20020a170907780600b00a4e2db8ffdcsm6902621ejc.111.2024.04.03.05.18.06
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 03 Apr 2024 05:18:07 -0700 (PDT)
-Date: Wed, 3 Apr 2024 05:15:10 -0700
-From: Breno Leitao <leitao@debian.org>
-To: Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>
-Cc: Jakub Kicinski <kuba@kernel.org>, Leon Romanovsky <leon@kernel.org>,
-	Jason Gunthorpe <jgg@ziepe.ca>, keescook@chromium.org,
-	"open list:HFI1 DRIVER" <linux-rdma@vger.kernel.org>,
-	open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v4] IB/hfi1: allocate dummy net_device dynamically
-Message-ID: <Zg1ITuSCHW/T+QUX@gmail.com>
-References: <20240319090944.2021309-1-leitao@debian.org>
- <20240401115331.GB73174@unreal>
- <20240401075306.0ce18627@kernel.org>
- <2453e7d4-fd50-42ae-a322-490e7e691dc6@cornelisnetworks.com>
+	s=arc-20240116; t=1712146791; c=relaxed/simple;
+	bh=DtimUzcCiaEemuoUaPjn4n0jKJP0VTmi4Z8kvystU2g=;
+	h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=MvIcQobks+qSFRzAzXoU0SnpWQt3NcxflYqFYQzr0V++LW0Z89n+51v7ECpaDQzUuqFc4y+lvaH5Zi9iPE0Y5NAC25fDabyeUY8h0d9TSehHDig0EY95cQdTCnG8lNM5UJrCXTzjfDLe3NRnnHSDY2VSaZz12ojNaWVpXGMtVXk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=proton.me; spf=pass smtp.mailfrom=proton.me; dkim=pass (2048-bit key) header.d=proton.me header.i=@proton.me header.b=Xv9GRf4L; arc=none smtp.client-ip=185.70.40.134
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=proton.me
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=proton.me
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=proton.me;
+	s=protonmail; t=1712146786; x=1712405986;
+	bh=0bM9BhDiM99LAuLM/L3WaFL905yHSxqRHWxKfPusUgY=;
+	h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
+	 Feedback-ID:From:To:Cc:Date:Subject:Reply-To:Feedback-ID:
+	 Message-ID:BIMI-Selector;
+	b=Xv9GRf4LDL0m+M7PmKZenEhuN4QhZyqARnY2A1tSww0dcPL+oQJ8jDjRdwfmqGkua
+	 uNUvQaZGvm7d3Gxt96PKHN6uFes5rb2r79tYvvN5l1BccQRwxRDIt6dy9j0SV3C6N0
+	 VqJysdzsgv7fd68HyQJvlvUkUyXdY/WnSdO/EAzmyFL3dB8NuRRCjMr3ZtYmcbY2ur
+	 G6/HsNy1jaJL88pqL5j5IVAv5O+XwQSaip4c9J1Ilmf1J1X7ANn9Caw/8W3KuBGpnw
+	 7Jlakk0IQa8eoubezehHvRZg03s1WXIsRLLzQhd9qXq9a38k4rHafG02GUQqmtHggJ
+	 T97UyL1iq3JBw==
+Date: Wed, 03 Apr 2024 12:19:38 +0000
+To: Alice Ryhl <aliceryhl@google.com>, Miguel Ojeda <ojeda@kernel.org>, Andrew Morton <akpm@linux-foundation.org>
+From: Benno Lossin <benno.lossin@proton.me>
+Cc: Alex Gaynor <alex.gaynor@gmail.com>, Wedson Almeida Filho <wedsonaf@gmail.com>, Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>, =?utf-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>, Andreas Hindborg <a.hindborg@samsung.com>, Marco Elver <elver@google.com>, Kees Cook <keescook@chromium.org>, Coly Li <colyli@suse.de>, Paolo Abeni <pabeni@redhat.com>, Pierre Gondois <pierre.gondois@arm.com>, Ingo Molnar <mingo@kernel.org>, Jakub Kicinski <kuba@kernel.org>, Wei Yang <richard.weiyang@gmail.com>, Matthew Wilcox <willy@infradead.org>, linux-kernel@vger.kernel.org, rust-for-linux@vger.kernel.org
+Subject: Re: [PATCH 7/9] rust: list: add cursor
+Message-ID: <4aaf7fd7-49ed-4b3e-b691-0d8d7d426d3a@proton.me>
+In-Reply-To: <20240402-linked-list-v1-7-b1c59ba7ae3b@google.com>
+References: <20240402-linked-list-v1-0-b1c59ba7ae3b@google.com> <20240402-linked-list-v1-7-b1c59ba7ae3b@google.com>
+Feedback-ID: 71780778:user:proton
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <2453e7d4-fd50-42ae-a322-490e7e691dc6@cornelisnetworks.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-On Mon, Apr 01, 2024 at 11:34:23AM -0400, Dennis Dalessandro wrote:
-> On 4/1/24 10:53 AM, Jakub Kicinski wrote:
-> > On Mon, 1 Apr 2024 14:53:31 +0300 Leon Romanovsky wrote:
-> >> On Tue, Mar 19, 2024 at 02:09:43AM -0700, Breno Leitao wrote:
-> >>> Embedding net_device into structures prohibits the usage of flexible
-> >>> arrays in the net_device structure. For more details, see the discussion
-> >>> at [1].
-> >>>
-> >>> Un-embed the net_device from struct hfi1_netdev_rx by converting it
-> >>> into a pointer. Then use the leverage alloc_netdev() to allocate the
-> >>> net_device object at hfi1_alloc_rx().
-> >>>
-> >>> [1] https://lore.kernel.org/all/20240229225910.79e224cf@kernel.org/
-> >>>
-> >>> Signed-off-by: Breno Leitao <leitao@debian.org>
-> >>> Acked-by: Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>  
-> >>
-> >> Jakub,
-> >>
-> >> I create shared branch for you, please pull it from:
-> >> https://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git/log/?h=remove-dummy-netdev
-> > 
-> > Did you merge it in already?
-> > Turned out that the use of init_dummy_netdev as a setup function
-> > is broken, I'm not sure how Dennis tested this :(
-> > We should have pinged you, sorry.
-> 
-> This is what I tested, Linus 6.8 tag + cherry pick + Breno patch. So if
-> something went in that broke it I didn't have it in my tree.
-> 
-> commit 311810a6d7e37d8e7537d50e26197b7f5f02f164 (linus-master)
-> Author: Breno Leitao <leitao@debian.org>
-> Date:   Wed Mar 13 03:33:10 2024 -0700
-> 
->     IB/hfi1: allocate dummy net_device dynamically
+On 02.04.24 14:17, Alice Ryhl wrote:
+> diff --git a/rust/kernel/list.rs b/rust/kernel/list.rs
+> index 892705dd0571..47e52818c7bd 100644
+> --- a/rust/kernel/list.rs
+> +++ b/rust/kernel/list.rs
+> @@ -408,6 +408,20 @@ pub fn push_all_back(&mut self, other: &mut List<T, =
+ID>) {
+>          other.first =3D ptr::null_mut();
+>      }
+>=20
+> +    /// Returns a cursor to the first element of the list.
+> +    ///
+> +    /// If the list is empty, this returns `None`.
+> +    pub fn cursor_front(&mut self) -> Option<Cursor<'_, T, ID>> {
+> +        if self.first.is_null() {
+> +            None
+> +        } else {
+> +            Some(Cursor {
 
-This one has a potential bug that causes a kernel panic when the module
-is removed.
+Missing INVARIANT comment.
 
-This is because alloc_netdev() allocates some data structures that are
-later overwritten (memset) by init_dummy_netdev(). At the free time,
-free_netdev() will dereference those structures and they are zero.
+> +                current: self.first,
+> +                list: self,
+> +            })
+> +        }
+> +    }
+> +
+>      /// Creates an iterator over the list.
+>      pub fn iter(&self) -> Iter<'_, T, ID> {
+>          // INVARIANT: If the list is empty, both pointers are null. Othe=
+rwise, both pointers point
+> @@ -476,6 +490,69 @@ fn next(&mut self) -> Option<ArcBorrow<'a, T>> {
+>      }
+>  }
+>=20
+> +/// A cursor into a [`List`].
+> +///
+> +/// # Invariants
+> +///
+> +/// The `current` pointer points a value in `list`.
+> +pub struct Cursor<'a, T: ?Sized + ListItem<ID>, const ID: u64 =3D 0> {
+> +    current: *mut ListLinksFields,
+> +    list: &'a mut List<T, ID>,
+> +}
+> +
+> +impl<'a, T: ?Sized + ListItem<ID>, const ID: u64> Cursor<'a, T, ID> {
+> +    /// Access the current element of this cursor.
+> +    pub fn current(&self) -> ArcBorrow<'_, T> {
+> +        // SAFETY: The `current` pointer points a value in the list.
+> +        let me =3D unsafe { T::view_value(ListLinks::from_fields(self.cu=
+rrent)) };
+> +        // SAFETY:
+> +        // * All values in a list are stored in an `Arc`.
+> +        // * The value cannot be removed from the list for the duration =
+of the lifetime annotated
+> +        //   on the returned `ArcBorrow`, because removing it from the l=
+ist would require mutable
+> +        //   access to the cursor or the list. However, the `ArcBorrow` =
+holds an immutable borrow
+> +        //   on the cursor, which in turn holds an immutable borrow on t=
+he list, so any such
 
-A new upcoming patch is creating a helper (init_dummy_netdev()) that
-will allocate the netdev and call a special version of
-init_dummy_netdev() without memsetting the structure.
+The cursor has a mutable borrow on the list.
 
-I would drop this patch for now, and I will submit a new version using
-the new helper.
+
+> +        //   mutable access requires first releasing the immutable borro=
+w on the cursor.
+> +        // * Values in a list never have a `UniqueArc` reference.
+
+Is there some type invariant guaranteeing this?
+
+--=20
+Cheers,
+Benno
+
+> +        unsafe { ArcBorrow::from_raw(me) }
+> +    }
+> +
+> +    /// Move the cursor to the next element.
+> +    pub fn next(self) -> Option<Cursor<'a, T, ID>> {
+> +        // SAFETY: The `current` field is always in a list.
+> +        let next =3D unsafe { (*self.current).next };
+> +
+> +        if next =3D=3D self.list.first {
+> +            None
+> +        } else {
+> +            Some(Cursor {
+> +                current: next,
+> +                list: self.list,
+> +            })
+> +        }
+> +    }
+
 
