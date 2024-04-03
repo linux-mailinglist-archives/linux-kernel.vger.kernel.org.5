@@ -1,131 +1,180 @@
-Return-Path: <linux-kernel+bounces-129720-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-129721-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7FBD5896EEA
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 14:36:42 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 47D47896EEE
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 14:37:15 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1D67C286987
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 12:36:41 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A9119B25762
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 12:37:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1501C481AB;
-	Wed,  3 Apr 2024 12:36:34 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 92F6B23BE;
-	Wed,  3 Apr 2024 12:36:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1C1D856B64;
+	Wed,  3 Apr 2024 12:37:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Re8F0gky"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.7])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7331144C86;
+	Wed,  3 Apr 2024 12:37:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.7
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712147793; cv=none; b=hx0JKUyXzMUdlbeyOnR+Rq59Vnt8mgq55v1aYB0uCg+T2lk/ABOtxx5K5oCi2yiESXdxlarc4tN7hENzs2KLeLu+Ij+0Zu1R0oxVepOVtuuzWHlwft0m4C0YOejJlW2TF2dDrzy7iVuCepB1qTpeWIbBtX0rcBw1C4nFaHlkY+E=
+	t=1712147823; cv=none; b=K+sFs6T1MLJgkCzS/9iW5DwjLyCaVH1bbwhb/8tXy2r4nnSHVLH6RLD9lgrQeNRehe9h4YfHPyegsM2OKScD0+iZoK5AJORtjgRnA2K3CA8hy6ZFk3ElrVxOUYfFv3slk2su/HIZbrE2z37KIcK/qP6xJMECRDmNANU55oODUeU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712147793; c=relaxed/simple;
-	bh=1DIsaoDpER4p++k4Z7iVSmQ6SUDjiw+1VTM2vtYz1FE=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Q+UNHgPxVSTATaSbgucW/WX1ewTwb+k6DIH/CvTeVjURZc060RaqGIVdoMhnEvS9cM4qQMMBaWpo8TKx7Zo3HG8ZzEvULC5N5gLH9PXsi310pvqWjx+hfuPeRPYmLbtbZF12RXM1gxWmNVgFk/E4dHps1cbIWWmXaGQl1qg4sAk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 3E0A81007;
-	Wed,  3 Apr 2024 05:37:01 -0700 (PDT)
-Received: from [10.57.72.191] (unknown [10.57.72.191])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id E6D6F3F64C;
-	Wed,  3 Apr 2024 05:36:27 -0700 (PDT)
-Message-ID: <8519bb4c-e8b4-436c-bd3b-4a08e328a6ec@arm.com>
-Date: Wed, 3 Apr 2024 13:36:29 +0100
+	s=arc-20240116; t=1712147823; c=relaxed/simple;
+	bh=Gz4IMh43tlqJQMtkQNAmSURtoItRp7LuOPT/d9igbhs=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=H97JvUOLkTiPwkgaBhMLQ+EE1mVbQRxgcNgFALR/R2b1keSB9jgu1HarfVZipuu++x5Cm8T/ab+5Lnin84DvBg/Fk0OqpUW4lJaQz6d9wEb2E/crqCPEvJQ8ha3YZ1+jbFRJdlahHKziDcspMdtdpGQxa46ziv6T77hbIpQvbNs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Re8F0gky; arc=none smtp.client-ip=192.198.163.7
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1712147822; x=1743683822;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:content-transfer-encoding:in-reply-to;
+  bh=Gz4IMh43tlqJQMtkQNAmSURtoItRp7LuOPT/d9igbhs=;
+  b=Re8F0gkyxNMG91bQSCmM+sumsuhc/4ehQlP89bNusxXv2SWnXzgjJPFK
+   CLz9kMrGiZewa9C3EdKrNDfRcCrYpPbsat1ytgRlBd62M2VDY1LD+Ppia
+   NDTPfLXiUyQLLgXOSSqOQNJyk3X5i0ksIV9GXnhbegDabHOVxRjkAl+L9
+   1ZUb0wesnfVDgV3xE0Vkh7pPrQZ9rTHY/OMJpRIVlgvpfqVym6UYOocSe
+   3WRhKo6d+rlL8wZsHZRVd2l+HJsOaVAjR7TIu82r0UCES6uFWFbRoobwk
+   thIu8GRCft8GFjQQxP3XI20hTDJmOw5HsiI8BC9C8GmiaPYY0NQsXtZx4
+   w==;
+X-CSE-ConnectionGUID: RJ1SUX5RTIKQ/0geZv9Uqg==
+X-CSE-MsgGUID: 7oKw8rPVS7qJo5SFlcUbnw==
+X-IronPort-AV: E=McAfee;i="6600,9927,11033"; a="32764456"
+X-IronPort-AV: E=Sophos;i="6.07,177,1708416000"; 
+   d="scan'208";a="32764456"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by fmvoesa101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Apr 2024 05:36:58 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,11033"; a="827789899"
+X-IronPort-AV: E=Sophos;i="6.07,177,1708416000"; 
+   d="scan'208";a="827789899"
+Received: from stinkpipe.fi.intel.com (HELO stinkbox) ([10.237.72.74])
+  by orsmga001.jf.intel.com with SMTP; 03 Apr 2024 05:36:43 -0700
+Received: by stinkbox (sSMTP sendmail emulation); Wed, 03 Apr 2024 15:36:43 +0300
+Date: Wed, 3 Apr 2024 15:36:43 +0300
+From: Ville =?iso-8859-1?Q?Syrj=E4l=E4?= <ville.syrjala@linux.intel.com>
+To: Andi Shyti <andi.shyti@linux.intel.com>
+Cc: Easwar Hariharan <eahariha@linux.microsoft.com>,
+	Alex Deucher <alexander.deucher@amd.com>,
+	Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
+	"Pan, Xinhui" <Xinhui.Pan@amd.com>, David Airlie <airlied@gmail.com>,
+	Daniel Vetter <daniel@ffwll.ch>,
+	Harry Wentland <harry.wentland@amd.com>, Leo Li <sunpeng.li@amd.com>,
+	Rodrigo Siqueira <Rodrigo.Siqueira@amd.com>,
+	Evan Quan <evan.quan@amd.com>, Hawking Zhang <Hawking.Zhang@amd.com>,
+	Candice Li <candice.li@amd.com>, Ran Sun <sunran001@208suo.com>,
+	Alexander Richards <electrodeyt@gmail.com>,
+	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
+	Neil Armstrong <neil.armstrong@linaro.org>,
+	Heiner Kallweit <hkallweit1@gmail.com>,
+	Hamza Mahfooz <hamza.mahfooz@amd.com>,
+	Ruan Jinjie <ruanjinjie@huawei.com>, Alan Liu <haoping.liu@amd.com>,
+	Aurabindo Pillai <aurabindo.pillai@amd.com>,
+	Wayne Lin <wayne.lin@amd.com>, Samson Tam <samson.tam@amd.com>,
+	Alvin Lee <alvin.lee2@amd.com>, Charlene Liu <charlene.liu@amd.com>,
+	Sohaib Nadeem <sohaib.nadeem@amd.com>,
+	Lewis Huang <lewis.huang@amd.com>,
+	Tom Chung <chiahsuan.chung@amd.com>,
+	Bhawanpreet Lakha <Bhawanpreet.Lakha@amd.com>,
+	Meenakshikumar Somasundaram <meenakshikumar.somasundaram@amd.com>,
+	George Shen <george.shen@amd.com>, Aric Cyr <aric.cyr@amd.com>,
+	Jun Lei <jun.lei@amd.com>,
+	Nicholas Kazlauskas <nicholas.kazlauskas@amd.com>,
+	Qingqing Zhuo <Qingqing.Zhuo@amd.com>,
+	Dillon Varone <dillon.varone@amd.com>, Le Ma <Le.Ma@amd.com>,
+	Lijo Lazar <lijo.lazar@amd.com>, Asad kamal <asad.kamal@amd.com>,
+	Kenneth Feng <kenneth.feng@amd.com>, Ma Jun <Jun.Ma2@amd.com>,
+	Mario Limonciello <mario.limonciello@amd.com>,
+	Yang Wang <kevinyang.wang@amd.com>,
+	Darren Powell <darren.powell@amd.com>,
+	Yifan Zhang <yifan1.zhang@amd.com>,
+	"open list:RADEON and AMDGPU DRM DRIVERS" <amd-gfx@lists.freedesktop.org>,
+	"open list:DRM DRIVERS" <dri-devel@lists.freedesktop.org>,
+	open list <linux-kernel@vger.kernel.org>, Wolfram@web.codeaurora.org,
+	"Sang <wsa+renesas"@sang-engineering.smtp.subspace.kernel.org
+Subject: Re: [PATCH v0 02/14] drm/amdgpu,drm/radeon: Make I2C terminology
+ more inclusive
+Message-ID: <Zg1NW0jqwFn4lvEP@intel.com>
+References: <20240329170038.3863998-1-eahariha@linux.microsoft.com>
+ <20240329170038.3863998-3-eahariha@linux.microsoft.com>
+ <Zgb3VYsgLjhJ2HKs@ashyti-mobl2.lan>
+ <ceeaafe1-49d5-4602-8251-eed63a1be2b6@linux.microsoft.com>
+ <Zgb8gieDzZtZmg2q@ashyti-mobl2.lan>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v4 0/4] Update Energy Model after chip binning adjusted
- voltages
-Content-Language: en-US
-To: Dietmar Eggemann <dietmar.eggemann@arm.com>
-Cc: linux-arm-kernel@lists.infradead.org, sboyd@kernel.org,
- rafael@kernel.org, linux-pm@vger.kernel.org, nm@ti.com,
- linux-samsung-soc@vger.kernel.org, daniel.lezcano@linaro.org,
- viresh.kumar@linaro.org, krzysztof.kozlowski@linaro.org,
- alim.akhtar@samsung.com, m.szyprowski@samsung.com, mhiramat@kernel.org,
- linux-kernel@vger.kernel.org
-References: <20240402155822.505491-1-lukasz.luba@arm.com>
- <045fa6db-4f76-46aa-85ba-c9e698c7e390@arm.com>
-From: Lukasz Luba <lukasz.luba@arm.com>
-In-Reply-To: <045fa6db-4f76-46aa-85ba-c9e698c7e390@arm.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <Zgb8gieDzZtZmg2q@ashyti-mobl2.lan>
+X-Patchwork-Hint: comment
 
-Hi Dietmar,
+On Fri, Mar 29, 2024 at 06:38:10PM +0100, Andi Shyti wrote:
+> Hi,
+> 
+> On Fri, Mar 29, 2024 at 10:28:14AM -0700, Easwar Hariharan wrote:
+> > On 3/29/2024 10:16 AM, Andi Shyti wrote:
+> > > Hi Easwar,
+> > > 
+> > > On Fri, Mar 29, 2024 at 05:00:26PM +0000, Easwar Hariharan wrote:
+> > >> I2C v7, SMBus 3.2, and I3C specifications have replaced "master/slave"
+> > > 
+> > > I don't understand why we forget that i3c is 1.1.1 :-)
+> > 
+> > That's because it's a copy-paste error from Wolfram's cover letter. :) I'll update
+> > next go-around.
+> 
+> not a binding comment, though. Just for completeness, because we
+> are giving the version to the i2c and smbus, but not i3c.
+> 
+> > >> with more appropriate terms. Inspired by and following on to Wolfram's
+> > >> series to fix drivers/i2c/[1], fix the terminology for users of
+> > >> I2C_ALGOBIT bitbanging interface, now that the approved verbiage exists
+> > >> in the specification.
+> > > 
+> > > The specification talks about:
+> > > 
+> > >  - master -> controller
+> > >  - slave -> target (and not client)
+> > > 
+> > > But both you and Wolfram have used client. I'd like to reach
+> > > some more consistency here.
+> > 
+> > I had the impression that remote targets (i.e external to the device) were to be called clients,
+> > e.g. the QSFP FRUs in drivers/infiniband, and internal ones targets.
+> > I chose the terminology according to that understanding, but now I can't find where I got that
+> > information.
+> 
+> The word "client" does not even appear in the documentation (only
+> one instance in the i3c document), so that the change is not
+> related to the document as stated in the commit log. Unless, of
+> course, I am missing something.
+> 
+> I'm OK with choosing a "customized" naming, but we need to reach
+> an agreement.
+> 
+> I raised the same question to Wolfram.
 
-On 4/3/24 13:07, Dietmar Eggemann wrote:
-> On 02/04/2024 17:58, Lukasz Luba wrote:
->> Hi all,
->>
->> This is a follow-up patch aiming to add EM modification due to chip binning.
->> The first RFC and the discussion can be found here [1].
->>
->> It uses Exynos chip driver code as a 1st user. The EM framework has been
->> extended to handle this use case easily, when the voltage has been changed
->> after setup. On my Odroid-xu4 in some OPPs I can observe ~20% power difference.
->> According to that data in driver tables it could be up to ~29%.
->>
->> This chip binning is applicable to a lot of SoCs, so the EM framework should
->> make it easy to update. It uses the existing OPP and DT information to
->> re-calculate the new power values.
->>
->> It has dependency on Exynos SoC driver tree.
->>
->> Changes:
->> v4:
->> - added asterisk in the comment section (test robot)
->> - change the patch 2/4 header name and use 'Refactor'
->> v3:
->> - updated header description patch 2/4 (Dietmar)
->> - removed 2 sentences from comment and adjusted in patch 3/4 (Dietmar)
->> - patch 4/4 re-phrased code comment (Dietmar)
->> - collected tags (Krzysztof, Viresh)
->> v2:
->> - removed 'ret' from error message which wasn't initialized (Christian)
->> v1:
->> - exported the OPP calculation function from the OPP/OF so it can be
->>    used from EM fwk (Viresh)
->> - refactored EM updating function to re-use common code
->> - added new EM function which can be used by chip device drivers which
->>    modify the voltage in OPPs
->> RFC is at [1]
->>
->> Regards,
->> Lukasz Luba
->>
->> [1] https://lore.kernel.org/lkml/20231220110339.1065505-1-lukasz.luba@arm.com/
->>
->> Lukasz Luba (4):
->>    OPP: OF: Export dev_opp_pm_calc_power() for usage from EM
->>    PM: EM: Refactor em_adjust_new_capacity()
->>    PM: EM: Add em_dev_update_chip_binning()
->>    soc: samsung: exynos-asv: Update Energy Model after adjusting voltage
->>
->>   drivers/opp/of.c                 |  17 +++--
->>   drivers/soc/samsung/exynos-asv.c |  11 +++-
->>   include/linux/energy_model.h     |   5 ++
->>   include/linux/pm_opp.h           |   8 +++
->>   kernel/power/energy_model.c      | 106 +++++++++++++++++++++++++------
->>   5 files changed, 122 insertions(+), 25 deletions(-)
-> 
-> LGTM.
-> 
-> Just two very minor things which I mentioned in the individual patches.
-> 
-> Reviewed-by: Dietmar Eggemann <dietmar.eggemann@arm.com>
-> 
-> 
-> 
+I don't know where that discussion happened, but my opinion
+is NAK to "client". Life is already confusing enough with
+these renames, so let's not make it even more confusing by
+inventing new names nowhere to be found in the spec.
 
-Thank you for the review. I will send the v5 with those.
+And let's especially not invent names that don't even fit
+the purpose. "Client" makes me think of "client/server" or
+some real world analogy. Neither of which seem to have any
+resemblence to how the term would be used for i2c.
 
-Regards,
-Lukasz
+-- 
+Ville Syrjälä
+Intel
 
