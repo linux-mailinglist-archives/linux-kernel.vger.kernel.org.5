@@ -1,146 +1,227 @@
-Return-Path: <linux-kernel+bounces-130180-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-130181-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id D5C2A897505
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 18:19:32 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 355A1897503
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 18:19:12 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D73A1B24B9C
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 16:17:45 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 57CF51C25C61
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 16:19:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 34A6714F11C;
-	Wed,  3 Apr 2024 16:17:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 69FBD14F12B;
+	Wed,  3 Apr 2024 16:19:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="CbUxIIGF"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="SkO0cMBu"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.15])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 05CAD14E2EC
-	for <linux-kernel@vger.kernel.org>; Wed,  3 Apr 2024 16:17:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 652DE14EC62;
+	Wed,  3 Apr 2024 16:18:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.15
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712161054; cv=none; b=ubpq+K+sM1/6F2to7GFUUP3ce3BRSHcvEfs6QYDv33NIYel8e+v0zv2bgzIuFv6dUlOsyq0x2jQToDC91/mooEKnzz4SWoAg4xOrzw+UFnOuFudweVm11UHQKA3BUPTyr8ahPdbOv/5sLPBgOhFH7HG0/Jg3CDQi3hWmQkODIkE=
+	t=1712161140; cv=none; b=JEDBj8gjDe52hGsMfuf/Z96M5pSWqUqBffFMtiRRk6/o5BQFM/GKYnqIIlSpazzkgiYnJmgtN7OHSUTpBD3FRO/ZVdZ6JoV6If0VH4XpfOeTTcZyWawXDmpQXlRztwIAMvwQw1FoGsbhd4Y3uh5W46SQxqx35YunohG9np0nKAo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712161054; c=relaxed/simple;
-	bh=/oHz60YmomB8xtLx1SmFXh+ChYzmFb8LPQK3p7ehSUc=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=D7K3faTDhP0wamg/XoBXQgXH6pzdhqVh6BP6fyk6xwRChoi/q206AHWY+qHtoGuIGOww9xOf3mLPxyQfdNF3N6OmEVFyVb1u/dV7KBDDgBaWiCpBK17Y+4jUlNJU+Vmhgx5uzqW3uDuYCFECLhpOEubg/TWI3Eu+9ppjsd2c0MU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=CbUxIIGF; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1712161052;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=OQm7KJ2wxSLm5O0upddCNpxjqnodHhe0dn1TWqhcwVM=;
-	b=CbUxIIGFlyZJ/hf6mrsde4gwXpm70JgMw+Pc/du55q7b2fA+zHik8nieCx0bL2A2F3kmo3
-	kHtWEqn5cykaMpGGtT8ngWM4ALu2CI2+G6dcLuUKJODuy0EDXC2pX7WfF2F13qM4o6u8tf
-	pgEfyxqtcqlVH2+sY+BtvgNZjOBWH98=
-Received: from mail-qv1-f71.google.com (mail-qv1-f71.google.com
- [209.85.219.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-500-Om4XmBmcMYm1F04UhbtY7A-1; Wed, 03 Apr 2024 12:17:30 -0400
-X-MC-Unique: Om4XmBmcMYm1F04UhbtY7A-1
-Received: by mail-qv1-f71.google.com with SMTP id 6a1803df08f44-6963cd45fddso25623116d6.1
-        for <linux-kernel@vger.kernel.org>; Wed, 03 Apr 2024 09:17:30 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712161050; x=1712765850;
-        h=content-transfer-encoding:mime-version:message-id:date:references
-         :in-reply-to:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=OQm7KJ2wxSLm5O0upddCNpxjqnodHhe0dn1TWqhcwVM=;
-        b=S59aMSxvz64FZ6EFsf8wo4jk0yFylzKaf0sAEV3O4sAI0IBiALTswd2ogk0pnaEV/j
-         cl1MSvv8i1bLZzgIezcncwjvdN8wkKP7bMefx4I/GPgzapK5s2cHh65zJrmXNlb7TMZd
-         ca004Qk227MFSpuvL025V7DfLDXc98G10uQgqTrlP+T83JiFrU+uvahyMn3brJD58VP1
-         dC7POZkTl2QDnn0S52SeXq92ZQTWNsRZOZ9kgYmsbqd2stI9rkb8DeuB+Q3JPCFJkr4v
-         9q0d6q/stZInBf2x8SZqMpXLo7q1TMNIKWarNE4OvNWulQ3zChJwhKSJZ+wJIaavIbdz
-         tbhA==
-X-Forwarded-Encrypted: i=1; AJvYcCUi8lkKTKMT6JLrkrmFsmvebmI7Gj6U2VYE10NqCtO93Po8I0/eEAO6DZfxvjB1ZJ5OkSwia2DFGhY8OQpPgBJVWQzmKEy+WlsCapdb
-X-Gm-Message-State: AOJu0YwAzveX2imzDZgIDa33U1Ezb8CF1ejy8y+KAqREQXzOAhDQ4Knf
-	hVwbU8GZpjXiHjLZl0uS6CHiuizurO8H7ZRwBzjjNaih39L9uf0FoaySO59FbldLqDFcdKz3e3b
-	eynRB5iPbRMepQuHJLyvsGHIfmwBL6jcS7yPqKBbKfHglzAdzi+0Jkl4ORxDYzg==
-X-Received: by 2002:a05:6214:4a5b:b0:696:926e:dfe3 with SMTP id ph27-20020a0562144a5b00b00696926edfe3mr4445023qvb.22.1712161049921;
-        Wed, 03 Apr 2024 09:17:29 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IHR3C2HuuS83Z+oeOqPEr+EoDC/KiDUbG8jZaKkAfFo7rb5+8xu5HIXGjsbFTYHuv5C36xqTg==
-X-Received: by 2002:a05:6214:4a5b:b0:696:926e:dfe3 with SMTP id ph27-20020a0562144a5b00b00696926edfe3mr4444998qvb.22.1712161049636;
-        Wed, 03 Apr 2024 09:17:29 -0700 (PDT)
-Received: from vschneid-thinkpadt14sgen2i.remote.csb (213-44-141-166.abo.bbox.fr. [213.44.141.166])
-        by smtp.gmail.com with ESMTPSA id oo14-20020a056214450e00b00690c9256676sm6614401qvb.49.2024.04.03.09.17.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 03 Apr 2024 09:17:29 -0700 (PDT)
-From: Valentin Schneider <vschneid@redhat.com>
-To: Waiman Long <longman@redhat.com>, Michal =?utf-8?Q?Koutn=C3=BD?=
- <mkoutny@suse.com>
-Cc: Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>, Johannes
- Weiner <hannes@cmpxchg.org>, Thomas Gleixner <tglx@linutronix.de>, Peter
- Zijlstra <peterz@infradead.org>, "Rafael J. Wysocki" <rafael@kernel.org>,
- Len Brown <len.brown@intel.com>, Pavel Machek <pavel@ucw.cz>, Shuah Khan
- <shuah@kernel.org>, linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
- linux-pm@vger.kernel.org, linux-kselftest@vger.kernel.org, Frederic
- Weisbecker <frederic@kernel.org>, "Paul E. McKenney" <paulmck@kernel.org>,
- Ingo Molnar <mingo@kernel.org>, Anna-Maria Behnsen
- <anna-maria@linutronix.de>, Alex Shi <alexs@kernel.org>, Vincent Guittot
- <vincent.guittot@linaro.org>, Barry Song <song.bao.hua@hisilicon.com>
-Subject: Re: [PATCH 1/2] cgroup/cpuset: Make cpuset hotplug processing
- synchronous
-In-Reply-To: <620d1b70-cfbc-4b76-ad04-b3be559afd56@redhat.com>
-References: <20240401145858.2656598-1-longman@redhat.com>
- <20240401145858.2656598-2-longman@redhat.com>
- <kce74bx6aafxfuw5yovaschym4ze4kommfk74eq5totojytest@mdxnfvl2kdol>
- <548efd52-e45f-41fa-a477-bc5112d7b00c@redhat.com>
- <u3naomgv34t5rnc7pmyy4zjppgf36skeo45orss2xnqcvtrcez@m74tsl2ws76f>
- <7e62b37d-6c9c-4e55-a01a-175695475cb5@redhat.com>
- <xhsmhedbmbjz5.mognet@vschneid-thinkpadt14sgen2i.remote.csb>
- <620d1b70-cfbc-4b76-ad04-b3be559afd56@redhat.com>
-Date: Wed, 03 Apr 2024 18:17:25 +0200
-Message-ID: <xhsmh8r1ubeui.mognet@vschneid-thinkpadt14sgen2i.remote.csb>
+	s=arc-20240116; t=1712161140; c=relaxed/simple;
+	bh=SGfPVU8V5igH8YWHdvcYC/PRY8VGmklyP1mTAt5HW2w=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=W60BM0kNe+YpzFev3Hawob8TkOZPLNsepuv9NAn4OuUaGUbRTQCin1ZSlALxON48FaQSd+Goad1yEsH33TUhLRsaq94DnH57z1nMWdgQGAKuy39+m9Sr4q8oiivwFT3PXFqK2Yr9E+dQPvPmlEe6lWY4HtxY9IazQ8ITz0eXiTk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=SkO0cMBu; arc=none smtp.client-ip=192.198.163.15
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1712161139; x=1743697139;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=SGfPVU8V5igH8YWHdvcYC/PRY8VGmklyP1mTAt5HW2w=;
+  b=SkO0cMBu5yiJgvIV5m4piEuc6hdhcCs0Y5N85kgoKtDTldvq7sTdZEF0
+   Iqo/cXflcSx8KdN0EsDMDW6Z/kaMWxIuI8foLO0BnEkMPXU6LrtbSB71u
+   rcdGTKyNWRfxcYGyNSKQE+GrJhrZbtvT5epZN2cY8giXa+Y7wjGxd9ISh
+   rPyg305j9NCvuVtSqZuzvVRCZ5XI7YBtEbZgbrGyBXP0mQxBgg6Lp3TGC
+   aLlQzsdaMYsYjvTfn1bUmZvPfgR0o6JLY89CIdvyeKNYGL6QJfxXxxkQv
+   7r+eOK6wClYEMYQXu6/rIO/euFQJAiNe2pQbkVWY3stmmCuW9i31G5HKk
+   Q==;
+X-CSE-ConnectionGUID: sqt/afK5R3+PLBYO0oCxzg==
+X-CSE-MsgGUID: vNDgo3EpSuWPHAYm7Wi4bA==
+X-IronPort-AV: E=McAfee;i="6600,9927,11033"; a="7594728"
+X-IronPort-AV: E=Sophos;i="6.07,177,1708416000"; 
+   d="scan'208";a="7594728"
+Received: from fmviesa009.fm.intel.com ([10.60.135.149])
+  by fmvoesa109.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Apr 2024 09:18:52 -0700
+X-CSE-ConnectionGUID: bjlkRXSBRHO8Nb0ulkHabQ==
+X-CSE-MsgGUID: +46wiwqRQ/qbWc2RyCbZKw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,177,1708416000"; 
+   d="scan'208";a="18552257"
+Received: from turnipsi.fi.intel.com (HELO kekkonen.fi.intel.com) ([10.237.72.44])
+  by fmviesa009-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Apr 2024 09:18:48 -0700
+Received: from kekkonen.localdomain (localhost [127.0.0.1])
+	by kekkonen.fi.intel.com (Postfix) with SMTP id 90B1C11F811;
+	Wed,  3 Apr 2024 19:18:45 +0300 (EEST)
+Date: Wed, 3 Apr 2024 16:18:45 +0000
+From: Sakari Ailus <sakari.ailus@linux.intel.com>
+To: git@luigi311.com
+Cc: linux-media@vger.kernel.org, dave.stevenson@raspberrypi.com,
+	jacopo.mondi@ideasonboard.com, mchehab@kernel.org, robh@kernel.org,
+	krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+	shawnguo@kernel.org, s.hauer@pengutronix.de, kernel@pengutronix.de,
+	festevam@gmail.com, devicetree@vger.kernel.org, imx@lists.linux.dev,
+	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+	pavel@ucw.cz, phone-devel@vger.kernel.org
+Subject: Re: [PATCH v3 19/25] media: i2c: imx258: Change register settings
+ for variants of the sensor
+Message-ID: <Zg2BZXQpzsm7jMnc@kekkonen.localdomain>
+References: <20240403150355.189229-1-git@luigi311.com>
+ <20240403150355.189229-20-git@luigi311.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240403150355.189229-20-git@luigi311.com>
 
-On 03/04/24 10:47, Waiman Long wrote:
-> On 4/3/24 10:26, Valentin Schneider wrote:
->> IIUC that was Thomas' suggestion [1], but I can't tell yet how bad it wo=
-uld
->> be to change cgroup_lock() to also do a cpus_read_lock().
->
-> Changing the locking order is certainly doable. I have taken a cursory
-> look at it and at least the following files need to be changed:
->
->  =C2=A0kernel/bpf/cgroup.c
->  =C2=A0kernel/cgroup/cgroup.c
->  =C2=A0kernel/cgroup/legacy_freezer.c
->  =C2=A0mm/memcontrol.c
->
-> That requires a lot more testing to make sure that there won't be a
-> regression. Given that the call to cgroup_transfer_tasks() should be
-> rare these days as it will only apply in the case of cgroup v1 under
-> certain condtion, I am not sure this requirement justifies making such
-> extensive changes. So I kind of defer it until we reach a consensus that
-> it is the right thing to do.
->
+Hi Luis, Dave,
 
-Yeah if we can avoid it initially I'd be up for it.
+On Wed, Apr 03, 2024 at 09:03:48AM -0600, git@luigi311.com wrote:
+> From: Dave Stevenson <dave.stevenson@raspberrypi.com>
+> 
+> Sony have advised that there are variants of the IMX258 sensor which
+> require slightly different register configuration to the mainline
+> imx258 driver defaults.
+> 
+> There is no available run-time detection for the variant, so add
+> configuration via the DT compatible string.
+> 
+> The Vision Components imx258 module supports PDAF, so add the
+> register differences for that variant
+> 
+> Signed-off-by: Dave Stevenson <dave.stevenson@raspberrypi.com>
+> Signed-off-by: Luis Garcia <git@luigi311.com>
+> ---
+>  drivers/media/i2c/imx258.c | 48 ++++++++++++++++++++++++++++++++++----
+>  1 file changed, 44 insertions(+), 4 deletions(-)
+> 
+> diff --git a/drivers/media/i2c/imx258.c b/drivers/media/i2c/imx258.c
+> index 775d957c9b87..fa48da212037 100644
+> --- a/drivers/media/i2c/imx258.c
+> +++ b/drivers/media/i2c/imx258.c
+> @@ -6,6 +6,7 @@
+>  #include <linux/delay.h>
+>  #include <linux/i2c.h>
+>  #include <linux/module.h>
+> +#include <linux/of_device.h>
+>  #include <linux/pm_runtime.h>
+>  #include <linux/regulator/consumer.h>
+>  #include <media/v4l2-ctrls.h>
+> @@ -321,8 +322,6 @@ static const struct imx258_reg mipi_642mbps_24mhz_4l[] = {
+>  
+>  static const struct imx258_reg mode_common_regs[] = {
+>  	{ 0x3051, 0x00 },
+> -	{ 0x3052, 0x00 },
+> -	{ 0x4E21, 0x14 },
+>  	{ 0x6B11, 0xCF },
+>  	{ 0x7FF0, 0x08 },
+>  	{ 0x7FF1, 0x0F },
+> @@ -345,7 +344,6 @@ static const struct imx258_reg mode_common_regs[] = {
+>  	{ 0x7FA8, 0x03 },
+>  	{ 0x7FA9, 0xFE },
+>  	{ 0x7B24, 0x81 },
+> -	{ 0x7B25, 0x00 },
+>  	{ 0x6564, 0x07 },
+>  	{ 0x6B0D, 0x41 },
+>  	{ 0x653D, 0x04 },
+> @@ -460,6 +458,33 @@ static const struct imx258_reg mode_1048_780_regs[] = {
+>  	{ 0x034F, 0x0C },
+>  };
+>  
+> +struct imx258_variant_cfg {
+> +	const struct imx258_reg *regs;
+> +	unsigned int num_regs;
+> +};
+> +
+> +static const struct imx258_reg imx258_cfg_regs[] = {
+> +	{ 0x3052, 0x00 },
+> +	{ 0x4E21, 0x14 },
+> +	{ 0x7B25, 0x00 },
+> +};
+> +
+> +static const struct imx258_variant_cfg imx258_cfg = {
+> +	.regs = imx258_cfg_regs,
+> +	.num_regs = ARRAY_SIZE(imx258_cfg_regs),
+> +};
+> +
+> +static const struct imx258_reg imx258_pdaf_cfg_regs[] = {
+> +	{ 0x3052, 0x01 },
+> +	{ 0x4E21, 0x10 },
+> +	{ 0x7B25, 0x01 },
+> +};
+> +
+> +static const struct imx258_variant_cfg imx258_pdaf_cfg = {
+> +	.regs = imx258_pdaf_cfg_regs,
+> +	.num_regs = ARRAY_SIZE(imx258_pdaf_cfg_regs),
+> +};
+> +
+>  static const char * const imx258_test_pattern_menu[] = {
+>  	"Disabled",
+>  	"Solid Colour",
+> @@ -637,6 +662,8 @@ struct imx258 {
+>  	struct v4l2_subdev sd;
+>  	struct media_pad pad;
+>  
+> +	const struct imx258_variant_cfg *variant_cfg;
+> +
+>  	struct v4l2_ctrl_handler ctrl_handler;
+>  	/* V4L2 Controls */
+>  	struct v4l2_ctrl *link_freq;
+> @@ -1104,6 +1131,14 @@ static int imx258_start_streaming(struct imx258 *imx258)
+>  		return ret;
+>  	}
+>  
+> +	ret = imx258_write_regs(imx258, imx258->variant_cfg->regs,
+> +				imx258->variant_cfg->num_regs);
+> +	if (ret) {
+> +		dev_err(&client->dev, "%s failed to set variant config\n",
+> +			__func__);
+> +		return ret;
+> +	}
+> +
+>  	ret = imx258_write_reg(imx258, IMX258_CLK_BLANK_STOP,
+>  			       IMX258_REG_VALUE_08BIT,
+>  			       imx258->csi2_flags & V4L2_MBUS_CSI2_NONCONTINUOUS_CLOCK ?
+> @@ -1492,6 +1527,10 @@ static int imx258_probe(struct i2c_client *client)
+>  
+>  	imx258->csi2_flags = ep.bus.mipi_csi2.flags;
+>  
+> +	imx258->variant_cfg = of_device_get_match_data(&client->dev);
 
-Just one thing that came to mind - there's no flushing of the
-cpuset_migrate_tasks_workfn() work, so the scheduler might move tasks
-itself before the cpuset does via:
+You'll also need to keep this working for ACPI based systems. I.e. in
+practice remove "of_" prefix here and add the non-PDAF variant data to the
+relevant ACPI ID list.
 
-  balance_push() ->__balance_push_cpu_stop() -> select_fallback_rq()
+> +	if (!imx258->variant_cfg)
+> +		imx258->variant_cfg = &imx258_cfg;
+> +
+>  	/* Initialize subdev */
+>  	v4l2_i2c_subdev_init(&imx258->sd, client, &imx258_subdev_ops);
+>  
+> @@ -1579,7 +1618,8 @@ MODULE_DEVICE_TABLE(acpi, imx258_acpi_ids);
+>  #endif
+>  
+>  static const struct of_device_id imx258_dt_ids[] = {
+> -	{ .compatible = "sony,imx258" },
+> +	{ .compatible = "sony,imx258", .data = &imx258_cfg },
+> +	{ .compatible = "sony,imx258-pdaf", .data = &imx258_pdaf_cfg },
+>  	{ /* sentinel */ }
+>  };
+>  MODULE_DEVICE_TABLE(of, imx258_dt_ids);
 
-But, given the current placement of cpuset_wait_for_hotplug(), I believe
-that's something we can already have, so we should be good.
+-- 
+Kind regards,
 
-> Cheers,
-> Longman
-
+Sakari Ailus
 
