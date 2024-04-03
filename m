@@ -1,152 +1,149 @@
-Return-Path: <linux-kernel+bounces-129886-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-129887-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 79E808971A3
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 15:52:39 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 178FB8971A6
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 15:52:48 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AAC841C26EFB
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 13:52:38 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C0F502832E4
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 13:52:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7ED9D1494A8;
-	Wed,  3 Apr 2024 13:52:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="AorutTzH"
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6750A1494C8;
+	Wed,  3 Apr 2024 13:52:11 +0000 (UTC)
+Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1CCDF148820;
-	Wed,  3 Apr 2024 13:52:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.158.5
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 77479148318;
+	Wed,  3 Apr 2024 13:52:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.176.79.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712152329; cv=none; b=Q8hGe4SO2vRcYnxGBiLTcrqFfZ2BPI+nKbKmrHs5uVg8dvIoy1QTWZ1BX6JXGZARVdDyoJpXBrputBzi7HZqhmamf0uusxSM0JwJOxeTGmhvda4NvhgN8e0ti5vL34RUyE7+oVA3Os2dHbcxfmhAx7B/holAsf6szvvxjUhx6js=
+	t=1712152330; cv=none; b=JYrQHtA0ZF7569RwdDW/zC+h7lQ2EgD9pdAEPK1TwnFt8gV3jb3LeKcz+kgD3YXJaAuXs89oR9oSfiff9H7yks/JEALISo4HM7aNDoqA9a2AUpuGX1VXQqpoAdI5nBeJTqX6A+J4aZgcMoJGh/GiORo42yCFrtvgfD43vLF4VWM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712152329; c=relaxed/simple;
-	bh=CwJkkDx4ZIW2eMWEeW36i0Kt+cMh5ZXbEta6hcL2aYk=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=fdsKaoMO1JYmgKm4ZsOoD/ZQJpNg0Pa0afVniIs4oIqgbRlvFiH31y7OFncwOVVI3Xt+By1ZsRz0TRW+k5MH6rI0r7zQ869Y8QP5kFT5JUB4WSlixIyRilGP5EFAPzcQsf3OSXezHqTzzTVDFzBU8rtnEuRCOKYUi4byk0Iiut0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=AorutTzH; arc=none smtp.client-ip=148.163.158.5
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0353723.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 433DUALL004827;
-	Wed, 3 Apr 2024 13:52:02 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding; s=pp1;
- bh=izIyucAL52DXDXjFVhD5rovKwvgy+szpaDNZyUpZuaU=;
- b=AorutTzHsWbMncgRqUA77BO59QbimRvtQtmgotj6qmvpOCtOiinnswO8O2urEhAzKOGU
- 80N868uTU/aiwzYMdihEK973aC+uz38h/TZkdz1xVKup2pjFj/AqfmhlqzW6yyFw5NMJ
- HsDAMTy/pUm2aCXRQ8Nvz/2Tum5m5vyRKx42HyDip0Bq40ZWo+BWAUU7TZ+0SHS06LWe
- lu1K3w3xgjWftpRl534hl4DVVVl37tP9fEjBkgslMkVyvaCCAB2YwkGPA3OHgZK+meku
- ZbikzRfoL3j409QPxR4TktneSnAvk04Jo/gOLp/t2mmNnlVTOCz5FGOzt7zmopBqJLBb aA== 
-Received: from pps.reinject (localhost [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3x982001s3-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 03 Apr 2024 13:52:01 +0000
-Received: from m0353723.ppops.net (m0353723.ppops.net [127.0.0.1])
-	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 433Dq1sh007006;
-	Wed, 3 Apr 2024 13:52:01 GMT
-Received: from ppma21.wdc07v.mail.ibm.com (5b.69.3da9.ip4.static.sl-reverse.com [169.61.105.91])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3x982001s0-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 03 Apr 2024 13:52:01 +0000
-Received: from pps.filterd (ppma21.wdc07v.mail.ibm.com [127.0.0.1])
-	by ppma21.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 433CFw7q025796;
-	Wed, 3 Apr 2024 13:52:00 GMT
-Received: from smtprelay01.fra02v.mail.ibm.com ([9.218.2.227])
-	by ppma21.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3x6x2pdj4c-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 03 Apr 2024 13:52:00 +0000
-Received: from smtpav04.fra02v.mail.ibm.com (smtpav04.fra02v.mail.ibm.com [10.20.54.103])
-	by smtprelay01.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 433DptGO39715246
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Wed, 3 Apr 2024 13:51:57 GMT
-Received: from smtpav04.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 23A302004B;
-	Wed,  3 Apr 2024 13:51:55 +0000 (GMT)
-Received: from smtpav04.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id EB6802004D;
-	Wed,  3 Apr 2024 13:51:54 +0000 (GMT)
-Received: from tuxmaker.boeblingen.de.ibm.com (unknown [9.152.85.9])
-	by smtpav04.fra02v.mail.ibm.com (Postfix) with ESMTP;
-	Wed,  3 Apr 2024 13:51:54 +0000 (GMT)
-From: Niklas Schnelle <schnelle@linux.ibm.com>
-To: Marcel Holtmann <marcel@holtmann.org>,
-        Luiz Augusto von Dentz <luiz.dentz@gmail.com>
-Cc: linux-bluetooth@vger.kernel.org, Arnd Bergmann <arnd@kernel.org>,
-        Heiko Carstens <hca@linux.ibm.com>, linux-kernel@vger.kernel.org,
-        Niklas Schnelle <schnelle@linux.ibm.com>
-Subject: [PATCH 1/1] Bluetooth: add HAS_IOPORT dependencies
-Date: Wed,  3 Apr 2024 15:51:54 +0200
-Message-Id: <20240403135154.905614-2-schnelle@linux.ibm.com>
-X-Mailer: git-send-email 2.40.1
-In-Reply-To: <20240403135154.905614-1-schnelle@linux.ibm.com>
-References: <20240403135154.905614-1-schnelle@linux.ibm.com>
+	s=arc-20240116; t=1712152330; c=relaxed/simple;
+	bh=HMEfWzbSwWAN8nTimw2mnfhX0tvSQNkY41MOF5tayJ4=;
+	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
+	 Content-Type:MIME-Version; b=CguXoz+RSkLdnsjxXz5RT0JVWjXd+pVCQ88kZW/P6uSLJPZDDFJsgtThmli8JHw9u1vPGQ/1V08bdzoXYiwOen3jrIGNxSte839yH6AdIMRu2nwFH8RyLjy/+mgstJ9gcQ1W/9TTKAR9PtGtq5OmyY4C5V+rm9VJEqfBkgp+5aM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=185.176.79.56
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.18.186.216])
+	by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4V8mJs5NVGz6D9Rl;
+	Wed,  3 Apr 2024 21:47:25 +0800 (CST)
+Received: from lhrpeml500004.china.huawei.com (unknown [7.191.163.9])
+	by mail.maildlp.com (Postfix) with ESMTPS id 85C61140CB9;
+	Wed,  3 Apr 2024 21:52:03 +0800 (CST)
+Received: from lhrpeml500006.china.huawei.com (7.191.161.198) by
+ lhrpeml500004.china.huawei.com (7.191.163.9) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.35; Wed, 3 Apr 2024 14:52:03 +0100
+Received: from lhrpeml500006.china.huawei.com ([7.191.161.198]) by
+ lhrpeml500006.china.huawei.com ([7.191.161.198]) with mapi id 15.01.2507.035;
+ Wed, 3 Apr 2024 14:52:03 +0100
+From: Shiju Jose <shiju.jose@huawei.com>
+To: Daniel Ferguson <danielf@os.amperecomputing.com>,
+	"linux-cxl@vger.kernel.org" <linux-cxl@vger.kernel.org>,
+	"linux-acpi@vger.kernel.org" <linux-acpi@vger.kernel.org>,
+	"linux-mm@kvack.org" <linux-mm@kvack.org>, "dan.j.williams@intel.com"
+	<dan.j.williams@intel.com>, "dave@stgolabs.net" <dave@stgolabs.net>,
+	"Jonathan Cameron" <jonathan.cameron@huawei.com>, "dave.jiang@intel.com"
+	<dave.jiang@intel.com>, "alison.schofield@intel.com"
+	<alison.schofield@intel.com>, "vishal.l.verma@intel.com"
+	<vishal.l.verma@intel.com>, "ira.weiny@intel.com" <ira.weiny@intel.com>
+CC: "linux-edac@vger.kernel.org" <linux-edac@vger.kernel.org>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	"david@redhat.com" <david@redhat.com>, "Vilas.Sridharan@amd.com"
+	<Vilas.Sridharan@amd.com>, "leo.duran@amd.com" <leo.duran@amd.com>,
+	"Yazen.Ghannam@amd.com" <Yazen.Ghannam@amd.com>, "rientjes@google.com"
+	<rientjes@google.com>, "jiaqiyan@google.com" <jiaqiyan@google.com>,
+	"tony.luck@intel.com" <tony.luck@intel.com>, "Jon.Grimm@amd.com"
+	<Jon.Grimm@amd.com>, "dave.hansen@linux.intel.com"
+	<dave.hansen@linux.intel.com>, "rafael@kernel.org" <rafael@kernel.org>,
+	"lenb@kernel.org" <lenb@kernel.org>, "naoya.horiguchi@nec.com"
+	<naoya.horiguchi@nec.com>, "james.morse@arm.com" <james.morse@arm.com>,
+	"jthoughton@google.com" <jthoughton@google.com>, "somasundaram.a@hpe.com"
+	<somasundaram.a@hpe.com>, "erdemaktas@google.com" <erdemaktas@google.com>,
+	"pgonda@google.com" <pgonda@google.com>, "duenwen@google.com"
+	<duenwen@google.com>, "mike.malvestuto@intel.com"
+	<mike.malvestuto@intel.com>, "gthelen@google.com" <gthelen@google.com>,
+	"wschwartz@amperecomputing.com" <wschwartz@amperecomputing.com>,
+	"dferguson@amperecomputing.com" <dferguson@amperecomputing.com>, tanxiaofei
+	<tanxiaofei@huawei.com>, "Zengtao (B)" <prime.zeng@hisilicon.com>,
+	"kangkang.shen@futurewei.com" <kangkang.shen@futurewei.com>, wanghuiqiang
+	<wanghuiqiang@huawei.com>, Linuxarm <linuxarm@huawei.com>,
+	"wbs@os.amperecomputing.com" <wbs@os.amperecomputing.com>
+Subject: RE: [RFC PATCH v7 00/12] memory: scrub: introduce subsystem +
+ CXL/ACPI-RAS2 drivers
+Thread-Topic: [RFC PATCH v7 00/12] memory: scrub: introduce subsystem +
+ CXL/ACPI-RAS2 drivers
+Thread-Index: AQHaZmXXQwZWLjPhY0S3rmfIb/nqxrFOBaAAgAie3mA=
+Date: Wed, 3 Apr 2024 13:52:02 +0000
+Message-ID: <341e8365816746f58bc8f5b270f91eef@huawei.com>
+References: <20240223143723.1574-1-shiju.jose@huawei.com>
+ <0309f5f9-9a95-485c-a442-e9fba603d676@os.amperecomputing.com>
+In-Reply-To: <0309f5f9-9a95-485c-a442-e9fba603d676@os.amperecomputing.com>
+Accept-Language: en-GB, en-US
+Content-Language: en-US
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: QxpHuYairbRSKolX4a3Nm_Lqch2bqHmo
-X-Proofpoint-ORIG-GUID: d5fd3vmzZTJAnoMUPkfT6QECJ23dbMVU
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-04-03_13,2024-04-03_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 bulkscore=0
- impostorscore=0 mlxscore=0 phishscore=0 adultscore=0 mlxlogscore=941
- spamscore=0 lowpriorityscore=0 malwarescore=0 priorityscore=1501
- suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2403210000 definitions=main-2404030095
 
-In a future patch HAS_IOPORT=n will disable inb()/outb() and friends at
-compile time. We thus need to add HAS_IOPORT as dependency for those
-drivers using them.
-
-Co-developed-by: Arnd Bergmann <arnd@kernel.org>
-Signed-off-by: Arnd Bergmann <arnd@kernel.org>
-Signed-off-by: Niklas Schnelle <schnelle@linux.ibm.com>
----
- drivers/bluetooth/Kconfig | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
-
-diff --git a/drivers/bluetooth/Kconfig b/drivers/bluetooth/Kconfig
-index bc211c324206..d11b55fddf86 100644
---- a/drivers/bluetooth/Kconfig
-+++ b/drivers/bluetooth/Kconfig
-@@ -323,7 +323,7 @@ config BT_HCIBFUSB
- 
- config BT_HCIDTL1
- 	tristate "HCI DTL1 (PC Card) driver"
--	depends on PCMCIA
-+	depends on PCMCIA && HAS_IOPORT
- 	help
- 	  Bluetooth HCI DTL1 (PC Card) driver.
- 	  This driver provides support for Bluetooth PCMCIA devices with
-@@ -336,7 +336,7 @@ config BT_HCIDTL1
- 
- config BT_HCIBT3C
- 	tristate "HCI BT3C (PC Card) driver"
--	depends on PCMCIA
-+	depends on PCMCIA && HAS_IOPORT
- 	select FW_LOADER
- 	help
- 	  Bluetooth HCI BT3C (PC Card) driver.
-@@ -350,7 +350,7 @@ config BT_HCIBT3C
- 
- config BT_HCIBLUECARD
- 	tristate "HCI BlueCard (PC Card) driver"
--	depends on PCMCIA
-+	depends on PCMCIA && HAS_IOPORT
- 	help
- 	  Bluetooth HCI BlueCard (PC Card) driver.
- 	  This driver provides support for Bluetooth PCMCIA devices with
--- 
-2.40.1
-
+SGkgRGFuaWVsLA0KDQpUaGFua3MgZm9yIHRoZSBmZWVkYmFja3MuDQoNCj4tLS0tLU9yaWdpbmFs
+IE1lc3NhZ2UtLS0tLQ0KPkZyb206IERhbmllbCBGZXJndXNvbiA8ZGFuaWVsZkBvcy5hbXBlcmVj
+b21wdXRpbmcuY29tPg0KPlNlbnQ6IDI4IE1hcmNoIDIwMjQgMjM6NDANCj5UbzogU2hpanUgSm9z
+ZSA8c2hpanUuam9zZUBodWF3ZWkuY29tPjsgbGludXgtY3hsQHZnZXIua2VybmVsLm9yZzsgbGlu
+dXgtDQo+YWNwaUB2Z2VyLmtlcm5lbC5vcmc7IGxpbnV4LW1tQGt2YWNrLm9yZzsgZGFuLmoud2ls
+bGlhbXNAaW50ZWwuY29tOw0KPmRhdmVAc3Rnb2xhYnMubmV0OyBKb25hdGhhbiBDYW1lcm9uIDxq
+b25hdGhhbi5jYW1lcm9uQGh1YXdlaS5jb20+Ow0KPmRhdmUuamlhbmdAaW50ZWwuY29tOyBhbGlz
+b24uc2Nob2ZpZWxkQGludGVsLmNvbTsgdmlzaGFsLmwudmVybWFAaW50ZWwuY29tOw0KPmlyYS53
+ZWlueUBpbnRlbC5jb20NCj5DYzogbGludXgtZWRhY0B2Z2VyLmtlcm5lbC5vcmc7IGxpbnV4LWtl
+cm5lbEB2Z2VyLmtlcm5lbC5vcmc7DQo+ZGF2aWRAcmVkaGF0LmNvbTsgVmlsYXMuU3JpZGhhcmFu
+QGFtZC5jb207IGxlby5kdXJhbkBhbWQuY29tOw0KPllhemVuLkdoYW5uYW1AYW1kLmNvbTsgcmll
+bnRqZXNAZ29vZ2xlLmNvbTsgamlhcWl5YW5AZ29vZ2xlLmNvbTsNCj50b255Lmx1Y2tAaW50ZWwu
+Y29tOyBKb24uR3JpbW1AYW1kLmNvbTsgZGF2ZS5oYW5zZW5AbGludXguaW50ZWwuY29tOw0KPnJh
+ZmFlbEBrZXJuZWwub3JnOyBsZW5iQGtlcm5lbC5vcmc7IG5hb3lhLmhvcmlndWNoaUBuZWMuY29t
+Ow0KPmphbWVzLm1vcnNlQGFybS5jb207IGp0aG91Z2h0b25AZ29vZ2xlLmNvbTsgc29tYXN1bmRh
+cmFtLmFAaHBlLmNvbTsNCj5lcmRlbWFrdGFzQGdvb2dsZS5jb207IHBnb25kYUBnb29nbGUuY29t
+OyBkdWVud2VuQGdvb2dsZS5jb207DQo+bWlrZS5tYWx2ZXN0dXRvQGludGVsLmNvbTsgZ3RoZWxl
+bkBnb29nbGUuY29tOw0KPndzY2h3YXJ0ekBhbXBlcmVjb21wdXRpbmcuY29tOyBkZmVyZ3Vzb25A
+YW1wZXJlY29tcHV0aW5nLmNvbTsNCj50YW54aWFvZmVpIDx0YW54aWFvZmVpQGh1YXdlaS5jb20+
+OyBaZW5ndGFvIChCKSA8cHJpbWUuemVuZ0BoaXNpbGljb24uY29tPjsNCj5rYW5na2FuZy5zaGVu
+QGZ1dHVyZXdlaS5jb207IHdhbmdodWlxaWFuZyA8d2FuZ2h1aXFpYW5nQGh1YXdlaS5jb20+Ow0K
+PkxpbnV4YXJtIDxsaW51eGFybUBodWF3ZWkuY29tPjsgd2JzQG9zLmFtcGVyZWNvbXB1dGluZy5j
+b20NCj5TdWJqZWN0OiBSZTogW1JGQyBQQVRDSCB2NyAwMC8xMl0gbWVtb3J5OiBzY3J1YjogaW50
+cm9kdWNlIHN1YnN5c3RlbSArDQo+Q1hML0FDUEktUkFTMiBkcml2ZXJzDQo+DQo+PiBSQVMyIEhX
+IGJhc2VkIG1lbW9yeSBwYXRyb2wgc2NydWIgbmVlZHMgUkFTMiBQQ0MgaW50ZXJmYWNlcyBhbmQg
+QUNQSQ0KPj4gUkFTMiBkcml2ZXIgZm9yIGNvbW11bmljYXRpb24gYi93IGtlcm5lbCBhbmQgZmly
+bXdhcmUuDQo+PiBBQ1BJIFJBUzIgRHJpdmVyIGFkZHMgcGxhdGZvcm0gZGV2aWNlLCBmb3IgZWFj
+aCBtZW1vcnkgZmVhdHVyZSwgd2hpY2gNCj4+IGJpbmRzIHRvIHRoZSBSQVMyIG1lbW9yeSBkcml2
+ZXIuDQo+PiBNZW1vcnkgUkFTMiBkcml2ZXIgcmVnaXN0ZXJzIHdpdGggdGhlIG1lbW9yeSBzY3J1
+YiBzdWJzeXN0ZW0gdG8gZXhwb3NlDQo+PiB0aGUgUkFTMiBzY3J1YiBjb250cm9scyB0byB0aGUg
+dXNlci4NCj4NCj5IaSBTaGlqdSwNCj5UaGFua3MgZm9yIHRoaXMgd29yay4gVGhpcyBoYXMgYmVl
+biB2ZXJ5IHVzZWZ1bCBmb3IgdXMsIGFzIHdlJ3ZlIGJlZW4gdXNpbmcgaXQgdG8NCj50ZXN0IGEg
+UkFTMiBpbXBsZW1lbnRhdGlvbiBoZXJlIGF0IEFtcGVyZSBDb21wdXRpbmcuDQo+DQo+SW4gZ2Vu
+ZXJhbCwgdGhlIHBpZWNlcyBpbXBsZW1lbnRpbmcgUkFTMiBhcmUgdXNlZnVsIGFuZCBmdW5jdGlv
+bmFsLiBXZSBkaWQsDQo+aG93ZXZlciwgZW5jb3VudGVyIGEgZmV3IHBsYWNlcyB3aGVyZSB3ZSBo
+YWQgdG8gbWFrZSBzb21lIGJ1ZyBmaXhlcy4NCj5JJ2xsIHJlcGx5IHRvIHNwZWNpZmljIHBhdGNo
+ZXMgd2l0aCBjaGFuZ2VzIEkgY2FuIHJlY29tbWVuZC4gQWxzbywgdGhlcmUgYXJlIGENCj5mZXcg
+aW1wbGVtZW50YXRpb24gY2hvaWNlcyB0aGF0IEkgd2lsbCBoYXZlIHF1ZXN0aW9ucyBhYm91dC4N
+Cj4NCj5IZXJlIGlzIGFuIG91dGxpbmUgY29udGFpbmluZyB0aGUgZ2VuZXJhbGl6ZWQgY29tbWVu
+dHMgSSBwbGFuIG9uIG1ha2luZw0KPndpdGhpbi9uZWFyIHJlbGV2YW50IHBhdGNoZXM6DQo+MSkg
+Rm91bmQgYSBidWcgaW4gcmFzMi5jIGluIGhvdyB0aGUgcGNjX2Rlc2NfbGlzdCBwb2ludGVyIGlz
+IGluY3JlbWVudGVkLg0KVGhpcyBidWcgd2FzIGZpeGVkIGluIHRoZSBsb2NhbCB2OCBjb2RlLg0K
+DQo+MikgRXhlY3V0aW5nIGEgUkFTMiBjb21tYW5kIHNlZW1zIHVubmVjZXNzYXJ5IGZvciBmZWF0
+dXJlIGRldGVjdGlvbi4NCj5zcGVjaWZpY2FsbHksIGluIHRoZSBmdW5jdGlvbnMgcmFzMl9pc19w
+YXRyb2xfc2NydWJfc3VwcG9ydCgpIGFuZA0KPnJhczJfZ2V0X3BhdHJvbF9zY3J1Yl9wYXJhbXMo
+KQ0KSSB3aWxsIGNoZWNrIGFuZCBtb2RpZnkgaW4gdGhlIG5leHQgdmVyc2lvbi4NCg0KPjMpIENv
+bnNpZGVyIGFkZGluZyBtb3JlIGVycm9yIGRldGVjdGlvbi9yZXBvcnRpbmcgaW4gcmFzMl9jaGVj
+a19wY2NfY2hhbigpDQpTdXJlLg0KDQo+NCkgQ29uY2VybnMgd2l0aCBtdWx0aXBsZSBzY3J1YiBk
+ZXZpY2VzIGF0dGVtcHRpbmcgdG8gbWFwIHRoZSBzYW1lIFBDQw0KPmNoYW5uZWwuDQpJIHdpbGwg
+cmVwbHkgaW4gdGhlIHBhdGNoLiANCj4NCj4tRGFuaWVsDQo+DQpUaGFua3MsDQpTaGlqdQ0KDQo=
 
