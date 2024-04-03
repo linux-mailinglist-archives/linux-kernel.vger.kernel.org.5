@@ -1,192 +1,148 @@
-Return-Path: <linux-kernel+bounces-129066-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-129068-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id EF61189643C
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 07:51:15 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id CE682896444
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 07:54:32 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E7366B21BAF
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 05:51:12 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3E080B21ED2
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 05:54:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B13524CB4E;
-	Wed,  3 Apr 2024 05:51:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E9CEC4D133;
+	Wed,  3 Apr 2024 05:54:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="msAKyTwB"
-Received: from mail-lj1-f177.google.com (mail-lj1-f177.google.com [209.85.208.177])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="fbCKW/3w"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.15])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 28F811870
-	for <linux-kernel@vger.kernel.org>; Wed,  3 Apr 2024 05:51:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BA9224CB2B
+	for <linux-kernel@vger.kernel.org>; Wed,  3 Apr 2024 05:54:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.15
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712123465; cv=none; b=h5EY3kSLg4RX/FhW9TQocNYUHXXhIt++itVJacEqUKRnn1q+rrvLy6sfMaNjY1v1Noetlh1acM927yp7M0KA7W9EKfINq9Sh5nQvUMfVa1nrw9ozpuanpmzIGAbajhzy6Kmxj3kTj0SSH2Oh6XlQ5QEu97QM9T5J1qqmROPrNXo=
+	t=1712123663; cv=none; b=sGMToyYLueIoq6+z6dxkmXLZw3PEZbtXXaPkxBFn+6vp/iq//KkDGB8TDP3BM5H8WNrDz4DAi4yiLEfbXgsHjNJffnAREbnjbPHXN2gfERGhQep93moIoX1G9gMV+uqzWUJ3kVrYNS09/Z0Fzd2nzdrWOJ7nkbdeLPQI9RCE64c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712123465; c=relaxed/simple;
-	bh=E4FbwUVJWlX4xtcxltOFjRly3b0AT46saRVGRZAwbpU=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=bgdEWZd5XKUPRQdqK0qLqTr27H0Mlr9Cohctf37NFDAIpKWGr+a95K+siA4s1DMdDpE3cpUrVxbKHWsWAUswcQ9lVZtniJySIRLIii4lCZqvr7SyJ3IzQLmBq3wTUvMBnI2vG7oM6Vy35JOCMB1JjS/C0qIKMixrSa85CWLTnK0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=msAKyTwB; arc=none smtp.client-ip=209.85.208.177
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lj1-f177.google.com with SMTP id 38308e7fff4ca-2d715638540so66448441fa.3
-        for <linux-kernel@vger.kernel.org>; Tue, 02 Apr 2024 22:51:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1712123462; x=1712728262; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=pCe99m+lvX3Q9JdwOVipLcUF6ks8hURE2QgW54n2EHA=;
-        b=msAKyTwBL1035beDcwbrXObMP3gITDHOzPZIo35jphL5VQTtApAAcdNNSM1SgAUz1K
-         0wq67t9BURBlSVZYpOX0fx/0D20HyM/FHAMbK0tYdcryaFFIWVvCSLfYi/Ca7oOcsS8i
-         Ljv3Ez7Tn/Vs2XsbvgFbwj40Ybrbwsrw72bge6uPwTkqqW3Q1c3F5b9M/xhwAsq90wzb
-         tUbUtKmLMOtGCANVITMpADDNnJz9l4BE8Fc7FD7UxgNMKtvPKVjzF0lDt9j53tovVNDa
-         qVkBx+li7Hnk6e0OxuNwU84KsmaQTW17jWbl2tKZNN2y9IgmjipUgXPebTAf1ljL30N6
-         AMXA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712123462; x=1712728262;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=pCe99m+lvX3Q9JdwOVipLcUF6ks8hURE2QgW54n2EHA=;
-        b=jarSe+O88ii4G9LcwDL7RrHfhdnXK1Koru0WIsB2RQMHaHORtmesuHm+rlhsPboOex
-         pmYYE5JbJ2EXs5MtSZqD3w+YvQwGSJSNgvywOSTHiyAZ44DsY0kRJ8szdpU3/ehauKbH
-         9yQqrrg/48G9KW5BYFYsQgzlNeAsHiygTN0ZQMVhNE2ZdGxs8lgqCC3XK+Ea2zxRTL+P
-         gqJa5rrHlj8AmbuW8RW/Rk6MTKM8BnsmpYtV5T7i/FtFvIcqzA0Wne4fb9R33bMR26k/
-         eZ5sBx55SiB3n97h0CncMtXfpZyxH7DOo+ZWqeAD9Vw7PuGaWdsJl0g2gWzZSrWQqLs9
-         IpBA==
-X-Forwarded-Encrypted: i=1; AJvYcCWqwLPDZ3PpsT0tO1LKuBJDRiQfw2/tqbXU7JX2YTgOxhSm4hKCwnpUCeV8juZBBFk1cFt8zWmNQYqhVdOWlPGN6BAP/rlxcyr+e0jE
-X-Gm-Message-State: AOJu0YxCHAPkh4LvllIBscZGF9Arl7OsyWNgWg980a8Fzut/AyVZYhuu
-	h5yQvXaYaq2wd8cy5d41peKVjYqpEbVGod8dYp6OEy7enpSpR6obHINb58VIcUmX7frp9LfRgri
-	a85GugiskdqSLca75NTQVk2ZQGr4=
-X-Google-Smtp-Source: AGHT+IHFqmXqlBSd2ZbMViKWG+Z1LzyEnCtR30sIJcynrZM9shhHsPMu9mH9re6Zh+Mf/CW35nLpVb9a2Oyge73CAY8=
-X-Received: by 2002:a2e:b1c9:0:b0:2d4:42da:40fe with SMTP id
- e9-20020a2eb1c9000000b002d442da40femr9203882lja.17.1712123462056; Tue, 02 Apr
- 2024 22:51:02 -0700 (PDT)
+	s=arc-20240116; t=1712123663; c=relaxed/simple;
+	bh=2AbxKAfDZUN1hrqHIFLRsS3F44dpdKbXX0E1kqQankY=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition; b=KEfFf/7zZBNj6kWAgHcEYUrOvikeN7IwUAbCw29wlFGYPXP2QoC0FOmmtUwKFJdrmQbao+XoOkNcwfnV60p2t5hnUzA0mgV6PmUQzUVbI/URXkPz/Lg1g2tMJvgVTrK+aMRek/kebA/hew5uG+uZhkVFJ8h306YFjtvUt9CYm3c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=fbCKW/3w; arc=none smtp.client-ip=198.175.65.15
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1712123662; x=1743659662;
+  h=date:from:to:cc:subject:message-id:mime-version;
+  bh=2AbxKAfDZUN1hrqHIFLRsS3F44dpdKbXX0E1kqQankY=;
+  b=fbCKW/3w+kurh+LhzGuf81u1EEu0iAI7yCphvJ6nwvtsqbJmxHSSqDRM
+   Epfqd4j5fjR1hghL9ImMBEFc6oWChnOa83K1cjMw1OZn9ZZkwgOEriAx7
+   c8EXKakpVmA6gm5FByl2B9UmkJtgQ9aS2IoS5ixn3idmuWiA+z1/mLkPs
+   lpY+qWBIdzAm4LGhNOfKycDD3zbWyd0y63JUzxlxu0zwMMYLL9GGh0sd+
+   HN14V3c7c8g33kaQ+sJysI652plH0yZKlfIMsc4w8nvAoz6R7x/uW6Yo+
+   ILNUc5Rkfgrd+z987hKMtvUJM7qb+yOX+QeL1oTTy208wdjCdTi8I1ANq
+   w==;
+X-CSE-ConnectionGUID: DYBp18h3Sr2TXrgZFV+aSA==
+X-CSE-MsgGUID: FU5QPQnsQ5S9lYvNQrunxA==
+X-IronPort-AV: E=McAfee;i="6600,9927,11032"; a="11154091"
+X-IronPort-AV: E=Sophos;i="6.07,176,1708416000"; 
+   d="scan'208";a="11154091"
+Received: from orviesa006.jf.intel.com ([10.64.159.146])
+  by orvoesa107.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Apr 2024 22:54:22 -0700
+X-CSE-ConnectionGUID: YbCp/abMSxq0/KlztLLKBw==
+X-CSE-MsgGUID: dB/1mYqlRvSpj5mMrk7x8g==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,176,1708416000"; 
+   d="scan'208";a="18776156"
+Received: from wangmei-mobl.amr.corp.intel.com (HELO desk) ([10.209.86.58])
+  by orviesa006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Apr 2024 22:54:22 -0700
+Date: Tue, 2 Apr 2024 22:54:19 -0700
+From: Pawan Gupta <pawan.kumar.gupta@linux.intel.com>
+To: Thomas Gleixner <tglx@linutronix.de>, Borislav Petkov <bp@alien8.de>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Josh Poimboeuf <jpoimboe@kernel.org>,
+	Ingo Molnar <mingo@redhat.com>,
+	Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+	"H. Peter Anvin" <hpa@zytor.com>
+Cc: Daniel Sneddon <daniel.sneddon@linux.intel.com>,
+	antonio.gomez.iglesias@linux.intel.com,
+	alyssa.milburn@linux.intel.com, andrew.cooper3@citrix.com,
+	linux-kernel@vger.kernel.org,
+	Alyssa Milburn <alyssa.milburn@intel.com>, stable@kernel.org
+Subject: [PATCH v3] x86/bugs: Default retbleed to =stuff when retpoline is
+ enabled
+Message-ID: <20240402-retbleed-auto-stuff-v3-1-e65f275a8ec8@linux.intel.com>
+X-B4-Tracking: v=1; b=H4sIAJ/uDGYC/33NQQ7CIBCF4asY1tIwQBvqynsYF9gOlqSCAUpqm
+ t5d2pWJxuX/kvlmIRGDxUhOh4UEzDZa70qI44F0g3Z3pLYvTTjjknGmaMB0GxF7qqfkaUyTMbQ
+ WyIxuQbAaSbl8BjR23tXLtfRgY/LhtT/JsK3/vQwUaGOAYw1CNcqcR+umubIu4Vh1/kE2NfMPC
+ fhviRdJtZJBI1shQX9L67q+Ae7piSsGAQAA
+X-Mailer: b4 0.12.3
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240401081734.1433755-1-zhaoyang.huang@unisoc.com> <736b982a-57c9-441a-812c-87cdee2e096e@redhat.com>
-In-Reply-To: <736b982a-57c9-441a-812c-87cdee2e096e@redhat.com>
-From: Zhaoyang Huang <huangzhaoyang@gmail.com>
-Date: Wed, 3 Apr 2024 13:50:50 +0800
-Message-ID: <CAGWkznF6NQrB-vwBZCfCF-1WQJv8iwPPrwND7yDsPJw1EbfxQA@mail.gmail.com>
-Subject: Re: [PATCHv2 1/1] mm: fix unproperly folio_put by changing API in read_pages
-To: David Hildenbrand <david@redhat.com>
-Cc: "zhaoyang.huang" <zhaoyang.huang@unisoc.com>, Andrew Morton <akpm@linux-foundation.org>, 
-	NeilBrown <neilb@suse.de>, linux-mm@kvack.org, linux-kernel@vger.kernel.org, 
-	steve.kang@unisoc.com, Matthew Wilcox <willy@infradead.org>, 
-	Christoph Hellwig <hch@infradead.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-On Tue, Apr 2, 2024 at 8:58=E2=80=AFPM David Hildenbrand <david@redhat.com>=
- wrote:
->
-> On 01.04.24 10:17, zhaoyang.huang wrote:
-> > From: Zhaoyang Huang <zhaoyang.huang@unisoc.com>
-> >
-> > An VM_BUG_ON in step 9 of [1] could happen as the refcnt is dropped
-> > unproperly during the procedure of read_pages()->readahead_folio->folio=
-_put.
-> > This is introduced by commit 9fd472af84ab ("mm: improve cleanup when
-> > ->readpages doesn't process all pages")'.
-> >
-> > key steps of[1] in brief:
-> > 2'. Thread_truncate get folio to its local fbatch by find_get_entry in =
-step 2
-> > 7'. Last refcnt remained which is not as expect as from alloc_pages
-> >      but from thread_truncate's local fbatch in step 7
-> > 8'. Thread_reclaim succeed to isolate the folio by the wrong refcnt(not
-> >      the value but meaning) in step 8
-> > 9'. Thread_truncate hit the VM_BUG_ON in step 9
-> >
-> > [1]
-> > Thread_readahead:
-> > 0. folio =3D filemap_alloc_folio(gfp_mask, 0);
-> >         (refcount 1: alloc_pages)
-> > 1. ret =3D filemap_add_folio(mapping, folio, index + i, gfp_mask);
-> >         (refcount 2: alloc_pages, page_cache)
-> >
-> > Thread_truncate:
-> > 2. folio =3D find_get_entries(&fbatch_truncate);
-> >         (refcount 3: alloc_pages, page_cache, fbatch_truncate))
-> >
-> > Thread_readahead:
-> > 3. Then we call read_pages()
-> >         First we call ->readahead() which for some reason stops early.
-> > 4. Then we call readahead_folio() which calls folio_put()
-> >         (refcount 2: page_cache, fbatch_truncate)
-> > 5. Then we call folio_get()
-> >         (refcount 3: page_cache, fbatch_truncate, read_pages_temp)
-> > 6. Then we call filemap_remove_folio()
-> >         (refcount 2: fbatch_truncate, read_pages_temp)
-> > 7. Then we call folio_unlock() and folio_put()
-> >         (refcount 1: fbatch_truncate)
-> >
-> > Thread_reclaim:
-> > 8. collect the page from LRU and call shrink_inactive_list->isolate_lru=
-_folios
-> >          shrink_inactive_list
-> >          {
-> >              isolate_lru_folios
-> >              {
-> >                 if (!folio_test_lru(folio)) //false
-> >                     bail out;
-> >                 if (!folio_try_get(folio)) //false
-> >                     bail out;
-> >              }
-> >           }
-> >           (refcount 2: fbatch_truncate, reclaim_isolate)
-> >
-> > 9. call shrink_folio_list->__remove_mapping
-> >          shrink_folio_list()
-> >          {
-> >              folio_try_lock(folio);
-> >              __remove_mapping()
-> >              {
-> >                  if (!folio_ref_freeze(2)) //false
-> >                      bail out;
-> >              }
-> >              folio_unlock(folio)
-> >              list_add(folio, free_folios);
-> >          }
-> >          (folio has refcount 0)
-> >
-> > Thread_truncate:
-> > 10. Thread_truncate will hit the refcnt VM_BUG_ON(refcnt =3D=3D 0) in
-> > release_pages->folio_put_testzero
-> >          truncate_inode_pages_range
-> >          {
-> >              folio =3D find_get_entries(&fbatch_truncate);
-> >              truncate_inode_pages(&fbatch_truncate);
-> >              folio_fbatch_release(&fbatch_truncate);
-> >              {
-> >                  folio_put_testzero(folio); //VM_BUG_ON here
-> >              }
-> >          }
-> >
-> > fix: commit 9fd472af84ab ("mm: improve cleanup when ->readpages doesn't=
- process all pages")'
->
-> Something that would help here is an actual reproducer that triggersthis
-> issue.
->
-> To me, it's unclear at this point if we are talking about an actual
-> issue or a theoretical issue?
-Thanks for feedback. Above callstack is a theoretical issue so far
-which is arised from an ongoing analysis of a practical livelock issue
-generated by folio_try_get_rcu which is related to abnormal folio
-refcnt state. So do you think this callstack makes sense?
+On Intel systems when retpoline mitigation is enabled for spectre-v2,
+retbleed=auto does not enable RSB stuffing. This may make the system
+vulnerable to retbleed. Retpoline is not the default mitigation when
+IBRS is present, but in virtualized cases a VMM can hide IBRS from
+guests, resulting in guest deploying retpoline by default. Even if IBRS
+is enumerated, a user can still select spectre_v2=retpoline.
 
->
-> --
-> Cheers,
->
-> David / dhildenb
->
+As with other mitigations, mitigate retbleed by default. On Intel
+systems when retpoline is enabled, and retbleed mitigation is set to
+auto, enable Call Depth Tracking and RSB stuffing i.e. retbleed=stuff
+mitigation. For AMD/Hygon auto mode already selects the appropriate
+mitigation.
+
+Reported-by: Alyssa Milburn <alyssa.milburn@intel.com>
+Cc: stable@kernel.org
+Signed-off-by: Pawan Gupta <pawan.kumar.gupta@linux.intel.com>
+---
+v3:
+- Rebased to v6.9-rc2
+
+v2: https://lore.kernel.org/r/20240212-retbleed-auto-stuff-v2-1-89401649341a@linux.intel.com
+- Mitigate retbleed by default for spectre_v2=retpoline. (Josh)
+- Add the missing ',' in the comment. (Josh)
+- Rebased to v6.8-rc4
+
+v1: https://lore.kernel.org/r/20240208-retbleed-auto-stuff-v1-1-6f12e513868f@linux.intel.com
+---
+ arch/x86/kernel/cpu/bugs.c | 10 ++++++++--
+ 1 file changed, 8 insertions(+), 2 deletions(-)
+
+diff --git a/arch/x86/kernel/cpu/bugs.c b/arch/x86/kernel/cpu/bugs.c
+index e7ba936d798b..69d8ce58f244 100644
+--- a/arch/x86/kernel/cpu/bugs.c
++++ b/arch/x86/kernel/cpu/bugs.c
+@@ -1092,11 +1092,17 @@ static void __init retbleed_select_mitigation(void)
+ 			else if (IS_ENABLED(CONFIG_MITIGATION_IBPB_ENTRY) &&
+ 				 boot_cpu_has(X86_FEATURE_IBPB))
+ 				retbleed_mitigation = RETBLEED_MITIGATION_IBPB;
++		} else if (boot_cpu_data.x86_vendor == X86_VENDOR_INTEL &&
++			   spectre_v2_enabled == SPECTRE_V2_RETPOLINE) {
++			if (IS_ENABLED(CONFIG_CALL_DEPTH_TRACKING))
++				retbleed_mitigation = RETBLEED_MITIGATION_STUFF;
++			else
++				pr_err("WARNING: Retpoline enabled, but kernel not compiled with CALL_DEPTH_TRACKING.\n");
+ 		}
+ 
+ 		/*
+-		 * The Intel mitigation (IBRS or eIBRS) was already selected in
+-		 * spectre_v2_select_mitigation().  'retbleed_mitigation' will
++		 * If Intel mitigation (IBRS or eIBRS) was already selected in
++		 * spectre_v2_select_mitigation(),  'retbleed_mitigation' will
+ 		 * be set accordingly below.
+ 		 */
+ 
+
+---
+base-commit: 39cd87c4eb2b893354f3b850f916353f2658ae6f
+change-id: 20240208-retbleed-auto-stuff-53e0fa91305e
+
 
