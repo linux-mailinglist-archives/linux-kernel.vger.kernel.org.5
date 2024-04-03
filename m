@@ -1,47 +1,48 @@
-Return-Path: <linux-kernel+bounces-129750-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-129748-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id C7F6E896F77
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 14:54:36 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id A07D6896F73
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 14:54:13 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 062141C267F1
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 12:54:36 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 53ED9289EF8
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 12:54:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B8B8A14900A;
-	Wed,  3 Apr 2024 12:53:09 +0000 (UTC)
-Received: from smtpbgbr1.qq.com (smtpbgbr1.qq.com [54.207.19.206])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9D18414882F;
+	Wed,  3 Apr 2024 12:52:26 +0000 (UTC)
+Received: from smtpbg154.qq.com (smtpbg154.qq.com [15.184.224.54])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 568CC1482E1;
-	Wed,  3 Apr 2024 12:53:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=54.207.19.206
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 852421487E2;
+	Wed,  3 Apr 2024 12:52:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=15.184.224.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712148789; cv=none; b=QcQPBQ9YjIY/FZcbFigAnQlfWXYaze9FEKwxNw6uWaR6x7Ghixyp8yxnfH3LO7UeXUF5pj1nPsbBv9S57y/jJ3mq024+w9pZFjBRPlErqqAVYOJ+JIDABBtA2ZoieMr4/cVXeQ+gHD4QJhu4C8HT3UaKSPcJXp2W5ix9U87g4oI=
+	t=1712148746; cv=none; b=BNVn0gf2GUNknez4y8t/5i5rgRSb6evMEulrAh49Yk2Q/6XfYr7fUv1Thn2JuAO8cByBG9Eluuwz63+a11wtvHoc2V1ZQcsKzlG5B7DXnIrETcOJxMmRkVUCSlJO2esYVgQmtzPAFtecIjzW8quoWcs8KO+TF6Zwm5L1JFnapOQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712148789; c=relaxed/simple;
-	bh=oEllcByHTb5ruy6A9Usqz1VtCeCPw7v0KZkyVRzJ3FY=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=PR+PNDeaLC3aAZfhqCnT3fM3tvTsVZRyC5PM4t60lr86s7pRsVzHRhtL9nTUYxLSBXCmfGsD3pZDQPANWsPH5uyweRSBVpqEtn4gQyYS9W3jECprx28cke0NGKlf256c1AwmjvCmkW4hvqqe22vfsWYUznDoZlYRVvtTnr2SFwc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=shingroup.cn; spf=pass smtp.mailfrom=shingroup.cn; arc=none smtp.client-ip=54.207.19.206
+	s=arc-20240116; t=1712148746; c=relaxed/simple;
+	bh=Re5TwhQ0QoFy44j2poIlImy55nEU9kHehFfmXVKdsDQ=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=dzBNhthfzDPy9q/OQHVsGGKxh49AYhAYo73wnOfvjR3JFqIJKiVW1CoFuL0kx7uauIp8pVcvdCL9kb/PrIo0McNzAi9qEXUkZs8tNzzFNnXsYaYMa5kUoxcPZSNhzJd1cCSVOrfA6U3FWNwmwCptWhcufTHOcpdbq4XIEp1YP6Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=shingroup.cn; spf=pass smtp.mailfrom=shingroup.cn; arc=none smtp.client-ip=15.184.224.54
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=shingroup.cn
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=shingroup.cn
-X-QQ-mid: bizesmtpsz11t1712148686tdr3l7
-X-QQ-Originating-IP: SM5s8FAZLkIg0k+zF/ph3vSArsy2doitvdgwni5O9z0=
+X-QQ-mid: bizesmtpsz4t1712148701tsac26x
+X-QQ-Originating-IP: Pt3Yzg7Fbd/Gq685Lb68nVVJ5dOnwjDPocHW6PLILm8=
 Received: from localhost ( [112.0.147.175])
 	by bizesmtp.qq.com (ESMTP) with 
-	id ; Wed, 03 Apr 2024 20:51:24 +0800 (CST)
+	id ; Wed, 03 Apr 2024 20:51:39 +0800 (CST)
 X-QQ-SSF: 01400000000000704000000A0000000
-X-QQ-FEAT: 3M0okmaRx3j5lef41+AwE9Y+CgaUKkKYmVC9Hf7Y5u3aB2n+VoMXvS/oH3NmX
-	CN9ZCNixChYwql3f3fM5oDTW1nlfJ7ur6GPa+OMpaISt8QpYZ3KML+ejjTkle5SChoMBkgB
-	WfWGVyewEtJl6VYASlgkfrQIxq4VAaduXp54kOyVX4zNbMJghsvQkYBQYfi8cBHe5za7UEL
-	rpIWIjPHyvAvgLrR26/oD3TEzfFgc9ReQ/8Uqkt3zOeI8x2Cu35qyHya2Z+AqCdmQCcfrYo
-	HWGcPRgZh4ba2tQlpgXjn6fh2yfZl6dOsND1xR0VcpYdup7f5mWK8CO9qO3ty89A9yfewrJ
-	fsCIZOvws9FjUKVUirxoDWz54Noyvtuf7ij3guUpEAwvlXSkbr+N1toNtijbzkM9eu74dlN
-	OQKCh/y/vMYHRSkIBZDRvA==
+X-QQ-FEAT: Xz3VOcA7Mr3qdnC/UgwbBFEKd4PF3FRiz2wwJAjHOmXtauSBj/BAFRR5iv1FC
+	vbqv1f5u4tnBbrG136Dyf8/U5jg+rC/llOC07zNbsyMfxXY07N+9nty6ZLdkQixx9ZlQqsR
+	AWONM/ELyb/LOfBuuBStJ/Nebx8w/6VobWY5krrR6xslz8gvqVAquEhzanFmdj6fXo2ul8l
+	WzAldMgUY72gyEQBSBdaEbiu6/0Kyat4hVoVcn+zhaNoCmr9pOWT87sStFgwjbnQp0o9jbl
+	IrL/+lzKAjduNhaU8WzasgQ+gs+gVVxAt4OtbceTOJDCLbBJe8KNx2g+UNYi3dh+NYPe67O
+	mp8jSDvKhnw1uGVs8YeVbQNbcrcFLGVXyubNXumlfmP7xiuwqTqOEktb6UExky/pt90IeYB
+	cg96CN/Wg3BOs3IDP4dbPpAinEn71ejy
 X-QQ-GoodBg: 2
-X-BIZMAIL-ID: 6104082383576056037
+X-BIZMAIL-ID: 4473137723865551747
 From: Dawei Li <dawei.li@shingroup.cn>
 To: will@kernel.org,
 	mark.rutland@arm.com,
@@ -56,11 +57,17 @@ Cc: xueshuai@linux.alibaba.com,
 	linux-arm-kernel@lists.infradead.org,
 	linux-kernel@vger.kernel.org,
 	linux-arm-msm@vger.kernel.org,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Rusty Russell <rusty@rustcorp.com.au>,
 	Dawei Li <dawei.li@shingroup.cn>
-Subject: [PATCH v2 00/10] perf: Avoid placing cpumask var on stack
-Date: Wed,  3 Apr 2024 20:50:59 +0800
-Message-Id: <20240403125109.2054881-1-dawei.li@shingroup.cn>
+Subject: [PATCH v2 01/10] cpumask: add cpumask_any_and_but()
+Date: Wed,  3 Apr 2024 20:51:00 +0800
+Message-Id: <20240403125109.2054881-2-dawei.li@shingroup.cn>
 X-Mailer: git-send-email 2.27.0
+In-Reply-To: <20240403125109.2054881-1-dawei.li@shingroup.cn>
+References: <20240403125109.2054881-1-dawei.li@shingroup.cn>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -71,58 +78,71 @@ Content-Transfer-Encoding: 8bit
 X-QQ-SENDSIZE: 520
 Feedback-ID: bizesmtpsz:shingroup.cn:qybglogicsvrgz:qybglogicsvrgz5a-1
 
-Hi all,
+From: Mark Rutland <mark.rutland@arm.com>
 
-This is v2 of [1] and [2] which basically eliminate cpumask var allocation
-on stack for perf subsystem.
+In some cases, it's useful to be able to select a random cpu from the
+intersection of two masks, excluding a particular CPU.
 
-Change since v1:
-- Change from dynamic allocation to a temporary var free helper:
-  cpumask_any_and_but().	[Mark]
+For example, in some systems an uncore PMU is shared by a subset of
+CPUs, and management of this PMU is assigned to some arbitrary CPU in
+this set. Whenever the management CPU is hotplugged out, we wish to
+migrate responsibility to another arbitrary CPU which is both in this
+set and online.
 
-- Some minor coding style improvements, reverse chrismas tree e.g.
+Today we can use cpumask_any_and() to select an arbitrary CPU in the
+intersection of two masks. We can also use cpumask_any_but() to select
+any arbitrary cpu in a mask excluding, a particular CPU.
 
-- For cpumask_any_and_but() itself:
-  - Moved to cpumask.h, just like other helpers.
-  - Return value converted to unsigned int.
-  - Remove EXPORT_SYMBOL, for obvious reason.
+To do both, we either need to use a temporary cpumask, which is
+wasteful, or use some lower-level cpumask helpers, which can be unclear.
 
-[1]:
-https://lore.kernel.org/lkml/20240402105610.1695644-1-dawei.li@shingroup.cn/
+This patch adds a new cpumask_any_and_but() to cater for these cases.
 
-[2]:
-https://lore.kernel.org/lkml/1486381132-5610-1-git-send-email-mark.rutland@arm.com/
+Signed-off-by: Mark Rutland <mark.rutland@arm.com>
+Cc: Thomas Gleixner <tglx@linutronix.de>
+Cc: Andrew Morton <akpm@linux-foundation.org>
+Cc: Peter Zijlstra <peterz@infradead.org>
+Cc: Rusty Russell <rusty@rustcorp.com.au>
+Cc: linux-kernel@vger.kernel.org
+Signed-off-by: Dawei Li <dawei.li@shingroup.cn>
+---
+ include/linux/cpumask.h | 23 +++++++++++++++++++++++
+ 1 file changed, 23 insertions(+)
 
-Dawei Li (9):
-  perf/alibaba_uncore_drw: Avoid placing cpumask var on stack
-  perf/arm-cmn: Avoid placing cpumask var on stack
-  perf/arm_cspmu: Avoid placing cpumask var on stack
-  perf/arm_dsu: Avoid placing cpumask var on stack
-  perf/dwc_pcie: Avoid placing cpumask var on stack
-  perf/hisi_pcie: Avoid placing cpumask var on stack
-  perf/hisi_uncore: Avoid placing cpumask var on stack
-  perf/qcom_l2: Avoid placing cpumask var on stack
-  perf/thunderx2: Avoid placing cpumask var on stack
-
-Mark Rutland (1):
-  cpumask: add cpumask_any_and_but()
-
- drivers/perf/alibaba_uncore_drw_pmu.c    | 10 +++-------
- drivers/perf/arm-cmn.c                   | 10 +++++-----
- drivers/perf/arm_cspmu/arm_cspmu.c       |  8 +++-----
- drivers/perf/arm_dsu_pmu.c               | 19 ++++++-------------
- drivers/perf/dwc_pcie_pmu.c              | 10 ++++------
- drivers/perf/hisilicon/hisi_pcie_pmu.c   |  9 ++++-----
- drivers/perf/hisilicon/hisi_uncore_pmu.c |  6 ++----
- drivers/perf/qcom_l2_pmu.c               |  8 +++-----
- drivers/perf/thunderx2_pmu.c             | 10 +++-------
- include/linux/cpumask.h                  | 23 +++++++++++++++++++++++
- 10 files changed, 56 insertions(+), 57 deletions(-)
-
-Thanks,
-
-    Dawei
-
+diff --git a/include/linux/cpumask.h b/include/linux/cpumask.h
+index 1c29947db848..121f3ac757ff 100644
+--- a/include/linux/cpumask.h
++++ b/include/linux/cpumask.h
+@@ -388,6 +388,29 @@ unsigned int cpumask_any_but(const struct cpumask *mask, unsigned int cpu)
+ 	return i;
+ }
+ 
++/**
++ * cpumask_any_and_but - pick a "random" cpu from *mask1 & *mask2, but not this one.
++ * @mask1: the first input cpumask
++ * @mask2: the second input cpumask
++ * @cpu: the cpu to ignore
++ *
++ * Returns >= nr_cpu_ids if no cpus set.
++ */
++static inline
++unsigned int cpumask_any_and_but(const struct cpumask *mask1,
++				 const struct cpumask *mask2,
++				 unsigned int cpu)
++{
++	unsigned int i;
++
++	cpumask_check(cpu);
++	i = cpumask_first_and(mask1, mask2);
++	if (i != cpu)
++		return i;
++
++	return cpumask_next_and(cpu, mask1, mask2);
++}
++
+ /**
+  * cpumask_nth - get the Nth cpu in a cpumask
+  * @srcp: the cpumask pointer
 -- 
 2.27.0
 
