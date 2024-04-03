@@ -1,158 +1,169 @@
-Return-Path: <linux-kernel+bounces-130170-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-130178-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C2ECF8974DF
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 18:08:26 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5A3468974FA
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 18:16:46 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7C688284FD6
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 16:08:25 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 46169B27944
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 16:15:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B91F114D459;
-	Wed,  3 Apr 2024 16:08:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D7C6D14EC64;
+	Wed,  3 Apr 2024 16:15:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="U9brMdbB"
-Received: from mail-pl1-f182.google.com (mail-pl1-f182.google.com [209.85.214.182])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=digikod.net header.i=@digikod.net header.b="RgOFNIcC"
+Received: from smtp-bc0d.mail.infomaniak.ch (smtp-bc0d.mail.infomaniak.ch [45.157.188.13])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 94B0714D285;
-	Wed,  3 Apr 2024 16:08:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 452F014D44E
+	for <linux-kernel@vger.kernel.org>; Wed,  3 Apr 2024 16:15:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.157.188.13
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712160500; cv=none; b=LJ63jxwd6v7b91oK5e2beD6hPnhpkY5tkQu46GclVuukL0epkiIFmKvTylzCxdbdcwuCly3LAXR8DVY5RAbaFrIS4kU/NeMHO8DlnBwFAJed4A2vrNhMDMn0SpygDkkZUZPMl26JPnKEGszXFvN/Id13bPgTwyj3v+UQgbK23z0=
+	t=1712160947; cv=none; b=ieZOg0anPa0Qj9W2mRPEdCGdyLA17tRp8al/Y9Iumf+MpsoE5Zb4VE9Zr64JedymSfkssx51jVDMNfyxzqSLPfS0a6CoIfByaLVUlj9iWiKL4+8PzssVt6N0hV7ZUSRuSixYKlPLRB+JKKVpwVUEmEFWcvBEtDVr7ou9Q7LWRFk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712160500; c=relaxed/simple;
-	bh=IqjH8ZsjjXcHWdkBguAM3YqmROLjZcQ6NsU/4jQD6gI=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=UO7imUCjOZlmWg96t14mzS+4VduDLWLA4YRS5EVmhSrkdcLiPW1Sh1ZaWBvZVdaCIE7mWXkF2LkzoMHDiwhP7vrQaeeBkUJR0qqoOGUYgSMpWSwsotMSRq3p3G8RdE+a46X9VG9n1XOdrS+hSOhFVxklVOR6gw7+lmUwKDVuGmM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=U9brMdbB; arc=none smtp.client-ip=209.85.214.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f182.google.com with SMTP id d9443c01a7336-1e0878b76f3so9670575ad.0;
-        Wed, 03 Apr 2024 09:08:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1712160498; x=1712765298; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=pTovBIMigzMxozJjoOLniaoDgNINuOLPvVuUktpfkdo=;
-        b=U9brMdbBtIpFXuAaUAzc+xfDhWzerujWt1V6vRfsReSSk1ANA98VfSShwTOVft7ecw
-         ghC2B7pvRnBGwaBra4zHDiu5LI3SOExtHvrZGAF9ZQmflcX/J2YJ8PgYfI4vTP6C/O4O
-         f/fYnHQqcHh22VUoFcLPHDkavJE5BOAJ5el37NbvXeSJb16GWnp1s+XdwObb+hcR0Qo5
-         3s+gosQSM9Ey33hY+0qoo/X5osJRU3SqLBlRTV/Uj2Z/rNQPxf7tVkL3Lc5nzH1k1E+a
-         0zApEGli8c/MpjFn9IMTxAYqtJbQMs1JjGw9Dnqle1eh1j03OTaHFX/jefMxOJtSrPIB
-         NI4g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712160498; x=1712765298;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=pTovBIMigzMxozJjoOLniaoDgNINuOLPvVuUktpfkdo=;
-        b=ovAUfql9dmP95LyTTOI3Ghd+/RfhisAtKsw6irWO4wts7Etyra4bIl+9flwd18m1XH
-         kFDW2GGkwBjJ0ctWfLZvotfm9h4vJQsZivDd4hEwrTQEEAQ2ZwQE0Zi25V+5WRyqXy48
-         P9gQ3TfCQgppS3cNkMdKmqxxyXMYzzFxzvQLdpOFG8/XvB3Nzt5iTyDTMcCafM3eKH+C
-         OYH57cfggzqNttKhbuasUw2Vrusil2e5/IyP02QyeZ0pzGVF3cq0GSUYGfpwOdgGaJKn
-         a56x/KSX8UK7gEd1dcZDygXx/+j7LDM1N74/2D5coACsNqpPjlqJUBDV0PkEAVCHgmSJ
-         jmUQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVj98e6jIW8VjsTT8yZXz0mha2KK7ejkqq6s6KyvNf4QDI6ykdeiwBIo28NaSA2Pg/QjonI6QFwRDFhLRCVbBoUh4zlaxksHXFPxb5DNHj3TpNKOWmrgwg34Nc1CDHS3y46
-X-Gm-Message-State: AOJu0YwapkgQ9yx2qIcpFYxoxX5Gc2tplHzLnel839eiseMDQJpV91oc
-	/Ur2ICrbgRc/ioxoGjCs9QnwHMrHLordqS4QpE4PuV8EQKGdF6ByBwzlAICrpRpvDvnfYg9UYdl
-	gVtYa7gOFHmP8MqE/z4gkgejLnifFVTDp
-X-Google-Smtp-Source: AGHT+IHuSUMdO6pjLJbvSTmow/ClVgPEQqkEXbtL28DUnlywZ0RXRnPF2GaO1+aK8oJNbPCtgglv5tnLFgZeYisBReM=
-X-Received: by 2002:a17:903:32c8:b0:1e0:b628:a752 with SMTP id
- i8-20020a17090332c800b001e0b628a752mr4121467plr.7.1712160497829; Wed, 03 Apr
- 2024 09:08:17 -0700 (PDT)
+	s=arc-20240116; t=1712160947; c=relaxed/simple;
+	bh=uatYMX2i3KE1ekQW6bUNQmpadzSHqfrZK0YEKMW1MqQ=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=pNtTJoBt621zd0E77F3BHHIdX2Gz/JZ3hZqtTuUB96CR7aiFLSyzCPdkrlX98MMZaDhXIKBjBksDqeGH8MQ5CFl+7h9UKoBLBg6BiGA2bLXjMyd9JAV4zn+M3WyyVx/khy6GYlBC3fPbHCMzpLQdDiGASNwgU7TEGtUe2PqzNys=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=digikod.net; spf=pass smtp.mailfrom=digikod.net; dkim=pass (1024-bit key) header.d=digikod.net header.i=@digikod.net header.b=RgOFNIcC; arc=none smtp.client-ip=45.157.188.13
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=digikod.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=digikod.net
+Received: from smtp-3-0000.mail.infomaniak.ch (smtp-3-0000.mail.infomaniak.ch [10.4.36.107])
+	by smtp-4-3000.mail.infomaniak.ch (Postfix) with ESMTPS id 4V8qSn2c4fz9WQ;
+	Wed,  3 Apr 2024 18:09:29 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=digikod.net;
+	s=20191114; t=1712160569;
+	bh=uatYMX2i3KE1ekQW6bUNQmpadzSHqfrZK0YEKMW1MqQ=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=RgOFNIcCwT0MAtAY9jmDT0imf4WzdbQMHPXwzBjayYtuLO+mCny9g1of/NQw+m/B+
+	 BeZTZ24wyfzfLBkjhXGZqo/2VZQ4++DeKv/VOeAAAeDvfB3GzxzKPozrMqBZ57dWW9
+	 vyJtv8AsACKqNrc8YDjKyeHm/adTcxIbcj60x8a0=
+Received: from unknown by smtp-3-0000.mail.infomaniak.ch (Postfix) with ESMTPA id 4V8qSm2X6jz4mD;
+	Wed,  3 Apr 2024 18:09:28 +0200 (CEST)
+Date: Wed, 3 Apr 2024 18:09:27 +0200
+From: =?utf-8?Q?Micka=C3=ABl_Sala=C3=BCn?= <mic@digikod.net>
+To: Ayush Tiwari <ayushtiw0110@gmail.com>
+Cc: Greg KH <gregkh@linuxfoundation.org>, alison.schofield@intel.com, 
+	paul@paul-moore.com, fabio.maria.de.francesco@linux.intel.com, 
+	linux-kernel@vger.kernel.org, outreachy@lists.linux.dev, linux-security-module@vger.kernel.org
+Subject: Re: [PATCH v2] landlock: Use kmem for landlock_object
+Message-ID: <20240403.Yiep0aem7wu5@digikod.net>
+References: <ZggZi/EFICvb4xTU@ayush-HP-Pavilion-Gaming-Laptop-15-ec0xxx>
+ <2024033030-tutu-dynamite-47c9@gregkh>
+ <ZgmETqQr7+W9XtWN@ayush-HP-Pavilion-Gaming-Laptop-15-ec0xxx>
+ <2024033111-squeezing-linoleum-52a7@gregkh>
+ <ZgmmnLIal3gz55Q+@ayush-HP-Pavilion-Gaming-Laptop-15-ec0xxx>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240331041830.2806741-1-andrii@kernel.org> <Zgp+lYLOZU3OkO7w@gmail.com>
- <CAEf4BzZEuDRt=dLN79uJ0EwQcxuxCp8LZx1ayNBsw82BytPTqg@mail.gmail.com> <Zg0N87sfBdB5Cydk@gmail.com>
-In-Reply-To: <Zg0N87sfBdB5Cydk@gmail.com>
-From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Wed, 3 Apr 2024 09:08:05 -0700
-Message-ID: <CAEf4BzbGvhjwGCxQUt7fHrxdJbk00K6GnE_AjBEffDAak=7BaA@mail.gmail.com>
-Subject: Re: [PATCH v4 0/4] perf/x86/amd: add LBR capture support outside of
- hardware events
-To: Ingo Molnar <mingo@kernel.org>
-Cc: Andrii Nakryiko <andrii@kernel.org>, x86@kernel.org, peterz@infradead.org, 
-	mingo@redhat.com, tglx@linutronix.de, bpf@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, jolsa@kernel.org, song@kernel.org, 
-	kernel-team@meta.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <ZgmmnLIal3gz55Q+@ayush-HP-Pavilion-Gaming-Laptop-15-ec0xxx>
+X-Infomaniak-Routing: alpha
 
-On Wed, Apr 3, 2024 at 1:06=E2=80=AFAM Ingo Molnar <mingo@kernel.org> wrote=
-:
->
->
-> * Andrii Nakryiko <andrii.nakryiko@gmail.com> wrote:
->
-> > On Mon, Apr 1, 2024 at 2:30=E2=80=AFAM Ingo Molnar <mingo@kernel.org> w=
-rote:
-> > >
-> > >
-> > > * Andrii Nakryiko <andrii@kernel.org> wrote:
-> > >
-> > > > Add AMD-specific implementation of perf_snapshot_branch_stack stati=
-c call that
-> > > > allows LBR capture from arbitrary points in the kernel. This is uti=
-lized by
-> > > > BPF programs. See patch #3 for all the details.
-> > > >
-> > > > Patches #1 and #2 are preparatory steps to ensure LBR freezing is c=
-ompletely
-> > > > inlined and have no branches, to minimize LBR snapshot contaminatio=
-n.
-> > > >
-> > > > Patch #4 removes an artificial restriction on perf events with LBR =
-enabled.
-> > > >
-> > > > Andrii Nakryiko (4):
-> > > >   perf/x86/amd: ensure amd_pmu_core_disable_all() is always inlined
-> > > >   perf/x86/amd: avoid taking branches before disabling LBR
-> > > >   perf/x86/amd: support capturing LBR from software events
-> > > >   perf/x86/amd: don't reject non-sampling events with configured LB=
-R
-> > > >
-> > > >  arch/x86/events/amd/core.c   | 37 ++++++++++++++++++++++++++++++++=
-+++-
-> > > >  arch/x86/events/amd/lbr.c    | 11 +----------
-> > > >  arch/x86/events/perf_event.h | 11 +++++++++++
-> > > >  3 files changed, 48 insertions(+), 11 deletions(-)
-> > >
-> > > So there's a new conflict with patch #2, probably due to interaction
-> > > with this recent fix that is now upstream:
-> > >
-> > >    598c2fafc06f ("perf/x86/amd/lbr: Use freeze based on availability"=
-)
-> > >
-> > > I don't think it should change the logic of the snapshot feature
-> > > materially, X86_FEATURE_AMD_LBR_PMC_FREEZE should be orthogonal to it=
-,
-> > > as the LBR snapshot isn't taken from a PMI.
-> > >
-> >
-> > Yep, seems like there was a parallel change to related code in
-> > perf/urgent branch. And yes, you are right that it's orthogonal and
-> > doesn't regress anything as far as branching and whatnot (just
-> > retested everything on real hardware). So I've rebased my patches on
-> > top of perf/urgent, will send v5 momentarily.
->
-> Thank you - it's now all in tip:perf/core and lined up for v6.10.
+On Sun, Mar 31, 2024 at 11:38:28PM +0530, Ayush Tiwari wrote:
+> On Sun, Mar 31, 2024 at 06:54:39PM +0200, Greg KH wrote:
+> > On Sun, Mar 31, 2024 at 09:12:06PM +0530, Ayush Tiwari wrote:
+> > > Hello Greg. Thanks for the feedback.
+> > > On Sat, Mar 30, 2024 at 05:12:18PM +0100, Greg KH wrote:
+> > > > On Sat, Mar 30, 2024 at 07:24:19PM +0530, Ayush Tiwari wrote:
+> > > > > Use kmem_cache replace kzalloc() calls with kmem_cache_zalloc() for
+> > > > > struct landlock_object and update the related dependencies to improve
+> > > > > memory allocation and deallocation performance.
+> > > > 
+> > > > So it's faster?  Great, what are the measurements?
+> > > > 
+> > > Thank you for the feedback. Regarding the performance improvements, I
+> > > realized I should have provided concrete measurements to support the
+> > > claim. The intention behind switching to kmem_cache_zalloc() was to
+> > > optimize memory management efficiency based on general principles.
+> > > Could you suggest some way to get some measurements if possible?
+> > 
+> > If you can not measure the difference, why make the change at all?
+> 
+> Kindly refer to this issue: https://github.com/landlock-lsm/linux/issues/19
+> I have been assigned this issue hence I am focussing on making the
+> changes that have been listed.
 
-Great, thank you!
+As Greg asked, it would be good know the performance impact of such
+change.  This could be measured by creating a lot of related allocations
+and accessing them in non-sequential order (e.g. adding new rules,
+accessing a related inode while being sandboxed).  I guess there will be
+a lot of noise (because of other subsystems) but it's worth a try.  You
+should look at similar commits and their related threads to see what
+others did.
 
->
-> > Sorry for an extra round on this.
->
-> Not your doing really - just crossing patches.
->
-> Thanks,
->
->         Ingo
+> > 
+> > Again, you need to prove the need for this change, so far I fail to see
+> > a reason why.
+> > 
+> > > > > +static struct kmem_cache *landlock_object_cache;
+> > > > > +
+> > > > > +void __init landlock_object_cache_init(void)
+> > > > > +{
+> > > > > +	landlock_object_cache = kmem_cache_create(
+> > > > > +		"landlock_object_cache", sizeof(struct landlock_object), 0,
+> > > > > +		SLAB_PANIC, NULL);
+> > > > 
+> > > > You really want SLAB_PANIC?  Why?
+> > > >
+> > > The SLAB_PANIC flag used in kmem_cache_create indicates that if the
+> > > kernel is unable to create the cache, it should panic. The use of
+> > > SLAB_PANIC in the creation of the landlock_object_cache is due to the
+> > > critical nature of this cache for the Landlock LSM's operation. I
+> > > found it to be a good choice to be used. Should I use some other
+> > > altrnative?
+> > 
+> > Is panicing really a good idea?  Why can't you properly recover from
+> > allocation failures?
+> 
+> I am relying on SLAB_PANIC because of the reason I mentioned earlier,
+> and also because it was used in lsm_file_cache that I was asked to look
+> into as reference. I could try to recover from allocation failures but
+> currently my focus is on working on the changes that are listed. I will
+> definitely try to look into it once I am done with all changes.
+
+Not being able to create this kmem cache would mean that Landlock would
+not be able to properly run, so we could print a warning and exit the
+Landlock init function.  However, most calls to kmem_cache_create() are
+init calls, and most of them (especially in security/*) set SLAB_PANIC.
+I'm wondering why Landlock should do differently, if others should be
+fixed, and if the extra complexity of handling several
+kmem_cache_create() potential failure is worth it for init handlers?
+
+> 
+> > > > > +
+> > > > >  struct landlock_object *
+> > > > >  landlock_create_object(const struct landlock_object_underops *const underops,
+> > > > >  		       void *const underobj)
+> > > > > @@ -25,7 +34,8 @@ landlock_create_object(const struct landlock_object_underops *const underops,
+> > > > >  
+> > > > >  	if (WARN_ON_ONCE(!underops || !underobj))
+> > > > >  		return ERR_PTR(-ENOENT);
+> > > > > -	new_object = kzalloc(sizeof(*new_object), GFP_KERNEL_ACCOUNT);
+> > > > > +	new_object =
+> > > > > +		kmem_cache_zalloc(landlock_object_cache, GFP_KERNEL_ACCOUNT);
+> > > > 
+> > > > Odd indentation, why?
+> > > > 
+> > > This indentation is due to formatting introduced by running
+> > > clang-format.
+> > 
+> > Why not keep it all on one line?
+> > 
+> I kept it all in one line in v1, but Paul and Mickael asked me to use
+> clang-format, hence it is this way.
+
+Yes, it may looks weird but we format everything with clang-format to
+not waste time discussing about style.
+
+> > thanks,
+> > 
+> > greg k-h
+> 
 
