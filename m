@@ -1,81 +1,81 @@
-Return-Path: <linux-kernel+bounces-129896-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-129897-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9E91C8971CC
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 15:58:54 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 63DC98971CF
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 15:59:07 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1623A1F233A3
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 13:58:54 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1E122284D29
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 13:59:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 40807148FE4;
-	Wed,  3 Apr 2024 13:58:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BA2C7148FE0;
+	Wed,  3 Apr 2024 13:58:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="gSFdrCeD"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="nNIuh8T+"
+Received: from mail-wm1-f44.google.com (mail-wm1-f44.google.com [209.85.128.44])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 23BAB14830F
-	for <linux-kernel@vger.kernel.org>; Wed,  3 Apr 2024 13:58:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4495B148845
+	for <linux-kernel@vger.kernel.org>; Wed,  3 Apr 2024 13:58:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712152725; cv=none; b=RHRbIptK4J7x4MqEyO3rMxAUJEHQsMYZpoZDqLvu7A5GE4nx+ekVxekHyKeMuKqOma078UH0bbJQkfDACbvpxv+rpC/rLFGlC0jQFX4NwmenrdfHJwqlEOY/umRX7ZZvL+W50m0eKNA1426uy6oOK8VlLnWRH81kJspSh8hgACM=
+	t=1712152735; cv=none; b=muBV0oeigk/w8njcNI2tJGMqlIwmrNEVpm4NGwTjpZcloaJo1q+LdtHoaeODcK7B/mz4VMHjBAXEal5XIbaWDLoAsDgzCXJZoKG/cDdcMDvOaWDs0QSlG5GSvp6+y69GcRgQEHwnFjRKWhVxNeyf3P0Jk/QaEP+phaDl0LfIGtc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712152725; c=relaxed/simple;
-	bh=SJSDM1jLJy1+bnkJOfwF5OrMRSMvyL4/cFh8OpRtlao=;
+	s=arc-20240116; t=1712152735; c=relaxed/simple;
+	bh=TQNlFkl/iPl6kEZxvkBf9c7pV/p9E/CfhbTLpQyyNlU=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=RvRXVgE3rVU6H6f53kSo84qOgMILqv+4zMQyxbsywgBaZCsoX3zGbJf8ZkPeZswtSREZGbeSSuzvxpFZhM5RDwNBDs84LYf+I9V3pqZGerRc7FMERyngtFuzOCvmp25s4r/VR6/F0P9qyaVS9VeodMXbwFhBLTxU6o51A5tTW1A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=gSFdrCeD; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1712152722;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=SJSDM1jLJy1+bnkJOfwF5OrMRSMvyL4/cFh8OpRtlao=;
-	b=gSFdrCeDPZkb+DS0M20A6QSsp6gR+nA9j5i4RtPDEhVieBHlmybdv3ORmELLTPebgQkPsA
-	QU2Ixan901/eklDwxv1wDuwbwWwbDiZLKvLvri6IHStnLP2q2L2xzxS+wrM28FwgCsHUMA
-	ErkPAPkNpSCN27uuuaZMOlLhSjsUnyo=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-16-814WLSUpN9-gkiUa8lOX-g-1; Wed, 03 Apr 2024 09:58:40 -0400
-X-MC-Unique: 814WLSUpN9-gkiUa8lOX-g-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.rdu2.redhat.com [10.11.54.2])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 77AF8879844;
-	Wed,  3 Apr 2024 13:58:39 +0000 (UTC)
-Received: from dhcp-27-174.brq.redhat.com (unknown [10.45.224.49])
-	by smtp.corp.redhat.com (Postfix) with SMTP id 07B5B40C6CB5;
-	Wed,  3 Apr 2024 13:58:35 +0000 (UTC)
-Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
-	oleg@redhat.com; Wed,  3 Apr 2024 15:57:15 +0200 (CEST)
-Date: Wed, 3 Apr 2024 15:56:51 +0200
-From: Oleg Nesterov <oleg@redhat.com>
-To: Jiri Olsa <olsajiri@gmail.com>
-Cc: Masami Hiramatsu <mhiramat@kernel.org>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Andrii Nakryiko <andrii@kernel.org>, linux-kernel@vger.kernel.org,
-	linux-trace-kernel@vger.kernel.org, bpf@vger.kernel.org,
-	Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-	John Fastabend <john.fastabend@gmail.com>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	"Borislav Petkov (AMD)" <bp@alien8.de>, x86@kernel.org
-Subject: Re: [PATCHv2 1/3] uprobe: Add uretprobe syscall to speed up return
- probe
-Message-ID: <20240403135650.GA31764@redhat.com>
-References: <20240402093302.2416467-1-jolsa@kernel.org>
- <20240402093302.2416467-2-jolsa@kernel.org>
- <20240403100708.233575a8ac2a5bac2192d180@kernel.org>
- <Zg0lvUIB4WdRUGw_@krava>
+	 Content-Type:Content-Disposition:In-Reply-To; b=ISm+CkPNY/LRo3WaUdizoDMFrsWX1+n+DbC9AiX38ODjL1FAJYYIpJIXI84DAWnSESMVSGudj9b9bJkAySfMj6TH8gIrcm3x/9p6iP8FMcgcZ8wgKml9WVf212A9aeL4vr2L2sXP9APUUvTKLxWjnwUIEtxZrHLS2FCoR3kl09M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=nNIuh8T+; arc=none smtp.client-ip=209.85.128.44
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-wm1-f44.google.com with SMTP id 5b1f17b1804b1-41624c40b44so4716225e9.0
+        for <linux-kernel@vger.kernel.org>; Wed, 03 Apr 2024 06:58:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1712152731; x=1712757531; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=TQNlFkl/iPl6kEZxvkBf9c7pV/p9E/CfhbTLpQyyNlU=;
+        b=nNIuh8T+JlqmtZHyz4eE6vMszpgykfl9OLbG4MEu3gWvbwqTDTNj304CNV2HRcSxXT
+         DPkbi2YxwQVhCbUF5+Kdq/bgWnMAy5ABX2+82sy1RfRN8EljLnm2IYm22zA200Eq/B42
+         AjsQJTnh1fm7DIyjXapkzRiIKQyE4XxM2NtdqBXPaHhBGX0rPnhLJ9J3+i+i1kHsNvvd
+         sUKwMusI0wxrqgg3npzVq+2kkuFbsbNaO0q9njbzbguWiYPyCl7ojCBiurOs3KEbcqbo
+         8qxjy+7T08THQZisLi0gUvP/bCnaGXabSj0jJXv2hv7EZLh+L9/wsnTLl9kX5zuuAZHR
+         fO5Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712152731; x=1712757531;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=TQNlFkl/iPl6kEZxvkBf9c7pV/p9E/CfhbTLpQyyNlU=;
+        b=EXIEF9z/QuvbScOsI3/MYdq35Oonpz5ooZPOKG0bMtkojQarT5JH7j2jKX9+hPia6B
+         Fgjz6C2EXORLB7+Jr/gTw6pD0mq/9b88IXAqvgojPE5h8SLTNiydlVTWeiZoHChufJ56
+         HJLCXQACMLB4vQX9k9Ue8xba/2xcpWCr+CbeWt6CNwxZMtUw6QD2eZTI1/lJ/mhgc02m
+         piHMZGxh6++2asvyEKkbnSWavH9CvlgHpHXJFwuosGPNKJqAxRlD/3Z1X7LjSJoj0wl+
+         aCaDoNKJkfzGfyvt/tiJ0Inxh5/Yz78QR002zKvmj4pLajv3wWz5o7NIWE9VYjNTZTd9
+         zQIA==
+X-Forwarded-Encrypted: i=1; AJvYcCXB8UmYSefKDC2V8OpZOFjzEHkjn2DPnMEJdVEcwVYs3hYY656iIIrdk8+7hejJBAhZxTM6/8KC0uW8o6rCAS9TXUk8dpBRnDTQ2Jjj
+X-Gm-Message-State: AOJu0Yx+bneGQzYfXNgtQrAbYfQ1QuUSWXf9f0AcOUFj0kVmTT8/L/Pg
+	4fckNH7YKNs1mMFFDi6vryY9GU/wFIHibPiRItxW0HC1KFSFW9k18gqWZ81rAvg=
+X-Google-Smtp-Source: AGHT+IHeqNDBA/AfyKYzWvB+jEZxaoUQEyY/aylIOI09KkhqbTFndAoM1/OE52+0lZPrdJynAwVY/A==
+X-Received: by 2002:a5d:4bc6:0:b0:343:72e3:df00 with SMTP id l6-20020a5d4bc6000000b0034372e3df00mr4208682wrt.49.1712152731627;
+        Wed, 03 Apr 2024 06:58:51 -0700 (PDT)
+Received: from aspen.lan (aztw-34-b2-v4wan-166919-cust780.vm26.cable.virginm.net. [82.37.195.13])
+        by smtp.gmail.com with ESMTPSA id v21-20020adfa1d5000000b0034399b0713fsm1541588wrv.18.2024.04.03.06.58.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 03 Apr 2024 06:58:51 -0700 (PDT)
+Date: Wed, 3 Apr 2024 14:58:49 +0100
+From: Daniel Thompson <daniel.thompson@linaro.org>
+To: liu.yec@h3c.com
+Cc: dianders@chromium.org, gregkh@linuxfoundation.org,
+	jason.wessel@windriver.com, jirislaby@kernel.org,
+	kgdb-bugreport@lists.sourceforge.net, linux-kernel@vger.kernel.org,
+	linux-serial@vger.kernel.org
+Subject: Re: [PATCH V8] kdb: Fix the deadlock issue in KDB debugging.
+Message-ID: <20240403135849.GE25200@aspen.lan>
+References: <20240402125802.GC25200@aspen.lan>
+ <20240403061109.3142580-1-liu.yec@h3c.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -84,65 +84,44 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <Zg0lvUIB4WdRUGw_@krava>
-User-Agent: Mutt/1.5.24 (2015-08-30)
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.2
+In-Reply-To: <20240403061109.3142580-1-liu.yec@h3c.com>
 
-I leave this to you and Masami, but...
-
-On 04/03, Jiri Olsa wrote:
+On Wed, Apr 03, 2024 at 02:11:09PM +0800, liu.yec@h3c.com wrote:
+> From: LiuYe <liu.yeC@h3c.com>
 >
-> On Wed, Apr 03, 2024 at 10:07:08AM +0900, Masami Hiramatsu wrote:
-> >
-> > This is interesting approach. But I doubt we need to add additional
-> > syscall just for this purpose. Can't we use another syscall or ioctl?
+> Currently, if CONFIG_KDB_KEYBOARD is enabled, then kgdboc will
+> attempt to use schedule_work() to provoke a keyboard reset when
+> transitioning out of the debugger and back to normal operation.
+> This can cause deadlock because schedule_work() is not NMI-safe.
 >
-> so the plan is to optimize entry uprobe in a similar way and given
-> the syscall is not a scarce resource I wanted to add another syscall
-> for that one as well
+> <snip>
 >
-> tbh I'm not sure sure which syscall or ioctl to reuse for this, it's
-> possible to do that, the trampoline will just have to save one or
-> more additional registers, but adding new syscall seems cleaner to me
-
-Agreed.
-
-> > Also, we should run syzkaller on this syscall. And if uretprobe is
+> We fix the problem by using irq_work to call schedule_work()
+> instead of calling it directly. This is because we cannot
+> resynchronize the keyboard state from the hardirq context
+> provided by irq_work. This must be done from the task context
+> in order to call the input subsystem.
 >
-> right, I'll check on syzkaller
-
-I don't understand this concern...
-
-> > set in the user function, what happen if the user function directly
-> > calls this syscall? (maybe it consumes shadow stack?)
+> Therefore, we have to defer the work twice. First, safely
+> switch from the debug trap context (similar to NMI) to the
+> hardirq, and then switch from the hardirq to the system work queue.
 >
-> the process should receive SIGILL if there's no pending uretprobe for
-> the current task,
+> Signed-off-by: LiuYe <liu.yeC@h3c.com>
+> Co-authored-by: Daniel Thompson <daniel.thompson@linaro.org>
+> Signed-off-by: Daniel Thompson <daniel.thompson@linaro.org>
 
-Yes,
+I'm happy with how this is looking. In the long term it might be good to
+move the keyboard resync code so it is with the rest of the kdb keyboard
+code rather than in tty/serial. However I certainly don't want to tangle
+that kind of clean up along with a bug fix so I think this is ready to
+go now.
 
-> or it will trigger uretprobe if there's one pending
+@Greg: I assume you want to take this via the tty/serial tree? I
+contributed a fair bit to the eventual patch so a Reviewed-by from me
+probably isn't appropriate but if you want to take the code it is
+certainly:
+Acked-by: Daniel Thompson <daniel.thompson@linaro.org>
 
-.. and corrupt the caller. So what?
 
-> but we could limit the syscall to be executed just from the trampoline,
-> that should prevent all the user space use cases, I'll do that in next
-> version and add more tests for that
-
-Yes, we can... well, ignoring the race with mremap() from another thread.
-
-But why should we care?
-
-Userspace should not call sys_uretprobe(). Likewise, it should not call
-sys_restart_syscall(). Likewise, it should not jump to xol_area.
-
-Of course, userspace (especially syzkaller) _can_ do this. So what?
-
-I think the only thing we need to ensure is that the "malicious" task
-which calls sys_uretprobe() can only harm itself, nothing more.
-
-No?
-
-Oleg.
-
+Daniel.
 
