@@ -1,95 +1,123 @@
-Return-Path: <linux-kernel+bounces-130486-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-130487-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id F058C8978D7
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 21:12:41 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id C79ED8978D5
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 21:10:50 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 4B9D1B23EDB
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 19:10:12 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8274F28D9E9
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 19:10:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4675C154C11;
-	Wed,  3 Apr 2024 19:10:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8C8FA154C08;
+	Wed,  3 Apr 2024 19:10:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="xShiaKJt";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="yQTIGrSR"
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="UXdSCBef"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 24853154BE8;
-	Wed,  3 Apr 2024 19:10:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CF08553A7
+	for <linux-kernel@vger.kernel.org>; Wed,  3 Apr 2024 19:10:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712171404; cv=none; b=W/iUOQEB1uwwdbPSld8qxzu8u/7TUHqTRtlu3v9lQjJWfJpBcJS1NaBPq6ceViNh6P6OmSG//NU2gJQ4SzxFHGwvPAtEiCAH9vBlIwY0lqKcQRxZj+6wOWDTNmdAJIvrSoF+x1WIb4WqdGb45d+0Tvo+smKnpCWN9KJ6lehXjPk=
+	t=1712171442; cv=none; b=F8NqpVH68mW1r0YwFiiggX7Ua2/6nnFYgIgMGM8+XymCBZ0gq6BfQwuQCyQE9uhWD31/JAAlRE/5IDwPxeaT/BK6a/6uft1TMXwmA2pBFVqRtODPgDgFgQW387tnQfrHKR0MSaPjqpOkm0hpXHZruNQGptQooeEP5/doBHkjRJo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712171404; c=relaxed/simple;
-	bh=pzIK4B66bc749NQfKqD2bPVYkt2kauVqKBN7X+SGq3E=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=TaXQj+65uaiikNzYDAYXElADaBjuj0aYe9TVteR12RGRwdGbYaHuyZDwo/btgGPCOquXXOQqN8YyFrqQvLhDwnPs9lzbvvaiyVXngAfd6UuunuoM6nVD8NxC4I03lELXb3A4a8aU6ql0f9k6ij5tipDw0+DO9WCX2ErnbEtyNjo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=xShiaKJt; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=yQTIGrSR; arc=none smtp.client-ip=193.142.43.55
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
-From: Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1712171400;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=pzIK4B66bc749NQfKqD2bPVYkt2kauVqKBN7X+SGq3E=;
-	b=xShiaKJtyR1gQrMBFejJXh9EOxZcQKqLRlqUo2VQSNyezhFjw8uL7AgQVFFH3WoL8UWVoM
-	qqUbWmOt5mj7xv+xIIlInxnDutryQDoqKhi5UaxGJfp76YuXAoBb3PoIvdcL0ctW6D/KoS
-	8KOCCzs68MUSN4ArjooctEz4Fa3elbUWdBF1j8MIzrtezNp3EWgUqixRTFk8TMs3U/ygR1
-	Lx/T82SO6tQXwLAOb2sNpdKoxFe0QY8FToetMe5ASjJXWTJW+CviQKSAyKq7zvO1ci2aRb
-	R+tfAvHyWCd/4SnXMxiT0h/An0GqR2l7yUeNNoSymJbC/q2By6Qput9Hss7KTw==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1712171400;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=pzIK4B66bc749NQfKqD2bPVYkt2kauVqKBN7X+SGq3E=;
-	b=yQTIGrSRROvqb/a+uelr9JkgAlV+FG5YEN1BnUHIl/D0lqJpMHfdH1p9uU2wBTSg+ans0g
-	Vl3NTnuxa6I1+TBA==
-To: John Stultz <jstultz@google.com>
-Cc: Oleg Nesterov <oleg@redhat.com>, Marco Elver <elver@google.com>, Peter
- Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@kernel.org>, "Eric W.
- Biederman" <ebiederm@xmission.com>, linux-kernel@vger.kernel.org,
- linux-kselftest@vger.kernel.org, Dmitry Vyukov <dvyukov@google.com>,
- kasan-dev@googlegroups.com, Edward Liaw <edliaw@google.com>, Carlos Llamas
- <cmllamas@google.com>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Subject: Re: [PATCH v6 1/2] posix-timers: Prefer delivery of signals to the
- current thread
-In-Reply-To: <CANDhNCoGRnXLYRzQWpy2ZzsuAXeraqT4R13tHXmiUtGzZRD3gA@mail.gmail.com>
-References: <87sf02bgez.ffs@tglx> <87r0fmbe65.ffs@tglx>
- <CANDhNCoGRnXLYRzQWpy2ZzsuAXeraqT4R13tHXmiUtGzZRD3gA@mail.gmail.com>
-Date: Wed, 03 Apr 2024 21:09:59 +0200
-Message-ID: <87o7aqb6uw.ffs@tglx>
+	s=arc-20240116; t=1712171442; c=relaxed/simple;
+	bh=MY0qMhK+Ip066j30e2Fo5r+ntZnfCU7bAxLRrjL4Czw=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition; b=UtBOX2FiMHocPcx1qMuBK8+HHVELuuBKoAUYzfELy8Bs4gjphfVWe1suSK2e0asVIKopi8YkCYGd3qNqJepHf1mmr28r99dLNCUslx7RDhVIR/gZEFufjgUtZvVkFOKgKrzKVckZhXbZEO0wou8c3yFM9XIfIkBlh2Pr8HG6a/M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=UXdSCBef; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5B90DC433C7;
+	Wed,  3 Apr 2024 19:10:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1712171442;
+	bh=MY0qMhK+Ip066j30e2Fo5r+ntZnfCU7bAxLRrjL4Czw=;
+	h=Date:From:To:Cc:Subject:Reply-To:From;
+	b=UXdSCBefo6FnAJG45R4BUy0s90IK4srpa/j731QW3nACmIUJE2aGC/k1/eVvYbI3K
+	 HtfDdiyv/Em78GOCqVSzFp7wPzBArHqrd1XPGogosAJNhUGvQLNF8m0M000DW2x99w
+	 Sas2Bmm29rjoZ0vx7bfW72FLDVYYr5BpG5/kQZQCd+GfU8+9naplIqnJaJCNkA6T5m
+	 Tfarpk8HTb50zyuCxPbR4u1VJuMNz6MQ7uBHR+WxdRHdSqiJDesYI8G7Is9DHhEk97
+	 oNDDMo7O1UGyQrHRITcND/ezoZ2qCRGRZtXyWw9VwkPWXXe6rtvy/Z6MQHMCHkJSBH
+	 L5OuSB5OeKyNQ==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+	id 014CDCE0D85; Wed,  3 Apr 2024 12:10:41 -0700 (PDT)
+Date: Wed, 3 Apr 2024 12:10:41 -0700
+From: "Paul E. McKenney" <paulmck@kernel.org>
+To: linux-kernel@vger.kernel.org, x86@kernel.org
+Cc: Zhengxu Chen <zhxchen17@meta.com>,
+	Danielle Costantino <dcostantino@meta.com>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+	Dave Hansen <dave.hansen@linux.intel.com>,
+	"H. Peter Anvin" <hpa@zytor.com>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Feng Tang <feng.tang@intel.com>, Waiman Long <longman@redhat.com>,
+	John Stultz <jstultz@google.com>, Boqun Feng <boqun.feng@gmail.com>,
+	Neeraj Upadhyay <Neeraj.Upadhyay@amd.com>
+Subject: [PATCH RFC v2 tsc] Check for sockets instead of CPUs to make code
+ match comment
+Message-ID: <62a0a0cd-3103-4e8f-b4c8-a91f12121e92@paulmck-laptop>
+Reply-To: paulmck@kernel.org
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-On Wed, Apr 03 2024 at 11:16, John Stultz wrote:
-> On Wed, Apr 3, 2024 at 9:32=E2=80=AFAM Thomas Gleixner <tglx@linutronix.d=
-e> wrote:
-> Thanks for this, Thomas!
->
-> Just FYI: testing with 6.1, the test no longer hangs, but I don't see
-> the SKIP behavior. It just fails:
-> not ok 6 check signal distribution
-> # Totals: pass:5 fail:1 xfail:0 xpass:0 skip:0 error:0
->
-> I've not had time yet to dig into what's going on, but let me know if
-> you need any further details.
+The unsynchronized_tsc() eventually checks num_possible_cpus(), and
+if the system is non-Intel and the number of possible CPUs is greater
+than one, assumes that TSCs are unsynchronized.  This despite the
+comment saying "assume multi socket systems are not synchronized",
+that is, socket rather than CPU.  This behavior was preserved by
+commit 8fbbc4b45ce3 ("x86: merge tsc_init and clocksource code") and
+by the previous relevant commit 7e69f2b1ead2 ("clocksource: Remove the
+update callback").
 
-That's weird. I ran it on my laptop with 6.1.y ...
+The clocksource drivers were added by commit 5d0cf410e94b ("Time: i386
+Clocksource Drivers") back in 2006, and the comment still said "socket"
+rather than "CPU".
 
-What kind of machine is that?
+Therefore, bravely (and perhaps foolishly) make the code match the
+comment.
+
+Note that it is possible to bypass both code and comment by booting
+with tsc=reliable, but this also disables the clocksource watchdog,
+which is undesirable when trust in the TSC is strictly limited.
+
+Changes since v1:
+
+o	Forward-port to v6.9-rc1.
+
+Reported-by: Zhengxu Chen <zhxchen17@meta.com>
+Reported-by: Danielle Costantino <dcostantino@meta.com>
+Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+Cc: Thomas Gleixner <tglx@linutronix.de>
+Cc: Ingo Molnar <mingo@redhat.com>
+Cc: Borislav Petkov <bp@alien8.de>
+Cc: Dave Hansen <dave.hansen@linux.intel.com>
+Cc: "H. Peter Anvin" <hpa@zytor.com>
+Cc: Peter Zijlstra <peterz@infradead.org>
+Cc: Feng Tang <feng.tang@intel.com>
+Cc: Waiman Long <longman@redhat.com>
+Cc: John Stultz <jstultz@google.com>
+Cc: Neeraj Upadhyay <Neeraj.Upadhyay@amd.com>
+Cc: <x86@kernel.org>
+
+diff --git a/arch/x86/kernel/tsc.c b/arch/x86/kernel/tsc.c
+index 5a69a49acc963..e938b990bea19 100644
+--- a/arch/x86/kernel/tsc.c
++++ b/arch/x86/kernel/tsc.c
+@@ -1289,7 +1289,7 @@ int unsynchronized_tsc(void)
+ 	 */
+ 	if (boot_cpu_data.x86_vendor != X86_VENDOR_INTEL) {
+ 		/* assume multi socket systems are not synchronized: */
+-		if (num_possible_cpus() > 1)
++		if (nr_online_nodes > 1)
+ 			return 1;
+ 	}
+ 
 
