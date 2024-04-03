@@ -1,141 +1,145 @@
-Return-Path: <linux-kernel+bounces-130396-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-130397-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 56CAC897781
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 19:57:10 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id EEAE4897786
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 19:57:29 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7A3FC1C22143
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 17:57:09 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A8D2728DC31
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 17:57:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8BDC3152DE8;
-	Wed,  3 Apr 2024 17:54:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AEC8E153591;
+	Wed,  3 Apr 2024 17:55:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="AKUDUQv2"
-Received: from mail-oo1-f54.google.com (mail-oo1-f54.google.com [209.85.161.54])
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="Uz6aO2El";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="K5PuXrV4"
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 39AF5152E18
-	for <linux-kernel@vger.kernel.org>; Wed,  3 Apr 2024 17:54:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1F4631C33;
+	Wed,  3 Apr 2024 17:55:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712166895; cv=none; b=a46EjBIaZaDE72Rifb2WwObxxaZbGTKeDg5xNHgu32++oSkv7wdsR3UDWG0OuuqUuaxlN6n/p4tFWwdnJE743Gfkr+QatcetV/oSfMyKpWbeVkTTnCaiVuHGgDyjejTtw6JjtvMP7OxvaYq4LkHgoQSV3HPzL+q6F/1PqRAiMiM=
+	t=1712166944; cv=none; b=rCmzZj4FkAGoqIb3JzBaLWy/VFD3/eXFNa2IlvHpu6lSy6UP87neW2Vr3vVCZK5sT3fzXjJeeh+dnDQMxSV4WWfXIoGuxzRJ/A8QujPTnoxMqNFgWCSGp5LAP55h0xVtRdiu+hSXd8u88ZM88fIM4rWyeQH6/g7TYJyS3POFOG4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712166895; c=relaxed/simple;
-	bh=/0XZpuV90cVbdOdKNn9mw9B3D5Yw88DCt0+hoxD1w8c=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:To:Cc; b=p6atJujqEU9H8U1s37Pe/0o7vqH42t3pgkbr3Q0taU9863Un8Hqw6tAj3m9ea5hhg83C+vguiDX25OGq6utqNRxZ9tuW5/51bb1RCXIW60gY60HC59WKSMfJoc29YdO/LedBo4gfe6llgy1GOQtvl+9s1rUtaDOwSiYmXpvv8+s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=AKUDUQv2; arc=none smtp.client-ip=209.85.161.54
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-oo1-f54.google.com with SMTP id 006d021491bc7-5a7c3dd2556so84495eaf.1
-        for <linux-kernel@vger.kernel.org>; Wed, 03 Apr 2024 10:54:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1712166893; x=1712771693; darn=vger.kernel.org;
-        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
-         :date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=xznWw54FxaWloYVwfy+4qqRxy8SOPUqZEYo49dH5RKo=;
-        b=AKUDUQv2DEOSQIOLriVgSDwFKf0jsor5tQ//ylMHF6LDTWX2CIwYOvCOFGfgtDUa7i
-         D+NJ8wASjGDR25jGsd6+nYHPBvzXTS0dLTL55a+sGsNMhipymEGqXiGljltYLKsqfIdP
-         jr/khxZAYxnTjU3hi44FaxyXoKpDn9QYT6ivQ=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712166893; x=1712771693;
-        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
-         :date:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=xznWw54FxaWloYVwfy+4qqRxy8SOPUqZEYo49dH5RKo=;
-        b=Yhy2NkTORdzxvUUVJZXEKjCsjsYh9BdOwABbt8nKd4LLV6RcO/I+1GSvziZi3LMrxs
-         SeGHAihsXE1ANFswsEtrQaWq3ajYgCJn1OARamBhhSUffvBm2mOpg+yTBrrfbA63OGw3
-         UHU8WhFg9eujMrpankF/Z8OpCkMdyxDoVx6IMY/AbWaTvWHVhKYGa37ydDeWa6LN4Y0w
-         h36Yjnq9R/SIM2Qqo2Fe8skAaPvoyJxthTEFfMaSNx/Hn8tcbFSkRlwxEmOpvs2bXg6J
-         ARhdl2OolCN02nYZOGWIwxkGNY1GrZ1eYaJYDzAi/cKxKeS/S9iwN1zV4u0yjkz5AkZe
-         MvQg==
-X-Forwarded-Encrypted: i=1; AJvYcCW5ifZW5AAWeWJBtlFYpSmGzdUcESCzxtcmkssFUl9AFbpw80D9++ocV1IRE+7MSNkaRoBk6ta+GiAx3fZ72fE6cN7ibT3jYXnlpWtn
-X-Gm-Message-State: AOJu0Yx0+MUZFG1sXNjvzN7bP03wrcYoo/iAgiC7RLbNL8NKEZHsQpAi
-	qBFVzkw68oblcjEzeeJWNh/XM1lr0sCQsNgsPXazOTgUja7HxjOJV+9znX1j9A==
-X-Google-Smtp-Source: AGHT+IEkOvzpB3sS1GOMdYoTNTPrcUJQAqysOJCExlqcM5uAzvObmKgFti8V3JJ6lg7+vtgEa+c+AQ==
-X-Received: by 2002:a05:6359:4c15:b0:183:8bc6:82b with SMTP id kj21-20020a0563594c1500b001838bc6082bmr3498716rwc.28.1712166893093;
-        Wed, 03 Apr 2024 10:54:53 -0700 (PDT)
-Received: from pholla1.c.googlers.com (210.73.125.34.bc.googleusercontent.com. [34.125.73.210])
-        by smtp.gmail.com with ESMTPSA id o13-20020a65520d000000b005d7994a08dcsm10509577pgp.36.2024.04.03.10.54.52
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 03 Apr 2024 10:54:52 -0700 (PDT)
-From: Pavan Holla <pholla@chromium.org>
-Date: Wed, 03 Apr 2024 17:54:51 +0000
-Subject: [PATCH v2] usb: typec: ucsi: Wait 20ms before reading CCI after a
- reset
+	s=arc-20240116; t=1712166944; c=relaxed/simple;
+	bh=UVpatiKVwhxLWX8puZya+ICdNXhPi/+rGPkrIR89hYE=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=p2/y9vZr92GlBYsfsKwWKbJ0tkGH57xIWKwKbkQVFU2oxM2AV6L+Jkd8z3neVf2XbdTx9PjS/VmaKLRbjnO5n1utwoP7sAjf3TC/uxLpM4gwzd6706NsnyN/tEQBn3+e4n/sTRzJQ8eYZUzpZ4t269s1FIKOM8Uq/T0xXXivB5M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=Uz6aO2El; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=K5PuXrV4; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:98])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 3D6373738F;
+	Wed,  3 Apr 2024 17:55:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1712166938;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=3uqlK5tXRDv3ca7TX0f01adWVqFvHQM/F9oaiZDI7WU=;
+	b=Uz6aO2Els/Bd6BydT4d/H4yDZW/jMs7o0dqb4xJTFCMDHtTkVBSKZ6is/AOBVLEJSRaA1X
+	C4h0KcbzLxXrXmV0QbafHjPXmzJEf0BURIkx5Am/6e3wCn5wfWb891n4JQgX2Erf4n8QYH
+	SOe+Ayw+rj3BNr5gTe41XPYWhRbiBUg=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1712166938;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=3uqlK5tXRDv3ca7TX0f01adWVqFvHQM/F9oaiZDI7WU=;
+	b=K5PuXrV4xP1HKiHsbvq3HpjavqCgWFNm93Dyw0Bn980te9dmAPBRAiLeMt07IX/BXhFPNe
+	S3+u7utXKCozqEDA==
+Authentication-Results: smtp-out1.suse.de;
+	dkim=none
+Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id CA59F1331E;
+	Wed,  3 Apr 2024 17:55:35 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap2.dmz-prg2.suse.org with ESMTPSA
+	id 0VT/JxeYDWYiIwAAn2gu4w
+	(envelope-from <pvorel@suse.cz>); Wed, 03 Apr 2024 17:55:35 +0000
+Date: Wed, 3 Apr 2024 19:55:33 +0200
+From: Petr Vorel <pvorel@suse.cz>
+To: Rob Herring <robh@kernel.org>
+Cc: Alexander Reimelt <alexander.reimelt@posteo.de>,
+	konrad.dybcio@linaro.org, devicetree@vger.kernel.org,
+	andersson@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+	conor+dt@kernel.org, linux-arm-msm@vger.kernel.org,
+	robh+dt@kernel.org, linux-kernel@vger.kernel.org,
+	Petr Vorel <petr.vorel@gmail.com>
+Subject: Re: [PATCH 1/2] dt-bindings: arm: qcom: Add LG G4 (h815)
+Message-ID: <20240403175533.GA462665@pevik>
+Reply-To: Petr Vorel <pvorel@suse.cz>
+References: <20240403104415.30636-1-alexander.reimelt@posteo.de>
+ <20240403104415.30636-2-alexander.reimelt@posteo.de>
+ <171216461463.4018435.3466905061314737419.robh@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20240403-ucsi-reset-delay-v2-1-244c175825a4@chromium.org>
-X-B4-Tracking: v=1; b=H4sIAOqXDWYC/32NSw6DMAwFr4K8rqskfPpZ9R4VC0ocYqkQ5AAqQ
- ty9KQfockZ68zaIJEwR7tkGQgtHDkMCc8qg9c3QEbJNDEaZQuWmxLmNjEKRJrT0blZ8WVddtCn
- K0llIs1HI8edIPuvEnuMUZD0eFv2zf2KLRo32Rvqak3KaqkfrJfQ89+cgHdT7vn8Bm2r+m7MAA
- AA=
-To: Heikki Krogerus <heikki.krogerus@linux.intel.com>, 
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org, 
- Abhishek Pandit-Subedi <abhishekpandit@chromium.org>, 
- Pavan Holla <pholla@chromium.org>
-X-Mailer: b4 0.12.4
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <171216461463.4018435.3466905061314737419.robh@kernel.org>
+X-Spam-Score: 1.40
+X-Spam-Flag: NO
+X-Spamd-Bar: +
+X-Spamd-Result: default: False [1.40 / 50.00];
+	 HAS_REPLYTO(0.30)[pvorel@suse.cz];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
+	 TO_DN_SOME(0.00)[];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 MX_GOOD(-0.01)[];
+	 NEURAL_HAM_SHORT(-0.20)[-1.000];
+	 RCPT_COUNT_SEVEN(0.00)[11];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 R_DKIM_NA(2.20)[];
+	 MIME_TRACE(0.00)[0:+];
+	 BAYES_HAM(-0.29)[74.68%];
+	 ARC_NA(0.00)[];
+	 REPLYTO_EQ_FROM(0.00)[];
+	 FROM_HAS_DN(0.00)[];
+	 FREEMAIL_ENVRCPT(0.00)[gmail.com];
+	 NEURAL_HAM_LONG(-1.00)[-1.000];
+	 TAGGED_RCPT(0.00)[dt];
+	 MIME_GOOD(-0.10)[text/plain];
+	 TO_MATCH_ENVRCPT_SOME(0.00)[];
+	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	 DBL_BLOCKED_OPENRESOLVER(0.00)[posteo.de:email];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 MID_RHS_NOT_FQDN(0.50)[];
+	 FREEMAIL_CC(0.00)[posteo.de,linaro.org,vger.kernel.org,kernel.org,gmail.com];
+	 RCVD_TLS_ALL(0.00)[];
+	 RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:98:from]
+X-Spam-Level: *
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+X-Rspamd-Queue-Id: 3D6373738F
 
-The PPM might take time to process a reset. Allow 20ms for the reset to
-be processed before reading the CCI.
+Hi all,
 
-Signed-off-by: Pavan Holla <pholla@chromium.org>
----
-The PPM might take time to process a reset and set the CCI. Give the PPM
-20ms to update it's CCI.
+> On Wed, 03 Apr 2024 10:43:29 +0000, Alexander Reimelt wrote:
+> > International variant of the LG G4 from 2015.
 
-Based on the discussion in v1, this should not slow down existing
-implementations because they would not set any bits in the CCI after a reset,
-and would take a 20ms delay to read the CCI anyway. This change just makes the
-delay explicit, and reduces a CCI read. Based on the spec, the PPM has
-10ms to set busy, so, 20ms seems like a reasonable delay before we read
-the CCI.
----
-Changes in v2:
-- Commit message updated.
-- Link to v1: https://lore.kernel.org/r/20240325-ucsi-reset-delay-v1-1-d9e183e0f1e6@chromium.org
----
- drivers/usb/typec/ucsi/ucsi.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+> > Signed-off-by: Alexander Reimelt <alexander.reimelt@posteo.de>
+> > ---
+> >  Documentation/devicetree/bindings/arm/qcom.yaml | 1 +
+> >  1 file changed, 1 insertion(+)
 
-diff --git a/drivers/usb/typec/ucsi/ucsi.c b/drivers/usb/typec/ucsi/ucsi.c
-index cf52cb34d285..c0706c40fa64 100644
---- a/drivers/usb/typec/ucsi/ucsi.c
-+++ b/drivers/usb/typec/ucsi/ucsi.c
-@@ -1280,6 +1280,9 @@ static int ucsi_reset_ppm(struct ucsi *ucsi)
- 			goto out;
- 		}
- 
-+		/* Give the PPM time to process a reset before reading CCI */
-+		msleep(20);
-+
- 		ret = ucsi->ops->read(ucsi, UCSI_CCI, &cci, sizeof(cci));
- 		if (ret)
- 			goto out;
-@@ -1293,7 +1296,6 @@ static int ucsi_reset_ppm(struct ucsi *ucsi)
- 				goto out;
- 		}
- 
--		msleep(20);
- 	} while (!(cci & UCSI_CCI_RESET_COMPLETE));
- 
- out:
 
----
-base-commit: 4cece764965020c22cff7665b18a012006359095
-change-id: 20240325-ucsi-reset-delay-bdf6712455fd
+> Acked-by: Rob Herring <robh@kernel.org>
 
-Best regards,
--- 
-Pavan Holla <pholla@chromium.org>
+Reviewed-by: Petr Vorel <petr.vorel@gmail.com>
 
+Kind regards,
+Petr
 
