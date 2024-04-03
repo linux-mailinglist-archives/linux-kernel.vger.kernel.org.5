@@ -1,108 +1,129 @@
-Return-Path: <linux-kernel+bounces-129436-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-129438-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B05BE896AE1
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 11:41:54 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id CEEB1896ADC
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 11:40:55 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id EFB2FB2BBB3
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 09:36:25 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7EA21B2C4AD
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 09:37:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DCDC3133981;
-	Wed,  3 Apr 2024 09:36:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 280ED135A44;
+	Wed,  3 Apr 2024 09:36:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="EEWnWSyl"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.17])
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="IYQR2xtT"
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DC7EB6FE00;
-	Wed,  3 Apr 2024 09:36:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.17
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EDF386F085;
+	Wed,  3 Apr 2024 09:36:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712136977; cv=none; b=S2iGwhbcCQZsXfICa3dyrldYCXHaiOh+eTGNZUI8GaR9BbHmVYGxnq2cs2F294TdRMXSuX36KvMOcbqABYUdYK+WqXg1XjinKdwSU2XCve2XkWskB8r5a2gphF9szcG4lrxmtB5oNqR/lLGXF67qhi+QLptBDwlPwNdzKAxnAME=
+	t=1712136984; cv=none; b=bxY072x/HOUWQFY8cXagx49SZlOeBalFDGvXzKntPWDFYlC4F0c9CEgE0dbGx9cuz2RtPYRok5+UskC62V2yY/BtVcSnpT3wZzG/vmqKjCPQAwVAsuvJd4KB1xiD3mL42um7Ob3+INdy/dNJjx/qEUrLom8g4hjxaXuu9TRaLe4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712136977; c=relaxed/simple;
-	bh=J4/4Z/KbRHhQpBPL6z/aGYydGWTMJbsDXjqRAbKjEZM=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=jdJ7fCJLveJdxtHAN544bbimVNjPKQ4S2Gg+ZO4BDiw3KsPYTzgyxmACCLiA4A5hptXdOR7mb1+SPrFtdB1FWjm++G8SeApcOR3yr4opbkRfxHKAYHPMBYp9pzCJj/HOagmXs4D2iJUef3gf0znaBfZNfVQMUoq8p2Q1hZmIyAw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=EEWnWSyl; arc=none smtp.client-ip=192.198.163.17
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1712136976; x=1743672976;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=J4/4Z/KbRHhQpBPL6z/aGYydGWTMJbsDXjqRAbKjEZM=;
-  b=EEWnWSylOKhhopQMk7DNhthF2S/HaZjaBYtnFwpTPZqkea7nJL2jCUwf
-   /yN3nrizHaD6qXn49jUG3rPeUuaUVEmxStIBa8ddESXs4ODmfL/BF8jDC
-   /8suW9QMQDD4OVTKk9Zya0Hg3fXwdrZamaiUAtGPczK+hEDCwKMdR8NNn
-   LGKCAPxgbRoogvwY6IoWnJTCI2SkfhZCUX+fcUcr9QAMCE6X5HT92vd0y
-   0MWL397CDmaSJN3pLMzYnl6mjeb/pD3383rK7PgnTUmh7UiYbH72oofzE
-   gK5ZUHpO0rCCsbiynj3bftrgYMHYi/7x5EC/0fbC07c11jO9aa/IsDQLr
-   w==;
-X-CSE-ConnectionGUID: BVAbgaSjRFqYtOUodZ3JLw==
-X-CSE-MsgGUID: aHZNuR9XQn+RunVOAjP+Gg==
-X-IronPort-AV: E=McAfee;i="6600,9927,11032"; a="7219125"
-X-IronPort-AV: E=Sophos;i="6.07,177,1708416000"; 
-   d="scan'208";a="7219125"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by fmvoesa111.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Apr 2024 02:36:15 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,11032"; a="915176150"
-X-IronPort-AV: E=Sophos;i="6.07,177,1708416000"; 
-   d="scan'208";a="915176150"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.72.54])
-  by fmsmga002.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Apr 2024 02:36:13 -0700
-Received: from andy by smile with local (Exim 4.97)
-	(envelope-from <andriy.shevchenko@linux.intel.com>)
-	id 1rrx2R-000000014m4-15PG;
-	Wed, 03 Apr 2024 12:36:11 +0300
-Date: Wed, 3 Apr 2024 12:36:11 +0300
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To: Arnd Bergmann <arnd@kernel.org>
-Cc: linux-kernel@vger.kernel.org, Lars-Peter Clausen <lars@metafoo.de>,
-	Michael Hennerich <Michael.Hennerich@analog.com>,
-	Jonathan Cameron <jic23@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
-	linux-iio@vger.kernel.org
-Subject: Re: [PATCH 16/34] iio: ad5755: hook up of_device_id lookup to
- platform driver
-Message-ID: <Zg0jC0R39CTLsrg0@smile.fi.intel.com>
-References: <20240403080702.3509288-1-arnd@kernel.org>
- <20240403080702.3509288-17-arnd@kernel.org>
+	s=arc-20240116; t=1712136984; c=relaxed/simple;
+	bh=Tcq6waVhu6x2uDMgdHob45eXvXyBR13IKWESGleO5QQ=;
+	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=CPMgbEsTeZd5R2Fyfqhln2oDhs0F6FqvBq98jeoOS1x31+s6MRsQw+Fc31zBC7gx3NmrpZGEQALKCevz/Sljm6PSSyXmwyL6aiJjYBZ/fCYJk6BP39QvzhH7kCl1ASjhW61OCWiX3QO64o0DTqoIPTfmeizoxJ03HhGPHc0MBDY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=IYQR2xtT; arc=none smtp.client-ip=205.220.180.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279870.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 433957Hi031954;
+	Wed, 3 Apr 2024 09:36:19 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	message-id:date:mime-version:subject:to:references:from
+	:in-reply-to:content-type:content-transfer-encoding; s=
+	qcppdkim1; bh=Qut8GT9o136iegY3V8uUsXMS6TUkzgV1SykQRe77Q5Y=; b=IY
+	QR2xtTOWmpHRTvQOxsTjsECk6T4hfI1RxVZmH5wDG7heVeBwI2R9eTVRYCiMYvtT
+	sn0ymhIrzBXtrycPZ4pfxFW0Bo3oU2Di73v46+juaRjKBJgUGdYS2bSm1LTxQmg5
+	mtOqcZd0Y2eKXIueO3+TU1xdZA0wNYMpHlCKCCIm84JMviBTY1AMJnfKAPLWHvNx
+	6cSwasdsKm5Ko+0qJ4FgZAzhxrnPQUTuyGyYcnukYkasH2toiYXmKtWyqEI8BcCu
+	GXkRZsgTE5AxG3Q1vN3cgq/y1KB17OrIxUETbeYuSbFFzGp4PdDJI/yA6No55r9P
+	gHOOQ0EuP7rX9GcBeoAg==
+Received: from nalasppmta02.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3x946002nh-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 03 Apr 2024 09:36:18 +0000 (GMT)
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+	by NALASPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 4339aHIL004891
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 3 Apr 2024 09:36:17 GMT
+Received: from [10.217.217.112] (10.80.80.8) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.4; Wed, 3 Apr 2024
+ 02:36:14 -0700
+Message-ID: <dc19ba7a-ee4b-48c1-ac8e-224077526039@quicinc.com>
+Date: Wed, 3 Apr 2024 15:06:11 +0530
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240403080702.3509288-17-arnd@kernel.org>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] arm64: dts: qcom: qcm6490-idp: Add change to name the
+ regulators
+Content-Language: en-US
+To: Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio
+	<konrad.dybcio@linaro.org>,
+        Rob Herring <robh@kernel.org>,
+        "Krzysztof
+ Kozlowski" <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley
+	<conor+dt@kernel.org>, <linux-arm-msm@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <quic_kamalw@quicinc.com>
+References: <20240329122940.3649730-1-quic_uchheda@quicinc.com>
+ <20240329140534820-0700.eberman@hu-eberman-lv.qualcomm.com>
+ <fvep7awia3eqlavh4ksscig4x2yc2szpy2uoi2p6ueofimv5ch@km4aekplcys5>
+From: Umang Chheda <quic_uchheda@quicinc.com>
+In-Reply-To: <fvep7awia3eqlavh4ksscig4x2yc2szpy2uoi2p6ueofimv5ch@km4aekplcys5>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: bUMKvSbmkLr76X2yZIpOpBRPo_n8IFhB
+X-Proofpoint-ORIG-GUID: bUMKvSbmkLr76X2yZIpOpBRPo_n8IFhB
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-04-03_08,2024-04-01_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=878
+ suspectscore=0 adultscore=0 phishscore=0 priorityscore=1501 mlxscore=0
+ clxscore=1015 impostorscore=0 lowpriorityscore=0 bulkscore=0
+ malwarescore=0 spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2403210001 definitions=main-2404030065
 
-On Wed, Apr 03, 2024 at 10:06:34AM +0200, Arnd Bergmann wrote:
-> From: Arnd Bergmann <arnd@arndb.de>
+
+
+On 4/3/2024 9:22 AM, Bjorn Andersson wrote:
+> On Fri, Mar 29, 2024 at 02:09:55PM -0700, Elliot Berman wrote:
+>> Nit: the subject line should be:
+>>
+>> arm64: dts: qcom: qcm6490: Name the regulators
+>>
 > 
-> When the driver is built-in, 'make W=1' warns about an unused
-> ID table:
+> Much cleaner subject, but no longer matches file prefix.
+
+I will update the subject line to:
+arm64: dts: qcom: qcm6490-idp: Name the regulators
+
 > 
-> drivers/iio/dac/ad5755.c:866:34: error: 'ad5755_of_match' defined but not used [-Werror=unused-const-variable=]
->   866 | static const struct of_device_id ad5755_of_match[] = {
+>> I don't know if it merits a resend, though.
 > 
-> While the data is duplicated in the spi_device_id, it's common
-> to use the actual OF compatible strings in the driver.
+> Yes, please.
+
+Ack, will update the subject line as suggested by Elliot and Resend the patch.
+
+Regards,
+Umang
+
 > 
-> Since there are no in-tree users of plain platform devices, the
-> spi_device_id table could actually be dropped entirely with this.
-
-Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-
--- 
-With Best Regards,
-Andy Shevchenko
-
-
+> Regards,
+> Bjorn
 
