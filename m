@@ -1,154 +1,165 @@
-Return-Path: <linux-kernel+bounces-129880-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-129882-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 41AB2897191
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 15:50:40 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id BA05F897197
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 15:51:26 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A59461F217B6
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 13:50:38 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 394241F2569A
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 13:51:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9B35F148836;
-	Wed,  3 Apr 2024 13:50:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 327E514882F;
+	Wed,  3 Apr 2024 13:51:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="CfbCHv/6"
-Received: from mail-pj1-f42.google.com (mail-pj1-f42.google.com [209.85.216.42])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="iSRab5p/"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 75BCE1487DE
-	for <linux-kernel@vger.kernel.org>; Wed,  3 Apr 2024 13:50:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D22551487E0
+	for <linux-kernel@vger.kernel.org>; Wed,  3 Apr 2024 13:50:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712152224; cv=none; b=o6ec459fM07ZS6Yui4rMieplEPx3nZGvqbqMNhAYsTZySddWyH75Nrin2YdOX4O8DhqY8U3ckE6keFnI0zaHECFK3RpZ3XJNkvnTNdMmw8Rygvd229xng/lzkp3qZvsy/iCMjmJHGOvrY1rCgQc0njuNyHoZ2Zqo5WMUKvahXsE=
+	t=1712152259; cv=none; b=L/BvKWv9ZcjnoTmRCR48P14tcC3Gz9siH8xUTtJ1UEEYICcRprEPlA2ncaYvdzGha0kud87vglsrQsWNkNEN6dPDSrsygOFis3nq10KBb6f3qJdiYu8MzDshlBSqNN/+Nhjxl/lfZKOOSTkDJM+dgC/+DiD+H4pBhe2OEdJ768c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712152224; c=relaxed/simple;
-	bh=X2XAS/oTqinlQY0bqWZ9HdUjhcK3j05vJH/5bNcOweY=;
+	s=arc-20240116; t=1712152259; c=relaxed/simple;
+	bh=0w2WrMPgBEF7P+KBFC1PiBOaaNAE12UV7ArGCbs4Fpk=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=SCm5xQ4MRsOVFDM2Gi9DHqAJQ69efRgbT17qf31DobG+KuT8PSxYfbyXu9cfQtFlV8BOtQiUeBIpPMzcfm0CanWxrLL7+8luGZfR8qs8qQ6IBRqN8blDsIyMBJGxwEIeWq9KTCPNZ0cl/Kgj3SyczN8BMcR8pYKPUSkbijrrPxg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=CfbCHv/6; arc=none smtp.client-ip=209.85.216.42
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-pj1-f42.google.com with SMTP id 98e67ed59e1d1-2a2601f0562so1428954a91.0
-        for <linux-kernel@vger.kernel.org>; Wed, 03 Apr 2024 06:50:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1712152223; x=1712757023; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=f7pIzWrkcLxbGwLKhe5BWqkH4QaoGIyBQXlY1niD1ok=;
-        b=CfbCHv/6SIBCP1W72SXIpI4tjNL00nPcURc0KlN7pXRYdfRnQrWcBTC0ARABICVeUQ
-         DJuDL7aC7W6+KpB95X5mGEBTy84QWkRzIoYBEygT3LK5k/GLKYf5/EYQ561R3Px3Vu+G
-         5acaV4S/9j1d3Z2IP+xGbUmqVLds3dt3XLN9GnWwchtdQFPAQFkZhkzwqmpRpK9GWQw/
-         BjqdIy7lkvwxwl5uhI3hCCdIq1uHDpM+YYTBsY555YFKhYZ8UJI6UjiDIPFCAY1GZbly
-         Ij/KfL0GviUiDC4ZgxuE8YYRQ1TTQkJe/2Dc503l5PjJC9rHc9TExb7TmVuLAMJ6a2CN
-         N4cA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712152223; x=1712757023;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=f7pIzWrkcLxbGwLKhe5BWqkH4QaoGIyBQXlY1niD1ok=;
-        b=vix0RWXs/LjvtOHMAC8dbSSmoQGI2Grd27IreVbmCSHNCx31C2jIJHXglQ3nABn436
-         OwsokScgzcyKxsO9g5AL90pOoYIw09UCLdD1OrEiqY3HZ/eLMefs4efy9XBrW+52c3ne
-         U+eUVy5BADyzZRXKnyBEh+si4acXaAh1sj+txLwA/G0NmX+OApVZmRWPrs10qlI5xVNl
-         Uq2bdMSD42XTMFo8khPZoDHXTICPZpdEYnegmjsISKV6nXvTd0kD5LX35jKsk8w7DA9I
-         mY9Bkn2T2RI9f2n5GUc+DlhmcL65K6e+jkyNrFpws7jbwoMmhggpks2cfyAG1yF9ZWUe
-         HQtg==
-X-Forwarded-Encrypted: i=1; AJvYcCVo+NUhQz5fNunLYyPyMk2eNTVJHp1wM28a/lQM7LW8GBRJ6tqZwdzW/XqpEpPC4SPyy4VQFY+sO+I26TA7efDP27KEmVbd804/2N1P
-X-Gm-Message-State: AOJu0Ywf7GWvyEZ3e+aJQ2IzNOw1jrFqmm7s3NVAS+Rhckm6uuvHG7vP
-	VUga0t4wQJukUG0ReLnNuDY6AO239FdYasitXpeerL5lmz9m04vshbZpndsHRQ==
-X-Google-Smtp-Source: AGHT+IFDdfRiUaNJoLcOr55g0unal8pZiJ3WGx9PpUBA19tgVAi/tYPRzvUz9AfJy4wzh0i9HRnXeA==
-X-Received: by 2002:a17:90a:4b8e:b0:2a2:6e60:b53c with SMTP id i14-20020a17090a4b8e00b002a26e60b53cmr3886528pjh.20.1712152222504;
-        Wed, 03 Apr 2024 06:50:22 -0700 (PDT)
-Received: from thinkpad ([103.28.246.48])
-        by smtp.gmail.com with ESMTPSA id m10-20020a17090a34ca00b0029b9954a02asm2196137pjf.0.2024.04.03.06.50.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 03 Apr 2024 06:50:22 -0700 (PDT)
-Date: Wed, 3 Apr 2024 19:20:15 +0530
-From: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-To: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Cc: Bjorn Andersson <andersson@kernel.org>,
-	Konrad Dybcio <konrad.dybcio@linaro.org>,
-	Alim Akhtar <alim.akhtar@samsung.com>,
-	Avri Altman <avri.altman@wdc.com>,
-	Bart Van Assche <bvanassche@acm.org>,
-	Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>, Andy Gross <agross@kernel.org>,
-	Andy Gross <andy.gross@linaro.org>,
-	"James E.J. Bottomley" <jejb@linux.ibm.com>,
-	"Martin K. Petersen" <martin.petersen@oracle.com>,
-	linux-arm-msm@vger.kernel.org, linux-scsi@vger.kernel.org,
-	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 3/3] arm64: dts: qcom: msm8996: Add missing UFS host
- controller reset
-Message-ID: <20240403135015.GN25309@thinkpad>
-References: <20240129-ufs-core-reset-fix-v1-0-7ac628aa735f@linaro.org>
- <20240129-ufs-core-reset-fix-v1-3-7ac628aa735f@linaro.org>
- <CAA8EJpphzwoCaetGfnM8dE478ic1-BMqXKA3XVLeC9j5BBu3SA@mail.gmail.com>
- <20240130065550.GF32821@thinkpad>
- <CAA8EJpqZYp0C8rT8E=LoVo9fispLNhBn8CEgx1-iMqN_2MQXfg@mail.gmail.com>
- <g4a6gl47kfjx47ww36qnwp7zgvbd5gi5r7d26ibitfrybaa3l4@gvnz2mhsdf4s>
- <CAA8EJppOPrSfD=VkHm8M0P07=mN_BikT=cGvLe6UFL3OpKVWzA@mail.gmail.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=WcmwgV1EQwzh/6Dy2O1awflZTqnrWYqk18iM/R42Gle9LZlTa3f33GLOPPvnfiKuv73h5EeQZ0lXhdrwNjEFfIAuBYTLpwWGgqOBZi60ludMikVLu4viHJs5vETohOHwFcw5fG9NbxzK2bWfutHr1LXMn/T1MyU3ku4LAxPqBNU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=iSRab5p/; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1712152256;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=fbnyxTPoivxdulGiRzybrkcGRwKo49Gh1MYbg192HZY=;
+	b=iSRab5p/C4pXQeGNdOCCiyW3CFtX3M8SOQDFoF8WIJfyurhrzdXJNoeW953AgJmH2I3XyY
+	r6MFozkuiSWYAeA/71AKdxg1djHH0/YEg+yN8OKxWverapZfPOmspyVLnS8Uek8hTDZa93
+	u6Pc9MHVo5pFD5nRz/+9M+Sav4XSnt8=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-193-h1MQqg0sPVK2IoQWIgyF3g-1; Wed, 03 Apr 2024 09:50:55 -0400
+X-MC-Unique: h1MQqg0sPVK2IoQWIgyF3g-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.rdu2.redhat.com [10.11.54.2])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id A10DA101A535;
+	Wed,  3 Apr 2024 13:50:54 +0000 (UTC)
+Received: from localhost (unknown [10.39.194.118])
+	by smtp.corp.redhat.com (Postfix) with ESMTP id 9649A40735E1;
+	Wed,  3 Apr 2024 13:50:53 +0000 (UTC)
+Date: Wed, 3 Apr 2024 09:50:32 -0400
+From: Stefan Hajnoczi <stefanha@redhat.com>
+To: Eric Blake <eblake@redhat.com>
+Cc: linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+	Alasdair Kergon <agk@redhat.com>,
+	Mikulas Patocka <mpatocka@redhat.com>, dm-devel@lists.linux.dev,
+	David Teigland <teigland@redhat.com>,
+	Mike Snitzer <snitzer@kernel.org>, Jens Axboe <axboe@kernel.dk>,
+	Christoph Hellwig <hch@lst.de>, Joe Thornber <ejt@redhat.com>
+Subject: Re: [RFC 3/9] selftests: block_seek_hole: add loop block driver tests
+Message-ID: <20240403135032.GB2524049@fedora>
+References: <20240328203910.2370087-1-stefanha@redhat.com>
+ <20240328203910.2370087-4-stefanha@redhat.com>
+ <xh2nqmndk4rfnvghhmv6xlueleb4mdfa6v5vvamnxfyxb3eomb@yz5u2nldqewf>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="wef+JxaAyeGLmzI+"
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAA8EJppOPrSfD=VkHm8M0P07=mN_BikT=cGvLe6UFL3OpKVWzA@mail.gmail.com>
+In-Reply-To: <xh2nqmndk4rfnvghhmv6xlueleb4mdfa6v5vvamnxfyxb3eomb@yz5u2nldqewf>
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.2
 
-On Tue, Apr 02, 2024 at 10:25:32PM +0300, Dmitry Baryshkov wrote:
-> On Tue, 2 Apr 2024 at 20:35, Bjorn Andersson <andersson@kernel.org> wrote:
-> >
-> > On Fri, Feb 09, 2024 at 10:16:25PM +0200, Dmitry Baryshkov wrote:
-> > > On Tue, 30 Jan 2024 at 08:55, Manivannan Sadhasivam
-> > > <manivannan.sadhasivam@linaro.org> wrote:
-> > > >
-> > > > On Mon, Jan 29, 2024 at 11:44:15AM +0200, Dmitry Baryshkov wrote:
-> > > > > On Mon, 29 Jan 2024 at 09:55, Manivannan Sadhasivam
-> > > > > <manivannan.sadhasivam@linaro.org> wrote:
-> > > > > >
-> > > > > > UFS host controller reset is required for the drivers to properly reset the
-> > > > > > controller. Hence, add it.
-> > > > > >
-> > > > > > Fixes: 57fc67ef0d35 ("arm64: dts: qcom: msm8996: Add ufs related nodes")
-> > > > > > Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-> > > > >
-> > > > > I think I had issues previously when I attempted to reset the
-> > > > > controller, but it might be because of the incomplete clocks
-> > > > > programming. Let met check whether it works first.
-> > > > >
-> > > >
-> > > > Sure. Please let me know.
-> > >
-> > > With the clocking fixes in place (I'll send them in a few minutes) and
-> > > with this patch the UFS breaks in the following way:
-> > >
-> >
-> > Was this further reviewed/investigated? What would you like me to do
-> > with this patch?
-> 
-> I'd say, hold until we can understand what is going on.
-> 
-> Mani, If you have any ideas what can be causing the issue, I'm open to
-> testing any ideas or any patches from your side.
-> Judging that the UFS breaks after toggling the reset, we might be
-> missing some setup steps.
-> 
 
-I've bombarded the Qcom UFS team with too many questions, but didn't get answer
-for all of them. And this is one of those questions.
+--wef+JxaAyeGLmzI+
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Let me try to dig further and come back.
+On Thu, Mar 28, 2024 at 07:11:30PM -0500, Eric Blake wrote:
+> On Thu, Mar 28, 2024 at 04:39:04PM -0400, Stefan Hajnoczi wrote:
+> > Run the tests with:
+> >=20
+> >   $ make TARGETS=3Dblock_seek_hole -C tools/selftests run_tests
+> >=20
+> > Signed-off-by: Stefan Hajnoczi <stefanha@redhat.com>
+> > ---
+> >  tools/testing/selftests/Makefile              |   1 +
+> >  .../selftests/block_seek_hole/Makefile        |  17 +++
+> >  .../testing/selftests/block_seek_hole/config  |   1 +
+> >  .../selftests/block_seek_hole/map_holes.py    |  37 +++++++
+> >  .../testing/selftests/block_seek_hole/test.py | 103 ++++++++++++++++++
+> >  5 files changed, 159 insertions(+)
+> >  create mode 100644 tools/testing/selftests/block_seek_hole/Makefile
+> >  create mode 100644 tools/testing/selftests/block_seek_hole/config
+> >  create mode 100755 tools/testing/selftests/block_seek_hole/map_holes.py
+> >  create mode 100755 tools/testing/selftests/block_seek_hole/test.py
+> >=20
+> > +++ b/tools/testing/selftests/block_seek_hole/test.py
+>=20
+> > +
+> > +# Different data layouts to test
+> > +
+> > +def data_at_beginning_and_end(f):
+> > +    f.write(b'A' * 4 * KB)
+> > +    f.seek(256 * MB)
+> > +
+> > +    f.write(b'B' * 64 * KB)
+> > +
+> > +    f.seek(1024 * MB - KB)
+> > +    f.write(b'C' * KB)
+> > +
+> > +def holes_at_beginning_and_end(f):
+> > +    f.seek(128 * MB)
+> > +    f.write(b'A' * 4 * KB)
+> > +
+> > +    f.seek(512 * MB)
+> > +    f.write(b'B' * 64 * KB)
+> > +
+> > +    f.truncate(1024 * MB)
+> > +
+> > +def no_holes(f):
+> > +    # Just 1 MB so test file generation is quick
+> > +    mb =3D b'A' * MB
+> > +    f.write(mb)
+> > +
+> > +def empty_file(f):
+> > +    f.truncate(1024 * MB)
+>=20
+> Is it also worth attempting to test a (necessarily sparse!) file
+> larger than 2GiB to prove that we are 64-bit clean, even on a 32-bit
+> system where lseek is different than lseek64?  (I honestly have no
+> idea if python always uses 64-bit seek even on 32-bit systems,
+> although I would be surprised if it were not)
 
-- Mani
+Yes, it wouldn't hurt to add a test case for that. I'll do that.
 
--- 
-மணிவண்ணன் சதாசிவம்
+Stefan
+
+--wef+JxaAyeGLmzI+
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEEhpWov9P5fNqsNXdanKSrs4Grc8gFAmYNXqcACgkQnKSrs4Gr
+c8haRQf6AwEcxzTy4yYaPyNMUFI4yW1gzKFlXN451KGhjcejq6HevACTbBTLUy4o
+uIiH5kiBM2XSl5k5m8E4oZeB5x6sWdHR+3OpwP9KoPvJfZinyoJbQM4CqIMQsWMM
+RJ5pIM9XRqG6BkeNT5ni8zs7VgF8aIxXkzhuSLf5H3WKKpqcXNfmMTuHUOWyOhtn
+AkfAYK6Mvzwucyv3HonafDbHokCB09BY5SKOcx4U2dz+7PKmiGxkjdanEOsAPHko
+SUAF2pM1Koi3X+9xfs63eJAfwVGqMZB9W36nAMEybCnNedVPoJUiT6JUdfjQSDa+
+hbxtZbvKkwZvaSxNRS81RwSszsK4vQ==
+=qDQS
+-----END PGP SIGNATURE-----
+
+--wef+JxaAyeGLmzI+--
+
 
