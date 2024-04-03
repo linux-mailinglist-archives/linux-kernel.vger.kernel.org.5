@@ -1,168 +1,189 @@
-Return-Path: <linux-kernel+bounces-129335-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-129336-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2D46E8968B2
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 10:31:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id D64D28968B4
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 10:32:14 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id AE4451F2A46D
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 08:31:58 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 643781F2A72A
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 08:32:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F0BB36E5FE;
-	Wed,  3 Apr 2024 08:31:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8D19C6FE1D;
+	Wed,  3 Apr 2024 08:31:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Cz+GR88/"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.12])
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="ZO5xMyxc"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BC11C44C8C;
-	Wed,  3 Apr 2024 08:31:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.12
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4D0BC6F076
+	for <linux-kernel@vger.kernel.org>; Wed,  3 Apr 2024 08:31:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712133083; cv=none; b=UMUtt0Zb542jaNANEKaYqYBhCNoEM6VHIFI0DoZS+Hn0S2V/CmQbehoQOfiLSIjFFKYq/zAREdiX+593HC8RvcRr/ZWJZF+emjnuPMPTmdYVyrEVCi4HaUxik3NI4LIKO0PreVO9QzHe9m9pamBOepfX58RJNjyV6xFaEIoeGPQ=
+	t=1712133087; cv=none; b=vEmpG12ISPWEXRKFF6rtBBCiwoT18hT8212mxIlEQKmSzCwrmURGVxjCKOd7d8lo0lZOzwRSiAwQd/QgAbY4ABS08iOAHcvLYphzkcaOH0nVLXuGBnqGs76CMlX4kvYFeVyVBwvbZujIDLxs1jcT8ZKqcL9E4UwxBQIbg9mlP0M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712133083; c=relaxed/simple;
-	bh=RqJyN0hEVHVjcA8Rbw9SFpPLwpA2ggCDucLROXLaXQ4=;
-	h=From:Date:To:cc:Subject:In-Reply-To:Message-ID:References:
-	 MIME-Version:Content-Type; b=nV8QVvexYwAHDpOVzRHuwIWtsQ2OmqSKQCq6KPcHSaoz3ww/ASqUVIcU8Pse99DNWnXwhWh+H+MmCr9o5dvRA3XOT3+FkEYYT8fB59Ti8psx31ZkGRCAeZkkaguooZxLvd+5Zr1ZdJGd2/Ssle5Lzz72gesbTiVHFhAszqu5vzU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Cz+GR88/; arc=none smtp.client-ip=198.175.65.12
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1712133082; x=1743669082;
-  h=from:date:to:cc:subject:in-reply-to:message-id:
-   references:mime-version;
-  bh=RqJyN0hEVHVjcA8Rbw9SFpPLwpA2ggCDucLROXLaXQ4=;
-  b=Cz+GR88/fjWWCKV0GjyMSNfleXAwL63pKweMVHuL88/TFY6Y4izr6YnR
-   MCstiGpG9etDR6+5COt8psUqePUoVqp3DC2hFRmi3iC2wltAE3gMorwU6
-   8UGj6upsd8nuzQ/0R60KHuDgPeTxKUUlWqs4oYYaK86rC/IERCpkj51YL
-   x3NrwSgmyy94bsQuZFTEA+mXfXZGwJ1lwMeIBJEbuUG60OvqJquZkU1wr
-   lMhI6S6eAI1RW7T+gd15WqVncvkhuj27pNkDxHhQrsiDFltMBTwr/F0MV
-   +CpSRn2jHx5xAJK5+g+oGfj+9nJ8v8uIoijAbFpSdAqHHXBHOU1s3NJcl
-   w==;
-X-CSE-ConnectionGUID: KWdGFPKIROaXnGA7rHzfiQ==
-X-CSE-MsgGUID: NziOSNovSYSC4HbJG3FHjQ==
-X-IronPort-AV: E=McAfee;i="6600,9927,11032"; a="18793076"
-X-IronPort-AV: E=Sophos;i="6.07,177,1708416000"; 
-   d="scan'208";a="18793076"
-Received: from fmviesa006.fm.intel.com ([10.60.135.146])
-  by orvoesa104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Apr 2024 01:31:21 -0700
-X-CSE-ConnectionGUID: NHfEeCZOQ1SykuOzeFUjsg==
-X-CSE-MsgGUID: iWbmClEmQQaHdHi5bL9GaQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,177,1708416000"; 
-   d="scan'208";a="18398328"
-Received: from ijarvine-desk1.ger.corp.intel.com (HELO localhost) ([10.245.247.24])
-  by fmviesa006-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Apr 2024 01:31:19 -0700
-From: =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
-Date: Wed, 3 Apr 2024 11:31:14 +0300 (EEST)
-To: Luke Jones <luke@ljones.dev>
-cc: Hans de Goede <hdegoede@redhat.com>, corentin.chary@gmail.com, 
-    platform-driver-x86@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v2 8/9] platform/x86: asus-wmi: Add support for MCU
- powersave
-In-Reply-To: <24071185.4csPzL39Zc@fedora>
-Message-ID: <42f09e54-5669-2242-28db-240405e7c4bc@linux.intel.com>
-References: <20240402022607.34625-1-luke@ljones.dev> <20240402022607.34625-9-luke@ljones.dev> <71426f4c-a44a-cf87-7045-b3f2b3fc240e@linux.intel.com> <24071185.4csPzL39Zc@fedora>
+	s=arc-20240116; t=1712133087; c=relaxed/simple;
+	bh=+vVNIkL30xXBEaWxi3EBVw+q/A/bX52+6zrF25jw+3M=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=mXGUuUGS5PTqG/WaBHKbvm+OTlDwpWf3pX8VDyV4OYMMg8fJ04gpntJwWabOwPTQSy07ZDM1ITe5M2FimqlQcKrelhmEmKtn6doc2toMzw0nFUkdfjkh1I6JjrC7IYsW3AvUQkCnd6a4JxfyIRzb7bZQenbahwtKu6vG+iQVeMw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=ZO5xMyxc; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1712133085;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=VLWFcXSG4rlX1A4JD4WkEdD7OkmVurYSG5NUffi+fW4=;
+	b=ZO5xMyxck1e802xbMuXhfyzWWTvgghC0oChDLU9I7FdHNYU7df3ISC+hYoyWzWBe/AkdFQ
+	5GNJUVKD49hpFEQoX9Bij2dqv7LhGdxrIn5IoVLotosU34Kcx26acdmfirfisNcUXQDy0t
+	EFIVrjbB7Iiwr/DodODJi7vwagf+Yqo=
+Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
+ [209.85.208.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-540-khcJ4ZyDNpSELUIaSVbj5A-1; Wed, 03 Apr 2024 04:31:22 -0400
+X-MC-Unique: khcJ4ZyDNpSELUIaSVbj5A-1
+Received: by mail-ed1-f71.google.com with SMTP id 4fb4d7f45d1cf-56c079c74d1so2802483a12.2
+        for <linux-kernel@vger.kernel.org>; Wed, 03 Apr 2024 01:31:22 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712133081; x=1712737881;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=VLWFcXSG4rlX1A4JD4WkEdD7OkmVurYSG5NUffi+fW4=;
+        b=AR/NMMayMC4gUWMJD9LQ7FcX4vhwWshSqtmH6YoBBkbNiQj8iE8a0yfG2y5BxX6KM9
+         lhSqgKohmPu44tfJiFfQaaANvtkNLlnxwbnitwBCFE2dtwcWXMXKPpptZjZHyhICDxC/
+         BThAXlj3n+qOo5jg8ZttQJj47z6e6+cnJKpOc8uexPspFLranRRx/7ntIkpYwi7PGj5N
+         bPyGA/ytOqRRjJgkIMcn6ZbrlHN+wQLiAtKHqfhUOLCs/Fk0bVOwuLy/m428hWb1dlLs
+         qmIu91a6TY0wpw90k6cV9iAstkJRelLB8vJdV13PgtaiAbw518I/8sVbdKTraJ/uwqzO
+         YL6g==
+X-Forwarded-Encrypted: i=1; AJvYcCUj4S/bs3w16sleuMnyNscX/9mpqi1ry3WEzwd2zBw+hvqklGqwdIbBI/0SlHzXalb7A2b7A2dUX6mwPYnjGkiawbwqAYI7oijxi0ef
+X-Gm-Message-State: AOJu0Yx90FXbMIrdL3t6N/h0+Vfm1tUMWX6MeEnEg606q1F0NvnMKimp
+	CCiGsimVB1BS/RhgILhNUhzXUT3TSzvAYYp/ovomk68oPyDIMiVwRz5IvpGrWS/h+jTVup3/X20
+	AKavHzqvVr4jtALJf5eFimfsQdkMnRl/AvoKBt352MbSwTBm/UA8RI/ncAvhRcw==
+X-Received: by 2002:a05:6402:254a:b0:56b:e089:56ed with SMTP id l10-20020a056402254a00b0056be08956edmr14504317edb.39.1712133081180;
+        Wed, 03 Apr 2024 01:31:21 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IFEVJhrcQkid/ww0Wnkt8Pd/Xp1RBCh4HcViBRk6/ugNOQ7Eel0eDd8Ak45ekBXiFn9o3cr3g==
+X-Received: by 2002:a05:6402:254a:b0:56b:e089:56ed with SMTP id l10-20020a056402254a00b0056be08956edmr14504269edb.39.1712133080261;
+        Wed, 03 Apr 2024 01:31:20 -0700 (PDT)
+Received: from ?IPV6:2001:1c00:c32:7800:5bfa:a036:83f0:f9ec? (2001-1c00-0c32-7800-5bfa-a036-83f0-f9ec.cable.dynamic.v6.ziggo.nl. [2001:1c00:c32:7800:5bfa:a036:83f0:f9ec])
+        by smtp.gmail.com with ESMTPSA id cn20-20020a0564020cb400b0056dfc8d12fasm820692edb.21.2024.04.03.01.31.19
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 03 Apr 2024 01:31:19 -0700 (PDT)
+Message-ID: <39acb3b9-a69f-4654-9749-a9af42fea39e@redhat.com>
+Date: Wed, 3 Apr 2024 10:31:19 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="8323328-687975693-1712133074=:1449"
-
-  This message is in MIME format.  The first part should be readable text,
-  while the remaining parts are likely unreadable without MIME-aware tools.
-
---8323328-687975693-1712133074=:1449
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 1/3] dt-bindings: leds: add LED_FUNCTION_FNLOCK
+To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+ Gergo Koteles <soyer@irl.hu>, Ike Panhc <ike.pan@canonical.com>,
+ =?UTF-8?Q?Ilpo_J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>,
+ Pavel Machek <pavel@ucw.cz>, Lee Jones <lee@kernel.org>,
+ Rob Herring <robh@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>
+Cc: platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-leds@vger.kernel.org, devicetree@vger.kernel.org
+References: <cover.1712063200.git.soyer@irl.hu>
+ <8ac95e85a53dc0b8cce1e27fc1cab6d19221543b.1712063200.git.soyer@irl.hu>
+ <6b47886e-09ac-4cb9-ab53-ca64f5320005@linaro.org>
+Content-Language: en-US, nl
+From: Hans de Goede <hdegoede@redhat.com>
+In-Reply-To: <6b47886e-09ac-4cb9-ab53-ca64f5320005@linaro.org>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Transfer-Encoding: 7bit
 
-On Wed, 3 Apr 2024, Luke Jones wrote:
+Hi Krzysztof,
 
-> On Wednesday, 3 April 2024 12:01:15=E2=80=AFAM NZDT Ilpo J=C3=A4rvinen wr=
-ote:
-> > On Tue, 2 Apr 2024, Luke D. Jones wrote:
-> > > Add support for an MCU powersave WMI call. This is intended to set th=
-e
-> > > MCU in to a low-power mode when sleeping. This mode can cut sleep pow=
-er
-> > > use by around half.
-> > >=20
-> > > Signed-off-by: Luke D. Jones <luke@ljones.dev>
-> >=20
-> > Hi,
-> >=20
-> > I fail to follow the logic of the patch here. This patch makes it
-> > configurable which is not bad in itself but what is the reason why a us=
-er
-> > would not always want to cut sleep power usage down? So this sounds lik=
-e a
-> > feature that the user wants always enabled if available.
-> >=20
-> > So what are the downsides of enabling it if it's supported?
->=20
-> Honestly, I'm not sure. Previously it was a source of issues but with rec=
-ent=20
-> bios and more work in the various gaming-handheld distros it's much less =
-of a=20
-> problem. The issue before was that the MCU would appear every second susp=
-end=20
-> due to the suspend sequence being more parallel compared to windows being=
-=20
-> sequential - the acpi calls related to this would "unplug" the USB device=
-s=20
-> that are related to the n-key (keyboard, same internal dev as laptops) an=
-d not=20
-> complete it before suspend. And then on resume it was unreliable.
->=20
-> I worked around this by calling the unplug very early, and trying to "plu=
-g"=20
-> super early also so that subsystems wouldn't notice the absence of the de=
-vice=20
-> and create new devices + paths on add. Most of the requirement for that c=
-ame=20
-> from some userspace programs unable to handle the unplug/plug part, but a=
-lso=20
-> bad device state occurring.
->=20
-> But now with the forced wait for the device to finish its task, and then =
-the=20
-> forced wait before letting it add itself back everything is fine - althou=
-gh it=20
-> does mean everything sees a device properly unplugged and plugged.
->=20
-> All of the above is to say that the "powersave" function was also part of=
- the=20
-> issue as delayed things further and we couldn't add the device back befor=
-e=20
-> subsystems noticed.
->=20
-> Distros like bazzite and chimeraOS are now using this patch, and I'd like=
- to=20
-> leave it to them to set a default for now. If it turns out everything is=
-=20
-> indeed safe as houses then we can adjust the kernel default.
->=20
-> A side-note I think is that because there is a forced wait time due to un=
-able=20
-> to use the right acpi path, the old excuse of "but users might want the d=
-evice=20
-> to wake faster by turning off powersave" doesn't really apply now.
->=20
-> I will discuss with the main stakeholders, but for now can we accept as i=
-s? If=20
-> changes are required we'll get them done before the merge window.
+On 4/2/24 3:55 PM, Krzysztof Kozlowski wrote:
+> On 02/04/2024 15:21, Gergo Koteles wrote:
+>> Newer laptops have FnLock LED.
+>>
+>> Add a define for this very common function.
+>>
+>> Signed-off-by: Gergo Koteles <soyer@irl.hu>
+>> ---
+>>  include/dt-bindings/leds/common.h | 1 +
+> 
+> Do we really need to define all these possible LED functions? Please
+> link to DTS user for this.
 
-Yes, I think it is okay to make it configurable first and then look=20
-separately into making it default on.
+It is useful to have well established names for common
+LED functions instead of having each driver come up
+with its own name with slightly different spelling
+for various fixed function LEDs.
 
---=20
- i.
+This is even documented in:
 
---8323328-687975693-1712133074=:1449--
+Documentation/leds/leds-class.rst :
+
+"""
+LED Device Naming
+=================
+
+Is currently of the form:
+
+        "devicename:color:function"
+
+..
+
+
+- function:
+        one of LED_FUNCTION_* definitions from the header
+        include/dt-bindings/leds/common.h.
+"""
+
+Note this even specifies these definitions should go into
+include/dt-bindings/leds/common.h .
+
+In this case there is no dts user (yet) only an in kernel
+driver which wants to use a LED_FUNCTION_* define to
+establish how to identify FN-lock LEDs going forward.
+
+Since a lot of LED_FUNCTION_* defines happen to be used
+in dts files these happen to live under include/dt-bindings/
+but the dts files are not the only consumer of these defines (1).
+
+IMHO having a hard this must be used in a dts file rule
+is not helpful for these kinda files with defines shared
+between dts and non dts cases.
+
+If we were to follow this logic then any addition to
+
+include/uapi/linux/input-event-codes.h
+
+must have a dts user before being approved too ? Since
+that file is included from include/dt-bindings/input/input.h ?
+
+TL;DR: not only is this patch fine, this is actually
+the correct place to add such a define according to
+the docs in Documentation/leds/leds-class.rst :
+
+Reviewed-by: Hans de Goede <hdegoede@redhat.com>
+
+Regards,
+
+Hans
+
+
+
+
+1) These defines are also used in:
+
+drivers/hid/hid-playstation.c
+drivers/hid/hid-nintendo.c
+drivers/platform/x86/ideapad-laptop.c
+drivers/leds/leds-cht-wcove.c
+drivers/leds/simple/simatic-ipc-leds.c
+drivers/leds/simple/simatic-ipc-leds-gpio-core.c
+
+
+
 
