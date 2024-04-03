@@ -1,347 +1,221 @@
-Return-Path: <linux-kernel+bounces-129364-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-129365-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id AEF06896980
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 10:50:00 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 98F25896985
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 10:50:26 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 655F728A7BF
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 08:49:59 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BC9B11C25EED
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 08:50:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E96596EB5A;
-	Wed,  3 Apr 2024 08:49:51 +0000 (UTC)
-Received: from dggsgout11.his.huawei.com (unknown [45.249.212.51])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 82E716F069;
+	Wed,  3 Apr 2024 08:50:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=mediatek.com header.i=@mediatek.com header.b="f2/sLnGl";
+	dkim=pass (1024-bit key) header.d=mediateko365.onmicrosoft.com header.i=@mediateko365.onmicrosoft.com header.b="Xe7ipVMz"
+Received: from mailgw01.mediatek.com (unknown [60.244.123.138])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9822026286;
-	Wed,  3 Apr 2024 08:49:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712134191; cv=none; b=g5spoTXRbrEAIy8ZQOs+p60ja4WyAQG56zMlY6MbrSAGDaPGQ+WpK4F2s4VUBqcc60PYlI9Z0AuNX/PQ/1pP1MzuHD5Uba6kCm6AiTT2xC8voXYzjf281RGwv2kMSxOY7RU/t8B4enKPiO38cgJ7a40rNUiO2SSN5KuLOQS8ZtI=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712134191; c=relaxed/simple;
-	bh=fn7DVLGKWosvunx9fjOF1fFwjTXPBL4g1aWLefcdTbQ=;
-	h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
-	 In-Reply-To:Content-Type; b=hQZe24pz7dDtCRhiBzwCHBGhjlvt/AKeYkzVYeqTt3VGuNDA9eLXqRgGDJToth2XxurlahzjZmxIJYl1Jw/owY6jrXR2OsFSsgFDPkMCHziiWlApuVaQSU0mJxP/gZ6NR97VV/7g47+jRv8+h3w7ldjq+ykRqZHCNQUASuxXKmk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.163.235])
-	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4V8djD2KFTz4f3p1K;
-	Wed,  3 Apr 2024 16:49:36 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.75])
-	by mail.maildlp.com (Postfix) with ESMTP id AFC401A0572;
-	Wed,  3 Apr 2024 16:49:44 +0800 (CST)
-Received: from [10.174.178.129] (unknown [10.174.178.129])
-	by APP2 (Coremail) with SMTP id Syh0CgCHrA8mGA1mM_hsJA--.51200S2;
-	Wed, 03 Apr 2024 16:49:44 +0800 (CST)
-Subject: Re: [PATCH v2 3/6] writeback: support retrieving per group debug
- writeback stats of bdi
-To: Brian Foster <bfoster@redhat.com>
-Cc: akpm@linux-foundation.org, willy@infradead.org, jack@suse.cz,
- tj@kernel.org, dsterba@suse.com, mjguzik@gmail.com, dhowells@redhat.com,
- linux-kernel@vger.kernel.org, linux-mm@kvack.org,
- linux-fsdevel@vger.kernel.org
-References: <20240327155751.3536-1-shikemeng@huaweicloud.com>
- <20240327155751.3536-4-shikemeng@huaweicloud.com> <Zga937dR5UgtSVaz@bfoster>
-From: Kemeng Shi <shikemeng@huaweicloud.com>
-Message-ID: <e3816f9c-0f29-a0e4-8ad8-a6acf82a06ad@huaweicloud.com>
-Date: Wed, 3 Apr 2024 16:49:42 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.5.0
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 497185C61A;
+	Wed,  3 Apr 2024 08:50:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=60.244.123.138
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1712134215; cv=fail; b=VOhY73+2hsY/S4Ibh0BzB5rTR54CDo6Lphj3tZ/r7672ImkwUyg8y/Ou2UtvcZmjkPywwgDMYTnrhTMMoO+32wTa7/4B2/U2BR7aaQxTfHm7YRLmD1GY6LBvwLwEULgf01i1rLlsjapy5837NsJ+XbUzVteiun4Ex8tplQp65QM=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1712134215; c=relaxed/simple;
+	bh=l83XbpilaO7RDtxKihMifzCNM9u9JWd7343L/Rx8xAQ=;
+	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
+	 Content-Type:MIME-Version; b=gCKVHNcRJTxgyRxwoRAG4YTmlNrMRyEOBZfBhS+/0xyHQEbB+jt5nz+xaRo5NN9d4ckPDDu+ZAPYtAbZ9PNFqmIeaJHyEF6Hoffs+4dV0eu4cqzply7UEAx8agTdQaaHFBx4B/Cqv4SPu1d9pXYMlp/I1IDnmT8AP8CDnkZA+tA=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=mediatek.com; spf=pass smtp.mailfrom=mediatek.com; dkim=pass (1024-bit key) header.d=mediatek.com header.i=@mediatek.com header.b=f2/sLnGl; dkim=pass (1024-bit key) header.d=mediateko365.onmicrosoft.com header.i=@mediateko365.onmicrosoft.com header.b=Xe7ipVMz; arc=fail smtp.client-ip=60.244.123.138
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=mediatek.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mediatek.com
+X-UUID: 2aff863af19711eeb8927bc1f75efef4-20240403
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+	h=MIME-Version:Content-Transfer-Encoding:Content-ID:Content-Type:In-Reply-To:References:Message-ID:Date:Subject:CC:To:From; bh=l83XbpilaO7RDtxKihMifzCNM9u9JWd7343L/Rx8xAQ=;
+	b=f2/sLnGl7jhCSsGvoURqV/MKjJxktCnY2iLAyEIL4f890jupqSbOaEaD618Ahin0VFcCPp3j2l+C6KEDF6XlvPmqOajR0bgX3yODO2TdWU4Vk7oGUw4ASh0PyzMf7e1Noij6kCT9bTgq7nVVK9Z35aydsZBP+HC6RKH2xfUx50w=;
+X-CID-P-RULE: Release_Ham
+X-CID-O-INFO: VERSION:1.1.37,REQID:ba81024a-8e47-43ea-9d36-575ce100e499,IP:0,U
+	RL:0,TC:0,Content:0,EDM:0,RT:0,SF:0,FILE:0,BULK:0,RULE:Release_Ham,ACTION:
+	release,TS:0
+X-CID-META: VersionHash:6f543d0,CLOUDID:268e2b91-e2c0-40b0-a8fe-7c7e47299109,B
+	ulkID:nil,BulkQuantity:0,Recheck:0,SF:102,TC:nil,Content:0,EDM:-3,IP:nil,U
+	RL:11|1,File:nil,RT:nil,Bulk:nil,QS:nil,BEC:nil,COL:0,OSI:0,OSA:0,AV:0,LES
+	:1,SPR:NO,DKR:0,DKP:0,BRR:0,BRE:0
+X-CID-BVR: 0
+X-CID-BAS: 0,_,0,_
+X-CID-FACTOR: TF_CID_SPAM_SNR,TF_CID_SPAM_ULN
+X-UUID: 2aff863af19711eeb8927bc1f75efef4-20240403
+Received: from mtkmbs14n2.mediatek.inc [(172.21.101.76)] by mailgw01.mediatek.com
+	(envelope-from <yi-de.wu@mediatek.com>)
+	(Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
+	with ESMTP id 1857856586; Wed, 03 Apr 2024 16:50:05 +0800
+Received: from mtkmbs10n1.mediatek.inc (172.21.101.34) by
+ MTKMBS09N1.mediatek.inc (172.21.101.35) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.26; Wed, 3 Apr 2024 01:50:04 -0700
+Received: from APC01-TYZ-obe.outbound.protection.outlook.com (172.21.101.237)
+ by mtkmbs10n1.mediatek.inc (172.21.101.34) with Microsoft SMTP Server id
+ 15.2.1118.26 via Frontend Transport; Wed, 3 Apr 2024 16:50:04 +0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=ExexlvfLPOquqcVGQB65BvrO+YorKpgj1QiqZMtxptlIeZp5CAI5J8IErVxIwZshgQG4qdJsHQBd3s53KX/TIB6+VnJHTulykQOUwcpwFST6XkwmlwfcoyTtvTee+BIYFHHOqjqp7SflVLyQOEJTZkCACwlnPR1Rz5fSknEq8UrMJihEQm87H8fXmaiBbp6OQ5y38IZlEkZyKo5EZRm3msWEOZxGrqZ5V+aFVcc5CoHtMLRJMDR8kOxvzIk5BCxydB979ruKl2xdxg6Jf72KDFJt2u2NYE9gbrHJkYcrKHHh0p++oN7X/Yukcx7gvXaMqv3A/vP8IXO8bS9Ux4zW2Q==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=l83XbpilaO7RDtxKihMifzCNM9u9JWd7343L/Rx8xAQ=;
+ b=mckNBylhcvcEyHOTqtSfavSPbO3/Cijrdr+PtkZmCSM7Aqv1AB1pSxPzKe6iTs5S//PYBLSfd/VOIp7m7xzK/lztzM/LEnnuEiGR93crSiYjERvR1KMJou0yt6OEKf+vj60GRlBf7XQQ1DbTt5pSc5k4f9/txKYlmA7CHUfidOJlzORkfvH0sVXt0u0uOPQe8rLC33zBsaJnPdr/7eefGT2HJfvCy7kKftTUeNze0RKH5acMZ+oLaJz4Aidc8NdD7MFa9jCFCb7AU59E/Wc3JgzRvxjUM3b9n4QHt8WFWgZXbzdlWHYwswD4UQyMNn2iMwt8G3AuDT7ndzIARgPbJw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=mediatek.com; dmarc=pass action=none header.from=mediatek.com;
+ dkim=pass header.d=mediatek.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=mediateko365.onmicrosoft.com; s=selector2-mediateko365-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=l83XbpilaO7RDtxKihMifzCNM9u9JWd7343L/Rx8xAQ=;
+ b=Xe7ipVMz4HFHZAK1rqT+b0Ppsadt622lUHIkKXoqgF52rp+BvGqvB6XIbBqztqwHQozyiNJOWZmzAtB2rDlQkri6Kt7UlsVl4k/ea69b9D/dYVJilIBCTBe3HF9bn4az8q1qPlv8MVE1r9UDX3MzXuuBlSnQ9CIDsZnCcqvUnv8=
+Received: from SI2PR03MB6167.apcprd03.prod.outlook.com (2603:1096:4:14f::8) by
+ SG2PR03MB6780.apcprd03.prod.outlook.com (2603:1096:4:1dc::6) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.7409.46; Wed, 3 Apr 2024 08:50:01 +0000
+Received: from SI2PR03MB6167.apcprd03.prod.outlook.com
+ ([fe80::ac1f:8f3c:20e0:bfd]) by SI2PR03MB6167.apcprd03.prod.outlook.com
+ ([fe80::ac1f:8f3c:20e0:bfd%2]) with mapi id 15.20.7409.042; Wed, 3 Apr 2024
+ 08:50:00 +0000
+From: =?utf-8?B?WWktRGUgV3UgKOWQs+S4gOW+tyk=?= <Yi-De.Wu@mediatek.com>
+To: "corbet@lwn.net" <corbet@lwn.net>, "robh+dt@kernel.org"
+	<robh+dt@kernel.org>, "catalin.marinas@arm.com" <catalin.marinas@arm.com>,
+	"conor+dt@kernel.org" <conor+dt@kernel.org>, "richardcochran@gmail.com"
+	<richardcochran@gmail.com>, =?utf-8?B?WWluZ3NoaXVhbiBQYW4gKOa9mOepjui7kik=?=
+	<Yingshiuan.Pan@mediatek.com>, "krzysztof.kozlowski+dt@linaro.org"
+	<krzysztof.kozlowski+dt@linaro.org>, "matthias.bgg@gmail.com"
+	<matthias.bgg@gmail.com>, =?utf-8?B?WmUteXUgV2FuZyAo546L5r6k5a6HKQ==?=
+	<Ze-yu.Wang@mediatek.com>, "angelogioacchino.delregno@collabora.com"
+	<angelogioacchino.delregno@collabora.com>, "will@kernel.org"
+	<will@kernel.org>
+CC: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	"linux-mediatek@lists.infradead.org" <linux-mediatek@lists.infradead.org>,
+	"quic_tsoni@quicinc.com" <quic_tsoni@quicinc.com>,
+	=?utf-8?B?TVkgQ2h1YW5nICjojormmI7ouo0p?= <MY.Chuang@mediatek.com>,
+	=?utf-8?B?S2V2ZW5ueSBIc2llaCAo6Kyd5a6c6Iq4KQ==?=
+	<Kevenny.Hsieh@mediatek.com>, "devicetree@vger.kernel.org"
+	<devicetree@vger.kernel.org>, =?utf-8?B?UGVpTHVuIFN1ZWkgKOmai+WfueWAqyk=?=
+	<PeiLun.Suei@mediatek.com>, =?utf-8?B?TGlqdS1jbHIgQ2hlbiAo6Zmz6bqX5aaCKQ==?=
+	<Liju-clr.Chen@mediatek.com>, "dbrazdil@google.com" <dbrazdil@google.com>,
+	"linux-arm-kernel@lists.infradead.org"
+	<linux-arm-kernel@lists.infradead.org>, "netdev@vger.kernel.org"
+	<netdev@vger.kernel.org>, =?utf-8?B?U2hhd24gSHNpYW8gKOiVreW/l+elpSk=?=
+	<shawn.hsiao@mediatek.com>, "linux-doc@vger.kernel.org"
+	<linux-doc@vger.kernel.org>, =?utf-8?B?Q2hpLXNoZW4gWWVoICjokYnlpYfou5Ip?=
+	<Chi-shen.Yeh@mediatek.com>
+Subject: Re: [PATCH v9 07/21] virt: geniezone: Add vm capability check
+Thread-Topic: [PATCH v9 07/21] virt: geniezone: Add vm capability check
+Thread-Index: AQHaUo3wML57vgqVI0qXjsE4FXoM2bD1QU0AgGFhaIA=
+Date: Wed, 3 Apr 2024 08:50:00 +0000
+Message-ID: <27258baa96e7ff3701ee56e86dd649756da2c70c.camel@mediatek.com>
+References: <20240129083302.26044-1-yi-de.wu@mediatek.com>
+	 <20240129083302.26044-8-yi-de.wu@mediatek.com>
+	 <c027bf67-e9b2-4eb2-9dee-a47a9c3bdd8a@collabora.com>
+In-Reply-To: <c027bf67-e9b2-4eb2-9dee-a47a9c3bdd8a@collabora.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: SI2PR03MB6167:EE_|SG2PR03MB6780:EE_
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: ZrW7NwbhwpB+q4M/OwJUMkygwUnRpQwUZwllaHtHV4TwC4esrGMGoDaE3yLKugrSnqpHscux6slcz4wE33IOQEKCBSqdIdKrn2cCp8ins2UhJBcI9qLHUy68nglPnLQp5d2HTCgduicCr9fJyaKMC89GUzDT9bGZccPCSPrR1/oX+Nzl2YDC81Gbk0o+igV6oySAezfNYh0XlMeh5jDHS6irkX+vg6LZX7rcXSkSCskP6r2vXFoNerbJ/JrD+ZWjfMEYgmHe4RYrUnMd3RQpfsc4F2T9O4cHV9P0CvN+OvBzIMO8fW6VDa4A6F8G62HHh+/oMmHgcPAyazYkIhMnX/zDu6++xrb9ivhc7MwUOp74ViMUDfFRjwfIFthRX4oV/yDD2ZZDYF3zSJ9U2KAWdLhkFTbvgu/wNaxfHrKlkgMiWUIKfQWtyJsmtcZ5n5+cxnWIQwOGGtPwsXnFjRusvG6N9PxaLW58/r3EhPeRXkiCqNRXYqF0ZaLObn53D36krgSGBxMsOyRSG1UG4UXNvwfX9oIqYmD5Yt/hrq4H/rs27Rje4xp2n6DkA0LqRmxNxy9oyZpPz4MUt5bsI6lUWv+CuXpMPTVBglEYdZIM23lUnaKEGeFRo6nu4nE+Iv3sK/q87/nM2NbaZTJWfwc+FQ==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SI2PR03MB6167.apcprd03.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(1800799015)(376005)(7416005)(366007)(921011);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?utf-8?B?andNbjZTaGo3UEFlRmdpK0dRNVVoUC90eFM5dTBDcmh3SjhOZ1ZBM1BaV21i?=
+ =?utf-8?B?dGUwVWo5aUFvWXAyZUpaRENpcFJKdWlZc1lMTCt2djcvaENQQ2pJQzJ0aFlQ?=
+ =?utf-8?B?UndVY2hWdUJHSklJdnppeWJ0dFpxRTV5RSs1WUhJS1E4TU40QXZMc0piUHk5?=
+ =?utf-8?B?V3M1NlIwZzhJS250cWFVZ3FDczg5emtwQ1FzRXprTFhSYWdJZTBwUEdGbmlK?=
+ =?utf-8?B?Z0tWa3huYkx6NTY5TlZPTTU1dk5zV3pMK25vSFFKejlGQkFYUU5nejRBN1Rs?=
+ =?utf-8?B?d1lva0k4T1UraDZPd2JlTUNzejRqR1B4ZGwxY29RcnR6UStNV1REOEU3MHhQ?=
+ =?utf-8?B?UmVuV2pLdVBFZFRvV0VCNWJPaHZZaFI3UWUxUlhPdlRBSHY1TWhkWWljNnNQ?=
+ =?utf-8?B?d0lqK3cvR2VHRWJ4OGdZc2pIM3gwQ0lMb3o4eTB1ek5USkhDVjRMSkJFS2FC?=
+ =?utf-8?B?R0FLOEo4QUh2V0NPb25CdDFGSFhraHZ1czg4NDdqbUt3cDRPVjcxUGNod3hj?=
+ =?utf-8?B?L3RENm9YK0V2SjluUG1UQmZ3RVJZNHd5dHBTZGtGUUZTTmgrN09UZWNhL0hP?=
+ =?utf-8?B?TDhJNW9pVHlQMlRnZTlueWRXSEIzSUFzY0o3YmRRdm9lYXBJMG0vclhxQkxV?=
+ =?utf-8?B?dEl0RUNxQTFaOTQ4bFRUNWw3QzBFOTRGT3dWeFpEVFNhZTJOcFlLdkhIanF5?=
+ =?utf-8?B?VGs2VkJ2TGVMR0ZHVkx0M1plKzhEZlZMUHUwR29tUnBHeEtJejBKdm9QWmlp?=
+ =?utf-8?B?WnVhQmlqTTZZeHFCTm9Sa3B6cExyRDRudDRUL3pQUmQ2QVVtWStsREJRWkkz?=
+ =?utf-8?B?SytyZkE3ZmIxL2JLbkF1aTc1aDByQm50d2dRcVBlbCtBb2tKZHJxLzRiZkNq?=
+ =?utf-8?B?OVNrT0JuWXprZ0NMRmV2VnB0cUg3Z2EzeWpaM2dqVDFuRnhsbjNKVE9OTWV5?=
+ =?utf-8?B?QXR2UWp5ZHZ3MytHRkR5TGMxWE9BbnhaYndvV2lwN1h5akFYcWJScVFXWTI3?=
+ =?utf-8?B?Z3ZURVZtT1lsMlFmZVhNNnFpM1pIbFRsQS9sajJDdEtSS25GM2xsSUxieWk5?=
+ =?utf-8?B?TDhNK2wvMWFMZ09WWU5HWXR5ay9iQUJrTTRPYzFaWXlXU3A3QjVKWFFGdzBW?=
+ =?utf-8?B?bHdOZ3VUc0xwT01pTlgySlpBeEd4RnBTZjdvVjdiV0g2Zm9kTkRvWGoxQTE1?=
+ =?utf-8?B?UTArRDlVN3phY0ZsYUpWSWxsQVp3Z0lEVEo1cTg2Qk5xbS9kTFdhaFFoczdF?=
+ =?utf-8?B?NXlnS0lBcXYzZ3FqdUc5M2I5MThOYnpTWENRVk4zUW0yNUFxQmY1SWMrdGxW?=
+ =?utf-8?B?N2VnNGdxTFJCTE5pM2ExNFliUmJZKzJTZERHbUszWnYyVnIvNytqMFF5aE55?=
+ =?utf-8?B?QUVnYk1VVVd2eDl5YU9QMXF3bVkySXVvbUlLRU41MlZSbS9TUjVwNlorTHJZ?=
+ =?utf-8?B?VjM1MEN0MEpHRmhYMWNQeUVESmZuRWFKdGtWYXFxMFdMdWpRcEJqYnNJclZm?=
+ =?utf-8?B?Vkl2UlFzcEJ1TWVFVXhKNE1Tc2RCQnl6QktYNmZ0UU1uWExtSnNqTE9SNUZs?=
+ =?utf-8?B?NjdUNmlxbThlSXRESFRieG1peXJXcllXdVZQcExMUzJpMlJpSzBMUHJkY3JS?=
+ =?utf-8?B?SHBZUEZpVVZnRVM1cDYycllnSU5SNnlXeXA1eXhpZE5sb2FMZFZzdVJKTFRa?=
+ =?utf-8?B?YW1OTVhxWjFKZ0taK3BYZW1XTjkrbGc5R2pBenRxRmsvNnRKWExEQTl2eWFJ?=
+ =?utf-8?B?dGtENnY1NjI3RzM2M3A4cjFYeWZPc0pRZFNmUVIrTzZwaVRMWE02YUw1SThp?=
+ =?utf-8?B?QVRmZUhwcjVVVkJ6L3hYakg0K0tTSGFiQTlseEhPcGtZNXdLcUwvMlpCRDNL?=
+ =?utf-8?B?SGNQeGw1WnRSbm00aE9mSmxDTmtmZFRwcTdmWWtyU1dGNVpLVVF5K1J0ZUIr?=
+ =?utf-8?B?QnYvQm1DRlJtdHd4NExNamxpZlp3alRpWHQ5eVA2MHUxUUpOdU5sTXFzeFpQ?=
+ =?utf-8?B?cWtBV3RxUm1MN2l0R3VFWHNhaWZ5cUpxSmhib1dqQTNNL1pJbTRsMmJKM1hn?=
+ =?utf-8?B?WEkvSCsrVWxRajZlNjJCc0Z4dm00TUlEeHB0Z0pIM3hGL2NTeUpnRDVMeVMx?=
+ =?utf-8?Q?kOoIZGwRjk5Jtz5eGWDmLTL8R?=
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <21CF535108F59E4F8B9A122D67025100@apcprd03.prod.outlook.com>
+Content-Transfer-Encoding: base64
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <Zga937dR5UgtSVaz@bfoster>
-Content-Type: text/plain; charset=gbk
-Content-Transfer-Encoding: 7bit
-X-CM-TRANSID:Syh0CgCHrA8mGA1mM_hsJA--.51200S2
-X-Coremail-Antispam: 1UD129KBjvJXoW3JF4DKF1fAr4xZry7AFW3GFg_yoW3AFW8pa
-	13J3W5KF4UXryI9rnxZFWUXryrt395trW7XF97Za4rCFyq9r1FkFyfGrWakFy5Ar93AFy3
-	Za1Yvryku3yktrJanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUvIb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
-	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7Cj
-	xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
-	0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
-	6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
-	Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7Mxk0xIA0c2IE
-	e2xFo4CEbIxvr21l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxV
-	Aqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q
-	6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6x
-	kF7I0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE
-	14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf
-	9x07UWE__UUUUU=
-X-CM-SenderInfo: 5vklyvpphqwq5kxd4v5lfo033gof0z/
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: SI2PR03MB6167.apcprd03.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: eef1e59f-1539-4bda-e67a-08dc53bb0bd7
+X-MS-Exchange-CrossTenant-originalarrivaltime: 03 Apr 2024 08:50:00.2266
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: a7687ede-7a6b-4ef6-bace-642f677fbe31
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: qrUaGzYJ1iHoS78uW+WfsXrZ+3YfvUgPI9IGyCYb9mG2B8jgCd1RFnH9rhfUnndawaBPiDhJv9sRumQyZlAZcw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SG2PR03MB6780
 
-
-
-on 3/29/2024 9:10 PM, Brian Foster wrote:
-> On Wed, Mar 27, 2024 at 11:57:48PM +0800, Kemeng Shi wrote:
->> Add /sys/kernel/debug/bdi/xxx/wb_stats to show per group writeback stats
->> of bdi.
->>
-> 
-> Hi Kemeng,
-Hello Brian,
-> 
-> Just a few random thoughts/comments..
-> 
->> Following domain hierarchy is tested:
->>                 global domain (320G)
->>                 /                 \
->>         cgroup domain1(10G)     cgroup domain2(10G)
->>                 |                 |
->> bdi            wb1               wb2
->>
->> /* per wb writeback info of bdi is collected */
->> cat /sys/kernel/debug/bdi/252:16/wb_stats
->> WbCgIno:                    1
->> WbWriteback:                0 kB
->> WbReclaimable:              0 kB
->> WbDirtyThresh:              0 kB
->> WbDirtied:                  0 kB
->> WbWritten:                  0 kB
->> WbWriteBandwidth:      102400 kBps
->> b_dirty:                    0
->> b_io:                       0
->> b_more_io:                  0
->> b_dirty_time:               0
->> state:                      1
-> 
-> Maybe some whitespace or something between entries would improve
-> readability?
-Sure, I will add a whitespace in next version.
-> 
->> WbCgIno:                 4094
->> WbWriteback:            54432 kB
->> WbReclaimable:         766080 kB
->> WbDirtyThresh:        3094760 kB
->> WbDirtied:            1656480 kB
->> WbWritten:             837088 kB
->> WbWriteBandwidth:      132772 kBps
->> b_dirty:                    1
->> b_io:                       1
->> b_more_io:                  0
->> b_dirty_time:               0
->> state:                      7
->> WbCgIno:                 4135
->> WbWriteback:            15232 kB
->> WbReclaimable:         786688 kB
->> WbDirtyThresh:        2909984 kB
->> WbDirtied:            1482656 kB
->> WbWritten:             681408 kB
->> WbWriteBandwidth:      124848 kBps
->> b_dirty:                    0
->> b_io:                       1
->> b_more_io:                  0
->> b_dirty_time:               0
->> state:                      7
->>
->> Signed-off-by: Kemeng Shi <shikemeng@huaweicloud.com>
->> ---
->>  include/linux/writeback.h |  1 +
->>  mm/backing-dev.c          | 88 +++++++++++++++++++++++++++++++++++++++
->>  mm/page-writeback.c       | 19 +++++++++
->>  3 files changed, 108 insertions(+)
->>
-> ...
->> diff --git a/mm/backing-dev.c b/mm/backing-dev.c
->> index 8daf950e6855..e3953db7d88d 100644
->> --- a/mm/backing-dev.c
->> +++ b/mm/backing-dev.c
->> @@ -103,6 +103,91 @@ static void collect_wb_stats(struct wb_stats *stats,
->>  }
->>  
->>  #ifdef CONFIG_CGROUP_WRITEBACK
-> ...
->> +static int cgwb_debug_stats_show(struct seq_file *m, void *v)
->> +{
->> +	struct backing_dev_info *bdi;
->> +	unsigned long background_thresh;
->> +	unsigned long dirty_thresh;
->> +	struct bdi_writeback *wb;
->> +	struct wb_stats stats;
->> +
->> +	rcu_read_lock();
->> +	bdi = lookup_bdi(m);
->> +	if (!bdi) {
->> +		rcu_read_unlock();
->> +		return -EEXIST;
->> +	}
->> +
->> +	global_dirty_limits(&background_thresh, &dirty_thresh);
->> +
->> +	list_for_each_entry_rcu(wb, &bdi->wb_list, bdi_node) {
->> +		memset(&stats, 0, sizeof(stats));
->> +		stats.dirty_thresh = dirty_thresh;
-> 
-> If you did something like the following here, wouldn't that also zero
-> the rest of the structure?
-> 
-> 		struct wb_stats stats = { .dirty_thresh = dirty_thresh };
-> 
-Suer, will do it in next version.
->> +		collect_wb_stats(&stats, wb);
->> +
-> 
-> Also, similar question as before on whether you'd want to check
-> WB_registered or something here..
-Still prefer to keep full debug info and user could filter out on
-demand.
-> 
->> +		if (mem_cgroup_wb_domain(wb) == NULL) {
->> +			wb_stats_show(m, wb, &stats);
->> +			continue;
->> +		}
-> 
-> Can you explain what this logic is about? Is the cgwb_calc_thresh()
-> thing not needed in this case? A comment might help for those less
-> familiar with the implementation details.
-If mem_cgroup_wb_domain(wb) is NULL, then it's bdi->wb, otherwise,
-it's wb in cgroup. For bdi->wb, there is no need to do wb_tryget
-and cgwb_calc_thresh. Will add some comment in next version.
-> 
-> BTW, I'm also wondering if something like the following is correct
-> and/or roughly equivalent:
-> 	
-> 	list_for_each_*(wb, ...) {
-> 		struct wb_stats stats = ...;
-> 
-> 		if (!wb_tryget(wb))
-> 			continue;
-> 
-> 		collect_wb_stats(&stats, wb);
-> 
-> 		/*
-> 		 * Extra wb_thresh magic. Drop rcu lock because ... . We
-> 		 * can do so here because we have a ref.
-> 		 */
-> 		if (mem_cgroup_wb_domain(wb)) {
-> 			rcu_read_unlock();
-> 			stats.wb_thresh = min(stats.wb_thresh, cgwb_calc_thresh(wb));
-> 			rcu_read_lock();
-> 		}
-> 
-> 		wb_stats_show(m, wb, &stats)
-> 		wb_put(wb);
-> 	}
-It's correct as wb_tryget to bdi->wb has no harm. I have considered
-to do it in this way, I change my mind to do it in new way for
-two reason:
-1. Put code handling wb in cgroup more tight which could be easier
-to maintain.
-2. Rmove extra wb_tryget/wb_put for wb in bdi.
-Would this make sense to you?
-> 
->> +
->> +		/*
->> +		 * cgwb_release will destroy wb->memcg_completions which
->> +		 * will be ued in cgwb_calc_thresh. Use wb_tryget to prevent
->> +		 * memcg_completions destruction from cgwb_release.
->> +		 */
->> +		if (!wb_tryget(wb))
->> +			continue;
->> +
->> +		rcu_read_unlock();
->> +		/* cgwb_calc_thresh may sleep in cgroup_rstat_flush */
->> +		stats.wb_thresh = min(stats.wb_thresh, cgwb_calc_thresh(wb));
->> +		wb_stats_show(m, wb, &stats);
->> +		rcu_read_lock();
->> +		wb_put(wb);
->> +	}
->> +	rcu_read_unlock();
->> +
->> +	return 0;
->> +}
->> +DEFINE_SHOW_ATTRIBUTE(cgwb_debug_stats);
->> +
->> +static void cgwb_debug_register(struct backing_dev_info *bdi)
->> +{
->> +	debugfs_create_file("wb_stats", 0444, bdi->debug_dir, bdi,
->> +			    &cgwb_debug_stats_fops);
->> +}
->> +
->>  static void bdi_collect_stats(struct backing_dev_info *bdi,
->>  			      struct wb_stats *stats)
->>  {
->> @@ -117,6 +202,8 @@ static void bdi_collect_stats(struct backing_dev_info *bdi,
->>  {
->>  	collect_wb_stats(stats, &bdi->wb);
->>  }
->> +
->> +static inline void cgwb_debug_register(struct backing_dev_info *bdi) { }
-> 
-> Could we just create the wb_stats file regardless of whether cgwb is
-> enabled? Obviously theres only one wb in the !CGWB case and it's
-> somewhat duplicative with the bdi stats file, but that seems harmless if
-> the same code can be reused..? Maybe there's also a small argument for
-> dropping the state info from the bdi stats file and moving it to
-> wb_stats.In backing-dev.c, there are a lot "#ifdef CGWB .. #else .. #endif" to
-avoid unneed extra cost when CGWB is not enabled.
-I think it's better to avoid extra cost from wb_stats when CGWB is not
-enabled. For now, we only save cpu cost to create and destroy wb_stats
-and save memory cost to record debugfs file, we could save more in
-future when wb_stats records more debug info.
-Move state info from bdi stats to wb_stats make senses to me. The only
-concern would be compatibility problem. I will add a new patch to this
-to make this more noticeable and easier to revert.
-Thanks a lot for review!
-
-Kemeng
-> 
-> Brian
-> 
->>  #endif
->>  
->>  static int bdi_debug_stats_show(struct seq_file *m, void *v)
->> @@ -182,6 +269,7 @@ static void bdi_debug_register(struct backing_dev_info *bdi, const char *name)
->>  
->>  	debugfs_create_file("stats", 0444, bdi->debug_dir, bdi,
->>  			    &bdi_debug_stats_fops);
->> +	cgwb_debug_register(bdi);
->>  }
->>  
->>  static void bdi_debug_unregister(struct backing_dev_info *bdi)
->> diff --git a/mm/page-writeback.c b/mm/page-writeback.c
->> index 0e20467367fe..3724c7525316 100644
->> --- a/mm/page-writeback.c
->> +++ b/mm/page-writeback.c
->> @@ -893,6 +893,25 @@ unsigned long wb_calc_thresh(struct bdi_writeback *wb, unsigned long thresh)
->>  	return __wb_calc_thresh(&gdtc, thresh);
->>  }
->>  
->> +unsigned long cgwb_calc_thresh(struct bdi_writeback *wb)
->> +{
->> +	struct dirty_throttle_control gdtc = { GDTC_INIT_NO_WB };
->> +	struct dirty_throttle_control mdtc = { MDTC_INIT(wb, &gdtc) };
->> +	unsigned long filepages, headroom, writeback;
->> +
->> +	gdtc.avail = global_dirtyable_memory();
->> +	gdtc.dirty = global_node_page_state(NR_FILE_DIRTY) +
->> +		     global_node_page_state(NR_WRITEBACK);
->> +
->> +	mem_cgroup_wb_stats(wb, &filepages, &headroom,
->> +			    &mdtc.dirty, &writeback);
->> +	mdtc.dirty += writeback;
->> +	mdtc_calc_avail(&mdtc, filepages, headroom);
->> +	domain_dirty_limits(&mdtc);
->> +
->> +	return __wb_calc_thresh(&mdtc, mdtc.thresh);
->> +}
->> +
->>  /*
->>   *                           setpoint - dirty 3
->>   *        f(dirty) := 1.0 + (----------------)
->> -- 
->> 2.30.0
->>
-> 
-> 
-
+T24gVGh1LCAyMDI0LTAyLTAxIGF0IDEwOjQ0ICswMTAwLCBBbmdlbG9HaW9hY2NoaW5vIERlbCBS
+ZWdubyB3cm90ZToNCj4gSWwgMjkvMDEvMjQgMDk6MzIsIFlpLURlIFd1IGhhIHNjcml0dG86DQo+
+ID4gRnJvbTogIllpbmdzaGl1YW4gUGFuIiA8eWluZ3NoaXVhbi5wYW5AbWVkaWF0ZWsuY29tPg0K
+PiA+IA0KPiA+IElucXVpcmUgdGhlIGBjYXBhYmlsaXR5IHN1cHBvcnRgIG9uIEdlbmllWm9uZSBo
+eXBlcnZpc29yLg0KPiA+IEV4YW1wbGU6DQo+ID4gYEdaVk1fQ0FQX1BST1RFQ1RFRF9WTWAgb3Ig
+YEdaVk1fQ0FQX1ZNX0dQQV9TSVpFYC4NCj4gPiANCj4gPiBTaWduZWQtb2ZmLWJ5OiBZaW5nc2hp
+dWFuIFBhbiA8eWluZ3NoaXVhbi5wYW5AbWVkaWF0ZWsuY29tPg0KPiA+IFNpZ25lZC1vZmYtYnk6
+IEplcnJ5IFdhbmcgPHplLXl1LndhbmdAbWVkaWF0ZWsuY29tPg0KPiA+IFNpZ25lZC1vZmYtYnk6
+IGtldmVubnkgaHNpZWggPGtldmVubnkuaHNpZWhAbWVkaWF0ZWsuY29tPg0KPiA+IFNpZ25lZC1v
+ZmYtYnk6IExpanUgQ2hlbiA8bGlqdS1jbHIuY2hlbkBtZWRpYXRlay5jb20+DQo+ID4gU2lnbmVk
+LW9mZi1ieTogWWktRGUgV3UgPHlpLWRlLnd1QG1lZGlhdGVrLmNvbT4NCj4gPiAtLS0NCj4gPiAg
+IGFyY2gvYXJtNjQvZ2VuaWV6b25lL2d6dm1fYXJjaF9jb21tb24uaCB8ICAgMiArDQo+ID4gICBh
+cmNoL2FybTY0L2dlbmllem9uZS92bS5jICAgICAgICAgICAgICAgfCAxMjINCj4gPiArKysrKysr
+KysrKysrKysrKysrKysrKysNCj4gPiAgIGRyaXZlcnMvdmlydC9nZW5pZXpvbmUvZ3p2bV9tYWlu
+LmMgICAgICB8ICAyNyArKysrKysNCj4gPiAgIGRyaXZlcnMvdmlydC9nZW5pZXpvbmUvZ3p2bV92
+bS5jICAgICAgICB8ICAyMSArKysrDQo+ID4gICBpbmNsdWRlL2xpbnV4L2d6dm1fZHJ2LmggICAg
+ICAgICAgICAgICAgfCAgIDUgKw0KPiA+ICAgaW5jbHVkZS91YXBpL2xpbnV4L2d6dm0uaCAgICAg
+ICAgICAgICAgIHwgIDMxICsrKysrKw0KPiA+ICAgNiBmaWxlcyBjaGFuZ2VkLCAyMDggaW5zZXJ0
+aW9ucygrKQ0KPiA+IA0KPiA+IGRpZmYgLS1naXQgYS9hcmNoL2FybTY0L2dlbmllem9uZS9nenZt
+X2FyY2hfY29tbW9uLmgNCj4gPiBiL2FyY2gvYXJtNjQvZ2VuaWV6b25lL2d6dm1fYXJjaF9jb21t
+b24uaA0KPiA+IGluZGV4IDJmNjZlNDk2ZGZhZS4uMzgzYWYwODI5ZjExIDEwMDY0NA0KPiA+IC0t
+LSBhL2FyY2gvYXJtNjQvZ2VuaWV6b25lL2d6dm1fYXJjaF9jb21tb24uaA0KPiA+ICsrKyBiL2Fy
+Y2gvYXJtNjQvZ2VuaWV6b25lL2d6dm1fYXJjaF9jb21tb24uaA0KPiA+IEBAIC0xMyw2ICsxMyw3
+IEBAIGVudW0gew0KPiA+ICAgCUdaVk1fRlVOQ19ERVNUUk9ZX1ZNID0gMSwNCj4gPiAgIAlHWlZN
+X0ZVTkNfU0VUX01FTVJFR0lPTiA9IDQsDQo+ID4gICAJR1pWTV9GVU5DX1BST0JFID0gMTIsDQo+
+ID4gKwlHWlZNX0ZVTkNfRU5BQkxFX0NBUCA9IDEzLA0KPiANCj4gR1pWTV9GVU5DX1BST0JFICA9
+IDEyLA0KPiBHWlZNX0ZVTkNfRU5BQkxFX0NBUCwNCj4gDQoNCkdpdmVuIHRoYXQgdGhpcyBpcyBh
+biBBUEkgZnJvbSB0aGUga2VybmVsIHRvIHRoZSBoeXBlcnZpc29yLCBpdCBtYXkgYmUNCnV0aWxp
+emVkIHdpdGggdmFyaW91cyB0b29sY2hhaW5zLiBPdXIgaW50ZW50aW9uIGlzIHRvIGV4cGxpY2l0
+bHkgYXNzaWduDQp2YWx1ZXMgdG8gcHJldmVudCBhbnkgdW5leHBlY3RlZCBjb21waWxlciBiZWhh
+dmlvci4gRm9yIGZ1cnRoZXINCmRldGFpbHMsIHdlJ2QgbGlrZSB0byByZWZlciB0byB0aGUgZGlz
+Y3Vzc2lvbiBiZWxvdy4NCg0KaHR0cHM6Ly9sb3JlLmtlcm5lbC5vcmcvYWxsLzIwMjAwMzE4MTI1
+MDAzLkdBMjcyNzA5NEBrcm9haC5jb20vDQoNCj4gPiAgIAlOUl9HWlZNX0ZVTkMsDQo+ID4gICB9
+Ow0KPiA+ICAgDQo+IA0KPiBSZWdhcmRzLA0KPiBBbmdlbG8NCj4gDQo=
 
