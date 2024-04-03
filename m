@@ -1,204 +1,317 @@
-Return-Path: <linux-kernel+bounces-129731-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-129732-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id F3070896F31
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 14:47:47 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3ED87896F39
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 14:48:05 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3F225B2867A
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 12:47:45 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E8D63285431
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 12:48:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AC0DB56B64;
-	Wed,  3 Apr 2024 12:47:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8CED71474C0;
+	Wed,  3 Apr 2024 12:47:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="aWosff4F"
-Received: from mail-lf1-f49.google.com (mail-lf1-f49.google.com [209.85.167.49])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="gXt607An"
+Received: from mail-oa1-f42.google.com (mail-oa1-f42.google.com [209.85.160.42])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 27BEF147C95;
-	Wed,  3 Apr 2024 12:47:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A89015C8F4;
+	Wed,  3 Apr 2024 12:47:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712148436; cv=none; b=uAR1a3ffUCL3PwM/1YywjB6EwFDTd8wRFWQJWWLpLpwd2kA5ON/iicUD4d0O4gIQ6bOigk+OKs3iEqScuCjQoWAGNKK/XRZp3RafL47zQ5TFI7ht94gjTzgN0278WVUmg2FcHzab012LFdWALvfrTPCfjoXRjiuGmiUJNrHfBwI=
+	t=1712148474; cv=none; b=X0S1OUxSbmWiMiVB58TIGqf3NpsvIs9PsRZHUln//lc1jeDVZd07nnqTIMx+o1Nx6iejSQLp5f6Eo/16q3cZS/XZLRp6FK0AtxOjVEI/FX2xbdLOZ3H94JExVbuSDmIpUg0JLlpUYCHvMtrpu9WbrWa7VUUXT8GkPZWtj8Iwcs8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712148436; c=relaxed/simple;
-	bh=mmBOX5CWfuQTkTPKm+iURBQ8uUZaZB/7MTJNd2TQzbA=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=TCafBTCrCxJhFdtMxfSVzoperQXmFfsQtMgnpOuH60vKQlGX6Z3oqbQesCSnymNfOOBEUG67Qqj8coVFBYTbB7MucD/oxmwxaFXJh7RxmWs5XiSus9K46AqyChAfFaeFMLjOV+DrtU2jLLwvtofMamIrSl73b910bpsKHuzoo14=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=aWosff4F; arc=none smtp.client-ip=209.85.167.49
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+	s=arc-20240116; t=1712148474; c=relaxed/simple;
+	bh=Yaqa4hvoBG8RPxnP1QDyCJ05NplxTgr5jhi1BxYxxCU=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=M/gF/lUd1MPW4doglks9DMu8KVMN9nk00Z52XilMYJlMYItnqE8bV9Zr2VoySIr1qFSdnnzaJETgVTxoWCuErkE+Q9pIxxVPEP0G00RqyGs0nU6FBZpBy98ooFbNF2HIGiTHxRNBFOHd2X1zKZg4WCpitceVruwJDNpQnc6jPLM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=acm.org; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=gXt607An; arc=none smtp.client-ip=209.85.160.42
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=acm.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lf1-f49.google.com with SMTP id 2adb3069b0e04-513e6777af4so10443277e87.2;
-        Wed, 03 Apr 2024 05:47:14 -0700 (PDT)
+Received: by mail-oa1-f42.google.com with SMTP id 586e51a60fabf-222b6a05bb1so4453304fac.3;
+        Wed, 03 Apr 2024 05:47:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1712148433; x=1712753233; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=nuDN6L38TIM9wf05jp6jhML5GX0735G9pkKElMgFJl0=;
-        b=aWosff4FAf8fgSF3bxjE9H9ylFYEs8x+tao3GEWMjuLUJ8lZCzuiH1qDv11pnHUD+7
-         MZqZjo4OWJn1eYQcQY48QzWm+9w3TOf94O3KP1Kt/DMQYjnMUnbNQDRBKwWOHOtYMAgk
-         BLOjp9DkwXRX92zNKiMnQuwkLJGtYkuGj4gyOsvKJc9a2RQXa+WeDaW4g+fJ4ZfLgyXI
-         QbI5GtwWIE8bqatGnAKUrGJAVmC1lsPwmX5WTl4UuXq4BSQyK7fHQ1K4N7fZybwzjzT6
-         nHLjjvBB79ILm02QqCcalUUr5Z0u+/fhB0AbjLHNXCDHsr4T/zXESUJdnVf2lSF/7HY0
-         VlBg==
+        d=gmail.com; s=20230601; t=1712148472; x=1712753272; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:reply-to
+         :message-id:subject:cc:to:from:date:sender:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=rtecu7pbCOzcU6lg6jomsrlGzCnl9MEDMOfvGJlD74o=;
+        b=gXt607Anqa8knPlvNYiQ7EZYUcKiBjT9y07ZPG2JlP0E39pqSICCAh2xk4/kerVR7L
+         88Hkl/snfRyKX9mM9FRBwZdyj5EJoMpQciWde3BIg4+Zwkb1jlsYbwtC3oK7A1Tg5b5q
+         Tx4ZbJP3ljHdNYVusMU9xEkEvYs0fpwXycfKINeppHq7oSiNQ95kdeTvOBWSYap9jVH6
+         CTxfEsO2hb84T7zt20NXdFaCMDMrSiqPbwVFeiddb0/CAwv8X2iNs+81BxzgYp4rIalm
+         3LDcS2JwR0OH9droCRTlp2XwBP/VbMaGxkphATmNfXYsbAQAgUKIEmv5VY+OF60eBSJN
+         yHtg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712148433; x=1712753233;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=nuDN6L38TIM9wf05jp6jhML5GX0735G9pkKElMgFJl0=;
-        b=K62mwuv7fuFjOYtvuj9kvmBjCsGbohtpFvvmpE+6b5h+liHi4M0zvPRk5vrXpUsbTA
-         LcifsLtB9oE2JMsp0Uc+RKzc8120t+m6Aeos7zfQeqAC6a+SJjUo7EL0C2RDNpeOAinj
-         fEFHaEKnB0K+KaZ2xHrPVXuQLdfWj7qb+b+vhglJUsltaJ+jWe98XEqDyKh8ipvgjTxK
-         Y0cd/6oV9YmxUpB0muxSTievtbb3q5Pbj223TsEbfgDVtq92aW2uuqhh9wjHp6sPsPbY
-         +std7jx2DGuSmd9IkGoMEM0iuNTvEIXZ1mFsK6ZRApsj15qN1oxWSrCV5UCN3rvEXCjX
-         zbnA==
-X-Forwarded-Encrypted: i=1; AJvYcCWmW1w+5m0cTVayF8k6qZUKmMto2Q03P+FCbL/RmDNG6A3gyJHls5fwY3aKKphPeEqH0Jz5c7Dy6JVfBYFHSMzL5pWH6xgFeOOxT3nop+2UrlN0Rm4MnFVkI5Jw6ikXIoFlXJInJgrEc/utM/DI2RrHaub0ZDd6MilmA1in9kuHIDnuj7UTfK8P
-X-Gm-Message-State: AOJu0Yzatx5inrnecZTuGp0jGBHWa1GzKOEJgn5uWOQF5i2fvKGwpZju
-	8qSmPy7u2xiSIrg3vSE3aBZ4741WQrZWp269H5/gwYe+/5RWLE9XhBH01YO2
-X-Google-Smtp-Source: AGHT+IFBTNYJCfhqRdcb8brcRkZuW7VL/46WTvto5wbFfg82T3NK4Rar6AxuZXNY+0UHiF7/TQvvDQ==
-X-Received: by 2002:a05:6512:114f:b0:513:cfaa:e618 with SMTP id m15-20020a056512114f00b00513cfaae618mr4523164lfg.0.1712148432988;
-        Wed, 03 Apr 2024 05:47:12 -0700 (PDT)
-Received: from [172.16.183.82] ([213.255.186.46])
-        by smtp.gmail.com with ESMTPSA id h18-20020a056512221200b00516b061e091sm648150lfu.4.2024.04.03.05.47.12
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 03 Apr 2024 05:47:12 -0700 (PDT)
-Message-ID: <1d956aab-2892-4a2b-a4b3-0a93504668eb@gmail.com>
-Date: Wed, 3 Apr 2024 15:47:12 +0300
+        d=1e100.net; s=20230601; t=1712148472; x=1712753272;
+        h=in-reply-to:content-disposition:mime-version:references:reply-to
+         :message-id:subject:cc:to:from:date:sender:x-gm-message-state:from
+         :to:cc:subject:date:message-id:reply-to;
+        bh=rtecu7pbCOzcU6lg6jomsrlGzCnl9MEDMOfvGJlD74o=;
+        b=vKUfGa0A4IEzdip8muYSg4+QbJ2s5cXSFd2sHI8tCXKMh4lmEJ6EguRaefXY8q15ak
+         cxIybHvvzunnbI816PISmdkWX3zvyUn2C9bR2wmSdRYnG3TKSsXm6kfk+rlC2O2XvcAX
+         xuD51kBXNLVB8x+/t9sBuVieH8eVDpxE005Gw+UjvggbHK8AKauPa5zrp7ylxPPgbIMl
+         4zt0bE7g6yApCLSXrhEQEq0k4WOb9a3Y1r2VNEZjd6nZ1Q2/o89KQ9gvh3JiDxYLQGJi
+         K5O0PMERGYYRYgLUS55NQyrOXz3db7YycpYA+WDEtDMxY/kn8UmtztvFdJZbZ4JHuRcU
+         Lt5w==
+X-Forwarded-Encrypted: i=1; AJvYcCXJGg21+7h1ozg3odxY9r3GjKFzLywzTM98JkUmgbhYdWKoPm0I0SGjiZOT8FukomItd2/x3DLiFr43eveSE4Cg70PSjMFqz8rIyih14biKAkKnpiFAa43omE7gR6y+NRc9f+4cbuxfLlufjq61uvb4nIqoL1cZgOq5eS/hKjOtsrx/IDfXIRWlbM/+3FI4bPVDNUjArCYbVy8SgRmProG/DGrBS3M8hB6adcFTNwwZka/LBpDYBhL6XQErgq/6/E7zZc47goD+TrankLR3G0FYZtTe4DImH6xgHYKvKpHvR4nO0k5/t6dlMI/a+DWCb0OiJ/RXiRocjvA2yg5ghBK2nxFjKAdlnvGDUE1GtPEZBKvy5w==
+X-Gm-Message-State: AOJu0YxcCzJ6toBXfIDL2RWvU8G3fDKc2WT8YuLvh4sJoZlCw0tOStbZ
+	/NB+godkqbN4oFz1D6kFPsRoXmz4CKNb4kZYT5n9zrhQIATzvjg=
+X-Google-Smtp-Source: AGHT+IG0d5T8JXCtfqlx6JtVyEaCsqFpPnvwq2pH9XmJas2+vfFJn39FYAUdlGYyjJjWq/sJ1YaRJQ==
+X-Received: by 2002:a05:6871:29c:b0:22e:7c19:5c71 with SMTP id i28-20020a056871029c00b0022e7c195c71mr2548199oae.59.1712148471696;
+        Wed, 03 Apr 2024 05:47:51 -0700 (PDT)
+Received: from serve.minyard.net ([47.184.176.113])
+        by smtp.gmail.com with ESMTPSA id ny21-20020a056871751500b00221df0eb6f9sm3931309oac.28.2024.04.03.05.47.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 03 Apr 2024 05:47:51 -0700 (PDT)
+Sender: Corey Minyard <tcminyard@gmail.com>
+Received: from mail.minyard.net (unknown [IPv6:2001:470:b8f6:1b::37a])
+	by serve.minyard.net (Postfix) with ESMTPSA id F404A1800B7;
+	Wed,  3 Apr 2024 12:47:50 +0000 (UTC)
+Date: Wed, 3 Apr 2024 07:47:49 -0500
+From: Corey Minyard <minyard@acm.org>
+To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc: Arnd Bergmann <arnd@kernel.org>, linux-kernel@vger.kernel.org,
+	Peter Huewe <peterhuewe@gmx.de>,
+	Jarkko Sakkinen <jarkko@kernel.org>, Vinod Koul <vkoul@kernel.org>,
+	Moritz Fischer <mdf@kernel.org>, Wu Hao <hao.wu@intel.com>,
+	Xu Yilun <yilun.xu@intel.com>, Jiri Kosina <jikos@kernel.org>,
+	Benjamin Tissoires <benjamin.tissoires@redhat.com>,
+	Michael Hennerich <michael.hennerich@analog.com>,
+	Peter Rosin <peda@axentia.se>,
+	Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+	Iyappan Subramanian <iyappan@os.amperecomputing.com>,
+	Keyur Chudgar <keyur@os.amperecomputing.com>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	Yisen Zhuang <yisen.zhuang@huawei.com>,
+	Salil Mehta <salil.mehta@huawei.com>,
+	Tony Lindgren <tony@atomide.com>,
+	Liam Girdwood <lgirdwood@gmail.com>,
+	Mark Brown <broonie@kernel.org>,
+	Alexandre Belloni <alexandre.belloni@bootlin.com>,
+	Xiang Chen <chenxiang66@hisilicon.com>,
+	"James E.J. Bottomley" <jejb@linux.ibm.com>,
+	"Martin K. Petersen" <martin.petersen@oracle.com>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	Russell King <linux@armlinux.org.uk>,
+	Jiri Slaby <jirislaby@kernel.org>,
+	Jacky Huang <ychuang3@nuvoton.com>,
+	Shan-Chun Hung <schung@nuvoton.com>, Arnd Bergmann <arnd@arndb.de>,
+	Jason Gunthorpe <jgg@ziepe.ca>, Tom Rix <trix@redhat.com>,
+	Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>,
+	Randy Dunlap <rdunlap@infradead.org>, Rob Herring <robh@kernel.org>,
+	Linus Walleij <linus.walleij@linaro.org>,
+	openipmi-developer@lists.sourceforge.net,
+	linux-integrity@vger.kernel.org, dmaengine@vger.kernel.org,
+	linux-fpga@vger.kernel.org, linux-input@vger.kernel.org,
+	linux-i2c@vger.kernel.org, netdev@vger.kernel.org,
+	linux-omap@vger.kernel.org, linux-rtc@vger.kernel.org,
+	linux-scsi@vger.kernel.org, linux-staging@lists.linux.dev,
+	linux-serial@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH 33/34] drivers: remove incorrect of_match_ptr/ACPI_PTR
+ annotations
+Message-ID: <Zg1P9fpdwPot3Dxj@mail.minyard.net>
+Reply-To: minyard@acm.org
+References: <20240403080702.3509288-1-arnd@kernel.org>
+ <20240403080702.3509288-34-arnd@kernel.org>
+ <Zg0hxMZGlwfXV2RA@smile.fi.intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC PATCH 5/6] watchdog: ROHM BD96801 PMIC WDG driver
-Content-Language: en-US, en-GB
-To: Guenter Roeck <linux@roeck-us.net>
-Cc: Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>,
- Lee Jones <lee@kernel.org>, Wim Van Sebroeck <wim@linux-watchdog.org>,
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-watchdog@vger.kernel.org
-References: <cover.1712058690.git.mazziesaccount@gmail.com>
- <f8e743a6c49607de0dd7a27778383477e051b130.1712058690.git.mazziesaccount@gmail.com>
- <4fa3a64b-60fb-4e5e-8785-0f14da37eea2@roeck-us.net>
- <279336b3-f28d-48ee-a10f-47abba7b0b89@gmail.com>
- <d2ab33e6-4d3e-472a-b4d7-b703955989ba@roeck-us.net>
-From: Matti Vaittinen <mazziesaccount@gmail.com>
-In-Reply-To: <d2ab33e6-4d3e-472a-b4d7-b703955989ba@roeck-us.net>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <Zg0hxMZGlwfXV2RA@smile.fi.intel.com>
 
-On 4/3/24 15:41, Guenter Roeck wrote:
-> On Wed, Apr 03, 2024 at 09:34:35AM +0300, Matti Vaittinen wrote:
->> Hi Guenter,
->>
->> First of all, thanks for the review. It was quick! Especially when we speak
->> of a RFC series. Very much appreciated.
->>
->> On 4/2/24 20:11, Guenter Roeck wrote:
->>> On Tue, Apr 02, 2024 at 04:11:41PM +0300, Matti Vaittinen wrote >> +static int init_wdg_hw(struct wdtbd96801 *w)
->>>> +{
->>>> +	u32 hw_margin[2];
->>>> +	int count, ret;
->>>> +	u32 hw_margin_max = BD96801_WDT_DEFAULT_MARGIN, hw_margin_min = 0;
->>>> +
->>>> +	count = device_property_count_u32(w->dev->parent, "rohm,hw-timeout-ms");
->>>> +	if (count < 0 && count != -EINVAL)
->>>> +		return count;
->>>> +
->>>> +	if (count > 0) {
->>>> +		if (count > ARRAY_SIZE(hw_margin))
->>>> +			return -EINVAL;
->>>> +
->>>> +		ret = device_property_read_u32_array(w->dev->parent,
->>>> +						     "rohm,hw-timeout-ms",
->>>> +						     &hw_margin[0], count);
->>>> +		if (ret < 0)
->>>> +			return ret;
->>>> +
->>>> +		if (count == 1)
->>>> +			hw_margin_max = hw_margin[0];
->>>> +
->>>> +		if (count == 2) {
->>>> +			hw_margin_max = hw_margin[1];
->>>> +			hw_margin_min = hw_margin[0];
->>>> +		}
->>>> +	}
->>>> +
->>>> +	ret = bd96801_set_wdt_mode(w, hw_margin_max, hw_margin_min);
->>>> +	if (ret)
->>>> +		return ret;
->>>> +
->>>> +	ret = device_property_match_string(w->dev->parent, "rohm,wdg-action",
->>>> +					   "prstb");
->>>> +	if (ret >= 0) {
->>>> +		ret = regmap_update_bits(w->regmap, BD96801_REG_WD_CONF,
->>>> +				 BD96801_WD_ASSERT_MASK,
->>>> +				 BD96801_WD_ASSERT_RST);
->>>> +		return ret;
->>>> +	}
->>>> +
->>>> +	ret = device_property_match_string(w->dev->parent, "rohm,wdg-action",
->>>> +					   "intb-only");
->>>> +	if (ret >= 0) {
->>>> +		ret = regmap_update_bits(w->regmap, BD96801_REG_WD_CONF,
->>>> +				 BD96801_WD_ASSERT_MASK,
->>>> +				 BD96801_WD_ASSERT_IRQ);
->>>> +		return ret;
->>>> +	}
->>>
->>> I don't see the devicetree bindings documented in the series.
->>
->> Seems like I have missed this WDG binding. But after reading your comment
->> below, I am wondering if I should just drop the binding and default to
->> "prstb" (shutdown should the feeding be skipped) - and leave the "intb-only"
->> case for one who actually needs such.
->>
->>> I am also a bit surprised that the interrupt isn't handled in the driver.
->>> Please explain.
->>
->> Basically, I just had no idea what the IRQ should do in the generic case. If
->> we get an interrupt, it means the WDG feeding has failed. My thinking is
->> that, what should happen is forced reset. I don't see how that can be done
->> in reliably manner from an IRQ handler.
->>
->> When the "prstb WDG action" is set (please, see the above DT binding
->> handling), the PMIC shall shut down power outputs. This should get the
->> watchdog's job done.
->>
->> With the "intb-only"-option, PMIC will not turn off the power. I'd expect
->> there to be some external HW connection which handles the reset by HW.
->>
->> After all this being said, I wonder if I should just unconditionally
->> configure the PMIC to always turn off the power (prstb option) should the
->> feeding fail? Or do someone have some suggestion what the IRQ handler should
->> do (except maybe print an error msg)?
->>
+On Wed, Apr 03, 2024 at 12:30:44PM +0300, Andy Shevchenko wrote:
+> On Wed, Apr 03, 2024 at 10:06:51AM +0200, Arnd Bergmann wrote:
+> > From: Arnd Bergmann <arnd@arndb.de>
+> > 
+> > When building with CONFIG_OF and/or CONFIG_ACPI disabled but W=1 extra
+> > warnings enabled, a lot of driver cause a warning about an unused
+> > ID table:
+> > 
+> > drivers/char/tpm/tpm_ftpm_tee.c:356:34: error: unused variable 'of_ftpm_tee_ids' [-Werror,-Wunused-const-variable]
+> > drivers/dma/img-mdc-dma.c:863:34: error: unused variable 'mdc_dma_of_match' [-Werror,-Wunused-const-variable]
+> > drivers/fpga/versal-fpga.c:62:34: error: unused variable 'versal_fpga_of_match' [-Werror,-Wunused-const-variable]
+> > drivers/i2c/muxes/i2c-mux-ltc4306.c:200:34: error: unused variable 'ltc4306_of_match' [-Werror,-Wunused-const-variable]
+> > drivers/i2c/muxes/i2c-mux-reg.c:242:34: error: unused variable 'i2c_mux_reg_of_match' [-Werror,-Wunused-const-variable]
+> > drivers/memory/pl353-smc.c:62:34: error: unused variable 'pl353_smc_supported_children' [-Werror,-Wunused-const-variable]
+> > drivers/regulator/pbias-regulator.c:136:34: error: unused variable 'pbias_of_match' [-Werror,-Wunused-const-variable]
+> > drivers/regulator/twl-regulator.c:552:34: error: unused variable 'twl_of_match' [-Werror,-Wunused-const-variable]
+> > drivers/regulator/twl6030-regulator.c:645:34: error: unused variable 'twl_of_match' [-Werror,-Wunused-const-variable]
+> > drivers/scsi/hisi_sas/hisi_sas_v2_hw.c:3635:36: error: unused variable 'sas_v2_acpi_match' [-Werror,-Wunused-const-variable]
+> > drivers/staging/pi433/pi433_if.c:1359:34: error: unused variable 'pi433_dt_ids' [-Werror,-Wunused-const-variable]
+> > drivers/tty/serial/amba-pl011.c:2945:34: error: unused variable 'sbsa_uart_of_match' [-Werror,-Wunused-const-variable]
+> > 
+> > The fix is always to just remove the of_match_ptr() and ACPI_PTR() wrappers
+> > that remove the reference, rather than adding another #ifdef just for build
+> > testing for a configuration that doesn't matter in practice.
 > 
-> Other watchdog drivers call emergency_restart() if the watchdog times out
-> and triggers an interrupt. Are you saying this won't work for this system ?
-> If so, please explain.
+> > I considered splitting up the large patch into per subsystem patches, but since
+> > it's really just the same thing everywhere it feels better to do it all at once.
 > 
+> Can we split to three groups:
+> - Dropping ACPI_PTR()
+> - Dropping of_match_ptr() (which I won't review in depth, for example)
+> - Dropping both
+> ?
 
-Thanks Guenter. If it works with systems using other devices, then it 
-should work (to the same extent) with systems using this PMIC. Thanks.
+Why?
 
-I'll add the IRQ handling to next version - but it may take a while as 
-I'm currently having some problems with the IRQs in general, and because 
-I'll wait for feedback from Mark to the regulator part.
+-corey
 
-Yours,
-	-- Matti
-
--- 
-Matti Vaittinen
-Linux kernel developer at ROHM Semiconductors
-Oulu Finland
-
-~~ When things go utterly wrong vim users can always type :help! ~~
-
+> 
+> ...
+> 
+> > --- a/drivers/char/ipmi/ipmb_dev_int.c
+> > +++ b/drivers/char/ipmi/ipmb_dev_int.c
+> > @@ -364,7 +364,7 @@ MODULE_DEVICE_TABLE(acpi, acpi_ipmb_id);
+> >  static struct i2c_driver ipmb_driver = {
+> >  	.driver = {
+> >  		.name = "ipmb-dev",
+> > -		.acpi_match_table = ACPI_PTR(acpi_ipmb_id),
+> > +		.acpi_match_table = acpi_ipmb_id,
+> >  	},
+> >  	.probe = ipmb_probe,
+> >  	.remove = ipmb_remove,
+> 
+> acpi.h --> mod_devicetable.h.
+> 
+> ...
+> 
+> > --- a/drivers/hid/hid-google-hammer.c
+> > +++ b/drivers/hid/hid-google-hammer.c
+> > @@ -275,21 +275,19 @@ static const struct acpi_device_id cbas_ec_acpi_ids[] = {
+> >  };
+> >  MODULE_DEVICE_TABLE(acpi, cbas_ec_acpi_ids);
+> >  
+> > -#ifdef CONFIG_OF
+> >  static const struct of_device_id cbas_ec_of_match[] = {
+> >  	{ .compatible = "google,cros-cbas" },
+> >  	{ },
+> >  };
+> >  MODULE_DEVICE_TABLE(of, cbas_ec_of_match);
+> > -#endif
+> >  
+> >  static struct platform_driver cbas_ec_driver = {
+> >  	.probe = cbas_ec_probe,
+> >  	.remove = cbas_ec_remove,
+> >  	.driver = {
+> >  		.name = "cbas_ec",
+> > -		.acpi_match_table = ACPI_PTR(cbas_ec_acpi_ids),
+> > -		.of_match_table = of_match_ptr(cbas_ec_of_match),
+> > +		.acpi_match_table = cbas_ec_acpi_ids,
+> > +		.of_match_table = cbas_ec_of_match,
+> >  		.pm = &cbas_ec_pm_ops,
+> >  	},
+> >  };
+> 
+> Ditto, and likely of.h can be also dropped.
+> 
+> ...
+> 
+> > --- a/drivers/input/touchscreen/wdt87xx_i2c.c
+> > +++ b/drivers/input/touchscreen/wdt87xx_i2c.c
+> > @@ -1166,7 +1166,7 @@ static struct i2c_driver wdt87xx_driver = {
+> >  		.name = WDT87XX_NAME,
+> >  		.dev_groups = wdt87xx_groups,
+> >  		.pm = pm_sleep_ptr(&wdt87xx_pm_ops),
+> > -		.acpi_match_table = ACPI_PTR(wdt87xx_acpi_id),
+> > +		.acpi_match_table = wdt87xx_acpi_id,
+> >  	},
+> >  };
+> >  module_i2c_driver(wdt87xx_driver);
+> 
+> Ditto.
+> 
+> ...
+> 
+> > --- a/drivers/net/ethernet/apm/xgene-v2/main.c
+> > +++ b/drivers/net/ethernet/apm/xgene-v2/main.c
+> > @@ -731,7 +731,7 @@ MODULE_DEVICE_TABLE(acpi, xge_acpi_match);
+> >  static struct platform_driver xge_driver = {
+> >  	.driver = {
+> >  		   .name = "xgene-enet-v2",
+> > -		   .acpi_match_table = ACPI_PTR(xge_acpi_match),
+> > +		   .acpi_match_table = xge_acpi_match,
+> >  	},
+> >  	.probe = xge_probe,
+> >  	.remove_new = xge_remove,
+> 
+> Ditto. And remove forward declaration of the variable as well.
+> 
+> ...
+> 
+> > --- a/drivers/rtc/rtc-fsl-ftm-alarm.c
+> > +++ b/drivers/rtc/rtc-fsl-ftm-alarm.c
+> > @@ -320,7 +320,7 @@ static struct platform_driver ftm_rtc_driver = {
+> >  	.driver		= {
+> >  		.name	= "ftm-alarm",
+> >  		.of_match_table = ftm_rtc_match,
+> > -		.acpi_match_table = ACPI_PTR(ftm_imx_acpi_ids),
+> > +		.acpi_match_table = ftm_imx_acpi_ids,
+> >  	},
+> >  };
+> 
+> Ditto.
+> 
+> ...
+> 
+> >  	.driver = {
+> >  		.name =		"pi433",
+> >  		.owner =	THIS_MODULE,
+> 
+> Oh-oh.
+> 
+> > -		.of_match_table = of_match_ptr(pi433_dt_ids),
+> > +		.of_match_table = pi433_dt_ids,
+> >  	},
+> 
+> ...
+> 
+> > --- a/drivers/tty/serial/amba-pl011.c
+> > +++ b/drivers/tty/serial/amba-pl011.c
+> > @@ -2948,7 +2948,7 @@ static const struct of_device_id sbsa_uart_of_match[] = {
+> >  };
+> >  MODULE_DEVICE_TABLE(of, sbsa_uart_of_match);
+> >  
+> > -static const struct acpi_device_id __maybe_unused sbsa_uart_acpi_match[] = {
+> > +static const struct acpi_device_id sbsa_uart_acpi_match[] = {
+> >  	{ "ARMH0011", 0 },
+> >  	{ "ARMHB000", 0 },
+> >  	{},
+> > @@ -2961,8 +2961,8 @@ static struct platform_driver arm_sbsa_uart_platform_driver = {
+> >  	.driver	= {
+> >  		.name	= "sbsa-uart",
+> >  		.pm	= &pl011_dev_pm_ops,
+> > -		.of_match_table = of_match_ptr(sbsa_uart_of_match),
+> > -		.acpi_match_table = ACPI_PTR(sbsa_uart_acpi_match),
+> > +		.of_match_table = sbsa_uart_of_match,
+> > +		.acpi_match_table = sbsa_uart_acpi_match,
+> >  		.suppress_bind_attrs = IS_BUILTIN(CONFIG_SERIAL_AMBA_PL011),
+> >  	},
+> >  };
+> 
+> Ditto.
+> 
+> ...
+> 
+> As mentioned above, I haven't and won't look into of_match_ptr() cases, but you
+> got the idea.
+> 
+> For the above, if addressed as suggested,
+> Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> 
+> -- 
+> With Best Regards,
+> Andy Shevchenko
+> 
+> 
 
