@@ -1,39 +1,66 @@
-Return-Path: <linux-kernel+bounces-129764-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-129765-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7EA1C896FAC
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 14:59:21 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 60603896FAF
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 14:59:51 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0B79B1F2A1EB
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 12:59:21 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 840161C21C99
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 12:59:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7DF3A146D53;
-	Wed,  3 Apr 2024 12:59:15 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 68DEF13775D
-	for <linux-kernel@vger.kernel.org>; Wed,  3 Apr 2024 12:59:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A28A4147C79;
+	Wed,  3 Apr 2024 12:59:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=embeddedor.com header.i=@embeddedor.com header.b="V05JxkJq"
+Received: from omta40.uswest2.a.cloudfilter.net (omta40.uswest2.a.cloudfilter.net [35.89.44.39])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C4D851411F0
+	for <linux-kernel@vger.kernel.org>; Wed,  3 Apr 2024 12:59:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=35.89.44.39
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712149154; cv=none; b=abTfhifli+pSZ18/+uyxc/RF4Hwsya6vSQ7v9dpwTJnXDXSCuOwYADqKVzcWvIdLoCxTHO0ZMKVolOJNUymX1+bIrs1NBgdnp5Ff4YtQDG99268YJnyMMguG8j2204V4bnMRSDdegUf+DuiKS41bsbN/5NcntQHnPQKWd1eWCug=
+	t=1712149181; cv=none; b=Tg9FQ2sHc59vzROONW7m+JIVkmKtZ2fwnI0VTpXF+K2fJnsKLourNqVV+ukzWiM7SYeRyteHYRvlIgyOaj7G1CMmgg0yWlRWfF0m1DgQ1pj12T5XWtW0HLQYib1H4/b2aqfuqfpX58Q1a8KbxBBbwyyXAk9wsrwm1O/F4wWQsPM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712149154; c=relaxed/simple;
-	bh=irgCMffmOmwQWHOOHIcD87QVwVYpJ1zi4B6EebujLwo=;
+	s=arc-20240116; t=1712149181; c=relaxed/simple;
+	bh=HUm4rX7f5vx16jEu8Sf5T2cz4l5Z+ApVMO6v3mlJDPw=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Pe9kXnG58zjcTfE34a/q8iExvvze8zNCwsGOATF3Bkxt2lKUlOHeBHPsT11Z4tm7PLbuMygGau1155b1mGalRoIJIqGA/RRh1eOuejWwUYECYUTFxXDmbtFAe9WZ1MGCyON2TOgWcmjGiwdDnOsJhvEcA7xXb8Q79qvqFvHXI/4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id C265B1007;
-	Wed,  3 Apr 2024 05:59:43 -0700 (PDT)
-Received: from [10.57.72.245] (unknown [10.57.72.245])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id E1AA53F7B4;
-	Wed,  3 Apr 2024 05:59:10 -0700 (PDT)
-Message-ID: <dbc5083b-bf8c-4869-8dc7-5fbf2c88cce8@arm.com>
-Date: Wed, 3 Apr 2024 13:59:09 +0100
+	 In-Reply-To:Content-Type; b=Uo/cLHFkLEzLp4ZTpKweI0twTvwjIIb/Ex1/AYyfXcW+AyA7AFWLCr2ELHvQTRkjiE0GeFrTWqfhi3BYO7Tsex7H9LcKYIvRnMyG0eB2D3EbznXJIkkk1C+hhzjqfrRCMfuu3mwHMiyMVmBtnOLnAO8wSU2v/0pGq6GIMrAAN+A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=embeddedor.com; spf=pass smtp.mailfrom=embeddedor.com; dkim=pass (2048-bit key) header.d=embeddedor.com header.i=@embeddedor.com header.b=V05JxkJq; arc=none smtp.client-ip=35.89.44.39
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=embeddedor.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=embeddedor.com
+Received: from eig-obgw-5007a.ext.cloudfilter.net ([10.0.29.141])
+	by cmsmtp with ESMTPS
+	id rsjRrEuftPM1hs0DEr0aLI; Wed, 03 Apr 2024 12:59:32 +0000
+Received: from gator4166.hostgator.com ([108.167.133.22])
+	by cmsmtp with ESMTPS
+	id s0DDrXlFYeXgGs0DDrGegP; Wed, 03 Apr 2024 12:59:31 +0000
+X-Authority-Analysis: v=2.4 cv=Q/PU4Z2a c=1 sm=1 tr=0 ts=660d52b3
+ a=1YbLdUo/zbTtOZ3uB5T3HA==:117 a=4VnFru8p6tJF5H7f7NqpSA==:17
+ a=IkcTkHD0fZMA:10 a=raytVjVEu-sA:10 a=wYkD_t78qR0A:10 a=hSkVLCK3AAAA:8
+ a=dZbOZ2KzAAAA:8 a=NCOkLyd_rlf-iUkjTgcA:9 a=QEXdDO2ut3YA:10
+ a=cQPPKAXgyycSBL8etih5:22
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=embeddedor.com; s=default; h=Content-Transfer-Encoding:Content-Type:
+	In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:Message-ID:Sender
+	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
+	List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+	bh=fviJob8AHM37gPjhK3h7HrJK72m/4Gn7wrbDrlUSskE=; b=V05JxkJqP76wdpE6Bj5q0AVFtl
+	8zYkkK7JocWgI6tZffH/UbcDyOgwgoxTV4GAuzD7Ur49Xvwe71SdnCdyPvNlh42vgUCiWiKQdkjlo
+	n5FjQuWcxkDwDk0vHjpjKjvIHhxgojXOwmHkGvsIEH5BnaYeN2syAz5/GAkfj0p5MKfcekEegWG4X
+	AmnjvtjLAlaAvrqWfx7FSbEkN6gkXKpQt/C9mZf7OP9dRtCsDnfs8zapScgg357O11jMrfgfIyGFk
+	l0CUrGd6dWbdbcMTR4V0zB50erBv73/SbuoNbRK84XhCtIS5u8x/pUqHiUbuWYcVHewnC8jSHhCL7
+	mRkevEyw==;
+Received: from [187.184.159.122] (port=11187 helo=[192.168.0.27])
+	by gator4166.hostgator.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+	(Exim 4.96.2)
+	(envelope-from <gustavo@embeddedor.com>)
+	id 1rs0DC-002qxv-17;
+	Wed, 03 Apr 2024 07:59:30 -0500
+Message-ID: <88f4493a-2787-4c25-bd0a-80731a603faa@embeddedor.com>
+Date: Wed, 3 Apr 2024 06:59:24 -0600
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -41,167 +68,102 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC PATCH v1 0/4] Reduce cost of ptep_get_lockless on arm64
-Content-Language: en-GB
-To: David Hildenbrand <david@redhat.com>, Mark Rutland
- <mark.rutland@arm.com>, Catalin Marinas <catalin.marinas@arm.com>,
- Will Deacon <will@kernel.org>,
- Alexander Shishkin <alexander.shishkin@linux.intel.com>,
- Jiri Olsa <jolsa@kernel.org>, Ian Rogers <irogers@google.com>,
- Adrian Hunter <adrian.hunter@intel.com>,
- Andrew Morton <akpm@linux-foundation.org>,
- Muchun Song <muchun.song@linux.dev>
-Cc: linux-arm-kernel@lists.infradead.org, linux-mm@kvack.org,
- linux-kernel@vger.kernel.org
-References: <20240215121756.2734131-1-ryan.roberts@arm.com>
- <0ae22147-e1a1-4bcb-8a4c-f900f3f8c39e@redhat.com>
- <d8b3bcf2-495f-42bd-b114-6e3a010644d8@arm.com>
- <de143212-49ce-4c30-8bfa-4c0ff613f107@redhat.com>
- <374d8500-4625-4bff-a934-77b5f34cf2ec@arm.com>
- <c1218cdb-905b-4896-8e17-109700577cec@redhat.com>
- <a41b0534-b841-42c2-8c06-41337c35347d@arm.com>
- <8bd9e136-8575-4c40-bae2-9b015d823916@redhat.com>
- <86680856-2532-495b-951a-ea7b2b93872f@arm.com>
- <35236bbf-3d9a-40e9-84b5-e10e10295c0c@redhat.com>
-From: Ryan Roberts <ryan.roberts@arm.com>
-In-Reply-To: <35236bbf-3d9a-40e9-84b5-e10e10295c0c@redhat.com>
-Content-Type: text/plain; charset=UTF-8
+Subject: Re: [PATCH next] fs: fix oob in do_handle_open
+To: Jeff Layton <jlayton@kernel.org>, Edward Adam Davis <eadavis@qq.com>,
+ syzbot+4139435cb1b34cf759c2@syzkaller.appspotmail.com
+Cc: amir73il@gmail.com, brauner@kernel.org, chuck.lever@oracle.com,
+ jack@suse.cz, linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-nfs@vger.kernel.org, syzkaller-bugs@googlegroups.com,
+ viro@zeniv.linux.org.uk, "Gustavo A. R. Silva" <gustavoars@kernel.org>
+References: <000000000000f075b9061520cbbe@google.com>
+ <tencent_A7845DD769577306D813742365E976E3A205@qq.com>
+ <72d7604e38ee9a37bcb33a6a537758e4412488ee.camel@kernel.org>
+Content-Language: en-US
+From: "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+In-Reply-To: <72d7604e38ee9a37bcb33a6a537758e4412488ee.camel@kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - gator4166.hostgator.com
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - embeddedor.com
+X-BWhitelist: no
+X-Source-IP: 187.184.159.122
+X-Source-L: No
+X-Exim-ID: 1rs0DC-002qxv-17
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
+X-Source-Sender: ([192.168.0.27]) [187.184.159.122]:11187
+X-Source-Auth: gustavo@embeddedor.com
+X-Email-Count: 5
+X-Org: HG=hgshared;ORG=hostgator;
+X-Source-Cap: Z3V6aWRpbmU7Z3V6aWRpbmU7Z2F0b3I0MTY2Lmhvc3RnYXRvci5jb20=
+X-Local-Domain: yes
+X-CMAE-Envelope: MS4xfFzgXLfGqdy353sQOAANoPF2niGyu3vx8dKIbW2KNCeL2tB7HeekMgU26LwbIw0q3dPX8MTcbhz9XKf4fqepjXYYLHZkL2sKKQwGia0UORTExr97j89N
+ m+YijVkzosyCrmf2U6UetjZ9/JDXFsDthKwPEjSFMx/YkX7IE+7hGw3Qu3u8iB/Gr4SQ7aWiFiiVvFGHKi7zUDLqXFkr3er8PvxZv3GE8CJHqJyhbXPQnYp0
 
-On 27/03/2024 09:34, David Hildenbrand wrote:
-> On 26.03.24 18:51, Ryan Roberts wrote:
->> On 26/03/2024 17:39, David Hildenbrand wrote:
->>> On 26.03.24 18:32, Ryan Roberts wrote:
->>>> On 26/03/2024 17:04, David Hildenbrand wrote:
->>>>>>>>>
->>>>>>>>> Likely, we just want to read "the real deal" on both sides of the
->>>>>>>>> pte_same()
->>>>>>>>> handling.
->>>>>>>>
->>>>>>>> Sorry I'm not sure I understand? You mean read the full pte including
->>>>>>>> access/dirty? That's the same as dropping the patch, right? Of course if
->>>>>>>> we do
->>>>>>>> that, we still have to keep pte_get_lockless() around for this case. In an
->>>>>>>> ideal
->>>>>>>> world we would convert everything over to ptep_get_lockless_norecency() and
->>>>>>>> delete ptep_get_lockless() to remove the ugliness from arm64.
->>>>>>>
->>>>>>> Yes, agreed. Patch #3 does not look too crazy and it wouldn't really affect
->>>>>>> any
->>>>>>> architecture.
->>>>>>>
->>>>>>> I do wonder if pte_same_norecency() should be defined per architecture
->>>>>>> and the
->>>>>>> default would be pte_same(). So we could avoid the mkold etc on all other
->>>>>>> architectures.
->>>>>>
->>>>>> Wouldn't that break it's semantics? The "norecency" of
->>>>>> ptep_get_lockless_norecency() means "recency information in the returned pte
->>>>>> may
->>>>>> be incorrect". But the "norecency" of pte_same_norecency() means "ignore the
->>>>>> access and dirty bits when you do the comparison".
->>>>>
->>>>> My idea was that ptep_get_lockless_norecency() would return the actual
->>>>> result on
->>>>> these architectures. So e.g., on x86, there would be no actual change in
->>>>> generated code.
->>>>
->>>> I think this is a bad plan... You'll end up with subtle differences between
->>>> architectures.
->>>>
->>>>>
->>>>> But yes, the documentation of these functions would have to be improved.
->>>>>
->>>>> Now I wonder if ptep_get_lockless_norecency() should actively clear
->>>>> dirty/accessed bits to more easily find any actual issues where the bits still
->>>>> matter ...
->>>>
->>>> I did a version that took that approach. Decided it was not as good as this way
->>>> though. Now for the life of me, I can't remember my reasoning.
->>>
->>> Maybe because there are some code paths that check accessed/dirty without
->>> "correctness" implications? For example, if the PTE is already dirty, no need to
->>> set it dirty etc?
+
+
+On 03/04/24 02:48, Jeff Layton wrote:
+> On Wed, 2024-04-03 at 14:54 +0800, Edward Adam Davis wrote:
+>> [Syzbot reported]
+>> BUG: KASAN: slab-out-of-bounds in instrument_copy_from_user_before include/linux/instrumented.h:129 [inline]
+>> BUG: KASAN: slab-out-of-bounds in _copy_from_user+0x7b/0xe0 lib/usercopy.c:22
+>> Write of size 48 at addr ffff88802b8cbc88 by task syz-executor333/5090
 >>
->> I think I decided I was penalizing the architectures that don't care because all
->> their ptep_get_norecency() and ptep_get_lockless_norecency() need to explicitly
->> clear access/dirty. And I would have needed ptep_get_norecency() from day 1 so
->> that I could feed its result into pte_same().
+>> CPU: 0 PID: 5090 Comm: syz-executor333 Not tainted 6.9.0-rc2-next-20240402-syzkaller #0
+>> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 03/27/2024
+>> Call Trace:
+>>   <TASK>
+>>   __dump_stack lib/dump_stack.c:88 [inline]
+>>   dump_stack_lvl+0x241/0x360 lib/dump_stack.c:114
+>>   print_address_description mm/kasan/report.c:377 [inline]
+>>   print_report+0x169/0x550 mm/kasan/report.c:488
+>>   kasan_report+0x143/0x180 mm/kasan/report.c:601
+>>   kasan_check_range+0x282/0x290 mm/kasan/generic.c:189
+>>   instrument_copy_from_user_before include/linux/instrumented.h:129 [inline]
+>>   _copy_from_user+0x7b/0xe0 lib/usercopy.c:22
+>>   copy_from_user include/linux/uaccess.h:183 [inline]
+>>   handle_to_path fs/fhandle.c:203 [inline]
+>>   do_handle_open+0x204/0x660 fs/fhandle.c:226
+>>   do_syscall_64+0xfb/0x240
+>>   entry_SYSCALL_64_after_hwframe+0x72/0x7a
+>> [Fix]
+>> When copying data to f_handle, the length of the copied data should not include
+>> the length of "struct file_handle".
+>>
+>> Reported-by: syzbot+4139435cb1b34cf759c2@syzkaller.appspotmail.com
+>> Signed-off-by: Edward Adam Davis <eadavis@qq.com>
+>> ---
+>>   fs/fhandle.c | 2 +-
+>>   1 file changed, 1 insertion(+), 1 deletion(-)
+>>
+>> diff --git a/fs/fhandle.c b/fs/fhandle.c
+>> index 53ed54711cd2..8a7f86c2139a 100644
+>> --- a/fs/fhandle.c
+>> +++ b/fs/fhandle.c
+>> @@ -202,7 +202,7 @@ static int handle_to_path(int mountdirfd, struct file_handle __user *ufh,
+>>   	*handle = f_handle;
+>>   	if (copy_from_user(&handle->f_handle,
+>>   			   &ufh->f_handle,
+>> -			   struct_size(ufh, f_handle, f_handle.handle_bytes))) {
+>> +			   f_handle.handle_bytes)) {
+>>   		retval = -EFAULT;
+>>   		goto out_handle;
+>>   	}
 > 
-> True. With ptep_get_norecency() you're also penalizing other architectures.
-> Therefore my original thought about making the behavior arch-specific, but the
-> arch has to make sure to get the combination of
-> ptep_get_lockless_norecency()+ptep_same_norecency() is right.
-> 
-> So if an arch decide to ignore bits in ptep_get_lockless_norecency(), it must
-> make sure to also ignore them in ptep_same_norecency(), and must be able to
-> handle access/dirty bit changes differently.
-> 
-> Maybe one could have one variant for "hw-managed access/dirty" vs. "sw managed
-> accessed or dirty". Only the former would end up ignoring stuff here, the latter
-> would not.
-> 
-> But again, just some random thoughts how this affects other architectures and
-> how we could avoid it. The issue I describe in patch #3 would be gone if
-> ptep_same_norecency() would just do a ptep_same() check on other architectures
-> -- and would make it easier to sell :)
+> cc'ing Gustavo, since it looks like his patch in -next is what broke
+> this.
 > 
 
-I've been thinking some more about this. I think your proposal is the following:
+Oh, sorry about that folks. That looks pretty much like a copy/paste error.
 
+The fix is correct.
 
-// ARM64
-ptep_get_lockless_norecency()
-{
-	- returned access/dirty may be incorrect
-	- returned access/dirty may be differently incorrect between 2 calls
-}
-pte_same_norecency()
-{
-	- ignore access/dirty when doing comparison
-}
-ptep_set_access_flags(ptep, pte)
-{
-	- must not assume access/dirty in pte are "more permissive" than
-	  access/dirty in *ptep
-	- must only set access/dirty in *ptep, never clear
-}
-
-
-// Other arches: no change to generated code
-ptep_get_lockless_norecency()
-{
-	return ptep_get_lockless();
-}
-pte_same_norecency()
-{
-	return pte_same();
-}
-ptep_set_access_flags(ptep, pte)
-{
-	- may assume access/dirty in pte are "more permissive" than access/dirty
-	  in *ptep
-	- if no HW access/dirty updates, "*ptep = pte" always results in "more
-	  permissive" change
-}
-
-An arch either specializes all 3 or none of them.
-
-This would allow us to get rid of ptep_get_lockless().
-
-And it addresses the bug you found with ptep_set_access_flags().
-
-
-BUT, I still have a nagging feeling that there are likely to be other similar
-problems caused by ignoring access/dirty during pte_same_norecency(). I can't
-convince myself that its definitely all safe and robust.
-
-So I'm leaning towards dropping patch 3 and therefore keeping
-ptep_get_lockless() around.
-
-Let me know if you have any insight that might help me change my mind :)
-
-Thanks,
-Ryan
+Thanks, Edward!
+--
+Gustavo
 
 
