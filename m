@@ -1,103 +1,102 @@
-Return-Path: <linux-kernel+bounces-130228-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-130230-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9A6B18975B4
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 18:56:58 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9FA3C8975BB
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 18:57:35 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 55DBE28BE01
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 16:56:57 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 55AAC1F28D7A
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 16:57:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 42EE1152172;
-	Wed,  3 Apr 2024 16:56:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 85B41152171;
+	Wed,  3 Apr 2024 16:57:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="Hsy8gvWm"
-Received: from mail-ed1-f47.google.com (mail-ed1-f47.google.com [209.85.208.47])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="W+rl5fcW"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 686C6150980
-	for <linux-kernel@vger.kernel.org>; Wed,  3 Apr 2024 16:56:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C70E63E487;
+	Wed,  3 Apr 2024 16:57:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712163408; cv=none; b=BLENyUFwl3+fWMWnPCgRtyCxnQS8Ak5MWAE/TB4/5giN9rRGAJm1P4j2Fgqopxfhqi8jfa3pT/vTgzxuUuU3E7bp9xiOyeN3sCk9ARxCvlF3ggXdVSFiAd2XZ6lDZw/tc+/rd2qe2VV51RBNI5khvysyAdtkgTMYcZuSOGu9M7c=
+	t=1712163443; cv=none; b=A0+kBFuX95nt9AOWmsaGcASRpQh3e9uwgtuxYJFgPay49N/jFzxMDFDQXzNf5FzhFOe43DnUPemiri4z8VpBF+ji26eBxh9ZspfBB1+p6vgjUyDB9X/jKpZOri7zY9LbrK/zQpz9iMTRFySttAXDU3lmgHktW10FnjRbQSzR2Wc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712163408; c=relaxed/simple;
-	bh=5pdOUUNk0QN6oJLZ46GUGnM3Gj6Ge8kHKMQVFmHpCjo=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=Fusr6c9rKsUGnY+XX0YR/NOaW0aGhb3/7rzwiu6s7TeIr0nxTFFWR1jhFqYse7rPh486ib1yag6I20KuWnMEcMBrAMxhIAa110g+pry6BPToOw4LAQGPjcpy0OMuBspwB+zrSjdhXKazSax2pfM7GHkRdzuZ/k0Bj4DIhCi5Z4Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org; spf=pass smtp.mailfrom=linuxfoundation.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=Hsy8gvWm; arc=none smtp.client-ip=209.85.208.47
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
-Received: by mail-ed1-f47.google.com with SMTP id 4fb4d7f45d1cf-56dcf805aa1so30086a12.1
-        for <linux-kernel@vger.kernel.org>; Wed, 03 Apr 2024 09:56:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google; t=1712163404; x=1712768204; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=iBcL9nm6pAxCV+RLg7Wh9pL8ACKC92BGseUAAvh8CwE=;
-        b=Hsy8gvWmyKM2pZTO1ZriZdf2A5JUkkZlbe6JsjFkjrSNeAxTYTZgrKwojZKp8c5nDu
-         j34DCJlLjxHkFVthlmovx32enBHII/mEAfnisjIeovkOYMhaxx55ZcsgZKspc/ybexvq
-         UBwFtz+9WLQUg3Z2yOwQwONQWxx+dtbhGc31g=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712163404; x=1712768204;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=iBcL9nm6pAxCV+RLg7Wh9pL8ACKC92BGseUAAvh8CwE=;
-        b=iAe1PfVepzS+g2jY8J1eZtf0TZtcmZC1zpcUVC6bD9slDRJZc0f8wsL7sGYR2c33/3
-         7MCoDIxhghfo8rrnNShwNGEm+oeHi2UMRYgDWicpPsr36khSP7W57IIcQOeSsnRfhSm1
-         vUu+4wJY06HmYPFl5cqdjn709NkFRO6BhQ95cDw8ujs7Zs2YBMRU12B3NyCcWPaI25kt
-         MdRTKGv+6vP4sFQfKU88we08EIjiJBjjIvB6S4Sv1Xik0xOCeVM2Dbr/uopVZLqyLwt8
-         IMZrXVFYJmpc3UXzrKVjoO3kKOqGz1V9fmXXh2uhorHMFLcwzNChvdK9nwJA8c3M7Uvp
-         WeTQ==
-X-Forwarded-Encrypted: i=1; AJvYcCW1w6FO8PucKNxBnh/xQ9zVGmr7YClWST7pcVS2vidQvgKO1elOaCFit/+YiKHVt6DOg/wa6icd4NGrtUgHh1Ue/Kr2t8uFeSLZSB3s
-X-Gm-Message-State: AOJu0Yyh70dft+GDxAjVMLM3u1sO3YpJJNN9HL1ZJ59UTRl0PsR/N8r9
-	f/gNvO3E/onntfJTkv33mR389dJ72c40z/kTsppGxe6Df1mr0zxn98BqOh03bp0UXkbSD8/a/K9
-	kb2D66Q==
-X-Google-Smtp-Source: AGHT+IHgjO0+kbmx/Tcl1lH6xu32BG/K9WmEv0rQU3ovVuGcKzTYaMVBovkl/nKyK+/5WV2PC/+DEg==
-X-Received: by 2002:a17:907:7213:b0:a50:e067:e211 with SMTP id dr19-20020a170907721300b00a50e067e211mr1430016ejc.36.1712163404571;
-        Wed, 03 Apr 2024 09:56:44 -0700 (PDT)
-Received: from mail-ej1-f50.google.com (mail-ej1-f50.google.com. [209.85.218.50])
-        by smtp.gmail.com with ESMTPSA id q17-20020a1709060e5100b00a4623030893sm7819211eji.126.2024.04.03.09.56.44
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 03 Apr 2024 09:56:44 -0700 (PDT)
-Received: by mail-ej1-f50.google.com with SMTP id a640c23a62f3a-a4e61accceaso11927666b.2
-        for <linux-kernel@vger.kernel.org>; Wed, 03 Apr 2024 09:56:44 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCU0LPvw7yitGO79DwtBCUKIE3GNaT0xAQk8RTPgUJa8z015dX6dV5FxswjehAim8qo6OmEnuMrgtCbx1RyM2ScsMDikZR2XxO8tuvcV
-X-Received: by 2002:a17:906:3945:b0:a4e:6b94:7d4 with SMTP id
- g5-20020a170906394500b00a4e6b9407d4mr6495526eje.24.1712163403638; Wed, 03 Apr
- 2024 09:56:43 -0700 (PDT)
+	s=arc-20240116; t=1712163443; c=relaxed/simple;
+	bh=Lyo2Jkd+NP2jcyMjfmSSDQpvC/i5lfwUw1klvOt8u4M=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=a/GJvqAhDi0hUj8L7rX+y36aBnVWe0UlrwVEAiO30C+7hbGqZRNFAVD4HM0Oa/d74B1vivSQBRKxHEvUggk4vbRHaVt2ixMBhm8A+FKMs7Yx/vblsiLbghD8VOBoere/grTx+4Pug9htbzB6fuJezd3E1Qe4PxCtYqSIrxwxydk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=W+rl5fcW; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 20326C433C7;
+	Wed,  3 Apr 2024 16:57:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1712163443;
+	bh=Lyo2Jkd+NP2jcyMjfmSSDQpvC/i5lfwUw1klvOt8u4M=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=W+rl5fcWtGDnzgkuQ9dJB/MwuM578FH1ChxNzfvkUSA1zsCW76Y+Jb4K9xEuvgOV9
+	 tjL5skqR7xA4W7dv6pD6ffSM0hGgqXNvpUa8crYjhlaVvlVOm6GZImf5s+rCDgvLdL
+	 d8n4yFN+d9HK5MX0H5vxMv30iOwMHPwedVEyhg7j9qrLoH4jHgIXBqjhCXPXmppdMF
+	 Z3dJ9WiTjuNXu4DHm6rMM79HQcX33+Ni+dUKHOwTBKt3heDHMBYh2j2WN8lWTxBfzw
+	 ITXeEK9Ygz/3cFHNLCE7mVVIaBGfeJc1qe84Gn7G++0NFjlAUIhvQRbJOOkF+nkLk/
+	 +ZXGCFDUSq93g==
+Date: Wed, 3 Apr 2024 11:57:21 -0500
+From: Rob Herring <robh@kernel.org>
+To: Hiago De Franco <hiagofranco@gmail.com>
+Cc: Shawn Guo <shawnguo@kernel.org>, Sascha Hauer <s.hauer@pengutronix.de>,
+	Pengutronix Kernel Team <kernel@pengutronix.de>,
+	Fabio Estevam <festevam@gmail.com>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Hiago De Franco <hiago.franco@toradex.com>, imx@lists.linux.dev,
+	linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v1 2/4] dt-bindings: arm: fsl: remove reduntant
+ toradex,colibri-imx8x
+Message-ID: <20240403165721.GA3980362-robh@kernel.org>
+References: <20240402193512.240417-1-hiagofranco@gmail.com>
+ <20240402193512.240417-3-hiagofranco@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <969ccc0f-d909-4b45-908e-e98279777733@metaparadigm.com>
-In-Reply-To: <969ccc0f-d909-4b45-908e-e98279777733@metaparadigm.com>
-From: Linus Torvalds <torvalds@linux-foundation.org>
-Date: Wed, 3 Apr 2024 09:56:27 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wj3khqjXnHmShPj+tZvC=SyUitTZ7BkDO-rqu_aCVPrXA@mail.gmail.com>
-Message-ID: <CAHk-=wj3khqjXnHmShPj+tZvC=SyUitTZ7BkDO-rqu_aCVPrXA@mail.gmail.com>
-Subject: Re: user-space concurrent pipe buffer scheduler interactions
-To: Michael Clark <michael@metaparadigm.com>
-Cc: Jens Axboe <axboe@kernel.dk>, Ingo Molnar <mingo@redhat.com>, 
-	Peter Zijlstra <peterz@infradead.org>, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240402193512.240417-3-hiagofranco@gmail.com>
 
-On Tue, 2 Apr 2024 at 13:54, Michael Clark <michael@metaparadigm.com> wrote:
->
-> I am working on a low latency cross-platform concurrent pipe buffer
-> using C11 threads and atomics.
+On Tue, Apr 02, 2024 at 04:35:10PM -0300, Hiago De Franco wrote:
+> From: Hiago De Franco <hiago.franco@toradex.com>
+> 
+> 'toradex,colibri-imx8x' is already present as a constant value for
+> 'i.MX8QP Board with Toradex Colibri iMX8X Modules', so there is no need
+> to keep it twice as a enum value for 'i.MX8QXP based Boards'.
 
-You will never get good performance doing spinlocks in user space
-unless you actually tell the scheduler about the spinlocks, and have
-some way to actually sleep on contention.
+If the module can operate on its own, then it would be valid to have 
+just "toradex,colibri-imx8x". If not, then:
 
-Which I don't see you as having.
+Acked-by: Rob Herring <robh@kernel.org>
 
-               Linus
+> 
+> Signed-off-by: Hiago De Franco <hiago.franco@toradex.com>
+> ---
+>  Documentation/devicetree/bindings/arm/fsl.yaml | 1 -
+>  1 file changed, 1 deletion(-)
+> 
+> diff --git a/Documentation/devicetree/bindings/arm/fsl.yaml b/Documentation/devicetree/bindings/arm/fsl.yaml
+> index 0027201e19f8..6fdfa10af43c 100644
+> --- a/Documentation/devicetree/bindings/arm/fsl.yaml
+> +++ b/Documentation/devicetree/bindings/arm/fsl.yaml
+> @@ -1218,7 +1218,6 @@ properties:
+>            - enum:
+>                - einfochips,imx8qxp-ai_ml  # i.MX8QXP AI_ML Board
+>                - fsl,imx8qxp-mek           # i.MX8QXP MEK Board
+> -              - toradex,colibri-imx8x     # Colibri iMX8X Modules
+>            - const: fsl,imx8qxp
+>  
+>        - description: i.MX8DXL based Boards
+> -- 
+> 2.39.2
+> 
 
