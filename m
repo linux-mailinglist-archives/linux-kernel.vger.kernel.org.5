@@ -1,74 +1,74 @@
-Return-Path: <linux-kernel+bounces-129391-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-129392-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 579AF896A05
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 11:08:53 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id E16C7896A02
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 11:07:15 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 45C8CB28F1C
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 09:06:58 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 36FA21F2660A
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 09:07:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DB30973527;
-	Wed,  3 Apr 2024 09:05:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DF7EB70CC5;
+	Wed,  3 Apr 2024 09:06:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="qMcR2tR0"
-Received: from mail-ej1-f41.google.com (mail-ej1-f41.google.com [209.85.218.41])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="efl/3Yjh"
+Received: from mail-ej1-f46.google.com (mail-ej1-f46.google.com [209.85.218.46])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 47EBD69302
-	for <linux-kernel@vger.kernel.org>; Wed,  3 Apr 2024 09:05:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 72A476E2BE
+	for <linux-kernel@vger.kernel.org>; Wed,  3 Apr 2024 09:06:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712135120; cv=none; b=dV5UJbeJo2mFpHpuvFor1Pc/TipQD91iMbO2iiybzPmfoxoDkHGdN/WaMtF623tOqmGh6yzUrVIy0t0lquK5conflw4L55jHSTM8BzaiJWSOM6Aan+gPFBPKHSOjQHIpqLpNLTdYrrR0Tv5/DS+628CnL+LDUXb0f/lvF/0HHUo=
+	t=1712135196; cv=none; b=nlCjpOi30QtckpYlsTE/MHelZA1RB+zipmFvM68c1bfHzShVYpWrYfQdvlEi3EP28PhywYwwWKZt+Vv/JVGFaWUnaEcBssHmk8hoPluHFPYdJN8WqXjuC2SnEfBpuYw1YMmezxUFJ1pYGtx0yG6pVjCV1kUGbW1r1BtPyjxO2y4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712135120; c=relaxed/simple;
-	bh=Oh80JIU6KLcfPrcA+lSg/xEaqgkDMJlM+tW6/eztX7E=;
+	s=arc-20240116; t=1712135196; c=relaxed/simple;
+	bh=pkZwS+e5I+h69eXwpb5Uy35vKeyJ9txD4lCmRKkROoU=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=f2Vud8Xjj1gZd+nFu63j9VynAmGxINPlBf7fSm5MbJ5Bsrx5t+mqlYmLbYh5PW6Ur+sLbdhAf/LacBH/XrQYJI0R2BGCaLwz833VU3y0xWcIi9rCu1h9BYFud3cVb8lusSeiaYA2rR/GqD8GZ3Jdp4zUinA6tmKHVeQdft9F2/s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=qMcR2tR0; arc=none smtp.client-ip=209.85.218.41
+	 In-Reply-To:Content-Type; b=Ra40oeNi+R13SISp83wfYvsEKOXJXra3ax62dSNBrbFxEgD0D7o7VA5cAWHaTkSL+AHe1yob/CxCvQGlpbW9r8SNdqCeZn3VhMj2823rCHpQktkkPqIbdDLXwT/ZKQp/DcKbVm0+E9Kj1khxciASM0ffPD9Jo5Vf1iPRt/9FR/c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=efl/3Yjh; arc=none smtp.client-ip=209.85.218.46
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ej1-f41.google.com with SMTP id a640c23a62f3a-a4e8904bd71so209638966b.1
-        for <linux-kernel@vger.kernel.org>; Wed, 03 Apr 2024 02:05:18 -0700 (PDT)
+Received: by mail-ej1-f46.google.com with SMTP id a640c23a62f3a-a4e5ee91879so429869266b.3
+        for <linux-kernel@vger.kernel.org>; Wed, 03 Apr 2024 02:06:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1712135117; x=1712739917; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1712135192; x=1712739992; darn=vger.kernel.org;
         h=content-transfer-encoding:in-reply-to:autocrypt:from
          :content-language:references:cc:to:subject:user-agent:mime-version
          :date:message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=/BsUDXr+H/gy9dW7d8tv9OH5McclwdwB4w6WnKYu8n8=;
-        b=qMcR2tR0yJweixaxfcrLAbflA2/l5SoJtP2NX5QQ6Z/qDTTkiVsR8h1soCAeB54WIZ
-         2UV1ZvhVNEjYSPgtYreczc9yrnYigxnvC0Vnd8I+3EZUzjnaJPckv7WvPG8dL6s5PTAw
-         ypcp/zv/j/WgomEQYqQjONQmvs1NCnbWeQtdBYbqZ90zrWFYg/FI8DZpPB29l6GswPsi
-         1wHWRi5ZDBUYrFxd6xESWRnYiY9xyEimk9KtmaQay4C+qcA9dFkqYUBM8rlkEftsZi5d
-         kolDSxpa+PEG1aJEKUL+0NOFAabMk4x+cuhcsMeOIRoaiavkls7P5xmF7c1mXJzdAjG3
-         admA==
+        bh=uj+vStzBE1g5HSFxOT3J1gWV2WIEySZ+b3hpcha4y3E=;
+        b=efl/3YjhoEo6XPoVKtXo0e4jgGx2zInLoyizWmL0WKJ08cuscrTsZbtlfe+9YPLuIb
+         jvrU0f6l/lhMFOFAZHeGUUgbzRXqqqSyQO8lCpFWDWuml+pYEheLFuZ90rUhBeYd8eQB
+         rJl+p66z6laX/qXwPunKu1+0Bv/37T3r9BZZse1OvMbSrHk+FdjPIDZNp47ioCord/IV
+         cULnCjfeqz94yMZMWUIlx/UXTTt5rG51V2rbZikp7tI8mwEEJWGlHZyIoccYqCg6Qisn
+         tspKAU3WuKu80bXYHHW4z1EqwuCO9QIMI0U3eIrONKSLhLITTGP6nDORL587+khg1ik6
+         9Mdg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712135117; x=1712739917;
+        d=1e100.net; s=20230601; t=1712135192; x=1712739992;
         h=content-transfer-encoding:in-reply-to:autocrypt:from
          :content-language:references:cc:to:subject:user-agent:mime-version
          :date:message-id:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=/BsUDXr+H/gy9dW7d8tv9OH5McclwdwB4w6WnKYu8n8=;
-        b=hEc2fVdcMwD5ZG8vofSxsGnUgoe2cJI0U5xrAoYmL830t+aBn/A/pZ3LHoiigE1uzL
-         Sm47IzGh9RfSP3x9ISJwpFzX/EiFopZAXzCGu63wbXrMKO85edNOSkySYKXNE8TZkdTN
-         dh1WYgE5CYu0Q5cnuA67Hg0Cb7xbpxLKQSCCAdGlgbvIE7Wuk9MIp1tdMKkyK47lbt7I
-         baQSlfjW1cyR8j34SW+Xk8KeVGBn6oE6fsrbvaMyfuiAH/vLOMI++aW1FteaFW+zi8Zj
-         iRuDNGRdBxnvguHYFyy98rnXsW45Y/eCt2ykUC02+2+2fViEHefr625LRDQi26d+JWPN
-         WTNA==
-X-Forwarded-Encrypted: i=1; AJvYcCXzw88jvGW48FUc2q8P9MgCTBWI+dBFEiDn2P1gRP/4n9O0yQPcOhCqYpGiE7tZhsfGIDmtLLG2bwEGOclVhiQvU7z9JphHrT3K8Rbd
-X-Gm-Message-State: AOJu0Yy5mNyIsvrKIQDkCISGuY7ya+Zh1Oik8LNCUGrzLcghPvJURAEB
-	5beDcMpYXxK4y2PN9z/Gb3TGhsu7uYRCp8TKdgztevZf/u4D4bOdZq/sajsXlHY=
-X-Google-Smtp-Source: AGHT+IHVq9lYEk7UtFMIn02Wn0/ICwDsN6x4+XcyxkuO2QBbXrRH3akEBlRHMp6+dgGPFZhIiXQY7Q==
-X-Received: by 2002:a17:906:796:b0:a4e:8998:57bc with SMTP id l22-20020a170906079600b00a4e899857bcmr3164139ejc.41.1712135116682;
-        Wed, 03 Apr 2024 02:05:16 -0700 (PDT)
+        bh=uj+vStzBE1g5HSFxOT3J1gWV2WIEySZ+b3hpcha4y3E=;
+        b=Z0WPVUUK8vQsGCz2hPopyfkwrjtl/uWrnBAbMPbNaot8WjQFpvuFu+IN9LWx0RQXgW
+         DAOKKxoSPoANr+s025r9j+WE7jAtkl2DIlgURS+AIqX37W9gyy72/HOd4gUL83hhH5Zc
+         ZyLbppmDLYLbucy0PDzFLsfKPT9Jgw7hrI0vl6C80KPkU1tJ8QTX6OvgvHEXSo4vPefK
+         I79cxUfBTua122h4rfUFKd7ToKb4XoeJ723e0AirchgG2ieSVf4K31DWZEGr690XfoR7
+         kTE9U9aU6B7OYBEKGk5+0sjZT+XQsgR8EEjlEMFym85oXYFaXkvfAWCHv72siHV6+M5V
+         od2Q==
+X-Forwarded-Encrypted: i=1; AJvYcCWpHYVgYzeJ/Mq0otVRtrK8o0X8O5K0XUmeq308cEf4gj/6r/CuwyARAF3SDwXVZGGUrwenR7EtmU+qaqw3RWxLnm9DNu/6rct/0jdE
+X-Gm-Message-State: AOJu0YzAZPeEnTRxXOPU0bCOGTX+jj9mb6GZjDZ0dIiX1CRVvTL3NIwO
+	A7OEvvVJfKNEWQFWqFGrCpsV8o+zcDzAm+lXs1hGXExwmw6OPoIo+qF8dDKxNN4=
+X-Google-Smtp-Source: AGHT+IGRqZpi9oCpnNmrge8Z32DKZEdGLAfYi9Oj1PCEBcKrbaPVEKfjcmfbYYYevLIwW3BRhRIHyQ==
+X-Received: by 2002:a17:906:39c2:b0:a4e:7f22:cfc2 with SMTP id i2-20020a17090639c200b00a4e7f22cfc2mr1464281eje.28.1712135191799;
+        Wed, 03 Apr 2024 02:06:31 -0700 (PDT)
 Received: from [192.168.1.20] ([178.197.223.16])
-        by smtp.gmail.com with ESMTPSA id bw11-20020a170907928b00b00a4e6cbbc28dsm3313851ejc.22.2024.04.03.02.05.14
+        by smtp.gmail.com with ESMTPSA id pw14-20020a17090720ae00b00a4e35cc42c7sm6377026ejb.170.2024.04.03.02.06.29
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 03 Apr 2024 02:05:16 -0700 (PDT)
-Message-ID: <4a0b3d53-5a28-4ccd-9df3-bf3e82ed760c@linaro.org>
-Date: Wed, 3 Apr 2024 11:05:13 +0200
+        Wed, 03 Apr 2024 02:06:31 -0700 (PDT)
+Message-ID: <2c9af070-ab35-41c7-9d81-a1f20509a20e@linaro.org>
+Date: Wed, 3 Apr 2024 11:06:28 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -76,26 +76,31 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 31/34] spi: remove incorrect of_match_ptr annotations
+Subject: Re: [PATCH 32/34] ASoC: remove incorrect of_match_ptr/ACPI_PTR
+ annotations
 To: Arnd Bergmann <arnd@kernel.org>, linux-kernel@vger.kernel.org,
- Mark Brown <broonie@kernel.org>, Neil Armstrong <neil.armstrong@linaro.org>,
- Kevin Hilman <khilman@baylibre.com>, Heiko Stuebner <heiko@sntech.de>,
- Andi Shyti <andi.shyti@kernel.org>
-Cc: Arnd Bergmann <arnd@arndb.de>, Jerome Brunet <jbrunet@baylibre.com>,
- Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
- Alim Akhtar <alim.akhtar@samsung.com>, Li Zetao <lizetao1@huawei.com>,
- Jonathan Cameron <Jonathan.Cameron@huawei.com>, Rob Herring
- <robh@kernel.org>, Yang Yingliang <yangyingliang@huawei.com>,
- Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
- Luis de Arquer <luis.dearquer@inertim.com>,
- Tudor Ambarus <tudor.ambarus@linaro.org>,
- Sam Protsenko <semen.protsenko@linaro.org>,
- Peter Griffin <peter.griffin@linaro.org>,
- Jaewon Kim <jaewon02.kim@samsung.com>, linux-spi@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org, linux-amlogic@lists.infradead.org,
- linux-rockchip@lists.infradead.org, linux-samsung-soc@vger.kernel.org
+ Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
+ Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
+ Claudiu Beznea <claudiu.beznea@tuxon.dev>,
+ Nicolas Ferre <nicolas.ferre@microchip.com>,
+ Alexandre Belloni <alexandre.belloni@bootlin.com>,
+ Oder Chiou <oder_chiou@realtek.com>,
+ Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+ Banajit Goswami <bgoswami@quicinc.com>,
+ Sylwester Nawrocki <s.nawrocki@samsung.com>
+Cc: Arnd Bergmann <arnd@arndb.de>, Alper Nebi Yasak
+ <alpernebiyasak@gmail.com>,
+ Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
+ Akihiko Odaki <akihiko.odaki@daynix.com>,
+ Linus Walleij <linus.walleij@linaro.org>,
+ Yinchuan Guo <guoych37@mail2.sysu.edu.cn>,
+ =?UTF-8?Q?Uwe_Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>,
+ Rob Herring <robh@kernel.org>,
+ AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
+ linux-sound@vger.kernel.org, alsa-devel@alsa-project.org,
+ linux-arm-kernel@lists.infradead.org
 References: <20240403080702.3509288-1-arnd@kernel.org>
- <20240403080702.3509288-32-arnd@kernel.org>
+ <20240403080702.3509288-33-arnd@kernel.org>
 Content-Language: en-US
 From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
@@ -142,35 +147,37 @@ Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  KQ06ztUMRrj8eVtpImjsWCd0bDWRaaR4vqhCHvAG9iWXZu4qh3ipie2Y0oSJygcZT7H3UZxq
  fyYKiqEmRuqsvv6dcbblD8ZLkz1EVZL6djImH5zc5x8qpVxlA0A0i23v5QvN00m6G9NFF0Le
  D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20240403080702.3509288-32-arnd@kernel.org>
+In-Reply-To: <20240403080702.3509288-33-arnd@kernel.org>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 
 On 03/04/2024 10:06, Arnd Bergmann wrote:
 > From: Arnd Bergmann <arnd@arndb.de>
 > 
-> When building with CONFIG_OF  disabled but W=1 extra warnings enabled,
-> a couple of driver cause a warning about an unused ID table:
+> When building with CONFIG_OF and/or CONFIG_ACPI disabled but W=1 extra
+> warnings enabled, a lot of driver cause a warning about an unused
+> ID table:
 > 
-> drivers/spi/spi-armada-3700.c:806:34: error: unused variable 'a3700_spi_dt_ids' [-Werror,-Wunused-const-variable]
-> drivers/spi/spi-orion.c:614:34: error: unused variable 'orion_spi_of_match_table' [-Werror,-Wunused-const-variable]
-> drivers/spi/spi-pic32-sqi.c:673:34: error: unused variable 'pic32_sqi_of_ids' [-Werror,-Wunused-const-variable]
-> drivers/spi/spi-pic32.c:850:34: error: unused variable 'pic32_spi_of_match' [-Werror,-Wunused-const-variable]
-> drivers/spi/spi-rockchip.c:1020:34: error: unused variable 'rockchip_spi_dt_match' [-Werror,-Wunused-const-variable]
-> drivers/spi/spi-s3c64xx.c:1642:34: error: unused variable 's3c64xx_spi_dt_match' [-Werror,-Wunused-const-variable]
-> drivers/spi/spi-st-ssc4.c:439:34: error: unused variable 'stm_spi_match' [-Werror,-Wunused-const-variable]
+> sound/soc/atmel/sam9x5_wm8731.c:187:34: error: unused variable 'sam9x5_wm8731_of_match' [-Werror,-Wunused-const-variable]
+> sound/soc/codecs/rt5514-spi.c:496:34: error: unused variable 'rt5514_of_match' [-Werror,-Wunused-const-variable]
+> sound/soc/samsung/aries_wm8994.c:524:34: error: unused variable 'samsung_wm8994_of_match' [-Werror,-Wunused-const-variable]
 > 
-> These appear to all be copied from the same original driver, so fix them at the
-> same time by removing the unnecessary of_match_ptr() annotation. As far as I
-> can tell, all these drivers are only actually used on configurations that
-> have CONFIG_OF enabled.
+> The fix is always to just remove the of_match_ptr() and ACPI_PTR() wrappers
+> that remove the reference, rather than adding another #ifdef just for build
+> testing for a configuration that doesn't matter in practice.
+> 
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+> ---
+>  sound/soc/amd/acp3x-rt5682-max9836.c | 2 +-
+>  sound/soc/atmel/sam9x5_wm8731.c      | 2 +-
+>  sound/soc/codecs/rt5514-spi.c        | 2 +-
+>  sound/soc/qcom/lpass-sc7280.c        | 2 +-
+>  sound/soc/samsung/aries_wm8994.c     | 2 +-
 
-I think I already tried to fix all of these, but Mark rejected my patches:
+I sent it already as well:
+https://lore.kernel.org/all/20230310214333.274903-5-krzysztof.kozlowski@linaro.org/
 
-https://lore.kernel.org/all/7a65d775-cf07-4393-8b10-2cef4d5266ab@sirena.org.uk/
-
-All of the changes here look the same as my patchset, I also got there
-some Acks.
+and Mark did not pick it up, I guess for the same reason as SPI.
 
 Best regards,
 Krzysztof
