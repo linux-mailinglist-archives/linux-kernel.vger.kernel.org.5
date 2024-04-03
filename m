@@ -1,109 +1,95 @@
-Return-Path: <linux-kernel+bounces-128965-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-128963-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id C0EA989625C
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 04:16:40 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id E7E3F896253
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 04:10:42 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 4D803B22700
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 02:16:38 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 844371F2501B
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 02:10:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D7D6E17C98;
-	Wed,  3 Apr 2024 02:16:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A34061864C;
+	Wed,  3 Apr 2024 02:10:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b="aAaHfe5b"
-Received: from out203-205-221-205.mail.qq.com (out203-205-221-205.mail.qq.com [203.205.221.205])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="LCPbcesp"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C0FB914F70;
-	Wed,  3 Apr 2024 02:16:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=203.205.221.205
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D315F168DE;
+	Wed,  3 Apr 2024 02:10:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712110590; cv=none; b=a91UvHuOO3SdHyS1WhohOJR36j90D9CHk9hw/eLcBTpevmA4OLG7MlUQJVEZZGAeSn87vE7grNLWBHHYkUfft4UzoEHfke1Q1T4TwP+hgSSmk2FpYaG3XLbBHc8ux1gP87jvAEBFDAEzgSZDveLKUgcckeIT+8dm+Yke4GIdPLo=
+	t=1712110232; cv=none; b=uDzzqsoIXSKRyvCnx9uAKCsDgHNc++WBMoU3kQBzELeU848uPFqnscA9jLWEw0/xSHsPjZGj4zsmOrIUcN94KZGuK/O/Y4HP0JXkxxgWFXeFNVWD8u4gEd/9EkTmG7bhJ3tiamtjiwdhvGiXiiTc9f2MC7CpjXJO+G1OF+cBnlQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712110590; c=relaxed/simple;
-	bh=/mxN8H4HfV7JABW4Te432WPH6daYeWBceHea3twjMLM=;
-	h=Message-ID:From:To:Cc:Subject:Date:MIME-Version; b=omoiahcPBevfnmSlFDAgaegJ3zJ936fM76pvBxZdehlLClzor26zotvfAr7uUa4pGEJwnGSm/L5aBQH+SmeW0877qC54plABbQkCuXU5Zp943d7NYPvGN+k59Fq/e43ASvjn0+UynrgN7EpJZPagHp7nk5fkRky0DwLbhq/sF9A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com; spf=pass smtp.mailfrom=qq.com; dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b=aAaHfe5b; arc=none smtp.client-ip=203.205.221.205
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=qq.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qq.com; s=s201512;
-	t=1712110580; bh=ayMG5kPQyrq+8jbtAodeuRBjRi8R0ZuYWiPfYDs0A34=;
-	h=From:To:Cc:Subject:Date;
-	b=aAaHfe5b5gUJG5SLXJdPdLM5+JJSV6qDXhowhdgzoqg5YOksjxp74ppb74tTYNTGH
-	 6afNCoeyui6dRjew6BkBHgcUA70gIx7NcN2otvjv5WbP06nkCixxLOFCSYrjGpva+1
-	 goJCLpAahBUmI0it/yB+VLY5HLVFtI3tSdAXsn6g=
-Received: from localhost.localdomain ([153.3.164.50])
-	by newxmesmtplogicsvrsza1-0.qq.com (NewEsmtp) with SMTP
-	id 28B83A6E; Wed, 03 Apr 2024 10:10:11 +0800
-X-QQ-mid: xmsmtpt1712110211t0yxkh2ev
-Message-ID: <tencent_5E187BD0A61BA28605E85405F15228254D0A@qq.com>
-X-QQ-XMAILINFO: OZsapEVPoiO6vlv/ICY8TgGx/eAkz6B+6WYW0Fyip6dA9nbTAMktxVIHkJVNf7
-	 /qgVBr13Tr0pnzOGDRUO+imITOgybbwGqCPCWx1l5sNIMBN030FXqhXIcuyCPy+U2wWLCA6Y//a1
-	 X+pPp2bwvopAsl7+YcseK/bZ8YIL1a9WRUYfgUlFXDRjVvPnsCoRyXsywRCSygAeuh+rheiBjr8n
-	 e3GNL44yiWYtMSA/z0QlB4oDUN3CZdZvxgQ8KwQ7DJ3lvcd5VWZOOGTJqtbLX2w5pvvRBdQz3/cF
-	 6JfhQpgnlDxadKmaCtgFC0akIXzmR6cXopvN8zU/VhziGWk2GtFim2Rfz0OrXWaPeaxUvU0c0D5E
-	 hTGv3imEXzbGBmgcQje1xS360PoFRhRCjMpPxpOHizK55Od5SaWMPWUJIQJIFJI6H+Daq7foK0k/
-	 aOO84kOtSJySjk/AMDu5bMFlr8v+l3YnHf+HxMA80amXsbupS1R7Hi+eyUvv3XZX/5bcHzBGRII5
-	 pPb92Nz+Brv/wOg4GIuwCiGh8DCi0sJQyJ17ruHxc3I5JhPGr+TDe157nPTfZfYT36z+JyG4GoOX
-	 Tz7ctL6pYeksRLp6lNheZlbmMlt0ZtlkAFQpDy9Sfvt4Rr6G8fQUnZQ1G9AS2P+OtNGBswgWxNux
-	 5JdGzlXVwbXJIiUKUrTmZgVob5nb7Luy2lelKBCuSrWqfoORJu0yBNWkzCu6smrYp3LhUD8KYVtc
-	 cXTv/k/aReGTc2OuX9bRWa3kjQxhbxivFC3FUQTwBb+tbWZYPBBzK4XPMGRbfYZwEl4UyMZRTzjK
-	 UoYWmeHxaeSrGvzXtYr7yoAEbMFTeoX74HQsXXcq0JwjDECWB7o5j0jyWGa6j9xs/LYnmLZdEWky
-	 r45NTgljWNl6RmL1a7752NElIFnswoFi3tdvSXa5sN4YUa991fPARneISEx96bW/xisMfbH79Tml
-	 b0hARrFd7tzRZfnYj6XdZt+gnkcJcGNlvWpYTG5Yq+w3qJcijaYl42u5My6mCsIhaor54BL9M=
-X-QQ-XMRINFO: NI4Ajvh11aEj8Xl/2s1/T8w=
-From: linke li <lilinke99@qq.com>
-To: 
-Cc: xujianhao01@gmail.com,
-	linke li <lilinke99@qq.com>,
-	Alexander Viro <viro@zeniv.linux.org.uk>,
-	Christian Brauner <brauner@kernel.org>,
-	Jan Kara <jack@suse.cz>,
-	linux-fsdevel@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH] fs/dcache: Re-use value stored to dentry->d_flags instead of re-reading
-Date: Wed,  3 Apr 2024 10:10:08 +0800
-X-OQ-MSGID: <20240403021008.47028-1-lilinke99@qq.com>
-X-Mailer: git-send-email 2.39.3 (Apple Git-146)
+	s=arc-20240116; t=1712110232; c=relaxed/simple;
+	bh=y6DvVEooFfS6fE42WhsK/UU1M9fwwEQd4IEC65RgZdk=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=LI2X7P7hnQMYmZaLe28OuoC+Q4cgsFGwOHBDHXkmeKrYYQwTtX5F2o8ez19/0R0JojALfwvMBZzvu13B/imIgiJok6LBiUMmGfrdcj+lO+Wwg6qJcZhppQAhE5Gn/aRQUqNtAtoiPjia/LaaokoI8QgsPZikPXIdKLM57WLq/2k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=LCPbcesp; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1D029C433C7;
+	Wed,  3 Apr 2024 02:10:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1712110231;
+	bh=y6DvVEooFfS6fE42WhsK/UU1M9fwwEQd4IEC65RgZdk=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=LCPbcespmCZc8RnSHDEKXToJp4JYVa+JgyFU1TzjuPNUjbSGqIZkhC7AvH3irfGko
+	 u9ECvhb6Do9hyYqsSutp9jVnJHzsQ9xzcHRRIGSXg0e1TMG3uL5UD/rqvFDAPatRlj
+	 Luyg/ct38rckmpYUPG9EtTaVGaOu012+ZPTqKRAyaMko8Auradq9bGeAIeSrW37jBh
+	 V8eZsAOidVQbgbMOUpsN64u4CDZz+3VOMHG66tj+oyHQOr99LHkXZshyCmot2ie9xk
+	 G+em7l80Rl/WPk4duNzgrjwQTuQdfrH8gL35lcrASI2OrO4ZogrEy+KYWNISf6JKnf
+	 D+fIX6/wF0s0Q==
+Date: Tue, 2 Apr 2024 19:10:29 -0700
+From: Jakub Kicinski <kuba@kernel.org>
+To: Mina Almasry <almasrymina@google.com>
+Cc: netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-rdma@vger.kernel.org, Ayush Sawal <ayush.sawal@chelsio.com>, "David
+ S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, Paolo
+ Abeni <pabeni@redhat.com>, Mirko Lindner <mlindner@marvell.com>, Stephen
+ Hemminger <stephen@networkplumber.org>, Tariq Toukan <tariqt@nvidia.com>,
+ Steffen Klassert <steffen.klassert@secunet.com>, Herbert Xu
+ <herbert@gondor.apana.org.au>, David Ahern <dsahern@kernel.org>, Boris
+ Pismenny <borisp@nvidia.com>, John Fastabend <john.fastabend@gmail.com>,
+ Dragos Tatulea <dtatulea@nvidia.com>, Maxim Mikityanskiy
+ <maxtram95@gmail.com>, Sabrina Dubroca <sd@queasysnail.net>, Simon Horman
+ <horms@kernel.org>, Yunsheng Lin <linyunsheng@huawei.com>, "Ahelenia
+ =?UTF-8?B?WmllbWlhxYRza2E=?=" <nabijaczleweli@nabijaczleweli.xyz>,
+ Christophe JAILLET <christophe.jaillet@wanadoo.fr>, David Howells
+ <dhowells@redhat.com>, Florian Westphal <fw@strlen.de>, Aleksander Lobakin
+ <aleksander.lobakin@intel.com>, Lorenzo Bianconi <lorenzo@kernel.org>,
+ Johannes Berg <johannes.berg@intel.com>, Liang Chen
+ <liangchen.linux@gmail.com>
+Subject: Re: [PATCH net-next v3 0/3] Minor cleanups to skb frag ref/unref
+Message-ID: <20240402191029.321b1609@kernel.org>
+In-Reply-To: <20240401215042.1877541-1-almasrymina@google.com>
+References: <20240401215042.1877541-1-almasrymina@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-Currently, the __d_clear_type_and_inode() writes the value flags to
-dentry->d_flags, then immediately re-reads it in order to use it in a if
-statement. This re-read is useless because no other update to 
-dentry->d_flags can occur at this point.
+On Mon,  1 Apr 2024 14:50:36 -0700 Mina Almasry wrote:
+> This series is largely motivated by a recent discussion where there was
+> some confusion on how to properly ref/unref pp pages vs non pp pages:
+> 
+> https://lore.kernel.org/netdev/CAHS8izOoO-EovwMwAm9tLYetwikNPxC0FKyVGu1TPJWSz4bGoA@mail.gmail.com/T/#t
+> 
+> There is some subtely there because pp uses page->pp_ref_count for
+> refcounting, while non-pp uses get_page()/put_page() for ref counting.
+> Getting the refcounting pairs wrong can lead to kernel crash.
+> 
+> Additionally currently it may not be obvious to skb users unaware of
+> page pool internals how to properly acquire a ref on a pp frag. It
+> requires checking of skb->pp_recycle & is_pp_page() to make the correct
+> calls and may require some handling at the call site aware of arguable pp
+> internals.
 
-This commit therefore re-use flags in the if statement instead of
-re-reading dentry->d_flags.
-
-
-Signed-off-by: linke li <lilinke99@qq.com>
----
- fs/dcache.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/fs/dcache.c b/fs/dcache.c
-index b813528fb147..79da415d7995 100644
---- a/fs/dcache.c
-+++ b/fs/dcache.c
-@@ -355,7 +355,7 @@ static inline void __d_clear_type_and_inode(struct dentry *dentry)
- 	flags &= ~DCACHE_ENTRY_TYPE;
- 	WRITE_ONCE(dentry->d_flags, flags);
- 	dentry->d_inode = NULL;
--	if (dentry->d_flags & DCACHE_LRU_LIST)
-+	if (flags & DCACHE_LRU_LIST)
- 		this_cpu_inc(nr_dentry_negative);
- }
- 
+I concluded that Olek's series as good to go in, so you gotta rebase.
 -- 
-2.39.3 (Apple Git-146)
-
+pw-bot: cr
 
