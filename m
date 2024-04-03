@@ -1,176 +1,125 @@
-Return-Path: <linux-kernel+bounces-130210-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-130211-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2F4FC897568
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 18:42:38 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 18A4789756C
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 18:42:58 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B0A4B1F285F5
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 16:42:37 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 827011F27451
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 16:42:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D2909147C6C;
-	Wed,  3 Apr 2024 16:42:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 72BE0152170;
+	Wed,  3 Apr 2024 16:42:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="F7zOCAhq"
-Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9AA4714C5B3
-	for <linux-kernel@vger.kernel.org>; Wed,  3 Apr 2024 16:42:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=13.77.154.182
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="PIfAWDCk"
+Received: from mail-io1-f73.google.com (mail-io1-f73.google.com [209.85.166.73])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C4D1E14A62A
+	for <linux-kernel@vger.kernel.org>; Wed,  3 Apr 2024 16:42:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.73
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712162551; cv=none; b=DirO9dqFl4qp1GkU9kqZrefb9Rf+QLHzhuK4AxF/ZNidYDaVrQa5tMGj7Ss0qYTok7ZdKNQUDKk7qcy1I7DpWwGoSZC1Dkr5oG4cOApQ8GW06pWTKu2aZyaBZGFdN8Kj2zq0UOpqer/YadHQHT7OF5X9fhcIkegsHOoJ3KUKZdE=
+	t=1712162558; cv=none; b=dePoCoWCPcOvEjrnxQ+1DVsqSr6YGopy8c6Y3dwL/c53FVsIswhzPDpSi999q777AyoMREfrnG/MmdM9yzUhH9XBgTW7Us9ELZr5RdcWrZSfaA3etCGt/JhZ0pHR+f2BTLCAxUrd0Zt2DaBnCFPs0AN42djYI989LDfj0sQqFH0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712162551; c=relaxed/simple;
-	bh=5/TgGowfLSBGhCrZVCt7b81IA1GU7dKBtGmLk3DQKkI=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Gm7XSgK5WnbWWb8TSIAvxqSfp2Ld+oekqIdsh7dCwryQOywpH3o0XdEkIMIEy2D3o+9V0YpOXffeNEAggdEmvkjyV2bxjkM5pyRU+71OY2dwOWgelO+el4Zyv54aWF8GmCCY6b2XUvnmRvtncYVPTQ81OIMkjgskgdXJoAl3xsk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com; spf=pass smtp.mailfrom=linux.microsoft.com; dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b=F7zOCAhq; arc=none smtp.client-ip=13.77.154.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.microsoft.com
-Received: from [100.64.216.231] (unknown [20.29.225.195])
-	by linux.microsoft.com (Postfix) with ESMTPSA id 769C820E8CB1;
-	Wed,  3 Apr 2024 09:42:27 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 769C820E8CB1
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-	s=default; t=1712162549;
-	bh=vqt9SWYA+DonVFY3bwxfhND2wn3sK4WmMeoT1wrpVFg=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=F7zOCAhqFjnPTo0KQRYeE5uaIvqcIJyPOzLq2iBWdr4/iS1BFOtgydlTfhGdni/uY
-	 iQe+halaQkCqhosXfjF16IdtmPqtyPh6IScEcHIn0jn1nl91AmmtdwdUuMD5wYIr47
-	 D+BmC3oQaJFSpLyY4kMKD5trvQTBtQmMygvY8AiA=
-Message-ID: <8f475409-d56d-45b4-8310-4c2122a43eb7@linux.microsoft.com>
-Date: Wed, 3 Apr 2024 09:42:25 -0700
+	s=arc-20240116; t=1712162558; c=relaxed/simple;
+	bh=13pzuYSzeQAEjsqL42hszPIFIbvOLO7/tUFfzFZ7DN4=;
+	h=Date:Mime-Version:Message-ID:Subject:From:To:Cc:Content-Type; b=Hqr3UOk2GAzWLw7+MicDVeLXsmrHqfFlc52Lb6g14lB2NyHDwNFaOPl+EhV27rY4JoYB1t6lS/6H6uwDfJ9GcDdA3mWjsi6wDvvx45zagN7M1ms4cyOU8mUDvQ3zXKfkGtn8XGBCYB6vdDIeAvW9adAQyu2HBhERh6FyWZNrYTc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--rananta.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=PIfAWDCk; arc=none smtp.client-ip=209.85.166.73
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--rananta.bounces.google.com
+Received: by mail-io1-f73.google.com with SMTP id ca18e2360f4ac-7cc61b1d690so2897439f.3
+        for <linux-kernel@vger.kernel.org>; Wed, 03 Apr 2024 09:42:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1712162555; x=1712767355; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=zL9VryjlYsGlQOxrrXBc4s+acw2W31pFo0ivkt7WDt4=;
+        b=PIfAWDCkfSG47Ye5IlLAlA7E4G3UIrfcHS+DCr5nxEsNYY3gIqXBRUpv7HXKwRe1wI
+         LkU+kUIzFc5ODGyU9dVvmdIPKtuRbBDJ0A79Es/2Eb4AdhaZS/hPiA7/7Dp+Z5VbXllh
+         GCI5CxHNZO9BXpWnjbLoAaWNVxg5XxGeSfiH1fKY8vinS5vkZhmAiI9EiIwqayS8/Ztj
+         0KkL/khK4IvvNeakhs/5wJjXXA17kqPzHjxVE+VODXDj60M2E4vxUiptH99PIYgCMZqy
+         nM5GqN5zlWl33Hh7mQWO/3N0Emdq3JkTzRmcShNMXtbkVBFjYlTLdOmcGchPbgFtKS+Q
+         7p/Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712162555; x=1712767355;
+        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=zL9VryjlYsGlQOxrrXBc4s+acw2W31pFo0ivkt7WDt4=;
+        b=hhDrTSQsvcH+gb1GG/a6KEuQiQs9E9DtYG7id5o4sEnf9ZenJfBUfq4JyTSN8HoAV4
+         E+3BN9C7R8FzV9ZLGHCrkFOa4xySPAiN9Y/sTmRhbvT+iYCC3meaLEH9YofZdNqlAdZo
+         NT6ihRGGn5Wbka+Q460NZGAAzOsX0Nqmj5QmVCRIMfQHFjzGr9Q+LrNcWYFUtQ9CU/X7
+         k638vYSH5hYnE2JJ26SzUMtX7mOM0Y3eQJj3A5/Fd94IBWA8BX8Uzz/gemj32TD9fIdd
+         K0CQjyim3kENPSC0caTv6oY+QzJKza3vlnBJhs01LBmHUs3Wr4bIseRVm7GOKwvqN8TF
+         FUig==
+X-Forwarded-Encrypted: i=1; AJvYcCUAE7AEIOhleArx/KSyK/SKSuiD+R4nAPBd/iMcpHfDnPAYG3e3+AX3DNbZuxj0EI/Xfbrf2F8uoa6tCLjWhhBysWTbV3E4B/Tf7eBl
+X-Gm-Message-State: AOJu0YzEUze048oIVRVGjF5go35mJCJg6NFou2dNio+5zodrXtD5aAWp
+	gFKzY9USOdyFtgZNz1Q593I+hntVn7i9pWuTjm9QaUvaLIXaY90DfXJNSXcMPW/AMG17x3vtz1B
+	3ZK60qA==
+X-Google-Smtp-Source: AGHT+IF0rO1Bjeb7TUkL6kSTrX663vMZ3XBPI3uHeZiTz2sTccbaBGMG83mBaqMove3qM6FC98OsRNgJym+A
+X-Received: from rananta-linux.c.googlers.com ([fda3:e722:ac3:cc00:2b:ff92:c0a8:20a1])
+ (user=rananta job=sendgmr) by 2002:a05:6638:8904:b0:47f:1496:13e5 with SMTP
+ id jc4-20020a056638890400b0047f149613e5mr111392jab.4.1712162555133; Wed, 03
+ Apr 2024 09:42:35 -0700 (PDT)
+Date: Wed,  3 Apr 2024 16:42:30 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v0 02/14] drm/amdgpu,drm/radeon: Make I2C terminology more
- inclusive
-To: Jani Nikula <jani.nikula@linux.intel.com>,
- =?UTF-8?B?VmlsbGUgU3lyasOkbMOk?= <ville.syrjala@linux.intel.com>,
- Andi Shyti <andi.shyti@linux.intel.com>
-Cc: Alex Deucher <alexander.deucher@amd.com>,
- =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
- "Pan, Xinhui" <Xinhui.Pan@amd.com>, David Airlie <airlied@gmail.com>,
- Daniel Vetter <daniel@ffwll.ch>, Harry Wentland <harry.wentland@amd.com>,
- Leo Li <sunpeng.li@amd.com>, Rodrigo Siqueira <Rodrigo.Siqueira@amd.com>,
- Evan Quan <evan.quan@amd.com>, Hawking Zhang <Hawking.Zhang@amd.com>,
- Candice Li <candice.li@amd.com>, Ran Sun <sunran001@208suo.com>,
- Alexander Richards <electrodeyt@gmail.com>,
- AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
- Neil Armstrong <neil.armstrong@linaro.org>,
- Heiner Kallweit <hkallweit1@gmail.com>, Hamza Mahfooz
- <hamza.mahfooz@amd.com>, Ruan Jinjie <ruanjinjie@huawei.com>,
- Alan Liu <haoping.liu@amd.com>, Aurabindo Pillai <aurabindo.pillai@amd.com>,
- Wayne Lin <wayne.lin@amd.com>, Samson Tam <samson.tam@amd.com>,
- Alvin Lee <alvin.lee2@amd.com>, Charlene Liu <charlene.liu@amd.com>,
- Sohaib Nadeem <sohaib.nadeem@amd.com>, Lewis Huang <lewis.huang@amd.com>,
- Tom Chung <chiahsuan.chung@amd.com>,
- Bhawanpreet Lakha <Bhawanpreet.Lakha@amd.com>,
- Meenakshikumar Somasundaram <meenakshikumar.somasundaram@amd.com>,
- George Shen <george.shen@amd.com>, Aric Cyr <aric.cyr@amd.com>,
- Jun Lei <jun.lei@amd.com>, Nicholas Kazlauskas
- <nicholas.kazlauskas@amd.com>, Qingqing Zhuo <Qingqing.Zhuo@amd.com>,
- Dillon Varone <dillon.varone@amd.com>, Le Ma <Le.Ma@amd.com>,
- Lijo Lazar <lijo.lazar@amd.com>, Asad kamal <asad.kamal@amd.com>,
- Kenneth Feng <kenneth.feng@amd.com>, Ma Jun <Jun.Ma2@amd.com>,
- Mario Limonciello <mario.limonciello@amd.com>,
- Yang Wang <kevinyang.wang@amd.com>, Darren Powell <darren.powell@amd.com>,
- Yifan Zhang <yifan1.zhang@amd.com>,
- "open list:RADEON and AMDGPU DRM DRIVERS" <amd-gfx@lists.freedesktop.org>,
- "open list:DRM DRIVERS" <dri-devel@lists.freedesktop.org>,
- open list <linux-kernel@vger.kernel.org>, Wolfram Sang <wsa@kernel.org>
-References: <20240329170038.3863998-1-eahariha@linux.microsoft.com>
- <20240329170038.3863998-3-eahariha@linux.microsoft.com>
- <Zgb3VYsgLjhJ2HKs@ashyti-mobl2.lan>
- <ceeaafe1-49d5-4602-8251-eed63a1be2b6@linux.microsoft.com>
- <Zgb8gieDzZtZmg2q@ashyti-mobl2.lan> <Zg1NW0jqwFn4lvEP@intel.com>
- <87sf02d1zf.fsf@intel.com>
-Content-Language: en-CA
-From: Easwar Hariharan <eahariha@linux.microsoft.com>
-In-Reply-To: <87sf02d1zf.fsf@intel.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.44.0.478.gd926399ef9-goog
+Message-ID: <20240403164230.1722018-1-rananta@google.com>
+Subject: [PATCH v2] KVM: selftests: Fix build error due to assert in dirty_log_test
+From: Raghavendra Rao Ananta <rananta@google.com>
+To: Sean Christopherson <seanjc@google.com>, Sasha Levin <sashal@kernel.org>
+Cc: Paolo Bonzini <pbonzini@redhat.com>, Shuah Khan <shuah@kernel.org>, Peter Xu <peterx@redhat.com>, 
+	kvm@vger.kernel.org, linux-kselftest@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, stable@vger.kernel.org, 
+	Raghavendra Rao Ananta <rananta@google.com>
+Content-Type: text/plain; charset="UTF-8"
 
-On 4/3/2024 6:12 AM, Jani Nikula wrote:
-> On Wed, 03 Apr 2024, Ville Syrjälä <ville.syrjala@linux.intel.com> wrote:
->> On Fri, Mar 29, 2024 at 06:38:10PM +0100, Andi Shyti wrote:
->>> Hi,
->>>
->>> On Fri, Mar 29, 2024 at 10:28:14AM -0700, Easwar Hariharan wrote:
->>>> On 3/29/2024 10:16 AM, Andi Shyti wrote:
->>>>> Hi Easwar,
->>>>>
->>>>> On Fri, Mar 29, 2024 at 05:00:26PM +0000, Easwar Hariharan wrote:
->>>>>> I2C v7, SMBus 3.2, and I3C specifications have replaced "master/slave"
->>>>>
->>>>> I don't understand why we forget that i3c is 1.1.1 :-)
->>>>
->>>> That's because it's a copy-paste error from Wolfram's cover letter. :) I'll update
->>>> next go-around.
->>>
->>> not a binding comment, though. Just for completeness, because we
->>> are giving the version to the i2c and smbus, but not i3c.
->>>
->>>>>> with more appropriate terms. Inspired by and following on to Wolfram's
->>>>>> series to fix drivers/i2c/[1], fix the terminology for users of
->>>>>> I2C_ALGOBIT bitbanging interface, now that the approved verbiage exists
->>>>>> in the specification.
->>>>>
->>>>> The specification talks about:
->>>>>
->>>>>  - master -> controller
->>>>>  - slave -> target (and not client)
->>>>>
->>>>> But both you and Wolfram have used client. I'd like to reach
->>>>> some more consistency here.
->>>>
->>>> I had the impression that remote targets (i.e external to the device) were to be called clients,
->>>> e.g. the QSFP FRUs in drivers/infiniband, and internal ones targets.
->>>> I chose the terminology according to that understanding, but now I can't find where I got that
->>>> information.
->>>
->>> The word "client" does not even appear in the documentation (only
->>> one instance in the i3c document), so that the change is not
->>> related to the document as stated in the commit log. Unless, of
->>> course, I am missing something.
->>>
->>> I'm OK with choosing a "customized" naming, but we need to reach
->>> an agreement.
->>>
->>> I raised the same question to Wolfram.
->>
->> I don't know where that discussion happened, but my opinion
->> is NAK to "client". Life is already confusing enough with
->> these renames, so let's not make it even more confusing by
->> inventing new names nowhere to be found in the spec.
->>
->> And let's especially not invent names that don't even fit
->> the purpose. "Client" makes me think of "client/server" or
->> some real world analogy. Neither of which seem to have any
->> resemblence to how the term would be used for i2c.
-> 
-> Agreed.
-> 
-> I2C 7.0, I3C 1.1.1, and SMBus 3.2 have all switched to controller/target
-> terminology. The SMBus spec has additionally converted generic host
-> references to controller.
-> 
-> At least for i915 where I have some say in the matter, controller/target
-> it shall be.
-> 
-> 
-> BR,
-> Jani.
-> 
-> 
+The commit e5ed6c922537 ("KVM: selftests: Fix a semaphore imbalance in
+the dirty ring logging test") backported the fix from v6.8 to stable
+v6.1. However, since the patch uses 'TEST_ASSERT_EQ()', which doesn't
+exist on v6.1, the following build error is seen:
 
-Will do in v1. Thanks for the review, Jani and Ville.
+dirty_log_test.c:775:2: error: call to undeclared function
+'TEST_ASSERT_EQ'; ISO C99 and later do not support implicit function
+declarations [-Wimplicit-function-declaration]
+        TEST_ASSERT_EQ(sem_val, 0);
+        ^
+1 error generated.
 
-Thanks,
-Easwar
+Replace the macro with its equivalent, 'ASSERT_EQ()' to fix the issue.
+
+Fixes: e5ed6c922537 ("KVM: selftests: Fix a semaphore imbalance in the dirty ring logging test")
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Raghavendra Rao Ananta <rananta@google.com>
+---
+ tools/testing/selftests/kvm/dirty_log_test.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/tools/testing/selftests/kvm/dirty_log_test.c b/tools/testing/selftests/kvm/dirty_log_test.c
+index ec40a33c29fd..711b9e4d86aa 100644
+--- a/tools/testing/selftests/kvm/dirty_log_test.c
++++ b/tools/testing/selftests/kvm/dirty_log_test.c
+@@ -772,9 +772,9 @@ static void run_test(enum vm_guest_mode mode, void *arg)
+ 	 * verification of all iterations.
+ 	 */
+ 	sem_getvalue(&sem_vcpu_stop, &sem_val);
+-	TEST_ASSERT_EQ(sem_val, 0);
++	ASSERT_EQ(sem_val, 0);
+ 	sem_getvalue(&sem_vcpu_cont, &sem_val);
+-	TEST_ASSERT_EQ(sem_val, 0);
++	ASSERT_EQ(sem_val, 0);
+ 
+ 	pthread_create(&vcpu_thread, NULL, vcpu_worker, vcpu);
+ 
+
+base-commit: e5cd595e23c1a075359a337c0e5c3a4f2dc28dd1
+-- 
+2.44.0.478.gd926399ef9-goog
+
 
