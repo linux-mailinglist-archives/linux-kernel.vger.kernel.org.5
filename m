@@ -1,112 +1,108 @@
-Return-Path: <linux-kernel+bounces-130641-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-130640-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id EAEFF897ADC
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 23:37:05 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id D425F897ADA
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 23:36:53 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 803EBB25F87
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 21:37:03 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8EBA928B1D3
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 21:36:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 33DF815689D;
-	Wed,  3 Apr 2024 21:36:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E5C72156879;
+	Wed,  3 Apr 2024 21:36:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="C6WiZzrQ"
-Received: from mail-pf1-f177.google.com (mail-pf1-f177.google.com [209.85.210.177])
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="B+3qWW03"
+Received: from mail-pg1-f202.google.com (mail-pg1-f202.google.com [209.85.215.202])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2A7C4156671
-	for <linux-kernel@vger.kernel.org>; Wed,  3 Apr 2024 21:36:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D91D3154431
+	for <linux-kernel@vger.kernel.org>; Wed,  3 Apr 2024 21:36:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.202
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712180206; cv=none; b=BNxc/cyjufa/1qaqxt/euH4SlPv6vKwNljfhkDp2N87AfcNngU6BeymoNxc43Q54OJTsMOZwkZE/2yTTbFhT4Ur+XPJ2pvdBbmXXFxROXcipWBrbNXldqK2eeuvVtbp9eeRSpGm0JwXBZRDaBpIgrAwk6W8QlMX78LTqaU/9aU4=
+	t=1712180205; cv=none; b=U3KhwPwTz1jRgv7WRS/Z+397g9y+Q8QYm41wIe/28Ft42xba0Ydvp9dOI5u9GrDIFcz37dsj0Nv5ZgZeQ8meRrBPSjGGZg4bRbD7otr2Kxovo3bzGKuSvGBTQTLZY1rXxciw7zIBEmHyztdBbJV06GSMMqfj/gddMbWQHC2VKbk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712180206; c=relaxed/simple;
-	bh=NdBqKp0juwWtRnrAtCIbTx8J+qGB2w1A5P7tVAcCA/E=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=Dp4EUJSZZP+VlGIclbXkp+N0uPxYztSqJUYuqAL4Y2MeVY+OlQ+y05aa3e//0l+RJAt+BRbBfAKm/0KL2RKhHS7fYmXMkUc0UMwIWfwl7WM/NKu+hqrw8DALvhTJ3DlVlRQbqgKs2QAbn6nfO5XDA82CLx7vJMwpLedN/knhcRs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=C6WiZzrQ; arc=none smtp.client-ip=209.85.210.177
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-pf1-f177.google.com with SMTP id d2e1a72fcca58-6eaf9565e6bso199751b3a.2
-        for <linux-kernel@vger.kernel.org>; Wed, 03 Apr 2024 14:36:44 -0700 (PDT)
+	s=arc-20240116; t=1712180205; c=relaxed/simple;
+	bh=eW0vjqV7z+PAR1g4tFJb4YbSM8OnjwNtis/IuUJSfjg=;
+	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
+	 To:Cc:Content-Type; b=J7xoGG0UFwT5o5tvWjo/HhxhL+NeWGEOlhV5IzIqoWia0SwLPttnyobbuIvbbvHvN/4jmutiIw3NwsDsNCc5WYdMk3tZUsBnC9+m+06n0aO85oJXRVN9LBJos71n6WBZLQm1lP1RDhmo50g99k9kofgaYSyADfFgMUE0Wjr+cOQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=B+3qWW03; arc=none smtp.client-ip=209.85.215.202
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
+Received: by mail-pg1-f202.google.com with SMTP id 41be03b00d2f7-5cdfd47de98so290409a12.1
+        for <linux-kernel@vger.kernel.org>; Wed, 03 Apr 2024 14:36:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1712180204; x=1712785004; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=gXb/hya9MuzyVUKh4KO8Jgkudhwo0tzYCFb8lkCPFT8=;
-        b=C6WiZzrQZjQ6VK6yvW5QziXTcszW83nEtpB6wyTc10Y7Sr9HjaQiSogPBC1YdQ1Fu+
-         HKIv18chG8/woMzNvEmRWRJHR6ukIJ02y2gdP3lGXPYIZyUF8kQfY4BaZ3qoj50wNZ/l
-         xsi2zm1iZ/HCNksvn39iZXLpdAFcmbbkcMuhg=
+        d=google.com; s=20230601; t=1712180203; x=1712785003; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=dPltzAFf6VDIT1wIj8ilrUQtdD5DBvoWePx4BEmHj9U=;
+        b=B+3qWW03vdA1vHywBGdk2grTe0T0ZqqUK4hCDVu4wQoqiiAN6/s2mZvAIEnEyD2A1B
+         fZVDSq7vqk6c8o9sA8AeSKqSwm1CZN0NNKC6V+8wYvlKW8O/jQgVTNroS8vn1NDh19jK
+         LIr+kV3lUNN5g56xRQTY+iLvAJGBF+2NCBWjKUNinBEB7xhgjEXpNCK27Z2VvhvQ4Ppv
+         gRTKPfDAxWfWPwfEJ8w2dYzzDL08gtN36TIfTMhlCBTJXRChGOHCG8U0u6DdrbbNM6oy
+         h1aJvj2EwXipas71HNwbWcO46Zz4iWhL35xPTy1NJpP+QaPhL8Gf1YGkzY0Vt1D3uhbX
+         TGOQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712180204; x=1712785004;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=gXb/hya9MuzyVUKh4KO8Jgkudhwo0tzYCFb8lkCPFT8=;
-        b=b8kiEqn3DA3k6BnwhfKUYdRhqfEQknYmdKlImfdH5PPdaTE7agtW057EOCJ0TB2fCN
-         G5nCOaBISbCEKEZWx2MwTadvfMgY5zsCrCvst2WwxWP/08l0EuLWvwMXPbl4/S9TbKQb
-         Gbu8cAf3YKkCE52fluTU1KgkKWahdrPkvWWOgIPYOKpKfkpagSqs3bRn8rrTXmbpG626
-         WyTgmwk0JT2TtsCYLZxdJFnpX56UuoudNgjnEDR1cGONbD62J2i4Ni3Ks9QmA4Kk/kJa
-         EK6jpGR19YiYRBz0kO6SgFBibrEP6FwR6+r2BoTqdjDSm2oDV76sVc7sfl5MLQhypPKx
-         RmjQ==
-X-Gm-Message-State: AOJu0YzJSaHh4+jDs1Eh+dD4ia2igI1ckQn+hJVr04mA45Op1yQdyadi
-	8sRdV1pSv7z6fRztbyLNcAfXiWJlPFsHNU5AWO7zUtYfPutdm/+3tXZOEpBkXg==
-X-Google-Smtp-Source: AGHT+IFQ8/7XnV2Lir+npGRY/WkOn5joFd7y+Pw7U5KvNmhECatsiBYh2vrisoxpgesvx1BiuveZZw==
-X-Received: by 2002:a05:6a20:9151:b0:1a3:adc3:ce29 with SMTP id x17-20020a056a20915100b001a3adc3ce29mr1090942pzc.15.1712180204577;
-        Wed, 03 Apr 2024 14:36:44 -0700 (PDT)
-Received: from www.outflux.net ([198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id j5-20020aa783c5000000b006eac81fa1fbsm12273046pfn.66.2024.04.03.14.36.43
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 03 Apr 2024 14:36:44 -0700 (PDT)
-From: Kees Cook <keescook@chromium.org>
-To: linux-kernel@vger.kernel.org,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Arnd Bergmann <arnd@kernel.org>
-Cc: Kees Cook <keescook@chromium.org>,
-	Arnd Bergmann <arnd@arndb.de>,
-	Marco Elver <elver@google.com>,
-	Andrey Konovalov <andreyknvl@gmail.com>,
-	Andrey Ryabinin <ryabinin.a.a@gmail.com>,
-	Justin Stitt <justinstitt@google.com>,
-	kasan-dev@googlegroups.com,
-	linux-hardening@vger.kernel.org
-Subject: Re: (subset) [PATCH 02/34] ubsan: fix unused variable warning in test module
-Date: Wed,  3 Apr 2024 14:36:37 -0700
-Message-Id: <171218019557.1345248.1235044277725212529.b4-ty@chromium.org>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20240403080702.3509288-3-arnd@kernel.org>
-References: <20240403080702.3509288-1-arnd@kernel.org> <20240403080702.3509288-3-arnd@kernel.org>
+        d=1e100.net; s=20230601; t=1712180203; x=1712785003;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=dPltzAFf6VDIT1wIj8ilrUQtdD5DBvoWePx4BEmHj9U=;
+        b=TySE/Z/eKHQ8kvXyu8Jby+g2zdCLe0oqS6f4Cbmhx7NkItb6Y2pHHLW8++hk0nkWPc
+         +13JAd2hDYysb8j7E2tODadfu+2PUq3uP+w3VSWtO3FYd5u61mtAZIw3dBfH5UpqfNnD
+         JO7GxgKOnhG3WrKa6dCmxzJP6yasDM6fJYIvw4vB/XtkzjozaEdLzyEiIAkqmgYSJmw9
+         IM3Ym++Y4zoNEqv75WeeAlrJRCmoT/awbE+WtFWMn4vIqBTXz5328+0o109CpDtActuC
+         QSiGe3SD1lGz1QKKtzPjRi1yabQr2PYyzZhNR3CXfEJgRtceS0jbuFUv/AlJQQINYOja
+         LxHQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUiEJf85wwhMXbDrmPKmJOwNis9YdtKbFBWn4t2UQxSAIq8Aoi8hse5fgBNreJYeKBo+TNImJrALf1f8uIfwDA6aLaYJ5gexQPN+AcY
+X-Gm-Message-State: AOJu0Yw2xxcMNApaovYOE0lMFdQ5Fc8I4aSEUZJ+rwtldds9N8C5k37b
+	PXEfZTbF6XPpQq50S0FabaYdgKQZvlI46VJwGCiFXp3Ubn4xH7RaIpxWGMt0Y7vhBDC9nVY0QDb
+	cdA==
+X-Google-Smtp-Source: AGHT+IExCGrJPdAW2GeOLG491SIcrLlhsuV3XsGg9Om6QoQqLDgMtfFqtvcSt+vrYfYHgj0J9CVY23pc2dY=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a65:434d:0:b0:5d8:bb9d:4fd0 with SMTP id
+ k13-20020a65434d000000b005d8bb9d4fd0mr2015pgq.4.1712180203127; Wed, 03 Apr
+ 2024 14:36:43 -0700 (PDT)
+Date: Wed, 3 Apr 2024 14:36:41 -0700
+In-Reply-To: <70d7a20a-72dc-4ded-a35f-684de44eb6e6@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Mime-Version: 1.0
+References: <cover.1708933498.git.isaku.yamahata@intel.com>
+ <8f64043a6c393c017347bf8954d92b84b58603ec.1708933498.git.isaku.yamahata@intel.com>
+ <e6e8f585-b718-4f53-88f6-89832a1e4b9f@intel.com> <bd21a37560d4d0695425245658a68fcc2a43f0c0.camel@intel.com>
+ <54ae3bbb-34dc-4b10-a14e-2af9e9240ef1@intel.com> <ZfR4UHsW_Y1xWFF-@google.com>
+ <ea85f773-b5ef-4cf6-b2bd-2c0e7973a090@intel.com> <ZfSjvwdJqFJhxjth@google.com>
+ <8d79db2af4e0629ad5dea6d8276fc5cda86a890a.camel@intel.com> <70d7a20a-72dc-4ded-a35f-684de44eb6e6@intel.com>
+Message-ID: <Zg3L6VttYZkb7N1M@google.com>
+Subject: Re: [PATCH v19 007/130] x86/virt/tdx: Export SEAMCALL functions
+From: Sean Christopherson <seanjc@google.com>
+To: Dave Hansen <dave.hansen@intel.com>
+Cc: Kai Huang <kai.huang@intel.com>, Tina Zhang <tina.zhang@intel.com>, 
+	Rick P Edgecombe <rick.p.edgecombe@intel.com>, Hang Yuan <hang.yuan@intel.com>, 
+	"x86@kernel.org" <x86@kernel.org>, Bo2 Chen <chen.bo@intel.com>, 
+	"sagis@google.com" <sagis@google.com>, 
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, 
+	"isaku.yamahata@gmail.com" <isaku.yamahata@gmail.com>, Erdem Aktas <erdemaktas@google.com>, 
+	"kvm@vger.kernel.org" <kvm@vger.kernel.org>, "pbonzini@redhat.com" <pbonzini@redhat.com>, 
+	Isaku Yamahata <isaku.yamahata@intel.com>
+Content-Type: text/plain; charset="us-ascii"
 
-On Wed, 03 Apr 2024 10:06:20 +0200, Arnd Bergmann wrote:
-> This is one of the drivers with an unused variable that is marked 'const'.
-> Adding a __used annotation here avoids the warning and lets us enable
-> the option by default:
+On Wed, Mar 20, 2024, Dave Hansen wrote:
+> On 3/20/24 05:09, Huang, Kai wrote:
+> > I can try to do if you guys believe this should be done, and should be done
+> > earlier than later, but I am not sure _ANY_ optimization around SEAMCALL will
+> > have meaningful performance improvement.
 > 
-> lib/test_ubsan.c:137:28: error: unused variable 'skip_ubsan_array' [-Werror,-Wunused-const-variable]
+> I don't think Sean had performance concerns.
 > 
-> 
-> [...]
+> I think he was having a justifiably violent reaction to how much more
+> complicated the generated code is to do a SEAMCALL versus a good ol' KVM
+> hypercall.
 
-Applied to for-next/hardening, thanks!
-
-[02/34] ubsan: fix unused variable warning in test module
-        https://git.kernel.org/kees/c/bbda3ba626b9
-
-Take care,
-
--- 
-Kees Cook
-
+Yep.  The code essentially violates the principle of least surprise.  I genuinely
+thought I was dumping the wrong function(s) when I first looked at the output.
 
