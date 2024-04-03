@@ -1,159 +1,119 @@
-Return-Path: <linux-kernel+bounces-130098-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-130099-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 00E56897415
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 17:34:40 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 72FB4897417
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 17:34:51 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 247851C25134
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 15:34:39 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2C7B828B275
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 15:34:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5D41D14A4C8;
-	Wed,  3 Apr 2024 15:34:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1529514A0BF;
+	Wed,  3 Apr 2024 15:34:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="E7ZFqz7M"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="pmuFNUgl";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="xI8e7ZCQ"
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9A47714A092;
-	Wed,  3 Apr 2024 15:34:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DD49114A092;
+	Wed,  3 Apr 2024 15:34:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712158471; cv=none; b=kMrh93Vc7cb0Y5RKfVFnpT5lylzA1CBb7TsPpWp6vNTdzM+O0zcE9WX0UM+SklGjDkt7InU29Odium/aAuq6wOyCo4zVVYkS0JxE2ywTiiKh99DcKrOIo8ARhJiQkqXqD3kqfvVSl7kqLQIdQvhycu7Hyidc7E1yQ5+E0O2048s=
+	t=1712158481; cv=none; b=M8ttdSBlmgF+SNdmq/j0wh8QQQJj1+jQpTqcVgx0jgCg2FxCpqm2B3fBsSCgERClEbKgwQmOwx3ki2BKJ2sQ6lep5CEfch0FIsJQ4Il9Vd/sJ6FVXqPvvjYEVcYQ6qqX8MZ1cn14qXDH+1aev+kuweIugfQSP7PgtH3Le8E08iY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712158471; c=relaxed/simple;
-	bh=Mxc+CC8sC/scrgK6foejLgrA2eOYbMZE4L+NN/kTniA=;
-	h=Mime-Version:Content-Type:Date:Message-Id:To:Cc:Subject:From:
-	 References:In-Reply-To; b=u+QVpBHHLSwJ8IKetn+JaZlzKOFaWeChtWEYOUjOBpz5CaD7egs6evsqlVTystP4oJ+3NkraoFH1zb34d40l83VER07JeUpo7FeJwvPy56BxvE65NE9HQfDfEejr7qv+eLTDxvRHRyLdwREA63pCgbJyl+j53fhN/qqqL8wEAlc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=E7ZFqz7M; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A80CEC433F1;
-	Wed,  3 Apr 2024 15:34:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712158471;
-	bh=Mxc+CC8sC/scrgK6foejLgrA2eOYbMZE4L+NN/kTniA=;
-	h=Date:To:Cc:Subject:From:References:In-Reply-To:From;
-	b=E7ZFqz7MZg+3CPEomG/D2lcumlgIERtDKcjeo603ozf4CuxA8Ko6KDuBfNfsRukNz
-	 iU2nxtDWub9HYPkJtDmGCCZOOoRJR/ydGBKcrp6NnYlBRYUvhEfymlUlTqpAnUTVAB
-	 2weWAnkzLdog+IEW+Rp769dAtV+mKoc2j4RpoIQBV2XicEk17tFzhK9cGf9YYMLjUB
-	 +h5gU6Qd054+0Rf0BpQSjCeqfbo57b4gGycTh++/hVa9Sji6MojEY21x2Q4mmB8/GO
-	 VdCrC4ADZFBuVbDwm7OXooLH2NencpaZLdVwuQ/xEZj/AWdcA/0Qolkj/LBe81KXr6
-	 nTrc6IR0Quhvg==
+	s=arc-20240116; t=1712158481; c=relaxed/simple;
+	bh=0yR1YZrFPcWqE35bawXukpzUEZSo68/XTB1pOsvuQlY=;
+	h=Date:From:To:Subject:Cc:In-Reply-To:References:MIME-Version:
+	 Message-ID:Content-Type; b=m01jYe/4KGjbszdBOL8eIvTdr0ImPL66mY8qZrXDFJrCs4Ap+48fL7D8au8f9df2OSVy81EN2aUP6xnYjpEbz6As0+4dlDlcDr0NIB29VTFefJiXlEDtKObNIX3N7ycaDZ+Oy+JhwZAg649GFmRHD0FFWfQpnqAxJIF8MowgzPY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=pmuFNUgl; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=xI8e7ZCQ; arc=none smtp.client-ip=193.142.43.55
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
+Date: Wed, 03 Apr 2024 15:34:36 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020; t=1712158477;
+	h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+	 content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=3gA+MH41tDMK85+ffDy9WD+nQ22y2JvuPFWEFURH4JY=;
+	b=pmuFNUglj4nQE40bv1s06IxxovYaH8AkAoVu3ZRl7V0vdFRO27yJKTl5XFg0FvEssiEzVp
+	h1tQJD45ZSCnnTIsfITPgLeC5Nev8syrd7vZQhnChelCdUzbmVaGQVDiaQ8fnsZepWQ4IT
+	U62zLsCgYX95ABXo0attinLKL5ZJKMDqmx3DyG73YX/TTKZz1EWN6aygZ2csyI6+YJR/jm
+	Vca6Lxwj0XGIVMXu3UyeXOVTau96TjQ+UWs/SuDUo7+1GUKy63JnzD13Pqq2vOjjdc1HYG
+	Emsyv9a4jb9l6VS3ET/6XoiBq7+5lVas3AC4yVD42scbg66n/v6WAjyDknqM/Q==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020e; t=1712158477;
+	h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+	 content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=3gA+MH41tDMK85+ffDy9WD+nQ22y2JvuPFWEFURH4JY=;
+	b=xI8e7ZCQmuOfZM0KBCSxqz/PAyOaOe2fQgfPn+BUw2iYshg6lQpSCEOzYhN2S0X0hAzBLo
+	TNnjJ7xYsrBoP6DA==
+From: "tip-bot2 for Andy Shevchenko" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To: linux-tip-commits@vger.kernel.org
+Subject: [tip: x86/cleanups] x86/rtc: Remove unused intel-mid.h
+Cc: Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+ Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+ linux-kernel@vger.kernel.org
+In-Reply-To: <1460592286-300-5-git-send-email-mcgrof@kernel.org>
+References: <1460592286-300-5-git-send-email-mcgrof@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset=UTF-8
-Date: Wed, 03 Apr 2024 18:34:24 +0300
-Message-Id: <D0ALIS78E2UP.O2C1LEQ5NNER@kernel.org>
-To: "Haitao Huang" <haitao.huang@linux.intel.com>
-Cc: <anakrish@microsoft.com>, <bp@alien8.de>, <cgroups@vger.kernel.org>,
- <chrisyan@microsoft.com>, <dave.hansen@linux.intel.com>, <hpa@zytor.com>,
- <kai.huang@intel.com>, <kristen@linux.intel.com>,
- <linux-kernel@vger.kernel.org>, <linux-sgx@vger.kernel.org>,
- <mikko.ylinen@linux.intel.com>, <mingo@redhat.com>, <mkoutny@suse.com>,
- <seanjc@google.com>, <sohil.mehta@intel.com>, <tglx@linutronix.de>,
- <tim.c.chen@linux.intel.com>, <tj@kernel.org>, <x86@kernel.org>,
- <yangjie@microsoft.com>, <zhanb@microsoft.com>, <zhiquan1.li@intel.com>
-Subject: Re: [PATCH v2] selftests/sgx: Improve cgroup test scripts
-From: "Jarkko Sakkinen" <jarkko@kernel.org>
-X-Mailer: aerc 0.17.0
-References: <D08UQJ2XQY6L.1XEOEJ6HIUJ8Y@kernel.org>
- <20240402014254.27717-1-haitao.huang@linux.intel.com>
- <D09GVMLN1O4Z.2RXQUH4ZY5IVF@kernel.org>
- <op.2ll2yyfgwjvjmi@hhuan26-mobl.amr.corp.intel.com>
-In-Reply-To: <op.2ll2yyfgwjvjmi@hhuan26-mobl.amr.corp.intel.com>
+MIME-Version: 1.0
+Message-ID: <171215847684.10875.11532736795620786435.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe:
+ Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Precedence: bulk
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 
-On Tue Apr 2, 2024 at 8:31 PM EEST, Haitao Huang wrote:
-> On Tue, 02 Apr 2024 02:43:25 -0500, Jarkko Sakkinen <jarkko@kernel.org> =
-=20
-> wrote:
->
-> > On Tue Apr 2, 2024 at 4:42 AM EEST, Haitao Huang wrote:
-> >> Make cgroup test scripts ash compatible.
-> >> Remove cg-tools dependency.
-> >> Add documentation for functions.
-> >>
-> >> Tested with busybox on Ubuntu.
-> >>
-> >> Signed-off-by: Haitao Huang <haitao.huang@linux.intel.com>
-> >> ---
-> >> v2:
-> >> - Fixes for v2 cgroup
-> >> - Turn off swapping before memcontrol tests and back on after
-> >> - Add comments and reformat
-> >> ---
-> >>  tools/testing/selftests/sgx/ash_cgexec.sh     |  57 ++++++
-> >>  .../selftests/sgx/run_epc_cg_selftests.sh     | 187 +++++++++++------=
--
-> >>  .../selftests/sgx/watch_misc_for_tests.sh     |  13 +-
-> >>  3 files changed, 179 insertions(+), 78 deletions(-)
-> >>  create mode 100755 tools/testing/selftests/sgx/ash_cgexec.sh
-> >>
-> >> diff --git a/tools/testing/selftests/sgx/ash_cgexec.sh =20
-> >> b/tools/testing/selftests/sgx/ash_cgexec.sh
-> >> new file mode 100755
-> >> index 000000000000..9607784378df
-> >> --- /dev/null
-> >> +++ b/tools/testing/selftests/sgx/ash_cgexec.sh
-> >> @@ -0,0 +1,57 @@
-> >> +#!/usr/bin/env sh
-> >> +# SPDX-License-Identifier: GPL-2.0
-> >> +# Copyright(c) 2024 Intel Corporation.
-> >> +
-> >> +# Move the current shell process to the specified cgroup
-> >> +# Arguments:
-> >> +# 	$1 - The cgroup controller name, e.g., misc, memory.
-> >> +#	$2 - The path of the cgroup,
-> >> +#		relative to /sys/fs/cgroup for cgroup v2,
-> >> +#		relative to /sys/fs/cgroup/$1 for v1.
-> >> +move_to_cgroup() {
-> >> +    controllers=3D"$1"
-> >> +    path=3D"$2"
-> >> +
-> >> +    # Check if cgroup v2 is in use
-> >> +    if [ ! -d "/sys/fs/cgroup/misc" ]; then
-> >> +        # Cgroup v2 logic
-> >> +        cgroup_full_path=3D"/sys/fs/cgroup/${path}"
-> >> +        echo $$ > "${cgroup_full_path}/cgroup.procs"
-> >> +    else
-> >> +        # Cgroup v1 logic
-> >> +        OLD_IFS=3D"$IFS"
-> >> +        IFS=3D','
-> >> +        for controller in $controllers; do
-> >> +            cgroup_full_path=3D"/sys/fs/cgroup/${controller}/${path}"
-> >> +            echo $$ > "${cgroup_full_path}/tasks"
-> >> +        done
-> >> +        IFS=3D"$OLD_IFS"
-> >> +    fi
-> >
-> > I think that if you could point me to git v10 and all this I could
-> > then quite easily create test image and see what I get from that.
-> >
-> > I will code review the whole thing but this is definitely good
-> > enough to start testing this series properly! Thanks for the
-> > effort with this. The payback from this comes after the feature
-> > is mainline. We have now sort of reference of the usage patterns
-> > and less layers when we need to debug any possible (likely) bugs
-> > in the future.
-> >
-> > This is definitely to the right direction. I'm just wondering do
-> > we want to support v1 cgroups or would it make sense support only
-> > v2?
-> > BR, Jarkko
-> >
-> I can drop v1. I think most distro now support v2.
-> Created this branch to host these changes so far: =20
-> https://github.com/haitaohuang/linux/tree/sgx_cg_upstream_v10_plus
+The following commit has been merged into the x86/cleanups branch of tip:
 
-Thanks!=20
+Commit-ID:     62fbc013c185896080bc5c7f6dfb26f0746eb217
+Gitweb:        https://git.kernel.org/tip/62fbc013c185896080bc5c7f6dfb26f0746eb217
+Author:        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+AuthorDate:    Tue, 05 Mar 2024 18:10:24 +02:00
+Committer:     Dave Hansen <dave.hansen@linux.intel.com>
+CommitterDate: Wed, 03 Apr 2024 08:24:48 -07:00
 
-I'll point my build to that, make a test image and report the
-results.
+x86/rtc: Remove unused intel-mid.h
 
-BR, Jarkko
+The rtc driver used to be disabled with a direct check for Intel MID
+platforms.  But that direct check was replaced long ago (see second
+link).  Remove the (unused since 2016) include.
+
+[ dhansen: rewrite changelog to include some history ]
+
+Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Signed-off-by: Dave Hansen <dave.hansen@linux.intel.com>
+Link: https://lore.kernel.org/all/20240305161024.1364098-1-andriy.shevchenko%40linux.intel.com
+Link: https://lore.kernel.org/all/1460592286-300-5-git-send-email-mcgrof@kernel.org
+---
+ arch/x86/kernel/rtc.c | 1 -
+ 1 file changed, 1 deletion(-)
+
+diff --git a/arch/x86/kernel/rtc.c b/arch/x86/kernel/rtc.c
+index 2e70669..51a849a 100644
+--- a/arch/x86/kernel/rtc.c
++++ b/arch/x86/kernel/rtc.c
+@@ -10,7 +10,6 @@
+ #include <asm/vsyscall.h>
+ #include <asm/x86_init.h>
+ #include <asm/time.h>
+-#include <asm/intel-mid.h>
+ #include <asm/setup.h>
+ 
+ #ifdef CONFIG_X86_32
 
