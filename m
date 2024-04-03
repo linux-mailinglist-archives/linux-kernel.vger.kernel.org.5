@@ -1,153 +1,118 @@
-Return-Path: <linux-kernel+bounces-129781-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-129782-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7D37A896FDD
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 15:06:08 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3099C896FDF
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 15:06:12 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2F3DC28F6C9
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 13:06:07 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 622DD1C2656A
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 13:06:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 25CB71487D7;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A54A41487E7;
 	Wed,  3 Apr 2024 13:05:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="DtrIgt7W"
-Received: from mail-pf1-f172.google.com (mail-pf1-f172.google.com [209.85.210.172])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="apHUNtpR"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.11])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 166BA147C8C;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 08569146D72;
 	Wed,  3 Apr 2024 13:05:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.172
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.11
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712149549; cv=none; b=LZ0eO4OmQRsMpTgDdUVRWs1hNiMS1m1ytIh5lefEuhMacPdTZULQa/SVaUieYMaxVBc2n130vumpGU+88/fHnfhCmxHWHTzgUFasmTVgfLnXJMsQwDufElfE5GqLRoQYgflrapm50Jz4lOt7Pxu9E6TGJyJRsTyuSRzEwajp0bA=
+	t=1712149550; cv=none; b=mQQaBPu+RssPCIYAdmZyaYh+qnGxejbd3EbEt3oUAFH/Mwv1wLnybqsIhFWlg1qmZFSmqftE1BiWiyyH3RjDsI9u9FNX3TMTraZkB15fjpXeOitUIJBu9ZnI9QYoP/d8XDgeCZtk0Y6VQJNodWRFud9Hlu5cv3GpNhQ8fhtL3jM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712149549; c=relaxed/simple;
-	bh=QJEeCIkAPiFZbRuleWyDEENFSiH12JZFpZfsYZc250s=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=WDbWoO79lflLZ7cMAykwdYYWuNC3ttfPRJlg64WCPNkE3w6bPrW9/CjBh//HgAKNj2eps1njRUEGHt3hBZofZqZrgYYb8fTRrJkhxVRUIyjhg2eABi7O9+xHX6iRklHT9nbzyyAXXevHPp2lq9wHGFDYUqtY4bbj75/YyeDkYSk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=DtrIgt7W; arc=none smtp.client-ip=209.85.210.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f172.google.com with SMTP id d2e1a72fcca58-6e46dcd8feaso2960279b3a.2;
-        Wed, 03 Apr 2024 06:05:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1712149547; x=1712754347; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=/qpDKTFHgYEBe0w0N3iXwvyoiKCATOl8h9lKP1Scxuc=;
-        b=DtrIgt7WtyDPCLFT7y5WFeQgtqeMe68CqmFcrAXvpaE2JF0QUhcp8b7Hc9hcO8RMit
-         GxUS85mrXr4VVQazbQf6j2D4Gqs78Or+a9b4oh09Xa7qvt4XOii273hk0cK+889S0CsE
-         zbdtSCfJzzxYWUJwafnqwSeEFW3eMktYA5qDKCJgcIGjWuKq2gZ5+Csp5WmlMrLcXheN
-         1LXOhH9BpJcps9jnRiUqh42Hw1BJDDMlgBxB5dquMUhjgoPfycgT48BAGeIpVcWj3Iwk
-         VxnmVLl+C8eqsDeUgwSSfRSvtsvxXx0W3qtN9NzJbCtu3fGwpIBFpFxxJhgEwX7jNCWZ
-         uUpg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712149547; x=1712754347;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=/qpDKTFHgYEBe0w0N3iXwvyoiKCATOl8h9lKP1Scxuc=;
-        b=rP+dn1EyYdq6uNqUXAVtUk0uSGtGmRuPdZ0IXBxr3zUCMqGQEiAazA9U+22F3CA9BO
-         mU2LMJd+RoPK78qQ7zzjhF9EqgwxRhcqE4ZMjn/ISgz8zxL8mPpGEyLawayhmG8h7H0y
-         J+B1PSkd4PIZ9beJ0Yyx69m7QtGjtrV8n7eV1B6T4trVSfl1gMd9u6zMsu4pEKmyrDiP
-         vSmuEzTbYlQOP7JczyiAo+AKzMYkLp74fx/fbt+jHgEoofyqeskgpiXb6i2AuJcu6Fo0
-         HpzJCpUltyS14D4n9Mh567eSe0Ru/Aspa+NkIpVKci/ZKOOIbr43hPOxIYh7jmqpIFqp
-         81XQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXf7xWxqw7Mgxe5bLu9JgOqTcWYbIGdwBcbSw4X2uKolSDa4SIIAbSJnE1mr/i4Yoaf/JUwnLbEQ6EuhqbkDt2SuP5NxgxFPv73N0lF+ikUNLoWq8qmcoOCMsEzWnakckcw6uhen8A=
-X-Gm-Message-State: AOJu0YztHpv0hQEZw4trqN6ynI96tjA6QzUBUB/hcCU9NozqgIr/OZeg
-	y5K5weMuGJBRAoboxSzVb3tR2pdLKKeD8CU7Nq/7YcqkaxsRUB5zfwjt8efU3ljaTJP+g819+5T
-	Oetf9RpOZ8VhKjeoWMaW91J3+PcQ=
-X-Google-Smtp-Source: AGHT+IHj03gMS2kJE81A6fLRXaMe/gexzYIBYP4LehLc5GMbebVJzPVL7069PYpRl07nTID94Ij/N08ROieeVx+dvOs=
-X-Received: by 2002:a17:90a:d4f:b0:29d:dd50:afe with SMTP id
- 15-20020a17090a0d4f00b0029ddd500afemr12411970pju.30.1712149547342; Wed, 03
- Apr 2024 06:05:47 -0700 (PDT)
+	s=arc-20240116; t=1712149550; c=relaxed/simple;
+	bh=ND3jNXeXD8UCa8WzVy98aeHA4SFwZtX43lGgSbkdjqg=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=sSxT24ylxmguiqGrTmejpWoqiZDzkMdxZCSCcFyT1WKxXPdfcpMxXS8DoNd+atXMGFHrZ7gBCR5i73SJLeyzB3UZuEBEBZ2l9K6zAy1+FHKbE2AZGbgbcVJGsdQBMfmAM968b7kmhNbbSPZNYuZH92PynD8lOtDHBII+tqVeE/g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=apHUNtpR; arc=none smtp.client-ip=192.198.163.11
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1712149548; x=1743685548;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:content-transfer-encoding:in-reply-to;
+  bh=ND3jNXeXD8UCa8WzVy98aeHA4SFwZtX43lGgSbkdjqg=;
+  b=apHUNtpR7UTQtGLy3gYaxv4uPVCrasYY2GG/lYUAt2LOrUQAtJ4LNKs3
+   gJk9j2eaOGVspOdZVGrOobpBlhndW0IIWz8KsjEbLUnfVfEHaL9anMeU4
+   otmGIWdsTWLO+/ciA7PNU0hiJmfQvQ7wT+wPKsNztnnBewFvyH30P+C0r
+   x1v4MclW7zeCe2duPFiItOZrp0lN4cFWdT45Fgp8NK1bqHqsoI3NcsHLq
+   nML3tDLsjsVLvHjHH2WpmuiLPuEA/y+wEvbNddsRvKbbi29WcU/5dn90i
+   e8YHHJRcO+noVD6wp18DRWtTEkaYejPuW3ncQ3sJSvbrpPu35n6f7UtrG
+   Q==;
+X-CSE-ConnectionGUID: +JQm8PsAQLa3v3O2K/aqAg==
+X-CSE-MsgGUID: I2TZ4D3tRs2JpFr3SQR93A==
+X-IronPort-AV: E=McAfee;i="6600,9927,11033"; a="17992665"
+X-IronPort-AV: E=Sophos;i="6.07,177,1708416000"; 
+   d="scan'208";a="17992665"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by fmvoesa105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Apr 2024 06:05:47 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,11033"; a="915182954"
+X-IronPort-AV: E=Sophos;i="6.07,177,1708416000"; 
+   d="scan'208";a="915182954"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.72.54])
+  by fmsmga002.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Apr 2024 06:05:43 -0700
+Received: from andy by smile with local (Exim 4.97)
+	(envelope-from <andriy.shevchenko@linux.intel.com>)
+	id 1rs0JB-000000017iB-00E6;
+	Wed, 03 Apr 2024 16:05:41 +0300
+Date: Wed, 3 Apr 2024 16:05:40 +0300
+From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To: Bartosz Golaszewski <brgl@bgdev.pl>
+Cc: linux-gpio@vger.kernel.org, linux-doc@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+	Linus Walleij <linus.walleij@linaro.org>,
+	Jonathan Corbet <corbet@lwn.net>, Alex Shi <alexs@kernel.org>,
+	Yanteng Si <siyanteng@loongson.cn>,
+	Hu Haowen <2023002089@link.tyut.edu.cn>,
+	Daniel Mack <daniel@zonque.org>,
+	Haojian Zhuang <haojian.zhuang@gmail.com>,
+	Robert Jarzmik <robert.jarzmik@free.fr>,
+	Russell King <linux@armlinux.org.uk>
+Subject: Re: [PATCH v1 0/3] gpiolib: Get rid of
+ gpio_free_array()/gpio_request_array()
+Message-ID: <Zg1UJPhFnQoIfNBR@smile.fi.intel.com>
+References: <20240307135109.3778316-1-andriy.shevchenko@linux.intel.com>
+ <ZgxRzyQGeSAl4MzX@smile.fi.intel.com>
+ <CAMRc=Md_81qY02=XPmQA5_EWRC1eU0zYAjRwjbAGxvGg2kOL+A@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240403-gpa-no-cooling-devs-v2-0-79bdd8439449@trvn.ru>
- <20240403-gpa-no-cooling-devs-v2-3-79bdd8439449@trvn.ru> <187a3acb-d4a8-41e6-822c-f901a693aae1@arm.com>
-In-Reply-To: <187a3acb-d4a8-41e6-822c-f901a693aae1@arm.com>
-From: Nikita Travkin <nikitos.tr@gmail.com>
-Date: Wed, 3 Apr 2024 18:05:36 +0500
-Message-ID: <CAN_S-bUOozoU=eP_FEwphL2HWtt7WQQC4n_98dL0nt=jsqogjQ@mail.gmail.com>
-Subject: Re: [PATCH v2 3/3] thermal: gov_power_allocator: Suppress
- sustainable_power warning without trip_points
-To: Lukasz Luba <lukasz.luba@arm.com>
-Cc: "Rafael J. Wysocki" <rafael@kernel.org>, "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>, 
-	linux-pm@vger.kernel.org, Zhang Rui <rui.zhang@intel.com>, 
-	Daniel Lezcano <daniel.lezcano@linaro.org>, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAMRc=Md_81qY02=XPmQA5_EWRC1eU0zYAjRwjbAGxvGg2kOL+A@mail.gmail.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 
-=D1=81=D1=80, 3 =D0=B0=D0=BF=D1=80. 2024=E2=80=AF=D0=B3. =D0=B2 17:52, Luka=
-sz Luba <lukasz.luba@arm.com>:
->
->
->
-> On 4/3/24 12:31, Nikita Travkin via B4 Relay wrote:
-> > From: Nikita Travkin <nikita@trvn.ru>
+On Wed, Apr 03, 2024 at 01:09:13PM +0200, Bartosz Golaszewski wrote:
+> On Tue, Apr 2, 2024 at 8:43 PM Andy Shevchenko
+> <andriy.shevchenko@linux.intel.com> wrote:
 > >
-> > IPA warns if the thermal zone it was attached to doesn't define
-> > sustainable_power value. In some cases though IPA may be bound to an
-> > "empty" TZ, in which case the lack of sustainable_power doesn't matter.
+> > On Thu, Mar 07, 2024 at 03:49:02PM +0200, Andy Shevchenko wrote:
+> > > There are only two users left of the gpio_free_array()/gpio_request_array().
+> > > Convert them to very basic legacy APIs (it requires much less work for
+> > > now) and drop no more used gpio_free_array()/gpio_request_array().
 > >
-> > Suppress the warning in case when IPA is bound to an empty TZ to make i=
-t
-> > easier to see the warnings that actually matter.
-> >
-> > Signed-off-by: Nikita Travkin <nikita@trvn.ru>
-> > ---
-> >
-> > I've decided to add this along to supress those warnings for some TZ on
-> > sc7180. Feel free to drop this patch if you think the warning should
-> > always appear.
->
-> That warning should stay, since in the development or integration phase
-> quite a lot of stuff is missing. This will warn that there is an issue.
-> The case with 'empty' TZ is an exception only to 'work' with IPA.
->
+> > Any comments on this? We really want to get rid of the legacy APIs.
+> 
+> I applied the patches, they only touch the GPIO part in legacy
+> platform code. It's not very controversial IMO.
 
-Yes, that's understandable, though by suppressing those I could
-actually see the few actual warnings for TZ with cooling devices
-and no value, which I couldn't see before because it looked like
-"all of them" have the warning.
+Thank you!
 
-In any case, as I said, I'm fine with this not being applied :)
+FWIW, In case of issue(s) I would like to help to fix, but I don't think
+it will be even one.
 
-Thanks for your review!
-Nikita
+-- 
+With Best Regards,
+Andy Shevchenko
 
-> Thanks for the patches!
->
-> Regards,
-> Lukasz
->
->
-> > ---
-> >   drivers/thermal/gov_power_allocator.c | 2 +-
-> >   1 file changed, 1 insertion(+), 1 deletion(-)
-> >
-> > diff --git a/drivers/thermal/gov_power_allocator.c b/drivers/thermal/go=
-v_power_allocator.c
-> > index e25e48d76aa7..05a40f6b5928 100644
-> > --- a/drivers/thermal/gov_power_allocator.c
-> > +++ b/drivers/thermal/gov_power_allocator.c
-> > @@ -704,7 +704,7 @@ static int power_allocator_bind(struct thermal_zone=
-_device *tz)
-> >               params->allocated_tzp =3D true;
-> >       }
-> >
-> > -     if (!tz->tzp->sustainable_power)
-> > +     if (!tz->tzp->sustainable_power && params->trip_max)
-> >               dev_warn(&tz->device, "power_allocator: sustainable_power=
- will be estimated\n");
-> >       else
-> >               params->sustainable_power =3D tz->tzp->sustainable_power;
-> >
+
 
