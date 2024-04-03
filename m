@@ -1,120 +1,176 @@
-Return-Path: <linux-kernel+bounces-129988-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-129989-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id F18B18972E6
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 16:43:36 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 388C08972EC
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 16:44:30 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 90C821F28729
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 14:43:36 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BAF8428C37E
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 14:44:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 006DD13A411;
-	Wed,  3 Apr 2024 14:43:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B753513AA52;
+	Wed,  3 Apr 2024 14:44:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="XCGzBImM"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="B5x37iJ1"
+Received: from mail-lj1-f177.google.com (mail-lj1-f177.google.com [209.85.208.177])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 42A433EA73;
-	Wed,  3 Apr 2024 14:43:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 244225CDC9
+	for <linux-kernel@vger.kernel.org>; Wed,  3 Apr 2024 14:44:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712155409; cv=none; b=Mvc4jxU/VPNk1XkpfWC52fZbp6DCmUwr8lFFpB/2LiEfIVz9mwDcj058LNW34oTNZqCdMTgxyBPxpZD2o3TEnjy3F3SUsoCVAOWhv1aUmFZFWM+hQQNw26PTId5tNL88EIkWUd78c/bJ7YK7e1UFhReCLHY3uXZ+xRzXkrOLJcg=
+	t=1712155461; cv=none; b=RNyVxhoONTGV05d3Smyl8tykwqp5JLUBOU/1J0I1TbBtm/OONbrJZm9VVLek9zvieCXzg2K4gIGIz/xMKzZfXanWf7bVtql07P6L61VattqJ79GZakMz1lc9hjMh5VsUMd9DIm+g1Fp/j6QMuHK7d9YnjB3JdWCqL2s8n3JFC2Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712155409; c=relaxed/simple;
-	bh=tlMXic5oKCPutcJcCKDaFWginzrmNtARXxwOC45KnC0=;
+	s=arc-20240116; t=1712155461; c=relaxed/simple;
+	bh=lsRpr/8jWj3lfSaJBM3ocC2GdBVv947x6Oo/jhR7VbI=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=HSPrjjPZgYv7na2osdXSkhLQGledACB3XRKQrHgaHRU8Xs6iYYvSIm8V3U0g+kfl+OT1yx6Cg0xtjhmBhtpxxXxcJLtNiZAfZiSKAINGPnPVadDeUrAQwefHBC2t1l+glGN0wV0sln4McV6klJr71qfYLlV4utdFFiZpzVvNpcs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=XCGzBImM; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BB23EC433F1;
-	Wed,  3 Apr 2024 14:43:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712155408;
-	bh=tlMXic5oKCPutcJcCKDaFWginzrmNtARXxwOC45KnC0=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=XCGzBImMMzVRsDylX+t3VTpNLsGrdGFgCh1wXexTKatY5hFrFKDzW8TOxSKEtEl/v
-	 ODofAhsYnqz2yzN61kbLvpJQesHBJCgVNHOQ9RB77QXbq/WKBJwBI9F87x8wiFYOVa
-	 TnyRZArwCkC/JP0tpIw4ywQShKpfjl1nS8wKSEhWsu4CgmCbLxCwYiK3kFWBbvOfP0
-	 +IpGXBw1BI/ht9ayxhk0/tK3WUTtUSOEdpoVfNWHyUtiXyo4TMtrPUzkQlN+ii+IbL
-	 pTvIE5eUsY/Lw0CmKLSYmtNsC2LaB2MbQtyPJNuYp/BdDlLu+ZMyJEps6IpA2D7e9f
-	 UtuXL79SQ0Ypw==
-Received: by mail-oo1-f42.google.com with SMTP id 006d021491bc7-5a46b30857bso1558204eaf.1;
-        Wed, 03 Apr 2024 07:43:28 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCU/LtEzPFiXTD+CYbMsHRw2T8tceN36HXTu5Xia2OKVUBYEbU+iE3WsqsAIgj6EHLY7OkA1q2JTWRIggxdsxbWmPS9DRwV4zdM=
-X-Gm-Message-State: AOJu0YyWSehabvYrZQk4NK4otiU7YN9yMsuzCSl9A46w/ZG1SydXrPoE
-	jOqVpbD6bZ1oPSkr2P5cNtwYJ5hbczCodzI83zY8BkSPU+OsLSk0AmDKMtIneVpcxtkVz7a99wz
-	TT0woulEUqyG2ODPhSs4f6co4JPo=
-X-Google-Smtp-Source: AGHT+IEktw5KB/rO4P7FHx+97yBpFU6a3DwE9hteSSSp0VzoxobMNIFalE+vbxCWftFVT8YNghIaWQta0VRV3b7UVtY=
-X-Received: by 2002:a4a:a9ca:0:b0:5a5:2d09:4fdc with SMTP id
- h10-20020a4aa9ca000000b005a52d094fdcmr14212464oon.1.1712155408036; Wed, 03
- Apr 2024 07:43:28 -0700 (PDT)
+	 To:Cc:Content-Type; b=cH5W/+jjcI6+qm0vrAXEWHqyco2yeIz/REDW3ykR2Uz9GmQcSciudyn8l9w/hIB3eCxvWwJPGYTBGSrCWJ39VK+fcj4AwWeEIR1RMFua3nWsMJgC5NnOv/s9yCUrL0mndjkCZIppmnhMynNWU5+PGqCTlYPWHXYX0JWbZ/G5yqU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=B5x37iJ1; arc=none smtp.client-ip=209.85.208.177
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-lj1-f177.google.com with SMTP id 38308e7fff4ca-2d68651e253so88636051fa.0
+        for <linux-kernel@vger.kernel.org>; Wed, 03 Apr 2024 07:44:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1712155457; x=1712760257; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=hSvZ57t2p82ZJ1lio7M1iLNtxzJMWQfJlM+tiUoDpMs=;
+        b=B5x37iJ1QquONlWtQ53VrAHxkHegSkepxHAT1zGfGPWwM6XJ5WlNhxaxargL0FtYhE
+         ZiVX66PAbP0pGkCIlRB3I2Wlau2JakbjoJeVZb/P78tNjaqrZk34v+q5kxbgALl0E/Dt
+         GjgsGDdxRmbn6zZTfUkkioqzqLUejGjz/ctxYcRaPsg3FpC3SIxniuU+f1CrONkzQVH7
+         J4qFjXyOu/WXPo0GCD7+3o+inYmx19HmfD2+rCDQ8er2WiMHnnV5jtAae4KnwobO0/FT
+         Fe0uKDScIimvebcWLYZRunRM2bbxMErdntHKHcdY02JdeKPhOFKT4oJ0+V/yCkDMFNAb
+         ln5g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712155457; x=1712760257;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=hSvZ57t2p82ZJ1lio7M1iLNtxzJMWQfJlM+tiUoDpMs=;
+        b=FwrP64RHvzg044s8I6GPLRtGJI5RICGQX3L9UpKOfFVjZsVcOfgADDOVHdIbEabjRp
+         wHtCtnlugVdP+z3nHflQSnxnfz3kYYJpfwvLbpSSjrZYIXIwfQqHoz0YtKe9NY31K3Ha
+         qKP51dWOJ1r433prqUnefPKoYNKSj15FLIr1Vn2eidYiqVALJ5a6yMzFqEzFzIYaMdn9
+         HaHPyVpz+hQDovWrZX8+bucgykn5D6frH9xfka+avCFuVnHT5fZye3mFSqmPBk4hymTb
+         Ym6Kfve6jamSU3IlrRJAfUQnRKE082SpSk+fpk3VpS3wvaxnnLpZPCaStYjewGay6UTY
+         xNBQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWZzCicpLEemJszMIewG7hxxU3g59wLhCZ1z42WA8FGgvfHqvKIsfHHsXRKW/iPaeZUHC73u31lj+JdmUjilPx0ToCbo4kHjYl9A6oT
+X-Gm-Message-State: AOJu0Yx2bqPtUeJ6KljLtkHfaKxE6GvGew8kWS+gfgFRPacvg/b7XTJG
+	fdb49r4lv658uVoPCL7aw5Jne/N7wonWA1kYfwCD+bgFL3m0X1gr+jkg/JGZZCBMfIWGTtnQvnW
+	1WUbbT9X0xTQcp5mJT2NNgNBs2C35KLi0/+8rkg==
+X-Google-Smtp-Source: AGHT+IF1xEeqYKajQd4WFoCF5CO9BwkZ/fZwROFlZBQ88tomzbj9vB/5AKqgIiLAJMNB7Y2JTjHkkgDcp+Ci9CqG+is=
+X-Received: by 2002:a2e:8793:0:b0:2d8:3d62:da6c with SMTP id
+ n19-20020a2e8793000000b002d83d62da6cmr1498179lji.52.1712155457181; Wed, 03
+ Apr 2024 07:44:17 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240403080702.3509288-1-arnd@kernel.org> <20240403080702.3509288-28-arnd@kernel.org>
-In-Reply-To: <20240403080702.3509288-28-arnd@kernel.org>
-From: "Rafael J. Wysocki" <rafael@kernel.org>
-Date: Wed, 3 Apr 2024 16:43:17 +0200
-X-Gmail-Original-Message-ID: <CAJZ5v0hDFLvqnKTMtee3m52tUDzW7HH41TorVEx4Ea+JSxUN+w@mail.gmail.com>
-Message-ID: <CAJZ5v0hDFLvqnKTMtee3m52tUDzW7HH41TorVEx4Ea+JSxUN+w@mail.gmail.com>
-Subject: Re: [PATCH 27/34] cpufreq: intel_pstate: hide unused intel_pstate_cpu_oob_ids[]
-To: Arnd Bergmann <arnd@kernel.org>
-Cc: linux-kernel@vger.kernel.org, 
-	Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>, Len Brown <lenb@kernel.org>, 
-	"Rafael J. Wysocki" <rafael@kernel.org>, Viresh Kumar <viresh.kumar@linaro.org>, 
-	Arnd Bergmann <arnd@arndb.de>, Doug Smythies <dsmythies@telus.net>, Zhenguo Yao <yaozhenguo1@gmail.com>, 
-	Tero Kristo <tero.kristo@linux.intel.com>, "Jiri Slaby (SUSE)" <jirislaby@kernel.org>, 
-	linux-pm@vger.kernel.org
+References: <20240403-msm-drm-dsc-dsi-video-upstream-v1-0-db5036443545@linaro.org>
+ <20240403-msm-drm-dsc-dsi-video-upstream-v1-1-db5036443545@linaro.org> <CAA8EJpqF4rVsWG=A1fNYWWi7rjHDmu_ftZttXH1v41v8wBgAiQ@mail.gmail.com>
+In-Reply-To: <CAA8EJpqF4rVsWG=A1fNYWWi7rjHDmu_ftZttXH1v41v8wBgAiQ@mail.gmail.com>
+From: Jun Nie <jun.nie@linaro.org>
+Date: Wed, 3 Apr 2024 22:44:06 +0800
+Message-ID: <CABymUCNNhFTQZ6NSOL8SmLzCSOktvR_Sj0s2TSmqa0_56CSvDg@mail.gmail.com>
+Subject: Re: [PATCH v3 1/6] drm/msm/dpu: fix video mode DSC for DSI
+To: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Cc: Rob Clark <robdclark@gmail.com>, Abhinav Kumar <quic_abhinavk@quicinc.com>, 
+	Sean Paul <sean@poorly.run>, Marijn Suijten <marijn.suijten@somainline.org>, 
+	David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>, 
+	Jessica Zhang <quic_jesszhan@quicinc.com>, Vinod Koul <vkoul@kernel.org>, 
+	linux-arm-msm@vger.kernel.org, dri-devel@lists.freedesktop.org, 
+	freedreno@lists.freedesktop.org, linux-kernel@vger.kernel.org, 
+	Jonathan Marek <jonathan@marek.ca>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Wed, Apr 3, 2024 at 10:11=E2=80=AFAM Arnd Bergmann <arnd@kernel.org> wro=
-te:
+Dmitry Baryshkov <dmitry.baryshkov@linaro.org> =E4=BA=8E2024=E5=B9=B44=E6=
+=9C=883=E6=97=A5=E5=91=A8=E4=B8=89 17:57=E5=86=99=E9=81=93=EF=BC=9A
 >
-> From: Arnd Bergmann <arnd@arndb.de>
+> On Wed, 3 Apr 2024 at 12:11, Jun Nie <jun.nie@linaro.org> wrote:
+> >
+> > From: Jonathan Marek <jonathan@marek.ca>
+> >
+> > Add necessary DPU timing and control changes for DSC to work with DSI
+> > video mode.
+> >
+> > Signed-off-by: Jonathan Marek <jonathan@marek.ca>
+> > Signed-off-by: Jun Nie <jun.nie@linaro.org>
+> > ---
+> >  drivers/gpu/drm/msm/disp/dpu1/dpu_encoder_phys_vid.c | 9 +++++++++
+> >  drivers/gpu/drm/msm/disp/dpu1/dpu_hw_intf.c          | 8 ++++++++
+> >  2 files changed, 17 insertions(+)
+> >
+> > diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder_phys_vid.c b/dri=
+vers/gpu/drm/msm/disp/dpu1/dpu_encoder_phys_vid.c
+> > index d9e7dbf0499c..c7b009a60b63 100644
+> > --- a/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder_phys_vid.c
+> > +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder_phys_vid.c
+> > @@ -115,6 +115,15 @@ static void drm_mode_to_intf_timing_params(
+> >                 timing->h_front_porch =3D timing->h_front_porch >> 1;
+> >                 timing->hsync_pulse_width =3D timing->hsync_pulse_width=
+ >> 1;
+> >         }
+> > +
+> > +       /*
+> > +        * for DSI, if compression is enabled, then divide the horizona=
+l active
+> > +        * timing parameters by compression ratio.
+> > +        */
+> > +       if (phys_enc->hw_intf->cap->type !=3D INTF_DP && timing->compre=
+ssion_en) {
+> > +               timing->width =3D timing->width / 3; /* XXX: don't assu=
+me 3:1 compression ratio */
+> > +               timing->xres =3D timing->width;
+> > +       }
+> >  }
+> >
+> >  static u32 get_horizontal_total(const struct dpu_hw_intf_timing_params=
+ *timing)
+> > diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_intf.c b/drivers/gpu/=
+drm/msm/disp/dpu1/dpu_hw_intf.c
+> > index 965692ef7892..079efb48db05 100644
+> > --- a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_intf.c
+> > +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_intf.c
+> > @@ -167,6 +167,14 @@ static void dpu_hw_intf_setup_timing_engine(struct=
+ dpu_hw_intf *ctx,
+> >                 intf_cfg2 |=3D INTF_CFG2_DATABUS_WIDEN;
+> >
+> >         data_width =3D p->width;
+> > +       if (p->wide_bus_en && !dp_intf)
+> > +               data_width =3D p->width >> 1;
 >
-> The reference to this variable is hidden in an #ifdef:
->
-> drivers/cpufreq/intel_pstate.c:2440:32: error: 'intel_pstate_cpu_oob_ids'=
- defined but not used [-Werror=3Dunused-const-variable=3D]
->
-> Use the same check around the definition.
->
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-> ---
->  drivers/cpufreq/intel_pstate.c | 2 ++
->  1 file changed, 2 insertions(+)
->
-> diff --git a/drivers/cpufreq/intel_pstate.c b/drivers/cpufreq/intel_pstat=
-e.c
-> index dbbf299f4219..29ce9edc6f68 100644
-> --- a/drivers/cpufreq/intel_pstate.c
-> +++ b/drivers/cpufreq/intel_pstate.c
-> @@ -2437,6 +2437,7 @@ static const struct x86_cpu_id intel_pstate_cpu_ids=
-[] =3D {
->  };
->  MODULE_DEVICE_TABLE(x86cpu, intel_pstate_cpu_ids);
->
-> +#ifdef CONFIG_ACPI
->  static const struct x86_cpu_id intel_pstate_cpu_oob_ids[] __initconst =
-=3D {
->         X86_MATCH(BROADWELL_D,          core_funcs),
->         X86_MATCH(BROADWELL_X,          core_funcs),
-> @@ -2445,6 +2446,7 @@ static const struct x86_cpu_id intel_pstate_cpu_oob=
-_ids[] __initconst =3D {
->         X86_MATCH(SAPPHIRERAPIDS_X,     core_funcs),
->         {}
->  };
-> +#endif
->
->  static const struct x86_cpu_id intel_pstate_cpu_ee_disable_ids[] =3D {
->         X86_MATCH(KABYLAKE,             core_funcs),
-> --
+> How is wide_bus relevant to the DSC case?
+> Is there a need for the Fixes tag?
 
-Applied as 6.10 material, thanks!
+48bit bus width should be used when DSC is enabled. Without the
+widebus configuration,
+a lot dsi error happens as below in DSC case.
+[  206.275992] dsi_err_worker: status=3D4
+
+For the Fixes tag, the previous patch mentioned to enable the widebus
+mode for any DSC case. So it is fair to add the tag.
+>
+> > +
+> > +       if (p->compression_en)
+> > +               intf_cfg2 |=3D INTF_CFG2_DCE_DATA_COMPRESS;
+> > +
+> > +       if (p->compression_en && dp_intf)
+> > +               DPU_ERROR("missing adjustments for DSC+DP\n");
+> >
+> >         hsync_data_start_x =3D hsync_start_x;
+> >         hsync_data_end_x =3D  hsync_start_x + data_width - 1;
+> >
+> > --
+> > 2.34.1
+> >
+>
+>
+> --
+> With best wishes
+> Dmitry
 
