@@ -1,74 +1,74 @@
-Return-Path: <linux-kernel+bounces-129768-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-129769-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1E06B896FB8
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 15:01:07 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5C388896FBA
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 15:01:25 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 40FF41C26264
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 13:01:06 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8AE8EB21BD7
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 13:01:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0F01B1474DF;
-	Wed,  3 Apr 2024 13:00:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C710F147C79;
+	Wed,  3 Apr 2024 13:01:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="I7pIZred"
-Received: from mail-oo1-f46.google.com (mail-oo1-f46.google.com [209.85.161.46])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="RKRfJhe1"
+Received: from mail-qk1-f179.google.com (mail-qk1-f179.google.com [209.85.222.179])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E015413775D;
-	Wed,  3 Apr 2024 13:00:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 908C713775D;
+	Wed,  3 Apr 2024 13:01:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712149258; cv=none; b=J0JgCOam7Vhjy720itFT0H5gdfvgXf3etOwPToPgnzIRUF9u6VOXZ+1Jh885Dcr2SmOM881egqLpYZ4UHqu6bIeIRn3skB0pwIFl7UxkRSkzjjM1fzUH4xacyGj//sn6qJ6W1sPJ8FFK7jUZAASFVHsEMRFhxxvVgcyGNGeQG8w=
+	t=1712149274; cv=none; b=JYpORdLkedIIylINSt25sVtJ518RiJjq71vPQXUAsja3oQaSikvCVPcFY4tmamvHgwvo8tj6OizGpuTHqDSx7tE8kfAOFnS/bHGyDTk2ls+KB7eF6Pr9OkeGGOyXcdgnR+QAiRKh5f2Emcw1RzMRs7OTjcSKnCIlWvvUEyUkJHM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712149258; c=relaxed/simple;
-	bh=16LVT++7hCxJT/DtJ4w5xBA8tUHSe3fqP2Lif0mfet8=;
+	s=arc-20240116; t=1712149274; c=relaxed/simple;
+	bh=8Z1z87IVRGvIDJ30z9anQbPjQE110ZtgTUm3EEesock=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=ALBSsghBon76IZFcmM5tiAi3P7fBcfzp5kBsDOZK4DPYm54b/MEtkP+r4w8OYI7bX6sGXFpH5b0uAvKDhLvm4VbHE47KhKRyBlMvGzb5j6nyVY2JTHgok8CBMo6PYKlq9iSBktLaOA3IsSC/5auZG4nF+5Yt7sT5BVFnB+wYQNY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=I7pIZred; arc=none smtp.client-ip=209.85.161.46
+	 In-Reply-To:Content-Type; b=Hl4uVKFS9XWBzE+JBXh57rxEw82+xf5gR1Om+OYJrK2my0pLoUp+pEy5fFej04mL5jHxtSK8oqfqGK0hTRJfLZ5rC/ks4oMgC5T6P5RMfFtn283Pdtx4SpkhodZ1CQUd0AFIJLwCLRgxE0mq0RyIB4+m52UWvVzZPy2b6qLqmgA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=RKRfJhe1; arc=none smtp.client-ip=209.85.222.179
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-oo1-f46.google.com with SMTP id 006d021491bc7-5a7c3dd2556so1473568eaf.1;
-        Wed, 03 Apr 2024 06:00:56 -0700 (PDT)
+Received: by mail-qk1-f179.google.com with SMTP id af79cd13be357-78bd8068b0fso263565585a.1;
+        Wed, 03 Apr 2024 06:01:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1712149256; x=1712754056; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1712149271; x=1712754071; darn=vger.kernel.org;
         h=content-transfer-encoding:in-reply-to:autocrypt:from
          :content-language:references:cc:to:subject:user-agent:mime-version
          :date:message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=dIgQrEY6TPgQ+hIvMFxPD/CgS9U4iTKbFmnudRwHnGY=;
-        b=I7pIZredKrE9qjg9hh1xYz+j2pM1r4t6GIO45KZx9OhEOCcJgqgeCbQVSX1h8ZRyLk
-         GX64A6VQR2Kh+5RlqgPnDjs0l6P/5ROIEoLTbfIcvfp+72pYAo/Z4/hOOL+YJN9Dab6L
-         Q/4Q7uoO/V5HalGfh6yA21OYdM6r3M5QPY2vv1ZldgJyVBl6dE5kMre+iFbsH75ZLO1t
-         CFvcUZlnKgMJPkQVMo7+x+ynsjBLVMMUbg8OKSiee1nKrg3YXQr8yiZPosfD3qP9HXWi
-         zBpCMV6qcF+ND1x3YikOycdlx/KASFHaLKNNOTH8IU66MQztfXD4TebeF7D7LeX//8Ko
-         J17w==
+        bh=W221BqTBStZAoR2FwMzuQj2RcNq4bopCNAqXl896PoQ=;
+        b=RKRfJhe1y2bsxwUaVrKEdE1o2x+yzCm0OdNfy1SorupkhM6fQkecV8+fV26wG5sP9b
+         K1EYk0pLya3VQuYpQddOOg1asERrU9AQrtAia4I04hWRWZGNCR09VEeL7G6iPQtVSa+A
+         DbFZO1Ke2UWdPR3EhLayO1BHDElvn44m+PQkZ5xmyN/EnqfAMDjPC+mHdvxAfZPjgP+I
+         /G+tGDUo76aTED0wctYFyLnGrLDze9k02WMfDNx/5oPdZ7h1+Zf8CqvjyZQ90y9ptyvo
+         7w9E8rsas/GE7JfofW2GgvvTLKtKnzLtzGQWNypvP6Wea81S1YbhVMrOFOnz3nf83qLp
+         70tw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712149256; x=1712754056;
+        d=1e100.net; s=20230601; t=1712149271; x=1712754071;
         h=content-transfer-encoding:in-reply-to:autocrypt:from
          :content-language:references:cc:to:subject:user-agent:mime-version
          :date:message-id:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=dIgQrEY6TPgQ+hIvMFxPD/CgS9U4iTKbFmnudRwHnGY=;
-        b=IVRvk0Yfw9+O+fCKC3Hv9s8hH41ULV8oXwj7SDD6NtFlYpEIfsNZN6a7zaewTzN47q
-         xACncM4zIh0x/74Iq2grPBtaIU405fHb4gHLkbFTl3r2M6xkFkCu/78bqJmKttILRhOB
-         mBy+vXBnTy2wCud0FWqfmuMF0qxBVx/rqXZgjwI02Nle+pIceBymsKFd9fIZBRbDUsFv
-         D2p545XQo/dTq6G4DrM7qT1HFnaHb0Wg40is/y6DDyyHUaPV3DX/vuOv8Hb8f69aCUnF
-         ngIQwK53wpyh5AfGZMF+d9Hr2Gp1FTDWDplcc0CLbwQwaVLZcnVHL/DKf4T3O/uNO7gh
-         VwLg==
-X-Forwarded-Encrypted: i=1; AJvYcCVCktT38nZAC0jb4+3io0MYxg7g4Pg1Nq/T+GHEqsjA1/dUcEvc+/fotzC3fzmMp1RXWFA0n5OPDfPd9YovgKKN1bPEwFp8Ek/i5+u9z/vUcdIFXmnHVIv2sHzUoIRwgORCOgKW
-X-Gm-Message-State: AOJu0YzT5S5iyWkKOdmsXmN/KVKh7HoKMI0SEfqew0GDSq9bv343QwAp
-	zWGpZ8YsEbIZMZTdOpPV5vC+FWnrvWxO27STOb5Hbn/PZ6qhzFCW
-X-Google-Smtp-Source: AGHT+IFCpFlfL0sLQFo+2RApChaKoRenFCVrrKMBBDh6xDFwEikyct1C5roISUQa0F2CnAl2sdFHHg==
-X-Received: by 2002:a05:6358:6583:b0:183:9ea4:74a8 with SMTP id x3-20020a056358658300b001839ea474a8mr2816424rwh.15.1712149255765;
-        Wed, 03 Apr 2024 06:00:55 -0700 (PDT)
+        bh=W221BqTBStZAoR2FwMzuQj2RcNq4bopCNAqXl896PoQ=;
+        b=isVi8p/HZoT5954y6fIjOPxYI5yGshy7X5SiAuzkJqwp4V8VumYki6Jq42ymjxPBgC
+         tu9bVz+T4Xf4eyzaLZKCBXsiIviH2H1zjI28qHA0QPslVLzZ8d0N0x0Cuh8jaCQs1YOb
+         uA2dietNl3K+LcfDRm86h+/vMoyjiqAkPxGXixMn6Yv3EXOIA+tz+x1LcO5jylgeQkex
+         bDcVZ4o7Ff8YIpVaUjHvjM+aZlrnTMo97keEUvbiHPVHo2dF77lzR4E+DXtSJGk1j7Nf
+         fK+gBhb58tx0riL8zlDIRT8Wc6PO2Jx7XXiIVLOGAGeziueAKq/5izd5F+mEbpgFpoSF
+         jqyA==
+X-Forwarded-Encrypted: i=1; AJvYcCUODIGcpjl9OHEYNgmV3LlS77j9kdUFln2CUWpR3z1mqMBS2Z+tQ9pXxTvrNMr6MclKhm7A/k/ZLkSoqMpdsyiG+oNlSHMdOd5vFeWtBZszBVfUTBY0o7vjBG1IgThQKmyyIWxs
+X-Gm-Message-State: AOJu0YwT6wYbn0uttMAYvJfLwbzY6WC9X/OW7he/ah/M7Xl432W3slUl
+	rwGWBDxQaIYyx/Rtl3SS6DBut4uubuNBhnLYP5Y+pzZbfStfl8fI
+X-Google-Smtp-Source: AGHT+IFKmAEEvxWNvqXp0HmbV38s+1XnpGrLGnK3aEE6/Z/G5TawRmD/kP/3ju9mDQV0DjpVPL7a4g==
+X-Received: by 2002:a05:620a:462b:b0:78b:e84f:3dd1 with SMTP id br43-20020a05620a462b00b0078be84f3dd1mr8740243qkb.32.1712149271236;
+        Wed, 03 Apr 2024 06:01:11 -0700 (PDT)
 Received: from [192.168.1.3] (ip68-4-215-93.oc.oc.cox.net. [68.4.215.93])
-        by smtp.gmail.com with ESMTPSA id e8-20020a0562140d8800b0069918064e9esm1590264qve.41.2024.04.03.06.00.52
+        by smtp.gmail.com with ESMTPSA id v4-20020a05620a090400b0078be9e0f9adsm1781156qkv.43.2024.04.03.06.01.07
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 03 Apr 2024 06:00:54 -0700 (PDT)
-Message-ID: <a732f5ca-4e88-4bdb-ae3c-26a69208266b@gmail.com>
-Date: Wed, 3 Apr 2024 06:00:50 -0700
+        Wed, 03 Apr 2024 06:01:10 -0700 (PDT)
+Message-ID: <bcdf90f6-b757-46ba-98bf-6380f738a20d@gmail.com>
+Date: Wed, 3 Apr 2024 06:01:05 -0700
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -76,8 +76,8 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net-next v2 1/8] net: dsa: microchip: Remove unused FDB
- timestamp support in ksz8_r_dyn_mac_table()
+Subject: Re: [PATCH net-next v2 2/8] net: dsa: microchip: Make
+ ksz8_r_dyn_mac_table() static
 To: Oleksij Rempel <o.rempel@pengutronix.de>,
  "David S. Miller" <davem@davemloft.net>, Andrew Lunn <andrew@lunn.ch>,
  Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
@@ -88,7 +88,7 @@ Cc: kernel@pengutronix.de, linux-kernel@vger.kernel.org,
  netdev@vger.kernel.org, UNGLinuxDriver@microchip.com,
  =?UTF-8?Q?S=C3=B8ren_Andersen?= <san@skov.dk>
 References: <20240403125039.3414824-1-o.rempel@pengutronix.de>
- <20240403125039.3414824-2-o.rempel@pengutronix.de>
+ <20240403125039.3414824-3-o.rempel@pengutronix.de>
 Content-Language: en-US
 From: Florian Fainelli <f.fainelli@gmail.com>
 Autocrypt: addr=f.fainelli@gmail.com; keydata=
@@ -124,15 +124,15 @@ Autocrypt: addr=f.fainelli@gmail.com; keydata=
  y5arMQorqTFWlEOgRA8OP47L9knl9i4xuR0euV6DChDrguup2aJVU8JPBBgRAgAPAhsMBQJU
  X9LxBQkeXB3fAAoJEGFXmRW1Y3YOj4UAn3nrFLPZekMeqX5aD/aq/dsbXSfyAKC45Go0YyxV
  HGuUuzv+GKZ6nsysJw==
-In-Reply-To: <20240403125039.3414824-2-o.rempel@pengutronix.de>
+In-Reply-To: <20240403125039.3414824-3-o.rempel@pengutronix.de>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 
 
 
 On 4/3/2024 5:50 AM, Oleksij Rempel wrote:
-> The FDB timestamps are not being utilized. This commit removes the
-> unused timestamp support from ksz8_r_dyn_mac_table() function.
+> ksz8_r_dyn_mac_table() is not used outside the source file. Make it
+> static.
 > 
 > Reviewed-by: Vladimir Oltean <olteanv@gmail.com>
 > Acked-by: Arun Ramadoss <arun.ramadoss@microchip.com>
