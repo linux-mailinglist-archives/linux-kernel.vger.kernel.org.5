@@ -1,229 +1,148 @@
-Return-Path: <linux-kernel+bounces-130068-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-130071-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 533C78973C5
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 17:18:01 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1929B8973CB
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 17:18:44 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 50E5C28F6E8
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 15:17:33 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3CB391C20A1E
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 15:18:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 342A114A63F;
-	Wed,  3 Apr 2024 15:14:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9E37414B09D;
+	Wed,  3 Apr 2024 15:14:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="qXBK7svH"
-Received: from mail-yw1-f202.google.com (mail-yw1-f202.google.com [209.85.128.202])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b="AWMVjxtY"
+Received: from mail-lj1-f178.google.com (mail-lj1-f178.google.com [209.85.208.178])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7528814A4FF
-	for <linux-kernel@vger.kernel.org>; Wed,  3 Apr 2024 15:14:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.202
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DD30A14A60A
+	for <linux-kernel@vger.kernel.org>; Wed,  3 Apr 2024 15:14:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712157249; cv=none; b=h5Z3qrXYqR8STZXE3tLtD8yKP/heLzPQjWlfW8u/yzPgfMO/kcFNXf2lRHRsbxEgspRc5XxmFb8aAAjfe3slDkOAUATzfoFYdH0/ZS5WnliOyx1sjuDjS0h5XxPO0vX4Y53je5msDqmbk3w59GPGw1ctUJR10RrizP3HMFN1oi0=
+	t=1712157290; cv=none; b=g8FbCT8KswZ5DUQOQuiXWHRENOYkNoCKvm52VM4CozWOlR/M3B8fXW1EmnB/SufN6INM2zaFUn3ptq32op+MfTjs31xq8g7gMspeJEq9UoBvP8odCAHKLzyChvF8J98wDWUb8vxaRXUhuuJvUjGDhb2BULA9tIdyXe8zBh4rE7k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712157249; c=relaxed/simple;
-	bh=W6tEz6Zwd/3V0AalPwql2eDmQ/JYHtwljJr2Uh2Zm/A=;
-	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=tqAw+p5ENyof8SZRXyvfr2GALPsDQVVyMHF7no5pwf7AGddKoTjGbRTrSFPfjp+HZXoFPIq0IN4bzm33REVKHAls6YAcs5G3aWoAQU9JbfEGDMgIGOlt0UUeCg6X2Gad6qLzQej8AEN14WrlkJ2QLwY/8T/s5MDJp3Qnl4Ztw3c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=qXBK7svH; arc=none smtp.client-ip=209.85.128.202
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
-Received: by mail-yw1-f202.google.com with SMTP id 00721157ae682-60cc8d4e1a4so117280877b3.3
-        for <linux-kernel@vger.kernel.org>; Wed, 03 Apr 2024 08:14:07 -0700 (PDT)
+	s=arc-20240116; t=1712157290; c=relaxed/simple;
+	bh=okMqtAJdJt2mKknsEiqIBDifkB1qCYqpQVnmksBqJLg=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=Okjvaezy2yYnyqJ2YNImTqhwcT2geXmbReXGiQaIP1fwRFG1RuKU6i2nSysepuWMf7tm3gIqf4rhl9wrfTWZBtVIcPlw+Ss/N5ETqPaLD5SvRyGNLY8ckdm2IpbsKgy2cc3itZr1gUnYRBCVVKRkNS4MSKpjcRaf+dWJzJtKwpE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com; spf=pass smtp.mailfrom=baylibre.com; dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b=AWMVjxtY; arc=none smtp.client-ip=209.85.208.178
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=baylibre.com
+Received: by mail-lj1-f178.google.com with SMTP id 38308e7fff4ca-2d6ff0422a2so88536331fa.2
+        for <linux-kernel@vger.kernel.org>; Wed, 03 Apr 2024 08:14:48 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1712157246; x=1712762046; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=RERRULEGqmQXPtZTcd/mEGQQNqydbJ8WRO6RWf+KLek=;
-        b=qXBK7svHDvvteHAx6b7gDQlPoakWDN5rEqtG8eCbj4bmlUtyJTBftY1cszauaBtfUw
-         5Oshf3j/WicRyOgxelet21mr93kHtmzu8+fNpqcN21YBSbONutG7eDYKQfIPdXML1VcT
-         ovcDJQ5Hpm0LQ2yA+mrEqZnm5rvA99gs7TcZCxnwFp38qzU+RM3Lu99O6KWnnEoZ4OuB
-         ZY9d0pePNZt4ibQsC56Jgmh3sERl1DmvbuJG98gwbt9zgHe79Y2kWpaRoieVZlpG7CYk
-         qjyEg/Ode2iK8KYhus3znLaa4J8Ro32+CR9u4ru1cOWZNgsXuV3NSIV9BcfHcXb8argO
-         oVrA==
+        d=baylibre-com.20230601.gappssmtp.com; s=20230601; t=1712157287; x=1712762087; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=8On6x+LYibbtDP6IBIgF4A+aMOZN1d3uu3/VQOdT6Nc=;
+        b=AWMVjxtYCIvAHhRmFKuPHli/mfkYqal/o/qp+19PaRvbbFmF8FkYkGA2fPLgMpKvWA
+         8kqExIolNOPOa+SktvatzD5t7ZhxvMR2Lw2DtrmMeBNmF1VKa/2GBht468wdeLW0xrjL
+         jWaXrU0VYou2I0vPcWdxKewpfprsRKl1dtr383nVSR3pIHh0Q2xdbjT5KKttA5pI9hSO
+         P6kMmAg9jADUF1c+rUoRV1Ook2K1pq7H8dSsM5YnWcQOcwTw7AGMajWrAw1aAPzZ9S+D
+         y0Ng0frrV1UHwbNFAYLNLp2GeuWB1QYhWT1iNXeoch1J3KLjeCjnqoukPEQAYBREjnBq
+         f0Rg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712157246; x=1712762046;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=RERRULEGqmQXPtZTcd/mEGQQNqydbJ8WRO6RWf+KLek=;
-        b=TO8aJgwM8KA9HsFfAjI8x0/X7UvT3XNcpfRiKIoqomLfCxZLFoJrW6iuyWHWuibM3b
-         p8Ohb8QdWhh3XYeL+HFpIl+UyyCC5gR0pr55A7/bnN3+ww459tDg45HQ6HUwmP+vAWd2
-         OP/EOVWLlVTEorCE3zo43xPmUPH73D+f3lNHU0HsecIATZOKXv4yKOck3U4BLjKft2bZ
-         t5C5ZU2wvObB5wqcSoHkRwZMIgV9wFuBTuploXnbKQRo3M0UsrKCvxH3CMdLBAAK8FMn
-         1xRX4gmMNjPDzaC9nafG8zTldpcJ6omIcd3h9xddicpNN1/BG3AfSjdVycW/DheS3jbM
-         8rvg==
-X-Forwarded-Encrypted: i=1; AJvYcCV5RMlZDwolwn43DCxhSCfE30YKNR2ubpHYjS82W406XVYD3G1yYFZG76zi4tKRlHotE+3w8iBeIzGEdPHnRhPPzSnfjZlf8XtElhdt
-X-Gm-Message-State: AOJu0Yw2LkU4DnRpBK39KEV42A4t4YjIwjjQMPaQOAnGUWOhFTKwJj4G
-	iZyYfvdfucHgpH2Bbv/nx0JiQZZVVHPXZr0neHHfCWr7IzOpvAC+Qymq65c/4kcSrxuIPg4TrwY
-	CFw==
-X-Google-Smtp-Source: AGHT+IGmfLK0wH6vXigEvfjeTOgWqVBdPAJCvhT6SwqLPJkCtrIm6w6lz8yIYj/1nevhClSMuSxyy2oCynE=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a0d:eb82:0:b0:615:378a:73ed with SMTP id
- u124-20020a0deb82000000b00615378a73edmr979932ywe.8.1712157246357; Wed, 03 Apr
- 2024 08:14:06 -0700 (PDT)
-Date: Wed, 3 Apr 2024 08:14:04 -0700
-In-Reply-To: <62f8890cb90e49a3e0b0d5946318c0267b80c540.1708933498.git.isaku.yamahata@intel.com>
+        d=1e100.net; s=20230601; t=1712157287; x=1712762087;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=8On6x+LYibbtDP6IBIgF4A+aMOZN1d3uu3/VQOdT6Nc=;
+        b=jq26TGQOVgCTMMg4psy/5okdmbpV1VFiFMRN5/6CU8AnaYIEOIqS2+5VjH88gApaH7
+         ZxrTv9Fco3UtuzvUAZR3PnO1eYOrJgyusvzCN4z/sYlK2bNq11l95RE+zRyh6iJYN365
+         HRHDNW0R2dRVavmY3zBFvSF6Vor7NQeiIzEYAsTRmIoROuZ71qgJuf+MmaTsYvQ8kEKO
+         M45RW1yTcfWUbMo690nzqI3ePWaHuJ6yZEh4V+M57wHTGSuicv+i3V8uv4IilheSaPz9
+         TmkY+s1MUoQEyW+HiiPWtI+Nohr4pSTsVsqVc9Ea6izULEU1PKm2iHYy4UBG6R8Mr8Ao
+         bVtg==
+X-Forwarded-Encrypted: i=1; AJvYcCUL4zuo0C+lBL44PKc1Fa22fkIkk+nStEH0+Ld7xewk84Oyvwj49C+sJIJnZ907gl72CjtUf3kVdvYTnl98aazlXLk0LE+Sa2W/hoQm
+X-Gm-Message-State: AOJu0Yz2cc28QEPzVrGeOTvagsXN029bdmqfWBA2+d+OpqMG+ZWzc5Vy
+	0KVWxjDCAuxsuN6CFvWSui2IgzDN0QkFs5Gts4JPuKs6bakxODihX5HbPCzXHsK5BNgCWsAMANu
+	3EQmbXvXy8zEG3fKaA2hYj7Xwf1rdtdL2oBsGzQ==
+X-Google-Smtp-Source: AGHT+IH7piIbVZFBEOcJtVy6rEGRW0U40dXyS1jzVfSYyjpbI87gg+pbV2IGLZoqKJDqmJFZJ6ZDhT4+Zh0znZwRjiM=
+X-Received: by 2002:a2e:9ace:0:b0:2d4:1fa4:9eb8 with SMTP id
+ p14-20020a2e9ace000000b002d41fa49eb8mr9893359ljj.40.1712157286650; Wed, 03
+ Apr 2024 08:14:46 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-References: <cover.1708933498.git.isaku.yamahata@intel.com> <62f8890cb90e49a3e0b0d5946318c0267b80c540.1708933498.git.isaku.yamahata@intel.com>
-Message-ID: <Zg1yPIV6cVJrwGxX@google.com>
-Subject: Re: [PATCH v19 111/130] KVM: TDX: Implement callbacks for MSR
- operations for TDX
-From: Sean Christopherson <seanjc@google.com>
-To: isaku.yamahata@intel.com
-Cc: kvm@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	isaku.yamahata@gmail.com, Paolo Bonzini <pbonzini@redhat.com>, erdemaktas@google.com, 
-	Sagi Shahar <sagis@google.com>, Kai Huang <kai.huang@intel.com>, chen.bo@intel.com, 
-	hang.yuan@intel.com, tina.zhang@intel.com
-Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+References: <20240401-ad4111-v1-0-34618a9cc502@analog.com> <20240401-ad4111-v1-1-34618a9cc502@analog.com>
+ <CAMknhBHeKAQ45=5-dL1T1tv-mZcPN+bNo3vxWJYgWpEPE+8p3Q@mail.gmail.com>
+ <CAMknhBGJt1TG0-UXMqqCT6nxJKAX7ZbsPF19eeWqwKsXbKOQoQ@mail.gmail.com>
+ <0db40597-0d66-4d5b-8165-d9a4c068a42e@gmail.com> <dce3ae6c-6e65-4134-8927-549e9b4afd4c@gmail.com>
+In-Reply-To: <dce3ae6c-6e65-4134-8927-549e9b4afd4c@gmail.com>
+From: David Lechner <dlechner@baylibre.com>
+Date: Wed, 3 Apr 2024 10:14:35 -0500
+Message-ID: <CAMknhBHLEjtiQVOVODdvfH=pOP656=1RNb=9-rt37H7iowVDBw@mail.gmail.com>
+Subject: Re: [PATCH 1/6] dt-bindings: adc: ad7173: add support for ad411x
+To: "Ceclan, Dumitru" <mitrutzceclan@gmail.com>
+Cc: dumitru.ceclan@analog.com, Lars-Peter Clausen <lars@metafoo.de>, 
+	Michael Hennerich <Michael.Hennerich@analog.com>, Jonathan Cameron <jic23@kernel.org>, 
+	Rob Herring <robh@kernel.org>, Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
+	Conor Dooley <conor+dt@kernel.org>, linux-iio@vger.kernel.org, devicetree@vger.kernel.org, 
+	linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Mon, Feb 26, 2024, isaku.yamahata@intel.com wrote:
-> diff --git a/arch/x86/kvm/vmx/tdx.c b/arch/x86/kvm/vmx/tdx.c
-> index 389bb95d2af0..c8f991b69720 100644
-> --- a/arch/x86/kvm/vmx/tdx.c
-> +++ b/arch/x86/kvm/vmx/tdx.c
-> @@ -1877,6 +1877,76 @@ void tdx_get_exit_info(struct kvm_vcpu *vcpu, u32 *reason,
->  	*error_code = 0;
->  }
->  
-> +static bool tdx_is_emulated_kvm_msr(u32 index, bool write)
-> +{
-> +	switch (index) {
-> +	case MSR_KVM_POLL_CONTROL:
-> +		return true;
-> +	default:
-> +		return false;
-> +	}
-> +}
-> +
-> +bool tdx_has_emulated_msr(u32 index, bool write)
-> +{
-> +	switch (index) {
-> +	case MSR_IA32_UCODE_REV:
-> +	case MSR_IA32_ARCH_CAPABILITIES:
-> +	case MSR_IA32_POWER_CTL:
-> +	case MSR_IA32_CR_PAT:
-> +	case MSR_IA32_TSC_DEADLINE:
-> +	case MSR_IA32_MISC_ENABLE:
-> +	case MSR_PLATFORM_INFO:
-> +	case MSR_MISC_FEATURES_ENABLES:
-> +	case MSR_IA32_MCG_CAP:
-> +	case MSR_IA32_MCG_STATUS:
-> +	case MSR_IA32_MCG_CTL:
-> +	case MSR_IA32_MCG_EXT_CTL:
-> +	case MSR_IA32_MC0_CTL ... MSR_IA32_MCx_CTL(KVM_MAX_MCE_BANKS) - 1:
-> +	case MSR_IA32_MC0_CTL2 ... MSR_IA32_MCx_CTL2(KVM_MAX_MCE_BANKS) - 1:
-> +		/* MSR_IA32_MCx_{CTL, STATUS, ADDR, MISC, CTL2} */
-> +		return true;
-> +	case APIC_BASE_MSR ... APIC_BASE_MSR + 0xff:
-> +		/*
-> +		 * x2APIC registers that are virtualized by the CPU can't be
-> +		 * emulated, KVM doesn't have access to the virtual APIC page.
-> +		 */
-> +		switch (index) {
-> +		case X2APIC_MSR(APIC_TASKPRI):
-> +		case X2APIC_MSR(APIC_PROCPRI):
-> +		case X2APIC_MSR(APIC_EOI):
-> +		case X2APIC_MSR(APIC_ISR) ... X2APIC_MSR(APIC_ISR + APIC_ISR_NR):
-> +		case X2APIC_MSR(APIC_TMR) ... X2APIC_MSR(APIC_TMR + APIC_ISR_NR):
-> +		case X2APIC_MSR(APIC_IRR) ... X2APIC_MSR(APIC_IRR + APIC_ISR_NR):
-> +			return false;
-> +		default:
-> +			return true;
-> +		}
-> +	case MSR_IA32_APICBASE:
-> +	case MSR_EFER:
-> +		return !write;
+On Wed, Apr 3, 2024 at 5:08=E2=80=AFAM Ceclan, Dumitru <mitrutzceclan@gmail=
+com> wrote:
+>
+> On 03/04/2024 10:45, Ceclan, Dumitru wrote:
+> > On 01/04/2024 23:22, David Lechner wrote:
+> >> On Mon, Apr 1, 2024 at 2:37=E2=80=AFPM David Lechner <dlechner@baylibr=
+e.com> wrote:
+> >>>
+> >>> On Mon, Apr 1, 2024 at 10:10=E2=80=AFAM Dumitru Ceclan via B4 Relay
+> >>> <devnull+dumitru.ceclan.analog.com@kernel.org> wrote:
+> >
+> > ...
+> >
+> >>
+> >> Also, I just noticed that AD411x have only one AVDD input instead of
+> >> AVDD1 and AVDD2. So we need an if statement that says if properties:
+> >> compatible: enum: - adi,ad411x, then properties: avdd2-supply: false.
+> >
+> > Already addressed by this:
+> > "
+> >   # Only ad7172-4, ad7173-8 and ad7175-8 support vref2
+> >   - if:
+> >       properties:
+> >         compatible:
+> >           not:
+> >             contains:
+> >               enum:
+> >                 - adi,ad7172-4
+> >                 - adi,ad7173-8
+> >                 - adi,ad7175-8
+> >     then:
+> >       properties:
+> >         vref2-supply: false
+> >       patternProperties:
+> >         "^channel@[0-9a-f]$":
+> >           properties:
+> >             adi,reference-select:
+> >               enum:
+> >                 - vref
+> >                 - refout-avss
+> >                 - avdd
+> > "
+>
+> Mistaken vref2-supply to avdd2-supply.
+>
+> But still, the presence of avdd2-supply does not influence anything at al=
+l.
+> Driver does not use it, you cannot select it for channel conversions.
+> Would a restriction like this really be required?
 
-Meh, for literally two MSRs, just open code them in tdx_set_msr() and drop the
-@write param.  Or alternatively add:
+It is true that it is not likely to cause any problems we don't fix
+this but why would we want the bindings to intentionally be incorrect
+when there is an easy fix? Driver implementations should not influence
+leaving something out of the bindings [1].
 
-static bool tdx_is_read_only_msr(u32 msr){
-{
-	return msr == MSR_IA32_APICBASE || msr == MSR_EFER;
-}
-
-> +	case 0x4b564d00 ... 0x4b564dff:
-
-This is silly, just do
-
-	case MSR_KVM_POLL_CONTROL:
-		return false;
-
-and let everything else go through the default statement, no?
-
-> +		/* KVM custom MSRs */
-> +		return tdx_is_emulated_kvm_msr(index, write);
-> +	default:
-> +		return false;
-> +	}
-> +}
-> +
-> +int tdx_get_msr(struct kvm_vcpu *vcpu, struct msr_data *msr)
-> +{
-> +	if (tdx_has_emulated_msr(msr->index, false))
-> +		return kvm_get_msr_common(vcpu, msr);
-> +	return 1;
-
-Please invert these and make the happy path the not-taken path, i.e.
-
-	if (!tdx_has_emulated_msr(msr->index))
-		return 1;
-
-	return kvm_get_msr_common(vcpu, msr);
-
-The standard kernel pattern is
-
-	if (error)
-		return <error thingie>
-
-	return <happy thingie>
-
-> +}
-> +
-> +int tdx_set_msr(struct kvm_vcpu *vcpu, struct msr_data *msr)
-> +{
-> +	if (tdx_has_emulated_msr(msr->index, true))
-
-As above:
-
-	if (tdx_is_read_only_msr(msr->index))
-		return 1;
-
-	if (!tdx_has_emulated_msr(msr->index))
-		return 1;
-
-	return kvm_set_msr_common(vcpu, msr);
-
-> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-> index d5b18cad9dcd..0e1d3853eeb4 100644
-> --- a/arch/x86/kvm/x86.c
-> +++ b/arch/x86/kvm/x86.c
-> @@ -90,7 +90,6 @@
->  #include "trace.h"
->  
->  #define MAX_IO_MSRS 256
-> -#define KVM_MAX_MCE_BANKS 32
->  
->  struct kvm_caps kvm_caps __read_mostly = {
->  	.supported_mce_cap = MCG_CTL_P | MCG_SER_P,
-> diff --git a/arch/x86/kvm/x86.h b/arch/x86/kvm/x86.h
-> index 4e40c23d66ed..c87b7a777b67 100644
-> --- a/arch/x86/kvm/x86.h
-> +++ b/arch/x86/kvm/x86.h
-> @@ -9,6 +9,8 @@
->  #include "kvm_cache_regs.h"
->  #include "kvm_emulate.h"
->  
-> +#define KVM_MAX_MCE_BANKS 32
-
-Split this to a separate.  Yes, it's trivial, but that's _exactly_ why it should
-be in a separate patch.  The more trivial refactoring you split out, the more we
-can apply _now_ and take off your hands.
+[1]: https://www.kernel.org/doc/html//v5.10/devicetree/bindings/writing-bin=
+dings.html#overall-design
 
