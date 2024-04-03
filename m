@@ -1,47 +1,79 @@
-Return-Path: <linux-kernel+bounces-129340-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-129341-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5841E89696C
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 10:47:13 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 88DFD8968C5
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 10:33:34 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A504AB2D1EA
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 08:33:18 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 44E052856E8
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 08:33:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CB63370CAD;
-	Wed,  3 Apr 2024 08:32:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C6B152F873;
+	Wed,  3 Apr 2024 08:33:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="gFWcNKqg"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="DjkhvEZh"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0A48D6FE13;
-	Wed,  3 Apr 2024 08:32:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 907C519470
+	for <linux-kernel@vger.kernel.org>; Wed,  3 Apr 2024 08:33:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712133146; cv=none; b=rNR8Wdp+2/08NisqBZyI8cKxb11w9wcTsFunY7Jcm2f3K9EoffcYpsQKIQP8/uDMjGQFcP1Btpe441SA1DZYbB7Z7mHn3zs7JOBuGjnZDMX+okjV8GwKRC4xSV7Jf8WRWMjRwfRbAwsgQfdROg3CCUVNML0354RdnFAmFHUkdXM=
+	t=1712133187; cv=none; b=oHqBGGHmMR0UM7U+XOGgrr9akGM00gPKa1g1HOkzwh6HkfBZIqhsIKkM/hFw5aOWdv+i8Nb2GzgTAf8opLFddPUsjGo6lBtRNxIxERujo8DSBUVD8ZzJD51R5LXwGgTgxWIUu0u5SRM3ywPbgHrflEs8qM/JcEtzfxkl9e8NQp8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712133146; c=relaxed/simple;
-	bh=aGhiiMNbyThJXm/os2JFdWTJxH/5Ik748muQ/oIJTBs=;
+	s=arc-20240116; t=1712133187; c=relaxed/simple;
+	bh=2Z+Ejko7FofGkIpI4wJ7ZPsjyB8mCnSvFfx+1YEfT4M=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=kVTVta4IV+opAFljvoie/KTeE5+zVdZSauhjH0P9sFRCH0ezKRgE1syfxqprU/95ptcklx/ZJPc6lUr7re4Mg3F/SVVNvppWLMYKkui0XVt2kITOtKNN5pNeYjx8ZpGnkZsXjrKpcQvqO0REzJIY+uGSC8C1nUjDyyaU9tph9TI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=gFWcNKqg; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4EC60C43330;
-	Wed,  3 Apr 2024 08:32:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712133145;
-	bh=aGhiiMNbyThJXm/os2JFdWTJxH/5Ik748muQ/oIJTBs=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=gFWcNKqgMGhVcvPHrJu3LUr9vw9tGvcC+8FZUCcllgrlMOwbjZ21bZsZS6rbSrZD6
-	 z1nl6uE1SWxMeQkuJwWBWTqI+CqyFJlzjSOcNjLxhFbvRWwsz3d7gk50Q30W06gGUN
-	 ZE8oNF46LDq68Ktr5D/nN07eq7zVnFju6KUhMUTz3tZIj+kWzAtbD3+D3a4EqAs+U2
-	 twcQQBz7/sbkCjmy/ZZthmnZ0OMCrhd/S2fiXiyksXOg8cegGNVLL6Tm2TE4hEUSV+
-	 jlujWEJPveb3a7DgazHcD85f5ZC++b/XLFNyh6xGulqhLDAAJfhOkJmiFstQB3GObP
-	 BMGGQNLI6gx9Q==
-Message-ID: <a1ca8aa3-d122-4ec9-b239-8180a02106e1@kernel.org>
-Date: Wed, 3 Apr 2024 17:32:23 +0900
+	 In-Reply-To:Content-Type; b=VQksMHsHdpOzgSrSxtbTdQtEiQB7zX/aGvl0mTShDR78YrzFkJ4uI5xAOleN/8lrJ+/SeDvHm4zD2yVo7MIEc4bwHvq0DCsqvluSCbrP5NmlL3wJAtm1QPi9+tNDfeSlejyHx9C8XUIEzsiA/F95TqbLdhNtI8oWj4JzRqGY8nE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=DjkhvEZh; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1712133184;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=9hBwVccZBg0Fl5p97DfphA9YXGRXtnSdOSqA1Wworgs=;
+	b=DjkhvEZhGrkB5nVC4eboxXbfrk7ypn5nOcfrV/avO+aoR3dtges1V1zXe5+oJrqet3vPk6
+	nbkt4GCl2dJqyxeMZqdPsjU1LY6UD54jWUO1gp90i8v21B8mStM24d/RNdKXsHVare1EJj
+	+QSoG1hQtpr1XbQtLWfzuSIc0XB5zOg=
+Received: from mail-ej1-f70.google.com (mail-ej1-f70.google.com
+ [209.85.218.70]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-631-T1LrbgAYNlClX5gUwdV2jQ-1; Wed, 03 Apr 2024 04:33:03 -0400
+X-MC-Unique: T1LrbgAYNlClX5gUwdV2jQ-1
+Received: by mail-ej1-f70.google.com with SMTP id a640c23a62f3a-a4dfdbdaf06so347714966b.3
+        for <linux-kernel@vger.kernel.org>; Wed, 03 Apr 2024 01:33:02 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712133182; x=1712737982;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=9hBwVccZBg0Fl5p97DfphA9YXGRXtnSdOSqA1Wworgs=;
+        b=b6JKMrhn+fh6J3Nv1lD0T+C/9kPvrx4ZBAHv+OY/BVaMira95ndfTe67qiU6+gygLQ
+         j9K5dXaYzoRbQh3vHF8/1Tc8+rdvlabyadXSkTwuWV4Sq5heHClVRZXk6teAXc/TmnK3
+         JE4+VWs/YNh6ob3uhVzxJmp8rzA4KQZvY7i+8GUBEoOAxH+htxYmJa3oxWIsnEX/WFrr
+         1qDAZGW978CQcYySi9tusuk2i2EGCpE50CAAq2u1xksnOpJtCIO7yxUjSxMDLGGdcY8m
+         x9ZhW8M1+KYhKTAL/MLWfHb/lZ1JqtY5CZyaGszE3xrmn3tH3SCIfCJ2Qw+oqGt/1P4t
+         qsNw==
+X-Forwarded-Encrypted: i=1; AJvYcCX9VH9+EtdmoM6kaLFJOgvoA1+UdkiuLvLJ0AwvUndsgplfow7w9WrBNyXgAWA/DkjeaqhqtdWZk8WMTVFAdg0e4TkZfGC1+IxfYj5G
+X-Gm-Message-State: AOJu0Yzn3ZvWqRvgUWVmoyBnPxl82J4QdFhqrg/8Y7qJDmvSMWvkgACh
+	08IsfPAd6pG8li9QRk4qQgEw06UIOx+u/2O7pyOIZeGU55QBigAt2D9MjccOctMADOnj+nPUWLg
+	WQ2Hk2IXsrb16JWFcjjnN0yD9ABPVeBj0CMoMyKYJq4C++6zvdrjBUyfDboSNtXDnVmJnNw==
+X-Received: by 2002:a17:906:1157:b0:a4e:6414:5afd with SMTP id i23-20020a170906115700b00a4e64145afdmr5759443eja.52.1712133181940;
+        Wed, 03 Apr 2024 01:33:01 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IFUYrX1YOrnmR10vdbq+ufbRk4BHlYYJBSP3DuH1BuQ6YlKfpjx3idfoB6rTEHjFrNn1Q5mmA==
+X-Received: by 2002:a17:906:1157:b0:a4e:6414:5afd with SMTP id i23-20020a170906115700b00a4e64145afdmr5759429eja.52.1712133181648;
+        Wed, 03 Apr 2024 01:33:01 -0700 (PDT)
+Received: from ?IPV6:2001:1c00:c32:7800:5bfa:a036:83f0:f9ec? (2001-1c00-0c32-7800-5bfa-a036-83f0-f9ec.cable.dynamic.v6.ziggo.nl. [2001:1c00:c32:7800:5bfa:a036:83f0:f9ec])
+        by smtp.gmail.com with ESMTPSA id jx24-20020a170906ca5800b00a47152e6d10sm7426027ejb.134.2024.04.03.01.33.00
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 03 Apr 2024 01:33:01 -0700 (PDT)
+Message-ID: <283b5056-29df-486f-8a4a-5271af8a5b8c@redhat.com>
+Date: Wed, 3 Apr 2024 10:33:00 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -49,149 +81,68 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 30/34] sata: mv: drop unnecessary #ifdef checks
-To: Arnd Bergmann <arnd@kernel.org>, linux-kernel@vger.kernel.org,
- Niklas Cassel <cassel@kernel.org>,
- Saeed Bishara <saeed@ubuntu-saeed.il.marvell.com>
-Cc: Arnd Bergmann <arnd@arndb.de>, Ma Ke <make_ruc2021@163.com>,
- =?UTF-8?Q?Uwe_Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>,
- Sergey Shtylyov <s.shtylyov@omp.ru>,
- Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
- Jeff Garzik <jeff@garzik.org>, linux-ide@vger.kernel.org
-References: <20240403080702.3509288-1-arnd@kernel.org>
- <20240403080702.3509288-31-arnd@kernel.org>
-Content-Language: en-US
-From: Damien Le Moal <dlemoal@kernel.org>
-Organization: Western Digital Research
-In-Reply-To: <20240403080702.3509288-31-arnd@kernel.org>
+Subject: Re: [PATCH 1/3] dt-bindings: leds: add LED_FUNCTION_FNLOCK
+To: Gergo Koteles <soyer@irl.hu>,
+ Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+ Ike Panhc <ike.pan@canonical.com>,
+ =?UTF-8?Q?Ilpo_J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>,
+ Pavel Machek <pavel@ucw.cz>, Lee Jones <lee@kernel.org>,
+ Rob Herring <robh@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>
+Cc: platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-leds@vger.kernel.org, devicetree@vger.kernel.org
+References: <cover.1712063200.git.soyer@irl.hu>
+ <8ac95e85a53dc0b8cce1e27fc1cab6d19221543b.1712063200.git.soyer@irl.hu>
+ <6b47886e-09ac-4cb9-ab53-ca64f5320005@linaro.org>
+ <5864594aa47ecfeb23d5d05a3afc02393f84b44e.camel@irl.hu>
+ <a19688d3-5402-41c0-b10a-131cefed5b91@linaro.org>
+ <2710283677cf12ca6b826565ec39652f560a43d8.camel@irl.hu>
+Content-Language: en-US, nl
+From: Hans de Goede <hdegoede@redhat.com>
+In-Reply-To: <2710283677cf12ca6b826565ec39652f560a43d8.camel@irl.hu>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 
-On 4/3/24 17:06, Arnd Bergmann wrote:
-> From: Arnd Bergmann <arnd@arndb.de>
-> 
-> Building with W=1 shows a warning for an unused variable when CONFIG_PCI
-> is diabled:
-> 
-> drivers/ata/sata_mv.c:790:35: error: unused variable 'mv_pci_tbl' [-Werror,-Wunused-const-variable]
-> static const struct pci_device_id mv_pci_tbl[] = {
-> 
-> Move the table into the same block that containsn the pci_driver
-> definition.
-> 
-> Fixes: 7bb3c5290ca0 ("sata_mv: Remove PCI dependency")
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+Hi George,
 
-The patch title is also not describing what the patch does.
-Are you OK with changing that to:
-
-ata: sata_mv: Fix PCI device ID table declaration warning
-
-?
-
-> ---
->  drivers/ata/sata_mv.c | 64 +++++++++++++++++++++----------------------
->  1 file changed, 32 insertions(+), 32 deletions(-)
+On 4/2/24 8:50 PM, Gergo Koteles wrote:
+> Hi Krzysztof,
 > 
-> diff --git a/drivers/ata/sata_mv.c b/drivers/ata/sata_mv.c
-> index e82786c63fbd..697063890f5d 100644
-> --- a/drivers/ata/sata_mv.c
-> +++ b/drivers/ata/sata_mv.c
-> @@ -787,37 +787,6 @@ static const struct ata_port_info mv_port_info[] = {
->  	},
->  };
->  
-> -static const struct pci_device_id mv_pci_tbl[] = {
-> -	{ PCI_VDEVICE(MARVELL, 0x5040), chip_504x },
-> -	{ PCI_VDEVICE(MARVELL, 0x5041), chip_504x },
-> -	{ PCI_VDEVICE(MARVELL, 0x5080), chip_5080 },
-> -	{ PCI_VDEVICE(MARVELL, 0x5081), chip_508x },
-> -	/* RocketRAID 1720/174x have different identifiers */
-> -	{ PCI_VDEVICE(TTI, 0x1720), chip_6042 },
-> -	{ PCI_VDEVICE(TTI, 0x1740), chip_6042 },
-> -	{ PCI_VDEVICE(TTI, 0x1742), chip_6042 },
-> -
-> -	{ PCI_VDEVICE(MARVELL, 0x6040), chip_604x },
-> -	{ PCI_VDEVICE(MARVELL, 0x6041), chip_604x },
-> -	{ PCI_VDEVICE(MARVELL, 0x6042), chip_6042 },
-> -	{ PCI_VDEVICE(MARVELL, 0x6080), chip_608x },
-> -	{ PCI_VDEVICE(MARVELL, 0x6081), chip_608x },
-> -
-> -	{ PCI_VDEVICE(ADAPTEC2, 0x0241), chip_604x },
-> -
-> -	/* Adaptec 1430SA */
-> -	{ PCI_VDEVICE(ADAPTEC2, 0x0243), chip_7042 },
-> -
-> -	/* Marvell 7042 support */
-> -	{ PCI_VDEVICE(MARVELL, 0x7042), chip_7042 },
-> -
-> -	/* Highpoint RocketRAID PCIe series */
-> -	{ PCI_VDEVICE(TTI, 0x2300), chip_7042 },
-> -	{ PCI_VDEVICE(TTI, 0x2310), chip_7042 },
-> -
-> -	{ }			/* terminate list */
-> -};
-> -
->  static const struct mv_hw_ops mv5xxx_ops = {
->  	.phy_errata		= mv5_phy_errata,
->  	.enable_leds		= mv5_enable_leds,
-> @@ -4303,6 +4272,37 @@ static int mv_pci_init_one(struct pci_dev *pdev,
->  static int mv_pci_device_resume(struct pci_dev *pdev);
->  #endif
->  
-> +static const struct pci_device_id mv_pci_tbl[] = {
-> +	{ PCI_VDEVICE(MARVELL, 0x5040), chip_504x },
-> +	{ PCI_VDEVICE(MARVELL, 0x5041), chip_504x },
-> +	{ PCI_VDEVICE(MARVELL, 0x5080), chip_5080 },
-> +	{ PCI_VDEVICE(MARVELL, 0x5081), chip_508x },
-> +	/* RocketRAID 1720/174x have different identifiers */
-> +	{ PCI_VDEVICE(TTI, 0x1720), chip_6042 },
-> +	{ PCI_VDEVICE(TTI, 0x1740), chip_6042 },
-> +	{ PCI_VDEVICE(TTI, 0x1742), chip_6042 },
-> +
-> +	{ PCI_VDEVICE(MARVELL, 0x6040), chip_604x },
-> +	{ PCI_VDEVICE(MARVELL, 0x6041), chip_604x },
-> +	{ PCI_VDEVICE(MARVELL, 0x6042), chip_6042 },
-> +	{ PCI_VDEVICE(MARVELL, 0x6080), chip_608x },
-> +	{ PCI_VDEVICE(MARVELL, 0x6081), chip_608x },
-> +
-> +	{ PCI_VDEVICE(ADAPTEC2, 0x0241), chip_604x },
-> +
-> +	/* Adaptec 1430SA */
-> +	{ PCI_VDEVICE(ADAPTEC2, 0x0243), chip_7042 },
-> +
-> +	/* Marvell 7042 support */
-> +	{ PCI_VDEVICE(MARVELL, 0x7042), chip_7042 },
-> +
-> +	/* Highpoint RocketRAID PCIe series */
-> +	{ PCI_VDEVICE(TTI, 0x2300), chip_7042 },
-> +	{ PCI_VDEVICE(TTI, 0x2310), chip_7042 },
-> +
-> +	{ }			/* terminate list */
-> +};
-> +
->  
->  static struct pci_driver mv_pci_driver = {
->  	.name			= DRV_NAME,
-> @@ -4315,6 +4315,7 @@ static struct pci_driver mv_pci_driver = {
->  #endif
->  
->  };
-> +MODULE_DEVICE_TABLE(pci, mv_pci_tbl);
->  
->  /**
->   *      mv_print_info - Dump key info to kernel log for perusal.
-> @@ -4487,7 +4488,6 @@ static void __exit mv_exit(void)
->  MODULE_AUTHOR("Brett Russ");
->  MODULE_DESCRIPTION("SCSI low-level driver for Marvell SATA controllers");
->  MODULE_LICENSE("GPL v2");
-> -MODULE_DEVICE_TABLE(pci, mv_pci_tbl);
->  MODULE_VERSION(DRV_VERSION);
->  MODULE_ALIAS("platform:" DRV_NAME);
->  
+> On Tue, 2024-04-02 at 20:08 +0200, Krzysztof Kozlowski wrote:
+>> On 02/04/2024 16:36, Gergo Koteles wrote:
+>>> Hi Krzysztof,
+>>>
+>>> On Tue, 2024-04-02 at 15:55 +0200, Krzysztof Kozlowski wrote:
+>>>>
+>>>> Do we really need to define all these possible LED functions? Please
+>>>> link to DTS user for this.
+>>>>
+>>>
+>>> I think for userspace it's easier to support an LED with a specified
+>>> name than to use various sysfs attributes. LED devices are easy to find
+>>> because they available are in the /sys/class/leds/ directory.
+>>> So I think it's a good thing to define LED names somewhere.
+>>
+>> You did not add anything for user-space, but DT bindings. We do not keep
+>> here anything for user-space.
+>>
+> 
+> The LED_FUNCTION_KBD_BACKLIGHT confused me. Ok, this shouldn't be here,
+> I will remove it from v2.
 
--- 
-Damien Le Moal
-Western Digital Research
+I don't believe that is necessary, see my direct reply to Krzysztof first
+email about this. According to Documentation/leds/leds-class.rst
+you did exactly the right thing.
+
+Also thank you for your interesting contribution. I have only briefly
+looked over your other 2 patches, but I like the concept.
+
+I'll hopefully have time to do a full review coming Monday.
+
+Regards,
+
+Hans
+
 
 
