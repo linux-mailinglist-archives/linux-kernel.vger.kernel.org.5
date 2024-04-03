@@ -1,74 +1,74 @@
-Return-Path: <linux-kernel+bounces-129778-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-129780-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 66A15896FD1
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 15:04:46 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3625F896FD9
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 15:05:54 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 86C741C264D4
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 13:04:45 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id AF2911F2201E
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 13:05:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BB8D3148318;
-	Wed,  3 Apr 2024 13:04:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A1E4A148304;
+	Wed,  3 Apr 2024 13:05:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Jf8SQuYi"
-Received: from mail-pf1-f175.google.com (mail-pf1-f175.google.com [209.85.210.175])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="OX277Qky"
+Received: from mail-qv1-f43.google.com (mail-qv1-f43.google.com [209.85.219.43])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AF026147C90;
-	Wed,  3 Apr 2024 13:04:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 691BE147C8C;
+	Wed,  3 Apr 2024 13:05:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712149469; cv=none; b=Bq/BCT27Hd96DOLsC6EHoZL0qgqdt50sDusWzVt/TQhccVc3R3XUucXoBl92om0r8fD9SUBn8yMJBclU5kWFgDrc4WbxaeuF6NG5HMSWGuPVR6zTkCLFqdEGY/63IBZj70/1JLqHlUNgjrZt25AMDydOGhfZh/jIyZKSA3QY7II=
+	t=1712149540; cv=none; b=XMzFfUWxuobmmyJxsleTxcCF36Svq1KBO1s/z0aU5XonHI25Tb8uS8Mydzsb9J/dA0GUdzRN2Y0CegS67qM1wZz6QObcJpcYwKNKXhl1v7kg3kFW69aP2ghF/EaqhAESjOR6jfVZ7/rR7X2CfNz3Jb3HnQYSjalzTxX9aNZQ8wM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712149469; c=relaxed/simple;
-	bh=hbshPJrhfoiAxMe08Uzd8OxBoSHcUUGIyq14hQs3qq0=;
+	s=arc-20240116; t=1712149540; c=relaxed/simple;
+	bh=wQNcHiU2egNcf6hBq6VHiTIlV1Qd3a+Jtkh3eSehbdc=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=S/o67AxSXTynkRvJe5ofAgpaBeaVairgEkNv5mUSby+FA9DF2Qn4X8abznmySRIo0Jij+nZUeFNFdxaHzrPOfEs4Yb8B1+28bw5tO5XIbn7i/XiFR+YXNZ0znkFrROq0D46wqC6B22PWJ4ltGH+f+n+WA91VY1rMaZ6V+xfEXe8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Jf8SQuYi; arc=none smtp.client-ip=209.85.210.175
+	 In-Reply-To:Content-Type; b=KuCVSeQvITJ9NcREXKQt93zLMGTshwe7nE6P6oOANLncgw+ByaJp3jhEzFqZMxyH/fHr6OYlhHdGW2Dof5lCC4c+EfwgqbpUAor2Yx1FOp6Yh7vrzYvHB2U2AAj0DoqpyzDI+7cPPnq2jIU+c6Kma2gyz4DmTlPYlgVxNyhVpiQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=OX277Qky; arc=none smtp.client-ip=209.85.219.43
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f175.google.com with SMTP id d2e1a72fcca58-6eaf1005fcaso2990179b3a.3;
-        Wed, 03 Apr 2024 06:04:27 -0700 (PDT)
+Received: by mail-qv1-f43.google.com with SMTP id 6a1803df08f44-6992d41de57so730566d6.3;
+        Wed, 03 Apr 2024 06:05:39 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1712149467; x=1712754267; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1712149538; x=1712754338; darn=vger.kernel.org;
         h=content-transfer-encoding:in-reply-to:autocrypt:from
          :content-language:references:cc:to:subject:user-agent:mime-version
          :date:message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=CYh0cMlxUyaLCd0U+9BafKU2TiVpKIgwYe7ZOLgPcu4=;
-        b=Jf8SQuYiJyfeEeQrH2CtQltaG6qXbbHyUiS6tg/EdIqus3xPdg83K/d/io31USqPml
-         f4vJ2NI2FA/3N+m/SI7cyTqldxjFOkNp5lxb5vJiJAJsrYqMRk0MFX2tbLYDyUFKJDly
-         XhjJl9LDIVHGmNOpGI7176MYtJqtT2gtRu39OwFz2pFT7gWyqvvVATv2PVsGhrzZjfz8
-         3LfVR0DoHx7We5qqqLWGAAeKJMCHgJce1DTeyb3u9+q2N7oDXvZETe/9kTyxKFhs2TzT
-         tEaUUVhtS8b/fb7OFoFDF0Y4VFhAW1pieQeT4edTHcGoaCnlCaXKhj/6QmjF5hTanwoX
-         dLcA==
+        bh=3E/5ZKiFCYtAT6YThoONU0/wlO4idhhu4OUR1dvPZWI=;
+        b=OX277Qky9PHiYqjYyuZgKK9bzNeufsnXwSpymo10b6XxNujD7AaDwkRif77OP/VxDh
+         rFewF3XOyyVtGiJ0SbjaPf8y/CpC7jZ35cU5shaEO8YBtfqv9LslX6NklMBEiSGwJ/CV
+         4TcvULHe5w6hfuqXQyJnjXbRNXQj7Rl6QRz2C972SiG7hO2m6mCDF4mXfUf18Irv0mVO
+         vTjKTRPG73bx6trgkss89hoqp67062QnaNJmvEVYxmW7Avg0T7mLT0U9t4VhZJj/9Zss
+         ut+CPXrQnrHReRRZhpwAB0ZwAvnlpIjDE/7JmgAhaKJ0q/jlPPafcQF2YjFcjqaqUZNL
+         9wCw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712149467; x=1712754267;
+        d=1e100.net; s=20230601; t=1712149538; x=1712754338;
         h=content-transfer-encoding:in-reply-to:autocrypt:from
          :content-language:references:cc:to:subject:user-agent:mime-version
          :date:message-id:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=CYh0cMlxUyaLCd0U+9BafKU2TiVpKIgwYe7ZOLgPcu4=;
-        b=V/PAGdm47UD2kzULrQ0zQG8EhWlh3hTb1Ppygel/fyX4u0UvZJw7jHRJ9mPN7a5vWs
-         G5C9XuxJ64+u4SuoZhpyHJB6OND5tEg4ebNJ1jkEoqAESUVMbZK/pt3gJwRZyXZ23PSR
-         VOk6BSDmjkxAQeKhcSxEgmWw93vKr2+N4jkts5B+R/ZY57SZzIAjv9I+jK/e1fS2EJwG
-         FseXdcIP45iqoHdZdloxyNEQHZlR1qmD2X8VYq5afdNotYW1k8P2SIgcg1nhU/yKmoHM
-         tvMZKt9n+8RzdX5b/Slt55PQBCoBl/CDQS3p5DIJFO060965dK2+Qt8PEutPbs3xJfK2
-         VN4A==
-X-Forwarded-Encrypted: i=1; AJvYcCV1I+UII0JPwncOJuZrxhTiCvaixTeMDrNqKVR07dD7R+XipIUo19+rMGaCyqN6LvxRCwyJhCKkzK1pfHyu/gocj57bpVK79OolD+4oKLehWOGqf4BwWhCz7Mvkv4iUR9kvoorN
-X-Gm-Message-State: AOJu0YwQSQMQZrlPMrr4m6aDSxOEtmq0LMJ/soEB6aAXZIzgTlLy3JVs
-	c9F3MtN3UhEblLKJELIOOBfv9TcARN7xdYM88U7LwSj9hPDVfvEP
-X-Google-Smtp-Source: AGHT+IEZs6yg93R4mNQWrtjPl2vWI+pYGQDMcjjUzzDxBEJLtp0tRmj28JluC6961Q8cuxrzfEmHxw==
-X-Received: by 2002:a05:6a20:baa7:b0:1a3:d60c:f16d with SMTP id fb39-20020a056a20baa700b001a3d60cf16dmr11750114pzb.51.1712149466950;
-        Wed, 03 Apr 2024 06:04:26 -0700 (PDT)
+        bh=3E/5ZKiFCYtAT6YThoONU0/wlO4idhhu4OUR1dvPZWI=;
+        b=Hz+ALWN/AEh7aebHfywJYyjXEqLHT88ilC+VzTUghoKC5Jct9yeU0piK7jK5Fk7fAG
+         kuerz2FFcd/575XNAHN+2h/Bsux1amz9lFuk52SwBWCGBLAGmilYuO/9OSoe8qQeAe2G
+         lqWngKEi2OVrzgtQsQy+E9Ta3ZsgWLD8ZM2kWP/IVW9rfgwMuqLZ0AUFVKXeqINfsjGs
+         3NvzqhamJtlNS8U+fT0+nQ//O15Ckf2tEtShd4uzo9yapdZiKWRQ2AZdR9WVy/X+nmcF
+         ViStZoKW/oGhZIzYbNYju3TYfZFoWnMx5/SCxyCX5n4efDq/cZTGfhXKCwUYH8JH//pb
+         AuRQ==
+X-Forwarded-Encrypted: i=1; AJvYcCU2ItKh2W3HhLAx1IhK16eD+LXLT1ZATgI4Ahb3ETJGExo9PjG4tPrA8X/q7Y4ceAG7BvyvkgwzROhpG3CGcatq/tZhMrFiIykSOiuu28aPK9ljo1MfDMNWv685v5msKty2hYRw
+X-Gm-Message-State: AOJu0YxrYmhQ05WiHI9wCoP4dmvRP0PF75lGpyIkx9tvZYxsS/4hlk/3
+	X3cSOSdxuLJT4zCaA9nMY7G0dbMW3tnUdxlhcPEh/m8dtrmIWLnB
+X-Google-Smtp-Source: AGHT+IEoNF5/Z/Ai9ZoDxOliZjp+T9YvlFfdguVZ9qSKBVONmO0sn2K9lOiVhVkZrheX1w0JgSTOBg==
+X-Received: by 2002:a05:6214:400b:b0:699:2d9b:214f with SMTP id kd11-20020a056214400b00b006992d9b214fmr201464qvb.63.1712149538193;
+        Wed, 03 Apr 2024 06:05:38 -0700 (PDT)
 Received: from [192.168.1.3] (ip68-4-215-93.oc.oc.cox.net. [68.4.215.93])
-        by smtp.gmail.com with ESMTPSA id bn5-20020a056a02030500b005f073cd2bc6sm10221620pgb.82.2024.04.03.06.04.21
+        by smtp.gmail.com with ESMTPSA id kc21-20020a056214411500b00698fccd2e02sm4255923qvb.43.2024.04.03.06.05.33
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 03 Apr 2024 06:04:26 -0700 (PDT)
-Message-ID: <0d0ff3bb-f651-4d51-9c51-4da2fef178e2@gmail.com>
-Date: Wed, 3 Apr 2024 06:04:19 -0700
+        Wed, 03 Apr 2024 06:05:37 -0700 (PDT)
+Message-ID: <29163687-5e76-4231-b551-46c584e5629b@gmail.com>
+Date: Wed, 3 Apr 2024 06:05:32 -0700
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -76,8 +76,8 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net-next v2 8/8] net: dsa: microchip:
- ksz8_r_dyn_mac_table(): use entries variable to signal 0 entries
+Subject: Re: [PATCH net-next v2 1/9] net: dsa: add support for DCB get/set
+ apptrust configuration
 To: Oleksij Rempel <o.rempel@pengutronix.de>,
  "David S. Miller" <davem@davemloft.net>, Andrew Lunn <andrew@lunn.ch>,
  Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
@@ -86,9 +86,11 @@ To: Oleksij Rempel <o.rempel@pengutronix.de>,
  Arun Ramadoss <arun.ramadoss@microchip.com>
 Cc: kernel@pengutronix.de, linux-kernel@vger.kernel.org,
  netdev@vger.kernel.org, UNGLinuxDriver@microchip.com,
- =?UTF-8?Q?S=C3=B8ren_Andersen?= <san@skov.dk>
-References: <20240403125039.3414824-1-o.rempel@pengutronix.de>
- <20240403125039.3414824-9-o.rempel@pengutronix.de>
+ David Ahern <dsahern@kernel.org>, Simon Horman <horms@kernel.org>,
+ Willem de Bruijn <willemb@google.com>, =?UTF-8?Q?S=C3=B8ren_Andersen?=
+ <san@skov.dk>
+References: <20240403092905.2107522-1-o.rempel@pengutronix.de>
+ <20240403092905.2107522-2-o.rempel@pengutronix.de>
 Content-Language: en-US
 From: Florian Fainelli <f.fainelli@gmail.com>
 Autocrypt: addr=f.fainelli@gmail.com; keydata=
@@ -124,19 +126,26 @@ Autocrypt: addr=f.fainelli@gmail.com; keydata=
  y5arMQorqTFWlEOgRA8OP47L9knl9i4xuR0euV6DChDrguup2aJVU8JPBBgRAgAPAhsMBQJU
  X9LxBQkeXB3fAAoJEGFXmRW1Y3YOj4UAn3nrFLPZekMeqX5aD/aq/dsbXSfyAKC45Go0YyxV
  HGuUuzv+GKZ6nsysJw==
-In-Reply-To: <20240403125039.3414824-9-o.rempel@pengutronix.de>
+In-Reply-To: <20240403092905.2107522-2-o.rempel@pengutronix.de>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 
 
 
-On 4/3/2024 5:50 AM, Oleksij Rempel wrote:
-> We already have a variable to provide number of entries. So use it,
-> instead of using error number.
+On 4/3/2024 2:28 AM, Oleksij Rempel wrote:
+> Add DCB support to get/set trust configuration for different packet
+> priority information sources. Some switch allow to choice different
+> source of packet priority classification. For example on KSZ switches it
+> is possible to configure VLAN PCP and/or DSCP sources.
+
+s/to choice/to chose/
+
+or s/to choice/the choice/
+
 > 
-> Reviewed-by: Vladimir Oltean <olteanv@gmail.com>
-> Acked-by: Arun Ramadoss <arun.ramadoss@microchip.com>
 > Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
+
+With that fixed:
 
 Reviewed-by: Florian Fainelli <florian.fainelli@broadcom.com>
 -- 
