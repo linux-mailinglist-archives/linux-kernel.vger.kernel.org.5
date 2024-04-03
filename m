@@ -1,119 +1,121 @@
-Return-Path: <linux-kernel+bounces-129709-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-129701-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C5FB5896EC6
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 14:16:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 02A62896EAC
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 14:07:55 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 032191C22904
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 12:16:31 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 34D7C1C23287
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 12:07:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5F238146003;
-	Wed,  3 Apr 2024 12:16:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=analog.com header.i=@analog.com header.b="CDssN7lk"
-Received: from mx0b-00128a01.pphosted.com (mx0a-00128a01.pphosted.com [148.163.135.77])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2484C6E60F;
-	Wed,  3 Apr 2024 12:16:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.135.77
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6DBFA145FEC;
+	Wed,  3 Apr 2024 12:07:46 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EE98E143869;
+	Wed,  3 Apr 2024 12:07:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712146583; cv=none; b=XGbsIhpfZd6c0XeiH/YhWv7ED8xyejTn1n93d9RiNmaI16FfATEAYB8H3kKWtLafsvKMUCIyPK4fB9mh2CmHFTeMKHKIw+G8cfboBJuKCVOuZNo18zJETGYhAw5b+KbVlmDPBPhrlHPCkS6E8ISJFD1bb26/IxgaexghRwcTDv0=
+	t=1712146066; cv=none; b=snQKcj1U8vsZXnW7GmtjPp9CXpq/kiBjWtSFd5AvLIN8feNR4DwyzWlHN1sdLp8gAzYVclSGsWlklTHm7zxLnwsura/C5N9OD+0rPZRkfewKX59fV5zamNa7zzFV1MATNLUd2U42aFiyK22BHPnF4NaclgsOxEO2typ905rPy24=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712146583; c=relaxed/simple;
-	bh=rkDWyKFHQlcK//l8NqLN4Od3LQ6jwyS9wT6NmXfTJO4=;
-	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=gan1ACRqSH3D+qodM2RARaaYFjyC4W2JkcWkRO/PvOkjjqdFPOHb+8z3RpOCZKQS+GprmHrUDkVojCVdmL/O0xVhGAj/kmGUA5+JUlImIRrJKDZLmMJBiI5oszWkyx7RYUlUqhtUgM5RX04TBRILXTvMGVMXK7SF8qkr8f7y7ig=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=analog.com; spf=pass smtp.mailfrom=analog.com; dkim=pass (2048-bit key) header.d=analog.com header.i=@analog.com header.b=CDssN7lk; arc=none smtp.client-ip=148.163.135.77
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=analog.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=analog.com
-Received: from pps.filterd (m0375855.ppops.net [127.0.0.1])
-	by mx0b-00128a01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 4337M1Ag015941;
-	Wed, 3 Apr 2024 07:14:12 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=analog.com; h=
-	from:to:cc:subject:date:message-id:in-reply-to:references
-	:mime-version:content-transfer-encoding:content-type; s=DKIM;
-	 bh=PXD3z/o/txzzPGoWI9hDoubN7IcsO/NqLqeUrJhqVfs=; b=CDssN7lk0dbD
-	KCzmLE4Fo88z8/kJgBTS+myvckq4U3NvM4/BeRCeljEDh9PdyGPV3w2qhkFy7xZr
-	xKKLy+gEiBL50ySXz+6L7zWSaxNnLBgYJuqhmo8TnWC/V398S268ctDWchpapqdl
-	N8ixzNC1fH1BrcLT/dkVjYUCM5W5725snEQnV2KYniGBPzPJYm1mxk4tCm265ZEW
-	rlKNRuXupEMlzS/f1JjFIbpA+dDV8bxFDIg0q0PXqt4sxSlckuHwbl6VqQWg/8/U
-	LuUVrVnVfPp1E2tBKcCKlA5f/lTeMJnaZcP3HIbzK0TEszj7ALg3QIe3TRC/bLlB
-	cDNTjxpsqw==
-Received: from nwd2mta3.analog.com ([137.71.173.56])
-	by mx0b-00128a01.pphosted.com (PPS) with ESMTPS id 3x92nh0tnf-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 03 Apr 2024 07:14:12 -0400 (EDT)
-Received: from ASHBMBX8.ad.analog.com (ASHBMBX8.ad.analog.com [10.64.17.5])
-	by nwd2mta3.analog.com (8.14.7/8.14.7) with ESMTP id 433BEBhg034631
-	(version=TLSv1/SSLv3 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-	Wed, 3 Apr 2024 07:14:11 -0400
-Received: from ASHBMBX8.ad.analog.com (10.64.17.5) by ASHBMBX8.ad.analog.com
- (10.64.17.5) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.14; Wed, 3 Apr 2024
- 07:14:10 -0400
-Received: from zeus.spd.analog.com (10.66.68.11) by ashbmbx8.ad.analog.com
- (10.64.17.5) with Microsoft SMTP Server id 15.2.986.14 via Frontend
- Transport; Wed, 3 Apr 2024 07:14:10 -0400
-Received: from rbolboac.ad.analog.com ([10.48.65.117])
-	by zeus.spd.analog.com (8.15.1/8.15.1) with ESMTP id 433BE16q019608;
-	Wed, 3 Apr 2024 07:14:06 -0400
-From: Ramona Gradinariu <ramona.gradinariu@analog.com>
-To: <linux-kernel@vger.kernel.org>, <jic23@kernel.org>, <nuno.sa@analog.com>,
-        <linux-iio@vger.kernel.org>
-CC: Ramona Gradinariu <ramona.gradinariu@analog.com>
-Subject: [PATCH 1/1] iio:imu: adis16475: Fix sync mode setting
-Date: Wed, 3 Apr 2024 14:13:57 +0300
-Message-ID: <20240403111357.1074511-2-ramona.gradinariu@analog.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20240403111357.1074511-1-ramona.gradinariu@analog.com>
-References: <20240403111357.1074511-1-ramona.gradinariu@analog.com>
+	s=arc-20240116; t=1712146066; c=relaxed/simple;
+	bh=baSyI2npvgfiHgQkn4LT4cuEiLvo3xIr5VzFHc6fB4s=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=WgmxTTKu8ztdzpFGyRkIzjvujEXps3TGfOWEB84x5w3vCYD9Vq/jf/Tp9IjkwPyUkn5P8Wx7Ow2zoSWpzQnTP7qPJ886andPa2UBua360oDg6X50slpq8PIaBfTgidhRtqJclTnGlkHrlYkeRy9AhaICM2dQKuTemg0hExE1rLg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 3D2EE1007;
+	Wed,  3 Apr 2024 05:08:13 -0700 (PDT)
+Received: from [192.168.178.6] (unknown [172.31.20.19])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 0945E3F64C;
+	Wed,  3 Apr 2024 05:07:39 -0700 (PDT)
+Message-ID: <045fa6db-4f76-46aa-85ba-c9e698c7e390@arm.com>
+Date: Wed, 3 Apr 2024 14:07:30 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ADIRuleOP-NewSCL: Rule Triggered
-X-Proofpoint-GUID: 4zXI8UjcwJ439MGpJGpvhI9NBGLi0s_Q
-X-Proofpoint-ORIG-GUID: 4zXI8UjcwJ439MGpJGpvhI9NBGLi0s_Q
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-04-03_10,2024-04-01_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
- suspectscore=0 malwarescore=0 mlxscore=0 priorityscore=1501 clxscore=1011
- mlxlogscore=999 bulkscore=0 phishscore=0 adultscore=0 spamscore=0
- impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2403210001 definitions=main-2404030077
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v4 0/4] Update Energy Model after chip binning adjusted
+ voltages
+Content-Language: en-US
+To: Lukasz Luba <lukasz.luba@arm.com>, linux-kernel@vger.kernel.org,
+ linux-pm@vger.kernel.org, rafael@kernel.org
+Cc: linux-arm-kernel@lists.infradead.org, sboyd@kernel.org, nm@ti.com,
+ linux-samsung-soc@vger.kernel.org, daniel.lezcano@linaro.org,
+ viresh.kumar@linaro.org, krzysztof.kozlowski@linaro.org,
+ alim.akhtar@samsung.com, m.szyprowski@samsung.com, mhiramat@kernel.org
+References: <20240402155822.505491-1-lukasz.luba@arm.com>
+From: Dietmar Eggemann <dietmar.eggemann@arm.com>
+In-Reply-To: <20240402155822.505491-1-lukasz.luba@arm.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-Fix sync mode setting by applying the necessary shift bits.
+On 02/04/2024 17:58, Lukasz Luba wrote:
+> Hi all,
+> 
+> This is a follow-up patch aiming to add EM modification due to chip binning.
+> The first RFC and the discussion can be found here [1].
+> 
+> It uses Exynos chip driver code as a 1st user. The EM framework has been
+> extended to handle this use case easily, when the voltage has been changed
+> after setup. On my Odroid-xu4 in some OPPs I can observe ~20% power difference.
+> According to that data in driver tables it could be up to ~29%.
+> 
+> This chip binning is applicable to a lot of SoCs, so the EM framework should
+> make it easy to update. It uses the existing OPP and DT information to
+> re-calculate the new power values.
+> 
+> It has dependency on Exynos SoC driver tree.
+> 
+> Changes:
+> v4:
+> - added asterisk in the comment section (test robot)
+> - change the patch 2/4 header name and use 'Refactor'
+> v3:
+> - updated header description patch 2/4 (Dietmar)
+> - removed 2 sentences from comment and adjusted in patch 3/4 (Dietmar)
+> - patch 4/4 re-phrased code comment (Dietmar)
+> - collected tags (Krzysztof, Viresh)
+> v2:
+> - removed 'ret' from error message which wasn't initialized (Christian)
+> v1:
+> - exported the OPP calculation function from the OPP/OF so it can be
+>   used from EM fwk (Viresh)
+> - refactored EM updating function to re-use common code
+> - added new EM function which can be used by chip device drivers which
+>   modify the voltage in OPPs
+> RFC is at [1]
+> 
+> Regards,
+> Lukasz Luba
+> 
+> [1] https://lore.kernel.org/lkml/20231220110339.1065505-1-lukasz.luba@arm.com/
+> 
+> Lukasz Luba (4):
+>   OPP: OF: Export dev_opp_pm_calc_power() for usage from EM
+>   PM: EM: Refactor em_adjust_new_capacity()
+>   PM: EM: Add em_dev_update_chip_binning()
+>   soc: samsung: exynos-asv: Update Energy Model after adjusting voltage
+> 
+>  drivers/opp/of.c                 |  17 +++--
+>  drivers/soc/samsung/exynos-asv.c |  11 +++-
+>  include/linux/energy_model.h     |   5 ++
+>  include/linux/pm_opp.h           |   8 +++
+>  kernel/power/energy_model.c      | 106 +++++++++++++++++++++++++------
+>  5 files changed, 122 insertions(+), 25 deletions(-)
 
-Fixes: fff7352bf7a3 ("iio: imu: Add support for adis16475")
-Signed-off-by: Ramona Gradinariu <ramona.gradinariu@analog.com>
----
- drivers/iio/imu/adis16475.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+LGTM.
 
-diff --git a/drivers/iio/imu/adis16475.c b/drivers/iio/imu/adis16475.c
-index 01f55cc902fa..bd30c3469d9a 100644
---- a/drivers/iio/imu/adis16475.c
-+++ b/drivers/iio/imu/adis16475.c
-@@ -1351,7 +1351,8 @@ static int adis16475_config_sync_mode(struct adis16475 *st)
- 	 * in chip_info.
- 	 */
- 	ret = __adis_update_bits(&st->adis, ADIS16475_REG_MSG_CTRL,
--				 ADIS16475_SYNC_MODE_MASK, sync->sync_mode);
-+				 ADIS16475_SYNC_MODE_MASK,
-+				 ADIS16475_SYNC_MODE(sync->sync_mode));
- 	if (ret)
- 		return ret;
- 
--- 
-2.34.1
+Just two very minor things which I mentioned in the individual patches.
+
+Reviewed-by: Dietmar Eggemann <dietmar.eggemann@arm.com>
+
+
 
 
