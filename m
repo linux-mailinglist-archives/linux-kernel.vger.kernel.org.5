@@ -1,107 +1,98 @@
-Return-Path: <linux-kernel+bounces-130116-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-130117-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4C680897453
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 17:47:33 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4B5BF897442
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 17:44:06 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 94562B257A6
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 15:43:53 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CEE7328487A
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 15:44:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5917B14A4DE;
-	Wed,  3 Apr 2024 15:43:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="sD3iALlA";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="LXSNI6mg"
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5454D14A4EF;
+	Wed,  3 Apr 2024 15:43:52 +0000 (UTC)
+Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 463331E871;
-	Wed,  3 Apr 2024 15:43:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1974614A4EC;
+	Wed,  3 Apr 2024 15:43:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.176.79.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712159015; cv=none; b=hpIkZO1366I2QrP5uiQ2UdmqsI9dqLOVC1BJ0NRBAtelmBBUf4CXOeYdrdb4YMNsSryJlydaP5AIYiLmVvIfJI4YpZ9eKPhyuEXnsJrri7/9/oobRXlaENqlEpaf7kxuvyZPESddM+ezKBfMwntjpjP8cgf/pTDyVtM0R4hxlIc=
+	t=1712159031; cv=none; b=sBvxPZQpE0KrTWYckjicU7eSt4LySqMoPIpmjbOaDMSwHyziq+eG4wgvwTLDtQd0T3elTlVAELgUBu0NE8mBl/33gZ2WE3SQXIjX69kHXemMBu19xRiPbzAYnE0DDlPfV4rGbRYZLhiYyxuprGBAm2RQ7Ikm5/8MqjNPBWOOzWM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712159015; c=relaxed/simple;
-	bh=T6ATMPb0L6jQmUdZukRjg/J3crE9UrcQ5hjw5772x5A=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=gEc+SA8FqPc+J8HwN+gqaHAZzRa6Rhm59WlkBfYaYVfSMCpPUwx13fbBqIO99tIMb9imsc/ffCAxb8LAfYGI0ygf1XYuKnNgJ5hBzUdWlyc82HOUIYtedJqUnrXxgbOJvImDe0EmAhoS9zel66fc3aCNzuce9Xnx5ES3seRDYgg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=sD3iALlA; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=LXSNI6mg; arc=none smtp.client-ip=193.142.43.55
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
-From: Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1712159012;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=0ZWNUC2Pb10IDRHFLsN4mAj14Fjk7lK2G1G9BFqCQx4=;
-	b=sD3iALlAHq87Li0ITqAVHVUJn4FRxdTyg8m1gPG+LOzVvMQz2dTbiiH38ktFhrjm1TRzS4
-	Zo+ksm8rKsS8tcOEoKso1w455YUOP82JbFovRjNLSayXTnjD1YL/1XdzqJNBpJZuXz+26e
-	/fSp8RhscDgr1RFB+MoIhbAVpqAKe4tfYUEV5nybg6BjFMW/V6Dg4kPcmDBky7LCbtYjU9
-	YMKMqzCB3NWF7c0OxRkDvYgijekaaTECxorL0Up4ZEqsF+BuHk9G1orAgUsp2Dbr0iwwMw
-	t8fUCE1k92TiF8WGrWIEUUy3G5+GHhisJ2pg5r5ddK9ZwIuaYY15yvSrlXLIsw==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1712159012;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=0ZWNUC2Pb10IDRHFLsN4mAj14Fjk7lK2G1G9BFqCQx4=;
-	b=LXSNI6mgfuJiVQShFc3oviDQpxtZXNLCZwsb+8sl4TKoEpTx9Ns389HsCAS6SYVbkSpjcQ
-	G5ifs6gtp6y5PiAQ==
-To: Oleg Nesterov <oleg@redhat.com>
-Cc: John Stultz <jstultz@google.com>, Marco Elver <elver@google.com>, Peter
- Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@kernel.org>, "Eric W.
- Biederman" <ebiederm@xmission.com>, linux-kernel@vger.kernel.org,
- linux-kselftest@vger.kernel.org, Dmitry Vyukov <dvyukov@google.com>,
- kasan-dev@googlegroups.com, Edward Liaw <edliaw@google.com>, Carlos Llamas
- <cmllamas@google.com>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Subject: Re: [PATCH v6 1/2] posix-timers: Prefer delivery of signals to the
- current thread
-In-Reply-To: <20240403150343.GC31764@redhat.com>
-References: <20230316123028.2890338-1-elver@google.com>
- <CANDhNCqBGnAr_MSBhQxWo+-8YnPPggxoVL32zVrDB+NcoKXVPQ@mail.gmail.com>
- <87frw3dd7d.ffs@tglx>
- <CANDhNCqbJHTNcnBj=twHQqtLjXiGNeGJ8tsbPrhGFq4Qz53c5w@mail.gmail.com>
- <874jcid3f6.ffs@tglx> <20240403150343.GC31764@redhat.com>
-Date: Wed, 03 Apr 2024 17:43:32 +0200
-Message-ID: <87sf02bgez.ffs@tglx>
+	s=arc-20240116; t=1712159031; c=relaxed/simple;
+	bh=EUdlrtYcP9SwWnsQ8olJN/RqljV2d9AFFIWAUVklaZA=;
+	h=Date:From:To:CC:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=lJE4qUBxEqmy3Sx+KyqFL98ZKBGeBA68uxCcfcVbToWImp5wUjwveqlOFHmQPxMSagqm6NJHhDF2cj6fYQM6+nF3Wc7jeBFkdq7CCy9kUY2WPB4ZQqS8DXpdYtplM3BejM+RC1Oh1QkGtq/GR9lqwaLiCG/sUFuo+Ib3CtDF2nA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=185.176.79.56
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.18.186.31])
+	by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4V8psd4VBDz6G89M;
+	Wed,  3 Apr 2024 23:42:29 +0800 (CST)
+Received: from lhrpeml500005.china.huawei.com (unknown [7.191.163.240])
+	by mail.maildlp.com (Postfix) with ESMTPS id 6461B140516;
+	Wed,  3 Apr 2024 23:43:46 +0800 (CST)
+Received: from localhost (10.202.227.76) by lhrpeml500005.china.huawei.com
+ (7.191.163.240) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.1.2507.35; Wed, 3 Apr
+ 2024 16:43:46 +0100
+Date: Wed, 3 Apr 2024 16:43:45 +0100
+From: Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+To: Huang Ying <ying.huang@intel.com>
+CC: Dan Williams <dan.j.williams@intel.com>, <linux-cxl@vger.kernel.org>,
+	<linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] cxl/hdm: Add debug message for invalid interleave
+ granularity
+Message-ID: <20240403164345.00002e3d@Huawei.com>
+In-Reply-To: <20240402061016.388408-1-ying.huang@intel.com>
+References: <20240402061016.388408-1-ying.huang@intel.com>
+Organization: Huawei Technologies Research and Development (UK) Ltd.
+X-Mailer: Claws Mail 4.1.0 (GTK 3.24.33; x86_64-w64-mingw32)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset="US-ASCII"
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: lhrpeml500005.china.huawei.com (7.191.163.240) To
+ lhrpeml500005.china.huawei.com (7.191.163.240)
 
-On Wed, Apr 03 2024 at 17:03, Oleg Nesterov wrote:
-> On 04/03, Thomas Gleixner wrote:
->> The test if fragile as hell as there is absolutely no guarantee that the
->> signal target distribution is as expected. The expectation is based on a
->> statistical assumption which does not really hold.
->
-> Agreed. I too never liked this test-case.
->
-> I forgot everything about this patch and test-case, I can't really read
-> your patch right now (sorry), so I am sure I missed something, but
->
->>  static void *distribution_thread(void *arg)
->>  {
->> -	while (__atomic_load_n(&remain, __ATOMIC_RELAXED));
->> -	return NULL;
->> +	while (__atomic_load_n(&remain, __ATOMIC_RELAXED) && !done) {
->> +		if (got_signal)
->> +			usleep(10);
->> +	}
->> +
->> +	return (void *)got_signal;
->>  }
->
-> Why distribution_thread() can't simply exit if got_signal != 0 ?
->
-> See https://lore.kernel.org/all/20230128195641.GA14906@redhat.com/
+On Tue,  2 Apr 2024 14:10:16 +0800
+Huang Ying <ying.huang@intel.com> wrote:
 
-Indeed. It's too obvious :)
+> There's no debug message for invalid interleave granularity.  This
+> makes it hard to debug related bugs.  So, this is added in this patch.
+> 
+> Signed-off-by: "Huang, Ying" <ying.huang@intel.com>
+That is indeed odd given similar code around it.
+
+Reviewed-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+
+> ---
+>  drivers/cxl/core/hdm.c | 6 +++++-
+>  1 file changed, 5 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/cxl/core/hdm.c b/drivers/cxl/core/hdm.c
+> index 7d97790b893d..973a27543ed5 100644
+> --- a/drivers/cxl/core/hdm.c
+> +++ b/drivers/cxl/core/hdm.c
+> @@ -888,8 +888,12 @@ static int init_hdm_decoder(struct cxl_port *port, struct cxl_decoder *cxld,
+>  	}
+>  	rc = eig_to_granularity(FIELD_GET(CXL_HDM_DECODER0_CTRL_IG_MASK, ctrl),
+>  				 &cxld->interleave_granularity);
+> -	if (rc)
+> +	if (rc) {
+> +		dev_warn(&port->dev,
+> +			 "decoder%d.%d: Invalid interleave granularity (ctrl: %#x)\n",
+> +			 port->id, cxld->id, ctrl);
+>  		return rc;
+> +	}
+>  
+>  	dev_dbg(&port->dev, "decoder%d.%d: range: %#llx-%#llx iw: %d ig: %d\n",
+>  		port->id, cxld->id, cxld->hpa_range.start, cxld->hpa_range.end,
+
 
