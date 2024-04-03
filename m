@@ -1,333 +1,262 @@
-Return-Path: <linux-kernel+bounces-129217-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-129218-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8E3A689671F
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 09:49:28 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5E909896721
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 09:49:47 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id EC9CEB28FBA
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 07:49:25 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B363EB24D74
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 07:49:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C6F0760267;
-	Wed,  3 Apr 2024 07:48:47 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 935C8286A6
-	for <linux-kernel@vger.kernel.org>; Wed,  3 Apr 2024 07:48:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A4B356027E;
+	Wed,  3 Apr 2024 07:49:16 +0000 (UTC)
+Received: from dggsgout11.his.huawei.com (unknown [45.249.212.51])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DE698286A6;
+	Wed,  3 Apr 2024 07:49:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712130527; cv=none; b=sKSzRcaW1l/Ef9RMw/qcPCGrFKgEsk+5hRa2VTp7gbqG4t4FwVI+Pf8OHM8jiavmcglU7LPjfY9idM6C42LZRZjO2/wWJDeBAadgjFCOIpY/Sfm3mEsKuj+ks6Y/ZPj27wajNp+pKU/LL0Iq6VxiWLMZZj0wdBW7HqjacPoKw8Y=
+	t=1712130556; cv=none; b=Uj7PFkxI1GpOBkhAP9rykcZWpGCsICAcPHi5BmdAwbQsYJTuXZozWuNptIk7nFij2XXoQgLIgPFXRJlNU0KwlckeE7U6QJTMUXMsCNpGazLW1b04IyF0u1CBS191+bX2QCsxqCLti/k4AH5rJqNt+EnFhcqlctVC7Ge5PmORo+A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712130527; c=relaxed/simple;
-	bh=y9VvcHmgUjjoeI5lKnDhfqtAa09LFx3qDFmUcrGnXAg=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=uqMT9oJILj1moxLW4IjsxTYslRXkdZYy3DBPJD9Oph5nkzTXwa+WkKw40VwqcLs1Pd8bxQDINbb1ScgwiqExzwoKfv5odon6a1zrkxEZSpfXW9d4kK6BdS3wgX5sHTD19zsx9hgiyrvVrt9TQAQSiMKCnpK+fiC48bf2EBfjk3s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 090CC1007;
-	Wed,  3 Apr 2024 00:49:15 -0700 (PDT)
-Received: from [10.57.72.245] (unknown [10.57.72.245])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 7CC0A3F7B4;
-	Wed,  3 Apr 2024 00:48:41 -0700 (PDT)
-Message-ID: <e5911bd7-7b33-4e6f-a844-fbac0db31af5@arm.com>
-Date: Wed, 3 Apr 2024 08:48:40 +0100
+	s=arc-20240116; t=1712130556; c=relaxed/simple;
+	bh=EPw59Nj1eeTLPR830UfffcQk/hCu65cgSEMB6Rtx9SU=;
+	h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
+	 In-Reply-To:Content-Type; b=W/5dO/PDBhyJ9USnbGIzLLRgjm3KK75r7PCOobrqhLFiSUD4Mb0sC14D6AlUDljDA9/84IvMusrq2W5H/FB7dGqij20cUI+fGsxu443BpRD7DW9ErbJRlXf04ac6Jy7bEEj2mVVh3QkWnz1PuqP74HsiFoxtFtdBTG5XHlYezK0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.19.163.216])
+	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4V8cMJ6pFmz4f3m7J;
+	Wed,  3 Apr 2024 15:49:00 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.112])
+	by mail.maildlp.com (Postfix) with ESMTP id 56A551A0BDA;
+	Wed,  3 Apr 2024 15:49:09 +0800 (CST)
+Received: from [10.174.178.129] (unknown [10.174.178.129])
+	by APP1 (Coremail) with SMTP id cCh0CgCnwwzzCQ1m7OeoIw--.47991S2;
+	Wed, 03 Apr 2024 15:49:09 +0800 (CST)
+Subject: Re: [PATCH v2 2/6] writeback: collect stats of all wb of bdi in
+ bdi_debug_stats_show
+To: Brian Foster <bfoster@redhat.com>
+Cc: akpm@linux-foundation.org, willy@infradead.org, jack@suse.cz,
+ tj@kernel.org, dsterba@suse.com, mjguzik@gmail.com, dhowells@redhat.com,
+ linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+ linux-fsdevel@vger.kernel.org
+References: <20240327155751.3536-1-shikemeng@huaweicloud.com>
+ <20240327155751.3536-3-shikemeng@huaweicloud.com> <Zga8Sf1DIxMevdcw@bfoster>
+From: Kemeng Shi <shikemeng@huaweicloud.com>
+Message-ID: <9a9fe07e-d7f4-19f7-a6fb-28ae0ca4c25e@huaweicloud.com>
+Date: Wed, 3 Apr 2024 15:49:07 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.5.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v5 4/6] mm: swap: Allow storage of all mTHP orders
-Content-Language: en-GB
-To: "Huang, Ying" <ying.huang@intel.com>
-Cc: Andrew Morton <akpm@linux-foundation.org>,
- David Hildenbrand <david@redhat.com>, Matthew Wilcox <willy@infradead.org>,
- Gao Xiang <xiang@kernel.org>, Yu Zhao <yuzhao@google.com>,
- Yang Shi <shy828301@gmail.com>, Michal Hocko <mhocko@suse.com>,
- Kefeng Wang <wangkefeng.wang@huawei.com>, Barry Song <21cnbao@gmail.com>,
- Chris Li <chrisl@kernel.org>, Lance Yang <ioworker0@gmail.com>,
- linux-mm@kvack.org, linux-kernel@vger.kernel.org
-References: <20240327144537.4165578-1-ryan.roberts@arm.com>
- <20240327144537.4165578-5-ryan.roberts@arm.com>
- <87o7atkc3i.fsf@yhuang6-desk2.ccr.corp.intel.com>
- <017632d3-7de8-407a-aaa4-caaa5ebab057@arm.com>
- <8734s3f8jt.fsf@yhuang6-desk2.ccr.corp.intel.com>
-From: Ryan Roberts <ryan.roberts@arm.com>
-In-Reply-To: <8734s3f8jt.fsf@yhuang6-desk2.ccr.corp.intel.com>
-Content-Type: text/plain; charset=UTF-8
+In-Reply-To: <Zga8Sf1DIxMevdcw@bfoster>
+Content-Type: text/plain; charset=gbk
 Content-Transfer-Encoding: 7bit
+X-CM-TRANSID:cCh0CgCnwwzzCQ1m7OeoIw--.47991S2
+X-Coremail-Antispam: 1UD129KBjvJXoW3WryfWr17JFykur1rAF4ktFb_yoW7tw47pF
+	ZxGwn3Gr48XF1xWFnxuFWjqryYqw4Sqry7tF9ayFWUCFn8urn0yFyxW345CFy5CrZ7Crya
+	van8uF97C3yktaDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUvIb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
+	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7Cj
+	xVAFwI0_Cr1j6rxdM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I
+	0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40E
+	x7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x
+	0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkIwI1lc7I2V7IY0VAS
+	07AlzVAYIcxG8wCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c
+	02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_Jw0_
+	GFylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7
+	CjxVAFwI0_Gr0_Cr1lIxAIcVCF04k26cxKx2IYs7xG6rWUJVWrZr1UMIIF0xvEx4A2jsIE
+	14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf
+	9x07UWE__UUUUU=
+X-CM-SenderInfo: 5vklyvpphqwq5kxd4v5lfo033gof0z/
 
-On 03/04/2024 04:07, Huang, Ying wrote:
-> Ryan Roberts <ryan.roberts@arm.com> writes:
-> 
->> On 01/04/2024 04:15, Huang, Ying wrote:
->>> Ryan Roberts <ryan.roberts@arm.com> writes:
->>>
->>>> Multi-size THP enables performance improvements by allocating large,
->>>> pte-mapped folios for anonymous memory. However I've observed that on an
->>>> arm64 system running a parallel workload (e.g. kernel compilation)
->>>> across many cores, under high memory pressure, the speed regresses. This
->>>> is due to bottlenecking on the increased number of TLBIs added due to
->>>> all the extra folio splitting when the large folios are swapped out.
->>>>
->>>> Therefore, solve this regression by adding support for swapping out mTHP
->>>> without needing to split the folio, just like is already done for
->>>> PMD-sized THP. This change only applies when CONFIG_THP_SWAP is enabled,
->>>> and when the swap backing store is a non-rotating block device. These
->>>> are the same constraints as for the existing PMD-sized THP swap-out
->>>> support.
->>>>
->>>> Note that no attempt is made to swap-in (m)THP here - this is still done
->>>> page-by-page, like for PMD-sized THP. But swapping-out mTHP is a
->>>> prerequisite for swapping-in mTHP.
->>>>
->>>> The main change here is to improve the swap entry allocator so that it
->>>> can allocate any power-of-2 number of contiguous entries between [1, (1
->>>> << PMD_ORDER)]. This is done by allocating a cluster for each distinct
->>>> order and allocating sequentially from it until the cluster is full.
->>>> This ensures that we don't need to search the map and we get no
->>>> fragmentation due to alignment padding for different orders in the
->>>> cluster. If there is no current cluster for a given order, we attempt to
->>>> allocate a free cluster from the list. If there are no free clusters, we
->>>> fail the allocation and the caller can fall back to splitting the folio
->>>> and allocates individual entries (as per existing PMD-sized THP
->>>> fallback).
->>>>
->>>> The per-order current clusters are maintained per-cpu using the existing
->>>> infrastructure. This is done to avoid interleving pages from different
->>>> tasks, which would prevent IO being batched. This is already done for
->>>> the order-0 allocations so we follow the same pattern.
->>>>
->>>> As is done for order-0 per-cpu clusters, the scanner now can steal
->>>> order-0 entries from any per-cpu-per-order reserved cluster. This
->>>> ensures that when the swap file is getting full, space doesn't get tied
->>>> up in the per-cpu reserves.
->>>>
->>>> This change only modifies swap to be able to accept any order mTHP. It
->>>> doesn't change the callers to elide doing the actual split. That will be
->>>> done in separate changes.
->>>>
->>>> Signed-off-by: Ryan Roberts <ryan.roberts@arm.com>
->>>> ---
->>>>  include/linux/swap.h |  10 ++-
->>>>  mm/swap_slots.c      |   6 +-
->>>>  mm/swapfile.c        | 175 ++++++++++++++++++++++++-------------------
->>>>  3 files changed, 109 insertions(+), 82 deletions(-)
->>>>
->>>> diff --git a/include/linux/swap.h b/include/linux/swap.h
->>>> index 5e1e4f5bf0cb..11c53692f65f 100644
->>>> --- a/include/linux/swap.h
->>>> +++ b/include/linux/swap.h
->>>> @@ -268,13 +268,19 @@ struct swap_cluster_info {
->>>>   */
->>>>  #define SWAP_NEXT_INVALID	0
->>>>  
->>>> +#ifdef CONFIG_THP_SWAP
->>>> +#define SWAP_NR_ORDERS		(PMD_ORDER + 1)
->>>> +#else
->>>> +#define SWAP_NR_ORDERS		1
->>>> +#endif
->>>> +
->>>>  /*
->>>>   * We assign a cluster to each CPU, so each CPU can allocate swap entry from
->>>>   * its own cluster and swapout sequentially. The purpose is to optimize swapout
->>>>   * throughput.
->>>>   */
->>>>  struct percpu_cluster {
->>>> -	unsigned int next; /* Likely next allocation offset */
->>>> +	unsigned int next[SWAP_NR_ORDERS]; /* Likely next allocation offset */
->>>>  };
->>>>  
->>>>  struct swap_cluster_list {
->>>> @@ -471,7 +477,7 @@ swp_entry_t folio_alloc_swap(struct folio *folio);
->>>>  bool folio_free_swap(struct folio *folio);
->>>>  void put_swap_folio(struct folio *folio, swp_entry_t entry);
->>>>  extern swp_entry_t get_swap_page_of_type(int);
->>>> -extern int get_swap_pages(int n, swp_entry_t swp_entries[], int entry_size);
->>>> +extern int get_swap_pages(int n, swp_entry_t swp_entries[], int order);
->>>>  extern int add_swap_count_continuation(swp_entry_t, gfp_t);
->>>>  extern void swap_shmem_alloc(swp_entry_t);
->>>>  extern int swap_duplicate(swp_entry_t);
->>>> diff --git a/mm/swap_slots.c b/mm/swap_slots.c
->>>> index 53abeaf1371d..13ab3b771409 100644
->>>> --- a/mm/swap_slots.c
->>>> +++ b/mm/swap_slots.c
->>>> @@ -264,7 +264,7 @@ static int refill_swap_slots_cache(struct swap_slots_cache *cache)
->>>>  	cache->cur = 0;
->>>>  	if (swap_slot_cache_active)
->>>>  		cache->nr = get_swap_pages(SWAP_SLOTS_CACHE_SIZE,
->>>> -					   cache->slots, 1);
->>>> +					   cache->slots, 0);
->>>>  
->>>>  	return cache->nr;
->>>>  }
->>>> @@ -311,7 +311,7 @@ swp_entry_t folio_alloc_swap(struct folio *folio)
->>>>  
->>>>  	if (folio_test_large(folio)) {
->>>>  		if (IS_ENABLED(CONFIG_THP_SWAP))
->>>> -			get_swap_pages(1, &entry, folio_nr_pages(folio));
->>>> +			get_swap_pages(1, &entry, folio_order(folio));
->>>>  		goto out;
->>>>  	}
->>>>  
->>>> @@ -343,7 +343,7 @@ swp_entry_t folio_alloc_swap(struct folio *folio)
->>>>  			goto out;
->>>>  	}
->>>>  
->>>> -	get_swap_pages(1, &entry, 1);
->>>> +	get_swap_pages(1, &entry, 0);
->>>>  out:
->>>>  	if (mem_cgroup_try_charge_swap(folio, entry)) {
->>>>  		put_swap_folio(folio, entry);
->>>> diff --git a/mm/swapfile.c b/mm/swapfile.c
->>>> index 1393966b77af..d56cdc547a06 100644
->>>> --- a/mm/swapfile.c
->>>> +++ b/mm/swapfile.c
->>>> @@ -278,15 +278,15 @@ static void discard_swap_cluster(struct swap_info_struct *si,
->>>>  #ifdef CONFIG_THP_SWAP
->>>>  #define SWAPFILE_CLUSTER	HPAGE_PMD_NR
->>>>  
->>>> -#define swap_entry_size(size)	(size)
->>>> +#define swap_entry_order(order)	(order)
->>>>  #else
->>>>  #define SWAPFILE_CLUSTER	256
->>>>  
->>>>  /*
->>>> - * Define swap_entry_size() as constant to let compiler to optimize
->>>> + * Define swap_entry_order() as constant to let compiler to optimize
->>>>   * out some code if !CONFIG_THP_SWAP
->>>>   */
->>>> -#define swap_entry_size(size)	1
->>>> +#define swap_entry_order(order)	0
->>>>  #endif
->>>>  #define LATENCY_LIMIT		256
->>>>  
->>>> @@ -551,10 +551,12 @@ static void free_cluster(struct swap_info_struct *si, unsigned long idx)
->>>>  
->>>>  /*
->>>>   * The cluster corresponding to page_nr will be used. The cluster will be
->>>> - * removed from free cluster list and its usage counter will be increased.
->>>> + * removed from free cluster list and its usage counter will be increased by
->>>> + * count.
->>>>   */
->>>> -static void inc_cluster_info_page(struct swap_info_struct *p,
->>>> -	struct swap_cluster_info *cluster_info, unsigned long page_nr)
->>>> +static void add_cluster_info_page(struct swap_info_struct *p,
->>>> +	struct swap_cluster_info *cluster_info, unsigned long page_nr,
->>>> +	unsigned long count)
->>>>  {
->>>>  	unsigned long idx = page_nr / SWAPFILE_CLUSTER;
->>>>  
->>>> @@ -563,9 +565,19 @@ static void inc_cluster_info_page(struct swap_info_struct *p,
->>>>  	if (cluster_is_free(&cluster_info[idx]))
->>>>  		alloc_cluster(p, idx);
->>>>  
->>>> -	VM_BUG_ON(cluster_count(&cluster_info[idx]) >= SWAPFILE_CLUSTER);
->>>> +	VM_BUG_ON(cluster_count(&cluster_info[idx]) + count > SWAPFILE_CLUSTER);
->>>>  	cluster_set_count(&cluster_info[idx],
->>>> -		cluster_count(&cluster_info[idx]) + 1);
->>>> +		cluster_count(&cluster_info[idx]) + count);
->>>> +}
->>>> +
->>>> +/*
->>>> + * The cluster corresponding to page_nr will be used. The cluster will be
->>>> + * removed from free cluster list and its usage counter will be increased by 1.
->>>> + */
->>>> +static void inc_cluster_info_page(struct swap_info_struct *p,
->>>> +	struct swap_cluster_info *cluster_info, unsigned long page_nr)
->>>> +{
->>>> +	add_cluster_info_page(p, cluster_info, page_nr, 1);
->>>>  }
->>>>  
->>>>  /*
->>>> @@ -595,7 +607,7 @@ static void dec_cluster_info_page(struct swap_info_struct *p,
->>>>   */
->>>>  static bool
->>>>  scan_swap_map_ssd_cluster_conflict(struct swap_info_struct *si,
->>>> -	unsigned long offset)
->>>> +	unsigned long offset, int order)
->>>>  {
->>>>  	struct percpu_cluster *percpu_cluster;
->>>>  	bool conflict;
->>>> @@ -609,24 +621,39 @@ scan_swap_map_ssd_cluster_conflict(struct swap_info_struct *si,
->>>>  		return false;
->>>>  
->>>>  	percpu_cluster = this_cpu_ptr(si->percpu_cluster);
->>>> -	percpu_cluster->next = SWAP_NEXT_INVALID;
->>>> +	percpu_cluster->next[order] = SWAP_NEXT_INVALID;
->>>> +	return true;
->>>> +}
->>>> +
->>>> +static inline bool swap_range_empty(char *swap_map, unsigned int start,
->>>> +				    unsigned int nr_pages)
->>>> +{
->>>> +	unsigned int i;
->>>> +
->>>> +	for (i = 0; i < nr_pages; i++) {
->>>> +		if (swap_map[start + i])
->>>> +			return false;
->>>> +	}
->>>> +
->>>>  	return true;
->>>>  }
->>>>  
->>>>  /*
->>>> - * Try to get a swap entry from current cpu's swap entry pool (a cluster). This
->>>> - * might involve allocating a new cluster for current CPU too.
->>>> + * Try to get swap entries with specified order from current cpu's swap entry
->>>> + * pool (a cluster). This might involve allocating a new cluster for current CPU
->>>> + * too.
->>>>   */
->>>>  static bool scan_swap_map_try_ssd_cluster(struct swap_info_struct *si,
->>>> -	unsigned long *offset, unsigned long *scan_base)
->>>> +	unsigned long *offset, unsigned long *scan_base, int order)
->>>>  {
->>>> +	unsigned int nr_pages = 1 << order;
->>>
->>> Use swap_entry_order()?
+
+
+on 3/29/2024 9:04 PM, Brian Foster wrote:
+> On Wed, Mar 27, 2024 at 11:57:47PM +0800, Kemeng Shi wrote:
+>> /sys/kernel/debug/bdi/xxx/stats is supposed to show writeback information
+>> of whole bdi, but only writeback information of bdi in root cgroup is
+>> collected. So writeback information in non-root cgroup are missing now.
+>> To be more specific, considering following case:
 >>
->> I had previously convinced myself that the compiler should be smart enough to
->> propagate the constant from
+>> /* create writeback cgroup */
+>> cd /sys/fs/cgroup
+>> echo "+memory +io" > cgroup.subtree_control
+>> mkdir group1
+>> cd group1
+>> echo $$ > cgroup.procs
+>> /* do writeback in cgroup */
+>> fio -name test -filename=/dev/vdb ...
+>> /* get writeback info of bdi */
+>> cat /sys/kernel/debug/bdi/xxx/stats
+>> The cat result unexpectedly implies that there is no writeback on target
+>> bdi.
 >>
->> get_swap_pages -> scan_swap_map_slots -> scan_swap_map_try_ssd_cluster
+>> Fix this by collecting stats of all wb in bdi instead of only wb in
+>> root cgroup.
+>>
+>> Following domain hierarchy is tested:
+>>                 global domain (320G)
+>>                 /                 \
+>>         cgroup domain1(10G)     cgroup domain2(10G)
+>>                 |                 |
+>> bdi            wb1               wb2
+>>
+>> /* all writeback info of bdi is successfully collected */
+>> cat stats
+>> BdiWriteback:             2912 kB
+>> BdiReclaimable:        1598464 kB
+>> BdiDirtyThresh:      167479028 kB
+>> DirtyThresh:         195038532 kB
+>> BackgroundThresh:     32466728 kB
+>> BdiDirtied:           19141696 kB
+>> BdiWritten:           17543456 kB
+>> BdiWriteBandwidth:     1136172 kBps
+>> b_dirty:                     2
+>> b_io:                        0
+>> b_more_io:                   1
+>> b_dirty_time:                0
+>> bdi_list:                    1
+>> state:                       1
+>>
+>> Signed-off-by: Kemeng Shi <shikemeng@huaweicloud.com>
+>> ---
+>>  mm/backing-dev.c | 100 +++++++++++++++++++++++++++++++++--------------
+>>  1 file changed, 71 insertions(+), 29 deletions(-)
+>>
+>> diff --git a/mm/backing-dev.c b/mm/backing-dev.c
+>> index 70f02959f3bd..8daf950e6855 100644
+>> --- a/mm/backing-dev.c
+>> +++ b/mm/backing-dev.c
+> ...
+>> @@ -65,16 +78,54 @@ static struct backing_dev_info *lookup_bdi(struct seq_file *m)
+>>  	return NULL;
+>>  }
+>>  
+>> +static void collect_wb_stats(struct wb_stats *stats,
+>> +			     struct bdi_writeback *wb)
+>> +{
+>> +	struct inode *inode;
+>> +
+>> +	spin_lock(&wb->list_lock);
+>> +	list_for_each_entry(inode, &wb->b_dirty, i_io_list)
+>> +		stats->nr_dirty++;
+>> +	list_for_each_entry(inode, &wb->b_io, i_io_list)
+>> +		stats->nr_io++;
+>> +	list_for_each_entry(inode, &wb->b_more_io, i_io_list)
+>> +		stats->nr_more_io++;
+>> +	list_for_each_entry(inode, &wb->b_dirty_time, i_io_list)
+>> +		if (inode->i_state & I_DIRTY_TIME)
+>> +			stats->nr_dirty_time++;
+>> +	spin_unlock(&wb->list_lock);
+>> +
+>> +	stats->nr_writeback += wb_stat(wb, WB_WRITEBACK);
+>> +	stats->nr_reclaimable += wb_stat(wb, WB_RECLAIMABLE);
+>> +	stats->nr_dirtied += wb_stat(wb, WB_DIRTIED);
+>> +	stats->nr_written += wb_stat(wb, WB_WRITTEN);
+>> +	stats->wb_thresh += wb_calc_thresh(wb, stats->dirty_thresh);
 > 
-> Do some experiments via calling function with constants and check the
-> compiled code.  It seems that "interprocedural constant propagation" in
-> compiler can optimize the code at least if the callee is "static".
+> Kinda nitty question, but is this a sum of per-wb writeback thresholds?
+> If so, do you consider that useful information vs. the per-wb threshold
+> data presumably exposed in the next patch?
+It's sum of per-wb wirteback thresholds in global domain. For each wb,
+it's threshold is min of threshold in global domain and threshold in
+cgroup domain (if any). As the debug data of bdi existed before writeback
+cgroup was introduced, so it would be better to show bdi threshold in global
+domain which is more compatible.
+> 
+> I'm not really that worried about what debug data we expose, it just
+> seems a little odd. How would you document this value in a sentence or
+> two, for example?
+I think it could simply be "threshold of bdi in global domain".
+> 
+>> +}
+>> +
+>> +#ifdef CONFIG_CGROUP_WRITEBACK
+>> +static void bdi_collect_stats(struct backing_dev_info *bdi,
+>> +			      struct wb_stats *stats)
+>> +{
+>> +	struct bdi_writeback *wb;
+>> +
+>> +	list_for_each_entry_rcu(wb, &bdi->wb_list, bdi_node)
+>> +		collect_wb_stats(stats, wb);
+> 
+> Depending on discussion on the previous patch and whether the higher
+> level rcu protection in bdi_debug_stats_show() is really necessary, it
+> might make more sense to move it here.
+Sure, will do it in next version.
+> 
+> I'm also wondering if you'd want to check the state of the individual wb
+> (i.e. WB_registered?) before reading it..?
+I think it't better to keep full debug info. The user could filter it out
+with state in debug info anyway.
+> 
+>> +}
+>> +#else
+>> +static void bdi_collect_stats(struct backing_dev_info *bdi,
+>> +			      struct wb_stats *stats)
+>> +{
+>> +	collect_wb_stats(stats, &bdi->wb);
+>> +}
+>> +#endif
+> ...
+>> @@ -115,18 +157,18 @@ static int bdi_debug_stats_show(struct seq_file *m, void *v)
+>>  		   "b_dirty_time:       %10lu\n"
+>>  		   "bdi_list:           %10u\n"
+>>  		   "state:              %10lx\n",
+>> -		   (unsigned long) K(wb_stat(wb, WB_WRITEBACK)),
+>> -		   (unsigned long) K(wb_stat(wb, WB_RECLAIMABLE)),
+>> -		   K(wb_thresh),
+>> +		   K(stats.nr_writeback),
+>> +		   K(stats.nr_reclaimable),
+>> +		   K(stats.wb_thresh),
+>>  		   K(dirty_thresh),
+>>  		   K(background_thresh),
+>> -		   (unsigned long) K(wb_stat(wb, WB_DIRTIED)),
+>> -		   (unsigned long) K(wb_stat(wb, WB_WRITTEN)),
+>> -		   (unsigned long) K(wb->write_bandwidth),
+>> -		   nr_dirty,
+>> -		   nr_io,
+>> -		   nr_more_io,
+>> -		   nr_dirty_time,
+>> +		   K(stats.nr_dirtied),
+>> +		   K(stats.nr_written),
+>> +		   K(tot_bw),
+>> +		   stats.nr_dirty,
+>> +		   stats.nr_io,
+>> +		   stats.nr_more_io,
+>> +		   stats.nr_dirty_time,
+>>  		   !list_empty(&bdi->bdi_list), bdi->wb.state);
+> 
+> Is it worth showing a list count here rather than list_empty() state?
+Actually, I don't know how this info was supposed to be used. So I keep it in
+old way for compatibility...
+As for bdi count, it would be easy to retrieve by counting the bdi number under
+/sys/kernel/debug/bdi/.
+As for wb count, it would be easy to count with wb_stats.
+So I still prefer to keep it in old way for compatibility or just simply remove
+it if the list_empty() state is not needed.
+Thansk for the review and all advise. Look forward to your reply.
 
-Yes; I just confirmed this by compiling swapfile.c to assembly. For the
-!CONFIG_THP_SWAP case, as long as get_swap_pages() is using swap_entry_order(),
-the constant order=0 is propagated to scan_swap_map_slots() and
-scan_swap_map_try_ssd_cluster() implicitly and those functions' assembly is
-hardcoded for order=0.
-
-So at least for arm64 with this specific toolchain, it all works as I assumed
-and swap_entry_order() is not required in the static functions.
-
-aarch64-none-linux-gnu-gcc (Arm GNU Toolchain 13.2.rel1 (Build arm-13.7)) 13.2.1
-20231009
+Kemeng
 
 > 
->> But I'll add the explicit macro for the next version, as you suggest.
+> Brian
 > 
-> So, I will leave it to you to decide whether to do that.
-
-On this basis, I'd rather leave the compiler to do the optimizations itself and
-reduce swap_entry_order() usage to a minimum (i.e. only at the non-static entry
-points).
-
-Thanks,
-Ryan
-
+>>  
+>>  	rcu_read_unlock();
+>> -- 
+>> 2.30.0
+>>
 > 
-> --
-> Best Regards,
-> Huang, Ying
-> 
-> [snip]
 
 
