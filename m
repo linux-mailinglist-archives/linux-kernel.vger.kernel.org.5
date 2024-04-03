@@ -1,221 +1,162 @@
-Return-Path: <linux-kernel+bounces-129226-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-129230-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id C9034896755
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 09:57:47 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id EE7EC89675E
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 09:58:40 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EBB421C24FFB
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 07:57:46 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8DC541F2890C
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 07:58:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 82D13605B6;
-	Wed,  3 Apr 2024 07:57:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="KQi5tStu"
-Received: from out30-98.freemail.mail.aliyun.com (out30-98.freemail.mail.aliyun.com [115.124.30.98])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 302F76EB5A;
+	Wed,  3 Apr 2024 07:58:02 +0000 (UTC)
+Received: from frasgout11.his.huawei.com (frasgout11.his.huawei.com [14.137.139.23])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 62FD15BAD7;
-	Wed,  3 Apr 2024 07:57:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.98
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5EFED6EB46;
+	Wed,  3 Apr 2024 07:57:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=14.137.139.23
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712131056; cv=none; b=bJDyt3ZnUYAQaa8/Lm0jYo2ZNtdvugZPiiwS4PszAF6dGM2YY3p5+jwEl3Ggp3bHYEv+9K7LrGlrsghPiP7rSwSmq/fXK0Heb1CB/oEgf8Tp6rkEY6zYJZ7JUtcgu/5QZ4rVo4dxtAvym5cyYP3JdmZpps9sGxmaeuM91KSHoWs=
+	t=1712131081; cv=none; b=Re33JynRRjvtp4WWwKNK79QhFlW3XCrJgsXFYwvoHUGVCl8H/bnOML7Jc8IYsfLmOyJfMsDZczctj362Tysz4/fktFCBpNsp3o/VkcyVoeMVHZEVrqNTrRyj91xwrD/o/yQxYEOBRNxjKsOjqOB91b4T1a8JU+QR3UHwMdVKtgg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712131056; c=relaxed/simple;
-	bh=NWpwTnjcEDhRKvpJ+SIhLpymU8TaR5Qc2w5x9QzXbL4=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=P1qhghtUAfGGh79Bb1ed3COcN9/dl2uf2u2ziplwYdIUJG+mtm7qeBuLA+WcB5Z2naQsbW60LKnuQEYbiNBwNSbuunTww+cn6ka8HoSKtwN1kVmJ/MGHC8NlRW35gsKqGsfSDWEDVFq2Q8RFSyu2/F25Kd8kCFIYIiq4NaEwwRQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=KQi5tStu; arc=none smtp.client-ip=115.124.30.98
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
-DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
-	d=linux.alibaba.com; s=default;
-	t=1712131045; h=Message-ID:Date:MIME-Version:Subject:To:From:Content-Type;
-	bh=R0yA25vpOsgMjEIbg/eLjwHteozmPXXyADvI8WORaFA=;
-	b=KQi5tStuas3JwKzy6NaNA/+QUR+0Mf1o5TveDdt56XAj77qTK/PnkWSTmN2QvPGGJOouG62b2hhEeGW/tgOWfkVyrrmOIjiAEt5bNBWxJy/Dei9sJ+xUnSvTof9vF7YOmPONcwdojGzjkdFNMKVFA3W2BUWmEFM4mtcxR6BK7tI=
-X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R161e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018045176;MF=hengqi@linux.alibaba.com;NM=1;PH=DS;RN=16;SR=0;TI=SMTPD_---0W3qvPFc_1712131042;
-Received: from 30.221.147.161(mailfrom:hengqi@linux.alibaba.com fp:SMTPD_---0W3qvPFc_1712131042)
-          by smtp.aliyun-inc.com;
-          Wed, 03 Apr 2024 15:57:23 +0800
-Message-ID: <ae848a33-383f-40d8-9c41-7a4b51045b3b@linux.alibaba.com>
-Date: Wed, 3 Apr 2024 15:57:22 +0800
+	s=arc-20240116; t=1712131081; c=relaxed/simple;
+	bh=QgoE+OfmdPvK6VPzB9LV9LayCaBdrKNtJSdxQEmkaI4=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=LDXBDDPaG8iC6Pqg1RjLsL9rxgAgep9H4zAFGt4Q4yaaKCvpY8AOQR4e3bSmaT43rSB0sg+LIUGBbABzEtxTJJZuXO7js4/sqm/Hi/UHd0j82LDdk9o/8QBH+tU/hQ48bXCsEd3PBmHVOn8csEpyYsggKFpnhatvSvoKOmjuLEU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=14.137.139.23
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.18.186.51])
+	by frasgout11.his.huawei.com (SkyGuard) with ESMTP id 4V8cBr5Jz7z9v7H3;
+	Wed,  3 Apr 2024 15:41:40 +0800 (CST)
+Received: from mail02.huawei.com (unknown [7.182.16.27])
+	by mail.maildlp.com (Postfix) with ESMTP id A54061404FE;
+	Wed,  3 Apr 2024 15:57:47 +0800 (CST)
+Received: from huaweicloud.com (unknown [10.204.63.22])
+	by APP2 (Coremail) with SMTP id GxC2BwC3oyfuCw1mPjx7BQ--.30370S2;
+	Wed, 03 Apr 2024 08:57:46 +0100 (CET)
+From: Roberto Sassu <roberto.sassu@huaweicloud.com>
+To: viro@zeniv.linux.org.uk,
+	brauner@kernel.org,
+	jack@suse.cz,
+	paul@paul-moore.com,
+	jmorris@namei.org,
+	serge@hallyn.com
+Cc: linux-fsdevel@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux-security-module@vger.kernel.org,
+	linux-cifs@vger.kernel.org,
+	pc@manguebit.com,
+	christian@brauner.io,
+	torvalds@linux-foundation.org,
+	Roberto Sassu <roberto.sassu@huawei.com>,
+	Steve French <smfrench@gmail.com>
+Subject: [PATCH v3] security: Place security_path_post_mknod() where the original IMA call was
+Date: Wed,  3 Apr 2024 09:57:29 +0200
+Message-Id: <20240403075729.2888084-1-roberto.sassu@huaweicloud.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net v3] virtio_net: Do not send RSS key if it is not
- supported
-To: Breno Leitao <leitao@debian.org>, "Michael S. Tsirkin" <mst@redhat.com>
-Cc: xuanzhuo@linux.alibaba.com, Jason Wang <jasowang@redhat.com>,
- "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
- Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
- Andrew Melnychenko <andrew@daynix.com>, rbc@meta.com, riel@surriel.com,
- stable@vger.kernel.org, qemu-devel@nongnu.org,
- "open list:VIRTIO CORE AND NET DRIVERS" <virtualization@lists.linux.dev>,
- "open list:NETWORKING DRIVERS" <netdev@vger.kernel.org>,
- open list <linux-kernel@vger.kernel.org>
-References: <20240329171641.366520-1-leitao@debian.org>
- <20240331160618-mutt-send-email-mst@kernel.org>
-From: Heng Qi <hengqi@linux.alibaba.com>
-In-Reply-To: <20240331160618-mutt-send-email-mst@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
+X-CM-TRANSID:GxC2BwC3oyfuCw1mPjx7BQ--.30370S2
+X-Coremail-Antispam: 1UD129KBjvJXoWxXrWrXFyUKr4rJFy3trWrKrg_yoW5AF4kpF
+	4rtF1DK34rJFy3WF1kAFy7CFyIvay5WFW5XFsYgr13AF9Igr1YgF1S9ryY9rZ8KrWUtry0
+	va17KrZxXw4UZrUanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUkFb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
+	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Jr0_JF4l84ACjcxK6xIIjxv20xvEc7Cj
+	xVAFwI0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVWUJVW8JwA2z4x0Y4vEx4A2jsIEc7CjxV
+	AFwI0_Gr0_Gr1UM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40E
+	x7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x
+	0Yz7v_Jr0_Gr1lF7xvr2IYc2Ij64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkIwI1l42xK82IY
+	c2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s
+	026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43MIIYrxkI7VAKI48JMIIF
+	0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r4j6F4UMIIF0x
+	vE42xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2
+	jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x07UWE__UUUUU=
+X-CM-SenderInfo: purev21wro2thvvxqx5xdzvxpfor3voofrz/1tbiAgACBF1jj5gK+wACse
 
+From: Roberto Sassu <roberto.sassu@huawei.com>
 
+Commit 08abce60d63f ("security: Introduce path_post_mknod hook")
+introduced security_path_post_mknod(), to replace the IMA-specific call to
+ima_post_path_mknod().
 
-在 2024/4/1 上午4:20, Michael S. Tsirkin 写道:
-> On Fri, Mar 29, 2024 at 10:16:41AM -0700, Breno Leitao wrote:
->> There is a bug when setting the RSS options in virtio_net that can break
->> the whole machine, getting the kernel into an infinite loop.
->>
->> Running the following command in any QEMU virtual machine with virtionet
->> will reproduce this problem:
->>
->>      # ethtool -X eth0  hfunc toeplitz
->>
->> This is how the problem happens:
->>
->> 1) ethtool_set_rxfh() calls virtnet_set_rxfh()
->>
->> 2) virtnet_set_rxfh() calls virtnet_commit_rss_command()
->>
->> 3) virtnet_commit_rss_command() populates 4 entries for the rss
->> scatter-gather
->>
->> 4) Since the command above does not have a key, then the last
->> scatter-gatter entry will be zeroed, since rss_key_size == 0.
->> sg_buf_size = vi->rss_key_size;
->>
->> 5) This buffer is passed to qemu, but qemu is not happy with a buffer
->> with zero length, and do the following in virtqueue_map_desc() (QEMU
->> function):
->>
->>    if (!sz) {
->>        virtio_error(vdev, "virtio: zero sized buffers are not allowed");
->>
->> 6) virtio_error() (also QEMU function) set the device as broken
->>
->>      vdev->broken = true;
->>
->> 7) Qemu bails out, and do not repond this crazy kernel.
->>
->> 8) The kernel is waiting for the response to come back (function
->> virtnet_send_command())
->>
->> 9) The kernel is waiting doing the following :
->>
->>        while (!virtqueue_get_buf(vi->cvq, &tmp) &&
->> 	     !virtqueue_is_broken(vi->cvq))
->> 	      cpu_relax();
->>
->> 10) None of the following functions above is true, thus, the kernel
->> loops here forever. Keeping in mind that virtqueue_is_broken() does
->> not look at the qemu `vdev->broken`, so, it never realizes that the
->> vitio is broken at QEMU side.
->>
->> Fix it by not sending RSS commands if the feature is not available in
->> the device.
->>
->> Fixes: c7114b1249fa ("drivers/net/virtio_net: Added basic RSS support.")
->> Cc: stable@vger.kernel.org
-> net has its own stable process, don't CC stable on net patches.
->
->
->> Cc: qemu-devel@nongnu.org
->> Signed-off-by: Breno Leitao <leitao@debian.org>
->> ---
->> Changelog:
->>
->> V2:
->>    * Moved from creating a valid packet, by rejecting the request
->>      completely
->> V3:
->>    * Got some good feedback from and Xuan Zhuo and Heng Qi, and reworked
->>      the rejection path.
->>
->> ---
->>   drivers/net/virtio_net.c | 22 ++++++++++++++++++----
->>   1 file changed, 18 insertions(+), 4 deletions(-)
->>
->> diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
->> index c22d1118a133..c4a21ec51adf 100644
->> --- a/drivers/net/virtio_net.c
->> +++ b/drivers/net/virtio_net.c
->> @@ -3807,6 +3807,7 @@ static int virtnet_set_rxfh(struct net_device *dev,
->>   			    struct netlink_ext_ack *extack)
->>   {
->>   	struct virtnet_info *vi = netdev_priv(dev);
->> +	bool update = false;
->>   	int i;
->>   
->>   	if (rxfh->hfunc != ETH_RSS_HASH_NO_CHANGE &&
->> @@ -3814,13 +3815,24 @@ static int virtnet_set_rxfh(struct net_device *dev,
->>   		return -EOPNOTSUPP;
->>   
->>   	if (rxfh->indir) {
->> +		if (!vi->has_rss)
->> +			return -EOPNOTSUPP;
->> +
->>   		for (i = 0; i < vi->rss_indir_table_size; ++i)
->>   			vi->ctrl->rss.indirection_table[i] = rxfh->indir[i];
->> +		update = true;
->>   	}
->> -	if (rxfh->key)
->> +
->> +	if (rxfh->key) {
->> +		if (!vi->has_rss && !vi->has_rss_hash_report)
->> +			return -EOPNOTSUPP;
->
-> What's the logic here? Is it || or &&? A comment can't hurt.
+For symmetry with security_path_mknod(), security_path_post_mknod() was
+called after a successful mknod operation, for any file type, rather than
+only for regular files at the time there was the IMA call.
 
-&&
+However, as reported by VFS maintainers, successful mknod operation does
+not mean that the dentry always has an inode attached to it (for example,
+not for FIFOs on a SAMBA mount).
 
-Hi Breno,
+If that condition happens, the kernel crashes when
+security_path_post_mknod() attempts to verify if the inode associated to
+the dentry is private.
 
-You can add a comment like the following:
+Move security_path_post_mknod() where the ima_post_path_mknod() call was,
+which is obviously correct from IMA/EVM perspective. IMA/EVM are the only
+in-kernel users, and only need to inspect regular files.
 
-If either _F_HASH_REPORT or _F_RSS are negotiated, the device provides
-hash calculation capabilities, that is, hash_key can be configured.
+Reported-by: Steve French <smfrench@gmail.com>
+Closes: https://lore.kernel.org/linux-kernel/CAH2r5msAVzxCUHHG8VKrMPUKQHmBpE6K9_vjhgDa1uAvwx4ppw@mail.gmail.com/
+Suggested-by: Al Viro <viro@zeniv.linux.org.uk>
+Fixes: 08abce60d63f ("security: Introduce path_post_mknod hook")
+Signed-off-by: Roberto Sassu <roberto.sassu@huawei.com>
+---
+ fs/namei.c          | 7 ++-----
+ security/security.c | 4 ++--
+ 2 files changed, 4 insertions(+), 7 deletions(-)
 
-Regards,
-Heng
-
->
->> +
->>   		memcpy(vi->ctrl->rss.key, rxfh->key, vi->rss_key_size);
->> +		update = true;
->> +	}
->>   
->> -	virtnet_commit_rss_command(vi);
->> +	if (update)
->> +		virtnet_commit_rss_command(vi);
->>   
->>   	return 0;
->>   }
->> @@ -4729,13 +4741,15 @@ static int virtnet_probe(struct virtio_device *vdev)
->>   	if (virtio_has_feature(vdev, VIRTIO_NET_F_HASH_REPORT))
->>   		vi->has_rss_hash_report = true;
->>   
->> -	if (virtio_has_feature(vdev, VIRTIO_NET_F_RSS))
->> +	if (virtio_has_feature(vdev, VIRTIO_NET_F_RSS)) {
->>   		vi->has_rss = true;
->>   
->> -	if (vi->has_rss || vi->has_rss_hash_report) {
->>   		vi->rss_indir_table_size =
->>   			virtio_cread16(vdev, offsetof(struct virtio_net_config,
->>   				rss_max_indirection_table_length));
->> +	}
->> +
->> +	if (vi->has_rss || vi->has_rss_hash_report) {
->>   		vi->rss_key_size =
->>   			virtio_cread8(vdev, offsetof(struct virtio_net_config, rss_max_key_size));
->>   
->> -- 
->> 2.43.0
+diff --git a/fs/namei.c b/fs/namei.c
+index ceb9ddf8dfdd..c5b2a25be7d0 100644
+--- a/fs/namei.c
++++ b/fs/namei.c
+@@ -4050,6 +4050,8 @@ static int do_mknodat(int dfd, struct filename *name, umode_t mode,
+ 		case 0: case S_IFREG:
+ 			error = vfs_create(idmap, path.dentry->d_inode,
+ 					   dentry, mode, true);
++			if (!error)
++				security_path_post_mknod(idmap, dentry);
+ 			break;
+ 		case S_IFCHR: case S_IFBLK:
+ 			error = vfs_mknod(idmap, path.dentry->d_inode,
+@@ -4060,11 +4062,6 @@ static int do_mknodat(int dfd, struct filename *name, umode_t mode,
+ 					  dentry, mode, 0);
+ 			break;
+ 	}
+-
+-	if (error)
+-		goto out2;
+-
+-	security_path_post_mknod(idmap, dentry);
+ out2:
+ 	done_path_create(&path, dentry);
+ 	if (retry_estale(error, lookup_flags)) {
+diff --git a/security/security.c b/security/security.c
+index 7e118858b545..0a9a0ac3f266 100644
+--- a/security/security.c
++++ b/security/security.c
+@@ -1793,11 +1793,11 @@ int security_path_mknod(const struct path *dir, struct dentry *dentry,
+ EXPORT_SYMBOL(security_path_mknod);
+ 
+ /**
+- * security_path_post_mknod() - Update inode security field after file creation
++ * security_path_post_mknod() - Update inode security after reg file creation
+  * @idmap: idmap of the mount
+  * @dentry: new file
+  *
+- * Update inode security field after a file has been created.
++ * Update inode security field after a regular file has been created.
+  */
+ void security_path_post_mknod(struct mnt_idmap *idmap, struct dentry *dentry)
+ {
+-- 
+2.34.1
 
 
