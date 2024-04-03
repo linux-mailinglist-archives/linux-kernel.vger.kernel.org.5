@@ -1,82 +1,53 @@
-Return-Path: <linux-kernel+bounces-128893-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-128895-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2508C89618E
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 02:38:42 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3E99F896193
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 02:44:26 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DE57E2850FD
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 00:38:40 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6D8211C2226D
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 00:44:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4B73D8C07;
-	Wed,  3 Apr 2024 00:38:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 61DAED29B;
+	Wed,  3 Apr 2024 00:44:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Ld+e1Y/n"
-Received: from mail-pf1-f177.google.com (mail-pf1-f177.google.com [209.85.210.177])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1AC79FC0C;
-	Wed,  3 Apr 2024 00:38:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.177
+	dkim=pass (1024-bit key) header.d=yeah.net header.i=@yeah.net header.b="EjzsYTj6"
+Received: from mail-177132.yeah.net (mail-177132.yeah.net [123.58.177.132])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CADF417C8;
+	Wed,  3 Apr 2024 00:44:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=123.58.177.132
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712104717; cv=none; b=j5mOPWSDiFPhQ5K8NEqnycg9Y6cQwWLrqkD4w6ag56ogGwLhacGORQMHgnZoGxL+ByAZR7OUEo6L1057wt3T2hrk9sYnep/oNjQRZjXG+kBqmmg863IEaKsCtU5MLDk8m9gfw3uVYJcsZhRLWoYv/eP/F0edRpqdbECKaULoFMQ=
+	t=1712105059; cv=none; b=UrfPLBvz/EwTvlZD043Z0A3hwLAvVKazP6+GKJdCtzKNzAI8WZAse35JtUCphagTvR4PRp8McI4oc1rZGA08pMd1TdwvB/UoE6O/5HtmWVIVQWAzNAUvTPdIxNDbISNvr3C9g4tQVMdNWD5cPVCX0kJN2JgSrwOgcBfWHvGUzMg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712104717; c=relaxed/simple;
-	bh=/pKOQn0YGMSiKq2vjXjO1upFSxAXfJ2XljqSMDWwXFg=;
+	s=arc-20240116; t=1712105059; c=relaxed/simple;
+	bh=LR99gG5LNLc23ySSEXkTJVAntBAds+rXUifHCtQe2rM=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=V//YZAV03Qmr5jLPsyS8arGWoYB85eEe2DRgzElTgABD27tA2rg4q0fgafIpa/a9n2Z8WFIL+Xw9lCEk4xRLLL3hcibbDMT3DpoSuytstQ7gY9g3CDZbZ1/tLcqm+kE72Y3ePEOjVzSh4CPxxrUMRP2BJmfMM5e/1wJlQyupLis=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Ld+e1Y/n; arc=none smtp.client-ip=209.85.210.177
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f177.google.com with SMTP id d2e1a72fcca58-6ea80de0e97so4141586b3a.2;
-        Tue, 02 Apr 2024 17:38:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1712104715; x=1712709515; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=lDuEkbhuZ4nhCQYseid5ymqn/qQ8r9+nK29T23SV1sY=;
-        b=Ld+e1Y/nG0OwlFfWnzB92al3CbTudCasDe9eanch1vWToiaV5nj2Y0WHsuoY55DHuz
-         Ki+tBKfkROPdYNQBGKfhmrOU5l8OOrWPR5g1u4PTSFPY4+M+o4UpD1UfqV7xKJFVhd1w
-         ccLQqsXyBRaDWBg20Kf1C1AuAOrYrCXmmu4J20mgWDIbLvJ/ZLMbpVmSJiCWWDnYL3Wi
-         54z+mAn77R24ORxcAv/Y6TMojJh5ZvUnj+i5c5utdE4iwn+YVMHT9UAGfAmGsxLElkTM
-         aID4dvexc/2acaAqbTNxri4WOSgv9AFsJxO5dOxbAtPHyMYkX+xkc3NADZwdTe9rhX4J
-         eunA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712104715; x=1712709515;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=lDuEkbhuZ4nhCQYseid5ymqn/qQ8r9+nK29T23SV1sY=;
-        b=XTYKHoQRoyEMM+lDcwQchOjxEJTNngEtEeiHOeZxcWV4LWnty862Rzzpl9tSPpev+k
-         zxcyl4ntOvOluvzHr+fBLQ5436lTp08jtjmRAXpmYUHliOPVWdkHQZBhkrOq1LWY6Ga+
-         iGDy5heKMPOR0bzXxACelEv6RfZZQzT1PloVjS4SOR4y9T4AtHv0wZvWFjkIlUo+dgb7
-         /Gcniyfr7CybzSFbY4OOOD4RjXq3qpGk6O3bAxBv2LuxQLncSwNZgHF5OZ7sC2JzrrZ9
-         ez3hTtrug10y73wX1Ee7YvL5pHJ4VkNJZyX0h8H03hkDpgIs60G1uLh8/0nnXJ3XZ5gc
-         n+Ug==
-X-Forwarded-Encrypted: i=1; AJvYcCXhU6Wa5BSuvUq7BuPUGoY72WnVYdVVF+VaN8B9CmHBPl+fMrRWXzKTgDCsho3UtK86BWHdKZDKVMVCVofEOlDoN4CnA8L2od280gdTZtffP8J02LiOdk2pe4Ab0hqHGr1MXv4n
-X-Gm-Message-State: AOJu0YxUkRsWiJHUaDRSqwj1+DcGMf4q760KKHuktKppSVEXOp+7+GAR
-	YuDwpI60G4FJ86Q3WjZQrjtZ5Cy5UY3jyU565al84KeBGuziWccG
-X-Google-Smtp-Source: AGHT+IHjjD8qHS6NjcI14QZRJH1hz7B35xujdQGn9UV521z1FTa9DUmnqoHtIBZ7Dm9Fy8byf/AduA==
-X-Received: by 2002:a05:6a21:999f:b0:1a7:1c5:4746 with SMTP id ve31-20020a056a21999f00b001a701c54746mr1875347pzb.1.1712104715190;
-        Tue, 02 Apr 2024 17:38:35 -0700 (PDT)
-Received: from localhost (dhcp-141-239-158-86.hawaiiantel.net. [141.239.158.86])
-        by smtp.gmail.com with ESMTPSA id j23-20020aa78d17000000b006e681769ee0sm10817731pfe.145.2024.04.02.17.38.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 02 Apr 2024 17:38:34 -0700 (PDT)
-Sender: Tejun Heo <htejun@gmail.com>
-Date: Tue, 2 Apr 2024 14:38:33 -1000
-From: Tejun Heo <tj@kernel.org>
-To: Linux regressions mailing list <regressions@lists.linux.dev>
-Cc: Greg KH <gregkh@linuxfoundation.org>, Sasha Levin <sashal@kernel.org>,
-	"stable@vger.kernel.org" <stable@vger.kernel.org>,
-	LKML <linux-kernel@vger.kernel.org>
-Subject: Re: Hibernate stuck after recent kernel/workqueue.c changes in
- Stable 6.6.23
-Message-ID: <ZgylCe48FuOKNWtM@slm.duckdns.org>
-References: <ce4c2f67-c298-48a0-87a3-f933d646c73b@leemhuis.info>
+	 Content-Type:Content-Disposition:In-Reply-To; b=fCbJ5NHzmkQuOOKvX2u2pdiBOKcUK9s36NCv1wPHLlsvU4GWHFL2bmMR+MnOjQkHUymQoDOMgHj/6FiITFI/5+mCK6sluDDTZlyJ87K+iM60SJDsGVQHoIVKlanN/xH+QY0nOM6RXawcIZ2fqG4grKe6l5KPGmOIevzsQZdQj/w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=yeah.net; spf=pass smtp.mailfrom=yeah.net; dkim=pass (1024-bit key) header.d=yeah.net header.i=@yeah.net header.b=EjzsYTj6; arc=none smtp.client-ip=123.58.177.132
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=yeah.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=yeah.net
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yeah.net;
+	s=s110527; h=Date:From:Subject:Message-ID:MIME-Version:
+	Content-Type; bh=V8Qan3vHh6zRqpFSLvYPjs8bOeaOc0YWEP6aFIgm3OI=;
+	b=EjzsYTj6IL2j8EWBlji8fjHVghR5ngdCS0mbH9zznASj8rxb/LxJTV5uZt41DV
+	bM76JwY9zp5fNlZ473qw19nTnDnLjawcMSaQShu8SquK3+XPSTN6enq11QkcxXJF
+	rbbaU5t3VfUkEAbQpXFMCp5/hJ9eeP48fCmcdXbskDpok=
+Received: from dragon (unknown [223.68.79.243])
+	by smtp2 (Coremail) with SMTP id C1UQrAC3n2hHpgxmDFOyAg--.55910S3;
+	Wed, 03 Apr 2024 08:43:52 +0800 (CST)
+Date: Wed, 3 Apr 2024 08:43:47 +0800
+From: Shawn Guo <shawnguo2@yeah.net>
+To: carlos.song@nxp.com
+Cc: shawnguo@kernel.org, robh@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+	conor+dt@kernel.org, frank.li@nxp.com,
+	linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] arm64: dts: lx2160a: add pinmux and i2c gpio to support
+ bus recovery
+Message-ID: <ZgymQ8D4JxviBJzP@dragon>
+References: <20240328061419.1956329-1-carlos.song@nxp.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -85,45 +56,24 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <ce4c2f67-c298-48a0-87a3-f933d646c73b@leemhuis.info>
+In-Reply-To: <20240328061419.1956329-1-carlos.song@nxp.com>
+X-CM-TRANSID:C1UQrAC3n2hHpgxmDFOyAg--.55910S3
+X-Coremail-Antispam: 1Uf129KBjDUn29KB7ZKAUJUUUUU529EdanIXcx71UUUUU7v73
+	VFW2AGmfu7bjvjm3AaLaJ3UbIYCTnIWIevJa73UjIFyTuYvjxUs6pBUUUUU
+X-CM-SenderInfo: pvkd40hjxrjqh1hdxhhqhw/1tbiFQq1ZV6NnBsUdgAAs5
 
-Hello,
-
-On Tue, Apr 02, 2024 at 10:08:11AM +0200, Linux regression tracking (Thorsten Leemhuis) wrote:
-> Hi stable team, there is a report that the recent backport of
-> 5797b1c18919cd ("workqueue: Implement system-wide nr_active enforcement
-> for unbound workqueues") [from Tejun] to 6.6.y (as 5a70baec2294) broke
-> hibernate for a user. 6.6.24-rc1 did not fix this problem; reverting the
-> culprit does.
+On Thu, Mar 28, 2024 at 02:14:19PM +0800, carlos.song@nxp.com wrote:
+> From: Carlos Song <carlos.song@nxp.com>
 > 
-> > With kernel 6.6.23 hibernating usually hangs here: the display stays
-> > on but the mouse pointer does not move and the keyboard does not work.
-> > But SysRq REISUB does reboot. Sometimes it seems to hibernate: the
-> > computer powers down and can be waked up and the previous display comes
-> > visible, but it is stuck there.
+> I2C bus recovery need a pinmux and gpio. So i2c driver can switch
+> gpio mode to toggle scl to recovery bus.
 > 
-> See https://bugzilla.kernel.org/show_bug.cgi?id=218658 for details.
-> Note, you have to use bugzilla to reach the reporter, as I sadly[1] can
-> not CCed them in mails like this.
+> Add pinctrl-single node to every i2c bus on fsl-ls2160 layerscape
+> platform.
 > 
-> Side note: there is a mainline report about problems due to
-> 5797b1c18919cd ("workqueue: Implement system-wide nr_active enforcement
-> for unbound workqueues") as well, but it's about "nohz_full=0 prevents
-> kernel from booting":
-> https://bugzilla.kernel.org/show_bug.cgi?id=218665; will forward that
-> separately to Tejun.
-> 
-> Ciao, Thorsten (wearing his 'the Linux kernel's regression tracker' hat)
+> Signed-off-by: Carlos Song <carlos.song@nxp.com>
+> Reviewed-by: Frank Li <frank.li@nxp.com>
 
-Sorry about late reply but that commit is not for -stable. It does fix an
-undesirable behavior from an earlier commit, so it has the Fixes tag but it
-has a series of dependencies that need to be backported together which would
-be far too invasive for -stable, thus no Cc: stable. I didn't know a Fixes
-tag automatically triggers backport to -stable. I will keep that in mind for
-future.
+Applied, thanks!
 
-Thanks.
-
--- 
-tejun
 
