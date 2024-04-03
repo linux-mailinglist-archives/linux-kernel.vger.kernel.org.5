@@ -1,132 +1,116 @@
-Return-Path: <linux-kernel+bounces-128904-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-128905-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id B35458961AB
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 02:52:47 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 250128961B0
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 02:54:17 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2686D1F231B6
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 00:52:47 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 566D01C225C3
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 00:54:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 49B6BDDDF;
-	Wed,  3 Apr 2024 00:52:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C6333FC02;
+	Wed,  3 Apr 2024 00:54:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="V1NdzGZW"
-Received: from mail-yb1-f201.google.com (mail-yb1-f201.google.com [209.85.219.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b="Np+rraRc"
+Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 247E628FC
-	for <linux-kernel@vger.kernel.org>; Wed,  3 Apr 2024 00:52:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 246AE28FC;
+	Wed,  3 Apr 2024 00:53:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=150.107.74.76
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712105559; cv=none; b=qxzrAJHqbAXkeb4zFmMeNtnQKBioiaq5g2LidE3Qjsed0rvnJrJ8M5JVgJgJrrwSSUbV5CnWEuCgACz05yLcgafHS9t5EVEHQzx40Xp1nwC4BGobb0d/lXcMQj4XrcsEiMmr7DGk2QG1LwWGu3yJOniqXJN7FEChJQdFUD1anHI=
+	t=1712105646; cv=none; b=PoEUcYnEchiiRrRvG+eL8DAA+ZDRhZt+2ABb7wS44C1gS5+9VjgTWQydWAJdPJLHSshO7gprVr83UTfylvy5Z+OdL8CGf6Wb2km7B5zhC7eUi2/TQvWL27aoMtZfL1OYV1WgBbhMUbR329CoonW4Keu7l6937CPIWQ3GmW3iTZM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712105559; c=relaxed/simple;
-	bh=AMBZZucRDLbkCBnpUsFkHT1Acvq2JW3K7G/CZEuEqfE=;
-	h=Date:Mime-Version:Message-ID:Subject:From:To:Cc:Content-Type; b=q/3e6D3ElwHFPbxkY9XcY47PhldbUwCIs1dx1Ixvja1LLP6Dys9cP1sHfjcCYq8GgcbMPX9GscpADM8EcUMRrdDQ9+zeEbl3+Eoi0Pu/N3aApUIdPyfp1r8yWSuAk/kWJ/21NmmPH3KNMDwvfUSd4Ds79QFzloNGp7G7K6DcvmY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--justinstitt.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=V1NdzGZW; arc=none smtp.client-ip=209.85.219.201
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--justinstitt.bounces.google.com
-Received: by mail-yb1-f201.google.com with SMTP id 3f1490d57ef6-dd8e82dd47eso7819366276.2
-        for <linux-kernel@vger.kernel.org>; Tue, 02 Apr 2024 17:52:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1712105557; x=1712710357; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=2LtWRlkSNk32zYyNyz1b834Pph06BPJDWHucHrmrXSY=;
-        b=V1NdzGZWloPXuLxDqb/B8tmJQPVGQnQmw+bKqLVmL7rOtFACzymWsvAwnP7tIVfkLD
-         s4IwLwXfAK8T4p3EeJCPxDJ8lNkAYVvcAFSmbpOh1vfeui2rZSMtQF0yIUPCBeJkmN7x
-         SmxzA4mE6X/kCFH7OClcwbzIuAfY2agibcTt6Wzm2cDm+f63LoOxvrvKdVwK/5Ab7SmV
-         PZPEvKWT68Vk0t+ruOoFQOO7nHvAIoh9W8gR3R3Pffy+aA4dii2G/YQCIFDfYU5MKRLN
-         Y0SfQ0Sta0PmbjnNqcOF736arowuF99YZE5eF/+BWbVUWomluW9EcbPoBkNp56EfjclF
-         kY7g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712105557; x=1712710357;
-        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=2LtWRlkSNk32zYyNyz1b834Pph06BPJDWHucHrmrXSY=;
-        b=JYH1aN77ttyK+S3UECfQxD7jeiIJBw2GQ6Gl3l1Ucr+hvs0cz13U6iakf+GKzxNIju
-         TzrKboe7+rk59K2s+mjdfmfxihI+v+qA531TtMovgW1z7KluDmRMMgUjNwjmuSSnyFlZ
-         Dc+sD0bZnvph8LwekaX5Oy9LqROKn4zIRLw3YwJMqZfrt13sYL2oR9dZVYWS+zVorVph
-         5dodhqc4EnRrioik6Aj4k0ePtSh2jYqSyX3kabpZ6J3bAniQdFwL5U6qeu/eiB0yOl2y
-         6pUASmhkXjEzHAz0E9jl+J5hbVOB+tp0lMDjQgNSjkt9mV+3wKDpm3CS9uxI4nNkJasg
-         1j/g==
-X-Forwarded-Encrypted: i=1; AJvYcCVPKAsl3QjTayxnTe8nfpvla5YnlHWQJX89Ypy1wRFzAuswZClpETDIXS2R6gjazju67nxLqlWbN0BNzRMFWHhvqoBmuVIdLTZQG2zb
-X-Gm-Message-State: AOJu0Yy9BnbqQEpV2RwNh7AK7gog8uZ619S+onf7QBB0ouqhbcfeP8Vm
-	4f193KedBsRVmra9kKh065b9EFNHn/2kqVq8h1Pl2HUdng13nfpZ5SpNQ8oulGvQepa0RaLFAyg
-	jTtWFDDeOKRP/HYEckJVoPQ==
-X-Google-Smtp-Source: AGHT+IENHtMGTKiMA0s2/kOwugq4yr4dOndu0KnzLEY/2IVlh0JUmWjmdLHBkuswQWDSDEhDP1VdBsuAqxFROrPxgA==
-X-Received: from jstitt-linux1.c.googlers.com ([fda3:e722:ac3:cc00:2b:ff92:c0a8:23b5])
- (user=justinstitt job=sendgmr) by 2002:a05:6902:1b09:b0:dc6:c94e:fb85 with
- SMTP id eh9-20020a0569021b0900b00dc6c94efb85mr980999ybb.2.1712105557231; Tue,
- 02 Apr 2024 17:52:37 -0700 (PDT)
-Date: Wed, 03 Apr 2024 00:52:36 +0000
+	s=arc-20240116; t=1712105646; c=relaxed/simple;
+	bh=+SAlP9kHVlh7iFi31R674pJNdtdpSCKCF/iafEcczb8=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type; b=bNK8KWQia0m/rRtiHoyv7hMaUKk4SZAu7FdxqAIFvxJXJri8s3SRR5mqcb4S0FZ0s+5b1YUuYxAgGVuwRNyN0uU21T3JvQNxztOcEbfdnb5Ua2ge6Q+n1idzRuJwT9OGqJXz60gZWHhNxPsHj6IoMJzSLlNr4GP/g5soF9Abk+0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au; spf=pass smtp.mailfrom=canb.auug.org.au; dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b=Np+rraRc; arc=none smtp.client-ip=150.107.74.76
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canb.auug.org.au
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+	s=201702; t=1712105636;
+	bh=yMn7CWEDwJ/I6VqHvO9A+ou6USwpxJZr7pe1Gsdq7JM=;
+	h=Date:From:To:Cc:Subject:From;
+	b=Np+rraRcjNWKwmpKmZsXUhzCQWNNNY7g3UlfWpjqoOpejTDE9iF0DV52vVLkeGJoc
+	 wVjy1fzq7N+oG78k3v+gWzW9tE4somCTHEUa4I7Ht3d120kdkFk7CKZnhlGiP9BRh5
+	 Uf8T8voEHjzjcNiULKtMJtEUYkgQIDLVJxuP+KDiyPAQc0lzQ2wKp41MrxlyGyEo+J
+	 slawaRzSTWHHQMEttJKAKuykgOdJl84Yji1L7vEtiillFhBwVih8f8U2PDwb9OBOSW
+	 Z8wGrrWnDx46G2nWRHLSVs9rISivqmrP4pH1aEgSkTJWYoWYbSyMrslrFOHjiUCFWK
+	 2NL72tKABfTgQ==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mail.ozlabs.org (Postfix) with ESMTPSA id 4V8R8M6tGhz4wcb;
+	Wed,  3 Apr 2024 11:53:55 +1100 (AEDT)
+Date: Wed, 3 Apr 2024 11:53:53 +1100
+From: Stephen Rothwell <sfr@canb.auug.org.au>
+To: Sean Christopherson <seanjc@google.com>, Paolo Bonzini
+ <pbonzini@redhat.com>
+Cc: KVM <kvm@vger.kernel.org>, Linux Kernel Mailing List
+ <linux-kernel@vger.kernel.org>, Linux Next Mailing List
+ <linux-next@vger.kernel.org>
+Subject: linux-next: manual merge of the kvm-x86 tree with the kvm-fixes
+ tree
+Message-ID: <20240403115353.59c7b4f4@canb.auug.org.au>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-X-B4-Tracking: v=1; b=H4sIAFOoDGYC/x2NwQ6CMBAFf4Xs2U1qAQ/+CjEGuk/cQArZKoEQ/
- p3qYQ5zmdkpwRSJ7sVOhkWTTjHL9VJQeLexB6tkJ+985SrnOX0shnnjARYxsqD79jxI9+OpEwe uS9QQf5O2FMqd2fDS9f9oHsdxAlV4hjpzAAAA
-X-Developer-Key: i=justinstitt@google.com; a=ed25519; pk=tC3hNkJQTpNX/gLKxTNQKDmiQl6QjBNCGKJINqAdJsE=
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1712105556; l=1581;
- i=justinstitt@google.com; s=20230717; h=from:subject:message-id;
- bh=AMBZZucRDLbkCBnpUsFkHT1Acvq2JW3K7G/CZEuEqfE=; b=5vCiLZjVHanyhM6gz89NkA5pyYDVG+O71KYpStpAjblh7KSvarGbuKYfVC5QMLNwXCs/IhIuP
- Rq24m4eV/t/B4SeYnsudISx/x6NQCQ+38VqG8fIE7d7TQ8vT8eU4wBo
-X-Mailer: b4 0.12.3
-Message-ID: <20240403-strncpy-kernel-debug-kdb-kdb_io-c-v1-1-7f78a08e9ff4@google.com>
-Subject: [PATCH] kdb: replace deprecated strncpy
-From: Justin Stitt <justinstitt@google.com>
-To: Jason Wessel <jason.wessel@windriver.com>, 
-	Daniel Thompson <daniel.thompson@linaro.org>, Douglas Anderson <dianders@chromium.org>
-Cc: kgdb-bugreport@lists.sourceforge.net, linux-kernel@vger.kernel.org, 
-	linux-hardening@vger.kernel.org, Justin Stitt <justinstitt@google.com>
-Content-Type: text/plain; charset="utf-8"
+MIME-Version: 1.0
+Content-Type: multipart/signed; boundary="Sig_/fZQSE1CbvT3OvZf0/G5tIRg";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 
-All the other cases in this big switch statement use memcpy or other
-methods for copying string data. Since the lengths are handled manually
-and carefully, using strncpy() is may be misleading. It doesn't
-guarantee any sort of NUL-termination on its destination buffer. At any
-rate, it's deprecated [1] and we want to remove all its uses [2].
+--Sig_/fZQSE1CbvT3OvZf0/G5tIRg
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Link: https://www.kernel.org/doc/html/latest/process/deprecated.html#strncpy-on-nul-terminated-strings [1]
-Link: https://github.com/KSPP/linux/issues/90 [2]
-Cc: linux-hardening@vger.kernel.org
-Signed-off-by: Justin Stitt <justinstitt@google.com>
----
-Note: build-tested only.
+Hi all,
 
-Found with: $ rg "strncpy\("
----
- kernel/debug/kdb/kdb_io.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+Today's linux-next merge of the kvm-x86 tree got a conflict in:
 
-diff --git a/kernel/debug/kdb/kdb_io.c b/kernel/debug/kdb/kdb_io.c
-index 9443bc63c5a2..8bba77b4a39c 100644
---- a/kernel/debug/kdb/kdb_io.c
-+++ b/kernel/debug/kdb/kdb_io.c
-@@ -368,9 +368,9 @@ static char *kdb_read(char *buffer, size_t bufsize)
- 			kdb_printf("%s", buffer);
- 		} else if (tab != 2 && count > 0) {
- 			len_tmp = strlen(p_tmp);
--			strncpy(p_tmp+len_tmp, cp, lastchar-cp+1);
-+			memcpy(p_tmp+len_tmp, cp, lastchar-cp+1);
- 			len_tmp = strlen(p_tmp);
--			strncpy(cp, p_tmp+len, len_tmp-len + 1);
-+			memcpy(cp, p_tmp+len, len_tmp-len + 1);
- 			len = len_tmp - len;
- 			kdb_printf("%s", cp);
- 			cp += len;
+  tools/testing/selftests/kvm/include/x86_64/processor.h
 
----
-base-commit: 026e680b0a08a62b1d948e5a8ca78700bfac0e6e
-change-id: 20240402-strncpy-kernel-debug-kdb-kdb_io-c-53e5ed26da3d
+between commit:
 
-Best regards,
---
-Justin Stitt <justinstitt@google.com>
+  0d1756482e66 ("Merge tag 'kvm-x86-pvunhalt-6.9' of https://github.com/kvm=
+-x86/linux into HEAD")
 
+from the kvm-fixes tree and commit:
+
+  964d0c614c7f ("Merge branch 'hyperv'")
+
+from the kvm-x86 tree.
+
+I fixed it up (I used the former version) and can carry the fix as
+necessary. This is now fixed as far as linux-next is concerned, but any
+non trivial conflicts should be mentioned to your upstream maintainer
+when your tree is submitted for merging.  You may also want to consider
+cooperating with the maintainer of the conflicting tree to minimise any
+particularly complex conflicts.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/fZQSE1CbvT3OvZf0/G5tIRg
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmYMqKEACgkQAVBC80lX
+0GxbOwf/eDxlNKVlJRm37PWQKeKQ4FMvKavrHBe+EpehdSNcMn73XkwLWGPsKxhE
+af9jilp7xlyK2FPoPmm2NYMqlihC3DQ18T4ZaxKiAnxCcgtmRISkxKJrHhHftgOn
+UyWhX5+6gt7McLrKG8JaFPG7g3/yg4JvtfG0fmohcQ9kQNKVqmVHTyHbXbDHwwkh
+8wQd9SCT26+EYdy3Mig6r6OtBYSEUWTJUWLzUeQj0O7YgeBi9TatenqJw5qCl/+C
+avSYM7ZMaktIltmQMJb+RXPF+6Wqj3uWiyzBHy9RR59bv+o9qux7R8ZjhK04/q6o
+j/3ENljd8K1yW2wgRZrEB1H+M0UASw==
+=X0Oj
+-----END PGP SIGNATURE-----
+
+--Sig_/fZQSE1CbvT3OvZf0/G5tIRg--
 
