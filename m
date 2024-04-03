@@ -1,148 +1,134 @@
-Return-Path: <linux-kernel+bounces-129454-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-129455-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B8F00896B05
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 11:48:56 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id B73C7896B0A
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 11:49:20 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7066528CD39
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 09:48:55 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E87CD1C25E29
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 09:49:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A7B1B1350CC;
-	Wed,  3 Apr 2024 09:48:39 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E01396EB4B;
-	Wed,  3 Apr 2024 09:48:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0FD621350CA;
+	Wed,  3 Apr 2024 09:49:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="gyS0iJV4"
+Received: from mail-yb1-f172.google.com (mail-yb1-f172.google.com [209.85.219.172])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DA0F8134CE0
+	for <linux-kernel@vger.kernel.org>; Wed,  3 Apr 2024 09:49:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712137719; cv=none; b=Z5NGp1vZZ9M+2/d2l/O7rDpoY0ZbH/y3UBPxnLcR1nV71lpwKOL0v/re+5uqaq6OQR5hOwoq3/llm4IT8frW4r0xl/ffZfdeSqQruUkMXxHwDBBHq26SSn58F7c2JSkFy03QKZGu3tN9SJvy/1I+XiFTMDC4XW2E31IPBNf8ZmU=
+	t=1712137753; cv=none; b=VzeYrpRLOn1rUIKCuzO4nV0q/huAms/PgikO4jVmccuF5FC09LRJHzcaeXJCQvvwTTYa7iU/ufEyVOGIqL7jnoqcepkrfMgsMek1kR3069sxQ9ZhYzanu5wP8gep/F5fKiVYRpXcbDwsJJWUAcMzrgixxjgDbdDyvEYB/KMRUDc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712137719; c=relaxed/simple;
-	bh=F82JaR9RdyJNFxUkurbYF8bxOODLnktjKcHEfsByIV8=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=n1wU9jWICoAdsW5xHyt47r2vNPorrdzPRMEGgM4RsKHheBq0NWzbBO5i3QoiqB3XAapvrHiOO8WiI8voaD3wigIRKmTkQfOvPt6odDuOyaf2uU8C3V00PYSPW5SbDoXdYUSa4kLWcAGd8nGKDB9iWL/zj+DiWk8DD8KZl1yJPeo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 56D49FEC;
-	Wed,  3 Apr 2024 02:49:07 -0700 (PDT)
-Received: from FVFF77S0Q05N (unknown [10.57.16.212])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id C7D463F7B4;
-	Wed,  3 Apr 2024 02:48:33 -0700 (PDT)
-Date: Wed, 3 Apr 2024 10:48:27 +0100
-From: Mark Rutland <mark.rutland@arm.com>
-To: Zenghui Yu <yuzenghui@huawei.com>
-Cc: linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
-	peterz@infradead.org, mingo@redhat.com, acme@kernel.org,
-	namhyung@kernel.org, will@kernel.org,
-	alexander.shishkin@linux.intel.com, jolsa@kernel.org,
-	irogers@google.com, adrian.hunter@intel.com,
-	wanghaibin.wang@huawei.com, linux-arm-kernel@lists.infradead.org
-Subject: Re: [report] WARN_ON_ONCE triggered in for_each_sibling_event()
-Message-ID: <Zg0l642PgQ7T3a8Z@FVFF77S0Q05N>
-References: <d4491035-9f9c-d3c2-bd26-a5133d8233fe@huawei.com>
+	s=arc-20240116; t=1712137753; c=relaxed/simple;
+	bh=I/lHK07ldnCHYwMXK+O+modiLmcQLlhWwsMZypnyawE=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=A0GNRORoGJXNwA7FIh6eH+1/0gNvcXwbrsHrBPuctDX0QJXQqPz8GcbEYmULlndN/UwuRCfYmz3lc7IxvAnaqYUF16zrggfFYd0jeQ4evC1C/i1IYd2zVfW2k4twRHc/AY511AHFEOp6BtqFxaBsB19pb0yDnP8vbXd3trXB5Zo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=gyS0iJV4; arc=none smtp.client-ip=209.85.219.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-yb1-f172.google.com with SMTP id 3f1490d57ef6-ddda842c399so4894485276.3
+        for <linux-kernel@vger.kernel.org>; Wed, 03 Apr 2024 02:49:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1712137751; x=1712742551; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=3tvxwcGEaXlq9t2qggBvOm4jDfIobjVvvQgoLk34JPw=;
+        b=gyS0iJV4JbOjl0nH6c1arzmrIy2B2zK5JHKy20mJ4XpVh6oFLhihKxk4fybz8dH7ZG
+         3PhWDUbdNqQV8jAUXiruBp6dmZcruQhQDVdd7DgriRSI8C6LIRvjL/o3a2bPNQmZXkA0
+         v5yD01WuIkOxY0cQQVSxz6ue1fvgcknQF63fbdZrT9kW9jShKeW3RgnBR/o/id315Sdc
+         Q84gc858fOJNfUeLczirbYsfq1U5259rAGPRISCfbCmMWxSpHojVq7xHdyF8bMOFiTaK
+         glElAzOh59YwnqmQX1RCSeFbeEGsyQmGS5JkyY+myrn1t9BlcAZ+zKvJfXei/pRC6dOl
+         sNkA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712137751; x=1712742551;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=3tvxwcGEaXlq9t2qggBvOm4jDfIobjVvvQgoLk34JPw=;
+        b=jSY6jymQvT8iu1TgjolFvisRxkdxWHubReltD2bioyyWAb42bJBmxLRCoYu0lsJaZJ
+         UA4HYiS5TcJ704y3FadXJR5pUN1kqh/D4XdtIsFWIP2y8KI7b+mp1t+1B2aDMKvxd/5O
+         +e66oteKdOawbYcrIDuBASmQJRTNc3adurqkZX1RwC3E8lfhLZ8QkKr46NFy+FrV7rLd
+         TEUvxEynRNgYfvMDnun16NGzpC3VV70wxk957EQ0MAa3TXZeJc2R+kPh1Tw+obwMRL3i
+         IIYng55uJS9ndEZQYFBrzssgCDTqnzRJgWoLyHgTlO7UZaRCn2oSvcOv8cLqbdwhVNiN
+         PuXQ==
+X-Forwarded-Encrypted: i=1; AJvYcCU0VuJmaS84XO9kkoF/q7p8qk8bxt442IJ9eSZsw+gxUNv+IvO1gDn/qmW4QJoSxW8SsHoyPO6Mu+EMYlzNlKImlC3Y8a9FYEEgXbMg
+X-Gm-Message-State: AOJu0YzbGsRM3qdmiMj1L0sCM+giHaUcRKP953x1Ln7+y9UzZMiVYhKN
+	Z/RuFILP7YZ1gmMth+6J98RgwDZa/qdyYrGF18Oy6YrgEjeJ1SpxjZkafRnHGmhEkv8noEUCkAN
+	OpLfqODm1pg2FMAm0dt8Wr+TC4u6neMdhlrJE3g==
+X-Google-Smtp-Source: AGHT+IEpF2mJ7B2oXcCBJscSms9I5JdRsHzjwR2AXCUqHh+AiX5In12EGhsUtCqq2Re95OL5aJpNfwvGQHMpDLx4yAQ=
+X-Received: by 2002:a25:b989:0:b0:dbd:8f9:a71 with SMTP id r9-20020a25b989000000b00dbd08f90a71mr12861423ybg.28.1712137750746;
+ Wed, 03 Apr 2024 02:49:10 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <d4491035-9f9c-d3c2-bd26-a5133d8233fe@huawei.com>
+References: <20240403-msm-drm-dsc-dsi-video-upstream-v1-0-db5036443545@linaro.org>
+In-Reply-To: <20240403-msm-drm-dsc-dsi-video-upstream-v1-0-db5036443545@linaro.org>
+From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Date: Wed, 3 Apr 2024 12:49:00 +0300
+Message-ID: <CAA8EJprd78g0jM4u2uY-vZnqQibbWevjxqzXFaPohkvmyWHkHw@mail.gmail.com>
+Subject: Re: [PATCH v3 0/6] Add DSC support to DSI video panel
+To: Jun Nie <jun.nie@linaro.org>
+Cc: Rob Clark <robdclark@gmail.com>, Abhinav Kumar <quic_abhinavk@quicinc.com>, 
+	Sean Paul <sean@poorly.run>, Marijn Suijten <marijn.suijten@somainline.org>, 
+	David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>, 
+	Jessica Zhang <quic_jesszhan@quicinc.com>, Vinod Koul <vkoul@kernel.org>, 
+	linux-arm-msm@vger.kernel.org, dri-devel@lists.freedesktop.org, 
+	freedreno@lists.freedesktop.org, linux-kernel@vger.kernel.org, 
+	Jonathan Marek <jonathan@marek.ca>
+Content-Type: text/plain; charset="UTF-8"
 
-On Thu, Mar 28, 2024 at 06:06:21PM +0800, Zenghui Yu wrote:
-> Hi folks,
+On Wed, 3 Apr 2024 at 12:11, Jun Nie <jun.nie@linaro.org> wrote:
+>
+> This is follow up update to Jonathan's patch set.
+>
+> Changes vs V2:
+> - Rebase to latest mainline.
+> - Drop the INTF_CFG2_DATA_HCTL_EN change as it is handled in
+>     latest mainline code.
+> - Drop the bonded DSI patch as I do not have device to test it.
+> - Address comments from version 2.
 
-Hi Zenghui,
+Which comments? "Adress comments" is the worst case of changelog.
 
-> The following splat is triggered when I execute `perf stat -e
-> smmuv3_pmcg_100020/config_cache_miss/` on mainline kernel (built with
-> arm64-defconfig + PROVE_LOCKING).
-> 
-> | ------------[ cut here ]------------
-> | WARNING: CPU: 36 PID: 72452 at drivers/perf/arm_smmuv3_pmu.c:434
-> smmu_pmu_event_init+0x298/0x2b0 [arm_smmuv3_pmu]
-> | Modules linked in: xt_MASQUERADE iptable_nat xt_addrtype xt_conntrack
-> nf_nat nf_conntrack nf_defrag_ipv6 nf_defrag_ipv4 libcrc32c overlay
-> ip6table_filter ip6_tables xt_tcpudp iptable_filter ip_tables x_tables
-> md_mod arm_smmuv3_pmu hibmc_drm drm_vram_helper drm_ttm_helper ttm
-> drm_kms_helper spi_dw_mmio spi_dw fuse drm backlight crct10dif_ce
-> onboard_usb_hub xhci_pci xhci_pci_renesas hisi_sec2 hisi_qm uacce authenc
-> ipmi_si ipmi_devintf ipmi_msghandler dm_mod br_netfilter bridge stp llc nvme
-> nvme_core nbd ipv6
-> | CPU: 36 PID: 72452 Comm: perf Kdump: loaded Not tainted
-> 6.9.0-rc1-00061-g8d025e2092e2-dirty #1700
-> | Hardware name: Huawei TaiShan 2280 V2/BC82AMDDA, BIOS 1.05 09/18/2019
-> | pstate: 80400009 (Nzcv daif +PAN -UAO -TCO -DIT -SSBS BTYPE=--)
-> | pc : smmu_pmu_event_init+0x298/0x2b0 [arm_smmuv3_pmu]
-> | lr : smmu_pmu_event_init+0x290/0x2b0 [arm_smmuv3_pmu]
-> | sp : ffff8000c8ce3be0
-> | x29: ffff8000c8ce3be0 x28: 0000000000000000 x27: ffff8000802a2c1c
-> | x26: ffff8000c8ce3d70 x25: ffff8000802a2bc8 x24: 0000000000000000
-> | x23: 0000000000000001 x22: ffff0028045d52b0 x21: ffff002807228168
-> | x20: 0000000000000002 x19: ffff002807228000 x18: 0000000000000000
-> | x17: 0000000000000000 x16: 0000000000000000 x15: 0000000000000000
-> | x14: 0000000000000000 x13: 0000000000000000 x12: 0000000000000040
-> | x11: ffff0020804016d0 x10: ffff0020804016d2 x9 : ffff800083b29b18
-> | x8 : ffff0020804016f8 x7 : 0000000000000000 x6 : ffff0020804018c0
-> | x5 : ffff0020804016d0 x4 : ffff80007bf07a58 x3 : 0000000000000002
-> | x2 : ffff802f5db37000 x1 : 0000000000000000 x0 : 0000000000000000
-> | Call trace:
-> |  smmu_pmu_event_init+0x298/0x2b0 [arm_smmuv3_pmu]
-> |  perf_try_init_event+0x54/0x140|  perf_event_alloc+0x3e4/0x1080
-> |  __do_sys_perf_event_open+0x178/0xfa8
-> |  __arm64_sys_perf_event_open+0x28/0x34
-> |  invoke_syscall+0x48/0x114
-> |  el0_svc_common.constprop.0+0x40/0xe0
-> |  do_el0_svc+0x1c/0x28
-> |  el0_svc+0x4c/0x11c
-> |  el0t_64_sync_handler+0xc0/0xc4
-> |  el0t_64_sync+0x190/0x194
-> | irq event stamp: 174338
-> | hardirqs last  enabled at (174337): [<ffff800080357774>]
-> ___slab_alloc+0x3bc/0xf38
-> | hardirqs last disabled at (174338): [<ffff8000812a7ee0>] el1_dbg+0x24/0x8c
-> | softirqs last  enabled at (174292): [<ffff8000800185bc>]
-> fpsimd_restore_current_state+0x34/0xc4
-> | softirqs last disabled at (174290): [<ffff80008001858c>]
-> fpsimd_restore_current_state+0x4/0xc4
-> | ---[ end trace 0000000000000000 ]---
-> 
-> Note that this is not specific to the arm_smmuv3_pmu driver as I can
-> also reproduce it with some HiSilicon uncore PMU events (e.g., executing
-> `perf stat -e hisi_sccl1_ddrc0/flux_rd/`).
-> 
-> For your convenience, the assertion was added by commit f3c0eba28704
-> ("perf: Add a few assertions").
-> 
-> Post it out for visibility, not sure if there are already similar
-> reports on the list though. Please have a look.
+Also, what do you consider as version 2? Jonathan Marek has only sent v1.
 
-Thanks for the report!
+>
+> Signed-off-by: Jun Nie <jun.nie@linaro.org>
+> ---
+> Jonathan Marek (5):
+>       drm/msm/dpu: fix video mode DSC for DSI
+>       drm/msm/dsi: set video mode widebus enable bit when widebus is enabled
+>       drm/msm/dsi: set VIDEO_COMPRESSION_MODE_CTRL_WC (fix video mode DSC)
+>       drm/msm/dsi: add a comment to explain pkt_per_line encoding
+>       drm/msm/dsi: support DSC configurations with slice_per_pkt > 1
+>
+> Jun Nie (1):
+>       drm/display: Add slice_per_pkt for dsc
+>
+>  .../gpu/drm/msm/disp/dpu1/dpu_encoder_phys_vid.c   |  9 +++++
+>  drivers/gpu/drm/msm/disp/dpu1/dpu_hw_intf.c        |  8 +++++
+>  drivers/gpu/drm/msm/dsi/dsi.xml.h                  |  1 +
+>  drivers/gpu/drm/msm/dsi/dsi_host.c                 | 42 +++++++++++-----------
+>  include/drm/display/drm_dsc.h                      |  4 +++
+>  5 files changed, 44 insertions(+), 20 deletions(-)
+> ---
+> base-commit: b1e6ec0a0fd0252af046e542f91234cd6c30b2cb
+> change-id: 20240403-msm-drm-dsc-dsi-video-upstream-1156d110a53d
+>
+> Best regards,
+> --
+> Jun Nie <jun.nie@linaro.org>
+>
 
-This is indeed a regression caused by commit:
 
-  f3c0eba28704 ("perf: Add a few assertions")
-
-.. and it's concerning that we haven't had a report until now; we're clearly
-not testing system/uncore PMUs all that much. :/
-
-I don't want to remove the assertion, since that will catch missed locking that
-has been the source of a number of nasty bugs.
-
-I think we have to update all PMU drivers to avoid for_each_sibling_event()
-when event == group_leader. That's the established practice in CPU PMU drivers,
-and with that done I believe that we can tighten the requirements such that
-for_each_sibling_event() can *only* be called for a group leader, which would
-catch unintentional misuse in the core code.
-
-Looking around, I see some other (related) problems in group validation in some
-PMU drivers, so I'll spin a series to address those in one go. I'll try to get
-that out in the next few days.
-
-Mark.
+--
+With best wishes
+Dmitry
 
