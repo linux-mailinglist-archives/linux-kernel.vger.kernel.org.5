@@ -1,165 +1,108 @@
-Return-Path: <linux-kernel+bounces-129882-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-129881-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id BA05F897197
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 15:51:26 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9C758897194
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 15:51:01 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 394241F2569A
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 13:51:26 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3CCEB1F22119
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 13:51:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 327E514882F;
-	Wed,  3 Apr 2024 13:51:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4AEB7148834;
+	Wed,  3 Apr 2024 13:50:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="iSRab5p/"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Xd/SRhp2"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D22551487E0
-	for <linux-kernel@vger.kernel.org>; Wed,  3 Apr 2024 13:50:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8A14514831D;
+	Wed,  3 Apr 2024 13:50:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712152259; cv=none; b=L/BvKWv9ZcjnoTmRCR48P14tcC3Gz9siH8xUTtJ1UEEYICcRprEPlA2ncaYvdzGha0kud87vglsrQsWNkNEN6dPDSrsygOFis3nq10KBb6f3qJdiYu8MzDshlBSqNN/+Nhjxl/lfZKOOSTkDJM+dgC/+DiD+H4pBhe2OEdJ768c=
+	t=1712152245; cv=none; b=s/PmdrCY/so6wAe7I9XxDBXlzSlEZABL6vZP07RL5AHATPhYOlGjNGcATqkF6QQy2Jstn9whBlUKbCiWQXiWujXMKGydt2H8W+mumljah3QZC7Y9My1Uz0sh3DG813Opo1mKjzcrDrbmS1C9CMdSz7z7EtRa+6XkDdD0XhPY8l0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712152259; c=relaxed/simple;
-	bh=0w2WrMPgBEF7P+KBFC1PiBOaaNAE12UV7ArGCbs4Fpk=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=WcmwgV1EQwzh/6Dy2O1awflZTqnrWYqk18iM/R42Gle9LZlTa3f33GLOPPvnfiKuv73h5EeQZ0lXhdrwNjEFfIAuBYTLpwWGgqOBZi60ludMikVLu4viHJs5vETohOHwFcw5fG9NbxzK2bWfutHr1LXMn/T1MyU3ku4LAxPqBNU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=iSRab5p/; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1712152256;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=fbnyxTPoivxdulGiRzybrkcGRwKo49Gh1MYbg192HZY=;
-	b=iSRab5p/C4pXQeGNdOCCiyW3CFtX3M8SOQDFoF8WIJfyurhrzdXJNoeW953AgJmH2I3XyY
-	r6MFozkuiSWYAeA/71AKdxg1djHH0/YEg+yN8OKxWverapZfPOmspyVLnS8Uek8hTDZa93
-	u6Pc9MHVo5pFD5nRz/+9M+Sav4XSnt8=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-193-h1MQqg0sPVK2IoQWIgyF3g-1; Wed, 03 Apr 2024 09:50:55 -0400
-X-MC-Unique: h1MQqg0sPVK2IoQWIgyF3g-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.rdu2.redhat.com [10.11.54.2])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id A10DA101A535;
-	Wed,  3 Apr 2024 13:50:54 +0000 (UTC)
-Received: from localhost (unknown [10.39.194.118])
-	by smtp.corp.redhat.com (Postfix) with ESMTP id 9649A40735E1;
-	Wed,  3 Apr 2024 13:50:53 +0000 (UTC)
-Date: Wed, 3 Apr 2024 09:50:32 -0400
-From: Stefan Hajnoczi <stefanha@redhat.com>
-To: Eric Blake <eblake@redhat.com>
-Cc: linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-	Alasdair Kergon <agk@redhat.com>,
-	Mikulas Patocka <mpatocka@redhat.com>, dm-devel@lists.linux.dev,
-	David Teigland <teigland@redhat.com>,
-	Mike Snitzer <snitzer@kernel.org>, Jens Axboe <axboe@kernel.dk>,
-	Christoph Hellwig <hch@lst.de>, Joe Thornber <ejt@redhat.com>
-Subject: Re: [RFC 3/9] selftests: block_seek_hole: add loop block driver tests
-Message-ID: <20240403135032.GB2524049@fedora>
-References: <20240328203910.2370087-1-stefanha@redhat.com>
- <20240328203910.2370087-4-stefanha@redhat.com>
- <xh2nqmndk4rfnvghhmv6xlueleb4mdfa6v5vvamnxfyxb3eomb@yz5u2nldqewf>
+	s=arc-20240116; t=1712152245; c=relaxed/simple;
+	bh=ik1Yx7g2yV54SqbOiKkosaQPOUnk7YH54MIOwB7vzuU=;
+	h=From:To:Cc:Subject:References:Date:In-Reply-To:Message-ID:
+	 MIME-Version:Content-Type; b=X1FkB1SEfvcRCCs6BjmbUqfrNdjrPugY9xQuTOL/ambXcRgaFzo/7RaGLYVdwTVjl1P2KCpJ0X5uH9+458P0SpRbSFgvsszX/ZDiYYbmIw15a2CqqCipZtAYtTEDJBDrfVieBd7ZECT6wb1qWhZCs6+nb4GZkOITm+femHiQ3Dg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Xd/SRhp2; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 29B22C433C7;
+	Wed,  3 Apr 2024 13:50:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1712152245;
+	bh=ik1Yx7g2yV54SqbOiKkosaQPOUnk7YH54MIOwB7vzuU=;
+	h=From:To:Cc:Subject:References:Date:In-Reply-To:From;
+	b=Xd/SRhp2o//KNgIe7V9q/Vqg3uMo+ldj6QJa3Gna1jr+O1daos75LaAQurJDXj7S3
+	 SQpjuyBXs8LKDZxlP2b6Q+t74wd0XPqaj4IOEZ9K2UETteki/AyE1R7VudIVAZaENq
+	 t/G855WrxmaMUoZu26xsKMpeZo93MW9/e+9u1lhhOArsZyD+c7TpDuzQUFPvqdAEmp
+	 W8NBlBtB59+jYcGHqyzg+EJ0sbaweDiylmVe3DFIzAQgGQgLIfpS/KYgZlRv/jGOB3
+	 +sqnbyIPXuYuM1xTlr7CXju+xbTt6y9gynfhQrsH0cgQH3XmKWrXtymyAWFJXgOp63
+	 NXFLXnaF0P3OA==
+From: Kalle Valo <kvalo@kernel.org>
+To: Jeff Johnson <quic_jjohnson@quicinc.com>
+Cc: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,  Jeff Johnson
+ <jjohnson@kernel.org>,  Brian Norris <briannorris@chromium.org>,  Ajay
+ Singh <ajay.kathat@microchip.com>,  Claudiu Beznea
+ <claudiu.beznea@tuxon.dev>,  <linux-wireless@vger.kernel.org>,
+  <ath10k@lists.infradead.org>,  <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 1/6] wifi: ath10k: sdio: simplify module initialization
+References: <20240329171019.63836-1-krzysztof.kozlowski@linaro.org>
+	<f78fa061-3b34-47d2-a40c-bbec744f0f97@quicinc.com>
+Date: Wed, 03 Apr 2024 16:50:41 +0300
+In-Reply-To: <f78fa061-3b34-47d2-a40c-bbec744f0f97@quicinc.com> (Jeff
+	Johnson's message of "Fri, 29 Mar 2024 10:22:00 -0700")
+Message-ID: <87jzle5zda.fsf@kernel.org>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.2 (gnu/linux)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="wef+JxaAyeGLmzI+"
-Content-Disposition: inline
-In-Reply-To: <xh2nqmndk4rfnvghhmv6xlueleb4mdfa6v5vvamnxfyxb3eomb@yz5u2nldqewf>
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.2
+Content-Type: text/plain
 
+Jeff Johnson <quic_jjohnson@quicinc.com> writes:
 
---wef+JxaAyeGLmzI+
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+> On 3/29/2024 10:10 AM, Krzysztof Kozlowski wrote:
+>> This driver's initialization functions do not perform any custom code,
+>> except printing messages.  Printing messages on modules
+>> loading/unloading is discouraged because it pollutes the dmesg
+>> regardless whether user actually has this device.  Core kernel code
+>> already gives tools to investigate whether module was loaded or not.
+>> 
+>> Drop the printing messages which allows to replace open-coded
+>> module_sdio_driver().
+>> 
+>> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+>
+> Acked-by: Jeff Johnson <quic_jjohnson@quicinc.com>
+>
+>> 
+>> ---
+>> 
+>> FYI:
+>> I have ongoing patchset touching few lines above this patch chunk
+>> (sdio_driver) which might go via different tree. If that patchset is
+>> applied via different tree, it might result in a trivial conflict, but
+>> there is no dependency. They can go via separate trees (except that
+>> trivial conflict).
+>
+> I'll let Kalle respond if he'll take this through the ath tree vs letting you
+> take it through your tree
 
-On Thu, Mar 28, 2024 at 07:11:30PM -0500, Eric Blake wrote:
-> On Thu, Mar 28, 2024 at 04:39:04PM -0400, Stefan Hajnoczi wrote:
-> > Run the tests with:
-> >=20
-> >   $ make TARGETS=3Dblock_seek_hole -C tools/selftests run_tests
-> >=20
-> > Signed-off-by: Stefan Hajnoczi <stefanha@redhat.com>
-> > ---
-> >  tools/testing/selftests/Makefile              |   1 +
-> >  .../selftests/block_seek_hole/Makefile        |  17 +++
-> >  .../testing/selftests/block_seek_hole/config  |   1 +
-> >  .../selftests/block_seek_hole/map_holes.py    |  37 +++++++
-> >  .../testing/selftests/block_seek_hole/test.py | 103 ++++++++++++++++++
-> >  5 files changed, 159 insertions(+)
-> >  create mode 100644 tools/testing/selftests/block_seek_hole/Makefile
-> >  create mode 100644 tools/testing/selftests/block_seek_hole/config
-> >  create mode 100755 tools/testing/selftests/block_seek_hole/map_holes.py
-> >  create mode 100755 tools/testing/selftests/block_seek_hole/test.py
-> >=20
-> > +++ b/tools/testing/selftests/block_seek_hole/test.py
->=20
-> > +
-> > +# Different data layouts to test
-> > +
-> > +def data_at_beginning_and_end(f):
-> > +    f.write(b'A' * 4 * KB)
-> > +    f.seek(256 * MB)
-> > +
-> > +    f.write(b'B' * 64 * KB)
-> > +
-> > +    f.seek(1024 * MB - KB)
-> > +    f.write(b'C' * KB)
-> > +
-> > +def holes_at_beginning_and_end(f):
-> > +    f.seek(128 * MB)
-> > +    f.write(b'A' * 4 * KB)
-> > +
-> > +    f.seek(512 * MB)
-> > +    f.write(b'B' * 64 * KB)
-> > +
-> > +    f.truncate(1024 * MB)
-> > +
-> > +def no_holes(f):
-> > +    # Just 1 MB so test file generation is quick
-> > +    mb =3D b'A' * MB
-> > +    f.write(mb)
-> > +
-> > +def empty_file(f):
-> > +    f.truncate(1024 * MB)
->=20
-> Is it also worth attempting to test a (necessarily sparse!) file
-> larger than 2GiB to prove that we are 64-bit clean, even on a 32-bit
-> system where lseek is different than lseek64?  (I honestly have no
-> idea if python always uses 64-bit seek even on 32-bit systems,
-> although I would be surprised if it were not)
+I prefer to avoid conflicts as much as possible. In this patchset I'm
+not anticipating any conflicts with wireless trees, so if we can avoid
+any conflicts, please take this patchset via the other tree:
 
-Yes, it wouldn't hurt to add a test case for that. I'll do that.
+Acked-by: Kalle Valo <kvalo@kernel.org>
 
-Stefan
+I'll drop this patchset from my queue. But if I should take these to
+wireless trees instead just let me know.
 
---wef+JxaAyeGLmzI+
-Content-Type: application/pgp-signature; name="signature.asc"
+-- 
+https://patchwork.kernel.org/project/linux-wireless/list/
 
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEEhpWov9P5fNqsNXdanKSrs4Grc8gFAmYNXqcACgkQnKSrs4Gr
-c8haRQf6AwEcxzTy4yYaPyNMUFI4yW1gzKFlXN451KGhjcejq6HevACTbBTLUy4o
-uIiH5kiBM2XSl5k5m8E4oZeB5x6sWdHR+3OpwP9KoPvJfZinyoJbQM4CqIMQsWMM
-RJ5pIM9XRqG6BkeNT5ni8zs7VgF8aIxXkzhuSLf5H3WKKpqcXNfmMTuHUOWyOhtn
-AkfAYK6Mvzwucyv3HonafDbHokCB09BY5SKOcx4U2dz+7PKmiGxkjdanEOsAPHko
-SUAF2pM1Koi3X+9xfs63eJAfwVGqMZB9W36nAMEybCnNedVPoJUiT6JUdfjQSDa+
-hbxtZbvKkwZvaSxNRS81RwSszsK4vQ==
-=qDQS
------END PGP SIGNATURE-----
-
---wef+JxaAyeGLmzI+--
-
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
 
