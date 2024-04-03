@@ -1,37 +1,37 @@
-Return-Path: <linux-kernel+bounces-130020-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-130022-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 574B089734D
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 17:02:54 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id B27AD89734F
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 17:03:13 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D6EB11F295D2
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 15:02:53 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D4FBD1C27D0C
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 15:03:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3BE6F14A605;
-	Wed,  3 Apr 2024 15:02:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2D56D14A635;
+	Wed,  3 Apr 2024 15:02:14 +0000 (UTC)
 Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A85C514A4D9
-	for <linux-kernel@vger.kernel.org>; Wed,  3 Apr 2024 15:02:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E41C814A4FF
+	for <linux-kernel@vger.kernel.org>; Wed,  3 Apr 2024 15:02:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712156531; cv=none; b=TsogmLoRYkctMDwNic2lhYpahegzq/QSG0G7uuoKpG8e5GjNehnqWr/qJdbLvFzEVj5rRaNaTe3B9ilZ4cRfF9f91i9y6BgEk5PgTmyEDy9ueVnmiS+L/zXJpNQf74PYxV8mZ8qWqEm64ogXF3YrIe7kLrRHYTRFoKVqog7edOE=
+	t=1712156533; cv=none; b=SyhBU6XooknX3gRuOs07zHRVRzMh7beuuGIVNFGhqr4AGLLjwWgsfYxBrYypDjMoeQYb0qz2IA9MTNCecHKUKhtNn2Xjs0MZRI6/3zXBoQvk4CPurN2jgH0HyktAasXbtv5z5SqXkmne20yUuvU6JYsWNDiWLBjuFkhqOCHscpg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712156531; c=relaxed/simple;
-	bh=V9CTkZOx/tGYPNlc61sl/gWZULplYRl65rJqks9cElo=;
+	s=arc-20240116; t=1712156533; c=relaxed/simple;
+	bh=3TQz803SJKKWWDXdmpXJtdnVe8cb7gnbBOh1swoHYpo=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=bIXkgp6Lx0cUO8id9bcWt15wC9fbVpSXYpD9iLiL5cbXK+4YtXuoNrqJKvwFGtcXStPzRCt4eWR161BD0o0CEtHuA6kXgbFMIsTUtm5i+WYMQMaVRlca0bYqIyxUEmRoSAbGQwFUV81MjUi1CLI4trmX7QzkNPZ0ncbtxd3dYm4=
+	 MIME-Version; b=YDabxlZjnFFywA5AoD5XMKphluFc0PVraBOvrG0HJx0t3MnqIOuA1OkRyG9UByAThMO4+mVbo9FtG/NSmcNeYM/Q9oFbi/dkJr9wlOzavyDjJPTn+rU1EFSc0ADzbaYscqVKMjFyA3oWtNHum4rroabTRbpmjAoESR+o6YgU/k8=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 2C7C21007;
-	Wed,  3 Apr 2024 08:02:40 -0700 (PDT)
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 9E98A1595;
+	Wed,  3 Apr 2024 08:02:42 -0700 (PDT)
 Received: from lakrids.cambridge.arm.com (usa-sjc-imap-foss1.foss.arm.com [10.121.207.14])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 7DE443F7B4;
-	Wed,  3 Apr 2024 08:02:07 -0700 (PDT)
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id F00113F7B4;
+	Wed,  3 Apr 2024 08:02:09 -0700 (PDT)
 From: Mark Rutland <mark.rutland@arm.com>
 To: linux-kernel@vger.kernel.org
 Cc: anil.s.keshavamurthy@intel.com,
@@ -46,9 +46,9 @@ Cc: anil.s.keshavamurthy@intel.com,
 	palmer@dabbelt.com,
 	paul.walmsley@sifive.com,
 	will@kernel.org
-Subject: [PATCH v2 3/4] kprobes/treewide: Explicitly override alloc/free functions
-Date: Wed,  3 Apr 2024 16:01:53 +0100
-Message-Id: <20240403150154.667649-4-mark.rutland@arm.com>
+Subject: [PATCH v2 4/4] kprobes: Remove core dependency on modules
+Date: Wed,  3 Apr 2024 16:01:54 +0100
+Message-Id: <20240403150154.667649-5-mark.rutland@arm.com>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20240403150154.667649-1-mark.rutland@arm.com>
 References: <20240403150154.667649-1-mark.rutland@arm.com>
@@ -60,50 +60,30 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Currently architectures can override kprobes_alloc_insn_page(), but
-kprobes_free_insn_page() is always implemented using module_memfree(),
-which might not be what an architecture needs, especially as we'd like
-to make it possible to use kprobes without requiring MODULES.
+From: Jarkko Sakkinen <jarkko@kernel.org>
 
-It would be nicer if architectures either:
+Tracing with kprobes while running a monolithic kernel is currently
+impossible because KPROBES depends on MODULES. While this dependency is
+necessary when HAVE_KPROBES_ALLOC=n and the core kprobes code allocates
+memory using module_alloc(), all the other module-specific code only
+exist to handle the case when MODULES=y, and can be hidden behind
+ifdeffery.
 
-(a) Used only the generic kprobes_alloc_insn_page() and
-    kprobes_free_insn_page(), implicitly depending on MODULES.
+Add the necessary ifdeffery, and remove the dependency on MODULES=y when
+HAVE_KPROBES_ALLOC=y.
 
-(b) Provided their own implementation of both kprobes_alloc_insn_page()
-    and kprobes_free_insn_page(), handling the relevant dependencies
-    themselves.
+As of this patch kprobes can be used when MODULES=n on arm64 and
+riscv. All other architectures still depend on MODULES, either by virtue
+of the core dependency on MODULES when HAVE_KPROBES_ALLOC=n, or by
+virtue of an explciit dependency on MODULES in arch code.
 
-This patch applies that split treewide:
+Other architectures can enable support by implementing their own
+kprobes_alloc_insn_page() and kprobes_free_insn_page() which do not
+depend on MODULES.
 
-(a) Architectures using the generic kprobes_free_insn_page() and
-    kprobes_free_insn_page() are left as-is. The __weak annotation is
-    removed from the generic implementations so that accidental
-    overrides/misuse can be detected easily.
-
-(b) Architectures which provide their own kprobes_free_insn_page() are
-    given a matching implementation of kprobes_free_insn_page(), and
-    select HAVE_KPROBES_ALLOC.
-
-    This new Kconfig symbol will allow subsequent patches to relax the
-    dependency on MODULES to (MODULES || HAVE_KPROBES_ALLOC) once other
-    module dependencies in the core kprobes code are cleaned up.
-
-    Architectures which use module_alloc() are given an implementation
-    using module_memfree() along with an explicit dependency on MODULES.
-
-    Architectures using __vmalloc_node_range() are given an
-    implementation using vfree(). This loses the warning for
-    in_interrupt(), but vfree() can handle this via vfree_atomic(), so
-    the warning isn't necessary.
-
-    On riscv, the allocator depends on !XIP_KERNEL, which is already a
-    dependency for HAVE_KPROBES in arch/riscv/Kconfig.
-
-As of this patch arm64 and riscv have kprobe allocation functions which
-do not explicitly depend on MODULES. The core kprobes code still depends
-on MODULES.
-
+Signed-off-by: Jarkko Sakkinen <jarkko@kernel.org>
+Link: https://lore.kernel.org/lkml/20240326134616.7691-1-jarkko@kernel.org/
+[Mark: Remove execmem changes, depend on HAVE_KPROBES_ALLOC]
 Signed-off-by: Mark Rutland <mark.rutland@arm.com>
 Cc: Albert Ou <aou@eecs.berkeley.edu>
 Cc: Anil S Keshavamurthy <anil.s.keshavamurthy@intel.com>
@@ -116,220 +96,171 @@ Cc: Palmer Dabbelt <palmer@dabbelt.com>
 Cc: Paul Walmsley <paul.walmsley@sifive.com>
 Cc: Will Deacon <will@kernel.org>
 ---
- arch/Kconfig                       | 3 +++
- arch/arm64/Kconfig                 | 1 +
- arch/arm64/kernel/probes/kprobes.c | 5 +++++
- arch/powerpc/Kconfig               | 3 ++-
- arch/powerpc/kernel/kprobes.c      | 5 +++++
- arch/riscv/Kconfig                 | 1 +
- arch/riscv/kernel/probes/kprobes.c | 5 +++++
- arch/s390/Kconfig                  | 3 ++-
- arch/s390/kernel/kprobes.c         | 5 +++++
- arch/x86/Kconfig                   | 3 ++-
- arch/x86/kernel/kprobes/core.c     | 5 +++++
- include/linux/kprobes.h            | 1 +
- kernel/kprobes.c                   | 6 ++++--
- 13 files changed, 41 insertions(+), 5 deletions(-)
+ arch/Kconfig                |  2 +-
+ kernel/kprobes.c            | 46 ++++++++++++++++++++++---------------
+ kernel/trace/trace_kprobe.c | 15 ++++++++++--
+ 3 files changed, 41 insertions(+), 22 deletions(-)
 
 diff --git a/arch/Kconfig b/arch/Kconfig
-index 9f066785bb71d..85bb59f7b8c07 100644
+index 85bb59f7b8c07..0df2c88547b3c 100644
 --- a/arch/Kconfig
 +++ b/arch/Kconfig
-@@ -206,6 +206,9 @@ config HAVE_IOREMAP_PROT
- config HAVE_KPROBES
- 	bool
+@@ -52,7 +52,7 @@ config GENERIC_ENTRY
  
-+config HAVE_KPROBES_ALLOC
-+	bool
-+
- config HAVE_KRETPROBES
- 	bool
- 
-diff --git a/arch/arm64/Kconfig b/arch/arm64/Kconfig
-index 7b11c98b3e84b..bda7913d6c9b8 100644
---- a/arch/arm64/Kconfig
-+++ b/arch/arm64/Kconfig
-@@ -233,6 +233,7 @@ config ARM64
- 	select HAVE_STACKPROTECTOR
- 	select HAVE_SYSCALL_TRACEPOINTS
- 	select HAVE_KPROBES
-+	select HAVE_KPROBES_ALLOC
- 	select HAVE_KRETPROBES
- 	select HAVE_GENERIC_VDSO
- 	select HOTPLUG_CORE_SYNC_DEAD if HOTPLUG_CPU
-diff --git a/arch/arm64/kernel/probes/kprobes.c b/arch/arm64/kernel/probes/kprobes.c
-index 4b6ab7b1fa211..69d19a390cd48 100644
---- a/arch/arm64/kernel/probes/kprobes.c
-+++ b/arch/arm64/kernel/probes/kprobes.c
-@@ -136,6 +136,11 @@ void *kprobes_alloc_insn_page(void)
- 			NUMA_NO_NODE, __builtin_return_address(0));
- }
- 
-+void kprobes_free_insn_page(void *page)
-+{
-+	vfree(page);
-+}
-+
- /* arm kprobe: install breakpoint in text */
- void __kprobes arch_arm_kprobe(struct kprobe *p)
- {
-diff --git a/arch/powerpc/Kconfig b/arch/powerpc/Kconfig
-index 1c4be33736860..13e0fc51dcdcf 100644
---- a/arch/powerpc/Kconfig
-+++ b/arch/powerpc/Kconfig
-@@ -254,7 +254,8 @@ config PPC
- 	select HAVE_KERNEL_LZMA			if DEFAULT_UIMAGE
- 	select HAVE_KERNEL_LZO			if DEFAULT_UIMAGE
- 	select HAVE_KERNEL_XZ			if PPC_BOOK3S || 44x
--	select HAVE_KPROBES
-+	select HAVE_KPROBES			if MODULES
-+	select HAVE_KPROBES_ALLOC
- 	select HAVE_KPROBES_ON_FTRACE
- 	select HAVE_KRETPROBES
- 	select HAVE_LD_DEAD_CODE_DATA_ELIMINATION if HAVE_OBJTOOL_MCOUNT && (!ARCH_USING_PATCHABLE_FUNCTION_ENTRY || (!CC_IS_GCC || GCC_VERSION >= 110100))
-diff --git a/arch/powerpc/kernel/kprobes.c b/arch/powerpc/kernel/kprobes.c
-index 0b297718d5de6..d0332aaebab09 100644
---- a/arch/powerpc/kernel/kprobes.c
-+++ b/arch/powerpc/kernel/kprobes.c
-@@ -146,6 +146,11 @@ void *kprobes_alloc_insn_page(void)
- 	return NULL;
- }
- 
-+void kprobes_free_insn_page(void *page)
-+{
-+	module_memfree(page);
-+}
-+
- int arch_prepare_kprobe(struct kprobe *p)
- {
- 	int ret = 0;
-diff --git a/arch/riscv/Kconfig b/arch/riscv/Kconfig
-index be09c8836d56b..4e22549a522a5 100644
---- a/arch/riscv/Kconfig
-+++ b/arch/riscv/Kconfig
-@@ -139,6 +139,7 @@ config RISCV
- 	select HAVE_GENERIC_VDSO if MMU && 64BIT
- 	select HAVE_IRQ_TIME_ACCOUNTING
- 	select HAVE_KPROBES if !XIP_KERNEL
-+	select HAVE_KPROBES_ALLOC
- 	select HAVE_KPROBES_ON_FTRACE if !XIP_KERNEL
- 	select HAVE_KRETPROBES if !XIP_KERNEL
- 	# https://github.com/ClangBuiltLinux/linux/issues/1881
-diff --git a/arch/riscv/kernel/probes/kprobes.c b/arch/riscv/kernel/probes/kprobes.c
-index 75201ce721057..37fdfa952d999 100644
---- a/arch/riscv/kernel/probes/kprobes.c
-+++ b/arch/riscv/kernel/probes/kprobes.c
-@@ -112,6 +112,11 @@ void *kprobes_alloc_insn_page(void)
- 				     VM_FLUSH_RESET_PERMS, NUMA_NO_NODE,
- 				     __builtin_return_address(0));
- }
-+
-+void kprobes_free_insn_page(void *page)
-+{
-+	vfree(page);
-+}
- #endif
- 
- /* install breakpoint in text */
-diff --git a/arch/s390/Kconfig b/arch/s390/Kconfig
-index 8f01ada6845e3..635eddc3fce80 100644
---- a/arch/s390/Kconfig
-+++ b/arch/s390/Kconfig
-@@ -193,7 +193,8 @@ config S390
- 	select HAVE_KERNEL_UNCOMPRESSED
- 	select HAVE_KERNEL_XZ
- 	select HAVE_KERNEL_ZSTD
--	select HAVE_KPROBES
-+	select HAVE_KPROBES		if MODULES
-+	select HAVE_KPROBES_ALLOC
- 	select HAVE_KPROBES_ON_FTRACE
- 	select HAVE_KRETPROBES
- 	select HAVE_LIVEPATCH
-diff --git a/arch/s390/kernel/kprobes.c b/arch/s390/kernel/kprobes.c
-index 91ca4d501d4ef..a5b142b8eb0f7 100644
---- a/arch/s390/kernel/kprobes.c
-+++ b/arch/s390/kernel/kprobes.c
-@@ -45,6 +45,11 @@ void *kprobes_alloc_insn_page(void)
- 	return page;
- }
- 
-+void kprobes_free_insn_page(void *page)
-+{
-+	module_memfree(page);
-+}
-+
- static void *alloc_s390_insn_page(void)
- {
- 	if (xchg(&insn_page_in_use, 1) == 1)
-diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
-index 4fff6ed46e902..0810cd0bdeca9 100644
---- a/arch/x86/Kconfig
-+++ b/arch/x86/Kconfig
-@@ -240,7 +240,8 @@ config X86
- 	select HAVE_KERNEL_LZO
- 	select HAVE_KERNEL_XZ
- 	select HAVE_KERNEL_ZSTD
--	select HAVE_KPROBES
-+	select HAVE_KPROBES			if MODULES
-+	select HAVE_KPROBES_ALLOC
- 	select HAVE_KPROBES_ON_FTRACE
- 	select HAVE_FUNCTION_ERROR_INJECTION
- 	select HAVE_KRETPROBES
-diff --git a/arch/x86/kernel/kprobes/core.c b/arch/x86/kernel/kprobes/core.c
-index 7f01bbbfa9e2a..5f093b94d9b40 100644
---- a/arch/x86/kernel/kprobes/core.c
-+++ b/arch/x86/kernel/kprobes/core.c
-@@ -508,6 +508,11 @@ void *kprobes_alloc_insn_page(void)
- 	return page;
- }
- 
-+void kprobes_free_insn_page(void *page)
-+{
-+	module_memfree(page);
-+}
-+
- /* Kprobe x86 instruction emulation - only regs->ip or IF flag modifiers */
- 
- static void kprobe_emulate_ifmodifiers(struct kprobe *p, struct pt_regs *regs)
-diff --git a/include/linux/kprobes.h b/include/linux/kprobes.h
-index ad4b561100f9e..651c807727bea 100644
---- a/include/linux/kprobes.h
-+++ b/include/linux/kprobes.h
-@@ -431,6 +431,7 @@ int enable_kprobe(struct kprobe *kp);
- void dump_kprobe(struct kprobe *kp);
- 
- void *kprobes_alloc_insn_page(void);
-+void kprobes_free_insn_page(void *page);
- 
- void *kprobes_alloc_optinsn_page(void);
- void kprobes_free_optinsn_page(void *page);
+ config KPROBES
+ 	bool "Kprobes"
+-	depends on MODULES
++	depends on MODULES || HAVE_KPROBES_ALLOC
+ 	depends on HAVE_KPROBES
+ 	select KALLSYMS
+ 	select TASKS_RCU if PREEMPTION
 diff --git a/kernel/kprobes.c b/kernel/kprobes.c
-index 35adf56430c9b..fa2ee4e59eca2 100644
+index fa2ee4e59eca2..ec4493a41b505 100644
 --- a/kernel/kprobes.c
 +++ b/kernel/kprobes.c
-@@ -110,7 +110,8 @@ enum kprobe_slot_state {
- 	SLOT_USED = 2,
- };
+@@ -1594,6 +1594,7 @@ static int check_kprobe_address_safe(struct kprobe *p,
+ 			goto out;
+ 		}
  
--void __weak *kprobes_alloc_insn_page(void)
-+#ifndef CONFIG_HAVE_KPROBES_ALLOC
-+void *kprobes_alloc_insn_page(void)
- {
- 	/*
- 	 * Use module_alloc() so this page is within +/- 2GB of where the
-@@ -121,10 +122,11 @@ void __weak *kprobes_alloc_insn_page(void)
- 	return module_alloc(PAGE_SIZE);
++#ifdef CONFIG_MODULES
+ 		/*
+ 		 * If the module freed '.init.text', we couldn't insert
+ 		 * kprobes in there.
+@@ -1604,7 +1605,9 @@ static int check_kprobe_address_safe(struct kprobe *p,
+ 			*probed_mod = NULL;
+ 			ret = -ENOENT;
+ 		}
++#endif /* CONFIG_MODULES */
+ 	}
++
+ out:
+ 	preempt_enable();
+ 	jump_label_unlock();
+@@ -2484,24 +2487,6 @@ int kprobe_add_area_blacklist(unsigned long start, unsigned long end)
+ 	return 0;
  }
  
--static void kprobes_free_insn_page(void *page)
-+void kprobes_free_insn_page(void *page)
+-/* Remove all symbols in given area from kprobe blacklist */
+-static void kprobe_remove_area_blacklist(unsigned long start, unsigned long end)
+-{
+-	struct kprobe_blacklist_entry *ent, *n;
+-
+-	list_for_each_entry_safe(ent, n, &kprobe_blacklist, list) {
+-		if (ent->start_addr < start || ent->start_addr >= end)
+-			continue;
+-		list_del(&ent->list);
+-		kfree(ent);
+-	}
+-}
+-
+-static void kprobe_remove_ksym_blacklist(unsigned long entry)
+-{
+-	kprobe_remove_area_blacklist(entry, entry + 1);
+-}
+-
+ int __weak arch_kprobe_get_kallsym(unsigned int *symnum, unsigned long *value,
+ 				   char *type, char *sym)
  {
- 	module_memfree(page);
+@@ -2566,6 +2551,25 @@ static int __init populate_kprobe_blacklist(unsigned long *start,
+ 	return ret ? : arch_populate_kprobe_blacklist();
  }
-+#endif
  
- struct kprobe_insn_cache kprobe_insn_slots = {
- 	.mutex = __MUTEX_INITIALIZER(kprobe_insn_slots.mutex),
++#ifdef CONFIG_MODULES
++/* Remove all symbols in given area from kprobe blacklist */
++static void kprobe_remove_area_blacklist(unsigned long start, unsigned long end)
++{
++	struct kprobe_blacklist_entry *ent, *n;
++
++	list_for_each_entry_safe(ent, n, &kprobe_blacklist, list) {
++		if (ent->start_addr < start || ent->start_addr >= end)
++			continue;
++		list_del(&ent->list);
++		kfree(ent);
++	}
++}
++
++static void kprobe_remove_ksym_blacklist(unsigned long entry)
++{
++	kprobe_remove_area_blacklist(entry, entry + 1);
++}
++
+ static void add_module_kprobe_blacklist(struct module *mod)
+ {
+ 	unsigned long start, end;
+@@ -2662,6 +2666,9 @@ static int kprobes_module_callback(struct notifier_block *nb,
+ 	mutex_unlock(&kprobe_mutex);
+ 	return NOTIFY_DONE;
+ }
++#else
++#define kprobes_module_callback	(NULL)
++#endif /* CONFIG_MODULES */
+ 
+ static struct notifier_block kprobe_module_nb = {
+ 	.notifier_call = kprobes_module_callback,
+@@ -2726,7 +2733,8 @@ static int __init init_kprobes(void)
+ 	err = arch_init_kprobes();
+ 	if (!err)
+ 		err = register_die_notifier(&kprobe_exceptions_nb);
+-	if (!err)
++
++	if (!err && IS_ENABLED(CONFIG_MODULES))
+ 		err = register_module_notifier(&kprobe_module_nb);
+ 
+ 	kprobes_initialized = (err == 0);
+diff --git a/kernel/trace/trace_kprobe.c b/kernel/trace/trace_kprobe.c
+index 14099cc17fc9e..c509ba776e679 100644
+--- a/kernel/trace/trace_kprobe.c
++++ b/kernel/trace/trace_kprobe.c
+@@ -111,6 +111,7 @@ static nokprobe_inline bool trace_kprobe_within_module(struct trace_kprobe *tk,
+ 	return strncmp(module_name(mod), name, len) == 0 && name[len] == ':';
+ }
+ 
++#ifdef CONFIG_MODULES
+ static nokprobe_inline bool trace_kprobe_module_exist(struct trace_kprobe *tk)
+ {
+ 	char *p;
+@@ -129,6 +130,9 @@ static nokprobe_inline bool trace_kprobe_module_exist(struct trace_kprobe *tk)
+ 
+ 	return ret;
+ }
++#else
++#define trace_kprobe_module_exist(tk) false /* aka a module never exists */
++#endif /* CONFIG_MODULES */
+ 
+ static bool trace_kprobe_is_busy(struct dyn_event *ev)
+ {
+@@ -670,6 +674,7 @@ static int register_trace_kprobe(struct trace_kprobe *tk)
+ 	return ret;
+ }
+ 
++#ifdef CONFIG_MODULES
+ /* Module notifier call back, checking event on the module */
+ static int trace_kprobe_module_callback(struct notifier_block *nb,
+ 				       unsigned long val, void *data)
+@@ -699,6 +704,9 @@ static int trace_kprobe_module_callback(struct notifier_block *nb,
+ 
+ 	return NOTIFY_DONE;
+ }
++#else
++#define trace_kprobe_module_callback (NULL)
++#endif /* CONFIG_MODULES */
+ 
+ static struct notifier_block trace_kprobe_module_nb = {
+ 	.notifier_call = trace_kprobe_module_callback,
+@@ -1933,8 +1941,11 @@ static __init int init_kprobe_trace_early(void)
+ 	if (ret)
+ 		return ret;
+ 
+-	if (register_module_notifier(&trace_kprobe_module_nb))
+-		return -EINVAL;
++	if (IS_ENABLED(CONFIG_MODULES)) {
++		ret = register_module_notifier(&trace_kprobe_module_nb);
++		if (ret)
++			return -EINVAL;
++	}
+ 
+ 	return 0;
+ }
 -- 
 2.30.2
 
