@@ -1,205 +1,111 @@
-Return-Path: <linux-kernel+bounces-129451-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-129452-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1B82E896B00
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 11:48:02 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id C06EF896B2B
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 11:57:09 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 887111F23A7D
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 09:48:01 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id CD0C9B207EB
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 09:48:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EA004135A5F;
-	Wed,  3 Apr 2024 09:47:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2224A1350C7;
+	Wed,  3 Apr 2024 09:47:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=metaspace-dk.20230601.gappssmtp.com header.i=@metaspace-dk.20230601.gappssmtp.com header.b="1q8H9D3R"
-Received: from mail-lf1-f42.google.com (mail-lf1-f42.google.com [209.85.167.42])
+	dkim=pass (2048-bit key) header.d=bgdev-pl.20230601.gappssmtp.com header.i=@bgdev-pl.20230601.gappssmtp.com header.b="IrxgW6gg"
+Received: from mail-lf1-f50.google.com (mail-lf1-f50.google.com [209.85.167.50])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D3EC554725
-	for <linux-kernel@vger.kernel.org>; Wed,  3 Apr 2024 09:47:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9AFDD136650
+	for <linux-kernel@vger.kernel.org>; Wed,  3 Apr 2024 09:47:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712137648; cv=none; b=hJVR6tGpKZH5wczKUG2CJmJQtRrHF51E5D+T8cpDfL3mBAeB8I4PM1R3jaiLOTpxJHudh/43qHPQiMT31zz9MFPOWvR1o6Q/qc3V95XW2s0m3GP8W87Ewijb9PaXKHKm2dZRM++PL48UtYOodxG6ady5l3hm0OnFbbx66NlENPA=
+	t=1712137656; cv=none; b=oYt4aAUyh/30QVbkTMFYk6lx7NAOojbZDDh4RkE6ZRtDT3IvVEzleKHrScRIi8RhQhNqnTGevwZF6GWuFXw3rLwCATv53xf995jL8DfIj5AtRpzszSADa1pI6sURmzmISu1HrXxS0dKBIq8lbDJ/H0C/LrMun1uJwKWE7Wok5Ls=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712137648; c=relaxed/simple;
-	bh=GRfag88koxETtlzSVNB41LuzJOoQ5upi+5Ad5sKRA7g=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=ZQ9nv0+LCQ4Spvx3mXzrLMsX/mylQ5spGRMWO6dKSLzbDIFjwfb42OqET6Ke5bpQ8qFTin+RXH1b9xYNJpa5znk1cpIgJHxJtnqty+xIP9Bpe8url9nRxE/GTLEMedEqrnZ5ZOlqQUNCzqt3PjEgS8fZt4BmLR1aWE1hc72XUBQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=metaspace.dk; spf=none smtp.mailfrom=metaspace.dk; dkim=pass (2048-bit key) header.d=metaspace-dk.20230601.gappssmtp.com header.i=@metaspace-dk.20230601.gappssmtp.com header.b=1q8H9D3R; arc=none smtp.client-ip=209.85.167.42
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=metaspace.dk
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=metaspace.dk
-Received: by mail-lf1-f42.google.com with SMTP id 2adb3069b0e04-513e25afabaso6836249e87.2
-        for <linux-kernel@vger.kernel.org>; Wed, 03 Apr 2024 02:47:25 -0700 (PDT)
+	s=arc-20240116; t=1712137656; c=relaxed/simple;
+	bh=qPteIPghEmNaFbFbiFtmdDCR/LlCAmuK8ocfUthHuZc=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=ctkqWSGMJc9VIj12sVrIWfINJl2aksDNsSfayy9hjaa3bp51ppQ2vxkqNK3hGqe+n2AY28sohzxJgMUgauq8JImjuhMDc+iw6O1KPaj3A7HIKpoThSfufNpz7ZCvx6OAjmuRrQRDloDGixprbarwrPKnIbLXWVbQS8H8YVMs8lM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bgdev.pl; spf=none smtp.mailfrom=bgdev.pl; dkim=pass (2048-bit key) header.d=bgdev-pl.20230601.gappssmtp.com header.i=@bgdev-pl.20230601.gappssmtp.com header.b=IrxgW6gg; arc=none smtp.client-ip=209.85.167.50
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bgdev.pl
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=bgdev.pl
+Received: by mail-lf1-f50.google.com with SMTP id 2adb3069b0e04-515b43b39fdso662728e87.1
+        for <linux-kernel@vger.kernel.org>; Wed, 03 Apr 2024 02:47:34 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=metaspace-dk.20230601.gappssmtp.com; s=20230601; t=1712137644; x=1712742444; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:user-agent
-         :references:in-reply-to:subject:cc:to:from:from:to:cc:subject:date
+        d=bgdev-pl.20230601.gappssmtp.com; s=20230601; t=1712137653; x=1712742453; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=38SEkdXIN7qI57DkSuG7SyOZVG7UjoZz3fx+kBnmeVk=;
-        b=1q8H9D3RzPDHhPPW4oaXaZvc7oz9L7SA26PXsYzg9aJb7w0nJs77TmQf4sne7GpRyp
-         8f+2IRi+bET4fzqdjNgBWX0GF1cY/6++n4eXh1B+TUSb8r3SPA8Qy+7gCGRQmZVdXCqv
-         Gt/DNTfEPvAsm6LrazzTyVsYRu9vjYBJ+qOjCmby6PCkvP8p2TMILUxCQRBSF3Y6T7+y
-         DX4pHS3CEzoR2K+i6bATZ8xtk/z9I7RIZ3PApLsQX8+f3ouPxW9KVR0QvLNcWJ0hP+Ki
-         UikiKhmT1iwwy64yKoByLHAcGOTjYBPJqOq1B4bB1f3ca1VKViCSSEY2ROa4HoI5ehfD
-         HoHg==
+        bh=7KABiyoA6kqLcaNOPFvDrUfGOgcIyRMqYJlYfREBWxQ=;
+        b=IrxgW6ggp2laH/3u5v008fpHxZreyR21hYxus/LRUiAvd2IgTPhRUeu38SaK9I0Ddh
+         mxUwKooL1kgXVcQ00aVGT7TK3KQZ4Q4Fmtge/oLlRp4aArlkZf4JDGJoZGTdQac9fIfm
+         TQ0S03cX2SSGsCKhjWN89PiE/jafHfQQIh/OuvzGW5GmII8fMr+AaLrMm5hBRvqWm7mg
+         9xfCRrqfIqYxUI5NJNiw1TmOPxPFNF2a54yK1iGOAh3rRY1RZi4b8g3gKi3sZw/L/LjR
+         ydUvmXuL0qvz3J4mkfsVDDM24TEafweqaP1NWEGUMGoH1nAZsZl1U0a3WruvmWq3nI7S
+         x1Pg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712137644; x=1712742444;
-        h=content-transfer-encoding:mime-version:message-id:date:user-agent
-         :references:in-reply-to:subject:cc:to:from:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=38SEkdXIN7qI57DkSuG7SyOZVG7UjoZz3fx+kBnmeVk=;
-        b=NwaSwqJW6bV3BpoJvKbyhpPAW00dqAOwTXdVjp4LDhzo59vVurkB2V1NxSIKOM5tRr
-         KCwCbpXhbfpe9fSgjLmSmuySEl8Ow83C8cjDBi8rQD2KLrh7s+q2mxs7WTsWXQbrvRvk
-         OJjeF4AwiqV5LKDztnde61I4Vst6xg2506hFD/tNwzbjoLebrYBcHvj5/ud2hnxuEbOE
-         JVO97XJe4V3ziYwujatcwhcfe3RMhsgjgotKSviXsHedguMzaK8b9TVTKjEnwZ1nwmGU
-         QJPJDoBQE4jD01lh32xB0fon4v0Gvm6cUTnUMUbARKdjgh9blf+Jg4/lY1GXKFY35ir7
-         5LcA==
-X-Forwarded-Encrypted: i=1; AJvYcCXcgSgEnOLGwAQqYjTh/mMDh8dwGbn9oOW6cFU522fjpqwGuh0g9U0zzOwVb85gpQvdnEnBZVrRe+5ItB/CcVPMjpC9jb8GWliJwhFT
-X-Gm-Message-State: AOJu0YxRCKpHnR3PQAXg1Qm/RUdpaw26OfCXHCN7J7IoOEf3dsve7JSq
-	feIIINO8QzzbZGpDaniKgllUOtXZNPoZSgZdG1Uafkt/ZDIeyCjzdKrr9QYlU7E=
-X-Google-Smtp-Source: AGHT+IF/utXEsQEWDyjGiPzaJJWG210MR6/6WD7WsBEga3lRMhAkUP0TtaJbNUiFtWdGFRhMNlrSRg==
-X-Received: by 2002:a05:6512:480b:b0:516:26ca:c1fe with SMTP id eo11-20020a056512480b00b0051626cac1femr7053161lfb.8.1712137643891;
-        Wed, 03 Apr 2024 02:47:23 -0700 (PDT)
-Received: from localhost ([147.161.155.112])
-        by smtp.gmail.com with ESMTPSA id en19-20020a056000421300b0034365152f2asm4259837wrb.97.2024.04.03.02.47.23
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 03 Apr 2024 02:47:23 -0700 (PDT)
-From: Andreas Hindborg <nmi@metaspace.dk>
-To: Benno Lossin <benno.lossin@proton.me>
-Cc: Jens Axboe <axboe@kernel.dk>,  Christoph Hellwig <hch@lst.de>,  Keith
- Busch <kbusch@kernel.org>,  Damien Le Moal <Damien.LeMoal@wdc.com>,  Bart
- Van Assche <bvanassche@acm.org>,  Hannes Reinecke <hare@suse.de>,
-  "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,  Andreas
- Hindborg <a.hindborg@samsung.com>,  Niklas Cassel <Niklas.Cassel@wdc.com>,
-  Greg KH <gregkh@linuxfoundation.org>,  Matthew Wilcox
- <willy@infradead.org>,  Miguel Ojeda <ojeda@kernel.org>,  Alex Gaynor
- <alex.gaynor@gmail.com>,  Wedson Almeida Filho <wedsonaf@gmail.com>,
-  Boqun Feng <boqun.feng@gmail.com>,  Gary Guo <gary@garyguo.net>,
-  =?utf-8?Q?Bj=C3=B6rn?=
- Roy Baron <bjorn3_gh@protonmail.com>,  Alice Ryhl <aliceryhl@google.com>,
-  Chaitanya Kulkarni <chaitanyak@nvidia.com>,  Luis Chamberlain
- <mcgrof@kernel.org>,  Yexuan Yang <1182282462@bupt.edu.cn>,  Sergio
- =?utf-8?Q?Gonz=C3=A1lez?= Collado <sergio.collado@gmail.com>,  Joel
- Granados
- <j.granados@samsung.com>,  "Pankaj Raghav (Samsung)"
- <kernel@pankajraghav.com>,  Daniel Gomez <da.gomez@samsung.com>,  open
- list <linux-kernel@vger.kernel.org>,  "rust-for-linux@vger.kernel.org"
- <rust-for-linux@vger.kernel.org>,  "lsf-pc@lists.linux-foundation.org"
- <lsf-pc@lists.linux-foundation.org>,  "gost.dev@samsung.com"
- <gost.dev@samsung.com>
-Subject: Re: [RFC PATCH 4/5] rust: block: add rnull, Rust null_blk
- implementation
-In-Reply-To: <1e8a2a1f-abbf-44ba-8344-705a9cbb1627@proton.me> (Benno Lossin's
-	message of "Tue, 02 Apr 2024 22:35:32 +0000")
-References: <20240313110515.70088-1-nmi@metaspace.dk>
-	<20240313110515.70088-5-nmi@metaspace.dk>
-	<QqpNcEOxhslSB7-34znxmQK_prPJfe2GT0ejWLesj-Dlse1ueCacbzsJOM0LK3YmgQsUWAR58ZFPPh1MUCliionIXrvLNsOqTS_Ee3bXEuQ=@proton.me>
-	<87msqc3p0e.fsf@metaspace.dk>
-	<1e8a2a1f-abbf-44ba-8344-705a9cbb1627@proton.me>
-User-Agent: mu4e 1.12.2; emacs 29.3
-Date: Wed, 03 Apr 2024 11:47:18 +0200
-Message-ID: <87edbmsrq1.fsf@metaspace.dk>
+        d=1e100.net; s=20230601; t=1712137653; x=1712742453;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=7KABiyoA6kqLcaNOPFvDrUfGOgcIyRMqYJlYfREBWxQ=;
+        b=CWOUJ7QO2u8BZKfWnsG1z+MDnc1XjOJhOf8WP4a7kLC16wXOrFL4R0ezD05uweBSdN
+         qwMDV1lKwV3mIW3oJlxWoW8CzD+d7+IuL3kol4f9wFqpTLobZ6iM9cxt+1V5HbNpiudV
+         r2gPz0Aq37Jr2zrlDUwwH2TRlkHQldlfmKhDSnRweoZyxIh9NQooJDOcIQdtOI//a3FP
+         raKEuhTSlXzMqrXqpPwyLxC7xrGlPfhgIUMxjQzcgaywr2OHYPLu31yBB9gPdF1ePHyS
+         vwwIogr5IcmfW5MCvtqsgZ99jUfKuKvxjoQz26biSVBOIx1aLLMSy0rbFzxUqiOw7sX0
+         U32w==
+X-Forwarded-Encrypted: i=1; AJvYcCVrWgJLWCri9N6vlD6Vy8+zLASvCFqfoLVcnjgCM/If2PlHrEtlenzbsGfqr0HgQn2bHIlldkXnQ4DFsbzI9uEPgrOJohM4kWDb86J1
+X-Gm-Message-State: AOJu0YwamKnp+tpHI9/6OYv5xjTT/hUd0lKGoMl7m7iBKNq5//RhzJvR
+	ilykPVkb+8ItVNg7uLQvLqtjU1OvzuJe8dlcmb5nw7aD/cxpbxMCQbfd/oJRrfOVsdvITtCBPhm
+	Q1n8NRKayoVnupfYBOSzqRIAbsoSO7XFDk1pp7w==
+X-Google-Smtp-Source: AGHT+IG3Db0aH5fVKWMjadssHxAGVYgs1vlEPlw4hlOgGoFOBb8OwTQCY0tQE/dJH4EGfGfs4wf5rTdQTC65LycruUs=
+X-Received: by 2002:ac2:5399:0:b0:513:e1b6:40b9 with SMTP id
+ g25-20020ac25399000000b00513e1b640b9mr721023lfh.28.1712137652596; Wed, 03 Apr
+ 2024 02:47:32 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+References: <20240402114159.32920-1-brgl@bgdev.pl> <20240403094205.GA158151@rigel>
+In-Reply-To: <20240403094205.GA158151@rigel>
+From: Bartosz Golaszewski <brgl@bgdev.pl>
+Date: Wed, 3 Apr 2024 11:47:21 +0200
+Message-ID: <CAMRc=MePwq_rnWZUA6skVqiqjxTKNLXR7cdfrrVeeaxz8Osxmg@mail.gmail.com>
+Subject: Re: [PATCH] gpio: cdev: check for NULL labels when sanitizing them
+ for irqs
+To: Kent Gibson <warthog618@gmail.com>
+Cc: Linus Walleij <linus.walleij@linaro.org>, linux-gpio@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, Alexey Dobriyan <adobriyan@gmail.com>, stable@vger.kernel.org, 
+	Stefan Wahren <wahrenst@gmx.net>, Naresh Kamboju <naresh.kamboju@linaro.org>, 
+	Bartosz Golaszewski <bartosz.golaszewski@linaro.org>, 
+	Linux Kernel Functional Testing <lkft@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-Benno Lossin <benno.lossin@proton.me> writes:
-
-[...]
-
+On Wed, Apr 3, 2024 at 11:42=E2=80=AFAM Kent Gibson <warthog618@gmail.com> =
+wrote:
 >
 >
-> So I did some digging and there are multiple things at play. I am going
-> to explain the second error first, since that one might be a problem
-> with `pin_init`:
-> - the `params` extension of the `module!` macro creates constants with
->    snake case names.
-> - your `QueueData` struct has the same name as a field.
-> - `pin_init!` generates `let $field_name =3D ...` statements for each
->    field you initialize
+> It occurred to me that none of my tests cover this case, as they always
+> request edges with the consumer set, so I added some and can confirm both
+> the problem and the fix.
 >
-> Now when you define a constant in Rust, you are able to pattern-match
-> with that constant, eg:
+> In the process I found another bug - we overlooked setting up the irq
+> label in debounce_setup() - the alternate path in edge_detector_setup()
+> that performs sw debounce.  That results in a double free of the
+> req->label and memory corruption hilarity follows.
 >
->      const FOO: u8 =3D 0;
->=20=20=20=20=20=20
->      fn main() {
->          match 10 {
->              FOO =3D> println!("foo"),
->              _ =3D> {}
->          }
->      }
->
-> So when you do `let FOO =3D x;`, then it interprets `FOO` as the constant.
-> This is still true if the constant has a snake case name.
-> Since the expression in the `pin_init!` macro has type
-> `DropGuard<$field_type>`, we get the error "expected
-> `DropGuard<IRQMode>`, found `__rnull_mod_irq_mode`".
+> I've got a patch for that - the unfortunate part being that
+> debounce_setup() is earlier in the file than make_irq_label() and
+> free_irq_label().  Those will need to be pushed earlier, so it is
+> sure to conflict with this patch.
+> How would you prefer to proceed?
 
-Thanks for the analysis!
+Can you take my patch and just make it part of your series?
 
-So in this expanded code:
-
-1   {
-2       unsafe { ::core::ptr::write(&raw mut ((*slot).irq_mode), irq_mode) =
-};
-3   }
-4   let irq_mode =3D unsafe {
-5       $crate::init::__internal::DropGuard::new(&raw mut ((*slot).irq_mode=
-))
-6   };
-
-the `irq_mode` on line 2 will refer to the correct thing, but the one on
-line 6 will be a pattern match against a constant? That is really
-surprising to me. Can we make the let binding in line 6 be `let
-irq_mode_pin_init` or something similar?
-
->
-> Now to the first error, this is a problem with the parameter handling of
-> `module`. By the same argument above, your let binding in line 104:
->
->      let irq_mode =3D (*irq_mode.read()).try_into()?;
->
-> Tries to pattern-match the `irq_mode` constant with the right
-> expression. Since you use the `try_into` function, it tries to search
-> for a `TryInto` implementation for the type of `irq_mode` which is
-> generated by the `module!` macro. The type is named
-> __rnull_mod_irq_mode.
->
->
-> Now what to do about this. For the second error (the one related to
-> `pin_init`), I could create a patch that fixes it by adding the suffix
-> `_guard` to those let bindings, preventing the issue. Not sure if we
-> need that though, since it will not get rid of the first issue.
-
-I think that is a good idea =F0=9F=91=8D
-
->
-> For the first issue, I think there is no other way than to use a
-> different name for either the field or the constant. Since constants are
-> usually named using screaming snake case, I think it should be renamed.
-> I believe your reason for using a snake case name is that these names
-> are used directly as the names for the parameters when loading the
-> module and there the convention is to use snake case, right?
-> In that case I think we could expect people to write the screaming snake
-> case name in rust and have it automatically be lower-cased by the
-> `module!` macro when it creates the names that the parameters are shown
-> with.
-
-I was thinking about putting the parameters in a separate name space,
-but making them screaming snake case is also a good idea. So it would
-be `module_parameters::IRQ_MODE` to access the parameter with the name
-`irq_mode` exposed towards the user. Developers can always opt in to bringi=
-ng
-the symbols into scope with a `use`.
-
-Best regards,
-Andreas
+Bart
 
