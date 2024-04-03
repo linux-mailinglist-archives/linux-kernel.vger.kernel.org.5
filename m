@@ -1,169 +1,121 @@
-Return-Path: <linux-kernel+bounces-129765-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-129766-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 60603896FAF
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 14:59:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 8C57B896FB3
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 15:00:06 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 840161C21C99
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 12:59:50 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B8C0B1C25CA8
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 13:00:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A28A4147C79;
-	Wed,  3 Apr 2024 12:59:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 678351487C6;
+	Wed,  3 Apr 2024 12:59:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=embeddedor.com header.i=@embeddedor.com header.b="V05JxkJq"
-Received: from omta40.uswest2.a.cloudfilter.net (omta40.uswest2.a.cloudfilter.net [35.89.44.39])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=bgdev-pl.20230601.gappssmtp.com header.i=@bgdev-pl.20230601.gappssmtp.com header.b="UTWes3r+"
+Received: from mail-lj1-f173.google.com (mail-lj1-f173.google.com [209.85.208.173])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C4D851411F0
-	for <linux-kernel@vger.kernel.org>; Wed,  3 Apr 2024 12:59:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=35.89.44.39
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E0217148315
+	for <linux-kernel@vger.kernel.org>; Wed,  3 Apr 2024 12:59:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712149181; cv=none; b=Tg9FQ2sHc59vzROONW7m+JIVkmKtZ2fwnI0VTpXF+K2fJnsKLourNqVV+ukzWiM7SYeRyteHYRvlIgyOaj7G1CMmgg0yWlRWfF0m1DgQ1pj12T5XWtW0HLQYib1H4/b2aqfuqfpX58Q1a8KbxBBbwyyXAk9wsrwm1O/F4wWQsPM=
+	t=1712149187; cv=none; b=BpWl+eSVn2NXnw1Jo15t7eQrJAzrdStlWaDDAUCpSUXu5dL3ESXcqCrQWsZE6nffbk4SoajWJOHE5UINKu4ZpSzLlzCOo1YxpCqWcWCuUjsI5+q1g5UYQP2XSVl/59Ykliabb2VEta1mXax2pRsdNuqn76pfMxD5Lqt4x0dyr10=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712149181; c=relaxed/simple;
-	bh=HUm4rX7f5vx16jEu8Sf5T2cz4l5Z+ApVMO6v3mlJDPw=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Uo/cLHFkLEzLp4ZTpKweI0twTvwjIIb/Ex1/AYyfXcW+AyA7AFWLCr2ELHvQTRkjiE0GeFrTWqfhi3BYO7Tsex7H9LcKYIvRnMyG0eB2D3EbznXJIkkk1C+hhzjqfrRCMfuu3mwHMiyMVmBtnOLnAO8wSU2v/0pGq6GIMrAAN+A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=embeddedor.com; spf=pass smtp.mailfrom=embeddedor.com; dkim=pass (2048-bit key) header.d=embeddedor.com header.i=@embeddedor.com header.b=V05JxkJq; arc=none smtp.client-ip=35.89.44.39
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=embeddedor.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=embeddedor.com
-Received: from eig-obgw-5007a.ext.cloudfilter.net ([10.0.29.141])
-	by cmsmtp with ESMTPS
-	id rsjRrEuftPM1hs0DEr0aLI; Wed, 03 Apr 2024 12:59:32 +0000
-Received: from gator4166.hostgator.com ([108.167.133.22])
-	by cmsmtp with ESMTPS
-	id s0DDrXlFYeXgGs0DDrGegP; Wed, 03 Apr 2024 12:59:31 +0000
-X-Authority-Analysis: v=2.4 cv=Q/PU4Z2a c=1 sm=1 tr=0 ts=660d52b3
- a=1YbLdUo/zbTtOZ3uB5T3HA==:117 a=4VnFru8p6tJF5H7f7NqpSA==:17
- a=IkcTkHD0fZMA:10 a=raytVjVEu-sA:10 a=wYkD_t78qR0A:10 a=hSkVLCK3AAAA:8
- a=dZbOZ2KzAAAA:8 a=NCOkLyd_rlf-iUkjTgcA:9 a=QEXdDO2ut3YA:10
- a=cQPPKAXgyycSBL8etih5:22
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=embeddedor.com; s=default; h=Content-Transfer-Encoding:Content-Type:
-	In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:Message-ID:Sender
-	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
-	List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-	bh=fviJob8AHM37gPjhK3h7HrJK72m/4Gn7wrbDrlUSskE=; b=V05JxkJqP76wdpE6Bj5q0AVFtl
-	8zYkkK7JocWgI6tZffH/UbcDyOgwgoxTV4GAuzD7Ur49Xvwe71SdnCdyPvNlh42vgUCiWiKQdkjlo
-	n5FjQuWcxkDwDk0vHjpjKjvIHhxgojXOwmHkGvsIEH5BnaYeN2syAz5/GAkfj0p5MKfcekEegWG4X
-	AmnjvtjLAlaAvrqWfx7FSbEkN6gkXKpQt/C9mZf7OP9dRtCsDnfs8zapScgg357O11jMrfgfIyGFk
-	l0CUrGd6dWbdbcMTR4V0zB50erBv73/SbuoNbRK84XhCtIS5u8x/pUqHiUbuWYcVHewnC8jSHhCL7
-	mRkevEyw==;
-Received: from [187.184.159.122] (port=11187 helo=[192.168.0.27])
-	by gator4166.hostgator.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-	(Exim 4.96.2)
-	(envelope-from <gustavo@embeddedor.com>)
-	id 1rs0DC-002qxv-17;
-	Wed, 03 Apr 2024 07:59:30 -0500
-Message-ID: <88f4493a-2787-4c25-bd0a-80731a603faa@embeddedor.com>
-Date: Wed, 3 Apr 2024 06:59:24 -0600
+	s=arc-20240116; t=1712149187; c=relaxed/simple;
+	bh=5znrIQEcLDepj8i0BYxKYfip8Zq6prw6jMC2mOgF7wQ=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=l0rM++26X8J7huvCzU9wzeeF6IMIvrS7Vud9dQQsvntZhI9IMnH5WR+lVDkYlCP0VM9ciJen9Wi2/IZm/ahywJQ3BGfA9WbRWW7n3MViKv8W4QkDIGDw5T33y8wAXLmwmhhQUJSTru6CWjBVDPYq0c0zDxwOlHLaHndeIeYdYK4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bgdev.pl; spf=none smtp.mailfrom=bgdev.pl; dkim=pass (2048-bit key) header.d=bgdev-pl.20230601.gappssmtp.com header.i=@bgdev-pl.20230601.gappssmtp.com header.b=UTWes3r+; arc=none smtp.client-ip=209.85.208.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bgdev.pl
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=bgdev.pl
+Received: by mail-lj1-f173.google.com with SMTP id 38308e7fff4ca-2d700beb60bso105819731fa.1
+        for <linux-kernel@vger.kernel.org>; Wed, 03 Apr 2024 05:59:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bgdev-pl.20230601.gappssmtp.com; s=20230601; t=1712149184; x=1712753984; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=hec3c6A5LUTzdEAyLK3WFDfOKLWpwfFK7uM79F0PJ2w=;
+        b=UTWes3r+d3/ZHHxsnIsd1Xvmh0Tg2ivNZCwNJvt0G5Q/+koPUKqcN8ZvIpaXSUdULz
+         OoalHeXJvepyV15h4eZwPCRLYal6ZMm2er3nhjB2q6z3RIEozAoH8Tu+cCSxW2cdyA68
+         IrzkD/4zYOIiiB9BWafsGX1bxAzgNj5eyCcfkxSakLtHyd2jpdhQ+Y16qTx1sVF1FOq/
+         pZPI0Isl0RN3kA4H48GXiOH4KfFbGZcfBIcfOMK34O0z6ZDwvfL5aYhcF1l9kXjYn0Ye
+         XrhlOhuLKScGanTM5dPV4eVmJcZAcWRFx9LdWE/hnkeJx47rIwyZ0pkxgUVAFiRLKSUH
+         f3HQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712149184; x=1712753984;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=hec3c6A5LUTzdEAyLK3WFDfOKLWpwfFK7uM79F0PJ2w=;
+        b=B7d9wh/cv1Ab1KLeTkjtWJpr54jn149em/kF59GyMIlVLr1WIrpwaRaBpvyL+xjvqO
+         +ZtU4b7YFgY80yxaCG3Qe9i7Lii93+8KCExx5b5NzECGp/TbpRfcqK1o3ffYGPp5EJyj
+         QjhIOG3bVv2tR67O7zlJ/j9TaFfqR8MGyH+5SZiED4j4oBUwAwdg0z35GuRnXbBDUBkA
+         cQQvlRNXfWj4ocG9ADENSDiMHufNyBTSxqT/iWQ0Fk4dLBJwUy6tR/gMEdd6q/x5eoQT
+         AaB2ElNvAN9knM1swAihKuXnwGhCa3Cv2K/b7YYs87I6az6WmM8Wja8ivsU1RBN0rJAg
+         gUgw==
+X-Forwarded-Encrypted: i=1; AJvYcCUbU4ObVIh1Mhj/q7zIW7SSXIvEfdxK1+k9/e7seD0y49zliySXLhYIJ06B26jz2MZpudGHcvg3xa65YkSEzHVXDFXMoDXHlXmf/hfw
+X-Gm-Message-State: AOJu0YzVd3PtzhdFovvngSt5rVUfAM6N1NS8g08tbis5CLvkq/23/AsO
+	Wp5StgW7CjjGyDwyM9UguEdRH8rlVretDdTTwSE/jTJ1RMCKxgTTHnsNZh5MfgKe6olL42FPXIM
+	CLGQ+d+POQMuyn60woroHwZfwHyyG+f5DYpZcWw==
+X-Google-Smtp-Source: AGHT+IH2z5uVLQK954WX2i3Z0bS960gVfaLsQFcEt6rPL5qfRi0Q1S7IvXkYMM4JHde/wkWdVUiNankcoCg4yXsKE/o=
+X-Received: by 2002:a2e:8697:0:b0:2d6:ba1e:a54a with SMTP id
+ l23-20020a2e8697000000b002d6ba1ea54amr3641702lji.51.1712149184111; Wed, 03
+ Apr 2024 05:59:44 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH next] fs: fix oob in do_handle_open
-To: Jeff Layton <jlayton@kernel.org>, Edward Adam Davis <eadavis@qq.com>,
- syzbot+4139435cb1b34cf759c2@syzkaller.appspotmail.com
-Cc: amir73il@gmail.com, brauner@kernel.org, chuck.lever@oracle.com,
- jack@suse.cz, linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-nfs@vger.kernel.org, syzkaller-bugs@googlegroups.com,
- viro@zeniv.linux.org.uk, "Gustavo A. R. Silva" <gustavoars@kernel.org>
-References: <000000000000f075b9061520cbbe@google.com>
- <tencent_A7845DD769577306D813742365E976E3A205@qq.com>
- <72d7604e38ee9a37bcb33a6a537758e4412488ee.camel@kernel.org>
-Content-Language: en-US
-From: "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-In-Reply-To: <72d7604e38ee9a37bcb33a6a537758e4412488ee.camel@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - gator4166.hostgator.com
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - embeddedor.com
-X-BWhitelist: no
-X-Source-IP: 187.184.159.122
-X-Source-L: No
-X-Exim-ID: 1rs0DC-002qxv-17
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
-X-Source-Sender: ([192.168.0.27]) [187.184.159.122]:11187
-X-Source-Auth: gustavo@embeddedor.com
-X-Email-Count: 5
-X-Org: HG=hgshared;ORG=hostgator;
-X-Source-Cap: Z3V6aWRpbmU7Z3V6aWRpbmU7Z2F0b3I0MTY2Lmhvc3RnYXRvci5jb20=
-X-Local-Domain: yes
-X-CMAE-Envelope: MS4xfFzgXLfGqdy353sQOAANoPF2niGyu3vx8dKIbW2KNCeL2tB7HeekMgU26LwbIw0q3dPX8MTcbhz9XKf4fqepjXYYLHZkL2sKKQwGia0UORTExr97j89N
- m+YijVkzosyCrmf2U6UetjZ9/JDXFsDthKwPEjSFMx/YkX7IE+7hGw3Qu3u8iB/Gr4SQ7aWiFiiVvFGHKi7zUDLqXFkr3er8PvxZv3GE8CJHqJyhbXPQnYp0
+References: <20240326181247.1419138-1-andriy.shevchenko@linux.intel.com> <20240326181247.1419138-3-andriy.shevchenko@linux.intel.com>
+In-Reply-To: <20240326181247.1419138-3-andriy.shevchenko@linux.intel.com>
+From: Bartosz Golaszewski <brgl@bgdev.pl>
+Date: Wed, 3 Apr 2024 14:59:32 +0200
+Message-ID: <CAMRc=Mf3y4EUSVte9Y5VyTDAFFKHXtM5RSz=MDeHhOVBeqPtmw@mail.gmail.com>
+Subject: Re: [PATCH v1 2/2] gpiolib: Up to date the kernel documentation
+To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>, Kent Gibson <warthog618@gmail.com>, 
+	linux-gpio@vger.kernel.org, linux-acpi@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, 
+	Mika Westerberg <mika.westerberg@linux.intel.com>, Linus Walleij <linus.walleij@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
+On Tue, Mar 26, 2024 at 7:12=E2=80=AFPM Andy Shevchenko
+<andriy.shevchenko@linux.intel.com> wrote:
+>
+> There are several issues:
+>
+> - Reference to the non-existing or only single functions out of possible
+>   callees
+>
+> - No return section
+>
+> $ scripts/kernel-doc -v -none -Wall drivers/gpio/gpiolib* 2>&1 | grep -w =
+warning | wc -l
+> 67
+>
+> - Reference to NULL as %NULL in a few cases
+>
+> - Explicit reference to error codes as Exxx or %Exxx and
+>   numbers with leading %
+>
+> - Spelling of gpio, irq, SOC (in different capitalization)
+>
+> - Unaligned style of irqchip, gpiochip references
+>
+> - Unaligned style of NOTE, FIXME, and TODO
+>
+> Fix all these. While at it, fix multi-line comment style as well.
+>
+> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 
+Could you split it into separate patches by subject (one for
+capitalization, one for %NULL, etc.)? As is, it's a huge dump that's
+hard to review.
 
-On 03/04/24 02:48, Jeff Layton wrote:
-> On Wed, 2024-04-03 at 14:54 +0800, Edward Adam Davis wrote:
->> [Syzbot reported]
->> BUG: KASAN: slab-out-of-bounds in instrument_copy_from_user_before include/linux/instrumented.h:129 [inline]
->> BUG: KASAN: slab-out-of-bounds in _copy_from_user+0x7b/0xe0 lib/usercopy.c:22
->> Write of size 48 at addr ffff88802b8cbc88 by task syz-executor333/5090
->>
->> CPU: 0 PID: 5090 Comm: syz-executor333 Not tainted 6.9.0-rc2-next-20240402-syzkaller #0
->> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 03/27/2024
->> Call Trace:
->>   <TASK>
->>   __dump_stack lib/dump_stack.c:88 [inline]
->>   dump_stack_lvl+0x241/0x360 lib/dump_stack.c:114
->>   print_address_description mm/kasan/report.c:377 [inline]
->>   print_report+0x169/0x550 mm/kasan/report.c:488
->>   kasan_report+0x143/0x180 mm/kasan/report.c:601
->>   kasan_check_range+0x282/0x290 mm/kasan/generic.c:189
->>   instrument_copy_from_user_before include/linux/instrumented.h:129 [inline]
->>   _copy_from_user+0x7b/0xe0 lib/usercopy.c:22
->>   copy_from_user include/linux/uaccess.h:183 [inline]
->>   handle_to_path fs/fhandle.c:203 [inline]
->>   do_handle_open+0x204/0x660 fs/fhandle.c:226
->>   do_syscall_64+0xfb/0x240
->>   entry_SYSCALL_64_after_hwframe+0x72/0x7a
->> [Fix]
->> When copying data to f_handle, the length of the copied data should not include
->> the length of "struct file_handle".
->>
->> Reported-by: syzbot+4139435cb1b34cf759c2@syzkaller.appspotmail.com
->> Signed-off-by: Edward Adam Davis <eadavis@qq.com>
->> ---
->>   fs/fhandle.c | 2 +-
->>   1 file changed, 1 insertion(+), 1 deletion(-)
->>
->> diff --git a/fs/fhandle.c b/fs/fhandle.c
->> index 53ed54711cd2..8a7f86c2139a 100644
->> --- a/fs/fhandle.c
->> +++ b/fs/fhandle.c
->> @@ -202,7 +202,7 @@ static int handle_to_path(int mountdirfd, struct file_handle __user *ufh,
->>   	*handle = f_handle;
->>   	if (copy_from_user(&handle->f_handle,
->>   			   &ufh->f_handle,
->> -			   struct_size(ufh, f_handle, f_handle.handle_bytes))) {
->> +			   f_handle.handle_bytes)) {
->>   		retval = -EFAULT;
->>   		goto out_handle;
->>   	}
-> 
-> cc'ing Gustavo, since it looks like his patch in -next is what broke
-> this.
-> 
-
-Oh, sorry about that folks. That looks pretty much like a copy/paste error.
-
-The fix is correct.
-
-Thanks, Edward!
---
-Gustavo
-
+Bart
 
