@@ -1,66 +1,66 @@
-Return-Path: <linux-kernel+bounces-130453-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-130456-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 96F52897864
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 20:42:40 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 264E689786C
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 20:43:32 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4BC5E28B8CF
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 18:42:39 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B7A5B1F28C5C
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 18:43:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A40C6154C03;
-	Wed,  3 Apr 2024 18:42:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 75CD9154BFB;
+	Wed,  3 Apr 2024 18:42:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b="b/byF7Lx"
+	dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b="pYr8Vq9v"
 Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.153.233])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 06A2F153BD6;
-	Wed,  3 Apr 2024 18:42:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 28892146D62;
+	Wed,  3 Apr 2024 18:42:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=68.232.153.233
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712169740; cv=none; b=sA3m4VWlwOkNjkB75CGRK8QG3MhNl7r03Kn4AFrFRN8o9wu+RgypPxNFVG491p0ob67Hx6gVy+6vvCDPEJ2vtpIvPaNLGpxs9xuuAazG1ENe/sqx7NGR8I3jfFx1DVCpx9tfl6AtYp6819qbvABU/IoGMweDq0nHaOA3ii4eBhY=
+	t=1712169770; cv=none; b=aP2ryVp792LUYKtHvHncZJFqj5k0gjvLmZkkw6w95sDZxgrmVdAGe6Cy3wCYcwPtjeGIgMs6yG2/pcJ741oRxllOl30jgKkuMn7t7tDON6YNxLwsdBiB+jXt/DLxhKwVSYDXqsbxIBZ+rs+4eQ1idCkPhtk25tqCmk04lMAyI6Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712169740; c=relaxed/simple;
-	bh=0BQfTNJh7WCqTooxO5jQh9nq8Nvly6zUvYcfVjQ186M=;
+	s=arc-20240116; t=1712169770; c=relaxed/simple;
+	bh=g9OGTjriFjC5okqqsdE43uxvtzt0NrohNgdOIFqLUPc=;
 	h=From:Date:Subject:MIME-Version:Content-Type:Message-ID:References:
-	 In-Reply-To:To:CC; b=QqOqa6nLke4LFrOVJs6BUmxpHvVzMBd5jSrUigD7HkoqOOJDusMpwZKRrTiZkOXKJ9eZiKgF0S7an/EylZyH9mUdaIa3ZJwQD8Df1pUB7aUSktq0ho/6kZUSdGnpmvsNFQL+FUO2oj9MNljpQKhHGhDzf8cyLzHGZ2/CNs4RW4o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=microchip.com; spf=pass smtp.mailfrom=microchip.com; dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b=b/byF7Lx; arc=none smtp.client-ip=68.232.153.233
+	 In-Reply-To:To:CC; b=Pt8vfiu512NAdhFd59c2pMfnmIzxRwCNwwrDeB1KpvVHn1bY7XronKDK5TI6QdTGI0I4/1yfMQSPrc8Z5mcFfbWokfd4TvPCnfUIMry4RQrvZ67eaNjF0ukX4eDUOaFUeoHQnS+RXyBJCDPsmKZY+wDHKA2nV3AwPssSNoXbJIA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=microchip.com; spf=pass smtp.mailfrom=microchip.com; dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b=pYr8Vq9v; arc=none smtp.client-ip=68.232.153.233
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=microchip.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=microchip.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1712169737; x=1743705737;
+  t=1712169769; x=1743705769;
   h=from:date:subject:mime-version:content-transfer-encoding:
    message-id:references:in-reply-to:to:cc;
-  bh=0BQfTNJh7WCqTooxO5jQh9nq8Nvly6zUvYcfVjQ186M=;
-  b=b/byF7Lx2yJkEBXIeIhFt6D70ituv07OKtBmnnraxqRQbwaz2lO/X4lk
-   8TwbFn/nSaN3FbbPlx8Cb0XKNV0+B8Y9+ovwvq8lEAtxguRws/nuhJZ9+
-   jFlHHvWwbT9L3J4K39yO/uI7EDyR4JpRViETb+oT2eZ0AQCrIumOJnkF4
-   TQC3bPRbD+45m6tShzZ4mCvpmdMIbYwrViJq8nBb+lOKpgsHS6JPiTIAW
-   YEyvba6OkZtoEvyt23acjy+51gPyCQ4EpkHUYEJlnM6tSLcEi+zUD4eKb
-   EtSGLzoJDl6co/pR+HNrIWoLiMPX/WZ6nZYO1y+T+Juke3wS8ROW9e2hO
-   w==;
-X-CSE-ConnectionGUID: S7G30frMRjS4zHdERZ8jng==
-X-CSE-MsgGUID: Gp10ytTDSTaEhG2Ch+jTtQ==
+  bh=g9OGTjriFjC5okqqsdE43uxvtzt0NrohNgdOIFqLUPc=;
+  b=pYr8Vq9ve23Kd4NzOdN3PxsKUWZ2eLfX70rdBTBYMuj5NBC26ZMSKHjQ
+   yuCW2NAeyO1uJV+YpSQVF2u2cwbyyf5Z3B8Pda5yeVbIYunxf0OWoRFAM
+   rCPqT5AZ4toxLoliGGygEdrSyc4IHKQEQD0wAe8EBY9k/7c0aa5LI3iJr
+   7z4sKO4GpWVlC9cim9z2PBPg9lfhvz4VD0bItM4QWrJBHG4eM5gM6YdKi
+   GAdqx7ViQnd27x8XgTDENoJG6ULf7Z2R0nWnIQ3lLwkckB7Qn6dGqkcVM
+   0UuHGqsyeVOqtPLPk8pbG7aUptWT2xayBuaSvThTtU9LFLBh88QQ8+xvd
+   g==;
+X-CSE-ConnectionGUID: By3oU9PeTtGY31IsBtby0Q==
+X-CSE-MsgGUID: roZiApLfSA2APbX12J9Lhw==
 X-IronPort-AV: E=Sophos;i="6.07,177,1708412400"; 
-   d="scan'208";a="21259577"
+   d="scan'208";a="21259638"
 X-Amp-Result: SKIPPED(no attachment in message)
 Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
-  by esa1.microchip.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 03 Apr 2024 11:42:13 -0700
+  by esa1.microchip.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 03 Apr 2024 11:42:48 -0700
 Received: from chn-vm-ex02.mchp-main.com (10.10.85.144) by
- chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server
+ chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Wed, 3 Apr 2024 11:42:12 -0700
+ 15.1.2507.35; Wed, 3 Apr 2024 11:42:15 -0700
 Received: from DEN-DL-M70577.microchip.com (10.10.85.11) by
  chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server id
- 15.1.2507.35 via Frontend Transport; Wed, 3 Apr 2024 11:42:10 -0700
+ 15.1.2507.35 via Frontend Transport; Wed, 3 Apr 2024 11:42:13 -0700
 From: Daniel Machon <daniel.machon@microchip.com>
-Date: Wed, 3 Apr 2024 20:41:43 +0200
-Subject: [PATCH net-next 2/3] net: sparx5: add support for tc flower mirred
- action.
+Date: Wed, 3 Apr 2024 20:41:44 +0200
+Subject: [PATCH net-next 3/3] net: sparx5: add support for tc flower
+ redirect action
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -69,7 +69,7 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-ID: <20240403-mirror-redirect-actions-v1-2-c8e7c8132c89@microchip.com>
+Message-ID: <20240403-mirror-redirect-actions-v1-3-c8e7c8132c89@microchip.com>
 References: <20240403-mirror-redirect-actions-v1-0-c8e7c8132c89@microchip.com>
 In-Reply-To: <20240403-mirror-redirect-actions-v1-0-c8e7c8132c89@microchip.com>
 To: Lars Povlsen <lars.povlsen@microchip.com>, Steen Hegelund
@@ -80,51 +80,40 @@ CC: <linux-arm-kernel@lists.infradead.org>, <netdev@vger.kernel.org>,
 	<linux-kernel@vger.kernel.org>, Daniel Machon <daniel.machon@microchip.com>
 X-Mailer: b4 0.14-dev
 
-Add support for tc flower mirred action. Two VCAP actions are encoded in
-the rule - one for the port mask, and one for the port mask mode. When
-the rule is hit, the destination mask is OR'ed with the port mask.
-
-Also add helper to set port forwarding mask.
+Add support for the flower redirect action. Two VCAP actions are encoded
+in the rule - one for the port mask, and one for the port mask mode.
+When the rule is hit, the port mask is used as the final destination
+set, replacing all other port masks.
 
 Signed-off-by: Daniel Machon <daniel.machon@microchip.com>
 ---
- .../ethernet/microchip/sparx5/sparx5_tc_flower.c   | 43 ++++++++++++++++++++++
- 1 file changed, 43 insertions(+)
+ .../ethernet/microchip/sparx5/sparx5_tc_flower.c   | 33 ++++++++++++++++++++++
+ 1 file changed, 33 insertions(+)
 
 diff --git a/drivers/net/ethernet/microchip/sparx5/sparx5_tc_flower.c b/drivers/net/ethernet/microchip/sparx5/sparx5_tc_flower.c
-index 523e0c470894..a86ce1f8f3e5 100644
+index a86ce1f8f3e5..0df8724251a0 100644
 --- a/drivers/net/ethernet/microchip/sparx5/sparx5_tc_flower.c
 +++ b/drivers/net/ethernet/microchip/sparx5/sparx5_tc_flower.c
-@@ -1004,6 +1004,44 @@ static int sparx5_tc_action_vlan_push(struct vcap_admin *admin,
- 	return err;
+@@ -1042,6 +1042,34 @@ static int sparx5_tc_action_mirred(struct vcap_admin *admin,
+ 	return 0;
  }
  
-+static void sparx5_tc_flower_set_port_mask(struct vcap_u72_action *ports,
-+					   struct net_device *ndev)
-+{
-+	struct sparx5_port *port = netdev_priv(ndev);
-+	int byidx = port->portno / BITS_PER_BYTE;
-+	int biidx = port->portno % BITS_PER_BYTE;
-+
-+	ports->value[byidx] |= BIT(biidx);
-+}
-+
-+static int sparx5_tc_action_mirred(struct vcap_admin *admin,
-+				   struct vcap_rule *vrule,
-+				   struct flow_cls_offload *fco,
-+				   struct flow_action_entry *act)
++static int sparx5_tc_action_redirect(struct vcap_admin *admin,
++				     struct vcap_rule *vrule,
++				     struct flow_cls_offload *fco,
++				     struct flow_action_entry *act)
 +{
 +	struct vcap_u72_action ports = {0};
 +	int err;
 +
 +	if (admin->vtype != VCAP_TYPE_IS0 && admin->vtype != VCAP_TYPE_IS2) {
 +		NL_SET_ERR_MSG_MOD(fco->common.extack,
-+				   "Mirror action not supported in this VCAP");
++				   "Redirect action not supported in this VCAP");
 +		return -EOPNOTSUPP;
 +	}
 +
 +	err = vcap_rule_add_action_u32(vrule, VCAP_AF_MASK_MODE,
-+				       SPX5_PMM_OR_DSTMASK);
++				       SPX5_PMM_REPLACE_ALL);
 +	if (err)
 +		return err;
 +
@@ -140,12 +129,12 @@ index 523e0c470894..a86ce1f8f3e5 100644
  /* Remove rule keys that may prevent templates from matching a keyset */
  static void sparx5_tc_flower_simplify_rule(struct vcap_admin *admin,
  					   struct vcap_rule *vrule,
-@@ -1150,6 +1188,11 @@ static int sparx5_tc_flower_replace(struct net_device *ndev,
+@@ -1193,6 +1221,11 @@ static int sparx5_tc_flower_replace(struct net_device *ndev,
  			if (err)
  				goto out;
  			break;
-+		case FLOW_ACTION_MIRRED:
-+			err = sparx5_tc_action_mirred(admin, vrule, fco, act);
++		case FLOW_ACTION_REDIRECT:
++			err = sparx5_tc_action_redirect(admin, vrule, fco, act);
 +			if (err)
 +				goto out;
 +			break;
