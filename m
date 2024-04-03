@@ -1,307 +1,209 @@
-Return-Path: <linux-kernel+bounces-130712-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-130711-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 15D95897BE7
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 01:13:52 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 551A7897BE5
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 01:13:45 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 816691F25D39
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 23:13:51 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C0153B2632E
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 23:13:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 04C45156C4F;
-	Wed,  3 Apr 2024 23:13:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 51B89156985;
+	Wed,  3 Apr 2024 23:13:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b="YpHO0zEH"
-Received: from mail-yb1-f176.google.com (mail-yb1-f176.google.com [209.85.219.176])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="hO6abd1s"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.18])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0CA2B156966
-	for <linux-kernel@vger.kernel.org>; Wed,  3 Apr 2024 23:13:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.176
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712186018; cv=none; b=KrGDlEGSNVVgAqQeJWgDbvDv1dYgSK/6lTTtOZS6LDY71qbUYpp8wthOwVvlBcVuqmEdxgg/TfqzQknU0FKqVXukLufNokPL1FclH0IOboH/N0DOGDwk3iyAtlMWTKgg89WYPWt5LsOB+RhbL4KuQeXEXF5WW04oUbYwF0/fafw=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712186018; c=relaxed/simple;
-	bh=pUU3g8YyhBE2JjQkANiR+x6xd6tdfAbxrQ8hOKQJLk4=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=ZSV/164mwVhuiyTEVTSoSqL2RE0cH4x3BOfkhp6tSBXlfMGJ0vL5rD2UiB4Pn9wtf9HtVAxdwl2JGwd6FQGKXb3BtOsPk4y+IUpvV5ECdb8RASP8PR02R2GJSRa+SWJe5/QqCx9Nqko1UdT+AaMu+WBaEZHi7a3QYXPL2chxyJU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com; spf=pass smtp.mailfrom=bytedance.com; dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b=YpHO0zEH; arc=none smtp.client-ip=209.85.219.176
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bytedance.com
-Received: by mail-yb1-f176.google.com with SMTP id 3f1490d57ef6-dcc84ae94c1so486854276.1
-        for <linux-kernel@vger.kernel.org>; Wed, 03 Apr 2024 16:13:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance.com; s=google; t=1712186015; x=1712790815; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=SXQkJndwO2OFb1B4uAhm6DSgUpXUEz9T4TSxXyfE+FM=;
-        b=YpHO0zEHFvldxI0Mc3QMoW5Egln0Cd9kQZU7ZnJCjJSrsvJ2pi6JlM534SCnHvyZMH
-         Gt7UcJ21OxN60o+OVGHJVrrIHYC6J7IzId4jItlZ6UeKkoyjQuWJPPO2q2smCwcO90M9
-         GYpQQhPW6SoTB4WUr1O39rT7fCd1VBBM6jDep6UEXIWPS3dqotjMkq1UWav+5szq4/0O
-         hnKz5LjTBcDZ7DdtKWSNOqHyF8rgs8Lc1lTUVIyG7h7MsK9sRqWb07GBWfwMybYrkMzj
-         nXS8Yn2sOdBp157g7DtATzBGlUwceB3Rb2UTEEXkRuWj1KuML3OD1Eu7XdegAk31c8FJ
-         C5yg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712186015; x=1712790815;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=SXQkJndwO2OFb1B4uAhm6DSgUpXUEz9T4TSxXyfE+FM=;
-        b=dGuvbJGzZR/rXSgSflooAS0aXz0eNSs1Rt58nnGGKrLEj6Yp4yz9wJOUhlO4IFxMRB
-         xejznJHg4p75PPcX+WV01oOQXtPVOlhI/bxoqq+Qzxiq1BH9bdqqz3mRgwtzLrMve6G1
-         kj6JybVxzEHyhPCWhNd5n8DiOow1mGN811OEedB2vGV9jntLzrlPVccTGnHxTrZwHBYV
-         TFyPUY9P5k3GiW0E4UZ+8Q4Erc7WmONzRVA6W98vVx00XUrRwCdPYMWoNByAl83xT87I
-         dWp4zofc1EEGRjHCFlf+xT2+BywljLL8Ram5iWq//9rnS9Xo+NiqLRhK+xPf8m/PvAmQ
-         MFng==
-X-Forwarded-Encrypted: i=1; AJvYcCXQg2D/7UxIUkcTIU/9E6kswkfYXgAF+XaVXJI5znxXg1fhZKmuKkaS8noWn+nwEelrUUgQEO2vJmp4Lik8oSbG5aotEewc8s5goXr3
-X-Gm-Message-State: AOJu0YzPNNiQ4tWCki3MrKcYGyMm/gx99T19VDxN+2AKuqSoIZNqizYj
-	5JE6AR2Fiid812o2mx7BBoifZnXoIEywzFELTB4DC1dCMyv22RY+JzAJXvkhTNeNOCYWvUSBKbr
-	GRe8qMTFDN/+whDfzsA5otSvMnlouc+dKBMGpjA==
-X-Google-Smtp-Source: AGHT+IFVeLOeseHn7jgUi35tqoQdrprRgFyBUayTJ7qIeLYhEuQo2z8SpiV7Er/5CVQCTXOehRej6DG8/caODWdPemM=
-X-Received: by 2002:a25:8189:0:b0:dc2:3936:5fa5 with SMTP id
- p9-20020a258189000000b00dc239365fa5mr828148ybk.51.1712186014869; Wed, 03 Apr
- 2024 16:13:34 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CEB4C692FC
+	for <linux-kernel@vger.kernel.org>; Wed,  3 Apr 2024 23:13:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=192.198.163.18
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1712186016; cv=fail; b=debqJxVxL6LO5sbsqxSepblb+XQaBxFsbxf03/6znocgai7aSXhqqM9VG3u8V8mqkJW1OEGjNXOPteh3EzEg1chBJL6wqdjTvD9PqvEXwrO34MfNLDNnlI2FnRtzqYCDdsLhXbqwD9WClPB1JYBdAtjd6dOySszFUil2zs2B80o=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1712186016; c=relaxed/simple;
+	bh=yJP+FJwIi1zJ1zvNeNwVQz/59VI4s/HZ4q0DnuTweOQ=;
+	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
+	 Content-Type:MIME-Version; b=TWxBvZXzrMYOsVNPQIUvdrxKYycnRX1/7L/iedCm7wmxXExMd3TG0z6uIFmp+5t3Afx/UumQlpFPEIKTnQCso2dk4Riy+Pywmkcez/6G1BUgPF18nGqtuKYiql+nm9/Usi/iCgaegeUEpee5pDhf0zB+0nApVoGmxpIko7nSIg4=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=hO6abd1s; arc=fail smtp.client-ip=192.198.163.18
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1712186013; x=1743722013;
+  h=from:to:cc:subject:date:message-id:references:
+   in-reply-to:content-id:content-transfer-encoding:
+   mime-version;
+  bh=yJP+FJwIi1zJ1zvNeNwVQz/59VI4s/HZ4q0DnuTweOQ=;
+  b=hO6abd1suQ9NgJcX+rnbbPXZDYNXN77TP4v+p7KlPBfY0aCa0fPmozvb
+   tcbcDJGs/SnpvGNgy9i97Z6JM+nl2c8O2Jo8gmUZPjhfZVGB+s0Bl6+pb
+   qdrxdYrrFBQvPZQ53rq2ecUM0707GjnPYxAmybFQiZHfxBPxWxM2eaBjC
+   sKZimI3YDGqZ9IZpVucVjHQbfelKhc5IFsuAUFE3dBf8nMkfhIFASABHg
+   VKKuYRAPBsoVEHlMzAwqDOW3df52m3ahI3DwzUhv7t8Pa2ZK7A/YX9PJX
+   wPYM9IiT/k2PUsq9n7s2u9R4oPvz31ExJ5lcKgZVkYnSeQZJVKlUHMlPG
+   w==;
+X-CSE-ConnectionGUID: ozp9JYuxQIaTDFNX/Nwiug==
+X-CSE-MsgGUID: vuHp5/tyROqvCYorIgD3Zw==
+X-IronPort-AV: E=McAfee;i="6600,9927,11033"; a="7293428"
+X-IronPort-AV: E=Sophos;i="6.07,178,1708416000"; 
+   d="scan'208";a="7293428"
+Received: from orviesa006.jf.intel.com ([10.64.159.146])
+  by fmvoesa112.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Apr 2024 16:13:33 -0700
+X-CSE-ConnectionGUID: 8ASjC9thQIuW7RbdBtwxvA==
+X-CSE-MsgGUID: eHP4bvq7TzKy2XIm/T1GiQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,178,1708416000"; 
+   d="scan'208";a="19044186"
+Received: from orsmsx601.amr.corp.intel.com ([10.22.229.14])
+  by orviesa006.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 03 Apr 2024 16:13:33 -0700
+Received: from orsmsx612.amr.corp.intel.com (10.22.229.25) by
+ ORSMSX601.amr.corp.intel.com (10.22.229.14) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Wed, 3 Apr 2024 16:13:32 -0700
+Received: from orsmsx612.amr.corp.intel.com (10.22.229.25) by
+ ORSMSX612.amr.corp.intel.com (10.22.229.25) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Wed, 3 Apr 2024 16:13:31 -0700
+Received: from ORSEDG601.ED.cps.intel.com (10.7.248.6) by
+ orsmsx612.amr.corp.intel.com (10.22.229.25) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35 via Frontend Transport; Wed, 3 Apr 2024 16:13:31 -0700
+Received: from NAM12-BN8-obe.outbound.protection.outlook.com (104.47.55.169)
+ by edgegateway.intel.com (134.134.137.102) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.35; Wed, 3 Apr 2024 16:13:30 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=FUGZeaZx4EKxZNYX1BoEZ8cA8jkWRpBqKGEiTTM7yLykNLaDaVfOm4kZRPO9S65zSP8jGb+RT4ofLEis/4GvHT3N40cz0SUjYCQXrFMl2lnMXVDhoAaNrkQj1JhvZJO60JR/8svuG+9DZVAxXr7yg7gb46jjXl8kt7MvULWP1bF66wY4nirqweXtL7ivoAqojuNgX9NLT0fwIih/wZIJMLK6MoCZ9388+7KydpW70y7+qhHSSu9OcBy0jtpun2VZeHbGA5SaRlOkCH+5czhk0NjPm3oOQGnBPe/ZlI8svZNWQ8yu/DOx0/qRccoZH3Ckko/F9ZLAzPMzRyeTjTjTKQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=yJP+FJwIi1zJ1zvNeNwVQz/59VI4s/HZ4q0DnuTweOQ=;
+ b=lEQh8i9mbCd7XAbfxr7uA5EKhom3Q7YJuvPd4Tyhk3nAvYWYAb2s53EtdPz2eX2dJ2Tq7cXSADy/UefFWm54cZJeAqTppXkpTdggjEm9QNtVEKlRUEZzb19MkSKMyM8bEIxX8VLvbEsoESLQo56ChwsT+JZUGOyhC2ShGLwHFPZbPfSn77aHUCd+JK6ZPWFyxjaSZFKMeTme2avPedt/QuU0k2asJ1HiiJVZEJJr+KeBsSOaRa7wRdXs6Z3jOaZxc0w0IH0ZvS96pET6xdYXzE7pvT7+pV7G66NUdE7qCpEdJ5kxicT9bAWdlh5WeC8oO7uHq+7Iincw6EyruR8cXQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Received: from CH0PR11MB5330.namprd11.prod.outlook.com (2603:10b6:610:bd::7)
+ by PH8PR11MB8107.namprd11.prod.outlook.com (2603:10b6:510:256::6) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7409.33; Wed, 3 Apr
+ 2024 23:13:27 +0000
+Received: from CH0PR11MB5330.namprd11.prod.outlook.com
+ ([fe80::5627:e6de:5e36:aacf]) by CH0PR11MB5330.namprd11.prod.outlook.com
+ ([fe80::5627:e6de:5e36:aacf%6]) with mapi id 15.20.7452.019; Wed, 3 Apr 2024
+ 23:13:27 +0000
+From: "Winiarska, Iwona" <iwona.winiarska@intel.com>
+To: "rdunlap@infradead.org" <rdunlap@infradead.org>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+CC: "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
+	"openbmc@lists.ozlabs.org" <openbmc@lists.ozlabs.org>
+Subject: Re: [PATCH v2] peci: linux/peci.h: fix Excess kernel-doc description
+ warning
+Thread-Topic: [PATCH v2] peci: linux/peci.h: fix Excess kernel-doc description
+ warning
+Thread-Index: AQHaggcJ9XjElys6dkmri3wGFiPcSLFXNQEA
+Date: Wed, 3 Apr 2024 23:13:27 +0000
+Message-ID: <c28853d7e563482c5682e6cbbe5fcf20f218e487.camel@intel.com>
+References: <20240329182910.29495-1-rdunlap@infradead.org>
+In-Reply-To: <20240329182910.29495-1-rdunlap@infradead.org>
+Accept-Language: en-US, pl-PL
+Content-Language: en-US
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+user-agent: Evolution 3.50.4 (3.50.4-1.fc39) 
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: CH0PR11MB5330:EE_|PH8PR11MB8107:EE_
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: lTgDXf+/7m5AcRNycfJK/gWW3gHNJ6yQnTPIeRc8qdyNexq3gh7nVF05Ud4Oae4AduOyoqcnR8gzlC6rRaP9Z37T/rd8ma4JnactAOFCAI8miBccbFEHLhj5hvMy/xRUcNaO13PPcRDXK5vv51N5N0kTNO2Zp9YF5htFY6Ic95AUbrtuY/Hayv5p/AKWWHrEA65B9D1N3zieXYDXxlEQL+tfarZxxY58Jey4XEW3ynxp/LErBdIIvPdvT+X/9/fcDqQsAngf8mtz3TBs4IZ+rEVF+4uXMEEIQAjRb1KG5fx5VL55It1soIuE33dpZAVmmCgAcxXY9RQKaKLwDd5uTxvLCOo8IRxjyYo4lciwlXQDmsePnXrKq7X7On2uKI0moioX1o9bz4jfJ/fW1hu8b/8D64qpZZ/T9ViV/npDHPLTL5RmHmsbqCh67doM4A3HdZhIRZx/aW+9nUmRsH/ZM1HVzi6c2BPdpg+1x56fvRmUYt2JEALYefk9QYe215+uqid6ZfcYj3Oa06cYZdrUt1W9wUyRZM6fEa0A8GGbV46KO9VL4HzQxb1KLpnsYnVdjEHzgS6OVnI8HYc9eIP+9ru4G+bR+PKKYrqinznk980=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CH0PR11MB5330.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376005)(366007)(1800799015);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?utf-8?B?TjJEY1NxL2t1Z1dQS2VsZWtobnVhU2U1OW50ckJqL2p1QVRmUkprOFkrZUx1?=
+ =?utf-8?B?ems0L05la1NOZWFUNjJvZVdBc2lJYW9LV2pjRytWMSswZFlsVUtvSitsbTNE?=
+ =?utf-8?B?MUZ0dmsrbW1DUG5iZTlSUmp2eEc5TzUyOXhUaWhDMGFhRXlmaW9sNGZQVlQz?=
+ =?utf-8?B?bWt0Y2dIYTNoa3c1SGNDUTBsSmFKbUh2Zi9sREE5dCtwUmxmZ2wvQjZuQU5K?=
+ =?utf-8?B?KzIzVUZxYUJCQmF5VTR4bGFaVmFCTDhxdWV2NjFKWmR4RWI5Yys1U1Y3WWFF?=
+ =?utf-8?B?YldBWTl6ZUhwSkV1WlBXWXpROW15aWNIb2JiTVozeHhsSjhaMERYV3BId3N4?=
+ =?utf-8?B?WU9ucW9kdXorcWlzSHdCcU4ra2M1bnR4Y09BQlIrMTFDUXZBcERIZFNVdTB6?=
+ =?utf-8?B?RHhSa0VpNFRMWk1OZmNKUUcvdmpuQ1BuRXF0L1RwRnF5MEFnaTdPYlhPQlNp?=
+ =?utf-8?B?MFFFRWlDSjVEbkJ0L3RWbE1LWDhLMTcya2JJU1R1cHFHYWxVdHdQNVZrYWtD?=
+ =?utf-8?B?eHovUThSaEdibUV0VzQvbm4xM2V2Z2JxVkoxZHlseUI2Z2xkQU40Yk5lWU5q?=
+ =?utf-8?B?NDJSaU93OTdFNS84YUlheVNVbm55ZVdydWZvdlZXVUNkRDUwbjd2VGVFckxq?=
+ =?utf-8?B?aWU4YlRwYnRBVjlCNThzUTI2Rnc0MmNhZXM4aGwvVDJHNTd0a3hXdDBaTDNY?=
+ =?utf-8?B?eUxudjZyeU1SMHlKUnVUdDF5MHBIOHJza01zTnVPZDVSd3ZwMFU0aXk1akJN?=
+ =?utf-8?B?WWN0V1dVNi9IYkZaK0lZcksvTnJkeVVORjViNlpjazlOaHBxeU1KbjY3SUtZ?=
+ =?utf-8?B?YTlleFhZWndQd0w1c1V0RnFRU2dSRXBJZWpMaWRlWnZVOEhMMmtxZlhiaFJ3?=
+ =?utf-8?B?RDdFQ1hqM1hjcUZiSFJyYmVPSk5MUmlKMVJxK0ZnQTJpUU16S3NoRGduRlU2?=
+ =?utf-8?B?YUkxRXJ3WG1oUFRRRTVZT0FvQStLK0JQbzh3YTFuQWY0dWk3QnRscWNRTWpP?=
+ =?utf-8?B?dkRySnFMUERXcnFaUHd2c002dExwKzA5L0JuVHJCejYvQ0lOdEkxazBWRTgw?=
+ =?utf-8?B?Y1lTL2FzR1dUUy95b2lxWEozTkhIeWp0RWtXU3FBZjNUWTNGdXE1MmdEemV2?=
+ =?utf-8?B?VDArdDBJWExXbTBsNlpGRGJnQWJtVXZYaTE0UTBaMWVlMU4weGU5b0xKNGdo?=
+ =?utf-8?B?bnJiaytTTGoxdkpGY3FMWHEzWlVPVWRJRHJ3Q2hyODl6akFQVjlXT3hySHFY?=
+ =?utf-8?B?U3BUUGt0M0NYS2VwSVErMzltczBvd0cwU0dVQ1BFZy9PTmY1djNLM2FJMGY3?=
+ =?utf-8?B?US9PVUlUY3ArRDBmZ3VwcFd2ZjJWREt2cmgwbXcvcFhmNFNHMEtZUmNldHUx?=
+ =?utf-8?B?OXQ4QVpGMXA1Ly9POGw2ZWR1cGN3R09aL0Zyd25tSkthc2g1NWFwRTRpd0E3?=
+ =?utf-8?B?Q3ltUVB6U1BEb1BMQTkrUmFvRG1iSEdFaElrODZXMTV5VFdrVGJLS1g4Q3pK?=
+ =?utf-8?B?cFJJbXNNUVpvNUJyODJqZFhsWWVaeXAvaVRtSVY5dkhCQ0V2bGkzYkZIQi9Q?=
+ =?utf-8?B?cldZQ1Z0Z2NCTHV5WlZDMHhQb1JCZi9xWDUyWHlYUWJDK01ET3VNdzZ1WjlP?=
+ =?utf-8?B?dlROcEdrZDJLbXc3VTc3MGJPRWRROUxKbTVzOFJiNmN4Y3lMUyt4aFRnQmE3?=
+ =?utf-8?B?ZFlNSE53RTEwM1d1akpBNk52L0ZFWVJON0lkaHg1U21EYzE5M3ZQUnRISGQ2?=
+ =?utf-8?B?aEJGZVBvb045WlNtd3hmb1B1MERnN205UG9LalYxTVhSWVAyMm1ITnRMNVZH?=
+ =?utf-8?B?bWtydU1rend1S0dIcktjUEVwQVVpaWhiM2EyODhic3AvS1RHNnNhRm41cVlQ?=
+ =?utf-8?B?d0N4OFNvTDJ4d1Ntc25BY2VNeldMNlBEaEhaa2w0SUI0bk02U1BxaWdGaXpq?=
+ =?utf-8?B?WTFDcUtDbk9XcGN6Q3JsbXowVUZ4WDFLeERSNWFSQXBhZm1tZWhkU01OTTZz?=
+ =?utf-8?B?Q3kxOEJMeXcxaDBUR0w2Yy90VTZRMGhtNGhNNDdhQWdDNEVRYVlWcm9oZEEx?=
+ =?utf-8?B?NjJCNmo5enZjVjNZcTN5eXJHOXpnMHd0Ri9yRVc1RU5uRVRzYzR6K3VRQXBH?=
+ =?utf-8?B?d1FhYU04RjI0MzdHYzRoZHgzaVNSQVE2Unl2UW9HR1R6SVJmbEUvZDl4U1Np?=
+ =?utf-8?B?Q2c9PQ==?=
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <C6C8FDE8B570524B91DB6CD0649C6DE4@namprd11.prod.outlook.com>
+Content-Transfer-Encoding: base64
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240402001739.2521623-1-horenchuang@bytedance.com>
- <20240402001739.2521623-2-horenchuang@bytedance.com> <20240403175201.00000c2c@Huawei.com>
-In-Reply-To: <20240403175201.00000c2c@Huawei.com>
-From: "Ho-Ren (Jack) Chuang" <horenchuang@bytedance.com>
-Date: Wed, 3 Apr 2024 16:13:24 -0700
-Message-ID: <CAKPbEqo_zN1Y-Ut6oGpP6OaRALQRFMmA737_br-9=ROcnj25gg@mail.gmail.com>
-Subject: Re: [PATCH v10 1/2] memory tier: dax/kmem: introduce an abstract
- layer for finding, allocating, and putting memory types
-To: Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Cc: "Huang, Ying" <ying.huang@intel.com>, Gregory Price <gourry.memverge@gmail.com>, 
-	aneesh.kumar@linux.ibm.com, mhocko@suse.com, tj@kernel.org, 
-	john@jagalactic.com, Eishan Mirakhur <emirakhur@micron.com>, 
-	Vinicius Tavares Petrucci <vtavarespetr@micron.com>, Ravis OpenSrc <Ravis.OpenSrc@micron.com>, 
-	Alistair Popple <apopple@nvidia.com>, Srinivasulu Thanneeru <sthanneeru@micron.com>, 
-	SeongJae Park <sj@kernel.org>, Dan Williams <dan.j.williams@intel.com>, 
-	Vishal Verma <vishal.l.verma@intel.com>, Dave Jiang <dave.jiang@intel.com>, 
-	Andrew Morton <akpm@linux-foundation.org>, nvdimm@lists.linux.dev, 
-	linux-cxl@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	Linux Memory Management List <linux-mm@kvack.org>, "Ho-Ren (Jack) Chuang" <horenc@vt.edu>, 
-	"Ho-Ren (Jack) Chuang" <horenchuang@gmail.com>, qemu-devel@nongnu.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: CH0PR11MB5330.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 01a2fcdf-3916-4440-2d94-08dc5433ab69
+X-MS-Exchange-CrossTenant-originalarrivaltime: 03 Apr 2024 23:13:27.5169
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: PAxWSajal93iMr8tgBjby6Dmt4qQwLEAFGaipwPTUi1lJiJwA83B0/nGQCsnippZHHLz/YG6Cw6hvrqPZ9QKWIdzNw8CwGpr6uq1X+iAJAc=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH8PR11MB8107
+X-OriginatorOrg: intel.com
 
-Hi Jonathan,
-
-Thanks for your feedback. I will fix them (inlined) in the next V11.
-No worries, it's never too late!
-
-On Wed, Apr 3, 2024 at 9:52=E2=80=AFAM Jonathan Cameron
-<Jonathan.Cameron@huawei.com> wrote:
->
-> On Tue,  2 Apr 2024 00:17:37 +0000
-> "Ho-Ren (Jack) Chuang" <horenchuang@bytedance.com> wrote:
->
-> > Since different memory devices require finding, allocating, and putting
-> > memory types, these common steps are abstracted in this patch,
-> > enhancing the scalability and conciseness of the code.
-> >
-> > Signed-off-by: Ho-Ren (Jack) Chuang <horenchuang@bytedance.com>
-> > Reviewed-by: "Huang, Ying" <ying.huang@intel.com>
->
-> Hi,
->
-> I know this is a late entry to the discussion but a few comments inline.
-> (sorry I didn't look earlier!)
->
-> All opportunities to improve code complexity and readability as a result
-> of your factoring out.
->
-> Jonathan
->
->
-> > ---
-> >  drivers/dax/kmem.c           | 20 ++------------------
-> >  include/linux/memory-tiers.h | 13 +++++++++++++
-> >  mm/memory-tiers.c            | 32 ++++++++++++++++++++++++++++++++
-> >  3 files changed, 47 insertions(+), 18 deletions(-)
-> >
-> > diff --git a/drivers/dax/kmem.c b/drivers/dax/kmem.c
-> > index 42ee360cf4e3..01399e5b53b2 100644
-> > --- a/drivers/dax/kmem.c
-> > +++ b/drivers/dax/kmem.c
-> > @@ -55,21 +55,10 @@ static LIST_HEAD(kmem_memory_types);
-> >
-> >  static struct memory_dev_type *kmem_find_alloc_memory_type(int adist)
-> >  {
-> > -     bool found =3D false;
-> >       struct memory_dev_type *mtype;
-> >
-> >       mutex_lock(&kmem_memory_type_lock);
-> could use
->
->         guard(mutex)(&kmem_memory_type_lock);
->         return mt_find_alloc_memory_type(adist, &kmem_memory_types);
->
-
-I will change it accordingly.
-
-> I'm fine if you ignore this comment though as may be other functions in
-> here that could take advantage of the cleanup.h stuff in a future patch.
->
-> > -     list_for_each_entry(mtype, &kmem_memory_types, list) {
-> > -             if (mtype->adistance =3D=3D adist) {
-> > -                     found =3D true;
-> > -                     break;
-> > -             }
-> > -     }
-> > -     if (!found) {
-> > -             mtype =3D alloc_memory_type(adist);
-> > -             if (!IS_ERR(mtype))
-> > -                     list_add(&mtype->list, &kmem_memory_types);
-> > -     }
-> > +     mtype =3D mt_find_alloc_memory_type(adist, &kmem_memory_types);
-> >       mutex_unlock(&kmem_memory_type_lock);
-> >
-> >       return mtype;
->
-> > diff --git a/include/linux/memory-tiers.h b/include/linux/memory-tiers.=
-h
-> > index 69e781900082..a44c03c2ba3a 100644
-> > --- a/include/linux/memory-tiers.h
-> > +++ b/include/linux/memory-tiers.h
-> > @@ -48,6 +48,9 @@ int mt_calc_adistance(int node, int *adist);
-> >  int mt_set_default_dram_perf(int nid, struct access_coordinate *perf,
-> >                            const char *source);
-> >  int mt_perf_to_adistance(struct access_coordinate *perf, int *adist);
-> > +struct memory_dev_type *mt_find_alloc_memory_type(int adist,
-> > +                                                     struct list_head =
-*memory_types);
->
-> That indent looks unusual.  Align the start of struct with start of int.
->
-
-I can make this aligned but it will show another warning:
-"WARNING: line length of 131 exceeds 100 columns"
-Is this ok?
-
-> > +void mt_put_memory_types(struct list_head *memory_types);
-> >  #ifdef CONFIG_MIGRATION
-> >  int next_demotion_node(int node);
-> >  void node_get_allowed_targets(pg_data_t *pgdat, nodemask_t *targets);
-> > @@ -136,5 +139,15 @@ static inline int mt_perf_to_adistance(struct acce=
-ss_coordinate *perf, int *adis
-> >  {
-> >       return -EIO;
-> >  }
-> > +
-> > +struct memory_dev_type *mt_find_alloc_memory_type(int adist, struct li=
-st_head *memory_types)
-> > +{
-> > +     return NULL;
-> > +}
-> > +
-> > +void mt_put_memory_types(struct list_head *memory_types)
-> > +{
-> > +
-> No blank line needed here.
-
-Will fix.
-
-> > +}
-> >  #endif       /* CONFIG_NUMA */
-> >  #endif  /* _LINUX_MEMORY_TIERS_H */
-> > diff --git a/mm/memory-tiers.c b/mm/memory-tiers.c
-> > index 0537664620e5..974af10cfdd8 100644
-> > --- a/mm/memory-tiers.c
-> > +++ b/mm/memory-tiers.c
-> > @@ -623,6 +623,38 @@ void clear_node_memory_type(int node, struct memor=
-y_dev_type *memtype)
-> >  }
-> >  EXPORT_SYMBOL_GPL(clear_node_memory_type);
-> >
-> > +struct memory_dev_type *mt_find_alloc_memory_type(int adist, struct li=
-st_head *memory_types)
->
-> Breaking this out as a separate function provides opportunity to improve =
-it.
-> Maybe a follow up patch makes sense given it would no longer be a straigh=
-t
-> forward code move.  However in my view it would be simple enough to be ob=
-vious
-> even within this patch.
->
-
-I will just keep this as is for now to minimize the changes aka mistakes.
-
-> > +{
-> > +     bool found =3D false;
-> > +     struct memory_dev_type *mtype;
-> > +
-> > +     list_for_each_entry(mtype, memory_types, list) {
-> > +             if (mtype->adistance =3D=3D adist) {
-> > +                     found =3D true;
->
-> Why not return here?
->                         return mtype;
->
-
-Yes, I can return here. I will do that and take care of the ptr
-returning at this point.
-
-> > +                     break;
-> > +             }
-> > +     }
-> > +     if (!found) {
->
-> If returning above, no need for found variable - just do this uncondition=
-ally.
-> + I suggest you flip logic for simpler to follow code flow.
-> It's more code but I think a bit easier to read as error handling is
-> out of the main simple flow.
->
->         mtype =3D alloc_memory_type(adist);
->         if (IS_ERR(mtype))
->                 return mtype;
->
->         list_add(&mtype->list, memory_types);
->
->         return mtype;
->
-
-Good idea! I will change it accordingly.
-
-> > +             mtype =3D alloc_memory_type(adist);
-> > +             if (!IS_ERR(mtype))
-> > +                     list_add(&mtype->list, memory_types);
-> > +     }
-> > +
-> > +     return mtype;
-> > +}
-> > +EXPORT_SYMBOL_GPL(mt_find_alloc_memory_type);
-> > +
-> > +void mt_put_memory_types(struct list_head *memory_types)
-> > +{
-> > +     struct memory_dev_type *mtype, *mtn;
-> > +
-> > +     list_for_each_entry_safe(mtype, mtn, memory_types, list) {
-> > +             list_del(&mtype->list);
-> > +             put_memory_type(mtype);
-> > +     }
-> > +}
-> > +EXPORT_SYMBOL_GPL(mt_put_memory_types);
-> > +
-> >  static void dump_hmem_attrs(struct access_coordinate *coord, const cha=
-r *prefix)
-> >  {
-> >       pr_info(
->
-
-
---=20
-Best regards,
-Ho-Ren (Jack) Chuang
-=E8=8E=8A=E8=B3=80=E4=BB=BB
+T24gRnJpLCAyMDI0LTAzLTI5IGF0IDExOjI5IC0wNzAwLCBSYW5keSBEdW5sYXAgd3JvdGU6DQo+
+IFJlbW92ZSB0aGUgQGNvbnRyb2xsZXI6IGxpbmUgdG8gcHJldmVudCB0aGUga2VybmVsLWRvYyB3
+YXJuaW5nOg0KPiANCj4gaW5jbHVkZS9saW51eC9wZWNpLmg6ODQ6IHdhcm5pbmc6IEV4Y2VzcyBz
+dHJ1Y3QgbWVtYmVyICdjb250cm9sbGVyJw0KPiBkZXNjcmlwdGlvbiBpbiAncGVjaV9kZXZpY2Un
+DQo+IA0KPiBTaWduZWQtb2ZmLWJ5OiBSYW5keSBEdW5sYXAgPHJkdW5sYXBAaW5mcmFkZWFkLm9y
+Zz4NCj4gQ2M6IEl3b25hIFdpbmlhcnNrYSA8aXdvbmEud2luaWFyc2thQGludGVsLmNvbT4NCj4g
+Q2M6IG9wZW5ibWNAbGlzdHMub3psYWJzLm9yZw0KPiBSZXZpZXdlZC1ieTogSXdvbmEgV2luaWFy
+c2thIDxpd29uYS53aW5pYXJza2FAaW50ZWwuY29tPg0KPiBDYzogR3JlZyBLcm9haC1IYXJ0bWFu
+IDxncmVna2hAbGludXhmb3VuZGF0aW9uLm9yZz4NCj4gLS0tDQo+IHYyOiBhZGQgUmV2LWJ5LCBh
+ZGQgZ3JlZ2toIGVtYWlsDQo+IA0KPiBXb3VsZCBpdCBtYWtlIHNlbnNlIHRvIGFkZCBHcmVnIGFz
+IE06IGluIHRoZSBNQUlOVEFJTkVSUyBmaWxlPw0KPiBIb3cgZG9lcyBzb21lb25lIGtub3cgdG8g
+Q2M6IEdyZWcgb24gUEVDSSBwYXRjaGVzPw0KDQpIaSBSYW5keSwNCg0KTm9ybWFsbHkgSSB3YXMg
+dGFraW5nIFBFQ0kgcmVsYXRlZCBwYXRjaGVzIGludG8gcGVjaS1uZXh0IFsxXSBhbmQgc2VuZGlu
+ZyBhIFBSDQp0byBHcmVnLiBVbmZvcnR1bmF0ZWx5LCBJIGRpZG4ndCBtYW5hZ2UgdG8gc2VuZCBp
+dCBpbiB2Ni45IGN5Y2xlLCB3aGljaCBpcyB3aHkNCnlvdXIgcGF0Y2ggZGlkbid0IGxhbmQgaW4g
+bWFpbmxpbmUgeWV0LiBTb3JyeSBhYm91dCB0aGF0IGRlbGF5Lg0KDQpbMV0gaHR0cHM6Ly9naXQu
+a2VybmVsLm9yZy9wdWIvc2NtL2xpbnV4L2tlcm5lbC9naXQvaXdpL2xpbnV4LmdpdC9sb2cvP2g9
+cGVjaS1uZXh0DQoNCi1Jd29uYQ0KDQo+IA0KPiDCoGluY2x1ZGUvbGludXgvcGVjaS5oIHzCoMKg
+wqAgMSAtDQo+IMKgMSBmaWxlIGNoYW5nZWQsIDEgZGVsZXRpb24oLSkNCj4gDQo+IGRpZmYgLS0g
+YS9pbmNsdWRlL2xpbnV4L3BlY2kuaCBiL2luY2x1ZGUvbGludXgvcGVjaS5oDQo+IC0tLSBhL2lu
+Y2x1ZGUvbGludXgvcGVjaS5oDQo+ICsrKyBiL2luY2x1ZGUvbGludXgvcGVjaS5oDQo+IEBAIC01
+OCw3ICs1OCw2IEBAIHN0YXRpYyBpbmxpbmUgc3RydWN0IHBlY2lfY29udHJvbGxlciAqdG8NCj4g
+wqAvKioNCj4gwqAgKiBzdHJ1Y3QgcGVjaV9kZXZpY2UgLSBQRUNJIGRldmljZQ0KPiDCoCAqIEBk
+ZXY6IGRldmljZSBvYmplY3QgdG8gcmVnaXN0ZXIgUEVDSSBkZXZpY2UgdG8gdGhlIGRldmljZSBt
+b2RlbA0KPiAtICogQGNvbnRyb2xsZXI6IG1hbmFnZXMgdGhlIGJ1cyBzZWdtZW50IGhvc3Rpbmcg
+dGhpcyBQRUNJIGRldmljZQ0KPiDCoCAqIEBpbmZvOiBQRUNJIGRldmljZSBjaGFyYWN0ZXJpc3Rp
+Y3MNCj4gwqAgKiBAaW5mby5mYW1pbHk6IGRldmljZSBmYW1pbHkNCj4gwqAgKiBAaW5mby5tb2Rl
+bDogZGV2aWNlIG1vZGVsDQoNCg==
 
