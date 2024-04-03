@@ -1,110 +1,126 @@
-Return-Path: <linux-kernel+bounces-129638-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-129639-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 333E4896DA9
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 13:06:39 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6A29A896DAE
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 13:07:48 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id DDF6D1F27903
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 11:06:38 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9BC4A1C25F24
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 11:07:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 38FE4141987;
-	Wed,  3 Apr 2024 11:06:35 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3BC26135A5F
-	for <linux-kernel@vger.kernel.org>; Wed,  3 Apr 2024 11:06:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 10DD61411ED;
+	Wed,  3 Apr 2024 11:07:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="l8qbELEQ"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.14])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D1C5471736;
+	Wed,  3 Apr 2024 11:07:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.14
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712142394; cv=none; b=V5hLbV1Gbp62z2BcO7hEhidHM7a/dGi8VJDLr8kyVJc/bQI8RQqozqLgYjfcfrdQicWBJW55zL4bb4NwQ3JBY2WVWjEE2M3ydmkG8JwQjmOOUlBGCdwd5ozO0a3d+JLq06lUtpAkK7/bWCq7l55tUe2K5nZqMsnqbEdkajXGsoo=
+	t=1712142462; cv=none; b=uBsXGPX4CdKKf/SPm6vA4GrCNHkbPzuNS4J7OHySdQ5G6kclSj7Mrd3H/RBjZD64IzgGPlazEuU+okS6mDHMIWtqsrDn+wqo2xiJrdrH1CWD3USlVDZS8xOtqWk1xxxVQaMbpE/At5OLyr5miOFw+f17MDaRs8WpWyjzx5v2RhI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712142394; c=relaxed/simple;
-	bh=Oe3Jdl4RWGcnPaKdQmGWYoniShsC0VVS9hxDqaL/GdA=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=fEwSAX6L8RUXiXsduCBQI+2oWJhs6ZD0Z2RVWsGL53hW2FIiYM0YA848WnFll97OQ+sE8ym14Se41FkOPL1seQ9N5HwEyPVdPFgbSQTLTys+NQC2wjSwwkn2viRBHaot3Dv30gryZMf5m1pnL+L8gmRVONVHYjAAYGlFWgXiM8Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id D30E21595;
-	Wed,  3 Apr 2024 04:07:02 -0700 (PDT)
-Received: from [10.57.72.245] (unknown [10.57.72.245])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 38F4C3F64C;
-	Wed,  3 Apr 2024 04:06:30 -0700 (PDT)
-Message-ID: <dfb0873f-3559-4979-94d1-39c4a7a4ca3c@arm.com>
-Date: Wed, 3 Apr 2024 12:06:28 +0100
+	s=arc-20240116; t=1712142462; c=relaxed/simple;
+	bh=W3Ge3vROf3oGr+qOJOoJNxTnopZwS7ozZZCtveEdiPA=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=cIkTmfCBLgTCM533M6V4HpPdSOZxyYJCWcxXSEqucVviVdBTnrQlYKO1fxAfoEogdXPGRIDOzs2fAGW5oWa6UuAWTpm2VIjXHS4PwtTHP56Zwpnr0JgmyOgWNvna84T1xDFDlqRPJC/h3UMc2eLPh28BSc5MKv/p3EFWEe8b2s8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=l8qbELEQ; arc=none smtp.client-ip=192.198.163.14
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1712142461; x=1743678461;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=W3Ge3vROf3oGr+qOJOoJNxTnopZwS7ozZZCtveEdiPA=;
+  b=l8qbELEQDL9BT5zRMT467ASuYDn3hj0U0mPNRFEMdj+Q8L9crLEpOnak
+   vhJHEk+EIlOwdLSUmILpVq7ah76hitWmWcPpV6FKxVcQlNezQG3O62SNq
+   4aGWpfn4QOLyxUkon23QO7OpU34+AYhqEMfny56R296yrje50IS2B1PNz
+   +T/1Q0592QMcWgeM6ktAK+ZbDHdG+k84NC7GjlIHeiIzePZkFXP8CGR4+
+   LWtfCOmyrJ8zlcfHjFrzDG/m+hJx5R5cWnRKoqXraAtgcc+8atSQf3+4o
+   rvIMBfgO4lQ2Yls9t/Ijf3L5LOeF4GACk11X2WpipX7qbJWYYBcRpfNUe
+   g==;
+X-CSE-ConnectionGUID: EwLpJeuoTR+i+j96yHnhZw==
+X-CSE-MsgGUID: 2FT5tdPHRfqHSR8M+F44pA==
+X-IronPort-AV: E=McAfee;i="6600,9927,11032"; a="7592840"
+X-IronPort-AV: E=Sophos;i="6.07,177,1708416000"; 
+   d="scan'208";a="7592840"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by fmvoesa108.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Apr 2024 04:07:34 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,11032"; a="915179348"
+X-IronPort-AV: E=Sophos;i="6.07,177,1708416000"; 
+   d="scan'208";a="915179348"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.72.54])
+  by fmsmga002.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Apr 2024 04:07:31 -0700
+Received: from andy by smile with local (Exim 4.97)
+	(envelope-from <andriy.shevchenko@linux.intel.com>)
+	id 1rrySn-000000016IN-2TvT;
+	Wed, 03 Apr 2024 14:07:29 +0300
+Date: Wed, 3 Apr 2024 14:07:29 +0300
+From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To: Mark Brown <broonie@kernel.org>
+Cc: linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org,
+	Daniel Mack <daniel@zonque.org>,
+	Haojian Zhuang <haojian.zhuang@gmail.com>,
+	Robert Jarzmik <robert.jarzmik@free.fr>,
+	Russell King <linux@armlinux.org.uk>, Arnd Bergmann <arnd@arndb.de>
+Subject: Re: (subset) [PATCH v2 0/9] spi: pxa2xx: Drop linux/spi/pxa2xx_spi.h
+Message-ID: <Zg04cWhT_Dl6AUik@smile.fi.intel.com>
+References: <20240327193138.2385910-1-andriy.shevchenko@linux.intel.com>
+ <171167575036.187521.17547262230962160149.b4-ty@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 0/3] mm/gup: fixups for hugetlb gup rework series
-Content-Language: en-GB
-To: peterx@redhat.com, linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Cc: Huacai Chen <chenhuacai@kernel.org>, David Hildenbrand
- <david@redhat.com>, Jason Gunthorpe <jgg@nvidia.com>,
- Nathan Chancellor <nathan@kernel.org>,
- Andrew Morton <akpm@linux-foundation.org>,
- Matthew Wilcox <willy@infradead.org>, WANG Xuerui <kernel@xen0n.name>,
- loongarch@lists.linux.dev
-References: <20240403013249.1418299-1-peterx@redhat.com>
-From: Ryan Roberts <ryan.roberts@arm.com>
-In-Reply-To: <20240403013249.1418299-1-peterx@redhat.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <171167575036.187521.17547262230962160149.b4-ty@kernel.org>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 
-On 03/04/2024 02:32, peterx@redhat.com wrote:
-> From: Peter Xu <peterx@redhat.com>
+On Fri, Mar 29, 2024 at 01:29:10AM +0000, Mark Brown wrote:
+> On Wed, 27 Mar 2024 21:29:19 +0200, Andy Shevchenko wrote:
+> > As Arnd suggested we may drop linux/spi/pxa2xx_spi.h as most of
+> > its content is being used solely internally to SPI subsystem
+> > (PXA2xx drivers). Hence this refactoring series with the additional
+> > win of getting rid of legacy documentation.
+> > 
+> > Changelog v2:
+> > - dropped applied patches
+> > - added patch to amend dependencies (Mark)
+> > - amended the second patch accordingly (Mark)
+> > - elaborated purpose of the patch 6 in the commit message (Mark)
+> > 
+> > [...]
 > 
-> Hi,
+> Applied to
 > 
-> This is a small patchset that will fix two known issues that got reported
-> today on the previous hugetlb unification series on slow gup [1].
+>    https://git.kernel.org/pub/scm/linux/kernel/git/broonie/spi.git for-next
 > 
-> The first issue was reported by Ryan Roberts [2] on a test failure over
-> gup_longterm.  Patch 1-2 should fix it.  Tested with 32MB hugepages on
-> arm64 VM.
+> Thanks!
 > 
-> The second issue was reported by Nathan Chancellor [3] on a build issue
-> over loongson's defconfig (loongson3_defconfig).  It can be easily
-> reproduced with my own build setup [4], while patch 3 fixes it, and should
-> hopefully fix similar archs where pud_pfn() is not defined even if
-> pud_leaf() can return true.
-> 
-> For the 2nd issue, it's debatable whether it's an arch issue, because
-> logically speaking pud_pfn() and pud_leaf() should either be both defined
-> or both not.  But since the current fix will be the simplest and still safe
-> (I at least checked loongarch doesn't support either pud dax or pud
-> hugetlb), I think we can consider having this to unbreak the build first,
-> assuming this could also happen to other archs.
-> 
-> One note is that the last 2 patches should be squashed into corresponding
-> patch, while the 1st patch should be kept standalone.
-> 
-> Thanks,
-> 
-> [1] https://lore.kernel.org/r/20240327152332.950956-1-peterx@redhat.com
-> [2] https://lore.kernel.org/r/adfdd89b-ee56-4758-836e-c66a0be7de25@arm.com
-> [3] https://lore.kernel.org/r/ZgyKLLVZ4vN56uZE@x1n
-> [4] https://gitlab.com/peterx/lkb-harness/-/blob/main/config.json?ref_type=heads#L32
-> 
-> Peter Xu (3):
->   mm: Allow anon exclusive check over hugetlb tail pages
->   fixup! mm/gup: handle huge pmd for follow_pmd_mask()
->   fixup! mm/arch: provide pud_pfn() fallback
-> 
->  include/linux/page-flags.h |  8 +++++++-
->  include/linux/pgtable.h    |  6 +++++-
->  mm/gup.c                   |  3 ---
->  mm/internal.h              | 10 ----------
->  4 files changed, 12 insertions(+), 15 deletions(-)
-> 
+> [1/9] spi: pxa2xx: Narrow the Kconfig option visibility
+>       commit: 3af201a405b3e5abee65102b062c309fff68cc0e
+> [2/9] spi: pxa2xx: Drop ACPI_PTR() and of_match_ptr()
+>       commit: 9907c475dcab9b269422972577360122129ac84c
+> [3/9] spi: pxa2xx: Extract pxa2xx_spi_init_ssp() helper
+>       commit: 7290f1e4075d28ab961df5a454503296fa289271
+> [4/9] spi: pxa2xx: Skip SSP initialization if it's done elsewhere
+>       commit: bb77c99ee6d3d704086acf141d3ec92601747809
 
-With these applied, gup_longterm is now passing for me on arm64. So for the series:
+Thank you!
 
-Tested-by: Ryan Roberts <ryan.roberts@arm.com>
+Do I need to do anything else to get the rest applied?
+
+-- 
+With Best Regards,
+Andy Shevchenko
+
 
 
