@@ -1,118 +1,165 @@
-Return-Path: <linux-kernel+bounces-130597-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-130598-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id B2929897A48
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 22:57:39 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D668E897A4C
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 23:00:12 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6DBF0288E08
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 20:57:38 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CD6ED28A343
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 21:00:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 676A215625A;
-	Wed,  3 Apr 2024 20:57:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7417C15664A;
+	Wed,  3 Apr 2024 21:00:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="WTSw+Vf0"
-Received: from mail-ej1-f53.google.com (mail-ej1-f53.google.com [209.85.218.53])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b="bMjpQfbV";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="CIQGSrnF"
+Received: from wfhigh6-smtp.messagingengine.com (wfhigh6-smtp.messagingengine.com [64.147.123.157])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9CE7D1E493
-	for <linux-kernel@vger.kernel.org>; Wed,  3 Apr 2024 20:57:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D3400153BF3;
+	Wed,  3 Apr 2024 21:00:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=64.147.123.157
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712177853; cv=none; b=I5P/Rmsp+dsup/CkMCnnB3pK5op35/mwk94THqLR3vKDSVAp1LAPHzsmUEWB9OCJfUPHi2GSdSQNC2mOAovNwYDtRDyvB3ej3BZgBUNiSIj48RUiDmldyntxabOXlpANhYiFxM/PFaOULC34P3OmW+jHj88UxBcBieDbDR7KKZw=
+	t=1712178002; cv=none; b=XV8d7gCfz48laHKaS+kGhiSGC/2CjtfuhbaM6LSn46gEGtioFFImvQHaahOxsYq6ZpqEfla+gU383yw577qRXEksSax3B7LC9ougV01eFKe0QWPJ0D4ZMvPAu/UKR64G68ijMwPhqKi5jacAl04M87cr6GpuBvzF/CATkoA6kfM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712177853; c=relaxed/simple;
-	bh=MtipjY1rhcZmd8ECzBFU2sU+RH7NZQPVwYxqI/OhKf4=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=LlfAwYktW1kCGyhaihtk+5I6qc/84+ujXqveDHPP9MWzA21+nznngEo+b8p7wKqGJgNIV3QsqKHlp2QkrbvG0e7XiP4lfoA/UMdpeFljK7OgnvsuXjbnXmdvoROvNGxrj4i/X4jXX1qCT4sZFC5a/G3dZmtN1lrfs41LolhFn+4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org; spf=pass smtp.mailfrom=linuxfoundation.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=WTSw+Vf0; arc=none smtp.client-ip=209.85.218.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
-Received: by mail-ej1-f53.google.com with SMTP id a640c23a62f3a-a4644bde1d4so42305566b.3
-        for <linux-kernel@vger.kernel.org>; Wed, 03 Apr 2024 13:57:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google; t=1712177849; x=1712782649; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=uhsxa7DGICZrrNGGAE/sbQuG+sYkkKkFMYbdqORjHlQ=;
-        b=WTSw+Vf0CUyumHgE80ABzcAxCFE8R2EKw/7qTfcEZHsduefBewh/Ro+m9YjK8UfeOT
-         Kd4kZc7Eny8T6HZuCwOuavrxrtlBDIknYfdyfEtY+s/14DzcY+OsINzRYJdQMYWot3JD
-         /S5Y70JYVSQ6IDIc/DVVVRbmLqftk1/MPzyQ0=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712177849; x=1712782649;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=uhsxa7DGICZrrNGGAE/sbQuG+sYkkKkFMYbdqORjHlQ=;
-        b=MOryqJPA2nyEZChsiL3Q8rynee/ne668Httmian82DYH9Dtj/zT1QbPp45xMi0L99G
-         IeBNYvP1hjCvgPowjNZ31yOefqMkaA5BYDRnypWr/jjc7vyI4HEgsBoeemPDLZbUDEGf
-         RVdGWtv5+86ik3BYYshJpCctaSMzzBsN90l5RuOAvkBaR+16zA6v5zcJ0l8e/LJWZfW1
-         3htLPTmv4b0BmxBJ8pzbAQ+pY3q/OH9cQIcKlCx7Nudh0eNQozLxbgfh9/oH7PReKFtO
-         9QBYGvE2NAYl9qTt0yqkzbGiygLEVFMvy94YGNkjQ7Anr0+3/Ch3YpCYTpmBpsCWHh1N
-         Rmqg==
-X-Forwarded-Encrypted: i=1; AJvYcCVlRxcfuibmvHbLXpgIiWGaXh9bszBm0j0/w9YAL56FylL1D0kP+ekE6+OKckeZhihHjtbwsiZKQdslYo5MurMKQo+y7fwMETit05n2
-X-Gm-Message-State: AOJu0YwzawKprlE6OTf2DnihrVnJfi5+o7ektmrayx8Wfce35EFcGC+q
-	ZNRwoavUumx+uSK65KE8IlXqOu1cbngYTXKSLVo3b3DaXQP3n0dgf43sGKD+0NlEBvVVaB70vEG
-	wpYmc5w==
-X-Google-Smtp-Source: AGHT+IE5HbSwhkBToqCqz9vEinVfEXjup+ekppXCr5pkcomNVUlkT4NeMnCZZyNvnycStxkWHREgxQ==
-X-Received: by 2002:a17:906:4fca:b0:a46:cc87:12f3 with SMTP id i10-20020a1709064fca00b00a46cc8712f3mr302256ejw.75.1712177848933;
-        Wed, 03 Apr 2024 13:57:28 -0700 (PDT)
-Received: from mail-ed1-f47.google.com (mail-ed1-f47.google.com. [209.85.208.47])
-        by smtp.gmail.com with ESMTPSA id wg1-20020a17090705c100b00a4e393b6349sm6627788ejb.5.2024.04.03.13.57.28
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 03 Apr 2024 13:57:28 -0700 (PDT)
-Received: by mail-ed1-f47.google.com with SMTP id 4fb4d7f45d1cf-56829f41f81so367191a12.2
-        for <linux-kernel@vger.kernel.org>; Wed, 03 Apr 2024 13:57:28 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCVTfltx5n2LwsJXCY1yM/AprKHEPT14HR2J19AR6EONttcbal4WdZ75R3xM7PQj+tV0As2xP5AYPDawrwoqoYfeEFanJwDUeIGVaDTL
-X-Received: by 2002:a17:907:2d8f:b0:a4e:2ad3:60ff with SMTP id
- gt15-20020a1709072d8f00b00a4e2ad360ffmr339680ejc.47.1712177847931; Wed, 03
- Apr 2024 13:57:27 -0700 (PDT)
+	s=arc-20240116; t=1712178002; c=relaxed/simple;
+	bh=z2aFj7Yero9UEAl+EmXBknvXwFagdYrg8gO/nPAA5PI=;
+	h=MIME-Version:Message-Id:In-Reply-To:References:Date:From:To:Cc:
+	 Subject:Content-Type; b=YxH7PfYQJdLJBaRKZo/lvdfNWmn78kCSvfAfkZnUNmolscKQdGA44BXMJhMSYgFIcVFbmIS9FOrnFcGJFk3cA0ejoSprfWe/t48sz8H8lPDb3qGaQrpsLBW3BZX7i9+kAwJ83T98IGYG9FQ8/5RMzTTzePG45HPlYB9Qv9Y+RtY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de; spf=pass smtp.mailfrom=arndb.de; dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b=bMjpQfbV; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=CIQGSrnF; arc=none smtp.client-ip=64.147.123.157
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arndb.de
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+	by mailfhigh.west.internal (Postfix) with ESMTP id 506BD180010E;
+	Wed,  3 Apr 2024 16:59:58 -0400 (EDT)
+Received: from imap51 ([10.202.2.101])
+  by compute5.internal (MEProxy); Wed, 03 Apr 2024 16:59:59 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
+	:cc:content-type:content-type:date:date:from:from:in-reply-to
+	:in-reply-to:message-id:mime-version:references:reply-to:subject
+	:subject:to:to; s=fm1; t=1712177997; x=1712264397; bh=TkyKpF4n3C
+	q52s0X3ZL3E7R1KrZzCnoADc0YqLDsh/k=; b=bMjpQfbVCi8Fq8X/stkrxnmNLa
+	a9eEqq1QgwOAfhJa8IBNoTc9TmPgl8k37iGa3Plj+yL82KuU/DHLiW+B0EgYL82c
+	02tVQS6fGmyZwYLxqYe78UZVRUV2mMN5Esd/08WwqhNyFJnJG5un/99DDmFMwWJW
+	Az5K6oBjccQ59rLVezsvSSIgR8itvVTkbtC7jvrMY7NfxDzqNxrboKzUGqXNJQNi
+	YyEsWKJ6or2z1WSTEA2riV00U8oJRsjYk9nuZTZA0u6iQkwzng051T0bgvZmXXPP
+	VRHZnfJUFtIoxLojPbaHAglzRdn7e1lXGHeVQhMviK/+OorI/43OpHbHQFVA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-type:content-type:date:date
+	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+	:message-id:mime-version:references:reply-to:subject:subject:to
+	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+	fm2; t=1712177997; x=1712264397; bh=TkyKpF4n3Cq52s0X3ZL3E7R1KrZz
+	CnoADc0YqLDsh/k=; b=CIQGSrnFZRNZgMpARGSyCT5M46ioL1XGSw7MA0g7Rydv
+	zQYYjGI4sejaWCkb1bXdvVklGyJXheHuMfcxVjySSplR2bL7EkH3oyVUTIcl3Gai
+	GRPNR2tZJraIWZvwn5KzpR22QuKSAe+H/q/bRz04wgH0bXdpjj0tB9CO4CCBuABc
+	JG6u7OvcvJPWSiT9jPR78+639l1b3s8ex+E/W3xiVe/aTUxK9Sv6x4pVOmIGaBI3
+	2bEcxjq0cO+cB5msjHtB12nJhcKNH0JPZEy/brteYOce2+8Nno6d0bwX3DLJrcdy
+	m4VzX7YEp2FHkgYzSIWEumxrId/cRz6NUlyjxfgMOQ==
+X-ME-Sender: <xms:TcMNZvjGxtVaQ7lJjPrnjJiTRcLqVvdevj2JGj5ygxkyvaxZTq-XgQ>
+    <xme:TcMNZsCj-2Cg0iMiPgYRpqHhfvGdEB9yBlad668jZ-4CemOPfrP93fsBvHPVn709S
+    WLbvOnbNIIlgnQNirg>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrudefiedguddufecutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
+    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
+    enucfjughrpefofgggkfgjfhffhffvvefutgesthdtredtreertdenucfhrhhomhepfdet
+    rhhnugcuuegvrhhgmhgrnhhnfdcuoegrrhhnugesrghrnhgusgdruggvqeenucggtffrrg
+    htthgvrhhnpeffheeugeetiefhgeethfejgfdtuefggeejleehjeeutefhfeeggefhkedt
+    keetffenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpe
+    grrhhnugesrghrnhgusgdruggv
+X-ME-Proxy: <xmx:TcMNZvGQo8zIv4XpkRoy1AW70Hn1lLnDuoKeh7BaArgh2j3x8KRF4Q>
+    <xmx:TcMNZsSo7PaGRkdKyfCOrEEhQYGxMzdS9B_wky1316eTKOsQGv_gzg>
+    <xmx:TcMNZsy3V4u7Ht2CEsSf1pQF8CxUAU3s06Fo95V0PBgEmgUVe73JZQ>
+    <xmx:TcMNZi4mcfwK233dblrueIHu9lqApYhCEdnUP2bH5oTQyYtwjBFpWA>
+    <xmx:TcMNZoDtsp2EnYCMaV-GyvV6o6vcniCi6pZD5YwF8kZEoqBIUsKE_tNZ>
+Feedback-ID: i56a14606:Fastmail
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+	id 251F5B6008D; Wed,  3 Apr 2024 16:59:57 -0400 (EDT)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.11.0-alpha0-333-gbfea15422e-fm-20240327.001-gbfea1542
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <969ccc0f-d909-4b45-908e-e98279777733@metaparadigm.com>
- <CAHk-=wj3khqjXnHmShPj+tZvC=SyUitTZ7BkDO-rqu_aCVPrXA@mail.gmail.com> <1a116a43-fd2e-4f03-8a17-75816fc62717@metaparadigm.com>
-In-Reply-To: <1a116a43-fd2e-4f03-8a17-75816fc62717@metaparadigm.com>
-From: Linus Torvalds <torvalds@linux-foundation.org>
-Date: Wed, 3 Apr 2024 13:57:11 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wiOqTAX7nwQqHJ2Ti3dbxM-HrUJq3FD_Gjua5qW=QAoTg@mail.gmail.com>
-Message-ID: <CAHk-=wiOqTAX7nwQqHJ2Ti3dbxM-HrUJq3FD_Gjua5qW=QAoTg@mail.gmail.com>
-Subject: Re: user-space concurrent pipe buffer scheduler interactions
-To: Michael Clark <michael@metaparadigm.com>
-Cc: Jens Axboe <axboe@kernel.dk>, Ingo Molnar <mingo@redhat.com>, 
-	Peter Zijlstra <peterz@infradead.org>, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Message-Id: <701f8f93-f5fb-408b-822a-37a1d5c424ba@app.fastmail.com>
+In-Reply-To: <20240327152358.2368467-20-aleksander.lobakin@intel.com>
+References: <20240327152358.2368467-1-aleksander.lobakin@intel.com>
+ <20240327152358.2368467-20-aleksander.lobakin@intel.com>
+Date: Wed, 03 Apr 2024 22:59:36 +0200
+From: "Arnd Bergmann" <arnd@arndb.de>
+To: "Alexander Lobakin" <aleksander.lobakin@intel.com>,
+ "David S . Miller" <davem@davemloft.net>,
+ "Eric Dumazet" <edumazet@google.com>, "Jakub Kicinski" <kuba@kernel.org>,
+ "Paolo Abeni" <pabeni@redhat.com>
+Cc: "Yury Norov" <yury.norov@gmail.com>,
+ "Alexander Potapenko" <glider@google.com>,
+ nex.sw.ncis.osdt.itp.upstreaming@intel.com,
+ "intel-wired-lan@lists.osuosl.org" <intel-wired-lan@lists.osuosl.org>,
+ Netdev <netdev@vger.kernel.org>, linux-kernel@vger.kernel.org,
+ "Michal Swiatkowski" <michal.swiatkowski@linux.intel.com>,
+ "Marcin Szycik" <marcin.szycik@linux.intel.com>,
+ "Simon Horman" <horms@kernel.org>, "Kees Cook" <keescook@chromium.org>
+Subject: Re: [PATCH net-next v6 19/21] pfcp: always set pfcp metadata
+Content-Type: text/plain
 
-On Wed, 3 Apr 2024 at 13:52, Michael Clark <michael@metaparadigm.com> wrote:
->
-> On 4/4/24 05:56, Linus Torvalds wrote:
-> > On Tue, 2 Apr 2024 at 13:54, Michael Clark <michael@metaparadigm.com> wrote:
-> >>
-> >> I am working on a low latency cross-platform concurrent pipe buffer
-> >> using C11 threads and atomics.
-> >
-> > You will never get good performance doing spinlocks in user space
-> > unless you actually tell the scheduler about the spinlocks, and have
-> > some way to actually sleep on contention.
-> >
-> > Which I don't see you as having.
->
-> We can work on this.
+On Wed, Mar 27, 2024, at 16:23, Alexander Lobakin wrote:
 
-It's been tried.
+> +static int pfcp_encap_recv(struct sock *sk, struct sk_buff *skb)
+> +{
+> +	IP_TUNNEL_DECLARE_FLAGS(flags) = { };
+> +	struct metadata_dst *tun_dst;
+> +	struct pfcp_metadata *md;
+> +	struct pfcphdr *unparsed;
+> +	struct pfcp_dev *pfcp;
+> +
+> +	if (unlikely(!pskb_may_pull(skb, PFCP_HLEN)))
+> +		goto drop;
+> +
+> +	pfcp = rcu_dereference_sk_user_data(sk);
+> +	if (unlikely(!pfcp))
+> +		goto drop;
+> +
+> +	unparsed = pfcp_hdr(skb);
+> +
+> +	ip_tunnel_flags_zero(flags);
+> +	tun_dst = udp_tun_rx_dst(skb, sk->sk_family, flags, 0,
+> +				 sizeof(*md));
+> +	if (unlikely(!tun_dst))
+> +		goto drop;
+> +
+> +	md = ip_tunnel_info_opts(&tun_dst->u.tun_info);
+> +	if (unlikely(!md))
+> +		goto drop;
+> +
+> +	if (unparsed->flags & PFCP_SEID_FLAG)
+> +		pfcp_session_recv(pfcp, skb, md);
+> +	else
+> +		pfcp_node_recv(pfcp, skb, md);
+> +
+> +	__set_bit(IP_TUNNEL_PFCP_OPT_BIT, flags);
+> +	ip_tunnel_info_opts_set(&tun_dst->u.tun_info, md, sizeof(*md),
+> +				flags);
+> +
 
-Nobody ever found a use-case that is sufficiently convincing, but see
-the write-up at
+The memcpy() in the ip_tunnel_info_opts_set() causes
+a string.h fortification warning, with at least gcc-13:
 
-   https://lwn.net/Articles/944895/
+    In function 'fortify_memcpy_chk',
+        inlined from 'ip_tunnel_info_opts_set' at include/net/ip_tunnels.h:619:3,
+        inlined from 'pfcp_encap_recv' at drivers/net/pfcp.c:84:2:
+    include/linux/fortify-string.h:553:25: error: call to '__write_overflow_field' declared with attribute warning: detected write beyond size of field (1st parameter); maybe use struct_group()? [-Werror=attribute-warning]
+      553 |                         __write_overflow_field(p_size_field, size);
 
-for a pointer to at least attempts.
+As far as I can tell, the warning is caused by the
+ambiguity of the union, but what I noticed is that
+it also seems to copy a buffer to itself, as 'md'
+is initialized to tun_dst->u.tun_info as well.
 
-               Linus
+Is this intentional?
+
+      Arnd
 
