@@ -1,179 +1,177 @@
-Return-Path: <linux-kernel+bounces-130376-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-130379-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 58B3F897752
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 19:49:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 33992897754
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 19:51:10 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 89D661C2659D
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 17:49:58 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 56CD31C20DD9
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 17:51:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 25827156F25;
-	Wed,  3 Apr 2024 17:28:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1EAFE157498;
+	Wed,  3 Apr 2024 17:33:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="pJpsqN23"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b="3aPeaN9O"
+Received: from mail-pl1-f177.google.com (mail-pl1-f177.google.com [209.85.214.177])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1FF49154C12;
-	Wed,  3 Apr 2024 17:28:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 55B22152521
+	for <linux-kernel@vger.kernel.org>; Wed,  3 Apr 2024 17:33:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712165287; cv=none; b=TFOsEpHPHvMpsXSVOrzdJ3xGTcagVMBNbbDwbmjf+qVtNIX0VuATQVq3fneF066Qom8Xs5LS2t4j+H9tYTDnf8IotFc28fiFCSiiPEGQOg+qRqzm/2YA9t5d2gVpxJlGToWYeXoivbOjEGcAVkFxtmS2i0mp2UY4NwbU6EIEgD8=
+	t=1712165596; cv=none; b=V8IE8OaIxZcincg66v0s6q/NGkHglTJ/jtk2MUqeydoCOF1b23y2YE5N2WpgOO+gVvCkrl/JTbkjGyaUZRj9qNK+ZEo57Qmy411gKG9Ipzlft/osc40d0ojVcwtF+jDnymltc6j9wOkPD3UqD+zzGQId/pcWzgI3mu86UIoKyIQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712165287; c=relaxed/simple;
-	bh=ev9qwjumkVBT21OJLnRxmj6j+tcZWLWc9gYIuhQP4YA=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Ia2opbuoxHt0lFkgWDWQ6GW72TwXxCw0yfeQSJ/LhG7sn01WZkrj8WZRUJRsE4888fMYzSyz3Ech/P1f6Gxg8GCCmQni6+lw8lB91KappKy7elE43A1OQAfDim+Rx3i92Q5ooTwIdQtz8KoPEYKbLRt0tvnVMBkb7I6ZXCcHAOA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=pJpsqN23; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 25477C433F1;
-	Wed,  3 Apr 2024 17:27:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712165286;
-	bh=ev9qwjumkVBT21OJLnRxmj6j+tcZWLWc9gYIuhQP4YA=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=pJpsqN23a/bTPCDYI46/mddJ60857N8gxl0704dxwCHxM5gKzPHc731EgK6XTky8d
-	 UTSvCE/t886wLCwR1UtYWv7Xweb+uKowOagxSx/lUTLkXov7Dsf3h7EJVqcumDwZqs
-	 tOZb0mWrfqCf+8IONESe5080Pxu9nMjALf/FMnCDXF9xhUlL3R67eN2rH1I5mN6bzF
-	 1n8OJA3VkfjnGjVp4Z+o4CVz2zIgJ7Dmv0gNexlQEtkyGLrPexZxzjQpZtQ6ml5ppR
-	 mZhUqv9H4p4rGkxe60L9FXP3YjGI6r2+YWhPDeKU2GGU7vXAeDQM5+N6jWyDCaqmEM
-	 CqEUGy0nok9lw==
-Date: Wed, 3 Apr 2024 18:27:49 +0100
-From: Simon Horman <horms@kernel.org>
-To: Mina Almasry <almasrymina@google.com>
-Cc: netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-doc@vger.kernel.org, linux-alpha@vger.kernel.org,
-	linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org,
-	sparclinux@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
-	linux-arch@vger.kernel.org, bpf@vger.kernel.org,
-	linux-kselftest@vger.kernel.org, linux-media@vger.kernel.org,
-	dri-devel@lists.freedesktop.org,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Jonathan Corbet <corbet@lwn.net>,
-	Richard Henderson <richard.henderson@linaro.org>,
-	Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
-	Matt Turner <mattst88@gmail.com>,
-	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-	"James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
-	Helge Deller <deller@gmx.de>, Andreas Larsson <andreas@gaisler.com>,
-	Jesper Dangaard Brouer <hawk@kernel.org>,
-	Ilias Apalodimas <ilias.apalodimas@linaro.org>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Masami Hiramatsu <mhiramat@kernel.org>,
-	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-	Arnd Bergmann <arnd@arndb.de>, Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Martin KaFai Lau <martin.lau@linux.dev>,
-	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>,
-	Yonghong Song <yonghong.song@linux.dev>,
-	John Fastabend <john.fastabend@gmail.com>,
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>,
-	Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-	Steffen Klassert <steffen.klassert@secunet.com>,
-	Herbert Xu <herbert@gondor.apana.org.au>,
-	David Ahern <dsahern@kernel.org>,
-	Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
-	Shuah Khan <shuah@kernel.org>,
-	Sumit Semwal <sumit.semwal@linaro.org>,
-	Christian =?utf-8?B?S8O2bmln?= <christian.koenig@amd.com>,
-	Amritha Nambiar <amritha.nambiar@intel.com>,
-	Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
-	Alexander Mikhalitsyn <alexander@mihalicyn.com>,
-	Kaiyuan Zhang <kaiyuanz@google.com>,
-	Christian Brauner <brauner@kernel.org>,
-	David Howells <dhowells@redhat.com>,
-	Florian Westphal <fw@strlen.de>,
-	Yunsheng Lin <linyunsheng@huawei.com>,
-	Kuniyuki Iwashima <kuniyu@amazon.com>, Jens Axboe <axboe@kernel.dk>,
-	Arseniy Krasnov <avkrasnov@salutedevices.com>,
-	Aleksander Lobakin <aleksander.lobakin@intel.com>,
-	Michael Lass <bevan@bi-co.net>, Jiri Pirko <jiri@resnulli.us>,
-	Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-	Lorenzo Bianconi <lorenzo@kernel.org>,
-	Richard Gobert <richardbgobert@gmail.com>,
-	Sridhar Samudrala <sridhar.samudrala@intel.com>,
-	Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
-	Johannes Berg <johannes.berg@intel.com>,
-	Abel Wu <wuyun.abel@bytedance.com>,
-	Breno Leitao <leitao@debian.org>,
-	Pavel Begunkov <asml.silence@gmail.com>, David Wei <dw@davidwei.uk>,
-	Jason Gunthorpe <jgg@ziepe.ca>,
-	Shailend Chand <shailend@google.com>,
-	Harshitha Ramamurthy <hramamurthy@google.com>,
-	Shakeel Butt <shakeel.butt@linux.dev>,
-	Jeroen de Borst <jeroendb@google.com>,
-	Praveen Kaligineedi <pkaligineedi@google.com>, linux-mm@kvack.org,
-	Matthew Wilcox <willy@infradead.org>
-Subject: Re: [RFC PATCH net-next v8 06/14] page_pool: convert to use netmem
-Message-ID: <20240403172749.GP26556@kernel.org>
-References: <20240403002053.2376017-1-almasrymina@google.com>
- <20240403002053.2376017-7-almasrymina@google.com>
+	s=arc-20240116; t=1712165596; c=relaxed/simple;
+	bh=bNitdDZEZ45Wu2BGg5a1lM8zD7IM1Pkagn/eVdTtlLU=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=KEhQjhGD8BHT4PZRMd5so+oBm8m7GpHkc5qnPXWJLciLQYReszYtDXVR8nwpTgPN+tkE99iiIhHbWVurRZWnQ49UY78tDinvBwAi9D39FwHdNEz9x64ZSVn9r2HBGzhfa0rVeJWHA7MbbWoVPl2UAfWgm+nT3ezK1ItOC4wj0Y8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com; spf=pass smtp.mailfrom=rivosinc.com; dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b=3aPeaN9O; arc=none smtp.client-ip=209.85.214.177
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rivosinc.com
+Received: by mail-pl1-f177.google.com with SMTP id d9443c01a7336-1e223025ccbso104115ad.3
+        for <linux-kernel@vger.kernel.org>; Wed, 03 Apr 2024 10:33:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1712165593; x=1712770393; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=fdtmFuCQtKqL7XQB5yBZBXcGu9/7lkplVdP/I75yquc=;
+        b=3aPeaN9OmKsmSJh0e4LCI/S5B/ommlnc04giwq0H8FDYAXrTmfuoatLuFSzt5ij4A3
+         WtSQPF6DolV/7iVKYMGS1dRUcJSpFQObopoUDGVUdj3acs+/f9PFbaOW31FOdmhKxKFu
+         KDp+6LWKlZWD2KgIthfjx+yV89Abfb73lvCjoAC6BBCv/cuD+cnMvzoiDuReVNii7mey
+         OVhLNcnbEKDcsEkkBlHDUPdHw/jyY25GuYvXTj8Oz15oKeuEhFTrWZeyWiN0T/empJ9T
+         ehE6Lvu7admIzoqoSaOXd43WMv0a8GpeO5wZQbHKUJ9wta/klskzdjtvYr/Kyfn2qPvR
+         53Ag==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712165593; x=1712770393;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=fdtmFuCQtKqL7XQB5yBZBXcGu9/7lkplVdP/I75yquc=;
+        b=pYlhMvmRH5+tebmmpwcVhWgwpKDCqc2XEziiyixcwjYAGewCg/B0/i0R/TuP6SwpL3
+         97mH+Yl4bS68Bhi+hs8s4CjFmcCzc809kMN2977WBSurruhYakeBCDjgmh/ieCd5fAr/
+         gYWJLMOX/EC/DjmNJPBBrtmq1QMeWsqStIt71b2McYnmMVn2jJKahFxiNa0pDeVgS1Ff
+         I92WkXqI/QLXjnYg8YDJ1WTSaeaGHp7B6Zw3haIpH61qczw3pWXv0SMoK/uiovgeLUgp
+         +JcvH2X+dl8q7ox0lWo2aNC07LaJnGaJ+WXH9o0KY27x2gIhYKRpZqeDE6NtAkMPBnoN
+         WN+A==
+X-Forwarded-Encrypted: i=1; AJvYcCU13X3Xgw3vQPatPZl/z4JEyxtsYoEzEAurDsg5qrhXutoBcLSiLldkYrOhKf5V9Or9xAgkf/GSqgZq+Kxwr2HalO9FGaecB1JKUExa
+X-Gm-Message-State: AOJu0YyoFs/nxLqia1kvpUjbySn9VFrpCDhhFkLmrvMFM9+5nH8HfzQT
+	i2o+iHlPB2VbQ3MfTZ9BVPBbSPVxIqR8jYDY7vfzku4HwWGxEtI2+iEM1aUAxDM=
+X-Google-Smtp-Source: AGHT+IFBs/XuJJMQmrVQUKGAA9J8OyyBRTsBqretCIWUOoly3HJp/hb+dobtV3ICE1IfQjtI5xaAtQ==
+X-Received: by 2002:a17:90a:886:b0:2a2:c354:64dd with SMTP id v6-20020a17090a088600b002a2c35464ddmr202756pjc.38.1712165593547;
+        Wed, 03 Apr 2024 10:33:13 -0700 (PDT)
+Received: from [10.0.16.165] ([50.145.13.30])
+        by smtp.gmail.com with ESMTPSA id ga4-20020a17090b038400b002a04f430937sm3863480pjb.43.2024.04.03.10.33.12
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 03 Apr 2024 10:33:13 -0700 (PDT)
+Message-ID: <314e0216-a667-4bba-bdc7-3ae8af351800@rivosinc.com>
+Date: Wed, 3 Apr 2024 10:33:10 -0700
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240403002053.2376017-7-almasrymina@google.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] riscv: Fix vector state restore in rt_sigreturn()
+To: =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>,
+ Paul Walmsley <paul.walmsley@sifive.com>, Palmer Dabbelt
+ <palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>,
+ Andy Chiu <andy.chiu@sifive.com>, linux-riscv@lists.infradead.org
+Cc: =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@rivosinc.com>,
+ Conor Dooley <conor.dooley@microchip.com>, Heiko Stuebner <heiko@sntech.de>,
+ Vincent Chen <vincent.chen@sifive.com>, Ben Dooks
+ <ben.dooks@codethink.co.uk>, Greentime Hu <greentime.hu@sifive.com>,
+ Haorong Lu <ancientmodern4@gmail.com>, Jerry Shih <jerry.shih@sifive.com>,
+ Nick Knight <nick.knight@sifive.com>, linux-kernel@vger.kernel.org,
+ Charlie Jenkins <charlie@rivosinc.com>, Vineet Gupta <vgupta@kernel.org>
+References: <20240403072638.567446-1-bjorn@kernel.org>
+Content-Language: en-US
+From: Vineet Gupta <vineetg@rivosinc.com>
+In-Reply-To: <20240403072638.567446-1-bjorn@kernel.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-On Tue, Apr 02, 2024 at 05:20:43PM -0700, Mina Almasry wrote:
-> Abstrace the memory type from the page_pool so we can later add support
-> for new memory types. Convert the page_pool to use the new netmem type
-> abstraction, rather than use struct page directly.
-> 
-> As of this patch the netmem type is a no-op abstraction: it's always a
-> struct page underneath. All the page pool internals are converted to
-> use struct netmem instead of struct page, and the page pool now exports
-> 2 APIs:
-> 
-> 1. The existing struct page API.
-> 2. The new struct netmem API.
-> 
-> Keeping the existing API is transitional; we do not want to refactor all
-> the current drivers using the page pool at once.
-> 
-> The netmem abstraction is currently a no-op. The page_pool uses
-> page_to_netmem() to convert allocated pages to netmem, and uses
-> netmem_to_page() to convert the netmem back to pages to pass to mm APIs,
-> 
-> Follow up patches to this series add non-paged netmem support to the
-> page_pool. This change is factored out on its own to limit the code
-> churn to this 1 patch, for ease of code review.
-> 
-> Signed-off-by: Mina Almasry <almasrymina@google.com>
+On 4/3/24 00:26, Björn Töpel wrote:
+> From: Björn Töpel <bjorn@rivosinc.com>
+>
+> The RISC-V Vector specification states in "Appendix D: Calling
+> Convention for Vector State" [1] that "Executing a system call causes
+> all caller-saved vector registers (v0-v31, vl, vtype) and vstart to
+> become unspecified.". In the RISC-V kernel this is called "discarding
+> the vstate".
+>
+> Returning from a signal handler via the rt_sigreturn() syscall, vector
+> discard is also performed. However, this is not an issue since the
+> vector state should be restored from the sigcontext, and therefore not
+> care about the vector discard.
+>
+> The "live state" is the actual vector register in the running context,
+> and the "vstate" is the vector state of the task. A dirty live state,
+> means that the vstate and live state are not in synch.
+>
+> When vectorized user_from_copy() was introduced, an bug sneaked in at
+> the restoration code, related to the discard of the live state.
+>
+> An example when this go wrong:
+>
+>   1. A userland application is executing vector code
+>   2. The application receives a signal, and the signal handler is
+>      entered.
+>   3. The application returns from the signal handler, using the
+>      rt_sigreturn() syscall.
+>   4. The live vector state is discarded upon entering the
+>      rt_sigreturn(), and the live state is marked as "dirty", indicating
+>      that the live state need to be synchronized with the current
+>      vstate.
+>   5. rt_sigreturn() restores the vstate, except the Vector registers,
+>      from the sigcontext
+>   6. rt_sigreturn() restores the Vector registers, from the sigcontext,
+>      and now the vectorized user_from_copy() is used. The dirty live
+>      state from the discard is saved to the vstate, making the vstate
+>      corrupt.
+>   7. rt_sigreturn() returns to the application, which crashes due to
+>      corrupted vstate.
+>
+> Note that the vectorized user_from_copy() is invoked depending on the
+> value of CONFIG_RISCV_ISA_V_UCOPY_THRESHOLD. Default is 768, which
+> means that vlen has to be larger than 128b for this bug to trigger.
+>
+> The fix is simply to mark the live state as non-dirty/clean prior
+> performing the vstate restore.
+>
+> Link: https://github.com/riscv/riscv-isa-manual/releases/download/riscv-isa-release-8abdb41-2024-03-26/unpriv-isa-asciidoc.pdf # [1]
+> Reported-by: Charlie Jenkins <charlie@rivosinc.com>
+> Reported-by: Vineet Gupta <vgupta@kernel.org>
+> Fixes: c2a658d41924 ("riscv: lib: vectorize copy_to_user/copy_from_user")
+> Signed-off-by: Björn Töpel <bjorn@rivosinc.com>
 
-..
+Tested-by: Vineet Gupta <vineetg@rivosinc.com>
 
-> diff --git a/include/net/page_pool/helpers.h b/include/net/page_pool/helpers.h
+For completeness (and fun)
 
-..
+1. The issue was triggered on dual core spike run with a seemingly
+benign workload (the key is repeated fork/execve/exit with a little I/O)
 
-> @@ -170,9 +172,10 @@ static inline void *page_pool_alloc_va(struct page_pool *pool,
->  	struct page *page;
->  
->  	/* Mask off __GFP_HIGHMEM to ensure we can use page_address() */
-> -	page = page_pool_alloc(pool, &offset, size, gfp & ~__GFP_HIGHMEM);
-> +	page = netmem_to_page(
-> +		page_pool_alloc(pool, &offset, size, gfp & ~__GFP_HIGHMEM));
->  	if (unlikely(!page))
-> -		return NULL;
-> +		return 0;
+    some-shell-script.sh
 
-Hi Mina,
+    #!/bin/bash
 
-This doesn't seem right, as the return type is a pointer rather than an
-integer.
+    (while true; do ls; done) &
 
-Flagged by Sparse.
+    for i in $seq (1 20); do
+       <long running job>
+    done
 
->  
->  	return page_address(page) + offset;
->  }
+2. The issue initially appears as follows: Vector store instruction,
+before starting to run invalidates it's own context (page fault ->
+preemption -> handle-signal -> sigreturn -> VILL / V-clobber), so when
+it eventually runs, it takes an illegal instruction exception, taking
+down the entire program.
+
+Thx,
+-Vineet
+   
 
