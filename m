@@ -1,71 +1,71 @@
-Return-Path: <linux-kernel+bounces-129903-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-129904-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id E85498971DD
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 16:02:32 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3523B8971E0
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 16:02:45 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1611F1C2705C
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 14:02:32 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A0BA51F28F38
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 14:02:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 87A4D14900B;
-	Wed,  3 Apr 2024 14:01:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0F4A9148FFC;
+	Wed,  3 Apr 2024 14:01:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bitbyteword.org header.i=@bitbyteword.org header.b="GnE3S7hQ"
-Received: from mail-qv1-f50.google.com (mail-qv1-f50.google.com [209.85.219.50])
+	dkim=pass (2048-bit key) header.d=bitbyteword.org header.i=@bitbyteword.org header.b="WMp4O7B5"
+Received: from mail-ot1-f43.google.com (mail-ot1-f43.google.com [209.85.210.43])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BDD0A148FFA
-	for <linux-kernel@vger.kernel.org>; Wed,  3 Apr 2024 14:01:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6A9A0149016
+	for <linux-kernel@vger.kernel.org>; Wed,  3 Apr 2024 14:01:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712152899; cv=none; b=fmcyS0RGlgXSx51qMTPkb3fFumGmvF1892bQibCA4uS2TeYhDXMC15lQMpCy3dWJiVr6PI3pBIhDvhka6XteIk+eRb57ZaWN2A3lVIRxTsD7b087pKXwwN78ZBvAZD6XnYn/o4fdo0SaRkTFXILjvQKjKQr22RzUSk3FZY31zps=
+	t=1712152901; cv=none; b=YbRuhW4ZyUS6ARBu8mEgNCGiRSlp5wYwIhnuF9g1UfxOMiJGyR65Y4h/Gas07FEZ0j3wpW9Nx4zLIGQ1CsVEMIn95jTl6qLNJCnc8bNqYw8ai/Qsk6rfE/IzxiAVi5eIJmnu0IY9p3RUuHLq88+ks1ZbJnSNmcJx2tK7ur76ARw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712152899; c=relaxed/simple;
-	bh=FDYnvGX3jppgjt0ms5JcBF+Jc7zw8R2BAEn2b+ABJPI=;
+	s=arc-20240116; t=1712152901; c=relaxed/simple;
+	bh=OKezwxiOEiM9+urpB8402BC4SYCwdxDMf8Df/ISZUg0=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=a5e3GzDCMt/d6TtZlqzFFDo85txyVJO6Lk4b0FJk9XzMmzoxO01ksmHDsHDU7DeBLeOLjxUE/4SnZxMluxn2cU2zp7ncyg+a+1Gk5JSe06Bn/IYlV3/MAoFdj6ooznTlwqACuhRNWldN2tq/bwTzDbVUf5TDHC1XZwYn3WtVmjU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bitbyteword.org; spf=pass smtp.mailfrom=bitbyteword.org; dkim=pass (2048-bit key) header.d=bitbyteword.org header.i=@bitbyteword.org header.b=GnE3S7hQ; arc=none smtp.client-ip=209.85.219.50
+	 MIME-Version; b=NASeRn74gMlerpSlJ0gu9FcyuNZ2rYANCjBLP1l+LAqtuCFQgF3+g5K2EETeNY0DhIoLyUl0zw02SZS+cGWiwwFgmFjNM49rpJX1JFxVXYBUonrnRriNqQKZgrAJdukeC6AK9Moh02tmdDE+gK104ECEx9ViDQaK39Yix4wpIV8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bitbyteword.org; spf=pass smtp.mailfrom=bitbyteword.org; dkim=pass (2048-bit key) header.d=bitbyteword.org header.i=@bitbyteword.org header.b=WMp4O7B5; arc=none smtp.client-ip=209.85.210.43
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bitbyteword.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bitbyteword.org
-Received: by mail-qv1-f50.google.com with SMTP id 6a1803df08f44-6991fb8f31dso8922116d6.1
-        for <linux-kernel@vger.kernel.org>; Wed, 03 Apr 2024 07:01:37 -0700 (PDT)
+Received: by mail-ot1-f43.google.com with SMTP id 46e09a7af769-6e89c87a72eso2387023a34.0
+        for <linux-kernel@vger.kernel.org>; Wed, 03 Apr 2024 07:01:39 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bitbyteword.org; s=google; t=1712152896; x=1712757696; darn=vger.kernel.org;
+        d=bitbyteword.org; s=google; t=1712152898; x=1712757698; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=RAl5yGyZgzeKDHOgPfwgCPdv3gtVirZpx2WY36IzrFA=;
-        b=GnE3S7hQtlBzz5FDFR9gGbJi5gW9SwyzYiv5Lg6Q1W42Y+3WljBLh8H/viIHOSpZ5l
-         mDtivDKn/qfjy5Nfes5lqHs8B6ZSdovK1C7WqAOxe9PWOUhtdDmaN60MohYRrYZKqovC
-         xMurIZIP5Hx0a3gi1yIJbQaOCkHha8SO7T1UXR/e50/xKFS0aFnjhDQKezyWPyE6+pJR
-         cAwFj/QTrvFtCz34A5TfhcSpUZzQrZAWvviCr4vkw2Lf+tvu0ncbu3Kyowm+B59NCBKq
-         FrUcar++MI6oumNg1ElnfIBMhGQbZPXDKKb8yyPezo5zk/4KTBRQd3iBdSxqneOeUGul
-         I3Sg==
+        bh=7VOPM+Isn3puOfkfBMYmv3GVLrqplGzQJegeaxwHn/Q=;
+        b=WMp4O7B5HDNF80hOnwY5oOBZPer+2V1WRXTDTQT+cwY/5Cp1SOsxpk21d9uLih02gC
+         i3HfmYuFYntSuHtC6fOXuoghrDCsR/ezPt2osU/0qs0+CrLfVRKFBQaFcC2ubd3Cv0j0
+         OTAk+xd8LkK+LnurhzJ9SHITRLBcizvh+kpaaEEDYFSP5+KmFWikp7rBE+xXCFFJHzq5
+         YNL1dfIr5zpiO3vMAjMka2haB7oOhSztdMHPW51sLHhEcXe2yPb1gOEV494VBQ7k5oTM
+         BeR+WgPLfBFEdcsw0oKznFwshw8vIPxXpG3etMx1YOvEU4wB84e9Q+VpV9aFtgiuwXSS
+         /iSg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712152896; x=1712757696;
+        d=1e100.net; s=20230601; t=1712152898; x=1712757698;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=RAl5yGyZgzeKDHOgPfwgCPdv3gtVirZpx2WY36IzrFA=;
-        b=MN3V//43/NHxXo1BCxbI65iL7Lwf0DprvkBBf6V5U9n96GJcWD0SMGus/GBuoyp/yB
-         F4jqXnYfqgZZdblzVaOyDtP48aT9kK1rdr0LUGRyGtq3SsuwCkSL0XwbN8PU8tPmuFDk
-         ehh9lLQQcaXEfQgEmZvgBKKpllX0AY7l757m/Xdh4i3dd2ZPYnA7zg33zdfJWNEHT19F
-         PFLvaTKp1U+prYAU56igdUJ+pBUvvCZAYGzArlH2s2llYeZ+lCi0fAjVdnMe9BL6IoSm
-         fQJLFdpKlB0XEtYgTr8n38udCT5WbWzyG+zDvBR7e2JP5GhuKCtZZldHOwKi71cpgbwL
-         xrcQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXzPe5SAfA2arHHgedqaJKaSlFTp/W94fCb9BDNjUcuO4P6shQwmlwVWnGtuRAd6Q49b9mlORzOcEBih5Z5OhrDeWfMpk90x6rTEB78
-X-Gm-Message-State: AOJu0Yy3+V0rGCh4/mPhzGAxKjZvp9XU5ocWoIpXq10ngObshAIsiPdC
-	eXGcHnPS/OY6wRibXaO11Vw0kxeNFi6yVGwbRDdT8UlTY01+9yJMOZj8JzMzeIE=
-X-Google-Smtp-Source: AGHT+IHvc+Z8rAGYdV18GoHSVhAuEJhixIxtB7Sprh49Rl10nkC3+gtuPFpYpMsM5sh5ZkIdR/76QA==
-X-Received: by 2002:a0c:ed4e:0:b0:699:1b6b:82ae with SMTP id v14-20020a0ced4e000000b006991b6b82aemr4264059qvq.17.1712152896489;
-        Wed, 03 Apr 2024 07:01:36 -0700 (PDT)
+        bh=7VOPM+Isn3puOfkfBMYmv3GVLrqplGzQJegeaxwHn/Q=;
+        b=HBRO/flMpJlxZ76AQ/m56/CWVRpSb56QGgp1oLbneztg3azjDfolS0ZJqKk22uziqT
+         p8DWoI2A6xYEaEjMqhc0UVwzK6exAIOzF1Ncr88yDmutxNvhrHIpdlVIqWSouP0APk9q
+         X5NSwYOonsEmxUBDeylBE3D1FbD1L9h6n1eBFeXMWxmIij1Q7flosn2w0OmitaLQIIcr
+         zuYDDrDOhrIzJUpBKesnyA1GDJvWxNctixDJRntUFyZjqKP9OCaQ98nLVJR64Ubxc42z
+         2WrPLZISAqtW8hXQKpkuUWSD3Vq2T8HDOYe4XRKqBlb7E+49mxzu5DpoKNGnDv5KcrXc
+         fiBA==
+X-Forwarded-Encrypted: i=1; AJvYcCXqzmX6CBDKjL1T3GRr1qegIzKF/lVraYbL8bJc69xR+CfKPmH4m38MvGvvW8i4W9RFz9BjxZu2sFEtYRbCaZAIsS+leJzE1lbf5vzx
+X-Gm-Message-State: AOJu0YzXou74LeAoUPEasZ/JeEo1KU8GOa2ryvlTrYCs3wMaQ6y/YFMW
+	gmi8jb7axOiX+SkChLtfexs/NjbkxX0g1mjSQJuPvmNruPkV0BUEuFzLGwkylMw=
+X-Google-Smtp-Source: AGHT+IFVHhEadwy+vYVbpR80h1N15BwjLDnooutKSgc1bq6Ce0yAUhvCgcTFJsTJXfmfWJbdINes4g==
+X-Received: by 2002:a05:6830:a44:b0:6e6:d1ac:c989 with SMTP id g4-20020a0568300a4400b006e6d1acc989mr15963532otu.6.1712152898445;
+        Wed, 03 Apr 2024 07:01:38 -0700 (PDT)
 Received: from vinbuntup3.lan (c-73-143-21-186.hsd1.vt.comcast.net. [73.143.21.186])
-        by smtp.gmail.com with ESMTPSA id gf12-20020a056214250c00b00698d06df322sm5945706qvb.122.2024.04.03.07.01.25
+        by smtp.gmail.com with ESMTPSA id gf12-20020a056214250c00b00698d06df322sm5945706qvb.122.2024.04.03.07.01.36
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 03 Apr 2024 07:01:26 -0700 (PDT)
+        Wed, 03 Apr 2024 07:01:38 -0700 (PDT)
 From: "Vineeth Pillai (Google)" <vineeth@bitbyteword.org>
 To: Ben Segall <bsegall@google.com>,
 	Borislav Petkov <bp@alien8.de>,
@@ -94,9 +94,9 @@ Cc: "Vineeth Pillai (Google)" <vineeth@bitbyteword.org>,
 	kvm@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
 	x86@kernel.org
-Subject: [RFC PATCH v2 3/5] kvm: interface for managing pvsched driver for guest VMs
-Date: Wed,  3 Apr 2024 10:01:14 -0400
-Message-Id: <20240403140116.3002809-4-vineeth@bitbyteword.org>
+Subject: [RFC PATCH v2 4/5] pvsched: bpf support for pvsched
+Date: Wed,  3 Apr 2024 10:01:15 -0400
+Message-Id: <20240403140116.3002809-5-vineeth@bitbyteword.org>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20240403140116.3002809-1-vineeth@bitbyteword.org>
 References: <20240403140116.3002809-1-vineeth@bitbyteword.org>
@@ -108,179 +108,189 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Implement ioctl for assigning and unassigning pvsched driver for a
-guest. VMMs would need to adopt this ioctls for supporting the feature.
-Also add a temporary debugfs interface for managing this.
+Add support for implementing bpf pvsched drivers. bpf programs can use
+the struct_ops to define the callbacks of pvsched drivers.
 
-Ideally, the hypervisor would be able to determine the pvsched driver
-based on the information received from the guest. Guest VMs with the
-feature enabled would request hypervisor to select a pvsched driver.
-ioctl api is an override mechanism to give more control to the admin.
+This is only a skeleton of the bpf framework for pvsched. Some
+verification details are not implemented yet.
 
 Signed-off-by: Vineeth Pillai (Google) <vineeth@bitbyteword.org>
 Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
 ---
- include/uapi/linux/kvm.h |   6 ++
- virt/kvm/kvm_main.c      | 117 +++++++++++++++++++++++++++++++++++++++
- 2 files changed, 123 insertions(+)
+ kernel/bpf/bpf_struct_ops_types.h |   4 +
+ virt/pvsched/Makefile             |   2 +-
+ virt/pvsched/pvsched_bpf.c        | 141 ++++++++++++++++++++++++++++++
+ 3 files changed, 146 insertions(+), 1 deletion(-)
+ create mode 100644 virt/pvsched/pvsched_bpf.c
 
-diff --git a/include/uapi/linux/kvm.h b/include/uapi/linux/kvm.h
-index c3308536482b..4b29bdad4188 100644
---- a/include/uapi/linux/kvm.h
-+++ b/include/uapi/linux/kvm.h
-@@ -2227,4 +2227,10 @@ struct kvm_create_guest_memfd {
- 	__u64 reserved[6];
- };
+diff --git a/kernel/bpf/bpf_struct_ops_types.h b/kernel/bpf/bpf_struct_ops_types.h
+index 5678a9ddf817..9d5e4d1a331a 100644
+--- a/kernel/bpf/bpf_struct_ops_types.h
++++ b/kernel/bpf/bpf_struct_ops_types.h
+@@ -9,4 +9,8 @@ BPF_STRUCT_OPS_TYPE(bpf_dummy_ops)
+ #include <net/tcp.h>
+ BPF_STRUCT_OPS_TYPE(tcp_congestion_ops)
+ #endif
++#ifdef CONFIG_PARAVIRT_SCHED_HOST
++#include <linux/pvsched.h>
++BPF_STRUCT_OPS_TYPE(pvsched_vcpu_ops)
++#endif
+ #endif
+diff --git a/virt/pvsched/Makefile b/virt/pvsched/Makefile
+index 4ca38e30479b..02bc072cd806 100644
+--- a/virt/pvsched/Makefile
++++ b/virt/pvsched/Makefile
+@@ -1,2 +1,2 @@
  
-+struct kvm_pvsched_ops {
-+	__u8 ops_name[32]; /* PVSCHED_NAME_MAX */
+-obj-$(CONFIG_PARAVIRT_SCHED_HOST) += pvsched.o
++obj-$(CONFIG_PARAVIRT_SCHED_HOST) += pvsched.o pvsched_bpf.o
+diff --git a/virt/pvsched/pvsched_bpf.c b/virt/pvsched/pvsched_bpf.c
+new file mode 100644
+index 000000000000..b125089abc3b
+--- /dev/null
++++ b/virt/pvsched/pvsched_bpf.c
+@@ -0,0 +1,141 @@
++// SPDX-License-Identifier: GPL-2.0
++/* Copyright (c) 2024 Google  */
++
++#include <linux/types.h>
++#include <linux/bpf_verifier.h>
++#include <linux/bpf.h>
++#include <linux/btf.h>
++#include <linux/filter.h>
++#include <linux/pvsched.h>
++
++
++/* "extern" is to avoid sparse warning.  It is only used in bpf_struct_ops.c. */
++extern struct bpf_struct_ops bpf_pvsched_vcpu_ops;
++
++static int bpf_pvsched_vcpu_init(struct btf *btf)
++{
++	return 0;
++}
++
++static bool bpf_pvsched_vcpu_is_valid_access(int off, int size,
++				       enum bpf_access_type type,
++				       const struct bpf_prog *prog,
++				       struct bpf_insn_access_aux *info)
++{
++	if (off < 0 || off >= sizeof(__u64) * MAX_BPF_FUNC_ARGS)
++		return false;
++	if (type != BPF_READ)
++		return false;
++	if (off % size != 0)
++		return false;
++
++	if (!btf_ctx_access(off, size, type, prog, info))
++		return false;
++
++	return true;
++}
++
++static int bpf_pvsched_vcpu_btf_struct_access(struct bpf_verifier_log *log,
++					const struct bpf_reg_state *reg,
++					int off, int size)
++{
++	/*
++	 * TODO: Enable write access to Guest shared mem.
++	 */
++	return -EACCES;
++}
++
++static const struct bpf_func_proto *
++bpf_pvsched_vcpu_get_func_proto(enum bpf_func_id func_id, const struct bpf_prog *prog)
++{
++	return bpf_base_func_proto(func_id);
++}
++
++static const struct bpf_verifier_ops bpf_pvsched_vcpu_verifier_ops = {
++	.get_func_proto		= bpf_pvsched_vcpu_get_func_proto,
++	.is_valid_access	= bpf_pvsched_vcpu_is_valid_access,
++	.btf_struct_access	= bpf_pvsched_vcpu_btf_struct_access,
 +};
 +
-+#define KVM_GET_PVSCHED_OPS		_IOR(KVMIO, 0xe4, struct kvm_pvsched_ops)
-+#define KVM_REPLACE_PVSCHED_OPS		_IOWR(KVMIO, 0xe5, struct kvm_pvsched_ops)
- #endif /* __LINUX_KVM_H */
-diff --git a/virt/kvm/kvm_main.c b/virt/kvm/kvm_main.c
-index 0546814e4db7..b3d9c362d2e3 100644
---- a/virt/kvm/kvm_main.c
-+++ b/virt/kvm/kvm_main.c
-@@ -1223,6 +1223,79 @@ static void kvm_destroy_vm_debugfs(struct kvm *kvm)
- 	}
- }
- 
-+#ifdef CONFIG_PARAVIRT_SCHED_KVM
-+static int pvsched_vcpu_ops_show(struct seq_file *m, void *data)
++static int bpf_pvsched_vcpu_init_member(const struct btf_type *t,
++				  const struct btf_member *member,
++				  void *kdata, const void *udata)
 +{
-+	char ops_name[PVSCHED_NAME_MAX];
-+	struct pvsched_vcpu_ops *ops;
-+	struct kvm *kvm = (struct kvm *) m->private;
++	const struct pvsched_vcpu_ops *uvm_ops;
++	struct pvsched_vcpu_ops *vm_ops;
++	u32 moff;
 +
-+	rcu_read_lock();
-+	ops = rcu_dereference(kvm->pvsched_ops);
-+	if (ops)
-+		strncpy(ops_name, ops->name, PVSCHED_NAME_MAX);
-+	rcu_read_unlock();
++	uvm_ops = (const struct pvsched_vcpu_ops *)udata;
++	vm_ops = (struct pvsched_vcpu_ops *)kdata;
 +
-+	seq_printf(m, "%s\n", ops_name);
++	moff = __btf_member_bit_offset(t, member) / 8;
++	switch (moff) {
++	case offsetof(struct pvsched_vcpu_ops, events):
++		vm_ops->events = *(u32 *)(udata + moff);
++		return 1;
++	case offsetof(struct pvsched_vcpu_ops, name):
++		if (bpf_obj_name_cpy(vm_ops->name, uvm_ops->name,
++					sizeof(vm_ops->name)) <= 0)
++			return -EINVAL;
++		return 1;
++	}
 +
 +	return 0;
 +}
 +
-+static ssize_t
-+pvsched_vcpu_ops_write(struct file *filp, const char __user *ubuf,
-+		size_t cnt, loff_t *ppos)
++static int bpf_pvsched_vcpu_check_member(const struct btf_type *t,
++				   const struct btf_member *member,
++				   const struct bpf_prog *prog)
 +{
-+	int ret;
-+	char *cmp;
-+	char buf[PVSCHED_NAME_MAX];
-+	struct inode *inode;
-+	struct kvm *kvm;
-+
-+	if (cnt > PVSCHED_NAME_MAX)
-+		return -EINVAL;
-+
-+	if (copy_from_user(&buf, ubuf, cnt))
-+		return -EFAULT;
-+
-+	cmp = strstrip(buf);
-+
-+	inode = file_inode(filp);
-+	inode_lock(inode);
-+	kvm = (struct kvm *)inode->i_private;
-+	ret = kvm_replace_pvsched_ops(kvm, cmp);
-+	inode_unlock(inode);
-+
-+	if (ret)
-+		return ret;
-+
-+	*ppos += cnt;
-+	return cnt;
++	return 0;
 +}
 +
-+static int pvsched_vcpu_ops_open(struct inode *inode, struct file *filp)
++static int bpf_pvsched_vcpu_reg(void *kdata)
 +{
-+	return single_open(filp, pvsched_vcpu_ops_show, inode->i_private);
++	return pvsched_register_vcpu_ops((struct pvsched_vcpu_ops *)kdata);
 +}
 +
-+static const struct file_operations pvsched_vcpu_ops_fops = {
-+	.open		= pvsched_vcpu_ops_open,
-+	.write		= pvsched_vcpu_ops_write,
-+	.read		= seq_read,
-+	.llseek		= seq_lseek,
-+	.release	= single_release,
++static void bpf_pvsched_vcpu_unreg(void *kdata)
++{
++	pvsched_unregister_vcpu_ops((struct pvsched_vcpu_ops *)kdata);
++}
++
++static int bpf_pvsched_vcpu_validate(void *kdata)
++{
++	return pvsched_validate_vcpu_ops((struct pvsched_vcpu_ops *)kdata);
++}
++
++static int bpf_pvsched_vcpu_update(void *kdata, void *old_kdata)
++{
++	return -EOPNOTSUPP;
++}
++
++static int __pvsched_vcpu_register(struct pid *pid)
++{
++	return 0;
++}
++static void __pvsched_vcpu_unregister(struct pid *pid)
++{
++}
++static void __pvsched_notify_event(void *addr, struct pid *pid, u32 event)
++{
++}
++
++static struct pvsched_vcpu_ops __bpf_ops_pvsched_vcpu_ops = {
++	.pvsched_vcpu_register = __pvsched_vcpu_register,
++	.pvsched_vcpu_unregister = __pvsched_vcpu_unregister,
++	.pvsched_vcpu_notify_event = __pvsched_notify_event,
 +};
 +
-+static void kvm_create_vm_pvsched_debugfs(struct kvm *kvm)
-+{
-+	debugfs_create_file("pvsched_vcpu_ops", 0644, kvm->debugfs_dentry, kvm,
-+			    &pvsched_vcpu_ops_fops);
-+}
-+#else
-+static void kvm_create_vm_pvsched_debugfs(struct kvm *kvm)
-+{
-+}
-+#endif
-+
- static int kvm_create_vm_debugfs(struct kvm *kvm, const char *fdname)
- {
- 	static DEFINE_MUTEX(kvm_debugfs_lock);
-@@ -1288,6 +1361,8 @@ static int kvm_create_vm_debugfs(struct kvm *kvm, const char *fdname)
- 				    &stat_fops_per_vm);
- 	}
- 
-+	kvm_create_vm_pvsched_debugfs(kvm);
-+
- 	ret = kvm_arch_create_vm_debugfs(kvm);
- 	if (ret)
- 		goto out_err;
-@@ -5474,6 +5549,48 @@ static long kvm_vm_ioctl(struct file *filp,
- 		r = kvm_gmem_create(kvm, &guest_memfd);
- 		break;
- 	}
-+#endif
-+#ifdef CONFIG_PARAVIRT_SCHED_KVM
-+	case KVM_REPLACE_PVSCHED_OPS:
-+		struct pvsched_vcpu_ops *ops;
-+		struct kvm_pvsched_ops in_ops, out_ops;
-+
-+		r = -EFAULT;
-+		if (copy_from_user(&in_ops, argp, sizeof(in_ops)))
-+			goto out;
-+
-+		out_ops.ops_name[0] = 0;
-+
-+		rcu_read_lock();
-+		ops = rcu_dereference(kvm->pvsched_ops);
-+		if (ops)
-+			strncpy(out_ops.ops_name, ops->name, PVSCHED_NAME_MAX);
-+		rcu_read_unlock();
-+
-+		r = kvm_replace_pvsched_ops(kvm, (char *)in_ops.ops_name);
-+		if (r)
-+			goto out;
-+
-+		r = -EFAULT;
-+		if (copy_to_user(argp, &out_ops, sizeof(out_ops)))
-+			goto out;
-+
-+		r = 0;
-+		break;
-+	case KVM_GET_PVSCHED_OPS:
-+		out_ops.ops_name[0] = 0;
-+		rcu_read_lock();
-+		ops = rcu_dereference(kvm->pvsched_ops);
-+		if (ops)
-+			strncpy(out_ops.ops_name, ops->name, PVSCHED_NAME_MAX);
-+		rcu_read_unlock();
-+
-+		r = -EFAULT;
-+		if (copy_to_user(argp, &out_ops, sizeof(out_ops)))
-+			goto out;
-+
-+		r = 0;
-+		break;
- #endif
- 	default:
- 		r = kvm_arch_vm_ioctl(filp, ioctl, arg);
++struct bpf_struct_ops bpf_pvsched_vcpu_ops = {
++	.init = &bpf_pvsched_vcpu_init,
++	.validate = bpf_pvsched_vcpu_validate,
++	.update = bpf_pvsched_vcpu_update,
++	.verifier_ops = &bpf_pvsched_vcpu_verifier_ops,
++	.reg = bpf_pvsched_vcpu_reg,
++	.unreg = bpf_pvsched_vcpu_unreg,
++	.check_member = bpf_pvsched_vcpu_check_member,
++	.init_member = bpf_pvsched_vcpu_init_member,
++	.name = "pvsched_vcpu_ops",
++	.cfi_stubs = &__bpf_ops_pvsched_vcpu_ops,
++};
 -- 
 2.40.1
 
