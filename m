@@ -1,58 +1,59 @@
-Return-Path: <linux-kernel+bounces-130334-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-130335-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 142D18976E7
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 19:35:48 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 926068976EA
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 19:36:06 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C103D296039
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 17:35:46 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 223B8296392
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 17:36:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AE6DF161315;
-	Wed,  3 Apr 2024 17:19:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 257DB161336;
+	Wed,  3 Apr 2024 17:19:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="N4tfyX95"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="OYjvBBC0"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E904C16089C;
-	Wed,  3 Apr 2024 17:19:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6552B161324;
+	Wed,  3 Apr 2024 17:19:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712164770; cv=none; b=sVscr/rB1ENgdeMLxgaCJ46q3Uu53tNOkqDrrPBOQ4Aak+e25wk3BputD08gg3bWywfZdcLVFZ6nBne/lHfTVmQtqEoelRh2uq6QSACj/ziUaKW63r4kNRwDK84evygLsrLSn3iF6EE2dk3ZPDE6Oiyol3rL0vdZncnK4HbLT2Q=
+	t=1712164772; cv=none; b=A2/6fQQ8CvFGB1+o/8jzIoSDALkJ1fX9tM5Y3ujFLWc1xpSEkeM2jTOW/CxggMkZLMaFoQDhsUcjMxrRZ0mplA0aW1cIo2n0vcFbTM2gLv4JkoekLfYyoFFiEFdD7RLMW6ghr51SRN4dpBlEXCfoZ0RFIZOzJnAIe/lcJipXubs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712164770; c=relaxed/simple;
-	bh=+molO8qQbX4QeS0LNGvlr/5BUWpD3H1OZtd27L7winI=;
+	s=arc-20240116; t=1712164772; c=relaxed/simple;
+	bh=1s7e/iUP+fl2GBm1UpjFeevJLSutEOfjvsGAu3dHY6k=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=tN3jsZlAu7uUSs7ymi259pheYAlSmjVzzsgszu+2PsAYSNMcOcCYaGO8+d17oXoVbBvwodzKeeRPYoKcAtFhAm5mDZ27lXgPI04zBzd3Kb8inZDxWrm2exV7yZ+7wQnhsYVzGZwuf7ke3ikDXmd3xgcDOwsGKNIR9h9qd0d8NpM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=N4tfyX95; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 74BCAC43601;
-	Wed,  3 Apr 2024 17:19:28 +0000 (UTC)
+	 MIME-Version; b=ZqRFOToRJzu+++SRbdEyxtqENn85MiUUTuSRb0/tqXGL/aar9kMTxsAut3X8dRFd+nI3LcQ5xkckUfOv5J9DzBNde/ySxwaGu6c3VYa8OKKLfmn0HHpTYmd0OQM1YER4nmbf6LFvH5/Y5NItnAlLpHGLKMZUtuWTZYZA9RJzFoY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=OYjvBBC0; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D2ADCC433A6;
+	Wed,  3 Apr 2024 17:19:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712164769;
-	bh=+molO8qQbX4QeS0LNGvlr/5BUWpD3H1OZtd27L7winI=;
+	s=k20201202; t=1712164770;
+	bh=1s7e/iUP+fl2GBm1UpjFeevJLSutEOfjvsGAu3dHY6k=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=N4tfyX9523InZf76ZS28KGIE7ScybkYQvu3ioScsFkk+7C+11r+xPxbqFlufi9C8a
-	 3hrdIHCVlWbV1XtT3jRFFKcYjSE0ra6GSOEpKBUXAUuOEgHjH/JmmiirGJf0rxtvke
-	 PUd1cl3nzxUGDaLZDflBU96Rm3wdAvJG3Yor2UYfpwQkD7T3oi4VHK/1OK/g3Gcwto
-	 4NiVK3jEvogR0n7DSuB20kPJbEnI/HxQKtF6+6xrx9ZiSI1+ufTW/kPVGh0LSqSHCn
-	 w0mWhD7veOmpaQZVnCBc1MB5coaO86sngLunZ8p5eBtHzOMkIxrih4UOB9VLbZQjpa
-	 IC2UroOmmP+gA==
+	b=OYjvBBC0T8viwe7HErrdbrggZYno+SZBClskogs/PVY8+MOhiQH8fYkRKHxy+tdC8
+	 OkMzZcizBy900siNb+KyZFZ3nDYpkBwNGgH/4g6ZazxfV9L0+XVtNkofYvSWRes6So
+	 Tu3cWsafPyhlr/ECVTb/fRuPpJqdsDEaDlXA6hFHnTPrLBTQ/uv4tyKkPV4BqY4Rf2
+	 CjnYmkwGXN/niAbo+h8pxE5IG8VjNgmeEkPxv+de0v+F98lgqFJODUU8bs7lZXm+Tp
+	 K0le17efAetLz3U1n1xNgq7rK5tFGoE8+KZwZASHrg8ynjFOVZHTzKshbfhumcoUd0
+	 nECzg81XrJRgA==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Konrad Dybcio <konrad.dybcio@linaro.org>,
-	Bjorn Andersson <andersson@kernel.org>,
-	Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-	Daniel Lezcano <daniel.lezcano@linaro.org>,
+Cc: Chancel Liu <chancel.liu@nxp.com>,
+	Zhipeng Wang <zhipeng.wang_1@nxp.com>,
+	Mark Brown <broonie@kernel.org>,
 	Sasha Levin <sashal@kernel.org>,
-	rafael@kernel.org,
-	linux-pm@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.1 09/15] thermal/of: Assume polling-delay(-passive) 0 when absent
-Date: Wed,  3 Apr 2024 13:18:53 -0400
-Message-ID: <20240403171909.345570-9-sashal@kernel.org>
+	lgirdwood@gmail.com,
+	perex@perex.cz,
+	tiwai@suse.com,
+	linux-sound@vger.kernel.org
+Subject: [PATCH AUTOSEL 6.1 10/15] ASoC: soc-core.c: Skip dummy codec when adding platforms
+Date: Wed,  3 Apr 2024 13:18:54 -0400
+Message-ID: <20240403171909.345570-10-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240403171909.345570-1-sashal@kernel.org>
 References: <20240403171909.345570-1-sashal@kernel.org>
@@ -67,54 +68,40 @@ X-Patchwork-Hint: Ignore
 X-stable-base: Linux 6.1.84
 Content-Transfer-Encoding: 8bit
 
-From: Konrad Dybcio <konrad.dybcio@linaro.org>
+From: Chancel Liu <chancel.liu@nxp.com>
 
-[ Upstream commit 488164006a281986d95abbc4b26e340c19c4c85b ]
+[ Upstream commit 23fb6bc2696119391ec3a92ccaffe50e567c515e ]
 
-Currently, thermal zones associated with providers that have interrupts
-for signaling hot/critical trips are required to set a polling-delay
-of 0 to indicate no polling. This feels a bit backwards.
+When pcm_runtime is adding platform components it will scan all
+registered components. In case of DPCM FE/BE some DAI links will
+configure dummy platform. However both dummy codec and dummy platform
+are using "snd-soc-dummy" as component->name. Dummy codec should be
+skipped when adding platforms otherwise there'll be overflow and UBSAN
+complains.
 
-Change the code such that "no polling delay" also means "no polling".
-
-Suggested-by: Bjorn Andersson <andersson@kernel.org>
-Signed-off-by: Konrad Dybcio <konrad.dybcio@linaro.org>
-Reviewed-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Reviewed-by: Bjorn Andersson <andersson@kernel.org>
-Signed-off-by: Daniel Lezcano <daniel.lezcano@linaro.org>
-Link: https://lore.kernel.org/r/20240125-topic-thermal-v1-2-3c9d4dced138@linaro.org
+Reported-by: Zhipeng Wang <zhipeng.wang_1@nxp.com>
+Signed-off-by: Chancel Liu <chancel.liu@nxp.com>
+Link: https://msgid.link/r/20240305065606.3778642-1-chancel.liu@nxp.com
+Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/thermal/thermal_of.c | 12 ++++++++----
- 1 file changed, 8 insertions(+), 4 deletions(-)
+ sound/soc/soc-core.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/drivers/thermal/thermal_of.c b/drivers/thermal/thermal_of.c
-index 4104743dbc17e..202dce0d2e309 100644
---- a/drivers/thermal/thermal_of.c
-+++ b/drivers/thermal/thermal_of.c
-@@ -337,14 +337,18 @@ static int thermal_of_monitor_init(struct device_node *np, int *delay, int *pdel
- 	int ret;
+diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
+index a409fbed8f34c..6a4101dc15a54 100644
+--- a/sound/soc/soc-core.c
++++ b/sound/soc/soc-core.c
+@@ -1020,6 +1020,9 @@ int snd_soc_add_pcm_runtime(struct snd_soc_card *card,
+ 			if (!snd_soc_is_matching_component(platform, component))
+ 				continue;
  
- 	ret = of_property_read_u32(np, "polling-delay-passive", pdelay);
--	if (ret < 0) {
--		pr_err("%pOFn: missing polling-delay-passive property\n", np);
-+	if (ret == -EINVAL) {
-+		*pdelay = 0;
-+	} else if (ret < 0) {
-+		pr_err("%pOFn: Couldn't get polling-delay-passive: %d\n", np, ret);
- 		return ret;
++			if (snd_soc_component_is_dummy(component) && component->num_dai)
++				continue;
++
+ 			snd_soc_rtd_add_component(rtd, component);
+ 		}
  	}
- 
- 	ret = of_property_read_u32(np, "polling-delay", delay);
--	if (ret < 0) {
--		pr_err("%pOFn: missing polling-delay property\n", np);
-+	if (ret == -EINVAL) {
-+		*delay = 0;
-+	} else if (ret < 0) {
-+		pr_err("%pOFn: Couldn't get polling-delay: %d\n", np, ret);
- 		return ret;
- 	}
- 
 -- 
 2.43.0
 
