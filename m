@@ -1,81 +1,68 @@
-Return-Path: <linux-kernel+bounces-130618-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-130619-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 69534897A96
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 23:22:30 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 48946897A9D
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 23:24:49 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8C3341C23C05
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 21:22:29 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0387528583B
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 21:24:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A9269156877;
-	Wed,  3 Apr 2024 21:22:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CD82A156679;
+	Wed,  3 Apr 2024 21:24:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="UxhnYUUB"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="YctJEJAR"
+Received: from fllv0016.ext.ti.com (fllv0016.ext.ti.com [198.47.19.142])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4BF5115696E
-	for <linux-kernel@vger.kernel.org>; Wed,  3 Apr 2024 21:21:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4DF082C683;
+	Wed,  3 Apr 2024 21:24:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.19.142
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712179320; cv=none; b=nXTe8PL3gBUpJKSsf9EOHjn/8Yb/pc00CGZGKxlbhpo6QKdgCZEAxMYJAnxkC1+Dn1ll3/2zqTEGfRWvHk7zBwoN5c7eYy+nE0Unc2WPtdwavJ1Q70vJj44BWRMNvW9JBMm3/zzdYGuI7h722Y1nIo9LJq50PzX0UxcCx8a1cIw=
+	t=1712179483; cv=none; b=UPq6S231GHVd27CQLLdEiibB6kI9J6QGtHXBvIxAhCyY4I9o2FZotKRJ3J2nzd+Hk/J3ugrr7dYKI5lcLXZo++1L71Bwc3b4Tyz2sXmZabIBqNgYaw5hOZpi9qM1mvPImldDKlj8d6CPe5Z6k3IJnXPhIjoaaI+K2Mixk7mM370=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712179320; c=relaxed/simple;
-	bh=gJB6PnOnH9pEcRZfFJUFoATzU7tNBKNy6P4IKxxIrRU=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=bL8YeK6DFjfXB+CMtUGkaXdhAXtSWYDaHVyDB8esKMa3R3+ARoSyZoQJGsnzlSStCs440YymQ4UpodrnrOacx6ZVgskK6I5Vsm1VEFXA7ffSIND9shJgbO1Ftb15dsI0X6F6Eypio4tXhd9PzIZ3vO1+g2eVFJYd7qfnnnNFpkM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=UxhnYUUB; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1712179318;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=efLT3sOcQF/h2hQN5fWNO1q+LEWoeOZtTC+KwC/NbJA=;
-	b=UxhnYUUB3nhYK69Su6li4P29O+VUwiieH7AwhHPNglPZ1vjRjIaVWTzdwToV7WSvuDNzi8
-	oiJr/Ul8CQUFZMeN4dlWpF4Twzj0sFRCYV9dOMOJKHGApi6XqFqsZbkr4rl9/PWtpKljLY
-	3Fnc54AO7SeZPzhxU7+N+/bn4LvFHP8=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-662-lsbBclVqNHi4N3-nmhzPHA-1; Wed, 03 Apr 2024 17:21:54 -0400
-X-MC-Unique: lsbBclVqNHi4N3-nmhzPHA-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.rdu2.redhat.com [10.11.54.3])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id E3D73101A535;
-	Wed,  3 Apr 2024 21:21:52 +0000 (UTC)
-Received: from t14s.fritz.box (unknown [10.39.192.52])
-	by smtp.corp.redhat.com (Postfix) with ESMTP id 1CD02111E408;
-	Wed,  3 Apr 2024 21:21:48 +0000 (UTC)
-From: David Hildenbrand <david@redhat.com>
-To: linux-kernel@vger.kernel.org
-Cc: linux-mm@kvack.org,
-	x86@kernel.org,
-	David Hildenbrand <david@redhat.com>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Ingo Molnar <mingo@redhat.com>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Christoph Hellwig <hch@lst.de>,
-	Borislav Petkov <bp@alien8.de>,
-	"H. Peter Anvin" <hpa@zytor.com>,
-	Andy Lutomirski <luto@kernel.org>,
-	Dave Hansen <dave.hansen@linux.intel.com>,
-	Fei Li <fei1.li@intel.com>,
-	Nathan Chancellor <nathan@kernel.org>,
-	Ingo Molnar <mingo@kernel.org>
-Subject: [PATCH v2 3/3] mm: move follow_phys to arch/x86/mm/pat/memtype.c
-Date: Wed,  3 Apr 2024 23:21:31 +0200
-Message-ID: <20240403212131.929421-4-david@redhat.com>
-In-Reply-To: <20240403212131.929421-1-david@redhat.com>
-References: <20240403212131.929421-1-david@redhat.com>
+	s=arc-20240116; t=1712179483; c=relaxed/simple;
+	bh=1TlP7tfuRkJTb4XoahhY0tQ8NEmaAo2KqRI7vJSzLcw=;
+	h=From:To:Subject:Date:Message-ID:MIME-Version:Content-Type; b=VQReAAl5cCGLQo1Ogbv2LxfRTIMxXR5EVI2BNtAwHc4g8qVsF+5lcU9UXxnveplFHGuJurD4JZUzxAsr9v1hT7VjXXhqaJod28QNZcBVevlGp2MsA4ujjsptuDE5lkLCUR3lCVXmGFo+EYHVXpegEi26fh2DVj84BLW/cQY34Fc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=YctJEJAR; arc=none smtp.client-ip=198.47.19.142
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
+Received: from fllv0034.itg.ti.com ([10.64.40.246])
+	by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 433LOQ5E048322;
+	Wed, 3 Apr 2024 16:24:26 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+	s=ti-com-17Q1; t=1712179466;
+	bh=whB614MwmgUgmaq9BLDly5u4OTIz4n2TQUmWWW3dLy8=;
+	h=From:To:Subject:Date;
+	b=YctJEJAR6t2e7vYpRUWtEiDwRWp1thDBQta0cExuuxNEysrldae9jn1wRSmO88dwT
+	 QUhD9CyBQB6ZR+nRzeegyDeknSiLMxTkU3ocS12f3wpeLKn9t81GC/S8xxlIM08A+4
+	 z+Wu1knFJh0EYqCYL1YSPuR3cc4FNBrWKClD4jBA=
+Received: from DLEE113.ent.ti.com (dlee113.ent.ti.com [157.170.170.24])
+	by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 433LOQwY005837
+	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+	Wed, 3 Apr 2024 16:24:26 -0500
+Received: from DLEE114.ent.ti.com (157.170.170.25) by DLEE113.ent.ti.com
+ (157.170.170.24) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Wed, 3
+ Apr 2024 16:24:26 -0500
+Received: from lelvsmtp5.itg.ti.com (10.180.75.250) by DLEE114.ent.ti.com
+ (157.170.170.25) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Wed, 3 Apr 2024 16:24:26 -0500
+Received: from judy-hp.dhcp.ti.com (judy-hp.dhcp.ti.com [128.247.81.105])
+	by lelvsmtp5.itg.ti.com (8.15.2/8.15.2) with ESMTP id 433LOQO3031686;
+	Wed, 3 Apr 2024 16:24:26 -0500
+From: Judith Mendez <jm@ti.com>
+To: Wim Van Sebroeck <wim@linux-watchdog.org>,
+        Guenter Roeck
+	<linux@roeck-us.net>, <linux-watchdog@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: [PATCH] watchdog: rti_wdt: Set min_hw_heartbeat_ms to accommodate 5% safety margin
+Date: Wed, 3 Apr 2024 16:24:26 -0500
+Message-ID: <20240403212426.582727-1-jm@ti.com>
+X-Mailer: git-send-email 2.43.2
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -83,141 +70,77 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.3
+Content-Type: text/plain
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 
-From: Christoph Hellwig <hch@lst.de>
+On AM62x, the watchdog is pet before the valid window
+is open. Fix min_hw_heartbeat and accommodate a 5% safety
+margin with the exception of open window size < 10%,
+which shall use <5% due to the smaller open window size.
 
-follow_phys is only used by two callers in arch/x86/mm/pat/memtype.c.
-Move it there and hardcode the two arguments that get the same values
-passed by both callers.
-
-Link: https://lkml.kernel.org/r/20240324234542.2038726-4-hch@lst.de
-Signed-off-by: Christoph Hellwig <hch@lst.de>
-Reviewed-by: David Hildenbrand <david@redhat.com>
-Cc: Andy Lutomirski <luto@kernel.org>
-Cc: Dave Hansen <dave.hansen@linux.intel.com>
-Cc: Fei Li <fei1.li@intel.com>
-Cc: Ingo Molnar <mingo@kernel.org>
-Cc: Peter Zijlstra <peterz@infradead.org>
-Cc: Nathan Chancellor <nathan@kernel.org>
-Signed-off-by: David Hildenbrand <david@redhat.com> # rebased, applied fixups
+Signed-off-by: Judith Mendez <jm@ti.com>
 ---
- arch/x86/mm/pat/memtype.c | 29 ++++++++++++++++++++++++++++-
- include/linux/mm.h        |  2 --
- mm/memory.c               | 32 --------------------------------
- 3 files changed, 28 insertions(+), 35 deletions(-)
+ drivers/watchdog/rti_wdt.c | 24 +++++++++++++-----------
+ 1 file changed, 13 insertions(+), 11 deletions(-)
 
-diff --git a/arch/x86/mm/pat/memtype.c b/arch/x86/mm/pat/memtype.c
-index 36b603d0cdde..d01c3b0bd6eb 100644
---- a/arch/x86/mm/pat/memtype.c
-+++ b/arch/x86/mm/pat/memtype.c
-@@ -39,6 +39,7 @@
- #include <linux/pfn_t.h>
- #include <linux/slab.h>
- #include <linux/mm.h>
-+#include <linux/highmem.h>
- #include <linux/fs.h>
- #include <linux/rbtree.h>
- 
-@@ -947,6 +948,32 @@ static void free_pfn_range(u64 paddr, unsigned long size)
- 		memtype_free(paddr, paddr + size);
- }
- 
-+static int follow_phys(struct vm_area_struct *vma, unsigned long *prot,
-+		resource_size_t *phys)
-+{
-+	pte_t *ptep, pte;
-+	spinlock_t *ptl;
-+
-+	if (!(vma->vm_flags & (VM_IO | VM_PFNMAP)))
-+		return -EINVAL;
-+
-+	if (follow_pte(vma->vm_mm, vma->vm_start, &ptep, &ptl))
-+		return -EINVAL;
-+
-+	pte = ptep_get(ptep);
-+
-+	/* Never return PFNs of anon folios in COW mappings. */
-+	if (vm_normal_folio(vma, vma->vm_start, pte)) {
-+		pte_unmap_unlock(ptep, ptl);
-+		return -EINVAL;
-+	}
-+
-+	*prot = pgprot_val(pte_pgprot(pte));
-+	*phys = (resource_size_t)pte_pfn(pte) << PAGE_SHIFT;
-+	pte_unmap_unlock(ptep, ptl);
-+	return 0;
-+}
-+
- static int get_pat_info(struct vm_area_struct *vma, resource_size_t *paddr,
- 		pgprot_t *pgprot)
- {
-@@ -964,7 +991,7 @@ static int get_pat_info(struct vm_area_struct *vma, resource_size_t *paddr,
- 	 * detect the PFN. If we need the cachemode as well, we're out of luck
- 	 * for now and have to fail fork().
+diff --git a/drivers/watchdog/rti_wdt.c b/drivers/watchdog/rti_wdt.c
+index 8e1be7ba0103..0b16ada659cc 100644
+--- a/drivers/watchdog/rti_wdt.c
++++ b/drivers/watchdog/rti_wdt.c
+@@ -92,7 +92,7 @@ static int rti_wdt_start(struct watchdog_device *wdd)
+ 	 * to be 50% or less than that; we obviouly want to configure the open
+ 	 * window as large as possible so we select the 50% option.
  	 */
--	if (!follow_phys(vma, vma->vm_start, 0, &prot, paddr)) {
-+	if (!follow_phys(vma, &prot, paddr)) {
- 		if (pgprot)
- 			*pgprot = __pgprot(prot);
- 		return 0;
-diff --git a/include/linux/mm.h b/include/linux/mm.h
-index 97e779993c74..bc0cd34a8042 100644
---- a/include/linux/mm.h
-+++ b/include/linux/mm.h
-@@ -2424,8 +2424,6 @@ int
- copy_page_range(struct vm_area_struct *dst_vma, struct vm_area_struct *src_vma);
- int follow_pte(struct mm_struct *mm, unsigned long address,
- 	       pte_t **ptepp, spinlock_t **ptlp);
--int follow_phys(struct vm_area_struct *vma, unsigned long address,
--		unsigned int flags, unsigned long *prot, resource_size_t *phys);
- int generic_access_phys(struct vm_area_struct *vma, unsigned long addr,
- 			void *buf, int len, int write);
+-	wdd->min_hw_heartbeat_ms = 500 * wdd->timeout;
++	wdd->min_hw_heartbeat_ms = 550 * wdd->timeout;
  
-diff --git a/mm/memory.c b/mm/memory.c
-index 1e9a0288fdaf..912cd738ec03 100644
---- a/mm/memory.c
-+++ b/mm/memory.c
-@@ -5987,38 +5987,6 @@ int follow_pte(struct mm_struct *mm, unsigned long address,
- EXPORT_SYMBOL_GPL(follow_pte);
+ 	/* Generate NMI when wdt expires */
+ 	writel_relaxed(RTIWWDRX_NMI, wdt->base + RTIWWDRXCTRL);
+@@ -126,31 +126,33 @@ static int rti_wdt_setup_hw_hb(struct watchdog_device *wdd, u32 wsize)
+ 	 * be petted during the open window; not too early or not too late.
+ 	 * The HW configuration options only allow for the open window size
+ 	 * to be 50% or less than that.
++	 * To avoid any glitches, we accommodate 5% safety margin, with the
++	 * exception of open window size < 10%.
+ 	 */
+ 	switch (wsize) {
+ 	case RTIWWDSIZE_50P:
+-		/* 50% open window => 50% min heartbeat */
+-		wdd->min_hw_heartbeat_ms = 500 * heartbeat;
++		/* 50% open window => 55% min heartbeat */
++		wdd->min_hw_heartbeat_ms = 550 * heartbeat;
+ 		break;
  
- #ifdef CONFIG_HAVE_IOREMAP_PROT
--int follow_phys(struct vm_area_struct *vma,
--		unsigned long address, unsigned int flags,
--		unsigned long *prot, resource_size_t *phys)
--{
--	int ret = -EINVAL;
--	pte_t *ptep, pte;
--	spinlock_t *ptl;
--
--	if (!(vma->vm_flags & (VM_IO | VM_PFNMAP)))
--		goto out;
--
--	if (follow_pte(vma->vm_mm, address, &ptep, &ptl))
--		goto out;
--	pte = ptep_get(ptep);
--
--	/* Never return PFNs of anon folios in COW mappings. */
--	if (vm_normal_folio(vma, address, pte))
--		goto unlock;
--
--	if ((flags & FOLL_WRITE) && !pte_write(pte))
--		goto unlock;
--
--	*prot = pgprot_val(pte_pgprot(pte));
--	*phys = (resource_size_t)pte_pfn(pte) << PAGE_SHIFT;
--
--	ret = 0;
--unlock:
--	pte_unmap_unlock(ptep, ptl);
--out:
--	return ret;
--}
--
- /**
-  * generic_access_phys - generic implementation for iomem mmap access
-  * @vma: the vma to access
+ 	case RTIWWDSIZE_25P:
+-		/* 25% open window => 75% min heartbeat */
+-		wdd->min_hw_heartbeat_ms = 750 * heartbeat;
++		/* 25% open window => 80% min heartbeat */
++		wdd->min_hw_heartbeat_ms = 800 * heartbeat;
+ 		break;
+ 
+ 	case RTIWWDSIZE_12P5:
+-		/* 12.5% open window => 87.5% min heartbeat */
+-		wdd->min_hw_heartbeat_ms = 875 * heartbeat;
++		/* 12.5% open window => 92.5% min heartbeat */
++		wdd->min_hw_heartbeat_ms = 925 * heartbeat;
+ 		break;
+ 
+ 	case RTIWWDSIZE_6P25:
+-		/* 6.5% open window => 93.5% min heartbeat */
+-		wdd->min_hw_heartbeat_ms = 935 * heartbeat;
++		/* 6.5% open window => 96.5% min heartbeat */
++		wdd->min_hw_heartbeat_ms = 965 * heartbeat;
+ 		break;
+ 
+ 	case RTIWWDSIZE_3P125:
+-		/* 3.125% open window => 96.9% min heartbeat */
+-		wdd->min_hw_heartbeat_ms = 969 * heartbeat;
++		/* 3.125% open window => 97.9% min heartbeat */
++		wdd->min_hw_heartbeat_ms = 979 * heartbeat;
+ 		break;
+ 
+ 	default:
 -- 
-2.44.0
+2.43.2
 
 
