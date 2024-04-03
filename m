@@ -1,176 +1,153 @@
-Return-Path: <linux-kernel+bounces-129077-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-129078-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 09752896470
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 08:16:55 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7BC84896477
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 08:20:57 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 367571C21EDD
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 06:16:54 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A7F891C21A2D
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 06:20:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3A8E74EB3F;
-	Wed,  3 Apr 2024 06:16:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 97EAF524DC;
+	Wed,  3 Apr 2024 06:20:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=shruggie-ro.20230601.gappssmtp.com header.i=@shruggie-ro.20230601.gappssmtp.com header.b="WYnKe0dG"
-Received: from mail-lf1-f46.google.com (mail-lf1-f46.google.com [209.85.167.46])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="MRUt4V79"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.18])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6EDAC4AEEF
-	for <linux-kernel@vger.kernel.org>; Wed,  3 Apr 2024 06:16:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C7F37645;
+	Wed,  3 Apr 2024 06:20:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712125007; cv=none; b=Gz2ah0ONzX8lNX6/BJICjuyzgsiJeO6CwqZeWX1rZgTs3GwOEXHY0HBqzRD/gHAzcI72OyQba6LtRjoHoHXhmMCi3Ee+6I6hu9YKRRLvUsxe3GBtoOCzLnpHe1woPz81iQg0uS29gmmY6YtxffDYUh+Sr3m/espdCk7lHC79wcI=
+	t=1712125245; cv=none; b=CZFmVEOQt5XbhYzm3OsldCgwyyHuvOUhedFBf+FRjSxNgQEiVh6ZuayV3CB2WdJrQz1PDRVDOY8Xxk7dw7XPnpUIvWrtkyrRwVG1wcYw68gVFJSs124iwP46l/Gl+GDRtITU85F3QdlwkyQlxfudUlrG6tnYq2WFHY5IoNbAX2o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712125007; c=relaxed/simple;
-	bh=kIy7qWFiBqN1u57DhH/gWej2UMvzk3eu0cayWgZ2JQk=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=YOW0EVyOVI+f1jdOwTo6V8Zi53YaHUrFsJF3PFLPyY78ixSnum9gILz63xEPUputPcPJPuu8YB1ZdsQtP82fUz54hBRM/HmvOOPgAln7fbmHiM6wsGj0JTrXN0DSElmCFn4awbt99v8+u8UngZGob8ogHDMlWetPm0NdmXctTHk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=shruggie.ro; spf=pass smtp.mailfrom=shruggie.ro; dkim=pass (2048-bit key) header.d=shruggie-ro.20230601.gappssmtp.com header.i=@shruggie-ro.20230601.gappssmtp.com header.b=WYnKe0dG; arc=none smtp.client-ip=209.85.167.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=shruggie.ro
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=shruggie.ro
-Received: by mail-lf1-f46.google.com with SMTP id 2adb3069b0e04-513d23be0b6so6501625e87.0
-        for <linux-kernel@vger.kernel.org>; Tue, 02 Apr 2024 23:16:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=shruggie-ro.20230601.gappssmtp.com; s=20230601; t=1712125002; x=1712729802; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=TUWOAlRew8Y9zlqvI12IsW4qhw1mXgmiBgk1qsYuJAE=;
-        b=WYnKe0dGvTr9j6X5aXCcWIfdx2bUHfe74Jj6bJL7ZhwSMSMLFuRU7YifVtqiGayr22
-         KRWYtxbZi/9tp5/AjRmH1p7LiG4OmN5ubZVp/WiNkZFXWUrKnBrJk8NsdwXAlwZXKV8N
-         GI2iQlHDmFqA0KVpaG22dRYOUXejHjJBXEgjzerLPtnMrvksMxuOFfrClLOARj3YRbPg
-         Y68Tu1U1Vo6FdqMBh5RJ4NtqSqfbuh+xDRgwJaMoHSb8KhSLoXN4eRb6MUl7rFr6MVkY
-         c6uoys7i/MTqBZydngoJ0OaXRMAoM8frvu4+jR9V734i1WNJaLQDHSIfdGjHQxzftRKU
-         r3lw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712125002; x=1712729802;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=TUWOAlRew8Y9zlqvI12IsW4qhw1mXgmiBgk1qsYuJAE=;
-        b=gHuQL77WFU3wXPjJrJo02MbMEBJMCa123gBqICVH8U8K9qBCAJwDiXBbkL2emPv7wS
-         gSumW5YLIxVdowxrgrLApFHvvxpWKBIbWNzLWl1eThryuoptwBo0BxJCG3Z0VoSZ/5eI
-         ZOr/TweIBx+TNHJHwdQpJE/thjk8vn6jOcm1t2mvgldEI5UuzhQzFjIP0FFRhQITfUP8
-         5yxIu9y9M2FU6XhBj0FLnShAEHqvZktg6NiYdp7zYj47CZpEst6mv3INj6mANaKamKIL
-         Fq6uHwduQe/K8ls3pUPNjc1lIRozrIY1inpAl3uv3KIOZZ+awgaIiviKTsUbAI6iyztI
-         kb2A==
-X-Gm-Message-State: AOJu0YyM93DXSgblis0NDBm/72GX1dg4ZurTWeNv2Z8TVvCjy/r9a7DG
-	WGKzI56AI6ZMl5l46HxEmWCZDX9Cmgl+dxNmRQHQQhU+Mr4haeKGnjrKmhYatAGenEwxkHfUwJX
-	tpdjrgWt54R/rowdHCKOcuUqToQVLAZ+MFGW5qw==
-X-Google-Smtp-Source: AGHT+IHxy5L7IuAClTzOQvPqVmBmGzm4Jxd5dXHEawLJyCom6nIx29NzDwr6gHy4UOjn+UPEdfsKmGeIOhgk1vX2hCY=
-X-Received: by 2002:a19:6a13:0:b0:516:a0a5:a444 with SMTP id
- u19-20020a196a13000000b00516a0a5a444mr8832014lfu.2.1712125002295; Tue, 02 Apr
- 2024 23:16:42 -0700 (PDT)
+	s=arc-20240116; t=1712125245; c=relaxed/simple;
+	bh=JpP/EDsMSxDuAaZti2qzwzDnAIQsAXrHMUrBgeEJ/Qk=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=Mgj9PrJMh9yCa6iEXsf8u7RscUlMTqPbiszG9OAXaEJn5rwYKZth1fiFlaib9/iyGYekFBWSjU0PuSkC9b8JxCckpZVCQWt08j9PUFAbWVGd80n3LjHYl0OPAaoUdYInzLCtSF6j02QXqYXhGBM1h2OWJVVmd4e/0geLHfYGya8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=MRUt4V79; arc=none smtp.client-ip=198.175.65.18
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1712125243; x=1743661243;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=JpP/EDsMSxDuAaZti2qzwzDnAIQsAXrHMUrBgeEJ/Qk=;
+  b=MRUt4V79NBZ+BeHW+YxWuepAWZe9sZ1q9oc3AcphXNijuE44Al0B4LbO
+   27F85VsRS7J0fal203h+lQ3AqWRLxvnVTHciAfkAFqLpHVeJMzx4O3Lha
+   8zgDpqgnjB5ujSQhhkcmY+D/n70/byUBKsoW2G7KD+RB79X3InjMuQSl3
+   sN2SNH7olqajdgVbIQAszjMszpRHfUroebh87fJP5OO6pcs4ql3B2Mulo
+   3E5XBz80k41rK1I+r17mtSfOCozvLhKthRtqMFmWWzmMzqH3ZNP10Mfqt
+   bcZ7pHVMorLzijgMAJ8wTYedQXU3eecoWbZMor2aa2Xo40ei/IHNMlEti
+   w==;
+X-CSE-ConnectionGUID: RON7XNj6TDuF+Iei/Ti7vA==
+X-CSE-MsgGUID: McJnjiTdTs2c0XZvQvbxug==
+X-IronPort-AV: E=McAfee;i="6600,9927,11032"; a="7492471"
+X-IronPort-AV: E=Sophos;i="6.07,176,1708416000"; 
+   d="scan'208";a="7492471"
+Received: from orviesa003.jf.intel.com ([10.64.159.143])
+  by orvoesa110.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Apr 2024 23:20:43 -0700
+X-CSE-ConnectionGUID: TsR1QIiURJmbYigYH81a0Q==
+X-CSE-MsgGUID: jxr6We+rSRi5gdycU53sEw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,176,1708416000"; 
+   d="scan'208";a="23023367"
+Received: from lingshan-mobl.ccr.corp.intel.com (HELO [10.124.249.198]) ([10.124.249.198])
+  by ORVIESA003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Apr 2024 23:20:40 -0700
+Message-ID: <81ba4f68-21b7-48bf-94ae-8cd72880fed6@intel.com>
+Date: Wed, 3 Apr 2024 14:20:36 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240402105925.905144-1-alex@shruggie.ro> <20240402105925.905144-2-alex@shruggie.ro>
- <20240402-sheet-retread-025759b22faf@spud>
-In-Reply-To: <20240402-sheet-retread-025759b22faf@spud>
-From: Alexandru Ardelean <alex@shruggie.ro>
-Date: Wed, 3 Apr 2024 09:16:31 +0300
-Message-ID: <CAH3L5QooAXDYAxOdMkPrW1mx04ZgTv_kMU5VSAby9J3Hb_RFOg@mail.gmail.com>
-Subject: Re: [PATCH 2/2] dt-bindings: display: bridge: lt8912b: document
- 'lontium,pn-swap' property
-To: Conor Dooley <conor@kernel.org>
-Cc: linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org, 
-	devicetree@vger.kernel.org, adrien.grassein@gmail.com, 
-	andrzej.hajda@intel.com, neil.armstrong@linaro.org, rfoss@kernel.org, 
-	Laurent.pinchart@ideasonboard.com, jonas@kwiboo.se, jernej.skrabec@gmail.com, 
-	airlied@gmail.com, daniel@ffwll.ch, maarten.lankhorst@linux.intel.com, 
-	mripard@kernel.org, tzimmermann@suse.de, robh@kernel.org, 
-	krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org, 
-	stefan.eichenberger@toradex.com, francesco.dolcini@toradex.com, 
-	marius.muresan@mxt.ro, irina.muresan@mxt.ro
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] vhost-vdpa: change ioctl # for VDPA_GET_VRING_SIZE
+To: "Michael S. Tsirkin" <mst@redhat.com>, linux-kernel@vger.kernel.org
+Cc: Arnaldo Carvalho de Melo <acme@kernel.org>,
+ Namhyung Kim <namhyung@kernel.org>, Jason Wang <jasowang@redhat.com>,
+ =?UTF-8?Q?Eugenio_P=C3=A9rez?= <eperezma@redhat.com>, kvm@vger.kernel.org,
+ virtualization@lists.linux.dev, netdev@vger.kernel.org,
+ Adrian Hunter <adrian.hunter@intel.com>, Ian Rogers <irogers@google.com>,
+ Jiri Olsa <jolsa@kernel.org>, Kan Liang <kan.liang@linux.intel.com>
+References: <41c1c5489688abe5bfef9f7cf15584e3fb872ac5.1712092759.git.mst@redhat.com>
+Content-Language: en-US
+From: "Zhu, Lingshan" <lingshan.zhu@intel.com>
+In-Reply-To: <41c1c5489688abe5bfef9f7cf15584e3fb872ac5.1712092759.git.mst@redhat.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Tue, Apr 2, 2024 at 9:06=E2=80=AFPM Conor Dooley <conor@kernel.org> wrot=
-e:
+
+
+On 4/3/2024 5:21 AM, Michael S. Tsirkin wrote:
+> VDPA_GET_VRING_SIZE by mistake uses the already occupied
+> ioctl # 0x80 and we never noticed - it happens to work
+> because the direction and size are different, but confuses
+> tools such as perf which like to look at just the number,
+> and breaks the extra robustness of the ioctl numbering macros.
 >
-> On Tue, Apr 02, 2024 at 01:59:25PM +0300, Alexandru Ardelean wrote:
-> > On some HW designs, it's easier for the layout if the P/N pins are swap=
-ped.
-> > The driver currently has a DT property to do that.
+> To fix, sort the entries and renumber the ioctl - not too late
+> since it wasn't in any released kernels yet.
 >
-> "currently", because 1/2 adds it. bindings patches should precede the
-> driver patches in the series, so please swap the patches and remove this
-> portion of the description.
+> Cc: Arnaldo Carvalho de Melo <acme@kernel.org>
+> Reported-by: Namhyung Kim <namhyung@kernel.org>
+> Fixes: 1496c47065f9 ("vhost-vdpa: uapi to support reporting per vq size")
+> Cc: "Zhu Lingshan" <lingshan.zhu@intel.com>
+> Signed-off-by: Michael S. Tsirkin <mst@redhat.com>
 
-ack;
-i'll invert the order and remove this;
+Reviewed-by: Zhu Lingshan <lingshan.zhu@intel.com>
 
+Thanks for the fix and sorry for the mess, I should read the whole header file to check whether
+the number is available.
+
+> ---
 >
-> >
-> > This change documents the 'lontium,pn-swap' property.
-> >
-> > Signed-off-by: Alexandru Ardelean <alex@shruggie.ro>
-> > ---
-> >  .../devicetree/bindings/display/bridge/lontium,lt8912b.yaml | 6 ++++++
-> >  1 file changed, 6 insertions(+)
-> >
-> > diff --git a/Documentation/devicetree/bindings/display/bridge/lontium,l=
-t8912b.yaml b/Documentation/devicetree/bindings/display/bridge/lontium,lt89=
-12b.yaml
-> > index 2cef252157985..3a804926b288a 100644
-> > --- a/Documentation/devicetree/bindings/display/bridge/lontium,lt8912b.=
-yaml
-> > +++ b/Documentation/devicetree/bindings/display/bridge/lontium,lt8912b.=
-yaml
-> > @@ -24,6 +24,12 @@ properties:
-> >      maxItems: 1
-> >      description: GPIO connected to active high RESET pin.
-> >
-> > +  lontium,pn-swap:
-> > +    description: Swap the polarities of the P/N pins in software.
-> > +      On some HW designs, the layout is simplified if the P/N pins
-> > +      are inverted.
+> Build tested only - userspace patches using this will have to adjust.
+> I will merge this in a week or so unless I hear otherwise,
+> and afterwards perf can update there header.
 >
-> Please explain what configuration of a board would cause these to be
-> swapped, rather than why someone might want to configure the board this
-> way. I've got no idea what this hardware is actually doing, so this is
-> being pulled out of a hat, but I'd expect something like "Some boards
-> swap the polarity of the P/N pins, use this property to indicate this to
-> software".
-
-ack
-if it's fine with you, i'll use your suggested description;
-
-for a broader context, we were using a DSI-HDMI converter [1] from
-SomLabs on a different (than SomLabs) board;
-and we were not seeing anything on the HDMI-connected display;
-as I understand it, some DSI-HDMI bridges support P/N auto-inversion;
-this one doesn't AFAICT;
-on this DSI-HDMI converter [1], we've noticed that the P/N pins were
-inverted from the DSI to the chip (vs what we expected to see)
-after changing the register value (for the P/N swap), it worked;
-our conclusion was that, the design of the converter (board) was done
-as-such, because it made the layout easier
-
-[1] https://wiki.somlabs.com/index.php/SL-MIPI-LVDS-HDMI-CNV-11_Datasheet_a=
-nd_Pinout
-
+>   include/uapi/linux/vhost.h | 15 ++++++++-------
+>   1 file changed, 8 insertions(+), 7 deletions(-)
 >
-> > +    type: boolean
->
-> The type here should be flag.
+> diff --git a/include/uapi/linux/vhost.h b/include/uapi/linux/vhost.h
+> index bea697390613..b95dd84eef2d 100644
+> --- a/include/uapi/linux/vhost.h
+> +++ b/include/uapi/linux/vhost.h
+> @@ -179,12 +179,6 @@
+>   /* Get the config size */
+>   #define VHOST_VDPA_GET_CONFIG_SIZE	_IOR(VHOST_VIRTIO, 0x79, __u32)
+>   
+> -/* Get the count of all virtqueues */
+> -#define VHOST_VDPA_GET_VQS_COUNT	_IOR(VHOST_VIRTIO, 0x80, __u32)
+> -
+> -/* Get the number of virtqueue groups. */
+> -#define VHOST_VDPA_GET_GROUP_NUM	_IOR(VHOST_VIRTIO, 0x81, __u32)
+> -
+>   /* Get the number of address spaces. */
+>   #define VHOST_VDPA_GET_AS_NUM		_IOR(VHOST_VIRTIO, 0x7A, unsigned int)
+>   
+> @@ -228,10 +222,17 @@
+>   #define VHOST_VDPA_GET_VRING_DESC_GROUP	_IOWR(VHOST_VIRTIO, 0x7F,	\
+>   					      struct vhost_vring_state)
+>   
+> +
+> +/* Get the count of all virtqueues */
+> +#define VHOST_VDPA_GET_VQS_COUNT	_IOR(VHOST_VIRTIO, 0x80, __u32)
+> +
+> +/* Get the number of virtqueue groups. */
+> +#define VHOST_VDPA_GET_GROUP_NUM	_IOR(VHOST_VIRTIO, 0x81, __u32)
+> +
+>   /* Get the queue size of a specific virtqueue.
+>    * userspace set the vring index in vhost_vring_state.index
+>    * kernel set the queue size in vhost_vring_state.num
+>    */
+> -#define VHOST_VDPA_GET_VRING_SIZE	_IOWR(VHOST_VIRTIO, 0x80,	\
+> +#define VHOST_VDPA_GET_VRING_SIZE	_IOWR(VHOST_VIRTIO, 0x82,	\
+>   					      struct vhost_vring_state)
+>   #endif
 
-ack; i'll change the type
-
->
-> Cheers,
-> Conor.
->
-> > +
-> >    ports:
-> >      $ref: /schemas/graph.yaml#/properties/ports
-> >
-> > --
-> > 2.44.0
-> >
 
