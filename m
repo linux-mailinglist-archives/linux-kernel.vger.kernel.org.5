@@ -1,311 +1,255 @@
-Return-Path: <linux-kernel+bounces-129961-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-129963-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id A452789728E
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 16:27:22 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 20D62897296
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 16:27:58 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 55D7E281FC6
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 14:27:21 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3CCDD1C20F5E
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 14:27:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0718D1494DF;
-	Wed,  3 Apr 2024 14:26:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 181F614A09D;
+	Wed,  3 Apr 2024 14:27:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="SAInuEps"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="JndjP0Aw"
+Received: from NAM10-DM6-obe.outbound.protection.outlook.com (mail-dm6nam10on2094.outbound.protection.outlook.com [40.107.93.94])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4421014900E
-	for <linux-kernel@vger.kernel.org>; Wed,  3 Apr 2024 14:26:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712154409; cv=none; b=n/zBi8QcrSM/pepR4xqyD6AQF/qwM2u29YEgLlU9RkHuWxvfQLdBMOu84Fbs7Uill9aErmX/n1LXSlQYKH4c8hc9KaQ1y8f40V72vqIL58/IipD5QvhsPqMKfOg3oElKY83feX12/i5Q8Ef84TCluRTLjAqdPZkdwBmtiSRhoDY=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712154409; c=relaxed/simple;
-	bh=RBFLm5+uDEmgofj9uWxnzSGcRd9//fecuzhvrER/xPs=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=AaYyC+uItMEopvuvcvZA68sybPnCmK1NDMC5MvwjHqyMDlUGdsVhTqi6FRdAqdv8HLsy6tk86JAHtVeU7sOH8fhGP7yyO1VztsXN0mJyhHCpaEoh5yZFtRCS56AoR40CeYvSwivfoc09DtzgpPJBFL/YfDgVw8rvNk4ghXE5qC0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=SAInuEps; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1712154406;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=57LjQ/Xo+U2gCuYANCe1R7m3CEd4Dr8ZrP/P0e/5PCw=;
-	b=SAInuEpsN1iUV4UMwu3+mE7o70v3N42XZUQVt0PLiSOsTW76P1a1/MWT+TDZdFefAoW4/z
-	6yDvjiE7oxvMoSSWlzxOm+Rd8xESXJ9NiopdyW6kFiFByne09EWzvky5+qfAa3hIkuc/Hp
-	vGtR2HxQGLJOuFZtdQhc2qFSfwq/I1o=
-Received: from mail-ot1-f69.google.com (mail-ot1-f69.google.com
- [209.85.210.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-661-WW7LftD3Pq2jFg2ZXyJUhw-1; Wed, 03 Apr 2024 10:26:44 -0400
-X-MC-Unique: WW7LftD3Pq2jFg2ZXyJUhw-1
-Received: by mail-ot1-f69.google.com with SMTP id 46e09a7af769-6e682fd5c39so7772767a34.3
-        for <linux-kernel@vger.kernel.org>; Wed, 03 Apr 2024 07:26:44 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712154403; x=1712759203;
-        h=content-transfer-encoding:mime-version:message-id:date:references
-         :in-reply-to:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=57LjQ/Xo+U2gCuYANCe1R7m3CEd4Dr8ZrP/P0e/5PCw=;
-        b=b8iMiEPhZotm0gRtTImY038uKXqpE5muRuMJrSdxx9y/tYK1/pvb8TGRI+W42bCl7c
-         e5qcTiA7I0K7RzUKAO/AHbPrF9W/9Sd0r+CRS0Gda+QGNDZbzOUsDcCdnqCrB6zSlBPl
-         vZ71VsLEgEIgPw4XAAw4QRf0vVPf9kbwX/FctDKh2KWTdtXoQzM99I+EKIPf21kAZ7He
-         uNv4GCGBoo3gCzWCjBMCYmrNGjD1ngKM2Xb09PBC/Q6EQ4Kclp3YY03ecXx/K/e8gp3Q
-         3WrnudTlryS7WhPAvQqXxMpAklBRT596Ykj75lBZIPc2flv1c8U+pPZYeOCGMQE1QHAL
-         9Spg==
-X-Forwarded-Encrypted: i=1; AJvYcCXULdTMxLS890QNAJb0Ts6f5/11u9ScNsIDw3h7CIoMMWxKslezIZdwkDh/JfBxBdlGd/bGq/nv2iqyWFFUCEqlIPdW8c6YYfjupzWl
-X-Gm-Message-State: AOJu0Ywf1zZTleMKUH/VLCTnQQIBSXcAE7vTZzjB+mUcJCPm25dpADV8
-	cgSY43BWWlsMatD45+6xH7layqBSIjeHezSuHDaZ2urZwPXXE71F058cNha/jz4a0wl0fXb7htH
-	EkJ3JfFhBIK3TkvgQMDt23fEeQhTz1lLzHtrYEKLEZdlro4jwEu7Wd0Ru36lNVA==
-X-Received: by 2002:a9d:5e89:0:b0:6e6:c77e:3933 with SMTP id f9-20020a9d5e89000000b006e6c77e3933mr3900670otl.17.1712154403623;
-        Wed, 03 Apr 2024 07:26:43 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IG0oaGSIyUo+FTnIsjVJ3ux/o0Qa7R44NDTFF1Hk8OXdUAwOVdR3LsBgCR9cxlorz/yDCeJXA==
-X-Received: by 2002:a9d:5e89:0:b0:6e6:c77e:3933 with SMTP id f9-20020a9d5e89000000b006e6c77e3933mr3900642otl.17.1712154403283;
-        Wed, 03 Apr 2024 07:26:43 -0700 (PDT)
-Received: from vschneid-thinkpadt14sgen2i.remote.csb (213-44-141-166.abo.bbox.fr. [213.44.141.166])
-        by smtp.gmail.com with ESMTPSA id ke11-20020a056214300b00b006915ae114efsm6515532qvb.52.2024.04.03.07.26.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 03 Apr 2024 07:26:42 -0700 (PDT)
-From: Valentin Schneider <vschneid@redhat.com>
-To: Waiman Long <longman@redhat.com>, Michal =?utf-8?Q?Koutn=C3=BD?=
- <mkoutny@suse.com>
-Cc: Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>, Johannes
- Weiner <hannes@cmpxchg.org>, Thomas Gleixner <tglx@linutronix.de>, Peter
- Zijlstra <peterz@infradead.org>, "Rafael J. Wysocki" <rafael@kernel.org>,
- Len Brown <len.brown@intel.com>, Pavel Machek <pavel@ucw.cz>, Shuah Khan
- <shuah@kernel.org>, linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
- linux-pm@vger.kernel.org, linux-kselftest@vger.kernel.org, Frederic
- Weisbecker <frederic@kernel.org>, "Paul E. McKenney" <paulmck@kernel.org>,
- Ingo Molnar <mingo@kernel.org>, Anna-Maria Behnsen
- <anna-maria@linutronix.de>, Alex Shi <alexs@kernel.org>, Vincent Guittot
- <vincent.guittot@linaro.org>, Barry Song <song.bao.hua@hisilicon.com>
-Subject: Re: [PATCH 1/2] cgroup/cpuset: Make cpuset hotplug processing
- synchronous
-In-Reply-To: <7e62b37d-6c9c-4e55-a01a-175695475cb5@redhat.com>
-References: <20240401145858.2656598-1-longman@redhat.com>
- <20240401145858.2656598-2-longman@redhat.com>
- <kce74bx6aafxfuw5yovaschym4ze4kommfk74eq5totojytest@mdxnfvl2kdol>
- <548efd52-e45f-41fa-a477-bc5112d7b00c@redhat.com>
- <u3naomgv34t5rnc7pmyy4zjppgf36skeo45orss2xnqcvtrcez@m74tsl2ws76f>
- <7e62b37d-6c9c-4e55-a01a-175695475cb5@redhat.com>
-Date: Wed, 03 Apr 2024 16:26:38 +0200
-Message-ID: <xhsmhedbmbjz5.mognet@vschneid-thinkpadt14sgen2i.remote.csb>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4CA5C14A081
+	for <linux-kernel@vger.kernel.org>; Wed,  3 Apr 2024 14:27:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.93.94
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1712154424; cv=fail; b=MSitCwhPxd9VRZIC8Fq64rzyAeudZ+JM7veXWtIP7rQiPppofLP2rIBytiAbNlRRBZDUYx9N9AkikzxnOA2/9Ssad0r5qDp7ceXJkLFXmX/ldibrF0TwQqPa9+fia5w0qRfRc92FgRi3181PSGv+hObjSXOn1eAnfdvclgTVU04=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1712154424; c=relaxed/simple;
+	bh=UVhO4Y/yGh9IDwMQTtuldweApvCSbXQnfnY8VSkq1YA=;
+	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
+	 Content-Type:MIME-Version; b=hBMxD1Rf/wYgGX1V1SfZXrO3yb9+gP63xrtNBKuqjfAbbeqAXlVnNfd3bWHr1Ut8Z3Wu+0BDh77f0jhV7y8V7r7T+sR1PUyQ0SXQ9SlBDpsODKLt0rA4jJPIdSvj4I/LpaLaGIW8w2CAaZChHTGNxguMeIS+Pjeeext8kwTqAYQ=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=JndjP0Aw; arc=fail smtp.client-ip=40.107.93.94
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=BVBO/ywu4J3LfKkM9zYnvfdR81K+rlohb2YjToQvyjROe22vN6fvLgtbgRlDUSjSQdhB0GLATecX0onZPMOwI6dfoEpUiB4Kz1PHWk3rUJYqzPXGT0iqJgtlefGVNpHPydA4cciNCcuUdzY2UD6dE/m8/+5XtferCvIMWSHpcBWxAgHPMU4sbESj+Y5C545uwLPwRMBR0YccfZ2isIYFbnF8IY67LMfb8OrMqQjIYOL9Y0yQvPcG1IBihmF41K1mR9+wwfiYNuadpdlrNgo7qo/s4RECZPalMssKLZhJx7im9qSWGcwmXlHScAHgZBzfoTUQABSbfCXK46j6qP5q8w==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=ZlfLAZIJp09mkpStccyb8rB1wQixxLxcTVybXjAT+sE=;
+ b=N/GA0BrnzkHZZ7pSA7NToNwLHgQfJndvLMjEt6k1uqv4CdUQrKRlyUHSqD21BhrJa7QkeQiC+hTlEK3UxD1rV6Pa5joa+SFbJOMyGZUhZDoC1yYEGNOnmaMQpkeiqrkwTRFKZawH5mFVwCBBPTbIFdcU5oT6F4xuFeDDp6CxQZdby5Gc9mOtmyK+3Mbvpcue03NRoWwoQqIn5MuNMlQMLrFjP6S4WYhhpZwNX2quhPn9zrIviHPMwxFf8uCsGu4X7M+Dz9YJ+wojeyTbJxS/bz4TTlyz5SIwcUBisLapHH8dskRKXfzXhZWuspWCudJjPoy3RkBXW+qVe7WcxTQ/uA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=ZlfLAZIJp09mkpStccyb8rB1wQixxLxcTVybXjAT+sE=;
+ b=JndjP0AwytpKQgcZOFqE23xuvo4db96MKieDyRwY5dE2kV0jptesrNuxyNZ7pA+H1JSw6Nsp47XHV9uW3AQRcMjHSmzpCkGbkCtsqfKOsCJF8Ia26p0/hOIYUSGoZpJa8XnLEqwfiCYQ2Tc3HwleIZVcne+aPWzBmqSmxS7qExk=
+Received: from PH7PR12MB5685.namprd12.prod.outlook.com (2603:10b6:510:13c::22)
+ by DS0PR12MB9038.namprd12.prod.outlook.com (2603:10b6:8:f2::20) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7409.46; Wed, 3 Apr
+ 2024 14:27:00 +0000
+Received: from PH7PR12MB5685.namprd12.prod.outlook.com
+ ([fe80::f2b6:1034:76e8:f15a]) by PH7PR12MB5685.namprd12.prod.outlook.com
+ ([fe80::f2b6:1034:76e8:f15a%6]) with mapi id 15.20.7409.042; Wed, 3 Apr 2024
+ 14:27:00 +0000
+Message-ID: <53f3afba-4759-4ea1-b408-8a929b26280c@amd.com>
+Date: Wed, 3 Apr 2024 16:26:44 +0200
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v0 02/14] drm/amdgpu,drm/radeon: Make I2C terminology more
+ inclusive
+To: Jani Nikula <jani.nikula@linux.intel.com>,
+ =?UTF-8?B?VmlsbGUgU3lyasOkbMOk?= <ville.syrjala@linux.intel.com>,
+ Andi Shyti <andi.shyti@linux.intel.com>
+Cc: Easwar Hariharan <eahariha@linux.microsoft.com>,
+ Alex Deucher <alexander.deucher@amd.com>, "Pan, Xinhui"
+ <Xinhui.Pan@amd.com>, David Airlie <airlied@gmail.com>,
+ Daniel Vetter <daniel@ffwll.ch>, Harry Wentland <harry.wentland@amd.com>,
+ Leo Li <sunpeng.li@amd.com>, Rodrigo Siqueira <Rodrigo.Siqueira@amd.com>,
+ Evan Quan <evan.quan@amd.com>, Hawking Zhang <Hawking.Zhang@amd.com>,
+ Candice Li <candice.li@amd.com>, Ran Sun <sunran001@208suo.com>,
+ Alexander Richards <electrodeyt@gmail.com>,
+ AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
+ Neil Armstrong <neil.armstrong@linaro.org>,
+ Heiner Kallweit <hkallweit1@gmail.com>, Hamza Mahfooz
+ <hamza.mahfooz@amd.com>, Ruan Jinjie <ruanjinjie@huawei.com>,
+ Alan Liu <haoping.liu@amd.com>, Aurabindo Pillai <aurabindo.pillai@amd.com>,
+ Wayne Lin <wayne.lin@amd.com>, Samson Tam <samson.tam@amd.com>,
+ Alvin Lee <alvin.lee2@amd.com>, Charlene Liu <charlene.liu@amd.com>,
+ Sohaib Nadeem <sohaib.nadeem@amd.com>, Lewis Huang <lewis.huang@amd.com>,
+ Tom Chung <chiahsuan.chung@amd.com>,
+ Bhawanpreet Lakha <Bhawanpreet.Lakha@amd.com>,
+ Meenakshikumar Somasundaram <meenakshikumar.somasundaram@amd.com>,
+ George Shen <george.shen@amd.com>, Aric Cyr <aric.cyr@amd.com>,
+ Jun Lei <jun.lei@amd.com>, Nicholas Kazlauskas
+ <nicholas.kazlauskas@amd.com>, Qingqing Zhuo <Qingqing.Zhuo@amd.com>,
+ Dillon Varone <dillon.varone@amd.com>, Le Ma <Le.Ma@amd.com>,
+ Lijo Lazar <lijo.lazar@amd.com>, Asad kamal <asad.kamal@amd.com>,
+ Kenneth Feng <kenneth.feng@amd.com>, Ma Jun <Jun.Ma2@amd.com>,
+ Mario Limonciello <mario.limonciello@amd.com>,
+ Yang Wang <kevinyang.wang@amd.com>, Darren Powell <darren.powell@amd.com>,
+ Yifan Zhang <yifan1.zhang@amd.com>,
+ "open list:RADEON and AMDGPU DRM DRIVERS" <amd-gfx@lists.freedesktop.org>,
+ "open list:DRM DRIVERS" <dri-devel@lists.freedesktop.org>,
+ open list <linux-kernel@vger.kernel.org>, Wolfram Sang <wsa@kernel.org>
+References: <20240329170038.3863998-1-eahariha@linux.microsoft.com>
+ <20240329170038.3863998-3-eahariha@linux.microsoft.com>
+ <Zgb3VYsgLjhJ2HKs@ashyti-mobl2.lan>
+ <ceeaafe1-49d5-4602-8251-eed63a1be2b6@linux.microsoft.com>
+ <Zgb8gieDzZtZmg2q@ashyti-mobl2.lan> <Zg1NW0jqwFn4lvEP@intel.com>
+ <87sf02d1zf.fsf@intel.com>
+Content-Language: en-US
+From: =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>
+In-Reply-To: <87sf02d1zf.fsf@intel.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: VI1PR0902CA0035.eurprd09.prod.outlook.com
+ (2603:10a6:802:1::24) To PH7PR12MB5685.namprd12.prod.outlook.com
+ (2603:10b6:510:13c::22)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: PH7PR12MB5685:EE_|DS0PR12MB9038:EE_
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	JKTi7FgZqau3yIko/NzpfJBC9GXNsLV9HkP53TKAVzIViaaMBbZjEyPiCB3SRn0Yc3UWfWD5DyHtfmbnCGSJvP9Dt5Zu8tfiTg0wYzGeggc/crNd9+IVCYGl1d3CjZzqfYPH5XfoUFqDO1QDD6MBUQk+zuN1DCPiceL9DQjpvSRL7pcU8O+zAB0alwZuj++4njSD3KrDnK0GE4m9cSQoTMoCMSF+cZDkYjFAOh2+LjpGTrLVPUnxFR1NF+uNUdZrBqqUovvWUlcL20gPyjeW3kq5yDNUp56JI/BLZsGfXL8NXyB8foBVv9eLeoTVCZ2RcdwoqHIFhRLrdPsoUiR+RYkcvNhKmJYaV0+xJqEXrpUyNl26ZkRSX3uiBvz7ao+qAsXztVtEL7wkJLa/pTs2zL0QKxi2ec4WH8/WW5fzE7WgLhpBwmAG2TUV7ByZlxvNx+CG6bkKC7cGF1RfFpOyGfsU3IDFv7tzJpEzbw1IT5WfGy9MsCtmxNAUtZIQYvGgMUc4AI50nnxoLyci8IEkJs8aVdt02rabLDIpFLLIQccmaJZgbx3HKC8Sdo7R20xaG2n9kW2bwode0t8xemQpT3xVd9Rxi/TS9SDaVQJip6Jb39KaJl3LO4gO4+aWkEEyl71Josr26/ly60Ab2cHD5j+UanvrNfp91C+W01jN/QA=
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH7PR12MB5685.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(1800799015)(376005)(7416005)(366007);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?utf-8?B?Slc5M2U1cW10REpWVnJrdzlDb2REdG5pV1RudS9oNlZ1TGkvSzNjUFNabkVU?=
+ =?utf-8?B?REwvQnpJaVhEdkRRcTk3TUY5SVZWRkhrNERsWnFjeWtiSXpwTUF0d1czVUMw?=
+ =?utf-8?B?ZXIyRlp6RDlnZmNqelB0Z0ZkcERzN3RpbGVucmMvdW51Mm5VNTVmTzkyT0Yz?=
+ =?utf-8?B?SVdEcWdUK0dQdnV4YmVtVDFreUtkbGZMVTlpc2orSEptcGsvY2QxeTFqMHVW?=
+ =?utf-8?B?dkNIMDZyZ2pOVzN5RUNCeElyNVlOMXNWTkQvWWYrSzVKczhXYmUrck1VeUpj?=
+ =?utf-8?B?c2ZhUVpDOFkraWgwUnEvWSsxUnBEVGFhRnR2OGt6UmZxSWpQZmNNWFRPVndV?=
+ =?utf-8?B?Uk90S2p4MHZZcHFMZ2lxT0ZtMUhSTkYxQlgvY1ZGODFkVjZHU2djL2h3YnZM?=
+ =?utf-8?B?WTdibGJUU2pKcHVZWi91bDNUS2pwR1BBS3ZtMWl4MmpTOU1JTVN3SHVBS3F2?=
+ =?utf-8?B?R1JNZEtQZHVRVXhIeWF5V1FxODhoRmJIa2hsaEhxaVpDYnNSMEp3TFFZVTBY?=
+ =?utf-8?B?amFLU2F1eWtsMTdvYW5ITmpzT0Q4NVhoNlJyS2VaQjJsSXhxS2JySXVNMDRK?=
+ =?utf-8?B?cmo5ei9RTkJKMWJqcjd6Z21na3FSRHNYT3FaVkxtWWNYU3VBVDBTMXp3NXJi?=
+ =?utf-8?B?UEorYU5GSVBqV011THB5MkVMUnhVUGx5a3cva0J4ZTRsMStQZ0svVGN6SWJU?=
+ =?utf-8?B?TnlVelFrcHcwYjcwQXUxOW5rL2VQRjh5RkJ0dUhEL3Y2TjZkZ09GaWJzbHJI?=
+ =?utf-8?B?L2E4dUxBSk84d2NTSmdoQkdQVjNVUFJtTXlJYlpXSXBLZXU4VHdLTE5lejk0?=
+ =?utf-8?B?OHAyMG9pU0orT2djclFSeFBsZkNaM0ZyMVFzRDE5K0tldEl1Zm1PbmUrY0Zu?=
+ =?utf-8?B?WUYwdXpEajE1V2VDNHNqOENXSGRWcnBzQ3ExK0c5VlFHOHJMTkJ5czZYWEpv?=
+ =?utf-8?B?aytwbE8yUHhSMlhXYisrakVhTy9aMVhtOWRSZ2QyaUJkQzNiR09vZjFEWkxN?=
+ =?utf-8?B?cjMvbHNJTEV2MjYwY3ByMFJ1eU03dU9RN2Nqdy9VcTJZT29DTnc3ZUtldFNP?=
+ =?utf-8?B?cDdleWN1Yis1a0xJQlVwU0pNK1JsWERvUGdYcEEzNjJPeUhTQU1wUEdlT2hG?=
+ =?utf-8?B?aC9nUCtVMmdtd0xSV3BkRmg5RTQzRXoyTXZnRFdackpZd0tkR1dyQnI0UXRI?=
+ =?utf-8?B?UFQzVldHRE5SMzJTZVJnYXA5amxVM1J6R3pETFVqRjVsWncwL2dBb3J1M3BO?=
+ =?utf-8?B?YWpjaEovQWN0eWgwUnZxdmpiNkt4K1o4YXNYUVhSSFFTZGlJVncxb293eUZV?=
+ =?utf-8?B?U1FJUGFkR2g3Z3FsV0hsT1BtOEtEQW5kNG1XcDZ6S1plOFArSFplSDdvekl2?=
+ =?utf-8?B?a1JERzl6Z1hCWWVWeVF6WlRDcjBLQ1lFeTdFczFkb3ArUWN6dzdqUjVQWS9l?=
+ =?utf-8?B?V1JvZWRUNkRjMFlkV0Z3dGtKeUQvWkZjK093azhLNTVnQk96anNxaUt5Y0VE?=
+ =?utf-8?B?TzN5UWNDZ3M4b2FadHFDQVdaenRUVVp4MXZocjVNbmJNZ1plTnc4MmhQK0pS?=
+ =?utf-8?B?OURFT3VvNFFBbTM3ZytaYWpqTEozaXlrd0t5UVlPOGRCR0lRQ1NQcGtlb1p5?=
+ =?utf-8?B?dTZCNno0RTFWbHFydW85VlhMNVh2NllNSHQ4bloybWxpNDdoNXJSVmJNdmFz?=
+ =?utf-8?B?ZUlHb2U0UUlkTVZwaWd0MXRqTUFhcHBicUZCYW9sSUlTaHhCNEp6ZXhBVFBp?=
+ =?utf-8?B?dHBxZ1ZEUTN0UUZwTGxEdjZnUkFoTWNlNEJuSVladzVJNHdjdjl4SWdLR1hD?=
+ =?utf-8?B?OHlTcm96cExseUhYd05WOU15cEhyRXQwdEUrUGdzdk44US9LL2hHYTdyY0tZ?=
+ =?utf-8?B?Ym1qeGVJK1g0RnNCa1U3VFd3bXg3Uzl5eCtldkc1dU5KL2JrTXh4dUdmaStt?=
+ =?utf-8?B?M25BR1h6c1dKYVZ1TjNJZVRsRktUcUhxRlo3WjRSZXk5c3VyYW1FVmVLOVFU?=
+ =?utf-8?B?R1ArblFFeVczVTB5d254elY0UWdiRXNxeTRhYi9CMkhSeUZaNVM1TmxCM0ds?=
+ =?utf-8?B?NjNhSnQzVVNGTi9kN1NBd1pBZjErSmhlRzhYZDJrODlIYnlBVnY2NVl4QlZY?=
+ =?utf-8?Q?zvyY05yUsYD69l1J7CU+Myylz?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 6756c8b5-902d-488c-db44-08dc53ea1f98
+X-MS-Exchange-CrossTenant-AuthSource: PH7PR12MB5685.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 03 Apr 2024 14:26:59.9222
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: rreBfafSxtVurBuIAA4q31122OzlMWG7bk2mmpgKWjuEjKR33b0iRxLPB+UY9o9a
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS0PR12MB9038
 
-On 03/04/24 09:38, Waiman Long wrote:
-> On 4/3/24 08:02, Michal Koutn=C3=BD wrote:
->> On Tue, Apr 02, 2024 at 11:30:11AM -0400, Waiman Long <longman@redhat.co=
-m> wrote:
->>> Yes, there is a potential that a cpus_read_lock() may be called leading=
- to
->>> deadlock. So unless we reverse the current cgroup_mutex --> cpu_hotplug=
-_lock
->>> ordering, it is not safe to call cgroup_transfer_tasks() directly.
->> I see that cgroup_transfer_tasks() has the only user -- cpuset. What
->> about bending it for the specific use like:
+Am 03.04.24 um 15:12 schrieb Jani Nikula:
+> On Wed, 03 Apr 2024, Ville Syrjälä <ville.syrjala@linux.intel.com> wrote:
+>> On Fri, Mar 29, 2024 at 06:38:10PM +0100, Andi Shyti wrote:
+>>> Hi,
+>>>
+>>> On Fri, Mar 29, 2024 at 10:28:14AM -0700, Easwar Hariharan wrote:
+>>>> On 3/29/2024 10:16 AM, Andi Shyti wrote:
+>>>>> Hi Easwar,
+>>>>>
+>>>>> On Fri, Mar 29, 2024 at 05:00:26PM +0000, Easwar Hariharan wrote:
+>>>>>> I2C v7, SMBus 3.2, and I3C specifications have replaced "master/slave"
+>>>>> I don't understand why we forget that i3c is 1.1.1 :-)
+>>>> That's because it's a copy-paste error from Wolfram's cover letter. :) I'll update
+>>>> next go-around.
+>>> not a binding comment, though. Just for completeness, because we
+>>> are giving the version to the i2c and smbus, but not i3c.
+>>>
+>>>>>> with more appropriate terms. Inspired by and following on to Wolfram's
+>>>>>> series to fix drivers/i2c/[1], fix the terminology for users of
+>>>>>> I2C_ALGOBIT bitbanging interface, now that the approved verbiage exists
+>>>>>> in the specification.
+>>>>> The specification talks about:
+>>>>>
+>>>>>   - master -> controller
+>>>>>   - slave -> target (and not client)
+>>>>>
+>>>>> But both you and Wolfram have used client. I'd like to reach
+>>>>> some more consistency here.
+>>>> I had the impression that remote targets (i.e external to the device) were to be called clients,
+>>>> e.g. the QSFP FRUs in drivers/infiniband, and internal ones targets.
+>>>> I chose the terminology according to that understanding, but now I can't find where I got that
+>>>> information.
+>>> The word "client" does not even appear in the documentation (only
+>>> one instance in the i3c document), so that the change is not
+>>> related to the document as stated in the commit log. Unless, of
+>>> course, I am missing something.
+>>>
+>>> I'm OK with choosing a "customized" naming, but we need to reach
+>>> an agreement.
+>>>
+>>> I raised the same question to Wolfram.
+>> I don't know where that discussion happened, but my opinion
+>> is NAK to "client". Life is already confusing enough with
+>> these renames, so let's not make it even more confusing by
+>> inventing new names nowhere to be found in the spec.
 >>
->> diff --git a/include/linux/cgroup.h b/include/linux/cgroup.h
->> index 34aaf0e87def..64deb7212c5c 100644
->> --- a/include/linux/cgroup.h
->> +++ b/include/linux/cgroup.h
->> @@ -109,7 +109,7 @@ struct cgroup *cgroup_get_from_fd(int fd);
->>   struct cgroup *cgroup_v1v2_get_from_fd(int fd);
->>
->>   int cgroup_attach_task_all(struct task_struct *from, struct task_struc=
-t *);
->> -int cgroup_transfer_tasks(struct cgroup *to, struct cgroup *from);
->> +int cgroup_transfer_tasks_locked(struct cgroup *to, struct cgroup *from=
-);
->>
->>   int cgroup_add_dfl_cftypes(struct cgroup_subsys *ss, struct cftype *cf=
-ts);
->>   int cgroup_add_legacy_cftypes(struct cgroup_subsys *ss, struct cftype =
-*cfts);
->> diff --git a/kernel/cgroup/cgroup-v1.c b/kernel/cgroup/cgroup-v1.c
->> index 520a11cb12f4..f97025858c7a 100644
->> --- a/kernel/cgroup/cgroup-v1.c
->> +++ b/kernel/cgroup/cgroup-v1.c
->> @@ -91,7 +91,8 @@ EXPORT_SYMBOL_GPL(cgroup_attach_task_all);
->>    *
->>    * Return: %0 on success or a negative errno code on failure
->>    */
->> -int cgroup_transfer_tasks(struct cgroup *to, struct cgroup *from)
->> +int cgroup_transfer_tasks_locked(struct cgroup *to, struct cgroup *from)
->>   {
->>      DEFINE_CGROUP_MGCTX(mgctx);
->>      struct cgrp_cset_link *link;
->> @@ -106,9 +106,11 @@ int cgroup_transfer_tasks(struct cgroup *to, struct=
- cgroup *from)
->>      if (ret)
->>              return ret;
->>
->> -	cgroup_lock();
->> -
->> -	cgroup_attach_lock(true);
->> +	/* The locking rules serve specific purpose of v1 cpuset hotplug
->> +	 * migration, see hotplug_update_tasks_legacy() and
->> +	 * cgroup_attach_lock() */
->> +	lockdep_assert_held(&cgroup_mutex);
->> +	lockdep_assert_cpus_held();
->> +	percpu_down_write(&cgroup_threadgroup_rwsem);
->>
->>      /* all tasks in @from are being moved, all csets are source */
->>      spin_lock_irq(&css_set_lock);
->> @@ -144,8 +146,7 @@ int cgroup_transfer_tasks(struct cgroup *to, struct =
-cgroup *from)
->>      } while (task && !ret);
->>   out_err:
->>      cgroup_migrate_finish(&mgctx);
->> -	cgroup_attach_unlock(true);
->> -	cgroup_unlock();
->> +	percpu_up_write(&cgroup_threadgroup_rwsem);
->>      return ret;
->>   }
->>
->> diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
->> index 13d27b17c889..94fb8b26f038 100644
->> --- a/kernel/cgroup/cpuset.c
->> +++ b/kernel/cgroup/cpuset.c
->> @@ -4331,7 +4331,7 @@ static void remove_tasks_in_empty_cpuset(struct cp=
-uset *cs)
->>                      nodes_empty(parent->mems_allowed))
->>              parent =3D parent_cs(parent);
->>
->> -	if (cgroup_transfer_tasks(parent->css.cgroup, cs->css.cgroup)) {
->> +	if (cgroup_transfer_tasks_locked(parent->css.cgroup, cs->css.cgroup)) {
->>              pr_err("cpuset: failed to transfer tasks out of empty cpuse=
-t ");
->>              pr_cont_cgroup_name(cs->css.cgroup);
->>              pr_cont("\n");
->> @@ -4376,21 +4376,9 @@ hotplug_update_tasks_legacy(struct cpuset *cs,
->>
->>      /*
->>       * Move tasks to the nearest ancestor with execution resources,
->> -	 * This is full cgroup operation which will also call back into
->> -	 * cpuset. Execute it asynchronously using workqueue.
->>       */
->> -	if (is_empty && css_tryget_online(&cs->css)) {
->> -		struct cpuset_remove_tasks_struct *s;
->> -
->> -		s =3D kzalloc(sizeof(*s), GFP_KERNEL);
->> -		if (WARN_ON_ONCE(!s)) {
->> -			css_put(&cs->css);
->> -			return;
->> -		}
->> -
->> -		s->cs =3D cs;
->> -		INIT_WORK(&s->work, cpuset_migrate_tasks_workfn);
->> -		schedule_work(&s->work);
->> +	if (is_empty)
->> +		remove_tasks_in_empty_cpuset(cs);
->>      }
->>   }
->>
+>> And let's especially not invent names that don't even fit
+>> the purpose. "Client" makes me think of "client/server" or
+>> some real world analogy. Neither of which seem to have any
+>> resemblence to how the term would be used for i2c.
+> Agreed.
 >
-> It still won't work because of the possibility of mutiple tasks
-> involving in a circular locking dependency. The hotplug thread always
-> acquire the cpu_hotplug_lock first before acquiring cpuset_mutex or
-> cgroup_mtuex in this case (cpu_hotplug_lock --> cgroup_mutex). Other
-> tasks calling into cgroup code will acquire the pair in the order
-> cgroup_mutex --> cpu_hotplug_lock. This may lead to a deadlock if these
-> 2 locking sequences happen at the same time. Lockdep will certainly
-> spill out a splat because of this.
-
-> So unless we change all the relevant
-> cgroup code to the new cpu_hotplug_lock --> cgroup_mutex locking order,
-> the hotplug code can't call cgroup_transfer_tasks() directly.
+> I2C 7.0, I3C 1.1.1, and SMBus 3.2 have all switched to controller/target
+> terminology. The SMBus spec has additionally converted generic host
+> references to controller.
 >
+> At least for i915 where I have some say in the matter, controller/target
+> it shall be.
 
-IIUC that was Thomas' suggestion [1], but I can't tell yet how bad it would
-be to change cgroup_lock() to also do a cpus_read_lock().
++1 for using the same vocabulary in amdgpu as in the specifications.
 
-Also, I gave Michal's patch a try and it looks like it's introducing a
-  cgroup_threadgroup_rwsem -> cpuset_mutex
-ordering from
-  cgroup_transfer_tasks_locked()
-  `\
-    percpu_down_write(&cgroup_threadgroup_rwsem);
-    cgroup_migrate()
-    `\
-      cgroup_migrate_execute()
-      `\
-        ss->can_attach() // cpuset_can_attach()
-        `\
-          mutex_lock(&cpuset_mutex);
+My personal opinion is that master/slave was actually a pretty good 
+description of the relationship.
 
-which is invalid, see below.
+The "slave" or rather target of the communication is forced into 
+operation, can't speak back and potentially won't get any payment for 
+the serving.
 
-[1]: https://lore.kernel.org/lkml/87cyrfe7a3.ffs@tglx/
+If we remove the word slave from our vocabulary society will just sooner 
+or later start to forget the meaning, and that is probably not a good thing.
 
-[   77.627915] WARNING: possible circular locking dependency detected
-[   77.628419] 6.9.0-rc1-00042-g844178b616c7-dirty #23 Tainted: G        W
-[   77.629035] ------------------------------------------------------
-[   77.629548] cpuhp/2/24 is trying to acquire lock:
-[   77.629946] ffffffff82d680b0 (cgroup_threadgroup_rwsem){++++}-{0:0}, at:=
- cgroup_transfer_tasks_locked+0x123/0x450
-[   77.630851]
-[   77.630851] but task is already holding lock:
-[   77.631397] ffffffff82d6c088 (cpuset_mutex){+.+.}-{3:3}, at: cpuset_upda=
-te_active_cpus+0x352/0xca0
-[   77.632169]
-[   77.632169] which lock already depends on the new lock.
-[   77.632169]
-[   77.632891]
-[   77.632891] the existing dependency chain (in reverse order) is:
-[   77.633521]
-[   77.633521] -> #1 (cpuset_mutex){+.+.}-{3:3}:
-[   77.634028]        lock_acquire+0xc0/0x2d0
-[   77.634393]        __mutex_lock+0xaa/0x710
-[   77.634751]        cpuset_can_attach+0x6d/0x2c0
-[   77.635146]        cgroup_migrate_execute+0x6f/0x520
-[   77.635565]        cgroup_attach_task+0x2e2/0x450
-[   77.635989]        __cgroup1_procs_write.isra.0+0xfd/0x150
-[   77.636440]        kernfs_fop_write_iter+0x127/0x1c0
-[   77.636917]        vfs_write+0x2b0/0x540
-[   77.637330]        ksys_write+0x70/0xf0
-[   77.637707]        int80_emulation+0xf8/0x1b0
-[   77.638183]        asm_int80_emulation+0x1a/0x20
-[   77.638636]
-[   77.638636] -> #0 (cgroup_threadgroup_rwsem){++++}-{0:0}:
-[   77.639321]        check_prev_add+0xeb/0xb20
-[   77.639751]        __lock_acquire+0x12ac/0x16d0
-[   77.640345]        lock_acquire+0xc0/0x2d0
-[   77.640903]        percpu_down_write+0x33/0x260
-[   77.641347]        cgroup_transfer_tasks_locked+0x123/0x450
-[   77.641826]        cpuset_update_active_cpus+0x782/0xca0
-[   77.642268]        sched_cpu_deactivate+0x1ad/0x1d0
-[   77.642677]        cpuhp_invoke_callback+0x16b/0x6b0
-[   77.643098]        cpuhp_thread_fun+0x1ba/0x240
-[   77.643488]        smpboot_thread_fn+0xd8/0x1d0
-[   77.643873]        kthread+0xce/0x100
-[   77.644209]        ret_from_fork+0x2f/0x50
-[   77.644626]        ret_from_fork_asm+0x1a/0x30
-[   77.645084]
-[   77.645084] other info that might help us debug this:
-[   77.645084]
-[   77.645829]  Possible unsafe locking scenario:
-[   77.645829]
-[   77.646356]        CPU0                    CPU1
-[   77.646748]        ----                    ----
-[   77.647143]   lock(cpuset_mutex);
-[   77.647529]                                lock(cgroup_threadgroup_rwsem=
-);
-[   77.648193]                                lock(cpuset_mutex);
-[   77.648767]   lock(cgroup_threadgroup_rwsem);
-[   77.649216]
-[   77.649216]  *** DEADLOCK ***
+Regards,
+Christian.
+
+>
+>
+> BR,
+> Jani.
+>
+>
 
 
