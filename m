@@ -1,52 +1,76 @@
-Return-Path: <linux-kernel+bounces-130088-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-130089-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9D1198973F0
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 17:27:06 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 48EBB8973F3
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 17:28:17 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CDAD51C22DC9
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 15:27:05 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6BE1D1C21A92
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 15:28:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8C13C14A0A2;
-	Wed,  3 Apr 2024 15:26:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=thefossguy.com header.i=@thefossguy.com header.b="mIu1yPYh"
-Received: from mail-4022.proton.ch (mail-4022.proton.ch [185.70.40.22])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3317214A0B5;
+	Wed,  3 Apr 2024 15:28:09 +0000 (UTC)
+Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4226F148FE8
-	for <linux-kernel@vger.kernel.org>; Wed,  3 Apr 2024 15:26:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.70.40.22
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0A486148FE8
+	for <linux-kernel@vger.kernel.org>; Wed,  3 Apr 2024 15:28:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712158017; cv=none; b=HQHw/QWoc/CDpc4qmf3PvUBp5YyPQzRu7G5wiirk2O7Uj3xMTFtWant5G0FBTjL2iEFmMEZ6WbvPEtC6Xgw/toEbdQoZnT5diGql6ufRVnjpDGG5dtyjNkAAr/m2Al0tY7TwHfvxGkbpycW1URXyIFHKQi74b4I8RL9I78YHuIE=
+	t=1712158088; cv=none; b=RzQld4vmF0pqtRcXZFUTIgzpmUVr8ntYWv2cNYEoz/eF8rzZVYFmGHb8uhaWMc0Rau96o1ujg1sdFtpB1eDKdmsQyyB7qPC4afyEVK8zNqCCynF8NqAhXz68De7bG4R6RzKyJbSQSgY9XLOZvfVLK+xF87+Wwroas1/xTo0RqwA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712158017; c=relaxed/simple;
-	bh=Z7bkTgkUMCbu64k/VOOsbCpZzTWGIgZdwpQsRWq5X3A=;
-	h=Date:To:From:Cc:Subject:Message-ID:MIME-Version:Content-Type; b=G6HEYqJFQ1iSq97hW6BUld/ngKQw06aHfw5apa2qPFisYW0JZRYqSfs8YJd6T+qDcJa0A4pT0FtGbQt7Dh4HdBIDl0+H7kofExbWwsxmMBmL53w/dom3gzDUrpR7Vr+6jIDhMZfRaJHFaXtdZTXrgCoJwCjEOjwMOhCmD0ruIkg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=thefossguy.com; spf=pass smtp.mailfrom=thefossguy.com; dkim=pass (2048-bit key) header.d=thefossguy.com header.i=@thefossguy.com header.b=mIu1yPYh; arc=none smtp.client-ip=185.70.40.22
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=thefossguy.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=thefossguy.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=thefossguy.com;
-	s=protonmail; t=1712158011; x=1712417211;
-	bh=9SQXRgCUecFeWBFD17xwAybx00ZfUI80tkTt7oEpgbI=;
-	h=Date:To:From:Cc:Subject:Message-ID:Feedback-ID:From:To:Cc:Date:
-	 Subject:Reply-To:Feedback-ID:Message-ID:BIMI-Selector;
-	b=mIu1yPYh/SOnPiPmfVQR14NLuXoTecAhyJ/uF7ffGscpgsXDkMJC3hEm7La/4034R
-	 bpc1LYk2unCxUXeq64HUDzDoBB6XEidI2YoKgij6T8unAAu4Z8Q9fLzAlnZXWT6+Ut
-	 IEho6xr3UisETLI5ymHomXVD7rS7rnaRGPLKiuuVHEvkTh+a84zX/YkGgtZhMpJXO8
-	 UAoHc47elTv7sNf3LqD+s7eN4wHBRDtYl2xiMBDItM+Q+nGKkyayRNB6AcIX2WFq7U
-	 kw58Zu4myk6mAjyRVgjFz3gZsRbg692KNeQqfYOVr7Ta35HUAtS92kRpVh97RgmNij
-	 wpN+qWpcPXNRQ==
-Date: Wed, 03 Apr 2024 15:26:44 +0000
-To: Sebastian Reichel <sebastian.reichel@collabora.com>
-From: Pratham Patel <prathampatel@thefossguy.com>
-Cc: Saravana Kannan <saravanak@google.com>, Dragan Simic <dsimic@manjaro.org>, devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org, regressions@lists.linux.dev, stable@vger.kernel.org
-Subject: Re: Fixing the devicetree of Rock 5 Model B (and possibly others)
-Message-ID: <D0ALCT8IOMGQ.105ELHD701M4F@thefossguy.com>
-Feedback-ID: 104309535:user:proton
+	s=arc-20240116; t=1712158088; c=relaxed/simple;
+	bh=GmbD26WMynLhI5PkWa2+VgAcWtdokHdMIyR0DsUfccc=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=FRthQAqt7FgPdD6nxdRINlnjd4MH41kh1/nWFNkOQne3dLOYtEJj80Lk9UD9iF3HEd3tjHu51c6SyPyvUdUk6ZutdUJFPeoFHXVS6CbxqbUbjwZ6amtPimORdZjWAWbQGufmw2qc2xzsquPGjgigEKoTzkiOll7xCM2+h2PysLk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+	(Exim 4.92)
+	(envelope-from <ore@pengutronix.de>)
+	id 1rs2WX-0006iQ-Tz; Wed, 03 Apr 2024 17:27:37 +0200
+Received: from [2a0a:edc0:2:b01:1d::c5] (helo=pty.whiteo.stw.pengutronix.de)
+	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.94.2)
+	(envelope-from <ore@pengutronix.de>)
+	id 1rs2WV-00ACng-OF; Wed, 03 Apr 2024 17:27:35 +0200
+Received: from ore by pty.whiteo.stw.pengutronix.de with local (Exim 4.96)
+	(envelope-from <ore@pengutronix.de>)
+	id 1rs2WV-00CU00-22;
+	Wed, 03 Apr 2024 17:27:35 +0200
+Date: Wed, 3 Apr 2024 17:27:35 +0200
+From: Oleksij Rempel <o.rempel@pengutronix.de>
+To: Rob Herring <robh@kernel.org>
+Cc: Kory Maincent <kory.maincent@bootlin.com>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	Jonathan Corbet <corbet@lwn.net>,
+	Luis Chamberlain <mcgrof@kernel.org>,
+	Russ Weight <russ.weight@linux.dev>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	"Rafael J. Wysocki" <rafael@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>, Mark Brown <broonie@kernel.org>,
+	Frank Rowand <frowand.list@gmail.com>, Andrew Lunn <andrew@lunn.ch>,
+	Heiner Kallweit <hkallweit1@gmail.com>,
+	Russell King <linux@armlinux.org.uk>,
+	Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+	netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-doc@vger.kernel.org, devicetree@vger.kernel.org,
+	Dent Project <dentproject@linuxfoundation.org>
+Subject: Re: [PATCH net-next v6 11/17] dt-bindings: net: pse-pd: Add another
+ way of describing several PSE PIs
+Message-ID: <Zg11Z1kJ42eLhabK@pengutronix.de>
+References: <20240326-feature_poe-v6-0-c1011b6ea1cb@bootlin.com>
+ <20240326-feature_poe-v6-11-c1011b6ea1cb@bootlin.com>
+ <20240402132637.GA3744978-robh@kernel.org>
+ <ZgworgDAXXOpf3QV@pengutronix.de>
+ <20240403144448.GB3508225-robh@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -54,67 +78,107 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Content-Disposition: inline
+In-Reply-To: <20240403144448.GB3508225-robh@kernel.org>
+X-Sent-From: Pengutronix Hildesheim
+X-URL: http://www.pengutronix.de/
+X-Accept-Language: de,en
+X-Accept-Content-Type: text/plain
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: ore@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 
-On Wed Apr 3, 2024 at 7:22 PM IST, Sebastian Reichel wrote:
-> Hi,
->
-> On Wed, Apr 03, 2024 at 01:03:07AM +0000, Pratham Patel wrote:
-> > > > > Also, can you give the output of <debugfs>/devices_deferred for t=
-he
-> > > > > good vs bad case?
-> > > >
-> > > > I can't provide you with requested output from the bad case, since =
-the
-> > > > kernel never moves past this to an initramfs rescue shell, but foll=
-owing
-> > > > is the output from v6.8.1 (**with aforementioned patch reverted**).
-> > > >
-> > > > # cat /sys/kernel/debug/devices_deferred
-> > > > fc400000.usb    platform: wait for supplier /phy@fed90000/usb3-port
-> > > > 1-0022  typec_fusb302: cannot register tcpm port
-> > > > fc000000.usb    platform: wait for supplier /phy@fed80000/usb3-port
-> > > >
-> > > > It seems that v6.8.2 works _without needing to revert the patch_. I=
- will
-> > > > have to look into this sometime this week but it seems like
-> > > > a8037ceb8964 (arm64: dts: rockchip: drop rockchip,trcm-sync-tx-only=
- from rk3588 i2s)
-> > > > seems to be the one that fixed the root issue. I will have to test =
-it
-> > > > sometime later this week.
-> > >
-> > > Ok, once you find the patch that fixes things, let me know too.
-> >
-> > Will do!
->
-> FWIW the v6.8.1 kernel referenced above is definitely patched, since
-> upstream's Rock 5B DT does neither describe fusb302, nor the USB
-> port it is connected to.
->
-> We have a few Rock 5B in Kernel CI and upstream boots perfectly
-> fine:
->
-> https://lava.collabora.dev/scheduler/device_type/rk3588-rock-5b
+On Wed, Apr 03, 2024 at 09:44:48AM -0500, Rob Herring wrote:
+> On Tue, Apr 02, 2024 at 05:47:58PM +0200, Oleksij Rempel wrote:
+> > On Tue, Apr 02, 2024 at 08:26:37AM -0500, Rob Herring wrote:
+> > > > +          pairsets:
+> > > > +            $ref: /schemas/types.yaml#/definitions/phandle-array
+> > > > +            description:
+> > > > +              List of phandles, each pointing to the power supply for the
+> > > > +              corresponding pairset named in 'pairset-names'. This property
+> > > > +              aligns with IEEE 802.3-2022, Section 33.2.3 and 145.2.4.
+> > > > +              PSE Pinout Alternatives (as per IEEE 802.3-2022 Table 145\u20133)
+> > > > +              |-----------|---------------|---------------|---------------|---------------|
+> > > > +              | Conductor | Alternative A | Alternative A | Alternative B | Alternative B |
+> > > > +              |           |    (MDI-X)    |     (MDI)     |      (X)      |      (S)      |
+> > > > +              |-----------|---------------|---------------|---------------|---------------|
+> > > > +              | 1         | Negative VPSE | Positive VPSE | \u2014             | \u2014             |
+> > > > +              | 2         | Negative VPSE | Positive VPSE | \u2014             | \u2014             |
+> > > > +              | 3         | Positive VPSE | Negative VPSE | \u2014             | \u2014             |
+> > > > +              | 4         | \u2014             | \u2014             | Negative VPSE | Positive VPSE |
+> > > > +              | 5         | \u2014             | \u2014             | Negative VPSE | Positive VPSE |
+> > > > +              | 6         | Positive VPSE | Negative VPSE | \u2014             | \u2014             |
+> > > > +              | 7         | \u2014             | \u2014             | Positive VPSE | Negative VPSE |
+> > > > +              | 8         | \u2014             | \u2014             | Positive VPSE | Negative VPSE |
+> > > > +            minItems: 1
+> > > > +            maxItems: 2
+> > > 
+> > > "pairsets" does not follow the normal design pattern of foos, foo-names, 
+> > > and #foo-cells. You could add #foo-cells I suppose, but what would cells 
+> > > convey? I don't think it's a good fit for what you need.
+> > > 
+> > > The other oddity is the number of entries and the names are fixed. That 
+> > > is usually defined per consumer. 
+> > > 
+> > > As each entry is just a power rail, why can't the regulator binding be 
+> > > used here?
+> > 
+> > I'm not against describing it consequent with regulator till the wire
+> > end, but right now I have no idea how it should be described by using
+> > regulator bindings. There are maximum 2 rails going in to PSE PI on one
+> > side and 4 rails with at least 5 combinations supported by standard on
+> > other side. Instead of inventing anything new, I suggested to describe
+> > supported output combinations by using IEEE 802.3 standard.
+> 
+> There's 4 combinations above, what's the 5th combination? SPE?
 
-Hmm, weird then. I can confirm that v6.8.1 doesn't _always_ boot. It
-boots some times but still fails a majority of times. There is a
-2 out of 10 chance that v6.8.1 will not boot. If you keep rebooting
-enough times, you might get it to boot but the next boot is
-likely to be borked. :(
+The 5th combination is PoE4 where two rails are supplying power at same
+time.
 
-That said, v6.8.2 might still have the same issue, but the probably of a
-failed boot might be _lesser_ than v6.8.1 (from what I saw). I will
-verify that behaviour sometime tomorrow or day after tomorrow.
+First 4 variants for PoE: one or two positive rails are attached (but
+only one is used at same time) to pairs 1-2 or 3-4, or 5-6, or 7-8. Or
+support all of combinations if some advanced PSE PI is present. PSE PI
+is kind of MUX for regulators.
 
->
-> So it could be one of your downstream patches, which is introducing
-> this problem.
+One more variant in case of PoE4: two positive rail are attached at same
+time, one to 1-2, second to 5-6. May be one more variant with opposite
+polarity, this will be the 6th combination.
 
-I thought so too. So I built a vanilla kernel from the release tarball
-of v6.8.1, using GCC + arm64 defconfig. I also tried using LLVM just in
-case but noticed the same result.
+> Seems to me you just describe the 2 rails going to the connector and 
+> then describe all the variations the connector supports. The PSE 
+> (h/w) has little to do with which variations are supported, right?
 
- -- Pratham Patel
+No. In case of mutli-channel PSE, it needs to know if channels are
+attached to one port or to different ports. PSE is not only responsible
+to enable the power, it runs classification of devices attached to the
+port, so it will decide, which rail should be enabled.
 
+> For example, MDI-X vs. MDI support is determined by the PHY, right?
+
+Yes and No. Until PSE do not start supplying power, PHY will not be able to
+start communication with the remote PHY, so it will not be able to
+detect MDI/X configuration.
+
+Polarity configuration is important for user space or user to get
+information about supported pin configuration and if possible,
+change the configuration.
+
+> Or it has to be supported by both the PHY and PSE?
+
+In most cases PSE and PHY work independently from each other, they just
+share same port. Potential exception are:
+- in case data line should not be shared with power lines, we need to
+  know what pins are used for power, this information would help to
+  provide PHY configuration.
+- in case PHY autoneg signals disturb PoE classification, we need to
+  coordinate PHY and PSE states.
+
+Regards,
+Oleksij
+-- 
+Pengutronix e.K.                           |                             |
+Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
+31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
+Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
 
