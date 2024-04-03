@@ -1,126 +1,169 @@
-Return-Path: <linux-kernel+bounces-130421-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-130428-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id A30D18977D7
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 20:10:31 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1FA15897867
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 20:43:10 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5E8E9282D54
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 18:10:30 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5DDDDB2DBE6
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 18:13:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 70187153574;
-	Wed,  3 Apr 2024 18:10:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F3F8A153566;
+	Wed,  3 Apr 2024 18:12:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=canonical.com header.i=@canonical.com header.b="P5lp7Zfm"
-Received: from smtp-relay-canonical-0.canonical.com (smtp-relay-canonical-0.canonical.com [185.125.188.120])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ZBHw4ak6"
+Received: from mail-vk1-f176.google.com (mail-vk1-f176.google.com [209.85.221.176])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1EF1817C98;
-	Wed,  3 Apr 2024 18:10:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.125.188.120
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AC226154BEF;
+	Wed,  3 Apr 2024 18:12:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712167821; cv=none; b=JMAyEABFvEiLLubMo3OIpFSpfQUd4uzl9nL7F7H2VZHFCKg6fEI2aF+SAt39rXO1SU3NL+pto/wpTsj5/8ONz3+hn62fxYI+/1Ve7YhOLeWWQbn7WAgFnjQdbeaC2P3APTh05zBdW8io/XAh7YARyBcOv4y/pJ+Fr2KPlsT+oQY=
+	t=1712167943; cv=none; b=O0fi5dIv0qp6/7Hsc5tScWcJtOTJZMC/JV5l4Dbr87F2U9hbNSLKZlSE/piZ0D/34+Nu4JMkKf5V57Ruh2QEJkR3Lclhs+D6WxwOT8gsBxJrHUO3ooKKbyAvwxPeblL3XHcgsD30PN2AQ/6UxgjV0XYDd+BT7CivQFBZxkAE0eM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712167821; c=relaxed/simple;
-	bh=uOWennQkUOPuwn8gwTvr4tVH8UUda4SVjW7W5jff4CM=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=TWmhsk5qh4Y24AYWdqgYXiIoDS7v0RQpc0zyjjpcU11ch/XLbNiNap6bSaYi1yRoDAV1AGqVlxrf+Lk7CaMXnMvYXXB8SBIer3HNM2DsPqy8UQYuhjSQgUH+E+J1IK90gOB4qjrDnqOONU8KO0U6iF/KztUz7LMAZWEmfdvBWbU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canonical.com; spf=pass smtp.mailfrom=canonical.com; dkim=pass (2048-bit key) header.d=canonical.com header.i=@canonical.com header.b=P5lp7Zfm; arc=none smtp.client-ip=185.125.188.120
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canonical.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canonical.com
-Received: from [10.172.66.188] (1.general.jsalisbury.us.vpn [10.172.66.188])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-relay-canonical-0.canonical.com (Postfix) with ESMTPSA id 9FC983F2F9;
-	Wed,  3 Apr 2024 18:10:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-	s=20210705; t=1712167818;
-	bh=AVCRfVvSKO0IO7YLIfyO05ThGqrBf2jTRKl0XcMO2a8=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type;
-	b=P5lp7ZfmUxIQ5syPtqfd2asTVdkr9EGyJinDFnluL63mE66jtwEfoLwaU2MI1LBiK
-	 vv1LkCPuNRzmk0ay5WGP97BqaI5MsnUVRy1wmByKq9aOdvYTiN5cFrve+vUjLhmzf+
-	 Aa07T59NPR7AcORoRg8gyCfUl8ydYWEU4GjzuICwZudzNFOlQrrBLWQFZRuoFFZu7S
-	 bQeocmIXLwYZr7sgTA5U7KR99jMqD8YQGo2IVpTAwohkH2tPVvJgxkuYQlcqdbfpb6
-	 QVlta3wjQ0sYL5LVW9RFP/rRpRc1BEPbkWtq4W86h2498WkH1rK4L6lJ0rg0xVFasQ
-	 sHR5K0t8Vj6lw==
-Message-ID: <3ecbdd00-151b-4cec-9a61-c6d340b2e147@canonical.com>
-Date: Wed, 3 Apr 2024 14:10:16 -0400
+	s=arc-20240116; t=1712167943; c=relaxed/simple;
+	bh=8xHv3oyWik1X+pB1D6LHL4+E5z+BFONERpUXyTJcEbs=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=Z5HScwtkrP0HWyueSh9cNfjTIl6/o2diLCnLpOUKkc+3yzxMeVrHtHg+insSfx9I8ziQYYy/SxkSGeSW0u69raitt4ENSKHvfQZEO69qkePeqO9QfUUIGs4mhLeD7d/Xr0BqzviJdS/NIOXB95zxVCAqRNcCScC5l8RNaKZOp38=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ZBHw4ak6; arc=none smtp.client-ip=209.85.221.176
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-vk1-f176.google.com with SMTP id 71dfb90a1353d-4d43b3fc06cso33929e0c.3;
+        Wed, 03 Apr 2024 11:12:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1712167940; x=1712772740; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=2LPRUCfO8vLA+VTuxeAjc+lg7ZeBV4TKM1NgQNqaX4o=;
+        b=ZBHw4ak6buEMI4ESelBXVSkn4JsJJQZWUvmo/3hVXRnB4yuWcttWw+d2Mzsv6pUzha
+         TJImE+8OvNeMUsiD5xpzxNa7sF0ufh3Jq6HLPSiTvh1DVOp1oLRICsIcCpaDHK/2e3yO
+         pqcU0WQMXpko5YkRnyuacFO+n7pZTh6JVdckGI4rQIvxIVlDHn1Efqpd9HSoHhiz6v4l
+         0TKH8V+ON3ffWjEPIxS5aiPn57LgbrvWUdChOPC48m0JtmGvdesOOiKM/gHeSCkiSmsI
+         +JGJYtVO3/yxZodDEYvIyqlyZ0rsg/6rq4BwUG9ixA0880JPp80lI/sKq9cDgkv2ldLn
+         i7JQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712167940; x=1712772740;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=2LPRUCfO8vLA+VTuxeAjc+lg7ZeBV4TKM1NgQNqaX4o=;
+        b=N45U6w2I4/S9JmqfmKRvyON+woKhtzEPMdM5+VykaqtJuuzQMjeZfrQFjA3s2cUloJ
+         Q9+fhyRaQate7UE8MG4YgNiSEWdsllo96M2AL3WYAz8edfQpJIvCiNGx2HAajtdgnR3J
+         5YuvfTNClxdHpCw8NIQiFsm1HSpRbkdW8V4mKG7vF0fXu3l9lYB85oEi3hYx1q5oLRbK
+         R3snyMZSTrrAxl8AVF40cM8klMWqW9mDp6nCqDKg1+kGr8N1XMCHBiTXw8o3YAZzsmP/
+         NRpm7/dM73XYlRA+SnKc516raFfAv3VG4QcSee7K/MfzVdP7w5z2EGCHmFaJBFkIQVLE
+         5n2Q==
+X-Forwarded-Encrypted: i=1; AJvYcCXPaBbDMt2CbQWBwvB2VcoDdpqr0UiTivWGfYul/2jjwmEaYbpyZuKbibo/3wPSDZhq1vZNrl8jrGvxpBKlQc8W+H7X/+iPY9klHhv+HKQY+1TAF9CpDlEAW1X1htabPg3s3WH1J/UkJw==
+X-Gm-Message-State: AOJu0YzZZ44j8eAB69w1AqLEu3j/BW41Udgct3eGDYewck+r32pD4bA1
+	OGXuA6FW34/i54t8CLIKHwTNrtsQWHX+gtEEN/QnZtJ7K9gXygT/R3jmPsHelb8JNhVjo6kFX5I
+	JusRPxUyN87Gr0NEHvTbxrSML8PY=
+X-Google-Smtp-Source: AGHT+IHrrkiSOm6wLnFKQHKdrarP92qhgfwfDo/mPb5qCUU7DxYQE24BY/ERiXN9pre31elgG8R8MxOj8He3tkMs4Vk=
+X-Received: by 2002:a05:6122:189c:b0:4ca:80c5:753d with SMTP id
+ bi28-20020a056122189c00b004ca80c5753dmr40719vkb.4.1712167940470; Wed, 03 Apr
+ 2024 11:12:20 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [v5.15 Regression] block: rename GENHD_FL_NO_PART_SCAN to
- GENHD_FL_NO_PART
-To: Christoph Hellwig <hch@lst.de>
-Cc: linux-kernel@vger.kernel.org, linux-block@vger.kernel.org,
- axboe@kernel.dk, gregkh@linuxfoundation.org, sashal@kernel.org,
- stable@vger.kernel.org, Francis Ginther <francis.ginther@canonical.com>
-References: <924449dc-9b1f-4943-afe3-a68c03aedbb5@canonical.com>
- <20240403180512.GA3411@lst.de>
-Content-Language: en-US
-From: Joseph Salisbury <joseph.salisbury@canonical.com>
-Autocrypt: addr=joseph.salisbury@canonical.com; keydata=
- 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
- p24lPxLL08SuCEzuBw==
-In-Reply-To: <20240403180512.GA3411@lst.de>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+References: <20240222094006.1030709-1-apatel@ventanamicro.com>
+ <20240222094006.1030709-2-apatel@ventanamicro.com> <CA+V-a8tGucbJ87hsMQDEgcor5BzDmB_WnRsEn6c9F_HzucWLXQ@mail.gmail.com>
+ <CAK9=C2VgiRcQjBEPmZjdcMf221omKS8ntdcenSE7G__4xYcCUA@mail.gmail.com>
+ <CA+V-a8ser=hDmst6+XSeOWaEoOd+iY3Ys6bYBWDa5UYPfT+Pug@mail.gmail.com> <4dbd5daf-d100-4ae2-8bda-c657e23a809e@sifive.com>
+In-Reply-To: <4dbd5daf-d100-4ae2-8bda-c657e23a809e@sifive.com>
+From: "Lad, Prabhakar" <prabhakar.csengg@gmail.com>
+Date: Wed, 3 Apr 2024 19:10:31 +0100
+Message-ID: <CA+V-a8uLjEb==sTXa3WePqTWn4ejVNJfMu+qTXSNZz1Uw+U5oA@mail.gmail.com>
+Subject: Re: [PATCH v14 01/18] irqchip/sifive-plic: Convert PLIC driver into a
+ platform driver
+To: Samuel Holland <samuel.holland@sifive.com>, Anup Patel <anup@brainfault.org>
+Cc: Anup Patel <apatel@ventanamicro.com>, devicetree@vger.kernel.org, 
+	Conor Dooley <conor+dt@kernel.org>, Geert Uytterhoeven <geert+renesas@glider.be>, 
+	Marc Zyngier <maz@kernel.org>, Atish Patra <atishp@atishpatra.org>, linux-kernel@vger.kernel.org, 
+	Saravana Kannan <saravanak@google.com>, =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>, 
+	Rob Herring <robh+dt@kernel.org>, Palmer Dabbelt <palmer@dabbelt.com>, 
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
+	Paul Walmsley <paul.walmsley@sifive.com>, Thomas Gleixner <tglx@linutronix.de>, 
+	Frank Rowand <frowand.list@gmail.com>, linux-riscv@lists.infradead.org, 
+	linux-arm-kernel@lists.infradead.org, Andrew Jones <ajones@ventanamicro.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
+Hi Samuel and Anup,
 
-
-On 4/3/24 14:05, Christoph Hellwig wrote:
-> Hi Joseph.
+On Wed, Apr 3, 2024 at 5:28=E2=80=AFPM Samuel Holland <samuel.holland@sifiv=
+e.com> wrote:
 >
-> given that Canonical ignores our kernel licensing rules and tries to
-> get away with it I'm not going to offer any help to Canonical at all.
+> Hi Prabhakar,
+>
+> On 2024-04-03 10:49 AM, Lad, Prabhakar wrote:
+> > On Wed, Apr 3, 2024 at 3:17=E2=80=AFPM Anup Patel <apatel@ventanamicro.=
+com> wrote:
+> >>
+> >> On Wed, Apr 3, 2024 at 2:01=E2=80=AFPM Lad, Prabhakar
+> >> <prabhakar.csengg@gmail.com> wrote:
+> >>>
+> >>> Hi Anup,
+> >>>
+> >>> On Thu, Feb 22, 2024 at 9:41=E2=80=AFAM Anup Patel <apatel@ventanamic=
+ro.com> wrote:
+> >>>>
+> >>>> The PLIC driver does not require very early initialization so conver=
+t
+> >>>> it into a platform driver.
+> >>>>
+> >>>> After conversion, the PLIC driver is probed after CPUs are brought-u=
+p
+> >>>> so setup cpuhp state after context handler of all online CPUs are
+> >>>> initialized otherwise PLIC driver crashes for platforms with multipl=
+e
+> >>>> PLIC instances.
+> >>>>
+> >>>> Signed-off-by: Anup Patel <apatel@ventanamicro.com>
+> >>>> ---
+> >>>>  drivers/irqchip/irq-sifive-plic.c | 101 ++++++++++++++++++---------=
+---
+> >>>>  1 file changed, 61 insertions(+), 40 deletions(-)
+> >>>>
+> >>> This patch seems to have broken things on RZ/Five SoC, after revertin=
+g
+> >>> this patch I get to boot it back again on v6.9-rc2. Looks like there
+> >>> is some probe order issue after switching to platform driver?
+> >>
+> >> Yes, this is most likely related to probe ordering based on your DT.
+> >>
+> >> Can you share the failing boot log and DT ?
+> >
+> > non working case, https://paste.debian.net/1312947/
+>
+> Looks like you need to add "keep_bootcon" to your kernel command line to =
+get a
+> full log here.
+>
+Thanks for the pointer, that helped me to get to the root cause.
 
-Sorry, I was trying to help the community since this is affecting 
-upstream stable kernels.
+> > after reverting, https://paste.debian.net/1312948/
+> > (attached is the DTB)
+>
+> I don't see anything suspicious between the "riscv-intc" lines and the "F=
+ixed
+> dependency cycle(s)" lines that looks like it would depend on the PLIC IR=
+Q
+> domain. Maybe there is some driver that does not handle -EPROBE_DEFER? It=
+'s hard
+> to tell without the full log from the failure case.
+>
+The clock required for the PLIC wasnt available during the probe of
+this driver. This bug got hidden when the PLIC driver was probed
+earlier  in boot where it used an incorrect clock source. Ive created
+a patch which adds a missing clock for the PLIC.
+
+Sorry for the noise!
+
+Cheers,
+Prabhakar
 
