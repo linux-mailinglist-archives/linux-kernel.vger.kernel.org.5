@@ -1,1527 +1,233 @@
-Return-Path: <linux-kernel+bounces-129008-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-129007-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id CAFF6896315
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 05:39:40 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 93218896312
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 05:39:22 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7BC60284496
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 03:39:39 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B09221C22B9B
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 03:39:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AC3373F9E0;
-	Wed,  3 Apr 2024 03:39:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 017F73D56F;
+	Wed,  3 Apr 2024 03:39:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=mediatek.com header.i=@mediatek.com header.b="WVoo1CV4"
-Received: from mailgw01.mediatek.com (unknown [60.244.123.138])
+	dkim=pass (1024-bit key) header.d=mediatek.com header.i=@mediatek.com header.b="DCov68NA";
+	dkim=pass (1024-bit key) header.d=mediateko365.onmicrosoft.com header.i=@mediateko365.onmicrosoft.com header.b="G8CvULDJ"
+Received: from mailgw02.mediatek.com (unknown [210.61.82.184])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A2F873D967;
-	Wed,  3 Apr 2024 03:39:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=60.244.123.138
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712115563; cv=none; b=dNGpjpODg+Ix9dNaezEX17BjVgHn9+Fj0aY2cToji41grmRlBXKKU+Bg/ztXhFLpLfYt8DPjLCHzBlJ9RUhRUchZMRbDSJWSlUVyOCupi10TH4/2yvlI7jJhfwj/YSwjHktEPJj4RE9JzVoknQiBdRDRMauUyoMXDY8x3oltPZM=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712115563; c=relaxed/simple;
-	bh=eEKEu/H8V9Uvke2Owd6Wz+47CkkKMhvPB7kWOBZgiOY=;
-	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=sYLj5TMOANYRaynZAZNpiLkegI3zr8pQRDvj+6nD2AZAmeQuA1l+FwVUl8VOC10mfWtE45/0nvf4Kl7JafeKd7/tSNl5h12T0E4CmQW1JOn++rhlPFktHwPVyQbhobN4P186KyIEI1TdyUoq0/Gqe5FhcpF/zUpE2c4MaEjPxaE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=mediatek.com; spf=pass smtp.mailfrom=mediatek.com; dkim=pass (1024-bit key) header.d=mediatek.com header.i=@mediatek.com header.b=WVoo1CV4; arc=none smtp.client-ip=60.244.123.138
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B2C993D576
+	for <linux-kernel@vger.kernel.org>; Wed,  3 Apr 2024 03:39:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=210.61.82.184
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1712115557; cv=fail; b=V63zJ4YlsZlCB0O27DR7pjepaLpYLxYinzP/3VQYcOv2CY1OvYsqP7eCZceGZ0K/1MiS8ALf8vARTiVY0xYegyLba74JNyVcP8gZwIL2/aCMDzJr/wYQqBmHGXV0Xl7WMZIFzFabTnweVzIL1RQFHTspXF0CmtiUFsetMQMwU7Y=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1712115557; c=relaxed/simple;
+	bh=DBY+JNbyB9Ntgb0EXaPM5b/bh/BgvABMivVHH6rAaKo=;
+	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
+	 Content-Type:MIME-Version; b=cVEoX9vhh6AFYuABeotPFvLH41AXU53mFrJhJ4WhCplogQoWzklpL6f/TmEoVg0Cd72WKtW6xaB766SHOE1044HPVW5oCxNwBV8Cd85OzZS27Lk3eDev0pdrZYNxgskXScqVqqOg4f0W0ARAwR8DLOHH89htleYQsQI9dd2eIJw=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=mediatek.com; spf=pass smtp.mailfrom=mediatek.com; dkim=pass (1024-bit key) header.d=mediatek.com header.i=@mediatek.com header.b=DCov68NA; dkim=pass (1024-bit key) header.d=mediateko365.onmicrosoft.com header.i=@mediateko365.onmicrosoft.com header.b=G8CvULDJ; arc=fail smtp.client-ip=210.61.82.184
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=mediatek.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mediatek.com
-X-UUID: bea17208f16b11eeb8927bc1f75efef4-20240403
+X-UUID: badeed76f16b11ee935d6952f98a51a9-20240403
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-	h=Content-Type:Content-Transfer-Encoding:MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:CC:To:From; bh=7jICRO2lh9aWJBIiaQZ+KFVyhuwJzfaJ3uHtma9Jnsw=;
-	b=WVoo1CV4yO3RYPdLwHc+mfCV4TRu8T5bCwHs9FjK8oxGacc0uxjNP/RA0ziLUIFW+HSBikJcg29HMi6zF0456P8BSrOS2evVFaKEDTQIjuKq1HdC6cQCUkTray26SlBUvc4miN/qpSmFOBIKhjE2e+d808V1V6/N/IqiJwkkTW8=;
+	h=MIME-Version:Content-Transfer-Encoding:Content-Type:In-Reply-To:References:Message-ID:Date:Subject:CC:To:From; bh=DBY+JNbyB9Ntgb0EXaPM5b/bh/BgvABMivVHH6rAaKo=;
+	b=DCov68NAYPW2ySF6OZafec3tlYh+iRJ9uP8YFWsWjslUGJxqoX7mCSl9Vd1s2rkoiNl3lMYbIUot4CXkUTE7A3bfWe29YmiN4xNm1cuIaV70aSJkAUs92+3/va3W4XIzxy9meUd7KgjzYUzsuuqKHOCoDRZsAYl42ZXkeOoASD4=;
 X-CID-P-RULE: Release_Ham
-X-CID-O-INFO: VERSION:1.1.37,REQID:fb6f3504-494e-4245-9e09-1b294fea9634,IP:0,U
+X-CID-O-INFO: VERSION:1.1.37,REQID:aec7e150-7dfe-4f67-82b8-6374bc158ccd,IP:0,U
 	RL:0,TC:0,Content:0,EDM:0,RT:0,SF:0,FILE:0,BULK:0,RULE:Release_Ham,ACTION:
 	release,TS:0
-X-CID-META: VersionHash:6f543d0,CLOUDID:52e42791-e2c0-40b0-a8fe-7c7e47299109,B
-	ulkID:nil,BulkQuantity:0,Recheck:0,SF:102,TC:nil,Content:1,EDM:-3,IP:nil,U
-	RL:11|1,File:nil,RT:nil,Bulk:nil,QS:nil,BEC:nil,COL:0,OSI:0,OSA:0,AV:0,LES
-	:1,SPR:NO,DKR:0,DKP:0,BRR:0,BRE:0
-X-CID-BVR: 0
-X-CID-BAS: 0,_,0,_
-X-CID-FACTOR: TF_CID_SPAM_SNR,TF_CID_SPAM_ULN
-X-UUID: bea17208f16b11eeb8927bc1f75efef4-20240403
-Received: from mtkmbs10n2.mediatek.inc [(172.21.101.183)] by mailgw01.mediatek.com
-	(envelope-from <zhi.mao@mediatek.com>)
+X-CID-META: VersionHash:6f543d0,CLOUDID:07a24082-4f93-4875-95e7-8c66ea833d57,B
+	ulkID:nil,BulkQuantity:0,Recheck:0,SF:102,TC:nil,Content:0,EDM:-3,IP:nil,U
+	RL:0,File:nil,RT:nil,Bulk:nil,QS:nil,BEC:nil,COL:0,OSI:0,OSA:0,AV:0,LES:1,
+	SPR:NO,DKR:0,DKP:0,BRR:0,BRE:0
+X-CID-BVR: 0,NGT
+X-CID-BAS: 0,NGT,0,_
+X-CID-FACTOR: TF_CID_SPAM_SNR
+X-UUID: badeed76f16b11ee935d6952f98a51a9-20240403
+Received: from mtkmbs13n1.mediatek.inc [(172.21.101.193)] by mailgw02.mediatek.com
+	(envelope-from <light.hsieh@mediatek.com>)
 	(Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
-	with ESMTP id 684717994; Wed, 03 Apr 2024 11:39:15 +0800
-Received: from mtkmbs13n2.mediatek.inc (172.21.101.108) by
- mtkmbs13n1.mediatek.inc (172.21.101.193) with Microsoft SMTP Server
+	with ESMTP id 730602965; Wed, 03 Apr 2024 11:39:09 +0800
+Received: from mtkmbs10n1.mediatek.inc (172.21.101.34) by
+ MTKMBS09N1.mediatek.inc (172.21.101.35) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.26; Wed, 3 Apr 2024 11:39:14 +0800
-Received: from mhfsdcap04.gcn.mediatek.inc (10.17.3.154) by
- mtkmbs13n2.mediatek.inc (172.21.101.73) with Microsoft SMTP Server id
- 15.2.1118.26 via Frontend Transport; Wed, 3 Apr 2024 11:39:12 +0800
-From: Zhi Mao <zhi.mao@mediatek.com>
-To: <mchehab@kernel.org>, <robh+dt@kernel.org>,
-	<krzysztof.kozlowski+dt@linaro.org>, <sakari.ailus@linux.intel.com>
-CC: <laurent.pinchart@ideasonboard.com>, <shengnan.wang@mediatek.com>,
-	<yaya.chang@mediatek.com>,
-	<Project_Global_Chrome_Upstream_Group@mediatek.com>, <yunkec@chromium.org>,
-	<conor+dt@kernel.org>, <matthias.bgg@gmail.com>,
-	<angelogioacchino.delregno@collabora.com>, <jacopo.mondi@ideasonboard.com>,
-	<zhi.mao@mediatek.com>, <10572168@qq.com>, <hverkuil-cisco@xs4all.nl>,
-	<heiko@sntech.de>, <jernej.skrabec@gmail.com>, <macromorgan@hotmail.com>,
-	<linus.walleij@linaro.org>, <hdegoede@redhat.com>,
-	<tomi.valkeinen@ideasonboard.com>, <gerald.loacker@wolfvision.net>,
-	<andy.shevchenko@gmail.com>, <bingbu.cao@intel.com>,
-	<dan.scally@ideasonboard.com>, <linux-media@vger.kernel.org>,
-	<devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-	<linux-arm-kernel@lists.infradead.org>, <linux-mediatek@lists.infradead.org>
-Subject: [PATCH v3 2/2] media: i2c: Add GC05A2 image sensor driver
-Date: Wed, 3 Apr 2024 11:38:25 +0800
-Message-ID: <20240403033825.9072-3-zhi.mao@mediatek.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20240403033825.9072-1-zhi.mao@mediatek.com>
-References: <20240403033825.9072-1-zhi.mao@mediatek.com>
+ 15.2.1118.26; Tue, 2 Apr 2024 20:39:08 -0700
+Received: from APC01-PSA-obe.outbound.protection.outlook.com (172.21.101.237)
+ by mtkmbs10n1.mediatek.inc (172.21.101.34) with Microsoft SMTP Server id
+ 15.2.1118.26 via Frontend Transport; Wed, 3 Apr 2024 11:39:08 +0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Fwa5b8TH1mIni0Mq+6l1aoxLiTZQxRYjTON/48+1TUDdCQt+WsmwamNHGk/HhkF40OGLH5l+GigPD593DFwA7/90BFKZV3+6EIpDSwPDTvbV9I/65Rv/R+ksGM9Wvcfvp0qBFG0i2Gq20zoi/BQtLuNqlBTbBh0C8dKggHHlFjNmPdkyyUSiLIpKmA7JKMkJMoKE6OBIWXTk0EdCWr7qjm4q1Dns9p+YVfk9IbtCRC0zayFiJl58LNQllXANOssO+FoWi8ldlW/ISdXiVSEFtEbfM8hBsaLUp+XeVA6u0CH0h/srIK19dHnbrfSM8cYH6xGv1Pql2NKn1OexWS+ovw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=DBY+JNbyB9Ntgb0EXaPM5b/bh/BgvABMivVHH6rAaKo=;
+ b=is6cjLeDG7Ad4t3Q2znxqAdcrymOxe0SRlM0I8r79bwTRPwDTOwPoegVYdsmMzEQ60opXuxgM07xVY4etOSwVsOCqCbca4Smsvt+bgnvZ0lzXxozHL4ztCxqcp+9axx/mCUKs7bOQtP7eElcTF76AHpDpasXgIvz2ais3Tzvg3eI7a93AyJpE6CNFMvkH9vr7rSLdoVLkWaH/AiRpkjfBBKZO2bpoFywD8uvv+pRjJL2aQhFyXutfmDAJpbo713BvXFLFgi1RaqKTsi8F/uEUwsxNOjRQaOU0qbMb7Zo3ByWpO5Ta6SGfwb/KkHs942LSDVksORUp2dP3nJUA/bXkg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=mediatek.com; dmarc=pass action=none header.from=mediatek.com;
+ dkim=pass header.d=mediatek.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=mediateko365.onmicrosoft.com; s=selector2-mediateko365-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=DBY+JNbyB9Ntgb0EXaPM5b/bh/BgvABMivVHH6rAaKo=;
+ b=G8CvULDJ/xvj/4z5SPMe5rzlo2vDth4g2CgFFb/rW2Hep7hvItpi70Ogk9Sd0jo/Alj3JE8q0vaI4CjZ4iJ/IzMIXEBxYUgc0cHwe2ri5IBivv6OFHYX8tOgE+QZb9enYsJ70KKD4cRoz7jVsaUfRx+mdRcDojkojpiDR5LKr3M=
+Received: from SI2PR03MB5260.apcprd03.prod.outlook.com (2603:1096:4:108::5) by
+ KL1PR03MB7850.apcprd03.prod.outlook.com (2603:1096:820:f0::12) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.7409.46; Wed, 3 Apr 2024 03:39:06 +0000
+Received: from SI2PR03MB5260.apcprd03.prod.outlook.com
+ ([fe80::7365:45a2:14a6:2f86]) by SI2PR03MB5260.apcprd03.prod.outlook.com
+ ([fe80::7365:45a2:14a6:2f86%4]) with mapi id 15.20.7409.042; Wed, 3 Apr 2024
+ 03:39:06 +0000
+From: =?utf-8?B?TGlnaHQgSHNpZWggKOisneaYjueHiCk=?= <Light.Hsieh@mediatek.com>
+To: Jaegeuk Kim <jaegeuk@kernel.org>
+CC: Hillf Danton <hdanton@sina.com>, "linux-kernel@vger.kernel.org"
+	<linux-kernel@vger.kernel.org>, "linux-f2fs-devel@lists.sourceforge.net"
+	<linux-f2fs-devel@lists.sourceforge.net>
+Subject: =?utf-8?B?5Zue6KaGOiDlm57opoY6IFtQQVRDSF0gZjJmczogYXZvaWQgdGhlIGRlYWRs?=
+ =?utf-8?Q?ock_case_when_stopping_discard_thread?=
+Thread-Topic: =?utf-8?B?5Zue6KaGOiBbUEFUQ0hdIGYyZnM6IGF2b2lkIHRoZSBkZWFkbG9jayBjYXNl?=
+ =?utf-8?Q?_when_stopping_discard_thread?=
+Thread-Index: AQHae+EjGuIimSJa2U6kUjro/ZAA7bFC6B+AgAAWVxiAAVk0AIAF7G8AgABpwiuAC0nn9w==
+Date: Wed, 3 Apr 2024 03:39:06 +0000
+Message-ID: <SI2PR03MB5260819B5B1719063EFF458A843D2@SI2PR03MB5260.apcprd03.prod.outlook.com>
+References: <20240320001442.497813-1-jaegeuk@kernel.org>
+ <20240321224233.2541-1-hdanton@sina.com> <ZfzQz5hwECOEGYVL@google.com>
+ <SI2PR03MB52607606AB0D29C8AB123C1484312@SI2PR03MB5260.apcprd03.prod.outlook.com>
+ <Zf4FIAkI83GbQYLB@google.com> <ZgL9NLLiSdDeIMg_@google.com>
+ <SI2PR03MB526041E42B6BD9C9DA9FBAC184352@SI2PR03MB5260.apcprd03.prod.outlook.com>
+In-Reply-To: <SI2PR03MB526041E42B6BD9C9DA9FBAC184352@SI2PR03MB5260.apcprd03.prod.outlook.com>
+Accept-Language: zh-TW, en-US
+Content-Language: zh-TW
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+msip_labels:
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: SI2PR03MB5260:EE_|KL1PR03MB7850:EE_
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: sDMG/VaKODwi4J1rqR8H7yauKbQZLZZfrmAEjyLNXjKXjq48RY2UonkQTc7rXF/j+9hl1GanOUNrYbr9QMDXqa52b6+soGYl7UQTLOcYA2ulPH4Rx/lxe10lBC/AfJdmBXre9E4hL8QHOTKTyo9wd8iygCZpQpWAZuEdZG+My/Rx7ntvW015XVkfa8WrJfpZxnJpvDv1fv/AbzhW4IBmt1GMXV0sicQ+NP/1CSCT+jui3kSOA8xKEF0Zr23tBSwmn0FhVoygagkYKiVZ4UoYk8iYS8S1zl1iu+3MYLdQ7poV+BtLYUbbDDe7WO8JAGJ0Pg3tObGU2NgWhhQWHSQBkjpK/3k5RIrgpCNW9FFegZaNfXizW273N10BpJWMWYrxUEzpcGyyH0+liuK+4wwzeLBCNlfgxXIbIVKkRfRDkwvsc4a7YH5t2fKM/EvTOMnhiuE3rpunoJL86oysFS52+2tbM3zppn0iiEIbojfbwzwLm5oEjPPmh3SsixMfPsGu4pTN/P+dh1x4enULXSZFm8bDteRsNn4Tk7MJRuGWWWxOTkf6fVFFlDS5K9T1gdAMcBZt1iCcXRMdvXPfxdRoJxpc9exiLL8bl+Q3WOJTTWDU8Nb4WjmJE89mbCvUAJz3N2pP3LQsQWGoPC+qYWrxbJOGe4Er1O8MMcq1se9Gn94=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:zh-tw;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SI2PR03MB5260.apcprd03.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376005)(1800799015)(366007);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?utf-8?B?Tzc3d2tMMjYrejR6VlBCZEpHZGxsbkZxRG8xU1JsVXNlSDVjRFYxYnF6WXVM?=
+ =?utf-8?B?RVdtanRtZHZENUZVYU9HN0tLcnJQbFVhL1hydHh5cjZTVFZyenNSeHJ3TTlU?=
+ =?utf-8?B?QjF6dWtSR0l6cjV3WGd3cFg3ZFB4b0I1VVlydW1EL2xGNnNlMzhvdVBEa21Q?=
+ =?utf-8?B?NFozSmR4T2JRSjVIMVEzTUlOZkFIVUZSQk9wYWlmNlBoUHNYcmdVMFRDeGxQ?=
+ =?utf-8?B?SjdLZ3lWQnRQNjB6amJXMTVobUk3QVhuWWVGUm5aenh1NDRMWmpjNGNWNy9n?=
+ =?utf-8?B?Z3J4S0NibStTSGt0dGRMWDBoMG1CODdPVGR2dnRpcm4xdHExbGNMOExaeERN?=
+ =?utf-8?B?cE83UGpPNzBLOUZMQjE1RUpyVlVQd1RidDQ3enRNLzBCUzA1bUNJOHNLSG1Q?=
+ =?utf-8?B?WlN3QWw0c2JadzFiRzkySzlmUEd2WGF2S25yRDZ6K2Y4ODNLTjhzd2FRcjVn?=
+ =?utf-8?B?N01BOHBlZ1NRU1lLZHplZXdTWEZzeXB1SldCU2NPbEk3WmVZcEs0N1NSZFFy?=
+ =?utf-8?B?dkd1U0J3bDZ2Qi9qbU4rKzNZNFpnamM3N2cveWEwNjViVWNGZnYySmdiVVow?=
+ =?utf-8?B?dGFmSWpHMmdoNDE5OGJZRHowM1pTVnFiaFZJbXZrcmlHYm5PR2xHQkNSaUZt?=
+ =?utf-8?B?c25tZHhPQ3VsTG9uRVF5ajUyeElNRTIvRkRHTDV6MThUSE5FS2ovRzF1Slo2?=
+ =?utf-8?B?djc4K296WmNDVDN3VkljNzFUNUt3T21OUUM5YkJSRjVUSVBTRDBHR1IrbXRE?=
+ =?utf-8?B?K2RTM292czh5S2VGVzNZanJKSVZiMElFM1pHdElsMWozZ1V6Y2w3RmtsKzZ3?=
+ =?utf-8?B?Ym5TTCtWblFLZUVhRy9qZUlaL0lJSzM0RjdvbjdwcjJtZms1OFFUeDVleHEv?=
+ =?utf-8?B?a0tCa3lvMlVaTzY5T2RJMEVKUlcwR1ZicjRhclFsUU82bG1vOVZ2ais2U3BI?=
+ =?utf-8?B?cUZXeFlIRFZsblBZSTZTNHc2Wmx2WVp0bWNRZ0p2R3FvV1dEdEJSQlVkMS9j?=
+ =?utf-8?B?elIweFRoZHA5MEZiSHgvb0ZBM0Q5WWo1S3pxamI3NWREYjNPYXRRRW16L2xv?=
+ =?utf-8?B?NUh4Z1J1WjFIQ0s2UHNDZ05ENnMrVWUxcG1ES2hFYXpITVpFQThlNXNHUlZK?=
+ =?utf-8?B?WmJpRndTMDVPekgzK0NzZlRLT09JUFdScm5RR2QyeFo1L00wMU5nOHMzd3Ba?=
+ =?utf-8?B?aTBDT1J5MXdvaDlINHVHZHlxM29iNU15a0U0SXdKbEdhbVZjakFxaGZJSjJm?=
+ =?utf-8?B?QXVFaFJWMkFYVm9YVCtHNEVmL2xVNldqdWRWWVU3Z0tla0wwWndhVDRXWDNH?=
+ =?utf-8?B?NmpTNXJrdTVta0FpVnFNNDFpZCs5am1IYXRnSFdFVFlPRlBvL0QyWUhmQXZa?=
+ =?utf-8?B?SHNjVVc1RUd1MjdJUEZoZnBEYm9tYTRERm5ERXdEMWY0aXhyM2pPOTVIdjAy?=
+ =?utf-8?B?d2tnZk1mV3d5ZUhtNmVtcWVJSDRuc2YrdktkcURGdHV0clpqeGZCK00zUTVJ?=
+ =?utf-8?B?ZzN5Y0Y2alZrdVkrWm0xcUxUNWYrN2RSRmxCYklCbWNvbHFGZkZnUGJMNUZ3?=
+ =?utf-8?B?M2pTcXpZdTA1T3A4SFVQOWdReFU5QVdtRnZRQlAwZmNUTGpvWGluWWtvVFhJ?=
+ =?utf-8?B?SVBrczZZVUREcTk0SjFBNEwxVWR4QndpVjRqOVY0WDg2VkRraUVyT1g0aVoz?=
+ =?utf-8?B?dDdINVZDYUJtQkR4ank0SGxrVVpWOHZIUlQ1aktvR2dXS3pTRjhHYjhDTElU?=
+ =?utf-8?B?MTJ0NlF5S0t0Z0VkM1RCaUErNGJXaUhiZk1nQXNtU3E0NkJUemREVU12dW0z?=
+ =?utf-8?B?R2NmdjFWVkdEVFdqN0prNW16RHpTQVdBT1NjcDBISzBINHlYNE8ySmxpZTVZ?=
+ =?utf-8?B?Ny9MUUxNeW1hanJxTTVNVWxLUVlnWUlQYkR0ellTcXh5RmN1RjRMZGJ4Wmg0?=
+ =?utf-8?B?SHBydUdCUHIzYkN1YXRXNXVYN0xYWnlOTkt2alBWajZpSmJ5ZnpOYTUyUFRu?=
+ =?utf-8?B?VzRRcGhtV0VWVDdDQzhZelVKZVNQZUhoeFIxNGF4OUw2UENLYytGV2E2MGtI?=
+ =?utf-8?B?MUpwVVhFbzdrYUhseUY3MXptQ2lxdi9zMUZEWUEwSnpwWXZoRWhhK0hFMVJz?=
+ =?utf-8?Q?oqn5OBjY+uJQ4owIv/2SbzRka?=
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-MTK: N
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: SI2PR03MB5260.apcprd03.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 0ba0cf88-b641-4807-92bc-08dc538f9d2a
+X-MS-Exchange-CrossTenant-originalarrivaltime: 03 Apr 2024 03:39:06.1828
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: a7687ede-7a6b-4ef6-bace-642f677fbe31
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: n/DN5PCo8sXGd9VYxwNP4wRbRI8gSFnPDPNkk9HK2UXkfuW0KwIwjEG5ImZOnsaqG/AEn8Plqph/n99hYIwiU7iSjPUwm0b8QRDFmg2MPg8=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: KL1PR03MB7850
 
-Add a V4L2 sub-device driver for Galaxycore GC05A2 image sensor.
-
-Signed-off-by: Zhi Mao <zhi.mao@mediatek.com>
----
- drivers/media/i2c/Kconfig  |   10 +
- drivers/media/i2c/Makefile |    1 +
- drivers/media/i2c/gc05a2.c | 1383 ++++++++++++++++++++++++++++++++++++
- 3 files changed, 1394 insertions(+)
- create mode 100644 drivers/media/i2c/gc05a2.c
-
-diff --git a/drivers/media/i2c/Kconfig b/drivers/media/i2c/Kconfig
-index 56f276b920ab..97993bf160f9 100644
---- a/drivers/media/i2c/Kconfig
-+++ b/drivers/media/i2c/Kconfig
-@@ -70,6 +70,16 @@ config VIDEO_GC0308
- 	  To compile this driver as a module, choose M here: the
- 	  module will be called gc0308.
- 
-+config VIDEO_GC05A2
-+	tristate "GalaxyCore gc05a2 sensor support"
-+	select V4L2_CCI_I2C
-+	help
-+	  This is a Video4Linux2 sensor driver for the GalaxyCore gc05a2
-+	  camera.
-+
-+	  To compile this driver as a module, choose M here: the
-+	  module will be called gc05a2.
-+
- config VIDEO_GC2145
- 	select V4L2_CCI_I2C
- 	tristate "GalaxyCore GC2145 sensor support"
-diff --git a/drivers/media/i2c/Makefile b/drivers/media/i2c/Makefile
-index dfbe6448b549..8ed6faf0f854 100644
---- a/drivers/media/i2c/Makefile
-+++ b/drivers/media/i2c/Makefile
-@@ -38,6 +38,7 @@ obj-$(CONFIG_VIDEO_DW9768) += dw9768.o
- obj-$(CONFIG_VIDEO_DW9807_VCM) += dw9807-vcm.o
- obj-$(CONFIG_VIDEO_ET8EK8) += et8ek8/
- obj-$(CONFIG_VIDEO_GC0308) += gc0308.o
-+obj-$(CONFIG_VIDEO_GC05A2) += gc05a2.o
- obj-$(CONFIG_VIDEO_GC2145) += gc2145.o
- obj-$(CONFIG_VIDEO_HI556) += hi556.o
- obj-$(CONFIG_VIDEO_HI846) += hi846.o
-diff --git a/drivers/media/i2c/gc05a2.c b/drivers/media/i2c/gc05a2.c
-new file mode 100644
-index 000000000000..461d33055a3b
---- /dev/null
-+++ b/drivers/media/i2c/gc05a2.c
-@@ -0,0 +1,1383 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * Driver for GalaxyCore gc05a2 image sensor
-+ *
-+ * Copyright 2024 MediaTek
-+ *
-+ * Zhi Mao <zhi.mao@mediatek.com>
-+ */
-+#include <linux/array_size.h>
-+#include <linux/bits.h>
-+#include <linux/clk.h>
-+#include <linux/container_of.h>
-+#include <linux/delay.h>
-+#include <linux/device.h>
-+#include <linux/err.h>
-+#include <linux/gpio/consumer.h>
-+#include <linux/math64.h>
-+#include <linux/mod_devicetable.h>
-+#include <linux/pm_runtime.h>
-+#include <linux/property.h>
-+#include <linux/regulator/consumer.h>
-+#include <linux/types.h>
-+#include <linux/units.h>
-+
-+#include <media/v4l2-cci.h>
-+#include <media/v4l2-ctrls.h>
-+#include <media/v4l2-event.h>
-+#include <media/v4l2-fwnode.h>
-+#include <media/v4l2-subdev.h>
-+
-+#define GC05A2_REG_TEST_PATTERN_EN CCI_REG8(0x008c)
-+#define GC05A2_REG_TEST_PATTERN_IDX CCI_REG8(0x008d)
-+#define GC05A2_TEST_PATTERN_EN 0x01
-+
-+#define GC05A2_STREAMING_REG CCI_REG8(0x0100)
-+
-+#define GC05A2_FLIP_REG CCI_REG8(0x0101)
-+#define GC05A2_FLIP_H_MASK BIT(0)
-+#define GC05A2_FLIP_V_MASK BIT(1)
-+
-+#define GC05A2_EXP_REG CCI_REG16(0x0202)
-+#define GC05A2_EXP_MARGIN 16
-+#define GC05A2_EXP_MIN 4
-+#define GC05A2_EXP_STEP 1
-+
-+#define GC05A2_AGAIN_REG CCI_REG16(0x0204)
-+#define GC05A2_AGAIN_MIN 1024
-+#define GC05A2_AGAIN_MAX (1024 * 16)
-+#define GC05A2_AGAIN_STEP 1
-+
-+#define GC05A2_FRAME_LENGTH_REG CCI_REG16(0x0340)
-+#define GC05A2_VTS_MAX 0xffff
-+
-+#define GC05A2_REG_CHIP_ID CCI_REG16(0x03f0)
-+#define GC05A2_CHIP_ID 0x05a2
-+
-+#define GC05A2_NATIVE_WIDTH 2592
-+#define GC05A2_NATIVE_HEIGHT 1944
-+
-+#define GC05A2_DEFAULT_CLK_FREQ (24 * HZ_PER_MHZ)
-+#define GC05A2_MBUS_CODE MEDIA_BUS_FMT_SGRBG10_1X10
-+#define GC05A2_DATA_LANES 2
-+#define GC05A2_RGB_DEPTH 10
-+#define GC05A2_SLEEP_US  (2 * USEC_PER_MSEC)
-+
-+static const char *const gc05a2_test_pattern_menu[] = {
-+	"No Pattern",  "Fade_to_gray_Color Bar", "Color Bar",
-+	"PN9",	       "Horizental_gradient",    "Checkboard Pattern",
-+	"Slant",       "Resolution",	         "Solid Black",
-+	"Solid White",
-+};
-+
-+static const s64 gc05a2_link_freq_menu_items[] = {
-+	(448 * HZ_PER_MHZ),
-+	(224 * HZ_PER_MHZ),
-+};
-+
-+static const char *const gc05a2_supply_name[] = {
-+	"avdd",
-+	"dvdd",
-+	"dovdd",
-+};
-+
-+struct gc05a2 {
-+	struct device *dev;
-+	struct v4l2_subdev sd;
-+	struct media_pad pad;
-+
-+	struct clk *xclk;
-+	struct regulator_bulk_data supplies[ARRAY_SIZE(gc05a2_supply_name)];
-+	struct gpio_desc *reset_gpio;
-+
-+	struct v4l2_ctrl_handler ctrls;
-+	struct v4l2_ctrl *pixel_rate;
-+	struct v4l2_ctrl *link_freq;
-+	struct v4l2_ctrl *exposure;
-+	struct v4l2_ctrl *vblank;
-+	struct v4l2_ctrl *hblank;
-+	struct v4l2_ctrl *hflip;
-+	struct v4l2_ctrl *vflip;
-+
-+	struct regmap *regmap;
-+	unsigned long link_freq_bitmap;
-+
-+	/* True if the device has been identified */
-+	bool identified;
-+	const struct gc05a2_mode *cur_mode;
-+};
-+
-+struct gc05a2_reg_list {
-+	u32 num_of_regs;
-+	const struct cci_reg_sequence *regs;
-+};
-+
-+static const struct cci_reg_sequence mode_2592x1944[] = {
-+	/* system */
-+	{ CCI_REG8(0x0135), 0x01 },
-+
-+	/* pre_setting */
-+	{ CCI_REG8(0x0084), 0x21 },
-+	{ CCI_REG8(0x0d05), 0xcc },
-+	{ CCI_REG8(0x0218), 0x00 },
-+	{ CCI_REG8(0x005e), 0x48 },
-+	{ CCI_REG8(0x0d06), 0x01 },
-+	{ CCI_REG8(0x0007), 0x16 },
-+	{ CCI_REG8(0x0101), 0x00 },
-+
-+	/* analog */
-+	{ CCI_REG8(0x0342), 0x07 },
-+	{ CCI_REG8(0x0343), 0x28 },
-+	{ CCI_REG8(0x0220), 0x07 },
-+	{ CCI_REG8(0x0221), 0xd0 },
-+	{ CCI_REG8(0x0202), 0x07 },
-+	{ CCI_REG8(0x0203), 0x32 },
-+	{ CCI_REG8(0x0340), 0x07 },
-+	{ CCI_REG8(0x0341), 0xf0 },
-+	{ CCI_REG8(0x0219), 0x00 },
-+	{ CCI_REG8(0x0346), 0x00 },
-+	{ CCI_REG8(0x0347), 0x04 },
-+	{ CCI_REG8(0x0d14), 0x00 },
-+	{ CCI_REG8(0x0d13), 0x05 },
-+	{ CCI_REG8(0x0d16), 0x05 },
-+	{ CCI_REG8(0x0d15), 0x1d },
-+	{ CCI_REG8(0x00c0), 0x0a },
-+	{ CCI_REG8(0x00c1), 0x30 },
-+	{ CCI_REG8(0x034a), 0x07 },
-+	{ CCI_REG8(0x034b), 0xa8 },
-+	{ CCI_REG8(0x0e0a), 0x00 },
-+	{ CCI_REG8(0x0e0b), 0x00 },
-+	{ CCI_REG8(0x0e0e), 0x03 },
-+	{ CCI_REG8(0x0e0f), 0x00 },
-+	{ CCI_REG8(0x0e06), 0x0a },
-+	{ CCI_REG8(0x0e23), 0x15 },
-+	{ CCI_REG8(0x0e24), 0x15 },
-+	{ CCI_REG8(0x0e2a), 0x10 },
-+	{ CCI_REG8(0x0e2b), 0x10 },
-+	{ CCI_REG8(0x0e17), 0x49 },
-+	{ CCI_REG8(0x0e1b), 0x1c },
-+	{ CCI_REG8(0x0e3a), 0x36 },
-+	{ CCI_REG8(0x0d11), 0x84 },
-+	{ CCI_REG8(0x0e52), 0x14 },
-+	{ CCI_REG8(0x000b), 0x10 },
-+	{ CCI_REG8(0x0008), 0x08 },
-+	{ CCI_REG8(0x0223), 0x17 },
-+	{ CCI_REG8(0x0d27), 0x39 },
-+	{ CCI_REG8(0x0d22), 0x00 },
-+	{ CCI_REG8(0x03f6), 0x0d },
-+	{ CCI_REG8(0x0d04), 0x07 },
-+	{ CCI_REG8(0x03f3), 0x72 },
-+	{ CCI_REG8(0x03f4), 0xb8 },
-+	{ CCI_REG8(0x03f5), 0xbc },
-+	{ CCI_REG8(0x0d02), 0x73 },
-+
-+	/* auto load start */
-+	{ CCI_REG8(0x00cb), 0x00 },
-+
-+	/* OUT 2592*1944 */
-+	{ CCI_REG8(0x0350), 0x01 },
-+	{ CCI_REG8(0x0353), 0x00 },
-+	{ CCI_REG8(0x0354), 0x08 },
-+	{ CCI_REG8(0x034c), 0x0a },
-+	{ CCI_REG8(0x034d), 0x20 },
-+	{ CCI_REG8(0x021f), 0x14 },
-+
-+	/* MIPI */
-+	{ CCI_REG8(0x0107), 0x05 },
-+	{ CCI_REG8(0x0117), 0x01 },
-+	{ CCI_REG8(0x0d81), 0x00 },
-+	{ CCI_REG8(0x0d84), 0x0c },
-+	{ CCI_REG8(0x0d85), 0xa8 },
-+	{ CCI_REG8(0x0d86), 0x06 },
-+	{ CCI_REG8(0x0d87), 0x55 },
-+	{ CCI_REG8(0x0db3), 0x06 },
-+	{ CCI_REG8(0x0db4), 0x08 },
-+	{ CCI_REG8(0x0db5), 0x1e },
-+	{ CCI_REG8(0x0db6), 0x02 },
-+	{ CCI_REG8(0x0db8), 0x12 },
-+	{ CCI_REG8(0x0db9), 0x0a },
-+	{ CCI_REG8(0x0d93), 0x06 },
-+	{ CCI_REG8(0x0d94), 0x09 },
-+	{ CCI_REG8(0x0d95), 0x0d },
-+	{ CCI_REG8(0x0d99), 0x0b },
-+	{ CCI_REG8(0x0084), 0x01 },
-+
-+	/* OUT */
-+	{ CCI_REG8(0x0110), 0x01 },
-+};
-+
-+static const struct cci_reg_sequence mode_1280x720[] = {
-+	/* system */
-+	{ CCI_REG8(0x0135), 0x05 },
-+
-+	/*pre_setting*/
-+	{ CCI_REG8(0x0084), 0x21 },
-+	{ CCI_REG8(0x0d05), 0xcc },
-+	{ CCI_REG8(0x0218), 0x80 },
-+	{ CCI_REG8(0x005e), 0x49 },
-+	{ CCI_REG8(0x0d06), 0x81 },
-+	{ CCI_REG8(0x0007), 0x16 },
-+	{ CCI_REG8(0x0101), 0x00 },
-+
-+	/* analog */
-+	{ CCI_REG8(0x0342), 0x07 },
-+	{ CCI_REG8(0x0343), 0x10 },
-+	{ CCI_REG8(0x0220), 0x07 },
-+	{ CCI_REG8(0x0221), 0xd0 },
-+	{ CCI_REG8(0x0202), 0x03 },
-+	{ CCI_REG8(0x0203), 0x32 },
-+	{ CCI_REG8(0x0340), 0x04 },
-+	{ CCI_REG8(0x0341), 0x08 },
-+	{ CCI_REG8(0x0219), 0x00 },
-+	{ CCI_REG8(0x0346), 0x01 },
-+	{ CCI_REG8(0x0347), 0x00 },
-+	{ CCI_REG8(0x0d14), 0x00 },
-+	{ CCI_REG8(0x0d13), 0x05 },
-+	{ CCI_REG8(0x0d16), 0x05 },
-+	{ CCI_REG8(0x0d15), 0x1d },
-+	{ CCI_REG8(0x00c0), 0x0a },
-+	{ CCI_REG8(0x00c1), 0x30 },
-+	{ CCI_REG8(0x034a), 0x05 },
-+	{ CCI_REG8(0x034b), 0xb0 },
-+	{ CCI_REG8(0x0e0a), 0x00 },
-+	{ CCI_REG8(0x0e0b), 0x00 },
-+	{ CCI_REG8(0x0e0e), 0x03 },
-+	{ CCI_REG8(0x0e0f), 0x00 },
-+	{ CCI_REG8(0x0e06), 0x0a },
-+	{ CCI_REG8(0x0e23), 0x15 },
-+	{ CCI_REG8(0x0e24), 0x15 },
-+	{ CCI_REG8(0x0e2a), 0x10 },
-+	{ CCI_REG8(0x0e2b), 0x10 },
-+	{ CCI_REG8(0x0e17), 0x49 },
-+	{ CCI_REG8(0x0e1b), 0x1c },
-+	{ CCI_REG8(0x0e3a), 0x36 },
-+	{ CCI_REG8(0x0d11), 0x84 },
-+	{ CCI_REG8(0x0e52), 0x14 },
-+	{ CCI_REG8(0x000b), 0x0e },
-+	{ CCI_REG8(0x0008), 0x03 },
-+	{ CCI_REG8(0x0223), 0x16 },
-+	{ CCI_REG8(0x0d27), 0x39 },
-+	{ CCI_REG8(0x0d22), 0x00 },
-+	{ CCI_REG8(0x03f6), 0x0d },
-+	{ CCI_REG8(0x0d04), 0x07 },
-+	{ CCI_REG8(0x03f3), 0x72 },
-+	{ CCI_REG8(0x03f4), 0xb8 },
-+	{ CCI_REG8(0x03f5), 0xbc },
-+	{ CCI_REG8(0x0d02), 0x73 },
-+
-+	/* auto load start */
-+	{ CCI_REG8(0x00cb), 0xfc },
-+
-+	/* OUT 1280x720 */
-+	{ CCI_REG8(0x0350), 0x01 },
-+	{ CCI_REG8(0x0353), 0x00 },
-+	{ CCI_REG8(0x0354), 0x0c },
-+	{ CCI_REG8(0x034c), 0x05 },
-+	{ CCI_REG8(0x034d), 0x00 },
-+	{ CCI_REG8(0x021f), 0x14 },
-+
-+	/* MIPI */
-+	{ CCI_REG8(0x0107), 0x05 },
-+	{ CCI_REG8(0x0117), 0x01 },
-+	{ CCI_REG8(0x0d81), 0x00 },
-+	{ CCI_REG8(0x0d84), 0x06 },
-+	{ CCI_REG8(0x0d85), 0x40 },
-+	{ CCI_REG8(0x0d86), 0x03 },
-+	{ CCI_REG8(0x0d87), 0x21 },
-+	{ CCI_REG8(0x0db3), 0x03 },
-+	{ CCI_REG8(0x0db4), 0x04 },
-+	{ CCI_REG8(0x0db5), 0x0d },
-+	{ CCI_REG8(0x0db6), 0x01 },
-+	{ CCI_REG8(0x0db8), 0x04 },
-+	{ CCI_REG8(0x0db9), 0x06 },
-+	{ CCI_REG8(0x0d93), 0x03 },
-+	{ CCI_REG8(0x0d94), 0x04 },
-+	{ CCI_REG8(0x0d95), 0x05 },
-+	{ CCI_REG8(0x0d99), 0x06 },
-+	{ CCI_REG8(0x0084), 0x01 },
-+
-+	/* OUT */
-+	{ CCI_REG8(0x0110), 0x01 },
-+};
-+
-+static const struct cci_reg_sequence mode_table_common[] = {
-+	{ GC05A2_STREAMING_REG, 0x00 },
-+	/* system */
-+	{ CCI_REG8(0x0315), 0xd4 },
-+	{ CCI_REG8(0x0d06), 0x01 },
-+	{ CCI_REG8(0x0a70), 0x80 },
-+	{ CCI_REG8(0x031a), 0x00 },
-+	{ CCI_REG8(0x0314), 0x00 },
-+	{ CCI_REG8(0x0130), 0x08 },
-+	{ CCI_REG8(0x0132), 0x01 },
-+	{ CCI_REG8(0x0136), 0x38 },
-+	{ CCI_REG8(0x0137), 0x03 },
-+	{ CCI_REG8(0x0134), 0x5b },
-+	{ CCI_REG8(0x031c), 0xe0 },
-+	{ CCI_REG8(0x0d82), 0x14 },
-+	{ CCI_REG8(0x0dd1), 0x56 },
-+
-+	/* gate_mode */
-+	{ CCI_REG8(0x0af4), 0x01 },
-+	{ CCI_REG8(0x0002), 0x10 },
-+	{ CCI_REG8(0x00c3), 0x34 },
-+
-+	/* auto load start */
-+	{ CCI_REG8(0x00c4), 0x00 },
-+	{ CCI_REG8(0x00c5), 0x01 },
-+	{ CCI_REG8(0x0af6), 0x00 },
-+	{ CCI_REG8(0x0ba0), 0x17 },
-+	{ CCI_REG8(0x0ba1), 0x00 },
-+	{ CCI_REG8(0x0ba2), 0x00 },
-+	{ CCI_REG8(0x0ba3), 0x00 },
-+	{ CCI_REG8(0x0ba4), 0x03 },
-+	{ CCI_REG8(0x0ba5), 0x00 },
-+	{ CCI_REG8(0x0ba6), 0x00 },
-+	{ CCI_REG8(0x0ba7), 0x00 },
-+	{ CCI_REG8(0x0ba8), 0x40 },
-+	{ CCI_REG8(0x0ba9), 0x00 },
-+	{ CCI_REG8(0x0baa), 0x00 },
-+	{ CCI_REG8(0x0bab), 0x00 },
-+	{ CCI_REG8(0x0bac), 0x40 },
-+	{ CCI_REG8(0x0bad), 0x00 },
-+	{ CCI_REG8(0x0bae), 0x00 },
-+	{ CCI_REG8(0x0baf), 0x00 },
-+	{ CCI_REG8(0x0bb0), 0x02 },
-+	{ CCI_REG8(0x0bb1), 0x00 },
-+	{ CCI_REG8(0x0bb2), 0x00 },
-+	{ CCI_REG8(0x0bb3), 0x00 },
-+	{ CCI_REG8(0x0bb8), 0x02 },
-+	{ CCI_REG8(0x0bb9), 0x00 },
-+	{ CCI_REG8(0x0bba), 0x00 },
-+	{ CCI_REG8(0x0bbb), 0x00 },
-+	{ CCI_REG8(0x0a70), 0x80 },
-+	{ CCI_REG8(0x0a71), 0x00 },
-+	{ CCI_REG8(0x0a72), 0x00 },
-+	{ CCI_REG8(0x0a66), 0x00 },
-+	{ CCI_REG8(0x0a67), 0x80 },
-+	{ CCI_REG8(0x0a4d), 0x4e },
-+	{ CCI_REG8(0x0a50), 0x00 },
-+	{ CCI_REG8(0x0a4f), 0x0c },
-+	{ CCI_REG8(0x0a66), 0x00 },
-+	{ CCI_REG8(0x00ca), 0x00 },
-+	{ CCI_REG8(0x00cc), 0x00 },
-+	{ CCI_REG8(0x00cd), 0x00 },
-+	{ CCI_REG8(0x0aa1), 0x00 },
-+	{ CCI_REG8(0x0aa2), 0xe0 },
-+	{ CCI_REG8(0x0aa3), 0x00 },
-+	{ CCI_REG8(0x0aa4), 0x40 },
-+	{ CCI_REG8(0x0a90), 0x03 },
-+	{ CCI_REG8(0x0a91), 0x0e },
-+	{ CCI_REG8(0x0a94), 0x80 },
-+
-+	/* standby */
-+	{ CCI_REG8(0x0af6), 0x20 },
-+	{ CCI_REG8(0x0b00), 0x91 },
-+	{ CCI_REG8(0x0b01), 0x17 },
-+	{ CCI_REG8(0x0b02), 0x01 },
-+	{ CCI_REG8(0x0b03), 0x00 },
-+	{ CCI_REG8(0x0b04), 0x01 },
-+	{ CCI_REG8(0x0b05), 0x17 },
-+	{ CCI_REG8(0x0b06), 0x01 },
-+	{ CCI_REG8(0x0b07), 0x00 },
-+	{ CCI_REG8(0x0ae9), 0x01 },
-+	{ CCI_REG8(0x0aea), 0x02 },
-+	{ CCI_REG8(0x0ae8), 0x53 },
-+	{ CCI_REG8(0x0ae8), 0x43 },
-+
-+	/* gain_partition */
-+	{ CCI_REG8(0x0af6), 0x30 },
-+	{ CCI_REG8(0x0b00), 0x08 },
-+	{ CCI_REG8(0x0b01), 0x0f },
-+	{ CCI_REG8(0x0b02), 0x00 },
-+	{ CCI_REG8(0x0b04), 0x1c },
-+	{ CCI_REG8(0x0b05), 0x24 },
-+	{ CCI_REG8(0x0b06), 0x00 },
-+	{ CCI_REG8(0x0b08), 0x30 },
-+	{ CCI_REG8(0x0b09), 0x40 },
-+	{ CCI_REG8(0x0b0a), 0x00 },
-+	{ CCI_REG8(0x0b0c), 0x0e },
-+	{ CCI_REG8(0x0b0d), 0x2a },
-+	{ CCI_REG8(0x0b0e), 0x00 },
-+	{ CCI_REG8(0x0b10), 0x0e },
-+	{ CCI_REG8(0x0b11), 0x2b },
-+	{ CCI_REG8(0x0b12), 0x00 },
-+	{ CCI_REG8(0x0b14), 0x0e },
-+	{ CCI_REG8(0x0b15), 0x23 },
-+	{ CCI_REG8(0x0b16), 0x00 },
-+	{ CCI_REG8(0x0b18), 0x0e },
-+	{ CCI_REG8(0x0b19), 0x24 },
-+	{ CCI_REG8(0x0b1a), 0x00 },
-+	{ CCI_REG8(0x0b1c), 0x0c },
-+	{ CCI_REG8(0x0b1d), 0x0c },
-+	{ CCI_REG8(0x0b1e), 0x00 },
-+	{ CCI_REG8(0x0b20), 0x03 },
-+	{ CCI_REG8(0x0b21), 0x03 },
-+	{ CCI_REG8(0x0b22), 0x00 },
-+	{ CCI_REG8(0x0b24), 0x0e },
-+	{ CCI_REG8(0x0b25), 0x0e },
-+	{ CCI_REG8(0x0b26), 0x00 },
-+	{ CCI_REG8(0x0b28), 0x03 },
-+	{ CCI_REG8(0x0b29), 0x03 },
-+	{ CCI_REG8(0x0b2a), 0x00 },
-+	{ CCI_REG8(0x0b2c), 0x12 },
-+	{ CCI_REG8(0x0b2d), 0x12 },
-+	{ CCI_REG8(0x0b2e), 0x00 },
-+	{ CCI_REG8(0x0b30), 0x08 },
-+	{ CCI_REG8(0x0b31), 0x08 },
-+	{ CCI_REG8(0x0b32), 0x00 },
-+	{ CCI_REG8(0x0b34), 0x14 },
-+	{ CCI_REG8(0x0b35), 0x14 },
-+	{ CCI_REG8(0x0b36), 0x00 },
-+	{ CCI_REG8(0x0b38), 0x10 },
-+	{ CCI_REG8(0x0b39), 0x10 },
-+	{ CCI_REG8(0x0b3a), 0x00 },
-+	{ CCI_REG8(0x0b3c), 0x16 },
-+	{ CCI_REG8(0x0b3d), 0x16 },
-+	{ CCI_REG8(0x0b3e), 0x00 },
-+	{ CCI_REG8(0x0b40), 0x10 },
-+	{ CCI_REG8(0x0b41), 0x10 },
-+	{ CCI_REG8(0x0b42), 0x00 },
-+	{ CCI_REG8(0x0b44), 0x19 },
-+	{ CCI_REG8(0x0b45), 0x19 },
-+	{ CCI_REG8(0x0b46), 0x00 },
-+	{ CCI_REG8(0x0b48), 0x16 },
-+	{ CCI_REG8(0x0b49), 0x16 },
-+	{ CCI_REG8(0x0b4a), 0x00 },
-+	{ CCI_REG8(0x0b4c), 0x19 },
-+	{ CCI_REG8(0x0b4d), 0x19 },
-+	{ CCI_REG8(0x0b4e), 0x00 },
-+	{ CCI_REG8(0x0b50), 0x16 },
-+	{ CCI_REG8(0x0b51), 0x16 },
-+	{ CCI_REG8(0x0b52), 0x00 },
-+	{ CCI_REG8(0x0b80), 0x01 },
-+	{ CCI_REG8(0x0b81), 0x00 },
-+	{ CCI_REG8(0x0b82), 0x00 },
-+	{ CCI_REG8(0x0b84), 0x00 },
-+	{ CCI_REG8(0x0b85), 0x00 },
-+	{ CCI_REG8(0x0b86), 0x00 },
-+	{ CCI_REG8(0x0b88), 0x01 },
-+	{ CCI_REG8(0x0b89), 0x6a },
-+	{ CCI_REG8(0x0b8a), 0x00 },
-+	{ CCI_REG8(0x0b8c), 0x00 },
-+	{ CCI_REG8(0x0b8d), 0x01 },
-+	{ CCI_REG8(0x0b8e), 0x00 },
-+	{ CCI_REG8(0x0b90), 0x01 },
-+	{ CCI_REG8(0x0b91), 0xf6 },
-+	{ CCI_REG8(0x0b92), 0x00 },
-+	{ CCI_REG8(0x0b94), 0x00 },
-+	{ CCI_REG8(0x0b95), 0x02 },
-+	{ CCI_REG8(0x0b96), 0x00 },
-+	{ CCI_REG8(0x0b98), 0x02 },
-+	{ CCI_REG8(0x0b99), 0xc4 },
-+	{ CCI_REG8(0x0b9a), 0x00 },
-+	{ CCI_REG8(0x0b9c), 0x00 },
-+	{ CCI_REG8(0x0b9d), 0x03 },
-+	{ CCI_REG8(0x0b9e), 0x00 },
-+	{ CCI_REG8(0x0ba0), 0x03 },
-+	{ CCI_REG8(0x0ba1), 0xd8 },
-+	{ CCI_REG8(0x0ba2), 0x00 },
-+	{ CCI_REG8(0x0ba4), 0x00 },
-+	{ CCI_REG8(0x0ba5), 0x04 },
-+	{ CCI_REG8(0x0ba6), 0x00 },
-+	{ CCI_REG8(0x0ba8), 0x05 },
-+	{ CCI_REG8(0x0ba9), 0x4d },
-+	{ CCI_REG8(0x0baa), 0x00 },
-+	{ CCI_REG8(0x0bac), 0x00 },
-+	{ CCI_REG8(0x0bad), 0x05 },
-+	{ CCI_REG8(0x0bae), 0x00 },
-+	{ CCI_REG8(0x0bb0), 0x07 },
-+	{ CCI_REG8(0x0bb1), 0x3e },
-+	{ CCI_REG8(0x0bb2), 0x00 },
-+	{ CCI_REG8(0x0bb4), 0x00 },
-+	{ CCI_REG8(0x0bb5), 0x06 },
-+	{ CCI_REG8(0x0bb6), 0x00 },
-+	{ CCI_REG8(0x0bb8), 0x0a },
-+	{ CCI_REG8(0x0bb9), 0x1a },
-+	{ CCI_REG8(0x0bba), 0x00 },
-+	{ CCI_REG8(0x0bbc), 0x09 },
-+	{ CCI_REG8(0x0bbd), 0x36 },
-+	{ CCI_REG8(0x0bbe), 0x00 },
-+	{ CCI_REG8(0x0bc0), 0x0e },
-+	{ CCI_REG8(0x0bc1), 0x66 },
-+	{ CCI_REG8(0x0bc2), 0x00 },
-+	{ CCI_REG8(0x0bc4), 0x10 },
-+	{ CCI_REG8(0x0bc5), 0x06 },
-+	{ CCI_REG8(0x0bc6), 0x00 },
-+	{ CCI_REG8(0x02c1), 0xe0 },
-+	{ CCI_REG8(0x0207), 0x04 },
-+	{ CCI_REG8(0x02c2), 0x10 },
-+	{ CCI_REG8(0x02c3), 0x74 },
-+	{ CCI_REG8(0x02c5), 0x09 },
-+	{ CCI_REG8(0x02c1), 0xe0 },
-+	{ CCI_REG8(0x0207), 0x04 },
-+	{ CCI_REG8(0x02c2), 0x10 },
-+	{ CCI_REG8(0x02c5), 0x09 },
-+	{ CCI_REG8(0x02c1), 0xe0 },
-+	{ CCI_REG8(0x0207), 0x04 },
-+	{ CCI_REG8(0x02c2), 0x10 },
-+	{ CCI_REG8(0x02c5), 0x09 },
-+
-+	/* auto load CH_GAIN */
-+	{ CCI_REG8(0x0aa1), 0x15 },
-+	{ CCI_REG8(0x0aa2), 0x50 },
-+	{ CCI_REG8(0x0aa3), 0x00 },
-+	{ CCI_REG8(0x0aa4), 0x09 },
-+	{ CCI_REG8(0x0a90), 0x25 },
-+	{ CCI_REG8(0x0a91), 0x0e },
-+	{ CCI_REG8(0x0a94), 0x80 },
-+
-+	/* ISP */
-+	{ CCI_REG8(0x0050), 0x00 },
-+	{ CCI_REG8(0x0089), 0x83 },
-+	{ CCI_REG8(0x005a), 0x40 },
-+	{ CCI_REG8(0x00c3), 0x35 },
-+	{ CCI_REG8(0x00c4), 0x80 },
-+	{ CCI_REG8(0x0080), 0x10 },
-+	{ CCI_REG8(0x0040), 0x12 },
-+	{ CCI_REG8(0x0053), 0x0a },
-+	{ CCI_REG8(0x0054), 0x44 },
-+	{ CCI_REG8(0x0055), 0x32 },
-+	{ CCI_REG8(0x0058), 0x89 },
-+	{ CCI_REG8(0x004a), 0x03 },
-+	{ CCI_REG8(0x0048), 0xf0 },
-+	{ CCI_REG8(0x0049), 0x0f },
-+	{ CCI_REG8(0x0041), 0x20 },
-+	{ CCI_REG8(0x0043), 0x0a },
-+	{ CCI_REG8(0x009d), 0x08 },
-+	{ CCI_REG8(0x0236), 0x40 },
-+
-+	/* gain */
-+	{ CCI_REG8(0x0204), 0x04 },
-+	{ CCI_REG8(0x0205), 0x00 },
-+	{ CCI_REG8(0x02b3), 0x00 },
-+	{ CCI_REG8(0x02b4), 0x00 },
-+	{ CCI_REG8(0x009e), 0x01 },
-+	{ CCI_REG8(0x009f), 0x94 },
-+
-+	/* auto load REG */
-+	{ CCI_REG8(0x0aa1), 0x10 },
-+	{ CCI_REG8(0x0aa2), 0xf8 },
-+	{ CCI_REG8(0x0aa3), 0x00 },
-+	{ CCI_REG8(0x0aa4), 0x1f },
-+	{ CCI_REG8(0x0a90), 0x11 },
-+	{ CCI_REG8(0x0a91), 0x0e },
-+	{ CCI_REG8(0x0a94), 0x80 },
-+	{ CCI_REG8(0x03fe), 0x00 },
-+	{ CCI_REG8(0x0a90), 0x00 },
-+	{ CCI_REG8(0x0a70), 0x00 },
-+	{ CCI_REG8(0x0a67), 0x00 },
-+	{ CCI_REG8(0x0af4), 0x29 },
-+
-+	/* DPHY */
-+	{ CCI_REG8(0x0d80), 0x07 },
-+	{ CCI_REG8(0x0dd3), 0x18 },
-+
-+	/* CISCTL_Reset */
-+	{ CCI_REG8(0x031c), 0x80 },
-+	{ CCI_REG8(0x03fe), 0x30 },
-+	{ CCI_REG8(0x0d17), 0x06 },
-+	{ CCI_REG8(0x03fe), 0x00 },
-+	{ CCI_REG8(0x0d17), 0x00 },
-+	{ CCI_REG8(0x031c), 0x93 },
-+	{ CCI_REG8(0x03fe), 0x00 },
-+	{ CCI_REG8(0x031c), 0x80 },
-+	{ CCI_REG8(0x03fe), 0x30 },
-+	{ CCI_REG8(0x0d17), 0x06 },
-+	{ CCI_REG8(0x03fe), 0x00 },
-+	{ CCI_REG8(0x0d17), 0x00 },
-+	{ CCI_REG8(0x031c), 0x93 },
-+};
-+
-+struct gc05a2_mode {
-+	u32 width;
-+	u32 height;
-+	const struct gc05a2_reg_list reg_list;
-+
-+	u32 hts; /* Horizontal timining size */
-+	u32 vts_def; /* Default vertical timining size */
-+	u32 vts_min; /* Min vertical timining size */
-+};
-+
-+/* Declare modes in order, from biggest to smallest height. */
-+static const struct gc05a2_mode gc05a2_modes[] = {
-+	{
-+		/* 2592*1944@30fps */
-+		.width = GC05A2_NATIVE_WIDTH,
-+		.height = GC05A2_NATIVE_HEIGHT,
-+		.reg_list = {
-+			.num_of_regs = ARRAY_SIZE(mode_2592x1944),
-+			.regs = mode_2592x1944,
-+		},
-+		.hts = 3664,
-+		.vts_def = 2032,
-+		.vts_min = 2032,
-+	},
-+	{
-+		/* 1280*720@60fps */
-+		.width = 1280,
-+		.height = 720,
-+		.reg_list = {
-+			.num_of_regs = ARRAY_SIZE(mode_1280x720),
-+			.regs = mode_1280x720,
-+		},
-+		.hts = 3616,
-+		.vts_def = 1032,
-+		.vts_min = 1032,
-+	},
-+};
-+
-+static inline struct gc05a2 *to_gc05a2(struct v4l2_subdev *sd)
-+{
-+	return container_of(sd, struct gc05a2, sd);
-+}
-+
-+static int gc05a2_power_on(struct device *dev)
-+{
-+	struct v4l2_subdev *sd = dev_get_drvdata(dev);
-+	struct gc05a2 *gc05a2 = to_gc05a2(sd);
-+	int ret;
-+
-+	ret = regulator_bulk_enable(ARRAY_SIZE(gc05a2_supply_name),
-+				    gc05a2->supplies);
-+	if (ret < 0) {
-+		dev_err(gc05a2->dev, "failed to enable regulators: %d\n", ret);
-+		return ret;
-+	}
-+
-+	ret = clk_prepare_enable(gc05a2->xclk);
-+	if (ret < 0) {
-+		regulator_bulk_disable(ARRAY_SIZE(gc05a2_supply_name),
-+				       gc05a2->supplies);
-+		dev_err(gc05a2->dev, "clk prepare enable failed\n");
-+		return ret;
-+	}
-+
-+	fsleep(GC05A2_SLEEP_US);
-+
-+	gpiod_set_value_cansleep(gc05a2->reset_gpio, 0);
-+	fsleep(GC05A2_SLEEP_US);
-+
-+	return 0;
-+}
-+
-+static int gc05a2_power_off(struct device *dev)
-+{
-+	struct v4l2_subdev *sd = dev_get_drvdata(dev);
-+	struct gc05a2 *gc05a2 = to_gc05a2(sd);
-+
-+	clk_disable_unprepare(gc05a2->xclk);
-+	gpiod_set_value_cansleep(gc05a2->reset_gpio, 1);
-+	regulator_bulk_disable(ARRAY_SIZE(gc05a2_supply_name),
-+			       gc05a2->supplies);
-+
-+	return 0;
-+}
-+
-+static int gc05a2_enum_mbus_code(struct v4l2_subdev *sd,
-+				 struct v4l2_subdev_state *sd_state,
-+				 struct v4l2_subdev_mbus_code_enum *code)
-+{
-+	if (code->index > 0)
-+		return -EINVAL;
-+
-+	code->code = GC05A2_MBUS_CODE;
-+
-+	return 0;
-+}
-+
-+static int gc05a2_enum_frame_size(struct v4l2_subdev *subdev,
-+				  struct v4l2_subdev_state *sd_state,
-+				  struct v4l2_subdev_frame_size_enum *fse)
-+{
-+	if (fse->code != GC05A2_MBUS_CODE)
-+		return -EINVAL;
-+
-+	if (fse->index >= ARRAY_SIZE(gc05a2_modes))
-+		return -EINVAL;
-+
-+	fse->min_width = gc05a2_modes[fse->index].width;
-+	fse->max_width = gc05a2_modes[fse->index].width;
-+	fse->min_height = gc05a2_modes[fse->index].height;
-+	fse->max_height = gc05a2_modes[fse->index].height;
-+
-+	return 0;
-+}
-+
-+static int gc05a2_update_cur_mode_controls(struct gc05a2 *gc05a2,
-+					   const struct gc05a2_mode *mode)
-+{
-+	s64 exposure_max, h_blank;
-+	int ret;
-+
-+	ret = __v4l2_ctrl_modify_range(gc05a2->vblank,
-+				       mode->vts_min - mode->height,
-+				       GC05A2_VTS_MAX - mode->height, 1,
-+				       mode->vts_def - mode->height);
-+	if (ret) {
-+		dev_err(gc05a2->dev, "VB ctrl range update failed\n");
-+		return ret;
-+	}
-+
-+	h_blank = mode->hts - mode->width;
-+	ret = __v4l2_ctrl_modify_range(gc05a2->hblank, h_blank, h_blank, 1,
-+				       h_blank);
-+	if (ret) {
-+		dev_err(gc05a2->dev, "HB ctrl range update failed\n");
-+		return ret;
-+	}
-+
-+	exposure_max = mode->vts_def - GC05A2_EXP_MARGIN;
-+	ret = __v4l2_ctrl_modify_range(gc05a2->exposure, GC05A2_EXP_MIN,
-+				       exposure_max, GC05A2_EXP_STEP,
-+				       exposure_max);
-+	if (ret) {
-+		dev_err(gc05a2->dev, "exposure ctrl range update failed\n");
-+		return ret;
-+	}
-+
-+	return 0;
-+}
-+
-+static void gc05a2_update_pad_format(struct gc05a2 *gc08a3,
-+				     const struct gc05a2_mode *mode,
-+				     struct v4l2_mbus_framefmt *fmt)
-+{
-+	fmt->width = mode->width;
-+	fmt->height = mode->height;
-+	fmt->code = GC05A2_MBUS_CODE;
-+	fmt->field = V4L2_FIELD_NONE;
-+	fmt->colorspace = V4L2_COLORSPACE_RAW;
-+	fmt->ycbcr_enc = V4L2_MAP_YCBCR_ENC_DEFAULT(fmt->colorspace);
-+	fmt->quantization = V4L2_QUANTIZATION_FULL_RANGE;
-+	fmt->xfer_func = V4L2_XFER_FUNC_NONE;
-+}
-+
-+static int gc05a2_set_format(struct v4l2_subdev *sd,
-+			     struct v4l2_subdev_state *state,
-+			     struct v4l2_subdev_format *fmt)
-+{
-+	struct gc05a2 *gc05a2 = to_gc05a2(sd);
-+	struct v4l2_mbus_framefmt *mbus_fmt;
-+	struct v4l2_rect *crop;
-+	const struct gc05a2_mode *mode;
-+
-+	mode = v4l2_find_nearest_size(gc05a2_modes, ARRAY_SIZE(gc05a2_modes),
-+				      width, height, fmt->format.width,
-+				      fmt->format.height);
-+
-+	/* update crop info to subdev state */
-+	crop = v4l2_subdev_state_get_crop(state, 0);
-+	crop->width = mode->width;
-+	crop->height = mode->height;
-+
-+	/* update fmt info to subdev state */
-+	gc05a2_update_pad_format(gc05a2, mode, &fmt->format);
-+	mbus_fmt = v4l2_subdev_state_get_format(state, 0);
-+	*mbus_fmt = fmt->format;
-+
-+	if (fmt->which == V4L2_SUBDEV_FORMAT_TRY)
-+		return 0;
-+	gc05a2->cur_mode = mode;
-+	gc05a2_update_cur_mode_controls(gc05a2, mode);
-+
-+	return 0;
-+}
-+
-+static int gc05a2_get_selection(struct v4l2_subdev *sd,
-+				struct v4l2_subdev_state *state,
-+				struct v4l2_subdev_selection *sel)
-+{
-+	switch (sel->target) {
-+	case V4L2_SEL_TGT_CROP_DEFAULT:
-+	case V4L2_SEL_TGT_CROP:
-+		sel->r = *v4l2_subdev_state_get_crop(state, 0);
-+		break;
-+	case V4L2_SEL_TGT_CROP_BOUNDS:
-+		sel->r.top = 0;
-+		sel->r.left = 0;
-+		sel->r.width = GC05A2_NATIVE_WIDTH;
-+		sel->r.height = GC05A2_NATIVE_HEIGHT;
-+		break;
-+	default:
-+		return -EINVAL;
-+	}
-+
-+	return 0;
-+}
-+
-+static int gc05a2_init_state(struct v4l2_subdev *sd,
-+			     struct v4l2_subdev_state *state)
-+{
-+	struct v4l2_subdev_format fmt = {
-+		.which = V4L2_SUBDEV_FORMAT_TRY,
-+		.pad = 0,
-+		.format = {
-+			.code = GC05A2_MBUS_CODE,
-+			.width = gc05a2_modes[0].width,
-+			.height = gc05a2_modes[0].height,
-+		},
-+	};
-+
-+	gc05a2_set_format(sd, state, &fmt);
-+
-+	return 0;
-+}
-+
-+static int gc05a2_set_ctrl_hflip(struct gc05a2 *gc05a2, u32 ctrl_val)
-+{
-+	int ret;
-+	u64 val;
-+
-+	ret = cci_read(gc05a2->regmap, GC05A2_FLIP_REG, &val, NULL);
-+	if (ret) {
-+		dev_err(gc05a2->dev, "read hflip register failed: %d\n", ret);
-+		return ret;
-+	}
-+
-+	return cci_update_bits(gc05a2->regmap, GC05A2_FLIP_REG,
-+			       GC05A2_FLIP_H_MASK,
-+			       ctrl_val ? GC05A2_FLIP_H_MASK : 0, NULL);
-+}
-+
-+static int gc05a2_set_ctrl_vflip(struct gc05a2 *gc05a2, u32 ctrl_val)
-+{
-+	int ret;
-+	u64 val;
-+
-+	ret = cci_read(gc05a2->regmap, GC05A2_FLIP_REG, &val, NULL);
-+	if (ret) {
-+		dev_err(gc05a2->dev, "read vflip register failed: %d\n", ret);
-+		return ret;
-+	}
-+
-+	return cci_update_bits(gc05a2->regmap, GC05A2_FLIP_REG,
-+			       GC05A2_FLIP_V_MASK,
-+			       ctrl_val ? GC05A2_FLIP_V_MASK : 0, NULL);
-+}
-+
-+static int gc05a2_test_pattern(struct gc05a2 *gc05a2, u32 pattern_menu)
-+{
-+	u32 pattern;
-+	int ret;
-+
-+	if (pattern_menu) {
-+		switch (pattern_menu) {
-+		case 1:
-+		case 2:
-+		case 3:
-+		case 4:
-+		case 5:
-+		case 6:
-+		case 7:
-+			pattern = pattern_menu << 4;
-+			break;
-+
-+		case 8:
-+			pattern = 0;
-+			break;
-+
-+		case 9:
-+			pattern = 4;
-+			break;
-+
-+		default:
-+			pattern = 0x00;
-+			break;
-+		}
-+
-+		ret = cci_write(gc05a2->regmap, GC05A2_REG_TEST_PATTERN_IDX,
-+				pattern, NULL);
-+		if (ret)
-+			return ret;
-+
-+		return cci_write(gc05a2->regmap, GC05A2_REG_TEST_PATTERN_EN,
-+				 GC05A2_TEST_PATTERN_EN, NULL);
-+	} else {
-+		return cci_write(gc05a2->regmap, GC05A2_REG_TEST_PATTERN_EN,
-+				 0x00, NULL);
-+	}
-+}
-+
-+static int gc05a2_set_ctrl(struct v4l2_ctrl *ctrl)
-+{
-+	struct gc05a2 *gc05a2 =
-+		container_of(ctrl->handler, struct gc05a2, ctrls);
-+	int ret = 0;
-+	s64 exposure_max;
-+	struct v4l2_subdev_state *state;
-+	const struct v4l2_mbus_framefmt *format;
-+
-+	state = v4l2_subdev_get_locked_active_state(&gc05a2->sd);
-+	format = v4l2_subdev_state_get_format(state, 0);
-+
-+	if (ctrl->id == V4L2_CID_VBLANK) {
-+		/* Update max exposure while meeting expected vblanking */
-+		exposure_max = format->height + ctrl->val - GC05A2_EXP_MARGIN;
-+		__v4l2_ctrl_modify_range(gc05a2->exposure,
-+					 gc05a2->exposure->minimum,
-+					 exposure_max, gc05a2->exposure->step,
-+					 exposure_max);
-+	}
-+
-+	/*
-+	 * Applying V4L2 control value only happens
-+	 * when power is on for streaming.
-+	 */
-+	if (!pm_runtime_get_if_active(gc05a2->dev))
-+		return 0;
-+
-+	switch (ctrl->id) {
-+	case V4L2_CID_EXPOSURE:
-+		ret = cci_write(gc05a2->regmap, GC05A2_EXP_REG,
-+				ctrl->val, NULL);
-+		break;
-+
-+	case V4L2_CID_ANALOGUE_GAIN:
-+		ret = cci_write(gc05a2->regmap, GC05A2_AGAIN_REG,
-+				ctrl->val, NULL);
-+		break;
-+
-+	case V4L2_CID_VBLANK:
-+		ret = cci_write(gc05a2->regmap, GC05A2_FRAME_LENGTH_REG,
-+				gc05a2->cur_mode->height + ctrl->val, NULL);
-+		break;
-+
-+	case V4L2_CID_HFLIP:
-+		ret = gc05a2_set_ctrl_hflip(gc05a2, ctrl->val);
-+		break;
-+
-+	case V4L2_CID_VFLIP:
-+		ret = gc05a2_set_ctrl_vflip(gc05a2, ctrl->val);
-+		break;
-+
-+	case V4L2_CID_TEST_PATTERN:
-+		ret = gc05a2_test_pattern(gc05a2, ctrl->val);
-+		break;
-+
-+	default:
-+		break;
-+	}
-+
-+	pm_runtime_put(gc05a2->dev);
-+
-+	return ret;
-+}
-+
-+static const struct v4l2_ctrl_ops gc05a2_ctrl_ops = {
-+	.s_ctrl = gc05a2_set_ctrl,
-+};
-+
-+static int gc05a2_identify_module(struct gc05a2 *gc05a2)
-+{
-+	u64 val;
-+	int ret;
-+
-+	if (gc05a2->identified)
-+		return 0;
-+
-+	ret = cci_read(gc05a2->regmap, GC05A2_REG_CHIP_ID, &val, NULL);
-+	if (ret)
-+		return ret;
-+
-+	if (val != GC05A2_CHIP_ID) {
-+		dev_err(gc05a2->dev, "chip id mismatch: 0x%x!=0x%llx",
-+			GC05A2_CHIP_ID, val);
-+		return -ENXIO;
-+	}
-+
-+	gc05a2->identified = true;
-+
-+	return 0;
-+}
-+
-+static int gc05a2_start_streaming(struct gc05a2 *gc05a2)
-+{
-+	const struct gc05a2_mode *mode;
-+	const struct gc05a2_reg_list *reg_list;
-+	int ret;
-+
-+	ret = pm_runtime_resume_and_get(gc05a2->dev);
-+	if (ret < 0)
-+		return ret;
-+
-+	ret = gc05a2_identify_module(gc05a2);
-+	if (ret)
-+		goto err_rpm_put;
-+
-+	ret = cci_multi_reg_write(gc05a2->regmap,
-+				  mode_table_common,
-+				  ARRAY_SIZE(mode_table_common), NULL);
-+	if (ret)
-+		goto err_rpm_put;
-+
-+	mode = gc05a2->cur_mode;
-+	reg_list = &mode->reg_list;
-+
-+	ret = cci_multi_reg_write(gc05a2->regmap,
-+				  reg_list->regs, reg_list->num_of_regs, NULL);
-+	if (ret < 0)
-+		goto err_rpm_put;
-+
-+	ret = __v4l2_ctrl_handler_setup(&gc05a2->ctrls);
-+	if (ret < 0) {
-+		dev_err(gc05a2->dev, "could not sync v4l2 controls\n");
-+		goto err_rpm_put;
-+	}
-+
-+	ret = cci_write(gc05a2->regmap, GC05A2_STREAMING_REG, 1, NULL);
-+	if (ret < 0) {
-+		dev_err(gc05a2->dev, "write STREAMING_REG failed: %d\n", ret);
-+		goto err_rpm_put;
-+	}
-+
-+	return 0;
-+
-+err_rpm_put:
-+	pm_runtime_put(gc05a2->dev);
-+	return ret;
-+}
-+
-+static int gc05a2_stop_streaming(struct gc05a2 *gc05a2)
-+{
-+	int ret;
-+
-+	ret = cci_write(gc05a2->regmap, GC05A2_STREAMING_REG, 0, NULL);
-+	if (ret < 0)
-+		dev_err(gc05a2->dev, "could not sent stop streaming %d\n", ret);
-+
-+	pm_runtime_put(gc05a2->dev);
-+	return ret;
-+}
-+
-+static int gc05a2_s_stream(struct v4l2_subdev *subdev, int enable)
-+{
-+	struct gc05a2 *gc05a2 = to_gc05a2(subdev);
-+	struct v4l2_subdev_state *state;
-+	int ret;
-+
-+	state = v4l2_subdev_lock_and_get_active_state(subdev);
-+
-+	if (enable)
-+		ret = gc05a2_start_streaming(gc05a2);
-+	else
-+		ret = gc05a2_stop_streaming(gc05a2);
-+
-+	v4l2_subdev_unlock_state(state);
-+
-+	return ret;
-+}
-+
-+static const struct v4l2_subdev_video_ops gc05a2_video_ops = {
-+	.s_stream = gc05a2_s_stream,
-+};
-+
-+static const struct v4l2_subdev_pad_ops gc05a2_subdev_pad_ops = {
-+	.enum_mbus_code = gc05a2_enum_mbus_code,
-+	.enum_frame_size = gc05a2_enum_frame_size,
-+	.get_fmt = v4l2_subdev_get_fmt,
-+	.set_fmt = gc05a2_set_format,
-+	.get_selection = gc05a2_get_selection,
-+};
-+
-+static const struct v4l2_subdev_core_ops gc05a2_core_ops = {
-+	.subscribe_event = v4l2_ctrl_subdev_subscribe_event,
-+	.unsubscribe_event = v4l2_event_subdev_unsubscribe,
-+};
-+
-+static const struct v4l2_subdev_ops gc05a2_subdev_ops = {
-+	.core = &gc05a2_core_ops,
-+	.video = &gc05a2_video_ops,
-+	.pad = &gc05a2_subdev_pad_ops,
-+};
-+
-+static const struct v4l2_subdev_internal_ops gc05a2_internal_ops = {
-+	.init_state = gc05a2_init_state,
-+};
-+
-+static int gc05a2_get_regulators(struct device *dev, struct gc05a2 *gc05a2)
-+{
-+	unsigned int i;
-+
-+	for (i = 0; i < ARRAY_SIZE(gc05a2_supply_name); i++)
-+		gc05a2->supplies[i].supply = gc05a2_supply_name[i];
-+
-+	return devm_regulator_bulk_get(dev, ARRAY_SIZE(gc05a2_supply_name),
-+				       gc05a2->supplies);
-+}
-+
-+static int gc05a2_parse_fwnode(struct gc05a2 *gc05a2)
-+{
-+	struct fwnode_handle *endpoint;
-+	struct v4l2_fwnode_endpoint bus_cfg = {
-+		.bus_type = V4L2_MBUS_CSI2_DPHY,
-+	};
-+	int ret;
-+	struct device *dev = gc05a2->dev;
-+
-+	endpoint =
-+		fwnode_graph_get_endpoint_by_id(dev_fwnode(dev), 0, 0,
-+						FWNODE_GRAPH_ENDPOINT_NEXT);
-+	if (!endpoint) {
-+		dev_err(dev, "endpoint node not found\n");
-+		return -EINVAL;
-+	}
-+
-+	ret = v4l2_fwnode_endpoint_alloc_parse(endpoint, &bus_cfg);
-+	if (ret) {
-+		dev_err(dev, "parsing endpoint node failed\n");
-+		goto done;
-+	}
-+
-+	ret = v4l2_link_freq_to_bitmap(dev, bus_cfg.link_frequencies,
-+				       bus_cfg.nr_of_link_frequencies,
-+				       gc05a2_link_freq_menu_items,
-+				       ARRAY_SIZE(gc05a2_link_freq_menu_items),
-+				       &gc05a2->link_freq_bitmap);
-+	if (ret)
-+		goto done;
-+
-+done:
-+	v4l2_fwnode_endpoint_free(&bus_cfg);
-+	fwnode_handle_put(endpoint);
-+	return ret;
-+}
-+
-+static u64 gc05a2_to_pixel_rate(u32 f_index)
-+{
-+	u64 pixel_rate =
-+		gc05a2_link_freq_menu_items[f_index] * 2 * GC05A2_DATA_LANES;
-+
-+	return div_u64(pixel_rate, GC05A2_RGB_DEPTH);
-+}
-+
-+static int gc05a2_init_controls(struct gc05a2 *gc05a2)
-+{
-+	struct i2c_client *client = v4l2_get_subdevdata(&gc05a2->sd);
-+	const struct gc05a2_mode *mode = &gc05a2_modes[0];
-+	const struct v4l2_ctrl_ops *ops = &gc05a2_ctrl_ops;
-+	struct v4l2_fwnode_device_properties props;
-+	struct v4l2_ctrl_handler *ctrl_hdlr;
-+	s64 exposure_max, h_blank;
-+	int ret;
-+
-+	ctrl_hdlr = &gc05a2->ctrls;
-+	ret = v4l2_ctrl_handler_init(ctrl_hdlr, 9);
-+	if (ret)
-+		return ret;
-+
-+	gc05a2->hflip = v4l2_ctrl_new_std(ctrl_hdlr, &gc05a2_ctrl_ops,
-+					  V4L2_CID_HFLIP, 0, 1, 1, 0);
-+	gc05a2->vflip = v4l2_ctrl_new_std(ctrl_hdlr, &gc05a2_ctrl_ops,
-+					  V4L2_CID_VFLIP, 0, 1, 1, 0);
-+	v4l2_ctrl_cluster(2, &gc05a2->hflip);
-+
-+	gc05a2->link_freq =
-+	v4l2_ctrl_new_int_menu(ctrl_hdlr,
-+			       &gc05a2_ctrl_ops,
-+			       V4L2_CID_LINK_FREQ,
-+			       ARRAY_SIZE(gc05a2_link_freq_menu_items) - 1,
-+			       0,
-+			       gc05a2_link_freq_menu_items);
-+	if (gc05a2->link_freq)
-+		gc05a2->link_freq->flags |= V4L2_CTRL_FLAG_READ_ONLY;
-+
-+	gc05a2->pixel_rate =
-+		v4l2_ctrl_new_std(ctrl_hdlr,
-+				  &gc05a2_ctrl_ops,
-+				  V4L2_CID_PIXEL_RATE, 0,
-+				  gc05a2_to_pixel_rate(0),
-+				  1,
-+				  gc05a2_to_pixel_rate(0));
-+
-+	gc05a2->vblank =
-+		v4l2_ctrl_new_std(ctrl_hdlr,
-+				  &gc05a2_ctrl_ops, V4L2_CID_VBLANK,
-+				  mode->vts_min - mode->height,
-+				  GC05A2_VTS_MAX - mode->height, 1,
-+				  mode->vts_def - mode->height);
-+
-+	h_blank = mode->hts - mode->width;
-+	gc05a2->hblank = v4l2_ctrl_new_std(ctrl_hdlr, &gc05a2_ctrl_ops,
-+					   V4L2_CID_HBLANK, h_blank, h_blank, 1,
-+					   h_blank);
-+	if (gc05a2->hblank)
-+		gc05a2->hblank->flags |= V4L2_CTRL_FLAG_READ_ONLY;
-+
-+	v4l2_ctrl_new_std(ctrl_hdlr, &gc05a2_ctrl_ops,
-+			  V4L2_CID_ANALOGUE_GAIN, GC05A2_AGAIN_MIN,
-+			  GC05A2_AGAIN_MAX, GC05A2_AGAIN_STEP,
-+			  GC05A2_AGAIN_MIN);
-+
-+	exposure_max = mode->vts_def - GC05A2_EXP_MARGIN;
-+	gc05a2->exposure = v4l2_ctrl_new_std(ctrl_hdlr, &gc05a2_ctrl_ops,
-+					     V4L2_CID_EXPOSURE, GC05A2_EXP_MIN,
-+					     exposure_max, GC05A2_EXP_STEP,
-+					     exposure_max);
-+
-+	v4l2_ctrl_new_std_menu_items(ctrl_hdlr, &gc05a2_ctrl_ops,
-+				     V4L2_CID_TEST_PATTERN,
-+				     ARRAY_SIZE(gc05a2_test_pattern_menu) - 1,
-+				     0, 0, gc05a2_test_pattern_menu);
-+
-+	/* register properties to fwnode (e.g. rotation, orientation) */
-+	ret = v4l2_fwnode_device_parse(&client->dev, &props);
-+	if (ret)
-+		goto error_ctrls;
-+
-+	ret = v4l2_ctrl_new_fwnode_properties(ctrl_hdlr, ops, &props);
-+	if (ret)
-+		goto error_ctrls;
-+
-+	if (ctrl_hdlr->error) {
-+		ret = ctrl_hdlr->error;
-+		goto error_ctrls;
-+	}
-+
-+	gc05a2->sd.ctrl_handler = ctrl_hdlr;
-+
-+	return 0;
-+
-+error_ctrls:
-+	v4l2_ctrl_handler_free(ctrl_hdlr);
-+
-+	return ret;
-+}
-+
-+static int gc05a2_probe(struct i2c_client *client)
-+{
-+	struct device *dev = &client->dev;
-+	struct gc05a2 *gc05a2;
-+	int ret;
-+
-+	gc05a2 = devm_kzalloc(dev, sizeof(*gc05a2), GFP_KERNEL);
-+	if (!gc05a2)
-+		return -ENOMEM;
-+
-+	gc05a2->dev = dev;
-+
-+	ret = gc05a2_parse_fwnode(gc05a2);
-+	if (ret)
-+		return ret;
-+
-+	gc05a2->regmap = devm_cci_regmap_init_i2c(client, 16);
-+	if (IS_ERR(gc05a2->regmap))
-+		return dev_err_probe(dev, PTR_ERR(gc05a2->regmap),
-+				     "failed to init CCI\n");
-+
-+	gc05a2->xclk = devm_clk_get(dev, NULL);
-+	if (IS_ERR(gc05a2->xclk))
-+		return dev_err_probe(dev, PTR_ERR(gc05a2->xclk),
-+				     "failed to get xclk\n");
-+
-+	ret = clk_set_rate(gc05a2->xclk, GC05A2_DEFAULT_CLK_FREQ);
-+	if (ret)
-+		return dev_err_probe(dev, ret,
-+				     "failed to set xclk frequency\n");
-+
-+	ret = gc05a2_get_regulators(dev, gc05a2);
-+	if (ret < 0)
-+		return dev_err_probe(dev, ret,
-+				     "failed to get regulators\n");
-+
-+	gc05a2->reset_gpio = devm_gpiod_get(dev, "reset", GPIOD_OUT_LOW);
-+	if (IS_ERR(gc05a2->reset_gpio))
-+		return dev_err_probe(dev, PTR_ERR(gc05a2->reset_gpio),
-+				     "failed to get gpio\n");
-+
-+	v4l2_i2c_subdev_init(&gc05a2->sd, client, &gc05a2_subdev_ops);
-+	gc05a2->sd.internal_ops = &gc05a2_internal_ops;
-+	gc05a2->cur_mode = &gc05a2_modes[0];
-+
-+	ret = gc05a2_init_controls(gc05a2);
-+	if (ret)
-+		return dev_err_probe(dev, ret,
-+				     "failed to init controls\n");
-+
-+	gc05a2->sd.flags |= V4L2_SUBDEV_FL_HAS_DEVNODE |
-+			    V4L2_SUBDEV_FL_HAS_EVENTS;
-+	gc05a2->pad.flags = MEDIA_PAD_FL_SOURCE;
-+	gc05a2->sd.dev = &client->dev;
-+	gc05a2->sd.entity.function = MEDIA_ENT_F_CAM_SENSOR;
-+
-+	ret = media_entity_pads_init(&gc05a2->sd.entity, 1, &gc05a2->pad);
-+	if (ret < 0) {
-+		dev_err(dev, "could not register media entity\n");
-+		goto err_v4l2_ctrl_handler_free;
-+	}
-+
-+	gc05a2->sd.state_lock = gc05a2->ctrls.lock;
-+	ret = v4l2_subdev_init_finalize(&gc05a2->sd);
-+	if (ret < 0) {
-+		dev_err(dev, "v4l2 subdev init error: %d\n", ret);
-+		goto err_media_entity_cleanup;
-+	}
-+
-+	pm_runtime_set_active(gc05a2->dev);
-+	pm_runtime_enable(gc05a2->dev);
-+	pm_runtime_set_autosuspend_delay(gc05a2->dev, 1000);
-+	pm_runtime_use_autosuspend(gc05a2->dev);
-+	pm_runtime_idle(gc05a2->dev);
-+
-+	ret = v4l2_async_register_subdev_sensor(&gc05a2->sd);
-+	if (ret < 0) {
-+		dev_err(dev, "could not register v4l2 device\n");
-+		goto err_rpm;
-+	}
-+
-+	return 0;
-+
-+err_rpm:
-+	pm_runtime_disable(gc05a2->dev);
-+	v4l2_subdev_cleanup(&gc05a2->sd);
-+
-+err_media_entity_cleanup:
-+	media_entity_cleanup(&gc05a2->sd.entity);
-+
-+err_v4l2_ctrl_handler_free:
-+	v4l2_ctrl_handler_free(&gc05a2->ctrls);
-+
-+	return ret;
-+}
-+
-+static void gc05a2_remove(struct i2c_client *client)
-+{
-+	struct v4l2_subdev *sd = i2c_get_clientdata(client);
-+	struct gc05a2 *gc05a2 = to_gc05a2(sd);
-+
-+	v4l2_async_unregister_subdev(&gc05a2->sd);
-+	v4l2_subdev_cleanup(sd);
-+	media_entity_cleanup(&gc05a2->sd.entity);
-+	v4l2_ctrl_handler_free(&gc05a2->ctrls);
-+
-+	pm_runtime_disable(&client->dev);
-+	if (!pm_runtime_status_suspended(&client->dev))
-+		gc05a2_power_off(gc05a2->dev);
-+	pm_runtime_set_suspended(&client->dev);
-+}
-+
-+static const struct of_device_id gc05a2_of_match[] = {
-+	{ .compatible = "galaxycore,gc05a2" },
-+	{}
-+};
-+MODULE_DEVICE_TABLE(of, gc05a2_of_match);
-+
-+static DEFINE_RUNTIME_DEV_PM_OPS(gc05a2_pm_ops,
-+				 gc05a2_power_off,
-+				 gc05a2_power_on,
-+				 NULL);
-+
-+static struct i2c_driver gc05a2_i2c_driver = {
-+	.driver = {
-+		.of_match_table = gc05a2_of_match,
-+		.pm = pm_ptr(&gc05a2_pm_ops),
-+		.name  = "gc05a2",
-+	},
-+	.probe = gc05a2_probe,
-+	.remove = gc05a2_remove,
-+};
-+module_i2c_driver(gc05a2_i2c_driver);
-+
-+MODULE_DESCRIPTION("GalaxyCore gc05a2 Camera driver");
-+MODULE_AUTHOR("Zhi Mao <zhi.mao@mediatek.com>");
-+MODULE_LICENSE("GPL");
--- 
-2.25.1
-
+T3VyIGxvZyBzaG93cyB0aGF0IHRoYXdfc3VwZXJfbG9ja2VkKCkgZmluZCB0aGF0IHNiIGlzIHJl
+YWRvbmx5LMKgc28gc2JfZnJlZXplX3VubG9jaygpIGlzIG5vdCBpbnZva2VkLgoKc3RhdGljIGlu
+dCB0aGF3X3N1cGVyX2xvY2tlZChzdHJ1Y3Qgc3VwZXJfYmxvY2sgKnNiLCBlbnVtIGZyZWV6ZV9o
+b2xkZXIgd2hvKQp7CuKAguKAguKAguKAguKAguKAgi4uLgrigILigILigILigILigILigIJpZiAo
+c2JfcmRvbmx5KHNiKSkgewrigILigILigILigILigILigILigILigILigILigILigILigIJzYi0+
+c193cml0ZXJzLmZyZWV6ZV9ob2xkZXJzICY9IH53aG87CuKAguKAguKAguKAguKAguKAguKAguKA
+guKAguKAguKAguKAgnNiLT5zX3dyaXRlcnMuZnJvemVuID0gU0JfVU5GUk9aRU47CuKAguKAguKA
+guKAguKAguKAguKAguKAguKAguKAguKAguKAgndha2VfdXBfdmFyKCZzYi0+c193cml0ZXJzLmZy
+b3plbik7CuKAguKAguKAguKAguKAguKAguKAguKAguKAguKAguKAguKAgmdvdG8gb3V0OwrigILi
+gILigILigILigILigIJ9CsKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgLi4uCuKAguKAguKAguKAguKA
+guKAgnNiX2ZyZWV6ZV91bmxvY2soc2IsIFNCX0ZSRUVaRV9GUyk7Cm91dDoK4oCC4oCC4oCC4oCC
+4oCC4oCCZGVhY3RpdmF0ZV9sb2NrZWRfc3VwZXIoc2IpOwrigILigILigILigILigILigIJyZXR1
+cm4gMDsKfQoK5a+E5Lu26ICFOsKgSmFlZ2V1ayBLaW0gPGphZWdldWtAa2VybmVsLm9yZz4K5a+E
+5Lu25pel5pyfOsKgMjAyNOW5tDPmnIgyN+aXpSDkuIrljYggMTI6NTIK5pS25Lu26ICFOsKgTGln
+aHQgSHNpZWggKOisneaYjueHiCkgPExpZ2h0LkhzaWVoQG1lZGlhdGVrLmNvbT4K5Ymv5pysOsKg
+SGlsbGYgRGFudG9uIDxoZGFudG9uQHNpbmEuY29tPjsgbGludXgta2VybmVsQHZnZXIua2VybmVs
+Lm9yZyA8bGludXgta2VybmVsQHZnZXIua2VybmVsLm9yZz47IGxpbnV4LWYyZnMtZGV2ZWxAbGlz
+dHMuc291cmNlZm9yZ2UubmV0IDxsaW51eC1mMmZzLWRldmVsQGxpc3RzLnNvdXJjZWZvcmdlLm5l
+dD4K5Li75peoOsKgUmU6IOWbnuimhjogW1BBVENIXSBmMmZzOiBhdm9pZCB0aGUgZGVhZGxvY2sg
+Y2FzZSB3aGVuIHN0b3BwaW5nIGRpc2NhcmQgdGhyZWFkCsKgCgpFeHRlcm5hbCBlbWFpbCA6IFBs
+ZWFzZSBkbyBub3QgY2xpY2sgbGlua3Mgb3Igb3BlbiBhdHRhY2htZW50cyB1bnRpbCB5b3UgaGF2
+ZSB2ZXJpZmllZCB0aGUgc2VuZGVyIG9yIHRoZSBjb250ZW50LgpPbiAwMy8yMiwgSmFlZ2V1ayBL
+aW0gd3JvdGU6Cj4gT24gMDMvMjIsIExpZ2h0IEhzaWVoICjorJ3mmI7nh4gpIHdyb3RlOgo+ID4g
+SSBkb24ndCBzZWUgbXkgYWRkZWQgbG9nIGluIHNiX2ZyZWVfdW5sb2NrKCkgd2hpY2ggd2lsbCBp
+bnZva2UgcGVyY3B1X3VwX3dyaXRlIHRvIHJlbGVhc2UgdGhlIHdyaXRlIHNlbWFwaG9yZS4KPiAK
+PiBNYXkgSSBhc2sgbW9yZSBkZXRhaWxzIHdoZXRoZXIgdGhhd19zdXBlcigpIHdhcyBjYWxsZWQg
+b3Igbm90PwoKUGluZz8KCj4gCj4gPiAKPiA+IAo+ID4gX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX18KPiA+IOWvhOS7tuiAhTogSmFlZ2V1ayBLaW0gPGphZWdldWtAa2VybmVsLm9yZz4K
+PiA+IOWvhOS7tuaXpeacnzogMjAyNOW5tDPmnIgyMuaXpSDkuIrljYggMDg6MjkKPiA+IOaUtuS7
+tuiAhTogSGlsbGYgRGFudG9uIDxoZGFudG9uQHNpbmEuY29tPgo+ID4g5Ymv5pysOiBsaW51eC1r
+ZXJuZWxAdmdlci5rZXJuZWwub3JnIDxsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnPjsgTGln
+aHQgSHNpZWggKOisneaYjueHiCkgPExpZ2h0LkhzaWVoQG1lZGlhdGVrLmNvbT47IGxpbnV4LWYy
+ZnMtZGV2ZWxAbGlzdHMuc291cmNlZm9yZ2UubmV0IDxsaW51eC1mMmZzLWRldmVsQGxpc3RzLnNv
+dXJjZWZvcmdlLm5ldD4KPiA+IOS4u+aXqDogUmU6IFtQQVRDSF0gZjJmczogYXZvaWQgdGhlIGRl
+YWRsb2NrIGNhc2Ugd2hlbiBzdG9wcGluZyBkaXNjYXJkIHRocmVhZAo+ID4gCj4gPiAKPiA+IEV4
+dGVybmFsIGVtYWlsIDogUGxlYXNlIGRvIG5vdCBjbGljayBsaW5rcyBvciBvcGVuIGF0dGFjaG1l
+bnRzIHVudGlsIHlvdSBoYXZlIHZlcmlmaWVkIHRoZSBzZW5kZXIgb3IgdGhlIGNvbnRlbnQuCj4g
+PiAKPiA+IE9uIDAzLzIyLCBIaWxsZiBEYW50b24gd3JvdGU6Cj4gPiA+IE9uIFR1ZSwgMTkgTWFy
+IDIwMjQgMTc6MTQ6NDIgLTA3MDAgSmFlZ2V1ayBLaW0gPGphZWdldWtAa2VybmVsLm9yZz4KPiA+
+ID4gPiBmMmZzX2lvY19zaHV0ZG93bihGMkZTX0dPSU5HX0RPV05fTk9TWU5DKSAgaXNzdWVfZGlz
+Y2FyZF90aHJlYWQKPiA+ID4gPiAgLSBtbnRfd2FudF93cml0ZV9maWxlKCkKPiA+ID4gPiAgICAt
+IHNiX3N0YXJ0X3dyaXRlKFNCX0ZSRUVaRV9XUklURSkKPiA+ID4gIF9fc2Jfc3RhcnRfd3JpdGUo
+KQo+ID4gPiAgICBwZXJjcHVfZG93bl9yZWFkKCkKPiA+ID4gPiAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAtIHNiX3N0YXJ0X2ludHdyaXRlKFNCX0ZSRUVaRV9G
+Uyk7Cj4gPiA+ICAgIF9fc2Jfc3RhcnRfd3JpdGUoKQo+ID4gPiAgICAgIHBlcmNwdV9kb3duX3Jl
+YWQoKQo+ID4gPgo+ID4gPiBHaXZlbiBsb2NrIGFjcXVpcmVycyBmb3IgcmVhZCBvbiBib3RoIHNp
+ZGVzLCB3dGYgZGVhZGxvY2sgYXJlIHlvdSBmaXhpbmc/Cj4gPiAKPiA+IERhbW4uIEkgY291bGRu
+J3QgdGhpbmsgX3dyaXRlIHVzZXMgX3JlYWQgc2VtLgo+ID4gCj4gPiA+Cj4gPiA+ID4gIC0gZjJm
+c19zdG9wX2NoZWNrcG9pbnQoc2JpLCBmYWxzZSwgICAgICAgICAgICA6IHdhaXRpbmcKPiA+ID4g
+PiAgICAgU1RPUF9DUF9SRUFTT05fU0hVVERPV04pOwo+ID4gPiA+ICAtIGYyZnNfc3RvcF9kaXNj
+YXJkX3RocmVhZChzYmkpOwo+ID4gPiA+ICAgIC0ga3RocmVhZF9zdG9wKCkKPiA+ID4gPiAgICAg
+IDogd2FpdGluZwo+ID4gPiA+Cj4gPiA+ID4gIC0gbW50X2Ryb3Bfd3JpdGVfZmlsZShmaWxwKTsK
+PiA+ID4KPiA+ID4gTW9yZSBpbXBvcnRhbnQsIGZlZWwgZnJlZSB0byBhZGQgaW4gc3Bpbi4KPiA+
+IAo+ID4gSSBwb3N0ZWQgdGhpcyBwYXRjaCBiZWZvcmUgTGlnaHQgcmVwb3J0ZWQuCj4gPiAKPiA+
+IEFuZCwgaW4gdGhlIHJlcG9ydCwgSSBkaWRuJ3QgZ2V0IHRoaXM6Cj4gPiAKPiA+IGYyZnNfaW9j
+X3NodXRkb3duKCkgLS0+IGZyZWV6ZV9iZGV2KCkgLS0+IGZyZWV6ZV9zdXBlcigpIC0tPiBzYl93
+YWl0X3dyaXRlKHNiLCBTQl9GUkVFWkVfRlMpIC0tPiAuLi4gLT5wZXJjcHVfZG93bl93cml0ZSgp
+Lgo+ID4gCj4gPiBiZWNhdXNlIGYyZnNfaW9jX3NodXRkb3duKCkgY2FsbHMgZjJmc19zdG9wX2Rp
+c2NhcmRfdGhyZWFkKCkgYWZ0ZXIgdGhhd19iZGV2KCkKPiA+IGxpa2UgdGhpcyBvcmRlci4KPiA+
+IAo+ID4gIC0+IGZyZWV6ZV9iZGV2KCkKPiA+ICAtPiB0aGF3X2JkZXYoKQo+ID4gIC0+IGYyZnNf
+c3RvcF9kaXNjYXJkX3RocmVhZCgpCj4gPiAKPiA+IEFtIEkgbWlzc2luZyBzb21ldGhpbmc/Cj4g
+PiAKPiA+ID4KPiA+ID4gUmVwb3J0ZWQtYnk6ICJMaWdodCBIc2llaCAo6Kyd5piO54eIKSIgPExp
+Z2h0LkhzaWVoQG1lZGlhdGVrLmNvbT4KPiA+IAo=
 
