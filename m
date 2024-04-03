@@ -1,180 +1,158 @@
-Return-Path: <linux-kernel+bounces-130417-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-130420-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8AE6C8977C8
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 20:06:08 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8C44A8977D0
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 20:07:18 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 030B61F229C7
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 18:06:08 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 17A2C1F21B24
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 18:07:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 33522154BEA;
-	Wed,  3 Apr 2024 18:05:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 46100153583;
+	Wed,  3 Apr 2024 18:06:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Ae15G2wK"
-Received: from mail-oa1-f51.google.com (mail-oa1-f51.google.com [209.85.160.51])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=canonical.com header.i=@canonical.com header.b="U3Xj5F9W"
+Received: from smtp-relay-canonical-0.canonical.com (smtp-relay-canonical-0.canonical.com [185.125.188.120])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C16D215357D;
-	Wed,  3 Apr 2024 18:05:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D746A152E11;
+	Wed,  3 Apr 2024 18:06:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.125.188.120
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712167526; cv=none; b=or+QKFOXWkfV9nHnL83eS6KstS6PQQqlaxXNAoAkqQmbe3DcgkYNfPetsm4o8t/hr4R/lVNfRqoS5fKdOLxS0dmg3Tw5Jei9k8bZPfnvFSxhNBOKQ88TheJhktd6rd9HEiLAbPLa0vWVGRSHVtBcgFnyj4FUatTN2oHCW0iqtZw=
+	t=1712167594; cv=none; b=oBcMQz/fTtwoXavhPujNh29Mu2RrIezW1Jd1Nyn6XGMiYx348tDKR26gBYNaL7fA9CD9xQH+KyVWvj+F2C1DyyRl3GwFhbUH4fiCh/4PnGCk2yMk5ym5MqYLmvMh7XE0VlSqO4/Yco8fru/DXetQptKYt4ITbOAsdtXsHgj+8s8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712167526; c=relaxed/simple;
-	bh=yzV8gvMbMG9aYQ19MBzqxr4amKzhod3/glCMw4VGUZE=;
+	s=arc-20240116; t=1712167594; c=relaxed/simple;
+	bh=5m6VOcgHOe4SYB/rSBcchnqgOUDENpQXobQNyZKgX0Y=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=oSv9ihzXp+9HPsOhWBzP7ZAqAKVHf/c4V2hKp9cqxndwa0WP3xmzT/1lOf3sIdzN2+govJbdjxcxtKvHqGqXv42SJgOY2clU4zwoqeM2hXCWr2EqHmczzKvBZvPiYXMdQiP6XXZKprzIhflK7ZcybDvNUGcv1vBBfsp1DaZrJBs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Ae15G2wK; arc=none smtp.client-ip=209.85.160.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-oa1-f51.google.com with SMTP id 586e51a60fabf-229661f57cbso70050fac.1;
-        Wed, 03 Apr 2024 11:05:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1712167524; x=1712772324; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=fZ75uqyXcKd8R5Pz7Ws9tVG0bayyM9hJ1Z1pvbSQndY=;
-        b=Ae15G2wK/YEC5vvYpf5FwQ/xNHB/FDO57tazsJYrpr+3JucPRuVBzAx2QQDyIJ6knf
-         hVn4YJr+jG9UKaNC4thE5A3TPrXg75PgSqEfYyaqNdMa2yxW5hU4AeGlhtoLCQ2xW09N
-         V5n2TdP8fe2OV9Zb9mQlT6lbG433DDg2KCM9Z9KPskRmEV5xy7qsWa6wXo0FdLkWYP+Y
-         BahQJvOPjRuHQDpWszrY5zLUPr/mrV582COYrQWqQ6IgqnYX7xE1B5vlC2WE5qx9hPPa
-         1clp9ErbkLzfPCXnRDr4rh4RM/EDOBW5lUkdGVxZdi/cNA2dWz5/1QpKdi7ogGcKSzmj
-         t3kg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712167524; x=1712772324;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=fZ75uqyXcKd8R5Pz7Ws9tVG0bayyM9hJ1Z1pvbSQndY=;
-        b=lWJylmC9Y3HHD9KCaNpToIP0B38y59bK3eDBj+r6v8sdWkRNKaNle9ZKSUTG06kmc8
-         5QLkOf/I/5YRQsGOojY+ROQlow0xg96vhn6r/FMbImPRKgwMyZmJv0gS+QbGlnH2qKHF
-         EQ3sEoRQWp+k/tf8jLK2NQ4n5S5kd4a73zZidSziK5xlXT21EoZ7s84C2zCn4Obgpu6t
-         Rt18P1zQn2DrOhQO9xIfW2ffvaQiPdMaLAxK/S3u9X7W+hM0JUPQH+b5qlmCWf7OfZGm
-         FYXpfG1jEucu/BX14GBklTw2/Ir8c7G5oYJdMA/bz0JUcVihYNE/cNjkmTul9XDYTVwH
-         +gqg==
-X-Forwarded-Encrypted: i=1; AJvYcCXLOq92sWpzuAoX794TV7Cnod+VvRG8k1XCOXth/UTbPUyuTaBjggdSmmqGytaNQn4oYIwk7+Ng6XLqV8wPziVvJxeVcc7oJpez+yWud1PuUyJMDfJXaoT4Rv+Hw6cHGcvIQ/oznfFcW+f5SHoq47K3skOEzKbtx75uJMSK8w+oYU8k3DLOx4kaq6u3n4mLj4KLwu6hMlHvPLdkUVPNz96v/kU=
-X-Gm-Message-State: AOJu0YxItEXlZBQyJAtKbuRRFojbeYlWK4WTpi52tJfyB5LWPXhGXaiO
-	zEfjwMrq7D+1kiWE+2zWAqmMXOIxUGSd1/Jy1DO9A1W/ex4angmm
-X-Google-Smtp-Source: AGHT+IEtjndM4TcXGUt3GAQI11LA8n53NRmJwToTDskQZ/GbUK0jGW4KyyBCURII9akrd7cabDnLTA==
-X-Received: by 2002:a05:6870:5d85:b0:22a:b3cd:1d7e with SMTP id fu5-20020a0568705d8500b0022ab3cd1d7emr82627oab.27.1712167523575;
-        Wed, 03 Apr 2024 11:05:23 -0700 (PDT)
-Received: from [192.168.7.169] (c-98-197-58-203.hsd1.tx.comcast.net. [98.197.58.203])
-        by smtp.gmail.com with ESMTPSA id hi27-20020a056870c99b00b0022e9bd70567sm317220oab.31.2024.04.03.11.05.22
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 03 Apr 2024 11:05:23 -0700 (PDT)
-Message-ID: <d35c96ca-24af-fbad-74fe-ad85a433caa2@gmail.com>
-Date: Wed, 3 Apr 2024 13:05:22 -0500
+	 In-Reply-To:Content-Type; b=ZqQ/Lq0nSzoQagDMmzj6Pp6W8MJdnbpKTPy9OiBnQRPQbp/yELiObFluRdJrk3vNF3NYZQcXRusezmKvdgaP7/mDdipaoefVmX6z7XRFc0b+nzqk8xkxrCTHOwkkDDeMBkNTYFT+nWAYi2u7bbWWQkvatEyePTX6QJA5+y4AJQk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canonical.com; spf=pass smtp.mailfrom=canonical.com; dkim=pass (2048-bit key) header.d=canonical.com header.i=@canonical.com header.b=U3Xj5F9W; arc=none smtp.client-ip=185.125.188.120
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canonical.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canonical.com
+Received: from [10.172.66.188] (1.general.jsalisbury.us.vpn [10.172.66.188])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-relay-canonical-0.canonical.com (Postfix) with ESMTPSA id 32C6E3F2F9;
+	Wed,  3 Apr 2024 18:06:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+	s=20210705; t=1712167589;
+	bh=ddwEN/UnUOz25J/Hbmt3w3pE4mBozWKhgJVvL8PNpBM=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type;
+	b=U3Xj5F9WCYs+sEEOcYorfKeikV608XJApffKe6tDz41ykVkOSRrgKjZh+tZ0q7prH
+	 DzUj352Ltg6r0LPtug6GzJEgtMgUlhw9jrBu8X12lUwp8M2Sds3nWL1f9ZIEFKc+f3
+	 22lnaYwHjDbnSji/+Hi1ARrDF7O3Evwqw9v/lxUCNbqlC9qFYx/D82oGLQQ6sKsbFi
+	 ebzMTJcfJ2ntsIckVV1MMlIBhyVUY2Lmcj4ORt2B6f6CTjsSWw2IDXpJn7moH2Rox0
+	 osZVuE5Hto0hcdMw9ufa5n4M4TIp4GqWY+FEltZ3FS5K3/gR39hKUl1pP4Nb8IGf7t
+	 dvHm6r1yIXRNg==
+Message-ID: <a0819f54-7469-4c94-b567-71f634c84ac1@canonical.com>
+Date: Wed, 3 Apr 2024 14:06:28 -0400
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [PATCH 3/7] dt-bindings: PCI: qcom: Add IPQ9574 PCIe controller
+User-Agent: Mozilla Thunderbird
+Subject: Re: [v5.15 Regression] block: rename GENHD_FL_NO_PART_SCAN to
+ GENHD_FL_NO_PART
+To: Greg KH <gregkh@linuxfoundation.org>
+Cc: hch@lst.de, linux-kernel@vger.kernel.org, linux-block@vger.kernel.org,
+ axboe@kernel.dk, sashal@kernel.org, stable@vger.kernel.org,
+ Francis Ginther <francis.ginther@canonical.com>
+References: <924449dc-9b1f-4943-afe3-a68c03aedbb5@canonical.com>
+ <2024040329-unstopped-spelling-64c8@gregkh>
 Content-Language: en-US
-To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
- Bjorn Andersson <andersson@kernel.org>,
- Konrad Dybcio <konrad.dybcio@linaro.org>, Bjorn Helgaas
- <bhelgaas@google.com>, Lorenzo Pieralisi <lpieralisi@kernel.org>,
- =?UTF-8?Q?Krzysztof_Wilczy=c5=84ski?= <kw@linux.com>,
- Rob Herring <robh@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>,
- Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-Cc: ansuelsmth@gmail.com, robimarko@gmail.com, linux-arm-msm@vger.kernel.org,
- linux-pci@vger.kernel.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org
-References: <20240402192555.1955204-1-mr.nuke.me@gmail.com>
- <20240402192555.1955204-3-mr.nuke.me@gmail.com>
- <bad88189-cf70-4200-9fa3-650ea923b4b8@linaro.org>
-From: mr.nuke.me@gmail.com
-In-Reply-To: <bad88189-cf70-4200-9fa3-650ea923b4b8@linaro.org>
+From: Joseph Salisbury <joseph.salisbury@canonical.com>
+Autocrypt: addr=joseph.salisbury@canonical.com; keydata=
+ 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
+ p24lPxLL08SuCEzuBw==
+In-Reply-To: <2024040329-unstopped-spelling-64c8@gregkh>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 
 
 
-On 4/3/24 02:14, Krzysztof Kozlowski wrote:
-> On 02/04/2024 21:25, Alexandru Gagniuc wrote:
->> IPQ9574 has PCIe controllers which are almost identical to IPQ6018.
->> The only difference is that the "iface" clock is not required.
->> Document this difference along with the compatible string.
+On 4/3/24 13:54, Greg KH wrote:
+> On Wed, Apr 03, 2024 at 01:50:09PM -0400, Joseph Salisbury wrote:
+>> Hi Christoph,
 >>
->> Signed-off-by: Alexandru Gagniuc <mr.nuke.me@gmail.com>
->> ---
->>   .../devicetree/bindings/pci/qcom,pcie.yaml    | 32 +++++++++++++++++++
->>   1 file changed, 32 insertions(+)
+>> A kernel bug report was opened against Ubuntu [0].  This bug is a regression
+>> introduced in mainline version v5.17-rc1 and made it's way into v5.15 stable
+>> updates.
 >>
->> diff --git a/Documentation/devicetree/bindings/pci/qcom,pcie.yaml b/Documentation/devicetree/bindings/pci/qcom,pcie.yaml
->> index cf9a6910b542..6eb29547c18e 100644
->> --- a/Documentation/devicetree/bindings/pci/qcom,pcie.yaml
->> +++ b/Documentation/devicetree/bindings/pci/qcom,pcie.yaml
->> @@ -26,6 +26,7 @@ properties:
->>             - qcom,pcie-ipq8064-v2
->>             - qcom,pcie-ipq8074
->>             - qcom,pcie-ipq8074-gen3
->> +          - qcom,pcie-ipq9574
->>             - qcom,pcie-msm8996
->>             - qcom,pcie-qcs404
->>             - qcom,pcie-sdm845
->> @@ -383,6 +384,35 @@ allOf:
->>               - const: axi_s # AXI Slave clock
->>               - const: axi_bridge # AXI bridge clock
->>               - const: rchng
->> +
->> +  - if:
->> +      properties:
->> +        compatible:
->> +          contains:
->> +            enum:
->> +              - qcom,pcie-ipq9574
->> +    then:
->> +      properties:
->> +        clocks:
->> +          minItems: 4
->> +          maxItems: 4
->> +        clock-names:
->> +          items:
->> +            - const: axi_m # AXI Master clock
->> +            - const: axi_s # AXI Slave clock
->> +            - const: axi_bridge # AXI bridge clock
->> +            - const: rchng
->> +
->> +  - if:
->> +      properties:
->> +        compatible:
->> +          contains:
->> +            enum:
->> +              - qcom,pcie-ipq6018
->> +              - qcom,pcie-ipq8074-gen3
->> +              - qcom,pcie-ipq9574
->> +    then:
-> 
-> Do not introduce inconsistent style. All if:then: define both clocks and
-> resets, right? And after your patch not anymore?
-> 
-I kept the resets in one place because they are the same cross the ipq* 
-variants.
+>> The following commit was identified as the cause of the regression in 5.15:
+>>
+>> c6ce1c5dd327 ("block: rename GENHD_FL_NO_PART_SCAN to GENHD_FL_NO_PART")
+> How is renaming a define a "regression"?
+The "regression" is experienced after upgrading to the kernel to the 
+version that introduced this commit.
+The v5.15.131 kernel works as expected, upgrading the kernel to 
+v5.15.132 breaks behavior that worked in a prior kernel version.
+Reverting commit c6ce1c5dd327 in v5.15.132 allows the experience to be 
+as before in v5.15.131.
 
-Do I understand correctly that you wish me to split up the resets as well?
+>
+>> I was hoping to get your feedback, since you are the patch author. Is the
+>> best approach to revert this commit, since many third parties rely on the
+>> name being GENHD_FL_NO_PART_SCAN in kernel headers?
+> External kernel modules are never an issue.  Is this a userspace thing?
+>
+>>   Is there a specific need that you know of that requires this commit
+>> in the 5.15 and earlier stable kernels?
+> Yes.  And Christoph did not do the backport, so I doubt he cares :)
+>
+> Again, what in-kernel issue is caused by this?
 
-     if ipq8074 ipq6018
-         clocks
-         resets
+Third party code that relies on the kernel-headers will no longer 
+compile due to the name change.  Should we not care if we break things, 
+even in userspace?
 
-     if ipq9754
-         clocks
-         resets
+>
+> thanks,
+>
+> greg k-h
 
-Alex
-
-> Best regards,
-> Krzysztof
-> 
 
