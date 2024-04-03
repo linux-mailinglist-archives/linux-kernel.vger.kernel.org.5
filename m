@@ -1,156 +1,86 @@
-Return-Path: <linux-kernel+bounces-129521-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-129520-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 239D1896BDF
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 12:17:00 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9B4E2896BDD
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 12:16:16 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id CD6DC1F2271A
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 10:16:59 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CC8361C243D1
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 10:16:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E1902136650;
-	Wed,  3 Apr 2024 10:16:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ozoCUCog"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D046D136676;
+	Wed,  3 Apr 2024 10:16:05 +0000 (UTC)
+Received: from mail-io1-f72.google.com (mail-io1-f72.google.com [209.85.166.72])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2E1997317F;
-	Wed,  3 Apr 2024 10:16:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0BF6C135A68
+	for <linux-kernel@vger.kernel.org>; Wed,  3 Apr 2024 10:16:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.72
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712139411; cv=none; b=iUrQ+sKFsG0dUVS9uFUr9zhDVvm8jrfTAU8e+JGpDRxMQqAR/c0j+dlCEItyIf2DaiG4Q+M3PexX37Y/vXN5TTAMFjNz39vyIqgZnxJNQ1jkz4Zuvbl9EYztD8KCMH/r/obbp6hXoMJPqPmGcf0HFGf3SikxULRJuuGDgzR++gw=
+	t=1712139365; cv=none; b=V4twE+S2BKYQqScx+HgTlSnh7bFmPGt/IWCJokfVOZsQ85mL0tFGZgRj8OMct0WCU0xVYxPO/xoNa8qV2IKExMprZ7LVeaiza+aTljwk2v9SwH8Wt1RbKFuQBY6HH2mJhYpnoXOEJ4xqZAqlpDvvbE+2WDHnqGl81juB7GCamIQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712139411; c=relaxed/simple;
-	bh=KhTM+tpnXqd9uFhBod6K1zqVBw8JCQg4SrMRO7iHxPU=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=bgmIBSfNPrnGgeUQ0dXcmaOMRx7yY+DwlSFuwKxneVRTwLT0KcytqkDLd00/mPW19XHlUYEWJOaV/pO10BbiEhFsx7pmTm9F/OQMmkbUA5vLDSxgHlYmPrHB51YXD0sSmS3CPNCNcHJwrvZz32FXlMq1begd1fICwEP2qObIXlA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ozoCUCog; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 839CDC433C7;
-	Wed,  3 Apr 2024 10:16:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712139410;
-	bh=KhTM+tpnXqd9uFhBod6K1zqVBw8JCQg4SrMRO7iHxPU=;
-	h=From:To:Cc:Subject:Date:From;
-	b=ozoCUCogL5YJSFcowlUZGMSY7SxjGo+lz7MHs4ClSy4L5csiVsqOQgAWCcy07AoBF
-	 lrcIelHfI5DK1mhOTp4nJXzEY7Qq5tCKvix7Ed8CTFgUEZLKMPdaKIfEJI4brPyGs7
-	 mwQzEKar4rZVs5VvKsazVWANIX+cbHWsAuhxC4aUhlIPa10/ltgrHPHCSfv2kArjxQ
-	 m2525pZwCd6a+OvMztGNa1YzVZL8kra6hwLhsUOzf3gfsiUlww8a1yND50YJ1eMs6A
-	 YvaqPz5GdpGWqV+/eXHokxUUc/v6vgcUTiQNCDkKaqS6RfSODtXfqnHYgxh6u//+5L
-	 uZU3qxj986fWw==
-From: Michael Walle <mwalle@kernel.org>
-To: Francesco Dolcini <francesco@dolcini.it>,
-	Nishanth Menon <nm@ti.com>,
-	Vignesh Raghavendra <vigneshr@ti.com>,
-	Tero Kristo <kristo@kernel.org>,
-	Rob Herring <robh@kernel.org>,
-	Krzysztof Kozlowski <krzk+dt@kernel.org>,
-	Conor Dooley <conor+dt@kernel.org>
-Cc: linux-arm-kernel@lists.infradead.org,
-	devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Michael Walle <mwalle@kernel.org>
-Subject: [PATCH v2] arm64: dts: ti: k3-{am62p,j722s}: Disable ethernet by default
-Date: Wed,  3 Apr 2024 12:15:45 +0200
-Message-Id: <20240403101545.3932437-1-mwalle@kernel.org>
-X-Mailer: git-send-email 2.39.2
+	s=arc-20240116; t=1712139365; c=relaxed/simple;
+	bh=0m+mEBkWM2xkYT6T032qq1g6LsT4SgFckX7jIzdWo8o=;
+	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
+	 Content-Type; b=fc/pFMtQzXJ85y+OTwRdKVRxoIgBdMHump9aaYxOzQK0AyruXTM5azP2XCSqLJdYYlnQ2g3gguwyDvDxOkyqOMvnNep6NVO1qT+volT9/FLTmIAC+5hq7jwzNyo7jZEk7VIAk3OzU3DuD240lEZcXYm5Cxf0dPW9NaEdYyIFcHk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.72
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-io1-f72.google.com with SMTP id ca18e2360f4ac-7cc764c885bso691657239f.3
+        for <linux-kernel@vger.kernel.org>; Wed, 03 Apr 2024 03:16:03 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712139363; x=1712744163;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=V/wM0KdPD3Vm+wRioEoDYjHtqAGzPDviPsshBrGrOn4=;
+        b=sCxL+xqWG2W6WD4FZeEbvt+/40fGtneg2ma+YYibxCpo3zQRdvKnR9eqLTI/7dlr/Z
+         Pq7ozrPnCGrzoD/7FVkIx17KVsCVAQxDjQ/99Iyr3xiY+KrM2kNJ/mqJtyADTa439QUd
+         PhC4vecH4NBdhfUg+nAc/t8wnIHZUA1JktOIZhnqVJa1EON5GGAuMjvD7oGbGZsUYw8J
+         k8VvkUrvmS7edYV3zbLh3O0RACh6AKXO+j3WxP7wLST1vwm4w8WbdL2Vnhi4LjqlzuaU
+         CrQG2k8MYTP4asD40Jrwl8ZLuT9RZdHNjBRWm8SujsAkQpAZ/YoLmLvU8ShQEUSsTX0f
+         +XKQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVxmypj3lW+nW3TueTE7DZoGDDXRSkDL1+FO051CkVvArHgJ2ABgBqeUbWB2LocSiH2hJHLDuV0N3g3X95ggY8JaBfbgTPzVm+wV0TF
+X-Gm-Message-State: AOJu0YxperEEvNh+z/mftl+ReyfZFLp+N3OStknnnlqzmLWKEcFoEEaB
+	6aWGkXYLQ87QWLqKBeMAUUgwXBbvIM/vT84Mpi6mqKOKGYIrnllves8/9+H4lkUyjFiUxWGd9Dw
+	Q97sMhwaeQ9tr7JnWIiVBScQ5nJylOlSRYZWesAb7Dl/5jjT8MCx/DFs=
+X-Google-Smtp-Source: AGHT+IE9rdCcPpwH0d6m6leYvMgeOO+n8O8d5yy58DVGmQh6qnpHbPCpakQGV4SHifN4m+5scYIBrdnjfK8auUqA99EZjweV6AzM
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-Received: by 2002:a05:6638:22ca:b0:47e:cf59:7f48 with SMTP id
+ j10-20020a05663822ca00b0047ecf597f48mr739456jat.0.1712139363188; Wed, 03 Apr
+ 2024 03:16:03 -0700 (PDT)
+Date: Wed, 03 Apr 2024 03:16:03 -0700
+In-Reply-To: <20240402130040.3715-1-hdanton@sina.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000008c948706152e82f7@google.com>
+Subject: Re: [syzbot] [mm?] general protection fault in shmem_get_next_id
+From: syzbot <syzbot+05e63c0981a31f35f3fa@syzkaller.appspotmail.com>
+To: hdanton@sina.com, linux-kernel@vger.kernel.org, 
+	syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 
-Device tree best practice is to disable any external interface in the
-dtsi and just enable them if needed in the device tree. Thus, disable
-the ethernet switch and its ports by default and just enable the ones
-used by the EVMs in their device trees.
+Hello,
 
-There is no functional change.
+syzbot has tested the proposed patch and the reproducer did not trigger any issue:
 
-Signed-off-by: Michael Walle <mwalle@kernel.org>
----
-v2:
- - move the status propert into k3-am62p5-main.dtsi, thus also update
-   the k3-am62p5-sk.dts
- - put "status" last
----
- arch/arm64/boot/dts/ti/k3-am62p-main.dtsi | 3 +++
- arch/arm64/boot/dts/ti/k3-am62p5-sk.dts   | 3 +++
- arch/arm64/boot/dts/ti/k3-j722s-evm.dts   | 5 +----
- 3 files changed, 7 insertions(+), 4 deletions(-)
+Reported-and-tested-by: syzbot+05e63c0981a31f35f3fa@syzkaller.appspotmail.com
 
-diff --git a/arch/arm64/boot/dts/ti/k3-am62p-main.dtsi b/arch/arm64/boot/dts/ti/k3-am62p-main.dtsi
-index 7337a9e13535..88bc64111234 100644
---- a/arch/arm64/boot/dts/ti/k3-am62p-main.dtsi
-+++ b/arch/arm64/boot/dts/ti/k3-am62p-main.dtsi
-@@ -673,6 +673,7 @@ cpsw3g: ethernet@8000000 {
- 		assigned-clock-parents = <&k3_clks 13 11>;
- 		clock-names = "fck";
- 		power-domains = <&k3_pds 13 TI_SCI_PD_EXCLUSIVE>;
-+		status = "disabled";
- 
- 		dmas = <&main_pktdma 0xc600 15>,
- 		       <&main_pktdma 0xc601 15>,
-@@ -696,6 +697,7 @@ cpsw_port1: port@1 {
- 				label = "port1";
- 				phys = <&phy_gmii_sel 1>;
- 				mac-address = [00 00 00 00 00 00];
-+				status = "disabled";
- 			};
- 
- 			cpsw_port2: port@2 {
-@@ -704,6 +706,7 @@ cpsw_port2: port@2 {
- 				label = "port2";
- 				phys = <&phy_gmii_sel 2>;
- 				mac-address = [00 00 00 00 00 00];
-+				status = "disabled";
- 			};
- 		};
- 
-diff --git a/arch/arm64/boot/dts/ti/k3-am62p5-sk.dts b/arch/arm64/boot/dts/ti/k3-am62p5-sk.dts
-index 6694087b3665..6a9c99c5fb2a 100644
---- a/arch/arm64/boot/dts/ti/k3-am62p5-sk.dts
-+++ b/arch/arm64/boot/dts/ti/k3-am62p5-sk.dts
-@@ -431,16 +431,19 @@ &cpsw3g {
- 	pinctrl-names = "default";
- 	pinctrl-0 = <&main_rgmii1_pins_default>,
- 		    <&main_rgmii2_pins_default>;
-+	status = "okay";
- };
- 
- &cpsw_port1 {
- 	phy-mode = "rgmii-rxid";
- 	phy-handle = <&cpsw3g_phy0>;
-+	status = "okay";
- };
- 
- &cpsw_port2 {
- 	phy-mode = "rgmii-rxid";
- 	phy-handle = <&cpsw3g_phy1>;
-+	status = "okay";
- };
- 
- &cpsw3g_mdio {
-diff --git a/arch/arm64/boot/dts/ti/k3-j722s-evm.dts b/arch/arm64/boot/dts/ti/k3-j722s-evm.dts
-index 6b148da2bcdc..8a38e5ae7d4f 100644
---- a/arch/arm64/boot/dts/ti/k3-j722s-evm.dts
-+++ b/arch/arm64/boot/dts/ti/k3-j722s-evm.dts
-@@ -226,10 +226,7 @@ cpsw3g_phy0: ethernet-phy@0 {
- &cpsw_port1 {
- 	phy-mode = "rgmii-rxid";
- 	phy-handle = <&cpsw3g_phy0>;
--};
--
--&cpsw_port2 {
--	status = "disabled";
-+	status = "okay";
- };
- 
- &main_gpio1 {
--- 
-2.39.2
+Tested on:
 
+commit:         fe46a7dd Merge tag 'sound-6.9-rc1' of git://git.kernel..
+git tree:       https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
+console output: https://syzkaller.appspot.com/x/log.txt?x=12cb9d29180000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=fe78468a74fdc3b7
+dashboard link: https://syzkaller.appspot.com/bug?extid=05e63c0981a31f35f3fa
+compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+patch:          https://syzkaller.appspot.com/x/patch.diff?x=1156321d180000
+
+Note: testing is done by a robot and is best-effort only.
 
