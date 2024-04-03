@@ -1,48 +1,48 @@
-Return-Path: <linux-kernel+bounces-129757-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-129756-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6B894896F8E
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 14:56:13 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7BCBB896F8C
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 14:55:59 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id EC871B2AAFB
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 12:56:10 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AD1EB1C26288
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 12:55:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 42FB7148826;
-	Wed,  3 Apr 2024 12:54:28 +0000 (UTC)
-Received: from smtpbguseast3.qq.com (smtpbguseast3.qq.com [54.243.244.52])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A7D431487CB;
+	Wed,  3 Apr 2024 12:54:16 +0000 (UTC)
+Received: from smtpbg154.qq.com (smtpbg154.qq.com [15.184.224.54])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C18E7146A9D;
-	Wed,  3 Apr 2024 12:54:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=54.243.244.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A8A214F613;
+	Wed,  3 Apr 2024 12:54:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=15.184.224.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712148867; cv=none; b=Yme7K/fLW41G6ovto5zi7zID1tuJO86HkhnxxsOke9cDVMfHhWRy3emspl4V3AS9F6i562s8X0DjLeWvWz5yL8GLTiFKOoDmeII6UO2KaJMxrC35jRz3derOVNk6XgkUatrcUbOSQiL7s9p/owoMVdQj4NUEj067CTWvq2ES6XY=
+	t=1712148856; cv=none; b=aggEJW+tGuEEgnFDymsGJnMiu2GvVHM8ZaoQ5chr6t9KndWKjmg25XqnujVOpNSgQyOChhSnncnOtDZcKR7+m9J18OIn5JVwmchF+BvoWIrOs+/NT7fA94TPC8cuimDg7PvVrWSmtleB5c5M+LbtJBLwy5UHExbQxQMrzwST9Xw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712148867; c=relaxed/simple;
-	bh=DuvQOR4vsP78Wm5NVq8AOQUFUfQcm9T0pyka2X4Hhp4=;
+	s=arc-20240116; t=1712148856; c=relaxed/simple;
+	bh=eD3mfKYgc+nRUPkrE3ZTzbALwXtkGiDfBxjh0ZWxoIU=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=Vq6wcXB8KZAtZJJN81wkzoGEFfLLDgjH0XHVU6MHPoRm9klc7lthG1QFd5ud4Rlu4lgdSXfrY1//AE9ZYGCngow4gWKsHYp4lFKM9++8wD8gf+3Kd3WAbuQf5aqsz7JyV/NtEP+ituFXmEUue0QMrxhQl0GROVWYwU2mLFO5yCg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=shingroup.cn; spf=pass smtp.mailfrom=shingroup.cn; arc=none smtp.client-ip=54.243.244.52
+	 MIME-Version; b=XuA2ugI9STldshcrKDQcoUbFUOaeX2nfG8Zcxx5puFNBFG2bc/DKubvxzsXO9wHJ8MRN2YiSf2YaJ1FQqXoz7FsbZn3eZJdVygSu2B2P6Bcftc79+POzcIs8Wqj6mpeZqele5xOVdZlTWXjPCl7nDSEb3aSLei+9BqES0VFHVTk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=shingroup.cn; spf=pass smtp.mailfrom=shingroup.cn; arc=none smtp.client-ip=15.184.224.54
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=shingroup.cn
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=shingroup.cn
-X-QQ-mid: bizesmtpsz13t1712148751thjp14
-X-QQ-Originating-IP: PN96WD6+s0f0fHNZoIaqwlrHcfY0nVQajJhi8FUfFuM=
+X-QQ-mid: bizesmtpsz14t1712148757trdpo7
+X-QQ-Originating-IP: DSTvJb15+fliyf2zWUZJBYnhPlXY5kA800cxsWCzZAk=
 Received: from localhost ( [112.0.147.175])
 	by bizesmtp.qq.com (ESMTP) with 
-	id ; Wed, 03 Apr 2024 20:52:30 +0800 (CST)
+	id ; Wed, 03 Apr 2024 20:52:36 +0800 (CST)
 X-QQ-SSF: 01400000000000704000000A0000000
-X-QQ-FEAT: zcLa5zqvhxgf/5JXWZ8twfXFCazlSAsrySVLuhjEZMYToUkKWNsAJmBBYfDe+
-	NsLkXC+chAgf1GKnj0xs+cjveEn376+2q5jqMLFhczeZpSps2N19LEoRD2EbL4GsthwKh2A
-	ZyAM+BPRilAQekCh1hGwcIFu4x73e4p44a+fel0VgLqjLCpdTtAIDgjrdSd5diS1y57wy88
-	hDyTUongOVf12A2X/IV7LhSD94AniI9zUmfBXtROAXHdcHcYaWhLWsEoBZGrY2TnkpQM+My
-	W/ls2X2G2eB/4CVV13mfkN8eKhXbh+2+EZslaoWjqF2Vpw/mamsDazphJq5suJJVWI/apJG
-	AD/bzvFButsgFqs8fNhD38vhGupDFjLpN6Juab9D/+ynsLdXRwsXrr+Bl9JrApdbDjgOxeM
-	oLfxxIRlYsInBfAA6uV2dWzExTT2ldHB
+X-QQ-FEAT: DoD8xN2rKoyVx7iKxegRViP9yMHQO4PaK1xU/ZRFnWvi6EHTmFXXoEI0Tq+YG
+	VGPFDOfLxJqbT+UZl66iAoaeAMjri+NbDF9MK+kIvkjGPQu5hREf2A4wLewIUWa5U7TNPVf
+	vSDKXMrntzyaD6bwhCpjQiIPt2Rtz+gxZRQnirHyzS/Lz3XfECT1b902pBjGETAHk+t5qp5
+	DILh6DAT2KGSocqoB4sJWqzKV0DB4YcD4ObXhuKmANDEkGX7yrae25xH7MV8443POuc0gYP
+	wFtLo4KuUmtHU2GlaaqqHmRsYYJa360fBY4jnCVDfGkSh5NSP/Z9q3m0aKWGamL4BZKY/WG
+	iqFFIoZ/4qTBWDH5G7aez/K0eOcIN6qjoohy70tTEsOWkSuqey5Kmata83VI9Ox9Ijj0J2H
+	79lmb0hIr7MukC8G8+W7D4iY7ei5TGnN
 X-QQ-GoodBg: 2
-X-BIZMAIL-ID: 11098512972322688443
+X-BIZMAIL-ID: 15651604539771351507
 From: Dawei Li <dawei.li@shingroup.cn>
 To: will@kernel.org,
 	mark.rutland@arm.com,
@@ -58,9 +58,9 @@ Cc: xueshuai@linux.alibaba.com,
 	linux-kernel@vger.kernel.org,
 	linux-arm-msm@vger.kernel.org,
 	Dawei Li <dawei.li@shingroup.cn>
-Subject: [PATCH v2 06/10] perf/dwc_pcie: Avoid placing cpumask var on stack
-Date: Wed,  3 Apr 2024 20:51:05 +0800
-Message-Id: <20240403125109.2054881-7-dawei.li@shingroup.cn>
+Subject: [PATCH v2 07/10] perf/hisi_pcie: Avoid placing cpumask var on stack
+Date: Wed,  3 Apr 2024 20:51:06 +0800
+Message-Id: <20240403125109.2054881-8-dawei.li@shingroup.cn>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20240403125109.2054881-1-dawei.li@shingroup.cn>
 References: <20240403125109.2054881-1-dawei.li@shingroup.cn>
@@ -96,34 +96,32 @@ the cpumask var is allocated.
 Suggested-by: Mark Rutland <mark.rutland@arm.com>
 Signed-off-by: Dawei Li <dawei.li@shingroup.cn>
 ---
- drivers/perf/dwc_pcie_pmu.c | 10 ++++------
- 1 file changed, 4 insertions(+), 6 deletions(-)
+ drivers/perf/hisilicon/hisi_pcie_pmu.c | 9 ++++-----
+ 1 file changed, 4 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/perf/dwc_pcie_pmu.c b/drivers/perf/dwc_pcie_pmu.c
-index 957058ad0099..c5e328f23841 100644
---- a/drivers/perf/dwc_pcie_pmu.c
-+++ b/drivers/perf/dwc_pcie_pmu.c
-@@ -690,9 +690,8 @@ static int dwc_pcie_pmu_offline_cpu(unsigned int cpu, struct hlist_node *cpuhp_n
+diff --git a/drivers/perf/hisilicon/hisi_pcie_pmu.c b/drivers/perf/hisilicon/hisi_pcie_pmu.c
+index 5d1f0e9fdb08..06b192cc31d5 100644
+--- a/drivers/perf/hisilicon/hisi_pcie_pmu.c
++++ b/drivers/perf/hisilicon/hisi_pcie_pmu.c
+@@ -673,7 +673,6 @@ static int hisi_pcie_pmu_offline_cpu(unsigned int cpu, struct hlist_node *node)
  {
- 	struct dwc_pcie_pmu *pcie_pmu;
- 	struct pci_dev *pdev;
--	int node;
--	cpumask_t mask;
+ 	struct hisi_pcie_pmu *pcie_pmu = hlist_entry_safe(node, struct hisi_pcie_pmu, node);
  	unsigned int target;
-+	int node;
+-	cpumask_t mask;
+ 	int numa_node;
  
- 	pcie_pmu = hlist_entry_safe(cpuhp_node, struct dwc_pcie_pmu, cpuhp_node);
  	/* Nothing to do if this CPU doesn't own the PMU */
-@@ -702,10 +701,9 @@ static int dwc_pcie_pmu_offline_cpu(unsigned int cpu, struct hlist_node *cpuhp_n
- 	pcie_pmu->on_cpu = -1;
- 	pdev = pcie_pmu->pdev;
- 	node = dev_to_node(&pdev->dev);
--	if (cpumask_and(&mask, cpumask_of_node(node), cpu_online_mask) &&
+@@ -684,10 +683,10 @@ static int hisi_pcie_pmu_offline_cpu(unsigned int cpu, struct hlist_node *node)
+ 
+ 	/* Choose a local CPU from all online cpus. */
+ 	numa_node = dev_to_node(&pcie_pmu->pdev->dev);
+-	if (cpumask_and(&mask, cpumask_of_node(numa_node), cpu_online_mask) &&
 -	    cpumask_andnot(&mask, &mask, cpumask_of(cpu)))
 -		target = cpumask_any(&mask);
 -	else
 +
-+	target = cpumask_any_and_but(cpumask_of_node(node), cpu_online_mask, cpu);
++	target = cpumask_any_and_but(cpumask_of_node(numa_node),
++				     cpu_online_mask, cpu);
 +	if (target >= nr_cpu_ids)
  		target = cpumask_any_but(cpu_online_mask, cpu);
  
