@@ -1,289 +1,176 @@
-Return-Path: <linux-kernel+bounces-130209-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-130210-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 888E2897566
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 18:41:32 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2F4FC897568
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 18:42:38 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A59891C25F05
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 16:41:31 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B0A4B1F285F5
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 16:42:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DD26614C596;
-	Wed,  3 Apr 2024 16:41:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D2909147C6C;
+	Wed,  3 Apr 2024 16:42:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="nFbe3yxQ"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0B84C1B7F4
-	for <linux-kernel@vger.kernel.org>; Wed,  3 Apr 2024 16:41:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="F7zOCAhq"
+Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9AA4714C5B3
+	for <linux-kernel@vger.kernel.org>; Wed,  3 Apr 2024 16:42:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=13.77.154.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712162485; cv=none; b=QPJlyQaL9YXLj6J94/NxpHS/6g4aDeSiPNVjkYM0kk7Q1PKnvOLFMamjrrk5yAw4DaLQoH12RsNJj+WjtYkzIFe9ekrvj0o2ToRlGWz4IjtunJ6VOkJ8ZJV0oLGSjBF48le0iZv1WAiFnZ1nZw203ISST7SuwR31M9AFSPrHvZw=
+	t=1712162551; cv=none; b=DirO9dqFl4qp1GkU9kqZrefb9Rf+QLHzhuK4AxF/ZNidYDaVrQa5tMGj7Ss0qYTok7ZdKNQUDKk7qcy1I7DpWwGoSZC1Dkr5oG4cOApQ8GW06pWTKu2aZyaBZGFdN8Kj2zq0UOpqer/YadHQHT7OF5X9fhcIkegsHOoJ3KUKZdE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712162485; c=relaxed/simple;
-	bh=VexJclgIGmsUeF7CI2xMgQCuZXf6sBp/eNu+TfEwNiI=;
-	h=Mime-Version:Content-Type:Date:Message-Id:To:Cc:Subject:From:
-	 References:In-Reply-To; b=kJlFAKYCnwN8reQe4oeFs0tgHCbg0qGOL/Y21neZbdjgmabkEZ1gye09yxdB5XwAG1R1bF+WlnS6KpsETq/TMP7tFkj25Jbj0X+XhYh+8rdbNJYUTDP9U33LcYoBGGnrG7myQZk/AUQRInHqRyLRrJl+ex3M11tXLEOXWp0TW7I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=nFbe3yxQ; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 24F24C433F1;
-	Wed,  3 Apr 2024 16:41:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712162484;
-	bh=VexJclgIGmsUeF7CI2xMgQCuZXf6sBp/eNu+TfEwNiI=;
-	h=Date:To:Cc:Subject:From:References:In-Reply-To:From;
-	b=nFbe3yxQTQQ2GZ+bPONz87rHGCY6CFv+MXeU38ZFqqYqKv7QK0eNlUyMNHXWQ3qu9
-	 7KCSAOYepDrX8h9s+Lb9rJ3qI8V0em5aJZHpUbVwj7YmF+kmVthJZoIcYXNJ0rRVGt
-	 0puEnNQoGpheH59BR6yKYbaJ5Kv7RSNM52cTNoiUME5QBgNVoWerpQXgFRaV8Citd4
-	 m1Lj2qsFeOhWnCa4HZkmKujjmsWpxI/RHdJ46dutUmz92KuTb5TcUmfXYng4PXtI7f
-	 3m7Lo5atm//Utqa+5NWPVkwZ+Vj27euih9fk/sOOX/gIYkd4L3++lLjFbc3ShNYREl
-	 BMwwiLjMuqTBw==
+	s=arc-20240116; t=1712162551; c=relaxed/simple;
+	bh=5/TgGowfLSBGhCrZVCt7b81IA1GU7dKBtGmLk3DQKkI=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=Gm7XSgK5WnbWWb8TSIAvxqSfp2Ld+oekqIdsh7dCwryQOywpH3o0XdEkIMIEy2D3o+9V0YpOXffeNEAggdEmvkjyV2bxjkM5pyRU+71OY2dwOWgelO+el4Zyv54aWF8GmCCY6b2XUvnmRvtncYVPTQ81OIMkjgskgdXJoAl3xsk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com; spf=pass smtp.mailfrom=linux.microsoft.com; dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b=F7zOCAhq; arc=none smtp.client-ip=13.77.154.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.microsoft.com
+Received: from [100.64.216.231] (unknown [20.29.225.195])
+	by linux.microsoft.com (Postfix) with ESMTPSA id 769C820E8CB1;
+	Wed,  3 Apr 2024 09:42:27 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 769C820E8CB1
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+	s=default; t=1712162549;
+	bh=vqt9SWYA+DonVFY3bwxfhND2wn3sK4WmMeoT1wrpVFg=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=F7zOCAhqFjnPTo0KQRYeE5uaIvqcIJyPOzLq2iBWdr4/iS1BFOtgydlTfhGdni/uY
+	 iQe+halaQkCqhosXfjF16IdtmPqtyPh6IScEcHIn0jn1nl91AmmtdwdUuMD5wYIr47
+	 D+BmC3oQaJFSpLyY4kMKD5trvQTBtQmMygvY8AiA=
+Message-ID: <8f475409-d56d-45b4-8310-4c2122a43eb7@linux.microsoft.com>
+Date: Wed, 3 Apr 2024 09:42:25 -0700
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v0 02/14] drm/amdgpu,drm/radeon: Make I2C terminology more
+ inclusive
+To: Jani Nikula <jani.nikula@linux.intel.com>,
+ =?UTF-8?B?VmlsbGUgU3lyasOkbMOk?= <ville.syrjala@linux.intel.com>,
+ Andi Shyti <andi.shyti@linux.intel.com>
+Cc: Alex Deucher <alexander.deucher@amd.com>,
+ =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
+ "Pan, Xinhui" <Xinhui.Pan@amd.com>, David Airlie <airlied@gmail.com>,
+ Daniel Vetter <daniel@ffwll.ch>, Harry Wentland <harry.wentland@amd.com>,
+ Leo Li <sunpeng.li@amd.com>, Rodrigo Siqueira <Rodrigo.Siqueira@amd.com>,
+ Evan Quan <evan.quan@amd.com>, Hawking Zhang <Hawking.Zhang@amd.com>,
+ Candice Li <candice.li@amd.com>, Ran Sun <sunran001@208suo.com>,
+ Alexander Richards <electrodeyt@gmail.com>,
+ AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
+ Neil Armstrong <neil.armstrong@linaro.org>,
+ Heiner Kallweit <hkallweit1@gmail.com>, Hamza Mahfooz
+ <hamza.mahfooz@amd.com>, Ruan Jinjie <ruanjinjie@huawei.com>,
+ Alan Liu <haoping.liu@amd.com>, Aurabindo Pillai <aurabindo.pillai@amd.com>,
+ Wayne Lin <wayne.lin@amd.com>, Samson Tam <samson.tam@amd.com>,
+ Alvin Lee <alvin.lee2@amd.com>, Charlene Liu <charlene.liu@amd.com>,
+ Sohaib Nadeem <sohaib.nadeem@amd.com>, Lewis Huang <lewis.huang@amd.com>,
+ Tom Chung <chiahsuan.chung@amd.com>,
+ Bhawanpreet Lakha <Bhawanpreet.Lakha@amd.com>,
+ Meenakshikumar Somasundaram <meenakshikumar.somasundaram@amd.com>,
+ George Shen <george.shen@amd.com>, Aric Cyr <aric.cyr@amd.com>,
+ Jun Lei <jun.lei@amd.com>, Nicholas Kazlauskas
+ <nicholas.kazlauskas@amd.com>, Qingqing Zhuo <Qingqing.Zhuo@amd.com>,
+ Dillon Varone <dillon.varone@amd.com>, Le Ma <Le.Ma@amd.com>,
+ Lijo Lazar <lijo.lazar@amd.com>, Asad kamal <asad.kamal@amd.com>,
+ Kenneth Feng <kenneth.feng@amd.com>, Ma Jun <Jun.Ma2@amd.com>,
+ Mario Limonciello <mario.limonciello@amd.com>,
+ Yang Wang <kevinyang.wang@amd.com>, Darren Powell <darren.powell@amd.com>,
+ Yifan Zhang <yifan1.zhang@amd.com>,
+ "open list:RADEON and AMDGPU DRM DRIVERS" <amd-gfx@lists.freedesktop.org>,
+ "open list:DRM DRIVERS" <dri-devel@lists.freedesktop.org>,
+ open list <linux-kernel@vger.kernel.org>, Wolfram Sang <wsa@kernel.org>
+References: <20240329170038.3863998-1-eahariha@linux.microsoft.com>
+ <20240329170038.3863998-3-eahariha@linux.microsoft.com>
+ <Zgb3VYsgLjhJ2HKs@ashyti-mobl2.lan>
+ <ceeaafe1-49d5-4602-8251-eed63a1be2b6@linux.microsoft.com>
+ <Zgb8gieDzZtZmg2q@ashyti-mobl2.lan> <Zg1NW0jqwFn4lvEP@intel.com>
+ <87sf02d1zf.fsf@intel.com>
+Content-Language: en-CA
+From: Easwar Hariharan <eahariha@linux.microsoft.com>
+In-Reply-To: <87sf02d1zf.fsf@intel.com>
 Content-Type: text/plain; charset=UTF-8
-Date: Wed, 03 Apr 2024 19:41:20 +0300
-Message-Id: <D0AMY0ZA8BZK.F6S2B4743MXL@kernel.org>
-To: "Mark Rutland" <mark.rutland@arm.com>, <linux-kernel@vger.kernel.org>
-Cc: <anil.s.keshavamurthy@intel.com>, <aou@eecs.berkeley.edu>,
- <catalin.marinas@arm.com>, <davem@davemloft.net>,
- <linux-arm-kernel@lists.infradead.org>, <mhiramat@kernel.org>,
- <naveen.n.rao@linux.ibm.com>, <palmer@dabbelt.com>,
- <paul.walmsley@sifive.com>, <will@kernel.org>
-Subject: Re: [PATCH v2 4/4] kprobes: Remove core dependency on modules
-From: "Jarkko Sakkinen" <jarkko@kernel.org>
-X-Mailer: aerc 0.17.0
-References: <20240403150154.667649-1-mark.rutland@arm.com>
- <20240403150154.667649-5-mark.rutland@arm.com>
-In-Reply-To: <20240403150154.667649-5-mark.rutland@arm.com>
+Content-Transfer-Encoding: 8bit
 
-On Wed Apr 3, 2024 at 6:01 PM EEST, Mark Rutland wrote:
-> From: Jarkko Sakkinen <jarkko@kernel.org>
->
-> Tracing with kprobes while running a monolithic kernel is currently
-> impossible because KPROBES depends on MODULES. While this dependency is
-> necessary when HAVE_KPROBES_ALLOC=3Dn and the core kprobes code allocates
-> memory using module_alloc(), all the other module-specific code only
-> exist to handle the case when MODULES=3Dy, and can be hidden behind
-> ifdeffery.
->
-> Add the necessary ifdeffery, and remove the dependency on MODULES=3Dy whe=
-n
-> HAVE_KPROBES_ALLOC=3Dy.
->
-> As of this patch kprobes can be used when MODULES=3Dn on arm64 and
-> riscv. All other architectures still depend on MODULES, either by virtue
-> of the core dependency on MODULES when HAVE_KPROBES_ALLOC=3Dn, or by
-> virtue of an explciit dependency on MODULES in arch code.
->
-> Other architectures can enable support by implementing their own
-> kprobes_alloc_insn_page() and kprobes_free_insn_page() which do not
-> depend on MODULES.
->
-> Signed-off-by: Jarkko Sakkinen <jarkko@kernel.org>
-> Link: https://lore.kernel.org/lkml/20240326134616.7691-1-jarkko@kernel.or=
-g/
-> [Mark: Remove execmem changes, depend on HAVE_KPROBES_ALLOC]
-> Signed-off-by: Mark Rutland <mark.rutland@arm.com>
-> Cc: Albert Ou <aou@eecs.berkeley.edu>
-> Cc: Anil S Keshavamurthy <anil.s.keshavamurthy@intel.com>
-> Cc: Catalin Marinas <catalin.marinas@arm.com>
-> Cc: David S. Miller <davem@davemloft.net>
-> Cc: Jarkko Sakkinen <jarkko@kernel.org>
-> Cc: Masami Hiramatsu <mhiramat@kernel.org>
-> Cc: Naveen N. Rao <naveen.n.rao@linux.ibm.com>
-> Cc: Palmer Dabbelt <palmer@dabbelt.com>
-> Cc: Paul Walmsley <paul.walmsley@sifive.com>
-> Cc: Will Deacon <will@kernel.org>
-> ---
->  arch/Kconfig                |  2 +-
->  kernel/kprobes.c            | 46 ++++++++++++++++++++++---------------
->  kernel/trace/trace_kprobe.c | 15 ++++++++++--
->  3 files changed, 41 insertions(+), 22 deletions(-)
->
-> diff --git a/arch/Kconfig b/arch/Kconfig
-> index 85bb59f7b8c07..0df2c88547b3c 100644
-> --- a/arch/Kconfig
-> +++ b/arch/Kconfig
-> @@ -52,7 +52,7 @@ config GENERIC_ENTRY
-> =20
->  config KPROBES
->  	bool "Kprobes"
-> -	depends on MODULES
-> +	depends on MODULES || HAVE_KPROBES_ALLOC
->  	depends on HAVE_KPROBES
->  	select KALLSYMS
->  	select TASKS_RCU if PREEMPTION
-> diff --git a/kernel/kprobes.c b/kernel/kprobes.c
-> index fa2ee4e59eca2..ec4493a41b505 100644
-> --- a/kernel/kprobes.c
-> +++ b/kernel/kprobes.c
-> @@ -1594,6 +1594,7 @@ static int check_kprobe_address_safe(struct kprobe =
-*p,
->  			goto out;
->  		}
-> =20
-> +#ifdef CONFIG_MODULES
->  		/*
->  		 * If the module freed '.init.text', we couldn't insert
->  		 * kprobes in there.
-> @@ -1604,7 +1605,9 @@ static int check_kprobe_address_safe(struct kprobe =
-*p,
->  			*probed_mod =3D NULL;
->  			ret =3D -ENOENT;
->  		}
-> +#endif /* CONFIG_MODULES */
->  	}
-> +
->  out:
->  	preempt_enable();
->  	jump_label_unlock();
-> @@ -2484,24 +2487,6 @@ int kprobe_add_area_blacklist(unsigned long start,=
- unsigned long end)
->  	return 0;
->  }
-> =20
-> -/* Remove all symbols in given area from kprobe blacklist */
-> -static void kprobe_remove_area_blacklist(unsigned long start, unsigned l=
-ong end)
-> -{
-> -	struct kprobe_blacklist_entry *ent, *n;
-> -
-> -	list_for_each_entry_safe(ent, n, &kprobe_blacklist, list) {
-> -		if (ent->start_addr < start || ent->start_addr >=3D end)
-> -			continue;
-> -		list_del(&ent->list);
-> -		kfree(ent);
-> -	}
-> -}
-> -
-> -static void kprobe_remove_ksym_blacklist(unsigned long entry)
-> -{
-> -	kprobe_remove_area_blacklist(entry, entry + 1);
-> -}
-> -
->  int __weak arch_kprobe_get_kallsym(unsigned int *symnum, unsigned long *=
-value,
->  				   char *type, char *sym)
->  {
-> @@ -2566,6 +2551,25 @@ static int __init populate_kprobe_blacklist(unsign=
-ed long *start,
->  	return ret ? : arch_populate_kprobe_blacklist();
->  }
-> =20
-> +#ifdef CONFIG_MODULES
-> +/* Remove all symbols in given area from kprobe blacklist */
-> +static void kprobe_remove_area_blacklist(unsigned long start, unsigned l=
-ong end)
-> +{
-> +	struct kprobe_blacklist_entry *ent, *n;
-> +
-> +	list_for_each_entry_safe(ent, n, &kprobe_blacklist, list) {
-> +		if (ent->start_addr < start || ent->start_addr >=3D end)
-> +			continue;
-> +		list_del(&ent->list);
-> +		kfree(ent);
-> +	}
-> +}
-> +
-> +static void kprobe_remove_ksym_blacklist(unsigned long entry)
-> +{
-> +	kprobe_remove_area_blacklist(entry, entry + 1);
-> +}
-> +
->  static void add_module_kprobe_blacklist(struct module *mod)
->  {
->  	unsigned long start, end;
-> @@ -2662,6 +2666,9 @@ static int kprobes_module_callback(struct notifier_=
-block *nb,
->  	mutex_unlock(&kprobe_mutex);
->  	return NOTIFY_DONE;
->  }
-> +#else
-> +#define kprobes_module_callback	(NULL)
-> +#endif /* CONFIG_MODULES */
-> =20
->  static struct notifier_block kprobe_module_nb =3D {
->  	.notifier_call =3D kprobes_module_callback,
-> @@ -2726,7 +2733,8 @@ static int __init init_kprobes(void)
->  	err =3D arch_init_kprobes();
->  	if (!err)
->  		err =3D register_die_notifier(&kprobe_exceptions_nb);
-> -	if (!err)
-> +
-> +	if (!err && IS_ENABLED(CONFIG_MODULES))
->  		err =3D register_module_notifier(&kprobe_module_nb);
-> =20
->  	kprobes_initialized =3D (err =3D=3D 0);
-> diff --git a/kernel/trace/trace_kprobe.c b/kernel/trace/trace_kprobe.c
-> index 14099cc17fc9e..c509ba776e679 100644
-> --- a/kernel/trace/trace_kprobe.c
-> +++ b/kernel/trace/trace_kprobe.c
-> @@ -111,6 +111,7 @@ static nokprobe_inline bool trace_kprobe_within_modul=
-e(struct trace_kprobe *tk,
->  	return strncmp(module_name(mod), name, len) =3D=3D 0 && name[len] =3D=
-=3D ':';
->  }
-> =20
-> +#ifdef CONFIG_MODULES
->  static nokprobe_inline bool trace_kprobe_module_exist(struct trace_kprob=
-e *tk)
->  {
->  	char *p;
-> @@ -129,6 +130,9 @@ static nokprobe_inline bool trace_kprobe_module_exist=
-(struct trace_kprobe *tk)
-> =20
->  	return ret;
->  }
-> +#else
-> +#define trace_kprobe_module_exist(tk) false /* aka a module never exists=
- */
-> +#endif /* CONFIG_MODULES */
-> =20
->  static bool trace_kprobe_is_busy(struct dyn_event *ev)
->  {
-> @@ -670,6 +674,7 @@ static int register_trace_kprobe(struct trace_kprobe =
-*tk)
->  	return ret;
->  }
-> =20
-> +#ifdef CONFIG_MODULES
->  /* Module notifier call back, checking event on the module */
->  static int trace_kprobe_module_callback(struct notifier_block *nb,
->  				       unsigned long val, void *data)
-> @@ -699,6 +704,9 @@ static int trace_kprobe_module_callback(struct notifi=
-er_block *nb,
-> =20
->  	return NOTIFY_DONE;
->  }
-> +#else
-> +#define trace_kprobe_module_callback (NULL)
-> +#endif /* CONFIG_MODULES */
-> =20
->  static struct notifier_block trace_kprobe_module_nb =3D {
->  	.notifier_call =3D trace_kprobe_module_callback,
-> @@ -1933,8 +1941,11 @@ static __init int init_kprobe_trace_early(void)
->  	if (ret)
->  		return ret;
-> =20
-> -	if (register_module_notifier(&trace_kprobe_module_nb))
-> -		return -EINVAL;
-> +	if (IS_ENABLED(CONFIG_MODULES)) {
-> +		ret =3D register_module_notifier(&trace_kprobe_module_nb);
-> +		if (ret)
-> +			return -EINVAL;
-> +	}
-> =20
->  	return 0;
->  }
+On 4/3/2024 6:12 AM, Jani Nikula wrote:
+> On Wed, 03 Apr 2024, Ville Syrjälä <ville.syrjala@linux.intel.com> wrote:
+>> On Fri, Mar 29, 2024 at 06:38:10PM +0100, Andi Shyti wrote:
+>>> Hi,
+>>>
+>>> On Fri, Mar 29, 2024 at 10:28:14AM -0700, Easwar Hariharan wrote:
+>>>> On 3/29/2024 10:16 AM, Andi Shyti wrote:
+>>>>> Hi Easwar,
+>>>>>
+>>>>> On Fri, Mar 29, 2024 at 05:00:26PM +0000, Easwar Hariharan wrote:
+>>>>>> I2C v7, SMBus 3.2, and I3C specifications have replaced "master/slave"
+>>>>>
+>>>>> I don't understand why we forget that i3c is 1.1.1 :-)
+>>>>
+>>>> That's because it's a copy-paste error from Wolfram's cover letter. :) I'll update
+>>>> next go-around.
+>>>
+>>> not a binding comment, though. Just for completeness, because we
+>>> are giving the version to the i2c and smbus, but not i3c.
+>>>
+>>>>>> with more appropriate terms. Inspired by and following on to Wolfram's
+>>>>>> series to fix drivers/i2c/[1], fix the terminology for users of
+>>>>>> I2C_ALGOBIT bitbanging interface, now that the approved verbiage exists
+>>>>>> in the specification.
+>>>>>
+>>>>> The specification talks about:
+>>>>>
+>>>>>  - master -> controller
+>>>>>  - slave -> target (and not client)
+>>>>>
+>>>>> But both you and Wolfram have used client. I'd like to reach
+>>>>> some more consistency here.
+>>>>
+>>>> I had the impression that remote targets (i.e external to the device) were to be called clients,
+>>>> e.g. the QSFP FRUs in drivers/infiniband, and internal ones targets.
+>>>> I chose the terminology according to that understanding, but now I can't find where I got that
+>>>> information.
+>>>
+>>> The word "client" does not even appear in the documentation (only
+>>> one instance in the i3c document), so that the change is not
+>>> related to the document as stated in the commit log. Unless, of
+>>> course, I am missing something.
+>>>
+>>> I'm OK with choosing a "customized" naming, but we need to reach
+>>> an agreement.
+>>>
+>>> I raised the same question to Wolfram.
+>>
+>> I don't know where that discussion happened, but my opinion
+>> is NAK to "client". Life is already confusing enough with
+>> these renames, so let's not make it even more confusing by
+>> inventing new names nowhere to be found in the spec.
+>>
+>> And let's especially not invent names that don't even fit
+>> the purpose. "Client" makes me think of "client/server" or
+>> some real world analogy. Neither of which seem to have any
+>> resemblence to how the term would be used for i2c.
+> 
+> Agreed.
+> 
+> I2C 7.0, I3C 1.1.1, and SMBus 3.2 have all switched to controller/target
+> terminology. The SMBus spec has additionally converted generic host
+> references to controller.
+> 
+> At least for i915 where I have some say in the matter, controller/target
+> it shall be.
+> 
+> 
+> BR,
+> Jani.
+> 
+> 
 
-I'll test the patch set asap.
+Will do in v1. Thanks for the review, Jani and Ville.
 
-BR, Jarkko
+Thanks,
+Easwar
 
