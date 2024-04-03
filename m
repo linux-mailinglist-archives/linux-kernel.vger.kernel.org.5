@@ -1,146 +1,161 @@
-Return-Path: <linux-kernel+bounces-130220-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-130221-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6363889759D
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 18:48:32 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id A240D89759E
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 18:51:58 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 944C91C22864
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 16:48:31 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 48C7028D470
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 16:51:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4EC381514E3;
-	Wed,  3 Apr 2024 16:48:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="q6I3+8sb"
-Received: from mail-yb1-f202.google.com (mail-yb1-f202.google.com [209.85.219.202])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2E9DB42A92
-	for <linux-kernel@vger.kernel.org>; Wed,  3 Apr 2024 16:48:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.202
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 32B131514DB;
+	Wed,  3 Apr 2024 16:51:53 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1A60E135A75
+	for <linux-kernel@vger.kernel.org>; Wed,  3 Apr 2024 16:51:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712162904; cv=none; b=Y8QYk9RAnryWcgVEQXn+ZOO0BUMStVuVUGiNwP8dupW7E/GYEZ8cyTMGS7xlTnsSG1wDaT8NJ7W/DSnCni6oD/UAxzd+pzevm7aba3+tBqgC7WEp6YJbIXZMXkw5QrGX6ig7IbELXv3JFSvKzyF7o7uwHosFnMjJyWqmQ9lJttY=
+	t=1712163112; cv=none; b=GfYX3BoBTGU0RBFZL/SI9nGG850P52wL8tOmoEDqOHmoMExWWiZpaCve91h7IkDHuhv929+PRHQWip4W6aSZSb67lpuNqOm6NDtaTkJ8dopq123tiC45CPaaWCuBTqmtpFP6dkLVU15C7WeGIlRfLxkzo4k56xhh3nYRb1yhNKY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712162904; c=relaxed/simple;
-	bh=7QcSyFABd+QKWDdwayDT4uwPwseqttv+HfSpTZlxz/E=;
-	h=Date:Message-Id:Mime-Version:Subject:From:To:Content-Type; b=BpkTXhQ3C+ce5LWXKGmSl/quTytEie264LgUgE1Lscyx7vjj/ko/fpO/ICIj1LkOXQePrgi3x4fn0fqK+Jgsb24O4qogGqvDxPZWc0UTXOuAGIBLgz3ZdTr5Xho0Ab0CcsGtEofmgjES4bnVaXC3SiNUEffNbzW8CE2MBzts8r8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--irogers.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=q6I3+8sb; arc=none smtp.client-ip=209.85.219.202
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--irogers.bounces.google.com
-Received: by mail-yb1-f202.google.com with SMTP id 3f1490d57ef6-dd0ae66422fso61805276.0
-        for <linux-kernel@vger.kernel.org>; Wed, 03 Apr 2024 09:48:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1712162902; x=1712767702; darn=vger.kernel.org;
-        h=to:from:subject:mime-version:message-id:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=P25cDF5GUi/3IkAO8xY65FCuv4W8Vj7opMco2ZjDiJc=;
-        b=q6I3+8sb5NwwL7W/b0nxkZ+QCtKVpNwBEyrqyKYu2BoV/VomnyMwvOxw+RAgeLMil3
-         FH0KEOJXj4PImyO/hsbvbhnievL9/QoFzK3eMWHKM1/F/ZxDJzJuvpzLnAGPILcN9wB/
-         MCbk6iL58c/3ACG7JVyw8EBuWDp31c/f8mbCpTFttY5qQQmIYhwtWxF4WBzRNbR9jaL/
-         44KG03n0MM+nRvOqgG0e2Pd3SZXKyXlEGFcob6bD79nFQQ4VmjXNIQiFqyXD6uacWUsW
-         KT31j8Y2miZqa++7HUbFDvcZcaMQDbjUuBIlhHcfwDquOqsfiRxGN+hjyc9IcC/uWQdk
-         cH3Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712162902; x=1712767702;
-        h=to:from:subject:mime-version:message-id:date:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=P25cDF5GUi/3IkAO8xY65FCuv4W8Vj7opMco2ZjDiJc=;
-        b=lG6pkCySpoO/6ukD0hqupAjj2iXg8VIG8Yt5HM4Jcu29Y4Tt7x2l5OHJfEhSsQW+Sc
-         vVzaoDcvYzLl+3THDS7jjeKbMex8UqAxHA0ETnoUqXGKG3xwYQnLaqw9YTirH0b+nQVM
-         yQdhJdrplKE+N8fB1qVRwqrsrioq3pvN2xM5ycj4hjuP4QMTUb1Wryh/Z5lwo9YzbmZk
-         AJ8GQRJn5yW70pi0d3szuX3kDrDS4ylIbJku0uyEw9SX5HDAAjqFymB0ZPo+yzF5em4p
-         qoDU+x1/f3JIQIHVU2UtJ4wN8GK2w+paX6hH0c5MGP80DFOSgyW/vlE0y13Y5ROdGLlN
-         UWGg==
-X-Forwarded-Encrypted: i=1; AJvYcCVob7V+uqpJ7Xw4Jq+39tcXe8qFpc3NJed2lqzfAgUi6LdX7Kk7IK+xN+eIm+vDF9c8QHAtp+M2mzyOoW5WXlV8Q0c1X9qElj0n9+g8
-X-Gm-Message-State: AOJu0Yyz6XZyaPu+KoiRdICrGTrNm6316yXq0D3Sm9bc1WY/F7035W4M
-	xBpKbkGWgJbfUG8KhHn5VNxbhGSc5t9+wgKEpLjhKNJSC9XK9NTtkCG5eZhXn0zda87zLu/HgqC
-	U9XMH+g==
-X-Google-Smtp-Source: AGHT+IFvvWzP5ZlSPn2lIs5Om5+YV8aHagBDhzCc44p+4uKgLXV0tVEw0Zlqvj1qC+urG0HmrDYVE/8d6VXf
-X-Received: from irogers.svl.corp.google.com ([2620:15c:2a3:200:12e:26c0:7a24:6d64])
- (user=irogers job=sendgmr) by 2002:a05:6902:18c6:b0:dbe:d0a9:2be3 with SMTP
- id ck6-20020a05690218c600b00dbed0a92be3mr42781ybb.3.1712162902250; Wed, 03
- Apr 2024 09:48:22 -0700 (PDT)
-Date: Wed,  3 Apr 2024 09:48:18 -0700
-Message-Id: <20240403164818.3431325-1-irogers@google.com>
+	s=arc-20240116; t=1712163112; c=relaxed/simple;
+	bh=TGTpo9irm2EBdH+a4jyLepfc/WLlfopDjIp/3xE4rbA=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=G2Nskxqn2csRs5LHZF5qUMCOUWgeSBXlYJyqcazOad5Xq7qWEPY4OKkLKxSRAjGpTkTZfWywlYS8aF1hVBjNvOzZRC8ddzirJSlK1excgF3rYNujtvylIU3aMDZWIkVU565nS2M7S8YLaoWG8VyXashWDJp1DKP+bjC4vFRY7m0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 3F23F1007;
+	Wed,  3 Apr 2024 09:52:21 -0700 (PDT)
+Received: from FVFF77S0Q05N (unknown [10.57.16.212])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 263C83F64C;
+	Wed,  3 Apr 2024 09:51:48 -0700 (PDT)
+Date: Wed, 3 Apr 2024 17:51:44 +0100
+From: Mark Rutland <mark.rutland@arm.com>
+To: Jarkko Sakkinen <jarkko@kernel.org>
+Cc: linux-kernel@vger.kernel.org, Catalin Marinas <catalin.marinas@arm.com>,
+	Will Deacon <will@kernel.org>, anil.s.keshavamurthy@intel.com,
+	aou@eecs.berkeley.edu, davem@davemloft.net,
+	linux-arm-kernel@lists.infradead.org, mhiramat@kernel.org,
+	naveen.n.rao@linux.ibm.com, palmer@dabbelt.com,
+	paul.walmsley@sifive.com
+Subject: Re: [PATCH v2 1/4] arm64: patching: always use fixmap
+Message-ID: <Zg2JIFNy8IgwIyUV@FVFF77S0Q05N>
+References: <20240403150154.667649-1-mark.rutland@arm.com>
+ <20240403150154.667649-2-mark.rutland@arm.com>
+ <D0AMI3962WW0.3JKFCSUXVSSVL@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.44.0.478.gd926399ef9-goog
-Subject: [PATCH v1] perf test: Be more tolerant of metricgroup failures
-From: Ian Rogers <irogers@google.com>
-To: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, 
-	Arnaldo Carvalho de Melo <acme@kernel.org>, Namhyung Kim <namhyung@kernel.org>, 
-	Mark Rutland <mark.rutland@arm.com>, 
-	Alexander Shishkin <alexander.shishkin@linux.intel.com>, Jiri Olsa <jolsa@kernel.org>, 
-	Ian Rogers <irogers@google.com>, Adrian Hunter <adrian.hunter@intel.com>, 
-	Athira Rajeev <atrajeev@linux.vnet.ibm.com>, linux-perf-users@vger.kernel.org, 
-	linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <D0AMI3962WW0.3JKFCSUXVSSVL@kernel.org>
 
-Previously "set -e" meant any non-zero exit code from perf stat would
-cause a test failure. As a non-zero exit happens when there aren't
-sufficient permissions, check for this case and make the exit code
-2/skip for it.
+On Wed, Apr 03, 2024 at 07:20:31PM +0300, Jarkko Sakkinen wrote:
+> On Wed Apr 3, 2024 at 6:01 PM EEST, Mark Rutland wrote:
+> > For historical reasons, patch_map() won't bother to fixmap non-image
+> > addresses when CONFIG_STRICT_MODULE_RWX=n, matching the behaviour prior
+> > to the introduction of CONFIG_STRICT_MODULE_RWX. However, as arm64
+> > doesn't select CONFIG_ARCH_OPTIONAL_KERNEL_RWX, CONFIG_MODULES implies
+> > CONFIG_STRICT_MODULE_RWX, so any kernel built with module support will
+> > use the fixmap for any non-image address.
+> 
+> Not familiar with the config flag but I'd guess it is essentially
+> w^x enforcement right for the sections?
 
-Signed-off-by: Ian Rogers <irogers@google.com>
----
- .../perf/tests/shell/stat_all_metricgroups.sh | 28 +++++++++++++++----
- 1 file changed, 22 insertions(+), 6 deletions(-)
+Essentially, yes.
 
-diff --git a/tools/perf/tests/shell/stat_all_metricgroups.sh b/tools/perf/tests/shell/stat_all_metricgroups.sh
-index 55ef9c9ded2d..d6db192b9f18 100755
---- a/tools/perf/tests/shell/stat_all_metricgroups.sh
-+++ b/tools/perf/tests/shell/stat_all_metricgroups.sh
-@@ -1,9 +1,7 @@
--#!/bin/sh
-+#!/bin/bash
- # perf all metricgroups test
- # SPDX-License-Identifier: GPL-2.0
- 
--set -e
--
- ParanoidAndNotRoot()
- {
-   [ "$(id -u)" != 0 ] && [ "$(cat /proc/sys/kernel/perf_event_paranoid)" -gt $1 ]
-@@ -14,11 +12,29 @@ if ParanoidAndNotRoot 0
- then
-   system_wide_flag=""
- fi
--
-+err=0
- for m in $(perf list --raw-dump metricgroups)
- do
-   echo "Testing $m"
--  perf stat -M "$m" $system_wide_flag sleep 0.01
-+  result=$(perf stat -M "$m" $system_wide_flag sleep 0.01 2>&1)
-+  result_err=$?
-+  if [[ $result_err -gt 0 ]]
-+  then
-+    if [[ "$result" =~ \
-+          "Access to performance monitoring and observability operations is limited" ]]
-+    then
-+      echo "Permission failure"
-+      echo $result
-+      if [[ $err -eq 0 ]]
-+      then
-+        err=2 # Skip
-+      fi
-+    else
-+      echo "Metric group $m failed"
-+      echo $result
-+      err=1 # Fail
-+    fi
-+  fi
- done
- 
--exit 0
-+exit $err
--- 
-2.44.0.478.gd926399ef9-goog
+> > Historically we only used patch_map() for the kernel image and modules,
+> > but these days its also used by BPF and KPROBES to write to read-only
+> > pages of executable text. Currently these both depend on CONFIG_MODULES,
+> > but we'd like to change that in subsequent patches, which will require
+> > using the fixmap regardless of CONFIG_STRICT_MODULE_RWX.
+> >
+> > This patch changes patch_map() to always use the fixmap, and simplifies
+> > the logic:
+> >
+> > * Use is_image_text() directly in the if-else, rather than using a
+> >   temporary boolean variable.
+> >
+> > * Use offset_in_page() to get the offset within the mapping.
+> >
+> > * Remove uintaddr and cast the address directly when using
+> >   is_image_text().
+> >
+> > For kernels built with CONFIG_MODULES=y, there should be no functional
+> > change as a result of this patch.
+> >
+> > For kernels built with CONFIG_MODULES=n, patch_map() will use the fixmap
+> > for non-image addresses, but there are no extant users with non-image
+> > addresses when CONFIG_MODULES=n, and hence there should be no functional
+> > change as a result of this patch alone.
+> >
+> > Signed-off-by: Mark Rutland <mark.rutland@arm.com>
+> > Cc: Catalin Marinas <catalin.marinas@arm.com>
+> > Cc: Will Deacon <will@kernel.org>
+> > ---
+> >  arch/arm64/kernel/patching.c | 10 +++-------
+> >  1 file changed, 3 insertions(+), 7 deletions(-)
+> >
+> > Catalin, Will, this is a prerequisite for the final two patches in the
+> > series. Are you happy for this go via the tracing tree?
+> >
+> > Mark.
+> >
+> > diff --git a/arch/arm64/kernel/patching.c b/arch/arm64/kernel/patching.c
+> > index 2555349303684..f0f3a2a82ca5a 100644
+> > --- a/arch/arm64/kernel/patching.c
+> > +++ b/arch/arm64/kernel/patching.c
+> > @@ -30,20 +30,16 @@ static bool is_image_text(unsigned long addr)
+> >  
+> >  static void __kprobes *patch_map(void *addr, int fixmap)
+> >  {
+> > -	unsigned long uintaddr = (uintptr_t) addr;
+> > -	bool image = is_image_text(uintaddr);
+> >  	struct page *page;
+> >  
+> > -	if (image)
+> > +	if (is_image_text((unsigned long)addr))
+> >  		page = phys_to_page(__pa_symbol(addr));
+> > -	else if (IS_ENABLED(CONFIG_STRICT_MODULE_RWX))
+> > -		page = vmalloc_to_page(addr);
+> >  	else
+> > -		return addr;
+> > +		page = vmalloc_to_page(addr);
+> >  
+> >  	BUG_ON(!page);
+> >  	return (void *)set_fixmap_offset(fixmap, page_to_phys(page) +
+> > -			(uintaddr & ~PAGE_MASK));
+> > +					 offset_in_page(addr));
+> 
+> nit: could be a single line but i guess it is up to the taste (and
+> subsystem maintainer). I.e. checkpatch will allow it at least.
+> 
+> I don't mind it too much just mentioning for completeness.
 
+At that point it goes to 93 chars long, and I stuck with the existing line
+wrapping at 80 chars. I'd rather have a temporary 'phys_addr_t phys' variable
+and do:
+
+	phys = page_to_phys(page) + offset_in_page(addr);
+	return (void *)set_fixmap(fixmap, phys);
+
+.. but I'll leave this as-is for now.
+
+> >  }
+> >  
+> >  static void __kprobes patch_unmap(int fixmap)
+> 
+> If my assumption about the config flag holds this makes sense:
+> 
+> Reviewed-by: Jarkko Sakkinen <jarkko@kernel.rg>
+
+Thanks! I assume that should be "kernel.org", with an 'o' ;)
+
+Mark.
 
