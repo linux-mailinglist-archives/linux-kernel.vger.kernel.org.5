@@ -1,71 +1,71 @@
-Return-Path: <linux-kernel+bounces-129901-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-129902-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id E17068971DB
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 16:02:04 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 690418971DC
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 16:02:06 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 107CF1C22828
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 14:02:04 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E32501F27047
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 14:02:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DC4A1148825;
-	Wed,  3 Apr 2024 14:01:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 10420149C4A;
+	Wed,  3 Apr 2024 14:01:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bitbyteword.org header.i=@bitbyteword.org header.b="TZOnuuqC"
-Received: from mail-qv1-f49.google.com (mail-qv1-f49.google.com [209.85.219.49])
+	dkim=pass (2048-bit key) header.d=bitbyteword.org header.i=@bitbyteword.org header.b="JH9KYukU"
+Received: from mail-qv1-f52.google.com (mail-qv1-f52.google.com [209.85.219.52])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D8527148FEA
-	for <linux-kernel@vger.kernel.org>; Wed,  3 Apr 2024 14:01:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2BEA7149016
+	for <linux-kernel@vger.kernel.org>; Wed,  3 Apr 2024 14:01:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712152887; cv=none; b=BXE6f/JP1m740XBYuoG4jD6GdqGrhTScjrykZjRH0EVoCDP4poSEKvBCvp8ILXfFwpgswrhqd5cEEZUl3iXgVLVW2kbDpYaNtC2QjqRlXys6bCWJl2QtCaMjCmvWa/Z0Jcq0amY/x9bYU6ePBvKzgnKkHPYcBjd/9zqQIausxj8=
+	t=1712152888; cv=none; b=kfywfsLBENM7SzM0C1OvdwObtPZvpfaSX8bB6ioPcbXWtOsan0PBh6a2ksaMHscAoNKZc3hvtpSNSVnCMQX5b5B6XJklBH1uOiIpn8XQuD6CuXk3GK2IFhSGcbw5tfo64oQORzZSXKYZNtPjRYy3JjqdxhEh6Aq/jSHEG6pJVVs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712152887; c=relaxed/simple;
-	bh=lpEab+19m9Mx7BY7SwMTKJYnA5tlJh+0D6EDugugn/0=;
+	s=arc-20240116; t=1712152888; c=relaxed/simple;
+	bh=TDctzrjvOyJsGkgtTdTPKD3E/sGdBBWNU2PAEkT4FWw=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=WvP/dfdEsPc6WME/WPJQljCDHuMS84G3SlzrRELAZ+5VNLXgYlu1N1M4exJYLoDZTAbxprP7RdwxMQK0WHCoNWPIhOYSZX+SXJoS91bvYsaDF7SqXeIV/U5EWrYGTkQoqLG9s3N1NEapha27BPu9vISmXh3bd7UaH392f1LkRjI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bitbyteword.org; spf=pass smtp.mailfrom=bitbyteword.org; dkim=pass (2048-bit key) header.d=bitbyteword.org header.i=@bitbyteword.org header.b=TZOnuuqC; arc=none smtp.client-ip=209.85.219.49
+	 MIME-Version; b=SLbqt7OmGFz36ccjWkBXjLeN8U7C/rFuACrXJjSfRXCooWp87GIo+uBcMz2RPGqhRSqN08tPpj9ta+ItkHlbRThDdSP7X0LMThifpjsLmsUiAugmY6jvPcXtkmcIIvfbKNkT1zSwwnkHk2/vDpoD+Qnjay1qsw9i8jyK+l/vBFE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bitbyteword.org; spf=pass smtp.mailfrom=bitbyteword.org; dkim=pass (2048-bit key) header.d=bitbyteword.org header.i=@bitbyteword.org header.b=JH9KYukU; arc=none smtp.client-ip=209.85.219.52
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bitbyteword.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bitbyteword.org
-Received: by mail-qv1-f49.google.com with SMTP id 6a1803df08f44-6964b1c529cso50150506d6.0
-        for <linux-kernel@vger.kernel.org>; Wed, 03 Apr 2024 07:01:24 -0700 (PDT)
+Received: by mail-qv1-f52.google.com with SMTP id 6a1803df08f44-6992d8e7e6dso832556d6.0
+        for <linux-kernel@vger.kernel.org>; Wed, 03 Apr 2024 07:01:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bitbyteword.org; s=google; t=1712152884; x=1712757684; darn=vger.kernel.org;
+        d=bitbyteword.org; s=google; t=1712152885; x=1712757685; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=UONGPslpRt306kqZsCmGTE/b37ydkUsAJesjvT1tJpY=;
-        b=TZOnuuqCWQeykS4xx0VCry+S8i7MXpSO9vMoFgCzqKiZyCp/I8S2Um7vg0thOCZgJf
-         7UaNcUxP3yUXZZT6TQ8O5f8N/jalmIxY1FnTf1Uhkw0FUeP2Y13+EBpKchrPPJWorJdW
-         I3HrlKMeGHvl7cziEfxEMhY+RMAEYlSuCFwUP3iUzd/05ziPD/hWiwjohlkAnzWJfDGx
-         Jbkg1na5dkHQLAHjVqBbTtG8fibHn2zZTQicobvWq2GG/DrCUT8lSZGf31GjTJ5m6RkQ
-         O6Cofmxlwr/ey490UI32Vb7SRyJBjHS4FzaQ72EGEFKltjhfFbAKar07t4Cyspz5Plsh
-         UAQA==
+        bh=/BPGVzMI1+eo9yvIAgnlTxqk+J0LKPxHXNZYDNRJA58=;
+        b=JH9KYukU0oTCHZDEXfYpMIVEVyCtwpFQMM6lm1YY/9JXIcKNCh/Y4EHvwHXbqt7R/4
+         fJ8avagTe7AKzsl5yQxW/IRyoPOqTWhnNwznhHn/ooov6AULZBak0k68dKKa58jJ0vYc
+         cy+3FI7DQjSnugPZsk1ilrIeoBJdbRRq7JjS0p+OBCYP75NikQ9NfnWSNfDv6kbRm0V6
+         ERYOR9M6GuYi3KiJk958KYx1NxHYX5GIkk0MMcm5h6C/t6l937gvr/slczv6dioileq8
+         i6eHTCmYstWhbg25ZLXSro6urFSxJrJY0xnavry+h9hZH4LjRFZqpt6uy7mN1MYbyL3J
+         aOZg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712152884; x=1712757684;
+        d=1e100.net; s=20230601; t=1712152885; x=1712757685;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=UONGPslpRt306kqZsCmGTE/b37ydkUsAJesjvT1tJpY=;
-        b=fr+QVVKWEdUdPJJ6F5VIZM6hFOr19UoKAfyJgOUQp6NKiamnTU/XmqHAaEXdNN/X2C
-         BMUEtnOe8rwNE1lScqd2IczERnQMG1TGpG+7tM/qgT/uDD6nI2DJOeLZjFkkzwmPSPlC
-         CYcjQ2ANphRsX4vzU/2UzYtDJGKjelf6PoqBiFfgmLXrHEIFexsahFy4vt1JQlyNmzdr
-         ztMpEQXLrXjNmF/WnKPQso0+/10dYZSYdcFZg1La4f68m1Yt2Rljul66Wsrml7ykHge4
-         PLqN5SwgwfPIgl4alwSPJ+HpMzeMiH9fLSUcN1FlrPv8g5xCWTnVtqXhc5u3MugJmYnv
-         nPGw==
-X-Forwarded-Encrypted: i=1; AJvYcCWuEESjsOGDLk15TN7rM+Ssyqz9Fce42HiQcITL4jhXKVplsqLWP75Bt0eCmYCEhpUtRNh7eJ/n+xv0kIKfMKUAnHdZKePebnDo/N2d
-X-Gm-Message-State: AOJu0YzmEbpDflrprFG8LJETAyLXAs2ufyfAk8SSS7gcxWrbm3TZBnTC
-	QMq0cIBFhCTxI3gQIlO26JwvWa58v3STY2VLYcuSMnPgQ7ZUIfEsbZN/lzm8s3I=
-X-Google-Smtp-Source: AGHT+IHyvTEQNqSIQcjpHeGqJ7SNEPZRIYtalkAiLrynTgcv4Dtsm9x9wS8IfPIQOAxIX49l9lI3dg==
-X-Received: by 2002:a05:6214:8f2:b0:699:2ad4:3dc4 with SMTP id dr18-20020a05621408f200b006992ad43dc4mr1251372qvb.42.1712152883304;
-        Wed, 03 Apr 2024 07:01:23 -0700 (PDT)
+        bh=/BPGVzMI1+eo9yvIAgnlTxqk+J0LKPxHXNZYDNRJA58=;
+        b=uPkz9fvsYGCiKMG5ybEfi3j3/llWyAH2QhEBWOBFxLx+EcTRB4eeqrfEmxS8P7WH/H
+         y0PvIBAc43LlEuqXGw2Ng/iLkBWrtmpJdvgIQpxuqAssFN3BnJbAUYD9NKrzM5P238cw
+         6DMAnAkqDvFwS1IAgFoS4eTmTvK2+750ABrzQQDjE9zZ0mpeH49QpOZ/RiefBn9rTlwC
+         /8A2P9A309Il3ovWSvi5x8s0G8OzrlzBTSBpDZOHa0bqiAcUrQmx+JeHhZycku1LATb9
+         7HX7drTlK48WNFv0V3TBnWPERkVoUpNIz1xFHiwKOCD0NIGZa0Yrq/JErWgUlxp7NDIz
+         ipvw==
+X-Forwarded-Encrypted: i=1; AJvYcCU8h0kQQG0Ti3mx8ENbQit7CqyIFAsd/3OzecBjo0jb1qy4t9pA8aRaRDkrX2imeHoC9xHDKGfAQV+WsRra1tAf2NWAGwDo3PHOyluQ
+X-Gm-Message-State: AOJu0Yw3BxA2JgVXRAAgpe1BXR5YGoVA0QnfhmQHZuLUlFwgVb70Z/w5
+	4D7gCoZGBSjTmTlZjSdrOypEVRpXBeenuy8KZQ9YED1HxcGxnygyRYOyhNkHcAU=
+X-Google-Smtp-Source: AGHT+IGFZcEaZ2LTTabAkPrVqPjWtdW/Cz0Il+zhLsM9yKyyKZpea5NsINjyFBJZ577Vil8whyw/9g==
+X-Received: by 2002:a0c:c249:0:b0:699:1fd3:95a3 with SMTP id w9-20020a0cc249000000b006991fd395a3mr3804251qvh.24.1712152884922;
+        Wed, 03 Apr 2024 07:01:24 -0700 (PDT)
 Received: from vinbuntup3.lan (c-73-143-21-186.hsd1.vt.comcast.net. [73.143.21.186])
-        by smtp.gmail.com with ESMTPSA id gf12-20020a056214250c00b00698d06df322sm5945706qvb.122.2024.04.03.07.01.21
+        by smtp.gmail.com with ESMTPSA id gf12-20020a056214250c00b00698d06df322sm5945706qvb.122.2024.04.03.07.01.23
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 03 Apr 2024 07:01:22 -0700 (PDT)
+        Wed, 03 Apr 2024 07:01:24 -0700 (PDT)
 From: "Vineeth Pillai (Google)" <vineeth@bitbyteword.org>
 To: Ben Segall <bsegall@google.com>,
 	Borislav Petkov <bp@alien8.de>,
@@ -94,9 +94,9 @@ Cc: "Vineeth Pillai (Google)" <vineeth@bitbyteword.org>,
 	kvm@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
 	x86@kernel.org
-Subject: [RFC PATCH v2 1/5] pvsched: paravirt scheduling framework
-Date: Wed,  3 Apr 2024 10:01:12 -0400
-Message-Id: <20240403140116.3002809-2-vineeth@bitbyteword.org>
+Subject: [RFC PATCH v2 2/5] kvm: Implement the paravirt sched framework for kvm
+Date: Wed,  3 Apr 2024 10:01:13 -0400
+Message-Id: <20240403140116.3002809-3-vineeth@bitbyteword.org>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20240403140116.3002809-1-vineeth@bitbyteword.org>
 References: <20240403140116.3002809-1-vineeth@bitbyteword.org>
@@ -108,221 +108,34 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Implement a paravirt scheduling framework for linux kernel.
+kvm uses the kernel's paravirt sched framework to assign an available
+pvsched driver for a guest. guest vcpus registers with the pvsched
+driver and calls into the driver callback to notify the events that the
+driver is interested in.
 
-The framework allows for pvsched driver to register to the kernel and
-receive callbacks from hypervisor(eg: kvm) for interested vcpu events
-like VMENTER, VMEXIT etc.
-
-The framework also allows hypervisor to select a pvsched driver (from
-the available list of registered drivers) for each guest.
-
-Also implement a sysctl for listing the available pvsched drivers.
+This PoC doesn't do the callback on interrupt injection yet. Will be
+implemented in subsequent iterations.
 
 Signed-off-by: Vineeth Pillai (Google) <vineeth@bitbyteword.org>
 Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
 ---
- Kconfig                 |   2 +
- include/linux/pvsched.h | 102 +++++++++++++++++++
- kernel/sysctl.c         |  27 +++++
- virt/Makefile           |   2 +-
- virt/pvsched/Kconfig    |  12 +++
- virt/pvsched/Makefile   |   2 +
- virt/pvsched/pvsched.c  | 215 ++++++++++++++++++++++++++++++++++++++++
- 7 files changed, 361 insertions(+), 1 deletion(-)
- create mode 100644 include/linux/pvsched.h
- create mode 100644 virt/pvsched/Kconfig
- create mode 100644 virt/pvsched/Makefile
- create mode 100644 virt/pvsched/pvsched.c
+ arch/x86/kvm/Kconfig     |  13 ++++
+ arch/x86/kvm/x86.c       |   3 +
+ include/linux/kvm_host.h |  32 +++++++++
+ virt/kvm/kvm_main.c      | 148 +++++++++++++++++++++++++++++++++++++++
+ 4 files changed, 196 insertions(+)
 
-diff --git a/Kconfig b/Kconfig
-index 745bc773f567..4a52eaa21166 100644
---- a/Kconfig
-+++ b/Kconfig
-@@ -29,4 +29,6 @@ source "lib/Kconfig"
+diff --git a/arch/x86/kvm/Kconfig b/arch/x86/kvm/Kconfig
+index 65ed14b6540b..c1776cdb5b65 100644
+--- a/arch/x86/kvm/Kconfig
++++ b/arch/x86/kvm/Kconfig
+@@ -189,4 +189,17 @@ config KVM_MAX_NR_VCPUS
+ 	  the memory footprint of each KVM guest, regardless of how many vCPUs are
+ 	  created for a given VM.
  
- source "lib/Kconfig.debug"
- 
-+source "virt/pvsched/Kconfig"
-+
- source "Documentation/Kconfig"
-diff --git a/include/linux/pvsched.h b/include/linux/pvsched.h
-new file mode 100644
-index 000000000000..59df6b44aacb
---- /dev/null
-+++ b/include/linux/pvsched.h
-@@ -0,0 +1,102 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+/* Copyright (c) 2024 Google  */
-+
-+#ifndef _LINUX_PVSCHED_H
-+#define _LINUX_PVSCHED_H 1
-+
-+/*
-+ * List of events for which hypervisor calls back into pvsched driver.
-+ * Driver can specify the events it is interested in.
-+ */
-+enum pvsched_vcpu_events {
-+	PVSCHED_VCPU_VMENTER = 0x1,
-+	PVSCHED_VCPU_VMEXIT = 0x2,
-+	PVSCHED_VCPU_HALT = 0x4,
-+	PVSCHED_VCPU_INTR_INJ = 0x8,
-+};
-+
-+#define PVSCHED_NAME_MAX	32
-+#define PVSCHED_MAX		8
-+#define PVSCHED_DRV_BUF_MAX	(PVSCHED_NAME_MAX * PVSCHED_MAX + PVSCHED_MAX)
-+
-+/*
-+ * pvsched driver callbacks.
-+ * TODO: versioning support for better compatibility with the guest
-+ *       component implementing this feature.
-+ */
-+struct pvsched_vcpu_ops {
-+	/*
-+	 * pvsched_vcpu_register() - Register the vcpu with pvsched driver.
-+	 * @pid: pid of the vcpu task.
-+	 *
-+	 * pvsched driver can store the pid internally and initialize
-+	 * itself to prepare for receiving callbacks from thsi vcpu.
-+	 */
-+	int (*pvsched_vcpu_register)(struct pid *pid);
-+
-+	/*
-+	 * pvsched_vcpu_unregister() - Un-register the vcpu with pvsched driver.
-+	 * @pid: pid of the vcpu task.
-+	 */
-+	void (*pvsched_vcpu_unregister)(struct pid *pid);
-+
-+	/*
-+	 * pvsched_vcpu_notify_event() - Callback for pvsched events
-+	 * @addr: Address of the memory region shared with guest
-+	 * @pid: pid of the vcpu task.
-+	 * @events: bit mask of the events that hypervisor wants to notify.
-+	 */
-+	void (*pvsched_vcpu_notify_event)(void *addr, struct pid *pid, u32 event);
-+
-+	char name[PVSCHED_NAME_MAX];
-+	struct module *owner;
-+	struct list_head list;
-+	u32 events;
-+	u32 key;
-+};
-+
-+#ifdef CONFIG_PARAVIRT_SCHED_HOST
-+int pvsched_get_available_drivers(char *buf, size_t maxlen);
-+
-+int pvsched_register_vcpu_ops(struct pvsched_vcpu_ops *ops);
-+void pvsched_unregister_vcpu_ops(struct pvsched_vcpu_ops *ops);
-+
-+struct pvsched_vcpu_ops *pvsched_get_vcpu_ops(char *name);
-+void pvsched_put_vcpu_ops(struct pvsched_vcpu_ops *ops);
-+
-+static inline int pvsched_validate_vcpu_ops(struct pvsched_vcpu_ops *ops)
-+{
-+	/*
-+	 * All callbacks are mandatory.
-+	 */
-+	if (!ops->pvsched_vcpu_register || !ops->pvsched_vcpu_unregister ||
-+			!ops->pvsched_vcpu_notify_event)
-+		return -EINVAL;
-+
-+	return 0;
-+}
-+#else
-+static inline void pvsched_get_available_drivers(char *buf, size_t maxlen)
-+{
-+}
-+
-+static inline int pvsched_register_vcpu_ops(struct pvsched_vcpu_ops *ops)
-+{
-+	return -ENOTSUPP;
-+}
-+
-+static inline void pvsched_unregister_vcpu_ops(struct pvsched_vcpu_ops *ops)
-+{
-+}
-+
-+static inline struct pvsched_vcpu_ops *pvsched_get_vcpu_ops(char *name)
-+{
-+	return NULL;
-+}
-+
-+static inline void pvsched_put_vcpu_ops(struct pvsched_vcpu_ops *ops)
-+{
-+}
-+#endif
-+
-+#endif
-diff --git a/kernel/sysctl.c b/kernel/sysctl.c
-index 157f7ce2942d..10a18a791b4f 100644
---- a/kernel/sysctl.c
-+++ b/kernel/sysctl.c
-@@ -63,6 +63,7 @@
- #include <linux/mount.h>
- #include <linux/userfaultfd_k.h>
- #include <linux/pid.h>
-+#include <linux/pvsched.h>
- 
- #include "../lib/kstrtox.h"
- 
-@@ -1615,6 +1616,24 @@ int proc_do_static_key(struct ctl_table *table, int write,
- 	return ret;
- }
- 
-+#ifdef CONFIG_PARAVIRT_SCHED_HOST
-+static int proc_pvsched_available_drivers(struct ctl_table *ctl,
-+						 int write, void *buffer,
-+						 size_t *lenp, loff_t *ppos)
-+{
-+	struct ctl_table tbl = { .maxlen = PVSCHED_DRV_BUF_MAX, };
-+	int ret;
-+
-+	tbl.data = kmalloc(tbl.maxlen, GFP_USER);
-+	if (!tbl.data)
-+		return -ENOMEM;
-+	pvsched_get_available_drivers(tbl.data, PVSCHED_DRV_BUF_MAX);
-+	ret = proc_dostring(&tbl, write, buffer, lenp, ppos);
-+	kfree(tbl.data);
-+	return ret;
-+}
-+#endif
-+
- static struct ctl_table kern_table[] = {
- 	{
- 		.procname	= "panic",
-@@ -2033,6 +2052,14 @@ static struct ctl_table kern_table[] = {
- 		.extra1		= SYSCTL_ONE,
- 		.extra2		= SYSCTL_INT_MAX,
- 	},
-+#endif
-+#ifdef CONFIG_PARAVIRT_SCHED_HOST
-+	{
-+		.procname	= "pvsched_available_drivers",
-+		.maxlen		= PVSCHED_DRV_BUF_MAX,
-+		.mode		= 0444,
-+		.proc_handler   = proc_pvsched_available_drivers,
-+	},
- #endif
- 	{ }
- };
-diff --git a/virt/Makefile b/virt/Makefile
-index 1cfea9436af9..9d0f32d775a1 100644
---- a/virt/Makefile
-+++ b/virt/Makefile
-@@ -1,2 +1,2 @@
- # SPDX-License-Identifier: GPL-2.0-only
--obj-y	+= lib/
-+obj-y	+= lib/ pvsched/
-diff --git a/virt/pvsched/Kconfig b/virt/pvsched/Kconfig
-new file mode 100644
-index 000000000000..5ca2669060cb
---- /dev/null
-+++ b/virt/pvsched/Kconfig
-@@ -0,0 +1,12 @@
-+# SPDX-License-Identifier: GPL-2.0-only
-+config PARAVIRT_SCHED_HOST
-+	bool "Paravirt scheduling framework in the host kernel"
++config PARAVIRT_SCHED_KVM
++	bool "Enable paravirt scheduling capability for kvm"
++	depends on KVM
 +	default n
 +	help
 +	  Paravirtualized scheduling facilitates the exchange of scheduling
@@ -331,236 +144,286 @@ index 000000000000..5ca2669060cb
 +	  An illustrative use case involves dynamically boosting the priority of
 +	  a vCPU thread when the guest is executing a latency-sensitive workload
 +	  on that specific vCPU.
-+	  This config enables paravirt scheduling framework in the host kernel.
-diff --git a/virt/pvsched/Makefile b/virt/pvsched/Makefile
-new file mode 100644
-index 000000000000..4ca38e30479b
---- /dev/null
-+++ b/virt/pvsched/Makefile
-@@ -0,0 +1,2 @@
++	  This config enables paravirt scheduling in the kvm hypervisor.
 +
-+obj-$(CONFIG_PARAVIRT_SCHED_HOST) += pvsched.o
-diff --git a/virt/pvsched/pvsched.c b/virt/pvsched/pvsched.c
-new file mode 100644
-index 000000000000..610c85cf90d2
---- /dev/null
-+++ b/virt/pvsched/pvsched.c
-@@ -0,0 +1,215 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+/* Copyright (c) 2024 Google  */
+ endif # VIRTUALIZATION
+diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+index ffe580169c93..d0abc2c64d47 100644
+--- a/arch/x86/kvm/x86.c
++++ b/arch/x86/kvm/x86.c
+@@ -10896,6 +10896,8 @@ static int vcpu_enter_guest(struct kvm_vcpu *vcpu)
+ 
+ 	preempt_disable();
+ 
++	kvm_vcpu_pvsched_notify(vcpu, PVSCHED_VCPU_VMENTER);
 +
-+/*
-+ *  Paravirt scheduling framework
-+ *
-+ */
-+
-+/*
-+ * Heavily inspired from tcp congestion avoidance implementation.
-+ * (net/ipv4/tcp_cong.c)
-+ */
-+
-+#define pr_fmt(fmt) "PVSCHED: " fmt
-+
-+#include <linux/module.h>
-+#include <linux/bpf.h>
-+#include <linux/gfp.h>
-+#include <linux/types.h>
-+#include <linux/list.h>
-+#include <linux/jhash.h>
+ 	static_call(kvm_x86_prepare_switch_to_guest)(vcpu);
+ 
+ 	/*
+@@ -11059,6 +11061,7 @@ static int vcpu_enter_guest(struct kvm_vcpu *vcpu)
+ 	guest_timing_exit_irqoff();
+ 
+ 	local_irq_enable();
++	kvm_vcpu_pvsched_notify(vcpu, PVSCHED_VCPU_VMEXIT);
+ 	preempt_enable();
+ 
+ 	kvm_vcpu_srcu_read_lock(vcpu);
+diff --git a/include/linux/kvm_host.h b/include/linux/kvm_host.h
+index 179df96b20f8..6381569f3de8 100644
+--- a/include/linux/kvm_host.h
++++ b/include/linux/kvm_host.h
+@@ -45,6 +45,8 @@
+ #include <asm/kvm_host.h>
+ #include <linux/kvm_dirty_ring.h>
+ 
 +#include <linux/pvsched.h>
 +
-+static DEFINE_SPINLOCK(pvsched_drv_list_lock);
-+static int nr_pvsched_drivers = 0;
-+static LIST_HEAD(pvsched_drv_list);
+ #ifndef KVM_MAX_VCPU_IDS
+ #define KVM_MAX_VCPU_IDS KVM_MAX_VCPUS
+ #endif
+@@ -832,6 +834,11 @@ struct kvm {
+ 	bool vm_bugged;
+ 	bool vm_dead;
+ 
++#ifdef CONFIG_PARAVIRT_SCHED_KVM
++	spinlock_t pvsched_ops_lock;
++	struct pvsched_vcpu_ops __rcu *pvsched_ops;
++#endif
 +
-+/*
-+ * Retrieve pvsched_vcpu_ops given the name.
-+ */
-+static struct pvsched_vcpu_ops *pvsched_find_vcpu_ops_name(char *name)
+ #ifdef CONFIG_HAVE_KVM_PM_NOTIFIER
+ 	struct notifier_block pm_notifier;
+ #endif
+@@ -2413,4 +2420,29 @@ static inline int kvm_gmem_get_pfn(struct kvm *kvm,
+ }
+ #endif /* CONFIG_KVM_PRIVATE_MEM */
+ 
++#ifdef CONFIG_PARAVIRT_SCHED_KVM
++int kvm_vcpu_pvsched_notify(struct kvm_vcpu *vcpu, u32 events);
++int kvm_vcpu_pvsched_register(struct kvm_vcpu *vcpu);
++void kvm_vcpu_pvsched_unregister(struct kvm_vcpu *vcpu);
++
++int kvm_replace_pvsched_ops(struct kvm *kvm, char *name);
++#else
++static inline int kvm_vcpu_pvsched_notify(struct kvm_vcpu *vcpu, u32 events)
 +{
-+	struct pvsched_vcpu_ops *ops;
-+
-+	list_for_each_entry_rcu(ops, &pvsched_drv_list, list) {
-+		if (strcmp(ops->name, name) == 0)
-+			return ops;
-+	}
-+
-+	return NULL;
-+}
-+
-+/*
-+ * Retrieve pvsched_vcpu_ops given the hash key.
-+ */
-+static struct pvsched_vcpu_ops *pvsched_find_vcpu_ops_key(u32 key)
-+{
-+	struct pvsched_vcpu_ops *ops;
-+
-+	list_for_each_entry_rcu(ops, &pvsched_drv_list, list) {
-+		if (ops->key == key)
-+			return ops;
-+	}
-+
-+	return NULL;
-+}
-+
-+/*
-+ * pvsched_get_available_drivers() - Copy space separated list of pvsched
-+ * driver names.
-+ * @buf: buffer to store the list of driver names
-+ * @maxlen: size of the buffer
-+ *
-+ * Return: 0 on success, negative value on error.
-+ */
-+int pvsched_get_available_drivers(char *buf, size_t maxlen)
-+{
-+	struct pvsched_vcpu_ops *ops;
-+	size_t offs = 0;
-+
-+	if (!buf)
-+		return -EINVAL;
-+
-+	if (maxlen > PVSCHED_DRV_BUF_MAX)
-+		maxlen = PVSCHED_DRV_BUF_MAX;
-+
-+	rcu_read_lock();
-+	list_for_each_entry_rcu(ops, &pvsched_drv_list, list) {
-+		offs += snprintf(buf + offs, maxlen - offs,
-+				 "%s%s",
-+				 offs == 0 ? "" : " ", ops->name);
-+
-+		if (WARN_ON_ONCE(offs >= maxlen))
-+			break;
-+	}
-+	rcu_read_unlock();
-+
 +	return 0;
 +}
-+EXPORT_SYMBOL_GPL(pvsched_get_available_drivers);
++static inline int kvm_vcpu_pvsched_register(struct kvm_vcpu *vcpu)
++{
++	return 0;
++}
++static inline void kvm_vcpu_pvsched_unregister(struct kvm_vcpu *vcpu)
++{
++}
++
++static inline int kvm_replace_pvsched_ops(struct kvm *kvm, char *name)
++{
++	return 0;
++}
++#endif
++
+ #endif
+diff --git a/virt/kvm/kvm_main.c b/virt/kvm/kvm_main.c
+index 0f50960b0e3a..0546814e4db7 100644
+--- a/virt/kvm/kvm_main.c
++++ b/virt/kvm/kvm_main.c
+@@ -170,6 +170,142 @@ bool kvm_is_zone_device_page(struct page *page)
+ 	return is_zone_device_page(page);
+ }
+ 
++#ifdef CONFIG_PARAVIRT_SCHED_KVM
++typedef enum {
++	PVSCHED_CB_REGISTER = 1,
++	PVSCHED_CB_UNREGISTER = 2,
++	PVSCHED_CB_NOTIFY = 3
++} pvsched_vcpu_callback_t;
 +
 +/*
-+ * pvsched_register_vcpu_ops() - Register the driver in the kernel.
-+ * @ops: Driver data(callbacks)
-+ *
-+ * After the registration, driver will be exposed to the hypervisor
-+ * for assignment to the guest VMs.
-+ *
-+ * Return: 0 on success, negative value on error.
++ * Helper function to invoke the pvsched driver callback.
 + */
-+int pvsched_register_vcpu_ops(struct pvsched_vcpu_ops *ops)
++static int __vcpu_pvsched_callback(struct kvm_vcpu *vcpu, u32 events,
++		pvsched_vcpu_callback_t action)
 +{
 +	int ret = 0;
-+
-+	ops->key = jhash(ops->name, sizeof(ops->name), strlen(ops->name));
-+	spin_lock(&pvsched_drv_list_lock);
-+	if (nr_pvsched_drivers > PVSCHED_MAX) {
-+		ret = -ENOSPC;
-+	} if (pvsched_find_vcpu_ops_key(ops->key)) {
-+		ret = -EEXIST;
-+	} else if (!(ret = pvsched_validate_vcpu_ops(ops))) {
-+		list_add_tail_rcu(&ops->list, &pvsched_drv_list);
-+		nr_pvsched_drivers++;
-+	}
-+	spin_unlock(&pvsched_drv_list_lock);
-+
-+	return ret;
-+}
-+EXPORT_SYMBOL_GPL(pvsched_register_vcpu_ops);
-+
-+/*
-+ * pvsched_register_vcpu_ops() - Un-register the driver from the kernel.
-+ * @ops: Driver data(callbacks)
-+ *
-+ * After un-registration, driver will not be visible to hypervisor.
-+ */
-+void pvsched_unregister_vcpu_ops(struct pvsched_vcpu_ops *ops)
-+{
-+	spin_lock(&pvsched_drv_list_lock);
-+	list_del_rcu(&ops->list);
-+	nr_pvsched_drivers--;
-+	spin_unlock(&pvsched_drv_list_lock);
-+
-+	synchronize_rcu();
-+}
-+EXPORT_SYMBOL_GPL(pvsched_unregister_vcpu_ops);
-+
-+/*
-+ * pvsched_get_vcpu_ops: Acquire the driver.
-+ * @name: Name of the driver to be acquired.
-+ *
-+ * Hypervisor can use this API to get the driver structure for
-+ * assigning it to guest VMs. This API takes a reference on the
-+ * module/bpf program so that driver doesn't vanish under the
-+ * hypervisor.
-+ *
-+ * Return: driver structure if found, else NULL.
-+ */
-+struct pvsched_vcpu_ops *pvsched_get_vcpu_ops(char *name)
-+{
++	struct pid *pid;
 +	struct pvsched_vcpu_ops *ops;
 +
-+	if (!name || (strlen(name) >= PVSCHED_NAME_MAX))
-+		return NULL;
-+
 +	rcu_read_lock();
-+	ops = pvsched_find_vcpu_ops_name(name);
-+	if (!ops)
-+		goto out;
-+
-+	if (unlikely(!bpf_try_module_get(ops, ops->owner))) {
-+		ops = NULL;
++	ops = rcu_dereference(vcpu->kvm->pvsched_ops);
++	if (!ops) {
++		ret = -ENOENT;
 +		goto out;
 +	}
++
++	pid = rcu_dereference(vcpu->pid);
++	if (WARN_ON_ONCE(!pid)) {
++		ret = -EINVAL;
++		goto out;
++	}
++	get_pid(pid);
++	switch(action) {
++		case PVSCHED_CB_REGISTER:
++			ops->pvsched_vcpu_register(pid);
++			break;
++		case PVSCHED_CB_UNREGISTER:
++			ops->pvsched_vcpu_unregister(pid);
++			break;
++		case PVSCHED_CB_NOTIFY:
++			if (ops->events & events) {
++				ops->pvsched_vcpu_notify_event(
++					NULL, /* TODO: Pass guest allocated sharedmem addr */
++					pid,
++					ops->events & events);
++			}
++			break;
++		default:
++			WARN_ON_ONCE(1);
++	}
++	put_pid(pid);
 +
 +out:
 +	rcu_read_unlock();
-+	return ops;
++	return ret;
 +}
-+EXPORT_SYMBOL_GPL(pvsched_get_vcpu_ops);
++
++int kvm_vcpu_pvsched_notify(struct kvm_vcpu *vcpu, u32 events)
++{
++	return __vcpu_pvsched_callback(vcpu, events, PVSCHED_CB_NOTIFY);
++}
++
++int kvm_vcpu_pvsched_register(struct kvm_vcpu *vcpu)
++{
++	return __vcpu_pvsched_callback(vcpu, 0, PVSCHED_CB_REGISTER);
++	/*
++	 * TODO: Action if the registration fails?
++	 */
++}
++
++void kvm_vcpu_pvsched_unregister(struct kvm_vcpu *vcpu)
++{
++	__vcpu_pvsched_callback(vcpu, 0, PVSCHED_CB_UNREGISTER);
++}
 +
 +/*
-+ * pvsched_put_vcpu_ops: Release the driver.
-+ * @name: Name of the driver to be releases.
-+ *
-+ * Hypervisor can use this API to release the driver.
++ * Replaces the VM's current pvsched driver.
++ * if name is NULL or empty string, unassign the
++ * current driver.
 + */
-+void pvsched_put_vcpu_ops(struct pvsched_vcpu_ops *ops)
++int kvm_replace_pvsched_ops(struct kvm *kvm, char *name)
 +{
-+	bpf_module_put(ops, ops->owner);
-+}
-+EXPORT_SYMBOL_GPL(pvsched_put_vcpu_ops);
++	int ret = 0;
++	unsigned long i;
++	struct kvm_vcpu *vcpu = NULL;
++	struct pvsched_vcpu_ops *ops = NULL, *prev_ops;
 +
-+/*
-+ * NOP vm_ops Sample implementation.
-+ * This driver doesn't do anything other than registering itself.
-+ * Placeholder for adding some default logic when the feature is
-+ * complete.
-+ */
-+static int nop_pvsched_vcpu_register(struct pid *pid)
-+{
++
++	spin_lock(&kvm->pvsched_ops_lock);
++
++	prev_ops = rcu_dereference(kvm->pvsched_ops);
++
++	/*
++	 * Unassign operation if the passed in value is
++	 * NULL or an empty string.
++	 */
++	if (name && *name) {
++		ops = pvsched_get_vcpu_ops(name);
++		if (!ops) {
++			ret = -EINVAL;
++			goto out;
++		}
++	}
++
++	if (prev_ops) {
++		/*
++		 * Unregister current pvsched driver.
++		 */
++		kvm_for_each_vcpu(i, vcpu, kvm) {
++			kvm_vcpu_pvsched_unregister(vcpu);
++		}
++
++		pvsched_put_vcpu_ops(prev_ops);
++	}
++
++
++	rcu_assign_pointer(kvm->pvsched_ops, ops);
++	if (ops) {
++		/*
++		 * Register new pvsched driver.
++		 */
++		kvm_for_each_vcpu(i, vcpu, kvm) {
++			WARN_ON_ONCE(kvm_vcpu_pvsched_register(vcpu));
++		}
++	}
++
++out:
++	spin_unlock(&kvm->pvsched_ops_lock);
++
++	if (ret)
++		return ret;
++
++	synchronize_rcu();
++
 +	return 0;
 +}
-+static void nop_pvsched_vcpu_unregister(struct pid *pid)
-+{
-+}
-+static void nop_pvsched_notify_event(void *addr, struct pid *pid, u32 event)
-+{
-+}
++#endif
 +
-+struct pvsched_vcpu_ops nop_vcpu_ops = {
-+	.events = PVSCHED_VCPU_VMENTER | PVSCHED_VCPU_VMEXIT | PVSCHED_VCPU_HALT,
-+	.pvsched_vcpu_register = nop_pvsched_vcpu_register,
-+	.pvsched_vcpu_unregister = nop_pvsched_vcpu_unregister,
-+	.pvsched_vcpu_notify_event = nop_pvsched_notify_event,
-+	.name = "pvsched_nop",
-+	.owner = THIS_MODULE,
-+};
+ /*
+  * Returns a 'struct page' if the pfn is "valid" and backed by a refcounted
+  * page, NULL otherwise.  Note, the list of refcounted PG_reserved page types
+@@ -508,6 +644,8 @@ static void kvm_vcpu_destroy(struct kvm_vcpu *vcpu)
+ 	kvm_arch_vcpu_destroy(vcpu);
+ 	kvm_dirty_ring_free(&vcpu->dirty_ring);
+ 
++	kvm_vcpu_pvsched_unregister(vcpu);
 +
-+static int __init pvsched_init(void)
-+{
-+	return WARN_ON(pvsched_register_vcpu_ops(&nop_vcpu_ops));
-+}
+ 	/*
+ 	 * No need for rcu_read_lock as VCPU_RUN is the only place that changes
+ 	 * the vcpu->pid pointer, and at destruction time all file descriptors
+@@ -1221,6 +1359,10 @@ static struct kvm *kvm_create_vm(unsigned long type, const char *fdname)
+ 
+ 	BUILD_BUG_ON(KVM_MEM_SLOTS_NUM > SHRT_MAX);
+ 
++#ifdef CONFIG_PARAVIRT_SCHED_KVM
++	spin_lock_init(&kvm->pvsched_ops_lock);
++#endif
 +
-+late_initcall(pvsched_init);
+ 	/*
+ 	 * Force subsequent debugfs file creations to fail if the VM directory
+ 	 * is not created (by kvm_create_vm_debugfs()).
+@@ -1343,6 +1485,8 @@ static void kvm_destroy_vm(struct kvm *kvm)
+ 	int i;
+ 	struct mm_struct *mm = kvm->mm;
+ 
++	kvm_replace_pvsched_ops(kvm, NULL);
++
+ 	kvm_destroy_pm_notifier(kvm);
+ 	kvm_uevent_notify_change(KVM_EVENT_DESTROY_VM, kvm);
+ 	kvm_destroy_vm_debugfs(kvm);
+@@ -3779,6 +3923,8 @@ bool kvm_vcpu_block(struct kvm_vcpu *vcpu)
+ 		if (kvm_vcpu_check_block(vcpu) < 0)
+ 			break;
+ 
++		kvm_vcpu_pvsched_notify(vcpu, PVSCHED_VCPU_HALT);
++
+ 		waited = true;
+ 		schedule();
+ 	}
+@@ -4434,6 +4580,7 @@ static long kvm_vcpu_ioctl(struct file *filp,
+ 			/* The thread running this VCPU changed. */
+ 			struct pid *newpid;
+ 
++			kvm_vcpu_pvsched_unregister(vcpu);
+ 			r = kvm_arch_vcpu_run_pid_change(vcpu);
+ 			if (r)
+ 				break;
+@@ -4442,6 +4589,7 @@ static long kvm_vcpu_ioctl(struct file *filp,
+ 			rcu_assign_pointer(vcpu->pid, newpid);
+ 			if (oldpid)
+ 				synchronize_rcu();
++			kvm_vcpu_pvsched_register(vcpu);
+ 			put_pid(oldpid);
+ 		}
+ 		r = kvm_arch_vcpu_ioctl_run(vcpu);
 -- 
 2.40.1
 
