@@ -1,196 +1,72 @@
-Return-Path: <linux-kernel+bounces-129375-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-129378-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8D87E8969AF
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 10:58:10 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1E02D8969B8
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 10:59:42 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 49E692857A0
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 08:58:09 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4DEE11C23DE1
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 08:59:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C28CC6EB45;
-	Wed,  3 Apr 2024 08:58:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="TvVHdHIt"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8C4436FE38;
+	Wed,  3 Apr 2024 08:59:26 +0000 (UTC)
+Received: from verein.lst.de (verein.lst.de [213.95.11.211])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 023266DCE8
-	for <linux-kernel@vger.kernel.org>; Wed,  3 Apr 2024 08:58:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0DC136CDBD;
+	Wed,  3 Apr 2024 08:59:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.95.11.211
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712134684; cv=none; b=iXy/gMonMvCuQDufxvZRRMNu5HQL8uPS/2Fa5MljirjSW5Dn1rJtzmGzppd9UsGnx4RP4znxXB46E0ia2mMDTTjheXWcnNJVCA/FltbM7+1rtHPxVjUOk49V90kGMaCaML8FKX2AnSfp97KBza+K+mMpFpdDeNGAe41wipRHtm8=
+	t=1712134766; cv=none; b=V5eFHRFbbVzFKz0znA4W6E5ruWLwkNr75DUxf6/vOGaKCkDFxXNwojdaQsSIptfbCVhh8gU2ukpnyN+ZIBht+thcb03By82z3awF4L61ATQhnvn8GRUPemU8t6t4dfqE1KNmV2evD3tLDAZ1JC0+j7ZozV+BMPgnJC8kcwkws6U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712134684; c=relaxed/simple;
-	bh=ZAIxO5z+o29M+kH6syBeb8pWBi2QGdZ/xqTOqqX+69U=;
-	h=Date:Message-ID:From:To:Cc:Subject:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=aoga4B/7/5cfMRWPr1BPuYDe1dFduE7SU6054aEGf7kUix9VCIlFglcylQm7K81r6sSXpHY27d/qMiU+R5OJYttfILLYCujZ++LgtMthAxr7d3NuMmHJIaoxYR5iqpr5e1/3Uy5rD/cpmfBXcyZGZWTT4kHKhU+gATbSgkLenBw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=TvVHdHIt; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8A705C433F1;
-	Wed,  3 Apr 2024 08:58:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712134683;
-	bh=ZAIxO5z+o29M+kH6syBeb8pWBi2QGdZ/xqTOqqX+69U=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=TvVHdHIt0Vhh680xjUkrJGcZ9+qyaXdxeojcZXMFfJCmFx3lGzuDSq9rWE5VZawKM
-	 uD+TVKWb3DclzG26NMCTWVOGykIvRq8UHILyGtStHGecB1HVQbSJbexWIm3+o5dSw2
-	 nPiOLC8oBQN0FTnISTDECrkG29rPNw67SGKACNiruTvXZq9E5EHBo2hXxrJhLoZWHq
-	 i0/ZDcCDWvF7NEek92UTlzGthkrM/73Le2kwTOb9a7g3fXLUdmzJaQPrO+w9S94rq9
-	 6e3yVGH+xHog2tMmxRHuZ0+sXcAnwaoIie1yTqAgzm+cEMkD5t94tlZ4r6/E32e+Jm
-	 4FL/Cy0ZqUcdg==
-Received: from sofa.misterjones.org ([185.219.108.64] helo=goblin-girl.misterjones.org)
-	by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.95)
-	(envelope-from <maz@kernel.org>)
-	id 1rrwRU-00112V-Mi;
-	Wed, 03 Apr 2024 09:58:00 +0100
-Date: Wed, 03 Apr 2024 09:58:00 +0100
-Message-ID: <86edbmu8kn.wl-maz@kernel.org>
-From: Marc Zyngier <maz@kernel.org>
-To: Gavin Shan <gshan@redhat.com>
-Cc: linux-arm-kernel@lists.infradead.org,
-	linux-kernel@vger.kernel.org,
-	catalin.marinas@arm.com,
-	will@kernel.org,
-	akpm@linux-foundation.org,
-	apopple@nvidia.com,
-	mark.rutland@arm.com,
-	ryan.roberts@arm.com,
-	rananta@google.com,
-	yangyicong@hisilicon.com,
-	v-songbaohua@oppo.com,
-	yezhenyu2@huawei.com,
-	yihyu@redhat.com,
-	shan.gavin@gmail.com
-Subject: Re: [PATCH] arm64: tlb: Fix TLBI RANGE operand
-In-Reply-To: <20240403064929.1438475-1-gshan@redhat.com>
-References: <20240403064929.1438475-1-gshan@redhat.com>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
- FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/29.2
- (aarch64-unknown-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+	s=arc-20240116; t=1712134766; c=relaxed/simple;
+	bh=Y8rTUim6wOz7dPyp+qzNx4sbsi7VJTk/kH/pv5IxOOY=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=d4PnKbdodhuN049J6SmRsAhIWj0XaaqaPs7Q/Ks1fZ25UN00AaAYdTsZURrlefNLTqvdQbt5cckoVRmqjXjDdDk7qRHXYtXBkFO7bIVH80WXhWZaMpOkJ2JvWhifqVx7AMtIUweIMgY2jKsItwpgThx8HIA1pJzwZ5702eqXA2A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=lst.de; spf=pass smtp.mailfrom=lst.de; arc=none smtp.client-ip=213.95.11.211
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=lst.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lst.de
+Received: by verein.lst.de (Postfix, from userid 2407)
+	id 5FBB968BFE; Wed,  3 Apr 2024 10:59:18 +0200 (CEST)
+Date: Wed, 3 Apr 2024 10:59:18 +0200
+From: Christoph Hellwig <hch@lst.de>
+To: David Howells <dhowells@redhat.com>
+Cc: Christian Brauner <christian@brauner.io>,
+	Jeff Layton <jlayton@kernel.org>,
+	Gao Xiang <hsiangkao@linux.alibaba.com>,
+	Dominique Martinet <asmadeus@codewreck.org>,
+	Matthew Wilcox <willy@infradead.org>,
+	Steve French <smfrench@gmail.com>,
+	Marc Dionne <marc.dionne@auristor.com>,
+	Paulo Alcantara <pc@manguebit.com>,
+	Shyam Prasad N <sprasad@microsoft.com>, Tom Talpey <tom@talpey.com>,
+	Eric Van Hensbergen <ericvh@kernel.org>,
+	Ilya Dryomov <idryomov@gmail.com>, netfs@lists.linux.dev,
+	linux-cachefs@redhat.com, linux-afs@lists.infradead.org,
+	linux-cifs@vger.kernel.org, linux-nfs@vger.kernel.org,
+	ceph-devel@vger.kernel.org, v9fs@lists.linux.dev,
+	linux-erofs@lists.ozlabs.org, linux-fsdevel@vger.kernel.org,
+	linux-mm@kvack.org, netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org, Christoph Hellwig <hch@lst.de>
+Subject: Re: [PATCH 15/26] mm: Export writeback_iter()
+Message-ID: <20240403085918.GA1178@lst.de>
+References: <20240328163424.2781320-1-dhowells@redhat.com> <20240328163424.2781320-16-dhowells@redhat.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Content-Type: text/plain; charset=US-ASCII
-X-SA-Exim-Connect-IP: 185.219.108.64
-X-SA-Exim-Rcpt-To: gshan@redhat.com, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, catalin.marinas@arm.com, will@kernel.org, akpm@linux-foundation.org, apopple@nvidia.com, mark.rutland@arm.com, ryan.roberts@arm.com, rananta@google.com, yangyicong@hisilicon.com, v-songbaohua@oppo.com, yezhenyu2@huawei.com, yihyu@redhat.com, shan.gavin@gmail.com
-X-SA-Exim-Mail-From: maz@kernel.org
-X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240328163424.2781320-16-dhowells@redhat.com>
+User-Agent: Mutt/1.5.17 (2007-11-01)
 
-On Wed, 03 Apr 2024 07:49:29 +0100,
-Gavin Shan <gshan@redhat.com> wrote:
-> 
-> KVM/arm64 relies on TLBI RANGE feature to flush TLBs when the dirty
-> bitmap is collected by VMM and the corresponding PTEs need to be
-> write-protected again. Unfortunately, the operand passed to the TLBI
-> RANGE instruction isn't correctly sorted out by commit d1d3aa98b1d4
-> ("arm64: tlb: Use the TLBI RANGE feature in arm64"). It leads to
-> crash on the destination VM after live migration because some of the
-> dirty pages are missed.
-> 
-> For example, I have a VM where 8GB memory is assigned, starting from
-> 0x40000000 (1GB). Note that the host has 4KB as the base page size.
-> All TLBs for VM can be covered by one TLBI RANGE operation. However,
-> I receives 0xffff708000040000 as the operand, which is wrong and the
-> correct one should be 0x00007f8000040000. From the wrong operand, we
-> have 3 and 1 for SCALE (bits[45:44) and NUM (bits943:39], only 1GB
-> instead of 8GB memory is covered.
-> 
-> Fix the macro __TLBI_RANGE_NUM() so that the correct NUM and TLBI
-> RANGE operand are provided.
-> 
-> Fixes: d1d3aa98b1d4 ("arm64: tlb: Use the TLBI RANGE feature in arm64")
-> Cc: stable@kernel.org # v5.10+
-> Reported-by: Yihuang Yu <yihyu@redhat.com>
-> Signed-off-by: Gavin Shan <gshan@redhat.com>
-> ---
->  arch/arm64/include/asm/tlbflush.h | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/arch/arm64/include/asm/tlbflush.h b/arch/arm64/include/asm/tlbflush.h
-> index 3b0e8248e1a4..07c4fb4b82b4 100644
-> --- a/arch/arm64/include/asm/tlbflush.h
-> +++ b/arch/arm64/include/asm/tlbflush.h
-> @@ -166,7 +166,7 @@ static inline unsigned long get_trans_granule(void)
->   */
->  #define TLBI_RANGE_MASK			GENMASK_ULL(4, 0)
->  #define __TLBI_RANGE_NUM(pages, scale)	\
-> -	((((pages) >> (5 * (scale) + 1)) & TLBI_RANGE_MASK) - 1)
-> +	((((pages) >> (5 * (scale) + 1)) - 1) & TLBI_RANGE_MASK)
->  
->  /*
->   *	TLB Invalidation
+On Thu, Mar 28, 2024 at 04:34:07PM +0000, David Howells wrote:
+> Export writeback_iter() so that it can be used by netfslib as a module.
 
-This looks pretty wrong, by the very definition of the comment that's
-just above:
+EXPORT_SYMBOL_GPL, please.
 
-<quote>
-/*
- * Generate 'num' values from -1 to 30 with -1 rejected by the
- * __flush_tlb_range() loop below.
- */
-</quote>
-
-With your change, num can't ever be negative, and that breaks
-__flush_tlb_range_op():
-
-<quote>
-		num = __TLBI_RANGE_NUM(pages, scale);			\
-		if (num >= 0) {						\
-			addr = __TLBI_VADDR_RANGE(start >> shift, asid, \
-						scale, num, tlb_level);	\
-			__tlbi(r##op, addr);				\
-			if (tlbi_user)					\
-				__tlbi_user(r##op, addr);		\
-			start += __TLBI_RANGE_PAGES(num, scale) << PAGE_SHIFT; \
-			pages -= __TLBI_RANGE_PAGES(num, scale);	\
-		}							\
-		scale--;						\
-</quote>
-
-We'll then shove whatever value we've found in the TLBI operation,
-leading to unknown results instead of properly adjusting the scale to
-issue a smaller invalidation.
-
-I think the problem is that you are triggering NUM=31 and SCALE=3,
-which the current code cannot handle as per the comment above
-__flush_tlb_range_op() (we can't do NUM=30 and SCALE=4, obviously).
-
-Can you try the untested patch below?
-
-Thanks,
-
-	M.
-
-diff --git a/arch/arm64/include/asm/tlbflush.h b/arch/arm64/include/asm/tlbflush.h
-index 3b0e8248e1a4..b71a1cece802 100644
---- a/arch/arm64/include/asm/tlbflush.h
-+++ b/arch/arm64/include/asm/tlbflush.h
-@@ -379,10 +379,6 @@ static inline void arch_tlbbatch_flush(struct arch_tlbflush_unmap_batch *batch)
-  * 3. If there is 1 page remaining, flush it through non-range operations. Range
-  *    operations can only span an even number of pages. We save this for last to
-  *    ensure 64KB start alignment is maintained for the LPA2 case.
-- *
-- * Note that certain ranges can be represented by either num = 31 and
-- * scale or num = 0 and scale + 1. The loop below favours the latter
-- * since num is limited to 30 by the __TLBI_RANGE_NUM() macro.
-  */
- #define __flush_tlb_range_op(op, start, pages, stride,			\
- 				asid, tlb_level, tlbi_user, lpa2)	\
-@@ -407,6 +403,7 @@ do {									\
- 									\
- 		num = __TLBI_RANGE_NUM(pages, scale);			\
- 		if (num >= 0) {						\
-+			num += 1;					\
- 			addr = __TLBI_VADDR_RANGE(start >> shift, asid, \
- 						scale, num, tlb_level);	\
- 			__tlbi(r##op, addr);				\
-
--- 
-Without deviation from the norm, progress is not possible.
 
