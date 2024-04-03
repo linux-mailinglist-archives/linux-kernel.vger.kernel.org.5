@@ -1,92 +1,123 @@
-Return-Path: <linux-kernel+bounces-130530-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-130532-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 28443897979
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 22:00:16 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B8AD589797B
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 22:03:22 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id BA1981F272F1
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 20:00:15 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E964A1C2658B
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 20:03:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 27311155A29;
-	Wed,  3 Apr 2024 19:59:16 +0000 (UTC)
-Received: from mailscanner01.zoner.fi (mailscanner01.zoner.fi [84.34.166.10])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9089015573C;
+	Wed,  3 Apr 2024 20:03:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="KcgaR7Nz"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.17])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ADE961553A1
-	for <linux-kernel@vger.kernel.org>; Wed,  3 Apr 2024 19:59:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=84.34.166.10
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C306A1553BE
+	for <linux-kernel@vger.kernel.org>; Wed,  3 Apr 2024 20:03:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.17
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712174355; cv=none; b=WFJR/eS024rUnR0ZTJjSJj3Q1QqCmitOOsOY7hhrQ+uMtwDKMgMaDOEeHM6N+MYh+DOFEJttQDP3PgZke8EPum7SvED4PnrnfA+vzoBR8Ka3M1XQ7wC1N1IYACsFlPGaqUeWS9ReytyysTmnHWvMMZGM160PsR5VOMWAnWbBwwU=
+	t=1712174594; cv=none; b=IX46UoZUXJieU9c58fw2Xf1b9HwiYqN1xabMJ3WEp+0n5NhbzaFA+jmvtxy4MOiOxEagDGFcDiIwwP1k6XwqR1cN8Qr2xdmd+hEfmoEMDqb+XUNaifvjrMLeG18i6pxYMdN01oIS4PRHfUy3ne20dd6WvdTEyl431a6dUR0Vai4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712174355; c=relaxed/simple;
-	bh=KR9CdPgMOf6FrLUtHF73U+GXxBqurEfaGjwrIK7zXhc=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=DQ4bqg9o4fS4ZhPFuRhUEBAiLuw2tCgXoYcJ0teZRQeLjKndmqvB72GJrMAD6bZKVLannYUqH/Z0dHH3EGlKdmKqv4aRS6w1vPwUtKLNdBu5VSTVP2ysBzYzOR47BW/6/exea/U7SkCXLe+9/XoBY/Yy5W4XZT9FyyMcYMA6KMI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=tukaani.org; spf=pass smtp.mailfrom=tukaani.org; arc=none smtp.client-ip=84.34.166.10
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=tukaani.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=tukaani.org
-Received: from www25.zoner.fi (www25.zoner.fi [84.34.147.45])
-	by mailscanner01.zoner.fi (Postfix) with ESMTPS id A88F342E21;
-	Wed,  3 Apr 2024 22:59:04 +0300 (EEST)
-Received: from mail.zoner.fi ([84.34.147.244])
-	by www25.zoner.fi with esmtp (Exim 4.96.1-7-g79877b70e)
-	(envelope-from <lasse.collin@tukaani.org>)
-	id 1rs6lE-0006L7-1i;
-	Wed, 03 Apr 2024 22:59:04 +0300
-Date: Wed, 3 Apr 2024 22:59:03 +0300
-From: Lasse Collin <lasse.collin@tukaani.org>
-To: <angel.lkml@16bits.net>
-Cc: Andrew Morton <akpm@linux-foundation.org>, Jubin Zhong
- <zhongjubin@huawei.com>, linux-kernel@vger.kernel.org,
- vegard.nossum@oracle.com
-Subject: Re: [PATCH 11/11] xz: Adjust arch-specific options for better
- kernel compression
-Message-ID: <20240403225903.0773746d@kaneli>
-In-Reply-To: <27db456edeb6f72e7e229c2333c5d8449718c26e.camel@16bits.net>
-References: <20240320183846.19475-1-lasse.collin@tukaani.org>
-	<20240320183846.19475-12-lasse.collin@tukaani.org>
-	<27db456edeb6f72e7e229c2333c5d8449718c26e.camel@16bits.net>
-X-Mailer: Claws Mail 4.2.0 (GTK 3.24.41; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1712174594; c=relaxed/simple;
+	bh=eN0BMPJt/yzNeLJkwA6M2eqVeuPw0vmnY2kBYFQl+YE=;
+	h=Date:From:To:Cc:Subject:Message-ID; b=hzZrE9dLrJ9165+0lNXa4mbe8QX0RcTNGYY9UmNOHzfp8rZy84DrcoDfKvI8LWUToZQvKvbT52QNM+CoYfg587El4uSytoS9Yom7gZ0PSpswzqLQV8YbnWo+OoMPWwNpdPQ1ZaK9KqaRNSUU1kIXD0SdgFiuwMyHYKJhq21UyWg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=KcgaR7Nz; arc=none smtp.client-ip=198.175.65.17
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1712174593; x=1743710593;
+  h=date:from:to:cc:subject:message-id;
+  bh=eN0BMPJt/yzNeLJkwA6M2eqVeuPw0vmnY2kBYFQl+YE=;
+  b=KcgaR7NzDCgMyqnDlKOQ6lJ/HLXCvU9D71XTBHrdTFtnPNi+3/rUyyHL
+   lHDblGiNtQCBbyH9fZ4HtOKtrBYs5iPx2Ddzcmvf1evhbRAukW2+wlQ/c
+   7ZklAhEO8aHj1H7nJh2lJQbzKuGfnpKk3nkinte0N/GuYAlQNS7+QueHa
+   eRcdLJrQGWDhPZ6PnF2UcZFckpoxfvqJp1GZnNLX0DNUR98ImNfZLhLsf
+   nFAXiP71MKONqQD3+z78su8N8tgQMKzvGRBMh5Yo//pnIZS7XDRYVc9/E
+   RmC1gRDqZVpDmye6oaGXGPliJTaj0uDIHcW8x7E58VG48qs2klq9flN+Z
+   w==;
+X-CSE-ConnectionGUID: 2g1QrUJnSwORsA2xTBzESw==
+X-CSE-MsgGUID: 1Wo//m9aRBWDqdaccukRsQ==
+X-IronPort-AV: E=McAfee;i="6600,9927,11033"; a="7544435"
+X-IronPort-AV: E=Sophos;i="6.07,177,1708416000"; 
+   d="scan'208";a="7544435"
+Received: from orviesa010.jf.intel.com ([10.64.159.150])
+  by orvoesa109.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Apr 2024 13:03:13 -0700
+X-CSE-ConnectionGUID: Rr0clMBCSAya6FYE9/ccDg==
+X-CSE-MsgGUID: zgkS5qy9Rq2Uy0LQQhXfzg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,177,1708416000"; 
+   d="scan'208";a="18395852"
+Received: from lkp-server01.sh.intel.com (HELO e61807b1d151) ([10.239.97.150])
+  by orviesa010.jf.intel.com with ESMTP; 03 Apr 2024 13:03:12 -0700
+Received: from kbuild by e61807b1d151 with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1rs6pB-0000BP-0e;
+	Wed, 03 Apr 2024 20:03:09 +0000
+Date: Thu, 04 Apr 2024 04:02:35 +0800
+From: kernel test robot <lkp@intel.com>
+To: "x86-ml" <x86@kernel.org>
+Cc: linux-kernel@vger.kernel.org
+Subject: [tip:x86/urgent] BUILD SUCCESS
+ c3eeb1ffc6a88af9b002e22be0f70851759be03a
+Message-ID: <202404040433.FCLrieoq-lkp@intel.com>
+User-Agent: s-nail v14.9.24
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
 
-On 2024-03-31 angel.lkml@16bits.net wrote:
-> Under the light of the recent xz backdoor, I should note that this
-> patch (patch 11) does:
-> 
-> > +# Set XZ_VERSION (and LIBLZMA_VERSION). This is needed to disable
-> > features +# that aren't available in old XZ Utils versions.
-> > +eval "$($XZ --robot --version)" || exit
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git x86/urgent
+branch HEAD: c3eeb1ffc6a88af9b002e22be0f70851759be03a  x86/resctrl: Fix uninitialized memory read when last CPU of domain goes offline
 
-The eval method has been on the xz man page for a very long time but I
-agree that due to the recent events the above method is not ideal.
+elapsed time: 730m
 
-It can break also if XZ_OPT or XZ_DEFAULTS contains something that they
-usually shouldn't. For example, XZ_OPT=--help would make the above eval
-method run the output of $XZ --help.
+configs tested: 31
+configs skipped: 134
 
-> So, in the spirit of keeping a fair amount of paranoia, and since it
-> doesn't do any harm, any such code should be failproofed to ensure it
-> can only import the expected shell variables with the right format[3]:
->
->  eval "$($XZ --robot --version | grep '^\(XZ\|LIBLZMA\)_VERSION=[0-9]*$')" || exit
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-I would rather get rid of eval. I committed the following to the
-upstream repository:
-
-XZ_VERSION=$($XZ --robot --version | sed -n 's/^XZ_VERSION=//p') || exit
-
-Thanks!
+tested configs:
+i386                             allmodconfig   gcc  
+i386                              allnoconfig   gcc  
+i386                             allyesconfig   gcc  
+i386         buildonly-randconfig-001-20240403   gcc  
+i386         buildonly-randconfig-002-20240403   clang
+i386         buildonly-randconfig-003-20240403   clang
+i386         buildonly-randconfig-004-20240403   clang
+i386         buildonly-randconfig-005-20240403   gcc  
+i386         buildonly-randconfig-006-20240403   clang
+i386                                defconfig   clang
+i386                  randconfig-001-20240403   gcc  
+i386                  randconfig-002-20240403   clang
+i386                  randconfig-003-20240403   gcc  
+i386                  randconfig-004-20240403   gcc  
+i386                  randconfig-005-20240403   clang
+i386                  randconfig-006-20240403   gcc  
+i386                  randconfig-011-20240403   gcc  
+i386                  randconfig-012-20240403   clang
+i386                  randconfig-013-20240403   gcc  
+i386                  randconfig-014-20240403   clang
+i386                  randconfig-015-20240403   gcc  
+i386                  randconfig-016-20240403   clang
+x86_64                            allnoconfig   clang
+x86_64                           allyesconfig   clang
+x86_64       buildonly-randconfig-001-20240404   gcc  
+x86_64       buildonly-randconfig-002-20240404   gcc  
+x86_64       buildonly-randconfig-003-20240404   gcc  
+x86_64       buildonly-randconfig-004-20240404   clang
+x86_64                              defconfig   gcc  
+x86_64                          rhel-8.3-rust   clang
+x86_64                               rhel-8.3   gcc  
 
 -- 
-Lasse Collin
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
