@@ -1,260 +1,162 @@
-Return-Path: <linux-kernel+bounces-129875-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-129870-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8624A89717F
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 15:48:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 6221B897174
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 15:46:19 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id ED0F31F20F41
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 13:48:13 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 01CA41F20FA0
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 13:46:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E8E33142E78;
-	Wed,  3 Apr 2024 13:48:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F1E021487F6;
+	Wed,  3 Apr 2024 13:46:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=tq-group.com header.i=@tq-group.com header.b="kHykZO6q";
-	dkim=fail reason="key not found in DNS" (0-bit key) header.d=ew.tq-group.com header.i=@ew.tq-group.com header.b="lXCWb+qd"
-Received: from mx1.tq-group.com (mx1.tq-group.com [93.104.207.81])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="lpxgkZ0v"
+Received: from mail-pl1-f170.google.com (mail-pl1-f170.google.com [209.85.214.170])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C908E4DA0C;
-	Wed,  3 Apr 2024 13:47:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=93.104.207.81
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AF1A1148308
+	for <linux-kernel@vger.kernel.org>; Wed,  3 Apr 2024 13:46:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712152082; cv=none; b=kxDhdbzduESAcL306fi5ESehWBKNtrgIOe39lthg90rIVCzzg67go0js3+z6wNjeljIq+3gZJQZkKbvNVNC0xclZVNdj18a/o3RIuQ2I9aouRulQj2cHK0p4/ciuiz6V2bUfh+FmOcNeVq3+a33F9sfuwSHy6PLmmzpxAbY4/4c=
+	t=1712151968; cv=none; b=CxRvsidxDahS5dLriNm6iJUnUJBoyScCNLQqw/qlh29zs0gpUDeULIICBQZj+i3jo8OUKydpQaVgkv1RRO2lIzEAt+DFYbBHLLNzChYoe4gpHF8tgTeqOc0T2QyD5m7gUDt39oXOcgqkvMdCy5T07l2qReIiHJXjluYhSzPo4ic=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712152082; c=relaxed/simple;
-	bh=YEVP9YpyH7o2aYsLFiX4m2nl9C+fbyptKQ7J4JphAmU=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:To:Cc; b=NsGSESbLlFEEMF9heMExtwinqWadcdoCAermwIq7yg+gWpOdHY11p/03c2N9Q/vSiW5KHf4hpLzpHD6dM9KMdR58PBXeY6Wh2VB7Nrc38CFOGU3QlSyaaIbXNloyIBS+BxKG3oU4zyhdn/8wjfGXwDq+B8BHHBJZjfClQTBAPs8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ew.tq-group.com; spf=pass smtp.mailfrom=ew.tq-group.com; dkim=pass (2048-bit key) header.d=tq-group.com header.i=@tq-group.com header.b=kHykZO6q; dkim=fail (0-bit key) header.d=ew.tq-group.com header.i=@ew.tq-group.com header.b=lXCWb+qd reason="key not found in DNS"; arc=none smtp.client-ip=93.104.207.81
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ew.tq-group.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ew.tq-group.com
+	s=arc-20240116; t=1712151968; c=relaxed/simple;
+	bh=oNVe7SUbSSVH8Hwzoz+0n5x3tQwhvVYI/rKOgk9P1Ko=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=tIyHz1h7tuwYH4qxdXQD8I8n/ZRne4nfP9X+fSrCcz+WCcf97NOpLVUthfxRYe7sUAFQZ2Bh8DQiTGk3UaX76Bef+uDz98RGV+iAdNgz5I9ezrwwHYIWARhlFOGhRi+69YzUF4zCTSDrzI0mn60ezSlPcDb/BE1SlE02VuPSFhE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=lpxgkZ0v; arc=none smtp.client-ip=209.85.214.170
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-pl1-f170.google.com with SMTP id d9443c01a7336-1e267238375so7357655ad.1
+        for <linux-kernel@vger.kernel.org>; Wed, 03 Apr 2024 06:46:06 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=tq-group.com; i=@tq-group.com; q=dns/txt; s=key1;
-  t=1712152079; x=1743688079;
-  h=from:date:subject:mime-version:content-transfer-encoding:
-   message-id:to:cc;
-  bh=YPy9yfsjAfToG/aF4JhewtXvS/gpl8OBYr5iAdGDwaI=;
-  b=kHykZO6qgPHOhkKQd9U0PsThpje2XU657EHfGlbwskbKy1aqwHTtfMJ9
-   ybCvO6sCwZvQcNa3m4iFUPWdAUx+QRn9qSqSzwE5n3lH076o/KmExU+zL
-   xmfJuJNGkS/7fLmd82Q2rrbqu3k3QNnrKG3g9g8i6nXEqdrllMcIbxxY0
-   vUQb8oN5D/9UG7m405tocc/8Mcq/pg4JbnrDH0YFWYnXMQ03Tj/nfH9D8
-   yBCEuG0RwNVrmRj3omFsuHo/FQnRIs/lAFUnS32mRFFtGgHfOOYcxTX4a
-   mDoWaioaE0wZxvZHDPzEfoQyGnY4gcpvx1SNd6d9u754ij3y5coNJop3P
-   w==;
-X-IronPort-AV: E=Sophos;i="6.07,177,1708383600"; 
-   d="scan'208";a="36230473"
-Received: from vmailcow01.tq-net.de ([10.150.86.48])
-  by mx1.tq-group.com with ESMTP; 03 Apr 2024 15:47:50 +0200
-Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id B39A7173471;
-	Wed,  3 Apr 2024 15:47:43 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ew.tq-group.com;
-	s=dkim; t=1712152065;
-	h=from:subject:date:message-id:to:cc:mime-version:content-type:
-	 content-transfer-encoding; bh=YPy9yfsjAfToG/aF4JhewtXvS/gpl8OBYr5iAdGDwaI=;
-	b=lXCWb+qdsokxzO81ajEPy3MAV1EsR0sIe0IDdY6/FMuSRRpOsdF/CIJG7QyzN9pu8smZx3
-	MkqzlDTpPRKQQqW9VMd+/aCYEGmPfLSF4vyaZm4FEgLksFRAoWkttJA3cIR6YBfs6OuBMo
-	LG8vY3MCUuhD3J+HLYgzC1CSA2H3lg+8nAELrtYPNun63YOA/jT6jshH8JYaKps3ZiV/y+
-	GM+d4B75L1xnZGWBnSssysCjRNUVm2bLKUwINWUx0ctC7Rq3+LPRNs6iVFkUV4VRLdjryF
-	dMSWm6gWl55434FZRkQSrbJDfMtGw4O8vIMpOn2vNvyT10yNhBQbcPHlrWW7Ow==
-From: Gregor Herburger <gregor.herburger@ew.tq-group.com>
-Date: Wed, 03 Apr 2024 15:45:22 +0200
-Subject: [PATCH] net: phy: marvell-88q2xxx: add support for Rev B1 and B2
+        d=linaro.org; s=google; t=1712151966; x=1712756766; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=902P16CJPnj1xKchC1BfN1x8nt3eQDIalgicu+1Lvwk=;
+        b=lpxgkZ0vASiLQ+/wepIN45dVAGmf9Zm+N8OKg48F7O3ybnu/PMWZSCTidHAS/p10km
+         1OVI1Mmgo8kf03lcg4l3kHsjPyj3vsyqMEfwTDvJr4b4FJKBsordR+ZiTdc/z+R05hlk
+         qjqk+DIFutN2gM1Tg3ByzlZ1TwUg2m4Ky0UOXzray5y5lPZ+C41NScuZZ0Exe3vXcZ8A
+         FeJ7/xSwnTqokTHmXUE67+SMYdCvoQubW8HWAI2XLD023p/5CsZJ2NIGB52+P7q2DTil
+         CXVtLh0MNotVxHBZRawG26x5w8Qki7WtZM9536mRQbbPXrJKbCdx4AqnrirQMIujtGHB
+         YZ6A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712151966; x=1712756766;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=902P16CJPnj1xKchC1BfN1x8nt3eQDIalgicu+1Lvwk=;
+        b=PwKS/SXGDBU492QSxZXP6WDMSk09KOXmFQd9kOcMo0FS4h2yL6+3tHHslBahdUFSC+
+         fTLDUlX2uRibwRUkL+FcOvOxwlAdgXETGeUPpEviwnI9HIYyAxDXX0hlcwrAQcnxenmL
+         25KsrnFQSB1u3LNkd564BdieVf2gE15d2pNUvhPQc7hOaSDeht6EC+RC2Z1AbV15oF9E
+         Ix2N8EHFIuHuYPIH2zFqDffsJrPhzSatj01mzH1IopOhtCEybGFNkVSHA35WAcQZ7uN4
+         uPZU3hz5SGixDzFdPFA0IPR+1+Q8+tnF5QrpUWHV0rxyU8r5QbnX5Pl4pVvoVl7cc1d8
+         DB6Q==
+X-Forwarded-Encrypted: i=1; AJvYcCVr/dCOprbhXxnxoHLkHDph8XgL2rcBav9LOEHOn2aY6cxSyu2/O7kOX3jyMwHPE7wxuNMd1gKWx3jqJgFJC20DZl6Q/xcno2+HTFL6
+X-Gm-Message-State: AOJu0YzAP4taZzgs9I0yx1PvqxtNvdErfpERBmhGCR1Ymc3IZqcqDGoG
+	OJnfgYhUqbBvLhgB4fz3QltkBxKKq6rQ55bJC4UQeQf+fjIMLkbx+XiArRjeew==
+X-Google-Smtp-Source: AGHT+IHatIDalzVcNZetMx8G4eOcZq4CA3SOosvubbiLoS5X3FwlL5WkyiDNnVYB6kUtPKfF3k+0Ug==
+X-Received: by 2002:a17:903:2282:b0:1e2:45f3:2d57 with SMTP id b2-20020a170903228200b001e245f32d57mr3249524plh.6.1712151965699;
+        Wed, 03 Apr 2024 06:46:05 -0700 (PDT)
+Received: from thinkpad ([103.28.246.48])
+        by smtp.gmail.com with ESMTPSA id d5-20020a170902654500b001e290812d49sm1720356pln.226.2024.04.03.06.46.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 03 Apr 2024 06:46:05 -0700 (PDT)
+Date: Wed, 3 Apr 2024 19:16:00 +0530
+From: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+To: Niklas Cassel <cassel@kernel.org>
+Cc: Lorenzo Pieralisi <lpieralisi@kernel.org>,
+	Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
+	Rob Herring <robh@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>,
+	Kishon Vijay Abraham I <kishon@kernel.org>,
+	Thierry Reding <thierry.reding@gmail.com>,
+	Jonathan Hunter <jonathanh@nvidia.com>,
+	Jingoo Han <jingoohan1@gmail.com>, linux-pci@vger.kernel.org,
+	linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+	mhi@lists.linux.dev, linux-tegra@vger.kernel.org
+Subject: Re: [PATCH v2 03/10] PCI: endpoint: Rename core_init() callback in
+ 'struct pci_epc_event_ops' to init()
+Message-ID: <20240403134600.GL25309@thinkpad>
+References: <20240401-pci-epf-rework-v2-0-970dbe90b99d@linaro.org>
+ <20240401-pci-epf-rework-v2-3-970dbe90b99d@linaro.org>
+ <ZgvjWtC0f1CY6DJs@ryzen>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-Message-Id: <20240403-mv88q222x-revb1-b2-init-v1-1-48b855464c37@ew.tq-group.com>
-X-B4-Tracking: v=1; b=H4sIAHFdDWYC/x2MSwqAMAwFryJZG2ij+LuKuPATNQurtlIE8e4GN
- wMD894Dgb1wgCZ5wHOUILtTsWkC49q7hVEmdSBDuclNhlusqpOIbtR8sDgQipML67qwE42zogR
- dH55nuf/ntnvfDygSoGhpAAAA
-To: Andrew Lunn <andrew@lunn.ch>, Heiner Kallweit <hkallweit1@gmail.com>, 
- Russell King <linux@armlinux.org.uk>, 
- "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, 
- Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
- Dimitri Fedrau <dima.fedrau@gmail.com>, 
- Stefan Eichenberger <eichest@gmail.com>
-Cc: netdev@vger.kernel.org, linux-kernel@vger.kernel.org, 
- linux@ew.tq-group.com, gregor.herburger@ew.tq-group.com, 
- alexander.stein@ew.tq-group.com
-X-Mailer: b4 0.12.3
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1712152063; l=5601;
- i=gregor.herburger@ew.tq-group.com; s=20230829; h=from:subject:message-id;
- bh=YEVP9YpyH7o2aYsLFiX4m2nl9C+fbyptKQ7J4JphAmU=;
- b=LMdt2IUGtR9R6t/rywlx2hmuvxgMn+C7OvPHybfe/Kt56s+8RTL7ZhR4tl71flkURyPwHWc04
- ngUTyKpw26tD6HCkAFSqEVPmW6tgLfyW7ma6fATYA4F3AvshyBByw8n
-X-Developer-Key: i=gregor.herburger@ew.tq-group.com; a=ed25519;
- pk=+eRxwX7ikXwazcRjlOjj2/tbDmfVZdDLoW+xLZbQ4h4=
-X-Last-TLS-Session-Version: TLSv1.3
+In-Reply-To: <ZgvjWtC0f1CY6DJs@ryzen>
 
-Different revisions of the Marvell 88q2xxx phy needs different init
-sequences.
+On Tue, Apr 02, 2024 at 12:52:10PM +0200, Niklas Cassel wrote:
+> On Mon, Apr 01, 2024 at 09:20:29PM +0530, Manivannan Sadhasivam wrote:
+> > core_init() callback is used to notify the EPC initialization event to the
+> > EPF drivers. The 'core' prefix was used indicate that the controller IP
+> > core has completed initialization. But it serves no purpose as the EPF
+> > driver will only care about the EPC initialization as a whole and there is
+> > no real benefit to distinguish the IP core part.
+> > 
+> > So let's rename the core_init() callback in 'struct pci_epc_event_ops' to
+> > just init() to make it more clear.
+> > 
+> > Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+> > ---
+> >  drivers/pci/endpoint/functions/pci-epf-mhi.c  |  4 ++--
+> >  drivers/pci/endpoint/functions/pci-epf-test.c |  4 ++--
+> >  drivers/pci/endpoint/pci-epc-core.c           | 16 ++++++++--------
+> >  include/linux/pci-epf.h                       |  4 ++--
+> >  4 files changed, 14 insertions(+), 14 deletions(-)
+> > 
+> > diff --git a/drivers/pci/endpoint/functions/pci-epf-mhi.c b/drivers/pci/endpoint/functions/pci-epf-mhi.c
+> > index 280863c0eeb9..b3c26ffd29a5 100644
+> > --- a/drivers/pci/endpoint/functions/pci-epf-mhi.c
+> > +++ b/drivers/pci/endpoint/functions/pci-epf-mhi.c
+> > @@ -716,7 +716,7 @@ static void pci_epf_mhi_dma_deinit(struct pci_epf_mhi *epf_mhi)
+> >  	epf_mhi->dma_chan_rx = NULL;
+> >  }
+> >  
+> > -static int pci_epf_mhi_core_init(struct pci_epf *epf)
+> > +static int pci_epf_mhi_epc_init(struct pci_epf *epf)
+> >  {
+> >  	struct pci_epf_mhi *epf_mhi = epf_get_drvdata(epf);
+> >  	const struct pci_epf_mhi_ep_info *info = epf_mhi->info;
+> > @@ -897,7 +897,7 @@ static void pci_epf_mhi_unbind(struct pci_epf *epf)
+> >  }
+> >  
+> >  static const struct pci_epc_event_ops pci_epf_mhi_epc_event_ops = {
+> > -	.core_init = pci_epf_mhi_core_init,
+> > +	.init = pci_epf_mhi_epc_init,
+> >  };
+> >  
+> >  static const struct pci_epc_bus_event_ops pci_epf_mhi_bus_event_ops = {
+> > diff --git a/drivers/pci/endpoint/functions/pci-epf-test.c b/drivers/pci/endpoint/functions/pci-epf-test.c
+> > index 973db0b1bde2..abcb6ca61c4e 100644
+> > --- a/drivers/pci/endpoint/functions/pci-epf-test.c
+> > +++ b/drivers/pci/endpoint/functions/pci-epf-test.c
+> > @@ -731,7 +731,7 @@ static int pci_epf_test_set_bar(struct pci_epf *epf)
+> >  	return 0;
+> >  }
+> >  
+> > -static int pci_epf_test_core_init(struct pci_epf *epf)
+> > +static int pci_epf_test_epc_init(struct pci_epf *epf)
+> 
+> On V1 you agreed that it is better to remove 'epc' from the naming.
+> (For both pci-epf-test and pci-epf-mhi).
+> You seem to have forgotten to address this for V2.
+> 
 
-Add init sequence for Rev B1 and Rev B2. Rev B2 init sequence skips one
-register write.
+Oh yeah, sorry about that. I tried to address comments for both series and
+apparently this one got missed.
 
-Signed-off-by: Gregor Herburger <gregor.herburger@ew.tq-group.com>
----
-Hi,
+- Mani
 
-as discussed when adding support for Marvell 88Q2220 Revision B0 [1],
-newer revisions need different init sequences. So add support for Rev B1
-and B2 with this patch.
-
-[1] https://lore.kernel.org/netdev/20240216205302.GC3873@debian/
-
-Best regards
-Gregor
----
- drivers/net/phy/marvell-88q2xxx.c | 86 +++++++++++++++++++++++++++++++++++++--
- 1 file changed, 83 insertions(+), 3 deletions(-)
-
-diff --git a/drivers/net/phy/marvell-88q2xxx.c b/drivers/net/phy/marvell-88q2xxx.c
-index 6b4bd9883304..c4c916eb3195 100644
---- a/drivers/net/phy/marvell-88q2xxx.c
-+++ b/drivers/net/phy/marvell-88q2xxx.c
-@@ -12,6 +12,8 @@
- #include <linux/hwmon.h>
- 
- #define PHY_ID_88Q2220_REVB0	(MARVELL_PHY_ID_88Q2220 | 0x1)
-+#define PHY_ID_88Q2220_REVB1	(MARVELL_PHY_ID_88Q2220 | 0x2)
-+#define PHY_ID_88Q2220_REVB2	(MARVELL_PHY_ID_88Q2220 | 0x3)
- 
- #define MDIO_MMD_AN_MV_STAT			32769
- #define MDIO_MMD_AN_MV_STAT_ANEG		0x0100
-@@ -129,6 +131,43 @@ static const struct mmd_val mv88q222x_revb0_init_seq1[] = {
- 	{ MDIO_MMD_PCS, 0xfe05, 0x755c },
- };
- 
-+static const struct mmd_val mv88q222x_revb1_init_seq0[] = {
-+	{ MDIO_MMD_PCS, 0xFFE4, 0x0007 },
-+	{ MDIO_MMD_AN, MDIO_AN_T1_CTRL, 0x0 },
-+	{ MDIO_MMD_PCS, 0xFFE3, 0x7000 },
-+	{ MDIO_MMD_PMAPMD, MDIO_CTRL1, 0x0840 },
-+};
-+
-+static const struct mmd_val mv88q222x_revb1_init_seq1[] = {
-+	{ MDIO_MMD_PCS, 0xFE07, 0x125A },
-+	{ MDIO_MMD_PCS, 0xFE09, 0x1288 },
-+	{ MDIO_MMD_PCS, 0xFE08, 0x2588 },
-+	{ MDIO_MMD_PCS, 0xFE72, 0x042C },
-+	{ MDIO_MMD_PCS, 0xFFE4, 0x0071 },
-+	{ MDIO_MMD_PCS, 0xFFE4, 0x0001 },
-+	{ MDIO_MMD_PCS, 0xFE1B, 0x0048 },
-+	{ MDIO_MMD_PMAPMD, 0x0000, 0x0000 },
-+	{ MDIO_MMD_PCS, 0x0000, 0x0000 },
-+	{ MDIO_MMD_PCS, 0xFFDB, 0xFC10 },
-+	{ MDIO_MMD_PCS, 0xFE1B, 0x58 },
-+	{ MDIO_MMD_PCS, 0xFCAD, 0x030C },
-+	{ MDIO_MMD_PCS, 0x8032, 0x6001 },
-+	{ MDIO_MMD_PCS, 0xFDFF, 0x05A5 },
-+	{ MDIO_MMD_PCS, 0xFDEC, 0xDBAF },
-+	{ MDIO_MMD_PCS, 0xFCAB, 0x1054 },
-+	{ MDIO_MMD_PCS, 0xFCAC, 0x1483 },
-+	{ MDIO_MMD_PCS, 0x8033, 0xC801 },
-+	{ MDIO_MMD_AN, 0x8032, 0x2020 },
-+	{ MDIO_MMD_AN, 0x8031, 0xA28 },
-+	{ MDIO_MMD_AN, 0x8031, 0xC28 },
-+	{ MDIO_MMD_PCS, 0xFBBA, 0x0CB2 },
-+	{ MDIO_MMD_PCS, 0xFBBB, 0x0C4A },
-+	{ MDIO_MMD_PCS, 0xFE5F, 0xE8 },
-+	{ MDIO_MMD_PCS, 0xFE05, 0x755C },
-+	{ MDIO_MMD_PCS, 0xFA20, 0x002A },
-+	{ MDIO_MMD_PCS, 0xFE11, 0x1105 },
-+};
-+
- static int mv88q2xxx_soft_reset(struct phy_device *phydev)
- {
- 	int ret;
-@@ -712,6 +751,46 @@ static int mv88q222x_revb0_config_init(struct phy_device *phydev)
- 	return mv88q2xxx_config_init(phydev);
- }
- 
-+static int mv88q222x_revb1_revb2_config_init(struct phy_device *phydev)
-+{
-+	bool is_rev_b2 = phydev->c45_ids.device_ids[MDIO_MMD_PMAPMD] == PHY_ID_88Q2220_REVB2;
-+	int ret, i;
-+
-+	for (i = 0; i < ARRAY_SIZE(mv88q222x_revb1_init_seq0); i++) {
-+		/* Rev B2 init sequence differs compared to Rev B1. As noted in Marvell API:
-+		 * Remove the instruction to enable TXDAC setting overwrite bit for Rev B2.
-+		 */
-+		if (is_rev_b2 && mv88q222x_revb1_init_seq1[i].regnum == 0xffe3)
-+			continue;
-+
-+		ret = phy_write_mmd(phydev, mv88q222x_revb1_init_seq0[i].devad,
-+				    mv88q222x_revb1_init_seq0[i].regnum,
-+				    mv88q222x_revb1_init_seq0[i].val);
-+		if (ret < 0)
-+			return ret;
-+	}
-+
-+	usleep_range(3000, 5000);
-+
-+	for (i = 0; i < ARRAY_SIZE(mv88q222x_revb1_init_seq1); i++) {
-+		ret = phy_write_mmd(phydev, mv88q222x_revb1_init_seq1[i].devad,
-+				    mv88q222x_revb1_init_seq1[i].regnum,
-+				    mv88q222x_revb1_init_seq1[i].val);
-+		if (ret < 0)
-+			return ret;
-+	}
-+
-+	return mv88q2xxx_config_init(phydev);
-+}
-+
-+static int mv88q222x_config_init(struct phy_device *phydev)
-+{
-+	if (phydev->c45_ids.device_ids[MDIO_MMD_PMAPMD] == PHY_ID_88Q2220_REVB0)
-+		return mv88q222x_revb0_config_init(phydev);
-+	else
-+		return mv88q222x_revb1_revb2_config_init(phydev);
-+}
-+
- static int mv88q222x_cable_test_start(struct phy_device *phydev)
- {
- 	int ret;
-@@ -810,14 +889,15 @@ static struct phy_driver mv88q2xxx_driver[] = {
- 		.get_sqi_max		= mv88q2xxx_get_sqi_max,
- 	},
- 	{
--		PHY_ID_MATCH_EXACT(PHY_ID_88Q2220_REVB0),
-+		.phy_id			= MARVELL_PHY_ID_88Q2220,
-+		.phy_id_mask		= MARVELL_PHY_ID_MASK,
- 		.name			= "mv88q2220",
- 		.flags			= PHY_POLL_CABLE_TEST,
- 		.probe			= mv88q2xxx_probe,
- 		.get_features		= mv88q2xxx_get_features,
- 		.config_aneg		= mv88q2xxx_config_aneg,
- 		.aneg_done		= genphy_c45_aneg_done,
--		.config_init		= mv88q222x_revb0_config_init,
-+		.config_init		= mv88q222x_config_init,
- 		.read_status		= mv88q2xxx_read_status,
- 		.soft_reset		= mv88q222x_soft_reset,
- 		.config_intr		= mv88q2xxx_config_intr,
-@@ -836,7 +916,7 @@ module_phy_driver(mv88q2xxx_driver);
- 
- static struct mdio_device_id __maybe_unused mv88q2xxx_tbl[] = {
- 	{ MARVELL_PHY_ID_88Q2110, MARVELL_PHY_ID_MASK },
--	{ PHY_ID_MATCH_EXACT(PHY_ID_88Q2220_REVB0), },
-+	{ MARVELL_PHY_ID_88Q2220, MARVELL_PHY_ID_MASK },
- 	{ /*sentinel*/ }
- };
- MODULE_DEVICE_TABLE(mdio, mv88q2xxx_tbl);
-
----
-base-commit: 1fdad13606e104ff103ca19d2d660830cb36d43e
-change-id: 20240403-mv88q222x-revb1-b2-init-9961d2cf1d27
-
-Best regards,
 -- 
-TQ-Systems GmbH | Mühlstraße 2, Gut Delling | 82229 Seefeld, Germany
-Amtsgericht München, HRB 105018
-Geschäftsführer: Detlef Schneider, Rüdiger Stahl, Stefan Schneider
-https://www.tq-group.com/
-
+மணிவண்ணன் சதாசிவம்
 
