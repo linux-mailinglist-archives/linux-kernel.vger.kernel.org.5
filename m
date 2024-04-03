@@ -1,117 +1,99 @@
-Return-Path: <linux-kernel+bounces-130215-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-130216-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7495E897589
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 18:45:00 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id D94E489758C
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 18:45:53 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2E9E728DE1E
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 16:44:59 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8ECC01F28B94
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 16:45:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8FE60152DE9;
-	Wed,  3 Apr 2024 16:44:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0789D14F13F;
+	Wed,  3 Apr 2024 16:45:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="enc6td2/"
-Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8815514C58A;
-	Wed,  3 Apr 2024 16:44:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=13.77.154.182
+	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="aFgcC8Lr"
+Received: from mail-ej1-f42.google.com (mail-ej1-f42.google.com [209.85.218.42])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6752E1B7F4
+	for <linux-kernel@vger.kernel.org>; Wed,  3 Apr 2024 16:45:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712162667; cv=none; b=nhTNRSV7xxoJ/IvNkGllDjOJJWWzfecBBLKHXLyhOv+2UEgHuk2w7eCc90A+81hdWQOI+l8SbpiiVGrzGE3GzMz82ed/+kDpUTOyMHwHSqOlIfYr3/oz657PqDyO7gHhsJxEeEQbJNLMCbae8QWe9trJgoKp1WsL0FcB3xSkS00=
+	t=1712162747; cv=none; b=NXwXinth60PyASV4lzkhQ7t+6o744HnzlwzNp7xi44aXexslf4LUg3w6uEfliRYd0V5DA8r2kIMeophUGF9138qki0YXTci2s4sHl4eTYbRcvSNgPvklmsNZibMU1/Ln4iI1PzUOQLWsEeli0zlTG6kAwSIXhYBpFQlUKt6Rz4c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712162667; c=relaxed/simple;
-	bh=E/xU54rEeo/oDDTNeLyTGcgPNTZZ5c2Rcpkp/VoXpog=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=pD5TQx9Pm3ronVSBxEpVwlifgVb8FO2guqkwjLjq8K6g25kobPztvPB0ueCqdz/+WnwhiICvWRF1GC6QusT0fggjJWO0PJwNhPWyA+oWqFv12mQXjgFiaV/YOX3n2ub6uxwu9hC8CU4d5kJaZrXuKbVwZG0EN/kJK7WYDghhKv8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com; spf=pass smtp.mailfrom=linux.microsoft.com; dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b=enc6td2/; arc=none smtp.client-ip=13.77.154.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.microsoft.com
-Received: from [100.64.216.231] (unknown [20.29.225.195])
-	by linux.microsoft.com (Postfix) with ESMTPSA id DEC6420E8CB1;
-	Wed,  3 Apr 2024 09:44:25 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com DEC6420E8CB1
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-	s=default; t=1712162666;
-	bh=JXwsd2AxoIuTbqYYBsm2eaH2T3RMwYhW+EuWf51ajaI=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=enc6td2/9wYk/5AJ75GJ+d2KStC4HCCxos5X3NVTZDD2/oIurKS5e5aSfxG20NTAn
-	 i6QoaGybHsOcc9F8ukHIPO521Uu8BoKDrrjEMr1X1WvCtk0DqcVkd5bYcJVQCFeQeI
-	 efLmLz3IHfJYxowLOTc8KrIggtvkr42zcNpYJ/Ys=
-Message-ID: <2d2a22a5-25cf-4b15-904e-7928a92d6ff5@linux.microsoft.com>
-Date: Wed, 3 Apr 2024 09:44:24 -0700
+	s=arc-20240116; t=1712162747; c=relaxed/simple;
+	bh=WkOp0jt83v59PmTbpG01/8bMvUonlZp+wBHAUkpikYQ=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=LvcnFbN1RjMi2/sHlBJGvgvmClT5PXyU7Q5RDmPPjBEmiPtn+w/K3nTQyjdm9KeTKIwNcrqqgjrSSbq1o2YqJV2yff44tPToVYiLyz8lgzApUH4BPeR2RDZTn8a15OdhgYUCunWAsx+pzC4PM0yUMK8m/Wb8Bs6hUlIc+GjM5qg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org; spf=pass smtp.mailfrom=linuxfoundation.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=aFgcC8Lr; arc=none smtp.client-ip=209.85.218.42
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
+Received: by mail-ej1-f42.google.com with SMTP id a640c23a62f3a-a4e61accceaso10301666b.2
+        for <linux-kernel@vger.kernel.org>; Wed, 03 Apr 2024 09:45:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google; t=1712162743; x=1712767543; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=BA+iBcOT7cJaTUdOkwv4QgkljAgFbNor67YZYYCKl/4=;
+        b=aFgcC8Lruc7gJPA/k9vsOJ5zsM5If22oQ6DffBnywNsy6I0I/FXWjx5UwiY+yZexeR
+         0YpH+mTxp828McTSJn0d94FvtXXashnWDh+5T66DnbefM+n2mQbCSOs3HrBLu2lQq5z4
+         1RQzHy8VkzRbtKWXJTNfuHy7AunkmBZ3gM9js=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712162743; x=1712767543;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=BA+iBcOT7cJaTUdOkwv4QgkljAgFbNor67YZYYCKl/4=;
+        b=CegujdBe0EEM9W6CftFML8lNfOVu/2+o/WvnH/gU/ILsT1E4CAu/LkR33RvFCRSq25
+         EY+eJAXVJcxFs1cDMM32Hkh3+1RMshIoSjggf3ijNjkCTHyWRp7KzdSrKgKcWvMz5O2z
+         +71N0Qm+D0TIrN23M3LmMmjJSdQGCZKZDG2oxzrJDNwi75m/QRTi//CARaToP2OT6R8H
+         V0LQgzD2UlaOg7KkfHeV9aMpXaRVe8im807cti7Fj36jqI1lDXilbGDaVOk5cyq3iIZK
+         hm/5D5dx0KHgkSuXlqfYQnM8oEWzcJYicvHeMZMnjagCnHkSDdnOT7VmFmn+KRVRzqmu
+         AeXA==
+X-Forwarded-Encrypted: i=1; AJvYcCXx1XmS84YOiI4nsVw6rM/QR0gMa4pZEWg/JHEC0Ygj/GXtd5JdCVkRvY0nHipoEzoo66U+G7tRdfQQCGyluV0S6dQeWaH6ngwAUmrj
+X-Gm-Message-State: AOJu0YxKmywUvqrGm0Xyf9fTJXUVnoiY/zXsegvKymAvTyYzPujk3jqZ
+	nhxe/SHxgAKF9f1bBUeY0EfO483eswLbhat6HCVgoItcM275RtZWxcMKHEkSz6C1NPhG4n+MxpR
+	43xjiDg==
+X-Google-Smtp-Source: AGHT+IGLFrgwSNZdWL+Ki08w9YacQpahXWv+CnwE+wDplAebtFy9UNUyVtQq3AB7+JlGi+W/8Anw2g==
+X-Received: by 2002:a17:907:7859:b0:a4e:2873:e94c with SMTP id lb25-20020a170907785900b00a4e2873e94cmr9913991ejc.1.1712162743681;
+        Wed, 03 Apr 2024 09:45:43 -0700 (PDT)
+Received: from mail-ej1-f54.google.com (mail-ej1-f54.google.com. [209.85.218.54])
+        by smtp.gmail.com with ESMTPSA id gl20-20020a170906e0d400b00a46c39e6a47sm7985783ejb.148.2024.04.03.09.45.42
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 03 Apr 2024 09:45:43 -0700 (PDT)
+Received: by mail-ej1-f54.google.com with SMTP id a640c23a62f3a-a4e61accceaso10297666b.2
+        for <linux-kernel@vger.kernel.org>; Wed, 03 Apr 2024 09:45:42 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCUjpGDGtg3pRMpMWeBw5pGaqSeNENSEooDKo9mySUWFsAD/aQPAuK80Y6L4hmvLo8dl6ZnIJknKhODe6YFMJ6RDge81gJl+iZRjAarc
+X-Received: by 2002:a17:906:57c2:b0:a47:3b6a:a29b with SMTP id
+ u2-20020a17090657c200b00a473b6aa29bmr10816968ejr.13.1712162742304; Wed, 03
+ Apr 2024 09:45:42 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v0 01/14] IB/hfi1, IB/qib: Make I2C terminology more
- inclusive
-To: Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
- Leon Romanovsky <leon@kernel.org>
-Cc: Jason Gunthorpe <jgg@ziepe.ca>,
- "open list:HFI1 DRIVER" <linux-rdma@vger.kernel.org>,
- open list <linux-kernel@vger.kernel.org>,
- Wolfram Sang <wsa+renesas@sang-engineering.com>,
- "open list:RADEON and AMDGPU DRM DRIVERS" <amd-gfx@lists.freedesktop.org>,
- "open list:DRM DRIVERS" <dri-devel@lists.freedesktop.org>,
- "open list:INTEL DRM DISPLAY FOR XE AND I915 DRIVERS"
- <intel-gfx@lists.freedesktop.org>,
- "open list:INTEL DRM DISPLAY FOR XE AND I915 DRIVERS"
- <intel-xe@lists.freedesktop.org>,
- "open list:DRM DRIVER FOR NVIDIA GEFORCE/QUADRO GPUS"
- <nouveau@lists.freedesktop.org>,
- "open list:I2C SUBSYSTEM HOST DRIVERS" <linux-i2c@vger.kernel.org>,
- "open list:BTTV VIDEO4LINUX DRIVER" <linux-media@vger.kernel.org>,
- "open list:FRAMEBUFFER LAYER" <linux-fbdev@vger.kernel.org>
-References: <20240329170038.3863998-1-eahariha@linux.microsoft.com>
- <20240329170038.3863998-2-eahariha@linux.microsoft.com>
- <20240403083025.GT11187@unreal>
- <0214214a-73c4-46b4-a099-189036954aa1@cornelisnetworks.com>
-Content-Language: en-CA
-From: Easwar Hariharan <eahariha@linux.microsoft.com>
-In-Reply-To: <0214214a-73c4-46b4-a099-189036954aa1@cornelisnetworks.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+References: <202404020901.da75a60f-oliver.sang@intel.com> <20240403122350.GEZg1KVvsyc-Z3bwro@fat_crate.local>
+In-Reply-To: <20240403122350.GEZg1KVvsyc-Z3bwro@fat_crate.local>
+From: Linus Torvalds <torvalds@linux-foundation.org>
+Date: Wed, 3 Apr 2024 09:45:25 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wj+Q_LXV0Y5+kBvv-5sTxT3Y7E=8wJ2sX4vzWksd3LWzA@mail.gmail.com>
+Message-ID: <CAHk-=wj+Q_LXV0Y5+kBvv-5sTxT3Y7E=8wJ2sX4vzWksd3LWzA@mail.gmail.com>
+Subject: Re: [PATCH] x86/retpoline: Fix a missing return thunk warning (was:
+ Re: [linus:master] [x86/bugs] 4535e1a417: WARNING:at_arch/x86/kernel/alternative.c:#apply_returns)
+To: Borislav Petkov <bp@alien8.de>
+Cc: kernel test robot <oliver.sang@intel.com>, oe-lkp@lists.linux.dev, lkp@intel.com, 
+	linux-kernel@vger.kernel.org, Ingo Molnar <mingo@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 
-On 4/3/2024 8:54 AM, Dennis Dalessandro wrote:
-> 
-> On 4/3/24 4:30 AM, Leon Romanovsky wrote:
->> On Fri, Mar 29, 2024 at 05:00:25PM +0000, Easwar Hariharan wrote:
->>> I2C v7, SMBus 3.2, and I3C specifications have replaced "master/slave"
->>> with more appropriate terms. Inspired by and following on to Wolfram's series
->>> to fix drivers/i2c[1], fix the terminology where I had a role to play, now that
->>> the approved verbiage exists in the specification.
->>>
->>> Compile tested, no functionality changes intended
->>>
->>> [1]: https://lore.kernel.org/all/20240322132619.6389-1-wsa+renesas@sang-engineering.com/
->>>
->>> Signed-off-by: Easwar Hariharan <eahariha@linux.microsoft.com>
->>> ---
->>>  drivers/infiniband/hw/hfi1/chip.c           |  6 ++--
->>>  drivers/infiniband/hw/hfi1/chip.h           |  2 +-
->>>  drivers/infiniband/hw/hfi1/chip_registers.h |  2 +-
->>>  drivers/infiniband/hw/hfi1/file_ops.c       |  2 +-
->>>  drivers/infiniband/hw/hfi1/firmware.c       | 22 ++++++-------
->>>  drivers/infiniband/hw/hfi1/pcie.c           |  2 +-
->>>  drivers/infiniband/hw/hfi1/qsfp.c           | 36 ++++++++++-----------
->>>  drivers/infiniband/hw/hfi1/user_exp_rcv.c   |  2 +-
->>>  drivers/infiniband/hw/qib/qib_twsi.c        |  6 ++--
->>>  9 files changed, 40 insertions(+), 40 deletions(-)
->>
->> hfi1 and qib work perfectly fine with the current terminology. There is
->> no need to change old code just for the sake of change.
->>
->> Let's drop this patch.
-> 
-> Agreed.
+On Wed, 3 Apr 2024 at 05:24, Borislav Petkov <bp@alien8.de> wrote:
+>
+> Subject: [PATCH] x86/retpoline: Fix a missing return thunk warning
 
-Will drop in v1.
+Thanks, applied directly,
 
-Thanks,
-Easwar
+                Linus
 
