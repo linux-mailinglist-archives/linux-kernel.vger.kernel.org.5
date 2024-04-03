@@ -1,73 +1,73 @@
-Return-Path: <linux-kernel+bounces-129457-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-129458-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C5CCE896B11
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 11:52:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id B855A896B16
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 11:53:17 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EA1E71C26346
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 09:52:24 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DBD221C25B9A
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 09:53:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EEFB56F085;
-	Wed,  3 Apr 2024 09:52:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D93EA1350CF;
+	Wed,  3 Apr 2024 09:53:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="AcqVEneN"
-Received: from mail-ej1-f45.google.com (mail-ej1-f45.google.com [209.85.218.45])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="c4CHKIj/"
+Received: from mail-qt1-f181.google.com (mail-qt1-f181.google.com [209.85.160.181])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 745006EB73
-	for <linux-kernel@vger.kernel.org>; Wed,  3 Apr 2024 09:52:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 73A716EB73;
+	Wed,  3 Apr 2024 09:53:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712137938; cv=none; b=tODSX5fBkak1ENXLuonYX3DX7Sw4Oy6zaE1U8PgLVyXTwTK9y8eBrNmTt88AsvyxePiM9VIj36tnCvLVfZN1N3ObY4dRkG+04uRkYhybQKoC0BAii0Tbgd3lIcSxTXp8b0aYVoC07fibJqsjjGFS4ICzMXSA9r6VhlrPQVRSq2o=
+	t=1712137989; cv=none; b=hdw8smOus0BlWfCV7muVKSiZ2j2lsH0p3q7hYOpucpmm10VpNInb7qfSwXAV/Ayih8QKLEg8C/f/lAQ5eum8TLZDpwbHw9FCphacLCUN6CCOmRLS2ku/mguEJTH3E/tOfbDGfDdYROI6qsX0IPtNwfwUI4hdgwlbQbajrMhg274=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712137938; c=relaxed/simple;
-	bh=hlOw2/7Vi3LeM5RWn5MXYhGfJTlU67UcasQqIQQVS7o=;
+	s=arc-20240116; t=1712137989; c=relaxed/simple;
+	bh=nVU7niFzDwvRHhsC91XdjmYYEnpugKgc/2s1l6flgyI=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=gTFreB107pQ3J9d40mY7affAP0h9NuzOo2hJsosN0AiJnpvHhtXvypS3qGYyLBwrdjHdo1c0jEFFOgslsypn0kqjy2EGH17dMSjV5UsxI1AtXeVaUKHVST/w0U79fXfyFMPqjUjfddw7rKWJfdF1qvX7kLVs9f+tpXLhcatHd+w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=AcqVEneN; arc=none smtp.client-ip=209.85.218.45
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ej1-f45.google.com with SMTP id a640c23a62f3a-a4e61accceaso477552866b.2
-        for <linux-kernel@vger.kernel.org>; Wed, 03 Apr 2024 02:52:16 -0700 (PDT)
+	 In-Reply-To:Content-Type; b=GUWwC30gYbIlMYkdlxyy9GinJkEGQanDb0FJsAHb4vtIA3b7yy9qKAJFuQ+NQlDMXgdgdolYcCQgJPmVLJfDdsJlUTOKL+IBDFCWW1TZ61NvvgYjcP/nTeTIYWYh9RybbZX6JQXpdd85B73s4xylSw22eQVLIzsANj31xMumV2I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=c4CHKIj/; arc=none smtp.client-ip=209.85.160.181
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-qt1-f181.google.com with SMTP id d75a77b69052e-430a25ed4e7so40794221cf.0;
+        Wed, 03 Apr 2024 02:53:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1712137935; x=1712742735; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=Bh7wBi8WWtCQt6nVIMQjgvFVk1AS3gMEUMeiD99RuYQ=;
-        b=AcqVEneNG9jM5+BOUd5JmcZao2uN4l4wWAifvvCvTY8GLAtUtRtvsYd52n631UigC1
-         MBi1fwb3w1U02PilVMJO8HLyafuo/EdfMca1uahSSu9SLd9alZRUoCDgV/Wuugmp/EZI
-         k2r824vDvCPDkLq3HO9/46iMJPMTc/B5mGG360Oapc8q2W6Fq+Fgpw75vFMQRF5jf8XF
-         srN8X2dgO3tsFYD1Z3vMuKRDiOF2hDtUPA5JYg/hXCt7+04RzP/X0OENxofIJ89pGUyi
-         FYCvNKjSDW/TgghGC/D0qCpI/22GuhfgD0rvKLjQGsIsJPmvS2Ae+65ESH/6IcleHbXF
-         e3GA==
+        d=gmail.com; s=20230601; t=1712137986; x=1712742786; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=WJEtfEgGOvZ4NQDXQ/7+cf0sv8jHi6x8Pc+R36zNRao=;
+        b=c4CHKIj/od518Y8ZYB2C4XQMk0FWdxDsjraMHSwBn+JUvc+8Q3W4QP6a6w3DZ2a1JD
+         1RFk0v/pF/N3wJB3+gzUZ/jNe+Z45I+Cl8iuqnZ813hex1UcicocpJRvJYoTC3TTGccO
+         yyj/DNzjTWW3G/yQ2SeajsUMZsD8HDgUVz3dCURheeDeeKx+vZelMBs5CuRhrdDyd1+y
+         V5OhgsTWH3LNiD3PBX6apfn7+j/mwig/H35Tyjdd0y8mx17KpdY00ALsE/UTuWsAE8Y/
+         9ZoIKG9D+mCJp/ssUyLJ1wGbtTA0RGQRyeDHkXhnxiru758bF9J6J96HVxu/HOk6cSPP
+         EiDw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712137935; x=1712742735;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Bh7wBi8WWtCQt6nVIMQjgvFVk1AS3gMEUMeiD99RuYQ=;
-        b=H5Hkd4MY8kMhXd9z5MieRl2C06aJ9WxLuN1DzTGIBaMBK7m9z6mGl2B6eYWSKYl10R
-         MHGxiGbcgAwUfd7b48b8yBMpOVdnHsq7/RU7368phdiKz5J4Dx4IJZspqQ0e1SuI//QC
-         E+l6qXoCJX99Ai9/1eiEnBU8SWGwwQ9bktx9vZA0G6Rv0izEunAznFGG51i0MqWLy0ji
-         bSRRKoubVhdgcLuWSnRF1X2FFDFROAJEXSpxDUeNLhI1IFjylImubtAcl8Rqahumuf8X
-         nroWIsK96TSQxiKXwntP3K+8dwMUfZReT7XevU9fE2OVfCCH+A2phyxh/5MS+xUWDPW3
-         SByw==
-X-Gm-Message-State: AOJu0Yw8GLZiN7uJCp4J7LUN3O6ccvub0C4ZQtko6iDd487MeEzqRJ1n
-	VA6hkmaWXs4+fLvCmZOMFrHHL4jlMK0ogSOF0n4XkDDImkwIoOo0ytnTgpZL/DM=
-X-Google-Smtp-Source: AGHT+IEDabXeKoqVvuqtVZjOz9m5IdvARYiBRHDxqcAxuGTRaru9MVwoTvAymTVd0gDyB5oTCSl37g==
-X-Received: by 2002:a17:906:abc1:b0:a47:533f:2d0f with SMTP id kq1-20020a170906abc100b00a47533f2d0fmr9118717ejb.66.1712137934880;
-        Wed, 03 Apr 2024 02:52:14 -0700 (PDT)
-Received: from [192.168.1.20] ([178.197.223.16])
-        by smtp.gmail.com with ESMTPSA id f19-20020a17090631d300b00a46a27794f6sm7478708ejf.123.2024.04.03.02.52.13
+        d=1e100.net; s=20230601; t=1712137986; x=1712742786;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=WJEtfEgGOvZ4NQDXQ/7+cf0sv8jHi6x8Pc+R36zNRao=;
+        b=HPfA4y4/Ta7HXdkqhAHCRo0c2wDhGLPdF2lQx36tT+/zOcjv8PG0HjHel6PYDpz+xS
+         /kheD+O2e6CMApyPpxzHPUaMas9140LqhemlT7E9LWV7ZCXt6vDpfzSbwS2YV/RLuWgz
+         cr+SFZ/OFjF+iT10vgXpHnleBm7uysJwKdDWs4p1CvLu9Z1/IzUS7ZHrSPLLe7GtTvR/
+         Gr7gkn/nc+8Ik6WUUHmqp6BXr8J2LTFNF9obrBxBaek98JBqdpcNo5GJWwJCSRIbHKvi
+         BKq7cube8o7YdYWkFU/chDINjGWY7BjIpvbU4lwb5Fipu+uJ4tKq5xZsuOwKvHa+kG7j
+         zsoA==
+X-Forwarded-Encrypted: i=1; AJvYcCVDrWhaUlyKRSgllM7HgpgKOVgjytzISzlXvBohkH95RqTwO1QCC/KmiRiQGI/Ho/X3FiqvaP47SceWNB6FZZoFDgDPROVAW3pz8I+nfFQ0q/b/g7c6Z2geiwqyIfGkl3nXFKA69kvt6m8QrLf17t5YdEboucdvQIHjdN4K43YKyiNKrg==
+X-Gm-Message-State: AOJu0Yz/9xoXQtrflj9kxMAnCA+wXSkmNfGaWW5cozeYj3KlB+wIJRuP
+	jIn8SdQ12p7lOGuQdWbioye/Dl6xgEAxiLCgJJze4ufBp+qiVJsa
+X-Google-Smtp-Source: AGHT+IGk3Sphsu/CS6tCyXd5ivhB2YIIX7J+CLaAoaRbfEpzUhcezLUU4kLxt4hyV0KYHMfLxSDbcQ==
+X-Received: by 2002:a05:622a:491:b0:431:7c36:7f86 with SMTP id p17-20020a05622a049100b004317c367f86mr17090861qtx.59.1712137986137;
+        Wed, 03 Apr 2024 02:53:06 -0700 (PDT)
+Received: from [10.76.84.174] ([5.2.194.157])
+        by smtp.gmail.com with ESMTPSA id et16-20020a05622a4b1000b00430b385f721sm6385650qtb.15.2024.04.03.02.53.04
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 03 Apr 2024 02:52:14 -0700 (PDT)
-Message-ID: <614fc80a-5d2a-43a1-b8d4-48bdb2cc7dc7@linaro.org>
-Date: Wed, 3 Apr 2024 11:52:12 +0200
+        Wed, 03 Apr 2024 02:53:05 -0700 (PDT)
+Message-ID: <c7c26d36-ab08-420c-b634-8eb6d9cee9b5@gmail.com>
+Date: Wed, 3 Apr 2024 12:53:02 +0300
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -75,91 +75,178 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 07/34] Input: stmpe-ts - mark OF related data as maybe
- unused
-To: Andy Shevchenko <andriy.shevchenko@intel.com>,
- Arnd Bergmann <arnd@kernel.org>
-Cc: linux-kernel@vger.kernel.org, Dmitry Torokhov
- <dmitry.torokhov@gmail.com>, Maxime Coquelin <mcoquelin.stm32@gmail.com>,
- Alexandre Torgue <alexandre.torgue@foss.st.com>,
- Arnd Bergmann <arnd@arndb.de>,
- =?UTF-8?Q?Uwe_Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>,
- linux-input@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com,
- linux-arm-kernel@lists.infradead.org
-References: <20240403080702.3509288-1-arnd@kernel.org>
- <20240403080702.3509288-8-arnd@kernel.org>
- <Zg0kC6uYFOi-UGXl@smile.fi.intel.com>
+Subject: Re: [PATCH 6/6] iio: adc: ad7173: Add support for AD411x devices
+To: David Lechner <dlechner@baylibre.com>, dumitru.ceclan@analog.com
+Cc: Lars-Peter Clausen <lars@metafoo.de>,
+ Michael Hennerich <Michael.Hennerich@analog.com>,
+ Jonathan Cameron <jic23@kernel.org>, Rob Herring <robh@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>, linux-iio@vger.kernel.org,
+ devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20240401-ad4111-v1-0-34618a9cc502@analog.com>
+ <20240401-ad4111-v1-6-34618a9cc502@analog.com>
+ <CAMknhBFdtv84E_S4wa4UW0pO2yiUEk9=jn=_i4F=b8VHdR6v+w@mail.gmail.com>
 Content-Language: en-US
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- xsFNBFVDQq4BEAC6KeLOfFsAvFMBsrCrJ2bCalhPv5+KQF2PS2+iwZI8BpRZoV+Bd5kWvN79
- cFgcqTTuNHjAvxtUG8pQgGTHAObYs6xeYJtjUH0ZX6ndJ33FJYf5V3yXqqjcZ30FgHzJCFUu
- JMp7PSyMPzpUXfU12yfcRYVEMQrmplNZssmYhiTeVicuOOypWugZKVLGNm0IweVCaZ/DJDIH
- gNbpvVwjcKYrx85m9cBVEBUGaQP6AT7qlVCkrf50v8bofSIyVa2xmubbAwwFA1oxoOusjPIE
- J3iadrwpFvsZjF5uHAKS+7wHLoW9hVzOnLbX6ajk5Hf8Pb1m+VH/E8bPBNNYKkfTtypTDUCj
- NYcd27tjnXfG+SDs/EXNUAIRefCyvaRG7oRYF3Ec+2RgQDRnmmjCjoQNbFrJvJkFHlPeHaeS
- BosGY+XWKydnmsfY7SSnjAzLUGAFhLd/XDVpb1Een2XucPpKvt9ORF+48gy12FA5GduRLhQU
- vK4tU7ojoem/G23PcowM1CwPurC8sAVsQb9KmwTGh7rVz3ks3w/zfGBy3+WmLg++C2Wct6nM
- Pd8/6CBVjEWqD06/RjI2AnjIq5fSEH/BIfXXfC68nMp9BZoy3So4ZsbOlBmtAPvMYX6U8VwD
- TNeBxJu5Ex0Izf1NV9CzC3nNaFUYOY8KfN01X5SExAoVTr09ewARAQABzTRLcnp5c3p0b2Yg
- S296bG93c2tpIDxrcnp5c3p0b2Yua296bG93c2tpQGxpbmFyby5vcmc+wsGUBBMBCgA+FiEE
- m9B+DgxR+NWWd7dUG5NDfTtBYpsFAmI+BxMCGwMFCRRfreEFCwkIBwIGFQoJCAsCBBYCAwEC
- HgECF4AACgkQG5NDfTtBYptgbhAAjAGunRoOTduBeC7V6GGOQMYIT5n3OuDSzG1oZyM4kyvO
- XeodvvYv49/ng473E8ZFhXfrre+c1olbr1A8pnz9vKVQs9JGVa6wwr/6ddH7/yvcaCQnHRPK
- mnXyP2BViBlyDWQ71UC3N12YCoHE2cVmfrn4JeyK/gHCvcW3hUW4i5rMd5M5WZAeiJj3rvYh
- v8WMKDJOtZFXxwaYGbvFJNDdvdTHc2x2fGaWwmXMJn2xs1ZyFAeHQvrp49mS6PBQZzcx0XL5
- cU9ZjhzOZDn6Apv45/C/lUJvPc3lo/pr5cmlOvPq1AsP6/xRXsEFX/SdvdxJ8w9KtGaxdJuf
- rpzLQ8Ht+H0lY2On1duYhmro8WglOypHy+TusYrDEry2qDNlc/bApQKtd9uqyDZ+rx8bGxyY
- qBP6bvsQx5YACI4p8R0J43tSqWwJTP/R5oPRQW2O1Ye1DEcdeyzZfifrQz58aoZrVQq+innR
- aDwu8qDB5UgmMQ7cjDSeAQABdghq7pqrA4P8lkA7qTG+aw8Z21OoAyZdUNm8NWJoQy8m4nUP
- gmeeQPRc0vjp5JkYPgTqwf08cluqO6vQuYL2YmwVBIbO7cE7LNGkPDA3RYMu+zPY9UUi/ln5
- dcKuEStFZ5eqVyqVoZ9eu3RTCGIXAHe1NcfcMT9HT0DPp3+ieTxFx6RjY3kYTGLOwU0EVUNc
- NAEQAM2StBhJERQvgPcbCzjokShn0cRA4q2SvCOvOXD+0KapXMRFE+/PZeDyfv4dEKuCqeh0
- hihSHlaxTzg3TcqUu54w2xYskG8Fq5tg3gm4kh1Gvh1LijIXX99ABA8eHxOGmLPRIBkXHqJY
- oHtCvPc6sYKNM9xbp6I4yF56xVLmHGJ61KaWKf5KKWYgA9kfHufbja7qR0c6H79LIsiYqf92
- H1HNq1WlQpu/fh4/XAAaV1axHFt/dY/2kU05tLMj8GjeQDz1fHas7augL4argt4e+jum3Nwt
- yupodQBxncKAUbzwKcDrPqUFmfRbJ7ARw8491xQHZDsP82JRj4cOJX32sBg8nO2N5OsFJOcd
- 5IE9v6qfllkZDAh1Rb1h6DFYq9dcdPAHl4zOj9EHq99/CpyccOh7SrtWDNFFknCmLpowhct9
- 5ZnlavBrDbOV0W47gO33WkXMFI4il4y1+Bv89979rVYn8aBohEgET41SpyQz7fMkcaZU+ok/
- +HYjC/qfDxT7tjKXqBQEscVODaFicsUkjheOD4BfWEcVUqa+XdUEciwG/SgNyxBZepj41oVq
- FPSVE+Ni2tNrW/e16b8mgXNngHSnbsr6pAIXZH3qFW+4TKPMGZ2rZ6zITrMip+12jgw4mGjy
- 5y06JZvA02rZT2k9aa7i9dUUFggaanI09jNGbRA/ABEBAAHCwXwEGAEKACYCGwwWIQSb0H4O
- DFH41ZZ3t1Qbk0N9O0FimwUCYDzvagUJFF+UtgAKCRAbk0N9O0Fim9JzD/0auoGtUu4mgnna
- oEEpQEOjgT7l9TVuO3Qa/SeH+E0m55y5Fjpp6ZToc481za3xAcxK/BtIX5Wn1mQ6+szfrJQ6
- 59y2io437BeuWIRjQniSxHz1kgtFECiV30yHRgOoQlzUea7FgsnuWdstgfWi6LxstswEzxLZ
- Sj1EqpXYZE4uLjh6dW292sO+j4LEqPYr53hyV4I2LPmptPE9Rb9yCTAbSUlzgjiyyjuXhcwM
- qf3lzsm02y7Ooq+ERVKiJzlvLd9tSe4jRx6Z6LMXhB21fa5DGs/tHAcUF35hSJrvMJzPT/+u
- /oVmYDFZkbLlqs2XpWaVCo2jv8+iHxZZ9FL7F6AHFzqEFdqGnJQqmEApiRqH6b4jRBOgJ+cY
- qc+rJggwMQcJL9F+oDm3wX47nr6jIsEB5ZftdybIzpMZ5V9v45lUwmdnMrSzZVgC4jRGXzsU
- EViBQt2CopXtHtYfPAO5nAkIvKSNp3jmGxZw4aTc5xoAZBLo0OV+Ezo71pg3AYvq0a3/oGRG
- KQ06ztUMRrj8eVtpImjsWCd0bDWRaaR4vqhCHvAG9iWXZu4qh3ipie2Y0oSJygcZT7H3UZxq
- fyYKiqEmRuqsvv6dcbblD8ZLkz1EVZL6djImH5zc5x8qpVxlA0A0i23v5QvN00m6G9NFF0Le
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <Zg0kC6uYFOi-UGXl@smile.fi.intel.com>
+From: "Ceclan, Dumitru" <mitrutzceclan@gmail.com>
+In-Reply-To: <CAMknhBFdtv84E_S4wa4UW0pO2yiUEk9=jn=_i4F=b8VHdR6v+w@mail.gmail.com>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 
-On 03/04/2024 11:40, Andy Shevchenko wrote:
-> On Wed, Apr 03, 2024 at 10:06:25AM +0200, Arnd Bergmann wrote:
->> From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+
+On 01/04/2024 22:45, David Lechner wrote:
+> On Mon, Apr 1, 2024 at 10:10 AM Dumitru Ceclan via B4 Relay
+> <devnull+dumitru.ceclan.analog.com@kernel.org> wrote:
 >>
->> When compile tested with W=1 on x86_64 with driver as built-in:
+>> From: Dumitru Ceclan <dumitru.ceclan@analog.com>
 >>
->>   stmpe-ts.c:371:34: error: unused variable 'stmpe_ts_ids' [-Werror,-Wunused-const-variable]
-> 
-> ...
-> 
->> -static const struct of_device_id stmpe_ts_ids[] = {
->> +static const struct of_device_id stmpe_ts_ids[] __maybe_unused = {
-> 
-> __maybe_unused? 
-> 
-> Why not adding it into .driver as you have done in another patch in this series?
 
-Because there is no benefit in this. This is instantiated by MFD, so the
-only thing you need is entry for module loading.
+..
 
-Best regards,
-Krzysztof
+>>  #define AD7175_2_ID                    0x0cd0
+>>  #define AD7172_4_ID                    0x2050
+>>  #define AD7173_ID                      0x30d0
+>> +#define AD4111_ID                      0x30d0
+>> +#define AD4112_ID                      0x30d0
+>> +#define AD4114_ID                      0x30d0
+> 
+> It might make it a bit more obvious that not all chips have a unique
+> ID if we rename AD7173_ID to AD7173_AD4111_AD4112_AD4114_ID rather
+> than introducing multiple macros with the same value.
+> 
+> Or leave it as AD7173_ID to keep it short and add a comment where it
+> is used with 411x chips in ad7173_device_info[].
+> 
 
+Sure
+
+>> +#define AD4116_ID                      0x34d0
+>> +#define AD4115_ID                      0x38d0
+>>  #define AD7175_8_ID                    0x3cd0
+>>  #define AD7177_ID                      0x4fd0
+>>  #define AD7173_ID_MASK                 GENMASK(15, 4)
+
+..
+
+>>  struct ad7173_device_info {
+>>         const unsigned int *sinc5_data_rates;
+>>         unsigned int num_sinc5_data_rates;
+>>         unsigned int odr_start_value;
+>> +       unsigned int num_inputs_with_divider;
+>>         unsigned int num_channels;
+>>         unsigned int num_configs;
+>>         unsigned int num_inputs;
+> 
+> Probably a good idea to change num_inputs to num_voltage_inputs so it
+> isn't confused with the total number of inputs.
+> 
+> Similarly num_voltage_inputs_with_divider instead of num_inputs_with_divider.
+> 
+> Also could use a comment to make it clear if num_voltage_inputs
+> includes num_voltage_inputs_with_divider or not. And that it doesn't
+> include VINCOM.
+> 
+
+Alright for these 3 statements above.
+
+> Probably also need some flag here to differentiate ADCINxx voltage
+> inputs on AD4116.
+> 
+
+That is the purpose of num_inputs_with_divider. Mangled some changes
+when splitting into individual patches. Will include in V2.
+"
+if (ain[1] == AD411X_VCOM_INPUT &&
+		    ain[0] >= st->info->num_inputs_with_divider)
+			return dev_err_probe(dev, -EINVAL,
+		"VCOM must be paired with inputs having divider.\n");
+"
+
+..
+
+>>
+>> +static unsigned int ad4111_current_channel_config[] = {
+>> +       [AD4111_CURRENT_IN0P_IN0N] = 0x1E8,
+>> +       [AD4111_CURRENT_IN1P_IN1N] = 0x1C9,
+>> +       [AD4111_CURRENT_IN2P_IN2N] = 0x1AA,
+>> +       [AD4111_CURRENT_IN3P_IN3N] = 0x18B,
+>> +};
+> 
+> As mentioned in the DT bindings review, it would make more sense to
+> just use the datasheet numbers for the current input channels in the
+> diff-channels DT property, then we don't need this lookup table.
+>
+Yet, the datasheet does not specify the numbers, just a single bitfield
+for each pair. It is too much of a churn to need to decode that bitfield
+into individual values when the user just wants to select a single pair.
+
+..
+
+>> +               case IIO_CURRENT:
+>> +                       *val = ad7173_get_ref_voltage_milli(st, ch->cfg.ref_sel);
+>> +                       *val /= AD4111_SHUNT_RESISTOR_OHM;
+>> +                       *val2 = chan->scan_type.realbits - !!(ch->cfg.bipolar);
+> 
+> Static analysis tools like to complain about using bool as int.
+> Probably more clear to write it as (ch->cfg.bipolar ? 1 : 0) anyway.
+> 
+Maybe it does not apply here, but i followed this advice:
+
+Andy Shevchenko V1 of AD7173 (named initially ad717x)
+"
+> +	return (bool)(value & mask);
+
+This is weird. You have int which you get from bool, wouldn't be better
+to use
+!!(...) as other GPIO drivers do?
+
+"
+
+
+>> +               case IIO_CURRENT:
+>>                         *val = -BIT(chan->scan_type.realbits - 1);
+> 
+> Expecting a special case here, at least when ADCIN15 is configured for
+> pseudo-differential inputs.
+> 
+
+And what configuration would that be?
+The only configurable part is the BI_UNIPOLARx bit in the channel
+register, which is addressed here.
+
+There seems to be a confusion similar to what we had with single-ended
+channels. The ADC is differential. Pseudo-differential in this datasheet
+just means that you wired a fixed voltage(higher than 0) to the negative
+analog input.
+
+ Which you can also do on the other inputs with a divider.
+
+..
+
+>> -               chan_st_priv->ain = AD7173_CH_ADDRESS(ain[0], ain[1]);
+>> +               if (reg >= AD4111_CURRENT_CHAN_CUTOFF) {
+>> +                       chan->type = IIO_CURRENT;
+>> +                       chan->channel = ain[0];
+>> +                       chan_st_priv->ain = ad4111_current_channel_config[ain[0]];
+>> +               } else {
+>> +                       chan->channel = ain[0];
+>> +                       chan->channel2 = ain[1];
+>> +                       chan->differential = true;
+> 
+> Expecting chan->differential = false when ADCIN15 is configured for
+> pseudo-differential inputs.
+> 
+> Also, perhaps missed in previous reviews, I would expect
+> chan->differential = false when channels are used as single-ended.
+>
+Why?
+Also, how would one detect if you are using single-ended channels?
+
+The ADC is still differential. Single ended is represented as connecting
+AVSS(or another fixed voltage) and only letting the AIN+ input to fluctuate.
+
+In the IIO framework the only difference this makes is in the naming of
+the channel:
+ voltage0-voltage1 vs just voltage0
+
+All channels are differential. Pseudo differential: still differential.
 
