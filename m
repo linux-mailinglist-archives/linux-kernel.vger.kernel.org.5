@@ -1,130 +1,95 @@
-Return-Path: <linux-kernel+bounces-130485-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-130486-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id DA2C48978CC
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 21:07:15 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id F058C8978D7
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 21:12:41 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6A3581F218FD
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 19:07:15 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 4B9D1B23EDB
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 19:10:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B1CD11552E0;
-	Wed,  3 Apr 2024 19:07:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4675C154C11;
+	Wed,  3 Apr 2024 19:10:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="ab29Awgi"
-Received: from out-188.mta0.migadu.com (out-188.mta0.migadu.com [91.218.175.188])
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="xShiaKJt";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="yQTIGrSR"
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 68C2E15099C
-	for <linux-kernel@vger.kernel.org>; Wed,  3 Apr 2024 19:07:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.188
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 24853154BE8;
+	Wed,  3 Apr 2024 19:10:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712171225; cv=none; b=aDOjOZPC9ahoQqW7jjFpqLJftCYKbe3jRcH13as1s3vtMX6klzmHRqrFxL8xdmblKMvy90ETDCIJKl25OihF/S35XV7JhFFMVquyK6ktfH+0aPWsVX/9Ck+WjNKTfvmqevBkimhgQiz62R21GihJ8O3QY5PtXG+g3/goiHZRi+I=
+	t=1712171404; cv=none; b=W/iUOQEB1uwwdbPSld8qxzu8u/7TUHqTRtlu3v9lQjJWfJpBcJS1NaBPq6ceViNh6P6OmSG//NU2gJQ4SzxFHGwvPAtEiCAH9vBlIwY0lqKcQRxZj+6wOWDTNmdAJIvrSoF+x1WIb4WqdGb45d+0Tvo+smKnpCWN9KJ6lehXjPk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712171225; c=relaxed/simple;
-	bh=DmbUJaU7fvPvxuhQjMUT+PZdyRm/OezzMypWogtG338=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=F148U1L8NOP7I40cBQde6wap4+4hQEj0/jXYbulnn1/eDM1MKXMVHQgJb1xiBnPwkzxK+07QLnV0SKXr/6rzEOxXeZcyXIBvy5DAAY7/Or9YQq1gUikOSTgKU+RPt8YASDxRXC6Sv216HCxNh67QjRz/Z2IhimPXqY7Tw/N9HSI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=ab29Awgi; arc=none smtp.client-ip=91.218.175.188
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Date: Wed, 3 Apr 2024 15:06:56 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1712171220;
+	s=arc-20240116; t=1712171404; c=relaxed/simple;
+	bh=pzIK4B66bc749NQfKqD2bPVYkt2kauVqKBN7X+SGq3E=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=TaXQj+65uaiikNzYDAYXElADaBjuj0aYe9TVteR12RGRwdGbYaHuyZDwo/btgGPCOquXXOQqN8YyFrqQvLhDwnPs9lzbvvaiyVXngAfd6UuunuoM6nVD8NxC4I03lELXb3A4a8aU6ql0f9k6ij5tipDw0+DO9WCX2ErnbEtyNjo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=xShiaKJt; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=yQTIGrSR; arc=none smtp.client-ip=193.142.43.55
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
+From: Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020; t=1712171400;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=MPufZuIJuTLIDu10Urps9fsUQXIz9rznyNkrrZnyWEM=;
-	b=ab29AwgidGYXl/9pYqDFJfdDItXW7t4LUhM3Qj9YVwhcTDaF8J7UEropu/nN8V+SnlrPp/
-	+SrSQ2f18s9M0jQ8SgPaaB8J5ogz82i+9eN08TaGx4gkgjN0F4Euhr/MbcHZN6rMiDbbtt
-	T9FLbyOJvoCIqIyAx5v/kURkMzbxliU=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Kent Overstreet <kent.overstreet@linux.dev>
-To: Tejun Heo <tj@kernel.org>
-Cc: Jan Kara <jack@suse.cz>, Kemeng Shi <shikemeng@huaweicloud.com>, 
-	akpm@linux-foundation.org, willy@infradead.org, bfoster@redhat.com, dsterba@suse.com, 
-	mjguzik@gmail.com, dhowells@redhat.com, linux-kernel@vger.kernel.org, 
-	linux-mm@kvack.org, linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH v2 0/6] Improve visibility of writeback
-Message-ID: <qemects2mglzjdig7y5uufhoqdhoccwlrwrtfhe4jy6gbadj6n@dnnbzymtxpyj>
-References: <qyzaompqkxwdquqtofmqghvpi4m3twkrawn26rxs56aw4n2j3o@kt32f47dkjtu>
- <ZgXFrabAqunDctVp@slm.duckdns.org>
- <n2znv2ioy62rrrzz4nl2x7x5uighuxf2fgozhpfdkj6ialdiqe@a3mnfez7mitl>
- <ZgXJH9XQNqda7fpz@slm.duckdns.org>
- <wgec7wbhdn7ilvwddcalkbgxzjutp6h7dgfrijzffb64pwpksz@e6tqcybzfu2f>
- <ZgXPZ1uJSUCF79Ef@slm.duckdns.org>
- <qv3vv6355aw5fkzw5yvuwlnyceypcsfl5kkcrvlipxwfl3nuyg@7cqwaqpxn64t>
- <ZgXXKaZlmOWC-3mn@slm.duckdns.org>
- <20240403162716.icjbicvtbleiymjy@quack3>
- <Zg2jdcochRXNdDZX@slm.duckdns.org>
+	bh=pzIK4B66bc749NQfKqD2bPVYkt2kauVqKBN7X+SGq3E=;
+	b=xShiaKJtyR1gQrMBFejJXh9EOxZcQKqLRlqUo2VQSNyezhFjw8uL7AgQVFFH3WoL8UWVoM
+	qqUbWmOt5mj7xv+xIIlInxnDutryQDoqKhi5UaxGJfp76YuXAoBb3PoIvdcL0ctW6D/KoS
+	8KOCCzs68MUSN4ArjooctEz4Fa3elbUWdBF1j8MIzrtezNp3EWgUqixRTFk8TMs3U/ygR1
+	Lx/T82SO6tQXwLAOb2sNpdKoxFe0QY8FToetMe5ASjJXWTJW+CviQKSAyKq7zvO1ci2aRb
+	R+tfAvHyWCd/4SnXMxiT0h/An0GqR2l7yUeNNoSymJbC/q2By6Qput9Hss7KTw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020e; t=1712171400;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=pzIK4B66bc749NQfKqD2bPVYkt2kauVqKBN7X+SGq3E=;
+	b=yQTIGrSRROvqb/a+uelr9JkgAlV+FG5YEN1BnUHIl/D0lqJpMHfdH1p9uU2wBTSg+ans0g
+	Vl3NTnuxa6I1+TBA==
+To: John Stultz <jstultz@google.com>
+Cc: Oleg Nesterov <oleg@redhat.com>, Marco Elver <elver@google.com>, Peter
+ Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@kernel.org>, "Eric W.
+ Biederman" <ebiederm@xmission.com>, linux-kernel@vger.kernel.org,
+ linux-kselftest@vger.kernel.org, Dmitry Vyukov <dvyukov@google.com>,
+ kasan-dev@googlegroups.com, Edward Liaw <edliaw@google.com>, Carlos Llamas
+ <cmllamas@google.com>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Subject: Re: [PATCH v6 1/2] posix-timers: Prefer delivery of signals to the
+ current thread
+In-Reply-To: <CANDhNCoGRnXLYRzQWpy2ZzsuAXeraqT4R13tHXmiUtGzZRD3gA@mail.gmail.com>
+References: <87sf02bgez.ffs@tglx> <87r0fmbe65.ffs@tglx>
+ <CANDhNCoGRnXLYRzQWpy2ZzsuAXeraqT4R13tHXmiUtGzZRD3gA@mail.gmail.com>
+Date: Wed, 03 Apr 2024 21:09:59 +0200
+Message-ID: <87o7aqb6uw.ffs@tglx>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <Zg2jdcochRXNdDZX@slm.duckdns.org>
-X-Migadu-Flow: FLOW_OUT
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-On Wed, Apr 03, 2024 at 08:44:05AM -1000, Tejun Heo wrote:
-> Hello,
-> 
-> On Wed, Apr 03, 2024 at 06:27:16PM +0200, Jan Kara wrote:
-> > Yeah, BPF is great and I use it but to fill in some cases from practice,
-> > there are sysadmins refusing to install bcc or run your BPF scripts on
-> > their systems due to company regulations, their personal fear, or whatever.
-> > So debugging with what you can achieve from a shell is still the thing
-> > quite often.
-> 
-> Yeah, I mean, this happens with anything new. Tracing itself took quite a
-> while to be adopted widely. BPF, bcc, bpftrace are all still pretty new and
-> it's likely that the adoption line will keep shifting for quite a while.
-> Besides, even with all the new gizmos there definitely are cases where good
-> ol' cat interface makes sense.
-> 
-> So, if the static interface makes sense, we add it but we should keep in
-> mind that the trade-offs for adding such static infrastructure, especially
-> for the ones which aren't *widely* useful, are rather quickly shfiting in
-> the less favorable direction.
+On Wed, Apr 03 2024 at 11:16, John Stultz wrote:
+> On Wed, Apr 3, 2024 at 9:32=E2=80=AFAM Thomas Gleixner <tglx@linutronix.d=
+e> wrote:
+> Thanks for this, Thomas!
+>
+> Just FYI: testing with 6.1, the test no longer hangs, but I don't see
+> the SKIP behavior. It just fails:
+> not ok 6 check signal distribution
+> # Totals: pass:5 fail:1 xfail:0 xpass:0 skip:0 error:0
+>
+> I've not had time yet to dig into what's going on, but let me know if
+> you need any further details.
 
-A lot of our static debug infrastructure isn't that useful because it
-just sucks.
+That's weird. I ran it on my laptop with 6.1.y ...
 
-Every time I hit a sysfs or procfs file that's just a single integer,
-and nothing else, when clearly there's internal structure and
-description that needs to be there I die a little inside. It's lazy and
-amateurish.
-
-I regularly debug things in bcachefs over IRC in about 5-10 minutes of
-asking to check various files and pastebin them - this is my normal
-process, I pretty much never have to ssh and touch the actual machines.
-
-That's how it should be if you just make a point of making your internal
-state easy to view and introspect, but when I'm debugging issues that
-run into the wider block layer, or memory reclaim, we often hit a wall.
-
-Writeback throttling was buggy for _months_, no visibility or
-introspection or concerns for debugging, and that's a small chunk of
-code. io_uring - had to disable it. I _still_ have people bringing
-issues to me that are clearly memory reclaim related but I don't have
-the tools.
-
-It's not like any of this code exports much in the way of useful
-tracepoints either, but tracepoints often just aren't what you want;
-what you want just to be able to see internal state (_without_ having to
-use a debugger, because that's completely impractical outside highly
-controlled environments) - and tracing is also never the first thing you
-want to reach for when you have a user asking you "hey, this thing went
-wonky, what's it doing?" - tracing automatically turns it into a multi
-step process of decide what you want to look at, run the workload more
-to collect data, iterate.
-
-Think more about "what would make code easier to debug" and less about
-"how do I shove this round peg through the square tracing/BPF slot".
-There's _way_ more we could be doing that would just make our lives
-easier.
+What kind of machine is that?
 
