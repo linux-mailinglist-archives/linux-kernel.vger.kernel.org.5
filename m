@@ -1,275 +1,164 @@
-Return-Path: <linux-kernel+bounces-130189-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-130190-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 41C58897529
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 18:24:55 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 11C7789752D
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 18:25:45 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C4DDD1F2A2C6
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 16:24:54 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3B29FB27592
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 16:25:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 79E2B152167;
-	Wed,  3 Apr 2024 16:24:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DC15C150982;
+	Wed,  3 Apr 2024 16:25:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="I7M5G9qT"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="sAjrqesj"
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8AF4414F9F5
-	for <linux-kernel@vger.kernel.org>; Wed,  3 Apr 2024 16:24:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BD32814F122;
+	Wed,  3 Apr 2024 16:25:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.1
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712161466; cv=none; b=ej+LewFuSEGVNqy/j0VSlGdM3FN6vc99CtXTlXNuHljzAqY97ARSVFxftP496a3sNAi4LIhNaopPmN42Y+Zn04nwfLwB1BKmDRvzLzIO02yBwQe9+ez84rmbqSfcAfVj31AiGTYOIpd3JuTkDqleAwd5XFJ+Q6nQHTiL0HZaikk=
+	t=1712161523; cv=none; b=cKN9TTT8jhL+740h6rFhAvItUP+ioKeWA4gm2MQfTGq+ZUCwPZDovF99Rr6+Ki7se9ma9BIgC8r96/Tkj707v+PPUAcgGyG0v2xfm990y3DaftR0MD9QJxYVMIxo41qYmTKFNopPKV0U98YXA+W6Din73GWZOdS93K04IDgHTaM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712161466; c=relaxed/simple;
-	bh=PGkvPz54sw6lbBSWwVDq6/wxpQ7dugoTXvPiOFQUkMM=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=PAmaX8+3flotda+yYMd/caeQUmKR7w1S5C32k7w/iMlDGCn1ahvkPazDGi5kOFaLH2aBJZxqDQ0qTAjZYNVL69NCNdrznmi0ah1h1/9qt4xfNcFjRPfSJNWrzUtj5paK0lTgWDlXOKzkE8aHeTi4BEgVJdSIVuu1SMO1iSro9rk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=I7M5G9qT; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DF362C43399;
-	Wed,  3 Apr 2024 16:24:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712161466;
-	bh=PGkvPz54sw6lbBSWwVDq6/wxpQ7dugoTXvPiOFQUkMM=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=I7M5G9qT/o8LPIZnvTjoSIlf/PCIustxS8/SolfShzjZ4Rjbf/qtRuPXxto/3i0/i
-	 OFN947uUt7rocVm90HJ5MdUD9tKokjO8/QkIrajOn+83vuFaiuxOidNGKsWCtN4RT3
-	 AwbbcM306JjnnuEQNFmyPidjQtE1nwbtiHbx8XBH2N6tTo1SHdTVurS6UhX7EC/aM8
-	 EL2/e3Mc9GJDg1VM3SAmt9jU+32SlIXaYHf4QlbUK6Ay/cznJth69bdnF9jhwmv5/Q
-	 +JeI5e9XJSx4O7PLUIjlwdW26+g6beh1rz348T4WGyyOtHOzTmoLzDLnmRzsPBARep
-	 CjKscakTNnxwA==
-Date: Wed, 3 Apr 2024 18:24:23 +0200
-From: Frederic Weisbecker <frederic@kernel.org>
-To: Anna-Maria Behnsen <anna-maria@linutronix.de>
-Cc: Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@kernel.org>,
-	LKML <linux-kernel@vger.kernel.org>
-Subject: [PATCH v2] timers/migration: Fix ignored event due to missing CPU
- update
-Message-ID: <Zg2Ct6M2RJAYHgCB@localhost.localdomain>
-References: <20240401214859.11533-1-frederic@kernel.org>
- <87r0fo9jmw.fsf@somnus>
+	s=arc-20240116; t=1712161523; c=relaxed/simple;
+	bh=M2KSxX/qzBohwPJ02hVjKtTS/u8IGLEnJlpOLc775+c=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=A4uFRn7AaCaSPnXdZuoAlQt2XCyqIexTOLALzFuOX8qsxVeg0HABotusZAqEfXgfyDMEgMSdi81hvMZzPXyQKXsvOSswQx7weSnB7u9qJXj4aZSx3zVrsX4gC/9pEwEp+vbQ5sEIRT/fsFMmCBfquI1S4+O2L5X7IisxvHD9MvM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=sAjrqesj; arc=none smtp.client-ip=148.163.156.1
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
+Received: from pps.filterd (m0353728.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 433G2mnG017749;
+	Wed, 3 Apr 2024 16:25:17 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
+ from : to : cc : date : in-reply-to : references : content-type :
+ content-transfer-encoding : mime-version; s=pp1;
+ bh=UqaB+wRnNOYEb2m53SzDiYd2Jvl8mk/TbCmsEno9obA=;
+ b=sAjrqesjJ6yYZeiFMFjQW7W9xciDm/RAp2G44FYgyrNmsN74i9KhwHiFKZGvi+XZq39V
+ eUn4H96aidg69kGQWvz9UdlDYiNz5tVLnueLVGzyASv+scU0wWR7qW9r/CghFpxrD5ai
+ AOL01EG/FVBYwfoNH2y7XmRNqADoqlIxu6wUgy+a6f40p1318e15Mus+LGOVbGqcG9xa
+ gGxFeTNqvRt8/v14QV2flcmpHQrKfixx3Sn4wdTMrOJawZlXFyhsL41dutaEVBY/U6Ay
+ E27WUkn4sPhYtWug43OYjTR5p34ojzrUiWUeBwW0x1x1RKKE4KuhX6yklpUSL4md1Wt5 6g== 
+Received: from pps.reinject (localhost [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3x9a9b02jr-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 03 Apr 2024 16:25:16 +0000
+Received: from m0353728.ppops.net (m0353728.ppops.net [127.0.0.1])
+	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 433GPGRJ023481;
+	Wed, 3 Apr 2024 16:25:16 GMT
+Received: from ppma21.wdc07v.mail.ibm.com (5b.69.3da9.ip4.static.sl-reverse.com [169.61.105.91])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3x9a9b02jh-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 03 Apr 2024 16:25:16 +0000
+Received: from pps.filterd (ppma21.wdc07v.mail.ibm.com [127.0.0.1])
+	by ppma21.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 433EwYjc025753;
+	Wed, 3 Apr 2024 16:25:15 GMT
+Received: from smtprelay04.fra02v.mail.ibm.com ([9.218.2.228])
+	by ppma21.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3x6x2peegv-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 03 Apr 2024 16:25:14 +0000
+Received: from smtpav01.fra02v.mail.ibm.com (smtpav01.fra02v.mail.ibm.com [10.20.54.100])
+	by smtprelay04.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 433GP9PY25231958
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Wed, 3 Apr 2024 16:25:11 GMT
+Received: from smtpav01.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 1C71F20065;
+	Wed,  3 Apr 2024 16:25:09 +0000 (GMT)
+Received: from smtpav01.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 02BE52004B;
+	Wed,  3 Apr 2024 16:25:08 +0000 (GMT)
+Received: from [9.171.60.51] (unknown [9.171.60.51])
+	by smtpav01.fra02v.mail.ibm.com (Postfix) with ESMTP;
+	Wed,  3 Apr 2024 16:25:07 +0000 (GMT)
+Message-ID: <3122eece5b484abcf8d23f85d6c18c36f0b939ff.camel@linux.ibm.com>
+Subject: Re: [RFC PATCH net-next v5 04/11] net/smc: implement some
+ unsupported operations of loopback-ism
+From: Gerd Bayer <gbayer@linux.ibm.com>
+To: Wen Gu <guwen@linux.alibaba.com>, wintera@linux.ibm.com,
+        twinkler@linux.ibm.com, hca@linux.ibm.com, gor@linux.ibm.com,
+        agordeev@linux.ibm.com, davem@davemloft.net, edumazet@google.com,
+        kuba@kernel.org, pabeni@redhat.com, wenjia@linux.ibm.com,
+        jaka@linux.ibm.com
+Cc: borntraeger@linux.ibm.com, svens@linux.ibm.com, alibuda@linux.alibaba.com,
+        tonylu@linux.alibaba.com, linux-kernel@vger.kernel.org,
+        linux-s390@vger.kernel.org, netdev@vger.kernel.org
+Date: Wed, 03 Apr 2024 18:25:07 +0200
+In-Reply-To: <20240324135522.108564-5-guwen@linux.alibaba.com>
+References: <20240324135522.108564-1-guwen@linux.alibaba.com>
+	 <20240324135522.108564-5-guwen@linux.alibaba.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.50.4 (3.50.4-2.fc39app4) 
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <87r0fo9jmw.fsf@somnus>
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: e-maJrEYK3CrbN1gUYBUw5wqMTnGJHjI
+X-Proofpoint-ORIG-GUID: y1xl521ypI8S9m31iHqSuVR8sDJBb3t1
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-04-03_16,2024-04-03_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 adultscore=0
+ phishscore=0 spamscore=0 mlxlogscore=999 malwarescore=0 mlxscore=0
+ suspectscore=0 lowpriorityscore=0 priorityscore=1501 impostorscore=0
+ bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2403210000 definitions=main-2404030112
 
-Le Tue, Apr 02, 2024 at 11:52:23AM +0200, Anna-Maria Behnsen a écrit :
-> Frederic Weisbecker <frederic@kernel.org> writes:
-> 
-> > When a group event is updated with its expiry unchanged but a different
-> > CPU, that target change may go unnoticed and the event may be propagated
-> > up with a stale CPU value. The following depicts a scenario that has
-> > been actually observed:
-> 
-> urgh...
-> 
-> >
-> > Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
-> > ---
-> >  kernel/time/timer_migration.c | 5 ++++-
-> >  1 file changed, 4 insertions(+), 1 deletion(-)
-> >
-> > diff --git a/kernel/time/timer_migration.c b/kernel/time/timer_migration.c
-> > index c63a0afdcebe..90786bb9a607 100644
-> > --- a/kernel/time/timer_migration.c
-> > +++ b/kernel/time/timer_migration.c
-> > @@ -762,8 +762,11 @@ bool tmigr_update_events(struct tmigr_group *group, struct tmigr_group *child,
-> >  	 * queue when the expiry time changed only or when it could be ignored.
-> >  	 */
-> >  	if (timerqueue_node_queued(&evt->nextevt)) {
-> > -		if ((evt->nextevt.expires == nextexp) && !evt->ignore)
-> > +		if ((evt->nextevt.expires == nextexp) && !evt->ignore) {
-> > +			if (evt->cpu != first_childevt->cpu)
-> > +				evt->cpu = first_childevt->cpu;
-> 
-> Why not just unconditionally overwriting the evt->cpu value here?
+On Sun, 2024-03-24 at 21:55 +0800, Wen Gu wrote:
+> This implements some operations that loopback-ism does not support
+> currently:
+>  - vlan operations, since there is no strong use-case for it.
+>  - signal_event operations, since there is no event to be processed=20
+> by the loopback-ism device.
 
-Right! See below:
+Hi Wen,
 
----
-From d038dad7345398a2f6671a3cda98a48805f9eba3 Mon Sep 17 00:00:00 2001
-From: Frederic Weisbecker <frederic@kernel.org>
-Date: Mon, 1 Apr 2024 23:48:59 +0200
-Subject: [PATCH v2] timers/migration: Fix ignored event due to missing CPU update
+I wonder if the these operations that are not supported by loopback-ism
+should rather be marked "optional" in the struct smcd_ops, and the
+calling code should call these only when they are implemented.
 
-When a group event is updated with its expiry unchanged but a different
-CPU, that target change may go unnoticed and the event may be propagated
-up with a stale CPU value. The following depicts a scenario that has
-been actually observed:
+Of course this would mean more changes to net/smc/smc_core.c - but
+loopback-ism could omit these "boiler-plate" functions.
 
-                       [GRP2:0]
-                   migrator = GRP1:1
-                   active   = GRP1:1
-                   nextevt  = TGRP1:0 (T0)
-                    /              \
-               [GRP1:0]           [GRP1:1]
-            migrator = NONE       [...]
-            active   = NONE
-            nextevt  = TGRP0:0 (T0)
-            /           \
-        [GRP0:0]       [...]
-      migrator = NONE
-      active   = NONE
-      nextevt  = T0
-      /         \
-    0 (T0)       1 (T1)
-    idle         idle
+> =C2=A0
+> +static int smc_lo_add_vlan_id(struct smcd_dev *smcd, u64 vlan_id)
+> +{
+> +	return -EOPNOTSUPP;
+> +}
+> +
+> +static int smc_lo_del_vlan_id(struct smcd_dev *smcd, u64 vlan_id)
+> +{
+> +	return -EOPNOTSUPP;
+> +}
+> +
+> +static int smc_lo_set_vlan_required(struct smcd_dev *smcd)
+> +{
+> +	return -EOPNOTSUPP;
+> +}
+> +
+> +static int smc_lo_reset_vlan_required(struct smcd_dev *smcd)
+> +{
+> +	return -EOPNOTSUPP;
+> +}
+> +
+> +static int smc_lo_signal_event(struct smcd_dev *dev, struct smcd_gid
+> *rgid,
+> +			=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 u32 trigger_irq, u32 event_code,=
+ u64
+> info)
+> +{
+> +	return 0;
+> +}
+> +
 
-0) The hierarchy has 3 levels. The left part (GRP1:0) is all idle,
-including CPU 0 and CPU 1 which have a timer each: T0 and T1. They have
-the same expiry value.
+Just a pattern that I saw elsewhere in the kernel...
 
-                       [GRP2:0]
-                   migrator = GRP1:1
-                   active   = GRP1:1
-                   nextevt  = KTIME_MAX
-                    /              \
-               [GRP1:0]           [GRP1:1]
-            migrator = NONE       [...]
-            active   = NONE
-            nextevt  = TGRP0:0 (T0)
-            /           \
-        [GRP0:0]       [...]
-      migrator = NONE
-      active   = NONE
-      nextevt  = T0
-      /         \
-    0 (T0)       1 (T1)
-    idle         idle
-
-1) The migrator in GRP1:1 handles remotely T0. The event is dequeued
-from the top and T0 executed.
-
-                       [GRP2:0]
-                   migrator = GRP1:1
-                   active   = GRP1:1
-                   nextevt  = KTIME_MAX
-                    /              \
-               [GRP1:0]           [GRP1:1]
-            migrator = NONE       [...]
-            active   = NONE
-            nextevt  = TGRP0:0 (T0)
-            /           \
-        [GRP0:0]       [...]
-      migrator = NONE
-      active   = NONE
-      nextevt  = T1
-      /         \
-    0            1 (T1)
-    idle         idle
-
-2) The migrator in GRP1:1 fetches the next timer for CPU 0 and finds
-none. But it updates the events from its groups, starting with GRP0:0
-which now has T1 as its next event. So far so good.
-
-                       [GRP2:0]
-                   migrator = GRP1:1
-                   active   = GRP1:1
-                   nextevt  = KTIME_MAX
-                    /              \
-               [GRP1:0]           [GRP1:1]
-            migrator = NONE       [...]
-            active   = NONE
-            nextevt  = TGRP0:0 (T0)
-            /           \
-        [GRP0:0]       [...]
-      migrator = NONE
-      active   = NONE
-      nextevt  = T1
-      /         \
-    0            1 (T1)
-    idle         idle
-
-3) The migrator in GRP1:1 proceeds upward and updates the events in
-GRP1:0. The child event TGRP0:0 is found queued with the same expiry
-as before. And therefore it is left unchanged. However the target CPU
-is not the same but that fact is ignored so TGRP0:0 still points to
-CPU 0 when it should point to CPU 1.
-
-                       [GRP2:0]
-                   migrator = GRP1:1
-                   active   = GRP1:1
-                   nextevt  = TGRP1:0 (T0)
-                    /              \
-               [GRP1:0]           [GRP1:1]
-            migrator = NONE       [...]
-            active   = NONE
-            nextevt  = TGRP0:0 (T0)
-            /           \
-        [GRP0:0]       [...]
-      migrator = NONE
-      active   = NONE
-      nextevt  = T1
-      /         \
-    0            1 (T1)
-    idle         idle
-
-4) The propagation has reached the top level and TGRP1:0, having TGRP0:0
-as its first event, also wrongly points to CPU 0. TGRP1:0 is added to
-the top level group.
-
-                       [GRP2:0]
-                   migrator = GRP1:1
-                   active   = GRP1:1
-                   nextevt  = KTIME_MAX
-                    /              \
-               [GRP1:0]           [GRP1:1]
-            migrator = NONE       [...]
-            active   = NONE
-            nextevt  = TGRP0:0 (T0)
-            /           \
-        [GRP0:0]       [...]
-      migrator = NONE
-      active   = NONE
-      nextevt  = T1
-      /         \
-    0            1 (T1)
-    idle         idle
-
-5) The migrator in GRP1:1 dequeues the next event in top level pointing
-to CPU 0. But since it actually doesn't see any real event in CPU 0, it
-early returns.
-
-6) T1 is left unhandled until either CPU 0 or CPU 1 wake up.
-
-Some other bad scenario may involve trees with just two levels.
-
-Fix this with unconditionally updating the CPU of the child event before
-considering to early return while updating a queued event with an
-unchanged expiry value.
-
-Fixes: 7ee988770326 ("timers: Implement the hierarchical pull model")
-Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
----
- kernel/time/timer_migration.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
-
-diff --git a/kernel/time/timer_migration.c b/kernel/time/timer_migration.c
-index c63a0afdcebe..e3075e40cb43 100644
---- a/kernel/time/timer_migration.c
-+++ b/kernel/time/timer_migration.c
-@@ -762,8 +762,11 @@ bool tmigr_update_events(struct tmigr_group *group, struct tmigr_group *child,
- 	 * queue when the expiry time changed only or when it could be ignored.
- 	 */
- 	if (timerqueue_node_queued(&evt->nextevt)) {
--		if ((evt->nextevt.expires == nextexp) && !evt->ignore)
-+		if ((evt->nextevt.expires == nextexp) && !evt->ignore) {
-+			/* Make sure not to miss a new CPU event with the same expiry */
-+			evt->cpu = first_childevt->cpu;
- 			goto check_toplvl;
-+		}
- 
- 		if (!timerqueue_del(&group->events, &evt->nextevt))
- 			WRITE_ONCE(group->next_expiry, KTIME_MAX);
--- 
-2.44.0
-
+Thanks,
+Gerd
 
