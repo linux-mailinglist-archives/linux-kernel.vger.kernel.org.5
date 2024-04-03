@@ -1,149 +1,153 @@
-Return-Path: <linux-kernel+bounces-130446-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-130448-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id BBD55897843
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 20:30:42 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B13C6897848
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 20:32:03 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5A2F21F21F9B
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 18:30:42 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6C6EC28276D
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 18:32:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AF427153BED;
-	Wed,  3 Apr 2024 18:30:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8D915153BCE;
+	Wed,  3 Apr 2024 18:31:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="O4l5Q98X"
-Received: from mail-pf1-f201.google.com (mail-pf1-f201.google.com [209.85.210.201])
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="wUg0FBYi"
+Received: from mail-il1-f176.google.com (mail-il1-f176.google.com [209.85.166.176])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8AB5E53A7
-	for <linux-kernel@vger.kernel.org>; Wed,  3 Apr 2024 18:30:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 68F4C1D54B
+	for <linux-kernel@vger.kernel.org>; Wed,  3 Apr 2024 18:31:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712169031; cv=none; b=uVOQBd1F1LQSSk1ZNsyWQbCAY2HAlcBHJjh+54ou9rrLcGKa0wF0rdUMrlXmeRb7DRJNB48PDnlZpJ1Nc5hX8yBJj+d13VfBkN0Pm7/e8ZWIRUoHQxIy6hUhB73729KxCjnQZNWysTcopaByUYUx9yjrFDSKiDqT2c8ZWX4JPsQ=
+	t=1712169113; cv=none; b=teqPrzGVD3QymasnM4LVut9/TKGpWg60D0o/OU7HjRbUNfKUiJ0GURrbqUzIaVMdDG2rRpvotlnVRMIfhXTvXjhCBpsWGyLBbn35bn5QplhBrTfYp1hIc0LPdyHHEKcyW+GNR8yZ5IQURj6a4EHb9K3MzhnFlNnTj3KG/0n5dRQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712169031; c=relaxed/simple;
-	bh=3+9lMpILcT4GrzjklqZThP0A8O5Au3Kt8WUWoV+QX18=;
-	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=RmkBaZjR+8Zrm1T0xKMj6aNYaedRxHf+Iy9OxPZ0iOY+VeugbIcxuI6o2OWV/W2IB3QVZYsAAos3qfe9i0ps/KuXRnPU/fNVUVyCcb94TEsmgsBXz+DStRdky7T2cw7/dPJKo5DLw7FGDPNsbDJiyGKtZDXws5g3FRMmaWDHRMg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=O4l5Q98X; arc=none smtp.client-ip=209.85.210.201
+	s=arc-20240116; t=1712169113; c=relaxed/simple;
+	bh=VZ5Lpg28bRGxX9u8+FU6dh/DzQK2KQ4a90DWVcKqgV0=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=Laxti18cqoXAJ6hTVCCVRwNOh9DBTajOpzUzWINs1JlZimc14UOEdpKsxgxxJFJBpRYT375B0cod9E2D7gZNWf1zpftXQYDU/w0whJ5Ztz7lAvLXgNTB4EYsCG8gT5hZf21V7jmaEIY4l0zp7GNpxGi7Lvl1I3FyXxf/cDNutGk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=wUg0FBYi; arc=none smtp.client-ip=209.85.166.176
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
-Received: by mail-pf1-f201.google.com with SMTP id d2e1a72fcca58-6ea844bfbb7so98727b3a.0
-        for <linux-kernel@vger.kernel.org>; Wed, 03 Apr 2024 11:30:29 -0700 (PDT)
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-il1-f176.google.com with SMTP id e9e14a558f8ab-369de5d5833so12525ab.1
+        for <linux-kernel@vger.kernel.org>; Wed, 03 Apr 2024 11:31:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1712169029; x=1712773829; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=VwSQRZk+BRxb7GZSaFeES/scIy0HPs9KPKeQnP6jNQA=;
-        b=O4l5Q98XSlJ72CMiyfQLVgLeeDoICseHsQPl9PQcQRZEanElc/xhifRioSWN/kmDJ1
-         q4X8YjhIeTuuekY6pg2l1AYn+616tmQRUMbjsdLbxx30h+Y3No4Ox51OHNCLRZgZ0mE1
-         ePAGleNsio1BUflY2SvqlfD9MK1VuJthlBeF6cyPb39o74K4Gue+iiBddBslhhbHTxK4
-         ALJnOaVj3WK4UYNYFiFpVDVvvjozo5SXSy/Uug5CVuUCAK+NgBXWR7QewwZLFGCbz9LB
-         CawLdpfUKxhwLN3A2i7sUlejoOmy/T//l48WU0ESvh1pj8xD/5LEtevm1PJgQdCnBNGN
-         xTjA==
+        d=google.com; s=20230601; t=1712169111; x=1712773911; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=DavZa0Vn131W4AwpDx3XJiiYAXVAyTt4Vn1WSk/2RBw=;
+        b=wUg0FBYiIaCHTzI16fW1hrLsqj+qYUAp/KuopK7qaz04sdU/r7a833Bk7HkX9m90vm
+         nyft8M/U1OrqYDtIZi+fJGIZoZ8IHiZpy63FRj61EZmlsFS/LMZ8ZZST2QVlU6AnsFrq
+         uNft4DbcDqlm0ouOBZn9hhmGJzVYM8y8Is2tXQR8CVzuB2sOLlEfpaSnZrSa8yWoiZws
+         UgiiEhk4CB3+w+kNIJgzwt7Wdr6uCXe3JVI4x7lWLskcAEr4eQD6ywziyiqrpGQFuntC
+         LHfKnVWMkst1bB23wugI3i/OuIITrogC6rQR3ami6p1/PmBV+a59z6pt6NIZJNiJqBPQ
+         hZ8g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712169029; x=1712773829;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=VwSQRZk+BRxb7GZSaFeES/scIy0HPs9KPKeQnP6jNQA=;
-        b=ii78cFqhcRh1mmiwFpfgA6NjzBxDbWBSQOa/X3TFCs0RdzZTKWC6irFqJtQ0vbkRVy
-         7Atk8aCJdK1RZn+gRtOj/nIweeDCmLynEo/5r85ZNRhOQ24HsmfTFPkg3R9ILrxoexu+
-         oMHGh70MZEnkUvNZwKZv0F/7O9R8o1aYq7M5QhUupGQbCLUyn1uaW37vlLVRYqJX4DNh
-         lUnooFmwPRgopgGpZql3YjW9FXJlSKBewIWxT/Cc7kypiCsMlXDhryd+7pT3+a82KvCp
-         9PHipfcmG25BcB+49K/2RJhVtdnH/nqKyYwUJfjzR4/4c+VA8u2/G3J6o5bNbiqUBcBw
-         a4kQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUMgYsPGsJ9Qlreh0NqiwKknYdbPBLQPXTODp1DvfGaZlHmZGIkv5OHCsuxassS+H72ZIwuOBUKmfV+o3exAVoQC3/S6tOUyG1MWPOb
-X-Gm-Message-State: AOJu0YzAqyxohhCOrHu5rVt/UGPEYtXc9Wp3fKqss05wkkMHCeP9rWVQ
-	OHN4NIsYU9YzpaAufbzKwGjR0PBhiqWEE9mn3fBqPP8nf2MR7fE8zE7k1lxgUsUN4WJoXkZn358
-	9lw==
-X-Google-Smtp-Source: AGHT+IG/dVT1QOvlvL3U4/nwwVAfLf64pBOTR5Elndu+IJvpzi5Oo1x0lhZjKdwFiBZ+AqTPHPDpWYXpEf8=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a05:6a00:2d07:b0:6ea:b999:4de1 with SMTP id
- fa7-20020a056a002d0700b006eab9994de1mr10338pfb.5.1712169028875; Wed, 03 Apr
- 2024 11:30:28 -0700 (PDT)
-Date: Wed, 3 Apr 2024 11:30:21 -0700
-In-Reply-To: <20240319163309.GG1645738@ls.amr.corp.intel.com>
+        d=1e100.net; s=20230601; t=1712169111; x=1712773911;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=DavZa0Vn131W4AwpDx3XJiiYAXVAyTt4Vn1WSk/2RBw=;
+        b=CTaZjl4N4DYe55vipgAdea/6LMJv6ZpeojLK3j9ZIbGPEimEcFxDOd0dr0ztqW9g54
+         AsNGKgQM8igoK9RsqrHWljU1O3b73dxb53cpdLhkdJjvJqnKSwf1aJ5exOGXFiu9r185
+         StoBV+fl5Fn+vEJRc18s2PxiUKl/Uk2j5udwD7/jQUw+EbdbHs41Gd+jImfKUXf9DCLl
+         kaTOJC86A67TpmU6jytzubJ1S76DDPYlo/2Q1zWB1zbfK2C+0Cube4vTiPuRTXQuj92R
+         C8MtsdTJAbcUhnQl6g9puXuuMZi3fU60bei+PyJ//gTO6VW10y4Kg6vN1BheBHKesGW7
+         veCA==
+X-Forwarded-Encrypted: i=1; AJvYcCVRpaP1N7CNlyDGmTHWv5Oss6Cyq85gP5PmdSrY5b8d3OiK8aubKeu2SJXzr559ycxbBWHlLVGCCkDPY5mTT410zNxOmQkJw66/DsuH
+X-Gm-Message-State: AOJu0YyxtRXJCEbGHaFQIUhXbEu9iGP6jbI2iFMda4E8LHjW6fE9abm1
+	+783LuqJ4N68a5VMvJrChw6a9eMiwRCbUExXdWguDdwKStV5byQ7+8QJCRdne3Al9cROhJGdqFK
+	NHmMeZf85hLdHKxvHP8rEKdGRbFnbD5DN0YgH
+X-Google-Smtp-Source: AGHT+IFSczYbfUmSrLqLilwtVGK/wXjsQZ0QwQoQ1RfLw9H4GIEwV1Ih4fz/tCxv28G5UcAZGFQ4gsbnTfiSnyHKs4Y=
+X-Received: by 2002:a92:c750:0:b0:369:a2ae:2634 with SMTP id
+ y16-20020a92c750000000b00369a2ae2634mr271505ilp.12.1712169111299; Wed, 03 Apr
+ 2024 11:31:51 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-References: <cover.1709288671.git.isaku.yamahata@intel.com>
- <ZekQFdPlU7RDVt-B@google.com> <20240307020954.GG368614@ls.amr.corp.intel.com> <20240319163309.GG1645738@ls.amr.corp.intel.com>
-Message-ID: <Zg2gPaXWjYxr8woR@google.com>
-Subject: Re: [RFC PATCH 0/8] KVM: Prepopulate guest memory API
-From: Sean Christopherson <seanjc@google.com>
-To: Isaku Yamahata <isaku.yamahata@intel.com>
-Cc: David Matlack <dmatlack@google.com>, kvm@vger.kernel.org, isaku.yamahata@gmail.com, 
-	linux-kernel@vger.kernel.org, Paolo Bonzini <pbonzini@redhat.com>, 
-	Michael Roth <michael.roth@amd.com>, Federico Parola <federico.parola@polito.it>
-Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+References: <20240403164636.3429091-1-irogers@google.com> <dcb0121f-611d-4104-80b9-941d535c5fd2@linux.intel.com>
+In-Reply-To: <dcb0121f-611d-4104-80b9-941d535c5fd2@linux.intel.com>
+From: Ian Rogers <irogers@google.com>
+Date: Wed, 3 Apr 2024 11:31:37 -0700
+Message-ID: <CAP-5=fUgiafmLEKEUJ5r5_tK+jqv30P0TGFCMvR8DkW7J4qYsQ@mail.gmail.com>
+Subject: Re: [PATCH v1] perf metrics: Remove the "No_group" metric group
+To: "Liang, Kan" <kan.liang@linux.intel.com>
+Cc: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, 
+	Arnaldo Carvalho de Melo <acme@kernel.org>, Namhyung Kim <namhyung@kernel.org>, 
+	Mark Rutland <mark.rutland@arm.com>, 
+	Alexander Shishkin <alexander.shishkin@linux.intel.com>, Jiri Olsa <jolsa@kernel.org>, 
+	Adrian Hunter <adrian.hunter@intel.com>, linux-perf-users@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, Andi Kleen <ak@linux.intel.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Tue, Mar 19, 2024, Isaku Yamahata wrote:
-> On Wed, Mar 06, 2024 at 06:09:54PM -0800,
-> Isaku Yamahata <isaku.yamahata@linux.intel.com> wrote:
-> 
-> > On Wed, Mar 06, 2024 at 04:53:41PM -0800,
-> > David Matlack <dmatlack@google.com> wrote:
-> > 
-> > > On 2024-03-01 09:28 AM, isaku.yamahata@intel.com wrote:
-> > > > From: Isaku Yamahata <isaku.yamahata@intel.com>
-> > > > 
-> > > > Implementation:
-> > > > - x86 KVM MMU
-> > > >   In x86 KVM MMU, I chose to use kvm_mmu_do_page_fault().  It's not confined to
-> > > >   KVM TDP MMU.  We can restrict it to KVM TDP MMU and introduce an optimized
-> > > >   version.
-> > > 
-> > > Restricting to TDP MMU seems like a good idea. But I'm not quite sure
-> > > how to reliably do that from a vCPU context. Checking for TDP being
-> > > enabled is easy, but what if the vCPU is in guest-mode?
-> > 
-> > As you pointed out in other mail, legacy KVM MMU support or guest-mode will be
-> > troublesome.
+On Wed, Apr 3, 2024 at 10:59=E2=80=AFAM Liang, Kan <kan.liang@linux.intel.c=
+om> wrote:
+>
+>
+>
+> On 2024-04-03 12:46 p.m., Ian Rogers wrote:
+> > Rather than place metrics without a metric group in "No_group" place
+> > them in a a metric group that is their name. Still allow such metrics
+> > to be selected if "No_group" is passed, this change just impacts perf
+> > list.
+>
+> So it looks like the "No_group" is not completely removed.
+> They are just not seen in the perf list, but users can still use it via
+> perf stat -M No_group, right?
+>
+> If so, why we want to remove it from perf list? Where can the end user
+> know which metrics are included in the No_group?
+>
+> If the No_group is useless, why not completely remove it?
 
-Why is shadow paging troublesome?  I don't see any obvious issues with effectively
-prefetching into a shadow MMU with read fault semantics.  It might be pointless
-and wasteful, as the guest PTEs need to be in place, but that's userspace's problem.
+Agreed. For command line argument deprecation we usually keep the
+option but hide it from help with PARSE_OPT_HIDDEN, so I was trying to
+follow that pattern albeit that a metric group isn't a command line
+option it's an option to an option.
 
-Testing is the biggest gap I see, as using the ioctl() for shadow paging will
-essentially require a live guest, but that doesn't seem like it'd be too hard to
-validate.  And unless we lock down the ioctl() to only be allowed on vCPUs that
-have never done KVM_RUN, we need that test coverage anyways.
+Thanks,
+Ian
 
-And I don't think it makes sense to try and lock down the ioctl(), because for
-the enforcement to have any meaning, KVM would need to reject the ioctl() if *any*
-vCPU has run, and adding that code would likely add more complexity than it solves.
-
-> > The use case I supposed is pre-population before guest runs, the guest-mode
-> > wouldn't matter. I didn't add explicit check for it, though.
-
-KVM shouldn't have an explicit is_guest_mode() check, the support should be a
-property of the underlying MMU, and KVM can use the TDP MMU for L2 (if L1 is
-using legacy shadow paging, not TDP).
-
-> > Any use case while vcpus running?
-> > 
-> > 
-> > > Perhaps we can just return an error out to userspace if the vCPU is in
-> > > guest-mode or TDP is disabled, and make it userspace's problem to do
-> > > memory mapping before loading any vCPU state.
-> > 
-> > If the use case for default VM or sw-proteced VM is to avoid excessive kvm page
-> > fault at guest boot, error on guest-mode or disabled TDP wouldn't matter.
-> 
-> Any input?  If no further input, I assume the primary use case is pre-population
-> before guest running.
-
-Pre-populating is the primary use case, but that could happen if L2 is active,
-e.g. after live migration.
-
-I'm not necessarily opposed to initially adding support only for the TDP MMU, but
-if the delta to also support the shadow MMU is relatively small, my preference
-would be to add the support right away.  E.g. to give us confidence that the uAPI
-can work for multiple MMUs, and so that we don't have to write documentation for
-x86 to explain exactly when it's legal to use the ioctl().
+> Thanks,
+> Kan
+>
+> >
+> > Signed-off-by: Ian Rogers <irogers@google.com>
+> > ---
+> >  tools/perf/util/metricgroup.c | 4 ++--
+> >  1 file changed, 2 insertions(+), 2 deletions(-)
+> >
+> > diff --git a/tools/perf/util/metricgroup.c b/tools/perf/util/metricgrou=
+p.c
+> > index 79ef6095ab28..6ec083af14a1 100644
+> > --- a/tools/perf/util/metricgroup.c
+> > +++ b/tools/perf/util/metricgroup.c
+> > @@ -455,7 +455,7 @@ static int metricgroup__add_to_mep_groups(const str=
+uct pmu_metric *pm,
+> >       const char *g;
+> >       char *omg, *mg;
+> >
+> > -     mg =3D strdup(pm->metric_group ?: "No_group");
+> > +     mg =3D strdup(pm->metric_group ?: pm->metric_name);
+> >       if (!mg)
+> >               return -ENOMEM;
+> >       omg =3D mg;
+> > @@ -466,7 +466,7 @@ static int metricgroup__add_to_mep_groups(const str=
+uct pmu_metric *pm,
+> >               if (strlen(g))
+> >                       me =3D mep_lookup(groups, g, pm->metric_name);
+> >               else
+> > -                     me =3D mep_lookup(groups, "No_group", pm->metric_=
+name);
+> > +                     me =3D mep_lookup(groups, pm->metric_name, pm->me=
+tric_name);
+> >
+> >               if (me) {
+> >                       me->metric_desc =3D pm->desc;
 
