@@ -1,142 +1,88 @@
-Return-Path: <linux-kernel+bounces-129265-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-129316-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6786A8967F3
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 10:12:55 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 31C9489687D
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 10:26:22 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 22D0D28CD9C
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 08:12:54 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 62E9C1C214C7
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 08:26:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 361E473510;
-	Wed,  3 Apr 2024 08:06:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B3FE5134CC8;
+	Wed,  3 Apr 2024 08:15:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="nmYdqFEB"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="KSSdA1OQ"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 740EA5FB85;
-	Wed,  3 Apr 2024 08:06:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 026C4134CC6;
+	Wed,  3 Apr 2024 08:15:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712131616; cv=none; b=HMSgZ5FxpOyIjTt0uGsN/KARILAu9+CBCklveBiH3fNE3Eqib1cxWDZ8qHlZs5WRmX4uBE82weNklX10dP2SZ2quHGPMsrexLCustnewHMLnD8DN04ABMYoj4g/LKIS7q3xWjyBupVeBvEl4m0NwqVb2ZMZq5IseYsVztAV9yUQ=
+	t=1712132128; cv=none; b=aEhwbigHNZzh/ucKRjvSjNbFZFkMFsVySZpZhBS32BMKOHpxZYB2Lod9kGh+BqqHaislFRsrCdlcz2Xw5wPGKLVuEmpZwfWRVP67WzcRPvVeFIJYtg/BhRh0gAEtmGmpYC4e8z0ci6fDrV349lYvh3Ja3i1Lcv+u6gEUhVVM9sM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712131616; c=relaxed/simple;
-	bh=D1fnKXGmnMmng2XJnWn0RD1OcALCWsnaPJw6jX/2oJk=;
-	h=Content-Type:Date:Message-Id:Cc:From:To:Subject:References:
-	 In-Reply-To; b=MXwQcbred8r/zC+5pYK2RkHrq05tUbrkoug8Nll+Cv52+vUBqQ1f4oRpOzSEfv5wF/YPV6jBmm4h3Y47ExqQhjJGRNfKzIepqeZ/3zA9u9ek4dAHP9/dEOVXafOxl+AolUsbdzbSwdnJZi0Z9bcn1+aboEuNr5YMvm3XZXub+Fc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=nmYdqFEB; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6A036C433F1;
-	Wed,  3 Apr 2024 08:06:55 +0000 (UTC)
+	s=arc-20240116; t=1712132128; c=relaxed/simple;
+	bh=JOPsom47Sc136qgfvRV59X06uzcHOevejbHhq+F/jfU=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=QkudiykhLEZyoEkxbln8tPH5U80V/RAUPjvgfAx7MPDLuQ8b2iDmb02pWbgn/tfi9Jzwz0gT89xXjUN+WkWDEIx/30ZOLQeRGd9zmAeb4svDinL71AUQZ/lBxhpJh79QVGKRsurQo8Ywp76EvlQaBb/xbY5dxzCLq2Ru8gQlSzI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=KSSdA1OQ; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1494AC433F1;
+	Wed,  3 Apr 2024 08:15:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712131615;
-	bh=D1fnKXGmnMmng2XJnWn0RD1OcALCWsnaPJw6jX/2oJk=;
-	h=Date:Cc:From:To:Subject:References:In-Reply-To:From;
-	b=nmYdqFEB6hMbmmMq1HTnQD9AKOwTHn4LdeG9WSL5+bA6ISFiyoReQ48mynf1bfrtm
-	 2cxWDzfq6Kwpw8GDirG4YQfjKe9KXPN3fenEZdrTPLR0RX8tnu5I2qCpjZp0rqR9qA
-	 l1NmFCpNYaJo426dTMZF+vqvRLeLqUhe2717vOit18YdAHTHdpTU4O56dacq4W8Cz+
-	 w1AAimDEt1D/jUbc/YXGSz3OCtM8fU7dyfmtiff26M6BgOrILchaYd5HgbVe2vj1Zx
-	 2levQjXnuaDyq7+IL74gDHVRHz1fcFJ7E5HY3oHaaTTOkV/Qw9kb7b/ijgKPY4d9vz
-	 IX/6EqidI7a+w==
-Content-Type: multipart/signed;
- boundary=4bd2cb084b6d1bc3a4d2b6f2223a5fc8229f83965193b4e69adc10d305a3;
- micalg=pgp-sha384; protocol="application/pgp-signature"
-Date: Wed, 03 Apr 2024 10:06:51 +0200
-Message-Id: <D0AC0465UQUJ.26171T9KETMCW@kernel.org>
-Cc: <linux-kernel@vger.kernel.org>, <kernel-janitors@vger.kernel.org>,
- <netdev@vger.kernel.org>
-From: "Michael Walle" <mwalle@kernel.org>
-To: "Christophe JAILLET" <christophe.jaillet@wanadoo.fr>, "Vladimir Oltean"
- <olteanv@gmail.com>, "Andrew Lunn" <andrew@lunn.ch>, "Florian Fainelli"
- <f.fainelli@gmail.com>, "David S. Miller" <davem@davemloft.net>, "Eric
- Dumazet" <edumazet@google.com>, "Jakub Kicinski" <kuba@kernel.org>, "Paolo
- Abeni" <pabeni@redhat.com>
-Subject: Re: [PATCH net] net: dsa: sja1105: Fix parameters order in
- sja1110_pcs_mdio_write_c45()
-X-Mailer: aerc 0.16.0
-References: <ff2a5af67361988b3581831f7bd1eddebfb4c48f.1712082763.git.christophe.jaillet@wanadoo.fr>
-In-Reply-To: <ff2a5af67361988b3581831f7bd1eddebfb4c48f.1712082763.git.christophe.jaillet@wanadoo.fr>
+	s=k20201202; t=1712132127;
+	bh=JOPsom47Sc136qgfvRV59X06uzcHOevejbHhq+F/jfU=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=KSSdA1OQaL+eEA0Z0TUh0zRo4zDqXBC37Yr9QTJIMtim6w0ykg4OHiXGl/dCToq4D
+	 p4vPulBWpALmObpWNkckM9RlQnLF/d6UiwsIhemLeA6wTN91gzBnpYNtIbWsYe9i9+
+	 /IunC4Bf6a974R7AyCRxTz+8fngyK0QuoMJyjAT0oPTjy9RHpyDYW2o///6RBRFCfj
+	 FXmwk/MeXGNSZ3sdgtsUMOr2YyWshEg43YNk7W4+PZ9Hvv4IPwNQwf/3NjqeSv6vF8
+	 wkBqQ1ieK2IrYV7/lTlSOhNlugFs10d/7liI6zi1t2OKexThTT5BxiWro5VPV5HIRi
+	 rk/2tG9fULdnA==
+From: Arnd Bergmann <arnd@kernel.org>
+To: linux-kernel@vger.kernel.org,
+	Masahiro Yamada <masahiroy@kernel.org>
+Cc: Arnd Bergmann <arnd@arndb.de>,
+	Nathan Chancellor <nathan@kernel.org>,
+	Nicolas Schier <nicolas@fjasle.eu>,
+	linux-kbuild@vger.kernel.org
+Subject: [PATCH 34/34] kbuild: always enable -Wunused-const-variable
+Date: Wed,  3 Apr 2024 10:06:52 +0200
+Message-Id: <20240403080702.3509288-35-arnd@kernel.org>
+X-Mailer: git-send-email 2.39.2
+In-Reply-To: <20240403080702.3509288-1-arnd@kernel.org>
+References: <20240403080702.3509288-1-arnd@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 
---4bd2cb084b6d1bc3a4d2b6f2223a5fc8229f83965193b4e69adc10d305a3
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset=UTF-8
+From: Arnd Bergmann <arnd@arndb.de>
 
-On Tue Apr 2, 2024 at 8:33 PM CEST, Christophe JAILLET wrote:
-> The definition and declaration of sja1110_pcs_mdio_write_c45() don't have
-> parameters in the same order.
->
-> Knowing that sja1110_pcs_mdio_write_c45() is used as a function pointer
-> in 'sja1105_info' structure with .pcs_mdio_write_c45, and that we have:
->
->    int (*pcs_mdio_write_c45)(struct mii_bus *bus, int phy, int mmd,
-> 				  int reg, u16 val);
->
-> it is likely that the definition is the one to change.
+The last such warnings are fixed now, so the option can be enabled by default.
 
-See also "struct mii_bus":
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+---
+ scripts/Makefile.extrawarn | 1 -
+ 1 file changed, 1 deletion(-)
 
-	/** @write_c45: Perform a C45 write transfer on the bus */
-	int (*write_c45)(struct mii_bus *bus, int addr, int devnum,
-			 int regnum, u16 val);
+diff --git a/scripts/Makefile.extrawarn b/scripts/Makefile.extrawarn
+index 24d29e477644..a534aba0b97a 100644
+--- a/scripts/Makefile.extrawarn
++++ b/scripts/Makefile.extrawarn
+@@ -96,7 +96,6 @@ else
+ # Some diagnostics enabled by default are noisy.
+ # Suppress them by using -Wno... except for W=1.
+ KBUILD_CFLAGS += $(call cc-disable-warning, unused-but-set-variable)
+-KBUILD_CFLAGS += $(call cc-disable-warning, unused-const-variable)
+ KBUILD_CFLAGS += $(call cc-disable-warning, packed-not-aligned)
+ KBUILD_CFLAGS += $(call cc-disable-warning, format-overflow)
+ ifdef CONFIG_CC_IS_GCC
+-- 
+2.39.2
 
->
-> Found with cppcheck, funcArgOrderDifferent.
->
-> Fixes: ae271547bba6 ("net: dsa: sja1105: C45 only transactions for PCS")
-
-> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-> ---
-> Compile tested only.
-> ---
->  drivers/net/dsa/sja1105/sja1105_mdio.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/drivers/net/dsa/sja1105/sja1105_mdio.c b/drivers/net/dsa/sja=
-1105/sja1105_mdio.c
-> index 833e55e4b961..52ddb4ef259e 100644
-> --- a/drivers/net/dsa/sja1105/sja1105_mdio.c
-> +++ b/drivers/net/dsa/sja1105/sja1105_mdio.c
-> @@ -94,7 +94,7 @@ int sja1110_pcs_mdio_read_c45(struct mii_bus *bus, int =
-phy, int mmd, int reg)
->  	return tmp & 0xffff;
->  }
-> =20
-> -int sja1110_pcs_mdio_write_c45(struct mii_bus *bus, int phy, int reg, in=
-t mmd,
-> +int sja1110_pcs_mdio_write_c45(struct mii_bus *bus, int phy, int mmd, in=
-t reg,
->  			       u16 val)
-
-Reviewed-by: Michael Walle <mwalle@kernel.org>
-
-Vladimir, do you happen to know if some of your boards will use this
-function? Just wondering because it was never noticed.
-
--michael
-
->  {
->  	struct sja1105_mdio_private *mdio_priv =3D bus->priv;
-
-
---4bd2cb084b6d1bc3a4d2b6f2223a5fc8229f83965193b4e69adc10d305a3
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iKgEABMJADAWIQTIVZIcOo5wfU/AngkSJzzuPgIf+AUCZg0OHBIcbXdhbGxlQGtl
-cm5lbC5vcmcACgkQEic87j4CH/hg0wF/RTzwJEa5sk8GegngsX3YXJNsapFGBssA
-1yi4ssEWgnZ6MhuJioHlBvvAGMyORvVSAYDbILAPiVw0FfyfNp47+kanvUqhvG78
-pxSroqUKdQMTmg56f1PDbdoUyTwYihmBgHw=
-=ICMO
------END PGP SIGNATURE-----
-
---4bd2cb084b6d1bc3a4d2b6f2223a5fc8229f83965193b4e69adc10d305a3--
 
